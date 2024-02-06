@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/settings/dlcs/geheimnisnacht_2021/geheimnisnacht_2021_altar_extension.lua
+
 Geheimnisnacht2021AltarExtension = class(Geheimnisnacht2021AltarExtension)
+
 local ambient_vfx_name = "fx/halloween_event_ambient"
 local explosion_vfx_name = "fx/halloween_event_final_explosion"
 local decal_unit_name = "units/decals/decal_halloween_2021"
@@ -6,7 +9,7 @@ local decal_size = 3
 local decal_offset_rot = math.degrees_to_radians(78.5)
 local decal_offset = {
 	-0.04,
-	-0.1
+	-0.1,
 }
 local STATE_INIT = 0
 local STATE_AGGROED = 1
@@ -82,7 +85,7 @@ Geheimnisnacht2021AltarExtension.update = function (self, unit, input, dt, conte
 		self._check_time = 0
 	end
 
-	if not self._hero_close and self._check_time < t then
+	if not self._hero_close and t > self._check_time then
 		local nearby_player_units = FrameTable.alloc_table()
 		local proximity_extension = Managers.state.entity:system("proximity_system")
 		local broadphase = proximity_extension.player_units_broadphase
@@ -248,6 +251,7 @@ end
 Geheimnisnacht2021AltarExtension._init_state = function (self)
 	local world = self.world
 	local unit = self._unit
+
 	self._health_extension = ScriptUnit.extension(unit, "health_system")
 	self._health_extension.is_invincible = true
 
@@ -258,6 +262,7 @@ Geheimnisnacht2021AltarExtension._init_state = function (self)
 	if self._state ~= STATE_DESTRUCTIBLE then
 		local pos = Unit.world_position(unit, 0)
 		local rot = Unit.world_rotation(unit, 0)
+
 		self._ambient_vfx = World.create_particles(world, ambient_vfx_name, pos, rot)
 
 		World.link_particles(world, self._ambient_vfx, unit, 0, Matrix4x4.identity(), "stop")
@@ -318,22 +323,23 @@ Geheimnisnacht2021AltarExtension.spawn_nurglings = function (self)
 	local unit = self._unit
 	local altar_pos = Unit.local_position(unit, 0)
 	local altar_pos_box = Vector3Box(altar_pos)
+
 	self.nurgling_group_id = Managers.state.entity:system("ai_group_system"):generate_group_id()
-	local optional_data = {}
 
-	optional_data.spawned_func = function (unit, breed, optional_data)
-		local blackboard = BLACKBOARDS[unit]
-		local ai_extension = ScriptUnit.extension(unit, "ai_system")
+	local optional_data = {
+		spawned_func = function (unit, breed, optional_data)
+			local blackboard = BLACKBOARDS[unit]
+			local ai_extension = ScriptUnit.extension(unit, "ai_system")
 
-		ai_extension:set_perception("perception_regular", "pick_no_targets")
+			ai_extension:set_perception("perception_regular", "pick_no_targets")
 
-		if blackboard then
-			blackboard.altar_pos = altar_pos_box
-			blackboard.is_fleeing = false
-			blackboard.nurgling_spawned_by_altar = true
-		end
-	end
-
+			if blackboard then
+				blackboard.altar_pos = altar_pos_box
+				blackboard.is_fleeing = false
+				blackboard.nurgling_spawned_by_altar = true
+			end
+		end,
+	}
 	local lowest_amount = 15
 	local highest_amount = 20
 	local num_nurglings = math.random(lowest_amount, highest_amount)
@@ -343,13 +349,13 @@ Geheimnisnacht2021AltarExtension.spawn_nurglings = function (self)
 	local group_data = {
 		template = "critter_nurglings",
 		id = self.nurgling_group_id,
-		size = num_nurglings
+		size = num_nurglings,
 	}
 	local spawn_rot = Quaternion.identity()
 	local breed_name = "critter_nurgling"
 	local spawn_category = "event"
 	local spawn_type = "event"
-	local spawn_animation = nil
+	local spawn_animation
 	local breed_data = Breeds[breed_name]
 	local conflict_director = Managers.state.conflict
 	local nav_world = Managers.state.entity:system("ai_system"):nav_world()

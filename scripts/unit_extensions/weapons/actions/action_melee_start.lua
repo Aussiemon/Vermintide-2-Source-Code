@@ -1,8 +1,11 @@
+﻿-- chunkname: @scripts/unit_extensions/weapons/actions/action_melee_start.lua
+
 ActionMeleeStart = class(ActionMeleeStart, ActionDummy)
 
 local function scale_delay_value(action_settings, value, owner_unit, buff_extension)
 	local new_value = value
 	local time_scale = ActionUtils.get_action_time_scale(owner_unit, action_settings)
+
 	new_value = new_value / time_scale
 
 	return new_value
@@ -23,12 +26,15 @@ ActionMeleeStart.client_owner_start_action = function (self, new_action, t, chai
 	self:_play_additional_animation(new_action.custom_start_anim_data)
 
 	self.zoom_condition_function = new_action.zoom_condition_function
+
 	local owner_unit = self.owner_unit
 	local buff_extension = self.buff_extension
+
 	self._block_delay = scale_delay_value(new_action, new_action.blocking_charge_start_time or 0, owner_unit, buff_extension)
 
 	if self.zoom_condition_function then
 		local aim_zoom_delay = scale_delay_value(new_action, new_action.aim_zoom_delay or 0, owner_unit, buff_extension)
+
 		self.aim_zoom_time = t + aim_zoom_delay
 	end
 end
@@ -63,7 +69,7 @@ ActionMeleeStart.client_owner_post_update = function (self, dt, t, world)
 		local input_extension = self.input_extension
 		local buff_extension = self.buff_extension
 
-		if not status_extension:is_zooming() and self.aim_zoom_time <= t then
+		if not status_extension:is_zooming() and t >= self.aim_zoom_time then
 			status_extension:set_zooming(true, action.default_zoom)
 		end
 

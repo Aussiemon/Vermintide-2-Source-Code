@@ -1,6 +1,9 @@
+﻿-- chunkname: @scripts/entity_system/systems/damage/hit_reaction_system.lua
+
 HitReactionSystem = class(HitReactionSystem, ExtensionSystemBase)
+
 local extensions = {
-	"GenericHitReactionExtension"
+	"GenericHitReactionExtension",
 }
 
 HitReactionSystem.init = function (self, entity_system_creation_context, system_name)
@@ -16,6 +19,7 @@ end
 
 HitReactionSystem.on_add_extension = function (self, world, unit, extension_name, extension_init_data)
 	local extension = ScriptUnit.add_extension(self.extension_init_context, unit, extension_name, self.NAME, extension_init_data)
+
 	self.unit_extensions[unit] = extension
 
 	return extension

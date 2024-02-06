@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/hero_view/states/hero_view_state_overview.lua
+
 require("scripts/ui/views/hero_view/windows/hero_window_prestige")
 require("scripts/ui/views/hero_view/windows/hero_window_talents")
 require("scripts/ui/views/hero_view/windows/hero_window_talents_console")
@@ -32,12 +34,13 @@ local animation_definitions = definitions.animation_definitions
 local DO_RELOAD = false
 local rarity_index = {
 	common = 2,
-	plentiful = 1,
 	exotic = 4,
+	plentiful = 1,
 	rare = 3,
-	unique = 5
+	unique = 5,
 }
 local hero_view_state_overview_testify = script_data.testify and require("scripts/ui/views/hero_view/states/hero_view_state_overview_testify")
+
 HeroViewStateOverview = class(HeroViewStateOverview)
 HeroViewStateOverview.NAME = "HeroViewStateOverview"
 
@@ -46,7 +49,9 @@ HeroViewStateOverview.on_enter = function (self, params)
 
 	self.parent = params.parent
 	self._gamepad_style_active = self:_setup_menu_layout(params)
+
 	local ingame_ui_context = params.ingame_ui_context
+
 	self.ingame_ui_context = ingame_ui_context
 	self.ui_renderer = ingame_ui_context.ui_renderer
 	self.ui_top_renderer = ingame_ui_context.ui_top_renderer
@@ -55,7 +60,7 @@ HeroViewStateOverview.on_enter = function (self, params)
 	self.profile_synchronizer = ingame_ui_context.profile_synchronizer
 	self.statistics_db = ingame_ui_context.statistics_db
 	self.render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 	self.wwise_world = params.wwise_world
 	self.ingame_ui = ingame_ui_context.ingame_ui
@@ -63,15 +68,19 @@ HeroViewStateOverview.on_enter = function (self, params)
 	self.force_ingame_menu = params.state_params.force_ingame_menu
 	self.world_previewer = params.world_previewer
 	self.platform = PLATFORM
+
 	local player_manager = Managers.player
 	local local_player = player_manager:local_player()
+
 	self._stats_id = local_player:stats_id()
 	self.player_manager = player_manager
 	self.peer_id = ingame_ui_context.peer_id
 	self.local_player_id = ingame_ui_context.local_player_id
 	self.player = local_player
 	self.is_server = self.parent.is_server
+
 	local profile_index, career_index = self.profile_synchronizer:profile_by_peer(self.peer_id, self.local_player_id)
+
 	self.profile_index = profile_index or 1
 	self.career_index = career_index or 1
 	self.hero_name = SPProfiles[self.profile_index].display_name
@@ -106,7 +115,7 @@ HeroViewStateOverview.on_enter = function (self, params)
 		career_index = self.career_index,
 		profile_index = self.profile_index,
 		start_state = params.start_state,
-		force_ingame_menu = self.force_ingame_menu
+		force_ingame_menu = self.force_ingame_menu,
 	}
 
 	self:_initial_windows_setups(window_params)
@@ -161,12 +170,14 @@ end
 
 HeroViewStateOverview.create_ui_elements = function (self, params)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+
 	local widgets = {}
 	local widgets_by_name = {}
 
 	for name, widget_definition in pairs(widget_definitions) do
 		if widget_definition then
 			local widget = UIWidget.init(widget_definition)
+
 			widgets[#widgets + 1] = widget
 			widgets_by_name[name] = widget
 		end
@@ -183,6 +194,7 @@ end
 HeroViewStateOverview.disable_player_world = function (self)
 	if not self._player_world_disabled then
 		self._player_world_disabled = true
+
 		local viewport_name = "player_1"
 		local world = Managers.world:world("level_world")
 		local viewport = ScriptWorld.viewport(world, viewport_name)
@@ -194,6 +206,7 @@ end
 HeroViewStateOverview.enable_player_world = function (self)
 	if self._player_world_disabled then
 		self._player_world_disabled = false
+
 		local viewport_name = "player_1"
 		local world = Managers.world:world("level_world")
 		local viewport = ScriptWorld.viewport(world, viewport_name)
@@ -205,6 +218,7 @@ end
 HeroViewStateOverview.enable_ingame_overlay = function (self)
 	if not self._ingame_overlay_enabled then
 		self._ingame_overlay_enabled = true
+
 		local world = Managers.world:world("level_world")
 
 		World.set_data(world, "fullscreen_blur", 0.5)
@@ -216,6 +230,7 @@ end
 HeroViewStateOverview.disable_ingame_overlay = function (self)
 	if self._ingame_overlay_enabled then
 		self._ingame_overlay_enabled = false
+
 		local world = Managers.world:world("level_world")
 
 		World.set_data(world, "fullscreen_blur", nil)
@@ -226,8 +241,10 @@ end
 
 HeroViewStateOverview._initial_windows_setups = function (self, params)
 	local active_windows = {}
+
 	self._active_windows = active_windows
 	self._window_params = params
+
 	local start_state = params.start_state
 
 	if start_state then
@@ -283,7 +300,7 @@ HeroViewStateOverview._change_window = function (self, window_index, window_name
 	local window_class = rawget(_G, window_class_name)
 	local window = window_class:new()
 	local ignore_alignment = new_window_settings.ignore_alignment
-	local window_offset = nil
+	local window_offset
 
 	if not ignore_alignment then
 		local alignment_index = new_window_settings.alignment_index or window_index
@@ -295,10 +312,11 @@ HeroViewStateOverview._change_window = function (self, window_index, window_name
 		local total_windows_width = 3 * window_width
 		local start_width_offset = -(total_windows_width / 2 + window_width / 2) - (total_spacing / 2 + window_spacing)
 		local window_width_offset = start_width_offset + alignment_index * window_width + alignment_index * window_spacing
+
 		window_offset = {
 			window_width_offset,
 			0,
-			3
+			3,
 		}
 	end
 
@@ -482,6 +500,7 @@ HeroViewStateOverview.on_exit = function (self, params)
 	print("[HeroViewState] Exit Substate HeroViewStateOverview")
 
 	self.ui_animator = nil
+
 	local friends_component_ui = self._friends_component_ui
 
 	if friends_component_ui and self:is_friends_list_active() then
@@ -639,6 +658,7 @@ HeroViewStateOverview.post_update = function (self, dt, t)
 
 	if request then
 		self._equip_request = nil
+
 		local slot_type = request.slot_type
 		local slot_name = request.slot_name
 		local backend_id = request.backend_id
@@ -779,10 +799,11 @@ end
 HeroViewStateOverview._start_transition_animation = function (self, key, animation_name)
 	local params = {
 		wwise_world = self.wwise_world,
-		render_settings = self.render_settings
+		render_settings = self.render_settings,
 	}
 	local widgets = {}
 	local anim_id = self.ui_animator:start_animation(animation_name, widgets, scenegraph_definition, params)
+
 	self._animations[key] = anim_id
 end
 
@@ -792,6 +813,7 @@ end
 
 HeroViewStateOverview.get_auto_fill_rarity = function (self)
 	local auto_fill_rarity = self._auto_fill_rarity
+
 	self._auto_fill_rarity = nil
 
 	return auto_fill_rarity
@@ -819,6 +841,7 @@ end
 
 HeroViewStateOverview.filter_reset = function (self)
 	local filter_reset = self._filter_reset
+
 	self._filter_reset = nil
 
 	return filter_reset
@@ -963,7 +986,7 @@ HeroViewStateOverview._set_loadout_item = function (self, item, strict_slot_name
 
 	local backend_id = item.backend_id
 	local item_data = item.data
-	local slot, slot_type = nil
+	local slot, slot_type
 
 	if strict_slot_name then
 		slot = InventorySettings.slots_by_name[strict_slot_name]
@@ -992,7 +1015,7 @@ HeroViewStateOverview._set_loadout_item = function (self, item, strict_slot_name
 				slot_type = slot_type,
 				slot_name = slot_name,
 				backend_id = backend_id,
-				unit = unit
+				unit = unit,
 			}
 		end
 	elseif slot_type == "hat" then
@@ -1001,6 +1024,7 @@ HeroViewStateOverview._set_loadout_item = function (self, item, strict_slot_name
 
 	self.loadout_sync_id = self.loadout_sync_id + 1
 	self.inventory_sync_id = self.inventory_sync_id + 1
+
 	local highest_rarity = self.statistics_db:get_persistent_stat(self._stats_id, "highest_equipped_rarity", slot_type)
 	local item_rarity = rarity_index[item.rarity]
 

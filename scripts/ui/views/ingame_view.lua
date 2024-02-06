@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/ingame_view.lua
+
 require("scripts/ui/views/ingame_view_definitions")
 require("scripts/ui/views/ingame_view_layout_logic")
 require("scripts/ui/views/menu_input_description_ui")
@@ -5,16 +7,17 @@ require("scripts/ui/views/menu_input_description_ui")
 local layout_definitions = local_require("scripts/ui/views/ingame_view_menu_layout")
 local generic_input_actions = {
 	{
+		description_text = "input_description_open",
 		input_action = "confirm",
 		priority = 2,
-		description_text = "input_description_open"
 	},
 	{
+		description_text = "input_description_close",
 		input_action = "back",
 		priority = 3,
-		description_text = "input_description_close"
-	}
+	},
 }
+
 IngameView = class(IngameView)
 
 IngameView.init = function (self, ingame_ui_context)
@@ -24,11 +27,13 @@ IngameView.init = function (self, ingame_ui_context)
 	self.menu_active = false
 	self.ingame_ui = ingame_ui_context.ingame_ui
 	self.render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 	self.ingame_ui_context = ingame_ui_context
 	self.network_lobby = ingame_ui_context.network_lobby
+
 	local is_in_inn = ingame_ui_context.is_in_inn
+
 	self.is_server = ingame_ui_context.is_server
 	self.menu_definition = IngameViewDefinitions
 
@@ -37,15 +42,19 @@ IngameView.init = function (self, ingame_ui_context)
 	self.ui_animations = {}
 	self.controller_grid_index = {
 		x = 1,
-		y = 1
+		y = 1,
 	}
 	self.controller_cooldown = 0
+
 	local input_service = self.input_manager:get_service("ingame_menu")
 	local number_of_actvie_descriptions = 3
 	local world = Managers.world:world("level_world")
+
 	self.wwise_world = Managers.world:wwise_world(world)
 	self._friends_component_ui = FriendsUIComponent:new(ingame_ui_context)
+
 	local gui_layer = self.menu_definition.scenegraph_definition.root.position[3]
+
 	self.menu_input_description = MenuInputDescriptionUI:new(ingame_ui_context, self.ui_top_renderer, input_service, number_of_actvie_descriptions, gui_layer, generic_input_actions)
 
 	self.menu_input_description:set_input_description(nil)
@@ -115,6 +124,7 @@ end
 
 IngameView.create_ui_elements = function (self)
 	local widgets = self.menu_definition.widgets
+
 	self.stored_buttons = {
 		UIWidget.init(widgets.button_1),
 		UIWidget.init(widgets.button_2),
@@ -124,7 +134,7 @@ IngameView.create_ui_elements = function (self)
 		UIWidget.init(widgets.button_6),
 		UIWidget.init(widgets.button_7),
 		UIWidget.init(widgets.button_8),
-		UIWidget.init(widgets.button_9)
+		UIWidget.init(widgets.button_9),
 	}
 
 	for _, button_widget in ipairs(self.stored_buttons) do
@@ -136,7 +146,7 @@ IngameView.create_ui_elements = function (self)
 	self.static_widgets = {
 		UIWidget.init(widgets.background),
 		UIWidget.init(widgets.top_panel),
-		UIWidget.init(widgets.left_chain_end)
+		UIWidget.init(widgets.left_chain_end),
 	}
 	self.left_chain_widget = UIWidget.init(widgets.left_chain)
 	self.right_chain_widget = UIWidget.init(widgets.right_chain)
@@ -175,12 +185,17 @@ IngameView.set_background_height = function (self, num_buttons)
 	local total_button_height = num_buttons * (button_height + button_spacing)
 	local ui_scenegraph = self.ui_scenegraph
 	local background_size = ui_scenegraph.window.size
+
 	background_size[2] = total_button_height
+
 	local left_chain_widget = self.left_chain_widget
 	local left_chain_scenegraph_id = left_chain_widget.scenegraph_id
+
 	ui_scenegraph[left_chain_scenegraph_id].size[2] = total_button_height + 40
+
 	local right_chain_widget = self.right_chain_widget
 	local right_chain_scenegraph_id = right_chain_widget.scenegraph_id
+
 	ui_scenegraph[right_chain_scenegraph_id].size[2] = total_button_height + 100
 end
 
@@ -235,6 +250,7 @@ IngameView.update = function (self, dt)
 			local widget = stored_buttons[index]
 			local content = widget.content
 			local button_hotspot = content.button_hotspot
+
 			button_hotspot.disable_button = data.disabled
 			content.title_text = data.display_name
 
@@ -265,6 +281,7 @@ IngameView.update = function (self, dt)
 	UIRenderer.end_pass(ui_top_renderer)
 
 	self.gamepad_active_last_frame = gamepad_active
+
 	local join_lobby_data = self._friends_component_ui:join_lobby_data()
 
 	if join_lobby_data and Managers.matchmaking:allowed_to_initiate_join_lobby() then
@@ -302,11 +319,13 @@ IngameView.controller_select_button_index = function (self, index, ignore_sound)
 	for i, data in ipairs(layout_data) do
 		local button_widget = stored_buttons[i]
 		local is_selected = i == index
+
 		button_widget.content.button_hotspot.is_selected = is_selected
 
 		if is_selected then
 			local widget_scenegraph_id = button_widget.scenegraph_id
 			local widget_current_position = self.ui_scenegraph[widget_scenegraph_id].local_position
+
 			gamepad_selection_current_position[2] = gamepad_selection_default_position[2] - i * 84
 		end
 	end
@@ -328,6 +347,7 @@ IngameView.clear_controller_selection = function (self)
 
 	for i, data in ipairs(layout_data) do
 		local widget = stored_buttons[i]
+
 		widget.content.button_hotspot.is_selected = false
 	end
 end
@@ -339,9 +359,11 @@ IngameView.update_controller_input = function (self, input_service, dt)
 
 	if self.controller_cooldown > 0 then
 		self.controller_cooldown = self.controller_cooldown - dt
+
 		local speed_multiplier = self.speed_multiplier or 1
 		local decrease = GamepadSettings.menu_speed_multiplier_frame_decrease
 		local min_multiplier = GamepadSettings.menu_min_speed_multiplier
+
 		self.speed_multiplier = math.max(speed_multiplier - decrease, min_multiplier)
 
 		return

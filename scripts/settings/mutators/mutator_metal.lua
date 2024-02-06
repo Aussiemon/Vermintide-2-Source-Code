@@ -1,19 +1,21 @@
+﻿-- chunkname: @scripts/settings/mutators/mutator_metal.lua
+
 local blade_dance_enemies = {
-	skaven_ratling_gunner = true,
-	skaven_stormfiend = true,
-	skaven_storm_vermin_with_shield = true,
-	chaos_warrior = true,
 	beastmen_bestigor = true,
-	skaven_warpfire_thrower = true,
 	beastmen_standard_bearer = true,
-	skaven_storm_vermin_commander = true,
+	chaos_warrior = true,
+	skaven_ratling_gunner = true,
 	skaven_storm_vermin = true,
-	skaven_storm_vermin_champion = true
+	skaven_storm_vermin_champion = true,
+	skaven_storm_vermin_commander = true,
+	skaven_storm_vermin_with_shield = true,
+	skaven_stormfiend = true,
+	skaven_warpfire_thrower = true,
 }
 
 return {
-	display_name = "weaves_metal_mutator_name",
 	description = "weaves_metal_mutator_desc",
+	display_name = "weaves_metal_mutator_name",
 	icon = "icon_wind_chamon",
 	primary_armor_category = 6,
 	modify_primary_armor_category_breeds = {
@@ -26,7 +28,7 @@ return {
 		"skaven_warpfire_thrower",
 		"chaos_warrior",
 		"beastmen_bestigor",
-		"beastmen_standard_bearer"
+		"beastmen_standard_bearer",
 	},
 	server_players_left_safe_zone = function (context, data)
 		data.has_left_safe_zone = true
@@ -53,6 +55,7 @@ return {
 	end,
 	server_start_function = function (context, data)
 		local weave_manager = Managers.weave
+
 		data.wind_strength = weave_manager:get_wind_strength()
 		data.buff_system = Managers.state.entity:system("buff_system")
 	end,
@@ -66,6 +69,7 @@ return {
 		if ScorpionSeasonalSettings.current_season_id == 1 then
 			local statistics_db = Managers.player:statistics_db()
 			local stats_id = data.player:stats_id()
+
 			data.buff_challenge_result = statistics_db:get_persistent_stat(stats_id, "season_1", "scorpion_weaves_metal_season_1")
 		end
 	end,
@@ -95,7 +99,7 @@ return {
 				if has_buff then
 					data.buff_challenge_counter = data.buff_challenge_counter + dt
 
-					if QuestSettings.bladestorm_duration <= data.buff_challenge_counter then
+					if data.buff_challenge_counter >= QuestSettings.bladestorm_duration then
 						local statistics_db = Managers.player:statistics_db()
 						local stats_id = data.player:stats_id()
 
@@ -108,5 +112,5 @@ return {
 				end
 			end
 		end
-	end
+	end,
 }

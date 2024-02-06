@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/utils/base64.lua
+
 require("math")
 
 local __author__ = "Daniel Lindsley"
@@ -47,6 +49,7 @@ function to_base64(to_encode)
 	for i = 1, string.len(bit_pattern), 6 do
 		local byte = string.sub(bit_pattern, i, i + 5)
 		local offset = tonumber(from_binary(byte))
+
 		encoded = encoded .. string.sub(index_table, offset + 1, offset + 1)
 	end
 
@@ -72,6 +75,7 @@ function from_base64(to_decode)
 
 	for i = 1, string.len(bit_pattern), 8 do
 		local byte = string.sub(bit_pattern, i, i + 7)
+
 		decoded = decoded .. string.char(from_binary(byte))
 	end
 

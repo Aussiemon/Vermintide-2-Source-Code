@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_combat_step_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTCombatStepAction = class(BTCombatStepAction, BTNode)
@@ -21,6 +23,7 @@ BTCombatStepAction.enter = function (self, unit, blackboard, t)
 	blackboard.active_node = BTCombatStepAction
 	blackboard.start_finished = nil
 	blackboard.start_started_since = t
+
 	local navigation_extension = blackboard.navigation_extension
 	local target_unit = blackboard.target_unit
 	local rotation_to_target = LocomotionUtils.rotation_towards_unit_flat(unit, target_unit)
@@ -40,6 +43,7 @@ BTCombatStepAction.enter = function (self, unit, blackboard, t)
 	network_manager:anim_event(unit, animation)
 
 	blackboard.move_state = "moving"
+
 	local ai_slot_system = Managers.state.entity:system("ai_slot_system")
 
 	ai_slot_system:do_slot_search(unit, false)
@@ -70,11 +74,13 @@ end
 BTCombatStepAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	blackboard.start_finished = nil
 	blackboard.start_started_since = nil
+
 	local ai_slot_system = Managers.state.entity:system("ai_slot_system")
 
 	ai_slot_system:do_slot_search(unit, true)
 
 	blackboard.active_node = nil
+
 	local default_move_speed = AiUtils.get_default_breed_move_speed(unit, blackboard)
 	local navigation_extension = blackboard.navigation_extension
 
@@ -122,17 +128,9 @@ BTCombatStepAction._get_animation = function (self, rotation, direction)
 	local forward_vector = Quaternion.forward(rotation)
 	local fwd_dot = Vector3.dot(forward_vector, direction)
 	local abs_fwd = math.abs(fwd_dot)
-	local anim = nil
+	local anim
 
-	if abs_fwd < abs_right and right_dot > 0 then
-		anim = "combat_step_left"
-	elseif abs_fwd < abs_right then
-		anim = "combat_step_right"
-	elseif fwd_dot >= 0 then
-		anim = "combat_step_fwd"
-	else
-		anim = "combat_step_bwd"
-	end
+	anim = abs_fwd < abs_right and right_dot > 0 and "combat_step_left" or abs_fwd < abs_right and "combat_step_right" or fwd_dot >= 0 and "combat_step_fwd" or "combat_step_bwd"
 
 	return anim
 end

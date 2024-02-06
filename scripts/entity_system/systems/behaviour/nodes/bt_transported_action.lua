@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_transported_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTTransportedAction = class(BTTransportedAction, BTNode)
@@ -10,7 +12,9 @@ BTTransportedAction.name = "BTTransportedAction"
 
 BTTransportedAction.enter = function (self, unit, blackboard, t, dt)
 	local action = self._tree_node.action_data
+
 	blackboard.action = action
+
 	local navigation_extension = blackboard.navigation_extension
 	local locomotion_extension = blackboard.locomotion_extension
 

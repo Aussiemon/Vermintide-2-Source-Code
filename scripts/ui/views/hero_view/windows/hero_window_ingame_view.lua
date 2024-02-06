@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/hero_view/windows/hero_window_ingame_view.lua
+
 local definitions = local_require("scripts/ui/views/hero_view/windows/definitions/hero_window_ingame_view_definitions")
 local layout_definitions = local_require("scripts/ui/views/ingame_view_menu_layout_console")
 local widget_definitions = definitions.widgets
@@ -20,8 +22,9 @@ local menu_functions = {
 
 		input_manager:block_device_except_service("console_friends_menu", "gamepad")
 		this:_activate_view("console_friends_view")
-	end
+	end,
 }
+
 HeroWindowIngameView = class(HeroWindowIngameView)
 HeroWindowIngameView.NAME = "HeroWindowIngameView"
 
@@ -30,14 +33,16 @@ HeroWindowIngameView.on_enter = function (self, params, offset)
 
 	self._params = params
 	self.parent = params.parent
+
 	local ingame_ui_context = params.ingame_ui_context
+
 	self.ingame_ui_context = ingame_ui_context
 	self.ui_renderer = ingame_ui_context.ui_renderer
 	self.ui_top_renderer = ingame_ui_context.ui_top_renderer
 	self.input_manager = ingame_ui_context.input_manager
 	self.statistics_db = ingame_ui_context.statistics_db
 	self.render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 	self.layout_logic = IngameViewLayoutLogic:new(ingame_ui_context, params, layout_definitions.menu_layouts, layout_definitions.full_access_layout)
 
@@ -45,18 +50,21 @@ HeroWindowIngameView.on_enter = function (self, params, offset)
 
 	local player_manager = Managers.player
 	local local_player = player_manager:local_player()
+
 	self._stats_id = local_player:stats_id()
 	self.player_manager = player_manager
 	self.peer_id = ingame_ui_context.peer_id
 	self.hero_name = params.hero_name
 	self.career_index = params.career_index
 	self.profile_index = params.profile_index
+
 	local hero_name = self.hero_name
 	local career_index = self.career_index
 	local profile_index = FindProfileIndex(hero_name)
 	local profile = SPProfiles[profile_index]
 	local career_data = profile.careers[career_index]
 	local career_name = career_data.name
+
 	self._animations = {}
 	self._ui_animations = {}
 
@@ -72,18 +80,20 @@ end
 HeroWindowIngameView._start_transition_animation = function (self, animation_name)
 	local params = {
 		wwise_world = self.wwise_world,
-		render_settings = self.render_settings
+		render_settings = self.render_settings,
 	}
 	local widgets = {}
 	local anim_id = self.ui_animator:start_animation(animation_name, widgets, scenegraph_definition, params)
+
 	self._animations[animation_name] = anim_id
 end
 
 HeroWindowIngameView._init_menu_views = function (self)
 	local ingame_ui_context = self.ingame_ui_context
+
 	self._views = {
 		options_view = ingame_ui_context.ingame_ui.views.options_view,
-		console_friends_view = ingame_ui_context.ingame_ui.views.console_friends_view
+		console_friends_view = ingame_ui_context.ingame_ui.views.console_friends_view,
 	}
 
 	for name, view in pairs(self._views) do
@@ -106,6 +116,7 @@ end
 
 HeroWindowIngameView._activate_view = function (self, new_view)
 	self._active_view = new_view
+
 	local views = self._views
 
 	assert(views[new_view])
@@ -130,6 +141,7 @@ HeroWindowIngameView.exit_current_view = function (self)
 	end
 
 	self._active_view = nil
+
 	local input_service = Managers.input:get_service("hero_view")
 	local input_service_name = input_service.name
 	local input_manager = Managers.input
@@ -142,21 +154,25 @@ end
 
 HeroWindowIngameView.create_ui_elements = function (self, params, offset)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+
 	local widgets = {}
 	local widgets_by_name = {}
 
 	for name, widget_definition in pairs(widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		widgets[#widgets + 1] = widget
 		widgets_by_name[name] = widget
 	end
 
 	self._widgets = widgets
 	self._widgets_by_name = widgets_by_name
+
 	local title_button_widgets = {}
 
 	for name, widget_definition in pairs(title_button_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		title_button_widgets[#title_button_widgets + 1] = widget
 	end
 
@@ -168,6 +184,7 @@ HeroWindowIngameView.create_ui_elements = function (self, params, offset)
 
 	if offset then
 		local window_position = self.ui_scenegraph.window.local_position
+
 		window_position[1] = window_position[1] + offset[1]
 		window_position[2] = window_position[2] + offset[2]
 		window_position[3] = window_position[3] + offset[3]
@@ -175,6 +192,7 @@ HeroWindowIngameView.create_ui_elements = function (self, params, offset)
 
 	local input_service = Managers.input:get_service("hero_view")
 	local gui_layer = UILayer.default + 30
+
 	self._menu_input_description = MenuInputDescriptionUI:new(nil, self.ui_top_renderer, input_service, 3, gui_layer, generic_input_actions.default, true)
 
 	self._menu_input_description:set_input_description(nil)
@@ -188,6 +206,7 @@ HeroWindowIngameView.on_exit = function (self, params)
 	self._menu_input_description:destroy()
 
 	self._menu_input_description = nil
+
 	local layout_logic = self.layout_logic
 
 	if layout_logic then
@@ -449,6 +468,7 @@ HeroWindowIngameView.draw = function (self, dt)
 			local widget = title_button_widgets[index]
 			local content = widget.content
 			local button_hotspot = content.button_hotspot
+
 			button_hotspot.disable_button = data.disabled
 			content.text_field = data.display_name_func and data.display_name_func() or data.display_name
 
@@ -480,6 +500,7 @@ HeroWindowIngameView._update_presentation = function (self)
 		for index = 1, num_entries do
 			local widget = title_button_widgets[index]
 			local offset = widget.offset
+
 			offset[2] = -(spacing * index - 1)
 			total_height = total_height + spacing
 		end
@@ -488,6 +509,7 @@ HeroWindowIngameView._update_presentation = function (self)
 		local background_widget = widgets_by_name.background
 		local background_scenegraph_id = background_widget.scenegraph_id
 		local ui_scenegraph = self.ui_scenegraph
+
 		ui_scenegraph[background_scenegraph_id].size[2] = total_height + 90
 	end
 end

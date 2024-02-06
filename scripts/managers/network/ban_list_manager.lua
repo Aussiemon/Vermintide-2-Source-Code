@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/managers/network/ban_list_manager.lua
+
 BanListManager = class(BanListManager)
+
 local SAVE_FILE = "ban_list"
 
 BanListManager.init = function (self)
@@ -10,7 +13,7 @@ end
 BanListManager.ban = function (self, peer_id, name, until_time_stamp)
 	self._bans[peer_id] = {
 		name = name,
-		ban_end = until_time_stamp
+		ban_end = until_time_stamp,
 	}
 end
 
@@ -63,7 +66,7 @@ BanListManager.ban_list = function (self)
 		result[#result + 1] = {
 			name = ban_info.name,
 			peer_id = peer_id,
-			ban_end = ban_info.ban_end
+			ban_end = ban_info.ban_end,
 		}
 	end
 

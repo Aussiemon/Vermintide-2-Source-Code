@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/game_mode/mechanisms/deus_populate_graph.lua
+
 require("scripts/settings/dlcs/morris/deus_map_populate_settings")
 require("scripts/managers/game_mode/mechanisms/deus_gen_engine")
 require("scripts/helpers/deus_gen_utils")
@@ -5,8 +7,8 @@ require("scripts/helpers/deus_gen_utils")
 local function shuffle_array(table, random_generator)
 	for ii = #table, 2, -1 do
 		local swap = random_generator(1, ii)
-		table[ii] = table[swap]
-		table[swap] = table[ii]
+
+		table[swap], table[ii] = table[ii], table[swap]
 	end
 
 	return table
@@ -23,8 +25,8 @@ local function get_random_key_list(table1, random_generator)
 
 	for ii = #keys, 2, -1 do
 		local swap = random_generator(1, ii)
-		keys[ii] = keys[swap]
-		keys[swap] = keys[ii]
+
+		keys[swap], keys[ii] = keys[ii], keys[swap]
 	end
 
 	return keys
@@ -68,8 +70,8 @@ local function get_paths(nodes, node_key)
 	if #nodes[node_key].prev == 0 then
 		return {
 			{
-				node_key
-			}
+				node_key,
+			},
 		}
 	end
 
@@ -143,6 +145,7 @@ end
 local function get_descendants(nodes, node_key, depth)
 	if depth > 1 then
 		depth = depth - 1
+
 		local all_descendants = {}
 
 		for _, next_node_key in ipairs(nodes[node_key].next) do
@@ -213,16 +216,16 @@ local LEVEL_VALIDATIONS = {
 	SIGNATURE = {
 		prevent_same_level_choice = prevent_same_level_choice,
 		last_signature_level_is_specific_level = last_signature_level_is_specific_level,
-		prevent_same_level_on_same_path = prevent_same_level_on_same_path
+		prevent_same_level_on_same_path = prevent_same_level_on_same_path,
 	},
 	TRAVEL = {
 		prevent_same_level_choice = prevent_same_level_choice,
-		prevent_same_level_on_same_path = prevent_same_level_on_same_path
+		prevent_same_level_on_same_path = prevent_same_level_on_same_path,
 	},
 	SHOP = {
-		prevent_same_level_choice = prevent_same_level_choice
+		prevent_same_level_choice = prevent_same_level_choice,
 	},
-	ARENA = {}
+	ARENA = {},
 }
 local LEVEL_SHUFFLERS = {
 	lower_priority_of_already_used_levels_on_path = function (context, working_graph, node_key, levels)
@@ -247,12 +250,13 @@ local LEVEL_SHUFFLERS = {
 
 			if is_level_already_used(node_key, level) then
 				local level_to_swap = levels[swap_to_index]
+
 				levels[i] = level_to_swap
 				levels[swap_to_index] = level
 				swap_to_index = swap_to_index - 1
 			end
 		end
-	end
+	end,
 }
 local LABEL_OVERRIDES = {
 	last_signature_level_is_specific_level = function (context, working_graph, labels)
@@ -262,7 +266,7 @@ local LABEL_OVERRIDES = {
 		fassert(sig_level, "you need to specify a SPECIFIC_SIGNATURE_LEVEL when using LABEL_OVERRIDES.last_signature_level_is_specific_level")
 
 		local sig_labels = labels.SIGNATURE
-		local last_level_label = nil
+		local last_level_label
 
 		for _, prev_node_key in ipairs(working_graph.final.prev) do
 			local prev_node = working_graph[prev_node_key]
@@ -276,7 +280,7 @@ local LABEL_OVERRIDES = {
 
 		fassert(last_level_label, "a graph needs to have a signature level just before the end in order for LABEL_OVERRIDES.last_signature_level_is_specific_level to work")
 
-		local specific_level_label = nil
+		local specific_level_label
 
 		for label, level in pairs(sig_labels) do
 			if level == sig_level then
@@ -289,18 +293,19 @@ local LABEL_OVERRIDES = {
 		fassert(specific_level_label, sprintf("In LABEL_OVERRIDES.last_signature_level_is_specific_level the level %s was not found in the level availability", sig_level))
 
 		local other_level = sig_labels[last_level_label]
+
 		sig_labels[last_level_label] = sig_level
 		sig_labels[specific_level_label] = other_level
 
 		return labels
-	end
+	end,
 }
 local MINOR_MODIFIER_VALIDATORS = {
 	prevent_modifier_on_curse_abundance_of_life = function (context, working_graph, node_key, modifier_group)
 		local node = working_graph[node_key]
 
 		return node.curse ~= "curse_abundance_of_life" or not table.contains(modifier_group, "increased_grenades") and not table.contains(modifier_group, "increased_healing")
-	end
+	end,
 }
 
 local function validate_level_placement(config, indent, working_graph, node_key, level)
@@ -377,7 +382,7 @@ local function get_available_paths(context, working_graph, node_key, level)
 	return paths
 end
 
-local create_process_node_action, create_assign_level_and_path_action, create_process_connections_action = nil
+local create_process_node_action, create_assign_level_and_path_action, create_process_connections_action
 
 function create_process_connections_action(context, working_graph, node_key)
 	local function executor()
@@ -401,7 +406,7 @@ function create_process_connections_action(context, working_graph, node_key)
 		end,
 		retry = function ()
 			return false
-		end
+		end,
 	}
 end
 
@@ -419,14 +424,14 @@ function create_process_node_action(context, working_graph, node_key)
 			local next_actions = {
 				function ()
 					return create_assign_level_and_path_action(context, working_graph, node_key)
-				end
+				end,
 			}
 
 			return true, next_actions
 		end,
 		retry = function ()
 			return false
-		end
+		end,
 	}
 end
 
@@ -448,12 +453,14 @@ function create_assign_level_and_path_action(context, working_graph, node_key)
 		return levels
 	end
 
-	local shuffled_levels_available = nil
+	local shuffled_levels_available
 
 	local function executor()
 		if node_label and node_label ~= 0 then
 			node.level = context.shuffled_levels_for_labels[node_type][node_label]
+
 			local paths = levels_available[node.level].paths
+
 			paths = shuffle_array(table.clone(paths), context.random_generator)
 			node.path = paths[1]
 		else
@@ -463,6 +470,7 @@ function create_assign_level_and_path_action(context, working_graph, node_key)
 
 			while #shuffled_levels_available > 0 do
 				local level_to_try = shuffled_levels_available[#shuffled_levels_available]
+
 				shuffled_levels_available[#shuffled_levels_available] = nil
 
 				if validate_level_placement(context.config, context.indent, working_graph, node_key, level_to_try) then
@@ -473,7 +481,9 @@ function create_assign_level_and_path_action(context, working_graph, node_key)
 					else
 						local paths = get_available_paths(context, working_graph, node_key, level_to_try)
 
-						if #paths ~= 0 then
+						if #paths == 0 then
+							-- Nothing
+						else
 							paths = shuffle_array(table.clone(paths), context.random_generator)
 							node.level = level_to_try
 							node.path = paths[1]
@@ -492,7 +502,7 @@ function create_assign_level_and_path_action(context, working_graph, node_key)
 		local next_actions = {
 			function ()
 				return create_process_connections_action(context, working_graph, node_key)
-			end
+			end,
 		}
 
 		return true, next_actions
@@ -512,7 +522,7 @@ function create_assign_level_and_path_action(context, working_graph, node_key)
 			else
 				return executor()
 			end
-		end
+		end,
 	}
 end
 
@@ -570,6 +580,7 @@ local function apply_progress(working_graph, path, start_index, end_index)
 	for index = start_index, end_index do
 		local lerp_index = index - start_index
 		local progress = math.lerp(start_prog, end_prog, (lerp_index + index_offset) / length_of_lerp)
+
 		working_graph[path[index]].run_progress = progress
 	end
 end
@@ -608,6 +619,7 @@ local function assign_random_curse(context, node, god)
 	local node_type = node.type
 	local curses = context.config.AVAILABLE_CURSES[node_type][god]
 	local curse = curses[context.random_generator(1, #curses)]
+
 	node.curse = curse
 	node.god = god
 end
@@ -639,7 +651,7 @@ local function spread_curse_on_hot_spot(context, working_graph, god, hot_spot_ce
 	local hot_spot_data = {
 		god = god,
 		center_key = hot_spot_center_key,
-		nodes = {}
+		nodes = {},
 	}
 	local hot_spot_center = working_graph[hot_spot_center_key]
 
@@ -650,11 +662,10 @@ local function spread_curse_on_hot_spot(context, working_graph, god, hot_spot_ce
 
 	for possible_index = #possible_cursed_nodes, 1, -1 do
 		local possible_node = possible_cursed_nodes[possible_index]
-		local dx = hot_spot_center.layout_x - possible_node.layout_x
-		local dy = hot_spot_center.layout_y - possible_node.layout_y
+		local dx, dy = hot_spot_center.layout_x - possible_node.layout_x, hot_spot_center.layout_y - possible_node.layout_y
 		local squared_distance = dx * dx + dy * dy
 
-		if squared_range > squared_distance then
+		if squared_distance < squared_range then
 			assign_random_curse(context, possible_node, god)
 			table.swap_delete(possible_cursed_nodes, possible_index)
 
@@ -674,6 +685,7 @@ local function spread_curse(context, working_graph)
 
 	if not context.config.NO_DOMINANT_GOD then
 		local squared_god_range = context.config.CURSES_HOT_SPOT_MAX_RANGE * context.config.CURSES_HOT_SPOT_MAX_RANGE
+
 		possible_cursed_nodes = spread_curse_on_hot_spot(context, working_graph, context.dominant_god, "final", squared_god_range, possible_cursed_nodes)
 	end
 
@@ -698,6 +710,7 @@ local function spread_curse(context, working_graph)
 			local hot_spot_center_index = context.random_generator(1, #possible_cursed_nodes)
 			local hot_spot_center = possible_cursed_nodes[hot_spot_center_index]
 			local god_range = context.config.CURSES_HOT_SPOT_MIN_RANGE + context.random_generator() * (context.config.CURSES_HOT_SPOT_MAX_RANGE - context.config.CURSES_HOT_SPOT_MAX_RANGE)
+
 			possible_cursed_nodes = spread_curse_on_hot_spot(context, working_graph, god, hot_spot_center.name, god_range * god_range, possible_cursed_nodes)
 		end
 	end
@@ -709,7 +722,7 @@ local function spread_belakor(context, working_graph)
 
 	for node_key, node in pairs(working_graph) do
 		if node.type ~= "START" and node.type ~= "SHOP" and node.type ~= "ARENA" then
-			local final_nodes = nil
+			local final_nodes
 			local possible_arena_belakor_nodes = get_descendants(working_graph, node_key, depth)
 			local possible_arena_belakor_nodes_without_shops = {}
 
@@ -769,8 +782,10 @@ local function spread_belakor(context, working_graph)
 		if belakor_node_map[path_start_node] then
 			local path = {}
 			local path_n = 1
+
 			belakor_paths[#belakor_paths + 1] = path
 			path[path_n] = first_playable_nodes[i]
+
 			local path_next = get_descendants(working_graph, path_start_node, 1)
 
 			for j = 1, #path_next do
@@ -792,6 +807,7 @@ local function spread_belakor(context, working_graph)
 		if path_n > 0 then
 			local rand_node = random_generator(1, path_n)
 			local rand_node_name = path[rand_node]
+
 			belakor_nodes[#belakor_nodes + 1] = rand_node_name
 
 			for next_path_id = path_id + 1, #belakor_paths do
@@ -836,6 +852,7 @@ local function assign_conflict_settings(context, working_graph)
 	for _, base_node in pairs(working_graph) do
 		if base_node.type == "SIGNATURE" or base_node.type == "TRAVEL" or base_node.type == "ARENA" then
 			local possible_conflict_settings = context.config.CONFLICT_DIRECTORS[base_node.god] or context.config.CONFLICT_DIRECTORS.default
+
 			base_node.conflict_settings = possible_conflict_settings[context.random_generator(1, #possible_conflict_settings)]
 		end
 	end
@@ -858,10 +875,12 @@ local function get_visible_nodes(nodes, node_key, depth)
 
 	if depth > 1 then
 		depth = depth - 1
+
 		local all_visible_nodes = {}
 
 		for _, descendant in ipairs(descendants) do
 			all_visible_nodes[descendant] = nodes[descendant]
+
 			local visibles_from_descendant = get_visible_nodes(nodes, descendant, depth)
 
 			for visible_from_descendant_node_key, visible_from_descendant in pairs(visibles_from_descendant) do
@@ -939,7 +958,7 @@ function deus_generate_seeds(level_seed)
 		pickups_seed = pickups_seed,
 		mutator_seed = mutator_seed,
 		blessings_seed = blessings_seed,
-		power_ups_seed = power_ups_seed
+		power_ups_seed = power_ups_seed,
 	}
 end
 
@@ -951,7 +970,7 @@ function deus_populate_graph(base_graph, seed, config, dominant_god, with_belako
 		random_generator = random_generator,
 		config = config,
 		dominant_god = dominant_god,
-		hot_spots = {}
+		hot_spots = {},
 	}
 	local shuffled_levels_for_labels = {}
 	local level_availability_types = {}
@@ -964,6 +983,7 @@ function deus_populate_graph(base_graph, seed, config, dominant_god, with_belako
 
 	for _, type in pairs(level_availability_types) do
 		local levels = config.LEVEL_AVAILABILITY[type]
+
 		levels = get_random_key_list(levels, random_generator)
 		shuffled_levels_for_labels[type] = levels
 	end
@@ -979,10 +999,10 @@ function deus_populate_graph(base_graph, seed, config, dominant_god, with_belako
 	end
 
 	local action_list = {
-		create_process_connections_action(context, working_graph, "start")
+		create_process_connections_action(context, working_graph, "start"),
 	}
 	local generator = DeusGenEngine.get_generator(action_list, per_action_callback)
-	local error_message, result = nil
+	local error_message, result
 	local process_count = 100000
 
 	for i = 1, process_count do
@@ -1035,7 +1055,7 @@ function deus_populate_graph(base_graph, seed, config, dominant_god, with_belako
 				pickups = pickups_seed,
 				mutator = mutator_seed,
 				blessings = blessings_seed,
-				power_ups = power_ups_seed
+				power_ups = power_ups_seed,
 			},
 			theme = base_node.god or "wastes",
 			minor_modifier_group = base_node.minor_modifier_group,
@@ -1046,13 +1066,14 @@ function deus_populate_graph(base_graph, seed, config, dominant_god, with_belako
 			terror_event_power_up = base_node.terror_event_power_up,
 			terror_event_power_up_rarity = base_node.terror_event_power_up_rarity,
 			possible_arena_belakor_nodes = base_node.possible_arena_belakor_nodes,
-			next = table.clone(base_node.next)
+			next = table.clone(base_node.next),
 		}
 
 		if script_data.deus_shoppify_run and base_node.type ~= "START" and base_node.type ~= "ARENA" then
 			local shop_types = table.keys(DeusShopSettings.shop_types)
 			local random_id = random_generator(1, #shop_types)
 			local shop_type = shop_types[random_id]
+
 			base_node.level = shop_type
 			base_node.type = "SHOP"
 		end
@@ -1060,6 +1081,7 @@ function deus_populate_graph(base_graph, seed, config, dominant_god, with_belako
 		if base_node.type == "SIGNATURE" or base_node.type == "TRAVEL" or base_node.type == "ARENA" then
 			node.base_level = base_node.level
 			node.path = base_node.path
+
 			local themes = config.LEVEL_AVAILABILITY[base_node.type][base_node.level].themes
 
 			if not table.contains(themes, base_node.god or "wastes") then

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/network/smartmatch_xb1.lua
+
 local DEBUG_SMARTMATCH = true
 
 local function dprintf()
@@ -13,13 +15,13 @@ end
 local HOPPER_PARAMS_LUT = {
 	default_stage_hopper = {
 		"difficulty",
-		"stage"
+		"stage",
 	},
 	new_stage_hopper = {
 		"difficulty",
 		"level",
 		"powerlevel",
-		"strict_matchmaking"
+		"strict_matchmaking",
 	},
 	safe_profiles_hopper = {
 		"difficulty",
@@ -28,7 +30,7 @@ local HOPPER_PARAMS_LUT = {
 		"strict_matchmaking",
 		"profiles",
 		"network_hash",
-		"matchmaking_types"
+		"matchmaking_types",
 	},
 	weave_find_group_hopper = {
 		"difficulty",
@@ -36,47 +38,48 @@ local HOPPER_PARAMS_LUT = {
 		"profiles",
 		"network_hash",
 		"matchmaking_types",
-		"weave_index"
-	}
+		"weave_index",
+	},
 }
 local HOPPER_PARAM_TYPE_LUT = {
-	network_hash = "string",
-	strict_matchmaking = "number",
-	weave_index = "number",
-	powerlevel = "number",
+	difficulty = "number",
+	level = "collection",
 	matchmaking_types = "collection",
+	network_hash = "string",
+	powerlevel = "number",
 	profiles = "collection",
 	stage = "number",
-	difficulty = "number",
-	level = "collection"
+	strict_matchmaking = "number",
+	weave_index = "number",
 }
 local OPTIONAL_HOPPER_PARAM_LUT = {
 	default_stage_hopper = {},
 	new_stage_hopper = {
-		strict_matchmaking = true
+		strict_matchmaking = true,
 	},
 	safe_profiles_hopper = {
-		strict_matchmaking = true
+		strict_matchmaking = true,
 	},
 	weave_find_group_hopper = {
+		difficulty = true,
+		powerlevel = true,
 		profiles = true,
 		weave_index = true,
-		difficulty = true,
-		powerlevel = true
-	}
+	},
 }
-local SMARTMATCH_STATUS_LUT = {
-	[SmartMatchStatus.UNKNOWN] = "UNKNOWN",
-	[SmartMatchStatus.SEARCHING] = "SEARCHING",
-	[SmartMatchStatus.EXPIRED] = "EXPIRED",
-	[SmartMatchStatus.FOUND] = "FOUND"
-}
-local SMARTMATCH_SESSION_STATUS_LUT = {
-	[MultiplayerSession.READY] = "READY",
-	[MultiplayerSession.WORKING] = "WORKING",
-	[MultiplayerSession.SHUTDOWN] = "SHUTDOWN",
-	[MultiplayerSession.BROKEN] = "BROKEN"
-}
+local SMARTMATCH_STATUS_LUT = {}
+
+SMARTMATCH_STATUS_LUT[SmartMatchStatus.UNKNOWN] = "UNKNOWN"
+SMARTMATCH_STATUS_LUT[SmartMatchStatus.SEARCHING] = "SEARCHING"
+SMARTMATCH_STATUS_LUT[SmartMatchStatus.EXPIRED] = "EXPIRED"
+SMARTMATCH_STATUS_LUT[SmartMatchStatus.FOUND] = "FOUND"
+
+local SMARTMATCH_SESSION_STATUS_LUT = {}
+
+SMARTMATCH_SESSION_STATUS_LUT[MultiplayerSession.READY] = "READY"
+SMARTMATCH_SESSION_STATUS_LUT[MultiplayerSession.WORKING] = "WORKING"
+SMARTMATCH_SESSION_STATUS_LUT[MultiplayerSession.SHUTDOWN] = "SHUTDOWN"
+SMARTMATCH_SESSION_STATUS_LUT[MultiplayerSession.BROKEN] = "BROKEN"
 SmartMatch = class(SmartMatch)
 
 SmartMatch.init = function (self, hopper_name, is_host, ticket_params, timeout)
@@ -102,10 +105,11 @@ SmartMatch._create_smartmatch_session = function (self)
 	local session_name = Application.guid()
 	local hopper_name = self._hopper_name
 	local session_template_name = LobbyInternal.SMARTMATCH_SESSION_TEMPLATE_NAME
-	local keywords = nil
+	local keywords
 	local min_num_members = 0
 	local max_num_members = 0
-	local guest_user_ids = nil
+	local guest_user_ids
+
 	self._session_id = Network.create_multiplayer_session_host(self._user_id, session_name, session_template_name, keywords, min_num_members, max_num_members, guest_user_ids)
 	self._session_name = session_name
 end
@@ -132,7 +136,7 @@ SmartMatch._start_smartmatch = function (self, dt)
 
 	dprintf("PreserveSessionMode %s. is host %s", preserve_session_mode == PreserveSessionMode.ALWAYS and "ALWAYS" or "NEVER", self._is_host and "TRUE" or "FALSE")
 
-	local ticket_param_str = nil
+	local ticket_param_str
 
 	if self._ticket_params then
 		ticket_param_str = self:_convert_to_json(self._hopper_name, self._ticket_params)
@@ -168,6 +172,7 @@ SmartMatch._check_smartmatch_result = function (self, dt)
 
 	local smartmatch_status = MultiplayerSession.smartmatch_status(self._session_id)
 	local session_name, session_template_name, estimated_waiting_time = MultiplayerSession.smartmatch_result(self._session_id)
+
 	self._estimated_waiting_time = estimated_waiting_time > 0 and estimated_waiting_time or self._estimated_waiting_time
 
 	if self._smartmatch_status ~= smartmatch_status then
@@ -285,7 +290,7 @@ SmartMatch.destroy = function (self)
 		user_id = self._user_id,
 		session_id = self._session_id,
 		hopper_name = self._hopper_name,
-		session_name = self._session_name
+		session_name = self._session_name,
 	}
 
 	Managers.account:add_session_to_cleanup(session_data)

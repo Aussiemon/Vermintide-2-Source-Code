@@ -1,6 +1,9 @@
+﻿-- chunkname: @scripts/ui/views/start_game_view/windows/start_game_window_event.lua
+
 local definitions = local_require("scripts/ui/views/start_game_view/windows/definitions/start_game_window_event_definitions")
 local widget_definitions = definitions.widgets
 local scenegraph_definition = definitions.scenegraph_definition
+
 StartGameWindowEvent = class(StartGameWindowEvent)
 StartGameWindowEvent.NAME = "StartGameWindowEvent"
 
@@ -8,11 +11,13 @@ StartGameWindowEvent.on_enter = function (self, params, offset)
 	print("[StartGameWindow] Enter Substate StartGameWindowEvent")
 
 	self._parent = params.parent
+
 	local ingame_ui_context = params.ingame_ui_context
+
 	self._ui_renderer = ingame_ui_context.ui_renderer
 	self._ui_renderer = ingame_ui_context.ui_renderer
 	self._render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 
 	self:_create_ui_elements(params, offset)
@@ -21,12 +26,15 @@ end
 
 StartGameWindowEvent._create_ui_elements = function (self, params, offset)
 	local ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+
 	self.ui_scenegraph = ui_scenegraph
+
 	local widgets = {}
 	local widgets_by_name = {}
 
 	for name, widget_definition in pairs(widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		widgets[#widgets + 1] = widget
 		widgets_by_name[name] = widget
 	end
@@ -38,6 +46,7 @@ StartGameWindowEvent._create_ui_elements = function (self, params, offset)
 
 	if offset then
 		local window_position = ui_scenegraph.window.local_position
+
 		window_position[1] = window_position[1] + offset[1]
 		window_position[2] = window_position[2] + offset[2]
 		window_position[3] = window_position[3] + offset[3]
@@ -52,10 +61,14 @@ StartGameWindowEvent._setup_content_from_backend = function (self)
 	local game_mode_data = live_event_interface:get_weekly_events_game_mode_data()
 	local title_text_id = game_mode_data.title_text_id
 	local event_title_widget = widgets_by_name.event_title
+
 	event_title_widget.content.text = Localize(title_text_id)
+
 	local description_text_id = game_mode_data.description_text_id
 	local description_text_widget = widgets_by_name.description_text
+
 	description_text_widget.content.text = Localize(description_text_id)
+
 	local icon_id = game_mode_data.icon_id
 	local event_texture_widget = widgets_by_name.event_texture
 	local reference_name = "event_mode_texture"

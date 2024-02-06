@@ -1,23 +1,27 @@
+﻿-- chunkname: @scripts/settings/mutators/mutator_blessing_of_isha.lua
+
 require("scripts/settings/dlcs/morris/deus_blessing_settings")
 
 local STAGGER_RADIUS = 5
 local EXPLOSION_TEMPLATE_NAME = "blessing_of_isha_stagger"
 local SOUND_EVENTS = {
-	player_resurrected = "Play_blessing_of_isha_activate"
+	player_resurrected = "Play_blessing_of_isha_activate",
 }
 local VALID_DISABLE_EVENTS = {
-	pack_master_grab = true,
 	assassin_pounced = true,
-	corruptor_grab = true
+	corruptor_grab = true,
+	pack_master_grab = true,
 }
 
 local function stagger_enemies(radius, attacker_unit, explosion_template_name, position)
 	position = position or POSITION_LOOKUP[attacker_unit]
+
 	local world = Application.main_world()
 	local rotation = Quaternion.identity()
 	local career_extension = ScriptUnit.has_extension(attacker_unit, "career_system")
 	local career_power_level = career_extension and career_extension:get_career_power_level()
 	local explosion_template = ExplosionTemplates[explosion_template_name]
+
 	explosion_template.explosion.radius = radius
 
 	DamageUtils.create_explosion(world, attacker_unit, position, rotation, explosion_template, 1, "buff", true, false, attacker_unit, career_power_level, false)
@@ -84,6 +88,7 @@ return {
 	temp_not_disabled_units = {},
 	server_start_function = function (context, data, unit)
 		local hero_side = Managers.state.side:get_side_from_name("heroes")
+
 		data.hero_side = hero_side
 		data.buff_ids = {}
 	end,
@@ -176,6 +181,7 @@ return {
 
 			if not has_buff then
 				local buff_id = buff_extension:add_buff("blessing_of_isha_invincibility")
+
 				data.buff_ids[unit] = buff_id
 			end
 
@@ -185,5 +191,5 @@ return {
 
 			data.buff_active = false
 		end
-	end
+	end,
 }

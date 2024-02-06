@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/managers/backend_playfab/backend_interface_loot_playfab.lua
+
 local PlayFabClientApi = require("PlayFab.PlayFabClientApi")
+
 BackendInterfaceLootPlayfab = class(BackendInterfaceLootPlayfab)
 
 BackendInterfaceLootPlayfab.init = function (self, backend_mirror)
@@ -29,11 +32,11 @@ BackendInterfaceLootPlayfab.open_loot_chest = function (self, hero_name, backend
 		playfab_id = backend_id,
 		id = id,
 		amount = num_chests or 1,
-		game_mode_key = game_mode_key
+		game_mode_key = game_mode_key,
 	}
 	local generate_loot_chest_rewards_request = {
 		FunctionName = "generateLootChestRewards",
-		FunctionParameter = data
+		FunctionParameter = data,
 	}
 	local success_callback = callback(self, "loot_chest_rewards_request_cb", data)
 	local request_queue = self._backend_mirror:request_queue()
@@ -60,6 +63,7 @@ BackendInterfaceLootPlayfab.loot_chest_rewards_request_cb = function (self, data
 		local item = items[i]
 		local backend_id = item.ItemInstanceId
 		local new_backend_id = backend_mirror:add_item(backend_id, item)
+
 		loot[#loot + 1] = new_backend_id or backend_id
 	end
 
@@ -80,7 +84,7 @@ BackendInterfaceLootPlayfab.loot_chest_rewards_request_cb = function (self, data
 	if new_cosmetics then
 		for i = 1, #new_cosmetics do
 			local backend_id = backend_mirror:add_item(nil, {
-				ItemId = new_cosmetics[i]
+				ItemId = new_cosmetics[i],
 			})
 
 			if backend_id then
@@ -109,6 +113,7 @@ BackendInterfaceLootPlayfab.loot_chest_rewards_request_cb = function (self, data
 	end
 
 	local id = data.id
+
 	self._loot_requests[id] = loot
 end
 
@@ -135,11 +140,11 @@ BackendInterfaceLootPlayfab.generate_end_of_level_loot = function (self, game_wo
 		remote_player_ids_and_characters = remote_player_ids_and_characters,
 		game_mode_key = game_mode_key,
 		game_time = game_time,
-		end_of_level_rewards_arguments = end_of_level_rewards_arguments
+		end_of_level_rewards_arguments = end_of_level_rewards_arguments,
 	}
 	local generate_end_of_level_loot_request = {
 		FunctionName = "generateEndOfLevelLoot",
-		FunctionParameter = data
+		FunctionParameter = data,
 	}
 	local success_callback = callback(self, "end_of_level_loot_request_cb", data)
 	local request_queue = self._backend_mirror:request_queue()
@@ -172,7 +177,7 @@ BackendInterfaceLootPlayfab.end_of_level_loot_request_cb = function (self, data,
 	local backend_mirror = self._backend_mirror
 
 	for item_type, item_data in pairs(rewards) do
-		local backend_id, item = nil
+		local backend_id, item
 
 		for i = 1, num_items do
 			item = items[i]
@@ -185,7 +190,7 @@ BackendInterfaceLootPlayfab.end_of_level_loot_request_cb = function (self, data,
 		end
 
 		loot_request[item_type] = {
-			backend_id = backend_id
+			backend_id = backend_id,
 		}
 
 		if item_type == "chest" then
@@ -198,12 +203,12 @@ BackendInterfaceLootPlayfab.end_of_level_loot_request_cb = function (self, data,
 	if cosmetic_rewards then
 		for reward_key, item in pairs(cosmetic_rewards) do
 			local backend_id = backend_mirror:add_item(nil, {
-				ItemId = item
+				ItemId = item,
 			})
 
 			if backend_id then
 				loot_request[reward_key] = {
-					backend_id = backend_id
+					backend_id = backend_id,
 				}
 			end
 		end
@@ -252,6 +257,7 @@ BackendInterfaceLootPlayfab.end_of_level_loot_request_cb = function (self, data,
 		end
 	elseif essence_rewards and #essence_rewards > 0 then
 		loot_request.essence = essence_rewards
+
 		local final_essence_reward = essence_rewards[#essence_rewards]
 		local new_total_essence = final_essence_reward.new_total
 
@@ -280,6 +286,7 @@ BackendInterfaceLootPlayfab._get_remote_player_network_ids_and_characters = func
 					local career_settings = SPProfiles[profile_index].careers[career_index]
 					local career_playfab_name = career_settings.playfab_name
 					local decimal_id = Steam.id_hex_to_dec(peer_id)
+
 					ids_and_characters[decimal_id] = career_playfab_name
 				end
 			end
@@ -295,6 +302,7 @@ BackendInterfaceLootPlayfab._get_remote_player_network_ids_and_characters = func
 				local career_settings = SPProfiles[profile_index].careers[career_index]
 				local career_playfab_name = career_settings.playfab_name
 				local decimal_id = player:platform_id()
+
 				ids_and_characters[decimal_id] = career_playfab_name
 			end
 		end
@@ -310,6 +318,7 @@ BackendInterfaceLootPlayfab._get_remote_player_network_ids_and_characters = func
 				local career_playfab_name = career_settings.playfab_name
 				local platform_id = player:platform_id()
 				local decimal_id = Application.hex64_to_dec(peer_id)
+
 				ids_and_characters[decimal_id] = career_playfab_name
 			end
 		end
@@ -345,13 +354,14 @@ end
 
 BackendInterfaceLootPlayfab.claim_achievement_rewards = function (self, achievement_id, poll_id)
 	self._reward_poll_id = true
+
 	local data = {
 		achievement_id = achievement_id,
-		id = poll_id
+		id = poll_id,
 	}
 	local generate_achievement_rewards_request = {
 		FunctionName = "generateAchievementRewards",
-		FunctionParameter = data
+		FunctionParameter = data,
 	}
 	local success_callback = callback(self, "achievement_rewards_request_cb", data)
 	local request_queue = self._backend_mirror:request_queue()
@@ -393,7 +403,7 @@ BackendInterfaceLootPlayfab.achievement_rewards_request_cb = function (self, dat
 			loot[#loot + 1] = {
 				type = "item",
 				backend_id = backend_id,
-				amount = amount
+				amount = amount,
 			}
 		end
 	end
@@ -408,7 +418,7 @@ BackendInterfaceLootPlayfab.achievement_rewards_request_cb = function (self, dat
 
 			loot[#loot + 1] = {
 				type = "keep_decoration_painting",
-				keep_decoration_name = keep_decoration_name
+				keep_decoration_name = keep_decoration_name,
 			}
 		end
 	end
@@ -423,7 +433,7 @@ BackendInterfaceLootPlayfab.achievement_rewards_request_cb = function (self, dat
 
 			loot[#loot + 1] = {
 				type = "weapon_skin",
-				weapon_skin_name = weapon_skin_name
+				weapon_skin_name = weapon_skin_name,
 			}
 		end
 	end
@@ -437,13 +447,13 @@ BackendInterfaceLootPlayfab.achievement_rewards_request_cb = function (self, dat
 			local cosmetic_name = new_cosmetics[i]
 			local item = rawget(item_master_list, cosmetic_name)
 			local backend_id = backend_mirror:add_item(nil, {
-				ItemId = cosmetic_name
+				ItemId = cosmetic_name,
 			})
 
 			if backend_id then
 				loot[#loot + 1] = {
 					type = item.slot_type,
-					backend_id = backend_id
+					backend_id = backend_id,
 				}
 			end
 		end
@@ -456,7 +466,7 @@ BackendInterfaceLootPlayfab.achievement_rewards_request_cb = function (self, dat
 			loot[#loot + 1] = {
 				type = "currency",
 				currency_code = code,
-				amount = amount
+				amount = amount,
 			}
 		end
 	end
@@ -508,10 +518,11 @@ BackendInterfaceLootPlayfab.claim_multiple_achievement_rewards = function (self,
 	self._reward_poll_id = true
 	start_index = start_index or 1
 	end_index = end_index or ACH_CHUNK_LIMIT
+
 	local challenge_data = {}
 	local num_elements = #achievement_ids
 	local id = poll_id
-	local temp_achievement_ids = nil
+	local temp_achievement_ids
 	local chunk_size = ACH_CHUNK_LIMIT
 
 	if start_index > 1 then
@@ -527,8 +538,9 @@ BackendInterfaceLootPlayfab.claim_multiple_achievement_rewards = function (self,
 	for i = 1, chunk_size do
 		local achievement_id = temp_achievement_ids[i]
 		local data = {
-			achievement_id = achievement_id
+			achievement_id = achievement_id,
 		}
+
 		challenge_data[#challenge_data + 1] = data
 	end
 
@@ -536,8 +548,8 @@ BackendInterfaceLootPlayfab.claim_multiple_achievement_rewards = function (self,
 		FunctionName = "generateAchievementRewards",
 		FunctionParameter = {
 			achievement_ids = challenge_data,
-			id = id
-		}
+			id = id,
+		},
 	}
 	local success_callback = callback(self, "claim_multiple_achievement_rewards_request_cb", challenge_data, id, start_index, end_index, achievement_ids)
 	local request_queue = self._backend_mirror:request_queue()
@@ -586,7 +598,7 @@ BackendInterfaceLootPlayfab.claim_multiple_achievement_rewards_request_cb = func
 			loot[#loot + 1] = {
 				type = "item",
 				backend_id = backend_id,
-				amount = amount
+				amount = amount,
 			}
 		end
 	end
@@ -601,7 +613,7 @@ BackendInterfaceLootPlayfab.claim_multiple_achievement_rewards_request_cb = func
 
 			loot[#loot + 1] = {
 				type = "keep_decoration_painting",
-				keep_decoration_name = keep_decoration_name
+				keep_decoration_name = keep_decoration_name,
 			}
 		end
 	end
@@ -616,7 +628,7 @@ BackendInterfaceLootPlayfab.claim_multiple_achievement_rewards_request_cb = func
 
 			loot[#loot + 1] = {
 				type = "weapon_skin",
-				weapon_skin_name = weapon_skin_name
+				weapon_skin_name = weapon_skin_name,
 			}
 		end
 	end
@@ -630,13 +642,13 @@ BackendInterfaceLootPlayfab.claim_multiple_achievement_rewards_request_cb = func
 			local cosmetic_name = new_cosmetics[i]
 			local item = rawget(item_master_list, cosmetic_name)
 			local backend_id = backend_mirror:add_item(nil, {
-				ItemId = cosmetic_name
+				ItemId = cosmetic_name,
 			})
 
 			if backend_id then
 				loot[#loot + 1] = {
 					type = item.slot_type,
-					backend_id = backend_id
+					backend_id = backend_id,
 				}
 			end
 		end
@@ -649,7 +661,7 @@ BackendInterfaceLootPlayfab.claim_multiple_achievement_rewards_request_cb = func
 			loot[#loot + 1] = {
 				type = "currency",
 				currency_code = code,
-				amount = amount
+				amount = amount,
 			}
 		end
 	end

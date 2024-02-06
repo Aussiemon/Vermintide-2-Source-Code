@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/hud_ui/game_timer_ui.lua
+
 GameTimerUI = class(GameTimerUI)
 
 GameTimerUI.init = function (self, parent, ingame_ui_context)
@@ -33,8 +35,7 @@ GameTimerUI.update = function (self)
 		local text = string.format("%.2d:%.2d:%06.3f", time / 3600, time / 60 % 60, time % 60)
 		local screen_width, screen_height = Gui.resolution()
 		local scale = math.min(screen_width / 1920, screen_height / 1080, 1)
-		local font = "materials/fonts/arial"
-		local font_size = 28 * scale
+		local font, font_size = "materials/fonts/arial", 28 * scale
 		local _, _, car = Gui.slug_text_extents(gui, text, font, font_size)
 
 		Gui.slug_text(gui, text, font, font_size, Vector3(screen_width - scale * 14 * 13, screen_height - scale * 14, 1000), Color(255, 255, 255), "shadow", Color(0, 0, 0))

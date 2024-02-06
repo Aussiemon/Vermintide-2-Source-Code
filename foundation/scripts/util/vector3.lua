@@ -1,3 +1,5 @@
+﻿-- chunkname: @foundation/scripts/util/vector3.lua
+
 Vector3.flat = function (v)
 	return Vector3(v[1], v[2], 0)
 end

@@ -1,71 +1,74 @@
+﻿-- chunkname: @scripts/settings/dlcs/cog/buff_settings_cog.lua
+
 require("scripts/settings/profiles/career_constants")
 
 local buff_perks = require("scripts/unit_extensions/default_player_unit/buffs/settings/buff_perk_names")
 local settings = DLCSettings.cog
+
 settings.buff_templates = {
 	bardin_engineer_pump_max_overheat_check = {
 		buffs = {
 			{
 				duration = 2,
+				max_stacks = 1,
 				name = "bardin_engineer_pump_max_overheat_check",
 				on_max_stacks_overflow_func = "add_remove_buffs",
-				max_stacks = 1,
 				refresh_durations = true,
 				max_stack_data = {
 					talent_buffs = {
 						bardin_engineer_overclock = {
 							buffs_to_add = {
 								{
-									name = "bardin_engineer_pump_overclock_buff"
-								}
+									name = "bardin_engineer_pump_overclock_buff",
+								},
 							},
 							buffs_to_add_if_missing = {
 								{
-									name = "bardin_engineer_pump_max_exhaustion_buff"
-								}
-							}
-						}
-					}
-				}
-			}
-		}
+									name = "bardin_engineer_pump_max_exhaustion_buff",
+								},
+							},
+						},
+					},
+				},
+			},
+		},
 	},
 	bardin_engineer_pump_max_exhaustion_buff = {
 		buffs = {
 			{
+				apply_buff_func = "bardin_engineer_animation_slow_down_add",
+				debuff = true,
 				duration = 5,
+				icon = "bardin_engineer_pump_max_exhaustion_buff_icon",
+				max_stacks = 1,
 				name = "bardin_engineer_pump_max_exhaustion_buff",
 				priority_buff = true,
 				remove_buff_func = "bardin_engineer_animation_slow_down_remove",
-				apply_buff_func = "bardin_engineer_animation_slow_down_add",
-				debuff = true,
-				max_stacks = 1,
-				icon = "bardin_engineer_pump_max_exhaustion_buff_icon",
 				perks = {
-					buff_perks.exhausted
-				}
-			}
-		}
+					buff_perks.exhausted,
+				},
+			},
+		},
 	},
 	bardin_engineer_pump_overclock_buff = {
 		buffs = {
 			{
-				name = "bardin_engineer_pump_overclock_buff",
-				stat_buff = "critical_strike_chance",
 				apply_buff_func = "bardin_engineer_overclock_damage",
-				on_max_stacks_overflow_func = "reapply_buff",
-				refresh_durations = true,
-				priority_buff = true,
-				max_health_loss = 10,
 				duration = 12,
-				max_stacks = 3,
-				icon = "bardin_engineer_4_2",
 				health_to_lose_per_stack = 4,
+				icon = "bardin_engineer_4_2",
+				max_health_loss = 10,
+				max_stacks = 3,
+				name = "bardin_engineer_pump_overclock_buff",
+				on_max_stacks_overflow_func = "reapply_buff",
+				priority_buff = true,
+				refresh_durations = true,
+				stat_buff = "critical_strike_chance",
 				bonus = CareerConstants.dr_engineer.talent_4_2_crit,
-				cooldown_amount = CareerConstants.dr_engineer.talent_4_2_cooldown
-			}
-		}
-	}
+				cooldown_amount = CareerConstants.dr_engineer.talent_4_2_cooldown,
+			},
+		},
+	},
 }
 settings.proc_functions = {
 	add_debuff_on_drakefire_hit = function (owner_unit, buff, params)
@@ -149,7 +152,7 @@ settings.proc_functions = {
 				buff_extension:remove_buff(buff.id)
 			end
 		end
-	end
+	end,
 }
 settings.buff_function_templates = {
 	bardin_engineer_animation_slow_down_add = function (unit, buff, params)
@@ -211,6 +214,7 @@ settings.buff_function_templates = {
 			return t
 		elseif buff.is_full then
 			buff.is_full = false
+
 			local buff_ext = ScriptUnit.has_extension(unit, "buff_system")
 
 			if buff_ext then
@@ -226,8 +230,10 @@ settings.buff_function_templates = {
 			buff_ext:add_buff(buff.template.cooldown_buff)
 		end
 
-		local pick_frag = nil
+		local pick_frag
+
 		pick_frag, buff._state = PseudoRandomDistribution.flip_coin(buff._state, 0.5)
+
 		local frag_settings = AllPickups.frag_grenade_t1
 		local fire_settings = AllPickups.fire_grenade_t1
 
@@ -286,5 +292,5 @@ settings.buff_function_templates = {
 		local damage = math.clamp(num_overclock_stacks * buff.template.health_to_lose_per_stack, 0, buff.template.max_health_loss)
 
 		DamageUtils.add_damage_network(unit, unit, damage, "torso", "life_tap", nil, Vector3(0, 0, 0), "life_tap", nil, unit)
-	end
+	end,
 }

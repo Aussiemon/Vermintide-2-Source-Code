@@ -1,5 +1,6 @@
-local SIZE_X = 1920
-local SIZE_Y = 1080
+﻿-- chunkname: @scripts/ui/hud_ui/buff_ui_definitions.lua
+
+local SIZE_X, SIZE_Y = 1920, 1080
 local RETAINED_MODE_ENABLED = true
 local scenegraph_definition = {
 	root = {
@@ -7,69 +8,69 @@ local scenegraph_definition = {
 		position = {
 			0,
 			0,
-			UILayer.hud
+			UILayer.hud,
 		},
 		size = {
 			SIZE_X,
-			SIZE_Y
-		}
+			SIZE_Y,
+		},
 	},
 	pivot_parent = {
-		vertical_alignment = "bottom",
-		parent = "root",
 		horizontal_alignment = "left",
+		parent = "root",
+		vertical_alignment = "bottom",
 		position = {
 			150,
 			18,
-			1
+			1,
 		},
 		size = {
 			0,
-			0
-		}
+			0,
+		},
 	},
 	pivot = {
-		vertical_alignment = "bottom",
-		parent = "pivot_parent",
 		horizontal_alignment = "left",
+		parent = "pivot_parent",
+		vertical_alignment = "bottom",
 		position = {
 			0,
 			0,
-			0
+			0,
 		},
 		size = {
 			0,
-			0
-		}
+			0,
+		},
 	},
 	pivot_dragger = {
-		vertical_alignment = "bottom",
-		parent = "pivot",
 		horizontal_alignment = "left",
+		parent = "pivot",
+		vertical_alignment = "bottom",
 		position = {
 			0,
 			0,
-			0
+			0,
 		},
 		size = {
 			362,
-			214
-		}
+			214,
+		},
 	},
 	buff_pivot = {
-		vertical_alignment = "center",
-		parent = "pivot",
 		horizontal_alignment = "center",
+		parent = "pivot",
+		vertical_alignment = "center",
 		position = {
 			0,
 			0,
-			1
+			1,
 		},
 		size = {
 			0,
-			0
-		}
-	}
+			0,
+		},
+	},
 }
 
 if not IS_WINDOWS then
@@ -79,7 +80,7 @@ end
 
 local BUFF_SIZE = {
 	66,
-	66
+	66,
 }
 local BUFF_SPACING = 8
 local buff_widget_definition = {
@@ -90,7 +91,7 @@ local buff_widget_definition = {
 				pass_type = "texture",
 				style_id = "texture_icon_bg",
 				texture_id = "texture_icon",
-				retained_mode = RETAINED_MODE_ENABLED
+				retained_mode = RETAINED_MODE_ENABLED,
 			},
 			{
 				pass_type = "texture",
@@ -99,151 +100,151 @@ local buff_widget_definition = {
 				retained_mode = RETAINED_MODE_ENABLED,
 				content_check_function = function (content)
 					return content.is_cooldown
-				end
+				end,
 			},
 			{
+				pass_type = "texture",
 				style_id = "icon_mask",
 				texture_id = "icon_mask",
-				pass_type = "texture",
 				retained_mode = RETAINED_MODE_ENABLED,
 				content_change_function = function (content, style, _, dt)
 					style.color[1] = 255 * (1 - content.progress)
-				end
+				end,
 			},
 			{
 				pass_type = "texture",
 				style_id = "texture_frame",
 				texture_id = "texture_frame",
-				retained_mode = RETAINED_MODE_ENABLED
+				retained_mode = RETAINED_MODE_ENABLED,
 			},
 			{
+				pass_type = "text",
 				style_id = "stack_count",
-				pass_type = "text",
 				text_id = "stack_count",
 				retained_mode = RETAINED_MODE_ENABLED,
 				content_check_function = function (content)
 					return content.stack_count > 1
-				end
+				end,
 			},
 			{
+				pass_type = "text",
 				style_id = "stack_count_shadow",
-				pass_type = "text",
 				text_id = "stack_count",
 				retained_mode = RETAINED_MODE_ENABLED,
 				content_check_function = function (content)
 					return content.stack_count > 1
-				end
+				end,
 			},
 			{
+				pass_type = "gradient_mask_texture",
 				style_id = "texture_cooldown",
 				texture_id = "texture_cooldown",
-				pass_type = "gradient_mask_texture",
 				retained_mode = RETAINED_MODE_ENABLED,
 				content_check_function = function (content)
 					return content.is_cooldown
 				end,
 				content_change_function = function (content, style, _, dt)
 					style.color[1] = 255 * (1 - content.progress)
-				end
+				end,
 			},
 			{
+				pass_type = "gradient_mask_texture",
 				style_id = "texture_duration",
 				texture_id = "texture_duration",
-				pass_type = "gradient_mask_texture",
 				retained_mode = RETAINED_MODE_ENABLED,
 				content_check_function = function (content)
 					return not content.is_cooldown
 				end,
 				content_change_function = function (content, style, _, dt)
 					style.color[1] = 255 * (1 - content.progress)
-				end
-			}
-		}
+				end,
+			},
+		},
 	},
 	content = {
-		set_unsaturated = false,
-		is_cooldown = false,
-		texture_cooldown = "buff_cooldown_gradient",
-		progress = 0,
-		texture_frame = "buff_frame",
-		stack_count = 1,
-		texture_icon = "teammate_consumable_icon_medpack",
-		last_stack_count = 1,
-		texture_duration = "buff_duration_gradient",
 		gris = "rect_masked",
-		icon_mask = "buff_gradient_mask"
+		icon_mask = "buff_gradient_mask",
+		is_cooldown = false,
+		last_stack_count = 1,
+		progress = 0,
+		set_unsaturated = false,
+		stack_count = 1,
+		texture_cooldown = "buff_cooldown_gradient",
+		texture_duration = "buff_duration_gradient",
+		texture_frame = "buff_frame",
+		texture_icon = "teammate_consumable_icon_medpack",
 	},
 	style = {
 		texture_icon_bg = {
 			saturated = false,
 			size = {
 				60,
-				60
+				60,
 			},
 			color = {
 				255,
 				255,
 				255,
-				255
+				255,
 			},
 			offset = {
 				3,
 				3,
-				1
-			}
+				1,
+			},
 		},
 		texture_icon = {
-			saturated = false,
 			masked = true,
+			saturated = false,
 			size = {
 				60,
-				60
+				60,
 			},
 			color = {
 				255,
 				100,
 				100,
-				100
+				100,
 			},
 			offset = {
 				3,
 				3,
-				2
-			}
+				2,
+			},
 		},
 		icon_mask = {
 			size = {
 				60,
-				60
+				60,
 			},
 			color = {
 				255,
 				255,
 				255,
-				255
+				255,
 			},
 			offset = {
 				3,
 				3,
-				2
-			}
+				2,
+			},
 		},
 		texture_cooldown = {
 			size = {
 				60,
-				60
+				60,
 			},
 			color = {
 				255,
 				255,
 				255,
-				255
+				255,
 			},
 			offset = {
 				3,
 				3,
-				3
-			}
+				3,
+			},
 		},
 		texture_frame = {
 			size = BUFF_SIZE,
@@ -251,78 +252,77 @@ local buff_widget_definition = {
 				255,
 				255,
 				255,
-				255
+				255,
 			},
 			offset = {
 				0,
 				0,
-				4
-			}
+				4,
+			},
 		},
 		texture_duration = {
 			size = {
 				70,
-				70
+				70,
 			},
 			color = {
 				150,
 				255,
 				255,
-				255
+				255,
 			},
 			offset = {
 				-2,
 				-2,
-				5
-			}
+				5,
+			},
 		},
 		stack_count = {
-			word_wrap = true,
-			upper_case = true,
-			localize = false,
 			font_size = 26,
-			horizontal_alignment = "right",
-			vertical_alignment = "bottom",
 			font_type = "hell_shark",
+			horizontal_alignment = "right",
+			localize = false,
+			upper_case = true,
+			vertical_alignment = "bottom",
+			word_wrap = true,
 			size = {
 				60,
-				60
+				60,
 			},
 			offset = {
 				-2,
 				2,
-				9
+				9,
 			},
-			text_color = Colors.get_color_table_with_alpha("white", 255)
+			text_color = Colors.get_color_table_with_alpha("white", 255),
 		},
 		stack_count_shadow = {
-			word_wrap = true,
-			upper_case = true,
-			localize = false,
 			font_size = 26,
-			horizontal_alignment = "right",
-			vertical_alignment = "bottom",
 			font_type = "hell_shark",
+			horizontal_alignment = "right",
+			localize = false,
+			upper_case = true,
+			vertical_alignment = "bottom",
+			word_wrap = true,
 			size = {
 				60,
-				60
+				60,
 			},
 			offset = {
 				0,
 				0,
-				8
+				8,
 			},
-			text_color = Colors.get_color_table_with_alpha("black", 255)
-		}
+			text_color = Colors.get_color_table_with_alpha("black", 255),
+		},
 	},
 	offset = {
 		0,
 		0,
-		0
-	}
+		0,
+	},
 }
-local MAX_BUFF_ROWS = 3
-local MAX_BUFF_COLUMNS = 5
+local MAX_BUFF_ROWS, MAX_BUFF_COLUMNS = 3, 5
 local MAX_NUMBER_OF_BUFFS = MAX_BUFF_ROWS * MAX_BUFF_COLUMNS
 
 return {
@@ -332,5 +332,5 @@ return {
 	MAX_BUFF_ROWS = MAX_BUFF_ROWS,
 	MAX_BUFF_COLUMNS = MAX_BUFF_COLUMNS,
 	scenegraph_definition = scenegraph_definition,
-	buff_widget_definition = buff_widget_definition
+	buff_widget_definition = buff_widget_definition,
 }

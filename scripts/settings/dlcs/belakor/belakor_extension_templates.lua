@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/dlcs/belakor/belakor_extension_templates.lua
+
 local unit_extension_templates = {
 	orb_pickup_unit = {
 		go_type = "orb_pickup_unit",
@@ -5,21 +7,21 @@ local unit_extension_templates = {
 			"OrbPickupUnitExtension",
 			"PickupOutlineExtension",
 			"LookatTargetExtension",
-			"PingTargetExtension"
+			"PingTargetExtension",
 		},
 		husk_extensions = {
 			"OrbPickupUnitExtension",
 			"PickupOutlineExtension",
 			"LookatTargetExtension",
-			"PingTargetExtension"
-		}
+			"PingTargetExtension",
+		},
 	},
 	shadow_dagger_spawner = {
 		go_type = "positioned_prop_unit",
 		self_owned_extensions = {
-			"ShadowDaggerSpawnerExtension"
+			"ShadowDaggerSpawnerExtension",
 		},
-		husk_extensions = {}
+		husk_extensions = {},
 	},
 	shadow_dagger_unit = {
 		go_type = "shadow_dagger_unit",
@@ -27,12 +29,12 @@ local unit_extension_templates = {
 			"ProjectileScriptUnitLocomotionExtension",
 			"ProjectileLinearSphereSweepImpactUnitExtension",
 			"GenericImpactProjectileUnitExtension",
-			"ShadowDaggerExtension"
+			"ShadowDaggerExtension",
 		},
 		husk_extensions = {
 			"ProjectileScriptUnitLocomotionExtension",
-			"GenericImpactProjectileUnitExtension"
-		}
+			"GenericImpactProjectileUnitExtension",
+		},
 	},
 	shadow_skull_unit = {
 		go_type = "shadow_skull_unit",
@@ -50,7 +52,7 @@ local unit_extension_templates = {
 			"AISimpleExtension",
 			"ProjectileHomingSkullLocomotionExtension",
 			"ProjectileLinearSphereSweepImpactUnitExtension",
-			"GenericImpactProjectileUnitExtension"
+			"GenericImpactProjectileUnitExtension",
 		},
 		husk_extensions = {
 			"GenericHitReactionExtension",
@@ -63,8 +65,8 @@ local unit_extension_templates = {
 			"DialogueActorExtension",
 			"AiHuskBaseExtension",
 			"ProjectileExtrapolatedHuskLocomotionExtension",
-			"GenericImpactProjectileUnitExtension"
-		}
+			"GenericImpactProjectileUnitExtension",
+		},
 	},
 	deus_belakor_locus = {
 		go_type = "deus_belakor_locus",
@@ -74,7 +76,7 @@ local unit_extension_templates = {
 			"GenericOutlineExtension",
 			"DeusBelakorLocusExtension",
 			"LookatTargetExtension",
-			"PingTargetExtension"
+			"PingTargetExtension",
 		},
 		husk_extensions = {
 			"GenericUnitInteractableExtension",
@@ -82,8 +84,8 @@ local unit_extension_templates = {
 			"GenericOutlineExtension",
 			"DeusBelakorLocusExtension",
 			"LookatTargetExtension",
-			"PingTargetExtension"
-		}
+			"PingTargetExtension",
+		},
 	},
 	belakor_crystal = {
 		go_type = "belakor_crystal",
@@ -95,7 +97,7 @@ local unit_extension_templates = {
 			"PickupProjectileVolumeExtension",
 			"PingTargetExtension",
 			"KillVolumeHandlerExtension",
-			"DeusBelakorCrystalExtension"
+			"DeusBelakorCrystalExtension",
 		},
 		husk_extensions = {
 			"PickupUnitExtension",
@@ -103,31 +105,31 @@ local unit_extension_templates = {
 			"ObjectiveLightOutlineExtension",
 			"LookatTargetExtension",
 			"PingTargetExtension",
-			"DeusBelakorCrystalExtension"
-		}
+			"DeusBelakorCrystalExtension",
+		},
 	},
 	belakor_crystal_throw = {
 		base_template = "belakor_crystal",
 		go_type = "belakor_crystal_throw",
 		self_owned_extensions = {
 			"ObjectivePickupTutorialExtension",
-			"ProjectilePhysicsUnitLocomotionExtension"
+			"ProjectilePhysicsUnitLocomotionExtension",
 		},
 		husk_extensions = {
 			"ObjectivePickupTutorialExtension",
-			"ProjectilePhysicsHuskLocomotionExtension"
-		}
+			"ProjectilePhysicsHuskLocomotionExtension",
+		},
 	},
 	arena_belakor_big_statue_health = {
 		go_type = "arena_belakor_big_statue_health",
 		self_owned_extensions = {
 			"GenericHealthExtension",
-			"ObjectiveHealthTutorialExtension"
+			"ObjectiveHealthTutorialExtension",
 		},
 		husk_extensions = {
 			"GenericHealthExtension",
-			"ObjectiveHealthTutorialExtension"
-		}
+			"ObjectiveHealthTutorialExtension",
+		},
 	},
 	belakor_totem = {
 		go_type = "belakor_totem",
@@ -146,7 +148,7 @@ local unit_extension_templates = {
 			"PingTargetExtension",
 			"BuffExtension",
 			"AIVolumeExtension",
-			"AISimpleExtension"
+			"AISimpleExtension",
 		},
 		husk_extensions = {
 			"GenericHealthExtension",
@@ -161,29 +163,29 @@ local unit_extension_templates = {
 			"DialogueActorExtension",
 			"AiHuskBaseExtension",
 			"LookatTargetExtension",
-			"PingTargetExtension"
-		}
+			"PingTargetExtension",
+		},
 	},
 	shadow_homing_skulls_spawner = {
 		go_type = "shadow_homing_skulls_spawner",
 		self_owned_extensions = {
-			"ShadowHomingSkullsSpawnerExtension"
+			"ShadowHomingSkullsSpawnerExtension",
 		},
-		husk_extensions = {}
+		husk_extensions = {},
 	},
 	belakor_crystal_socket = {
 		go_type = "belakor_crystal_socket",
 		self_owned_extensions = {
 			"ObjectiveSocketUnitExtension",
 			"DeusBelakorStatueSocketExtension",
-			"ObjectiveUnitExtension"
+			"ObjectiveUnitExtension",
 		},
 		husk_extensions = {
 			"ObjectiveSocketUnitExtension",
 			"DeusBelakorStatueSocketExtension",
-			"ObjectiveUnitExtension"
-		}
-	}
+			"ObjectiveUnitExtension",
+		},
+	},
 }
 
 return unit_extension_templates

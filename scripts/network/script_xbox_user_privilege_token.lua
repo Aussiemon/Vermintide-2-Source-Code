@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/network/script_xbox_user_privilege_token.lua
+
 ScriptXboxUserPrivilegeToken = class(ScriptXboxUserPrivilegeToken)
 
 ScriptXboxUserPrivilegeToken.init = function (self, token)
@@ -7,6 +9,7 @@ end
 
 ScriptXboxUserPrivilegeToken.update = function (self)
 	local in_progress, done, error, status_code = UserPrivilege.status(self._token)
+
 	self._result.in_progress = in_progress
 	self._result.done = done
 	self._result.error = error

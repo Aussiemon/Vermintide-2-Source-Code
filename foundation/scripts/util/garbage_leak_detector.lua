@@ -1,15 +1,17 @@
+﻿-- chunkname: @foundation/scripts/util/garbage_leak_detector.lua
+
 GarbageLeakDetector = GarbageLeakDetector or {
 	enabled = false,
 	object_callstack_map = setmetatable({}, {
-		__mode = "k"
-	})
+		__mode = "k",
+	}),
 }
 
 GarbageLeakDetector.register_object = function (object, object_name)
 	return
 end
 
-local debug_search = nil
+local debug_search
 
 local function debug_search_function(func, what, path, path_n)
 	local up = 1
@@ -80,7 +82,7 @@ local function debug_search_table(tablet, what, path, path_n)
 	end
 end
 
-local seen_tables = nil
+local seen_tables
 
 function debug_search(object, what, path, path_n)
 	if object == what then
@@ -135,6 +137,7 @@ local function debug_search_stack(what, path, path_n)
 		end
 
 		path[path_n] = string.format("Stack function %s [%d]", function_info.name or "UNKNOWN", stack_level)
+
 		local func = function_info.func
 
 		if func then
@@ -167,7 +170,7 @@ local function debug_search_stack(what, path, path_n)
 	end
 end
 
-local has_run = nil
+local has_run
 
 GarbageLeakDetector.run_leak_detection = function (do_assert)
 	return

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/lobby_browser_console_ui.lua
+
 require("foundation/scripts/util/local_require")
 require("scripts/managers/telemetry/iso_country_names")
 require("scripts/settings/level_settings")
@@ -9,13 +11,15 @@ local adventure_details_widget_definition = definitions.adventure_details_widget
 local weave_details_widget_definition = definitions.weave_details_widget_definition
 local deus_details_widget_definition = definitions.deus_details_widget_definition
 local animation_definitions = definitions.animation_definitions
+
 LobbyBrowserConsoleUI = class(LobbyBrowserConsoleUI)
+
 local GAME_TYPE_LOOKUP_STRINGS = {
-	deus = "area_selection_morris_name",
 	adventure = "area_selection_campaign",
-	weave = "menu_weave_area_no_wom_title",
+	any = "lobby_browser_mission",
+	deus = "area_selection_morris_name",
 	versus = "vs_ui_versus_tag",
-	any = "lobby_browser_mission"
+	weave = "menu_weave_area_no_wom_title",
 }
 
 LobbyBrowserConsoleUI.init = function (self, parent, ingame_ui_context, game_mode_data, show_lobby_data_table, distance_data_table)
@@ -25,7 +29,7 @@ LobbyBrowserConsoleUI.init = function (self, parent, ingame_ui_context, game_mod
 	self._distance_data_table = distance_data_table
 	self._parent = parent
 	self._render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 	self._details_type = "adventure"
 	self._ui_renderer = ingame_ui_context.ui_top_renderer
@@ -40,10 +44,11 @@ end
 
 LobbyBrowserConsoleUI._start_transition_animation = function (self, animation_name)
 	local params = {
-		render_settings = self._render_settings
+		render_settings = self._render_settings,
 	}
 	local widgets = {}
 	local anim_id = self._ui_animator:start_animation(animation_name, widgets, scenegraph_definition, params)
+
 	self._animations[animation_name] = anim_id
 end
 
@@ -67,6 +72,7 @@ LobbyBrowserConsoleUI._create_ui_elements = function (self)
 	self._list_base_pos_y = nil
 	self._dot_timer = 0
 	self._details_filled = false
+
 	local base_widget_definition = base_widget_definition
 
 	for name, widget in pairs(base_widget_definition) do
@@ -81,6 +87,7 @@ LobbyBrowserConsoleUI._create_ui_elements = function (self)
 	end
 
 	self._details_widgets.adventure = details_widgets
+
 	local details_widgets = {}
 	local weave_details_widget_definition = weave_details_widget_definition
 
@@ -89,6 +96,7 @@ LobbyBrowserConsoleUI._create_ui_elements = function (self)
 	end
 
 	self._details_widgets.weave = details_widgets
+
 	local details_widgets = {}
 	local deus_details_widget_definition = deus_details_widget_definition
 
@@ -114,29 +122,29 @@ LobbyBrowserConsoleUI._create_filters = function (self)
 	self._filter_functions = {
 		{
 			input_function = "_handle_game_type_filter_input",
+			input_function_mouse = "_handle_game_type_filter_input_mouse",
 			render_function = "_render_game_type_filter_list",
-			input_function_mouse = "_handle_game_type_filter_input_mouse"
 		},
 		{
 			input_function = "_handle_level_filter_input",
+			input_function_mouse = "_handle_level_filter_input_mouse",
 			render_function = "_render_level_filter_list",
-			input_function_mouse = "_handle_level_filter_input_mouse"
 		},
 		{
 			input_function = "_handle_difficulty_filter_input",
+			input_function_mouse = "_handle_difficulty_filter_input_mouse",
 			render_function = "_render_difficulty_filter_list",
-			input_function_mouse = "_handle_difficulty_filter_input_mouse"
 		},
 		{
 			input_function = "_handle_lobby_filter_input",
+			input_function_mouse = "_handle_lobby_filter_input_mouse",
 			render_function = "_render_lobby_filter_list",
-			input_function_mouse = "_handle_lobby_filter_input_mouse"
 		},
 		{
 			input_function = "_handle_distance_filter_input",
+			input_function_mouse = "_handle_distance_filter_input_mouse",
 			render_function = "_render_distance_filter_list",
-			input_function_mouse = "_handle_distance_filter_input_mouse"
-		}
+		},
 	}
 
 	self:setup_filter_entries()
@@ -161,12 +169,15 @@ LobbyBrowserConsoleUI.setup_filter_entries = function (self)
 	local offset_y = -element_settings.filter_height - element_settings.spacing
 	local create_game_type_filter_entry_func = definitions.create_game_type_filter_entry_func
 	local widget = create_game_type_filter_entry_func("any", GAME_TYPE_LOOKUP_STRINGS.any, offset_y)
+
 	self._game_type_filter_widgets[#self._game_type_filter_widgets + 1] = UIWidget.init(widget)
 
 	for _, game_type in ipairs(game_modes) do
 		if game_type ~= "any" then
 			offset_y = offset_y - element_settings.filter_height - element_settings.spacing
+
 			local widget = create_game_type_filter_entry_func(game_type, GAME_TYPE_LOOKUP_STRINGS[game_type], offset_y)
+
 			self._game_type_filter_widgets[#self._game_type_filter_widgets + 1] = UIWidget.init(widget)
 		end
 	end
@@ -181,6 +192,7 @@ LobbyBrowserConsoleUI.setup_filter_entries = function (self)
 			table.remove(unlockable_levels, index)
 
 			local widget = create_level_filter_entry_func(level, true)
+
 			level_widgets[#level_widgets + 1] = UIWidget.init(widget)
 		end
 	end
@@ -201,6 +213,7 @@ LobbyBrowserConsoleUI.setup_filter_entries = function (self)
 
 		if not level_settings.ommit_from_lobby_browser then
 			local widget = create_level_filter_entry_func(level, false)
+
 			locked_level_widgets[#locked_level_widgets + 1] = UIWidget.init(widget)
 		end
 	end
@@ -222,15 +235,19 @@ LobbyBrowserConsoleUI.setup_filter_entries = function (self)
 
 	self._level_filter_widgets = level_widgets
 	self._level_filter_scroller = UIWidget.init(definitions.create_level_filter_scroller_func(#level_widgets))
+
 	local offset_y = -element_settings.filter_height - element_settings.spacing
 	local create_difficulty_filter_entry_func = definitions.create_difficulty_filter_entry_func
 	local widget = create_difficulty_filter_entry_func("any", offset_y)
+
 	self._difficulty_filter_widgets[#self._difficulty_filter_widgets + 1] = UIWidget.init(widget)
 
 	for _, difficulty in pairs(difficulties) do
 		if difficulty ~= "any" then
 			offset_y = offset_y - element_settings.filter_height - element_settings.spacing
+
 			local widget = create_difficulty_filter_entry_func(difficulty, offset_y)
+
 			self._difficulty_filter_widgets[#self._difficulty_filter_widgets + 1] = UIWidget.init(widget)
 		end
 	end
@@ -241,7 +258,9 @@ LobbyBrowserConsoleUI.setup_filter_entries = function (self)
 
 	for _, show_lobby_type in ipairs(show_lobby_data_table) do
 		offset_y = offset_y - element_settings.filter_height - element_settings.spacing
+
 		local widget_definition = create_lobby_filter_entry_func(show_lobby_type, offset_y)
+
 		self._lobby_filter_widgets[#self._lobby_filter_widgets + 1] = UIWidget.init(widget_definition)
 	end
 
@@ -251,12 +270,15 @@ LobbyBrowserConsoleUI.setup_filter_entries = function (self)
 
 	for _, distance in ipairs(distance_data_table) do
 		offset_y = offset_y - element_settings.filter_height - element_settings.spacing
+
 		local widget_definition = create_distance_filter_entry_func(distance, offset_y)
+
 		self._distance_filter_widgets[#self._distance_filter_widgets + 1] = UIWidget.init(widget_definition)
 	end
 
 	local frame_widget = self._widgets.filter_frame
 	local frame_widget_content = frame_widget.content
+
 	frame_widget_content.filter_hotspot_1.disable_button = #self._game_type_filter_widgets < 2
 	frame_widget_content.filter_hotspot_2.disable_button = #self._level_filter_widgets < 2
 	frame_widget_content.filter_hotspot_3.disable_button = #self._difficulty_filter_widgets < 2
@@ -280,6 +302,7 @@ LobbyBrowserConsoleUI._update_info_text = function (self, dt, t, loading)
 
 	if loading then
 		local text = Localize("start_game_window_lobby_searching")
+
 		text = text .. string.rep(".", self._dot_timer % 4)
 		self._dot_timer = self._dot_timer + dt * 5
 		widget_content.info_text_id = text
@@ -321,20 +344,17 @@ LobbyBrowserConsoleUI._remove_invalid_lobbies = function (self, lobbies)
 
 	for i = 1, num_lobbies do
 		invalid = false
+
 		local lobby = lobbies[i]
 
 		if lobby then
 			local selected_mission_id = lobby.selected_mission_id
 
-			if selected_mission_id then
-				invalid = mission_ids[selected_mission_id] == nil or invalid
-			end
+			invalid = selected_mission_id and mission_ids[selected_mission_id] == nil or invalid
 
 			local mission_id = lobby.mission_id
 
-			if mission_id then
-				invalid = mission_ids[mission_id] == nil or invalid
-			end
+			invalid = mission_id and mission_ids[mission_id] == nil or invalid
 
 			if not invalid then
 				VALID_LOBBIES[#VALID_LOBBIES + 1] = lobby
@@ -349,7 +369,9 @@ end
 LobbyBrowserConsoleUI.populate_lobby_list = function (self, lobbies, ignore_scroll_reset)
 	local lobby_frame_widget = self._widgets.frame
 	local lobby_frame_widget_content = lobby_frame_widget.content
+
 	lobby_frame_widget_content.timer = 0
+
 	local valid_lobbies, valid_lobbies_by_id = self:_remove_invalid_lobbies(lobbies)
 	local element_settings = definitions.element_settings
 	local offset_y = 0
@@ -361,10 +383,13 @@ LobbyBrowserConsoleUI.populate_lobby_list = function (self, lobbies, ignore_scro
 
 	for index, lobby_data in pairs(valid_lobbies) do
 		local joinable, locked_reason = self._parent:is_lobby_joinable(lobby_data)
+
 		offset_y = offset_y - element_settings.height - element_settings.spacing
+
 		local completed_difficulty_index = self._parent:completed_level_difficulty_index(lobby_data)
 		local lobby_entry = create_lobby_entry_func(offset_y, lobby_data, #lobby_entry_widgets + 1, joinable, completed_difficulty_index)
 		local lobby_entry_widget = UIWidget.init(lobby_entry)
+
 		lobby_entry_widgets[#lobby_entry_widgets + 1] = lobby_entry_widget
 	end
 
@@ -376,8 +401,10 @@ LobbyBrowserConsoleUI.populate_lobby_list = function (self, lobbies, ignore_scro
 	local widget = self._widgets.frame
 	local widget_content = widget.content
 	local widget_style = widget.style
+
 	widget_content.show_scroller = false
 	self._empty_lobby_entry_widgets = self._empty_lobby_entry_widgets or {}
+
 	local empty_lobby_entry_widgets = self._empty_lobby_entry_widgets
 
 	table.clear(empty_lobby_entry_widgets)
@@ -388,15 +415,21 @@ LobbyBrowserConsoleUI.populate_lobby_list = function (self, lobbies, ignore_scro
 
 		for i = 1, amount do
 			offset_y = offset_y - element_settings.height - element_settings.spacing
+
 			local lobby_entry = create_empty_lobby_entry_func(offset_y)
 			local lobby_entry_widget = UIWidget.init(lobby_entry)
+
 			empty_lobby_entry_widgets[#empty_lobby_entry_widgets + 1] = lobby_entry_widget
 		end
-	elseif element_settings.num_visible_entries < self._num_lobbies then
+	elseif self._num_lobbies > element_settings.num_visible_entries then
 		widget_content.show_scroller = true
+
 		local scroller_style = widget_style.scroller
+
 		scroller_style.texture_size[2] = math.min(-(element_settings.window_height / (self._num_lobbies / element_settings.num_visible_entries)), -30)
+
 		local inner_scroller_style = widget_style.inner_scroller
+
 		inner_scroller_style.texture_size[2] = math.min(-(element_settings.window_height / (self._num_lobbies / element_settings.num_visible_entries)), -30) + 4
 	end
 end
@@ -472,13 +505,16 @@ LobbyBrowserConsoleUI._handle_mouse_input = function (self, dt, t, loading)
 		else
 			local widget = self._widgets.frame
 			local widget_content = widget.content
+
 			widget_content.filter_active = false
 			self._filter_active = false
 			self._current_active_filter = false
 			self._current_filter_index = 1
 			self._filter_list_index = nil
+
 			local widget = self._widgets.filter_frame
 			local widget_content = widget.content
+
 			widget_content.filter_selection = false
 			widget_content.filter_index = self._current_filter_index
 		end
@@ -489,14 +525,17 @@ end
 
 LobbyBrowserConsoleUI._verify_selected_lobby_index = function (self)
 	local old_selected_lobby_index = self._selected_lobby_index
+
 	self._selected_lobby_index = math.clamp(self._selected_lobby_index, 1, math.max(self._num_lobbies, 1))
 
 	if old_selected_lobby_index ~= self._selected_lobby_index then
 		local element_settings = definitions.element_settings
 		local num_visible_entries = element_settings.num_visible_entries
 		local entry_size_y = element_settings.height + element_settings.spacing
+
 		self._base_pos_y = self._base_pos_y or scenegraph_definition.lobby_entry_anchor.position[2]
 		self._visible_list_index = math.max(math.min(num_visible_entries, self._num_lobbies), 1)
+
 		local new_pos = self._base_pos_y
 
 		if num_visible_entries < self._selected_lobby_index then
@@ -505,6 +544,7 @@ LobbyBrowserConsoleUI._verify_selected_lobby_index = function (self)
 
 		local base_pos = self._base_pos_y
 		local value = self._num_lobbies * entry_size_y - num_visible_entries * entry_size_y
+
 		self._wanted_pos = math.clamp(new_pos, self._base_pos_y, math.max(self._num_lobbies * entry_size_y - num_visible_entries * entry_size_y, 0))
 		self._ui_animations.move = UIAnimation.init(UIAnimation.function_by_time, self._ui_scenegraph.lobby_entry_anchor.position, 2, self._ui_scenegraph.lobby_entry_anchor.position[2], self._wanted_pos, 0.3, math.easeOutCubic)
 
@@ -514,10 +554,7 @@ LobbyBrowserConsoleUI._verify_selected_lobby_index = function (self)
 		local widget_content = widget.content
 		local progress = self._wanted_pos / (self._num_lobbies * entry_size_y - num_visible_entries * entry_size_y)
 
-		if self:_is_nan(progress) then
-			progress = 0
-		end
-
+		progress = self:_is_nan(progress) and 0 or progress
 		self._ui_animations.scrollbar = UIAnimation.init(UIAnimation.function_by_time, widget_content, "scrollbar_progress", widget_content.scrollbar_progress, progress, 0.3, math.easeOutCubic)
 	end
 end
@@ -528,19 +565,23 @@ LobbyBrowserConsoleUI._handle_browser_input = function (self, input_service, ele
 	local old_selected_lobby_index = self._selected_lobby_index
 	local num_visible_entries = element_settings.num_visible_entries
 	local entry_size_y = element_settings.height + element_settings.spacing
+
 	self._base_pos_y = self._base_pos_y or scenegraph_definition.lobby_entry_anchor.position[2]
 	self._wanted_pos = self._wanted_pos or self._base_pos_y
 
 	if input_service:get("right_stick_press") then
 		local widget = self._widgets.frame
 		local widget_content = widget.content
+
 		widget_content.filter_active = true
 		self._filter_active = true
 		self._current_active_filter = false
 		self._current_filter_index = 1
 		self._filter_list_index = nil
+
 		local widget = self._widgets.filter_frame
 		local widget_content = widget.content
+
 		widget_content.filter_selection = true
 		widget_content.filter_index = self._current_filter_index
 
@@ -596,6 +637,7 @@ LobbyBrowserConsoleUI._handle_browser_input = function (self, input_service, ele
 
 		if self._visible_list_index == num_visible_entries then
 			local old_wanted_pos = self._wanted_pos
+
 			self._wanted_pos = math.clamp(self._wanted_pos + entry_size_y, self._base_pos_y, self._num_lobbies * entry_size_y - num_visible_entries * entry_size_y)
 			self._ui_animations.move = UIAnimation.init(UIAnimation.function_by_time, self._ui_scenegraph.lobby_entry_anchor.position, 2, self._ui_scenegraph.lobby_entry_anchor.position[2], self._wanted_pos, 0.3, math.easeOutCubic)
 
@@ -613,6 +655,7 @@ LobbyBrowserConsoleUI._handle_browser_input = function (self, input_service, ele
 
 		if self._visible_list_index <= 1 and num_visible_entries < self._num_lobbies then
 			local old_wanted_pos = self._wanted_pos
+
 			self._wanted_pos = math.clamp(self._wanted_pos - entry_size_y, self._base_pos_y, self._num_lobbies * entry_size_y + entry_size_y)
 			self._ui_animations.move = UIAnimation.init(UIAnimation.function_by_time, self._ui_scenegraph.lobby_entry_anchor.position, 2, self._ui_scenegraph.lobby_entry_anchor.position[2], self._wanted_pos, 0.3, math.easeOutCubic)
 
@@ -629,10 +672,7 @@ LobbyBrowserConsoleUI._handle_browser_input = function (self, input_service, ele
 		local widget_content = widget.content
 		local progress = self._wanted_pos / (self._num_lobbies * entry_size_y - num_visible_entries * entry_size_y)
 
-		if self:_is_nan(progress) then
-			progress = 0
-		end
-
+		progress = self:_is_nan(progress) and 0 or progress
 		self._ui_animations.scrollbar = UIAnimation.init(UIAnimation.function_by_time, widget_content, "scrollbar_progress", widget_content.scrollbar_progress, progress, 0.3, math.easeOutCubic)
 	end
 end
@@ -645,8 +685,10 @@ LobbyBrowserConsoleUI._handle_browser_input_mouse = function (self, input_servic
 	local old_selected_lobby_index = self._mouse_selected_index
 	local num_visible_entries = element_settings.num_visible_entries
 	local entry_size_y = element_settings.height + element_settings.spacing
+
 	self._base_pos_y = self._base_pos_y or scenegraph_definition.lobby_entry_anchor.position[2]
 	self._wanted_pos = self._wanted_pos or self._base_pos_y
+
 	local left_pressed = input_service:get("left_press")
 	local widget = self._widgets.filter_frame
 	local widget_content = widget.content
@@ -665,11 +707,15 @@ LobbyBrowserConsoleUI._handle_browser_input_mouse = function (self, input_servic
 			self._current_filter_index = i
 			self._filter_list_index = nil
 			self._mouse_scroll_index = nil
+
 			local widget_content = widget.content
+
 			widget_content.filter_selection = true
 			widget_content.filter_index = self._current_filter_index
+
 			local widget = self._widgets.frame
 			local widget_content = widget.content
+
 			widget_content.filter_active = true
 
 			return
@@ -734,6 +780,7 @@ LobbyBrowserConsoleUI._handle_browser_input_mouse = function (self, input_servic
 
 		if num_visible_entries < self._num_lobbies then
 			local old_wanted_pos = self._wanted_pos
+
 			self._wanted_pos = math.clamp(self._wanted_pos + entry_size_y, self._base_pos_y, self._num_lobbies * entry_size_y - num_visible_entries * entry_size_y)
 
 			if self._wanted_pos ~= old_wanted_pos then
@@ -748,6 +795,7 @@ LobbyBrowserConsoleUI._handle_browser_input_mouse = function (self, input_servic
 
 		if num_visible_entries < self._num_lobbies then
 			local old_wanted_pos = self._wanted_pos
+
 			self._wanted_pos = math.clamp(self._wanted_pos - entry_size_y, self._base_pos_y, self._num_lobbies * entry_size_y + entry_size_y)
 
 			if self._wanted_pos ~= old_wanted_pos then
@@ -763,10 +811,7 @@ LobbyBrowserConsoleUI._handle_browser_input_mouse = function (self, input_servic
 		local widget_content = widget.content
 		local progress = self._wanted_pos / (self._num_lobbies * entry_size_y - num_visible_entries * entry_size_y)
 
-		if self:_is_nan(progress) then
-			progress = 0
-		end
-
+		progress = self:_is_nan(progress) and 0 or progress
 		self._ui_animations.scrollbar = UIAnimation.init(UIAnimation.function_by_time, widget_content, "scrollbar_progress", widget_content.scrollbar_progress, progress, 0.3, math.easeOutCubic)
 	end
 end
@@ -781,13 +826,16 @@ LobbyBrowserConsoleUI._handle_filter_input = function (self, input_service, elem
 	if input_service:get("right_stick_press") or input_service:get("back_menu", true) then
 		local widget = self._widgets.frame
 		local widget_content = widget.content
+
 		widget_content.filter_active = false
 		self._filter_active = false
 		self._current_active_filter = false
 		self._current_filter_index = 1
 		self._filter_list_index = nil
+
 		local widget = self._widgets.filter_frame
 		local widget_content = widget.content
+
 		widget_content.filter_selection = false
 		widget_content.filter_index = self._current_filter_index
 
@@ -799,6 +847,7 @@ LobbyBrowserConsoleUI._handle_filter_input = function (self, input_service, elem
 	if input_service:get("confirm") then
 		local widget = self._widgets.filter_frame
 		local widget_content = widget.content
+
 		widget_content.filter_selection = false
 		self._current_active_filter = self._current_filter_index
 
@@ -817,8 +866,10 @@ LobbyBrowserConsoleUI._handle_filter_input = function (self, input_service, elem
 		self._parent:play_sound("Play_hud_hover")
 
 		self._filter_list_index = nil
+
 		local widget = self._widgets.filter_frame
 		local widget_content = widget.content
+
 		widget_content.filter_index = current_filter_index
 	end
 end
@@ -842,7 +893,9 @@ end
 
 LobbyBrowserConsoleUI._handle_game_type_filter_input = function (self, input_service, element_settings, dt, t)
 	local old_selected_list_index = self._filter_list_index
+
 	self._filter_list_index = self._filter_list_index or 1
+
 	local hold_down_timer = 0
 	local hold_up_timer = 0
 	local num_entries = #self._game_type_filter_widgets
@@ -852,6 +905,7 @@ LobbyBrowserConsoleUI._handle_game_type_filter_input = function (self, input_ser
 		local current_filter_list_index = self._filter_list_index
 		local widget = self._game_type_filter_widgets[current_filter_list_index]
 		local widget_content = widget.content
+
 		widget_content.selected = false
 		self._filter_list_index = nil
 		self._visible_list_index = 1
@@ -865,8 +919,10 @@ LobbyBrowserConsoleUI._handle_game_type_filter_input = function (self, input_ser
 		end
 
 		self._current_active_filter = nil
+
 		local widget = self._widgets.filter_frame
 		local widget_content = widget.content
+
 		widget_content.filter_selection = true
 
 		return
@@ -898,11 +954,13 @@ LobbyBrowserConsoleUI._handle_game_type_filter_input = function (self, input_ser
 	if self._filter_list_index ~= old_selected_list_index then
 		local widget = self._game_type_filter_widgets[self._filter_list_index]
 		local widget_content = widget.content
+
 		widget_content.selected = true
 
 		if old_selected_list_index then
 			local widget = self._game_type_filter_widgets[old_selected_list_index]
 			local widget_content = widget.content
+
 			widget_content.selected = false
 		end
 
@@ -914,9 +972,13 @@ LobbyBrowserConsoleUI._handle_game_type_filter_input_mouse = function (self, inp
 	local length = element_settings.window_height + element_settings.filter_height
 	local num_visible_entries = math.ceil(length / (element_settings.filter_height + element_settings.spacing))
 	local entry_size_y = element_settings.filter_height + element_settings.spacing
+
 	self._list_base_pos_y = self._list_base_pos_y or scenegraph_definition.filter_game_type_entry_anchor.position[2]
+
 	local num_entries = #self._game_type_filter_widgets
+
 	self._mouse_scroll_index = self._mouse_scroll_index or 1
+
 	local any_selected = false
 	local exiting = input_service:get("back_menu", true)
 
@@ -948,8 +1010,10 @@ LobbyBrowserConsoleUI._handle_game_type_filter_input_mouse = function (self, inp
 		self._hold_down_list_timer = 0
 		self._ui_scenegraph.filter_game_type_entry_anchor.position[2] = self._list_base_pos_y
 		self._current_active_filter = nil
+
 		local widget = self._widgets.filter_frame
 		local widget_content = widget.content
+
 		widget_content.filter_selection = true
 
 		return
@@ -960,12 +1024,16 @@ LobbyBrowserConsoleUI._handle_level_filter_input = function (self, input_service
 	local hold_down_timer = 0
 	local hold_up_timer = 0
 	local old_selected_list_index = self._filter_list_index
+
 	self._filter_list_index = self._filter_list_index or 1
+
 	local length = element_settings.window_height + element_settings.filter_height
 	local num_visible_entries = math.ceil(length / (element_settings.filter_height + element_settings.spacing))
 	local entry_size_y = element_settings.filter_height + element_settings.spacing
+
 	self._list_base_pos_y = self._list_base_pos_y or scenegraph_definition.filter_level_entry_anchor.position[2]
 	self._wanted_list_pos = self._wanted_list_pos or self._list_base_pos_y
+
 	local num_entries = #self._level_filter_widgets
 	local confirm_pressed = input_service:get("confirm")
 	local back_pressed = input_service:get("back_menu", true)
@@ -978,6 +1046,7 @@ LobbyBrowserConsoleUI._handle_level_filter_input = function (self, input_service
 		if widget_content.unlocked or back_pressed then
 			local widget = self._level_filter_widgets[self._filter_list_index]
 			local widget_content = widget.content
+
 			widget_content.selected = false
 			self._filter_list_index = nil
 			self._wanted_list_pos = self._list_base_pos_y
@@ -993,8 +1062,10 @@ LobbyBrowserConsoleUI._handle_level_filter_input = function (self, input_service
 			end
 
 			self._current_active_filter = nil
+
 			local widget = self._widgets.filter_frame
 			local widget_content = widget.content
+
 			widget_content.filter_selection = true
 
 			return
@@ -1029,7 +1100,7 @@ LobbyBrowserConsoleUI._handle_level_filter_input = function (self, input_service
 		if self._visible_list_index == num_visible_entries then
 			local old_wanted_list_pos = self._wanted_list_pos
 
-			if self._filter_list_index <= num_entries then
+			if num_entries >= self._filter_list_index then
 				self._wanted_list_pos = math.clamp(self._wanted_list_pos + entry_size_y, self._list_base_pos_y, num_entries * entry_size_y - num_visible_entries * entry_size_y)
 				self._ui_animations.move_list = UIAnimation.init(UIAnimation.function_by_time, self._ui_scenegraph.filter_level_entry_anchor.position, 2, self._ui_scenegraph.filter_level_entry_anchor.position[2], self._wanted_list_pos, 0.3, math.easeOutCubic)
 			end
@@ -1048,6 +1119,7 @@ LobbyBrowserConsoleUI._handle_level_filter_input = function (self, input_service
 
 		if self._visible_list_index <= 1 and num_visible_entries < num_entries then
 			local old_wanted_list_pos = self._wanted_list_pos
+
 			self._wanted_list_pos = math.clamp(self._wanted_list_pos - entry_size_y, self._list_base_pos_y, self._num_lobbies * entry_size_y + entry_size_y)
 			self._ui_animations.move_list = UIAnimation.init(UIAnimation.function_by_time, self._ui_scenegraph.filter_level_entry_anchor.position, 2, self._ui_scenegraph.filter_level_entry_anchor.position[2], self._wanted_list_pos, 0.3, math.easeOutCubic)
 
@@ -1060,11 +1132,13 @@ LobbyBrowserConsoleUI._handle_level_filter_input = function (self, input_service
 	if self._filter_list_index ~= old_selected_list_index then
 		local widget = self._level_filter_widgets[self._filter_list_index]
 		local widget_content = widget.content
+
 		widget_content.selected = true
 
 		if old_selected_list_index then
 			local widget = self._level_filter_widgets[old_selected_list_index]
 			local widget_content = widget.content
+
 			widget_content.selected = false
 		end
 
@@ -1072,10 +1146,7 @@ LobbyBrowserConsoleUI._handle_level_filter_input = function (self, input_service
 		local widget_content = widget.content
 		local progress = (self._wanted_list_pos - self._list_base_pos_y) / (num_entries * entry_size_y - num_visible_entries * entry_size_y + entry_size_y)
 
-		if self:_is_nan(progress) then
-			progress = 0
-		end
-
+		progress = self:_is_nan(progress) and 0 or progress
 		self._ui_animations.list_scrollbar = UIAnimation.init(UIAnimation.function_by_time, widget_content, "scrollbar_progress", widget_content.scrollbar_progress, progress, 0.3, math.easeOutCubic)
 
 		self._parent:play_sound("Play_hud_hover")
@@ -1086,9 +1157,13 @@ LobbyBrowserConsoleUI._handle_level_filter_input_mouse = function (self, input_s
 	local length = element_settings.window_height + element_settings.filter_height
 	local num_visible_entries = math.ceil(length / (element_settings.filter_height + element_settings.spacing))
 	local entry_size_y = element_settings.filter_height + element_settings.spacing
+
 	self._list_base_pos_y = self._list_base_pos_y or scenegraph_definition.filter_level_entry_anchor.position[2]
+
 	local num_entries = #self._level_filter_widgets
+
 	self._mouse_scroll_index = self._mouse_scroll_index or 1
+
 	local widget = self._level_filter_scroller
 	local widget_content = widget.content
 	local widget_style = widget.style
@@ -1128,11 +1203,15 @@ LobbyBrowserConsoleUI._handle_level_filter_input_mouse = function (self, input_s
 		self._hold_down_list_timer = 0
 		self._ui_scenegraph.filter_level_entry_anchor.position[2] = self._list_base_pos_y
 		self._current_active_filter = nil
+
 		local widget = self._widgets.filter_frame
 		local widget_content = widget.content
+
 		widget_content.filter_selection = true
+
 		local widget = self._level_filter_scroller
 		local widget_content = widget.content
+
 		widget_content.scrollbar_progress = 0
 
 		return
@@ -1146,8 +1225,11 @@ LobbyBrowserConsoleUI._handle_level_filter_input_mouse = function (self, input_s
 		local diff_y = mouse_y - self._old_mouse_y
 		local progress_diff = total_size_y > 0 and diff_y / total_size_y or 0
 		local progress = math.clamp(widget_content.scrollbar_progress - progress_diff, 0, 1)
+
 		widget_content.scrollbar_progress = progress
+
 		local new_pos = self._list_base_pos_y + (num_entries - num_visible_entries + 1) * progress * entry_size_y
+
 		self._ui_scenegraph.filter_level_entry_anchor.position[2] = new_pos
 		self._mouse_scroll_index = math.floor((num_entries - num_visible_entries + 1) * progress)
 		self._old_mouse_y = mouse_y
@@ -1157,17 +1239,17 @@ LobbyBrowserConsoleUI._handle_level_filter_input_mouse = function (self, input_s
 
 		if math.abs(scroll_y) > 0 then
 			self._mouse_scroll_index = math.clamp(self._mouse_scroll_index - math.sign(scroll_y), 1, num_entries - num_visible_entries + 2)
+
 			local offset_num = self._mouse_scroll_index - 1
 			local new_pos = self._list_base_pos_y + offset_num * entry_size_y
+
 			self._ui_animations.move_list = UIAnimation.init(UIAnimation.function_by_time, self._ui_scenegraph.filter_level_entry_anchor.position, 2, self._ui_scenegraph.filter_level_entry_anchor.position[2], new_pos, 0.3, math.easeOutCubic)
+
 			local widget = self._level_filter_scroller
 			local widget_content = widget.content
 			local progress = offset_num / (num_entries - num_visible_entries + 1)
 
-			if self:_is_nan(progress) then
-				progress = 0
-			end
-
+			progress = self:_is_nan(progress) and 0 or progress
 			self._ui_animations.list_scrollbar = UIAnimation.init(UIAnimation.function_by_time, widget_content, "scrollbar_progress", widget_content.scrollbar_progress, progress, 0.3, math.easeOutCubic)
 		end
 	end
@@ -1175,7 +1257,9 @@ end
 
 LobbyBrowserConsoleUI._handle_difficulty_filter_input = function (self, input_service, element_settings, dt, t)
 	local old_selected_list_index = self._filter_list_index
+
 	self._filter_list_index = self._filter_list_index or 1
+
 	local hold_down_timer = 0
 	local hold_up_timer = 0
 	local num_entries = #self._difficulty_filter_widgets
@@ -1200,8 +1284,10 @@ LobbyBrowserConsoleUI._handle_difficulty_filter_input = function (self, input_se
 			end
 
 			self._current_active_filter = nil
+
 			local widget = self._widgets.filter_frame
 			local widget_content = widget.content
+
 			widget_content.filter_selection = true
 
 			return
@@ -1234,11 +1320,13 @@ LobbyBrowserConsoleUI._handle_difficulty_filter_input = function (self, input_se
 	if self._filter_list_index ~= old_selected_list_index then
 		local widget = self._difficulty_filter_widgets[self._filter_list_index]
 		local widget_content = widget.content
+
 		widget_content.selected = true
 
 		if old_selected_list_index then
 			local widget = self._difficulty_filter_widgets[old_selected_list_index]
 			local widget_content = widget.content
+
 			widget_content.selected = false
 		end
 
@@ -1250,9 +1338,13 @@ LobbyBrowserConsoleUI._handle_difficulty_filter_input_mouse = function (self, in
 	local length = element_settings.window_height + element_settings.filter_height
 	local num_visible_entries = math.ceil(length / (element_settings.filter_height + element_settings.spacing))
 	local entry_size_y = element_settings.filter_height + element_settings.spacing
+
 	self._list_base_pos_y = self._list_base_pos_y or scenegraph_definition.filter_difficulty_entry_anchor.position[2]
+
 	local num_entries = #self._difficulty_filter_widgets
+
 	self._mouse_scroll_index = self._mouse_scroll_index or 1
+
 	local any_selected = false
 	local exiting = input_service:get("back_menu", true)
 
@@ -1286,8 +1378,10 @@ LobbyBrowserConsoleUI._handle_difficulty_filter_input_mouse = function (self, in
 		self._hold_down_list_timer = 0
 		self._ui_scenegraph.filter_difficulty_entry_anchor.position[2] = self._list_base_pos_y
 		self._current_active_filter = nil
+
 		local widget = self._widgets.filter_frame
 		local widget_content = widget.content
+
 		widget_content.filter_selection = true
 
 		return
@@ -1296,7 +1390,9 @@ end
 
 LobbyBrowserConsoleUI._handle_lobby_filter_input = function (self, input_service, element_settings, dt, t)
 	local old_selected_list_index = self._filter_list_index
+
 	self._filter_list_index = self._filter_list_index or 1
+
 	local hold_down_timer = 0
 	local hold_up_timer = 0
 	local num_entries = #self._lobby_filter_widgets
@@ -1306,6 +1402,7 @@ LobbyBrowserConsoleUI._handle_lobby_filter_input = function (self, input_service
 		local current_filter_list_index = self._filter_list_index
 		local widget = self._lobby_filter_widgets[current_filter_list_index]
 		local widget_content = widget.content
+
 		widget_content.selected = false
 		self._filter_list_index = nil
 		self._visible_list_index = 1
@@ -1319,8 +1416,10 @@ LobbyBrowserConsoleUI._handle_lobby_filter_input = function (self, input_service
 		end
 
 		self._current_active_filter = nil
+
 		local widget = self._widgets.filter_frame
 		local widget_content = widget.content
+
 		widget_content.filter_selection = true
 
 		return
@@ -1352,11 +1451,13 @@ LobbyBrowserConsoleUI._handle_lobby_filter_input = function (self, input_service
 	if self._filter_list_index ~= old_selected_list_index then
 		local widget = self._lobby_filter_widgets[self._filter_list_index]
 		local widget_content = widget.content
+
 		widget_content.selected = true
 
 		if old_selected_list_index then
 			local widget = self._lobby_filter_widgets[old_selected_list_index]
 			local widget_content = widget.content
+
 			widget_content.selected = false
 		end
 
@@ -1368,9 +1469,13 @@ LobbyBrowserConsoleUI._handle_lobby_filter_input_mouse = function (self, input_s
 	local length = element_settings.window_height + element_settings.filter_height
 	local num_visible_entries = math.ceil(length / (element_settings.filter_height + element_settings.spacing))
 	local entry_size_y = element_settings.filter_height + element_settings.spacing
+
 	self._list_base_pos_y = self._list_base_pos_y or scenegraph_definition.filter_lobby_entry_anchor.position[2]
+
 	local num_entries = #self._lobby_filter_widgets
+
 	self._mouse_scroll_index = self._mouse_scroll_index or 1
+
 	local any_selected = false
 	local exiting = input_service:get("back_menu", true)
 
@@ -1401,8 +1506,10 @@ LobbyBrowserConsoleUI._handle_lobby_filter_input_mouse = function (self, input_s
 		self._hold_down_list_timer = 0
 		self._ui_scenegraph.filter_lobby_entry_anchor.position[2] = self._list_base_pos_y
 		self._current_active_filter = nil
+
 		local widget = self._widgets.filter_frame
 		local widget_content = widget.content
+
 		widget_content.filter_selection = true
 
 		return
@@ -1411,7 +1518,9 @@ end
 
 LobbyBrowserConsoleUI._handle_distance_filter_input = function (self, input_service, element_settings, dt, t)
 	local old_selected_list_index = self._filter_list_index
+
 	self._filter_list_index = self._filter_list_index or 1
+
 	local hold_down_timer = 0
 	local hold_up_timer = 0
 	local num_entries = #self._distance_filter_widgets
@@ -1421,6 +1530,7 @@ LobbyBrowserConsoleUI._handle_distance_filter_input = function (self, input_serv
 		local current_filter_list_index = self._filter_list_index
 		local widget = self._distance_filter_widgets[current_filter_list_index]
 		local widget_content = widget.content
+
 		widget_content.selected = false
 		self._filter_list_index = nil
 		self._visible_list_index = 1
@@ -1434,8 +1544,10 @@ LobbyBrowserConsoleUI._handle_distance_filter_input = function (self, input_serv
 		end
 
 		self._current_active_filter = nil
+
 		local widget = self._widgets.filter_frame
 		local widget_content = widget.content
+
 		widget_content.filter_selection = true
 
 		return
@@ -1467,11 +1579,13 @@ LobbyBrowserConsoleUI._handle_distance_filter_input = function (self, input_serv
 	if self._filter_list_index ~= old_selected_list_index then
 		local widget = self._distance_filter_widgets[self._filter_list_index]
 		local widget_content = widget.content
+
 		widget_content.selected = true
 
 		if old_selected_list_index then
 			local widget = self._distance_filter_widgets[old_selected_list_index]
 			local widget_content = widget.content
+
 			widget_content.selected = false
 		end
 
@@ -1483,9 +1597,13 @@ LobbyBrowserConsoleUI._handle_distance_filter_input_mouse = function (self, inpu
 	local length = element_settings.window_height + element_settings.filter_height
 	local num_visible_entries = math.ceil(length / (element_settings.filter_height + element_settings.spacing))
 	local entry_size_y = element_settings.filter_height + element_settings.spacing
+
 	self._list_base_pos_y = self._list_base_pos_y or scenegraph_definition.filter_distance_entry_anchor.position[2]
+
 	local num_entries = #self._distance_filter_widgets
+
 	self._mouse_scroll_index = self._mouse_scroll_index or 1
+
 	local any_selected = false
 	local exiting = input_service:get("back_menu", true)
 
@@ -1516,8 +1634,10 @@ LobbyBrowserConsoleUI._handle_distance_filter_input_mouse = function (self, inpu
 		self._hold_down_list_timer = 0
 		self._ui_scenegraph.filter_distance_entry_anchor.position[2] = self._list_base_pos_y
 		self._current_active_filter = nil
+
 		local widget = self._widgets.filter_frame
 		local widget_content = widget.content
+
 		widget_content.filter_selection = true
 
 		return
@@ -1526,6 +1646,7 @@ end
 
 LobbyBrowserConsoleUI._select_lobby = function (self, old_selected_lobby_index, new_selected_lobby_index, device_selected_lobby_index)
 	self._details_filled = false
+
 	local widgets = self._lobby_entry_widgets
 
 	if old_selected_lobby_index then
@@ -1533,6 +1654,7 @@ LobbyBrowserConsoleUI._select_lobby = function (self, old_selected_lobby_index, 
 
 		if widget then
 			local content = widget.content
+
 			content.selected = false
 		end
 	end
@@ -1542,6 +1664,7 @@ LobbyBrowserConsoleUI._select_lobby = function (self, old_selected_lobby_index, 
 
 		if widget then
 			local content = widget.content
+
 			content.selected = false
 		end
 	end
@@ -1551,6 +1674,7 @@ LobbyBrowserConsoleUI._select_lobby = function (self, old_selected_lobby_index, 
 
 		if widget then
 			local content = widget.content
+
 			content.selected = true
 		end
 	end
@@ -1559,7 +1683,9 @@ LobbyBrowserConsoleUI._select_lobby = function (self, old_selected_lobby_index, 
 	local selected_lobby_entry_content = selected_lobby_entry_widget and selected_lobby_entry_widget.content
 	local selected_lobby_data = selected_lobby_entry_content and selected_lobby_entry_content.lobby_data
 	local id = selected_lobby_data and selected_lobby_data.id
+
 	self._selected_lobby_id = id
+
 	local current_lobbies = self._parent:get_lobbies()
 	local valid_current_lobbies, valid_current_lobbies_by_id = self:_remove_invalid_lobbies(current_lobbies)
 	local lobby_data = valid_current_lobbies_by_id[self._selected_lobby_id]
@@ -1628,6 +1754,7 @@ LobbyBrowserConsoleUI._update_lobby_entry = function (self, index, offset_y, sel
 		local lobby_entry = create_lobby_entry_func(offset_y, lobby_data, index, joinable, completed_difficulty_index)
 		local lobby_entry_widget = UIWidget.init(lobby_entry)
 		local lobby_entry_content = lobby_entry_widget.content
+
 		lobby_entry_content.selected = selected
 		self._lobby_entry_widgets[index] = lobby_entry_widget
 	else
@@ -1635,6 +1762,7 @@ LobbyBrowserConsoleUI._update_lobby_entry = function (self, index, offset_y, sel
 		local lobby_entry = create_unavailable_lobby_entry_func(offset_y)
 		local lobby_entry_widget = UIWidget.init(lobby_entry)
 		local lobby_entry_content = lobby_entry_widget.content
+
 		lobby_entry_content.selected = selected
 		self._lobby_entry_widgets[index] = lobby_entry_widget
 	end
@@ -1643,7 +1771,7 @@ end
 LobbyBrowserConsoleUI._fill_details = function (self, lobby_data)
 	local details_widgets = self._details_widgets.adventure
 	local level_image = "level_image_any"
-	local level_name = nil
+	local level_name
 	local selected_mission_id = lobby_data and (lobby_data.selected_mission_id or lobby_data.mission_id)
 	local matchmaking_type_id = lobby_data and lobby_data.matchmaking_type
 	local matchmaking_type = matchmaking_type_id and (IS_PS4 and matchmaking_type_id or NetworkLookup.matchmaking_types[tonumber(matchmaking_type_id)])
@@ -1665,14 +1793,19 @@ LobbyBrowserConsoleUI._fill_details = function (self, lobby_data)
 		end
 
 		local level_settings = LevelSettings[level_key]
+
 		level_name = level_settings.display_name
 		level_image = level_settings.level_image or level_image
 	end
 
 	local level_image_widget = details_widgets.level_image
+
 	level_image_widget.content.texture_id = level_image
+
 	local level_name_widget = details_widgets.level_name
+
 	level_name_widget.content.text = level_name and Localize(level_name) or " "
+
 	local occupied_profiles = {}
 
 	if lobby_data then
@@ -1710,11 +1843,13 @@ LobbyBrowserConsoleUI._fill_details = function (self, lobby_data)
 		if completed_difficulty_index > 0 then
 			local difficulty_key = DefaultDifficulties[completed_difficulty_index]
 			local settings = DifficultySettings[difficulty_key]
+
 			level_frame = settings.completed_frame_texture
 		end
 	end
 
 	level_image_frame_widget_content.texture_id = level_frame
+
 	local join_button_widget = self._widgets.join_button
 	local join_button_widget_content = join_button_widget.content
 	local button_hotspot = join_button_widget_content.button_hotspot
@@ -1723,6 +1858,7 @@ LobbyBrowserConsoleUI._fill_details = function (self, lobby_data)
 
 	if lobby_data then
 		local joinable, locked_reason = self._parent:is_lobby_joinable(lobby_data)
+
 		locked_reason_widget_content.text = locked_reason or "tutorial_no_text"
 		button_hotspot.disable_button = not joinable
 	else
@@ -1735,15 +1871,15 @@ LobbyBrowserConsoleUI._fill_details = function (self, lobby_data)
 
 	if lobby_data then
 		local matchmaking_type_lookup = {
-			event = "lb_game_type_event",
+			custom = "lb_game_type_custom",
 			deed = "lb_game_type_deed",
+			deus = "area_selection_morris_name",
+			event = "lb_game_type_event",
+			["n/a"] = "lb_game_type_none",
+			standard = "lb_game_type_quick_play",
 			tutorial = "lb_game_type_prologue",
 			weave = "lb_game_type_weave",
-			custom = "lb_game_type_custom",
-			standard = "lb_game_type_quick_play",
 			weave_quick_play = "lb_game_type_weave_quick_play",
-			["n/a"] = "lb_game_type_none",
-			deus = "area_selection_morris_name"
 		}
 		local mission_id = lobby_data.mission_id
 		local level_key = mission_id
@@ -1765,6 +1901,7 @@ LobbyBrowserConsoleUI._fill_details = function (self, lobby_data)
 		end
 
 		local level_setting = LevelSettings[level_key]
+
 		details_information_widget_content.game_type_id = matchmaking_type and (matchmaking_type_lookup[matchmaking_type] or "lb_unknown") or "lb_game_type_none"
 		details_information_widget_content.status_id = level_setting.hub_level and "lb_in_inn" or "lb_playing"
 	else
@@ -1792,28 +1929,38 @@ LobbyBrowserConsoleUI._fill_weave_details = function (self, lobby_data)
 	local wind_icon_widget = details_widgets.wind_icon
 	local wind_icon_content = wind_icon_widget.content
 	local wind_icon_style = wind_icon_widget.style.texture_id
+
 	wind_icon_content.texture_id = wind_thumbnail_icon
 	wind_icon_style.texture_size = {
 		wind_thumbnail_icon_size[1] * 0.6,
-		wind_thumbnail_icon_size[2] * 0.6
+		wind_thumbnail_icon_size[2] * 0.6,
 	}
 	wind_icon_style.horizontal_alignment = "center"
 	wind_icon_style.vertical_alignment = "center"
+
 	local wind_icon_glow = details_widgets.wind_icon_glow
+
 	wind_icon_glow.style.texture_id.color = wind_color
+
 	local wind_icon_bg = details_widgets.wind_icon_bg
+
 	wind_icon_bg.style.texture_id.color = wind_color
+
 	local wind_name_widget = details_widgets.wind_name
+
 	wind_name_widget.content.text = wind_display_name
 	wind_name_widget.style.text.text_color = wind_color
+
 	local mutator_name = wind_settings.mutator
 	local mutator_data = MutatorTemplates[mutator_name]
 	local wind_mutator_icon_widget = details_widgets.wind_mutator_icon
 	local wind_mutator_title_text_widget = details_widgets.wind_mutator_title_text
 	local wind_mutator_description_text_widget = details_widgets.wind_mutator_description_text
+
 	wind_mutator_icon_widget.content.texture_id = mutator_data.icon
 	wind_mutator_title_text_widget.content.text = mutator_data.display_name
 	wind_mutator_description_text_widget.content.text = mutator_data.description
+
 	local objectives = weave_template.objectives
 	local objective_spacing = 10
 	local largest_objective_width = 0
@@ -1847,11 +1994,14 @@ LobbyBrowserConsoleUI._fill_weave_details = function (self, lobby_data)
 		end
 
 		local level_settings = LevelSettings[level_key]
+
 		level_image = level_settings.level_image or level_image
 	end
 
 	local level_image_widget = details_widgets.level_image
+
 	level_image_widget.content.texture_id = level_image
+
 	local level_name_widget = details_widgets.level_name
 
 	if lobby_data.quick_game == "true" then
@@ -1889,8 +2039,10 @@ LobbyBrowserConsoleUI._fill_weave_details = function (self, lobby_data)
 
 	local level_image_frame_widget = details_widgets.level_image_frame
 	local level_image_frame_widget_content = level_image_frame_widget.content
+
 	level_image_frame_widget_content.texture_id = "map_frame_weaves"
 	level_image_frame_widget.style.texture_id.color = wind_color
+
 	local join_button_widget = self._widgets.join_button
 	local join_button_widget_content = join_button_widget.content
 	local button_hotspot = join_button_widget_content.button_hotspot
@@ -1899,6 +2051,7 @@ LobbyBrowserConsoleUI._fill_weave_details = function (self, lobby_data)
 
 	if lobby_data then
 		local joinable, locked_reason = self._parent:is_lobby_joinable(lobby_data)
+
 		locked_reason_widget_content.text = locked_reason or "tutorial_no_text"
 		button_hotspot.disable_button = not joinable
 	else
@@ -1911,15 +2064,15 @@ LobbyBrowserConsoleUI._fill_weave_details = function (self, lobby_data)
 
 	if lobby_data then
 		local matchmaking_type_lookup = {
-			event = "lb_game_type_event",
+			custom = "lb_game_type_custom",
 			deed = "lb_game_type_deed",
+			deus = "area_selection_morris_name",
+			event = "lb_game_type_event",
+			["n/a"] = "lb_game_type_none",
+			standard = "lb_game_type_quick_play",
 			tutorial = "lb_game_type_prologue",
 			weave = "lb_game_type_weave",
-			custom = "lb_game_type_custom",
-			standard = "lb_game_type_quick_play",
 			weave_quick_play = "lb_game_type_weave_quick_play",
-			["n/a"] = "lb_game_type_none",
-			deus = "area_selection_morris_name"
 		}
 		local mechanism = lobby_data.mechanism
 		local matchmaking_type_id = lobby_data.matchmaking_type
@@ -1942,6 +2095,7 @@ LobbyBrowserConsoleUI._fill_weave_details = function (self, lobby_data)
 		end
 
 		local level_setting = LevelSettings[level_key]
+
 		details_information_widget_content.game_type_id = matchmaking_type and (matchmaking_type_lookup[matchmaking_type] or "lb_unknown") or "lb_game_type_none"
 		details_information_widget_content.status_id = level_setting.hub_level and "lb_in_inn" or "lb_playing"
 	else
@@ -1969,7 +2123,7 @@ LobbyBrowserConsoleUI._fill_deus_details = function (self, lobby_data)
 	local unlocked_journeys, completed_difficulty_index = self:_gather_unlocked_journeys()
 	local details_widgets = self._details_widgets.deus
 	local level_image = "level_image_any"
-	local level_name = nil
+	local level_name
 	local selected_mission_id = lobby_data and (lobby_data.selected_mission_id or lobby_data.mission_id)
 	local matchmaking_type_id = lobby_data and lobby_data.matchmaking_type
 	local matchmaking_type = matchmaking_type_id and (IS_PS4 and matchmaking_type_id or NetworkLookup.matchmaking_types[tonumber(matchmaking_type_id)])
@@ -1978,15 +2132,21 @@ LobbyBrowserConsoleUI._fill_deus_details = function (self, lobby_data)
 	local journey_data = DeusJourneySettings[journey_name]
 	local widget = details_widgets.expedition_icon
 	local content = widget.content
+
 	content.level_icon = journey_data.level_image
 	content.locked = not unlocked_journeys[journey_name]
+
 	local backend_deus = Managers.backend:get_interface("deus")
 	local journey_cycle = backend_deus:get_journey_cycle()
 	local theme = journey_cycle.journey_data[journey_name].dominant_god
 	local theme_settings = DeusThemeSettings[theme]
+
 	content.theme_icon = theme_settings.icon
+
 	local level_name_widget = details_widgets.level_name
+
 	level_name_widget.content.text = Localize(journey_data.display_name)
+
 	local occupied_profiles = {}
 
 	if lobby_data then
@@ -2022,6 +2182,7 @@ LobbyBrowserConsoleUI._fill_deus_details = function (self, lobby_data)
 
 	if lobby_data then
 		local joinable, locked_reason = self._parent:is_lobby_joinable(lobby_data)
+
 		locked_reason_widget_content.text = locked_reason or "tutorial_no_text"
 		button_hotspot.disable_button = not joinable
 	else
@@ -2034,15 +2195,15 @@ LobbyBrowserConsoleUI._fill_deus_details = function (self, lobby_data)
 
 	if lobby_data then
 		local matchmaking_type_lookup = {
-			event = "lb_game_type_event",
+			custom = "lb_game_type_custom",
 			deed = "lb_game_type_deed",
+			deus = "area_selection_morris_name",
+			event = "lb_game_type_event",
+			["n/a"] = "lb_game_type_none",
+			standard = "lb_game_type_quick_play",
 			tutorial = "lb_game_type_prologue",
 			weave = "lb_game_type_weave",
-			custom = "lb_game_type_custom",
-			standard = "lb_game_type_quick_play",
 			weave_quick_play = "lb_game_type_weave_quick_play",
-			["n/a"] = "lb_game_type_none",
-			deus = "area_selection_morris_name"
 		}
 		local mission_id = lobby_data.mission_id
 		local level_key = mission_id
@@ -2064,6 +2225,7 @@ LobbyBrowserConsoleUI._fill_deus_details = function (self, lobby_data)
 		end
 
 		local level_setting = LevelSettings[level_key]
+
 		details_information_widget_content.game_type_id = matchmaking_type and (matchmaking_type_lookup[matchmaking_type] or "lb_unknown") or "lb_game_type_none"
 		details_information_widget_content.status_id = level_setting.hub_level and "lb_in_inn" or "lb_playing"
 	else
@@ -2082,6 +2244,7 @@ LobbyBrowserConsoleUI._assign_objective = function (self, index, text, icon, spa
 	local widget = details_widgets[widget_name]
 	local content = widget.content
 	local style = widget.style
+
 	content.icon = icon or "trial_gem"
 	content.text = text or "-"
 end
@@ -2089,30 +2252,35 @@ end
 LobbyBrowserConsoleUI.set_game_type_filter = function (self, game_type_name)
 	local widget = self._widgets.filter_frame
 	local content = widget.content
+
 	content.game_type_name = game_type_name
 end
 
 LobbyBrowserConsoleUI.set_level_filter = function (self, level_display_name)
 	local widget = self._widgets.filter_frame
 	local content = widget.content
+
 	content.mission_name = level_display_name
 end
 
 LobbyBrowserConsoleUI.set_difficulty_filter = function (self, difficulty_display_name)
 	local widget = self._widgets.filter_frame
 	local content = widget.content
+
 	content.difficulty_name = difficulty_display_name
 end
 
 LobbyBrowserConsoleUI.set_show_lobbies_filter = function (self, show_lobbies_text)
 	local widget = self._widgets.filter_frame
 	local content = widget.content
+
 	content.show_lobbies_name = show_lobbies_text
 end
 
 LobbyBrowserConsoleUI.set_distance_filter = function (self, distance_text)
 	local widget = self._widgets.filter_frame
 	local content = widget.content
+
 	content.distance_name = distance_text
 end
 
@@ -2122,7 +2290,7 @@ LobbyBrowserConsoleUI._draw = function (self, dt, t)
 	local input_manager = self._input_manager
 	local render_settings = self._render_settings
 	local input_service = self._parent:input_service()
-	local parent_scenegraph_id = nil
+	local parent_scenegraph_id
 
 	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt, nil, render_settings)
 

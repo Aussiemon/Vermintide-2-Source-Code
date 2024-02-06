@@ -1,1898 +1,1901 @@
+﻿-- chunkname: @scripts/settings/paintings_01.lua
+
 Paintings = Paintings or {}
 Paintings.hidden = {
-	sound_event = "painting_none_description",
-	rarity = "common",
-	display_name = "painting_none_name",
-	icon = "icon_painting_0",
-	frame = "wood",
-	description = "painting_none_description",
 	artist = "painting__artist",
+	description = "painting_none_description",
+	display_name = "painting_none_name",
+	frame = "wood",
+	icon = "icon_painting_0",
 	orientation = "horizontal",
+	rarity = "common",
+	sound_event = "painting_none_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.hor_none = {
-	sound_event = "painting_none_description",
-	rarity = "common",
-	display_name = "painting_none_name",
-	icon = "icon_painting_1",
-	frame = "wood",
-	description = "painting_none_description",
 	artist = "painting__artist",
+	description = "painting_none_description",
+	display_name = "painting_none_name",
+	frame = "wood",
+	icon = "icon_painting_1",
 	orientation = "horizontal",
+	rarity = "common",
+	sound_event = "painting_none_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_none = {
-	sound_event = "painting_none_description",
-	rarity = "common",
-	display_name = "painting_none_name",
-	icon = "icon_painting_2",
-	frame = "wood",
-	description = "painting_none_description",
 	artist = "painting__artist",
+	description = "painting_none_description",
+	display_name = "painting_none_name",
+	frame = "wood",
+	icon = "icon_painting_2",
 	orientation = "vertical",
+	rarity = "common",
+	sound_event = "painting_none_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.hor_mines03 = {
-	sound_event = "painting_mines03_description",
-	rarity = "common",
-	display_name = "painting_mines03_name",
-	icon = "icon_painting_3",
-	frame = "wood",
-	description = "painting_mines03_description",
 	artist = "painting_mines03_artist",
+	description = "painting_mines03_description",
+	display_name = "painting_mines03_name",
+	frame = "wood",
+	icon = "icon_painting_3",
 	orientation = "horizontal",
+	rarity = "common",
+	sound_event = "painting_mines03_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_tzeentch01 = {
-	sound_event = "painting_tzeentch01_description",
-	rarity = "rare",
-	display_name = "painting_tzeentch01_name",
-	icon = "icon_painting_4",
-	frame = "painted",
-	description = "painting_tzeentch01_description",
 	artist = "painting_tzeentch01_artist",
+	description = "painting_tzeentch01_description",
+	display_name = "painting_tzeentch01_name",
+	frame = "painted",
+	icon = "icon_painting_4",
 	orientation = "vertical",
+	rarity = "rare",
+	sound_event = "painting_tzeentch01_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_slaanesh03 = {
-	sound_event = "painting_slaanesh03_description",
-	rarity = "rare",
-	display_name = "painting_slaanesh03_name",
-	icon = "icon_painting_5",
-	frame = "painted",
-	description = "painting_slaanesh03_description",
 	artist = "painting_slaanesh03_artist",
+	description = "painting_slaanesh03_description",
+	display_name = "painting_slaanesh03_name",
+	frame = "painted",
+	icon = "icon_painting_5",
 	orientation = "vertical",
+	rarity = "rare",
+	sound_event = "painting_slaanesh03_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_khorne09 = {
-	sound_event = "painting_khorne09_description",
-	rarity = "rare",
-	display_name = "painting_khorne09_name",
-	icon = "icon_painting_6",
-	frame = "painted",
-	description = "painting_khorne09_description",
 	artist = "painting_khorne09_artist",
+	description = "painting_khorne09_description",
+	display_name = "painting_khorne09_name",
+	frame = "painted",
+	icon = "icon_painting_6",
 	orientation = "vertical",
+	rarity = "rare",
+	sound_event = "painting_khorne09_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_bw01 = {
-	sound_event = "painting_bw01_description",
-	rarity = "exotic",
-	display_name = "painting_bw01_name",
-	icon = "icon_painting_1",
-	frame = "gold",
-	description = "painting_bw01_description",
 	artist = "painting_bw01_artist",
+	description = "painting_bw01_description",
+	display_name = "painting_bw01_name",
+	frame = "gold",
+	icon = "icon_painting_1",
 	orientation = "vertical",
+	rarity = "exotic",
+	sound_event = "painting_bw01_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.hor_entrance01 = {
-	sound_event = "painting_entrance01_description",
-	rarity = "common",
-	display_name = "painting_entrance01_name",
-	icon = "icon_painting_2",
-	frame = "wood",
-	description = "painting_entrance01_description",
 	artist = "painting_entrance01_artist",
+	description = "painting_entrance01_description",
+	display_name = "painting_entrance01_name",
+	frame = "wood",
+	icon = "icon_painting_2",
 	orientation = "horizontal",
+	rarity = "common",
+	sound_event = "painting_entrance01_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.hor_mansion01 = {
-	sound_event = "painting_mansion01_description",
-	rarity = "common",
-	display_name = "painting_mansion01_name",
-	icon = "icon_painting_3",
-	frame = "wood",
-	description = "painting_mansion01_description",
 	artist = "painting_mansion01_artist",
+	description = "painting_mansion01_description",
+	display_name = "painting_mansion01_name",
+	frame = "wood",
+	icon = "icon_painting_3",
 	orientation = "horizontal",
+	rarity = "common",
+	sound_event = "painting_mansion01_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_victor01 = {
-	sound_event = "painting_victor01_description",
-	rarity = "exotic",
-	display_name = "painting_victor01_name",
-	icon = "icon_painting_4",
-	frame = "gold",
-	description = "painting_victor01_description",
 	artist = "painting_victor01_artist",
+	description = "painting_victor01_description",
+	display_name = "painting_victor01_name",
+	frame = "gold",
+	icon = "icon_painting_4",
 	orientation = "vertical",
+	rarity = "exotic",
+	sound_event = "painting_victor01_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_bogenhafen01 = {
-	sound_event = "painting_bogenhafen01_description",
-	rarity = "exotic",
-	display_name = "painting_bogenhafen01_name",
-	icon = "icon_painting_4",
-	frame = "gold",
-	description = "painting_bogenhafen01_description",
 	artist = "painting_bogenhafen01_artist",
+	description = "painting_bogenhafen01_description",
+	display_name = "painting_bogenhafen01_name",
+	frame = "gold",
+	icon = "icon_painting_4",
 	orientation = "vertical",
+	rarity = "exotic",
+	sound_event = "painting_bogenhafen01_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.hor_norsca01 = {
-	sound_event = "painting_norsca01_description",
-	rarity = "common",
-	display_name = "painting_norsca01_name",
-	icon = "icon_painting_5",
-	frame = "wood",
-	description = "painting_norsca01_description",
 	artist = "painting_norsca01_artist",
+	description = "painting_norsca01_description",
+	display_name = "painting_norsca01_name",
+	frame = "wood",
+	icon = "icon_painting_5",
 	orientation = "horizontal",
+	rarity = "common",
+	sound_event = "painting_norsca01_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.hor_norsca02 = {
-	sound_event = "painting_norsca02_description",
-	rarity = "common",
-	display_name = "painting_norsca02_name",
-	icon = "icon_painting_6",
-	frame = "wood",
-	description = "painting_norsca02_description",
 	artist = "painting_norsca02_artist",
+	description = "painting_norsca02_description",
+	display_name = "painting_norsca02_name",
+	frame = "wood",
+	icon = "icon_painting_6",
 	orientation = "horizontal",
+	rarity = "common",
+	sound_event = "painting_norsca02_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.hor_barnogre01 = {
-	sound_event = "painting_barnogre01_description",
-	rarity = "common",
-	display_name = "painting_barnogre01_name",
-	icon = "icon_painting_1",
-	frame = "wood",
-	description = "painting_barnogre01_description",
 	artist = "painting_barnogre01_artist",
+	description = "painting_barnogre01_description",
+	display_name = "painting_barnogre01_name",
+	frame = "wood",
+	icon = "icon_painting_1",
 	orientation = "horizontal",
+	rarity = "common",
+	sound_event = "painting_barnogre01_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_champion01 = {
-	description = "painting_champion01_description",
-	icon = "icon_painting_1",
-	display_name = "painting_champion01_name",
-	sound_event = "painting_champion01_description",
-	frame = "gold",
-	orientation = "vertical",
 	artist = "painting_champion01_artist",
+	description = "painting_champion01_description",
+	display_name = "painting_champion01_name",
+	frame = "gold",
+	icon = "icon_painting_1",
+	orientation = "vertical",
+	sound_event = "painting_champion01_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.hor_dragon01 = {
-	sound_event = "painting_dragon01_description",
-	rarity = "common",
-	display_name = "painting_dragon01_name",
-	icon = "icon_painting_2",
-	frame = "wood",
-	description = "painting_dragon01_description",
 	artist = "painting_dragon01_artist",
+	description = "painting_dragon01_description",
+	display_name = "painting_dragon01_name",
+	frame = "wood",
+	icon = "icon_painting_2",
 	orientation = "horizontal",
+	rarity = "common",
+	sound_event = "painting_dragon01_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.hor_prologue01 = {
-	sound_event = "painting_prologue01_description",
-	rarity = "common",
-	display_name = "painting_prologue01_name",
-	icon = "icon_painting_3",
-	frame = "wood",
-	description = "painting_prologue01_description",
 	artist = "painting_prologue01_artist",
+	description = "painting_prologue01_description",
+	display_name = "painting_prologue01_name",
+	frame = "wood",
+	icon = "icon_painting_3",
 	orientation = "horizontal",
+	rarity = "common",
+	sound_event = "painting_prologue01_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.hor_prologue02 = {
-	sound_event = "painting_prologue02_description",
-	rarity = "common",
-	display_name = "painting_prologue02_name",
-	icon = "icon_painting_4",
-	frame = "wood",
-	description = "painting_prologue02_description",
 	artist = "painting_prologue02_artist",
+	description = "painting_prologue02_description",
+	display_name = "painting_prologue02_name",
+	frame = "wood",
+	icon = "icon_painting_4",
 	orientation = "horizontal",
+	rarity = "common",
+	sound_event = "painting_prologue02_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.hor_military02 = {
-	sound_event = "painting_military02_description",
-	rarity = "common",
-	display_name = "painting_military02_name",
-	icon = "icon_painting_5",
-	frame = "wood",
-	description = "painting_military02_description",
 	artist = "painting_military02_artist",
+	description = "painting_military02_description",
+	display_name = "painting_military02_name",
+	frame = "wood",
+	icon = "icon_painting_5",
 	orientation = "horizontal",
+	rarity = "common",
+	sound_event = "painting_military02_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.hor_nurgle10 = {
-	sound_event = "painting_nurgle10_description",
-	rarity = "common",
-	display_name = "painting_nurgle10_name",
-	icon = "icon_painting_6",
-	frame = "wood",
-	description = "painting_nurgle10_description",
 	artist = "painting_nurgle10_artist",
+	description = "painting_nurgle10_description",
+	display_name = "painting_nurgle10_name",
+	frame = "wood",
+	icon = "icon_painting_6",
 	orientation = "horizontal",
+	rarity = "common",
+	sound_event = "painting_nurgle10_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.hor_highelf01 = {
-	sound_event = "painting_highelf01_description",
-	rarity = "common",
-	display_name = "painting_highelf01_name",
-	icon = "icon_painting_1",
-	frame = "wood",
-	description = "painting_highelf01_description",
 	artist = "painting_highelf01_artist",
+	description = "painting_highelf01_description",
+	display_name = "painting_highelf01_name",
+	frame = "wood",
+	icon = "icon_painting_1",
 	orientation = "horizontal",
+	rarity = "common",
+	sound_event = "painting_highelf01_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.hor_nurgle02 = {
-	sound_event = "painting_nurgle02_description",
-	rarity = "exotic",
-	display_name = "painting_nurgle02_name",
-	icon = "icon_painting_2",
-	frame = "gold",
-	description = "painting_nurgle02_description",
 	artist = "painting_nurgle02_artist",
+	description = "painting_nurgle02_description",
+	display_name = "painting_nurgle02_name",
+	frame = "gold",
+	icon = "icon_painting_2",
 	orientation = "horizontal",
+	rarity = "exotic",
+	sound_event = "painting_nurgle02_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.hor_stronghold01 = {
-	sound_event = "painting_stronghold01_description",
-	rarity = "common",
-	display_name = "painting_stronghold01_name",
-	icon = "icon_painting_3",
-	frame = "wood",
-	description = "painting_stronghold01_description",
 	artist = "painting_stronghold01_artist",
+	description = "painting_stronghold01_description",
+	display_name = "painting_stronghold01_name",
+	frame = "wood",
+	icon = "icon_painting_3",
 	orientation = "horizontal",
+	rarity = "common",
+	sound_event = "painting_stronghold01_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.hor_shallya01 = {
-	sound_event = "painting_shallya01_description",
-	rarity = "common",
-	display_name = "painting_shallya01_name",
-	icon = "icon_painting_4",
-	frame = "wood",
-	description = "painting_shallya01_description",
 	artist = "painting_shallya01_artist",
+	description = "painting_shallya01_description",
+	display_name = "painting_shallya01_name",
+	frame = "wood",
+	icon = "icon_painting_4",
 	orientation = "horizontal",
+	rarity = "common",
+	sound_event = "painting_shallya01_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.hor_groundzero01 = {
-	sound_event = "painting_groundzero01_description",
-	rarity = "common",
-	display_name = "painting_groundzero01_name",
-	icon = "icon_painting_5",
-	frame = "wood",
-	description = "painting_groundzero01_description",
 	artist = "painting_groundzero01_artist",
+	description = "painting_groundzero01_description",
+	display_name = "painting_groundzero01_name",
+	frame = "wood",
+	icon = "icon_painting_5",
 	orientation = "horizontal",
+	rarity = "common",
+	sound_event = "painting_groundzero01_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.hor_skaven01 = {
-	sound_event = "painting_skaven01_description",
-	rarity = "common",
-	display_name = "painting_skaven01_name",
-	icon = "icon_painting_6",
-	frame = "wood",
-	description = "painting_skaven01_description",
 	artist = "painting_skaven01_artist",
+	description = "painting_skaven01_description",
+	display_name = "painting_skaven01_name",
+	frame = "wood",
+	icon = "icon_painting_6",
 	orientation = "horizontal",
+	rarity = "common",
+	sound_event = "painting_skaven01_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_khorne07 = {
-	sound_event = "painting_khorne07_description",
-	rarity = "rare",
-	display_name = "painting_khorne07_name",
-	icon = "icon_painting_1",
-	frame = "painted",
-	description = "painting_khorne07_description",
 	artist = "painting_khorne07_artist",
+	description = "painting_khorne07_description",
+	display_name = "painting_khorne07_name",
+	frame = "painted",
+	icon = "icon_painting_1",
 	orientation = "vertical",
+	rarity = "rare",
+	sound_event = "painting_khorne07_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.hor_military01 = {
-	sound_event = "painting_military01_description",
-	rarity = "exotic",
-	display_name = "painting_military01_name",
-	icon = "icon_painting_2",
-	frame = "gold",
-	description = "painting_military01_description",
 	artist = "painting_military01_artist",
+	description = "painting_military01_description",
+	display_name = "painting_military01_name",
+	frame = "gold",
+	icon = "icon_painting_2",
 	orientation = "horizontal",
+	rarity = "exotic",
+	sound_event = "painting_military01_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.hor_morr01 = {
-	sound_event = "painting_morr01_description",
-	rarity = "common",
-	display_name = "painting_morr01_name",
-	icon = "icon_painting_3",
-	frame = "wood",
-	description = "painting_morr01_description",
 	artist = "painting_morr01_artist",
+	description = "painting_morr01_description",
+	display_name = "painting_morr01_name",
+	frame = "wood",
+	icon = "icon_painting_3",
 	orientation = "horizontal",
+	rarity = "common",
+	sound_event = "painting_morr01_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_khorne04 = {
-	sound_event = "painting_khorne04_description",
-	rarity = "rare",
-	display_name = "painting_khorne04_name",
-	icon = "icon_painting_4",
-	frame = "painted",
-	description = "painting_khorne04_description",
 	artist = "painting_khorne04_artist",
+	description = "painting_khorne04_description",
+	display_name = "painting_khorne04_name",
+	frame = "painted",
+	icon = "icon_painting_4",
 	orientation = "vertical",
+	rarity = "rare",
+	sound_event = "painting_khorne04_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_khorne05 = {
-	sound_event = "painting_khorne05_description",
-	rarity = "rare",
-	display_name = "painting_khorne05_name",
-	icon = "icon_painting_5",
-	frame = "painted",
-	description = "painting_khorne05_description",
 	artist = "painting_khorne05_artist",
+	description = "painting_khorne05_description",
+	display_name = "painting_khorne05_name",
+	frame = "painted",
+	icon = "icon_painting_5",
 	orientation = "vertical",
+	rarity = "rare",
+	sound_event = "painting_khorne05_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_khorne06 = {
-	sound_event = "painting_khorne06_description",
-	rarity = "rare",
-	display_name = "painting_khorne06_name",
-	icon = "icon_painting_6",
-	frame = "painted",
-	description = "painting_khorne06_description",
 	artist = "painting_khorne06_artist",
+	description = "painting_khorne06_description",
+	display_name = "painting_khorne06_name",
+	frame = "painted",
+	icon = "icon_painting_6",
 	orientation = "vertical",
+	rarity = "rare",
+	sound_event = "painting_khorne06_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_khorne08 = {
-	sound_event = "painting_khorne08_description",
-	rarity = "rare",
-	display_name = "painting_khorne08_name",
-	icon = "icon_painting_1",
-	frame = "painted",
-	description = "painting_khorne08_description",
 	artist = "painting_khorne08_artist",
+	description = "painting_khorne08_description",
+	display_name = "painting_khorne08_name",
+	frame = "painted",
+	icon = "icon_painting_1",
 	orientation = "vertical",
+	rarity = "rare",
+	sound_event = "painting_khorne08_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_krell02 = {
-	sound_event = "painting_krell02_description",
-	rarity = "rare",
-	display_name = "painting_krell02_name",
-	icon = "icon_painting_2",
-	frame = "painted",
-	description = "painting_krell02_description",
 	artist = "painting_krell02_artist",
+	description = "painting_krell02_description",
+	display_name = "painting_krell02_name",
+	frame = "painted",
+	icon = "icon_painting_2",
 	orientation = "vertical",
+	rarity = "rare",
+	sound_event = "painting_krell02_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_nurgle06 = {
-	sound_event = "painting_nurgle06_description",
-	rarity = "rare",
-	display_name = "painting_nurgle06_name",
-	icon = "icon_painting_3",
-	frame = "painted",
-	description = "painting_nurgle06_description",
 	artist = "painting_nurgle06_artist",
+	description = "painting_nurgle06_description",
+	display_name = "painting_nurgle06_name",
+	frame = "painted",
+	icon = "icon_painting_3",
 	orientation = "vertical",
+	rarity = "rare",
+	sound_event = "painting_nurgle06_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_nurgle07 = {
-	sound_event = "painting_nurgle07_description",
-	rarity = "rare",
-	display_name = "painting_nurgle07_name",
-	icon = "icon_painting_4",
-	frame = "painted",
-	description = "painting_nurgle07_description",
 	artist = "painting_nurgle07_artist",
+	description = "painting_nurgle07_description",
+	display_name = "painting_nurgle07_name",
+	frame = "painted",
+	icon = "icon_painting_4",
 	orientation = "vertical",
+	rarity = "rare",
+	sound_event = "painting_nurgle07_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_nurgle08 = {
-	sound_event = "painting_nurgle08_description",
-	rarity = "rare",
-	display_name = "painting_nurgle08_name",
-	icon = "icon_painting_5",
-	frame = "painted",
-	description = "painting_nurgle08_description",
 	artist = "painting_nurgle08_artist",
+	description = "painting_nurgle08_description",
+	display_name = "painting_nurgle08_name",
+	frame = "painted",
+	icon = "icon_painting_5",
 	orientation = "vertical",
+	rarity = "rare",
+	sound_event = "painting_nurgle08_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_skeleton02 = {
-	sound_event = "painting_skeleton02_description",
-	rarity = "rare",
-	display_name = "painting_skeleton02_name",
-	icon = "icon_painting_6",
-	frame = "painted",
-	description = "painting_skeleton02_description",
 	artist = "painting_skeleton02_artist",
+	description = "painting_skeleton02_description",
+	display_name = "painting_skeleton02_name",
+	frame = "painted",
+	icon = "icon_painting_6",
 	orientation = "vertical",
+	rarity = "rare",
+	sound_event = "painting_skeleton02_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_slaanesh01 = {
-	sound_event = "painting_slaanesh01_description",
-	rarity = "rare",
-	display_name = "painting_slaanesh01_name",
-	icon = "icon_painting_1",
-	frame = "painted",
-	description = "painting_slaanesh01_description",
 	artist = "painting_slaanesh01_artist",
+	description = "painting_slaanesh01_description",
+	display_name = "painting_slaanesh01_name",
+	frame = "painted",
+	icon = "icon_painting_1",
 	orientation = "vertical",
+	rarity = "rare",
+	sound_event = "painting_slaanesh01_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.hor_fort01 = {
-	sound_event = "painting_fort01_description",
-	rarity = "common",
-	display_name = "painting_fort01_name",
-	icon = "icon_painting_2",
-	frame = "wood",
-	description = "painting_fort01_description",
 	artist = "painting_fort01_artist",
+	description = "painting_fort01_description",
+	display_name = "painting_fort01_name",
+	frame = "wood",
+	icon = "icon_painting_2",
 	orientation = "horizontal",
+	rarity = "common",
+	sound_event = "painting_fort01_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_slaanesh02 = {
-	sound_event = "painting_slaanesh02_description",
-	rarity = "rare",
-	display_name = "painting_slaanesh02_name",
-	icon = "icon_painting_3",
-	frame = "painted",
-	description = "painting_slaanesh02_description",
 	artist = "painting_slaanesh02_artist",
+	description = "painting_slaanesh02_description",
+	display_name = "painting_slaanesh02_name",
+	frame = "painted",
+	icon = "icon_painting_3",
 	orientation = "vertical",
+	rarity = "rare",
+	sound_event = "painting_slaanesh02_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_tzeentch03 = {
-	sound_event = "painting_tzeentch03_description",
-	rarity = "rare",
-	display_name = "painting_tzeentch03_name",
-	icon = "icon_painting_4",
-	frame = "painted",
-	description = "painting_tzeentch03_description",
 	artist = "painting_tzeentch03_artist",
+	description = "painting_tzeentch03_description",
+	display_name = "painting_tzeentch03_name",
+	frame = "painted",
+	icon = "icon_painting_4",
 	orientation = "vertical",
+	rarity = "rare",
+	sound_event = "painting_tzeentch03_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_tzeentch04 = {
-	sound_event = "painting_tzeentch04_description",
-	rarity = "rare",
-	display_name = "painting_tzeentch04_name",
-	icon = "icon_painting_5",
-	frame = "painted",
-	description = "painting_tzeentch04_description",
 	artist = "painting_tzeentch04_artist",
+	description = "painting_tzeentch04_description",
+	display_name = "painting_tzeentch04_name",
+	frame = "painted",
+	icon = "icon_painting_5",
 	orientation = "vertical",
+	rarity = "rare",
+	sound_event = "painting_tzeentch04_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_wearelegion = {
-	sound_event = "painting_wearelegion_description",
-	rarity = "rare",
-	display_name = "painting_wearelegion_name",
-	icon = "icon_painting_6",
-	frame = "painted",
-	description = "painting_wearelegion_description",
 	artist = "painting_wearelegion_artist",
+	description = "painting_wearelegion_description",
+	display_name = "painting_wearelegion_name",
+	frame = "painted",
+	icon = "icon_painting_6",
 	orientation = "vertical",
+	rarity = "rare",
+	sound_event = "painting_wearelegion_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_hugeldal01 = {
-	sound_event = "painting_hugeldal01_description",
-	rarity = "common",
-	display_name = "painting_hugeldal01_name",
-	icon = "icon_painting_4",
-	frame = "wood",
-	description = "painting_hugeldal01_description",
 	artist = "painting_hugeldal01_artist",
+	description = "painting_hugeldal01_description",
+	display_name = "painting_hugeldal01_name",
+	frame = "wood",
+	icon = "icon_painting_4",
 	orientation = "vertical",
+	rarity = "common",
+	sound_event = "painting_hugeldal01_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_nurgle04 = {
-	sound_event = "painting_nurgle04_description",
-	rarity = "common",
-	display_name = "painting_nurgle04_name",
-	icon = "icon_painting_5",
-	frame = "wood",
-	description = "painting_nurgle04_description",
 	artist = "painting_nurgle04_artist",
+	description = "painting_nurgle04_description",
+	display_name = "painting_nurgle04_name",
+	frame = "wood",
+	icon = "icon_painting_5",
 	orientation = "vertical",
+	rarity = "common",
+	sound_event = "painting_nurgle04_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_marauder = {
-	sound_event = "painting_marauder_description",
-	rarity = "common",
-	display_name = "painting_marauder_name",
-	icon = "icon_painting_6",
-	frame = "wood",
-	description = "painting_marauder_description",
 	artist = "painting_marauder_artist",
+	description = "painting_marauder_description",
+	display_name = "painting_marauder_name",
+	frame = "wood",
+	icon = "icon_painting_6",
 	orientation = "vertical",
+	rarity = "common",
+	sound_event = "painting_marauder_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_manaan01 = {
-	sound_event = "painting_manaan01_description",
-	rarity = "promo",
-	display_name = "painting_manaan01_name",
-	icon = "icon_painting_4",
-	frame = "painted",
-	description = "painting_manaan01_description",
 	artist = "painting_manaan01_artist",
+	description = "painting_manaan01_description",
+	display_name = "painting_manaan01_name",
+	frame = "painted",
+	icon = "icon_painting_4",
 	orientation = "vertical",
+	rarity = "promo",
+	sound_event = "painting_manaan01_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_warriors_of_chaos_page_35 = {
-	sound_event = "painting_warriors_of_chaos_page_35_description",
-	rarity = "promo",
-	display_name = "painting_warriors_of_chaos_page_35_name",
-	icon = "icon_painting_2",
-	frame = "wood",
-	description = "painting_warriors_of_chaos_page_35_description",
 	artist = "painting_warriors_of_chaos_page_35_artist",
+	description = "painting_warriors_of_chaos_page_35_description",
+	display_name = "painting_warriors_of_chaos_page_35_name",
+	frame = "wood",
+	icon = "icon_painting_2",
 	orientation = "vertical",
+	rarity = "promo",
+	sound_event = "painting_warriors_of_chaos_page_35_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_warriors_of_chaos_page_30 = {
-	sound_event = "painting_warriors_of_chaos_page_30_description",
-	rarity = "promo",
-	display_name = "painting_warriors_of_chaos_page_30_name",
-	icon = "icon_painting_2",
-	frame = "gold",
-	description = "painting_warriors_of_chaos_page_30_description",
 	artist = "painting_warriors_of_chaos_page_30_artist",
+	description = "painting_warriors_of_chaos_page_30_description",
+	display_name = "painting_warriors_of_chaos_page_30_name",
+	frame = "gold",
+	icon = "icon_painting_2",
 	orientation = "vertical",
+	rarity = "promo",
+	sound_event = "painting_warriors_of_chaos_page_30_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_daemons_of_chaos_8th_edition_army_book_page_007 = {
-	sound_event = "painting_daemons_of_chaos_8th_edition_army_book_page_007_description",
-	rarity = "common",
-	display_name = "painting_daemons_of_chaos_8th_edition_army_book_page_007_name",
-	icon = "icon_painting_2",
-	frame = "wood",
-	description = "painting_daemons_of_chaos_8th_edition_army_book_page_007_description",
 	artist = "painting_daemons_of_chaos_8th_edition_army_book_page_007_artist",
+	description = "painting_daemons_of_chaos_8th_edition_army_book_page_007_description",
+	display_name = "painting_daemons_of_chaos_8th_edition_army_book_page_007_name",
+	frame = "wood",
+	icon = "icon_painting_2",
 	orientation = "vertical",
+	rarity = "common",
+	sound_event = "painting_daemons_of_chaos_8th_edition_army_book_page_007_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_daemons_of_chaos_8th_edition_army_book_page_016 = {
-	sound_event = "painting_daemons_of_chaos_8th_edition_army_book_page_016_description",
-	rarity = "common",
-	display_name = "painting_daemons_of_chaos_8th_edition_army_book_page_016_name",
-	icon = "icon_painting_2",
-	frame = "wood",
-	description = "painting_daemons_of_chaos_8th_edition_army_book_page_016_description",
 	artist = "painting_daemons_of_chaos_8th_edition_army_book_page_016_artist",
+	description = "painting_daemons_of_chaos_8th_edition_army_book_page_016_description",
+	display_name = "painting_daemons_of_chaos_8th_edition_army_book_page_016_name",
+	frame = "wood",
+	icon = "icon_painting_2",
 	orientation = "vertical",
+	rarity = "common",
+	sound_event = "painting_daemons_of_chaos_8th_edition_army_book_page_016_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_daemons_of_chaos_8th_edition_army_book_page_019 = {
-	sound_event = "painting_daemons_of_chaos_8th_edition_army_book_page_019_description",
-	rarity = "common",
-	display_name = "painting_daemons_of_chaos_8th_edition_army_book_page_019_name",
-	icon = "icon_painting_2",
-	frame = "wood",
-	description = "painting_daemons_of_chaos_8th_edition_army_book_page_019_description",
 	artist = "painting_daemons_of_chaos_8th_edition_army_book_page_019_artist",
+	description = "painting_daemons_of_chaos_8th_edition_army_book_page_019_description",
+	display_name = "painting_daemons_of_chaos_8th_edition_army_book_page_019_name",
+	frame = "wood",
+	icon = "icon_painting_2",
 	orientation = "vertical",
+	rarity = "common",
+	sound_event = "painting_daemons_of_chaos_8th_edition_army_book_page_019_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_daemons_of_chaos_8th_edition_army_book_page_030 = {
-	sound_event = "painting_daemons_of_chaos_8th_edition_army_book_page_030_description",
-	rarity = "common",
-	display_name = "painting_daemons_of_chaos_8th_edition_army_book_page_030_name",
-	icon = "icon_painting_2",
-	frame = "wood",
-	description = "painting_daemons_of_chaos_8th_edition_army_book_page_030_description",
 	artist = "painting_daemons_of_chaos_8th_edition_army_book_page_030_artist",
+	description = "painting_daemons_of_chaos_8th_edition_army_book_page_030_description",
+	display_name = "painting_daemons_of_chaos_8th_edition_army_book_page_030_name",
+	frame = "wood",
+	icon = "icon_painting_2",
 	orientation = "vertical",
+	rarity = "common",
+	sound_event = "painting_daemons_of_chaos_8th_edition_army_book_page_030_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_daemons_of_chaos_8th_edition_army_book_page_034 = {
-	sound_event = "painting_daemons_of_chaos_8th_edition_army_book_page_034_description",
-	rarity = "promo",
-	display_name = "painting_daemons_of_chaos_8th_edition_army_book_page_034_name",
-	icon = "icon_painting_2",
-	frame = "painted",
-	description = "painting_daemons_of_chaos_8th_edition_army_book_page_034_description",
 	artist = "painting_daemons_of_chaos_8th_edition_army_book_page_034_artist",
+	description = "painting_daemons_of_chaos_8th_edition_army_book_page_034_description",
+	display_name = "painting_daemons_of_chaos_8th_edition_army_book_page_034_name",
+	frame = "painted",
+	icon = "icon_painting_2",
 	orientation = "vertical",
+	rarity = "promo",
+	sound_event = "painting_daemons_of_chaos_8th_edition_army_book_page_034_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.hor_beastmen_page_08 = {
-	sound_event = "painting_beastmen_page_08_description",
-	rarity = "common",
-	display_name = "painting_beastmen_page_08_name",
-	icon = "icon_painting_1",
-	frame = "wood",
-	description = "painting_beastmen_page_08_description",
 	artist = "painting_beastmen_page_08_artist",
+	description = "painting_beastmen_page_08_description",
+	display_name = "painting_beastmen_page_08_name",
+	frame = "wood",
+	icon = "icon_painting_1",
 	orientation = "horizontal",
+	rarity = "common",
+	sound_event = "painting_beastmen_page_08_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_beastmen_page_38 = {
-	sound_event = "painting_beastmen_page_38_description",
-	rarity = "common",
-	display_name = "painting_beastmen_page_38_name",
-	icon = "icon_painting_2",
-	frame = "wood",
-	description = "painting_beastmen_page_38_description",
 	artist = "painting_beastmen_page_38_artist",
+	description = "painting_beastmen_page_38_description",
+	display_name = "painting_beastmen_page_38_name",
+	frame = "wood",
+	icon = "icon_painting_2",
 	orientation = "vertical",
+	rarity = "common",
+	sound_event = "painting_beastmen_page_38_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_beastmen_page_41 = {
-	sound_event = "painting_beastmen_page_41_description",
-	rarity = "common",
-	display_name = "painting_beastmen_page_41_name",
-	icon = "icon_painting_2",
-	frame = "wood",
-	description = "painting_beastmen_page_41_description",
 	artist = "painting_beastmen_page_41_artist",
+	description = "painting_beastmen_page_41_description",
+	display_name = "painting_beastmen_page_41_name",
+	frame = "wood",
+	icon = "icon_painting_2",
 	orientation = "vertical",
+	rarity = "common",
+	sound_event = "painting_beastmen_page_41_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_beastmen_page_60 = {
-	sound_event = "painting_beastmen_page_60_description",
-	rarity = "common",
-	display_name = "painting_beastmen_page_60_name",
-	icon = "icon_painting_2",
-	frame = "wood",
-	description = "painting_beastmen_page_60_description",
 	artist = "painting_beastmen_page_60_artist",
+	description = "painting_beastmen_page_60_description",
+	display_name = "painting_beastmen_page_60_name",
+	frame = "wood",
+	icon = "icon_painting_2",
 	orientation = "vertical",
+	rarity = "common",
+	sound_event = "painting_beastmen_page_60_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_beastmen_page_93 = {
-	sound_event = "painting_beastmen_page_93_description",
-	rarity = "common",
-	display_name = "painting_beastmen_page_93_name",
-	icon = "icon_painting_2",
-	frame = "wood",
-	description = "painting_beastmen_page_93_description",
 	artist = "painting_beastmen_page_93_artist",
+	description = "painting_beastmen_page_93_description",
+	display_name = "painting_beastmen_page_93_name",
+	frame = "wood",
+	icon = "icon_painting_2",
 	orientation = "vertical",
+	rarity = "common",
+	sound_event = "painting_beastmen_page_93_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_beastmen_page_39 = {
-	sound_event = "painting_beastmen_page_39_description",
-	rarity = "common",
-	display_name = "painting_beastmen_page_39_name",
-	icon = "icon_painting_2",
-	frame = "wood",
-	description = "painting_beastmen_page_39_description",
 	artist = "painting_beastmen_page_39_artist",
+	description = "painting_beastmen_page_39_description",
+	display_name = "painting_beastmen_page_39_name",
+	frame = "wood",
+	icon = "icon_painting_2",
 	orientation = "vertical",
+	rarity = "common",
+	sound_event = "painting_beastmen_page_39_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_beastmen_page_98 = {
-	sound_event = "painting_beastmen_page_98_description",
-	rarity = "common",
-	display_name = "painting_beastmen_page_98_name",
-	icon = "icon_painting_2",
-	frame = "wood",
-	description = "painting_beastmen_page_98_description",
 	artist = "painting_beastmen_page_98_artist",
+	description = "painting_beastmen_page_98_description",
+	display_name = "painting_beastmen_page_98_name",
+	frame = "wood",
+	icon = "icon_painting_2",
 	orientation = "vertical",
+	rarity = "common",
+	sound_event = "painting_beastmen_page_98_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.hor_wom = {
-	sound_event = "painting_wom_01_description",
-	rarity = "rare",
-	display_name = "painting_wom_01_name",
-	icon = "icon_painting_2",
-	frame = "painted",
-	description = "painting_wom_01_description",
 	artist = "painting_wom_01_artist",
+	description = "painting_wom_01_description",
+	display_name = "painting_wom_01_name",
+	frame = "painted",
+	icon = "icon_painting_2",
 	orientation = "horizontal",
+	rarity = "rare",
+	sound_event = "painting_wom_01_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.hor_CurseOfTheVampireCoast_KeyArt = {
-	sound_event = "painting_curseofthevampirecoast_keyart_description",
-	rarity = "common",
-	display_name = "painting_curseofthevampirecoast_keyart_name",
-	icon = "icon_painting_2",
-	frame = "painted",
-	description = "painting_curseofthevampirecoast_keyart_description",
 	artist = "painting_CurseOfTheVampireCoast_KeyArt_artist",
+	description = "painting_curseofthevampirecoast_keyart_description",
+	display_name = "painting_curseofthevampirecoast_keyart_name",
+	frame = "painted",
+	icon = "icon_painting_2",
 	orientation = "horizontal",
+	rarity = "common",
+	sound_event = "painting_curseofthevampirecoast_keyart_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_TD033_BL_Drachenfels_newedition = {
-	sound_event = "painting_TD033_BL_Drachenfels_newedition_description",
-	rarity = "common",
-	display_name = "painting_TD033_BL_Drachenfels_newedition_name",
-	icon = "icon_painting_2",
-	frame = "painted",
-	description = "painting_TD033_BL_Drachenfels_newedition_description",
 	artist = "painting_TD033_BL_Drachenfels_newedition_artist",
+	description = "painting_TD033_BL_Drachenfels_newedition_description",
+	display_name = "painting_TD033_BL_Drachenfels_newedition_name",
+	frame = "painted",
+	icon = "icon_painting_2",
 	orientation = "vertical",
+	rarity = "common",
+	sound_event = "painting_TD033_BL_Drachenfels_newedition_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_PAS014C_Drachenfels = {
-	sound_event = "painting_PAS014C_Drachenfels_description",
-	rarity = "common",
-	display_name = "painting_PAS014C_Drachenfels_name",
-	icon = "icon_painting_2",
-	frame = "painted",
-	description = "painting_PAS014C_Drachenfels_description",
 	artist = "painting_PAS014C_Drachenfels_artist",
+	description = "painting_PAS014C_Drachenfels_description",
+	display_name = "painting_PAS014C_Drachenfels_name",
+	frame = "painted",
+	icon = "icon_painting_2",
 	orientation = "vertical",
+	rarity = "common",
+	sound_event = "painting_PAS014C_Drachenfels_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_JB002_Drachenfel_Ogres_Tower = {
-	sound_event = "painting_JB002_Drachenfel_Ogres_Tower_description",
-	rarity = "common",
-	display_name = "painting_JB002_Drachenfel_Ogres_Tower_name",
-	icon = "icon_painting_2",
-	frame = "painted",
-	description = "painting_JB002_Drachenfel_Ogres_Tower_description",
 	artist = "painting_JB002_Drachenfel_Ogres_Tower_artist",
+	description = "painting_JB002_Drachenfel_Ogres_Tower_description",
+	display_name = "painting_JB002_Drachenfel_Ogres_Tower_name",
+	frame = "painted",
+	icon = "icon_painting_2",
 	orientation = "vertical",
+	rarity = "common",
+	sound_event = "painting_JB002_Drachenfel_Ogres_Tower_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_skaven_7th_edition_army_book_page_027 = {
-	sound_event = "painting_skaven_7th_edition_army_book_page_027_description",
-	rarity = "common",
-	display_name = "painting_skaven_7th_edition_army_book_page_027_name",
-	icon = "icon_painting_1",
-	frame = "painted",
-	description = "painting_skaven_7th_edition_army_book_page_027_description",
 	artist = "painting_skaven_7th_edition_army_book_page_027_artist",
+	description = "painting_skaven_7th_edition_army_book_page_027_description",
+	display_name = "painting_skaven_7th_edition_army_book_page_027_name",
+	frame = "painted",
+	icon = "icon_painting_1",
 	orientation = "vertical",
+	rarity = "common",
+	sound_event = "painting_skaven_7th_edition_army_book_page_027_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_skaven_7th_edition_army_book_page_037 = {
-	sound_event = "painting_skaven_7th_edition_army_book_page_037_description",
-	rarity = "common",
-	display_name = "painting_skaven_7th_edition_army_book_page_037_name",
-	icon = "icon_painting_3",
-	frame = "painted",
-	description = "painting_skaven_7th_edition_army_book_page_037_description",
 	artist = "painting_skaven_7th_edition_army_book_page_037_artist",
+	description = "painting_skaven_7th_edition_army_book_page_037_description",
+	display_name = "painting_skaven_7th_edition_army_book_page_037_name",
+	frame = "painted",
+	icon = "icon_painting_3",
 	orientation = "vertical",
+	rarity = "common",
+	sound_event = "painting_skaven_7th_edition_army_book_page_037_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.hor_AB615C_BretKoR_CMYK = {
-	sound_event = "painting_AB615C_BretKoR_CMYK_description",
-	rarity = "common",
-	display_name = "painting_AB615C_BretKoR_CMYK_name",
-	icon = "icon_painting_3",
-	frame = "painted",
-	description = "painting_AB615C_BretKoR_CMYK_description",
 	artist = "painting_AB615C_BretKoR_CMYK_artist",
+	description = "painting_AB615C_BretKoR_CMYK_description",
+	display_name = "painting_AB615C_BretKoR_CMYK_name",
+	frame = "painted",
+	icon = "icon_painting_3",
 	orientation = "horizontal",
+	rarity = "common",
+	sound_event = "painting_AB615C_BretKoR_CMYK_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.hor_dg726_bretcourtscncmyk = {
-	sound_event = "painting_DG726_BretCourtScnCMYK_description",
-	rarity = "common",
-	display_name = "painting_DG726_BretCourtScnCMYK_name",
-	icon = "icon_painting_3",
-	frame = "painted",
-	description = "painting_DG726_BretCourtScnCMYK_description",
 	artist = "painting_DG726_BretCourtScnCMYK_artist",
+	description = "painting_DG726_BretCourtScnCMYK_description",
+	display_name = "painting_DG726_BretCourtScnCMYK_name",
+	frame = "painted",
+	icon = "icon_painting_3",
 	orientation = "horizontal",
+	rarity = "common",
+	sound_event = "painting_DG726_BretCourtScnCMYK_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.hor_KK279C_BretMenAtArms_CMYK = {
-	sound_event = "painting_KK279C_BretMenAtArms_CMYK_description",
-	rarity = "common",
-	display_name = "painting_KK279C_BretMenAtArms_CMYK_name",
-	icon = "icon_painting_3",
-	frame = "painted",
-	description = "painting_KK279C_BretMenAtArms_CMYK_description",
 	artist = "painting_KK279C_BretMenAtArms_CMYK_artist",
+	description = "painting_KK279C_BretMenAtArms_CMYK_description",
+	display_name = "painting_KK279C_BretMenAtArms_CMYK_name",
+	frame = "painted",
+	icon = "icon_painting_3",
 	orientation = "horizontal",
+	rarity = "common",
+	sound_event = "painting_KK279C_BretMenAtArms_CMYK_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.hor_KK282C_BretBowmen_CMYK = {
-	sound_event = "painting_KK282C_BretBowmen_CMYK_description",
-	rarity = "common",
-	display_name = "painting_KK282C_BretBowmen_CMYK_name",
-	icon = "icon_painting_3",
-	frame = "painted",
-	description = "painting_KK282C_BretBowmen_CMYK_description",
 	artist = "painting_KK282C_BretBowmen_CMYK_artist",
+	description = "painting_KK282C_BretBowmen_CMYK_description",
+	display_name = "painting_KK282C_BretBowmen_CMYK_name",
+	frame = "painted",
+	icon = "icon_painting_3",
 	orientation = "horizontal",
+	rarity = "common",
+	sound_event = "painting_KK282C_BretBowmen_CMYK_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.hor_pd237_bret_pegasus_knight_box = {
-	sound_event = "painting_PD237_BRET_PEGASUS_KNIGHT_BOX_description",
-	rarity = "common",
-	display_name = "painting_PD237_BRET_PEGASUS_KNIGHT_BOX_name",
-	icon = "icon_painting_3",
-	frame = "painted",
-	description = "painting_PD237_BRET_PEGASUS_KNIGHT_BOX_description",
 	artist = "painting_PD237_BRET_PEGASUS_KNIGHT_BOX_artist",
+	description = "painting_PD237_BRET_PEGASUS_KNIGHT_BOX_description",
+	display_name = "painting_PD237_BRET_PEGASUS_KNIGHT_BOX_name",
+	frame = "painted",
+	icon = "icon_painting_3",
 	orientation = "horizontal",
+	rarity = "common",
+	sound_event = "painting_PD237_BRET_PEGASUS_KNIGHT_BOX_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.hor_storm_of_magic_Page_007 = {
-	sound_event = "painting_storm_of_magic_page_007_description",
-	rarity = "promo",
-	display_name = "painting_storm_of_magic_page_007_name",
-	icon = "icon_painting_3",
-	frame = "painted",
-	description = "painting_storm_of_magic_page_007_description",
 	artist = "painting_storm_of_magic_page_007_artist",
+	description = "painting_storm_of_magic_page_007_description",
+	display_name = "painting_storm_of_magic_page_007_name",
+	frame = "painted",
+	icon = "icon_painting_3",
 	orientation = "horizontal",
+	rarity = "promo",
+	sound_event = "painting_storm_of_magic_page_007_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.hor_storm_of_magic_Page_012 = {
-	sound_event = "painting_storm_of_magic_page_012_description",
-	rarity = "promo",
-	display_name = "painting_storm_of_magic_page_012_name",
-	icon = "icon_painting_3",
-	frame = "painted",
-	description = "painting_storm_of_magic_page_012_description",
 	artist = "painting_storm_of_magic_page_012_artist",
+	description = "painting_storm_of_magic_page_012_description",
+	display_name = "painting_storm_of_magic_page_012_name",
+	frame = "painted",
+	icon = "icon_painting_3",
 	orientation = "horizontal",
+	rarity = "promo",
+	sound_event = "painting_storm_of_magic_page_012_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.hor_wfrp2_knights_of_the_grail_Page_017 = {
-	sound_event = "painting_wfrp2_knights_of_the_grail_Page_017_description",
-	rarity = "common",
-	display_name = "painting_wfrp2_knights_of_the_grail_Page_017_name",
-	icon = "icon_painting_3",
-	frame = "painted",
-	description = "painting_wfrp2_knights_of_the_grail_Page_017_description",
 	artist = "painting_wfrp2_knights_of_the_grail_Page_017_artist",
+	description = "painting_wfrp2_knights_of_the_grail_Page_017_description",
+	display_name = "painting_wfrp2_knights_of_the_grail_Page_017_name",
+	frame = "painted",
+	icon = "icon_painting_3",
 	orientation = "horizontal",
+	rarity = "common",
+	sound_event = "painting_wfrp2_knights_of_the_grail_Page_017_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_AB626C_BretFrontisPiece = {
-	sound_event = "painting_AB626C_BretFrontisPiece_description",
-	rarity = "common",
-	display_name = "painting_AB626C_BretFrontisPiece_name",
-	icon = "icon_painting_3",
-	frame = "painted",
-	description = "painting_AB626C_BretFrontisPiece_description",
 	artist = "painting_AB626C_BretFrontisPiece_artist",
+	description = "painting_AB626C_BretFrontisPiece_description",
+	display_name = "painting_AB626C_BretFrontisPiece_name",
+	frame = "painted",
+	icon = "icon_painting_3",
 	orientation = "vertical",
+	rarity = "common",
+	sound_event = "painting_AB626C_BretFrontisPiece_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_skaven_7th_edition_army_book_page_027 = {
-	sound_event = "painting_skaven_7th_edition_army_book_page_027_description",
-	rarity = "common",
-	display_name = "painting_skaven_7th_edition_army_book_page_027_name",
-	icon = "icon_painting_3",
-	frame = "painted",
-	description = "painting_skaven_7th_edition_army_book_page_027_description",
 	artist = "painting_skaven_7th_edition_army_book_page_027_artist",
+	description = "painting_skaven_7th_edition_army_book_page_027_description",
+	display_name = "painting_skaven_7th_edition_army_book_page_027_name",
+	frame = "painted",
+	icon = "icon_painting_3",
 	orientation = "vertical",
+	rarity = "common",
+	sound_event = "painting_skaven_7th_edition_army_book_page_027_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_skaven_7th_edition_army_book_page_037 = {
-	sound_event = "painting_skaven_7th_edition_army_book_page_037_description",
-	rarity = "common",
-	display_name = "painting_skaven_7th_edition_army_book_page_037_name",
-	icon = "icon_painting_3",
-	frame = "painted",
-	description = "painting_skaven_7th_edition_army_book_page_037_description",
 	artist = "painting_skaven_7th_edition_army_book_page_037_artist",
+	description = "painting_skaven_7th_edition_army_book_page_037_description",
+	display_name = "painting_skaven_7th_edition_army_book_page_037_name",
+	frame = "painted",
+	icon = "icon_painting_3",
 	orientation = "vertical",
+	rarity = "common",
+	sound_event = "painting_skaven_7th_edition_army_book_page_037_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_storm_of_magic_Page_019 = {
-	sound_event = "painting_storm_of_magic_page_019_description",
-	rarity = "promo",
-	display_name = "painting_storm_of_magic_page_019_name",
-	icon = "icon_painting_3",
-	frame = "painted",
-	description = "painting_storm_of_magic_page_019_description",
 	artist = "painting_storm_of_magic_page_019_artist",
+	description = "painting_storm_of_magic_page_019_description",
+	display_name = "painting_storm_of_magic_page_019_name",
+	frame = "painted",
+	icon = "icon_painting_3",
 	orientation = "vertical",
+	rarity = "promo",
+	sound_event = "painting_storm_of_magic_page_019_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_storm_of_magic_Page_034 = {
-	sound_event = "painting_storm_of_magic_page_034_description",
-	rarity = "promo",
-	display_name = "painting_storm_of_magic_page_034_name",
-	icon = "icon_painting_3",
-	frame = "painted",
-	description = "painting_storm_of_magic_page_034_description",
 	artist = "painting_storm_of_magic_page_034_artist",
+	description = "painting_storm_of_magic_page_034_description",
+	display_name = "painting_storm_of_magic_page_034_name",
+	frame = "painted",
+	icon = "icon_painting_3",
 	orientation = "vertical",
+	rarity = "promo",
+	sound_event = "painting_storm_of_magic_page_034_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_storm_of_magic_Page_035 = {
-	sound_event = "painting_storm_of_magic_page_035_description",
-	rarity = "promo",
-	display_name = "painting_storm_of_magic_page_035_name",
-	icon = "icon_painting_3",
-	frame = "painted",
-	description = "painting_storm_of_magic_page_035_description",
 	artist = "painting_storm_of_magic_page_035_artist",
+	description = "painting_storm_of_magic_page_035_description",
+	display_name = "painting_storm_of_magic_page_035_name",
+	frame = "painted",
+	icon = "icon_painting_3",
 	orientation = "vertical",
+	rarity = "promo",
+	sound_event = "painting_storm_of_magic_page_035_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_wfrp2_knights_of_the_grail_Page_020 = {
-	sound_event = "painting_wfrp2_knights_of_the_grail_Page_020_description",
-	rarity = "common",
-	display_name = "painting_wfrp2_knights_of_the_grail_Page_020_name",
-	icon = "icon_painting_3",
-	frame = "painted",
-	description = "painting_wfrp2_knights_of_the_grail_Page_020_description",
 	artist = "painting_wfrp2_knights_of_the_grail_Page_020_artist",
+	description = "painting_wfrp2_knights_of_the_grail_Page_020_description",
+	display_name = "painting_wfrp2_knights_of_the_grail_Page_020_name",
+	frame = "painted",
+	icon = "icon_painting_3",
 	orientation = "vertical",
+	rarity = "common",
+	sound_event = "painting_wfrp2_knights_of_the_grail_Page_020_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_wfrp2_knights_of_the_grail_Page_040 = {
-	sound_event = "painting_wfrp2_knights_of_the_grail_Page_040_description",
-	rarity = "common",
-	display_name = "painting_wfrp2_knights_of_the_grail_Page_040_name",
-	icon = "icon_painting_3",
-	frame = "painted",
-	description = "painting_wfrp2_knights_of_the_grail_Page_040_description",
 	artist = "painting_wfrp2_knights_of_the_grail_Page_040_artist",
+	description = "painting_wfrp2_knights_of_the_grail_Page_040_description",
+	display_name = "painting_wfrp2_knights_of_the_grail_Page_040_name",
+	frame = "painted",
+	icon = "icon_painting_3",
 	orientation = "vertical",
+	rarity = "common",
+	sound_event = "painting_wfrp2_knights_of_the_grail_Page_040_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_wfrp2_knights_of_the_grail_Page_058 = {
-	sound_event = "painting_wfrp2_knights_of_the_grail_Page_058_description",
-	rarity = "common",
-	display_name = "painting_wfrp2_knights_of_the_grail_Page_058_name",
-	icon = "icon_painting_3",
-	frame = "painted",
-	description = "painting_wfrp2_knights_of_the_grail_Page_058_description",
 	artist = "painting_wfrp2_knights_of_the_grail_Page_058_artist",
+	description = "painting_wfrp2_knights_of_the_grail_Page_058_description",
+	display_name = "painting_wfrp2_knights_of_the_grail_Page_058_name",
+	frame = "painted",
+	icon = "icon_painting_3",
 	orientation = "vertical",
+	rarity = "common",
+	sound_event = "painting_wfrp2_knights_of_the_grail_Page_058_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_wfrp2_knights_of_the_grail_Page_070 = {
-	sound_event = "painting_wfrp2_knights_of_the_grail_Page_070_description",
-	rarity = "common",
-	display_name = "painting_wfrp2_knights_of_the_grail_Page_070_name",
-	icon = "icon_painting_3",
-	frame = "painted",
-	description = "painting_wfrp2_knights_of_the_grail_Page_070_description",
 	artist = "painting_wfrp2_knights_of_the_grail_Page_070_artist",
+	description = "painting_wfrp2_knights_of_the_grail_Page_070_description",
+	display_name = "painting_wfrp2_knights_of_the_grail_Page_070_name",
+	frame = "painted",
+	icon = "icon_painting_3",
 	orientation = "vertical",
+	rarity = "common",
+	sound_event = "painting_wfrp2_knights_of_the_grail_Page_070_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_AB617_BretIntroPage_CMYK = {
-	sound_event = "painting_AB617_BretIntroPage_CMYK_description",
-	rarity = "promo",
-	display_name = "painting_AB617_BretIntroPage_CMYK_name",
-	icon = "icon_painting_3",
-	frame = "painted",
-	description = "painting_AB617_BretIntroPage_CMYK_description",
 	artist = "painting_AB617_BretIntroPage_CMYK_artist",
+	description = "painting_AB617_BretIntroPage_CMYK_description",
+	display_name = "painting_AB617_BretIntroPage_CMYK_name",
+	frame = "painted",
+	icon = "icon_painting_3",
 	orientation = "vertical",
+	rarity = "promo",
+	sound_event = "painting_AB617_BretIntroPage_CMYK_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_KK280_BretGrailDamsel_CMYK = {
-	sound_event = "painting_KK280_BretGrailDamsel_CMYK_description",
-	rarity = "promo",
-	display_name = "painting_KK280_BretGrailDamsel_CMYK_name",
-	icon = "icon_painting_3",
-	frame = "painted",
-	description = "painting_KK280_BretGrailDamsel_CMYK_description",
 	artist = "painting_KK280_BretGrailDamsel_CMYK_artist",
+	description = "painting_KK280_BretGrailDamsel_CMYK_description",
+	display_name = "painting_KK280_BretGrailDamsel_CMYK_name",
+	frame = "painted",
+	icon = "icon_painting_3",
 	orientation = "vertical",
+	rarity = "promo",
+	sound_event = "painting_KK280_BretGrailDamsel_CMYK_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_PD238_BretDuel_CMYK = {
-	sound_event = "painting_PD238_BretDuel_CMYK_description",
-	rarity = "promo",
-	display_name = "painting_PD238_BretDuel_CMYK_name",
-	icon = "icon_painting_3",
-	frame = "painted",
-	description = "painting_PD238_BretDuel_CMYK_description",
 	artist = "painting_PD238_BretDuel_CMYK_artist",
+	description = "painting_PD238_BretDuel_CMYK_description",
+	display_name = "painting_PD238_BretDuel_CMYK_name",
+	frame = "painted",
+	icon = "icon_painting_3",
 	orientation = "vertical",
+	rarity = "promo",
+	sound_event = "painting_PD238_BretDuel_CMYK_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_dwarfs_page_50 = {
-	sound_event = "painting_dwarfs_page_50_description",
-	rarity = "common",
-	display_name = "painting_dwarfs_page_50_name",
-	icon = "icon_painting_2",
-	frame = "wood",
-	description = "painting_dwarfs_page_50_description",
 	artist = "painting_dwarfs_page_50_artist",
+	description = "painting_dwarfs_page_50_description",
+	display_name = "painting_dwarfs_page_50_name",
+	frame = "wood",
+	icon = "icon_painting_2",
 	orientation = "vertical",
+	rarity = "common",
+	sound_event = "painting_dwarfs_page_50_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_dwarfs_page_56 = {
-	sound_event = "painting_dwarfs_page_56_description",
-	rarity = "common",
-	display_name = "painting_dwarfs_page_56_name",
-	icon = "icon_painting_2",
-	frame = "wood",
-	description = "painting_dwarfs_page_56_description",
 	artist = "painting_dwarfs_page_30_artist",
+	description = "painting_dwarfs_page_56_description",
+	display_name = "painting_dwarfs_page_56_name",
+	frame = "wood",
+	icon = "icon_painting_2",
 	orientation = "vertical",
+	rarity = "common",
+	sound_event = "painting_dwarfs_page_56_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.hor_dwarfs_page_30 = {
-	sound_event = "painting_dwarfs_page_30_description",
-	rarity = "common",
-	display_name = "painting_dwarfs_page_30_name",
-	icon = "icon_painting_1",
-	frame = "wood",
-	description = "painting_dwarfs_page_30_description",
 	artist = "painting_dwarfs_page_30_artist",
+	description = "painting_dwarfs_page_30_description",
+	display_name = "painting_dwarfs_page_30_name",
+	frame = "wood",
+	icon = "icon_painting_1",
 	orientation = "horizontal",
+	rarity = "common",
+	sound_event = "painting_dwarfs_page_30_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_dwarfs_page_51 = {
-	sound_event = "painting_dwarfs_page_51_description",
-	rarity = "common",
-	display_name = "painting_dwarfs_page_51_name",
-	icon = "icon_painting_2",
-	frame = "wood",
-	description = "painting_dwarfs_page_51_description",
 	artist = "painting_dwarfs_page_51_artist",
+	description = "painting_dwarfs_page_51_description",
+	display_name = "painting_dwarfs_page_51_name",
+	frame = "wood",
+	icon = "icon_painting_2",
 	orientation = "vertical",
+	rarity = "common",
+	sound_event = "painting_dwarfs_page_51_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_whf17_masterengineer = {
-	sound_event = "painting_whf17_masterengineer_description",
-	rarity = "common",
-	display_name = "painting_whf17_masterengineer_name",
-	icon = "icon_painting_2",
-	frame = "wood",
-	description = "painting_whf17_masterengineer_description",
 	artist = "painting_whf17_masterengineer_artist",
+	description = "painting_whf17_masterengineer_description",
+	display_name = "painting_whf17_masterengineer_name",
+	frame = "wood",
+	icon = "icon_painting_2",
 	orientation = "vertical",
+	rarity = "common",
+	sound_event = "painting_whf17_masterengineer_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.hor_dwarfs_page_48 = {
-	sound_event = "painting_dwarfs_page_48_description",
-	rarity = "common",
-	display_name = "painting_dwarfs_page_48_name",
-	icon = "icon_painting_1",
-	frame = "wood",
-	description = "painting_dwarfs_page_48_description",
 	artist = "painting_dwarfs_page_48_artist",
+	description = "painting_dwarfs_page_48_description",
+	display_name = "painting_dwarfs_page_48_name",
+	frame = "wood",
+	icon = "icon_painting_1",
 	orientation = "horizontal",
+	rarity = "common",
+	sound_event = "painting_dwarfs_page_48_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.hor_warriors_of_chaos_page_04 = {
-	sound_event = "painting_warriors_of_chaos_page_04_description",
-	rarity = "common",
-	display_name = "painting_warriors_of_chaos_page_04_name",
-	icon = "icon_painting_1",
-	frame = "wood",
-	description = "painting_warriors_of_chaos_page_04_description",
 	artist = "painting_warriors_of_chaos_page_04_artist",
+	description = "painting_warriors_of_chaos_page_04_description",
+	display_name = "painting_warriors_of_chaos_page_04_name",
+	frame = "wood",
+	icon = "icon_painting_1",
 	orientation = "horizontal",
+	rarity = "common",
+	sound_event = "painting_warriors_of_chaos_page_04_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.hor_warriors_of_chaos_page_22 = {
-	sound_event = "painting_warriors_of_chaos_page_22_description",
-	rarity = "common",
-	display_name = "painting_warriors_of_chaos_page_22_name",
-	icon = "icon_painting_1",
-	frame = "painted",
-	description = "painting_warriors_of_chaos_page_22_description",
 	artist = "painting_warriors_of_chaos_page_22_artist",
+	description = "painting_warriors_of_chaos_page_22_description",
+	display_name = "painting_warriors_of_chaos_page_22_name",
+	frame = "painted",
+	icon = "icon_painting_1",
 	orientation = "horizontal",
+	rarity = "common",
+	sound_event = "painting_warriors_of_chaos_page_22_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_warriors_of_chaos_page_17 = {
-	sound_event = "painting_warriors_of_chaos_page_17_description",
-	rarity = "common",
-	display_name = "painting_warriors_of_chaos_page_17_name",
-	icon = "icon_painting_2",
-	frame = "painted",
-	description = "painting_warriors_of_chaos_page_17_description",
 	artist = "painting_warriors_of_chaos_page_17_artist",
+	description = "painting_warriors_of_chaos_page_17_description",
+	display_name = "painting_warriors_of_chaos_page_17_name",
+	frame = "painted",
+	icon = "icon_painting_2",
 	orientation = "vertical",
+	rarity = "common",
+	sound_event = "painting_warriors_of_chaos_page_17_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_warriors_of_chaos_page_46 = {
-	sound_event = "painting_warriors_of_chaos_page_46_description",
-	rarity = "common",
-	display_name = "painting_warriors_of_chaos_page_46_name",
-	icon = "icon_painting_2",
-	frame = "wood",
-	description = "painting_warriors_of_chaos_page_46_description",
 	artist = "painting_warriors_of_chaos_page_46_artist",
+	description = "painting_warriors_of_chaos_page_46_description",
+	display_name = "painting_warriors_of_chaos_page_46_name",
+	frame = "wood",
+	icon = "icon_painting_2",
 	orientation = "vertical",
+	rarity = "common",
+	sound_event = "painting_warriors_of_chaos_page_46_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_wood_elves_page_020 = {
-	sound_event = "painting_wood_elves_page_020_description",
-	rarity = "common",
-	display_name = "painting_wood_elves_page_020_name",
-	icon = "icon_painting_2",
-	frame = "wood",
-	description = "painting_wood_elves_page_020_description",
 	artist = "painting_wood_elves_page_020_artist",
+	description = "painting_wood_elves_page_020_description",
+	display_name = "painting_wood_elves_page_020_name",
+	frame = "wood",
+	icon = "icon_painting_2",
 	orientation = "vertical",
+	rarity = "common",
+	sound_event = "painting_wood_elves_page_020_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_wood_elves_page_046 = {
-	sound_event = "painting_wood_elves_page_046_description",
-	rarity = "common",
-	display_name = "painting_wood_elves_page_046_name",
-	icon = "icon_painting_2",
-	frame = "wood",
-	description = "painting_wood_elves_page_046_description",
 	artist = "painting_wood_elves_page_046_artist",
+	description = "painting_wood_elves_page_046_description",
+	display_name = "painting_wood_elves_page_046_name",
+	frame = "wood",
+	icon = "icon_painting_2",
 	orientation = "vertical",
+	rarity = "common",
+	sound_event = "painting_wood_elves_page_046_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_wood_elves_page_052 = {
-	sound_event = "painting_wood_elves_page_052_description",
-	rarity = "common",
-	display_name = "painting_wood_elves_page_052_name",
-	icon = "icon_painting_2",
-	frame = "wood",
-	description = "painting_wood_elves_page_052_description",
 	artist = "painting_wood_elves_page_052_artist",
+	description = "painting_wood_elves_page_052_description",
+	display_name = "painting_wood_elves_page_052_name",
+	frame = "wood",
+	icon = "icon_painting_2",
 	orientation = "vertical",
+	rarity = "common",
+	sound_event = "painting_wood_elves_page_052_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.hor_IP_NK663C_WESpites8 = {
-	sound_event = "painting_IP_NK663C_WESpites8_description",
-	rarity = "common",
-	display_name = "painting_IP_NK663C_WESpites8_name",
-	icon = "icon_painting_2",
-	frame = "wood",
-	description = "painting_IP_NK663C_WESpites8_description",
 	artist = "painting_IP_NK663C_WESpites8_artist",
+	description = "painting_IP_NK663C_WESpites8_description",
+	display_name = "painting_IP_NK663C_WESpites8_name",
+	frame = "wood",
+	icon = "icon_painting_2",
 	orientation = "horizontal",
+	rarity = "common",
+	sound_event = "painting_IP_NK663C_WESpites8_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.hor_IP_NK672C_WESpites15 = {
-	sound_event = "painting_IP_NK672C_WESpites15_description",
-	rarity = "common",
-	display_name = "painting_IP_NK672C_WESpites15_name",
-	icon = "icon_painting_2",
-	frame = "wood",
-	description = "painting_IP_NK672C_WESpites15_description",
 	artist = "painting_IP_NK672C_WESpites15_artist",
+	description = "painting_IP_NK672C_WESpites15_description",
+	display_name = "painting_IP_NK672C_WESpites15_name",
+	frame = "wood",
+	icon = "icon_painting_2",
 	orientation = "horizontal",
+	rarity = "common",
+	sound_event = "painting_IP_NK672C_WESpites15_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_PD291_WEMage_BW = {
-	sound_event = "painting_PD291_WEMage_BW_description",
-	rarity = "common",
-	display_name = "painting_PD291_WEMage_BW_name",
-	icon = "icon_painting_2",
-	frame = "wood",
-	description = "painting_PD291_WEMage_BW_description",
 	artist = "painting_PD291_WEMage_BW_artist",
+	description = "painting_PD291_WEMage_BW_description",
+	display_name = "painting_PD291_WEMage_BW_name",
+	frame = "wood",
+	icon = "icon_painting_2",
 	orientation = "vertical",
+	rarity = "common",
+	sound_event = "painting_PD291_WEMage_BW_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.hor_wfrp_thr_0055_moon_over_mountains = {
-	sound_event = "painting_wfrp_thr_0055_moon_over_mountains_description",
-	rarity = "common",
-	display_name = "painting_wfrp_thr_0055_moon_over_mountains_name",
-	icon = "icon_painting_1",
-	frame = "wood",
-	description = "painting_wfrp_thr_0055_moon_over_mountains_description",
 	artist = "painting_wfrp_thr_0055_moon_over_mountains_artist",
+	description = "painting_wfrp_thr_0055_moon_over_mountains_description",
+	display_name = "painting_wfrp_thr_0055_moon_over_mountains_name",
+	frame = "wood",
+	icon = "icon_painting_1",
 	orientation = "horizontal",
+	rarity = "common",
+	sound_event = "painting_wfrp_thr_0055_moon_over_mountains_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_jb465_wh_nurgle_champion = {
-	sound_event = "painting_jb465_wh_nurgle_champion_description",
-	rarity = "common",
-	display_name = "painting_jb465_wh_nurgle_champion_name",
-	icon = "icon_painting_2",
-	frame = "wood",
-	description = "painting_jb465_wh_nurgle_champion_description",
 	artist = "painting_jb465_wh_nurgle_champion_artist",
+	description = "painting_jb465_wh_nurgle_champion_description",
+	display_name = "painting_jb465_wh_nurgle_champion_name",
+	frame = "wood",
+	icon = "icon_painting_2",
 	orientation = "vertical",
+	rarity = "common",
+	sound_event = "painting_jb465_wh_nurgle_champion_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_empire_page_036 = {
-	sound_event = "painting_empire_page_036_description",
-	rarity = "common",
-	display_name = "painting_empire_page_036_name",
-	icon = "icon_painting_2",
-	frame = "wood",
-	description = "painting_empire_page_036_description",
 	artist = "painting_empire_page_036_artist",
+	description = "painting_empire_page_036_description",
+	display_name = "painting_empire_page_036_name",
+	frame = "wood",
+	icon = "icon_painting_2",
 	orientation = "vertical",
+	rarity = "common",
+	sound_event = "painting_empire_page_036_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_empire_page_047 = {
-	sound_event = "painting_empire_page_047_description",
-	rarity = "common",
-	display_name = "painting_empire_page_047_name",
-	icon = "icon_painting_2",
-	frame = "wood",
-	description = "painting_empire_page_047_description",
 	artist = "painting_empire_page_047_artist",
+	description = "painting_empire_page_047_description",
+	display_name = "painting_empire_page_047_name",
+	frame = "wood",
+	icon = "icon_painting_2",
 	orientation = "vertical",
+	rarity = "common",
+	sound_event = "painting_empire_page_047_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_empire_page_059 = {
-	sound_event = "painting_empire_page_059_description",
-	rarity = "common",
-	display_name = "painting_empire_page_059_name",
-	icon = "icon_painting_2",
-	frame = "wood",
-	description = "painting_empire_page_059_description",
 	artist = "painting_empire_page_059_artist",
+	description = "painting_empire_page_059_description",
+	display_name = "painting_empire_page_059_name",
+	frame = "wood",
+	icon = "icon_painting_2",
 	orientation = "vertical",
+	rarity = "common",
+	sound_event = "painting_empire_page_059_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_end_times_thanquol_narrative_Page_205 = {
-	sound_event = "painting_end_times_thanquol_narrative_Page_205_description",
-	rarity = "common",
-	display_name = "painting_end_times_thanquol_narrative_Page_205_name",
-	icon = "icon_painting_2",
-	frame = "wood",
-	description = "painting_end_times_thanquol_narrative_Page_205_description",
 	artist = "painting_end_times_thanquol_narrative_Page_205_artist",
+	description = "painting_end_times_thanquol_narrative_Page_205_description",
+	display_name = "painting_end_times_thanquol_narrative_Page_205_name",
+	frame = "wood",
+	icon = "icon_painting_2",
 	orientation = "vertical",
+	rarity = "common",
+	sound_event = "painting_end_times_thanquol_narrative_Page_205_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_legend_of_sigmar_cover = {
-	sound_event = "painting_legend_of_sigmar_cover_description",
-	rarity = "common",
-	display_name = "painting_legend_of_sigmar_cover_name",
-	icon = "icon_painting_2",
-	frame = "wood",
-	description = "painting_legend_of_sigmar_cover_description",
 	artist = "painting_legend_of_sigmar_cover_artist",
+	description = "painting_legend_of_sigmar_cover_description",
+	display_name = "painting_legend_of_sigmar_cover_name",
+	frame = "wood",
+	icon = "icon_painting_2",
 	orientation = "vertical",
+	rarity = "common",
+	sound_event = "painting_legend_of_sigmar_cover_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_The_Empire_at_War_Page_096 = {
-	sound_event = "painting_The_Empire_at_War_Page_096_description",
-	rarity = "common",
-	display_name = "painting_The_Empire_at_War_Page_096_name",
-	icon = "icon_painting_2",
-	frame = "wood",
-	description = "painting_The_Empire_at_War_Page_096_description",
 	artist = "painting_The_Empire_at_War_Page_096_artist",
+	description = "painting_The_Empire_at_War_Page_096_description",
+	display_name = "painting_The_Empire_at_War_Page_096_name",
+	frame = "wood",
+	icon = "icon_painting_2",
 	orientation = "vertical",
+	rarity = "common",
+	sound_event = "painting_The_Empire_at_War_Page_096_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_dwarfs_page_13 = {
-	sound_event = "painting_dwarfs_page_13_description",
-	rarity = "common",
-	display_name = "painting_dwarfs_page_13_name",
-	icon = "icon_painting_2",
-	frame = "wood",
-	description = "painting_dwarfs_page_13_description",
 	artist = "painting_whf17_engineer_artist",
+	description = "painting_dwarfs_page_13_description",
+	display_name = "painting_dwarfs_page_13_name",
+	frame = "wood",
+	icon = "icon_painting_2",
 	orientation = "vertical",
+	rarity = "common",
+	sound_event = "painting_dwarfs_page_13_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_dwarfs_page_14 = {
-	sound_event = "painting_dwarfs_page_14_description",
-	rarity = "common",
-	display_name = "painting_dwarfs_page_14_name",
-	icon = "icon_painting_2",
-	frame = "wood",
-	description = "painting_dwarfs_page_14_description",
 	artist = "painting_whf17_engineer_artist",
+	description = "painting_dwarfs_page_14_description",
+	display_name = "painting_dwarfs_page_14_name",
+	frame = "wood",
+	icon = "icon_painting_2",
 	orientation = "vertical",
+	rarity = "common",
+	sound_event = "painting_dwarfs_page_14_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_dwarfs_page_19 = {
-	sound_event = "painting_dwarfs_page_19_description",
-	rarity = "common",
-	display_name = "painting_dwarfs_page_19_name",
-	icon = "icon_painting_2",
-	frame = "wood",
-	description = "painting_dwarfs_page_19_description",
 	artist = "painting_whf17_engineer_artist",
+	description = "painting_dwarfs_page_19_description",
+	display_name = "painting_dwarfs_page_19_name",
+	frame = "wood",
+	icon = "icon_painting_2",
 	orientation = "vertical",
+	rarity = "common",
+	sound_event = "painting_dwarfs_page_19_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_dwarfs_page_46 = {
-	sound_event = "painting_dwarfs_page_46_description",
-	rarity = "common",
-	display_name = "painting_dwarfs_page_46_name",
-	icon = "icon_painting_2",
-	frame = "wood",
-	description = "painting_dwarfs_page_46_description",
 	artist = "painting_whf17_engineer_artist",
+	description = "painting_dwarfs_page_46_description",
+	display_name = "painting_dwarfs_page_46_name",
+	frame = "wood",
+	icon = "icon_painting_2",
 	orientation = "vertical",
+	rarity = "common",
+	sound_event = "painting_dwarfs_page_46_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_dwarfs_page_43 = {
-	sound_event = "painting_dwarfs_page_43_description",
-	rarity = "common",
-	display_name = "painting_dwarfs_page_43_name",
-	icon = "icon_painting_2",
-	frame = "wood",
-	description = "painting_dwarfs_page_43_description",
 	artist = "painting_whf17_engineer_artist",
+	description = "painting_dwarfs_page_43_description",
+	display_name = "painting_dwarfs_page_43_name",
+	frame = "wood",
+	icon = "icon_painting_2",
 	orientation = "vertical",
+	rarity = "common",
+	sound_event = "painting_dwarfs_page_43_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.hor_vampire_counts_page_05 = {
-	sound_event = "painting_vampire_counts_8th_Page_5_description",
-	rarity = "common",
-	display_name = "painting_vampire_counts_8th_Page_5_name",
-	icon = "icon_painting_2",
-	frame = "wood",
-	description = "painting_vampire_counts_8th_Page_5_description",
 	artist = "painting_vampire_counts_8th_Page_5_artist",
+	description = "painting_vampire_counts_8th_Page_5_description",
+	display_name = "painting_vampire_counts_8th_Page_5_name",
+	frame = "wood",
+	icon = "icon_painting_2",
 	orientation = "horizontal",
+	rarity = "common",
+	sound_event = "painting_vampire_counts_8th_Page_5_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_vampire_counts_page_28 = {
-	sound_event = "painting_vampire_counts_8th_Page_28_description",
-	rarity = "common",
-	display_name = "painting_vampire_counts_8th_Page_28_name",
-	icon = "icon_painting_2",
-	frame = "wood",
-	description = "painting_vampire_counts_8th_Page_28_description",
 	artist = "painting_vampire_counts_8th_Page_28_artist",
+	description = "painting_vampire_counts_8th_Page_28_description",
+	display_name = "painting_vampire_counts_8th_Page_28_name",
+	frame = "wood",
+	icon = "icon_painting_2",
 	orientation = "vertical",
+	rarity = "common",
+	sound_event = "painting_vampire_counts_8th_Page_28_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_vampire_counts_page_31 = {
-	sound_event = "painting_vampire_counts_8th_Page_31_description",
-	rarity = "common",
-	display_name = "painting_vampire_counts_8th_Page_31_name",
-	icon = "icon_painting_2",
-	frame = "wood",
-	description = "painting_vampire_counts_8th_Page_31_description",
 	artist = "painting_vampire_counts_8th_Page_31_artist",
+	description = "painting_vampire_counts_8th_Page_31_description",
+	display_name = "painting_vampire_counts_8th_Page_31_name",
+	frame = "wood",
+	icon = "icon_painting_2",
 	orientation = "vertical",
+	rarity = "common",
+	sound_event = "painting_vampire_counts_8th_Page_31_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_vampire_counts_page_35 = {
-	sound_event = "painting_vampire_counts_8th_Page_35_description",
-	rarity = "common",
-	display_name = "painting_vampire_counts_8th_Page_35_name",
-	icon = "icon_painting_2",
-	frame = "wood",
-	description = "painting_vampire_counts_8th_Page_35_description",
 	artist = "painting_vampire_counts_8th_Page_35_artist",
+	description = "painting_vampire_counts_8th_Page_35_description",
+	display_name = "painting_vampire_counts_8th_Page_35_name",
+	frame = "wood",
+	icon = "icon_painting_2",
 	orientation = "vertical",
+	rarity = "common",
+	sound_event = "painting_vampire_counts_8th_Page_35_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_vampire_counts_page_40 = {
-	sound_event = "painting_vampire_counts_8th_Page_40_description",
-	rarity = "common",
-	display_name = "painting_vampire_counts_8th_Page_40_name",
-	icon = "icon_painting_2",
-	frame = "wood",
-	description = "painting_vampire_counts_8th_Page_40_description",
 	artist = "painting_vampire_counts_8th_Page_40_artist",
+	description = "painting_vampire_counts_8th_Page_40_description",
+	display_name = "painting_vampire_counts_8th_Page_40_name",
+	frame = "wood",
+	icon = "icon_painting_2",
 	orientation = "vertical",
+	rarity = "common",
+	sound_event = "painting_vampire_counts_8th_Page_40_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 Paintings.ver_vampire_counts_page_58 = {
-	sound_event = "painting_vampire_counts_8th_Page_58_description",
-	rarity = "common",
-	display_name = "painting_vampire_counts_8th_Page_58_name",
-	icon = "icon_painting_2",
-	frame = "wood",
-	description = "painting_vampire_counts_8th_Page_58_description",
 	artist = "painting_vampire_counts_8th_Page_58_artist",
+	description = "painting_vampire_counts_8th_Page_58_description",
+	display_name = "painting_vampire_counts_8th_Page_58_name",
+	frame = "wood",
+	icon = "icon_painting_2",
 	orientation = "vertical",
+	rarity = "common",
+	sound_event = "painting_vampire_counts_8th_Page_58_description",
 	frames = {
 		gold = true,
 		paint = true,
-		wood = true
-	}
+		wood = true,
+	},
 }
 DefaultPaintings = {
 	"hor_none",
 	"ver_none",
-	"hidden"
+	"hidden",
 }
+
 local painting_order = {
 	"hor_none",
 	"hor_dragon01",
@@ -2017,8 +2020,9 @@ local painting_order = {
 	"ver_vampire_counts_page_31",
 	"ver_vampire_counts_page_35",
 	"ver_vampire_counts_page_40",
-	"ver_vampire_counts_page_58"
+	"ver_vampire_counts_page_58",
 }
+
 PaintingOrder = PaintingOrder or {}
 
 for _, painting in ipairs(painting_order) do
@@ -2028,6 +2032,7 @@ for _, painting in ipairs(painting_order) do
 end
 
 local prefix = "resource_packages/keep_paintings/keep_painting_"
+
 PaintingPackageNames = PaintingPackageNames or {}
 
 for painting_name, _ in pairs(Paintings) do

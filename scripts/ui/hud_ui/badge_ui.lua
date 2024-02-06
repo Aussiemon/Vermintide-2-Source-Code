@@ -1,7 +1,10 @@
+﻿-- chunkname: @scripts/ui/hud_ui/badge_ui.lua
+
 local definitions = local_require("scripts/ui/hud_ui/badge_ui_definitions")
 local badge_widget_definition = definitions.badge_widget_definition
 local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
+
 BadgeUI = class(BadgeUI)
 
 BadgeUI.init = function (self, parent, ingame_ui_context)
@@ -14,7 +17,7 @@ BadgeUI.init = function (self, parent, ingame_ui_context)
 	self._wwise_world = ingame_ui_context.world_manager:wwise_world(self._world)
 	self._render_settings = {
 		alpha_multiplier = 1,
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 	self._ingame_ui_context = ingame_ui_context
 	self._ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
@@ -109,18 +112,13 @@ BadgeUI._add_to_queue = function (self, hash, badge)
 	badges_queue[#badges_queue + 1] = {
 		amount = 1,
 		hash = hash,
-		badge = badge
+		badge = badge,
 	}
 end
 
 BadgeUI.add_badge = function (self, hash, badge, add_to_queue, num_badges)
-	if add_to_queue == nil then
-		add_to_queue = true
-	end
-
-	if num_badges == nil then
-		num_badges = 1
-	end
+	add_to_queue = add_to_queue == nil and true or add_to_queue
+	num_badges = num_badges == nil and 1 or num_badges
 
 	if add_to_queue and self._has_active_badge then
 		self:_add_to_queue(hash, badge)
@@ -129,6 +127,7 @@ BadgeUI.add_badge = function (self, hash, badge, add_to_queue, num_badges)
 	end
 
 	self._has_active_badge = true
+
 	local widget = self._badge_widget
 	local content = widget.content
 	local gui = self._ui_renderer.gui
@@ -152,12 +151,13 @@ BadgeUI._start_animation = function (self, animation_name, event_id, widget)
 	local params = {
 		wwise_world = self._wwise_world,
 		render_settings = self._render_settings,
-		ui_scenegraph = self._ui_scenegraph
+		ui_scenegraph = self._ui_scenegraph,
 	}
 	local animation_id = self._ui_animator:start_animation(animation_name, widget, scenegraph_definition, params)
+
 	self._animations[event_id] = {
 		id = animation_id,
-		name = animation_name
+		name = animation_name,
 	}
 end
 

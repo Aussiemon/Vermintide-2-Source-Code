@@ -1,20 +1,22 @@
+﻿-- chunkname: @scripts/managers/voting/vote_templates.lua
+
 VoteTemplates = {
 	retry_level = {
-		priority = 100,
 		client_start_vote_rpc = "rpc_server_request_start_vote_peer_id",
-		text = "vote_retry_level_title",
-		minimum_voter_percent = 1,
-		server_start_vote_rpc = "rpc_client_start_vote_peer_id",
 		duration = 20,
+		minimum_voter_percent = 1,
+		priority = 100,
+		server_start_vote_rpc = "rpc_client_start_vote_peer_id",
+		text = "vote_retry_level_title",
 		vote_options = {
 			{
 				text = "vote_retry_level_yes",
-				vote = 1
+				vote = 1,
 			},
 			{
 				text = "vote_retry_level_no",
-				vote = 2
-			}
+				vote = 2,
+			},
 		},
 		on_complete = function (vote_result, ingame_context)
 			local level_transition_handler = Managers.level_transition_handler
@@ -42,20 +44,20 @@ VoteTemplates = {
 			local data = {}
 
 			return data
-		end
+		end,
 	},
 	return_to_inn = {
-		priority = 1000,
 		client_start_vote_rpc = "rpc_server_request_start_vote_peer_id",
-		text = "n/a",
-		minimum_voter_percent = 1,
-		server_start_vote_rpc = "rpc_client_start_vote_peer_id",
 		duration = 90,
+		minimum_voter_percent = 1,
+		priority = 1000,
+		server_start_vote_rpc = "rpc_client_start_vote_peer_id",
+		text = "n/a",
 		vote_options = {
 			{
 				text = "n/a",
-				vote = 1
-			}
+				vote = 1,
+			},
 		},
 		on_complete = function (vote_result, ingame_context)
 			local mechanism = Managers.mechanism:game_mechanism()
@@ -73,28 +75,28 @@ VoteTemplates = {
 			local data = {}
 
 			return data
-		end
+		end,
 	},
 	continue_level = {
-		priority = 100,
 		client_start_vote_rpc = "rpc_server_request_start_vote_peer_id",
-		text = "vote_retry_level_title",
-		minimum_voter_percent = 1,
-		server_start_vote_rpc = "rpc_client_start_vote_peer_id",
 		duration = 20,
+		minimum_voter_percent = 1,
+		priority = 100,
+		server_start_vote_rpc = "rpc_client_start_vote_peer_id",
+		text = "vote_retry_level_title",
 		vote_options = {
 			{
 				text = "vote_retry_level_continue",
-				vote = 1
+				vote = 1,
 			},
 			{
 				text = "vote_retry_level_restart",
-				vote = 2
+				vote = 2,
 			},
 			{
 				text = "vote_retry_level_cancel",
-				vote = 3
-			}
+				vote = 3,
+			},
 		},
 		on_complete = function (vote_result, ingame_context)
 			local level_transition_handler = Managers.level_transition_handler
@@ -121,32 +123,32 @@ VoteTemplates = {
 			local data = {}
 
 			return data
-		end
+		end,
 	},
 	kick_player = {
 		client_start_vote_rpc = "rpc_server_request_start_vote_peer_id",
-		priority = 10,
+		duration = 30,
 		ingame_vote = true,
 		min_required_voters = 3,
-		text = "input_description_vote_kick_player",
 		minimum_voter_percent = 1,
-		success_percent = 0.51,
+		priority = 10,
 		server_start_vote_rpc = "rpc_client_start_vote_peer_id",
-		duration = 30,
+		success_percent = 0.51,
+		text = "input_description_vote_kick_player",
 		vote_options = {
 			{
+				gamepad_input = "ingame_vote_yes",
+				input = "ingame_vote_yes",
+				input_hold_time = 1,
 				text = "vote_kick_player_option_yes",
 				vote = 1,
-				input_hold_time = 1,
-				gamepad_input = "ingame_vote_yes",
-				input = "ingame_vote_yes"
 			},
 			{
-				text = "vote_kick_player_option_no",
+				input = "ingame_vote_no",
 				input_hold_time = 1,
+				text = "vote_kick_player_option_no",
 				vote = 2,
-				input = "ingame_vote_no"
-			}
+			},
 		},
 		on_complete = function (vote_result, ingame_context, data)
 			if vote_result == 1 then
@@ -158,7 +160,7 @@ VoteTemplates = {
 		pack_sync_data = function (data)
 			local sync_data = {
 				data.voter_peer_id,
-				data.kick_peer_id
+				data.kick_peer_id,
 			}
 
 			return sync_data
@@ -168,7 +170,7 @@ VoteTemplates = {
 			local kick_peer_id = sync_data[2]
 			local data = {
 				voter_peer_id = voter_peer_id,
-				kick_peer_id = kick_peer_id
+				kick_peer_id = kick_peer_id,
 			}
 
 			return data
@@ -182,7 +184,7 @@ VoteTemplates = {
 		initial_vote_func = function (data)
 			local votes = {
 				[data.voter_peer_id] = 1,
-				[data.kick_peer_id] = 2
+				[data.kick_peer_id] = 2,
 			}
 
 			return votes
@@ -197,29 +199,29 @@ VoteTemplates = {
 			end
 
 			return false
-		end
+		end,
 	},
 	afk_kick = {
 		client_start_vote_rpc = "rpc_server_request_start_vote_peer_id",
-		priority = 10,
+		duration = 30,
 		ingame_vote = true,
 		min_required_voters = 2,
-		text = "afk_vote_kick_player",
 		minimum_voter_percent = 1,
-		success_percent = 0.51,
+		priority = 10,
 		server_start_vote_rpc = "rpc_client_start_vote_peer_id",
-		duration = 30,
+		success_percent = 0.51,
+		text = "afk_vote_kick_player",
 		vote_options = {
 			{
+				input = "ingame_vote_yes",
 				text = "vote_kick_player_yes",
 				vote = 1,
-				input = "ingame_vote_yes"
 			},
 			{
+				input = "ingame_vote_no",
 				text = "vote_kick_player_no",
 				vote = 2,
-				input = "ingame_vote_no"
-			}
+			},
 		},
 		on_complete = function (vote_result, ingame_context, data)
 			if vote_result == 1 then
@@ -231,7 +233,7 @@ VoteTemplates = {
 		pack_sync_data = function (data)
 			local sync_data = {
 				data.voter_peer_id,
-				data.kick_peer_id
+				data.kick_peer_id,
 			}
 
 			return sync_data
@@ -241,7 +243,7 @@ VoteTemplates = {
 			local kick_peer_id = sync_data[2]
 			local data = {
 				voter_peer_id = voter_peer_id,
-				kick_peer_id = kick_peer_id
+				kick_peer_id = kick_peer_id,
 			}
 
 			return data
@@ -251,30 +253,30 @@ VoteTemplates = {
 			local name = player:name()
 
 			return sprintf("%s\n%s", text, tostring(name))
-		end
+		end,
 	},
 	vote_for_level = {
 		client_start_vote_rpc = "rpc_server_request_start_vote_peer_id",
-		priority = 110,
+		duration = 300,
 		ingame_vote = false,
 		min_required_voters = 1,
-		text = "vote_for_next_level",
 		minimum_voter_percent = 1,
-		success_percent = 1,
+		priority = 110,
 		server_start_vote_rpc = "rpc_client_start_vote_peer_id",
-		duration = 300,
 		start_sound_event = "hud_dice_game_reward_sound",
+		success_percent = 1,
+		text = "vote_for_next_level",
 		vote_options = {
 			{
+				input = "ingame_vote_yes",
 				text = "popup_choice_accept",
 				vote = 1,
-				input = "ingame_vote_yes"
 			},
 			{
+				input = "ingame_vote_no",
 				text = "dlc1_3_1_decline",
 				vote = 2,
-				input = "ingame_vote_no"
-			}
+			},
 		},
 		on_complete = function (vote_result, ingame_context, data)
 			if vote_result == 1 then
@@ -286,7 +288,7 @@ VoteTemplates = {
 		pack_sync_data = function (data)
 			local sync_data = {
 				data.voter_peer_id,
-				NetworkLookup.mission_ids[data.level_key]
+				NetworkLookup.mission_ids[data.level_key],
 			}
 
 			return sync_data
@@ -296,25 +298,25 @@ VoteTemplates = {
 			local level_key = NetworkLookup.mission_ids[tonumber(sync_data[2])]
 			local data = {
 				voter_peer_id = voter_peer_id,
-				level_key = level_key
+				level_key = level_key,
 			}
 
 			return data
-		end
+		end,
 	},
 	game_settings_vote = {
 		client_start_vote_rpc = "rpc_server_request_start_vote_lookup",
-		ingame_vote = false,
-		mission_vote = true,
-		gamepad_support = true,
-		text = "game_settings_vote",
-		minimum_voter_percent = 1,
-		success_percent = 1,
-		server_start_vote_rpc = "rpc_client_start_vote_lookup",
 		duration = 30,
-		priority = 110,
-		min_required_voters = 1,
 		gamepad_input_desc = "default_voting",
+		gamepad_support = true,
+		ingame_vote = false,
+		min_required_voters = 1,
+		minimum_voter_percent = 1,
+		mission_vote = true,
+		priority = 110,
+		server_start_vote_rpc = "rpc_client_start_vote_lookup",
+		success_percent = 1,
+		text = "game_settings_vote",
 		timeout_vote_option = 2,
 		requirement_failed_message_func = function (requirement_check_data)
 			local text = Localize("vote_requirement_failed")
@@ -324,6 +326,7 @@ VoteTemplates = {
 				if not success then
 					local player = player_manager:player_from_peer_id(peer_id)
 					local name = player:name()
+
 					text = text .. name .. "\n"
 				end
 			end
@@ -332,17 +335,17 @@ VoteTemplates = {
 		end,
 		vote_options = {
 			{
-				text = "popup_choice_accept",
 				gamepad_input = "confirm",
+				input = "ingame_vote_yes",
+				text = "popup_choice_accept",
 				vote = 1,
-				input = "ingame_vote_yes"
 			},
 			{
-				text = "dlc1_3_1_decline",
 				gamepad_input = "back",
+				input = "ingame_vote_no",
+				text = "dlc1_3_1_decline",
 				vote = 2,
-				input = "ingame_vote_no"
-			}
+			},
 		},
 		on_start = function (ingame_context, data)
 			Managers.matchmaking:cancel_matchmaking()
@@ -370,7 +373,7 @@ VoteTemplates = {
 					strict_matchmaking = strict_matchmaking,
 					matchmaking_type = matchmaking_type,
 					excluded_level_keys = excluded_level_keys,
-					mechanism = mechanism
+					mechanism = mechanism,
 				}
 
 				if (Managers.twitch:is_connecting() or Managers.twitch:is_connected()) and not Managers.twitch:game_mode_supported(vote_type, difficulty) then
@@ -406,7 +409,7 @@ VoteTemplates = {
 				strict_matchmaking and 1 or 2,
 				NetworkLookup.matchmaking_types[matchmaking_type],
 				twitch_enabled and 1 or 2,
-				NetworkLookup.mechanisms[mechanism]
+				NetworkLookup.mechanisms[mechanism],
 			}
 
 			return sync_data
@@ -447,32 +450,32 @@ VoteTemplates = {
 				strict_matchmaking = strict_matchmaking_id == 1 and true or false,
 				matchmaking_type = matchmaking_type,
 				twitch_enabled = twitch_enabled_id == 1 and true or false,
-				mechanism = mechanism
+				mechanism = mechanism,
 			}
 
 			return data
 		end,
 		initial_vote_func = function (data)
 			local votes = {
-				[data.voter_peer_id] = 1
+				[data.voter_peer_id] = 1,
 			}
 
 			return votes
-		end
+		end,
 	},
 	game_settings_deed_vote = {
 		client_start_vote_rpc = "rpc_server_request_start_vote_deed",
-		ingame_vote = false,
-		mission_vote = true,
-		gamepad_support = true,
-		text = "game_settings_deed_vote",
-		minimum_voter_percent = 1,
-		success_percent = 1,
-		server_start_vote_rpc = "rpc_client_start_vote_deed",
 		duration = 30,
-		priority = 110,
-		min_required_voters = 1,
 		gamepad_input_desc = "default_voting",
+		gamepad_support = true,
+		ingame_vote = false,
+		min_required_voters = 1,
+		minimum_voter_percent = 1,
+		mission_vote = true,
+		priority = 110,
+		server_start_vote_rpc = "rpc_client_start_vote_deed",
+		success_percent = 1,
+		text = "game_settings_deed_vote",
 		timeout_vote_option = 2,
 		requirement_failed_message_func = function (requirement_check_data)
 			local text = Localize("vote_requirement_failed")
@@ -482,6 +485,7 @@ VoteTemplates = {
 				if not success then
 					local player = player_manager:player_from_peer_id(peer_id)
 					local name = player:name()
+
 					text = text .. name .. "\n"
 				end
 			end
@@ -490,17 +494,17 @@ VoteTemplates = {
 		end,
 		vote_options = {
 			{
-				text = "popup_choice_accept",
 				gamepad_input = "confirm",
+				input = "ingame_vote_yes",
+				text = "popup_choice_accept",
 				vote = 1,
-				input = "ingame_vote_yes"
 			},
 			{
-				text = "dlc1_3_1_decline",
 				gamepad_input = "back",
+				input = "ingame_vote_no",
+				text = "dlc1_3_1_decline",
 				vote = 2,
-				input = "ingame_vote_no"
-			}
+			},
 		},
 		can_start_vote = function (data)
 			local is_server = Managers.player.is_server
@@ -543,7 +547,7 @@ VoteTemplates = {
 					private_game = private_game,
 					quick_game = quick_game,
 					matchmaking_type = matchmaking_type,
-					mechanism = mechanism
+					mechanism = mechanism,
 				}
 
 				if (Managers.twitch:is_connecting() or Managers.twitch:is_connected()) and not Managers.twitch:game_mode_supported(vote_type, difficulty) then
@@ -567,7 +571,7 @@ VoteTemplates = {
 				NetworkLookup.mission_ids[mission_id],
 				NetworkLookup.difficulties[difficulty],
 				twitch_enabled and 1 or 2,
-				NetworkLookup.mechanisms[mechanism]
+				NetworkLookup.mechanisms[mechanism],
 			}
 
 			return sync_data
@@ -592,32 +596,32 @@ VoteTemplates = {
 				mission_id = mission_id,
 				difficulty = difficulty,
 				twitch_enabled = twitch_enabled_id == 1 and true or false,
-				mechanism = NetworkLookup.mechanisms[mechanism_id]
+				mechanism = NetworkLookup.mechanisms[mechanism_id],
 			}
 
 			return data
 		end,
 		initial_vote_func = function (data)
 			local votes = {
-				[data.voter_peer_id] = 1
+				[data.voter_peer_id] = 1,
 			}
 
 			return votes
-		end
+		end,
 	},
 	game_settings_event_vote = {
 		client_start_vote_rpc = "rpc_server_request_start_vote_lookup",
-		ingame_vote = false,
-		mission_vote = true,
-		gamepad_support = true,
-		text = "game_settings_event_vote",
-		minimum_voter_percent = 1,
-		success_percent = 1,
-		server_start_vote_rpc = "rpc_client_start_vote_lookup",
 		duration = 30,
-		priority = 110,
-		min_required_voters = 1,
 		gamepad_input_desc = "default_voting",
+		gamepad_support = true,
+		ingame_vote = false,
+		min_required_voters = 1,
+		minimum_voter_percent = 1,
+		mission_vote = true,
+		priority = 110,
+		server_start_vote_rpc = "rpc_client_start_vote_lookup",
+		success_percent = 1,
+		text = "game_settings_event_vote",
 		timeout_vote_option = 2,
 		requirement_failed_message_func = function (requirement_check_data)
 			local text = Localize("vote_requirement_failed")
@@ -627,6 +631,7 @@ VoteTemplates = {
 				if not success then
 					local player = player_manager:player_from_peer_id(peer_id)
 					local name = player:name()
+
 					text = text .. name .. "\n"
 				end
 			end
@@ -635,17 +640,17 @@ VoteTemplates = {
 		end,
 		vote_options = {
 			{
-				text = "popup_choice_accept",
 				gamepad_input = "confirm",
+				input = "ingame_vote_yes",
+				text = "popup_choice_accept",
 				vote = 1,
-				input = "ingame_vote_yes"
 			},
 			{
-				text = "dlc1_3_1_decline",
 				gamepad_input = "back",
+				input = "ingame_vote_no",
+				text = "dlc1_3_1_decline",
 				vote = 2,
-				input = "ingame_vote_no"
-			}
+			},
 		},
 		on_start = function (ingame_context, data)
 			Managers.matchmaking:cancel_matchmaking()
@@ -667,7 +672,7 @@ VoteTemplates = {
 					quick_game = quick_game,
 					private_game = private_game,
 					matchmaking_type = matchmaking_type,
-					mechanism = mechanism
+					mechanism = mechanism,
 				}
 
 				if (Managers.twitch:is_connecting() or Managers.twitch:is_connected()) and not Managers.twitch:game_mode_supported(vote_type, difficulty) then
@@ -694,12 +699,13 @@ VoteTemplates = {
 				NetworkLookup.mission_ids[mission_id],
 				NetworkLookup.difficulties[difficulty],
 				twitch_enabled and 1 or 2,
-				NetworkLookup.mechanisms[mechanism]
+				NetworkLookup.mechanisms[mechanism],
 			}
 
 			for i = 1, #mutators do
 				local mutator_name = mutators[i]
 				local mutator_id = NetworkLookup.mutator_templates[mutator_name]
+
 				sync_data[#sync_data + 1] = mutator_id
 			end
 
@@ -715,6 +721,7 @@ VoteTemplates = {
 
 			for i = mutator_start_index, #sync_data do
 				local mutator_id = sync_data[i]
+
 				mutators[#mutators + 1] = NetworkLookup.mutator_templates[mutator_id]
 			end
 
@@ -731,35 +738,35 @@ VoteTemplates = {
 				mission_id = mission_id,
 				difficulty = difficulty,
 				event_data = {
-					mutators = mutators
+					mutators = mutators,
 				},
 				twitch_enabled = twitch_enabled_id == 1 and true or false,
-				mechanism = mechanism
+				mechanism = mechanism,
 			}
 
 			return data
 		end,
 		initial_vote_func = function (data)
 			local votes = {
-				[data.voter_peer_id] = 1
+				[data.voter_peer_id] = 1,
 			}
 
 			return votes
-		end
+		end,
 	},
 	game_settings_weave_vote = {
 		client_start_vote_rpc = "rpc_server_request_start_vote_lookup",
-		ingame_vote = false,
-		mission_vote = true,
-		gamepad_support = true,
-		text = "game_settings_weave_vote",
-		minimum_voter_percent = 1,
-		success_percent = 1,
-		server_start_vote_rpc = "rpc_client_start_vote_lookup",
 		duration = 30,
-		priority = 110,
-		min_required_voters = 1,
 		gamepad_input_desc = "default_voting",
+		gamepad_support = true,
+		ingame_vote = false,
+		min_required_voters = 1,
+		minimum_voter_percent = 1,
+		mission_vote = true,
+		priority = 110,
+		server_start_vote_rpc = "rpc_client_start_vote_lookup",
+		success_percent = 1,
+		text = "game_settings_weave_vote",
 		timeout_vote_option = 2,
 		requirement_failed_message_func = function (requirement_check_data)
 			local text = Localize("vote_weave_requirement_failed")
@@ -769,6 +776,7 @@ VoteTemplates = {
 				if not success then
 					local player = player_manager:player_from_peer_id(peer_id)
 					local name = player:name()
+
 					text = text .. name .. "\n"
 				end
 			end
@@ -777,17 +785,17 @@ VoteTemplates = {
 		end,
 		vote_options = {
 			{
-				text = "popup_choice_accept",
 				gamepad_input = "confirm",
+				input = "ingame_vote_yes",
+				text = "popup_choice_accept",
 				vote = 1,
-				input = "ingame_vote_yes"
 			},
 			{
-				text = "dlc1_3_1_decline",
 				gamepad_input = "back",
+				input = "ingame_vote_no",
+				text = "dlc1_3_1_decline",
 				vote = 2,
-				input = "ingame_vote_no"
-			}
+			},
 		},
 		can_start_vote = function (data)
 			local is_server = Managers.player.is_server
@@ -811,6 +819,7 @@ VoteTemplates = {
 
 			if #players_failing_requirements > 0 then
 				local reply_string = Localize("vote_game_mode_requirement_failed")
+
 				reply_string = string.format(reply_string, players_failing_requirements)
 
 				return false, reply_string
@@ -840,7 +849,7 @@ VoteTemplates = {
 					always_host = always_host,
 					quick_game = quick_game,
 					matchmaking_type = matchmaking_type,
-					mechanism = mechanism
+					mechanism = mechanism,
 				}
 
 				Managers.mechanism:choose_next_state("weave")
@@ -860,7 +869,7 @@ VoteTemplates = {
 				objective_index,
 				private_game and 1 or 2,
 				NetworkLookup.mechanisms[mechanism],
-				NetworkLookup.matchmaking_types[matchmaking_type]
+				NetworkLookup.matchmaking_types[matchmaking_type],
 			}
 
 			return sync_data
@@ -882,46 +891,46 @@ VoteTemplates = {
 				objective_index = objective_index,
 				matchmaking_type = matchmaking_type,
 				private_game = private_game,
-				mechanism = mechanism
+				mechanism = mechanism,
 			}
 
 			return data
 		end,
 		initial_vote_func = function (data)
 			local votes = {
-				[data.voter_peer_id] = 1
+				[data.voter_peer_id] = 1,
 			}
 
 			return votes
-		end
+		end,
 	},
 	game_settings_join_weave_vote = {
 		client_start_vote_rpc = "rpc_server_request_start_vote_lookup",
-		ingame_vote = false,
-		mission_vote = true,
-		gamepad_support = true,
-		text = "game_settings_join_weave_vote",
-		minimum_voter_percent = 1,
-		success_percent = 1,
-		server_start_vote_rpc = "rpc_client_start_vote_lookup",
 		duration = 30,
-		priority = 110,
-		min_required_voters = 1,
 		gamepad_input_desc = "default_voting",
+		gamepad_support = true,
+		ingame_vote = false,
+		min_required_voters = 1,
+		minimum_voter_percent = 1,
+		mission_vote = true,
+		priority = 110,
+		server_start_vote_rpc = "rpc_client_start_vote_lookup",
+		success_percent = 1,
+		text = "game_settings_join_weave_vote",
 		timeout_vote_option = 2,
 		vote_options = {
 			{
-				text = "popup_choice_accept",
 				gamepad_input = "confirm",
+				input = "ingame_vote_yes",
+				text = "popup_choice_accept",
 				vote = 1,
-				input = "ingame_vote_yes"
 			},
 			{
-				text = "matchmaking_suffix_continue_searching",
 				gamepad_input = "back",
+				input = "ingame_vote_no",
+				text = "matchmaking_suffix_continue_searching",
 				vote = 2,
-				input = "ingame_vote_no"
-			}
+			},
 		},
 		on_start = function (ingame_context, data)
 			return
@@ -943,7 +952,7 @@ VoteTemplates = {
 					private_game = private_game,
 					quick_game = quick_game,
 					matchmaking_type = matchmaking_type,
-					mechanism = mechanism
+					mechanism = mechanism,
 				}
 
 				Managers.matchmaking:weave_vote_result(true)
@@ -958,7 +967,7 @@ VoteTemplates = {
 			local sync_data = {
 				NetworkLookup.weave_names[weave_name],
 				objective_index,
-				NetworkLookup.mechanisms[mechanism]
+				NetworkLookup.mechanisms[mechanism],
 			}
 
 			return sync_data
@@ -976,7 +985,7 @@ VoteTemplates = {
 				mission_id = weave_name,
 				difficulty = difficulty,
 				objective_index = objective_index,
-				mechanism = mechanism
+				mechanism = mechanism,
 			}
 
 			return data
@@ -985,21 +994,21 @@ VoteTemplates = {
 			local votes = {}
 
 			return votes
-		end
+		end,
 	},
 	game_settings_weave_quick_play_vote = {
 		client_start_vote_rpc = "rpc_server_request_start_vote_lookup",
-		ingame_vote = false,
-		mission_vote = true,
-		gamepad_support = true,
-		text = "game_settings_weave_vote",
-		minimum_voter_percent = 1,
-		success_percent = 1,
-		server_start_vote_rpc = "rpc_client_start_vote_lookup",
 		duration = 30,
-		priority = 110,
-		min_required_voters = 1,
 		gamepad_input_desc = "default_voting",
+		gamepad_support = true,
+		ingame_vote = false,
+		min_required_voters = 1,
+		minimum_voter_percent = 1,
+		mission_vote = true,
+		priority = 110,
+		server_start_vote_rpc = "rpc_client_start_vote_lookup",
+		success_percent = 1,
+		text = "game_settings_weave_vote",
 		timeout_vote_option = 2,
 		requirement_failed_message_func = function (requirement_check_data)
 			local text = Localize("vote_weave_requirement_failed")
@@ -1009,6 +1018,7 @@ VoteTemplates = {
 				if not success then
 					local player = player_manager:player_from_peer_id(peer_id)
 					local name = player:name()
+
 					text = text .. name .. "\n"
 				end
 			end
@@ -1017,17 +1027,17 @@ VoteTemplates = {
 		end,
 		vote_options = {
 			{
-				text = "popup_choice_accept",
 				gamepad_input = "confirm",
+				input = "ingame_vote_yes",
+				text = "popup_choice_accept",
 				vote = 1,
-				input = "ingame_vote_yes"
 			},
 			{
-				text = "dlc1_3_1_decline",
 				gamepad_input = "back",
+				input = "ingame_vote_no",
+				text = "dlc1_3_1_decline",
 				vote = 2,
-				input = "ingame_vote_no"
-			}
+			},
 		},
 		can_start_vote = function (data)
 			local is_server = Managers.player.is_server
@@ -1051,6 +1061,7 @@ VoteTemplates = {
 
 			if #players_failing_requirements > 0 then
 				local reply_string = Localize("vote_game_mode_requirement_failed")
+
 				reply_string = string.format(reply_string, players_failing_requirements)
 
 				return false, reply_string
@@ -1070,13 +1081,13 @@ VoteTemplates = {
 				local matchmaking_type = data.matchmaking_type
 				local search_config = {
 					any_level = true,
-					quick_game = true,
 					dedicated_server = false,
+					quick_game = true,
 					difficulty = difficulty,
 					always_host = always_host,
 					matchmaking_type = matchmaking_type,
 					private_game = private_game,
-					mechanism = mechanism
+					mechanism = mechanism,
 				}
 
 				Managers.mechanism:choose_next_state("weave")
@@ -1090,7 +1101,7 @@ VoteTemplates = {
 			local sync_data = {
 				NetworkLookup.difficulties[difficulty],
 				NetworkLookup.mechanisms[mechanism],
-				NetworkLookup.matchmaking_types[matchmaking_type]
+				NetworkLookup.matchmaking_types[matchmaking_type],
 			}
 
 			return sync_data
@@ -1103,38 +1114,38 @@ VoteTemplates = {
 			local matchmaking_type_id = sync_data[3]
 			local matchmaking_type = NetworkLookup.matchmaking_types[matchmaking_type_id]
 			local data = {
-				private_game = false,
-				dedicated_server = false,
-				quick_game = true,
 				always_host = false,
+				dedicated_server = false,
+				private_game = false,
+				quick_game = true,
 				difficulty = difficulty,
 				matchmaking_type = matchmaking_type,
-				mechanism = mechanism
+				mechanism = mechanism,
 			}
 
 			return data
 		end,
 		initial_vote_func = function (data)
 			local votes = {
-				[data.voter_peer_id] = 1
+				[data.voter_peer_id] = 1,
 			}
 
 			return votes
-		end
+		end,
 	},
 	game_settings_vote_switch_mechanism = {
 		client_start_vote_rpc = "rpc_server_request_start_vote_lookup",
-		ingame_vote = false,
-		mission_vote = true,
-		gamepad_support = true,
-		text = "vote_switch_mechanism",
-		minimum_voter_percent = 1,
-		success_percent = 1,
-		server_start_vote_rpc = "rpc_client_start_vote_lookup",
 		duration = 30,
-		priority = 110,
-		min_required_voters = 1,
 		gamepad_input_desc = "default_voting",
+		gamepad_support = true,
+		ingame_vote = false,
+		min_required_voters = 1,
+		minimum_voter_percent = 1,
+		mission_vote = true,
+		priority = 110,
+		server_start_vote_rpc = "rpc_client_start_vote_lookup",
+		success_percent = 1,
+		text = "vote_switch_mechanism",
 		timeout_vote_option = 2,
 		requirement_failed_message_func = function (requirement_check_data)
 			local text = Localize("vote_requirement_failed")
@@ -1144,6 +1155,7 @@ VoteTemplates = {
 				if not success then
 					local player = player_manager:player_from_peer_id(peer_id)
 					local name = player:name()
+
 					text = text .. name .. "\n"
 				end
 			end
@@ -1152,17 +1164,17 @@ VoteTemplates = {
 		end,
 		vote_options = {
 			{
-				text = "popup_choice_accept",
 				gamepad_input = "confirm",
+				input = "ingame_vote_yes",
+				text = "popup_choice_accept",
 				vote = 1,
-				input = "ingame_vote_yes"
 			},
 			{
-				text = "dlc1_3_1_decline",
 				gamepad_input = "back",
+				input = "ingame_vote_no",
+				text = "dlc1_3_1_decline",
 				vote = 2,
-				input = "ingame_vote_no"
-			}
+			},
 		},
 		can_start_vote = function (data)
 			local success = true
@@ -1171,6 +1183,7 @@ VoteTemplates = {
 			if is_server then
 				local network_manager = Managers.state.network
 				local network_server = network_manager.network_server
+
 				success = network_server:are_all_peers_ingame()
 			end
 
@@ -1203,7 +1216,7 @@ VoteTemplates = {
 			local mechanism = data.mechanism
 			local vote_data = {
 				NetworkLookup.mission_ids[level_key],
-				NetworkLookup.mechanism_keys[mechanism]
+				NetworkLookup.mechanism_keys[mechanism],
 			}
 
 			return vote_data
@@ -1214,19 +1227,19 @@ VoteTemplates = {
 			local data = {
 				switch_mechanism = true,
 				level_key = NetworkLookup.mission_ids[level_key_id],
-				mechanism = NetworkLookup.mechanism_keys[mechanism_id]
+				mechanism = NetworkLookup.mechanism_keys[mechanism_id],
 			}
 
 			return data
 		end,
 		initial_vote_func = function (data)
 			local votes = {
-				[data.voter_peer_id] = 1
+				[data.voter_peer_id] = 1,
 			}
 
 			return votes
-		end
-	}
+		end,
+	},
 }
 
 DLCUtils.require_list("vote_template_filenames")

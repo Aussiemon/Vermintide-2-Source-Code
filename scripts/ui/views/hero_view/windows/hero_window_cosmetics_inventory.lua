@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/hero_view/windows/hero_window_cosmetics_inventory.lua
+
 local definitions = local_require("scripts/ui/views/hero_view/windows/definitions/hero_window_cosmetics_inventory_definitions")
 local widget_definitions = definitions.widgets
 local category_settings = definitions.category_settings
@@ -45,6 +47,7 @@ local function item_sort_func(item_1, item_2)
 end
 
 local hero_window_cosmetics_inventory_testify = script_data.testify and require("scripts/ui/views/hero_view/windows/hero_window_cosmetics_inventory_testify")
+
 HeroWindowCosmeticsInventory = class(HeroWindowCosmeticsInventory)
 HeroWindowCosmeticsInventory.NAME = "HeroWindowCosmeticsInventory"
 
@@ -52,16 +55,20 @@ HeroWindowCosmeticsInventory.on_enter = function (self, params, offset)
 	print("[HeroViewWindow] Enter Substate HeroWindowCosmeticsInventory")
 
 	self.parent = params.parent
+
 	local ingame_ui_context = params.ingame_ui_context
+
 	self.ui_renderer = ingame_ui_context.ui_renderer
 	self.ui_top_renderer = ingame_ui_context.ui_top_renderer
 	self.input_manager = ingame_ui_context.input_manager
 	self.statistics_db = ingame_ui_context.statistics_db
 	self.render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
+
 	local player_manager = Managers.player
 	local local_player = player_manager:local_player()
+
 	self._stats_id = local_player:stats_id()
 	self.player_manager = player_manager
 	self.peer_id = ingame_ui_context.peer_id
@@ -72,7 +79,9 @@ HeroWindowCosmeticsInventory.on_enter = function (self, params, offset)
 	self.hero_name = params.hero_name
 	self.career_index = params.career_index
 	self.profile_index = params.profile_index
+
 	local item_grid = ItemGridUI:new(category_settings, self._widgets_by_name.item_grid, self.hero_name, self.career_index)
+
 	self._item_grid = item_grid
 
 	item_grid:mark_equipped_items(true)
@@ -84,11 +93,13 @@ end
 
 HeroWindowCosmeticsInventory.create_ui_elements = function (self, params, offset)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+
 	local widgets = {}
 	local widgets_by_name = {}
 
 	for name, widget_definition in pairs(widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		widgets[#widgets + 1] = widget
 		widgets_by_name[name] = widget
 	end
@@ -102,6 +113,7 @@ HeroWindowCosmeticsInventory.create_ui_elements = function (self, params, offset
 
 	if offset then
 		local window_position = self.ui_scenegraph.window.local_position
+
 		window_position[1] = window_position[1] + offset[1]
 		window_position[2] = window_position[2] + offset[2]
 		window_position[3] = window_position[3] + offset[3]
@@ -122,6 +134,7 @@ HeroWindowCosmeticsInventory._assign_tab_icons = function (self)
 		local hotspot_content = widget_content[hotspot_name]
 		local category = category_settings[i]
 		local icon = category.icon
+
 		hotspot_content[icon_name] = icon
 	end
 end
@@ -238,6 +251,7 @@ HeroWindowCosmeticsInventory._select_tab_by_category_index = function (self, ind
 		local name_sufix = "_" .. tostring(i)
 		local hotspot_name = "hotspot" .. name_sufix
 		local hotspot_content = widget_content[hotspot_name]
+
 		hotspot_content.is_selected = i == index
 	end
 end
@@ -332,7 +346,9 @@ HeroWindowCosmeticsInventory._update_page_info = function (self)
 		self._current_page = current_page
 		current_page = current_page or 1
 		total_pages = total_pages or 1
+
 		local widgets_by_name = self._widgets_by_name
+
 		widgets_by_name.page_text_left.content.text = tostring(current_page)
 		widgets_by_name.page_text_right.content.text = tostring(total_pages)
 		widgets_by_name.page_button_next.content.button_hotspot.disable_button = current_page == total_pages
@@ -407,6 +423,7 @@ HeroWindowCosmeticsInventory._change_category_by_index = function (self, index, 
 	end
 
 	self._current_category_index = index
+
 	local category_setting = category_settings[index]
 	local category_name = category_setting.name
 	local display_name = category_setting.display_name

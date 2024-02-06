@@ -1,6 +1,9 @@
+﻿-- chunkname: @scripts/managers/conflict_director/pacing.lua
+
 Pacing = class(Pacing)
 script_data.debug_ai_pacing = script_data.debug_ai_pacing or Development.parameter("debug_ai_pacing")
 script_data.debug_player_intensity = script_data.debug_player_intensity or Development.parameter("debug_player_intensity")
+
 local CurrentPacing = CurrentPacing or nil
 
 Pacing.init = function (self, world)
@@ -42,13 +45,13 @@ Pacing.pacing_frozen = function (self, t)
 end
 
 Pacing.pacing_build_up = function (self, t)
-	if CurrentPacing.peak_intensity_threshold < self.total_intensity then
+	if self.total_intensity > CurrentPacing.peak_intensity_threshold then
 		self:advance_pacing(t)
 	end
 end
 
 Pacing.pacing_sustain_peak = function (self, t)
-	if self._end_pacing_time < t then
+	if t > self._end_pacing_time then
 		self:advance_pacing(t)
 	end
 end
@@ -66,7 +69,7 @@ Pacing.pacing_relax = function (self, t)
 		return
 	end
 
-	if self._end_pacing_time < t then
+	if t > self._end_pacing_time then
 		self:advance_pacing(t)
 	end
 end
@@ -101,7 +104,7 @@ Pacing.enemy_killed = function (self, killed_unit, player_units)
 		local killed_pos = Unit.local_position(killed_unit, 0)
 		local player_pos = Unit.local_position(player_unit, 0)
 		local dist = Vector3.distance(killed_pos, player_pos)
-		local amount = nil
+		local amount
 
 		if dist > 0 then
 			amount = 1 / dist * CurrentIntensitySettings.intensity_add_nearby_kill
@@ -117,10 +120,12 @@ end
 
 Pacing.advance_pacing = function (self, t, reason)
 	local pacing = self.pacing_state
+	local next_pacing
+
 	self._end_pacing_time = nil
 
 	if pacing == "pacing_build_up" then
-		local next_pacing = "pacing_sustain_peak"
+		next_pacing = "pacing_sustain_peak"
 		self._end_pacing_time = t + ConflictUtils.random_interval(CurrentPacing.sustain_peak_duration)
 		self._threat_population = 1
 		self._specials_population = 1
@@ -184,6 +189,7 @@ Pacing.update = function (self, t, dt, alive_player_units)
 		local unit = alive_player_units[k]
 		local status_ext = ScriptUnit.extension(unit, "status_system")
 		local intensity = status_ext:get_pacing_intensity()
+
 		self.player_intensity[k] = intensity
 		sum_intensity = sum_intensity + intensity
 	end
@@ -225,7 +231,7 @@ local player_names = {
 	"player1",
 	"player2",
 	"player3",
-	"player4"
+	"player4",
 }
 
 Pacing.intensity_graphs = function (self, t, dt, alive_player_units)
@@ -235,7 +241,7 @@ Pacing.intensity_graphs = function (self, t, dt, alive_player_units)
 		if not g then
 			self.graph = Managers.state.debug.graph_drawer:create_graph("intensity", {
 				"time",
-				"intensity"
+				"intensity",
 			})
 			self.graph.visual_frame.y_max = 100
 			self.graph.scroll_lock.vertical = false
@@ -288,7 +294,7 @@ Pacing.annotate_graph = function (self, text, color)
 		x = t,
 		y = annotate_pos,
 		text = text,
-		color = color or "orange"
+		color = color or "orange",
 	})
 end
 

@@ -1,18 +1,22 @@
+﻿-- chunkname: @scripts/managers/backend_playfab/backend_interface_deus_base.lua
+
 require("scripts/settings/dlcs/morris/deus_meta_progression_settings")
 
 BackendInterfaceDeusBase = class(BackendInterfaceDeusBase)
+
 local LOADOUT_INTERFACE_OVERRIDES = {
-	slot_hat = "items",
-	slot_skin = "items",
 	slot_frame = "items",
+	slot_hat = "items",
 	slot_melee = "deus",
-	slot_ranged = "deus"
+	slot_ranged = "deus",
+	slot_skin = "items",
 }
 
 BackendInterfaceDeusBase.init = function (self)
 	self._extra_deus_inventory = {}
 	self._loadouts = {}
 	self._talent_ids = {}
+
 	local valid_loadout_slots = {}
 
 	for slot_name, interface_name in pairs(LOADOUT_INTERFACE_OVERRIDES) do
@@ -162,16 +166,17 @@ BackendInterfaceDeusBase._generate_journey_cycle = function (self, current_time,
 	local journey_data = {}
 
 	for i, journey_name in pairs(AvailableJourneyOrder) do
-		local dominant_god_index = (dominant_god_base_index + i - 1) % #DeusJourneyCycleGods
+		local dominant_god_index = (dominant_god_base_index + (i - 1)) % #DeusJourneyCycleGods
+
 		journey_data[journey_name] = {
-			dominant_god = DeusJourneyCycleGods[dominant_god_index + 1]
+			dominant_god = DeusJourneyCycleGods[dominant_god_index + 1],
 		}
 	end
 
 	return {
 		remaining_time = remaining_time,
 		time_of_update = current_time,
-		journey_data = journey_data
+		journey_data = journey_data,
 	}
 end
 

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/world_hero_previewer.lua
+
 HeroPreviewer = class(HeroPreviewer)
 
 HeroPreviewer.init = function (self, ingame_ui_context, unique_id, delayed_spawn)
@@ -13,12 +15,12 @@ HeroPreviewer.init = function (self, ingame_ui_context, unique_id, delayed_spawn
 	self.character_location = {
 		0,
 		0,
-		0
+		0,
 	}
 	self.character_look_target = {
 		0,
 		3,
-		1
+		1,
 	}
 	self.character_rotation = 0
 	self.unique_id = unique_id
@@ -79,6 +81,7 @@ HeroPreviewer.on_exit = function (self)
 	self:_unload_all_packages()
 
 	self._hero_loading_package_data = nil
+
 	local max_shadow_casting_lights = Application.user_setting("render_settings", "max_shadow_casting_lights")
 
 	Application.set_render_setting("max_shadow_casting_lights", max_shadow_casting_lights)
@@ -160,6 +163,7 @@ end
 
 HeroPreviewer._request_mip_streaming_for_unit = function (self, unit)
 	local requested_mip_streaming_units = self._requested_mip_streaming_units
+
 	requested_mip_streaming_units[unit] = true
 
 	Renderer.set_automatic_streaming(false)
@@ -276,7 +280,7 @@ HeroPreviewer._set_character_visibility = function (self, visible)
 			local category = slot.category
 			local slot_type = slot.type
 			local is_weapon = category == "weapon"
-			local show_unit = nil
+			local show_unit
 
 			if is_weapon then
 				show_unit = visible and slot_type == self._wielded_slot_type
@@ -379,7 +383,7 @@ HeroPreviewer.request_spawn_hero_unit = function (self, profile_name, career_ind
 		profile_name = profile_name,
 		career_index = career_index,
 		callback = callback,
-		optional_skin = optional_skin
+		optional_skin = optional_skin,
 	}
 
 	if self._delayed_spawn then
@@ -415,6 +419,7 @@ HeroPreviewer._load_hero_unit = function (self, profile_name, career_index, call
 	end
 
 	self._current_profile_name = profile_name
+
 	local profile_index = FindProfileIndex(profile_name)
 	local profile = SPProfiles[profile_index]
 	local career = profile.careers[career_index]
@@ -422,8 +427,10 @@ HeroPreviewer._load_hero_unit = function (self, profile_name, career_index, call
 	local skin_item = BackendUtils.get_loadout_item(career_name, "slot_skin")
 	local item_data = skin_item and skin_item.data
 	local skin_name = optional_skin or item_data and item_data.name or career.base_skin
+
 	self._current_career_name = career_name
 	self.character_unit_skin_data = nil
+
 	local package_names = CosmeticsUtils.retrieve_skin_packages_for_preview(skin_name)
 	local skin_data = Cosmetics[skin_name]
 	local data = {
@@ -434,7 +441,7 @@ HeroPreviewer._load_hero_unit = function (self, profile_name, career_index, call
 		optional_scale = optional_scale,
 		package_names = package_names,
 		num_packages = #package_names,
-		callback = callback
+		callback = callback,
 	}
 
 	self:_load_packages(package_names)
@@ -540,6 +547,7 @@ HeroPreviewer._spawn_hero_unit = function (self, skin_data, optional_scale, care
 
 	if box_dimension then
 		local default_unit_height_dimension = 1.7
+
 		self.unit_max_look_height = default_unit_height_dimension < box_dimension.z and 1.5 or 0.9
 	else
 		self.unit_max_look_height = 0.9
@@ -577,9 +585,9 @@ end
 
 HeroPreviewer.spawn_prop = function (self, prop_spawn_settings)
 	self._props_data[#self._props_data + 1] = {
-		visible = false,
 		loaded = false,
-		settings = prop_spawn_settings
+		visible = false,
+		settings = prop_spawn_settings,
 	}
 
 	self:_load_packages(prop_spawn_settings.package_names)
@@ -625,11 +633,14 @@ HeroPreviewer.equip_item = function (self, item_name, slot, backend_id, skin)
 
 			if item_units.is_ammo_weapon then
 				left_hand_unit = item_units.ammo_unit
+
 				local ammo_data = item_template.ammo_data
+
 				unit_attachment_node_linking = ammo_data.ammo_unit_attachment_node_linking.third_person
 			end
 
 			local left_unit = left_hand_unit .. "_3p"
+
 			spawn_data[#spawn_data + 1] = {
 				left_hand = true,
 				despawn_both_hands_units = despawn_both_hands_units,
@@ -638,7 +649,7 @@ HeroPreviewer.equip_item = function (self, item_name, slot, backend_id, skin)
 				slot_index = slot_index,
 				unit_attachment_node_linking = unit_attachment_node_linking,
 				material_settings = material_settings,
-				is_ammo_unit = item_units.ammo_unit ~= nil
+				is_ammo_unit = item_units.ammo_unit ~= nil,
 			}
 			package_names[#package_names + 1] = left_unit
 		end
@@ -652,6 +663,7 @@ HeroPreviewer.equip_item = function (self, item_name, slot, backend_id, skin)
 			end
 
 			local right_unit = right_hand_unit .. "_3p"
+
 			spawn_data[#spawn_data + 1] = {
 				right_hand = true,
 				despawn_both_hands_units = despawn_both_hands_units,
@@ -660,7 +672,7 @@ HeroPreviewer.equip_item = function (self, item_name, slot, backend_id, skin)
 				slot_index = slot_index,
 				unit_attachment_node_linking = unit_attachment_node_linking,
 				material_settings = material_settings,
-				is_ammo_unit = item_units.ammo_unit ~= nil
+				is_ammo_unit = item_units.ammo_unit ~= nil,
 			}
 
 			if right_hand_unit ~= left_hand_unit then
@@ -679,12 +691,13 @@ HeroPreviewer.equip_item = function (self, item_name, slot, backend_id, skin)
 
 			local attachment_slot_name = item_template.slots[attachment_slot_lookup_index]
 			local character_material_changes = item_template.character_material_changes
+
 			spawn_data[#spawn_data + 1] = {
 				unit_name = unit,
 				item_slot_type = item_slot_type,
 				slot_index = slot_index,
 				unit_attachment_node_linking = item_template.attachment_node_linking[attachment_slot_name],
-				character_material_changes = character_material_changes
+				character_material_changes = character_material_changes,
 			}
 			package_names[#package_names + 1] = unit
 
@@ -708,7 +721,7 @@ HeroPreviewer.equip_item = function (self, item_name, slot, backend_id, skin)
 			backend_id = backend_id,
 			skin_name = skin,
 			package_names = package_names,
-			spawn_data = spawn_data
+			spawn_data = spawn_data,
 		}
 
 		self:_load_packages(package_names)
@@ -771,6 +784,7 @@ HeroPreviewer._poll_item_package_loading = function (self)
 
 			if all_packages_loaded and self._activated then
 				data.loaded = true
+
 				local item_name = data.name
 				local spawn_data = data.spawn_data
 
@@ -807,6 +821,7 @@ HeroPreviewer._spawn_prop = function (self, data)
 	end
 
 	data.unit = unit
+
 	local offset = settings.offset
 
 	Unit.set_local_position(unit, 0, Vector3(offset[1], offset[2], offset[3]))
@@ -865,6 +880,7 @@ HeroPreviewer._spawn_item = function (self, item_name, spawn_data)
 			end
 		else
 			local unit = World.spawn_unit(world, unit_name)
+
 			self._equipment_units[slot_index] = unit
 
 			self:_spawn_item_unit(unit, item_slot_type, item_template, unit_attachment_node_linking, scene_graph_links)
@@ -924,6 +940,7 @@ HeroPreviewer._spawn_item_unit = function (self, unit, item_slot_type, item_temp
 			end
 
 			self._hidden_units[unit] = true
+
 			local flow_event = character_visible and "lua_wield" or "lua_unwield"
 
 			Unit.flow_event(unit, flow_event)
@@ -1018,6 +1035,7 @@ end
 
 HeroPreviewer.wield_weapon_slot = function (self, slot_type)
 	self._wielded_slot_type = slot_type
+
 	local melee_slot_info = self._item_info_by_slot.melee
 
 	if melee_slot_info then
@@ -1210,6 +1228,7 @@ end
 HeroPreviewer.set_hero_location = function (self, location)
 	if location then
 		self.character_location = location
+
 		local character_unit = self.character_unit
 
 		if character_unit and Unit.alive(character_unit) then
@@ -1221,6 +1240,7 @@ end
 HeroPreviewer.set_hero_rotation = function (self, angle)
 	if angle then
 		self.character_rotation = angle
+
 		local character_unit = self.character_unit
 
 		if character_unit and Unit.alive(character_unit) then

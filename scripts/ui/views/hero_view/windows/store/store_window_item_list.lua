@@ -1,9 +1,12 @@
+﻿-- chunkname: @scripts/ui/views/hero_view/windows/store/store_window_item_list.lua
+
 local definitions = local_require("scripts/ui/views/hero_view/windows/store/definitions/store_window_item_list_definitions")
 local widget_definitions = definitions.widgets
 local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
 local LIST_SPACING = 10
 local LIST_MAX_WIDTH = 800
+
 StoreWindowItemList = class(StoreWindowItemList)
 StoreWindowItemList.NAME = "StoreWindowItemList"
 
@@ -12,12 +15,14 @@ StoreWindowItemList.on_enter = function (self, params, offset)
 
 	self._params = params
 	self._parent = params.parent
+
 	local ui_renderer, ui_top_renderer = self._parent:get_renderers()
+
 	self._ui_renderer = ui_renderer
 	self._ui_top_renderer = ui_top_renderer
 	self._render_settings = {
 		alpha_multiplier = 0,
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 	self._layout_settings = params.layout_settings
 	self._animations = {}
@@ -31,23 +36,26 @@ end
 
 StoreWindowItemList._start_transition_animation = function (self, animation_name)
 	local params = {
-		render_settings = self._render_settings
+		render_settings = self._render_settings,
 	}
 	local widgets = {
 		widgets_by_name = self._widgets_by_name,
-		list_widgets = self._list_widgets
+		list_widgets = self._list_widgets,
 	}
 	local anim_id = self._ui_animator:start_animation(animation_name, widgets, scenegraph_definition, params)
+
 	self._animations[animation_name] = anim_id
 end
 
 StoreWindowItemList._create_ui_elements = function (self, params, offset)
 	self._ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+
 	local widgets = {}
 	local widgets_by_name = {}
 
 	for name, widget_definition in pairs(widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		widgets[#widgets + 1] = widget
 		widgets_by_name[name] = widget
 	end
@@ -58,7 +66,9 @@ StoreWindowItemList._create_ui_elements = function (self, params, offset)
 	UIRenderer.clear_scenegraph_queue(self._ui_top_renderer)
 
 	self._ui_animator = UIAnimator:new(self._ui_scenegraph, animation_definitions)
+
 	local scrollbar_widget = self._widgets_by_name.list_scrollbar
+
 	self._scrollbar_logic = ScrollBarLogic:new(scrollbar_widget)
 end
 
@@ -274,6 +284,7 @@ StoreWindowItemList._update_item_list = function (self)
 			local backend_items = Managers.backend:get_interface("items")
 			local item_key = item.key
 			local item_owned = backend_items:has_item(item_key) or backend_items:has_weapon_illusion(item_key) or backend_items:has_bundle_contents(item.data.bundle_contains)
+
 			item.owned = item_owned
 			self._list_widgets[self._selected_gamepad_grid_index].content.owned = item_owned
 		end
@@ -310,7 +321,7 @@ StoreWindowItemList._update_item_list = function (self)
 			end
 		end
 
-		local items = nil
+		local items
 
 		if added_filters > 0 then
 			items = self:_get_items_by_filter(item_filter)
@@ -325,8 +336,9 @@ StoreWindowItemList._update_item_list = function (self)
 				item = item,
 				type = product_type,
 				product_id = item.key,
-				sort_key = StoreLayoutConfig.make_sort_key(item)
+				sort_key = StoreLayoutConfig.make_sort_key(item),
 			}
+
 			insert_index = insert_index + 1
 			layout[insert_index] = product
 		end
@@ -341,7 +353,7 @@ StoreWindowItemList._update_item_list = function (self)
 				layout[#layout + 1] = {
 					dlc_settings = dlc_settings,
 					type = product_type,
-					product_id = dlc_settings.dlc_name
+					product_id = dlc_settings.dlc_name,
 				}
 			end
 		end
@@ -350,17 +362,18 @@ StoreWindowItemList._update_item_list = function (self)
 
 		for _, item_key in pairs(bundle_contains) do
 			local item = ItemMasterList[item_key]
+
 			layout[#layout + 1] = {
 				type = "item",
 				item = {
 					dlc_name = current_page.dlc_name,
-					data = item
+					data = item,
 				},
 				product_id = item.key,
 				settings = {
+					hide_new = true,
 					hide_price = true,
-					hide_new = true
-				}
+				},
 			}
 		end
 	end
@@ -374,12 +387,12 @@ end
 
 local RARITY_SORTING = {
 	common = 2,
-	promo = 7,
+	exotic = 4,
 	magic = 5,
 	plentiful = 1,
-	exotic = 4,
+	promo = 7,
 	rare = 3,
-	unique = 6
+	unique = 6,
 }
 
 StoreWindowItemList._sort_peddler_items_by_type = function (self, items)
@@ -388,7 +401,7 @@ StoreWindowItemList._sort_peddler_items_by_type = function (self, items)
 	table.clear(TEMP_DATA)
 
 	local sorted_items = {}
-	local item_type = nil
+	local item_type
 
 	for _, item_data in pairs(items) do
 		item_type = item_data.data and item_data.data.item_type or "unknown"
@@ -405,7 +418,7 @@ StoreWindowItemList._sort_peddler_items_by_type = function (self, items)
 		local a_rarity = a.data and a.data.rarity and RARITY_SORTING[a.data.rarity] or 1
 		local b_rarity = b.data and b.data.rarity and RARITY_SORTING[b.data.rarity] or 1
 
-		return a_rarity > b_rarity
+		return b_rarity < a_rarity
 	end
 
 	for item_type, items in pairs(TEMP_DATA) do
@@ -422,7 +435,7 @@ StoreWindowItemList._sort_peddler_items_by_price = function (self, items)
 		local a_price = a.current_prices and a.current_prices.SM or 0
 		local b_price = b.current_prices and b.current_prices.SM or 0
 
-		return a_price > b_price
+		return b_price < a_price
 	end
 
 	table.sort(items, sort_func)
@@ -444,7 +457,9 @@ end
 StoreWindowItemList._on_list_index_selected = function (self, index, scrollbar_animation_percentage)
 	local layout = self._layout
 	local entry = layout[index]
+
 	self._params.selected_product = entry
+
 	local list_widgets = self._list_widgets
 
 	if entry.item then
@@ -455,7 +470,7 @@ StoreWindowItemList._on_list_index_selected = function (self, index, scrollbar_a
 		ItemHelper.set_shop_item_seen(entry.product_id, "dlc", self._parent.tab_cat)
 	end
 
-	local row, column = nil
+	local row, column
 
 	if list_widgets then
 		for i, widget in ipairs(list_widgets) do
@@ -464,6 +479,7 @@ StoreWindowItemList._on_list_index_selected = function (self, index, scrollbar_a
 
 			if hotspot then
 				local is_selected = i == index
+
 				hotspot.is_selected = is_selected
 
 				if is_selected then
@@ -492,6 +508,7 @@ StoreWindowItemList._on_list_index_selected = function (self, index, scrollbar_a
 		local to = scrollbar_animation_percentage
 		local duration = 0.3
 		local easing = math.easeOutCubic
+
 		self._ui_animations.scrollbar = UIAnimation.init(func, target, target_index, from, to, duration, easing)
 	else
 		self._ui_animations.scrollbar = nil
@@ -559,7 +576,7 @@ StoreWindowItemList._align_item_widgets = function (self)
 		local size = content.size
 		local width = size[1]
 		local height = size[2]
-		local change_row = LIST_MAX_WIDTH < widget_position_x + width
+		local change_row = widget_position_x + width > LIST_MAX_WIDTH
 
 		if change_row then
 			column = 1
@@ -573,7 +590,7 @@ StoreWindowItemList._align_item_widgets = function (self)
 		widget.default_offset = table.clone(offset)
 		content.row = row
 		content.column = column
-		widget_position_x = widget_position_x + width + LIST_SPACING
+		widget_position_x = widget_position_x + (width + LIST_SPACING)
 
 		if index == num_widgets then
 			total_height = math.abs(widget_position_y - height)
@@ -605,7 +622,7 @@ StoreWindowItemList._handle_gamepad_grid_selection = function (self, input_servi
 	local current_selected_column = self._selected_gamepad_grid_column
 	local columns_on_row = gamepad_navigation[current_selected_row]
 	local num_columns_on_row = #columns_on_row
-	local new_row, new_index = nil
+	local new_row, new_index
 
 	if input_service:get("move_left_hold_continuous") then
 		if current_selected_column > 1 then
@@ -623,6 +640,7 @@ StoreWindowItemList._handle_gamepad_grid_selection = function (self, input_servi
 
 	if new_row and new_row ~= current_selected_row then
 		local columns = gamepad_navigation[new_row]
+
 		new_index = self:_find_closest_neighbour(columns, current_selected_grid_index, 1)
 	end
 
@@ -641,7 +659,7 @@ StoreWindowItemList._find_closest_neighbour = function (self, column_index_list,
 	local current_widget_offset = current_widget.offset
 	local current_coordinate_x = current_widget_size[1] * 0.5 + current_widget_offset[1]
 	local shortest_distance = math.huge
-	local closest_index = nil
+	local closest_index
 
 	for _, layout_index in pairs(column_index_list) do
 		local widget = list_widgets[layout_index]
@@ -742,13 +760,15 @@ StoreWindowItemList._scroll_to_list_index = function (self, index)
 			local height = size[2]
 			local start_position_top = math.abs(offset[2])
 			local start_position_bottom = start_position_top + height
-			local percentage_difference = nil
+			local percentage_difference
 
 			if draw_end_height < start_position_bottom then
 				local height_missing = start_position_bottom - draw_end_height
+
 				percentage_difference = math.clamp(height_missing / scroll_length, 0, 1)
 			elseif start_position_top < draw_start_height then
 				local height_missing = draw_start_height - start_position_top
+
 				percentage_difference = -math.clamp(height_missing / scroll_length, 0, 1)
 			end
 
@@ -787,9 +807,11 @@ StoreWindowItemList._get_scrollbar_percentage_by_index = function (self, index)
 
 			if draw_end_height < start_position_bottom then
 				local height_missing = start_position_bottom - draw_end_height
+
 				percentage_difference = math.clamp(height_missing / scroll_length, 0, 1)
 			elseif start_position_top < draw_start_height then
 				local height_missing = draw_start_height - start_position_top
+
 				percentage_difference = -math.clamp(height_missing / scroll_length, 0, 1)
 			end
 

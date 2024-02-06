@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/backend/statistics_definitions_penny_part_2.lua
+
 local player = StatisticsDefinitions.player
 local database_names = {
 	"penny_portals_grapes",
@@ -8,14 +10,15 @@ local database_names = {
 	"penny_bastion_overstay",
 	"penny_bastion_sprinter",
 	"penny_bastion_yorick",
-	"penny_bastion_torch"
+	"penny_bastion_torch",
 }
 
 for i = 1, #database_names do
 	local name = database_names[i]
+
 	player[name] = {
-		value = 0,
 		source = "player_data",
-		database_name = name
+		value = 0,
+		database_name = name,
 	}
 end

@@ -1,9 +1,11 @@
+﻿-- chunkname: @scripts/settings/mutators/mutator_lightning_strike.lua
+
 return {
-	max_spawns = 3,
-	display_name = "lightning_strike_mutator_name",
 	description = "lightning_strike_mutator_desc",
-	spawn_rate = 11,
+	display_name = "lightning_strike_mutator_name",
 	icon = "mutator_icon_heavens_lightning",
+	max_spawns = 3,
+	spawn_rate = 11,
 	spawn_lightning_strike_unit = function (data)
 		local side_manager = data.side_manager
 		local hero_side = Managers.state.side:get_side_from_name("heroes")
@@ -15,6 +17,7 @@ return {
 
 		for _, player_unit in pairs(player_and_bot_units) do
 			data.extension_init_data.area_damage_system.follow_unit = player_unit
+
 			local unit = Managers.state.unit_spawner:spawn_network_unit(data.decal_unit_name, "timed_explosion_unit", data.extension_init_data, Unit.local_position(player_unit, 0))
 
 			side_manager:add_unit_to_side(unit, side_id)
@@ -43,10 +46,12 @@ return {
 		data.time_to_explode = data.explosion_template.time_to_explode
 		data.extension_init_data = {
 			area_damage_system = {
-				explosion_template_name = "lightning_strike_twitch"
-			}
+				explosion_template_name = "lightning_strike_twitch",
+			},
 		}
+
 		local ai_system = Managers.state.entity:system("ai_system")
+
 		data.ai_system = ai_system
 		data._nav_cost_map_id = data._nav_cost_map_id or ai_system:create_nav_cost_map("mutator_heavens_zone", 4)
 		data._nav_cost_volume_ids = {}
@@ -163,5 +168,5 @@ return {
 		elseif last_spawn_time == nil then
 			data.last_spawn_time = t - spawn_rate
 		end
-	end
+	end,
 }

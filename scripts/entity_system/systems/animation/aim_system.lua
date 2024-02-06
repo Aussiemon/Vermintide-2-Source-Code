@@ -1,9 +1,12 @@
+﻿-- chunkname: @scripts/entity_system/systems/animation/aim_system.lua
+
 require("scripts/unit_extensions/generic/generic_unit_aim_extension")
 
 local RPCS = {}
 local extensions = {
-	"GenericUnitAimExtension"
+	"GenericUnitAimExtension",
 }
+
 AimSystem = class(AimSystem, ExtensionSystemBase)
 
 AimSystem.init = function (self, context, system_name)
@@ -19,6 +22,7 @@ end
 
 AimSystem.on_add_extension = function (self, world, unit, extension_name, extension_init_data)
 	local extension = ScriptUnit.add_extension(self.extension_init_context, unit, extension_name, self.NAME, extension_init_data)
+
 	self._extensions[unit] = extension
 
 	return extension

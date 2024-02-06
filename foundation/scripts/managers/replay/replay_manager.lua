@@ -1,3 +1,5 @@
+﻿-- chunkname: @foundation/scripts/managers/replay/replay_manager.lua
+
 ReplayManager = class(ReplayManager)
 
 ReplayManager.init = function (self, world)
@@ -18,6 +20,7 @@ ReplayManager.update = function (self, dt)
 
 	if self._playing then
 		local total = ExtendedReplay.num_frames()
+
 		self._frame = self._frame + 1
 
 		if self._frame == total then
@@ -43,10 +46,10 @@ ReplayManager.move_to_current_frame = function (self)
 
 	self:report_frame()
 
-	local new_story_index = nil
+	local new_story_index
 
 	for i, location in ipairs(self._stories) do
-		if location.framestart <= self._frame and self._frame < location.frameend then
+		if self._frame >= location.framestart and self._frame < location.frameend then
 			new_story_index = i
 
 			break
@@ -73,7 +76,7 @@ ReplayManager.move_to_current_frame = function (self)
 					action = "close",
 					message = "error",
 					type = "replay",
-					reason = "Level " .. self._level_name .. " can't be found in the world. Have you loaded the correct level for this replay session?"
+					reason = "Level " .. self._level_name .. " can't be found in the world. Have you loaded the correct level for this replay session?",
 				}
 
 				Application.console_send(cmd)
@@ -100,7 +103,7 @@ ReplayManager.report_frame = function (self)
 	local cmd = {
 		message = "frame",
 		type = "replay",
-		frame = self._frame
+		frame = self._frame,
 	}
 
 	Application.console_send(cmd)

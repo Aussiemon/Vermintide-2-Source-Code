@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/network/xbox_user_privileges.lua
+
 require("scripts/network/script_xbox_user_privilege_token")
 
 XboxUserPrivileges = class(XboxUserPrivileges)
@@ -63,7 +65,7 @@ XboxUserPrivileges.get_privilege_async = function (self, user_id, privilege, att
 end
 
 XboxUserPrivileges.update_privilege = function (self, privilege, cb)
-	local privilege_id = nil
+	local privilege_id
 
 	for id, name in pairs(XBOX_PRIVILEGE_LUT) do
 		if name == privilege then

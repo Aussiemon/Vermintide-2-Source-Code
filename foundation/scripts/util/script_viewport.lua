@@ -1,3 +1,5 @@
+﻿-- chunkname: @foundation/scripts/util/script_viewport.lua
+
 ScriptViewport = ScriptViewport or {}
 
 ScriptViewport.active = function (viewport)

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/dlcs/morris/deus_upgrade_weapon_interaction_ui.lua
+
 require("scripts/settings/dlcs/morris/deus_swap_weapon_interaction_ui")
 
 DeusUpgradeWeaponInteractionUI = class(DeusUpgradeWeaponInteractionUI, DeusSwapWeaponInteractionUI)
@@ -40,7 +42,9 @@ DeusUpgradeWeaponInteractionUI._populate_widget = function (self, interactable_u
 	local rarity_settings = RaritySettings
 	local weapon_rarity_order = rarity_settings[equipped_item.rarity].order
 	local chest_rarity_order = rarity_settings[stored_purchase.rarity].order
+
 	upgrade_available = weapon_rarity_order < chest_rarity_order
+
 	local tooltip_widget = self._widgets_by_name.weapon_tooltip
 	local chest_info_widget = self._widgets_by_name.chest_content
 	local network_manager = Managers.state.network
@@ -59,8 +63,10 @@ DeusUpgradeWeaponInteractionUI._populate_widget = function (self, interactable_u
 		tooltip_widget.content.item = equipped_item
 		tooltip_widget.content.force_equipped = true
 		tooltip_widget.style.item.draw_end_passes = true
+
 		local rarity = stored_purchase.rarity
 		local rarity_color = Colors.get_table(rarity)
+
 		chest_info_widget.content.rarity_text = RaritySettings[rarity].display_name
 		chest_info_widget.style.rarity.text_color = rarity_color
 		chest_info_widget.content.cost_text = soft_currency_amount .. "/" .. cost
@@ -68,15 +74,17 @@ DeusUpgradeWeaponInteractionUI._populate_widget = function (self, interactable_u
 			255,
 			255,
 			255,
-			255
+			255,
 		} or {
 			255,
 			255,
 			0,
-			0
+			0,
 		}
+
 		local power_level = stored_purchase.power_level
 		local slot_type = wielded_slot_name == "slot_melee" and "melee" or "ranged"
+
 		chest_info_widget.content.reward_info_text = power_level .. " " .. Localize("deus_weapon_chest_" .. slot_type .. "_weapon_description")
 		chest_info_widget.content.show_coin_icon = true
 		chest_info_widget.content.disabled_text = nil

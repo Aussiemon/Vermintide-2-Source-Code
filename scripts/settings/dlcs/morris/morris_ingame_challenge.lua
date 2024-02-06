@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/dlcs/morris/morris_ingame_challenge.lua
+
 require("scripts/managers/challenges/boon_reactivation_rules")
 require("scripts/managers/challenges/pickup_spawn_type")
 
@@ -31,8 +33,8 @@ dlc_settings.questing_knight_challenges = {
 					10,
 					15,
 					15,
-					15
-				}
+					15,
+				},
 			},
 			{
 				reward = "deus_markus_questing_knight_passive_attack_speed",
@@ -45,8 +47,8 @@ dlc_settings.questing_knight_challenges = {
 					7,
 					10,
 					10,
-					10
-				}
+					10,
+				},
 			},
 			{
 				reward = "deus_markus_questing_knight_passive_cooldown_reduction",
@@ -59,8 +61,8 @@ dlc_settings.questing_knight_challenges = {
 					1,
 					1,
 					1,
-					1
-				}
+					1,
+				},
 			},
 			{
 				reward = "deus_markus_questing_knight_passive_damage_taken",
@@ -73,9 +75,9 @@ dlc_settings.questing_knight_challenges = {
 					5,
 					5,
 					5,
-					5
+					5,
 				},
-				condition = only_on_travel_and_signature_levels
+				condition = only_on_travel_and_signature_levels,
 			},
 			{
 				reward = "deus_markus_questing_knight_passive_health_regen",
@@ -88,10 +90,10 @@ dlc_settings.questing_knight_challenges = {
 					1,
 					1,
 					1,
-					1
+					1,
 				},
-				condition = only_on_travel_and_signature_levels
-			}
+				condition = only_on_travel_and_signature_levels,
+			},
 		},
 		side_quest_challenge = {
 			reward = "markus_questing_knight_passive_strength_potion",
@@ -104,10 +106,10 @@ dlc_settings.questing_knight_challenges = {
 				85,
 				100,
 				100,
-				100
-			}
-		}
-	}
+				100,
+			},
+		},
+	},
 }
 dlc_settings.ingame_challenge_templates = {
 	find_deus_soft_currency = {
@@ -116,8 +118,8 @@ dlc_settings.ingame_challenge_templates = {
 		events = {
 			player_pickup_deus_soft_currency = function (t, data, player)
 				return 1
-			end
-		}
+			end,
+		},
 	},
 	find_deus_weapon_chest = {
 		default_target = 1,
@@ -125,8 +127,8 @@ dlc_settings.ingame_challenge_templates = {
 		events = {
 			player_pickup_deus_weapon_chest = function (t, data, player)
 				return 1
-			end
-		}
+			end,
+		},
 	},
 	cleanse_cursed_chest = {
 		default_target = 1,
@@ -134,115 +136,115 @@ dlc_settings.ingame_challenge_templates = {
 		events = {
 			player_cleansed_deus_cursed_chest = function (t, data, player)
 				return 1
-			end
-		}
-	}
+			end,
+		},
+	},
 }
 dlc_settings.ingame_challenge_rewards = {
 	deus_markus_questing_knight_passive_cooldown_reduction = {
+		consume_type = "round",
+		consume_value = 1,
+		icon = "icon_objective_cdr",
 		reward_id = "markus_questing_knight_passive_cooldown_reduction_buff",
 		sound = "Play_hud_grail_knight_stamina",
-		type = "boon",
-		consume_type = "round",
-		icon = "icon_objective_cdr",
 		target = "party",
-		consume_value = 1,
-		reactivation_rule = BoonReactivationRules.questing_knight
+		type = "boon",
+		reactivation_rule = BoonReactivationRules.questing_knight,
 	},
 	deus_markus_questing_knight_passive_cooldown_reduction_improved = {
+		consume_type = "round",
+		consume_value = 1,
+		icon = "icon_objective_cdr",
 		reward_id = "markus_questing_knight_passive_cooldown_reduction_buff_improved",
 		sound = "Play_hud_grail_knight_stamina",
-		type = "boon",
-		consume_type = "round",
-		icon = "icon_objective_cdr",
 		target = "party",
-		consume_value = 1,
-		reactivation_rule = BoonReactivationRules.questing_knight
+		type = "boon",
+		reactivation_rule = BoonReactivationRules.questing_knight,
 	},
 	deus_markus_questing_knight_passive_attack_speed = {
+		consume_type = "round",
+		consume_value = 1,
+		icon = "icon_objective_attack_speed",
 		reward_id = "markus_questing_knight_passive_attack_speed_buff",
 		sound = "Play_hud_grail_knight_attack",
-		type = "boon",
-		consume_type = "round",
-		icon = "icon_objective_attack_speed",
 		target = "party",
-		consume_value = 1,
-		reactivation_rule = BoonReactivationRules.questing_knight
+		type = "boon",
+		reactivation_rule = BoonReactivationRules.questing_knight,
 	},
 	deus_markus_questing_knight_passive_attack_speed_improved = {
+		consume_type = "round",
+		consume_value = 1,
+		icon = "icon_objective_attack_speed",
 		reward_id = "markus_questing_knight_passive_attack_speed_buff_improved",
 		sound = "Play_hud_grail_knight_attack",
-		type = "boon",
-		consume_type = "round",
-		icon = "icon_objective_attack_speed",
 		target = "party",
-		consume_value = 1,
-		reactivation_rule = BoonReactivationRules.questing_knight
+		type = "boon",
+		reactivation_rule = BoonReactivationRules.questing_knight,
 	},
 	deus_markus_questing_knight_passive_power_level = {
+		consume_type = "round",
+		consume_value = 1,
+		icon = "icon_objective_power_level",
 		reward_id = "markus_questing_knight_passive_power_level_buff",
 		sound = "Play_hud_grail_knight_power",
-		type = "boon",
-		consume_type = "round",
-		icon = "icon_objective_power_level",
 		target = "party",
-		consume_value = 1,
-		reactivation_rule = BoonReactivationRules.questing_knight
+		type = "boon",
+		reactivation_rule = BoonReactivationRules.questing_knight,
 	},
 	deus_markus_questing_knight_passive_power_level_improved = {
+		consume_type = "round",
+		consume_value = 1,
+		icon = "icon_objective_power_level",
 		reward_id = "markus_questing_knight_passive_power_level_buff_improved",
 		sound = "Play_hud_grail_knight_power",
-		type = "boon",
-		consume_type = "round",
-		icon = "icon_objective_power_level",
 		target = "party",
-		consume_value = 1,
-		reactivation_rule = BoonReactivationRules.questing_knight
+		type = "boon",
+		reactivation_rule = BoonReactivationRules.questing_knight,
 	},
 	deus_markus_questing_knight_passive_damage_taken = {
+		consume_type = "round",
+		consume_value = 1,
+		icon = "icon_objective_damage_taken",
 		reward_id = "markus_questing_knight_passive_damage_taken_buff",
 		sound = "Play_hud_grail_knight_tank",
-		type = "boon",
-		consume_type = "round",
-		icon = "icon_objective_damage_taken",
 		target = "party",
-		consume_value = 1,
-		reactivation_rule = BoonReactivationRules.questing_knight
+		type = "boon",
+		reactivation_rule = BoonReactivationRules.questing_knight,
 	},
 	deus_markus_questing_knight_passive_damage_taken_improved = {
+		consume_type = "round",
+		consume_value = 1,
+		icon = "icon_objective_damage_taken",
 		reward_id = "markus_questing_knight_passive_damage_taken_buff_improved",
 		sound = "Play_hud_grail_knight_tank",
-		type = "boon",
-		consume_type = "round",
-		icon = "icon_objective_damage_taken",
 		target = "party",
-		consume_value = 1,
-		reactivation_rule = BoonReactivationRules.questing_knight
+		type = "boon",
+		reactivation_rule = BoonReactivationRules.questing_knight,
 	},
 	deus_markus_questing_knight_passive_health_regen = {
+		consume_type = "round",
+		consume_value = 1,
+		icon = "icon_objective_health_regen",
 		reward_id = "markus_questing_knight_passive_health_regen_buff",
 		sound = "Play_hud_grail_knight_heal",
-		type = "boon",
-		consume_type = "round",
-		icon = "icon_objective_health_regen",
 		target = "party",
-		consume_value = 1,
-		reactivation_rule = BoonReactivationRules.questing_knight
+		type = "boon",
+		reactivation_rule = BoonReactivationRules.questing_knight,
 	},
 	deus_markus_questing_knight_passive_health_regen_improved = {
+		consume_type = "round",
+		consume_value = 1,
+		icon = "icon_objective_health_regen",
 		reward_id = "markus_questing_knight_passive_health_regen_buff_improved",
 		sound = "Play_hud_grail_knight_heal",
-		type = "boon",
-		consume_type = "round",
-		icon = "icon_objective_health_regen",
 		target = "party",
-		consume_value = 1,
-		reactivation_rule = BoonReactivationRules.questing_knight
-	}
+		type = "boon",
+		reactivation_rule = BoonReactivationRules.questing_knight,
+	},
 }
 dlc_settings.ingame_challenge_rewards_description = {
 	deus_markus_questing_knight_passive_attack_speed = "markus_questing_knight_passive_attack_speed",
+	deus_markus_questing_knight_passive_cooldown_reduction = "markus_questing_knight_passive_cooldown_reduction",
 	deus_markus_questing_knight_passive_damage_taken = "markus_questing_knight_passive_damage_taken",
 	deus_markus_questing_knight_passive_power_level = "markus_questing_knight_passive_power_level",
-	deus_markus_questing_knight_passive_cooldown_reduction = "markus_questing_knight_passive_cooldown_reduction"
 }

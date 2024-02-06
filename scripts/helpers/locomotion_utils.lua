@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/helpers/locomotion_utils.lua
+
 LocomotionUtils = {}
+
 local unit_local_position = Unit.local_position
 local unit_set_local_rotation = Unit.set_local_rotation
 local quaternion_look = Quaternion.look
@@ -11,7 +14,7 @@ LocomotionUtils.follow_target = function (unit, blackboard, t, dt)
 	local breed = blackboard.breed
 	local pos = unit_local_position(unit, 0)
 	local threat_position = unit_local_position(blackboard.target_unit, 0)
-	local goal_has_moved = nil
+	local goal_has_moved
 
 	if blackboard.remembered_threat_pos then
 		goal_has_moved = Vector3.distance(Vector3Box.unbox(blackboard.remembered_threat_pos), threat_position) > 1
@@ -28,6 +31,7 @@ LocomotionUtils.follow_target = function (unit, blackboard, t, dt)
 
 		if is_position_on_navmesh then
 			goal_pos.z = altitude
+
 			local ai_extension = ScriptUnit.extension(unit, "ai_system")
 			local navigation = ai_extension:navigation()
 
@@ -49,29 +53,31 @@ LocomotionUtils.follow_target_ogre = function (unit, blackboard, t, dt)
 
 	local pos = POSITION_LOOKUP[unit]
 	local status_extension = ScriptUnit.has_extension(target_unit, "status_system")
-	local is_on_ladder, ladder_unit = nil
+	local is_on_ladder, ladder_unit
 
 	if status_extension then
 		is_on_ladder, ladder_unit = status_extension:get_is_on_ladder()
 	end
 
-	local threat_position, goal_pos = nil
+	local threat_position, goal_pos
 
 	if is_on_ladder then
 		local foot, top = Managers.state.bot_nav_transition:get_ladder_coordinates(ladder_unit)
+
 		threat_position = foot
 		goal_pos = foot
 	else
 		threat_position = POSITION_LOOKUP[target_unit]
 	end
 
-	local goal_has_moved = nil
+	local goal_has_moved
 
 	if blackboard.remembered_threat_pos then
 		goal_has_moved = Vector3.distance(Vector3Box.unbox(blackboard.remembered_threat_pos), threat_position) > 1
 
-		if not goal_has_moved and blackboard.next_move_check < t then
+		if not goal_has_moved and t > blackboard.next_move_check then
 			blackboard.next_move_check = t + 2
+
 			local nav_world = blackboard.nav_world
 			local is_position_on_navmesh, altitude = GwNavQueries.triangle_from_position(nav_world, threat_position, 2, 2)
 
@@ -90,8 +96,11 @@ LocomotionUtils.follow_target_ogre = function (unit, blackboard, t, dt)
 		local to_target = threat_position - pos
 		local breed = blackboard.breed
 		local nav_world = blackboard.nav_world
+
 		goal_pos = goal_pos or Unit.local_position(blackboard.target_unit, 0) - Vector3.normalize(to_target) * breed.radius
-		local diff_height, is_position_on_navmesh, z_height = nil
+
+		local diff_height, is_position_on_navmesh, z_height
+
 		is_position_on_navmesh, z_height = GwNavQueries.triangle_from_position(nav_world, goal_pos, 30, 30)
 
 		if is_position_on_navmesh then
@@ -108,10 +117,7 @@ LocomotionUtils.follow_target_ogre = function (unit, blackboard, t, dt)
 			end
 		end
 
-		local above = 2
-		local below = 2
-		local horizontal = 3
-		local distance_from_obstacel = 3
+		local above, below, horizontal, distance_from_obstacel = 2, 2, 3, 3
 		local snap_pos = GwNavQueries.inside_position_from_outside_position(nav_world, goal_pos, above, below, horizontal, distance_from_obstacel)
 
 		if snap_pos then
@@ -153,7 +159,7 @@ LocomotionUtils.follow_target_ogre = function (unit, blackboard, t, dt)
 end
 
 local SteeringTweakData = {
-	ROTATION_LERP_LOOK_AT = 20
+	ROTATION_LERP_LOOK_AT = 20,
 }
 
 LocomotionUtils.update_combat_rotation = function (unit, blackboard, t, dt)
@@ -206,7 +212,9 @@ LocomotionUtils.rotation_towards_unit_flat = function (unit, target_unit)
 	local pos_unit = unit_local_position(unit, 0)
 	local pos_target_unit = unit_local_position(target_unit, 0)
 	local to_dir = pos_target_unit - pos_unit
+
 	to_dir.z = 0
+
 	local direction = Vector3.normalize(to_dir)
 	local flat_rotation = quaternion_look(direction)
 
@@ -238,7 +246,9 @@ LocomotionUtils.get_attack_anim = function (unit, blackboard, attack_anims)
 		local to_enemy = Vector3.normalize(pos - target_pos)
 		local my_fwd = Quaternion.forward(Unit.local_rotation(unit, 0))
 		local dot = Vector3.dot(my_fwd, to_enemy)
+
 		dot = math.clamp(dot, -1, 1)
+
 		local angle = math.acos(dot)
 
 		if angle > math.pi * 0.95 then
@@ -265,7 +275,9 @@ LocomotionUtils.get_start_anim = function (unit, blackboard, start_anims)
 		local to_enemy = Vector3.normalize(pos - target_pos)
 		local my_fwd = Quaternion.forward(Unit.local_rotation(unit, 0))
 		local dot = Vector3.dot(my_fwd, to_enemy)
+
 		dot = math.clamp(dot, -1, 1)
+
 		local angle = math.acos(dot)
 
 		if angle > math.pi * 0.75 then
@@ -406,7 +418,7 @@ LocomotionUtils.update_local_animation_driven_movement_with_min_z = function (un
 	local wanted_pose = Unit.animation_wanted_root_pose(unit)
 	local wanted_position = Matrix4x4.translation(wanted_pose)
 
-	if wanted_position.z < min_z then
+	if min_z > wanted_position.z then
 		Vector3.set_z(wanted_position, min_z)
 	end
 
@@ -422,7 +434,7 @@ LocomotionUtils.new_random_goal = function (nav_world, blackboard, start_pos, mi
 	local below = below or 30
 	local tries = 0
 
-	while max_tries > tries do
+	while tries < max_tries do
 		local dist = min_dist + math.random() * (max_dist - min_dist)
 		local add_vec = Vector3(dist, 0, 1.5)
 		local pos = start_pos + Quaternion.rotate(Quaternion(Vector3.up(), math.degrees_to_radians(Math.random(1, 360))), add_vec)
@@ -448,7 +460,7 @@ LocomotionUtils.new_random_goal_uniformly_distributed = function (nav_world, bla
 	local below = below or 30
 	local tries = 0
 
-	while max_tries > tries do
+	while tries < max_tries do
 		local min_dist_proportion = (min_dist / max_dist)^2
 		local random_value = Math.random()
 		local normalized_dist = min_dist_proportion + random_value * (1 - min_dist_proportion)
@@ -480,7 +492,7 @@ LocomotionUtils.new_random_goal_uniformly_distributed_with_inside_from_outside_o
 	local distance_from_obstacle = 0.1
 	local tries = 0
 
-	while max_tries > tries do
+	while tries < max_tries do
 		local min_dist_proportion = (min_dist / max_dist)^2
 		local random_value = Math.random()
 		local normalized_dist = min_dist_proportion + random_value * (1 - min_dist_proportion)
@@ -521,10 +533,11 @@ LocomotionUtils.new_random_goal_in_front_of_unit = function (nav_world, unit, mi
 
 	while tries < max_tries do
 		local locomotion_ext = ScriptUnit.has_extension(unit, "locomotion_system")
-		local direction, speed = nil
+		local direction, speed
 
 		if locomotion_ext and locomotion_ext.average_velocity then
 			local average_velocity = Vector3.flat(locomotion_ext:average_velocity())
+
 			speed = Vector3.length(average_velocity)
 
 			if speed > 0.1 then
@@ -631,21 +644,16 @@ LocomotionUtils.pick_visible_outside_goal = function (params)
 	local min_angle_step = params.min_angle_step or MIN_ANGLE_STEP
 	local max_angle_step = params.max_angle_step or MAX_ANGLE_STEP
 	local outside_goal_tries = params.outside_goal_tries or OUTSIDE_GOAL_TRIES
-	local nav_world = params.nav_world
-	local physics_world = params.physics_world
-	local from_unit = params.from_unit
-	local to_unit = params.to_unit
-	local from_node_name = params.from_node_name
-	local to_node_name = params.to_node_name
-	local min_distance = params.min_distance
-	local max_distance = params.max_distance
-	local above = params.above
-	local below = params.below
+	local nav_world, physics_world = params.nav_world, params.physics_world
+	local from_unit, to_unit = params.from_unit, params.to_unit
+	local from_node_name, to_node_name = params.from_node_name, params.to_node_name
+	local min_distance, max_distance = params.min_distance, params.max_distance
+	local above, below = params.above, params.below
 	local from_node = Unit.node(from_unit, from_node_name)
 	local from_node_position = Unit.world_position(from_unit, from_node)
 	local to_node = Unit.node(to_unit, to_node_name)
 	local to_node_position = Unit.world_position(to_unit, to_node)
-	local min_found_radius_sq = nil
+	local min_found_radius_sq
 	local min_wanted_radius = params.min_wanted_radius
 	local min_wanted_radius_sq = min_wanted_radius and min_wanted_radius^2
 	local radius_check_directions = params.radius_check_directions
@@ -655,7 +663,7 @@ LocomotionUtils.pick_visible_outside_goal = function (params)
 	local to_position = POSITION_LOOKUP[to_unit]
 	local direction = params.direction or 1 - math.random(0, 1) * 2
 	local delta_up = Vector3.up() * 0.05
-	local result = nil
+	local result
 
 	for j = 1, 2 do
 		for i = 1, max_tries do
@@ -664,7 +672,7 @@ LocomotionUtils.pick_visible_outside_goal = function (params)
 
 			if position then
 				local from_unit_line_of_sight, hit_pos1 = PerceptionUtils.is_position_in_line_of_sight(from_unit, from_node_position, position + delta_up, physics_world)
-				local to_unit_line_of_sight, hit_pos2 = nil
+				local to_unit_line_of_sight, hit_pos2
 
 				if from_unit_line_of_sight then
 					to_unit_line_of_sight, hit_pos2 = PerceptionUtils.is_position_in_line_of_sight(to_unit, to_node_position, position + delta_up, physics_world)
@@ -677,7 +685,7 @@ LocomotionUtils.pick_visible_outside_goal = function (params)
 					for i = 1, num_directions do
 						local check_direction = radius_check_directions[i]:unbox()
 						local check_end_position = position + check_direction
-						local hit, hit_position = nil
+						local hit, hit_position
 
 						if traverse_logic then
 							hit, hit_position = GwNavQueries.raycast(nav_world, position, check_end_position, traverse_logic)
@@ -773,6 +781,7 @@ end
 LocomotionUtils.get_close_pos_below_on_mesh = function (nav_world, pos, searches, above, below)
 	above = above or 1
 	below = below or 8
+
 	local failed_points = {}
 	local success, altitude, p1, p2, p3 = GwNavQueries.triangle_from_position(nav_world, pos, above, below)
 
@@ -823,7 +832,7 @@ local circle_points = {
 	0,
 	-1,
 	0.707,
-	-0.707
+	-0.707,
 }
 
 LocomotionUtils.mesh_positions_closest_to_outside_pos = function (nav_world, outside_pos, radius, point_list)
@@ -878,7 +887,7 @@ end
 LocomotionUtils.ray_can_go_on_mesh = function (nav_world, position_start, position_end, traverse_logic, above, below)
 	local projected_start_pos = LocomotionUtils.pos_on_mesh(nav_world, position_start, above, below)
 	local projected_end_pos = projected_start_pos and LocomotionUtils.pos_on_mesh(nav_world, position_end, above, below)
-	local raycango = nil
+	local raycango
 
 	if traverse_logic then
 		raycango = projected_end_pos and GwNavQueries.raycango(nav_world, projected_start_pos, projected_end_pos, traverse_logic)
@@ -892,7 +901,7 @@ end
 LocomotionUtils.raycast_on_navmesh = function (nav_world, position_start, position_end, traverse_logic, above, below, end_pos_nav_projection)
 	local projected_start_pos = LocomotionUtils.pos_on_mesh(nav_world, position_start, above, below)
 	local projected_end_pos = projected_start_pos and (not end_pos_nav_projection and position_end or LocomotionUtils.pos_on_mesh(nav_world, position_end, above, below))
-	local success, hit_position = nil
+	local success, hit_position
 
 	if projected_end_pos then
 		if traverse_logic then
@@ -910,11 +919,12 @@ local FLAT_GROUND_UP_DOT_THRESHOLD = 0.9
 LocomotionUtils.is_on_flat_ground_raycast = function (physics_world, unit_position)
 	local ray_source = unit_position + Vector3.up() * 0.1
 	local hit_ground, _, _, ground_normal = PhysicsWorld.immediate_raycast(physics_world, ray_source, Vector3.down(), 0.15, "closest", "collision_filter", "filter_ai_mover")
-	local is_standing_on_flat_ground = nil
+	local is_standing_on_flat_ground
 
 	if hit_ground then
 		local up_dot = Vector3.dot(ground_normal, Vector3.up())
-		is_standing_on_flat_ground = FLAT_GROUND_UP_DOT_THRESHOLD < up_dot
+
+		is_standing_on_flat_ground = up_dot > FLAT_GROUND_UP_DOT_THRESHOLD
 	end
 
 	return is_standing_on_flat_ground
@@ -928,7 +938,7 @@ local WALL_CHECK_RAYCAST_LENGTH = 1.3
 local WALL_CHECK_RAYCAST_LOW_HEIGHT = 0.4
 
 LocomotionUtils.navmesh_movement_check = function (unit_position, unit_velocity, nav_world, physics_world, traverse_logic)
-	local is_moving = EPSILON_SQ < Vector3.length_squared(unit_velocity)
+	local is_moving = Vector3.length_squared(unit_velocity) > EPSILON_SQ
 	local direction = is_moving and Vector3.normalize(unit_velocity) or Vector3.zero()
 	local target_position = unit_position + direction * NAV_CHECK_DISTANCE
 	local raycango, projected_unit_pos, projected_target_pos = LocomotionUtils.ray_can_go_on_mesh(nav_world, unit_position, target_position, traverse_logic, NAV_CHECK_ABOVE, NAV_CHECK_BELOW)
@@ -936,18 +946,14 @@ LocomotionUtils.navmesh_movement_check = function (unit_position, unit_velocity,
 
 	if not raycango and is_moving then
 		local allowed_to_do_wall_check = LocomotionUtils.is_on_flat_ground_raycast(physics_world, unit_position)
-		local hit_wall, ray_source, hit_position = nil
+		local hit_wall, ray_source, hit_position
 
 		if allowed_to_do_wall_check then
 			ray_source = unit_position + Vector3.up() * WALL_CHECK_RAYCAST_LOW_HEIGHT
 			hit_wall, hit_position = PhysicsWorld.immediate_raycast(physics_world, ray_source, direction, WALL_CHECK_RAYCAST_LENGTH, "closest", "collision_filter", "filter_ai_mover")
 		end
 
-		if hit_wall then
-			result = "navmesh_hit_wall"
-		else
-			result = "navmesh_use_mover"
-		end
+		result = hit_wall and "navmesh_hit_wall" or "navmesh_use_mover"
 	end
 
 	return result
@@ -1063,9 +1069,12 @@ end
 LocomotionUtils.in_crosshairs_dodge = function (unit, blackboard, t, radius, in_crosshairs_time, min_distance, max_distance)
 	min_distance = min_distance or 0
 	max_distance = max_distance or math.huge
+
 	local side = Managers.state.side.side_by_unit[unit]
 	local units = side.ENEMY_PLAYER_AND_BOT_UNITS
+
 	blackboard.aim_times = blackboard.aim_times or {}
+
 	local aim_times = blackboard.aim_times
 	local debug_ai_movement = script_data.debug_ai_movement
 
@@ -1089,7 +1098,7 @@ LocomotionUtils.in_crosshairs_dodge = function (unit, blackboard, t, radius, in_
 			local dist = Vector3.length(to_rat)
 			local miss_vec = to_rat - aim_direction * dist
 			local aim_distance = Vector3.length(miss_vec)
-			local bulls_eye = nil
+			local bulls_eye
 
 			if aim_distance < radius and min_distance < dist and dist < max_distance then
 				local rot = Unit.local_rotation(unit, 0)
@@ -1143,12 +1152,13 @@ end
 
 LocomotionUtils.on_alerted_dodge = function (unit, blackboard, alerting_unit, enemy_unit)
 	local pos = Unit.world_position(unit, Unit.node(unit, "j_neck"))
-	local enemy_pos, rotation = nil
+	local enemy_pos, rotation
 	local real_attacker_unit = AiUtils.get_actual_attacker_unit(enemy_unit)
 
 	if DamageUtils.is_player_unit(real_attacker_unit) then
 		local locomotion_extension = ScriptUnit.has_extension(real_attacker_unit, "locomotion_system")
 		local node = Unit.has_node(real_attacker_unit, "camera_attach") and Unit.node(real_attacker_unit, "camera_attach")
+
 		rotation = locomotion_extension:current_rotation()
 		enemy_pos = Unit.world_position(real_attacker_unit, node)
 	else
@@ -1173,7 +1183,7 @@ LocomotionUtils.get_vortex_spin_velocity = function (unit_position, center_pos, 
 	local angular_speed = rotation_speed / math.max(current_radius, epsilon)
 	local delta_rotation = angular_speed * dt
 	local new_rotation = Quaternion.axis_angle(up_direction, delta_rotation)
-	local new_radius = nil
+	local new_radius
 
 	if wanted_radius < current_radius then
 		new_radius = math.max(current_radius - radius_change_speed * dt, wanted_radius)
@@ -1246,7 +1256,7 @@ LocomotionUtils.check_start_turning = function (unit, t, dt, blackboard)
 		return
 	end
 
-	local start_anim = nil
+	local start_anim
 
 	if abs_fwd_dot < abs_right_dot then
 		if right_dot > 0 then

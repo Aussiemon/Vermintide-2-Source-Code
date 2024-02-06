@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/unit_extensions/ai_supplementary/shadow_dagger_extension.lua
+
 ShadowDaggerExtension = class(ShadowDaggerExtension)
+
 local DAGGER_DURATION = 10
 
 ShadowDaggerExtension.init = function (self, extension_init_context, unit, extension_init_data)
@@ -23,7 +26,7 @@ ShadowDaggerExtension.update = function (self, unit, input, dt, context, t)
 
 	if not unit_alive then
 		self._done = true
-	elseif DAGGER_DURATION < current_life_time then
+	elseif current_life_time > DAGGER_DURATION then
 		Managers.state.unit_spawner:mark_for_deletion(unit)
 
 		self._done = true

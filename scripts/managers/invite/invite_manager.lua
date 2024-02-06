@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/managers/invite/invite_manager.lua
+
 InviteManager = class(InviteManager)
+
 local REFRESH_TIME = 1
 
 InviteManager.init = function (self)
@@ -47,12 +50,12 @@ InviteManager._handle_invitation = function (self, invite_type, lobby_id, params
 	elseif invite_type == Friends.INVITE_SERVER then
 		print("Got invite to server from " .. invitee)
 
-		local lobby_data = {
-			is_server_invite = true,
-			id = lobby_id,
-			server_info = {
-				ip_port = lobby_id
-			}
+		local lobby_data = {}
+
+		lobby_data.is_server_invite = true
+		lobby_data.id = lobby_id
+		lobby_data.server_info = {
+			ip_port = lobby_id,
 		}
 		self.lobby_data = lobby_data
 	end
@@ -69,7 +72,7 @@ InviteManager._update_pending_lobby_data = function (self, dt, t)
 	local invitee = self._pending_lobby_data.invitee
 	local lobby_data = SteamMisc.get_lobby_data(lobby_id)
 
-	if not table.is_empty(lobby_data) and self._refresh_timer < t then
+	if not table.is_empty(lobby_data) and t > self._refresh_timer then
 		table.clear(self._pending_lobby_data)
 		self:_handle_invitation(invite_type, lobby_id, params, invitee, lobby_data)
 	end
@@ -87,6 +90,7 @@ end
 
 InviteManager.get_invited_lobby_data = function (self)
 	local lobby_data = self.lobby_data
+
 	self.lobby_data = nil
 
 	return lobby_data
@@ -94,6 +98,7 @@ end
 
 InviteManager.set_invited_lobby_data = function (self, lobby_id)
 	local lobby_data = LobbyInternal.get_lobby_data_from_id(lobby_id)
+
 	lobby_data.id = lobby_id
 	self.lobby_data = lobby_data
 end

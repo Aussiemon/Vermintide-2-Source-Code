@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/utils/hit_reactions_template_compiler.lua
+
 require("scripts/managers/status_effect/status_effect_templates")
 dofile("scripts/settings/hit_effects/hit_effects_skaven_clan_rat")
 dofile("scripts/settings/hit_effects/hit_effects_skaven_slave")
@@ -37,10 +39,10 @@ Dismemberments = {}
 HitTemplates = {}
 SoundEvents = {}
 DismemberFlowEvents = {
-	explode_head = true
+	explode_head = true,
 }
 AdditionalHitReactions = {
-	"HitEffectsSkavenGreySeerMounted"
+	"HitEffectsSkavenGreySeerMounted",
 }
 
 local function setup_dismemberment_table(breed_name, hit_zones)
@@ -52,6 +54,7 @@ local function setup_dismemberment_table(breed_name, hit_zones)
 
 	for hit_zone, _ in pairs(hit_zones) do
 		local event_name = "dismember_" .. hit_zone
+
 		events[hit_zone] = event_name
 		DismemberFlowEvents[event_name] = true
 	end
@@ -61,10 +64,10 @@ end
 
 local function add_to_sound_events_table(sound_event)
 	if not SoundEvents[sound_event] then
-		local events = {
-			["false"] = sound_event,
-			["true"] = sound_event .. "_husk"
-		}
+		local events = {}
+
+		events["false"] = sound_event
+		events["true"] = sound_event .. "_husk"
 		SoundEvents[sound_event] = events
 	end
 end
@@ -142,8 +145,9 @@ local function compile_effects_templates(template)
 
 	for name, template_rule in pairs(templates) do
 		local new_template_rule = compile_template_rule(template_rule, templates, {
-			name
+			name,
 		})
+
 		new_template_rule.template_name = name
 
 		insert_sorted(new_templates, new_template_rule)

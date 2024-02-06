@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/camera/camera_system.lua
+
 require("scripts/unit_extensions/camera/generic_camera_extension")
 require("scripts/unit_extensions/camera/states/camera_state_helper")
 require("scripts/unit_extensions/camera/states/camera_state")
@@ -15,11 +17,12 @@ require("scripts/unit_extensions/camera/states/camera_state_interaction")
 require("scripts/unit_extensions/camera/states/camera_state_observer_spectator")
 
 CameraSystem = class(CameraSystem, ExtensionSystemBase)
+
 local extensions = {
-	"GenericCameraExtension"
+	"GenericCameraExtension",
 }
 local RPCS = {
-	"rpc_set_observer_camera"
+	"rpc_set_observer_camera",
 }
 
 CameraSystem.init = function (self, context, system_name)
@@ -27,6 +30,7 @@ CameraSystem.init = function (self, context, system_name)
 
 	self.camera_units = {}
 	self.input_manager = context.input_manager
+
 	local network_event_delegate = context.network_event_delegate
 
 	network_event_delegate:register(self, unpack(RPCS))
@@ -143,11 +147,11 @@ CameraSystem._setup_camera_unit = function (self, player, viewport_name)
 	local extension_init_data = {
 		camera_state_machine_system = {
 			start_state = "idle",
-			camera_state_class_list = camera_state_class_list
+			camera_state_class_list = camera_state_class_list,
 		},
 		camera_system = {
-			player = player
-		}
+			player = player,
+		},
 	}
 	local camera_unit = Managers.state.unit_spawner:spawn_local_unit_with_extensions(unit_name, unit_template_name, extension_init_data, position, rotation)
 	local camera_ext = ScriptUnit.extension(camera_unit, "camera_system")

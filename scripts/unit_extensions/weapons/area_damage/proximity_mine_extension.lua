@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/weapons/area_damage/proximity_mine_extension.lua
+
 ProximityMineExtension = class(ProximityMineExtension)
 
 ProximityMineExtension.init = function (self, extension_init_context, unit, extension_init_data)

@@ -1,13 +1,16 @@
+﻿-- chunkname: @scripts/settings/dlcs/cog/action_charged_sweep.lua
+
 ActionChargedSweep = class(ActionChargedSweep, ActionSweep)
 
 ActionChargedSweep.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
 	ActionChargedSweep.super.init(self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
 
 	local overcharge_extension = ScriptUnit.extension(owner_unit, "overcharge_system")
+
 	self.overcharge_level_map = {
 		overcharge_extension.overcharge_threshold,
 		overcharge_extension.overcharge_limit,
-		overcharge_extension.overcharge_critical_limit
+		overcharge_extension.overcharge_critical_limit,
 	}
 	self.overcharge_map_size = #self.overcharge_level_map
 	self.overcharge_extension = overcharge_extension
@@ -17,12 +20,14 @@ ActionChargedSweep.client_owner_start_action = function (self, new_action, t, ch
 	action_init_data = action_init_data or {}
 	self._overcharge_type = nil
 	self._consume_overcharge = false
-	local discharge_effect = nil
+
+	local discharge_effect
 	local overcharge_extension = self.overcharge_extension
 
 	if new_action.discharge_attack then
 		local value = overcharge_extension:get_overcharge_value()
 		local overcharge_level = self:get_overcharge_level(value)
+
 		discharge_effect = self:get_discharge_effect(new_action, overcharge_level)
 
 		if discharge_effect then
@@ -57,7 +62,7 @@ ActionChargedSweep.get_overcharge_level = function (self, value)
 	local overcharge_map = self.overcharge_level_map
 
 	for i = self.overcharge_map_size, 1, -1 do
-		if overcharge_map[i] <= value then
+		if value >= overcharge_map[i] then
 			return i + 1
 		end
 	end
@@ -95,11 +100,13 @@ end
 
 ActionChargedSweep._send_attack_hit = function (self, t, damage_source_id, attacker_unit_id, hit_unit_id, hit_zone_id, hit_position, attack_direction, damage_profile_id, ...)
 	local first_alive_hit = false
-	local hit_unit = nil
+	local hit_unit
 
-	if self._time_to_hit < t and self._number_of_hit_enemies == 1 then
+	if t > self._time_to_hit and self._number_of_hit_enemies == 1 then
 		hit_unit = self._network_manager:game_object_or_level_unit(hit_unit_id)
+
 		local target_health_extension = ScriptUnit.has_extension(hit_unit, "health_system")
+
 		first_alive_hit = target_health_extension and target_health_extension:client_predicted_is_alive()
 	end
 

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/human/player_bot_unit/player_bot_base.lua
+
 require("scripts/unit_extensions/human/ai_player_unit/ai_brain")
 
 local unit_alive = Unit.alive
@@ -27,7 +29,7 @@ local VORTEX_ESCAPE_DISTANCE = 10
 local VORTEX_ESCAPE_STICKINESS_WEIGHT = 0.75
 local VORTEX_ESCAPE_RE_EVALUATE_DISTANCE_SQ = 1
 local VORTEX_ESCAPE_RE_EVALUATE_REACHED_DISTANCE_SQ = 0.01
-local SELF_UNIT = nil
+local SELF_UNIT
 
 local function dprint(...)
 	if SELF_UNIT == script_data.debug_unit and script_data.ai_bots_debug then
@@ -61,18 +63,21 @@ end
 
 PlayerBotBase.init = function (self, extension_init_context, unit, extension_init_data)
 	local world = extension_init_context.world
+
 	self._world = world
 	self._unit = unit
 	self._nav_world = extension_init_data.nav_world
 	self._enemy_broadphase = Managers.state.entity:system("ai_system").broadphase
+
 	local override_box = Vector3Box(Vector3(0, 0, 0))
+
 	override_box.value_stored = false
 	self.is_bot = true
 	self._t = 0
 	self._blackboard = {
+		is_passive = true,
 		target_ally_needs_aid = false,
 		using_navigation_destination_override = false,
-		is_passive = true,
 		re_evaluate_detection = Math.random() * 0.5,
 		world = world,
 		unit = unit,
@@ -85,7 +90,7 @@ PlayerBotBase.init = function (self, extension_init_context, unit, extension_ini
 		follow = {
 			needs_target_position_refresh = true,
 			follow_timer = math.lerp(FOLLOW_TIMER_LOWER_BOUND, FOLLOW_TIMER_UPPER_BOUND, Math.random()),
-			target_position = Vector3Box(POSITION_LOOKUP[unit])
+			target_position = Vector3Box(POSITION_LOOKUP[unit]),
 		},
 		target_ally_aid_destination = Vector3Box(),
 		navigation_destination_override = override_box,
@@ -94,7 +99,7 @@ PlayerBotBase.init = function (self, extension_init_context, unit, extension_ini
 		navigation_vortex_escape_previous_evaluation_position = Vector3Box(),
 		activate_ability_data = {
 			is_using_ability = false,
-			aim_position = Vector3Box()
+			aim_position = Vector3Box(),
 		},
 		hit_by_projectile = {},
 		proximity_target_distance = math.huge,
@@ -105,50 +110,54 @@ PlayerBotBase.init = function (self, extension_init_context, unit, extension_ini
 			threats = {},
 			active_threats = {},
 			cover_position = Vector3Box(Vector3.invalid_vector()),
-			failed_cover_points = {}
-		}
+			failed_cover_points = {},
+		},
 	}
+
 	local up = Vector3.up()
 	local vortex_escape_directions = {
 		{
 			weight = 0.5,
-			direction = Vector3Box(Quaternion.forward(Quaternion(up, -math.pi * 4 / 8)))
+			direction = Vector3Box(Quaternion.forward(Quaternion(up, -math.pi * 4 / 8))),
 		},
 		{
 			weight = 0.75,
-			direction = Vector3Box(Quaternion.forward(Quaternion(up, -math.pi * 3 / 8)))
+			direction = Vector3Box(Quaternion.forward(Quaternion(up, -math.pi * 3 / 8))),
 		},
 		{
 			weight = 1,
-			direction = Vector3Box(Quaternion.forward(Quaternion(up, -math.pi * 2 / 8)))
+			direction = Vector3Box(Quaternion.forward(Quaternion(up, -math.pi * 2 / 8))),
 		},
 		{
 			weight = 0.7,
-			direction = Vector3Box(Quaternion.forward(Quaternion(up, -math.pi * 1 / 8)))
+			direction = Vector3Box(Quaternion.forward(Quaternion(up, -math.pi * 1 / 8))),
 		},
 		{
 			weight = 0.6,
-			direction = Vector3Box(Quaternion.forward(Quaternion(up, math.pi * 0 / 8)))
+			direction = Vector3Box(Quaternion.forward(Quaternion(up, math.pi * 0 / 8))),
 		},
 		{
 			weight = 0.7,
-			direction = Vector3Box(Quaternion.forward(Quaternion(up, math.pi * 1 / 8)))
+			direction = Vector3Box(Quaternion.forward(Quaternion(up, math.pi * 1 / 8))),
 		},
 		{
 			weight = 1,
-			direction = Vector3Box(Quaternion.forward(Quaternion(up, math.pi * 2 / 8)))
+			direction = Vector3Box(Quaternion.forward(Quaternion(up, math.pi * 2 / 8))),
 		},
 		{
 			weight = 0.75,
-			direction = Vector3Box(Quaternion.forward(Quaternion(up, math.pi * 3 / 8)))
+			direction = Vector3Box(Quaternion.forward(Quaternion(up, math.pi * 3 / 8))),
 		},
 		{
 			weight = 0.5,
-			direction = Vector3Box(Quaternion.forward(Quaternion(up, math.pi * 4 / 8)))
-		}
+			direction = Vector3Box(Quaternion.forward(Quaternion(up, math.pi * 4 / 8))),
+		},
 	}
+
 	self._vortex_escape_directions = vortex_escape_directions
+
 	local largest_vortex_weight = find_max_weight(vortex_escape_directions)
+
 	self._vortex_largest_weighted_distance_sq = largest_vortex_weight * VORTEX_ESCAPE_DISTANCE^2
 	self._bot_profile = extension_init_data.bot_profile
 	self._player = extension_init_data.player
@@ -174,7 +183,7 @@ PlayerBotBase.init = function (self, extension_init_context, unit, extension_ini
 		index = 1,
 		path_failed = false,
 		rotation = QuaternionBox(),
-		path_position = Vector3Box()
+		path_position = Vector3Box(),
 	}
 	self._last_mule_pickup_attempt = {
 		blacklist = false,
@@ -182,7 +191,7 @@ PlayerBotBase.init = function (self, extension_init_context, unit, extension_ini
 		index = 1,
 		path_failed = false,
 		rotation = QuaternionBox(),
-		path_position = Vector3Box()
+		path_position = Vector3Box(),
 	}
 end
 
@@ -191,6 +200,7 @@ PlayerBotBase.ranged_attack_started = function (self, attacking_unit, victim_uni
 
 	if attack_type == "ratling_gun_fire" then
 		local targets = blackboard.taking_cover.threats
+
 		targets[attacking_unit] = victim_unit
 	end
 end
@@ -200,12 +210,14 @@ PlayerBotBase.ranged_attack_ended = function (self, attacking_unit, victim_unit,
 
 	if attack_type == "ratling_gun_fire" then
 		local targets = blackboard.taking_cover.threats
+
 		targets[attacking_unit] = nil
 	end
 end
 
 PlayerBotBase.hit_by_projectile = function (self, attacking_unit)
 	local blackboard = self._blackboard
+
 	blackboard.hit_by_projectile[attacking_unit] = self._t
 end
 
@@ -251,6 +263,7 @@ PlayerBotBase.extensions_ready = function (self, world, unit)
 	local career_extension = ScriptUnit.extension(unit, "career_system")
 	local ai_slot_extension = ScriptUnit.extension(unit, "ai_slot_system")
 	local ai_commander_extension = ScriptUnit.extension(unit, "ai_commander_system")
+
 	self._health_extension = health_ext
 	self._status_extension = status_ext
 	self._locomotion_extension = locomotion_ext
@@ -290,6 +303,7 @@ end
 
 PlayerBotBase.update = function (self, unit, input, dt, context, t)
 	self._t = t
+
 	local status_extension = self._status_extension
 	local locomotion_extension = self._locomotion_extension
 	local is_alive = HEALTH_ALIVE[self._unit]
@@ -328,6 +342,7 @@ PlayerBotBase._update_blackboard = function (self, dt, t)
 	local bb = self._blackboard
 	local status_extension = self._status_extension
 	local locomotion_extension = self._locomotion_extension
+
 	bb.is_knocked_down = status_extension:is_knocked_down()
 	bb.is_grabbed_by_pack_master = status_extension:is_grabbed_by_pack_master()
 	bb.is_pounced_down = status_extension:is_pounced_down()
@@ -335,6 +350,7 @@ PlayerBotBase._update_blackboard = function (self, dt, t)
 	bb.is_ledge_hanging = status_extension:get_is_ledge_hanging()
 	bb.is_transported = status_extension:is_using_transport() or locomotion_extension:get_moving_platform()
 	bb.is_grabbed_by_chaos_spawn = status_extension:is_grabbed_by_chaos_spawn()
+
 	local unit = self._unit
 	local target_unit = bb.target_unit
 
@@ -399,20 +415,25 @@ local BROADPHASE_QUERY_TEMP = {}
 PlayerBotBase._update_proximity_target = function (self, dt, t, self_position)
 	local blackboard = self._blackboard
 
-	if self._proximity_target_update_timer < t then
+	if t > self._proximity_target_update_timer then
 		local self_unit = self._unit
+
 		self._proximity_target_update_timer = t + 0.25 + Math.random() * 0.15
+
 		local prox_enemies = blackboard.proximite_enemies
 
 		table.clear(prox_enemies)
 
 		local check_range = PROXIMITY_CHECK_RANGE
+
 		blackboard.aggressive_mode = false
 		blackboard.force_aid = false
-		local search_position = nil
+
+		local search_position
 
 		if ALIVE[blackboard.target_ally_unit] and blackboard.target_ally_needs_aid and self:within_aid_range(blackboard) then
 			search_position = POSITION_LOOKUP[blackboard.target_ally_unit]
+
 			local ai_bot_group_system = Managers.state.entity:system("ai_bot_group_system")
 			local is_prioritized = ai_bot_group_system:is_prioritized_ally(self_unit, blackboard.target_ally_unit)
 			local is_reviving = blackboard.current_interaction_unit == blackboard.target_ally_unit
@@ -434,7 +455,7 @@ PlayerBotBase._update_proximity_target = function (self, dt, t, self_position)
 		local side = blackboard.side
 		local num_hits = Broadphase.query(self._enemy_broadphase, search_position, check_range, BROADPHASE_QUERY_TEMP, side.enemy_broadphase_categories)
 		local closest_dist = math.huge
-		local closest_enemy = nil
+		local closest_enemy
 		local closest_real_dist = math.huge
 
 		for PLAYER_UNIT, _ in pairs(side.VALID_ENEMY_TARGETS_PLAYERS_AND_BOTS) do
@@ -454,10 +475,11 @@ PlayerBotBase._update_proximity_target = function (self, dt, t, self_position)
 				if self:_target_valid(unit, enemy_offset) then
 					prox_enemies[index] = unit
 					index = index + 1
+
 					local enemy_real_dist = Vector3.length(enemy_offset)
 					local enemy_dist = enemy_real_dist + (unit == blackboard.target_unit and STICKYNESS_DISTANCE_MODIFIER or 0)
 
-					if closest_dist > enemy_dist then
+					if enemy_dist < closest_dist then
 						closest_enemy = unit
 						closest_dist = enemy_dist
 						closest_real_dist = enemy_real_dist
@@ -494,7 +516,7 @@ PlayerBotBase._target_valid = function (self, unit, enemy_offset)
 
 	local up_dot_product = Vector3.dot(Vector3.up(), Vector3.normalize(enemy_offset))
 
-	if PROXIMITY_UP_DOWN_THRESHOLD < up_dot_product or up_dot_product < -PROXIMITY_UP_DOWN_THRESHOLD then
+	if up_dot_product > PROXIMITY_UP_DOWN_THRESHOLD or up_dot_product < -PROXIMITY_UP_DOWN_THRESHOLD then
 		return false
 	end
 
@@ -528,7 +550,7 @@ PlayerBotBase._update_slot_target = function (self, dt, t, self_position)
 
 	local side = Managers.state.side.side_by_unit[unit]
 	local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
-	local best_target = nil
+	local best_target
 	local best_dist = math.huge
 
 	for k = 1, #player_and_bot_units do
@@ -560,7 +582,7 @@ local SLOT_TYPES = table.keys(SlotTypeSettings)
 
 PlayerBotBase._get_closest_target_in_slot = function (self, position, unit, current_enemy_unit, is_self)
 	local ai_slot_system = Managers.state.entity:system("ai_slot_system")
-	local best_target = nil
+	local best_target
 	local target_dist = math.huge
 
 	for i = 1, #SLOT_TYPES do
@@ -586,7 +608,7 @@ PlayerBotBase._get_closest_target_in_slot = function (self, position, unit, curr
 						end
 					end
 
-					if target_dist > dist then
+					if dist < target_dist then
 						best_target = enemy_unit
 						target_dist = dist
 					end
@@ -599,11 +621,12 @@ PlayerBotBase._get_closest_target_in_slot = function (self, position, unit, curr
 end
 
 PlayerBotBase._alter_target_position = function (self, nav_world, self_position, target_unit, target_position, reason)
-	local wanted_position, should_stop = nil
+	local wanted_position, should_stop
 
 	if reason == "ledge" then
 		local rotation = Unit.local_rotation(target_unit, 0)
 		local forward_vector_flat = Vector3.normalize(Vector3.flat(Quaternion.forward(rotation)))
+
 		wanted_position = target_position - forward_vector_flat * 0.5
 	elseif reason == "in_need_of_heal" or reason == "can_accept_grenade" or reason == "can_accept_potion" or reason == "can_accept_heal_item" then
 		local target_locomotion_extension = ScriptUnit.extension(target_unit, "locomotion_system")
@@ -627,8 +650,7 @@ PlayerBotBase._alter_target_position = function (self, nav_world, self_position,
 		return wanted_position, should_stop
 	end
 
-	local above = 0.5
-	local below = 3
+	local above, below = 0.5, 3
 	local success, z = GwNavQueries.triangle_from_position(nav_world, wanted_position, above, below)
 
 	if success then
@@ -648,8 +670,7 @@ PlayerBotBase._alter_target_position = function (self, nav_world, self_position,
 end
 
 PlayerBotBase._find_target_position_on_nav_mesh = function (self, nav_world, wanted_position)
-	local above = 0.5
-	local below = 0.5
+	local above, below = 0.5, 0.5
 	local success, z = GwNavQueries.triangle_from_position(nav_world, wanted_position, above, below)
 
 	if success then
@@ -670,7 +691,7 @@ PlayerBotBase._update_target_ally = function (self, dt, t)
 	local unit = self._unit
 	local blackboard = self._blackboard
 	local breed = self._bot_profile
-	local best_ally, ally_dist, in_need_type, look_at_ally = nil
+	local best_ally, ally_dist, in_need_type, look_at_ally
 
 	if blackboard.target_unit and blackboard.target_unit == blackboard.priority_target_enemy then
 		best_ally = blackboard.priority_target_disabled_ally
@@ -750,21 +771,23 @@ PlayerBotBase._player_needs_attention = function (self, self_unit, player_unit, 
 	local velocity_normalized = Vector3.normalize(velocity)
 	local speed_sq = Vector3.length_squared(velocity)
 	local player_direction_dot = Vector3.dot(player_to_self_direction, player_velocity_normalized)
-	local is_heading_towards_us = MIN_HEADING_TOWARDS_US_DOT < player_direction_dot
-	local is_heading_towards_player = nil
+	local is_heading_towards_us = player_direction_dot > MIN_HEADING_TOWARDS_US_DOT
+	local is_heading_towards_player
 
 	if speed_sq > 0.01 then
 		local bot_direction_dot = Vector3.dot(player_to_self_direction, velocity_normalized)
+
 		is_heading_towards_player = bot_direction_dot <= MIN_HEADING_TOWARDS_US_DOT
 	else
 		is_heading_towards_player = false
 	end
 
-	local look_threshold, stop_threshold = nil
+	local look_threshold, stop_threshold
 	local safe_stop_distance = ATTENTION_SAFE_TO_STOP_DISTANCE
 
 	if is_heading_towards_us and player_wielded_slot == "slot_healthkit" and (interested_in_heal or can_receive_item) then
 		local health_term = (1 - health_percent) * 0.2
+
 		stop_threshold = 0.5 - health_term
 		look_threshold = 0.25
 		safe_stop_distance = safe_stop_distance + math.sqrt(player_speed_sq)
@@ -815,10 +838,10 @@ end
 
 PlayerBotBase._select_ally_by_utility = function (self, unit, blackboard, breed, t)
 	local self_pos = POSITION_LOOKUP[unit]
-	local closest_ally = nil
+	local closest_ally
 	local closest_dist = math.huge
 	local closest_real_dist = math.huge
-	local closest_in_need_type = nil
+	local closest_in_need_type
 	local closest_ally_look_at = false
 	local buff_extension = ScriptUnit.extension(unit, "buff_system")
 	local inventory_extension = blackboard.inventory_extension
@@ -831,11 +854,13 @@ PlayerBotBase._select_ally_by_utility = function (self, unit, blackboard, breed,
 		local self_wounded = self._status_extension:is_wounded()
 		local template = inventory_extension:get_item_template(health_slot_data)
 		local has_no_permanent_health_from_item_buff = buff_extension:has_buff_type("trait_necklace_no_healing_health_regen")
+
 		can_heal_other = template.can_heal_other
 		can_give_healing_to_other = template.can_give_other
 
 		if not has_no_permanent_health_from_item_buff or self_wounded then
 			local self_permanent_health_percent = self._health_extension:current_permanent_health_percent()
+
 			self_health_utiliy = self:_calculate_healing_item_utility(self_permanent_health_percent, self_wounded, can_give_healing_to_other) + SELF_HEAL_STICKINESS
 		end
 	end
@@ -845,6 +870,7 @@ PlayerBotBase._select_ally_by_utility = function (self, unit, blackboard, breed,
 
 	if grenade_slot_data then
 		local template = inventory_extension:get_item_template(grenade_slot_data)
+
 		can_give_grenade_to_other = template.can_give_other
 	end
 
@@ -853,6 +879,7 @@ PlayerBotBase._select_ally_by_utility = function (self, unit, blackboard, breed,
 
 	if potion_slot_data then
 		local template = inventory_extension:get_item_template(potion_slot_data)
+
 		can_give_potion_to_other = template.can_give_other
 	end
 
@@ -875,7 +902,7 @@ PlayerBotBase._select_ally_by_utility = function (self, unit, blackboard, breed,
 				local player = Managers.player:owner(player_unit)
 				local is_bot = not player:is_player_controlled()
 				local heal_player_preference = is_bot and 0 or PLAYER_HEAL_STICKYBESS
-				local in_need_type = nil
+				local in_need_type
 
 				if status_ext:is_knocked_down() then
 					in_need_type = "knocked_down"
@@ -954,7 +981,7 @@ PlayerBotBase._select_ally_by_utility = function (self, unit, blackboard, breed,
 							local real_dist = Vector3.distance(self_pos, target_pos)
 							local dist = real_dist - utility
 
-							if closest_dist > dist then
+							if dist < closest_dist then
 								closest_dist = dist
 								closest_real_dist = real_dist
 								closest_ally = player_unit
@@ -1000,7 +1027,7 @@ PlayerBotBase._update_liquid_escape = function (self)
 		local rim_nodes, is_array = liquid_extension:get_rim_nodes()
 		local bot_position = POSITION_LOOKUP[unit]
 		local best_distance_sq = math.huge
-		local best_position = nil
+		local best_position
 
 		if is_array then
 			local num_nodes = #rim_nodes
@@ -1037,11 +1064,11 @@ PlayerBotBase._update_liquid_escape = function (self)
 end
 
 PlayerBotBase._should_re_evaluate_vortex_escape = function (self, current_position, previous_check_position, navigation_extension, vortex_unit)
-	local re_evaluate_destination = false
-	local escape_completed = nil
+	local re_evaluate_destination, escape_completed = false
 
 	if ALIVE[vortex_unit] then
 		local vortex_extension = ScriptUnit.extension(vortex_unit, "ai_supplementary_system")
+
 		escape_completed = not vortex_extension:is_position_inside(current_position, VORTEX_ESCAPE_DISTANCE)
 	else
 		escape_completed = true
@@ -1050,14 +1077,15 @@ PlayerBotBase._should_re_evaluate_vortex_escape = function (self, current_positi
 	if not escape_completed then
 		local traversed_distance_sq = Vector3.distance_squared(previous_check_position, current_position)
 		local destination_reached = navigation_extension:destination_reached()
-		re_evaluate_destination = VORTEX_ESCAPE_RE_EVALUATE_DISTANCE_SQ <= traversed_distance_sq or destination_reached and VORTEX_ESCAPE_RE_EVALUATE_REACHED_DISTANCE_SQ <= traversed_distance_sq
+
+		re_evaluate_destination = traversed_distance_sq >= VORTEX_ESCAPE_RE_EVALUATE_DISTANCE_SQ or destination_reached and traversed_distance_sq >= VORTEX_ESCAPE_RE_EVALUATE_REACHED_DISTANCE_SQ
 	end
 
 	return re_evaluate_destination, escape_completed
 end
 
 PlayerBotBase._find_vortex_escape_destination = function (self, start_position, rotation, nav_world, traverse_logic, best_weighted_distance_sq, largest_weighted_distance_sq)
-	local best_weight, best_destination = nil
+	local best_weight, best_destination
 	local vortex_escape_directions = self._vortex_escape_directions
 	local num_directions = #vortex_escape_directions
 
@@ -1093,12 +1121,12 @@ PlayerBotBase._update_vortex_escape = function (self)
 	local use_vortex_escape_destination = blackboard.use_vortex_escape_destination
 	local navigation_extension = blackboard.navigation_extension
 	local is_disabled = status_extension:is_disabled()
-	local re_evaluate_destination = false
-	local escape_completed = false
+	local re_evaluate_destination, escape_completed = false, false
 
 	if use_vortex_escape_destination then
 		local current_vortex_escape_unit = blackboard.vortex_escape_unit
 		local previous_check_position = blackboard.navigation_vortex_escape_previous_evaluation_position:unbox()
+
 		re_evaluate_destination, escape_completed = self:_should_re_evaluate_vortex_escape(self_position, previous_check_position, navigation_extension, current_vortex_escape_unit)
 	end
 
@@ -1116,6 +1144,7 @@ PlayerBotBase._update_vortex_escape = function (self)
 				local current_escape_destination = blackboard.navigation_vortex_escape_destination_override:unbox()
 				local current_escape_weight = blackboard.navigation_vortex_escape_weight + VORTEX_ESCAPE_STICKINESS_WEIGHT
 				local current_escape_weight_sq = current_escape_weight^2
+
 				best_weighted_distance_sq = Vector3.distance_squared(self_position, current_escape_destination) * current_escape_weight_sq
 
 				if largest_weighted_distance_sq <= best_weighted_distance_sq then
@@ -1157,8 +1186,10 @@ end
 PlayerBotBase._update_pickups = function (self, dt, t)
 	local unit = self._unit
 	local blackboard = self._blackboard
+
 	blackboard.needs_ammo = false
 	blackboard.has_ammo_missing = false
+
 	local target_unit = blackboard.priority_target_enemy or blackboard.target_unit
 	local has_target = ALIVE[target_unit]
 	local ammo_percentage = has_target and 0.1 or 0.9
@@ -1168,6 +1199,7 @@ PlayerBotBase._update_pickups = function (self, dt, t)
 	if current and current < num_max then
 		local ai_bot_group_system = Managers.state.entity:system("ai_bot_group_system")
 		local has_ammo_pickup_order = ai_bot_group_system:get_ammo_pickup_order_unit(unit) ~= nil
+
 		blackboard.needs_ammo = has_ammo_pickup_order or ammo_percentage > current / num_max
 		blackboard.has_ammo_missing = current ~= num_max
 	end
@@ -1178,8 +1210,9 @@ local INTERACTABLES_BROADPHASE_QUERY_RESULTS = {}
 PlayerBotBase._update_interactables = function (self, dt, t)
 	local blackboard = self._blackboard
 
-	if self._interactable_timer < t then
+	if t > self._interactable_timer then
 		self._interactable_timer = t + 0.2 + Math.random() * 0.15
+
 		local door_ext = blackboard.interaction_unit and ScriptUnit.has_extension(blackboard.interaction_unit, "door_system")
 
 		if door_ext and blackboard.interaction_unit ~= blackboard.target_ally_unit then
@@ -1195,9 +1228,9 @@ PlayerBotBase._update_interactables = function (self, dt, t)
 
 		local self_pos = POSITION_LOOKUP[self._unit]
 		local num_doors = Managers.state.entity:system("door_system"):get_doors(self_pos, 1.5, INTERACTABLES_BROADPHASE_QUERY_RESULTS)
-		local best_unit = nil
+		local best_unit
 		local best_dist = math.huge
-		local best_interaction_type = nil
+		local best_interaction_type
 
 		for i = 1, num_doors do
 			local hit_unit = INTERACTABLES_BROADPHASE_QUERY_RESULTS[i]
@@ -1238,9 +1271,12 @@ PlayerBotBase._find_cover = function (self, take_cover_targets, self_pos, max_ra
 
 	for unit, _ in pairs(take_cover_targets) do
 		local unit_pos = POSITION_LOOKUP[unit]
+
 		AVOID_POINTS_TEMP_TABLE[#AVOID_POINTS_TEMP_TABLE + 1] = unit_pos
+
 		local offset = Vector3.flat(self_pos - unit_pos)
 		local normalized_offset = Vector3.normalize(offset)
+
 		offset_vector = offset_vector + normalized_offset
 		allow_forward_distance = math.min(allow_forward_distance, 0.5 * Vector3.length(offset))
 	end
@@ -1266,7 +1302,7 @@ local function line_of_fire_check(from, to, p, width, length)
 
 	local direct_dist = Vector3.length(diff - lateral_dist * dir)
 
-	if math.min(lateral_dist, width) < direct_dist then
+	if direct_dist > math.min(lateral_dist, width) then
 		return false
 	else
 		return true
@@ -1316,6 +1352,7 @@ end
 PlayerBotBase.cb_cover_point_path_result = function (self, hash, success, destination)
 	if not success then
 		local cover_bb = self._blackboard.taking_cover
+
 		cover_bb.failed_cover_points[hash] = true
 
 		table.clear(cover_bb.active_threats)
@@ -1323,7 +1360,7 @@ PlayerBotBase.cb_cover_point_path_result = function (self, hash, success, destin
 end
 
 PlayerBotBase._update_cover = function (self, unit, self_pos, blackboard, cover_bb, follow_bb)
-	local cover_position = nil
+	local cover_position
 	local in_line_of_fire, changed = self:_in_line_of_fire(unit, self_pos, cover_bb.threats, cover_bb.active_threats)
 	local bot_group_system = Managers.state.entity:system("ai_bot_group_system")
 
@@ -1332,7 +1369,7 @@ PlayerBotBase._update_cover = function (self, unit, self_pos, blackboard, cover_
 		local radius = math.min(5 + fails * 5, 40)
 		local allowed_forward_dist = radius * 0.4
 		local num_found, hidden_cover_units = self:_find_cover(cover_bb.active_threats, self_pos, radius, allowed_forward_dist)
-		local found_point, found_unit, occupied_cover_unit, occupied_cover_point = nil
+		local found_point, found_unit, occupied_cover_unit, occupied_cover_point
 
 		for i = 1, num_found do
 			local cover_unit = hidden_cover_units[i]
@@ -1392,14 +1429,14 @@ end
 
 PlayerBotBase.new_destination_distance_check = function (self, self_position, previous_destination, new_destination, navigation_extension)
 	local destination_offset = new_destination - previous_destination
-	local destination_offset_ok = Z_MOVE_TO_EPSILON < math.abs(destination_offset.z) or FLAT_MOVE_TO_EPSILON_SQ < Vector3.length_squared(Vector3.flat(destination_offset))
+	local destination_offset_ok = math.abs(destination_offset.z) > Z_MOVE_TO_EPSILON or Vector3.length_squared(Vector3.flat(destination_offset)) > FLAT_MOVE_TO_EPSILON_SQ
 
 	if navigation_extension:destination_reached() then
 		local position_when_destination_reached = navigation_extension:position_when_destination_reached()
 		local previous_pos_offset = self_position - position_when_destination_reached
-		local previous_pos_offset_ok = Z_MOVE_TO_EPSILON < math.abs(previous_pos_offset.z) or FLAT_MOVE_TO_PREVIOUS_POS_EPSILON_SQ < Vector3.length_squared(Vector3.flat(previous_pos_offset))
+		local previous_pos_offset_ok = math.abs(previous_pos_offset.z) > Z_MOVE_TO_EPSILON or Vector3.length_squared(Vector3.flat(previous_pos_offset)) > FLAT_MOVE_TO_PREVIOUS_POS_EPSILON_SQ
 		local new_destination_offset = new_destination - self_position
-		local new_destination_offset_ok = Z_MOVE_TO_EPSILON < math.abs(new_destination_offset.z) or FLAT_MOVE_TO_EPSILON_SQ < Vector3.length_squared(Vector3.flat(new_destination_offset))
+		local new_destination_offset_ok = math.abs(new_destination_offset.z) > Z_MOVE_TO_EPSILON or Vector3.length_squared(Vector3.flat(new_destination_offset)) > FLAT_MOVE_TO_EPSILON_SQ
 
 		return (previous_pos_offset_ok or destination_offset_ok) and new_destination_offset_ok
 	else
@@ -1424,7 +1461,7 @@ PlayerBotBase._update_movement_target = function (self, dt, t)
 	local follow_bb = blackboard.follow
 	local cover_bb = blackboard.taking_cover
 	local cover_position = self:_update_cover(unit, self_pos, blackboard, cover_bb, follow_bb)
-	local transport_unit_override = nil
+	local transport_unit_override
 	local nav_world = self._nav_world
 	local target_ally_unit = blackboard.target_ally_unit
 	local target_ally_need_type = blackboard.target_ally_need_type
@@ -1436,6 +1473,7 @@ PlayerBotBase._update_movement_target = function (self, dt, t)
 
 		if unit_alive(transport_unit) and not blackboard.target_ally_needs_aid then
 			blackboard.ally_inside_transport_unit = transport_unit
+
 			local transportation_ext = ScriptUnit.extension(blackboard.ally_inside_transport_unit, "transportation_system")
 			local has_valid_transportation_unit = transportation_ext.story_state == "stopped_beginning"
 
@@ -1446,6 +1484,7 @@ PlayerBotBase._update_movement_target = function (self, dt, t)
 			blackboard.ally_inside_transport_unit = nil
 		elseif not target_ally_need_type or target_ally_need_type == "in_need_of_attention_stop" or target_ally_need_type == "in_need_of_attention_look" then
 			local ally_locomotion_extension = ScriptUnit.extension(target_ally_unit, "locomotion_system")
+
 			target_ally_has_moved_from_start_position = ally_locomotion_extension.has_moved_from_start_position
 		end
 	else
@@ -1459,7 +1498,7 @@ PlayerBotBase._update_movement_target = function (self, dt, t)
 	local hold_position_offset = hold_position and hold_position - previous_destination
 	local hold_position_offset_z = hold_position_offset and math.abs(hold_position_offset.z)
 	local flat_hold_position_offset_length_sq = hold_position_offset and Vector3.length_squared(Vector3.flat(hold_position_offset))
-	local should_go_back = hold_position_offset and (HOLD_POSITION_MAX_ALLOWED_Z < hold_position_offset_z or hold_position_max_distance_sq < flat_hold_position_offset_length_sq)
+	local should_go_back = hold_position_offset and (hold_position_offset_z > HOLD_POSITION_MAX_ALLOWED_Z or hold_position_max_distance_sq < flat_hold_position_offset_length_sq)
 	local stop_for_vortex = not override_vortex_escape and blackboard.vortex_exist and not navigation_extension:is_path_safe_from_vortex(VORTEX_SAFE_PATH_CHECK_DISTANCE, MIN_ALLOWED_VORTEX_DISTANCE)
 
 	if should_go_back then
@@ -1489,9 +1528,9 @@ PlayerBotBase._update_movement_target = function (self, dt, t)
 	elseif override_vortex_escape or override_liquid_escape or cover_position or override_melee or override_ranged or override_ability then
 		local override = transport_unit_override or override_vortex_escape or override_liquid_escape or cover_position or override_melee or override_ranged or override_ability
 		local offset = override - previous_destination
-		local override_allowed = hold_position == nil or Vector3.distance_squared(hold_position, override) <= hold_position_max_distance_sq
+		local override_allowed = hold_position == nil or hold_position_max_distance_sq >= Vector3.distance_squared(hold_position, override)
 
-		if override_allowed and (Z_MOVE_TO_EPSILON < math.abs(offset.z) or FLAT_MOVE_TO_EPSILON < Vector3.length(Vector3.flat(offset))) then
+		if override_allowed and (math.abs(offset.z) > Z_MOVE_TO_EPSILON or Vector3.length(Vector3.flat(offset)) > FLAT_MOVE_TO_EPSILON) then
 			local should_stop = override_melee and blackboard.melee.stop_at_current_position or override_ranged and blackboard.shoot.stop_at_current_position
 
 			if should_stop then
@@ -1506,6 +1545,7 @@ PlayerBotBase._update_movement_target = function (self, dt, t)
 		end
 	else
 		follow_bb.follow_timer = follow_bb.follow_timer - dt
+
 		local interaction_extension = blackboard.interaction_extension
 		local is_interacting = interaction_extension:is_interacting()
 		local need_to_stop = target_ally_need_type == "in_need_of_attention_stop"
@@ -1519,9 +1559,9 @@ PlayerBotBase._update_movement_target = function (self, dt, t)
 		local has_pickup_order = has_ammo_pickup_order or ai_bot_group_system:has_pending_pickup_order(unit)
 
 		if follow_bb.needs_target_position_refresh and (target_ally_has_moved_from_start_position or has_pickup_order) then
-			local target_position, should_stop = nil
+			local target_position, should_stop
 			local goal_selection_func_name = blackboard.follow.goal_selection_func
-			local path_callback = nil
+			local path_callback
 			local enemy_unit = blackboard.target_unit
 			local priority_target_enemy = blackboard.priority_target_enemy
 			local health_slot_pickup_order = ai_bot_group_system:get_pickup_order(unit, "slot_healthkit")
@@ -1551,10 +1591,13 @@ PlayerBotBase._update_movement_target = function (self, dt, t)
 				path_callback = callback(self, "cb_ally_path_result", target_ally_unit)
 			elseif goal_selection_func_name and ALIVE[target_ally_unit] then
 				local func = LocomotionUtils[goal_selection_func_name]
+
 				target_position = func(nav_world, unit, target_ally_unit)
 			elseif unit_alive(blackboard.health_pickup) and blackboard.allowed_to_take_health_pickup and t < blackboard.health_pickup_valid_until and (self._last_health_pickup_attempt.unit ~= blackboard.health_pickup or not self._last_health_pickup_attempt.blacklist or health_slot_pickup_order_unit == blackboard.health_pickup) then
 				local pickup_unit = blackboard.health_pickup
+
 				target_position = self:_find_pickup_position_on_navmesh(nav_world, self_pos, pickup_unit, self._last_health_pickup_attempt)
+
 				local allowed_to_take_without_path = pickup_unit == health_slot_pickup_order_unit
 
 				if target_position then
@@ -1566,7 +1609,9 @@ PlayerBotBase._update_movement_target = function (self, dt, t)
 				end
 			elseif unit_alive(blackboard.mule_pickup) and (self._last_mule_pickup_attempt.unit ~= blackboard.mule_pickup or not self._last_mule_pickup_attempt.blacklist or potion_slot_pickup_order_unit == blackboard.mule_pickup) then
 				local pickup_unit = blackboard.mule_pickup
+
 				target_position = self:_find_pickup_position_on_navmesh(nav_world, self_pos, pickup_unit, self._last_mule_pickup_attempt)
+
 				local allowed_to_take_without_path = pickup_unit == potion_slot_pickup_order_unit
 
 				if target_position then
@@ -1581,10 +1626,8 @@ PlayerBotBase._update_movement_target = function (self, dt, t)
 			if not target_position and unit_alive(blackboard.ammo_pickup) and blackboard.has_ammo_missing and t < blackboard.ammo_pickup_valid_until then
 				local ammo_position = POSITION_LOOKUP[blackboard.ammo_pickup]
 				local dir = Vector3.normalize(self_pos - ammo_position)
-				local above = 0.5
-				local below = 1.5
-				local lateral = INTERACT_RAY_DISTANCE - 0.3
-				local distance = 0
+				local above, below, lateral, distance = 0.5, 1.5, INTERACT_RAY_DISTANCE - 0.3, 0
+
 				target_position = self:_find_position_on_navmesh(nav_world, ammo_position, ammo_position + dir, above, below, lateral, distance)
 
 				if target_position then
@@ -1643,12 +1686,11 @@ local PICKUP_ROTATIONS = {
 	QuaternionBox(Quaternion(Vector3.up(), -math.pi * 0.5)),
 	QuaternionBox(Quaternion(Vector3.up(), math.pi * 0.75)),
 	QuaternionBox(Quaternion(Vector3.up(), -math.pi * 0.75)),
-	QuaternionBox(Quaternion(Vector3.up(), math.pi))
+	QuaternionBox(Quaternion(Vector3.up(), math.pi)),
 }
 
 PlayerBotBase._find_pickup_position_on_navmesh = function (self, nav_world, self_pos, pickup_unit, pickup_attempt)
-	local above = 1.5
-	local below = 2.2
+	local above, below = 1.5, 2.2
 	local STEP = 0.1
 	local range = INTERACT_RAY_DISTANCE - 0.3
 	local max_index = #PICKUP_ROTATIONS
@@ -1669,13 +1711,15 @@ PlayerBotBase._find_pickup_position_on_navmesh = function (self, nav_world, self
 		local index = pickup_attempt.index
 		local attempt_rotation = pickup_attempt.rotation:unbox()
 		local dist = pickup_attempt.distance
-		local found_position = nil
+		local found_position
 
 		while index <= max_index and not found_position do
 			local rot = Quaternion.multiply(PICKUP_ROTATIONS[index]:unbox(), attempt_rotation)
 			local dir = Quaternion.forward(rot)
+
 			dist = math.min(dist + STEP, 1)
-			local pos = pickup_pos + dir * dist * range
+
+			local pos = pickup_pos + dir * (dist * range)
 			local success, z = GwNavQueries.triangle_from_position(nav_world, pos, above, below)
 
 			if success then
@@ -1758,7 +1802,7 @@ PlayerBotBase._debug_draw_update = function (self, dt)
 	local drawer_name = "bot_debug" .. self._player.player_name
 	local drawer = Managers.state.debug:drawer({
 		mode = "immediate",
-		name = drawer_name
+		name = drawer_name,
 	})
 	local debug_sphere_position = Unit.local_position(self._unit, 0) + Vector3.up() * 2
 	local color = self._player.color:unbox()
@@ -1801,7 +1845,7 @@ PlayerBotBase.cb_enemy_path_result = function (self, enemy_unit, success, destin
 
 	if not path_status then
 		path_status = {
-			last_path_destination = Vector3Box()
+			last_path_destination = Vector3Box(),
 		}
 		paths[enemy_unit] = path_status
 	end
@@ -1860,12 +1904,13 @@ PlayerBotBase.cb_ally_path_result = function (self, ally_unit, success, destinat
 
 	if not path_status then
 		path_status = {
-			last_path_destination = Vector3Box()
+			last_path_destination = Vector3Box(),
 		}
 		paths[ally_unit] = path_status
 	end
 
 	local fail = not success
+
 	path_status.failed = fail
 
 	path_status.last_path_destination:store(destination)
@@ -1908,21 +1953,15 @@ PlayerBotBase._ally_path_allowed = function (self, self_unit, ally_unit, t)
 		local conflict_director = Managers.state.conflict
 		local self_segment = conflict_director:get_player_unit_segment(self._unit) or -1
 		local target_segment = conflict_director:get_player_unit_segment(ally_unit) or -1
-		local ignore_for = nil
+		local ignore_for
 
-		if self_segment < target_segment then
-			ignore_for = 1
-		elseif target_segment < self_segment then
-			ignore_for = 10
-		else
-			ignore_for = 5
-		end
+		ignore_for = self_segment < target_segment and 1 or target_segment < self_segment and 10 or 5
 
 		local no_longer_ignored = t > path_status.ignore_ally_from + ignore_for
 
 		if no_longer_ignored then
 			local last_path_destination = path_status.last_path_destination:unbox()
-			local has_moved = ALLY_PATH_FAILED_REPATH_THRESHOLD < Vector3.distance_squared(ally_position, last_path_destination)
+			local has_moved = Vector3.distance_squared(ally_position, last_path_destination) > ALLY_PATH_FAILED_REPATH_THRESHOLD
 			local forced_callback = path_status.forced_callback
 
 			return true, has_moved or forced_callback
@@ -1939,10 +1978,8 @@ local function find_chain_times(allowed_chain_actions)
 		return 1, 0, 1, 0
 	end
 
-	local min = math.huge
-	local max = -math.huge
-	local min_idx = 1
-	local max_idx = 1
+	local min, max = math.huge, -math.huge
+	local min_idx, max_idx = 1, 1
 
 	for i = 1, #allowed_chain_actions do
 		local chain = allowed_chain_actions[i]
@@ -1985,8 +2022,8 @@ PlayerBotBase._update_weapon_metadata = function (self, template)
 					0,
 					0,
 					0,
-					0
-				}
+					0,
+				},
 			}
 			local heavy_attack_data = {
 				total_chain_time = 0,
@@ -1996,8 +2033,8 @@ PlayerBotBase._update_weapon_metadata = function (self, template)
 					0,
 					0,
 					0,
-					0
-				}
+					0,
+				},
 			}
 
 			for name, _ in pairs(used_actions.action_one) do
@@ -2007,21 +2044,27 @@ PlayerBotBase._update_weapon_metadata = function (self, template)
 					local chain_attacks = current_attack.allowed_chain_actions
 					local anim_speed_scale = current_attack.anim_time_scale or 1
 					local min_idx, min, max_idx, max = find_chain_times(chain_attacks)
+
 					light_attack_data.total_chain_time = light_attack_data.total_chain_time + min * anim_speed_scale
 					heavy_attack_data.total_chain_time = heavy_attack_data.total_chain_time + max * anim_speed_scale
+
 					local chain_action_name = chain_attacks[min_idx].action
 					local chain_sub_action_name = chain_attacks[min_idx].sub_action
 					local chain_action = template.actions[chain_action_name][chain_sub_action_name]
+
 					anim_speed_scale = chain_action.anim_time_scale or 1
 					min_idx, min = find_chain_times(chain_action.allowed_chain_actions)
 					light_attack_data.total_chain_time = light_attack_data.total_chain_time + min * anim_speed_scale
+
 					local light_armor_mods = ActionUtils.get_performance_scores_for_sub_action(chain_action)
+
 					chain_action_name = chain_attacks[max_idx].action
 					chain_sub_action_name = chain_attacks[max_idx].sub_action
 					chain_action = template.actions[chain_action_name][chain_sub_action_name]
 					anim_speed_scale = chain_action.anim_time_scale or 1
 					min_idx, min = find_chain_times(chain_action.allowed_chain_actions)
 					heavy_attack_data.total_chain_time = heavy_attack_data.total_chain_time + min * anim_speed_scale
+
 					local heavy_armor_mods = ActionUtils.get_performance_scores_for_sub_action(chain_action)
 
 					if light_armor_mods and heavy_armor_mods then
@@ -2103,10 +2146,13 @@ PlayerBotBase._update_best_weapon = function (self)
 	local inventory = blackboard.inventory_extension
 	local melee_slot_data = inventory:get_slot_data("slot_melee")
 	local melee_item_template = inventory:get_item_template(melee_slot_data)
+
 	slot_melee.input, slot_melee.meta, slot_melee.score = AiUtils.get_melee_weapon_score(combat_conditions, melee_item_template)
 	slot_melee.score = slot_melee.score
+
 	local ranged_slot_data = inventory:get_slot_data("slot_ranged")
 	local ranged_item_template = inventory:get_item_template(ranged_slot_data)
+
 	slot_ranged.input, slot_ranged.meta, slot_ranged.score = AiUtils.get_melee_weapon_score(combat_conditions, ranged_item_template)
 	slot_ranged.score = slot_ranged.score
 	weapons_scores.slot_melee = slot_melee
@@ -2121,14 +2167,15 @@ PlayerBotBase._update_reload = function (self)
 	local right_unit_1p = ranged_slot_data and ranged_slot_data.right_unit_1p
 	local left_unit_1p = ranged_slot_data and ranged_slot_data.left_unit_1p
 	local ammo_extension = GearUtils.get_ammo_extension(right_unit_1p, left_unit_1p)
-	local wanted_slot_to_reload = nil
+	local wanted_slot_to_reload
 
 	if ammo_extension then
-		local should_reload = nil
+		local should_reload
 
 		if inventory:has_unique_ammo_type_weapon_equipped() then
 			local remaining_ammo = ammo_extension:total_remaining_ammo()
 			local max_ammo = ammo_extension:max_ammo()
+
 			should_reload = remaining_ammo < max_ammo
 		else
 			should_reload = not ammo_extension:clip_full() and (ammo_extension:remaining_ammo() > 0 or ammo_extension:infinite_ammo())

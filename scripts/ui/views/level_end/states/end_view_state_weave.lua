@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/level_end/states/end_view_state_weave.lua
+
 require("scripts/helpers/weave_utils")
 require("scripts/ui/ui_widgets_weaves")
 
@@ -26,7 +28,9 @@ EndViewStateWeave.on_enter = function (self, params)
 	self.parent = params.parent
 	self.game_won = params.game_won
 	self.game_mode_key = params.game_mode_key
+
 	local context = params.context
+
 	self._context = context
 	self.ui_renderer = context.ui_renderer
 	self.ui_top_renderer = context.ui_top_renderer
@@ -35,7 +39,7 @@ EndViewStateWeave.on_enter = function (self, params)
 	self.statistics_db = context.statistics_db
 	self.render_settings = {
 		alpha_multiplier = 0,
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 	self.world_previewer = params.world_previewer
 	self.platform = PLATFORM
@@ -85,11 +89,13 @@ end
 
 EndViewStateWeave.create_ui_elements = function (self, params)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+
 	local widgets = {}
 	local widgets_by_name = {}
 
 	for name, widget_definition in pairs(widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		widgets[#widgets + 1] = widget
 		widgets_by_name[name] = widget
 	end
@@ -173,6 +179,7 @@ end
 EndViewStateWeave._update_ready = function (self, dt, t)
 	local is_force_shutdown_active = self.parent:is_force_shutdown_active()
 	local timer_bar = self._ready_timer_widget
+
 	timer_bar.content.active = is_force_shutdown_active == true
 
 	if is_force_shutdown_active then
@@ -310,6 +317,7 @@ EndViewStateWeave._update_animations = function (self, dt)
 				self.score_count_index = score_count_index + 1
 			else
 				self.score_count_index = nil
+
 				local new_highscore = self.weave_personal_best_achieved
 
 				if new_highscore then
@@ -341,19 +349,23 @@ end
 EndViewStateWeave._start_transition_animation = function (self, key, animation_name)
 	local params = {
 		wwise_world = self.wwise_world,
-		render_settings = self.render_settings
+		render_settings = self.render_settings,
 	}
 	local widgets = self._widgets_by_name
 	local anim_id = self.ui_animator:start_animation(animation_name, widgets, scenegraph_definition, params)
+
 	self._animations[key] = anim_id
 end
 
 EndViewStateWeave._start_score_count_animation = function (self, key, animation_name, params)
 	local widgets = {}
+
 	params.start_font_size = params.widget.style.text.font_size
 	params.peak_font_size = params.widget.style.text.font_size * 1.5
 	params.wwise_world = self.wwise_world
+
 	local anim_id = self.ui_animator:start_animation(animation_name, widgets, scenegraph_definition, params)
+
 	self._animations[key] = anim_id
 end
 
@@ -408,12 +420,14 @@ EndViewStateWeave._move_profile_selector = function (self, selection_index)
 	local hero_frame_count = self._player_count
 	local profile_selector_widget = self._widgets_by_name.profile_selector
 	local x_offset = player_frame_spacing * (selection_index - hero_frame_count / 2 - 0.5)
+
 	profile_selector_widget.offset = {
 		x_offset,
 		0,
-		0
+		0,
 	}
 	self._selected_profile = selection_index
+
 	local players_session_scores = self._context.players_session_score
 	local sorted_stat_ids = {}
 
@@ -441,21 +455,23 @@ EndViewStateWeave._fill_portrait = function (self, slot, portrait_frame, level_t
 	local portrait_image = portrait_image or "eor_empty_player"
 	local widget_definition = UIWidgets.create_portrait_frame("player_frame", portrait_frame, level_text, 1, nil, portrait_image)
 	local hero_widget = self._hero_widgets[slot]
+
 	hero_widget = UIWidget.init(widget_definition)
 	hero_widget.offset = {
 		x_offset,
 		0,
-		0
+		0,
 	}
 	self._hero_widgets[slot] = hero_widget
 
 	if player_name then
 		local name = UIRenderer.crop_text_width(self.ui_renderer, player_name, player_name_width, hero_widget_definitions.player_name.style.text)
 		local widget = UIWidget.init(hero_widget_definitions.player_name)
+
 		widget.offset = {
 			x_offset,
 			0,
-			0
+			0,
 		}
 		widget.content.text = name
 		self._player_name_widgets[#self._player_name_widgets + 1] = widget
@@ -482,6 +498,7 @@ EndViewStateWeave._setup_score_panel = function (self)
 	local time_score = weave_manager:get_time_score()
 	local damage_score = weave_manager:get_damage_score()
 	local widgets_by_name = self._widgets_by_name
+
 	widgets_by_name.score_weave_num.content.text = Localize("lb_game_type_weave") .. " " .. weave_number_display_name .. ": " .. weave_display_name
 	widgets_by_name.total_time_value.content.text = string.format("%d %s %02d %s", minutes, Localize("weave_endscreen_min"), seconds, Localize("weave_endscreen_sec"))
 
@@ -494,26 +511,26 @@ EndViewStateWeave._setup_score_panel = function (self)
 				{
 					start_value = 0,
 					widget = widgets_by_name.time_score_value,
-					end_value = time_score
+					end_value = time_score,
 				},
 				{
 					start_value = 0,
 					widget = widgets_by_name.total_score_value,
-					end_value = time_score
-				}
+					end_value = time_score,
+				},
 			},
 			{
 				{
 					start_value = 0,
 					widget = widgets_by_name.damage_bonus_value,
-					end_value = damage_score
+					end_value = damage_score,
 				},
 				{
 					widget = widgets_by_name.total_score_value,
 					start_value = time_score,
-					end_value = total_score
-				}
-			}
+					end_value = total_score,
+				},
+			},
 		}
 		self.score_count_index = 1
 	else

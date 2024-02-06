@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/helpers/lorebook_helper.lua
+
 LoreBookHelper = LoreBookHelper or {}
+
 local new_pages = {}
 
 LoreBookHelper.save_new_pages = function ()

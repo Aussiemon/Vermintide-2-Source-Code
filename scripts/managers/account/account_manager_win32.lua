@@ -1,7 +1,10 @@
+﻿-- chunkname: @scripts/managers/account/account_manager_win32.lua
+
 require("scripts/managers/account/presence/presence_helper")
 
 AccountManager = class(AccountManager)
 AccountManager.VERSION = "win32"
+
 local debug_friends_list = Development.parameter("debug_friends_list")
 
 local function dprint(...)

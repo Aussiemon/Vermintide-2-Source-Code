@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/outlines/outline_system.lua
+
 require("scripts/settings/outline_settings")
 require("scripts/unit_extensions/outline/outline_extension")
 
@@ -18,9 +20,9 @@ OutlineSystem.system_extensions = {
 	"GenericOutlineExtension",
 	"SmallPickupOutlineExtension",
 	"SmallDoorOutlineExtension",
-	[#OutlineSystem.system_extensions + 1] = "DarkPactPlayerOutlineExtension",
-	[#OutlineSystem.system_extensions + 1] = "DarkPactPlayerHuskOutlineExtension"
 }
+OutlineSystem.system_extensions[#OutlineSystem.system_extensions + 1] = "DarkPactPlayerOutlineExtension"
+OutlineSystem.system_extensions[#OutlineSystem.system_extensions + 1] = "DarkPactPlayerHuskOutlineExtension"
 
 OutlineSystem.init = function (self, context, system_name)
 	local extensions = OutlineSystem.system_extensions
@@ -35,7 +37,9 @@ OutlineSystem.init = function (self, context, system_name)
 	self.current_index = 0
 	self.darkness_system = Managers.state.entity:system("darkness_system")
 	self.cutscene_system = Managers.state.entity:system("cutscene_system")
+
 	local game_mode_manager = Managers.state.game_mode
+
 	self._game_mode = game_mode_manager and game_mode_manager:game_mode()
 	self._pulsing_units = {}
 end
@@ -45,7 +49,7 @@ OutlineSystem.add_ext_functions = {
 		extension:add_outline({
 			method = "never",
 			outline_color = OutlineSettings.colors.ally,
-			flag = OutlineSettings.flags.non_wall_occluded
+			flag = OutlineSettings.flags.non_wall_occluded,
 		})
 
 		extension.apply_method = "unit_and_childs"
@@ -56,26 +60,20 @@ OutlineSystem.add_ext_functions = {
 			method = "outside_distance_or_not_visible",
 			outline_color = OutlineSettings.colors.ally,
 			distance = OutlineSettings.ranges.player_husk,
-			flag = OutlineSettings.flags.non_wall_occluded
+			flag = OutlineSettings.flags.non_wall_occluded,
 		})
 
 		extension.apply_method = "unit_and_childs"
 		extension.pinged_method = "always"
 
 		extension.update_override_method_player_setting = function (self)
-			local user_outline_method = nil
+			local user_outline_method
 			local outline_user_setting = Application.user_setting("player_outlines")
 
-			if outline_user_setting == "off" then
-				user_outline_method = "never"
-			elseif outline_user_setting == "always_on" then
-				user_outline_method = "always"
-			else
-				user_outline_method = "outside_distance_or_not_visible"
-			end
+			user_outline_method = outline_user_setting == "off" and "never" or outline_user_setting == "always_on" and "always" or "outside_distance_or_not_visible"
 
 			extension:update_outline({
-				method = user_outline_method
+				method = user_outline_method,
 			}, 0)
 		end
 
@@ -86,26 +84,20 @@ OutlineSystem.add_ext_functions = {
 			method = "outside_distance_or_not_visible",
 			outline_color = OutlineSettings.colors.necromancer_command,
 			distance = OutlineSettings.ranges.player_husk,
-			flag = OutlineSettings.flags.non_wall_occluded
+			flag = OutlineSettings.flags.non_wall_occluded,
 		})
 
 		extension.apply_method = "unit_and_childs"
 		extension.pinged_method = "always"
 
 		extension.update_override_method_minion_setting = function (self)
-			local user_outline_method = nil
+			local user_outline_method
 			local outline_user_setting = Application.user_setting("minion_outlines")
 
-			if outline_user_setting == "off" then
-				user_outline_method = "never"
-			elseif outline_user_setting == "always_on" then
-				user_outline_method = "always"
-			else
-				user_outline_method = "outside_distance_or_not_visible"
-			end
+			user_outline_method = outline_user_setting == "off" and "never" or outline_user_setting == "always_on" and "always" or "outside_distance_or_not_visible"
 
 			extension:update_outline({
-				method = user_outline_method
+				method = user_outline_method,
 			}, 0)
 		end
 
@@ -116,7 +108,7 @@ OutlineSystem.add_ext_functions = {
 			method = "within_distance_and_not_in_dark",
 			outline_color = OutlineSettings.colors.interactable,
 			distance = OutlineSettings.ranges.pickup,
-			flag = OutlineSettings.flags.wall_occluded
+			flag = OutlineSettings.flags.wall_occluded,
 		})
 
 		extension.apply_method = "unit"
@@ -127,7 +119,7 @@ OutlineSystem.add_ext_functions = {
 			method = "never",
 			outline_color = OutlineSettings.colors.interactable,
 			distance = OutlineSettings.ranges.player_husk,
-			flag = OutlineSettings.flags.non_wall_occluded
+			flag = OutlineSettings.flags.non_wall_occluded,
 		})
 
 		extension.apply_method = "unit"
@@ -138,7 +130,7 @@ OutlineSystem.add_ext_functions = {
 			method = "within_distance_and_not_in_dark",
 			outline_color = OutlineSettings.colors.interactable,
 			distance = OutlineSettings.ranges.doors,
-			flag = OutlineSettings.flags.wall_occluded
+			flag = OutlineSettings.flags.wall_occluded,
 		})
 
 		extension.apply_method = "unit"
@@ -149,7 +141,7 @@ OutlineSystem.add_ext_functions = {
 			method = "within_distance_and_not_in_dark",
 			outline_color = OutlineSettings.colors.interactable,
 			distance = OutlineSettings.ranges.small_doors,
-			flag = OutlineSettings.flags.wall_occluded
+			flag = OutlineSettings.flags.wall_occluded,
 		})
 
 		extension.apply_method = "unit"
@@ -160,7 +152,7 @@ OutlineSystem.add_ext_functions = {
 			method = "within_distance",
 			outline_color = OutlineSettings.colors.interactable,
 			distance = OutlineSettings.ranges.objective,
-			flag = OutlineSettings.flags.non_wall_occluded
+			flag = OutlineSettings.flags.non_wall_occluded,
 		})
 
 		extension.apply_method = "unit"
@@ -171,7 +163,7 @@ OutlineSystem.add_ext_functions = {
 			method = "within_distance",
 			outline_color = OutlineSettings.colors.interactable,
 			distance = OutlineSettings.ranges.objective_light,
-			flag = OutlineSettings.flags.wall_occluded
+			flag = OutlineSettings.flags.wall_occluded,
 		})
 
 		extension.apply_method = "unit"
@@ -182,7 +174,7 @@ OutlineSystem.add_ext_functions = {
 			method = "within_distance",
 			outline_color = OutlineSettings.colors.interactable,
 			distance = OutlineSettings.ranges.elevators,
-			flag = OutlineSettings.flags.wall_occluded
+			flag = OutlineSettings.flags.wall_occluded,
 		})
 
 		extension.apply_method = "unit"
@@ -193,7 +185,7 @@ OutlineSystem.add_ext_functions = {
 			method = "conditional_within_distance",
 			outline_color = OutlineSettings.colors.interactable,
 			distance = OutlineSettings.ranges.doors,
-			flag = OutlineSettings.flags.wall_occluded
+			flag = OutlineSettings.flags.wall_occluded,
 		})
 
 		extension.apply_method = "unit"
@@ -204,7 +196,7 @@ OutlineSystem.add_ext_functions = {
 			method = "conditional_within_distance",
 			outline_color = OutlineSettings.colors.interactable,
 			distance = OutlineSettings.ranges.pickup,
-			flag = OutlineSettings.flags.wall_occluded
+			flag = OutlineSettings.flags.wall_occluded,
 		})
 
 		extension.apply_method = "unit"
@@ -214,7 +206,7 @@ OutlineSystem.add_ext_functions = {
 		extension:add_outline({
 			method = "never",
 			outline_color = OutlineSettings.colors.knocked_down,
-			flag = OutlineSettings.flags.non_wall_occluded
+			flag = OutlineSettings.flags.non_wall_occluded,
 		})
 
 		extension.apply_method = "unit_and_childs"
@@ -225,7 +217,7 @@ OutlineSystem.add_ext_functions = {
 			method = "within_distance_and_not_in_dark",
 			outline_color = OutlineSettings.colors.interactable,
 			distance = OutlineSettings.ranges.small_pickup,
-			flag = OutlineSettings.flags.wall_occluded
+			flag = OutlineSettings.flags.wall_occluded,
 		})
 
 		extension.apply_method = "unit"
@@ -236,7 +228,7 @@ OutlineSystem.add_ext_functions = {
 			method = "within_distance",
 			outline_color = OutlineSettings.colors.interactable,
 			distance = OutlineSettings.ranges.interactable,
-			flag = OutlineSettings.flags.wall_occluded
+			flag = OutlineSettings.flags.wall_occluded,
 		})
 
 		extension.apply_method = "unit"
@@ -246,14 +238,14 @@ OutlineSystem.add_ext_functions = {
 		extension:add_outline({
 			method = "never",
 			outline_color = OutlineSettingsVS.colors.ally,
-			flag = OutlineSettings.flags.non_wall_occluded
+			flag = OutlineSettings.flags.non_wall_occluded,
 		})
 
 		extension.apply_method = "unit_and_childs"
 		extension.pinged_method = "show_versus_dark_pact_outline"
 	end,
 	DarkPactPlayerHuskOutlineExtension = function (extension)
-		local is_ally = nil
+		local is_ally
 		local local_player = Managers.player:local_player()
 
 		if local_player then
@@ -275,12 +267,12 @@ OutlineSystem.add_ext_functions = {
 			method = "always_same_side",
 			outline_color = is_ally and OutlineSettingsVS.colors.ally or OutlineSettings.colors.knocked_down,
 			distance = OutlineSettings.ranges.player_husk,
-			flag = OutlineSettings.flags.non_wall_occluded
+			flag = OutlineSettings.flags.non_wall_occluded,
 		})
 
 		extension.apply_method = "unit_and_childs"
 		extension.pinged_method = "show_versus_dark_pact_outline"
-	end
+	end,
 }
 
 OutlineSystem.on_add_extension = function (self, world, unit, extension_name)
@@ -438,6 +430,7 @@ OutlineSystem.update = function (self, context, t)
 
 	for i = 1, num_to_check_per_frame do
 		current_index = current_index % num_units + 1
+
 		local unit = units[current_index]
 		local extension = extensions[unit]
 
@@ -451,8 +444,7 @@ OutlineSystem.update = function (self, context, t)
 				extension.prev_flag = nil
 			end
 
-			local do_outline = false
-			local slow_check = false
+			local do_outline, slow_check = false, false
 
 			if not active_cutscene then
 				do_outline, slow_check = self[method](self, unit, extension)
@@ -490,7 +482,7 @@ local PULSE_METHODS = {
 	end,
 	pulse = function (t)
 		return math.round(t * 3 % 1.5)
-	end
+	end,
 }
 
 OutlineSystem.set_pulsing = function (self, unit, enable, method)
@@ -501,6 +493,7 @@ OutlineSystem.set_pulsing = function (self, unit, enable, method)
 
 		if pulsing then
 			self._pulsing_units[unit] = nil
+
 			local extension = self.unit_extension_data[unit]
 
 			if extension then
@@ -607,6 +600,7 @@ OutlineSystem.always_same_side = function (self, unit, extension)
 	if not same_side then
 		local unit_side = Managers.state.side.side_by_unit[unit]
 		local local_side = Managers.state.side.side_by_party[self._local_player:get_party()]
+
 		same_side = not Managers.state.side:is_enemy_by_side(unit_side, local_side)
 		extension.same_side = same_side
 	end

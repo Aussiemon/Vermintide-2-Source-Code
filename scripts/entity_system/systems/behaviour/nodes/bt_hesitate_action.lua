@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_hesitate_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTHesitateAction = class(BTHesitateAction, BTNode)
@@ -7,6 +9,7 @@ BTHesitateAction.init = function (self, ...)
 end
 
 BTHesitateAction.name = "BTHesitateAction"
+
 local HESITATION_TIMER = 5
 
 if script_data.ai_hesitation_debug then
@@ -24,6 +27,7 @@ local WALL_ROTATION_FACTOR = 1
 
 BTHesitateAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
+
 	blackboard.action = action
 
 	blackboard.navigation_extension:set_enabled(false)
@@ -117,6 +121,7 @@ BTHesitateAction.wall_check = function (self, unit, blackboard, current_pos, dir
 	local raycast_pos = current_pos + Vector3(0, 0, 1)
 	local distance = 1.5
 	local result, hit_pos, hit_distance, normal = PhysicsWorld.immediate_raycast(physics_world, raycast_pos, direction, distance, "closest", "types", "statics", "collision_filter", "filter_ai_line_of_sight_check")
+
 	blackboard.do_wall_check = false
 
 	if result and (not DO_DOT_CHECK_FOR_RE_RAYCAST or Vector3.dot(normal, -direction) < RE_RAYCAST_DOT) then
@@ -137,6 +142,7 @@ BTHesitateAction.wall_check = function (self, unit, blackboard, current_pos, dir
 
 		blackboard.hesitate_wall = true
 		blackboard.hesitate_wall_rotation = QuaternionBox(Quaternion.look(Vector3.flat(normal), Vector3.up()))
+
 		local OPTIMAL_DISTANCE = 1.2
 
 		if hit_distance < OPTIMAL_DISTANCE then
@@ -152,12 +158,13 @@ end
 BTHesitateAction.calculate_outnumber_multiplier = function (self, unit, blackboard, t, dt, current_pos, target_pos)
 	local target_dist_sq = Vector3.distance_squared(target_pos, current_pos)
 	local hesitation_delta = HESITATION_PROXIMITY_SCALING / math.max(target_dist_sq - HESITATION_SCALING_MINIMUM_RANGE_SQ, 1) * dt + dt
-	local outnumber_multiplier = nil
+	local outnumber_multiplier
 
 	if blackboard.taunt_unit then
 		outnumber_multiplier = 1
 	elseif t < blackboard.outnumber_timer then
 		blackboard.outnumber_timer = t + 0.2 + Math.random() * 0.2
+
 		local broadphase = blackboard.group_blackboard.broadphase
 
 		table.clear(BROADPHASE_QUERY_RESULT)
@@ -195,7 +202,7 @@ BTHesitateAction.calculate_outnumber_multiplier = function (self, unit, blackboa
 			end
 		end
 
-		outnumber_multiplier = 1.25 * allies_nearby / math.max(enemies_nearby, 1)
+		outnumber_multiplier = 1.25 * (allies_nearby / math.max(enemies_nearby, 1))
 		blackboard.outnumber_multiplier = outnumber_multiplier
 
 		if enemies_nearby < allies_nearby then
@@ -228,6 +235,7 @@ BTHesitateAction.start_move_animation = function (self, unit, blackboard, target
 	blackboard.move_animation_name = animation_name
 	blackboard.anim_locked = 0
 	blackboard.spawn_to_running = true
+
 	local fwd_start_anim = action.start_anims_name.fwd
 	local is_fwd_animation = false
 
@@ -249,13 +257,15 @@ end
 BTHesitateAction.run = function (self, unit, blackboard, t, dt)
 	local debug = script_data.ai_hesitation_debug
 	local action = blackboard.action
+
 	blackboard.target_unit = nil
+
 	local target_alive = blackboard.target_unit and Unit.alive(blackboard.target_unit)
 	local exit_override = blackboard.is_within_proximity or blackboard.hesitate_finished or blackboard.previous_attacker and not blackboard.taunt_unit or not target_alive
 	local finished_hesitating = blackboard.confirmed_player_sighting or blackboard.no_hesitation or exit_override
 
 	if finished_hesitating then
-		local deadline_reached = blackboard.hesitate_timer and blackboard.hesitate_timer < t
+		local deadline_reached = blackboard.hesitate_timer and t > blackboard.hesitate_timer
 		local exit_hesitate = deadline_reached and blackboard.anim_cb_move or exit_override
 
 		if exit_hesitate then
@@ -289,7 +299,7 @@ BTHesitateAction.run = function (self, unit, blackboard, t, dt)
 	local outnumber_multiplier, hesitation_delta = self:calculate_outnumber_multiplier(unit, blackboard, t, dt, current_pos, target_pos)
 	local hesitation = blackboard.hesitation + hesitation_delta * blackboard.outnumber_multiplier
 	local panic_override = blackboard.oh_shit_proximity_panic_override or blackboard.taunt_unit
-	local should_start_move_animation = (breed.hesitation_timer or HESITATION_TIMER) < hesitation or panic_override
+	local should_start_move_animation = hesitation > (breed.hesitation_timer or HESITATION_TIMER) or panic_override
 
 	if should_start_move_animation then
 		local have_started_animation = blackboard.move_animation_name and true
@@ -321,6 +331,7 @@ BTHesitateAction.run = function (self, unit, blackboard, t, dt)
 				locomotion_extension:set_wanted_rotation(rot)
 			elseif blackboard.move_animation_name then
 				blackboard.anim_cb_rotation_start = false
+
 				local rot_scale = AiAnimUtils.get_animation_rotation_scale(unit, target_pos, blackboard.move_animation_name, action.start_anims_data)
 
 				LocomotionUtils.set_animation_rotation_scale(unit, rot_scale)
@@ -340,6 +351,7 @@ BTHesitateAction.run = function (self, unit, blackboard, t, dt)
 		end
 	else
 		blackboard.hesitation = hesitation
+
 		local nav_world = blackboard.nav_world
 		local direction = -Quaternion.forward(rot)
 
@@ -353,7 +365,7 @@ end
 
 BTHesitationVariations = {
 	hesitate = {
-		"hesitate"
+		"hesitate",
 	},
 	hesitate_bwd = {
 		"hesitate_bwd_2",
@@ -361,25 +373,19 @@ BTHesitationVariations = {
 		"hesitate_bwd_4",
 		"hesitate_bwd_5",
 		"hesitate_bwd_6",
-		"hesitate_bwd"
-	}
+		"hesitate_bwd",
+	},
 }
 
 BTHesitateAction._select_new_hesitate_anim = function (self, unit, blackboard)
-	local anim = nil
+	local anim
 
 	if not blackboard.do_wall_check then
 		anim = "hesitate"
 	elseif blackboard.last_hesitate_anim == "hesitate_bwd" then
-		if Math.random() > 0.3333333333333333 then
-			anim = "hesitate"
-		else
-			anim = "hesitate_bwd"
-		end
-	elseif Math.random() > 0.3333333333333333 then
-		anim = "hesitate_bwd"
+		anim = Math.random() > 0.3333333333333333 and "hesitate" or "hesitate_bwd"
 	else
-		anim = "hesitate"
+		anim = Math.random() > 0.3333333333333333 and "hesitate_bwd" or "hesitate"
 	end
 
 	local breed = blackboard.breed

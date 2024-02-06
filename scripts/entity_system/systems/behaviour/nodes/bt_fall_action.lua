@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_fall_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 local function get_fall_animation(unit, blackboard)
@@ -48,6 +50,7 @@ BTFallAction.enter = function (self, unit, blackboard, t)
 
 	blackboard.fall_state = "waiting_to_stop_freefall"
 	blackboard.fall_failsafe_timer = t + 0
+
 	local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
 	local event_data = FrameTable.alloc_table()
 
@@ -76,6 +79,7 @@ BTFallAction.leave = function (self, unit, blackboard, t, reason, destroy)
 
 	blackboard.jump_climb_finished = nil
 	blackboard.fall_state = nil
+
 	local shield_extension = ScriptUnit.has_extension(unit, "ai_shield_system")
 
 	if shield_extension then
@@ -86,7 +90,7 @@ end
 BTFallAction.run = function (self, unit, blackboard, t, dt)
 	if blackboard.fall_state == "waiting_to_stop_freefall" then
 		local is_in_freefall = blackboard.locomotion_extension:is_falling()
-		local has_waited_a_little = blackboard.fall_failsafe_timer <= t
+		local has_waited_a_little = t >= blackboard.fall_failsafe_timer
 
 		if not is_in_freefall and has_waited_a_little then
 			blackboard.fall_state = "waiting_to_collide_down"
@@ -104,6 +108,7 @@ BTFallAction.run = function (self, unit, blackboard, t, dt)
 				local vertical_range = 0.5
 				local horizontal_tolerance = 0.5
 				local distance_from_obstacle = 0.5
+
 				nav_position = GwNavQueries.inside_position_from_outside_position(nav_world, position, vertical_range, vertical_range, horizontal_tolerance, distance_from_obstacle)
 
 				if nav_position == nil then
@@ -120,6 +125,7 @@ BTFallAction.run = function (self, unit, blackboard, t, dt)
 			Managers.state.network:anim_event(unit, "jump_down_land")
 
 			blackboard.fall_state = "waiting_to_land"
+
 			local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
 			local event_data = FrameTable.alloc_table()
 

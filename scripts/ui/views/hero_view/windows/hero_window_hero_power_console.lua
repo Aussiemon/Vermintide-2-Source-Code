@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/hero_view/windows/hero_window_hero_power_console.lua
+
 local definitions = local_require("scripts/ui/views/hero_view/windows/definitions/hero_window_hero_power_console_definitions")
 local widget_definitions = definitions.widgets
 local category_settings = definitions.category_settings
@@ -5,6 +7,7 @@ local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
 local DO_RELOAD = false
 local HERO_POWER_EFFECT_DURATION = 1
+
 HeroWindowHeroPowerConsole = class(HeroWindowHeroPowerConsole)
 HeroWindowHeroPowerConsole.NAME = "HeroWindowHeroPowerConsole"
 
@@ -12,16 +15,20 @@ HeroWindowHeroPowerConsole.on_enter = function (self, params, offset)
 	print("[HeroViewWindow] Enter Substate HeroWindowHeroPowerConsole")
 
 	self.parent = params.parent
+
 	local ingame_ui_context = params.ingame_ui_context
+
 	self.ui_renderer = ingame_ui_context.ui_renderer
 	self.ui_top_renderer = ingame_ui_context.ui_top_renderer
 	self.input_manager = ingame_ui_context.input_manager
 	self.statistics_db = ingame_ui_context.statistics_db
 	self.render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
+
 	local player_manager = Managers.player
 	local local_player = player_manager:local_player()
+
 	self._stats_id = local_player:stats_id()
 	self.player_manager = player_manager
 	self.peer_id = ingame_ui_context.peer_id
@@ -38,20 +45,23 @@ end
 HeroWindowHeroPowerConsole._start_transition_animation = function (self, animation_name)
 	local params = {
 		wwise_world = self.wwise_world,
-		render_settings = self.render_settings
+		render_settings = self.render_settings,
 	}
 	local widgets = {}
 	local anim_id = self.ui_animator:start_animation(animation_name, widgets, scenegraph_definition, params)
+
 	self._animations[animation_name] = anim_id
 end
 
 HeroWindowHeroPowerConsole.create_ui_elements = function (self, params, offset)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+
 	local widgets = {}
 	local widgets_by_name = {}
 
 	for name, widget_definition in pairs(widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		widgets[#widgets + 1] = widget
 		widgets_by_name[name] = widget
 	end
@@ -65,6 +75,7 @@ HeroWindowHeroPowerConsole.create_ui_elements = function (self, params, offset)
 
 	if offset then
 		local window_position = self.ui_scenegraph.window.local_position
+
 		window_position[1] = window_position[1] + offset[1]
 		window_position[2] = window_position[2] + offset[2]
 		window_position[3] = window_position[3] + offset[3]
@@ -164,7 +175,7 @@ HeroWindowHeroPowerConsole._calculate_power_level = function (self)
 	local presentable_hero_power_level = UIUtils.presentable_hero_power_level(total_power_level)
 	local widgets_by_name = self._widgets_by_name
 	local content = widgets_by_name.power_text.content
-	local play_effect = content.power and content.power < presentable_hero_power_level
+	local play_effect = content.power and presentable_hero_power_level > content.power
 
 	if play_effect then
 		self._hero_power_effect_time = HERO_POWER_EFFECT_DURATION
@@ -184,13 +195,16 @@ HeroWindowHeroPowerConsole._update_hero_power_effect = function (self, dt)
 
 	if hero_power_effect_time then
 		hero_power_effect_time = math.max(hero_power_effect_time - dt, 0)
+
 		local progress = 1 - hero_power_effect_time / HERO_POWER_EFFECT_DURATION
 		local anim_progress = math.easeOutCubic(progress)
 		local pulse_progress = math.ease_pulse(anim_progress)
 		local widgets_by_name = self._widgets_by_name
 		local effect_style = widgets_by_name.hero_power_tooltip.style.effect
+
 		effect_style.angle = math.degrees_to_radians(120 * anim_progress)
 		effect_style.color[1] = 255 * pulse_progress
+
 		local text_style = widgets_by_name.power_text.style.text
 
 		Colors.lerp_color_tables(power_default_color, power_increase_color, pulse_progress, text_style.text_color)

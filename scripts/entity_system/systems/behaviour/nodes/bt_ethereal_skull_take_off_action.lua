@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_ethereal_skull_take_off_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTEtherealSkullTakeOffAction = class(BTEtherealSkullTakeOffAction, BTNode)

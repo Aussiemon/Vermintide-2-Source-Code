@@ -1,7 +1,10 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/chaos_sorcerer/bt_chaos_plague_wave_spawner_summoning_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTChaosPlagueWaveSpawnerSummoningAction = class(BTChaosPlagueWaveSpawnerSummoningAction, BTNode)
 BTChaosPlagueWaveSpawnerSummoningAction.name = "BTChaosPlagueWaveSpawnerSummoningAction"
+
 local BTChaosPlagueWaveSpawnerSummoningAction = BTChaosPlagueWaveSpawnerSummoningAction
 
 BTChaosPlagueWaveSpawnerSummoningAction.init = function (self, ...)
@@ -11,8 +14,11 @@ end
 BTChaosPlagueWaveSpawnerSummoningAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
 	local breed = blackboard.breed
+
 	blackboard.action = action
+
 	local target_dist = blackboard.target_dist
+
 	blackboard.ready_to_summon = false
 
 	if not blackboard.plague_wave_data then
@@ -20,7 +26,7 @@ BTChaosPlagueWaveSpawnerSummoningAction.enter = function (self, unit, blackboard
 			plague_wave_timer = t + action.plague_wave_spawn_cooldown,
 			physics_world = World.get_data(blackboard.world, "physics_world"),
 			target_starting_pos = Vector3Box(),
-			plague_wave_rot = QuaternionBox()
+			plague_wave_rot = QuaternionBox(),
 		}
 	end
 end
@@ -52,10 +58,11 @@ BTChaosPlagueWaveSpawnerSummoningAction.run = function (self, unit, blackboard, 
 
 	if not blackboard.anticipation_fx_id and anticipation_fx and t > plague_wave_data.plague_wave_timer - action.anticipation_fx_offset_time then
 		local world = blackboard.world
+
 		blackboard.anticipation_fx_id = World.create_particles(world, anticipation_fx, POSITION_LOOKUP[unit], Quaternion.identity())
 	end
 
-	if plague_wave_data.plague_wave_timer < t and not ScriptUnit.extension(target_unit, "status_system"):is_invisible() then
+	if t > plague_wave_data.plague_wave_timer and not ScriptUnit.extension(target_unit, "status_system"):is_invisible() then
 		local nav_world = blackboard.nav_world
 		local target_position = POSITION_LOOKUP[target_unit]
 		local unit_pos = POSITION_LOOKUP[unit]

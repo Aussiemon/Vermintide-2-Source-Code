@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/chaos_spawn/bt_victim_grabbed_throw_away_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTVictimGrabbedThrowAwayAction = class(BTVictimGrabbedThrowAwayAction, BTNode)
@@ -11,6 +13,7 @@ BTVictimGrabbedThrowAwayAction.enter = function (self, unit, blackboard, t)
 	local network_manager = Managers.state.network
 	local animation = "attack_grabbed_throw"
 	local action = self._tree_node.action_data
+
 	blackboard.action = action
 
 	network_manager:anim_event(unit, animation)
@@ -30,14 +33,16 @@ BTVictimGrabbedThrowAwayAction.enter = function (self, unit, blackboard, t)
 	blackboard.chaos_spawn_is_throwing = true
 	blackboard.grabbed_state = "throw_away"
 	blackboard.throw_direction = Vector3Box()
+
 	local ray_length = 3.5
-	local can_go = nil
+	local can_go
 
 	if Unit.alive(blackboard.target_unit) then
 		local nav_world = blackboard.nav_world
 		local pos = POSITION_LOOKUP[unit]
 		local target_pos = POSITION_LOOKUP[blackboard.target_unit]
 		local block_check_pos = pos + (target_pos - pos) * ray_length
+
 		can_go = GwNavQueries.raycango(nav_world, pos, block_check_pos)
 	end
 
@@ -107,7 +112,7 @@ end
 BTVictimGrabbedThrowAwayAction.catapult_player = function (self, unit, blackboard, throw_speed, throw_speed_z)
 	local victim_unit = blackboard.victim_grabbed
 	local victim_pos = POSITION_LOOKUP[victim_unit]
-	local target_pos = nil
+	local target_pos
 
 	if blackboard.target_unit then
 		target_pos = POSITION_LOOKUP[blackboard.target_unit]

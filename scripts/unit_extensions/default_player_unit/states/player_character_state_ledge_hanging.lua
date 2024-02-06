@@ -1,9 +1,12 @@
+﻿-- chunkname: @scripts/unit_extensions/default_player_unit/states/player_character_state_ledge_hanging.lua
+
 PlayerCharacterStateLedgeHanging = class(PlayerCharacterStateLedgeHanging, PlayerCharacterState)
 
 PlayerCharacterStateLedgeHanging.init = function (self, character_state_init_context)
 	PlayerCharacterState.init(self, character_state_init_context, "ledge_hanging")
 
 	local context = character_state_init_context
+
 	self.lerp_target_position = Vector3Box()
 	self.lerp_start_position = Vector3Box()
 end
@@ -30,6 +33,7 @@ end
 PlayerCharacterStateLedgeHanging.on_enter = function (self, unit, input, dt, context, t, previous_state, params)
 	local unit = self.unit
 	local ledge_unit = params.ledge_unit
+
 	self.ledge_unit = ledge_unit
 
 	CharacterStateHelper.stop_weapon_actions(self.inventory_extension, "ledge_hanging")
@@ -38,6 +42,7 @@ PlayerCharacterStateLedgeHanging.on_enter = function (self, unit, input, dt, con
 	self.locomotion_extension:set_forced_velocity(Vector3:zero())
 
 	local movement_settings_table = PlayerUnitMovementSettings.get_movement_settings_table(unit)
+
 	self.fall_down_time = t + movement_settings_table.ledge_hanging.time_until_fall_down
 
 	self:calculate_and_start_rotation_to_ledge()
@@ -85,14 +90,16 @@ PlayerCharacterStateLedgeHanging.update = function (self, unit, input, dt, conte
 
 	if status_extension:is_pulled_up() or DebugKeyHandler.key_pressed("c", "pull up from ledge hanging", "player") then
 		local params = self.temp_params
+
 		params.ledge_unit = self.ledge_unit
 		params.start_rotation_box = self.start_rotation_box
 
 		csm:change_state("leave_ledge_hanging_pull_up", params)
 	end
 
-	if self.fall_down_time < t or CharacterStateHelper.is_knocked_down(status_extension) then
+	if t > self.fall_down_time or CharacterStateHelper.is_knocked_down(status_extension) then
 		local params = self.temp_params
+
 		params.ledge_unit = self.ledge_unit
 
 		csm:change_state("leave_ledge_hanging_falling", params)
@@ -103,6 +110,7 @@ PlayerCharacterStateLedgeHanging.update = function (self, unit, input, dt, conte
 
 	if self.position_lerp_timer then
 		self.position_lerp_timer = self.position_lerp_timer + dt
+
 		local percentage_in_lerp = math.clamp(self.position_lerp_timer / self.time_for_position_lerp, 0, 1)
 		local start_position = self.lerp_start_position:unbox()
 		local target_position = self.lerp_target_position:unbox()
@@ -142,8 +150,10 @@ PlayerCharacterStateLedgeHanging.calculate_start_position = function (self)
 	local finger_box_rotation = Unit.world_rotation(ledge_unit, node)
 	local finger_box_scale = Unit.local_scale(ledge_unit, node)
 	local finger_box_right_vector = Quaternion.right(finger_box_rotation)
-	position_offset_amount = 1 - 0.3 * 1 / global_unit_scale.x * 1 / finger_box_scale.x
+
+	position_offset_amount = 1 - 0.3 * (1 / global_unit_scale.x) * (1 / finger_box_scale.x)
 	position_offset_amount = position_offset_amount * global_unit_scale.x * finger_box_scale.x
+
 	local left_point = finger_box_position - finger_box_right_vector * position_offset_amount
 	local right_point = finger_box_position + finger_box_right_vector * position_offset_amount
 	local new_position = Geometry.closest_point_on_line(current_position, left_point, right_point)
@@ -154,6 +164,7 @@ PlayerCharacterStateLedgeHanging.calculate_start_position = function (self)
 
 	self.time_for_position_lerp = distance * movement_settings_table.ledge_hanging.attach_position_lerp_time_per_meter
 	self.position_lerp_timer = 0
+
 	local hang_ledge_spawn_offset = 0.5
 	local hang_ledge_spawn_position = new_position - Quaternion.forward(ledge_rotation) * hang_ledge_spawn_offset
 
@@ -169,6 +180,7 @@ PlayerCharacterStateLedgeHanging.calculate_and_start_rotation_to_ledge = functio
 	local finger_box_yaw = Quaternion.yaw(finger_box_rotation)
 	local rotation = Quaternion(Vector3.up(), finger_box_yaw + math.pi)
 	local to_player = Quaternion.forward(rotation)
+
 	self.start_rotation_box = QuaternionBox(Quaternion.look(-to_player))
 
 	Unit.set_local_rotation(unit, 0, rotation)
@@ -188,7 +200,7 @@ PlayerCharacterStateLedgeHanging.calculate_offset_rotation = function (self)
 	local ray_1_succeded, ray_1_position = is_in_line_of_sight(unit, ray_origin_position, below_player_position, physics_world)
 
 	if not ray_1_succeded then
-		local ray_succeded, hit_position, ray_goal_position = nil
+		local ray_succeded, hit_position, ray_goal_position
 		local num_rays = 5
 
 		for i = 1, num_rays do
@@ -205,6 +217,7 @@ PlayerCharacterStateLedgeHanging.calculate_offset_rotation = function (self)
 			local to_goal_position = Vector3.normalize(ray_goal_position - ledge_position)
 			local cross_dir = Vector3.cross(right_dir, to_goal_position)
 			local new_rotation = Quaternion.look(cross_dir)
+
 			rotation = new_rotation
 		elseif script_data.debug_hang_ledges then
 			-- Nothing

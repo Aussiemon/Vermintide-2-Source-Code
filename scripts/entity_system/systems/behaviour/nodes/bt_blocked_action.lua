@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_blocked_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTBlockedAction = class(BTBlockedAction, BTNode)
@@ -35,6 +37,7 @@ BTBlockedAction.enter = function (self, unit, blackboard, t)
 	end
 
 	blackboard.move_state = "stagger"
+
 	local ai_slot_system = Managers.state.entity:system("ai_slot_system")
 
 	ai_slot_system:do_slot_search(unit, false)
@@ -80,6 +83,7 @@ BTBlockedAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	end
 
 	blackboard.blocked_anim = nil
+
 	local navigation_extension = blackboard.navigation_extension
 
 	navigation_extension:set_enabled(true)
@@ -118,7 +122,7 @@ BTBlockedAction.run = function (self, unit, blackboard, t, dt)
 		end
 	end
 
-	if blackboard.anim_cb_blocked_cooldown and blackboard.leave_blocked_at_t and blackboard.leave_blocked_at_t < t then
+	if blackboard.anim_cb_blocked_cooldown and blackboard.leave_blocked_at_t and t > blackboard.leave_blocked_at_t then
 		return "done"
 	end
 

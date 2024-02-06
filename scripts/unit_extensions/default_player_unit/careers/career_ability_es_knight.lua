@@ -1,10 +1,14 @@
+﻿-- chunkname: @scripts/unit_extensions/default_player_unit/careers/career_ability_es_knight.lua
+
 CareerAbilityESKnight = class(CareerAbilityESKnight)
 
 CareerAbilityESKnight.init = function (self, extension_init_context, unit, extension_init_data)
 	self._owner_unit = unit
 	self._world = extension_init_context.world
 	self._wwise_world = Managers.world:wwise_world(self._world)
+
 	local player = extension_init_data.player
+
 	self._player = player
 	self._is_server = player.is_server
 	self._local_player = player.local_player
@@ -42,7 +46,7 @@ CareerAbilityESKnight.init = function (self, extension_init_context, unit, exten
 
 			first_person_extension:play_hud_sound_event("Stop_career_ability_kruber_charge_forward")
 			first_person_extension:play_remote_unit_sound_event("Stop_career_ability_kruber_charge_forward", unit_3p, 0)
-		end
+		end,
 	}
 end
 
@@ -121,7 +125,9 @@ CareerAbilityESKnight._start_priming = function (self)
 	if self._local_player then
 		local decal_unit_name = self._decal_unit_name
 		local unit_spawner = Managers.state.unit_spawner
+
 		self._decal_unit = unit_spawner:spawn_local_unit(decal_unit_name)
+
 		local flow_event = "lua_es_knight_activated_start_priming"
 
 		Unit.flow_event(self._owner_unit, flow_event)
@@ -131,8 +137,9 @@ CareerAbilityESKnight._start_priming = function (self)
 	local buff_extension = self._buff_extension
 	local buff_template_name = "planted_decrease_movement"
 	local buff_params = {
-		external_optional_multiplier = 0.3
+		external_optional_multiplier = 0.3,
 	}
+
 	self._buff_id = buff_extension:add_buff(buff_template_name, buff_params)
 	self._is_priming = true
 end
@@ -153,6 +160,7 @@ CareerAbilityESKnight._update_priming = function (self, dt)
 		local total_lerp_time = 2.5
 		local lerp_value = self._fov_lerp_time / total_lerp_time
 		local fov_multiplier = math.lerp(1, 0.95, lerp_value)
+
 		self._fov_lerp_time = math.min(self._fov_lerp_time + dt, total_lerp_time)
 
 		Managers.state.camera:set_additional_fov_multiplier(fov_multiplier)
@@ -203,14 +211,14 @@ CareerAbilityESKnight._run_ability = function (self)
 	local buff_name = "markus_knight_activated_ability"
 
 	buff_extension:add_buff(buff_name, {
-		attacker_unit = owner_unit
+		attacker_unit = owner_unit,
 	})
 
 	if talent_extension:has_talent("markus_knight_ability_invulnerability", "empire_soldier", true) then
 		buff_name = "markus_knight_ability_invulnerability_buff"
 
 		buff_extension:add_buff(buff_name, {
-			attacker_unit = owner_unit
+			attacker_unit = owner_unit,
 		})
 
 		local buff_template_name_id = NetworkLookup.buff_templates[buff_name]
@@ -226,19 +234,20 @@ CareerAbilityESKnight._run_ability = function (self)
 
 	local hold_duration = 0.03
 	local windup_duration = 0.15
+
 	status_extension.do_lunge = {
-		animation_end_event = "foot_knight_ability_charge_hit",
 		allow_rotation = false,
-		falloff_to_speed = 5,
-		ledge_falloff_immunity = 0.5,
-		dodge = true,
-		first_person_animation_event = "foot_knight_ability_charge_start",
-		first_person_animation_end_event = "foot_knight_ability_charge_hit",
-		first_person_hit_animation_event = "charge_react",
-		damage_start_time = 0.3,
-		duration = 1.5,
-		initial_speed = 20,
+		animation_end_event = "foot_knight_ability_charge_hit",
 		animation_event = "foot_knight_ability_charge_start",
+		damage_start_time = 0.3,
+		dodge = true,
+		duration = 1.5,
+		falloff_to_speed = 5,
+		first_person_animation_end_event = "foot_knight_ability_charge_hit",
+		first_person_animation_event = "foot_knight_ability_charge_start",
+		first_person_hit_animation_event = "charge_react",
+		initial_speed = 20,
+		ledge_falloff_immunity = 0.5,
 		lunge_events = self._lunge_events,
 		speed_function = function (lunge_time, duration)
 			local end_duration = 0.25
@@ -263,7 +272,7 @@ CareerAbilityESKnight._run_ability = function (self)
 				local t_value = rush_time / rush_duration
 				local acceleration = math.min(rush_time / (rush_duration / 3), 1)
 				local interpolation_value = math.cos(t_value * math.pi * 0.5)
-				local offset = nil
+				local offset
 				local step_time = 0.25
 
 				if rush_time > 8 * step_time then
@@ -287,7 +296,7 @@ CareerAbilityESKnight._run_ability = function (self)
 				end
 
 				local offset_multiplier = 1 - offset * 0.4
-				local speed = offset_multiplier * acceleration * acceleration * math.lerp(end_speed, rush_speed, interpolation_value)
+				local speed = offset_multiplier * (acceleration * acceleration) * math.lerp(end_speed, rush_speed, interpolation_value)
 
 				return speed
 			else
@@ -298,32 +307,32 @@ CareerAbilityESKnight._run_ability = function (self)
 			end
 		end,
 		damage = {
-			offset_forward = 2.4,
-			height = 1.8,
+			allow_backstab = false,
+			collision_filter = "filter_explosion_overlap_no_player",
+			damage_profile = "markus_knight_charge",
 			depth_padding = 0.6,
+			height = 1.8,
 			hit_zone_hit_name = "full",
 			ignore_shield = false,
-			collision_filter = "filter_explosion_overlap_no_player",
-			interrupt_on_max_hit_mass = true,
-			power_level_multiplier = 1,
 			interrupt_on_first_hit = false,
-			damage_profile = "markus_knight_charge",
+			interrupt_on_max_hit_mass = true,
+			offset_forward = 2.4,
+			power_level_multiplier = 1,
 			width = 2,
-			allow_backstab = false,
 			stagger_angles = {
 				max = 80,
-				min = 25
+				min = 25,
 			},
 			on_interrupt_blast = {
 				allow_backstab = false,
-				radius = 3,
-				power_level_multiplier = 1,
-				hit_zone_hit_name = "full",
+				collision_filter = "filter_explosion_overlap_no_player",
 				damage_profile = "markus_knight_charge_blast",
+				hit_zone_hit_name = "full",
 				ignore_shield = false,
-				collision_filter = "filter_explosion_overlap_no_player"
-			}
-		}
+				power_level_multiplier = 1,
+				radius = 3,
+			},
+		},
 	}
 
 	if talent_extension:has_talent("markus_knight_wide_charge", "empire_soldier", true) then

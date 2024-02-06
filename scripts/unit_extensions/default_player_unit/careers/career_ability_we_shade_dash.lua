@@ -1,10 +1,14 @@
+﻿-- chunkname: @scripts/unit_extensions/default_player_unit/careers/career_ability_we_shade_dash.lua
+
 CareerAbilityWEShadeDash = class(CareerAbilityWEShadeDash)
 
 CareerAbilityWEShadeDash.init = function (self, extension_init_context, unit, extension_init_data)
 	self._owner_unit = unit
 	self._world = extension_init_context.world
 	self._wwise_world = Managers.world:wwise_world(self._world)
+
 	local player = extension_init_data.player
+
 	self._player = player
 	self._is_server = player.is_server
 	self._local_player = player.local_player
@@ -34,7 +38,7 @@ CareerAbilityWEShadeDash.init = function (self, extension_init_context, unit, ex
 
 			if is_server then
 				buff_extension:add_buff(buff_name, {
-					attacker_unit = owner_unit
+					attacker_unit = owner_unit,
 				})
 				network_transmit:send_rpc_clients("rpc_add_buff", unit_object_id, buff_template_name_id, unit_object_id, 0, false)
 			else
@@ -48,7 +52,7 @@ CareerAbilityWEShadeDash.init = function (self, extension_init_context, unit, ex
 
 				local events = {
 					"Play_career_ability_kerillian_shade_enter",
-					"Play_career_ability_kerillian_shade_loop_husk"
+					"Play_career_ability_kerillian_shade_loop_husk",
 				}
 				local unit_id = network_manager:unit_game_object_id(owner_unit)
 				local node_id = 0
@@ -83,7 +87,7 @@ CareerAbilityWEShadeDash.init = function (self, extension_init_context, unit, ex
 		end,
 		finished = function (this)
 			return
-		end
+		end,
 	}
 	self._decal_unit = nil
 	self._decal_unit_name = "units/decals/decal_arrow_kerillian"
@@ -160,6 +164,7 @@ CareerAbilityWEShadeDash._start_priming = function (self)
 	if self._local_player then
 		local decal_unit_name = self._decal_unit_name
 		local unit_spawner = Managers.state.unit_spawner
+
 		self._decal_unit = unit_spawner:spawn_local_unit(decal_unit_name)
 	end
 
@@ -221,18 +226,18 @@ CareerAbilityWEShadeDash._run_ability = function (self)
 	end
 
 	status_extension.do_lunge = {
-		animation_end_event = "maiden_guard_active_ability_charge_hit",
 		allow_rotation = false,
+		animation_end_event = "maiden_guard_active_ability_charge_hit",
+		animation_event = "maiden_guard_active_ability_charge_start",
+		dodge = true,
+		duration = 0.65,
 		falloff_to_speed = 5,
 		first_person_animation_end_event = "dodge_bwd",
-		first_person_hit_animation_event = "charge_react",
-		dodge = true,
-		first_person_animation_event = "shade_stealth_ability",
 		first_person_animation_end_event_hit = "dodge_bwd",
-		duration = 0.65,
+		first_person_animation_event = "shade_stealth_ability",
+		first_person_hit_animation_event = "charge_react",
 		initial_speed = 25,
-		animation_event = "maiden_guard_active_ability_charge_start",
-		lunge_events = self._lunge_events
+		lunge_events = self._lunge_events,
 	}
 
 	career_extension:start_activated_ability_cooldown()

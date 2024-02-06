@@ -1,5 +1,8 @@
+﻿-- chunkname: @scripts/utils/ping_reporter.lua
+
 PingReporter = class(PingReporter)
 PingReporter.NAME = "PingReporter"
+
 local SAMPLE_RATE = 10
 
 local function find_local_player()
@@ -44,6 +47,7 @@ end
 PingReporter.init = function (self)
 	self._measures = {}
 	self._measure_taken = 0
+
 	local write_network_debug_output_to_log = Application.user_setting("write_network_debug_output_to_log")
 
 	if write_network_debug_output_to_log then
@@ -52,7 +56,7 @@ PingReporter.init = function (self)
 end
 
 PingReporter.update = function (self, dt, t)
-	if SAMPLE_RATE < t - self._measure_taken then
+	if t - self._measure_taken > SAMPLE_RATE then
 		self:_take_measure()
 
 		self._measure_taken = math.floor(t)
@@ -71,15 +75,12 @@ PingReporter._take_measure = function (self)
 
 	if not player.is_server and not player.bot_player and game_session and game_object_id then
 		local ping = GameSession.game_object_field(game_session, game_object_id, "ping")
+
 		self._measures[#self._measures + 1] = ping
 	end
 
 	if self._dump_detailed_connection_status and LobbyInternal.client then
-		print([[
-
-
-STEAM NETWORK DEBUG:
-]])
+		print("\n\nSTEAM NETWORK DEBUG:\n")
 		SteamClient.write_detailed_connection_status_to_log(LobbyInternal.client)
 		print("Network.get_local_ping_location()\n", Network.get_local_ping_location())
 		table.dump(SteamClient.get_connection_info(LobbyInternal.client), "SteamClient.get_connection_info", 2)

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/presence_set.lua
+
 return {
 	playing = {
 		"en",
@@ -7,7 +9,7 @@ return {
 		"pl",
 		"it",
 		"es",
-		"de"
+		"de",
 	},
 	title_screen = {
 		"en",
@@ -17,7 +19,7 @@ return {
 		"pl",
 		"it",
 		"es",
-		"de"
+		"de",
 	},
 	inn = {
 		"en",
@@ -27,7 +29,7 @@ return {
 		"pl",
 		"it",
 		"es",
-		"de"
+		"de",
 	},
 	dice_game = {
 		"en",
@@ -37,6 +39,6 @@ return {
 		"pl",
 		"it",
 		"es",
-		"de"
-	}
+		"de",
+	},
 }

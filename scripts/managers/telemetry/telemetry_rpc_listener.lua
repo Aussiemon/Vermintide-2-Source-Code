@@ -1,6 +1,9 @@
+﻿-- chunkname: @scripts/managers/telemetry/telemetry_rpc_listener.lua
+
 local RPCS = {
-	"rpc_to_client_sync_session_id"
+	"rpc_to_client_sync_session_id",
 }
+
 TelemetryRPCListener = class(TelemetryRPCListener)
 
 TelemetryRPCListener.init = function (self, events)

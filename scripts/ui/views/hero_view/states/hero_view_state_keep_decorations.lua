@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/hero_view/states/hero_view_state_keep_decorations.lua
+
 require("scripts/ui/helpers/scrollbar_logic")
 
 local definitions = local_require("scripts/ui/views/hero_view/states/definitions/hero_view_state_keep_decorations_definitions")
@@ -12,6 +14,7 @@ local DO_RELOAD = false
 local LIST_SPACING = 4
 local LIST_MAX_WIDTH = 800
 local DIALOGUE_DELAY = 1
+
 HeroViewStateKeepDecorations = class(HeroViewStateKeepDecorations)
 HeroViewStateKeepDecorations.NAME = "HeroViewStateKeepDecorations"
 
@@ -19,18 +22,22 @@ HeroViewStateKeepDecorations.on_enter = function (self, params)
 	print("[HeroViewState] Enter Substate HeroViewStateKeepDecorations")
 
 	self.parent = params.parent
+
 	local ingame_ui_context = params.ingame_ui_context
+
 	self.ingame_ui_context = ingame_ui_context
 	self._ui_renderer = ingame_ui_context.ui_renderer
 	self._ui_top_renderer = ingame_ui_context.ui_top_renderer
 	self._input_manager = ingame_ui_context.input_manager
 	self._voting_manager = ingame_ui_context.voting_manager
 	self._render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 	self._wwise_world = params.wwise_world
 	self._is_server = ingame_ui_context.is_server
+
 	local input_service = self:input_service()
+
 	self._menu_input_description = MenuInputDescriptionUI:new(ingame_ui_context, self._ui_top_renderer, input_service, 3, 100, generic_input_actions)
 
 	self._menu_input_description:set_input_description(nil)
@@ -52,6 +59,7 @@ HeroViewStateKeepDecorations.on_enter = function (self, params)
 
 	local state_params = params.state_params
 	local interactable_unit = state_params.interactable_unit
+
 	self._interactable_unit = interactable_unit
 	self._type = state_params.type
 
@@ -74,14 +82,17 @@ HeroViewStateKeepDecorations.on_enter = function (self, params)
 
 	local camera_interaction_name = Unit.get_data(interactable_unit, "interaction_data", "camera_interaction_name")
 	local hide_character = Unit.get_data(interactable_unit, "interaction_data", "hide_character")
+
 	self._hide_character = hide_character
+
 	local player = Managers.player:local_player()
 
 	if player then
 		UISettings.map.camera_time_enter = Unit.get_data(interactable_unit, "interaction_data", "camera_transition_time_in") or 0.5
 		UISettings.map.camera_time_exit = Unit.get_data(interactable_unit, "interaction_data", "camera_transition_time_out") or 0.5
+
 		local params = {
-			camera_interaction_name = camera_interaction_name
+			camera_interaction_name = camera_interaction_name,
 		}
 
 		CharacterStateHelper.change_camera_state(player, "camera_state_interaction", params)
@@ -113,7 +124,9 @@ HeroViewStateKeepDecorations.on_enter = function (self, params)
 	if decoration_settings_key then
 		local keep_decoration_extension = ScriptUnit.extension(interactable_unit, "keep_decoration_system")
 		local selected_decoration = keep_decoration_extension:get_selected_decoration()
+
 		self._keep_decoration_extension = keep_decoration_extension
+
 		local view_only = Unit.get_data(interactable_unit, "interaction_data", "view_only") or not self._is_server
 
 		if view_only then
@@ -151,6 +164,7 @@ end
 
 HeroViewStateKeepDecorations._disable_list_widgets = function (self)
 	local widgets_by_name = self._widgets_by_name
+
 	widgets_by_name.list_mask.content.visible = false
 	widgets_by_name.list_scrollbar.content.visible = false
 	widgets_by_name.confirm_button.content.visible = false
@@ -220,12 +234,14 @@ end
 
 HeroViewStateKeepDecorations._create_ui_elements = function (self, params)
 	self._ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+
 	local widgets = {}
 	local widgets_by_name = {}
 
 	for name, widget_definition in pairs(widget_definitions) do
 		if widget_definition then
 			local widget = UIWidget.init(widget_definition)
+
 			widgets[#widgets + 1] = widget
 			widgets_by_name[name] = widget
 		end
@@ -237,7 +253,9 @@ HeroViewStateKeepDecorations._create_ui_elements = function (self, params)
 	UIRenderer.clear_scenegraph_queue(self._ui_renderer)
 
 	self.ui_animator = UIAnimator:new(self._ui_scenegraph, animation_definitions)
+
 	local scrollbar_widget = self._widgets_by_name.list_scrollbar
+
 	self._scrollbar_logic = ScrollBarLogic:new(scrollbar_widget)
 end
 
@@ -475,6 +493,7 @@ HeroViewStateKeepDecorations._handle_input = function (self, dt, t)
 			self:_handle_gamepad_list_selection(input_service)
 		else
 			is_list_hovered = self:_is_list_hovered()
+
 			local list_widgets = self._list_widgets
 
 			if list_widgets and is_list_hovered then
@@ -606,10 +625,11 @@ end
 HeroViewStateKeepDecorations._start_transition_animation = function (self, key, animation_name)
 	local params = {
 		wwise_world = self._wwise_world,
-		render_settings = self._render_settings
+		render_settings = self._render_settings,
 	}
 	local widgets = {}
 	local anim_id = self.ui_animator:start_animation(animation_name, widgets, scenegraph_definition, params)
+
 	self._animations[key] = anim_id
 end
 
@@ -645,6 +665,7 @@ HeroViewStateKeepDecorations._set_info_by_decoration_key = function (self, key, 
 	local artist = settings.artist
 	local description_text = locked and Localize("interaction_unavailable") or Localize(description)
 	local artist_text = artist and not locked and Localize(artist) or ""
+
 	self._selected_decoration = key
 
 	self:_set_info_texts(Localize(display_name), description_text, artist_text)
@@ -652,6 +673,7 @@ HeroViewStateKeepDecorations._set_info_by_decoration_key = function (self, key, 
 
 	if not locked then
 		local sound_event = settings.sound_event
+
 		self._sound_event_delay = sound_event and DIALOGUE_DELAY or nil
 	end
 end
@@ -667,6 +689,7 @@ HeroViewStateKeepDecorations._update_sound_trigger_delay = function (self, dt)
 
 	if time == 0 then
 		self._sound_event_delay = nil
+
 		local selected_list_index = self._selected_list_index
 
 		if self._selected_decoration and selected_list_index then
@@ -744,6 +767,7 @@ HeroViewStateKeepDecorations._on_list_index_selected = function (self, index, sc
 
 			if hotspot then
 				local is_selected = i == index
+
 				hotspot.is_selected = is_selected
 
 				if is_selected then
@@ -766,6 +790,7 @@ HeroViewStateKeepDecorations._on_list_index_selected = function (self, index, sc
 		local to = scrollbar_animation_percentage
 		local duration = 0.3
 		local easing = math.easeOutCubic
+
 		self._ui_animations.scrollbar = UIAnimation.init(func, target, target_index, from, to, duration, easing)
 	else
 		self._ui_animations.scrollbar = nil
@@ -780,6 +805,7 @@ HeroViewStateKeepDecorations._update_scrollbar_progress_animation = function (se
 	end
 
 	chest_zoom_in_duration = chest_zoom_in_duration + dt
+
 	local progress = math.min(chest_zoom_in_duration / CHEST_PRESENTATION_ZOOM_IN_TIME, 1)
 	local animation_progress = math.easeOutCubic(progress)
 
@@ -801,20 +827,27 @@ HeroViewStateKeepDecorations._set_info_texts = function (self, title_text, descr
 	local artist_height = artist_text and self:_set_selected_artist(artist_text) or 0
 	local ui_scenegraph = self._ui_scenegraph
 	local title_scenegraph = ui_scenegraph.title_text
+
 	title_scenegraph.size[2] = title_height
+
 	local artist_scenegraph = ui_scenegraph.artist_text
+
 	artist_scenegraph.size[2] = artist_height
+
 	local window_scenegraph = ui_scenegraph.info_window
 	local window_position = window_scenegraph.position
 	local window_size = window_scenegraph.size
 	local available_description_height = window_size[2] - title_height - artist_height - 110
 	local description_scenegraph = ui_scenegraph.description_text
+
 	description_scenegraph.size[2] = available_description_height
 end
 
 HeroViewStateKeepDecorations._set_selected_title = function (self, title_text)
 	local widget = self._widgets_by_name.title_text
+
 	widget.content.text = title_text
+
 	local scenegraph_id = widget.scenegraph_id
 	local text_style = widget.style.text
 	local default_scenegraph = scenegraph_definition[scenegraph_id]
@@ -826,7 +859,9 @@ end
 
 HeroViewStateKeepDecorations._set_selected_description = function (self, description_text)
 	local widget = self._widgets_by_name.description_text
+
 	widget.content.text = description_text
+
 	local scenegraph_id = widget.scenegraph_id
 	local text_style = widget.style.text
 	local default_scenegraph = scenegraph_definition[scenegraph_id]
@@ -838,7 +873,9 @@ end
 
 HeroViewStateKeepDecorations._set_selected_artist = function (self, artist_text)
 	local widget = self._widgets_by_name.artist_text
+
 	widget.content.text = artist_text
+
 	local scenegraph_id = widget.scenegraph_id
 	local text_style = widget.style.text
 	local default_scenegraph = scenegraph_definition[scenegraph_id]
@@ -856,6 +893,7 @@ HeroViewStateKeepDecorations._update_equipped_widget = function (self)
 
 	for _, list_widget in pairs(self._list_widgets) do
 		local key = list_widget.content.key
+
 		list_widget.content.in_use = decoration_system:is_decoration_in_use(key)
 		list_widget.content.equipped = equipped_decoration == key
 	end
@@ -868,7 +906,7 @@ HeroViewStateKeepDecorations._align_list_widgets = function (self)
 	local num_widgets = #list_widgets + #dummy_widgets
 
 	for index = 1, num_widgets do
-		local widget = nil
+		local widget
 
 		if index <= #list_widgets then
 			widget = list_widgets[index]
@@ -879,8 +917,11 @@ HeroViewStateKeepDecorations._align_list_widgets = function (self)
 		local offset = widget.offset
 		local content = widget.content
 		local size = content.size
+
 		widget.default_offset = table.clone(offset)
+
 		local height = size[2]
+
 		offset[2] = -total_height
 		total_height = total_height + height
 
@@ -901,7 +942,7 @@ HeroViewStateKeepDecorations._handle_gamepad_list_selection = function (self, in
 
 	local list_widgets = self._list_widgets
 	local num_rows = #list_widgets
-	local new_index, scroll_index = nil
+	local new_index, scroll_index
 
 	if input_service:get("move_up_hold_continuous") then
 		new_index = math.max(current_index - 1, 1)
@@ -927,7 +968,7 @@ HeroViewStateKeepDecorations._find_closest_neighbour = function (self, column_in
 	local current_widget_offset = current_widget.offset
 	local current_coordinate_x = current_widget_size[1] * 0.5 + current_widget_offset[1]
 	local shortest_distance = math.huge
-	local closest_index = nil
+	local closest_index
 
 	for _, layout_index in pairs(column_index_list) do
 		local widget = list_widgets[layout_index]
@@ -1032,9 +1073,11 @@ HeroViewStateKeepDecorations._get_scrollbar_percentage_by_index = function (self
 
 			if draw_end_height < start_position_bottom then
 				local height_missing = start_position_bottom - draw_end_height
+
 				percentage_difference = math.clamp(height_missing / scroll_length, 0, 1)
 			elseif start_position_top < draw_start_height then
 				local height_missing = draw_start_height - start_position_top
+
 				percentage_difference = -math.clamp(height_missing / scroll_length, 0, 1)
 			end
 
@@ -1083,13 +1126,16 @@ HeroViewStateKeepDecorations._setup_decorations_list = function (self)
 
 				if unlocked then
 					local widget = UIWidget.init(entry_widget_definition)
+
 					index = index + 1
 					widgets[index] = widget
+
 					local content = widget.content
 					local style = widget.style
 					local title = display_name
 					local title_style = style.title
 					local max_text_width = title_style.size[1] - 10
+
 					content.title = UIRenderer.crop_text_width(self._ui_renderer, title, max_text_width, title_style)
 					content.key = key
 					content.locked = false
@@ -1127,6 +1173,7 @@ HeroViewStateKeepDecorations._setup_decorations_list = function (self)
 
 		while scrollbar_length > content_length + dummy_height do
 			dummy_count = dummy_count + 1
+
 			local widget = UIWidget.init(dummy_entry_widget_definition)
 
 			table.insert(dummy_list_widgets, widget)
@@ -1134,6 +1181,7 @@ HeroViewStateKeepDecorations._setup_decorations_list = function (self)
 			local content = widget.content
 			local size = content.size
 			local height = size[2]
+
 			dummy_height = dummy_height + height + LIST_SPACING
 		end
 	end
@@ -1177,7 +1225,7 @@ HeroViewStateKeepDecorations._animate_list_widget = function (self, widget, dt, 
 	local pulse_progress = hotspot.pulse_progress or 1
 	local offset_progress = hotspot.offset_progress or 1
 	local selection_progress = hotspot.selection_progress or 0
-	local speed = (is_hover or is_selected) and 14 or 3
+	local speed = not (not is_hover and not is_selected) and 14 or 3
 	local pulse_speed = 3
 	local input_speed = 20
 	local offset_speed = 5
@@ -1196,6 +1244,7 @@ HeroViewStateKeepDecorations._animate_list_widget = function (self, widget, dt, 
 	end
 
 	pulse_progress = math.min(pulse_progress + dt * pulse_speed, 1)
+
 	local pulse_easing_out_progress = math.easeOutCubic(pulse_progress)
 	local pulse_easing_in_progress = math.easeInCubic(pulse_progress)
 
@@ -1222,7 +1271,9 @@ HeroViewStateKeepDecorations._animate_list_widget = function (self, widget, dt, 
 	local combined_out_progress = math.max(select_easing_out_progress, hover_easing_out_progress)
 	local combined_in_progress = math.max(hover_easing_in_progress, select_easing_in_progress)
 	local hover_alpha = 255 * combined_progress
+
 	style.hover_frame.color[1] = hover_alpha
+
 	local title_text_style = style.title
 	local title_text_color = title_text_style.text_color
 	local title_default_text_color = title_text_style.default_text_color
@@ -1231,6 +1282,7 @@ HeroViewStateKeepDecorations._animate_list_widget = function (self, widget, dt, 
 	Colors.lerp_color_tables(title_default_text_color, title_hover_text_color, combined_progress, title_text_color)
 
 	local pulse_alpha = 255 - 255 * pulse_progress
+
 	style.pulse_frame.color[1] = pulse_alpha
 	offset[1] = 10 * math.ease_in_exp(offset_progress)
 	hotspot.offset_progress = offset_progress

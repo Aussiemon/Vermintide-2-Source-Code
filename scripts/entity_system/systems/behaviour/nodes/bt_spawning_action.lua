@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_spawning_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTSpawningAction = class(BTSpawningAction, BTNode)
@@ -7,16 +9,19 @@ BTSpawningAction.init = function (self, ...)
 end
 
 BTSpawningAction.name = "BTSpawningAction"
+
 local unit_alive = Unit.alive
 
 BTSpawningAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
+
 	blackboard.action = action
 
 	Unit.set_animation_root_mode(unit, "ignore")
 	self:_apply_anim_varations(unit)
 
 	local breed = blackboard.breed
+
 	blackboard.uses_spawn_animation = blackboard.spawn_type == "horde" or breed.uses_spawn_animation
 
 	if blackboard.uses_spawn_animation then
@@ -48,6 +53,7 @@ BTSpawningAction.enter = function (self, unit, blackboard, t)
 
 	if type(spawn_animation) == "table" then
 		local random_index = Math.random(1, #spawn_animation)
+
 		spawn_animation = spawn_animation[random_index]
 	end
 
@@ -62,6 +68,7 @@ BTSpawningAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	blackboard.spawning_finished = nil
 	blackboard.spawn_last_pos = nil
 	blackboard.fallback_landing_t = nil
+
 	local ai_navigation = blackboard.navigation_extension
 
 	ai_navigation:init_position()
@@ -191,7 +198,7 @@ BTSpawningAction.run = function (self, unit, blackboard, t, dt)
 				return "done"
 			end
 		end
-	elseif blackboard.spawn_landing_state == "landing" and (blackboard.jump_climb_finished or blackboard.fallback_landing_t < t) then
+	elseif blackboard.spawn_landing_state == "landing" and (blackboard.jump_climb_finished or t > blackboard.fallback_landing_t) then
 		return "done"
 	end
 
@@ -199,8 +206,8 @@ BTSpawningAction.run = function (self, unit, blackboard, t, dt)
 end
 
 local variation_type_to_rpc = {
+	float = "rpc_anim_set_variable_float",
 	int = "rpc_anim_set_variable_int",
-	float = "rpc_anim_set_variable_float"
 }
 
 BTSpawningAction._apply_anim_varations = function (self, unit)
@@ -220,7 +227,9 @@ BTSpawningAction._apply_anim_varations = function (self, unit)
 					local min = variation_data.min
 					local max = variation_data.max
 					local val = variation_data.value or math.random(min, max)
+
 					variation_data.value = math.wrap_index_between(val + 1, min, max)
+
 					local var_id = Unit.animation_find_variable(unit, variation_data.name)
 
 					Unit.animation_set_variable(unit, var_id, val)

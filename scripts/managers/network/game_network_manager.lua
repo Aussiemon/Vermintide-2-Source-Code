@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/network/game_network_manager.lua
+
 local game_object_templates = dofile("scripts/network/game_object_templates")
 
 local function debug_print(format, ...)
@@ -7,6 +9,7 @@ local function debug_print(format, ...)
 end
 
 GameNetworkManager = class(GameNetworkManager)
+
 local PING_SAMPLES_MAX_SIZE = 10
 local PING_SAMPLE_INTERVAL = 1
 
@@ -26,6 +29,7 @@ GameNetworkManager.init = function (self, world, lobby, is_server, event_delegat
 		self._session_id = Application.guid()
 	else
 		local game_session_host = GameSession.game_session_host(self.game_session)
+
 		self._session_id = "<client-session-id>"
 
 		if not game_session_host or game_session_host == "0" then
@@ -99,7 +103,9 @@ GameNetworkManager.post_init = function (self, context)
 	self.spawn_manager = context.spawn_manager
 	self.network_clock = context.network_clock
 	self.player_manager = context.player_manager
+
 	local transmit = context.network_transmit
+
 	self.network_transmit = transmit
 
 	transmit:set_game_session(self.game_session)
@@ -173,8 +179,7 @@ GameNetworkManager.update = function (self, dt)
 		local lobby = self._lobby
 		local game_session = self.game_session
 		local players = self.player_manager:human_players()
-		local min_ping = NetworkConstants.ping.min
-		local max_ping = NetworkConstants.ping.max
+		local min_ping, max_ping = NetworkConstants.ping.min, NetworkConstants.ping.max
 
 		for _, player in pairs(players) do
 			local peer_id = player.peer_id
@@ -190,6 +195,7 @@ GameNetworkManager.update = function (self, dt)
 
 	if self._shutdown_server_timer then
 		self._shutdown_server_timer = self._shutdown_server_timer - dt
+
 		local shutdown = self.network_server:all_client_peers_disconnected() or self._shutdown_server_timer < 0
 
 		if shutdown then
@@ -357,6 +363,7 @@ end
 
 GameNetworkManager.create_game_object = function (self, object_template, data_table, session_disconnect_callback)
 	local game_object_id = GameSession.create_game_object(self.game_session, object_template, data_table)
+
 	self._game_object_types[game_object_id] = object_template
 	self._game_object_disconnect_callbacks[game_object_id] = session_disconnect_callback
 
@@ -369,6 +376,7 @@ GameNetworkManager.create_player_game_object = function (self, profile, data_tab
 	fassert(self.is_server, "create_player_game_object: FAIL")
 
 	local go_id = GameSession.create_game_object(self.game_session, profile, data_table)
+
 	self._game_object_types[go_id] = "player"
 	self._game_object_disconnect_callbacks[go_id] = session_disconnect_callback
 
@@ -608,11 +616,13 @@ end
 
 GameNetworkManager.game_object_created_horde_surge = function (self, game_object_id, owner_id, go_template)
 	local game_mode = Managers.state.game_mode:game_mode()
+
 	game_mode._horde_surge_handler._game_object_id = game_object_id
 end
 
 GameNetworkManager.game_object_destroyed_horde_surge = function (self, game_object_id)
 	local game_mode = Managers.state.game_mode:game_mode()
+
 	game_mode._horde_surge_handler._game_object_id = nil
 end
 
@@ -754,11 +764,13 @@ end
 
 GameNetworkManager.game_object_created_versus_character_selection_unit = function (self, game_object_id, owner_id, go_template)
 	local mechanism = Managers.mechanism:game_mechanism()
+
 	mechanism._party_selection_logic._go_id = game_object_id
 end
 
 GameNetworkManager.game_object_destroyed_versus_character_selection_unit = function (self, game_object_id)
 	local mechanism = Managers.mechanism:game_mechanism()
+
 	mechanism._party_selection_logic._go_id = nil
 end
 
@@ -912,6 +924,7 @@ GameNetworkManager._pack_percentages_completed_arrays = function (self, percenta
 		if player then
 			local peer_id = player:network_id()
 			local local_player_id = player:local_player_id()
+
 			peer_ids[i] = peer_id
 			local_player_ids[i] = local_player_id
 			percentages[i] = percentage_complete
@@ -934,6 +947,7 @@ GameNetworkManager._unpack_percentages_completed_arrays = function (self, peer_i
 
 		if player then
 			local unique_id = player:unique_id()
+
 			percentages_completed[unique_id] = math.clamp(percentage_completed, 0, 1)
 		end
 	end
@@ -1016,7 +1030,7 @@ GameNetworkManager.rpc_surface_mtr_fx = function (self, channel_id, effect_name_
 		self.network_transmit:send_rpc_clients_except("rpc_surface_mtr_fx", peer_id, effect_name_id, unit_game_object_id, position, rotation, normal, actor_index)
 	end
 
-	local hit_actor = nil
+	local hit_actor
 
 	if actor_index > 0 then
 		hit_actor = Unit.actor(unit, actor_index)
@@ -1041,7 +1055,7 @@ GameNetworkManager.rpc_surface_mtr_fx_lvl_unit = function (self, channel_id, eff
 		self.network_transmit:send_rpc_clients_except("rpc_surface_mtr_fx_lvl_unit", peer_id, effect_name_id, unit_level_index, position, rotation, normal, actor_index)
 	end
 
-	local hit_actor = nil
+	local hit_actor
 
 	if actor_index > 0 then
 		hit_actor = Unit.actor(unit, actor_index)
@@ -1159,6 +1173,7 @@ GameNetworkManager.rpc_coop_feedback = function (self, channel_id, player1_peer_
 
 		if IS_CONSOLE and not Managers.account:offline_mode() then
 			local lobby = Managers.state.network:lobby()
+
 			player_1_name = is_player_controlled and (lobby:user_name(player_1_peer_id) or tostring(player_1_peer_id)) or player1:name()
 		end
 

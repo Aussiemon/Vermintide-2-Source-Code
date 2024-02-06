@@ -1,17 +1,21 @@
+﻿-- chunkname: @foundation/scripts/util/testify.lua
+
 require("foundation/scripts/util/table")
 
 local SIGNALS = {
 	current_request = "current_request",
-	request = "request",
-	reply = "reply",
+	end_suite = "end_suite",
 	ready = "ready",
-	end_suite = "end_suite"
+	reply = "reply",
+	request = "request",
 }
+
 Testify = {
 	_requests = {},
 	_responses = {},
-	RETRY = newproxy(false)
+	RETRY = newproxy(false),
 }
+
 local __raw_print = print
 local cjson_decode = cjson.decode
 local cjson_encode = cjson.encode
@@ -78,6 +82,7 @@ end
 
 Testify.make_request = function (self, request_name, ...)
 	local request_parameters, num_parameters = table_pack(...)
+
 	request_parameters.length = num_parameters
 
 	self:_print("Requesting %s", request_name)
@@ -95,9 +100,10 @@ Testify.make_request_to_runner = function (self, request_name, ...)
 
 	self._requests[request_name] = request_parameters
 	self._responses[request_name] = nil
+
 	local request = {
 		name = request_name,
-		parameters = request_parameters
+		parameters = request_parameters,
 	}
 
 	self:_signal(SIGNALS.request, cjson_encode(request))
@@ -164,7 +170,7 @@ end
 
 Testify.respond_to_runner_request = function (self, request_name, responses, num_responses)
 	self:respond_to_request(request_name, {
-		responses
+		responses,
 	}, num_responses)
 end
 
@@ -187,6 +193,7 @@ Testify._set_time_scale = function (self)
 
 	local scale = Development.parameter("testify_time_scale")
 	local time_scale_index = table.index_of(debug_manager.time_scale_list, tonumber(scale))
+
 	self._time_scaled = true
 
 	if time_scale_index == -1 then
@@ -211,7 +218,7 @@ Testify._signal = function (self, signal, message, print_signal)
 		system = "Testify",
 		type = "signal",
 		signal = signal,
-		message = tostring(message)
+		message = tostring(message),
 	})
 end
 

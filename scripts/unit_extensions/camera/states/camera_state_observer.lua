@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/unit_extensions/camera/states/camera_state_observer.lua
+
 local camera_state_observer_testify = script_data.testify and require("scripts/unit_extensions/camera/states/camera_state_observer_testify")
+
 CameraStateObserver = class(CameraStateObserver, CameraState)
 
 CameraStateObserver.init = function (self, camera_state_init_context)
@@ -102,6 +105,7 @@ CameraStateObserver._get_valid_players_to_observe = function (self)
 			for _, player_unit in ipairs(side:player_units()) do
 				local other_player = player_manager:owner(player_unit)
 				local other_unique_id = other_player:unique_id()
+
 				allowed_players_to_observe[other_unique_id] = other_player
 			end
 		end
@@ -120,7 +124,7 @@ CameraStateObserver.follow_next_unit = function (self)
 	end
 
 	local observed_player_id = self._observed_player_id
-	local follow_unit = nil
+	local follow_unit
 	local num_players = table.size(players)
 
 	for i = 1, num_players do
@@ -155,7 +159,7 @@ CameraStateObserver.follow_previous_unit = function (self)
 	end
 
 	local observed_player_id = self._observed_player_id
-	local current_player_id, current_player, previous_player_id, previous_player_unit = nil
+	local current_player_id, current_player, previous_player_id, previous_player_unit
 
 	repeat
 		current_player_id, current_player = next(players, current_player_id)
@@ -180,7 +184,7 @@ CameraStateObserver._set_follow_unit = function (self, observed_player_id, follo
 		return false
 	end
 
-	local snap_camera = nil
+	local snap_camera
 
 	if follow_unit then
 		local unit = self.unit

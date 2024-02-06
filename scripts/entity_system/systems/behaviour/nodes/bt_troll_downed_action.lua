@@ -1,7 +1,10 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_troll_downed_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTTrollDownedAction = class(BTTrollDownedAction, BTNode)
 BTTrollDownedAction.name = "BTTrollDownedAction"
+
 local script_data = script_data
 
 BTTrollDownedAction.init = function (self, ...)
@@ -10,6 +13,7 @@ end
 
 BTTrollDownedAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
+
 	blackboard.action = action
 
 	blackboard.navigation_extension:set_enabled(false)
@@ -22,7 +26,9 @@ BTTrollDownedAction.enter = function (self, unit, blackboard, t)
 
 	blackboard.downed_end_time = t + action.downed_duration
 	blackboard.minimum_downed_end_time = t + action.min_downed_duration
+
 	local health_extension = ScriptUnit.extension(unit, "health_system")
+
 	blackboard.downed_end_finished = false
 	blackboard.downed_state = "downed"
 
@@ -44,12 +50,12 @@ BTTrollDownedAction.run = function (self, unit, blackboard, t, dt)
 	local health_extension = ScriptUnit.extension(unit, "health_system")
 
 	if blackboard.downed_state == "downed" then
-		if blackboard.downed_end_time < t then
+		if t > blackboard.downed_end_time then
 			Managers.state.network:anim_event(unit, "downed_end")
 			self:trigger_dialogue_event(unit, "chaos_troll_rising_regen")
 
 			blackboard.downed_state = "standup"
-		elseif blackboard.minimum_downed_end_time < t and health_extension:min_health_reached() then
+		elseif t > blackboard.minimum_downed_end_time and health_extension:min_health_reached() then
 			Managers.state.network:anim_event(unit, "downed_end_wounded")
 			self:trigger_dialogue_event(unit, "chaos_troll_rising_interrupted")
 

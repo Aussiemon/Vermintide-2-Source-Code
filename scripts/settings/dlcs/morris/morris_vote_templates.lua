@@ -1,16 +1,18 @@
+﻿-- chunkname: @scripts/settings/dlcs/morris/morris_vote_templates.lua
+
 VoteTemplates.deus_settings_vote = {
 	client_start_vote_rpc = "rpc_server_request_start_vote_lookup",
-	ingame_vote = false,
-	mission_vote = true,
-	gamepad_support = true,
-	text = "deus_settings_vote",
-	minimum_voter_percent = 1,
-	success_percent = 1,
-	server_start_vote_rpc = "rpc_client_start_vote_lookup",
 	duration = 30,
-	priority = 110,
-	min_required_voters = 1,
 	gamepad_input_desc = "default_voting",
+	gamepad_support = true,
+	ingame_vote = false,
+	min_required_voters = 1,
+	minimum_voter_percent = 1,
+	mission_vote = true,
+	priority = 110,
+	server_start_vote_rpc = "rpc_client_start_vote_lookup",
+	success_percent = 1,
+	text = "deus_settings_vote",
 	timeout_vote_option = 2,
 	requirement_failed_message_func = function (requirement_check_data)
 		local text = Localize("vote_requirement_failed")
@@ -20,6 +22,7 @@ VoteTemplates.deus_settings_vote = {
 			if not success then
 				local player = player_manager:player_from_peer_id(peer_id)
 				local name = player:name()
+
 				text = text .. name .. "\n"
 			end
 		end
@@ -28,17 +31,17 @@ VoteTemplates.deus_settings_vote = {
 	end,
 	vote_options = {
 		{
-			text = "popup_choice_accept",
 			gamepad_input = "confirm",
+			input = "ingame_vote_yes",
+			text = "popup_choice_accept",
 			vote = 1,
-			input = "ingame_vote_yes"
 		},
 		{
-			text = "dlc1_3_1_decline",
 			gamepad_input = "back",
+			input = "ingame_vote_no",
+			text = "dlc1_3_1_decline",
 			vote = 2,
-			input = "ingame_vote_no"
-		}
+		},
 	},
 	on_start = function (ingame_context, data)
 		Managers.matchmaking:cancel_matchmaking()
@@ -56,10 +59,10 @@ VoteTemplates.deus_settings_vote = {
 			local vote_type = data.vote_type
 			local search_config = {
 				any_level = true,
-				dedicated_servers = false,
 				dedicated_server = false,
-				mechanism = "deus",
+				dedicated_servers = false,
 				join_method = "solo",
+				mechanism = "deus",
 				mission_id = mission_id,
 				difficulty = difficulty,
 				quick_game = quick_game,
@@ -67,7 +70,7 @@ VoteTemplates.deus_settings_vote = {
 				always_host = always_host,
 				strict_matchmaking = strict_matchmaking,
 				matchmaking_type = matchmaking_type,
-				excluded_level_keys = excluded_level_keys
+				excluded_level_keys = excluded_level_keys,
 			}
 
 			if Managers.twitch and (Managers.twitch:is_connecting() or Managers.twitch:is_connected()) and not Managers.twitch:game_mode_supported(vote_type, difficulty) then
@@ -111,7 +114,7 @@ VoteTemplates.deus_settings_vote = {
 			NetworkLookup.matchmaking_types[matchmaking_type],
 			twitch_enabled and 1 or 2,
 			NetworkLookup.mechanisms[mechanism],
-			dominant_god and NetworkLookup.deus_themes[dominant_god]
+			dominant_god and NetworkLookup.deus_themes[dominant_god],
 		}
 
 		return sync_data
@@ -155,16 +158,16 @@ VoteTemplates.deus_settings_vote = {
 			strict_matchmaking = strict_matchmaking_id == 1,
 			matchmaking_type = matchmaking_type,
 			twitch_enabled = twitch_enabled_id == 1,
-			mechanism = mechanism
+			mechanism = mechanism,
 		}
 
 		return data
 	end,
 	initial_vote_func = function (data)
 		local votes = {
-			[data.voter_peer_id] = 1
+			[data.voter_peer_id] = 1,
 		}
 
 		return votes
-	end
+	end,
 }

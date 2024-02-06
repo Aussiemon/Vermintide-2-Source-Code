@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/default_player_unit/buffs/settings/buff_perk_functions.lua
+
 local buff_perk_names = require("scripts/unit_extensions/default_player_unit/buffs/settings/buff_perk_names")
 local STATUS_REASON = "BUFF_PERK"
 local buff_perk_functions = {
@@ -11,7 +13,7 @@ local buff_perk_functions = {
 			if is_server then
 				StatusUtils.set_overpowered_network(unit, false, "slow_bomb", nil)
 			end
-		end
+		end,
 	},
 	[buff_perk_names.poisoned] = {
 		added = function (buff_ext, unit, template, is_server)
@@ -23,7 +25,7 @@ local buff_perk_functions = {
 			end
 
 			Managers.state.status_effect:set_status(unit, StatusEffectNames.poisoned, STATUS_REASON, false)
-		end
+		end,
 	},
 	[buff_perk_names.burning] = {
 		added = function (buff_ext, unit, template, is_server)
@@ -35,7 +37,7 @@ local buff_perk_functions = {
 			end
 
 			Managers.state.status_effect:set_status(unit, StatusEffectNames.burning, STATUS_REASON, false)
-		end
+		end,
 	},
 	[buff_perk_names.burning_balefire] = {
 		added = function (buff_ext, unit, template, is_server)
@@ -47,7 +49,7 @@ local buff_perk_functions = {
 			end
 
 			Managers.state.status_effect:set_status(unit, StatusEffectNames.burning_balefire, STATUS_REASON, false)
-		end
+		end,
 	},
 	[buff_perk_names.burning_elven_magic] = {
 		added = function (buff_ext, unit, template, is_server)
@@ -59,7 +61,7 @@ local buff_perk_functions = {
 			end
 
 			Managers.state.status_effect:set_status(unit, StatusEffectNames.burning_elven_magic, STATUS_REASON, false)
-		end
+		end,
 	},
 	[buff_perk_names.burning_warpfire] = {
 		added = function (buff_ext, unit, template, is_server)
@@ -71,8 +73,8 @@ local buff_perk_functions = {
 			end
 
 			Managers.state.status_effect:set_status(unit, StatusEffectNames.burning_warpfire, STATUS_REASON, false)
-		end
-	}
+		end,
+	},
 }
 
 return buff_perk_functions

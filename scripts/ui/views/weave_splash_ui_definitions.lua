@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/weave_splash_ui_definitions.lua
+
 local_require("scripts/ui/ui_widgets")
 
 local scenegraph_definition = {
@@ -6,39 +8,39 @@ local scenegraph_definition = {
 		position = {
 			0,
 			0,
-			1
+			1,
 		},
 		size = {
 			1920,
-			1080
-		}
+			1080,
+		},
 	},
 	dead_space_filler = {
 		scale = "fit",
 		position = {
 			0,
 			0,
-			0
+			0,
 		},
 		size = {
 			1920,
-			1080
-		}
+			1080,
+		},
 	},
 	background_image = {
-		vertical_alignment = "center",
-		scale = "aspect_ratio",
 		horizontal_alignment = "center",
+		scale = "aspect_ratio",
+		vertical_alignment = "center",
 		size = {
 			1920,
-			1080
+			1080,
 		},
 		position = {
 			0,
 			0,
-			2
-		}
-	}
+			2,
+		},
+	},
 }
 
 local function create_weave_image(image, alpha)
@@ -49,12 +51,12 @@ local function create_weave_image(image, alpha)
 				{
 					pass_type = "texture",
 					style_id = "bg_texture",
-					texture_id = "bg_texture"
-				}
-			}
+					texture_id = "bg_texture",
+				},
+			},
 		},
 		content = {
-			bg_texture = image
+			bg_texture = image,
 		},
 		style = {
 			bg_texture = {
@@ -62,15 +64,15 @@ local function create_weave_image(image, alpha)
 					alpha,
 					255,
 					255,
-					255
-				}
-			}
+					255,
+				},
+			},
 		},
 		offset = {
 			0,
 			0,
-			5
-		}
+			5,
+		},
 	}
 end
 
@@ -79,12 +81,12 @@ local widgets = {
 		255,
 		0,
 		0,
-		0
-	}, -1)
+		0,
+	}, -1),
 }
 
 return {
 	scenegraph_definition = scenegraph_definition,
 	widget_definitions = widgets,
-	create_weave_image_func = create_weave_image
+	create_weave_image_func = create_weave_image,
 }

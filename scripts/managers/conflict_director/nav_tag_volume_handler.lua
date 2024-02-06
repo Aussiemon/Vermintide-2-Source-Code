@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/conflict_director/nav_tag_volume_handler.lua
+
 NavTagVolumeHandler = class(NavTagVolumeHandler)
 
 NavTagVolumeHandler.init = function (self, world, nav_world)
@@ -10,6 +12,7 @@ NavTagVolumeHandler.init = function (self, world, nav_world)
 	self._runtime_volume_index = 1
 	self._volume_lookup_id = 1
 	self.mappings = {}
+
 	local level_settings = LevelHelper:current_level_settings(world)
 	local level_path = level_settings.level_name
 	local num_nested_levels = LevelResource.nested_level_count(level_path)
@@ -26,6 +29,7 @@ NavTagVolumeHandler.init = function (self, world, nav_world)
 
 	if Application.can_get("lua", file_path) then
 		local mappings = require(file_path)
+
 		self.mappings = table.clone(mappings.nav_tag_volumes)
 		self.mappings_available = true
 
@@ -64,6 +68,7 @@ NavTagVolumeHandler.create_tag_volume_from_mappings = function (self, level_volu
 
 	for i = 1, #bottom_points do
 		local point = bottom_points[i]
+
 		point_table[i] = Vector3(point[1], point[2], point[3])
 	end
 
@@ -74,7 +79,9 @@ NavTagVolumeHandler.create_tag_volume_from_mappings = function (self, level_volu
 	GwNavTagVolume.add_to_world(tag_volume)
 
 	self.created_tag_volumes[level_volume_name] = tag_volume
+
 	local volumes = self.level_volumes_by_layer[mapping.layer_name] or {}
+
 	volumes[#volumes + 1] = level_volume_name
 	self.level_volumes_by_layer[mapping.layer_name] = volumes
 
@@ -95,53 +102,54 @@ NavTagVolumeHandler.create_mapping = function (self, pos, size, layer_name)
 	local up_right = pos + Vector3.normalize(Vector3(size, size, 0)) * size
 	local up = pos + Vector3(0, size, 0)
 	local up_left = pos + Vector3.normalize(Vector3(-size, size, 0)) * size
+
 	mapping.bottom_points = {
 		{
 			left[1],
 			left[2],
-			left[3]
+			left[3],
 		},
 		{
 			left_down[1],
 			left_down[2],
-			left_down[3]
+			left_down[3],
 		},
 		{
 			down[1],
 			down[2],
-			down[3]
+			down[3],
 		},
 		{
 			down_right[1],
 			down_right[2],
-			down_right[3]
+			down_right[3],
 		},
 		{
 			right[1],
 			right[2],
-			right[3]
+			right[3],
 		},
 		{
 			up_right[1],
 			up_right[2],
-			up_right[3]
+			up_right[3],
 		},
 		{
 			up[1],
 			up[2],
-			up[3]
+			up[3],
 		},
 		{
 			up_left[1],
 			up_left[2],
-			up_left[3]
-		}
+			up_left[3],
+		},
 	}
 	mapping.color = {
 		255,
 		255,
 		255,
-		255
+		255,
 	}
 	mapping.layer_name = layer_name
 	mapping.alt_min = pos[3] - size

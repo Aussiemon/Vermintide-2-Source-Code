@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/chaos_sorcerer/bt_cast_missile_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTCastMissileAction = class(BTCastMissileAction, BTNode)
@@ -9,14 +11,17 @@ end
 
 BTCastMissileAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
+
 	blackboard.action = action
 	blackboard.active_node = BTCastMissileAction
 	blackboard.spell_count = blackboard.spell_count or 0
 	blackboard.cast_time_done = t + (action.cast_time or 1)
 	blackboard.summoning = true
 	blackboard.volleys = 0
+
 	local target_unit = blackboard.target_unit
-	local distance_to_target = nil
+	local distance_to_target
+
 	blackboard.cast_target_unit = target_unit
 
 	if Unit.alive(target_unit) then
@@ -62,10 +67,11 @@ BTCastMissileAction.run = function (self, unit, blackboard, t, dt)
 	local target_position = blackboard.target_position:unbox()
 	local action = blackboard.action
 
-	if not action.only_cb and blackboard.cast_time_done < t or blackboard.anim_cb_throw then
+	if not action.only_cb and t > blackboard.cast_time_done or blackboard.anim_cb_throw then
 		blackboard.anim_cb_throw = false
+
 		local missile_data = blackboard.current_spell or action.spell_data
-		local throw_pos, target_dir = nil
+		local throw_pos, target_dir
 
 		if action.get_throw_position_func then
 			throw_pos, target_dir = action.get_throw_position_func(unit, blackboard, target_position)
@@ -81,6 +87,7 @@ BTCastMissileAction.run = function (self, unit, blackboard, t, dt)
 				local x, y, z = unpack(blackboard.action.missile_spawn_offset)
 				local pos = Vector3(x, y, z)
 				local throw_offset = Quaternion.rotate(rot, pos)
+
 				throw_pos = curr_pos + throw_offset
 				target_dir = Vector3.normalize(target_position - throw_pos)
 			end
@@ -89,10 +96,14 @@ BTCastMissileAction.run = function (self, unit, blackboard, t, dt)
 		if missile_data.magic_missile then
 			local angle = action.launch_angle or 0.7
 			local speed = missile_data.magic_missile_speed
+
 			target_dir = Quaternion.rotate(Quaternion.axis_angle(Vector3.cross(target_dir, Vector3.up()), angle), target_dir)
+
 			local up = Vector3.cross(target_dir, Vector3.up()) * (1 - 2 * math.random()) * 0.25
 			local right = Vector3.cross(target_dir, Vector3.right()) * (1 - 2 * math.random()) * 0.25
+
 			target_dir = Vector3.normalize(target_dir + up + right)
+
 			local position_target = missile_data.target_ground and POSITION_LOOKUP[blackboard.target_unit]
 
 			self:launch_magic_missile(blackboard, action, throw_pos, target_dir, angle, speed, unit, blackboard.target_unit, position_target, missile_data)
@@ -106,7 +117,7 @@ BTCastMissileAction.run = function (self, unit, blackboard, t, dt)
 		blackboard.spell_count = blackboard.spell_count + 1
 		blackboard.volleys = blackboard.volleys + 1
 
-		if not action.only_cb and action.volleys <= blackboard.volleys then
+		if not action.only_cb and blackboard.volleys >= action.volleys then
 			return "done"
 		else
 			blackboard.cast_time_done = t + action.volley_delay
@@ -146,23 +157,23 @@ BTCastMissileAction.launch_projectile = function (self, blackboard, action, init
 			angle = angle,
 			speed = speed,
 			target_vector = target_dir,
-			initial_position = initial_position
+			initial_position = initial_position,
 		},
 		projectile_impact_system = {
-			server_side_raycast = true,
 			collision_filter = "filter_enemy_ray_projectile",
-			owner_unit = owner_unit
+			server_side_raycast = true,
+			owner_unit = owner_unit,
 		},
 		projectile_system = {
 			impact_template_name = "explosion_impact",
 			damage_source = damage_source,
-			owner_unit = owner_unit
+			owner_unit = owner_unit,
 		},
 		area_damage_system = {
-			area_damage_template = "sorcerer_area_dot_damage",
-			invisible_unit = false,
 			area_ai_random_death_template = "area_poison_ai_random_death",
+			area_damage_template = "sorcerer_area_dot_damage",
 			damage_players = true,
+			invisible_unit = false,
 			aoe_dot_damage = aoe_dot_damage,
 			aoe_init_damage = aoe_init_damage,
 			aoe_dot_damage_interval = aoe_dot_damage_interval,
@@ -172,8 +183,8 @@ BTCastMissileAction.launch_projectile = function (self, blackboard, action, init
 			dot_effect_name = action.dot_effect_name,
 			damage_source = damage_source,
 			create_nav_tag_volume = create_nav_tag_volume,
-			nav_tag_volume_layer = nav_tag_volume_layer
-		}
+			nav_tag_volume_layer = nav_tag_volume_layer,
+		},
 	}
 	local projectile_unit_name = "units/hub_elements/empty"
 	local projectile_unit = Managers.state.unit_spawner:spawn_network_unit(projectile_unit_name, "aoe_projectile_unit", extension_init_data, initial_position)
@@ -188,29 +199,30 @@ BTCastMissileAction.launch_magic_missile = function (self, blackboard, action, p
 	local true_flight_template_name = missile_data.true_flight_template_name
 	local true_flight_template = TrueFlightTemplates[true_flight_template_name]
 	local unit_template_name = "ai_true_flight_projectile_unit"
-	local health_system, death_system = nil
+	local health_system, death_system
 	local missile_health = true_flight_template.health
 
 	if missile_health then
 		if type(missile_health) == "table" then
 			local difficulty_rank = Managers.state.difficulty:get_difficulty_rank()
+
 			missile_health = missile_health[difficulty_rank]
 		end
 
 		unit_template_name = "ai_true_flight_killable_projectile_unit"
 		health_system = {
-			health = missile_health
+			health = missile_health,
 		}
 		death_system = {
 			is_husk = false,
-			death_reaction_template = true_flight_template.death_reaction_template
+			death_reaction_template = true_flight_template.death_reaction_template,
 		}
 	end
 
 	local extension_init_data = {
 		projectile_locomotion_system = {
-			trajectory_template_name = "throw_trajectory",
 			gravity_settings = "arrows",
+			trajectory_template_name = "throw_trajectory",
 			angle = angle,
 			speed = speed,
 			initial_position = position,
@@ -219,26 +231,26 @@ BTCastMissileAction.launch_magic_missile = function (self, blackboard, action, p
 			target_unit = target_unit,
 			owner_unit = owner_unit,
 			position_target = position_target,
-			life_time = missile_data.life_time
+			life_time = missile_data.life_time,
 		},
 		projectile_system = {
 			impact_template_name = "direct_impact",
 			owner_unit = owner_unit,
 			damage_source = damage_source,
-			explosion_template_name = missile_data.explosion_template_name or "chaos_magic_missile"
+			explosion_template_name = missile_data.explosion_template_name or "chaos_magic_missile",
 		},
 		projectile_impact_system = {
 			collision_filter = "filter_enemy_ray_projectile",
 			server_side_raycast = true,
 			owner_unit = owner_unit,
-			radius = radius
+			radius = radius,
 		},
 		health_system = health_system,
-		death_system = death_system
+		death_system = death_system,
 	}
 	local rotation = Quaternion.look(target_dir)
 	local projectile_unit_name = missile_data.projectile_unit_name
-	local projectile_unit = nil
+	local projectile_unit
 
 	if missile_data.projectile_size then
 		local s = missile_data.projectile_size

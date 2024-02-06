@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_smash_door_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTSmashDoorAction = class(BTSmashDoorAction, BTNode)
@@ -26,6 +28,7 @@ BTSmashDoorAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
 	local smart_object = blackboard.next_smart_object_data
 	local target_unit = smart_object.smart_object_data.unit
+
 	blackboard.action = action
 	blackboard.is_smashing_door = nil
 	blackboard.is_opening_door = nil
@@ -38,6 +41,7 @@ BTSmashDoorAction.enter = function (self, unit, blackboard, t)
 	blackboard.smash_door.frames_to_done = nil
 	blackboard.smash_door.failed = false
 	blackboard.smash_door.target_unit = target_unit
+
 	local params = {
 		unit = unit,
 		blackboard = blackboard,
@@ -45,9 +49,11 @@ BTSmashDoorAction.enter = function (self, unit, blackboard, t)
 		entrance_pos = smart_object.entrance_pos,
 		exit_pos = smart_object.exit_pos,
 		exit_lookat_direction = Vector3Box(Vector3.normalize(Vector3.flat(smart_object.exit_pos:unbox() - smart_object.entrance_pos:unbox()))),
-		start_t = t
+		start_t = t,
 	}
+
 	blackboard.smash_door.state_machine = StateMachine:new(self, BTSmashDoorAction.StateInit, params)
+
 	local rotation_speed = action.rotation_speed or 10
 	local locomotion_extension = blackboard.locomotion_extension
 
@@ -172,7 +178,7 @@ BTSmashDoorAction.StateMovingToSmartObjectEntrance.update = function (self, dt, 
 	local distance_to_target_sq = Vector3.length_squared(vector_to_target)
 	local wanted_distance_sq = (action.door_attack_distance or 0.1)^2
 
-	if distance_to_target_sq > wanted_distance_sq then
+	if wanted_distance_sq < distance_to_target_sq then
 		local look_direction_wanted = self.exit_lookat_direction:unbox()
 		local direction_to_target = Vector3.normalize(vector_to_target)
 		local locomotion_extension = blackboard.locomotion_extension
@@ -201,10 +207,12 @@ BTSmashDoorAction.StateOpening.on_enter = function (self, params)
 	local unit = params.unit
 	local action = params.action
 	local target_unit = blackboard.smash_door.target_unit
+
 	self.blackboard = blackboard
 	self.unit = unit
 	self.action = action
 	self.target_unit = target_unit
+
 	local locomotion_extension = blackboard.locomotion_extension
 
 	locomotion_extension:set_wanted_velocity(Vector3.zero())
@@ -238,16 +246,19 @@ end
 BTSmashDoorAction.StateAttacking.on_enter = function (self, params)
 	local target_unit = params.blackboard.smash_door.target_unit
 	local blackboard = params.blackboard
+
 	self.blackboard = blackboard
 	self.unit = params.unit
 	self.action = params.action
 	self.target_unit = target_unit
 	self.start_t = params.start_t
+
 	local locomotion_extension = blackboard.locomotion_extension
 
 	locomotion_extension:set_wanted_velocity(Vector3.zero())
 
 	local door_extension = ScriptUnit.extension(target_unit, "door_system")
+
 	door_extension.num_attackers = door_extension.num_attackers + 1
 
 	self:attack()
@@ -278,6 +289,7 @@ end
 BTSmashDoorAction.StateAttacking.on_exit = function (self)
 	local target_unit = self.target_unit
 	local door_extension = ScriptUnit.extension(target_unit, "door_system")
+
 	door_extension.num_attackers = door_extension.num_attackers - 1
 end
 
@@ -325,7 +337,7 @@ BTSmashDoorAction.StateMovingToSmartObjectExit.update = function (self, dt, t)
 	local distance_to_target_sq = Vector3.length_squared(vector_to_target)
 	local wanted_distance_sq = 0.010000000000000002
 
-	if distance_to_target_sq > wanted_distance_sq then
+	if wanted_distance_sq < distance_to_target_sq then
 		local look_direction_wanted = self.exit_lookat_direction:unbox()
 		local direction_to_target = Vector3.normalize(vector_to_target)
 		local locomotion_extension = blackboard.locomotion_extension

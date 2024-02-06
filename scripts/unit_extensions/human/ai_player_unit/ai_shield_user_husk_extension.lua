@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/human/ai_player_unit/ai_shield_user_husk_extension.lua
+
 AIShieldUserHuskExtension = class(AIShieldUserHuskExtension)
 
 AIShieldUserHuskExtension.init = function (self, extension_init_context, unit, extension_init_data)
@@ -26,7 +28,7 @@ AIShieldUserHuskExtension.can_block_attack = function (self, attacker_unit, true
 	local hit_unit_pos = Unit.world_position(unit, 0)
 	local attacker_to_hit_dir = Vector3.normalize(hit_unit_pos - attacker_unit_pos)
 	local hit_unit_direction = Quaternion.forward(Unit.local_rotation(unit, 0))
-	local hit_angle, behind_target = nil
+	local hit_angle, behind_target
 
 	if trueflight_blocking then
 		hit_angle = Vector3.dot(hit_unit_direction, hit_direction)

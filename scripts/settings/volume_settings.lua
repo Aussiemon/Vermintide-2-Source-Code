@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/volume_settings.lua
+
 require("scripts/unit_extensions/generic/generic_volume_templates")
 
 local PLAYER = "PlayerVolumeExtension"
@@ -5,21 +7,22 @@ local BOT = "BotVolumeExtension"
 local AI = "AIVolumeExtension"
 local PICKUP_PROJECTILE = "PickupProjectileVolumeExtension"
 local LOCAL_PLAYER = "LocalPlayerVolumeExtension"
+
 VolumeSystemSettings = VolumeSystemSettings or {
 	updates_per_frame = {
 		[PLAYER] = 4,
 		[LOCAL_PLAYER] = 1,
 		[BOT] = 3,
 		[AI] = 10,
-		[PICKUP_PROJECTILE] = 1
+		[PICKUP_PROJECTILE] = 1,
 	},
 	traversal_costs = {
 		high = 2,
 		inferno = 100000,
-		low = 1.2,
 		insane = 4,
-		medium = 1.5
-	}
+		low = 1.2,
+		medium = 1.5,
+	},
 }
 VolumeExtensionSettings = VolumeExtensionSettings or {
 	damage_volume = {
@@ -31,31 +34,31 @@ VolumeExtensionSettings = VolumeExtensionSettings or {
 					10,
 					10,
 					10,
-					10
-				}
+					10,
+				},
 			},
 			[BOT] = {
-				traversal_cost = "low",
 				time_between_damage = 2,
+				traversal_cost = "low",
 				damage = {
 					10,
 					10,
 					10,
 					10,
-					10
-				}
+					10,
+				},
 			},
 			[AI] = {
-				traversal_cost = "low",
 				time_between_damage = 2,
+				traversal_cost = "low",
 				damage = {
 					1,
 					1,
 					1,
 					1,
-					1
-				}
-			}
+					1,
+				},
+			},
 		},
 		warpstone_meteor = {
 			[PLAYER] = {
@@ -65,90 +68,90 @@ VolumeExtensionSettings = VolumeExtensionSettings or {
 					3,
 					3,
 					3,
-					3
-				}
+					3,
+				},
 			},
 			[BOT] = {
-				traversal_cost = "medium",
 				time_between_damage = 0.1,
+				traversal_cost = "medium",
 				damage = {
 					3,
 					3,
 					3,
 					3,
-					3
-				}
+					3,
+				},
 			},
 			[AI] = {
-				traversal_cost = "medium",
 				time_between_damage = 0.1,
+				traversal_cost = "medium",
 				damage = {
 					4,
 					4,
 					4,
 					4,
-					4
-				}
-			}
+					4,
+				},
+			},
 		},
 		ai_kill_dot = {
 			[AI] = {
-				traversal_cost = "insane",
 				time_between_damage = 0.1,
+				traversal_cost = "insane",
 				damage = {
 					500,
 					500,
 					500,
 					500,
-					500
-				}
-			}
+					500,
+				},
+			},
 		},
 		generic_insta_kill = {
 			[PLAYER] = {},
 			[LOCAL_PLAYER] = {},
 			[BOT] = {
-				traversal_cost = "high"
+				traversal_cost = "high",
 			},
 			[AI] = {
-				traversal_cost = "high"
-			}
+				traversal_cost = "high",
+			},
 		},
 		player_insta_kill = {
 			[PLAYER] = {},
 			[LOCAL_PLAYER] = {},
 			[BOT] = {
-				traversal_cost = "high"
-			}
+				traversal_cost = "high",
+			},
 		},
 		ai_insta_kill = {
 			[AI] = {
-				traversal_cost = "high"
-			}
+				traversal_cost = "high",
+			},
 		},
 		generic_insta_kill_no_cost = {
 			[PLAYER] = {},
 			[LOCAL_PLAYER] = {},
 			[BOT] = {},
-			[AI] = {}
+			[AI] = {},
 		},
 		player_insta_kill_no_cost = {
 			[PLAYER] = {},
 			[LOCAL_PLAYER] = {},
-			[BOT] = {}
+			[BOT] = {},
 		},
 		pactsworn_insta_kill_no_cost = {
 			[PLAYER] = {},
 			[LOCAL_PLAYER] = {},
-			[BOT] = {}
+			[BOT] = {},
 		},
 		heroes_insta_kill_no_cost = {
 			[PLAYER] = {},
 			[LOCAL_PLAYER] = {},
-			[BOT] = {}
+			[BOT] = {},
 		},
 		ai_insta_kill_no_cost = {
-			[AI] = {}
+			[AI] = {},
 		},
 		ai_kill_dot_no_cost = {
 			[AI] = {
@@ -158,9 +161,9 @@ VolumeExtensionSettings = VolumeExtensionSettings or {
 					500,
 					500,
 					500,
-					500
-				}
-			}
+					500,
+				},
+			},
 		},
 		generic_fire = {
 			[PLAYER] = {
@@ -170,29 +173,29 @@ VolumeExtensionSettings = VolumeExtensionSettings or {
 					1,
 					1,
 					1,
-					1
-				}
+					1,
+				},
 			},
 			[BOT] = {
-				traversal_cost = "high",
 				time_between_damage = 0.5,
+				traversal_cost = "high",
 				damage = {
 					1,
 					1,
 					1,
 					1,
-					1
-				}
-			}
+					1,
+				},
+			},
 		},
 		catacombs_corpse_pit = {
-			[PLAYER] = {}
+			[PLAYER] = {},
 		},
 		cemetery_plague_floor = {
 			[PLAYER] = {},
 			[BOT] = {
-				traversal_cost = "insane"
-			}
+				traversal_cost = "insane",
+			},
 		},
 		skaven_molten_steel = {
 			[PLAYER] = {
@@ -202,135 +205,136 @@ VolumeExtensionSettings = VolumeExtensionSettings or {
 					10,
 					10,
 					10,
-					10
-				}
+					10,
+				},
 			},
 			[BOT] = {
-				traversal_cost = "inferno",
 				time_between_damage = 1,
+				traversal_cost = "inferno",
 				damage = {
 					10,
 					10,
 					10,
 					10,
-					10
-				}
+					10,
+				},
 			},
 			[AI] = {
-				traversal_cost = "inferno",
 				time_between_damage = 1,
+				traversal_cost = "inferno",
 				damage = {
 					3,
 					3,
 					3,
 					3,
-					3
-				}
-			}
+					3,
+				},
+			},
 		},
 		bot_avoid_area = {
 			[BOT] = {
-				traversal_cost = "inferno"
-			}
-		}
+				traversal_cost = "inferno",
+			},
+		},
 	},
 	movement_volume = {
 		generic_slowdown = {
 			[PLAYER] = {
-				speed_multiplier = 0.75
+				speed_multiplier = 0.75,
 			},
 			[BOT] = {
-				speed_multiplier = 0.75
-			}
+				speed_multiplier = 0.75,
+			},
 		},
 		generic_slowdown_2 = {
 			[PLAYER] = {
-				speed_multiplier = 0.6
+				speed_multiplier = 0.6,
 			},
 			[BOT] = {
-				speed_multiplier = 0.6
-			}
+				speed_multiplier = 0.6,
+			},
 		},
 		generic_slowdown_3 = {
 			[PLAYER] = {
-				speed_multiplier = 0.8
+				speed_multiplier = 0.8,
 			},
 			[BOT] = {
-				speed_multiplier = 0.8
-			}
+				speed_multiplier = 0.8,
+			},
 		},
 		generic_slowdown_glue = {
 			[PLAYER] = {
-				speed_multiplier = 0.1
+				speed_multiplier = 0.1,
 			},
 			[BOT] = {
-				speed_multiplier = 0.1
-			}
-		}
+				speed_multiplier = 0.1,
+			},
+		},
 	},
 	location_volume = {
 		area_indication = {
-			[PLAYER] = {}
-		}
+			[PLAYER] = {},
+		},
 	},
 	trigger_volume = {
 		all_alive_humans_outside = {
 			[PLAYER] = {
-				filter = GenericVolumeTemplates.filters.unit_not_disabled
-			}
+				filter = GenericVolumeTemplates.filters.unit_not_disabled,
+			},
 		},
 		all_alive_players_outside = {
 			[PLAYER] = {
-				filter = GenericVolumeTemplates.filters.unit_not_disabled
+				filter = GenericVolumeTemplates.filters.unit_not_disabled,
 			},
 			[BOT] = {
-				filter = GenericVolumeTemplates.filters.unit_not_disabled
-			}
+				filter = GenericVolumeTemplates.filters.unit_not_disabled,
+			},
 		},
 		all_alive_players_outside_no_alive_inside = {
 			[PLAYER] = {
-				filter = GenericVolumeTemplates.filters.unit_not_disabled_outside_or_disabled_inside_and_not_all_disabled_inside
+				filter = GenericVolumeTemplates.filters.unit_not_disabled_outside_or_disabled_inside_and_not_all_disabled_inside,
 			},
 			[BOT] = {
-				filter = GenericVolumeTemplates.filters.unit_not_disabled_outside_or_disabled_inside_and_not_all_disabled_inside
-			}
+				filter = GenericVolumeTemplates.filters.unit_not_disabled_outside_or_disabled_inside_and_not_all_disabled_inside,
+			},
 		},
 		all_alive_players_inside = {
 			[PLAYER] = {
-				filter = GenericVolumeTemplates.filters.all_alive_players_inside
-			}
+				filter = GenericVolumeTemplates.filters.all_alive_players_inside,
+			},
 		},
 		all_non_disabled_players_inside = {
 			[PLAYER] = {
-				filter = GenericVolumeTemplates.filters.all_non_disabled_players_inside
-			}
+				filter = GenericVolumeTemplates.filters.all_non_disabled_players_inside,
+			},
 		},
 		non_disabled_players_inside = {
 			[PLAYER] = {
-				filter = GenericVolumeTemplates.filters.unit_not_disabled
-			}
+				filter = GenericVolumeTemplates.filters.unit_not_disabled,
+			},
 		},
 		ai_inside = {
-			[AI] = {}
+			[AI] = {},
 		},
 		players_and_bots_inside = {
 			[PLAYER] = {},
-			[BOT] = {}
+			[BOT] = {},
 		},
 		players_inside = {
-			[PLAYER] = {}
+			[PLAYER] = {},
 		},
 		local_player_inside = {
 			[PLAYER] = {},
-			[LOCAL_PLAYER] = {}
-		}
+			[LOCAL_PLAYER] = {},
+		},
 	},
 	despawn_volume = {
 		pickup_projectiles = {
-			[PICKUP_PROJECTILE] = {}
-		}
-	}
+			[PICKUP_PROJECTILE] = {},
+		},
+	},
 }
+
 local nav_tag_layer_costs = {}
 
 for volume_type, volume_sub_types in pairs(VolumeExtensionSettings) do

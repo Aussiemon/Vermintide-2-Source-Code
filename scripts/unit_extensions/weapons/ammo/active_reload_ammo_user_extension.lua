@@ -1,10 +1,14 @@
+﻿-- chunkname: @scripts/unit_extensions/weapons/ammo/active_reload_ammo_user_extension.lua
+
 script_data.infinite_ammo = script_data.infinite_ammo or Development.parameter("infinite_ammo")
 ActiveReloadAmmoUserExtension = class(ActiveReloadAmmoUserExtension)
 
 ActiveReloadAmmoUserExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	self.world = extension_init_context.world
 	self.owner_unit = extension_init_data.owner_unit
+
 	local ammo_data = extension_init_data.ammo_data
+
 	self.reload_time = ammo_data.reload_time
 	self.max_ammo = ammo_data.max_ammo
 	self.start_ammo = ammo_data.start_ammo or self.max_ammo
@@ -67,17 +71,19 @@ ActiveReloadAmmoUserExtension.update = function (self, unit, input, dt, context,
 	end
 
 	if self.next_reload_time then
-		if self.next_reload_time < t then
+		if t > self.next_reload_time then
 			if not self.start_reloading then
 				self.current_ammo = self.current_ammo + 1
 				self.available_ammo = self.available_ammo - 1
 			end
 
 			self.start_reloading = nil
+
 			local num_missing = self.ammo_per_clip - self.current_ammo
 
 			if num_missing > 0 and self.available_ammo > 0 then
 				local reload_event = "reload"
+
 				self.next_reload_time = t + self.reload_time
 
 				if num_missing == 1 or self.available_ammo == 1 then
@@ -173,6 +179,7 @@ ActiveReloadAmmoUserExtension._setup_indicator_area = function (self)
 	assert(self.next_reload_time)
 
 	local reload_start = self:reload_start_time()
+
 	self.event_start = self.reload_time * EVENT_START_PERCENT
 end
 

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/game_state/state_demo_end.lua
+
 require("scripts/ui/views/demo_end_ui")
 
 StateDemoEnd = class(StateDemoEnd)
@@ -43,7 +45,9 @@ end
 
 StateDemoEnd._setup_input = function (self)
 	self._input_manager = InputManager:new()
+
 	local input_manager = self._input_manager
+
 	Managers.input = input_manager
 
 	input_manager:initialize_device("keyboard", 1)

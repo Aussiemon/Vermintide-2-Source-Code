@@ -1,7 +1,10 @@
+﻿-- chunkname: @scripts/managers/game_mode/game_modes/game_mode_tutorial.lua
+
 require("scripts/managers/game_mode/game_modes/game_mode_base")
 
 script_data.disable_gamemode_end = script_data.disable_gamemode_end or Development.parameter("disable_gamemode_end")
 GameModeTutorial = class(GameModeTutorial, GameModeBase)
+
 local COMPLETE_LEVEL_VAR = false
 local FAIL_LEVEL_VAR = false
 
@@ -9,6 +12,7 @@ GameModeTutorial.init = function (self, settings, world, ...)
 	GameModeTutorial.super.init(self, settings, world, ...)
 
 	local hero_side = Managers.state.side:get_side_from_name("heroes")
+
 	self._adventure_spawning = AdventureSpawning:new(self._profile_synchronizer, hero_side, self._is_server, self._network_server)
 
 	self:_register_player_spawner(self._adventure_spawning)
@@ -35,9 +39,11 @@ GameModeTutorial._switch_profile_to_tutorial = function (self)
 	end
 
 	local tutorial_profile_name = PROFILES_BY_AFFILIATION.tutorial[1]
+
 	self._tutorial_profile_index = FindProfileIndex(tutorial_profile_name)
 	self._tutorial_career_index = 1
 	self._local_player_spawned = false
+
 	local is_bot = false
 
 	self._profile_synchronizer:assign_full_profile(peer_id, local_player_id, self._tutorial_profile_index, self._tutorial_career_index, is_bot)
@@ -46,8 +52,7 @@ end
 GameModeTutorial._switch_back_to_previous_profile = function (self)
 	local peer_id = Network.peer_id()
 	local local_player_id = 1
-	local prev_profile = self._previous_profile_index
-	local prev_career = self._previous_career_index
+	local prev_profile, prev_career = self._previous_profile_index, self._previous_career_index
 
 	if prev_profile and prev_career then
 		local is_bot = false
@@ -106,6 +111,7 @@ GameModeTutorial.add_bot = function (self, profile_index, career_index)
 	local bot_players = self._bot_players
 	local party_id = 1
 	local bot_player = self:_add_bot_to_party(party_id, profile_index, career_index)
+
 	bot_players[#bot_players + 1] = bot_player
 end
 
@@ -116,6 +122,7 @@ GameModeTutorial._remove_bot = function (self, bot_players, index)
 	self:_remove_bot_instant(bot_player)
 
 	local last = #bot_players
+
 	bot_players[index] = bot_players[last]
 	bot_players[last] = nil
 end
@@ -234,18 +241,19 @@ GameModeTutorial.get_active_respawn_units = function (self)
 end
 
 GameModeTutorial.get_end_screen_config = function (self, game_won, game_lost, player)
-	local screen_name = nil
-	local screen_config = {}
+	local screen_name, screen_config = nil, {}
 
 	if game_won then
 		screen_name = "victory"
+
 		local stats_id = player:stats_id()
 		local statistics_db = self._statistics_db
 		local level_key = self._level_key
 		local previous_completed_difficulty_index = LevelUnlockUtils.completed_level_difficulty_index(statistics_db, stats_id, level_key) or 0
+
 		screen_config = {
 			level_key = level_key,
-			previous_completed_difficulty_index = previous_completed_difficulty_index
+			previous_completed_difficulty_index = previous_completed_difficulty_index,
 		}
 	else
 		screen_name = "defeat"

@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/unit_extensions/default_player_unit/states/player_character_state_emote.lua
+
 PlayerCharacterStateEmote = class(PlayerCharacterStateEmote, PlayerCharacterState)
+
 local zoom_sensitivity = 0.05
 local zoom_sensitivity_gamepad = 0.03
 local zoom_lerp_speed = 5
@@ -13,11 +16,11 @@ PlayerCharacterStateEmote.on_enter = function (self, unit, input, dt, context, t
 	self.locomotion_extension:set_wanted_velocity(Vector3.zero())
 
 	local camera_settings = {
-		override_node_name = "camera_attach",
+		allow_camera_movement = true,
 		camera_node = "emotes",
 		force_state_change = true,
-		allow_camera_movement = true,
-		override_follow_unit = unit
+		override_node_name = "camera_attach",
+		override_follow_unit = unit,
 	}
 
 	CharacterStateHelper.change_camera_state(self.player, "follow_third_person", camera_settings)
@@ -149,6 +152,7 @@ PlayerCharacterStateEmote.update = function (self, unit, input, dt, context, t)
 	if self._current_zoom ~= self._current_zoom_target then
 		local current_zoom = self._current_zoom
 		local lerp_t = math.min(dt * zoom_lerp_speed, 1)
+
 		current_zoom = math.lerp(current_zoom, self._current_zoom_target, lerp_t)
 		self._current_zoom = current_zoom
 

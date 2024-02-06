@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/skaven_ratling_gunner/bt_ratling_gunner_move_to_shoot_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTRatlingGunnerMoveToShootAction = class(BTRatlingGunnerMoveToShootAction, BTNode)
@@ -11,8 +13,10 @@ BTRatlingGunnerMoveToShootAction.name = "BTRatlingGunnerMoveToShootAction"
 BTRatlingGunnerMoveToShootAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
 	local attack_pattern_data = {}
+
 	blackboard.attack_pattern_data = attack_pattern_data
 	blackboard.action = action
+
 	local target_unit, node_name = PerceptionUtils.pick_ratling_gun_target(unit, blackboard)
 
 	if target_unit then
@@ -43,6 +47,7 @@ BTRatlingGunnerMoveToShootAction.leave = function (self, unit, blackboard, t, re
 	end
 
 	blackboard.move_attempts = nil
+
 	local default_move_speed = AiUtils.get_default_breed_move_speed(unit, blackboard)
 	local navigation_extension = blackboard.navigation_extension
 
@@ -60,6 +65,7 @@ BTRatlingGunnerMoveToShootAction.run = function (self, unit, blackboard, t, dt)
 
 	if not move_pos then
 		local position = self:calculate_move_position(unit, blackboard)
+
 		blackboard.move_attempts = blackboard.move_attempts or 0
 		blackboard.move_attempts = blackboard.move_attempts + 1
 

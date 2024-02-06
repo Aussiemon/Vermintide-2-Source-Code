@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/ui/views/fatigue_ui.lua
+
 local definitions = local_require("scripts/ui/views/fatigue_ui_definitions")
+
 FatigueUI = class(FatigueUI)
 
 FatigueUI.init = function (self, parent, ingame_ui_context)
@@ -13,10 +16,12 @@ end
 
 FatigueUI.create_ui_elements = function (self)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(definitions.scenegraph_definition)
+
 	local shields = {}
 
 	for i = 1, UISettings.max_fatigue_shields do
 		local shield = UIWidget.init(definitions.shield_definition)
+
 		shields[i] = shield
 	end
 
@@ -42,8 +47,10 @@ end
 
 FatigueUI.setup_hud = function (self, status_extension)
 	local fatigue_points, max_fatigue_points = status_extension:current_fatigue_points()
+
 	fatigue_points = math.clamp(fatigue_points, 0, UISettings.max_fatigue_shields * 2)
 	max_fatigue_points = math.clamp(max_fatigue_points, 0, UISettings.max_fatigue_shields * 2)
+
 	local active_shields = math.floor(max_fatigue_points / 2 + 0.5)
 	local offset = 30
 	local total_width = offset * (active_shields - 1)
@@ -55,6 +62,7 @@ FatigueUI.setup_hud = function (self, status_extension)
 		local shield = shields[i]
 		local style = shield.style
 		local width_offet = half_width - offset * (i - 1)
+
 		style.offset[1] = width_offet
 		style.texture_glow_id.offset[1] = width_offet
 		shield.state = self:shield_state(i, living_shields)
@@ -104,10 +112,10 @@ FatigueUI.start_fade_out = function (self)
 end
 
 local customizer_data = {
-	root_scenegraph_id = "background",
+	drag_scenegraph_id = "background_dragger",
 	label = "Stamina",
 	registry_key = "fatigue",
-	drag_scenegraph_id = "background_dragger"
+	root_scenegraph_id = "background",
 }
 
 FatigueUI.update = function (self, dt)

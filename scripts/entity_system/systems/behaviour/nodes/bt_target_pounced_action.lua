@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_target_pounced_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTTargetPouncedAction = class(BTTargetPouncedAction, BTNode)
@@ -7,14 +9,17 @@ BTTargetPouncedAction.init = function (self, ...)
 end
 
 BTTargetPouncedAction.name = "BTTargetPouncedAction"
+
 local POSITION_LOOKUP = POSITION_LOOKUP
 
 BTTargetPouncedAction.enter = function (self, unit, blackboard, t)
 	local locomotion_extension = blackboard.locomotion_extension
 	local action = self._tree_node.action_data
+
 	blackboard.action = action
 	blackboard.active_node = BTTargetPouncedAction
 	blackboard.start_pouncing_time = t
+
 	local jump_data = blackboard.jump_data
 	local target_unit = jump_data.target_unit
 	local target_position = POSITION_LOOKUP[target_unit]
@@ -41,8 +46,7 @@ BTTargetPouncedAction.enter = function (self, unit, blackboard, t)
 
 	blackboard.navigation_extension:set_enabled(false)
 
-	local target_position = POSITION_LOOKUP[target_unit]
-	local target_rotation = Unit.local_rotation(target_unit, 0)
+	local target_position, target_rotation = POSITION_LOOKUP[target_unit], Unit.local_rotation(target_unit, 0)
 
 	locomotion_extension:set_wanted_velocity(Vector3.zero())
 	locomotion_extension:teleport_to(target_position)
@@ -90,6 +94,7 @@ BTTargetPouncedAction.leave = function (self, unit, blackboard, t, reason, destr
 
 	local jump_data = blackboard.jump_data
 	local target_unit = jump_data.target_unit
+
 	blackboard.active_node = nil
 
 	if not blackboard.already_pounced then
@@ -176,7 +181,7 @@ BTTargetPouncedAction.impact_pushback = function (pouncing_unit, impact_position
 				local player_dist = Vector3.length(to_player)
 
 				if player_dist < far_impact_radius then
-					local push_velocity = nil
+					local push_velocity
 
 					if player_dist <= close_impact_radius then
 						push_velocity = Vector3.normalize(to_player) * impact_speed_given
@@ -200,7 +205,7 @@ end
 local temp_damage_triplett = {
 	0,
 	0,
-	0
+	0,
 }
 
 BTTargetPouncedAction.direct_damage = function (unit, blackboard)
@@ -218,7 +223,9 @@ BTTargetPouncedAction.direct_damage = function (unit, blackboard)
 	local normalized_time = math.clamp(pounced_time, 0, 1)
 	local base_damage = action.damage
 	local multiplier = 1 + normalized_time * action.final_damage_multiplier
+
 	base_damage = base_damage * multiplier
+
 	local jump_data = blackboard.jump_data
 	local target_unit = jump_data.target_unit
 

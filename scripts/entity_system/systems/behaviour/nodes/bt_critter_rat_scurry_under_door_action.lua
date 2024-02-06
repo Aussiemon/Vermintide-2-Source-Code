@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_critter_rat_scurry_under_door_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTCritterRatScurryUnderDoorAction = class(BTCritterRatScurryUnderDoorAction, BTNode)
@@ -10,12 +12,15 @@ BTCritterRatScurryUnderDoorAction.name = "BTCritterRatScurryUnderDoorAction"
 
 BTCritterRatScurryUnderDoorAction.enter = function (self, unit, blackboard, t)
 	blackboard.action = self._tree_node.action_data
+
 	local next_smart_object_data = blackboard.next_smart_object_data
 	local entrance_pos = next_smart_object_data.entrance_pos:unbox()
 	local exit_pos = next_smart_object_data.exit_pos:unbox()
+
 	blackboard.scurry_under_entrance_pos = Vector3Box(entrance_pos)
 	blackboard.scurry_under_exit_pos = Vector3Box(exit_pos)
 	blackboard.scurry_under_lookat_direction = Vector3Box(Vector3.normalize(Vector3.flat(exit_pos - entrance_pos)))
+
 	local locomotion_extension = blackboard.locomotion_extension
 
 	locomotion_extension:set_movement_type("snap_to_navmesh")
@@ -140,11 +145,7 @@ BTCritterRatScurryUnderDoorAction._move_towards_smartobject_entrance_update = fu
 		local speed = blackboard.breed.run_speed
 
 		if distance_to_target < speed * dt then
-			if dt == 0 then
-				speed = 0
-			else
-				speed = distance_to_target / dt
-			end
+			speed = dt == 0 and 0 or distance_to_target / dt
 		end
 
 		local direction_to_target = Vector3.normalize(vector_to_target)

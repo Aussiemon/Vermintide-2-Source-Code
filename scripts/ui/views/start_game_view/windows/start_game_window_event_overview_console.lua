@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/start_game_view/windows/start_game_window_event_overview_console.lua
+
 local definitions = local_require("scripts/ui/views/start_game_view/windows/definitions/start_game_window_event_overview_console_definitions")
 local scenegraph_definition = definitions.scenegraph_definition
 local widget_definitions = definitions.widgets
@@ -5,6 +7,7 @@ local animation_definitions = definitions.animation_definitions
 local selector_input_definition = definitions.selector_input_definition
 local START_GAME_INPUT = "refresh_press"
 local SELECTION_INPUT = "confirm_press"
+
 StartGameWindowEventOverviewConsole = class(StartGameWindowEventOverviewConsole)
 StartGameWindowEventOverviewConsole.NAME = "StartGameWindowEventOverviewConsole"
 
@@ -12,17 +15,21 @@ StartGameWindowEventOverviewConsole.on_enter = function (self, params, offset)
 	print("[StartGameViewWindow] Enter Substate StartGameWindowEventOverviewConsole")
 
 	self._parent = params.parent
+
 	local ingame_ui_context = params.ingame_ui_context
+
 	self._ingame_ui_context = ingame_ui_context
 	self._ui_renderer = ingame_ui_context.ui_renderer
 	self._ui_top_renderer = ingame_ui_context.ui_top_renderer
 	self._input_manager = ingame_ui_context.input_manager
 	self._statistics_db = ingame_ui_context.statistics_db
+
 	local player_manager = Managers.player
 	local local_player = player_manager:local_player()
+
 	self._stats_id = local_player:stats_id()
 	self._render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 	self._animations = {}
 
@@ -44,20 +51,23 @@ end
 
 StartGameWindowEventOverviewConsole._start_transition_animation = function (self, animation_name)
 	local params = {
-		render_settings = self._render_settings
+		render_settings = self._render_settings,
 	}
 	local widgets = {}
 	local anim_id = self._ui_animator:start_animation(animation_name, widgets, scenegraph_definition, params)
+
 	self._animations[animation_name] = anim_id
 end
 
 StartGameWindowEventOverviewConsole._create_ui_elements = function (self, params, offset)
 	self._ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+
 	local widgets = {}
 	local widgets_by_name = {}
 
 	for name, widget_definition in pairs(widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		widgets[#widgets + 1] = widget
 		widgets_by_name[name] = widget
 	end
@@ -71,6 +81,7 @@ StartGameWindowEventOverviewConsole._create_ui_elements = function (self, params
 
 	if offset then
 		local window_position = self._ui_scenegraph.window.local_position
+
 		window_position[1] = window_position[1] + offset[1]
 		window_position[2] = window_position[2] + offset[2]
 		window_position[3] = window_position[3] + offset[3]
@@ -85,9 +96,12 @@ StartGameWindowEventOverviewConsole._setup_content_from_backend = function (self
 	local game_mode_data = live_event_interface:get_weekly_events_game_mode_data()
 	local title_text_id = game_mode_data.title_text_id
 	local event_title_widget = widgets_by_name.event_title
+
 	event_title_widget.content.text = Localize(title_text_id)
+
 	local description_text_id = game_mode_data.description_text_id
 	local event_description_widget = widgets_by_name.event_description
+
 	event_description_widget.content.text = Localize(description_text_id)
 end
 
@@ -123,7 +137,9 @@ StartGameWindowEventOverviewConsole._update_can_play = function (self)
 
 	if self._previous_can_play ~= can_play then
 		self._previous_can_play = can_play
+
 		local play_button = self._widgets_by_name.play_button
+
 		play_button.content.button_hotspot.disable_button = not can_play
 		play_button.content.disabled = not can_play
 
@@ -220,10 +236,15 @@ StartGameWindowEventOverviewConsole._update_difficulty_option = function (self)
 	if selected_difficulty_key then
 		local difficulty_settings = DifficultySettings[selected_difficulty_key]
 		local difficulty_widget = self._widgets_by_name.difficulty_setting
+
 		difficulty_widget.content.input_text = Localize(difficulty_settings.display_name)
+
 		local display_image = difficulty_settings.display_image
+
 		difficulty_widget.content.icon_texture = display_image
+
 		local completed_frame_texture = difficulty_settings.completed_frame_texture
+
 		difficulty_widget.content.icon_frame_texture = completed_frame_texture
 	end
 end
@@ -245,7 +266,9 @@ end
 StartGameWindowEventOverviewConsole._handle_new_selection = function (self, input_index)
 	local widgets_by_name = self._widgets_by_name
 	local num_inputs = #selector_input_definition
+
 	input_index = math.clamp(input_index, 1, num_inputs)
+
 	local widget_name = selector_input_definition[input_index]
 	local widget = widgets_by_name[widget_name]
 	local widget_content = widget.content
@@ -258,6 +281,7 @@ StartGameWindowEventOverviewConsole._handle_new_selection = function (self, inpu
 		local widget_name = selector_input_definition[i]
 		local widget = widgets_by_name[widget_name]
 		local is_selected = i == input_index
+
 		widget.content.is_selected = is_selected
 	end
 
@@ -290,7 +314,7 @@ StartGameWindowEventOverviewConsole._draw = function (self, dt)
 	local ui_scenegraph = self._ui_scenegraph
 	local input_service = self._parent:window_input_service()
 	local render_settings = self._render_settings
-	local parent_scenegraph_id = nil
+	local parent_scenegraph_id
 
 	UIRenderer.begin_pass(ui_top_renderer, ui_scenegraph, input_service, dt, parent_scenegraph_id, render_settings)
 

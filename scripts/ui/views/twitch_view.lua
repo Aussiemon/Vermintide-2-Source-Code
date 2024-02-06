@@ -1,6 +1,9 @@
+﻿-- chunkname: @scripts/ui/views/twitch_view.lua
+
 require("scripts/utils/keystroke_helper")
 
 local definitions = local_require("scripts/ui/views/twitch_view_definitions")
+
 TwitchView = class(TwitchView)
 
 TwitchView.init = function (self, ingame_ui_context)
@@ -9,9 +12,10 @@ TwitchView.init = function (self, ingame_ui_context)
 	self._network_lobby = ingame_ui_context.network_lobby
 	self._matchmaking_manager = ingame_ui_context.matchmaking_manager
 	self._render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 	self._network_server = ingame_ui_context.network_server
+
 	local input_manager = ingame_ui_context.input_manager
 
 	input_manager:create_input_service("twitch_view", "TwitchControllerSettings", "TwitchControllerFilters")
@@ -20,8 +24,10 @@ TwitchView.init = function (self, ingame_ui_context)
 	input_manager:map_device_to_service("twitch_view", "gamepad")
 
 	self._input_manager = input_manager
+
 	local world_manager = ingame_ui_context.world_manager
 	local world = world_manager:world("level_world")
+
 	self._wwise_world = Managers.world:wwise_world(world)
 
 	self:_create_ui_elements()
@@ -30,6 +36,7 @@ end
 TwitchView._create_ui_elements = function (self)
 	self._ui_scenegraph = UISceneGraph.init_scenegraph(definitions.scenegraph_definition)
 	self._widgets = {}
+
 	local widget_definitions = definitions.widget_definitions
 
 	for name, widget in pairs(widget_definitions.widgets) do
@@ -37,11 +44,15 @@ TwitchView._create_ui_elements = function (self)
 	end
 
 	self._connect_button_widget = UIWidget.init(definitions.widget_definitions.connect_button)
+
 	local button_text_style = self._connect_button_widget.style.title_text
+
 	button_text_style.text_color = Colors.get_color_table_with_alpha("twitch", 255)
 	button_text_style.text_color_enabled = Colors.get_color_table_with_alpha("twitch", 255)
 	self._disconnect_button_widget = UIWidget.init(definitions.widget_definitions.disconnect_button)
+
 	local button_text_style = self._disconnect_button_widget.style.title_text
+
 	button_text_style.text_color = Colors.get_color_table_with_alpha("red", 255)
 	button_text_style.text_color_enabled = Colors.get_color_table_with_alpha("red", 255)
 
@@ -77,12 +88,12 @@ TwitchView.cb_on_message_received = function (self, key, message_type, user_name
 	local chat_output_widget = self._widgets.chat_output_widget
 	local chat_output_content = chat_output_widget.content
 	local message_tables = chat_output_content.message_tables
-	local new_message_table = {
-		is_dev = false,
-		is_system = false,
-		sender = string.format("%s: ", user_name),
-		message = message
-	}
+	local new_message_table = {}
+
+	new_message_table.is_dev = false
+	new_message_table.is_system = false
+	new_message_table.sender = string.format("%s: ", user_name)
+	new_message_table.message = message
 	message_tables[#message_tables + 1] = new_message_table
 
 	if #message_tables > 20 then
@@ -117,9 +128,12 @@ TwitchView._update_input = function (self, dt, t)
 	if is_connecting then
 		local connect_button_content = self._connect_button_widget.content
 		local connect_button_hotspot = connect_button_content.button_hotspot
+
 		connect_button_hotspot.on_pressed = false
+
 		local disconnect_button_content = self._disconnect_button_widget.content
 		local disconnect_button_hotspot = disconnect_button_content.button_hotspot
+
 		disconnect_button_hotspot.on_pressed = false
 	else
 		local input_hotspot = frame_widget_content.text_input_hotspot
@@ -140,10 +154,12 @@ TwitchView._update_input = function (self, dt, t)
 
 		if frame_widget_content.text_field_active then
 			local keystrokes = Keyboard.keystrokes()
+
 			frame_widget_content.twitch_name, frame_widget_content.caret_index = KeystrokeHelper.parse_strokes(frame_widget_content.twitch_name, frame_widget_content.caret_index, "insert", keystrokes)
 
 			if input_service:get("execute_login") then
 				frame_widget_content.text_field_active = false
+
 				local user_name = string.gsub(frame_widget_content.twitch_name, " ", "")
 
 				Managers.twitch:connect(user_name, callback(self, "cb_connection_callback"))
@@ -176,6 +192,7 @@ TwitchView._update_input = function (self, dt, t)
 
 			local chat_output_widget = self._widgets.chat_output_widget
 			local chat_output_content = chat_output_widget.content
+
 			chat_output_content.message_tables = {}
 			chat_output_content.text_start_offset = 0
 		end
@@ -188,8 +205,11 @@ TwitchView._update_error = function (self, dt, t)
 	end
 
 	local style = self._widgets.frame_widget.style
+
 	self._error_timer = self._error_timer - dt
+
 	local alpha = math.lerp(0, 255, math.min(self._error_timer, 1))
+
 	style.error_field.text_color[1] = alpha
 
 	if self._error_timer <= 0 then
@@ -201,6 +221,7 @@ end
 TwitchView.cb_connection_callback = function (self, message)
 	local content = self._widgets.frame_widget.content
 	local style = self._widgets.frame_widget.style
+
 	content.error_id = message
 	style.error_field.text_color[1] = 255
 	self._error_timer = 5

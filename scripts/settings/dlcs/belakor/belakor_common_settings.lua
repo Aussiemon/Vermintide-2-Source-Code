@@ -1,20 +1,23 @@
+﻿-- chunkname: @scripts/settings/dlcs/belakor/belakor_common_settings.lua
+
 local settings = DLCSettings.belakor
+
 settings.additional_system_extensions = {
 	pickup_system = {
 		{
+			class = "OrbPickupUnitExtension",
 			require = "scripts/unit_extensions/pickups/orb_pickup_unit_extension",
-			class = "OrbPickupUnitExtension"
-		}
-	}
+		},
+	},
 }
 settings.pickup_system_extension_update = {
-	"OrbPickupUnitExtension"
+	"OrbPickupUnitExtension",
 }
 settings.unit_extension_templates = {
-	"scripts/settings/dlcs/belakor/belakor_extension_templates"
+	"scripts/settings/dlcs/belakor/belakor_extension_templates",
 }
 settings.statistics_definitions = {
-	"scripts/managers/backend/statistics_definitions_belakor"
+	"scripts/managers/backend/statistics_definitions_belakor",
 }
 settings.anim_lookup = {
 	"spawn_chaos_champion_01",
@@ -22,7 +25,7 @@ settings.anim_lookup = {
 	"spawn_chaos_champion_03",
 	"spawn_chaos_champion_04",
 	"spawn_chaos_champion_05",
-	"insert_locus_crystal"
+	"insert_locus_crystal",
 }
 settings.husk_lookup = {
 	"units/props/deus_orb/deus_orb_01",
@@ -34,7 +37,7 @@ settings.husk_lookup = {
 	"units/props/blk/blk_locus_01",
 	"units/props/blk/blk_totem_01",
 	"units/beings/enemies/blk_shadow_lieutenant/chr_blk_shadow_lieutenant",
-	"units/gameplay/belakor_crystal_socket_01"
+	"units/gameplay/belakor_crystal_socket_01",
 }
 settings.game_object_initializers = {
 	orb_pickup_unit = function (unit, unit_name, unit_template, gameobject_functor_context)
@@ -52,7 +55,7 @@ settings.game_object_initializers = {
 			position = Unit.local_position(unit, 0),
 			rotation = Unit.local_rotation(unit, 0),
 			orb_flight_target_position = orb_flight_target_position and orb_flight_target_position:unbox(),
-			flight_enabled = orb_flight_target_position and true or false
+			flight_enabled = orb_flight_target_position and true or false,
 		}
 
 		return data_table
@@ -94,7 +97,7 @@ settings.game_object_initializers = {
 			sphere_radius = sphere_radius,
 			only_one_impact = only_one_impact,
 			impact_template_name = NetworkLookup.projectile_templates[impact_template_name],
-			damage_source_id = NetworkLookup.damage_sources[damage_source]
+			damage_source_id = NetworkLookup.damage_sources[damage_source],
 		}
 
 		return data_table
@@ -113,7 +116,7 @@ settings.game_object_initializers = {
 			health = health,
 			breed_name = NetworkLookup.breeds[breed.name],
 			bt_action_name = NetworkLookup.bt_action_names["n/a"],
-			side_id = side_id
+			side_id = side_id,
 		}
 
 		return data_table
@@ -125,7 +128,7 @@ settings.game_object_initializers = {
 			husk_unit = NetworkLookup.husks[unit_name],
 			position = Unit.local_position(unit, 0),
 			rotation = Unit.local_rotation(unit, 0),
-			health = health_extension:get_max_health()
+			health = health_extension:get_max_health(),
 		}
 
 		return data_table
@@ -135,7 +138,7 @@ settings.game_object_initializers = {
 			go_type = NetworkLookup.go_types.deus_belakor_locus,
 			husk_unit = NetworkLookup.husks[unit_name],
 			position = Unit.local_position(unit, 0),
-			rotation = Unit.local_rotation(unit, 0)
+			rotation = Unit.local_rotation(unit, 0),
 		}
 
 		return data_table
@@ -153,7 +156,7 @@ settings.game_object_initializers = {
 			debug_pos = Unit.local_position(unit, 0),
 			pickup_name = NetworkLookup.pickup_names[pickup_name],
 			has_physics = has_physics,
-			spawn_type = NetworkLookup.pickup_spawn_types[spawn_type]
+			spawn_type = NetworkLookup.pickup_spawn_types[spawn_type],
 		}
 
 		return data_table
@@ -180,7 +183,7 @@ settings.game_object_initializers = {
 			debug_pos = Unit.local_position(unit, 0),
 			pickup_name = NetworkLookup.pickup_names[pickup_name],
 			has_physics = has_physics,
-			spawn_type = NetworkLookup.pickup_spawn_types[spawn_type]
+			spawn_type = NetworkLookup.pickup_spawn_types[spawn_type],
 		}
 
 		return data_table
@@ -198,7 +201,7 @@ settings.game_object_initializers = {
 			health = health_extension:get_max_health(),
 			breed_name = NetworkLookup.breeds[breed.name],
 			bt_action_name = NetworkLookup.bt_action_names["n/a"],
-			side_id = side_id
+			side_id = side_id,
 		}
 
 		return data_table
@@ -208,7 +211,7 @@ settings.game_object_initializers = {
 			go_type = NetworkLookup.go_types.shadow_homing_skulls_spawner,
 			husk_unit = NetworkLookup.husks[unit_name],
 			position = Unit.local_position(unit, 0),
-			rotation = Unit.local_rotation(unit, 0)
+			rotation = Unit.local_rotation(unit, 0),
 		}
 
 		return data_table
@@ -218,11 +221,11 @@ settings.game_object_initializers = {
 			go_type = NetworkLookup.go_types.belakor_crystal_socket,
 			husk_unit = NetworkLookup.husks[unit_name],
 			position = Unit.local_position(unit, 0),
-			rotation = Unit.local_rotation(unit, 0)
+			rotation = Unit.local_rotation(unit, 0),
 		}
 
 		return data_table
-	end
+	end,
 }
 settings.game_object_extractors = {
 	orb_pickup_unit = function (game_session, game_object_id, owner_id, unit, gameobject_functor_context)
@@ -237,8 +240,8 @@ settings.game_object_extractors = {
 				has_physics = has_physics,
 				spawn_type = NetworkLookup.pickup_spawn_types[spawn_type],
 				orb_flight_target_position = orb_flight_target_position and Vector3Box(orb_flight_target_position),
-				flight_enabled = flight_enabled
-			}
+				flight_enabled = flight_enabled,
+			},
 		}
 		local unit_template_name = "orb_pickup_unit"
 
@@ -272,20 +275,20 @@ settings.game_object_extractors = {
 				trajectory_template_name = NetworkLookup.projectile_templates[trajectory_template_name],
 				rotation_speed = rotation_speed,
 				rotate_around_forward = rotate_around_forward,
-				start_paused_for_time = start_paused_for_time
+				start_paused_for_time = start_paused_for_time,
 			},
 			projectile_impact_system = {
 				collision_filter = NetworkLookup.collision_filters[collision_filter_id],
 				only_one_impact = only_one_impact,
 				sphere_radius = sphere_radius,
-				owner_unit = owner_unit
+				owner_unit = owner_unit,
 			},
 			projectile_system = {
 				impact_template_name = NetworkLookup.projectile_templates[impact_template_name],
 				owner_unit = owner_unit,
-				damage_source = NetworkLookup.damage_sources[damage_source_id]
+				damage_source = NetworkLookup.damage_sources[damage_source_id],
 			},
-			locomotion_system = {}
+			locomotion_system = {},
 		}
 		local unit_template_name = "shadow_dagger_unit"
 
@@ -304,35 +307,35 @@ settings.game_object_extractors = {
 			ai_system = {
 				go_id = go_id,
 				game = game_session,
-				side_id = side_id
+				side_id = side_id,
 			},
 			health_system = {
-				health = health
+				health = health,
 			},
 			death_system = {
 				is_husk = true,
 				death_reaction_template = breed.death_reaction,
-				disable_second_hit_ragdoll = breed.disable_second_hit_ragdoll
+				disable_second_hit_ragdoll = breed.disable_second_hit_ragdoll,
 			},
 			hit_reaction_system = {
 				is_husk = true,
 				hit_reaction_template = breed.hit_reaction,
-				hit_effect_template = breed.hit_effect_template
+				hit_effect_template = breed.hit_effect_template,
 			},
 			dialogue_system = {
 				faction = "enemy",
-				breed_name = breed_name
+				breed_name = breed_name,
 			},
 			proximity_system = {
-				breed = breed
+				breed = breed,
 			},
 			projectile_locomotion_system = {
-				is_husk = true
-			}
+				is_husk = true,
+			},
 		}
 		local is_husk = true
 
-		breed:modify_extension_init_data(is_husk, extension_init_data)
+		breed.modify_extension_init_data(breed, is_husk, extension_init_data)
 
 		local unit_template_name = breed.unit_template
 
@@ -343,16 +346,16 @@ settings.game_object_extractors = {
 		local unit_template_name = "arena_belakor_big_statue_health"
 		local extension_init_data = {
 			health_system = {
-				health = health
+				health = health,
 			},
 			death_system = {
 				death_reaction_template = "level_object",
-				is_husk = true
+				is_husk = true,
 			},
 			hit_reaction_system = {
+				hit_reaction_template = "level_object",
 				is_husk = true,
-				hit_reaction_template = "level_object"
-			}
+			},
 		}
 
 		return unit_template_name, extension_init_data
@@ -374,8 +377,8 @@ settings.game_object_extractors = {
 			pickup_system = {
 				pickup_name = NetworkLookup.pickup_names[pickup_name],
 				has_physics = has_physics,
-				spawn_type = NetworkLookup.pickup_spawn_types[spawn_type]
-			}
+				spawn_type = NetworkLookup.pickup_spawn_types[spawn_type],
+			},
 		}
 		local unit_template_name = "belakor_crystal"
 
@@ -394,13 +397,13 @@ settings.game_object_extractors = {
 				network_position = network_position,
 				network_rotation = network_rotation,
 				network_velocity = network_velocity,
-				network_angular_velocity = network_angular_velocity
+				network_angular_velocity = network_angular_velocity,
 			},
 			pickup_system = {
 				pickup_name = NetworkLookup.pickup_names[pickup_name],
 				has_physics = has_physics,
-				spawn_type = NetworkLookup.pickup_spawn_types[spawn_type]
-			}
+				spawn_type = NetworkLookup.pickup_spawn_types[spawn_type],
+			},
 		}
 		local unit_template_name = "belakor_crystal_throw"
 
@@ -419,28 +422,28 @@ settings.game_object_extractors = {
 			ai_system = {
 				go_id = game_object_id,
 				game = game_session,
-				side_id = side_id
+				side_id = side_id,
 			},
 			health_system = {
-				health = health
+				health = health,
 			},
 			death_system = {
-				is_husk = true
+				is_husk = true,
 			},
 			hit_reaction_system = {
-				is_husk = true
+				is_husk = true,
 			},
 			dialogue_system = {
 				faction = "enemy",
-				breed_name = breed_name
+				breed_name = breed_name,
 			},
 			proximity_system = {
-				breed = breed
-			}
+				breed = breed,
+			},
 		}
 		local is_husk = true
 
-		breed:modify_extension_init_data(is_husk, extension_init_data)
+		breed.modify_extension_init_data(breed, is_husk, extension_init_data)
 
 		local unit_template_name = breed.unit_template
 
@@ -455,85 +458,85 @@ settings.game_object_extractors = {
 	belakor_crystal_socket = function (game_session, game_object_id, owner_id, unit, gameobject_functor_context)
 		local extension_init_data = {
 			objective_socket_system = {
-				use_game_object_id = true
-			}
+				use_game_object_id = true,
+			},
 		}
 		local unit_template_name = "belakor_crystal_socket"
 
 		return unit_template_name, extension_init_data
-	end
+	end,
 }
 settings.game_object_templates = {
 	orb_pickup_unit = {
 		game_object_created_func_name = "game_object_created_network_unit",
+		game_object_destroyed_func_name = "game_object_destroyed_network_unit",
+		is_level_unit = false,
 		syncs_position = true,
 		syncs_rotation = true,
-		game_object_destroyed_func_name = "game_object_destroyed_network_unit",
-		is_level_unit = false
 	},
 	shadow_dagger_unit = {
 		game_object_created_func_name = "game_object_created_network_unit",
+		game_object_destroyed_func_name = "game_object_destroyed_network_unit",
+		is_level_unit = false,
 		syncs_position = true,
 		syncs_rotation = true,
-		game_object_destroyed_func_name = "game_object_destroyed_network_unit",
-		is_level_unit = false
 	},
 	shadow_skull_unit = {
 		game_object_created_func_name = "game_object_created_network_unit",
+		game_object_destroyed_func_name = "game_object_destroyed_network_unit",
+		is_level_unit = false,
 		syncs_position = true,
 		syncs_rotation = true,
-		game_object_destroyed_func_name = "game_object_destroyed_network_unit",
-		is_level_unit = false
 	},
 	arena_belakor_big_statue_health = {
 		game_object_created_func_name = "game_object_created_network_unit",
+		game_object_destroyed_func_name = "game_object_destroyed_network_unit",
+		is_level_unit = false,
 		syncs_position = true,
 		syncs_rotation = false,
-		game_object_destroyed_func_name = "game_object_destroyed_network_unit",
-		is_level_unit = false
 	},
 	deus_belakor_locus = {
 		game_object_created_func_name = "game_object_created_network_unit",
+		game_object_destroyed_func_name = "game_object_destroyed_network_unit",
+		is_level_unit = false,
 		syncs_position = true,
 		syncs_rotation = true,
-		game_object_destroyed_func_name = "game_object_destroyed_network_unit",
-		is_level_unit = false
 	},
 	belakor_crystal = {
 		game_object_created_func_name = "game_object_created_network_unit",
+		game_object_destroyed_func_name = "game_object_destroyed_network_unit",
+		is_level_unit = false,
 		syncs_position = true,
 		syncs_rotation = true,
-		game_object_destroyed_func_name = "game_object_destroyed_network_unit",
-		is_level_unit = false
 	},
 	belakor_crystal_throw = {
 		game_object_created_func_name = "game_object_created_network_unit",
+		game_object_destroyed_func_name = "game_object_destroyed_network_unit",
+		is_level_unit = false,
 		syncs_position = true,
 		syncs_rotation = true,
-		game_object_destroyed_func_name = "game_object_destroyed_network_unit",
-		is_level_unit = false
 	},
 	belakor_totem = {
 		game_object_created_func_name = "game_object_created_network_unit",
+		game_object_destroyed_func_name = "game_object_destroyed_network_unit",
+		is_level_unit = false,
 		syncs_position = true,
 		syncs_rotation = true,
-		game_object_destroyed_func_name = "game_object_destroyed_network_unit",
-		is_level_unit = false
 	},
 	shadow_homing_skulls_spawner = {
 		game_object_created_func_name = "game_object_created_network_unit",
+		game_object_destroyed_func_name = "game_object_destroyed_network_unit",
+		is_level_unit = false,
 		syncs_position = true,
 		syncs_rotation = true,
-		game_object_destroyed_func_name = "game_object_destroyed_network_unit",
-		is_level_unit = false
 	},
 	belakor_crystal_socket = {
 		game_object_created_func_name = "game_object_created_network_unit",
+		game_object_destroyed_func_name = "game_object_destroyed_network_unit",
+		is_level_unit = false,
 		syncs_position = true,
 		syncs_rotation = true,
-		game_object_destroyed_func_name = "game_object_destroyed_network_unit",
-		is_level_unit = false
-	}
+	},
 }
 settings.entity_extensions = {
 	"scripts/unit_extensions/ai_supplementary/shadow_dagger_spawner_extension",
@@ -544,83 +547,83 @@ settings.entity_extensions = {
 	"scripts/unit_extensions/deus/deus_belakor_crystal_extension",
 	"scripts/unit_extensions/deus/deus_belakor_totem_extension",
 	"scripts/unit_extensions/deus/deus_belakor_statue_socket_extension",
-	"scripts/unit_extensions/generic/kill_volume_handler_extension"
+	"scripts/unit_extensions/generic/kill_volume_handler_extension",
 }
 settings.systems = {
-	"scripts/entity_system/systems/orb/orb_system"
+	"scripts/entity_system/systems/orb/orb_system",
 }
 settings.entity_system_params = {
 	shadow_homing_skulls_spawner_system = {
 		system_class_name = "ExtensionSystemBase",
 		system_name = "shadow_homing_skulls_spawner_system",
 		extension_list = {
-			"ShadowHomingSkullsSpawnerExtension"
-		}
+			"ShadowHomingSkullsSpawnerExtension",
+		},
 	},
 	shadow_dagger_spawner_system = {
 		system_class_name = "ExtensionSystemBase",
 		system_name = "shadow_dagger_spawner_system",
 		extension_list = {
-			"ShadowDaggerSpawnerExtension"
-		}
+			"ShadowDaggerSpawnerExtension",
+		},
 	},
 	shadow_dagger_system = {
 		system_class_name = "ExtensionSystemBase",
 		system_name = "shadow_dagger_system",
 		extension_list = {
-			"ShadowDaggerExtension"
-		}
+			"ShadowDaggerExtension",
+		},
 	},
 	deus_belakor_locus_system = {
 		system_class_name = "ExtensionSystemBase",
 		system_name = "deus_belakor_locus_system",
 		extension_list = {
-			"DeusBelakorLocusExtension"
-		}
+			"DeusBelakorLocusExtension",
+		},
 	},
 	deus_belakor_crystal_system = {
 		system_class_name = "ExtensionSystemBase",
 		system_name = "deus_belakor_crystal_system",
 		extension_list = {
-			"DeusBelakorCrystalExtension"
-		}
+			"DeusBelakorCrystalExtension",
+		},
 	},
 	deus_arena_belakor_big_statue_system = {
 		system_class_name = "ExtensionSystemBase",
 		system_name = "deus_arena_belakor_big_statue_system",
 		extension_list = {
-			"DeusArenaBelakorBigStatueExtension"
-		}
+			"DeusArenaBelakorBigStatueExtension",
+		},
 	},
 	deus_belakor_totem_system = {
 		system_class_name = "ExtensionSystemBase",
 		system_name = "deus_belakor_totem_system",
 		extension_list = {
-			"DeusBelakorTotemExtension"
-		}
+			"DeusBelakorTotemExtension",
+		},
 	},
 	deus_belakor_statue_socket_system = {
 		system_class_name = "ExtensionSystemBase",
 		system_name = "deus_belakor_statue_socket_system",
 		extension_list = {
-			"DeusBelakorStatueSocketExtension"
-		}
+			"DeusBelakorStatueSocketExtension",
+		},
 	},
 	orb_system = {
 		system_class_name = "OrbSystem",
 		system_name = "orb_system",
-		extension_list = {}
+		extension_list = {},
 	},
 	kill_volume_handler_system = {
 		system_class_name = "ExtensionSystemBase",
 		system_name = "kill_volume_handler_system",
 		extension_list = {
-			"KillVolumeHandlerExtension"
-		}
-	}
+			"KillVolumeHandlerExtension",
+		},
+	},
 }
 settings.network_damage_sources = {
-	"tiny_explosive_barrel"
+	"tiny_explosive_barrel",
 }
 settings.network_go_types = {
 	"orb_pickup_unit",
@@ -633,7 +636,7 @@ settings.network_go_types = {
 	"belakor_totem",
 	"shadow_homing_skulls_spawner",
 	"shadow_skull_unit",
-	"belakor_crystal_socket"
+	"belakor_crystal_socket",
 }
 settings.mutators = {
 	"challenge_test",
@@ -642,13 +645,13 @@ settings.mutators = {
 	"curse_shadow_daggers",
 	"curse_shadow_homing_skulls",
 	"curse_belakor_totems",
-	"curse_grey_wings"
+	"curse_grey_wings",
 }
 settings.network_packages = {
 	"resource_packages/mutators/mutator_curse_shadow_daggers",
 	"resource_packages/mutators/mutator_curse_shadow_homing_skulls",
 	"resource_packages/mutators/mutator_curse_belakor_totems",
-	"resource_packages/mutators/mutator_curse_grey_wings"
+	"resource_packages/mutators/mutator_curse_grey_wings",
 }
 settings.effects = {
 	"fx/cursed_chest_spawn_01_portal",
@@ -656,10 +659,10 @@ settings.effects = {
 	"fx/blk_grey_wings_spawn_01",
 	"fx/blk_grey_wings_teleport_01",
 	"fx/blk_grey_wings_teleport_direction_01",
-	"fx/trail_locus"
+	"fx/trail_locus",
 }
 settings.dialogue_event_data_lookup = {
-	"belakor_crystal"
+	"belakor_crystal",
 }
 settings.ai_group_templates = {
 	deus_belakor_locus_cultists = {
@@ -693,27 +696,29 @@ settings.ai_group_templates = {
 			ai_simple:set_perception(breed.perception, breed.target_selection)
 
 			local blackboard = BLACKBOARDS[unit]
+
 			blackboard.ignore_interest_points = false
 			blackboard.only_trust_your_own_eyes = false
+
 			local optional_spawn_data = blackboard.optional_spawn_data
 
 			if optional_spawn_data then
 				optional_spawn_data.idle_animation = nil
 			end
-		end
-	}
+		end,
+	},
 }
 settings.death_reactions = {
-	"scripts/settings/dlcs/belakor/belakor_death_reactions"
+	"scripts/settings/dlcs/belakor/belakor_death_reactions",
 }
 settings.interactions = {
 	"deus_belakor_locus_pre_crystal",
-	"deus_belakor_locus_with_crystal"
+	"deus_belakor_locus_with_crystal",
 }
 settings.interactions_filenames = {
-	"scripts/settings/dlcs/belakor/belakor_interactions"
+	"scripts/settings/dlcs/belakor/belakor_interactions",
 }
 settings.hit_effects = {
 	"scripts/settings/hit_effects/hit_effects_shadow_totem",
-	"scripts/settings/hit_effects/hit_effects_shadow_skull"
+	"scripts/settings/hit_effects/hit_effects_shadow_skull",
 }

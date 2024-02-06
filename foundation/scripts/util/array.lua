@@ -1,7 +1,9 @@
+﻿-- chunkname: @foundation/scripts/util/array.lua
+
 local function array_new()
 	return {
 		{},
-		0
+		0,
 	}
 end
 
@@ -22,7 +24,7 @@ local function array_copy(a)
 	local t = {}
 	local b = {
 		t,
-		an
+		an,
 	}
 
 	for i = 1, an do
@@ -33,8 +35,7 @@ local function array_copy(a)
 end
 
 local function array_resize(a, new_n)
-	local t = a[1]
-	local n = a[2]
+	local t, n = a[1], a[2]
 
 	while n < new_n do
 		n = n + 1
@@ -50,8 +51,8 @@ local function array_resize(a, new_n)
 end
 
 local function array_resize_grow_only(a, new_n)
-	local t = a[1]
-	local n = a[2]
+	local t, n = a[1], a[2]
+
 	a[2] = new_n
 
 	while n < new_n do
@@ -73,16 +74,15 @@ local function array_empty(a)
 end
 
 local function array_pop_index(a, index)
-	local t = a[1]
-	local n = a[2]
+	local t, n = a[1], a[2]
+
 	t[index] = t[n]
 	t[n] = nil
 	a[2] = n - 1
 end
 
 local function array_pop_index_ordered(a, index)
-	local t = a[1]
-	local n = a[2]
+	local t, n = a[1], a[2]
 
 	for i = index, n - 1 do
 		t[i] = t[i + 1]
@@ -93,9 +93,8 @@ local function array_pop_index_ordered(a, index)
 end
 
 local function array_item_index(a, item)
-	local t = a[1]
-	local n = a[2]
-	local found_i = nil
+	local t, n = a[1], a[2]
+	local found_i
 
 	for i = 1, n do
 		if t[i] == item then
@@ -121,9 +120,9 @@ local function array_pop_item(a, item)
 end
 
 local function array_pop_index_value(a, index)
-	local t = a[1]
-	local n = a[2]
+	local t, n = a[1], a[2]
 	local return_value = t[index]
+
 	t[index] = t[n]
 	t[n] = nil
 	a[2] = n - 1
@@ -142,8 +141,7 @@ local function array_pop_item_value(a, item)
 end
 
 local function array_pop_index_ordered_value(a, index)
-	local t = a[1]
-	local n = a[2]
+	local t, n = a[1], a[2]
 	local return_value = t[index]
 
 	for i = index, n - 1 do
@@ -179,12 +177,12 @@ local function array_pop_item_value_ordered(a, item)
 end
 
 local function array_pop_back(a)
-	local t = a[1]
-	local n = a[2]
+	local t, n = a[1], a[2]
 
 	assert(n > 0)
 
 	local v = t[n]
+
 	t[n] = nil
 	a[2] = n - 1
 
@@ -192,8 +190,7 @@ local function array_pop_back(a)
 end
 
 local function array_erase_back(a)
-	local t = a[1]
-	local n = a[2]
+	local t, n = a[1], a[2]
 
 	assert(n > 0)
 
@@ -202,23 +199,23 @@ local function array_erase_back(a)
 end
 
 local function array_push_back(a, item)
-	local t = a[1]
-	local n = a[2] + 1
+	local t, n = a[1], a[2] + 1
+
 	t[n] = item
 	a[2] = n
 end
 
 local function array_push_back2(a, item1, item2)
-	local t = a[1]
-	local n = a[2]
+	local t, n = a[1], a[2]
+
 	t[n + 1] = item1
 	t[n + 2] = item2
 	a[2] = n + 2
 end
 
 local function array_push_back3(a, item1, item2, item3)
-	local t = a[1]
-	local n = a[2]
+	local t, n = a[1], a[2]
+
 	t[n + 1] = item1
 	t[n + 2] = item2
 	t[n + 3] = item3
@@ -226,8 +223,8 @@ local function array_push_back3(a, item1, item2, item3)
 end
 
 local function array_push_back4(a, item1, item2, item3, item4)
-	local t = a[1]
-	local n = a[2]
+	local t, n = a[1], a[2]
+
 	t[n + 1] = item1
 	t[n + 2] = item2
 	t[n + 3] = item3
@@ -236,8 +233,8 @@ local function array_push_back4(a, item1, item2, item3, item4)
 end
 
 local function array_push_back5(a, item1, item2, item3, item4, item5)
-	local t = a[1]
-	local n = a[2]
+	local t, n = a[1], a[2]
+
 	t[n + 1] = item1
 	t[n + 2] = item2
 	t[n + 3] = item3
@@ -247,8 +244,8 @@ local function array_push_back5(a, item1, item2, item3, item4, item5)
 end
 
 local function array_push_back6(a, item1, item2, item3, item4, item5, item6)
-	local t = a[1]
-	local n = a[2]
+	local t, n = a[1], a[2]
+
 	t[n + 1] = item1
 	t[n + 2] = item2
 	t[n + 3] = item3
@@ -259,8 +256,8 @@ local function array_push_back6(a, item1, item2, item3, item4, item5, item6)
 end
 
 local function array_push_back7(a, item1, item2, item3, item4, item5, item6, item7)
-	local t = a[1]
-	local n = a[2]
+	local t, n = a[1], a[2]
+
 	t[n + 1] = item1
 	t[n + 2] = item2
 	t[n + 3] = item3
@@ -272,8 +269,8 @@ local function array_push_back7(a, item1, item2, item3, item4, item5, item6, ite
 end
 
 local function array_push_back8(a, item1, item2, item3, item4, item5, item6, item7, item8)
-	local t = a[1]
-	local n = a[2]
+	local t, n = a[1], a[2]
+
 	t[n + 1] = item1
 	t[n + 2] = item2
 	t[n + 3] = item3
@@ -286,8 +283,8 @@ local function array_push_back8(a, item1, item2, item3, item4, item5, item6, ite
 end
 
 local function array_push_back9(a, item1, item2, item3, item4, item5, item6, item7, item8, item9)
-	local t = a[1]
-	local n = a[2]
+	local t, n = a[1], a[2]
+
 	t[n + 1] = item1
 	t[n + 2] = item2
 	t[n + 3] = item3
@@ -301,8 +298,8 @@ local function array_push_back9(a, item1, item2, item3, item4, item5, item6, ite
 end
 
 local function array_push_back10(a, item1, item2, item3, item4, item5, item6, item7, item8, item9, item10)
-	local t = a[1]
-	local n = a[2]
+	local t, n = a[1], a[2]
+
 	t[n + 1] = item1
 	t[n + 2] = item2
 	t[n + 3] = item3
@@ -317,8 +314,8 @@ local function array_push_back10(a, item1, item2, item3, item4, item5, item6, it
 end
 
 local function array_push_back11(a, item1, item2, item3, item4, item5, item6, item7, item8, item9, item10, item11)
-	local t = a[1]
-	local n = a[2]
+	local t, n = a[1], a[2]
+
 	t[n + 1] = item1
 	t[n + 2] = item2
 	t[n + 3] = item3
@@ -334,8 +331,8 @@ local function array_push_back11(a, item1, item2, item3, item4, item5, item6, it
 end
 
 local function array_push_back12(a, item1, item2, item3, item4, item5, item6, item7, item8, item9, item10, item11, item12)
-	local t = a[1]
-	local n = a[2]
+	local t, n = a[1], a[2]
+
 	t[n + 1] = item1
 	t[n + 2] = item2
 	t[n + 3] = item3
@@ -352,8 +349,8 @@ local function array_push_back12(a, item1, item2, item3, item4, item5, item6, it
 end
 
 local function array_push_back13(a, item1, item2, item3, item4, item5, item6, item7, item8, item9, item10, item11, item12, item13)
-	local t = a[1]
-	local n = a[2]
+	local t, n = a[1], a[2]
+
 	t[n + 1] = item1
 	t[n + 2] = item2
 	t[n + 3] = item3
@@ -371,8 +368,8 @@ local function array_push_back13(a, item1, item2, item3, item4, item5, item6, it
 end
 
 local function array_push_back14(a, item1, item2, item3, item4, item5, item6, item7, item8, item9, item10, item11, item12, item13, item14)
-	local t = a[1]
-	local n = a[2]
+	local t, n = a[1], a[2]
+
 	t[n + 1] = item1
 	t[n + 2] = item2
 	t[n + 3] = item3
@@ -391,8 +388,8 @@ local function array_push_back14(a, item1, item2, item3, item4, item5, item6, it
 end
 
 local function array_push_back15(a, item1, item2, item3, item4, item5, item6, item7, item8, item9, item10, item11, item12, item13, item14, item15)
-	local t = a[1]
-	local n = a[2]
+	local t, n = a[1], a[2]
+
 	t[n + 1] = item1
 	t[n + 2] = item2
 	t[n + 3] = item3
@@ -413,29 +410,29 @@ end
 
 local array_push_back_table_lut = {
 	function (a, t)
-		local at = a[1]
-		local n = a[2]
+		local at, n = a[1], a[2]
+
 		at[n + 1] = t[1]
 		a[2] = n + 1
 	end,
 	function (a, t)
-		local at = a[1]
-		local n = a[2]
+		local at, n = a[1], a[2]
+
 		at[n + 1] = t[1]
 		at[n + 2] = t[2]
 		a[2] = n + 2
 	end,
 	function (a, t)
-		local at = a[1]
-		local n = a[2]
+		local at, n = a[1], a[2]
+
 		at[n + 1] = t[1]
 		at[n + 2] = t[2]
 		at[n + 3] = t[3]
 		a[2] = n + 3
 	end,
 	function (a, t)
-		local at = a[1]
-		local n = a[2]
+		local at, n = a[1], a[2]
+
 		at[n + 1] = t[1]
 		at[n + 2] = t[2]
 		at[n + 3] = t[3]
@@ -443,8 +440,8 @@ local array_push_back_table_lut = {
 		a[2] = n + 4
 	end,
 	function (a, t)
-		local at = a[1]
-		local n = a[2]
+		local at, n = a[1], a[2]
+
 		at[n + 1] = t[1]
 		at[n + 2] = t[2]
 		at[n + 3] = t[3]
@@ -453,8 +450,8 @@ local array_push_back_table_lut = {
 		a[2] = n + 5
 	end,
 	function (a, t)
-		local at = a[1]
-		local n = a[2]
+		local at, n = a[1], a[2]
+
 		at[n + 1] = t[1]
 		at[n + 2] = t[2]
 		at[n + 3] = t[3]
@@ -464,8 +461,8 @@ local array_push_back_table_lut = {
 		a[2] = n + 6
 	end,
 	function (a, t)
-		local at = a[1]
-		local n = a[2]
+		local at, n = a[1], a[2]
+
 		at[n + 1] = t[1]
 		at[n + 2] = t[2]
 		at[n + 3] = t[3]
@@ -476,8 +473,8 @@ local array_push_back_table_lut = {
 		a[2] = n + 7
 	end,
 	function (a, t)
-		local at = a[1]
-		local n = a[2]
+		local at, n = a[1], a[2]
+
 		at[n + 1] = t[1]
 		at[n + 2] = t[2]
 		at[n + 3] = t[3]
@@ -487,7 +484,7 @@ local array_push_back_table_lut = {
 		at[n + 7] = t[7]
 		at[n + 8] = t[8]
 		a[2] = n + 8
-	end
+	end,
 }
 
 local function array_push_back_table(array, in_table, table_count)
@@ -511,11 +508,10 @@ local function array_front(a)
 end
 
 local function array_filter(a, filter_func)
-	local t = a[1]
-	local n = a[2]
+	local t, n = a[1], a[2]
 	local i = 1
 
-	while n >= i do
+	while i <= n do
 		if not filter_func(t[i]) then
 			t[i] = t[n]
 			t[n] = nil
@@ -526,14 +522,14 @@ local function array_filter(a, filter_func)
 	end
 
 	local num_filtered_items = a[2] - n
+
 	a[2] = n
 
 	return num_filtered_items
 end
 
 local function array_insert_at(a, v, insert_index)
-	local at = a[1]
-	local n = a[2]
+	local at, n = a[1], a[2]
 
 	for i = n, insert_index, -1 do
 		at[i + 1] = at[i]
@@ -549,8 +545,8 @@ end
 
 local function array_insert_sorted(a, value, comp_function)
 	comp_function = comp_function or comp_default
-	local at = a[1]
-	local n = a[2]
+
+	local at, n = a[1], a[2]
 
 	for i = 1, n do
 		if comp_function(value, at[i]) then
@@ -571,22 +567,17 @@ local floor = math.floor
 
 local function array_binary_insert(a, value, comp_function)
 	comp_function = comp_function or comp_default
-	local at = a[1]
-	local n = a[2]
-	local iStart = 1
-	local iEnd = n
-	local iMid = 1
-	local iState = 0
+
+	local at, n = a[1], a[2]
+	local iStart, iEnd, iMid, iState = 1, n, 1, 0
 
 	while iStart <= iEnd do
 		iMid = floor((iStart + iEnd) / 2)
 
 		if comp_function(value, at[iMid]) then
-			iState = 0
-			iEnd = iMid - 1
+			iEnd, iState = iMid - 1, 0
 		else
-			iState = 1
-			iStart = iMid + 1
+			iStart, iState = iMid + 1, 1
 		end
 	end
 
@@ -638,8 +629,9 @@ local a = {
 	binary_insert = array_binary_insert,
 	front = array_front,
 	back = array_back,
-	filter = array_filter
+	filter = array_filter,
 }
+
 pdArray = a
 
 return a

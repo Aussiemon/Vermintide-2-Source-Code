@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/network/game_server_manager.lua
+
 GameServerManager = class(GameServerManager)
 
 GameServerManager.init = function (self, level_transition_handler)
@@ -90,6 +92,7 @@ GameServerManager.set_start_game_params = function (self, sender, level_key, gam
 	end
 
 	local stored_lobby_data = self._game_server:get_stored_lobby_data()
+
 	stored_lobby_data.level_key = level_key
 	stored_lobby_data.difficulty = difficulty
 	stored_lobby_data.game_mode = not IS_PS4 and NetworkLookup.game_modes[game_mode] or game_mode
@@ -101,7 +104,7 @@ GameServerManager.set_start_game_params = function (self, sender, level_key, gam
 		level_key = level_key,
 		game_mode = game_mode,
 		difficulty = difficulty,
-		private_game = private_game
+		private_game = private_game,
 	}
 end
 
@@ -121,6 +124,7 @@ end
 
 GameServerManager._say = function (self, text)
 	text = UTF8Utils.sub_string(text, 1, 128)
+
 	local chat = Managers.chat
 
 	if chat ~= nil and chat:has_channel(1) then

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/camera/states/camera_state_follow.lua
+
 CameraStateFollow = class(CameraStateFollow, CameraState)
 
 CameraStateFollow.init = function (self, camera_state_init_context)
@@ -9,6 +11,7 @@ end
 
 CameraStateFollow.on_enter = function (self, unit, input, dt, context, t, previous_state, params)
 	local follow_unit, follow_node = self.camera_extension:get_follow_data()
+
 	self._follow_unit = follow_unit
 	self._follow_node = follow_node
 

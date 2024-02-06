@@ -1,8 +1,11 @@
+﻿-- chunkname: @scripts/ui/views/popup_profile_picker.lua
+
 local definitions = local_require("scripts/ui/views/popup_profile_picker_definitions")
 local scenegraph_definition = definitions.scenegraph_definition
 local widget_definitions = definitions.widget_definitions
 local hero_widget_definition = definitions.hero_widget_definition
 local hero_icon_widget_definition = definitions.hero_icon_widget_definition
+
 PopupProfilePicker = class(PopupProfilePicker)
 
 PopupProfilePicker.init = function (self, ingame_ui_context, ...)
@@ -11,9 +14,11 @@ PopupProfilePicker.init = function (self, ingame_ui_context, ...)
 	self._ingame_ui = ingame_ui_context.ingame_ui
 	self._wwise_world = ingame_ui_context.wwise_world
 	self._render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
+
 	local input_manager = ingame_ui_context.input_manager
+
 	self._input_manager = input_manager
 
 	input_manager:create_input_service("popup_profile_picker", "IngameMenuKeymaps", "IngameMenuFilters")
@@ -22,6 +27,7 @@ PopupProfilePicker.init = function (self, ingame_ui_context, ...)
 	input_manager:map_device_to_service("popup_profile_picker", "gamepad")
 
 	local input_service = input_manager:get_service("popup_profile_picker")
+
 	self._menu_input_desc = MenuInputDescriptionUI:new(nil, self._ui_top_renderer, input_service, 5, 900, definitions.generic_input_actions.default)
 
 	self._menu_input_desc:set_input_description(nil)
@@ -37,8 +43,11 @@ PopupProfilePicker._create_ui_elements = function (self)
 
 	local hero_attributes = Managers.backend:get_interface("hero_attributes")
 	local hero_widgets = {}
+
 	self._hero_widgets = hero_widgets
+
 	local hero_icon_widgets = {}
+
 	self._hero_icon_widgets = hero_icon_widgets
 	self._num_max_hero_columns = #ProfilePriority
 	self._num_max_career_columns = 4
@@ -49,17 +58,25 @@ PopupProfilePicker._create_ui_elements = function (self)
 		local hero_experience = hero_attributes:get(hero_name, "experience") or 0
 		local hero_level = ExperienceSettings.get_level(hero_experience)
 		local icon_widget = UIWidget.init(hero_icon_widget_definition)
+
 		hero_icon_widgets[#hero_icon_widgets + 1] = icon_widget
+
 		local hero_icon_offset = icon_widget.offset
+
 		hero_icon_offset[1] = (i - 1) * 124
+
 		local hero_icon_texture = profile_settings.hero_selection_image
+
 		icon_widget.content.icon = hero_icon_texture
 	end
 
 	for i = 1, 4 do
 		local widget = UIWidget.init(hero_widget_definition)
+
 		hero_widgets[i] = widget
+
 		local offset = widget.offset
+
 		offset[1] = (i - 1) * 124 + 62
 	end
 end
@@ -72,6 +89,7 @@ PopupProfilePicker.update = function (self, dt, t)
 
 	if self._cancel_timer then
 		self._cancel_timer = math.max(self._cancel_timer - dt, 0)
+
 		local timer_text = tostring(math.ceil(self._cancel_timer))
 
 		self:_set_timer_text(timer_text)
@@ -90,7 +108,7 @@ end
 PopupProfilePicker._INPUT_DEVICES = {
 	"keyboard",
 	"gamepad",
-	"mouse"
+	"mouse",
 }
 
 PopupProfilePicker.show = function (self, current_profile_index, current_career_index, time_until_cancel, join_by_lobby_browser, _difficulty, lobby_data)
@@ -107,6 +125,7 @@ PopupProfilePicker.show = function (self, current_profile_index, current_career_
 	self:_select_hero(profile_index, career_index, ignore_sound)
 
 	self._cancel_timer = time_until_cancel
+
 	local input_manager = self._input_manager
 
 	input_manager:capture_input(self._INPUT_DEVICES, 1, "popup_profile_picker", "PopupProfilePicker")
@@ -156,11 +175,12 @@ end
 PopupProfilePicker.set_result = function (self, accepted, reason)
 	local selected_hero_name = accepted and self._selected_hero_name
 	local selected_career_name = accepted and self._selected_career_name
+
 	self._join_lobby_result = {
 		accepted = accepted,
 		selected_hero_name = selected_hero_name,
 		selected_career_name = selected_career_name,
-		reason = reason
+		reason = reason,
 	}
 end
 
@@ -306,6 +326,7 @@ PopupProfilePicker._select_hero = function (self, profile_index, career_index, i
 	local hero_widgets = self._hero_widgets
 	local num_max_rows = self._num_max_hero_rows
 	local num_max_columns = self._num_max_hero_columns
+
 	self._selected_career_index = career_index
 	self._selected_profile_index = profile_index
 	self._selected_hero_name = hero_name
@@ -321,12 +342,15 @@ PopupProfilePicker._select_hero = function (self, profile_index, career_index, i
 		local career = profile_settings.careers[i]
 		local content = widget.content
 		local available = career and not backend_dlcs:is_unreleased_career(career.name)
+
 		content.exists = available
 
 		if available then
 			content.career_settings = career
 			content.portrait = career.picking_image or "medium_" .. career.portrait_image
+
 			local is_career_unlocked, _, dlc_name = career:is_unlocked_function(hero_name, level)
+
 			content.locked = not is_career_unlocked
 
 			if dlc_name then
@@ -354,6 +378,7 @@ end
 
 PopupProfilePicker._set_hero_info = function (self, hero_name, career_name, level)
 	local widgets_by_name = self._widgets_by_name
+
 	widgets_by_name.info_hero_name.content.text = hero_name
 	widgets_by_name.info_career_name.content.text = career_name
 	widgets_by_name.info_hero_level.content.text = level
@@ -361,6 +386,7 @@ end
 
 PopupProfilePicker._set_timer_text = function (self, timer_text)
 	local widgets_by_name = self._widgets_by_name
+
 	widgets_by_name.timer_text.content.text = timer_text
 end
 
@@ -386,6 +412,7 @@ PopupProfilePicker._update_occupied_profiles = function (self)
 		local widget = hero_icon_widgets[i]
 		local content = widget.content
 		local button_hotspot = content.button_hotspot
+
 		content.taken = occupied
 	end
 
@@ -395,6 +422,7 @@ PopupProfilePicker._update_occupied_profiles = function (self)
 		for i = 1, #hero_widgets do
 			local widget = hero_widgets[i]
 			local content = widget.content
+
 			content.taken = taken
 		end
 	end
@@ -417,6 +445,7 @@ end
 
 PopupProfilePicker.set_select_button_enable_state = function (self, enabled)
 	local button_content = self._widgets_by_name.select_button.content
+
 	button_content.title_text = enabled and Localize("input_description_confirm") or Localize("dlc1_2_difficulty_unavailable")
 	button_content.button_hotspot.disable_button = not enabled
 	self._selection_approved = enabled

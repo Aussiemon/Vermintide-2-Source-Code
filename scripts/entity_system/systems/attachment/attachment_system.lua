@@ -1,21 +1,25 @@
+﻿-- chunkname: @scripts/entity_system/systems/attachment/attachment_system.lua
+
 require("scripts/unit_extensions/default_player_unit/attachment/player_unit_attachment_extension")
 require("scripts/unit_extensions/default_player_unit/attachment/player_husk_attachment_extension")
 
 AttachmentSystem = class(AttachmentSystem, ExtensionSystemBase)
+
 local RPCS = {
 	"rpc_create_attachment",
 	"rpc_remove_attachment",
-	"rpc_add_attachment_buffs"
+	"rpc_add_attachment_buffs",
 }
 local extension_list = {
 	"PlayerUnitAttachmentExtension",
-	"PlayerHuskAttachmentExtension"
+	"PlayerHuskAttachmentExtension",
 }
 
 AttachmentSystem.init = function (self, entity_system_creation_context, system_name)
 	AttachmentSystem.super.init(self, entity_system_creation_context, system_name, extension_list)
 
 	local network_event_delegate = entity_system_creation_context.network_event_delegate
+
 	self.network_event_delegate = network_event_delegate
 
 	network_event_delegate:register(self, unpack(RPCS))

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/weapons/actions/action_crossbow.lua
+
 ActionCrossbow = class(ActionCrossbow, ActionBase)
 
 ActionCrossbow.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
@@ -16,6 +18,7 @@ ActionCrossbow.client_owner_start_action = function (self, new_action, t, chain_
 	local owner_unit = self.owner_unit
 	local is_critical_strike = ActionUtils.is_critical_strike(owner_unit, new_action, t)
 	local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
+
 	self.power_level = power_level
 	self.owner_buff_extension = buff_extension
 	self.current_action = new_action
@@ -31,6 +34,7 @@ ActionCrossbow.client_owner_start_action = function (self, new_action, t, chain_
 	self.time_to_shoot = t + (new_action.fire_time or 0)
 	self.extra_buff_shot = false
 	self.active_reload_time = new_action.active_reload_time and t + new_action.active_reload_time
+
 	local hud_extension = ScriptUnit.has_extension(owner_unit, "hud_system")
 
 	self:_handle_critical_strike(is_critical_strike, buff_extension, hud_extension, nil, "on_critical_shot", nil)
@@ -40,7 +44,7 @@ ActionCrossbow.client_owner_start_action = function (self, new_action, t, chain_
 end
 
 ActionCrossbow.client_owner_post_update = function (self, dt, t, world, can_damage)
-	if self.state == "waiting_to_shoot" and self.time_to_shoot <= t then
+	if self.state == "waiting_to_shoot" and t >= self.time_to_shoot then
 		self.state = "shooting"
 	end
 
@@ -50,7 +54,7 @@ ActionCrossbow.client_owner_post_update = function (self, dt, t, world, can_dama
 
 		if not Managers.player:owner(self.owner_unit).bot_player then
 			Managers.state.controller_features:add_effect("rumble", {
-				rumble_effect = "crossbow_fire"
+				rumble_effect = "crossbow_fire",
 			})
 		end
 
@@ -73,6 +77,7 @@ ActionCrossbow.client_owner_post_update = function (self, dt, t, world, can_dama
 						local spread_horizontal_angle = math.pi * (self.num_projectiles_shot % 2 + 0.5)
 						local shot_count_offset = self.num_projectiles_shot == 1 and 0 or math.round((self.num_projectiles_shot - 1) / 2, 0)
 						local angle_offset = self.multi_projectile_spread * shot_count_offset
+
 						fire_rotation = spread_extension:combine_spread_rotations(spread_horizontal_angle, angle_offset, fire_rotation)
 					end
 
@@ -160,7 +165,7 @@ ActionCrossbow.client_owner_post_update = function (self, dt, t, world, can_dama
 
 		local extra_shots = self:_update_extra_shots(self.owner_buff_extension)
 
-		if current_action.burst and self.num_projectiles_shot <= self.num_projectiles then
+		if current_action.burst and self.num_projectiles >= self.num_projectiles_shot then
 			self.state = "waiting_to_shoot"
 			self.time_to_shoot = t + 0.075
 			self.extra_buff_shot = false
@@ -190,7 +195,7 @@ ActionCrossbow.client_owner_post_update = function (self, dt, t, world, can_dama
 		local owner_unit = self.owner_unit
 		local input_extension = ScriptUnit.extension(owner_unit, "input_system")
 
-		if self.active_reload_time < t then
+		if t > self.active_reload_time then
 			local ammo_extension = self.ammo_extension
 
 			if (input_extension:get("weapon_reload") or input_extension:get_buffer("weapon_reload")) and ammo_extension:can_reload() then

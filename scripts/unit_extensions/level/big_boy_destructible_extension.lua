@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/unit_extensions/level/big_boy_destructible_extension.lua
+
 BigBoyDestructibleExtension = class(BigBoyDestructibleExtension)
+
 local SIMPLE_ANIMATION_FPS = 30
 local NAVMESH_UPDATE_DELAY = 3
 local unit_alive = Unit.alive
@@ -7,9 +10,13 @@ BigBoyDestructibleExtension.init = function (self, extension_init_context, unit,
 	self.unit = unit
 	self.world = extension_init_context.world
 	self.is_server = Managers.player.is_server
+
 	local move_to_exit_when_opened = Unit.get_data(unit, "move_to_exit_when_opened")
+
 	self.move_to_exit_when_opened = move_to_exit_when_opened == nil or move_to_exit_when_opened
+
 	local door_state = Unit.get_data(unit, "door_state")
+
 	self.current_state = door_state == 0 and "open_forward" or door_state == 1 and "closed" or door_state == 2 and "open_backward"
 	self.state_to_nav_obstacle_map = {}
 	self.animation_stop_time = 0
@@ -26,6 +33,7 @@ end
 BigBoyDestructibleExtension.animation_played = function (self, frames, speed)
 	local animation_length = frames / SIMPLE_ANIMATION_FPS / speed
 	local t = Managers.time:time("game")
+
 	self.animation_stop_time = t + animation_length
 end
 

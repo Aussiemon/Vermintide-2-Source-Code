@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/save/save_data_common.lua
+
 function ensure_user_id_in_save_data(save_data)
 	if save_data.machine_id == nil then
 		local function ensure_length_16(str)
@@ -11,6 +13,7 @@ function ensure_user_id_in_save_data(save_data)
 		local random_data = {}
 		local a = make_64_bit_random()
 		local b = make_64_bit_random()
+
 		save_data.machine_id = string.sub(a, 1, 8) .. "-" .. string.sub(a, 9, 12) .. "-4" .. string.sub(a, 13, 15) .. "-8" .. string.sub(b, 1, 3) .. "-" .. string.sub(b, 5, 16)
 	end
 end

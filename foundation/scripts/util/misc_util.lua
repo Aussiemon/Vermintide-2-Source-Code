@@ -1,3 +1,5 @@
+﻿-- chunkname: @foundation/scripts/util/misc_util.lua
+
 IDENTITY = IDENTITY or function (x)
 	return x
 end
@@ -19,8 +21,9 @@ CONST = CONST or setmetatable({}, {
 		self[x] = f
 
 		return f
-	end
+	end,
 })
+
 local string_format = string.format
 
 function printf(f, ...)
@@ -74,9 +77,7 @@ function bool_string(b)
 end
 
 function vector_string(v)
-	local x = v[1]
-	local y = v[2]
-	local z = v[3]
+	local x, y, z = v[1], v[2], v[3]
 
 	return string.format("x(%.2f) y(%.2f) z(%.2f)", x, y, z)
 end
@@ -110,6 +111,7 @@ varargs.join = function (delimiter, ...)
 
 	for i = 1, num_args - 1 do
 		local val = select(i, ...)
+
 		output = output .. tostring(val) .. delimiter
 	end
 

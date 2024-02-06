@@ -1,10 +1,15 @@
+﻿-- chunkname: @scripts/unit_extensions/weapons/ai_weapon_unit_templates.lua
+
 AiWeaponUnitTemplates = {}
-local update_shoot, update_windup = nil
+
+local update_shoot, update_windup
+
 AiWeaponUnitTemplates.templates = {
 	ratling_gun = {
 		shoot_start = function (world, unit, data, shoot_time)
 			data.shoot_time = shoot_time
 			data.shoot_timer = shoot_time
+
 			local use_occlusion = true
 			local node_id = Unit.node(unit, "rp_ratlinggun")
 			local wwise_source_id, wwise_world = WwiseUtils.make_unit_auto_source(world, unit, node_id)
@@ -51,12 +56,13 @@ AiWeaponUnitTemplates.templates = {
 
 				update_shoot(world, unit, data)
 			end
-		end
+		end,
 	},
 	warpfire_gun = {
 		shoot_start = function (world, unit, data, shoot_time)
 			data.shoot_time = shoot_time
 			data.shoot_timer = shoot_time
+
 			local use_occlusion = true
 			local node_id = Unit.node(unit, "rp_warpfiregun")
 			local wwise_source_id, wwise_world = WwiseUtils.make_unit_auto_source(world, unit, node_id)
@@ -103,8 +109,8 @@ AiWeaponUnitTemplates.templates = {
 
 				update_shoot(world, unit, data)
 			end
-		end
-	}
+		end,
+	},
 }
 
 function update_shoot(world, unit, data)

@@ -1,13 +1,18 @@
+﻿-- chunkname: @scripts/entity_system/systems/play_go_tutorial/play_go_pause_templates.lua
+
 DefaultAnimationFunctions = {
 	on_enter = function (this, unit, position)
 		this.activated = true
 		this.unit = unit
+
 		local player = Managers.player:local_player()
 		local player_unit = player.player_unit
 		local player_input = ScriptUnit.extension(player_unit, "input_system")
+
 		this.old_player_input_enabled = player_input.enabled
 		this.old_allowed_input = player_input:allowed_input_table()
 		this.old_disallowed_input = player_input:disallowed_input_table()
+
 		local allowed_input = {}
 
 		for _, input in pairs(this.allowed_input) do
@@ -53,7 +58,7 @@ DefaultAnimationFunctions = {
 		end
 
 		if this.timer then
-			if this.timer < t then
+			if t > this.timer then
 				this.stop_timer = this.timer
 				this.timer = nil
 
@@ -86,7 +91,7 @@ DefaultAnimationFunctions = {
 				local success = true
 
 				for _, input in ipairs(inputs) do
-					local result = nil
+					local result
 					local keymap_data = not gamepad_active and input_service:get_keymapping(input)
 
 					if not gamepad_active and (not keymap_data or keymap_data[2] == UNASSIGNED_KEY) then
@@ -122,7 +127,7 @@ DefaultAnimationFunctions = {
 					local success = true
 
 					for _, input in ipairs(inputs) do
-						local result = nil
+						local result
 						local keymap_data = not gamepad_active and input_service:get_keymapping(input)
 
 						if not gamepad_active and (not keymap_data or keymap_data[2] == UNASSIGNED_KEY) then
@@ -161,7 +166,7 @@ DefaultAnimationFunctions = {
 		end
 
 		if this.timer then
-			if this.timer < t then
+			if t > this.timer then
 				this.stop_timer = this.timer
 				this.timer = nil
 
@@ -203,6 +208,7 @@ DefaultAnimationFunctions = {
 
 		local first_person_ext = ScriptUnit.extension(player_unit, "first_person_system")
 		local rotation = Unit.local_rotation(player_unit, 0)
+
 		first_person_ext.forced_look_rotation = nil
 
 		if this.mission_name then
@@ -242,90 +248,90 @@ DefaultAnimationFunctions = {
 		end
 
 		return true
-	end
+	end,
 }
 PauseEvents = {
 	pause_events = {
 		{
 			animation_delay = 0.75,
-			stop_delay = 0.1,
 			input_requirement = "sequence",
 			mission_name = "prologue_use_special_ability",
 			name = "special_ability",
+			stop_delay = 0.1,
 			input_mappings = {
 				{
-					"action_career"
+					"action_career",
 				},
 				{
-					"action_career_release"
-				}
+					"action_career_release",
+				},
 			},
 			allowed_input = {
 				"action_career",
-				"action_career_release"
+				"action_career_release",
 			},
 			on_enter = DefaultAnimationFunctions.on_enter,
 			update = DefaultAnimationFunctions.update_input,
 			on_exit = DefaultAnimationFunctions.on_exit,
 			check_prerequisites = function ()
 				return true
-			end
-		}
+			end,
+		},
 	},
 	animation_hook_templates = {
 		{
-			stop_delay = 0.1,
-			mission_name = "prologue_pushing",
 			animation_delay = 0.75,
 			breed = "skaven_storm_vermin",
+			mission_name = "prologue_pushing",
 			name = "push_storm_vermin",
+			stop_delay = 0.1,
 			animations = {
 				"attack_pounce",
-				"attack_special"
+				"attack_special",
 			},
 			input_mappings = {
 				{
 					"action_two_hold",
-					"action_one"
-				}
+					"action_one",
+				},
 			},
 			allowed_input = {
 				"action_two_hold",
-				"action_one"
+				"action_one",
 			},
 			on_enter = DefaultAnimationFunctions.on_enter,
 			update = DefaultAnimationFunctions.update_input,
 			on_exit = DefaultAnimationFunctions.on_exit,
 			check_prerequisites = function ()
 				return true
-			end
+			end,
 		},
 		{
-			stop_delay = 0.07,
-			mission_name = "prologue_dodge",
 			animation_delay = 0.4,
 			breed = "chaos_raider_tutorial",
+			mission_name = "prologue_dodge",
 			name = "dodge_chaos_raider",
+			stop_delay = 0.07,
 			animations = {
-				"attack_cleave_02"
+				"attack_cleave_02",
 			},
 			input_mappings = {
 				{
 					"move_left",
-					"dodge_hold"
+					"dodge_hold",
 				},
 				{
 					"move_right",
-					"dodge_hold"
+					"dodge_hold",
 				},
 				{
 					"move_controller_left",
-					"dodge_hold"
+					"dodge_hold",
 				},
 				{
 					"move_controller_right",
-					"dodge_hold"
-				}
+					"dodge_hold",
+				},
 			},
 			allowed_input = {
 				"move",
@@ -334,42 +340,42 @@ PauseEvents = {
 				"move_controller",
 				"dodge",
 				"dodge_hold",
-				"jump"
+				"jump",
 			},
 			on_enter = DefaultAnimationFunctions.on_enter,
 			update = DefaultAnimationFunctions.update_input,
 			on_exit = DefaultAnimationFunctions.on_exit,
 			check_prerequisites = function ()
 				return true
-			end
+			end,
 		},
 		{
-			stop_delay = 0.05,
-			mission_name = "prologue_blocking",
 			animation_delay = 0.4,
 			breed = "chaos_marauder_tutorial",
+			mission_name = "prologue_blocking",
 			name = "block_chaos_marauder",
+			stop_delay = 0.05,
 			animations = {
-				"attack_pounce"
+				"attack_pounce",
 			},
 			input_mappings = {
 				{
 					"action_two",
-					"action_two_hold"
-				}
+					"action_two_hold",
+				},
 			},
 			allowed_input = {
 				"action_two_hold",
-				"action_two"
+				"action_two",
 			},
 			on_enter = DefaultAnimationFunctions.on_enter,
 			update = DefaultAnimationFunctions.update_input,
 			on_exit = DefaultAnimationFunctions.on_exit,
 			check_prerequisites = function ()
 				return true
-			end
-		}
-	}
+			end,
+		},
+	},
 }
 
 for idx, animation_hook in ipairs(PauseEvents.animation_hook_templates) do

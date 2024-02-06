@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/unit_extensions/weapons/actions/action_multi_shoot.lua
+
 ActionMultiShoot = class(ActionMultiShoot, ActionShotgun)
+
 local unit_set_flow_variable = Unit.set_flow_variable
 local unit_flow_event = Unit.flow_event
 
@@ -54,6 +57,7 @@ ActionMultiShoot._combine_rotations = function (self, yaw, pitch, current_rot)
 	local yaw_rot = Quaternion(Vector3.up(), yaw)
 	local pitch_rot = Quaternion(Vector3.right(), pitch)
 	local combined_rotation = Quaternion.multiply(current_rot, yaw_rot)
+
 	combined_rotation = Quaternion.multiply(combined_rotation, pitch_rot)
 
 	return combined_rotation
@@ -91,6 +95,7 @@ ActionMultiShoot._shoot = function (self, num_shots_total, num_shots_this_frame)
 
 	for i = 1, num_shots_this_frame do
 		self._shots_fired = self._shots_fired + 1
+
 		local rotation = self:_get_spread_rotation(num_shots_total, current_rotation, num_layers_spread, bullseye, spread_pitch)
 		local direction = Quaternion.forward(rotation)
 		local result = PhysicsWorld.immediate_raycast_actors(physics_world, current_position, direction, current_action.range, "static_collision_filter", "filter_player_ray_projectile_static_only", "dynamic_collision_filter", "filter_player_ray_projectile_ai_only", "dynamic_collision_filter", "filter_player_ray_projectile_hitbox_only")

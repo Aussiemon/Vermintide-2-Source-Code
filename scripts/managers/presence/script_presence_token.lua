@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/presence/script_presence_token.lua
+
 ScriptPresenceToken = class(ScriptPresenceToken)
 
 ScriptPresenceToken.init = function (self, token)
@@ -8,6 +10,7 @@ end
 
 ScriptPresenceToken.update = function (self)
 	local done, presence, error_code = Presence.status(self._token)
+
 	self._done = done
 	self._presence = presence
 	self._error_code = error_code

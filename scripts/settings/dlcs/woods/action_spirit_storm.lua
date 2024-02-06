@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/dlcs/woods/action_spirit_storm.lua
+
 ActionSpiritStorm = class(ActionSpiritStorm, ActionBase)
 
 ActionSpiritStorm.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
@@ -10,8 +12,10 @@ ActionSpiritStorm.client_owner_start_action = function (self, new_action, t, cha
 	ActionSpiritStorm.super.client_owner_start_action(self, new_action, t, chain_action_data, power_level)
 
 	self.current_action = new_action
+
 	local owner_unit = self.owner_unit
 	local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
+
 	self.owner_buff_extension = buff_extension
 	self.state = "waiting_to_shoot"
 	self.time_to_shoot = t + (new_action.fire_time or 0)
@@ -22,7 +26,7 @@ end
 ActionSpiritStorm.client_owner_post_update = function (self, dt, t, world, can_damage)
 	local current_action = self.current_action
 
-	if self.state == "waiting_to_shoot" and self.time_to_shoot <= t then
+	if self.state == "waiting_to_shoot" and t >= self.time_to_shoot then
 		self.state = "shooting"
 	end
 
@@ -45,6 +49,7 @@ ActionSpiritStorm.finish = function (self, reason)
 	end
 
 	self.position = nil
+
 	local hud_extension = ScriptUnit.has_extension(self.owner_unit, "hud_system")
 
 	if hud_extension then

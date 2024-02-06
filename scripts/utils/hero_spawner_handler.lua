@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/utils/hero_spawner_handler.lua
+
 HeroSpawnerHandler = class(HeroSpawnerHandler)
 
 HeroSpawnerHandler.init = function (self, is_server, profile_synchronizer, network_event_delegate)
@@ -98,6 +100,7 @@ end
 
 HeroSpawnerHandler.save_selected_profile = function (self, index)
 	local save_manager = Managers.save
+
 	SaveData.wanted_profile_index = index
 
 	save_manager:auto_save(SaveFileName, SaveData, nil)

@@ -1,8 +1,11 @@
+﻿-- chunkname: @scripts/unit_extensions/default_player_unit/player_unit_locomotion_extension.lua
+
 require("scripts/helpers/mover_helper")
 require("scripts/unit_extensions/default_player_unit/third_person_idle_fullbody_animation_control")
 
 PlayerUnitLocomotionExtension = class(PlayerUnitLocomotionExtension)
 IS_NEW_FRAME = false
+
 local POSITION_LOOKUP = POSITION_LOOKUP
 local MAX_MOVE_SPEED = 99.9999
 local MOVE_SPEED_ANIM_LERP_TIME = 0.15
@@ -15,9 +18,11 @@ PlayerUnitLocomotionExtension.init = function (self, extension_init_context, uni
 	self.unit = unit
 	self.is_server = Managers.player.is_server
 	self.player = extension_init_data.player
+
 	local profile_index = self.player:profile_index()
 	local profile = SPProfiles[profile_index]
 	local mover_profile = profile.mover_profile
+
 	self._default_mover_filter = mover_profile or "filter_player_mover"
 	self._pactsworn_no_clip = self._default_mover_filter == "filter_player_mover_pactsworn"
 	self._no_clip_filter = {}
@@ -49,12 +54,15 @@ PlayerUnitLocomotionExtension.init = function (self, extension_init_context, uni
 
 	self.world = extension_init_context.world
 	self.is_bot = extension_init_data.player.bot_player
+
 	local rotation = Unit.local_rotation(unit, 0)
+
 	self.target_rotation = QuaternionBox(rotation)
 
 	self:move_to_non_intersecting_position()
 
 	local position = Unit.world_position(unit, 0)
+
 	self.has_moved_from_start_position = false
 	self._start_position = Vector3Box(position)
 
@@ -72,9 +80,9 @@ PlayerUnitLocomotionExtension.init = function (self, extension_init_context, uni
 	self._system_data = extension_init_data.system_data
 	self._system_data.all_update_units[unit] = self
 	self._mover_modes = {
-		ladder = false,
+		dark_pact_noclip = false,
 		enemy_noclip = false,
-		dark_pact_noclip = false
+		ladder = false,
 	}
 	self._climb_entrance = nil
 	self._climb_exit = nil
@@ -89,17 +97,10 @@ PlayerUnitLocomotionExtension.set_mover_filter_property = function (self, proper
 	fassert(modes[property] ~= nil, "Trying to set unitialized mover filter property %q.", bool)
 
 	modes[property] = bool
-	local filter = nil
 
-	if modes.ladder then
-		filter = "filter_player_ladder_mover"
-	elseif modes.enemy_noclip then
-		filter = "filter_player_enemy_noclip_mover"
-	elseif modes.dark_pact_noclip then
-		filter = "filter_player_mover_pactsworn_ghost_mode"
-	else
-		filter = self._default_mover_filter
-	end
+	local filter
+
+	filter = modes.ladder and "filter_player_ladder_mover" or modes.enemy_noclip and "filter_player_enemy_noclip_mover" or modes.dark_pact_noclip and "filter_player_mover_pactsworn_ghost_mode" or self._default_mover_filter
 
 	local mover = Unit.mover(self.unit)
 
@@ -127,15 +128,17 @@ PlayerUnitLocomotionExtension.destroy = function (self)
 
 	local unit = self.unit
 	local system_data = self._system_data
+
 	system_data.all_disabled_units[unit] = nil
 	system_data.all_update_units[unit] = nil
 end
 
 PlayerUnitLocomotionExtension.set_on_moving_platform = function (self, platform_unit)
-	local level_unit_id = nil
+	local level_unit_id
 
 	if platform_unit then
 		local platform_extension = ScriptUnit.extension(platform_unit, "transportation_system")
+
 		self._platform_extension = platform_extension
 		self._platform_unit = platform_unit
 		level_unit_id = Managers.state.network:level_object_id(platform_unit)
@@ -189,7 +192,7 @@ PlayerUnitLocomotionExtension._initialize_sample_velocities = function (self)
 		Vector3Box(0, 0, 0),
 		Vector3Box(0, 0, 0),
 		Vector3Box(0, 0, 0),
-		Vector3Box(0, 0, 0)
+		Vector3Box(0, 0, 0),
 	}
 end
 
@@ -245,6 +248,7 @@ PlayerUnitLocomotionExtension.set_disabled = function (self, disabled, run_func,
 	self.disabled = disabled
 	self.run_func = run_func
 	self.master_unit = master_unit
+
 	local system_data = self._system_data
 	local unit = self.unit
 
@@ -256,7 +260,9 @@ PlayerUnitLocomotionExtension.set_disabled = function (self, disabled, run_func,
 	else
 		system_data.all_update_units[unit] = self
 		system_data.all_disabled_units[unit] = nil
+
 		local pos = POSITION_LOOKUP[unit]
+
 		self._pos_lerp_time = 0
 
 		Unit.set_data(unit, "last_lerp_position", pos)
@@ -295,11 +301,13 @@ PlayerUnitLocomotionExtension.post_update = function (self, unit, input, dt, con
 
 	if move_speed_lerp_val < move_speed then
 		local delta = math.min(move_speed / MOVE_SPEED_ANIM_LERP_TIME * dt, speed_difference)
+
 		move_speed_lerp_val = math.clamp(move_speed_lerp_val + delta, 0, move_speed)
 		self._move_speed_top = move_speed_lerp_val
 	else
 		local ms = self._move_speed_top or move_speed
 		local delta = math.min(ms / MOVE_SPEED_ANIM_LERP_TIME * dt, speed_difference)
+
 		move_speed_lerp_val = math.clamp(move_speed_lerp_val - delta, 0, move_speed_lerp_val)
 	end
 
@@ -362,6 +370,7 @@ PlayerUnitLocomotionExtension.moving_on_slope = function (self, calculate_fall_v
 	end
 
 	local on_slope = Mover.standing_frames(mover) == 0 or slippery
+
 	self.allow_jump = not calculate_fall_velocity or self.allow_jump and self.on_ground or Mover.flying_frames(mover) == 0 and not slippery
 
 	return on_slope and calculate_fall_velocity
@@ -391,11 +400,13 @@ PlayerUnitLocomotionExtension.update_script_driven_movement = function (self, un
 		self.velocity_forced = nil
 	end
 
-	local external_dir, new_external_velocity = nil
+	local external_dir, new_external_velocity
 
 	if external_velocity then
 		local flat_external_velocity = Vector3.flat(external_velocity)
+
 		external_dir = Vector3.normalize(flat_external_velocity)
+
 		local external_length = Vector3.length(flat_external_velocity)
 		local external_direction_component = Vector3.dot(external_dir, velocity_wanted)
 
@@ -405,13 +416,16 @@ PlayerUnitLocomotionExtension.update_script_driven_movement = function (self, un
 			velocity_wanted = velocity_wanted - external_dir * external_direction_component + flat_external_velocity
 		else
 			flat_external_velocity = flat_external_velocity + external_dir * external_direction_component * dt
+
 			local wanted_component = velocity_wanted - external_dir * external_direction_component
+
 			velocity_wanted = wanted_component + flat_external_velocity
 		end
 
 		if self.on_ground then
 			local friction_constant = 15
 			local friction = math.min(friction_constant * dt, external_length) * -external_dir
+
 			new_external_velocity = flat_external_velocity + friction
 		else
 			new_external_velocity = flat_external_velocity * (1 - math.min(dt * 0.00225 * external_length * external_length, 1))
@@ -432,6 +446,7 @@ PlayerUnitLocomotionExtension.update_script_driven_movement = function (self, un
 	if calculate_fall_velocity then
 		local fall_speed = dragged_velocity.z
 		local movement_settings_table = PlayerUnitMovementSettings.get_movement_settings_table(unit)
+
 		fall_speed = fall_speed - movement_settings_table.gravity_acceleration * self._script_driven_gravity_scale * dt
 		dragged_velocity.z = math.min(self.maximum_upward_velocity, fall_speed)
 	end
@@ -443,10 +458,10 @@ PlayerUnitLocomotionExtension.update_script_driven_movement = function (self, un
 
 	if velocity_flat_length > 0.001 then
 		velocity_flat_normalized = velocity_flat_normalized / velocity_flat_length
+
 		local flat_player_pos = Vector3.flat(current_position)
-		local constrained_target = nil
-		local min_dot = -1
-		local max_dot = 1
+		local constrained_target
+		local min_dot, max_dot = -1, 1
 		local query_radius = 1
 		local query_position = current_position + velocity_flat_normalized * 0.5
 		local no_clip = self._mover_modes.enemy_noclip == true
@@ -471,7 +486,9 @@ PlayerUnitLocomotionExtension.update_script_driven_movement = function (self, un
 
 					if ai_dist_to_line_sq < ai_min_dist_sq then
 						constrained_target = ai_position + Vector3.normalize(ai_point_on_line - ai_position) * ai_radius * 2
+
 						local dot = Vector3.dot(velocity_flat_normalized, Vector3.normalize(constrained_target - flat_player_pos))
+
 						min_dot = math.max(min_dot, dot)
 						max_dot = math.min(max_dot, dot)
 					end
@@ -481,10 +498,12 @@ PlayerUnitLocomotionExtension.update_script_driven_movement = function (self, un
 
 		if max_dot < min_dot or max_dot <= 0 then
 			local fall_speed = dragged_velocity.z
+
 			dragged_velocity = Vector3.zero()
 			dragged_velocity.z = fall_speed
 		elseif constrained_target then
 			local fall_speed = dragged_velocity.z
+
 			dragged_velocity = constrained_target - flat_player_pos
 
 			if Vector3.length(dragged_velocity) > 0.001 then
@@ -518,6 +537,7 @@ PlayerUnitLocomotionExtension.update_script_driven_movement = function (self, un
 						local push_strength = 2
 						local push_force = push_strength * (1 - dist_to_ai_sq / ai_radius_sq)
 						local push_direction = Vector3.normalize(flat_player_pos - ai_position)
+
 						dragged_velocity = dragged_velocity + push_direction * push_force
 					end
 				end
@@ -556,8 +576,10 @@ PlayerUnitLocomotionExtension.update_animation_driven_movement = function (self,
 	local wanted_position = Matrix4x4.translation(wanted_pose)
 	local current_position = POSITION_LOOKUP[unit]
 	local delta_anim = wanted_position - current_position
+
 	delta_anim = Vector3.multiply_elements(delta_anim, self.animation_translation_scale:unbox())
-	local delta_total = nil
+
+	local delta_total
 	local velocity = self.velocity_current:unbox()
 	local velocity_fall = Vector3(0, 0, velocity.z)
 
@@ -565,7 +587,9 @@ PlayerUnitLocomotionExtension.update_animation_driven_movement = function (self,
 		delta_total = delta_anim
 	else
 		velocity_fall.z = velocity_fall.z - 9.82 * dt
+
 		local delta_velocity = velocity_fall * dt
+
 		delta_total = delta_velocity + delta_anim
 	end
 
@@ -603,7 +627,9 @@ PlayerUnitLocomotionExtension.update_animation_driven_movement_no_mover = functi
 	local wanted_position = Matrix4x4.translation(wanted_pose)
 	local current_position = POSITION_LOOKUP[unit]
 	local delta_anim = wanted_position - current_position
+
 	delta_anim = Vector3.multiply_elements(delta_anim, self.animation_translation_scale:unbox())
+
 	local velocity_new = delta_anim / dt
 
 	Unit.set_local_position(unit, 0, current_position + delta_anim)
@@ -684,7 +710,9 @@ PlayerUnitLocomotionExtension.update_wanted_position_movement = function (self, 
 	local move_velocity = wanted_pos - current_position
 	local velocity = self.velocity_current:unbox()
 	local velocity_fall = Vector3(0, 0, velocity.z)
+
 	velocity_fall.z = velocity_fall.z - 9.82 * dt
+
 	local delta_velocity = move_velocity + velocity_fall
 	local mover = Unit.mover(unit)
 
@@ -713,7 +741,9 @@ PlayerUnitLocomotionExtension.is_stood_still = function (self)
 	local current_rotation = first_person_extension:current_rotation()
 	local current_rotation_flat = Vector3.flat(Quaternion.forward(current_rotation))
 	local velocity_current = self.velocity_current:unbox()
+
 	velocity_current.z = 0
+
 	local velocity_dot = Vector3.dot(velocity_current, current_rotation_flat)
 
 	return velocity_dot == 0
@@ -733,6 +763,7 @@ PlayerUnitLocomotionExtension.sync_network_position = function (self, game, go_i
 
 	if self._platform_unit then
 		local platform_pos = Unit.local_position(self._platform_unit, 0)
+
 		position = position - platform_pos
 	end
 
@@ -801,6 +832,7 @@ PlayerUnitLocomotionExtension.set_forced_velocity = function (self, velocity_for
 
 		if velocity_forced then
 			local current_velocity_forced = self.velocity_forced
+
 			self.velocity_forced = current_velocity_forced and current_velocity_forced + velocity_forced or velocity_forced
 		else
 			self.velocity_forced = nil
@@ -871,8 +903,9 @@ PlayerUnitLocomotionExtension.enable_linked_movement = function (self, parent_un
 	self.link_data = {
 		unit = parent_unit,
 		node = node,
-		offset = Vector3Box(offset)
+		offset = Vector3Box(offset),
 	}
+
 	local unit = self.unit
 	local network_manager = Managers.state.network
 	local game = network_manager:game()
@@ -1008,11 +1041,12 @@ PlayerUnitLocomotionExtension.enable_rotation_towards_velocity = function (self,
 		assert(duration, "Tried to set target rotation without setting duration")
 
 		local t = Managers.time:time("game")
+
 		self.target_rotation_data = {
 			target_rotation = QuaternionBox(target_rotation),
 			start_rotation = QuaternionBox(Unit.local_rotation(self.unit, 0)),
 			start_time = t,
-			end_time = t + duration
+			end_time = t + duration,
 		}
 	end
 end
@@ -1028,7 +1062,7 @@ PlayerUnitLocomotionExtension.apply_no_clip_filter = function (self, no_clip_fil
 		if no_clip_filter[i] then
 			if not self._no_clip_filter[i] then
 				self._no_clip_filter[i] = {
-					[reason] = true
+					[reason] = true,
 				}
 			else
 				self._no_clip_filter[i][reason] = true

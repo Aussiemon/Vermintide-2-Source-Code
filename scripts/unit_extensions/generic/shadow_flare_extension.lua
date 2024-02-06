@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/generic/shadow_flare_extension.lua
+
 ShadowFlareExtension = class(ShadowFlareExtension)
 
 ShadowFlareExtension.init = function (self, extension_init_context, unit, extension_init_data)
@@ -8,7 +10,9 @@ ShadowFlareExtension.init = function (self, extension_init_context, unit, extens
 	self._timer = 0
 	self._delete_timer = 0
 	self._flare_done = false
+
 	local owner_unit = Managers.state.unit_storage:unit(self.owner_unit_id)
+
 	self._player = Managers.player:owner(owner_unit)
 end
 

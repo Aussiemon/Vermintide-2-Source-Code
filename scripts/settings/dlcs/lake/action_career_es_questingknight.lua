@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/dlcs/lake/action_career_es_questingknight.lua
+
 ActionCareerESQuestingKnight = class(ActionCareerESQuestingKnight, ActionSweep)
 
 ActionCareerESQuestingKnight.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
@@ -29,6 +31,7 @@ ActionCareerESQuestingKnight.client_owner_post_update = function (self, dt, t, w
 
 	if not self._hit_fx_triggered and self._started_damage_window then
 		self._hit_fx_triggered = true
+
 		local first_person_extension = ScriptUnit.extension(self.owner_unit, "first_person_system")
 		local rot = first_person_extension:current_rotation()
 		local direction = Vector3.flat(Quaternion.forward(rot))

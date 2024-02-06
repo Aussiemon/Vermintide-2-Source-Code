@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/unlock/script_unlock_game_token.lua
+
 ScriptUnlockGameToken = class(ScriptUnlockGameToken)
 
 ScriptUnlockGameToken.init = function (self, token)

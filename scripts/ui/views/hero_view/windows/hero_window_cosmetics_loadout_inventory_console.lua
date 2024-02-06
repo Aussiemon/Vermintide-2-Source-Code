@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/hero_view/windows/hero_window_cosmetics_loadout_inventory_console.lua
+
 local definitions = local_require("scripts/ui/views/hero_view/windows/definitions/hero_window_cosmetics_loadout_inventory_console_definitions")
 local widget_definitions = definitions.widgets
 local category_settings = definitions.category_settings
@@ -63,24 +65,30 @@ HeroWindowCosmeticsLoadoutInventoryConsole.on_enter = function (self, params, of
 
 	self.params = params
 	self.parent = params.parent
+
 	local ingame_ui_context = params.ingame_ui_context
+
 	self.ui_renderer = ingame_ui_context.ui_renderer
 	self.ui_top_renderer = ingame_ui_context.ui_top_renderer
 	self.input_manager = ingame_ui_context.input_manager
 	self.statistics_db = ingame_ui_context.statistics_db
 	self.render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
+
 	local player_manager = Managers.player
 	local local_player = player_manager:local_player()
+
 	self._stats_id = local_player:stats_id()
 	self.player_manager = player_manager
 	self.peer_id = ingame_ui_context.peer_id
 	self.hero_name = params.hero_name
 	self.career_index = params.career_index
 	self.profile_index = params.profile_index
+
 	local profile = SPProfiles[self.profile_index]
 	local career_data = profile.careers[self.career_index]
+
 	self.career_name = career_data.name
 	self._animations = {}
 
@@ -89,9 +97,10 @@ HeroWindowCosmeticsLoadoutInventoryConsole.on_enter = function (self, params, of
 
 	local params = {
 		profile_index = params.profile_index,
-		career_index = params.career_index
+		career_index = params.career_index,
 	}
 	local item_grid = ItemGridUI:new(category_settings, self._widgets_by_name.item_grid, self.hero_name, self.career_index, params)
+
 	self._item_grid = item_grid
 
 	item_grid:mark_equipped_items(true)
@@ -117,28 +126,33 @@ end
 HeroWindowCosmeticsLoadoutInventoryConsole._start_transition_animation = function (self, animation_name)
 	local params = {
 		wwise_world = self.wwise_world,
-		render_settings = self.render_settings
+		render_settings = self.render_settings,
 	}
 	local widgets = {}
 	local anim_id = self.ui_animator:start_animation(animation_name, widgets, scenegraph_definition, params)
+
 	self._animations[animation_name] = anim_id
 end
 
 HeroWindowCosmeticsLoadoutInventoryConsole.create_ui_elements = function (self, params, offset)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+
 	local widgets = {}
 	local widgets_by_name = {}
 
 	for name, widget_definition in pairs(widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		widgets[#widgets + 1] = widget
 		widgets_by_name[name] = widget
 	end
 
 	self._widgets = widgets
 	self._widgets_by_name = widgets_by_name
+
 	local input_service = Managers.input:get_service("hero_view")
 	local gui_layer = UILayer.default + 30
+
 	self._menu_input_description = MenuInputDescriptionUI:new(nil, self.ui_top_renderer, input_service, 6, gui_layer, generic_input_actions.default, true)
 
 	self._menu_input_description:set_input_description(nil)
@@ -148,6 +162,7 @@ HeroWindowCosmeticsLoadoutInventoryConsole.create_ui_elements = function (self, 
 
 	if offset then
 		local window_position = self.ui_scenegraph.window.local_position
+
 		window_position[1] = window_position[1] + offset[1]
 		window_position[2] = window_position[2] + offset[2]
 		window_position[3] = window_position[3] + offset[3]
@@ -245,6 +260,7 @@ HeroWindowCosmeticsLoadoutInventoryConsole._update_equipped_item_tooltip = funct
 	local backend_id = BackendUtils.get_loadout_item_id(self.career_name, slot_name)
 	local item = backend_id and item_interface:get_item_from_id(backend_id)
 	local widget = self._widgets_by_name.item_tooltip_compare
+
 	widget.content.item = item
 end
 
@@ -254,6 +270,7 @@ HeroWindowCosmeticsLoadoutInventoryConsole._update_selected_item_tooltip = funct
 
 	if backend_id ~= self._selected_backend_id then
 		local widget = self._widgets_by_name.item_tooltip
+
 		widget.content.item = selected_item
 	end
 
@@ -413,7 +430,9 @@ HeroWindowCosmeticsLoadoutInventoryConsole._update_page_info = function (self)
 		self._current_page = current_page
 		current_page = current_page or 1
 		total_pages = total_pages or 1
+
 		local widgets_by_name = self._widgets_by_name
+
 		widgets_by_name.page_text_left.content.text = tostring(current_page)
 		widgets_by_name.page_text_right.content.text = tostring(total_pages)
 		widgets_by_name.page_button_next.content.hotspot.disable_button = current_page == total_pages
@@ -491,6 +510,7 @@ HeroWindowCosmeticsLoadoutInventoryConsole._change_category_by_index = function 
 	end
 
 	self._current_category_index = index
+
 	local category_setting = category_settings[index]
 	local category_name = category_setting.name
 	local display_name = category_setting.display_name
@@ -509,19 +529,22 @@ HeroWindowCosmeticsLoadoutInventoryConsole._setup_input_buttons = function (self
 	local input_1_widget = widgets_by_name.input_icon_next
 	local input_2_widget = widgets_by_name.input_icon_previous
 	local icon_style_input_1 = input_1_widget.style.texture_id
+
 	icon_style_input_1.horizontal_alignment = "center"
 	icon_style_input_1.vertical_alignment = "center"
 	icon_style_input_1.texture_size = {
 		input_1_texture_data.size[1],
-		input_1_texture_data.size[2]
+		input_1_texture_data.size[2],
 	}
 	input_1_widget.content.texture_id = input_1_texture_data.texture
+
 	local icon_style_input_2 = input_2_widget.style.texture_id
+
 	icon_style_input_2.horizontal_alignment = "center"
 	icon_style_input_2.vertical_alignment = "center"
 	icon_style_input_2.texture_size = {
 		input_2_texture_data.size[1],
-		input_2_texture_data.size[2]
+		input_2_texture_data.size[2],
 	}
 	input_2_widget.content.texture_id = input_2_texture_data.texture
 end
@@ -532,6 +555,7 @@ HeroWindowCosmeticsLoadoutInventoryConsole._set_gamepad_input_buttons_visibility
 	local input_2_widget = widgets_by_name.input_icon_previous
 	local input_arrow_1_widget = widgets_by_name.input_arrow_next
 	local input_arrow_2_widget = widgets_by_name.input_arrow_previous
+
 	input_1_widget.content.visible = visible
 	input_2_widget.content.visible = visible
 	input_arrow_1_widget.content.visible = visible
@@ -545,6 +569,7 @@ HeroWindowCosmeticsLoadoutInventoryConsole._handle_gamepad_activity = function (
 	if not mouse_active then
 		if not self.gamepad_active_last_frame or force_update then
 			self.gamepad_active_last_frame = true
+
 			local item_grid = self._item_grid
 			local first_item = item_grid:get_item_in_slot(1, 1)
 
@@ -553,6 +578,7 @@ HeroWindowCosmeticsLoadoutInventoryConsole._handle_gamepad_activity = function (
 		end
 	elseif self.gamepad_active_last_frame or force_update then
 		self.gamepad_active_last_frame = false
+
 		local item_grid = self._item_grid
 
 		item_grid:set_item_selected(nil)

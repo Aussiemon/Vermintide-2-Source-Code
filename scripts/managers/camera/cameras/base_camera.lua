@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/camera/cameras/base_camera.lua
+
 BaseCamera = class(BaseCamera)
 
 BaseCamera.init = function (self, root_node)
@@ -24,6 +26,7 @@ BaseCamera.parse_parameters = function (self, camera_settings, parent_node)
 	end
 
 	local degrees_to_radians = math.pi / 180
+
 	self._fade_to_black = camera_settings.fade_to_black
 	self._vertical_fov = camera_settings.vertical_fov and camera_settings.vertical_fov * degrees_to_radians
 	self._should_apply_fov_multiplier = camera_settings.should_apply_fov_multiplier or parent_node:should_apply_fov_multiplier()
@@ -336,7 +339,7 @@ BaseCamera._debug_draw = function (self)
 	local pos = self._position
 	local rot = self._rotation
 	local drawer = Managers.state.debug:drawer({
-		name = "CAMERA_DEBUG_DRAW" .. self:name()
+		name = "CAMERA_DEBUG_DRAW" .. self:name(),
 	})
 
 	if DebugKeyHandler.key_pressed("z", "clear camera debug") then

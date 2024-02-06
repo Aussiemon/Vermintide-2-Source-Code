@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/conflict_director/perlin_path.lua
+
 local function noise(x, seed)
 	local next_seed, _ = Math.next_random(x + seed)
 	local _, value = Math.next_random(next_seed)
@@ -18,34 +20,36 @@ local function interpolated_noise(x, seed)
 	return math.lerp(v1, v2, remainder)
 end
 
-PerlinPath = {
-	make_perlin_path = function (start_oktave, end_oktave, persistance, seed)
-		local total = 0
-		local octave_table = {}
+PerlinPath = {}
 
-		for i = start_oktave, end_oktave do
-			local waves = {}
-			local amplitude = persistance^i
-			local x = 0
-			local step_dist = 1 / i
+PerlinPath.make_perlin_path = function (start_oktave, end_oktave, persistance, seed)
+	local total = 0
+	local octave_table = {}
 
-			for j = 0, i do
-				local next_seed, _ = Math.next_random(x + seed)
-				local _, value = Math.next_random(next_seed)
-				waves[j] = {
-					x,
-					value * amplitude
-				}
-				x = x + step_dist
-				seed = next_seed
-			end
+	for i = start_oktave, end_oktave do
+		local waves = {}
+		local amplitude = persistance^i
+		local x = 0
+		local step_dist = 1 / i
 
-			octave_table[i - start_oktave + 1] = waves
+		for j = 0, i do
+			local next_seed, _ = Math.next_random(x + seed)
+			local _, value = Math.next_random(next_seed)
+
+			waves[j] = {
+				x,
+				value * amplitude,
+			}
+			x = x + step_dist
+			seed = next_seed
 		end
 
-		return octave_table
+		octave_table[i - start_oktave + 1] = waves
 	end
-}
+
+	return octave_table
+end
+
 local near_path = 1345600
 local zone_length = 25
 
@@ -58,6 +62,7 @@ PerlinPath.make_easy_path = function (nav_world, main_path, path_length)
 
 	for i = 1, num_cycles do
 		local pos = LevelAnalysis.get_path_point(main_path, path_length, i / num_cycles)
+
 		new_path[#new_path + 1] = Vector3Box(pos)
 	end
 
@@ -68,7 +73,7 @@ local vector3_distance_squared = Vector3.distance_squared
 
 PerlinPath.fill_spawns = function (nav_world, main_path, path_length, density_path, p1, p2)
 	local lookup = {}
-	local triangle = nil
+	local triangle
 	local num_triangles = 0
 	local triangles = {}
 	local seed_list = {}
@@ -82,10 +87,12 @@ PerlinPath.fill_spawns = function (nav_world, main_path, path_length, density_pa
 			num_triangles = num_triangles + 1
 			triangles[num_triangles] = triangle
 			seed_list[num_triangles] = pos
+
 			local a, b, c = Script.temp_count()
 			local p1, p2, p3 = GwNavTraversal.get_triangle_vertices(nav_world, triangle)
 			local tri_center = (p1 + p2 + p3) / 3
 			local key = tri_center.x * 0.0001 + tri_center.y + tri_center.z * 10000
+
 			area_list[num_triangles] = Vector3.length(Vector3.cross(p2 - p1, p3 - p1)) / 2
 
 			Script.set_temp_count(a, b, c)
@@ -96,14 +103,16 @@ PerlinPath.fill_spawns = function (nav_world, main_path, path_length, density_pa
 
 	local i = 0
 
-	while num_triangles > i do
+	while i < num_triangles do
 		i = i + 1
 		triangle = triangles[i]
+
 		local a, b, c = Script.temp_count()
 		local p1, p2, p3 = GwNavTraversal.get_triangle_vertices(nav_world, triangle)
 		local tri_center = (p1 + p2 + p3) / 3
 		local key = tri_center.x * 0.0001 + tri_center.y + tri_center.z * 10000
 		local seed_index = lookup[key]
+
 		area_list[seed_index] = area_list[seed_index] + Vector3.length(Vector3.cross(p2 - p1, p3 - p1)) / 2
 
 		Script.set_temp_count(a, b, c)
@@ -112,13 +121,15 @@ PerlinPath.fill_spawns = function (nav_world, main_path, path_length, density_pa
 		local seed_b = seed_list[seed_index]
 		local seed_c = seed_list[seed_index + 1]
 		local neighbors = {
-			GwNavTraversal.get_neighboring_triangles(triangle)
+			GwNavTraversal.get_neighboring_triangles(triangle),
 		}
 
 		for k = 1, #neighbors do
 			local neighbour = neighbors[k]
 			local t1, t2, t3 = Script.temp_count()
+
 			p1, p2, p3 = GwNavTraversal.get_triangle_vertices(nav_world, neighbour)
+
 			local tri_center = (p1 + p2 + p3) / 3
 			local key = tri_center.x * 0.0001 + tri_center.y + tri_center.z * 10000
 
@@ -127,7 +138,7 @@ PerlinPath.fill_spawns = function (nav_world, main_path, path_length, density_pa
 				local a = seed_a and vector3_distance_squared(seed_a, tri_center) or math.huge
 				local b = seed_b and vector3_distance_squared(seed_b, tri_center) or math.huge
 				local c = seed_c and vector3_distance_squared(seed_c, tri_center) or math.huge
-				local closest = nil
+				local closest
 
 				if a < b then
 					if c and a < c then

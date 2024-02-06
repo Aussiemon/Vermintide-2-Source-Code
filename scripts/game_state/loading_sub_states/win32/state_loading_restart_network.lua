@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/game_state/loading_sub_states/win32/state_loading_restart_network.lua
+
 require("scripts/network/lobby_host")
 require("scripts/network/lobby_client")
 require("scripts/network/lobby_finder")
@@ -28,9 +30,9 @@ StateLoadingRestartNetwork._init_params = function (self, params)
 	self._server_created = true
 	self._lobby_joined = true
 	self._previous_session_error_headers_lookup = {
+		afk_kick = "popup_notice_topic",
 		host_left_game = "popup_notice_topic",
 		kicked_by_server = "popup_notice_topic",
-		afk_kick = "popup_notice_topic"
 	}
 end
 
@@ -48,7 +50,7 @@ StateLoadingRestartNetwork._init_network = function (self)
 	Development.set_parameter("auto_join", nil)
 	Development.set_parameter("auto_join_server", nil)
 
-	local host_to_join = nil
+	local host_to_join
 	local lobby_is_server = lobby_to_join ~= nil
 	local loading_context = self.parent.parent.loading_context
 	local increment_lobby_port = IS_WINDOWS and true
@@ -157,7 +159,8 @@ StateLoadingRestartNetwork._init_network = function (self)
 	end
 
 	if script_data.done_initial_join then
-		lobby_to_join, host_to_join = nil
+		lobby_to_join = nil
+		host_to_join = nil
 	else
 		script_data.done_initial_join = true
 	end
@@ -166,7 +169,10 @@ StateLoadingRestartNetwork._init_network = function (self)
 		self.parent:register_rpcs()
 	end
 
-	local lobby_data = self._starting_tutorial and Managers.invite:get_invited_lobby_data()
+	if self._starting_tutorial then
+		local lobby_data = Managers.invite:get_invited_lobby_data()
+	end
+
 	local loadout_resync_state = StateLoading.LoadoutResyncStates.WAIT_FOR_LEVEL_LOAD
 	local has_invitation = Managers.invite:has_invitation()
 
@@ -211,6 +217,7 @@ StateLoadingRestartNetwork._init_network = function (self)
 
 	if loading_context.previous_session_error then
 		local previous_session_error = loading_context.previous_session_error
+
 		loading_context.previous_session_error = nil
 
 		self.parent:create_popup(previous_session_error, self._previous_session_error_headers_lookup[previous_session_error], "continue")

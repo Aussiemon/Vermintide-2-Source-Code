@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/unit_extensions/props/quest_challenge_prop_extension.lua
+
 QuestChallengePropExtension = class(QuestChallengePropExtension)
+
 local ACHIEVEMENT_UPDATE_INTERVAL = 0.5
 local QUEST_UPDATE_INTERVAL = 2
 
@@ -20,27 +23,23 @@ QuestChallengePropExtension.update = function (self, unit, input, dt, context, t
 end
 
 QuestChallengePropExtension._update_unclaimed_achievement_status = function (self, dt, t)
-	if self._next_unclaimed_achievement_check < t then
+	if t > self._next_unclaimed_achievement_check then
 		self._has_unclaimed_achievements = Managers.state.achievement:has_any_unclaimed_achievement()
 		self._next_unclaimed_achievement_check = t + ACHIEVEMENT_UPDATE_INTERVAL
 	end
 end
 
 QuestChallengePropExtension._update_unclaimed_quests_status = function (self, dt, t)
-	if self._next_unclaimed_quest_check < t then
+	if t > self._next_unclaimed_quest_check then
 		self._has_unclaimed_quests = Managers.state.quest:has_any_unclaimed_quests()
 		self._next_unclaimed_quest_check = t + QUEST_UPDATE_INTERVAL
 	end
 end
 
 QuestChallengePropExtension._evaluate_highlight_status = function (self)
-	local should_be_highlighted = nil
+	local should_be_highlighted
 
-	if self._has_unclaimed_achievements or self._has_unclaimed_quests then
-		should_be_highlighted = true
-	else
-		should_be_highlighted = false
-	end
+	should_be_highlighted = not (not self._has_unclaimed_achievements and not self._has_unclaimed_quests) and true or false
 
 	local state_differs = should_be_highlighted ~= self._highlighted
 

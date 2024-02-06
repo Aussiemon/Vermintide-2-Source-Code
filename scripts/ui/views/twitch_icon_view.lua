@@ -1,15 +1,18 @@
+﻿-- chunkname: @scripts/ui/views/twitch_icon_view.lua
+
 require("scripts/ui/ui_renderer")
 require("scripts/ui/ui_elements")
 require("scripts/ui/ui_widgets")
 
 local definitions = require("scripts/ui/views/twitch_icon_view_definitions")
+
 TwitchIconView = class(TwitchIconView)
 
 TwitchIconView.init = function (self, world)
 	self._world = world
 	self._ui_renderer = UIRenderer.create(world, "material", "materials/ui/ui_1080p_loading")
 	self._render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 
 	self:_create_ui_elements()
@@ -27,6 +30,7 @@ TwitchIconView.update = function (self, dt)
 
 	if Managers.state.network then
 		local lobby = Managers.state.network:lobby()
+
 		lobby_has_twitch = lobby:lobby_data("twitch_enabled") == "true"
 	end
 

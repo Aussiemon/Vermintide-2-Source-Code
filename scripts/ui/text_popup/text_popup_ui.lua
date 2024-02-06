@@ -1,20 +1,24 @@
+﻿-- chunkname: @scripts/ui/text_popup/text_popup_ui.lua
+
 local definitions = local_require("scripts/ui/text_popup/text_popup_ui_definitions")
 local scenegraph_definition = definitions.scenegraph_definition
 local generic_input_actions = definitions.generic_input_actions
 local WINDOW_INSIDE_HEIGHT = scenegraph_definition.text_entry.size[2]
+
 TextPopupUI = class(TextPopupUI)
 
 TextPopupUI.init = function (self, ui_context)
 	self._ui_top_renderer = ui_context.ui_top_renderer
 	self._input_manager = ui_context.input_manager
 	self._render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 
 	self:_create_ui_elements()
 	self:_setup_input()
 
 	local input_service = self._input_manager:get_service("Text")
+
 	self._menu_input_description = MenuInputDescriptionUI:new(ui_context, self._ui_top_renderer, input_service, 3, 900, generic_input_actions.default)
 
 	self._menu_input_description:set_input_description(nil)
@@ -29,13 +33,16 @@ end
 
 TextPopupUI._create_ui_elements = function (self)
 	self._ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+
 	local widget_definitions = definitions.widget_definitions
+
 	self._widgets = {}
 	self._widgets_by_name = {}
 	self._buttons = {}
 
 	for key, widget in pairs(widget_definitions) do
 		local w = UIWidget.init(widget)
+
 		self._widgets[#self._widgets + 1] = w
 
 		if string.ends_with(key, "_button") then
@@ -69,7 +76,7 @@ TextPopupUI.show = function (self, header_localization_key, text_localization_ke
 	self._input_manager:capture_input({
 		"keyboard",
 		"gamepad",
-		"mouse"
+		"mouse",
 	}, 1, "Text", "TextPopupUI")
 end
 
@@ -85,7 +92,7 @@ TextPopupUI.hide = function (self)
 	self._input_manager:release_input({
 		"keyboard",
 		"gamepad",
-		"mouse"
+		"mouse",
 	}, 1, "Text", "TextPopupUI")
 
 	if self._on_close_callback then
@@ -121,6 +128,7 @@ end
 
 TextPopupUI._update_scroll_height = function (self, optional_scroll_value)
 	local total_height = UIUtils.get_text_height(self._ui_top_renderer, definitions.scenegraph_definition.text_entry.size, definitions.scroll_text_style, self._widgets_by_name.overlay_text.content.text)
+
 	self._total_scroll_height = math.max(total_height - WINDOW_INSIDE_HEIGHT, 0)
 
 	self:_setup_scrollbar(total_height, optional_scroll_value)
@@ -131,12 +139,14 @@ TextPopupUI._setup_scrollbar = function (self, height, optional_value)
 	local scenegraph_id = widget.scenegraph_id
 	local scrollbar_size_y = self._ui_scenegraph[scenegraph_id].size[2]
 	local percentage = math.min(scrollbar_size_y / height, 1)
+
 	widget.content.scroll_bar_info.bar_height_percentage = percentage
 
 	self:_set_scrollbar_value(optional_value or 0)
 
 	local scroll_step_multiplier = 2
 	local scroll_amount = math.max(WINDOW_INSIDE_HEIGHT / self._total_scroll_height, 0) * scroll_step_multiplier
+
 	self._widgets_by_name.scroll_content.content.scroll_amount = scroll_amount
 end
 
@@ -182,6 +192,7 @@ TextPopupUI._update_gamepad_scroll_input = function (self)
 	local widgets_by_name = self._widgets_by_name
 	local scroll_content = widgets_by_name.scroll_content
 	local scroll_content_content = scroll_content.content
+
 	scroll_content_content.scroll_add = scroll_content_content.scroll_amount * gamepad_scroll_value.y * -1 * 0.1
 end
 
@@ -190,13 +201,16 @@ TextPopupUI._set_scrollbar_value = function (self, value)
 		local widgets_by_name = self._widgets_by_name
 		local widget = widgets_by_name.scrollbar
 		local widget_scroll_bar_info = widget.content.scroll_bar_info
+
 		widget_scroll_bar_info.value = value
 		widgets_by_name.scroll_content.content.scroll_value = value
 		self._scroll_value = value
+
 		local scenegraph_id_to_move = "text_entry"
 		local ui_scenegraph = self._ui_scenegraph
 		local default_scenegraph = scenegraph_definition[scenegraph_id_to_move]
 		local default_position = default_scenegraph.position
+
 		ui_scenegraph[scenegraph_id_to_move].local_position[2] = default_position[2] + value * self._total_scroll_height
 	end
 end
@@ -231,6 +245,7 @@ TextPopupUI._button_clicked = function (self, button_name)
 
 	if gamepad_active and button_name == "ok_button" then
 		local input_service = self._input_manager:get_service("Text")
+
 		is_pressed = input_service:get("confirm") or is_pressed
 	end
 
@@ -273,18 +288,24 @@ TextPopupUI._animate_button = function (self, widget, dt)
 	end
 
 	local combined_progress = math.max(hover_progress, selection_progress)
+
 	style.clicked_rect.color[1] = 100 * input_progress
+
 	local hover_alpha = 255 * hover_progress
+
 	style.hover_glow.color[1] = hover_alpha
+
 	local text_disabled_style = style.title_text_disabled
 	local disabled_default_text_color = text_disabled_style.default_text_color
 	local disabled_text_color = text_disabled_style.text_color
+
 	disabled_text_color[2] = disabled_default_text_color[2] * 0.4
 	disabled_text_color[3] = disabled_default_text_color[3] * 0.4
 	disabled_text_color[4] = disabled_default_text_color[4] * 0.4
 	hotspot.hover_progress = hover_progress
 	hotspot.input_progress = input_progress
 	hotspot.selection_progress = selection_progress
+
 	local title_text_style = style.title_text
 	local title_text_color = title_text_style.text_color
 	local title_default_text_color = title_text_style.default_text_color

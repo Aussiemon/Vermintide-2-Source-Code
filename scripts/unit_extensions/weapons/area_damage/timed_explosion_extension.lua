@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/weapons/area_damage/timed_explosion_extension.lua
+
 TimedExplosionExtension = class(TimedExplosionExtension)
 
 TimedExplosionExtension.init = function (self, extension_init_context, unit, extension_init_data)
@@ -5,6 +7,7 @@ TimedExplosionExtension.init = function (self, extension_init_context, unit, ext
 	self._on_explode_callbacks = {}
 	self._area_damage_system = extension_init_context.entity_manager:system("area_damage_system")
 	self.explosion_template_name = extension_init_data.explosion_template_name
+
 	local explosion_template = ExplosionTemplates[extension_init_data.explosion_template_name]
 	local difficulty_name = Managers.state.difficulty:get_difficulty()
 	local active_wind = Managers.weave:get_active_wind()
@@ -13,6 +16,7 @@ TimedExplosionExtension.init = function (self, extension_init_context, unit, ext
 		local wind_settings = Managers.weave:get_active_wind_settings()
 		local wind_strength = Managers.weave:get_wind_strength()
 		local explosion_settings = wind_settings.timed_explosion_extension_settings
+
 		self._time_to_explode = explosion_settings.time_to_explode[difficulty_name][wind_strength]
 		self._follow_time = explosion_settings.follow_time and explosion_settings.follow_time[difficulty_name][wind_strength]
 		self._scale = wind_settings.radius and wind_settings.radius[difficulty_name][wind_strength] or 1
@@ -54,10 +58,12 @@ TimedExplosionExtension.update = function (self, unit, input, dt, context, t)
 
 		if self._buildup_effect_delay <= 0 and self._use_effect then
 			self._use_effect = false
+
 			local position = Vector3.copy(POSITION_LOOKUP[unit])
 
 			if self._buildup_effect_offset then
 				local buildup_effect_offset = Vector3(unpack(self._buildup_effect_offset))
+
 				position.x = position.x + buildup_effect_offset.x
 				position.y = position.y + buildup_effect_offset.y
 				position.z = position.z + buildup_effect_offset.z
@@ -76,6 +82,7 @@ TimedExplosionExtension.update = function (self, unit, input, dt, context, t)
 	elseif state == "follow_unit" then
 		if Unit.alive(self.follow_unit) then
 			self._follow_time = math.max(self._follow_time - dt, 0)
+
 			local follow_position = Unit.local_position(self.follow_unit, 0)
 
 			Unit.set_local_position(unit, 0, follow_position)
@@ -101,7 +108,9 @@ TimedExplosionExtension.update = function (self, unit, input, dt, context, t)
 
 			self._state = "waiting_for_deletion"
 		end
-	elseif state ~= "waiting_for_deletion" then
+	elseif state == "waiting_for_deletion" then
+		-- Nothing
+	else
 		ferror("Unknown state (%s)", state)
 	end
 end
@@ -115,6 +124,7 @@ TimedExplosionExtension._explode = function (self)
 	local scale = 1
 	local damage_source = explosion_template.damage_source or "undefined"
 	local attacker_power_level = self._power
+
 	self._state = "exploded"
 
 	self._area_damage_system:create_explosion(attacker_unit, position, rotation, explosion_template_name, scale, damage_source, attacker_power_level, false)

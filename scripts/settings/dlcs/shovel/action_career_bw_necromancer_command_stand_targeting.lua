@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/dlcs/shovel/action_career_bw_necromancer_command_stand_targeting.lua
+
 require("scripts/settings/profiles/career_constants")
 
 local target_decal_unit_name = "fx/bw_necromancer_ability_indicator"
@@ -6,84 +8,89 @@ local raycast_speed = 11
 local raycast_gravity = -10
 local right_spacing = 0.55
 local forward_spacing = 0.9
-ActionCareerBwNecromancerCommandStandTargetingUtility = {
-	generate_positions = function (target_center, fp_rotation, num_positions, optional_cached_positions)
-		local navified_spawn_positions = optional_cached_positions or {}
-		local num_per_rank = math.min(num_positions, CareerConstants.bw_necromancer.pets_per_rank)
 
-		if num_per_rank == 0 then
-			table.clear(navified_spawn_positions)
+ActionCareerBwNecromancerCommandStandTargetingUtility = {}
 
-			return navified_spawn_positions
-		end
+ActionCareerBwNecromancerCommandStandTargetingUtility.generate_positions = function (target_center, fp_rotation, num_positions, optional_cached_positions)
+	local navified_spawn_positions = optional_cached_positions or {}
+	local num_per_rank = math.min(num_positions, CareerConstants.bw_necromancer.pets_per_rank)
 
-		local above = 2
-		local below = 2
-		local fp_rotation_flat = Quaternion.axis_angle(Vector3.up(), Quaternion.yaw(fp_rotation))
-		local forward = Quaternion.forward(fp_rotation_flat)
-		local right = Quaternion.right(fp_rotation_flat)
-		local valid_position = nil
-		local ranks = math.ceil(num_positions / num_per_rank)
-
-		for rank_i = 1, ranks do
-			local num_this_rank = math.min(num_positions - (rank_i - 1) * num_per_rank, num_per_rank)
-			local wanted_width = (indicator_radius + right_spacing) * num_this_rank
-			local left_wanted = -right * wanted_width
-			local right_wanted = right * wanted_width
-			local nav_world = Managers.state.entity:system("ai_system"):nav_world()
-			local _, left_bound = GwNavQueries.raycast(nav_world, target_center, target_center + left_wanted)
-			local _, right_bound = GwNavQueries.raycast(nav_world, target_center, target_center + right_wanted)
-			local left_delta = left_bound - target_center
-			local right_delta = right_bound - target_center
-			local left_actual_wanted = left_wanted * 0.5
-			local right_actual_wanted = right_wanted * 0.5
-			local offset_left = Vector3.length_squared(right_delta) < Vector3.length_squared(right_actual_wanted) and right_delta - right_actual_wanted or Vector3.zero()
-			local offset_right = Vector3.length_squared(left_delta) < Vector3.length_squared(left_actual_wanted) and left_delta - left_actual_wanted or Vector3.zero()
-			right_bound = Geometry.closest_point_on_line(target_center + right_actual_wanted + offset_right, left_bound, right_bound)
-			left_bound = Geometry.closest_point_on_line(target_center + left_actual_wanted + offset_left, left_bound, right_bound)
-			local offset = Vector3.length(right_bound - left_bound) / num_this_rank
-
-			for i = 1, num_this_rank do
-				local position = left_bound + right * offset * (i - 0.5) - forward * forward_spacing * (rank_i - 1)
-				local nav_position = LocomotionUtils.pos_on_mesh(nav_world, position, above, below)
-				local idx = (rank_i - 1) * num_per_rank + i
-
-				if not nav_position then
-					local horizontal_tolerance = 3
-					local distance_from_obstacle = 0.5
-					nav_position = GwNavQueries.inside_position_from_outside_position(nav_world, position, above, below, horizontal_tolerance, distance_from_obstacle)
-				end
-
-				if nav_position then
-					navified_spawn_positions[idx] = Vector3Box(nav_position)
-					valid_position = valid_position or nav_position
-				else
-					navified_spawn_positions[idx] = false
-				end
-			end
-		end
-
-		if not valid_position then
-			table.clear(navified_spawn_positions)
-
-			return navified_spawn_positions
-		end
-
-		for i = 1, num_positions do
-			if not navified_spawn_positions[i] then
-				navified_spawn_positions[i] = Vector3Box(valid_position)
-			else
-				valid_position = navified_spawn_positions[i]:unbox()
-			end
-		end
-
-		for i = num_positions + 1, #navified_spawn_positions do
-			navified_spawn_positions[i] = nil
-		end
+	if num_per_rank == 0 then
+		table.clear(navified_spawn_positions)
 
 		return navified_spawn_positions
 	end
-}
+
+	local above = 2
+	local below = 2
+	local fp_rotation_flat = Quaternion.axis_angle(Vector3.up(), Quaternion.yaw(fp_rotation))
+	local forward = Quaternion.forward(fp_rotation_flat)
+	local right = Quaternion.right(fp_rotation_flat)
+	local valid_position
+	local ranks = math.ceil(num_positions / num_per_rank)
+
+	for rank_i = 1, ranks do
+		local num_this_rank = math.min(num_positions - (rank_i - 1) * num_per_rank, num_per_rank)
+		local wanted_width = (indicator_radius + right_spacing) * num_this_rank
+		local left_wanted = -right * wanted_width
+		local right_wanted = right * wanted_width
+		local nav_world = Managers.state.entity:system("ai_system"):nav_world()
+		local _, left_bound = GwNavQueries.raycast(nav_world, target_center, target_center + left_wanted)
+		local _, right_bound = GwNavQueries.raycast(nav_world, target_center, target_center + right_wanted)
+		local left_delta = left_bound - target_center
+		local right_delta = right_bound - target_center
+		local left_actual_wanted = left_wanted * 0.5
+		local right_actual_wanted = right_wanted * 0.5
+		local offset_left = Vector3.length_squared(right_delta) < Vector3.length_squared(right_actual_wanted) and right_delta - right_actual_wanted or Vector3.zero()
+		local offset_right = Vector3.length_squared(left_delta) < Vector3.length_squared(left_actual_wanted) and left_delta - left_actual_wanted or Vector3.zero()
+
+		right_bound = Geometry.closest_point_on_line(target_center + right_actual_wanted + offset_right, left_bound, right_bound)
+		left_bound = Geometry.closest_point_on_line(target_center + left_actual_wanted + offset_left, left_bound, right_bound)
+
+		local offset = Vector3.length(right_bound - left_bound) / num_this_rank
+
+		for i = 1, num_this_rank do
+			local position = left_bound + right * offset * (i - 0.5) - forward * forward_spacing * (rank_i - 1)
+			local nav_position = LocomotionUtils.pos_on_mesh(nav_world, position, above, below)
+			local idx = (rank_i - 1) * num_per_rank + i
+
+			if not nav_position then
+				local horizontal_tolerance = 3
+				local distance_from_obstacle = 0.5
+
+				nav_position = GwNavQueries.inside_position_from_outside_position(nav_world, position, above, below, horizontal_tolerance, distance_from_obstacle)
+			end
+
+			if nav_position then
+				navified_spawn_positions[idx] = Vector3Box(nav_position)
+				valid_position = valid_position or nav_position
+			else
+				navified_spawn_positions[idx] = false
+			end
+		end
+	end
+
+	if not valid_position then
+		table.clear(navified_spawn_positions)
+
+		return navified_spawn_positions
+	end
+
+	for i = 1, num_positions do
+		if not navified_spawn_positions[i] then
+			navified_spawn_positions[i] = Vector3Box(valid_position)
+		else
+			valid_position = navified_spawn_positions[i]:unbox()
+		end
+	end
+
+	for i = num_positions + 1, #navified_spawn_positions do
+		navified_spawn_positions[i] = nil
+	end
+
+	return navified_spawn_positions
+end
+
 ActionCareerBwNecromancerCommandStandTargeting = class(ActionCareerBwNecromancerCommandStandTargeting, ActionBase)
 
 ActionCareerBwNecromancerCommandStandTargeting.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
@@ -116,6 +123,7 @@ ActionCareerBwNecromancerCommandStandTargeting.client_owner_start_action = funct
 	self._controlled_unit_template = new_action.controlled_unit_template
 	self._breed_to_spawn = new_action.breed_to_spawn
 	self._spawn_decal_ids = {}
+
 	local owner_pos = POSITION_LOOKUP[self._owner_unit]
 
 	self._last_valid_spawn_position:store(owner_pos)
@@ -135,6 +143,7 @@ ActionCareerBwNecromancerCommandStandTargeting._update_targeting = function (sel
 	for i = 1, num_positions do
 		local position = spawn_positions[i]
 		local decal_id = decal_ids[i]
+
 		position = position:unbox()
 
 		if not decal_id then
@@ -169,7 +178,7 @@ ActionCareerBwNecromancerCommandStandTargeting._update_spawn_positions = functio
 	end)
 
 	local num_pets = #pet_array
-	local center = nil
+	local center
 	local good_target, target_pos = self:_get_projectile_position(raycast_speed)
 
 	if good_target then
@@ -181,6 +190,7 @@ ActionCareerBwNecromancerCommandStandTargeting._update_spawn_positions = functio
 	end
 
 	local fp_rotation = self._first_person_extension:current_rotation()
+
 	fp_rotation = Quaternion.axis_angle(Vector3.up(), Quaternion.yaw(fp_rotation))
 
 	self._fp_rotation:store(fp_rotation)
@@ -201,13 +211,13 @@ ActionCareerBwNecromancerCommandStandTargeting._get_projectile_position = functi
 
 	if good_target_position then
 		local nav_world = Managers.state.entity:system("ai_system"):nav_world()
-		local above = 1
-		local below = 1
+		local above, below = 1, 1
 		local nav_position = LocomotionUtils.pos_on_mesh(nav_world, target_position, above, below)
 
 		if not nav_position then
 			local horizontal_tolerance = 3
 			local distance_from_obstacle = 0.5
+
 			nav_position = GwNavQueries.inside_position_from_outside_position(nav_world, target_position, above, below, horizontal_tolerance, distance_from_obstacle)
 		end
 
@@ -256,7 +266,7 @@ ActionCareerBwNecromancerCommandStandTargeting.finish = function (self, reason)
 	if reason == "new_interupting_action" then
 		local targeting_data = {
 			target_center = self._last_valid_spawn_position,
-			fp_rotation = self._fp_rotation
+			fp_rotation = self._fp_rotation,
 		}
 
 		return targeting_data

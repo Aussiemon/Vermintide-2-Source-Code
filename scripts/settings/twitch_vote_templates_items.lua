@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/twitch_vote_templates_items.lua
+
 local twitch_settings = TwitchSettings
 
 local function debug_print(message, ...)
@@ -17,15 +19,16 @@ local function default_condition_func(vote_data)
 			true,
 			true,
 			true,
-			true
+			true,
 		}
 
 		for id, player in pairs(players) do
 			local profile_index = player:profile_index()
+
 			unused_indices[profile_index] = nil
 			validation_data[id] = {
 				name = player:name(),
-				option = profile_index
+				option = profile_index,
 			}
 		end
 
@@ -75,7 +78,7 @@ local function add_item(is_server, player_unit, pickup_type)
 			if slot_data and not can_store_additional_item then
 				local item_data = slot_data.item_data
 				local item_template = BackendUtils.get_item_template(item_data)
-				local pickup_item_to_spawn = nil
+				local pickup_item_to_spawn
 
 				if item_template.name == "wpn_side_objective_tome_01" then
 					pickup_item_to_spawn = "tome"
@@ -95,7 +98,7 @@ local function add_item(is_server, player_unit, pickup_type)
 			end
 
 			local item_data = ItemMasterList[item_name]
-			local unit_template = nil
+			local unit_template
 			local extra_extension_init_data = {}
 
 			if can_store_additional_item and slot_data then
@@ -140,13 +143,13 @@ end
 TwitchVoteTemplates = TwitchVoteTemplates or {}
 TwitchVoteTemplates.twitch_give_first_aid_kit = {
 	cost = -100,
-	use_frame_texture = true,
-	texture_id = "twitch_icon_medical_supplies",
 	multiple_choice = true,
 	text = "twitch_give_first_aid_kit_one",
+	texture_id = "twitch_icon_medical_supplies",
+	use_frame_texture = true,
 	texture_size = {
 		70,
-		70
+		70,
 	},
 	condition_func = function ()
 		return not twitch_settings.disable_giving_items and not twitch_settings.disable_positive_votes
@@ -172,17 +175,17 @@ TwitchVoteTemplates.twitch_give_first_aid_kit = {
 				break
 			end
 		end
-	end
+	end,
 }
 TwitchVoteTemplates.twitch_give_healing_draught = {
 	cost = -100,
-	use_frame_texture = true,
-	texture_id = "twitch_icon_healing_draught",
 	multiple_choice = true,
 	text = "twitch_give_healing_draught_one",
+	texture_id = "twitch_icon_healing_draught",
+	use_frame_texture = true,
 	texture_size = {
 		70,
-		70
+		70,
 	},
 	condition_func = function ()
 		return not twitch_settings.disable_giving_items and not twitch_settings.disable_positive_votes
@@ -208,17 +211,17 @@ TwitchVoteTemplates.twitch_give_healing_draught = {
 				break
 			end
 		end
-	end
+	end,
 }
 TwitchVoteTemplates.twitch_give_damage_boost_potion = {
 	cost = -50,
-	use_frame_texture = true,
-	texture_id = "twitch_icon_potion_of_strength",
 	multiple_choice = true,
 	text = "twitch_give_damage_boost_potion_one",
+	texture_id = "twitch_icon_potion_of_strength",
+	use_frame_texture = true,
 	texture_size = {
 		70,
-		70
+		70,
 	},
 	condition_func = function ()
 		return not twitch_settings.disable_giving_items and not twitch_settings.disable_positive_votes
@@ -244,17 +247,17 @@ TwitchVoteTemplates.twitch_give_damage_boost_potion = {
 				break
 			end
 		end
-	end
+	end,
 }
 TwitchVoteTemplates.twitch_give_speed_boost_potion = {
 	cost = -50,
-	use_frame_texture = true,
-	texture_id = "twitch_icon_potion_of_speed",
 	multiple_choice = true,
 	text = "twitch_give_speed_boost_potion_one",
+	texture_id = "twitch_icon_potion_of_speed",
+	use_frame_texture = true,
 	texture_size = {
 		70,
-		70
+		70,
 	},
 	condition_func = function ()
 		return not twitch_settings.disable_giving_items and not twitch_settings.disable_positive_votes
@@ -280,17 +283,17 @@ TwitchVoteTemplates.twitch_give_speed_boost_potion = {
 				break
 			end
 		end
-	end
+	end,
 }
 TwitchVoteTemplates.twitch_give_cooldown_reduction_potion = {
 	cost = -50,
-	use_frame_texture = true,
-	texture_id = "twitch_icon_potion_of_concentration",
 	multiple_choice = true,
 	text = "twitch_give_cooldown_reduction_potion_one",
+	texture_id = "twitch_icon_potion_of_concentration",
+	use_frame_texture = true,
 	texture_size = {
 		70,
-		70
+		70,
 	},
 	condition_func = function ()
 		return not twitch_settings.disable_giving_items and not twitch_settings.disable_positive_votes
@@ -316,17 +319,17 @@ TwitchVoteTemplates.twitch_give_cooldown_reduction_potion = {
 				break
 			end
 		end
-	end
+	end,
 }
 TwitchVoteTemplates.twitch_give_frag_grenade_t1 = {
 	cost = -100,
-	use_frame_texture = true,
-	texture_id = "twitch_icon_bomb",
 	multiple_choice = true,
 	text = "twitch_give_frag_grenade_t1_one",
+	texture_id = "twitch_icon_bomb",
+	use_frame_texture = true,
 	texture_size = {
 		70,
-		70
+		70,
 	},
 	condition_func = function ()
 		return not twitch_settings.disable_giving_items and not twitch_settings.disable_positive_votes
@@ -352,17 +355,17 @@ TwitchVoteTemplates.twitch_give_frag_grenade_t1 = {
 				break
 			end
 		end
-	end
+	end,
 }
 TwitchVoteTemplates.twitch_give_fire_grenade_t1 = {
 	cost = -100,
-	use_frame_texture = true,
-	texture_id = "twitch_icon_incediary_bomb",
 	multiple_choice = true,
 	text = "twitch_give_fire_grenade_t1_one",
+	texture_id = "twitch_icon_incediary_bomb",
+	use_frame_texture = true,
 	texture_size = {
 		70,
-		70
+		70,
 	},
 	condition_func = function ()
 		return not twitch_settings.disable_giving_items and not twitch_settings.disable_positive_votes
@@ -388,5 +391,5 @@ TwitchVoteTemplates.twitch_give_fire_grenade_t1 = {
 				break
 			end
 		end
-	end
+	end,
 }

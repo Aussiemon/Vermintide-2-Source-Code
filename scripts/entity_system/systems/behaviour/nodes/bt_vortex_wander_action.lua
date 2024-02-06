@@ -1,6 +1,9 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_vortex_wander_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTVortexWanderAction = class(BTVortexWanderAction, BTNode)
+
 local position_lookup = POSITION_LOOKUP
 
 BTVortexWanderAction.init = function (self, ...)
@@ -11,6 +14,7 @@ BTVortexWanderAction.name = "BTVortexWanderAction"
 
 BTVortexWanderAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
+
 	blackboard.action = action
 end
 
@@ -33,6 +37,7 @@ BTVortexWanderAction._wander_around = function (self, unit, t, dt, blackboard, v
 	local num_players_inside = vortex_data.num_players_inside
 	local navigation_extension = blackboard.navigation_extension
 	local is_following_path = navigation_extension:is_following_path()
+
 	blackboard.move_state = is_following_path and "moving" or "idle"
 
 	if vortex_template.stop_and_process_player and num_players_inside > 0 and wander_state ~= "standing_still" and wander_state ~= "forced_standing_still" then
@@ -44,7 +49,7 @@ BTVortexWanderAction._wander_around = function (self, unit, t, dt, blackboard, v
 	end
 
 	if wander_state == "wandering" then
-		if navigation_extension:has_reached_destination(0.5) or vortex_data.wander_time < t then
+		if navigation_extension:has_reached_destination(0.5) or t > vortex_data.wander_time then
 			vortex_data.wander_state = "recalc_path"
 		end
 	elseif wander_state == "calculating_path" then
@@ -103,7 +108,7 @@ BTVortexWanderAction._wander_around = function (self, unit, t, dt, blackboard, v
 			vortex_data.wander_state = "no_path_found"
 		end
 	elseif wander_state == "no_path_found" then
-		if vortex_data.idle_time < t then
+		if t > vortex_data.idle_time then
 			vortex_data.wander_state = "recalc_path"
 		end
 	elseif wander_state ~= "standing_still" and wander_state == "forced_standing_still" then

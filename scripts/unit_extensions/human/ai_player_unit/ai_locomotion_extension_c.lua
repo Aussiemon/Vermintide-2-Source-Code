@@ -1,12 +1,18 @@
+﻿-- chunkname: @scripts/unit_extensions/human/ai_player_unit/ai_locomotion_extension_c.lua
+
 require("scripts/helpers/mover_helper")
 
 local LOCOMOTION_GRAVITY = 20
+
 AILocomotionExtensionC = class(AILocomotionExtensionC)
 
 AILocomotionExtensionC.init = function (self, extension_init_context, unit, extension_init_data)
 	self._unit = unit
+
 	local breed = extension_init_data.breed
+
 	self.breed = breed
+
 	local unit_template = Managers.state.unit_spawner.unit_template_lut[breed.unit_template]
 	local go_type = unit_template.go_type
 	local game_object_template = Managers.state.network:game_object_template(go_type)
@@ -15,10 +21,12 @@ AILocomotionExtensionC.init = function (self, extension_init_context, unit, exte
 
 	local breed_run_speed = breed.run_speed
 	local sync_full_rotation = game_object_template.syncs_rotation or false
+
 	self._engine_extension_id = EngineOptimizedExtensions.ai_locomotion_register_extension(unit, LOCOMOTION_GRAVITY, breed_run_speed, sync_full_rotation)
 	self._animation_rotation_scale = 1
 	self._animation_translation_scale_box = Vector3Box(1, 1, 1)
 	self._mover_state = MoverHelper.create_mover_state()
+
 	local collision_actor_name = "c_mover_collision"
 	local has_collision_actor = Unit.actor(unit, collision_actor_name)
 
@@ -59,6 +67,7 @@ AILocomotionExtensionC.unfreeze = function (self, unit)
 	local go_type = unit_template.go_type
 	local game_object_template = Managers.state.network:game_object_template(go_type)
 	local sync_full_rotation = game_object_template.syncs_rotation or false
+
 	self._engine_extension_id = EngineOptimizedExtensions.ai_locomotion_register_extension(unit, LOCOMOTION_GRAVITY, breed_run_speed, sync_full_rotation)
 	self._animation_rotation_scale = 1
 
@@ -104,6 +113,7 @@ AILocomotionExtensionC.set_animation_driven = function (self, is_animation_drive
 	end
 
 	is_affected_by_gravity = is_affected_by_gravity or false
+
 	local r, param1, param2, param3 = EngineOptimizedExtensions.ai_locomotion_set_animation_driven(self._engine_extension_id, is_animation_driven, is_affected_by_gravity, script_driven_rotation, is_on_transport)
 
 	if r == 1 then
@@ -246,10 +256,10 @@ AILocomotionExtensionC.set_check_falling = function (self, state)
 end
 
 local movement_types = {
+	constrained_by_mover = 2,
+	disabled = 3,
 	script_driven = 0,
 	snap_to_navmesh = 1,
-	constrained_by_mover = 2,
-	disabled = 3
 }
 
 AILocomotionExtensionC.set_movement_type = function (self, movement_type, override_mover_move_distance, ignore_forced_mover_kill)

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/imgui/imgui_debug_menu.lua
+
 ImguiDebugMenu = class(ImguiDebugMenu)
 
 local function cmp_setting_name(a, b)
@@ -10,6 +12,7 @@ end
 
 ImguiDebugMenu.init = function (self)
 	self._needle = ""
+
 	local settings = require("scripts/utils/debug_screen_config").settings
 	local settings_by_category = {}
 
@@ -26,7 +29,7 @@ ImguiDebugMenu.init = function (self)
 		table.sort(list, cmp_setting_name)
 		table.insert(self._settings_categories, {
 			name = name,
-			list = list
+			list = list,
 		})
 	end
 
@@ -39,8 +42,7 @@ ImguiDebugMenu.update = function (self)
 	return
 end
 
-local find = string.find
-local lower = string.lower
+local find, lower = string.find, string.lower
 
 local function ifind(h, n)
 	return find(lower(h), lower(n))
@@ -63,6 +65,7 @@ end
 ImguiDebugMenu.draw = function (self)
 	local do_close = Imgui.begin_window("DebugMenu")
 	local needle = Imgui.input_text("Search", self._needle)
+
 	self._needle = needle
 
 	Imgui.begin_child_window("Settings", 0, 0, true)
@@ -70,8 +73,7 @@ ImguiDebugMenu.draw = function (self)
 	local no_matches = true
 
 	for _, sc in pairs(self._settings_categories) do
-		local category = sc.name
-		local setting_list = sc.list
+		local category, setting_list = sc.name, sc.list
 
 		if self:_find_needle_list(setting_list, needle) then
 			no_matches = false
@@ -148,7 +150,7 @@ ImguiDebugMenu._show_debug_setting = function (self, setting)
 	elseif setting.load_items_source_func or setting.item_source then
 		Imgui.same_line()
 
-		local options = nil
+		local options
 
 		if setting.load_items_source_func then
 			options = self._options

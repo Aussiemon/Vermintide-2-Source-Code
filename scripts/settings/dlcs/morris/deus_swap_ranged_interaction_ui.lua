@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/dlcs/morris/deus_swap_ranged_interaction_ui.lua
+
 require("scripts/settings/dlcs/morris/deus_swap_weapon_interaction_ui")
 
 DeusSwapRangedInteractionUI = class(DeusSwapRangedInteractionUI, DeusSwapWeaponInteractionUI)

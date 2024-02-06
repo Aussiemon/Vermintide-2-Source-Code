@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/unit_extensions/generic/thorn_mutator_extension.lua
+
 ThornMutatorExtension = class(ThornMutatorExtension)
+
 local DESPAWN_ANIM_TIME = 1
 
 ThornMutatorExtension.init = function (self, extension_init_context, unit, extension_init_data)
@@ -8,11 +11,15 @@ ThornMutatorExtension.init = function (self, extension_init_context, unit, exten
 	self._life_timer = 0
 	self._is_server = Managers.state.network.is_server
 	self._unit = unit
+
 	local original_scale = Unit.local_scale(unit, 0)
+
 	self._scale_x = original_scale.x
 	self._scale_y = original_scale.y
 	self._scale_z = original_scale.z
+
 	local area_damage_extension = ScriptUnit.extension(unit, "area_damage_system")
+
 	self._area_damage_extension = area_damage_extension
 	self._life_time = area_damage_extension.life_time
 	self._despawning = false
@@ -102,13 +109,14 @@ ThornMutatorExtension.despawn = function (self)
 	Unit.flow_event(self._unit, "despawn")
 
 	self._despawning = true
+
 	local extension = ScriptUnit.extension(self._unit, "area_damage_system")
 
 	extension:enable(false)
 end
 
 ThornMutatorExtension._check_for_deletion = function (self, t)
-	local despawn_done = self._despawn_done_time and self._despawn_done_time < t
+	local despawn_done = self._despawn_done_time and t > self._despawn_done_time
 
 	if despawn_done then
 		Managers.state.unit_spawner:mark_for_deletion(self._unit)

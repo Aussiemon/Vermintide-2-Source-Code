@@ -1,10 +1,14 @@
+﻿-- chunkname: @scripts/unit_extensions/default_player_unit/careers/career_ability_we_maiden_guard.lua
+
 CareerAbilityWEMaidenGuard = class(CareerAbilityWEMaidenGuard)
 
 CareerAbilityWEMaidenGuard.init = function (self, extension_init_context, unit, extension_init_data)
 	self._owner_unit = unit
 	self._world = extension_init_context.world
 	self._wwise_world = Managers.world:wwise_world(self._world)
+
 	local player = extension_init_data.player
+
 	self._player = player
 	self._is_server = player.is_server
 	self._local_player = player.local_player
@@ -84,6 +88,7 @@ CareerAbilityWEMaidenGuard._start_priming = function (self)
 	if self._local_player then
 		local decal_unit_name = self._decal_unit_name
 		local unit_spawner = Managers.state.unit_spawner
+
 		self._decal_unit = unit_spawner:spawn_local_unit(decal_unit_name)
 	end
 
@@ -127,12 +132,12 @@ CareerAbilityWEMaidenGuard._run_ability = function (self)
 	local buff_extension = self._buff_extension
 	local talent_extension = ScriptUnit.extension(owner_unit, "talent_system")
 	local buff_names = {
-		"kerillian_maidenguard_activated_ability"
+		"kerillian_maidenguard_activated_ability",
 	}
 
 	if talent_extension:has_talent("kerillian_maidenguard_activated_ability_invis_duration", "wood_elf", true) then
 		buff_names = {
-			"kerillian_maidenguard_activated_ability_invis_duration"
+			"kerillian_maidenguard_activated_ability_invis_duration",
 		}
 	end
 
@@ -148,7 +153,7 @@ CareerAbilityWEMaidenGuard._run_ability = function (self)
 
 		if is_server then
 			buff_extension:add_buff(buff_name, {
-				attacker_unit = owner_unit
+				attacker_unit = owner_unit,
 			})
 			network_transmit:send_rpc_clients("rpc_add_buff", unit_object_id, buff_template_name_id, unit_object_id, 0, false)
 		else
@@ -194,34 +199,34 @@ CareerAbilityWEMaidenGuard._run_ability = function (self)
 	end
 
 	status_extension.do_lunge = {
-		animation_end_event = "maiden_guard_active_ability_charge_hit",
 		allow_rotation = false,
-		first_person_animation_end_event = "dodge_bwd",
-		first_person_hit_animation_event = "charge_react",
-		falloff_to_speed = 5,
-		dodge = true,
-		first_person_animation_event = "shade_stealth_ability",
-		first_person_animation_end_event_hit = "dodge_bwd",
-		duration = 0.65,
-		initial_speed = 25,
+		animation_end_event = "maiden_guard_active_ability_charge_hit",
 		animation_event = "maiden_guard_active_ability_charge_start",
+		dodge = true,
+		duration = 0.65,
+		falloff_to_speed = 5,
+		first_person_animation_end_event = "dodge_bwd",
+		first_person_animation_end_event_hit = "dodge_bwd",
+		first_person_animation_event = "shade_stealth_ability",
+		first_person_hit_animation_event = "charge_react",
+		initial_speed = 25,
 		damage = {
+			allow_backstab = true,
+			collision_filter = "filter_explosion_overlap_no_player",
 			depth_padding = 0.4,
 			height = 1.8,
-			collision_filter = "filter_explosion_overlap_no_player",
 			hit_zone_hit_name = "full",
 			ignore_shield = true,
-			interrupt_on_max_hit_mass = false,
 			interrupt_on_first_hit = false,
+			interrupt_on_max_hit_mass = false,
 			width = 1.5,
-			allow_backstab = true,
 			damage_profile = damage_profile,
 			power_level_multiplier = bleed and 1 or 0,
 			stagger_angles = {
 				max = 90,
-				min = 90
-			}
-		}
+				min = 90,
+			},
+		},
 	}
 
 	career_extension:start_activated_ability_cooldown()

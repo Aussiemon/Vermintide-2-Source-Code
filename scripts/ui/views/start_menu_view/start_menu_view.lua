@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/start_menu_view/start_menu_view.lua
+
 require("scripts/ui/views/hero_view/item_grid_ui")
 require("scripts/ui/views/character_selection_view/states/character_selection_state_character")
 require("scripts/ui/views/start_menu_view/states/start_menu_state_overview")
@@ -17,6 +19,7 @@ end
 local DO_RELOAD = true
 local debug_draw_scenegraph = false
 local debug_menu = true
+
 StartMenuView = class(StartMenuView)
 
 StartMenuView.init = function (self, ingame_ui_context)
@@ -32,9 +35,13 @@ StartMenuView.init = function (self, ingame_ui_context)
 	self.is_server = ingame_ui_context.is_server
 	self.is_in_inn = ingame_ui_context.is_in_inn
 	self.world_manager = ingame_ui_context.world_manager
+
 	local world = self.world_manager:world("level_world")
+
 	self.wwise_world = Managers.world:wwise_world(world)
+
 	local input_manager = ingame_ui_context.input_manager
+
 	self.input_manager = input_manager
 
 	input_manager:create_input_service("start_menu_view", "IngameMenuKeymaps", "IngameMenuFilters")
@@ -52,8 +59,9 @@ StartMenuView.init = function (self, ingame_ui_context)
 		parent = self,
 		world_previewer = self.world_previewer,
 		settings_by_screen = settings_by_screen,
-		input_service = FAKE_INPUT_SERVICE
+		input_service = FAKE_INPUT_SERVICE,
 	}
+
 	self._state_machine_params = state_machine_params
 	self.units = {}
 	self.attachment_units = {}
@@ -76,6 +84,7 @@ StartMenuView._setup_state_machine = function (self, state_machine_params, optio
 
 	local start_state = optional_start_state or StartMenuStateOverview
 	local profiling_debugging_enabled = false
+
 	state_machine_params.start_state = optional_start_sub_state
 	state_machine_params.state_params = optional_params
 	self._machine = GameStateMachine:new(self, start_state, state_machine_params, profiling_debugging_enabled)
@@ -139,6 +148,7 @@ end
 StartMenuView.show_hero_world = function (self)
 	if not self._draw_menu_world then
 		self._draw_menu_world = true
+
 		local viewport_name = "player_1"
 		local world = Managers.world:world("level_world")
 		local viewport = ScriptWorld.viewport(world, viewport_name)
@@ -150,6 +160,7 @@ end
 StartMenuView.hide_hero_world = function (self)
 	if self._draw_menu_world then
 		self._draw_menu_world = false
+
 		local viewport_name = "player_1"
 		local world = Managers.world:world("level_world")
 		local viewport = ScriptWorld.viewport(world, viewport_name)
@@ -224,7 +235,9 @@ StartMenuView.update = function (self, dt, t)
 	local gamepad_active = input_manager:is_device_active("gamepad")
 	local input_blocked = self:input_blocked()
 	local input_service = input_blocked and not gamepad_active and FAKE_INPUT_SERVICE or input_manager:get_service("start_menu_view")
+
 	self._state_machine_params.input_service = input_service
+
 	local transitioning = self:transitioning()
 
 	self.ui_animator:update(dt)
@@ -257,6 +270,7 @@ StartMenuView.on_enter = function (self, params)
 	input_manager:block_device_except_service("start_menu_view", "gamepad", 1)
 
 	local state_machine_params = self._state_machine_params
+
 	state_machine_params.initial_state = true
 
 	self:create_ui_elements()
@@ -281,8 +295,11 @@ StartMenuView.set_current_hero = function (self, profile_index)
 	local profile_settings = SPProfiles[profile_index]
 	local display_name = profile_settings.display_name
 	local character_name = profile_settings.character_name
+
 	self._hero_name = display_name
+
 	local state_machine_params = self._state_machine_params
+
 	state_machine_params.hero_name = display_name
 end
 
@@ -363,12 +380,12 @@ end
 StartMenuView.requested_screen_change_by_name = function (self, screen_name, sub_screen_name)
 	self._requested_screen_change_data = {
 		screen_name = screen_name,
-		sub_screen_name = sub_screen_name
+		sub_screen_name = sub_screen_name,
 	}
 end
 
 StartMenuView._change_screen_by_name = function (self, screen_name, sub_screen_name, optional_params)
-	local settings, settings_index = nil
+	local settings, settings_index
 
 	for index, screen_settings in ipairs(settings_by_screen) do
 		if screen_settings.name == screen_name then
@@ -516,6 +533,7 @@ StartMenuView.suspend = function (self)
 	self.input_manager:device_unblock_all_services("gamepad", 1)
 
 	self.suspended = true
+
 	local viewport_name = "player_1"
 	local world = Managers.world:world("level_world")
 	local viewport = ScriptWorld.viewport(world, viewport_name)
@@ -609,6 +627,7 @@ StartMenuView.destroy = function (self)
 
 	self.ingame_ui_context = nil
 	self.ui_animator = nil
+
 	local world_name = "level_world"
 	local world_manager = Managers.world
 

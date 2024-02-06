@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/social_wheel/social_wheel_ui_settings.lua
+
 local function fetch_player_from_profile_display_name(wanted_profile_name)
 	local player_manager = Managers.player
 	local players = player_manager:players()
@@ -19,19 +21,22 @@ local function get_pickup_event_text(target_unit, event_settings)
 		local pickup_extension = ScriptUnit.extension(target_unit, "pickup_system")
 		local settings = pickup_extension:get_pickup_settings()
 		local parameters = FrameTable.alloc_table()
-		local event_text_id = nil
+		local event_text_id
 
 		if settings.type == "ammo" then
 			event_text_id = "social_wheel_pickup_item_ammo_event"
 		else
 			event_text_id = "social_wheel_pickup_item_event"
+
 			local item_name = Unit.get_data(target_unit, "interaction_data", "hud_description")
+
 			parameters[#parameters + 1] = item_name
 		end
 
 		local profile_index = callee_player:profile_index()
 		local profile = SPProfiles[profile_index]
 		local display_name_short = profile.ingame_short_display_name
+
 		parameters[#parameters + 1] = display_name_short
 
 		return event_text_id, parameters
@@ -51,6 +56,7 @@ local function get_drop_event_text(target_unit, event_settings)
 		local profile = SPProfiles[profile_index]
 		local display_name_short = profile.ingame_short_display_name
 		local parameters = FrameTable.alloc_table()
+
 		parameters[1] = item_hud_description
 		parameters[2] = display_name_short
 
@@ -159,7 +165,7 @@ SocialWheelPriority = {
 			local ping_type = ping_system:is_ping_response(nil, player:unique_id(), active_context.position:unbox())
 
 			return ping_type == PingTypes.ACKNOWLEDGE
-		end
+		end,
 	},
 	{
 		"cancel",
@@ -172,7 +178,7 @@ SocialWheelPriority = {
 			local ping_type = ping_system:is_ping_response(nil, player:unique_id(), active_context.position:unbox())
 
 			return ping_type == PingTypes.CANCEL
-		end
+		end,
 	},
 	{
 		"item",
@@ -198,7 +204,7 @@ SocialWheelPriority = {
 			end
 
 			return true
-		end
+		end,
 	},
 	{
 		"friendly_hero_player",
@@ -222,76 +228,77 @@ SocialWheelPriority = {
 			local target_side = Managers.state.side.side_by_unit[target_player.player_unit]
 
 			return not Managers.state.side:is_enemy_by_side(player_side, target_side)
-		end
-	}
+		end,
+	},
 }
+
 local unarmed_emotes = {
 	{
-		text = "social_wheel_pose_unarmed_01",
-		name = "social_wheel_general_pose_unarmed_01",
 		icon = "radial_chat_pose_wheel_icon_unarmed",
+		name = "social_wheel_general_pose_unarmed_01",
+		text = "social_wheel_pose_unarmed_01",
 		execute_func = play_emote,
 		data = {
 			anim_event = "anim_pose_unarmed_01",
-			hide_weapons = true
+			hide_weapons = true,
 		},
-		ping_type = PingTypes.LOCAL_ONLY
+		ping_type = PingTypes.LOCAL_ONLY,
 	},
 	{
-		text = "social_wheel_pose_unarmed_02",
-		name = "social_wheel_general_pose_unarmed_02",
 		icon = "radial_chat_pose_wheel_icon_unarmed",
+		name = "social_wheel_general_pose_unarmed_02",
+		text = "social_wheel_pose_unarmed_02",
 		execute_func = play_emote,
 		data = {
 			anim_event = "anim_pose_unarmed_02",
-			hide_weapons = true
+			hide_weapons = true,
 		},
-		ping_type = PingTypes.LOCAL_ONLY
+		ping_type = PingTypes.LOCAL_ONLY,
 	},
 	{
-		text = "social_wheel_pose_unarmed_03",
-		name = "social_wheel_general_pose_unarmed_03",
 		icon = "radial_chat_pose_wheel_icon_unarmed",
+		name = "social_wheel_general_pose_unarmed_03",
+		text = "social_wheel_pose_unarmed_03",
 		execute_func = play_emote,
 		data = {
 			anim_event = "anim_pose_unarmed_03",
-			hide_weapons = true
+			hide_weapons = true,
 		},
-		ping_type = PingTypes.LOCAL_ONLY
+		ping_type = PingTypes.LOCAL_ONLY,
 	},
 	{
-		text = "social_wheel_pose_unarmed_04",
-		name = "social_wheel_general_pose_unarmed_04",
 		icon = "radial_chat_pose_wheel_icon_unarmed",
+		name = "social_wheel_general_pose_unarmed_04",
+		text = "social_wheel_pose_unarmed_04",
 		execute_func = play_emote,
 		data = {
 			anim_event = "anim_pose_unarmed_04",
-			hide_weapons = true
+			hide_weapons = true,
 		},
-		ping_type = PingTypes.LOCAL_ONLY
+		ping_type = PingTypes.LOCAL_ONLY,
 	},
 	{
-		text = "social_wheel_pose_unarmed_05",
-		name = "social_wheel_general_pose_unarmed_05",
 		icon = "radial_chat_pose_wheel_icon_unarmed",
+		name = "social_wheel_general_pose_unarmed_05",
+		text = "social_wheel_pose_unarmed_05",
 		execute_func = play_emote,
 		data = {
 			anim_event = "anim_pose_unarmed_05",
-			hide_weapons = true
+			hide_weapons = true,
 		},
-		ping_type = PingTypes.LOCAL_ONLY
+		ping_type = PingTypes.LOCAL_ONLY,
 	},
 	{
-		text = "social_wheel_pose_unarmed_06",
-		name = "social_wheel_general_pose_unarmed_06",
 		icon = "radial_chat_pose_wheel_icon_unarmed",
+		name = "social_wheel_general_pose_unarmed_06",
+		text = "social_wheel_pose_unarmed_06",
 		execute_func = play_emote,
 		data = {
 			anim_event = "anim_pose_unarmed_06",
-			hide_weapons = true
+			hide_weapons = true,
 		},
-		ping_type = PingTypes.LOCAL_ONLY
-	}
+		ping_type = PingTypes.LOCAL_ONLY,
+	},
 }
 
 local function clone_wheel_settings(settings, unique_name_postfix)
@@ -305,268 +312,269 @@ local function clone_wheel_settings(settings, unique_name_postfix)
 end
 
 local unarmed_emotes_gamepad = clone_wheel_settings(unarmed_emotes, "_gp")
+
 SocialWheelSettings = {
 	general = {
-		{
-			{
-				text = "social_wheel_general_no",
-				event_text = "social_wheel_general_no",
-				name = "social_wheel_general_no",
-				icon = "radial_chat_icon_no",
-				vo_event_name = "vw_negation",
-				data = {},
-				ping_type = PingTypes.DENY
-			},
-			{
-				text = "social_wheel_general_come_here",
-				event_text = "social_wheel_general_come_here",
-				name = "social_wheel_general_come_here",
-				icon = "radial_chat_icon_come_here",
-				vo_event_name = "vw_gather",
-				data = {},
-				ping_type = PingTypes.MOVEMENTY_COME_HERE
-			},
-			{
-				text = "social_wheel_general_patrol",
-				event_text = "social_wheel_general_patrol",
-				name = "social_wheel_general_patrol",
-				icon = "radial_chat_icon_patrol",
-				vo_event_name = "vw_patrol",
-				data = {},
-				ping_type = PingTypes.ENEMY_PATROL
-			},
-			{
-				text = "social_wheel_general_help",
-				event_text = "social_wheel_general_help",
-				name = "social_wheel_general_help",
-				icon = "radial_chat_icon_help",
-				vo_event_name = "vw_help",
-				data = {},
-				ping_type = PingTypes.PLAYER_HELP
-			},
-			{
-				text = "social_wheel_general_boss",
-				event_text = "social_wheel_general_boss",
-				name = "social_wheel_general_boss",
-				icon = "radial_chat_icon_boss",
-				vo_event_name = "vw_boss",
-				data = {},
-				ping_type = PingTypes.ENEMY_BOSS
-			},
-			{
-				text = "social_wheel_general_thank_you",
-				event_text = "social_wheel_general_thank_you",
-				name = "social_wheel_general_thank_you",
-				icon = "radial_chat_icon_thank_you",
-				vo_event_name = "vw_thank_you",
-				data = {},
-				ping_type = PingTypes.PLAYER_THANK_YOU
-			},
-			{
-				text = "social_wheel_general_yes",
-				event_text = "social_wheel_general_yes",
-				name = "social_wheel_general_yes",
-				icon = "radial_chat_icon_yes",
-				vo_event_name = "vw_affirmative",
-				data = {},
-				ping_type = PingTypes.ACKNOWLEDGE
-			}
-		},
-		unarmed_emotes,
-		wedge_adjustment = 0.85,
-		has_pages = true,
-		individual_bg = true,
 		angle = 1.7 * math.pi,
 		size = {
 			500,
-			250
-		}
-	},
-	general_gamepad = {
+			250,
+		},
 		{
 			{
-				text = "social_wheel_general_no",
 				event_text = "social_wheel_general_no",
-				name = "social_wheel_general_no_gp",
 				icon = "radial_chat_icon_no",
-				data = {}
+				name = "social_wheel_general_no",
+				text = "social_wheel_general_no",
+				vo_event_name = "vw_negation",
+				data = {},
+				ping_type = PingTypes.DENY,
 			},
 			{
-				text = "social_wheel_general_come_here",
 				event_text = "social_wheel_general_come_here",
-				name = "social_wheel_general_come_here_gp",
 				icon = "radial_chat_icon_come_here",
-				data = {}
+				name = "social_wheel_general_come_here",
+				text = "social_wheel_general_come_here",
+				vo_event_name = "vw_gather",
+				data = {},
+				ping_type = PingTypes.MOVEMENTY_COME_HERE,
 			},
 			{
-				text = "social_wheel_general_patrol",
 				event_text = "social_wheel_general_patrol",
-				name = "social_wheel_general_patrol_gp",
 				icon = "radial_chat_icon_patrol",
-				data = {}
+				name = "social_wheel_general_patrol",
+				text = "social_wheel_general_patrol",
+				vo_event_name = "vw_patrol",
+				data = {},
+				ping_type = PingTypes.ENEMY_PATROL,
 			},
 			{
-				text = "social_wheel_general_help",
 				event_text = "social_wheel_general_help",
-				name = "social_wheel_general_help_gp",
 				icon = "radial_chat_icon_help",
-				data = {}
+				name = "social_wheel_general_help",
+				text = "social_wheel_general_help",
+				vo_event_name = "vw_help",
+				data = {},
+				ping_type = PingTypes.PLAYER_HELP,
 			},
 			{
-				text = "social_wheel_general_boss",
 				event_text = "social_wheel_general_boss",
-				name = "social_wheel_general_boss_gp",
 				icon = "radial_chat_icon_boss",
-				data = {}
+				name = "social_wheel_general_boss",
+				text = "social_wheel_general_boss",
+				vo_event_name = "vw_boss",
+				data = {},
+				ping_type = PingTypes.ENEMY_BOSS,
 			},
 			{
-				text = "social_wheel_general_thank_you",
 				event_text = "social_wheel_general_thank_you",
-				name = "social_wheel_general_thank_you_gp",
 				icon = "radial_chat_icon_thank_you",
-				data = {}
+				name = "social_wheel_general_thank_you",
+				text = "social_wheel_general_thank_you",
+				vo_event_name = "vw_thank_you",
+				data = {},
+				ping_type = PingTypes.PLAYER_THANK_YOU,
 			},
 			{
-				text = "social_wheel_general_yes",
 				event_text = "social_wheel_general_yes",
-				name = "social_wheel_general_yes_gp",
 				icon = "radial_chat_icon_yes",
-				data = {}
-			}
+				name = "social_wheel_general_yes",
+				text = "social_wheel_general_yes",
+				vo_event_name = "vw_affirmative",
+				data = {},
+				ping_type = PingTypes.ACKNOWLEDGE,
+			},
 		},
-		unarmed_emotes_gamepad,
-		wedge_adjustment = 0.85,
+		unarmed_emotes,
 		has_pages = true,
-		individual_bg = false,
+		individual_bg = true,
+		wedge_adjustment = 0.85,
+	},
+	general_gamepad = {
 		angle = 2 * math.pi,
 		size = {
 			250,
-			250
-		}
+			250,
+		},
+		{
+			{
+				event_text = "social_wheel_general_no",
+				icon = "radial_chat_icon_no",
+				name = "social_wheel_general_no_gp",
+				text = "social_wheel_general_no",
+				data = {},
+			},
+			{
+				event_text = "social_wheel_general_come_here",
+				icon = "radial_chat_icon_come_here",
+				name = "social_wheel_general_come_here_gp",
+				text = "social_wheel_general_come_here",
+				data = {},
+			},
+			{
+				event_text = "social_wheel_general_patrol",
+				icon = "radial_chat_icon_patrol",
+				name = "social_wheel_general_patrol_gp",
+				text = "social_wheel_general_patrol",
+				data = {},
+			},
+			{
+				event_text = "social_wheel_general_help",
+				icon = "radial_chat_icon_help",
+				name = "social_wheel_general_help_gp",
+				text = "social_wheel_general_help",
+				data = {},
+			},
+			{
+				event_text = "social_wheel_general_boss",
+				icon = "radial_chat_icon_boss",
+				name = "social_wheel_general_boss_gp",
+				text = "social_wheel_general_boss",
+				data = {},
+			},
+			{
+				event_text = "social_wheel_general_thank_you",
+				icon = "radial_chat_icon_thank_you",
+				name = "social_wheel_general_thank_you_gp",
+				text = "social_wheel_general_thank_you",
+				data = {},
+			},
+			{
+				event_text = "social_wheel_general_yes",
+				icon = "radial_chat_icon_yes",
+				name = "social_wheel_general_yes_gp",
+				text = "social_wheel_general_yes",
+				data = {},
+			},
+		},
+		unarmed_emotes_gamepad,
+		has_pages = true,
+		individual_bg = false,
+		wedge_adjustment = 0.85,
 	},
 	item = {
-		{
-			text = "witch_hunter_short",
-			name = "social_wheel_item_pick_up_witch_hunter",
-			icon = "radial_chat_icon_saltzpyre",
-			data = "witch_hunter",
-			event_text_func = get_pickup_event_text,
-			execute_func = pickup_item,
-			is_valid_func = is_valid_player_and_target_unit_exclude_local_player,
-			ping_type = PingTypes.PLAYER_PICK_UP
-		},
-		{
-			text = "bright_wizard_short",
-			name = "social_wheel_item_pick_up_bright_wizard",
-			icon = "radial_chat_icon_sienna",
-			data = "bright_wizard",
-			event_text_func = get_pickup_event_text,
-			execute_func = pickup_item,
-			is_valid_func = is_valid_player_and_target_unit_exclude_local_player,
-			ping_type = PingTypes.PLAYER_PICK_UP
-		},
-		{
-			text = "dwarf_ranger_short",
-			name = "social_wheel_item_pick_up_dwarf_ranger",
-			icon = "radial_chat_icon_bardin",
-			data = "dwarf_ranger",
-			event_text_func = get_pickup_event_text,
-			execute_func = pickup_item,
-			is_valid_func = is_valid_player_and_target_unit_exclude_local_player,
-			ping_type = PingTypes.PLAYER_PICK_UP
-		},
-		{
-			text = "wood_elf_short",
-			name = "social_wheel_item_pick_up_wood_elf",
-			icon = "radial_chat_icon_kerillian",
-			data = "wood_elf",
-			event_text_func = get_pickup_event_text,
-			execute_func = pickup_item,
-			is_valid_func = is_valid_player_and_target_unit_exclude_local_player,
-			ping_type = PingTypes.PLAYER_PICK_UP
-		},
-		{
-			text = "empire_soldier_short",
-			name = "social_wheel_item_pick_up_empire_soldier",
-			icon = "radial_chat_icon_kruber",
-			data = "empire_soldier",
-			event_text_func = get_pickup_event_text,
-			execute_func = pickup_item,
-			is_valid_func = is_valid_player_and_target_unit_exclude_local_player,
-			ping_type = PingTypes.PLAYER_PICK_UP
-		},
-		wedge_adjustment = 0.9,
-		ping = true,
 		size = {
 			250,
-			250
+			250,
 		},
-		angle = math.pi * 2
+		angle = math.pi * 2,
+		{
+			data = "witch_hunter",
+			icon = "radial_chat_icon_saltzpyre",
+			name = "social_wheel_item_pick_up_witch_hunter",
+			text = "witch_hunter_short",
+			event_text_func = get_pickup_event_text,
+			execute_func = pickup_item,
+			is_valid_func = is_valid_player_and_target_unit_exclude_local_player,
+			ping_type = PingTypes.PLAYER_PICK_UP,
+		},
+		{
+			data = "bright_wizard",
+			icon = "radial_chat_icon_sienna",
+			name = "social_wheel_item_pick_up_bright_wizard",
+			text = "bright_wizard_short",
+			event_text_func = get_pickup_event_text,
+			execute_func = pickup_item,
+			is_valid_func = is_valid_player_and_target_unit_exclude_local_player,
+			ping_type = PingTypes.PLAYER_PICK_UP,
+		},
+		{
+			data = "dwarf_ranger",
+			icon = "radial_chat_icon_bardin",
+			name = "social_wheel_item_pick_up_dwarf_ranger",
+			text = "dwarf_ranger_short",
+			event_text_func = get_pickup_event_text,
+			execute_func = pickup_item,
+			is_valid_func = is_valid_player_and_target_unit_exclude_local_player,
+			ping_type = PingTypes.PLAYER_PICK_UP,
+		},
+		{
+			data = "wood_elf",
+			icon = "radial_chat_icon_kerillian",
+			name = "social_wheel_item_pick_up_wood_elf",
+			text = "wood_elf_short",
+			event_text_func = get_pickup_event_text,
+			execute_func = pickup_item,
+			is_valid_func = is_valid_player_and_target_unit_exclude_local_player,
+			ping_type = PingTypes.PLAYER_PICK_UP,
+		},
+		{
+			data = "empire_soldier",
+			icon = "radial_chat_icon_kruber",
+			name = "social_wheel_item_pick_up_empire_soldier",
+			text = "empire_soldier_short",
+			event_text_func = get_pickup_event_text,
+			execute_func = pickup_item,
+			is_valid_func = is_valid_player_and_target_unit_exclude_local_player,
+			ping_type = PingTypes.PLAYER_PICK_UP,
+		},
+		ping = true,
+		wedge_adjustment = 0.9,
 	},
 	friendly_hero_player = {
+		size = {
+			250,
+			250,
+		},
+		angle = math.pi,
 		{
-			text = "social_wheel_player_drop_grimoire",
-			name = "social_wheel_player_drop_grimoire",
-			icon = "radial_chat_icon_drop_grimoire",
 			data = "grimoire",
+			icon = "radial_chat_icon_drop_grimoire",
+			name = "social_wheel_player_drop_grimoire",
+			text = "social_wheel_player_drop_grimoire",
 			event_text_func = get_drop_event_text,
 			execute_func = drop_item,
 			is_valid_func = has_item,
-			ping_type = PingTypes.CHAT_ONLY
+			ping_type = PingTypes.CHAT_ONLY,
 		},
-		wedge_adjustment = 1,
 		ping = false,
-		size = {
-			250,
-			250
-		},
-		angle = math.pi
+		wedge_adjustment = 1,
 	},
 	cancel = {
-		{
-			text = "social_wheel_general_cancel",
-			event_text = "social_wheel_general_cancel",
-			name = "cancel_social_wheel_general_cancel",
-			icon = "radial_chat_icon_no",
-			vo_event_name = "vw_cancel",
-			data = {},
-			ping_type = PingTypes.CANCEL
-		},
-		wedge_adjustment = 0.85,
-		individual_bg = true,
 		angle = 1.7 * math.pi,
 		size = {
 			500,
-			250
-		}
+			250,
+		},
+		{
+			event_text = "social_wheel_general_cancel",
+			icon = "radial_chat_icon_no",
+			name = "cancel_social_wheel_general_cancel",
+			text = "social_wheel_general_cancel",
+			vo_event_name = "vw_cancel",
+			data = {},
+			ping_type = PingTypes.CANCEL,
+		},
+		individual_bg = true,
+		wedge_adjustment = 0.85,
 	},
 	response = {
-		{
-			text = "social_wheel_general_no",
-			event_text = "social_wheel_general_no",
-			name = "response_social_wheel_general_no",
-			icon = "radial_chat_icon_no",
-			vo_event_name = "vw_cancel",
-			data = {},
-			ping_type = PingTypes.DENY
-		},
-		{
-			text = "social_wheel_general_yes",
-			event_text = "social_wheel_general_yes",
-			name = "response_social_wheel_general_yes",
-			icon = "radial_chat_icon_yes",
-			vo_event_name = "vw_affirmative",
-			data = {},
-			ping_type = PingTypes.ACKNOWLEDGE
-		},
-		wedge_adjustment = 0.85,
-		individual_bg = true,
 		angle = 1.7 * math.pi,
 		size = {
 			500,
-			250
-		}
-	}
+			250,
+		},
+		{
+			event_text = "social_wheel_general_no",
+			icon = "radial_chat_icon_no",
+			name = "response_social_wheel_general_no",
+			text = "social_wheel_general_no",
+			vo_event_name = "vw_cancel",
+			data = {},
+			ping_type = PingTypes.DENY,
+		},
+		{
+			event_text = "social_wheel_general_yes",
+			icon = "radial_chat_icon_yes",
+			name = "response_social_wheel_general_yes",
+			text = "social_wheel_general_yes",
+			vo_event_name = "vw_affirmative",
+			data = {},
+			ping_type = PingTypes.ACKNOWLEDGE,
+		},
+		individual_bg = true,
+		wedge_adjustment = 0.85,
+	},
 }
 
 DLCUtils.dofile("social_wheel_settings")

@@ -1,10 +1,12 @@
+﻿-- chunkname: @scripts/utils/buff_area_helper.lua
+
 local BuffAreaHelper = BuffAreaHelper or {}
 
 BuffAreaHelper.setup_range_check = function (unit, buff, params, world)
 	buff.range_check = {
 		update_time = 0,
 		units_in_range = {},
-		temp_new_units_in_range = {}
+		temp_new_units_in_range = {},
 	}
 end
 
@@ -15,6 +17,7 @@ BuffAreaHelper.update_range_check = function (unit, buff, params, world)
 
 	if range_check_state.update_time < params.t then
 		range_check_state.update_time = params.t + range_check_template.update_rate
+
 		local radius = buff_template.custom_radius and buff.radius or range_check_template.radius
 		local units_in_range = range_check_state.units_in_range
 		local unit_entered_range_func_name = range_check_template.unit_entered_range_func

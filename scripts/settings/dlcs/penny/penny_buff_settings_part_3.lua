@@ -1,37 +1,40 @@
+﻿-- chunkname: @scripts/settings/dlcs/penny/penny_buff_settings_part_3.lua
+
 local settings = DLCSettings.penny_part_3
 local buff_perks = require("scripts/unit_extensions/default_player_unit/buffs/settings/buff_perk_names")
+
 settings.buff_templates = {
 	enemy_penny_curse_pulse = {
 		buffs = {
 			{
-				update_func = "enemy_penny_curse_pulse",
 				name = "penny_curse_pulse",
 				radius = 3,
-				tick_rate = 0.5
-			}
-		}
+				tick_rate = 0.5,
+				update_func = "enemy_penny_curse_pulse",
+			},
+		},
 	},
 	enemy_penny_curse = {
 		buffs = {
 			{
-				duration = 5,
-				name = "penny_curse",
 				debuff = true,
-				max_stacks = 50,
+				duration = 5,
 				icon = "troll_vomit_debuff",
+				max_stacks = 50,
+				name = "penny_curse",
 				refresh_durations = true,
 				perks = {
-					buff_perks.slayer_curse
-				}
-			}
-		}
-	}
+					buff_perks.slayer_curse,
+				},
+			},
+		},
+	},
 }
 settings.buff_function_templates = {
 	enemy_penny_curse_pulse = function (unit, buff, params, world)
 		local t = params.t
 
-		if Managers.state.network.is_server and HEALTH_ALIVE[unit] and (buff.next_tick == nil or buff.next_tick and buff.next_tick < t) then
+		if Managers.state.network.is_server and HEALTH_ALIVE[unit] and (buff.next_tick == nil or buff.next_tick and t > buff.next_tick) then
 			local buff_system = Managers.state.entity:system("buff_system")
 			local side_manager = Managers.state.side
 			local template = buff.template
@@ -54,5 +57,5 @@ settings.buff_function_templates = {
 				end
 			end
 		end
-	end
+	end,
 }

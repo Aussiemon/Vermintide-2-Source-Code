@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_mount_unit_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTMountUnitAction = class(BTMountUnitAction, BTNode)
@@ -11,7 +13,9 @@ BTMountUnitAction.name = "BTMountUnitAction"
 BTMountUnitAction.enter = function (self, unit, blackboard, t)
 	local network_manager = Managers.state.network
 	local action = self._tree_node.action_data
+
 	blackboard.action = action
+
 	local animation = action.animation or "idle"
 	local optional_spawn_data = blackboard.optional_spawn_data
 
@@ -20,6 +24,7 @@ BTMountUnitAction.enter = function (self, unit, blackboard, t)
 	network_manager:anim_event(unit, animation)
 
 	local mounted_data = blackboard.mounted_data
+
 	blackboard.waiting_for_pickup = nil
 
 	if mounted_data then
@@ -41,6 +46,7 @@ BTMountUnitAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	blackboard.mounting_finished = nil
 	blackboard.should_mount_unit = nil
 	blackboard.goal_destination = nil
+
 	local mounted_data = blackboard.mounted_data
 
 	if mounted_data then
@@ -62,9 +68,11 @@ BTMountUnitAction.run = function (self, unit, blackboard, t, dt)
 
 			if HEALTH_ALIVE[mount_unit] then
 				local mount_blackboard = BLACKBOARDS[mount_unit]
+
 				mount_blackboard.mounting_finished = true
 				mount_blackboard.linked_unit = unit
 				blackboard.hp_at_knocked_off = nil
+
 				local game = Managers.state.network:game()
 				local go_id = Managers.state.unit_storage:go_id(mount_unit)
 				local target_go_id = Managers.state.unit_storage:go_id(unit)

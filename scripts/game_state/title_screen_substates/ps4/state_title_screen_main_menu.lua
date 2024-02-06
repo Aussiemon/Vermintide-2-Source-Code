@@ -1,21 +1,24 @@
+﻿-- chunkname: @scripts/game_state/title_screen_substates/ps4/state_title_screen_main_menu.lua
+
 require("scripts/ui/views/additional_content/additional_content_view")
 
 StateTitleScreenMainMenu = class(StateTitleScreenMainMenu)
 StateTitleScreenMainMenu.NAME = "StateTitleScreenMainMenu"
+
 local game_types = {
 	HOST_PLAY_TOGETHER = "host_play_together",
 	INVITATION = "invitation",
 	OFFLINE = "offline",
-	ONLINE = "online"
+	ONLINE = "online",
 }
-local menu_functions = nil
+local menu_functions
 
 if script_data.honduras_demo then
 	menu_functions = {
 		function (this)
 			this:_start_game(game_types.ONLINE, DemoSettings.demo_level)
 			Managers.music:trigger_event("Play_console_menu_start_game")
-		end
+		end,
 	}
 elseif script_data.settings.use_beta_mode then
 	if script_data.settings.disable_tutorial_at_start then
@@ -39,7 +42,7 @@ elseif script_data.settings.use_beta_mode then
 				this:activate_view("credits_view")
 				this._title_start_ui:menu_option_activated(true)
 				Managers.music:trigger_event("Play_console_menu_select")
-			end
+			end,
 		}
 	else
 		menu_functions = {
@@ -69,7 +72,7 @@ elseif script_data.settings.use_beta_mode then
 				this:activate_view("credits_view")
 				this._title_start_ui:menu_option_activated(true)
 				Managers.music:trigger_event("Play_console_menu_select")
-			end
+			end,
 		}
 	end
 elseif GameSettingsDevelopment.additional_content_view_enabled then
@@ -115,7 +118,7 @@ elseif GameSettingsDevelopment.additional_content_view_enabled then
 			this:activate_view("credits_view")
 			this._title_start_ui:menu_option_activated(true)
 			Managers.music:trigger_event("Play_console_menu_select")
-		end
+		end,
 	}
 else
 	menu_functions = {
@@ -145,7 +148,7 @@ else
 			this:activate_view("credits_view")
 			this._title_start_ui:menu_option_activated(true)
 			Managers.music:trigger_event("Play_console_menu_select")
-		end
+		end,
 	}
 end
 
@@ -182,13 +185,14 @@ StateTitleScreenMainMenu.on_enter = function (self, params)
 
 	Managers.transition:hide_loading_icon()
 
-	self._network_event_meta_table = {
-		__index = function (event_table, event_key)
-			return function ()
-				Application.warning("Got RPC %s during forced network update when exiting StateTitleScreenMain", event_key)
-			end
+	self._network_event_meta_table = {}
+
+	self._network_event_meta_table.__index = function (event_table, event_key)
+		return function ()
+			Application.warning("Got RPC %s during forced network update when exiting StateTitleScreenMain", event_key)
 		end
-	}
+	end
+
 	self._is_installed = Managers.play_go:installed()
 
 	if not self._is_installed then
@@ -222,12 +226,13 @@ end
 StateTitleScreenMainMenu._setup_sound = function (self)
 	local master_bus_volume = Application.user_setting("master_bus_volume") or 90
 	local music_bus_volume = Application.user_setting("music_bus_volume") or 90
-	local wwise_world = nil
+	local wwise_world
 
 	if GLOBAL_MUSIC_WORLD then
 		wwise_world = MUSIC_WWISE_WORLD
 	else
 		local music_world = Managers.world:world("music_world")
+
 		wwise_world = Managers.world:wwise_world(music_world)
 	end
 
@@ -247,6 +252,7 @@ end
 
 StateTitleScreenMainMenu._setup_input = function (self)
 	local input_manager = Managers.input
+
 	self.input_manager = input_manager
 end
 
@@ -256,7 +262,7 @@ StateTitleScreenMainMenu._init_menu_views = function (self)
 		ui_renderer = ui_renderer,
 		ui_top_renderer = ui_renderer,
 		input_manager = Managers.input,
-		world_manager = Managers.world
+		world_manager = Managers.world,
 	}
 
 	if script_data.honduras_demo then
@@ -268,7 +274,7 @@ StateTitleScreenMainMenu._init_menu_views = function (self)
 			credits_view = CreditsView:new(view_context),
 			options_view = OptionsView:new(view_context),
 			cinematics_view = CinematicsView:new(view_context),
-			additional_content_view = not script_data.settings.use_beta_mode and GameSettingsDevelopment.additional_content_view_enabled and AdditionalContentView:new(view_context) or nil
+			additional_content_view = not script_data.settings.use_beta_mode and GameSettingsDevelopment.additional_content_view_enabled and AdditionalContentView:new(view_context) or nil,
 		}
 	end
 
@@ -594,7 +600,9 @@ StateTitleScreenMainMenu.cb_fade_in_done = function (self)
 	end
 
 	self.parent.state = StateLoading
+
 	local loading_context = self.parent.parent.loading_context
+
 	loading_context.restart_network = true
 	loading_context.level_key = level_key
 
@@ -629,6 +637,7 @@ end
 
 StateTitleScreenMainMenu.activate_view = function (self, new_view)
 	self._active_view = new_view
+
 	local views = self._views
 
 	assert(views[new_view])
@@ -649,6 +658,7 @@ StateTitleScreenMainMenu.exit_current_view = function (self)
 	end
 
 	self._active_view = nil
+
 	local input_manager = Managers.input
 
 	input_manager:block_device_except_service("main_menu", "gamepad")
@@ -749,7 +759,7 @@ StateTitleScreenMainMenu._update_ps_plus_dialog = function (self)
 
 		if result == true then
 			Managers.account:refetch_restriction_access(nil, {
-				"playstation_plus"
+				"playstation_plus",
 			})
 
 			self._state = "check_restrictions_ps_plus"
@@ -797,6 +807,7 @@ StateTitleScreenMainMenu._signin_to_backend = function (self)
 	local mechanism_settings = MechanismSettings[mechanism_name]
 	local playfab_mirror = mechanism_settings and mechanism_settings.playfab_mirror
 	local mirror = playfab_mirror or "PlayFabMirrorAdventure"
+
 	Managers.unlock = UnlockManager:new()
 
 	if self._game_type == game_types.OFFLINE then
@@ -807,6 +818,7 @@ StateTitleScreenMainMenu._signin_to_backend = function (self)
 			require("scripts/managers/rest_transport_offline/rest_transport_manager_offline")
 
 			local offline_backend = require("scripts/managers/rest_transport_offline/offline_backend_playfab")
+
 			Managers.rest_transport_offline = RestTransportManagerOffline:new(offline_backend.endpoints)
 		end
 
@@ -839,5 +851,9 @@ StateTitleScreenMainMenu._waiting_for_backend_signin = function (self)
 		Managers.transition:fade_in(GameSettings.transition_fade_out_speed, callback(self, "cb_fade_in_done"))
 
 		self._state = "none"
+	end
+
+	if false then
+		-- Nothing
 	end
 end

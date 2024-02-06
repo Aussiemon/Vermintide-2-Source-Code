@@ -1,3 +1,5 @@
+﻿-- chunkname: @dialogues/generated/dlc_woods.lua
+
 return function ()
 	define_rule({
 		name = "pbw_woods_conversation_twentyeight_01",
@@ -7,28 +9,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwh_woods_conversation_twentyeight_01"
+				"pwh_woods_conversation_twentyeight_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
-			}
+				"bright_wizard",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_woods_conversation_twentyfive_01",
@@ -38,59 +40,59 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				0
+				0,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"bright_wizard"
+				"bright_wizard",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
+				"bright_wizard",
 			},
 			{
 				"global_context",
 				"we_thornsister",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				60
+				60,
 			},
 			{
 				"faction_memory",
 				"woods_conversation_twentyfive",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"woods_conversation_twentyfive",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_woods_conversation_twentyfive_02",
@@ -100,28 +102,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwe_st_woods_conversation_twentyfive_01"
+				"pwe_st_woods_conversation_twentyfive_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
-			}
+				"bright_wizard",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_woods_conversation_twentyfour_01",
@@ -131,59 +133,59 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				0
+				0,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"bright_wizard"
+				"bright_wizard",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
+				"bright_wizard",
 			},
 			{
 				"global_context",
 				"we_thornsister",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				60
+				60,
 			},
 			{
 				"faction_memory",
 				"woods_conversation_twentyfour",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"woods_conversation_twentyfour",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_woods_conversation_twentyfour_02",
@@ -193,28 +195,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwe_st_woods_conversation_twentyfour_01"
+				"pwe_st_woods_conversation_twentyfour_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
-			}
+				"bright_wizard",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_woods_conversation_twentynine_01",
@@ -224,28 +226,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwh_woods_conversation_twentynine_01"
+				"pwh_woods_conversation_twentynine_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
-			}
+				"bright_wizard",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_woods_conversation_twentyone_01",
@@ -255,59 +257,59 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				0
+				0,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"bright_wizard"
+				"bright_wizard",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
+				"bright_wizard",
 			},
 			{
 				"global_context",
 				"we_thornsister",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				60
+				60,
 			},
 			{
 				"faction_memory",
 				"woods_conversation_twentyone",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"woods_conversation_twentyone",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_woods_conversation_twentyone_02",
@@ -317,28 +319,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwe_st_woods_conversation_twentyone_01"
+				"pwe_st_woods_conversation_twentyone_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
-			}
+				"bright_wizard",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_woods_conversation_twentyseven_01",
@@ -348,28 +350,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwh_woods_conversation_twentyseven_01"
+				"pwh_woods_conversation_twentyseven_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
-			}
+				"bright_wizard",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_woods_conversation_twentysix_01",
@@ -379,71 +381,71 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				2
+				2,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"bright_wizard"
+				"bright_wizard",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
+				"bright_wizard",
 			},
 			{
 				"global_context",
 				"witch_hunter",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"global_context",
 				"empire_soldier",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"global_context",
 				"dwarf_ranger",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				60
+				60,
 			},
 			{
 				"faction_memory",
 				"woods_conversation_no_elf",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"woods_conversation_no_elf",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_woods_conversation_twentythree_01",
@@ -453,59 +455,59 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				0
+				0,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"bright_wizard"
+				"bright_wizard",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
+				"bright_wizard",
 			},
 			{
 				"global_context",
 				"we_thornsister",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				60
+				60,
 			},
 			{
 				"faction_memory",
 				"woods_conversation_twentythree",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"woods_conversation_twentythree",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_woods_conversation_twentythree_02",
@@ -515,28 +517,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwe_st_woods_conversation_twentythree_01"
+				"pwe_st_woods_conversation_twentythree_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
-			}
+				"bright_wizard",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_woods_conversation_twentythree_03",
@@ -546,28 +548,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwe_st_woods_conversation_twentythree_02"
+				"pwe_st_woods_conversation_twentythree_02",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
-			}
+				"bright_wizard",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_woods_conversation_twentytwo_01",
@@ -577,59 +579,59 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				0
+				0,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"bright_wizard"
+				"bright_wizard",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
+				"bright_wizard",
 			},
 			{
 				"global_context",
 				"we_thornsister",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				60
+				60,
 			},
 			{
 				"faction_memory",
 				"woods_conversation_twentytwo",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"woods_conversation_twentytwo",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_woods_conversation_twentytwo_02",
@@ -639,28 +641,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwe_st_woods_conversation_twentytwo_01"
+				"pwe_st_woods_conversation_twentytwo_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
-			}
+				"bright_wizard",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pdr_de_woods_conversation_four_01",
@@ -670,65 +672,65 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				0
+				0,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"dwarf_ranger"
+				"dwarf_ranger",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"dwarf_ranger"
+				"dwarf_ranger",
 			},
 			{
 				"user_context",
 				"player_career",
 				OP.EQ,
-				"dr_engineer"
+				"dr_engineer",
 			},
 			{
 				"global_context",
 				"we_thornsister",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				60
+				60,
 			},
 			{
 				"faction_memory",
 				"woods_conversation_four",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"woods_conversation_four",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pdr_de_woods_conversation_four_02",
@@ -738,28 +740,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwe_st_woods_conversation_four_01"
+				"pwe_st_woods_conversation_four_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"dwarf_ranger"
-			}
+				"dwarf_ranger",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pdr_de_woods_conversation_four_03",
@@ -769,28 +771,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwe_st_woods_conversation_four_02"
+				"pwe_st_woods_conversation_four_02",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"dwarf_ranger"
-			}
+				"dwarf_ranger",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pdr_de_woods_conversation_three_01",
@@ -800,65 +802,65 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				0
+				0,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"dwarf_ranger"
+				"dwarf_ranger",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"dwarf_ranger"
+				"dwarf_ranger",
 			},
 			{
 				"user_context",
 				"player_career",
 				OP.EQ,
-				"dr_engineer"
+				"dr_engineer",
 			},
 			{
 				"global_context",
 				"we_thornsister",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				60
+				60,
 			},
 			{
 				"faction_memory",
 				"woods_conversation_three",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"woods_conversation_three",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pdr_de_woods_conversation_three_02",
@@ -868,28 +870,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwe_st_woods_conversation_three_01"
+				"pwe_st_woods_conversation_three_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"dwarf_ranger"
-			}
+				"dwarf_ranger",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pdr_woods_conversation_eleven_01",
@@ -899,59 +901,59 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				0
+				0,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"dwarf_ranger"
+				"dwarf_ranger",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"dwarf_ranger"
+				"dwarf_ranger",
 			},
 			{
 				"global_context",
 				"we_thornsister",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				60
+				60,
 			},
 			{
 				"faction_memory",
 				"woods_conversation_eleven",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"woods_conversation_eleven",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pdr_woods_conversation_eleven_02",
@@ -961,28 +963,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwe_st_woods_conversation_eleven_01"
+				"pwe_st_woods_conversation_eleven_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"dwarf_ranger"
-			}
+				"dwarf_ranger",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pdr_woods_conversation_eleven_03",
@@ -992,28 +994,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwe_st_woods_conversation_eleven_02"
+				"pwe_st_woods_conversation_eleven_02",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"dwarf_ranger"
-			}
+				"dwarf_ranger",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pdr_woods_conversation_fifteen_01",
@@ -1023,59 +1025,59 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				0
+				0,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"dwarf_ranger"
+				"dwarf_ranger",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"dwarf_ranger"
+				"dwarf_ranger",
 			},
 			{
 				"global_context",
 				"we_thornsister",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				60
+				60,
 			},
 			{
 				"faction_memory",
 				"woods_conversation_fifteen",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"woods_conversation_fifteen",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pdr_woods_conversation_fifteen_02",
@@ -1085,28 +1087,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwe_st_woods_conversation_fifteen_01"
+				"pwe_st_woods_conversation_fifteen_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"dwarf_ranger"
-			}
+				"dwarf_ranger",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pdr_woods_conversation_fourteen_01",
@@ -1116,28 +1118,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwe_st_woods_conversation_fourteen_01"
+				"pwe_st_woods_conversation_fourteen_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"dwarf_ranger"
-			}
+				"dwarf_ranger",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pdr_woods_conversation_fourteen_02",
@@ -1147,28 +1149,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwe_st_woods_conversation_fourteen_02"
+				"pwe_st_woods_conversation_fourteen_02",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"dwarf_ranger"
-			}
+				"dwarf_ranger",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pdr_woods_conversation_nine_01",
@@ -1178,59 +1180,59 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				0
+				0,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"dwarf_ranger"
+				"dwarf_ranger",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"dwarf_ranger"
+				"dwarf_ranger",
 			},
 			{
 				"global_context",
 				"we_thornsister",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				60
+				60,
 			},
 			{
 				"faction_memory",
 				"woods_conversation_nine",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"woods_conversation_nine",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pdr_woods_conversation_nine_02",
@@ -1240,28 +1242,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwe_st_woods_conversation_nine_01"
+				"pwe_st_woods_conversation_nine_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"dwarf_ranger"
-			}
+				"dwarf_ranger",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pdr_woods_conversation_ten_01",
@@ -1271,59 +1273,59 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				0
+				0,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"dwarf_ranger"
+				"dwarf_ranger",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"dwarf_ranger"
+				"dwarf_ranger",
 			},
 			{
 				"global_context",
 				"we_thornsister",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				60
+				60,
 			},
 			{
 				"faction_memory",
 				"woods_conversation_ten",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"woods_conversation_ten",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pdr_woods_conversation_ten_02",
@@ -1333,28 +1335,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwe_st_woods_conversation_ten_01"
+				"pwe_st_woods_conversation_ten_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"dwarf_ranger"
-			}
+				"dwarf_ranger",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pdr_woods_conversation_thirteen_01",
@@ -1364,28 +1366,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwe_st_woods_conversation_thirteen_01"
+				"pwe_st_woods_conversation_thirteen_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"dwarf_ranger"
-			}
+				"dwarf_ranger",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pdr_woods_conversation_twelve_01",
@@ -1395,59 +1397,59 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				0
+				0,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"dwarf_ranger"
+				"dwarf_ranger",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"dwarf_ranger"
+				"dwarf_ranger",
 			},
 			{
 				"global_context",
 				"we_thornsister",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				60
+				60,
 			},
 			{
 				"faction_memory",
 				"woods_conversation_twelve",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"woods_conversation_twelve",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pdr_woods_conversation_twelve_02",
@@ -1457,28 +1459,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwe_st_woods_conversation_twelve_01"
+				"pwe_st_woods_conversation_twelve_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"dwarf_ranger"
-			}
+				"dwarf_ranger",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pdr_woods_conversation_twelve_03",
@@ -1488,28 +1490,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwe_st_woods_conversation_twelve_02"
+				"pwe_st_woods_conversation_twelve_02",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"dwarf_ranger"
-			}
+				"dwarf_ranger",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pdr_woods_conversation_twentyeight_01",
@@ -1519,28 +1521,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pbw_woods_conversation_twentyeight_01"
+				"pbw_woods_conversation_twentyeight_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"dwarf_ranger"
-			}
+				"dwarf_ranger",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pdr_woods_conversation_twentynine_01",
@@ -1550,28 +1552,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pes_woods_conversation_twentynine_01"
+				"pes_woods_conversation_twentynine_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"dwarf_ranger"
-			}
+				"dwarf_ranger",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pdr_woods_conversation_twentyseven_01",
@@ -1581,71 +1583,71 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				2
+				2,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"dwarf_ranger"
+				"dwarf_ranger",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"dwarf_ranger"
+				"dwarf_ranger",
 			},
 			{
 				"global_context",
 				"witch_hunter",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"global_context",
 				"empire_soldier",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"global_context",
 				"bright_wizard",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				60
+				60,
 			},
 			{
 				"faction_memory",
 				"woods_conversation_no_elf",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"woods_conversation_no_elf",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pdr_woods_conversation_twentysix_01",
@@ -1655,28 +1657,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pes_woods_conversation_twentysix_01"
+				"pes_woods_conversation_twentysix_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"dwarf_ranger"
-			}
+				"dwarf_ranger",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_gk_woods_conversation_one_01",
@@ -1686,65 +1688,65 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				0
+				0,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"user_context",
 				"player_career",
 				OP.EQ,
-				"es_questingknight"
+				"es_questingknight",
 			},
 			{
 				"global_context",
 				"we_thornsister",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				60
+				60,
 			},
 			{
 				"faction_memory",
 				"woods_conversation_one",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"woods_conversation_one",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_gk_woods_conversation_one_02",
@@ -1754,28 +1756,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwe_st_woods_conversation_one_01"
+				"pwe_st_woods_conversation_one_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
-			}
+				"empire_soldier",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_gk_woods_conversation_two_01",
@@ -1785,65 +1787,65 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				0
+				0,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"user_context",
 				"player_career",
 				OP.EQ,
-				"es_questingknight"
+				"es_questingknight",
 			},
 			{
 				"global_context",
 				"we_thornsister",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				60
+				60,
 			},
 			{
 				"faction_memory",
 				"woods_conversation_two",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"woods_conversation_two",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_gk_woods_conversation_two_02",
@@ -1853,28 +1855,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwe_st_woods_conversation_two_01"
+				"pwe_st_woods_conversation_two_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
-			}
+				"empire_soldier",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_woods_conversation_eight_01",
@@ -1884,59 +1886,59 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				0
+				0,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"global_context",
 				"we_thornsister",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				60
+				60,
 			},
 			{
 				"faction_memory",
 				"woods_conversation_eight",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"woods_conversation_eight",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_woods_conversation_eight_02",
@@ -1946,28 +1948,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwe_st_woods_conversation_eight_01"
+				"pwe_st_woods_conversation_eight_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
-			}
+				"empire_soldier",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_woods_conversation_eight_03",
@@ -1977,28 +1979,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwe_st_woods_conversation_eight_02"
+				"pwe_st_woods_conversation_eight_02",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
-			}
+				"empire_soldier",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_woods_conversation_five_01",
@@ -2008,59 +2010,59 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				0
+				0,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"global_context",
 				"we_thornsister",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				60
+				60,
 			},
 			{
 				"faction_memory",
 				"woods_conversation_five",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"woods_conversation_five",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_woods_conversation_five_02",
@@ -2070,28 +2072,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwe_st_woods_conversation_five_01"
+				"pwe_st_woods_conversation_five_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
-			}
+				"empire_soldier",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_woods_conversation_seven_01",
@@ -2101,59 +2103,59 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				0
+				0,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"global_context",
 				"we_thornsister",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				60
+				60,
 			},
 			{
 				"faction_memory",
 				"woods_conversation_seven",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"woods_conversation_seven",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_woods_conversation_seven_02",
@@ -2163,28 +2165,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwe_st_woods_conversation_seven_01"
+				"pwe_st_woods_conversation_seven_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
-			}
+				"empire_soldier",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_woods_conversation_six_01",
@@ -2194,59 +2196,59 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				0
+				0,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"global_context",
 				"we_thornsister",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				60
+				60,
 			},
 			{
 				"faction_memory",
 				"woods_conversation_six",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"woods_conversation_six",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_woods_conversation_six_02",
@@ -2256,28 +2258,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwe_st_woods_conversation_six_01"
+				"pwe_st_woods_conversation_six_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
-			}
+				"empire_soldier",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_woods_conversation_six_03",
@@ -2287,28 +2289,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwe_st_woods_conversation_six_02"
+				"pwe_st_woods_conversation_six_02",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
-			}
+				"empire_soldier",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_woods_conversation_twentyeight_01",
@@ -2318,71 +2320,71 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				2
+				2,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"global_context",
 				"witch_hunter",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"global_context",
 				"bright_wizard",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"global_context",
 				"dwarf_ranger",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				60
+				60,
 			},
 			{
 				"faction_memory",
 				"woods_conversation_no_elf",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"woods_conversation_no_elf",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_woods_conversation_twentyeight_02",
@@ -2392,28 +2394,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pdr_woods_conversation_twentyeight_01"
+				"pdr_woods_conversation_twentyeight_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
-			}
+				"empire_soldier",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_woods_conversation_twentynine_01",
@@ -2423,28 +2425,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwh_woods_conversation_twentynine_02"
+				"pwh_woods_conversation_twentynine_02",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
-			}
+				"empire_soldier",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_woods_conversation_twentyseven_01",
@@ -2454,28 +2456,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pdr_woods_conversation_twentyseven_01"
+				"pdr_woods_conversation_twentyseven_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
-			}
+				"empire_soldier",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_woods_conversation_twentysix_01",
@@ -2485,28 +2487,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwh_woods_conversation_twentysix_01"
+				"pwh_woods_conversation_twentysix_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
-			}
+				"empire_soldier",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_st_lullaby_full",
@@ -2516,35 +2518,35 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"distant_voices"
+				"distant_voices",
 			},
 			{
 				"global_context",
 				"wood_elf",
 				OP.EQ,
-				0
+				0,
 			},
 			{
 				"global_context",
 				"level_time",
 				OP.GT,
-				1500
+				1500,
 			},
 			{
 				"user_memory",
 				"pwe_st_lullaby_full",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"user_memory",
 				"pwe_st_lullaby_full",
 				OP.ADD,
-				1
-			}
-		}
+				1,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_st_woods_conversation_eight_01",
@@ -2554,28 +2556,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pes_woods_conversation_eight_01"
+				"pes_woods_conversation_eight_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_st_woods_conversation_eight_02",
@@ -2585,28 +2587,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pes_woods_conversation_eight_02"
+				"pes_woods_conversation_eight_02",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_st_woods_conversation_eight_03",
@@ -2616,28 +2618,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pes_woods_conversation_eight_03"
+				"pes_woods_conversation_eight_03",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_st_woods_conversation_eighteen_01",
@@ -2647,28 +2649,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwh_woods_conversation_eighteen_01"
+				"pwh_woods_conversation_eighteen_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_st_woods_conversation_eighteen_02",
@@ -2678,28 +2680,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwh_woods_conversation_eighteen_02"
+				"pwh_woods_conversation_eighteen_02",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_st_woods_conversation_eleven_01",
@@ -2709,28 +2711,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pdr_woods_conversation_eleven_01"
+				"pdr_woods_conversation_eleven_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_st_woods_conversation_eleven_02",
@@ -2740,28 +2742,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pdr_woods_conversation_eleven_02"
+				"pdr_woods_conversation_eleven_02",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_st_woods_conversation_eleven_03",
@@ -2771,28 +2773,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pdr_woods_conversation_eleven_03"
+				"pdr_woods_conversation_eleven_03",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_st_woods_conversation_fifteen_01",
@@ -2802,28 +2804,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pdr_woods_conversation_fifteen_01"
+				"pdr_woods_conversation_fifteen_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_st_woods_conversation_fifteen_02",
@@ -2833,28 +2835,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pdr_woods_conversation_fifteen_02"
+				"pdr_woods_conversation_fifteen_02",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_st_woods_conversation_five_01",
@@ -2864,28 +2866,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pes_woods_conversation_five_01"
+				"pes_woods_conversation_five_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_st_woods_conversation_five_02",
@@ -2895,28 +2897,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pes_woods_conversation_five_02"
+				"pes_woods_conversation_five_02",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_st_woods_conversation_four_01",
@@ -2926,28 +2928,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pdr_de_woods_conversation_four_01"
+				"pdr_de_woods_conversation_four_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_st_woods_conversation_four_02",
@@ -2957,28 +2959,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pdr_de_woods_conversation_four_02"
+				"pdr_de_woods_conversation_four_02",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_st_woods_conversation_fourteen_01",
@@ -2988,65 +2990,65 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				0
+				0,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"wood_elf"
+				"wood_elf",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
+				"wood_elf",
 			},
 			{
 				"user_context",
 				"player_career",
 				OP.EQ,
-				"we_thornsister"
+				"we_thornsister",
 			},
 			{
 				"global_context",
 				"dwarf_ranger",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				60
+				60,
 			},
 			{
 				"faction_memory",
 				"woods_conversation_fourteen",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"woods_conversation_fourteen",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_st_woods_conversation_fourteen_02",
@@ -3056,28 +3058,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pdr_woods_conversation_fourteen_01"
+				"pdr_woods_conversation_fourteen_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_st_woods_conversation_nine_01",
@@ -3087,28 +3089,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pdr_woods_conversation_nine_01"
+				"pdr_woods_conversation_nine_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_st_woods_conversation_nine_02",
@@ -3118,28 +3120,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pdr_woods_conversation_nine_02"
+				"pdr_woods_conversation_nine_02",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_st_woods_conversation_nineteen_01",
@@ -3149,28 +3151,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwh_woods_conversation_nineteen_01"
+				"pwh_woods_conversation_nineteen_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_st_woods_conversation_nineteen_02",
@@ -3180,28 +3182,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwh_woods_conversation_nineteen_02"
+				"pwh_woods_conversation_nineteen_02",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_st_woods_conversation_one_01",
@@ -3211,28 +3213,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pes_gk_woods_conversation_one_01"
+				"pes_gk_woods_conversation_one_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_st_woods_conversation_one_02",
@@ -3242,28 +3244,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pes_gk_woods_conversation_one_02"
+				"pes_gk_woods_conversation_one_02",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_st_woods_conversation_seven_01",
@@ -3273,28 +3275,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pes_woods_conversation_seven_01"
+				"pes_woods_conversation_seven_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_st_woods_conversation_seven_02",
@@ -3304,28 +3306,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pes_woods_conversation_seven_02"
+				"pes_woods_conversation_seven_02",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_st_woods_conversation_seventeen_01",
@@ -3335,28 +3337,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwh_woods_conversation_seventeen_01"
+				"pwh_woods_conversation_seventeen_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_st_woods_conversation_seventeen_02",
@@ -3366,28 +3368,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwh_woods_conversation_seventeen_02"
+				"pwh_woods_conversation_seventeen_02",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_st_woods_conversation_six_01",
@@ -3397,28 +3399,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pes_woods_conversation_six_01"
+				"pes_woods_conversation_six_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_st_woods_conversation_six_02",
@@ -3428,28 +3430,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pes_woods_conversation_six_02"
+				"pes_woods_conversation_six_02",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_st_woods_conversation_sixteen_01",
@@ -3459,28 +3461,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwh_woods_conversation_sixteen_01"
+				"pwh_woods_conversation_sixteen_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_st_woods_conversation_sixteen_02",
@@ -3490,28 +3492,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwh_woods_conversation_sixteen_02"
+				"pwh_woods_conversation_sixteen_02",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_st_woods_conversation_ten_01",
@@ -3521,28 +3523,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pdr_woods_conversation_ten_01"
+				"pdr_woods_conversation_ten_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_st_woods_conversation_ten_02",
@@ -3552,28 +3554,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pdr_woods_conversation_ten_02"
+				"pdr_woods_conversation_ten_02",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_st_woods_conversation_thirteen_01",
@@ -3583,65 +3585,65 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				0
+				0,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"wood_elf"
+				"wood_elf",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
+				"wood_elf",
 			},
 			{
 				"user_context",
 				"player_career",
 				OP.EQ,
-				"we_thornsister"
+				"we_thornsister",
 			},
 			{
 				"global_context",
 				"dwarf_ranger",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				60
+				60,
 			},
 			{
 				"faction_memory",
 				"woods_conversation_thirteen",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"woods_conversation_thirteen",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_st_woods_conversation_thirteen_02",
@@ -3651,28 +3653,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pdr_woods_conversation_thirteen_01"
+				"pdr_woods_conversation_thirteen_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_st_woods_conversation_three_01",
@@ -3682,28 +3684,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pdr_de_woods_conversation_three_01"
+				"pdr_de_woods_conversation_three_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_st_woods_conversation_three_02",
@@ -3713,28 +3715,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pdr_de_woods_conversation_three_02"
+				"pdr_de_woods_conversation_three_02",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_st_woods_conversation_twelve_01",
@@ -3744,28 +3746,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pdr_woods_conversation_twelve_01"
+				"pdr_woods_conversation_twelve_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_st_woods_conversation_twelve_02",
@@ -3775,28 +3777,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pdr_woods_conversation_twelve_02"
+				"pdr_woods_conversation_twelve_02",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_st_woods_conversation_twenty_01",
@@ -3806,28 +3808,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwh_woods_conversation_twenty_01"
+				"pwh_woods_conversation_twenty_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_st_woods_conversation_twenty_02",
@@ -3837,28 +3839,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwh_woods_conversation_twenty_02"
+				"pwh_woods_conversation_twenty_02",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_st_woods_conversation_twentyfive_01",
@@ -3868,28 +3870,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pbw_woods_conversation_twentyfive_01"
+				"pbw_woods_conversation_twentyfive_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_st_woods_conversation_twentyfive_02",
@@ -3899,28 +3901,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pbw_woods_conversation_twentyfive_02"
+				"pbw_woods_conversation_twentyfive_02",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_st_woods_conversation_twentyfour_01",
@@ -3930,28 +3932,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pbw_woods_conversation_twentyfour_01"
+				"pbw_woods_conversation_twentyfour_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_st_woods_conversation_twentyfour_02",
@@ -3961,28 +3963,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pbw_woods_conversation_twentyfour_02"
+				"pbw_woods_conversation_twentyfour_02",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_st_woods_conversation_twentyone_01",
@@ -3992,28 +3994,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pbw_woods_conversation_twentyone_01"
+				"pbw_woods_conversation_twentyone_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_st_woods_conversation_twentyone_02",
@@ -4023,28 +4025,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pbw_woods_conversation_twentyone_02"
+				"pbw_woods_conversation_twentyone_02",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_st_woods_conversation_twentythree_01",
@@ -4054,28 +4056,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pbw_woods_conversation_twentythree_01"
+				"pbw_woods_conversation_twentythree_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_st_woods_conversation_twentythree_02",
@@ -4085,28 +4087,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pbw_woods_conversation_twentythree_02"
+				"pbw_woods_conversation_twentythree_02",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_st_woods_conversation_twentythree_03",
@@ -4116,28 +4118,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pbw_woods_conversation_twentythree_03"
+				"pbw_woods_conversation_twentythree_03",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_st_woods_conversation_twentytwo_01",
@@ -4147,28 +4149,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pbw_woods_conversation_twentytwo_01"
+				"pbw_woods_conversation_twentytwo_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_st_woods_conversation_two_01",
@@ -4178,28 +4180,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pes_gk_woods_conversation_two_01"
+				"pes_gk_woods_conversation_two_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_st_woods_conversation_two_02",
@@ -4209,28 +4211,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pes_gk_woods_conversation_two_02"
+				"pes_gk_woods_conversation_two_02",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwh_woods_conversation_eighteen_01",
@@ -4240,59 +4242,59 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				0
+				0,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"witch_hunter"
+				"witch_hunter",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"witch_hunter"
+				"witch_hunter",
 			},
 			{
 				"global_context",
 				"we_thornsister",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				60
+				60,
 			},
 			{
 				"faction_memory",
 				"woods_conversation_eighteen",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"woods_conversation_eighteen",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwh_woods_conversation_eighteen_02",
@@ -4302,28 +4304,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwe_st_woods_conversation_eighteen_01"
+				"pwe_st_woods_conversation_eighteen_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"witch_hunter"
-			}
+				"witch_hunter",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwh_woods_conversation_nineteen_01",
@@ -4333,59 +4335,59 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				0
+				0,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"witch_hunter"
+				"witch_hunter",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"witch_hunter"
+				"witch_hunter",
 			},
 			{
 				"global_context",
 				"we_thornsister",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				60
+				60,
 			},
 			{
 				"faction_memory",
 				"woods_conversation_nineeen",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"woods_conversation_nineeen",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwh_woods_conversation_nineteen_02",
@@ -4395,28 +4397,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwe_st_woods_conversation_nineteen_01"
+				"pwe_st_woods_conversation_nineteen_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"witch_hunter"
-			}
+				"witch_hunter",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwh_woods_conversation_nineteen_03",
@@ -4426,28 +4428,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwe_st_woods_conversation_nineteen_02"
+				"pwe_st_woods_conversation_nineteen_02",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"witch_hunter"
-			}
+				"witch_hunter",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwh_woods_conversation_seventeen_01",
@@ -4457,59 +4459,59 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				0
+				0,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"witch_hunter"
+				"witch_hunter",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"witch_hunter"
+				"witch_hunter",
 			},
 			{
 				"global_context",
 				"we_thornsister",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				60
+				60,
 			},
 			{
 				"faction_memory",
 				"woods_conversation_seventeen",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"woods_conversation_seventeen",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwh_woods_conversation_seventeen_02",
@@ -4519,28 +4521,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwe_st_woods_conversation_seventeen_01"
+				"pwe_st_woods_conversation_seventeen_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"witch_hunter"
-			}
+				"witch_hunter",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwh_woods_conversation_sixteen_01",
@@ -4550,59 +4552,59 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				0
+				0,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"witch_hunter"
+				"witch_hunter",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"witch_hunter"
+				"witch_hunter",
 			},
 			{
 				"global_context",
 				"we_thornsister",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				60
+				60,
 			},
 			{
 				"faction_memory",
 				"woods_conversation_sixteen",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"woods_conversation_sixteen",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwh_woods_conversation_sixteen_02",
@@ -4612,28 +4614,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwe_st_woods_conversation_sixteen_01"
+				"pwe_st_woods_conversation_sixteen_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"witch_hunter"
-			}
+				"witch_hunter",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwh_woods_conversation_twenty_01",
@@ -4643,59 +4645,59 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				0
+				0,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"witch_hunter"
+				"witch_hunter",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"witch_hunter"
+				"witch_hunter",
 			},
 			{
 				"global_context",
 				"we_thornsister",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				60
+				60,
 			},
 			{
 				"faction_memory",
 				"woods_conversation_twenty",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"woods_conversation_twenty",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwh_woods_conversation_twenty_02",
@@ -4705,28 +4707,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwe_st_woods_conversation_twenty_01"
+				"pwe_st_woods_conversation_twenty_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"witch_hunter"
-			}
+				"witch_hunter",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwh_woods_conversation_twentyeight_01",
@@ -4736,28 +4738,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pes_woods_conversation_twentyeight_01"
+				"pes_woods_conversation_twentyeight_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"witch_hunter"
-			}
+				"witch_hunter",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwh_woods_conversation_twentynine_01",
@@ -4767,71 +4769,71 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				2
+				2,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"witch_hunter"
+				"witch_hunter",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"witch_hunter"
+				"witch_hunter",
 			},
 			{
 				"global_context",
 				"empire_soldier",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"global_context",
 				"bright_wizard",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"global_context",
 				"dwarf_ranger",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				60
+				60,
 			},
 			{
 				"faction_memory",
 				"woods_conversation_no_elf",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"woods_conversation_no_elf",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwh_woods_conversation_twentynine_02",
@@ -4841,28 +4843,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pbw_woods_conversation_twentynine_01"
+				"pbw_woods_conversation_twentynine_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"witch_hunter"
-			}
+				"witch_hunter",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwh_woods_conversation_twentyseven_01",
@@ -4872,28 +4874,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pes_woods_conversation_twentyseven_01"
+				"pes_woods_conversation_twentyseven_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"witch_hunter"
-			}
+				"witch_hunter",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwh_woods_conversation_twentysix_01",
@@ -4903,28 +4905,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pbw_woods_conversation_twentysix_01"
+				"pbw_woods_conversation_twentysix_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"witch_hunter"
-			}
+				"witch_hunter",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwh_woods_conversation_twentysix_02",
@@ -4934,2846 +4936,2846 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pdr_woods_conversation_twentysix_01"
+				"pdr_woods_conversation_twentysix_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"witch_hunter"
-			}
+				"witch_hunter",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	add_dialogues({
 		pbw_woods_conversation_twentyeight_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pbw_woods_conversation_twentyeight_01"
+				[1] = "pbw_woods_conversation_twentyeight_01",
 			},
 			sound_events = {
-				[1.0] = "pbw_woods_conversation_twentyeight_01"
+				[1] = "pbw_woods_conversation_twentyeight_01",
 			},
 			sound_events_duration = {
-				[1.0] = 3.2229375839233
-			}
+				[1] = 3.2229375839233,
+			},
 		},
 		pbw_woods_conversation_twentyfive_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pbw_woods_conversation_twentyfive_01"
+				[1] = "pbw_woods_conversation_twentyfive_01",
 			},
 			sound_events = {
-				[1.0] = "pbw_woods_conversation_twentyfive_01"
+				[1] = "pbw_woods_conversation_twentyfive_01",
 			},
 			sound_events_duration = {
-				[1.0] = 7.0784792900085
-			}
+				[1] = 7.0784792900085,
+			},
 		},
 		pbw_woods_conversation_twentyfive_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pbw_woods_conversation_twentyfive_02"
+				[1] = "pbw_woods_conversation_twentyfive_02",
 			},
 			sound_events = {
-				[1.0] = "pbw_woods_conversation_twentyfive_02"
+				[1] = "pbw_woods_conversation_twentyfive_02",
 			},
 			sound_events_duration = {
-				[1.0] = 5.3591251373291
-			}
+				[1] = 5.3591251373291,
+			},
 		},
 		pbw_woods_conversation_twentyfour_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pbw_woods_conversation_twentyfour_01"
+				[1] = "pbw_woods_conversation_twentyfour_01",
 			},
 			sound_events = {
-				[1.0] = "pbw_woods_conversation_twentyfour_01"
+				[1] = "pbw_woods_conversation_twentyfour_01",
 			},
 			sound_events_duration = {
-				[1.0] = 4.7118334770203
-			}
+				[1] = 4.7118334770203,
+			},
 		},
 		pbw_woods_conversation_twentyfour_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pbw_woods_conversation_twentyfour_02"
+				[1] = "pbw_woods_conversation_twentyfour_02",
 			},
 			sound_events = {
-				[1.0] = "pbw_woods_conversation_twentyfour_02"
+				[1] = "pbw_woods_conversation_twentyfour_02",
 			},
 			sound_events_duration = {
-				[1.0] = 1.8613749742508
-			}
+				[1] = 1.8613749742508,
+			},
 		},
 		pbw_woods_conversation_twentynine_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pbw_woods_conversation_twentynine_01"
+				[1] = "pbw_woods_conversation_twentynine_01",
 			},
 			sound_events = {
-				[1.0] = "pbw_woods_conversation_twentynine_01"
+				[1] = "pbw_woods_conversation_twentynine_01",
 			},
 			sound_events_duration = {
-				[1.0] = 3.6598124504089
-			}
+				[1] = 3.6598124504089,
+			},
 		},
 		pbw_woods_conversation_twentyone_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pbw_woods_conversation_twentyone_01"
+				[1] = "pbw_woods_conversation_twentyone_01",
 			},
 			sound_events = {
-				[1.0] = "pbw_woods_conversation_twentyone_01"
+				[1] = "pbw_woods_conversation_twentyone_01",
 			},
 			sound_events_duration = {
-				[1.0] = 5.9022083282471
-			}
+				[1] = 5.9022083282471,
+			},
 		},
 		pbw_woods_conversation_twentyone_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pbw_woods_conversation_twentyone_02"
+				[1] = "pbw_woods_conversation_twentyone_02",
 			},
 			sound_events = {
-				[1.0] = "pbw_woods_conversation_twentyone_02"
+				[1] = "pbw_woods_conversation_twentyone_02",
 			},
 			sound_events_duration = {
-				[1.0] = 2.447083234787
-			}
+				[1] = 2.447083234787,
+			},
 		},
 		pbw_woods_conversation_twentyseven_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pbw_woods_conversation_twentyseven_01"
+				[1] = "pbw_woods_conversation_twentyseven_01",
 			},
 			sound_events = {
-				[1.0] = "pbw_woods_conversation_twentyseven_01"
+				[1] = "pbw_woods_conversation_twentyseven_01",
 			},
 			sound_events_duration = {
-				[1.0] = 8.2422294616699
-			}
+				[1] = 8.2422294616699,
+			},
 		},
 		pbw_woods_conversation_twentysix_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pbw_woods_conversation_twentysix_01"
+				[1] = "pbw_woods_conversation_twentysix_01",
 			},
 			sound_events = {
-				[1.0] = "pbw_woods_conversation_twentysix_01"
+				[1] = "pbw_woods_conversation_twentysix_01",
 			},
 			sound_events_duration = {
-				[1.0] = 4.7419581413269
-			}
+				[1] = 4.7419581413269,
+			},
 		},
 		pbw_woods_conversation_twentythree_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pbw_woods_conversation_twentythree_01"
+				[1] = "pbw_woods_conversation_twentythree_01",
 			},
 			sound_events = {
-				[1.0] = "pbw_woods_conversation_twentythree_01"
+				[1] = "pbw_woods_conversation_twentythree_01",
 			},
 			sound_events_duration = {
-				[1.0] = 2.7880208492279
-			}
+				[1] = 2.7880208492279,
+			},
 		},
 		pbw_woods_conversation_twentythree_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pbw_woods_conversation_twentythree_02"
+				[1] = "pbw_woods_conversation_twentythree_02",
 			},
 			sound_events = {
-				[1.0] = "pbw_woods_conversation_twentythree_02"
+				[1] = "pbw_woods_conversation_twentythree_02",
 			},
 			sound_events_duration = {
-				[1.0] = 3.7586667537689
-			}
+				[1] = 3.7586667537689,
+			},
 		},
 		pbw_woods_conversation_twentythree_03 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pbw_woods_conversation_twentythree_03"
+				[1] = "pbw_woods_conversation_twentythree_03",
 			},
 			sound_events = {
-				[1.0] = "pbw_woods_conversation_twentythree_03"
+				[1] = "pbw_woods_conversation_twentythree_03",
 			},
 			sound_events_duration = {
-				[1.0] = 6.9450206756592
-			}
+				[1] = 6.9450206756592,
+			},
 		},
 		pbw_woods_conversation_twentytwo_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pbw_woods_conversation_twentytwo_01"
+				[1] = "pbw_woods_conversation_twentytwo_01",
 			},
 			sound_events = {
-				[1.0] = "pbw_woods_conversation_twentytwo_01"
+				[1] = "pbw_woods_conversation_twentytwo_01",
 			},
 			sound_events_duration = {
-				[1.0] = 5.5583958625794
-			}
+				[1] = 5.5583958625794,
+			},
 		},
 		pbw_woods_conversation_twentytwo_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pbw_woods_conversation_twentytwo_02"
+				[1] = "pbw_woods_conversation_twentytwo_02",
 			},
 			sound_events = {
-				[1.0] = "pbw_woods_conversation_twentytwo_02"
+				[1] = "pbw_woods_conversation_twentytwo_02",
 			},
 			sound_events_duration = {
-				[1.0] = 7.6355414390564
-			}
+				[1] = 7.6355414390564,
+			},
 		},
 		pdr_de_woods_conversation_four_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pdr_de_woods_conversation_four_01"
+				[1] = "pdr_de_woods_conversation_four_01",
 			},
 			sound_events = {
-				[1.0] = "pdr_de_woods_conversation_four_01"
+				[1] = "pdr_de_woods_conversation_four_01",
 			},
 			sound_events_duration = {
-				[1.0] = 3.3904583454132
-			}
+				[1] = 3.3904583454132,
+			},
 		},
 		pdr_de_woods_conversation_four_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pdr_de_woods_conversation_four_02"
+				[1] = "pdr_de_woods_conversation_four_02",
 			},
 			sound_events = {
-				[1.0] = "pdr_de_woods_conversation_four_02"
+				[1] = "pdr_de_woods_conversation_four_02",
 			},
 			sound_events_duration = {
-				[1.0] = 6.2716875076294
-			}
+				[1] = 6.2716875076294,
+			},
 		},
 		pdr_de_woods_conversation_four_03 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pdr_de_woods_conversation_four_03"
+				[1] = "pdr_de_woods_conversation_four_03",
 			},
 			sound_events = {
-				[1.0] = "pdr_de_woods_conversation_four_03"
+				[1] = "pdr_de_woods_conversation_four_03",
 			},
 			sound_events_duration = {
-				[1.0] = 8.0264377593994
-			}
+				[1] = 8.0264377593994,
+			},
 		},
 		pdr_de_woods_conversation_three_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pdr_de_woods_conversation_three_01"
+				[1] = "pdr_de_woods_conversation_three_01",
 			},
 			sound_events = {
-				[1.0] = "pdr_de_woods_conversation_three_01"
+				[1] = "pdr_de_woods_conversation_three_01",
 			},
 			sound_events_duration = {
-				[1.0] = 7.1095209121704
-			}
+				[1] = 7.1095209121704,
+			},
 		},
 		pdr_de_woods_conversation_three_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pdr_de_woods_conversation_three_02"
+				[1] = "pdr_de_woods_conversation_three_02",
 			},
 			sound_events = {
-				[1.0] = "pdr_de_woods_conversation_three_02"
+				[1] = "pdr_de_woods_conversation_three_02",
 			},
 			sound_events_duration = {
-				[1.0] = 6.5318331718445
-			}
+				[1] = 6.5318331718445,
+			},
 		},
 		pdr_woods_conversation_eleven_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pdr_woods_conversation_eleven_01"
+				[1] = "pdr_woods_conversation_eleven_01",
 			},
 			sound_events = {
-				[1.0] = "pdr_woods_conversation_eleven_01"
+				[1] = "pdr_woods_conversation_eleven_01",
 			},
 			sound_events_duration = {
-				[1.0] = 3.5982291698456
-			}
+				[1] = 3.5982291698456,
+			},
 		},
 		pdr_woods_conversation_eleven_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pdr_woods_conversation_eleven_02"
+				[1] = "pdr_woods_conversation_eleven_02",
 			},
 			sound_events = {
-				[1.0] = "pdr_woods_conversation_eleven_02"
+				[1] = "pdr_woods_conversation_eleven_02",
 			},
 			sound_events_duration = {
-				[1.0] = 1.735687494278
-			}
+				[1] = 1.735687494278,
+			},
 		},
 		pdr_woods_conversation_eleven_03 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pdr_woods_conversation_eleven_03"
+				[1] = "pdr_woods_conversation_eleven_03",
 			},
 			sound_events = {
-				[1.0] = "pdr_woods_conversation_eleven_03"
+				[1] = "pdr_woods_conversation_eleven_03",
 			},
 			sound_events_duration = {
-				[1.0] = 2.1672291755676
-			}
+				[1] = 2.1672291755676,
+			},
 		},
 		pdr_woods_conversation_fifteen_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pdr_woods_conversation_fifteen_01"
+				[1] = "pdr_woods_conversation_fifteen_01",
 			},
 			sound_events = {
-				[1.0] = "pdr_woods_conversation_fifteen_01"
+				[1] = "pdr_woods_conversation_fifteen_01",
 			},
 			sound_events_duration = {
-				[1.0] = 9.0372495651245
-			}
+				[1] = 9.0372495651245,
+			},
 		},
 		pdr_woods_conversation_fifteen_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pdr_woods_conversation_fifteen_02"
+				[1] = "pdr_woods_conversation_fifteen_02",
 			},
 			sound_events = {
-				[1.0] = "pdr_woods_conversation_fifteen_02"
+				[1] = "pdr_woods_conversation_fifteen_02",
 			},
 			sound_events_duration = {
-				[1.0] = 3.1250207424164
-			}
+				[1] = 3.1250207424164,
+			},
 		},
 		pdr_woods_conversation_fourteen_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pdr_woods_conversation_fourteen_01"
+				[1] = "pdr_woods_conversation_fourteen_01",
 			},
 			sound_events = {
-				[1.0] = "pdr_woods_conversation_fourteen_01"
+				[1] = "pdr_woods_conversation_fourteen_01",
 			},
 			sound_events_duration = {
-				[1.0] = 5.1583542823792
-			}
+				[1] = 5.1583542823792,
+			},
 		},
 		pdr_woods_conversation_fourteen_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pdr_woods_conversation_fourteen_02"
+				[1] = "pdr_woods_conversation_fourteen_02",
 			},
 			sound_events = {
-				[1.0] = "pdr_woods_conversation_fourteen_02"
+				[1] = "pdr_woods_conversation_fourteen_02",
 			},
 			sound_events_duration = {
-				[1.0] = 3.0370833873749
-			}
+				[1] = 3.0370833873749,
+			},
 		},
 		pdr_woods_conversation_nine_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pdr_woods_conversation_nine_01"
+				[1] = "pdr_woods_conversation_nine_01",
 			},
 			sound_events = {
-				[1.0] = "pdr_woods_conversation_nine_01"
+				[1] = "pdr_woods_conversation_nine_01",
 			},
 			sound_events_duration = {
-				[1.0] = 6.040479183197
-			}
+				[1] = 6.040479183197,
+			},
 		},
 		pdr_woods_conversation_nine_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pdr_woods_conversation_nine_02"
+				[1] = "pdr_woods_conversation_nine_02",
 			},
 			sound_events = {
-				[1.0] = "pdr_woods_conversation_nine_02"
+				[1] = "pdr_woods_conversation_nine_02",
 			},
 			sound_events_duration = {
-				[1.0] = 4.5894165039063
-			}
+				[1] = 4.5894165039063,
+			},
 		},
 		pdr_woods_conversation_ten_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pdr_woods_conversation_ten_01"
+				[1] = "pdr_woods_conversation_ten_01",
 			},
 			sound_events = {
-				[1.0] = "pdr_woods_conversation_ten_01"
+				[1] = "pdr_woods_conversation_ten_01",
 			},
 			sound_events_duration = {
-				[1.0] = 3.2143542766571
-			}
+				[1] = 3.2143542766571,
+			},
 		},
 		pdr_woods_conversation_ten_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pdr_woods_conversation_ten_02"
+				[1] = "pdr_woods_conversation_ten_02",
 			},
 			sound_events = {
-				[1.0] = "pdr_woods_conversation_ten_02"
+				[1] = "pdr_woods_conversation_ten_02",
 			},
 			sound_events_duration = {
-				[1.0] = 4.4997081756592
-			}
+				[1] = 4.4997081756592,
+			},
 		},
 		pdr_woods_conversation_thirteen_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pdr_woods_conversation_thirteen_01"
+				[1] = "pdr_woods_conversation_thirteen_01",
 			},
 			sound_events = {
-				[1.0] = "pdr_woods_conversation_thirteen_01"
+				[1] = "pdr_woods_conversation_thirteen_01",
 			},
 			sound_events_duration = {
-				[1.0] = 1.553750038147
-			}
+				[1] = 1.553750038147,
+			},
 		},
 		pdr_woods_conversation_twelve_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pdr_woods_conversation_twelve_01"
+				[1] = "pdr_woods_conversation_twelve_01",
 			},
 			sound_events = {
-				[1.0] = "pdr_woods_conversation_twelve_01"
+				[1] = "pdr_woods_conversation_twelve_01",
 			},
 			sound_events_duration = {
-				[1.0] = 2.9446666240692
-			}
+				[1] = 2.9446666240692,
+			},
 		},
 		pdr_woods_conversation_twelve_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pdr_woods_conversation_twelve_02"
+				[1] = "pdr_woods_conversation_twelve_02",
 			},
 			sound_events = {
-				[1.0] = "pdr_woods_conversation_twelve_02"
+				[1] = "pdr_woods_conversation_twelve_02",
 			},
 			sound_events_duration = {
-				[1.0] = 9.6448335647583
-			}
+				[1] = 9.6448335647583,
+			},
 		},
 		pdr_woods_conversation_twelve_03 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pdr_woods_conversation_twelve_03"
+				[1] = "pdr_woods_conversation_twelve_03",
 			},
 			sound_events = {
-				[1.0] = "pdr_woods_conversation_twelve_03"
+				[1] = "pdr_woods_conversation_twelve_03",
 			},
 			sound_events_duration = {
-				[1.0] = 2.5810208320618
-			}
+				[1] = 2.5810208320618,
+			},
 		},
 		pdr_woods_conversation_twentyeight_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pdr_woods_conversation_twentyeight_01"
+				[1] = "pdr_woods_conversation_twentyeight_01",
 			},
 			sound_events = {
-				[1.0] = "pdr_woods_conversation_twentyeight_01"
+				[1] = "pdr_woods_conversation_twentyeight_01",
 			},
 			sound_events_duration = {
-				[1.0] = 3.1675000190735
-			}
+				[1] = 3.1675000190735,
+			},
 		},
 		pdr_woods_conversation_twentynine_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pdr_woods_conversation_twentynine_01"
+				[1] = "pdr_woods_conversation_twentynine_01",
 			},
 			sound_events = {
-				[1.0] = "pdr_woods_conversation_twentynine_01"
+				[1] = "pdr_woods_conversation_twentynine_01",
 			},
 			sound_events_duration = {
-				[1.0] = 5.8583960533142
-			}
+				[1] = 5.8583960533142,
+			},
 		},
 		pdr_woods_conversation_twentyseven_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pdr_woods_conversation_twentyseven_01"
+				[1] = "pdr_woods_conversation_twentyseven_01",
 			},
 			sound_events = {
-				[1.0] = "pdr_woods_conversation_twentyseven_01"
+				[1] = "pdr_woods_conversation_twentyseven_01",
 			},
 			sound_events_duration = {
-				[1.0] = 2.6492290496826
-			}
+				[1] = 2.6492290496826,
+			},
 		},
 		pdr_woods_conversation_twentysix_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pdr_woods_conversation_twentysix_01"
+				[1] = "pdr_woods_conversation_twentysix_01",
 			},
 			sound_events = {
-				[1.0] = "pdr_woods_conversation_twentysix_01"
+				[1] = "pdr_woods_conversation_twentysix_01",
 			},
 			sound_events_duration = {
-				[1.0] = 3.302812576294
-			}
+				[1] = 3.302812576294,
+			},
 		},
 		pes_gk_woods_conversation_one_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pes_gk_woods_conversation_one_01"
+				[1] = "pes_gk_woods_conversation_one_01",
 			},
 			sound_events = {
-				[1.0] = "pes_gk_woods_conversation_one_01"
+				[1] = "pes_gk_woods_conversation_one_01",
 			},
 			sound_events_duration = {
-				[1.0] = 6.6810832023621
-			}
+				[1] = 6.6810832023621,
+			},
 		},
 		pes_gk_woods_conversation_one_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pes_gk_woods_conversation_one_02"
+				[1] = "pes_gk_woods_conversation_one_02",
 			},
 			sound_events = {
-				[1.0] = "pes_gk_woods_conversation_one_02"
+				[1] = "pes_gk_woods_conversation_one_02",
 			},
 			sound_events_duration = {
-				[1.0] = 4.1367502212524
-			}
+				[1] = 4.1367502212524,
+			},
 		},
 		pes_gk_woods_conversation_two_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pes_gk_woods_conversation_two_01"
+				[1] = "pes_gk_woods_conversation_two_01",
 			},
 			sound_events = {
-				[1.0] = "pes_gk_woods_conversation_two_01"
+				[1] = "pes_gk_woods_conversation_two_01",
 			},
 			sound_events_duration = {
-				[1.0] = 7.5194373130798
-			}
+				[1] = 7.5194373130798,
+			},
 		},
 		pes_gk_woods_conversation_two_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pes_gk_woods_conversation_two_02"
+				[1] = "pes_gk_woods_conversation_two_02",
 			},
 			sound_events = {
-				[1.0] = "pes_gk_woods_conversation_two_02"
+				[1] = "pes_gk_woods_conversation_two_02",
 			},
 			sound_events_duration = {
-				[1.0] = 5.8981251716614
-			}
+				[1] = 5.8981251716614,
+			},
 		},
 		pes_woods_conversation_eight_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pes_woods_conversation_eight_01"
+				[1] = "pes_woods_conversation_eight_01",
 			},
 			sound_events = {
-				[1.0] = "pes_woods_conversation_eight_01"
+				[1] = "pes_woods_conversation_eight_01",
 			},
 			sound_events_duration = {
-				[1.0] = 6.3762497901917
-			}
+				[1] = 6.3762497901917,
+			},
 		},
 		pes_woods_conversation_eight_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pes_woods_conversation_eight_02"
+				[1] = "pes_woods_conversation_eight_02",
 			},
 			sound_events = {
-				[1.0] = "pes_woods_conversation_eight_02"
+				[1] = "pes_woods_conversation_eight_02",
 			},
 			sound_events_duration = {
-				[1.0] = 4.1936249732971
-			}
+				[1] = 4.1936249732971,
+			},
 		},
 		pes_woods_conversation_eight_03 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pes_woods_conversation_eight_03"
+				[1] = "pes_woods_conversation_eight_03",
 			},
 			sound_events = {
-				[1.0] = "pes_woods_conversation_eight_03"
+				[1] = "pes_woods_conversation_eight_03",
 			},
 			sound_events_duration = {
-				[1.0] = 4.1400418281555
-			}
+				[1] = 4.1400418281555,
+			},
 		},
 		pes_woods_conversation_five_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pes_woods_conversation_five_01"
+				[1] = "pes_woods_conversation_five_01",
 			},
 			sound_events = {
-				[1.0] = "pes_woods_conversation_five_01"
+				[1] = "pes_woods_conversation_five_01",
 			},
 			sound_events_duration = {
-				[1.0] = 6.7310209274292
-			}
+				[1] = 6.7310209274292,
+			},
 		},
 		pes_woods_conversation_five_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pes_woods_conversation_five_02"
+				[1] = "pes_woods_conversation_five_02",
 			},
 			sound_events = {
-				[1.0] = "pes_woods_conversation_five_02"
+				[1] = "pes_woods_conversation_five_02",
 			},
 			sound_events_duration = {
-				[1.0] = 1.0076667070389
-			}
+				[1] = 1.0076667070389,
+			},
 		},
 		pes_woods_conversation_seven_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pes_woods_conversation_seven_01"
+				[1] = "pes_woods_conversation_seven_01",
 			},
 			sound_events = {
-				[1.0] = "pes_woods_conversation_seven_01"
+				[1] = "pes_woods_conversation_seven_01",
 			},
 			sound_events_duration = {
-				[1.0] = 3.9776458740234
-			}
+				[1] = 3.9776458740234,
+			},
 		},
 		pes_woods_conversation_seven_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pes_woods_conversation_seven_02"
+				[1] = "pes_woods_conversation_seven_02",
 			},
 			sound_events = {
-				[1.0] = "pes_woods_conversation_seven_02"
+				[1] = "pes_woods_conversation_seven_02",
 			},
 			sound_events_duration = {
-				[1.0] = 2.0822291374206
-			}
+				[1] = 2.0822291374206,
+			},
 		},
 		pes_woods_conversation_six_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pes_woods_conversation_six_01"
+				[1] = "pes_woods_conversation_six_01",
 			},
 			sound_events = {
-				[1.0] = "pes_woods_conversation_six_01"
+				[1] = "pes_woods_conversation_six_01",
 			},
 			sound_events_duration = {
-				[1.0] = 3.1072916984558
-			}
+				[1] = 3.1072916984558,
+			},
 		},
 		pes_woods_conversation_six_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pes_woods_conversation_six_02"
+				[1] = "pes_woods_conversation_six_02",
 			},
 			sound_events = {
-				[1.0] = "pes_woods_conversation_six_02"
+				[1] = "pes_woods_conversation_six_02",
 			},
 			sound_events_duration = {
-				[1.0] = 2.4635624885559
-			}
+				[1] = 2.4635624885559,
+			},
 		},
 		pes_woods_conversation_six_03 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pes_woods_conversation_six_03"
+				[1] = "pes_woods_conversation_six_03",
 			},
 			sound_events = {
-				[1.0] = "pes_woods_conversation_six_03"
+				[1] = "pes_woods_conversation_six_03",
 			},
 			sound_events_duration = {
-				[1.0] = 1.778520822525
-			}
+				[1] = 1.778520822525,
+			},
 		},
 		pes_woods_conversation_twentyeight_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pes_woods_conversation_twentyeight_01"
+				[1] = "pes_woods_conversation_twentyeight_01",
 			},
 			sound_events = {
-				[1.0] = "pes_woods_conversation_twentyeight_01"
+				[1] = "pes_woods_conversation_twentyeight_01",
 			},
 			sound_events_duration = {
-				[1.0] = 2.3159999847412
-			}
+				[1] = 2.3159999847412,
+			},
 		},
 		pes_woods_conversation_twentyeight_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pes_woods_conversation_twentyeight_02"
+				[1] = "pes_woods_conversation_twentyeight_02",
 			},
 			sound_events = {
-				[1.0] = "pes_woods_conversation_twentyeight_02"
+				[1] = "pes_woods_conversation_twentyeight_02",
 			},
 			sound_events_duration = {
-				[1.0] = 4.724187374115
-			}
+				[1] = 4.724187374115,
+			},
 		},
 		pes_woods_conversation_twentynine_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pes_woods_conversation_twentynine_01"
+				[1] = "pes_woods_conversation_twentynine_01",
 			},
 			sound_events = {
-				[1.0] = "pes_woods_conversation_twentynine_01"
+				[1] = "pes_woods_conversation_twentynine_01",
 			},
 			sound_events_duration = {
-				[1.0] = 2.2927916049957
-			}
+				[1] = 2.2927916049957,
+			},
 		},
 		pes_woods_conversation_twentyseven_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pes_woods_conversation_twentyseven_01"
+				[1] = "pes_woods_conversation_twentyseven_01",
 			},
 			sound_events = {
-				[1.0] = "pes_woods_conversation_twentyseven_01"
+				[1] = "pes_woods_conversation_twentyseven_01",
 			},
 			sound_events_duration = {
-				[1.0] = 6.890625
-			}
+				[1] = 6.890625,
+			},
 		},
 		pes_woods_conversation_twentysix_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pes_woods_conversation_twentysix_01"
+				[1] = "pes_woods_conversation_twentysix_01",
 			},
 			sound_events = {
-				[1.0] = "pes_woods_conversation_twentysix_01"
+				[1] = "pes_woods_conversation_twentysix_01",
 			},
 			sound_events_duration = {
-				[1.0] = 6.0025000572205
-			}
+				[1] = 6.0025000572205,
+			},
 		},
 		pwe_st_lullaby_full = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			sound_distance = 30,
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_distance = 30,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_st_lullaby_full"
+				[1] = "pwe_st_lullaby_full",
 			},
 			sound_events = {
-				[1.0] = "pwe_st_lullaby_full"
+				[1] = "pwe_st_lullaby_full",
 			},
 			sound_events_duration = {
-				[1.0] = 25.750770568848
-			}
+				[1] = 25.750770568848,
+			},
 		},
 		pwe_st_woods_conversation_eight_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_eight_01"
+				[1] = "pwe_st_woods_conversation_eight_01",
 			},
 			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_eight_01"
+				[1] = "pwe_st_woods_conversation_eight_01",
 			},
 			sound_events_duration = {
-				[1.0] = 3.8123126029968
-			}
+				[1] = 3.8123126029968,
+			},
 		},
 		pwe_st_woods_conversation_eight_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_eight_02"
+				[1] = "pwe_st_woods_conversation_eight_02",
 			},
 			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_eight_02"
+				[1] = "pwe_st_woods_conversation_eight_02",
 			},
 			sound_events_duration = {
-				[1.0] = 8.3463954925537
-			}
+				[1] = 8.3463954925537,
+			},
 		},
 		pwe_st_woods_conversation_eight_03 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_eight_03"
+				[1] = "pwe_st_woods_conversation_eight_03",
 			},
 			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_eight_03"
+				[1] = "pwe_st_woods_conversation_eight_03",
 			},
 			sound_events_duration = {
-				[1.0] = 2.1943957805634
-			}
+				[1] = 2.1943957805634,
+			},
 		},
 		pwe_st_woods_conversation_eighteen_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_eighteen_01"
+				[1] = "pwe_st_woods_conversation_eighteen_01",
 			},
 			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_eighteen_01"
+				[1] = "pwe_st_woods_conversation_eighteen_01",
 			},
 			sound_events_duration = {
-				[1.0] = 10.481645584106
-			}
+				[1] = 10.481645584106,
+			},
 		},
 		pwe_st_woods_conversation_eighteen_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_eighteen_02"
+				[1] = "pwe_st_woods_conversation_eighteen_02",
 			},
 			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_eighteen_02"
+				[1] = "pwe_st_woods_conversation_eighteen_02",
 			},
 			sound_events_duration = {
-				[1.0] = 5.7369999885559
-			}
+				[1] = 5.7369999885559,
+			},
 		},
 		pwe_st_woods_conversation_eleven_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_eleven_01"
+				[1] = "pwe_st_woods_conversation_eleven_01",
 			},
 			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_eleven_01"
+				[1] = "pwe_st_woods_conversation_eleven_01",
 			},
 			sound_events_duration = {
-				[1.0] = 2.3527083396912
-			}
+				[1] = 2.3527083396912,
+			},
 		},
 		pwe_st_woods_conversation_eleven_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_eleven_02"
+				[1] = "pwe_st_woods_conversation_eleven_02",
 			},
 			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_eleven_02"
+				[1] = "pwe_st_woods_conversation_eleven_02",
 			},
 			sound_events_duration = {
-				[1.0] = 2.0048959255219
-			}
+				[1] = 2.0048959255219,
+			},
 		},
 		pwe_st_woods_conversation_eleven_03 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_eleven_03"
+				[1] = "pwe_st_woods_conversation_eleven_03",
 			},
 			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_eleven_03"
+				[1] = "pwe_st_woods_conversation_eleven_03",
 			},
 			sound_events_duration = {
-				[1.0] = 5.0545001029968
-			}
+				[1] = 5.0545001029968,
+			},
 		},
 		pwe_st_woods_conversation_fifteen_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_fifteen_01"
+				[1] = "pwe_st_woods_conversation_fifteen_01",
 			},
 			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_fifteen_01"
+				[1] = "pwe_st_woods_conversation_fifteen_01",
 			},
 			sound_events_duration = {
-				[1.0] = 11.014833450317
-			}
+				[1] = 11.014833450317,
+			},
 		},
 		pwe_st_woods_conversation_fifteen_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_fifteen_02"
+				[1] = "pwe_st_woods_conversation_fifteen_02",
 			},
 			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_fifteen_02"
+				[1] = "pwe_st_woods_conversation_fifteen_02",
 			},
 			sound_events_duration = {
-				[1.0] = 2.6185417175293
-			}
+				[1] = 2.6185417175293,
+			},
 		},
 		pwe_st_woods_conversation_five_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_five_01"
+				[1] = "pwe_st_woods_conversation_five_01",
 			},
 			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_five_01"
+				[1] = "pwe_st_woods_conversation_five_01",
 			},
 			sound_events_duration = {
-				[1.0] = 8.9026250839233
-			}
+				[1] = 8.9026250839233,
+			},
 		},
 		pwe_st_woods_conversation_five_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_five_02"
+				[1] = "pwe_st_woods_conversation_five_02",
 			},
 			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_five_02"
+				[1] = "pwe_st_woods_conversation_five_02",
 			},
 			sound_events_duration = {
-				[1.0] = 1.4894791841507
-			}
+				[1] = 1.4894791841507,
+			},
 		},
 		pwe_st_woods_conversation_four_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_four_01"
+				[1] = "pwe_st_woods_conversation_four_01",
 			},
 			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_four_01"
+				[1] = "pwe_st_woods_conversation_four_01",
 			},
 			sound_events_duration = {
-				[1.0] = 10.720333099365
-			}
+				[1] = 10.720333099365,
+			},
 		},
 		pwe_st_woods_conversation_four_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_four_02"
+				[1] = "pwe_st_woods_conversation_four_02",
 			},
 			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_four_02"
+				[1] = "pwe_st_woods_conversation_four_02",
 			},
 			sound_events_duration = {
-				[1.0] = 7.8962497711182
-			}
+				[1] = 7.8962497711182,
+			},
 		},
 		pwe_st_woods_conversation_fourteen_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_fourteen_01"
+				[1] = "pwe_st_woods_conversation_fourteen_01",
 			},
 			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_fourteen_01"
+				[1] = "pwe_st_woods_conversation_fourteen_01",
 			},
 			sound_events_duration = {
-				[1.0] = 3.2710208892822
-			}
+				[1] = 3.2710208892822,
+			},
 		},
 		pwe_st_woods_conversation_fourteen_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_fourteen_02"
+				[1] = "pwe_st_woods_conversation_fourteen_02",
 			},
 			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_fourteen_02"
+				[1] = "pwe_st_woods_conversation_fourteen_02",
 			},
 			sound_events_duration = {
-				[1.0] = 8.0805835723877
-			}
+				[1] = 8.0805835723877,
+			},
 		},
 		pwe_st_woods_conversation_nine_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_nine_01"
+				[1] = "pwe_st_woods_conversation_nine_01",
 			},
 			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_nine_01"
+				[1] = "pwe_st_woods_conversation_nine_01",
 			},
 			sound_events_duration = {
-				[1.0] = 2.6746873855591
-			}
+				[1] = 2.6746873855591,
+			},
 		},
 		pwe_st_woods_conversation_nine_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_nine_02"
+				[1] = "pwe_st_woods_conversation_nine_02",
 			},
 			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_nine_02"
+				[1] = "pwe_st_woods_conversation_nine_02",
 			},
 			sound_events_duration = {
-				[1.0] = 1.4189583063126
-			}
+				[1] = 1.4189583063126,
+			},
 		},
 		pwe_st_woods_conversation_nineteen_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_nineteen_01"
+				[1] = "pwe_st_woods_conversation_nineteen_01",
 			},
 			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_nineteen_01"
+				[1] = "pwe_st_woods_conversation_nineteen_01",
 			},
 			sound_events_duration = {
-				[1.0] = 4.8227081298828
-			}
+				[1] = 4.8227081298828,
+			},
 		},
 		pwe_st_woods_conversation_nineteen_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_nineteen_02"
+				[1] = "pwe_st_woods_conversation_nineteen_02",
 			},
 			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_nineteen_02"
+				[1] = "pwe_st_woods_conversation_nineteen_02",
 			},
 			sound_events_duration = {
-				[1.0] = 7.5408749580383
-			}
+				[1] = 7.5408749580383,
+			},
 		},
 		pwe_st_woods_conversation_one_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_one_01"
+				[1] = "pwe_st_woods_conversation_one_01",
 			},
 			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_one_01"
+				[1] = "pwe_st_woods_conversation_one_01",
 			},
 			sound_events_duration = {
-				[1.0] = 4.5351877212524
-			}
+				[1] = 4.5351877212524,
+			},
 		},
 		pwe_st_woods_conversation_one_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_one_02"
+				[1] = "pwe_st_woods_conversation_one_02",
 			},
 			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_one_02"
+				[1] = "pwe_st_woods_conversation_one_02",
 			},
 			sound_events_duration = {
-				[1.0] = 5.4667291641235
-			}
+				[1] = 5.4667291641235,
+			},
 		},
 		pwe_st_woods_conversation_seven_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_seven_01"
+				[1] = "pwe_st_woods_conversation_seven_01",
 			},
 			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_seven_01"
+				[1] = "pwe_st_woods_conversation_seven_01",
 			},
 			sound_events_duration = {
-				[1.0] = 2.5082082748413
-			}
+				[1] = 2.5082082748413,
+			},
 		},
 		pwe_st_woods_conversation_seven_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_seven_02"
+				[1] = "pwe_st_woods_conversation_seven_02",
 			},
 			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_seven_02"
+				[1] = "pwe_st_woods_conversation_seven_02",
 			},
 			sound_events_duration = {
-				[1.0] = 5.8607292175293
-			}
+				[1] = 5.8607292175293,
+			},
 		},
 		pwe_st_woods_conversation_seventeen_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_seventeen_01"
+				[1] = "pwe_st_woods_conversation_seventeen_01",
 			},
 			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_seventeen_01"
+				[1] = "pwe_st_woods_conversation_seventeen_01",
 			},
 			sound_events_duration = {
-				[1.0] = 5.950749874115
-			}
+				[1] = 5.950749874115,
+			},
 		},
 		pwe_st_woods_conversation_seventeen_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_seventeen_02"
+				[1] = "pwe_st_woods_conversation_seventeen_02",
 			},
 			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_seventeen_02"
+				[1] = "pwe_st_woods_conversation_seventeen_02",
 			},
 			sound_events_duration = {
-				[1.0] = 6.4578123092651
-			}
+				[1] = 6.4578123092651,
+			},
 		},
 		pwe_st_woods_conversation_six_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_six_01"
+				[1] = "pwe_st_woods_conversation_six_01",
 			},
 			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_six_01"
+				[1] = "pwe_st_woods_conversation_six_01",
 			},
 			sound_events_duration = {
-				[1.0] = 4.4885625839233
-			}
+				[1] = 4.4885625839233,
+			},
 		},
 		pwe_st_woods_conversation_six_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_six_02"
+				[1] = "pwe_st_woods_conversation_six_02",
 			},
 			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_six_02"
+				[1] = "pwe_st_woods_conversation_six_02",
 			},
 			sound_events_duration = {
-				[1.0] = 5.3573126792908
-			}
+				[1] = 5.3573126792908,
+			},
 		},
 		pwe_st_woods_conversation_sixteen_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_sixteen_01"
+				[1] = "pwe_st_woods_conversation_sixteen_01",
 			},
 			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_sixteen_01"
+				[1] = "pwe_st_woods_conversation_sixteen_01",
 			},
 			sound_events_duration = {
-				[1.0] = 5.1895833015442
-			}
+				[1] = 5.1895833015442,
+			},
 		},
 		pwe_st_woods_conversation_sixteen_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_sixteen_02"
+				[1] = "pwe_st_woods_conversation_sixteen_02",
 			},
 			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_sixteen_02"
+				[1] = "pwe_st_woods_conversation_sixteen_02",
 			},
 			sound_events_duration = {
-				[1.0] = 6.3600625991821
-			}
+				[1] = 6.3600625991821,
+			},
 		},
 		pwe_st_woods_conversation_ten_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_ten_01"
+				[1] = "pwe_st_woods_conversation_ten_01",
 			},
 			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_ten_01"
+				[1] = "pwe_st_woods_conversation_ten_01",
 			},
 			sound_events_duration = {
-				[1.0] = 8.0117082595825
-			}
+				[1] = 8.0117082595825,
+			},
 		},
 		pwe_st_woods_conversation_ten_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_ten_02"
+				[1] = "pwe_st_woods_conversation_ten_02",
 			},
 			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_ten_02"
+				[1] = "pwe_st_woods_conversation_ten_02",
 			},
 			sound_events_duration = {
-				[1.0] = 1.4189583063126
-			}
+				[1] = 1.4189583063126,
+			},
 		},
 		pwe_st_woods_conversation_thirteen_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_thirteen_01"
+				[1] = "pwe_st_woods_conversation_thirteen_01",
 			},
 			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_thirteen_01"
+				[1] = "pwe_st_woods_conversation_thirteen_01",
 			},
 			sound_events_duration = {
-				[1.0] = 9.2917289733887
-			}
+				[1] = 9.2917289733887,
+			},
 		},
 		pwe_st_woods_conversation_thirteen_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_thirteen_02"
+				[1] = "pwe_st_woods_conversation_thirteen_02",
 			},
 			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_thirteen_02"
+				[1] = "pwe_st_woods_conversation_thirteen_02",
 			},
 			sound_events_duration = {
-				[1.0] = 4.7106456756592
-			}
+				[1] = 4.7106456756592,
+			},
 		},
 		pwe_st_woods_conversation_three_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_three_01"
+				[1] = "pwe_st_woods_conversation_three_01",
 			},
 			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_three_01"
+				[1] = "pwe_st_woods_conversation_three_01",
 			},
 			sound_events_duration = {
-				[1.0] = 6.1135206222534
-			}
+				[1] = 6.1135206222534,
+			},
 		},
 		pwe_st_woods_conversation_three_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_three_02"
+				[1] = "pwe_st_woods_conversation_three_02",
 			},
 			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_three_02"
+				[1] = "pwe_st_woods_conversation_three_02",
 			},
 			sound_events_duration = {
-				[1.0] = 4.2234582901001
-			}
+				[1] = 4.2234582901001,
+			},
 		},
 		pwe_st_woods_conversation_twelve_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_twelve_01"
+				[1] = "pwe_st_woods_conversation_twelve_01",
 			},
 			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_twelve_01"
+				[1] = "pwe_st_woods_conversation_twelve_01",
 			},
 			sound_events_duration = {
-				[1.0] = 3.5805625915527
-			}
+				[1] = 3.5805625915527,
+			},
 		},
 		pwe_st_woods_conversation_twelve_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_twelve_02"
+				[1] = "pwe_st_woods_conversation_twelve_02",
 			},
 			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_twelve_02"
+				[1] = "pwe_st_woods_conversation_twelve_02",
 			},
 			sound_events_duration = {
-				[1.0] = 6.8540205955505
-			}
+				[1] = 6.8540205955505,
+			},
 		},
 		pwe_st_woods_conversation_twenty_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_twenty_01"
+				[1] = "pwe_st_woods_conversation_twenty_01",
 			},
 			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_twenty_01"
+				[1] = "pwe_st_woods_conversation_twenty_01",
 			},
 			sound_events_duration = {
-				[1.0] = 5.7306876182556
-			}
+				[1] = 5.7306876182556,
+			},
 		},
 		pwe_st_woods_conversation_twenty_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_twenty_02"
+				[1] = "pwe_st_woods_conversation_twenty_02",
 			},
 			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_twenty_02"
+				[1] = "pwe_st_woods_conversation_twenty_02",
 			},
 			sound_events_duration = {
-				[1.0] = 8.3498754501343
-			}
+				[1] = 8.3498754501343,
+			},
 		},
 		pwe_st_woods_conversation_twentyfive_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_twentyfive_01"
+				[1] = "pwe_st_woods_conversation_twentyfive_01",
 			},
 			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_twentyfive_01"
+				[1] = "pwe_st_woods_conversation_twentyfive_01",
 			},
 			sound_events_duration = {
-				[1.0] = 3.0193123817444
-			}
+				[1] = 3.0193123817444,
+			},
 		},
 		pwe_st_woods_conversation_twentyfive_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_twentyfive_02"
+				[1] = "pwe_st_woods_conversation_twentyfive_02",
 			},
 			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_twentyfive_02"
+				[1] = "pwe_st_woods_conversation_twentyfive_02",
 			},
 			sound_events_duration = {
-				[1.0] = 9.0924167633057
-			}
+				[1] = 9.0924167633057,
+			},
 		},
 		pwe_st_woods_conversation_twentyfour_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_twentyfour_01"
+				[1] = "pwe_st_woods_conversation_twentyfour_01",
 			},
 			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_twentyfour_01"
+				[1] = "pwe_st_woods_conversation_twentyfour_01",
 			},
 			sound_events_duration = {
-				[1.0] = 13.850250244141
-			}
+				[1] = 13.850250244141,
+			},
 		},
 		pwe_st_woods_conversation_twentyfour_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_twentyfour_02"
+				[1] = "pwe_st_woods_conversation_twentyfour_02",
 			},
 			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_twentyfour_02"
+				[1] = "pwe_st_woods_conversation_twentyfour_02",
 			},
 			sound_events_duration = {
-				[1.0] = 2.7014999389648
-			}
+				[1] = 2.7014999389648,
+			},
 		},
 		pwe_st_woods_conversation_twentyone_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_twentyone_01"
+				[1] = "pwe_st_woods_conversation_twentyone_01",
 			},
 			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_twentyone_01"
+				[1] = "pwe_st_woods_conversation_twentyone_01",
 			},
 			sound_events_duration = {
-				[1.0] = 1.3881249427795
-			}
+				[1] = 1.3881249427795,
+			},
 		},
 		pwe_st_woods_conversation_twentyone_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_twentyone_02"
+				[1] = "pwe_st_woods_conversation_twentyone_02",
 			},
 			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_twentyone_02"
+				[1] = "pwe_st_woods_conversation_twentyone_02",
 			},
 			sound_events_duration = {
-				[1.0] = 7.7280206680298
-			}
+				[1] = 7.7280206680298,
+			},
 		},
 		pwe_st_woods_conversation_twentythree_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_twentythree_01"
+				[1] = "pwe_st_woods_conversation_twentythree_01",
 			},
 			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_twentythree_01"
+				[1] = "pwe_st_woods_conversation_twentythree_01",
 			},
 			sound_events_duration = {
-				[1.0] = 5.8555626869202
-			}
+				[1] = 5.8555626869202,
+			},
 		},
 		pwe_st_woods_conversation_twentythree_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_twentythree_02"
+				[1] = "pwe_st_woods_conversation_twentythree_02",
 			},
 			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_twentythree_02"
+				[1] = "pwe_st_woods_conversation_twentythree_02",
 			},
 			sound_events_duration = {
-				[1.0] = 5.0222916603088
-			}
+				[1] = 5.0222916603088,
+			},
 		},
 		pwe_st_woods_conversation_twentythree_03 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_twentythree_03"
+				[1] = "pwe_st_woods_conversation_twentythree_03",
 			},
 			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_twentythree_03"
+				[1] = "pwe_st_woods_conversation_twentythree_03",
 			},
 			sound_events_duration = {
-				[1.0] = 9.542854309082
-			}
+				[1] = 9.542854309082,
+			},
 		},
 		pwe_st_woods_conversation_twentytwo_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_twentytwo_01"
+				[1] = "pwe_st_woods_conversation_twentytwo_01",
 			},
 			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_twentytwo_01"
+				[1] = "pwe_st_woods_conversation_twentytwo_01",
 			},
 			sound_events_duration = {
-				[1.0] = 1.3124582767487
-			}
+				[1] = 1.3124582767487,
+			},
 		},
 		pwe_st_woods_conversation_two_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_two_01"
+				[1] = "pwe_st_woods_conversation_two_01",
 			},
 			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_two_01"
+				[1] = "pwe_st_woods_conversation_two_01",
 			},
 			sound_events_duration = {
-				[1.0] = 10.363145828247
-			}
+				[1] = 10.363145828247,
+			},
 		},
 		pwe_st_woods_conversation_two_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_two_02"
+				[1] = "pwe_st_woods_conversation_two_02",
 			},
 			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_two_02"
+				[1] = "pwe_st_woods_conversation_two_02",
 			},
 			sound_events_duration = {
-				[1.0] = 4.6217918395996
-			}
+				[1] = 4.6217918395996,
+			},
 		},
 		pwh_woods_conversation_eighteen_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pwh_woods_conversation_eighteen_01"
+				[1] = "pwh_woods_conversation_eighteen_01",
 			},
 			sound_events = {
-				[1.0] = "pwh_woods_conversation_eighteen_01"
+				[1] = "pwh_woods_conversation_eighteen_01",
 			},
 			sound_events_duration = {
-				[1.0] = 8.5363960266113
-			}
+				[1] = 8.5363960266113,
+			},
 		},
 		pwh_woods_conversation_eighteen_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwh_woods_conversation_eighteen_02"
+				[1] = "pwh_woods_conversation_eighteen_02",
 			},
 			sound_events = {
-				[1.0] = "pwh_woods_conversation_eighteen_02"
+				[1] = "pwh_woods_conversation_eighteen_02",
 			},
 			sound_events_duration = {
-				[1.0] = 2.6248333454132
-			}
+				[1] = 2.6248333454132,
+			},
 		},
 		pwh_woods_conversation_nineteen_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pwh_woods_conversation_nineteen_01"
+				[1] = "pwh_woods_conversation_nineteen_01",
 			},
 			sound_events = {
-				[1.0] = "pwh_woods_conversation_nineteen_01"
+				[1] = "pwh_woods_conversation_nineteen_01",
 			},
 			sound_events_duration = {
-				[1.0] = 10.194458007813
-			}
+				[1] = 10.194458007813,
+			},
 		},
 		pwh_woods_conversation_nineteen_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwh_woods_conversation_nineteen_02"
+				[1] = "pwh_woods_conversation_nineteen_02",
 			},
 			sound_events = {
-				[1.0] = "pwh_woods_conversation_nineteen_02"
+				[1] = "pwh_woods_conversation_nineteen_02",
 			},
 			sound_events_duration = {
-				[1.0] = 4.3171043395996
-			}
+				[1] = 4.3171043395996,
+			},
 		},
 		pwh_woods_conversation_nineteen_03 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwh_woods_conversation_nineteen_03"
+				[1] = "pwh_woods_conversation_nineteen_03",
 			},
 			sound_events = {
-				[1.0] = "pwh_woods_conversation_nineteen_03"
+				[1] = "pwh_woods_conversation_nineteen_03",
 			},
 			sound_events_duration = {
-				[1.0] = 2.899854183197
-			}
+				[1] = 2.899854183197,
+			},
 		},
 		pwh_woods_conversation_seventeen_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pwh_woods_conversation_seventeen_01"
+				[1] = "pwh_woods_conversation_seventeen_01",
 			},
 			sound_events = {
-				[1.0] = "pwh_woods_conversation_seventeen_01"
+				[1] = "pwh_woods_conversation_seventeen_01",
 			},
 			sound_events_duration = {
-				[1.0] = 6.3101043701172
-			}
+				[1] = 6.3101043701172,
+			},
 		},
 		pwh_woods_conversation_seventeen_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwh_woods_conversation_seventeen_02"
+				[1] = "pwh_woods_conversation_seventeen_02",
 			},
 			sound_events = {
-				[1.0] = "pwh_woods_conversation_seventeen_02"
+				[1] = "pwh_woods_conversation_seventeen_02",
 			},
 			sound_events_duration = {
-				[1.0] = 2.4798541069031
-			}
+				[1] = 2.4798541069031,
+			},
 		},
 		pwh_woods_conversation_sixteen_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pwh_woods_conversation_sixteen_01"
+				[1] = "pwh_woods_conversation_sixteen_01",
 			},
 			sound_events = {
-				[1.0] = "pwh_woods_conversation_sixteen_01"
+				[1] = "pwh_woods_conversation_sixteen_01",
 			},
 			sound_events_duration = {
-				[1.0] = 9.3411045074463
-			}
+				[1] = 9.3411045074463,
+			},
 		},
 		pwh_woods_conversation_sixteen_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwh_woods_conversation_sixteen_02"
+				[1] = "pwh_woods_conversation_sixteen_02",
 			},
 			sound_events = {
-				[1.0] = "pwh_woods_conversation_sixteen_02"
+				[1] = "pwh_woods_conversation_sixteen_02",
 			},
 			sound_events_duration = {
-				[1.0] = 3.974687576294
-			}
+				[1] = 3.974687576294,
+			},
 		},
 		pwh_woods_conversation_twenty_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pwh_woods_conversation_twenty_01"
+				[1] = "pwh_woods_conversation_twenty_01",
 			},
 			sound_events = {
-				[1.0] = "pwh_woods_conversation_twenty_01"
+				[1] = "pwh_woods_conversation_twenty_01",
 			},
 			sound_events_duration = {
-				[1.0] = 5.4894165992737
-			}
+				[1] = 5.4894165992737,
+			},
 		},
 		pwh_woods_conversation_twenty_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwh_woods_conversation_twenty_02"
+				[1] = "pwh_woods_conversation_twenty_02",
 			},
 			sound_events = {
-				[1.0] = "pwh_woods_conversation_twenty_02"
+				[1] = "pwh_woods_conversation_twenty_02",
 			},
 			sound_events_duration = {
-				[1.0] = 2.113041639328
-			}
+				[1] = 2.113041639328,
+			},
 		},
 		pwh_woods_conversation_twentyeight_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwh_woods_conversation_twentyeight_01"
+				[1] = "pwh_woods_conversation_twentyeight_01",
 			},
 			sound_events = {
-				[1.0] = "pwh_woods_conversation_twentyeight_01"
+				[1] = "pwh_woods_conversation_twentyeight_01",
 			},
 			sound_events_duration = {
-				[1.0] = 5.3414793014526
-			}
+				[1] = 5.3414793014526,
+			},
 		},
 		pwh_woods_conversation_twentynine_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pwh_woods_conversation_twentynine_01"
+				[1] = "pwh_woods_conversation_twentynine_01",
 			},
 			sound_events = {
-				[1.0] = "pwh_woods_conversation_twentynine_01"
+				[1] = "pwh_woods_conversation_twentynine_01",
 			},
 			sound_events_duration = {
-				[1.0] = 5.2253956794739
-			}
+				[1] = 5.2253956794739,
+			},
 		},
 		pwh_woods_conversation_twentynine_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwh_woods_conversation_twentynine_02"
+				[1] = "pwh_woods_conversation_twentynine_02",
 			},
 			sound_events = {
-				[1.0] = "pwh_woods_conversation_twentynine_02"
+				[1] = "pwh_woods_conversation_twentynine_02",
 			},
 			sound_events_duration = {
-				[1.0] = 2.3761458396912
-			}
+				[1] = 2.3761458396912,
+			},
 		},
 		pwh_woods_conversation_twentyseven_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwh_woods_conversation_twentyseven_01"
+				[1] = "pwh_woods_conversation_twentyseven_01",
 			},
 			sound_events = {
-				[1.0] = "pwh_woods_conversation_twentyseven_01"
+				[1] = "pwh_woods_conversation_twentyseven_01",
 			},
 			sound_events_duration = {
-				[1.0] = 2.8516249656677
-			}
+				[1] = 2.8516249656677,
+			},
 		},
 		pwh_woods_conversation_twentysix_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwh_woods_conversation_twentysix_01"
+				[1] = "pwh_woods_conversation_twentysix_01",
 			},
 			sound_events = {
-				[1.0] = "pwh_woods_conversation_twentysix_01"
+				[1] = "pwh_woods_conversation_twentysix_01",
 			},
 			sound_events_duration = {
-				[1.0] = 10.837187767029
-			}
+				[1] = 10.837187767029,
+			},
 		},
 		pwh_woods_conversation_twentysix_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
 			category = "story_talk_keep",
+			database = "dlc_woods",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwh_woods_conversation_twentysix_02"
+				[1] = "pwh_woods_conversation_twentysix_02",
 			},
 			sound_events = {
-				[1.0] = "pwh_woods_conversation_twentysix_02"
+				[1] = "pwh_woods_conversation_twentysix_02",
 			},
 			sound_events_duration = {
-				[1.0] = 4.3541874885559
-			}
-		}
+				[1] = 4.3541874885559,
+			},
+		},
 	})
 end

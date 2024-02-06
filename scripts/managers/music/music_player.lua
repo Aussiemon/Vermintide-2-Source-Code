@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/music/music_player.lua
+
 require("scripts/managers/music/music")
 
 local function dprint(...)
@@ -101,6 +103,7 @@ MusicPlayer.update = function (self, flags, game_object_id)
 
 				if local_party then
 					local local_party_id = local_party.party_id
+
 					state_id = state_id[local_party_id]
 				else
 					state_id = nil

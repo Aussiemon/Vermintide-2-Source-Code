@@ -1,9 +1,12 @@
+﻿-- chunkname: @scripts/ui/views/hero_view/windows/hero_window_prestige.lua
+
 local definitions = local_require("scripts/ui/views/hero_view/windows/definitions/hero_window_prestige_definitions")
 local widget_definitions = definitions.widgets
 local warning_widget_definitions = definitions.warning_widgets
 local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
 local DO_RELOAD = false
+
 HeroWindowPrestige = class(HeroWindowPrestige)
 HeroWindowPrestige.NAME = "HeroWindowPrestige"
 
@@ -11,16 +14,20 @@ HeroWindowPrestige.on_enter = function (self, params, offset)
 	print("[HeroViewWindow] Enter Substate HeroWindowPrestige")
 
 	self.parent = params.parent
+
 	local ingame_ui_context = params.ingame_ui_context
+
 	self.ui_renderer = ingame_ui_context.ui_renderer
 	self.ui_top_renderer = ingame_ui_context.ui_top_renderer
 	self.input_manager = ingame_ui_context.input_manager
 	self.statistics_db = ingame_ui_context.statistics_db
 	self.render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
+
 	local player_manager = Managers.player
 	local local_player = player_manager:local_player()
+
 	self._stats_id = local_player:stats_id()
 	self.player_manager = player_manager
 	self.peer_id = ingame_ui_context.peer_id
@@ -31,7 +38,9 @@ HeroWindowPrestige.on_enter = function (self, params, offset)
 	self.hero_name = params.hero_name
 	self.career_index = params.career_index
 	self.profile_index = params.profile_index
+
 	local experience = ExperienceSettings.get_experience(self.hero_name)
+
 	self.hero_level = ExperienceSettings.get_level(experience)
 
 	self:_setup_prestige_reward()
@@ -45,21 +54,25 @@ end
 
 HeroWindowPrestige.create_ui_elements = function (self, params, offset)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+
 	local widgets = {}
 	local widgets_by_name = {}
 
 	for name, widget_definition in pairs(widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		widgets[#widgets + 1] = widget
 		widgets_by_name[name] = widget
 	end
 
 	self._widgets = widgets
 	self._widgets_by_name = widgets_by_name
+
 	local warning_widgets = {}
 
 	for name, widget_definition in pairs(warning_widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		warning_widgets[#warning_widgets + 1] = widget
 		widgets_by_name[name] = widget
 	end
@@ -72,6 +85,7 @@ HeroWindowPrestige.create_ui_elements = function (self, params, offset)
 
 	if offset then
 		local window_position = self.ui_scenegraph.window.local_position
+
 		window_position[1] = window_position[1] + offset[1]
 		window_position[2] = window_position[2] + offset[2]
 		window_position[3] = window_position[3] + offset[3]
@@ -82,16 +96,22 @@ HeroWindowPrestige._setup_prestige_reward = function (self)
 	local widgets_by_name = self._widgets_by_name
 	local hero_name = self.hero_name
 	local max_prestige_level = ProgressionUnlocks.get_max_prestige_levels()
+
 	self._max_prestige_level = max_prestige_level
+
 	local prestige_level = ProgressionUnlocks.get_prestige_level(hero_name)
+
 	self._prestige_level = prestige_level
+
 	local next_presige_level = math.min(prestige_level + 1, max_prestige_level)
 	local is_max_prestiged = prestige_level == next_presige_level
 
 	if not is_max_prestiged then
-		local reward_portrait_frame, reward_texture = nil
+		local reward_portrait_frame, reward_texture
 		local reward_item_key = ProgressionUnlocks.prestige_reward_by_level(next_presige_level, hero_name)
+
 		self._reward_item_key = reward_item_key
+
 		local item_data = ItemMasterList[reward_item_key]
 		local item_type = item_data.item_type
 		local display_name = item_data.display_name
@@ -110,6 +130,7 @@ HeroWindowPrestige._setup_prestige_reward = function (self)
 	end
 
 	local can_prestige = ProgressionUnlocks.can_upgrade_prestige(hero_name)
+
 	widgets_by_name.prestige_button.content.button_hotspot.disable_button = not can_prestige
 	widgets_by_name.unable_description_text.content.visible = not can_prestige
 end
@@ -279,12 +300,15 @@ HeroWindowPrestige._set_prestige_reward_portrait_frame = function (self, frame_s
 	local careers = profile_settings.careers
 	local career_settings = careers[career_index]
 	local portrait_image = career_settings.portrait_image
-	local widget = nil
+	local widget
 
 	if frame_settings_name then
 		local widget_definition = UIWidgets.create_portrait_frame("reward_portrait_root", frame_settings_name, "", 1, nil, portrait_image)
+
 		widget = UIWidget.init(widget_definition)
+
 		local widget_content = widget.content
+
 		widget_content.frame_settings_name = frame_settings_name
 	end
 

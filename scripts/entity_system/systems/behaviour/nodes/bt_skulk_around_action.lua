@@ -1,7 +1,10 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_skulk_around_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTSkulkAroundAction = class(BTSkulkAroundAction, BTNode)
 BTSkulkAroundAction.name = "BTSkulkAroundAction"
+
 local position_lookup = POSITION_LOOKUP
 local script_data = script_data
 
@@ -42,12 +45,13 @@ BTSkulkAroundAction.enter = function (self, unit, blackboard, t)
 		blackboard.navigation_extension:move_to(pos)
 	else
 		local pos = self:get_new_skulk_goal(unit, blackboard)
+
 		skulk_data.skulk_pos = Vector3Box(pos)
 
 		blackboard.navigation_extension:move_to(pos)
 	end
 
-	if not skulk_data.attack_timer or skulk_data.attack_timer < t then
+	if not skulk_data.attack_timer or t > skulk_data.attack_timer then
 		skulk_data.attack_timer = t + math.random(25, 30)
 	end
 end
@@ -60,6 +64,7 @@ BTSkulkAroundAction.leave = function (self, unit, blackboard, t, reason, destroy
 
 	if blackboard.approach_target then
 		local skulk_data = blackboard.skulk_data
+
 		skulk_data.attack_timer = nil
 	end
 end
@@ -82,6 +87,7 @@ BTSkulkAroundAction.run = function (self, unit, blackboard, t, dt)
 
 		if blackboard.no_path_found then
 			local pos = self:get_new_skulk_goal(unit, blackboard)
+
 			skulk_data.skulk_pos = Vector3Box(pos)
 
 			blackboard.navigation_extension:move_to(pos)
@@ -92,7 +98,7 @@ BTSkulkAroundAction.run = function (self, unit, blackboard, t, dt)
 		return "done"
 	end
 
-	if skulk_data.attack_timer < t then
+	if t > skulk_data.attack_timer then
 		blackboard.approach_target = true
 
 		return "failed"
@@ -125,9 +131,9 @@ BTSkulkAroundAction.get_new_skulk_goal = function (self, unit, blackboard)
 	local path_pos, travel_dist, move_percent = MainPathUtils.closest_pos_at_main_path(main_paths, POSITION_LOOKUP[unit])
 	local info = Managers.state.conflict.main_path_info
 	local player_info = Managers.state.conflict.main_path_player_info
-	local enemy_pos, player_travel_dist, add_dist = nil
+	local enemy_pos, player_travel_dist, add_dist
 
-	if info.ahead_percent <= move_percent then
+	if move_percent >= info.ahead_percent then
 		enemy_pos = POSITION_LOOKUP[info.ahead_unit]
 		add_dist = 30
 		player_travel_dist = player_info[info.ahead_unit].travel_dist
@@ -152,16 +158,18 @@ BTSkulkAroundAction.get_new_skulk_goal = function (self, unit, blackboard)
 	local spawn_zone_baker = conflict_director.spawn_zone_baker
 	local zone_index = math.clamp(math.floor((wanted_travel_dist + 5) / 10), 1, #spawn_zone_baker.zones)
 	local zone = spawn_zone_baker.zones[zone_index]
-	local nodes = nil
+	local nodes
 	local nearby_islands = zone.nearby_islands
 
 	if nearby_islands then
 		local island_zone = nearby_islands[math.random(1, #nearby_islands)]
+
 		nodes = island_zone.sub[1]
 	else
 		local num_zones = #zone.sub
 		local zone_layer = math.clamp(num_zones, 1, 2)
 		local outer_nodes = zone.sub[zone_layer]
+
 		nodes = outer_nodes
 	end
 

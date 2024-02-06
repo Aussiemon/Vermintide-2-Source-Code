@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_follow_commander_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTFollowCommanderAction = class(BTFollowCommanderAction, BTNode)
@@ -12,14 +14,17 @@ BTFollowCommanderAction.enter = function (self, unit, blackboard, t)
 	blackboard.action = self._tree_node.action_data
 	blackboard.time_to_next_evaluate = t + 0.5
 	blackboard.time_to_next_friend_alert = t + 0.3
+
 	local commander_extension = blackboard.commander_extension
 
 	commander_extension:register_follow_node_update(unit)
 
 	local follow_node_position = commander_extension:follow_node_position(unit)
+
 	blackboard.commander_extension = commander_extension
 	blackboard.follow_node_position = follow_node_position
 	blackboard.new_follow_node_pos = true
+
 	local network_manager = Managers.state.network
 	local breed = blackboard.breed
 	local passive_in_patrol = breed.passive_in_patrol == nil or breed.passive_in_patrol and not blackboard.ignore_passive_on_patrol
@@ -55,6 +60,7 @@ BTFollowCommanderAction.leave = function (self, unit, blackboard, t, reason, des
 	blackboard.anim_cb_move = nil
 	blackboard.start_anim_done = nil
 	blackboard.skip_move_rotation = nil
+
 	local default_move_speed = AiUtils.get_default_breed_move_speed(unit, blackboard)
 	local navigation_extension = blackboard.navigation_extension
 
@@ -130,9 +136,9 @@ BTFollowCommanderAction.run = function (self, unit, blackboard, t, dt)
 		end
 	end
 
-	local should_evaluate = nil
+	local should_evaluate
 
-	if blackboard.time_to_next_evaluate < t or not blackboard.new_follow_node_pos and navigation_extension:has_reached_destination() then
+	if t > blackboard.time_to_next_evaluate or not blackboard.new_follow_node_pos and navigation_extension:has_reached_destination() then
 		should_evaluate = "evaluate"
 		blackboard.time_to_next_evaluate = t + 0.5
 	end
@@ -165,6 +171,7 @@ BTFollowCommanderAction.start_move_rotation = function (self, unit, blackboard, 
 		self:toggle_start_move_animation_lock(unit, false, blackboard)
 	else
 		blackboard.anim_cb_rotation_start = false
+
 		local target_pos = POSITION_LOOKUP[blackboard.target_unit]
 
 		if not target_pos and blackboard.goal_destination then

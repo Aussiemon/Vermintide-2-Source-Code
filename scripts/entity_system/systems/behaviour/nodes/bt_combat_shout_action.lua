@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_combat_shout_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTCombatShoutAction = class(BTCombatShoutAction, BTNode)
@@ -10,9 +12,11 @@ BTCombatShoutAction.name = "BTCombatShoutAction"
 
 BTCombatShoutAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
+
 	blackboard.action = action
 	blackboard.anim_cb_shout_finished = nil
 	blackboard.active_node = BTCombatShoutAction
+
 	local network_manager = Managers.state.network
 
 	network_manager:anim_event(unit, action.shout_anim)

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/side/side_manager.lua
+
 require("scripts/managers/side/side")
 
 SideManager = class(SideManager)
@@ -8,7 +10,7 @@ SideManager.init = function (self, side_compositions)
 		name = "undecided",
 		relations = {},
 		available_profiles = {},
-		party = Managers.party:get_party(0)
+		party = Managers.party:get_party(0),
 	}
 	self._sides, self._side_lookup = self:_create_sides(side_compositions)
 
@@ -30,6 +32,7 @@ SideManager._create_sides = function (self, side_compositions)
 		fassert(side_lookup[side_name] == nil, "Side with the same name exists in side_composition, side_name(%s)", side_name)
 
 		local side = Side:new(definition, i)
+
 		sides[i] = side
 		side_lookup[side_name] = side
 	end
@@ -60,7 +63,7 @@ SideManager._setup_relations = function (self, side_compositions, sides, side_lo
 		end
 
 		side:set_relation("ally", {
-			side
+			side,
 		})
 	end
 end
@@ -118,6 +121,7 @@ SideManager.add_unit_to_side = function (self, unit, side_id)
 	side:add_unit(unit)
 
 	self.side_by_unit[unit] = side
+
 	local enemy_sides = side:get_enemy_sides()
 
 	for i = 1, #enemy_sides do
@@ -185,6 +189,7 @@ end
 
 SideManager.remove_player_unit_from_side = function (self, player_unit)
 	self._player_units_lookup[player_unit] = nil
+
 	local side = self.side_by_unit[player_unit]
 	local enemy_sides = side:get_enemy_sides()
 
@@ -345,10 +350,12 @@ SideManager._update_frame_tables = function (self, side, all_human_and_bot_units
 
 		if is_valid(unit) then
 			local pos = position_lookup[unit]
+
 			num_human_and_bot_units = num_human_and_bot_units + 1
 			human_and_bot_units[num_human_and_bot_units] = unit
 			human_and_bot_unit_positions[num_human_and_bot_units] = pos
 			all_human_and_bot_units[all_index + i] = unit
+
 			local player = player_manager:owner(unit)
 
 			if player:is_player_controlled() then
@@ -362,6 +369,7 @@ SideManager._update_frame_tables = function (self, side, all_human_and_bot_units
 	end
 
 	side.has_bots = has_bots
+
 	local i = num_human_units + 1
 
 	while human_units[i] do
@@ -401,10 +409,12 @@ SideManager._update_enemy_frame_tables = function (self, side)
 
 		if is_valid(unit) then
 			local pos = position_lookup[unit]
+
 			num_human_and_bot_units = num_human_and_bot_units + 1
 			human_and_bot_units[num_human_and_bot_units] = unit
 			human_and_bot_unit_positions[num_human_and_bot_units] = pos
 			valid_humans_and_bots[unit] = true
+
 			local player = player_manager:owner(unit)
 
 			if player:is_player_controlled() then
@@ -461,6 +471,7 @@ end
 
 SideManager._remove_player_unit_from_lists = function (self, player_unit)
 	POSITION_LOOKUP[player_unit] = nil
+
 	local sides = self._sides
 	local num_sides = #sides
 
@@ -483,6 +494,7 @@ SideManager._remove_player_unit_from_lists = function (self, player_unit)
 
 		local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
 		local player_and_bot_positions = side.PLAYER_AND_BOT_POSITIONS
+
 		size = #player_and_bot_units
 
 		for j = 1, size do
@@ -498,6 +510,7 @@ SideManager._remove_player_unit_from_lists = function (self, player_unit)
 
 		local enemy_player_units = side.ENEMY_PLAYER_UNITS
 		local enemy_player_positions = side.ENEMY_PLAYER_POSITIONS
+
 		size = #enemy_player_units
 
 		for j = 1, size do
@@ -513,6 +526,7 @@ SideManager._remove_player_unit_from_lists = function (self, player_unit)
 
 		local enemy_player_and_bot_units = side.ENEMY_PLAYER_AND_BOT_UNITS
 		local enemy_player_and_bot_positions = side.ENEMY_PLAYER_AND_BOT_POSITIONS
+
 		size = #enemy_player_and_bot_units
 
 		for j = 1, size do

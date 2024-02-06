@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/unlock/unlock_clan.lua
+
 require("scripts/helpers/steam_helper")
 
 UnlockClan = class(UnlockClan)

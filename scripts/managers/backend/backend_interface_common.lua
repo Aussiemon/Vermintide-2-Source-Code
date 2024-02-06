@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/backend/backend_interface_common.lua
+
 BackendInterfaceCommon = class(BackendInterfaceCommon)
 
 require("scripts/settings/equipment/weapon_skins")
@@ -28,64 +30,64 @@ local filter_operators = {
 		1,
 		function (op1)
 			return not op1
-		end
+		end,
 	},
 	["<"] = {
 		3,
 		2,
 		function (op1, op2)
 			return op1 < op2
-		end
+		end,
 	},
 	[">"] = {
 		3,
 		2,
 		function (op1, op2)
 			return op2 < op1
-		end
+		end,
 	},
 	["<="] = {
 		3,
 		2,
 		function (op1, op2)
 			return op1 <= op2
-		end
+		end,
 	},
 	[">="] = {
 		3,
 		2,
 		function (op1, op2)
 			return op2 <= op1
-		end
+		end,
 	},
 	["~="] = {
 		3,
 		2,
 		function (op1, op2)
 			return op1 ~= op2
-		end
+		end,
 	},
 	["=="] = {
 		3,
 		2,
 		function (op1, op2)
 			return op1 == op2
-		end
+		end,
 	},
 	["and"] = {
 		2,
 		2,
 		function (op1, op2)
 			return op1 and op2
-		end
+		end,
 	},
 	["or"] = {
 		1,
 		2,
 		function (op1, op2)
 			return op1 or op2
-		end
-	}
+		end,
+	},
 }
 
 local function make_filter_macro_can_wield_profile(profile_name)
@@ -113,465 +115,430 @@ local filter_macros = {
 		local item_data = item.data
 
 		return item_data.key
-	end
-}
+	end,
+	item_rarity = function (item, backend_id)
+		local item_data = item.data
+		local backend_items = Managers.backend:get_interface("items")
+		local rarity = backend_items:get_item_rarity(backend_id)
 
-filter_macros.item_rarity = function (item, backend_id)
-	local item_data = item.data
-	local backend_items = Managers.backend:get_interface("items")
-	local rarity = backend_items:get_item_rarity(backend_id)
+		return rarity
+	end,
+	slot_type = function (item, backend_id)
+		local item_data = item.data
 
-	return rarity
-end
+		return item_data.slot_type
+	end,
+	item_type = function (item, backend_id)
+		local item_data = item.data
 
-filter_macros.slot_type = function (item, backend_id)
-	local item_data = item.data
+		return item_data.item_type
+	end,
+	chest_category = function (item, backend_id)
+		local item_data = item.data
 
-	return item_data.slot_type
-end
+		return item_data.chest_category
+	end,
+	discounted_items = function (item, backend_id)
+		local item_data = item.data
+		local item_key = item_data.key
+		local backend_peddler = Managers.backend:get_interface("peddler")
+		local steam_itemdefid = item_data.steam_itemdefid
 
-filter_macros.item_type = function (item, backend_id)
-	local item_data = item.data
+		if HAS_STEAM and steam_itemdefid then
+			local steam_data = item.steam_data
 
-	return item_data.item_type
-end
-
-filter_macros.chest_category = function (item, backend_id)
-	local item_data = item.data
-
-	return item_data.chest_category
-end
-
-filter_macros.discounted_items = function (item, backend_id)
-	local item_data = item.data
-	local item_key = item_data.key
-	local backend_peddler = Managers.backend:get_interface("peddler")
-	local steam_itemdefid = item_data.steam_itemdefid
-
-	if HAS_STEAM and steam_itemdefid then
-		local steam_data = item.steam_data
-
-		if steam_data and steam_data.discount_is_active then
-			return true
-		end
-	end
-
-	return backend_peddler:is_discounted_shilling_item(item_key)
-end
-
-filter_macros.trinket_as_hero = function (item, backend_id)
-	local item_data = item.data
-
-	if item_data.traits then
-		for _, trait_name in ipairs(item_data.traits) do
-			local trait_config = BuffTemplates[trait_name]
-			local roll_dice_as_hero = trait_config.roll_dice_as_hero
-
-			if roll_dice_as_hero then
+			if steam_data and steam_data.discount_is_active then
 				return true
 			end
 		end
-	end
-end
 
-filter_macros.is_weapon = function (item, backend_id)
-	local item_data = item.data
-	local slot_type = item_data.slot_type
-	local is_weapon = slot_type == "melee" or slot_type == "ranged"
+		return backend_peddler:is_discounted_shilling_item(item_key)
+	end,
+	trinket_as_hero = function (item, backend_id)
+		local item_data = item.data
 
-	return is_weapon
-end
+		if item_data.traits then
+			for _, trait_name in ipairs(item_data.traits) do
+				local trait_config = BuffTemplates[trait_name]
+				local roll_dice_as_hero = trait_config.roll_dice_as_hero
 
-filter_macros.equipped_by_current_career = function (item, backend_id, params)
-	local item_data = item.data
-	local profile_synchronizer = Managers.state.network.profile_synchronizer
-	local player = nil
-
-	if params and params.player then
-		player = params.player
-	else
-		player = Managers.player:local_player()
-	end
-
-	if not player then
-		return false
-	end
-
-	local profile_index = player:profile_index()
-
-	if not profile_index or profile_index == 0 then
-		return false
-	end
-
-	local career_index = player:career_index()
-
-	if not career_index or career_index == 0 then
-		return false
-	end
-
-	local hero_data = SPProfiles[profile_index]
-	local career_data = hero_data.careers[career_index]
-	local career_name = career_data.name
-	local backend_items = Managers.backend:get_interface("items")
-	local career_names = backend_items:equipped_by(backend_id)
-
-	return table.contains(career_names, career_name)
-end
-
-filter_macros.is_equipped = function (item, backend_id)
-	local item_data = item.data
-	local backend_items = Managers.backend:get_interface("items")
-	local career_names = backend_items:equipped_by(backend_id)
-
-	if #career_names > 0 then
-		return true
-	end
-
-	return false
-end
-
-filter_macros.is_equipment_slot = function (item, backend_id)
-	local item_data = item.data
-	local is_slot = false
-
-	for _, slot in ipairs(InventorySettings.equipment_slots) do
-		if item_data.slot_type == slot.type then
-			is_slot = true
-
-			break
-		end
-	end
-
-	return is_slot
-end
-
-filter_macros.current_hero = function (item, backend_id)
-	local item_data = item.data
-	local profile_synchronizer = Managers.state.network.profile_synchronizer
-	local player = Managers.player:local_player()
-	local profile_index = profile_synchronizer:profile_by_peer(player:network_id(), player:local_player_id())
-	local hero_data = SPProfiles[profile_index]
-	local hero_name = hero_data.display_name
-
-	return hero_name
-end
-
-filter_macros.can_wield_by_current_career = function (item, backend_id, params)
-	local item_data = item.data
-	local profile_synchronizer = Managers.state.network.profile_synchronizer
-	local player = Managers.player:local_player()
-	local profile_index = params and params.profile_index or player:profile_index()
-	local career_index = params and params.career_index or player:career_index()
-	local hero_data = SPProfiles[profile_index]
-	local career_data = hero_data.careers[career_index]
-	local career_name = career_data.name
-	local item_can_wield = item_data.can_wield
-
-	return table.contains(item_can_wield, career_name)
-end
-
-filter_macros.can_wield_by_current_hero = function (item, backend_id, params)
-	local item_data = item.data
-	local profile_synchronizer = Managers.state.network.profile_synchronizer
-	local player = Managers.player:local_player()
-	local profile_index = params and params.profile_index or player:profile_index()
-	local career_index = params and params.career_index or player:career_index()
-	local hero_data = SPProfiles[profile_index]
-	local careers = hero_data.careers
-	local item_can_wield = item_data.can_wield
-
-	for career_index, career in ipairs(careers) do
-		local career_name = career.name
-
-		if table.contains(item_can_wield, career_name) then
-			return true
-		end
-	end
-
-	return false
-end
-
-filter_macros.is_new = function (item, backend_id)
-	return PlayerData.new_item_ids[backend_id]
-end
-
-filter_macros.is_plentiful = function (item, backend_id)
-	local backend_items = Managers.backend:get_interface("items")
-	local rarity = backend_items:get_item_rarity(backend_id)
-
-	return rarity == "plentiful"
-end
-
-filter_macros.is_common = function (item, backend_id)
-	local backend_items = Managers.backend:get_interface("items")
-	local rarity = backend_items:get_item_rarity(backend_id)
-
-	return rarity == "common"
-end
-
-filter_macros.is_rare = function (item, backend_id)
-	local backend_items = Managers.backend:get_interface("items")
-	local rarity = backend_items:get_item_rarity(backend_id)
-
-	return rarity == "rare"
-end
-
-filter_macros.is_exotic = function (item, backend_id)
-	local backend_items = Managers.backend:get_interface("items")
-	local rarity = backend_items:get_item_rarity(backend_id)
-
-	return rarity == "exotic"
-end
-
-filter_macros.is_unique = function (item, backend_id)
-	local backend_items = Managers.backend:get_interface("items")
-	local rarity = backend_items:get_item_rarity(backend_id)
-
-	return rarity == "unique"
-end
-
-filter_macros.is_promo = function (item, backend_id)
-	local backend_items = Managers.backend:get_interface("items")
-	local rarity = backend_items:get_item_rarity(backend_id)
-
-	return rarity == "promo"
-end
-
-filter_macros.is_default = function (item, backend_id)
-	local backend_items = Managers.backend:get_interface("items")
-	local rarity = backend_items:get_item_rarity(backend_id)
-
-	return rarity == "default"
-end
-
-filter_macros.is_magic = function (item, backend_id)
-	local backend_items = Managers.backend:get_interface("items")
-	local rarity = backend_items:get_item_rarity(backend_id)
-
-	return rarity == "magic"
-end
-
-filter_macros.can_wield_bright_wizard = make_filter_macro_can_wield_profile("bright_wizard")
-filter_macros.can_wield_bw_scholar = make_filter_macro_can_wield_career("bw_scholar")
-filter_macros.can_wield_bw_adept = make_filter_macro_can_wield_career("bw_adept")
-filter_macros.can_wield_bw_unchained = make_filter_macro_can_wield_career("bw_unchained")
-filter_macros.can_wield_bw_necromancer = make_filter_macro_can_wield_career("bw_necromancer")
-filter_macros.can_wield_dwarf_ranger = make_filter_macro_can_wield_profile("dwarf_ranger")
-filter_macros.can_wield_dr_ironbreaker = make_filter_macro_can_wield_career("dr_ironbreaker")
-filter_macros.can_wield_dr_slayer = make_filter_macro_can_wield_career("dr_slayer")
-filter_macros.can_wield_dr_ranger = make_filter_macro_can_wield_career("dr_ranger")
-filter_macros.can_wield_dr_engineer = make_filter_macro_can_wield_career("dr_engineer")
-filter_macros.can_wield_empire_soldier = make_filter_macro_can_wield_profile("empire_soldier")
-filter_macros.can_wield_es_huntsman = make_filter_macro_can_wield_career("es_huntsman")
-filter_macros.can_wield_es_knight = make_filter_macro_can_wield_career("es_knight")
-filter_macros.can_wield_es_mercenary = make_filter_macro_can_wield_career("es_mercenary")
-filter_macros.can_wield_es_questingknight = make_filter_macro_can_wield_career("es_questingknight")
-filter_macros.can_wield_witch_hunter = make_filter_macro_can_wield_profile("witch_hunter")
-filter_macros.can_wield_wh_captain = make_filter_macro_can_wield_career("wh_captain")
-filter_macros.can_wield_wh_bountyhunter = make_filter_macro_can_wield_career("wh_bountyhunter")
-filter_macros.can_wield_wh_zealot = make_filter_macro_can_wield_career("wh_zealot")
-filter_macros.can_wield_wh_priest = make_filter_macro_can_wield_career("wh_priest")
-filter_macros.can_wield_wood_elf = make_filter_macro_can_wield_profile("wood_elf")
-filter_macros.can_wield_we_waywatcher = make_filter_macro_can_wield_career("we_waywatcher")
-filter_macros.can_wield_we_maidenguard = make_filter_macro_can_wield_career("we_maidenguard")
-filter_macros.can_wield_we_shade = make_filter_macro_can_wield_career("we_shade")
-filter_macros.can_wield_we_thornsister = make_filter_macro_can_wield_career("we_thornsister")
-
-filter_macros.player_owns_item_key = function (item, backend_id)
-	local item_data = item.data
-	local backend_items = Managers.backend:get_interface("items")
-	local all_items = backend_items:get_all_backend_items()
-
-	for backend_id, config in pairs(all_items) do
-		if item_data.key == config.key then
-			return true
-		end
-	end
-
-	return false
-end
-
-filter_macros.can_salvage = function (item, backend_id)
-	local item_data = item.data
-	local slot_type = item_data.slot_type
-
-	if slot_type == "ranged" or slot_type == "melee" or slot_type == "ring" or slot_type == "necklace" or slot_type == "trinket" then
-		local backend_items = Managers.backend:get_interface("items")
-		local rarity = backend_items:get_item_rarity(backend_id)
-
-		if rarity ~= "default" and rarity ~= "promo" and rarity ~= "magic" then
-			local career_names = backend_items:equipped_by(backend_id)
-
-			if #career_names == 0 then
-				local is_favorited = ItemHelper.is_favorite_backend_id(backend_id, item)
-
-				return not is_favorited
+				if roll_dice_as_hero then
+					return true
+				end
 			end
 		end
-	end
+	end,
+	is_weapon = function (item, backend_id)
+		local item_data = item.data
+		local slot_type = item_data.slot_type
+		local is_weapon = slot_type == "melee" or slot_type == "ranged"
 
-	return false
-end
+		return is_weapon
+	end,
+	equipped_by_current_career = function (item, backend_id, params)
+		local item_data = item.data
+		local profile_synchronizer = Managers.state.network.profile_synchronizer
+		local player
 
-filter_macros.has_properties = function (item, backend_id)
-	if item.properties then
-		return true
-	end
+		if params and params.player then
+			player = params.player
+		else
+			player = Managers.player:local_player()
+		end
 
-	return false
-end
-
-filter_macros.has_traits = function (item, backend_id)
-	if item.traits then
-		return true
-	end
-
-	return false
-end
-
-filter_macros.has_applied_skin = function (item, backend_id)
-	local item_data = item.data
-	local slot_type = item_data.slot_type
-
-	if item.skin and slot_type ~= "weapon_skin" then
-		return true
-	end
-
-	return false
-end
-
-filter_macros.can_apply_skin = function (item, backend_id)
-	local item_data = item.data
-	local slot_type = item_data.slot_type
-
-	if slot_type == "ranged" or slot_type == "melee" then
-		local backend_items = Managers.backend:get_interface("items")
-		local rarity = backend_items:get_item_rarity(backend_id)
-
-		if rarity == "magic" then
+		if not player then
 			return false
 		end
 
-		local backend_crafting = Managers.backend:get_interface("crafting")
-		local skin_combination_table_key = item_data.skin_combination_table
+		local profile_index = player:profile_index()
 
-		if skin_combination_table_key then
-			local weapon_skin_combinations_tables = WeaponSkins.skin_combinations[skin_combination_table_key]
-			local unlocked_weapon_skins = backend_crafting:get_unlocked_weapon_skins()
-			local default_skin = WeaponSkins.default_skins[item.ItemId]
+		if not profile_index or profile_index == 0 then
+			return false
+		end
 
-			if unlocked_weapon_skins[default_skin] then
+		local career_index = player:career_index()
+
+		if not career_index or career_index == 0 then
+			return false
+		end
+
+		local hero_data = SPProfiles[profile_index]
+		local career_data = hero_data.careers[career_index]
+		local career_name = career_data.name
+		local backend_items = Managers.backend:get_interface("items")
+		local career_names = backend_items:equipped_by(backend_id)
+
+		return table.contains(career_names, career_name)
+	end,
+	is_equipped = function (item, backend_id)
+		local item_data = item.data
+		local backend_items = Managers.backend:get_interface("items")
+		local career_names = backend_items:equipped_by(backend_id)
+
+		if #career_names > 0 then
+			return true
+		end
+
+		return false
+	end,
+	is_equipment_slot = function (item, backend_id)
+		local item_data = item.data
+		local is_slot = false
+
+		for _, slot in ipairs(InventorySettings.equipment_slots) do
+			if item_data.slot_type == slot.type then
+				is_slot = true
+
+				break
+			end
+		end
+
+		return is_slot
+	end,
+	current_hero = function (item, backend_id)
+		local item_data = item.data
+		local profile_synchronizer = Managers.state.network.profile_synchronizer
+		local player = Managers.player:local_player()
+		local profile_index = profile_synchronizer:profile_by_peer(player:network_id(), player:local_player_id())
+		local hero_data = SPProfiles[profile_index]
+		local hero_name = hero_data.display_name
+
+		return hero_name
+	end,
+	can_wield_by_current_career = function (item, backend_id, params)
+		local item_data = item.data
+		local profile_synchronizer = Managers.state.network.profile_synchronizer
+		local player = Managers.player:local_player()
+		local profile_index = params and params.profile_index or player:profile_index()
+		local career_index = params and params.career_index or player:career_index()
+		local hero_data = SPProfiles[profile_index]
+		local career_data = hero_data.careers[career_index]
+		local career_name = career_data.name
+		local item_can_wield = item_data.can_wield
+
+		return table.contains(item_can_wield, career_name)
+	end,
+	can_wield_by_current_hero = function (item, backend_id, params)
+		local item_data = item.data
+		local profile_synchronizer = Managers.state.network.profile_synchronizer
+		local player = Managers.player:local_player()
+		local profile_index = params and params.profile_index or player:profile_index()
+		local career_index = params and params.career_index or player:career_index()
+		local hero_data = SPProfiles[profile_index]
+		local careers = hero_data.careers
+		local item_can_wield = item_data.can_wield
+
+		for career_index, career in ipairs(careers) do
+			local career_name = career.name
+
+			if table.contains(item_can_wield, career_name) then
 				return true
 			end
+		end
 
-			for _, weapon_skins in pairs(weapon_skin_combinations_tables) do
-				for _, skin in ipairs(weapon_skins) do
-					if unlocked_weapon_skins[skin] then
-						return true
+		return false
+	end,
+	is_new = function (item, backend_id)
+		return PlayerData.new_item_ids[backend_id]
+	end,
+	is_plentiful = function (item, backend_id)
+		local backend_items = Managers.backend:get_interface("items")
+		local rarity = backend_items:get_item_rarity(backend_id)
+
+		return rarity == "plentiful"
+	end,
+	is_common = function (item, backend_id)
+		local backend_items = Managers.backend:get_interface("items")
+		local rarity = backend_items:get_item_rarity(backend_id)
+
+		return rarity == "common"
+	end,
+	is_rare = function (item, backend_id)
+		local backend_items = Managers.backend:get_interface("items")
+		local rarity = backend_items:get_item_rarity(backend_id)
+
+		return rarity == "rare"
+	end,
+	is_exotic = function (item, backend_id)
+		local backend_items = Managers.backend:get_interface("items")
+		local rarity = backend_items:get_item_rarity(backend_id)
+
+		return rarity == "exotic"
+	end,
+	is_unique = function (item, backend_id)
+		local backend_items = Managers.backend:get_interface("items")
+		local rarity = backend_items:get_item_rarity(backend_id)
+
+		return rarity == "unique"
+	end,
+	is_promo = function (item, backend_id)
+		local backend_items = Managers.backend:get_interface("items")
+		local rarity = backend_items:get_item_rarity(backend_id)
+
+		return rarity == "promo"
+	end,
+	is_default = function (item, backend_id)
+		local backend_items = Managers.backend:get_interface("items")
+		local rarity = backend_items:get_item_rarity(backend_id)
+
+		return rarity == "default"
+	end,
+	is_magic = function (item, backend_id)
+		local backend_items = Managers.backend:get_interface("items")
+		local rarity = backend_items:get_item_rarity(backend_id)
+
+		return rarity == "magic"
+	end,
+	can_wield_bright_wizard = make_filter_macro_can_wield_profile("bright_wizard"),
+	can_wield_bw_scholar = make_filter_macro_can_wield_career("bw_scholar"),
+	can_wield_bw_adept = make_filter_macro_can_wield_career("bw_adept"),
+	can_wield_bw_unchained = make_filter_macro_can_wield_career("bw_unchained"),
+	can_wield_bw_necromancer = make_filter_macro_can_wield_career("bw_necromancer"),
+	can_wield_dwarf_ranger = make_filter_macro_can_wield_profile("dwarf_ranger"),
+	can_wield_dr_ironbreaker = make_filter_macro_can_wield_career("dr_ironbreaker"),
+	can_wield_dr_slayer = make_filter_macro_can_wield_career("dr_slayer"),
+	can_wield_dr_ranger = make_filter_macro_can_wield_career("dr_ranger"),
+	can_wield_dr_engineer = make_filter_macro_can_wield_career("dr_engineer"),
+	can_wield_empire_soldier = make_filter_macro_can_wield_profile("empire_soldier"),
+	can_wield_es_huntsman = make_filter_macro_can_wield_career("es_huntsman"),
+	can_wield_es_knight = make_filter_macro_can_wield_career("es_knight"),
+	can_wield_es_mercenary = make_filter_macro_can_wield_career("es_mercenary"),
+	can_wield_es_questingknight = make_filter_macro_can_wield_career("es_questingknight"),
+	can_wield_witch_hunter = make_filter_macro_can_wield_profile("witch_hunter"),
+	can_wield_wh_captain = make_filter_macro_can_wield_career("wh_captain"),
+	can_wield_wh_bountyhunter = make_filter_macro_can_wield_career("wh_bountyhunter"),
+	can_wield_wh_zealot = make_filter_macro_can_wield_career("wh_zealot"),
+	can_wield_wh_priest = make_filter_macro_can_wield_career("wh_priest"),
+	can_wield_wood_elf = make_filter_macro_can_wield_profile("wood_elf"),
+	can_wield_we_waywatcher = make_filter_macro_can_wield_career("we_waywatcher"),
+	can_wield_we_maidenguard = make_filter_macro_can_wield_career("we_maidenguard"),
+	can_wield_we_shade = make_filter_macro_can_wield_career("we_shade"),
+	can_wield_we_thornsister = make_filter_macro_can_wield_career("we_thornsister"),
+	player_owns_item_key = function (item, backend_id)
+		local item_data = item.data
+		local backend_items = Managers.backend:get_interface("items")
+		local all_items = backend_items:get_all_backend_items()
+
+		for backend_id, config in pairs(all_items) do
+			if item_data.key == config.key then
+				return true
+			end
+		end
+
+		return false
+	end,
+	can_salvage = function (item, backend_id)
+		local item_data = item.data
+		local slot_type = item_data.slot_type
+
+		if slot_type == "ranged" or slot_type == "melee" or slot_type == "ring" or slot_type == "necklace" or slot_type == "trinket" then
+			local backend_items = Managers.backend:get_interface("items")
+			local rarity = backend_items:get_item_rarity(backend_id)
+
+			if rarity ~= "default" and rarity ~= "promo" and rarity ~= "magic" then
+				local career_names = backend_items:equipped_by(backend_id)
+
+				if #career_names == 0 then
+					local is_favorited = ItemHelper.is_favorite_backend_id(backend_id, item)
+
+					return not is_favorited
+				end
+			end
+		end
+
+		return false
+	end,
+	has_properties = function (item, backend_id)
+		if item.properties then
+			return true
+		end
+
+		return false
+	end,
+	has_traits = function (item, backend_id)
+		if item.traits then
+			return true
+		end
+
+		return false
+	end,
+	has_applied_skin = function (item, backend_id)
+		local item_data = item.data
+		local slot_type = item_data.slot_type
+
+		if item.skin and slot_type ~= "weapon_skin" then
+			return true
+		end
+
+		return false
+	end,
+	can_apply_skin = function (item, backend_id)
+		local item_data = item.data
+		local slot_type = item_data.slot_type
+
+		if slot_type == "ranged" or slot_type == "melee" then
+			local backend_items = Managers.backend:get_interface("items")
+			local rarity = backend_items:get_item_rarity(backend_id)
+
+			if rarity == "magic" then
+				return false
+			end
+
+			local backend_crafting = Managers.backend:get_interface("crafting")
+			local skin_combination_table_key = item_data.skin_combination_table
+
+			if skin_combination_table_key then
+				local weapon_skin_combinations_tables = WeaponSkins.skin_combinations[skin_combination_table_key]
+				local unlocked_weapon_skins = backend_crafting:get_unlocked_weapon_skins()
+				local default_skin = WeaponSkins.default_skins[item.ItemId]
+
+				if unlocked_weapon_skins[default_skin] then
+					return true
+				end
+
+				for _, weapon_skins in pairs(weapon_skin_combinations_tables) do
+					for _, skin in ipairs(weapon_skins) do
+						if unlocked_weapon_skins[skin] then
+							return true
+						end
 					end
 				end
 			end
 		end
-	end
 
-	return false
-end
+		return false
+	end,
+	can_upgrade = function (item, backend_id)
+		local item_data = item.data
+		local slot_type = item_data.slot_type
 
-filter_macros.can_upgrade = function (item, backend_id)
-	local item_data = item.data
-	local slot_type = item_data.slot_type
+		if slot_type == "ranged" or slot_type == "melee" or slot_type == "ring" or slot_type == "necklace" or slot_type == "trinket" then
+			local backend_items = Managers.backend:get_interface("items")
+			local rarity = backend_items:get_item_rarity(backend_id)
 
-	if slot_type == "ranged" or slot_type == "melee" or slot_type == "ring" or slot_type == "necklace" or slot_type == "trinket" then
-		local backend_items = Managers.backend:get_interface("items")
-		local rarity = backend_items:get_item_rarity(backend_id)
+			if rarity == "plentiful" or rarity == "common" or rarity == "rare" or rarity == "exotic" then
+				return true
+			end
+		end
+	end,
+	can_craft_with = function (item, backend_id)
+		local item_data = item.data
+		local slot_type = item_data.slot_type
 
-		if rarity == "plentiful" or rarity == "common" or rarity == "rare" or rarity == "exotic" then
+		if slot_type == "ranged" or slot_type == "melee" or slot_type == "ring" or slot_type == "necklace" or slot_type == "trinket" then
+			local backend_items = Managers.backend:get_interface("items")
+			local rarity = backend_items:get_item_rarity(backend_id)
+
+			if rarity == "default" then
+				return true
+			end
+		end
+	end,
+	available_in_mechanism_versus = function (item, backend_id)
+		local item_data = item.data
+		local mechanisms = item_data.mechanisms
+		local is_cosmetic = table.contains({
+			"hat",
+			"weapon_skin",
+			"frame",
+			"skin",
+		}, item_data.slot_type)
+
+		return is_cosmetic or mechanisms and table.contains(mechanisms, "versus")
+	end,
+	available_in_mechanism_adventure = function (item, backend_id)
+		local item_data = item.data
+		local mechanisms = item_data.mechanisms
+		local is_cosmetic = table.contains({
+			"hat",
+			"weapon_skin",
+			"frame",
+			"skin",
+		}, item_data.slot_type)
+
+		return is_cosmetic or not mechanisms or table.contains(mechanisms, "adventure")
+	end,
+	available_in_current_mechanism = function (item, backend_id)
+		if script_data.disable_mechanism_item_filter then
 			return true
 		end
-	end
-end
 
-filter_macros.can_craft_with = function (item, backend_id)
-	local item_data = item.data
-	local slot_type = item_data.slot_type
+		local item_data = item.data
+		local mechanisms = item_data.mechanisms
+		local current_mechanism = Managers.mechanism:current_mechanism_name()
+		local is_cosmetic = table.contains({
+			"hat",
+			"weapon_skin",
+			"frame",
+			"skin",
+		}, item_data.slot_type)
 
-	if slot_type == "ranged" or slot_type == "melee" or slot_type == "ring" or slot_type == "necklace" or slot_type == "trinket" then
-		local backend_items = Managers.backend:get_interface("items")
-		local rarity = backend_items:get_item_rarity(backend_id)
-
-		if rarity == "default" then
+		if is_cosmetic then
 			return true
 		end
-	end
-end
 
-filter_macros.available_in_mechanism_versus = function (item, backend_id)
-	local item_data = item.data
-	local mechanisms = item_data.mechanisms
-	local is_cosmetic = table.contains({
-		"hat",
-		"weapon_skin",
-		"frame",
-		"skin"
-	}, item_data.slot_type)
+		local is_item_for_mechanism = mechanisms and table.contains(mechanisms, current_mechanism)
+		local default_mechanism = not mechanisms and Managers.mechanism:mechanism_setting("default_inventory")
 
-	return is_cosmetic or mechanisms and table.contains(mechanisms, "versus")
-end
+		return is_item_for_mechanism or default_mechanism
+	end,
+	owned = function (item, backend_id)
+		local owned = item.owned
 
-filter_macros.available_in_mechanism_adventure = function (item, backend_id)
-	local item_data = item.data
-	local mechanisms = item_data.mechanisms
-	local is_cosmetic = table.contains({
-		"hat",
-		"weapon_skin",
-		"frame",
-		"skin"
-	}, item_data.slot_type)
+		return owned
+	end,
+	is_fake_item = function (item, backend_id)
+		local item_interface = Managers.backend:get_interface("items")
+		local fake_items = item_interface:get_all_fake_backend_items()
 
-	return is_cosmetic or not mechanisms or table.contains(mechanisms, "adventure")
-end
-
-filter_macros.available_in_current_mechanism = function (item, backend_id)
-	if script_data.disable_mechanism_item_filter then
-		return true
-	end
-
-	local item_data = item.data
-	local mechanisms = item_data.mechanisms
-	local current_mechanism = Managers.mechanism:current_mechanism_name()
-	local is_cosmetic = table.contains({
-		"hat",
-		"weapon_skin",
-		"frame",
-		"skin"
-	}, item_data.slot_type)
-
-	if is_cosmetic then
-		return true
-	end
-
-	local is_item_for_mechanism = mechanisms and table.contains(mechanisms, current_mechanism)
-	local default_mechanism = not mechanisms and Managers.mechanism:mechanism_setting("default_inventory")
-
-	return is_item_for_mechanism or default_mechanism
-end
-
-filter_macros.owned = function (item, backend_id)
-	local owned = item.owned
-
-	return owned
-end
-
-filter_macros.is_fake_item = function (item, backend_id)
-	local item_interface = Managers.backend:get_interface("items")
-	local fake_items = item_interface:get_all_fake_backend_items()
-
-	if fake_items[backend_id] then
-		return true
-	end
-end
+		if fake_items[backend_id] then
+			return true
+		end
+	end,
+}
 
 BackendInterfaceCommon.filter_postfix_cache = BackendInterfaceCommon.filter_postfix_cache or {}
+
 local empty_params = {}
 
 BackendInterfaceCommon.filter_items = function (self, items, filter_infix, params)
@@ -604,6 +571,7 @@ BackendInterfaceCommon.filter_items = function (self, items, filter_infix, param
 					stack[#stack + 1] = op_func(op1)
 				else
 					local op2 = table.remove(stack)
+
 					stack[#stack + 1] = op_func(op1, op2)
 				end
 			else
@@ -619,6 +587,7 @@ BackendInterfaceCommon.filter_items = function (self, items, filter_infix, param
 
 		if stack[1] == true then
 			local item = table.clone(item)
+
 			passed[#passed + 1] = item
 		end
 	end
@@ -708,6 +677,7 @@ BackendInterfaceCommon.serialize_runes = function (self, runes)
 		local rune_slot = rune_data.rune_slot
 		local rune_value = rune_data.rune
 		local serialized = rune_slot .. string.format(",%s,%.3f", rune_value, 0) .. ";"
+
 		serialized_runes = serialized_runes .. serialized
 	end
 
@@ -721,7 +691,7 @@ BackendInterfaceCommon.commit_load_time_data = function (self, load_time_data)
 
 	local human_players = Managers.player:human_players()
 	local collected_players = {}
-	local platform_id, name = nil
+	local platform_id, name
 
 	for unique_id, player in pairs(human_players) do
 		platform_id = player:platform_id()
@@ -739,7 +709,7 @@ BackendInterfaceCommon.commit_load_time_data = function (self, load_time_data)
 		collected_players[#collected_players + 1] = {
 			platform_id = platform_id,
 			name = name,
-			career = player:career_name()
+			career = player:career_name(),
 		}
 	end
 
@@ -749,8 +719,8 @@ BackendInterfaceCommon.commit_load_time_data = function (self, load_time_data)
 			identifier = load_time_data.identifier,
 			duration = load_time_data.duration,
 			parameters = load_time_data.parameters,
-			players = collected_players
-		}
+			players = collected_players,
+		},
 	}
 	local mirror = self._backend_mirror
 	local request_queue = mirror:request_queue()

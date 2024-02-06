@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/settings/player_movement_settings.lua
+
 PlayerUnitMovementSettings = PlayerUnitMovementSettings or {}
+
 local units_player_movement_setting = {}
 
 PlayerUnitMovementSettings.get_movement_settings_table = function (unit)
@@ -86,133 +89,129 @@ PlayerUnitMovementSettings.ladder.leave_ladder_reattach_time = 0.5
 PlayerUnitMovementSettings.ladder.looking_up_threshold = -0.25
 PlayerUnitMovementSettings.ladder.looking_down_threshold = -0.6
 PlayerUnitMovementSettings.ladder.bot_looking_down_threshold = 0
-PlayerUnitMovementSettings.soft_collision = {
-	speed_modifier = 0.01,
-	lowest_speed = 1,
-	highest_speed = 3,
-	grace_time_pushed_entering_standing = 0.75,
-	max_distance = 0.65,
-	max_height_diference = 0.1,
-	idle_speed_threshold = 0.05
-}
+PlayerUnitMovementSettings.soft_collision = {}
+PlayerUnitMovementSettings.soft_collision.speed_modifier = 0.01
+PlayerUnitMovementSettings.soft_collision.lowest_speed = 1
+PlayerUnitMovementSettings.soft_collision.highest_speed = 3
+PlayerUnitMovementSettings.soft_collision.grace_time_pushed_entering_standing = 0.75
+PlayerUnitMovementSettings.soft_collision.max_distance = 0.65
+PlayerUnitMovementSettings.soft_collision.max_height_diference = 0.1
+PlayerUnitMovementSettings.soft_collision.idle_speed_threshold = 0.05
 PlayerUnitMovementSettings.catapulted = PlayerUnitMovementSettings.catapulted or {}
 PlayerUnitMovementSettings.catapulted.directions = PlayerUnitMovementSettings.catapulted.directions or {}
 PlayerUnitMovementSettings.catapulted.directions.forward = {
-	wall_collide_animation = "airtime_end",
+	land_animation = "airtime_end",
 	start_animation = "airtime_bwd",
-	land_animation = "airtime_end"
+	wall_collide_animation = "airtime_end",
 }
 PlayerUnitMovementSettings.catapulted.directions.backward = {
-	wall_collide_animation = "airtime_end",
+	land_animation = "airtime_end",
 	start_animation = "airtime_fwd",
-	land_animation = "airtime_end"
+	wall_collide_animation = "airtime_end",
 }
 PlayerUnitMovementSettings.catapulted.directions.forward_thrown = {
-	start_animation_1p = "airtime_bwd",
+	land_animation = "airtime_end",
 	start_animation = "airtime_fwd",
+	start_animation_1p = "airtime_bwd",
 	wall_collide_animation = "airtime_end",
-	land_animation = "airtime_end"
 }
-PlayerUnitMovementSettings.gameplay_collision_box = {
-	collision_check_player_half_height = 0.8,
-	collision_check_player_radius = 0.8,
-	collision_check_player_height_offset = 0.8
-}
-PlayerUnitMovementSettings.ledge_hanging = {
-	time_until_fall_down = 30,
-	reattach_time = 2,
-	look_horizontal_max_degrees_yaw = 0,
-	look_horizontal_max_degrees_pitch = 0,
-	attach_rotation_speed_slowdown_modifier_yaw = 0.1,
-	attach_rotation_speed_slowdown_modifier_pitch = 0.1,
-	attach_position_lerp_threshold = 0.05,
-	attach_position_lerp_time_per_meter = 0.2,
-	ledge_hanging_attachment_offset_x = -0,
-	ledge_hanging_attachment_offset_y = 0.95,
-	ledge_hanging_attachment_offset_z = 0.05,
-	attach_pos_lerp_percentage_start_per_unit_velocity = 0.2,
-	attach_max_instant_start_pos_movement = 0.3,
-	leaving_animation_time = 2.83,
-	leaving_time_to_activate_gravitation = 2.5,
-	leaving_forward_push_factor = 0.1,
-	leaving_push_up_constant = -0.01,
-	falling_kill_timer = 0.2,
-	leaving_falling_forward_push_constant = -1.8,
-	leaving_falling_push_up_constant = -0.7
-}
-PlayerUnitMovementSettings.dodging = {
-	distance = 2,
-	speed_at_times = {
-		{
-			time_in_dodge = 0,
-			speed = 1
-		},
-		{
-			time_in_dodge = 0.05,
-			speed = 4
-		},
-		{
-			time_in_dodge = 0.1,
-			speed = 7
-		},
-		{
-			time_in_dodge = 0.25,
-			speed = 5
-		},
-		{
-			time_in_dodge = 0.4,
-			speed = 2
-		},
-		{
-			time_in_dodge = 0.5,
-			speed = 1
-		}
+PlayerUnitMovementSettings.gameplay_collision_box = {}
+PlayerUnitMovementSettings.gameplay_collision_box.collision_check_player_half_height = 0.8
+PlayerUnitMovementSettings.gameplay_collision_box.collision_check_player_radius = 0.8
+PlayerUnitMovementSettings.gameplay_collision_box.collision_check_player_height_offset = 0.8
+PlayerUnitMovementSettings.ledge_hanging = {}
+PlayerUnitMovementSettings.ledge_hanging.time_until_fall_down = 30
+PlayerUnitMovementSettings.ledge_hanging.reattach_time = 2
+PlayerUnitMovementSettings.ledge_hanging.look_horizontal_max_degrees_yaw = 0
+PlayerUnitMovementSettings.ledge_hanging.look_horizontal_max_degrees_pitch = 0
+PlayerUnitMovementSettings.ledge_hanging.attach_rotation_speed_slowdown_modifier_yaw = 0.1
+PlayerUnitMovementSettings.ledge_hanging.attach_rotation_speed_slowdown_modifier_pitch = 0.1
+PlayerUnitMovementSettings.ledge_hanging.attach_position_lerp_threshold = 0.05
+PlayerUnitMovementSettings.ledge_hanging.attach_position_lerp_time_per_meter = 0.2
+PlayerUnitMovementSettings.ledge_hanging.ledge_hanging_attachment_offset_x = -0
+PlayerUnitMovementSettings.ledge_hanging.ledge_hanging_attachment_offset_y = 0.95
+PlayerUnitMovementSettings.ledge_hanging.ledge_hanging_attachment_offset_z = 0.05
+PlayerUnitMovementSettings.ledge_hanging.attach_pos_lerp_percentage_start_per_unit_velocity = 0.2
+PlayerUnitMovementSettings.ledge_hanging.attach_max_instant_start_pos_movement = 0.3
+PlayerUnitMovementSettings.ledge_hanging.leaving_animation_time = 2.83
+PlayerUnitMovementSettings.ledge_hanging.leaving_time_to_activate_gravitation = 2.5
+PlayerUnitMovementSettings.ledge_hanging.leaving_forward_push_factor = 0.1
+PlayerUnitMovementSettings.ledge_hanging.leaving_push_up_constant = -0.01
+PlayerUnitMovementSettings.ledge_hanging.falling_kill_timer = 0.2
+PlayerUnitMovementSettings.ledge_hanging.leaving_falling_forward_push_constant = -1.8
+PlayerUnitMovementSettings.ledge_hanging.leaving_falling_push_up_constant = -0.7
+PlayerUnitMovementSettings.dodging = {}
+PlayerUnitMovementSettings.dodging.distance = 2
+PlayerUnitMovementSettings.dodging.speed_at_times = {
+	{
+		speed = 1,
+		time_in_dodge = 0,
 	},
-	dodge_cd = 0.15,
-	dodge_jump_override_timer = 0.35,
-	stop_threshold = 0.1,
-	speed_modifier = 1,
-	distance_modifier = 1
+	{
+		speed = 4,
+		time_in_dodge = 0.05,
+	},
+	{
+		speed = 7,
+		time_in_dodge = 0.1,
+	},
+	{
+		speed = 5,
+		time_in_dodge = 0.25,
+	},
+	{
+		speed = 2,
+		time_in_dodge = 0.4,
+	},
+	{
+		speed = 1,
+		time_in_dodge = 0.5,
+	},
 }
+PlayerUnitMovementSettings.dodging.dodge_cd = 0.15
+PlayerUnitMovementSettings.dodging.dodge_jump_override_timer = 0.35
+PlayerUnitMovementSettings.dodging.stop_threshold = 0.1
+PlayerUnitMovementSettings.dodging.speed_modifier = 1
+PlayerUnitMovementSettings.dodging.distance_modifier = 1
 PlayerUnitMovementSettings.first_person_height_knocked_down = 0.25
 PlayerUnitMovementSettings.first_person_height_crouch = 1
 PlayerUnitMovementSettings.first_person_height_stand = 1.65
 PlayerUnitMovementSettings.slowing_damage_types = {
-	projectile = true,
-	kinetic = true,
 	blunt = true,
+	crush = true,
+	cutting = true,
+	kinetic = true,
+	piercing = true,
+	plague_face = false,
+	projectile = true,
 	slashing = true,
 	vomit_face = true,
-	warpfire_ground = false,
-	plague_face = false,
-	piercing = true,
 	vomit_ground = false,
 	warpfire_face = false,
-	cutting = true,
-	crush = true
+	warpfire_ground = false,
 }
 PlayerUnitMovementSettings.charged_settings = PlayerUnitMovementSettings.charged_settings or {}
 PlayerUnitMovementSettings.charged_settings.charged = {
 	duration = 1,
 	first_person_anim_name = "interrupt",
-	third_person_anim_name = "idle"
+	third_person_anim_name = "idle",
 }
 PlayerUnitMovementSettings.stun_settings = PlayerUnitMovementSettings.stun_settings or {}
 PlayerUnitMovementSettings.stun_settings.parry_broken = {
 	duration = 1,
 	first_person_anim_name = "parry_break",
-	third_person_anim_name = "parry_break"
+	third_person_anim_name = "parry_break",
 }
 PlayerUnitMovementSettings.stun_settings.pushed = {
 	duration = 0.2,
 	first_person_anim_name = "interrupt",
-	third_person_anim_name = "idle"
+	third_person_anim_name = "idle",
 }
 PlayerUnitMovementSettings.hit_react_settings = {
 	light_push = {
-		start_look_sense_override = 0.9,
 		end_look_sense_override = 1,
 		movement_speed_modifier = 1,
+		start_look_sense_override = 0.9,
 		look_override_function = function ()
 			local look_override_x = 0.5 * (0.5 - math.random())
 			local look_override_y = -0.1 + math.random() * 0.05
@@ -226,12 +225,12 @@ PlayerUnitMovementSettings.hit_react_settings = {
 		end,
 		onscreen_particle_function = function (duration)
 			return "fx/screenspace_head_blow_light_push"
-		end
+		end,
 	},
 	light = {
-		start_look_sense_override = 0.6,
 		end_look_sense_override = 1,
 		movement_speed_modifier = 0.8,
+		start_look_sense_override = 0.6,
 		look_override_function = function ()
 			local look_override_x = 0.5 * (0.5 - math.random())
 			local look_override_y = -0.2 + math.random() * 0.1
@@ -249,12 +248,12 @@ PlayerUnitMovementSettings.hit_react_settings = {
 			end
 
 			return "fx/screenspace_head_blow_light"
-		end
+		end,
 	},
 	medium_push = {
-		start_look_sense_override = 0.6,
 		end_look_sense_override = 1,
 		movement_speed_modifier = 0.8,
+		start_look_sense_override = 0.6,
 		look_override_function = function ()
 			local look_override_x = 0.5 * (0.5 - math.random())
 			local look_override_y = -0.15 + math.random() * 0.1
@@ -268,12 +267,12 @@ PlayerUnitMovementSettings.hit_react_settings = {
 		end,
 		onscreen_particle_function = function (duration)
 			return "fx/screenspace_head_blow_medium_push"
-		end
+		end,
 	},
 	medium = {
-		start_look_sense_override = 0.4,
 		end_look_sense_override = 0.8,
 		movement_speed_modifier = 0.65,
+		start_look_sense_override = 0.4,
 		look_override_function = function ()
 			local look_override_x = 0.5 * (0.5 - math.random())
 			local look_override_y = -0.3 + math.random() * 0.2
@@ -291,12 +290,12 @@ PlayerUnitMovementSettings.hit_react_settings = {
 			end
 
 			return "fx/screenspace_head_blow_medium"
-		end
+		end,
 	},
 	heavy_push = {
-		start_look_sense_override = 0.4,
 		end_look_sense_override = 0.8,
 		movement_speed_modifier = 0.65,
+		start_look_sense_override = 0.4,
 		look_override_function = function ()
 			local look_override_x = 0.5 * (0.5 - math.random())
 			local look_override_y = -0.25 + math.random() * 0.1
@@ -310,12 +309,12 @@ PlayerUnitMovementSettings.hit_react_settings = {
 		end,
 		onscreen_particle_function = function (duration)
 			return "fx/screenspace_head_blow_heavy_push"
-		end
+		end,
 	},
 	heavy = {
-		start_look_sense_override = 0.35,
 		end_look_sense_override = 0.7,
 		movement_speed_modifier = 0.5,
+		start_look_sense_override = 0.35,
 		look_override_function = function ()
 			local look_override_x = 0.5 * (0.5 - math.random())
 			local look_override_y = -0.5 + math.random() * 0.2
@@ -333,12 +332,12 @@ PlayerUnitMovementSettings.hit_react_settings = {
 			end
 
 			return "fx/screenspace_head_blow_heavy"
-		end
+		end,
 	},
 	slow_bomb = {
-		start_look_sense_override = 0.35,
 		end_look_sense_override = 0.7,
 		movement_speed_modifier = 0.1,
+		start_look_sense_override = 0.35,
 		look_override_function = function ()
 			local look_override_x = 0.5 * (0.5 - math.random())
 			local look_override_y = -0.5 + math.random() * 0.2
@@ -356,12 +355,12 @@ PlayerUnitMovementSettings.hit_react_settings = {
 			end
 
 			return "fx/screenspace_head_blow_heavy"
-		end
+		end,
 	},
 	charged = {
-		start_look_sense_override = 0.4,
 		end_look_sense_override = 0.8,
 		movement_speed_modifier = 0.65,
+		start_look_sense_override = 0.4,
 		look_override_function = function ()
 			local look_override_x = 0
 			local look_override_y = 0.45
@@ -375,14 +374,14 @@ PlayerUnitMovementSettings.hit_react_settings = {
 		end,
 		onscreen_particle_function = function (duration)
 			return "fx/screenspace_head_blow_medium_push"
-		end
-	}
+		end,
+	},
 }
 PlayerUnitMovementSettings.overpowered_templates = PlayerUnitMovementSettings.overpowered_templates or {}
 PlayerUnitMovementSettings.overpowered_templates.slow_bomb = {}
 PlayerUnitMovementSettings.overpowered_templates.fly_bomb = {
 	end_sound_event = "Stop_sorcerer_boss_flies_curse_loop",
-	start_sound_event = "Play_sorcerer_boss_flies_curse_loop"
+	start_sound_event = "Play_sorcerer_boss_flies_curse_loop",
 }
 PlayerUnitMovementSettings.gravity_acceleration = 11
 PlayerUnitMovementSettings.jump = PlayerUnitMovementSettings.jump or {}

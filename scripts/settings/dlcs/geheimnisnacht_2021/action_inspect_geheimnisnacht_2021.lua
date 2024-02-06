@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/settings/dlcs/geheimnisnacht_2021/action_inspect_geheimnisnacht_2021.lua
+
 ActionInspectGeheimnisnacht2021 = class(ActionInspectGeheimnisnacht2021, ActionDummy)
+
 local INFLUENCE_RATE_MULT = 0.05
 local INFLUENCE_RATE_MULT_DOWN = 0.5
 local MAX_INFLUENCE_AT_ANGLE_MULT = 1.05
@@ -10,10 +13,10 @@ local CURSE_INTERVAL = 0.5
 local CURSE_COVERT_AMOUNT = 5
 local immune_careers = {
 	bw_necromancer = true,
-	wh_priest = true,
-	we_thornsister = true,
+	dr_slayer = true,
 	es_questingknight = true,
-	dr_slayer = true
+	we_thornsister = true,
+	wh_priest = true,
 }
 
 ActionInspectGeheimnisnacht2021.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
@@ -61,6 +64,7 @@ ActionInspectGeheimnisnacht2021.client_owner_post_update = function (self, dt, t
 		end
 
 		local influence_rate = max_influence_at_angle * INFLUENCE_RATE_MULT
+
 		self._influence_str = math.min(math.lerp(self._influence_str, max_influence_at_angle, influence_inc), MAX_INFLUENCE)
 	end
 
@@ -80,39 +84,39 @@ ActionInspectGeheimnisnacht2021.client_owner_post_update = function (self, dt, t
 		Unit.animation_event(self.first_person_unit, "gehemnisnacht_egg_level2")
 		self:_create_screen_particles()
 		self._first_person_extension:set_weapon_sway_settings({
-			recentering_lerp_speed = 250,
-			lerp_speed = 3,
-			sway_range = 1,
 			camera_look_sensitivity = 0.03,
-			look_sensitivity = 8
+			lerp_speed = 3,
+			look_sensitivity = 8,
+			recentering_lerp_speed = 250,
+			sway_range = 1,
 		})
 	end
 
 	if old_influnece > 0.7 and self._influence_str <= 0.7 then
 		Unit.animation_event(self.first_person_unit, "gehemnisnacht_egg_level1")
 		self._first_person_extension:set_weapon_sway_settings({
-			recentering_lerp_speed = 0,
-			lerp_speed = 10,
-			sway_range = 1,
 			camera_look_sensitivity = 1,
-			look_sensitivity = 1.5
+			lerp_speed = 10,
+			look_sensitivity = 1.5,
+			recentering_lerp_speed = 0,
+			sway_range = 1,
 		})
 	end
 
 	if old_influnece < 0.9 and self._influence_str >= 0.9 then
 		Unit.animation_event(self.first_person_unit, "gehemnisnacht_egg_level3")
 		self._first_person_extension:set_weapon_sway_settings({
-			recentering_lerp_speed = 10,
-			lerp_speed = 10,
-			sway_range = 1,
 			camera_look_sensitivity = 1,
-			look_sensitivity = 1.5
+			lerp_speed = 10,
+			look_sensitivity = 1.5,
+			recentering_lerp_speed = 10,
+			sway_range = 1,
 		})
 
 		self._take_curse_damage = true
 	end
 
-	if self._take_curse_damage and self._next_curse_time_t <= t then
+	if self._take_curse_damage and t >= self._next_curse_time_t then
 		self._next_curse_time_t = t + CURSE_INTERVAL
 
 		self._health_extension:convert_to_temp(CURSE_COVERT_AMOUNT)
@@ -123,8 +127,7 @@ ActionInspectGeheimnisnacht2021.client_owner_post_update = function (self, dt, t
 		local viewport_name = player.viewport_name
 		local viewport = ScriptWorld.viewport(self.world, viewport_name)
 		local camera = ScriptViewport.camera(viewport)
-		local screen_width = RESOLUTION_LOOKUP.res_w
-		local screen_height = RESOLUTION_LOOKUP.res_h
+		local screen_width, screen_height = RESOLUTION_LOOKUP.res_w, RESOLUTION_LOOKUP.res_h
 		local center_pos_x = screen_width / 2
 		local center_pos_y = screen_height / 2
 		local skull_world_pos = Unit.world_position(self.weapon_unit, 0)

@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/managers/backend_playfab/backend_interface_item_playfab.lua
+
 BackendInterfaceItemPlayfab = class(BackendInterfaceItemPlayfab)
+
 local PlayFabClientApi = require("PlayFab.PlayFabClientApi")
 
 BackendInterfaceItemPlayfab.init = function (self, backend_mirror)
@@ -22,7 +25,7 @@ local loadout_slots = {
 	"slot_necklace",
 	"slot_ring",
 	"slot_trinket_1",
-	"slot_frame"
+	"slot_frame",
 }
 
 BackendInterfaceItemPlayfab._refresh = function (self)
@@ -57,7 +60,9 @@ BackendInterfaceItemPlayfab._refresh_items = function (self)
 	end
 
 	local fake_items = backend_mirror:get_all_fake_inventory_items()
+
 	self._fake_items = fake_items
+
 	local new_backend_ids = ItemHelper.get_new_backend_ids()
 
 	if new_backend_ids then
@@ -94,6 +99,7 @@ BackendInterfaceItemPlayfab._refresh_loadouts = function (self)
 			for i = 1, #loadout_slots do
 				local slot_name = loadout_slots[i]
 				local item_id = backend_mirror:get_character_data(career_name, slot_name)
+
 				loadouts[career_name] = loadouts[career_name] or {}
 				loadouts[career_name][slot_name] = item_id
 			end
@@ -244,9 +250,9 @@ end
 
 local fake_item_types = {
 	frame = true,
-	weapon_skin = true,
 	hat = true,
-	skin = true
+	skin = true,
+	weapon_skin = true,
 }
 
 BackendInterfaceItemPlayfab.free_inventory_slots = function (self)
@@ -326,7 +332,7 @@ end
 
 BackendInterfaceItemPlayfab.set_loadout_item = function (self, item_id, career_name, slot_name)
 	local all_items = self:get_all_backend_items()
-	local item = nil
+	local item
 
 	if item_id then
 		item = all_items[item_id]
@@ -370,7 +376,7 @@ BackendInterfaceItemPlayfab.get_unseen_item_rewards = function (self)
 	end
 
 	local unseen_rewards = cjson.decode(unseen_rewards_json)
-	local unseen_items = nil
+	local unseen_items
 	local index = 1
 
 	while index <= #unseen_rewards do
@@ -510,7 +516,7 @@ BackendInterfaceItemPlayfab.get_item_template = function (self, item_data, backe
 	local template_name = item_data.temporary_template or item_data.template
 	local item_template = Weapons[template_name]
 	local modified_item_templates = self._modified_templates
-	local modified_item_template = nil
+	local modified_item_template
 
 	if item_template then
 		if backend_id then
@@ -570,8 +576,9 @@ BackendInterfaceItemPlayfab.delete_marked_deeds = function (self, deeds_list, st
 	self._is_deleting_deeds = true
 	start_index = start_index or 1
 	end_index = end_index or DEEDS_CHUNK_LIMIT
+
 	local id = self:_new_id()
-	local temp_deeds = nil
+	local temp_deeds
 	local num_elements = #deeds_list
 
 	if start_index > 1 then
@@ -582,7 +589,7 @@ BackendInterfaceItemPlayfab.delete_marked_deeds = function (self, deeds_list, st
 
 	local reduced_deeds_list = table.map(temp_deeds, function (entry)
 		return {
-			ItemInstanceId = entry.ItemInstanceId
+			ItemInstanceId = entry.ItemInstanceId,
 		}
 	end)
 
@@ -595,12 +602,12 @@ BackendInterfaceItemPlayfab.delete_marked_deeds = function (self, deeds_list, st
 	local delete_marked_deeds_request = {
 		FunctionName = "deleteMarkedDeeds",
 		FunctionParameter = {
-			marked_deeds_list = reduced_deeds_list
-		}
+			marked_deeds_list = reduced_deeds_list,
+		},
 	}
 	local data = {
 		marked_deeds_list = reduced_deeds_list,
-		id = id
+		id = id,
 	}
 	local success_callback = callback(self, "delete_marked_deeds_request_cb", data, end_index, start_index, deeds_list)
 	local request_queue = self._backend_mirror:request_queue()
@@ -663,6 +670,7 @@ BackendInterfaceItemPlayfab.can_delete_deeds = function (self, current_deeds, ma
 
 	local remaining_deeds = {}
 	local deletable_deeds = {}
+
 	remaining_deeds = current_deeds
 
 	for _, deed in ipairs(marked_deeds) do

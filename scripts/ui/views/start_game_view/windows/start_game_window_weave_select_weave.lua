@@ -1,7 +1,10 @@
+﻿-- chunkname: @scripts/ui/views/start_game_view/windows/start_game_window_weave_select_weave.lua
+
 local definitions = local_require("scripts/ui/views/start_game_view/windows/definitions/start_game_window_weave_select_weave_definitions")
 local widget_definitions = definitions.widgets
 local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
+
 StartGameWindowWeaveSelectWeave = class(StartGameWindowWeaveSelectWeave)
 StartGameWindowWeaveSelectWeave.NAME = "StartGameWindowWeaveSelectWeave"
 
@@ -9,15 +12,19 @@ StartGameWindowWeaveSelectWeave.on_enter = function (self, params, offset)
 	print("[StartGameWindow] Enter Substate StartGameWindowWeaveSelectWeave")
 
 	self._parent = params.parent
+
 	local ingame_ui_context = params.ingame_ui_context
+
 	self._ui_renderer = ingame_ui_context.ui_renderer
 	self._input_manager = ingame_ui_context.input_manager
 	self._statistics_db = ingame_ui_context.statistics_db
 	self._render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
+
 	local player_manager = Managers.player
 	local local_player = player_manager:local_player()
+
 	self._stats_id = local_player:stats_id()
 	self._player_manager = player_manager
 	self._peer_id = ingame_ui_context.peer_id
@@ -27,12 +34,15 @@ end
 
 StartGameWindowWeaveSelectWeave._create_ui_elements = function (self, params, offset)
 	local ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+
 	self._ui_scenegraph = ui_scenegraph
+
 	local widgets = {}
 	local widgets_by_name = {}
 
 	for name, widget_definition in pairs(widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		widgets[#widgets + 1] = widget
 		widgets_by_name[name] = widget
 	end
@@ -44,6 +54,7 @@ StartGameWindowWeaveSelectWeave._create_ui_elements = function (self, params, of
 	UIRenderer.clear_scenegraph_queue(self._ui_renderer)
 
 	self._ui_animator = UIAnimator:new(self._ui_scenegraph, animation_definitions)
+
 	local overlay_button = widgets_by_name.overlay_button
 	local anim = self:_animate_pulse(overlay_button.style.glow_frame.color, 1, 255, 100, 2)
 
@@ -51,6 +62,7 @@ StartGameWindowWeaveSelectWeave._create_ui_elements = function (self, params, of
 
 	if offset then
 		local window_position = ui_scenegraph.window.local_position
+
 		window_position[1] = window_position[1] + offset[1]
 		window_position[2] = window_position[2] + offset[2]
 		window_position[3] = window_position[3] + offset[3]
@@ -114,6 +126,7 @@ StartGameWindowWeaveSelectWeave._create_style_animation_enter = function (self, 
 	if animation_duration > 0 and not instant then
 		local ui_animations = self._ui_animations
 		local animation_name = "game_option_" .. style_id
+
 		ui_animations[animation_name .. "_hover_" .. widget_index] = self:_animate_element_by_time(pass_style.color, 1, current_color_value, target_color_value, animation_duration)
 	else
 		pass_style.color[1] = target_color_value
@@ -148,6 +161,7 @@ StartGameWindowWeaveSelectWeave._create_style_animation_exit = function (self, w
 	if animation_duration > 0 and not instant then
 		local ui_animations = self._ui_animations
 		local animation_name = "game_option_" .. style_id
+
 		ui_animations[animation_name .. "_hover_" .. widget_index] = self:_animate_element_by_time(pass_style.color, 1, current_color_value, target_color_value, animation_duration)
 	else
 		pass_style.color[1] = target_color_value

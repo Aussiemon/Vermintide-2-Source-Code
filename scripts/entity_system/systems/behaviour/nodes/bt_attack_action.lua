@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_attack_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTAttackAction = class(BTAttackAction, BTNode)
@@ -21,6 +23,7 @@ local EMPTY_TABLE = {}
 
 BTAttackAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
+
 	blackboard.action = action
 	blackboard.active_node = BTAttackAction
 	blackboard.attack_aborted = false
@@ -31,11 +34,13 @@ BTAttackAction.enter = function (self, unit, blackboard, t)
 	blackboard.moving_attack = action.moving_attack
 	blackboard.past_damage_in_attack = false
 	blackboard.target_speed = 0
+
 	local target_unit = blackboard.target_unit
 	local target_unit_status_extension = ScriptUnit.has_extension(target_unit, "status_system")
 	local target_unit_slot_extension = ScriptUnit.has_extension(target_unit, "ai_slot_system")
 	local attack = self:_select_attack(action, unit, target_unit, blackboard, target_unit_status_extension)
 	local attack_anim = randomize(attack.anims)
+
 	blackboard.attack_anim = attack_anim
 
 	if action.blocked_anim then
@@ -88,9 +93,12 @@ BTAttackAction.enter = function (self, unit, blackboard, t)
 	blackboard.attack_setup_delayed = true
 	blackboard.attacking_target = target_unit
 	blackboard.spawn_to_running = nil
+
 	local rotation = LocomotionUtils.rotation_towards_unit_flat(unit, target_unit)
+
 	blackboard.attack_rotation = QuaternionBox(rotation)
 	blackboard.attack_rotation_lock_timer = t
+
 	local dodge_window_start = action.dodge_window_start
 	local dodge_window_duration = action.dodge_window_duration or EMPTY_TABLE
 	local difficulty = Managers.state.difficulty:get_difficulty()
@@ -146,9 +154,9 @@ BTAttackAction._select_attack = function (self, action, unit, target_unit, black
 		local step_attack_with_callback = action.step_attack_with_callback
 		local knocked_down_attack = action.knocked_down_attack
 
-		if high_attack and high_attack.z_threshold < z_offset then
+		if high_attack and z_offset > high_attack.z_threshold then
 			return high_attack
-		elseif mid_attack and z_offset < mid_attack.z_threshold and mid_attack.flat_threshold < flat_distance then
+		elseif mid_attack and z_offset < mid_attack.z_threshold and flat_distance > mid_attack.flat_threshold then
 			return mid_attack
 		elseif low_attack and z_offset < low_attack.z_threshold then
 			return low_attack
@@ -261,7 +269,7 @@ BTAttackAction.run = function (self, unit, blackboard, t, dt)
 		end
 	end
 
-	if blackboard.anim_cb_attack_cooldown and blackboard.attack_finished_t and blackboard.attack_finished_t < t or not blackboard.attack_finished_t and blackboard.attack_finished then
+	if blackboard.anim_cb_attack_cooldown and blackboard.attack_finished_t and t > blackboard.attack_finished_t or not blackboard.attack_finished_t and blackboard.attack_finished then
 		return "done"
 	end
 
@@ -285,6 +293,7 @@ BTAttackAction.run = function (self, unit, blackboard, t, dt)
 
 		if math.abs(target_speed - blackboard.target_speed) > 0.25 then
 			blackboard.target_speed = target_speed
+
 			local navigation_extension = blackboard.navigation_extension
 
 			navigation_extension:set_max_speed(math.clamp(target_speed, 0, run_speed))
@@ -322,6 +331,7 @@ end
 BTAttackAction.attack_cooldown = function (self, unit, blackboard)
 	local t = Managers.time:time("game")
 	local cooldown, cooldown_at = self:_get_attack_cooldown_finished_at(unit, blackboard, t)
+
 	blackboard.attack_cooldown_at = cooldown_at
 	blackboard.is_in_attack_cooldown = cooldown
 end
@@ -378,14 +388,14 @@ local DEFAULT_DODGE_DISTANCE_THRESHOLD = 4
 BTAttackAction._handle_movement = function (self, unit, t, dt, blackboard)
 	local bb = blackboard
 	local distance = blackboard.target_dist
-	local is_in_dodge_window = bb.attack_dodge_window_start and bb.attack_dodge_window_start < t
+	local is_in_dodge_window = bb.attack_dodge_window_start and t > bb.attack_dodge_window_start
 
 	if is_in_dodge_window and not bb.past_damage_in_attack then
 		local target_status_ext = bb.target_unit_status_extension
 
 		if target_status_ext then
 			local target_is_dodging = target_status_ext:get_is_dodging() or target_status_ext:is_invisible()
-			local should_rotate = not target_is_dodging and bb.attack_rotation_lock_timer < t
+			local should_rotate = not target_is_dodging and t > bb.attack_rotation_lock_timer
 			local should_lock_rotation = target_is_dodging and not bb.locked_attack_rotation and distance < DEFAULT_DODGE_DISTANCE_THRESHOLD
 
 			if should_rotate then
@@ -411,7 +421,7 @@ BTAttackAction._handle_movement = function (self, unit, t, dt, blackboard)
 		locomotion_extension:set_wanted_rotation(blackboard.attack_rotation:unbox())
 	end
 
-	if bb.locked_attack_rotation and bb.attack_rotation_lock_timer and bb.attack_rotation_lock_timer < t or DEFAULT_DODGE_DISTANCE_THRESHOLD < distance then
+	if bb.locked_attack_rotation and bb.attack_rotation_lock_timer and t > bb.attack_rotation_lock_timer or distance > DEFAULT_DODGE_DISTANCE_THRESHOLD then
 		bb.locked_attack_rotation = false
 	end
 end

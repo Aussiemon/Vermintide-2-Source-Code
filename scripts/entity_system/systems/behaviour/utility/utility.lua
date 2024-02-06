@@ -1,6 +1,9 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/utility/utility.lua
+
 require("scripts/entity_system/systems/behaviour/utility/utility_considerations")
 
 Utility = Utility or {}
+
 local Utility = Utility
 
 Utility.GetUtilityValueFromSpline = function (spline, norm_value)
@@ -34,20 +37,11 @@ Utility.get_action_utility = function (breed_action, action_name, blackboard, fr
 		if consideration.is_condition then
 			local invert = consideration.invert
 
-			if blackboard_value then
-				if invert then
-					utility = 0
-				else
-					utility = 1
-				end
-			elseif invert then
-				utility = 1
-			else
-				utility = 0
-			end
+			utility = blackboard_value and (invert and 0 or 1) or invert and 1 or 0
 		else
 			local min_value = consideration.min_value or 0
 			local norm_value = math.clamp((blackboard_value - min_value) / (consideration.max_value - min_value), 0, 1)
+
 			utility = get_utility_from_spline(consideration.spline, norm_value)
 		end
 

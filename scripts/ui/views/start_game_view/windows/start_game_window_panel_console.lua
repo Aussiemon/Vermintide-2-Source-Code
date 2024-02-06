@@ -1,6 +1,9 @@
+﻿-- chunkname: @scripts/ui/views/start_game_view/windows/start_game_window_panel_console.lua
+
 local definitions = local_require("scripts/ui/views/start_game_view/windows/definitions/start_game_window_panel_console_definitions")
 local INPUT_ACTION_NEXT = "cycle_next"
 local INPUT_ACTION_PREVIOUS = "cycle_previous"
+
 StartGameWindowPanelConsole = class(StartGameWindowPanelConsole)
 StartGameWindowPanelConsole.NAME = "StartGameWindowPanelConsole"
 
@@ -9,12 +12,14 @@ StartGameWindowPanelConsole.on_enter = function (self, params, offset)
 
 	self.params = params
 	self.parent = params.parent
+
 	local ingame_ui_context = params.ingame_ui_context
+
 	self.ui_renderer = ingame_ui_context.ui_top_renderer
 	self.input_manager = ingame_ui_context.input_manager
 	self.statistics_db = ingame_ui_context.statistics_db
 	self.render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 	self._layout_settings = params.layout_settings
 	self._mechanism_name = params.mechanism_name
@@ -29,8 +34,10 @@ end
 StartGameWindowPanelConsole._create_ui_elements = function (self, definitions, params, offset)
 	local scenegraph_definition = definitions.scenegraph_definition
 	local ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+
 	self.ui_scenegraph = ui_scenegraph
 	self._widgets, self._widgets_by_name = UIUtils.create_widgets(definitions.widget_definitions)
+
 	local title_button_widgets = {}
 	local window_layouts = self._layout_settings.window_layouts
 	local parent = self.parent
@@ -47,6 +54,7 @@ StartGameWindowPanelConsole._create_ui_elements = function (self, definitions, p
 			local widget_definition = definitions.create_panel_button(scenegraph_id, size, display_name, font_size, nil, horizontal_alignment)
 			local widget = UIWidget.init(widget_definition)
 			local layout_name = settings.name
+
 			widget.content.layout_name = layout_name
 			widget.disable_function_name = settings.disable_function_name
 			title_button_widgets[#title_button_widgets + 1] = widget
@@ -61,6 +69,7 @@ StartGameWindowPanelConsole._create_ui_elements = function (self, definitions, p
 
 	if offset then
 		local window_position = ui_scenegraph.window.local_position
+
 		window_position[1] = window_position[1] + offset[1]
 		window_position[2] = window_position[2] + offset[2]
 		window_position[3] = window_position[3] + offset[3]
@@ -74,6 +83,7 @@ StartGameWindowPanelConsole._setup_text_buttons_width_and_position = function (s
 	local title_button_widgets = self._title_button_widgets
 	local num_title_button_widgets = #title_button_widgets
 	local entry_width = math.floor(total_width / num_title_button_widgets)
+
 	ui_scenegraph.game_mode_option.size[1] = entry_width
 
 	for i = 1, num_title_button_widgets do
@@ -82,19 +92,24 @@ StartGameWindowPanelConsole._setup_text_buttons_width_and_position = function (s
 		self:_set_text_button_size(widget, entry_width)
 
 		local position_x = entry_width * (i - 1)
+
 		widget.offset[1] = position_x
 	end
 
 	local widgets_by_name = self._widgets_by_name
 	local panel_input_area_2_widget = widgets_by_name.panel_input_area_2
+
 	panel_input_area_2_widget.offset[1] = entry_width * (num_title_button_widgets - 1)
 end
 
 StartGameWindowPanelConsole._set_text_button_size = function (self, widget, width)
 	local style = widget.style
+
 	style.selected_texture.texture_size[1] = width
+
 	local text_width_offset = 5
 	local text_width = width - text_width_offset * 2
+
 	style.text.size[1] = text_width
 	style.text_shadow.size[1] = text_width
 	style.text_hover.size[1] = text_width
@@ -138,6 +153,7 @@ StartGameWindowPanelConsole._update_title_buttons_disable_status = function (sel
 
 		if disable_function_name then
 			local is_disabled = self[disable_function_name](self)
+
 			widget.content.button_hotspot.disable_button = is_disabled
 		else
 			widget.content.button_hotspot.disable_button = false
@@ -198,12 +214,13 @@ StartGameWindowPanelConsole._find_next_layout_name = function (self, direction)
 		end
 	end
 
-	local new_layout_name = nil
+	local new_layout_name
 	local new_index = selected_layout_index
 	local done = false
 
 	repeat
 		new_index = math.index_wrapper(new_index + direction, #title_button_widgets)
+
 		local widget = title_button_widgets[new_index]
 
 		if new_index == selected_layout_index then
@@ -219,7 +236,7 @@ end
 
 StartGameWindowPanelConsole._handle_input = function (self, dt, t)
 	local input_made = false
-	local selected_layout_name = nil
+	local selected_layout_name
 	local title_button_widgets = self._title_button_widgets
 
 	for i = 1, #title_button_widgets do
@@ -249,7 +266,7 @@ StartGameWindowPanelConsole._handle_input = function (self, dt, t)
 	local close_on_exit = parent:close_on_exit()
 
 	if not close_on_exit and not input_made and UIUtils.is_button_pressed(back_button) then
-		local return_layout_name = nil
+		local return_layout_name
 		local params = self.params
 
 		if params then
@@ -297,6 +314,7 @@ StartGameWindowPanelConsole._set_selected_option = function (self, selected_layo
 		local widget = title_button_widgets[i]
 		local content = widget.content
 		local layout_name = content.layout_name
+
 		content.button_hotspot.is_selected = layout_name == selected_layout_name
 	end
 
@@ -324,21 +342,24 @@ StartGameWindowPanelConsole._setup_input_buttons = function (self)
 	local input_1_widget = widgets_by_name.panel_input_area_1
 	local icon_style_input_1 = input_1_widget.style.texture_id
 	local input_1_texture_data = UISettings.get_gamepad_input_texture_data(input_service, INPUT_ACTION_PREVIOUS, true)
+
 	icon_style_input_1.horizontal_alignment = "center"
 	icon_style_input_1.vertical_alignment = "center"
 	icon_style_input_1.texture_size = {
 		input_1_texture_data.size[1],
-		input_1_texture_data.size[2]
+		input_1_texture_data.size[2],
 	}
 	input_1_widget.content.texture_id = input_1_texture_data.texture
+
 	local input_2_widget = widgets_by_name.panel_input_area_2
 	local icon_style_input_2 = input_2_widget.style.texture_id
 	local input_2_texture_data = UISettings.get_gamepad_input_texture_data(input_service, INPUT_ACTION_NEXT, true)
+
 	icon_style_input_2.horizontal_alignment = "center"
 	icon_style_input_2.vertical_alignment = "center"
 	icon_style_input_2.texture_size = {
 		input_2_texture_data.size[1],
-		input_2_texture_data.size[2]
+		input_2_texture_data.size[2],
 	}
 	input_2_widget.content.texture_id = input_2_texture_data.texture
 end
@@ -348,6 +369,7 @@ StartGameWindowPanelConsole._handle_back_button_visibility = function (self)
 		local close_on_exit = self.parent:close_on_exit()
 		local new_visibility = not close_on_exit
 		local back_button = self._widgets_by_name.back_button
+
 		back_button.content.visible = new_visibility
 	end
 end
@@ -368,7 +390,9 @@ StartGameWindowPanelConsole._handle_gamepad_activity = function (self)
 	if gamepad_active then
 		if not self.gamepad_active_last_frame or force_update then
 			self.gamepad_active_last_frame = true
+
 			local widgets_by_name = self._widgets_by_name
+
 			widgets_by_name.panel_input_area_1.content.visible = true
 			widgets_by_name.panel_input_area_2.content.visible = true
 			widgets_by_name.back_button.content.visible = false
@@ -378,7 +402,9 @@ StartGameWindowPanelConsole._handle_gamepad_activity = function (self)
 		end
 	elseif self.gamepad_active_last_frame or force_update then
 		self.gamepad_active_last_frame = false
+
 		local widgets_by_name = self._widgets_by_name
+
 		widgets_by_name.panel_input_area_1.content.visible = false
 		widgets_by_name.panel_input_area_2.content.visible = false
 		widgets_by_name.close_button.content.visible = true
@@ -465,13 +491,18 @@ StartGameWindowPanelConsole._animate_title_entry = function (self, widget, dt, t
 	local combined_progress = math.max(hover_progress, selection_progress)
 	local hover_alpha = 255 * combined_progress
 	local style = widget.style
+
 	style.selected_texture.color[1] = hover_alpha
+
 	local text_height_offset = 4 * combined_progress
+
 	style.text.offset[2] = 5 - text_height_offset
 	style.text_shadow.offset[2] = 3 - text_height_offset
 	style.text_hover.offset[2] = 5 - text_height_offset
 	style.text_disabled.offset[2] = 5 - text_height_offset
+
 	local new_marker_progress = 0.5 + math.sin(t * 5) * 0.5
+
 	style.new_marker.color[1] = 100 + 155 * new_marker_progress
 	hotspot.hover_progress = hover_progress
 	hotspot.input_progress = input_progress
@@ -491,6 +522,7 @@ StartGameWindowPanelConsole._animate_back_button = function (self, widget, dt)
 	local selection_progress = UIUtils.animate_value(hotspot.selection_progress or 0, speed * dt, is_selected)
 	local combined_progress = math.max(hover_progress, selection_progress)
 	local hover_alpha = 255 * combined_progress
+
 	style.texture_id.color[1] = 255 - hover_alpha
 	style.texture_hover_id.color[1] = hover_alpha
 	style.selected_texture.color[1] = hover_alpha

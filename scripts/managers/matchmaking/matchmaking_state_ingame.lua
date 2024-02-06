@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/matchmaking/matchmaking_state_ingame.lua
+
 MatchmakingStateIngame = class(MatchmakingStateIngame)
 MatchmakingStateIngame.NAME = "MatchmakingStateIngame"
 

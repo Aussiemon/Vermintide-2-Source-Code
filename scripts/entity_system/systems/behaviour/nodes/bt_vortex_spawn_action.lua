@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_vortex_spawn_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTVortexSpawnAction = class(BTVortexSpawnAction, BTNode)

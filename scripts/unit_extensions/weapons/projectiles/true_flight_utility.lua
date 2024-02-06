@@ -1,5 +1,8 @@
+﻿-- chunkname: @scripts/unit_extensions/weapons/projectiles/true_flight_utility.lua
+
 TrueFlightUtility = TrueFlightUtility or {}
-local order_upvalue, reference_pos_upvalue = nil
+
+local order_upvalue, reference_pos_upvalue
 
 local function _prioritize_specials(unit_a, unit_b)
 	local breed_a = Unit.get_data(unit_a, "breed")

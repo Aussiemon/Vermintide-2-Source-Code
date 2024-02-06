@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/unit_extensions/default_player_unit/states/player_character_state_grabbed_by_tentacle.lua
+
 PlayerCharacterStateGrabbedByTentacle = class(PlayerCharacterStateGrabbedByTentacle, PlayerCharacterState)
+
 local position_lookup = POSITION_LOOKUP
 local anim_event = CharacterStateHelper.play_animation_event
 local switch_to_3p_dist_sq = 100
@@ -23,17 +26,24 @@ PlayerCharacterStateGrabbedByTentacle.on_enter = function (self, unit, input, dt
 
 	local status_extension = self.status_extension
 	local tentacle_unit = status_extension.grabbed_by_tentacle_unit
+
 	self.tentacle_unit = tentacle_unit
+
 	local tentacle_spline_extension = ScriptUnit.has_extension(tentacle_unit, "ai_supplementary_system")
 	local portal_unit = tentacle_spline_extension.portal_unit
+
 	self.tentacle_template = tentacle_spline_extension.tentacle_template
 	self.portal_unit = portal_unit
 	self.tentacle_spline_extension = tentacle_spline_extension
 	self.winding_dist = tentacle_spline_extension.lock_point_dist
+
 	local tentacle_data = tentacle_spline_extension.tentacle_data
 	local portal_forward = Quaternion.forward(Unit.local_rotation(tentacle_data.portal_unit, 0))
+
 	self.portal_forward = Vector3Box(portal_forward)
+
 	local breed = Unit.get_data(tentacle_unit, "breed")
+
 	self.breed = breed
 	self.drag_speed = breed.drag_speed
 	self.camera_state = "first_person"
@@ -45,6 +55,7 @@ PlayerCharacterStateGrabbedByTentacle.on_enter = function (self, unit, input, dt
 
 	self.physics_world = World.physics_world(self.world)
 	self.nav_world = self.nav_world or Managers.state.entity:system("ai_system"):nav_world()
+
 	local locomotion_extension = self.locomotion_extension
 
 	locomotion_extension:enable_script_driven_no_mover_movement()
@@ -183,7 +194,7 @@ PlayerCharacterStateGrabbedByTentacle.states = {
 		end,
 		leave = function (parent, unit)
 			return
-		end
+		end,
 	},
 	portal_hanging = {
 		enter = function (parent, unit, t)
@@ -208,7 +219,7 @@ PlayerCharacterStateGrabbedByTentacle.states = {
 		end,
 		leave = function (parent, unit)
 			return
-		end
+		end,
 	},
 	portal_consume = {
 		enter = function (parent, unit, t)
@@ -222,7 +233,7 @@ PlayerCharacterStateGrabbedByTentacle.states = {
 				animation = "tentacle_portal_struggle_dead",
 				drop_items_delay = breed.time_before_consume_kill_player,
 				override_item_drop_position = portal_position,
-				override_item_drop_direction = portal_forward
+				override_item_drop_direction = portal_forward,
 			}
 			local csm = parent.csm
 
@@ -233,7 +244,7 @@ PlayerCharacterStateGrabbedByTentacle.states = {
 		end,
 		leave = function (parent, unit)
 			return
-		end
+		end,
 	},
 	portal_release = {
 		enter = function (parent, unit, t)
@@ -242,10 +253,11 @@ PlayerCharacterStateGrabbedByTentacle.states = {
 
 			local breed = parent.breed
 			local portal_release_time = breed.portal_release_time
+
 			parent.wait_for_release = t + portal_release_time
 		end,
 		run = function (parent, unit, t, dt)
-			if parent.wait_for_release < t then
+			if t > parent.wait_for_release then
 				local csm = parent.csm
 
 				csm:change_state("standing")
@@ -253,28 +265,30 @@ PlayerCharacterStateGrabbedByTentacle.states = {
 		end,
 		leave = function (parent, unit)
 			return
-		end
-	}
+		end,
+	},
 }
 
 PlayerCharacterStateGrabbedByTentacle.get_drag_velocity = function (self, player_pos, t, dt)
 	self.winding_dist = self.winding_dist - self.drag_speed * dt
+
 	local spline = self.tentacle_spline_extension.spline
 	local tentacle_data = self.tentacle_spline_extension.tentacle_data
 	local out_dist = tentacle_data.portal_spawn_type == "floor" and 3.3 or 2.5
 	local spline_pos = spline:get_point_at_distance(self.winding_dist - out_dist)
 	local travel_to_node_index = self.tentacle_spline_extension.tentacle_data.travel_to_node_index
-	local to_portal_along_spline, swing_vec = nil
+	local to_portal_along_spline, swing_vec
 
 	if travel_to_node_index then
 		local glider_node_pos = self.tentacle_spline_extension.tentacle_data.astar_node_list[travel_to_node_index + 1]:unbox()
 		local travel_node_pos = self.tentacle_spline_extension.tentacle_data.astar_node_list[travel_to_node_index]:unbox()
 		local travel_dir = Vector3.normalize(travel_node_pos - glider_node_pos)
+
 		to_portal_along_spline = travel_dir
 
 		QuickDrawer:line(travel_node_pos, player_pos, Color(200, 0, 255))
 	else
-		local p, ds = nil
+		local p, ds
 		local portal_forward = self.portal_forward:unbox()
 		local root_pos = tentacle_data.root_pos:unbox()
 		local wall_pos = tentacle_data.wall_pos:unbox()
@@ -282,9 +296,11 @@ PlayerCharacterStateGrabbedByTentacle.get_drag_velocity = function (self, player
 		if tentacle_data.portal_spawn_type == "floor" then
 			local root_to_align_dist = 4
 			local horiz_influence_dist = 3
+
 			p, ds = self.tentacle_spline_extension:funnel_one_point(spline_pos, wall_pos, root_pos, portal_forward, root_to_align_dist, horiz_influence_dist)
 		else
 			local root_to_align_dist = 2.5
+
 			p, ds = self.tentacle_spline_extension:funnel_one_point(spline_pos, wall_pos, root_pos, portal_forward, root_to_align_dist)
 		end
 
@@ -295,7 +311,7 @@ PlayerCharacterStateGrabbedByTentacle.get_drag_velocity = function (self, player
 		to_portal_along_spline = Vector3.normalize(spline_pos - player_pos)
 	end
 
-	local look_dir = nil
+	local look_dir
 	local velocity = to_portal_along_spline * self.drag_speed
 
 	return velocity, look_dir

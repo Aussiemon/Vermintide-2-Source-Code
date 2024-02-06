@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/generic/generic_camera_state_machine_extension.lua
+
 require("scripts/unit_extensions/generic/generic_state_machine")
 
 GenericCameraStateMachineExtension = class(GenericCameraStateMachineExtension)
@@ -14,7 +16,7 @@ GenericCameraStateMachineExtension.extensions_ready = function (self)
 	local character_state_init_context = {
 		world = self.world,
 		unit = self.unit,
-		csm = self.state_machine
+		csm = self.state_machine,
 	}
 	local states = {}
 	local camera_state_class_list = self.camera_state_class_list

@@ -1,6 +1,9 @@
+﻿-- chunkname: @scripts/entity_system/systems/status/status_system.lua
+
 require("scripts/unit_extensions/generic/generic_status_extension")
 
 StatusSystem = class(StatusSystem, ExtensionSystemBase)
+
 local RPCS = {
 	"rpc_status_change_bool",
 	"rpc_status_change_int",
@@ -18,10 +21,10 @@ local RPCS = {
 	"rpc_replenish_fatigue_other_players",
 	"rpc_set_stagger",
 	"rpc_set_action_data",
-	"rpc_set_override_blocking"
+	"rpc_set_override_blocking",
 }
 local extensions = {
-	"GenericStatusExtension"
+	"GenericStatusExtension",
 }
 
 DLCUtils.map_list("status_extensions", function (file)
@@ -32,6 +35,7 @@ StatusSystem.init = function (self, entity_system_creation_context, system_name)
 	StatusSystem.super.init(self, entity_system_creation_context, system_name, extensions)
 
 	local network_event_delegate = entity_system_creation_context.network_event_delegate
+
 	self.network_event_delegate = network_event_delegate
 
 	network_event_delegate:register(self, unpack(RPCS))
@@ -355,6 +359,7 @@ end
 StatusSystem.rpc_hot_join_sync_health_status = function (self, channel_id, game_object_id, wounds, ready_for_assisted_respawn, respawn_unit_game_object_id)
 	local unit = self.unit_storage:unit(game_object_id)
 	local status_extension = ScriptUnit.extension(unit, "status_system")
+
 	status_extension.wounds = wounds
 
 	if ready_for_assisted_respawn then

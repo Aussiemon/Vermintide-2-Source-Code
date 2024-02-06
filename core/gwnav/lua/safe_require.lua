@@ -1,6 +1,8 @@
+﻿-- chunkname: @core/gwnav/lua/safe_require.lua
+
 local error_level = 0
 local safely_required_modules = {}
-local latest_safely_required_file = nil
+local latest_safely_required_file
 
 function safe_require(file)
 	if safely_required_modules[file] == nil then

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/ingame_ui.lua
+
 require("scripts/ui/ui_layer")
 require("scripts/ui/ui_renderer")
 require("scripts/ui/ui_elements")
@@ -46,6 +48,7 @@ local settings = require("scripts/ui/views/ingame_ui_settings")
 local view_settings = settings.view_settings
 local transitions = settings.transitions
 local ingame_ui_testify = script_data.testify and require("scripts/ui/views/ingame_ui_testify")
+
 IngameUI = class(IngameUI)
 
 IngameUI.init = function (self, ingame_ui_context)
@@ -55,16 +58,20 @@ IngameUI.init = function (self, ingame_ui_context)
 	self.world_manager = ingame_ui_context.world_manager
 	self.camera_manager = ingame_ui_context.camera_manager
 	self.is_in_inn = ingame_ui_context.is_in_inn
+
 	local world = Managers.world:world("level_world")
 	local top_world = Managers.world:world("top_ingame_view")
 	local wwise_world = Managers.world:wwise_world(world)
+
 	self.wwise_world = wwise_world
 	self.world = world
 	self.top_world = top_world
+
 	local game_mode_key = Managers.state.game_mode:game_mode_key()
 	local mechanism_key = Managers.mechanism:current_mechanism_name()
 	local is_tutorial = game_mode_key == "tutorial"
 	local is_in_inn = self.is_in_inn
+
 	self.ui_renderer = self:create_ui_renderer(world, is_tutorial, is_in_inn, mechanism_key)
 	self.ui_top_renderer = self:create_ui_renderer(top_world, is_tutorial, is_in_inn, mechanism_key)
 	self.blocked_transitions = view_settings.blocked_transitions
@@ -75,6 +82,7 @@ IngameUI.init = function (self, ingame_ui_context)
 	UISetupFontHeights(self.ui_renderer.gui)
 
 	local input_manager = ingame_ui_context.input_manager
+
 	self.input_manager = input_manager
 
 	input_manager:create_input_service("ingame_menu", "IngameMenuKeymaps", "IngameMenuFilters")
@@ -107,6 +115,7 @@ IngameUI.init = function (self, ingame_ui_context)
 	end
 
 	local cutscene_system = Managers.state.entity:system("cutscene_system")
+
 	self.cutscene_system = cutscene_system
 
 	self:register_rpcs(ingame_ui_context.network_event_delegate)
@@ -121,6 +130,7 @@ IngameUI.init = function (self, ingame_ui_context)
 	Managers.chat:set_input_manager(input_manager)
 
 	local network_handler = ingame_ui_context.network_server or ingame_ui_context.network_client
+
 	self._profile_requester = network_handler:profile_requester()
 	self.telemetry_time_view_enter = 0
 	self.ingame_ui_context = ingame_ui_context
@@ -335,7 +345,7 @@ IngameUI.not_in_modded = function (self)
 end
 
 local hotkeys_blocked_during_vote = {
-	"hotkey_map"
+	"hotkey_map",
 }
 
 IngameUI.handle_menu_hotkeys = function (self, dt, input_service, hotkeys_enabled, menu_active)
@@ -376,6 +386,7 @@ IngameUI.handle_menu_hotkeys = function (self, dt, input_service, hotkeys_enable
 
 					if matching_state and matching_sub_state then
 						local hotkey_allowed = active_view.hotkey_allowed and active_view:hotkey_allowed(input, mapping_data)
+
 						hotkey_allowed = hotkey_allowed ~= false
 
 						if hotkey_allowed then
@@ -415,22 +426,26 @@ IngameUI.handle_menu_hotkeys = function (self, dt, input_service, hotkeys_enable
 
 				if can_interact then
 					if transition_not_allowed then
-						local error_message = mapping_data.error_message
+						do
+							local error_message = mapping_data.error_message
 
-						if error_message then
-							self:add_local_system_message(error_message)
+							if error_message then
+								self:add_local_system_message(error_message)
+							end
 						end
 
 						break
 					end
 
-					local transition = menu_active and mapping_data.in_transition_menu or mapping_data.in_transition
-					local transition_params = {
-						menu_state_name = mapping_data.transition_state,
-						menu_sub_state_name = mapping_data.transition_sub_state
-					}
+					do
+						local transition = menu_active and mapping_data.in_transition_menu or mapping_data.in_transition
+						local transition_params = {
+							menu_state_name = mapping_data.transition_state,
+							menu_sub_state_name = mapping_data.transition_sub_state,
+						}
 
-					self:transition_with_fade(transition, transition_params)
+						self:transition_with_fade(transition, transition_params)
+					end
 
 					break
 				end
@@ -490,7 +505,7 @@ IngameUI.update = function (self, dt, t, disable_ingame_ui, end_of_level_ui)
 		self:_survey_update(dt)
 	end
 
-	if self.quit_game_retry and self.delay_quit_game_retry <= t then
+	if self.quit_game_retry and t >= self.delay_quit_game_retry then
 		self.quit_game_retry = nil
 
 		self:handle_transition("end_game")
@@ -546,7 +561,7 @@ IngameUI.update = function (self, dt, t, disable_ingame_ui, end_of_level_ui)
 					local menu_sub_state_name = gamepad_active and "equipment" or "system"
 					local transition_params = {
 						menu_state_name = menu_state_name,
-						menu_sub_state_name = menu_sub_state_name
+						menu_sub_state_name = menu_sub_state_name,
 					}
 
 					self:transition_with_fade("hero_view_force", transition_params)
@@ -555,7 +570,7 @@ IngameUI.update = function (self, dt, t, disable_ingame_ui, end_of_level_ui)
 					local transition_params = {
 						menu_state_name = menu_state_name,
 						menu_sub_state_name = menu_sub_state_name,
-						force_ingame_menu = IS_WINDOWS
+						force_ingame_menu = IS_WINDOWS,
 					}
 
 					self:handle_transition("hero_view_force", transition_params)
@@ -645,12 +660,10 @@ IngameUI._survey_update = function (self, dt)
 end
 
 IngameUI._handle_resolution_changes = function (self)
-	local res_x = RESOLUTION_LOOKUP.res_w
-	local res_y = RESOLUTION_LOOKUP.res_h
+	local res_x, res_y = RESOLUTION_LOOKUP.res_w, RESOLUTION_LOOKUP.res_h
 
 	if res_x ~= self.last_resolution_x or res_y ~= self.last_resolution_y then
-		self.last_resolution_y = res_y
-		self.last_resolution_x = res_x
+		self.last_resolution_x, self.last_resolution_y = res_x, res_y
 	end
 end
 
@@ -739,6 +752,7 @@ IngameUI.show_info = function (self)
 	local tome_mission_data = mission_system:get_level_end_mission_data("tome_bonus_mission")
 	local w, h = Application.resolution()
 	local pos = Vector3(100, h - 100, 999)
+
 	pos = self:_show_text(grimoire_mission_data and grimoire_mission_data.current_amount or "", pos)
 	pos = self:_show_text(tome_mission_data and tome_mission_data.current_amount or "", pos)
 end
@@ -779,7 +793,7 @@ IngameUI.add_local_system_message = function (self, message)
 end
 
 IngameUI.is_transition_allowed = function (self, transition)
-	local error_message = nil
+	local error_message
 	local transition_allowed = true
 	local player_ready_for_game = self:is_local_player_ready_for_game()
 
@@ -851,6 +865,7 @@ IngameUI.handle_transition = function (self, new_transition, params)
 	end
 
 	params = params or {}
+
 	local old_view = self.current_view
 
 	transitions[new_transition](self, params)
@@ -903,7 +918,7 @@ IngameUI.transition_with_fade = function (self, new_transition, params, fade_in_
 	self._transition_fade_data = {
 		new_transition = new_transition,
 		transition_params = params,
-		fade_out_speed = fade_out_speed
+		fade_out_speed = fade_out_speed,
 	}
 
 	Managers.transition:fade_in(fade_in_speed or 10)
@@ -925,6 +940,7 @@ IngameUI._update_fade_transition = function (self)
 		self:handle_transition(new_transition, transition_params)
 
 		local fade_out_speed = self._transition_fade_data.fade_out_speed
+
 		self._transition_fade_data = nil
 
 		Managers.transition:fade_out(fade_out_speed or 10)
@@ -1031,8 +1047,7 @@ local red_color = Colors.color_definitions.red
 
 IngameUI._render_version_info = function (self)
 	local ui_top_renderer = self.ui_top_renderer
-	local res_width = 1920
-	local res_height = 1080
+	local res_width, res_height = 1920, 1080
 	local text_size = 18
 	local build = script_data.build_identifier or "???"
 	local revision = script_data.settings.content_revision or "???"
@@ -1046,12 +1061,14 @@ IngameUI._render_version_info = function (self)
 
 	if rawget(_G, "Steam") then
 		local appid = Steam.app_id()
+
 		text = text .. " Appid: " .. appid
 	end
 
 	local width, height = UIRenderer.text_size(ui_top_renderer, text, debug_font_mtrl, text_size)
 	local x = res_width - width - 8
 	local y = height
+
 	position[1] = x
 	position[2] = y
 	position[3] = 899
@@ -1067,7 +1084,9 @@ end
 
 IngameUI._render_fps = function (self, dt)
 	self._fpses = self._fpses or {}
+
 	local ui_top_renderer = self.ui_top_renderer
+
 	self._fpses[#self._fpses + 1] = dt
 	self._fps_cooldown = self._fps_cooldown + dt
 
@@ -1081,6 +1100,7 @@ IngameUI._render_fps = function (self, dt)
 		end
 
 		local mean_dt = total_dt / num_dts
+
 		self.mean_dt = mean_dt
 		self.fps = math.floor(1 / mean_dt + 0.5)
 
@@ -1092,7 +1112,7 @@ IngameUI._render_fps = function (self, dt)
 	local fps = self.fps
 	local mean_dt = self.mean_dt
 	local text = string.format("%.2fms  %i FPS", mean_dt * 1000, fps)
-	local color = nil
+	local color
 	local red_cap = 30
 
 	if IS_CONSOLE then
@@ -1105,13 +1125,13 @@ IngameUI._render_fps = function (self, dt)
 		color = white_color
 	end
 
-	local res_width = RESOLUTION_LOOKUP.res_w
-	local res_height = RESOLUTION_LOOKUP.res_h
+	local res_width, res_height = RESOLUTION_LOOKUP.res_w, RESOLUTION_LOOKUP.res_h
 	local text_size = 24
 	local inv_scale = RESOLUTION_LOOKUP.inv_scale
 	local width, height = UIRenderer.text_size(ui_top_renderer, text, debug_font_mtrl, text_size * RESOLUTION_LOOKUP.scale)
 	local x = (res_width - width - 8) * inv_scale
 	local y = (height + 16) * inv_scale
+
 	position[1] = x
 	position[2] = y
 	position[3] = 899
@@ -1163,9 +1183,10 @@ IngameUI.open_popup = function (self, popup_name, ...)
 	local popup_settings = PopupSettingsByName[popup_name]
 	local popup_class = rawget(_G, popup_settings.class)
 	local popup = popup_class:new(self.ingame_ui_context, ...)
+
 	popups_by_name[popup_name] = {
 		settings = popup_settings,
-		popup = popup
+		popup = popup,
 	}
 end
 
@@ -1196,8 +1217,7 @@ IngameUI.respawn = function (self)
 		return
 	end
 
-	local peer_id = self.peer_id
-	local local_player_id = self.local_player_id
+	local peer_id, local_player_id = self.peer_id, self.local_player_id
 	local profile_index, career_index = self.profile_synchronizer:profile_by_peer(peer_id, local_player_id)
 	local profile_name, career_name = hero_and_career_name_from_index(profile_index, career_index)
 	local force_respawn = true

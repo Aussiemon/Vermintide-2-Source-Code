@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/imgui/imgui_behavior_tree.lua
+
 ImguiBehaviorTree = class(ImguiBehaviorTree)
 
 ImguiBehaviorTree.init = function (self, world, ...)
@@ -9,21 +11,21 @@ ImguiBehaviorTree.init = function (self, world, ...)
 	self._left_panel_width = 600
 	self._scrolling = {
 		x = 0,
-		y = 0
+		y = 0,
 	}
 	self._node_size = {
+		height = 0,
 		width = 150,
-		height = 0
 	}
 	self._grid_size = 64
 	self._offset = {
 		x = 0,
-		y = 0
+		y = 0,
 	}
 	self._zoom = 1
 	self._node_inner_padding = {
 		x = 5,
-		y = 5
+		y = 5,
 	}
 	self._node_font_size = 10
 	self._node_text_distance = 10
@@ -33,11 +35,11 @@ ImguiBehaviorTree.init = function (self, world, ...)
 	self._original_font_size = Imgui.get_font_size()
 	self._curve_in_offset = {
 		x = -50,
-		y = 0
+		y = 0,
 	}
 	self._curve_out_offset = {
 		x = 50,
-		y = 0
+		y = 0,
 	}
 	self._running_blackboard = nil
 	self._last_leaf_node_run = nil
@@ -51,7 +53,7 @@ end
 ImguiBehaviorTree._update_leaf_history = function (self, running_node_name)
 	self._running_leaf_history[#self._running_leaf_history + 1] = running_node_name
 
-	if self._max_history_quantity < #self._running_leaf_history then
+	if #self._running_leaf_history > self._max_history_quantity then
 		local overflow_quantity = #self._running_leaf_history - self._max_history_quantity
 
 		for i = 1, overflow_quantity do
@@ -132,9 +134,10 @@ ImguiBehaviorTree._draw_node = function (self, x, y, node, link_out)
 	local next_link_out = {
 		x = 0,
 		y = 0,
-		x = txt_start_box_x + rect_end_box_x - txt_start_box_x,
-		y = rect_start_box_y + (rect_end_box_y - rect_start_box_y) / 2
 	}
+
+	next_link_out.x = txt_start_box_x + (rect_end_box_x - txt_start_box_x)
+	next_link_out.y = rect_start_box_y + (rect_end_box_y - rect_start_box_y) / 2
 
 	return rect_end_box_x - txt_start_box_x, next_link_out
 end
@@ -149,6 +152,7 @@ ImguiBehaviorTree._draw_nodes = function (self, node, x, y, link_out)
 		local zoom = self._zoom
 		local width_padding_modifier = use_width_padding_zoom and zoom or 1
 		local height_padding_modifier = use_width_padding_zoom and zoom or 1
+
 		x = x + node_width + padding * width_padding_modifier
 
 		for _, child in pairs(node._children) do
@@ -227,7 +231,7 @@ ImguiBehaviorTree._draw_blackboard_value = function (self, data)
 end
 
 ImguiBehaviorTree._save_history = function (self, brain, running_node_name)
-	local leaf = nil
+	local leaf
 
 	for _, value in pairs(brain._blackboard.running_nodes) do
 		if value._identifier == running_node_name then
@@ -240,6 +244,7 @@ ImguiBehaviorTree._save_history = function (self, brain, running_node_name)
 	end
 
 	self._last_leaf_node_run = running_node_name
+
 	local i = 1
 	local node_iterator = leaf
 	local running_hierarchy = {}
@@ -267,9 +272,11 @@ ImguiBehaviorTree._save_history = function (self, brain, running_node_name)
 	end
 
 	blackboard_copy.running_nodes = running_hierarchy
+
 	local new_history_entry = {
-		blackboard = blackboard_copy
+		blackboard = blackboard_copy,
 	}
+
 	self._history_stack[#self._history_stack + 1] = new_history_entry
 end
 
@@ -351,8 +358,10 @@ ImguiBehaviorTree.draw = function (self)
 
 	local window_pos_x, window_pos_y = Imgui.get_cursor_screen_pos()
 	local window_width, window_height = Imgui.get_window_size()
+
 	self._offset.x = window_pos_x + self._scrolling.x
 	self._offset.y = window_pos_y + self._scrolling.y
+
 	local temp_x_grid = math.fmod(self._scrolling.x, self._grid_size * self._zoom)
 	local temp_y_grid = math.fmod(self._scrolling.y, self._grid_size * self._zoom)
 	local grid_color = Color(255, 100, 100, 100)
@@ -409,6 +418,7 @@ ImguiBehaviorTree.draw = function (self)
 
 	if Imgui.is_window_hovered() and Imgui.is_mouse_dragging(2, 0) then
 		local delta_x, delta_y = Imgui.get_mouse_delta()
+
 		self._scrolling.x = self._scrolling.x + delta_x
 		self._scrolling.y = self._scrolling.y + delta_y
 	end
@@ -449,14 +459,10 @@ ImguiBehaviorTree._draw_graph = function (self, consideration_key, consideration
 	local axis_color = Color(255, 255, 255, 255)
 	local line_color = Color(255, 255, 255, 255)
 	local val_line_color = Color(255, 255, 0, 0)
-	local margin_x = 10
-	local margin_y = 10
-	local size_x = 300
-	local size_y = 150
-	local axis_margin_x = 50
-	local axis_margin_y = 20
-	local axis_offset_x = -20
-	local axis_offset_y = 0
+	local margin_x, margin_y = 10, 10
+	local size_x, size_y = 300, 150
+	local axis_margin_x, axis_margin_y = 50, 20
+	local axis_offset_x, axis_offset_y = -20, 0
 	local line_thickness = 1
 	local axis_thickness = 2
 	local axis_oversize = 10
@@ -501,8 +507,9 @@ ImguiBehaviorTree._draw_graph = function (self, consideration_key, consideration
 
 		Imgui.add_line(line_start_x, line_start_y, line_end_x, line_end_y, line_color, line_thickness)
 
-		if spline[i - 2] <= blackboard_norm_value and blackboard_norm_value <= spline[i] then
+		if blackboard_norm_value >= spline[i - 2] and blackboard_norm_value <= spline[i] then
 			local spline_x_t = (blackboard_norm_value - spline[i - 2]) / (spline[i] - spline[i - 2])
+
 			blackboard_value_y = spline[i - 1] + (spline[i + 1] - spline[i - 1]) * spline_x_t
 		end
 

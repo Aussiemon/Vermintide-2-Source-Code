@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/default_player_unit/states/player_character_state_knocked_down.lua
+
 PlayerCharacterStateKnockedDown = class(PlayerCharacterStateKnockedDown, PlayerCharacterState)
 
 PlayerCharacterStateKnockedDown.init = function (self, character_state_init_context)
@@ -39,7 +41,9 @@ PlayerCharacterStateKnockedDown.on_enter = function (self, unit, input, dt, cont
 	first_person_extension:set_first_person_mode(false)
 
 	local status_extension = ScriptUnit.extension(unit, "status_system")
+
 	self.pounced_down = previous_state == "pounced_down"
+
 	local is_pounced_down, pouncer_unit = CharacterStateHelper.is_pounced_down(status_extension)
 
 	if is_pounced_down and not self.pounced_down then
@@ -50,6 +54,7 @@ PlayerCharacterStateKnockedDown.on_enter = function (self, unit, input, dt, cont
 	end
 
 	self.grabbed_by_pack_master = previous_state == "grabbed_by_pack_master"
+
 	local include_local_player = true
 
 	CharacterStateHelper.show_inventory_3p(unit, false, include_local_player, self.is_server, self.inventory_extension)
@@ -115,6 +120,7 @@ PlayerCharacterStateKnockedDown.update = function (self, unit, input, dt, contex
 
 	if not CharacterStateHelper.is_knocked_down(status_extension) then
 		local params = self.temp_params
+
 		params.is_crouching = false
 
 		csm:change_state("standing")

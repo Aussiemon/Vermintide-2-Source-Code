@@ -1,9 +1,12 @@
+﻿-- chunkname: @scripts/managers/conflict_director/conflict_utils.lua
+
 require("scripts/settings/breeds")
 require("scripts/settings/patrol_formation_settings")
 require("scripts/managers/conflict_director/breed_packs")
 require("scripts/managers/conflict_director/encampment_templates")
 
 ConflictUtils = {}
+
 local ConflictUtils = ConflictUtils
 local distance_squared = Vector3.distance_squared
 local math_random = Math.random
@@ -29,17 +32,19 @@ local cluster_index_lookup = {}
 local cluster_work_queue = {
 	false,
 	false,
-	false
+	false,
 }
 
 ConflictUtils.cluster_positions = function (positions, min_dist)
 	local clusters = {
-		positions[1]
+		positions[1],
 	}
 	local clusters_sizes = clusters_sizes
+
 	clusters_sizes[1] = 1
 	cluster_index_lookup[1] = 1
 	min_dist = min_dist * min_dist
+
 	local work_queue = cluster_work_queue
 
 	for i = 1, 3 do
@@ -75,6 +80,7 @@ ConflictUtils.cluster_positions = function (positions, min_dist)
 		if not clustered then
 			local i = #clusters + 1
 			local index = work_queue[1]
+
 			clusters[i] = positions[index]
 			cluster_index_lookup[index] = i
 			clusters_sizes[i] = 1
@@ -95,12 +101,14 @@ local max_cluster_score = {
 	1,
 	2,
 	3,
-	6
+	6,
 }
 
 ConflictUtils.cluster_weight_and_loneliness = function (positions, min_dist)
 	local distance_squared = Vector3.distance_squared
+
 	min_dist = min_dist * min_dist
+
 	local num_positions = math.min(#positions, 4)
 
 	if num_positions == 1 then
@@ -114,12 +122,7 @@ ConflictUtils.cluster_weight_and_loneliness = function (positions, min_dist)
 	local c = positions[3]
 	local d = positions[4]
 	local utility_sum = 0
-	local ab = 0
-	local ac = 0
-	local ad = 0
-	local bc = 0
-	local bd = 0
-	local cd = 0
+	local ab, ac, ad, bc, bd, cd = 0, 0, 0, 0, 0, 0
 
 	if d then
 		ad = distance_squared(a, d)
@@ -146,6 +149,7 @@ ConflictUtils.cluster_weight_and_loneliness = function (positions, min_dist)
 	end
 
 	loneliness[1] = ab + ac + ad
+
 	local cluster_utility = utility_sum / max_cluster_score[num_positions]
 	local loneliest_value = 0
 	local loneliest_index = 1
@@ -172,6 +176,7 @@ ConflictUtils.average_player_position = function ()
 
 		if ALIVE[unit] then
 			local pos = POSITION_LOOKUP[unit]
+
 			player_center_pos = player_center_pos + pos
 			player_count = player_count + 1
 		end
@@ -181,7 +186,7 @@ ConflictUtils.average_player_position = function ()
 		return nil
 	end
 
-	player_center_pos = player_center_pos * 1 / player_count
+	player_center_pos = player_center_pos * (1 / player_count)
 
 	return player_center_pos
 end
@@ -191,8 +196,10 @@ local hidden_cover_units = {}
 
 ConflictUtils.hidden_cover_points = function (center_position, avoid_pos_list, min_rad, max_rad, dot_threshold)
 	local bp = Managers.state.conflict.level_analysis.cover_points_broadphase
+
 	min_rad = min_rad * min_rad
 	dot_threshold = dot_threshold and math.max(dot_threshold, -0.9) or -0.9
+
 	local MAX_RANGE = 40
 	local num_found_cover_units = Broadphase.query(bp, center_position, math.min(max_rad, MAX_RANGE), found_cover_units)
 	local vector3_normalize = Vector3.normalize
@@ -219,7 +226,7 @@ ConflictUtils.hidden_cover_points = function (center_position, avoid_pos_list, m
 				Vector3.set_z(to_cover_point, 0)
 
 				local dot = dist_squared < 50 and dot_threshold or -0.6
-				local valid = vector3_dot(quaternion_forward(rot), to_cover_point) < dot
+				local valid = dot > vector3_dot(quaternion_forward(rot), to_cover_point)
 
 				if valid then
 					num_valid = num_valid + 1
@@ -241,8 +248,7 @@ end
 ConflictUtils.debug_is_cover_point_hidden = function ()
 	local bp = Managers.state.conflict.level_analysis.cover_points_broadphase
 	local num_found_cover_units = Broadphase.query(bp, PLAYER_POSITIONS[1], 20, found_cover_units)
-	local red = Colors.get("red")
-	local green = Colors.get("green")
+	local red, green = Colors.get("red"), Colors.get("green")
 	local unit_local_rotation = Unit.local_rotation
 	local unit_local_position = Unit.local_position
 	local min_rad = 5
@@ -284,7 +290,7 @@ ConflictUtils.is_cover_point_hidden = function (cover_point_unit, avoid_pos_list
 
 		local to_cover_point = vector3_normalize(pos - avoid_pos)
 		local dot = dist_squared < 225 and -0.9 or -0.6
-		local valid = vector3_dot(quaternion_forward(rot), to_cover_point) < dot or long_distance_sqr < dist_squared
+		local valid = dot > vector3_dot(quaternion_forward(rot), to_cover_point) or long_distance_sqr < dist_squared
 
 		if valid then
 			num_valid = num_valid + 1
@@ -340,7 +346,7 @@ ConflictUtils.get_biggest_cluster = function (clusters_sizes)
 		local size = clusters_sizes[i]
 
 		if size then
-			if clusters_sizes[biggest] < size then
+			if size > clusters_sizes[biggest] then
 				biggest = i
 			end
 		else
@@ -353,8 +359,10 @@ end
 
 ConflictUtils.filter_positions = function (center_pos, main_target_pos, spawner_units, min_dist, max_dist)
 	local list = {}
+
 	max_dist = max_dist * max_dist
 	min_dist = min_dist * min_dist
+
 	local behind_dist = distance_squared(center_pos, main_target_pos)
 
 	for j = 1, #spawner_units do
@@ -375,8 +383,8 @@ ConflictUtils.filter_positions = function (center_pos, main_target_pos, spawner_
 end
 
 ConflictUtils.filter_horde_spawners = function (player_positions, spawner_units, hidden_spawner_units, min_dist, max_dist)
-	local list = {}
-	local hidden_list = {}
+	local list, hidden_list = {}, {}
+
 	max_dist = max_dist * max_dist
 	min_dist = min_dist * min_dist
 
@@ -402,10 +410,11 @@ ConflictUtils.filter_horde_spawners = function (player_positions, spawner_units,
 end
 
 ConflictUtils.filter_horde_spawners_strictly = function (player_positions, spawner_units, hidden_spawner_units, min_dist, max_dist)
-	local list = {}
-	local hidden_list = {}
+	local list, hidden_list = {}, {}
+
 	max_dist = max_dist * max_dist
 	min_dist = min_dist * min_dist
+
 	local num_player_pos = #player_positions
 
 	for j = 1, #spawner_units do
@@ -440,7 +449,7 @@ ConflictUtils.get_hidden_pos = function (world, nav_world, level, nav_tag_volume
 	local ignore_umbra = not World.umbra_available(world)
 
 	for i = 1, max_tries do
-		local check_pos = nil
+		local check_pos
 
 		if cake_slice_dir then
 			check_pos = ConflictUtils.get_spawn_pos_on_cake_slice(nav_world, center_pos, radius - half_radius_spread, radius + half_radius_spread, cake_slice_dir, cake_slice_angle_radians, 10, check_no_spawn_volumes, level, nav_tag_volume_handler)
@@ -537,11 +546,12 @@ ConflictUtils.get_spawn_pos_on_cake_slice = function (nav_world, center_pos, rad
 end
 
 ConflictUtils.get_spawn_pos_on_circle = function (nav_world, center_pos, dist, spread, tries, check_no_spawn_volumes, level, nav_tag_volume_handler, above_max, below_max)
-	local p1, p2, p3 = nil
+	local p1, p2, p3
 
 	for i = 1, tries do
 		local add_vec = Vector3(dist + (math.random() - 0.5) * spread, 0, 1)
 		local pos = center_pos + Quaternion.rotate(Quaternion(Vector3.up(), math.degrees_to_radians(Math.random(1, 360))), add_vec)
+
 		pos, p1, p2, p3 = ConflictUtils.find_center_tri(nav_world, pos, above_max, below_max)
 
 		if pos and (not check_no_spawn_volumes or not ConflictUtils.is_position_inside_no_spawn_volume(level, nav_tag_volume_handler, pos)) then
@@ -556,7 +566,7 @@ ConflictUtils.get_pos_towards_goal = function (nav_world, center_pos, dist, spre
 	tries = tries or 1
 
 	for i = 1, tries do
-		local add_vec, goal_pos = nil
+		local add_vec, goal_pos
 
 		if optional_dir then
 			goal_pos = center_pos + optional_dir * dist + (math.random() - 0.5) * spread
@@ -568,7 +578,7 @@ ConflictUtils.get_pos_towards_goal = function (nav_world, center_pos, dist, spre
 		local _, end_pos = GwNavQueries.raycast(nav_world, center_pos, goal_pos)
 
 		if end_pos then
-			local return_pos = nil
+			local return_pos
 			local is_on_navmesh, altitude = GwNavQueries.triangle_from_position(nav_world, end_pos, 1, 1)
 
 			if is_on_navmesh then
@@ -592,6 +602,7 @@ ConflictUtils.get_furthest_pos_from_pos_on_circle = function (nav_world, center_
 	for i = 1, tries do
 		local add_vec = Vector3(dist + (math.random() - 0.5) * spread, 0, 1)
 		local pos = center_pos + Quaternion.rotate(Quaternion(Vector3.up(), math.degrees_to_radians(Math.random(1, 360))), add_vec)
+
 		pos = ConflictUtils.find_center_tri(nav_world, pos)
 
 		if pos then
@@ -599,8 +610,8 @@ ConflictUtils.get_furthest_pos_from_pos_on_circle = function (nav_world, center_
 		end
 	end
 
-	local max_dist = (dist + 0.5 * spread + 1) * 2 * (dist + 0.5 * spread + 1) * 2
-	local furthest_pos = nil
+	local max_dist = (dist + 0.5 * spread + 1) * 2 * ((dist + 0.5 * spread + 1) * 2)
+	local furthest_pos
 	local furthest_distance = 0
 
 	for i, pos in ipairs(positions) do
@@ -627,6 +638,7 @@ ConflictUtils.get_spawn_pos_on_circle_with_func = function (nav_world, center_po
 	for i = 1, tries do
 		local add_vec = Vector3(dist + (math.random() - 0.5) * spread, 0, 1)
 		local pos = center_pos + Quaternion.rotate(Quaternion(Vector3.up(), math.degrees_to_radians(Math.random(1, 360))), add_vec)
+
 		pos = ConflictUtils.find_center_tri(nav_world, pos, above_max, below_max)
 
 		if pos and filter_func(pos, filter_data) then
@@ -641,6 +653,7 @@ ConflictUtils.get_spawn_pos_on_circle_with_func_range = function (nav_world, cen
 	for i = 1, tries do
 		local add_vec = Vector3(math.lerp(min_dist, max_dist, math.random()), 0, 1)
 		local pos = center_pos + Quaternion.rotate(Quaternion(Vector3.up(), math.degrees_to_radians(Math.random(1, 360))), add_vec)
+
 		pos = ConflictUtils.find_center_tri(nav_world, pos, above_max, below_max)
 
 		if pos and filter_func(pos, filter_data) then
@@ -671,6 +684,7 @@ ConflictUtils.get_teleporter_portals = function ()
 
 	portals = {}
 	level_portals[level_name] = portals
+
 	local unit_ind = LevelResource.unit_indices(level_name, "units/hub_elements/portal")
 
 	for _, id in ipairs(unit_ind) do
@@ -680,9 +694,10 @@ ConflictUtils.get_teleporter_portals = function ()
 		local portal_id = DynamicData.get(unit_data, "id")
 		local boxed_rot = QuaternionBox(rot)
 		local boxed_pos = Vector3Box(pos)
+
 		portals[portal_id] = {
 			boxed_pos,
-			boxed_rot
+			boxed_rot,
 		}
 	end
 
@@ -695,7 +710,9 @@ ConflictUtils.interest_point_outside_nav_mesh = function (nav_world, unit_name, 
 	for i = 1, #lookup do
 		local point = lookup[i]
 		local local_pos = point[1]:unbox()
+
 		local_pos = Quaternion.rotate(interest_point_rot, local_pos)
+
 		local point_world_position = pos + local_pos
 		local is_position_on_navmesh, _ = GwNavQueries.triangle_from_position(nav_world, point_world_position, 0.3, 0.3)
 
@@ -723,9 +740,10 @@ ConflictUtils.generate_spawn_point_lookup = function (world)
 					local node = Unit.node(unit, node_name)
 					local point_position = node_name == "root_point" and Vector3(0, 0, 0) or Unit.local_position(unit, node)
 					local point_rotation = Unit.local_rotation(unit, node)
+
 					p[#p + 1] = {
 						Vector3Box(point_position),
-						QuaternionBox(point_rotation)
+						QuaternionBox(point_rotation),
 					}
 					i = i + 1
 				end
@@ -814,42 +832,47 @@ ConflictUtils.make_roaming_spawns = function (nav_world, level_analysis)
 
 		if #unit_ind > 0 then
 			local id = unit_ind[1]
+
 			seed_pos = LevelResource.unit_position(level_name, id)
 		end
 	end
 
 	local triangle = GwNavTraversal.get_seed_triangle(nav_world, seed_pos)
 	local triangles = {
-		triangle
+		triangle,
 	}
 	local num_triangles = 1
 	local i = 0
 	local lookup = {}
 	local p1, p2, p3 = GwNavTraversal.get_triangle_vertices(nav_world, triangle)
 	local p = (p1 + p2 + p3) / 3
+
 	lookup[p.x * 0.0001 + p.y + p.z * 10000] = true
 
 	while i < num_triangles do
 		i = i + 1
 		triangle = triangles[i]
+
 		local a, b, c = Script.temp_count()
 		local p1, p2, p3 = GwNavTraversal.get_triangle_vertices(nav_world, triangle)
 		local triangle_center = (p1 + p2 + p3) / 3
 
-		if math.random() < density then
+		if density > math.random() then
 			list[#list + 1] = Vector3Box(triangle_center)
 		end
 
 		Script.set_temp_count(a, b, c)
 
 		local neighbors = {
-			GwNavTraversal.get_neighboring_triangles(triangle)
+			GwNavTraversal.get_neighboring_triangles(triangle),
 		}
 
 		for j = 1, #neighbors do
 			local neighbour = neighbors[j]
 			local a, b, c = Script.temp_count()
+
 			p1, p2, p3 = GwNavTraversal.get_triangle_vertices(nav_world, neighbour)
+
 			local tri_center = (p1 + p2 + p3) / 3
 			local key = tri_center.x * 0.0001 + tri_center.y + tri_center.z * 10000
 
@@ -896,6 +919,7 @@ local function add_breeds_from_horde_composition(output, composition_type, diffi
 
 		for k = 1, #breeds, 2 do
 			local breed_name = breeds[k]
+
 			output[breed_name] = true
 		end
 	end
@@ -927,6 +951,7 @@ local function add_breed_or_breeds(output, breed_name, difficulty)
 	if type(breed_name) == "table" then
 		for i = 1, #breed_name do
 			local sub_breed_name = breed_name[i]
+
 			output[sub_breed_name] = true
 
 			add_breeds_from_breed_action(output, sub_breed_name, difficulty)
@@ -945,29 +970,45 @@ ConflictUtils.add_breeds_from_event = function (event_name, event, difficulty, d
 			local sub_event_name = sub_event[1]
 			local difficulty_requirement = sub_event.difficulty_requirement
 
-			if difficulty_requirement and (difficulty_rank or DifficultySettings.normal.rank) < difficulty_requirement then
+			if difficulty_requirement and difficulty_requirement > (difficulty_rank or DifficultySettings.normal.rank) then
 				break
 			end
 
 			if sub_event_name == "spawn" or sub_event_name == "spawn_at_raw" or sub_event_name == "spawn_special" or sub_event_name == "spawn_weave_special" or sub_event_name == "spawn_weave_special_event" then
 				add_breed_or_breeds(output, sub_event.breed_name, difficulty)
-			elseif sub_event_name == "spawn_patrol" then
-				local formations = sub_event.formations
 
-				for j = 1, #formations do
-					local formation_name = formations[j]
-					local formation = PatrolFormationSettings[formation_name]
+				break
+			end
 
-					add_breeds_from_patrol_formation(formation, difficulty, output)
+			if sub_event_name == "spawn_patrol" then
+				do
+					local formations = sub_event.formations
+
+					for j = 1, #formations do
+						local formation_name = formations[j]
+						local formation = PatrolFormationSettings[formation_name]
+
+						add_breeds_from_patrol_formation(formation, difficulty, output)
+					end
 				end
-			elseif sub_event_name == "start_event" then
-				local contained_event_name = sub_event.start_event_name
-				local contained_event = terror_event_lookup[contained_event_name]
 
-				if contained_event_name ~= event_name then
-					ConflictUtils.add_breeds_from_event(event_name, contained_event, difficulty, difficulty_rank, output, terror_event_lookup)
+				break
+			end
+
+			if sub_event_name == "start_event" then
+				do
+					local contained_event_name = sub_event.start_event_name
+					local contained_event = terror_event_lookup[contained_event_name]
+
+					if contained_event_name ~= event_name then
+						ConflictUtils.add_breeds_from_event(event_name, contained_event, difficulty, difficulty_rank, output, terror_event_lookup)
+					end
 				end
-			elseif sub_event_name == "event_horde" or sub_event_name == "ambush_horde" then
+
+				break
+			end
+
+			if sub_event_name == "event_horde" or sub_event_name == "ambush_horde" then
 				local event_composition_type = sub_event.composition_type
 
 				add_breeds_from_horde_composition(output, event_composition_type, difficulty)
@@ -1003,6 +1044,7 @@ local function add_breeds_from_special_settings(special_settings, difficulty, fa
 
 	for i = 1, #breeds do
 		local breed_name = breeds[i]
+
 		output[breed_name] = true
 	end
 
@@ -1011,6 +1053,7 @@ local function add_breeds_from_special_settings(special_settings, difficulty, fa
 
 	for i = 1, #rush_intervention_breeds do
 		local breed_name = rush_intervention_breeds[i]
+
 		output[breed_name] = true
 	end
 
@@ -1019,6 +1062,7 @@ local function add_breeds_from_special_settings(special_settings, difficulty, fa
 
 	for i = 1, #speed_running_intervention_breeds do
 		local breed_name = speed_running_intervention_breeds[i]
+
 		output[breed_name] = true
 	end
 
@@ -1026,6 +1070,7 @@ local function add_breeds_from_special_settings(special_settings, difficulty, fa
 
 	for i = 1, #speed_running_intervention_vector_horde_breeds do
 		local breed_name = speed_running_intervention_vector_horde_breeds[i]
+
 		output[breed_name] = true
 	end
 end
@@ -1039,6 +1084,7 @@ local function add_breeds_from_breed_packs(breed_packs, difficulty, output)
 		for i = 1, #clamp_breeds_low do
 			local clamp_breeds = clamp_breeds_low[i]
 			local replacement_breed_name = clamp_breeds[REPLACEMENT_BREED_INDEX].name
+
 			output[replacement_breed_name] = true
 		end
 	end
@@ -1049,6 +1095,7 @@ local function add_breeds_from_breed_packs(breed_packs, difficulty, output)
 		for i = 1, #clamp_breeds_hi do
 			local clamp_breeds = clamp_breeds_hi[i]
 			local replacement_breed_name = clamp_breeds[REPLACEMENT_BREED_INDEX].name
+
 			output[replacement_breed_name] = true
 		end
 	end
@@ -1060,6 +1107,7 @@ local function add_breeds_from_breed_packs(breed_packs, difficulty, output)
 		for j = 1, #breed_members do
 			local breed = breed_members[j]
 			local breed_name = breed.name
+
 			output[breed_name] = true
 		end
 	end
@@ -1103,6 +1151,7 @@ local function add_breeds_from_horde_settings(horde_settings, difficulty, fallba
 
 					for k = 1, #breeds, 2 do
 						local breed_name = breeds[k]
+
 						output[breed_name] = true
 					end
 				end
@@ -1117,6 +1166,7 @@ local function add_breeds_from_horde_settings(horde_settings, difficulty, fallba
 
 			for j = 1, #breeds, 2 do
 				local breed_name = breeds[j]
+
 				output[breed_name] = true
 			end
 		end
@@ -1139,6 +1189,7 @@ local function add_breeds_from_horde_settings(horde_settings, difficulty, fallba
 
 					for k = 1, #breeds, 2 do
 						local breed_name = breeds[k]
+
 						output[breed_name] = true
 					end
 				end
@@ -1153,6 +1204,7 @@ local function add_breeds_from_horde_settings(horde_settings, difficulty, fallba
 
 			for j = 1, #breeds, 2 do
 				local breed_name = breeds[j]
+
 				output[breed_name] = true
 			end
 		end
@@ -1175,6 +1227,7 @@ local function add_breeds_from_horde_settings(horde_settings, difficulty, fallba
 
 					for k = 1, #breeds, 2 do
 						local breed_name = breeds[k]
+
 						output[breed_name] = true
 					end
 				end
@@ -1189,6 +1242,7 @@ local function add_breeds_from_horde_settings(horde_settings, difficulty, fallba
 
 			for j = 1, #breeds, 2 do
 				local breed_name = breeds[j]
+
 				output[breed_name] = true
 			end
 		end
@@ -1203,6 +1257,7 @@ local function add_breeds_from_horde_settings(horde_settings, difficulty, fallba
 
 		for j = 1, #breeds, 2 do
 			local breed_name = breeds[j]
+
 			output[breed_name] = true
 		end
 	end
@@ -1254,6 +1309,7 @@ ConflictUtils.patch_terror_events_with_weaves = function (level_key, weave_data,
 	local weave_template = WeaveSettings.templates[weave_name]
 	local objectives = weave_template.objectives
 	local weave_terror_events = TerrorEventBlueprints.weaves
+
 	TerrorEventBlueprints[level_key] = TerrorEventBlueprints[level_key] or {}
 
 	table.clear(TerrorEventBlueprints[level_key])
@@ -1269,6 +1325,7 @@ ConflictUtils.patch_terror_events_with_weaves = function (level_key, weave_data,
 			for j = 1, #main_path_spawning do
 				local main_path_spawning_setting = main_path_spawning[j]
 				local terror_event_name = main_path_spawning_setting.terror_event_name
+
 				TerrorEventBlueprints[level_key][terror_event_name] = weave_terror_events[terror_event_name]
 			end
 		end
@@ -1283,6 +1340,7 @@ ConflictUtils.patch_terror_events_with_weaves = function (level_key, weave_data,
 	if objective_terror_events then
 		for i = 1, #objective_terror_events do
 			local objective_event = objective_terror_events[i]
+
 			TerrorEventBlueprints[level_key][objective_event] = weave_terror_events[objective_event]
 		end
 	end
@@ -1348,7 +1406,7 @@ end
 
 ConflictUtils.get_closest_position = function (pos, pos_list)
 	local min_dist = math.huge
-	local closest_pos = nil
+	local closest_pos
 
 	for i = 1, #pos_list do
 		local check_pos = pos_list[i]
@@ -1376,7 +1434,9 @@ end
 local function check_if_in_line_of_sight(physics_world, unit, from, to)
 	local dir = to - from
 	local dist = Vector3.length(dir)
+
 	dir = Vector3.normalize(dir)
+
 	local hit, hit_position, _, _, hit_actor = PhysicsWorld.raycast(physics_world, from, dir, dist, "closest", "collision_filter", "filter_ai_line_of_sight_check")
 	local hit_unit = hit and Actor.unit(hit_actor)
 
@@ -1386,6 +1446,7 @@ end
 ConflictUtils.raise_dead = function (pos, radius, side_id)
 	if pos then
 		radius = radius or 10
+
 		local result_table = {}
 		local raise_list = {}
 		local death_system = Managers.state.entity:system("death_system")
@@ -1417,13 +1478,14 @@ ConflictUtils.raise_dead = function (pos, radius, side_id)
 			local resurrected_group_id = local_player.resurrected_group_id
 			local group_id = resurrected_group_id or Managers.state.entity:system("ai_group_system"):generate_group_id()
 			local group_data = {
+				group_type = "resurrected",
 				insert_into_group = true,
 				template = "resurrected",
-				group_type = "resurrected",
 				id = group_id,
 				size = amount,
-				commanding_player = local_player
+				commanding_player = local_player,
 			}
+
 			local_player.resurrected_group_id = group_id
 
 			for i = 1, amount do
@@ -1436,7 +1498,7 @@ ConflictUtils.raise_dead = function (pos, radius, side_id)
 				local optional_data = {
 					ignore_breed_limits = true,
 					side_id = side_id,
-					insert_into_group = resurrected_group_id ~= nil
+					insert_into_group = resurrected_group_id ~= nil,
 				}
 
 				Managers.state.conflict:spawn_queued_unit(breed, Vector3Box(dead_pos), QuaternionBox(dead_rot), spawn_category, spawn_animation, nil, optional_data, group_data)
@@ -1494,7 +1556,7 @@ ConflictUtils.find_positions_around_position = function (center_position, output
 			for i = 1, #forbidden_position_list do
 				local forbidden_position = forbidden_position_list[i]
 
-				if Vector3.distance_squared(pos, forbidden_position) < distance_to_forbidden_position_list_sqr then
+				if distance_to_forbidden_position_list_sqr > Vector3.distance_squared(pos, forbidden_position) then
 					return false
 				end
 			end
@@ -1503,7 +1565,7 @@ ConflictUtils.find_positions_around_position = function (center_position, output
 		for i = 1, #output_position_list do
 			local output_position = output_position_list[i]
 
-			if Vector3.distance_squared(pos, output_position) < distance_to_forbidden_position_list_sqr then
+			if distance_to_forbidden_position_list_sqr > Vector3.distance_squared(pos, output_position) then
 				return false
 			end
 		end
@@ -1522,7 +1584,9 @@ ConflictUtils.find_positions_around_position = function (center_position, output
 
 	local spread = max_distance - min_distance
 	local distance = min_distance + spread * 0.5
+
 	circle_subdivision = circle_subdivision or 4
+
 	local radian_subdivision = math.pi * 2 / circle_subdivision
 	local spread_delta = row_distance or 2
 	local two_pi = 2 * math.pi
@@ -1531,18 +1595,19 @@ ConflictUtils.find_positions_around_position = function (center_position, output
 	local start_radians = math.random() * two_pi
 	local current_radians = start_radians
 	local current_subdivision_count = 0
+
 	tries = tries or 30
 
 	local function get_next_pos()
 		current_radians = current_radians + radian_subdivision
 
-		if two_pi < current_radians then
+		if current_radians > two_pi then
 			current_radians = current_radians - two_pi
 		end
 
 		current_subdivision_count = current_subdivision_count + 1
 
-		if circle_subdivision < current_subdivision_count then
+		if current_subdivision_count > circle_subdivision then
 			current_spread = current_spread + spread_delta
 
 			if current_spread > spread * 0.5 then
@@ -1587,6 +1652,7 @@ end
 
 ConflictUtils.find_visible_positions_in_sphere_around_player = function (physics_world, position_count, player_unit, radius, from_pitch, to_pitch, pitch_delta, from_yaw, to_yaw, yaw_delta, forbidden_position_list, distance_to_forbidden_position_list, distance_between_positions, min_distance_from_floor)
 	distance_to_forbidden_position_list = distance_to_forbidden_position_list or 0
+
 	local distance_between_positions_sqr = math.pow(distance_between_positions, 2)
 	local distance_to_forbidden_position_list_sqr = math.pow(distance_to_forbidden_position_list, 2)
 	local center_position = POSITION_LOOKUP[player_unit]
@@ -1624,7 +1690,7 @@ ConflictUtils.find_visible_positions_in_sphere_around_player = function (physics
 			for i = 1, #forbidden_position_list do
 				local forbidden_position = forbidden_position_list[i]
 
-				if Vector3.distance_squared(new_position, forbidden_position) < distance_to_forbidden_position_list_sqr then
+				if distance_to_forbidden_position_list_sqr > Vector3.distance_squared(new_position, forbidden_position) then
 					failed = true
 
 					break
@@ -1636,7 +1702,7 @@ ConflictUtils.find_visible_positions_in_sphere_around_player = function (physics
 			for i = 1, #valid_positions do
 				local valid_position = valid_positions[i]
 
-				if Vector3.distance_squared(new_position, valid_position) < distance_between_positions_sqr then
+				if distance_between_positions_sqr > Vector3.distance_squared(new_position, valid_position) then
 					failed = true
 
 					break

@@ -1,18 +1,22 @@
+﻿-- chunkname: @scripts/entity_system/systems/payload/payload_system.lua
+
 require("scripts/unit_extensions/level/payload_extension")
 
 PayloadSystem = class(PayloadSystem, ExtensionSystemBase)
+
 local RPCS = {
-	"rpc_payload_flow_event"
+	"rpc_payload_flow_event",
 }
 local extensions = {
 	"PayloadExtension",
-	"PayloadGizmoExtension"
+	"PayloadGizmoExtension",
 }
 
 PayloadSystem.init = function (self, entity_system_creation_context, system_name)
 	PayloadSystem.super.init(self, entity_system_creation_context, system_name, extensions)
 
 	local network_event_delegate = entity_system_creation_context.network_event_delegate
+
 	self.network_event_delegate = network_event_delegate
 
 	network_event_delegate:register(self, unpack(RPCS))
@@ -27,7 +31,7 @@ end
 
 PayloadSystem.on_add_extension = function (self, world, unit, extension_name, extension_init_data, ...)
 	local payload_gizmos = self._payload_gizmos
-	local extension = nil
+	local extension
 
 	if extension_name == "PayloadExtension" then
 		self._payloads[#self._payloads + 1] = unit
@@ -42,6 +46,7 @@ PayloadSystem.on_add_extension = function (self, world, unit, extension_name, ex
 		end
 
 		local spline_specific_gizmos = payload_gizmos[spline_name]
+
 		spline_specific_gizmos[#spline_specific_gizmos + 1] = unit
 		extension = {}
 	end

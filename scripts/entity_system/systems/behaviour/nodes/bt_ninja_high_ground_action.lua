@@ -1,6 +1,9 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_ninja_high_ground_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTNinjaHighGroundAction = class(BTNinjaHighGroundAction, BTClimbAction)
+
 local position_lookup = POSITION_LOOKUP
 local ALIVE = ALIVE
 
@@ -22,7 +25,7 @@ BTNinjaHighGroundAction.enter = function (self, unit, blackboard, t)
 			blackboard.fence_jumping = true
 
 			print("fence jumping")
-		elseif smart_data.smart_object_type == "ledges" and pos2.z < pos1.z and self:try_jump(unit, blackboard, t, pos1) then
+		elseif smart_data.smart_object_type == "ledges" and pos1.z > pos2.z and self:try_jump(unit, blackboard, t, pos1) then
 			blackboard.high_ground_opportunity = true
 		end
 	end
@@ -77,6 +80,7 @@ BTNinjaHighGroundAction.leave = function (self, unit, blackboard, t, reason, des
 			end
 
 			local hit_reaction_extension = ScriptUnit.extension(unit, "hit_reaction_system")
+
 			hit_reaction_extension.force_ragdoll_on_death = nil
 
 			if navigation_extension:is_using_smart_object() then
@@ -141,7 +145,7 @@ BTNinjaHighGroundAction.try_jump = function (self, unit, blackboard, t, pos1, fo
 				jump_target_pos = Vector3Box(p2),
 				jump_velocity_boxed = Vector3Box(velocity),
 				total_distance = Vector3.distance(p1, p2),
-				enemy_spine_node = enemy_spine_node
+				enemy_spine_node = enemy_spine_node,
 			}
 			blackboard.skulk_pos = Vector3Box(pos1)
 

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/camera/mood_handler/mood_handler.lua
+
 require("scripts/settings/mood_settings")
 
 MoodHandler = class(MoodHandler)
@@ -8,8 +10,10 @@ MoodHandler.init = function (self, world)
 	self.current_mood = "default"
 	self.mood_blends = nil
 	self.mood_weights = {}
+
 	local environment = require("scripts/settings/lua_environments/moods")
 	local env_vars, type_map = self:parse_environment_settings(environment)
+
 	self.environment_variables = env_vars
 	self.environment_variables_type_map = type_map
 	self.environment_variables_to_set = {}
@@ -42,13 +46,14 @@ MoodHandler.parse_environment_settings = function (self, environment)
 	for env_setting_name, env_setting in pairs(environment_settings) do
 		if env_setting_name ~= "default" then
 			variables[env_setting_name] = {}
+
 			local var_n = 1
 
 			for var_name, var_value in pairs(env_setting.variables) do
 				local weight = env_setting.variable_weights[var_name]
 
 				if weight == 1 then
-					local var_type = nil
+					local var_type
 
 					if type(var_value) == "string" then
 						var_type = "texture"
@@ -69,7 +74,7 @@ MoodHandler.parse_environment_settings = function (self, environment)
 					if var_type then
 						variables[env_setting_name][var_n] = {
 							name = var_name,
-							value = var_value
+							value = var_value,
 						}
 						type_map[var_name] = type_map[var_name] or var_type
 						var_n = var_n + 1
@@ -106,7 +111,7 @@ MoodHandler.add_mood_blend = function (self, current_mood, next_mood)
 		return
 	end
 
-	local blend_time = nil
+	local blend_time
 
 	if next_mood == "default" then
 		blend_time = MoodSettings[current_mood].blend_out_time
@@ -121,7 +126,7 @@ MoodHandler.add_mood_blend = function (self, current_mood, next_mood)
 			value = 0,
 			mood = current_mood,
 			speed = 1 / blend_time,
-			blends = self.mood_blends
+			blends = self.mood_blends,
 		}
 	end
 end
@@ -239,7 +244,7 @@ MoodHandler.update_environment_variables = function (self)
 						0,
 						0,
 						0,
-						0
+						0,
 					}
 					value_to_set[1] = value_to_set[1] + var_value[1] * mood_weight
 					value_to_set[2] = value_to_set[2] + var_value[2] * mood_weight
@@ -303,10 +308,12 @@ MoodHandler.apply_environment_variables = function (self, shading_environment)
 			ShadingEnvironment.set_vector3(shading_environment, var_name, set_value)
 		elseif var_type == "vector4" then
 			local default_x, default_y, default_z, default_w = Quaternion.to_elements(ShadingEnvironment.vector4(shading_environment, var_name))
+
 			default_x = default_x * weight_remainder
 			default_y = default_y * weight_remainder
 			default_z = default_z * weight_remainder
 			default_w = default_w * weight_remainder
+
 			local set_x = var_value[1] + default_x
 			local set_y = var_value[2] + default_y
 			local set_z = var_value[3] + default_z

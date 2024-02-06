@@ -1,3 +1,5 @@
+﻿-- chunkname: @foundation/scripts/util/hermite.lua
+
 Hermite = Hermite or {}
 
 Hermite.calc_point = function (t, p0, p1, p2, p3)
@@ -34,12 +36,14 @@ end
 
 Hermite.draw = function (segments, script_drawer, tangent_scale, color, p0, p1, p2, p3)
 	segments = segments or 20
+
 	local segment_increment = 1 / segments
 	local t = 0
 	local point_a = Hermite.calc_point(t, p0, p1, p2, p3)
 
 	for segment = 0, segments do
 		t = segment_increment * segment
+
 		local point_b = Hermite.calc_point(t, p0, p1, p2, p3)
 
 		script_drawer:line(point_a, point_b, color)
@@ -60,6 +64,7 @@ Hermite.length = function (segments, p0, p1, p2, p3)
 
 	for fraction = 1, segments - 1 do
 		local point = Hermite.calc_point(fraction / segments, p0, p1, p2, p3)
+
 		length = length + Vector3.length(point - last_point)
 		last_point = point
 	end

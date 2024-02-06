@@ -1,7 +1,9 @@
+﻿-- chunkname: @scripts/network/lobby_aux.lua
+
 LobbyAux = LobbyAux or {}
 
 local function concatenate_dlcs()
-	local concatenate_dlcs_str = nil
+	local concatenate_dlcs_str
 
 	for name, _ in pairs(DLCSettings) do
 		concatenate_dlcs_str = concatenate_dlcs_str and concatenate_dlcs_str .. "__" or ""
@@ -17,7 +19,7 @@ LobbyAux.create_network_hash = function (config_file_name, project_hash, disable
 	local trunk_revision = settings and settings.content_revision
 	local ignore_engine_revision = Development.parameter("ignore_engine_revision_in_network_hash") or Managers.mechanism:setting("ignore_engine_revision_in_network_hash")
 	local engine_revision = ignore_engine_revision and 0 or Application.build_identifier()
-	local combined_hash = nil
+	local combined_hash
 	local use_trunk_revision = GameSettingsDevelopment.network_revision_check_enabled or trunk_revision ~= nil and trunk_revision ~= ""
 	local concatenated_dlc_string = GameSettingsDevelopment.network_concatenated_dlc_check_enabled and concatenate_dlcs() or ""
 	local lobby_data_version = DEDICATED_SERVER and GameServerInternal.lobby_data_version or LobbyInternal.lobby_data_version
@@ -83,8 +85,9 @@ LobbyGameModes = {
 	"event",
 	"deed",
 	"weave",
-	"twitch"
+	"twitch",
 }
+
 local lookup = {}
 
 for idx, game_mode in pairs(LobbyGameModes) do
@@ -96,20 +99,24 @@ LobbyGameModes = lookup
 LobbyAux.map_lobby_distance_filter = IS_PS4 and {
 	"close",
 	"medium",
-	"world"
+	"world",
 } or {
 	"close",
 	"far",
-	"world"
+	"world",
 }
-local next_distance = {}
 
-for i = 1, #LobbyAux.map_lobby_distance_filter do
-	local filter_name = LobbyAux.map_lobby_distance_filter[i]
-	next_distance[filter_name] = LobbyAux.map_lobby_distance_filter[i + 1]
+do
+	local next_distance = {}
+
+	for i = 1, #LobbyAux.map_lobby_distance_filter do
+		local filter_name = LobbyAux.map_lobby_distance_filter[i]
+
+		next_distance[filter_name] = LobbyAux.map_lobby_distance_filter[i + 1]
+	end
+
+	LobbyAux.next_distance_filter = next_distance
 end
-
-LobbyAux.next_distance_filter = next_distance
 
 LobbyAux.get_next_lobby_distance_filter = function (current_filter, max_filter)
 	if current_filter == max_filter then
@@ -140,6 +147,7 @@ end
 local function level_exists_locally(lobby)
 	local mission_id = lobby.selected_mission_id or lobby.mission_id
 	local level_exists_locally = mission_id and rawget(NetworkLookup.mission_ids, mission_id)
+
 	level_exists_locally = level_exists_locally or WeaveSettings.templates[mission_id] and true
 
 	return level_exists_locally

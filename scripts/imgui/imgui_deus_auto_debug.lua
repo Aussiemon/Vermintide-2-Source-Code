@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/imgui/imgui_deus_auto_debug.lua
+
 ImguiDeusAutoDebug = class(ImguiDeusAutoDebug)
+
 local helpful_responses = {
 	"That ain't working.",
 	"Have you tried restarting?",
@@ -8,7 +11,7 @@ local helpful_responses = {
 	"I'm a notorious liar",
 	"What is truth",
 	"This is a helpful response",
-	"It is wednesday my dudes"
+	"It is wednesday my dudes",
 }
 
 ImguiDeusAutoDebug.init = function (self)
@@ -34,6 +37,7 @@ ImguiDeusAutoDebug.draw = function (self)
 		end)
 
 		local index = math.random(1, #possible_responses)
+
 		self._current_response = possible_responses[index]
 	end
 

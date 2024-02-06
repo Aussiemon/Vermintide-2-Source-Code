@@ -1,13 +1,14 @@
-local SIZE_X = 1920
-local SIZE_Y = 1080
+﻿-- chunkname: @scripts/ui/hud_ui/emote_photomode_ui_definitions.lua
+
+local SIZE_X, SIZE_Y = 1920, 1080
 local ROW_SIZE = 45
 local WINDOW_SIZE_PC = {
 	325,
-	ROW_SIZE * 2
+	ROW_SIZE * 2,
 }
 local WINDOW_SIZE_GAMEPAD = {
 	325,
-	ROW_SIZE * 4
+	ROW_SIZE * 4,
 }
 local scenegraph_definition = {
 	screen = {
@@ -15,35 +16,35 @@ local scenegraph_definition = {
 		position = {
 			0,
 			0,
-			UILayer.hud
+			UILayer.hud,
 		},
 		size = {
 			SIZE_X,
-			SIZE_Y
-		}
+			SIZE_Y,
+		},
 	},
 	controls_pc = {
-		vertical_alignment = "top",
-		parent = "screen",
 		horizontal_alignment = "right",
+		parent = "screen",
+		vertical_alignment = "top",
 		position = {
 			0,
 			-20,
-			0
+			0,
 		},
-		size = WINDOW_SIZE_PC
+		size = WINDOW_SIZE_PC,
 	},
 	controls_gamepad = {
-		vertical_alignment = "top",
-		parent = "screen",
 		horizontal_alignment = "right",
+		parent = "screen",
+		vertical_alignment = "top",
 		position = {
 			0,
 			-20,
-			0
+			0,
 		},
-		size = WINDOW_SIZE_GAMEPAD
-	}
+		size = WINDOW_SIZE_GAMEPAD,
+	},
 }
 
 local function create_input_widget(scenegraph_id, display_name, input_action, row)
@@ -51,61 +52,61 @@ local function create_input_widget(scenegraph_id, display_name, input_action, ro
 		element = {
 			passes = {
 				{
-					style_id = "text",
 					pass_type = "text",
-					text_id = "text_id"
+					style_id = "text",
+					text_id = "text_id",
 				},
 				{
-					style_id = "text_shadow",
 					pass_type = "text",
-					text_id = "text_id"
-				}
-			}
+					style_id = "text_shadow",
+					text_id = "text_id",
+				},
+			},
 		},
 		content = {
-			text_id = Localize(display_name) .. ": $KEY;Player__" .. input_action .. ":"
+			text_id = Localize(display_name) .. ": $KEY;Player__" .. input_action .. ":",
 		},
 		style = {
 			text = {
-				word_wrap = false,
-				localize = false,
-				font_size = 32,
-				pixel_perfect = true,
-				horizontal_alignment = "right",
-				vertical_alignment = "top",
 				dynamic_font_size = true,
+				font_size = 32,
 				font_type = "hell_shark_header",
+				horizontal_alignment = "right",
+				localize = false,
+				pixel_perfect = true,
+				vertical_alignment = "top",
+				word_wrap = false,
 				text_color = Colors.get_color_table_with_alpha("white", 255),
 				offset = {
 					0,
 					0,
-					2
-				}
+					2,
+				},
 			},
 			text_shadow = {
+				dynamic_font_size = true,
 				font_size = 32,
 				font_type = "hell_shark_header",
-				localize = false,
-				word_wrap = false,
-				pixel_perfect = true,
 				horizontal_alignment = "right",
-				vertical_alignment = "top",
-				dynamic_font_size = true,
+				localize = false,
+				pixel_perfect = true,
 				skip_button_rendering = true,
+				vertical_alignment = "top",
+				word_wrap = false,
 				text_color = Colors.get_color_table_with_alpha("black", 128),
 				offset = {
 					2,
 					-2,
-					1
-				}
-			}
+					1,
+				},
+			},
 		},
 		offset = {
 			0,
 			-row * ROW_SIZE,
-			0
+			0,
 		},
-		scenegraph_id = scenegraph_id
+		scenegraph_id = scenegraph_id,
 	}
 end
 
@@ -116,14 +117,14 @@ local function create_background(scenegraph_id, color)
 				{
 					pass_type = "rotated_texture",
 					style_id = "mask_vertical",
-					texture_id = "mask_id"
+					texture_id = "mask_id",
 				},
 				{
-					style_id = "background",
+					content_id = "background_id",
 					pass_type = "texture_uv",
-					content_id = "background_id"
-				}
-			}
+					style_id = "background",
+				},
+			},
 		},
 		content = {
 			mask_id = "horizontal_gradient_mask",
@@ -132,86 +133,86 @@ local function create_background(scenegraph_id, color)
 				uvs = {
 					{
 						0,
-						0
+						0,
 					},
 					{
 						1,
-						1
-					}
-				}
-			}
+						1,
+					},
+				},
+			},
 		},
 		style = {
 			test = {
-				vertical_alignment = "right",
 				horizontal_alignment = "bottom",
+				vertical_alignment = "right",
 				color = color or {
 					255,
 					255,
 					255,
-					255
+					255,
 				},
 				offset = {
 					0,
 					0,
-					-5
+					-5,
 				},
 				texture_size = {
 					scenegraph_definition[scenegraph_id].size[1],
-					scenegraph_definition[scenegraph_id].size[2] + ROW_SIZE
-				}
+					scenegraph_definition[scenegraph_id].size[2] + ROW_SIZE,
+				},
 			},
 			mask_vertical = {
-				vertical_alignment = "center",
 				horizontal_alignment = "center",
+				vertical_alignment = "center",
 				angle = -math.pi * 0.5,
 				color = {
 					255,
 					255,
 					255,
-					255
+					255,
 				},
 				offset = {
 					0,
 					50,
-					0
+					0,
 				},
 				pivot = {
 					(scenegraph_definition[scenegraph_id].size[2] + ROW_SIZE + 50) * 0.5,
-					scenegraph_definition[scenegraph_id].size[1] * 0.5
+					scenegraph_definition[scenegraph_id].size[1] * 0.5,
 				},
 				texture_size = {
 					scenegraph_definition[scenegraph_id].size[2] + ROW_SIZE + 50,
-					scenegraph_definition[scenegraph_id].size[1]
-				}
+					scenegraph_definition[scenegraph_id].size[1],
+				},
 			},
 			background = {
-				vertical_alignment = "right",
-				masked = true,
 				horizontal_alignment = "bottom",
+				masked = true,
+				vertical_alignment = "right",
 				color = {
 					255,
 					255,
 					255,
-					255
+					255,
 				},
 				offset = {
 					0,
 					0,
-					0
+					0,
 				},
 				texture_size = {
 					scenegraph_definition[scenegraph_id].size[1],
-					scenegraph_definition[scenegraph_id].size[2] + ROW_SIZE
-				}
-			}
+					scenegraph_definition[scenegraph_id].size[2] + ROW_SIZE,
+				},
+			},
 		},
 		offset = {
 			0,
 			0,
-			0
+			0,
 		},
-		scenegraph_id = scenegraph_id
+		scenegraph_id = scenegraph_id,
 	}
 end
 
@@ -222,10 +223,10 @@ local widgets_pc = {
 		70,
 		0,
 		0,
-		0
+		0,
 	}, num_elements),
 	hide_hud = create_input_widget("controls_pc", "photomode_hide_hud", "emote_toggle_hud_visibility", 0),
-	zoom_mouse = create_input_widget("controls_pc", "photomode_camera_zoom", "emote_camera_zoom", 1)
+	zoom_mouse = create_input_widget("controls_pc", "photomode_camera_zoom", "emote_camera_zoom", 1),
 }
 local num_elements = 4
 local widgets_gamepad = {
@@ -233,17 +234,17 @@ local widgets_gamepad = {
 		255,
 		255,
 		255,
-		255
+		255,
 	}, num_elements),
 	hide_hud = create_input_widget("controls_gamepad", "photomode_hide_hud", "emote_toggle_hud_visibility", 0),
 	zoom_in_gamepad = create_input_widget("controls_gamepad", "photomode_camera_zoom_in", "emote_camera_zoom_in", 1),
 	zoom_out_gamepad = create_input_widget("controls_gamepad", "photomode_camera_zoom_out", "emote_camera_zoom_out", 2),
-	exit_gamepad = create_input_widget("controls_gamepad", "exit", "crouch", 3)
+	exit_gamepad = create_input_widget("controls_gamepad", "exit", "crouch", 3),
 }
 
 return {
 	scenegraph_definition = scenegraph_definition,
 	widgets = widgets,
 	widgets_pc = widgets_pc,
-	widgets_gamepad = widgets_gamepad
+	widgets_gamepad = widgets_gamepad,
 }

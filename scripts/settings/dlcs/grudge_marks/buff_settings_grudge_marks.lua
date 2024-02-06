@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/dlcs/grudge_marks/buff_settings_grudge_marks.lua
+
 local settings = DLCSettings.grudge_marks
 local buff_perks = require("scripts/unit_extensions/default_player_unit/buffs/settings/buff_perk_names")
 
@@ -39,69 +41,69 @@ settings.buff_templates = {
 			{
 				multiplier = 0.5,
 				name = "grudge_mark_health",
-				stat_buff = "max_health"
+				stat_buff = "max_health",
 			},
 			{
-				remove_buff_func = "ai_update_max_health",
+				apply_buff_func = "ai_update_max_health",
 				name = "grudge_mark_health_update",
-				apply_buff_func = "ai_update_max_health"
-			}
-		}
+				remove_buff_func = "ai_update_max_health",
+			},
+		},
 	},
 	grudge_mark_elite_health = {
 		buffs = {
 			{
 				multiplier = 2,
 				name = "grudge_mark_health",
-				stat_buff = "max_health"
+				stat_buff = "max_health",
 			},
 			{
-				remove_buff_func = "ai_update_max_health",
+				apply_buff_func = "ai_update_max_health",
 				name = "grudge_mark_health_update",
-				apply_buff_func = "ai_update_max_health"
-			}
-		}
+				remove_buff_func = "ai_update_max_health",
+			},
+		},
 	},
 	grudge_mark_damage = {
 		buffs = {
 			{
 				multiplier = 0.2,
 				name = "grudge_mark_damage",
-				stat_buff = "damage_dealt"
-			}
-		}
+				stat_buff = "damage_dealt",
+			},
+		},
 	},
 	grudge_mark_stagger_distance_resistance = {
 		buffs = {
 			{
 				multiplier = -0.7,
 				name = "grudge_mark_stagger_distance_resistance",
-				stat_buff = "stagger_distance"
-			}
-		}
+				stat_buff = "stagger_distance",
+			},
+		},
 	},
 	grudge_mark_warping = {
 		buffs = {
 			{
-				proc_cooldown = 10,
-				name = "grudge_mark_warping",
 				buff_func = "random_teleport_ai",
 				event = "on_damage_taken",
-				proc_chance = 0.1,
-				max_teleport_distance = 8,
-				min_teleport_distance = 3,
 				find_valid_pos_attempts = 5,
-				min_dist_from_players = 3
-			}
-		}
+				max_teleport_distance = 8,
+				min_dist_from_players = 3,
+				min_teleport_distance = 3,
+				name = "grudge_mark_warping",
+				proc_chance = 0.1,
+				proc_cooldown = 10,
+			},
+		},
 	},
 	grudge_mark_unstaggerable = {
 		buffs = {
 			{
 				apply_buff_func = "make_stagger_immune",
-				name = "grudge_mark_unstaggerable"
-			}
-		}
+				name = "grudge_mark_unstaggerable",
+			},
+		},
 	},
 	grudge_mark_raging = {
 		buffs = {
@@ -110,52 +112,52 @@ settings.buff_templates = {
 				name = "grudge_mark_raging",
 				update_frequency = 25,
 				update_func = "add_buff",
-				update_start_delay = 5
-			}
-		}
+				update_start_delay = 5,
+			},
+		},
 	},
 	grudge_mark_raging_buff = {
-		activation_sound_3p = true,
 		activation_sound = "enemy_grudge_raging",
+		activation_sound_3p = true,
 		buffs = {
 			{
+				duration = 10,
 				multiplier = 1,
 				name = "grudge_mark_raging_buff",
 				stat_buff = "damage_dealt",
-				duration = 10,
 				particles = {
 					{
-						orphaned_policy = "stop",
-						first_person = false,
-						third_person = true,
-						effect = "fx/cw_khorne_boss",
 						continuous = true,
-						destroy_policy = "stop"
-					}
-				}
-			}
-		}
+						destroy_policy = "stop",
+						effect = "fx/cw_khorne_boss",
+						first_person = false,
+						orphaned_policy = "stop",
+						third_person = true,
+					},
+				},
+			},
+		},
 	},
 	grudge_mark_vampiric = {
 		buffs = {
 			{
-				name = "grudge_mark_vampiric",
-				multiplier = 2,
+				bonus = 0,
 				buff_func = "ai_heal_on_damage_dealt",
 				event = "on_damage_dealt",
-				bonus = 0
-			}
-		}
+				multiplier = 2,
+				name = "grudge_mark_vampiric",
+			},
+		},
 	},
 	grudge_mark_ranged_immune = {
 		buffs = {
 			{
 				name = "grudge_mark_ranged_immune",
 				perks = {
-					buff_perks.invulnerable_ranged
-				}
-			}
-		}
+					buff_perks.invulnerable_ranged,
+				},
+			},
+		},
 	},
 	grudge_mark_periodic_shield = {
 		buffs = {
@@ -164,414 +166,414 @@ settings.buff_templates = {
 				name = "grudge_mark_periodic_shield",
 				update_frequency = 20,
 				update_func = "add_buff",
-				update_start_delay = 0
-			}
-		}
+				update_start_delay = 0,
+			},
+		},
 	},
 	grudge_mark_periodic_shield_buff = {
-		deactivation_sound = "enemy_grudge_shield_end",
-		activation_sound_3p = true,
 		activation_sound = "enemy_grudge_shield_start",
+		activation_sound_3p = true,
+		deactivation_sound = "enemy_grudge_shield_end",
 		buffs = {
 			{
 				duration = 5,
 				name = "grudge_mark_periodic_shield_buff",
 				perks = {
-					buff_perks.invulnerable
+					buff_perks.invulnerable,
 				},
 				particles = {
 					{
-						orphaned_policy = "stop",
-						first_person = false,
-						third_person = true,
-						effect = "fx/cw_shield",
 						continuous = true,
-						destroy_policy = "stop"
-					}
-				}
-			}
-		}
+						destroy_policy = "stop",
+						effect = "fx/cw_shield",
+						first_person = false,
+						orphaned_policy = "stop",
+						third_person = true,
+					},
+				},
+			},
+		},
 	},
 	grudge_mark_intangible = {
 		buffs = {
 			{
-				num_mirrors = 3,
 				name = "grudge_mark_intangible",
-				update_func = "ai_spawn_mirror_images",
+				num_mirrors = 3,
 				update_dialogue_delay = 1,
 				update_frequency_time = 45,
-				update_start_delay = 5
-			}
-		}
+				update_func = "ai_spawn_mirror_images",
+				update_start_delay = 5,
+			},
+		},
 	},
 	grudge_mark_intangible_mirror = {
 		buffs = {
 			{
 				multiplier = -1,
 				name = "grudge_mark_intangible_mirror_damage",
+				remove_buff_func = "remove_intangible_mirror_damage",
 				stat_buff = "damage_dealt",
-				remove_buff_func = "remove_intangible_mirror_damage"
 			},
 			{
 				multiplier = -10,
 				name = "grudge_mark_intangible_mirror_health_stat",
-				stat_buff = "max_health"
+				stat_buff = "max_health",
 			},
 			{
-				remove_buff_func = "ai_update_max_health",
+				apply_buff_func = "ai_update_max_health",
 				name = "grudge_mark_intangible_mirror_health_update",
-				apply_buff_func = "ai_update_max_health"
-			}
-		}
+				remove_buff_func = "ai_update_max_health",
+			},
+		},
 	},
 	grudge_mark_crippling_blow = {
 		buffs = {
 			{
+				buff_func = "ai_add_buff_on_damage_dealt",
+				buff_to_add = "grudge_mark_crippling_blow_debuff",
 				event = "on_damage_dealt",
 				name = "grudge_mark_crippling_blow",
-				buff_to_add = "grudge_mark_crippling_blow_debuff",
-				buff_func = "ai_add_buff_on_damage_dealt"
-			}
-		}
+			},
+		},
 	},
 	grudge_mark_crippling_blow_debuff = {
 		buffs = {
 			{
-				name = "grudge_mark_crippling_blow_debuff_flow_event",
+				apply_buff_func = "first_person_flow_event",
+				duration = 5,
 				flow_event = "sfx_vce_struggle",
 				max_stacks = 1,
-				duration = 5,
-				apply_buff_func = "first_person_flow_event"
+				name = "grudge_mark_crippling_blow_debuff_flow_event",
 			},
 			{
-				update_func = "update_action_lerp_movement_buff",
+				apply_buff_func = "apply_action_lerp_movement_buff",
+				debuff = true,
+				duration = 5,
+				icon = "grudge_mark_crippling_debuff",
+				lerp_time = 0.1,
+				max_stacks = 1,
 				multiplier = 0.3,
 				name = "grudge_mark_crippling_blow_slow_run",
-				icon = "grudge_mark_crippling_debuff",
 				priority_buff = true,
 				remove_buff_func = "remove_action_lerp_movement_buff",
-				apply_buff_func = "apply_action_lerp_movement_buff",
 				remove_buff_name = "planted_return_to_normal_movement",
-				lerp_time = 0.1,
-				debuff = true,
-				max_stacks = 1,
-				duration = 5,
+				update_func = "update_action_lerp_movement_buff",
 				path_to_movement_setting_to_modify = {
-					"move_speed"
+					"move_speed",
 				},
 				sfx = {
-					activation_sound = "enemy_grudge_crippling_hit"
-				}
+					activation_sound = "enemy_grudge_crippling_hit",
+				},
 			},
 			{
-				update_func = "update_charging_action_lerp_movement_buff",
+				apply_buff_func = "apply_action_lerp_movement_buff",
+				duration = 5,
+				lerp_time = 0.1,
+				max_stacks = 1,
 				multiplier = 0.3,
 				name = "grudge_mark_crippling_blow_slow_crouch",
 				remove_buff_func = "remove_action_lerp_movement_buff",
-				apply_buff_func = "apply_action_lerp_movement_buff",
 				remove_buff_name = "planted_return_to_normal_crouch_movement",
-				lerp_time = 0.1,
-				max_stacks = 1,
-				duration = 5,
+				update_func = "update_charging_action_lerp_movement_buff",
 				path_to_movement_setting_to_modify = {
-					"crouch_move_speed"
-				}
+					"crouch_move_speed",
+				},
 			},
 			{
-				update_func = "update_charging_action_lerp_movement_buff",
+				apply_buff_func = "apply_action_lerp_movement_buff",
+				duration = 5,
+				lerp_time = 0.1,
+				max_stacks = 1,
 				multiplier = 0.3,
 				name = "grudge_mark_crippling_blow_slow_walk",
 				remove_buff_func = "remove_action_lerp_movement_buff",
-				apply_buff_func = "apply_action_lerp_movement_buff",
 				remove_buff_name = "planted_return_to_normal_walk_movement",
-				lerp_time = 0.1,
-				max_stacks = 1,
-				duration = 5,
+				update_func = "update_charging_action_lerp_movement_buff",
 				path_to_movement_setting_to_modify = {
-					"walk_move_speed"
-				}
+					"walk_move_speed",
+				},
 			},
 			{
+				apply_buff_func = "apply_movement_buff",
+				duration = 5,
+				max_stacks = 1,
 				multiplier = 0.3,
 				name = "grudge_mark_crippling_blow_jump_debuff",
-				duration = 5,
-				max_stacks = 1,
 				remove_buff_func = "remove_movement_buff",
-				apply_buff_func = "apply_movement_buff",
 				path_to_movement_setting_to_modify = {
 					"jump",
-					"initial_vertical_speed"
-				}
+					"initial_vertical_speed",
+				},
 			},
 			{
+				apply_buff_func = "apply_movement_buff",
+				duration = 5,
+				max_stacks = 1,
 				multiplier = 0.5,
 				name = "grudge_mark_crippling_blow_dodge_speed_debuff",
-				duration = 5,
-				max_stacks = 1,
 				remove_buff_func = "remove_movement_buff",
-				apply_buff_func = "apply_movement_buff",
 				path_to_movement_setting_to_modify = {
 					"dodging",
-					"speed_modifier"
-				}
+					"speed_modifier",
+				},
 			},
 			{
-				multiplier = 0.5,
-				name = "grudge_mark_crippling_blow_dodge_distance_debuff",
+				apply_buff_func = "apply_movement_buff",
 				duration = 5,
 				max_stacks = 1,
+				multiplier = 0.5,
+				name = "grudge_mark_crippling_blow_dodge_distance_debuff",
 				remove_buff_func = "remove_movement_buff",
-				apply_buff_func = "apply_movement_buff",
 				path_to_movement_setting_to_modify = {
 					"dodging",
-					"distance_modifier"
-				}
-			}
-		}
+					"distance_modifier",
+				},
+			},
+		},
 	},
 	grudge_mark_crushing_blow = {
 		buffs = {
 			{
-				buff_to_add = "grudge_mark_crushing_blow_debuff",
-				name = "grudge_mark_crushing_blow",
 				buff_func = "ai_crushing_blow",
+				buff_to_add = "grudge_mark_crushing_blow_debuff",
 				event = "on_damage_dealt",
+				name = "grudge_mark_crushing_blow",
 				perks = {
-					buff_perks.ai_unblockable
-				}
+					buff_perks.ai_unblockable,
+				},
 			},
 			{
-				remove_buff_func = "ai_remove_hit_sfx",
-				name = "grudge_mark_crushing_blow_sfx",
 				apply_buff_func = "ai_add_hit_sfx",
-				hit_sfx_name = "enemy_grudge_crushing_hit"
-			}
-		}
+				hit_sfx_name = "enemy_grudge_crushing_hit",
+				name = "grudge_mark_crushing_blow_sfx",
+				remove_buff_func = "ai_remove_hit_sfx",
+			},
+		},
 	},
 	grudge_mark_crushing_blow_debuff = {
 		buffs = {
 			{
-				duration = 8,
-				name = "grudge_mark_crushing_blow_debuff",
-				stat_buff = "max_fatigue",
+				bonus = -1,
 				debuff = true,
-				max_stacks = 20,
-				refresh_durations = true,
+				duration = 8,
 				icon = "troll_vomit_debuff",
-				bonus = -1
-			}
-		}
+				max_stacks = 20,
+				name = "grudge_mark_crushing_blow_debuff",
+				refresh_durations = true,
+				stat_buff = "max_fatigue",
+			},
+		},
 	},
 	grudge_mark_regeneratig = {
 		buffs = {
 			{
-				frequency = 1,
-				name = "grudge_mark_regeneratig",
-				part_healed_of_max_heath = 0.02,
 				buff_func = "ai_delay_regen",
 				event = "on_damage_taken",
+				frequency = 1,
+				name = "grudge_mark_regeneratig",
+				on_hit_delay = 3,
+				part_healed_of_max_heath = 0.02,
 				update_func = "ai_health_regen_update",
-				on_hit_delay = 3
-			}
-		}
+			},
+		},
 	},
 	grudge_mark_periodic_curse_aura = {
 		buffs = {
 			{
 				buff_to_add = "grudge_mark_curse",
-				name = "grudge_mark_periodic_curse_aura",
-				update_frequency = 0.5,
-				time_between_curses = 2,
-				update_start_delay = 0,
 				max_distance = 4,
-				update_func = "apply_curse_to_nearby_players",
+				name = "grudge_mark_periodic_curse_aura",
 				sound_on_enter = "enemy_grudge_cursed_enter",
+				time_between_curses = 2,
+				update_frequency = 0.5,
+				update_func = "apply_curse_to_nearby_players",
+				update_start_delay = 0,
 				particles = {
 					{
-						orphaned_policy = "stop",
-						first_person = false,
-						third_person = true,
-						effect = "fx/gm_cursed_aoe",
 						continuous = true,
 						destroy_policy = "stop",
+						effect = "fx/gm_cursed_aoe",
+						first_person = false,
+						orphaned_policy = "stop",
+						third_person = true,
 						custom_variables = {
 							{
 								name = "radius",
 								value = {
 									4,
 									4,
-									1
-								}
+									1,
+								},
 							},
 							{
 								name = "diameter",
 								value = {
 									8,
 									8,
-									1
-								}
-							}
-						}
-					}
-				}
-			}
-		}
+									1,
+								},
+							},
+						},
+					},
+				},
+			},
+		},
 	},
 	grudge_mark_curse = {
-		deactivation_sound = "enemy_grudge_cursed_exit",
 		activation_sound = "enemy_grudge_cursed_damage",
+		deactivation_sound = "enemy_grudge_cursed_exit",
 		buffs = {
 			{
-				icon = "grudge_mark_cursed_debuff",
-				name = "grudge_mark_curse",
-				stat_buff = "health_curse",
+				bonus = -0.05,
 				debuff = true,
-				max_stacks = 20,
 				duration = 5,
+				icon = "grudge_mark_cursed_debuff",
+				max_stacks = 20,
+				name = "grudge_mark_curse",
 				refresh_durations = true,
-				bonus = -0.05
-			}
-		}
+				stat_buff = "health_curse",
+			},
+		},
 	},
 	grudge_mark_commander = {
 		buffs = {
 			{
-				update_frequency = 40,
 				name = "grudge_mark_commander",
+				update_frequency = 40,
 				update_func = "trigger_terror_event",
 				update_start_delay = 8,
 				faction_terror_events = {
+					beastmen = "grudge_mark_commander_terror_event_beastmen",
+					chaos = "grudge_mark_commander_terror_event_chaos",
 					default = "grudge_mark_commander_terror_event_skaven",
 					skaven = "grudge_mark_commander_terror_event_skaven",
-					beastmen = "grudge_mark_commander_terror_event_beastmen",
-					chaos = "grudge_mark_commander_terror_event_chaos"
-				}
-			}
-		}
+				},
+			},
+		},
 	},
 	grudge_mark_frenzy = {
 		buffs = {
 			{
-				buff_to_add = "grudge_mark_frenzy_handler",
-				name = "grudge_mark_frenzy",
-				stacking_buff = "grudge_mark_frenzy_stack",
 				buff_func = "add_frenzy_handler",
+				buff_to_add = "grudge_mark_frenzy_handler",
 				event = "on_damage_taken",
-				remove_buff_func = "remove_frenzy_handlers"
-			}
-		}
+				name = "grudge_mark_frenzy",
+				remove_buff_func = "remove_frenzy_handlers",
+				stacking_buff = "grudge_mark_frenzy_stack",
+			},
+		},
 	},
 	grudge_mark_frenzy_handler = {
 		buffs = {
 			{
-				buff_to_add = "grudge_mark_frenzy_stack",
-				name = "grudge_mark_frenzy_handler",
+				apply_buff_func = "add_extra_frenzy_stack",
 				blocker_buff = "grudge_mark_frenzy_buff",
 				buff_func = "add_frenzy_stack",
+				buff_to_add = "grudge_mark_frenzy_stack",
 				event = "on_melee_hit",
-				apply_buff_func = "add_extra_frenzy_stack"
-			}
-		}
+				name = "grudge_mark_frenzy_handler",
+			},
+		},
 	},
 	grudge_mark_frenzy_stack = {
 		buffs = {
 			{
-				reset_on_max_stacks = true,
-				name = "grudge_mark_frenzy_stack",
+				debuff = true,
+				duration = 3,
 				icon = "grudge_mark_frenzy_debuff",
 				max_stacks = 10,
-				refresh_durations = true,
-				debuff = true,
+				name = "grudge_mark_frenzy_stack",
 				on_max_stacks_func = "add_remove_buffs",
-				duration = 3,
+				refresh_durations = true,
+				reset_on_max_stacks = true,
 				max_stack_data = {
 					buffs_to_add = {
-						"grudge_mark_frenzy_buff"
-					}
-				}
-			}
-		}
+						"grudge_mark_frenzy_buff",
+					},
+				},
+			},
+		},
 	},
 	grudge_mark_frenzy_buff = {
 		deactivation_sound = "enemy_grudge_frenzy_end",
 		buffs = {
 			{
-				buff_to_add = "grudge_mark_frenzy_buff",
-				name = "grudge_mark_frenzy_buff",
-				icon = "grudge_mark_frenzy_debuff",
-				buff_func = "add_buff",
-				event = "on_melee_hit",
-				refresh_durations = true,
 				apply_buff_func = "apply_frenzy_func",
-				remove_buff_func = "remove_frenzy_func",
+				buff_func = "add_buff",
+				buff_to_add = "grudge_mark_frenzy_buff",
+				duration = 5,
+				event = "on_melee_hit",
+				icon = "grudge_mark_frenzy_debuff",
 				max_stacks = 1,
-				duration = 5
+				name = "grudge_mark_frenzy_buff",
+				refresh_durations = true,
+				remove_buff_func = "remove_frenzy_func",
 			},
 			{
-				name = "grudge_mark_frenzy_buff_attack_speed",
-				multiplier = 0.25,
-				stat_buff = "attack_speed",
 				duration = 5,
 				max_stacks = 1,
-				refresh_durations = true
+				multiplier = 0.25,
+				name = "grudge_mark_frenzy_buff_attack_speed",
+				refresh_durations = true,
+				stat_buff = "attack_speed",
 			},
 			{
-				refresh_durations = true,
-				name = "grudge_mark_frenzy_buff_move_speed",
-				multiplier = 1.25,
-				max_stacks = 1,
-				remove_buff_func = "remove_movement_buff",
 				apply_buff_func = "apply_movement_buff",
 				duration = 5,
+				max_stacks = 1,
+				multiplier = 1.25,
+				name = "grudge_mark_frenzy_buff_move_speed",
+				refresh_durations = true,
+				remove_buff_func = "remove_movement_buff",
 				path_to_movement_setting_to_modify = {
-					"move_speed"
-				}
+					"move_speed",
+				},
 			},
 			{
-				refresh_durations = true,
-				multiplier = 0.2,
-				stat_buff = "power_level_melee",
 				buff_func = "deus_reckless_swings_buff_on_hit",
-				event = "on_melee_hit",
 				damage_to_deal = 10,
-				name = "grudge_mark_frenzy_buff_reckless_swings",
+				duration = 5,
+				event = "on_melee_hit",
 				is_non_lethal = true,
 				max_stacks = 1,
-				duration = 5
-			}
-		}
+				multiplier = 0.2,
+				name = "grudge_mark_frenzy_buff_reckless_swings",
+				refresh_durations = true,
+				stat_buff = "power_level_melee",
+			},
+		},
 	},
 	grudge_mark_shockwave_attacks = {
 		buffs = {
 			{
+				buff_func = "grudge_mark_shockwave",
 				event = "minion_attack_used",
 				name = "grudge_mark_shockwave_attacks",
-				buff_func = "grudge_mark_shockwave"
-			}
-		}
+			},
+		},
 	},
 	grudge_mark_ignore_death_aura = {
 		buffs = {
 			{
 				buff_to_add = "grudge_mark_ignore_death_buff",
 				name = "grudge_mark_ignore_death_aura",
-				remove_buff_func = "grudge_mark_ignore_death_aura_cleanup",
 				radius = 4,
+				remove_buff_func = "grudge_mark_ignore_death_aura_cleanup",
+				update_frequency = 1,
 				update_func = "grudge_mark_ignore_death_aura_update",
-				update_frequency = 1
-			}
-		}
+			},
+		},
 	},
 	grudge_mark_ignore_death_buff = {
 		buffs = {
 			{
 				name = "grudge_mark_ignore_death_buff",
 				perks = {
-					buff_perks.ignore_death
-				}
-			}
-		}
-	}
+					buff_perks.ignore_death,
+				},
+			},
+		},
+	},
 }
 settings.buff_function_templates = {
 	make_stagger_immune = function (unit, buff, params)
@@ -580,8 +582,9 @@ settings.buff_function_templates = {
 
 			if blackboard then
 				local stagger_immunity = {
-					health_threshold = 0
+					health_threshold = 0,
 				}
+
 				blackboard.stagger_immunity = stagger_immunity
 			end
 		end
@@ -636,7 +639,7 @@ settings.buff_function_templates = {
 					buff.update_dialogue_delay_time = t + update_dialogue_delay
 				end
 
-				if buff.update_dialogue_delay_time < t then
+				if t > buff.update_dialogue_delay_time then
 					local dialogue_name = "curse_very_negative_effect_happened"
 					local random_player = DialogueSystem:get_random_player()
 
@@ -677,9 +680,9 @@ settings.buff_function_templates = {
 				local enhancements = {
 					{
 						"grudge_mark_intangible_mirror",
+						name = "mirror_base",
 						no_attribute = true,
-						name = "mirror_base"
-					}
+					},
 				}
 				local ai_system = Managers.state.entity:system("ai_system")
 				local parent_attributes = ai_system:get_attributes(unit)
@@ -697,6 +700,7 @@ settings.buff_function_templates = {
 
 				local name_index = parent_attributes.grudge_marked.name_index
 				local old_mirrors = buff._mirror_units or {}
+
 				buff._mirror_units = old_mirrors
 
 				for i = 1, #old_mirrors do
@@ -738,12 +742,15 @@ settings.buff_function_templates = {
 
 					if mirror_pos then
 						pos_list[#pos_list + 1] = mirror_pos
+
 						local optional_data = {
 							side_id = side.side_id,
 							spawned_func = function (ai_unit, breed, optional_data)
 								local blackboard = BLACKBOARDS[ai_unit]
+
 								blackboard.deny_kill_loot = true
 								blackboard.is_illusion = true
+
 								local mirror_units = buff._mirror_units
 
 								if mirror_units then
@@ -767,7 +774,7 @@ settings.buff_function_templates = {
 								death_system:set_death_reaction_template(ai_unit, "despawn")
 							end,
 							enhancements = enhancements,
-							name_index = name_index
+							name_index = name_index,
 						}
 						local target_position = ConflictUtils.get_closest_position(mirror_pos, side.ENEMY_PLAYER_AND_BOT_POSITIONS)
 						local rot = ConflictUtils.look_at_position_flat(mirror_pos, target_position)
@@ -850,8 +857,10 @@ settings.buff_function_templates = {
 		local template = buff.template
 		local max_distance = template.max_distance
 		local position = POSITION_LOOKUP[unit]
+
 		buff.cursed_players = buff.cursed_players or {}
 		buff.inside_last_frame = buff.inside_last_frame or {}
+
 		local inside_last_frame = buff.inside_last_frame
 		local cursed_players = buff.cursed_players
 		local local_player = Managers.player:local_player().player_unit
@@ -863,6 +872,7 @@ settings.buff_function_templates = {
 
 		for i = 1, nearby_players_n do
 			local player_unit = nearby_players[i]
+
 			inside_this_frame[player_unit] = true
 
 			if not inside_last_frame[player_unit] then
@@ -885,10 +895,12 @@ settings.buff_function_templates = {
 
 		if is_server() then
 			local t = Managers.time:time("game")
+
 			buff.last_curse_t = buff.last_curse_t or t
+
 			local time_between_curses = template.time_between_curses
 			local next_curse_t = buff.last_curse_t + time_between_curses
-			local should_apply_buff = t >= next_curse_t
+			local should_apply_buff = next_curse_t <= t
 
 			for cursed_player, _ in pairs(cursed_players) do
 				if should_apply_buff then
@@ -1069,6 +1081,7 @@ settings.buff_function_templates = {
 		local buff_name = buff.template.buff_to_add
 		local inside_this_frame = FrameTable.alloc_table()
 		local inside_allies = buff.inside_allies or {}
+
 		buff.inside_allies = inside_allies
 
 		for i = 1, num_allies do
@@ -1115,7 +1128,7 @@ settings.buff_function_templates = {
 		end
 
 		buff.inside_allies = nil
-	end
+	end,
 }
 settings.proc_functions = {
 	add_frenzy_handler = function (owner_unit, buff, params)
@@ -1176,7 +1189,7 @@ settings.proc_functions = {
 
 			if is_server() then
 				buff_extension:add_buff(buff_name, {
-					attacker_unit = target_unit
+					attacker_unit = target_unit,
 				})
 				network_transmit:send_rpc_clients("rpc_add_buff", unit_object_id, buff_template_name_id, unit_object_id, 0, false)
 			else
@@ -1232,7 +1245,7 @@ settings.proc_functions = {
 				local side = Managers.state.side.side_by_unit[owner_unit]
 				local validation_data = {
 					side = side,
-					min_dist_sqr = min_player_dist * min_player_dist
+					min_dist_sqr = min_player_dist * min_player_dist,
 				}
 				local teleport_position = ConflictUtils.get_spawn_pos_on_circle_with_func_range(blackboard.nav_world, unit_pos, min_dist, max_dist, tries, teleport_validation_func, validation_data, 8, 8)
 
@@ -1270,6 +1283,7 @@ settings.proc_functions = {
 
 				if type(fatigue_type) == "table" then
 					local difficulty_manager = Managers.state.difficulty
+
 					fatigue_type = difficulty_manager:get_difficulty_value_from_table(fatigue_type)
 				end
 
@@ -1287,6 +1301,7 @@ settings.proc_functions = {
 			end
 
 			local proc_mod_table = params[param_order.PROC_MODIFIABLE]
+
 			proc_mod_table.damage_amount = 0
 
 			if action and action.blocked_damage then
@@ -1300,7 +1315,7 @@ settings.proc_functions = {
 
 			if is_server() then
 				buff_extension:add_buff(buff_name, {
-					attacker_unit = owner_unit
+					attacker_unit = owner_unit,
 				})
 				network_transmit:send_rpc_clients("rpc_add_buff", unit_object_id, buff_template_name_id, unit_object_id, 0, false)
 			else
@@ -1321,6 +1336,6 @@ settings.proc_functions = {
 		local damage_source_id = NetworkLookup.damage_sources[damage_source]
 
 		Managers.state.network.network_transmit:send_rpc_clients("rpc_create_explosion", attacker_unit_id, false, explosion_position, Quaternion.identity(), explosion_template_id, 1, damage_source_id, 0, false, attacker_unit_id)
-	end
+	end,
 }
 settings.stacking_buff_functions = {}

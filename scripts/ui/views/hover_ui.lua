@@ -1,44 +1,46 @@
+﻿-- chunkname: @scripts/ui/views/hover_ui.lua
+
 local scenegraph_definition = {
 	root = {
 		is_root = true,
 		size = {
 			1920,
-			1080
+			1080,
 		},
 		position = {
 			0,
 			0,
-			UILayer.hover
-		}
+			UILayer.hover,
+		},
 	},
 	hover_root = {
-		vertical_alignment = "bottom",
-		parent = "root",
 		horizontal_alignment = "left",
+		parent = "root",
+		vertical_alignment = "bottom",
 		size = {
 			1,
-			1
+			1,
 		},
 		position = {
 			0,
 			0,
-			1
-		}
+			1,
+		},
 	},
 	default_hover_widget = {
-		vertical_alignment = "center",
-		parent = "hover_root",
 		horizontal_alignment = "center",
+		parent = "hover_root",
+		vertical_alignment = "center",
 		size = {
 			1,
-			1
+			1,
 		},
 		position = {
 			10,
 			10,
-			1
-		}
-	}
+			1,
+		},
+	},
 }
 local widget_definitions = {
 	default_hover_widget = {
@@ -46,44 +48,46 @@ local widget_definitions = {
 		element = {
 			passes = {
 				{
-					texture_id = "background",
+					pass_type = "rounded_background",
 					style_id = "background",
-					pass_type = "rounded_background"
+					texture_id = "background",
 				},
 				{
-					style_id = "text",
 					pass_type = "text",
-					text_id = "text"
-				}
-			}
+					style_id = "text",
+					text_id = "text",
+				},
+			},
 		},
 		content = {
-			text = "description"
+			text = "description",
 		},
 		style = {
 			text = {
-				font_size = 28,
-				word_wrap = true,
-				pixel_perfect = true,
-				horizontal_alignment = "center",
-				vertical_alignment = "center",
 				dynamic_font = true,
+				font_size = 28,
 				font_type = "hell_shark",
+				horizontal_alignment = "center",
+				pixel_perfect = true,
+				vertical_alignment = "center",
+				word_wrap = true,
 				text_color = Colors.get_color_table_with_alpha("white", 255),
 				offset = {
 					0,
 					0,
-					1
-				}
+					1,
+				},
 			},
 			background = {
 				corner_radius = 2,
-				color = Colors.get_color_table_with_alpha("black", 200)
-			}
-		}
-	}
+				color = Colors.get_color_table_with_alpha("black", 200),
+			},
+		},
+	},
 }
+
 HoverUI = class(HoverUI)
+
 local TEXT_SIZE_MULTIPLIER = 1.1
 
 HoverUI.init = function (self, ingame_ui_context, input_service)
@@ -184,9 +188,10 @@ HoverUI.register_widget = function (self, name, tooltip_type, hover_content, con
 		type = tooltip_type,
 		style = style,
 		content = display_data,
-		hover_content = hover_content
+		hover_content = hover_content,
 	}
 	local index = #self._registered_hover_object + 1
+
 	self._registered_hover_index_by_name[name] = index
 	self._registered_hover_object[index] = hover_object_data
 end
@@ -216,6 +221,7 @@ HoverUI.set_default_widget_text = function (self, text)
 	local ui_scenegraph = self.ui_scenegraph
 	local default_widget = self.default_widget
 	local text_style = default_widget.style.text
+
 	text = Localize(text)
 	self.default_widget.content.text = text
 end
@@ -226,12 +232,15 @@ HoverUI.update_widget_pivot_position = function (self, ui_scenegraph, input_serv
 	if active_widget then
 		local hover_position = ui_scenegraph.hover_root.position
 		local cursor_position = UIRenderer.scaled_cursor_position_by_scenegraph(input_service, ui_scenegraph, "root")
+
 		hover_position[1] = cursor_position.x
 		hover_position[2] = cursor_position.y
+
 		local text_style = active_widget.style.text
 		local text = active_widget.content.text
 		local text_width, text_height = self:get_text_size(text, text_style)
 		local widget_scenegraph_definition = ui_scenegraph.default_hover_widget
+
 		widget_scenegraph_definition.size[1] = text_width * TEXT_SIZE_MULTIPLIER
 		widget_scenegraph_definition.size[2] = text_height * TEXT_SIZE_MULTIPLIER
 	end

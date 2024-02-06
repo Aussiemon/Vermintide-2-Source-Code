@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/unit_extensions/level/nav_graph_connector_extension.lua
+
 local ledges = require("scripts/settings/ledges")
+
 NavGraphConnectorExtension = class(NavGraphConnectorExtension)
 
 NavGraphConnectorExtension.init = function (self, extension_init_context, unit, extension_init_data)
@@ -7,6 +10,7 @@ NavGraphConnectorExtension.init = function (self, extension_init_context, unit, 
 	self.nav_world = extension_init_data.nav_world or Managers.state.entity:system("ai_system"):nav_world()
 	self.is_server = Managers.player.is_server
 	self.navgraphs = {}
+
 	local ledge_id = Unit.get_data(unit, "ledge_id")
 
 	if ledge_id and ledges[ledge_id] then
@@ -14,7 +18,7 @@ NavGraphConnectorExtension.init = function (self, extension_init_context, unit, 
 	else
 		local drawer = Managers.state.debug:drawer({
 			mode = "retained",
-			name = "NavGraphConnectorExtension"
+			name = "NavGraphConnectorExtension",
 		})
 		local pose, half_extents = Unit.box(unit)
 
@@ -34,12 +38,15 @@ NavGraphConnectorExtension.init_nav_graphs = function (self, ledge_id)
 	local smartobject_idx = unit_level_id
 	local bidirectional_edges = true
 	local layer_idx = 0
+
 	idx = idx + 1
+
 	local ledge_data = ledges[ledge_id]
 
 	for smart_object, smart_object_data in pairs(ledge_data) do
 		control_points[1] = Vector3Aux.unbox(smart_object_data.ground_pos)
 		control_points[2] = Vector3Aux.unbox(smart_object_data.ledge_pos)
+
 		local navgraph = GwNavGraph.create(nav_world, bidirectional_edges, control_points, debug_color, layer_idx, smartobject_idx)
 
 		GwNavGraph.add_to_database(navgraph)
@@ -49,7 +56,7 @@ NavGraphConnectorExtension.init_nav_graphs = function (self, ledge_id)
 		if Development.parameter("visualize_ledges") then
 			local drawer = Managers.state.debug:drawer({
 				mode = "retained",
-				name = "NavGraphConnectorExtension"
+				name = "NavGraphConnectorExtension",
 			})
 			local debug_color = Colors.get("dark_orange")
 			local debug_color_fail = Colors.get("red")

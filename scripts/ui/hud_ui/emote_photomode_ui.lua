@@ -1,9 +1,13 @@
+﻿-- chunkname: @scripts/ui/hud_ui/emote_photomode_ui.lua
+
 local definitions = local_require("scripts/ui/hud_ui/emote_photomode_ui_definitions")
 local widget_definitions = definitions.widgets
 local widgets_pc_definitions = definitions.widgets_pc
 local widgets_gamepad_definitions = definitions.widgets_gamepad
 local scenegraph_definition = definitions.scenegraph_definition
+
 EmotePhotomodeUI = class(EmotePhotomodeUI)
+
 local DO_RELOAD = false
 
 EmotePhotomodeUI.init = function (self, parent, ingame_ui_context)
@@ -28,6 +32,7 @@ EmotePhotomodeUI._create_ui_elements = function (self)
 
 	for name, widget in pairs(widget_definitions) do
 		local widget = UIWidget.init(widget)
+
 		self._widgets[name] = widget
 	end
 
@@ -35,6 +40,7 @@ EmotePhotomodeUI._create_ui_elements = function (self)
 
 	for name, widget in pairs(widgets_pc_definitions) do
 		local widget = UIWidget.init(widget)
+
 		self._widgets_pc[name] = widget
 	end
 
@@ -42,6 +48,7 @@ EmotePhotomodeUI._create_ui_elements = function (self)
 
 	for name, widget in pairs(widgets_gamepad_definitions) do
 		local widget = UIWidget.init(widget)
+
 		self._widgets_gamepad[name] = widget
 	end
 

@@ -1,43 +1,47 @@
+﻿-- chunkname: @scripts/ui/views/menu_world_previewer.lua
+
 require("scripts/ui/views/world_hero_previewer")
 
 local DEFAULT_ANGLE = math.degrees_to_radians(0)
+
 MenuWorldPreviewer = class(MenuWorldPreviewer, HeroPreviewer)
+
 local camera_position_by_character = {
 	witch_hunter = {
-		z = 0.4,
 		x = 0,
-		y = 0.8
+		y = 0.8,
+		z = 0.4,
 	},
 	bright_wizard = {
-		z = 0.2,
 		x = 0,
-		y = 0.4
+		y = 0.4,
+		z = 0.2,
 	},
 	dwarf_ranger = {
-		z = 0,
 		x = 0,
-		y = 0
+		y = 0,
+		z = 0,
 	},
 	wood_elf = {
-		z = 0.16,
 		x = 0,
-		y = 0.45
+		y = 0.45,
+		z = 0.16,
 	},
 	empire_soldier = {
-		z = 0.4,
 		x = 0,
-		y = 1
+		y = 1,
+		z = 0.4,
 	},
 	empire_soldier_tutorial = {
-		z = 0.4,
 		x = 0,
-		y = 1
+		y = 1,
+		z = 0.4,
 	},
 	default = {
-		z = 0.4,
 		x = 0,
-		y = 1
-	}
+		y = 1,
+		z = 0.4,
+	},
 }
 
 MenuWorldPreviewer.init = function (self, ingame_ui_context, optional_camera_character_positions, unique_id, delayed_spawn)
@@ -46,24 +50,26 @@ MenuWorldPreviewer.init = function (self, ingame_ui_context, optional_camera_cha
 	self.input_manager = ingame_ui_context.input_manager
 	self.ui_renderer = ingame_ui_context.ui_renderer
 	self._character_camera_positions = optional_camera_character_positions or camera_position_by_character
+
 	local player_manager = Managers.player
+
 	self.player_manager = player_manager
 	self.peer_id = ingame_ui_context.peer_id
 	self._camera_default_position = {
-		z = 0.9,
 		x = 0,
-		y = 2.8
+		y = 2.8,
+		z = 0.9,
 	}
 	self._default_animation_data = {
 		x = {
-			value = 0
+			value = 0,
 		},
 		y = {
-			value = 0
+			value = 0,
 		},
 		z = {
-			value = 0
-		}
+			value = 0,
+		},
 	}
 	self._camera_position_animation_data = table.clone(self._default_animation_data)
 	self._camera_character_position_animation_data = table.clone(self._default_animation_data)
@@ -71,7 +77,7 @@ MenuWorldPreviewer.init = function (self, ingame_ui_context, optional_camera_cha
 	self._camera_gamepad_offset_data = {
 		0,
 		0,
-		0
+		0,
 	}
 	self._units = {}
 	self._requested_unit_spawn_queue = {}
@@ -98,7 +104,9 @@ end
 
 MenuWorldPreviewer.setup_viewport = function (self, viewport_widget, hero_name)
 	self.viewport_widget = viewport_widget
+
 	local preview_pass_data = viewport_widget.element.pass_data[1]
+
 	self.world = preview_pass_data.world
 	self.level = preview_pass_data.level
 	self.viewport = preview_pass_data.viewport
@@ -108,12 +116,12 @@ MenuWorldPreviewer.setup_viewport = function (self, viewport_widget, hero_name)
 	self.character_look_current = {
 		0,
 		3,
-		1
+		1,
 	}
 	self.character_look_target = {
 		0,
 		3,
-		1
+		1,
 	}
 	self.camera_xy_angle_current = DEFAULT_ANGLE
 	self.camera_xy_angle_target = DEFAULT_ANGLE
@@ -197,7 +205,9 @@ MenuWorldPreviewer.update = function (self, dt, t, input_disabled)
 		end
 
 		local character_xy_angle_new = math.lerp(self.camera_xy_angle_current, self.camera_xy_angle_target, 0.1)
+
 		self.camera_xy_angle_current = character_xy_angle_new
+
 		local player_rotation = Quaternion.axis_angle(Vector3(0, 0, 1), -character_xy_angle_new)
 
 		Unit.set_local_rotation(character_unit, 0, player_rotation)
@@ -215,15 +225,19 @@ MenuWorldPreviewer.update = function (self, dt, t, input_disabled)
 
 	local camera_default_position = self._camera_default_position
 	local camera_position_new = Vector3.zero()
+
 	camera_position_new.x = camera_default_position.x
 	camera_position_new.y = camera_default_position.y
 	camera_position_new.z = camera_default_position.z
+
 	local lookat_target = self._lookat_target and self._lookat_target:unbox() or Vector3(0, 0, 0.9)
 	local direction = Vector3.normalize(lookat_target - camera_position_new)
 	local camera_rotation_animation_data = self._camera_rotation_animation_data
+
 	direction.x = direction.x + camera_rotation_animation_data.x.value
 	direction.y = direction.y + camera_rotation_animation_data.y.value
 	direction.z = direction.z + camera_rotation_animation_data.z.value
+
 	local rotation = Quaternion.look(direction)
 
 	ScriptCamera.set_local_rotation(self.camera, rotation)
@@ -231,6 +245,7 @@ MenuWorldPreviewer.update = function (self, dt, t, input_disabled)
 	local camera_position_animation_data = self._camera_position_animation_data
 	local camera_character_position_animation_data = self._camera_character_position_animation_data
 	local camera_gamepad_offset_data = self._camera_gamepad_offset_data
+
 	camera_position_new.x = camera_position_new.x + camera_position_animation_data.x.value + camera_character_position_animation_data.x.value + camera_gamepad_offset_data[1]
 	camera_position_new.y = camera_position_new.y + camera_position_animation_data.y.value + camera_character_position_animation_data.y.value + camera_gamepad_offset_data[2]
 	camera_position_new.z = camera_position_new.z + camera_position_animation_data.z.value + camera_character_position_animation_data.z.value + camera_gamepad_offset_data[3]
@@ -290,6 +305,7 @@ MenuWorldPreviewer._set_character_visibility = function (self, visible, camera_m
 			if profile_name then
 				local character_camera_positions = self._character_camera_positions
 				local new_character_position = character_camera_positions[profile_name] or character_camera_positions.default
+
 				x = new_character_position.x
 				y = new_character_position.y
 				z = new_character_position.z
@@ -306,9 +322,12 @@ MenuWorldPreviewer._update_camera_animation_data = function (self, animation_dat
 	for axis, data in pairs(animation_data) do
 		if data.total_time then
 			local old_time = data.time
+
 			data.time = math.min(old_time + dt, data.total_time)
+
 			local progress = math.min(1, data.time / data.total_time)
 			local func = data.func
+
 			data.value = (data.to - data.from) * (func and func(progress) or progress) + data.from
 
 			if progress == 1 then
@@ -321,6 +340,7 @@ end
 MenuWorldPreviewer.set_camera_axis_offset = function (self, axis, value, animation_time, func_ptr, fixed_position)
 	local data = self._camera_position_animation_data[axis]
 	local camera_default_position = self._camera_default_position
+
 	data.from = animation_time and data.value or value
 	data.to = fixed_position and value + -camera_default_position[axis] or value
 	data.total_time = animation_time
@@ -335,6 +355,7 @@ end
 
 MenuWorldPreviewer.set_camera_rotation_axis_offset = function (self, axis, value, animation_time, func_ptr)
 	local data = self._camera_rotation_animation_data[axis]
+
 	data.from = animation_time and data.value or value
 	data.to = value
 	data.total_time = animation_time
@@ -345,6 +366,7 @@ end
 
 MenuWorldPreviewer.set_character_axis_offset = function (self, axis, value, animation_time, func_ptr)
 	local data = self._camera_character_position_animation_data[axis]
+
 	data.from = animation_time and data.value or value
 	data.to = value
 	data.total_time = animation_time
@@ -439,7 +461,7 @@ MenuWorldPreviewer.request_spawn_hero_unit = function (self, profile_name, caree
 		callback = callback,
 		optional_scale = optional_scale,
 		camera_move_duration = camera_move_duration,
-		optional_skin = optional_skin
+		optional_skin = optional_skin,
 	}
 
 	if self._delayed_spawn then
@@ -453,11 +475,12 @@ end
 
 MenuWorldPreviewer.request_spawn_unit = function (self, unit_name, unit_type, cb)
 	local queue = self._requested_unit_spawn_queue
+
 	queue[#queue + 1] = {
 		frame_delay = 1,
 		unit_name = unit_name,
 		unit_type = unit_type,
-		callback = cb
+		callback = cb,
 	}
 
 	if self._delayed_spawn then
@@ -512,6 +535,7 @@ MenuWorldPreviewer._load_hero_unit = function (self, profile_name, career_index,
 	end
 
 	camera_move_duration = camera_move_duration or 0.01
+
 	local character_camera_positions = self._character_camera_positions
 	local new_character_position = character_camera_positions[profile_name] or character_camera_positions.default
 
@@ -521,6 +545,7 @@ MenuWorldPreviewer._load_hero_unit = function (self, profile_name, career_index,
 
 	self._camera_move_duration = camera_move_duration
 	self._current_profile_name = profile_name
+
 	local profile_index = FindProfileIndex(profile_name)
 	local profile = SPProfiles[profile_index]
 	local career = profile.careers[career_index]
@@ -535,6 +560,7 @@ MenuWorldPreviewer._load_hero_unit = function (self, profile_name, career_index,
 
 	self._current_career_name = career_name
 	self.character_unit_skin_data = nil
+
 	local package_names = CosmeticsUtils.retrieve_skin_packages_for_preview(skin_name)
 	local skin_data = Cosmetics[skin_name]
 	local data = {
@@ -545,7 +571,7 @@ MenuWorldPreviewer._load_hero_unit = function (self, profile_name, career_index,
 		optional_scale = optional_scale,
 		package_names = package_names,
 		num_packages = #package_names,
-		callback = callback
+		callback = callback,
 	}
 
 	self:_load_packages(package_names)
@@ -585,6 +611,7 @@ end
 
 MenuWorldPreviewer._spawn_unit = function (self, unit_name, item_data)
 	local unit = World.spawn_unit(self.world, unit_name)
+
 	self._units[#self._units + 1] = unit
 	self._hidden_units[unit] = true
 

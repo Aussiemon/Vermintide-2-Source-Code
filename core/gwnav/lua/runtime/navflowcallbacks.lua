@@ -1,6 +1,9 @@
+﻿-- chunkname: @core/gwnav/lua/runtime/navflowcallbacks.lua
+
 require("core/gwnav/lua/safe_require")
 
 GwNavFlowCallbacks = safe_require_guard()
+
 local NavRoute = safe_require("core/gwnav/lua/runtime/navroute")
 local NavWorld = safe_require("core/gwnav/lua/runtime/navworld")
 local NavBot = safe_require("core/gwnav/lua/runtime/navbot")

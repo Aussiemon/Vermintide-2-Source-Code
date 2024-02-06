@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/mutators/mutator_geheimnisnacht_2021.lua
+
 local spawn_lists = {
 	skaven = {
 		"skaven_plague_monk",
@@ -5,15 +7,15 @@ local spawn_lists = {
 		"skaven_plague_monk",
 		"skaven_clan_rat",
 		"skaven_plague_monk",
-		"skaven_clan_rat"
+		"skaven_clan_rat",
 	},
 	chaos = {
 		"chaos_marauder",
 		"chaos_marauder",
 		"chaos_marauder",
 		"chaos_marauder",
-		"chaos_marauder"
-	}
+		"chaos_marauder",
+	},
 }
 local spawn_categories = table.keys(spawn_lists)
 local event_settings = {
@@ -23,9 +25,9 @@ local event_settings = {
 				0,
 				0,
 				0,
-				0
-			}
-		}
+				0,
+			},
+		},
 	},
 	warcamp = {
 		ritual_locations = {
@@ -33,9 +35,9 @@ local event_settings = {
 				-151.1,
 				-20,
 				19.15,
-				0
-			}
-		}
+				0,
+			},
+		},
 	},
 	nurgle = {
 		ritual_locations = {
@@ -43,9 +45,9 @@ local event_settings = {
 				175.1,
 				-114.5,
 				2.5,
-				0
-			}
-		}
+				0,
+			},
+		},
 	},
 	dlc_wizards_tower = {
 		ritual_locations = {
@@ -53,9 +55,9 @@ local event_settings = {
 				4.45,
 				36.4,
 				77.01,
-				0
-			}
-		}
+				0,
+			},
+		},
 	},
 	dlc_bastion = {
 		ritual_locations = {
@@ -63,9 +65,9 @@ local event_settings = {
 				109.6,
 				56.7,
 				-52.8,
-				0
-			}
-		}
+				0,
+			},
+		},
 	},
 	dlc_dwarf_beacons = {
 		ritual_locations = {
@@ -73,13 +75,13 @@ local event_settings = {
 				-128.2,
 				-102.8,
 				-15.3,
-				0
-			}
-		}
-	}
+				0,
+			},
+		},
+	},
 }
 local hard_mode_mutators = {
-	"geheimnisnacht_2021_hard_mode"
+	"geheimnisnacht_2021_hard_mode",
 }
 
 local function side_objective_picked_up()
@@ -106,10 +108,10 @@ local function side_objective_picked_dropped()
 end
 
 return {
-	description = "description_mutator_geheimnisnacht_2021",
-	icon = "mutator_icon_death_spirits",
-	display_name = "display_name_mutator_geheimnisnacht_2021",
 	curse_package_name = "resource_packages/dlcs/geheimnisnacht_2021_event",
+	description = "description_mutator_geheimnisnacht_2021",
+	display_name = "display_name_mutator_geheimnisnacht_2021",
+	icon = "mutator_icon_death_spirits",
 	server_start_function = function (context, data)
 		local level_key = Managers.state.game_mode:level_key()
 		local settings = event_settings[level_key]
@@ -136,14 +138,14 @@ return {
 		local extension_init_data = {
 			health_system = {
 				damage_cap_per_hit = 1,
-				health = 15
+				health = 15,
 			},
 			death_system = {
-				death_reaction_template = "geheimnisnacht_2021_altar"
+				death_reaction_template = "geheimnisnacht_2021_altar",
 			},
 			hit_reaction_system = {
-				hit_reaction_template = "level_object"
-			}
+				hit_reaction_template = "level_object",
+			},
 		}
 		local altar_unit = Managers.state.unit_spawner:spawn_network_unit(unit_name, "geheimnisnacht_2021_altar", extension_init_data, position, rotation)
 		local spread = 2.5
@@ -152,7 +154,7 @@ return {
 			"idle_pray_02",
 			"idle_pray_03",
 			"idle_pray_04",
-			"idle_pray_05"
+			"idle_pray_05",
 		}
 		local optional_data_base = {
 			far_off_despawn_immunity = true,
@@ -179,14 +181,14 @@ return {
 
 					network_manager.network_transmit:send_rpc_all("rpc_ai_inventory_wield", unit_id, 1)
 				end
-			end
+			end,
 		}
 		local spawn_category = "event"
 		local spawn_type = "event"
 		local faction = spawn_categories[math.random(#spawn_categories)]
 		local spawn_list = spawn_lists[faction]
 		local num_cultists = #spawn_list
-		local spawn_animation = nil
+		local spawn_animation
 		local conflict_director = Managers.state.conflict
 		local forward = Vector3.forward() * spread
 		local up = Vector3.up()
@@ -195,15 +197,18 @@ return {
 		local group_data = {
 			template = "geheimnisnacht_2021_altar_cultists",
 			id = Managers.state.entity:system("ai_group_system"):generate_group_id(),
-			size = num_cultists
+			size = num_cultists,
 		}
 
 		for i = 1, num_cultists do
 			local breed = Breeds[spawn_list[i]]
 			local optional_data = table.shallow_copy(optional_data_base)
+
 			optional_data.idle_animation = idle_variations[math.random(#idle_variations)]
+
 			local spawn_rot = Quaternion.multiply(rotation, Quaternion.axis_angle(up, angle_increment * (i - 1)))
 			local spawn_pos = position + Quaternion.rotate(spawn_rot, forward)
+
 			spawn_rot = Quaternion.multiply(spawn_rot, rot_offset)
 
 			conflict_director:spawn_queued_unit(breed, Vector3Box(spawn_pos), QuaternionBox(spawn_rot), spawn_category, spawn_animation, spawn_type, optional_data, group_data)
@@ -213,5 +218,5 @@ return {
 
 		altar_extension:assign_cultist_group_id(group_data.id)
 		altar_extension:setup_faction(faction)
-	end
+	end,
 }

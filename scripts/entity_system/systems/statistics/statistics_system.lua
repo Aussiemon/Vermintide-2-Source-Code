@@ -1,19 +1,24 @@
+﻿-- chunkname: @scripts/entity_system/systems/statistics/statistics_system.lua
+
 require("scripts/entity_system/systems/statistics/statistics_templates")
 
 StatisticsSystem = class(StatisticsSystem, ExtensionSystemBase)
+
 local extensions = {
-	"StatisticsExtension"
+	"StatisticsExtension",
 }
 local CLIENT_RPCS = {
 	"rpc_register_kill",
-	"rpc_set_unsigned_number_session_stat"
+	"rpc_set_unsigned_number_session_stat",
 }
 
 StatisticsSystem.init = function (self, context, name)
 	StatisticsSystem.super.init(self, context, name, extensions)
 
 	self.unit_extension_data = {}
+
 	local network_event_delegate = context.network_event_delegate
+
 	self.network_event_delegate = network_event_delegate
 
 	if not self.is_server then
@@ -36,13 +41,14 @@ StatisticsSystem.on_add_extension = function (self, world, unit, extension_name,
 
 	local extension = {
 		template_category_name = template_category_name,
-		statistics_id = statistics_id
+		statistics_id = statistics_id,
 	}
 	local templates = StatisticsTemplateCategories[template_category_name]
 
 	for i = 1, #templates do
 		local template_name = templates[i]
 		local template = StatisticsTemplates[template_name]
+
 		extension[template_name] = template.init()
 	end
 
@@ -122,6 +128,7 @@ StatisticsSystem.rpc_register_kill = function (self, channel_id, victim_unit_go_
 	TEMP_ARGS[DamageDataIndex.CRITICAL_HIT] = false
 	TEMP_ARGS[DamageDataIndex.FIRST_HIT] = true
 	TEMP_ARGS[DamageDataIndex.TOTAL_HITS] = 0
+
 	local statistics_db = self.statistics_db
 
 	StatisticsUtil.register_kill(victim_unit, TEMP_ARGS, statistics_db, false)

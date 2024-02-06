@@ -1,5 +1,8 @@
+﻿-- chunkname: @scripts/managers/telemetry/telemetry_event.lua
+
 TelemetryEvent = class(TelemetryEvent)
 TelemetryEvent.NAME = "TelemetryEvent"
+
 local type_name = Script.type_name
 
 TelemetryEvent.init = function (self, source, subject, type, session)
@@ -13,7 +16,7 @@ TelemetryEvent.init = function (self, source, subject, type, session)
 		source = source,
 		subject = subject,
 		type = type,
-		session = session
+		session = session,
 	}
 end
 

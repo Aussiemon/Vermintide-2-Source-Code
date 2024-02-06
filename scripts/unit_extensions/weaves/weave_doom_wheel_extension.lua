@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/weaves/weave_doom_wheel_extension.lua
+
 WeaveDoomWheelExtension = class(WeaveDoomWheelExtension)
 WeaveDoomWheelExtension.NAME = "WeaveDoomWheelExtension"
 
@@ -22,6 +24,7 @@ WeaveDoomWheelExtension.init = function (self, extension_init_context, unit, ext
 	self._timer = self._max_timer
 	self.keep_alive = true
 	self._weave_objective_system = Managers.state.entity:system("weave_objective_system")
+
 	local terror_event_spawner_id = extension_init_data.terror_event_spawner_id
 
 	Unit.set_data(unit, "terror_event_spawner_id", terror_event_spawner_id)
@@ -44,9 +47,10 @@ WeaveDoomWheelExtension.activate = function (self, game_object_id, objective_dat
 		local game_object_data_table = {
 			go_type = NetworkLookup.go_types.weave_objective,
 			objective_name = NetworkLookup.weave_objective_names[self._objective_name],
-			value = self:get_percentage_done() * 100
+			value = self:get_percentage_done() * 100,
 		}
 		local callback = callback(self, "cb_game_session_disconnect")
+
 		self._game_object_id = Managers.state.network:create_game_object("weave_objective", game_object_data_table, callback)
 	else
 		self._game_object_id = game_object_id
@@ -62,7 +66,7 @@ WeaveDoomWheelExtension.complete = function (self)
 end
 
 WeaveDoomWheelExtension.should_disable = function (self)
-	return not self._is_server or self._num_sockets <= self._num_closed_sockets
+	return not self._is_server or self._num_closed_sockets >= self._num_sockets
 end
 
 WeaveDoomWheelExtension.disable = function (self)
@@ -116,7 +120,7 @@ end
 WeaveDoomWheelExtension._server_update = function (self, dt, t)
 	local num_closed_sockets = self._objective_socket_extension.num_closed_sockets
 
-	if self._num_closed_sockets < num_closed_sockets then
+	if num_closed_sockets > self._num_closed_sockets then
 		self._num_closed_sockets = num_closed_sockets
 
 		if self._on_socket_start_func then
@@ -136,7 +140,7 @@ WeaveDoomWheelExtension._server_update = function (self, dt, t)
 		end
 	end
 
-	if self._num_sockets <= num_closed_sockets then
+	if num_closed_sockets >= self._num_sockets then
 		if self._on_socket_complete_func then
 			self._on_socket_complete_func(self._unit)
 

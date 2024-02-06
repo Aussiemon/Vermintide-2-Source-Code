@@ -1,13 +1,16 @@
+﻿-- chunkname: @scripts/managers/backend_playfab/backend_interface_weaves_playfab.lua
+
 require("scripts/settings/weaves/weave_loadout/weave_loadout_settings")
 require("scripts/settings/equipment/power_level_settings")
 
 BackendInterfaceWeavesPlayFab = class(BackendInterfaceWeavesPlayFab)
+
 local LOADOUT_INTERFACE_OVERRIDES = {
-	slot_hat = "items",
-	slot_skin = "items",
 	slot_frame = "items",
+	slot_hat = "items",
 	slot_melee = "weaves",
-	slot_ranged = "weaves"
+	slot_ranged = "weaves",
+	slot_skin = "items",
 }
 
 local function magic_level_to_power_level(magic_level)
@@ -25,6 +28,7 @@ end
 BackendInterfaceWeavesPlayFab.init = function (self, backend_mirror)
 	self._backend_mirror = backend_mirror
 	self._dirty_loadouts = {}
+
 	local progression_settings = backend_mirror:get_weaves_progression_settings()
 
 	self:_validate_backend_progression_settings(progression_settings)
@@ -33,6 +37,7 @@ BackendInterfaceWeavesPlayFab.init = function (self, backend_mirror)
 	self._forge_level = backend_mirror:get_read_only_data("weaves_forge_level")
 	self._loadouts = self:_parse_loadouts()
 	self._career_progress = self:_parse_career_progress()
+
 	local inventory_items = backend_mirror:get_all_inventory_items()
 
 	for _, item in pairs(inventory_items) do
@@ -123,6 +128,7 @@ BackendInterfaceWeavesPlayFab._parse_loadouts = function (self)
 				if dlc_unlocked == nil or dlc_unlocked then
 					local loadout_json = self._backend_mirror:get_read_only_data("weaves_loadout_" .. career_name)
 					local loadout = loadout_json and cjson.decode(loadout_json)
+
 					loadouts[career_name] = loadout
 
 					self:_validate_loadout(career_name, loadout)
@@ -217,11 +223,11 @@ end
 BackendInterfaceWeavesPlayFab._create_leaderboard_entry = function (self, data, previous_tier, previous_score)
 	if not data then
 		local entry = {
-			score = "-",
+			local_player = false,
 			name = "-",
-			weave = "-",
 			ranking = "-",
-			local_player = false
+			score = "-",
+			weave = "-",
 		}
 
 		return entry
@@ -230,7 +236,7 @@ BackendInterfaceWeavesPlayFab._create_leaderboard_entry = function (self, data, 
 	local position = data.Position + 1
 	local profile = data.Profile
 	local linked_accounts = profile.LinkedAccounts
-	local name, position_text, platform_user_id = nil
+	local name, position_text, platform_user_id
 
 	for i = 1, #linked_accounts do
 		local account_data = linked_accounts[i]
@@ -262,7 +268,7 @@ BackendInterfaceWeavesPlayFab._create_leaderboard_entry = function (self, data, 
 		weave = tier,
 		score = score,
 		local_player = local_player,
-		platform_user_id = platform_user_id
+		platform_user_id = platform_user_id,
 	}
 
 	return entry
@@ -294,6 +300,7 @@ BackendInterfaceWeavesPlayFab._update_item_custom_data = function (self, item_ba
 			local costs = self:get_property_mastery_costs(property_name)
 			local max_num_slots = #costs
 			local value = num_slots / max_num_slots
+
 			item.properties[property_name] = value
 		end
 	else
@@ -332,6 +339,7 @@ BackendInterfaceWeavesPlayFab._get_loadout_mastery_cost = function (self, loadou
 	if loadout.traits then
 		for trait_name, _ in pairs(loadout.traits) do
 			local cost = self:get_trait_mastery_cost(trait_name)
+
 			total_cost = total_cost + cost
 		end
 	end
@@ -339,6 +347,7 @@ BackendInterfaceWeavesPlayFab._get_loadout_mastery_cost = function (self, loadou
 	if loadout.talents then
 		for talent_name, _ in pairs(loadout.talents) do
 			local cost = self:get_talent_mastery_cost(talent_name)
+
 			total_cost = total_cost + cost
 		end
 	end
@@ -363,6 +372,7 @@ BackendInterfaceWeavesPlayFab.submit_scores = function (self, tier, score, num_p
 
 		local career_name = player:career_name()
 		local weave_score = BackendUtils.calculate_weave_score(tier, score, career_name)
+
 		scores_by_platform_id[platform_id] = weave_score
 	end
 
@@ -370,8 +380,8 @@ BackendInterfaceWeavesPlayFab.submit_scores = function (self, tier, score, num_p
 		FunctionName = "submitWeaveScore",
 		FunctionParameter = {
 			scores_by_platform_id = scores_by_platform_id,
-			num_players = num_players
-		}
+			num_players = num_players,
+		},
 	}
 	local success_callback = callback(self, "submit_weave_score_request_cb")
 	local request_queue = self._backend_mirror:request_queue()
@@ -388,8 +398,8 @@ BackendInterfaceWeavesPlayFab.request_player_rank = function (self, stat_name, l
 		MaxResultsCount = 1,
 		StatisticName = stat_name,
 		ProfileConstraints = {
-			ShowLinkedAccounts = true
-		}
+			ShowLinkedAccounts = true,
+		},
 	}
 
 	if IS_XB1 then
@@ -415,6 +425,7 @@ BackendInterfaceWeavesPlayFab.player_rank_request_cb = function (self, result)
 	end
 
 	local leaderboard_entry = self:_create_leaderboard_entry(data)
+
 	self._requesting_leaderboard = self._requesting_leaderboard - 1
 	self._player_entry = leaderboard_entry
 	self._leaderboard_player_rank_error = false
@@ -425,8 +436,8 @@ BackendInterfaceWeavesPlayFab.request_leaderboard_around_player = function (self
 		MaxResultsCount = max_result_count or 1,
 		StatisticName = stat_name,
 		ProfileConstraints = {
-			ShowLinkedAccounts = true
-		}
+			ShowLinkedAccounts = true,
+		},
 	}
 
 	if IS_XB1 then
@@ -453,12 +464,13 @@ BackendInterfaceWeavesPlayFab.request_leaderboard_around_player_cb = function (s
 
 	for i = 1, #leaderboard do
 		local data = leaderboard[i]
-		local entry = nil
+		local entry
 
 		if data.StatValue ~= 0 then
 			local previous_score = idx > 1 and self._leaderboard_entries[idx - 1].score
 			local previous_tier = idx > 1 and self._leaderboard_entries[idx - 1].weave
 			local entry = self:_create_leaderboard_entry(data, previous_tier, previous_score)
+
 			self._leaderboard_entries[idx] = entry
 			idx = idx + 1
 		end
@@ -480,9 +492,9 @@ BackendInterfaceWeavesPlayFab.request_leaderboard = function (self, stat_name, s
 		MaxResultsCount = 100,
 		StatisticName = stat_name,
 		ProfileConstraints = {
-			ShowLinkedAccounts = true
+			ShowLinkedAccounts = true,
 		},
-		StartPosition = start_position
+		StartPosition = start_position,
 	}
 
 	if IS_XB1 then
@@ -509,6 +521,7 @@ BackendInterfaceWeavesPlayFab.leaderboard_request_cb = function (self, result)
 		local previous_score = i > 1 and self._leaderboard_entries[i - 1].score
 		local previous_tier = i > 1 and self._leaderboard_entries[i - 1].weave
 		local entry = self:_create_leaderboard_entry(data, previous_tier, previous_score)
+
 		self._leaderboard_entries[i] = entry
 	end
 
@@ -556,21 +569,24 @@ end
 BackendInterfaceWeavesPlayFab.get_mastery = function (self, career_name, optional_item_backend_id)
 	local mastery_settings = WeaveMasterySettings
 	local loadout = self._loadouts[career_name]
-	local initial_mastery = nil
+	local initial_mastery
 
 	if optional_item_backend_id then
 		loadout = loadout.item_loadouts[optional_item_backend_id]
+
 		local magic_level = self:get_item_magic_level(optional_item_backend_id)
+
 		initial_mastery = (magic_level - 1) * mastery_settings.item_mastery_per_magic_level
 
-		if self:max_magic_level() <= magic_level then
+		if magic_level >= self:max_magic_level() then
 			initial_mastery = magic_level * mastery_settings.item_mastery_per_magic_level
 		end
 	else
 		local magic_level = self:get_career_magic_level(career_name)
+
 		initial_mastery = (magic_level - 1) * mastery_settings.career_mastery_per_magic_level
 
-		if self:max_magic_level() <= magic_level then
+		if magic_level >= self:max_magic_level() then
 			initial_mastery = magic_level * mastery_settings.career_mastery_per_magic_level
 		end
 	end
@@ -598,7 +614,9 @@ BackendInterfaceWeavesPlayFab.get_average_power_level = function (self, career_n
 	local melee_item = self:_get_magic_inventory_item(loadout.slot_melee)
 	local sum = melee_item.power_level
 	local ranged_item = self:_get_magic_inventory_item(loadout.slot_ranged)
+
 	sum = sum + ranged_item.power_level
+
 	local career_power_level = self:get_career_power_level(career_name)
 	local result = math.ceil(sum * 0.5)
 
@@ -612,6 +630,7 @@ end
 BackendInterfaceWeavesPlayFab.get_total_magic_level = function (self, career_name)
 	local sum = self:get_career_magic_level(career_name)
 	local loadout = self._loadouts[career_name]
+
 	sum = sum + self:get_item_magic_level(loadout.slot_melee)
 	sum = sum + self:get_item_magic_level(loadout.slot_ranged)
 
@@ -647,7 +666,7 @@ BackendInterfaceWeavesPlayFab.career_upgrade_cost = function (self, career_name)
 	local current_magic_level = self:get_career_magic_level(career_name)
 	local new_magic_level = current_magic_level + 1
 
-	if self:max_magic_level() < new_magic_level then
+	if new_magic_level > self:max_magic_level() then
 		return nil, nil
 	end
 
@@ -671,8 +690,8 @@ BackendInterfaceWeavesPlayFab.upgrade_career_magic_level = function (self, caree
 		FunctionParameter = {
 			career_name = career_name,
 			new_magic_level = new_magic_level,
-			cost = cost
-		}
+			cost = cost,
+		},
 	}
 	local request_queue = self._backend_mirror:request_queue()
 
@@ -699,7 +718,7 @@ local CAREER_ID_LOOKUP = {
 	"wh_zealot",
 	"we_thornsister",
 	"wh_priest",
-	"bw_necromancer"
+	"bw_necromancer",
 }
 
 BackendInterfaceWeavesPlayFab.upgrade_career_magic_level_cb = function (self, external_cb, result)
@@ -763,7 +782,7 @@ BackendInterfaceWeavesPlayFab.magic_item_upgrade_cost = function (self, item_bac
 	local current_magic_level = self:get_item_magic_level(item_backend_id)
 	local new_magic_level = current_magic_level + 1
 
-	if self:max_magic_level() < new_magic_level then
+	if new_magic_level > self:max_magic_level() then
 		return nil, nil
 	end
 
@@ -787,8 +806,8 @@ BackendInterfaceWeavesPlayFab.upgrade_item_magic_level = function (self, item_ba
 		FunctionParameter = {
 			item_backend_id = item_backend_id,
 			new_magic_level = new_magic_level,
-			cost = cost
-		}
+			cost = cost,
+		},
 	}
 	local request_queue = self._backend_mirror:request_queue()
 
@@ -851,8 +870,8 @@ BackendInterfaceWeavesPlayFab.buy_magic_item = function (self, item_id, external
 		FunctionName = "buyMagicItem",
 		FunctionParameter = {
 			item_id = item_id,
-			cost = cost
-		}
+			cost = cost,
+		},
 	}
 	local request_queue = self._backend_mirror:request_queue()
 
@@ -916,7 +935,7 @@ BackendInterfaceWeavesPlayFab.forge_upgrade_cost = function (self)
 	local current_forge_level = self._forge_level
 	local new_forge_level = current_forge_level + 1
 
-	if self:forge_max_level() < new_forge_level then
+	if new_forge_level > self:forge_max_level() then
 		return nil, nil
 	end
 
@@ -939,8 +958,8 @@ BackendInterfaceWeavesPlayFab.upgrade_forge = function (self, external_cb)
 		FunctionName = "upgradeWeaveForge",
 		FunctionParameter = {
 			new_forge_level = new_forge_level,
-			cost = cost
-		}
+			cost = cost,
+		},
 	}
 	local request_queue = self._backend_mirror:request_queue()
 
@@ -963,6 +982,7 @@ BackendInterfaceWeavesPlayFab.upgrade_forge_cb = function (self, external_cb, re
 
 	local new_forge_level = function_result.new_forge_level
 	local new_essence = function_result.new_essence
+
 	self._forge_level = new_forge_level
 
 	self._backend_mirror:set_essence(new_essence)
@@ -1001,7 +1021,7 @@ BackendInterfaceWeavesPlayFab.set_loadout_property = function (self, career_name
 		if not item_loadout then
 			item_loadout = {
 				properties = {},
-				traits = {}
+				traits = {},
 			}
 			loadout.item_loadouts[optional_item_backend_id] = item_loadout
 		end
@@ -1062,10 +1082,11 @@ end
 
 BackendInterfaceWeavesPlayFab.get_loadout_properties = function (self, career_name, optional_item_backend_id)
 	local loadout = self._loadouts[career_name]
-	local properties = nil
+	local properties
 
 	if optional_item_backend_id then
 		local item_loadout = loadout.item_loadouts[optional_item_backend_id]
+
 		properties = item_loadout and item_loadout.properties or {}
 	else
 		properties = loadout.properties
@@ -1103,7 +1124,7 @@ BackendInterfaceWeavesPlayFab.set_loadout_trait = function (self, career_name, t
 		if not item_loadout then
 			item_loadout = {
 				properties = {},
-				traits = {}
+				traits = {},
 			}
 			loadout.item_loadouts[optional_item_backend_id] = item_loadout
 		end
@@ -1148,10 +1169,11 @@ end
 
 BackendInterfaceWeavesPlayFab.get_loadout_traits = function (self, career_name, optional_item_backend_id)
 	local loadout = self._loadouts[career_name]
-	local traits = nil
+	local traits
 
 	if optional_item_backend_id then
 		local item_loadout = loadout.item_loadouts[optional_item_backend_id]
+
 		traits = item_loadout and item_loadout.traits or {}
 	else
 		traits = loadout.traits
@@ -1295,6 +1317,7 @@ BackendInterfaceWeavesPlayFab.get_talents = function (self, career_name)
 		local talent_data = WeaveTalentsByCareer[career_name][talent_name]
 		local tree_row = talent_data.tree_row
 		local tree_column = talent_data.tree_column
+
 		TALENTS_RETURN_TABLE[tree_row] = tree_column
 	end
 
@@ -1328,7 +1351,7 @@ BackendInterfaceWeavesPlayFab.set_loadout_item = function (self, item_backend_id
 	fassert(self._valid_loadout_slots[slot_name], "[BackendInterfaceWeavesPlayFab] Loadout in slot %q shouldn't be set in the weaves interface", tostring(slot_name))
 
 	local all_items = self._backend_mirror:get_all_inventory_items()
-	local item = nil
+	local item
 
 	if item_backend_id then
 		item = all_items[item_backend_id]

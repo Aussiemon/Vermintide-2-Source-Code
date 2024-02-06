@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/hero_view/windows/hero_window_weave_properties.lua
+
 require("scripts/helpers/weave_utils")
 require("scripts/settings/weaves/weave_loadout/weave_loadout_settings")
 
@@ -22,62 +24,62 @@ local UPGRADE_REQUEST_LIMIT = 1.6
 local amulet_slot_layout = {
 	{
 		amount_per_layer = 6,
-		name = "talent",
 		degrees = 180,
 		max_amount = 6,
-		radius = 178
+		name = "talent",
+		radius = 178,
 	},
 	{
 		amount_per_layer = 3,
-		name = "trait",
 		degrees = 90,
 		max_amount = 3,
-		radius = 370
+		name = "trait",
+		radius = 370,
 	},
 	{
 		amount_per_layer = 10,
-		name = "property",
 		degrees = 180,
-		max_amount = 30,
-		radius = 100,
 		inherent_parent = "trait",
+		max_amount = 30,
+		name = "property",
+		radius = 100,
 		start_angle = 2.827433385,
 		layer_settings = {
 			{
-				radius = 100,
+				amount_per_layer = 10,
 				degrees = 324,
-				amount_per_layer = 10
+				radius = 100,
 			},
 			{
-				radius = 100,
+				amount_per_layer = 10,
 				degrees = 324,
-				amount_per_layer = 10
+				radius = 100,
 			},
 			{
-				radius = 100,
+				amount_per_layer = 10,
 				degrees = 324,
-				amount_per_layer = 10
-			}
-		}
-	}
+				radius = 100,
+			},
+		},
+	},
 }
 local weapon_slot_layout = {
 	{
 		amount_per_layer = 1,
-		name = "trait",
 		degrees = 90,
 		max_amount = 1,
-		radius = 370
+		name = "trait",
+		radius = 370,
 	},
 	{
 		amount_per_layer = 10,
-		name = "property",
 		degrees = 324,
-		max_amount = 10,
-		radius = 100,
 		inherent_parent = "trait",
-		start_angle = 2.827433385
-	}
+		max_amount = 10,
+		name = "property",
+		radius = 100,
+		start_angle = 2.827433385,
+	},
 }
 local localized_strings = {
 	trait_cost = Localize("menu_weave_forge_options_mastery_trait_cost_prefix"),
@@ -103,18 +105,18 @@ local localized_strings = {
 	unlock_description_property = Localize("menu_weave_forge_slot_unlock_description_property"),
 	unlock_description_trait = Localize("menu_weave_forge_slot_unlock_description_trait"),
 	unlock_slot_title = Localize("menu_weave_forge_slot_unlock_slot_title"),
-	unlock_talent_title = Localize("menu_weave_forge_slot_unlock_talent_title")
+	unlock_talent_title = Localize("menu_weave_forge_slot_unlock_talent_title"),
 }
 local menu_option_category_localized_strings = {
 	property = {
 		offence_accessory = Localize("menu_weave_forge_options_sub_title_properties_offensive"),
 		defence_accessory = Localize("menu_weave_forge_options_sub_title_properties_defensive"),
-		utility_accessory = Localize("menu_weave_forge_options_sub_title_properties_utility")
+		utility_accessory = Localize("menu_weave_forge_options_sub_title_properties_utility"),
 	},
 	trait = {
 		offence_accessory = Localize("menu_weave_forge_options_sub_title_traits_offensive"),
 		defence_accessory = Localize("menu_weave_forge_options_sub_title_traits_defensive"),
-		utility_accessory = Localize("menu_weave_forge_options_sub_title_traits_utility")
+		utility_accessory = Localize("menu_weave_forge_options_sub_title_traits_utility"),
 	},
 	talent = {
 		Localize("menu_weave_forge_options_sub_title_talents_tier_1"),
@@ -122,9 +124,10 @@ local menu_option_category_localized_strings = {
 		Localize("menu_weave_forge_options_sub_title_talents_tier_3"),
 		Localize("menu_weave_forge_options_sub_title_talents_tier_4"),
 		Localize("menu_weave_forge_options_sub_title_talents_tier_5"),
-		Localize("menu_weave_forge_options_sub_title_talents_tier_6")
-	}
+		(Localize("menu_weave_forge_options_sub_title_talents_tier_6")),
+	},
 }
+
 HeroWindowWeaveProperties = class(HeroWindowWeaveProperties)
 HeroWindowWeaveProperties.NAME = "HeroWindowWeaveProperties"
 
@@ -133,11 +136,13 @@ HeroWindowWeaveProperties.on_enter = function (self, params, offset)
 
 	self._params = params
 	self._parent = params.parent
+
 	local ingame_ui_context = params.ingame_ui_context
+
 	self._ui_renderer = ingame_ui_context.ui_renderer
 	self._ui_top_renderer = ingame_ui_context.ui_top_renderer
 	self._render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 	self._ingame_ui_context = ingame_ui_context
 	self._animations = {}
@@ -152,15 +157,20 @@ HeroWindowWeaveProperties.on_enter = function (self, params, offset)
 	local careers = profile.careers
 	local career = careers[career_index]
 	local career_name = career.name
+
 	self._career_name = career_name
 	self._hero_name = hero_name
-	local slot_layout, slots_progression = nil
+
+	local slot_layout, slots_progression
 	local selected_item = self:_selected_item()
 
 	if selected_item then
 		slots_progression = table.clone(WeaveWeaponProgression)
+
 		local item_data = selected_item.data
+
 		slot_layout = weapon_slot_layout
+
 		local progression_properties = slots_progression.properties
 
 		if progression_properties then
@@ -199,11 +209,13 @@ HeroWindowWeaveProperties.on_enter = function (self, params, offset)
 	local upgrage_tutorial_completed = WeaveOnboardingUtils.tutorial_completed(ui_onboarding_state, WeaveUITutorials.mastery)
 	local onboarding_step = WeaveOnboardingUtils.get_onboarding_step(ingame_ui_context.statistics_db, local_player:stats_id())
 	local upgrage_tutorial_reached = WeaveOnboardingUtils.reached_requirements(onboarding_step, WeaveUITutorials.mastery)
+
 	self.upgrage_tutorial = not upgrage_tutorial_completed and upgrage_tutorial_reached
 
 	if self.upgrage_tutorial then
 		local widgets_by_name = self._widgets_by_name
 		local upgrade_button = widgets_by_name.upgrade_button
+
 		upgrade_button.content.highlighted = true
 		self._ui_animations.upgrade_button_pulse = UIAnimation.init(UIAnimation.pulse_animation, upgrade_button.style.texture_highlight.color, 1, 100, 255, 2)
 	end
@@ -212,10 +224,11 @@ end
 HeroWindowWeaveProperties._start_transition_animation = function (self, animation_name)
 	local params = {
 		parent = self._parent,
-		render_settings = self._render_settings
+		render_settings = self._render_settings,
 	}
 	local widgets = self._widgets_by_name
 	local anim_id = self._ui_animator:start_animation(animation_name, widgets, scenegraph_definition, params)
+
 	self._animations[animation_name] = anim_id
 end
 
@@ -263,6 +276,7 @@ HeroWindowWeaveProperties.create_ui_elements = function (self, params, offset)
 	end
 
 	self._ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+
 	local top_widgets = {}
 	local bottom_widgets = {}
 	local top_hdr_widgets = {}
@@ -271,24 +285,28 @@ HeroWindowWeaveProperties.create_ui_elements = function (self, params, offset)
 
 	for name, widget_definition in pairs(top_widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		top_widgets[#top_widgets + 1] = widget
 		widgets_by_name[name] = widget
 	end
 
 	for name, widget_definition in pairs(bottom_widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		bottom_widgets[#bottom_widgets + 1] = widget
 		widgets_by_name[name] = widget
 	end
 
 	for name, widget_definition in pairs(bottom_hdr_widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		bottom_hdr_widgets[#bottom_hdr_widgets + 1] = widget
 		widgets_by_name[name] = widget
 	end
 
 	for name, widget_definition in pairs(top_hdr_widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		top_hdr_widgets[#top_hdr_widgets + 1] = widget
 		widgets_by_name[name] = widget
 	end
@@ -306,6 +324,7 @@ HeroWindowWeaveProperties.create_ui_elements = function (self, params, offset)
 
 	if offset then
 		local window_position = self._ui_scenegraph.window.local_position
+
 		window_position[1] = window_position[1] + offset[1]
 		window_position[2] = window_position[2] + offset[2]
 		window_position[3] = window_position[3] + offset[3]
@@ -343,6 +362,7 @@ HeroWindowWeaveProperties._setup_menu_options = function (self, career_name, slo
 		local widget_definition = create_menu_option_trait_definition(scenegraph_id, widget_size, masked)
 		local menu_option_key = "trait"
 		local menu_option = {}
+
 		menu_options[menu_option_key] = menu_option
 
 		for _, slot_unlock in ipairs(progression_traits) do
@@ -371,8 +391,9 @@ HeroWindowWeaveProperties._setup_menu_options = function (self, career_name, slo
 					category = category,
 					key = trait_key,
 					widget = widget,
-					required_forge_level = required_forge_level
+					required_forge_level = required_forge_level,
 				}
+
 				entries[#entries + 1] = entry
 			end
 
@@ -386,10 +407,11 @@ HeroWindowWeaveProperties._setup_menu_options = function (self, career_name, slo
 			local draw_count = math.ceil(list_draw_length / (entry_height + spacing))
 			local scrollbar_widget = UIWidget.init(scrollbar_widget_definition)
 			local scrollbar_logic = self:_initialize_scrollbar(scrollbar_widget, total_length, list_scenegraph_id, spacing)
-			local sub_display_name = nil
+			local sub_display_name
 
 			if selected_item then
 				local item_data = selected_item.data
+
 				sub_display_name = localized_strings[item_data.slot_type]
 			else
 				sub_display_name = menu_option_category_localized_strings[menu_option_key][category]
@@ -410,8 +432,8 @@ HeroWindowWeaveProperties._setup_menu_options = function (self, career_name, slo
 				entries = entries,
 				widget_size = widget_size,
 				scroll_content = {
-					scroll_progress = 0
-				}
+					scroll_progress = 0,
+				},
 			}
 		end
 	end
@@ -424,6 +446,7 @@ HeroWindowWeaveProperties._setup_menu_options = function (self, career_name, slo
 		local all_talents = Talents[hero_name]
 		local menu_option_key = "talent"
 		local menu_option = {}
+
 		menu_options[menu_option_key] = menu_option
 
 		for _, slot_unlock in ipairs(progression_talents) do
@@ -448,8 +471,9 @@ HeroWindowWeaveProperties._setup_menu_options = function (self, career_name, slo
 					category = category,
 					key = talent_name,
 					widget = widget,
-					required_forge_level = required_forge_level
+					required_forge_level = required_forge_level,
 				}
+
 				entries[#entries + 1] = entry
 			end
 
@@ -463,10 +487,11 @@ HeroWindowWeaveProperties._setup_menu_options = function (self, career_name, slo
 			local scrollbar_widget = UIWidget.init(scrollbar_widget_definition)
 			local draw_count = math.ceil(list_draw_length / (entry_height + spacing))
 			local scrollbar_logic = self:_initialize_scrollbar(scrollbar_widget, scroll_length, list_scenegraph_id, spacing)
-			local sub_display_name = nil
+			local sub_display_name
 
 			if selected_item then
 				local item_data = selected_item.data
+
 				sub_display_name = localized_strings[item_data.slot_type]
 			else
 				sub_display_name = menu_option_category_localized_strings[menu_option_key][category]
@@ -487,8 +512,8 @@ HeroWindowWeaveProperties._setup_menu_options = function (self, career_name, slo
 				entries = entries,
 				widget_size = widget_size,
 				scroll_content = {
-					scroll_progress = 0
-				}
+					scroll_progress = 0,
+				},
 			}
 		end
 	end
@@ -499,6 +524,7 @@ HeroWindowWeaveProperties._setup_menu_options = function (self, career_name, slo
 		local widget_definition = create_menu_option_property_definition(scenegraph_id, widget_size, masked)
 		local menu_option_key = "property"
 		local menu_option = {}
+
 		menu_options[menu_option_key] = menu_option
 
 		for _, slot_unlock in ipairs(progression_properties) do
@@ -524,8 +550,9 @@ HeroWindowWeaveProperties._setup_menu_options = function (self, career_name, slo
 					category = category,
 					key = property_key,
 					widget = widget,
-					required_forge_level = required_forge_level
+					required_forge_level = required_forge_level,
 				}
+
 				entries[#entries + 1] = entry
 			end
 
@@ -539,10 +566,11 @@ HeroWindowWeaveProperties._setup_menu_options = function (self, career_name, slo
 			local scrollbar_widget = UIWidget.init(scrollbar_widget_definition)
 			local draw_count = math.ceil(list_draw_length / (entry_height + spacing))
 			local scrollbar_logic = self:_initialize_scrollbar(scrollbar_widget, total_length, list_scenegraph_id, spacing)
-			local sub_display_name = nil
+			local sub_display_name
 
 			if selected_item then
 				local item_data = selected_item.data
+
 				sub_display_name = localized_strings[item_data.slot_type]
 			else
 				sub_display_name = menu_option_category_localized_strings[menu_option_key][category]
@@ -563,8 +591,8 @@ HeroWindowWeaveProperties._setup_menu_options = function (self, career_name, slo
 				entries = entries,
 				widget_size = widget_size,
 				scroll_content = {
-					scroll_progress = 0
-				}
+					scroll_progress = 0,
+				},
 			}
 		end
 	end
@@ -612,7 +640,9 @@ HeroWindowWeaveProperties._populate_menu_option_widget = function (self, entry_d
 	local required_forge_level = entry_data.required_forge_level
 	local locked = forge_level < required_forge_level
 	local button_hotspot = content.button_hotspot
+
 	button_hotspot.disable_button = locked
+
 	local current_mastery = self._current_mastery or 0
 	local loadout = self._loadout
 	local backend_interface_weaves = Managers.backend:get_interface("weaves")
@@ -628,14 +658,16 @@ HeroWindowWeaveProperties._populate_menu_option_widget = function (self, entry_d
 
 		if current_talents then
 			local slot_index = current_talents[talent_key]
+
 			used_amount = slot_index or 0
 		end
 
 		content.used_amount = used_amount
+
 		local num_uses = 1
 		local cost = backend_interface_weaves:get_talent_mastery_cost(talent_key)
 		local value_text = not locked and used_amount < num_uses and tostring(cost)
-		local price_text = nil
+		local price_text
 
 		if value_text then
 			price_text = localized_strings.talent_cost .. " " .. value_text
@@ -661,14 +693,16 @@ HeroWindowWeaveProperties._populate_menu_option_widget = function (self, entry_d
 
 		if current_traits then
 			local slot_index = current_traits[trait_key]
+
 			used_amount = slot_index or 0
 		end
 
 		content.used_amount = used_amount
+
 		local num_uses = 1
 		local cost = backend_interface_weaves:get_trait_mastery_cost(trait_key)
 		local value_text = not locked and used_amount < num_uses and tostring(cost)
-		local price_text = nil
+		local price_text
 
 		if value_text then
 			price_text = localized_strings.trait_cost .. " " .. value_text
@@ -696,17 +730,20 @@ HeroWindowWeaveProperties._populate_menu_option_widget = function (self, entry_d
 
 		if current_properties then
 			local slot_indices = current_properties[property_key]
+
 			used_amount = slot_indices and #slot_indices or 0
 		end
 
 		local costs = backend_interface_weaves:get_property_mastery_costs(property_key)
 		local total_value_text = UIUtils.get_weave_property_value_text(property_key, property_data, costs, used_amount)
+
 		content.total_value_text = total_value_text
 		content.used_amount = used_amount
+
 		local num_uses = #costs
 		local next_cost = used_amount < num_uses and costs[used_amount + 1] or nil
 		local value_text = not locked and next_cost and tostring(next_cost)
-		local price_text = nil
+		local price_text
 
 		if value_text then
 			price_text = localized_strings.property_cost .. " " .. value_text
@@ -723,6 +760,7 @@ HeroWindowWeaveProperties._populate_menu_option_widget = function (self, entry_d
 		content.total_uses = num_uses
 		content.price_text = price_text
 		entry_data.next_cost = next_cost
+
 		local default_text_length = UTF8Utils.string_length(title)
 		local end_index = string.find(title, " ", 1)
 		local value_string = string.sub(title, 1, end_index)
@@ -731,9 +769,12 @@ HeroWindowWeaveProperties._populate_menu_option_widget = function (self, entry_d
 
 		if text_style then
 			local color_override_table = text_style.color_override_table
+
 			color_override_table.start_index = value_string_length
 			color_override_table.end_index = default_text_length
+
 			local color_override = text_style.color_override
+
 			color_override[1] = color_override_table
 		end
 	end
@@ -744,14 +785,14 @@ local mastery_price_colors = {
 		255,
 		121,
 		193,
-		229
+		229,
 	},
 	unaffordable = {
 		255,
 		200,
 		0,
-		0
-	}
+		0,
+	},
 }
 
 HeroWindowWeaveProperties._align_menu_option_price_text = function (self, style, price_icon, price_text, value_text, can_afford, locked)
@@ -763,20 +804,27 @@ HeroWindowWeaveProperties._align_menu_option_price_text = function (self, style,
 		local value_string_length = UTF8Utils.string_length(value_text)
 		local default_text_length = UTF8Utils.string_length(price_text)
 		local color_override_table = price_text_style.color_override_table
+
 		color_override_table.start_index = default_text_length - value_string_length
 		color_override_table.end_index = default_text_length
+
 		local color_override = price_text_style.color_override
+
 		color_override[1] = color_override_table
 		color_override_table.color = can_afford and mastery_price_colors.affordable or mastery_price_colors.unaffordable
+
 		local price_icon_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(price_icon)
 		local price_icon_size = price_icon_texture_settings.size
+
 		price_icon_width = price_icon_size[1]
 	elseif locked then
 		local price_icon_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(price_icon)
 		local price_icon_size = price_icon_texture_settings.size
+
 		price_icon_width = price_icon_size[1]
 	else
 		local color_override = price_text_style.color_override
+
 		color_override[1] = nil
 	end
 
@@ -786,19 +834,29 @@ HeroWindowWeaveProperties._align_menu_option_price_text = function (self, style,
 	local total_price_width = price_icon_width + price_text_width + spacing
 
 	if locked then
-		local price_text_offset = -(total_price_width / 2 - price_text_width / 2) + price_icon_width / 2 + 5
+		local price_text_offset = -(total_price_width / 2 - price_text_width / 2) + (price_icon_width / 2 + 5)
+
 		style_price_text.offset[1] = style_price_text.default_offset[1] + price_text_offset
+
 		local style_price_text_shadow = style.price_text_shadow
+
 		style_price_text_shadow.offset[1] = style_price_text_shadow.default_offset[1] + price_text_offset
+
 		local price_icon_offset = price_text_offset - (price_text_width / 2 + price_icon_width / 2)
 		local style_lock_icon = style.lock_icon
+
 		style_lock_icon.offset[1] = style_lock_icon.default_offset[1] + price_icon_offset
 	else
 		local price_text_offset = -(total_price_width / 2 - (price_text_width / 2 + 5))
+
 		style_price_text.offset[1] = style_price_text.default_offset[1] + price_text_offset
+
 		local style_price_text_shadow = style.price_text_shadow
+
 		style_price_text_shadow.offset[1] = style_price_text_shadow.default_offset[1] + price_text_offset
+
 		local style_price_icon = style.price_icon
+
 		style_price_icon.offset[1] = style_price_icon.default_offset[1] + price_text_offset + price_icon_width / 2 + price_text_width / 2 + spacing
 	end
 end
@@ -811,30 +869,30 @@ HeroWindowWeaveProperties._create_viewport_definition = function (self)
 		element = UIElements.Viewport,
 		style = {
 			viewport = {
-				layer = 840,
-				world_name = "item_preview",
-				viewport_type = "default_forward",
-				viewport_name = "item_preview_viewport",
 				enable_sub_gui = false,
 				fov = 20,
+				layer = 840,
+				viewport_name = "item_preview_viewport",
+				viewport_type = "default_forward",
+				world_name = "item_preview",
 				shading_environment = shading_environment,
 				camera_position = {
 					0,
 					0,
-					0
+					0,
 				},
 				camera_lookat = {
 					0,
 					0,
-					0
-				}
-			}
+					0,
+				},
+			},
 		},
 		content = {
 			button_hotspot = {
-				allow_multi_hover = true
-			}
-		}
+				allow_multi_hover = true,
+			},
+		},
 	}
 end
 
@@ -847,20 +905,23 @@ HeroWindowWeaveProperties._create_cluster_background = function (self, index, po
 		150,
 		255,
 		255,
-		255
+		255,
 	})
 	local widget_definition_effect = UIWidgets.create_simple_texture(texture_background_effect, scenegraph_id, nil, nil, {
 		255,
 		138,
 		0,
-		147
+		147,
 	}, 1)
 	local default_widget = UIWidget.init(widget_definition_default)
+
 	self._bottom_widgets[#self._bottom_widgets + 1] = default_widget
 	widgets_by_name["cluster_background_" .. index] = default_widget
 	default_widget.offset[1] = position_x
 	default_widget.offset[2] = position_y
+
 	local effect_widget = UIWidget.init(widget_definition_effect)
+
 	self._bottom_hdr_widgets[#self._bottom_hdr_widgets + 1] = effect_widget
 	widgets_by_name["cluster_background_effect_" .. index] = effect_widget
 	effect_widget.offset[1] = position_x
@@ -874,30 +935,31 @@ HeroWindowWeaveProperties._create_slot_grid = function (self, slot_layout, slots
 		local amount_per_layer = layout.amount_per_layer
 		local degrees = layout.degrees
 		local radius = layout.radius
-		local widget_definition, progression_table = nil
+		local widget_definition, progression_table
 
 		if name == "trait" then
 			widget_definition = create_trait_slot_definition("slot_root", {
 				80,
-				80
+				80,
 			})
 			progression_table = slots_progression.traits
 		elseif name == "talent" then
 			widget_definition = create_talent_slot_definition("slot_root", {
 				100,
-				100
+				100,
 			})
 			progression_table = slots_progression.talents
 		elseif name == "property" then
 			widget_definition = create_property_slot_definition("slot_root", {
 				50,
-				50
+				50,
 			})
 			progression_table = slots_progression.properties
 		end
 
 		parent_x = parent_x or 0
 		parent_y = parent_y or 0
+
 		local layers = 1
 		local start_angle = layout.start_angle or math.pi / 2
 
@@ -910,17 +972,9 @@ HeroWindowWeaveProperties._create_slot_grid = function (self, slot_layout, slots
 
 			local settings = layer_settings and layer_settings[i]
 
-			if settings then
-				amount_per_layer = settings.amount_per_layer or amount_per_layer
-			end
-
-			if settings then
-				degrees = settings.degrees or degrees
-			end
-
-			if settings then
-				radius = settings.radius or radius
-			end
+			amount_per_layer = settings and settings.amount_per_layer or amount_per_layer
+			degrees = settings and settings.degrees or degrees
+			radius = settings and settings.radius or radius
 
 			local radians = math.degrees_to_radians(degrees)
 			local start_index = #slot_table + 1
@@ -932,6 +986,7 @@ HeroWindowWeaveProperties._create_slot_grid = function (self, slot_layout, slots
 
 			for k = start_index, start_index + num_slots_to_add - 1 do
 				slot_counter = slot_counter + 1
+
 				local slot_angle = slot_start_angle + (slot_counter - 1) * radians_per_slot
 				local position_x = math.sin(slot_angle) * radius
 				local position_y = math.cos(slot_angle) * radius
@@ -950,8 +1005,9 @@ HeroWindowWeaveProperties._create_slot_grid = function (self, slot_layout, slots
 					y = math.floor(parent_y + position_y),
 					index = entry_index,
 					category = entry_progression and entry_progression.category,
-					unlock_level = entry_progression and entry_progression.unlock_level
+					unlock_level = entry_progression and entry_progression.unlock_level,
 				}
+
 				slot_table[entry_index] = entry
 			end
 		end
@@ -964,7 +1020,7 @@ HeroWindowWeaveProperties._create_slot_grid = function (self, slot_layout, slots
 		complete = true
 
 		for index, slots_layout in ipairs(slot_layout) do
-			local slot_entries = nil
+			local slot_entries
 			local inherent_parent = slots_layout.inherent_parent
 			local layer_settings = slots_layout.layer_settings
 			local name = slots_layout.name
@@ -978,6 +1034,7 @@ HeroWindowWeaveProperties._create_slot_grid = function (self, slot_layout, slots
 					complete = false
 				elseif slots[inherent_parent] then
 					slot_entries = {}
+
 					local parent_slots = slots[inherent_parent]
 
 					for i = 1, #parent_slots do
@@ -999,6 +1056,7 @@ HeroWindowWeaveProperties._create_slot_grid = function (self, slot_layout, slots
 	end
 
 	self._slots = slots
+
 	local category_slots_by_type = {}
 
 	for slot_type, type_slots in pairs(slots) do
@@ -1016,6 +1074,7 @@ HeroWindowWeaveProperties._create_slot_grid = function (self, slot_layout, slots
 			end
 
 			local category_slots = slots_type_categories[category]
+
 			category_slots[#category_slots + 1] = slot
 		end
 	end
@@ -1099,6 +1158,7 @@ HeroWindowWeaveProperties.post_update = function (self, dt, t)
 
 	if self._viewport_widget and not self._previewer_initialized then
 		self._previewer_initialized = true
+
 		local selected_item = self:_selected_item()
 		local selected_unit_name = self:_selected_unit_name()
 		local viewport_widget = self._viewport_widget
@@ -1135,12 +1195,15 @@ HeroWindowWeaveProperties._update_background_animations = function (self, dt)
 
 		if i == 1 then
 			local speed = dt * 0.014 * overall_speed
+
 			angle_add = (current_angle + radians * speed) % radians
 		elseif i == 2 then
 			local speed = dt * 0.012 * overall_speed
+
 			angle_add = (current_angle - radians * speed) % -radians
 		elseif i == 3 then
 			local speed = dt * 0.011 * overall_speed
+
 			angle_add = (current_angle + radians * speed) % radians
 		end
 
@@ -1199,6 +1262,7 @@ HeroWindowWeaveProperties._update_animations = function (self, dt)
 	end
 
 	self._upgrading_anim_progress = upgrading_anim_progress
+
 	local ui_animations = self._ui_animations
 	local animations = self._animations
 	local ui_animator = self._ui_animator
@@ -1302,12 +1366,16 @@ HeroWindowWeaveProperties._upgrade_magic_level = function (self)
 	self._parent:block_input()
 
 	local time = Managers.time:time("ui")
+
 	self._upgrade_magic_level_done_time = time + UPGRADE_REQUEST_LIMIT
 	self._upgrade_magic_level_response = nil
+
 	local widgets_by_name = self._widgets_by_name
 	local upgrade_button = widgets_by_name.upgrade_button
+
 	upgrade_button.content.upgrading = true
 	upgrade_button.content.button_hotspot.disable_button = true
+
 	local career_name = self._career_name
 	local item = self:_selected_item()
 	local item_backend_id = item and item.backend_id
@@ -1335,6 +1403,7 @@ HeroWindowWeaveProperties._upgrade_magic_level_done = function (self, success)
 
 	local widgets_by_name = self._widgets_by_name
 	local upgrade_button = widgets_by_name.upgrade_button
+
 	upgrade_button.content.upgrading = false
 	upgrade_button.content.button_hotspot.disable_button = false
 
@@ -1352,8 +1421,10 @@ HeroWindowWeaveProperties._upgrade_magic_level_done = function (self, success)
 
 	if self.upgrage_tutorial then
 		self.upgrage_tutorial = false
+
 		local widgets_by_name = self._widgets_by_name
 		local upgrade_button = widgets_by_name.upgrade_button
+
 		upgrade_button.content.highlighted = false
 		self._ui_animations.upgrade_button_pulse = nil
 	end
@@ -1390,14 +1461,16 @@ HeroWindowWeaveProperties._sync_backend_loadout = function (self, upgraded)
 
 	local title_text = ""
 	local sub_title_text = ""
-	local magic_level, max_magic_level, magic_power = nil
+	local magic_level, max_magic_level, magic_power
 
 	if item_backend_id then
 		max_magic_level = backend_interface_weaves:max_magic_level()
 		magic_level = backend_interface_weaves:get_item_magic_level(item_backend_id)
 		magic_power = backend_interface_weaves:get_item_power_level(item_backend_id)
 		magic_power = UIUtils.presentable_hero_power_level_weaves(magic_power)
+
 		local item_data = item.data
+
 		title_text = Localize(item_data.display_name)
 		sub_title_text = Localize(item_data.item_type)
 	else
@@ -1406,7 +1479,9 @@ HeroWindowWeaveProperties._sync_backend_loadout = function (self, upgraded)
 		magic_level = backend_interface_weaves:get_career_magic_level(career_name)
 		magic_power = backend_interface_weaves:get_career_power_level(career_name)
 		magic_power = magic_power and UIUtils.presentable_hero_power_level_weaves(magic_power)
+
 		local career_settings = CareerSettings[career_name]
+
 		sub_title_text = Localize(career_settings.display_name)
 	end
 
@@ -1418,9 +1493,12 @@ HeroWindowWeaveProperties._sync_backend_loadout = function (self, upgraded)
 	local panel_divider_widget = widgets_by_name.viewport_panel_divider
 	local level_text_widget = widgets_by_name.viewport_level_value
 	local level_title_widget = widgets_by_name.viewport_level_title
+
 	level_text_widget.content.text = magic_level
+
 	local power_text_widget = widgets_by_name.viewport_power_value
 	local power_title_widget = widgets_by_name.viewport_power_title
+
 	power_text_widget.content.visible = magic_power ~= nil
 	power_title_widget.content.visible = magic_power ~= nil
 	panel_divider_widget.content.visible = magic_power ~= nil
@@ -1433,12 +1511,14 @@ HeroWindowWeaveProperties._sync_backend_loadout = function (self, upgraded)
 	end
 
 	local forge_level = backend_interface_weaves:get_forge_level()
+
 	self._forge_level = forge_level
+
 	local forge_progression_steps = backend_interface_weaves:forge_max_level()
 	local is_max_forge_level = forge_progression_steps == forge_level
 	local magic_level_cap = backend_interface_weaves:forge_magic_level_cap()
 	local essence_amount = backend_interface_weaves:get_essence()
-	local upgrade_cost = nil
+	local upgrade_cost
 
 	if item_backend_id then
 		upgrade_cost = backend_interface_weaves:magic_item_upgrade_cost(item_backend_id)
@@ -1453,10 +1533,11 @@ HeroWindowWeaveProperties._sync_backend_loadout = function (self, upgraded)
 	self:_set_essence_upgrade_cost(not is_max_level and upgrade_cost, can_afford_upgrade, magic_cap_reached)
 
 	local slots = self._slots
+
 	self._loadout = {
 		trait = traits,
 		talent = talents,
-		property = properties
+		property = properties,
 	}
 
 	if properties then
@@ -1480,7 +1561,9 @@ HeroWindowWeaveProperties._sync_backend_loadout = function (self, upgraded)
 			local property_key = properties_index_map[slot_index]
 			local add_tooltip = magic_level < unlock_level or property_key
 			local tooltip_data = add_tooltip and {} or nil
+
 			content.tooltip = tooltip_data
+
 			local is_new = unlock_level == magic_level and upgraded
 
 			if is_new then
@@ -1494,7 +1577,7 @@ HeroWindowWeaveProperties._sync_backend_loadout = function (self, upgraded)
 			if property_key then
 				if not slot.presentation_data then
 					slot.presentation_data = {
-						animation_duration = 0.4
+						animation_duration = 0.4,
 					}
 				end
 
@@ -1507,6 +1590,7 @@ HeroWindowWeaveProperties._sync_backend_loadout = function (self, upgraded)
 				local title_text = UIUtils.get_weave_property_description(property_key, property_data, mastery_costs)
 				local icon = property_data.icon or "icons_placeholder"
 				local presentation_data = slot.presentation_data
+
 				presentation_data.icon = icon
 				presentation_data.key = property_key
 				presentation_data.value = cost_value
@@ -1541,7 +1625,9 @@ HeroWindowWeaveProperties._sync_backend_loadout = function (self, upgraded)
 			local trait_key = table.find(traits, slot_index)
 			local add_tooltip = magic_level < unlock_level or trait_key
 			local tooltip_data = add_tooltip and {} or nil
+
 			content.tooltip = tooltip_data
+
 			local is_new = unlock_level == magic_level and upgraded
 
 			if is_new then
@@ -1555,7 +1641,7 @@ HeroWindowWeaveProperties._sync_backend_loadout = function (self, upgraded)
 			if trait_key then
 				if not slot.presentation_data then
 					slot.presentation_data = {
-						animation_duration = 0.4
+						animation_duration = 0.4,
 					}
 				end
 
@@ -1566,9 +1652,11 @@ HeroWindowWeaveProperties._sync_backend_loadout = function (self, upgraded)
 				local trait_advanced_description = trait_data.advanced_description
 				local trait_icon = trait_data.icon
 				local presentation_data = slot.presentation_data
+
 				presentation_data.icon = icon
 				presentation_data.key = trait_key
 				presentation_data.value = cost_value
+
 				local title_text = Localize(display_name)
 				local description_text = ""
 
@@ -1611,7 +1699,9 @@ HeroWindowWeaveProperties._sync_backend_loadout = function (self, upgraded)
 			local talent_key = table.find(talents, slot_index)
 			local add_tooltip = magic_level < unlock_level or talent_key
 			local tooltip_data = add_tooltip and {} or nil
+
 			content.tooltip = tooltip_data
+
 			local is_new = unlock_level == magic_level and upgraded
 
 			if is_new then
@@ -1622,7 +1712,7 @@ HeroWindowWeaveProperties._sync_backend_loadout = function (self, upgraded)
 			if talent_key then
 				if not slot.presentation_data then
 					slot.presentation_data = {
-						animation_duration = 0.4
+						animation_duration = 0.4,
 					}
 				end
 
@@ -1631,6 +1721,7 @@ HeroWindowWeaveProperties._sync_backend_loadout = function (self, upgraded)
 				local cost_value = backend_interface_weaves:get_talent_mastery_cost(talent_key)
 				local icon = talent_data and talent_data.icon or "icons_placeholder"
 				local presentation_data = slot.presentation_data
+
 				presentation_data.icon = icon
 				presentation_data.key = talent_key
 				presentation_data.value = cost_value
@@ -1668,15 +1759,16 @@ end
 HeroWindowWeaveProperties._setup_upgrade_tooltip = function (self, magic_level, max_magic_level, item)
 	local widgets_by_name = self._widgets_by_name
 	local upgrade_button = widgets_by_name.upgrade_button
-	local upgrade_tooltip_data = nil
+	local upgrade_tooltip_data
 	local next_magic_level = magic_level + 1
 
-	if max_magic_level >= next_magic_level then
+	if next_magic_level <= max_magic_level then
 		upgrade_tooltip_data = {
 			title = string.format(Localize("menu_weave_forge_tooltip_upgrade_item_title"), next_magic_level),
 			sub_title = string.format(Localize("menu_weave_forge_tooltip_upgrade_item_description"), max_magic_level),
-			upgrade_effect_title = Localize("menu_weave_forge_tooltip_upgrade_item_effect_title")
+			upgrade_effect_title = Localize("menu_weave_forge_tooltip_upgrade_item_effect_title"),
 		}
+
 		local is_item = item ~= nil
 		local progression_table = is_item and WeaveWeaponProgression or WeaveCareerProgression
 		local progression_properties = progression_table.properties
@@ -1694,6 +1786,7 @@ HeroWindowWeaveProperties._setup_upgrade_tooltip = function (self, magic_level, 
 
 			if counter > 0 then
 				local suffix = counter > 1 and Localize("menu_weave_forge_tooltip_upgrade_property_slots") or Localize("menu_weave_forge_tooltip_upgrade_property_slot")
+
 				upgrade_tooltip_data.upgrade_property_text = "+" .. counter .. " " .. suffix
 			end
 		end
@@ -1731,15 +1824,18 @@ HeroWindowWeaveProperties._setup_upgrade_tooltip = function (self, magic_level, 
 
 			if counter > 0 then
 				local suffix = counter > 1 and Localize("menu_weave_forge_tooltip_upgrade_trait_slots") or Localize("menu_weave_forge_tooltip_upgrade_trait_slot")
+
 				upgrade_tooltip_data.upgrade_trait_text = "+" .. counter .. " " .. suffix
 			end
 		end
 
 		local mastery_per_level = is_item and WeaveMasterySettings.item_mastery_per_magic_level or WeaveMasterySettings.career_mastery_per_magic_level
+
 		upgrade_tooltip_data.upgrade_mastery_text = "+" .. mastery_per_level .. " " .. Localize("menu_weave_forge_tooltip_mastery_title")
 
 		if is_item then
 			local power_level_per_magic_level = PowerLevelFromMagicLevel.power_level_per_magic_level
+
 			upgrade_tooltip_data.upgrade_power_text = "+" .. power_level_per_magic_level .. " " .. Localize("menu_weave_forge_loadout_power_title")
 		end
 	end
@@ -1757,7 +1853,9 @@ HeroWindowWeaveProperties._set_essence_upgrade_cost = function (self, essence_am
 
 	if essence_amount then
 		local value_string = UIUtils.comma_value(essence_amount)
+
 		button_text = Localize("menu_weave_forge_upgrade_loadout_button") .. " " .. value_string
+
 		local ui_renderer = self._ui_top_renderer
 		local text_width = UIUtils.get_text_width(ui_renderer, button_style.title_text, button_text)
 		local icon_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(button_content.price_icon)
@@ -1766,6 +1864,7 @@ HeroWindowWeaveProperties._set_essence_upgrade_cost = function (self, essence_am
 		local spacing = 0
 		local total_width = icon_width + text_width + spacing
 		local text_offset = -(total_width / 2 - (text_width / 2 + 5))
+
 		button_style.title_text.offset[1] = button_style.title_text.default_offset[1] + text_offset
 		button_style.title_text_shadow.offset[1] = button_style.title_text_shadow.default_offset[1] + text_offset
 		button_style.title_text_disabled.offset[1] = button_style.title_text_disabled.default_offset[1] + text_offset
@@ -1809,33 +1908,23 @@ HeroWindowWeaveProperties._draw_slots = function (self, ui_renderer, dt)
 			local content = widget.content
 			local style = widget.style
 			local locked = magic_level < unlock_level
+
 			content.locked = locked
 
 			if widget_type == "talent" then
-				local text = nil
+				local text
 
-				if i == 1 then
-					text = "I"
-				elseif i == 2 then
-					text = "II"
-				elseif i == 3 then
-					text = "III"
-				elseif i == 4 then
-					text = "IV"
-				elseif i == 5 then
-					text = "V"
-				else
-					text = "VI"
-				end
-
+				text = i == 1 and "I" or i == 2 and "II" or i == 3 and "III" or i == 4 and "IV" or i == 5 and "V" or "VI"
 				content.text = text
 			end
 
 			local key = presentation_data and presentation_data.key
+
 			content.highlight = self._highlighted_key and self._highlighted_key == key
 
 			if presentation_data then
 				content.icon = presentation_data.icon
+
 				local animation_duration = presentation_data.animation_duration
 
 				if animation_duration then
@@ -1858,6 +1947,7 @@ HeroWindowWeaveProperties._draw_slots = function (self, ui_renderer, dt)
 			local x = slot.x
 			local y = slot.y
 			local offset = widget.offset
+
 			offset[3] = 0
 			offset[2] = y
 			offset[1] = x
@@ -1929,6 +2019,7 @@ HeroWindowWeaveProperties._set_grid_slot_selected = function (self, selected_slo
 			local widget = slot.widget
 			local content = widget.content
 			local button_hotspot = content.button_hotspot
+
 			button_hotspot.is_selected = is_selected
 		end
 	end
@@ -1946,7 +2037,7 @@ HeroWindowWeaveProperties._set_locked_slot_description = function (self, widget_
 		local category_option = options[category]
 		local display_name = category_option.display_name
 		local sub_display_name = category_option.sub_display_name
-		local icon = nil
+		local icon
 		local description_text = ""
 		local sub_title_text = ""
 
@@ -1969,6 +2060,7 @@ HeroWindowWeaveProperties._set_locked_slot_description = function (self, widget_
 		local style = widget.style
 		local icon_style = style.icon
 		local icon_style_size = icon_style.texture_size
+
 		icon_style_size[1] = icon_size[1]
 		icon_style_size[2] = icon_size[2]
 		content.icon = icon
@@ -1983,6 +2075,7 @@ end
 HeroWindowWeaveProperties._disable_locked_slot_description = function (self)
 	local widgets_by_name = self._widgets_by_name
 	local widget = widgets_by_name.locked_slot_description
+
 	widget.content.visible = false
 end
 
@@ -2043,6 +2136,7 @@ HeroWindowWeaveProperties._animate_menu_option_entry = function (self, entry, me
 
 	local combined_progress = math.max(hover_progress, selection_progress)
 	local background_color = disabled and 100 or 255
+
 	style.background.color[2] = background_color
 	style.background.color[3] = background_color
 	style.background.color[4] = background_color
@@ -2050,6 +2144,7 @@ HeroWindowWeaveProperties._animate_menu_option_entry = function (self, entry, me
 	style.frame.color[3] = background_color
 	style.frame.color[4] = background_color
 	style.hover.color[1] = 255 * hover_progress
+
 	local used_amount = content.used_amount
 	local has_value = used_amount >= 1
 	local value_progress = hotspot.value_progress or 0
@@ -2116,8 +2211,10 @@ HeroWindowWeaveProperties._animate_slot = function (self, slot, dt)
 	local combined_progress = math.max(hover_progress, selection_progress)
 	local new_pulse_speed = 4
 	local new_progress = 0.5 + math.sin(Managers.time:time("ui") * new_pulse_speed) * 0.5
+
 	style.highlight_texture.color[1] = 255 * highlight_progress
 	style.hover.color[1] = 255 * (new and new_progress or hover_progress)
+
 	local slot_locked_style = style.slot_locked
 
 	Colors.lerp_color_tables(slot_locked_style.default_color, slot_locked_style.hover_color, combined_progress, slot_locked_style.color)
@@ -2138,6 +2235,7 @@ HeroWindowWeaveProperties._animate_slot_fill = function (self, slot, progress)
 	if style_slot then
 		local anim_progress = math.easeOutCubic(progress)
 		local color = style_slot.color
+
 		color[1] = 255 * anim_progress
 	end
 
@@ -2151,6 +2249,7 @@ HeroWindowWeaveProperties._animate_slot_fill = function (self, slot, progress)
 		local default_offset = style_fill_effect.default_offset
 		local anim_progress = math.easeOutCubic(progress)
 		local size_increase = 40 * anim_progress
+
 		size[1] = default_size[1] + size_increase
 		size[2] = default_size[2] + size_increase
 		offset[1] = default_offset[1] - size_increase / 2
@@ -2162,12 +2261,14 @@ end
 HeroWindowWeaveProperties._enable_menu_options = function (self, enabled, widget_type, category)
 	local menu_options = self._menu_options
 	local options = menu_options[widget_type]
+
 	self._active_menu_option = enabled and widget_type or nil
 	self._active_menu_category = enabled and category or nil
 
 	if enabled then
 		for category_key, option in pairs(options) do
 			local correct_option = category_key == category
+
 			option.anim_duration = correct_option and 0 or nil
 		end
 
@@ -2201,6 +2302,7 @@ end
 HeroWindowWeaveProperties._set_overlay_alpha = function (self, alpha)
 	local widgets_by_name = self._widgets_by_name
 	local widget = widgets_by_name.window_overlay
+
 	widget.style.rect.color[1] = alpha
 end
 
@@ -2213,7 +2315,7 @@ end
 local draw_offset = {
 	0,
 	0,
-	0
+	0,
 }
 
 HeroWindowWeaveProperties._draw_menu_selection = function (self, ui_renderer, render_settings, dt)
@@ -2240,7 +2342,9 @@ HeroWindowWeaveProperties._draw_menu_selection = function (self, ui_renderer, re
 		if draw then
 			local time_left = math.min(anim_duration + dt, SLOT_SELECT_ANIM_DURATION)
 			local anim_progress = math.easeOutCubic(time_left / SLOT_SELECT_ANIM_DURATION)
+
 			menu_data.anim_duration = time_left
+
 			local widget_size = menu_data.widget_size
 			local entries = menu_data.entries
 			local num_entries = #entries
@@ -2270,6 +2374,7 @@ HeroWindowWeaveProperties._draw_menu_selection = function (self, ui_renderer, re
 			end
 
 			draw_offset[2] = math.ceil(scrolled_length)
+
 			local index_offset = self:_calculate_list_index_offset(total_length, draw_length, entry_height, spacing, scrolled_length)
 			local index_pressed, right_clicked, index_hovered, index_hover_enter, index_hover_exit = self:_draw_selection_menu_widget(ui_renderer, widget_size, spacing, active_menu_option, entries, index_offset, draw_count, draw_offset, curve_multiplier, scrolled_length, anim_progress)
 
@@ -2281,7 +2386,9 @@ HeroWindowWeaveProperties._draw_menu_selection = function (self, ui_renderer, re
 				if index_hovered then
 					local entry = entries[index_hovered]
 					local key = entry.key
+
 					self._highlighted_key = key
+
 					local slot = self:_find_slot_by_key(key, active_menu_option, active_menu_category)
 
 					if slot then
@@ -2325,6 +2432,7 @@ HeroWindowWeaveProperties._draw_menu_selection = function (self, ui_renderer, re
 								local occupied_key = presentation_data.key
 								local occupied_value = presentation_data.value
 								local can_afford = next_cost <= current_mastery + occupied_value
+
 								approved = can_afford and occupied_key ~= key
 
 								if approved and occupied_key then
@@ -2366,7 +2474,7 @@ HeroWindowWeaveProperties._find_slot_by_key = function (self, key, menu_option)
 	local loadout = self._loadout
 	local loadout_keys = loadout[menu_option]
 	local slot_indices = loadout_keys[key]
-	local index = nil
+	local index
 
 	if type(slot_indices) == "table" then
 		index = slot_indices[#slot_indices]
@@ -2415,6 +2523,7 @@ end
 HeroWindowWeaveProperties._set_clear_button_enabled_state = function (self, enabled)
 	local widgets_by_name = self._widgets_by_name
 	local widget = widgets_by_name.clear_button
+
 	widget.content.button_hotspot.disable_button = not enabled
 end
 
@@ -2571,6 +2680,7 @@ HeroWindowWeaveProperties._draw_selection_menu_widget = function (self, ui_rende
 
 	if draw_count <= num_entries then
 		local mask_height = self:_options_mask_height()
+
 		start_height = mask_height / 2 + entry_height / 2
 	else
 		start_height = entry_height * (num_entries + 1) / 2 + spacing * (num_entries + 1) / 2
@@ -2579,7 +2689,7 @@ HeroWindowWeaveProperties._draw_selection_menu_widget = function (self, ui_rende
 	local start_x = draw_offset[1]
 	local start_y = draw_offset[2]
 	local start_z = 0
-	local index_pressed, index_hovered, index_hover_enter, index_hover_exit, right_clicked = nil
+	local index_pressed, index_hovered, index_hover_enter, index_hover_exit, right_clicked
 
 	for i = start_index, num_draws + index_offset do
 		local entry_data = entries[i]
@@ -2590,6 +2700,7 @@ HeroWindowWeaveProperties._draw_selection_menu_widget = function (self, ui_rende
 		local button_hotspot = content.button_hotspot
 		local debug_style = style.debug
 		local y = start_height - (entry_height + spacing) * i * anim_progress
+
 		offset[3] = start_z
 		offset[2] = start_y + y
 		offset[1] = start_x + -curve_multiplier * offset[2]^2
@@ -2769,6 +2880,7 @@ end
 
 HeroWindowWeaveProperties._set_options_title = function (self, title_text, sub_title_text)
 	local widgets_by_name = self._widgets_by_name
+
 	widgets_by_name.title_text.content.text = title_text
 	widgets_by_name.sub_title_text.content.text = sub_title_text
 end
@@ -2789,6 +2901,7 @@ end
 
 HeroWindowWeaveProperties._set_title_text = function (self, title_text, sub_title_text)
 	local widgets_by_name = self._widgets_by_name
+
 	widgets_by_name.viewport_title.content.text = title_text
 	widgets_by_name.viewport_sub_title.content.text = sub_title_text
 end
@@ -2803,12 +2916,15 @@ HeroWindowWeaveProperties._animate_mastery_amount = function (self, dt)
 	local max_time = 0.3
 	local progress = time / max_time
 	local anim_progress = math.easeOutCubic(progress)
+
 	time = math.min(time + dt, max_time)
+
 	local start_mastery = self._previous_mastery
 	local end_mastery = self._current_mastery
 	local diff = (end_mastery - start_mastery) * anim_progress
 	local widgets_by_name = self._widgets_by_name
 	local widget = widgets_by_name.mastery_text
+
 	widget.content.text = tostring(math.round(start_mastery + diff))
 
 	if time == max_time then
@@ -2828,9 +2944,9 @@ HeroWindowWeaveProperties._create_item_previewer = function (self, viewport_widg
 	local preview_position = {
 		-0.85,
 		3,
-		0
+		0,
 	}
-	local unique_id, invert_start_rotation, display_unit_key, use_highest_mip_levels, delayed_spawn = nil
+	local unique_id, invert_start_rotation, display_unit_key, use_highest_mip_levels, delayed_spawn
 	local career_name_override = self._career_name
 	local item_previewer = LootItemUnitPreviewer:new(item, preview_position, world, viewport, unique_id, invert_start_rotation, display_unit_key, use_highest_mip_levels, delayed_spawn, career_name_override)
 	local callback = callback(self, "cb_unit_spawned_item_preview", item_previewer, item_key)
@@ -2848,7 +2964,7 @@ HeroWindowWeaveProperties._create_unit_previewer = function (self, viewport_widg
 	local preview_position = {
 		-0.8,
 		2.5,
-		0.05
+		0.05,
 	}
 	local unit_previewer = UIUnitPreviewer:new(unit_name, package_name, preview_position, world, viewport)
 	local callback = callback(self, "cb_unit_spawned_unit_preview", unit_previewer, unit_name)

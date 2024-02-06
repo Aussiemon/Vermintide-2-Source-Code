@@ -1,8 +1,11 @@
+﻿-- chunkname: @scripts/ui/views/hero_view/windows/hero_window_cosmetics_loadout.lua
+
 local definitions = local_require("scripts/ui/views/hero_view/windows/definitions/hero_window_cosmetics_loadout_definitions")
 local widget_definitions = definitions.widgets
 local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
 local DO_RELOAD = false
+
 HeroWindowCosmeticsLoadout = class(HeroWindowCosmeticsLoadout)
 HeroWindowCosmeticsLoadout.NAME = "HeroWindowCosmeticsLoadout"
 
@@ -10,16 +13,20 @@ HeroWindowCosmeticsLoadout.on_enter = function (self, params, offset)
 	print("[HeroViewWindow] Enter Substate HeroWindowCosmeticsLoadout")
 
 	self.parent = params.parent
+
 	local ingame_ui_context = params.ingame_ui_context
+
 	self.ui_renderer = ingame_ui_context.ui_renderer
 	self.ui_top_renderer = ingame_ui_context.ui_top_renderer
 	self.input_manager = ingame_ui_context.input_manager
 	self.statistics_db = ingame_ui_context.statistics_db
 	self.render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
+
 	local player_manager = Managers.player
 	local local_player = player_manager:local_player()
+
 	self._stats_id = local_player:stats_id()
 	self.player_manager = player_manager
 	self.peer_id = ingame_ui_context.peer_id
@@ -34,11 +41,13 @@ end
 
 HeroWindowCosmeticsLoadout.create_ui_elements = function (self, params, offset)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+
 	local widgets = {}
 	local widgets_by_name = {}
 
 	for name, widget_definition in pairs(widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		widgets[#widgets + 1] = widget
 		widgets_by_name[name] = widget
 	end
@@ -52,6 +61,7 @@ HeroWindowCosmeticsLoadout.create_ui_elements = function (self, params, offset)
 
 	if offset then
 		local window_position = self.ui_scenegraph.window.local_position
+
 		window_position[1] = window_position[1] + offset[1]
 		window_position[2] = window_position[2] + offset[2]
 		window_position[3] = window_position[3] + offset[3]
@@ -195,6 +205,7 @@ HeroWindowCosmeticsLoadout._setup_slot_icons = function (self)
 			local slot_icon_name = "slot_icon" .. name_sufix
 			local slot_type = slot.type
 			local icon_texture = slot_icon_by_type[slot_type] or "tabs_icon_all_selected"
+
 			content[slot_icon_name] = icon_texture
 		end
 	end
@@ -228,6 +239,7 @@ HeroWindowCosmeticsLoadout._equip_item_presentation = function (self, item, slot
 
 	if cosmetic_index then
 		self._equipment_items[cosmetic_index] = item
+
 		local widget = widgets_by_name.loadout_grid
 		local content = widget.content
 		local style = widget.style
@@ -236,8 +248,10 @@ HeroWindowCosmeticsLoadout._equip_item_presentation = function (self, item, slot
 		local hotspot_name = "hotspot" .. name_sufix
 		local item_tooltip_name = "item_tooltip" .. name_sufix
 		local inventory_icon, display_name, _ = UIUtils.get_ui_information_from_item(item)
+
 		content[item_tooltip_name] = display_name
 		content["item" .. name_sufix] = item
+
 		local backend_id = item.backend_id
 		local rarity = item.rarity
 		local backend_items = Managers.backend:get_interface("items")
@@ -248,10 +262,12 @@ HeroWindowCosmeticsLoadout._equip_item_presentation = function (self, item, slot
 
 		if rarity then
 			local rarity_texture_name = "rarity_texture" .. name_sufix
+
 			content[rarity_texture_name] = UISettings.item_rarity_textures[rarity]
 		end
 
 		local item_content = content[hotspot_name]
+
 		item_content[item_icon_name] = inventory_icon
 	end
 end
@@ -305,6 +321,7 @@ HeroWindowCosmeticsLoadout._set_equipment_slot_selected = function (self, column
 			local name_sufix = "_" .. tostring(i) .. "_" .. tostring(k)
 			local hotspot_name = "hotspot" .. name_sufix
 			local slot_hotspot = content[hotspot_name]
+
 			slot_hotspot.is_selected = column_index and column_index == k
 		end
 	end
@@ -350,8 +367,11 @@ HeroWindowCosmeticsLoadout._highlight_equipment_slot_by_type = function (self, i
 			local slot_hover_name = "slot_hover" .. name_sufix
 			local slot_hotspot = content[hotspot_name]
 			local enabled = slot_settings.type == item_type
+
 			slot_hotspot.highlight = enabled
+
 			local alpha = slot_hotspot.internal_is_hover and 255 or 100
+
 			style[slot_hover_name].color[1] = enabled and alpha or 255
 		end
 	end

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/title_loading_ui.lua
+
 require("scripts/settings/controller_settings")
 require("scripts/ui/ui_widgets")
 require("scripts/ui/views/cutscene_overlay_ui")
@@ -11,481 +13,482 @@ local bless_intro_video_subtitle_settings = local_require("scripts/ui/cutscene_o
 local shovel_intro_video_subtitle_settings = local_require("scripts/ui/cutscene_overlay_templates/cutscene_template_shovel_intro")
 local scenegraph_definition = {
 	screen = {
-		vertical_alignment = "center",
 		horizontal_alignment = "center",
 		scale = "fit",
+		vertical_alignment = "center",
 		position = {
 			0,
 			0,
-			0
+			0,
 		},
 		size = {
 			1920,
-			1080
-		}
+			1080,
+		},
 	},
 	dead_space_filler = {
 		scale = "fit",
 		position = {
 			0,
 			0,
-			0
+			0,
 		},
 		size = {
 			1920,
-			1080
-		}
+			1080,
+		},
 	},
 	loading_background = {
-		vertical_alignment = "center",
-		parent = "screen",
 		horizontal_alignment = "center",
+		parent = "screen",
+		vertical_alignment = "center",
 		size = {
 			1920,
-			1080
+			1080,
 		},
 		position = {
 			0,
 			0,
-			0
-		}
+			0,
+		},
 	},
 	skip_input = {
-		vertical_alignment = "bottom",
-		parent = "screen",
 		horizontal_alignment = "left",
+		parent = "screen",
+		vertical_alignment = "bottom",
 		position = {
 			20,
 			15,
-			500
-		}
+			500,
+		},
 	},
 	skip_input_text_1 = {
-		vertical_alignment = "bottom",
-		parent = "skip_input",
 		horizontal_alignment = "left",
+		parent = "skip_input",
+		vertical_alignment = "bottom",
 		size = {
 			40,
-			40
+			40,
 		},
 		position = {
 			0,
 			0,
-			5
-		}
+			5,
+		},
 	},
 	skip_input_text_2 = {
-		vertical_alignment = "bottom",
-		parent = "skip_input",
 		horizontal_alignment = "left",
+		parent = "skip_input",
+		vertical_alignment = "bottom",
 		size = {
 			40,
-			40
+			40,
 		},
 		position = {
 			0,
 			0,
-			5
-		}
+			5,
+		},
 	},
 	skip_input_text_3 = {
-		vertical_alignment = "bottom",
-		parent = "skip_input",
 		horizontal_alignment = "left",
+		parent = "skip_input",
+		vertical_alignment = "bottom",
 		size = {
 			40,
-			40
+			40,
 		},
 		position = {
 			0,
 			0,
-			5
-		}
+			5,
+		},
 	},
 	skip_input_icon = {
-		vertical_alignment = "bottom",
-		parent = "skip_input",
 		horizontal_alignment = "left",
+		parent = "skip_input",
+		vertical_alignment = "bottom",
 		size = {
 			30,
-			30
+			30,
 		},
 		position = {
 			0,
 			10,
-			5
-		}
+			5,
+		},
 	},
 	skip_input_icon_bar = {
-		vertical_alignment = "center",
-		parent = "skip_input_icon",
 		horizontal_alignment = "center",
+		parent = "skip_input_icon",
+		vertical_alignment = "center",
 		size = {
 			36,
-			36
+			36,
 		},
 		position = {
 			0,
 			0,
-			-1
-		}
+			-1,
+		},
 	},
 	background = {
-		vertical_alignment = "center",
-		parent = "screen",
 		horizontal_alignment = "center",
+		parent = "screen",
+		vertical_alignment = "center",
 		size = {
 			1920,
-			1080
+			1080,
 		},
 		position = {
 			0,
 			0,
-			501
-		}
+			501,
+		},
 	},
 	splash_video = {
 		parent = "background",
 		size = {
 			1920,
-			1080
+			1080,
 		},
 		position = {
 			0,
 			0,
-			1
-		}
+			1,
+		},
 	},
 	gamma_header_text = {
-		vertical_alignment = "top",
-		parent = "gamma_image",
 		horizontal_alignment = "center",
+		parent = "gamma_image",
+		vertical_alignment = "top",
 		position = {
 			0,
 			100,
-			10
+			10,
 		},
 		size = {
 			800,
-			40
-		}
+			40,
+		},
 	},
 	gamma_image = {
-		vertical_alignment = "center",
-		parent = "background",
 		horizontal_alignment = "center",
+		parent = "background",
+		vertical_alignment = "center",
 		position = {
 			0,
 			100,
-			-10
+			-10,
 		},
 		size = {
 			285,
-			285
-		}
+			285,
+		},
 	},
 	gamma_correction_image = {
-		vertical_alignment = "bottom",
-		parent = "gamma_image",
 		horizontal_alignment = "center",
+		parent = "gamma_image",
+		vertical_alignment = "bottom",
 		position = {
 			0,
 			-140,
-			10
+			10,
 		},
 		size = {
 			420,
-			50
-		}
+			50,
+		},
 	},
 	gamma_stepper = {
-		vertical_alignment = "center",
-		parent = "gamma_correction_image",
 		horizontal_alignment = "center",
+		parent = "gamma_correction_image",
+		vertical_alignment = "center",
 		position = {
 			0,
 			0,
-			0
+			0,
 		},
 		size = {
 			500,
-			50
-		}
+			50,
+		},
 	},
 	gamma_info_text = {
-		vertical_alignment = "bottom",
-		parent = "gamma_correction_image",
 		horizontal_alignment = "center",
+		parent = "gamma_correction_image",
+		vertical_alignment = "bottom",
 		position = {
 			0,
 			-130,
-			10
+			10,
 		},
 		size = {
 			1300,
-			50
-		}
+			50,
+		},
 	},
 	apply_button = {
-		vertical_alignment = "bottom",
-		parent = "background",
 		horizontal_alignment = "center",
+		parent = "background",
+		vertical_alignment = "bottom",
 		position = {
 			0,
 			45,
-			10
+			10,
 		},
 		size = {
 			370,
-			70
-		}
+			70,
+		},
 	},
 	sound_presentation_image = {
-		vertical_alignment = "center",
-		parent = "gamma_image",
 		horizontal_alignment = "center",
+		parent = "gamma_image",
+		vertical_alignment = "center",
 		position = {
 			0,
 			0,
-			1
+			1,
 		},
 		size = {
 			166,
-			76
-		}
+			76,
+		},
 	},
 	sound_range_presentation_image = {
-		vertical_alignment = "center",
-		parent = "sound_presentation_image",
 		horizontal_alignment = "center",
+		parent = "sound_presentation_image",
+		vertical_alignment = "center",
 		position = {
 			0,
 			0,
-			1
+			1,
 		},
 		size = {
 			160,
-			160
-		}
+			160,
+		},
 	},
 	sound_panning_option_1 = {
-		vertical_alignment = "center",
-		parent = "gamma_stepper",
 		horizontal_alignment = "center",
+		parent = "gamma_stepper",
+		vertical_alignment = "center",
 		position = {
 			-120,
 			0,
-			10
+			10,
 		},
 		size = {
 			218,
-			203
-		}
+			203,
+		},
 	},
 	sound_panning_option_1_glow = {
-		vertical_alignment = "center",
-		parent = "sound_panning_option_1",
 		horizontal_alignment = "center",
+		parent = "sound_panning_option_1",
+		vertical_alignment = "center",
 		position = {
 			0,
 			0,
-			1
+			1,
 		},
 		size = {
 			218,
-			203
-		}
+			203,
+		},
 	},
 	sound_panning_option_2 = {
-		vertical_alignment = "center",
-		parent = "gamma_stepper",
 		horizontal_alignment = "center",
+		parent = "gamma_stepper",
+		vertical_alignment = "center",
 		position = {
 			120,
 			0,
-			10
+			10,
 		},
 		size = {
 			218,
-			203
-		}
+			203,
+		},
 	},
 	sound_panning_option_2_glow = {
-		vertical_alignment = "center",
-		parent = "sound_panning_option_2",
 		horizontal_alignment = "center",
+		parent = "sound_panning_option_2",
+		vertical_alignment = "center",
 		position = {
 			0,
 			0,
-			1
+			1,
 		},
 		size = {
 			218,
-			203
-		}
+			203,
+		},
 	},
 	sound_range_option_1 = {
-		vertical_alignment = "center",
-		parent = "sound_panning_option_1",
 		horizontal_alignment = "center",
+		parent = "sound_panning_option_1",
+		vertical_alignment = "center",
 		position = {
 			30,
 			0,
-			1
+			1,
 		},
 		size = {
 			300,
-			200
-		}
+			200,
+		},
 	},
 	sound_range_option_1_glow = {
-		vertical_alignment = "center",
-		parent = "sound_range_option_1",
 		horizontal_alignment = "center",
+		parent = "sound_range_option_1",
+		vertical_alignment = "center",
 		position = {
 			0,
 			0,
-			1
+			1,
 		},
 		size = {
 			300,
-			200
-		}
+			200,
+		},
 	},
 	sound_range_option_2 = {
-		vertical_alignment = "center",
-		parent = "sound_panning_option_2",
 		horizontal_alignment = "center",
+		parent = "sound_panning_option_2",
+		vertical_alignment = "center",
 		position = {
 			20,
 			0,
-			1
+			1,
 		},
 		size = {
 			170,
-			170
-		}
+			170,
+		},
 	},
 	sound_range_option_2_glow = {
-		vertical_alignment = "center",
-		parent = "sound_range_option_2",
 		horizontal_alignment = "center",
+		parent = "sound_range_option_2",
+		vertical_alignment = "center",
 		position = {
 			0,
 			0,
-			1
+			1,
 		},
 		size = {
 			170,
-			170
-		}
+			170,
+		},
 	},
 	console_input_text_1 = {
-		vertical_alignment = "bottom",
-		parent = "background",
 		horizontal_alignment = "right",
+		parent = "background",
+		vertical_alignment = "bottom",
 		position = {
 			-110,
 			85,
-			10
+			10,
 		},
 		size = {
 			300,
-			40
-		}
+			40,
+		},
 	},
 	console_input_icon_root_1 = {
-		vertical_alignment = "center",
-		parent = "console_input_text_1",
 		horizontal_alignment = "left",
+		parent = "console_input_text_1",
+		vertical_alignment = "center",
 		position = {
 			-25,
 			0,
-			1
+			1,
 		},
 		size = {
 			0,
-			0
-		}
+			0,
+		},
 	},
 	console_input_icon_1 = {
-		vertical_alignment = "center",
-		parent = "console_input_icon_root_1",
 		horizontal_alignment = "center",
+		parent = "console_input_icon_root_1",
+		vertical_alignment = "center",
 		position = {
 			0,
 			0,
-			1
+			1,
 		},
 		size = {
 			40,
-			40
-		}
+			40,
+		},
 	},
 	console_input_text_2 = {
-		vertical_alignment = "center",
-		parent = "console_input_text_1",
 		horizontal_alignment = "left",
+		parent = "console_input_text_1",
+		vertical_alignment = "center",
 		position = {
 			0,
 			-50,
-			1
+			1,
 		},
 		size = {
 			300,
-			40
-		}
+			40,
+		},
 	},
 	console_input_icon_root_2 = {
-		vertical_alignment = "center",
-		parent = "console_input_text_2",
 		horizontal_alignment = "left",
+		parent = "console_input_text_2",
+		vertical_alignment = "center",
 		position = {
 			-25,
 			0,
-			1
+			1,
 		},
 		size = {
 			0,
-			0
-		}
+			0,
+		},
 	},
 	console_input_icon_2 = {
-		vertical_alignment = "center",
-		parent = "console_input_icon_root_2",
 		horizontal_alignment = "center",
+		parent = "console_input_icon_root_2",
+		vertical_alignment = "center",
 		position = {
 			0,
 			0,
-			1
+			1,
 		},
 		size = {
 			40,
-			40
-		}
-	}
+			40,
+		},
+	},
 }
+
 skip_widget = {
 	scenegraph_id = "skip_input",
 	element = {
 		passes = {
 			{
-				style_id = "input_text_1",
 				pass_type = "text",
-				text_id = "input_text_1"
+				style_id = "input_text_1",
+				text_id = "input_text_1",
 			},
 			{
-				style_id = "input_text_2",
 				pass_type = "text",
+				style_id = "input_text_2",
 				text_id = "input_text_2",
 				content_check_function = function (content)
 					return not content.input_icon
-				end
+				end,
 			},
 			{
-				style_id = "input_text_3",
 				pass_type = "text",
-				text_id = "input_text_3"
+				style_id = "input_text_3",
+				text_id = "input_text_3",
 			},
 			{
 				pass_type = "texture",
@@ -493,7 +496,7 @@ skip_widget = {
 				texture_id = "input_icon",
 				content_check_function = function (content)
 					return content.input_icon
-				end
+				end,
 			},
 			{
 				pass_type = "gradient_mask_texture",
@@ -501,30 +504,30 @@ skip_widget = {
 				texture_id = "input_icon_bar",
 				content_check_function = function (content)
 					return not content.using_keyboard
-				end
+				end,
 			},
 			{
+				pass_type = "rect",
 				style_id = "hold_bar",
-				pass_type = "rect",
 				content_check_function = function (content)
 					return content.using_keyboard
-				end
+				end,
 			},
 			{
-				style_id = "hold_bar_bg",
 				pass_type = "rect",
+				style_id = "hold_bar_bg",
 				content_check_function = function (content)
 					return content.using_keyboard
-				end
-			}
-		}
+				end,
+			},
+		},
 	},
 	content = {
 		input_icon_bar = "controller_hold_bar",
-		input_text_2 = "",
 		input_text_1 = "",
+		input_text_2 = "",
 		using_keyboard = true,
-		input_text_3 = Localize("to_skip")
+		input_text_3 = Localize("to_skip"),
 	},
 	style = {
 		hold_bar = {
@@ -533,12 +536,12 @@ skip_widget = {
 			offset = {
 				-5,
 				-16,
-				1
+				1,
 			},
 			size = {
 				0,
-				8
-			}
+				8,
+			},
 		},
 		hold_bar_bg = {
 			scenegraph_id = "skip_input_icon",
@@ -546,17 +549,17 @@ skip_widget = {
 				255,
 				255,
 				255,
-				255
+				255,
 			},
 			offset = {
 				-5,
 				-16,
-				0
+				0,
 			},
 			size = {
 				0,
-				8
-			}
+				8,
+			},
 		},
 		input_icon = {
 			scenegraph_id = "skip_input_icon",
@@ -564,68 +567,69 @@ skip_widget = {
 				255,
 				255,
 				255,
-				255
-			}
+				255,
+			},
 		},
 		input_icon_bar = {
-			scenegraph_id = "skip_input_icon_bar",
 			gradient_threshold = 0,
+			scenegraph_id = "skip_input_icon_bar",
 			color = {
 				255,
 				255,
 				255,
-				255
-			}
+				255,
+			},
 		},
 		input_text_1 = {
-			scenegraph_id = "skip_input_text_1",
-			font_size = 36,
-			word_wrap = false,
-			pixel_perfect = true,
-			horizontal_alignment = "left",
-			vertical_alignment = "center",
 			dynamic_font = true,
+			font_size = 36,
 			font_type = "hell_shark",
-			text_color = Colors.get_color_table_with_alpha("white", 255)
+			horizontal_alignment = "left",
+			pixel_perfect = true,
+			scenegraph_id = "skip_input_text_1",
+			vertical_alignment = "center",
+			word_wrap = false,
+			text_color = Colors.get_color_table_with_alpha("white", 255),
 		},
 		input_text_2 = {
+			dynamic_font = true,
 			font_size = 36,
-			upper_case = true,
+			font_type = "hell_shark",
 			horizontal_alignment = "left",
-			word_wrap = false,
 			pixel_perfect = true,
 			scenegraph_id = "skip_input_text_2",
+			upper_case = true,
 			vertical_alignment = "center",
-			dynamic_font = true,
-			font_type = "hell_shark",
+			word_wrap = false,
 			text_color = Colors.get_color_table_with_alpha("font_title", 255),
 			offset = {
 				0,
 				0,
-				0
-			}
+				0,
+			},
 		},
 		input_text_3 = {
-			scenegraph_id = "skip_input_text_3",
-			font_size = 36,
-			word_wrap = false,
-			pixel_perfect = true,
-			horizontal_alignment = "left",
-			vertical_alignment = "center",
 			dynamic_font = true,
+			font_size = 36,
 			font_type = "hell_shark",
-			text_color = Colors.get_color_table_with_alpha("white", 255)
-		}
-	}
+			horizontal_alignment = "left",
+			pixel_perfect = true,
+			scenegraph_id = "skip_input_text_3",
+			vertical_alignment = "center",
+			word_wrap = false,
+			text_color = Colors.get_color_table_with_alpha("white", 255),
+		},
+	},
 }
+
 local dead_space_filler_widget = {
 	scenegraph_id = "dead_space_filler",
 	element = {
 		passes = {
 			{
-				pass_type = "rect"
-			}
-		}
+				pass_type = "rect",
+			},
+		},
 	},
 	content = {},
 	style = {
@@ -633,9 +637,9 @@ local dead_space_filler_widget = {
 			255,
 			0,
 			0,
-			0
-		}
-	}
+			0,
+		},
+	},
 }
 
 local function create_gamma_widget()
@@ -644,19 +648,19 @@ local function create_gamma_widget()
 		element = {
 			passes = {
 				{
+					pass_type = "text",
 					style_id = "value_text",
-					pass_type = "text",
-					text_id = "value_text"
+					text_id = "value_text",
 				},
 				{
+					pass_type = "text",
 					style_id = "gamma_header_text",
-					pass_type = "text",
-					text_id = "gamma_header_text"
+					text_id = "gamma_header_text",
 				},
 				{
-					style_id = "gamma_info_text",
 					pass_type = "text",
-					text_id = "gamma_info_text"
+					style_id = "gamma_info_text",
+					text_id = "gamma_info_text",
 				},
 				{
 					pass_type = "texture",
@@ -664,7 +668,7 @@ local function create_gamma_widget()
 					texture_id = "gamepad_navigation_icon",
 					content_check_function = function (content)
 						return content.gamepad_active
-					end
+					end,
 				},
 				{
 					pass_type = "texture",
@@ -672,119 +676,119 @@ local function create_gamma_widget()
 					texture_id = "gamepad_accept_icon",
 					content_check_function = function (content)
 						return content.gamepad_active
-					end
+					end,
 				},
 				{
-					style_id = "gamepad_navigation_text",
 					pass_type = "text",
+					style_id = "gamepad_navigation_text",
 					text_id = "gamepad_navigation_text",
 					content_check_function = function (content)
 						return content.gamepad_active
-					end
+					end,
 				},
 				{
-					style_id = "gamepad_accept_text",
 					pass_type = "text",
+					style_id = "gamepad_accept_text",
 					text_id = "gamepad_accept_text",
 					content_check_function = function (content)
 						return content.gamepad_active
-					end
-				}
-			}
+					end,
+				},
+			},
 		},
 		content = {
+			gamepad_accept_icon = "xbone_button_icon_a",
+			gamepad_navigation_icon = "xbone_button_icon_a",
 			gamma_header_text = "startup_settings_gamma_header",
 			gamma_info_text = "startup_settings_gamma_desc",
 			value_text = 0,
-			gamepad_navigation_icon = "xbone_button_icon_a",
-			gamepad_accept_icon = "xbone_button_icon_a",
 			gamepad_accept_text = "- " .. Localize("input_description_confirm"),
-			gamepad_navigation_text = "- " .. Localize("input_description_change")
+			gamepad_navigation_text = "- " .. Localize("input_description_change"),
 		},
 		style = {
 			gamepad_accept_icon = {
-				scenegraph_id = "console_input_icon_2"
+				scenegraph_id = "console_input_icon_2",
 			},
 			gamepad_navigation_icon = {
-				scenegraph_id = "console_input_icon_1"
+				scenegraph_id = "console_input_icon_1",
 			},
 			gamepad_navigation_text = {
-				vertical_alignment = "center",
-				scenegraph_id = "console_input_text_1",
-				localize = false,
 				font_size = 22,
-				horizontal_alignment = "left",
 				font_type = "hell_shark",
-				text_color = Colors.get_color_table_with_alpha("white", 255)
+				horizontal_alignment = "left",
+				localize = false,
+				scenegraph_id = "console_input_text_1",
+				vertical_alignment = "center",
+				text_color = Colors.get_color_table_with_alpha("white", 255),
 			},
 			gamepad_accept_text = {
-				vertical_alignment = "center",
-				scenegraph_id = "console_input_text_2",
-				localize = false,
 				font_size = 22,
-				horizontal_alignment = "left",
 				font_type = "hell_shark",
-				text_color = Colors.get_color_table_with_alpha("white", 255)
+				horizontal_alignment = "left",
+				localize = false,
+				scenegraph_id = "console_input_text_2",
+				vertical_alignment = "center",
+				text_color = Colors.get_color_table_with_alpha("white", 255),
 			},
 			value_text = {
-				vertical_alignment = "bottom",
-				localize = false,
-				horizontal_alignment = "left",
-				font_size = 32,
 				dynamic_font = true,
+				font_size = 32,
 				font_type = "hell_shark_header",
+				horizontal_alignment = "left",
+				localize = false,
+				vertical_alignment = "bottom",
 				offset = {
 					120.5,
 					-70,
-					0
+					0,
 				},
 				text_color = Colors.get_color_table_with_alpha("font_button_normal", 255),
 				default_color = Colors.get_color_table_with_alpha("font_button_normal", 255),
-				hover_color = Colors.get_color_table_with_alpha("font_button_normal", 255)
+				hover_color = Colors.get_color_table_with_alpha("font_button_normal", 255),
 			},
 			gamma_header_text = {
-				vertical_alignment = "center",
-				upper_case = true,
-				localize = true,
-				horizontal_alignment = "center",
 				font_size = 42,
 				font_type = "hell_shark_header",
+				horizontal_alignment = "center",
+				localize = true,
 				scenegraph_id = "gamma_header_text",
-				text_color = Colors.get_color_table_with_alpha("font_title", 255)
+				upper_case = true,
+				vertical_alignment = "center",
+				text_color = Colors.get_color_table_with_alpha("font_title", 255),
 			},
 			gamma_info_text = {
-				vertical_alignment = "center",
-				scenegraph_id = "gamma_info_text",
-				localize = true,
-				horizontal_alignment = "center",
 				font_size = 24,
-				word_wrap = true,
 				font_type = "hell_shark",
-				text_color = Colors.get_color_table_with_alpha("white", 255)
-			}
-		}
+				horizontal_alignment = "center",
+				localize = true,
+				scenegraph_id = "gamma_info_text",
+				vertical_alignment = "center",
+				word_wrap = true,
+				text_color = Colors.get_color_table_with_alpha("white", 255),
+			},
+		},
 	}
 end
 
 local header_text_style = {
-	vertical_alignment = "center",
-	upper_case = true,
-	localize = true,
-	horizontal_alignment = "center",
 	font_size = 42,
 	font_type = "hell_shark_header",
+	horizontal_alignment = "center",
+	localize = true,
 	scenegraph_id = "gamma_header_text",
-	text_color = Colors.get_color_table_with_alpha("font_title", 255)
+	upper_case = true,
+	vertical_alignment = "center",
+	text_color = Colors.get_color_table_with_alpha("font_title", 255),
 }
 local description_text_style = {
-	vertical_alignment = "center",
-	scenegraph_id = "gamma_info_text",
-	localize = true,
-	horizontal_alignment = "center",
 	font_size = 24,
-	word_wrap = true,
 	font_type = "hell_shark",
-	text_color = Colors.get_color_table_with_alpha("white", 255)
+	horizontal_alignment = "center",
+	localize = true,
+	scenegraph_id = "gamma_info_text",
+	vertical_alignment = "center",
+	word_wrap = true,
+	text_color = Colors.get_color_table_with_alpha("white", 255),
 }
 local sound_presentation_image_color = Colors.get_color_table_with_alpha("font_button_normal", 255)
 local gamma_widget_definitions = {
@@ -792,7 +796,7 @@ local gamma_widget_definitions = {
 	gamma_image = UIWidgets.create_background_with_frame("gamma_image", scenegraph_definition.gamma_image.size, "gamma_settings_image_01", "button_frame_01"),
 	gamma_correction_image = UIWidgets.create_background_with_frame("gamma_correction_image", scenegraph_definition.gamma_correction_image.size, "gamma_settings_image_02", "button_frame_01"),
 	gamma_stepper = UIWidgets.create_default_stepper("gamma_stepper", scenegraph_definition.gamma_stepper.size),
-	gamma_image_corners = UIWidgets.create_frame("gamma_image", scenegraph_definition.gamma_image.size, "frame_corner_detail_01", 10)
+	gamma_image_corners = UIWidgets.create_frame("gamma_image", scenegraph_definition.gamma_image.size, "frame_corner_detail_01", 10),
 }
 local panning_widget_definitions = {
 	stepper = UIWidgets.create_default_stepper("gamma_stepper", scenegraph_definition.gamma_stepper.size),
@@ -804,30 +808,30 @@ local panning_widget_definitions = {
 	sound_option_2_glow = UIWidgets.create_simple_texture("sound_setting_icon_04_glow", "sound_panning_option_2_glow"),
 	sound_option_button_2 = UIWidgets.create_simple_hotspot("sound_panning_option_2"),
 	header = UIWidgets.create_simple_text("startup_settings_panning_rule_header", "gamma_header_text", nil, nil, header_text_style),
-	description = UIWidgets.create_simple_text("startup_settings_panning_rule_desc", "gamma_info_text", nil, nil, description_text_style)
+	description = UIWidgets.create_simple_text("startup_settings_panning_rule_desc", "gamma_info_text", nil, nil, description_text_style),
 }
 local dynamic_range_widget_definitions = {
 	stepper = UIWidgets.create_default_stepper("gamma_stepper", scenegraph_definition.gamma_stepper.size),
 	sound_presentation_image = UIWidgets.create_simple_texture("sound_setting_icon_05", "sound_range_presentation_image", nil, nil, sound_presentation_image_color),
 	header = UIWidgets.create_simple_text("startup_settings_dynamic_range_header", "gamma_header_text", nil, nil, header_text_style),
-	description = UIWidgets.create_simple_text("startup_settings_dynamic_range_desc", "gamma_info_text", nil, nil, description_text_style)
+	description = UIWidgets.create_simple_text("startup_settings_dynamic_range_desc", "gamma_info_text", nil, nil, description_text_style),
 }
 local done_button = UIWidgets.create_default_button("apply_button", scenegraph_definition.apply_button.size, nil, nil, Localize("input_description_confirm"))
 local prologue_video = {
-	video_name = "video/vermintide_2_prologue_intro",
-	sound_start = "vermintide_2_prologue_intro",
-	scenegraph_id = "splash_video",
 	material_name = "vermintide_2_prologue_intro",
+	scenegraph_id = "splash_video",
+	sound_start = "vermintide_2_prologue_intro",
 	sound_stop = "Stop_vermintide_2_prologue_intro",
-	subtitle_template_settings = prologue_video_subtitle_settings
+	video_name = "video/vermintide_2_prologue_intro",
+	subtitle_template_settings = prologue_video_subtitle_settings,
 }
 local dlc_intro_video = {
-	video_name = "video/vermintide_2_shovel_intro",
-	sound_start = "Play_vermintide_2_shovel_intro",
-	scenegraph_id = "splash_video",
 	material_name = "vermintide_2_shovel_intro",
+	scenegraph_id = "splash_video",
+	sound_start = "Play_vermintide_2_shovel_intro",
 	sound_stop = "Stop_vermintide_2_shovel_intro",
-	subtitle_template_settings = shovel_intro_video_subtitle_settings
+	video_name = "video/vermintide_2_shovel_intro",
+	subtitle_template_settings = shovel_intro_video_subtitle_settings,
 }
 local first_time_video = dlc_intro_video
 
@@ -839,77 +843,79 @@ local function get_slider_progress(min, max, value)
 end
 
 local gamma_value_settings = {
-	start_value = 2.2,
+	max = 5,
 	min = 1.5,
 	num_decimals = 1,
-	max = 5
+	start_value = 2.2,
 }
 local panning_value_settings = {
+	max = 2,
 	min = 1,
 	num_decimals = 0,
 	start_value = 1,
-	max = 2,
 	options = {
 		{
 			value = "speakers",
-			text = Localize("menu_settings_speakers")
+			text = Localize("menu_settings_speakers"),
 		},
 		{
 			value = "headphones",
-			text = Localize("menu_settings_headphones")
-		}
+			text = Localize("menu_settings_headphones"),
+		},
 	},
 	option_index_by_key = {
 		headphones = 2,
-		speakers = 1
-	}
+		speakers = 1,
+	},
 }
 local dynamic_range_value_settings = {
+	max = 3,
 	min = 1,
 	num_decimals = 0,
 	start_value = 3,
-	max = 3,
 	options = {
 		{
 			value = "low",
-			text = Localize("menu_settings_low")
+			text = Localize("menu_settings_low"),
 		},
 		{
 			value = "medium",
-			text = Localize("menu_settings_medium")
+			text = Localize("menu_settings_medium"),
 		},
 		{
 			value = "high",
-			text = Localize("menu_settings_high")
-		}
+			text = Localize("menu_settings_high"),
+		},
 	},
 	option_index_by_key = {
 		high = 3,
+		low = 1,
 		medium = 2,
-		low = 1
-	}
+	},
 }
 local generic_input_actions = {
 	default = {
 		{
+			description_text = "scoreboard_navigation",
 			input_action = "analog_input",
 			priority = 1,
-			description_text = "scoreboard_navigation"
 		},
 		{
+			description_text = "input_description_confirm",
 			input_action = "confirm",
 			priority = 2,
-			description_text = "input_description_confirm"
-		}
-	}
+		},
+	},
 }
 local VIDEO_REFERENCE_NAME = "TitleLoadingUI"
+
 TitleLoadingUI = class(TitleLoadingUI)
 
 TitleLoadingUI.init = function (self, world, params, force_done)
 	Framerate.set_low_power()
 
 	first_time_video = dlc_intro_video
+
 	local title_settings = Managers.backend:get_title_settings()
 
 	if title_settings and title_settings.video_override then
@@ -922,7 +928,7 @@ TitleLoadingUI.init = function (self, world, params, force_done)
 	end
 
 	self.render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 	self._world = world
 	self._done = false
@@ -962,33 +968,39 @@ TitleLoadingUI._create_elements = function (self)
 		ShowCursorStack.push()
 
 		self._needs_cursor_pop = true
+
 		local gamma_widgets = {}
 		local gamma_widgets_by_name = {}
 
 		for name, widget_definition in pairs(gamma_widget_definitions) do
 			local widget = UIWidget.init(widget_definition)
+
 			gamma_widgets[#gamma_widgets + 1] = widget
 			gamma_widgets_by_name[name] = widget
 		end
 
 		self._gamma_widgets = gamma_widgets
 		self._gamma_widgets_by_name = gamma_widgets_by_name
+
 		local panning_widgets = {}
 		local panning_widgets_by_name = {}
 
 		for name, widget_definition in pairs(panning_widget_definitions) do
 			local widget = UIWidget.init(widget_definition)
+
 			panning_widgets[#panning_widgets + 1] = widget
 			panning_widgets_by_name[name] = widget
 		end
 
 		self._panning_widgets = panning_widgets
 		self._panning_widgets_by_name = panning_widgets_by_name
+
 		local dynamic_range_widgets = {}
 		local dynamic_range_widgets_by_name = {}
 
 		for name, widget_definition in pairs(dynamic_range_widget_definitions) do
 			local widget = UIWidget.init(widget_definition)
+
 			dynamic_range_widgets[#dynamic_range_widgets + 1] = widget
 			dynamic_range_widgets_by_name[name] = widget
 		end
@@ -1002,15 +1014,20 @@ TitleLoadingUI._create_elements = function (self)
 
 		local gamma_adjuster = self._gamma_widgets_by_name.gamma_adjuster
 		local texture_data, input_text = self:_get_input_gamepad_texture_data("confirm")
+
 		gamma_adjuster.content.gamepad_accept_icon = texture_data.texture
 		self._ui_scenegraph.console_input_icon_2.size[1] = texture_data.size[1]
 		self._ui_scenegraph.console_input_icon_2.size[2] = texture_data.size[2]
+
 		local platform = PLATFORM
 		local texture_data, input_text = ButtonTextureByName("d_horizontal", IS_WINDOWS and "xb1" or platform)
+
 		gamma_adjuster.content.gamepad_navigation_icon = texture_data.texture
 		self._ui_scenegraph.console_input_icon_1.size[1] = texture_data.size[1]
 		self._ui_scenegraph.console_input_icon_1.size[2] = texture_data.size[2]
+
 		local input_service = Managers.input:get_service("title_loading_ui")
+
 		self._menu_input_description = MenuInputDescriptionUI:new(nil, self._ui_renderer, input_service, 5, 10, generic_input_actions.default)
 
 		self._menu_input_description:set_input_description(nil)
@@ -1026,27 +1043,29 @@ DO_RELOAD = true
 TitleLoadingUI.setup_gamma_menu = function (self)
 	local gamma_stepper = self._gamma_widgets_by_name.gamma_stepper
 	local gamma_adjuster = self._gamma_widgets_by_name.gamma_adjuster
-	local min = gamma_value_settings.min
-	local max = gamma_value_settings.max
-	local start_value = gamma_value_settings.start_value
+	local min, max, start_value = gamma_value_settings.min, gamma_value_settings.max, gamma_value_settings.start_value
 	local value = Application.user_setting("render_settings", "gamma") or start_value
+
 	gamma_stepper.content.setting_text = ""
 	gamma_stepper.content.value = value
+
 	local internal_value = get_slider_progress(min, max, value)
+
 	gamma_stepper.content.internal_value = internal_value
+
 	local gamma_adjuster_content = gamma_adjuster.content
+
 	gamma_adjuster_content.value_text = string.format("%.1f", value)
 end
 
 TitleLoadingUI.setup_sound_panning_menu = function (self)
 	local stepper = self._panning_widgets_by_name.stepper
-	local min = panning_value_settings.min
-	local max = panning_value_settings.max
-	local start_value = panning_value_settings.start_value
+	local min, max, start_value = panning_value_settings.min, panning_value_settings.max, panning_value_settings.start_value
 	local options = panning_value_settings.options
 	local option_index_by_key = panning_value_settings.option_index_by_key
 	local default_value = DefaultUserSettings.get("user_settings", "sound_panning_rule")
 	local sound_panning_rule = Application.user_setting("sound_panning_rule") or default_value
+
 	stepper.content.setting_text = ""
 	stepper.content.value = sound_panning_rule
 	stepper.content.internal_value = start_value
@@ -1056,13 +1075,12 @@ end
 
 TitleLoadingUI.setup_sound_dynamic_range_menu = function (self)
 	local stepper = self._dynamic_range_widgets_by_name.stepper
-	local min = dynamic_range_value_settings.min
-	local max = dynamic_range_value_settings.max
-	local start_value = dynamic_range_value_settings.start_value
+	local min, max, start_value = dynamic_range_value_settings.min, dynamic_range_value_settings.max, dynamic_range_value_settings.start_value
 	local options = dynamic_range_value_settings.options
 	local option_index_by_key = dynamic_range_value_settings.option_index_by_key
 	local default_value = DefaultUserSettings.get("user_settings", "dynamic_range_sound")
 	local dynamic_range_sound = Application.user_setting("dynamic_range_sound") or default_value
+
 	stepper.content.setting_text = ""
 	stepper.content.value = dynamic_range_sound
 	stepper.content.internal_value = start_value
@@ -1089,9 +1107,12 @@ TitleLoadingUI.update = function (self, dt, t)
 				local num_decimals = gamma_value_settings.num_decimals
 				local internal_value = stepper.content.internal_value
 				local value = math.round_with_precision(min + (max - min) * internal_value, num_decimals or 0)
+
 				stepper.content.value = value
+
 				local gamma_adjuster = self._gamma_widgets_by_name.gamma_adjuster
 				local gamma_adjuster_content = gamma_adjuster.content
+
 				gamma_adjuster_content.value_text = string.format("%.1f", value)
 
 				Application.set_render_setting("gamma", value)
@@ -1109,6 +1130,7 @@ TitleLoadingUI.update = function (self, dt, t)
 				local index = math.round_with_precision(min + (max - min) * internal_value, num_decimals or 0)
 				local options = panning_value_settings.options
 				local option = options[index]
+
 				stepper.content.value = option.value
 
 				self:_change_sound_panning_display_by_value(index)
@@ -1139,6 +1161,7 @@ TitleLoadingUI.update = function (self, dt, t)
 				local index = math.round_with_precision(min + (max - min) * internal_value, num_decimals or 0)
 				local options = dynamic_range_value_settings.options
 				local option = options[index]
+
 				stepper.content.value = option.value
 
 				self:_change_sound_dynamic_range_display_by_value(index)
@@ -1167,6 +1190,7 @@ TitleLoadingUI._change_sound_panning_display_by_value = function (self, value)
 	local option_value = option.value
 	local panning_widgets_by_name = self._panning_widgets_by_name
 	local stepper = panning_widgets_by_name.stepper
+
 	stepper.content.value = option_value
 	stepper.content.internal_value = internal_value
 
@@ -1174,10 +1198,13 @@ TitleLoadingUI._change_sound_panning_display_by_value = function (self, value)
 		local widget_name = "sound_option_" .. i
 		local glow_widget_name = widget_name .. "_glow"
 		local widget = panning_widgets_by_name[glow_widget_name]
+
 		widget.content.visible = value == i
+
 		local button_widget_name = "sound_option_button_" .. i
 		local button_widget = panning_widgets_by_name[button_widget_name]
 		local hotspot = button_widget.content.hotspot
+
 		hotspot.is_selected = i == value
 	end
 
@@ -1194,6 +1221,7 @@ TitleLoadingUI._change_sound_dynamic_range_display_by_value = function (self, va
 	local option_text = option.text
 	local dynamic_range_widgets_by_name = self._dynamic_range_widgets_by_name
 	local stepper = dynamic_range_widgets_by_name.stepper
+
 	stepper.content.setting_text = option_text
 	stepper.content.value = option_value
 	stepper.content.internal_value = internal_value
@@ -1207,6 +1235,7 @@ TitleLoadingUI._update_continue_button = function (self, gamepad_active, dt)
 
 	if gamepad_active and input_service:get("confirm") or self._done_button.content.button_hotspot.on_release then
 		self._done_button.content.button_hotspot.on_release = nil
+
 		local settings_index = self._settings_index
 
 		if settings_index == 1 then
@@ -1295,19 +1324,25 @@ TitleLoadingUI._animate_button = function (self, widget, dt)
 	local combined_out_progress = math.max(select_easing_out_progress, hover_easing_out_progress)
 	local combined_in_progress = math.max(hover_easing_in_progress, select_easing_in_progress)
 	local input_alpha = 255 * input_progress
+
 	style.clicked_rect.color[1] = 100 * input_progress
+
 	local hover_alpha = 255 * hover_progress
+
 	style.hover_glow.color[1] = hover_alpha
+
 	local select_alpha = 255 * selection_progress
 	local text_disabled_style = style.title_text_disabled
 	local disabled_default_text_color = text_disabled_style.default_text_color
 	local disabled_text_color = text_disabled_style.text_color
+
 	disabled_text_color[2] = disabled_default_text_color[2] * 0.4
 	disabled_text_color[3] = disabled_default_text_color[3] * 0.4
 	disabled_text_color[4] = disabled_default_text_color[4] * 0.4
 	hotspot.hover_progress = hover_progress
 	hotspot.input_progress = input_progress
 	hotspot.selection_progress = selection_progress
+
 	local title_text_style = style.title_text
 	local title_text_color = title_text_style.text_color
 	local title_default_text_color = title_text_style.default_text_color
@@ -1340,7 +1375,9 @@ TitleLoadingUI._handle_stepper_input = function (self, widget, stepper_settings,
 
 	if input_cooldown then
 		on_cooldown_last_frame = true
+
 		local new_cooldown = math.max(input_cooldown - dt, 0)
+
 		input_cooldown = new_cooldown > 0 and new_cooldown or nil
 		content.input_cooldown = input_cooldown
 	end
@@ -1369,6 +1406,7 @@ TitleLoadingUI._handle_stepper_input = function (self, widget, stepper_settings,
 		end
 	elseif move and math.abs(move.x) > 0 and not input_cooldown then
 		local step_change = math.max(math.abs(math.pow(move.x, 2) * total_step * dt * analog_speed), step)
+
 		internal_value = math.clamp(internal_value + step_change * math.sign(move.x), 0, 1)
 		input_been_made = true
 	end
@@ -1407,6 +1445,7 @@ TitleLoadingUI._on_stepper_arrow_hover = function (self, widget, style_id)
 	if animation_duration > 0 then
 		local animation_name_hover = "stepper_widget_arrow_hover_" .. style_id
 		local anim = self:_animate_element_by_time(pass_style.color, 1, current_alpha, target_alpha, animation_duration)
+
 		widget_animations[anim] = animation_name_hover
 	else
 		pass_style.color[1] = target_alpha
@@ -1425,6 +1464,7 @@ TitleLoadingUI._on_stepper_arrow_dehover = function (self, widget, style_id)
 	if animation_duration > 0 then
 		local animation_name_hover = "stepper_widget_arrow_hover_" .. style_id
 		local anim = self:_animate_element_by_time(pass_style.color, 1, current_alpha, target_alpha, animation_duration)
+
 		widget_animations[anim] = animation_name_hover
 	else
 		pass_style.color[1] = target_alpha
@@ -1446,6 +1486,7 @@ TitleLoadingUI._on_stepper_arrow_pressed = function (self, widget, style_id)
 		local animation_name_width = "stepper_widget_arrow_width_" .. style_id
 		local animation_name_height = "stepper_widget_arrow_height_" .. style_id
 		local anim = self:_animate_element_by_time(pass_style.color, 1, current_alpha, target_alpha, animation_duration)
+
 		widget_animations[anim] = animation_name_hover
 		anim = self:_animate_element_by_catmullrom(pass_style.size, 1, default_size[1], 0.7, 1, 1, 0.7, animation_duration)
 		widget_animations[anim] = animation_name_width
@@ -1512,9 +1553,12 @@ TitleLoadingUI._update_input_text = function (self, dt)
 
 	local icon_spacing = 10
 	local using_keyboard = not texture_data and true or false
+
 	widget_content.using_keyboard = IS_WINDOWS and using_keyboard
+
 	local font, scaled_font_size = UIFontByResolution(widget_style.input_text_1)
 	local text_width, text_height, min = UIRenderer.text_size(self._ui_renderer, widget_content.input_text_1, font[1], scaled_font_size)
+
 	ui_scenegraph.skip_input_text_1.size[1] = text_width
 	ui_scenegraph.skip_input_icon.position[1] = ui_scenegraph.skip_input_text_1.position[1] + text_width + icon_spacing
 	ui_scenegraph.skip_input_text_2.position[1] = text_width
@@ -1525,6 +1569,7 @@ TitleLoadingUI._update_input_text = function (self, dt)
 		local font, scaled_font_size = UIFontByResolution(widget_style.input_text_2)
 		local input_text_2 = TextToUpper(widget_content.input_text_2)
 		local text_width, text_height, min = UIRenderer.text_size(self._ui_renderer, input_text_2, font[1], scaled_font_size)
+
 		ui_scenegraph.skip_input_text_2.size[1] = text_width
 		ui_scenegraph.skip_input_text_3.position[1] = ui_scenegraph.skip_input_text_2.position[1] + text_width
 		self.hold_bar_max_length = text_width
@@ -1590,7 +1635,9 @@ TitleLoadingUI._update_input = function (self, dt)
 
 	local total_hold_time = 1
 	local total_fade_time = 1
+
 	self._fade_timer = math.clamp((self._fade_timer or 0) - dt, 0, total_fade_time)
+
 	local input_service = Managers.input:get_service("title_loading_ui")
 	local cancel_video = input_service:get("cancel_video")
 
@@ -1604,6 +1651,7 @@ TitleLoadingUI._update_input = function (self, dt)
 	self:_handle_skip_fade(self._fade_timer / total_fade_time * 255)
 
 	self._cancel_timer = math.clamp(self._cancel_timer, 0, total_hold_time)
+
 	local progress = self._cancel_timer / total_hold_time
 
 	if progress >= 1 or cancel_video and self._cancel_video then
@@ -1627,11 +1675,14 @@ TitleLoadingUI._update_input = function (self, dt)
 		end
 	else
 		local fraction = math.clamp(progress, 0, 1)
+
 		self._skip_widget.style.input_icon_bar.gradient_threshold = fraction
+
 		local hold_bar_max_length = self.hold_bar_max_length
 
 		if hold_bar_max_length then
 			local new_length = hold_bar_max_length * fraction
+
 			self._skip_widget.style.hold_bar.size[1] = new_length
 		end
 	end
@@ -1641,6 +1692,7 @@ end
 
 TitleLoadingUI._handle_skip_fade = function (self, alpha)
 	local skip_input_style = self._skip_widget.style
+
 	skip_input_style.input_text_1.text_color[1] = alpha
 	skip_input_style.input_text_2.text_color[1] = alpha
 	skip_input_style.input_text_3.text_color[1] = alpha
@@ -1791,8 +1843,9 @@ TitleLoadingUI._start_subtitles_by_template = function (self, subtitle_template_
 	end
 
 	local context = {
-		ui_renderer = self._ui_renderer
+		ui_renderer = self._ui_renderer,
 	}
+
 	self.cutscene_overlay_ui = CutsceneOverlayUI:new(self, context)
 
 	self.cutscene_overlay_ui:force_unregister_event_listener()

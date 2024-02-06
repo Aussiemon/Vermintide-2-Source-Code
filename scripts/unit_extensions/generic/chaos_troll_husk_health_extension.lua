@@ -1,13 +1,18 @@
+﻿-- chunkname: @scripts/unit_extensions/generic/chaos_troll_husk_health_extension.lua
+
 ChaosTrollHuskHealthExtension = class(ChaosTrollHuskHealthExtension, GenericHealthExtension)
+
 local set_material_property = AiUtils.set_material_property
 
 ChaosTrollHuskHealthExtension.init = function (self, extension_init_context, unit, ...)
 	ChaosTrollHuskHealthExtension.super.init(self, extension_init_context, unit, ...)
 
 	local t = Managers.time:time("game")
+
 	self._regen_time = t + 1
 	self.pulse_time = 0
 	self.state = "unhurt"
+
 	local set_only_current_max_health = true
 
 	self:_setup_initial_health_variables(self.health, set_only_current_max_health)
@@ -29,6 +34,7 @@ end
 ChaosTrollHuskHealthExtension._setup_initial_health_variables = function (self, new_max_health, from_init)
 	local breed = Breeds.chaos_troll
 	local action = BreedActions.chaos_troll.downed
+
 	self.go_down_health = new_max_health * action.become_downed_hp_percent
 	self.regen_pulse_interval = breed.regen_pulse_interval
 	self.downed_pulse_interval = breed.downed_pulse_interval
@@ -50,8 +56,9 @@ ChaosTrollHuskHealthExtension.update = function (self, dt, context, t)
 	if self.state == "down" then
 		ChaosTrollHealthExtension.update_regen_effect(self, t, dt, self.downed_pulse_interval, self.downed_pulse_intensity)
 
-		if self.start_reset_time < t then
+		if t > self.start_reset_time then
 			self.down_reset_timer = self.down_reset_timer + dt
+
 			local percent_damage = 1 - self.down_reset_timer / self.action.reset_duration
 
 			set_material_property(self.unit, "damage_value", "mtr_skin", percent_damage, true)
@@ -59,7 +66,7 @@ ChaosTrollHuskHealthExtension.update = function (self, dt, context, t)
 	elseif self.state == "unhurt" or self.state == "wounded" then
 		ChaosTrollHealthExtension.update_regen_effect(self, t, dt, self.regen_pulse_interval, self.regen_pulse_intensity)
 
-		if self._regen_time < t then
+		if t > self._regen_time then
 			self._regen_time = t + self.regen_pulse_interval
 			self.pulse_time = 0
 		end
@@ -111,7 +118,8 @@ ChaosTrollHuskHealthExtension.sync_damage_taken = function (self, damage, set_ma
 			set_material_property(self.unit, "damage_value", "mtr_skin", 1, true)
 
 			local t = Managers.time:time("game")
-			self.start_reset_time = t + self.action.downed_duration + self.action.standup_anim_duration - self.action.reset_duration
+
+			self.start_reset_time = t + (self.action.downed_duration + self.action.standup_anim_duration - self.action.reset_duration)
 			self.down_reset_timer = 0
 		elseif state == "wounded" or state == "unhurt" then
 			set_material_property(self.unit, "damage_value", "mtr_skin", 0, true)

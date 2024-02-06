@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/unit_extensions/default_player_unit/player_husk_visual_effects_extension.lua
+
 PlayerHuskVisualEffectsExtension = class(PlayerHuskVisualEffectsExtension)
+
 local unit_set_flow_variable = Unit.set_flow_variable
 local unit_flow_event = Unit.flow_event
 
@@ -12,7 +15,9 @@ end
 PlayerHuskVisualEffectsExtension.extensions_ready = function (self, world, unit)
 	self.inventory_extension = ScriptUnit.extension(unit, "inventory_system")
 	self.overcharge_extension = ScriptUnit.extension(unit, "overcharge_system")
+
 	local cosmetic_extension = ScriptUnit.extension(unit, "cosmetic_system")
+
 	self.cosmetic_extension = cosmetic_extension
 	self.third_person_mesh_unit = cosmetic_extension:get_third_person_mesh_unit()
 end

@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/unit_extensions/deus/deus_belakor_crystal_extension.lua
+
 DeusBelakorCrystalExtension = class(DeusBelakorCrystalExtension)
+
 local CHECK_VALID_POSITION_EVERY_SECONDS = 5
 local RESPAWN_LOCUS_MIN_DISTANCE = 1
 local RESPAWN_LOCUS_MAX_DISTANCE = 2
@@ -120,7 +123,7 @@ end
 DeusBelakorCrystalExtension._find_nearest_locus = function (self)
 	local crystal_position = POSITION_LOOKUP[self._unit]
 	local entities = Managers.state.entity:get_entities("DeusBelakorLocusExtension")
-	local nearest_locus, nearest_locus_distance = nil
+	local nearest_locus, nearest_locus_distance
 
 	for locus_unit, _ in pairs(entities) do
 		local distance = Vector3.length(crystal_position - POSITION_LOOKUP[locus_unit])

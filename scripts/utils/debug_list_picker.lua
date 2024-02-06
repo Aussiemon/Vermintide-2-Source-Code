@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/utils/debug_list_picker.lua
+
 DebugListPicker = class(DebugListPicker)
+
 local font_size = 22
 local font = "arial"
 local font_mtrl = "materials/fonts/" .. font
@@ -9,8 +12,7 @@ local max_display_items = 20
 DebugListPicker.init = function (self, list, save_data_name, max_cols_seen)
 	self.pick_list = list
 	self.save_data_name = save_data_name
-	self.row_index = 1
-	self.column_index = 1
+	self.column_index, self.row_index = 1, 1
 	self.move_cursor_timer = 0
 	self.gui = Debug.gui
 	self.font_mtrl = font_mtrl
@@ -30,19 +32,23 @@ end
 
 DebugListPicker.setup = function (self)
 	local save_data = SaveData[self.save_data_name]
+
 	save_data = type(save_data) == "table" and save_data or {
 		last_column_index = 1,
-		columns = {}
+		columns = {},
 	}
 	self.save_data = save_data
+
 	local columns = save_data.columns
+
 	self.column_index = columns[save_data.last_column_index] and save_data.last_column_index or 1
 	self.row_index = columns[self.column_index] and columns[self.column_index].row_index or 1
-	local start_item = nil
-	local max_width = 0
-	local max_height = 0
+
+	local start_item
+	local max_width, max_height = 0, 0
 	local pick_list = self.pick_list
 	local max_rows = 0
+
 	self.column_index = pick_list[self.column_index] and self.column_index or 1
 	self.column = pick_list[self.column_index]
 	self.row_index = self.column[self.row_index] and self.row_index or 1
@@ -50,7 +56,9 @@ DebugListPicker.setup = function (self)
 
 	for i = 1, #pick_list do
 		local column = pick_list[i]
+
 		column.last_row_index = columns[i] and columns[i].row_index or 1
+
 		local num_rows = #column
 
 		if max_rows < num_rows then
@@ -88,11 +96,13 @@ DebugListPicker.activate = function (self)
 		local pick_list = self.pick_list
 		local save_data = self.save_data
 		local columns = save_data.columns or {}
+
 		save_data.columns = columns
 		save_data.last_column_index = self.column_index
 
 		for i = 1, #pick_list do
 			local column = pick_list[i]
+
 			columns[i] = columns[i] or {}
 			columns[i].row_index = column.last_row_index
 		end
@@ -137,7 +147,7 @@ DebugListPicker.update = function (self, t, dt)
 		self.item = self.column[self.row_index]
 	end
 
-	if DebugKeyHandler.key_pressed("up_key", "switch spawn category", "ai") and self.move_cursor_timer < wall_time then
+	if DebugKeyHandler.key_pressed("up_key", "switch spawn category", "ai") and wall_time > self.move_cursor_timer then
 		self.row_index = self.row_index - 1
 		self.row_index = (self.row_index - 1) % #column + 1
 		self.item = self.column[self.row_index]
@@ -145,7 +155,7 @@ DebugListPicker.update = function (self, t, dt)
 		column.last_row_index = self.row_index
 	end
 
-	if DebugKeyHandler.key_pressed("down_key", "switch spawn category", "ai") and self.move_cursor_timer < wall_time then
+	if DebugKeyHandler.key_pressed("down_key", "switch spawn category", "ai") and wall_time > self.move_cursor_timer then
 		self.row_index = self.row_index + 1
 		self.row_index = (self.row_index - 1) % #column + 1
 		self.item = self.column[self.row_index]
@@ -158,28 +168,26 @@ DebugListPicker.update = function (self, t, dt)
 		local column = self.column
 		local col_in = self.column_index
 		local num_cols = #self.pick_list
-		local c1 = col_in - 1
-		local c2 = col_in + 1
+		local c1, c2 = col_in - 1, col_in + 1
 
 		if col_in == 1 then
 			c1 = 1
-			c2 = c1 + self.max_cols_seen - 1
+			c2 = c1 + (self.max_cols_seen - 1)
 		elseif col_in == num_cols then
 			c1 = num_cols - (self.max_cols_seen - 1)
 			c2 = num_cols
 		end
 
-		local res_x = RESOLUTION_LOOKUP.res_w
-		local res_y = RESOLUTION_LOOKUP.res_h
+		local res_x, res_y = RESOLUTION_LOOKUP.res_w, RESOLUTION_LOOKUP.res_h
 		local opacity = 0.85
 		local height = self.font_size * (max_display_items + 1) + COLUMN_SPACING
 		local col_text = ""
-		local header_color = nil
+		local header_color
 		local base_header_color = Color(200, 100, 0)
 		local selected_header_color = Color(255, 155, 0)
 		local upper_pos = Vector3(5, res_y - 80 - font_height, 900)
 		local text_position = Vector3.copy(upper_pos)
-		local curr_column = nil
+		local curr_column
 
 		for i = c1, c2 do
 			local column_i = pick_list[i]
@@ -197,6 +205,7 @@ DebugListPicker.update = function (self, t, dt)
 
 			local min_pos, max_pos = Gui.text_extents(self.gui, col_text, self.font_mtrl, self.font_size)
 			local text_width = max_pos.x - min_pos.x + COLUMN_SPACING
+
 			text_position.x = text_position.x + text_width
 		end
 
@@ -205,7 +214,7 @@ DebugListPicker.update = function (self, t, dt)
 		end
 
 		local start_idx = math.clamp(self.row_index - max_display_items + 1, 1, #column)
-		local end_idx = math.min(#column, max_display_items) + start_idx - 1
+		local end_idx = math.min(#column, max_display_items) + (start_idx - 1)
 
 		for i = start_idx, end_idx do
 			local item_pos = upper_pos - Vector3(0, (i - start_idx + 1) * font_height, 0)

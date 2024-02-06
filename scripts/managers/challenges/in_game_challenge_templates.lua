@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/challenges/in_game_challenge_templates.lua
+
 InGameChallengeTemplates = InGameChallengeTemplates or {}
 InGameChallengeTemplates.kill_enemies = {
 	default_target = 3,
@@ -5,8 +7,8 @@ InGameChallengeTemplates.kill_enemies = {
 	events = {
 		on_player_killed_enemy = function (t, data, killing_blow, breed_killed, ai_unit)
 			return 1
-		end
-	}
+		end,
+	},
 }
 InGameChallengeTemplates.kill_elites = {
 	default_target = 20,
@@ -16,8 +18,8 @@ InGameChallengeTemplates.kill_elites = {
 			if breed_killed.elite then
 				return 1
 			end
-		end
-	}
+		end,
+	},
 }
 InGameChallengeTemplates.kill_specials = {
 	default_target = 10,
@@ -27,8 +29,8 @@ InGameChallengeTemplates.kill_specials = {
 			if breed_killed.special then
 				return 1
 			end
-		end
-	}
+		end,
+	},
 }
 InGameChallengeTemplates.kill_monsters = {
 	default_target = 1,
@@ -38,8 +40,8 @@ InGameChallengeTemplates.kill_monsters = {
 			if breed_killed.boss then
 				return 1
 			end
-		end
-	}
+		end,
+	},
 }
 InGameChallengeTemplates.find_tome = {
 	default_target = 1,
@@ -47,8 +49,8 @@ InGameChallengeTemplates.find_tome = {
 	events = {
 		player_pickup_tome = function (t, data, player)
 			return 1
-		end
-	}
+		end,
+	},
 }
 InGameChallengeTemplates.find_grimoire = {
 	default_target = 1,
@@ -56,8 +58,8 @@ InGameChallengeTemplates.find_grimoire = {
 	events = {
 		player_pickup_grimoire = function (t, data, player)
 			return 1
-		end
-	}
+		end,
+	},
 }
 InGameChallengeTemplates.kill_roamers = {
 	default_target = 1,
@@ -67,8 +69,8 @@ InGameChallengeTemplates.kill_roamers = {
 			if not breed_killed.boss and not breed_killed.special and not breed_killed.elite then
 				return 1
 			end
-		end
-	}
+		end,
+	},
 }
 
 for _, dlc in pairs(DLCSettings) do

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/human/ai_player_unit/ai_utils.lua
+
 local stagger_types = require("scripts/utils/stagger_types")
 
 require("scripts/entity_system/systems/behaviour/utility/utility")
@@ -17,13 +19,13 @@ end
 
 AiUtils = AiUtils or {}
 BreedCategory = {
-	Boss = 8,
-	Special = 64,
 	Armored = 16,
+	Berserker = 4,
+	Boss = 8,
 	Infantry = 1,
 	Shielded = 2,
+	Special = 64,
 	SuperArmor = 32,
-	Berserker = 4
 }
 
 AiUtils.has_breed_categories = function (owned_flags, effective_against)
@@ -36,8 +38,11 @@ AiUtils.special_dead_cleanup = function (unit, blackboard)
 	end
 
 	local special_targets = blackboard.group_blackboard.special_targets
+
 	special_targets[blackboard.target_unit] = nil
+
 	local disabled_by_special = blackboard.group_blackboard.disabled_by_special
+
 	disabled_by_special[blackboard.target_unit] = nil
 end
 
@@ -228,7 +233,7 @@ end
 AiUtils.calculate_ai_stagger_impact = function (stagger_strength)
 	local distance = (0.15 + 0.1 * math.random()) * stagger_strength
 	local impact = {
-		stagger_strength
+		stagger_strength,
 	}
 
 	return impact, distance
@@ -236,13 +241,17 @@ end
 
 AiUtils.damage_target = function (target_unit, attacker_unit, action, damage, damage_source)
 	damage = DamageUtils.calculate_damage(damage, target_unit, attacker_unit)
+
 	local attacker_pos = POSITION_LOOKUP[attacker_unit] or Unit.world_position(attacker_unit, 0)
 	local target_pos = POSITION_LOOKUP[target_unit] or Unit.world_position(target_unit, 0)
 	local damage_direction = Vector3.normalize(target_pos - attacker_pos)
 	local _, is_level_unit = Managers.state.network:game_object_or_level_id(target_unit)
+
 	damage_source = damage_source or AiUtils.breed_name(attacker_unit)
-	local inflicted_damage, source_attacker_unit = nil
+
+	local inflicted_damage, source_attacker_unit
 	local attacker_blackboard = BLACKBOARDS[attacker_unit]
+
 	source_attacker_unit = attacker_blackboard and attacker_blackboard.commander_unit
 
 	if is_level_unit then
@@ -263,10 +272,12 @@ AiUtils.damage_target = function (target_unit, attacker_unit, action, damage, da
 
 				if weave_manager:get_active_weave() then
 					local scaling_value = weave_manager:get_scaling_value("diminishing_damage")
+
 					diminishing_damage = math.lerp(diminishing_damage, max_diminishing_damage, scaling_value)
 				end
 
 				local damage_modifier = diminishing_damage
+
 				damage = damage * damage_modifier
 			end
 		end
@@ -281,6 +292,7 @@ AiUtils.damage_target = function (target_unit, attacker_unit, action, damage, da
 
 				if player_status_extension and player_status_extension:is_knocked_down() then
 					local knocked_down_damage_multiplier = difficulty_settings.knocked_down_damage_multiplier or 1
+
 					damage = damage * knocked_down_damage_multiplier
 				end
 
@@ -290,10 +302,12 @@ AiUtils.damage_target = function (target_unit, attacker_unit, action, damage, da
 					local damage_percent_cap = difficulty_settings.damage_percent_cap
 					local max_health = target_unit_health_extension:get_max_health()
 					local damage_cap = max_health * damage_percent_cap
+
 					damage = math.clamp(damage, 0, damage_cap)
 				end
 
 				local damage_multiplier = difficulty_settings.damage_multiplier or 1
+
 				damage = damage * damage_multiplier
 			end
 		else
@@ -304,7 +318,7 @@ AiUtils.damage_target = function (target_unit, attacker_unit, action, damage, da
 				local t = Managers.time:time("game")
 				local attacker_breed = attacker_blackboard.breed
 				local target_breed = target_blackboard.breed
-				local stagger_strength = nil
+				local stagger_strength
 
 				if action.unblockable and action.attack_intensity_type == "push" then
 					stagger_strength = stagger_types[action.hit_react_type]
@@ -316,7 +330,7 @@ AiUtils.damage_target = function (target_unit, attacker_unit, action, damage, da
 					if target_breed.strong_hit_reacts and target_blackboard.past_damage_in_attack ~= false and (not target_blackboard.stagger or target_blackboard.stagger_anim_done) then
 						local hit_unit_dir = Quaternion.forward(unit_local_rotation(target_unit, 0))
 						local angle_difference = Vector3.flat_angle(damage_direction, hit_unit_dir)
-						local hit_anim_list = nil
+						local hit_anim_list
 
 						if angle_difference < -math.pi * 0.75 or angle_difference > math.pi * 0.75 then
 							hit_anim_list = target_breed.strong_hit_reacts.bwd
@@ -336,17 +350,9 @@ AiUtils.damage_target = function (target_unit, attacker_unit, action, damage, da
 					elseif not target_breed.disable_local_hit_reactions then
 						local hit_unit_dir = Quaternion.forward(unit_local_rotation(target_unit, 0))
 						local angle_difference = Vector3.flat_angle(hit_unit_dir, damage_direction)
-						local hit_anim = nil
+						local hit_anim
 
-						if angle_difference < -math.pi * 0.75 or angle_difference > math.pi * 0.75 then
-							hit_anim = "hit_reaction_backward"
-						elseif angle_difference < -math.pi * 0.25 then
-							hit_anim = "hit_reaction_left"
-						elseif angle_difference < math.pi * 0.25 then
-							hit_anim = "hit_reaction_forward"
-						else
-							hit_anim = "hit_reaction_right"
-						end
+						hit_anim = not (not (angle_difference < -math.pi * 0.75) and not (angle_difference > math.pi * 0.75)) and "hit_reaction_backward" or angle_difference < -math.pi * 0.25 and "hit_reaction_left" or angle_difference < math.pi * 0.25 and "hit_reaction_forward" or "hit_reaction_right"
 
 						if hit_anim then
 							unit_animation_event(target_unit, hit_anim)
@@ -359,8 +365,10 @@ AiUtils.damage_target = function (target_unit, attacker_unit, action, damage, da
 				end
 
 				local damage_multiplier_vs_ai = attacker_breed.damage_multiplier_vs_ai or 0.25
+
 				damage = damage * damage_multiplier_vs_ai
-				local hit_effect = nil
+
+				local hit_effect
 				local hitzone_armor_categories = target_breed.hitzone_armor_categories
 				local target_unit_armor = hitzone_armor_categories and hitzone_armor_categories.torso or target_breed.armor_category
 
@@ -381,6 +389,7 @@ AiUtils.damage_target = function (target_unit, attacker_unit, action, damage, da
 		end
 
 		inflicted_damage = DamageUtils.add_damage_network(target_unit, attacker_unit, damage, "torso", action.damage_type, nil, damage_direction, damage_source, nil, source_attacker_unit, nil, action.hit_react_type)
+
 		local push_speed = action.player_push_speed
 
 		if is_player_unit and push_speed then
@@ -448,13 +457,13 @@ AiUtils.poison_explode_unit = function (unit, action, blackboard)
 	local nav_tag_volume_layer = action.nav_tag_volume_layer
 	local extension_init_data = {
 		area_damage_system = {
-			area_damage_template = "globadier_area_dot_damage",
-			invisible_unit = true,
-			player_screen_effect_name = "fx/screenspace_poison_globe_impact",
 			area_ai_random_death_template = "area_poison_ai_random_death",
+			area_damage_template = "globadier_area_dot_damage",
+			damage_players = true,
 			dot_effect_name = "fx/wpnfx_poison_wind_globe_impact",
 			extra_dot_effect_name = "fx/chr_gutter_death",
-			damage_players = true,
+			invisible_unit = true,
+			player_screen_effect_name = "fx/screenspace_poison_globe_impact",
 			aoe_dot_damage = aoe_dot_damage,
 			aoe_init_damage = aoe_init_damage,
 			aoe_dot_damage_interval = aoe_dot_damage_interval,
@@ -464,8 +473,8 @@ AiUtils.poison_explode_unit = function (unit, action, blackboard)
 			damage_source = blackboard.breed.name,
 			create_nav_tag_volume = create_nav_tag_volume,
 			nav_tag_volume_layer = nav_tag_volume_layer,
-			source_attacker_unit = unit
-		}
+			source_attacker_unit = unit,
+		},
 	}
 	local aoe_unit_name = "units/weapons/projectile/poison_wind_globe/poison_wind_globe"
 	local aoe_unit = Managers.state.unit_spawner:spawn_network_unit(aoe_unit_name, "aoe_unit", extension_init_data, position)
@@ -506,13 +515,15 @@ AiUtils.warpfire_explode_unit = function (unit, blackboard)
 	if position_on_navmesh then
 		local rotation = Unit.local_rotation(unit, 0)
 		local direction = Quaternion.forward(rotation)
+
 		direction = Vector3.flat(direction)
+
 		local extension_init_data = {
 			area_damage_system = {
 				liquid_template = "warpfire_death_fire",
 				flow_dir = direction,
-				source_unit = unit
-			}
+				source_unit = unit,
+			},
 		}
 		local aoe_unit_name = "units/hub_elements/empty"
 		local liquid_aoe_unit = Managers.state.unit_spawner:spawn_network_unit(aoe_unit_name, "liquid_aoe_unit", extension_init_data, position_on_navmesh)
@@ -605,11 +616,11 @@ AiUtils.spawn_overpowering_blob = function (network_manager, target_unit, blob_h
 		health_system = {
 			health = blob_health,
 			target_unit = target_unit,
-			life_time = life_time
+			life_time = life_time,
 		},
 		death_system = {
-			death_reaction_template = "lure_unit"
-		}
+			death_reaction_template = "lure_unit",
+		},
 	}
 	local size = Vector3(1, 1, 1)
 	local pose = Matrix4x4.from_quaternion_position(Quaternion.identity(), position)
@@ -645,6 +656,7 @@ end
 AiUtils.get_angle_between_vectors = function (vector_1, vector_2)
 	vector_1 = Vector3.normalize(Vector3.flat(vector_1))
 	vector_2 = Vector3.normalize(Vector3.flat(vector_2))
+
 	local radians = math.atan2(vector_1.y, vector_1.x) - math.atan2(vector_2.y, vector_2.x)
 	local degrees = math.radians_to_degrees(radians)
 	local angle = math.abs(degrees)
@@ -655,20 +667,23 @@ end
 AiUtils.rotate_vector = function (vector, radians)
 	local length = Vector3.length(vector)
 	local l_radians = math.atan2(vector.y, vector.x)
+
 	l_radians = l_radians + radians
+
 	local x = math.cos(l_radians)
 	local y = math.sin(l_radians)
 	local return_vector = Vector3(x, y, 0)
+
 	return_vector = return_vector * length
 
 	return return_vector
 end
 
 AiUtils.constrain_radians = function (radians)
-	if math.pi < radians then
-		radians = -math.pi + radians - math.pi
+	if radians > math.pi then
+		radians = -math.pi + (radians - math.pi)
 	elseif radians < -math.pi then
-		radians = math.pi + radians + math.pi
+		radians = math.pi + (radians + math.pi)
 	end
 
 	return radians
@@ -702,6 +717,7 @@ AiUtils.calculate_bot_threat_time = function (bot_threat)
 
 	local start_delay = sum_random * max_start_delay
 	local start_time = bot_threat.start_time + start_delay
+
 	previous_random_value = sum_random
 
 	return start_time, duration - start_delay
@@ -1017,16 +1033,20 @@ AiUtils.stagger = function (unit, blackboard, attacker_unit, stagger_direction, 
 	end
 
 	local difficulty_modifier = Managers.state.difficulty:get_difficulty_settings().stagger_modifier
+
 	blackboard.pushing_unit = attacker_unit
 	blackboard.stagger_direction = Vector3Box(stagger_direction)
 	blackboard.stagger_length = stagger_length
 	blackboard.stagger_time = stagger_duration * difficulty_modifier + t
+
 	local stagger_value_to_add = stagger_value or 1
+
 	blackboard.stagger = blackboard.stagger and blackboard.stagger + stagger_value_to_add or stagger_value_to_add
 	blackboard.stagger_type = stagger_type
 	blackboard.stagger_animation_scale = stagger_animation_scale
 	blackboard.always_stagger_suffered = always_stagger
 	blackboard.stagger_was_push = is_push
+
 	local shield_extension = ScriptUnit.has_extension(unit, "ai_shield_system")
 
 	if shield_extension and not shield_extension.is_blocking and blackboard.attack_token and blackboard.stagger and blackboard.stagger < 3 then
@@ -1064,7 +1084,7 @@ AiUtils.override_stagger = function (unit, blackboard, attacker_unit, stagger_di
 	end
 
 	if active_node:stagger_override(unit, blackboard, attacker_unit, stagger_direction, stagger_length, stagger_type, stagger_duration, stagger_animation_scale, t, is_push) then
-		assert(stagger_types.none < stagger_type, "Tried to use invalid stagger type %q", stagger_type)
+		assert(stagger_type > stagger_types.none, "Tried to use invalid stagger type %q", stagger_type)
 
 		if unit ~= attacker_unit and ScriptUnit.has_extension(unit, "ai_system") then
 			local ai_extension = ScriptUnit.extension(unit, "ai_system")
@@ -1100,7 +1120,9 @@ AiUtils.advance_towards_target = function (unit, blackboard, min_distance, max_d
 	local min_angle_step = min_angle_step or MIN_ANGLE_STEP
 	local max_angle_step = max_angle_step or MAX_ANGLE_STEP
 	local min_angle = min_angle or MIN_ANGLE
+
 	direction = direction or 1 - math.random(0, 1) * 2
+
 	local from_position = POSITION_LOOKUP[unit]
 	local target_position = POSITION_LOOKUP[target_unit]
 
@@ -1154,7 +1176,7 @@ AiUtils.anim_event = function (unit, data, anim_event)
 end
 
 AiUtils.get_default_breed_move_speed = function (unit, blackboard)
-	local move_speed = nil
+	local move_speed
 	local breed = blackboard.breed
 
 	if blackboard.is_passive then
@@ -1211,6 +1233,7 @@ end
 
 AiUtils.kill_unit = function (victim_unit, attacker_unit, hit_zone_name, damage_type, damage_direction, damage_source)
 	local damage_amount = NetworkConstants.damage.max
+
 	attacker_unit = attacker_unit or victim_unit
 
 	if HEALTH_ALIVE[victim_unit] then
@@ -1218,6 +1241,7 @@ AiUtils.kill_unit = function (victim_unit, attacker_unit, hit_zone_name, damage_
 		damage_type = damage_type or "kinetic"
 		damage_source = damage_source or "suicide"
 		damage_direction = damage_direction or Vector3(0, 0, 1)
+
 		local health = ScriptUnit.extension(victim_unit, "health_system"):current_health()
 		local skip_buffs = true
 
@@ -1228,9 +1252,9 @@ AiUtils.kill_unit = function (victim_unit, attacker_unit, hit_zone_name, damage_
 end
 
 local DEFAULT_AGGRO_MULTIPLIERS = {
-	ranged = 1,
+	grenade = 1,
 	melee = 1,
-	grenade = 1
+	ranged = 1,
 }
 
 AiUtils.update_aggro = function (unit, blackboard, breed, t, dt)
@@ -1258,6 +1282,7 @@ AiUtils.update_aggro = function (unit, blackboard, breed, t, dt)
 			if master_list_item then
 				local slot_type = master_list_item.slot_type
 				local multiplier = aggro_multipliers[slot_type] or 1
+
 				damage_amount = damage_amount * multiplier
 			end
 
@@ -1279,14 +1304,14 @@ AiUtils.debug_bot_transitions = function (gui, t, x1, y1)
 	local tiny_font_size = 16
 	local tiny_font = "arial"
 	local tiny_font_mtrl = "materials/fonts/" .. tiny_font
-	local resx = RESOLUTION_LOOKUP.res_w
-	local resy = RESOLUTION_LOOKUP.res_h
-	local borderx = 20
-	local bordery = 20
+	local resx, resy = RESOLUTION_LOOKUP.res_w, RESOLUTION_LOOKUP.res_h
+	local borderx, bordery = 20, 20
 	local debug_win_width = 330
 	local layer = 20
+
 	x1 = x1 + borderx + 20
 	y1 = y1 + bordery + 20
+
 	local y2 = y1
 	local running_color = Colors.get_color_with_alpha("lavender", 255)
 	local unrun_color = Colors.get_color_with_alpha("sky_blue", 255)
@@ -1295,6 +1320,7 @@ AiUtils.debug_bot_transitions = function (gui, t, x1, y1)
 	ScriptGUI.ictext(gui, resx, resy, "BOT TRANSITIONS: ", tiny_font_mtrl, tiny_font_size, tiny_font, x1 - 10, y2, layer, header_color)
 
 	y2 = y2 + 20
+
 	local players = Managers.player:human_and_bot_players()
 
 	for _, player in pairs(players) do
@@ -1348,7 +1374,7 @@ AiUtils.push_intersecting_players = function (unit, source_unit, displaced_units
 			local hit_unit = enemy_player_and_bot_units[i]
 
 			if displaced_units[hit_unit] then
-				if displaced_units[hit_unit] < t then
+				if t > displaced_units[hit_unit] then
 					displaced_units[hit_unit] = nil
 				end
 			else
@@ -1363,12 +1389,12 @@ AiUtils.push_intersecting_players = function (unit, source_unit, displaced_units
 					end
 				end
 
-				if Vector3.length(to_target) < push_radius then
+				if push_radius > Vector3.length(to_target) then
 					local push_width_sqr = data.push_width * data.push_width
 					local pos_projected_on_forward_move_dir = Geometry.closest_point_on_line(other_pos, self_pos, forward_pos)
 					local side_vector = other_pos - pos_projected_on_forward_move_dir
 
-					if Vector3.length_squared(side_vector) < push_width_sqr then
+					if push_width_sqr > Vector3.length_squared(side_vector) then
 						local ahead_dist = Vector3.distance(self_pos, pos_projected_on_forward_move_dir)
 
 						if ahead_dist < data.ahead_dist then
@@ -1379,6 +1405,7 @@ AiUtils.push_intersecting_players = function (unit, source_unit, displaced_units
 									local pushed_velocity = data.player_pushed_speed * Vector3.normalize(other_pos - self_pos)
 									local locomotion_extension = ScriptUnit.extension(hit_unit, "locomotion_system")
 									local push_scaler = 1 - ahead_dist / data.ahead_dist
+
 									push_scaler = push_scaler * push_scaler
 
 									locomotion_extension:add_external_velocity(pushed_velocity * push_scaler)
@@ -1400,7 +1427,7 @@ end
 
 AiUtils.set_material_property = function (unit, variable_name, material_name, value, all_meshes, mesh_name)
 	if all_meshes then
-		local mesh = nil
+		local mesh
 
 		for i = 0, Unit.num_meshes(unit) - 1 do
 			mesh = Unit.mesh(unit, i)
@@ -1483,14 +1510,16 @@ local MIN_DIST_SQR = 0.0001
 AiUtils.remove_bad_boxed_spline_points = function (source_points, spline_name)
 	local points = {}
 	local pA = source_points[1]:unbox()
-	local pB = nil
+	local pB
+
 	points[1] = pA
 
 	for i = 2, #source_points do
 		pB = source_points[i]:unbox()
+
 		local dist = Vector3.distance_squared(pA, pB)
 
-		if MIN_DIST_SQR < dist then
+		if dist > MIN_DIST_SQR then
 			points[#points + 1] = pB
 			pA = pB
 		else
@@ -1503,15 +1532,16 @@ end
 
 AiUtils.remove_bad_spline_points = function (source_points, spline_name)
 	local points = {}
-	local pA = source_points[1]
-	local pB = nil
+	local pA, pB = source_points[1]
+
 	points[1] = pA
 
 	for i = 2, #source_points do
 		pB = source_points[i]
+
 		local dist = Vector3.distance_squared(pA, pB)
 
-		if MIN_DIST_SQR < dist then
+		if dist > MIN_DIST_SQR then
 			points[#points + 1] = pB
 			pA = pB
 		else
@@ -1531,7 +1561,7 @@ AiUtils.get_combat_conditions = function (blackboard)
 
 		return {
 			enemy_arc = num_enemies > 3 and 2 or num_enemies > 1 and 1 or 0,
-			target_armor = target_breed and target_breed.armor_category or 1
+			target_armor = target_breed and target_breed.armor_category or 1,
 		}
 	end
 
@@ -1541,9 +1571,9 @@ end
 local DEFAULT_MAXIMAL_MELEE_RANGE = 5
 local DEFAULT_ATTACK_META_DATA = {
 	tap_attack = {
-		speed_mod = 1.2,
-		penetrating = false,
 		arc = 0,
+		penetrating = false,
+		speed_mod = 1.2,
 		max_range = DEFAULT_MAXIMAL_MELEE_RANGE,
 		armor_modifiers = {
 			0.1,
@@ -1551,13 +1581,13 @@ local DEFAULT_ATTACK_META_DATA = {
 			0.1,
 			0.1,
 			0.1,
-			0.1
-		}
+			0.1,
+		},
 	},
 	hold_attack = {
-		speed_mod = 0.8,
-		penetrating = true,
 		arc = 2,
+		penetrating = true,
+		speed_mod = 0.8,
 		max_range = DEFAULT_MAXIMAL_MELEE_RANGE,
 		armor_modifiers = {
 			0.1,
@@ -1565,15 +1595,15 @@ local DEFAULT_ATTACK_META_DATA = {
 			0.1,
 			0.1,
 			0.1,
-			0.1
-		}
-	}
+			0.1,
+		},
+	},
 }
 local MAX_ARC = 2
 local ARC_IMPORTANCE = {
 	0,
 	0.2,
-	0.4
+	0.4,
 }
 local ARMOR_MOD_IMPORTANCE = {
 	0.5,
@@ -1581,7 +1611,7 @@ local ARMOR_MOD_IMPORTANCE = {
 	1.5,
 	1,
 	1.3,
-	2
+	2,
 }
 local ARMOR_ARC_MOD = {
 	1,
@@ -1589,7 +1619,7 @@ local ARMOR_ARC_MOD = {
 	0,
 	0,
 	0,
-	0
+	0,
 }
 local math_abs = math.abs
 
@@ -1606,12 +1636,15 @@ AiUtils.get_melee_weapon_score = function (conditions, weapon_item_template)
 			local mod_arc = math.clamp(conditions.enemy_arc + ARMOR_ARC_MOD[target_armor], 0, 2)
 			local arc_diff = 1 - math_abs(mod_arc - attack_meta_data.arc) / MAX_ARC
 			local arc_importnace = ARC_IMPORTANCE[mod_arc + 1]
+
 			utility = utility + arc_importnace * arc_diff
+
 			local armor_modifiers = attack_meta_data.armor_modifiers
 
 			if armor_modifiers then
 				local armor_mod = armor_modifiers[target_armor] or 0
 				local armor_relevence = ARMOR_MOD_IMPORTANCE[target_armor] or 1
+
 				utility = utility + armor_mod * armor_relevence * (attack_meta_data.speed_mod or 1)
 			end
 
@@ -1729,21 +1762,19 @@ end
 AiUtils.calculate_animation_movespeed = function (animation_move_speed_config, unit, target_unit)
 	local max_value = animation_move_speed_config[1].value
 	local distance_to_target = Vector3.distance(POSITION_LOOKUP[unit], POSITION_LOOKUP[target_unit])
-	local wanted_value = max_value
-	local num_configs = #animation_move_speed_config
+	local wanted_value, num_configs = max_value, #animation_move_speed_config
 
 	for i = 1, num_configs do
 		local config = animation_move_speed_config[i]
-		local distance = config.distance
-		local value = config.value
+		local distance, value = config.distance, config.value
 
 		if i < num_configs then
 			local next_config = animation_move_speed_config[i + 1]
-			local next_distance = next_config.distance
-			local next_value = next_config.value
+			local next_distance, next_value = next_config.distance, next_config.value
 
 			if next_distance < distance_to_target then
 				local progress = math.inv_lerp(distance, next_distance, distance_to_target)
+
 				wanted_value = math.lerp_clamped(value, next_value, progress)
 
 				break

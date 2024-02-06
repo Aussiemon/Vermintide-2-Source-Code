@@ -1,7 +1,10 @@
+﻿-- chunkname: @scripts/network/shared_state.lua
+
 require("scripts/utils/hash_utils")
 
 SharedState = class(SharedState)
 script_data.shared_state_debug = true
+
 local RPCS = {
 	"rpc_shared_state_set_server_int",
 	"rpc_shared_state_set_server_string",
@@ -13,7 +16,7 @@ local RPCS = {
 	"rpc_shared_state_request_sync",
 	"rpc_shared_state_full_sync_complete",
 	"rpc_shared_state_start_atomic_set_server",
-	"rpc_shared_state_end_atomic_set_server"
+	"rpc_shared_state_end_atomic_set_server",
 }
 local STRING_CHUNK_SIZE = 500
 
@@ -141,6 +144,7 @@ end
 
 local function get_full_cached_key(cache_tree, key_type, peer_id, local_player_id, profile_index, career_index)
 	local cache = cache_tree
+
 	cache = get_or_create_table(cache, key_type)
 
 	if peer_id then
@@ -165,8 +169,9 @@ local function get_full_cached_key(cache_tree, key_type, peer_id, local_player_i
 			peer_id = peer_id or "0",
 			local_player_id = local_player_id or 0,
 			profile_index = profile_index or 0,
-			career_index = career_index or 0
+			career_index = career_index or 0,
 		}
+
 		cache.__val = key
 	end
 
@@ -394,6 +399,7 @@ SharedState.full_sync = function (self)
 		end
 	else
 		self._client_full_sync_complete = false
+
 		local channel_id = PEER_ID_TO_CHANNEL[self._server_peer_id]
 
 		if channel_id then
@@ -684,7 +690,7 @@ SharedState.rpc_shared_state_set_string = function (self, channel_id, context, o
 		self:_set_rpc(channel_id, owner, key_type_lookup, peer_id, local_player_id, profile_index, career_index, encoded_value)
 	else
 		self._batched_string_buffer = {
-			encoded_value
+			encoded_value,
 		}
 	end
 end
@@ -736,7 +742,7 @@ SharedState.rpc_shared_state_set_server_string = function (self, channel_id, con
 		self:_set_server_rpc(channel_id, key_type_lookup, peer_id, local_player_id, profile_index, career_index, encoded_value)
 	else
 		self._batched_string_buffer = {
-			encoded_value
+			encoded_value,
 		}
 	end
 end
@@ -798,6 +804,7 @@ SharedState._set_server_rpc = function (self, sender_channel_id, key_type_lookup
 
 	if atomic_set_server_cache then
 		local index = #atomic_set_server_cache
+
 		atomic_set_server_cache[index] = sender_channel_id
 		atomic_set_server_cache[index + 1] = key_type_lookup
 		atomic_set_server_cache[index + 2] = peer_id
@@ -869,6 +876,7 @@ end
 
 SharedState._increment_revision = function (self)
 	local revision = self._revision
+
 	self._revision = self._revision + 1
 
 	if self._revision == revision then

@@ -1,6 +1,9 @@
+﻿-- chunkname: @scripts/game_state/title_screen_substates/win32/state_title_screen_main_menu.lua
+
 StateTitleScreenMainMenu = class(StateTitleScreenMainMenu)
 StateTitleScreenMainMenu.NAME = "StateTitleScreenMainMenu"
-local menu_functions = nil
+
+local menu_functions
 
 if script_data.honduras_demo then
 	menu_functions = {
@@ -10,7 +13,7 @@ if script_data.honduras_demo then
 			Managers.transition:show_loading_icon(false)
 			Managers.transition:fade_in(GameSettings.transition_fade_out_speed, callback(this, "cb_fade_in_done", DemoSettings.demo_level))
 			Managers.music:trigger_event("hud_menu_start_game")
-		end
+		end,
 	}
 else
 	menu_functions = {
@@ -61,7 +64,7 @@ else
 			Managers.transition:show_loading_icon(false)
 			Managers.transition:fade_in(GameSettings.transition_fade_out_speed, callback(this, "cb_fade_in_done", "whitebox_combat"))
 			Managers.music:trigger_event("play_hud_select")
-		end
+		end,
 	}
 end
 
@@ -85,12 +88,13 @@ end
 StateTitleScreenMainMenu._setup_sound = function (self)
 	local master_bus_volume = Application.user_setting("master_bus_volume") or 90
 	local music_bus_volume = Application.user_setting("music_bus_volume") or 90
-	local wwise_world = nil
+	local wwise_world
 
 	if GLOBAL_MUSIC_WORLD then
 		wwise_world = MUSIC_WWISE_WORLD
 	else
 		local music_world = Managers.world:world("music_world")
+
 		wwise_world = Managers.world:wwise_world(music_world)
 	end
 
@@ -113,7 +117,7 @@ StateTitleScreenMainMenu._init_menu_views = function (self)
 	local view_context = {
 		ui_renderer = ui_renderer,
 		input_manager = Managers.input,
-		world_manager = Managers.world
+		world_manager = Managers.world,
 	}
 
 	if script_data.honduras_demo then
@@ -123,7 +127,7 @@ StateTitleScreenMainMenu._init_menu_views = function (self)
 	else
 		self._views = {
 			credits_view = CreditsView:new(view_context),
-			options_view = OptionsView:new(view_context)
+			options_view = OptionsView:new(view_context),
 		}
 	end
 
@@ -161,6 +165,7 @@ StateTitleScreenMainMenu.update = function (self, dt, t)
 
 		if script_data.honduras_demo and self._title_start_ui:should_start() and not self._input_disabled then
 			local profile_name, career_index = self._title_start_ui:selected_profile()
+
 			self._input_disabled = true
 
 			Managers.transition:show_loading_icon(false)
@@ -211,6 +216,7 @@ end
 
 StateTitleScreenMainMenu.activate_view = function (self, new_view)
 	self._active_view = new_view
+
 	local views = self._views
 
 	assert(views[new_view])
@@ -231,6 +237,7 @@ StateTitleScreenMainMenu.exit_current_view = function (self)
 	end
 
 	self._active_view = nil
+
 	local input_manager = Managers.input
 
 	input_manager:block_device_except_service("main_menu", "gamepad", 1)

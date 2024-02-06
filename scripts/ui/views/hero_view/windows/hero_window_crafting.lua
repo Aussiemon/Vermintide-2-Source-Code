@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/hero_view/windows/hero_window_crafting.lua
+
 require("scripts/ui/views/hero_view/craft_pages/craft_page_salvage")
 require("scripts/ui/views/hero_view/craft_pages/craft_page_roll_trait")
 require("scripts/ui/views/hero_view/craft_pages/craft_page_roll_properties")
@@ -15,48 +17,49 @@ local animation_definitions = definitions.animation_definitions
 local DO_RELOAD = false
 local page_settings = {
 	{
-		sound_event_enter = "play_gui_equipment_button",
-		name = "salvage",
 		class_name = "CraftPageSalvage",
-		sound_event_exit = "play_gui_equipment_close"
+		name = "salvage",
+		sound_event_enter = "play_gui_equipment_button",
+		sound_event_exit = "play_gui_equipment_close",
 	},
 	{
-		sound_event_enter = "play_gui_equipment_button",
-		name = "craft_random_item",
 		class_name = "CraftPageCraftItem",
-		sound_event_exit = "play_gui_equipment_close"
+		name = "craft_random_item",
+		sound_event_enter = "play_gui_equipment_button",
+		sound_event_exit = "play_gui_equipment_close",
 	},
 	{
-		sound_event_enter = "play_gui_equipment_button",
-		name = "reroll_weapon_properties",
 		class_name = "CraftPageRollProperties",
-		sound_event_exit = "play_gui_equipment_close"
+		name = "reroll_weapon_properties",
+		sound_event_enter = "play_gui_equipment_button",
+		sound_event_exit = "play_gui_equipment_close",
 	},
 	{
-		sound_event_enter = "play_gui_equipment_button",
-		name = "reroll_weapon_traits",
 		class_name = "CraftPageRollTrait",
-		sound_event_exit = "play_gui_equipment_close"
+		name = "reroll_weapon_traits",
+		sound_event_enter = "play_gui_equipment_button",
+		sound_event_exit = "play_gui_equipment_close",
 	},
 	{
-		sound_event_enter = "play_gui_equipment_button",
-		name = "upgrade_item_rarity_common",
 		class_name = "CraftPageUpgradeItem",
-		sound_event_exit = "play_gui_equipment_close"
+		name = "upgrade_item_rarity_common",
+		sound_event_enter = "play_gui_equipment_button",
+		sound_event_exit = "play_gui_equipment_close",
 	},
 	{
-		sound_event_enter = "play_gui_equipment_button",
-		name = "apply_weapon_skin",
 		class_name = "CraftPageApplySkin",
-		sound_event_exit = "play_gui_equipment_close"
+		name = "apply_weapon_skin",
+		sound_event_enter = "play_gui_equipment_button",
+		sound_event_exit = "play_gui_equipment_close",
 	},
 	{
-		sound_event_enter = "play_gui_equipment_button",
-		name = "convert_blue_dust",
 		class_name = "CraftPageConvertDust",
-		sound_event_exit = "play_gui_equipment_close"
-	}
+		name = "convert_blue_dust",
+		sound_event_enter = "play_gui_equipment_button",
+		sound_event_exit = "play_gui_equipment_close",
+	},
 }
+
 HeroWindowCrafting = class(HeroWindowCrafting)
 HeroWindowCrafting.NAME = "HeroWindowCrafting"
 
@@ -64,18 +67,22 @@ HeroWindowCrafting.on_enter = function (self, params, offset)
 	print("[HeroViewWindow] Enter Substate HeroWindowCrafting")
 
 	self.parent = params.parent
+
 	local ingame_ui_context = params.ingame_ui_context
+
 	self.ui_renderer = ingame_ui_context.ui_renderer
 	self.ui_top_renderer = ingame_ui_context.ui_top_renderer
 	self.input_manager = ingame_ui_context.input_manager
 	self.statistics_db = ingame_ui_context.statistics_db
 	self.render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 	self.crafting_manager = Managers.state.crafting
 	self.wwise_world = params.wwise_world
+
 	local player_manager = Managers.player
 	local local_player = player_manager:local_player()
+
 	self._stats_id = local_player:stats_id()
 	self.player_manager = player_manager
 	self.peer_id = ingame_ui_context.peer_id
@@ -93,7 +100,7 @@ HeroWindowCrafting.on_enter = function (self, params, offset)
 		parent = self,
 		hero_name = self.hero_name,
 		career_index = self.career_index,
-		profile_index = self.profile_index
+		profile_index = self.profile_index,
 	}
 	self.unblocked_services = {}
 	self.unblocked_services_n = 0
@@ -103,11 +110,13 @@ end
 
 HeroWindowCrafting.create_ui_elements = function (self, params, offset)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+
 	local widgets = {}
 	local widgets_by_name = {}
 
 	for name, widget_definition in pairs(widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		widgets[#widgets + 1] = widget
 		widgets_by_name[name] = widget
 	end
@@ -121,6 +130,7 @@ HeroWindowCrafting.create_ui_elements = function (self, params, offset)
 
 	if offset then
 		local window_position = self.ui_scenegraph.window.local_position
+
 		window_position[1] = window_position[1] + offset[1]
 		window_position[2] = window_position[2] + offset[2]
 		window_position[3] = window_position[3] + offset[3]
@@ -269,7 +279,7 @@ HeroWindowCrafting._handle_input = function (self, dt, t)
 		if input_service:get("cycle_next") then
 			local next_page_index = current_page % total_pages + 1
 
-			if total_pages >= next_page_index then
+			if next_page_index <= total_pages then
 				self:_change_recipe_page(next_page_index)
 				self:_play_sound("play_gui_craft_recipe_next")
 			end
@@ -322,9 +332,12 @@ HeroWindowCrafting._change_recipe_page = function (self, current_page)
 	local current_page_settings = page_settings[current_page]
 	local page_name = current_page_settings.name
 	local recipe = crafting_recipes_by_name[page_name]
+
 	self._active_recipe = recipe
+
 	local ingredients = recipe.ingredients
 	local widgets_by_name = self._widgets_by_name
+
 	widgets_by_name.title_text.content.text = Localize(recipe.display_name)
 	widgets_by_name.description_text.content.text = Localize(recipe.description_text)
 
@@ -333,7 +346,9 @@ HeroWindowCrafting._change_recipe_page = function (self, current_page)
 		self._current_page = current_page
 		current_page = current_page or 1
 		total_pages = total_pages or 1
+
 		local widgets_by_name = self._widgets_by_name
+
 		widgets_by_name.page_text_left.content.text = tostring(current_page)
 		widgets_by_name.page_text_right.content.text = tostring(total_pages)
 
@@ -388,6 +403,7 @@ HeroWindowCrafting._update_craft_start_time = function (self, dt, t)
 	end
 
 	craft_start_duration = craft_start_duration + dt
+
 	local animation_time = UISettings.crafting_animation_in_time
 	local progress = math.min(craft_start_duration / animation_time, 1)
 	local animation_progress = math.easeInCubic(progress)
@@ -412,10 +428,12 @@ HeroWindowCrafting._update_craft_glow_in_time = function (self, dt, t)
 	end
 
 	craft_glow_in_duration = craft_glow_in_duration + dt
+
 	local animation_time = UISettings.crafting_animation_in_time
 	local progress = math.min(craft_glow_in_duration / animation_time, 1)
 	local animation_progress = math.easeInCubic(progress)
 	local widget = self._widgets_by_name.crafting_fg_glow
+
 	widget.style.texture_id.color[1] = animation_progress * 255
 
 	if progress == 1 then
@@ -434,6 +452,7 @@ HeroWindowCrafting._update_craft_glow_wait_time = function (self, dt, t)
 	end
 
 	craft_glow_wait_duration = craft_glow_wait_duration + dt
+
 	local animation_wait_time = UISettings.crafting_animation_wait_time
 	local progress = math.min(craft_glow_wait_duration / animation_wait_time, 1)
 	local animation_progress = math.ease_pulse(1 - progress)
@@ -453,10 +472,12 @@ HeroWindowCrafting._update_craft_glow_out_time = function (self, dt, t)
 	end
 
 	craft_glow_out_duration = craft_glow_out_duration + dt
+
 	local animation_time = UISettings.crafting_animation_out_time
 	local progress = math.min(craft_glow_out_duration / animation_time, 1)
 	local animation_progress = math.easeOutCubic(1 - progress)
 	local widget = self._widgets_by_name.crafting_fg_glow
+
 	widget.style.texture_id.color[1] = animation_progress * 255
 
 	if progress == 1 then
@@ -481,6 +502,7 @@ HeroWindowCrafting._set_crafting_fg_progress = function (self, progress)
 	local ui_scenegraph = self.ui_scenegraph
 	local current_size = ui_scenegraph[scenegraph_id].size
 	local default_size = scenegraph_definition[scenegraph_id].size
+
 	current_size[2] = default_size[2] * progress
 	uvs[1][2] = 1 - progress
 	uvs[2][2] = 1
@@ -494,6 +516,7 @@ HeroWindowCrafting._update_craft_end_time = function (self, dt, t)
 	end
 
 	craft_end_duration = craft_end_duration + dt
+
 	local progress = math.min(craft_end_duration / 0.8, 1)
 	local animation_progress = math.easeCubic(1 - progress)
 

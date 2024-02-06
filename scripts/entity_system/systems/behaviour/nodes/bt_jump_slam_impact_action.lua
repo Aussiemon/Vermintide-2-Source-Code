@@ -1,7 +1,10 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_jump_slam_impact_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 local stagger_types = require("scripts/utils/stagger_types")
 local position_lookup = POSITION_LOOKUP
+
 BTJumpSlamImpactAction = class(BTJumpSlamImpactAction, BTNode)
 
 BTJumpSlamImpactAction.init = function (self, ...)
@@ -13,6 +16,7 @@ BTJumpSlamImpactAction.name = "BTJumpSlamImpactAction"
 BTJumpSlamImpactAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
 	local target_unit = blackboard.target_unit
+
 	blackboard.action = action
 	blackboard.active_node = BTJumpSlamImpactAction
 	blackboard.attack_finished = nil
@@ -84,6 +88,7 @@ BTJumpSlamImpactAction.catapult_player = function (target_unit, impact_position,
 	local length = push_speed * math.cos(angle)
 	local height = push_speed * math.sin(angle)
 	local push_velocity = flat_towards_player * length
+
 	push_velocity.z = height
 
 	StatusUtils.set_catapulted_network(target_unit, true, push_velocity)
@@ -103,10 +108,12 @@ BTJumpSlamImpactAction.impact_damage = function (attacking_unit, t, radius, stag
 			local unit_position = position_lookup[ai_unit]
 			local vector_to_target = unit_position - impact_position
 			local stagger_type, stagger_duration = DamageUtils.calculate_stagger(impact, nil, ai_unit, attacking_unit)
+
 			stagger_duration = 1
+
 			local target_ai_blackboard = BLACKBOARDS[ai_unit]
 
-			if stagger_types.none < stagger_type then
+			if stagger_type > stagger_types.none then
 				AiUtils.stagger(ai_unit, target_ai_blackboard, attacking_unit, vector_to_target, stagger_length, stagger_type, stagger_duration, nil, t)
 			end
 
@@ -116,10 +123,10 @@ BTJumpSlamImpactAction.impact_damage = function (attacking_unit, t, radius, stag
 				local is_inside_radius = distance < radius
 
 				if is_inside_radius then
-					local damage_done = nil
+					local damage_done
 
 					if max_damage_radius < distance then
-						damage_done = damage * (distance - max_damage_radius) / falloff_radius
+						damage_done = damage * ((distance - max_damage_radius) / falloff_radius)
 					else
 						damage_done = damage
 					end

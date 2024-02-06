@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/weapons/actions/action_one_time_consumable.lua
+
 ActionOneTimeConsumable = class(ActionOneTimeConsumable, ActionBase)
 
 ActionOneTimeConsumable.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)

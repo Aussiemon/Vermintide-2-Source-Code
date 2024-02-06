@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/hero_view/windows/hero_window_weave_forge_panel.lua
+
 require("scripts/ui/views/menu_world_previewer")
 require("scripts/helpers/weave_utils")
 
@@ -8,6 +10,7 @@ local bottom_hdr_widget_definitions = definitions.bottom_hdr_widgets
 local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
 local DO_RELOAD = false
+
 HeroWindowWeaveForgePanel = class(HeroWindowWeaveForgePanel)
 HeroWindowWeaveForgePanel.NAME = "HeroWindowWeaveForgePanel"
 
@@ -16,22 +19,26 @@ HeroWindowWeaveForgePanel.on_enter = function (self, params, offset)
 
 	self._params = params
 	self._parent = params.parent
+
 	local ingame_ui_context = params.ingame_ui_context
+
 	self._wwise_world = ingame_ui_context.wwise_world
 	self._ui_renderer = ingame_ui_context.ui_renderer
 	self._ui_top_renderer = ingame_ui_context.ui_top_renderer
 	self._render_settings = {
 		alpha_multiplier = 1,
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 	self._ingame_ui_context = ingame_ui_context
+
 	local input_manager = Managers.input
 	local reward_params = {
 		wwise_world = self._wwise_world,
 		ui_renderer = self._ui_renderer,
 		ui_top_renderer = self._ui_top_renderer,
-		input_manager = input_manager
+		input_manager = input_manager,
 	}
+
 	self._animations = {}
 	self._ui_animations = {}
 
@@ -44,6 +51,7 @@ HeroWindowWeaveForgePanel.on_enter = function (self, params, offset)
 	local careers = profile.careers
 	local career = careers[career_index]
 	local career_name = career.name
+
 	self._career_name = career_name
 	self._hero_name = hero_name
 end
@@ -51,10 +59,11 @@ end
 HeroWindowWeaveForgePanel._start_transition_animation = function (self, key, animation_name)
 	local params = {
 		wwise_world = self._wwise_world,
-		render_settings = self._render_settings
+		render_settings = self._render_settings,
 	}
 	local widgets = self._widgets_by_name
 	local anim_id = self._ui_animator:start_animation(animation_name, widgets, scenegraph_definition, params)
+
 	self._animations[key] = anim_id
 end
 
@@ -76,11 +85,13 @@ HeroWindowWeaveForgePanel.create_ui_elements = function (self, params, offset)
 	self:_setup_definitions()
 
 	self._ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+
 	local widgets_by_name = {}
 	local top_widgets = {}
 
 	for name, widget_definition in pairs(top_widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		top_widgets[#top_widgets + 1] = widget
 		widgets_by_name[name] = widget
 	end
@@ -89,6 +100,7 @@ HeroWindowWeaveForgePanel.create_ui_elements = function (self, params, offset)
 
 	for name, widget_definition in pairs(bottom_widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		bottom_widgets[#bottom_widgets + 1] = widget
 		widgets_by_name[name] = widget
 	end
@@ -97,6 +109,7 @@ HeroWindowWeaveForgePanel.create_ui_elements = function (self, params, offset)
 
 	for name, widget_definition in pairs(bottom_hdr_widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		bottom_hdr_widgets[#bottom_hdr_widgets + 1] = widget
 		widgets_by_name[name] = widget
 	end
@@ -109,6 +122,7 @@ HeroWindowWeaveForgePanel.create_ui_elements = function (self, params, offset)
 
 	if offset then
 		local window_position = self._ui_scenegraph.window.local_position
+
 		window_position[1] = window_position[1] + offset[1]
 		window_position[2] = window_position[2] + offset[2]
 		window_position[3] = window_position[3] + offset[3]
@@ -127,25 +141,26 @@ HeroWindowWeaveForgePanel._setup_essence_tooltip = function (self)
 	local scenegraph_id = "essence_panel"
 	local size = scenegraph_definition[scenegraph_id].size
 	local content_passes = {
-		"weave_progression_slot_titles"
+		"weave_progression_slot_titles",
 	}
 	local content_data = {
 		title = Localize("menu_weave_forge_tooltip_essence_title"),
 		description = Localize("menu_weave_forge_tooltip_essence_description"),
 		divider_description = Localize("menu_weave_forge_tooltip_essence_description_base_game"),
 		essence_title = Localize("menu_weave_forge_tooltip_essence_description_total_title"),
-		input_highlight = essence_total_gained_text
+		input_highlight = essence_total_gained_text,
 	}
 	local max_width = 400
 	local grow_downwards = true
-	local horizontal_alignment, vertical_alignment = nil
+	local horizontal_alignment, vertical_alignment
 	local offset = {
 		96,
 		0,
-		0
+		0,
 	}
 	local widget_definition = UIWidgets.create_additional_option_tooltip(scenegraph_id, size, content_passes, content_data, max_width, horizontal_alignment, vertical_alignment, grow_downwards, offset)
 	local widget = UIWidget.init(widget_definition)
+
 	top_widgets[#top_widgets + 1] = widget
 	widgets_by_name.essence_tooltip = widget
 end
@@ -158,6 +173,7 @@ HeroWindowWeaveForgePanel._set_essence_tooltip_amounts = function (self, total_e
 	local value_string_gained = UIUtils.comma_value(total_essence)
 	local value_string_cap = UIUtils.comma_value(maximum_essence)
 	local essence_total_gained_text = string.format(Localize("menu_weave_forge_tooltip_essence_description_total"), value_string_gained, value_string_cap)
+
 	tooltip.title = Localize("menu_weave_forge_tooltip_essence_title")
 	tooltip.description = Localize("menu_weave_forge_tooltip_essence_description")
 	tooltip.divider_description = Localize("menu_weave_forge_tooltip_essence_description_base_game")
@@ -169,6 +185,7 @@ HeroWindowWeaveForgePanel.on_exit = function (self, params)
 	print("[HeroViewWindow] Exit Substate HeroWindowWeaveForgePanel")
 
 	self._ui_animator = nil
+
 	local world = Managers.world:world("level_world")
 	local level = LevelHelper:current_level(world)
 
@@ -178,6 +195,7 @@ end
 HeroWindowWeaveForgePanel._set_loadout_power = function (self, power)
 	local widgets_by_name = self._widgets_by_name
 	local widget_text = widgets_by_name.loadout_power_text
+
 	widget_text.content.text = power
 end
 
@@ -186,7 +204,9 @@ HeroWindowWeaveForgePanel._set_essence_amount = function (self, essence_amount)
 	local widget_text = widgets_by_name.essence_text
 	local widget_icon = widgets_by_name.essence_icon
 	local value_string = UIUtils.comma_value(essence_amount)
+
 	widget_text.content.text = value_string
+
 	local ui_renderer = self._ui_top_renderer
 	local text_width = UIUtils.get_text_width(ui_renderer, widget_text.style.text, value_string)
 	local icon_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(widget_icon.content.texture_id)
@@ -194,6 +214,7 @@ HeroWindowWeaveForgePanel._set_essence_amount = function (self, essence_amount)
 	local icon_width = icon_size[1]
 	local spacing = 0
 	local total_width = icon_width + text_width + spacing
+
 	widget_icon.offset[1] = -(total_width / 2 - icon_width / 2 + 5)
 	widget_text.offset[1] = widget_icon.offset[1] + icon_width / 2 + text_width / 2 + spacing
 
@@ -207,12 +228,14 @@ HeroWindowWeaveForgePanel._sync_backend_loadout = function (self)
 	local essence_amount = backend_interface_weaves:get_essence()
 	local maximum_essence = backend_interface_weaves:get_maximum_essence()
 	local total_essence = backend_interface_weaves:get_total_essence()
+
 	self._current_essence_amount = essence_amount
 	self._essence_value_string = self:_set_essence_amount(math.min(essence_amount, maximum_essence))
 
 	self:_set_essence_tooltip_amounts(math.min(total_essence, maximum_essence), maximum_essence)
 
 	local average_power_level = backend_interface_weaves:get_average_power_level(career_name)
+
 	average_power_level = UIUtils.presentable_hero_power_level_weaves(average_power_level)
 
 	self:_set_loadout_power(average_power_level)
@@ -271,6 +294,7 @@ HeroWindowWeaveForgePanel._sync_component_visibilty_by_layout = function (self, 
 
 	if layout_name == "weave_overview" then
 		local visible = true
+
 		widgets_by_name.loadout_power_title.content.visible = visible
 		widgets_by_name.loadout_power_text.content.visible = visible
 		widgets_by_name.top_corner_right.content.visible = visible
@@ -279,6 +303,7 @@ HeroWindowWeaveForgePanel._sync_component_visibilty_by_layout = function (self, 
 		widgets_by_name.bottom_panel_right.content.visible = visible
 	else
 		local visible = false
+
 		widgets_by_name.loadout_power_title.content.visible = visible
 		widgets_by_name.loadout_power_text.content.visible = visible
 		widgets_by_name.loadout_power_tooltip.content.visible = visible
@@ -309,6 +334,7 @@ HeroWindowWeaveForgePanel._update_animations = function (self, dt)
 	end
 
 	self._upgrading_anim_progress = upgrading_anim_progress
+
 	local ui_animations = self._ui_animations
 	local animations = self._animations
 	local ui_animator = self._ui_animator
@@ -414,6 +440,7 @@ HeroWindowWeaveForgePanel._set_background_wheel_visibility = function (self, vis
 	local widgets_by_name = self._widgets_by_name
 	local background_wheel_1 = widgets_by_name.background_wheel_1
 	local hdr_background_wheel_1 = widgets_by_name.hdr_background_wheel_1
+
 	background_wheel_1.content.visible = visible
 	hdr_background_wheel_1.content.visible = visible
 
@@ -424,6 +451,7 @@ HeroWindowWeaveForgePanel._set_background_wheel_visibility = function (self, vis
 		local hdr_wheel_ring_1 = widgets_by_name["hdr_wheel_ring_" .. i .. "_1"]
 		local hdr_wheel_ring_2 = widgets_by_name["hdr_wheel_ring_" .. i .. "_2"]
 		local hdr_wheel_ring_3 = widgets_by_name["hdr_wheel_ring_" .. i .. "_3"]
+
 		wheel_ring_1.content.visible = visible
 		wheel_ring_2.content.visible = visible
 		wheel_ring_3.content.visible = visible
@@ -451,6 +479,7 @@ HeroWindowWeaveForgePanel._update_background_animations = function (self, dt)
 		local speed_1 = dt * 0.01 * overall_speed
 		local speed_2 = dt * 0.008 * overall_speed
 		local speed_3 = dt * 0.006 * overall_speed
+
 		wheel_ring_1.style.texture_id.angle = (wheel_ring_1.style.texture_id.angle + radians * speed_1) % radians
 		wheel_ring_2.style.texture_id.angle = (wheel_ring_2.style.texture_id.angle - radians * speed_2) % -radians
 		wheel_ring_3.style.texture_id.angle = (wheel_ring_3.style.texture_id.angle + radians * speed_3) % radians

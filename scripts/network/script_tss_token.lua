@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/network/script_tss_token.lua
+
 ScriptTssToken = class(ScriptTssToken)
 
 ScriptTssToken.init = function (self, token)
@@ -12,15 +14,16 @@ ScriptTssToken.update = function (self)
 
 	if Tss.has_result(token) then
 		local done, result = Tss.get_result(token)
+
 		self._done = done
 		self._result = result
 	end
 end
 
 ScriptTssToken.info = function (self)
-	local info = {
-		result = self._result
-	}
+	local info = {}
+
+	info.result = self._result
 
 	return info
 end

@@ -1,8 +1,11 @@
+﻿-- chunkname: @scripts/settings/dlcs/woods/woods_spawn_unit_templates.lua
+
 local UNIT_NAMES = {
+	bleed = "units/beings/player/way_watcher_thornsister/abilities/ww_thornsister_thorn_wall_01_bleed",
 	default = "units/beings/player/way_watcher_thornsister/abilities/ww_thornsister_thorn_wall_01",
-	bleed = "units/beings/player/way_watcher_thornsister/abilities/ww_thornsister_thorn_wall_01_bleed"
 }
 local WALL_TYPES = table.enum("default", "bleed")
+
 SpawnUnitTemplates.thornsister_thorn_wall_unit = {
 	spawn_func = function (source_unit, position, rotation, state_int, group_spawn_index)
 		local UNIT_NAME = UNIT_NAMES[WALL_TYPES.default]
@@ -12,39 +15,41 @@ SpawnUnitTemplates.thornsister_thorn_wall_unit = {
 		local life_time = 6
 		local area_damage_params = {
 			aoe_dot_damage = 0,
-			radius = 0.3,
+			aoe_dot_damage_interval = 0,
+			aoe_init_damage = 0,
 			area_damage_template = "we_thornsister_thorn_wall",
+			create_nav_tag_volume = true,
+			damage_players = false,
+			damage_source = "career_ability",
 			invisible_unit = false,
 			nav_tag_volume_layer = "temporary_wall",
-			create_nav_tag_volume = true,
-			aoe_init_damage = 0,
-			damage_source = "career_ability",
-			aoe_dot_damage_interval = 0,
-			damage_players = false,
+			radius = 0.3,
 			source_attacker_unit = source_unit,
-			life_time = life_time
+			life_time = life_time,
 		}
 		local props_params = {
 			life_time = life_time,
 			owner_unit = source_unit,
 			despawn_sound_event = despawn_sound_event,
-			wall_index = wall_index
+			wall_index = wall_index,
 		}
 		local health_params = {
-			health = 20
+			health = 20,
 		}
-		local buffs_to_add = nil
+		local buffs_to_add
 		local source_talent_extension = ScriptUnit.has_extension(source_unit, "talent_system")
 
 		if source_talent_extension then
 			if source_talent_extension:has_talent("kerillian_thorn_sister_tanky_wall") then
 				local life_time_mult = 1
 				local life_time_bonus = 4.2
+
 				area_damage_params.life_time = area_damage_params.life_time * life_time_mult + life_time_bonus
 				props_params.life_time = props_params.life_time * life_time_mult + life_time_bonus
 			elseif source_talent_extension:has_talent("kerillian_thorn_sister_debuff_wall") then
 				local life_time_mult = 0.17
 				local life_time_bonus = 0
+
 				area_damage_params.create_nav_tag_volume = false
 				area_damage_params.life_time = area_damage_params.life_time * life_time_mult + life_time_bonus
 				props_params.life_time = props_params.life_time * life_time_mult + life_time_bonus
@@ -58,12 +63,12 @@ SpawnUnitTemplates.thornsister_thorn_wall_unit = {
 			health_system = health_params,
 			death_system = {
 				death_reaction_template = "thorn_wall",
-				is_husk = false
+				is_husk = false,
 			},
 			hit_reaction_system = {
+				hit_reaction_template = "level_object",
 				is_husk = false,
-				hit_reaction_template = "level_object"
-			}
+			},
 		}
 		local wall_unit = Managers.state.unit_spawner:spawn_network_unit(UNIT_NAME, UNIT_TEMPLATE_NAME, extension_init_data, position, rotation)
 		local random_rotation = Quaternion(Vector3.up(), math.random() * 2 * math.pi - math.pi)
@@ -83,17 +88,17 @@ SpawnUnitTemplates.thornsister_thorn_wall_unit = {
 		if thorn_wall_extension then
 			thorn_wall_extension.group_spawn_index = group_spawn_index
 		end
-	end
+	end,
 }
 SpawnUnitTemplates.vortex_unit = {
 	spawn_func = function (source_unit, position, rotation, state_int)
 		local UNIT_NAME = "units/weapons/enemy/wpn_chaos_plague_vortex/wpn_chaos_plague_vortex"
 		local vortex_template_name = "spirit_storm"
 		local vortex_template = VortexTemplates[vortex_template_name]
-		local inner_decal_unit_name, outer_decal_unit_name = nil
+		local inner_decal_unit_name, outer_decal_unit_name
 		local spawn_radius = 2
 		local inner_radius_p = math.min(spawn_radius / vortex_template.full_inner_radius, 1)
-		local inner_decal_unit = nil
+		local inner_decal_unit
 
 		if inner_decal_unit_name then
 			local inner_spawn_pose = Matrix4x4.from_quaternion_position(Quaternion.identity(), position)
@@ -104,7 +109,7 @@ SpawnUnitTemplates.vortex_unit = {
 			inner_decal_unit = Managers.state.unit_spawner:spawn_network_unit(inner_decal_unit_name, "network_synched_dummy_unit", nil, inner_spawn_pose)
 		end
 
-		local outer_decal_unit = nil
+		local outer_decal_unit
 
 		if outer_decal_unit_name then
 			local outer_spawn_pose = Matrix4x4.from_quaternion_position(Quaternion.identity(), position)
@@ -121,10 +126,10 @@ SpawnUnitTemplates.vortex_unit = {
 				vortex_template_name = vortex_template_name,
 				inner_decal_unit = inner_decal_unit,
 				outer_decal_unit = outer_decal_unit,
-				owner_unit = source_unit
-			}
+				owner_unit = source_unit,
+			},
 		}
 
 		Managers.state.unit_spawner:spawn_network_unit(UNIT_NAME, UNIT_TEMPLATE_NAME, extension_init_data, position, rotation)
-	end
+	end,
 }

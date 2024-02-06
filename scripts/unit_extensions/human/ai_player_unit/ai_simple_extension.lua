@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/human/ai_player_unit/ai_simple_extension.lua
+
 require("scripts/unit_extensions/human/ai_player_unit/ai_locomotion_extension")
 require("scripts/unit_extensions/human/ai_player_unit/ai_locomotion_extension_c")
 require("scripts/unit_extensions/human/ai_player_unit/ai_husk_locomotion_extension")
@@ -7,12 +9,14 @@ require("scripts/unit_extensions/human/ai_player_unit/perception_utils")
 require("scripts/unit_extensions/human/ai_player_unit/target_selection_utils")
 
 local alive = Unit.alive
+
 AISimpleExtension = class(AISimpleExtension)
 
 AISimpleExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	self._world = extension_init_context.world
 	self._unit = unit
 	self._nav_world = extension_init_data.nav_world
+
 	local ai_system = Managers.state.entity:system("ai_system")
 	local spawn_type = extension_init_data.spawn_type
 	local is_horde = spawn_type == "horde_hidden" or spawn_type == "horde"
@@ -25,9 +29,11 @@ AISimpleExtension.init = function (self, extension_init_context, unit, extension
 	fassert(extension_init_data.side_id, "no side_id")
 
 	self._side_id = extension_init_data.side_id
+
 	local is_passive = breed.initial_is_passive == nil and true or breed.initial_is_passive
 	local blackboard = Script.new_map(breed.blackboard_allocation_size or 75)
 	local optional_spawn_data = extension_init_data.optional_spawn_data
+
 	blackboard.world = extension_init_context.world
 	blackboard.unit = unit
 	blackboard.level = LevelHelper:current_level(extension_init_context.world)
@@ -51,6 +57,7 @@ AISimpleExtension.init = function (self, extension_init_context, unit, extension
 	blackboard.is_ai = true
 	blackboard.lean_unit_list = {}
 	blackboard.next_lean_index = 0
+
 	local blackboard_init_data = breed.blackboard_init_data
 
 	if blackboard_init_data and blackboard_init_data.player_locomotion_constrain_radius ~= nil then
@@ -61,16 +68,25 @@ AISimpleExtension.init = function (self, extension_init_context, unit, extension
 
 	blackboard.lean_dogpile = 0
 	blackboard.crowded_slots = breed.infighting.crowded_slots
+
 	local health_extension = ScriptUnit.has_extension(unit, "health_system")
+
 	self._health_extension = health_extension
+
 	local locomotion_extension = ScriptUnit.has_extension(unit, "locomotion_system")
+
 	self._locomotion = locomotion_extension
 	blackboard.locomotion_extension = locomotion_extension
+
 	local ai_navigation_extension = ScriptUnit.has_extension(unit, "ai_navigation_system")
+
 	self._navigation = ai_navigation_extension
 	blackboard.navigation_extension = ai_navigation_extension
+
 	local buff_extension = ScriptUnit.has_extension(unit, "buff_system")
+
 	blackboard.buff_extension = buff_extension
+
 	local blackboard_init_data = breed.blackboard_init_data
 
 	if blackboard_init_data then
@@ -109,35 +125,35 @@ AISimpleExtension.destroy = function (self)
 end
 
 STATIC_BLACKBOARD_KEYS = STATIC_BLACKBOARD_KEYS or {
-	target_dist = true,
-	stagger_count = true,
-	node_data = true,
-	is_in_attack_cooldown = true,
-	next_lean_index = true,
+	attack_cooldown_at = true,
+	breed = true,
+	group_blackboard = true,
 	health_extension = true,
-	stagger_count_reset_at = true,
+	inventory_extension = true,
+	is_in_attack_cooldown = true,
+	is_passive = true,
 	lean_dogpile = true,
-	next_smart_object_data = true,
-	navigation_extension = true,
+	lean_slots = true,
+	lean_unit_list = true,
+	level = true,
 	locomotion_extension = true,
 	move_orders = true,
-	lean_slots = true,
-	unit = true,
+	nav_world = true,
+	navigation_extension = true,
+	next_lean_index = true,
+	next_smart_object_data = true,
+	node_data = true,
 	optional_spawn_data = true,
-	level = true,
-	system_api = true,
 	override_targets = true,
-	spawn_type = true,
 	running_nodes = true,
-	lean_unit_list = true,
-	group_blackboard = true,
-	attack_cooldown_at = true,
+	spawn_type = true,
+	stagger_count = true,
+	stagger_count_reset_at = true,
 	stuck_check_time = true,
+	system_api = true,
+	target_dist = true,
+	unit = true,
 	world = true,
-	inventory_extension = true,
-	is_passive = true,
-	breed = true,
-	nav_world = true
 }
 
 AISimpleExtension.freeze = function (self)
@@ -159,6 +175,7 @@ AISimpleExtension.unfreeze = function (self, unit, data)
 	local spawn_type = data[6]
 	local optional_spawn_data = data[7]
 	local side_id = optional_spawn_data.side_id
+
 	self._side_id = side_id
 
 	fassert(side_id ~= nil, "no side_id")
@@ -177,7 +194,9 @@ AISimpleExtension.unfreeze = function (self, unit, data)
 	blackboard.target_dist = math.huge
 	blackboard.spawn_type = spawn_type
 	blackboard.spawn_category = spawn_category
+
 	local buff_extension = ScriptUnit.has_extension(unit, "buff_system")
+
 	blackboard.buff_extension = buff_extension
 	blackboard.stuck_check_time = Managers.time:time("game") + RecycleSettings.ai_stuck_check_start_time
 	blackboard.is_in_attack_cooldown = false
@@ -186,13 +205,16 @@ AISimpleExtension.unfreeze = function (self, unit, data)
 	blackboard.stagger_count_reset_at = 0
 	blackboard.optional_spawn_data = optional_spawn_data
 	blackboard.side = side
+
 	local breed = blackboard.breed
+
 	blackboard.lean_dogpile = 0
 	blackboard.crowded_slots = breed.infighting.crowded_slots
 
 	table.clear(blackboard.lean_unit_list)
 
 	blackboard.next_lean_index = 0
+
 	local is_horde = spawn_type == "horde_hidden" or spawn_type == "horde"
 	local behavior = optional_spawn_data and optional_spawn_data.behavior or is_horde and breed.horde_behavior or breed.behavior
 
@@ -214,7 +236,9 @@ AISimpleExtension.extensions_ready = function (self, world, unit)
 	local blackboard = self._blackboard
 	local side_id = self._side_id
 	local side = Managers.state.side:add_unit_to_side(unit, side_id)
+
 	blackboard.side = side
+
 	local breed = self._breed
 	local spawn_type = blackboard.spawn_type
 	local is_horde = spawn_type == "horde_hidden" or spawn_type == "horde"
@@ -245,9 +269,9 @@ AISimpleExtension.get_overlap_context = function (self)
 	else
 		self._overlap_context = {
 			has_gotten_callback = false,
-			spine_node = false,
 			num_hits = 0,
-			overlap_units = {}
+			spine_node = false,
+			overlap_units = {},
 		}
 
 		GarbageLeakDetector.register_object(self._overlap_context, "ai_overlap_context")
@@ -263,6 +287,7 @@ AISimpleExtension.set_properties = function (self, params)
 
 		if prop_type == "table" then
 			prop_value = AIProperties
+
 			local prop_iterator = property:gmatch("(%S+)")
 
 			prop_iterator()
@@ -401,7 +426,9 @@ AISimpleExtension.attacked = function (self, attacker_unit, t, damage_hit)
 	local unit = self._unit
 	local blackboard = self._blackboard
 	local side = blackboard.side
+
 	attacker_unit = AiUtils.get_actual_attacker_unit(attacker_unit)
+
 	local is_enemy = side.enemy_units_lookup[attacker_unit]
 
 	if is_enemy then
@@ -439,6 +466,7 @@ AISimpleExtension.enemy_aggro = function (self, alerting_unit, enemy_unit)
 	AiUtils.activate_unit(blackboard)
 
 	blackboard.no_hesitation = true
+
 	local slot_extension = ScriptUnit.has_extension(self_unit, "ai_slot_system")
 
 	if slot_extension then
@@ -486,12 +514,14 @@ AISimpleExtension.increase_stagger_count = function (self)
 	local stagger_count = blackboard.stagger_count
 	local reset_time = breed.stagger_count_reset_time or DEFAULT_STAGGER_RESET_TIME
 	local t = Managers.time:time("main")
+
 	blackboard.stagger_count = stagger_count + 1
 	blackboard.stagger_count_reset_at = t + reset_time
 end
 
 AISimpleExtension.reset_stagger_count = function (self)
 	local blackboard = self._blackboard
+
 	blackboard.stagger_count_reset_at = 0
 	blackboard.stagger_count = 0
 end

@@ -1,10 +1,12 @@
+﻿-- chunkname: @scripts/utils/utf8_utils.lua
+
 UTF8Utils = UTF8Utils or {}
 
 UTF8Utils.string_length = function (text)
 	local length = #text
 	local index = 1
 	local num_chars = 0
-	local _ = nil
+	local _
 
 	while index <= length do
 		_, index = Utf8.location(text, index)
@@ -21,8 +23,7 @@ UTF8Utils.sub_string = function (text, char_from, char_to)
 
 	local byte_index = 1
 	local byte_count = #text
-	local byte_from = -1
-	local byte_to = -1
+	local byte_from, byte_to = -1, -1
 	local char_index = 1
 
 	while byte_index <= byte_count do

@@ -1,4 +1,7 @@
-local percent_to_rgb = nil
+﻿-- chunkname: @scripts/settings/light_fx_settings.lua
+
+local percent_to_rgb
+
 LightFXSettings = {
 	inn_level = {
 		value = {
@@ -6,8 +9,8 @@ LightFXSettings = {
 			255,
 			0,
 			255,
-			1
-		}
+			1,
+		},
 	},
 	loading = {
 		value = {
@@ -15,8 +18,8 @@ LightFXSettings = {
 			128,
 			128,
 			128,
-			1
-		}
+			1,
+		},
 	},
 	ingame = {
 		value = {
@@ -24,7 +27,7 @@ LightFXSettings = {
 			255,
 			0,
 			255,
-			1
+			1,
 		},
 		update_func = function (v)
 			assert(#v == 5, "[LightFXManager] You need to pass in 5 values ( red, green, blue, intensity, blendtime )")
@@ -46,12 +49,13 @@ LightFXSettings = {
 			if Unit.alive(unit) then
 				local health_ext = ScriptUnit.extension(unit, "health_system")
 				local health_percent = health_ext:current_health_percent()
+
 				v[1], v[2], v[3] = percent_to_rgb(health_percent)
 			end
 
 			return v
-		end
-	}
+		end,
+	},
 }
 LightFXConditionalSettings = {
 	{
@@ -61,7 +65,7 @@ LightFXConditionalSettings = {
 			0,
 			0,
 			60,
-			2
+			2,
 		},
 		condition_func = function ()
 			local game = Managers.state.network and Managers.state.network:game()
@@ -90,7 +94,7 @@ LightFXConditionalSettings = {
 		end,
 		update_func = function (dt, t, v)
 			Managers.light_fx:set_lightfx_color(v[1], v[2], v[3], v[4], v[5])
-		end
+		end,
 	},
 	{
 		name = "Hit",
@@ -100,7 +104,7 @@ LightFXConditionalSettings = {
 			0,
 			0,
 			255,
-			0.1
+			0.1,
 		},
 		condition_func = function ()
 			local game = Managers.state.network and Managers.state.network:game()
@@ -129,8 +133,8 @@ LightFXConditionalSettings = {
 		end,
 		update_func = function (dt, t, v)
 			Managers.light_fx:set_lightfx_color(v[1], v[2], v[3], v[4], v[5])
-		end
-	}
+		end,
+	},
 }
 
 function percent_to_rgb(percent)
@@ -140,14 +144,14 @@ function percent_to_rgb(percent)
 		percent = 0.99
 	end
 
-	local r, g, b = nil
+	local r, g, b
 
 	if percent < 0.5 then
-		r = math.floor(255 * percent / 0.5)
+		r = math.floor(255 * (percent / 0.5))
 		g = 255
 	else
 		r = 255
-		g = math.floor(255 * (0.5 - percent % 0.5) / 0.5)
+		g = math.floor(255 * ((0.5 - percent % 0.5) / 0.5))
 	end
 
 	b = 0

@@ -1,12 +1,15 @@
+﻿-- chunkname: @scripts/managers/backend_playfab/backend_interface_peddler_playfab.lua
+
 require("scripts/utils/steam_item_service")
 
 BackendInterfacePeddlerPlayFab = class(BackendInterfacePeddlerPlayFab)
+
 local PEDDLER_ID = "Store"
 local NON_FATAL_ERROR_CODES = {
-	[1052.0] = true,
-	[1053.0] = true,
-	[1047.0] = true,
-	[1059.0] = true
+	[1047] = true,
+	[1052] = true,
+	[1053] = true,
+	[1059] = true,
 }
 
 BackendInterfacePeddlerPlayFab.init = function (self, backend_mirror)
@@ -79,7 +82,7 @@ BackendInterfacePeddlerPlayFab.get_unseen_currency_rewards = function (self)
 	end
 
 	local unseen_rewards = cjson.decode(unseen_rewards_json)
-	local unseen_items = nil
+	local unseen_items
 	local index = 1
 
 	while index <= #unseen_rewards do
@@ -105,8 +108,9 @@ end
 
 BackendInterfacePeddlerPlayFab.refresh_stock = function (self, external_cb)
 	self._peddler_stock = {}
+
 	local request = {
-		StoreId = PEDDLER_ID
+		StoreId = PEDDLER_ID,
 	}
 	local request_cb = callback(self, "_refresh_stock_cb", external_cb)
 	local mirror = self._backend_mirror
@@ -116,12 +120,13 @@ BackendInterfacePeddlerPlayFab.refresh_stock = function (self, external_cb)
 end
 
 local function verify_stock_item(item_master_list_data)
-	local has_platform_id = nil
+	local has_platform_id
 
 	if IS_CONSOLE then
 		return true
 	else
 		local steam_itemdefid = item_master_list_data.steam_itemdefid
+
 		has_platform_id = steam_itemdefid ~= nil
 
 		if has_platform_id then
@@ -183,8 +188,9 @@ BackendInterfacePeddlerPlayFab._refresh_stock_cb = function (self, external_cb, 
 					end_time = item.CustomData.end_time,
 					owned = owned,
 					dlc_name = data.dlc_name,
-					steam_itemdefid = has_steam and data.steam_itemdefid
+					steam_itemdefid = has_steam and data.steam_itemdefid,
 				}
+
 				peddler_stock[stock_index] = item_data
 				stock_index = stock_index + 1
 
@@ -236,7 +242,7 @@ end
 BackendInterfacePeddlerPlayFab.refresh_chips = function (self, external_cb)
 	local request = {
 		FunctionName = "getUserChips",
-		FunctionParameter = {}
+		FunctionParameter = {},
 	}
 	local mirror = self._backend_mirror
 	local request_queue = mirror:request_queue()
@@ -293,8 +299,8 @@ BackendInterfacePeddlerPlayFab.refresh_layout_override = function (self, use_mir
 	else
 		local request = {
 			Keys = {
-				"store_layout_override"
-			}
+				"store_layout_override",
+			},
 		}
 		local success_cb = callback(self, "_refresh_layout_override_cb", external_cb)
 		local mirror = self._backend_mirror
@@ -359,6 +365,7 @@ BackendInterfacePeddlerPlayFab._refresh_steam_item_prices_cb = function (self, e
 
 		if item_key then
 			self._steam_item_prices[steam_itemdefid] = price
+
 			local master_item = ItemMasterList[item_key]
 
 			if not master_item.steam_store_hidden and verify_stock_item(master_item) then
@@ -393,7 +400,7 @@ BackendInterfacePeddlerPlayFab._refresh_steam_item_prices_cb = function (self, e
 					owned = owned,
 					steam_itemdefid = steam_itemdefid,
 					steam_price = price,
-					steam_data = SteamItemService.get_item_data(steam_itemdefid)
+					steam_data = SteamItemService.get_item_data(steam_itemdefid),
 				}
 				steam_stock_index = steam_stock_index + 1
 			end
@@ -409,6 +416,7 @@ BackendInterfacePeddlerPlayFab._refresh_steam_item_prices_cb = function (self, e
 
 		for j = 1, #bundle_contains do
 			local steam_itemdefid = bundle_contains[j]
+
 			price_sum = price_sum + (self._steam_item_prices[steam_itemdefid] or 0)
 		end
 
@@ -438,7 +446,7 @@ end
 BackendInterfacePeddlerPlayFab._refresh_app_prices_steam = function (self, external_cb)
 	local request = {
 		FunctionName = "getSteamAppPriceInfo",
-		FunctionParameter = {}
+		FunctionParameter = {},
 	}
 	local mirror = self._backend_mirror
 	local request_queue = mirror:request_queue()
@@ -462,10 +470,11 @@ BackendInterfacePeddlerPlayFab._refresh_app_prices_steam_cb = function (self, ex
 				local currency = info.currency
 				local regular_price = info.initial_price
 				local current_price = info.final_price
+
 				self._app_prices[app_id] = {
 					currency = currency,
 					regular_price = regular_price,
-					current_price = current_price
+					current_price = current_price,
 				}
 			end
 		end
@@ -503,7 +512,7 @@ BackendInterfacePeddlerPlayFab._refresh_app_prices_psn = function (self, externa
 					if table.size(product_label_lookup) > 20 then
 						self._psn_requests[#self._psn_requests + 1] = {
 							product_labels_string = product_labels_string,
-							product_label_lookup = table.clone(product_label_lookup)
+							product_label_lookup = table.clone(product_label_lookup),
 						}
 
 						table.clear(product_label_lookup)
@@ -518,7 +527,7 @@ BackendInterfacePeddlerPlayFab._refresh_app_prices_psn = function (self, externa
 	if table.size(product_label_lookup) > 0 then
 		self._psn_requests[#self._psn_requests + 1] = {
 			product_labels_string = product_labels_string,
-			product_label_lookup = table.clone(product_label_lookup)
+			product_label_lookup = table.clone(product_label_lookup),
 		}
 
 		table.clear(product_label_lookup)
@@ -547,6 +556,7 @@ BackendInterfacePeddlerPlayFab._refresh_app_prices_psn_cb = function (self, exte
 			local skus = product.skus
 			local sku = skus and skus[1] or empty_table
 			local dlc_name = product_label_lookup[product_label]
+
 			self._app_prices[dlc_name] = {
 				name = product.name,
 				is_plus_price = sku.is_plus_price,
@@ -557,7 +567,7 @@ BackendInterfacePeddlerPlayFab._refresh_app_prices_psn_cb = function (self, exte
 				display_plus_upsell_price = sku.display_plus_upsell_price,
 				display_price = sku.display_price,
 				product_id = sku.product_id,
-				product_label = product_label
+				product_label = product_label,
 			}
 		end
 	elseif external_cb then
@@ -627,6 +637,7 @@ BackendInterfacePeddlerPlayFab._refresh_app_prices_xboxlive_cb = function (self,
 		for product_id, catalog_item_details in pairs(result.product_details) do
 			local capitalized_product_id = string.upper(product_id)
 			local dlc_name = product_id_lookup[capitalized_product_id]
+
 			self._app_prices[dlc_name] = catalog_item_details
 		end
 	end
@@ -645,7 +656,7 @@ BackendInterfacePeddlerPlayFab.exchange_chips = function (self, item_id, chip_ty
 		StoreId = PEDDLER_ID,
 		ItemId = item_id,
 		VirtualCurrency = chip_type,
-		Price = expected_chip_amount
+		Price = expected_chip_amount,
 	}
 	local success_cb = callback(self, "_exchange_chips_success_cb", external_cb)
 	local error_cb = callback(self, "_exchange_chips_error_cb", external_cb)
@@ -676,8 +687,8 @@ BackendInterfacePeddlerPlayFab._exchange_chips_success_cb = function (self, exte
 	local request = {
 		FunctionName = "storePurchaseMade",
 		FunctionParameter = {
-			items = items
-		}
+			items = items,
+		},
 	}
 	local request_cb = callback(self, "_store_purchase_made_cb", items)
 	local request_queue = self._backend_mirror:request_queue()
@@ -728,7 +739,7 @@ BackendInterfacePeddlerPlayFab._store_purchase_made_cb = function (self, items, 
 			local _, item = table.find_by_key(items, "ItemId", cosmetic)
 
 			self._backend_mirror:add_item(item and item.ItemInstanceId, {
-				ItemId = function_result.new_cosmetics[i]
+				ItemId = function_result.new_cosmetics[i],
 			})
 		end
 	end
@@ -736,7 +747,7 @@ BackendInterfacePeddlerPlayFab._store_purchase_made_cb = function (self, items, 
 	if function_result.new_weapon_skins then
 		for i = 1, #function_result.new_weapon_skins do
 			self._backend_mirror:add_item(nil, {
-				ItemId = function_result.new_weapon_skins[i]
+				ItemId = function_result.new_weapon_skins[i],
 			})
 		end
 	end
@@ -761,7 +772,7 @@ end
 
 BackendInterfacePeddlerPlayFab.refresh_login_rewards = function (self, external_cb)
 	local request = {
-		FunctionName = "getStoreRewards"
+		FunctionName = "getStoreRewards",
 	}
 	local request_cb = callback(self, "_refresh_login_rewards_cb", external_cb)
 	local request_queue = self._backend_mirror:request_queue()
@@ -771,6 +782,7 @@ end
 
 BackendInterfacePeddlerPlayFab._refresh_login_rewards_cb = function (self, external_cb, result)
 	local login_rewards = result.FunctionResult
+
 	self._login_rewards = login_rewards
 
 	if external_cb then
@@ -794,8 +806,8 @@ BackendInterfacePeddlerPlayFab.claim_login_rewards = function (self, external_cb
 	local request = {
 		FunctionName = "claimStoreRewards",
 		FunctionParameter = {
-			offset = offset
-		}
+			offset = offset,
+		},
 	}
 	local request_cb = callback(self, "_claim_store_rewards_cb", external_cb, offset)
 	local request_queue = self._backend_mirror:request_queue()
@@ -833,7 +845,7 @@ BackendInterfacePeddlerPlayFab._claim_store_rewards_cb = function (self, externa
 		for i = 1, #new_cosmetics do
 			local cosmetic_name = new_cosmetics[i]
 			local backend_id = backend_mirror:add_item(nil, {
-				ItemId = cosmetic_name
+				ItemId = cosmetic_name,
 			})
 
 			if backend_id then
@@ -858,7 +870,7 @@ BackendInterfacePeddlerPlayFab._claim_store_rewards_cb = function (self, externa
 			if item_key then
 				local steam_item = {
 					ItemId = item_key,
-					ItemInstanceId = steam_backend_unique_id
+					ItemInstanceId = steam_backend_unique_id,
 				}
 				local backend_id = backend_mirror:add_item(steam_backend_unique_id, steam_item, true)
 

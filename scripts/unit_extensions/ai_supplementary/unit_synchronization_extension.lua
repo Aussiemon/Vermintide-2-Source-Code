@@ -1,8 +1,12 @@
+﻿-- chunkname: @scripts/unit_extensions/ai_supplementary/unit_synchronization_extension.lua
+
 UnitSynchronizationExtension = class(UnitSynchronizationExtension)
+
 local position_lookup = POSITION_LOOKUP
 
 UnitSynchronizationExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	local world = extension_init_context.world
+
 	self.world = world
 	self.unit = unit
 	self.is_server = Managers.player.is_server
@@ -50,7 +54,7 @@ UnitSynchronizationExtension._client_validate_position_rotation = function (self
 		local server_pos = GameSession_game_object_field(game, game_object_id, "position")
 		local client_pos = position_lookup[unit] or Unit_local_position(unit, 0)
 
-		if CORRECTION_DISTANCE < Vector3_distance_squared(server_pos, client_pos) then
+		if Vector3_distance_squared(server_pos, client_pos) > CORRECTION_DISTANCE then
 			local server_rot = GameSession_game_object_field(game, game_object_id, "rotation")
 
 			Unit.set_local_position(unit, 0, server_pos)

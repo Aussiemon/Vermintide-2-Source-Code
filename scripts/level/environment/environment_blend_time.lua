@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/level/environment/environment_blend_time.lua
+
 EnvironmentBlendTime = class(EnvironmentBlendTime)
 
 EnvironmentBlendTime.init = function (self, data)

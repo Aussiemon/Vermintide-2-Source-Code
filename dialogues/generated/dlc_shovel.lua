@@ -1,3 +1,5 @@
+﻿-- chunkname: @dialogues/generated/dlc_shovel.lua
+
 return function ()
 	define_rule({
 		name = "pbw_nm_shovel_conversation_eighteen_01",
@@ -7,28 +9,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwh_shovel_conversation_eighteen_01"
+				"pwh_shovel_conversation_eighteen_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
-			}
+				"bright_wizard",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_nm_shovel_conversation_eighteen_02",
@@ -38,28 +40,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwh_shovel_conversation_eighteen_02"
+				"pwh_shovel_conversation_eighteen_02",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
-			}
+				"bright_wizard",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_nm_shovel_conversation_eleven_01",
@@ -69,28 +71,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pdr_shovel_conversation_eleven_01"
+				"pdr_shovel_conversation_eleven_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
-			}
+				"bright_wizard",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_nm_shovel_conversation_eleven_02",
@@ -100,28 +102,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pdr_shovel_conversation_eleven_02"
+				"pdr_shovel_conversation_eleven_02",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
-			}
+				"bright_wizard",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_nm_shovel_conversation_fifteen_01",
@@ -131,28 +133,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwh_shovel_conversation_fifteen_01"
+				"pwh_shovel_conversation_fifteen_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
-			}
+				"bright_wizard",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_nm_shovel_conversation_fifteen_02",
@@ -162,28 +164,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwh_shovel_conversation_fifteen_02"
+				"pwh_shovel_conversation_fifteen_02",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
-			}
+				"bright_wizard",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_nm_shovel_conversation_four_01",
@@ -193,65 +195,65 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				0
+				0,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"bright_wizard"
+				"bright_wizard",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
+				"bright_wizard",
 			},
 			{
 				"user_context",
 				"player_career",
 				OP.EQ,
-				"bw_necromancer"
+				"bw_necromancer",
 			},
 			{
 				"global_context",
 				"wood_elf",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				60
+				60,
 			},
 			{
 				"faction_memory",
 				"shovel_conversation_three_four",
 				OP.EQ,
-				1
-			}
+				1,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"shovel_conversation_three_four",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_nm_shovel_conversation_four_02",
@@ -261,28 +263,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwe_shovel_conversation_four_01"
+				"pwe_shovel_conversation_four_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
-			}
+				"bright_wizard",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_nm_shovel_conversation_four_03",
@@ -292,28 +294,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwe_shovel_conversation_four_02"
+				"pwe_shovel_conversation_four_02",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
-			}
+				"bright_wizard",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_nm_shovel_conversation_fourteen_01",
@@ -323,66 +325,66 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				0
+				0,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"bright_wizard"
+				"bright_wizard",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
+				"bright_wizard",
 			},
 			{
 				"user_context",
 				"player_career",
 				OP.EQ,
 				"bw_necromancer",
-				1
+				1,
 			},
 			{
 				"global_context",
 				"witch_hunter",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				60
+				60,
 			},
 			{
 				"faction_memory",
 				"shovel_conversation_fourteen",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"shovel_conversation_fourteen",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_nm_shovel_conversation_fourteen_02",
@@ -392,28 +394,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwh_shovel_conversation_fourteen_01"
+				"pwh_shovel_conversation_fourteen_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
-			}
+				"bright_wizard",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_nm_shovel_conversation_nine_01",
@@ -423,28 +425,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pdr_shovel_conversation_nine_01"
+				"pdr_shovel_conversation_nine_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
-			}
+				"bright_wizard",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_nm_shovel_conversation_nine_02",
@@ -454,28 +456,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pdr_shovel_conversation_nine_02"
+				"pdr_shovel_conversation_nine_02",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
-			}
+				"bright_wizard",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_nm_shovel_conversation_nineteen_01",
@@ -485,28 +487,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwh_shovel_conversation_nineteen_01"
+				"pwh_shovel_conversation_nineteen_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
-			}
+				"bright_wizard",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_nm_shovel_conversation_nineteen_02",
@@ -516,28 +518,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwh_shovel_conversation_nineteen_02"
+				"pwh_shovel_conversation_nineteen_02",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
-			}
+				"bright_wizard",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_nm_shovel_conversation_one_01",
@@ -547,65 +549,65 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				0
+				0,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"bright_wizard"
+				"bright_wizard",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
+				"bright_wizard",
 			},
 			{
 				"user_context",
 				"player_career",
 				OP.EQ,
-				"bw_necromancer"
+				"bw_necromancer",
 			},
 			{
 				"global_context",
 				"wood_elf",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				60
+				60,
 			},
 			{
 				"faction_memory",
 				"shovel_conversation_one",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"shovel_conversation_one",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_nm_shovel_conversation_one_02",
@@ -615,28 +617,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwe_shovel_conversation_one_01"
+				"pwe_shovel_conversation_one_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
-			}
+				"bright_wizard",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_nm_shovel_conversation_one_a_01",
@@ -646,65 +648,65 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				0
+				0,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"bright_wizard"
+				"bright_wizard",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
+				"bright_wizard",
 			},
 			{
 				"user_context",
 				"player_career",
 				OP.EQ,
-				"bw_necromancer"
+				"bw_necromancer",
 			},
 			{
 				"global_context",
 				"we_thornsister",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				60
+				60,
 			},
 			{
 				"faction_memory",
 				"shovel_conversation_one_a",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"shovel_conversation_one_a",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_nm_shovel_conversation_one_a_02",
@@ -714,28 +716,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwe_st_shovel_conversation_one_a_01"
+				"pwe_st_shovel_conversation_one_a_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
-			}
+				"bright_wizard",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_nm_shovel_conversation_one_a_03",
@@ -745,28 +747,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwe_st_shovel_conversation_one_a_02"
+				"pwe_st_shovel_conversation_one_a_02",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
-			}
+				"bright_wizard",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_nm_shovel_conversation_seventeen_01",
@@ -776,28 +778,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwh_shovel_conversation_seventeen_01"
+				"pwh_shovel_conversation_seventeen_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
-			}
+				"bright_wizard",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_nm_shovel_conversation_seventeen_02",
@@ -807,28 +809,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwh_shovel_conversation_seventeen_02"
+				"pwh_shovel_conversation_seventeen_02",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
-			}
+				"bright_wizard",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_nm_shovel_conversation_sixteen_01",
@@ -838,28 +840,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwh_shovel_conversation_sixteen_01"
+				"pwh_shovel_conversation_sixteen_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
-			}
+				"bright_wizard",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_nm_shovel_conversation_sixteen_02",
@@ -869,28 +871,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwh_shovel_conversation_sixteen_02"
+				"pwh_shovel_conversation_sixteen_02",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
-			}
+				"bright_wizard",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_nm_shovel_conversation_ten_01",
@@ -900,28 +902,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pdr_shovel_conversation_ten_01"
+				"pdr_shovel_conversation_ten_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
-			}
+				"bright_wizard",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_nm_shovel_conversation_ten_02",
@@ -931,28 +933,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pdr_shovel_conversation_ten_02"
+				"pdr_shovel_conversation_ten_02",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
-			}
+				"bright_wizard",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_nm_shovel_conversation_ten_03",
@@ -962,28 +964,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pdr_shovel_conversation_ten_03"
+				"pdr_shovel_conversation_ten_03",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
-			}
+				"bright_wizard",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_nm_shovel_conversation_thirteen_01",
@@ -993,66 +995,66 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				0
+				0,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"bright_wizard"
+				"bright_wizard",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
+				"bright_wizard",
 			},
 			{
 				"user_context",
 				"player_career",
 				OP.EQ,
 				"bw_necromancer",
-				1
+				1,
 			},
 			{
 				"global_context",
 				"witch_hunter",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				60
+				60,
 			},
 			{
 				"faction_memory",
 				"shovel_conversation_thirteen",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"shovel_conversation_thirteen",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_nm_shovel_conversation_thirteen_02",
@@ -1062,28 +1064,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwh_shovel_conversation_thirteen_01"
+				"pwh_shovel_conversation_thirteen_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
-			}
+				"bright_wizard",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_nm_shovel_conversation_three_01",
@@ -1093,65 +1095,65 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				0
+				0,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"bright_wizard"
+				"bright_wizard",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
+				"bright_wizard",
 			},
 			{
 				"user_context",
 				"player_career",
 				OP.EQ,
-				"bw_necromancer"
+				"bw_necromancer",
 			},
 			{
 				"global_context",
 				"wood_elf",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				60
+				60,
 			},
 			{
 				"faction_memory",
 				"shovel_conversation_three_four",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"shovel_conversation_three_four",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_nm_shovel_conversation_three_02",
@@ -1161,28 +1163,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwe_shovel_conversation_three_01"
+				"pwe_shovel_conversation_three_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
-			}
+				"bright_wizard",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_nm_shovel_conversation_three_03",
@@ -1192,28 +1194,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwe_shovel_conversation_three_02"
+				"pwe_shovel_conversation_three_02",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
-			}
+				"bright_wizard",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_nm_shovel_conversation_twelve_01",
@@ -1223,28 +1225,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pdr_shovel_conversation_twelve_01"
+				"pdr_shovel_conversation_twelve_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
-			}
+				"bright_wizard",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_nm_shovel_conversation_twelve_02",
@@ -1254,28 +1256,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pdr_shovel_conversation_twelve_02"
+				"pdr_shovel_conversation_twelve_02",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
-			}
+				"bright_wizard",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_nm_shovel_conversation_twenty_01",
@@ -1285,28 +1287,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pes_shovel_conversation_twenty_01"
+				"pes_shovel_conversation_twenty_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
-			}
+				"bright_wizard",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_nm_shovel_conversation_twenty_02",
@@ -1316,28 +1318,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pes_shovel_conversation_twenty_02"
+				"pes_shovel_conversation_twenty_02",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
-			}
+				"bright_wizard",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_nm_shovel_conversation_twentyfive_01",
@@ -1347,66 +1349,66 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				0
+				0,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"bright_wizard"
+				"bright_wizard",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
+				"bright_wizard",
 			},
 			{
 				"user_context",
 				"player_career",
 				OP.EQ,
 				"bw_necromancer",
-				1
+				1,
 			},
 			{
 				"global_context",
 				"empire_soldier",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				60
+				60,
 			},
 			{
 				"faction_memory",
 				"shovel_conversation_twentyfive",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"shovel_conversation_twentyfive",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_nm_shovel_conversation_twentyfive_02",
@@ -1416,28 +1418,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pes_shovel_conversation_twentyfive_02"
+				"pes_shovel_conversation_twentyfive_02",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
-			}
+				"bright_wizard",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_nm_shovel_conversation_twentyfour_01",
@@ -1447,28 +1449,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pes_shovel_conversation_twentyfour_01"
+				"pes_shovel_conversation_twentyfour_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
-			}
+				"bright_wizard",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_nm_shovel_conversation_twentyfour_02",
@@ -1478,28 +1480,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pes_shovel_conversation_twentyfour_02"
+				"pes_shovel_conversation_twentyfour_02",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
-			}
+				"bright_wizard",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_nm_shovel_conversation_twentyone_01",
@@ -1509,28 +1511,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pes_shovel_conversation_twentyone_01"
+				"pes_shovel_conversation_twentyone_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
-			}
+				"bright_wizard",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_nm_shovel_conversation_twentyone_02",
@@ -1540,28 +1542,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pes_shovel_conversation_twentyone_02"
+				"pes_shovel_conversation_twentyone_02",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
-			}
+				"bright_wizard",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_nm_shovel_conversation_twentythree_01",
@@ -1571,66 +1573,66 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				0
+				0,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"bright_wizard"
+				"bright_wizard",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
+				"bright_wizard",
 			},
 			{
 				"user_context",
 				"player_career",
 				OP.EQ,
 				"bw_necromancer",
-				1
+				1,
 			},
 			{
 				"global_context",
 				"empire_soldier",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				60
+				60,
 			},
 			{
 				"faction_memory",
 				"shovel_conversation_twentythree",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"shovel_conversation_twentythree",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_nm_shovel_conversation_twentythree_02",
@@ -1640,28 +1642,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pes_shovel_conversation_twentythree_02"
+				"pes_shovel_conversation_twentythree_02",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
-			}
+				"bright_wizard",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_nm_shovel_conversation_twentythree_03",
@@ -1671,28 +1673,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pes_shovel_conversation_twentythree_03"
+				"pes_shovel_conversation_twentythree_03",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
-			}
+				"bright_wizard",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_nm_shovel_conversation_twentytwo_01",
@@ -1702,28 +1704,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pes_shovel_conversation_twentytwo_01"
+				"pes_shovel_conversation_twentytwo_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
-			}
+				"bright_wizard",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_nm_shovel_conversation_twentytwo_02",
@@ -1733,28 +1735,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pes_shovel_conversation_twentytwo_02"
+				"pes_shovel_conversation_twentytwo_02",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
-			}
+				"bright_wizard",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_nm_shovel_conversation_two_01",
@@ -1764,65 +1766,65 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				0
+				0,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"bright_wizard"
+				"bright_wizard",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
+				"bright_wizard",
 			},
 			{
 				"user_context",
 				"player_career",
 				OP.EQ,
-				"bw_necromancer"
+				"bw_necromancer",
 			},
 			{
 				"global_context",
 				"wood_elf",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				60
+				60,
 			},
 			{
 				"faction_memory",
 				"shovel_conversation_two",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"shovel_conversation_two",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_nm_shovel_conversation_two_02",
@@ -1832,28 +1834,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwe_shovel_conversation_two_01"
+				"pwe_shovel_conversation_two_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
-			}
+				"bright_wizard",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_nm_shovel_conversation_two_03",
@@ -1863,28 +1865,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwe_shovel_conversation_two_02"
+				"pwe_shovel_conversation_two_02",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
-			}
+				"bright_wizard",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_nm_shovel_conversation_two_a_01",
@@ -1894,65 +1896,65 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				0
+				0,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"bright_wizard"
+				"bright_wizard",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
+				"bright_wizard",
 			},
 			{
 				"user_context",
 				"player_career",
 				OP.EQ,
-				"bw_necromancer"
+				"bw_necromancer",
 			},
 			{
 				"global_context",
 				"we_thornsister",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				60
+				60,
 			},
 			{
 				"faction_memory",
 				"shovel_conversation_two_a",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"shovel_conversation_two_a",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_nm_shovel_conversation_two_a_02",
@@ -1962,28 +1964,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwe_st_shovel_conversation_two_a_01"
+				"pwe_st_shovel_conversation_two_a_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
-			}
+				"bright_wizard",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_nm_shovel_conversation_two_a_03",
@@ -1993,28 +1995,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwe_st_shovel_conversation_two_a_02"
+				"pwe_st_shovel_conversation_two_a_02",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
-			}
+				"bright_wizard",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pdr_shovel_conversation_eight_01",
@@ -2024,28 +2026,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pes_shovel_conversation_eight_01"
+				"pes_shovel_conversation_eight_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"dwarf_ranger"
-			}
+				"dwarf_ranger",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pdr_shovel_conversation_eleven_01",
@@ -2055,59 +2057,59 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				0
+				0,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"dwarf_ranger"
+				"dwarf_ranger",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"dwarf_ranger"
+				"dwarf_ranger",
 			},
 			{
 				"global_context",
 				"bw_necromancer",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				60
+				60,
 			},
 			{
 				"faction_memory",
 				"shovel_conversation_eleven",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"shovel_conversation_eleven",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pdr_shovel_conversation_eleven_02",
@@ -2117,28 +2119,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pbw_nm_shovel_conversation_eleven_01"
+				"pbw_nm_shovel_conversation_eleven_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"dwarf_ranger"
-			}
+				"dwarf_ranger",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pdr_shovel_conversation_five_01",
@@ -2148,28 +2150,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwe_shovel_conversation_five_01"
+				"pwe_shovel_conversation_five_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"dwarf_ranger"
-			}
+				"dwarf_ranger",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pdr_shovel_conversation_nine_01",
@@ -2179,59 +2181,59 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				0
+				0,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"dwarf_ranger"
+				"dwarf_ranger",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"dwarf_ranger"
+				"dwarf_ranger",
 			},
 			{
 				"global_context",
 				"bw_necromancer",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				60
+				60,
 			},
 			{
 				"faction_memory",
 				"shovel_conversation_nine",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"shovel_conversation_nine",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pdr_shovel_conversation_nine_02",
@@ -2241,28 +2243,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pbw_nm_shovel_conversation_nine_01"
+				"pbw_nm_shovel_conversation_nine_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"dwarf_ranger"
-			}
+				"dwarf_ranger",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pdr_shovel_conversation_seven_01",
@@ -2272,28 +2274,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pes_shovel_conversation_seven_01"
+				"pes_shovel_conversation_seven_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"dwarf_ranger"
-			}
+				"dwarf_ranger",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pdr_shovel_conversation_six_01",
@@ -2303,28 +2305,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pes_shovel_conversation_six_01"
+				"pes_shovel_conversation_six_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"dwarf_ranger"
-			}
+				"dwarf_ranger",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pdr_shovel_conversation_ten_01",
@@ -2334,59 +2336,59 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				0
+				0,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"dwarf_ranger"
+				"dwarf_ranger",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"dwarf_ranger"
+				"dwarf_ranger",
 			},
 			{
 				"global_context",
 				"bw_necromancer",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				60
+				60,
 			},
 			{
 				"faction_memory",
 				"shovel_conversation_ten",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"shovel_conversation_ten",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pdr_shovel_conversation_ten_02",
@@ -2396,28 +2398,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pbw_nm_shovel_conversation_ten_01"
+				"pbw_nm_shovel_conversation_ten_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"dwarf_ranger"
-			}
+				"dwarf_ranger",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pdr_shovel_conversation_ten_03",
@@ -2427,28 +2429,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pbw_nm_shovel_conversation_ten_02"
+				"pbw_nm_shovel_conversation_ten_02",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"dwarf_ranger"
-			}
+				"dwarf_ranger",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pdr_shovel_conversation_twelve_01",
@@ -2458,59 +2460,59 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				0
+				0,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"dwarf_ranger"
+				"dwarf_ranger",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"dwarf_ranger"
+				"dwarf_ranger",
 			},
 			{
 				"global_context",
 				"bw_necromancer",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				60
+				60,
 			},
 			{
 				"faction_memory",
 				"shovel_conversation_twelve",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"shovel_conversation_twelve",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pdr_shovel_conversation_twelve_02",
@@ -2520,28 +2522,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pbw_nm_shovel_conversation_twelve_01"
+				"pbw_nm_shovel_conversation_twelve_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"dwarf_ranger"
-			}
+				"dwarf_ranger",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pdr_shovel_conversation_twelve_03",
@@ -2551,28 +2553,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pbw_nm_shovel_conversation_twelve_02"
+				"pbw_nm_shovel_conversation_twelve_02",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"dwarf_ranger"
-			}
+				"dwarf_ranger",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pdr_shovel_conversation_twentynine_01",
@@ -2582,71 +2584,71 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				1
+				1,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"dwarf_ranger"
+				"dwarf_ranger",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"dwarf_ranger"
+				"dwarf_ranger",
 			},
 			{
 				"global_context",
 				"bright_wizard",
 				OP.EQ,
-				0
+				0,
 			},
 			{
 				"global_context",
 				"witch_hunter",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"global_context",
 				"empire_soldier",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				50
+				50,
 			},
 			{
 				"faction_memory",
 				"shovel_conversation_twentysix-nine",
 				OP.EQ,
-				3
-			}
+				3,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"shovel_conversation_twentysix-nine",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pdr_shovel_conversation_twentynine_02",
@@ -2656,28 +2658,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pes_gk_shovel_conversation_twentynine_01"
+				"pes_gk_shovel_conversation_twentynine_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"dwarf_ranger"
-			}
+				"dwarf_ranger",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pdr_shovel_conversation_twentyseven_01",
@@ -2687,71 +2689,71 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				1
+				1,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"dwarf_ranger"
+				"dwarf_ranger",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"dwarf_ranger"
+				"dwarf_ranger",
 			},
 			{
 				"global_context",
 				"bright_wizard",
 				OP.EQ,
-				0
+				0,
 			},
 			{
 				"global_context",
 				"witch_hunter",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"global_context",
 				"empire_soldier",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				60
+				60,
 			},
 			{
 				"faction_memory",
 				"shovel_conversation_twentysix-nine",
 				OP.EQ,
-				1
-			}
+				1,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"shovel_conversation_twentysix-nine",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pdr_shovel_conversation_twentysix_01",
@@ -2761,28 +2763,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwh_shovel_conversation_twentysix_02"
+				"pwh_shovel_conversation_twentysix_02",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"dwarf_ranger"
-			}
+				"dwarf_ranger",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_gk_shovel_conversation_twentyeight_01",
@@ -2792,28 +2794,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwh_wp_shovel_conversation_twentyeight_01"
+				"pwh_wp_shovel_conversation_twentyeight_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
-			}
+				"empire_soldier",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_gk_shovel_conversation_twentyeight_02",
@@ -2823,28 +2825,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwh_wp_shovel_conversation_twentyeight_02"
+				"pwh_wp_shovel_conversation_twentyeight_02",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
-			}
+				"empire_soldier",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_gk_shovel_conversation_twentynine_01",
@@ -2854,28 +2856,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwh_wp_shovel_conversation_twentynine_01"
+				"pwh_wp_shovel_conversation_twentynine_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
-			}
+				"empire_soldier",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_shovel_conversation_eight_01",
@@ -2885,28 +2887,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwh_shovel_conversation_eight_01"
+				"pwh_shovel_conversation_eight_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
-			}
+				"empire_soldier",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_shovel_conversation_five_01",
@@ -2916,77 +2918,77 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				2
+				2,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"global_context",
 				"bright_wizard",
 				OP.EQ,
-				0
+				0,
 			},
 			{
 				"global_context",
 				"wood_elf",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"global_context",
 				"dwarf_ranger",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"global_context",
 				"witch_hunter",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				60
+				60,
 			},
 			{
 				"faction_memory",
 				"shovel_conversation_five",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"shovel_conversation_five",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_shovel_conversation_seven_01",
@@ -2996,28 +2998,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwe_shovel_conversation_seven_01"
+				"pwe_shovel_conversation_seven_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
-			}
+				"empire_soldier",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_shovel_conversation_six_01",
@@ -3027,28 +3029,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwh_shovel_conversation_six_01"
+				"pwh_shovel_conversation_six_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
-			}
+				"empire_soldier",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_shovel_conversation_twenty_01",
@@ -3058,59 +3060,59 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				0
+				0,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"global_context",
 				"bw_necromancer",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				60
+				60,
 			},
 			{
 				"faction_memory",
 				"shovel_conversation_twenty_twentyone_twentyfour",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"shovel_conversation_twenty_twentyone_twentyfour",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_shovel_conversation_twenty_02",
@@ -3120,28 +3122,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pbw_nm_shovel_conversation_twenty_01"
+				"pbw_nm_shovel_conversation_twenty_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
-			}
+				"empire_soldier",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_shovel_conversation_twentyfive_02",
@@ -3151,28 +3153,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pbw_nm_shovel_conversation_twentyfive_01"
+				"pbw_nm_shovel_conversation_twentyfive_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
-			}
+				"empire_soldier",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_shovel_conversation_twentyfour_01",
@@ -3182,59 +3184,59 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				0
+				0,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"global_context",
 				"bw_necromancer",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				60
+				60,
 			},
 			{
 				"faction_memory",
 				"shovel_conversation_twenty_twentyone_twentyfour",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"shovel_conversation_twenty_twentyone_twentyfour",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_shovel_conversation_twentyfour_02",
@@ -3244,28 +3246,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pbw_nm_shovel_conversation_twentyfour_01"
+				"pbw_nm_shovel_conversation_twentyfour_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
-			}
+				"empire_soldier",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_shovel_conversation_twentyfour_03",
@@ -3275,28 +3277,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pbw_nm_shovel_conversation_twentyfour_02"
+				"pbw_nm_shovel_conversation_twentyfour_02",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
-			}
+				"empire_soldier",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_shovel_conversation_twentyone_01",
@@ -3306,59 +3308,59 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				0
+				0,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"global_context",
 				"bw_necromancer",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				60
+				60,
 			},
 			{
 				"faction_memory",
 				"shovel_conversation_twenty_twentyone_twentyfour",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"shovel_conversation_twenty_twentyone_twentyfour",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_shovel_conversation_twentyone_02",
@@ -3368,28 +3370,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pbw_nm_shovel_conversation_twentyone_01"
+				"pbw_nm_shovel_conversation_twentyone_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
-			}
+				"empire_soldier",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_shovel_conversation_twentyseven_01",
@@ -3399,28 +3401,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pdr_shovel_conversation_twentyseven_01"
+				"pdr_shovel_conversation_twentyseven_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
-			}
+				"empire_soldier",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_shovel_conversation_twentyseven_02",
@@ -3430,28 +3432,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwh_shovel_conversation_twentyseven_01"
+				"pwh_shovel_conversation_twentyseven_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
-			}
+				"empire_soldier",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_shovel_conversation_twentysix_01",
@@ -3461,71 +3463,71 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				1
+				1,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"global_context",
 				"bright_wizard",
 				OP.EQ,
-				0
+				0,
 			},
 			{
 				"global_context",
 				"dwarf_ranger",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"global_context",
 				"empire_soldier",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				60
+				60,
 			},
 			{
 				"faction_memory",
 				"shovel_conversation_twentysix-nine",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"shovel_conversation_twentysix-nine",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_shovel_conversation_twentysix_02",
@@ -3535,28 +3537,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwh_shovel_conversation_twentysix_01"
+				"pwh_shovel_conversation_twentysix_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
-			}
+				"empire_soldier",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_shovel_conversation_twentythree_02",
@@ -3566,28 +3568,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pbw_nm_shovel_conversation_twentythree_01"
+				"pbw_nm_shovel_conversation_twentythree_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
-			}
+				"empire_soldier",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_shovel_conversation_twentythree_03",
@@ -3597,28 +3599,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pbw_nm_shovel_conversation_twentythree_02"
+				"pbw_nm_shovel_conversation_twentythree_02",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
-			}
+				"empire_soldier",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_shovel_conversation_twentytwo_01",
@@ -3628,59 +3630,59 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				0
+				0,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"global_context",
 				"bw_necromancer",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				60
+				60,
 			},
 			{
 				"faction_memory",
 				"shovel_conversation_twentytwo",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"shovel_conversation_twentytwo",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_shovel_conversation_twentytwo_02",
@@ -3690,28 +3692,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pbw_nm_shovel_conversation_twentytwo_01"
+				"pbw_nm_shovel_conversation_twentytwo_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
-			}
+				"empire_soldier",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_shovel_conversation_eight_01",
@@ -3721,28 +3723,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pdr_shovel_conversation_eight_01"
+				"pdr_shovel_conversation_eight_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_shovel_conversation_five_01",
@@ -3752,28 +3754,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pes_shovel_conversation_five_01"
+				"pes_shovel_conversation_five_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_shovel_conversation_four_01",
@@ -3783,28 +3785,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pbw_nm_shovel_conversation_four_01"
+				"pbw_nm_shovel_conversation_four_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_shovel_conversation_four_02",
@@ -3814,28 +3816,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pbw_nm_shovel_conversation_four_02"
+				"pbw_nm_shovel_conversation_four_02",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_shovel_conversation_one_01",
@@ -3845,28 +3847,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pbw_nm_shovel_conversation_one_01"
+				"pbw_nm_shovel_conversation_one_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_shovel_conversation_one_02",
@@ -3876,28 +3878,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pbw_nm_shovel_conversation_one_02"
+				"pbw_nm_shovel_conversation_one_02",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_shovel_conversation_seven_01",
@@ -3907,28 +3909,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwh_shovel_conversation_seven_01"
+				"pwh_shovel_conversation_seven_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_shovel_conversation_six_01",
@@ -3938,28 +3940,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pdr_shovel_conversation_six_01"
+				"pdr_shovel_conversation_six_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_shovel_conversation_three_01",
@@ -3969,28 +3971,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pbw_nm_shovel_conversation_three_01"
+				"pbw_nm_shovel_conversation_three_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_shovel_conversation_three_02",
@@ -4000,28 +4002,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pbw_nm_shovel_conversation_three_02"
+				"pbw_nm_shovel_conversation_three_02",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_shovel_conversation_two_01",
@@ -4031,28 +4033,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pbw_nm_shovel_conversation_two_01"
+				"pbw_nm_shovel_conversation_two_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_shovel_conversation_two_02",
@@ -4062,28 +4064,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pbw_nm_shovel_conversation_two_02"
+				"pbw_nm_shovel_conversation_two_02",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_shovel_conversation_two_03",
@@ -4093,28 +4095,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pbw_nm_shovel_conversation_two_03"
+				"pbw_nm_shovel_conversation_two_03",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_st_shovel_conversation_one_a_01",
@@ -4124,28 +4126,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pbw_nm_shovel_conversation_one_a_01"
+				"pbw_nm_shovel_conversation_one_a_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_st_shovel_conversation_one_a_02",
@@ -4155,28 +4157,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pbw_nm_shovel_conversation_one_a_02"
+				"pbw_nm_shovel_conversation_one_a_02",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_st_shovel_conversation_two_a_01",
@@ -4186,28 +4188,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pbw_nm_shovel_conversation_two_a_01"
+				"pbw_nm_shovel_conversation_two_a_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_st_shovel_conversation_two_a_02",
@@ -4217,28 +4219,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pbw_nm_shovel_conversation_two_a_02"
+				"pbw_nm_shovel_conversation_two_a_02",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_st_shovel_conversation_two_a_03",
@@ -4248,28 +4250,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pbw_nm_shovel_conversation_two_a_03"
+				"pbw_nm_shovel_conversation_two_a_03",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwh_shovel_conversation_eight_01",
@@ -4279,77 +4281,77 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				2
+				2,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"witch_hunter"
+				"witch_hunter",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"witch_hunter"
+				"witch_hunter",
 			},
 			{
 				"global_context",
 				"bright_wizard",
 				OP.EQ,
-				0
+				0,
 			},
 			{
 				"global_context",
 				"wood_elf",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"global_context",
 				"dwarf_ranger",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"global_context",
 				"empire_soldier",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				60
+				60,
 			},
 			{
 				"faction_memory",
 				"shovel_conversation_eight",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"shovel_conversation_eight",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwh_shovel_conversation_eighteen_01",
@@ -4359,59 +4361,59 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				0
+				0,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"witch_hunter"
+				"witch_hunter",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"witch_hunter"
+				"witch_hunter",
 			},
 			{
 				"global_context",
 				"bw_necromancer",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				60
+				60,
 			},
 			{
 				"faction_memory",
 				"shovel_conversation_eighteen",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"shovel_conversation_eighteen",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwh_shovel_conversation_eighteen_02",
@@ -4421,28 +4423,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pbw_nm_shovel_conversation_eighteen_01"
+				"pbw_nm_shovel_conversation_eighteen_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"witch_hunter"
-			}
+				"witch_hunter",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwh_shovel_conversation_fifteen_01",
@@ -4452,59 +4454,59 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				0
+				0,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"witch_hunter"
+				"witch_hunter",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"witch_hunter"
+				"witch_hunter",
 			},
 			{
 				"global_context",
 				"bw_necromancer",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				60
+				60,
 			},
 			{
 				"faction_memory",
 				"shovel_conversation_fifteen",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"shovel_conversation_fifteen",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwh_shovel_conversation_fifteen_02",
@@ -4514,28 +4516,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pbw_nm_shovel_conversation_fifteen_01"
+				"pbw_nm_shovel_conversation_fifteen_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"witch_hunter"
-			}
+				"witch_hunter",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwh_shovel_conversation_five_01",
@@ -4545,28 +4547,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pdr_shovel_conversation_five_01"
+				"pdr_shovel_conversation_five_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"witch_hunter"
-			}
+				"witch_hunter",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwh_shovel_conversation_fourteen_01",
@@ -4576,28 +4578,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pbw_nm_shovel_conversation_fourteen_01"
+				"pbw_nm_shovel_conversation_fourteen_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"witch_hunter"
-			}
+				"witch_hunter",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwh_shovel_conversation_fourteen_02",
@@ -4607,28 +4609,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pbw_nm_shovel_conversation_fourteen_02"
+				"pbw_nm_shovel_conversation_fourteen_02",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"witch_hunter"
-			}
+				"witch_hunter",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwh_shovel_conversation_nineteen_01",
@@ -4638,59 +4640,59 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				0
+				0,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"witch_hunter"
+				"witch_hunter",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"witch_hunter"
+				"witch_hunter",
 			},
 			{
 				"global_context",
 				"bw_necromancer",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				60
+				60,
 			},
 			{
 				"faction_memory",
 				"shovel_conversation_nineteen",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"shovel_conversation_nineteen",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwh_shovel_conversation_nineteen_02",
@@ -4700,28 +4702,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pbw_nm_shovel_conversation_nineteen_01"
+				"pbw_nm_shovel_conversation_nineteen_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"witch_hunter"
-			}
+				"witch_hunter",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwh_shovel_conversation_nineteen_03",
@@ -4731,28 +4733,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pbw_nm_shovel_conversation_nineteen_02"
+				"pbw_nm_shovel_conversation_nineteen_02",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"witch_hunter"
-			}
+				"witch_hunter",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwh_shovel_conversation_seven_01",
@@ -4762,77 +4764,77 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				2
+				2,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"witch_hunter"
+				"witch_hunter",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"witch_hunter"
+				"witch_hunter",
 			},
 			{
 				"global_context",
 				"bright_wizard",
 				OP.EQ,
-				0
+				0,
 			},
 			{
 				"global_context",
 				"wood_elf",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"global_context",
 				"dwarf_ranger",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"global_context",
 				"empire_soldier",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				60
+				60,
 			},
 			{
 				"faction_memory",
 				"shovel_conversation_seven",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"shovel_conversation_seven",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwh_shovel_conversation_seventeen_01",
@@ -4842,59 +4844,59 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				0
+				0,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"witch_hunter"
+				"witch_hunter",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"witch_hunter"
+				"witch_hunter",
 			},
 			{
 				"global_context",
 				"bw_necromancer",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				60
+				60,
 			},
 			{
 				"faction_memory",
 				"shovel_conversation_seventeen",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"shovel_conversation_seventeen",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwh_shovel_conversation_seventeen_02",
@@ -4904,28 +4906,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pbw_nm_shovel_conversation_seventeen_01"
+				"pbw_nm_shovel_conversation_seventeen_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"witch_hunter"
-			}
+				"witch_hunter",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwh_shovel_conversation_six_01",
@@ -4935,77 +4937,77 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				2
+				2,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"witch_hunter"
+				"witch_hunter",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"witch_hunter"
+				"witch_hunter",
 			},
 			{
 				"global_context",
 				"bright_wizard",
 				OP.EQ,
-				0
+				0,
 			},
 			{
 				"global_context",
 				"wood_elf",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"global_context",
 				"dwarf_ranger",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"global_context",
 				"empire_soldier",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				60
+				60,
 			},
 			{
 				"faction_memory",
 				"shovel_conversation_six",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"shovel_conversation_six",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwh_shovel_conversation_six_02",
@@ -5015,28 +5017,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwe_shovel_conversation_six_01"
+				"pwe_shovel_conversation_six_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"witch_hunter"
-			}
+				"witch_hunter",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwh_shovel_conversation_sixteen_01",
@@ -5046,59 +5048,59 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				0
+				0,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"witch_hunter"
+				"witch_hunter",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"witch_hunter"
+				"witch_hunter",
 			},
 			{
 				"global_context",
 				"bw_necromancer",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				60
+				60,
 			},
 			{
 				"faction_memory",
 				"shovel_conversation_sixteen",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"shovel_conversation_sixteen",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwh_shovel_conversation_sixteen_02",
@@ -5108,28 +5110,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pbw_nm_shovel_conversation_sixteen_01"
+				"pbw_nm_shovel_conversation_sixteen_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"witch_hunter"
-			}
+				"witch_hunter",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwh_shovel_conversation_thirteen_01",
@@ -5139,28 +5141,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pbw_nm_shovel_conversation_thirteen_01"
+				"pbw_nm_shovel_conversation_thirteen_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"witch_hunter"
-			}
+				"witch_hunter",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwh_shovel_conversation_twentynine_02",
@@ -5170,28 +5172,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pdr_shovel_conversation_twentynine_02"
+				"pdr_shovel_conversation_twentynine_02",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"witch_hunter"
-			}
+				"witch_hunter",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwh_shovel_conversation_twentyseven_01",
@@ -5201,28 +5203,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pes_shovel_conversation_twentyseven_01"
+				"pes_shovel_conversation_twentyseven_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"witch_hunter"
-			}
+				"witch_hunter",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwh_shovel_conversation_twentyseven_02",
@@ -5232,28 +5234,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pes_shovel_conversation_twentyseven_02"
+				"pes_shovel_conversation_twentyseven_02",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"witch_hunter"
-			}
+				"witch_hunter",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwh_shovel_conversation_twentysix_01",
@@ -5263,28 +5265,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pes_shovel_conversation_twentysix_01"
+				"pes_shovel_conversation_twentysix_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"witch_hunter"
-			}
+				"witch_hunter",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwh_shovel_conversation_twentysix_02",
@@ -5294,28 +5296,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pes_shovel_conversation_twentysix_02"
+				"pes_shovel_conversation_twentysix_02",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"witch_hunter"
-			}
+				"witch_hunter",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwh_wp_shovel_conversation_twentyeight_01",
@@ -5325,71 +5327,71 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				0
+				0,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"witch_hunter"
+				"witch_hunter",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"witch_hunter"
+				"witch_hunter",
 			},
 			{
 				"user_context",
 				"player_career",
 				OP.EQ,
-				"wh_priest"
+				"wh_priest",
 			},
 			{
 				"global_context",
 				"bright_wizard",
 				OP.EQ,
-				0
+				0,
 			},
 			{
 				"global_context",
 				"es_questingknight",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				60
+				60,
 			},
 			{
 				"faction_memory",
 				"shovel_conversation_twentysix-nine",
 				OP.EQ,
-				2
-			}
+				2,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"shovel_conversation_twentysix-nine",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwh_wp_shovel_conversation_twentyeight_02",
@@ -5399,28 +5401,28 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pes_gk_shovel_conversation_twentyeight_01"
+				"pes_gk_shovel_conversation_twentyeight_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"witch_hunter"
-			}
+				"witch_hunter",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwh_wp_shovel_conversation_twentynine_01",
@@ -5430,3087 +5432,3087 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pdr_shovel_conversation_twentynine_01"
+				"pdr_shovel_conversation_twentynine_01",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"witch_hunter"
-			}
+				"witch_hunter",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	add_dialogues({
 		pbw_nm_shovel_conversation_eighteen_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pbw_nm_shovel_conversation_eighteen_01"
+				[1] = "pbw_nm_shovel_conversation_eighteen_01",
 			},
 			sound_events = {
-				[1.0] = "pbw_nm_shovel_conversation_eighteen_01"
+				[1] = "pbw_nm_shovel_conversation_eighteen_01",
 			},
 			sound_events_duration = {
-				[1.0] = 5.1089792251587
-			}
+				[1] = 5.1089792251587,
+			},
 		},
 		pbw_nm_shovel_conversation_eighteen_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pbw_nm_shovel_conversation_eighteen_02"
+				[1] = "pbw_nm_shovel_conversation_eighteen_02",
 			},
 			sound_events = {
-				[1.0] = "pbw_nm_shovel_conversation_eighteen_02"
+				[1] = "pbw_nm_shovel_conversation_eighteen_02",
 			},
 			sound_events_duration = {
-				[1.0] = 4.6089792251587
-			}
+				[1] = 4.6089792251587,
+			},
 		},
 		pbw_nm_shovel_conversation_eleven_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pbw_nm_shovel_conversation_eleven_01"
+				[1] = "pbw_nm_shovel_conversation_eleven_01",
 			},
 			sound_events = {
-				[1.0] = "pbw_nm_shovel_conversation_eleven_01"
+				[1] = "pbw_nm_shovel_conversation_eleven_01",
 			},
 			sound_events_duration = {
-				[1.0] = 3.1099998950958
-			}
+				[1] = 3.1099998950958,
+			},
 		},
 		pbw_nm_shovel_conversation_eleven_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pbw_nm_shovel_conversation_eleven_02"
+				[1] = "pbw_nm_shovel_conversation_eleven_02",
 			},
 			sound_events = {
-				[1.0] = "pbw_nm_shovel_conversation_eleven_02"
+				[1] = "pbw_nm_shovel_conversation_eleven_02",
 			},
 			sound_events_duration = {
-				[1.0] = 2.3259792327881
-			}
+				[1] = 2.3259792327881,
+			},
 		},
 		pbw_nm_shovel_conversation_fifteen_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pbw_nm_shovel_conversation_fifteen_01"
+				[1] = "pbw_nm_shovel_conversation_fifteen_01",
 			},
 			sound_events = {
-				[1.0] = "pbw_nm_shovel_conversation_fifteen_01"
+				[1] = "pbw_nm_shovel_conversation_fifteen_01",
 			},
 			sound_events_duration = {
-				[1.0] = 5.6079998016357
-			}
+				[1] = 5.6079998016357,
+			},
 		},
 		pbw_nm_shovel_conversation_fifteen_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pbw_nm_shovel_conversation_fifteen_02"
+				[1] = "pbw_nm_shovel_conversation_fifteen_02",
 			},
 			sound_events = {
-				[1.0] = "pbw_nm_shovel_conversation_fifteen_02"
+				[1] = "pbw_nm_shovel_conversation_fifteen_02",
 			},
 			sound_events_duration = {
-				[1.0] = 1.4869791269302
-			}
+				[1] = 1.4869791269302,
+			},
 		},
 		pbw_nm_shovel_conversation_four_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pbw_nm_shovel_conversation_four_01"
+				[1] = "pbw_nm_shovel_conversation_four_01",
 			},
 			sound_events = {
-				[1.0] = "pbw_nm_shovel_conversation_four_01"
+				[1] = "pbw_nm_shovel_conversation_four_01",
 			},
 			sound_events_duration = {
-				[1.0] = 7.8819789886475
-			}
+				[1] = 7.8819789886475,
+			},
 		},
 		pbw_nm_shovel_conversation_four_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pbw_nm_shovel_conversation_four_02"
+				[1] = "pbw_nm_shovel_conversation_four_02",
 			},
 			sound_events = {
-				[1.0] = "pbw_nm_shovel_conversation_four_02"
+				[1] = "pbw_nm_shovel_conversation_four_02",
 			},
 			sound_events_duration = {
-				[1.0] = 3.1119792461395
-			}
+				[1] = 3.1119792461395,
+			},
 		},
 		pbw_nm_shovel_conversation_four_03 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pbw_nm_shovel_conversation_four_03"
+				[1] = "pbw_nm_shovel_conversation_four_03",
 			},
 			sound_events = {
-				[1.0] = "pbw_nm_shovel_conversation_four_03"
+				[1] = "pbw_nm_shovel_conversation_four_03",
 			},
 			sound_events_duration = {
-				[1.0] = 3.4567
-			}
+				[1] = 3.4567,
+			},
 		},
 		pbw_nm_shovel_conversation_fourteen_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pbw_nm_shovel_conversation_fourteen_01"
+				[1] = "pbw_nm_shovel_conversation_fourteen_01",
 			},
 			sound_events = {
-				[1.0] = "pbw_nm_shovel_conversation_fourteen_01"
+				[1] = "pbw_nm_shovel_conversation_fourteen_01",
 			},
 			sound_events_duration = {
-				[1.0] = 6.4460000991821
-			}
+				[1] = 6.4460000991821,
+			},
 		},
 		pbw_nm_shovel_conversation_fourteen_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pbw_nm_shovel_conversation_fourteen_02"
+				[1] = "pbw_nm_shovel_conversation_fourteen_02",
 			},
 			sound_events = {
-				[1.0] = "pbw_nm_shovel_conversation_fourteen_02"
+				[1] = "pbw_nm_shovel_conversation_fourteen_02",
 			},
 			sound_events_duration = {
-				[1.0] = 5.9179792404175
-			}
+				[1] = 5.9179792404175,
+			},
 		},
 		pbw_nm_shovel_conversation_nine_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pbw_nm_shovel_conversation_nine_01"
+				[1] = "pbw_nm_shovel_conversation_nine_01",
 			},
 			sound_events = {
-				[1.0] = "pbw_nm_shovel_conversation_nine_01"
+				[1] = "pbw_nm_shovel_conversation_nine_01",
 			},
 			sound_events_duration = {
-				[1.0] = 1.0140000581741
-			}
+				[1] = 1.0140000581741,
+			},
 		},
 		pbw_nm_shovel_conversation_nine_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pbw_nm_shovel_conversation_nine_02"
+				[1] = "pbw_nm_shovel_conversation_nine_02",
 			},
 			sound_events = {
-				[1.0] = "pbw_nm_shovel_conversation_nine_02"
+				[1] = "pbw_nm_shovel_conversation_nine_02",
 			},
 			sound_events_duration = {
-				[1.0] = 0.630979180336
-			}
+				[1] = 0.630979180336,
+			},
 		},
 		pbw_nm_shovel_conversation_nineteen_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pbw_nm_shovel_conversation_nineteen_01"
+				[1] = "pbw_nm_shovel_conversation_nineteen_01",
 			},
 			sound_events = {
-				[1.0] = "pbw_nm_shovel_conversation_nineteen_01"
+				[1] = "pbw_nm_shovel_conversation_nineteen_01",
 			},
 			sound_events_duration = {
-				[1.0] = 8.0739793777466
-			}
+				[1] = 8.0739793777466,
+			},
 		},
 		pbw_nm_shovel_conversation_nineteen_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pbw_nm_shovel_conversation_nineteen_02"
+				[1] = "pbw_nm_shovel_conversation_nineteen_02",
 			},
 			sound_events = {
-				[1.0] = "pbw_nm_shovel_conversation_nineteen_02"
+				[1] = "pbw_nm_shovel_conversation_nineteen_02",
 			},
 			sound_events_duration = {
-				[1.0] = 2.9969792366028
-			}
+				[1] = 2.9969792366028,
+			},
 		},
 		pbw_nm_shovel_conversation_one_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pbw_nm_shovel_conversation_one_01"
+				[1] = "pbw_nm_shovel_conversation_one_01",
 			},
 			sound_events = {
-				[1.0] = "pbw_nm_shovel_conversation_one_01"
+				[1] = "pbw_nm_shovel_conversation_one_01",
 			},
 			sound_events_duration = {
-				[1.0] = 3.8929998874664
-			}
+				[1] = 3.8929998874664,
+			},
 		},
 		pbw_nm_shovel_conversation_one_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pbw_nm_shovel_conversation_one_02"
+				[1] = "pbw_nm_shovel_conversation_one_02",
 			},
 			sound_events = {
-				[1.0] = "pbw_nm_shovel_conversation_one_02"
+				[1] = "pbw_nm_shovel_conversation_one_02",
 			},
 			sound_events_duration = {
-				[1.0] = 2.7599999904633
-			}
+				[1] = 2.7599999904633,
+			},
 		},
 		pbw_nm_shovel_conversation_one_a_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pbw_nm_shovel_conversation_one_a_01"
+				[1] = "pbw_nm_shovel_conversation_one_a_01",
 			},
 			sound_events = {
-				[1.0] = "pbw_nm_shovel_conversation_one_a_01"
+				[1] = "pbw_nm_shovel_conversation_one_a_01",
 			},
 			sound_events_duration = {
-				[1.0] = 6.3069791793823
-			}
+				[1] = 6.3069791793823,
+			},
 		},
 		pbw_nm_shovel_conversation_one_a_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pbw_nm_shovel_conversation_one_a_02"
+				[1] = "pbw_nm_shovel_conversation_one_a_02",
 			},
 			sound_events = {
-				[1.0] = "pbw_nm_shovel_conversation_one_a_02"
+				[1] = "pbw_nm_shovel_conversation_one_a_02",
 			},
 			sound_events_duration = {
-				[1.0] = 4.0890002250671
-			}
+				[1] = 4.0890002250671,
+			},
 		},
 		pbw_nm_shovel_conversation_one_a_03 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pbw_nm_shovel_conversation_one_a_03"
+				[1] = "pbw_nm_shovel_conversation_one_a_03",
 			},
 			sound_events = {
-				[1.0] = "pbw_nm_shovel_conversation_one_a_03"
+				[1] = "pbw_nm_shovel_conversation_one_a_03",
 			},
 			sound_events_duration = {
-				[1.0] = 4.3439998626709
-			}
+				[1] = 4.3439998626709,
+			},
 		},
 		pbw_nm_shovel_conversation_seventeen_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pbw_nm_shovel_conversation_seventeen_01"
+				[1] = "pbw_nm_shovel_conversation_seventeen_01",
 			},
 			sound_events = {
-				[1.0] = "pbw_nm_shovel_conversation_seventeen_01"
+				[1] = "pbw_nm_shovel_conversation_seventeen_01",
 			},
 			sound_events_duration = {
-				[1.0] = 7.0890002250671
-			}
+				[1] = 7.0890002250671,
+			},
 		},
 		pbw_nm_shovel_conversation_seventeen_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pbw_nm_shovel_conversation_seventeen_02"
+				[1] = "pbw_nm_shovel_conversation_seventeen_02",
 			},
 			sound_events = {
-				[1.0] = "pbw_nm_shovel_conversation_seventeen_02"
+				[1] = "pbw_nm_shovel_conversation_seventeen_02",
 			},
 			sound_events_duration = {
-				[1.0] = 3.9270000457764
-			}
+				[1] = 3.9270000457764,
+			},
 		},
 		pbw_nm_shovel_conversation_sixteen_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pbw_nm_shovel_conversation_sixteen_01"
+				[1] = "pbw_nm_shovel_conversation_sixteen_01",
 			},
 			sound_events = {
-				[1.0] = "pbw_nm_shovel_conversation_sixteen_01"
+				[1] = "pbw_nm_shovel_conversation_sixteen_01",
 			},
 			sound_events_duration = {
-				[1.0] = 2.5009791851044
-			}
+				[1] = 2.5009791851044,
+			},
 		},
 		pbw_nm_shovel_conversation_sixteen_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pbw_nm_shovel_conversation_sixteen_02"
+				[1] = "pbw_nm_shovel_conversation_sixteen_02",
 			},
 			sound_events = {
-				[1.0] = "pbw_nm_shovel_conversation_sixteen_02"
+				[1] = "pbw_nm_shovel_conversation_sixteen_02",
 			},
 			sound_events_duration = {
-				[1.0] = 1.699979186058
-			}
+				[1] = 1.699979186058,
+			},
 		},
 		pbw_nm_shovel_conversation_ten_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pbw_nm_shovel_conversation_ten_01"
+				[1] = "pbw_nm_shovel_conversation_ten_01",
 			},
 			sound_events = {
-				[1.0] = "pbw_nm_shovel_conversation_ten_01"
+				[1] = "pbw_nm_shovel_conversation_ten_01",
 			},
 			sound_events_duration = {
-				[1.0] = 1.8880000114441
-			}
+				[1] = 1.8880000114441,
+			},
 		},
 		pbw_nm_shovel_conversation_ten_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pbw_nm_shovel_conversation_ten_02"
+				[1] = "pbw_nm_shovel_conversation_ten_02",
 			},
 			sound_events = {
-				[1.0] = "pbw_nm_shovel_conversation_ten_02"
+				[1] = "pbw_nm_shovel_conversation_ten_02",
 			},
 			sound_events_duration = {
-				[1.0] = 4.1849999427795
-			}
+				[1] = 4.1849999427795,
+			},
 		},
 		pbw_nm_shovel_conversation_ten_03 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pbw_nm_shovel_conversation_ten_03"
+				[1] = "pbw_nm_shovel_conversation_ten_03",
 			},
 			sound_events = {
-				[1.0] = "pbw_nm_shovel_conversation_ten_03"
+				[1] = "pbw_nm_shovel_conversation_ten_03",
 			},
 			sound_events_duration = {
-				[1.0] = 3.8469998836517
-			}
+				[1] = 3.8469998836517,
+			},
 		},
 		pbw_nm_shovel_conversation_thirteen_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pbw_nm_shovel_conversation_thirteen_01"
+				[1] = "pbw_nm_shovel_conversation_thirteen_01",
 			},
 			sound_events = {
-				[1.0] = "pbw_nm_shovel_conversation_thirteen_01"
+				[1] = "pbw_nm_shovel_conversation_thirteen_01",
 			},
 			sound_events_duration = {
-				[1.0] = 2.694000005722
-			}
+				[1] = 2.694000005722,
+			},
 		},
 		pbw_nm_shovel_conversation_thirteen_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pbw_nm_shovel_conversation_thirteen_02"
+				[1] = "pbw_nm_shovel_conversation_thirteen_02",
 			},
 			sound_events = {
-				[1.0] = "pbw_nm_shovel_conversation_thirteen_02"
+				[1] = "pbw_nm_shovel_conversation_thirteen_02",
 			},
 			sound_events_duration = {
-				[1.0] = 2.7699999809265
-			}
+				[1] = 2.7699999809265,
+			},
 		},
 		pbw_nm_shovel_conversation_three_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pbw_nm_shovel_conversation_three_01"
+				[1] = "pbw_nm_shovel_conversation_three_01",
 			},
 			sound_events = {
-				[1.0] = "pbw_nm_shovel_conversation_three_01"
+				[1] = "pbw_nm_shovel_conversation_three_01",
 			},
 			sound_events_duration = {
-				[1.0] = 9.1189794540405
-			}
+				[1] = 9.1189794540405,
+			},
 		},
 		pbw_nm_shovel_conversation_three_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pbw_nm_shovel_conversation_three_02"
+				[1] = "pbw_nm_shovel_conversation_three_02",
 			},
 			sound_events = {
-				[1.0] = "pbw_nm_shovel_conversation_three_02"
+				[1] = "pbw_nm_shovel_conversation_three_02",
 			},
 			sound_events_duration = {
-				[1.0] = 7.4359793663025
-			}
+				[1] = 7.4359793663025,
+			},
 		},
 		pbw_nm_shovel_conversation_three_03 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pbw_nm_shovel_conversation_three_03"
+				[1] = "pbw_nm_shovel_conversation_three_03",
 			},
 			sound_events = {
-				[1.0] = "pbw_nm_shovel_conversation_three_03"
+				[1] = "pbw_nm_shovel_conversation_three_03",
 			},
 			sound_events_duration = {
-				[1.0] = 2.6919791698456
-			}
+				[1] = 2.6919791698456,
+			},
 		},
 		pbw_nm_shovel_conversation_twelve_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pbw_nm_shovel_conversation_twelve_01"
+				[1] = "pbw_nm_shovel_conversation_twelve_01",
 			},
 			sound_events = {
-				[1.0] = "pbw_nm_shovel_conversation_twelve_01"
+				[1] = "pbw_nm_shovel_conversation_twelve_01",
 			},
 			sound_events_duration = {
-				[1.0] = 4.8619790077209
-			}
+				[1] = 4.8619790077209,
+			},
 		},
 		pbw_nm_shovel_conversation_twelve_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pbw_nm_shovel_conversation_twelve_02"
+				[1] = "pbw_nm_shovel_conversation_twelve_02",
 			},
 			sound_events = {
-				[1.0] = "pbw_nm_shovel_conversation_twelve_02"
+				[1] = "pbw_nm_shovel_conversation_twelve_02",
 			},
 			sound_events_duration = {
-				[1.0] = 6.4899792671204
-			}
+				[1] = 6.4899792671204,
+			},
 		},
 		pbw_nm_shovel_conversation_twenty_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pbw_nm_shovel_conversation_twenty_01"
+				[1] = "pbw_nm_shovel_conversation_twenty_01",
 			},
 			sound_events = {
-				[1.0] = "pbw_nm_shovel_conversation_twenty_01"
+				[1] = "pbw_nm_shovel_conversation_twenty_01",
 			},
 			sound_events_duration = {
-				[1.0] = 7.3229999542236
-			}
+				[1] = 7.3229999542236,
+			},
 		},
 		pbw_nm_shovel_conversation_twenty_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pbw_nm_shovel_conversation_twenty_02"
+				[1] = "pbw_nm_shovel_conversation_twenty_02",
 			},
 			sound_events = {
-				[1.0] = "pbw_nm_shovel_conversation_twenty_02"
+				[1] = "pbw_nm_shovel_conversation_twenty_02",
 			},
 			sound_events_duration = {
-				[1.0] = 2.0909790992737
-			}
+				[1] = 2.0909790992737,
+			},
 		},
 		pbw_nm_shovel_conversation_twentyfive_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pbw_nm_shovel_conversation_twentyfive_01"
+				[1] = "pbw_nm_shovel_conversation_twentyfive_01",
 			},
 			sound_events = {
-				[1.0] = "pbw_nm_shovel_conversation_twentyfive_01"
+				[1] = "pbw_nm_shovel_conversation_twentyfive_01",
 			},
 			sound_events_duration = {
-				[1.0] = 2.2630000114441
-			}
+				[1] = 2.2630000114441,
+			},
 		},
 		pbw_nm_shovel_conversation_twentyfive_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pbw_nm_shovel_conversation_twentyfive_02"
+				[1] = "pbw_nm_shovel_conversation_twentyfive_02",
 			},
 			sound_events = {
-				[1.0] = "pbw_nm_shovel_conversation_twentyfive_02"
+				[1] = "pbw_nm_shovel_conversation_twentyfive_02",
 			},
 			sound_events_duration = {
-				[1.0] = 6.1269793510437
-			}
+				[1] = 6.1269793510437,
+			},
 		},
 		pbw_nm_shovel_conversation_twentyfour_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pbw_nm_shovel_conversation_twentyfour_01"
+				[1] = "pbw_nm_shovel_conversation_twentyfour_01",
 			},
 			sound_events = {
-				[1.0] = "pbw_nm_shovel_conversation_twentyfour_01"
+				[1] = "pbw_nm_shovel_conversation_twentyfour_01",
 			},
 			sound_events_duration = {
-				[1.0] = 1.8400000333786
-			}
+				[1] = 1.8400000333786,
+			},
 		},
 		pbw_nm_shovel_conversation_twentyfour_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pbw_nm_shovel_conversation_twentyfour_02"
+				[1] = "pbw_nm_shovel_conversation_twentyfour_02",
 			},
 			sound_events = {
-				[1.0] = "pbw_nm_shovel_conversation_twentyfour_02"
+				[1] = "pbw_nm_shovel_conversation_twentyfour_02",
 			},
 			sound_events_duration = {
-				[1.0] = 10.080979347229
-			}
+				[1] = 10.080979347229,
+			},
 		},
 		pbw_nm_shovel_conversation_twentyone_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pbw_nm_shovel_conversation_twentyone_01"
+				[1] = "pbw_nm_shovel_conversation_twentyone_01",
 			},
 			sound_events = {
-				[1.0] = "pbw_nm_shovel_conversation_twentyone_01"
+				[1] = "pbw_nm_shovel_conversation_twentyone_01",
 			},
 			sound_events_duration = {
-				[1.0] = 6.8029789924622
-			}
+				[1] = 6.8029789924622,
+			},
 		},
 		pbw_nm_shovel_conversation_twentyone_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pbw_nm_shovel_conversation_twentyone_02"
+				[1] = "pbw_nm_shovel_conversation_twentyone_02",
 			},
 			sound_events = {
-				[1.0] = "pbw_nm_shovel_conversation_twentyone_02"
+				[1] = "pbw_nm_shovel_conversation_twentyone_02",
 			},
 			sound_events_duration = {
-				[1.0] = 2.5889999866486
-			}
+				[1] = 2.5889999866486,
+			},
 		},
 		pbw_nm_shovel_conversation_twentythree_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pbw_nm_shovel_conversation_twentythree_01"
+				[1] = "pbw_nm_shovel_conversation_twentythree_01",
 			},
 			sound_events = {
-				[1.0] = "pbw_nm_shovel_conversation_twentythree_01"
+				[1] = "pbw_nm_shovel_conversation_twentythree_01",
 			},
 			sound_events_duration = {
-				[1.0] = 5.0120000839233
-			}
+				[1] = 5.0120000839233,
+			},
 		},
 		pbw_nm_shovel_conversation_twentythree_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pbw_nm_shovel_conversation_twentythree_02"
+				[1] = "pbw_nm_shovel_conversation_twentythree_02",
 			},
 			sound_events = {
-				[1.0] = "pbw_nm_shovel_conversation_twentythree_02"
+				[1] = "pbw_nm_shovel_conversation_twentythree_02",
 			},
 			sound_events_duration = {
-				[1.0] = 4.6349792480469
-			}
+				[1] = 4.6349792480469,
+			},
 		},
 		pbw_nm_shovel_conversation_twentythree_03 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pbw_nm_shovel_conversation_twentythree_03"
+				[1] = "pbw_nm_shovel_conversation_twentythree_03",
 			},
 			sound_events = {
-				[1.0] = "pbw_nm_shovel_conversation_twentythree_03"
+				[1] = "pbw_nm_shovel_conversation_twentythree_03",
 			},
 			sound_events_duration = {
-				[1.0] = 3.7179999351502
-			}
+				[1] = 3.7179999351502,
+			},
 		},
 		pbw_nm_shovel_conversation_twentytwo_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pbw_nm_shovel_conversation_twentytwo_01"
+				[1] = "pbw_nm_shovel_conversation_twentytwo_01",
 			},
 			sound_events = {
-				[1.0] = "pbw_nm_shovel_conversation_twentytwo_01"
+				[1] = "pbw_nm_shovel_conversation_twentytwo_01",
 			},
 			sound_events_duration = {
-				[1.0] = 3.0439999103546
-			}
+				[1] = 3.0439999103546,
+			},
 		},
 		pbw_nm_shovel_conversation_twentytwo_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pbw_nm_shovel_conversation_twentytwo_02"
+				[1] = "pbw_nm_shovel_conversation_twentytwo_02",
 			},
 			sound_events = {
-				[1.0] = "pbw_nm_shovel_conversation_twentytwo_02"
+				[1] = "pbw_nm_shovel_conversation_twentytwo_02",
 			},
 			sound_events_duration = {
-				[1.0] = 4.5589790344238
-			}
+				[1] = 4.5589790344238,
+			},
 		},
 		pbw_nm_shovel_conversation_two_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pbw_nm_shovel_conversation_two_01"
+				[1] = "pbw_nm_shovel_conversation_two_01",
 			},
 			sound_events = {
-				[1.0] = "pbw_nm_shovel_conversation_two_01"
+				[1] = "pbw_nm_shovel_conversation_two_01",
 			},
 			sound_events_duration = {
-				[1.0] = 7.8539791107178
-			}
+				[1] = 7.8539791107178,
+			},
 		},
 		pbw_nm_shovel_conversation_two_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pbw_nm_shovel_conversation_two_02"
+				[1] = "pbw_nm_shovel_conversation_two_02",
 			},
 			sound_events = {
-				[1.0] = "pbw_nm_shovel_conversation_two_02"
+				[1] = "pbw_nm_shovel_conversation_two_02",
 			},
 			sound_events_duration = {
-				[1.0] = 3.2539792060852
-			}
+				[1] = 3.2539792060852,
+			},
 		},
 		pbw_nm_shovel_conversation_two_03 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pbw_nm_shovel_conversation_two_03"
+				[1] = "pbw_nm_shovel_conversation_two_03",
 			},
 			sound_events = {
-				[1.0] = "pbw_nm_shovel_conversation_two_03"
+				[1] = "pbw_nm_shovel_conversation_two_03",
 			},
 			sound_events_duration = {
-				[1.0] = 3.6899790763855
-			}
+				[1] = 3.6899790763855,
+			},
 		},
 		pbw_nm_shovel_conversation_two_a_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pbw_nm_shovel_conversation_two_a_01"
+				[1] = "pbw_nm_shovel_conversation_two_a_01",
 			},
 			sound_events = {
-				[1.0] = "pbw_nm_shovel_conversation_two_a_01"
+				[1] = "pbw_nm_shovel_conversation_two_a_01",
 			},
 			sound_events_duration = {
-				[1.0] = 2.9879791736603
-			}
+				[1] = 2.9879791736603,
+			},
 		},
 		pbw_nm_shovel_conversation_two_a_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pbw_nm_shovel_conversation_two_a_02"
+				[1] = "pbw_nm_shovel_conversation_two_a_02",
 			},
 			sound_events = {
-				[1.0] = "pbw_nm_shovel_conversation_two_a_02"
+				[1] = "pbw_nm_shovel_conversation_two_a_02",
 			},
 			sound_events_duration = {
-				[1.0] = 1.6819791793823
-			}
+				[1] = 1.6819791793823,
+			},
 		},
 		pbw_nm_shovel_conversation_two_a_03 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pbw_nm_shovel_conversation_two_a_03"
+				[1] = "pbw_nm_shovel_conversation_two_a_03",
 			},
 			sound_events = {
-				[1.0] = "pbw_nm_shovel_conversation_two_a_03"
+				[1] = "pbw_nm_shovel_conversation_two_a_03",
 			},
 			sound_events_duration = {
-				[1.0] = 6.0099792480469
-			}
+				[1] = 6.0099792480469,
+			},
 		},
 		pdr_shovel_conversation_eight_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pdr_shovel_conversation_eight_01"
+				[1] = "pdr_shovel_conversation_eight_01",
 			},
 			sound_events = {
-				[1.0] = "pdr_shovel_conversation_eight_01"
+				[1] = "pdr_shovel_conversation_eight_01",
 			},
 			sound_events_duration = {
-				[1.0] = 6.6669793128967
-			}
+				[1] = 6.6669793128967,
+			},
 		},
 		pdr_shovel_conversation_eleven_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pdr_shovel_conversation_eleven_01"
+				[1] = "pdr_shovel_conversation_eleven_01",
 			},
 			sound_events = {
-				[1.0] = "pdr_shovel_conversation_eleven_01"
+				[1] = "pdr_shovel_conversation_eleven_01",
 			},
 			sound_events_duration = {
-				[1.0] = 5.0329790115356
-			}
+				[1] = 5.0329790115356,
+			},
 		},
 		pdr_shovel_conversation_eleven_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pdr_shovel_conversation_eleven_02"
+				[1] = "pdr_shovel_conversation_eleven_02",
 			},
 			sound_events = {
-				[1.0] = "pdr_shovel_conversation_eleven_02"
+				[1] = "pdr_shovel_conversation_eleven_02",
 			},
 			sound_events_duration = {
-				[1.0] = 5.8299789428711
-			}
+				[1] = 5.8299789428711,
+			},
 		},
 		pdr_shovel_conversation_five_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pdr_shovel_conversation_five_01"
+				[1] = "pdr_shovel_conversation_five_01",
 			},
 			sound_events = {
-				[1.0] = "pdr_shovel_conversation_five_01"
+				[1] = "pdr_shovel_conversation_five_01",
 			},
 			sound_events_duration = {
-				[1.0] = 7.9829792976379
-			}
+				[1] = 7.9829792976379,
+			},
 		},
 		pdr_shovel_conversation_nine_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pdr_shovel_conversation_nine_01"
+				[1] = "pdr_shovel_conversation_nine_01",
 			},
 			sound_events = {
-				[1.0] = "pdr_shovel_conversation_nine_01"
+				[1] = "pdr_shovel_conversation_nine_01",
 			},
 			sound_events_duration = {
-				[1.0] = 6.4839792251587
-			}
+				[1] = 6.4839792251587,
+			},
 		},
 		pdr_shovel_conversation_nine_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pdr_shovel_conversation_nine_02"
+				[1] = "pdr_shovel_conversation_nine_02",
 			},
 			sound_events = {
-				[1.0] = "pdr_shovel_conversation_nine_02"
+				[1] = "pdr_shovel_conversation_nine_02",
 			},
 			sound_events_duration = {
-				[1.0] = 3.4659790992737
-			}
+				[1] = 3.4659790992737,
+			},
 		},
 		pdr_shovel_conversation_seven_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pdr_shovel_conversation_seven_01"
+				[1] = "pdr_shovel_conversation_seven_01",
 			},
 			sound_events = {
-				[1.0] = "pdr_shovel_conversation_seven_01"
+				[1] = "pdr_shovel_conversation_seven_01",
 			},
 			sound_events_duration = {
-				[1.0] = 5.8229789733887
-			}
+				[1] = 5.8229789733887,
+			},
 		},
 		pdr_shovel_conversation_six_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pdr_shovel_conversation_six_01"
+				[1] = "pdr_shovel_conversation_six_01",
 			},
 			sound_events = {
-				[1.0] = "pdr_shovel_conversation_six_01"
+				[1] = "pdr_shovel_conversation_six_01",
 			},
 			sound_events_duration = {
-				[1.0] = 6.4369792938232
-			}
+				[1] = 6.4369792938232,
+			},
 		},
 		pdr_shovel_conversation_ten_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pdr_shovel_conversation_ten_01"
+				[1] = "pdr_shovel_conversation_ten_01",
 			},
 			sound_events = {
-				[1.0] = "pdr_shovel_conversation_ten_01"
+				[1] = "pdr_shovel_conversation_ten_01",
 			},
 			sound_events_duration = {
-				[1.0] = 8.8159790039063
-			}
+				[1] = 8.8159790039063,
+			},
 		},
 		pdr_shovel_conversation_ten_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pdr_shovel_conversation_ten_02"
+				[1] = "pdr_shovel_conversation_ten_02",
 			},
 			sound_events = {
-				[1.0] = "pdr_shovel_conversation_ten_02"
+				[1] = "pdr_shovel_conversation_ten_02",
 			},
 			sound_events_duration = {
-				[1.0] = 6.245979309082
-			}
+				[1] = 6.245979309082,
+			},
 		},
 		pdr_shovel_conversation_ten_03 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pdr_shovel_conversation_ten_03"
+				[1] = "pdr_shovel_conversation_ten_03",
 			},
 			sound_events = {
-				[1.0] = "pdr_shovel_conversation_ten_03"
+				[1] = "pdr_shovel_conversation_ten_03",
 			},
 			sound_events_duration = {
-				[1.0] = 1.8379791975021
-			}
+				[1] = 1.8379791975021,
+			},
 		},
 		pdr_shovel_conversation_twelve_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pdr_shovel_conversation_twelve_01"
+				[1] = "pdr_shovel_conversation_twelve_01",
 			},
 			sound_events = {
-				[1.0] = "pdr_shovel_conversation_twelve_01"
+				[1] = "pdr_shovel_conversation_twelve_01",
 			},
 			sound_events_duration = {
-				[1.0] = 3.4179792404175
-			}
+				[1] = 3.4179792404175,
+			},
 		},
 		pdr_shovel_conversation_twelve_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pdr_shovel_conversation_twelve_02"
+				[1] = "pdr_shovel_conversation_twelve_02",
 			},
 			sound_events = {
-				[1.0] = "pdr_shovel_conversation_twelve_02"
+				[1] = "pdr_shovel_conversation_twelve_02",
 			},
 			sound_events_duration = {
-				[1.0] = 4.4399790763855
-			}
+				[1] = 4.4399790763855,
+			},
 		},
 		pdr_shovel_conversation_twelve_03 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pdr_shovel_conversation_twelve_03"
+				[1] = "pdr_shovel_conversation_twelve_03",
 			},
 			sound_events = {
-				[1.0] = "pdr_shovel_conversation_twelve_03"
+				[1] = "pdr_shovel_conversation_twelve_03",
 			},
 			sound_events_duration = {
-				[1.0] = 2.198979139328
-			}
+				[1] = 2.198979139328,
+			},
 		},
 		pdr_shovel_conversation_twentynine_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pdr_shovel_conversation_twentynine_01"
+				[1] = "pdr_shovel_conversation_twentynine_01",
 			},
 			sound_events = {
-				[1.0] = "pdr_shovel_conversation_twentynine_01"
+				[1] = "pdr_shovel_conversation_twentynine_01",
 			},
 			sound_events_duration = {
-				[1.0] = 7.2799792289734
-			}
+				[1] = 7.2799792289734,
+			},
 		},
 		pdr_shovel_conversation_twentynine_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pdr_shovel_conversation_twentynine_02"
+				[1] = "pdr_shovel_conversation_twentynine_02",
 			},
 			sound_events = {
-				[1.0] = "pdr_shovel_conversation_twentynine_02"
+				[1] = "pdr_shovel_conversation_twentynine_02",
 			},
 			sound_events_duration = {
-				[1.0] = 3.5819792747498
-			}
+				[1] = 3.5819792747498,
+			},
 		},
 		pdr_shovel_conversation_twentyseven_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pdr_shovel_conversation_twentyseven_01"
+				[1] = "pdr_shovel_conversation_twentyseven_01",
 			},
 			sound_events = {
-				[1.0] = "pdr_shovel_conversation_twentyseven_01"
+				[1] = "pdr_shovel_conversation_twentyseven_01",
 			},
 			sound_events_duration = {
-				[1.0] = 4.8629789352417
-			}
+				[1] = 4.8629789352417,
+			},
 		},
 		pdr_shovel_conversation_twentysix_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pdr_shovel_conversation_twentysix_01"
+				[1] = "pdr_shovel_conversation_twentysix_01",
 			},
 			sound_events = {
-				[1.0] = "pdr_shovel_conversation_twentysix_01"
+				[1] = "pdr_shovel_conversation_twentysix_01",
 			},
 			sound_events_duration = {
-				[1.0] = 2.7059791088104
-			}
+				[1] = 2.7059791088104,
+			},
 		},
 		pes_gk_shovel_conversation_twentyeight_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pes_gk_shovel_conversation_twentyeight_01"
+				[1] = "pes_gk_shovel_conversation_twentyeight_01",
 			},
 			sound_events = {
-				[1.0] = "pes_gk_shovel_conversation_twentyeight_01"
+				[1] = "pes_gk_shovel_conversation_twentyeight_01",
 			},
 			sound_events_duration = {
-				[1.0] = 2.2509999275208
-			}
+				[1] = 2.2509999275208,
+			},
 		},
 		pes_gk_shovel_conversation_twentyeight_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pes_gk_shovel_conversation_twentyeight_02"
+				[1] = "pes_gk_shovel_conversation_twentyeight_02",
 			},
 			sound_events = {
-				[1.0] = "pes_gk_shovel_conversation_twentyeight_02"
+				[1] = "pes_gk_shovel_conversation_twentyeight_02",
 			},
 			sound_events_duration = {
-				[1.0] = 5.8999791145325
-			}
+				[1] = 5.8999791145325,
+			},
 		},
 		pes_gk_shovel_conversation_twentynine_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pes_gk_shovel_conversation_twentynine_01"
+				[1] = "pes_gk_shovel_conversation_twentynine_01",
 			},
 			sound_events = {
-				[1.0] = "pes_gk_shovel_conversation_twentynine_01"
+				[1] = "pes_gk_shovel_conversation_twentynine_01",
 			},
 			sound_events_duration = {
-				[1.0] = 3.8780000209808
-			}
+				[1] = 3.8780000209808,
+			},
 		},
 		pes_shovel_conversation_eight_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pes_shovel_conversation_eight_01"
+				[1] = "pes_shovel_conversation_eight_01",
 			},
 			sound_events = {
-				[1.0] = "pes_shovel_conversation_eight_01"
+				[1] = "pes_shovel_conversation_eight_01",
 			},
 			sound_events_duration = {
-				[1.0] = 4.4279789924622
-			}
+				[1] = 4.4279789924622,
+			},
 		},
 		pes_shovel_conversation_five_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pes_shovel_conversation_five_01"
+				[1] = "pes_shovel_conversation_five_01",
 			},
 			sound_events = {
-				[1.0] = "pes_shovel_conversation_five_01"
+				[1] = "pes_shovel_conversation_five_01",
 			},
 			sound_events_duration = {
-				[1.0] = 6.4719791412353
-			}
+				[1] = 6.4719791412353,
+			},
 		},
 		pes_shovel_conversation_seven_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pes_shovel_conversation_seven_01"
+				[1] = "pes_shovel_conversation_seven_01",
 			},
 			sound_events = {
-				[1.0] = "pes_shovel_conversation_seven_01"
+				[1] = "pes_shovel_conversation_seven_01",
 			},
 			sound_events_duration = {
-				[1.0] = 5.0149998664856
-			}
+				[1] = 5.0149998664856,
+			},
 		},
 		pes_shovel_conversation_six_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pes_shovel_conversation_six_01"
+				[1] = "pes_shovel_conversation_six_01",
 			},
 			sound_events = {
-				[1.0] = "pes_shovel_conversation_six_01"
+				[1] = "pes_shovel_conversation_six_01",
 			},
 			sound_events_duration = {
-				[1.0] = 6.6019792556763
-			}
+				[1] = 6.6019792556763,
+			},
 		},
 		pes_shovel_conversation_twenty_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pes_shovel_conversation_twenty_01"
+				[1] = "pes_shovel_conversation_twenty_01",
 			},
 			sound_events = {
-				[1.0] = "pes_shovel_conversation_twenty_01"
+				[1] = "pes_shovel_conversation_twenty_01",
 			},
 			sound_events_duration = {
-				[1.0] = 3.3429999351502
-			}
+				[1] = 3.3429999351502,
+			},
 		},
 		pes_shovel_conversation_twenty_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pes_shovel_conversation_twenty_02"
+				[1] = "pes_shovel_conversation_twenty_02",
 			},
 			sound_events = {
-				[1.0] = "pes_shovel_conversation_twenty_02"
+				[1] = "pes_shovel_conversation_twenty_02",
 			},
 			sound_events_duration = {
-				[1.0] = 5.1119790077209
-			}
+				[1] = 5.1119790077209,
+			},
 		},
 		pes_shovel_conversation_twentyfive_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pes_shovel_conversation_twentyfive_02"
+				[1] = "pes_shovel_conversation_twentyfive_02",
 			},
 			sound_events = {
-				[1.0] = "pes_shovel_conversation_twentyfive_02"
+				[1] = "pes_shovel_conversation_twentyfive_02",
 			},
 			sound_events_duration = {
-				[1.0] = 3.0130000114441
-			}
+				[1] = 3.0130000114441,
+			},
 		},
 		pes_shovel_conversation_twentyfour_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pes_shovel_conversation_twentyfour_01"
+				[1] = "pes_shovel_conversation_twentyfour_01",
 			},
 			sound_events = {
-				[1.0] = "pes_shovel_conversation_twentyfour_01"
+				[1] = "pes_shovel_conversation_twentyfour_01",
 			},
 			sound_events_duration = {
-				[1.0] = 5.9339790344238
-			}
+				[1] = 5.9339790344238,
+			},
 		},
 		pes_shovel_conversation_twentyfour_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pes_shovel_conversation_twentyfour_02"
+				[1] = "pes_shovel_conversation_twentyfour_02",
 			},
 			sound_events = {
-				[1.0] = "pes_shovel_conversation_twentyfour_02"
+				[1] = "pes_shovel_conversation_twentyfour_02",
 			},
 			sound_events_duration = {
-				[1.0] = 2.6579792499542
-			}
+				[1] = 2.6579792499542,
+			},
 		},
 		pes_shovel_conversation_twentyfour_03 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pes_shovel_conversation_twentyfour_03"
+				[1] = "pes_shovel_conversation_twentyfour_03",
 			},
 			sound_events = {
-				[1.0] = "pes_shovel_conversation_twentyfour_03"
+				[1] = "pes_shovel_conversation_twentyfour_03",
 			},
 			sound_events_duration = {
-				[1.0] = 5.0839791297913
-			}
+				[1] = 5.0839791297913,
+			},
 		},
 		pes_shovel_conversation_twentyone_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pes_shovel_conversation_twentyone_01"
+				[1] = "pes_shovel_conversation_twentyone_01",
 			},
 			sound_events = {
-				[1.0] = "pes_shovel_conversation_twentyone_01"
+				[1] = "pes_shovel_conversation_twentyone_01",
 			},
 			sound_events_duration = {
-				[1.0] = 2.5259792804718
-			}
+				[1] = 2.5259792804718,
+			},
 		},
 		pes_shovel_conversation_twentyone_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pes_shovel_conversation_twentyone_02"
+				[1] = "pes_shovel_conversation_twentyone_02",
 			},
 			sound_events = {
-				[1.0] = "pes_shovel_conversation_twentyone_02"
+				[1] = "pes_shovel_conversation_twentyone_02",
 			},
 			sound_events_duration = {
-				[1.0] = 4.7449793815613
-			}
+				[1] = 4.7449793815613,
+			},
 		},
 		pes_shovel_conversation_twentyseven_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pes_shovel_conversation_twentyseven_01"
+				[1] = "pes_shovel_conversation_twentyseven_01",
 			},
 			sound_events = {
-				[1.0] = "pes_shovel_conversation_twentyseven_01"
+				[1] = "pes_shovel_conversation_twentyseven_01",
 			},
 			sound_events_duration = {
-				[1.0] = 3.3389792442322
-			}
+				[1] = 3.3389792442322,
+			},
 		},
 		pes_shovel_conversation_twentyseven_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pes_shovel_conversation_twentyseven_02"
+				[1] = "pes_shovel_conversation_twentyseven_02",
 			},
 			sound_events = {
-				[1.0] = "pes_shovel_conversation_twentyseven_02"
+				[1] = "pes_shovel_conversation_twentyseven_02",
 			},
 			sound_events_duration = {
-				[1.0] = 7.4629793167114
-			}
+				[1] = 7.4629793167114,
+			},
 		},
 		pes_shovel_conversation_twentysix_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pes_shovel_conversation_twentysix_01"
+				[1] = "pes_shovel_conversation_twentysix_01",
 			},
 			sound_events = {
-				[1.0] = "pes_shovel_conversation_twentysix_01"
+				[1] = "pes_shovel_conversation_twentysix_01",
 			},
 			sound_events_duration = {
-				[1.0] = 3.1019792556763
-			}
+				[1] = 3.1019792556763,
+			},
 		},
 		pes_shovel_conversation_twentysix_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pes_shovel_conversation_twentysix_02"
+				[1] = "pes_shovel_conversation_twentysix_02",
 			},
 			sound_events = {
-				[1.0] = "pes_shovel_conversation_twentysix_02"
+				[1] = "pes_shovel_conversation_twentysix_02",
 			},
 			sound_events_duration = {
-				[1.0] = 7.9249792098999
-			}
+				[1] = 7.9249792098999,
+			},
 		},
 		pes_shovel_conversation_twentythree_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pes_shovel_conversation_twentythree_02"
+				[1] = "pes_shovel_conversation_twentythree_02",
 			},
 			sound_events = {
-				[1.0] = "pes_shovel_conversation_twentythree_02"
+				[1] = "pes_shovel_conversation_twentythree_02",
 			},
 			sound_events_duration = {
-				[1.0] = 5.0489792823792
-			}
+				[1] = 5.0489792823792,
+			},
 		},
 		pes_shovel_conversation_twentythree_03 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pes_shovel_conversation_twentythree_03"
+				[1] = "pes_shovel_conversation_twentythree_03",
 			},
 			sound_events = {
-				[1.0] = "pes_shovel_conversation_twentythree_03"
+				[1] = "pes_shovel_conversation_twentythree_03",
 			},
 			sound_events_duration = {
-				[1.0] = 3.3539791107178
-			}
+				[1] = 3.3539791107178,
+			},
 		},
 		pes_shovel_conversation_twentytwo_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pes_shovel_conversation_twentytwo_01"
+				[1] = "pes_shovel_conversation_twentytwo_01",
 			},
 			sound_events = {
-				[1.0] = "pes_shovel_conversation_twentytwo_01"
+				[1] = "pes_shovel_conversation_twentytwo_01",
 			},
 			sound_events_duration = {
-				[1.0] = 4.7929792404175
-			}
+				[1] = 4.7929792404175,
+			},
 		},
 		pes_shovel_conversation_twentytwo_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pes_shovel_conversation_twentytwo_02"
+				[1] = "pes_shovel_conversation_twentytwo_02",
 			},
 			sound_events = {
-				[1.0] = "pes_shovel_conversation_twentytwo_02"
+				[1] = "pes_shovel_conversation_twentytwo_02",
 			},
 			sound_events_duration = {
-				[1.0] = 3.2479791641235
-			}
+				[1] = 3.2479791641235,
+			},
 		},
 		pwe_shovel_conversation_eight_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_shovel_conversation_eight_01"
+				[1] = "pwe_shovel_conversation_eight_01",
 			},
 			sound_events = {
-				[1.0] = "pwe_shovel_conversation_eight_01"
+				[1] = "pwe_shovel_conversation_eight_01",
 			},
 			sound_events_duration = {
-				[1.0] = 6.3549790382385
-			}
+				[1] = 6.3549790382385,
+			},
 		},
 		pwe_shovel_conversation_five_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_shovel_conversation_five_01"
+				[1] = "pwe_shovel_conversation_five_01",
 			},
 			sound_events = {
-				[1.0] = "pwe_shovel_conversation_five_01"
+				[1] = "pwe_shovel_conversation_five_01",
 			},
 			sound_events_duration = {
-				[1.0] = 4.040979385376
-			}
+				[1] = 4.040979385376,
+			},
 		},
 		pwe_shovel_conversation_four_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_shovel_conversation_four_01"
+				[1] = "pwe_shovel_conversation_four_01",
 			},
 			sound_events = {
-				[1.0] = "pwe_shovel_conversation_four_01"
+				[1] = "pwe_shovel_conversation_four_01",
 			},
 			sound_events_duration = {
-				[1.0] = 2.2619791030884
-			}
+				[1] = 2.2619791030884,
+			},
 		},
 		pwe_shovel_conversation_four_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_shovel_conversation_four_02"
+				[1] = "pwe_shovel_conversation_four_02",
 			},
 			sound_events = {
-				[1.0] = "pwe_shovel_conversation_four_02"
+				[1] = "pwe_shovel_conversation_four_02",
 			},
 			sound_events_duration = {
-				[1.0] = 5.9459791183472
-			}
+				[1] = 5.9459791183472,
+			},
 		},
 		pwe_shovel_conversation_one_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_shovel_conversation_one_01"
+				[1] = "pwe_shovel_conversation_one_01",
 			},
 			sound_events = {
-				[1.0] = "pwe_shovel_conversation_one_01"
+				[1] = "pwe_shovel_conversation_one_01",
 			},
 			sound_events_duration = {
-				[1.0] = 3.977979183197
-			}
+				[1] = 3.977979183197,
+			},
 		},
 		pwe_shovel_conversation_one_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_shovel_conversation_one_02"
+				[1] = "pwe_shovel_conversation_one_02",
 			},
 			sound_events = {
-				[1.0] = "pwe_shovel_conversation_one_02"
+				[1] = "pwe_shovel_conversation_one_02",
 			},
 			sound_events_duration = {
-				[1.0] = 1.1809791326523
-			}
+				[1] = 1.1809791326523,
+			},
 		},
 		pwe_shovel_conversation_seven_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_shovel_conversation_seven_01"
+				[1] = "pwe_shovel_conversation_seven_01",
 			},
 			sound_events = {
-				[1.0] = "pwe_shovel_conversation_seven_01"
+				[1] = "pwe_shovel_conversation_seven_01",
 			},
 			sound_events_duration = {
-				[1.0] = 8.4319791793823
-			}
+				[1] = 8.4319791793823,
+			},
 		},
 		pwe_shovel_conversation_six_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_shovel_conversation_six_01"
+				[1] = "pwe_shovel_conversation_six_01",
 			},
 			sound_events = {
-				[1.0] = "pwe_shovel_conversation_six_01"
+				[1] = "pwe_shovel_conversation_six_01",
 			},
 			sound_events_duration = {
-				[1.0] = 3.7529792785645
-			}
+				[1] = 3.7529792785645,
+			},
 		},
 		pwe_shovel_conversation_three_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_shovel_conversation_three_01"
+				[1] = "pwe_shovel_conversation_three_01",
 			},
 			sound_events = {
-				[1.0] = "pwe_shovel_conversation_three_01"
+				[1] = "pwe_shovel_conversation_three_01",
 			},
 			sound_events_duration = {
-				[1.0] = 3.8229792118073
-			}
+				[1] = 3.8229792118073,
+			},
 		},
 		pwe_shovel_conversation_three_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_shovel_conversation_three_02"
+				[1] = "pwe_shovel_conversation_three_02",
 			},
 			sound_events = {
-				[1.0] = "pwe_shovel_conversation_three_02"
+				[1] = "pwe_shovel_conversation_three_02",
 			},
 			sound_events_duration = {
-				[1.0] = 3.9179792404175
-			}
+				[1] = 3.9179792404175,
+			},
 		},
 		pwe_shovel_conversation_two_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_shovel_conversation_two_01"
+				[1] = "pwe_shovel_conversation_two_01",
 			},
 			sound_events = {
-				[1.0] = "pwe_shovel_conversation_two_01"
+				[1] = "pwe_shovel_conversation_two_01",
 			},
 			sound_events_duration = {
-				[1.0] = 4.5879998207092
-			}
+				[1] = 4.5879998207092,
+			},
 		},
 		pwe_shovel_conversation_two_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_shovel_conversation_two_02"
+				[1] = "pwe_shovel_conversation_two_02",
 			},
 			sound_events = {
-				[1.0] = "pwe_shovel_conversation_two_02"
+				[1] = "pwe_shovel_conversation_two_02",
 			},
 			sound_events_duration = {
-				[1.0] = 4.4079790115356
-			}
+				[1] = 4.4079790115356,
+			},
 		},
 		pwe_shovel_conversation_two_03 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_shovel_conversation_two_03"
+				[1] = "pwe_shovel_conversation_two_03",
 			},
 			sound_events = {
-				[1.0] = "pwe_shovel_conversation_two_03"
+				[1] = "pwe_shovel_conversation_two_03",
 			},
 			sound_events_duration = {
-				[1.0] = 0.79297918081284
-			}
+				[1] = 0.79297918081284,
+			},
 		},
 		pwe_st_shovel_conversation_one_a_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_st_shovel_conversation_one_a_01"
+				[1] = "pwe_st_shovel_conversation_one_a_01",
 			},
 			sound_events = {
-				[1.0] = "pwe_st_shovel_conversation_one_a_01"
+				[1] = "pwe_st_shovel_conversation_one_a_01",
 			},
 			sound_events_duration = {
-				[1.0] = 1.6559791564941
-			}
+				[1] = 1.6559791564941,
+			},
 		},
 		pwe_st_shovel_conversation_one_a_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_st_shovel_conversation_one_a_02"
+				[1] = "pwe_st_shovel_conversation_one_a_02",
 			},
 			sound_events = {
-				[1.0] = "pwe_st_shovel_conversation_one_a_02"
+				[1] = "pwe_st_shovel_conversation_one_a_02",
 			},
 			sound_events_duration = {
-				[1.0] = 5.0159792900085
-			}
+				[1] = 5.0159792900085,
+			},
 		},
 		pwe_st_shovel_conversation_two_a_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_st_shovel_conversation_two_a_01"
+				[1] = "pwe_st_shovel_conversation_two_a_01",
 			},
 			sound_events = {
-				[1.0] = "pwe_st_shovel_conversation_two_a_01"
+				[1] = "pwe_st_shovel_conversation_two_a_01",
 			},
 			sound_events_duration = {
-				[1.0] = 0.84397917985916
-			}
+				[1] = 0.84397917985916,
+			},
 		},
 		pwe_st_shovel_conversation_two_a_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_st_shovel_conversation_two_a_02"
+				[1] = "pwe_st_shovel_conversation_two_a_02",
 			},
 			sound_events = {
-				[1.0] = "pwe_st_shovel_conversation_two_a_02"
+				[1] = "pwe_st_shovel_conversation_two_a_02",
 			},
 			sound_events_duration = {
-				[1.0] = 5.4289793968201
-			}
+				[1] = 5.4289793968201,
+			},
 		},
 		pwe_st_shovel_conversation_two_a_03 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_st_shovel_conversation_two_a_03"
+				[1] = "pwe_st_shovel_conversation_two_a_03",
 			},
 			sound_events = {
-				[1.0] = "pwe_st_shovel_conversation_two_a_03"
+				[1] = "pwe_st_shovel_conversation_two_a_03",
 			},
 			sound_events_duration = {
-				[1.0] = 2.073979139328
-			}
+				[1] = 2.073979139328,
+			},
 		},
 		pwh_shovel_conversation_eight_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pwh_shovel_conversation_eight_01"
+				[1] = "pwh_shovel_conversation_eight_01",
 			},
 			sound_events = {
-				[1.0] = "pwh_shovel_conversation_eight_01"
+				[1] = "pwh_shovel_conversation_eight_01",
 			},
 			sound_events_duration = {
-				[1.0] = 8.6149787902832
-			}
+				[1] = 8.6149787902832,
+			},
 		},
 		pwh_shovel_conversation_eighteen_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pwh_shovel_conversation_eighteen_01"
+				[1] = "pwh_shovel_conversation_eighteen_01",
 			},
 			sound_events = {
-				[1.0] = "pwh_shovel_conversation_eighteen_01"
+				[1] = "pwh_shovel_conversation_eighteen_01",
 			},
 			sound_events_duration = {
-				[1.0] = 7.249979019165
-			}
+				[1] = 7.249979019165,
+			},
 		},
 		pwh_shovel_conversation_eighteen_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwh_shovel_conversation_eighteen_02"
+				[1] = "pwh_shovel_conversation_eighteen_02",
 			},
 			sound_events = {
-				[1.0] = "pwh_shovel_conversation_eighteen_02"
+				[1] = "pwh_shovel_conversation_eighteen_02",
 			},
 			sound_events_duration = {
-				[1.0] = 8.4589796066284
-			}
+				[1] = 8.4589796066284,
+			},
 		},
 		pwh_shovel_conversation_fifteen_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pwh_shovel_conversation_fifteen_01"
+				[1] = "pwh_shovel_conversation_fifteen_01",
 			},
 			sound_events = {
-				[1.0] = "pwh_shovel_conversation_fifteen_01"
+				[1] = "pwh_shovel_conversation_fifteen_01",
 			},
 			sound_events_duration = {
-				[1.0] = 7.2379789352417
-			}
+				[1] = 7.2379789352417,
+			},
 		},
 		pwh_shovel_conversation_fifteen_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwh_shovel_conversation_fifteen_02"
+				[1] = "pwh_shovel_conversation_fifteen_02",
 			},
 			sound_events = {
-				[1.0] = "pwh_shovel_conversation_fifteen_02"
+				[1] = "pwh_shovel_conversation_fifteen_02",
 			},
 			sound_events_duration = {
-				[1.0] = 10.754979133606
-			}
+				[1] = 10.754979133606,
+			},
 		},
 		pwh_shovel_conversation_five_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwh_shovel_conversation_five_01"
+				[1] = "pwh_shovel_conversation_five_01",
 			},
 			sound_events = {
-				[1.0] = "pwh_shovel_conversation_five_01"
+				[1] = "pwh_shovel_conversation_five_01",
 			},
 			sound_events_duration = {
-				[1.0] = 4.2889790534973
-			}
+				[1] = 4.2889790534973,
+			},
 		},
 		pwh_shovel_conversation_fourteen_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwh_shovel_conversation_fourteen_01"
+				[1] = "pwh_shovel_conversation_fourteen_01",
 			},
 			sound_events = {
-				[1.0] = "pwh_shovel_conversation_fourteen_01"
+				[1] = "pwh_shovel_conversation_fourteen_01",
 			},
 			sound_events_duration = {
-				[1.0] = 5.7739791870117
-			}
+				[1] = 5.7739791870117,
+			},
 		},
 		pwh_shovel_conversation_fourteen_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwh_shovel_conversation_fourteen_02"
+				[1] = "pwh_shovel_conversation_fourteen_02",
 			},
 			sound_events = {
-				[1.0] = "pwh_shovel_conversation_fourteen_02"
+				[1] = "pwh_shovel_conversation_fourteen_02",
 			},
 			sound_events_duration = {
-				[1.0] = 4.2699790000916
-			}
+				[1] = 4.2699790000916,
+			},
 		},
 		pwh_shovel_conversation_nineteen_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pwh_shovel_conversation_nineteen_01"
+				[1] = "pwh_shovel_conversation_nineteen_01",
 			},
 			sound_events = {
-				[1.0] = "pwh_shovel_conversation_nineteen_01"
+				[1] = "pwh_shovel_conversation_nineteen_01",
 			},
 			sound_events_duration = {
-				[1.0] = 3.4759790897369
-			}
+				[1] = 3.4759790897369,
+			},
 		},
 		pwh_shovel_conversation_nineteen_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwh_shovel_conversation_nineteen_02"
+				[1] = "pwh_shovel_conversation_nineteen_02",
 			},
 			sound_events = {
-				[1.0] = "pwh_shovel_conversation_nineteen_02"
+				[1] = "pwh_shovel_conversation_nineteen_02",
 			},
 			sound_events_duration = {
-				[1.0] = 2.4439792633057
-			}
+				[1] = 2.4439792633057,
+			},
 		},
 		pwh_shovel_conversation_nineteen_03 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwh_shovel_conversation_nineteen_03"
+				[1] = "pwh_shovel_conversation_nineteen_03",
 			},
 			sound_events = {
-				[1.0] = "pwh_shovel_conversation_nineteen_03"
+				[1] = "pwh_shovel_conversation_nineteen_03",
 			},
 			sound_events_duration = {
-				[1.0] = 6.879979133606
-			}
+				[1] = 6.879979133606,
+			},
 		},
 		pwh_shovel_conversation_seven_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pwh_shovel_conversation_seven_01"
+				[1] = "pwh_shovel_conversation_seven_01",
 			},
 			sound_events = {
-				[1.0] = "pwh_shovel_conversation_seven_01"
+				[1] = "pwh_shovel_conversation_seven_01",
 			},
 			sound_events_duration = {
-				[1.0] = 6.9359793663025
-			}
+				[1] = 6.9359793663025,
+			},
 		},
 		pwh_shovel_conversation_seventeen_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pwh_shovel_conversation_seventeen_01"
+				[1] = "pwh_shovel_conversation_seventeen_01",
 			},
 			sound_events = {
-				[1.0] = "pwh_shovel_conversation_seventeen_01"
+				[1] = "pwh_shovel_conversation_seventeen_01",
 			},
 			sound_events_duration = {
-				[1.0] = 3.2669792175293
-			}
+				[1] = 3.2669792175293,
+			},
 		},
 		pwh_shovel_conversation_seventeen_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwh_shovel_conversation_seventeen_02"
+				[1] = "pwh_shovel_conversation_seventeen_02",
 			},
 			sound_events = {
-				[1.0] = "pwh_shovel_conversation_seventeen_02"
+				[1] = "pwh_shovel_conversation_seventeen_02",
 			},
 			sound_events_duration = {
-				[1.0] = 6.9469790458679
-			}
+				[1] = 6.9469790458679,
+			},
 		},
 		pwh_shovel_conversation_six_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pwh_shovel_conversation_six_01"
+				[1] = "pwh_shovel_conversation_six_01",
 			},
 			sound_events = {
-				[1.0] = "pwh_shovel_conversation_six_01"
+				[1] = "pwh_shovel_conversation_six_01",
 			},
 			sound_events_duration = {
-				[1.0] = 6.5559792518616
-			}
+				[1] = 6.5559792518616,
+			},
 		},
 		pwh_shovel_conversation_six_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwh_shovel_conversation_six_02"
+				[1] = "pwh_shovel_conversation_six_02",
 			},
 			sound_events = {
-				[1.0] = "pwh_shovel_conversation_six_02"
+				[1] = "pwh_shovel_conversation_six_02",
 			},
 			sound_events_duration = {
-				[1.0] = 6.0999794006348
-			}
+				[1] = 6.0999794006348,
+			},
 		},
 		pwh_shovel_conversation_sixteen_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pwh_shovel_conversation_sixteen_01"
+				[1] = "pwh_shovel_conversation_sixteen_01",
 			},
 			sound_events = {
-				[1.0] = "pwh_shovel_conversation_sixteen_01"
+				[1] = "pwh_shovel_conversation_sixteen_01",
 			},
 			sound_events_duration = {
-				[1.0] = 11.417979240418
-			}
+				[1] = 11.417979240418,
+			},
 		},
 		pwh_shovel_conversation_sixteen_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwh_shovel_conversation_sixteen_02"
+				[1] = "pwh_shovel_conversation_sixteen_02",
 			},
 			sound_events = {
-				[1.0] = "pwh_shovel_conversation_sixteen_02"
+				[1] = "pwh_shovel_conversation_sixteen_02",
 			},
 			sound_events_duration = {
-				[1.0] = 0.57697916030884
-			}
+				[1] = 0.57697916030884,
+			},
 		},
 		pwh_shovel_conversation_thirteen_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwh_shovel_conversation_thirteen_01"
+				[1] = "pwh_shovel_conversation_thirteen_01",
 			},
 			sound_events = {
-				[1.0] = "pwh_shovel_conversation_thirteen_01"
+				[1] = "pwh_shovel_conversation_thirteen_01",
 			},
 			sound_events_duration = {
-				[1.0] = 9.5729789733887
-			}
+				[1] = 9.5729789733887,
+			},
 		},
 		pwh_shovel_conversation_twentynine_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwh_shovel_conversation_twentynine_02"
+				[1] = "pwh_shovel_conversation_twentynine_02",
 			},
 			sound_events = {
-				[1.0] = "pwh_shovel_conversation_twentynine_02"
+				[1] = "pwh_shovel_conversation_twentynine_02",
 			},
 			sound_events_duration = {
-				[1.0] = 5.0509791374206
-			}
+				[1] = 5.0509791374206,
+			},
 		},
 		pwh_shovel_conversation_twentyseven_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwh_shovel_conversation_twentyseven_01"
+				[1] = "pwh_shovel_conversation_twentyseven_01",
 			},
 			sound_events = {
-				[1.0] = "pwh_shovel_conversation_twentyseven_01"
+				[1] = "pwh_shovel_conversation_twentyseven_01",
 			},
 			sound_events_duration = {
-				[1.0] = 1.8499791622162
-			}
+				[1] = 1.8499791622162,
+			},
 		},
 		pwh_shovel_conversation_twentyseven_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwh_shovel_conversation_twentyseven_02"
+				[1] = "pwh_shovel_conversation_twentyseven_02",
 			},
 			sound_events = {
-				[1.0] = "pwh_shovel_conversation_twentyseven_02"
+				[1] = "pwh_shovel_conversation_twentyseven_02",
 			},
 			sound_events_duration = {
-				[1.0] = 7.504979133606
-			}
+				[1] = 7.504979133606,
+			},
 		},
 		pwh_shovel_conversation_twentysix_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwh_shovel_conversation_twentysix_01"
+				[1] = "pwh_shovel_conversation_twentysix_01",
 			},
 			sound_events = {
-				[1.0] = "pwh_shovel_conversation_twentysix_01"
+				[1] = "pwh_shovel_conversation_twentysix_01",
 			},
 			sound_events_duration = {
-				[1.0] = 5.816978931427
-			}
+				[1] = 5.816978931427,
+			},
 		},
 		pwh_shovel_conversation_twentysix_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwh_shovel_conversation_twentysix_02"
+				[1] = "pwh_shovel_conversation_twentysix_02",
 			},
 			sound_events = {
-				[1.0] = "pwh_shovel_conversation_twentysix_02"
+				[1] = "pwh_shovel_conversation_twentysix_02",
 			},
 			sound_events_duration = {
-				[1.0] = 1.9649791717529
-			}
+				[1] = 1.9649791717529,
+			},
 		},
 		pwh_wp_shovel_conversation_twentyeight_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pwh_wp_shovel_conversation_twentyeight_01"
+				[1] = "pwh_wp_shovel_conversation_twentyeight_01",
 			},
 			sound_events = {
-				[1.0] = "pwh_wp_shovel_conversation_twentyeight_01"
+				[1] = "pwh_wp_shovel_conversation_twentyeight_01",
 			},
 			sound_events_duration = {
-				[1.0] = 6.6139793395996
-			}
+				[1] = 6.6139793395996,
+			},
 		},
 		pwh_wp_shovel_conversation_twentyeight_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwh_wp_shovel_conversation_twentyeight_02"
+				[1] = "pwh_wp_shovel_conversation_twentyeight_02",
 			},
 			sound_events = {
-				[1.0] = "pwh_wp_shovel_conversation_twentyeight_02"
+				[1] = "pwh_wp_shovel_conversation_twentyeight_02",
 			},
 			sound_events_duration = {
-				[1.0] = 8.9419794082642
-			}
+				[1] = 8.9419794082642,
+			},
 		},
 		pwh_wp_shovel_conversation_twentynine_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_shovel",
 			category = "story_talk_keep",
+			database = "dlc_shovel",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwh_wp_shovel_conversation_twentynine_01"
+				[1] = "pwh_wp_shovel_conversation_twentynine_01",
 			},
 			sound_events = {
-				[1.0] = "pwh_wp_shovel_conversation_twentynine_01"
+				[1] = "pwh_wp_shovel_conversation_twentynine_01",
 			},
 			sound_events_duration = {
-				[1.0] = 2.6629791259766
-			}
-		}
+				[1] = 2.6629791259766,
+			},
+		},
 	})
 end

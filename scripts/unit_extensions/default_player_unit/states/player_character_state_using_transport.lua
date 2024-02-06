@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/default_player_unit/states/player_character_state_using_transport.lua
+
 PlayerCharacterStateUsingTransport = class(PlayerCharacterStateUsingTransport, PlayerCharacterState)
 
 PlayerCharacterStateUsingTransport.init = function (self, character_state_init_context)
@@ -47,6 +49,7 @@ PlayerCharacterStateUsingTransport.update = function (self, unit, input, dt, con
 
 		local config = interactor_extension:interaction_config()
 		local params = self.temp_params
+
 		params.swap_to_3p = config.swap_to_3p
 		params.show_weapons = config.show_weapons
 		params.activate_block = config.activate_block
@@ -64,6 +67,7 @@ PlayerCharacterStateUsingTransport.update = function (self, unit, input, dt, con
 
 		local config = interactor_extension:interaction_config()
 		local params = self.temp_params
+
 		params.swap_to_3p = config.swap_to_3p
 		params.show_weapons = config.show_weapons
 		params.activate_block = config.activate_block

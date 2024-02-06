@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/imgui/imgui_deus_chest_preload_debug.lua
+
 ImguiDeusChestPreloadDebug = class(ImguiDeusChestPreload)
 
 ImguiDeusChestPreloadDebug.init = function (self)

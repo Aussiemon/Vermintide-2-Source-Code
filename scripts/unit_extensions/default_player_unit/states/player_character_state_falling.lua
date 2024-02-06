@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/default_player_unit/states/player_character_state_falling.lua
+
 local fix = {
 	"Double",
 	"Triple",
@@ -17,11 +19,13 @@ local fix = {
 	"Heptadeca",
 	"Octadeca",
 	"Enneadeca",
-	"Icosa"
+	"Icosa",
 }
+
 script_data.ledge_hanging_turned_off = script_data.ledge_hanging_turned_off or Development.parameter("ledge_hanging_turned_off")
 TimesJumpedInAir = 0
 PlayerCharacterStateFalling = class(PlayerCharacterStateFalling, PlayerCharacterState)
+
 local position_lookup = POSITION_LOOKUP
 
 PlayerCharacterStateFalling.init = function (self, character_state_init_context)
@@ -33,6 +37,7 @@ end
 
 PlayerCharacterStateFalling.on_enter = function (self, unit, input, dt, context, t, previous_state, params)
 	self.falling_reason = previous_state
+
 	local input_extension = self.input_extension
 	local status_extension = self.status_extension
 	local locomotion_extension = self.locomotion_extension
@@ -43,22 +48,14 @@ PlayerCharacterStateFalling.on_enter = function (self, unit, input, dt, context,
 	locomotion_extension:set_maximum_upwards_velocity(math.huge)
 
 	local item_template = inventory_extension:get_wielded_slot_item_template()
+
 	self._play_fp_anim = item_template and item_template.jump_anim_enabled_1p
 
 	if previous_state ~= "jumping" then
-		local move_anim_3p, move_anim_1p = nil
+		local move_anim_3p, move_anim_1p
 
-		if CharacterStateHelper.is_moving(locomotion_extension) then
-			move_anim_3p = "jump_fwd"
-		else
-			move_anim_3p = "jump_idle"
-		end
-
-		if self._play_fp_anim then
-			move_anim_1p = "to_falling"
-		else
-			move_anim_1p = "idle"
-		end
+		move_anim_3p = CharacterStateHelper.is_moving(locomotion_extension) and "jump_fwd" or "jump_idle"
+		move_anim_1p = self._play_fp_anim and "to_falling" or "idle"
 
 		CharacterStateHelper.play_animation_event(unit, move_anim_3p)
 		CharacterStateHelper.play_animation_event_first_person(first_person_extension, move_anim_1p)
@@ -78,6 +75,7 @@ PlayerCharacterStateFalling.on_enter = function (self, unit, input, dt, context,
 	end
 
 	local player = Managers.player:owner(unit)
+
 	self.is_bot = player and player.bot_player
 end
 
@@ -154,6 +152,7 @@ PlayerCharacterStateFalling.update = function (self, unit, input, dt, context, t
 
 		local params = movement_settings_table.stun_settings.pushed
 		local hit_react_type = status_extension:hit_react_type()
+
 		params.hit_react_type = hit_react_type .. "_push"
 
 		csm:change_state("stunned", params)
@@ -163,6 +162,7 @@ PlayerCharacterStateFalling.update = function (self, unit, input, dt, context, t
 
 	if CharacterStateHelper.is_charged(status_extension) then
 		local params = movement_settings_table.charged_settings.charged
+
 		params.hit_react_type = "charged"
 
 		csm:change_state("charged", params)
@@ -174,6 +174,7 @@ PlayerCharacterStateFalling.update = function (self, unit, input, dt, context, t
 		status_extension:set_block_broken(false)
 
 		local params = movement_settings_table.stun_settings.parry_broken
+
 		params.hit_react_type = "medium_push"
 
 		csm:change_state("stunned", params)
@@ -206,6 +207,7 @@ PlayerCharacterStateFalling.update = function (self, unit, input, dt, context, t
 
 		if self_pos.z < Vector3.z(Unit.world_position(ladder_unit, top_node)) and distance > 0 and distance < 0.7 + epsilon then
 			local params = self.temp_params
+
 			params.ladder_unit = ladder_unit
 
 			csm:change_state("climbing_ladder", params)
@@ -222,6 +224,7 @@ PlayerCharacterStateFalling.update = function (self, unit, input, dt, context, t
 
 	if script_data.use_super_jumps and (input_extension:get("jump") or input_extension:get("jump_only")) then
 		self.times_jumped_in_air = math.min(#fix, self.times_jumped_in_air + 1)
+
 		local text = string.format("%sjump!", fix[self.times_jumped_in_air])
 
 		Debug.sticky_text(text)
@@ -237,6 +240,7 @@ PlayerCharacterStateFalling.update = function (self, unit, input, dt, context, t
 	local inventory_extension = self.inventory_extension
 	local move_speed = movement_settings_table.move_speed
 	local move_speed_multiplier = status_extension:current_move_speed_multiplier()
+
 	move_speed = move_speed * move_speed_multiplier
 	move_speed = move_speed * movement_settings_table.player_speed_scale
 	move_speed = move_speed * movement_settings_table.player_air_speed_scale
@@ -256,6 +260,7 @@ PlayerCharacterStateFalling.update = function (self, unit, input, dt, context, t
 
 		local config = interactor_extension:interaction_config()
 		local params = self.temp_params
+
 		params.swap_to_3p = config.swap_to_3p
 		params.show_weapons = config.show_weapons
 		params.activate_block = config.activate_block
@@ -273,6 +278,7 @@ PlayerCharacterStateFalling.update = function (self, unit, input, dt, context, t
 
 		local config = interactor_extension:interaction_config()
 		local params = self.temp_params
+
 		params.swap_to_3p = config.swap_to_3p
 		params.show_weapons = config.show_weapons
 		params.activate_block = config.activate_block

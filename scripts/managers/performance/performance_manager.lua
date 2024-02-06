@@ -1,26 +1,28 @@
+﻿-- chunkname: @scripts/managers/performance/performance_manager.lua
+
 PerformanceManager = class(PerformanceManager)
 
 PerformanceManager.init = function (self, gui, is_server, level_key)
 	self._gui = gui
 	self._is_server = is_server
 	self._tracked_ai_breeds = {
-		chaos_raider = true,
-		skaven_plague_monk = true,
-		skaven_storm_vermin_with_shield = true,
 		beastmen_bestigor = true,
-		chaos_berzerker = true,
-		skaven_clan_rat_with_shield = true,
-		chaos_marauder_with_shield = true,
-		chaos_fanatic = true,
-		skaven_slave = true,
-		skaven_clan_rat = true,
-		beastmen_ungor = true,
-		chaos_warrior = true,
-		beastmen_ungor_archer = true,
-		skaven_storm_vermin_commander = true,
-		skaven_storm_vermin = true,
 		beastmen_gor = true,
-		chaos_marauder = true
+		beastmen_ungor = true,
+		beastmen_ungor_archer = true,
+		chaos_berzerker = true,
+		chaos_fanatic = true,
+		chaos_marauder = true,
+		chaos_marauder_with_shield = true,
+		chaos_raider = true,
+		chaos_warrior = true,
+		skaven_clan_rat = true,
+		skaven_clan_rat_with_shield = true,
+		skaven_plague_monk = true,
+		skaven_slave = true,
+		skaven_storm_vermin = true,
+		skaven_storm_vermin_commander = true,
+		skaven_storm_vermin_with_shield = true,
 	}
 	self._num_ai_spawned = 0
 	self._num_ai_active = 0
@@ -29,22 +31,22 @@ PerformanceManager.init = function (self, gui, is_server, level_key)
 	self._num_ai_string = "SPAWNED: %3i   ACTIVE: %3i   EVENT SPAWNED: %3i   EVENT SPAWNED ACTIVE: %3i"
 	self._settings = {
 		critical = {
-			font = "materials/fonts/arial",
 			distance_from_top = 60,
-			size = 36,
+			font = "materials/fonts/arial",
 			material = "arial",
+			size = 36,
 			color = ColorBox(255, 255, 0, 0),
 			color_to = ColorBox(255, 255, 255, 0),
-			position = Vector3Box()
+			position = Vector3Box(),
 		},
 		normal = {
-			font = "materials/fonts/arial",
 			distance_from_top = 30,
-			size = 26,
+			font = "materials/fonts/arial",
 			material = "arial",
+			size = 26,
 			color = ColorBox(255, 0, 255, 0),
-			position = Vector3Box()
-		}
+			position = Vector3Box(),
+		},
 	}
 
 	if not DEDICATED_SERVER then
@@ -62,10 +64,11 @@ PerformanceManager.init = function (self, gui, is_server, level_key)
 
 	self._events = {
 		ai_unit_activated = "event_ai_unit_activated",
-		ai_unit_despawned = "event_ai_unit_despawned",
 		ai_unit_deactivated = "event_ai_unit_deactivated",
-		ai_unit_spawned = "event_ai_unit_spawned"
+		ai_unit_despawned = "event_ai_unit_despawned",
+		ai_unit_spawned = "event_ai_unit_spawned",
 	}
+
 	local event_manager = Managers.state.event
 
 	for event_name, cb_name in pairs(self._events) do
@@ -74,6 +77,7 @@ PerformanceManager.init = function (self, gui, is_server, level_key)
 
 	local level_settings = LevelSettings[level_key]
 	local perf = level_settings and level_settings.performance
+
 	self._allowed_active = perf and perf.allowed_active or 40
 	self._allowed_spawned = perf and perf.allowed_spawned or 75
 	self._activated_per_breed = {}

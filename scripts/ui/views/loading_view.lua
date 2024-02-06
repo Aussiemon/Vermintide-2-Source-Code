@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/loading_view.lua
+
 require("scripts/ui/ui_renderer")
 require("scripts/ui/ui_elements")
 require("scripts/ui/views/subtitle_timed_gui")
@@ -9,32 +11,32 @@ local survival_tip_list = {
 	"dlc1_2_survival_tip_03",
 	"dlc1_2_survival_tip_04",
 	"dlc1_2_survival_tip_05",
-	"dlc1_2_survival_tip_06"
+	"dlc1_2_survival_tip_06",
 }
 local tip_type_prefix_list = {
-	npcs = "loading_screen_npcs",
 	kerillian = "loading_screen_kerillian",
-	lore = "loading_screen_lore",
 	khazalid = "loading_screen_khazalid",
-	rotbloods = "loading_screen_rotbloods",
+	lore = "loading_screen_lore",
+	npcs = "loading_screen_npcs",
 	okri = "loading_screen_okri",
-	tip = "loading_screen_tip"
+	rotbloods = "loading_screen_rotbloods",
+	tip = "loading_screen_tip",
 }
 local tip_type_max_range = {
-	npcs = 3,
 	kerillian = 10,
-	lore = 55,
 	khazalid = 47,
-	rotbloods = 9,
+	lore = 55,
+	npcs = 3,
 	okri = 1,
-	tip = 89
+	rotbloods = 9,
+	tip = 89,
 }
 local blocked_tip_type_indices = {
 	lore = {
 		4,
 		8,
-		41
-	}
+		41,
+	},
 }
 local tip_type_list = {
 	"tip",
@@ -43,7 +45,7 @@ local tip_type_list = {
 	"khazalid",
 	"npcs",
 	"kerillian",
-	"okri"
+	"okri",
 }
 local max_tips = 0
 local num_tip_types = #tip_type_list
@@ -62,21 +64,23 @@ for name, value in pairs(tip_type_max_range) do
 end
 
 local objective_texts = {
-	objective_sockets_name = "nfl_olesya_all_weave_objective_essence_refine_01",
-	objective_kill_enemies_name = "nfl_olesya_all_weave_objective_kill_02",
 	objective_capture_points_name = "nfl_olesya_all_weave_objective_essence_capture_02",
 	objective_destroy_doom_wheels_name = "nfl_olesya_all_weave_objective_essence_nodes_02",
-	objective_targets_name = "nfl_olesya_all_weave_objective_essence_shards_04"
+	objective_kill_enemies_name = "nfl_olesya_all_weave_objective_kill_02",
+	objective_sockets_name = "nfl_olesya_all_weave_objective_essence_refine_01",
+	objective_targets_name = "nfl_olesya_all_weave_objective_essence_shards_04",
 }
 local num_subtitle_rows = 5
+
 LoadingView = class(LoadingView)
 
 LoadingView.init = function (self, ui_context)
 	local world = ui_context.world
+
 	self.input_manager = ui_context.input_manager
 	self.return_to_pc_menu = ui_context.return_to_pc_menu
 	self.render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 
 	if not script_data.disable_news_ticker then
@@ -103,7 +107,7 @@ end
 LoadingView._create_hdr_gui = function (self)
 	local world_flags = {
 		Application.DISABLE_SOUND,
-		Application.DISABLE_ESRAM
+		Application.DISABLE_ESRAM,
 	}
 	local layer = 800
 	local world_name = "loading_hdr_world"
@@ -112,6 +116,7 @@ LoadingView._create_hdr_gui = function (self)
 	local world = Managers.world:create_world(world_name, shading_environment, nil, layer, unpack(world_flags))
 	local viewport_type = "overlay"
 	local viewport = ScriptWorld.create_viewport(world, viewport_name, viewport_type, layer)
+
 	self._ui_hdr_viewport_name = viewport_name
 	self._ui_hdr_world_name = world_name
 	self._ui_hdr_world = world
@@ -127,6 +132,7 @@ LoadingView.texture_resource_loaded = function (self, level_key, act_progression
 
 	self.level_key = level_key
 	self.act_progression_index = act_progression_index
+
 	local level_settings = LevelSettings[level_key]
 	local has_multiple_loading_images = level_settings.has_multiple_loading_images
 	local loading_ui_package_name = optional_loading_ui_package_name or level_settings.loading_ui_package_name
@@ -136,6 +142,7 @@ LoadingView.texture_resource_loaded = function (self, level_key, act_progression
 	if IS_XB1 then
 		local gui = World.create_screen_gui(self.world, "immediate", "material", "materials/ui/loading_screens/" .. self.default_loading_screen, "material", bg_material, "material", "materials/fonts/gw_fonts", "material", "materials/ui/ui_1080p_common", "material", "materials/ui/ui_1080p_hud_atlas_textures", "material", "materials/ui/ui_1080p_chat")
 		local gui_retained = World.create_screen_gui(self.world, "material", "materials/ui/loading_screens/" .. self.default_loading_screen, "material", bg_material, "material", "materials/fonts/gw_fonts", "material", "materials/ui/ui_1080p_common", "material", "materials/ui/ui_1080p_hud_atlas_textures", "material", "materials/ui/ui_1080p_chat")
+
 		self.ui_renderer = UIRenderer.create_ui_renderer(self.world, gui, gui_retained)
 	else
 		self.ui_renderer = UIRenderer.create(self.world, "material", "materials/ui/loading_screens/" .. self.default_loading_screen, "material", bg_material, "material", "materials/fonts/gw_fonts", "material", "materials/ui/ui_1080p_common", "material", "materials/ui/ui_1080p_hud_atlas_textures", "material", "materials/ui/ui_1080p_chat")
@@ -151,6 +158,7 @@ LoadingView.texture_resource_loaded = function (self, level_key, act_progression
 		local location_display_name = weave_data.location_display_name
 		local objective_name = weave_data.objective_name
 		local objective_text = objective_texts[objective_name]
+
 		self.bg_widget.content.location_name = location_display_name
 		self.bg_widget.content.wind_name = wind_name
 		self.bg_widget.content.mutator_name = MutatorTemplates[wind_name].display_name
@@ -158,16 +166,18 @@ LoadingView.texture_resource_loaded = function (self, level_key, act_progression
 		self.bg_widget.content.objective_text = objective_text or self.bg_widget.content.objective_text
 		self.bg_widget.content.is_weave = true
 		self.bg_widget.content.is_arena = weave_data.is_arena
+
 		local text = self.bg_widget.content.mutator_description
 		local mutator_desc_style = self.bg_widget.style.mutator_description
 		local font, size_of_font = UIFontByResolution(mutator_desc_style)
-		local font_material = font[1]
-		local font_size = font[2]
-		local font_name = font[3]
+		local font_material, font_size, font_name = font[1], font[2], font[3]
 		local font_height, font_min, font_max = UIGetFontHeight(self.ui_renderer.gui, mutator_desc_style.font_type, font_size)
+
 		font_size = size_of_font
+
 		local texts = UIRenderer.word_wrap(self.ui_renderer, Localize(text), font_material, font_size, mutator_desc_style.size[1])
 		local offset = #texts * 30 + 30
+
 		self.bg_widget.style.objective_icon.offset[2] = self.bg_widget.style.objective_icon.offset[2] - offset
 		self.bg_widget.style.objective_text.offset[2] = self.bg_widget.style.objective_text.offset[2] - offset
 		self.weave_loading_icon = UIWidget.init(definitions.weave_loading_icon)
@@ -233,7 +243,7 @@ LoadingView.create_ui_elements = function (self)
 	self.widgets = {
 		self.bg_widget,
 		self.level_name_widget,
-		UIWidget.init(definitions.dead_space_filler)
+		UIWidget.init(definitions.dead_space_filler),
 	}
 
 	if not script_data.honduras_demo then
@@ -254,6 +264,7 @@ LoadingView.create_ui_elements = function (self)
 	end
 
 	self.bg_widget.content.bg_texture = self.default_loading_screen
+
 	local level_settings = self.level_key and LevelSettings[self.level_key]
 	local game_mode = level_settings and level_settings.game_mode or "adventure"
 
@@ -266,6 +277,7 @@ LoadingView.create_ui_elements = function (self)
 		local location_display_name = weave_data.location_display_name
 		local objective_name = weave_data.objective_name
 		local objective_text = objective_texts[objective_name]
+
 		self.bg_widget.content.location_name = location_display_name
 		self.bg_widget.content.wind_name = wind_name
 		self.bg_widget.content.mutator_name = MutatorTemplates[wind_name].display_name
@@ -273,16 +285,18 @@ LoadingView.create_ui_elements = function (self)
 		self.bg_widget.content.objective_text = objective_text or self.bg_widget.content.objective_text
 		self.bg_widget.content.is_weave = true
 		self.bg_widget.content.is_arena = weave_data.is_arena
+
 		local text = self.bg_widget.content.mutator_description
 		local mutator_desc_style = self.bg_widget.style.mutator_description
 		local font, size_of_font = UIFontByResolution(mutator_desc_style)
-		local font_material = font[1]
-		local font_size = font[2]
-		local font_name = font[3]
+		local font_material, font_size, font_name = font[1], font[2], font[3]
 		local font_height, font_min, font_max = UIGetFontHeight(self.ui_renderer.gui, font_name, font_size)
+
 		font_size = size_of_font
+
 		local texts = UIRenderer.word_wrap(self.ui_renderer, Localize(text), font_material, font_size, mutator_desc_style.size[1])
 		local offset = #texts * 30 + 30
+
 		self.bg_widget.style.objective_icon.offset[2] = self.bg_widget.style.objective_icon.offset[2] - offset
 		self.bg_widget.style.objective_text.offset[2] = self.bg_widget.style.objective_text.offset[2] - offset
 		self.bg_widget.content.bg_texture = self._optional_loading_screen_material_name
@@ -374,6 +388,7 @@ LoadingView._find_second_input_texture = function (self, suffix_text, macro_repl
 	local start_index, end_index = string.find(suffix_text, macro_replacement)
 	local prefix_text = string.sub(suffix_text, 1, start_index - 1)
 	local prefix_text_width = UIRenderer.text_size(self.ui_renderer, prefix_text, font[1], scaled_font_size)
+
 	second_input_texture_data.icon_offset = prefix_text_width
 	suffix_text = string.gsub(suffix_text, macro_replacement, "      ")
 	second_input_texture_data.button_texture_data = UISettings.get_gamepad_input_texture_data(Managers.input:get_service("Player"), input_action, true)
@@ -384,7 +399,7 @@ end
 local DEFAULT_SECOND_ICON_TABLE = {}
 local DEFAULT_ICON_SIZE_TABLE = {
 	0,
-	0
+	0,
 }
 
 LoadingView.setup_tip_text = function (self, act_progression_index, game_mode, tip_localization_key)
@@ -399,6 +414,7 @@ LoadingView.setup_tip_text = function (self, act_progression_index, game_mode, t
 
 	if game_mode == "survival" then
 		local text = tip_localization_key or survival_tip_list[math.random(1, #survival_tip_list)]
+
 		self.tip_text_prefix_widget.content.text = Localize(text)
 		self.tip_text_prefix_widget.style.text.horizontal_alignment = "center"
 		self.tip_text_prefix_widget.style.text.word_wrap = true
@@ -442,13 +458,15 @@ LoadingView.setup_tip_text = function (self, act_progression_index, game_mode, t
 			end
 
 			local tip_index = tip_random_index < 10 and "0" .. tostring(tip_random_index) or tostring(tip_random_index)
+
 			tip_localization_key = tip_prefix .. "_" .. tip_index
 		end
 
 		self._tip_localization_key = tip_localization_key
+
 		local input_manager = self.input_manager
 		local gamepad_active = input_manager:is_device_active("gamepad")
-		local localized_tip = nil
+		local localized_tip
 
 		if gamepad_active then
 			local input_action, input_actions, input_service_name = Managers.localizer:get_input_action(tip_localization_key)
@@ -460,6 +478,7 @@ LoadingView.setup_tip_text = function (self, act_progression_index, game_mode, t
 					local button_texture_size = button_texture_data.size
 					local button_texture_texture = button_texture_data.texture
 					local macro_replacement = "______"
+
 					localized_tip = Managers.localizer:replace_macro_in_string(tip_localization_key, macro_replacement)
 
 					if string.find(localized_tip, "%[") then
@@ -493,8 +512,9 @@ LoadingView.setup_tip_text = function (self, act_progression_index, game_mode, t
 					local second_icon_offset = -total_width * 0.5 + prefix_text_width + icon_width * 0.05 + icon_width * 0.5 + second_icon_icon_offset + second_icon_size[1] * 0.05 + second_icon_size[1]
 					local suffix_text_offset = -total_width * 0.5 + prefix_text_width + icon_width * 0.5 + suffix_text_width * 0.5 + icon_width * 0.5
 
-					if definitions.MAXIMUM_TIP_WIDTH < prefix_text_width then
+					if prefix_text_width > definitions.MAXIMUM_TIP_WIDTH then
 						local text_rows = UIRenderer.word_wrap(self.ui_renderer, prefix_text, font[1], scaled_font_size, definitions.MAXIMUM_TIP_WIDTH - prefix_text_width - icon_width)
+
 						prefix_text = text_rows[2]
 						prefix_text_width = UIRenderer.text_size(self.ui_renderer, prefix_text, font[1], scaled_font_size)
 						total_width = prefix_text_width + icon_width + suffix_text_width
@@ -521,8 +541,9 @@ LoadingView.setup_tip_text = function (self, act_progression_index, game_mode, t
 						self.ui_scenegraph.second_row_gamepad_input_icon.size = button_texture_size
 						self.ui_scenegraph.second_row_second_gamepad_input_icon.size = second_icon_size
 						self.ui_scenegraph.second_row_tip_text_suffix.size[1] = suffix_text_width
-					elseif definitions.MAXIMUM_TIP_WIDTH < suffix_text_width then
+					elseif suffix_text_width > definitions.MAXIMUM_TIP_WIDTH then
 						local text_rows = UIRenderer.word_wrap(self.ui_renderer, suffix_text, font[1], scaled_font_size, definitions.MAXIMUM_TIP_WIDTH - prefix_text_width - icon_width)
+
 						suffix_text = text_rows[1]
 						suffix_text_width = UIRenderer.text_size(self.ui_renderer, suffix_text, font[1], scaled_font_size)
 						total_width = prefix_text_width + icon_width + suffix_text_width
@@ -588,6 +609,7 @@ LoadingView.setup_act_text = function (self, level_key)
 		if act then
 			local act_key = act .. "_ls"
 			local act_text = Localize(act_key)
+
 			self.act_name_widget.content.text = act_text
 			self.act_name_bg_widget.content.text = act_text
 		end
@@ -601,6 +623,7 @@ LoadingView.setup_level_text = function (self, level_key)
 
 		if display_name then
 			local level_text = Localize(display_name)
+
 			self.level_name_widget.content.text = level_text
 			self.level_name_bg_widget.content.text = level_text
 		end
@@ -612,6 +635,7 @@ LoadingView.setup_difficulty_text = function (self, game_difficulty)
 		local difficulty_settings = DifficultySettings[game_difficulty]
 		local difficulty_display_name = difficulty_settings.display_name
 		local difficulty_text = Localize(difficulty_display_name)
+
 		self.game_difficulty_widget.content.text = difficulty_text
 		self.game_difficulty_bg_widget.content.text = difficulty_text
 	end
@@ -621,11 +645,14 @@ LoadingView.setup_news_ticker = function (self, text)
 	local widget = self.news_ticker_text_widget
 	local widget_content = widget.content
 	local widget_style = widget.style
+
 	widget_content.text = text
+
 	local text_style = widget_style.text
 	local font_type = text_style.font_type
 	local font, scaled_font_size = UIFontByResolution(text_style)
 	local text_width, text_height, min = UIRenderer.text_size(self.ui_renderer, text, font[1], scaled_font_size)
+
 	self.news_ticker_text_width = text_width
 	self.news_ticker_started = true
 end

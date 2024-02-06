@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/generic/generic_hit_reaction_extension.lua
+
 require("scripts/unit_extensions/generic/hit_reactions")
 require("scripts/settings/breeds")
 require("scripts/utils/hit_reactions_template_compiler")
@@ -7,6 +9,7 @@ local HitTemplates = HitTemplates
 local Dismemberments = Dismemberments
 local SoundEvents = SoundEvents
 local script_data = script_data
+
 GenericHitReactionExtension = class(GenericHitReactionExtension)
 
 local function get_damage_direction(unit, direction_vector)
@@ -26,6 +29,7 @@ local function get_damage_direction(unit, direction_vector)
 		end
 
 		unit_direction.z = 0
+
 		local flat_hit_direction = Vector3(direction_vector.x, direction_vector.y, 0)
 		local dot = Vector3.dot(Vector3.normalize(flat_hit_direction), Vector3.normalize(unit_direction))
 
@@ -38,15 +42,17 @@ local function get_damage_direction(unit, direction_vector)
 end
 
 local function get_attacker_direction(attacker_unit, hit_direction, explosion_push)
-	local distal_direction, lateral_direction = nil
+	local distal_direction, lateral_direction
 
 	if Unit.alive(attacker_unit) and not explosion_push then
 		if ScriptUnit.has_extension(attacker_unit, "first_person_system") then
 			local first_person_extension = ScriptUnit.extension(attacker_unit, "first_person_system")
+
 			attacker_unit = first_person_extension:get_first_person_unit()
 		end
 
 		local attacker_rotation = Unit.world_rotation(attacker_unit, 0)
+
 		distal_direction = Quaternion.forward(attacker_rotation)
 		distal_direction.z = 0
 		distal_direction = Vector3.normalize(distal_direction)
@@ -216,7 +222,7 @@ GenericHitReactionExtension.update = function (self, unit, input, dt, context, t
 	end
 
 	local best_damage_amount = -1000
-	local best_damage_index = nil
+	local best_damage_index
 	local stride = DD_STRIDE
 
 	for i = 1, num_damages, stride do
@@ -291,6 +297,7 @@ GenericHitReactionExtension.update = function (self, unit, input, dt, context, t
 	local hit_effects, num_effects = self:_resolve_effects(conditions, temp_effect_results)
 	local parameters = conditions
 	local buff_extension = ScriptUnit.has_extension(attacker_unit, "buff_system")
+
 	parameters.force_dismember = buff_extension and buff_extension:has_buff_perk("bloody_mess")
 
 	for i = 1, num_effects do
@@ -365,7 +372,7 @@ end
 local allowed_diagonal_hit_zones = {
 	left_arm = true,
 	right_arm = true,
-	torso = true
+	torso = true,
 }
 
 GenericHitReactionExtension._check_for_diagonal_dismemberment = function (self, unit, actor_name, hit_direction, hit_zone)
@@ -385,19 +392,11 @@ GenericHitReactionExtension._check_for_diagonal_dismemberment = function (self, 
 	local is_diagonal = dot > 0.51 and dot < 0.7
 	local hit_unit_dir = Quaternion.forward(Unit.local_rotation(unit, 0))
 	local angle = Vector3.flat_angle(hit_unit_dir, hit_direction)
-	local direction = nil
+	local direction
 
-	if angle < -math.pi * 0.75 or angle > math.pi * 0.75 then
-		direction = nil
-	elseif angle < -math.pi * 0.25 then
-		direction = "right"
-	elseif angle < math.pi * 0.25 then
-		direction = nil
-	else
-		direction = "left"
-	end
+	direction = (not (angle < -math.pi * 0.75) and not (angle > math.pi * 0.75) or nil) and (angle < -math.pi * 0.25 and "right" or (not (angle < math.pi * 0.25) or nil) and "left")
 
-	local new_dismember_event = nil
+	local new_dismember_event
 	local should_replace_old = true
 
 	if is_diagonal and direction then
@@ -413,7 +412,7 @@ end
 
 local restricted_regions = {
 	at = true,
-	de = true
+	de = true,
 }
 
 GenericHitReactionExtension._is_dismembering_allowed = function (self, parameters)
@@ -449,8 +448,8 @@ local status_effect_overrides = {
 				"light_burning_linesman",
 				"burning_linesman",
 				"drakegun",
-				"drakegun_glance"
-			})
+				"drakegun_glance",
+			}),
 		},
 		[StatusEffectNames.burning_death_critical] = {
 			override = StatusEffectNames.burning_balefire_death_critical,
@@ -467,10 +466,10 @@ local status_effect_overrides = {
 				"light_burning_linesman",
 				"burning_linesman",
 				"drakegun",
-				"drakegun_glance"
-			})
-		}
-	}
+				"drakegun_glance",
+			}),
+		},
+	},
 }
 local FLOW_EVENTS = {}
 local WWISE_PARAMETERS = {}
@@ -511,9 +510,7 @@ GenericHitReactionExtension._execute_effect = function (self, unit, effect_templ
 		if overrides_by_status then
 			local overrides_by_damage_type = overrides_by_status[timed_status]
 
-			if overrides_by_damage_type and overrides_by_damage_type.damage_types[damage_type] then
-				timed_status = overrides_by_damage_type.override or timed_status
-			end
+			timed_status = overrides_by_damage_type and overrides_by_damage_type.damage_types[damage_type] and overrides_by_damage_type.override or timed_status
 		end
 	end
 
@@ -546,7 +543,7 @@ GenericHitReactionExtension._execute_effect = function (self, unit, effect_templ
 	if dismember and (not death_ext or not death_ext:is_wall_nailed()) then
 		local event_table = Dismemberments[breed_data.name]
 		local dismember_flow_event = event_table[hit_zone]
-		local new_dismember_flow_event, should_replace_old = nil
+		local new_dismember_flow_event, should_replace_old
 
 		if effect_template.do_diagonal_dismemberments and allowed_diagonal_hit_zones[hit_zone] then
 			new_dismember_flow_event, should_replace_old = self:_check_for_diagonal_dismemberment(unit, actors[1], hit_direction, hit_zone)
@@ -594,7 +591,9 @@ GenericHitReactionExtension._execute_effect = function (self, unit, effect_templ
 		self._delayed_animation = "ragdoll"
 	elseif effect_template.animations and Unit.has_animation_state_machine(unit) then
 		local hit_direction_flat = Vector3(hit_direction.x, hit_direction.y, 0)
+
 		hit_direction_flat = Vector3.normalize(hit_direction_flat)
+
 		local animations = effect_template.animations
 		local angles = animations.angles
 
@@ -636,7 +635,7 @@ GenericHitReactionExtension._execute_effect = function (self, unit, effect_templ
 
 	local hit_effect_name = effect_template.hit_effect_name
 	local husk_hit_effect_name = effect_template.husk_hit_effect_name
-	local hit_effect = nil
+	local hit_effect
 
 	if BloodSettings.hit_effects.enabled then
 		if husk_hit_effect_name and Unit.alive(attacker_unit) and (not NetworkUnit.is_network_unit(attacker_unit) or NetworkUnit.is_husk_unit(attacker_unit)) then
@@ -649,11 +648,12 @@ GenericHitReactionExtension._execute_effect = function (self, unit, effect_templ
 	local damage_amount = effect_biggest_hit[DamageDataIndex.DAMAGE_AMOUNT]
 	local should_spawn_blood = damage_amount > 0 and not breed_data.no_blood_splatter_on_damage and not effect_template.disable_blood
 	local sound_event = effect_template.sound_event
-	local impact_position = nil
+	local impact_position
 
 	if hit_effect or should_spawn_blood or sound_event then
 		if HEALTH_ALIVE[unit] then
 			local hit_position = Vector3Aux.unbox(effect_biggest_hit[DamageDataIndex.POSITION])
+
 			impact_position = hit_position
 		else
 			local num_actors = #actors
@@ -682,7 +682,8 @@ GenericHitReactionExtension._execute_effect = function (self, unit, effect_templ
 
 			if not impact_position or impact_position and not Vector3.is_valid(impact_position) then
 				hit_effect = nil
-				should_spawn_blood, sound_event = nil
+				should_spawn_blood = nil
+				sound_event = nil
 			end
 		end
 	end
@@ -709,9 +710,9 @@ GenericHitReactionExtension._execute_effect = function (self, unit, effect_templ
 				hit_direction_table = {
 					hit_direction.x,
 					hit_direction.y,
-					hit_direction.z
+					hit_direction.z,
 				},
-				push_actors = push_actors
+				push_actors = push_actors,
 			}
 		end
 	end
@@ -727,6 +728,7 @@ GenericHitReactionExtension._execute_effect = function (self, unit, effect_templ
 		WWISE_PARAMETERS.weapon_type = parameters.weapon_type
 		WWISE_PARAMETERS.hit_zone = hit_zone
 		WWISE_PARAMETERS.husk = NetworkUnit.is_husk_unit(unit)
+
 		local dialogue_extension = self.dialogue_extension
 
 		if dialogue_extension and dialogue_extension.wwise_voice_switch_group then
@@ -757,12 +759,15 @@ GenericHitReactionExtension._do_push = function (self, unit, dt)
 	local push_actors = delayed_push.push_actors
 	local timeout = delayed_push.timeout - dt
 	local explosion_push = delayed_push.explosion_push
+
 	delayed_push.timeout = timeout
+
 	local num_actors = #push_actors
-	local actor = nil
+	local actor
 
 	for i = 1, num_actors do
 		local actor_name = push_actors[i]
+
 		actor = Unit.actor(unit, push_actors[i]) or actor
 	end
 
@@ -771,7 +776,9 @@ GenericHitReactionExtension._do_push = function (self, unit, dt)
 	end
 
 	local hit_direction = Vector3(hit_direction_table[1], hit_direction_table[2], 0)
+
 	hit_direction = Vector3.normalize(hit_direction)
+
 	local distal_direction, lateral_direction = get_attacker_direction(attacker_unit, hit_direction, explosion_push or push_parameters.always_use_hit_direction)
 
 	if Vector3.dot(lateral_direction, hit_direction) <= 0 then
@@ -803,6 +810,7 @@ GenericHitReactionExtension._do_push = function (self, unit, dt)
 	end
 
 	push_force = push_force * 0.25
+
 	local push_velocity = Vector3.normalize(push_force) * push_velocity_factor
 	local push_mass = Vector3.length(push_force) * 1
 	local push_mass_actor = push_mass / num_actors

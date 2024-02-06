@@ -1,16 +1,21 @@
+﻿-- chunkname: @scripts/ui/dlc_morris/views/start_game_view/windows/start_game_window_deus_chaos_god_information.lua
+
 local definitions = local_require("scripts/ui/dlc_morris/views/start_game_view/windows/definitions/start_game_window_deus_chaos_god_information_definitions")
 local widget_definitions = definitions.widgets
+
 StartGameWindowDeusChaosGodInformation = class(StartGameWindowDeusChaosGodInformation)
 
 StartGameWindowDeusChaosGodInformation.on_enter = function (self, params, offset)
 	self._parent = params.parent
+
 	local ingame_ui_context = params.ingame_ui_context
+
 	self._ingame_ui_context = ingame_ui_context
 	self._ui_top_renderer = ingame_ui_context.ui_top_renderer
 	self._input_manager = ingame_ui_context.input_manager
 	self._animations = {}
 	self._render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 
 	self:_create_ui_elements(definitions, params, offset)
@@ -29,11 +34,13 @@ StartGameWindowDeusChaosGodInformation._create_ui_elements = function (self, def
 	self._ui_scenegraph = UISceneGraph.init_scenegraph(definitions.scenegraph_definition)
 	self._ui_animator = UIAnimator:new(self._ui_scenegraph, definitions.animation_definitions)
 	self._refresh_time = 0
+
 	local widgets = {}
 	local widgets_by_name = {}
 
 	for name, widget_definition in pairs(widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		widgets[#widgets + 1] = widget
 		widgets_by_name[name] = widget
 	end
@@ -108,6 +115,7 @@ end
 StartGameWindowDeusChaosGodInformation._refresh_journey_data = function (self)
 	local backend_deus = Managers.backend:get_interface("deus")
 	local journey_cycle = backend_deus:get_journey_cycle()
+
 	self._journey_cycle = journey_cycle
 	self._refresh_time = journey_cycle.remaining_time + journey_cycle.time_of_update
 
@@ -125,6 +133,7 @@ StartGameWindowDeusChaosGodInformation._update_time_left = function (self)
 		local hours = remaining_time / 3600 % 24
 		local minutes = remaining_time / 60 % 60
 		local fmt = Localize("deus_start_game_mod_timer")
+
 		widget_content.subtitle = string.format(fmt, days, hours, minutes)
 	else
 		local fmt = Localize("deus_start_game_mod_timer_seconds")
@@ -156,6 +165,7 @@ StartGameWindowDeusChaosGodInformation._update_theme = function (self, initial_d
 	end
 
 	self._should_draw = true
+
 	local current_window_layout_settings = self._parent:get_current_window_layout_settings()
 
 	if current_window_layout_settings and current_window_layout_settings.should_draw_god_info then
@@ -163,14 +173,16 @@ StartGameWindowDeusChaosGodInformation._update_theme = function (self, initial_d
 	end
 
 	self:_start_animation("set_theme", self._widgets_by_name.god_info_widget, {
-		theme_settings = theme_settings
+		theme_settings = theme_settings,
 	})
 end
 
 StartGameWindowDeusChaosGodInformation._setup_belakor_information = function (self)
 	self._belakor_refresh_time = 0
 	self._is_refreshing_belakor = false
+
 	local belakor_widget = self._widgets_by_name.belakor_info_widget
+
 	belakor_widget.content.visible = false
 
 	self:_refresh_belakor_curse_data()
@@ -205,9 +217,11 @@ StartGameWindowDeusChaosGodInformation._update_belakor_time_left = function (sel
 			local minutes = belakor_remaining_time / 60 % 60
 			local hrs = Localize("datetime_hours_short")
 			local min = Localize("datetime_minutes_short")
+
 			belakor_widget_content.subtitle = string.format(hrs, hours) .. " " .. string.format(min, minutes)
 		else
 			local fmt = Localize("deus_start_game_mod_timer_seconds")
+
 			belakor_widget_content.subtitle = string.format(fmt, belakor_remaining_time)
 		end
 	end
@@ -235,7 +249,7 @@ StartGameWindowDeusChaosGodInformation._update_belakor_status = function (self)
 
 	if belakor_active_in_expedition then
 		self:_start_animation("set_theme_belakor", widget, {
-			theme_settings = DeusThemeSettings.belakor
+			theme_settings = DeusThemeSettings.belakor,
 		})
 	end
 

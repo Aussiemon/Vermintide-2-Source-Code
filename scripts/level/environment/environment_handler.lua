@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/level/environment/environment_handler.lua
+
 require("scripts/level/environment/environment_blend_time")
 require("scripts/level/environment/environment_blend_volume")
 
@@ -14,7 +16,7 @@ EnvironmentHandler.add_blend_group = function (self, group)
 end
 
 EnvironmentHandler.add_blend = function (self, blend_class_name, group, priority, blend_data, specified_id)
-	local id = nil
+	local id
 
 	if specified_id then
 		id = specified_id
@@ -26,14 +28,15 @@ EnvironmentHandler.add_blend = function (self, blend_class_name, group, priority
 	local blend_class = rawget(_G, blend_class_name)
 	local blend = blend_class:new(blend_data)
 	local group = self._blends[group]
+
 	group[#group + 1] = {
 		priority = priority,
 		blend = blend,
-		id = id
+		id = id,
 	}
 
 	table.sort(group, function (a, b)
-		return b.priority < a.priority
+		return a.priority > b.priority
 	end)
 
 	return id
@@ -68,7 +71,7 @@ EnvironmentHandler._update_blends = function (self, dt)
 end
 
 EnvironmentHandler._update_weights = function (self)
-	local particle_light_intensity = nil
+	local particle_light_intensity
 
 	for group, blends in pairs(self._blends) do
 		local weights = self._weights[group] or {}
@@ -78,6 +81,7 @@ EnvironmentHandler._update_weights = function (self)
 		for i = 1, #blends do
 			local b = blends[i]
 			local weight_data = weights[i] or {}
+
 			weight_data = weights[i] or {}
 			weight_data.environment = b.blend:environment()
 			weight_data.blend = b.blend
@@ -85,6 +89,7 @@ EnvironmentHandler._update_weights = function (self)
 
 			if weight_pool > 0 then
 				local weight = math.min(b.blend:value(), weight_pool)
+
 				weight_data.weight = weight
 				weight_pool = weight_pool - weight
 			else
@@ -105,7 +110,7 @@ end
 
 EnvironmentHandler.override_settings = function (self)
 	local max_prio = 0
-	local blend_volume = nil
+	local blend_volume
 
 	for i, blend in pairs(self._blends.volumes) do
 		if blend.blend:is_inside() and max_prio < blend.priority then

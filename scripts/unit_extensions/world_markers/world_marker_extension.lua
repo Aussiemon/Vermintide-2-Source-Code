@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/world_markers/world_marker_extension.lua
+
 WorldMarkerExtension = class(WorldMarkerExtension)
 
 WorldMarkerExtension.init = function (self, extension_init_context, unit, extension_init_data)
@@ -33,6 +35,7 @@ WorldMarkerExtension.add_marker = function (self, cb_func)
 	self:remove_marker()
 
 	self._adding_marker = true
+
 	local cb = callback(self, "cb_add_marker", cb_func)
 
 	self:_add_marker(cb)

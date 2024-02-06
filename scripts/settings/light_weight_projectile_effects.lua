@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/light_weight_projectile_effects.lua
+
 local function INVENTORY_UNIT(owner_unit)
 	local breed = Unit.get_data(owner_unit, "breed")
 	local inventory_template = breed.default_inventory_template
@@ -33,102 +35,102 @@ LightWeightProjectileEffects = {
 	ratling_gun_bullet = {
 		vfx = {
 			{
+				kill_policy = "destroy",
 				particle_name = "fx/wpnfx_skaven_ratlinggun_bullet",
-				kill_policy = "destroy"
 			},
 			{
+				kill_policy = "stop",
 				particle_name = "fx/wpnfx_skaven_ratlinggun_bullet_trail",
-				kill_policy = "stop"
 			},
 			{
-				particle_name = "fx/wpnfx_skaven_ratlinggun_muzzlefx",
 				link = "p_fx",
-				unit_function = INVENTORY_UNIT
-			}
+				particle_name = "fx/wpnfx_skaven_ratlinggun_muzzlefx",
+				unit_function = INVENTORY_UNIT,
+			},
 		},
 		sfx = {
 			{
 				looping_sound_event_name = "Play_weapon_warpbullet_flyby_proximity",
-				looping_sound_stop_event_name = "Stop_weapon_warpbullet_flyby_proximity"
-			}
-		}
+				looping_sound_stop_event_name = "Stop_weapon_warpbullet_flyby_proximity",
+			},
+		},
 	},
 	ratling_gun_bullet_vs = {
 		vfx = {
 			{
+				kill_policy = "stop",
 				particle_name = "fx/wpnfx_skaven_ratlinggun_bullet_trail_vs",
-				kill_policy = "stop",
-				condition_function = IS_UNIT_1P
+				condition_function = IS_UNIT_1P,
 			},
 			{
+				link = "p_fx",
 				particle_name = "fx/wpnfx_skaven_ratlinggun_muzzlefx_vs",
-				link = "p_fx",
 				unit_function = INVENTORY_UNIT_VS,
-				condition_function = IS_UNIT_1P
+				condition_function = IS_UNIT_1P,
 			},
 			{
-				particle_name = "fx/wpnfx_skaven_ratlinggun_bullet",
 				kill_policy = "destroy",
-				condition_function = IS_UNIT_3P
+				particle_name = "fx/wpnfx_skaven_ratlinggun_bullet",
+				condition_function = IS_UNIT_3P,
 			},
 			{
-				particle_name = "fx/wpnfx_skaven_ratlinggun_bullet_trail",
 				kill_policy = "stop",
-				condition_function = IS_UNIT_3P
+				particle_name = "fx/wpnfx_skaven_ratlinggun_bullet_trail",
+				condition_function = IS_UNIT_3P,
 			},
 			{
-				particle_name = "fx/wpnfx_skaven_ratlinggun_muzzlefx",
 				link = "p_fx",
+				particle_name = "fx/wpnfx_skaven_ratlinggun_muzzlefx",
 				unit_function = INVENTORY_UNIT_VS,
-				condition_function = IS_UNIT_3P
-			}
+				condition_function = IS_UNIT_3P,
+			},
 		},
 		sfx = {
 			{
 				looping_sound_event_name = "Play_weapon_warpbullet_flyby_proximity",
-				looping_sound_stop_event_name = "Stop_weapon_warpbullet_flyby_proximity"
-			}
-		}
+				looping_sound_stop_event_name = "Stop_weapon_warpbullet_flyby_proximity",
+			},
+		},
 	},
 	autocannon_backdrop_bullet = {
 		vfx = {
 			{
+				kill_policy = "destroy",
 				particle_name = "fx/wpnfx_skaven_autocannon_bullet",
-				kill_policy = "destroy"
 			},
 			{
+				kill_policy = "stop",
 				particle_name = "fx/wpnfx_skaven_autocannon_bullet_trail",
-				kill_policy = "stop"
-			}
+			},
 		},
 		sfx = {
 			{
 				looping_sound_event_name = "Play_weapon_warpbullet_flyby_proximity",
-				looping_sound_stop_event_name = "Stop_weapon_warpbullet_flyby_proximity"
-			}
-		}
+				looping_sound_stop_event_name = "Stop_weapon_warpbullet_flyby_proximity",
+			},
+		},
 	},
 	stormfiend_gun_bullet = {
 		vfx = {
 			{
+				kill_policy = "destroy",
 				particle_name = "fx/wpnfx_skaven_ratlinggun_bullet",
-				kill_policy = "destroy"
 			},
 			{
+				kill_policy = "stop",
 				particle_name = "fx/wpnfx_skaven_ratlinggun_bullet_trail",
-				kill_policy = "stop"
 			},
 			{
-				particle_name = "fx/wpnfx_skaven_ratlinggun_muzzlefx"
-			}
+				particle_name = "fx/wpnfx_skaven_ratlinggun_muzzlefx",
+			},
 		},
 		sfx = {
 			{
 				looping_sound_event_name = "Play_weapon_warpbullet_flyby_proximity",
-				looping_sound_stop_event_name = "Stop_weapon_warpbullet_flyby_proximity"
-			}
-		}
-	}
+				looping_sound_stop_event_name = "Stop_weapon_warpbullet_flyby_proximity",
+			},
+		},
+	},
 }
 
 DLCUtils.merge("light_weight_projectile_effects", LightWeightProjectileEffects)

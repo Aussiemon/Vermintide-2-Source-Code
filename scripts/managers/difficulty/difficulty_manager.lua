@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/difficulty/difficulty_manager.lua
+
 require("scripts/settings/difficulty_settings")
 
 DifficultyManager = class(DifficultyManager)
@@ -30,6 +32,7 @@ DifficultyManager.set_difficulty = function (self, difficulty, tweak)
 
 	if self.is_server then
 		local lobby_data = self.lobby_host:get_stored_lobby_data()
+
 		lobby_data.difficulty = difficulty
 		lobby_data.difficulty_tweak = tweak
 
@@ -113,7 +116,7 @@ DifficultyManager.players_below_required_power_level = function (difficulty_key,
 	local required_power_level = DifficultySettings[difficulty_key].required_power_level
 
 	for unique_id, player in pairs(players) do
-		if player:sync_data_active() and player:get_data("best_aquired_power_level") < required_power_level then
+		if player:sync_data_active() and required_power_level > player:get_data("best_aquired_power_level") then
 			players_below_power_level[#players_below_power_level + 1] = player
 		end
 	end

@@ -1,10 +1,13 @@
+﻿-- chunkname: @scripts/managers/account/script_web_api_psn.lua
+
 ScriptWebApiPsn = class(ScriptWebApiPsn)
+
 local web_api = WebApi
 local method_to_string = {
 	[web_api.GET] = "GET",
 	[web_api.PUT] = "PUT",
 	[web_api.POST] = "POST",
-	[web_api.DELETE] = "DELETE"
+	[web_api.DELETE] = "DELETE",
 }
 
 ScriptWebApiPsn.init = function (self)
@@ -75,27 +78,30 @@ ScriptWebApiPsn.send_request = function (self, user_id, api_group, path, method,
 	end
 
 	local id = web_api.send_request(user_id, api_group, path, method, content)
+
 	self._requests[#self._requests + 1] = {
 		id = id,
 		response_callback = response_callback,
 		response_format = response_format,
-		debug_text = string.format("%s %s", method_to_string[method], path)
+		debug_text = string.format("%s %s", method_to_string[method], path),
 	}
 end
 
 ScriptWebApiPsn.send_request_create_session = function (self, user_id, session_parameters, session_image, session_data, changable_session_data, response_callback)
 	local id = web_api.send_request_create_session(user_id, session_parameters, session_image, session_data, changable_session_data)
+
 	self._requests[#self._requests + 1] = {
 		debug_text = "POST /v1/sessions",
 		id = id,
-		response_callback = response_callback
+		response_callback = response_callback,
 	}
 end
 
 ScriptWebApiPsn.send_request_session_invitation = function (self, user_id, params, session_id)
 	local id = web_api.send_request_session_invitation(user_id, params, session_id)
+
 	self._requests[#self._requests + 1] = {
 		id = id,
-		debug_text = string.format("POST /v1/sessions/%s/invitations", session_id)
+		debug_text = string.format("POST /v1/sessions/%s/invitations", session_id),
 	}
 end

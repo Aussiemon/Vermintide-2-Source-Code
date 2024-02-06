@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/managers/backend/backend_interface_hero_attributes.lua
+
 BackendInterfaceHeroAttributes = class(BackendInterfaceHeroAttributes)
+
 local DB_ENTITY_NAME_PREFIX = "hero_attributes_"
 local DB_ENTITY_TYPE = "hero_attributes"
 local DB_ATTRIBUTE_NAME_PREFIX = "hero_attribute_"
@@ -14,6 +17,7 @@ BackendInterfaceHeroAttributes._refresh_attributes = function (self)
 	for entity_id, entity in pairs(entities) do
 		local entity_name = entity.entity_name
 		local attributes = entity.attributes
+
 		attributes.entity_id = entity_id
 		attributes_by_entity_name[entity_name] = attributes
 	end

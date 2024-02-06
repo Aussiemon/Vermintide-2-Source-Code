@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/weapons/projectiles/projectile_linker_extension.lua
+
 ProjectileLinkerExtension = class(ProjectileLinkerExtension)
 
 ProjectileLinkerExtension.init = function (self, extension_init_context, unit, extension_init_data)

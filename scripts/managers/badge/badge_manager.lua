@@ -1,9 +1,12 @@
+﻿-- chunkname: @scripts/managers/badge/badge_manager.lua
+
 require("scripts/settings/badge_templates")
 
 BadgeManager = class(BadgeManager)
+
 local RPCS = {
 	"rpc_show_badge",
-	"rpc_complete_badge"
+	"rpc_complete_badge",
 }
 
 BadgeManager.init = function (self, statistics_db, network_event_delegate, is_server)
@@ -54,8 +57,9 @@ BadgeManager._initialize_server = function (self)
 							network_transmit:send_rpc("rpc_show_badge", player_peer_id, badge_id)
 						end
 					end
-				end
+				end,
 			}
+
 			self._registered_events[#self._registered_events + 1] = callback_table
 
 			event_manager:register(callback_table, event_name, "callback_function")
@@ -95,8 +99,9 @@ BadgeManager._initialize_client = function (self)
 							network_transmit:send_rpc_server("rpc_complete_badge", badge_id, player_peer_id)
 						end
 					end
-				end
+				end,
 			}
+
 			self._registered_events[#self._registered_events + 1] = callback_table
 
 			event_manager:register(callback_table, event_name, "callback_function")

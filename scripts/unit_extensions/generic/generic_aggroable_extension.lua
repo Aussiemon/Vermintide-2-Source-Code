@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/generic/generic_aggroable_extension.lua
+
 GenericAggroableExtension = class(GenericAggroableExtension)
 
 GenericAggroableExtension.init = function (self, extension_init_context, unit, extension_init_data)

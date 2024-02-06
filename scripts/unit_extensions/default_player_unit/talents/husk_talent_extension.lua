@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/default_player_unit/talents/husk_talent_extension.lua
+
 HuskTalentExtension = class(HuskTalentExtension)
 
 HuskTalentExtension.init = function (self, extension_init_context, unit, extension_init_data)
@@ -14,12 +16,15 @@ end
 
 HuskTalentExtension.extensions_ready = function (self, world, unit)
 	local career_extension = ScriptUnit.extension(unit, "career_system")
+
 	self.buff_extension = ScriptUnit.extension(unit, "buff_system")
 	self.career_extension = career_extension
+
 	local current_hero_index = self._profile_index
 	local current_hero = SPProfiles[current_hero_index]
 	local hero_name = current_hero.display_name
 	local career_name = career_extension:career_name()
+
 	self._hero_name = hero_name
 	self._career_name = career_name
 end
@@ -54,9 +59,10 @@ HuskTalentExtension.apply_buffs_from_talents = function (self)
 
 		if num_sub_buffs > 0 then
 			local buff = buff_extension:get_buff_by_id(id)
+
 			sub_buffs_per_talent[buff.buff_type] = {
 				num_buffs = num_sub_buffs,
-				buff_name = buff.template.buff_to_add
+				buff_name = buff.template.buff_to_add,
 			}
 		end
 	end
@@ -71,7 +77,7 @@ HuskTalentExtension.apply_buffs_from_talents = function (self)
 			local buffs = talent_data.buffs
 			local buffer = talent_data.buffer
 
-			if player.local_player and (not buffer or buffer == "client") or self.is_server and buffer == "server" or (self.is_server or player.local_player) and buffer == "both" or buffer == "all" then
+			if player.local_player and (not buffer or buffer == "client") or self.is_server and buffer == "server" or not (not self.is_server and not player.local_player) and buffer == "both" or buffer == "all" then
 				local num_buffs = buffs and #buffs or 0
 
 				if num_buffs > 0 then
@@ -83,7 +89,7 @@ HuskTalentExtension.apply_buffs_from_talents = function (self)
 						if sub_buffs then
 							for k = 1, sub_buffs.num_buffs do
 								buff_extension:add_buff(sub_buffs.buff_name, {
-									attacker_unit = player.player_unit
+									attacker_unit = player.player_unit,
 								})
 							end
 						end
@@ -100,6 +106,7 @@ HuskTalentExtension.apply_buffs_from_talents = function (self)
 					for j = 1, #client_buffs do
 						local buff_template = client_buffs[j]
 						local id = buff_extension:add_buff(buff_template)
+
 						talent_buff_ids[#talent_buff_ids + 1] = id
 					end
 				end
@@ -112,6 +119,7 @@ HuskTalentExtension.apply_buffs_from_talents = function (self)
 					for j = 1, #server_buffs do
 						local buff_template = server_buffs[j]
 						local id = buff_extension:add_buff(buff_template)
+
 						talent_buff_ids[#talent_buff_ids + 1] = id
 					end
 				end
@@ -166,11 +174,13 @@ end
 HuskTalentExtension.get_talent_names = function (self, talent_names)
 	local talent_ids = self._talent_ids
 	local hero_name = self._hero_name
+
 	talent_names = talent_names or {}
 
 	for i = 1, #talent_ids do
 		local talent_id = talent_ids[i]
 		local talent_data = Talents[hero_name][talent_id]
+
 		talent_names[#talent_names + 1] = talent_data.name
 	end
 

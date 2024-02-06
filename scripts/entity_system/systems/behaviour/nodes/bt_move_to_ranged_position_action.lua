@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_move_to_ranged_position_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTMoveToRangedPositionAction = class(BTMoveToRangedPositionAction, BTNode)
@@ -10,8 +12,10 @@ BTMoveToRangedPositionAction.name = "BTMoveToRangedPositionAction"
 
 BTMoveToRangedPositionAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
+
 	blackboard.action = action
 	blackboard.move_state = "moving"
+
 	local navigation_extension = blackboard.navigation_extension
 	local move_animation = action.move_animation
 	local network_manager = Managers.state.network
@@ -23,6 +27,7 @@ BTMoveToRangedPositionAction.enter = function (self, unit, blackboard, t)
 	ai_slot_system:do_slot_search(unit, false)
 
 	blackboard.next_t_to_evaluate = t + 0.5
+
 	local nav_bot = navigation_extension._nav_bot
 
 	GwNavBot.set_use_avoidance(nav_bot, true)
@@ -32,6 +37,7 @@ BTMoveToRangedPositionAction.leave = function (self, unit, blackboard, t, reason
 	blackboard.ranged_position = nil
 	blackboard.action = nil
 	blackboard.next_t_to_evaluate = nil
+
 	local nav_bot = blackboard.navigation_extension._nav_bot
 
 	GwNavBot.set_use_avoidance(nav_bot, false)
@@ -53,7 +59,7 @@ BTMoveToRangedPositionAction.run = function (self, unit, blackboard, t, dt)
 		return "done"
 	end
 
-	if blackboard.next_t_to_evaluate < t then
+	if t > blackboard.next_t_to_evaluate then
 		blackboard.next_t_to_evaluate = t + Math.random_range(1.2, 2)
 
 		return "running", "evaluate"

@@ -1,7 +1,10 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_ninja_vanish_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTNinjaVanishAction = class(BTNinjaVanishAction, BTNode)
 BTNinjaVanishAction.name = "BTNinjaVanishAction"
+
 local POSITION_LOOKUP = POSITION_LOOKUP
 local script_data = script_data
 
@@ -19,6 +22,7 @@ BTNinjaVanishAction.enter = function (self, unit, blackboard, t)
 	blackboard.action = self._tree_node.action_data
 	blackboard.vanish_timer = 0
 	blackboard.skulk_pos = nil
+
 	local vanish_pos = BTNinjaVanishAction.find_escape_position(unit, blackboard)
 
 	blackboard.navigation_extension:set_enabled(false)
@@ -47,7 +51,7 @@ BTNinjaVanishAction.leave = function (self, unit, blackboard, t, reason, destroy
 end
 
 BTNinjaVanishAction.run = function (self, unit, blackboard, t, dt)
-	if blackboard.vanish_timer < t then
+	if t > blackboard.vanish_timer then
 		if blackboard.wait_one_frame then
 			return "done"
 		end
@@ -98,21 +102,23 @@ BTNinjaVanishAction.play_foff = function (unit, blackboard, network_manager, pos
 end
 
 BTNinjaVanishAction.find_escape_position = function (unit, blackboard)
-	local center_position = nil
+	local center_position
 
 	if blackboard.action.stalk_lonliest_player then
 		local side = blackboard.side
 		local cluster_utility, lonliest_pos, loneliness_value = Managers.state.conflict:get_cluster_and_loneliness(7, side.ENEMY_PLAYER_POSITIONS, side.ENEMY_PLAYER_UNITS)
+
 		center_position = lonliest_pos
 	else
 		center_position = POSITION_LOOKUP[unit]
 	end
 
 	local num_found = 0
-	local hidden_cover_units = nil
+	local hidden_cover_units
 
 	if center_position then
 		local side = blackboard.side
+
 		num_found, hidden_cover_units = ConflictUtils.hidden_cover_points(center_position, side.ENEMY_PLAYER_POSITIONS, 15, 40)
 	end
 

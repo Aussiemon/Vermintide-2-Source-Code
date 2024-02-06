@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/backend/backend_interface_item.lua
+
 local Items = class(Items)
 
 Items.init = function (self)
@@ -6,38 +8,38 @@ Items.init = function (self)
 end
 
 local CLEARABLE_SLOTS = {
+	slot_trinket_1 = true,
 	slot_trinket_2 = true,
 	slot_trinket_3 = true,
-	slot_trinket_1 = true
 }
 local MUST_HAVE_SLOTS = {
-	slot_hat = true,
-	slot_skin = true,
 	slot_frame = true,
+	slot_hat = true,
 	slot_melee = true,
-	slot_ranged = true
+	slot_ranged = true,
+	slot_skin = true,
 }
 local COSMETIC_ITEMS = {
 	frame = true,
+	hat = true,
 	skin = true,
-	hat = true
 }
 local STARTING_ITEMS = {
-	dr_shield_axe_0001 = true,
-	dr_crossbow_0001 = true,
-	we_shortbow_0001 = true,
-	dr_helmet_0001 = true,
-	bw_skullstaff_fireball_0001 = true,
-	es_blunderbuss_0001 = true,
-	ww_hood_0001 = true,
 	bw_gate_0001 = true,
+	bw_skullstaff_fireball_0001 = true,
 	bw_sword_0001 = true,
-	we_dual_wield_daggers_0001 = true,
+	dr_crossbow_0001 = true,
+	dr_helmet_0001 = true,
+	dr_shield_axe_0001 = true,
 	es_2h_hammer_0001 = true,
+	es_blunderbuss_0001 = true,
 	es_hat_0001 = true,
-	wh_hat_0001 = true,
+	we_dual_wield_daggers_0001 = true,
+	we_shortbow_0001 = true,
 	wh_brace_of_pistols_0001 = true,
-	wh_fencing_sword_0001 = true
+	wh_fencing_sword_0001 = true,
+	wh_hat_0001 = true,
+	ww_hood_0001 = true,
 }
 
 local function find_item_for_slot(items, profile_name, slot)
@@ -75,7 +77,7 @@ local function clean_inventory(items, loadout, whitelist)
 		end
 	end
 
-	local missing_items = nil
+	local missing_items
 
 	for backend_id, item in pairs(items) do
 		if not rawget(ItemMasterList, item.key) then
@@ -99,7 +101,7 @@ local function clean_inventory(items, loadout, whitelist)
 				if MUST_HAVE_SLOTS[slot] then
 					empty_must_have_slots[#empty_must_have_slots + 1] = {
 						slot = slot,
-						profile_name = profile_name
+						profile_name = profile_name,
 					}
 				end
 			elseif missing_items and missing_items[backend_id] then
@@ -111,7 +113,7 @@ local function clean_inventory(items, loadout, whitelist)
 				if MUST_HAVE_SLOTS[slot] then
 					empty_must_have_slots[#empty_must_have_slots + 1] = {
 						slot = slot,
-						profile_name = profile_name
+						profile_name = profile_name,
 					}
 				end
 			end
@@ -148,6 +150,7 @@ Items.set_item_whitelist = function (self, item_keys)
 
 	for i = 1, #item_keys do
 		local key = item_keys[i]
+
 		whitelist[key] = true
 	end
 
@@ -190,6 +193,7 @@ end
 
 Items.check_for_errors = function (self)
 	local error_data = self._error_data
+
 	self._error_data = nil
 
 	return error_data
@@ -219,11 +223,11 @@ Items.update = function (self, dt)
 			self._dice_item:disable_registered_commands()
 
 			self._dice_game_data = nil
-		elseif self._dice_game_data.time_out < Managers.time:time("main") then
+		elseif Managers.time:time("main") > self._dice_game_data.time_out then
 			self._dice_game_data = nil
 
 			self:set_error({
-				reason = BACKEND_LUA_ERRORS.ERR_DICE_TIMEOUT1
+				reason = BACKEND_LUA_ERRORS.ERR_DICE_TIMEOUT1,
 			})
 		end
 	elseif self._upgrades_failed_game_data then
@@ -243,11 +247,11 @@ Items.update = function (self, dt)
 			self._upgrades_item:disable_registered_commands()
 
 			self._upgrades_failed_game_data = nil
-		elseif self._upgrades_failed_game_data.time_out < Managers.time:time("main") then
+		elseif Managers.time:time("main") > self._upgrades_failed_game_data.time_out then
 			self._upgrades_failed_game_data = nil
 
 			self:set_error({
-				reason = BACKEND_LUA_ERRORS.ERR_UPGRADES_TIMEOUT
+				reason = BACKEND_LUA_ERRORS.ERR_UPGRADES_TIMEOUT,
 			})
 		end
 	end
@@ -289,7 +293,7 @@ Items.generate_item_server_loot = function (self, dice, difficulty, start_level,
 		"param_start_level",
 		start_level,
 		"param_end_level",
-		end_level
+		end_level,
 	}
 
 	if hero_name then
@@ -304,7 +308,7 @@ Items.generate_item_server_loot = function (self, dice, difficulty, start_level,
 
 	self._dice_game_data = {
 		time_out = time_out,
-		parameters = parameters
+		parameters = parameters,
 	}
 end
 
@@ -312,10 +316,11 @@ Items.upgrades_failed_game = function (self, start_level, end_level)
 	fassert(not self._dice_game_data and not self._upgrades_failed_game_data, "Trying to do two item server scripts at once. DiceGame: %s, UpgradesFailedGame: %s", self._dice_game_data and "true", self._upgrades_failed_game_data and "true")
 
 	local time_out = Managers.time:time("main") + 20
+
 	self._upgrades_failed_game_data = {
 		time_out = time_out,
 		start_level = start_level,
-		end_level = end_level
+		end_level = end_level,
 	}
 end
 
@@ -375,14 +380,15 @@ BackendInterfaceItem.get_properties = function (self, backend_id)
 	end
 
 	serialized_properties = serialized_properties or ""
+
 	local properties = {}
 
 	for rune_slot, property_key, rune_value in string.gmatch(serialized_properties, "([%w_]+):([%w_]+),([%w_]+)") do
-		local property_data = {
-			rune_slot = rune_slot,
-			property_key = property_key,
-			rune_value = rune_value
-		}
+		local property_data = {}
+
+		property_data.rune_slot = rune_slot
+		property_data.property_key = property_key
+		property_data.rune_value = rune_value
 		properties[#properties + 1] = property_data
 	end
 
@@ -544,7 +550,7 @@ BackendInterfaceItem.check_for_loot = function (self)
 			end
 
 			local item_key = win_list[total_successes]
-			local dice_win_id = nil
+			local dice_win_id
 			local level_rewards = {}
 
 			for id, key in pairs(items) do
@@ -600,17 +606,17 @@ BackendInterfaceItem.is_equipped = function (self, backend_id, profile_name)
 end
 
 local SalvageableSlotTypes = {
-	ranged = true,
-	melee = true,
 	hat = true,
-	trinket = true
+	melee = true,
+	ranged = true,
+	trinket = true,
 }
 local SalvageableRarities = {
 	common = true,
-	plentiful = true,
 	exotic = true,
+	plentiful = true,
 	rare = true,
-	unique = true
+	unique = true,
 }
 
 BackendInterfaceItem.is_salvageable = function (self, backend_id)
@@ -626,12 +632,12 @@ end
 
 local FuseableSlotTypes = {
 	melee = true,
-	ranged = true
+	ranged = true,
 }
 local FuseableRarities = {
 	common = true,
 	plentiful = true,
-	rare = true
+	rare = true,
 }
 
 BackendInterfaceItem.is_fuseable = function (self, backend_id)
@@ -674,7 +680,7 @@ end
 
 BackendInterfaceItem.clean_inventory_for_prestige = function (self, profile_index, unit)
 	local items, loadout = BackendItem.get_items()
-	local missing_items = nil
+	local missing_items
 	local items_to_remove = {}
 
 	for backend_id, item in pairs(items) do
@@ -709,7 +715,7 @@ BackendInterfaceItem.clean_inventory_for_prestige = function (self, profile_inde
 				if MUST_HAVE_SLOTS[slot] then
 					empty_must_have_slots[#empty_must_have_slots + 1] = {
 						slot = slot,
-						profile_name = profile_name
+						profile_name = profile_name,
 					}
 				end
 			elseif missing_items and missing_items[backend_id] then
@@ -720,7 +726,7 @@ BackendInterfaceItem.clean_inventory_for_prestige = function (self, profile_inde
 				if MUST_HAVE_SLOTS[slot] then
 					empty_must_have_slots[#empty_must_have_slots + 1] = {
 						slot = slot,
-						profile_name = profile_name
+						profile_name = profile_name,
 					}
 				end
 			end
@@ -794,7 +800,7 @@ end
 BackendInterfaceItem.get_item_template = function (self, item_data, backend_id)
 	local template_name = item_data.temporary_template or item_data.template
 	local item_template = Weapons[template_name]
-	local modified_item_template = nil
+	local modified_item_template
 
 	if item_template then
 		if backend_id then

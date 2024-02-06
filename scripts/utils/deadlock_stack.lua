@@ -1,5 +1,7 @@
+﻿-- chunkname: @scripts/utils/deadlock_stack.lua
+
 DeadlockStack = DeadlockStack or {
-	n = 0
+	n = 0,
 }
 
 DeadlockStack.pause = function ()

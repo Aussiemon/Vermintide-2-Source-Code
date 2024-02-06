@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/world_markers/player_equipment_world_marker_extension.lua
+
 require("scripts/unit_extensions/world_markers/world_marker_extension")
 
 PlayerEquipmentWorldMarkerExtension = class(PlayerEquipmentWorldMarkerExtension, WorldMarkerExtension)
@@ -26,12 +28,15 @@ PlayerEquipmentWorldMarkerExtension._extensions_ready = function (self)
 	end
 
 	local unit = self._unit
+
 	self._status_extension = ScriptUnit.extension(unit, "status_system")
+
 	local local_player = Managers.player:local_player()
 	local local_unique_id = local_player:unique_id()
 	local side_manager = Managers.state.side
 	local side = side_manager.side_by_unit[unit]
 	local local_side = side_manager:get_side_from_player_unique_id(local_unique_id)
+
 	self._side = side
 	self._is_enemy = side_manager:is_enemy_by_side(side, local_side)
 	self._local_player_is_dark_pact = local_side:name() == "dark_pact"
@@ -56,6 +61,7 @@ PlayerEquipmentWorldMarkerExtension.update = function (self, unit, dummy_input, 
 	local local_player = Managers.player:local_player()
 	local local_unique_id = local_player:unique_id()
 	local local_side = side_manager:get_side_from_player_unique_id(local_unique_id)
+
 	self._local_player_is_dark_pact = local_side:name() == "dark_pact"
 	self._is_enemy = side_manager:is_enemy_by_side(self._side, local_side)
 

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_ethereal_homing_flight_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTEtherealHomingFlightAction = class(BTEtherealHomingFlightAction, BTNode)
@@ -25,7 +27,7 @@ end
 BTEtherealHomingFlightAction.run = function (self, unit, blackboard, t, dt, bt_name)
 	if not blackboard.bot_target_delay then
 		blackboard.bot_target_delay = t + 6
-	elseif blackboard.bot_target_delay < t and not blackboard.is_target then
+	elseif t > blackboard.bot_target_delay and not blackboard.is_target then
 		blackboard.is_target = true
 	end
 

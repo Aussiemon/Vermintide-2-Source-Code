@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_interest_point_use_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTInterestPointUseAction = class(BTInterestPointUseAction, BTNode)
@@ -20,10 +22,12 @@ BTInterestPointUseAction.enter = function (self, unit, blackboard, t)
 	Managers.state.network:anim_event(unit, animation)
 
 	blackboard.move_state = "idle"
+
 	local duration = request.point_extension.duration
 
 	if duration and duration > 0 then
 		local duration_multiplier = 0.8 + math.random() * 0.4
+
 		blackboard.ip_end_time = t + duration * duration_multiplier
 	end
 
@@ -68,7 +72,7 @@ BTInterestPointUseAction.run = function (self, unit, blackboard, t, dt)
 		QuickDrawer:circle(blackboard.ip_root_pos:unbox(), 10, Vector3.up())
 	end
 
-	if blackboard.ip_end_time ~= nil and blackboard.ip_end_time <= t then
+	if blackboard.ip_end_time ~= nil and t >= blackboard.ip_end_time then
 		local moving_to_ip = blackboard.group_blackboard.rats_currently_moving_to_ip
 		local max_moving = InterestPointSettings.max_rats_currently_moving_to_ip
 
@@ -82,6 +86,7 @@ BTInterestPointUseAction.run = function (self, unit, blackboard, t, dt)
 
 		if blackboard.ip_next_request_id == nil then
 			local action = self._tree_node.action_data
+
 			blackboard.ip_next_request_id = interest_point_system_api.start_async_claim_request(unit, blackboard.ip_root_pos:unbox(), action.min_range, action.max_range, blackboard.ip_request_id)
 		else
 			local next_request = interest_point_system_api.get_claim(blackboard.ip_next_request_id)
@@ -92,6 +97,7 @@ BTInterestPointUseAction.run = function (self, unit, blackboard, t, dt)
 				local current_request = interest_point_system_api.get_claim(blackboard.ip_request_id)
 				local duration_multiplier = 0.8 + math.random() * 0.4
 				local duration = current_request.point_extension.duration * duration_multiplier
+
 				blackboard.ip_end_time = blackboard.ip_end_time + duration
 
 				interest_point_system_api.release_claim(blackboard.ip_next_request_id)

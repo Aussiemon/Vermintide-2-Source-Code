@@ -1,6 +1,9 @@
+﻿-- chunkname: @scripts/entity_system/systems/ward/ward_system.lua
+
 WardSystem = class(WardSystem, ExtensionSystemBase)
+
 local extensions = {
-	"WardExtension"
+	"WardExtension",
 }
 
 WardSystem.init = function (self, entity_system_creation_context, system_name, ...)
@@ -15,10 +18,13 @@ end
 
 WardSystem.on_add_extension = function (self, world, unit, extension_name, extension_init_data)
 	local extension_alias = self.NAME
-	local extension_pool_table = nil
+	local extension_pool_table
 	local extension = ScriptUnit.add_extension(self.extension_init_context, unit, extension_name, extension_alias, extension_init_data, extension_pool_table)
+
 	self.extensions[extension_name] = (self.extensions[extension_name] or 0) + 1
+
 	local index = self.extensions[extension_name]
+
 	self._units[index] = unit
 	self._lookup[unit] = index
 

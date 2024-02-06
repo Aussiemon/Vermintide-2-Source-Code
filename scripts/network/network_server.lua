@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/network/network_server.lua
+
 require("scripts/network/peer_state_machine")
 require("scripts/network/voip")
 require("scripts/game_state/components/profile_synchronizer")
@@ -7,6 +9,7 @@ require("scripts/settings/profiles/sp_profiles")
 
 PEER_ID_TO_CHANNEL = PEER_ID_TO_CHANNEL or {}
 CHANNEL_TO_PEER_ID = CHANNEL_TO_PEER_ID or {}
+
 local NUM_PROFILES = #PROFILES_BY_AFFILIATION.heroes
 local KICK_PEER_WAIT_TIMER = 5
 
@@ -21,6 +24,7 @@ NetworkServer = class(NetworkServer)
 
 NetworkServer.init = function (self, player_manager, lobby_host, wanted_profile_index, game_server_manager)
 	local my_peer_id = Network.peer_id()
+
 	PEER_ID_TO_CHANNEL[my_peer_id] = 0
 	CHANNEL_TO_PEER_ID[0] = my_peer_id
 	self.my_peer_id = my_peer_id
@@ -41,6 +45,7 @@ NetworkServer.init = function (self, player_manager, lobby_host, wanted_profile_
 	Managers.level_transition_handler:register_network_state(self._network_state)
 
 	local is_server = true
+
 	self.profile_synchronizer = ProfileSynchronizer:new(is_server, lobby_host, self._network_state)
 	self._profile_requester = ProfileRequester:new(is_server, self, self.profile_synchronizer)
 
@@ -49,8 +54,9 @@ NetworkServer.init = function (self, player_manager, lobby_host, wanted_profile_
 	local voip_params = {
 		is_server = is_server,
 		my_peer_id = my_peer_id,
-		lobby = lobby_host
+		lobby = lobby_host,
 	}
+
 	self.voip = Voip:new(voip_params)
 	self._reserved_slots = {}
 
@@ -60,6 +66,7 @@ NetworkServer.init = function (self, player_manager, lobby_host, wanted_profile_
 
 	if not DEDICATED_SERVER then
 		self.wanted_profile_index = wanted_profile_index or SaveData.wanted_profile_index or 1
+
 		local profile = SPProfiles[self.wanted_profile_index]
 
 		if profile then
@@ -80,7 +87,7 @@ NetworkServer.init = function (self, player_manager, lobby_host, wanted_profile_
 		end
 	end
 
-	local server_name = nil
+	local server_name
 
 	if DEDICATED_SERVER then
 		server_name = self.lobby_host:server_name()
@@ -114,6 +121,7 @@ NetworkServer.server_join = function (self)
 	print(string.format("### Created peer state machine for %s", self.my_peer_id))
 
 	local peer_id = self.my_peer_id
+
 	self.peer_state_machines[peer_id] = PeerStateMachine.create(self, peer_id)
 end
 
@@ -151,7 +159,7 @@ NetworkServer.rpc_notify_connected = function (self, channel_id)
 	local peer_id = CHANNEL_TO_PEER_ID[channel_id]
 
 	if peer_id == self.my_peer_id then
-		local profile_index, career_index = nil
+		local profile_index, career_index
 		local level_key = self._network_state:get_level_key()
 		local level_settings = LevelSettings[level_key]
 
@@ -159,6 +167,7 @@ NetworkServer.rpc_notify_connected = function (self, channel_id)
 			profile_index = self.wanted_profile_index
 		else
 			local wanted_profile_index = FindProfileIndex(Development.parameter("wanted_profile")) or self.wanted_profile_index or SaveData.wanted_profile_index
+
 			profile_index = wanted_profile_index or self.profile_synchronizer:get_first_free_profile()
 		end
 
@@ -168,6 +177,7 @@ NetworkServer.rpc_notify_connected = function (self, channel_id)
 			local profile = SPProfiles[profile_index]
 			local hero_name = profile.display_name
 			local hero_attributes = Managers.backend:get_interface("hero_attributes")
+
 			career_index = hero_attributes:get(hero_name, "career") or 1
 		end
 
@@ -624,7 +634,7 @@ NetworkServer.approve_channel = function (self, channel_id, peer_id, instance_id
 		eac_match_timer = 0,
 		channel_id = channel_id,
 		peer_id = peer_id,
-		channel_state = Network.channel_state(channel_id)
+		channel_state = Network.channel_state(channel_id),
 	}
 
 	if self._eac_server then
@@ -705,6 +715,7 @@ NetworkServer.peer_disconnected = function (self, peer_id)
 	self.profile_synchronizer:clear_peer_data(peer_id)
 
 	self._peer_initialized_mechanisms[peer_id] = nil
+
 	local slot_reservation_handler = Managers.mechanism:get_slot_reservation_handler()
 
 	if slot_reservation_handler and slot_reservation_handler.remove_peer_reservations then
@@ -823,6 +834,7 @@ NetworkServer.update = function (self, dt)
 				cprintf("[NetworkServer] Server is " .. (eac_authorized and "trusted" or "untrusted"))
 
 				local lobby_data = self.lobby_host:get_stored_lobby_data()
+
 				lobby_data.eac_authorized = eac_authorized_string
 
 				self.lobby_host:set_lobby_data(lobby_data)
@@ -839,6 +851,7 @@ NetworkServer.update = function (self, dt)
 				Application.quit()
 			elseif not self._gamelift_session_id and GameliftServer.can_get_session() then
 				local session_id, ip_addr, port, name, matchmaking = GameliftServer.get_session()
+
 				name = name or "Gamelift Server Unknown"
 
 				print("Got gamelift session data (NS):", session_id, ip_addr, port, name, matchmaking)
@@ -914,7 +927,9 @@ NetworkServer._update_eac_match = function (self, dt)
 			if data.eac_match_timer == 0 then
 				local determined, can_play = self:eac_check_peer(peer_id)
 
-				if not can_play then
+				if can_play then
+					-- Nothing
+				else
 					printf("[NetworkServer] Peer's EAC status doesn't match the server, disconnecting peer (%s)", peer_id)
 					self:disconnect_peer(peer_id, "eac_authorize_failed")
 					peer_state_machine.state_data:change_state(PeerStates.Disconnecting)
@@ -927,7 +942,7 @@ NetworkServer._update_eac_match = function (self, dt)
 end
 
 NetworkServer.eac_check_peer = function (self, peer_id)
-	local server_state, peer_state = nil
+	local server_state, peer_state
 
 	if DEDICATED_SERVER then
 		if BUILD == "release" then
@@ -939,14 +954,13 @@ NetworkServer.eac_check_peer = function (self, peer_id)
 		end
 	else
 		local host = self.lobby_host
+
 		server_state = EAC.state()
 
 		if peer_id == self.my_peer_id then
 			peer_state = server_state
-		elseif self._eac_server == nil then
-			peer_state = "untrusted"
 		else
-			peer_state = EACServer.state(self._eac_server, peer_id)
+			peer_state = self._eac_server == nil and "untrusted" or EACServer.state(self._eac_server, peer_id)
 		end
 	end
 
@@ -958,7 +972,8 @@ NetworkServer.eac_check_peer = function (self, peer_id)
 		return false, true
 	end
 
-	local match = nil
+	local match
+
 	match = (server_state ~= "banned" and peer_state ~= "banned" or false) and server_state == peer_state
 
 	if not match then
@@ -972,6 +987,7 @@ NetworkServer._draw_peer_states = function (self)
 	if DEDICATED_SERVER then
 		local result = ""
 		local pattern = "%-16s|%s\n"
+
 		result = result .. string.format(pattern, "Peer", "Peer-state")
 
 		for peer, sm in pairs(self.peer_state_machines) do
@@ -1042,7 +1058,7 @@ NetworkServer.rpc_clear_peer_state = function (self, channel_id)
 	local state_machine = self.peer_state_machines[peer_id]
 
 	if state_machine == nil then
-		local reason = nil
+		local reason
 
 		if self._network_state:get_level_key() == "prologue" then
 			reason = NetworkLookup.connection_fails.host_plays_prologue
@@ -1132,6 +1148,7 @@ local dummy_ignore_map = {}
 
 NetworkServer.are_all_peers_ingame = function (self, ignore_map)
 	ignore_map = ignore_map or dummy_ignore_map
+
 	local peer_state_machines = self.peer_state_machines
 
 	for peer_id, peer_state_machine in pairs(peer_state_machines) do
@@ -1147,6 +1164,7 @@ end
 
 NetworkServer.all_approved_peers_are_connected = function (self, ignore_map)
 	ignore_map = ignore_map or dummy_ignore_map
+
 	local peer_state_machines = self.peer_state_machines
 
 	for peer_id, peer_state_machine in pairs(peer_state_machines) do
@@ -1244,8 +1262,7 @@ end
 NetworkServer.peer_wanted_profile = function (self, peer_id, local_player_id)
 	local peer_state_machine = self.peer_state_machines[peer_id]
 	local state_data = peer_state_machine.state_data
-	local wanted_profile_index = state_data.wanted_profile_index
-	local wanted_career_index = state_data.wanted_career_index
+	local wanted_profile_index, wanted_career_index = state_data.wanted_profile_index, state_data.wanted_career_index
 
 	return wanted_profile_index, wanted_career_index
 end

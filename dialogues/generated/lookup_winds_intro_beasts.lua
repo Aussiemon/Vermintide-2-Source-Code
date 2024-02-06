@@ -1,3 +1,5 @@
+﻿-- chunkname: @dialogues/generated/lookup_winds_intro_beasts.lua
+
 assert(DialogueLookup[DialogueLookup_n + 1] == nil)
 assert(DialogueLookup[DialogueLookup_n + 2] == nil)
 assert(DialogueLookup[DialogueLookup_n + 3] == nil)

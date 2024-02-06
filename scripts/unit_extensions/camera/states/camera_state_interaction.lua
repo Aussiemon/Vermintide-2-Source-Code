@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/camera/states/camera_state_interaction.lua
+
 CameraStateInteraction = class(CameraStateInteraction, CameraState)
 
 CameraStateInteraction.init = function (self, camera_state_init_context)
@@ -9,7 +11,7 @@ CameraStateInteraction.on_enter = function (self, unit, input, dt, context, t, p
 	local world_manager = Managers.world
 
 	if world_manager:has_world("level_world") then
-		local camera_target_unit = nil
+		local camera_target_unit
 		local world = world_manager:world("level_world")
 		local mechanism = Managers.mechanism:game_mechanism()
 		local inn_level_name = mechanism:get_hub_level_key()

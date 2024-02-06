@@ -1,3 +1,5 @@
+﻿-- chunkname: @dialogues/generated/empire_soldier_nurgle.lua
+
 return function ()
 	define_rule({
 		name = "pes_level_nurgle_bury_objective",
@@ -7,41 +9,41 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"seen_item"
+				"seen_item",
 			},
 			{
 				"query_context",
 				"item_tag",
 				OP.EQ,
-				"level_nurgle_bury_objective"
+				"level_nurgle_bury_objective",
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"faction_memory",
 				"level_nurgle_bury_objective",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"level_nurgle_bury_objective",
 				OP.ADD,
-				1
-			}
-		}
+				1,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_level_nurgle_coming_down",
@@ -51,41 +53,41 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"seen_item"
+				"seen_item",
 			},
 			{
 				"query_context",
 				"item_tag",
 				OP.EQ,
-				"level_nurgle_coming_down"
+				"level_nurgle_coming_down",
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"faction_memory",
 				"level_nurgle_coming_down",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"level_nurgle_coming_down",
 				OP.ADD,
-				1
-			}
-		}
+				1,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_level_nurgle_digsite",
@@ -95,47 +97,47 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"seen_item"
+				"seen_item",
 			},
 			{
 				"query_context",
 				"item_tag",
 				OP.EQ,
-				"level_nurgle_digsite"
+				"level_nurgle_digsite",
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.EQ,
-				0
+				0,
 			},
 			{
 				"faction_memory",
 				"level_nurgle_digsite",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"level_nurgle_digsite",
 				OP.ADD,
-				1
-			}
-		}
+				1,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_level_nurgle_drop_down",
@@ -145,47 +147,47 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"seen_item"
+				"seen_item",
 			},
 			{
 				"query_context",
 				"item_tag",
 				OP.EQ,
-				"level_nurgle_drop_down"
+				"level_nurgle_drop_down",
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.EQ,
-				0
+				0,
 			},
 			{
 				"faction_memory",
 				"level_nurgle_drop_down",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"level_nurgle_drop_down",
 				OP.ADD,
-				1
-			}
-		}
+				1,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_level_nurgle_nurglification",
@@ -195,47 +197,47 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"seen_item"
+				"seen_item",
 			},
 			{
 				"query_context",
 				"item_tag",
 				OP.EQ,
-				"level_nurgle_nurglification"
+				"level_nurgle_nurglification",
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.EQ,
-				0
+				0,
 			},
 			{
 				"faction_memory",
 				"level_nurgle_nurglification",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"level_nurgle_nurglification",
 				OP.ADD,
-				1
-			}
-		}
+				1,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_level_nurgle_nurglification_increase",
@@ -245,47 +247,47 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"seen_item"
+				"seen_item",
 			},
 			{
 				"query_context",
 				"item_tag",
 				OP.EQ,
-				"level_nurgle_nurglification_increase"
+				"level_nurgle_nurglification_increase",
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.EQ,
-				0
+				0,
 			},
 			{
 				"faction_memory",
 				"level_nurgle_nurglification_increase",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"level_nurgle_nurglification_increase",
 				OP.ADD,
-				1
-			}
-		}
+				1,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_level_nurgle_outcast_lair",
@@ -295,47 +297,47 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"seen_item"
+				"seen_item",
 			},
 			{
 				"query_context",
 				"item_tag",
 				OP.EQ,
-				"level_nurgle_outcast_lair"
+				"level_nurgle_outcast_lair",
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.EQ,
-				0
+				0,
 			},
 			{
 				"faction_memory",
 				"level_nurgle_outcast_lair",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"level_nurgle_outcast_lair",
 				OP.ADD,
-				1
-			}
-		}
+				1,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_level_nurgle_river",
@@ -345,47 +347,47 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"seen_item"
+				"seen_item",
 			},
 			{
 				"query_context",
 				"item_tag",
 				OP.EQ,
-				"level_nurgle_river"
+				"level_nurgle_river",
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.EQ,
-				0
+				0,
 			},
 			{
 				"faction_memory",
 				"level_nurgle_river",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"level_nurgle_river",
 				OP.ADD,
-				1
-			}
-		}
+				1,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_level_nurgle_skaven_collapse",
@@ -395,47 +397,47 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"seen_item"
+				"seen_item",
 			},
 			{
 				"query_context",
 				"item_tag",
 				OP.EQ,
-				"level_nurgle_skaven_collapse"
+				"level_nurgle_skaven_collapse",
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.EQ,
-				0
+				0,
 			},
 			{
 				"faction_memory",
 				"level_nurgle_skaven_collapse",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"level_nurgle_skaven_collapse",
 				OP.ADD,
-				1
-			}
-		}
+				1,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_level_nurgle_spotting_objective",
@@ -445,41 +447,41 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"seen_item"
+				"seen_item",
 			},
 			{
 				"query_context",
 				"item_tag",
 				OP.EQ,
-				"level_nurgle_spotting_objective"
+				"level_nurgle_spotting_objective",
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"faction_memory",
 				"level_nurgle_spotting_objective",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"level_nurgle_spotting_objective",
 				OP.ADD,
-				1
-			}
-		}
+				1,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_level_nurgle_swift_river",
@@ -489,41 +491,41 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"seen_item"
+				"seen_item",
 			},
 			{
 				"query_context",
 				"item_tag",
 				OP.EQ,
-				"level_nurgle_swift_river"
+				"level_nurgle_swift_river",
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"faction_memory",
 				"level_nurgle_swift_river",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"level_nurgle_swift_river",
 				OP.ADD,
-				1
-			}
-		}
+				1,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_nurgle_intro_a",
@@ -533,41 +535,41 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"seen_item"
+				"seen_item",
 			},
 			{
 				"query_context",
 				"item_tag",
 				OP.EQ,
-				"nurgle_intro_a"
+				"nurgle_intro_a",
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"faction_memory",
 				"nurgle_intro_a",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"nurgle_intro_a",
 				OP.ADD,
-				1
-			}
-		}
+				1,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_nurgle_intro_b",
@@ -577,413 +579,413 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"dialogue_name_nopre",
 				OP.EQ,
-				"nurgle_intro_a"
+				"nurgle_intro_a",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"faction_memory",
 				"nurgle_intro_b",
 				OP.TIMEDIFF,
 				OP.GT,
-				1
-			}
+				1,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"nurgle_intro_b",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	add_dialogues({
 		pes_level_nurgle_bury_objective = {
-			randomize_indexes_n = 0,
-			face_animations_n = 2,
-			database = "empire_soldier_nurgle",
-			sound_events_n = 2,
 			category = "level_talk",
+			database = "empire_soldier_nurgle",
 			dialogue_animations_n = 2,
+			face_animations_n = 2,
+			randomize_indexes_n = 0,
+			sound_events_n = 2,
 			dialogue_animations = {
-				[1.0] = "dialogue_shout",
-				[2.0] = "dialogue_shout"
+				[1] = "dialogue_shout",
+				[2] = "dialogue_shout",
 			},
 			face_animations = {
-				[1.0] = "face_fear",
-				[2.0] = "face_fear"
+				[1] = "face_fear",
+				[2] = "face_fear",
 			},
 			localization_strings = {
-				[1.0] = "pes_level_nurgle_bury_objective_01",
-				[2.0] = "pes_level_nurgle_bury_objective_02"
+				[1] = "pes_level_nurgle_bury_objective_01",
+				[2] = "pes_level_nurgle_bury_objective_02",
 			},
 			randomize_indexes = {},
 			sound_events = {
-				[1.0] = "pes_level_nurgle_bury_objective_01",
-				[2.0] = "pes_level_nurgle_bury_objective_02"
+				[1] = "pes_level_nurgle_bury_objective_01",
+				[2] = "pes_level_nurgle_bury_objective_02",
 			},
 			sound_events_duration = {
-				[1.0] = 4.2746043205261,
-				[2.0] = 3.0456249713898
-			}
+				[1] = 4.2746043205261,
+				[2] = 3.0456249713898,
+			},
 		},
 		pes_level_nurgle_coming_down = {
-			randomize_indexes_n = 0,
-			face_animations_n = 2,
-			database = "empire_soldier_nurgle",
-			sound_events_n = 2,
 			category = "level_talk",
+			database = "empire_soldier_nurgle",
 			dialogue_animations_n = 2,
+			face_animations_n = 2,
+			randomize_indexes_n = 0,
+			sound_events_n = 2,
 			dialogue_animations = {
-				[1.0] = "dialogue_shout",
-				[2.0] = "dialogue_shout"
+				[1] = "dialogue_shout",
+				[2] = "dialogue_shout",
 			},
 			face_animations = {
-				[1.0] = "face_fear",
-				[2.0] = "face_fear"
+				[1] = "face_fear",
+				[2] = "face_fear",
 			},
 			localization_strings = {
-				[1.0] = "pes_level_nurgle_coming_down_01",
-				[2.0] = "pes_level_nurgle_coming_down_02"
+				[1] = "pes_level_nurgle_coming_down_01",
+				[2] = "pes_level_nurgle_coming_down_02",
 			},
 			randomize_indexes = {},
 			sound_events = {
-				[1.0] = "pes_level_nurgle_coming_down_01",
-				[2.0] = "pes_level_nurgle_coming_down_02"
+				[1] = "pes_level_nurgle_coming_down_01",
+				[2] = "pes_level_nurgle_coming_down_02",
 			},
 			sound_events_duration = {
-				[1.0] = 6.1494374275208,
-				[2.0] = 6.8563752174377
-			}
+				[1] = 6.1494374275208,
+				[2] = 6.8563752174377,
+			},
 		},
 		pes_level_nurgle_digsite = {
-			randomize_indexes_n = 0,
-			face_animations_n = 2,
-			database = "empire_soldier_nurgle",
-			sound_events_n = 2,
 			category = "level_talk",
+			database = "empire_soldier_nurgle",
 			dialogue_animations_n = 2,
+			face_animations_n = 2,
+			randomize_indexes_n = 0,
+			sound_events_n = 2,
 			dialogue_animations = {
-				[1.0] = "dialogue_shout",
-				[2.0] = "dialogue_shout"
+				[1] = "dialogue_shout",
+				[2] = "dialogue_shout",
 			},
 			face_animations = {
-				[1.0] = "face_fear",
-				[2.0] = "face_fear"
+				[1] = "face_fear",
+				[2] = "face_fear",
 			},
 			localization_strings = {
-				[1.0] = "pes_level_nurgle_digsite_01",
-				[2.0] = "pes_level_nurgle_digsite_02"
+				[1] = "pes_level_nurgle_digsite_01",
+				[2] = "pes_level_nurgle_digsite_02",
 			},
 			randomize_indexes = {},
 			sound_events = {
-				[1.0] = "pes_level_nurgle_digsite_01",
-				[2.0] = "pes_level_nurgle_digsite_02"
+				[1] = "pes_level_nurgle_digsite_01",
+				[2] = "pes_level_nurgle_digsite_02",
 			},
 			sound_events_duration = {
-				[1.0] = 1.8633333444595,
-				[2.0] = 3.0818541049957
-			}
+				[1] = 1.8633333444595,
+				[2] = 3.0818541049957,
+			},
 		},
 		pes_level_nurgle_drop_down = {
-			randomize_indexes_n = 0,
-			face_animations_n = 2,
-			database = "empire_soldier_nurgle",
-			sound_events_n = 2,
 			category = "level_talk",
+			database = "empire_soldier_nurgle",
 			dialogue_animations_n = 2,
+			face_animations_n = 2,
+			randomize_indexes_n = 0,
+			sound_events_n = 2,
 			dialogue_animations = {
-				[1.0] = "dialogue_shout",
-				[2.0] = "dialogue_shout"
+				[1] = "dialogue_shout",
+				[2] = "dialogue_shout",
 			},
 			face_animations = {
-				[1.0] = "face_concerned",
-				[2.0] = "face_concerned"
+				[1] = "face_concerned",
+				[2] = "face_concerned",
 			},
 			localization_strings = {
-				[1.0] = "pes_level_nurgle_drop_down_01",
-				[2.0] = "pes_level_nurgle_drop_down_02"
+				[1] = "pes_level_nurgle_drop_down_01",
+				[2] = "pes_level_nurgle_drop_down_02",
 			},
 			randomize_indexes = {},
 			sound_events = {
-				[1.0] = "pes_level_nurgle_drop_down_01",
-				[2.0] = "pes_level_nurgle_drop_down_02"
+				[1] = "pes_level_nurgle_drop_down_01",
+				[2] = "pes_level_nurgle_drop_down_02",
 			},
 			sound_events_duration = {
-				[1.0] = 2.2145624160767,
-				[2.0] = 1.3009999990463
-			}
+				[1] = 2.2145624160767,
+				[2] = 1.3009999990463,
+			},
 		},
 		pes_level_nurgle_nurglification = {
-			randomize_indexes_n = 0,
-			face_animations_n = 2,
-			database = "empire_soldier_nurgle",
-			sound_events_n = 2,
 			category = "level_talk",
+			database = "empire_soldier_nurgle",
 			dialogue_animations_n = 2,
+			face_animations_n = 2,
+			randomize_indexes_n = 0,
+			sound_events_n = 2,
 			dialogue_animations = {
-				[1.0] = "dialogue_shout",
-				[2.0] = "dialogue_shout"
+				[1] = "dialogue_shout",
+				[2] = "dialogue_shout",
 			},
 			face_animations = {
-				[1.0] = "face_fear",
-				[2.0] = "face_fear"
+				[1] = "face_fear",
+				[2] = "face_fear",
 			},
 			localization_strings = {
-				[1.0] = "pes_level_nurgle_nurglification_01",
-				[2.0] = "pes_level_nurgle_nurglification_02"
+				[1] = "pes_level_nurgle_nurglification_01",
+				[2] = "pes_level_nurgle_nurglification_02",
 			},
 			randomize_indexes = {},
 			sound_events = {
-				[1.0] = "pes_level_nurgle_nurglification_01",
-				[2.0] = "pes_level_nurgle_nurglification_02"
+				[1] = "pes_level_nurgle_nurglification_01",
+				[2] = "pes_level_nurgle_nurglification_02",
 			},
 			sound_events_duration = {
-				[1.0] = 3.8557708263397,
-				[2.0] = 2.7042500972748
-			}
+				[1] = 3.8557708263397,
+				[2] = 2.7042500972748,
+			},
 		},
 		pes_level_nurgle_nurglification_increase = {
-			randomize_indexes_n = 0,
-			face_animations_n = 2,
-			database = "empire_soldier_nurgle",
-			sound_events_n = 2,
 			category = "level_talk",
+			database = "empire_soldier_nurgle",
 			dialogue_animations_n = 2,
+			face_animations_n = 2,
+			randomize_indexes_n = 0,
+			sound_events_n = 2,
 			dialogue_animations = {
-				[1.0] = "dialogue_shout",
-				[2.0] = "dialogue_shout"
+				[1] = "dialogue_shout",
+				[2] = "dialogue_shout",
 			},
 			face_animations = {
-				[1.0] = "face_fear",
-				[2.0] = "face_fear"
+				[1] = "face_fear",
+				[2] = "face_fear",
 			},
 			localization_strings = {
-				[1.0] = "pes_level_nurgle_nurglification_increase_01",
-				[2.0] = "pes_level_nurgle_nurglification_increase_02"
+				[1] = "pes_level_nurgle_nurglification_increase_01",
+				[2] = "pes_level_nurgle_nurglification_increase_02",
 			},
 			randomize_indexes = {},
 			sound_events = {
-				[1.0] = "pes_level_nurgle_nurglification_increase_01",
-				[2.0] = "pes_level_nurgle_nurglification_increase_02"
+				[1] = "pes_level_nurgle_nurglification_increase_01",
+				[2] = "pes_level_nurgle_nurglification_increase_02",
 			},
 			sound_events_duration = {
-				[1.0] = 3.0373749732971,
-				[2.0] = 7.7443542480469
-			}
+				[1] = 3.0373749732971,
+				[2] = 7.7443542480469,
+			},
 		},
 		pes_level_nurgle_outcast_lair = {
-			randomize_indexes_n = 0,
-			face_animations_n = 2,
-			database = "empire_soldier_nurgle",
-			sound_events_n = 2,
 			category = "level_talk",
+			database = "empire_soldier_nurgle",
 			dialogue_animations_n = 2,
+			face_animations_n = 2,
+			randomize_indexes_n = 0,
+			sound_events_n = 2,
 			dialogue_animations = {
-				[1.0] = "dialogue_shout",
-				[2.0] = "dialogue_shout"
+				[1] = "dialogue_shout",
+				[2] = "dialogue_shout",
 			},
 			face_animations = {
-				[1.0] = "face_calm",
-				[2.0] = "face_calm"
+				[1] = "face_calm",
+				[2] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pes_level_nurgle_outcast_lair_01",
-				[2.0] = "pes_level_nurgle_outcast_lair_02"
+				[1] = "pes_level_nurgle_outcast_lair_01",
+				[2] = "pes_level_nurgle_outcast_lair_02",
 			},
 			randomize_indexes = {},
 			sound_events = {
-				[1.0] = "pes_level_nurgle_outcast_lair_01",
-				[2.0] = "pes_level_nurgle_outcast_lair_02"
+				[1] = "pes_level_nurgle_outcast_lair_01",
+				[2] = "pes_level_nurgle_outcast_lair_02",
 			},
 			sound_events_duration = {
-				[1.0] = 4.3796668052673,
-				[2.0] = 4.8788957595825
-			}
+				[1] = 4.3796668052673,
+				[2] = 4.8788957595825,
+			},
 		},
 		pes_level_nurgle_river = {
-			randomize_indexes_n = 0,
-			face_animations_n = 2,
-			database = "empire_soldier_nurgle",
-			sound_events_n = 2,
 			category = "level_talk",
+			database = "empire_soldier_nurgle",
 			dialogue_animations_n = 2,
+			face_animations_n = 2,
+			randomize_indexes_n = 0,
+			sound_events_n = 2,
 			dialogue_animations = {
-				[1.0] = "dialogue_shout",
-				[2.0] = "dialogue_shout"
+				[1] = "dialogue_shout",
+				[2] = "dialogue_shout",
 			},
 			face_animations = {
-				[1.0] = "face_calm",
-				[2.0] = "face_calm"
+				[1] = "face_calm",
+				[2] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pes_level_nurgle_river_01",
-				[2.0] = "pes_level_nurgle_river_02"
+				[1] = "pes_level_nurgle_river_01",
+				[2] = "pes_level_nurgle_river_02",
 			},
 			randomize_indexes = {},
 			sound_events = {
-				[1.0] = "pes_level_nurgle_river_01",
-				[2.0] = "pes_level_nurgle_river_02"
+				[1] = "pes_level_nurgle_river_01",
+				[2] = "pes_level_nurgle_river_02",
 			},
 			sound_events_duration = {
-				[1.0] = 3.4465000629425,
-				[2.0] = 2.9546666145325
-			}
+				[1] = 3.4465000629425,
+				[2] = 2.9546666145325,
+			},
 		},
 		pes_level_nurgle_skaven_collapse = {
-			randomize_indexes_n = 0,
-			face_animations_n = 2,
-			database = "empire_soldier_nurgle",
-			sound_events_n = 2,
 			category = "level_talk",
+			database = "empire_soldier_nurgle",
 			dialogue_animations_n = 2,
+			face_animations_n = 2,
+			randomize_indexes_n = 0,
+			sound_events_n = 2,
 			dialogue_animations = {
-				[1.0] = "dialogue_shout",
-				[2.0] = "dialogue_shout"
+				[1] = "dialogue_shout",
+				[2] = "dialogue_shout",
 			},
 			face_animations = {
-				[1.0] = "face_fear",
-				[2.0] = "face_fear"
+				[1] = "face_fear",
+				[2] = "face_fear",
 			},
 			localization_strings = {
-				[1.0] = "pes_level_nurgle_skaven_collapse_01",
-				[2.0] = "pes_level_nurgle_skaven_collapse_02"
+				[1] = "pes_level_nurgle_skaven_collapse_01",
+				[2] = "pes_level_nurgle_skaven_collapse_02",
 			},
 			randomize_indexes = {},
 			sound_events = {
-				[1.0] = "pes_level_nurgle_skaven_collapse_01",
-				[2.0] = "pes_level_nurgle_skaven_collapse_02"
+				[1] = "pes_level_nurgle_skaven_collapse_01",
+				[2] = "pes_level_nurgle_skaven_collapse_02",
 			},
 			sound_events_duration = {
-				[1.0] = 4.5346665382385,
-				[2.0] = 3.768833398819
-			}
+				[1] = 4.5346665382385,
+				[2] = 3.768833398819,
+			},
 		},
 		pes_level_nurgle_spotting_objective = {
-			randomize_indexes_n = 0,
-			face_animations_n = 2,
-			database = "empire_soldier_nurgle",
-			sound_events_n = 2,
 			category = "level_talk",
+			database = "empire_soldier_nurgle",
 			dialogue_animations_n = 2,
+			face_animations_n = 2,
+			randomize_indexes_n = 0,
+			sound_events_n = 2,
 			dialogue_animations = {
-				[1.0] = "dialogue_shout",
-				[2.0] = "dialogue_shout"
+				[1] = "dialogue_shout",
+				[2] = "dialogue_shout",
 			},
 			face_animations = {
-				[1.0] = "face_fear",
-				[2.0] = "face_fear"
+				[1] = "face_fear",
+				[2] = "face_fear",
 			},
 			localization_strings = {
-				[1.0] = "pes_level_nurgle_spotting_objective_01",
-				[2.0] = "pes_level_nurgle_spotting_objective_02"
+				[1] = "pes_level_nurgle_spotting_objective_01",
+				[2] = "pes_level_nurgle_spotting_objective_02",
 			},
 			randomize_indexes = {},
 			sound_events = {
-				[1.0] = "pes_level_nurgle_spotting_objective_01",
-				[2.0] = "pes_level_nurgle_spotting_objective_02"
+				[1] = "pes_level_nurgle_spotting_objective_01",
+				[2] = "pes_level_nurgle_spotting_objective_02",
 			},
 			sound_events_duration = {
-				[1.0] = 3.2394165992737,
-				[2.0] = 4.6296248435974
-			}
+				[1] = 3.2394165992737,
+				[2] = 4.6296248435974,
+			},
 		},
 		pes_level_nurgle_swift_river = {
-			randomize_indexes_n = 0,
-			face_animations_n = 2,
-			database = "empire_soldier_nurgle",
-			sound_events_n = 2,
 			category = "level_talk",
+			database = "empire_soldier_nurgle",
 			dialogue_animations_n = 2,
+			face_animations_n = 2,
+			randomize_indexes_n = 0,
+			sound_events_n = 2,
 			dialogue_animations = {
-				[1.0] = "dialogue_shout",
-				[2.0] = "dialogue_shout"
+				[1] = "dialogue_shout",
+				[2] = "dialogue_shout",
 			},
 			face_animations = {
-				[1.0] = "face_concerned",
-				[2.0] = "face_concerned"
+				[1] = "face_concerned",
+				[2] = "face_concerned",
 			},
 			localization_strings = {
-				[1.0] = "pes_level_nurgle_swift_river_01",
-				[2.0] = "pes_level_nurgle_swift_river_02"
+				[1] = "pes_level_nurgle_swift_river_01",
+				[2] = "pes_level_nurgle_swift_river_02",
 			},
 			randomize_indexes = {},
 			sound_events = {
-				[1.0] = "pes_level_nurgle_swift_river_01",
-				[2.0] = "pes_level_nurgle_swift_river_02"
+				[1] = "pes_level_nurgle_swift_river_01",
+				[2] = "pes_level_nurgle_swift_river_02",
 			},
 			sound_events_duration = {
-				[1.0] = 5.3746666908264,
-				[2.0] = 2.9363749027252
-			}
+				[1] = 5.3746666908264,
+				[2] = 2.9363749027252,
+			},
 		},
 		pes_nurgle_intro_a = {
-			randomize_indexes_n = 0,
-			face_animations_n = 2,
-			database = "empire_soldier_nurgle",
-			sound_events_n = 2,
 			category = "level_talk",
+			database = "empire_soldier_nurgle",
 			dialogue_animations_n = 2,
+			face_animations_n = 2,
+			randomize_indexes_n = 0,
+			sound_events_n = 2,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
+				[2] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral",
-				[2.0] = "face_neutral"
+				[1] = "face_neutral",
+				[2] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pes_nurgle_intro_a_01",
-				[2.0] = "pes_nurgle_intro_a_02"
+				[1] = "pes_nurgle_intro_a_01",
+				[2] = "pes_nurgle_intro_a_02",
 			},
 			randomize_indexes = {},
 			sound_events = {
-				[1.0] = "pes_nurgle_intro_a_01",
-				[2.0] = "pes_nurgle_intro_a_02"
+				[1] = "pes_nurgle_intro_a_01",
+				[2] = "pes_nurgle_intro_a_02",
 			},
 			sound_events_duration = {
-				[1.0] = 8.272271156311,
-				[2.0] = 8.2816457748413
-			}
+				[1] = 8.272271156311,
+				[2] = 8.2816457748413,
+			},
 		},
 		pes_nurgle_intro_b = {
-			randomize_indexes_n = 0,
-			face_animations_n = 2,
-			database = "empire_soldier_nurgle",
-			sound_events_n = 2,
 			category = "level_talk",
+			database = "empire_soldier_nurgle",
 			dialogue_animations_n = 2,
+			face_animations_n = 2,
+			randomize_indexes_n = 0,
+			sound_events_n = 2,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
+				[2] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral",
-				[2.0] = "face_neutral"
+				[1] = "face_neutral",
+				[2] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pes_nurgle_intro_b_01",
-				[2.0] = "pes_nurgle_intro_b_02"
+				[1] = "pes_nurgle_intro_b_01",
+				[2] = "pes_nurgle_intro_b_02",
 			},
 			randomize_indexes = {},
 			sound_events = {
-				[1.0] = "pes_nurgle_intro_b_01",
-				[2.0] = "pes_nurgle_intro_b_02"
+				[1] = "pes_nurgle_intro_b_01",
+				[2] = "pes_nurgle_intro_b_02",
 			},
 			sound_events_duration = {
-				[1.0] = 9.9031667709351,
-				[2.0] = 7.1461873054504
-			}
-		}
+				[1] = 9.9031667709351,
+				[2] = 7.1461873054504,
+			},
+		},
 	})
 end

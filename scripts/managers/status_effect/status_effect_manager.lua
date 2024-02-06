@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/status_effect/status_effect_manager.lua
+
 require("scripts/managers/status_effect/status_effect_templates")
 
 StatusEffectManager = class(StatusEffectManager)
@@ -60,9 +62,11 @@ StatusEffectManager.set_status = function (self, unit, status_name, reason, valu
 
 		statuses[status_name] = statuses[status_name] or {
 			reasons = {},
-			frame_index = GLOBAL_FRAME_INDEX
+			frame_index = GLOBAL_FRAME_INDEX,
 		}
+
 		local status_data = statuses[status_name]
+
 		status_data.reasons[reason] = true
 
 		if not had_status and status_template.on_applied then
@@ -78,6 +82,7 @@ StatusEffectManager.set_status = function (self, unit, status_name, reason, valu
 
 		if reasons[reason] then
 			reasons[reason] = nil
+
 			local apply_data = status_data.apply_data
 
 			if status_template.on_decrement then
@@ -112,7 +117,7 @@ StatusEffectManager.add_timed_status = function (self, unit, status_name, option
 	local timed_data = {
 		_is_timed = true,
 		status_name = status_name,
-		remove_t = t + duration
+		remove_t = t + duration,
 	}
 
 	if self:set_status(unit, status_name, timed_data, true) then
@@ -165,7 +170,7 @@ end
 
 StatusEffectManager._update_timed_statuses = function (self, dt, t)
 	for timed_data, unit in pairs(self._timed_status_datas) do
-		if timed_data.remove_t < t then
+		if t > timed_data.remove_t then
 			self:_remove_timed_status(unit, timed_data)
 		end
 	end

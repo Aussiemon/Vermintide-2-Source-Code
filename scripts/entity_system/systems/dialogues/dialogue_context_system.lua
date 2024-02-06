@@ -1,6 +1,9 @@
+﻿-- chunkname: @scripts/entity_system/systems/dialogues/dialogue_context_system.lua
+
 local extensions = {
-	"GenericDialogueContextExtension"
+	"GenericDialogueContextExtension",
 }
+
 DialogueContextSystem = class(DialogueContextSystem, ExtensionSystemBase)
 
 DialogueContextSystem.init = function (self, context, system_name)
@@ -25,8 +28,9 @@ DialogueContextSystem.on_add_extension = function (self, world, unit, extension_
 	fassert(extension_init_data.profile, "Missing profile!")
 
 	context.player_profile = extension_init_data.profile.character_vo
+
 	local extension = {
-		context = context
+		context = context,
 	}
 
 	ScriptUnit.set_extension(unit, "dialogue_context_system", extension, {})
@@ -47,6 +51,7 @@ DialogueContextSystem.extensions_ready = function (self, world, unit, extension_
 	local status_extension = ScriptUnit.extension(unit, "status_system")
 	local proximity_extension = ScriptUnit.extension(unit, "proximity_system")
 	local extension = self.unit_extension_data[unit]
+
 	extension.health_extension = health_extension
 	extension.status_extension = status_extension
 	extension.proximity_extension = proximity_extension
@@ -58,6 +63,7 @@ DialogueContextSystem.update = function (self, system_context, t)
 	end
 
 	local next_player_key, extension = next(self.unit_extension_data, self._next_player_key)
+
 	self._next_player_key = next_player_key
 
 	if not next_player_key then
@@ -65,14 +71,19 @@ DialogueContextSystem.update = function (self, system_context, t)
 	end
 
 	local context = extension.context
+
 	context.health = extension.health_extension:current_health_percent()
+
 	local status_extension = extension.status_extension
+
 	context.is_pounced_down = not not status_extension:is_pounced_down()
 	context.is_knocked_down = not not status_extension:is_knocked_down()
 	context.intensity = status_extension:get_pacing_intensity()
 	context.pacing_state = Managers.state.conflict.pacing.pacing_state
+
 	local proximity_extension = extension.proximity_extension
 	local proximity_types = proximity_extension.proximity_types
+
 	context.friends_close = proximity_types.friends_close.num
 	context.friends_distant = proximity_types.friends_distant.num
 	context.enemies_close = proximity_types.enemies_close.num

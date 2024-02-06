@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/world_markers/store_world_marker_extension.lua
+
 require("scripts/unit_extensions/world_markers/world_marker_extension")
 
 StoreWorldMarkerExtension = class(StoreWorldMarkerExtension, WorldMarkerExtension)

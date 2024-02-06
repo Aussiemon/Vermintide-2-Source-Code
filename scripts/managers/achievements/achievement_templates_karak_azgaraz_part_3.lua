@@ -1,52 +1,55 @@
+﻿-- chunkname: @scripts/managers/achievements/achievement_templates_karak_azgaraz_part_3.lua
+
 local add_event_challenge = AchievementTemplateHelper.add_event_challenge
 local add_levels_complete_challenge = AchievementTemplateHelper.add_levels_complete_challenge
 local add_meta_challenge = AchievementTemplateHelper.add_meta_challenge
 local achievements = AchievementTemplates.achievements
 local add_console_achievements = AchievementTemplateHelper.add_console_achievements
 local XB1_ACHIEVEMENT_ID = {
-	karak_azgaraz_complete_dlc_dwarf_beacons_legend = 121,
 	dwarf_big_jump = 118,
+	dwarf_crows = 115,
 	dwarf_pressure_pad = 114,
-	dwarf_crows = 115
+	karak_azgaraz_complete_dlc_dwarf_beacons_legend = 121,
 }
 local PS4_ACHIEVEMENT_ID = {
-	dwarf_crows = "091"
+	dwarf_crows = "091",
 }
 local all_difficulties = {}
 local portals = {
-	LevelSettings.dlc_dwarf_beacons
+	LevelSettings.dlc_dwarf_beacons,
 }
 local difficulties = {
 	"normal",
 	"hard",
 	"harder",
 	"hardest",
-	"cataclysm"
+	"cataclysm",
 }
 local player_facing_diff_names = {
-	hardest = "legend",
+	cataclysm = "cataclysm",
 	hard = "veteran",
 	harder = "champion",
-	cataclysm = "cataclysm",
-	normal = "recruit"
+	hardest = "legend",
+	normal = "recruit",
 }
 
 for i = 1, #difficulties do
 	local difficulty_name = difficulties[i]
 	local name = "karak_azgaraz_complete_dlc_dwarf_beacons_" .. player_facing_diff_names[difficulty_name]
 	local icon = "achievement_beacons_" .. player_facing_diff_names[difficulty_name]
+
 	all_difficulties[i] = name
 
 	add_levels_complete_challenge(achievements, name, portals, DifficultySettings[difficulty_name].rank, icon, nil, XB1_ACHIEVEMENT_ID[name], PS4_ACHIEVEMENT_ID[name])
 end
 
 achievements.dwarf_pressure_pad = {
-	name = "achv_dwarf_pressure_pad_name",
+	desc = "achv_dwarf_pressure_pad_desc",
 	display_completion_ui = true,
 	icon = "achievement_dwarf_pressure_pad",
-	desc = "achv_dwarf_pressure_pad_desc",
+	name = "achv_dwarf_pressure_pad_name",
 	events = {
-		"dwarf_pressure_pad"
+		"dwarf_pressure_pad",
 	},
 	completed = function (statistics_db, stats_id, template_data)
 		return statistics_db:get_persistent_stat(stats_id, "dwarf_pressure_pad") >= 1
@@ -82,15 +85,15 @@ achievements.dwarf_pressure_pad = {
 				template_data.challenge_over = true
 			end
 		end
-	end
+	end,
 }
 achievements.dwarf_big_jump = {
-	name = "achv_dwarf_big_jump_name",
+	desc = "achv_dwarf_big_jump_desc",
 	display_completion_ui = true,
 	icon = "achievement_dwarf_big_jump",
-	desc = "achv_dwarf_big_jump_desc",
+	name = "achv_dwarf_big_jump_name",
 	events = {
-		"dwarf_big_jump"
+		"dwarf_big_jump",
 	},
 	completed = function (statistics_db, stats_id, template_data)
 		return statistics_db:get_persistent_stat(stats_id, "dwarf_big_jump") >= 1
@@ -104,31 +107,31 @@ achievements.dwarf_big_jump = {
 		elseif not is_landing then
 			template_data.exit_t = t + 4
 		end
-	end
+	end,
 }
 achievements.dwarf_crows = {
-	name = "achv_dwarf_crows_name",
+	desc = "achv_dwarf_crows_desc",
 	display_completion_ui = true,
 	icon = "achievement_dwarf_crows",
-	desc = "achv_dwarf_crows_desc",
+	name = "achv_dwarf_crows_name",
 	events = {
-		"dwarf_crows"
+		"dwarf_crows",
 	},
 	completed = function (statistics_db, stats_id, template_data)
 		return statistics_db:get_persistent_stat(stats_id, "dwarf_crows") >= 1
 	end,
 	on_event = function (statistics_db, stats_id, template_data, event_name, event_data)
 		statistics_db:increment_stat(stats_id, "dwarf_crows")
-	end
+	end,
 }
 achievements.dwarf_speedrun = {
-	name = "achv_dwarf_speedrun_name",
+	desc = "achv_dwarf_speedrun_desc",
 	display_completion_ui = true,
 	icon = "achievement_dwarf_speedrun",
-	desc = "achv_dwarf_speedrun_desc",
+	name = "achv_dwarf_speedrun_name",
 	events = {
 		"dwarf_speedrun_start",
-		"dwarf_speedrun_end"
+		"dwarf_speedrun_end",
 	},
 	completed = function (statistics_db, stats_id, template_data)
 		return statistics_db:get_persistent_stat(stats_id, "dwarf_speedrun") >= 1
@@ -143,7 +146,7 @@ achievements.dwarf_speedrun = {
 		if event_name == "dwarf_speedrun_end" and template_data.started then
 			statistics_db:increment_stat(stats_id, "dwarf_speedrun")
 		end
-	end
+	end,
 }
 beacons_all_challenges = table.clone(all_difficulties)
 

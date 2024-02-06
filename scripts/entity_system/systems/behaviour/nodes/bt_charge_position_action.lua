@@ -1,6 +1,9 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_charge_position_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 local stagger_types = require("scripts/utils/stagger_types")
+
 BTChargePositionAction = class(BTChargePositionAction, BTNode)
 
 BTChargePositionAction.init = function (self, ...)
@@ -19,6 +22,7 @@ end
 
 BTChargePositionAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
+
 	blackboard.action = action
 	blackboard.active_node = BTChargePositionAction
 	blackboard.attack_finished = false
@@ -30,6 +34,7 @@ BTChargePositionAction.enter = function (self, unit, blackboard, t)
 	blackboard.action_enter_t = t
 	blackboard.total_distance_ran = 0
 	blackboard.last_frame_pos = Vector3Box(POSITION_LOOKUP[unit])
+
 	local network_manager = Managers.state.network
 	local start_animation = randomize(action.start_animation)
 
@@ -50,14 +55,19 @@ BTChargePositionAction.enter = function (self, unit, blackboard, t)
 
 	blackboard.hit_units = {}
 	blackboard.pushed_units = {}
+
 	local ai_slot_system = Managers.state.entity:system("ai_slot_system")
 
 	ai_slot_system:do_slot_search(unit, false)
 
 	local hit_reaction_extension = ScriptUnit.extension(unit, "hit_reaction_system")
+
 	hit_reaction_extension.force_ragdoll_on_death = true
+
 	local old_cost_table = blackboard.navigation_extension:get_navtag_layer_cost_table()
+
 	blackboard.old_navtag_layer_cost_table = old_cost_table
+
 	local charge_navtag_layer_cost_table = blackboard.charge_navtag_layer_cost_table
 
 	if charge_navtag_layer_cost_table then
@@ -87,7 +97,9 @@ BTChargePositionAction.leave = function (self, unit, blackboard, t, reason, dest
 		GwNavTraverseLogic.set_navtag_layer_cost_table(traverse_logic, blackboard.old_navtag_layer_cost_table)
 
 		blackboard.old_navtag_layer_cost_table = nil
+
 		local hit_reaction_extension = ScriptUnit.extension(unit, "hit_reaction_system")
+
 		hit_reaction_extension.force_ragdoll_on_death = nil
 	end
 
@@ -124,6 +136,7 @@ BTChargePositionAction.leave = function (self, unit, blackboard, t, reason, dest
 	blackboard.action_enter_t = nil
 	blackboard.distance_to_target_sq = nil
 	blackboard.charge_start_pos = nil
+
 	local ai_slot_system = Managers.state.entity:system("ai_slot_system")
 
 	ai_slot_system:do_slot_search(unit, true)
@@ -138,15 +151,16 @@ BTChargePositionAction.run = function (self, unit, blackboard, t, dt)
 		return "done"
 	end
 
-	if blackboard.ray_can_go_update_time < t then
+	if t > blackboard.ray_can_go_update_time then
 		local nav_world = blackboard.nav_world
 		local charge_position = blackboard.requested_charge_position:unbox()
+
 		blackboard.ray_can_go_to_target = LocomotionUtils.ray_can_go_on_mesh(nav_world, POSITION_LOOKUP[unit], charge_position, nil, 1, 1)
 		blackboard.ray_can_go_update_time = t + 0.25
 	end
 
 	local charge_state = blackboard.charge_state
-	local should_evaluate = nil
+	local should_evaluate
 
 	if charge_state == "starting" then
 		self:_run_starting(unit, blackboard, t)
@@ -173,6 +187,7 @@ BTChargePositionAction._start_charging = function (self, unit, blackboard)
 	local action = blackboard.action
 	local t = Managers.time:time("game")
 	local charge_animation = randomize(action.charge_animation)
+
 	blackboard.move_state = "moving"
 	blackboard.charge_state = "charging"
 
@@ -186,8 +201,10 @@ end
 
 BTChargePositionAction._start_approaching = function (self, unit, blackboard)
 	local action = blackboard.action
+
 	blackboard.charge_state = "approaching"
 	blackboard.goal_destination = blackboard.requested_charge_position
+
 	local navigation_extension = blackboard.navigation_extension
 	local speed = blackboard.current_charge_speed or action.charge_speed_min
 
@@ -200,7 +217,9 @@ end
 
 BTChargePositionAction._start_impact = function (self, unit, blackboard, hit_target, hit_wall, hit_target_blocked, target_avoided_attack)
 	local action = blackboard.action
+
 	blackboard.charge_state = "impact"
+
 	local locomotion_extension = blackboard.locomotion_extension
 
 	blackboard.navigation_extension:set_enabled(false)
@@ -236,6 +255,7 @@ BTChargePositionAction._pause_charge = function (self, unit, blackboard)
 	Managers.state.network:anim_event(unit, cancel_animation)
 
 	blackboard.charge_state = "cancel"
+
 	local locomotion_extension = blackboard.locomotion_extension
 
 	locomotion_extension:set_rotation_speed(nil)
@@ -382,7 +402,7 @@ BTChargePositionAction._hit_ai = function (self, unit, hit_unit, action, blackbo
 	if push_data then
 		local stagger_type, stagger_duration = DamageUtils.calculate_stagger(push_data.stagger_impact, push_data.stagger_duration, hit_unit, unit)
 
-		if stagger_types.none < stagger_type then
+		if stagger_type > stagger_types.none then
 			local self_pos = POSITION_LOOKUP[unit]
 			local hit_unit_pos = POSITION_LOOKUP[hit_unit]
 			local direction_to_ai = Vector3.normalize(hit_unit_pos - self_pos)
@@ -426,8 +446,7 @@ end
 
 BTChargePositionAction._check_wall_collision = function (self, unit, blackboard, dt)
 	local check_range = blackboard.action.wall_collision_check_range
-	local above = 1
-	local below = 1
+	local above, below = 1, 1
 	local nav_world = blackboard.nav_world
 	local from = POSITION_LOOKUP[unit]
 	local success, z = GwNavQueries.triangle_from_position(nav_world, from, above, below)
@@ -439,12 +458,13 @@ BTChargePositionAction._check_wall_collision = function (self, unit, blackboard,
 	local locomotion_extension = blackboard.locomotion_extension
 	local velocity = locomotion_extension:current_velocity()
 	local speed = Vector3.length(velocity)
-	local direction = nil
+	local direction
 
 	if speed > 0.01 then
 		direction = Vector3.normalize(velocity)
 	else
 		local rotation = Unit.local_rotation(unit, 0)
+
 		direction = Quaternion.forward(rotation)
 	end
 
@@ -495,6 +515,10 @@ BTChargePositionAction._is_at_edge = function (self, unit, blackboard, from, dir
 	if not hit2 then
 		return true
 	end
+
+	if false then
+		-- Nothing
+	end
 end
 
 BTChargePositionAction._check_smartobjects = function (self, unit, blackboard)
@@ -525,7 +549,7 @@ BTChargePositionAction._run_approaching = function (self, unit, blackboard, t, d
 	if blackboard.no_path_found then
 		if not blackboard.cancel_approaching_t then
 			blackboard.cancel_approaching_t = t + 2
-		elseif blackboard.cancel_approaching_t < t then
+		elseif t > blackboard.cancel_approaching_t then
 			self:_cancel_charge(unit, blackboard)
 
 			return
@@ -576,7 +600,7 @@ BTChargePositionAction._run_approaching = function (self, unit, blackboard, t, d
 
 	local time_since_enter = t - blackboard.action_enter_t
 
-	if action.max_charge_t < time_since_enter then
+	if time_since_enter > action.max_charge_t then
 		self:_cancel_charge(unit, blackboard)
 
 		return
@@ -585,11 +609,12 @@ BTChargePositionAction._run_approaching = function (self, unit, blackboard, t, d
 	local current_pos = POSITION_LOOKUP[unit]
 	local last_frame_pos = blackboard.last_frame_pos:unbox()
 	local distance_this_frame = Vector3.distance(current_pos, last_frame_pos)
+
 	blackboard.total_distance_ran = blackboard.total_distance_ran + distance_this_frame
 
 	blackboard.last_frame_pos:store(current_pos)
 
-	if action.max_charge_distance < blackboard.total_distance_ran then
+	if blackboard.total_distance_ran > action.max_charge_distance then
 		self:_cancel_charge(unit, blackboard)
 
 		return
@@ -646,7 +671,7 @@ BTChargePositionAction._run_charging = function (self, unit, blackboard, t, dt)
 
 	local time_since_enter = t - blackboard.action_enter_t
 
-	if action.max_charge_t < time_since_enter then
+	if time_since_enter > action.max_charge_t then
 		self:_cancel_charge(unit, blackboard)
 
 		return
@@ -675,11 +700,12 @@ BTChargePositionAction._run_charging = function (self, unit, blackboard, t, dt)
 
 	local frame_delta = current_pos - last_frame_pos
 	local distance_this_frame = Vector3.length(frame_delta)
+
 	blackboard.total_distance_ran = blackboard.total_distance_ran + distance_this_frame
 
 	blackboard.last_frame_pos:store(current_pos)
 
-	if action.max_charge_distance < blackboard.total_distance_ran then
+	if blackboard.total_distance_ran > action.max_charge_distance then
 		self:_cancel_charge(unit, blackboard)
 
 		return

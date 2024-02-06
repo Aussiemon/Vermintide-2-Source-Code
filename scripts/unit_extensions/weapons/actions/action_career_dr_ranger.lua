@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/weapons/actions/action_career_dr_ranger.lua
+
 ActionCareerDRRanger = class(ActionCareerDRRanger, ActionBase)
 
 ActionCareerDRRanger.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
@@ -16,11 +18,13 @@ ActionCareerDRRanger.client_owner_start_action = function (self, new_action, t, 
 	self.action_time_started = t
 	self.thrown = nil
 	self._cooldown_started = false
+
 	local slot = new_action.slot_to_wield
 
 	self.inventory_extension:wield(slot)
 
 	self.power_level = power_level
+
 	local inventory_extension = ScriptUnit.extension(self.owner_unit, "inventory_system")
 
 	inventory_extension:check_and_drop_pickups("career_ability")
@@ -56,7 +60,7 @@ ActionCareerDRRanger._create_smoke_screen = function (self)
 	end
 
 	buff_extension:add_buff(buff_name, {
-		attacker_unit = owner_unit
+		attacker_unit = owner_unit,
 	})
 end
 
@@ -76,7 +80,7 @@ ActionCareerDRRanger.client_owner_post_update = function (self, dt, t, world, ca
 	local current_action = self.current_action
 	local throw_time = self.action_time_started + current_action.throw_time
 
-	if t >= throw_time then
+	if throw_time <= t then
 		self:_throw()
 	end
 end

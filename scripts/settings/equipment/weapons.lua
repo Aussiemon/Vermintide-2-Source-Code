@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/equipment/weapons.lua
+
 require("scripts/settings/attachment_node_linking")
 require("scripts/unit_extensions/generic/interactions")
 require("scripts/settings/profiles/career_settings")
@@ -14,13 +16,14 @@ dofile("scripts/settings/equipment/light_weight_projectiles")
 require("scripts/settings/action_templates")
 
 DamageTypes = {
-	STAGGER = 4,
+	ARMOR_PIERCING = 1,
+	CLEAVE = 2,
 	DAMAGE = 5,
 	SPEED = 3,
-	CLEAVE = 2,
-	ARMOR_PIERCING = 1
+	STAGGER = 4,
 }
 Weapons = Weapons or {}
+
 local weapon_template_files_names = dofile("scripts/settings/equipment/honduras_weapon_templates")
 
 for _, dlc in pairs(DLCSettings) do
@@ -37,6 +40,7 @@ for i = 1, #weapon_template_files_names do
 		for template_name, template in pairs(weapon_templates) do
 			local actions = template.actions
 			local required_projectile_unit_templates = {}
+
 			template.required_projectile_unit_templates = required_projectile_unit_templates
 
 			for _, sub_actions in pairs(actions) do
@@ -61,16 +65,16 @@ end
 table.clear(weapon_template_files_names)
 
 DAMAGE_TYPES_AOE = {
-	warpfire_face = true,
+	plague_face = true,
+	poison = true,
 	vomit_face = true,
 	vomit_ground = true,
-	poison = true,
-	plague_face = true,
-	warpfire_ground = true
+	warpfire_face = true,
+	warpfire_ground = true,
 }
 
 local function kinda_equals(a, b, tolerence)
-	return math.abs(a - b) < tolerence
+	return tolerence > math.abs(a - b)
 end
 
 local buff_params = {}
@@ -83,6 +87,7 @@ local function add_dot(dot_template_name, hit_unit, attacker_unit, damage_source
 		buff_params.damage_source = damage_source
 		buff_params.power_level = power_level
 		buff_params.source_attacker_unit = source_attacker_unit
+
 		local buff_extension = ScriptUnit.extension(hit_unit, "buff_system")
 
 		buff_extension:add_buff(dot_template_name, buff_params)
@@ -97,6 +102,7 @@ local function add_dot_network_synced(dot_template_name, hit_unit, attacker_unit
 		buff_params.damage_source = damage_source
 		buff_params.power_level = power_level
 		buff_params.source_attacker_unit = source_attacker_unit
+
 		local buff_system = Managers.state.entity:system("buff_system")
 
 		buff_system:add_buff_synced(hit_unit, dot_template_name, BuffSyncType.All, buff_params)
@@ -118,6 +124,7 @@ Dots = {
 		end
 
 		local target_settings = damage_profile.targets[target_index] or damage_profile.default_target
+
 		dot_template_name = dot_template_name or target_settings.dot_template_name or damage_profile.dot_template_name
 
 		if not dot_template_name then
@@ -151,6 +158,7 @@ Dots = {
 	burning_dot = function (dot_template_name, damage_profile, target_index, power_level, target_unit, attacker_unit, hit_zone_name, damage_source, boost_curve_multiplier, is_critical_strike, source_attacker_unit)
 		if damage_profile and not dot_template_name then
 			local target_settings = damage_profile.targets[target_index] or damage_profile.default_target
+
 			dot_template_name = target_settings.dot_template_name or damage_profile.dot_template_name
 		end
 
@@ -163,9 +171,7 @@ Dots = {
 		if breed and not breed.is_hero then
 			local talent_extension = ScriptUnit.has_extension(attacker_unit, "talent_system") or ScriptUnit.has_extension(source_attacker_unit, "talent_system")
 
-			if talent_extension and talent_extension:has_talent("sienna_adept_infinite_burn") then
-				dot_template_name = InfiniteBurnDotLookup[dot_template_name] or dot_template_name
-			end
+			dot_template_name = talent_extension and talent_extension:has_talent("sienna_adept_infinite_burn") and InfiniteBurnDotLookup[dot_template_name] or dot_template_name
 
 			local attacker_unit_buff_extension = ScriptUnit.has_extension(attacker_unit, "buff_system")
 
@@ -181,6 +187,7 @@ Dots = {
 	slow_debuff = function (dot_template_name, damage_profile, target_index, power_level, target_unit, attacker_unit, hit_zone_name, damage_source, boost_curve_multiplier, is_critical_strike, source_attacker_unit)
 		if damage_profile and not dot_template_name then
 			local target_settings = damage_profile.targets[target_index] or damage_profile.default_target
+
 			dot_template_name = target_settings.dot_template_name or damage_profile.dot_template_name
 		end
 
@@ -191,25 +198,25 @@ Dots = {
 		add_dot(dot_template_name, target_unit, attacker_unit, damage_source, power_level, source_attacker_unit)
 
 		return true
-	end
+	end,
 }
 DotTypeLookup = DotTypeLookup or {
-	burning_dot_unchained_push = "burning_dot",
-	burning_dot = "burning_dot",
-	burning_dot_3tick = "burning_dot",
-	arrow_poison_dot = "poison_dot",
-	weapon_bleed_dot_whc = "poison_dot",
-	burning_dot_1tick = "burning_dot",
-	weapon_bleed_dot_maidenguard = "poison_dot",
-	beam_burning_dot = "burning_dot",
-	weapon_bleed_dot_dagger = "poison_dot",
-	burning_dot_fire_grenade = "burning_dot",
-	corpse_explosion_default = "poison_dot",
-	burning_flamethrower_dot = "burning_dot",
 	aoe_poison_dot = "poison_dot",
-	sienna_necromancer_4_3_dot = "burning_dot",
+	arrow_poison_dot = "poison_dot",
+	beam_burning_dot = "burning_dot",
+	burning_dot = "burning_dot",
+	burning_dot_1tick = "burning_dot",
+	burning_dot_3tick = "burning_dot",
+	burning_dot_fire_grenade = "burning_dot",
+	burning_dot_unchained_push = "burning_dot",
+	burning_flamethrower_dot = "burning_dot",
+	chaos_zombie_explosion = "poison_dot",
+	corpse_explosion_default = "poison_dot",
 	death_staff_dot = "burning_dot",
-	chaos_zombie_explosion = "poison_dot"
+	sienna_necromancer_4_3_dot = "burning_dot",
+	weapon_bleed_dot_dagger = "poison_dot",
+	weapon_bleed_dot_maidenguard = "poison_dot",
+	weapon_bleed_dot_whc = "poison_dot",
 }
 
 DLCUtils.merge("dot_type_lookup", DotTypeLookup)
@@ -227,7 +234,7 @@ local checked_templates = {
 	vs_warpfire_thrower = {},
 	vs_chaos_spawn = {},
 	vs_stormfiend = {},
-	vs_rat_ogre = {}
+	vs_rat_ogre = {},
 }
 
 for _, item in pairs(ItemMasterList) do
@@ -248,11 +255,13 @@ for _, item in pairs(ItemMasterList) do
 
 			if checked_templates[profile_name] and not checked_templates[profile_name][template_name] then
 				checked_templates[profile_name][template_name] = true
+
 				local template = Weapons[template_name]
 				local actions = template.actions
 
 				for j = 1, #action_names do
 					local action_name = action_names[j]
+
 					actions[action_name] = ActionTemplates[action_name]
 				end
 			end
@@ -262,11 +271,11 @@ end
 
 local MeleeBuffTypes = MeleeBuffTypes or {
 	MELEE_1H = true,
-	MELEE_2H = true
+	MELEE_2H = true,
 }
 local RangedBuffTypes = RangedBuffTypes or {
+	RANGED = true,
 	RANGED_ABILITY = true,
-	RANGED = true
 }
 local WEAPON_DAMAGE_UNIT_LENGTH_EXTENT = 1.919366
 local TAP_ATTACK_BASE_RANGE_OFFSET = 0.6
@@ -275,6 +284,7 @@ local HOLD_ATTACK_BASE_RANGE_OFFSET = 0.65
 for item_template_name, item_template in pairs(Weapons) do
 	item_template.name = item_template_name
 	item_template.crosshair_style = item_template.crosshair_style or "dot"
+
 	local attack_meta_data = item_template.attack_meta_data
 	local tap_attack_meta_data = attack_meta_data and attack_meta_data.tap_attack
 	local hold_attack_meta_data = attack_meta_data and attack_meta_data.hold_attack
@@ -299,12 +309,13 @@ for item_template_name, item_template in pairs(Weapons) do
 
 	for action_name, sub_actions in pairs(actions) do
 		for sub_action_name, sub_action_data in pairs(sub_actions) do
-			local lookup_data = {
-				item_template_name = item_template_name,
-				action_name = action_name,
-				sub_action_name = sub_action_name
-			}
+			local lookup_data = {}
+
+			lookup_data.item_template_name = item_template_name
+			lookup_data.action_name = action_name
+			lookup_data.sub_action_name = sub_action_name
 			sub_action_data.lookup_data = lookup_data
+
 			local action_kind = sub_action_data.kind
 			local action_assert_func = ActionAssertFuncs[action_kind]
 
@@ -318,10 +329,12 @@ for item_template_name, item_template in pairs(Weapons) do
 				if set_default_tap_attack_range and string.find(sub_action_name, "light_attack") then
 					local current_attack_range = tap_attack_meta_data.max_range or math.huge
 					local tap_attack_range = TAP_ATTACK_BASE_RANGE_OFFSET + WEAPON_DAMAGE_UNIT_LENGTH_EXTENT * range_mod
+
 					tap_attack_meta_data.max_range = math.min(current_attack_range, tap_attack_range)
 				elseif set_default_hold_attack_range and string.find(sub_action_name, "heavy_attack") then
 					local current_attack_range = hold_attack_meta_data.max_range or math.huge
 					local hold_attack_range = HOLD_ATTACK_BASE_RANGE_OFFSET + WEAPON_DAMAGE_UNIT_LENGTH_EXTENT * range_mod
+
 					hold_attack_meta_data.max_range = math.min(current_attack_range, hold_attack_range)
 				end
 			end
@@ -337,6 +350,7 @@ for item_template_name, item_template in pairs(Weapons) do
 					if link_hit_zones then
 						for i = 1, #link_hit_zones do
 							local hit_zone_name = link_hit_zones[i]
+
 							link_hit_zones[hit_zone_name] = true
 						end
 					end

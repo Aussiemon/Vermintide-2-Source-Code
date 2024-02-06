@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_follow_player_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTFollowPlayerAction = class(BTFollowPlayerAction, BTNode)

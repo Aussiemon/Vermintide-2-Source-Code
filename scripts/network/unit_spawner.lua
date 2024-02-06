@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/network/unit_spawner.lua
+
 require("scripts/settings/unit_spawner_settings")
 require("scripts/settings/spawn_unit_templates")
 
@@ -18,6 +20,7 @@ local function call_destroy_listener(unit_destroy_listeners, unit)
 end
 
 local Unit_alive = Unit.alive
+
 UnitSpawner = class(UnitSpawner)
 
 UnitSpawner.init = function (self, world, entity_manager, is_server)
@@ -86,7 +89,7 @@ UnitSpawner.push_unit_to_death_watch_list = function (self, unit, t, data)
 	self.unit_death_watch_list[self.unit_death_watch_list_n] = {
 		unit = unit,
 		t = t,
-		data = data
+		data = data,
 	}
 	self.unit_death_watch_lookup[unit] = self.unit_death_watch_list[self.unit_death_watch_list_n]
 end
@@ -151,11 +154,13 @@ UnitSpawner.update_death_watch_list = function (self)
 		end
 
 		for idx = 1, units_to_remove do
-			local my_death_data = nil
+			local my_death_data
 
 			if idx < self.unit_death_watch_list_n then
 				my_death_data = self.unit_death_watch_list[idx]
+
 				local swap_death_data = self.unit_death_watch_list[self.unit_death_watch_list_n]
+
 				self.unit_death_watch_list[idx] = swap_death_data
 				self.unit_death_watch_lookup[swap_death_data.unit] = self.unit_death_watch_list[idx]
 				self.unit_death_watch_list[self.unit_death_watch_list_n] = nil
@@ -183,6 +188,7 @@ UnitSpawner.mark_for_deletion = function (self, unit)
 	if my_death_data then
 		local idx = table.find(self.unit_death_watch_list, my_death_data)
 		local swap_death_data = self.unit_death_watch_list[self.unit_death_watch_list_n]
+
 		self.unit_death_watch_list[idx] = swap_death_data
 		self.unit_death_watch_lookup[swap_death_data.unit] = self.unit_death_watch_list[idx]
 		self.unit_death_watch_list[self.unit_death_watch_list_n] = nil
@@ -200,8 +206,7 @@ UnitSpawner.is_marked_for_deletion = function (self, unit)
 end
 
 UnitSpawner.commit_and_remove_pending_units = function (self)
-	local n_commited = 0
-	local n_removed = 0
+	local n_commited, n_removed = 0, 0
 
 	repeat
 		n_commited = self:commit_pending_unit_system_registrations()
@@ -218,8 +223,7 @@ UnitSpawner.commit_pending_unit_system_registrations = function (self)
 		return 0
 	end
 
-	local pending_extension_adds_map = self.pending_extension_adds_map
-	local pending_extension_adds_list = self.pending_extension_adds_list
+	local pending_extension_adds_map, pending_extension_adds_list = self.pending_extension_adds_map, self.pending_extension_adds_list
 	local count = 0
 
 	for unit, _ in pairs(pending_extension_adds_map) do
@@ -286,6 +290,7 @@ end
 UnitSpawner.spawn_local_unit = function (self, unit_name, position, rotation, material)
 	local unit = World.spawn_unit(self.world, unit_name, position, rotation, material)
 	local unit_unique_id = self.unit_unique_id
+
 	self.unit_unique_id = unit_unique_id + 1
 
 	Unit.set_data(unit, "unique_id", unit_unique_id)
@@ -317,6 +322,7 @@ end
 
 UnitSpawner.spawn_local_unit_with_extensions = function (self, unit_name, unit_template_name, extension_init_data, position, rotation, material)
 	local unit = self:spawn_local_unit(unit_name, position, rotation, material)
+
 	unit_template_name = unit_template_name or Unit.get_data(unit, "unit_template")
 
 	self:create_unit_extensions(self.world, unit, unit_template_name, extension_init_data)
@@ -358,8 +364,7 @@ UnitSpawner.request_spawn_network_unit = function (self, template_name, position
 end
 
 UnitSpawner.world_delete_units = function (self, world, units_list, units_list_n)
-	local game_session = self.game_session
-	local unit_storage = self.unit_storage
+	local game_session, unit_storage = self.game_session, self.unit_storage
 
 	if game_session then
 		for i = 1, units_list_n do
@@ -407,7 +412,7 @@ UnitSpawner.world_delete_units = function (self, world, units_list, units_list_n
 end
 
 UnitSpawner.spawn_unit_from_game_object = function (self, go_id, owner_id, go_template)
-	local unit = self:create_unit_from_gameobject_function(self.game_session, go_id, go_template)
+	local unit = self.create_unit_from_gameobject_function(self, self.game_session, go_id, go_template)
 
 	NetworkUnit.add_unit(unit)
 	NetworkUnit.set_is_husk_unit(unit, true)

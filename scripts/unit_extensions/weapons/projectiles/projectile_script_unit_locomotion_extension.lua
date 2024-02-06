@@ -1,10 +1,14 @@
+﻿-- chunkname: @scripts/unit_extensions/weapons/projectiles/projectile_script_unit_locomotion_extension.lua
+
 require("scripts/helpers/network_utils")
 
 ProjectileScriptUnitLocomotionExtension = class(ProjectileScriptUnitLocomotionExtension)
 
 ProjectileScriptUnitLocomotionExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	self.unit = unit
+
 	local world = extension_init_context.world
+
 	self.world = world
 	self.spawn_time = Managers.time:time("game") - (extension_init_data.fast_forward_time or 0)
 	self.t = self.spawn_time
@@ -17,7 +21,9 @@ ProjectileScriptUnitLocomotionExtension.init = function (self, extension_init_co
 	self.angle = extension_init_data.angle
 	self.radians = math.degrees_to_radians(self.angle)
 	self.speed = extension_init_data.speed
+
 	local initial_position = extension_init_data.initial_position
+
 	self.initial_position_boxed = Vector3Box(initial_position)
 	self.target_vector = extension_init_data.target_vector
 	self.target_vector_boxed = Vector3Box(self.target_vector)
@@ -51,7 +57,8 @@ ProjectileScriptUnitLocomotionExtension.init = function (self, extension_init_co
 	self.is_server = Managers.player.is_server
 	self.stopped = false
 	self.moved = false
-	local new_position, new_rotation = nil
+
+	local new_position, new_rotation
 
 	if self._has_multiple_targets then
 		new_position = self:_get_new_position_multiple_targetpoints(0, 0)
@@ -75,6 +82,7 @@ ProjectileScriptUnitLocomotionExtension.bounce = function (self, hit_position, h
 	local bounce_dir = Vector3.normalize(Vector3.reflect(hit_direction, hit_normal))
 	local bounce_pos = hit_position - hit_direction * 0.25 + hit_normal * 0.1
 	local rotation = Quaternion.look(bounce_dir)
+
 	self.spawn_time = Managers.time:time("game")
 	self.t = self.spawn_time
 
@@ -102,9 +110,11 @@ ProjectileScriptUnitLocomotionExtension.update = function (self, unit, input, _,
 	end
 
 	local position = self._position:unbox()
+
 	self.speed = self.speed - self.dt * self.speed * (1 - self._linear_dampening)
+
 	local time_lived = self.time_lived
-	local new_position = nil
+	local new_position
 
 	if self._has_multiple_targets and not self.has_reached_all_targets then
 		new_position = self:_get_new_position_multiple_targetpoints(time_lived, self.dt)
@@ -154,11 +164,13 @@ ProjectileScriptUnitLocomotionExtension._get_new_position_multiple_targetpoints 
 	local initial_position = Vector3Box.unbox(self.initial_position_boxed)
 	local current_target = self.target_positions[self.current_target_index]:unbox()
 	local position = self._position:unbox()
+
 	self.traversal_data.current_target = current_target
 	self.traversal_data.position = position
 	self.traversal_data.random_x_axis = self.random_x_axis
 	self.traversal_data.random_y_axis = self.random_y_axis
 	self.traversal_data.distance_to_traverse = self.distance_to_traverse
+
 	local new_position = trajectory.update(speed, radians, gravity, initial_position, target_vector, time_lived, dt, self.traversal_data)
 	local distance_sq = Vector3.distance_squared(new_position, current_target)
 	local in_hit_range = distance_sq < target_hit_radius_sq
@@ -167,7 +179,7 @@ ProjectileScriptUnitLocomotionExtension._get_new_position_multiple_targetpoints 
 		return new_position
 	end
 
-	local has_next_target = self.current_target_index < #self.target_positions
+	local has_next_target = #self.target_positions > self.current_target_index
 
 	if has_next_target then
 		self.current_target_index = self.current_target_index + 1
@@ -175,7 +187,7 @@ ProjectileScriptUnitLocomotionExtension._get_new_position_multiple_targetpoints 
 	elseif self.impact_with_last_target then
 		local new_target_hit_dist_sq = 0.010000000000000002
 
-		if Vector3.distance_squared(new_position, current_target) < new_target_hit_dist_sq then
+		if new_target_hit_dist_sq > Vector3.distance_squared(new_position, current_target) then
 			local projectile_extension = ScriptUnit.extension(self.unit, "projectile_system")
 
 			projectile_extension:force_impact(self.unit, new_position)
@@ -205,9 +217,10 @@ ProjectileScriptUnitLocomotionExtension._get_new_position = function (self, time
 	local target_vector = self.target_vector_boxed:unbox()
 	local initial_position = Vector3Box.unbox(self.initial_position_boxed)
 	local position = self._position:unbox()
-	local optional_data = {
-		position = position
-	}
+	local optional_data = {}
+
+	optional_data.position = position
+
 	local new_position = trajectory.update(speed, radians, gravity, initial_position, target_vector, time_lived, dt, optional_data)
 
 	return new_position
@@ -223,7 +236,7 @@ ProjectileScriptUnitLocomotionExtension._get_new_rotation = function (self, dire
 
 	if self.rotation_speed ~= 0 then
 		local look_rotation = Quaternion.look(direction_norm, Vector3.up())
-		local base_vector = nil
+		local base_vector
 
 		if self.rotate_around_forward then
 			base_vector = Quaternion.forward(look_rotation)
@@ -240,9 +253,11 @@ end
 ProjectileScriptUnitLocomotionExtension.rotate_projectile_away_from_target = function (self, new_position, position)
 	self.has_reached_all_targets = true
 	self._has_multiple_targets = false
+
 	local direction = Vector3.normalize(new_position - position)
 	local x, z = math.get_uniformly_random_point_inside_sector(0.75, 1.5, 0, 2 * math.pi)
 	local new_direction = Quaternion.rotate(Quaternion.look(direction, Vector3.up()), Vector3.normalize(Vector3(x, 2, z)))
+
 	self.target_vector_boxed = Vector3Box(new_direction)
 end
 

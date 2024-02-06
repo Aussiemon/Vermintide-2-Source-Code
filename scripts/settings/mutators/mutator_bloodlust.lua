@@ -1,28 +1,30 @@
+﻿-- chunkname: @scripts/settings/mutators/mutator_bloodlust.lua
+
 return {
+	debuff_start_time = 4.25,
 	description = "description_mutator_bloodlust",
 	display_name = "display_name_mutator_bloodlust",
-	debuff_start_time = 4.25,
 	icon = "mutator_icon_bloodlust",
 	amount_of_stacks_per_breed = {
-		chaos_vortex_sorcerer = 2,
-		skaven_plague_monk = 3,
 		chaos_berzerker = 3,
-		skaven_ratling_gunner = 2,
-		skaven_poison_wind_globadier = 2,
-		skaven_warpfire_thrower = 2,
+		chaos_corruptor_sorcerer = 2,
 		chaos_raider = 3,
+		chaos_spawn = 10,
+		chaos_troll = 10,
+		chaos_vortex_sorcerer = 2,
+		chaos_warrior = 5,
 		skaven_gutter_runner = 2,
 		skaven_loot_rat = 2,
 		skaven_pack_master = 2,
-		skaven_stormfiend = 10,
-		chaos_warrior = 5,
+		skaven_plague_monk = 3,
+		skaven_poison_wind_globadier = 2,
 		skaven_rat_ogre = 10,
-		chaos_troll = 10,
-		chaos_spawn = 10,
-		chaos_corruptor_sorcerer = 2,
-		skaven_storm_vermin_commander = 3,
+		skaven_ratling_gunner = 2,
 		skaven_storm_vermin = 3,
-		skaven_storm_vermin_with_shield = 3
+		skaven_storm_vermin_commander = 3,
+		skaven_storm_vermin_with_shield = 3,
+		skaven_stormfiend = 10,
+		skaven_warpfire_thrower = 2,
 	},
 	add_buff = function (buff_system, player_unit, buff_name)
 		buff_system:add_buff(player_unit, buff_name, player_unit)
@@ -30,6 +32,7 @@ return {
 	add_debuff = function (buffs, buff_system, player_unit, buff_name)
 		local is_server_controlled = true
 		local server_buff_id = buff_system:add_buff(player_unit, buff_name, player_unit, is_server_controlled)
+
 		buffs[#buffs + 1] = server_buff_id
 	end,
 	remove_buff = function (buffs, buff_system, player_unit)
@@ -64,7 +67,7 @@ return {
 				end
 
 				player_units[unit] = nil
-			elseif unit_data.add_debuff_at_t <= t then
+			elseif t >= unit_data.add_debuff_at_t then
 				local buff_extension = ScriptUnit.extension(unit, "buff_system")
 				local has_debuff = buff_extension:has_buff_type(data.debuff_name)
 
@@ -100,7 +103,7 @@ return {
 
 		if not player_units[killer_unit] then
 			player_units[killer_unit] = {
-				buffs = {}
+				buffs = {},
 			}
 		end
 
@@ -128,5 +131,5 @@ return {
 				end
 			end
 		end
-	end
+	end,
 }

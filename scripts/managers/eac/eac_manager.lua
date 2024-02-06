@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/eac/eac_manager.lua
+
 EacManager = class(EacManager)
 
 local function means_true(value)
@@ -7,13 +9,14 @@ end
 EacManager.init = function (self)
 	local is_steam_build = PACKAGED_BUILD
 	local suppress_messages = means_true(script_data["eac-untrusted"]) or not is_steam_build
+
 	self._suppress_popup = suppress_messages
 	self._suppress_panel = suppress_messages
 	self._file_related_violations = {
 		hash_catalogue_error = true,
 		hash_catalogue_file_not_found = true,
+		required_game_file_not_found = true,
 		unknown_game_file_version = true,
-		required_game_file_not_found = true
 	}
 	self._popup_id = nil
 	self._indicator_offset = 0
@@ -43,6 +46,7 @@ EacManager.update = function (self, dt, t)
 
 		local topic = Localize("eac_file_corruption_topic")
 		local quit_button_text = Localize("menu_quit")
+
 		self._popup_id = popup_manager:queue_popup(text, topic, "quit", quit_button_text)
 		self._suppress_popup = true
 	end
@@ -64,7 +68,7 @@ EacManager.draw_panel = function (self, gui, dt)
 			cause_text = Localize("eac_cause") .. ": " .. cause
 		end
 
-		local explanation = nil
+		local explanation
 
 		if state == "banned" then
 			explanation = Localize("eac_banned_explanation")
@@ -93,6 +97,7 @@ EacManager._draw_indicator = function (self, gui, dt, state_text, violation_text
 	local panel_w = 0
 	local row_height = 0
 	local min, max = Gui.text_extents(gui, state_text, font, font_size)
+
 	panel_w = math.max(panel_w, max.x - min.x)
 	row_height = math.max(row_height, max.y - min.y)
 	min, max = Gui.text_extents(gui, violation_text, font, font_size)
@@ -110,6 +115,7 @@ EacManager._draw_indicator = function (self, gui, dt, state_text, violation_text
 	row_height = row_height + row_margin
 	panel_w = math.ceil(panel_w + 2 * margin)
 	panel_w = math.min(max_width, panel_w)
+
 	local move_speed = max_width
 
 	if self._indicator_offset ~= -panel_w then

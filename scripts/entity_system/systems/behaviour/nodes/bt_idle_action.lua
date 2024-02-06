@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_idle_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTIdleAction = class(BTIdleAction, BTNode)
@@ -20,6 +22,7 @@ BTIdleAction.enter = function (self, unit, blackboard, t)
 	local network_manager = Managers.state.network
 	local animation = "idle"
 	local action = self._tree_node.action_data
+
 	blackboard.action = action
 	blackboard.spawn_to_running = nil
 
@@ -31,12 +34,14 @@ BTIdleAction.enter = function (self, unit, blackboard, t)
 		if action and action.animations then
 			local anims = action.animations
 			local index = action.anim_cycle_index % #anims + 1
+
 			animation = anims[index]
 			action.anim_cycle_index = index
 		end
 	elseif action and action.combat_animations then
 		local anims = action.combat_animations
 		local index = action.anim_cycle_index % #anims + 1
+
 		animation = anims[index]
 		action.anim_cycle_index = index
 	end

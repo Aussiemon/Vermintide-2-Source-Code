@@ -1,7 +1,10 @@
+﻿-- chunkname: @scripts/ui/views/hero_view/windows/store/store_window_background.lua
+
 local definitions = local_require("scripts/ui/views/hero_view/windows/store/definitions/store_window_background_definitions")
 local widget_definitions = definitions.widgets
 local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
+
 StoreWindowBackground = class(StoreWindowBackground)
 StoreWindowBackground.NAME = "StoreWindowBackground"
 
@@ -10,11 +13,13 @@ StoreWindowBackground.on_enter = function (self, params, offset)
 
 	self._params = params
 	self._parent = params.parent
+
 	local ui_renderer, ui_top_renderer = self._parent:get_renderers()
+
 	self._ui_renderer = ui_renderer
 	self._ui_top_renderer = ui_top_renderer
 	self._render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 	self._layout_settings = params.layout_settings
 	self._animations = {}
@@ -28,36 +33,36 @@ StoreWindowBackground._create_viewport_definition = function (self)
 		element = UIElements.Viewport,
 		style = {
 			viewport = {
-				layer = 960,
-				viewport_name = "store_background_viewport",
 				clear_screen_on_create = true,
-				level_name = "levels/ui_keep_menu/world",
 				enable_sub_gui = false,
 				fov = 50,
+				layer = 960,
+				level_name = "levels/ui_keep_menu/world",
+				viewport_name = "store_background_viewport",
 				world_name = "store_background",
 				world_flags = {
 					Application.DISABLE_SOUND,
 					Application.DISABLE_ESRAM,
-					Application.ENABLE_VOLUMETRICS
+					Application.ENABLE_VOLUMETRICS,
 				},
 				object_sets = LevelResource.object_set_names("levels/ui_keep_menu/world"),
 				camera_position = {
 					0,
 					2.8,
-					0.9
+					0.9,
 				},
 				camera_lookat = {
 					0,
 					-2.8,
-					0.9
-				}
-			}
+					0.9,
+				},
+			},
 		},
 		content = {
 			button_hotspot = {
-				allow_multi_hover = true
-			}
-		}
+				allow_multi_hover = true,
+			},
+		},
 	}
 end
 
@@ -69,11 +74,13 @@ StoreWindowBackground._create_ui_elements = function (self, params, offset)
 	end
 
 	self._ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+
 	local widgets = {}
 	local widgets_by_name = {}
 
 	for name, widget_definition in pairs(widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		widgets[#widgets + 1] = widget
 		widgets_by_name[name] = widget
 	end
@@ -88,6 +95,7 @@ StoreWindowBackground._create_ui_elements = function (self, params, offset)
 
 	if offset then
 		local window_position = self._ui_scenegraph.window.local_position
+
 		window_position[1] = window_position[1] + offset[1]
 		window_position[2] = window_position[2] + offset[2]
 		window_position[3] = window_position[3] + offset[3]

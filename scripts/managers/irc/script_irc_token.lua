@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/irc/script_irc_token.lua
+
 ScriptIrcToken = class(ScriptIrcToken)
 
 ScriptIrcToken.init = function (self, token)
@@ -8,6 +10,7 @@ end
 
 ScriptIrcToken.update = function (self)
 	local done, result = Irc.connect_async_status(self._token)
+
 	self._done = done
 	self._result = result
 end

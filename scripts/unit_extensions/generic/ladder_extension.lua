@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/generic/ladder_extension.lua
+
 LadderExtension = class(LadderExtension)
 
 LadderExtension.init = function (self, extension_init_context, unit, extension_init_data)
@@ -22,12 +24,12 @@ LadderExtension.ladder_extents = function (self)
 end
 
 LadderExtension.perlin_shake = {
-	persistance = 1,
-	magnitude = 0.1,
-	frequency_multiplier = 4,
 	duration = 1,
+	frequency_multiplier = 4,
+	magnitude = 0.1,
 	min_value = 0,
-	octaves = 6
+	octaves = 6,
+	persistance = 1,
 }
 
 local function calc_noise(x, seed)
@@ -57,6 +59,7 @@ local function calculate_perlin_value(x, persistance, number_of_octaves, seed)
 	for i = 0, number_of_octaves do
 		local frequency = 2^i
 		local amplitude = persistance^i
+
 		total = total + calc_interpolated_noise(x * frequency, seed) * amplitude
 		max_value = max_value + amplitude
 	end

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_pack_master_skulk_around_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTPackMasterSkulkAroundAction = class(BTPackMasterSkulkAroundAction, BTNode)
@@ -18,11 +20,13 @@ BTPackMasterSkulkAroundAction.enter = function (self, unit, blackboard, t)
 	navigation_extension:set_max_speed(blackboard.breed.run_speed)
 
 	local action = self._tree_node.action_data
+
 	blackboard.action = action
 	blackboard.skulk_time = blackboard.skulk_time or t + action.skulk_time
 	blackboard.skulk_time_force_attack = blackboard.skulk_time_force_attack or t + action.skulk_time_force_attack
 	blackboard.skulk_goal_get_fails = 0
 	blackboard.skulk_debug_state = "enter"
+
 	local locomotion_extension = blackboard.locomotion_extension
 
 	locomotion_extension:set_rotation_speed(5)
@@ -68,12 +72,12 @@ BTPackMasterSkulkAroundAction.run = function (self, unit, blackboard, t, dt)
 		self:debug(unit, blackboard)
 	end
 
-	if blackboard.skulk_time < t and blackboard.attack_cooldown < t then
+	if t > blackboard.skulk_time and t > blackboard.attack_cooldown then
 		local action = blackboard.action
-		local waited_too_long = blackboard.skulk_time_force_attack < t
+		local waited_too_long = t > blackboard.skulk_time_force_attack
 		local ai_slot_system = Managers.state.entity:system("ai_slot_system")
 		local dogpile = ai_slot_system:slots_count(blackboard.target_unit)
-		local enough_aggro_on_player = action.dogpile_aggro_needed <= dogpile or script_data.ai_packmaster_ignore_dogpile
+		local enough_aggro_on_player = dogpile >= action.dogpile_aggro_needed or script_data.ai_packmaster_ignore_dogpile
 
 		if enough_aggro_on_player or waited_too_long then
 			blackboard.skulk_pos = nil
@@ -99,6 +103,7 @@ BTPackMasterSkulkAroundAction.run = function (self, unit, blackboard, t, dt)
 
 	if blackboard.move_state ~= "moving" and not is_computing_path then
 		local network_manager = Managers.state.network
+
 		blackboard.move_state = "moving"
 
 		network_manager:anim_event(unit, blackboard.action.skulk_animation or "move_fwd")
@@ -135,7 +140,7 @@ BTPackMasterSkulkAroundAction.run = function (self, unit, blackboard, t, dt)
 	local distance_to_target_squared = Vector3.distance_squared(target_pos, position)
 	local melee_override_distance_sqr = blackboard.action.melee_override_distance_sqr
 
-	if distance_to_target_squared < melee_override_distance_sqr and blackboard.attack_cooldown < t then
+	if distance_to_target_squared < melee_override_distance_sqr and t > blackboard.attack_cooldown then
 		blackboard.skulk_pos = nil
 		blackboard.skulk_around_dir = nil
 
@@ -150,19 +155,23 @@ BTPackMasterSkulkAroundAction.get_new_goal = function (self, unit, blackboard)
 
 	if Unit.alive(target_unit) then
 		local fails = blackboard.skulk_goal_get_fails
-		local pos = nil
+		local pos
 		local min_dist = 10
 		local max_dist = 25
 		local dir = blackboard.skulk_around_dir
+
 		dir = dir or 1 - math.random(0, 1) * 2
 		blackboard.skulk_around_dir = dir
+
 		local angle = math.random(10, 180) * dir
 		local above_below = 5 + fails * 5
+
 		pos = LocomotionUtils.outside_goal(blackboard.nav_world, POSITION_LOOKUP[unit], POSITION_LOOKUP[target_unit], min_dist, max_dist, angle, 5, above_below, above_below)
 
 		if pos then
 			blackboard.skulk_goal_get_fails = 0
 			blackboard.skulk_pos = Vector3Box(pos)
+
 			local navigation_extension = blackboard.navigation_extension
 
 			navigation_extension:move_to(pos)

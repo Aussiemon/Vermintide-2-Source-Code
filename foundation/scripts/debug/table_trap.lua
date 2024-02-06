@@ -1,3 +1,5 @@
+﻿-- chunkname: @foundation/scripts/debug/table_trap.lua
+
 table_trap = table_trap or {}
 
 table_trap.print = function (operation, key, value)
@@ -186,7 +188,7 @@ table_trap._add_forwarding_metafunctions = function (metatable, data_table)
 end
 
 table_trap._replace_with_data_if_metatable_matches = function (lhs, rhs, metatable, data)
-	local redir_lhs, redir_rhs = nil
+	local redir_lhs, redir_rhs
 
 	if getmetatable(lhs) == metatable then
 		redir_lhs = data

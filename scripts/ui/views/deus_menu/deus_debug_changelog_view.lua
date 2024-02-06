@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/deus_menu/deus_debug_changelog_view.lua
+
 require("scripts/settings/dlcs/morris/morris_changelog")
 
 DeusDebugChangelogView = class(DeusDebugChangelogView)
@@ -5,6 +7,7 @@ DeusDebugChangelogView = class(DeusDebugChangelogView)
 DeusDebugChangelogView.init = function (self, ingame_ui_context)
 	local input_service_name = "deus_debug_changelog_view"
 	local input_manager = ingame_ui_context.input_manager
+
 	self._input_manager = input_manager
 	self._input_service_name = input_service_name
 	self.ingame_ui = ingame_ui_context.ingame_ui

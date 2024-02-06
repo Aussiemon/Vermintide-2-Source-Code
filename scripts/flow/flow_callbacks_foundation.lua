@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/flow/flow_callbacks_foundation.lua
+
 require("foundation/scripts/util/table")
 require("scripts/settings/attachment_node_linking")
 require("scripts/settings/ai_inventory_templates")
@@ -5,7 +7,7 @@ require("scripts/settings/ai_inventory_templates")
 local unit_alive = Unit.alive
 
 function flow_query_script_data(params)
-	local output_value = nil
+	local output_value
 
 	if params.table then
 		output_value = Unit.get_data(params.unit, params.table, params.scriptdata)
@@ -14,7 +16,7 @@ function flow_query_script_data(params)
 	end
 
 	local returns = {
-		value = output_value
+		value = output_value,
 	}
 
 	return returns
@@ -29,9 +31,9 @@ function flow_set_script_data(params)
 end
 
 function flow_script_data_compare_bool(params)
-	local script_data_value = nil
+	local script_data_value
 	local ref_value = params.reference
-	local returns = nil
+	local returns
 
 	if params.table then
 		local tab = split(params.table, "/")
@@ -47,12 +49,12 @@ function flow_script_data_compare_bool(params)
 		if script_data_value == ref_value then
 			returns = {
 				equal = true,
-				unequal = false
+				unequal = false,
 			}
 		else
 			returns = {
 				equal = false,
-				unequal = true
+				unequal = true,
 			}
 		end
 
@@ -61,9 +63,9 @@ function flow_script_data_compare_bool(params)
 end
 
 function flow_script_data_compare_string(params)
-	local script_data_value = nil
+	local script_data_value
 	local ref_value = params.reference
-	local returns = nil
+	local returns
 
 	if params.table then
 		local tab = split(params.table, "/")
@@ -78,11 +80,11 @@ function flow_script_data_compare_string(params)
 	if type(script_data_value) == "string" then
 		if script_data_value == ref_value then
 			returns = {
-				equal = true
+				equal = true,
 			}
 		else
 			returns = {
-				unequal = true
+				unequal = true,
 			}
 		end
 
@@ -91,9 +93,9 @@ function flow_script_data_compare_string(params)
 end
 
 function flow_script_data_compare_number(params)
-	local script_data_value = nil
+	local script_data_value
 	local ref_value = params.reference
-	local returns = nil
+	local returns
 
 	if params.table then
 		local tab = split(params.table, "/")
@@ -108,27 +110,27 @@ function flow_script_data_compare_number(params)
 	if type(script_data_value) == "number" then
 		if script_data_value < ref_value then
 			returns = {
-				less = true
+				less = true,
 			}
 		elseif script_data_value <= ref_value then
 			returns = {
-				less_or_equal = true
+				less_or_equal = true,
 			}
 		elseif script_data_value == ref_value then
 			returns = {
-				equal = true
+				equal = true,
 			}
 		elseif script_data_value ~= ref_value then
 			returns = {
-				unequal = true
+				unequal = true,
 			}
 		elseif ref_value <= script_data_value then
 			returns = {
-				more_or_equal = true
+				more_or_equal = true,
 			}
 		elseif ref_value < script_data_value then
 			returns = {
-				more = true
+				more = true,
 			}
 		end
 
@@ -138,8 +140,8 @@ end
 
 function flow_callback_state_false(params)
 	local returns = {
+		state = false,
 		updated = true,
-		state = false
 	}
 
 	return returns
@@ -147,8 +149,8 @@ end
 
 function flow_callback_state_true(params)
 	local returns = {
+		state = true,
 		updated = true,
-		state = true
 	}
 
 	return returns
@@ -157,7 +159,7 @@ end
 function flow_callback_construct_vector3(params)
 	local v = Vector3(params.x, params.y, params.z)
 	local returns = {
-		vector = v
+		vector = v,
 	}
 
 	return returns
@@ -166,9 +168,9 @@ end
 function flow_callback_store_float(params)
 	local stored_value = params.invalue
 	local returns = {
-		updated = true,
 		state = true,
-		outvalue = stored_value
+		updated = true,
+		outvalue = stored_value,
 	}
 
 	return returns
@@ -177,9 +179,9 @@ end
 function flow_callback_store_boolean(params)
 	local stored_bool = params.inbool
 	local returns = {
-		updated = true,
 		state = true,
-		outbool = stored_bool
+		updated = true,
+		outbool = stored_bool,
 	}
 
 	return returns
@@ -245,17 +247,18 @@ function flow_callback_math_addition(params)
 	local term_two = params.term_two
 
 	return {
-		value = term_one + term_two
+		value = term_one + term_two,
 	}
 end
 
 function flow_callback_rotate_vector3(params)
 	local direction = params.direction
 	local vector3 = params.vector3
+
 	vector3 = Quaternion.rotate(direction, vector3)
 
 	return {
-		vector = vector3
+		vector = vector3,
 	}
 end
 
@@ -265,7 +268,7 @@ function flow_callback_look(params)
 	local look_quat = Quaternion.look(direction, up)
 
 	return {
-		rotation = look_quat
+		rotation = look_quat,
 	}
 end
 
@@ -274,7 +277,7 @@ function flow_callback_math_subtraction(params)
 	local term_two = params.term_two
 
 	return {
-		value = term_one - term_two
+		value = term_one - term_two,
 	}
 end
 
@@ -283,7 +286,7 @@ function flow_callback_math_multiplication(params)
 	local factor_two = params.factor_two
 
 	return {
-		value = factor_one * factor_two
+		value = factor_one * factor_two,
 	}
 end
 
@@ -292,7 +295,7 @@ function flow_callback_math_multiplication_vector3(params)
 	local float = params.float
 
 	return {
-		value = vector * float
+		value = vector * float,
 	}
 end
 
@@ -303,19 +306,19 @@ function flow_callback_math_division(params)
 	fassert(divisor ~= 0, "Trying to divide by 0 in division flow node.")
 
 	return {
-		value = dividend / divisor
+		value = dividend / divisor,
 	}
 end
 
 function flow_callback_math_floor(params)
 	return {
-		value = math.floor(params.float)
+		value = math.floor(params.float),
 	}
 end
 
 function flow_callback_math_ceil(params)
 	return {
-		value = math.ceil(params.float)
+		value = math.ceil(params.float),
 	}
 end
 
@@ -341,7 +344,7 @@ function flow_callback_distance_between(params)
 	local world_position_2 = Unit.world_position(unit, node_index_2)
 	local distance_between = Vector3.distance(world_position_1, world_position_2)
 	local returns = {
-		distance = distance_between
+		distance = distance_between,
 	}
 
 	return returns
@@ -358,7 +361,7 @@ function flow_callback_link_objects_in_units_and_store(params)
 	for i = 1, #parentnodes - 1 do
 		local parentnodeindex = Unit.node(parentunit, parentnodes[i])
 		local childnode = childnodes[i]
-		local childnodeindex = nil
+		local childnodeindex
 
 		if string.find(childnode, "Index(.)") then
 			childnodeindex = tonumber(string.match(childnode, "%d+") + index_offset)
@@ -383,7 +386,7 @@ function flow_callback_link_objects_in_units_and_store(params)
 	Unit.set_data(parentunit, "flow_unit_attachments", unit_attachments)
 
 	return {
-		linked = true
+		linked = true,
 	}
 end
 
@@ -404,7 +407,7 @@ function flow_callback_unlink_objects_in_units_and_remove(params)
 	Unit.set_data(parentunit, "flow_unit_attachments", unit_attachments)
 
 	return {
-		unlinked = true
+		unlinked = true,
 	}
 end
 
@@ -458,7 +461,7 @@ function flow_callback_attach_unit(params)
 	end
 
 	return {
-		linked = true
+		linked = true,
 	}
 end
 
@@ -467,7 +470,7 @@ function flow_callback_attach_player_item(params)
 		return {}
 	end
 
-	local item_unit = nil
+	local item_unit
 	local parent_unit = params.unit
 	local world = Unit.world(parent_unit)
 
@@ -517,6 +520,7 @@ function flow_callback_attach_player_item(params)
 				if item.unit ~= nil then
 					if Attachments ~= nil then
 						local hat_template = Attachments[item.template]
+
 						item_unit = attach_player_item(parent_unit, item.unit, hat_template.attachment_node_linking.slot_hat, nil, true)
 						equip_event = Unit.get_data(item_unit, "equip_event") or hat_template.show_attachments_event or nil
 						material_switches = nil
@@ -594,7 +598,7 @@ function flow_callback_attach_player_item(params)
 	end
 
 	return {
-		item_unit = item_unit
+		item_unit = item_unit,
 	}
 end
 
@@ -607,11 +611,12 @@ function attach_player_item(parent_unit, child_unit_name, node_link_template, un
 		node_link_template = node_link_template.wielded or node_link_template
 	end
 
-	local item_position, item_rotation = nil
+	local item_position, item_rotation
 
 	for target_node, source_node in pairs(node_link_template) do
 		if target_node == 0 then
 			local source_node_index = type(source_node) == "string" and Unit.node(parent_unit, source_node) or source_node + index_offset
+
 			item_position = Unit.world_position(parent_unit, source_node_index)
 			item_rotation = Unit.world_rotation(parent_unit, source_node_index)
 
@@ -654,6 +659,7 @@ function flow_callback_remove_player_items(params)
 
 	for i = 1, #item_attachments do
 		params.unit = item_attachments[i]
+
 		local temp = flow_callback_remove_player_items(params)
 
 		World.destroy_unit(world, item_attachments[i])
@@ -681,7 +687,7 @@ function flow_callback_unattach_unit(params)
 	Unit.set_data(parentunit, "flow_unit_attachments", unit_attachments)
 
 	return {
-		unlinked = true
+		unlinked = true,
 	}
 end
 
@@ -693,7 +699,7 @@ function flow_callback_trigger_event_on_attachments(params)
 	end
 
 	return {
-		triggered = true
+		triggered = true,
 	}
 end
 
@@ -785,6 +791,7 @@ function flow_callback_set_material_property_scalar(params)
 		end
 	else
 		mesh = Unit.mesh(unit, mesh)
+
 		local material = Mesh.material(mesh, material_name)
 
 		Material.set_scalar(material, variable, value)
@@ -811,6 +818,7 @@ function flow_callback_set_material_property_vector2(params)
 		end
 	else
 		mesh = Unit.mesh(unit, mesh)
+
 		local material = Mesh.material(mesh, material_name)
 
 		Material.set_vector2(material, variable, value)
@@ -837,6 +845,7 @@ function flow_callback_set_material_property_vector3(params)
 		end
 	else
 		mesh = Unit.mesh(unit, mesh)
+
 		local material = Mesh.material(mesh, material_name)
 
 		Material.set_vector3(material, variable, value)
@@ -863,6 +872,7 @@ function flow_callback_set_material_property_color(params)
 		end
 	else
 		mesh = Unit.mesh(unit, mesh)
+
 		local material = Mesh.material(mesh, material_name)
 
 		Material.set_color(material, variable, color)
@@ -906,7 +916,7 @@ function flow_callback_material_scalar_set_chr_inventory(params)
 		"outfit",
 		"stump",
 		"helmet",
-		"other"
+		"other",
 	}) do
 		items = Unit.get_data(unit, v .. "_items") or {}
 
@@ -929,7 +939,7 @@ function flow_callback_material_dissolve(params)
 	local start_state = math.floor(0.5 + params.dissolve_start_state or 1)
 	local unit = params.unit
 	local index_offset = Script.index_offset()
-	local mesh = nil
+	local mesh
 	local mesh_name = params.mesh_name
 
 	if mesh_name then
@@ -938,7 +948,7 @@ function flow_callback_material_dissolve(params)
 		mesh = Unit.mesh(unit, mesh_name)
 	end
 
-	local material = nil
+	local material
 	local material_name = params.material_name
 
 	if mesh and material_name then
@@ -990,7 +1000,7 @@ function flow_callback_material_dissolve_chr(params)
 	for _, v in ipairs({
 		"outfit",
 		"stump",
-		"helmet"
+		"helmet",
 	}) do
 		items = Unit.get_data(unit, v .. "_items") or {}
 
@@ -1039,7 +1049,7 @@ function flow_callback_material_fade(params)
 	local fade_interval = Vector2(params.fade_range_from or 1, params.fade_range_to or 0)
 	local unit = params.unit
 	local index_offset = Script.index_offset()
-	local mesh = nil
+	local mesh
 	local mesh_name = params.mesh_name
 
 	if mesh_name then
@@ -1048,7 +1058,7 @@ function flow_callback_material_fade(params)
 		mesh = Unit.mesh(unit, mesh_name)
 	end
 
-	local material = nil
+	local material
 	local material_name = params.material_name
 
 	if mesh and material_name then
@@ -1100,7 +1110,7 @@ function flow_callback_material_fade_chr(params)
 	for _, v in ipairs({
 		"outfit",
 		"stump",
-		"helmet"
+		"helmet",
 	}) do
 		items = Unit.get_data(unit, v .. "_items") or {}
 
@@ -1144,7 +1154,7 @@ function flow_callback_visibility_chr_inventory(params)
 		"outfit",
 		"stump",
 		"helmet",
-		"other"
+		"other",
 	}) do
 		items = Unit.get_data(parent_unit, v .. "_items") or {}
 
@@ -1179,7 +1189,7 @@ function flow_callback_start_fade(params)
 	local start_end_time_name = params.start_end_time_name or "start_end_time"
 	local unit = params.unit
 	local index_offset = Script.index_offset()
-	local mesh = nil
+	local mesh
 	local mesh_name = params.mesh_name
 	local start_fade_name = params.start_fade_value_name or nil
 	local start_fade_value = params.start_fade_value or nil
@@ -1192,7 +1202,7 @@ function flow_callback_start_fade(params)
 		mesh = Unit.mesh(unit, mesh_name)
 	end
 
-	local material = nil
+	local material
 	local material_name = params.material_name
 
 	if mesh and material_name then
@@ -1260,12 +1270,13 @@ function flow_callback_chr_editor_inventory_spawn(params)
 				node_linking_data = item_node_linking.unwielded or item_node_linking
 			end
 
-			local item_position, item_rotation = nil
+			local item_position, item_rotation
 
 			for _, data in ipairs(node_linking_data) do
 				if data.target == 0 then
 					local source_node = data.source
 					local source_node_index = type(source_node) == "string" and Unit.node(unit, source_node) or source_node + 1
+
 					item_position = Unit.world_position(unit, source_node_index)
 					item_rotation = Unit.world_rotation(unit, source_node_index)
 
@@ -1311,7 +1322,7 @@ function flow_callback_chr_editor_inventory_spawn(params)
 	end
 
 	return {
-		spawned = true
+		spawned = true,
 	}
 end
 
@@ -1339,7 +1350,7 @@ function flow_callback_chr_editor_inventory_unspawn(params)
 	Unit.set_data(unit, "other_items", {})
 
 	return {
-		unspawned = true
+		unspawned = true,
 	}
 end
 
@@ -1364,7 +1375,7 @@ function flow_callback_chr_editor_inventory_drop(params)
 	end
 
 	return {
-		dropped = true
+		dropped = true,
 	}
 end
 
@@ -1401,7 +1412,7 @@ end
 
 function flow_callback_is_character_alive(params)
 	return {
-		out_value = true
+		out_value = true,
 	}
 end
 
@@ -1466,7 +1477,7 @@ function flow_callback_set_unit_light_color(params)
 end
 
 function flow_callback_debug_print(params)
-	local print_string = nil
+	local print_string
 
 	if params.prefix then
 		print_string = string.format("[flow:%s]", params.prefix)
@@ -1519,7 +1530,7 @@ function flow_callback_link_objects_in_units(params)
 	for i = 1, #parentnodes - 1 do
 		local parentnodeindex = Unit.node(parentunit, parentnodes[i])
 		local childnode = childnodes[i]
-		local childnodeindex = nil
+		local childnodeindex
 
 		if string.find(string.lower(childnode), "index(.)") then
 			childnodeindex = tonumber(string.match(childnode, "%d+"))
@@ -1542,7 +1553,7 @@ end
 function flow_callback_get_local_transform(params)
 	local node = params.node
 	local unit = params.unit
-	local nodeindex = nil
+	local nodeindex
 
 	if string.find(string.lower(node), "index(.)") then
 		nodeindex = tonumber(string.match(node, "%d+"))
@@ -1553,14 +1564,14 @@ function flow_callback_get_local_transform(params)
 	return {
 		position = Unit.local_position(unit, nodeindex),
 		rotation = Unit.local_rotation(unit, nodeindex),
-		scale = Unit.local_scale(unit, nodeindex)
+		scale = Unit.local_scale(unit, nodeindex),
 	}
 end
 
 function flow_callback_get_world_transform(params)
 	local node = params.node
 	local unit = params.unit
-	local nodeindex = nil
+	local nodeindex
 
 	if string.find(string.lower(node), "index(.)") then
 		nodeindex = tonumber(string.match(node, "%d+"))
@@ -1570,7 +1581,7 @@ function flow_callback_get_world_transform(params)
 
 	return {
 		position = Unit.world_position(unit, nodeindex),
-		rotation = Unit.world_rotation(unit, nodeindex)
+		rotation = Unit.world_rotation(unit, nodeindex),
 	}
 end
 
@@ -1600,7 +1611,7 @@ function flow_callback_stored_parent(params)
 	local childunit = params.child_unit
 	local parent = Unit.get_data(childunit, "parent_ref")
 	local returns = {
-		parent_unit = parent
+		parent_unit = parent,
 	}
 
 	return returns
@@ -1639,7 +1650,7 @@ end
 
 function flow_callback_relay_trigger(params)
 	return {
-		out = true
+		out = true,
 	}
 end
 
@@ -1650,7 +1661,9 @@ function flow_callback_set_shading_environment_scalar(params)
 
 	local variable = params.variable
 	local value = params.value
+
 	LevelEditor.camera_env_control = true
+
 	local shadingenvironment = LevelEditor.shading_environment
 
 	ShadingEnvironment.set_scalar(shadingenvironment, variable, value)
@@ -1659,6 +1672,7 @@ end
 
 function split(text, sep)
 	sep = sep or "\n"
+
 	local lines = {}
 	local pos = 1
 

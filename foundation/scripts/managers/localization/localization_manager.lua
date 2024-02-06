@@ -1,3 +1,5 @@
+﻿-- chunkname: @foundation/scripts/managers/localization/localization_manager.lua
+
 local function localize_err_string(text_id)
 	return "<" .. tostring(text_id) .. ">"
 end
@@ -9,7 +11,9 @@ LocalizationManager.init = function (self, language_id)
 
 	self._macros = {}
 	self._find_macro_callback_to_self = callback(self._find_macro, self)
+
 	local has_steam = rawget(_G, "Steam")
+
 	self._language_id = language_id or Application.user_setting("language_id") or has_steam and Steam.language() or "en"
 	self._backend_localizations = {}
 
@@ -26,7 +30,7 @@ LocalizationManager._setup_localizers = function (self)
 	fassert(not self._localizers, "LocalizationManager already initialized")
 
 	self._localizers = {
-		Localizer("localization/game")
+		Localizer("localization/game"),
 	}
 
 	for dlc, settings in pairs(DLCSettings) do
@@ -84,7 +88,7 @@ LocalizationManager.lookup = function (self, text_id)
 
 	local str = self:_base_lookup(text_id) or localize_err_string(text_id)
 
-	return self:apply_macro(str)
+	return (self:apply_macro(str))
 end
 
 LocalizationManager.apply_macro = function (self, str)
@@ -141,10 +145,12 @@ end
 
 function LocalizeArray(text_ids, result)
 	result = result or {}
+
 	local num_ids = #text_ids
 
 	for i = 1, num_ids do
 		local text_id = text_ids[i]
+
 		result[i] = Localize(text_id)
 	end
 
@@ -161,17 +167,20 @@ local INPUT_SERVICE_NAMES = {}
 LocalizationManager.get_input_action = function (self, text_id)
 	local str = self:_base_lookup(text_id) or localize_err_string(text_id)
 	local macro = string.match(str, "%b$;[%a%d_]*:")
-	local input_service_name = nil
+	local input_service_name
 
 	table.clear(INPUT_ACTIONS)
 	table.clear(INPUT_SERVICE_NAMES)
 
 	while macro do
 		local start_index, end_index = string.find(str, macro)
+
 		str = string.sub(str, end_index + 2)
+
 		local arg_start = string.find(macro, ";")
 		local input_service_and_action = string.sub(macro, arg_start + 1, -2)
 		local split_start, split_end = string.find(input_service_and_action, "__")
+
 		INPUT_SERVICE_NAMES[#INPUT_SERVICE_NAMES + 1] = string.sub(input_service_and_action, 1, split_start - 1)
 		INPUT_ACTIONS[#INPUT_ACTIONS + 1] = string.sub(input_service_and_action, split_end + 1)
 		macro = string.match(str, "%b$;[%a%d_]*:")

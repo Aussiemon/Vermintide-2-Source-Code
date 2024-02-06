@@ -1,3 +1,5 @@
+﻿-- chunkname: @foundation/scripts/util/visual_state_machine.lua
+
 VisualStateMachine = class(VisualStateMachine)
 VisualStateMachine.DEBUG = false
 
@@ -12,7 +14,7 @@ VisualStateMachine.init = function (self, name, parent, ...)
 
 	self._name = name
 	self._global_args = {
-		...
+		...,
 	}
 	self._events = {}
 	self._pending_event = nil
@@ -33,7 +35,7 @@ VisualStateMachine.init = function (self, name, parent, ...)
 		parent_stack[#parent_stack + 1] = self
 	else
 		self._state_machine_stack = {
-			self
+			self,
 		}
 	end
 
@@ -45,6 +47,7 @@ end
 
 VisualStateMachine.destroy = function (self)
 	local state = self._current_state
+
 	self._current_state = nil
 
 	if state ~= nil then
@@ -100,7 +103,7 @@ VisualStateMachine.set_initial_state = function (self, state_class, ...)
 	assert(self._current_state == nil, "it is not allowed to set initial state twice")
 
 	self._current_state = self:_enter_state(state_class, {
-		...
+		...,
 	})
 end
 
@@ -114,7 +117,7 @@ VisualStateMachine.update = function (self, dt, t)
 
 	for ii, state_machine in ipairs(self._state_machine_stack) do
 		local state = state_machine._current_state
-		local update_func = nil
+		local update_func
 
 		if ii == leaf_index then
 			if state ~= nil and state.update ~= nil then
@@ -126,7 +129,7 @@ VisualStateMachine.update = function (self, dt, t)
 
 		if update_func ~= nil then
 			local args = {
-				update_func(state, dt, t)
+				update_func(state, dt, t),
 			}
 			local event_name = args[1]
 
@@ -154,9 +157,10 @@ end
 
 VisualStateMachine.event = function (self, event_name, ...)
 	local root = self._root_state_machine
+
 	root._pending_event = event_name
 	root._pending_args = {
-		...
+		...,
 	}
 end
 
@@ -169,7 +173,9 @@ VisualStateMachine.state_report = function (self)
 
 	for ii = start_index, #stack do
 		local state_machine = stack[ii]
+
 		s = s .. string.format("State %q waits for:\n", self._current_state_name(state_machine))
+
 		local transitions = state_machine:_transitions_from_state()
 		local had_transitions = false
 
@@ -254,6 +260,7 @@ VisualStateMachine._received_event = function (self, event_name, args)
 	end
 
 	local report = string.format("none of the active states (%s) handled the event %q\n", table.concat(state_names, ", "), event_name)
+
 	report = report .. self._root_state_machine:state_report()
 
 	assert(false, report)
@@ -294,6 +301,7 @@ VisualStateMachine._enter_state = function (self, state_class, args)
 	assert(type(state_class.NAME) == "string", "States must have a class variable NAME set to a string value")
 
 	local state = state_class:new(self, unpack(self._global_args))
+
 	self._current_state = state
 
 	if state.enter then

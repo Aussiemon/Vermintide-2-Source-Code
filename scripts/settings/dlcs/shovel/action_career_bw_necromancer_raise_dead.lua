@@ -1,10 +1,12 @@
+﻿-- chunkname: @scripts/settings/dlcs/shovel/action_career_bw_necromancer_raise_dead.lua
+
 local MIN_RADIUS = 4.5
 local MAX_RADIUS = 9
 local TIME_BETWEEN_SPAWNS = 0.75
 local CHARGE_PER_SPAWN_PERCENT = 0.15
 local CHARGE_LEEWAY = 0.1
-local MIN_ANGLE = math.degrees_to_radians(-60)
-local MAX_ANGLE = math.degrees_to_radians(60)
+local MIN_ANGLE, MAX_ANGLE = math.degrees_to_radians(-60), math.degrees_to_radians(60)
+
 ActionCareerBWNecromancerRaiseDead = class(ActionCareerBWNecromancerRaiseDead, ActionBase)
 
 ActionCareerBWNecromancerRaiseDead.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
@@ -27,7 +29,7 @@ ActionCareerBWNecromancerRaiseDead.init = function (self, world, item_name, is_s
 	self.fx_spline_ids = {
 		World.find_particles_variable(world, "fx/wpnfx_staff_death/curse_spirit", "spline_1"),
 		World.find_particles_variable(world, "fx/wpnfx_staff_death/curse_spirit", "spline_2"),
-		World.find_particles_variable(world, "fx/wpnfx_staff_death/curse_spirit", "spline_3")
+		World.find_particles_variable(world, "fx/wpnfx_staff_death/curse_spirit", "spline_3"),
 	}
 
 	self._nav_callback = function ()
@@ -63,12 +65,14 @@ ActionCareerBWNecromancerRaiseDead._trigger_spawn = function (self)
 		local side = math.sign(Vector3.dot(to_pos, right))
 		local offset = math.pi * math.random(0.1, 0.25)
 		local side_offset = Quaternion.axis_angle(Vector3.up(), offset * side)
+
 		to_pos = Quaternion.rotate(side_offset, to_pos)
+
 		local mid_point = start_pos + to_pos * 0.5 + Vector3.up()
 		local spline_points = {
 			start_pos,
 			mid_point,
-			position
+			position,
 		}
 
 		Managers.state.network:rpc_play_particle_effect_spline(nil, fx_name_id, self.fx_spline_ids, spline_points)
@@ -89,7 +93,7 @@ ActionCareerBWNecromancerRaiseDead._update_spawning = function (self, t)
 		self._weapon_extension:stop_action("action_complete")
 	end
 
-	if self._next_spawn_t < t then
+	if t > self._next_spawn_t then
 		self._next_spawn_t = self._next_spawn_t + TIME_BETWEEN_SPAWNS
 
 		self:_trigger_spawn()
@@ -106,19 +110,22 @@ end
 
 ActionCareerBWNecromancerRaiseDead._generate_position = function (self)
 	local source_pos = self._position:unbox()
-	local above = 1
-	local below = 3
+	local above, below = 1, 3
 	local player_nav_pos = LocomotionUtils.pos_on_mesh(self._nav_world, source_pos, above, below)
 
 	if not player_nav_pos then
 		return nil
 	end
 
-	local x, y = nil
+	local x, y
+
 	self._seed, x, y = math.get_uniformly_random_point_inside_sector_seeded(self._seed, MIN_RADIUS, MAX_RADIUS, MIN_ANGLE, MAX_ANGLE)
+
 	local delta_pos = Vector3(x, y, 0)
 	local fp_rotation = self._first_person_extension:current_rotation()
+
 	delta_pos = Quaternion.rotate(fp_rotation, delta_pos)
+
 	local wanted_position = player_nav_pos + delta_pos
 	local _, position = GwNavQueries.raycast(self._nav_world, player_nav_pos, wanted_position, self._traverse_logic)
 

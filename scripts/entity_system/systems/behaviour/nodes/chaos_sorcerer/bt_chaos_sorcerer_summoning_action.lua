@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/chaos_sorcerer/bt_chaos_sorcerer_summoning_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTChaosSorcererSummoningAction = class(BTChaosSorcererSummoningAction, BTNode)
@@ -10,8 +12,10 @@ BTChaosSorcererSummoningAction.name = "BTChaosSorcererSummoningAction"
 
 BTChaosSorcererSummoningAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
+
 	blackboard.action = action
 	blackboard.attack_finished = false
+
 	local vortex_data = blackboard.vortex_data
 
 	if action.vortex_template_name then
@@ -19,6 +23,7 @@ BTChaosSorcererSummoningAction.enter = function (self, unit, blackboard, t)
 	end
 
 	local target_unit = blackboard.target_unit
+
 	blackboard.target_position = target_unit and Vector3Box(POSITION_LOOKUP[target_unit]) or Vector3Box()
 	blackboard.spell_count = blackboard.spell_count or 0
 
@@ -132,6 +137,7 @@ BTChaosSorcererSummoningAction.run = function (self, unit, blackboard, t, dt)
 			local target_position = blackboard.target_position:unbox()
 			local spawn_func_name = action.spawn_func_name
 			local success = self[spawn_func_name](self, unit, blackboard, t, dt, target_position, blackboard.current_spell)
+
 			blackboard.spell_count = blackboard.spell_count + 1
 			blackboard.summoning_finished = nil
 
@@ -200,16 +206,21 @@ BTChaosSorcererSummoningAction._start_vortex_summoning = function (self, unit, b
 
 	vortex_data.next_missile_cast_t = t
 	vortex_data.num_dummy_missiles = 0
+
 	local physics_world = vortex_data.physics_world
 	local start_check_position = summon_position + Vector3.up() * VORTEX_MIN_DUMMY_MISSILE_HEIGHT
 	local hit, hit_position, hit_distance, _, _ = PhysicsWorld.immediate_raycast(physics_world, start_check_position, Vector3.up(), max_height - VORTEX_MIN_DUMMY_MISSILE_HEIGHT, "closest", "collision_filter", "filter_ai_mover")
 	local max_height = hit and VORTEX_MIN_DUMMY_MISSILE_HEIGHT + hit_distance or max_height
+
 	vortex_data.max_height = max_height
+
 	local unit_position = POSITION_LOOKUP[unit]
 	local distance = Vector3.distance(unit_position, summon_position)
 	local extra_time = distance * action.extra_time_per_distance
+
 	vortex_data.summoning_done_t = t + action.summoning_time + extra_time
 	vortex_data.extra_time = extra_time
+
 	local breed = blackboard.breed
 
 	if not breed.boss then
@@ -237,6 +248,7 @@ BTChaosSorcererSummoningAction._clean_up_vortex_summoning = function (self, unit
 	vortex_data.inner_decal_unit = nil
 	vortex_data.outer_decal_unit = nil
 	vortex_data.num_dummy_missiles = 0
+
 	local breed = blackboard.breed
 
 	if not breed.boss then
@@ -260,7 +272,7 @@ BTChaosSorcererSummoningAction._update_vortex_summoning = function (self, unit, 
 
 	local action = blackboard.action
 
-	if vortex_data.num_dummy_missiles < action.num_missiles and vortex_data.next_missile_cast_t < t then
+	if vortex_data.num_dummy_missiles < action.num_missiles and t > vortex_data.next_missile_cast_t then
 		local unit_position = POSITION_LOOKUP[unit]
 		local to_summon = summon_position - unit_position
 		local summon_direction = Vector3.normalize(to_summon)
@@ -272,7 +284,7 @@ BTChaosSorcererSummoningAction._update_vortex_summoning = function (self, unit, 
 		vortex_data.next_missile_cast_t = vortex_data.next_missile_cast_t + action.missile_cast_interval
 	end
 
-	if vortex_data.summoning_done_t < t then
+	if t > vortex_data.summoning_done_t then
 		blackboard.summoning_finished = true
 	end
 end
@@ -284,11 +296,13 @@ BTChaosSorcererSummoningAction._launch_vortex_dummy_missile = function (self, ow
 	local true_flight_template_name = "sorcerer_vortex_dummy_missile"
 	local max_height = math.max(vortex_data.max_height / 2, VORTEX_MIN_DUMMY_MISSILE_HEIGHT + 0.5)
 	local height_offset = VORTEX_MIN_DUMMY_MISSILE_HEIGHT + (max_height - VORTEX_MIN_DUMMY_MISSILE_HEIGHT) * math.random()
+
 	target_position = target_position + Vector3.up() * height_offset
+
 	local extension_init_data = {
 		projectile_locomotion_system = {
-			trajectory_template_name = "throw_trajectory",
 			gravity_settings = "default",
+			trajectory_template_name = "throw_trajectory",
 			angle = angle,
 			initial_position = spawn_position,
 			height_offset = height_offset,
@@ -297,17 +311,18 @@ BTChaosSorcererSummoningAction._launch_vortex_dummy_missile = function (self, ow
 			position_target = target_position,
 			speed = speed,
 			target_vector = target_dir,
-			true_flight_template_name = true_flight_template_name
+			true_flight_template_name = true_flight_template_name,
 		},
 		projectile_system = {
-			impact_template_name = "direct_impact",
 			explosion_template_name = "chaos_vortex_dummy_missile",
-			owner_unit = owner_unit
-		}
+			impact_template_name = "direct_impact",
+			owner_unit = owner_unit,
+		},
 	}
 	local rotation = Quaternion.look(target_dir)
 	local projectile_unit_name = action.missile_effect_unit_name
 	local projectile_unit = Managers.state.unit_spawner:spawn_network_unit(projectile_unit_name, "ai_true_flight_projectile_unit_without_raycast", extension_init_data, spawn_position, rotation)
+
 	vortex_data.num_dummy_missiles = vortex_data.num_dummy_missiles + 1
 end
 
@@ -322,6 +337,7 @@ BTChaosSorcererSummoningAction._spawn_boss_vortex = function (self, unit, blackb
 	boss_vortex_data.vortex_spawn_pos:store(spawn_pos)
 
 	boss_vortex_data.vortex_spawn_radius = spawn_radius
+
 	local inner_radius_p = math.min(spawn_radius / vortex_template.full_inner_radius, 1)
 	local inner_decal_unit_name = action.inner_decal_unit_name
 
@@ -350,6 +366,7 @@ end
 
 BTChaosSorcererSummoningAction._spawn_vortex = function (self, unit, blackboard, t, dt, target_position, vortex_data)
 	vortex_data = vortex_data or blackboard.vortex_data
+
 	local action = blackboard.action
 	local vortex_pos = vortex_data.vortex_spawn_pos:unbox()
 	local vortex_template_name = blackboard.breed.vortex_template_name or action.vortex_template_name
@@ -368,23 +385,27 @@ BTChaosSorcererSummoningAction._spawn_vortex = function (self, unit, blackboard,
 				vortex_template_name = vortex_template_name or "standard",
 				inner_decal_unit = link_decal_units and inner_decal_unit,
 				outer_decal_unit = link_decal_units and outer_decal_unit,
-				owner_unit = unit
+				owner_unit = unit,
 			}
 		end,
 		spawned_func = function (vortex_unit, breed, optional_data)
 			local spawn_queue_index = optional_data.spawn_queue_index
+
 			queued_vortex[spawn_queue_index] = nil
 			vortex_units[#vortex_units + 1] = vortex_unit
+
 			local vortex_blackboard = BLACKBOARDS[vortex_unit]
+
 			vortex_blackboard.master_unit = unit
 
 			Managers.state.entity:system("surrounding_aware_system"):add_system_event(vortex_unit, "enemy_attack", DialogueSettings.see_vortex_distance, "attack_tag", "chaos_vortex_spawned")
-		end
+		end,
 	}
 	local vortex_queue_id = Managers.state.conflict:spawn_queued_unit(breed, Vector3Box(vortex_pos), QuaternionBox(Quaternion.identity()), spawn_category, nil, nil, optional_data)
+
 	vortex_data.queued_vortex[vortex_queue_id] = {
 		inner_decal_unit = link_decal_units and inner_decal_unit,
-		outer_decal_unit = link_decal_units and outer_decal_unit
+		outer_decal_unit = link_decal_units and outer_decal_unit,
 	}
 
 	if link_decal_units then
@@ -399,15 +420,17 @@ end
 
 BTChaosSorcererSummoningAction.spawn_portal = function (self, unit, blackboard, t, dt, target_position, portal_data)
 	portal_data = portal_data or blackboard.portal_data
+
 	local portal_pos = portal_data.portal_spawn_pos:unbox()
 	local portal_rot = portal_data.portal_spawn_rot:unbox()
 	local portal_type = portal_data.portal_spawn_type
 	local breed = Breeds.chaos_tentacle
 	local inside_wall_spawn_distance = breed.inside_wall_spawn_distance
-	local tentacle_pos = nil
+	local tentacle_pos
 
 	if inside_wall_spawn_distance then
 		local normal = Quaternion.forward(portal_rot)
+
 		tentacle_pos = portal_pos - normal * inside_wall_spawn_distance
 
 		QuickDrawerStay:line(tentacle_pos, tentacle_pos + normal * 5, Colors.get("light_green"))
@@ -418,13 +441,13 @@ BTChaosSorcererSummoningAction.spawn_portal = function (self, unit, blackboard, 
 	local optional_data = {
 		prepare_func = function (breed, extension_init_data)
 			extension_init_data.ai_supplementary_system = {
-				tentacle_template_name = tentacle_template_name
+				tentacle_template_name = tentacle_template_name,
 			}
 		end,
 		spawned_func = function (portal_unit, breed, optional_data)
 			optional_data.sorcerer_blackboard.portal_unit = portal_unit
 		end,
-		sorcerer_blackboard = blackboard
+		sorcerer_blackboard = blackboard,
 	}
 	local spawn_category = "portal"
 
@@ -454,11 +477,13 @@ BTChaosSorcererSummoningAction.boss_sorcerer_spawn_tentacle_in_arena = function 
 	local optional_data = {
 		spawned_func = function (portal_unit, breed, optional_data)
 			blackboard.tentacle_portal_units[portal_unit] = true
+
 			local tentacle_blackboard = BLACKBOARDS[portal_unit]
+
 			tentacle_blackboard.boss_master_unit = unit
 			blackboard.num_portals_alive = blackboard.num_portals_alive + 1
 			blackboard.portal_unit = portal_unit
-		end
+		end,
 	}
 
 	Managers.state.conflict:spawn_queued_unit(breed, Vector3Box(tentacle_pos), QuaternionBox(portal_rot), spawn_category, nil, nil, optional_data)
@@ -470,6 +495,7 @@ end
 
 BTChaosSorcererSummoningAction.init_summon_plague_wave = function (self, unit, blackboard, t)
 	blackboard.summon_plague_wave_timer = t + 0.1
+
 	local breed = blackboard.breed
 
 	if not breed.boss then
@@ -485,18 +511,19 @@ BTChaosSorcererSummoningAction.init_summon_vermintide = function (self, unit, bl
 end
 
 BTChaosSorcererSummoningAction.update_summon_plague_wave = function (self, unit, blackboard, t, dt)
-	if blackboard.summon_plague_wave_timer < t then
+	if t > blackboard.summon_plague_wave_timer then
 		if not blackboard.summoning_unit then
 			local unit_name = DamageWaveTemplates.templates[blackboard.damage_wave_template_name or "plague_wave"].fx_unit
 			local extension_init_data = {
 				area_damage_system = {
 					damage_wave_template_name = blackboard.damage_wave_template_name or "plague_wave",
-					source_unit = unit
-				}
+					source_unit = unit,
+				},
 			}
 			local pos = POSITION_LOOKUP[unit]
 			local rot = Unit.local_rotation(unit, 0)
 			local damage_wave_unit = Managers.state.unit_spawner:spawn_network_unit(unit_name, "damage_wave_unit", extension_init_data, pos, rot)
+
 			blackboard.summoning_unit = damage_wave_unit
 			blackboard.damage_wave_extension = ScriptUnit.extension(damage_wave_unit, "area_damage_system")
 		elseif blackboard.summoning_unit then
@@ -567,7 +594,7 @@ BTChaosSorcererSummoningAction.spawn_plague_wave = function (self, unit, blackbo
 	end
 
 	local success = GwNavQueries.raycango(nav_world, projected_start_pos, projected_end_pos)
-	local optional_target_pos = nil
+	local optional_target_pos
 
 	if success then
 		optional_target_pos = projected_end_pos
@@ -580,7 +607,7 @@ BTChaosSorcererSummoningAction.spawn_plague_wave = function (self, unit, blackbo
 		local ray_check_offset = 2.5
 
 		for i = 1, tries do
-			local ray_check_position = target_position + target_to_start_normalized * ray_check_offset * i
+			local ray_check_position = target_position + target_to_start_normalized * (ray_check_offset * i)
 			local success = GwNavQueries.raycango(nav_world, projected_start_pos, ray_check_position)
 
 			if success then
@@ -605,7 +632,7 @@ BTChaosSorcererSummoningAction.spawn_plague_wave = function (self, unit, blackbo
 	local dist_sq = Vector3.distance_squared(optional_target_pos, target_position)
 	local max_dist_sq = action.max_wave_to_target_dist^2
 
-	if dist_sq > max_dist_sq then
+	if max_dist_sq < dist_sq then
 		blackboard.ready_to_summon = false
 
 		damage_wave_extension:abort()
@@ -634,8 +661,8 @@ BTChaosSorcererSummoningAction.spawn_plague_wave_from_spawner = function (self, 
 	local extension_init_data = {
 		area_damage_system = {
 			damage_wave_template_name = "plague_wave",
-			source_unit = unit
-		}
+			source_unit = unit,
+		},
 	}
 	local damage_wave_unit = Managers.state.unit_spawner:spawn_network_unit(unit_name, "damage_wave_unit", extension_init_data, spawn_pos, spawn_rot)
 	local wave_extension = ScriptUnit.extension(damage_wave_unit, "area_damage_system")
@@ -650,30 +677,32 @@ end
 BTChaosSorcererSummoningAction.spawn_plague_waves_in_patterns = function (self, unit, blackboard, t, dt, target_position)
 	local nav_world = blackboard.nav_world
 	local action = blackboard.action
-	local spawner_set, reps = nil
+	local spawner_set, reps
 
 	if action.spawner_set_id then
 		spawner_set = blackboard.spawners[action.spawner_set_id]
 	else
 		spawner_set = {
-			unit
+			unit,
 		}
 	end
 
 	reps = action.pattern_repetitions or 1
+
 	local range = action.range or 20
 
 	for j = 1, reps do
 		for i = 1, #spawner_set do
 			local spawner_unit = spawner_set[i]
 			local spawn_pos = Unit.local_position(spawner_unit, 0)
+
 			spawn_pos = LocomotionUtils.pos_on_mesh(nav_world, spawn_pos)
 
 			if not spawn_pos then
 				return false
 			end
 
-			local spawn_rot, spawn_dir = nil
+			local spawn_rot, spawn_dir
 
 			if action.spawn_rot_func then
 				spawn_rot = action.spawn_rot_func(unit, blackboard, spawner_unit, j)
@@ -682,6 +711,7 @@ BTChaosSorcererSummoningAction.spawn_plague_waves_in_patterns = function (self, 
 			end
 
 			spawn_dir = Quaternion.forward(spawn_rot)
+
 			local target_pos = spawn_pos + spawn_dir * range
 
 			if action.goal_pos_func then
@@ -693,8 +723,8 @@ BTChaosSorcererSummoningAction.spawn_plague_waves_in_patterns = function (self, 
 				local extension_init_data = {
 					area_damage_system = {
 						damage_wave_template_name = action.damage_wave_template,
-						source_unit = unit
-					}
+						source_unit = unit,
+					},
 				}
 				local damage_wave_unit = Managers.state.unit_spawner:spawn_network_unit(unit_name, "damage_wave_unit", extension_init_data, spawn_pos, spawn_rot)
 				local wave_extension = ScriptUnit.extension(damage_wave_unit, "area_damage_system")
@@ -703,7 +733,7 @@ BTChaosSorcererSummoningAction.spawn_plague_waves_in_patterns = function (self, 
 					wave_extension:set_update_func(action.damage_wave_update_func, action.damage_wave_init_func, t)
 				end
 
-				local target_unit = nil
+				local target_unit
 
 				wave_extension:launch_wave(target_unit, target_pos)
 
@@ -719,6 +749,7 @@ BTChaosSorcererSummoningAction.init_summon_plague_wave_sequence = function (self
 	blackboard.summon_plague_wave_timer = t + 0.5
 	blackboard.next_wave_time = 0
 	blackboard.wave_counter = 0
+
 	local sequence_init_func = blackboard.action.sequence_init_func
 
 	if sequence_init_func then
@@ -728,15 +759,17 @@ end
 
 BTChaosSorcererSummoningAction.update_sequenced_plague_wave_spawning = function (self, unit, blackboard, t, dt)
 	local action = blackboard.action
-	local target_position = nil
+	local target_position
 
-	if blackboard.next_wave_time < t then
+	if t > blackboard.next_wave_time then
 		blackboard.next_wave_time = t + action.duration_between_waves
+
 		local spawn_func_name = action.spawn_func_name
 		local success = self[spawn_func_name](self, unit, blackboard, t, dt, target_position)
+
 		blackboard.wave_counter = blackboard.wave_counter + 1
 
-		if action.num_waves < blackboard.wave_counter then
+		if blackboard.wave_counter > action.num_waves then
 			return true
 		end
 	end
@@ -758,7 +791,9 @@ BTChaosSorcererSummoningAction.spawn_boss_rings = function (self, unit, blackboa
 	local action = blackboard.action
 	local dialogue_extension = ScriptUnit.extension(unit, "dialogue_system")
 	local wwise_world = Managers.world:wwise_world(blackboard.world)
+
 	blackboard.audio_source_id = WwiseWorld.make_manual_source(wwise_world, unit, dialogue_extension.voice_node)
+
 	local sound_event = action.start_ability_sound_event
 
 	if sound_event then
@@ -779,7 +814,7 @@ BTChaosSorcererSummoningAction.update_boss_rings = function (self, unit, blackbo
 	local all_done = true
 	local colors = {
 		Color(255, 0, 0),
-		Color(255, 0, 0)
+		Color(255, 0, 0),
 	}
 
 	for i, ring in ipairs(ring_sequence) do
@@ -788,7 +823,7 @@ BTChaosSorcererSummoningAction.update_boss_rings = function (self, unit, blackbo
 		if not done then
 			ring.delay_time = ring.delay_time or ring.delay + t or t
 
-			if ring.delay_time <= t and not ring.damage_effect_time then
+			if t >= ring.delay_time and not ring.damage_effect_time then
 				if debug and ring.delay > 0 then
 					QuickDrawerStay:reset()
 				end
@@ -821,7 +856,7 @@ BTChaosSorcererSummoningAction.update_boss_rings = function (self, unit, blackbo
 				fassert(premonition_type, "No or invalid premonition type")
 
 				ring.damage_effect_time = t + premonition_time
-			elseif ring.damage_effect_time and ring.damage_effect_time <= t and not ring.premonition_time then
+			elseif ring.damage_effect_time and t >= ring.damage_effect_time and not ring.premonition_time then
 				local ring_info = action.ring_info
 				local ring_position = ring.position
 				local origin_pos = Vector3Box.unbox(blackboard.ring_center_position)
@@ -832,7 +867,7 @@ BTChaosSorcererSummoningAction.update_boss_rings = function (self, unit, blackbo
 				end
 
 				ring.premonition_time = t
-			elseif ring.premonition_time and ring.premonition_time <= t then
+			elseif ring.premonition_time and t >= ring.premonition_time then
 				local ring_position = ring.position
 				local ring_info = action.ring_info
 				local origin_pos = Vector3Box.unbox(blackboard.ring_center_position)
@@ -844,6 +879,7 @@ BTChaosSorcererSummoningAction.update_boss_rings = function (self, unit, blackbo
 
 				if blackboard.summoning_start_event_playing then
 					blackboard.summoning_start_event_playing = nil
+
 					local wwise_world = Managers.world:wwise_world(blackboard.world)
 
 					audio_system:_play_event_with_source(wwise_world, action.end_ability_sound_event, blackboard.audio_source_id)
@@ -869,7 +905,7 @@ BTChaosSorcererSummoningAction.update_boss_rings = function (self, unit, blackbo
 						local damage_profile = DamageProfileTemplates[damage_profile_name]
 						local difficulty_rank = Managers.state.difficulty:get_difficulty()
 						local actual_power_level = action.power_level[difficulty_rank]
-						local hit_ragdoll_actor, boost_curve_multiplier, is_critical_strike, added_dot, first_hit, total_hits, backstab_multiplier = nil
+						local hit_ragdoll_actor, boost_curve_multiplier, is_critical_strike, added_dot, first_hit, total_hits, backstab_multiplier
 						local source_attacker_unit = unit
 
 						DamageUtils.add_damage_network_player(damage_profile, nil, actual_power_level, hit_unit, unit, "torso", POSITION_LOOKUP[hit_unit], Vector3.up(), "undefined", hit_ragdoll_actor, boost_curve_multiplier, is_critical_strike, added_dot, first_hit, total_hits, backstab_multiplier, source_attacker_unit)
@@ -881,6 +917,7 @@ BTChaosSorcererSummoningAction.update_boss_rings = function (self, unit, blackbo
 					local distance_squared = Vector3.distance_squared(position, origin_pos)
 					local catapult_direction = ring.catapult_direction
 					local direction = catapult_direction == "in" and origin_pos - position or position - origin_pos
+
 					direction = Vector3.normalize(direction)
 
 					if distance_squared < outer_squared and inner_squared < distance_squared then
@@ -929,6 +966,7 @@ BTChaosSorcererSummoningAction.clean_up_boss_rings = function (self, unit, black
 
 	if blackboard.summoning_start_event_playing then
 		blackboard.summoning_start_event_playing = nil
+
 		local audio_system = Managers.state.entity:system("audio_system")
 		local wwise_world = Managers.world:wwise_world(blackboard.world)
 

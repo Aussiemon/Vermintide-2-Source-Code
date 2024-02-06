@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/unit_extensions/default_player_unit/careers/career_ability_dr_slayer.lua
+
 CareerAbilityDRSlayer = class(CareerAbilityDRSlayer)
+
 local MIN_DISTANCE_FOR_LEAP = 2
 local segment_list = {}
 
@@ -22,7 +25,9 @@ CareerAbilityDRSlayer.init = function (self, extension_init_context, unit, exten
 	self._owner_unit = unit
 	self._world = extension_init_context.world
 	self._wwise_world = Managers.world:wwise_world(self._world)
+
 	local player = extension_init_data.player
+
 	self._player = player
 	self._is_server = player.is_server
 	self._local_player = player.local_player
@@ -131,6 +136,7 @@ CareerAbilityDRSlayer._start_priming = function (self)
 	if self._local_player then
 		local world = self._world
 		local effect_name = self._effect_name
+
 		self._effect_id = World.create_particles(world, effect_name, Vector3.zero())
 	end
 
@@ -164,7 +170,7 @@ CareerAbilityDRSlayer._update_priming = function (self)
 	local velocity = raycast_direction * speed
 	local gravity = Vector3(0, 0, -11)
 	local result, new_landing_position = WeaponHelper:ground_target(physics_world, self._owner_unit, player_position, velocity, gravity, collision_filter)
-	local leap_distance = nil
+	local leap_distance
 
 	if result then
 		leap_distance = Vector3.length(new_landing_position - player_position)
@@ -200,7 +206,7 @@ CareerAbilityDRSlayer._do_common_stuff = function (self)
 	local career_extension = self._career_extension
 	local talent_extension = self._talent_extension
 	local buffs = {
-		"bardin_slayer_activated_ability"
+		"bardin_slayer_activated_ability",
 	}
 
 	if talent_extension:has_talent("bardin_slayer_activated_ability_movement") then
@@ -217,7 +223,7 @@ CareerAbilityDRSlayer._do_common_stuff = function (self)
 			local buff_template_name_id = NetworkLookup.buff_templates[buff_name]
 
 			buff_extension:add_buff(buff_name, {
-				attacker_unit = owner_unit
+				attacker_unit = owner_unit,
 			})
 			network_transmit:send_rpc_clients("rpc_add_buff", unit_object_id, buff_template_name_id, unit_object_id, 0, false)
 		end
@@ -317,11 +323,12 @@ CareerAbilityDRSlayer._do_leap = function (self)
 	local distance = Vector3.distance(POSITION_LOOKUP[owner_unit], landing_position)
 	local vertical_speed_modifier = math.clamp(distance / 10, 0, 1)
 	local has_impact_damage_buff = talent_extension:has_talent("bardin_slayer_activated_ability_impact_damage")
+
 	status_extension.do_leap = {
-		camera_effect_sequence_start = "jump",
+		anim_start_event_1p = "slayer_jump_ability",
 		anim_start_event_3p = "jump_fwd",
 		camera_effect_sequence_land = "landed_leap",
-		anim_start_event_1p = "slayer_jump_ability",
+		camera_effect_sequence_start = "jump",
 		move_function = "leap",
 		direction = Vector3Box(direction),
 		speed = speed,
@@ -333,6 +340,7 @@ CareerAbilityDRSlayer._do_leap = function (self)
 			start = function (this)
 				local unit_3p = this.unit
 				local buff_extension = ScriptUnit.has_extension(unit_3p, "buff_system")
+
 				self._uninterruptible_buff_id = buff_extension:add_buff("bardin_slayer_passive_uninterruptible_leap")
 			end,
 			finished = function (this, aborted, final_position)
@@ -370,8 +378,8 @@ CareerAbilityDRSlayer._do_leap = function (self)
 
 					self._uninterruptible_buff_id = nil
 				end
-			end
-		}
+			end,
+		},
 	}
 end
 

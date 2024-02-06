@@ -1,11 +1,14 @@
+﻿-- chunkname: @scripts/settings/dlcs/belakor/belakor_interactions.lua
+
 local base_locus_definition = table.clone(InteractionDefinitions.smartobject)
+
 base_locus_definition.config = {
-	block_other_interactions = true,
-	hud_verb = "player_interaction",
-	hold = true,
-	swap_to_3p = false,
 	activate_block = true,
-	animation = "interaction_start"
+	animation = "interaction_start",
+	block_other_interactions = true,
+	hold = true,
+	hud_verb = "player_interaction",
+	swap_to_3p = false,
 }
 
 base_locus_definition.server.start = function (world, interactor_unit, interactable_unit, data, config, t)
@@ -13,8 +16,10 @@ base_locus_definition.server.start = function (world, interactor_unit, interacta
 
 	if deus_belakor_locus_extension then
 		local duration = deus_belakor_locus_extension:get_interaction_length()
+
 		data.done_time = t + duration
 		data.duration = duration
+
 		local buff_template_name = Unit.get_data(interactable_unit, "interaction_data", "apply_buff")
 
 		if buff_template_name then
@@ -24,6 +29,7 @@ base_locus_definition.server.start = function (world, interactor_unit, interacta
 		local interactor_position = Unit.world_position(interactor_unit, 0)
 		local interactable_position = Unit.world_position(interactable_unit, 0)
 		local start_offset = interactor_position - interactable_position
+
 		data.start_offset = Vector3Box(start_offset)
 
 		deus_belakor_locus_extension:on_server_start_interact(world, interactor_unit, interactable_unit, data, config, t)
@@ -45,8 +51,11 @@ base_locus_definition.client.start = function (world, interactor_unit, interacta
 
 	if deus_belakor_locus_extension then
 		data.start_time = t
+
 		local duration = deus_belakor_locus_extension:get_interaction_length()
+
 		data.duration = duration
+
 		local interactor_animation_name = config.animation
 		local interactor_animation_time_variable = Unit.get_data(interactable_unit, "interaction_data", "interactor_animation_time_variable")
 		local inventory_extension = ScriptUnit.extension(interactor_unit, "inventory_system")
@@ -143,7 +152,7 @@ InteractionDefinitions.deus_belakor_locus_with_crystal.server.update = function 
 		return InteractionResult.FAILURE
 	end
 
-	if data.done_time < t then
+	if t > data.done_time then
 		return InteractionResult.SUCCESS
 	end
 

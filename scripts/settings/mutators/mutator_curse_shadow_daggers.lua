@@ -1,9 +1,13 @@
+﻿-- chunkname: @scripts/settings/mutators/mutator_curse_shadow_daggers.lua
+
 local STORM_STATES = {
-	COOLDOWN = "COOLDOWN",
 	ACTIVE = "ACTIVE",
-	READY = "READY"
+	COOLDOWN = "COOLDOWN",
+	READY = "READY",
 }
+
 script_data.shadow_daggers_debug = true
+
 local TIME_BETWEEN_SPAWNS = 5
 local global_printf = printf
 
@@ -46,7 +50,7 @@ end
 
 Storm.update = function (self, dt, t)
 	if self._state == STORM_STATES.COOLDOWN then
-		if self._cooldown_end_t < t then
+		if t > self._cooldown_end_t then
 			self._state = STORM_STATES.READY
 
 			dprintf("-%s- new state %s", self._logging_prefix, self._state)
@@ -60,6 +64,7 @@ Storm.update = function (self, dt, t)
 			if not Unit.alive(unit) then
 				local min_cooldown = self._min_cooldown
 				local max_cooldown = self._max_cooldown
+
 				self._cooldown_end_t = Math.random_range(min_cooldown, max_cooldown)
 				self._state = STORM_STATES.COOLDOWN
 
@@ -86,13 +91,14 @@ Storm.spawn = function (self, spawn_position)
 	local spawn_pose = Matrix4x4.from_quaternion_position(Quaternion.identity(), spawn_position)
 	local extension_init_data = {
 		shadow_dagger_spawner_system = {
-			limitted_spawner = true
-		}
+			limitted_spawner = true,
+		},
 	}
 	local spawned_unit = Managers.state.unit_spawner:spawn_network_unit(unit_name, "shadow_dagger_spawner", extension_init_data, spawn_pose)
+
 	self._active_storm_data = {
 		unit = spawned_unit,
-		starting_position = Vector3Box(spawn_position)
+		starting_position = Vector3Box(spawn_position),
 	}
 	self._state = STORM_STATES.ACTIVE
 
@@ -139,8 +145,8 @@ local MAX_DISTANCE = 30
 local DISTANCE_TO_FORBIDDEN_POSITION_LIST = 10
 
 return {
-	description = "curse_shadow_daggers_desc",
 	curse_package_name = "resource_packages/mutators/mutator_curse_shadow_daggers",
+	description = "curse_shadow_daggers_desc",
 	display_name = "curse_shadow_daggers_name",
 	icon = "deus_curse_khorne_01",
 	server_start_function = function (context, data)
@@ -192,11 +198,13 @@ return {
 
 					for player_index = 1, #players do
 						local unit = players[player_index]
+
 						forbidden_position_list[#forbidden_position_list + 1] = POSITION_LOOKUP[unit]
 					end
 
 					for i = 1, #storms do
 						local other_storm = storms[i]
+
 						forbidden_position_list[#forbidden_position_list + 1] = other_storm:get_position()
 					end
 
@@ -220,5 +228,5 @@ return {
 	end,
 	server_player_hit_function = function (context, data, hit_unit, attacker_unit, hit_data)
 		return
-	end
+	end,
 }

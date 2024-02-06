@@ -1,8 +1,11 @@
+﻿-- chunkname: @scripts/helpers/item_helper.lua
+
 require("scripts/settings/equipment/item_master_list")
 dofile("scripts/settings/equipment/attachments")
 dofile("scripts/settings/equipment/cosmetics")
 
 ItemHelper = ItemHelper or {}
+
 local item_type_templates = {
 	melee = Weapons,
 	ranged = Weapons,
@@ -12,25 +15,25 @@ local item_type_templates = {
 	hat = Attachments,
 	skin = Cosmetics,
 	frame = Cosmetics,
-	color_tint = Cosmetics
+	color_tint = Cosmetics,
 }
 local weapon_attack_stats_order = {
-	speed = 2,
-	range = 5,
 	damage = 1,
+	range = 5,
+	speed = 2,
+	stagger = 4,
 	targets = 3,
-	stagger = 4
 }
 local stats_localization_keys = {
-	burn = "item_compare_burn",
-	range = "item_compare_range",
 	armor_penetration = "item_compare_armor_penetration",
+	burn = "item_compare_burn",
 	damage = "item_compare_damage",
 	head_shot = "item_compare_head_shot",
 	poison = "item_compare_poison",
+	range = "item_compare_range",
 	speed = "item_compare_attack_speed",
+	stagger = "item_compare_stagger",
 	targets = "item_compare_targets",
-	stagger = "item_compare_stagger"
 }
 
 ItemHelper.get_template_by_item_name = function (name)
@@ -41,7 +44,9 @@ ItemHelper.get_template_by_item_name = function (name)
 	local slot_type = item_data.slot_type
 	local template_name = item_data.template
 	local temporary_template = item_data.temporary_template
+
 	template_name = temporary_template or template_name
+
 	local template = item_type_templates[slot_type][template_name]
 
 	fassert(template, "No template by name %s found for item_data %s.", template_name, name)
@@ -116,13 +121,16 @@ ItemHelper.mark_backend_id_as_new = function (backend_id, item, skip_autosave)
 	local slot_type = item_data.slot_type
 	local can_wield = item_data.can_wield
 	local new_item_ids = PlayerData.new_item_ids or {}
+
 	new_item_ids[backend_id] = true
+
 	local career_settings = CareerSettings
 	local new_item_ids_by_career = PlayerData.new_item_ids_by_career or {}
 
 	for _, career_name in ipairs(can_wield) do
 		local item_ids_by_career = new_item_ids_by_career[career_name] or {}
 		local item_ids_by_slot_type = item_ids_by_career[slot_type] or {}
+
 		item_ids_by_slot_type[backend_id] = true
 		item_ids_by_career[slot_type] = item_ids_by_slot_type
 		new_item_ids_by_career[career_name] = item_ids_by_career
@@ -283,6 +291,7 @@ ItemHelper.retrieve_weapon_item_statistics = function (item_data, backend_id)
 
 	for key, data in pairs(stats_data) do
 		local index = weapon_attack_stats_order[key]
+
 		stats_data_by_order[index] = data
 	end
 
@@ -293,10 +302,11 @@ ItemHelper._retrieve_weapon_attack_data = function (stats_data, data_store_table
 	for key, value in pairs(stats_data) do
 		local localization_key = stats_localization_keys[key]
 		local weapon_data = data_store_table[key] or {}
+
 		weapon_data[#weapon_data + 1] = {
 			key = key,
 			title = Localize(localization_key),
-			value = value
+			value = value,
 		}
 		data_store_table[key] = weapon_data
 	end
@@ -321,13 +331,14 @@ end
 ItemHelper.mark_backend_id_as_favorite = function (backend_id, item, save)
 	if not item then
 		local item_interface = Managers.backend:get_interface("items")
+
 		item = item_interface:get_item_from_id(backend_id)
 	end
 
 	local item_data = item.data
 	local slot_type = item_data.slot_type
 	local can_wield = item_data.can_wield
-	local item_id = nil
+	local item_id
 
 	if CosmeticUtils.is_cosmetic_item(slot_type) then
 		item_id = item.ItemId
@@ -336,13 +347,16 @@ ItemHelper.mark_backend_id_as_favorite = function (backend_id, item, save)
 	end
 
 	local favorite_item_ids = PlayerData.favorite_item_ids or {}
+
 	favorite_item_ids[item_id] = true
+
 	local career_settings = CareerSettings
 	local favorite_item_ids_by_career = PlayerData.favorite_item_ids_by_career or {}
 
 	for _, career_name in ipairs(can_wield) do
 		local item_ids_by_career = favorite_item_ids_by_career[career_name] or {}
 		local item_ids_by_slot_type = item_ids_by_career[slot_type] or {}
+
 		item_ids_by_slot_type[item_id] = true
 		item_ids_by_career[slot_type] = item_ids_by_slot_type
 		favorite_item_ids_by_career[career_name] = item_ids_by_career
@@ -367,7 +381,7 @@ ItemHelper.unmark_backend_id_as_favorite = function (backend_id, item)
 		item = item_interface:get_item_from_id(backend_id)
 	end
 
-	local item_id = nil
+	local item_id
 
 	if item then
 		local item_data = item.data
@@ -409,12 +423,13 @@ end
 ItemHelper.is_favorite_backend_id = function (backend_id, item)
 	if not item then
 		local item_interface = Managers.backend:get_interface("items")
+
 		item = item_interface:get_item_from_id(backend_id)
 	end
 
 	local item_data = item.data
 	local slot_type = item_data.slot_type
-	local item_id = nil
+	local item_id
 
 	if CosmeticUtils.is_cosmetic_item(slot_type) then
 		item_id = item.ItemId
@@ -456,6 +471,7 @@ end
 
 ItemHelper.mark_keep_decoration_as_new = function (keep_decoration_id)
 	local new_keep_decoration_ids = PlayerData.new_keep_decoration_ids or {}
+
 	new_keep_decoration_ids[keep_decoration_id] = true
 	PlayerData.new_keep_decoration_ids = new_keep_decoration_ids
 
@@ -464,6 +480,7 @@ end
 
 ItemHelper.unmark_keep_decoration_as_new = function (keep_decoration_id)
 	local new_keep_decoration_ids = PlayerData.new_keep_decoration_ids
+
 	new_keep_decoration_ids[keep_decoration_id] = nil
 
 	Managers.save:auto_save(SaveFileName, SaveData, nil)
@@ -480,18 +497,19 @@ ItemHelper.is_new_keep_decoration_id = function (keep_decoration_id)
 end
 
 ItemHelper.tab_conversions = {
-	dlc = "dlc",
-	weapon_skin = "cosmetics",
-	hat = "cosmetics",
 	bundle = "bundles",
+	dlc = "dlc",
 	featured = "featured",
-	skin = "cosmetics"
+	hat = "cosmetics",
+	skin = "cosmetics",
+	weapon_skin = "cosmetics",
 }
+
 local tab_conversions = ItemHelper.tab_conversions
 local skip_items = {
+	hat = true,
 	skin = true,
 	weapon_skin = true,
-	hat = true
 }
 
 ItemHelper.create_tab_unseen_item_stars = function (tab_cat)
@@ -499,6 +517,7 @@ ItemHelper.create_tab_unseen_item_stars = function (tab_cat)
 
 	for i = 1, #menu_options do
 		local key = menu_options[i]
+
 		tab_cat[key] = 0
 	end
 
@@ -531,6 +550,7 @@ end
 
 ItemHelper.update_featured_unseen = function (featured_peddler_items, tab_cat)
 	local seen_items = PlayerData.seen_shop_items
+
 	tab_cat.featured = 0
 
 	for i = 1, #featured_peddler_items do
@@ -548,6 +568,7 @@ ItemHelper.set_shop_item_seen = function (item_key, item_type, tab_cat, optional
 
 	if not seen_shop_items[item_key] then
 		seen_shop_items[item_key] = true
+
 		local tab_name = tab_conversions[item_type]
 
 		if tab_cat[tab_name] ~= nil then
@@ -567,6 +588,7 @@ ItemHelper.set_all_shop_item_seen = function (tab_cat)
 
 	for item_key, pedler_item in pairs(store_items) do
 		local master_item_data = pedler_item.data
+
 		seen_items[master_item_data.key] = true
 	end
 
@@ -609,9 +631,9 @@ end
 
 local fake_item_types = {
 	frame = true,
-	weapon_skin = true,
 	hat = true,
-	skin = true
+	skin = true,
+	weapon_skin = true,
 }
 
 ItemHelper.is_fake_item = function (item_type)

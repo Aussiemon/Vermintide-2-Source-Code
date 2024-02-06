@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/objective/objective_item_spawner_system.lua
+
 ObjectiveItemSpawnerSystem = class(ObjectiveItemSpawnerSystem, ExtensionSystemBase)
 
 ObjectiveItemSpawnerSystem.init = function (self, entity_system_creation_context, system_name, extensions)
@@ -16,7 +18,7 @@ ObjectiveItemSpawnerSystem.item_gizmo_spawned = function (self, unit)
 
 	self._item_spawners[spawn_id] = {
 		unit = unit,
-		unit_template = unit_template
+		unit_template = unit_template,
 	}
 end
 
@@ -37,7 +39,7 @@ ObjectiveItemSpawnerSystem.spawn_items = function (self, spawn_ids)
 				if spawned_unit then
 					self._spawned_items[spawn_id] = {
 						unit = spawned_unit,
-						game_object_id = game_object_id
+						game_object_id = game_object_id,
 					}
 				end
 			end

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/ui_passes.lua
+
 require("scripts/utils/colors")
 require("scripts/settings/ui_settings")
 require("scripts/settings/inventory_settings")
@@ -12,19 +14,19 @@ local UIInverseScaleVectorToResolution = UIInverseScaleVectorToResolution
 local UIGetFontHeight = UIGetFontHeight
 local UIScaleVectorToResolution = UIScaleVectorToResolution
 local ScaleVectorToResolution = ScaleVectorToResolution
-local string = string
-local math = math
+local string, math = string, math
+
 UIPasses = UIPasses or {}
 UIPasses.nop = {
 	init = NOP,
 	draw = NOP,
-	update = NOP
+	update = NOP,
 }
 UIPasses.rect = {
 	init = function (pass_definition)
 		if pass_definition.retained_mode then
 			return {
-				dirty = true
+				dirty = true,
 			}
 		end
 	end,
@@ -54,19 +56,20 @@ UIPasses.rect = {
 
 		if pass_definition.retained_mode then
 			local retained_id = pass_definition.retained_mode and (pass_data.retained_id and pass_data.retained_id or true)
+
 			retained_id = UIRenderer.draw_rect(ui_renderer, position, size, color, retained_id)
 			pass_data.retained_id = retained_id and retained_id or pass_data.retained_id
 			pass_data.dirty = false
 		else
 			UIRenderer.draw_rect(ui_renderer, position, size, color)
 		end
-	end
+	end,
 }
 UIPasses.texture = {
 	init = function (pass_definition)
 		if pass_definition.retained_mode then
 			return {
-				dirty = true
+				dirty = true,
 			}
 		end
 	end,
@@ -81,7 +84,7 @@ UIPasses.texture = {
 	end,
 	draw = function (ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt)
 		local texture_name = ui_content[pass_definition.texture_id or "texture_id"]
-		local color, masked, saturated, point_sample, viewport_mask = nil
+		local color, masked, saturated, point_sample, viewport_mask
 
 		if ui_style then
 			local texture_size = ui_style.texture_size
@@ -101,19 +104,20 @@ UIPasses.texture = {
 
 		if pass_definition.retained_mode then
 			local retained_id = pass_definition.retained_mode and (pass_data.retained_id or true)
+
 			retained_id = UIRenderer_draw_texture(ui_renderer, texture_name, position, size, color, masked, saturated, retained_id, point_sample, viewport_mask)
 			pass_data.retained_id = retained_id or pass_data.retained_id
 			pass_data.dirty = false
 		else
 			UIRenderer_draw_texture(ui_renderer, texture_name, position, size, color, masked, saturated, nil, point_sample, viewport_mask)
 		end
-	end
+	end,
 }
 UIPasses.texture_uv = {
 	init = function (pass_definition)
 		if pass_definition.retained_mode then
 			return {
-				dirty = true
+				dirty = true,
 			}
 		end
 
@@ -131,7 +135,7 @@ UIPasses.texture_uv = {
 	draw = function (ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt)
 		local uvs = ui_content.uvs
 		local texture = ui_content[pass_definition.texture_id or "texture_id"]
-		local color, masked, saturated, viewport_mask, point_sample = nil
+		local color, masked, saturated, viewport_mask, point_sample
 
 		if ui_style then
 			local texture_size = ui_style.texture_size
@@ -161,24 +165,27 @@ UIPasses.texture_uv = {
 
 		if pass_definition.retained_mode then
 			local retained_id = pass_definition.retained_mode and (pass_data.retained_id and pass_data.retained_id or true)
+
 			retained_id = UIRenderer_draw_texture_uv(ui_renderer, texture, position, size, uvs, color, masked, saturated, retained_id, point_sample, viewport_mask)
 			pass_data.retained_id = retained_id and retained_id or pass_data.retained_id
 			pass_data.dirty = false
 		else
 			UIRenderer_draw_texture_uv(ui_renderer, texture, position, size, uvs, color, masked, saturated, nil, point_sample, viewport_mask)
 		end
-	end
+	end,
 }
+
 local NilCursor = {
 	0,
 	0,
-	0
+	0,
 }
+
 UIPasses.texture_uv_dynamic_color_uvs_size_offset = {
 	init = function (pass_definition)
 		if pass_definition.retained_mode then
 			return {
-				dirty = true
+				dirty = true,
 			}
 		end
 
@@ -194,13 +201,8 @@ UIPasses.texture_uv_dynamic_color_uvs_size_offset = {
 		end
 	end,
 	draw = function (ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, widget_size, input_service, dt)
-		if pass_definition.content_id then
-			ui_content = ui_content[pass_definition.content_id] or ui_content
-		end
-
-		if pass_definition.style_id then
-			ui_style = ui_style[pass_definition.style_id] or ui_style
-		end
+		ui_content = pass_definition.content_id and ui_content[pass_definition.content_id] or ui_content
+		ui_style = pass_definition.style_id and ui_style[pass_definition.style_id] or ui_style
 
 		local color, uvs, size, offset = pass_definition.dynamic_function(ui_content, ui_style, widget_size, dt, ui_renderer)
 		local texture_index = ui_content.texture_index
@@ -212,6 +214,7 @@ UIPasses.texture_uv_dynamic_color_uvs_size_offset = {
 
 		if pass_definition.retained_mode then
 			local retained_id = pass_definition.retained_mode and (pass_data.retained_id and pass_data.retained_id or true)
+
 			retained_id = UIRenderer_draw_texture_uv(ui_renderer, texture, position, size, uvs, color, ui_style and ui_style.masked, ui_style and ui_style.saturated, retained_id)
 			pass_data.retained_id = retained_id and retained_id or pass_data.retained_id
 			pass_data.dirty = false
@@ -220,13 +223,15 @@ UIPasses.texture_uv_dynamic_color_uvs_size_offset = {
 		end
 
 		return UIRenderer_draw_texture_uv(ui_renderer, texture, position, size, uvs, color, ui_style and ui_style.masked, ui_style and ui_style.saturated)
-	end
+	end,
 }
+
 local element_alignment_position = {
 	0,
 	0,
-	0
+	0,
 }
+
 UIPasses.list_pass = {
 	init = function (pass_definition)
 		local passes = pass_definition.passes
@@ -239,7 +244,7 @@ UIPasses.list_pass = {
 
 		return {
 			num_passes = num_passes,
-			sub_pass_datas = sub_pass_datas
+			sub_pass_datas = sub_pass_datas,
 		}
 	end,
 	draw = function (ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt)
@@ -258,9 +263,11 @@ UIPasses.list_pass = {
 		local pass_position = FrameTable.alloc_table()
 		local columns = ui_style.columns
 		local column_offset = ui_style.column_offset
+
 		element_alignment_position[1] = position[1]
 		element_alignment_position[2] = position[2]
 		element_alignment_position[3] = position[3]
+
 		local start_index = ui_style.start_index
 		local num_draws = ui_style.num_draws - 1
 		local stop_index = math.min(start_index + num_draws, num_list_elements)
@@ -286,23 +293,25 @@ UIPasses.list_pass = {
 		element_position[1] = element_alignment_position[1]
 		element_position[2] = element_alignment_position[2]
 		element_position[3] = element_alignment_position[3]
-		local index = 0
-		local row_count = 0
+
+		local index, row_count = 0, 0
 
 		if IS_PS4 then
-			row_count = math.max(start_index - 1, 0)
-			index = 0
+			index, row_count = 0, math.max(start_index - 1, 0)
 		end
 
-		local change_row = nil
+		local change_row
 
 		for i = start_index, stop_index do
 			index = index + 1
+
 			local element_content = ui_content[i]
+
 			element_content.parent = ui_content.parent
+
 			local element_style = ui_style.item_styles and ui_style.item_styles[i] or ui_style
 			local element_list_member_offset = element_style.list_member_offset
-			local column_index = nil
+			local column_index
 
 			if columns then
 				column_index = index % columns
@@ -342,9 +351,10 @@ UIPasses.list_pass = {
 				pass_position[1] = element_position[1]
 				pass_position[2] = element_position[2]
 				pass_position[3] = element_position[3]
+
 				local sub_pass_definition = passes[j]
 				local sub_pass_content_id = sub_pass_definition.content_id
-				local pass_element_content = nil
+				local pass_element_content
 
 				if sub_pass_content_id then
 					pass_element_content = element_content[sub_pass_content_id]
@@ -387,13 +397,13 @@ UIPasses.list_pass = {
 				row_count = row_count + 1
 			end
 		end
-	end
+	end,
 }
 UIPasses.gradient_mask_texture = {
 	init = function (pass_definition)
 		if pass_definition.retained_mode then
 			return {
-				dirty = true
+				dirty = true,
 			}
 		end
 	end,
@@ -407,7 +417,7 @@ UIPasses.gradient_mask_texture = {
 		end
 	end,
 	draw = function (ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt)
-		local color = nil
+		local color
 		local masked = false
 		local gradient_threshold = 1
 
@@ -439,19 +449,20 @@ UIPasses.gradient_mask_texture = {
 
 		if pass_definition.retained_mode then
 			local retained_id = pass_definition.retained_mode and (pass_data.retained_id and pass_data.retained_id or true)
+
 			retained_id = UIRenderer.draw_gradient_mask_texture(ui_renderer, ui_content[texture_id], position, size, color, masked, gradient_threshold, retained_id)
 			pass_data.retained_id = retained_id and retained_id or pass_data.retained_id
 			pass_data.dirty = false
 		else
 			UIRenderer.draw_gradient_mask_texture(ui_renderer, ui_content[texture_id], position, size, color, masked, gradient_threshold)
 		end
-	end
+	end,
 }
 UIPasses.texture_frame = {
 	init = function (pass_definition, content, style)
 		if pass_definition.retained_mode then
 			return {
-				dirty = true
+				dirty = true,
 			}
 		end
 
@@ -471,7 +482,7 @@ UIPasses.texture_frame = {
 		end
 	end,
 	draw = function (ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt)
-		local texture_size, texture_sizes, color, masked, saturated, only_corners, skip_background, use_tiling, mirrored_tiling, gui_position, gui_size = nil
+		local texture_size, texture_sizes, color, masked, saturated, only_corners, skip_background, use_tiling, mirrored_tiling, gui_position, gui_size
 		local texture_id = pass_definition.texture_id or "texture_id"
 
 		if ui_style then
@@ -521,19 +532,20 @@ UIPasses.texture_frame = {
 
 		if pass_definition.retained_mode then
 			local retained_ids = pass_definition.retained_mode and (pass_data.retained_ids and pass_data.retained_ids or true)
+
 			retained_ids = UIRenderer.draw_texture_frame(ui_renderer, gui_position, gui_size, ui_content[texture_id], texture_size, texture_sizes, color, masked, saturated, only_corners, use_tiling, mirrored_tiling, skip_background, retained_ids)
 			pass_data.retained_ids = retained_ids and retained_ids or pass_data.retained_ids
 			pass_data.dirty = false
 		else
 			return UIRenderer.draw_texture_frame(ui_renderer, gui_position, gui_size, ui_content[texture_id], texture_size, texture_sizes, color, masked, saturated, only_corners, use_tiling, mirrored_tiling, skip_background)
 		end
-	end
+	end,
 }
 UIPasses.shader_tiled_texture = {
 	init = function (pass_definition)
 		if pass_definition.retained_mode then
 			return {
-				dirty = true
+				dirty = true,
 			}
 		end
 	end,
@@ -547,7 +559,7 @@ UIPasses.shader_tiled_texture = {
 		end
 	end,
 	draw = function (ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt)
-		local color, masked, saturated = nil
+		local color, masked, saturated
 		local texture_id = pass_definition.texture_id or "texture_id"
 
 		if ui_style then
@@ -597,20 +609,21 @@ UIPasses.shader_tiled_texture = {
 
 		if pass_definition.retained_mode then
 			local retained_id = pass_definition.retained_mode and (pass_data.retained_id and pass_data.retained_id or true)
+
 			retained_id = UIRenderer_draw_texture(ui_renderer, ui_content[texture_id], position, size, color, masked, saturated, retained_id)
 			pass_data.retained_id = retained_id and retained_id or pass_data.retained_id
 			pass_data.dirty = false
 		else
 			UIRenderer_draw_texture(ui_renderer, ui_content[texture_id], position, size, color, masked, saturated)
 		end
-	end
+	end,
 }
 UIPasses.tiled_texture = {
 	init = function (pass_definition)
 		return nil
 	end,
 	draw = function (ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt)
-		local texture_tiling_size, color, masked, saturated = nil
+		local texture_tiling_size, color, masked, saturated
 
 		if ui_style then
 			local texture_size = ui_style.texture_size
@@ -642,13 +655,13 @@ UIPasses.tiled_texture = {
 		local texture_id = pass_definition.texture_id or "texture_id"
 
 		return UIRenderer.draw_tiled_texture(ui_renderer, ui_content[texture_id], position, size, texture_tiling_size, color, masked, saturated)
-	end
+	end,
 }
 UIPasses.multi_texture = {
 	init = function (pass_definition, content, style)
 		if pass_definition.retained_mode then
 			return {
-				dirty = true
+				dirty = true,
 			}
 		end
 
@@ -676,19 +689,20 @@ UIPasses.multi_texture = {
 
 		if pass_definition.retained_mode then
 			local retained_ids = pass_definition.retained_mode and (pass_data.retained_ids and pass_data.retained_ids or true)
+
 			retained_ids = UIRenderer.draw_multi_texture(ui_renderer, ui_content[pass_definition.texture_id], position, texture_size, texture_sizes, texture_offsets, ui_style.tile_sizes, ui_style.axis, ui_style.spacing, ui_style.direction, ui_style.draw_count, ui_style.texture_colors, ui_style.color, ui_style.masked, ui_style and ui_style.texture_saturation, ui_style and ui_style.saturated, retained_ids)
 			pass_data.retained_ids = retained_ids and retained_ids or pass_data.retained_ids
 			pass_data.dirty = false
 		else
 			return UIRenderer.draw_multi_texture(ui_renderer, ui_content[pass_definition.texture_id], position, texture_size, texture_sizes, texture_offsets, ui_style.tile_sizes, ui_style.axis, ui_style.spacing, ui_style.direction, ui_style.draw_count, ui_style.texture_colors, ui_style.color, ui_style.masked, ui_style and ui_style.texture_saturation, ui_style and ui_style.saturated)
 		end
-	end
+	end,
 }
 UIPasses.centered_texture_amount = {
 	init = function (pass_definition)
 		if pass_definition.retained_mode then
 			return {
-				dirty = true
+				dirty = true,
 			}
 		end
 
@@ -722,19 +736,20 @@ UIPasses.centered_texture_amount = {
 
 		if pass_definition.retained_mode then
 			local retained_ids = pass_definition.retained_mode and (pass_data.retained_ids and pass_data.retained_ids or true)
+
 			retained_ids = UIRenderer.draw_centered_texture_amount(ui_renderer, ui_content[pass_definition.texture_id], position, size, texture_size, num_of_textures, texture_axis, ui_style and ui_style.spacing, ui_style and ui_style.color, ui_style and ui_style.texture_colors, ui_style and ui_style.masked, retained_ids)
 			pass_data.retained_ids = retained_ids and retained_ids or pass_data.retained_ids
 			pass_data.dirty = false
 		else
 			return UIRenderer.draw_centered_texture_amount(ui_renderer, ui_content[pass_definition.texture_id], position, size, texture_size, num_of_textures, texture_axis, ui_style and ui_style.spacing, ui_style and ui_style.color, ui_style and ui_style.texture_colors, ui_style and ui_style.masked)
 		end
-	end
+	end,
 }
 UIPasses.rotated_texture = {
 	init = function (pass_definition)
 		if pass_definition.retained_mode then
 			return {
-				dirty = true
+				dirty = true,
 			}
 		end
 	end,
@@ -750,7 +765,7 @@ UIPasses.rotated_texture = {
 	draw = function (ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt)
 		local texture_id = pass_definition.texture_id or "texture_id"
 		local texture = ui_content[texture_id]
-		local angle, pivot, color, uvs = nil
+		local angle, pivot, color, uvs
 		local masked = false
 
 		if ui_style then
@@ -781,20 +796,21 @@ UIPasses.rotated_texture = {
 
 		if pass_definition.retained_mode then
 			local retained_id = pass_definition.retained_mode and (pass_data.retained_id and pass_data.retained_id or true)
+
 			retained_id = UIRenderer.draw_texture_rotated(ui_renderer, texture, size, position, angle, pivot, color, uvs, masked, retained_id)
 			pass_data.retained_id = retained_id and retained_id or pass_data.retained_id
 			pass_data.dirty = false
 		else
 			UIRenderer.draw_texture_rotated(ui_renderer, texture, size, position, angle, pivot, color, uvs, masked)
 		end
-	end
+	end,
 }
 UIPasses.rounded_background = {
 	init = function (pass_definition)
 		return nil
 	end,
 	draw = function (ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt)
-		local corner_radius, color = nil
+		local corner_radius, color
 
 		if ui_style then
 			local rect_size = ui_style.rect_size
@@ -820,13 +836,13 @@ UIPasses.rounded_background = {
 		end
 
 		return UIRenderer.draw_rounded_rect(ui_renderer, position, size, corner_radius, color)
-	end
+	end,
 }
 UIPasses.triangle = {
 	init = function (pass_definition)
 		if pass_definition.retained_mode then
 			return {
-				dirty = true
+				dirty = true,
 			}
 		end
 	end,
@@ -862,50 +878,53 @@ UIPasses.triangle = {
 
 		if pass_definition.retained_mode then
 			local retained_id = pass_definition.retained_mode and (pass_data.retained_id and pass_data.retained_id or true)
+
 			retained_id = UIRenderer.draw_triangle(ui_renderer, position, size, ui_style, retained_id)
 			pass_data.retained_id = retained_id and retained_id or pass_data.retained_id
 			pass_data.dirty = false
 		else
 			UIRenderer.draw_triangle(ui_renderer, position, size, ui_style)
 		end
-	end
+	end,
 }
+
 local cursor_value_type_name = "Vector3"
+
 UIPasses.scrollbar_hotspot = {
 	init = function (pass_definition)
 		return {
 			content_id = pass_definition.content_id,
 			scrollbar_size = {
 				0,
-				0
+				0,
 			},
 			scrollbar_position = {
 				0,
 				0,
-				0
+				0,
 			},
 			hotspot_size = {
 				0,
-				0
+				0,
 			},
 			hotspot_position = {
 				0,
 				0,
-				0
+				0,
 			},
 			scroll_area_position = {
 				0,
 				0,
-				0
+				0,
 			},
 			start_move_pos = {
 				math.huge,
-				math.huge
-			}
+				math.huge,
+			},
 		}
 	end,
 	draw = function (ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt)
-		local is_hover = nil
+		local is_hover
 		local cursor_name = "cursor"
 		local cursor_stack = ShowCursorStack.stack_depth
 		local has_cursor = input_service and input_service:has(cursor_name)
@@ -916,7 +935,7 @@ UIPasses.scrollbar_hotspot = {
 		end
 
 		local gamepad_active = Managers.input:is_device_active("gamepad")
-		local cursor_position = nil
+		local cursor_position
 
 		if gamepad_active then
 			cursor_position = cursor
@@ -925,35 +944,48 @@ UIPasses.scrollbar_hotspot = {
 		end
 
 		local hotspot_position = pass_data.hotspot_position
+
 		hotspot_position[1] = position[1]
 		hotspot_position[2] = position[2]
 		hotspot_position[3] = position[3]
+
 		local hotspot_size = pass_data.hotspot_size
+
 		hotspot_size[1] = size[1]
 		hotspot_size[2] = size[2]
 
 		if ui_style.hotspot_width_modifier then
 			local size_x = hotspot_size[1] * ui_style.hotspot_width_modifier
+
 			hotspot_size[1] = size_x
 			hotspot_position[1] = hotspot_position[1] - size_x / 2 + size[1] / 2
 		end
 
 		is_hover = math.point_is_inside_2d_box(cursor_position, hotspot_position, hotspot_size)
 		ui_content.is_hover = is_hover
+
 		local percentage = ui_content.percentage
 		local scrollbar_size = pass_data.scrollbar_size
+
 		scrollbar_size[1] = hotspot_size[1]
+
 		local scrollbar_height = math.max(ui_style.min_scrollbar_height, hotspot_size[2] * percentage)
+
 		scrollbar_size[2] = scrollbar_height
+
 		local scroll_value = ui_content.scroll_value
 		local bar_move_area = hotspot_size[2] - scrollbar_height
 		local scrollbar_offset_y = bar_move_area * scroll_value
 		local scrollbar_position = pass_data.scrollbar_position
+
 		scrollbar_position[1] = hotspot_position[1]
 		scrollbar_position[2] = hotspot_position[2] + scrollbar_offset_y
 		scrollbar_position[3] = hotspot_position[3] + 1
+
 		local is_hover_scrollbar = math.point_is_inside_2d_box(cursor_position, scrollbar_position, scrollbar_size)
+
 		ui_content.is_hover_scrollbar = is_hover_scrollbar
+
 		local left_hold = input_service and input_service:get("left_hold")
 
 		if is_hover_scrollbar then
@@ -969,7 +1001,7 @@ UIPasses.scrollbar_hotspot = {
 			ui_content.holding = true
 		end
 
-		local target_value = nil
+		local target_value
 
 		if ui_content.holding then
 			if not left_hold then
@@ -981,10 +1013,12 @@ UIPasses.scrollbar_hotspot = {
 				local diff_y = cursor_y - start_y
 				local delta = diff_y / bar_move_area
 				local og_value = ui_content.og_scroll_value
+
 				target_value = math.clamp(og_value + delta, 0, 1)
 			else
 				local cursor_y = cursor[2]
 				local y_diff = cursor_y - hotspot_position[2]
+
 				target_value = math.clamp(y_diff / bar_move_area, 0, 1)
 			end
 		end
@@ -995,6 +1029,7 @@ UIPasses.scrollbar_hotspot = {
 
 		if not target_value and scroll_area_size then
 			local scroll_area_offset = ui_style.scroll_area_offset
+
 			scroll_area_position[1] = hotspot_position[1] + scroll_area_offset[1]
 			scroll_area_position[2] = hotspot_position[2] + scroll_area_offset[2]
 			scroll_area_position[3] = hotspot_position[3] + scroll_area_offset[3]
@@ -1004,6 +1039,7 @@ UIPasses.scrollbar_hotspot = {
 				local scroll_axis = input_service:get("scroll_axis")
 				local y = scroll_axis[2]
 				local move = ui_content.scroll_amount * y
+
 				target_value = math.clamp(ui_content.scroll_value + move, 0, 1)
 			end
 		end
@@ -1018,14 +1054,14 @@ UIPasses.scrollbar_hotspot = {
 					128,
 					0,
 					255,
-					0
+					0,
 				})
 			else
 				UIRenderer.draw_rect(ui_renderer, Vector3(hotspot_position[1], hotspot_position[2], hotspot_position[3] + 1), hotspot_size, {
 					60,
 					255,
 					0,
-					0
+					0,
 				})
 			end
 
@@ -1034,14 +1070,14 @@ UIPasses.scrollbar_hotspot = {
 					128,
 					0,
 					255,
-					0
+					0,
 				})
 			else
 				UIRenderer.draw_rect(ui_renderer, Vector3(scrollbar_position[1], scrollbar_position[2], scrollbar_position[3] + 1), scrollbar_size, {
 					60,
 					255,
 					0,
-					0
+					0,
 				})
 			end
 
@@ -1050,18 +1086,18 @@ UIPasses.scrollbar_hotspot = {
 					128,
 					0,
 					255,
-					0
+					0,
 				})
 			else
 				UIRenderer.draw_rect(ui_renderer, Vector3(scroll_area_position[1], scroll_area_position[2], scroll_area_position[3] + 1), scroll_area_size, {
 					60,
 					255,
 					0,
-					0
+					0,
 				})
 			end
 		end
-	end
+	end,
 }
 UIPasses.scrollbar = {
 	init = function (pass_definition)
@@ -1069,13 +1105,13 @@ UIPasses.scrollbar = {
 			content_id = pass_definition.content_id,
 			scrollbar_size = {
 				0,
-				0
+				0,
 			},
 			scrollbar_position = {
 				0,
 				0,
-				0
-			}
+				0,
+			},
 		}
 	end,
 	draw = function (ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt)
@@ -1083,19 +1119,24 @@ UIPasses.scrollbar = {
 
 		local percentage = ui_content.percentage
 		local scrollbar_size = pass_data.scrollbar_size
+
 		scrollbar_size[1] = size[1]
+
 		local scrollbar_height = math.max(ui_style.min_scrollbar_height, size[2] * percentage)
+
 		scrollbar_size[2] = scrollbar_height
+
 		local scroll_value = ui_content.scroll_value
 		local bar_move_area = size[2] - scrollbar_height
 		local scrollbar_offset_y = bar_move_area * scroll_value
 		local scrollbar_position = pass_data.scrollbar_position
+
 		scrollbar_position[1] = position[1]
 		scrollbar_position[2] = position[2] + scrollbar_offset_y
 		scrollbar_position[3] = position[3] + 1
 
 		UIRenderer.draw_rect(ui_renderer, scrollbar_position, scrollbar_size, ui_style.scrollbar_color)
-	end
+	end,
 }
 UIPasses.rect_rotated = {
 	init = function (pass_definition)
@@ -1103,7 +1144,7 @@ UIPasses.rect_rotated = {
 	end,
 	draw = function (ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt)
 		local angle = 0
-		local pivot, color = nil
+		local pivot, color
 
 		if ui_style then
 			local texture_size = ui_style.texture_size
@@ -1130,7 +1171,7 @@ UIPasses.rect_rotated = {
 		end
 
 		return UIRenderer.draw_rect_rotated(ui_renderer, size, position, angle, pivot, color)
-	end
+	end,
 }
 UIPasses.video = {
 	init = function (pass_definition)
@@ -1138,8 +1179,9 @@ UIPasses.video = {
 	end,
 	draw = function (ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt)
 		local is_complete = UIRenderer.draw_video(ui_renderer, ui_content.material_name, position, size, ui_style.color, ui_content.video_player_reference, ui_content.video_player)
+
 		ui_content.video_completed = is_complete
-	end
+	end,
 }
 UIPasses.splash_video = {
 	init = function (pass_definition)
@@ -1147,8 +1189,9 @@ UIPasses.splash_video = {
 	end,
 	draw = function (ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt)
 		local is_complete = UIRenderer.draw_splash_video(ui_renderer, ui_content.material_name, position, size, ui_style.color, ui_content.video_player_reference, ui_content.video_player)
+
 		ui_content.video_completed = is_complete
-	end
+	end,
 }
 UIPasses.border = {
 	init = function (pass_definition)
@@ -1162,7 +1205,7 @@ UIPasses.border = {
 		UIRenderer.draw_rect(ui_renderer, lower_left_corner, Vector3(size.x, thickness, 0), ui_style.color)
 		UIRenderer.draw_rect(ui_renderer, lower_left_corner + Vector3(size.x - thickness, 0, 0), Vector3(thickness, size.y, 0), ui_style.color)
 		UIRenderer.draw_rect(ui_renderer, lower_left_corner + Vector3(0, size.y - thickness, 0), Vector3(size.x, thickness, 0), ui_style.color)
-	end
+	end,
 }
 
 local function get_position_offset(text_width, font_height, font_min, font_max, size, origin, data)
@@ -1172,6 +1215,7 @@ local function get_position_offset(text_width, font_height, font_min, font_max, 
 		offset = Vector3(size[1] - text_width, 0, 0)
 	elseif data.horizontal_alignment == "center" then
 		local x_offset = (size[1] - text_width) / 2
+
 		offset = Vector3(x_offset - origin.x, 0, 0)
 	end
 
@@ -1179,9 +1223,11 @@ local function get_position_offset(text_width, font_height, font_min, font_max, 
 
 	if data.vertical_alignment == "center" then
 		local y_offset = (size[2] - font_height * inv_scale * 0.5) / 2
+
 		offset = offset + Vector3(0, y_offset, 0)
 	elseif data.vertical_alignment == "top" then
 		local y_offset = size[2] - font_max * inv_scale
+
 		offset = offset + Vector3(0, y_offset, 0)
 	else
 		offset.y = offset.y + math.abs(font_min) * inv_scale
@@ -1200,13 +1246,14 @@ local formatted_emojis_array = {}
 local channel_key_size_array = {}
 local base_str = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890"
 local format_directive_color_string = "{#color(%d,%d,%d)}"
+
 UIPasses.text_area_chat = {
 	init = function (pass_definition)
 		assert(pass_definition.text_id)
 
 		return {
 			irc_channel_colors = table.clone(IRC_CHANNEL_COLORS),
-			text_id = pass_definition.text_id
+			text_id = pass_definition.text_id,
 		}
 	end,
 	draw = function (ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt)
@@ -1225,13 +1272,12 @@ UIPasses.text_area_chat = {
 
 		local w, h = Gui.resolution()
 		local current_format = w .. ":" .. h .. "-" .. ui_style.font_size
-		local font_material, font_size, font_name = nil
+		local font_material, font_size, font_name
 
 		if ui_style.font_type then
 			local font, size_of_font = UIFontByResolution(ui_style)
-			font_name = ui_style.font_type
-			font_size = size_of_font
-			font_material = font[1]
+
+			font_material, font_size, font_name = font[1], size_of_font, ui_style.font_type
 		end
 
 		local row_size = Vector3(size.x, font_size, size.z)
@@ -1274,25 +1320,30 @@ UIPasses.text_area_chat = {
 			local channel_string = message_table.channel_string or ""
 
 			if formatted ~= current_format then
-				local message_text = nil
+				local message_text
 
 				if channel_string ~= "" then
 					local channel_color = is_enemy and {
 						255,
 						237,
 						48,
-						48
+						48,
 					} or {
 						255,
 						53,
 						161,
-						212
+						212,
 					}
+
 					channel_color = string.format(format_directive_color_string, channel_color[2], channel_color[3], channel_color[4])
 					channel_string = channel_color .. channel_string
 				end
 
-				default_color = default_color and type(default_color) == "table" and string.format(format_directive_color_string, default_color[2], default_color[3], default_color[4]) or default_color or string.format(format_directive_color_string, color_text[2], color_text[3], color_text[4])
+				if default_color and type(default_color) == "table" then
+					default_color = string.format(format_directive_color_string, default_color[2], default_color[3], default_color[4])
+				else
+					default_color = default_color or string.format(format_directive_color_string, color_text[2], color_text[3], color_text[4])
+				end
 
 				if is_system then
 					if color_name_system and type(color_name_system) == "table" then
@@ -1312,6 +1363,7 @@ UIPasses.text_area_chat = {
 					end
 
 					local player_name_color = channel_string ~= "" and "" or color_name
+
 					message_text = channel_string .. player_name_color .. sender .. default_color .. message
 				end
 
@@ -1325,11 +1377,12 @@ UIPasses.text_area_chat = {
 				end
 
 				local split_message = UIRenderer.word_wrap(ui_renderer, text_to_split, font_material, font_size, size[1], nil, font_name)
-				local formatted_emojis = nil
+				local formatted_emojis
 				local formatted_message_array = table.clone(split_message)
 
 				if emojis then
-					local formatted_message, formatted_row = nil
+					local formatted_message, formatted_row
+
 					formatted_emojis = {}
 
 					for _, emoji_data in ipairs(emojis) do
@@ -1348,14 +1401,17 @@ UIPasses.text_area_chat = {
 								local blank_area = "      "
 								local str = string.gsub(substr, "{#.-}", "")
 								local width = UIUtils.get_text_width(ui_renderer, ui_style, str)
+
 								formatted_emojis[row] = formatted_emojis[row] or {}
 								formatted_emojis[row][#formatted_emojis[row] + 1] = {
 									data = emoji_data,
 									offset_x = width,
 									offset_y = -ui_style.emoji_size[2] * 0.3,
-									size = ui_style.emoji_size
+									size = ui_style.emoji_size,
 								}
+
 								local cropped_msg = string.gsub(split_msg, indicator, blank_area, 1)
+
 								formatted_message = cropped_msg
 								formatted_row = row
 
@@ -1377,7 +1433,9 @@ UIPasses.text_area_chat = {
 			local formatted_message_array = message_table.formatted_message_array
 			local formatted_emojis = message_table.formatted_emojis
 			local n_rows = #formatted_message_array
+
 			num_texts = num_texts + n_rows
+
 			local row = #message_array + 1
 
 			for j = 1, n_rows do
@@ -1399,6 +1457,7 @@ UIPasses.text_area_chat = {
 					end
 
 					local x, _, _ = UIRenderer.text_size(ui_renderer, channel_string, font_material, font_size)
+
 					channel_key_size_array[row] = x
 				end
 
@@ -1408,6 +1467,7 @@ UIPasses.text_area_chat = {
 
 				if formatted_emojis and formatted_emojis[j] then
 					local formatted_emojis_data = formatted_emojis[j]
+
 					formatted_emojis_array[row] = formatted_emojis_data
 				end
 
@@ -1425,12 +1485,14 @@ UIPasses.text_area_chat = {
 		end
 
 		num_texts_to_draw = math.min(num_texts_to_draw, num_texts)
+
 		local vertical_alignment = ui_style.vertical_alignment
 
 		if vertical_alignment == "top" then
 			position = position + Vector3(0, size[2], 0)
 		elseif vertical_alignment == "bottom" then
 			local text_area_draw_height = (ui_style.font_size + spacing) * (num_texts_to_draw - 1)
+
 			position = position + Vector3(0, text_area_draw_height - minimum[2], 0)
 		end
 
@@ -1439,6 +1501,7 @@ UIPasses.text_area_chat = {
 		local num_texts_to_scale_on = (1 - percent_num_texts_to_draw) * num_texts
 		local start_index = math.modf((1 + num_texts_to_scale_on) * text_start_offset)
 		local stop_index = math.min(num_texts, start_index + num_texts_to_draw)
+
 		start_index = math.max(1, stop_index - num_texts_to_draw + 1)
 
 		for i = start_index, stop_index do
@@ -1472,8 +1535,9 @@ UIPasses.text_area_chat = {
 
 			position.y = position.y - ui_style.font_size - spacing
 		end
-	end
+	end,
 }
+
 local FINAL_REPLACEMENT_STR_LIST = {}
 local REPLACEMENT_STR_LIST = {}
 local INPUT_ACTIONS = {}
@@ -1493,8 +1557,10 @@ local function extract_button_data_from_text(ui_renderer, ui_style, input_text, 
 	end
 
 	local gamepad_active = Managers.input and Managers.input:is_device_active("gamepad")
-	local _ = nil
+	local _
+
 	_, INPUT_ACTIONS, _, INPUT_SERVICE_NAMES = Managers.localizer:get_input_action(text)
+
 	local inv_scale = RESOLUTION_LOOKUP.inv_scale
 
 	if INPUT_ACTIONS[1] then
@@ -1505,8 +1571,7 @@ local function extract_button_data_from_text(ui_renderer, ui_style, input_text, 
 			local input_action = INPUT_ACTIONS[i]
 			local input_service_name = INPUT_SERVICE_NAMES[i]
 			local font, size_of_font = UIFontByResolution(ui_style)
-			local font_material = font[1]
-			local font_size = size_of_font
+			local font_material, font_size = font[1], size_of_font
 			local replacement_width = UIRenderer.text_size(ui_renderer, "½", font_material, font_size)
 			local test_width = UIRenderer.text_size(ui_renderer, "½ ", font_material, font_size)
 			local final_replacement_width = test_width - replacement_width
@@ -1514,8 +1579,11 @@ local function extract_button_data_from_text(ui_renderer, ui_style, input_text, 
 			if gamepad_active then
 				local button_width = font_size * inv_scale
 				local final_replacement_str_iterator = math.ceil(button_width / final_replacement_width) + 1
+
 				FINAL_REPLACEMENT_STR_LIST[i] = string.rep(" ", final_replacement_str_iterator)
+
 				local replacement_str_iterator = math.ceil(button_width / replacement_width) + 1
+
 				REPLACEMENT_STR_LIST[i] = string.rep("½", replacement_str_iterator)
 			else
 				local _, _, keymap_binding, unassigned = UISettings.get_gamepad_input_texture_data(Managers.input:get_service(input_service_name), input_action, gamepad_active)
@@ -1523,15 +1591,21 @@ local function extract_button_data_from_text(ui_renderer, ui_style, input_text, 
 				if not keymap_binding or not unassigned and keymap_binding[1] == "mouse" then
 					local button_width = font_size * inv_scale
 					local final_replacement_str_iterator = math.ceil(button_width / final_replacement_width) + 1
+
 					FINAL_REPLACEMENT_STR_LIST[i] = string.rep(" ", final_replacement_str_iterator)
+
 					local replacement_str_iterator = math.ceil(button_width / replacement_width) + 1
+
 					REPLACEMENT_STR_LIST[i] = string.rep("½", replacement_str_iterator)
 				else
 					local localized_button_name = Utf8.upper(unassigned and Localize(keymap_binding[2]) or Keyboard.button_name(keymap_binding[2]) or Localize(UNASSIGNED_KEY))
 					local text_width = UIRenderer.text_size(ui_renderer, localized_button_name, font_material, font_size) + font_size * inv_scale
 					local final_replacement_str_iterator = math.ceil(text_width / final_replacement_width)
+
 					FINAL_REPLACEMENT_STR_LIST[i] = string.rep(" ", final_replacement_str_iterator)
+
 					local replacement_str_iterator = math.ceil(text_width / replacement_width)
+
 					REPLACEMENT_STR_LIST[i] = string.rep("½", replacement_str_iterator)
 				end
 			end
@@ -1559,7 +1633,7 @@ local BUTTON_COLOR = {
 	0,
 	255,
 	255,
-	255
+	255,
 }
 
 local function render_buttons_in_text(ui_renderer, text, font_material, font_size, font_name, position, ui_style)
@@ -1595,7 +1669,9 @@ local function render_buttons_in_text(ui_renderer, text, font_material, font_siz
 			local button_texture_data, _, keymap_binding, unassigned = UISettings.get_gamepad_input_texture_data(Managers.input:get_service(input_service), input_action, gamepad_active)
 			local substr = string.sub(text, 1, math.max(start_idx, 2))
 			local length = UIRenderer.text_size(ui_renderer, substr, font_material, font_size)
+
 			length = start_idx > 1 and length or 0
+
 			local pos = position + Vector3(length - font_size * inv_scale * 0.25, -font_size * inv_scale * 0.25, 0)
 
 			if not ui_style.skip_button_rendering then
@@ -1612,6 +1688,7 @@ local function render_buttons_in_text(ui_renderer, text, font_material, font_siz
 				elseif not keymap_binding or not unassigned and keymap_binding[1] == "mouse" then
 					if button_texture_data then
 						local height_multiplier = button_texture_data.size[2] / button_texture_data.size[1]
+
 						BUTTON_COLOR[1] = ui_style.text_color[1]
 
 						UIRenderer_draw_texture(ui_renderer, button_texture_data.texture, pos, Vector2(font_size * inv_scale, font_size * inv_scale * height_multiplier), BUTTON_COLOR, ui_style.masked, ui_style.saturated)
@@ -1632,7 +1709,7 @@ local function render_buttons_in_text(ui_renderer, text, font_material, font_siz
 						ui_style.text_color[1],
 						255,
 						255,
-						255
+						255,
 					}, ui_style.masked, ui_style.saturated)
 
 					texture_pos[1] = texture_pos[1] + left_part.size[1] * size_multiplier
@@ -1641,7 +1718,7 @@ local function render_buttons_in_text(ui_renderer, text, font_material, font_siz
 						ui_style.text_color[1],
 						255,
 						255,
-						255
+						255,
 					}, ui_style.masked, ui_style.saturated)
 
 					local text_pos = position + Vector3(length + left_part.size[1] * 0.3 * size_multiplier + left_part.size[1] * 0.3 * size_multiplier, 0, 1)
@@ -1653,17 +1730,17 @@ local function render_buttons_in_text(ui_renderer, text, font_material, font_siz
 					UIRenderer_draw_texture_uv(ui_renderer, left_part.texture, texture_pos, Vector2(left_part.size[1] * size_multiplier, left_part.size[2] * size_multiplier), {
 						{
 							1,
-							0
+							0,
 						},
 						{
 							0,
-							1
-						}
+							1,
+						},
 					}, {
 						ui_style.text_color[1],
 						255,
 						255,
-						255
+						255,
 					}, ui_style.masked, ui_style.saturated)
 				end
 			end
@@ -1712,7 +1789,7 @@ local function get_line_color_override(line_index, line_length, line_global_star
 				local end_index = override.end_index + line_break_adjustment
 
 				if start_index <= line_global_start_index + line_length then
-					local line_start_index, line_end_index = nil
+					local line_start_index, line_end_index
 					local color_whole_line = start_index <= line_global_start_index and end_index >= line_global_start_index + line_length
 
 					if color_whole_line then
@@ -1734,6 +1811,7 @@ local function get_line_color_override(line_index, line_length, line_global_star
 						end
 
 						local line_color_values = line_color_override[k]
+
 						line_color_values.color = Color(color[1], color[2], color[3], color[4])
 						line_color_values.start_index = line_start_index
 						line_color_values.end_index = line_end_index
@@ -1761,7 +1839,7 @@ UIPasses.text = {
 
 		return {
 			text_id = pass_definition.text_id,
-			dirty = pass_definition.retained_mode and true or nil
+			dirty = pass_definition.retained_mode and true or nil,
 		}
 	end,
 	destroy = function (ui_renderer, pass_data, pass_definition)
@@ -1778,13 +1856,13 @@ UIPasses.text = {
 		end
 	end,
 	draw = function (ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt)
-		local retained_ids = nil
+		local retained_ids
 
 		if pass_definition.retained_mode then
 			retained_ids = pass_data.retained_ids and pass_data.retained_ids or true
 		end
 
-		local new_retained_ids = nil
+		local new_retained_ids
 
 		if retained_ids == true then
 			new_retained_ids = {}
@@ -1805,13 +1883,21 @@ UIPasses.text = {
 		end
 
 		local original_text = text
+
 		text = extract_button_data_from_text(ui_renderer, ui_style, ui_content[pass_data.text_id], original_text)
+
 		local default_font_size = ui_style.font_size
 
 		if ui_style.word_wrap and ui_style.dynamic_font_size_word_wrap then
 			local recalculate = ui_style._dynamic_wraped_text ~= text or ui_style._dynamic_wraped_scale ~= RESOLUTION_LOOKUP.scale
-			local dynamic_wrap_font_size = nil
-			dynamic_wrap_font_size = recalculate and UIRenderer.scaled_font_size_by_area(ui_renderer, text, ui_style.area_size or size, ui_style) or ui_style._dynamic_wrap_font_size
+			local dynamic_wrap_font_size
+
+			if recalculate then
+				dynamic_wrap_font_size = UIRenderer.scaled_font_size_by_area(ui_renderer, text, ui_style.area_size or size, ui_style)
+			else
+				dynamic_wrap_font_size = ui_style._dynamic_wrap_font_size
+			end
+
 			ui_style.font_size = dynamic_wrap_font_size
 			ui_style._dynamic_wrap_font_size = dynamic_wrap_font_size
 			ui_style._dynamic_wraped_text = text
@@ -1820,13 +1906,12 @@ UIPasses.text = {
 			ui_style.font_size = UIRenderer.scaled_font_size_by_width(ui_renderer, text, (ui_style.area_size and ui_style.area_size[1] or size[1]) - 1, ui_style)
 		end
 
-		local font_material, font_size, font_name = nil
+		local font_material, font_size, font_name
 
 		if ui_style.font_type then
 			local font, size_of_font = UIFontByResolution(ui_style)
-			font_name = ui_style.font_type
-			font_size = size_of_font
-			font_material = font[1]
+
+			font_material, font_size, font_name = font[1], size_of_font, ui_style.font_type
 		end
 
 		if ui_style.word_wrap then
@@ -1868,8 +1953,9 @@ UIPasses.text = {
 
 			for i = 1, num_texts do
 				text = texts[i - 1 + text_start_index]
+
 				local text_length = text and UTF8Utils.string_length(text) or 0
-				local width = nil
+				local width
 
 				if horizontal_alignment ~= "left" then
 					width = UIRenderer.text_size(ui_renderer, text, font_material, font_size, size[2])
@@ -1878,10 +1964,7 @@ UIPasses.text = {
 
 				if ui_style.draw_text_rect then
 					width = width or UIRenderer.text_size(ui_renderer, text, font_material, font_size, size[2])
-
-					if max_text_width < width then
-						max_text_width = width or max_text_width
-					end
+					max_text_width = max_text_width < width and width or max_text_width
 				end
 
 				local color = ui_style.text_color
@@ -1901,7 +1984,9 @@ UIPasses.text = {
 				end
 
 				text = render_buttons_in_text(ui_renderer, text, font_material, font_size, font_name, position + alignment_offset, ui_style)
+
 				local retained_id = retained_ids and (new_retained_ids and true or retained_ids[i])
+
 				retained_id = UIRenderer.draw_text(ui_renderer, text, font_material, font_size, font_name, position + alignment_offset, color, retained_id, line_color_override)
 
 				if new_retained_ids then
@@ -1938,13 +2023,14 @@ UIPasses.text = {
 				text = string.rep(replacing_character, end_index)
 			end
 
-			local sub_string, sub_string_width = nil
+			local sub_string, sub_string_width
 			local jump_to_end = ui_content.jump_to_end
 
 			if jump_to_end then
 				start_index = end_index
 				ui_content.jump_to_end = nil
 				sub_string_width = 0
+
 				local end_found = true
 
 				while sub_string_width < size[1] do
@@ -1985,6 +2071,7 @@ UIPasses.text = {
 				local caret_position_x = UIRenderer.text_size(ui_renderer, caret_sub_string, font_material, font_size, font_name)
 				local caret_position = position + Vector3(caret_position_x + caret_offset[1], caret_offset[2], caret_offset[3])
 				local retained_id = retained_ids and (new_retained_ids and true or retained_ids[1])
+
 				retained_id = UIRenderer.draw_text(ui_renderer, caret_sub_string, font_material, font_size, font_name, position, ui_style.text_color, retained_id, ui_style.color_override)
 
 				if new_retained_ids then
@@ -1998,11 +2085,13 @@ UIPasses.text = {
 				end
 
 				local rest_string = string.sub(sub_string, #caret_sub_string + 1, #sub_string + 1)
+
 				position[1] = position[1] + caret_position_x
 
 				UIRenderer.draw_text(ui_renderer, rest_string, font_material, font_size, font_name, position, ui_style.text_color, retained_id, ui_style.color_override)
 			else
 				local retained_id = retained_ids and (new_retained_ids and true or retained_ids[1])
+
 				retained_id = UIRenderer.draw_text(ui_renderer, sub_string, font_material, font_size, font_name, position, ui_style.text_color, retained_id, ui_style.color_override)
 
 				if new_retained_ids then
@@ -2014,8 +2103,11 @@ UIPasses.text = {
 			local text_width, _, origin = UIRenderer.text_size(ui_renderer, text, font_material, font_size, font_name)
 			local offset = get_position_offset(text_width, font_height, font_min, font_max, size, origin, ui_style)
 			local new_position = position + offset
+
 			text = render_buttons_in_text(ui_renderer, text, font_material, font_size, font_name, new_position, ui_style)
+
 			local retained_id = retained_ids and (new_retained_ids and true or retained_ids[1])
+
 			retained_id = UIRenderer.draw_text(ui_renderer, text, font_material, font_size, font_name, new_position, ui_style.text_color, retained_id, ui_style.color_override)
 
 			if new_retained_ids then
@@ -2044,7 +2136,7 @@ UIPasses.text = {
 			text = Utf8.upper(text)
 		end
 
-		local width, height = nil
+		local width, height
 
 		if ui_style.word_wrap then
 			local _, font_min, font_max = UIGetFontHeight(ui_renderer.gui, font_type, scaled_font_size)
@@ -2053,6 +2145,7 @@ UIPasses.text = {
 			local max_texts = #texts
 			local num_texts = math.min(#texts - (text_start_index - 1), max_texts)
 			local inv_scale = RESOLUTION_LOOKUP.inv_scale
+
 			height = (font_max + math.abs(font_min)) * inv_scale * num_texts
 			width = ui_style.size[1]
 		else
@@ -2060,7 +2153,7 @@ UIPasses.text = {
 		end
 
 		return width, height
-	end
+	end,
 }
 
 local function draw_lorebook_texts(initial_retained_id, section, ui_renderer, position, font_material, font_size, font_name, text_color)
@@ -2090,7 +2183,7 @@ UIPasses.lorebook_multiple_texts = {
 
 		return {
 			text_id = pass_definition.text_id,
-			dirty = pass_definition.retained_mode and true or nil
+			dirty = pass_definition.retained_mode and true or nil,
 		}
 	end,
 	destroy = function (ui_renderer, pass_data, pass_definition)
@@ -2103,48 +2196,51 @@ UIPasses.lorebook_multiple_texts = {
 		end
 	end,
 	draw = function (ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt)
-		local retained_id = nil
+		local retained_id
 
 		if pass_definition.retained_mode then
 			retained_id = pass_data.retained_id and pass_data.retained_id or true
 		end
 
-		local font_material, font_size, font_name = nil
+		local font_material, font_size, font_name
 
 		if ui_style.font_type then
 			local font, size_of_font = UIFontByResolution(ui_style)
-			font_name = font[3]
-			font_size = size_of_font
-			font_material = font[1]
+
+			font_material, font_size, font_name = font[1], size_of_font, font[3]
 		else
 			local font = ui_style.font
-			font_name = font[3]
-			font_size = font[2]
-			font_material = font[1]
+
+			font_material, font_size, font_name = font[1], font[2], font[3]
 			font_size = ui_style.font_size or font_size
 		end
 
 		local text_color = ui_style.text_color
 		local page = ui_content.page
 		local top = page.top
+
 		position.y = position.y + size[2]
 		retained_id = draw_lorebook_texts(retained_id, top, ui_renderer, position, font_material, font_size, font_name, text_color)
+
 		local center = page.center
+
 		retained_id = draw_lorebook_texts(retained_id, center, ui_renderer, position, font_material, font_size, font_name, text_color)
+
 		local bottom = page.bottom
+
 		retained_id = draw_lorebook_texts(retained_id, bottom, ui_renderer, position, font_material, font_size, font_name, text_color)
 
 		if pass_definition.retained_mode then
 			pass_data.retained_id = retained_id or pass_data.retained_id
 			pass_data.dirty = false
 		end
-	end
+	end,
 }
 UIPasses.lorebook_paragraph_divider = {
 	init = function (pass_definition)
 		if pass_definition.retained_mode then
 			return {
-				dirty = true
+				dirty = true,
 			}
 		end
 	end,
@@ -2166,8 +2262,10 @@ UIPasses.lorebook_paragraph_divider = {
 		if pass_definition.retained_mode then
 			for i = 1, num_dividers do
 				position[2] = initial_y + divider_positions[i]
+
 				local texture = ui_content[texture_id][i]
 				local retained_id = pass_definition.retained_mode and (pass_data.retained_id and pass_data.retained_id or true)
+
 				retained_id = UIRenderer_draw_texture(ui_renderer, texture, position, size, ui_style and ui_style.color, ui_style and ui_style.masked, ui_style and ui_style.saturated, retained_id)
 				pass_data.retained_id = retained_id and retained_id or pass_data.retained_id
 				pass_data.dirty = false
@@ -2175,26 +2273,25 @@ UIPasses.lorebook_paragraph_divider = {
 		else
 			for i = 1, num_dividers do
 				position[2] = initial_y + divider_positions[i]
+
 				local texture = ui_content[texture_id][i]
 
 				UIRenderer_draw_texture(ui_renderer, texture, position, size, ui_style and ui_style.color, ui_style and ui_style.masked, ui_style and ui_style.saturated)
 			end
 		end
-	end
+	end,
 }
 UIPasses.multiple_texts = {
 	init = function (pass_definition)
 		assert(pass_definition.texts_id, "no text id in pass definition. YOU NEEDS IT.")
 
 		return {
-			texts_id = pass_definition.texts_id
+			texts_id = pass_definition.texts_id,
 		}
 	end,
 	draw = function (ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt)
 		local font, calculated_font_size = UIFontByResolution(ui_style)
-		local font_material = font[1]
-		local font_size = calculated_font_size
-		local font_name = font[3]
+		local font_material, font_size, font_name = font[1], calculated_font_size, font[3]
 		local texts = ui_content[pass_data.texts_id] and ui_content[pass_data.texts_id].texts or ui_content.texts
 		local axis = ui_style.axis or 2
 		local direction = ui_style.direction or 1
@@ -2254,31 +2351,28 @@ UIPasses.multiple_texts = {
 				position[1] = position[1] + size[1] + ui_style.spacing
 			end
 		end
-	end
+	end,
 }
 UIPasses.viewport = {
 	init = function (pass_definition, widget_content, widget_style)
 		local style = widget_style[pass_definition.style_id]
-
-		if not style.world_flags then
-			local world_flags = {
-				Application.DISABLE_SOUND,
-				Application.DISABLE_ESRAM
-			}
-		end
-
+		local world_flags = style.world_flags or {
+			Application.DISABLE_SOUND,
+			Application.DISABLE_ESRAM,
+		}
 		local shading_environment = style.shading_environment
 		local world = Managers.world:create_world(style.world_name, shading_environment, nil, style.layer, unpack(world_flags))
 		local viewport_type = style.viewport_type or "default"
 		local viewport = ScriptWorld.create_viewport(world, style.viewport_name, viewport_type, style.layer)
 		local level_name = style.level_name
 		local object_sets = style.object_sets
-		local level = nil
+		local level
 
 		if level_name then
-			local position, rotation, shading_callback = nil
+			local position, rotation, shading_callback
 			local mood_setting = style.mood_setting
 			local time_sliced_spawn = false
+
 			level = ScriptWorld.spawn_level(world, level_name, object_sets, position, rotation, shading_callback, mood_setting, time_sliced_spawn)
 
 			Level.spawn_background(level)
@@ -2300,7 +2394,7 @@ UIPasses.viewport = {
 
 		Camera.set_vertical_fov(camera, math.pi * fov / 180)
 
-		local ui_renderer = nil
+		local ui_renderer
 
 		if style.enable_sub_gui then
 			ui_renderer = UIRenderer.create(world, "material", "materials/ui/ui_1080p_hud_atlas_textures", "material", "materials/ui/ui_1080p_hud_single_textures", "material", "materials/ui/ui_1080p_menu_atlas_textures", "material", "materials/ui/ui_1080p_menu_single_textures", "material", "materials/ui/ui_1080p_common", "material", "materials/fonts/gw_fonts")
@@ -2314,7 +2408,7 @@ UIPasses.viewport = {
 			viewport = viewport,
 			viewport_name = style.viewport_name,
 			ui_renderer = ui_renderer,
-			camera = camera
+			camera = camera,
 		}
 	end,
 	destroy = function (ui_renderer, pass_data, pass_definition)
@@ -2348,14 +2442,17 @@ UIPasses.viewport = {
 
 		local scaled_position = UIScaleVectorToResolution(position)
 		local scaled_size = UIScaleVectorToResolution(size)
-		local resx = RESOLUTION_LOOKUP.res_w
-		local resy = RESOLUTION_LOOKUP.res_h
+		local resx, resy = RESOLUTION_LOOKUP.res_w, RESOLUTION_LOOKUP.res_h
 		local viewport_size = Vector3.zero()
+
 		viewport_size.x = math.clamp(scaled_size.x / resx, 0, 1)
 		viewport_size.y = math.clamp(scaled_size.y / resy, 0, 1)
+
 		local viewport_position = Vector3.zero()
+
 		viewport_position.x = math.clamp(scaled_position.x / resx, 0, 1)
 		viewport_position.y = math.clamp(1 - scaled_position.y / resy - viewport_size.y, 0, 1)
+
 		local viewport = pass_data.viewport
 		local world = pass_data.world
 
@@ -2395,8 +2492,7 @@ UIPasses.viewport = {
 			return nil
 		end
 
-		local resx = RESOLUTION_LOOKUP.res_w
-		local resy = RESOLUTION_LOOKUP.res_h
+		local resx, resy = RESOLUTION_LOOKUP.res_w, RESOLUTION_LOOKUP.res_h
 		local camera_space_position = Vector3.zero()
 		local aspect_ratio = resx / resy
 		local default_aspect = 1.7777777777777777
@@ -2404,13 +2500,17 @@ UIPasses.viewport = {
 		if aspect_ratio < default_aspect then
 			local scale_x = screen_position.x / resx
 			local width = resy / 9 * 16
+
 			camera_space_position.x = resx * 0.5 - width * 0.5 + width * scale_x
+
 			local scale_y = screen_position.y / resy
 			local height = pass_data.size_scale_x * resy
+
 			camera_space_position.y = resy * 0.5 - height * 0.5 + height * scale_y
 		elseif default_aspect < aspect_ratio then
 			local scale_x = screen_position.x / resx
 			local width = pass_data.size_scale_y * resx
+
 			camera_space_position.x = resx * 0.5 - width * 0.5 + width * scale_x
 			camera_space_position.y = screen_position.y
 		else
@@ -2424,16 +2524,18 @@ UIPasses.viewport = {
 		local physics_world = World.get_data(pass_data.world, "physics_world")
 
 		return PhysicsWorld.immediate_raycast(physics_world, position, raycast_dir, range, result_type, "collision_filter", collision_filter)
-	end
+	end,
 }
 script_data.ui_debug_hover = script_data.ui_debug_hover or Development.parameter("ui_debug_hover")
 script_data.ui_debug_drag = script_data.ui_debug_drag or Development.parameter("ui_debug_drag")
+
 local drag_position_table = {
 	0,
 	0,
-	0
+	0,
 }
 local start_drag_threshold = UISettings.start_drag_threshold
+
 UIPasses.is_dragging_item = false
 UIPasses.drag = {
 	init = function (pass_definition, ui_content, ui_style)
@@ -2482,7 +2584,7 @@ UIPasses.drag = {
 
 		local hover_start_timer = ui_content.hover_start_timer
 
-		if hover_start_timer and start_drag_threshold <= hover_start_timer then
+		if hover_start_timer and hover_start_timer >= start_drag_threshold then
 			ui_content.hover_start_timer = nil
 			ui_content.on_drag_started = true
 			ui_content.is_dragging = true
@@ -2511,21 +2613,23 @@ UIPasses.drag = {
 				128,
 				0,
 				100,
-				100
+				100,
 			} or {
 				0,
 				0,
 				0,
-				255
+				255,
 			})
 		end
-	end
+	end,
 }
+
 local cursor_position_table = {
 	0,
 	0,
-	0
+	0,
 }
+
 UIPasses.gamepad_cursor = {
 	init = function (pass_definition, ui_content, ui_style)
 		return nil
@@ -2542,8 +2646,9 @@ UIPasses.gamepad_cursor = {
 		local cursor = input_service:get("cursor") or NilCursor
 		local offset = ui_style.offset or {
 			0,
-			0
+			0,
 		}
+
 		cursor_position_table[1] = (cursor.x or 0) + offset[1]
 		cursor_position_table[2] = (cursor.y or 0) + offset[2]
 		cursor_position_table[3] = 1000
@@ -2560,15 +2665,15 @@ UIPasses.gamepad_cursor = {
 			UIRenderer.draw_rect(ui_renderer, {
 				pos[1],
 				pos[2],
-				pos[3]
+				pos[3],
 			}, {
 				cursor_size[1],
-				cursor_size[2]
+				cursor_size[2],
 			}, {
 				128,
 				255,
 				255,
-				255
+				255,
 			})
 		end
 
@@ -2577,15 +2682,15 @@ UIPasses.gamepad_cursor = {
 				128,
 				0,
 				100,
-				100
+				100,
 			} or {
 				0,
 				0,
 				0,
-				255
+				255,
 			})
 		end
-	end
+	end,
 }
 UIPasses.hover = {
 	init = function (pass_definition)
@@ -2593,13 +2698,15 @@ UIPasses.hover = {
 	end,
 	draw = function (ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt)
 		local was_hover = ui_content.is_hover
-		local is_hover = nil
+		local is_hover
 		local cursor = input_service and input_service:has("cursor") and input_service:get("cursor") or NilCursor
 
 		if ui_content.hover_type == "circle" then
 			local half_size = ui_renderer:get_scaling() * size / 2
 			local pos_center = Vector3Aux.flat(ScaleVectorToResolution(position)) + half_size
 			local square_distance = Vector3.distance_squared(Vector3Aux.unbox(cursor), pos_center)
+
+			is_hover = square_distance <= half_size.x * half_size.y or false
 		else
 			if ui_style then
 				local area_size = ui_style.area_size
@@ -2625,12 +2732,12 @@ UIPasses.hover = {
 					128,
 					0,
 					255,
-					0
+					0,
 				} or {
 					128,
 					255,
 					0,
-					0
+					0,
 				})
 			end
 		end
@@ -2648,7 +2755,7 @@ UIPasses.hover = {
 		if not is_hover and ui_content.internal_is_hover then
 			ui_content.internal_is_hover = nil
 		end
-	end
+	end,
 }
 UIPasses.click = {
 	init = function (pass_definition)
@@ -2660,7 +2767,7 @@ UIPasses.click = {
 		else
 			ui_content.is_clicked = (ui_content.is_clicked or 10) + dt
 		end
-	end
+	end,
 }
 UIPasses.generic_tooltip = {
 	init = function (pass_definition, ui_content, ui_style)
@@ -2668,17 +2775,18 @@ UIPasses.generic_tooltip = {
 		local passes = {
 			{
 				data = UITooltipPasses.generic_text.setup_data(),
-				draw = UITooltipPasses.generic_text.draw
-			}
+				draw = UITooltipPasses.generic_text.draw,
+			},
 		}
+
 		pass_data.end_pass = {
 			data = UITooltipPasses.background.setup_data(),
-			draw = UITooltipPasses.background.draw
+			draw = UITooltipPasses.background.draw,
 		}
 		pass_data.passes = passes
 		pass_data.size = {
 			400,
-			0
+			0,
 		}
 		pass_data.alpha_multiplier = 1
 
@@ -2686,10 +2794,11 @@ UIPasses.generic_tooltip = {
 	end,
 	draw = function (ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, parent_size, input_service, dt)
 		local size = pass_data.size
+
 		size[2] = 0
+
 		local draw_downwards = false
-		local res_w = RESOLUTION_LOOKUP.res_w
-		local res_h = RESOLUTION_LOOKUP.res_h
+		local res_w, res_h = RESOLUTION_LOOKUP.res_w, RESOLUTION_LOOKUP.res_h
 
 		if position[2] + parent_size[2] * 0.5 > res_h * 0.5 then
 			draw_downwards = true
@@ -2712,6 +2821,7 @@ UIPasses.generic_tooltip = {
 		for _, tooltip_pass in loop_func(passes) do
 			local data = tooltip_pass.data
 			local pass_height = tooltip_pass.draw(data, draw, draw_downwards, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt)
+
 			size[2] = size[2] + pass_height
 
 			if draw_downwards then
@@ -2724,6 +2834,7 @@ UIPasses.generic_tooltip = {
 		position[1] = position_x
 		position[2] = position_y
 		position[3] = position_z
+
 		local end_pass = pass_data.end_pass
 
 		if end_pass then
@@ -2731,33 +2842,35 @@ UIPasses.generic_tooltip = {
 
 			end_pass.draw(data, draw, draw_downwards, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt)
 		end
-	end
+	end,
 }
 UIPasses.additional_option_tooltip = {
 	init = function (pass_definition, ui_content, ui_style)
 		local pass_data = {}
 		local pass_definitions = pass_definition.content_passes or {
-			"additional_option_info"
+			"additional_option_info",
 		}
 		local passes = {}
 
 		for _, pass_name in ipairs(pass_definitions) do
 			passes[#passes + 1] = {
 				data = UITooltipPasses[pass_name].setup_data(),
-				draw = UITooltipPasses[pass_name].draw
+				draw = UITooltipPasses[pass_name].draw,
 			}
 		end
 
 		pass_data.end_pass = {
 			data = UITooltipPasses.background.setup_data(),
-			draw = UITooltipPasses.background.draw
+			draw = UITooltipPasses.background.draw,
 		}
+
 		local style = ui_style and ui_style[pass_definition.style_id]
 		local max_width = style and style.max_width or 400
+
 		pass_data.passes = passes
 		pass_data.size = {
 			max_width,
-			0
+			0,
 		}
 		pass_data.alpha_multiplier = 1
 
@@ -2798,6 +2911,7 @@ UIPasses.additional_option_tooltip = {
 		elseif alpha_progress then
 			local tooltip_fade_in_speed = UISettings.tooltip_fade_in_speed
 			local new_alpha_progress = math.min(alpha_progress + dt * tooltip_fade_in_speed, 1)
+
 			pass_data.alpha_multiplier = math.easeOutCubic(new_alpha_progress)
 
 			if new_alpha_progress == 1 then
@@ -2811,7 +2925,9 @@ UIPasses.additional_option_tooltip = {
 		local default_position_y = position[2]
 		local default_position_z = position[3]
 		local size = pass_data.size
+
 		size[2] = 0
+
 		local draw_downwards = true
 
 		if ui_style.horizontal_alignment == "center" then
@@ -2830,6 +2946,7 @@ UIPasses.additional_option_tooltip = {
 		if end_pass then
 			local data = end_pass.data
 			local pass_height = end_pass.draw(data, draw, draw_downwards, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt)
+
 			tooltip_total_height = tooltip_total_height + pass_height
 		end
 
@@ -2837,8 +2954,11 @@ UIPasses.additional_option_tooltip = {
 
 		for _, tooltip_pass in ipairs(passes) do
 			local data = tooltip_pass.data
+
 			data.frame_margin = frame_margin
+
 			local pass_height = tooltip_pass.draw(data, draw, draw_downwards, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, additional_option_data)
+
 			tooltip_total_height = tooltip_total_height + pass_height
 		end
 
@@ -2855,12 +2975,16 @@ UIPasses.additional_option_tooltip = {
 		local position_x = position[1]
 		local position_y = position[2]
 		local position_z = position[3]
+
 		draw = true
 
 		for _, tooltip_pass in ipairs(passes) do
 			local data = tooltip_pass.data
+
 			data.frame_margin = frame_margin
+
 			local pass_height = tooltip_pass.draw(data, draw, draw_downwards, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, additional_option_data)
+
 			size[2] = size[2] + pass_height
 			position[2] = position[2] - pass_height
 		end
@@ -2878,7 +3002,7 @@ UIPasses.additional_option_tooltip = {
 		position[1] = default_position_x
 		position[2] = default_position_y
 		position[3] = default_position_z
-	end
+	end,
 }
 UIPasses.level_tooltip = {
 	init = function (pass_definition, ui_content, ui_style)
@@ -2886,17 +3010,18 @@ UIPasses.level_tooltip = {
 		local passes = {
 			{
 				data = UITooltipPasses.level_info.setup_data(),
-				draw = UITooltipPasses.level_info.draw
-			}
+				draw = UITooltipPasses.level_info.draw,
+			},
 		}
+
 		pass_data.end_pass = {
 			data = UITooltipPasses.background.setup_data(),
-			draw = UITooltipPasses.background.draw
+			draw = UITooltipPasses.background.draw,
 		}
 		pass_data.passes = passes
 		pass_data.size = {
 			300,
-			0
+			0,
 		}
 		pass_data.alpha_multiplier = 1
 
@@ -2931,6 +3056,7 @@ UIPasses.level_tooltip = {
 		elseif alpha_progress then
 			local tooltip_fade_in_speed = UISettings.tooltip_fade_in_speed
 			local new_alpha_progress = math.min(alpha_progress + dt * tooltip_fade_in_speed, 1)
+
 			pass_data.alpha_multiplier = math.easeOutCubic(new_alpha_progress)
 
 			if new_alpha_progress == 1 then
@@ -2941,9 +3067,13 @@ UIPasses.level_tooltip = {
 		end
 
 		local size = pass_data.size
+
 		size[2] = 0
+
 		local draw_downwards = true
+
 		position[1] = position[1] + parent_size[1] / 2 - size[1] / 2
+
 		local tooltip_total_height = 0
 		local passes = pass_data.passes
 		local draw = false
@@ -2952,6 +3082,7 @@ UIPasses.level_tooltip = {
 		if end_pass then
 			local data = end_pass.data
 			local pass_height = end_pass.draw(data, draw, draw_downwards, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt)
+
 			tooltip_total_height = tooltip_total_height + pass_height
 		end
 
@@ -2959,21 +3090,29 @@ UIPasses.level_tooltip = {
 
 		for _, tooltip_pass in ipairs(passes) do
 			local data = tooltip_pass.data
+
 			data.frame_margin = frame_margin
+
 			local pass_height = tooltip_pass.draw(data, draw, draw_downwards, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, level_data)
+
 			tooltip_total_height = tooltip_total_height + pass_height
 		end
 
 		position[2] = position[2] + parent_size[2] + tooltip_total_height
+
 		local position_x = position[1]
 		local position_y = position[2]
 		local position_z = position[3]
+
 		draw = true
 
 		for _, tooltip_pass in ipairs(passes) do
 			local data = tooltip_pass.data
+
 			data.frame_margin = frame_margin
+
 			local pass_height = tooltip_pass.draw(data, draw, draw_downwards, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, level_data)
+
 			size[2] = size[2] + pass_height
 			position[2] = position[2] - pass_height
 		end
@@ -2987,7 +3126,7 @@ UIPasses.level_tooltip = {
 
 			end_pass.draw(data, draw, draw_downwards, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt)
 		end
-	end
+	end,
 }
 UIPasses.hero_power_tooltip = {
 	init = function (pass_definition, ui_content, ui_style)
@@ -2995,29 +3134,30 @@ UIPasses.hero_power_tooltip = {
 		local passes = {
 			{
 				data = UITooltipPasses.hero_power_title.setup_data(),
-				draw = UITooltipPasses.hero_power_title.draw
+				draw = UITooltipPasses.hero_power_title.draw,
 			},
 			{
 				data = UITooltipPasses.hero_power_gained.setup_data(),
-				draw = UITooltipPasses.hero_power_gained.draw
+				draw = UITooltipPasses.hero_power_gained.draw,
 			},
 			{
 				data = UITooltipPasses.hero_power_perks.setup_data(),
-				draw = UITooltipPasses.hero_power_perks.draw
+				draw = UITooltipPasses.hero_power_perks.draw,
 			},
 			{
 				data = UITooltipPasses.hero_power_description.setup_data(),
-				draw = UITooltipPasses.hero_power_description.draw
-			}
+				draw = UITooltipPasses.hero_power_description.draw,
+			},
 		}
+
 		pass_data.end_pass = {
 			data = UITooltipPasses.background.setup_data(),
-			draw = UITooltipPasses.background.draw
+			draw = UITooltipPasses.background.draw,
 		}
 		pass_data.passes = passes
 		pass_data.size = {
 			400,
-			0
+			0,
 		}
 		pass_data.alpha_multiplier = 1
 		pass_data.player = nil
@@ -3052,6 +3192,7 @@ UIPasses.hero_power_tooltip = {
 		elseif alpha_progress then
 			local tooltip_fade_in_speed = UISettings.tooltip_fade_in_speed
 			local new_alpha_progress = math.min(alpha_progress + dt * tooltip_fade_in_speed, 1)
+
 			pass_data.alpha_multiplier = math.easeOutCubic(new_alpha_progress)
 
 			if new_alpha_progress == 1 then
@@ -3062,7 +3203,9 @@ UIPasses.hero_power_tooltip = {
 		end
 
 		local size = pass_data.size
+
 		size[2] = 0
+
 		local draw_downwards = true
 		local tooltip_total_height = 0
 		local passes = pass_data.passes
@@ -3072,29 +3215,39 @@ UIPasses.hero_power_tooltip = {
 		if end_pass then
 			local data = end_pass.data
 			local pass_height = end_pass.draw(data, draw, draw_downwards, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt)
+
 			tooltip_total_height = tooltip_total_height + pass_height
 		end
 
 		local frame_margin = end_pass.data.frame_margin or 0
+
 		position[1] = position[1] + parent_size[1] + frame_margin
 
 		for _, tooltip_pass in ipairs(passes) do
 			local data = tooltip_pass.data
+
 			data.frame_margin = frame_margin
+
 			local pass_height = tooltip_pass.draw(data, draw, draw_downwards, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt)
+
 			tooltip_total_height = tooltip_total_height + pass_height
 		end
 
 		position[2] = position[2] + tooltip_total_height
+
 		local position_x = position[1]
 		local position_y = position[2]
 		local position_z = position[3]
+
 		draw = true
 
 		for _, tooltip_pass in ipairs(passes) do
 			local data = tooltip_pass.data
+
 			data.frame_margin = frame_margin
+
 			local pass_height = tooltip_pass.draw(data, draw, draw_downwards, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt)
+
 			size[2] = size[2] + pass_height
 			position[2] = position[2] - pass_height
 		end
@@ -3112,7 +3265,7 @@ UIPasses.hero_power_tooltip = {
 		position[1] = position_x
 		position[2] = position_y
 		position[3] = position_z
-	end
+	end,
 }
 UIPasses.option_tooltip = {
 	init = function (pass_definition, ui_content, ui_style)
@@ -3120,17 +3273,18 @@ UIPasses.option_tooltip = {
 		local passes = {
 			{
 				data = UITooltipPasses.generic_text.setup_data(),
-				draw = UITooltipPasses.generic_text.draw
-			}
+				draw = UITooltipPasses.generic_text.draw,
+			},
 		}
+
 		pass_data.end_pass = {
 			data = UITooltipPasses.background.setup_data(),
-			draw = UITooltipPasses.background.draw
+			draw = UITooltipPasses.background.draw,
 		}
 		pass_data.passes = passes
 		pass_data.size = {
 			600,
-			0
+			0,
 		}
 		pass_data.alpha_multiplier = 1
 
@@ -3165,6 +3319,7 @@ UIPasses.option_tooltip = {
 		elseif alpha_progress then
 			local tooltip_fade_in_speed = UISettings.tooltip_fade_in_speed
 			local new_alpha_progress = math.min(alpha_progress + dt * tooltip_fade_in_speed, 1)
+
 			pass_data.alpha_multiplier = math.easeOutCubic(new_alpha_progress)
 
 			if new_alpha_progress == 1 then
@@ -3175,7 +3330,9 @@ UIPasses.option_tooltip = {
 		end
 
 		local size = pass_data.size
+
 		size[2] = 0
+
 		local draw_downwards = true
 		local tooltip_total_height = 0
 		local passes = pass_data.passes
@@ -3185,6 +3342,7 @@ UIPasses.option_tooltip = {
 		if end_pass then
 			local data = end_pass.data
 			local pass_height = end_pass.draw(data, draw, draw_downwards, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt)
+
 			tooltip_total_height = tooltip_total_height + pass_height
 		end
 
@@ -3192,21 +3350,29 @@ UIPasses.option_tooltip = {
 
 		for _, tooltip_pass in ipairs(passes) do
 			local data = tooltip_pass.data
+
 			data.frame_margin = frame_margin
+
 			local pass_height = tooltip_pass.draw(data, draw, draw_downwards, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt)
+
 			tooltip_total_height = tooltip_total_height + pass_height
 		end
 
 		position[2] = position[2] + parent_size[2] + tooltip_total_height
+
 		local position_x = position[1]
 		local position_y = position[2]
 		local position_z = position[3]
+
 		draw = true
 
 		for _, tooltip_pass in ipairs(passes) do
 			local data = tooltip_pass.data
+
 			data.frame_margin = frame_margin
+
 			local pass_height = tooltip_pass.draw(data, draw, draw_downwards, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt)
+
 			size[2] = size[2] + pass_height
 			position[2] = position[2] - pass_height
 		end
@@ -3220,7 +3386,7 @@ UIPasses.option_tooltip = {
 
 			end_pass.draw(data, draw, draw_downwards, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt)
 		end
-	end
+	end,
 }
 UIPasses.item_tooltip = {
 	init = function (pass_definition, ui_content, ui_style)
@@ -3253,49 +3419,55 @@ UIPasses.item_tooltip = {
 			"detailed_stats_heavy",
 			"detailed_stats_push",
 			"detailed_stats_ranged_light",
-			"detailed_stats_ranged_heavy"
+			"detailed_stats_ranged_heavy",
 		}
 		local passes = {}
 		local pass_styles = ui_style.pass_styles
 
 		for _, pass_name in ipairs(pass_definitions) do
 			local pass_style = pass_styles and pass_styles[pass_name]
+
 			passes[#passes + 1] = {
 				data = UITooltipPasses[pass_name].setup_data(pass_style),
-				draw = UITooltipPasses[pass_name].draw
+				draw = UITooltipPasses[pass_name].draw,
 			}
 		end
 
 		local pass_style = pass_styles and pass_styles.item_background
+
 		pass_data.end_pass = {
 			data = UITooltipPasses.item_background.setup_data(pass_style),
-			draw = UITooltipPasses.item_background.draw
+			draw = UITooltipPasses.item_background.draw,
 		}
 		pass_data.passes = passes
 		pass_data.size = {
 			400,
-			0
+			0,
 		}
 		pass_data.alpha_multiplier = 1
 		pass_data.items = {}
+
 		local disable_fade_in = ui_content.disable_fade_in
+
 		pass_data.items_alpha_progress = disable_fade_in and {
 			1,
 			1,
 			1,
-			1
+			1,
 		} or {
 			0,
 			0,
 			0,
-			0
+			0,
 		}
+
 		local tooltip_wait_duration = disable_fade_in and 0 or UISettings.tooltip_wait_duration
+
 		pass_data.alpha_wait_times = {
 			tooltip_wait_duration,
 			tooltip_wait_duration * 2,
 			tooltip_wait_duration * 2,
-			tooltip_wait_duration * 2
+			tooltip_wait_duration * 2,
 		}
 		pass_data.tooltip_sizes = {}
 		pass_data.equipped_items = {}
@@ -3306,9 +3478,12 @@ UIPasses.item_tooltip = {
 	update = function (ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, input_service, dt, visible)
 		if not visible then
 			pass_data.player = nil
+
 			local tooltip_wait_duration = UISettings.tooltip_wait_duration
+
 			pass_data.alpha_progress = 0
 			pass_data.alpha_wait_time = tooltip_wait_duration
+
 			local alpha_wait_times = pass_data.alpha_wait_times
 			local items_alpha_progress = pass_data.items_alpha_progress
 
@@ -3336,6 +3511,7 @@ UIPasses.item_tooltip = {
 		table.clear(items)
 
 		items[1] = preview_item
+
 		local preview_item_backend_id = preview_item.backend_id
 		local preview_item_data = preview_item.data
 		local slot_type = preview_item_data.slot_type
@@ -3374,6 +3550,7 @@ UIPasses.item_tooltip = {
 
 					local backend_common = Managers.backend:get_interface("common")
 					local item_filter = "slot_type == " .. slot_type
+
 					equipped_items = backend_common:filter_items(equipped_items, item_filter)
 					pass_data.equipped_items = equipped_items
 
@@ -3388,11 +3565,10 @@ UIPasses.item_tooltip = {
 
 		local scale = RESOLUTION_LOOKUP.scale
 		local scale_inversed = RESOLUTION_LOOKUP.inv_scale
-		local wanted_max_height = nil
+		local wanted_max_height
 		local size = pass_data.size
-		local res_w = RESOLUTION_LOOKUP.res_w
-		local res_h = RESOLUTION_LOOKUP.res_h
-		local direction = nil
+		local res_w, res_h = RESOLUTION_LOOKUP.res_w, RESOLUTION_LOOKUP.res_h
+		local direction
 
 		if ui_content.force_equipped_item_on_left or not ui_content.force_equipped_item_on_right and (position[1] + parent_size[1] * 0.5) * scale > res_w * 0.5 then
 			position[1] = position[1] - size[1] - 5
@@ -3418,13 +3594,17 @@ UIPasses.item_tooltip = {
 			if end_pass then
 				local data = end_pass.data
 				local pass_height = end_pass.draw(data, draw, draw_downwards, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, item)
+
 				tooltip_total_height = tooltip_total_height + pass_height
 			end
 
 			for _, tooltip_pass in loop_func(passes) do
 				local data = tooltip_pass.data
+
 				data.frame_margin = frame_margin
+
 				local pass_height = tooltip_pass.draw(data, draw, draw_downwards, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, item)
+
 				tooltip_total_height = tooltip_total_height + pass_height
 			end
 
@@ -3439,10 +3619,11 @@ UIPasses.item_tooltip = {
 
 		for index, item in ipairs(items) do
 			size[2] = 0
+
 			local draw_downwards = true
 			local loop_func = draw_downwards and ipairs or ripairs
 			local passes = pass_data.passes
-			local draw = nil
+			local draw
 			local end_pass = pass_data.end_pass
 			local frame_margin = end_pass.data.frame_margin or 0
 			local tooltip_total_height = tooltip_sizes[index]
@@ -3468,6 +3649,7 @@ UIPasses.item_tooltip = {
 				if alpha_progress then
 					local tooltip_fade_in_speed = UISettings.tooltip_fade_in_speed
 					local next_alpha_progress = math.min(alpha_progress + dt * tooltip_fade_in_speed, 1)
+
 					pass_data.alpha_multiplier = math.easeOutCubic(next_alpha_progress)
 
 					if alpha_progress == 1 then
@@ -3481,7 +3663,9 @@ UIPasses.item_tooltip = {
 
 				if first_item then
 					local y_offset = ui_content.force_top_alignment and 0 or tooltip_total_height
+
 					position[2] = position[2] + y_offset - frame_margin / 2
+
 					local actual_screen_y_position = position[2] * scale + top_spacing
 
 					if res_h < actual_screen_y_position then
@@ -3494,6 +3678,7 @@ UIPasses.item_tooltip = {
 				if not first_item then
 					if has_dubble_compares and res_h > tooltip_sizes[2] + tooltip_sizes[3] then
 						position[1] = start_position_x + size[1] * direction
+
 						local tooltip_bottom_y_position = wanted_max_height - (tooltip_sizes[2] + tooltip_sizes[3] + equipped_panel_height * 2)
 
 						if tooltip_bottom_y_position < 0 then
@@ -3509,6 +3694,7 @@ UIPasses.item_tooltip = {
 						end
 					else
 						position[1] = position[1] + size[1] * direction
+
 						local tooltip_bottom_y_position = wanted_max_height - tooltip_total_height
 
 						if tooltip_bottom_y_position < 0 then
@@ -3522,13 +3708,17 @@ UIPasses.item_tooltip = {
 				local position_x = position[1]
 				local position_y = position[2] + frame_margin / 2 * scale
 				local position_z = position[3]
+
 				draw = true
 
 				for _, tooltip_pass in loop_func(passes) do
 					local data = tooltip_pass.data
+
 					data.frame_margin = frame_margin
 					data.equipped_items = pass_data.equipped_items
+
 					local pass_height = tooltip_pass.draw(data, draw, draw_downwards, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, item)
+
 					size[2] = size[2] + pass_height
 
 					if draw_downwards then
@@ -3551,7 +3741,7 @@ UIPasses.item_tooltip = {
 
 			position[3] = start_position_z
 		end
-	end
+	end,
 }
 UIPasses.talent_tooltip = {
 	init = function (pass_definition, ui_content, ui_style)
@@ -3559,17 +3749,18 @@ UIPasses.talent_tooltip = {
 		local passes = {
 			{
 				data = UITooltipPasses.talent_text.setup_data(),
-				draw = UITooltipPasses.talent_text.draw
-			}
+				draw = UITooltipPasses.talent_text.draw,
+			},
 		}
+
 		pass_data.end_pass = {
 			data = UITooltipPasses.background.setup_data(),
-			draw = UITooltipPasses.background.draw
+			draw = UITooltipPasses.background.draw,
 		}
 		pass_data.passes = passes
 		pass_data.size = {
 			400,
-			0
+			0,
 		}
 		pass_data.alpha_multiplier = 1
 
@@ -3604,6 +3795,7 @@ UIPasses.talent_tooltip = {
 		elseif alpha_progress then
 			local tooltip_fade_in_speed = UISettings.tooltip_fade_in_speed
 			local next_alpha_progress = math.min(alpha_progress + dt * tooltip_fade_in_speed, 1)
+
 			pass_data.alpha_multiplier = math.easeOutCubic(next_alpha_progress)
 
 			if next_alpha_progress == 1 then
@@ -3614,6 +3806,7 @@ UIPasses.talent_tooltip = {
 		end
 
 		local size = pass_data.size
+
 		size[2] = 0
 
 		if ui_style.draw_right then
@@ -3634,13 +3827,17 @@ UIPasses.talent_tooltip = {
 			if end_pass then
 				local data = end_pass.data
 				local pass_height = end_pass.draw(data, draw, draw_downwards, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt)
+
 				tooltip_total_height = tooltip_total_height + pass_height
 			end
 
 			for _, tooltip_pass in ipairs(passes) do
 				local data = tooltip_pass.data
+
 				data.frame_margin = frame_margin
+
 				local pass_height = tooltip_pass.draw(data, draw, draw_downwards, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, talent)
+
 				tooltip_total_height = tooltip_total_height + pass_height
 			end
 
@@ -3654,8 +3851,11 @@ UIPasses.talent_tooltip = {
 
 		for _, tooltip_pass in ipairs(passes) do
 			local data = tooltip_pass.data
+
 			data.frame_margin = frame_margin
+
 			local pass_height = tooltip_pass.draw(data, draw, draw_downwards, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, talent)
+
 			size[2] = size[2] + pass_height
 			position[2] = position[2] - pass_height
 		end
@@ -3669,44 +3869,45 @@ UIPasses.talent_tooltip = {
 
 			end_pass.draw(data, draw, draw_downwards, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt)
 		end
-	end
+	end,
 }
+
 local tooltip_size = {
 	0,
-	0
+	0,
 }
 local temp_cursor_pos = {
 	0,
-	0
+	0,
 }
 local tooltip_background_color = {
 	220,
 	3,
 	3,
-	3
+	3,
 }
+
 UIPasses.tooltip_text = {
 	init = function (pass_definition)
 		assert(pass_definition.text_id, "no text id in pass definition. YOU NEEDS IT.")
 
 		return {
-			text_id = pass_definition.text_id
+			text_id = pass_definition.text_id,
 		}
 	end,
 	draw = function (ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt)
 		ui_style.font_size = 18
-		local font_material, font_size, font_name = nil
+
+		local font_material, font_size, font_name
 
 		if ui_style.font_type then
 			local font, size_of_font = UIFontByResolution(ui_style)
-			font_name = font[3]
-			font_size = size_of_font
-			font_material = font[1]
+
+			font_material, font_size, font_name = font[1], size_of_font, font[3]
 		else
 			local font = ui_style.font
-			font_name = font[3]
-			font_size = font[2]
-			font_material = font[1]
+
+			font_material, font_size, font_name = font[1], font[2], font[3]
 			font_size = ui_style.font_size or font_size
 		end
 
@@ -3731,14 +3932,17 @@ UIPasses.tooltip_text = {
 			temp_cursor_pos[2] = position[2] + fixed_position[2]
 		else
 			local cursor = input_service:get("cursor") or NilCursor
+
 			temp_cursor_pos[1] = cursor[1]
 			temp_cursor_pos[2] = cursor[2]
 		end
 
 		local cursor_offset = ui_style.cursor_offset
+
 		temp_cursor_pos[1] = temp_cursor_pos[1] + (cursor_offset and cursor_offset[1] or 25)
 		temp_cursor_pos[2] = temp_cursor_pos[2] - (cursor_offset and cursor_offset[2] or 15)
-		local cursor_position = nil
+
+		local cursor_position
 
 		if Managers.input:is_device_active("gamepad") then
 			cursor_position = temp_cursor_pos
@@ -3756,7 +3960,7 @@ UIPasses.tooltip_text = {
 			local text_line = texts[i - 1 + text_start_index]
 			local width = UIRenderer.text_size(ui_renderer, text_line, font_material, font_size, tooltip_size[2])
 
-			if tooltip_size[1] < width then
+			if width > tooltip_size[1] then
 				tooltip_size[1] = width
 			end
 		end
@@ -3770,7 +3974,7 @@ UIPasses.tooltip_text = {
 			if draw_downwards then
 				position[2] = cursor_position[2] - full_font_height
 			else
-				position[2] = cursor_position[2] + tooltip_size[2] - full_font_height
+				position[2] = cursor_position[2] + (tooltip_size[2] - full_font_height)
 			end
 		else
 			position[1] = cursor_position[1]
@@ -3792,6 +3996,7 @@ UIPasses.tooltip_text = {
 
 		local padding_x = 4
 		local padding_y = 8
+
 		position[3] = position[3] - 1
 		position[2] = position[2] - (full_font_height + font_min) - padding_y
 		position[1] = position[1] - 2 - padding_x
@@ -3799,33 +4004,33 @@ UIPasses.tooltip_text = {
 		tooltip_size[2] = tooltip_size[2] + padding_y * 2 * RESOLUTION_LOOKUP.inv_scale
 
 		UIRenderer.draw_rounded_rect(ui_renderer, position, tooltip_size, 5, tooltip_background_color)
-	end
+	end,
 }
+
 local rect_text_size = {
 	0,
-	0
+	0,
 }
+
 UIPasses.rect_text = {
 	init = function (pass_definition)
 		assert(pass_definition.text_id, "no text id in pass definition. YOU NEEDS IT.")
 
 		return {
-			text_id = pass_definition.text_id
+			text_id = pass_definition.text_id,
 		}
 	end,
 	draw = function (ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt)
-		local font_material, font_size, font_name = nil
+		local font_material, font_size, font_name
 
 		if ui_style.font_type then
 			local font, size_of_font = UIFontByResolution(ui_style)
-			font_name = font[3]
-			font_size = size_of_font
-			font_material = font[1]
+
+			font_material, font_size, font_name = font[1], size_of_font, font[3]
 		else
 			local font = ui_style.font
-			font_name = font[3]
-			font_size = font[2]
-			font_material = font[1]
+
+			font_material, font_size, font_name = font[1], font[2], font[3]
 			font_size = ui_style.font_size or font_size
 		end
 
@@ -3844,6 +4049,7 @@ UIPasses.rect_text = {
 		local full_font_height = (font_max + math.abs(font_min)) * RESOLUTION_LOOKUP.inv_scale
 		local text_offset = Vector3(0, ui_style.grow_downward and full_font_height or -full_font_height, 0)
 		local global_text_length = UTF8Utils.string_length(text)
+
 		rect_text_size[2] = full_font_height * num_texts
 		rect_text_size[1] = 0
 
@@ -3854,7 +4060,7 @@ UIPasses.rect_text = {
 				local text_line = texts[i - 1 + text_start_index]
 				local width = UIRenderer.text_size(ui_renderer, text_line, font_material, font_size, rect_text_size[2])
 
-				if rect_text_size[1] < width then
+				if width > rect_text_size[1] then
 					rect_text_size[1] = width
 				end
 			end
@@ -3865,10 +4071,11 @@ UIPasses.rect_text = {
 
 			for i = 1, num_texts do
 				text = texts[i - 1 + text_start_index]
+
 				local text_length = text and UTF8Utils.string_length(text) or 0
 				local width = UIRenderer.text_size(ui_renderer, text, font_material, font_size, size[2])
 				local alignment_offset = Vector3(size[1] / 2 - width / 2, 0, 0)
-				local line_color_override = nil
+				local line_color_override
 
 				if ui_style.color_override then
 					line_color_override = get_line_color_override(i, text_length, line_start_index, global_text_length, ui_style)
@@ -3897,10 +4104,12 @@ UIPasses.rect_text = {
 
 		local padding_x = 4
 		local padding_y = 2
+
 		position[3] = position[3] - 1
 		position[2] = position[2] + font_min * RESOLUTION_LOOKUP.inv_scale
 		rect_text_size[1] = rect_text_size[1] + padding_x * 4
 		rect_text_size[2] = rect_text_size[2] + padding_y * 2
+
 		local rect_alignment_offset = Vector3(0, 0, 0)
 
 		if ui_style.horizontal_alignment == "center" then
@@ -3926,9 +4135,11 @@ UIPasses.rect_text = {
 				UIRenderer.draw_rounded_rect(ui_renderer, position + rect_alignment_offset, rect_text_size, 5, ui_style.border_color)
 			end
 		end
-	end
+	end,
 }
+
 local double_click_threshold = UISettings.double_click_threshold
+
 UIPasses.hotspot = {
 	init = function (pass_definition, content)
 		return
@@ -3959,7 +4170,7 @@ UIPasses.hotspot = {
 		local gamepad_cursor_active = input_manager:gamepad_cursor_active()
 		local is_already_hovering = input_manager:is_frame_hovering()
 		local was_hover = ui_content.is_hover
-		local is_hover = nil
+		local is_hover
 		local cursor_name = "cursor"
 		local cursor_stack = ShowCursorStack.stack_depth
 		local has_cursor = input_service and input_service:has(cursor_name)
@@ -3969,7 +4180,7 @@ UIPasses.hotspot = {
 			cursor = NilCursor
 		end
 
-		local cursor_position = nil
+		local cursor_position
 
 		if IS_XB1 and not gamepad_active then
 			cursor_position = Vector3(cursor[1], 1080 - cursor[2], cursor[3])
@@ -3988,15 +4199,20 @@ UIPasses.hotspot = {
 				is_hover = false
 			else
 				local scale = RESOLUTION_LOOKUP.scale
+
 				cursor_position[1] = cursor_position[1] * scale
 				cursor_position[2] = cursor_position[2] * scale
+
 				local cursor_size = Vector2(GAMEPAD_CURSOR_SIZE * 0.5, GAMEPAD_CURSOR_SIZE * 0.5)
+
 				is_hover = math.box_overlap_box(cursor_position - cursor_size * 0.5, cursor_size, pixel_pos, pixel_size)
 			end
 		elseif hover_type == "circle" then
 			local half_size = pixel_size / 2
 			local pos_center = Vector3.flat(pixel_pos) + half_size
 			local square_distance = Vector3.distance_squared(cursor_position, pos_center)
+
+			is_hover = square_distance <= half_size.x * half_size.y or false
 		else
 			is_hover = math.point_is_inside_2d_box(cursor_position, pixel_pos, pixel_size)
 		end
@@ -4017,14 +4233,14 @@ UIPasses.hotspot = {
 					128,
 					0,
 					255,
-					0
+					0,
 				})
 			else
 				UIRenderer.draw_rect(ui_renderer, position + Vector3(0, 0, 1), size, {
 					60,
 					255,
 					0,
-					0
+					0,
 				})
 			end
 		end
@@ -4120,7 +4336,7 @@ UIPasses.hotspot = {
 			ui_content.on_left_release = false
 			ui_content.is_clicked = (ui_content.is_clicked or 10) + dt
 		end
-	end
+	end,
 }
 UIPasses.controller_hotspot = {
 	init = function (pass_definition)
@@ -4128,10 +4344,11 @@ UIPasses.controller_hotspot = {
 	end,
 	draw = function (ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt)
 		local was_hover = ui_content.is_hover
-		local is_hover = nil
+		local is_hover
 		local controller_cursor_position = input_service:get_controller_cursor_position() or NilCursor
 		local pixel_pos = position
 		local pixel_size = size
+
 		is_hover = math.point_is_inside_2d_box(controller_cursor_position, pixel_pos, pixel_size)
 
 		if script_data.ui_debug_hover then
@@ -4139,12 +4356,12 @@ UIPasses.controller_hotspot = {
 				128,
 				0,
 				255,
-				0
+				0,
 			} or {
 				128,
 				255,
 				0,
-				0
+				0,
 			})
 		end
 
@@ -4175,6 +4392,7 @@ UIPasses.controller_hotspot = {
 				ui_content.is_clicked = 0
 			else
 				ui_content.on_release = false
+
 				local left_hold = input_service:get("confirm_hold")
 
 				if ui_content.is_clicked == 0 and left_hold then
@@ -4190,7 +4408,7 @@ UIPasses.controller_hotspot = {
 			ui_content.on_release = false
 			ui_content.is_clicked = (ui_content.is_clicked or 10) + dt
 		end
-	end
+	end,
 }
 UIPasses.game_pad_connected = {
 	init = function (pass_definition)
@@ -4198,7 +4416,7 @@ UIPasses.game_pad_connected = {
 	end,
 	draw = function (ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt)
 		ui_content.gamepad_connected = Managers.input:get_device("gamepad").active()
-	end
+	end,
 }
 
 local function gamepad_button_clicked(ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, button_type)
@@ -4219,7 +4437,7 @@ UIPasses.gamepad_button_click_confirm = {
 	end,
 	draw = function (ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt)
 		gamepad_button_clicked(ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, "confirm")
-	end
+	end,
 }
 UIPasses.gamepad_button_click_back = {
 	init = function (pass_definition)
@@ -4227,7 +4445,7 @@ UIPasses.gamepad_button_click_back = {
 	end,
 	draw = function (ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt)
 		gamepad_button_clicked(ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, "back")
-	end
+	end,
 }
 UIPasses.gamepad_button_click_refresh = {
 	init = function (pass_definition)
@@ -4235,7 +4453,7 @@ UIPasses.gamepad_button_click_refresh = {
 	end,
 	draw = function (ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt)
 		gamepad_button_clicked(ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, "refresh")
-	end
+	end,
 }
 UIPasses.on_click = {
 	init = function (pass_definition)
@@ -4245,7 +4463,7 @@ UIPasses.on_click = {
 		if ui_content[pass_definition.click_check_content_id].on_pressed then
 			pass_definition.click_function(ui_scenegraph, ui_style, ui_content, input_service)
 		end
-	end
+	end,
 }
 UIPasses.on_left_and_right_click = {
 	init = function (pass_definition)
@@ -4257,7 +4475,7 @@ UIPasses.on_left_and_right_click = {
 		if hotspot.on_pressed or hotspot.on_right_click then
 			pass_definition.click_function(ui_scenegraph, ui_style, ui_content, input_service)
 		end
-	end
+	end,
 }
 UIPasses.on_double_click = {
 	init = function (pass_definition)
@@ -4269,7 +4487,7 @@ UIPasses.on_double_click = {
 		if click_content.on_double_click then
 			pass_definition.click_function(ui_scenegraph, ui_style, ui_content, input_service)
 		end
-	end
+	end,
 }
 UIPasses.debug_cursor = {
 	init = function (pass_definition)
@@ -4283,7 +4501,7 @@ UIPasses.debug_cursor = {
 		end
 
 		UIRenderer.draw_rect(ui_renderer, position, size, color)
-	end
+	end,
 }
 UIPasses.local_offset = {
 	init = function (pass_definition)
@@ -4291,7 +4509,7 @@ UIPasses.local_offset = {
 	end,
 	draw = function (ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt)
 		pass_definition.offset_function(ui_scenegraph, ui_style, ui_content, ui_renderer)
-	end
+	end,
 }
 UIPasses.scroll = {
 	init = function (pass_definition)
@@ -4299,7 +4517,7 @@ UIPasses.scroll = {
 	end,
 	draw = function (ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt)
 		local cursor = input_service:get("cursor") or NilCursor
-		local cursor_position = nil
+		local cursor_position
 		local gamepad_active = Managers.input:is_device_active("gamepad")
 
 		if gamepad_active then
@@ -4309,13 +4527,15 @@ UIPasses.scroll = {
 		end
 
 		local is_hover = math.point_is_inside_2d_box(cursor_position, position, size) and not UIPasses.is_dragging_item
+
 		ui_content.is_hover = is_hover
+
 		local scroll_axis = input_service:get("scroll_axis")
 
 		if scroll_axis then
 			pass_definition.scroll_function(ui_scenegraph, ui_style, ui_content, input_service, scroll_axis, dt)
 		end
-	end
+	end,
 }
 UIPasses.held = {
 	init = function (pass_definition)
@@ -4341,7 +4561,7 @@ UIPasses.held = {
 				content.is_held = false
 			end
 		end
-	end
+	end,
 }
 UIPasses.item_presentation = {
 	init = function (pass_definition, ui_content, ui_style)
@@ -4356,23 +4576,25 @@ UIPasses.item_presentation = {
 			"fatigue",
 			"item_power_level",
 			"properties",
-			"traits"
+			"traits",
 		}
 		local passes = {}
 		local pass_styles = ui_style.pass_styles
 
 		for _, pass_name in ipairs(pass_definitions) do
 			local pass_style = pass_styles and pass_styles[pass_name]
+
 			passes[#passes + 1] = {
 				data = UITooltipPasses[pass_name].setup_data(pass_style),
-				draw = UITooltipPasses[pass_name].draw
+				draw = UITooltipPasses[pass_name].draw,
 			}
 		end
 
 		local pass_style = pass_styles and pass_styles.item_background
+
 		pass_data.end_pass = {
 			data = UITooltipPasses.item_background.setup_data(pass_style),
-			draw = UITooltipPasses.item_background.draw
+			draw = UITooltipPasses.item_background.draw,
 		}
 		pass_data.items = {}
 		pass_data.passes = passes
@@ -4395,6 +4617,7 @@ UIPasses.item_presentation = {
 
 		size[2] = 0
 		pass_data.start_layer = position[3]
+
 		local draw_downwards = true
 		local passes = pass_data.passes
 		local draw = false
@@ -4409,6 +4632,7 @@ UIPasses.item_presentation = {
 			table.clear(items)
 
 			items[1] = item
+
 			local compare_item = ui_content.compare_item
 
 			if compare_item then
@@ -4419,13 +4643,17 @@ UIPasses.item_presentation = {
 		if end_pass and draw_end_passes then
 			local data = end_pass.data
 			local pass_height = end_pass.draw(data, draw, draw_downwards, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, item)
+
 			tooltip_total_height = tooltip_total_height + pass_height
 		end
 
 		for _, tooltip_pass in ipairs(passes) do
 			local data = tooltip_pass.data
+
 			data.frame_margin = frame_margin
+
 			local pass_height = tooltip_pass.draw(data, draw, draw_downwards, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, item)
+
 			tooltip_total_height = tooltip_total_height + pass_height
 		end
 
@@ -4436,12 +4664,16 @@ UIPasses.item_presentation = {
 		local position_x = position[1]
 		local position_y = position[2] + frame_margin / 2
 		local position_z = position[3]
+
 		draw = true
 
 		for _, tooltip_pass in ipairs(passes) do
 			local data = tooltip_pass.data
+
 			data.frame_margin = frame_margin
+
 			local pass_height = tooltip_pass.draw(data, draw, draw_downwards, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, item)
+
 			size[2] = size[2] + pass_height
 
 			if draw_downwards then
@@ -4462,13 +4694,13 @@ UIPasses.item_presentation = {
 		end
 
 		ui_style.item_presentation_height = size[2]
-	end
+	end,
 }
 UIPasses.keystrokes = {
 	init = function (pass_definition)
 		return {
 			input_text_id = pass_definition.input_text_id,
-			keystrokes = {}
+			keystrokes = {},
 		}
 	end,
 	draw = function (ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt)
@@ -4482,11 +4714,12 @@ UIPasses.keystrokes = {
 
 			local keystrokes = Keyboard.keystrokes(pass_data.keystrokes)
 			local new_input_text, new_caret_index, new_input_mode = KeystrokeHelper.parse_strokes(input_text, caret_index, input_mode, keystrokes, max_length)
+
 			ui_content[pass_data.input_text_id] = new_input_text
 			ui_content.caret_index = new_caret_index
 			ui_content.input_mode = new_input_mode
 		end
-	end
+	end,
 }
 
 local function run_content_functions_of_auto_layout_sub_pass(sub_pass, index)
@@ -4527,7 +4760,7 @@ UIPasses.auto_layout = {
 
 		local function get_content_and_style(sub_pass_definition, parent_ui_content, parent_ui_style)
 			local sub_pass_content_id = sub_pass_definition.content_id
-			local sub_pass_content = nil
+			local sub_pass_content
 
 			if sub_pass_content_id then
 				sub_pass_content = parent_ui_content[sub_pass_content_id]
@@ -4537,7 +4770,7 @@ UIPasses.auto_layout = {
 			end
 
 			local sub_pass_style_id = sub_pass_definition.style_id
-			local sub_pass_style = nil
+			local sub_pass_style
 
 			if sub_pass_style_id then
 				sub_pass_style = parent_ui_style[sub_pass_style_id]
@@ -4555,14 +4788,14 @@ UIPasses.auto_layout = {
 			local pass_name = sub_pass_definition.pass_type
 			local pass = UIPasses[pass_name]
 			local sub_pass_content, sub_pass_style = get_content_and_style(sub_pass_definition, ui_content, ui_style)
-			local debug_color = nil
+			local debug_color
 
 			if sub_pass_style.render_random_debug_color then
 				debug_color = {
 					64,
 					math.random(0, 255),
 					math.random(0, 255),
-					math.random(0, 255)
+					math.random(0, 255),
 				}
 			end
 
@@ -4575,7 +4808,7 @@ UIPasses.auto_layout = {
 				content = sub_pass_content,
 				style = sub_pass_style,
 				get_preferred_size = pass.get_preferred_size,
-				debug_color = debug_color
+				debug_color = debug_color,
 			}
 		end
 
@@ -4586,14 +4819,14 @@ UIPasses.auto_layout = {
 				local pass_name = background_definition.pass_type
 				local pass = UIPasses[pass_name]
 				local sub_pass_content, sub_pass_style = get_content_and_style(background_definition, ui_content, ui_style)
-				local debug_color = nil
+				local debug_color
 
 				if sub_pass_style.render_random_debug_color then
 					debug_color = {
 						64,
 						math.random(0, 255),
 						math.random(0, 255),
-						math.random(0, 255)
+						math.random(0, 255),
 					}
 				end
 
@@ -4606,7 +4839,7 @@ UIPasses.auto_layout = {
 					content = sub_pass_content,
 					style = sub_pass_style,
 					get_preferred_size = pass.get_preferred_size,
-					debug_color = debug_color
+					debug_color = debug_color,
 				}
 			end
 		end
@@ -4615,22 +4848,18 @@ UIPasses.auto_layout = {
 		pass_data.background_passes = background_passes
 		pass_data._size_table = {
 			0,
-			0
+			0,
 		}
 
 		return pass_data
 	end,
 	update = function (ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, input_service, dt, visible)
-		local min_x = 0
-		local min_y = 0
-		local max_x = 0
-		local max_y = 0
+		local min_x, min_y, max_x, max_y = 0, 0, 0, 0
 		local layout_delta_x = ui_style and ui_style.layout_delta_x or 0
-		local layout_delta_y = ui_style and ui_style.layout_delta_y or 1
+		local layout_delta_x, layout_delta_y = layout_delta_x, ui_style and ui_style.layout_delta_y or 1
 		local x_correction = layout_delta_x < 0 and 1 or 0
 		local y_correction = layout_delta_y < 0 and 1 or 0
-		local current_pos_x = 0
-		local current_pos_y = 0
+		local current_pos_x, current_pos_y = 0, 0
 
 		for i, sub_pass in ipairs(pass_data.passes) do
 			update_auto_layout_sub_pass(sub_pass, ui_content, ui_style)
@@ -4641,11 +4870,10 @@ UIPasses.auto_layout = {
 			end
 
 			if sub_pass.visible then
-				local width, height = nil
+				local width, height
 
 				if sub_pass.style and sub_pass.style.size then
-					height = sub_pass.style.size[2]
-					width = sub_pass.style.size[1]
+					width, height = sub_pass.style.size[1], sub_pass.style.size[2]
 				end
 
 				if sub_pass.style then
@@ -4656,7 +4884,8 @@ UIPasses.auto_layout = {
 					elseif sub_pass.style.dynamic_height then
 						fassert(sub_pass.get_preferred_size, "pass of type '" .. sub_pass.definition.pass_type .. "' does not support dynamic_size")
 
-						local _ = nil
+						local _
+
 						_, height = sub_pass.get_preferred_size(ui_renderer, sub_pass.data, ui_scenegraph, sub_pass.definition, sub_pass.style, sub_pass.content, input_service, dt, sub_pass.visible)
 					elseif sub_pass.style.dynamic_size then
 						fassert(sub_pass.get_preferred_size, "pass of type '" .. sub_pass.definition.pass_type .. "' does not support dynamic_size")
@@ -4675,6 +4904,7 @@ UIPasses.auto_layout = {
 				min_y = math.min(min_y, sub_pass.layout_pos_y)
 				max_x = math.max(max_x, sub_pass.layout_pos_x + sub_pass.wanted_width)
 				max_y = math.max(max_y, sub_pass.layout_pos_y + sub_pass.wanted_height)
+
 				local offset = sub_pass.style and sub_pass.style.offset
 
 				if offset then
@@ -4704,7 +4934,7 @@ UIPasses.auto_layout = {
 	draw = function (ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, parent_size, input_service, dt)
 		local total_width = pass_data.layout_max_x - pass_data.layout_min_x
 		local total_height = pass_data.layout_max_y - pass_data.layout_min_y
-		local base_pos_x, base_pos_y = nil
+		local base_pos_x, base_pos_y
 
 		if ui_style.horizontal_alignment == "center" then
 			base_pos_x = position[1] + parent_size[1] / 2 - total_width / 2
@@ -4726,8 +4956,7 @@ UIPasses.auto_layout = {
 
 		if screen_padding then
 			local inv_scale = RESOLUTION_LOOKUP.inv_scale
-			local screen_width = RESOLUTION_LOOKUP.res_w * inv_scale
-			local screen_height = RESOLUTION_LOOKUP.res_h * inv_scale
+			local screen_width, screen_height = RESOLUTION_LOOKUP.res_w * inv_scale, RESOLUTION_LOOKUP.res_h * inv_scale
 			local screen_padding_top = screen_padding.top
 
 			if screen_padding_top then
@@ -4771,9 +5000,10 @@ UIPasses.auto_layout = {
 
 		pass_data._size_table[1] = total_width
 		pass_data._size_table[2] = total_height
+
 		local pass_position = Vector3(0, 0, 0)
 		local layout_delta_x = ui_style and ui_style.layout_delta_x or 0
-		local layout_delta_y = ui_style and ui_style.layout_delta_y or 1
+		local layout_delta_x, layout_delta_y = layout_delta_x, ui_style and ui_style.layout_delta_y or 1
 		local x_correction = layout_delta_x < 0 and 1 or 0
 		local y_correction = layout_delta_y < 0 and 1 or 0
 		local background_passes = pass_data.background_passes
@@ -4785,6 +5015,7 @@ UIPasses.auto_layout = {
 				pass_position.x = base_pos_x - (sub_pass.style.layout_left_padding or 0)
 				pass_position.y = base_pos_y - (sub_pass.style.layout_bottom_padding or 0)
 				pass_position.z = position[3]
+
 				local offset = sub_pass.style and sub_pass.style.offset
 
 				if offset then
@@ -4813,6 +5044,7 @@ UIPasses.auto_layout = {
 				pass_position[1] = base_pos_x + sub_pass.layout_pos_x - total_width * layout_delta_x * x_correction
 				pass_position[2] = base_pos_y + sub_pass.layout_pos_y - total_height * layout_delta_y * y_correction
 				pass_position[3] = position[3]
+
 				local main_offset = pass_data.style and pass_data.style.offset
 
 				if main_offset then
@@ -4848,5 +5080,5 @@ UIPasses.auto_layout = {
 		local total_height = pass_data.layout_max_y - pass_data.layout_min_y
 
 		return total_width, total_height
-	end
+	end,
 }

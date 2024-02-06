@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/dlcs/cog/action_career_dr_engineer_charge.lua
+
 ActionCareerDREngineerCharge = class(ActionCareerDREngineerCharge, ActionBase)
 
 ActionCareerDREngineerCharge.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
@@ -28,7 +30,9 @@ ActionCareerDREngineerCharge.client_owner_post_update = function (self, dt, t, w
 
 	if interval <= charge_timer then
 		local recharge_instances = math.floor(charge_timer / interval)
+
 		charge_timer = charge_timer - recharge_instances * interval
+
 		local wwise_world = self.wwise_world
 		local buff_to_add = self._buff_to_add
 		local num_stacks = buff_extension:num_buff_type(buff_to_add)
@@ -41,7 +45,7 @@ ActionCareerDREngineerCharge.client_owner_post_update = function (self, dt, t, w
 
 			local buff_template = buff_type.template
 
-			if t - self.last_pump_time > 10 and buff_template.max_stacks <= num_stacks then
+			if t - self.last_pump_time > 10 and num_stacks >= buff_template.max_stacks then
 				Managers.state.achievement:trigger_event("clutch_pump", self.owner_unit)
 			end
 

@@ -1,8 +1,11 @@
+﻿-- chunkname: @scripts/managers/challenges/challenge_manager.lua
+
 require("scripts/managers/challenges/in_game_challenge")
 require("scripts/managers/challenges/in_game_challenge_templates")
 require("scripts/managers/challenges/in_game_challenge_rewards")
 
 ChallengeManager = class(ChallengeManager)
+
 local MAX_UNIQUE_IDS = 255
 
 ChallengeManager.init = function (self, statistics_db, is_server)
@@ -161,6 +164,7 @@ ChallengeManager.remove_filtered_challenges = function (self, category, owner_un
 	for i = 1, #all_challenges do
 		local challenge = all_challenges[i]
 		local valid = not category or challenge:get_category() == category
+
 		valid = valid and (not owner_unique_id or challenge:belongs_to(owner_unique_id))
 
 		if valid then
@@ -171,6 +175,7 @@ ChallengeManager.remove_filtered_challenges = function (self, category, owner_un
 	for i = 1, #completed_challenges do
 		local challenge = completed_challenges[i]
 		local valid = not category or challenge:get_category() == category
+
 		valid = valid and (not owner_unique_id or challenge:belongs_to(owner_unique_id))
 
 		if valid then
@@ -180,6 +185,7 @@ ChallengeManager.remove_filtered_challenges = function (self, category, owner_un
 
 	for _, challenge in ipairs(challenges_to_remove) do
 		local challenge_id = table.index_of(all_challenges, challenge)
+
 		challenge_id = table.index_of(completed_challenges, challenge)
 
 		if challenge_id then
@@ -203,6 +209,7 @@ ChallengeManager.get_challenges_filtered = function (self, results, category, ow
 	for i = 1, #challenges do
 		local challenge = challenges[i]
 		local valid = not category or challenge:get_category() == category
+
 		valid = valid and (not owner_unique_id or challenge:belongs_to(owner_unique_id))
 
 		if valid then
@@ -227,6 +234,7 @@ ChallengeManager.get_completed_challenges_filtered = function (self, results, ca
 	for i = 1, #challenges do
 		local challenge = challenges[i]
 		local valid = not category or challenge:get_category() == category
+
 		valid = valid and (not owner_unique_id or challenge:belongs_to(owner_unique_id))
 
 		if valid then
@@ -345,7 +353,7 @@ local rpcs = {
 	"rpc_server_add_ingame_challenge",
 	"rpc_server_remove_ingame_challenge",
 	"rpc_server_update_ingame_challenge",
-	"rpc_server_hot_join_sync_ingame_challenge"
+	"rpc_server_hot_join_sync_ingame_challenge",
 }
 
 ChallengeManager.register_rpcs = function (self, network_event_delegate)

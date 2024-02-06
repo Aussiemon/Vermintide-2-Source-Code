@@ -1,6 +1,9 @@
+﻿-- chunkname: @scripts/entity_system/systems/orb/orb_system.lua
+
 OrbSystem = class(OrbSystem, ExtensionSystemBase)
+
 local RPCS = {
-	"rpc_spawn_orb"
+	"rpc_spawn_orb",
 }
 local ORB_START_RADIUS = 1
 local ORB_END_RADIUS = 3
@@ -12,7 +15,7 @@ local function spawn_orb(nav_world, orb_name, owner_peer_id, orb_starting_positi
 	local angle2 = slice_angle + half_slice_angle
 	local start_radius = ORB_START_RADIUS
 	local end_radius = ORB_END_RADIUS
-	local orb_flight_target_position = nil
+	local orb_flight_target_position
 
 	for i = 1, 5 do
 		local x, y = math.get_uniformly_random_point_inside_sector(start_radius, end_radius, angle1, angle2)
@@ -33,6 +36,7 @@ local function spawn_orb(nav_world, orb_name, owner_peer_id, orb_starting_positi
 
 		if success then
 			local pos = Vector3(orb_starting_position[1], orb_starting_position[2], z)
+
 			orb_flight_target_position = Vector3Box(pos)
 		else
 			local pos = GwNavQueries.inside_position_from_outside_position(nav_world, orb_starting_position, 4, 4, 5)
@@ -53,14 +57,14 @@ local function spawn_orb(nav_world, orb_name, owner_peer_id, orb_starting_positi
 	local spawn_type = "buff"
 	local extension_init_data = {
 		pickup_system = {
+			flight_enabled = true,
 			has_physics = false,
 			spawn_limit = 1,
-			flight_enabled = true,
 			pickup_name = orb_name,
 			spawn_type = spawn_type,
 			owner_peer_id = owner_peer_id,
-			orb_flight_target_position = orb_flight_target_position
-		}
+			orb_flight_target_position = orb_flight_target_position,
+		},
 	}
 
 	if pickup_settings.local_only then
@@ -74,6 +78,7 @@ OrbSystem.init = function (self, entity_system_creation_context, ...)
 	OrbSystem.super.init(self, entity_system_creation_context, ...)
 
 	local network_event_delegate = entity_system_creation_context.network_event_delegate
+
 	self.network_event_delegate = network_event_delegate
 
 	network_event_delegate:register(self, unpack(RPCS))
@@ -89,6 +94,7 @@ OrbSystem.rpc_spawn_orb = function (self, channel_id, orb_name, owner_peer_id, o
 	end
 
 	orb_name = NetworkLookup.pickup_names[orb_name]
+
 	local start_pos = Vector3Box(orb_starting_position)
 	local slice_dir = Vector3Box(cake_slice_dir)
 

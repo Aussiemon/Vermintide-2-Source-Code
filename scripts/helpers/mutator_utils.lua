@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/helpers/mutator_utils.lua
+
 MutatorUtils = MutatorUtils or {}
 
 local function tweak_horde_size_value(value, multiplier)
@@ -10,6 +12,7 @@ local function tweak_horde_composition(compositions, composition_name, tweaked, 
 	end
 
 	tweaked[composition_name] = true
+
 	local composition = compositions[composition_name]
 
 	if not composition then
@@ -23,6 +26,7 @@ local function tweak_horde_composition(compositions, composition_name, tweaked, 
 
 		for i = 2, #breeds, 2 do
 			local counts = breeds[i]
+
 			counts[1] = tweak_horde_size_value(counts[1], multiplier)
 			counts[2] = tweak_horde_size_value(counts[2], multiplier)
 		end
@@ -40,8 +44,8 @@ local function tweak_horde_compositions(compositions, composition_names, tweaked
 end
 
 local function modify_time_table(time_table, modifier, dprint_string)
-	local tt_1 = time_table[1]
-	local tt_2 = time_table[2]
+	local tt_1, tt_2 = time_table[1], time_table[2]
+
 	time_table[1] = tt_1 - tt_1 * modifier
 	time_table[2] = tt_2 - tt_2 * modifier
 end
@@ -74,10 +78,11 @@ MutatorUtils.apply_buff_to_alive_player_units = function (context, data, buff_na
 
 		if player_units[unit] == nil and HEALTH_ALIVE[unit] then
 			local params = {
-				attacker_unit = unit
+				attacker_unit = unit,
 			}
 			local buff_ext = get_extension(unit, "buff_system")
 			local buff_id = buff_ext:add_buff(buff_name, params)
+
 			new_buff_ids[unit] = buff_id
 		end
 
@@ -141,10 +146,12 @@ end
 
 MutatorUtils.tweak_pack_spawning_settings_convert_breeds = function (pack_spawning_settings, conversion_table)
 	local breed_packs = pack_spawning_settings.roaming_set.breed_packs
+
 	pack_spawning_settings.roaming_set.breed_packs = conversion_table[breed_packs] or breed_packs
 
 	for _, breed_pack_override in ipairs(pack_spawning_settings.roaming_set.breed_packs_override) do
 		local breed = breed_pack_override[1]
+
 		breed_pack_override[1] = conversion_table[breed] or breed
 	end
 
@@ -153,6 +160,7 @@ MutatorUtils.tweak_pack_spawning_settings_convert_breeds = function (pack_spawni
 			for i = 1, #difficulty_override do
 				local breed_pack_override = difficulty_override[i]
 				local breed = breed_pack_override[1]
+
 				breed_pack_override[1] = conversion_table[breed] or breed
 			end
 		end
@@ -168,6 +176,7 @@ MutatorUtils.tweak_pack_spawning_settings_density_multiplier = function (pack_sp
 
 			for i = 1, #difficulty_override do
 				local breed_pack_override = difficulty_override[i]
+
 				breed_pack_override[3] = breed_pack_override[3] * density_multiplier
 			end
 		end
@@ -185,6 +194,7 @@ MutatorUtils.update_conflict_settings_specials_frequency = function (max_special
 	if not settings.disabled then
 		if settings.max_specials then
 			local original = settings.max_specials
+
 			settings.max_specials = math.round(settings.max_specials * max_specials_multiplier)
 		end
 
@@ -193,9 +203,11 @@ MutatorUtils.update_conflict_settings_specials_frequency = function (max_special
 
 			if method_name == "specials_by_time_window" then
 				local spawn_interval = method_settings.spawn_interval
+
 				spawn_interval[1] = spawn_interval[1] * spawn_time_reduction_multiplier
 				spawn_interval[2] = spawn_interval[2] * spawn_time_reduction_multiplier
 				modified = true
+
 				local new_1 = spawn_interval[1]
 				local new_2 = spawn_interval[2]
 				local old_1 = new_1 / spawn_time_reduction_multiplier
@@ -204,9 +216,11 @@ MutatorUtils.update_conflict_settings_specials_frequency = function (max_special
 
 			if method_name == "specials_by_slots" then
 				local spawn_cooldown = method_settings.spawn_cooldown
+
 				spawn_cooldown[1] = spawn_cooldown[1] * spawn_time_reduction_multiplier
 				spawn_cooldown[2] = spawn_cooldown[2] * spawn_time_reduction_multiplier
 				modified = true
+
 				local new_1 = spawn_cooldown[1]
 				local new_2 = spawn_cooldown[2]
 				local old_1 = new_1 / spawn_time_reduction_multiplier

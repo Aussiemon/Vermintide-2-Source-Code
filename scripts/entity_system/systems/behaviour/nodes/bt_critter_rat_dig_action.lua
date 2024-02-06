@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_critter_rat_dig_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTCritterRatDigAction = class(BTCritterRatDigAction, BTNode)

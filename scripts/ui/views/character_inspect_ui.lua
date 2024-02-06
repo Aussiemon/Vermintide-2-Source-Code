@@ -1,5 +1,8 @@
+﻿-- chunkname: @scripts/ui/views/character_inspect_ui.lua
+
 local definitions = local_require("scripts/ui/views/character_inspect_ui_definitions")
 local create_loot_widget = definitions.create_loot_widget
+
 CharacterInspectUI = class(CharacterInspectUI)
 
 CharacterInspectUI.init = function (self, ingame_ui_context)
@@ -7,7 +10,9 @@ CharacterInspectUI.init = function (self, ingame_ui_context)
 	self.ui_renderer = ingame_ui_context.ui_renderer
 	self.ingame_ui = ingame_ui_context.ingame_ui
 	self.input_manager = ingame_ui_context.input_manager
+
 	local world = ingame_ui_context.world_manager:world("level_world")
+
 	self.wwise_world = Managers.world:wwise_world(world)
 	self._animations = {}
 
@@ -18,12 +23,14 @@ local DO_RELOAD = true
 
 CharacterInspectUI.create_ui_elements = function (self)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(definitions.scenegraph_definition)
+
 	local widgets = {}
 	local widgets_by_name = {}
 	local widget_definitions = definitions.widget_definitions
 
 	for name, definition in pairs(widget_definitions) do
 		local widget = UIWidget.init(definition)
+
 		widgets[#widgets + 1] = widget
 		widgets_by_name[name] = widget
 	end
@@ -78,6 +85,7 @@ end
 
 CharacterInspectUI.set_position = function (self, x, y)
 	local position = self.ui_scenegraph.background.local_position
+
 	position[1] = x
 	position[2] = y
 end

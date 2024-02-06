@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/weapons/actions/action_potion.lua
+
 ActionPotion = class(ActionPotion, ActionBase)
 
 ActionPotion.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
@@ -31,10 +33,10 @@ ActionPotion.finish = function (self, reason)
 	local cooldown_reduction_override = buff_extension:has_buff_perk("cooldown_reduction_override") and buff_template == "cooldown_reduction_potion"
 	local potion_spread = buff_extension:has_buff_type("trait_ring_potion_spread") or buff_extension:has_buff_type("weave_trait_ring_potion_spread")
 	local targets = {
-		owner_unit
+		owner_unit,
 	}
 	local smallest_distance = TrinketSpreadDistance
-	local additional_target = nil
+	local additional_target
 
 	if potion_spread then
 		local side = Managers.state.side.side_by_unit[owner_unit]
@@ -96,7 +98,7 @@ ActionPotion.finish = function (self, reason)
 		local additional_potion_buffs = {
 			"speed_boost_potion_reduced",
 			"damage_boost_potion_reduced",
-			"cooldown_reduction_potion_reduced"
+			"cooldown_reduction_potion_reduced",
 		}
 
 		if cooldown_reduction_override and career_extension then

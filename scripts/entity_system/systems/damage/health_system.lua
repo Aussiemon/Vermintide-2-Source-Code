@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/damage/health_system.lua
+
 require("scripts/unit_extensions/generic/generic_health_extension")
 require("scripts/unit_extensions/generic/overpowered_blob_health_extension")
 require("scripts/unit_extensions/generic/explosive_barrel_health_extension")
@@ -12,6 +14,7 @@ require("scripts/unit_extensions/health/lure_health_extension")
 require("scripts/unit_extensions/health/target_health_extension")
 
 HealthSystem = class(HealthSystem, ExtensionSystemBase)
+
 local script_data = script_data
 local RPCS = {
 	"rpc_add_damage",
@@ -27,7 +30,7 @@ local RPCS = {
 	"rpc_request_heal_wounds",
 	"rpc_request_revive",
 	"rpc_request_insta_kill",
-	"rpc_request_convert_temp"
+	"rpc_request_convert_temp",
 }
 local extensions = {
 	"ChaosTrollHealthExtension",
@@ -41,7 +44,7 @@ local extensions = {
 	"LureHealthExtension",
 	"OverpoweredBlobHealthExtension",
 	"TrainingDummyHealthExtension",
-	"TargetHealthExtension"
+	"TargetHealthExtension",
 }
 
 DLCUtils.require_list("health_extension_files")
@@ -51,6 +54,7 @@ HealthSystem.init = function (self, entity_system_creation_context, system_name)
 	HealthSystem.super.init(self, entity_system_creation_context, system_name, extensions)
 
 	local network_event_delegate = entity_system_creation_context.network_event_delegate
+
 	self.network_event_delegate = network_event_delegate
 
 	network_event_delegate:register(self, unpack(RPCS))
@@ -71,6 +75,7 @@ end
 
 HealthSystem.on_add_extension = function (self, world, unit, extension_name, extension_init_data)
 	local extension = ScriptUnit.add_extension(self.extension_init_context, unit, extension_name, self.NAME, extension_init_data)
+
 	HEALTH_ALIVE[unit] = true
 	self.unit_extensions[unit] = extension
 
@@ -136,6 +141,7 @@ end
 
 HealthSystem.update = function (self, context, t)
 	self.active_damage_buffer_index = 3 - self.active_damage_buffer_index
+
 	local active_damage_buffer_index = self.active_damage_buffer_index
 	local pdArray_set_empty = pdArray.set_empty
 	local player_unit_extensions = self.player_unit_extensions
@@ -285,7 +291,7 @@ HealthSystem.update_debug = function (self)
 
 						if zone_data then
 							local hi_data = zone_data.hi_data
-							local text, col = nil
+							local text, col
 							local replaced_breed = health_extension.replaced_breed
 
 							if replaced_breed then
@@ -301,6 +307,7 @@ HealthSystem.update_debug = function (self)
 							local breed_name = BLACKBOARDS[unit].breed.name
 							local breed_count = hi_data and hi_data.breed_count and hi_data.breed_count[breed_name]
 							local count = breed_count and breed_count.count or " "
+
 							text = string.format("%s %s %q(%s)", zone_data.island and "island_id:" or "zone_id:", zone_data.unique_zone_id, zone_data.pack_type or "?", count)
 
 							if zone_data.hi then
@@ -328,7 +335,7 @@ end
 HealthSystem.rpc_add_damage = function (self, channel_id, victim_unit_go_id, victim_unit_is_level_unit, attacker_unit_go_id, attacker_is_level_unit, source_attacker_unit_go_id, damage_amount, hit_zone_id, damage_type_id, hit_position, damage_direction, damage_source_id, hit_ragdoll_actor_id, hit_react_type_id, is_dead, is_critical_strike, added_dot, first_hit, total_hits, attack_type_id, backstab_multiplier)
 	fassert(not self.is_server, "Tried sending rpc_add_damage to something other than client")
 
-	local victim_unit = nil
+	local victim_unit
 	local unit_storage = self.unit_storage
 
 	if victim_unit_is_level_unit then
@@ -341,7 +348,7 @@ HealthSystem.rpc_add_damage = function (self, channel_id, victim_unit_go_id, vic
 		return
 	end
 
-	local attacker_unit = nil
+	local attacker_unit
 
 	if attacker_is_level_unit then
 		attacker_unit = LevelHelper:unit_by_index(self.world, attacker_unit_go_id)
@@ -372,6 +379,7 @@ HealthSystem.rpc_add_damage = function (self, channel_id, victim_unit_go_id, vic
 		local killing_blow = FrameTable.alloc_table()
 		local hit_position_table = hit_position and Vector3Aux.box(nil, hit_position)
 		local damage_direction_table = Vector3Aux.box(nil, damage_direction)
+
 		killing_blow[DamageDataIndex.DAMAGE_AMOUNT] = damage_amount
 		killing_blow[DamageDataIndex.DAMAGE_TYPE] = damage_type
 		killing_blow[DamageDataIndex.ATTACKER] = attacker_unit_alive and attacker_unit or victim_unit
@@ -387,6 +395,7 @@ HealthSystem.rpc_add_damage = function (self, channel_id, victim_unit_go_id, vic
 		killing_blow[DamageDataIndex.TOTAL_HITS] = total_hits
 		killing_blow[DamageDataIndex.ATTACK_TYPE] = attack_type
 		killing_blow[DamageDataIndex.BACKSTAB_MULTIPLIER] = backstab_multiplier
+
 		local death_system = Managers.state.entity:system("death_system")
 
 		death_system:kill_unit(victim_unit, killing_blow)
@@ -396,7 +405,7 @@ end
 HealthSystem.rpc_add_damage_network = function (self, channel_id, victim_unit_go_id, victim_unit_is_level_unit, attacker_unit_go_id, attacker_is_level_unit, source_attacker_unit_go_id, damage_amount, hit_zone_id, damage_type_id, hit_position, damage_direction, damage_source_id, hit_react_type_id, is_critical_strike, added_dot, first_hit, total_hits, backstab_multiplier)
 	fassert(self.is_server, "Tried sending rpc_add_damage_network to something other than the server")
 
-	local victim_unit = nil
+	local victim_unit
 	local unit_storage = self.unit_storage
 
 	if victim_unit_is_level_unit then
@@ -409,7 +418,7 @@ HealthSystem.rpc_add_damage_network = function (self, channel_id, victim_unit_go
 		return
 	end
 
-	local attacker_unit = nil
+	local attacker_unit
 
 	if attacker_is_level_unit then
 		attacker_unit = LevelHelper:unit_by_index(self.world, attacker_unit_go_id)
@@ -417,7 +426,7 @@ HealthSystem.rpc_add_damage_network = function (self, channel_id, victim_unit_go
 		attacker_unit = unit_storage:unit(attacker_unit_go_id)
 	end
 
-	local source_attacker_unit = nil
+	local source_attacker_unit
 
 	if source_attacker_unit_go_id ~= NetworkConstants.invalid_game_object_id then
 		source_attacker_unit = unit_storage:unit(source_attacker_unit_go_id)
@@ -427,7 +436,8 @@ HealthSystem.rpc_add_damage_network = function (self, channel_id, victim_unit_go
 	local damage_type = NetworkLookup.damage_types[damage_type_id]
 	local damage_source_name = NetworkLookup.damage_sources[damage_source_id]
 	local hit_react_type = NetworkLookup.hit_react_types[hit_react_type_id]
-	local hit_ragdoll_actor, damaging_unit, buff_attack_type = nil
+	local hit_ragdoll_actor, damaging_unit, buff_attack_type
+
 	first_hit = first_hit or false
 	total_hits = total_hits or 0
 
@@ -443,7 +453,7 @@ HealthSystem.rpc_damage_taken_overcharge = function (self, channel_id, unit_go_i
 end
 
 HealthSystem.rpc_heal = function (self, channel_id, target_unit_go_id, target_unit_is_level_unit, healer_unit_go_id, healer_unit_is_level_unit, heal_amount, heal_type_id)
-	local target_unit = nil
+	local target_unit
 	local unit_storage = self.unit_storage
 
 	if target_unit_is_level_unit then
@@ -456,7 +466,7 @@ HealthSystem.rpc_heal = function (self, channel_id, target_unit_go_id, target_un
 		return
 	end
 
-	local healer_unit = nil
+	local healer_unit
 
 	if healer_unit_is_level_unit then
 		healer_unit = LevelHelper:unit_by_index(self.world, healer_unit_go_id)
@@ -558,7 +568,7 @@ end
 HealthSystem.rpc_sync_damage_taken = function (self, channel_id, go_id, is_level_unit, set_max_health, amount, state_id)
 	fassert(not self.is_server, "rpc_sync_damage_taken was sent to server, only clients should receive this!")
 
-	local unit = nil
+	local unit
 	local unit_storage = self.unit_storage
 
 	if is_level_unit then
@@ -600,6 +610,7 @@ HealthSystem.rpc_take_falling_damage = function (self, channel_id, go_id, fall_h
 	end
 
 	fall_height = fall_height * 0.25
+
 	local movement_settings_table = PlayerUnitMovementSettings.get_movement_settings_table(unit)
 	local damage_multiplier = movement_settings_table.fall.heights.FALL_DAMAGE_MULTIPLIER
 	local min_fall_damage_height = movement_settings_table.fall.heights.MIN_FALL_DAMAGE_HEIGHT

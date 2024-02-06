@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/ui/views/unlock_key_view.lua
+
 local definitions = local_require("scripts/ui/views/unlock_key_view_definitions")
+
 UnlockKeyView = class(UnlockKeyView)
 
 UnlockKeyView.init = function (self, ingame_ui_context)
@@ -8,6 +11,7 @@ UnlockKeyView.init = function (self, ingame_ui_context)
 	self.world = ingame_ui_context.world
 	self.statistics_db = ingame_ui_context.statistics_db
 	self.wwise_world = ingame_ui_context.dialogue_system.wwise_world
+
 	local input_manager = self.input_manager
 
 	input_manager:create_input_service("unlock_key_menu", "IngameMenuKeymaps", "IngameMenuFilters")
@@ -40,7 +44,7 @@ UnlockKeyView.create_ui_elements = function (self)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(definitions.scenegraph_definition)
 	self.background_widgets = {
 		create_simple_texture_widget("unlock_key_bg", "key_entry_background"),
-		create_simple_texture_widget("title_bar", "unlock_key_title_background")
+		create_simple_texture_widget("title_bar", "unlock_key_title_background"),
 	}
 	self.confirm_gamepad_button_widget = UIWidget.init(widget_definitions.confirm_gamepad_button_widget)
 	self.back_gamepad_button_widget = UIWidget.init(widget_definitions.back_gamepad_button_widget)
@@ -119,6 +123,7 @@ UnlockKeyView.update = function (self, dt, t)
 		Managers.transition:fade_out(10, nil)
 
 		self.ui_animations.exit_animation = nil
+
 		local transition_on_completed_animation = self.transition_on_completed_animation
 
 		if transition_on_completed_animation then
@@ -168,9 +173,12 @@ UnlockKeyView.draw_widgets = function (self, dt, t)
 	end
 
 	local text_input_widget = self.text_input_widget
+
 	text_input_widget.content.text_field = self.key_text
 	text_input_widget.content.caret_index = self.key_text_index
+
 	local value = (1 + math.sin(t * 3 % math.pi)) / 2
+
 	text_input_widget.style.text.caret_color[1] = value * 255
 
 	UIRenderer.draw_widget(ui_renderer, text_input_widget)
@@ -183,6 +191,7 @@ end
 
 UnlockKeyView.handle_input = function (self, input_service)
 	local keystrokes = Keyboard.keystrokes()
+
 	self.key_text, self.key_text_index, self.text_mode = KeystrokeHelper.parse_strokes(self.key_text, self.key_text_index, self.text_mode, keystrokes)
 	self.key_text = TextToUpper(self.key_text)
 
@@ -206,12 +215,18 @@ end
 UnlockKeyView.handle_controller_input = function (self, input_service, dt)
 	if self.controller_cooldown > 0 then
 		self.controller_cooldown = self.controller_cooldown - dt
-	elseif self.confirm_gamepad_button_widget.content.gamepad_button.is_clicked ~= 0 then
-		if self.confirm_gamepad_button_widget.content.button_hotspot.is_clicked == 0 then
-			-- Nothing
-		elseif self.back_gamepad_button_widget.content.gamepad_button.is_clicked == 0 or self.back_gamepad_button_widget.content.button_hotspot.is_clicked == 0 then
-			self.controller_cooldown = GamepadSettings.menu_cooldown
-		end
+	else
+		repeat
+			if self.confirm_gamepad_button_widget.content.gamepad_button.is_clicked == 0 or self.confirm_gamepad_button_widget.content.button_hotspot.is_clicked == 0 then
+				break
+			end
+
+			if self.back_gamepad_button_widget.content.gamepad_button.is_clicked == 0 or self.back_gamepad_button_widget.content.button_hotspot.is_clicked == 0 then
+				self.controller_cooldown = GamepadSettings.menu_cooldown
+			end
+
+			break
+		until true
 	end
 end
 

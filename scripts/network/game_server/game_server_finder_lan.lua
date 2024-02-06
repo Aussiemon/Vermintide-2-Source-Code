@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/network/game_server/game_server_finder_lan.lua
+
 GameServerFinderLan = class(GameServerFinderLan)
 
 GameServerFinderLan.init = function (self)

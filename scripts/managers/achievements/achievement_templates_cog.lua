@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/achievements/achievement_templates_cog.lua
+
 local PLACEHOLDER_ICON = AchievementTemplateHelper.PLACEHOLDER_ICON
 local achievements = AchievementTemplates.achievements
 local achievement_settings = DLCSettings.cog
@@ -57,15 +59,16 @@ local register_completed_level_player = 4
 local explosive_barrel_stats_id = 1
 local explosive_barrel_destroyed_unit = 2
 local explosive_barrel_destroyed_damage_data = 3
+
 achievements.cog_penta_bomb = {
-	name = "achv_cog_penta_bomb_name",
-	required_dlc_extra = "cog",
 	desc = "achv_cog_penta_bomb_desc",
 	display_completion_ui = true,
 	icon = "achievement_trophy_cog_penta_bomb",
+	name = "achv_cog_penta_bomb_name",
 	required_dlc = "cog_upgrade",
+	required_dlc_extra = "cog",
 	events = {
-		"register_damage"
+		"register_damage",
 	},
 	completed = function (statistics_db, stats_id, template_data)
 		return statistics_db:get_persistent_stat(stats_id, "cog_penta_bomb") > 0
@@ -108,17 +111,17 @@ achievements.cog_penta_bomb = {
 		if template_data.counter > 4 then
 			statistics_db:increment_stat(stats_id, "cog_penta_bomb")
 		end
-	end
+	end,
 }
 achievements.cog_air_bomb = {
-	name = "achv_cog_air_bomb_name",
-	required_dlc_extra = "cog",
 	desc = "achv_cog_air_bomb_desc",
 	display_completion_ui = true,
 	icon = "achievement_trophy_cog_air_bomb",
+	name = "achv_cog_air_bomb_name",
 	required_dlc = "cog_upgrade",
+	required_dlc_extra = "cog",
 	events = {
-		"rat_ogre_stagger"
+		"rat_ogre_stagger",
 	},
 	completed = function (statistics_db, stats_id, template_data)
 		return statistics_db:get_persistent_stat(stats_id, "cog_air_bomb") > 0
@@ -145,18 +148,18 @@ achievements.cog_air_bomb = {
 		if bt_node_name == "jump_slam" then
 			rpc_increment_stat(attacker_unit, "cog_air_bomb")
 		end
-	end
+	end,
 }
 achievements.cog_kill_barrage = {
-	name = "achv_cog_kill_barrage_name",
-	required_dlc_extra = "cog",
 	desc = "achv_cog_kill_barrage_desc",
 	display_completion_ui = true,
 	icon = "achievement_trophy_cog_kill_barrage",
+	name = "achv_cog_kill_barrage_name",
 	required_dlc = "cog_upgrade",
+	required_dlc_extra = "cog",
 	events = {
 		"register_kill",
-		"crank_gun_fire"
+		"crank_gun_fire",
 	},
 	completed = function (statistics_db, stats_id, template_data)
 		return statistics_db:get_persistent_stat(stats_id, "cog_kill_barrage") > 0
@@ -204,18 +207,18 @@ achievements.cog_kill_barrage = {
 		if template_data.kill_count >= 50 then
 			statistics_db:increment_stat(stats_id, "cog_kill_barrage")
 		end
-	end
+	end,
 }
 achievements.cog_all_kill_barrage = {
-	name = "achv_cog_all_kill_barrage_name",
-	required_dlc_extra = "cog",
 	desc = "achv_cog_all_kill_barrage_desc",
 	display_completion_ui = true,
 	icon = "achievement_trophy_cog_all_kill_barrage",
+	name = "achv_cog_all_kill_barrage_name",
 	required_dlc = "cog_upgrade",
+	required_dlc_extra = "cog",
 	events = {
 		"register_kill",
-		"crank_gun_fire"
+		"crank_gun_fire",
 	},
 	completed = function (statistics_db, stats_id, template_data)
 		return statistics_db:get_persistent_stat(stats_id, "cog_all_kill_barrage") > 0
@@ -277,25 +280,25 @@ achievements.cog_all_kill_barrage = {
 				end
 			end
 		end
-	end
+	end,
 }
 achievements.cog_climb_kill = {
-	required_dlc = "cog",
-	name = "achv_cog_climb_kill_name",
-	display_completion_ui = true,
-	desc = "achv_cog_climb_kill_desc",
-	required_career = "dr_engineer",
-	icon = "achievement_trophy_cog_climb_kill",
 	always_run = true,
+	desc = "achv_cog_climb_kill_desc",
+	display_completion_ui = true,
+	icon = "achievement_trophy_cog_climb_kill",
+	name = "achv_cog_climb_kill_name",
+	required_career = "dr_engineer",
+	required_dlc = "cog",
 	events = {
-		"register_kill"
+		"register_kill",
 	},
 	progress = function (statistics_db, stats_id, template_data)
 		local completed = statistics_db:get_persistent_stat(stats_id, "climbing_enemies_killed")
 
 		return {
 			completed,
-			100
+			100,
 		}
 	end,
 	completed = function (statistics_db, stats_id, template_data)
@@ -339,18 +342,18 @@ achievements.cog_climb_kill = {
 
 			rpc_increment_stat(attacker_unit, "climbing_enemies_killed")
 		end
-	end
+	end,
 }
 achievements.cog_long_bomb = {
-	name = "achv_cog_long_bomb_name",
-	required_dlc_extra = "cog",
 	desc = "achv_cog_long_bomb_desc",
 	display_completion_ui = true,
 	icon = "achievement_trophy_cog_long_bomb",
+	name = "achv_cog_long_bomb_name",
 	required_dlc = "cog_upgrade",
+	required_dlc_extra = "cog",
 	events = {
 		"on_grenade_thrown",
-		"register_kill"
+		"register_kill",
 	},
 	completed = function (statistics_db, stats_id, template_data)
 		return statistics_db:get_persistent_stat(stats_id, "cog_long_bomb") > 0
@@ -364,6 +367,7 @@ achievements.cog_long_bomb = {
 			end
 
 			local throw_position = POSITION_LOOKUP[throw_unit]
+
 			template_data.throw_position = Vector3Box(throw_position)
 		else
 			if not template_data.throw_position then
@@ -409,18 +413,18 @@ achievements.cog_long_bomb = {
 				end
 			end
 		end
-	end
+	end,
 }
 achievements.cog_steam_alt = {
-	name = "achv_cog_steam_alt_name",
-	required_dlc_extra = "cog",
 	desc = "achv_cog_steam_alt_desc",
 	display_completion_ui = true,
 	icon = "achievement_trophy_cog_steam_alt",
+	name = "achv_cog_steam_alt_name",
 	required_dlc = "cog_upgrade",
+	required_dlc_extra = "cog",
 	events = {
 		"steam_alt_fire",
-		"register_damage"
+		"register_damage",
 	},
 	completed = function (statistics_db, stats_id, template_data)
 		return statistics_db:get_persistent_stat(stats_id, "cog_steam_alt") > 0
@@ -474,24 +478,24 @@ achievements.cog_steam_alt = {
 				statistics_db:increment_stat(stats_id, "cog_steam_alt")
 			end
 		end
-	end
+	end,
 }
 achievements.cog_bomb_grind = {
-	name = "achv_cog_bomb_grind_name",
-	required_dlc_extra = "cog",
 	desc = "achv_cog_bomb_grind_desc",
 	display_completion_ui = true,
 	icon = "achievement_trophy_cog_bomb_grind",
+	name = "achv_cog_bomb_grind_name",
 	required_dlc = "cog_upgrade",
+	required_dlc_extra = "cog",
 	events = {
-		"register_kill"
+		"register_kill",
 	},
 	progress = function (statistics_db, stats_id, template_data)
 		local completed = statistics_db:get_persistent_stat(stats_id, "cog_bomb_kills")
 
 		return {
 			completed,
-			500
+			500,
 		}
 	end,
 	completed = function (statistics_db, stats_id, template_data)
@@ -542,17 +546,17 @@ achievements.cog_bomb_grind = {
 
 			statistics_db:increment_stat(stats_id, "cog_bomb_kills")
 		end
-	end
+	end,
 }
 achievements.cog_chain_headshot = {
+	desc = "achv_cog_chain_headshot_desc",
 	display_completion_ui = true,
+	icon = "achievement_trophy_cog_chain_headshot",
 	name = "achv_cog_chain_headshot_name",
 	required_dlc = "cog",
-	icon = "achievement_trophy_cog_chain_headshot",
-	desc = "achv_cog_chain_headshot_desc",
 	events = {
 		"on_hit",
-		"ammo_used"
+		"ammo_used",
 	},
 	completed = function (statistics_db, stats_id, template_data)
 		return statistics_db:get_persistent_stat(stats_id, "cog_chain_headshot") > 0
@@ -638,23 +642,23 @@ achievements.cog_chain_headshot = {
 				end
 			end
 		end
-	end
+	end,
 }
 achievements.cog_pistol_headshot_grind = {
-	name = "achv_cog_pistol_headshot_grind_name",
 	desc = "achv_cog_pistol_headshot_grind_desc",
 	display_completion_ui = true,
 	icon = "achievement_trophy_cog_pistol_headshot_grind",
+	name = "achv_cog_pistol_headshot_grind_name",
 	required_dlc = "cog",
 	events = {
-		"on_hit"
+		"on_hit",
 	},
 	progress = function (statistics_db, stats_id, template_data)
 		local completed = statistics_db:get_persistent_stat(stats_id, "steam_pistol_headshots")
 
 		return {
 			completed,
-			1000
+			1000,
 		}
 	end,
 	completed = function (statistics_db, stats_id, template_data)
@@ -711,23 +715,23 @@ achievements.cog_pistol_headshot_grind = {
 				statistics_db:increment_stat(stats_id, "steam_pistol_headshots")
 			end
 		end
-	end
+	end,
 }
 achievements.cog_clutch_pump = {
-	name = "achv_cog_clutch_pump_name",
 	desc = "achv_cog_clutch_pump_desc",
 	display_completion_ui = true,
 	icon = "achievement_trophy_cog_clutch_pump",
+	name = "achv_cog_clutch_pump_name",
 	required_dlc = "cog",
 	events = {
-		"clutch_pump"
+		"clutch_pump",
 	},
 	progress = function (statistics_db, stats_id, template_data)
 		local completed = statistics_db:get_persistent_stat(stats_id, "clutch_pumps")
 
 		return {
 			completed,
-			100
+			100,
 		}
 	end,
 	completed = function (statistics_db, stats_id, template_data)
@@ -742,23 +746,23 @@ achievements.cog_clutch_pump = {
 		if not is_hub_level then
 			statistics_db:increment_stat(stats_id, "clutch_pumps")
 		end
-	end
+	end,
 }
 achievements.cog_hammer_cliff_push = {
-	name = "achv_cog_hammer_cliff_push_name",
 	desc = "achv_cog_hammer_cliff_push_desc",
 	display_completion_ui = true,
 	icon = "achievement_trophy_cog_hammer_cliff_push",
+	name = "achv_cog_hammer_cliff_push_name",
 	required_dlc = "cog",
 	events = {
-		"register_kill"
+		"register_kill",
 	},
 	progress = function (statistics_db, stats_id, template_data)
 		local completed = statistics_db:get_persistent_stat(stats_id, "hammer_cliff_pushes")
 
 		return {
 			completed,
-			200
+			200,
 		}
 	end,
 	completed = function (statistics_db, stats_id, template_data)
@@ -801,17 +805,17 @@ achievements.cog_hammer_cliff_push = {
 				statistics_db:increment_stat(stats_id, "hammer_cliff_pushes")
 			end
 		end
-	end
+	end,
 }
 achievements.cog_only_crank = {
-	name = "achv_cog_only_crank_name",
-	display_completion_ui = true,
-	required_dlc = "cog",
-	icon = "achievement_trophy_cog_only_crank",
 	desc = "achv_cog_only_crank_desc",
+	display_completion_ui = true,
+	icon = "achievement_trophy_cog_only_crank",
+	name = "achv_cog_only_crank_name",
+	required_dlc = "cog",
 	events = {
 		"register_kill",
-		"register_completed_level"
+		"register_completed_level",
 	},
 	completed = function (statistics_db, stats_id, template_data)
 		return statistics_db:get_persistent_stat(stats_id, "cog_only_crank") > 0
@@ -850,17 +854,17 @@ achievements.cog_only_crank = {
 
 			template_data.failed = nil
 		end
-	end
+	end,
 }
 achievements.cog_exploding_barrel_kills = {
+	desc = "achv_cog_exploding_barrel_kills_desc",
 	display_completion_ui = true,
+	icon = "achievement_trophy_cog_exploding_barrel_kills",
 	name = "achv_cog_exploding_barrel_kills_name",
 	required_dlc = "cog",
-	icon = "achievement_trophy_cog_exploding_barrel_kills",
-	desc = "achv_cog_exploding_barrel_kills_desc",
 	events = {
 		"register_kill",
-		"explosive_barrel_destroyed"
+		"explosive_barrel_destroyed",
 	},
 	completed = function (statistics_db, stats_id, template_data)
 		if statistics_db:get_persistent_stat(stats_id, "cog_exploding_barrel_kills") > 0 then
@@ -915,17 +919,17 @@ achievements.cog_exploding_barrel_kills = {
 				statistics_db:set_local_stat("cog_exploding_barrel_kills", 0)
 			end
 		end
-	end
+	end,
 }
 achievements.cog_long_crank_fire = {
+	desc = "achv_cog_long_crank_fire_desc",
 	display_completion_ui = true,
+	icon = "achievement_trophy_cog_long_crank_fire",
 	name = "achv_cog_long_crank_fire_name",
 	required_dlc = "cog",
-	icon = "achievement_trophy_cog_long_crank_fire",
-	desc = "achv_cog_long_crank_fire_desc",
 	events = {
 		"crank_gun_fire_start",
-		"crank_gun_fire"
+		"crank_gun_fire",
 	},
 	completed = function (statistics_db, stats_id, template_data)
 		return statistics_db:get_persistent_stat(stats_id, "cog_long_crank_fire") > 0
@@ -933,6 +937,7 @@ achievements.cog_long_crank_fire = {
 	on_event = function (statistics_db, stats_id, template_data, event_name, event_data)
 		if event_name == "crank_gun_fire_start" then
 			local t = Managers.time:time("game")
+
 			template_data.start_time = t
 		elseif event_name == "crank_gun_fire" then
 			local fire_start = template_data.start_time
@@ -943,8 +948,9 @@ achievements.cog_long_crank_fire = {
 				statistics_db:increment_stat(stats_id, "cog_long_crank_fire")
 			end
 		end
-	end
+	end,
 }
+
 local elite_special_breeds = {}
 
 for breed_name, breed in pairs(Breeds) do
@@ -965,28 +971,36 @@ local kill_register_weapons = table.mirror_array_inplace({
 	"bardin_engineer_career_skill_weapon_heavy",
 	"bardin_engineer_career_skill_weapon",
 	"dr_steam_pistol",
-	"dr_2h_cog_hammer"
+	"dr_2h_cog_hammer",
 })
+
 achievements.cog_kill_register = {
 	display_completion_ui = false,
 	required_dlc = "cog",
 	events = {
-		"register_kill"
+		"register_kill",
 	},
 	completed = function (statistics_db, stats_id, template_data)
 		local max_count = 0
 
 		for i = 1, #elite_special_breeds do
 			local count = statistics_db:get_persistent_stat(stats_id, "weapon_kills_per_breed", "dr_steam_pistol", elite_special_breeds[i])
+
 			max_count = max_count + count
 		end
 
 		local completed_first = max_count >= 150
+
 		max_count = 0
+
 		local heavy_count = statistics_db:get_persistent_stat(stats_id, "weapon_kills_per_breed", "bardin_engineer_career_skill_weapon_heavy", "skaven_ratling_gunner")
+
 		max_count = max_count + heavy_count
+
 		local light_count = statistics_db:get_persistent_stat(stats_id, "weapon_kills_per_breed", "bardin_engineer_career_skill_weapon", "skaven_ratling_gunner")
+
 		max_count = max_count + light_count
+
 		local completed_second = max_count >= 15
 		local corruptor = statistics_db:get_persistent_stat(stats_id, "weapon_kills_per_breed", "dr_2h_cog_hammer", "chaos_vortex_sorcerer")
 		local vortex = statistics_db:get_persistent_stat(stats_id, "weapon_kills_per_breed", "dr_2h_cog_hammer", "chaos_corruptor_sorcerer")
@@ -1031,19 +1045,20 @@ achievements.cog_kill_register = {
 		if killed_breed and killed_breed.name then
 			statistics_db:increment_stat(stats_id, "weapon_kills_per_breed", damage_source, killed_breed.name)
 		end
-	end
+	end,
 }
 achievements.cog_missing_cog = {
-	required_dlc = "cog",
-	name = "achv_cog_missing_cog_name",
 	allow_in_inn = true,
+	desc = "achv_cog_missing_cog_desc",
 	display_completion_ui = true,
 	icon = "achievement_trophy_cog_missing_cog",
-	desc = "achv_cog_missing_cog_desc",
+	name = "achv_cog_missing_cog_name",
+	required_dlc = "cog",
 	completed = function (statistics_db, stats_id)
 		return statistics_db:get_persistent_stat(stats_id, "cog_missing_cog") > 0
-	end
+	end,
 }
+
 local act_1_levels = GameActs.act_1
 local act_2_levels = GameActs.act_2
 local act_3_levels = GameActs.act_3
@@ -1054,32 +1069,32 @@ add_levels_complete_per_hero_challenge(achievements, "cog_mission_streak_act2_le
 add_levels_complete_per_hero_challenge(achievements, "cog_mission_streak_act3_legend", act_3_levels, diff, "dr_engineer", true, "achievement_trophy_cog_mission_streak_act3_legend_dr_engineer", "cog_upgrade", nil, nil)
 add_multi_stat_count_challenge(achievements, "cog_crank_kill", {
 	"cog_kills_bardin_engineer_career_skill_weapon",
-	"cog_kills_bardin_engineer_career_skill_weapon_heavy"
+	"cog_kills_bardin_engineer_career_skill_weapon_heavy",
 }, 3000, "achievement_trophy_cog_crank_kill", "cog_upgrade")
 add_stat_count_challenge(achievements, "cog_hammer_axe_kills", "cog_kills_dr_2h_cog_hammer", 1000, nil, "achievement_trophy_cog_hammer_axe_kills", "cog_upgrade")
 add_weapon_kills_per_breeds_challenge(achievements, "cog_crank_kill_ratling", {
 	"bardin_engineer_career_skill_weapon_heavy",
-	"bardin_engineer_career_skill_weapon"
+	"bardin_engineer_career_skill_weapon",
 }, {
-	"skaven_ratling_gunner"
+	"skaven_ratling_gunner",
 }, 15, "achievement_trophy_cog_crank_kill_ratling", "cog", true, nil, nil)
 add_weapon_kills_per_breeds_challenge(achievements, "cog_steam_elite_kill", {
-	"dr_steam_pistol"
+	"dr_steam_pistol",
 }, elite_special_breeds, 150, "achievement_trophy_cog_steam_elite_kill", "cog_upgrade", true, nil, nil)
 add_weapon_kills_per_breeds_challenge(achievements, "cog_hammer_kill_storm", {
-	"dr_2h_cog_hammer"
+	"dr_2h_cog_hammer",
 }, {
-	"chaos_vortex_sorcerer"
+	"chaos_vortex_sorcerer",
 }, 1, nil, "cog_upgrade", false, nil, nil)
 add_weapon_kills_per_breeds_challenge(achievements, "cog_hammer_kill_leech", {
-	"dr_2h_cog_hammer"
+	"dr_2h_cog_hammer",
 }, {
-	"chaos_corruptor_sorcerer"
+	"chaos_corruptor_sorcerer",
 }, 1, nil, "cog_upgrade", false, nil, nil)
 add_weapon_kills_per_breeds_challenge(achievements, "cog_hammer_kill_hale", {
-	"dr_2h_cog_hammer"
+	"dr_2h_cog_hammer",
 }, {
-	"chaos_exalted_sorcerer"
+	"chaos_exalted_sorcerer",
 }, 1, nil, "cog_upgrade", false, nil, nil)
 
 local main_game_levels = HelmgartLevels
@@ -1088,7 +1103,7 @@ local difficulties = {
 	"hard",
 	"harder",
 	"hardest",
-	"cataclysm"
+	"cataclysm",
 }
 
 for i = 1, #difficulties do
@@ -1121,12 +1136,12 @@ local all_challenges = {
 	"cog_wizard_hammer",
 	"cog_steam_elite_kill",
 	"cog_steam_alt",
-	"cog_bomb_grind"
+	"cog_bomb_grind",
 }
 local wizard_hammerer = {
 	"cog_hammer_kill_storm",
 	"cog_hammer_kill_leech",
-	"cog_hammer_kill_hale"
+	"cog_hammer_kill_hale",
 }
 
 add_meta_challenge(achievements, "complete_all_engineer_challenges", all_challenges, "achievement_trophy_complete_all_engineer_challenges", "cog_upgrade", nil, nil)

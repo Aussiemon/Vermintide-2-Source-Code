@@ -1,8 +1,11 @@
+﻿-- chunkname: @scripts/entity_system/systems/play_go_tutorial/play_go_tutorial_system.lua
+
 require("scripts/entity_system/systems/play_go_tutorial/play_go_pause_templates")
 
 local extensions = {
-	"PlayGoTutorialExtension"
+	"PlayGoTutorialExtension",
 }
+
 PlayGoTutorialSystem = class(PlayGoTutorialSystem, ExtensionSystemBase)
 
 PlayGoTutorialSystem.init = function (self, entity_system_creation_context, system_name)
@@ -49,23 +52,27 @@ PlayGoTutorialSystem.on_add_extension = function (self, world, unit, extension_n
 	fassert(self._tutorial_unit == nil, "Multiple tutorial units spawned on level!")
 
 	local extension = {}
+
 	self._tutorial_started = true
 	self._tutorial_unit = unit
 	self._world = world
 	self._num_bots_active = 1
 	script_data.ai_bots_disabled = true
 	script_data.info_slates_disabled = true
+
 	local definitions = local_require("scripts/ui/views/tutorial_tooltip_ui_definitions")
+
 	self._active = true
 	self._saved_position = definitions.scenegraph.tutorial_tooltip.position
 	self._saved_definition = definitions.scenegraph.tutorial_tooltip
 	self._saved_definition.position = {
 		0,
 		-440,
-		1
+		1,
 	}
 	self.player_ammo_refill = false
 	self._profile_packages = {}
+
 	local extension_alias = self.NAME
 
 	ScriptUnit.set_extension(unit, extension_alias, extension, dummy_input)
@@ -94,6 +101,7 @@ end
 
 PlayGoTutorialSystem._add_next_animation_hook = function (self)
 	self._unit_animation_event = self._unit_animation_event or Unit.animation_event
+
 	local animation_hook = self._animation_hooks[1]
 
 	if animation_hook then
@@ -106,7 +114,7 @@ PlayGoTutorialSystem._add_next_animation_hook = function (self)
 				animation_hook.timer = Managers.time:time("game") + animation_hook.animation_delay or 0
 				animation_hook.world = self._world
 
-				animation_hook:on_enter(unit)
+				animation_hook.on_enter(animation_hook, unit)
 			end
 
 			return self._unit_animation_event(unit, animation_event)
@@ -328,12 +336,12 @@ end
 PlayGoTutorialSystem._load_profile_packages = function (self)
 	local profiles_to_load = {
 		3,
-		4
+		4,
 	}
 	local career_index = 1
 	local is_first_person = {
+		["3"] = false,
 		["4"] = true,
-		["3"] = false
 	}
 	local slots = InventorySettings.slots
 	local num_slots = #InventorySettings.slots
@@ -361,71 +369,75 @@ PlayGoTutorialSystem._load_profile_packages = function (self)
 				local item_units = BackendUtils.get_item_units(item_data, backend_id, nil, career_name)
 
 				if slot_category == "weapon" then
-					local left_hand_unit_name = item_units.left_hand_unit
+					do
+						local left_hand_unit_name = item_units.left_hand_unit
 
-					if left_hand_unit_name then
-						if is_first_person[profile_index] then
-							profile_packages[left_hand_unit_name] = true
+						if left_hand_unit_name then
+							if is_first_person[profile_index] then
+								profile_packages[left_hand_unit_name] = true
+							end
+
+							profile_packages[left_hand_unit_name .. "_3p"] = true
 						end
 
-						profile_packages[left_hand_unit_name .. "_3p"] = true
-					end
+						local right_hand_unit_name = item_units.right_hand_unit
 
-					local right_hand_unit_name = item_units.right_hand_unit
+						if right_hand_unit_name then
+							if is_first_person[profile_index] then
+								profile_packages[right_hand_unit_name] = true
+							end
 
-					if right_hand_unit_name then
-						if is_first_person[profile_index] then
-							profile_packages[right_hand_unit_name] = true
+							profile_packages[right_hand_unit_name .. "_3p"] = true
 						end
 
-						profile_packages[right_hand_unit_name .. "_3p"] = true
-					end
+						local ammo_unit_name = item_units.ammo_unit
 
-					local ammo_unit_name = item_units.ammo_unit
+						if ammo_unit_name then
+							if is_first_person[profile_index] then
+								profile_packages[ammo_unit_name] = true
+							end
 
-					if ammo_unit_name then
-						if is_first_person[profile_index] then
-							profile_packages[ammo_unit_name] = true
+							profile_packages[item_units.ammo_unit_3p or ammo_unit_name .. "_3p"] = true
 						end
 
-						if not item_units.ammo_unit_3p then
-							local actions = ammo_unit_name .. "_3p"
-						end
+						local actions = item_template.actions
 
-						profile_packages[actions] = true
-					end
+						for _, sub_actions in pairs(actions) do
+							for _, sub_action_data in pairs(sub_actions) do
+								local projectile_info = sub_action_data.projectile_info
 
-					local actions = item_template.actions
+								if projectile_info then
+									local projectile_units_template = projectile_info.projectile_units_template
+									local projectile_units = ProjectileUnits[projectile_units_template]
 
-					for _, sub_actions in pairs(actions) do
-						for _, sub_action_data in pairs(sub_actions) do
-							local projectile_info = sub_action_data.projectile_info
+									if projectile_units.projectile_unit_name then
+										profile_packages[projectile_units.projectile_unit_name] = true
+									end
 
-							if projectile_info then
-								local projectile_units_template = projectile_info.projectile_units_template
-								local projectile_units = ProjectileUnits[projectile_units_template]
+									if projectile_units.dummy_linker_unit_name then
+										profile_packages[projectile_units.dummy_linker_unit_name] = true
+									end
 
-								if projectile_units.projectile_unit_name then
-									profile_packages[projectile_units.projectile_unit_name] = true
-								end
-
-								if projectile_units.dummy_linker_unit_name then
-									profile_packages[projectile_units.dummy_linker_unit_name] = true
-								end
-
-								if projectile_units.dummy_linker_broken_units then
-									for _, unit in pairs(projectile_units.dummy_linker_broken_units) do
-										profile_packages[unit] = true
+									if projectile_units.dummy_linker_broken_units then
+										for _, unit in pairs(projectile_units.dummy_linker_broken_units) do
+											profile_packages[unit] = true
+										end
 									end
 								end
 							end
 						end
 					end
-				elseif slot_category == "attachment" then
-					profile_packages[item_units.unit] = true
-				else
-					error("InventoryPackageSynchronizerClient unknown slot_category: " .. slot_category)
+
+					break
 				end
+
+				if slot_category == "attachment" then
+					profile_packages[item_units.unit] = true
+
+					break
+				end
+
+				error("InventoryPackageSynchronizerClient unknown slot_category: " .. slot_category)
 			until true
 		end
 
@@ -447,6 +459,7 @@ PlayGoTutorialSystem._load_profile_packages = function (self)
 		end
 
 		local third_person_attachment = profile.third_person_attachment
+
 		profile_packages[third_person_attachment.unit] = true
 	end
 
@@ -475,7 +488,7 @@ PlayGoTutorialSystem.register_dodge = function (self, dodge_direction)
 		local x_value = Vector3.x(dodge_direction)
 		local y_value = Vector3.y(dodge_direction)
 
-		if math.abs(x_value) < math.abs(y_value) then
+		if math.abs(y_value) > math.abs(x_value) then
 			Unit.flow_event(tutorial_unit, "lua_dodge_backward")
 		elseif x_value > 0 then
 			Unit.flow_event(tutorial_unit, "lua_dodge_right")
@@ -537,6 +550,7 @@ PlayGoTutorialSystem.register_unit = function (self, spawner_unit, ai_unit)
 
 	if Unit.get_data(spawner_unit, "Tutorial", "highlight_on_spawn") then
 		local outline_extension = ScriptUnit.extension(ai_unit, "outline_system")
+
 		data.outline_id = outline_extension:add_outline(OutlineSettings.templates.tutorial_highlight)
 	end
 

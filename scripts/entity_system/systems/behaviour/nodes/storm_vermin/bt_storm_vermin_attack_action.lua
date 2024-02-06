@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/storm_vermin/bt_storm_vermin_attack_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTStormVerminAttackAction = class(BTStormVerminAttackAction, BTNode)
@@ -18,6 +20,7 @@ end
 
 BTStormVerminAttackAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
+
 	blackboard.action = action
 	blackboard.active_node = BTStormVerminAttackAction
 	blackboard.attack_range = action.range
@@ -33,6 +36,7 @@ BTStormVerminAttackAction.enter = function (self, unit, blackboard, t)
 
 	local target_unit = blackboard.target_unit
 	local target_unit_status_extension = ScriptUnit.has_extension(target_unit, "status_system") or nil
+
 	blackboard.target_unit_status_extension = target_unit_status_extension
 	blackboard.attacking_target = blackboard.target_unit
 
@@ -99,8 +103,10 @@ end
 
 BTStormVerminAttackAction._init_attack = function (self, unit, blackboard, t)
 	local action = blackboard.action
+
 	blackboard.move_state = "attacking"
-	local attack_anim = nil
+
+	local attack_anim
 	local target_is_knocked_down = blackboard.target_unit_status_extension and blackboard.target_unit_status_extension:is_knocked_down()
 
 	if target_is_knocked_down and action.knocked_down_attack_anim then
@@ -138,6 +144,7 @@ BTStormVerminAttackAction._init_attack = function (self, unit, blackboard, t)
 	Managers.state.network:anim_event(unit, attack_anim)
 
 	local rotation = LocomotionUtils.rotation_towards_unit_flat(unit, blackboard.attacking_target)
+
 	blackboard.attack_rotation = QuaternionBox(rotation)
 
 	if blackboard.moving_attack and action.rotation_time_step then
@@ -188,6 +195,7 @@ BTStormVerminAttackAction.leave = function (self, unit, blackboard, t, reason, d
 	blackboard.reset_attack_animation_locked = nil
 	blackboard.reset_attack_delay = nil
 	blackboard.past_damage_in_attack = nil
+
 	local action = blackboard.action
 	local reset_stagger_count = action.reset_stagger_count
 
@@ -219,11 +227,11 @@ BTStormVerminAttackAction.run = function (self, unit, blackboard, t, dt)
 		BTStormVerminAttackAction.catapult_enemies(unit, blackboard)
 	end
 
-	if blackboard.anim_cb_attack_cooldown and blackboard.attack_finished_t and blackboard.attack_finished_t < t or not blackboard.attack_finished_t and blackboard.attack_finished then
+	if blackboard.anim_cb_attack_cooldown and blackboard.attack_finished_t and t > blackboard.attack_finished_t or not blackboard.attack_finished_t and blackboard.attack_finished then
 		return "done"
 	end
 
-	if blackboard.play_sound_delay and blackboard.play_sound_delay < t then
+	if blackboard.play_sound_delay and t > blackboard.play_sound_delay then
 		local sound_event = blackboard.action.sound_event
 
 		if sound_event then
@@ -248,11 +256,7 @@ BTStormVerminAttackAction.run = function (self, unit, blackboard, t, dt)
 				target_speed = breed.run_speed
 			end
 		elseif distance > 1.5 then
-			if blackboard.set_dodge_rotation_timer then
-				target_speed = 0
-			else
-				target_speed = target_speed * 1.15
-			end
+			target_speed = blackboard.set_dodge_rotation_timer and 0 or target_speed * 1.15
 		end
 
 		if math.abs(target_speed - blackboard.target_speed) > 0.25 then
@@ -262,7 +266,7 @@ BTStormVerminAttackAction.run = function (self, unit, blackboard, t, dt)
 		end
 	end
 
-	if target_is_valid and blackboard.bot_threat_at_t and blackboard.bot_threat_at_t < t then
+	if target_is_valid and blackboard.bot_threat_at_t and t > blackboard.bot_threat_at_t then
 		self:_create_bot_threat(unit, blackboard)
 
 		blackboard.bot_threat_at_t = nil
@@ -348,6 +352,7 @@ BTStormVerminAttackAction.attack = function (self, unit, t, dt, blackboard)
 
 	if t < blackboard.attack_rotation_update_timer then
 		local rotation = LocomotionUtils.rotation_towards_unit_flat(unit, blackboard.attacking_target)
+
 		blackboard.attack_rotation = QuaternionBox(rotation)
 	end
 
@@ -358,12 +363,14 @@ end
 
 local debug_drawer_info = {
 	mode = "retained",
-	name = "BTStormVerminAttackAction"
+	name = "BTStormVerminAttackAction",
 }
 
 BTStormVerminAttackAction.anim_cb_damage = function (self, unit, blackboard)
 	local action = blackboard.action
+
 	blackboard.past_damage_in_attack = true
+
 	local world = Unit.world(unit)
 	local pw = World.get_data(world, "physics_world")
 	local range = action.range
@@ -402,6 +409,7 @@ BTStormVerminAttackAction.anim_cb_damage = function (self, unit, blackboard)
 
 	for _, actor in ipairs(hit_actors) do
 		local target_unit = Actor.unit(actor)
+
 		hit_units[target_unit] = true
 	end
 
@@ -520,7 +528,9 @@ BTStormVerminAttackAction.catapult_enemy = function (unit, blackboard, action, t
 		return
 	end
 
-	if not blocked then
+	if blocked then
+		-- Nothing
+	else
 		AiUtils.damage_target(target_unit, unit, action, action.damage)
 	end
 

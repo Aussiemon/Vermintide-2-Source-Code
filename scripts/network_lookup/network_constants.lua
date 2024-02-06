@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/network_lookup/network_constants.lua
+
 NetworkConstants = NetworkConstants or {}
 
 local function check_bounderies(network_variable_name, network_lookup_name, store_variable_info)
@@ -44,6 +46,7 @@ check_bounderies("light_weight_projectile_lookup", "light_weight_projectile_effe
 NetworkConstants.light_weight_projectile_speed = Network.type_info("light_weight_projectile_speed")
 NetworkConstants.light_weight_projectile_index = Network.type_info("light_weight_projectile_index")
 NetworkConstants.weapon_id = Network.type_info("weapon_id")
+
 local num_items = #ItemMasterList
 
 fassert(num_items <= NetworkConstants.weapon_id.max, "Too many weapons in ItemMasterList, global.network_config value weapon_id needs to be raised.")
@@ -53,6 +56,7 @@ NetworkConstants.weight_array = Network.type_info("weight_array")
 fassert(#NetworkLookup.level_keys <= NetworkConstants.weight_array.max_size, "Too many levels in LevelSettings, global.network_config value weight_array needs to be raised.")
 
 local num_damage_sources = #NetworkLookup.damage_sources
+
 NetworkConstants.damage_source_id = Network.type_info("damage_source_id")
 
 fassert(num_damage_sources <= NetworkConstants.damage_source_id.max, "Too many damage sources, global.network_config value damage_source_id needs to be raised.")
@@ -88,6 +92,7 @@ check_bounderies("player_status", "statuses")
 
 NetworkConstants.uint_16 = Network.type_info("uint_16")
 NetworkConstants.server_controlled_buff_id = Network.type_info("server_controlled_buff_id")
+
 local uint_8 = Network.type_info("uint_8")
 
 fassert(uint_8.bits == 8, "uint_8 is not 8 bits.")
@@ -121,6 +126,7 @@ local mechanism_id = Network.type_info("mechanism_id")
 fassert(table.size(MechanismSettings) <= mechanism_id.max, "Too many mechanism settings, please up mechanism_id value in global.network_config")
 
 local party_slot_id = Network.type_info("party_slot_id")
+
 NetworkConstants.INVALID_PARTY_SLOT_ID = party_slot_id.min
 
 fassert(NetworkConstants.INVALID_PARTY_SLOT_ID == 0, "party_slot_ids should start at one because we need an invalid slot id for syncing purposes.")
@@ -134,7 +140,9 @@ NetworkConstants.mutator_array = Network.type_info("mutator_array")
 NetworkConstants.buff_array = Network.type_info("buff_array")
 NetworkConstants.buff_variable_type_array = Network.type_info("buff_variable_type_array")
 NetworkConstants.buff_variable_data_array = Network.type_info("buff_variable_data_array")
+
 local ready_request_id = Network.type_info("ready_request_id")
+
 NetworkConstants.READY_REQUEST_ID_MAX = ready_request_id.max
 
 check_bounderies("health_status_lookup", "health_statuses")

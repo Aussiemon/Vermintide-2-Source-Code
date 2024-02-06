@@ -1,8 +1,12 @@
+﻿-- chunkname: @scripts/settings/mutators/mutator_curse_change_of_tzeentch.lua
+
 local base_splitting_enemies = require("scripts/settings/mutators/mutator_splitting_enemies")
 local curse_change_of_tzeentch = table.clone(base_splitting_enemies)
+
 curse_change_of_tzeentch.display_name = "curse_change_of_tzeentch_name"
 curse_change_of_tzeentch.description = "curse_change_of_tzeentch_desc"
 curse_change_of_tzeentch.icon = "deus_curse_tzeentch_01"
+
 local SPLIT_CHANCE = 0.25
 
 curse_change_of_tzeentch.server_start_function = function (context, data)
@@ -12,10 +16,11 @@ curse_change_of_tzeentch.server_start_function = function (context, data)
 end
 
 curse_change_of_tzeentch.server_ai_killed_function = function (context, data, killed_unit, killer_unit, death_data, killing_blow)
-	local random = nil
+	local random
+
 	data.seed, random = Math.next_random(data.seed)
 
-	if SPLIT_CHANCE < random then
+	if random > SPLIT_CHANCE then
 		return
 	end
 

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/game_mode/mechanisms/deus_gen_engine.lua
+
 local function find_next_action(action_list)
 	for i = #action_list, 1, -1 do
 		local action = action_list[i]
@@ -6,6 +8,7 @@ local function find_next_action(action_list)
 			for index, next_action in pairs(action._next_actions) do
 				if not next_action then
 					local new_action = action._next_action_generators[index]()
+
 					new_action._parent = action
 					action._next_actions[index] = new_action
 
@@ -52,7 +55,7 @@ DeusGenEngine = {
 					per_action_callback(action_list, action)
 				end
 
-				local result, next_action_generators = nil
+				local result, next_action_generators
 
 				if not retrying then
 					result, next_action_generators = action.run()
@@ -85,5 +88,5 @@ DeusGenEngine = {
 				return true, "Gen Failed"
 			end
 		end
-	end
+	end,
 }

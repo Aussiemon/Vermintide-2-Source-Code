@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_pack_master_initial_pull_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTPackMasterInitialPullAction = class(BTPackMasterInitialPullAction, BTNode)
@@ -10,7 +12,9 @@ BTPackMasterInitialPullAction.name = "BTPackMasterInitialPullAction"
 
 BTPackMasterInitialPullAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
+
 	blackboard.action = action
+
 	local navigation_extension = blackboard.navigation_extension
 
 	AiUtils.allow_smart_object_layers(navigation_extension, false)
@@ -108,7 +112,7 @@ BTPackMasterInitialPullAction.run = function (self, unit, blackboard, t, dt)
 		return "done"
 	end
 
-	if blackboard.pull_t_end < t then
+	if t > blackboard.pull_t_end then
 		return "done"
 	end
 

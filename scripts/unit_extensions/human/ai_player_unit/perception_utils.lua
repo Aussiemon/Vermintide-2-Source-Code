@@ -1,6 +1,9 @@
+﻿-- chunkname: @scripts/unit_extensions/human/ai_player_unit/perception_utils.lua
+
 require("scripts/unit_extensions/human/ai_player_unit/ai_utils")
 
 PerceptionUtils = {}
+
 local HEALTH_ALIVE = HEALTH_ALIVE
 local unit_knocked_down = AiUtils.unit_knocked_down
 local POSITION_LOOKUP = POSITION_LOOKUP
@@ -99,11 +102,13 @@ PerceptionUtils.perception_all_seeing_boss = function (unit, blackboard, breed, 
 	if blackboard.aggro_unit ~= blackboard.target_unit then
 		local old_aggro_unit = blackboard.aggro_unit
 		local new_aggro_unit = blackboard.target_unit
+
 		blackboard.aggro_unit = new_aggro_unit
 
 		if breed.trigger_dialogue_on_target_switch and new_aggro_unit then
 			local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
 			local event_data = FrameTable.alloc_table()
+
 			event_data.attack_tag = breed.dialogue_target_switch_attack_tag or "enemy_target_changed"
 			event_data.target_name = ScriptUnit.extension(new_aggro_unit, "dialogue_system").context.player_profile
 
@@ -203,18 +208,21 @@ PerceptionUtils.perception_rat_ogre = function (unit, blackboard, breed, pick_ta
 
 		if status_extension then
 			blackboard.target_is_not_downed = not status_extension.is_ledge_hanging and not status_extension.knocked_down
+
 			local self_pos = POSITION_LOOKUP[unit]
 			local offset = POSITION_LOOKUP[target_unit] - self_pos
-			local x = offset.x
-			local y = offset.y
-			local z = offset.z
+			local x, y, z = offset.x, offset.y, offset.z
+
 			blackboard.target_flat_distance = math.sqrt(x * x + y * y)
 			blackboard.target_height_distance = z
+
 			local is_on_ladder, ladder_unit = status_extension:get_is_on_ladder()
 
 			if is_on_ladder then
 				local foot, top = ScriptUnit.extension(ladder_unit, "ladder_system"):ladder_extents()
+
 				blackboard.target_on_ladder = ladder_unit
+
 				local foot_offset = self_pos - foot
 				local ladder_vector = top - foot
 				local ladder_up_dir = Vector3.normalize(ladder_vector)
@@ -222,7 +230,7 @@ PerceptionUtils.perception_rat_ogre = function (unit, blackboard, breed, pick_ta
 
 				if height_on_ladder < 0 then
 					blackboard.ladder_distance = Vector3.length(foot_offset)
-				elseif Vector3.length(ladder_vector) < height_on_ladder then
+				elseif height_on_ladder > Vector3.length(ladder_vector) then
 					blackboard.ladder_distance = Vector3.length(self_pos - top)
 				else
 					blackboard.ladder_distance = Vector3.length(foot_offset - ladder_up_dir * height_on_ladder)
@@ -238,7 +246,9 @@ PerceptionUtils.perception_rat_ogre = function (unit, blackboard, breed, pick_ta
 	if blackboard.aggro_unit ~= target_unit then
 		local old_aggro_unit = blackboard.aggro_unit
 		local new_aggro_unit = target_unit
+
 		blackboard.aggro_unit = new_aggro_unit
+
 		local old_aggro = blackboard.aggro_list[old_aggro_unit]
 
 		if old_aggro then
@@ -248,6 +258,7 @@ PerceptionUtils.perception_rat_ogre = function (unit, blackboard, breed, pick_ta
 		if breed.trigger_dialogue_on_target_switch and new_aggro_unit then
 			local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
 			local event_data = FrameTable.alloc_table()
+
 			event_data.attack_tag = breed.dialogue_target_switch_attack_tag or "rat_ogre_change_target"
 			event_data.target_name = ScriptUnit.extension(new_aggro_unit, "dialogue_system").context.player_profile
 
@@ -371,7 +382,9 @@ PerceptionUtils.perception_regular_update_aggro = function (unit, blackboard, br
 	if blackboard.aggro_unit ~= blackboard.target_unit then
 		local old_aggro_unit = blackboard.aggro_unit
 		local new_aggro_unit = blackboard.target_unit
+
 		blackboard.aggro_unit = new_aggro_unit
+
 		local aggro_list = blackboard.aggro_list
 		local aggro = aggro_list[old_aggro_unit]
 
@@ -382,6 +395,7 @@ PerceptionUtils.perception_regular_update_aggro = function (unit, blackboard, br
 		if breed.trigger_dialogue_on_target_switch and new_aggro_unit then
 			local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
 			local event_data = FrameTable.alloc_table()
+
 			event_data.attack_tag = "enemy_target_changed"
 			event_data.target_name = ScriptUnit.extension(new_aggro_unit, "dialogue_system").context.player_profile
 
@@ -403,11 +417,12 @@ PerceptionUtils.alert_enemies_within_range = function (___world, player_unit, is
 	end
 
 	local ScriptUnit_extension = ScriptUnit.extension
-	local enemy_categories = nil
+	local enemy_categories
 	local blackboard = BLACKBOARDS[player_unit]
 
 	if blackboard then
 		local side = blackboard.side
+
 		enemy_categories = side.enemy_broadphase_categories
 	end
 
@@ -426,7 +441,7 @@ PerceptionUtils.pack_master_has_line_of_sight_for_attack = function (physics_wor
 	local radius = 0.15
 	local max_hits = 1
 	local offset = start_pos - end_pos
-	local success = nil
+	local success
 	local hits = PhysicsWorld.linear_sphere_sweep(physics_world, start_pos, end_pos, radius, max_hits, "types", "both", "collision_filter", "filter_ai_mover", "report_initial_overlap")
 
 	if hits then
@@ -434,7 +449,7 @@ PerceptionUtils.pack_master_has_line_of_sight_for_attack = function (physics_wor
 		local sweep_offset = end_pos - start_pos
 		local hit_dist = Vector3.dot(hit_offset, Vector3.normalize(sweep_offset))
 
-		if Vector3.length(sweep_offset) < hit_dist then
+		if hit_dist > Vector3.length(sweep_offset) then
 			success = true
 		else
 			success = false
@@ -468,6 +483,7 @@ local num_healthy_targets = 0
 
 PerceptionUtils.special_opportunity = function (unit, blackboard)
 	num_healthy_targets = 0
+
 	local side = blackboard.side
 	local PLAYER_AND_BOT_UNITS = side.ENEMY_PLAYER_AND_BOT_UNITS
 	local VALID_ENEMY_TARGETS_PLAYERS_AND_BOTS = side.VALID_ENEMY_TARGETS_PLAYERS_AND_BOTS
@@ -515,7 +531,7 @@ PerceptionUtils.special_opportunity = function (unit, blackboard)
 	if urgency_to_engage > 0 then
 		local pos = POSITION_LOOKUP[unit]
 		local closest_dist = math.huge
-		local closest_unit = nil
+		local closest_unit
 
 		for i = 1, num_healthy_targets do
 			local enemy_unit = healthy_targets[i]
@@ -530,7 +546,7 @@ PerceptionUtils.special_opportunity = function (unit, blackboard)
 		return 10, closest_unit
 	end
 
-	return 0
+	do return 0 end
 
 	local cluster_utility, loneliest_index, loneliest_value, loneliness = conflictutils.cluster_weight_and_loneliness(healthy_target_positions, 10)
 	local loneliest_enemy_unit = healthy_targets[loneliest_index]
@@ -538,6 +554,7 @@ PerceptionUtils.special_opportunity = function (unit, blackboard)
 
 	if sqr_dist_to_loneliest < 30 then
 		urgency_to_engage = 10
+
 		local dist_to_loneliest = math.sqrt(sqr_dist_to_loneliest)
 
 		return loneliest_enemy_unit, dist_to_loneliest, urgency_to_engage

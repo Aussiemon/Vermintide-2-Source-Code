@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/game_state/state_ingame.lua
+
 require("scripts/flow/flow_callbacks")
 require("scripts/settings/quest_settings")
 require("scripts/managers/backend/statistics_database")
@@ -64,6 +66,7 @@ require("scripts/managers/side/side_manager")
 DLCUtils.require_list("statistics_database")
 
 local state_ingame_testify = script_data.testify and require("scripts/game_state/state_ingame_testify")
+
 StateIngame = class(StateIngame)
 StateIngame.NAME = "StateIngame"
 
@@ -71,10 +74,8 @@ StateIngame.on_enter = function (self)
 	fassert(self.parent.loading_context.ingame_world_object, "must have world")
 	fassert(self.parent.loading_context.ingame_level_object, "must have level")
 
-	self.world = self.parent.loading_context.ingame_world_object
-	self.parent.loading_context.ingame_world_object = self.world
-	self.level = self.parent.loading_context.ingame_level_object
-	self.parent.loading_context.ingame_level_object = self.level
+	self.parent.loading_context.ingame_world_object, self.world = self.world, self.parent.loading_context.ingame_world_object
+	self.parent.loading_context.ingame_level_object, self.level = self.level, self.parent.loading_context.ingame_level_object
 
 	if IS_XB1 then
 		Application.set_kinect_enabled(false)
@@ -83,9 +84,12 @@ StateIngame.on_enter = function (self)
 	end
 
 	local loading_context = self.parent.loading_context
+
 	self._lobby_host = loading_context.lobby_host
 	self._lobby_client = loading_context.lobby_client
+
 	local is_server = not not self._lobby_host
+
 	self.is_server = is_server
 
 	print("[Gamestate] Enter StateIngame", is_server and "HOST" or "CLIENT")
@@ -100,6 +104,7 @@ StateIngame.on_enter = function (self)
 	Managers.mechanism:check_venture_start()
 
 	local input_manager = InputManager:new()
+
 	self.input_manager = input_manager
 	Managers.input = self.input_manager
 
@@ -125,7 +130,9 @@ StateIngame.on_enter = function (self)
 	Crashify.print_property("level", level_key)
 
 	self.level_key = level_key
+
 	local level_setting = LevelSettings[level_key]
+
 	self.is_in_inn = level_setting.hub_level
 	self.is_in_tutorial = level_key == "prologue"
 	DamageUtils.is_in_inn = self.is_in_inn
@@ -148,6 +155,7 @@ StateIngame.on_enter = function (self)
 	end
 
 	local db = Managers.venture.statistics
+
 	loading_context.statistics_db = db
 	self.statistics_db = db
 
@@ -170,8 +178,11 @@ StateIngame.on_enter = function (self)
 	self:_setup_world()
 
 	local world = self.world
+
 	self.peer_id = Network.peer_id()
+
 	local network_event_delegate = NetworkEventDelegate:new()
+
 	self.network_event_delegate = network_event_delegate
 	self.network_server = loading_context.network_server
 	self.network_client = loading_context.network_client
@@ -202,6 +213,7 @@ StateIngame.on_enter = function (self)
 	self.statistics_db:register_network_event_delegate(network_event_delegate)
 
 	loading_context.network_transmit = self.network_transmit
+
 	local top_gui_world_name = "top_ingame_view"
 	local top_gui_world = Managers.world:world(top_gui_world_name)
 
@@ -219,6 +231,7 @@ StateIngame.on_enter = function (self)
 	end
 
 	Managers.state.crafting = CraftingManager:new()
+
 	local level_transition_handler = Managers.level_transition_handler
 	local difficulty = level_transition_handler:get_current_difficulty()
 	local difficulty_tweak = level_transition_handler:get_current_difficulty_tweak()
@@ -226,6 +239,7 @@ StateIngame.on_enter = function (self)
 	if Development.parameter("weave_name") then
 		local weave_name = Development.parameter("weave_name")
 		local weave_template = WeaveSettings.templates[weave_name]
+
 		difficulty = weave_template.difficulty_key
 		difficulty_tweak = 0
 	end
@@ -235,6 +249,7 @@ StateIngame.on_enter = function (self)
 	Managers.state.difficulty:set_difficulty(difficulty, difficulty_tweak)
 
 	local num_players = DEDICATED_SERVER and 0 or 1
+
 	self.num_local_human_players = num_players
 
 	if Managers.matchmaking then
@@ -251,8 +266,9 @@ StateIngame.on_enter = function (self)
 			profile_synchronizer = self.profile_synchronizer,
 			statistics_db = self.statistics_db,
 			quick_game = loading_context.quickplay_bonus,
-			local_quick_game = loading_context.local_quickplay_bonus
+			local_quick_game = loading_context.local_quickplay_bonus,
 		}
+
 		Managers.matchmaking = MatchmakingManager:new(matchmaking_params)
 	end
 
@@ -290,7 +306,9 @@ StateIngame.on_enter = function (self)
 
 	for i = 1, num_players do
 		local viewport_name = "player_" .. i
+
 		self.viewport_name = viewport_name
+
 		local player = Managers.player:add_player(nil, viewport_name, self.world_name, i)
 	end
 
@@ -332,12 +350,15 @@ StateIngame.on_enter = function (self)
 	InputDebugger:setup(world, self.input_manager)
 
 	self.machines = {}
+
 	local level_end_view_wrappers = loading_context.level_end_view_wrappers
 	local peer_id = Network.peer_id()
 
 	for i = 1, num_players do
 		local viewport_name = "player_" .. i
+
 		self.viewport_name = viewport_name
+
 		local network_options = Managers.lobby:network_options()
 		local params = {
 			local_player_id = i,
@@ -360,7 +381,7 @@ StateIngame.on_enter = function (self)
 			network_client = self.network_client,
 			network_transmit = self.network_transmit,
 			voip = self.network_server and self.network_server.voip or self.network_client.voip,
-			quickplay_bonus = loading_context.quickplay_bonus
+			quickplay_bonus = loading_context.quickplay_bonus,
 		}
 
 		if level_end_view_wrappers and level_end_view_wrappers[i] then
@@ -388,7 +409,7 @@ StateIngame.on_enter = function (self)
 			difficulty = Managers.state.difficulty,
 			wwise_world = wwise_world,
 			reset_matchmaking = self.is_in_inn,
-			is_in_inn = self.is_in_inn
+			is_in_inn = self.is_in_inn,
 		}
 
 		Managers.matchmaking:setup_post_init_data(post_init_data)
@@ -450,7 +471,7 @@ StateIngame.on_enter = function (self)
 	local dynamic_range_sound = Application.user_setting("dynamic_range_sound")
 
 	if dynamic_range_sound ~= nil then
-		local value = nil
+		local value
 
 		if dynamic_range_sound == "low" then
 			value = 1
@@ -532,7 +553,7 @@ StateIngame.on_enter = function (self)
 		difficulty = difficulty,
 		difficulty_tweak = difficulty_tweak,
 		mutators = mutators,
-		realm = realm
+		realm = realm,
 	})
 
 	if self.network_server then
@@ -542,6 +563,7 @@ StateIngame.on_enter = function (self)
 	end
 
 	self._camera_carrier = CameraCarrier:new()
+
 	local fullscreen = Application.user_setting("fullscreen")
 	local borderless_fullscreen = Application.user_setting("borderless_fullscreen")
 	local windowed = not fullscreen and not borderless_fullscreen
@@ -634,7 +656,7 @@ StateIngame._safe_to_do_entity_update = function (self)
 
 	local t = Managers.time:time("game")
 	local game_mode_ended = Managers.state.game_mode:is_game_mode_ended()
-	local left_game_mode = game_mode_ended and self.game_mode_end_timer and self.game_mode_end_timer <= t
+	local left_game_mode = game_mode_ended and self.game_mode_end_timer and t >= self.game_mode_end_timer
 
 	return not left_game_mode
 end
@@ -740,6 +762,7 @@ StateIngame._gather_backend_flow_events = function (self)
 		if flow_events then
 			for j = 1, #flow_events do
 				local flow_event = flow_events[j]
+
 				level_flow_events[#level_flow_events + 1] = flow_event
 			end
 		end
@@ -797,12 +820,13 @@ local EVENTS = {
 	"fx_hide_fire_trail",
 	"sfx_ranged_weapon_equip",
 	"lua_wield",
-	"geiser_muzzlefx"
+	"geiser_muzzlefx",
 }
 
 local function test(dt, t)
-	if TIMER < t then
+	if t > TIMER then
 		TIMER = t + 0.5
+
 		local player_unit = Managers.player:local_player().player_unit
 
 		if not ALIVE[player_unit] then
@@ -819,6 +843,7 @@ local function test(dt, t)
 			if not EVENTS[INDEX] then
 				INDEX = 1
 				REMAP_INDEX = (1 + REMAP_INDEX) % 2
+
 				local value = bit.lshift(REMAP_INDEX, 4)
 
 				Application.set_render_setting("global_shader_variable", value)
@@ -984,6 +1009,7 @@ end
 StateIngame._update_onclose_check = function (self, dt, t)
 	if self._onclose_called and not self._onclose_popup_id then
 		local popup_text = Localize("exit_game_popup_text") .. "\n\n" .. Localize("exit_game_popup_text_is_hosting_players")
+
 		self._onclose_popup_id = Managers.popup:queue_popup(popup_text, Localize("popup_exit_game_topic"), "end_game", Localize("popup_choice_yes"), "cancel_popup", Localize("popup_choice_no"))
 	end
 
@@ -1025,7 +1051,7 @@ StateIngame._check_exit = function (self, t)
 	local waiting_for_item_poll = (backend_items:num_current_item_server_requests() ~= 0 or UISettings.waiting_for_response) and not backend_manager:is_disconnected()
 
 	if not self.exit_type and not waiting_user_input and not waiting_for_item_poll then
-		local transition, join_lobby_data = nil
+		local transition, join_lobby_data
 
 		for _, machine in pairs(self.machines) do
 			machine:state():check_invites()
@@ -1251,7 +1277,9 @@ StateIngame._check_exit = function (self, t)
 
 				if level_key == "prologue" then
 					self.parent.loading_context.play_trailer = true
+
 					local switch_to_tutorial_backend, tutorial_state = Managers.mechanism:should_run_tutorial()
+
 					self.parent.loading_context.switch_to_tutorial_backend = switch_to_tutorial_backend
 					self.parent.loading_context.wanted_tutorial_state = tutorial_state
 				end
@@ -1412,6 +1440,7 @@ StateIngame._check_exit = function (self, t)
 			end
 
 			local exit_time = 2
+
 			self.exit_time = t + exit_time
 
 			printf("StateIngame: Got transition %s, set exit type to %s. Will exit at t=%.2f", tostring(transition), self.exit_type, self.exit_time)
@@ -1451,7 +1480,7 @@ StateIngame._check_exit = function (self, t)
 		end
 	end
 
-	if self.exit_time and self.exit_time <= t then
+	if self.exit_time and t >= self.exit_time then
 		Managers.popup:cancel_all_popups()
 		Managers.account:check_popup_retrigger()
 
@@ -1545,6 +1574,7 @@ StateIngame._check_exit = function (self, t)
 			return StateDemoEnd
 		elseif exit_type == "finished_tutorial" then
 			local loading_context = self.parent.loading_context
+
 			loading_context.finished_tutorial = true
 			loading_context.time_spent_in_level = math.floor(Managers.time and Managers.time:time("game") or -1)
 			loading_context.end_reason = "finished_tutorial"
@@ -1561,6 +1591,7 @@ StateIngame._check_exit = function (self, t)
 				Managers.account:set_should_teardown_xboxlive()
 
 				local switch_to_tutorial_backend, tutorial_state = Managers.mechanism:should_run_tutorial()
+
 				loading_context.switch_to_tutorial_backend = switch_to_tutorial_backend
 				loading_context.wanted_tutorial_state = tutorial_state
 
@@ -1570,6 +1601,7 @@ StateIngame._check_exit = function (self, t)
 			return StateLoading
 		elseif exit_type == "perform_host_migration" then
 			local host_migration_info = Managers.mechanism:create_host_migration_info(self._gm_event_end_conditions_met, self._gm_event_end_reason)
+
 			self.parent.loading_context.host_migration_info = host_migration_info
 			self.parent.loading_context.wanted_profile_index = self:wanted_profile_index()
 			self.parent.loading_context.wanted_party_index = self:wanted_party_index()
@@ -1580,6 +1612,7 @@ StateIngame._check_exit = function (self, t)
 			return StateLoading
 		elseif exit_type == "rejoin_party" then
 			local loading_context = self.parent.loading_context
+
 			loading_context.restart_network = true
 			loading_context.rejoin_lobby = true
 			self.parent.loading_context.time_spent_in_level = math.floor(Managers.time and Managers.time:time("game") or -1)
@@ -1602,9 +1635,8 @@ StateIngame._check_exit = function (self, t)
 			printf("[StateIngame] Transition to StateTitleScreen on %q", self.exit_type)
 
 			self.release_level_resources = true
-			self.parent.loading_context = {
-				offline_invite = true
-			}
+			self.parent.loading_context = {}
+			self.parent.loading_context.offline_invite = true
 
 			return StateTitleScreen
 		elseif exit_type == "return_to_title_screen" then
@@ -1811,6 +1843,7 @@ StateIngame.on_exit = function (self, application_shutdown)
 	Managers.state.game_mode:deactivate_mutators(true)
 
 	local unit_spawner = Managers.state.unit_spawner
+
 	unit_spawner.locked = false
 
 	unit_spawner:commit_and_remove_pending_units()
@@ -1899,13 +1932,14 @@ StateIngame.on_exit = function (self, application_shutdown)
 
 		Managers.mechanism:network_context_destroyed(current_level_key)
 
-		local network_event_meta_table = {
-			__index = function (event_table, event_key)
-				return function ()
-					Application.warning("Got RPC %s during forced network update when exiting StateIngame", event_key)
-				end
+		local network_event_meta_table = {}
+
+		network_event_meta_table.__index = function (event_table, event_key)
+			return function ()
+				Application.warning("Got RPC %s during forced network update when exiting StateIngame", event_key)
 			end
-		}
+		end
+
 		local loading_context = self.parent.loading_context
 		local join_data = loading_context.start_lobby_data or loading_context.join_lobby_data or loading_context.join_server_data
 		local party_join = join_data ~= nil and join_data.join_method == "party"
@@ -2069,6 +2103,7 @@ StateIngame._check_and_add_end_game_telemetry = function (self, application_shut
 
 	if application_shutdown then
 		local controlled_exit = Boot.is_controlled_exit
+
 		reason = controlled_exit and "controlled_exit" or "forced_exit"
 	else
 		local level_related_reason = self.exit_type == "load_next_level" or self.exit_type == "reload_level"
@@ -2086,7 +2121,7 @@ StateIngame._check_and_add_end_game_telemetry = function (self, application_shut
 end
 
 StateIngame._setup_state_context = function (self, world, is_server, network_event_delegate)
-	local network_clock = nil
+	local network_clock
 
 	if self.is_server then
 		network_clock = NetworkClockServer:new()
@@ -2099,7 +2134,9 @@ StateIngame._setup_state_context = function (self, world, is_server, network_eve
 	network_clock:register_rpcs(network_event_delegate)
 
 	local network_manager = GameNetworkManager:new(world, self._lobby_host or self._lobby_client, is_server, network_event_delegate)
+
 	Managers.state.network = network_manager
+
 	local build = BUILD
 
 	if build == "debug" or build == "dev" then
@@ -2112,10 +2149,13 @@ StateIngame._setup_state_context = function (self, world, is_server, network_eve
 	end
 
 	local event_manager = EventManager:new()
+
 	Managers.state.event = event_manager
+
 	local level_transition_handler = Managers.level_transition_handler
 	local game_mode_key = level_transition_handler:get_current_game_mode()
 	local _, side_compositions, game_mode_settings = Managers.mechanism:start_next_round()
+
 	Managers.state.side = SideManager:new(side_compositions)
 
 	for _, dlc in pairs(DLCSettings) do
@@ -2133,9 +2173,11 @@ StateIngame._setup_state_context = function (self, world, is_server, network_eve
 	Managers.weave:initiate(world, network_event_delegate, is_server, game_mode_key)
 
 	Managers.state.game_mode = GameModeManager:new(world, self._lobby_host, self._lobby_client, network_event_delegate, self.statistics_db, game_mode_key, self.network_server, self.network_transmit, self.profile_synchronizer, game_mode_settings)
+
 	local level_key = level_transition_handler:get_current_level_keys()
 	local level_seed = level_transition_handler:get_current_level_seed()
 	local conflict_settings = level_transition_handler:get_current_conflict_director()
+
 	Managers.state.conflict = ConflictDirector:new(world, level_key, network_event_delegate, level_seed, is_server, conflict_settings)
 	Managers.state.networked_flow_state = NetworkedFlowStateManager:new(world, is_server, network_event_delegate)
 
@@ -2144,11 +2186,13 @@ StateIngame._setup_state_context = function (self, world, is_server, network_eve
 
 	local is_server = self._lobby_host and true or false
 	local is_client = self._lobby_client and true or false
+
 	Managers.state.camera = CameraManager:new(world)
 
 	GarbageLeakDetector.register_object(Managers.state.camera, "CameraManager")
 
 	local entity_manager = EntityManager2:new()
+
 	Managers.state.entity = entity_manager
 
 	if not DEDICATED_SERVER then
@@ -2182,32 +2226,36 @@ StateIngame._setup_state_context = function (self, world, is_server, network_eve
 	Managers.state.debug_text = DebugTextManager:new(world, self._debug_gui, is_server, network_event_delegate)
 	Managers.state.performance = PerformanceManager:new(self._debug_gui_immediate, is_server, level_key)
 	Managers.state.world_interaction = WorldInteractionManager:new(self.world)
+
 	local wwise_world = Managers.world:wwise_world(world)
 	local voting_params = {
 		network_event_delegate = network_event_delegate,
 		is_server = self.is_server,
 		input_manager = self.input_manager,
 		network_server = self.network_server,
-		wwise_world = wwise_world
+		wwise_world = wwise_world,
 	}
+
 	Managers.state.voting = VoteManager:new(voting_params)
 	self.dice_keeper = DiceKeeper:new(7)
 
 	self.dice_keeper:register_rpcs(network_event_delegate)
 
 	local unit_spawner = UnitSpawner:new(world, entity_manager, is_server)
+
 	Managers.state.unit_spawner = unit_spawner
 
 	level_transition_handler.enemy_package_loader:set_unit_spawner(unit_spawner)
 	unit_spawner:set_unit_template_lookup_table(unit_templates)
 
 	local unit_storage = NetworkUnitStorage:new()
+
 	Managers.state.unit_storage = unit_storage
 
 	unit_spawner:set_unit_storage(unit_storage)
 
 	local go_context = {
-		world = world
+		world = world,
 	}
 	local unit_go_sync_functions = require("scripts/network/game_object_initializers_extractors")
 
@@ -2224,6 +2272,7 @@ StateIngame._setup_state_context = function (self, world, is_server, network_eve
 
 	Managers.state.debug = DebugManager:new(world, self.free_flight_manager, self.input_manager, network_event_delegate, is_server)
 	Managers.state.spawn = SpawnManager:new(world, is_server, network_event_delegate, unit_spawner, self.profile_synchronizer, self.network_server)
+
 	local level_key = level_transition_handler:get_current_level_keys()
 	local environment_variation_name = level_transition_handler:get_current_environment_variation_name()
 	local network_manager_post_init_data = {
@@ -2242,12 +2291,13 @@ StateIngame._setup_state_context = function (self, world, is_server, network_eve
 		weave_manager = Managers.weave,
 		matchmaking_manager = Managers.matchmaking,
 		voting_manager = Managers.state.voting,
-		game_server_manager = Managers.game_server
+		game_server_manager = Managers.game_server,
 	}
 
 	network_manager:post_init(network_manager_post_init_data)
 
 	self.entity_system_bag = EntitySystemBag:new()
+
 	local entity_systems_init_context = {
 		entity_manager = entity_manager,
 		input_manager = self.input_manager,
@@ -2255,7 +2305,7 @@ StateIngame._setup_state_context = function (self, world, is_server, network_eve
 		world = self.world,
 		startup_data = {
 			level_key = level_key,
-			environment_variation_name = environment_variation_name
+			environment_variation_name = environment_variation_name,
 		},
 		is_server = is_server,
 		free_flight_manager = self.free_flight_manager,
@@ -2272,7 +2322,7 @@ StateIngame._setup_state_context = function (self, world, is_server, network_eve
 		system_api = {},
 		statistics_db = self.statistics_db,
 		num_local_human_players = self.num_local_human_players,
-		level_transition_handler = level_transition_handler
+		level_transition_handler = level_transition_handler,
 	}
 	local entity_system = EntitySystem:new(entity_systems_init_context)
 
@@ -2290,6 +2340,7 @@ StateIngame._setup_state_context = function (self, world, is_server, network_eve
 	local ai_system = Managers.state.entity:system("ai_system")
 	local nav_world = ai_system:nav_world()
 	local physics_world = World.get_data(world, "physics_world")
+
 	Managers.state.bot_nav_transition = BotNavTransitionManager:new(world, physics_world, nav_world, is_server, network_event_delegate)
 
 	if not DEDICATED_SERVER then
@@ -2337,7 +2388,7 @@ StateIngame.event_play_particle_effect = function (self, effect_name, unit, node
 	if linked then
 		ScriptWorld.create_particles_linked(self.world, effect_name, unit, node, "destroy", Matrix4x4.from_quaternion_position(rotation_offset, offset))
 	else
-		local pos, rot = nil
+		local pos, rot
 
 		if unit then
 			pos = Unit.world_position(unit, node)

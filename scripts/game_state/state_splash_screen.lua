@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/game_state/state_splash_screen.lua
+
 if IS_WINDOWS then
 	require("scripts/managers/input/input_manager")
 	require("scripts/utils/visual_assert_log")
@@ -13,7 +15,7 @@ StateSplashScreen.packages_to_load = {
 	"resource_packages/menu",
 	"resource_packages/platform_specific/platform_specific",
 	"resource_packages/menu_assets",
-	"resource_packages/loading_screens/loading_screen_default"
+	"resource_packages/loading_screens/loading_screen_default",
 }
 
 if not IS_WINDOWS then
@@ -92,7 +94,7 @@ StateSplashScreen.on_enter = function (self)
 			"auto_join",
 			"skip_splash",
 			"attract_mode",
-			"benchmark_mode"
+			"benchmark_mode",
 		}
 
 		for i = 1, #skip_splash_screen_parameters do
@@ -107,7 +109,7 @@ StateSplashScreen.on_enter = function (self)
 	end
 
 	local args = {
-		Application.argv()
+		Application.argv(),
 	}
 
 	for i = 1, #args do
@@ -129,8 +131,8 @@ end
 
 local esrb_regions = {
 	CA = true,
+	MX = true,
 	US = true,
-	MX = true
 }
 
 StateSplashScreen._is_in_esrb_region = function (self)
@@ -155,7 +157,7 @@ StateSplashScreen.update_esrb_logo = function (self, dt, t)
 	local alpha = 0
 	local size = {
 		1200,
-		576
+		576,
 	}
 	local bitmap_name = "esrb_logo"
 

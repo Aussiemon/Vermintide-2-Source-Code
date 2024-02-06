@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/telemetry/telemetry_manager_dummy.lua
+
 TelemetryManagerDummy = class(TelemetryManagerDummy)
 
 TelemetryManagerDummy.init = function (self)

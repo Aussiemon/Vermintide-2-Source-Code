@@ -1,10 +1,15 @@
+﻿-- chunkname: @scripts/unit_extensions/human/player_bot_unit/player_bot_unit_first_person.lua
+
 PlayerBotUnitFirstPerson = class(PlayerBotUnitFirstPerson)
 
 PlayerBotUnitFirstPerson.init = function (self, extension_init_context, unit, extension_init_data)
 	self.unit = unit
 	self.world = extension_init_context.world
+
 	local profile = extension_init_data.profile
+
 	self.profile = profile
+
 	local career_index = 1
 	local career = profile.careers[career_index]
 	local unit_name = profile.base_units.first_person_bot
@@ -14,8 +19,10 @@ PlayerBotUnitFirstPerson.init = function (self, extension_init_context, unit, ex
 	local attachment_node_linking = first_person_attachment.attachment_node_linking
 	local unit_spawner = Managers.state.unit_spawner
 	local fp_unit = unit_spawner:spawn_local_unit(unit_name)
+
 	self.first_person_unit = fp_unit
 	self.first_person_attachment_unit = unit_spawner:spawn_local_unit(attachment_unit_name)
+
 	local default_state_machine = profile.default_state_machine
 
 	if default_state_machine then
@@ -40,11 +47,13 @@ PlayerBotUnitFirstPerson.init = function (self, extension_init_context, unit, ex
 	self.player_height_change_start_time = 0
 	self.has_look_delta = false
 	self.look_delta = Vector3Box()
+
 	local small_delta = math.pi / 15
+
 	self.MAX_MIN_PITCH = math.pi / 2 - small_delta
 	self.drawer = Managers.state.debug:drawer({
 		mode = "immediate",
-		name = "PlayerBotUnitFirstPerson"
+		name = "PlayerBotUnitFirstPerson",
 	})
 
 	if script_data.benchmark then
@@ -78,6 +87,7 @@ end
 
 local function ease_out_quad(t, b, c, d)
 	t = t / d
+
 	local res = -c * t * (t - 2) + b
 
 	return res
@@ -118,7 +128,9 @@ PlayerBotUnitFirstPerson.update_rotation = function (self, t, dt)
 	if self.has_look_delta then
 		local rotation = self.look_rotation:unbox()
 		local look_delta = self.look_delta:unbox()
+
 		self.has_look_delta = false
+
 		local yaw = Quaternion.yaw(rotation) - look_delta.x
 		local pitch = math.clamp(Quaternion.pitch(rotation) + look_delta.y, -self.MAX_MIN_PITCH, self.MAX_MIN_PITCH)
 		local yaw_rotation = Quaternion(Vector3.up(), yaw)

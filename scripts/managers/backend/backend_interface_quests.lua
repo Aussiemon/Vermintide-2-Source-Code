@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/backend/backend_interface_quests.lua
+
 require("scripts/managers/backend/data_server_queue")
 
 local function dprint(...)
@@ -21,9 +23,10 @@ BackendInterfaceQuests.setup = function (self, data_server_queue)
 	self:_register_executors(data_server_queue)
 
 	self._queue = data_server_queue
+
 	local param_config = {
 		reset_contracts = true,
-		reset_quests = true
+		reset_quests = true,
 	}
 
 	self._queue:add_item("qnc_get_state_1")
@@ -80,6 +83,7 @@ BackendInterfaceQuests._command_contracts = function (self, contracts)
 		end
 
 		local backend_difficulty = contract.requirements.difficulty
+
 		contract.requirements.difficulty = Difficulties[backend_difficulty]
 	end
 end
@@ -88,6 +92,7 @@ BackendInterfaceQuests._command_contract_update = function (self, contract_updat
 	dprint("_command_contract_update")
 
 	self._contracts_dirty = true
+
 	local id = contract_update.id
 	local contract = self._contracts[id]
 	local data = contract_update.data
@@ -105,6 +110,7 @@ BackendInterfaceQuests._command_contract_update = function (self, contract_updat
 			end
 		elseif key == "requirements" then
 			local backend_difficulty = value.difficulty
+
 			contract.requirements.difficulty = Difficulties[backend_difficulty]
 		end
 	end
@@ -114,8 +120,11 @@ BackendInterfaceQuests._command_contract_delete = function (self, contract_delet
 	dprint("_command_contract_delete")
 
 	self._contracts_dirty = true
+
 	local id = contract_delete.id
+
 	self._contracts[id] = nil
+
 	local active_contracts = self._active_contracts
 
 	if active_contracts[id] then
@@ -127,6 +136,7 @@ BackendInterfaceQuests._command_quest_update = function (self, quest_update)
 	dprint("_command_quest_update")
 
 	self._quests_dirty = true
+
 	local id = quest_update.id
 	local quest = self._quests[id]
 	local data = quest_update.data
@@ -150,8 +160,11 @@ BackendInterfaceQuests._command_quest_delete = function (self, quest_delete)
 	dprint("_command_quest_delete")
 
 	self._quests_dirty = true
+
 	local id = quest_delete.id
+
 	self._quests[id] = nil
+
 	local active_quest = self._active_quest
 
 	if active_quest and active_quest.id == id then
@@ -165,14 +178,14 @@ BackendInterfaceQuests._command_rewarded = function (self, rewarded)
 	for _, reward in ipairs(rewarded) do
 		if reward.type == "item" then
 			local gui_reward = {
-				reward.data
+				reward.data,
 			}
 
 			table.insert(self._reward_queue, reward)
 		elseif reward.type == "token" then
 			local gui_reward = {
 				type = reward.token_type,
-				amount = reward.amount
+				amount = reward.amount,
 			}
 
 			table.insert(self._reward_queue, reward)
@@ -196,6 +209,7 @@ end
 
 BackendInterfaceQuests.are_quests_dirty = function (self)
 	local dirty = self._quests_dirty
+
 	self._quests_dirty = false
 
 	return dirty
@@ -215,16 +229,19 @@ end
 
 BackendInterfaceQuests.set_active_quest = function (self, quest_id, active)
 	local token = self._queue:add_item("qnc_set_quest_active_1", "quest_id", cjson.encode(quest_id), "active", cjson.encode(active))
+
 	self._tokens[#self._tokens + 1] = token
 end
 
 BackendInterfaceQuests.complete_quest = function (self, quest_id)
 	local token = self._queue:add_item("qnc_turn_in_quest_1", "quest_id", cjson.encode(quest_id))
+
 	self._tokens[#self._tokens + 1] = token
 end
 
 BackendInterfaceQuests.are_contracts_dirty = function (self)
 	local dirty = self._contracts_dirty
+
 	self._contracts_dirty = false
 
 	return dirty
@@ -244,16 +261,19 @@ end
 
 BackendInterfaceQuests.set_contract_active = function (self, contract_id, active)
 	local token = self._queue:add_item("qnc_set_contract_active_1", "contract_id", cjson.encode(contract_id), "active", cjson.encode(active))
+
 	self._tokens[#self._tokens + 1] = token
 end
 
 BackendInterfaceQuests.add_contract_progress = function (self, contract_id, level, amount)
 	local token = self._queue:add_item("qnc_add_contract_progress_1", "contract_id", cjson.encode(contract_id), "level", cjson.encode(level), "task_amount", cjson.encode(amount))
+
 	self._tokens[#self._tokens + 1] = token
 end
 
 BackendInterfaceQuests.add_all_contract_progress = function (self, contract_id)
 	local token = self._queue:add_item("qnc_add_all_contract_progress_1", "contract_id", cjson.encode(contract_id))
+
 	self._tokens[#self._tokens + 1] = token
 end
 
@@ -267,17 +287,21 @@ end
 
 BackendInterfaceQuests.complete_contract = function (self, contract_id)
 	local token = self._queue:add_item("qnc_turn_in_contract_1", "contract_id", cjson.encode(contract_id))
+
 	self._tokens[#self._tokens + 1] = token
 end
 
 BackendInterfaceQuests.reset_quests_and_contracts = function (self, reset_quests, reset_contracts)
 	local config = cjson.encode({
 		reset_quests = reset_quests,
-		reset_contracts = reset_contracts
+		reset_contracts = reset_contracts,
 	})
 	local token = self._queue:add_item("qnc_reset_1", "param_config", config)
+
 	self._tokens[#self._tokens + 1] = token
+
 	local token2 = self._queue:add_item("qnc_get_state_1")
+
 	self._tokens[#self._tokens + 1] = token2
 end
 
@@ -286,9 +310,10 @@ local time_offset = 0
 BackendInterfaceQuests.reset_quests_and_contracts_with_time_offset = function (self, reset_quests, reset_contracts, add_time_offset)
 	local config = cjson.encode({
 		reset_quests = reset_quests,
-		reset_contracts = reset_contracts
+		reset_contracts = reset_contracts,
 	})
 	local token = self._queue:add_item("qnc_reset_1", "param_config", config)
+
 	self._tokens[#self._tokens + 1] = token
 
 	if add_time_offset then
@@ -299,11 +324,13 @@ BackendInterfaceQuests.reset_quests_and_contracts_with_time_offset = function (s
 
 	local debug_time = os.time() + time_offset
 	local token2 = self._queue:add_item("get_quest_state_debug_1", "debug_time", debug_time)
+
 	self._tokens[#self._tokens + 1] = token2
 end
 
 BackendInterfaceQuests.query_quests_and_contracts = function (self)
 	local token = self._queue:add_item("qnc_get_state_1")
+
 	self._tokens[#self._tokens + 1] = token
 end
 
@@ -311,11 +338,13 @@ BackendInterfaceQuests.query_expire_times = function (self)
 	dprint("query_expire_times")
 
 	local token = self._queue:add_item("qnc_get_expire_times_1")
+
 	self._tokens[#self._tokens + 1] = token
 end
 
 BackendInterfaceQuests.are_expire_times_dirty = function (self)
 	local dirty = self._expire_times_dirty
+
 	self._expire_times_dirty = false
 
 	return dirty
@@ -327,6 +356,7 @@ end
 
 BackendInterfaceQuests.are_status_dirty = function (self)
 	local dirty = self._status_dirty
+
 	self._status_dirty = false
 
 	return dirty

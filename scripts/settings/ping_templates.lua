@@ -1,30 +1,32 @@
+﻿-- chunkname: @scripts/settings/ping_templates.lua
+
 PingTypes = {
-	PING_ONLY = 15,
-	CONTEXT = 4,
-	MOVEMENT_WAIT = 13,
-	ENEMY_PATROL = 10,
-	ENEMY_BOSS = 8,
-	ENEMY_AMBUSH = 6,
-	ENEMY_GENERIC = 9,
-	PLAYER_PICK_UP = 18,
-	CHAT_ONLY = 3,
-	VO_ONLY = 21,
-	UNIT_DOWNED = 22,
-	LOCAL_ONLY = 23,
-	CANCEL = 2,
 	ACKNOWLEDGE = 1,
-	PLAYER_HELP = 17,
-	MOVEMENTY_COME_HERE = 14,
-	PLAYER_THANK_YOU = 20,
+	CANCEL = 2,
+	CHAT_ONLY = 3,
+	CONTEXT = 4,
 	DENY = 5,
-	MOVEMENT_GROUP_UP = 12,
-	PLAYER_PICK_UP_ACKNOWLEDGE = 19,
+	ENEMY_AMBUSH = 6,
+	ENEMY_ATTACK = 7,
+	ENEMY_BOSS = 8,
+	ENEMY_GENERIC = 9,
+	ENEMY_PATROL = 10,
+	LOCAL_ONLY = 23,
+	MOVEMENTY_COME_HERE = 14,
 	MOVEMENT_GENERIC = 11,
+	MOVEMENT_GROUP_UP = 12,
+	MOVEMENT_WAIT = 13,
+	PING_ONLY = 15,
 	PLAYER_COVER_ME = 16,
-	ENEMY_ATTACK = 7
+	PLAYER_HELP = 17,
+	PLAYER_PICK_UP = 18,
+	PLAYER_PICK_UP_ACKNOWLEDGE = 19,
+	PLAYER_THANK_YOU = 20,
+	UNIT_DOWNED = 22,
+	VO_ONLY = 21,
 }
 IgnoreCooldownPingTypes = {
-	[PingTypes.PLAYER_PICK_UP] = true
+	[PingTypes.PLAYER_PICK_UP] = true,
 }
 IgnoreFreeEvents = {}
 PingTemplates = {
@@ -36,42 +38,42 @@ PingTemplates = {
 			[PingTypes.ENEMY_GENERIC] = {
 				true,
 				{
-					"ENEMY_GENERIC"
+					"ENEMY_GENERIC",
 				},
-				"icon_property_grimoire_resistance"
+				"icon_property_grimoire_resistance",
 			},
 			[PingTypes.MOVEMENT_GENERIC] = {
 				true,
 				{
-					"MOVEMENT_GENERIC"
+					"MOVEMENT_GENERIC",
 				},
-				"icon_property_stamina"
+				"icon_property_stamina",
 			},
 			[PingTypes.PLAYER_PICK_UP] = {
 				true,
 				{
-					"PLAYER_PICK_UP"
+					"PLAYER_PICK_UP",
 				},
-				"twitch_icon_guns_blazing"
+				"twitch_icon_guns_blazing",
 			},
 			[PingTypes.CANCEL] = {
 				false,
 				{
-					"CANCEL"
-				}
+					"CANCEL",
+				},
 			},
 			[PingTypes.ACKNOWLEDGE] = {
 				false,
 				{
-					"ACKNOWLEDGE"
-				}
+					"ACKNOWLEDGE",
+				},
 			},
 			[PingTypes.DENY] = {
 				false,
 				{
-					"DENY"
-				}
-			}
+					"DENY",
+				},
+			},
 		},
 		exec_func = function (self, parent, pinger_unit, pinged_unit, ping_type, social_wheel_event_id)
 			local response = self.responses[ping_type]
@@ -81,7 +83,7 @@ PingTemplates = {
 			end
 
 			return true, nil, nil
-		end
+		end,
 	},
 	enemy_unit = {
 		check_func = function (self, pinger_unit, pinged_unit)
@@ -91,42 +93,42 @@ PingTemplates = {
 			[PingTypes.ENEMY_GENERIC] = {
 				true,
 				{
-					"ENEMY_GENERIC"
+					"ENEMY_GENERIC",
 				},
-				"icon_property_grimoire_resistance"
+				"icon_property_grimoire_resistance",
 			},
 			[PingTypes.MOVEMENT_GENERIC] = {
 				true,
 				{
-					"MOVEMENT_GENERIC"
+					"MOVEMENT_GENERIC",
 				},
-				"icon_property_stamina"
+				"icon_property_stamina",
 			},
 			[PingTypes.PLAYER_PICK_UP] = {
 				true,
 				{
-					"PLAYER_PICK_UP"
+					"PLAYER_PICK_UP",
 				},
-				"twitch_icon_guns_blazing"
+				"twitch_icon_guns_blazing",
 			},
 			[PingTypes.CANCEL] = {
 				false,
 				{
-					"CANCEL"
-				}
+					"CANCEL",
+				},
 			},
 			[PingTypes.ACKNOWLEDGE] = {
 				false,
 				{
-					"ACKNOWLEDGE"
-				}
+					"ACKNOWLEDGE",
+				},
 			},
 			[PingTypes.DENY] = {
 				false,
 				{
-					"DENY"
-				}
-			}
+					"DENY",
+				},
+			},
 		},
 		exec_func = function (self, parent, pinger_unit, pinged_unit, ping_type, social_wheel_event_id)
 			local response = self.responses[ping_type]
@@ -136,7 +138,7 @@ PingTemplates = {
 			end
 
 			return true, nil, nil
-		end
+		end,
 	},
 	friendly_unit = {
 		check_func = function (self, pinger_unit, pinged_unit)
@@ -146,48 +148,48 @@ PingTemplates = {
 			[PingTypes.ENEMY_GENERIC] = {
 				true,
 				{
-					"ENEMY_GENERIC"
+					"ENEMY_GENERIC",
 				},
-				"icon_property_grimoire_resistance"
+				"icon_property_grimoire_resistance",
 			},
 			[PingTypes.MOVEMENT_GENERIC] = {
 				true,
 				{
-					"MOVEMENT_GENERIC"
+					"MOVEMENT_GENERIC",
 				},
-				"icon_property_stamina"
+				"icon_property_stamina",
 			},
 			[PingTypes.PLAYER_PICK_UP] = {
 				true,
 				{
-					"PLAYER_PICK_UP"
+					"PLAYER_PICK_UP",
 				},
-				"twitch_icon_guns_blazing"
+				"twitch_icon_guns_blazing",
 			},
 			[PingTypes.CANCEL] = {
 				false,
 				{
-					"CANCEL"
-				}
+					"CANCEL",
+				},
 			},
 			[PingTypes.ACKNOWLEDGE] = {
 				false,
 				{
-					"ACKNOWLEDGE"
-				}
+					"ACKNOWLEDGE",
+				},
 			},
 			[PingTypes.DENY] = {
 				false,
 				{
-					"DENY"
-				}
+					"DENY",
+				},
 			},
 			[PingTypes.CHAT_ONLY] = {
-				true
+				true,
 			},
 			[PingTypes.UNIT_DOWNED] = {
-				true
-			}
+				true,
+			},
 		},
 		exec_func = function (self, parent, pinger_unit, pinged_unit, ping_type, social_wheel_event_id)
 			local response = self.responses[ping_type]
@@ -197,7 +199,7 @@ PingTemplates = {
 			end
 
 			return false, nil, nil
-		end
+		end,
 	},
 	position_only = {
 		check_func = function (self, pinger_unit, pinged_unit)
@@ -207,42 +209,42 @@ PingTemplates = {
 			[PingTypes.ENEMY_GENERIC] = {
 				true,
 				{
-					"ENEMY_GENERIC"
+					"ENEMY_GENERIC",
 				},
-				"icon_property_grimoire_resistance"
+				"icon_property_grimoire_resistance",
 			},
 			[PingTypes.MOVEMENT_GENERIC] = {
 				true,
 				{
-					"MOVEMENT_GENERIC"
+					"MOVEMENT_GENERIC",
 				},
-				"icon_property_stamina"
+				"icon_property_stamina",
 			},
 			[PingTypes.PLAYER_PICK_UP] = {
 				true,
 				{
-					"PLAYER_PICK_UP"
+					"PLAYER_PICK_UP",
 				},
-				"twitch_icon_guns_blazing"
+				"twitch_icon_guns_blazing",
 			},
 			[PingTypes.CANCEL] = {
 				false,
 				{
-					"CANCEL"
-				}
+					"CANCEL",
+				},
 			},
 			[PingTypes.ACKNOWLEDGE] = {
 				false,
 				{
-					"ACKNOWLEDGE"
-				}
+					"ACKNOWLEDGE",
+				},
 			},
 			[PingTypes.DENY] = {
 				false,
 				{
-					"DENY"
-				}
-			}
+					"DENY",
+				},
+			},
 		},
 		exec_func = function (self, parent, pinger_unit, pinged_unit, ping_type, social_wheel_event_id)
 			local response = self.responses[ping_type]
@@ -252,6 +254,6 @@ PingTemplates = {
 			end
 
 			return true, nil, nil
-		end
-	}
+		end,
+	},
 }

@@ -1,14 +1,17 @@
+﻿-- chunkname: @scripts/entity_system/systems/ai/ai_inventory_system.lua
+
 require("scripts/settings/ai_inventory_templates")
 require("scripts/entity_system/systems/ai/ai_inventory_extension")
 
 local RPCS = {
 	"rpc_ai_inventory_wield",
 	"rpc_ai_drop_single_item",
-	"rpc_ai_show_single_item"
+	"rpc_ai_show_single_item",
 }
 local extensions = {
-	"AIInventoryExtension"
+	"AIInventoryExtension",
 }
+
 AIInventorySystem = class(AIInventorySystem, ExtensionSystemBase)
 
 AIInventorySystem.init = function (self, context, system_name)
@@ -20,7 +23,9 @@ AIInventorySystem.init = function (self, context, system_name)
 	self.is_server = context.is_server
 	self.world = context.world
 	self.unit_storage = context.unit_storage
+
 	local network_event_delegate = context.network_event_delegate
+
 	self.network_event_delegate = network_event_delegate
 
 	network_event_delegate:register(self, unpack(RPCS))
@@ -57,7 +62,7 @@ end
 local dummy_input = {}
 
 AIInventorySystem.on_add_extension = function (self, world, unit, extension_name, extension_init_data)
-	local extension = nil
+	local extension
 
 	fassert(next(extension_init_data) ~= nil, "AI's unit template specifies inventory extension but no init data was sent")
 
@@ -96,7 +101,7 @@ AIInventorySystem._cleanup_extension = function (self, unit, extension_name)
 	local units_to_wield_n = self.units_to_wield_n
 	local i = 1
 
-	while units_to_wield_n >= i do
+	while i <= units_to_wield_n do
 		if unit == units_to_wield[i] then
 			units_to_wield[i] = units_to_wield[units_to_wield_n]
 			units_to_wield_n = units_to_wield_n - 1
@@ -106,11 +111,13 @@ AIInventorySystem._cleanup_extension = function (self, unit, extension_name)
 	end
 
 	self.units_to_wield_n = units_to_wield_n
+
 	local units_to_drop = self.units_to_drop
 	local units_to_drop_n = self.units_to_drop_n
+
 	i = 1
 
-	while units_to_drop_n >= i do
+	while i <= units_to_drop_n do
 		if unit == units_to_drop[i] then
 			units_to_drop[i] = units_to_drop[units_to_drop_n]
 			units_to_drop_n = units_to_drop_n - 1
@@ -159,7 +166,7 @@ AIInventorySystem.update = function (self, context, t, dt)
 	for i = 1, units_to_wield_n do
 		local unit = units_to_wield[i]
 		local extension = self.unit_extension_data[unit]
-		local start_index, end_index = nil
+		local start_index, end_index
 		local item_sets = extension.item_sets
 
 		if item_sets then
@@ -168,16 +175,18 @@ AIInventorySystem.update = function (self, context, t, dt)
 			end
 
 			local set_index = self.item_set_to_wield[unit]
+
 			extension.current_item_set_index = set_index
+
 			local item_set = item_sets[set_index]
-			end_index = extension.dropped and 0 or item_set.end_index
-			start_index = item_set.start_index
+
+			start_index, end_index = item_set.start_index, extension.dropped and 0 or item_set.end_index
 		else
-			end_index = extension.dropped and 0 or extension.inventory_items_n
-			start_index = 1
+			start_index, end_index = 1, extension.dropped and 0 or extension.inventory_items_n
 		end
 
 		extension.wielded = true
+
 		local inventory_item_definitions = extension.inventory_item_definitions
 		local inventory_item_units = extension.inventory_item_units
 		local inventory_items_n = extension.dropped and 0 or extension.inventory_items_n
@@ -200,6 +209,7 @@ AIInventorySystem.update = function (self, context, t, dt)
 	end
 
 	self.units_to_wield_n = 0
+
 	local units_to_drop = self.units_to_drop
 	local units_to_drop_n = self.units_to_drop_n
 
@@ -210,6 +220,7 @@ AIInventorySystem.update = function (self, context, t, dt)
 		fassert(not extension.dropped, "Tried to drop weapon twice")
 
 		extension.dropped = true
+
 		local inventory_item_definitions = extension.inventory_item_definitions
 		local inventory_items_n = extension.inventory_items_n
 

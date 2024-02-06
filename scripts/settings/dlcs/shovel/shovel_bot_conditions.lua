@@ -1,10 +1,12 @@
+﻿-- chunkname: @scripts/settings/dlcs/shovel/shovel_bot_conditions.lua
+
 BTConditions.can_activate = BTConditions.can_activate or {}
 BTConditions.can_activate_non_combat = BTConditions.can_activate_non_combat or {}
 
 table.merge_recursive(BTConditions.ability_check_categories, {
 	activate_ability = {
-		bw_necromancer = true
-	}
+		bw_necromancer = true,
+	},
 })
 
 BTConditions.can_activate.bw_necromancer = function (blackboard)
@@ -20,6 +22,7 @@ BTConditions.can_activate.bw_necromancer = function (blackboard)
 		return false
 	elseif blackboard._bt_conditions_first_ability then
 		local t = Managers.time:time("game")
+
 		blackboard._first_ability_t = blackboard._first_ability_t or t + Math.random(1, 4)
 
 		if t < blackboard._first_ability_t then

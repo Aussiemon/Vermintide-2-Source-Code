@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/start_game_view/windows/start_game_window_adventure_overview_console.lua
+
 local definitions = local_require("scripts/ui/views/start_game_view/windows/definitions/start_game_window_adventure_overview_console_definitions")
 local scenegraph_definition = definitions.scenegraph_definition
 local widget_definitions = definitions.widgets
@@ -5,6 +7,7 @@ local animation_definitions = definitions.animation_definitions
 local selector_input_definition = definitions.selector_input_definition
 local START_GAME_INPUT = "refresh_press"
 local SELECTION_INPUT = "confirm_press"
+
 StartGameWindowAdventureOverviewConsole = class(StartGameWindowAdventureOverviewConsole)
 StartGameWindowAdventureOverviewConsole.NAME = "StartGameWindowAdventureOverviewConsole"
 
@@ -12,18 +15,22 @@ StartGameWindowAdventureOverviewConsole.on_enter = function (self, params, offse
 	print("[StartGameViewWindow] Enter Substate StartGameWindowAdventureOverviewConsole")
 
 	self._parent = params.parent
+
 	local ingame_ui_context = params.ingame_ui_context
+
 	self._ingame_ui_context = ingame_ui_context
 	self._ui_renderer = ingame_ui_context.ui_renderer
 	self._ui_top_renderer = ingame_ui_context.ui_top_renderer
 	self._input_manager = ingame_ui_context.input_manager
 	self._statistics_db = ingame_ui_context.statistics_db
 	self._mechanism_name = Managers.mechanism:current_mechanism_name()
+
 	local player_manager = Managers.player
 	local local_player = player_manager:local_player()
+
 	self._stats_id = local_player:stats_id()
 	self._render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 	self._animations = {}
 
@@ -45,20 +52,23 @@ end
 
 StartGameWindowAdventureOverviewConsole._start_transition_animation = function (self, animation_name)
 	local params = {
-		render_settings = self._render_settings
+		render_settings = self._render_settings,
 	}
 	local widgets = {}
 	local anim_id = self._ui_animator:start_animation(animation_name, widgets, scenegraph_definition, params)
+
 	self._animations[animation_name] = anim_id
 end
 
 StartGameWindowAdventureOverviewConsole._create_ui_elements = function (self, params, offset)
 	self._ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+
 	local widgets = {}
 	local widgets_by_name = {}
 
 	for name, widget_definition in pairs(widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		widgets[#widgets + 1] = widget
 		widgets_by_name[name] = widget
 	end
@@ -72,6 +82,7 @@ StartGameWindowAdventureOverviewConsole._create_ui_elements = function (self, pa
 
 	if offset then
 		local window_position = self._ui_scenegraph.window.local_position
+
 		window_position[1] = window_position[1] + offset[1]
 		window_position[2] = window_position[2] + offset[2]
 		window_position[3] = window_position[3] + offset[3]
@@ -110,7 +121,9 @@ StartGameWindowAdventureOverviewConsole._update_can_play = function (self)
 
 	if self._previous_can_play ~= can_play then
 		self._previous_can_play = can_play
+
 		local play_button = self._widgets_by_name.play_button
+
 		play_button.content.button_hotspot.disable_button = not can_play
 		play_button.content.disabled = not can_play
 
@@ -184,6 +197,7 @@ StartGameWindowAdventureOverviewConsole._handle_input = function (self, dt, t)
 		if input_service:get(START_GAME_INPUT) or self:_is_button_pressed(widgets_by_name.play_button) then
 			local custom_game_settings = parent:get_quickplay_settings(self._mechanism_name) or parent:get_quickplay_settings("adventure")
 			local game_mode_type = custom_game_settings.game_mode_type
+
 			self._play_button_pressed = true
 
 			parent:play(t, game_mode_type)
@@ -215,10 +229,15 @@ StartGameWindowAdventureOverviewConsole._update_difficulty_option = function (se
 	if selected_difficulty_key then
 		local difficulty_settings = DifficultySettings[selected_difficulty_key]
 		local difficulty_widget = self._widgets_by_name.difficulty_setting
+
 		difficulty_widget.content.input_text = Localize(difficulty_settings.display_name)
+
 		local display_image = difficulty_settings.display_image
+
 		difficulty_widget.content.icon_texture = display_image
+
 		local completed_frame_texture = difficulty_settings.completed_frame_texture
+
 		difficulty_widget.content.icon_frame_texture = completed_frame_texture
 	end
 end
@@ -230,6 +249,7 @@ StartGameWindowAdventureOverviewConsole._option_selected = function (self, input
 		self._parent:set_layout_by_name("difficulty_selection_adventure")
 	elseif selected_widget_name == "play_button" then
 		self._play_button_pressed = true
+
 		local custom_game_settings = self._parent:get_quickplay_settings(self._mechanism_name) or self._parent:get_quickplay_settings("adventure")
 		local game_mode_type = custom_game_settings.game_mode_type
 
@@ -242,7 +262,9 @@ end
 StartGameWindowAdventureOverviewConsole._handle_new_selection = function (self, input_index)
 	local widgets_by_name = self._widgets_by_name
 	local num_inputs = #selector_input_definition
+
 	input_index = math.clamp(input_index, 1, num_inputs)
+
 	local widget_name = selector_input_definition[input_index]
 	local widget = widgets_by_name[widget_name]
 	local widget_content = widget.content
@@ -255,6 +277,7 @@ StartGameWindowAdventureOverviewConsole._handle_new_selection = function (self, 
 		local widget_name = selector_input_definition[i]
 		local widget = widgets_by_name[widget_name]
 		local is_selected = i == input_index
+
 		widget.content.is_selected = is_selected
 	end
 
@@ -287,7 +310,7 @@ StartGameWindowAdventureOverviewConsole._draw = function (self, dt)
 	local ui_scenegraph = self._ui_scenegraph
 	local input_service = self._parent:window_input_service()
 	local render_settings = self._render_settings
-	local parent_scenegraph_id = nil
+	local parent_scenegraph_id
 
 	UIRenderer.begin_pass(ui_top_renderer, ui_scenegraph, input_service, dt, parent_scenegraph_id, render_settings)
 

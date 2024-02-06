@@ -1,13 +1,16 @@
+﻿-- chunkname: @scripts/settings/dlcs/grudge_marks/grudge_marks_achievements_settings.lua
+
 local settings = DLCSettings.grudge_marks
+
 settings.achievement_template_file_names = {
-	"scripts/managers/achievements/achievement_templates_grudge_marks"
+	"scripts/managers/achievements/achievement_templates_grudge_marks",
 }
 settings.achievement_outline = {
 	levels = {
 		categories = {
 			{
-				sorting = 7,
 				name = "area_selection_morris_name",
+				sorting = 7,
 				entries = {
 					"grudge_mark_kills_grind_we_thornsister",
 					"grudge_mark_kills_grind_we_shade",
@@ -88,10 +91,10 @@ settings.achievement_outline = {
 					"complete_all_career_grudge_challenges_bw_unchained",
 					"complete_all_career_grudge_challenges_bw_necromancer",
 					"complete_all_career_grudge_challenges_wh_zealot",
-					"complete_all_career_grudge_challenges_wh_priest"
-				}
-			}
-		}
-	}
+					"complete_all_career_grudge_challenges_wh_priest",
+				},
+			},
+		},
+	},
 }
 settings.achievement_events = {}

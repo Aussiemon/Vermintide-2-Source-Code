@@ -1,7 +1,10 @@
+﻿-- chunkname: @scripts/entity_system/systems/inventory/inventory_system.lua
+
 require("scripts/unit_extensions/default_player_unit/inventory/simple_inventory_extension")
 require("scripts/unit_extensions/default_player_unit/inventory/simple_husk_inventory_extension")
 
 InventorySystem = class(InventorySystem, ExtensionSystemBase)
+
 local RPCS = {
 	"rpc_show_inventory",
 	"rpc_play_simple_particle_with_vector_variable",
@@ -15,17 +18,18 @@ local RPCS = {
 	"rpc_add_inventory_slot_item",
 	"rpc_start_weapon_fx",
 	"rpc_stop_weapon_fx",
-	"rpc_update_additional_slot"
+	"rpc_update_additional_slot",
 }
 local extensions = {
 	"SimpleHuskInventoryExtension",
-	"SimpleInventoryExtension"
+	"SimpleInventoryExtension",
 }
 
 InventorySystem.init = function (self, entity_system_creation_context, system_name)
 	InventorySystem.super.init(self, entity_system_creation_context, system_name, extensions)
 
 	local network_event_delegate = entity_system_creation_context.network_event_delegate
+
 	self.network_event_delegate = network_event_delegate
 
 	network_event_delegate:register(self, unpack(RPCS))
@@ -35,6 +39,7 @@ InventorySystem.init = function (self, entity_system_creation_context, system_na
 	self.profile_synchronizer = entity_system_creation_context.profile_synchronizer
 	self.num_grimoires = 0
 	self.num_side_objectives = 0
+
 	local sides_to_update = {}
 	local sides = Managers.state.side:sides()
 	local j = 1
@@ -101,6 +106,7 @@ InventorySystem.update = function (self, context, t)
 		for i = 1, #sides do
 			local side = sides[i]
 			local units = side.PLAYER_AND_BOT_UNITS
+
 			self.num_grimoires = self:update_mission_inventory_item(units, "slot_potion", "wpn_grimoire_01", self.num_grimoires, add_grimoire, remove_grimoire)
 			self.num_side_objectives = self:update_mission_inventory_item(units, "slot_healthkit", "wpn_side_objective_tome_01", self.num_side_objectives, add_side_objective, remove_side_objective)
 
@@ -443,6 +449,7 @@ InventorySystem.rpc_update_additional_slot = function (self, channel_id, go_id, 
 
 	for i = 1, #items do
 		local item = items[i]
+
 		looked_up_items[#looked_up_items + 1] = NetworkLookup.item_names[item]
 	end
 

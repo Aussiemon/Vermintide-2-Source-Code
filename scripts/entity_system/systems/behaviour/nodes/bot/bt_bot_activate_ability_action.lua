@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bot/bt_bot_activate_ability_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTBotActivateAbilityAction = class(BTBotActivateAbilityAction, BTNode)
@@ -32,6 +34,7 @@ BTBotActivateAbilityAction.enter = function (self, unit, blackboard, t)
 	local ability_action_data = action_data[career_name]
 	local inventory_extension = blackboard.inventory_extension
 	local activate_ability_data = blackboard.activate_ability_data
+
 	activate_ability_data.is_using_ability = true
 	activate_ability_data.do_start_input = true
 	activate_ability_data.started = false
@@ -94,7 +97,7 @@ BTBotActivateAbilityAction._start_ability = function (self, activate_ability_dat
 				local aim_dot = Vector3.dot(current_forward, aim_direction)
 
 				if aim_dot >= 0.995 then
-					do_start_input = activation_data.max_distance_sq and activation_data.max_distance_sq < Vector3.distance_squared(camera_position, aim_position)
+					do_start_input = activation_data.max_distance_sq and Vector3.distance_squared(camera_position, aim_position) > activation_data.max_distance_sq
 				else
 					do_start_input = true
 				end
@@ -109,15 +112,12 @@ BTBotActivateAbilityAction._start_ability = function (self, activate_ability_dat
 		local wielded_slot_data = inventory_extension:get_wielded_slot_data()
 
 		if wielded_slot_data.id ~= "slot_career_skill_weapon" then
-			started = false
-			do_start_input = true
+			do_start_input, started = true, false
 		else
-			started = true
-			do_start_input = false
+			do_start_input, started = false, true
 		end
 	else
-		started = true
-		do_start_input = false
+		do_start_input, started = false, true
 	end
 
 	return do_start_input, started
@@ -156,12 +156,13 @@ BTBotActivateAbilityAction._evaluate_end_condition = function (self, activate_ab
 
 	if end_condition.buffs then
 		local buff_extension = ScriptUnit.extension(unit, "buff_system")
-		local ability_buff = nil
+		local ability_buff
 		local buffs = end_condition.buffs
 		local num_buffs = #buffs
 
 		for i = 1, num_buffs do
 			local buff_name = buffs[i]
+
 			ability_buff = buff_extension:get_non_stacking_buff(buff_name)
 
 			if ability_buff then
@@ -185,7 +186,7 @@ BTBotActivateAbilityAction._evaluate_end_condition = function (self, activate_ab
 		local duration = t - activate_ability_data.enter_time
 		local min_duration = 0.5
 
-		if duration > min_duration and (navigation_extension:destination_reached() or speed_sq <= min_speed_sq) then
+		if min_duration < duration and (navigation_extension:destination_reached() or speed_sq <= min_speed_sq) then
 			return "done"
 		end
 	end
@@ -219,7 +220,7 @@ BTBotActivateAbilityAction.run = function (self, unit, blackboard, t, dt)
 				input_extension:set_aiming(true, true, false)
 				input_extension:set_aim_position(aim_position)
 
-				if activation_data.move_to_target_unit and data.next_repath_t <= t then
+				if activation_data.move_to_target_unit and t >= data.next_repath_t then
 					blackboard.navigation_destination_override:store(aim_position)
 
 					data.move_to_position_set = true

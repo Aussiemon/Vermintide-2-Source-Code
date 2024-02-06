@@ -1,44 +1,46 @@
+﻿-- chunkname: @scripts/ui/views/subtitle_gui.lua
+
 local scenegraph_definition = {
 	screen = {
 		scale = "fit",
 		position = {
 			0,
 			0,
-			UILayer.hud
+			UILayer.hud,
 		},
 		size = {
 			1920,
-			1080
-		}
+			1080,
+		},
 	},
 	subtitle_background_parent = {
-		vertical_alignment = "bottom",
-		parent = "screen",
 		horizontal_alignment = "center",
+		parent = "screen",
+		vertical_alignment = "bottom",
 		position = {
 			0,
 			120,
-			1
+			1,
 		},
 		size = {
 			850,
-			140
-		}
+			140,
+		},
 	},
 	subtitle_background = {
-		vertical_alignment = "bottom",
-		parent = "subtitle_background_parent",
 		horizontal_alignment = "left",
+		parent = "subtitle_background_parent",
+		vertical_alignment = "bottom",
 		position = {
 			0,
 			0,
-			0
+			0,
 		},
 		size = {
 			850,
-			140
-		}
-	}
+			140,
+		},
+	},
 }
 
 if not IS_WINDOWS then
@@ -49,21 +51,22 @@ local subtitle_widget_definition = {
 	scenegraph_id = "subtitle_background",
 	element = UIElements.StaticText,
 	content = {
-		text_field = ""
+		text_field = "",
 	},
 	style = {
 		text = {
-			vertical_alignment = "bottom",
-			horizontal_alignment = "left",
-			word_wrap = true,
-			font_type = "hell_shark",
 			draw_text_rect = true,
+			font_type = "hell_shark",
+			horizontal_alignment = "left",
+			vertical_alignment = "bottom",
+			word_wrap = true,
 			text_color = Colors.get_table("white"),
 			font_size = UISettings.subtitles_font_size,
-			rect_color = Colors.get_color_table_with_alpha("black", UISettings.subtitles_background_alpha)
-		}
-	}
+			rect_color = Colors.get_color_table_with_alpha("black", UISettings.subtitles_background_alpha),
+		},
+	},
 }
+
 SubtitleGui = class(SubtitleGui)
 
 SubtitleGui.init = function (self, parent, ingame_ui_context)
@@ -118,8 +121,9 @@ SubtitleGui._add_subtitle = function (self, unit, speaker, text)
 	local new_entry = {
 		unit = unit,
 		speaker = speaker,
-		text = text
+		text = text,
 	}
+
 	self.subtitle_list[#self.subtitle_list + 1] = new_entry
 end
 
@@ -148,10 +152,10 @@ SubtitleGui._has_subtitle_for_unit = function (self, unit)
 end
 
 local customizer_data = {
-	root_scenegraph_id = "subtitle_background",
+	drag_scenegraph_id = "subtitle_background",
 	label = "Subtitles",
 	registry_key = "subtitle",
-	drag_scenegraph_id = "subtitle_background"
+	root_scenegraph_id = "subtitle_background",
 }
 
 SubtitleGui.update = function (self, dt)
@@ -182,6 +186,7 @@ SubtitleGui.update = function (self, dt)
 		if currently_playing_dialogue then
 			if dialogue_changed then
 				remake_text = true
+
 				local text_id = currently_playing_dialogue.currently_playing_subtitle
 
 				if Managers.localizer:exists(text_id) then
@@ -221,6 +226,7 @@ SubtitleGui.update = function (self, dt)
 
 	if remake_text or self._force_text_remake then
 		self._force_text_remake = nil
+
 		local text = ""
 		local subtitle_list = self.subtitle_list
 		local num_subtitles = #subtitle_list
@@ -259,6 +265,7 @@ SubtitleGui.update = function (self, dt)
 
 	if self._subtitle_text ~= "" then
 		local subtitle_widget = self._subtitle_widget
+
 		subtitle_widget.content.text_field = self._subtitle_text
 		subtitle_widget.style.text.font_size = UISettings.subtitles_font_size
 		subtitle_widget.style.text.rect_color[1] = UISettings.subtitles_background_alpha

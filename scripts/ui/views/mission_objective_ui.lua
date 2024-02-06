@@ -1,6 +1,9 @@
+﻿-- chunkname: @scripts/ui/views/mission_objective_ui.lua
+
 local definitions = local_require("scripts/ui/views/mission_objective_ui_definitions")
 local animation_definitions = definitions.animation_definitions
 local scenegraph_definition = definitions.scenegraph_definition
+
 MissionObjectiveUI = class(MissionObjectiveUI)
 
 MissionObjectiveUI.init = function (self, parent, ingame_ui_context)
@@ -8,7 +11,9 @@ MissionObjectiveUI.init = function (self, parent, ingame_ui_context)
 	self.ui_renderer = ingame_ui_context.ui_renderer
 	self.ingame_ui = ingame_ui_context.ingame_ui
 	self.input_manager = ingame_ui_context.input_manager
+
 	local world = ingame_ui_context.world_manager:world("level_world")
+
 	self.wwise_world = Managers.world:wwise_world(world)
 	self.saved_mission_objectives = {}
 	self.completed_mission_objectives = {}
@@ -16,7 +21,7 @@ MissionObjectiveUI.init = function (self, parent, ingame_ui_context)
 	self.index_count = 0
 	self._animations = {}
 	self.render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 
 	self:create_ui_elements()
@@ -68,10 +73,10 @@ MissionObjectiveUI.block_mission_ui = function (self, ui_blocked)
 end
 
 local customizer_data = {
-	root_scenegraph_id = "pivot",
+	drag_scenegraph_id = "background",
 	label = "Objectives",
 	registry_key = "mission_objective",
-	drag_scenegraph_id = "background"
+	root_scenegraph_id = "pivot",
 }
 
 MissionObjectiveUI.update = function (self, dt)
@@ -105,7 +110,7 @@ MissionObjectiveUI.add_mission_objective = function (self, mission_name, text, d
 	self.saved_mission_objectives[#self.saved_mission_objectives + 1] = {
 		mission_name = mission_name,
 		text = text,
-		duration_text = duration_text
+		duration_text = duration_text,
 	}
 end
 
@@ -129,7 +134,7 @@ MissionObjectiveUI.complete_mission = function (self, mission_name, remove_immed
 end
 
 MissionObjectiveUI._remove_mission_objective = function (self, mission_name)
-	local index = nil
+	local index
 
 	for idx, mission_data in ipairs(self.saved_mission_objectives) do
 		if mission_data.mission_name == mission_name then
@@ -152,7 +157,7 @@ MissionObjectiveUI._remove_mission_objective = function (self, mission_name)
 end
 
 MissionObjectiveUI.update_mission = function (self, mission_name, text, duration_text)
-	local index = nil
+	local index
 
 	for idx, mission_data in ipairs(self.saved_mission_objectives) do
 		if mission_data.mission_name == mission_name then
@@ -164,6 +169,7 @@ MissionObjectiveUI.update_mission = function (self, mission_name, text, duration
 
 	if index then
 		local mission_data = self.saved_mission_objectives[index]
+
 		self.saved_mission_objectives[index].text = text
 
 		if mission_data.mission_name == self.current_mission_objective then
@@ -177,7 +183,9 @@ end
 MissionObjectiveUI.next_mission_objective = function (self, dt)
 	if not self.current_mission_objective and #self.saved_mission_objectives > 0 and not self._animations.mission_animation then
 		local current_mission_data = self.saved_mission_objectives[1]
+
 		self.current_mission_objective = current_mission_data.mission_name
+
 		local calculate_offsets = true
 
 		self:_set_mission_text(current_mission_data.text, current_mission_data.duration_text, calculate_offsets)
@@ -203,11 +211,13 @@ end
 MissionObjectiveUI._set_mission_text = function (self, text, duration_text, calculate_offsets)
 	local content = self._mission_widget.content
 	local style = self._mission_widget.style
+
 	content.area_text_content = text
 	content.duration_text_content = duration_text and duration_text .. " " or nil
+
 	local ui_renderer = self.ui_renderer
-	local max_width = 287.5
-	local max_height = 40
+	local max_width, max_height = 287.5, 40
+
 	content.text_height = 45
 
 	if calculate_offsets then
@@ -215,14 +225,14 @@ MissionObjectiveUI._set_mission_text = function (self, text, duration_text, calc
 
 		if duration_text then
 			local font, size_of_font = UIFontByResolution(style.area_text_style)
-			local font_material = font[1]
-			local font_size = size_of_font
+			local font_material, font_size = font[1], size_of_font
 			local text_string = string.upper(content.area_text_content)
 			local text_width = UIRenderer.text_size(ui_renderer, text_string, font_material, font_size)
 			local duration_string = duration_text
 			local duration_width = UIRenderer.text_size(ui_renderer, duration_string, font_material, font_size)
 			local area_text_background_size_x = ui_scenegraph.area_text_background.size[1]
 			local duration_text_background_size_x = ui_scenegraph.duration_text_background.size[1]
+
 			ui_scenegraph.area_text_background.position[1] = duration_width * 0.5
 			ui_scenegraph.duration_text_background.position[1] = -text_width * 0.5
 		else
@@ -234,17 +244,17 @@ end
 
 MissionObjectiveUI._get_text_size = function (self, ui_renderer, text, max_width, max_height, style)
 	style.font_size = style.default_font_size
+
 	local full_font_height = math.huge
 
 	if max_height < full_font_height then
 		repeat
 			local font, scaled_font_size = UIFontByResolution(style)
-			local font_material = font[1]
-			local font_size = font[2]
-			local font_name = font[3]
+			local font_material, font_size, font_name = font[1], font[2], font[3]
 			local font_height, font_min, font_max = UIGetFontHeight(ui_renderer.gui, font_name, font_size)
 			local texts = UIRenderer.word_wrap(ui_renderer, text, font_material, font_size, max_width)
 			local num_texts = #texts
+
 			full_font_height = (font_max + math.abs(font_min)) * RESOLUTION_LOOKUP.inv_scale * num_texts
 			style.font_size = math.max(style.font_size - 1, style.min_font_size)
 			style.new_font_size = style.font_size
@@ -273,8 +283,9 @@ MissionObjectiveUI._start_animation = function (self, key, animation_name)
 	local params = {
 		wwise_world = self.wwise_world,
 		render_settings = self.render_settings,
-		ui_renderer = self.ui_renderer
+		ui_renderer = self.ui_renderer,
 	}
 	local anim_id = self.ui_animator:start_animation(animation_name, self._mission_widget, scenegraph_definition, params)
+
 	self._animations[key] = anim_id
 end

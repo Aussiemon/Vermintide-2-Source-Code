@@ -1,8 +1,12 @@
+﻿-- chunkname: @core/gwnav/lua/runtime/navdefaultsmartobjectfollower.lua
+
 require("core/gwnav/lua/safe_require")
 
 local NavDefaultSmartObjectFollower = safe_require_guard()
 local NavClass = safe_require("core/gwnav/lua/runtime/navclass")
+
 NavDefaultSmartObjectFollower = NavClass(NavDefaultSmartObjectFollower)
+
 local Math = stingray.Math
 local Vector3 = stingray.Vector3
 local Vector3Box = stingray.Vector3Box
@@ -45,7 +49,7 @@ end
 NavDefaultSmartObjectFollower.update_follow = function (self, dt)
 	local approachingDistance = 0.5
 
-	if Vector3.distance(self.jump_target:unbox(), self.navbot:get_position()) < approachingDistance then
+	if approachingDistance > Vector3.distance(self.jump_target:unbox(), self.navbot:get_position()) then
 		local exit_manualcontrol = GwNavBot.exit_manual_control(self.navbot.gwnavbot)
 
 		if exit_manualcontrol == true then
@@ -89,7 +93,7 @@ NavDefaultSmartObjectFollower.handle_next_smartobject = function (self, botpos, 
 end
 
 NavDefaultSmartObjectFollower.manage_door_smartobject = function (self, botpos, next_smartobject_interval, entrance_pos, approachingDistance)
-	if Vector3.distance(entrance_pos, botpos) < approachingDistance and GwNavSmartObjectInterval.can_traverse_smartobject(next_smartobject_interval) == false then
+	if approachingDistance > Vector3.distance(entrance_pos, botpos) and GwNavSmartObjectInterval.can_traverse_smartobject(next_smartobject_interval) == false then
 		self.navbot:repath()
 	end
 end
@@ -103,7 +107,7 @@ NavDefaultSmartObjectFollower.start_follow = function (self, target_pos, start_f
 end
 
 NavDefaultSmartObjectFollower.manage_jump_smartobject = function (self, botpos, next_smartobject_interval, entrance_pos, exit_pos, approachingDistance)
-	if Vector3.distance(entrance_pos, botpos) < approachingDistance then
+	if approachingDistance > Vector3.distance(entrance_pos, botpos) then
 		if self.navbot.is_smartobject_driven == false and GwNavSmartObjectInterval.can_traverse_smartobject(next_smartobject_interval) == false then
 			self.navbot:repath()
 		end

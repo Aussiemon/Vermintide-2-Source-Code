@@ -1,6 +1,9 @@
+﻿-- chunkname: @scripts/unit_extensions/default_player_unit/player_whereabouts_extension.lua
+
 require("scripts/unit_extensions/generic/generic_state_machine")
 
 PlayerWhereaboutsExtension = class(PlayerWhereaboutsExtension)
+
 local position_lookup = POSITION_LOOKUP
 
 PlayerWhereaboutsExtension.init = function (self, extension_init_context, unit, extension_init_data)
@@ -28,6 +31,7 @@ PlayerWhereaboutsExtension._setup = function (self, nav_world, unit)
 
 	if nav_world_available then
 		local success, altitude = GwNavQueries.triangle_from_position(nav_world, position)
+
 		self._last_pos_on_nav_mesh = Vector3Box(position.x, position.y, altitude or position.z)
 	else
 		self._last_pos_on_nav_mesh = Vector3Box(Vector3.invalid_vector())
@@ -121,7 +125,7 @@ PlayerWhereaboutsExtension._find_start_position = function (self, current_positi
 	if Vector3.is_valid(last_pos) then
 		local offset = current_position - last_pos
 
-		if EPSILON < Vector3.length_squared(offset) then
+		if Vector3.length_squared(offset) > EPSILON then
 			local new_last_pos = GwNavQueries.move_on_navmesh(self._nav_world, last_pos, offset, 1, self._nav_traverse_logic)
 
 			if not perform_distance_check or Vector3.distance_squared(current_position, new_last_pos) < 4 then
@@ -138,6 +142,7 @@ PlayerWhereaboutsExtension._check_bot_nav_transition = function (self, nav_world
 		fassert(not self._falling and not self._jumping, "Tried to jump or fall while falling without aborting landing")
 
 		self._jumping = true
+
 		local perform_distance_check = input.player_state == nil or input.player_state ~= "lunging" and input.player_state ~= "leaping"
 		local pos = self:_find_start_position(current_position, perform_distance_check)
 
@@ -149,6 +154,7 @@ PlayerWhereaboutsExtension._check_bot_nav_transition = function (self, nav_world
 		fassert(not self._jumping and not self._falling, "Tried to fall or jump while jumping without aborting landing")
 
 		self._falling = true
+
 		local perform_distance_check = input.player_state == nil or input.player_state ~= "lunging" and input.player_state ~= "leaping"
 		local pos = self:_find_start_position(current_position, perform_distance_check)
 
@@ -163,6 +169,7 @@ PlayerWhereaboutsExtension._check_bot_nav_transition = function (self, nav_world
 
 		self._jumping = false
 		self._falling = false
+
 		local invalid_vector = Vector3.invalid_vector()
 
 		self._jump_position:store(invalid_vector)
@@ -203,6 +210,7 @@ end
 
 PlayerWhereaboutsExtension._get_closest_positions = function (self, pos, is_onground, point_list)
 	local nav_world = self._nav_world
+
 	self.player_on_nav_mesh = GwNavQueries.triangle_from_position(nav_world, pos, 0.2, 0.3)
 
 	if self.player_on_nav_mesh then

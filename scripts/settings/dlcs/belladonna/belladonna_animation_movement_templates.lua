@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/settings/dlcs/belladonna/belladonna_animation_movement_templates.lua
+
 AnimationMovementTemplates = AnimationMovementTemplates or {}
+
 local BLACKBOARDS = BLACKBOARDS
 local animation_set_variable = Unit.animation_set_variable
 
@@ -14,11 +17,9 @@ local function lean_towards_position(unit, dt, data, target_position, lerp_speed
 	local leaning_left = right_dot < 0
 	local target_lean = (1 - abs_fwd_dot) * lean_amount
 
-	if leaning_left then
-		target_lean = -target_lean or target_lean
-	end
-
+	target_lean = leaning_left and -target_lean or target_lean
 	target_lean = math.clamp(target_lean, -1, 1)
+
 	local current_lean = data.current_lean or 0
 	local lean = math.lerp(current_lean, target_lean, lerp_speed * dt)
 	local animation_variable_lean = data.animation_variable_lean
@@ -34,8 +35,10 @@ local function lean_downwards_over_time(unit, dt, data)
 	if data.current_lean_value then
 		local current_lean_value = data.current_lean_value
 		local lerp_speed = 7
+
 		data.current_lean_value = math.lerp(current_lean_value, 0, lerp_speed * dt)
 		data.lean_variable = data.current_lean_value
+
 		local compare_value = data.current_lean_value
 
 		if data.current_lean_direction == "left" and compare_value >= -0.1 or data.current_lean_direction == "right" and compare_value <= 0.1 then
@@ -50,6 +53,7 @@ local function lean_downwards_over_time(unit, dt, data)
 
 		local max = data.lean_downwards_max
 		local lerp_speed = data.lean_downwards_speed
+
 		data.lean_variable = math.lerp(data.lean_variable, max, lerp_speed * dt)
 	end
 
@@ -62,6 +66,7 @@ AnimationMovementTemplates.beastmen_bestigor = {
 	owner = {
 		init = function (unit, data)
 			local blackboard = BLACKBOARDS[unit]
+
 			data.blackboard = blackboard
 			data.ai_extension = ScriptUnit.extension(unit, "ai_system")
 			data.animation_variable_lean = Unit.animation_find_variable(unit, "lean")
@@ -96,7 +101,7 @@ AnimationMovementTemplates.beastmen_bestigor = {
 			if animation_variable_lean then
 				animation_set_variable(unit, animation_variable_lean, 0)
 			end
-		end
+		end,
 	},
 	husk = {
 		init = function (unit, data)
@@ -128,13 +133,14 @@ AnimationMovementTemplates.beastmen_bestigor = {
 			if animation_variable_lean then
 				animation_set_variable(unit, animation_variable_lean, 0)
 			end
-		end
-	}
+		end,
+	},
 }
 AnimationMovementTemplates.beastmen_minotaur = {
 	owner = {
 		init = function (unit, data)
 			local blackboard = BLACKBOARDS[unit]
+
 			data.blackboard = blackboard
 			data.ai_extension = ScriptUnit.extension(unit, "ai_system")
 			data.animation_variable_lean = Unit.animation_find_variable(unit, "lean")
@@ -203,6 +209,7 @@ AnimationMovementTemplates.beastmen_minotaur = {
 
 			local game = Managers.state.network:game()
 			local go_id = Managers.state.unit_storage:go_id(unit)
+
 			data.current_lean_value = nil
 			data.lean_variable = nil
 
@@ -211,7 +218,7 @@ AnimationMovementTemplates.beastmen_minotaur = {
 
 				data.sent_downwards_lean = nil
 			end
-		end
+		end,
 	},
 	husk = {
 		init = function (unit, data)
@@ -248,6 +255,6 @@ AnimationMovementTemplates.beastmen_minotaur = {
 			if animation_variable_lean then
 				animation_set_variable(unit, animation_variable_lean, 0)
 			end
-		end
-	}
+		end,
+	},
 }

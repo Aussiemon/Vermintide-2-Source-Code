@@ -1,5 +1,8 @@
-local go_type_table = nil
+﻿-- chunkname: @scripts/network/game_object_initializers_extractors.lua
+
+local go_type_table
 local temp_table = {}
+
 EnergyData = EnergyData or {}
 
 local function enemy_unit_common_extractor(unit, game_session, game_object_id)
@@ -27,6 +30,7 @@ local function setup_blackboard(player, profile, career, unit)
 	local side = Managers.state.side.side_by_party[party]
 	local breed = career.breed or profile.breed
 	local blackboard = BLACKBOARDS[unit] or {}
+
 	blackboard.is_player = true
 	blackboard.side = side
 	blackboard.breed = breed
@@ -54,13 +58,15 @@ go_type_table = {
 			local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
 			local aim_position = first_person_extension:current_position()
 			local rotation = Unit.local_rotation(unit, 0)
-			local level = nil
+			local level
 
 			if Managers.mechanism:current_mechanism_name() == "versus" then
 				local experience = ExperienceSettings.get_versus_profile_experience()
+
 				level = ExperienceSettings.get_versus_profile_level_from_experience(experience)
 			else
 				local experience = ExperienceSettings.get_experience(profile.display_name)
+
 				level = ExperienceSettings.get_level(experience)
 			end
 
@@ -82,13 +88,13 @@ go_type_table = {
 			setup_blackboard(player, profile, career, unit)
 
 			local data_table = {
-				ammo_percentage = 1,
-				overcharge_threshold_percentage = 0,
-				has_moved_from_start_position = false,
-				overcharge_max_value = 40,
 				ability_percentage = 0,
-				overcharge_percentage = 0,
+				ammo_percentage = 1,
+				has_moved_from_start_position = false,
 				moving_platform = 0,
+				overcharge_max_value = 40,
+				overcharge_percentage = 0,
+				overcharge_threshold_percentage = 0,
 				go_type = NetworkLookup.go_types.player_unit,
 				husk_unit = NetworkLookup.husks[husk_unit],
 				skin_name = NetworkLookup.cosmetics[skin_name],
@@ -107,7 +113,7 @@ go_type_table = {
 				average_velocity = Vector3(0, 0, 0),
 				profile_id = profile_id,
 				career_id = career_index,
-				network_buff_ids = network_buff_ids
+				network_buff_ids = network_buff_ids,
 			}
 
 			return data_table
@@ -135,14 +141,14 @@ go_type_table = {
 
 			local rotation = Unit.local_rotation(unit, 0)
 			local data_table = {
-				ammo_percentage = 1,
-				overcharge_threshold_percentage = 0,
 				ability_percentage = 0,
-				prestige_level = 0,
-				overcharge_max_value = 40,
+				ammo_percentage = 1,
 				level = 0,
-				overcharge_percentage = 0,
 				moving_platform = 0,
+				overcharge_max_value = 40,
+				overcharge_percentage = 0,
+				overcharge_threshold_percentage = 0,
+				prestige_level = 0,
 				go_type = NetworkLookup.go_types.player_bot_unit,
 				husk_unit = NetworkLookup.husks[husk_unit],
 				skin_name = NetworkLookup.cosmetics[skin_name],
@@ -157,7 +163,7 @@ go_type_table = {
 				local_player_id = player:local_player_id(),
 				aim_direction = Vector3(1, 0, 0),
 				profile_id = profile_id,
-				career_id = career_index
+				career_id = career_index,
 			}
 
 			return data_table
@@ -180,7 +186,7 @@ go_type_table = {
 				breed_name = NetworkLookup.breeds[breed.name],
 				uniform_scale = size_variation,
 				bt_action_name = NetworkLookup.bt_action_names["n/a"],
-				side_id = side_id
+				side_id = side_id,
 			}
 
 			return data_table
@@ -221,7 +227,7 @@ go_type_table = {
 				network_angular_velocity = network_angular_velocity,
 				pickup_name = NetworkLookup.pickup_names[pickup_name],
 				has_physics = has_physics,
-				spawn_type = NetworkLookup.pickup_spawn_types[spawn_type]
+				spawn_type = NetworkLookup.pickup_spawn_types[spawn_type],
 			}
 
 			return data_table
@@ -246,7 +252,7 @@ go_type_table = {
 				uniform_scale = size_variation,
 				inventory_configuration = NetworkLookup.ai_inventory[inventory_configuration_name],
 				bt_action_name = NetworkLookup.bt_action_names["n/a"],
-				side_id = side_id
+				side_id = side_id,
 			}
 
 			return data_table
@@ -260,8 +266,8 @@ go_type_table = {
 			local side = Managers.state.side.side_by_unit[unit]
 			local side_id = side.side_id
 			local data_table = {
-				lean_downwards = false,
 				has_teleported = 1,
+				lean_downwards = false,
 				go_type = NetworkLookup.go_types.ai_unit_beastmen_minotaur,
 				husk_unit = NetworkLookup.husks[unit_name],
 				health = ScriptUnit.extension(unit, "health_system"):get_max_health(),
@@ -272,7 +278,7 @@ go_type_table = {
 				uniform_scale = size_variation,
 				inventory_configuration = NetworkLookup.ai_inventory[inventory_configuration_name],
 				bt_action_name = NetworkLookup.bt_action_names["n/a"],
-				side_id = side_id
+				side_id = side_id,
 			}
 
 			return data_table
@@ -285,8 +291,8 @@ go_type_table = {
 			local side = Managers.state.side.side_by_unit[unit]
 			local side_id = side.side_id
 			local data_table = {
-				show_health_bar = false,
 				has_teleported = 1,
+				show_health_bar = false,
 				go_type = NetworkLookup.go_types.ai_unit,
 				husk_unit = NetworkLookup.husks[unit_name],
 				health = ScriptUnit.extension(unit, "health_system"):get_max_health(),
@@ -296,7 +302,7 @@ go_type_table = {
 				breed_name = NetworkLookup.breeds[breed.name],
 				uniform_scale = size_variation,
 				bt_action_name = NetworkLookup.bt_action_names["n/a"],
-				side_id = side_id
+				side_id = side_id,
 			}
 
 			return data_table
@@ -311,8 +317,8 @@ go_type_table = {
 			local side = Managers.state.side.side_by_unit[unit]
 			local side_id = side.side_id
 			local data_table = {
-				reach_distance = 0,
 				has_teleported = 1,
+				reach_distance = 0,
 				go_type = NetworkLookup.go_types.ai_unit_tentacle,
 				husk_unit = NetworkLookup.husks[unit_name],
 				health = ScriptUnit.extension(unit, "health_system"):get_max_health(),
@@ -324,7 +330,7 @@ go_type_table = {
 				bt_action_name = NetworkLookup.bt_action_names["n/a"],
 				portal_unit_id = Managers.state.network:unit_game_object_id(portal_unit),
 				tentacle_template_id = NetworkLookup.tentacle_templates[tentacle_spline_extension.tentacle_template_name],
-				side_id = side_id
+				side_id = side_id,
 			}
 
 			return data_table
@@ -359,9 +365,9 @@ go_type_table = {
 			local side = Managers.state.side.side_by_unit[unit]
 			local side_id = side.side_id
 			local data_table = {
-				height_percentage = 0,
 				fx_radius_percentage = 0,
 				has_teleported = 1,
+				height_percentage = 0,
 				inner_radius_percentage = 0,
 				go_type = NetworkLookup.go_types.ai_unit_vortex,
 				husk_unit = NetworkLookup.husks[unit_name],
@@ -375,7 +381,7 @@ go_type_table = {
 				inner_decal_unit_id = inner_decal_unit_id,
 				outer_decal_unit_id = outer_decal_unit_id,
 				owner_unit_id = owner_unit_id,
-				side_id = side_id
+				side_id = side_id,
 			}
 
 			return data_table
@@ -392,7 +398,7 @@ go_type_table = {
 				yaw_rot = Quaternion.yaw(Unit.local_rotation(unit, 0)),
 				breed_name = NetworkLookup.breeds[breed.name],
 				bt_action_name = NetworkLookup.bt_action_names["n/a"],
-				side_id = side_id
+				side_id = side_id,
 			}
 
 			return data_table
@@ -406,7 +412,7 @@ go_type_table = {
 				position = Unit.local_position(unit, 0),
 				rotation = Unit.local_rotation(unit, 0),
 				health = ScriptUnit.extension(unit, "health_system"):get_max_health(),
-				side_id = side_id
+				side_id = side_id,
 			}
 
 			return data_table
@@ -431,7 +437,7 @@ go_type_table = {
 				uniform_scale = size_variation,
 				inventory_configuration = NetworkLookup.ai_inventory[inventory_configuration_name],
 				bt_action_name = NetworkLookup.bt_action_names["n/a"],
-				side_id = side_id
+				side_id = side_id,
 			}
 
 			return data_table
@@ -459,7 +465,7 @@ go_type_table = {
 				inventory_configuration = NetworkLookup.ai_inventory[inventory_configuration_name],
 				bt_action_name = NetworkLookup.bt_action_names["n/a"],
 				is_blocking = is_blocking,
-				side_id = side_id
+				side_id = side_id,
 			}
 
 			return data_table
@@ -476,8 +482,8 @@ go_type_table = {
 			local side = Managers.state.side.side_by_unit[unit]
 			local side_id = side.side_id
 			local data_table = {
-				show_health_bar = false,
 				has_teleported = 1,
+				show_health_bar = false,
 				go_type = NetworkLookup.go_types.ai_unit_storm_vermin_warlord,
 				husk_unit = NetworkLookup.husks[unit_name],
 				health = ScriptUnit.extension(unit, "health_system"):get_max_health(),
@@ -490,7 +496,7 @@ go_type_table = {
 				bt_action_name = NetworkLookup.bt_action_names["n/a"],
 				is_blocking = is_blocking,
 				is_dodging = is_dodging,
-				side_id = side_id
+				side_id = side_id,
 			}
 
 			return data_table
@@ -515,7 +521,7 @@ go_type_table = {
 				uniform_scale = size_variation,
 				inventory_configuration = NetworkLookup.ai_inventory[inventory_configuration_name],
 				bt_action_name = NetworkLookup.bt_action_names["n/a"],
-				side_id = side_id
+				side_id = side_id,
 			}
 
 			return data_table
@@ -529,8 +535,8 @@ go_type_table = {
 			local side = Managers.state.side.side_by_unit[unit]
 			local side_id = side.side_id
 			local data_table = {
-				show_health_bar = false,
 				has_teleported = 1,
+				show_health_bar = false,
 				go_type = NetworkLookup.go_types.ai_lord_with_inventory,
 				husk_unit = NetworkLookup.husks[unit_name],
 				health = ScriptUnit.extension(unit, "health_system"):get_max_health(),
@@ -541,7 +547,7 @@ go_type_table = {
 				uniform_scale = size_variation,
 				inventory_configuration = NetworkLookup.ai_inventory[inventory_configuration_name],
 				bt_action_name = NetworkLookup.bt_action_names["n/a"],
-				side_id = side_id
+				side_id = side_id,
 			}
 
 			return data_table
@@ -567,7 +573,7 @@ go_type_table = {
 				inventory_configuration = NetworkLookup.ai_inventory[inventory_configuration_name],
 				aim_target = Vector3.zero(),
 				bt_action_name = NetworkLookup.bt_action_names["n/a"],
-				side_id = side_id
+				side_id = side_id,
 			}
 
 			return data_table
@@ -593,7 +599,7 @@ go_type_table = {
 				inventory_configuration = NetworkLookup.ai_inventory[inventory_configuration_name],
 				aim_target = Vector3.zero(),
 				bt_action_name = NetworkLookup.bt_action_names["n/a"],
-				side_id = side_id
+				side_id = side_id,
 			}
 
 			return data_table
@@ -619,7 +625,7 @@ go_type_table = {
 				inventory_configuration = NetworkLookup.ai_inventory[inventory_configuration_name],
 				aim_target = Vector3.zero(),
 				bt_action_name = NetworkLookup.bt_action_names["n/a"],
-				side_id = side_id
+				side_id = side_id,
 			}
 
 			return data_table
@@ -646,7 +652,7 @@ go_type_table = {
 				inventory_configuration = NetworkLookup.ai_inventory[inventory_configuration_name],
 				aim_target = Vector3.zero(),
 				bt_action_name = NetworkLookup.bt_action_names["n/a"],
-				side_id = side_id
+				side_id = side_id,
 			}
 
 			return data_table
@@ -660,9 +666,9 @@ go_type_table = {
 			local side = Managers.state.side.side_by_unit[unit]
 			local side_id = side.side_id
 			local data_table = {
-				show_health_bar = false,
 				attack_arm = 1,
 				has_teleported = 1,
+				show_health_bar = false,
 				go_type = NetworkLookup.go_types.ai_unit_stormfiend,
 				husk_unit = NetworkLookup.husks[unit_name],
 				health = ScriptUnit.extension(unit, "health_system"):get_max_health(),
@@ -674,7 +680,7 @@ go_type_table = {
 				inventory_configuration = NetworkLookup.ai_inventory[inventory_configuration_name],
 				aim_target = Vector3.zero(),
 				bt_action_name = NetworkLookup.bt_action_names["n/a"],
-				side_id = side_id
+				side_id = side_id,
 			}
 
 			return data_table
@@ -717,7 +723,7 @@ go_type_table = {
 				scale = scale,
 				fast_forward_time = fast_forward_time,
 				rotation_speed = rotation_speed,
-				power_level = power_level
+				power_level = power_level,
 			}
 
 			return data_table
@@ -758,7 +764,7 @@ go_type_table = {
 				target_unit = Unit.alive(target_unit) and Managers.state.network:unit_game_object_id(target_unit) or 0,
 				stopped = stopped,
 				seed = seed,
-				charge_level = charge_level
+				charge_level = charge_level,
 			}
 
 			return data_table
@@ -791,7 +797,7 @@ go_type_table = {
 				item_template_name = NetworkLookup.item_template_names[item_template_name],
 				action_name = NetworkLookup.actions[action_name],
 				sub_action_name = NetworkLookup.sub_actions[sub_action_name],
-				scale = scale
+				scale = scale,
 			}
 
 			return data_table
@@ -811,7 +817,7 @@ go_type_table = {
 				network_rotation = network_rotation,
 				network_velocity = network_velocity,
 				network_angular_velocity = network_angular_velocity,
-				debug_pos = Unit.local_position(unit, 0)
+				debug_pos = Unit.local_position(unit, 0),
 			}
 
 			return data_table
@@ -838,7 +844,7 @@ go_type_table = {
 				debug_pos = Unit.local_position(unit, 0),
 				pickup_name = NetworkLookup.pickup_names[pickup_name],
 				has_physics = has_physics,
-				spawn_type = NetworkLookup.pickup_spawn_types[spawn_type]
+				spawn_type = NetworkLookup.pickup_spawn_types[spawn_type],
 			}
 
 			return data_table
@@ -869,7 +875,7 @@ go_type_table = {
 				has_physics = has_physics,
 				spawn_type = NetworkLookup.pickup_spawn_types[spawn_type],
 				owner_peer_id = owner_peer_id,
-				spawn_limit = spawn_limit
+				spawn_limit = spawn_limit,
 			}
 
 			return data_table
@@ -896,7 +902,7 @@ go_type_table = {
 				debug_pos = Unit.local_position(unit, 0),
 				pickup_name = NetworkLookup.pickup_names[pickup_name],
 				has_physics = has_physics,
-				spawn_type = NetworkLookup.pickup_spawn_types[spawn_type]
+				spawn_type = NetworkLookup.pickup_spawn_types[spawn_type],
 			}
 
 			return data_table
@@ -923,7 +929,7 @@ go_type_table = {
 				network_angular_velocity = network_angular_velocity,
 				pickup_name = NetworkLookup.pickup_names[pickup_name],
 				has_physics = has_physics,
-				spawn_type = NetworkLookup.pickup_spawn_types[spawn_type]
+				spawn_type = NetworkLookup.pickup_spawn_types[spawn_type],
 			}
 
 			return data_table
@@ -937,7 +943,7 @@ go_type_table = {
 				position = Unit.local_position(unit, 0),
 				rotation = Unit.local_rotation(unit, 0),
 				scale = Unit.local_scale(unit, 0)[1],
-				objective_name = NetworkLookup.versus_objective_names[objective_name]
+				objective_name = NetworkLookup.versus_objective_names[objective_name],
 			}
 
 			return data_table
@@ -952,7 +958,7 @@ go_type_table = {
 				rotation = Unit.local_rotation(unit, 0),
 				scale = Unit.local_scale(unit, 0)[1],
 				objective_name = NetworkLookup.versus_objective_names[objective_name],
-				timer = versus_objective_ext._timer
+				timer = versus_objective_ext._timer,
 			}
 
 			return data_table
@@ -966,7 +972,7 @@ go_type_table = {
 				position = Unit.local_position(unit, 0),
 				rotation = Unit.local_rotation(unit, 0),
 				scale = Unit.local_scale(unit, 0)[1],
-				objective_name = NetworkLookup.versus_objective_names[objective_name]
+				objective_name = NetworkLookup.versus_objective_names[objective_name],
 			}
 
 			return data_table
@@ -981,7 +987,7 @@ go_type_table = {
 				rotation = Unit.local_rotation(unit, 0),
 				scale = Unit.local_scale(unit, 0)[1],
 				objective_name = NetworkLookup.weave_objective_names[objective_name],
-				timer = weave_objective_ext._timer
+				timer = weave_objective_ext._timer,
 			}
 
 			return data_table
@@ -1000,7 +1006,7 @@ go_type_table = {
 				objective_name = NetworkLookup.weave_objective_names[objective_name],
 				health = health,
 				allow_melee_damage = attacks_allowed.melee,
-				allow_ranged_damage = attacks_allowed.ranged
+				allow_ranged_damage = attacks_allowed.ranged,
 			}
 
 			return data_table
@@ -1015,7 +1021,7 @@ go_type_table = {
 				rotation = Unit.local_rotation(unit, 0),
 				objective_name = NetworkLookup.weave_objective_names[objective_name],
 				num_times_to_complete = weave_objective_ext._num_times_to_complete,
-				duration = weave_objective_ext._duration
+				duration = weave_objective_ext._duration,
 			}
 
 			return data_table
@@ -1028,7 +1034,7 @@ go_type_table = {
 				husk_unit = NetworkLookup.husks[unit_name],
 				position = Unit.local_position(unit, 0),
 				rotation = Unit.local_rotation(unit, 0),
-				objective_name = NetworkLookup.weave_objective_names[objective_name]
+				objective_name = NetworkLookup.weave_objective_names[objective_name],
 			}
 
 			return data_table
@@ -1045,7 +1051,7 @@ go_type_table = {
 				position = Unit.local_position(unit, 0),
 				rotation = Unit.local_rotation(unit, 0),
 				objective_name = NetworkLookup.weave_objective_names[objective_name],
-				amount = weave_objective_ext._kills_required
+				amount = weave_objective_ext._kills_required,
 			}
 
 			return data_table
@@ -1072,7 +1078,7 @@ go_type_table = {
 				debug_pos = Unit.local_position(unit, 0),
 				pickup_name = NetworkLookup.pickup_names[pickup_name],
 				has_physics = has_physics,
-				spawn_type = NetworkLookup.pickup_spawn_types[spawn_type]
+				spawn_type = NetworkLookup.pickup_spawn_types[spawn_type],
 			}
 
 			return data_table
@@ -1099,7 +1105,7 @@ go_type_table = {
 				debug_pos = Unit.local_position(unit, 0),
 				pickup_name = NetworkLookup.pickup_names[pickup_name],
 				has_physics = has_physics,
-				spawn_type = NetworkLookup.pickup_spawn_types[spawn_type]
+				spawn_type = NetworkLookup.pickup_spawn_types[spawn_type],
 			}
 
 			return data_table
@@ -1136,7 +1142,7 @@ go_type_table = {
 				pickup_name = NetworkLookup.pickup_names[pickup_name],
 				owner_peer_id = owner_peer_id,
 				has_physics = has_physics,
-				spawn_type = NetworkLookup.pickup_spawn_types[spawn_type]
+				spawn_type = NetworkLookup.pickup_spawn_types[spawn_type],
 			}
 
 			return data_table
@@ -1159,6 +1165,7 @@ go_type_table = {
 
 			if health_extension.ignited then
 				local data = health_extension:health_data()
+
 				explode_time = data.explode_time
 				fuse_time = data.fuse_time
 			end
@@ -1180,7 +1187,7 @@ go_type_table = {
 				damage = damage,
 				explode_time = explode_time,
 				fuse_time = fuse_time,
-				item_name = NetworkLookup.item_names[item_name]
+				item_name = NetworkLookup.item_names[item_name],
 			}
 
 			return data_table
@@ -1206,6 +1213,7 @@ go_type_table = {
 
 			if health_extension.ignited then
 				local data = health_extension:health_data()
+
 				explode_time = data.explode_time
 				fuse_time = data.fuse_time
 			end
@@ -1232,7 +1240,7 @@ go_type_table = {
 				damage = damage,
 				explode_time = explode_time,
 				fuse_time = fuse_time,
-				item_name = NetworkLookup.item_names[item_name]
+				item_name = NetworkLookup.item_names[item_name],
 			}
 
 			return data_table
@@ -1285,7 +1293,7 @@ go_type_table = {
 				action_name = NetworkLookup.actions[action_name],
 				sub_action_name = NetworkLookup.sub_actions[sub_action_name],
 				scale = scale,
-				power_level = power_level
+				power_level = power_level,
 			}
 
 			return data_table
@@ -1328,7 +1336,7 @@ go_type_table = {
 				impact_template_name = NetworkLookup.projectile_templates[impact_template_name],
 				collision_filter = NetworkLookup.collision_filters[collision_filter],
 				server_side_raycast = server_side_raycast,
-				owner_unit = Managers.state.network:unit_game_object_id(owner_unit)
+				owner_unit = Managers.state.network:unit_game_object_id(owner_unit),
 			}
 
 			return data_table
@@ -1366,7 +1374,7 @@ go_type_table = {
 				gravity_settings = NetworkLookup.projectile_gravity_settings[gravity_settings],
 				trajectory_template_id = NetworkLookup.projectile_templates[trajectory_template_name],
 				impact_template_name = NetworkLookup.projectile_templates[impact_template_name],
-				owner_unit = Managers.state.network:unit_game_object_id(owner_unit)
+				owner_unit = Managers.state.network:unit_game_object_id(owner_unit),
 			}
 
 			return data_table
@@ -1421,7 +1429,7 @@ go_type_table = {
 				dot_effect_name = NetworkLookup.effects[dot_effect_name],
 				area_damage_template = NetworkLookup.area_damage_templates[area_damage_template],
 				source_attacker_unit = network_manager:unit_game_object_id(source_attacker_unit),
-				damage_source_id = NetworkLookup.damage_sources[damage_source]
+				damage_source_id = NetworkLookup.damage_sources[damage_source],
 			}
 
 			return data_table
@@ -1485,7 +1493,7 @@ go_type_table = {
 				dot_effect_name = NetworkLookup.effects[dot_effect_name],
 				area_damage_template = NetworkLookup.area_damage_templates[area_damage_template],
 				source_attacker_unit = network_manager:unit_game_object_id(source_attacker_unit),
-				damage_source_id = NetworkLookup.damage_sources[damage_source]
+				damage_source_id = NetworkLookup.damage_sources[damage_source],
 			}
 
 			return data_table
@@ -1509,7 +1517,7 @@ go_type_table = {
 				target_vector = target_vector,
 				trajectory_template_name = NetworkLookup.projectile_templates[trajectory_template_name],
 				impact_template_name = NetworkLookup.projectile_templates[impact_template_name],
-				owner_unit = network_manager:unit_game_object_id(owner_unit)
+				owner_unit = network_manager:unit_game_object_id(owner_unit),
 			}
 
 			return data_table
@@ -1526,7 +1534,7 @@ go_type_table = {
 				position = Unit.local_position(unit, 0),
 				rotation = Unit.local_rotation(unit, 0),
 				damage_wave_template_name = NetworkLookup.damage_wave_templates[damage_wave_template_name],
-				source_unit = network_manager:unit_game_object_id(source_unit)
+				source_unit = network_manager:unit_game_object_id(source_unit),
 			}
 
 			return data_table
@@ -1542,7 +1550,7 @@ go_type_table = {
 				position = Unit.local_position(unit, 0),
 				rotation = Unit.local_rotation(unit, 0),
 				damage_blob_template_name = NetworkLookup.damage_blob_templates[damage_blob_template_name],
-				source_unit = network_manager:unit_game_object_id(source_unit)
+				source_unit = network_manager:unit_game_object_id(source_unit),
 			}
 
 			return data_table
@@ -1558,7 +1566,7 @@ go_type_table = {
 				liquid_area_damage_template = NetworkLookup.liquid_area_damage_templates[liquid_area_damage_template],
 				source_unit = network_manager:unit_game_object_id(source_unit),
 				position = Unit.local_position(unit, 0),
-				rotation = Unit.local_rotation(unit, 0)
+				rotation = Unit.local_rotation(unit, 0),
 			}
 
 			return data_table
@@ -1568,7 +1576,7 @@ go_type_table = {
 				go_type = NetworkLookup.go_types.lure_unit,
 				husk_unit = NetworkLookup.husks[unit_name],
 				position = Unit.local_position(unit, 0),
-				rotation = Unit.local_rotation(unit, 0)
+				rotation = Unit.local_rotation(unit, 0),
 			}
 
 			return data_table
@@ -1634,7 +1642,7 @@ go_type_table = {
 				area_damage_template = NetworkLookup.area_damage_templates[area_damage_template],
 				explosion_template_name = NetworkLookup.explosion_templates[explosion_template_name],
 				owner_player_id = owner_player_id,
-				source_attacker_unit_id = source_attacker_unit_id
+				source_attacker_unit_id = source_attacker_unit_id,
 			}
 
 			return data_table
@@ -1699,7 +1707,7 @@ go_type_table = {
 				owner_player_id = owner_player_id,
 				spawn_animation_time = spawn_animation_time,
 				despawn_animation_time = despawn_animation_time,
-				slow_modifier = slow_modifier
+				slow_modifier = slow_modifier,
 			}
 
 			return data_table
@@ -1713,7 +1721,7 @@ go_type_table = {
 				husk_unit = NetworkLookup.husks[unit_name],
 				glow_time = glow_time,
 				owner_unit_id = owner_unit_id,
-				position = Unit.local_position(unit, 0)
+				position = Unit.local_position(unit, 0),
 			}
 
 			return data_table
@@ -1729,7 +1737,7 @@ go_type_table = {
 				follow_unit = network_manager:unit_game_object_id(follow_unit),
 				explosion_template_name = NetworkLookup.explosion_templates[explosion_template_name],
 				position = Unit.local_position(unit, 0),
-				rotation = Unit.local_rotation(unit, 0)
+				rotation = Unit.local_rotation(unit, 0),
 			}
 
 			return data_table
@@ -1748,7 +1756,7 @@ go_type_table = {
 				spawn_type = NetworkLookup.pickup_spawn_types[spawn_type],
 				dropped_by_breed = NetworkLookup.breeds[breed_name],
 				position = Unit.local_position(unit, 0),
-				rotation = Unit.local_rotation(unit, 0)
+				rotation = Unit.local_rotation(unit, 0),
 			}
 
 			return data_table
@@ -1769,7 +1777,7 @@ go_type_table = {
 				position = Unit.local_position(unit, 0),
 				rotation = Unit.local_rotation(unit, 0),
 				owner_peer_id = owner_peer_id,
-				spawn_limit = spawn_limit
+				spawn_limit = spawn_limit,
 			}
 
 			return data_table
@@ -1796,7 +1804,7 @@ go_type_table = {
 				debug_pos = Unit.local_position(unit, 0),
 				pickup_name = NetworkLookup.pickup_names[pickup_name],
 				has_physics = has_physics,
-				spawn_type = NetworkLookup.pickup_spawn_types[spawn_type]
+				spawn_type = NetworkLookup.pickup_spawn_types[spawn_type],
 			}
 
 			return data_table
@@ -1813,7 +1821,7 @@ go_type_table = {
 				has_physics = has_physics,
 				spawn_type = NetworkLookup.pickup_spawn_types[spawn_type],
 				position = Unit.local_position(unit, 0),
-				rotation = Unit.local_rotation(unit, 0)
+				rotation = Unit.local_rotation(unit, 0),
 			}
 
 			return data_table
@@ -1821,7 +1829,7 @@ go_type_table = {
 		prop_unit = function (unit, unit_name, unit_template, gameobject_functor_context)
 			local data_table = {
 				go_type = NetworkLookup.go_types.prop_unit,
-				husk_unit = NetworkLookup.husks[unit_name]
+				husk_unit = NetworkLookup.husks[unit_name],
 			}
 
 			return data_table
@@ -1831,7 +1839,7 @@ go_type_table = {
 				go_type = NetworkLookup.go_types.positioned_prop_unit,
 				husk_unit = NetworkLookup.husks[unit_name],
 				position = Unit.local_position(unit, 0),
-				rotation = Unit.local_rotation(unit, 0)
+				rotation = Unit.local_rotation(unit, 0),
 			}
 
 			return data_table
@@ -1841,7 +1849,7 @@ go_type_table = {
 				go_type = NetworkLookup.go_types.positioned_blob_unit,
 				husk_unit = NetworkLookup.husks[unit_name],
 				position = Unit.local_position(unit, 0),
-				rotation = Unit.local_rotation(unit, 0)
+				rotation = Unit.local_rotation(unit, 0),
 			}
 
 			return data_table
@@ -1853,7 +1861,7 @@ go_type_table = {
 				husk_unit = NetworkLookup.husks[unit_name],
 				position = Unit.local_position(unit, 0),
 				rotation = Unit.local_rotation(unit, 0),
-				health = health_extension:get_max_health()
+				health = health_extension:get_max_health(),
 			}
 
 			return data_table
@@ -1862,7 +1870,7 @@ go_type_table = {
 			local data_table = {
 				go_type = NetworkLookup.go_types.objective_unit,
 				husk_unit = NetworkLookup.husks[unit_name],
-				position = Unit.local_position(unit, 0)
+				position = Unit.local_position(unit, 0),
 			}
 
 			return data_table
@@ -1878,7 +1886,7 @@ go_type_table = {
 				rotation = Unit.local_rotation(unit, 0),
 				health = health_extension:get_max_health(),
 				standard_template_id = NetworkLookup.standard_templates[standard_extension.standard_template_name],
-				always_pingable = ping_extension.always_pingable
+				always_pingable = ping_extension.always_pingable,
 			}
 
 			return data_table
@@ -1888,7 +1896,7 @@ go_type_table = {
 			local data_table = {
 				go_type = NetworkLookup.go_types.overpowering_blob_unit,
 				husk_unit = NetworkLookup.husks[unit_name],
-				health = health_extension:get_max_health()
+				health = health_extension:get_max_health(),
 			}
 
 			return data_table
@@ -1900,7 +1908,7 @@ go_type_table = {
 				husk_unit = NetworkLookup.husks[unit_name],
 				position = Unit.local_position(unit, 0),
 				yaw_rot = Quaternion.yaw(Unit.local_rotation(unit, 0)),
-				uniform_scale = scale.x
+				uniform_scale = scale.x,
 			}
 
 			return data_table
@@ -1910,7 +1918,7 @@ go_type_table = {
 				go_type = NetworkLookup.go_types.position_synched_dummy_unit,
 				husk_unit = NetworkLookup.husks[unit_name],
 				rotation = Unit.local_rotation(unit, 0),
-				position = Unit.local_position(unit, 0)
+				position = Unit.local_position(unit, 0),
 			}
 
 			return data_table
@@ -1948,7 +1956,7 @@ go_type_table = {
 				removal_proc_function_id = removal_proc_function_id,
 				radius = radius,
 				owner_unit_id = owner_unit_id,
-				source_unit_id = source_unit_id
+				source_unit_id = source_unit_id,
 			}
 
 			return data_table
@@ -1957,7 +1965,7 @@ go_type_table = {
 			local data_table = {
 				go_type = NetworkLookup.go_types.buff_unit,
 				husk_unit = NetworkLookup.husks[unit_name],
-				position = Unit.local_position(unit, 0)
+				position = Unit.local_position(unit, 0),
 			}
 
 			return data_table
@@ -1967,14 +1975,14 @@ go_type_table = {
 				go_type = NetworkLookup.go_types.thrown_weapon_unit,
 				husk_unit = NetworkLookup.husks[unit_name],
 				position = Unit.local_position(unit, 0),
-				rotation = Unit.local_rotation(unit, 0)
+				rotation = Unit.local_rotation(unit, 0),
 			}
 
 			return data_table
 		end,
 		interest_point_level_unit = function (unit, unit_name, unit_template, gameobject_functor_context)
 			local data_table = {
-				go_type = NetworkLookup.go_types.interest_point_level_unit
+				go_type = NetworkLookup.go_types.interest_point_level_unit,
 			}
 
 			return data_table
@@ -1984,7 +1992,7 @@ go_type_table = {
 				go_type = NetworkLookup.go_types.interest_point_unit,
 				husk_unit = NetworkLookup.husks[unit_name],
 				position = Unit.local_position(unit, 0),
-				rotation = Unit.local_rotation(unit, 0)
+				rotation = Unit.local_rotation(unit, 0),
 			}
 
 			return data_table
@@ -1993,7 +2001,7 @@ go_type_table = {
 			local game_object_extension = ScriptUnit.extension(unit, "game_object_system")
 			local data_table = {
 				go_type = NetworkLookup.go_types.sync_unit,
-				sync_name = NetworkLookup.sync_names[game_object_extension.sync_name]
+				sync_name = NetworkLookup.sync_names[game_object_extension.sync_name],
 			}
 
 			return data_table
@@ -2006,7 +2014,7 @@ go_type_table = {
 				position = Unit.local_position(unit, 0),
 				rotation = Unit.local_rotation(unit, 0),
 				start_network_time = rotating_hazard_extension._start_t,
-				state = rotating_hazard_extension._state
+				state = rotating_hazard_extension._state,
 			}
 
 			return data_table
@@ -2017,11 +2025,11 @@ go_type_table = {
 			local data_table = {
 				go_type = NetworkLookup.go_types.dialogue_node,
 				husk_unit = NetworkLookup.husks[unit_name],
-				dialogue_profile = NetworkLookup.dialogue_profiles[dialogue_profile]
+				dialogue_profile = NetworkLookup.dialogue_profiles[dialogue_profile],
 			}
 
 			return data_table
-		end
+		end,
 	},
 	extractors = {
 		player_unit = function (game_session, go_id, owner_id, unit, gameobject_functor_context)
@@ -2087,104 +2095,104 @@ go_type_table = {
 					id = go_id,
 					game = game_session,
 					player = player,
-					has_moved_from_start_position = has_moved_from_start_position
+					has_moved_from_start_position = has_moved_from_start_position,
 				},
 				health_system = {
 					player = player,
 					game_object_id = go_id,
 					profile_index = profile_id,
-					career_index = career_id
+					career_index = career_id,
 				},
 				hit_reaction_system = {
+					hit_reaction_template = "player",
 					is_husk = true,
-					hit_reaction_template = "player"
 				},
 				death_system = {
 					death_reaction_template = "player",
-					is_husk = true
+					is_husk = true,
 				},
 				aim_system = {
-					template = "player",
 					is_husk = true,
-					go_id = go_id
+					template = "player",
+					go_id = go_id,
 				},
 				status_system = {
 					wounds = player_wounds,
 					profile_id = profile_id,
-					player = player
+					player = player,
 				},
 				inventory_system = {
 					id = go_id,
 					game = game_session,
-					player = player
+					player = player,
 				},
 				attachment_system = {
 					profile = profile,
-					player = player
+					player = player,
 				},
 				cosmetic_system = {
 					profile = profile,
 					skin_name = skin_name,
 					frame_name = frame_name,
-					player = player
+					player = player,
 				},
 				dialogue_context_system = {
-					profile = profile
+					profile = profile,
 				},
 				dialogue_system = {
-					wwise_career_switch_group = "player_career",
 					faction = "player",
+					wwise_career_switch_group = "player_career",
 					wwise_voice_switch_group = "character",
 					profile = profile,
 					wwise_voice_switch_value = profile.character_vo,
-					wwise_career_switch_value = career_name
+					wwise_career_switch_value = career_name,
 				},
 				whereabouts_system = {
-					player = player
+					player = player,
 				},
 				buff_system = {
 					is_husk = true,
-					initial_buff_names = initial_buff_names
+					initial_buff_names = initial_buff_names,
 				},
 				statistics_system = {
 					template = "player",
-					statistics_id = player:stats_id()
+					statistics_id = player:stats_id(),
 				},
 				ai_slot_system = {
-					profile_index = profile_id
+					profile_index = profile_id,
 				},
 				talent_system = {
 					is_husk = true,
 					player = player,
-					profile_index = profile_id
+					profile_index = profile_id,
 				},
 				career_system = {
 					player = player,
 					profile_index = profile_id,
 					career_index = career_id,
-					initial_ability_percentage = initial_ability_percentage
+					initial_ability_percentage = initial_ability_percentage,
 				},
 				overcharge_system = {
 					overcharge_max_value = overcharge_max_value,
-					overcharge_data = overcharge_data
+					overcharge_data = overcharge_data,
 				},
 				energy_system = {
 					energy_max_value = energy_max_value,
-					energy_data = energy_data
+					energy_data = energy_data,
 				},
 				aggro_system = {
-					side = side
+					side = side,
 				},
 				proximity_system = {
 					profile = profile,
-					side = side
+					side = side,
 				},
 				target_override_system = {
-					side = side
+					side = side,
 				},
 				ai_commander_system = {
-					player = player
-				}
+					player = player,
+				},
 			}
 			local unit_template_name = profile.unit_template_name or "player_unit_3rd"
 
@@ -2242,102 +2250,102 @@ go_type_table = {
 					id = go_id,
 					game = game_session,
 					player = player,
-					has_moved_from_start_position = has_moved_from_start_position
+					has_moved_from_start_position = has_moved_from_start_position,
 				},
 				health_system = {
 					player = player,
 					game_object_id = go_id,
 					profile_index = profile_id,
-					career_index = career_id
+					career_index = career_id,
 				},
 				death_system = {
 					death_reaction_template = "player",
-					is_husk = true
+					is_husk = true,
 				},
 				inventory_system = {
 					id = go_id,
 					game = game_session,
-					player = player
+					player = player,
 				},
 				hit_reaction_system = {
+					hit_reaction_template = "player",
 					is_husk = true,
-					hit_reaction_template = "player"
 				},
 				dialogue_context_system = {
-					profile = profile
+					profile = profile,
 				},
 				aim_system = {
-					template = "player",
 					is_husk = true,
-					go_id = go_id
+					template = "player",
+					go_id = go_id,
 				},
 				status_system = {
 					wounds = player_wounds,
 					profile_id = profile_id,
-					player = player
+					player = player,
 				},
 				dialogue_system = {
-					wwise_career_switch_group = "player_career",
 					faction = "player",
+					wwise_career_switch_group = "player_career",
 					wwise_voice_switch_group = "character",
 					profile = profile,
 					wwise_voice_switch_value = profile.character_vo,
-					wwise_career_switch_value = career_name
+					wwise_career_switch_value = career_name,
 				},
 				whereabouts_system = {
-					player = player
+					player = player,
 				},
 				attachment_system = {
-					profile = profile
+					profile = profile,
 				},
 				cosmetic_system = {
 					profile = profile,
 					skin_name = skin_name,
 					frame_name = frame_name,
-					player = player
+					player = player,
 				},
 				buff_system = {
-					is_husk = true
+					is_husk = true,
 				},
 				statistics_system = {
 					template = "player",
-					statistics_id = player:stats_id()
+					statistics_id = player:stats_id(),
 				},
 				ai_slot_system = {
-					profile_index = profile_id
+					profile_index = profile_id,
 				},
 				talent_system = {
 					is_husk = true,
 					player = player,
-					profile_index = profile_id
+					profile_index = profile_id,
 				},
 				career_system = {
 					player = player,
 					profile_index = profile_id,
 					career_index = career_id,
-					initial_ability_percentage = initial_ability_percentage
+					initial_ability_percentage = initial_ability_percentage,
 				},
 				overcharge_system = {
 					overcharge_max_value = overcharge_max_value,
-					overcharge_data = overcharge_data
+					overcharge_data = overcharge_data,
 				},
 				energy_system = {
 					energy_max_value = energy_max_value,
-					energy_data = energy_data
+					energy_data = energy_data,
 				},
 				aggro_system = {
-					side = side
+					side = side,
 				},
 				proximity_system = {
 					profile = profile,
-					side = side
+					side = side,
 				},
 				target_override_system = {
-					side = side
+					side = side,
 				},
 				ai_commander_system = {
-					player = player
-				}
+					player = player,
+				},
 			}
 			local unit_template_name = "player_bot_unit"
 
@@ -2350,36 +2358,36 @@ go_type_table = {
 				ai_system = {
 					go_id = game_object_id,
 					game = game_session,
-					side_id = side_id
+					side_id = side_id,
 				},
 				locomotion_system = {
 					go_id = game_object_id,
 					breed = breed,
-					game = game_session
+					game = game_session,
 				},
 				health_system = {
-					health = health
+					health = health,
 				},
 				death_system = {
 					is_husk = true,
 					death_reaction_template = breed.death_reaction,
-					disable_second_hit_ragdoll = breed.disable_second_hit_ragdoll
+					disable_second_hit_ragdoll = breed.disable_second_hit_ragdoll,
 				},
 				hit_reaction_system = {
 					is_husk = true,
 					hit_reaction_template = breed.hit_reaction,
-					hit_effect_template = breed.hit_effect_template
+					hit_effect_template = breed.hit_effect_template,
 				},
 				dialogue_system = {
 					faction = "enemy",
-					breed_name = breed_name
+					breed_name = breed_name,
 				},
 				proximity_system = {
-					breed = breed
+					breed = breed,
 				},
 				buff_system = {
-					breed = breed
-				}
+					breed = breed,
+				},
 			}
 			local unit_template_name = breed.unit_template
 
@@ -2399,43 +2407,43 @@ go_type_table = {
 				ai_system = {
 					go_id = game_object_id,
 					game = game_session,
-					side_id = side_id
+					side_id = side_id,
 				},
 				health_system = {
 					damage = 0,
-					health = health
+					health = health,
 				},
 				death_system = {
 					is_husk = true,
 					death_reaction_template = breed.death_reaction,
-					disable_second_hit_ragdoll = breed.disable_second_hit_ragdoll
+					disable_second_hit_ragdoll = breed.disable_second_hit_ragdoll,
 				},
 				hit_reaction_system = {
 					is_husk = true,
 					hit_reaction_template = breed.hit_reaction,
-					hit_effect_template = breed.hit_effect_template
+					hit_effect_template = breed.hit_effect_template,
 				},
 				dialogue_system = {
 					faction = "enemy",
-					breed_name = breed_name
+					breed_name = breed_name,
 				},
 				proximity_system = {
-					breed = breed
+					breed = breed,
 				},
 				buff_system = {
-					breed = breed
+					breed = breed,
 				},
 				projectile_locomotion_system = {
 					network_position = network_position,
 					network_rotation = network_rotation,
 					network_velocity = network_velocity,
-					network_angular_velocity = network_angular_velocity
+					network_angular_velocity = network_angular_velocity,
 				},
 				pickup_system = {
 					pickup_name = NetworkLookup.pickup_names[pickup_name],
 					has_physics = has_physics,
-					spawn_type = NetworkLookup.pickup_spawn_types[spawn_type]
-				}
+					spawn_type = NetworkLookup.pickup_spawn_types[spawn_type],
+				},
 			}
 			local unit_template_name = "ai_unit_training_dummy_bob"
 
@@ -2449,40 +2457,40 @@ go_type_table = {
 				ai_system = {
 					go_id = game_object_id,
 					game = game_session,
-					side_id = side_id
+					side_id = side_id,
 				},
 				locomotion_system = {
 					go_id = game_object_id,
 					breed = breed,
-					game = game_session
+					game = game_session,
 				},
 				health_system = {
-					health = health
+					health = health,
 				},
 				death_system = {
 					is_husk = true,
 					death_reaction_template = breed.death_reaction,
-					disable_second_hit_ragdoll = breed.disable_second_hit_ragdoll
+					disable_second_hit_ragdoll = breed.disable_second_hit_ragdoll,
 				},
 				hit_reaction_system = {
 					is_husk = true,
 					hit_reaction_template = breed.hit_reaction,
-					hit_effect_template = breed.hit_effect_template
+					hit_effect_template = breed.hit_effect_template,
 				},
 				ai_inventory_system = {
-					inventory_configuration_name = inventory_configuration_name
+					inventory_configuration_name = inventory_configuration_name,
 				},
 				dialogue_system = {
 					faction = "enemy",
-					breed_name = breed_name
+					breed_name = breed_name,
 				},
 				animation_movement_system = {
 					is_husk = true,
-					template = breed.animation_movement_template
+					template = breed.animation_movement_template,
 				},
 				proximity_system = {
-					breed = breed
-				}
+					breed = breed,
+				},
 			}
 			local unit_template_name = breed.unit_template
 
@@ -2496,40 +2504,40 @@ go_type_table = {
 				ai_system = {
 					go_id = game_object_id,
 					game = game_session,
-					side_id = side_id
+					side_id = side_id,
 				},
 				locomotion_system = {
 					go_id = game_object_id,
 					breed = breed,
-					game = game_session
+					game = game_session,
 				},
 				health_system = {
-					health = health
+					health = health,
 				},
 				death_system = {
 					is_husk = true,
 					death_reaction_template = breed.death_reaction,
-					disable_second_hit_ragdoll = breed.disable_second_hit_ragdoll
+					disable_second_hit_ragdoll = breed.disable_second_hit_ragdoll,
 				},
 				hit_reaction_system = {
 					is_husk = true,
 					hit_reaction_template = breed.hit_reaction,
-					hit_effect_template = breed.hit_effect_template
+					hit_effect_template = breed.hit_effect_template,
 				},
 				ai_inventory_system = {
-					inventory_configuration_name = inventory_configuration_name
+					inventory_configuration_name = inventory_configuration_name,
 				},
 				dialogue_system = {
 					faction = "enemy",
-					breed_name = breed_name
+					breed_name = breed_name,
 				},
 				animation_movement_system = {
 					is_husk = true,
-					template = breed.animation_movement_template
+					template = breed.animation_movement_template,
 				},
 				proximity_system = {
-					breed = breed
-				}
+					breed = breed,
+				},
 			}
 			local unit_template_name = breed.unit_template
 
@@ -2542,36 +2550,36 @@ go_type_table = {
 				ai_system = {
 					go_id = game_object_id,
 					game = game_session,
-					side_id = side_id
+					side_id = side_id,
 				},
 				locomotion_system = {
 					go_id = game_object_id,
 					breed = breed,
-					game = game_session
+					game = game_session,
 				},
 				health_system = {
-					health = health
+					health = health,
 				},
 				death_system = {
 					is_husk = true,
 					death_reaction_template = breed.death_reaction,
-					disable_second_hit_ragdoll = breed.disable_second_hit_ragdoll
+					disable_second_hit_ragdoll = breed.disable_second_hit_ragdoll,
 				},
 				hit_reaction_system = {
 					is_husk = true,
 					hit_reaction_template = breed.hit_reaction,
-					hit_effect_template = breed.hit_effect_template
+					hit_effect_template = breed.hit_effect_template,
 				},
 				dialogue_system = {
 					faction = "enemy",
-					breed_name = breed_name
+					breed_name = breed_name,
 				},
 				proximity_system = {
-					breed = breed
+					breed = breed,
 				},
 				buff_system = {
-					breed = breed
-				}
+					breed = breed,
+				},
 			}
 			local unit_template_name = breed.unit_template
 
@@ -2586,31 +2594,31 @@ go_type_table = {
 			local extension_init_data = {
 				ai_supplementary_system = {
 					portal_unit = portal_unit,
-					tentacle_template_name = tentacle_template_name
+					tentacle_template_name = tentacle_template_name,
 				},
 				ai_system = {
 					go_id = game_object_id,
 					game = game_session,
-					side_id = side_id
+					side_id = side_id,
 				},
 				death_system = {
 					is_husk = true,
 					death_reaction_template = breed.death_reaction,
-					disable_second_hit_ragdoll = breed.disable_second_hit_ragdoll
+					disable_second_hit_ragdoll = breed.disable_second_hit_ragdoll,
 				},
 				dialogue_system = {
 					faction = "enemy",
-					breed_name = breed_name
+					breed_name = breed_name,
 				},
 				health_system = {
-					health = health
+					health = health,
 				},
 				proximity_system = {
-					breed = breed
+					breed = breed,
 				},
 				buff_system = {
-					breed = breed
-				}
+					breed = breed,
+				},
 			}
 			local unit_template_name = breed.unit_template
 
@@ -2630,19 +2638,19 @@ go_type_table = {
 				ai_system = {
 					go_id = game_object_id,
 					game = game_session,
-					side_id = side_id
+					side_id = side_id,
 				},
 				locomotion_system = {
 					go_id = game_object_id,
 					breed = breed,
-					game = game_session
+					game = game_session,
 				},
 				ai_supplementary_system = {
 					vortex_template_name = vortex_template_name,
 					inner_decal_unit = inner_decal_unit,
 					outer_decal_unit = outer_decal_unit,
-					owner_unit = owner_unit
-				}
+					owner_unit = owner_unit,
+				},
 			}
 			local unit_template_name = breed.unit_template
 
@@ -2654,8 +2662,8 @@ go_type_table = {
 				ai_system = {
 					go_id = game_object_id,
 					game = game_session,
-					side_id = side_id
-				}
+					side_id = side_id,
+				},
 			}
 			local unit_template_name = breed.unit_template
 
@@ -2666,12 +2674,12 @@ go_type_table = {
 			local health = GameSession.game_object_field(game_session, game_object_id, "health")
 			local extension_init_data = {
 				health_system = {
-					health = health
+					health = health,
 				},
 				death_system = {
 					death_reaction_template = "chaos_tentacle_portal",
-					is_husk = true
-				}
+					is_husk = true,
+				},
 			}
 
 			return unit_template_name, extension_init_data
@@ -2684,47 +2692,47 @@ go_type_table = {
 				ai_system = {
 					go_id = game_object_id,
 					game = game_session,
-					side_id = side_id
+					side_id = side_id,
 				},
 				locomotion_system = {
 					go_id = game_object_id,
 					breed = breed,
-					game = game_session
+					game = game_session,
 				},
 				health_system = {
-					health = health
+					health = health,
 				},
 				death_system = {
 					is_husk = true,
 					death_reaction_template = breed.death_reaction,
-					disable_second_hit_ragdoll = breed.disable_second_hit_ragdoll
+					disable_second_hit_ragdoll = breed.disable_second_hit_ragdoll,
 				},
 				hit_reaction_system = {
 					is_husk = true,
 					hit_reaction_template = breed.hit_reaction,
-					hit_effect_template = breed.hit_effect_template
+					hit_effect_template = breed.hit_effect_template,
 				},
 				ai_inventory_system = {
-					inventory_configuration_name = inventory_configuration_name
+					inventory_configuration_name = inventory_configuration_name,
 				},
 				aim_system = {
 					is_husk = true,
-					template = breed.aim_template
+					template = breed.aim_template,
 				},
 				dialogue_system = {
 					faction = "enemy",
-					breed_name = breed_name
+					breed_name = breed_name,
 				},
 				proximity_system = {
-					breed = breed
+					breed = breed,
 				},
 				buff_system = {
-					breed = breed
+					breed = breed,
 				},
 				animation_movement_system = {
 					is_husk = true,
-					template = breed.animation_movement_template
-				}
+					template = breed.animation_movement_template,
+				},
 			}
 			local unit_template_name = breed.unit_template
 
@@ -2739,46 +2747,46 @@ go_type_table = {
 				ai_system = {
 					go_id = game_object_id,
 					game = game_session,
-					side_id = side_id
+					side_id = side_id,
 				},
 				locomotion_system = {
 					go_id = game_object_id,
 					breed = breed,
-					game = game_session
+					game = game_session,
 				},
 				health_system = {
-					health = health
+					health = health,
 				},
 				death_system = {
 					is_husk = true,
 					death_reaction_template = breed.death_reaction,
-					disable_second_hit_ragdoll = breed.disable_second_hit_ragdoll
+					disable_second_hit_ragdoll = breed.disable_second_hit_ragdoll,
 				},
 				hit_reaction_system = {
 					is_husk = true,
 					hit_reaction_template = breed.hit_reaction,
-					hit_effect_template = breed.hit_effect_template
+					hit_effect_template = breed.hit_effect_template,
 				},
 				ai_inventory_system = {
-					inventory_configuration_name = inventory_configuration_name
+					inventory_configuration_name = inventory_configuration_name,
 				},
 				dialogue_system = {
 					faction = "enemy",
-					breed_name = breed_name
+					breed_name = breed_name,
 				},
 				ai_shield_system = {
-					is_blocking = is_blocking
+					is_blocking = is_blocking,
 				},
 				aim_system = {
 					is_husk = true,
-					template = breed.aim_template
+					template = breed.aim_template,
 				},
 				proximity_system = {
-					breed = breed
+					breed = breed,
 				},
 				buff_system = {
-					breed = breed
-				}
+					breed = breed,
+				},
 			}
 			local unit_template_name = breed.unit_template
 
@@ -2794,42 +2802,42 @@ go_type_table = {
 				ai_system = {
 					go_id = game_object_id,
 					game = game_session,
-					side_id = side_id
+					side_id = side_id,
 				},
 				locomotion_system = {
 					go_id = game_object_id,
 					breed = breed,
-					game = game_session
+					game = game_session,
 				},
 				health_system = {
-					health = health
+					health = health,
 				},
 				death_system = {
 					is_husk = true,
 					death_reaction_template = breed.death_reaction,
-					disable_second_hit_ragdoll = breed.disable_second_hit_ragdoll
+					disable_second_hit_ragdoll = breed.disable_second_hit_ragdoll,
 				},
 				hit_reaction_system = {
 					is_husk = true,
 					hit_reaction_template = breed.hit_reaction,
-					hit_effect_template = breed.hit_effect_template
+					hit_effect_template = breed.hit_effect_template,
 				},
 				ai_inventory_system = {
-					inventory_configuration_name = inventory_configuration_name
+					inventory_configuration_name = inventory_configuration_name,
 				},
 				dialogue_system = {
 					faction = "enemy",
-					breed_name = breed_name
+					breed_name = breed_name,
 				},
 				ai_shield_system = {
-					is_blocking = is_blocking
+					is_blocking = is_blocking,
 				},
 				proximity_system = {
-					breed = breed
+					breed = breed,
 				},
 				buff_system = {
-					breed = breed
-				}
+					breed = breed,
+				},
 			}
 			local unit_template_name = breed.unit_template
 
@@ -2844,47 +2852,47 @@ go_type_table = {
 				ai_system = {
 					go_id = game_object_id,
 					game = game_session,
-					side_id = side_id
+					side_id = side_id,
 				},
 				locomotion_system = {
 					go_id = game_object_id,
 					breed = breed,
-					game = game_session
+					game = game_session,
 				},
 				health_system = {
-					health = health
+					health = health,
 				},
 				death_system = {
 					is_husk = true,
 					death_reaction_template = breed.death_reaction,
-					disable_second_hit_ragdoll = breed.disable_second_hit_ragdoll
+					disable_second_hit_ragdoll = breed.disable_second_hit_ragdoll,
 				},
 				hit_reaction_system = {
 					is_husk = true,
 					hit_reaction_template = breed.hit_reaction,
-					hit_effect_template = breed.hit_effect_template
+					hit_effect_template = breed.hit_effect_template,
 				},
 				ai_inventory_system = {
-					inventory_configuration_name = inventory_configuration_name
+					inventory_configuration_name = inventory_configuration_name,
 				},
 				dialogue_system = {
 					faction = "enemy",
-					breed_name = breed_name
+					breed_name = breed_name,
 				},
 				aim_system = {
 					is_husk = true,
-					template = breed.aim_template
+					template = breed.aim_template,
 				},
 				animation_movement_system = {
 					is_husk = true,
-					template = breed.animation_movement_template
+					template = breed.animation_movement_template,
 				},
 				proximity_system = {
-					breed = breed
+					breed = breed,
 				},
 				buff_system = {
-					breed = breed
-				}
+					breed = breed,
+				},
 			}
 			local unit_template_name = breed.unit_template
 
@@ -2904,43 +2912,43 @@ go_type_table = {
 				ai_system = {
 					go_id = go_id,
 					game = game_session,
-					side_id = side_id
+					side_id = side_id,
 				},
 				locomotion_system = {
 					go_id = go_id,
 					breed = breed,
-					game = game_session
+					game = game_session,
 				},
 				health_system = {
-					health = health
+					health = health,
 				},
 				death_system = {
 					is_husk = true,
 					death_reaction_template = breed.death_reaction,
-					disable_second_hit_ragdoll = breed.disable_second_hit_ragdoll
+					disable_second_hit_ragdoll = breed.disable_second_hit_ragdoll,
 				},
 				hit_reaction_system = {
 					is_husk = true,
 					hit_reaction_template = breed.hit_reaction,
-					hit_effect_template = breed.hit_effect_template
+					hit_effect_template = breed.hit_effect_template,
 				},
 				ai_inventory_system = {
-					inventory_configuration_name = inventory_configuration_name
+					inventory_configuration_name = inventory_configuration_name,
 				},
 				dialogue_system = {
 					faction = "enemy",
-					breed_name = breed_name
+					breed_name = breed_name,
 				},
 				aim_system = {
 					is_husk = true,
-					template = breed.aim_template
+					template = breed.aim_template,
 				},
 				proximity_system = {
-					breed = breed
+					breed = breed,
 				},
 				buff_system = {
-					breed = breed
-				}
+					breed = breed,
+				},
 			}
 			local unit_template_name = breed.unit_template
 
@@ -2954,43 +2962,43 @@ go_type_table = {
 				ai_system = {
 					go_id = game_object_id,
 					game = game_session,
-					side_id = side_id
+					side_id = side_id,
 				},
 				locomotion_system = {
 					go_id = game_object_id,
 					breed = breed,
-					game = game_session
+					game = game_session,
 				},
 				health_system = {
-					health = health
+					health = health,
 				},
 				death_system = {
 					is_husk = true,
 					death_reaction_template = breed.death_reaction,
-					disable_second_hit_ragdoll = breed.disable_second_hit_ragdoll
+					disable_second_hit_ragdoll = breed.disable_second_hit_ragdoll,
 				},
 				hit_reaction_system = {
 					is_husk = true,
 					hit_reaction_template = breed.hit_reaction,
-					hit_effect_template = breed.hit_effect_template
+					hit_effect_template = breed.hit_effect_template,
 				},
 				ai_inventory_system = {
-					inventory_configuration_name = inventory_configuration_name
+					inventory_configuration_name = inventory_configuration_name,
 				},
 				dialogue_system = {
 					faction = "enemy",
-					breed_name = breed_name
+					breed_name = breed_name,
 				},
 				aim_system = {
+					is_husk = true,
 					template = "pack_master",
-					is_husk = true
 				},
 				proximity_system = {
-					breed = breed
+					breed = breed,
 				},
 				buff_system = {
-					breed = breed
-				}
+					breed = breed,
+				},
 			}
 			local unit_template_name = breed.unit_template
 
@@ -3004,43 +3012,43 @@ go_type_table = {
 				ai_system = {
 					go_id = game_object_id,
 					game = game_session,
-					side_id = side_id
+					side_id = side_id,
 				},
 				locomotion_system = {
 					go_id = game_object_id,
 					breed = breed,
-					game = game_session
+					game = game_session,
 				},
 				health_system = {
-					health = health
+					health = health,
 				},
 				death_system = {
 					is_husk = true,
 					death_reaction_template = breed.death_reaction,
-					disable_second_hit_ragdoll = breed.disable_second_hit_ragdoll
+					disable_second_hit_ragdoll = breed.disable_second_hit_ragdoll,
 				},
 				hit_reaction_system = {
 					is_husk = true,
 					hit_reaction_template = breed.hit_reaction,
-					hit_effect_template = breed.hit_effect_template
+					hit_effect_template = breed.hit_effect_template,
 				},
 				ai_inventory_system = {
-					inventory_configuration_name = inventory_configuration_name
+					inventory_configuration_name = inventory_configuration_name,
 				},
 				dialogue_system = {
 					faction = "enemy",
-					breed_name = breed_name
+					breed_name = breed_name,
 				},
 				aim_system = {
+					is_husk = true,
 					template = "ratling_gunner",
-					is_husk = true
 				},
 				proximity_system = {
-					breed = breed
+					breed = breed,
 				},
 				buff_system = {
-					breed = breed
-				}
+					breed = breed,
+				},
 			}
 			local unit_template_name = breed.unit_template
 
@@ -3054,42 +3062,42 @@ go_type_table = {
 				ai_system = {
 					go_id = game_object_id,
 					game = game_session,
-					side_id = side_id
+					side_id = side_id,
 				},
 				locomotion_system = {
 					go_id = game_object_id,
 					breed = breed,
-					game = game_session
+					game = game_session,
 				},
 				health_system = {
-					health = health
+					health = health,
 				},
 				death_system = {
 					is_husk = true,
-					death_reaction_template = breed.death_reaction
+					death_reaction_template = breed.death_reaction,
 				},
 				hit_reaction_system = {
 					is_husk = true,
 					hit_reaction_template = breed.hit_reaction,
-					hit_effect_template = breed.hit_effect_template
+					hit_effect_template = breed.hit_effect_template,
 				},
 				ai_inventory_system = {
-					inventory_configuration_name = inventory_configuration_name
+					inventory_configuration_name = inventory_configuration_name,
 				},
 				dialogue_system = {
 					faction = "enemy",
-					breed_name = breed_name
+					breed_name = breed_name,
 				},
 				aim_system = {
+					is_husk = true,
 					template = "ratling_gunner",
-					is_husk = true
 				},
 				proximity_system = {
-					breed = breed
+					breed = breed,
 				},
 				buff_system = {
-					breed = breed
-				}
+					breed = breed,
+				},
 			}
 			local unit_template_name = breed.unit_template
 
@@ -3103,43 +3111,43 @@ go_type_table = {
 				ai_system = {
 					go_id = game_object_id,
 					game = game_session,
-					side_id = side_id
+					side_id = side_id,
 				},
 				locomotion_system = {
 					go_id = game_object_id,
 					breed = breed,
-					game = game_session
+					game = game_session,
 				},
 				health_system = {
-					health = health
+					health = health,
 				},
 				death_system = {
 					is_husk = true,
 					death_reaction_template = breed.death_reaction,
-					disable_second_hit_ragdoll = breed.disable_second_hit_ragdoll
+					disable_second_hit_ragdoll = breed.disable_second_hit_ragdoll,
 				},
 				hit_reaction_system = {
 					is_husk = true,
 					hit_reaction_template = breed.hit_reaction,
-					hit_effect_template = breed.hit_effect_template
+					hit_effect_template = breed.hit_effect_template,
 				},
 				ai_inventory_system = {
-					inventory_configuration_name = inventory_configuration_name
+					inventory_configuration_name = inventory_configuration_name,
 				},
 				dialogue_system = {
 					faction = "enemy",
-					breed_name = breed_name
+					breed_name = breed_name,
 				},
 				aim_system = {
 					is_husk = true,
-					template = breed.aim_template
+					template = breed.aim_template,
 				},
 				proximity_system = {
-					breed = breed
+					breed = breed,
 				},
 				buff_system = {
-					breed = breed
-				}
+					breed = breed,
+				},
 			}
 			local unit_template_name = breed.unit_template
 
@@ -3153,43 +3161,43 @@ go_type_table = {
 				ai_system = {
 					go_id = game_object_id,
 					game = game_session,
-					side_id = side_id
+					side_id = side_id,
 				},
 				locomotion_system = {
 					go_id = game_object_id,
 					breed = breed,
-					game = game_session
+					game = game_session,
 				},
 				health_system = {
-					health = health
+					health = health,
 				},
 				death_system = {
 					is_husk = true,
 					death_reaction_template = breed.death_reaction,
-					disable_second_hit_ragdoll = breed.disable_second_hit_ragdoll
+					disable_second_hit_ragdoll = breed.disable_second_hit_ragdoll,
 				},
 				hit_reaction_system = {
 					is_husk = true,
 					hit_reaction_template = breed.hit_reaction,
-					hit_effect_template = breed.hit_effect_template
+					hit_effect_template = breed.hit_effect_template,
 				},
 				ai_inventory_system = {
-					inventory_configuration_name = inventory_configuration_name
+					inventory_configuration_name = inventory_configuration_name,
 				},
 				dialogue_system = {
 					faction = "enemy",
-					breed_name = breed_name
+					breed_name = breed_name,
 				},
 				aim_system = {
 					is_husk = true,
-					template = breed.aim_template
+					template = breed.aim_template,
 				},
 				proximity_system = {
-					breed = breed
+					breed = breed,
 				},
 				buff_system = {
-					breed = breed
-				}
+					breed = breed,
+				},
 			}
 			local unit_template_name = breed.unit_template
 
@@ -3227,11 +3235,11 @@ go_type_table = {
 					gravity_settings = NetworkLookup.projectile_gravity_settings[gravity_settings],
 					trajectory_template_name = NetworkLookup.projectile_templates[trajectory_template_name],
 					fast_forward_time = fast_forward_time,
-					rotation_speed = rotation_speed
+					rotation_speed = rotation_speed,
 				},
 				projectile_impact_system = {
 					item_name = item_name,
-					owner_unit = owner_unit
+					owner_unit = owner_unit,
 				},
 				projectile_system = {
 					item_name = item_name,
@@ -3241,8 +3249,8 @@ go_type_table = {
 					owner_unit = owner_unit,
 					time_initialized = time_initialized,
 					scale = scale,
-					power_level = power_level
-				}
+					power_level = power_level,
+				},
 			}
 			local action = Weapons[item_template_name].actions[action_name][sub_action_name]
 			local projectile_info = action.projectile_info
@@ -3279,11 +3287,11 @@ go_type_table = {
 					initial_position = initial_position,
 					target_unit = target_unit,
 					stopped = stopped,
-					seed = seed
+					seed = seed,
 				},
 				projectile_impact_system = {
 					item_name = item_name,
-					owner_unit = owner_unit
+					owner_unit = owner_unit,
 				},
 				projectile_system = {
 					item_name = item_name,
@@ -3295,8 +3303,8 @@ go_type_table = {
 					scale = scale,
 					power_level = power_level,
 					stopped = stopped,
-					charge_level = charge_level
-				}
+					charge_level = charge_level,
+				},
 			}
 			local action = Weapons[item_template_name].actions[action_name][sub_action_name]
 			local projectile_info = action.projectile_info
@@ -3314,8 +3322,8 @@ go_type_table = {
 					network_position = network_position,
 					network_rotation = network_rotation,
 					network_velocity = network_velocity,
-					network_angular_velocity = network_angular_velocity
-				}
+					network_angular_velocity = network_angular_velocity,
+				},
 			}
 			local unit_template_name = "prop_projectile_unit"
 
@@ -3334,13 +3342,13 @@ go_type_table = {
 					network_position = network_position,
 					network_rotation = network_rotation,
 					network_velocity = network_velocity,
-					network_angular_velocity = network_angular_velocity
+					network_angular_velocity = network_angular_velocity,
 				},
 				pickup_system = {
 					pickup_name = NetworkLookup.pickup_names[pickup_name],
 					has_physics = has_physics,
-					spawn_type = NetworkLookup.pickup_spawn_types[spawn_type]
-				}
+					spawn_type = NetworkLookup.pickup_spawn_types[spawn_type],
+				},
 			}
 			local unit_template_name = "pickup_projectile_unit"
 
@@ -3361,15 +3369,15 @@ go_type_table = {
 					network_position = network_position,
 					network_rotation = network_rotation,
 					network_velocity = network_velocity,
-					network_angular_velocity = network_angular_velocity
+					network_angular_velocity = network_angular_velocity,
 				},
 				pickup_system = {
 					pickup_name = NetworkLookup.pickup_names[pickup_name],
 					has_physics = has_physics,
 					spawn_type = NetworkLookup.pickup_spawn_types[spawn_type],
 					owner_peer_id = owner_peer_id,
-					spawn_limit = spawn_limit
-				}
+					spawn_limit = spawn_limit,
+				},
 			}
 			local unit_template_name = "limited_owned_pickup_projectile_unit"
 
@@ -3388,13 +3396,13 @@ go_type_table = {
 					network_position = network_position,
 					network_rotation = network_rotation,
 					network_velocity = network_velocity,
-					network_angular_velocity = network_angular_velocity
+					network_angular_velocity = network_angular_velocity,
 				},
 				pickup_system = {
 					pickup_name = NetworkLookup.pickup_names[pickup_name],
 					has_physics = has_physics,
-					spawn_type = NetworkLookup.pickup_spawn_types[spawn_type]
-				}
+					spawn_type = NetworkLookup.pickup_spawn_types[spawn_type],
+				},
 			}
 			local unit_template_name = "life_time_pickup_projectile_unit"
 
@@ -3413,19 +3421,19 @@ go_type_table = {
 					network_position = network_position,
 					network_rotation = network_rotation,
 					network_velocity = network_velocity,
-					network_angular_velocity = network_angular_velocity
+					network_angular_velocity = network_angular_velocity,
 				},
 				pickup_system = {
 					pickup_name = NetworkLookup.pickup_names[pickup_name],
 					has_physics = has_physics,
-					spawn_type = NetworkLookup.pickup_spawn_types[spawn_type]
+					spawn_type = NetworkLookup.pickup_spawn_types[spawn_type],
 				},
 				health_system = {
 					damage = 0,
-					health = 100
+					health = 100,
 				},
 				death_system = {},
-				hit_reaction_system = {}
+				hit_reaction_system = {},
 			}
 			local unit_template_name = "pickup_training_dummy_unit"
 
@@ -3437,8 +3445,8 @@ go_type_table = {
 			local extension_init_data = {
 				versus_objective_system = {
 					objective_name = NetworkLookup.versus_objective_names[objective_name],
-					scale = Vector3(scale, scale, scale)
-				}
+					scale = Vector3(scale, scale, scale),
+				},
 			}
 			local unit_template_name = "versus_volume_objective_unit"
 
@@ -3452,8 +3460,8 @@ go_type_table = {
 				versus_objective_system = {
 					objective_name = NetworkLookup.versus_objective_names[objective_name],
 					scale = Vector3(scale, scale, scale),
-					timer = timer
-				}
+					timer = timer,
+				},
 			}
 			local unit_template_name = "versus_capture_point_objective_unit"
 
@@ -3465,8 +3473,8 @@ go_type_table = {
 			local extension_init_data = {
 				versus_objective_system = {
 					objective_name = NetworkLookup.versus_objective_names[objective_name],
-					scale = Vector3(scale, scale, scale)
-				}
+					scale = Vector3(scale, scale, scale),
+				},
 			}
 			local unit_template_name = "versus_mission_objective_unit"
 
@@ -3480,8 +3488,8 @@ go_type_table = {
 				weave_objective_system = {
 					objective_name = NetworkLookup.weave_objective_names[objective_name],
 					timer = timer,
-					scale = Vector3(scale, scale, scale)
-				}
+					scale = Vector3(scale, scale, scale),
+				},
 			}
 			local unit_template_name = "weave_capture_point_unit"
 
@@ -3492,16 +3500,16 @@ go_type_table = {
 			local health = GameSession.game_object_field(game_session, go_id, "health")
 			local attacks_allowed = {
 				melee = GameSession.game_object_field(game_session, go_id, "allow_melee_damage"),
-				ranged = GameSession.game_object_field(game_session, go_id, "allow_ranged_damage")
+				ranged = GameSession.game_object_field(game_session, go_id, "allow_ranged_damage"),
 			}
 			local extension_init_data = {
 				weave_objective_system = {
 					objective_name = NetworkLookup.weave_objective_names[objective_name],
-					attacks_allowed = attacks_allowed
+					attacks_allowed = attacks_allowed,
 				},
 				health_system = {
-					health = health
-				}
+					health = health,
+				},
 			}
 			local unit_template_name = "weave_target_unit"
 
@@ -3515,8 +3523,8 @@ go_type_table = {
 				weave_objective_system = {
 					objective_name = NetworkLookup.weave_objective_names[objective_name],
 					num_times_to_complete = num_times_to_complete,
-					duration = duration
-				}
+					duration = duration,
+				},
 			}
 			local unit_template_name = "weave_interaction_unit"
 
@@ -3526,11 +3534,11 @@ go_type_table = {
 			local objective_name = GameSession.game_object_field(game_session, go_id, "objective_name")
 			local extension_init_data = {
 				weave_objective_system = {
-					objective_name = NetworkLookup.weave_objective_names[objective_name]
+					objective_name = NetworkLookup.weave_objective_names[objective_name],
 				},
 				objective_socket_system = {
-					use_game_object_id = true
-				}
+					use_game_object_id = true,
+				},
 			}
 			local unit_template_name = "weave_doom_wheel"
 
@@ -3542,8 +3550,8 @@ go_type_table = {
 			local extension_init_data = {
 				weave_objective_system = {
 					objective_name = NetworkLookup.weave_objective_names[objective_name],
-					amount = amount
-				}
+					amount = amount,
+				},
 			}
 			local unit_template_name = "weave_kill_enemies_unit"
 
@@ -3562,13 +3570,13 @@ go_type_table = {
 					network_position = network_position,
 					network_rotation = network_rotation,
 					network_velocity = network_velocity,
-					network_angular_velocity = network_angular_velocity
+					network_angular_velocity = network_angular_velocity,
 				},
 				pickup_system = {
 					pickup_name = NetworkLookup.pickup_names[pickup_name],
 					has_physics = has_physics,
-					spawn_type = NetworkLookup.pickup_spawn_types[spawn_type]
-				}
+					spawn_type = NetworkLookup.pickup_spawn_types[spawn_type],
+				},
 			}
 			local unit_template_name = "pickup_torch_unit"
 
@@ -3587,13 +3595,13 @@ go_type_table = {
 					network_position = network_position,
 					network_rotation = network_rotation,
 					network_velocity = network_velocity,
-					network_angular_velocity = network_angular_velocity
+					network_angular_velocity = network_angular_velocity,
 				},
 				pickup_system = {
 					pickup_name = NetworkLookup.pickup_names[pickup_name],
 					has_physics = has_physics,
-					spawn_type = NetworkLookup.pickup_spawn_types[spawn_type]
-				}
+					spawn_type = NetworkLookup.pickup_spawn_types[spawn_type],
+				},
 			}
 			local unit_template_name = "pickup_torch_unit"
 
@@ -3618,18 +3626,18 @@ go_type_table = {
 					network_position = network_position,
 					network_rotation = network_rotation,
 					network_velocity = network_velocity,
-					network_angular_velocity = network_angular_velocity
+					network_angular_velocity = network_angular_velocity,
 				},
 				pickup_system = {
 					pickup_name = NetworkLookup.pickup_names[pickup_name],
 					owner_peer_id = owner_peer_id,
 					has_physics = has_physics,
-					spawn_type = NetworkLookup.pickup_spawn_types[spawn_type]
+					spawn_type = NetworkLookup.pickup_spawn_types[spawn_type],
 				},
 				limited_item_track_system = {
 					spawner_unit = spawner_unit,
-					id = limited_item_id
-				}
+					id = limited_item_id,
+				},
 			}
 			local unit_template_name = "pickup_projectile_unit_limited"
 
@@ -3647,12 +3655,12 @@ go_type_table = {
 			local explode_time = GameSession.game_object_field(game_session, go_id, "explode_time")
 			local fuse_time = GameSession.game_object_field(game_session, go_id, "fuse_time")
 			local item_name_id = GameSession.game_object_field(game_session, go_id, "item_name")
-			local explosion_data = nil
+			local explosion_data
 
 			if explode_time ~= 0 then
 				explosion_data = {
 					explode_time = explode_time,
-					fuse_time = fuse_time
+					fuse_time = fuse_time,
 				}
 			end
 
@@ -3661,23 +3669,23 @@ go_type_table = {
 					network_position = network_position,
 					network_rotation = network_rotation,
 					network_velocity = network_velocity,
-					network_angular_velocity = network_angular_velocity
+					network_angular_velocity = network_angular_velocity,
 				},
 				pickup_system = {
 					pickup_name = NetworkLookup.pickup_names[pickup_name],
 					has_physics = has_physics,
-					spawn_type = NetworkLookup.pickup_spawn_types[spawn_type]
+					spawn_type = NetworkLookup.pickup_spawn_types[spawn_type],
 				},
 				health_system = {
 					in_hand = false,
 					item_name = NetworkLookup.item_names[item_name_id],
 					damage = damage,
-					health_data = explosion_data
+					health_data = explosion_data,
 				},
 				death_system = {
 					in_hand = false,
-					item_name = NetworkLookup.item_names[item_name_id]
-				}
+					item_name = NetworkLookup.item_names[item_name_id],
+				},
 			}
 			local unit_template_name = "explosive_pickup_projectile_unit"
 
@@ -3697,12 +3705,12 @@ go_type_table = {
 			local explode_time = GameSession.game_object_field(game_session, go_id, "explode_time")
 			local fuse_time = GameSession.game_object_field(game_session, go_id, "fuse_time")
 			local item_name_id = GameSession.game_object_field(game_session, go_id, "item_name")
-			local explosion_data = nil
+			local explosion_data
 
 			if explode_time ~= 0 then
 				explosion_data = {
 					explode_time = explode_time,
-					fuse_time = fuse_time
+					fuse_time = fuse_time,
 				}
 			end
 
@@ -3714,27 +3722,27 @@ go_type_table = {
 					network_position = network_position,
 					network_rotation = network_rotation,
 					network_velocity = network_velocity,
-					network_angular_velocity = network_angular_velocity
+					network_angular_velocity = network_angular_velocity,
 				},
 				pickup_system = {
 					pickup_name = NetworkLookup.pickup_names[pickup_name],
 					has_physics = has_physics,
-					spawn_type = NetworkLookup.pickup_spawn_types[spawn_type]
+					spawn_type = NetworkLookup.pickup_spawn_types[spawn_type],
 				},
 				health_system = {
 					in_hand = false,
 					item_name = NetworkLookup.item_names[item_name_id],
 					health_data = explosion_data,
-					damage = damage
+					damage = damage,
 				},
 				death_system = {
 					in_hand = false,
-					item_name = NetworkLookup.item_names[item_name_id]
+					item_name = NetworkLookup.item_names[item_name_id],
 				},
 				limited_item_track_system = {
 					spawner_unit = spawner_unit,
-					id = limited_item_id
-				}
+					id = limited_item_id,
+				},
 			}
 			local unit_template_name = "explosive_pickup_projectile_unit_limited"
 
@@ -3758,13 +3766,15 @@ go_type_table = {
 			local sub_action_name_id = GameSession.game_object_field(game_session, go_id, "sub_action_name")
 			local time_initialized = Managers.time:time("game")
 			local scale = GameSession.game_object_field(game_session, go_id, "scale")
+
 			scale = scale / 100
+
 			local item_template_name = NetworkLookup.item_template_names[item_template_name_id]
 			local item_name = NetworkLookup.item_names[item_name_id]
 			local action_name = NetworkLookup.actions[action_name_id]
 			local sub_action_name = NetworkLookup.sub_actions[sub_action_name_id]
 			local power_level = GameSession.game_object_field(game_session, go_id, "power_level")
-			local target_unit = nil
+			local target_unit
 
 			if target_unit_id ~= NetworkConstants.game_object_id_max then
 				target_unit = Managers.state.unit_storage:unit(target_unit_id)
@@ -3782,13 +3792,13 @@ go_type_table = {
 					target_vector = target_vector,
 					initial_position = initial_position,
 					gravity_settings = NetworkLookup.projectile_gravity_settings[gravity_settings],
-					trajectory_template_name = NetworkLookup.projectile_templates[trajectory_template_id]
+					trajectory_template_name = NetworkLookup.projectile_templates[trajectory_template_id],
 				},
 				projectile_impact_system = {
 					item_name = item_name,
 					collision_filter = NetworkLookup.collision_filters[collision_filter_id],
 					server_side_raycast = server_side_raycast,
-					owner_unit = owner_unit
+					owner_unit = owner_unit,
 				},
 				projectile_system = {
 					item_name = item_name,
@@ -3798,8 +3808,8 @@ go_type_table = {
 					owner_unit = owner_unit,
 					time_initialized = time_initialized,
 					scale = scale,
-					power_level = power_level
-				}
+					power_level = power_level,
+				},
 			}
 			local unit_template_name = "true_flight_projectile_unit"
 
@@ -3818,7 +3828,7 @@ go_type_table = {
 			local collision_filter_id = GameSession.game_object_field(game_session, go_id, "collision_filter")
 			local server_side_raycast = GameSession.game_object_field(game_session, go_id, "server_side_raycast")
 			local impact_template_name = GameSession.game_object_field(game_session, go_id, "impact_template_name")
-			local target_unit = nil
+			local target_unit
 
 			if target_unit_id ~= NetworkConstants.game_object_id_max then
 				target_unit = Managers.state.unit_storage:unit(target_unit_id)
@@ -3837,17 +3847,17 @@ go_type_table = {
 					target_vector = target_vector,
 					initial_position = initial_position,
 					gravity_settings = NetworkLookup.projectile_gravity_settings[gravity_settings],
-					trajectory_template_name = NetworkLookup.projectile_templates[trajectory_template_id]
+					trajectory_template_name = NetworkLookup.projectile_templates[trajectory_template_id],
 				},
 				projectile_impact_system = {
 					collision_filter = NetworkLookup.collision_filters[collision_filter_id],
 					server_side_raycast = server_side_raycast,
-					owner_unit = owner_unit
+					owner_unit = owner_unit,
 				},
 				projectile_system = {
 					impact_template_name = NetworkLookup.projectile_templates[impact_template_name],
-					owner_unit = owner_unit
-				}
+					owner_unit = owner_unit,
+				},
 			}
 			local unit_template_name = "ai_true_flight_projectile_unit"
 
@@ -3864,7 +3874,7 @@ go_type_table = {
 			local true_flight_template_id = GameSession.game_object_field(game_session, go_id, "true_flight_template_id")
 			local target_unit_id = GameSession.game_object_field(game_session, go_id, "target_unit_id")
 			local impact_template_name = GameSession.game_object_field(game_session, go_id, "impact_template_name")
-			local target_unit = nil
+			local target_unit
 
 			if target_unit_id ~= NetworkConstants.game_object_id_max then
 				target_unit = Managers.state.unit_storage:unit(target_unit_id)
@@ -3882,12 +3892,12 @@ go_type_table = {
 					target_vector = target_vector,
 					initial_position = initial_position,
 					gravity_settings = NetworkLookup.projectile_gravity_settings[gravity_settings],
-					trajectory_template_name = NetworkLookup.projectile_templates[trajectory_template_id]
+					trajectory_template_name = NetworkLookup.projectile_templates[trajectory_template_id],
 				},
 				projectile_system = {
 					impact_template_name = NetworkLookup.projectile_templates[impact_template_name],
-					owner_unit = owner_unit
-				}
+					owner_unit = owner_unit,
+				},
 			}
 			local unit_template_name = "ai_true_flight_projectile_unit_without_raycast"
 
@@ -3926,17 +3936,17 @@ go_type_table = {
 					gravity_settings = NetworkLookup.projectile_gravity_settings[gravity_settings],
 					target_vector = target_vector,
 					initial_position = initial_position,
-					trajectory_template_name = NetworkLookup.projectile_templates[trajectory_template_name]
+					trajectory_template_name = NetworkLookup.projectile_templates[trajectory_template_name],
 				},
 				projectile_impact_system = {
 					collision_filter = NetworkLookup.collision_filters[collision_filter_id],
 					server_side_raycast = server_side_raycast,
-					owner_unit = owner_unit
+					owner_unit = owner_unit,
 				},
 				projectile_system = {
 					impact_template_name = NetworkLookup.projectile_templates[impact_template_name],
 					owner_unit = owner_unit,
-					damage_source = NetworkLookup.damage_sources[damage_source_id]
+					damage_source = NetworkLookup.damage_sources[damage_source_id],
 				},
 				area_damage_system = {
 					aoe_dot_damage = aoe_dot_damage,
@@ -3950,8 +3960,8 @@ go_type_table = {
 					area_damage_template = NetworkLookup.area_damage_templates[area_damage_template],
 					damage_source = NetworkLookup.damage_sources[damage_source_id],
 					source_attacker_unit = source_attacker_unit,
-					owner_player = owner_player
-				}
+					owner_player = owner_player,
+				},
 			}
 			local unit_template_name = "aoe_projectile_unit"
 
@@ -3992,7 +4002,7 @@ go_type_table = {
 				hit_unit = Managers.state.network:game_object_or_level_unit(impact_hit_unit_id, true),
 				actor_index = impact_actor_index,
 				hit_normal = Vector3Box(impact_normal),
-				time = impact_time
+				time = impact_time,
 			}
 			local extension_init_data = {
 				projectile_locomotion_system = {
@@ -4002,16 +4012,16 @@ go_type_table = {
 					gravity_settings = NetworkLookup.projectile_gravity_settings[gravity_settings],
 					target_vector = target_vector,
 					initial_position = initial_position,
-					trajectory_template_name = NetworkLookup.projectile_templates[trajectory_template_name]
+					trajectory_template_name = NetworkLookup.projectile_templates[trajectory_template_name],
 				},
 				projectile_impact_system = {
 					impact_data = impact_data,
-					owner_unit = owner_unit
+					owner_unit = owner_unit,
 				},
 				projectile_system = {
 					impact_template_name = NetworkLookup.projectile_templates[impact_template_name],
 					owner_unit = owner_unit,
-					damage_source = NetworkLookup.damage_sources[damage_source_id]
+					damage_source = NetworkLookup.damage_sources[damage_source_id],
 				},
 				area_damage_system = {
 					aoe_dot_damage = aoe_dot_damage,
@@ -4025,8 +4035,8 @@ go_type_table = {
 					area_damage_template = NetworkLookup.area_damage_templates[area_damage_template],
 					damage_source = NetworkLookup.damage_sources[damage_source_id],
 					source_attacker_unit = source_attacker_unit,
-					owner_player = owner_player
-				}
+					owner_player = owner_player,
+				},
 			}
 			local unit_template_name = "aoe_projectile_unit_fixed_impact"
 
@@ -4049,8 +4059,8 @@ go_type_table = {
 					initial_position = initial_position,
 					trajectory_template_name = NetworkLookup.projectile_templates[trajectory_template_name],
 					impact_template_name = NetworkLookup.projectile_templates[impact_template_name],
-					owner_unit = Managers.state.unit_storage:unit(owner_unit)
-				}
+					owner_unit = Managers.state.unit_storage:unit(owner_unit),
+				},
 			}
 			local unit_template_name = "projectile_unit"
 
@@ -4062,8 +4072,8 @@ go_type_table = {
 			local extension_init_data = {
 				area_damage_system = {
 					damage_wave_template_name = NetworkLookup.damage_wave_templates[damage_wave_template_id],
-					source_unit = Managers.state.unit_storage:unit(source_unit)
-				}
+					source_unit = Managers.state.unit_storage:unit(source_unit),
+				},
 			}
 			local unit_template_name = "damage_wave_unit"
 
@@ -4075,8 +4085,8 @@ go_type_table = {
 			local extension_init_data = {
 				area_damage_system = {
 					damage_blob_template_name = NetworkLookup.damage_blob_templates[damage_blob_template_id],
-					source_unit = Managers.state.unit_storage:unit(source_unit)
-				}
+					source_unit = Managers.state.unit_storage:unit(source_unit),
+				},
 			}
 			local unit_template_name = "damage_blob_unit"
 
@@ -4088,8 +4098,8 @@ go_type_table = {
 			local extension_init_data = {
 				area_damage_system = {
 					liquid_template = NetworkLookup.liquid_area_damage_templates[liquid_area_damage_template],
-					source_unit = Managers.state.unit_storage:unit(source_unit)
-				}
+					source_unit = Managers.state.unit_storage:unit(source_unit),
+				},
 			}
 			local unit_template_name = "liquid_aoe_unit"
 
@@ -4099,11 +4109,11 @@ go_type_table = {
 			local unit_template_name = "lure_unit"
 			local extension_init_data = {
 				health_system = {
-					duration = 5
+					duration = 5,
 				},
 				death_system = {
-					death_reaction_template = "lure_unit"
-				}
+					death_reaction_template = "lure_unit",
+				},
 			}
 
 			return unit_template_name, extension_init_data
@@ -4122,6 +4132,7 @@ go_type_table = {
 			local explosion_template_name = GameSession.game_object_field(game_session, go_id, "explosion_template_name")
 			local owner_player_id = GameSession.game_object_field(game_session, go_id, "owner_player_id")
 			local source_attacker_unit_id = GameSession.game_object_field(game_session, go_id, "source_attacker_unit_id")
+
 			extra_dot_effect_name = NetworkLookup.effects[extra_dot_effect_name]
 
 			if extra_dot_effect_name == "n/a" then
@@ -4146,24 +4157,25 @@ go_type_table = {
 				dot_effect_name = nil
 			end
 
-			local nav_mesh_effect = nil
+			local nav_mesh_effect
 
 			if explosion_template_name then
 				local template = ExplosionTemplates[explosion_template_name]
 
 				if template then
 					local aoe_data = template.aoe
+
 					nav_mesh_effect = aoe_data.nav_mesh_effect
 				end
 			end
 
-			local owner_player = nil
+			local owner_player
 
 			if owner_player_id ~= NetworkConstants.invalid_game_object_id then
 				owner_player = Managers.player:player_from_game_object_id(owner_player_id)
 			end
 
-			local source_attacker_unit = nil
+			local source_attacker_unit
 
 			if source_attacker_unit_id ~= NetworkConstants.invalid_game_object_id then
 				source_attacker_unit = Managers.state.unit_storage:unit(source_attacker_unit_id)
@@ -4184,8 +4196,8 @@ go_type_table = {
 					area_damage_template = NetworkLookup.area_damage_templates[area_damage_template],
 					explosion_template_name = explosion_template_name,
 					owner_player = owner_player,
-					source_attacker_unit = source_attacker_unit
-				}
+					source_attacker_unit = source_attacker_unit,
+				},
 			}
 			local unit_template_name = "aoe_unit"
 
@@ -4207,6 +4219,7 @@ go_type_table = {
 			local spawn_animation_time = GameSession.game_object_field(game_session, go_id, "spawn_animation_time")
 			local despawn_animation_time = GameSession.game_object_field(game_session, go_id, "despawn_animation_time")
 			local slow_modifier = GameSession.game_object_field(game_session, go_id, "slow_modifier")
+
 			extra_dot_effect_name = NetworkLookup.effects[extra_dot_effect_name]
 
 			if extra_dot_effect_name == "n/a" then
@@ -4231,18 +4244,19 @@ go_type_table = {
 				dot_effect_name = nil
 			end
 
-			local nav_mesh_effect = nil
+			local nav_mesh_effect
 
 			if explosion_template_name then
 				local template = ExplosionTemplates[explosion_template_name]
 
 				if template then
 					local aoe_data = template.aoe
+
 					nav_mesh_effect = aoe_data.nav_mesh_effect
 				end
 			end
 
-			local owner_player = nil
+			local owner_player
 
 			if owner_player_id ~= NetworkConstants.invalid_game_object_id then
 				owner_player = Managers.player:player_from_game_object_id(owner_player_id)
@@ -4263,12 +4277,12 @@ go_type_table = {
 					area_damage_template = NetworkLookup.area_damage_templates[area_damage_template],
 					explosion_template_name = explosion_template_name,
 					owner_player = owner_player,
-					slow_modifier = slow_modifier
+					slow_modifier = slow_modifier,
 				},
 				props_system = {
 					spawn_animation_time = spawn_animation_time,
-					despawn_animation_time = despawn_animation_time
-				}
+					despawn_animation_time = despawn_animation_time,
+				},
 			}
 			local unit_template_name = "thorn_bush_unit"
 
@@ -4280,8 +4294,8 @@ go_type_table = {
 			local extension_init_data = {
 				darkness_system = {
 					glow_time = glow_time,
-					owner_unit_id = owner_unit_id
-				}
+					owner_unit_id = owner_unit_id,
+				},
 			}
 			local unit_template_name = "shadow_flare_light"
 
@@ -4293,8 +4307,8 @@ go_type_table = {
 			local extension_init_data = {
 				area_damage_system = {
 					follow_unit = Managers.state.unit_storage:unit(follow_unit),
-					explosion_template_name = NetworkLookup.explosion_templates[explosion_template_name]
-				}
+					explosion_template_name = NetworkLookup.explosion_templates[explosion_template_name],
+				},
 			}
 			local unit_template_name = "timed_explosion_unit"
 
@@ -4310,8 +4324,8 @@ go_type_table = {
 					pickup_name = NetworkLookup.pickup_names[pickup_name],
 					has_physics = has_physics,
 					spawn_type = NetworkLookup.pickup_spawn_types[spawn_type],
-					dropped_by_breed = NetworkLookup.breeds[breed_name]
-				}
+					dropped_by_breed = NetworkLookup.breeds[breed_name],
+				},
 			}
 			local unit_template_name = "pickup_unit"
 
@@ -4329,8 +4343,8 @@ go_type_table = {
 					has_physics = has_physics,
 					spawn_type = NetworkLookup.pickup_spawn_types[spawn_type],
 					owner_peer_id = owner_peer_id,
-					spawn_limit = spawn_limit
-				}
+					spawn_limit = spawn_limit,
+				},
 			}
 			local unit_template_name = "limited_owned_pickup_unit"
 
@@ -4344,8 +4358,8 @@ go_type_table = {
 				pickup_system = {
 					pickup_name = NetworkLookup.pickup_names[pickup_name],
 					has_physics = has_physics,
-					spawn_type = NetworkLookup.pickup_spawn_types[spawn_type]
-				}
+					spawn_type = NetworkLookup.pickup_spawn_types[spawn_type],
+				},
 			}
 			local unit_template_name = "life_time_pickup_unit"
 
@@ -4359,8 +4373,8 @@ go_type_table = {
 				pickup_system = {
 					pickup_name = NetworkLookup.pickup_names[pickup_name],
 					has_physics = has_physics,
-					spawn_type = NetworkLookup.pickup_spawn_types[spawn_type]
-				}
+					spawn_type = NetworkLookup.pickup_spawn_types[spawn_type],
+				},
 			}
 			local unit_template_name = "objective_pickup_unit"
 
@@ -4368,13 +4382,13 @@ go_type_table = {
 		end,
 		prop_unit = function (game_session, go_id, owner_id, unit, gameobject_functor_context)
 			local unit_template_name = "prop_unit"
-			local extension_init_data = nil
+			local extension_init_data
 
 			return unit_template_name, extension_init_data
 		end,
 		positioned_prop_unit = function (game_session, go_id, owner_id, unit, gameobject_functor_context)
 			local unit_template_name = "positioned_prop_unit"
-			local extension_init_data = nil
+			local extension_init_data
 
 			return unit_template_name, extension_init_data
 		end,
@@ -4382,21 +4396,21 @@ go_type_table = {
 			local unit_template_name = "nurgle_liquid_blob_dynamic"
 			local extension_init_data = {
 				props_system = {
-					start_size = 0.3,
 					duration = 0.5,
-					end_size = 1
+					end_size = 1,
+					start_size = 0.3,
 				},
 				death_system = {
 					death_reaction_template = "nurgle_liquid_blob",
-					shrink_and_despawn_time = 3
+					shrink_and_despawn_time = 3,
 				},
 				area_damage_system = {
-					catapult_strength = 3,
-					range = 2,
-					detonation_time = 3,
 					arm_time = 3,
-					explosion_template = "bubonic_catapult_explosion"
-				}
+					catapult_strength = 3,
+					detonation_time = 3,
+					explosion_template = "bubonic_catapult_explosion",
+					range = 2,
+				},
 			}
 
 			return unit_template_name, extension_init_data
@@ -4406,23 +4420,23 @@ go_type_table = {
 			local unit_template_name = "destructible_objective_unit"
 			local extension_init_data = {
 				health_system = {
-					health = health
+					health = health,
 				},
 				death_system = {
 					death_reaction_template = "level_object",
-					is_husk = true
+					is_husk = true,
 				},
 				hit_reaction_system = {
+					hit_reaction_template = "level_object",
 					is_husk = true,
-					hit_reaction_template = "level_object"
-				}
+				},
 			}
 
 			return unit_template_name, extension_init_data
 		end,
 		objective_unit = function (game_session, go_id, owner_id, unit, gameobject_functor_context)
 			local unit_template_name = "objective_unit"
-			local extension_init_data = nil
+			local extension_init_data
 
 			return unit_template_name, extension_init_data
 		end,
@@ -4433,18 +4447,18 @@ go_type_table = {
 			local always_pingable = GameSession.game_object_field(game_session, go_id, "always_pingable")
 			local extension_init_data = {
 				health_system = {
-					health = health
+					health = health,
 				},
 				death_system = {
 					death_reaction_template = "standard",
-					is_husk = true
+					is_husk = true,
 				},
 				ai_supplementary_system = {
-					standard_template_name = NetworkLookup.standard_templates[standard_template_name]
+					standard_template_name = NetworkLookup.standard_templates[standard_template_name],
 				},
 				ping_system = {
-					always_pingable = always_pingable
-				}
+					always_pingable = always_pingable,
+				},
 			}
 
 			return unit_template_name, extension_init_data
@@ -4454,25 +4468,25 @@ go_type_table = {
 			local unit_template_name = "overpowering_blob_unit"
 			local extension_init_data = {
 				health_system = {
-					health = health
+					health = health,
 				},
 				death_system = {
 					death_reaction_template = "lure_unit",
-					is_husk = true
-				}
+					is_husk = true,
+				},
 			}
 
 			return unit_template_name, extension_init_data
 		end,
 		network_synched_dummy_unit = function (game_session, go_id, owner_id, unit, gameobject_functor_context)
 			local unit_template_name = "network_synched_dummy_unit"
-			local extension_init_data = nil
+			local extension_init_data
 
 			return unit_template_name, extension_init_data
 		end,
 		position_synched_dummy_unit = function (game_session, go_id, owner_id, unit, gameobject_functor_context)
 			local unit_template_name = "position_synched_dummy_unit"
-			local extension_init_data = nil
+			local extension_init_data
 
 			return unit_template_name, extension_init_data
 		end,
@@ -4482,19 +4496,19 @@ go_type_table = {
 			local radius = GameSession.game_object_field(game_session, go_id, "radius")
 			local owner_unit_id = GameSession.game_object_field(game_session, go_id, "owner_unit_id")
 			local source_unit_id = GameSession.game_object_field(game_session, go_id, "source_unit_id")
-			local removal_proc_function_name = nil
+			local removal_proc_function_name
 
 			if removal_proc_function_id ~= NetworkConstants.invalid_game_object_id then
 				removal_proc_function_name = NetworkLookup.proc_functions[removal_proc_function_id]
 			end
 
-			local owner_unit = nil
+			local owner_unit
 
 			if owner_unit_id ~= NetworkConstants.invalid_game_object_id then
 				owner_unit = Managers.state.unit_storage:unit(owner_unit_id)
 			end
 
-			local source_unit = nil
+			local source_unit
 
 			if source_unit_id ~= NetworkConstants.invalid_game_object_id then
 				source_unit = Managers.state.unit_storage:unit(source_unit_id)
@@ -4506,8 +4520,8 @@ go_type_table = {
 					removal_proc_function_name = removal_proc_function_name,
 					radius = radius,
 					owner_unit = owner_unit,
-					source_unit = source_unit
-				}
+					source_unit = source_unit,
+				},
 			}
 			local unit_template_name = "buff_aoe_unit"
 
@@ -4516,8 +4530,8 @@ go_type_table = {
 		buff_unit = function (game_session, go_id, owner_id, unit, gameobject_functor_context)
 			local extension_init_data = {
 				buff_system = {
-					is_husk = true
-				}
+					is_husk = true,
+				},
 			}
 			local unit_template_name = "buff_unit"
 
@@ -4525,25 +4539,25 @@ go_type_table = {
 		end,
 		ai_unit_dummy_sorcerer = function (game_session, go_id, owner_id, unit, gameobject_functor_context)
 			local unit_template_name = "ai_unit_dummy_sorcerer"
-			local extension_init_data = nil
+			local extension_init_data
 
 			return unit_template_name, extension_init_data
 		end,
 		thrown_weapon_unit = function (game_session, go_id, owner_id, unit, gameobject_functor_context)
 			local unit_template_name = "thrown_weapon_unit"
-			local extension_init_data = nil
+			local extension_init_data
 
 			return unit_template_name, extension_init_data
 		end,
 		interest_point_level_unit = function (game_session, go_id, owner_id, unit, gameobject_functor_context)
 			local unit_template_name = "interest_point_level"
-			local extension_init_data = nil
+			local extension_init_data
 
 			return unit_template_name, extension_init_data
 		end,
 		interest_point_unit = function (game_session, go_id, owner_id, unit, gameobject_functor_context)
 			local unit_template_name = "interest_point"
-			local extension_init_data = nil
+			local extension_init_data
 
 			return unit_template_name, extension_init_data
 		end,
@@ -4557,8 +4571,8 @@ go_type_table = {
 			local extension_init_data = {
 				props_system = {
 					start_network_time = start_network_time,
-					state = state
-				}
+					state = state,
+				},
 			}
 
 			return unit_template_name, extension_init_data
@@ -4567,16 +4581,16 @@ go_type_table = {
 			local dialogue_profile_id = GameSession.game_object_field(game_session, go_id, "dialogue_profile")
 			local extension_init_data = {
 				dialogue_system = {
-					dialogue_profile = NetworkLookup.dialogue_profiles[dialogue_profile_id]
-				}
+					dialogue_profile = NetworkLookup.dialogue_profiles[dialogue_profile_id],
+				},
 			}
 			local unit_template_name = "dialogue_node"
 
 			return unit_template_name, extension_init_data
-		end
+		end,
 	},
 	unit_from_gameobject_creator_func = function (unit_spawner, game_session, go_id, go_template)
-		local unit = nil
+		local unit
 		local is_level_unit = go_template.is_level_unit
 
 		if is_level_unit then
@@ -4586,10 +4600,11 @@ go_type_table = {
 
 			local level_name = NetworkLookup.levels[GameSession.game_object_field(game_session, go_id, "level_name_id")]
 			local level = GLOBAL.current_levels[level_name]
+
 			unit = Level.unit_by_index(level, unit_index)
 		else
 			local husk_unit = NetworkLookup.husks[GameSession.game_object_field(game_session, go_id, "husk_unit")]
-			local position, rotation = nil
+			local position, rotation
 
 			if go_template.syncs_position then
 				position = GameSession.game_object_field(game_session, go_id, "position")
@@ -4600,12 +4615,14 @@ go_type_table = {
 			elseif go_template.syncs_yaw then
 				local new_yaw = GameSession.game_object_field(game_session, go_id, "yaw_rot")
 				local yaw_rotation = Quaternion(Vector3.up(), new_yaw)
+
 				rotation = yaw_rotation
 			elseif go_template.syncs_pitch_yaw then
 				local new_yaw = GameSession.game_object_field(game_session, go_id, "yaw")
 				local new_pitch = GameSession.game_object_field(game_session, go_id, "pitch")
 				local yaw_rotation = Quaternion(Vector3.up(), new_yaw)
 				local pitch_rotation = Quaternion(Vector3.right(), new_pitch)
+
 				rotation = Quaternion.multiply(yaw_rotation, pitch_rotation)
 			end
 
@@ -4625,7 +4642,7 @@ go_type_table = {
 		end
 
 		return unit
-	end
+	end,
 }
 
 DLCUtils.merge("game_object_initializers", go_type_table.initializers)
@@ -4636,6 +4653,7 @@ local initializers = go_type_table.initializers
 initializers.ai_true_flight_killable_projectile_unit = function (unit, unit_name, unit_template, gameobject_functor_context)
 	local data_table = initializers.ai_true_flight_projectile_unit(unit, unit_name, unit_template, gameobject_functor_context)
 	local health_extension = ScriptUnit.has_extension(unit, "health_system")
+
 	data_table.health = health_extension:get_max_health()
 	data_table.go_type = NetworkLookup.go_types.ai_true_flight_killable_projectile_unit
 
@@ -4648,13 +4666,15 @@ extractors.ai_true_flight_killable_projectile_unit = function (game_session, go_
 	local _, extension_init_data, true_flight_template_name = extractors.ai_true_flight_projectile_unit(game_session, go_id, owner_id, unit, gameobject_functor_context)
 	local template = TrueFlightTemplates[true_flight_template_name]
 	local health = GameSession.game_object_field(game_session, go_id, "health")
+
 	extension_init_data.health_system = {
-		health = health
+		health = health,
 	}
 	extension_init_data.death_system = {
 		is_husk = true,
-		death_reaction_template = template.death_reaction_template
+		death_reaction_template = template.death_reaction_template,
 	}
+
 	local unit_template_name = "ai_true_flight_killable_projectile_unit"
 
 	return unit_template_name, extension_init_data

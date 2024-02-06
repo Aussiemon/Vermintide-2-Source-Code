@@ -1,3 +1,5 @@
+﻿-- chunkname: @foundation/scripts/util/table.lua
+
 require("foundation/scripts/util/class")
 
 table.is_empty = function (t)
@@ -138,7 +140,7 @@ end
 
 table.merge_varargs = function (args, num_args, ...)
 	local merged = {
-		unpack(args, 1, num_args)
+		unpack(args, 1, num_args),
 	}
 	local num_varargs = select("#", ...)
 
@@ -151,7 +153,7 @@ end
 
 table.pack = function (...)
 	return {
-		...
+		...,
 	}, select("#", ...)
 end
 
@@ -270,8 +272,7 @@ table.reverse = function (t)
 	local size = #t
 
 	for i = 1, math.floor(size / 2) do
-		t[size - i + 1] = t[i]
-		t[i] = t[size - i + 1]
+		t[i], t[size - i + 1] = t[size - i + 1], t[i]
 	end
 end
 
@@ -412,8 +413,7 @@ end
 local _buffer = {}
 
 table.minidump = function (t, name)
-	local b = _buffer
-	local i = 1
+	local b, i = _buffer, 1
 
 	if name then
 		b[1] = "["
@@ -440,16 +440,16 @@ end
 table.shuffle = function (source, seed)
 	if seed then
 		for ii = #source, 2, -1 do
-			local swap = nil
+			local swap
+
 			seed, swap = Math.next_random(seed, ii)
-			source[ii] = source[swap]
-			source[swap] = source[ii]
+			source[swap], source[ii] = source[ii], source[swap]
 		end
 	else
 		for ii = #source, 2, -1 do
 			local swap = Math.random(ii)
-			source[ii] = source[swap]
-			source[swap] = source[ii]
+
+			source[swap], source[ii] = source[ii], source[swap]
 		end
 	end
 
@@ -461,8 +461,7 @@ table.max = function (t)
 
 	for key, value in pairs(t) do
 		if max_value < value then
-			max_value = value
-			max_key = key
+			max_key, max_value = key, value
 		end
 	end
 
@@ -483,7 +482,7 @@ function _add_tabs(str, tabs)
 	return str
 end
 
-local _value_to_string_array, _table_tostring_array = nil
+local _value_to_string_array, _table_tostring_array
 
 function _value_to_string_array(v, depth, max_depth, skip_private)
 	if type(v) == "table" then
@@ -491,25 +490,25 @@ function _value_to_string_array(v, depth, max_depth, skip_private)
 			return _table_tostring_array(v, depth + 1, max_depth, skip_private)
 		else
 			return {
-				"(rec-limit)"
+				"(rec-limit)",
 			}
 		end
 	elseif type(v) == "string" then
 		return {
 			"\"",
 			v,
-			"\""
+			"\"",
 		}
 	else
 		return {
-			tostring(v)
+			tostring(v),
 		}
 	end
 end
 
 function _table_tostring_array(t, depth, max_depth, skip_private)
 	local str = {
-		"{\n"
+		"{\n",
 	}
 	local last_tabs = string.rep("\t", depth - 1)
 	local tabs = last_tabs .. "\t"
@@ -527,7 +526,7 @@ function _table_tostring_array(t, depth, max_depth, skip_private)
 		local is_number = type(key) == "number"
 
 		if (is_number or not skip_private or key:sub(1, 1) ~= "_") and (not is_number or key < 1 or len < key) then
-			local key_str = nil
+			local key_str
 
 			if is_number then
 				key_str = string.format("[%i]", key)
@@ -601,6 +600,7 @@ end
 
 table.keys = function (t, out)
 	out = out or {}
+
 	local n = 0
 
 	for key in pairs(t) do
@@ -613,6 +613,7 @@ end
 
 table.keys_if = function (t, out, conditional_func)
 	out = out or {}
+
 	local n = 0
 
 	for key, val in pairs(t) do
@@ -627,6 +628,7 @@ end
 
 table.values = function (t, out)
 	out = out or {}
+
 	local n = 0
 
 	for _, val in pairs(t) do
@@ -652,6 +654,7 @@ table.array_to_table = function (array, array_n, out_table)
 	for i = 1, array_n, 2 do
 		local key = array[i]
 		local value = array[i + 1]
+
 		out_table[key] = value
 	end
 end
@@ -674,15 +677,15 @@ table.add_meta_logging = function (real_table, debug_enabled, debug_name)
 	local real_table = real_table or {}
 
 	if debug_enabled then
-		local front_table = {
-			__index = function (table, key)
-				local value = rawget(real_table, key)
+		local front_table = {}
 
-				print("meta getting", debug_name, key, value)
+		front_table.__index = function (table, key)
+			local value = rawget(real_table, key)
 
-				return value
-			end
-		}
+			print("meta getting", debug_name, key, value)
+
+			return value
+		end
 
 		setmetatable(front_table, front_table)
 
@@ -699,6 +702,7 @@ end
 
 local function ripairs_iterator(t, i)
 	i = i - 1
+
 	local v = t[i]
 
 	if v then
@@ -712,21 +716,19 @@ end
 
 table.swap_delete = function (t, index)
 	local table_length = #t
+
 	t[index] = t[table_length]
 	t[table_length] = nil
 end
 
 table.array_remove_if = function (t, predicate)
-	local i = 1
-	local v = nil
+	local i, v = 1
 
 	for j = 1, #t do
-		t[j] = nil
-		v = t[j]
+		v, t[j] = t[j]
 
 		if not predicate(v) then
-			i = i + 1
-			t[i] = v
+			t[i], i = v, i + 1
 		end
 	end
 end
@@ -742,7 +744,7 @@ end
 local _enum_index_metatable = {
 	__index = function (_, k)
 		return error("Don't know `" .. tostring(k) .. "` for enum.")
-	end
+	end,
 }
 
 table.enum = function (...)
@@ -750,6 +752,7 @@ table.enum = function (...)
 
 	for i = 1, select("#", ...) do
 		local v = select(i, ...)
+
 		t[v] = v
 	end
 
@@ -761,6 +764,7 @@ table.ordered_enum = function (...)
 
 	for i = 1, select("#", ...) do
 		local v = select(i, ...)
+
 		t[v] = v
 		t[i] = v
 	end
@@ -773,6 +777,7 @@ table.enum_safe = function (...)
 
 	for i = 1, select("#", ...) do
 		local v = select(i, ...)
+
 		t[v] = v
 	end
 
@@ -823,10 +828,11 @@ table.autovivified = function (new)
 	return setmetatable({}, {
 		__index = function (self, key)
 			local val = new(key)
+
 			self[key] = val
 
 			return val
-		end
+		end,
 	})
 end
 
@@ -858,7 +864,7 @@ table.recursive_readonlytable = function (t)
 	setmetatable(t, {
 		__newindex = function (table, key, value)
 			error("Trying to modify read only table.")
-		end
+		end,
 	})
 
 	for _, value in pairs(t) do
@@ -873,6 +879,7 @@ end
 table.flat = function (t, max_depth, current_depth)
 	max_depth = max_depth or 1
 	current_depth = (current_depth or 0) + 1
+
 	local out = {}
 
 	for i = 1, #t do
@@ -908,7 +915,7 @@ table.make_strict = function (tab, interface, interface_name)
 			end
 
 			return rawset(t, k, v)
-		end
+		end,
 	})
 end
 
@@ -957,18 +964,21 @@ local function _qs_partition(arr, low, high, f)
 	local i = low - 1
 
 	for j = low, high - 1 do
-		local less = nil
-		less = f and f(arr[j], pivot) or arr[j] <= pivot
+		local less
+
+		if f then
+			less = f(arr[j], pivot)
+		else
+			less = pivot >= arr[j]
+		end
 
 		if less then
 			i = i + 1
-			arr[j] = arr[i]
-			arr[i] = arr[j]
+			arr[i], arr[j] = arr[j], arr[i]
 		end
 	end
 
-	arr[high] = arr[i + 1]
-	arr[i + 1] = arr[high]
+	arr[i + 1], arr[high] = arr[high], arr[i + 1]
 
 	return i + 1
 end
@@ -989,26 +999,20 @@ end
 table.array_average = function (t, max_num, next_val)
 	if next_val then
 		local idx = math.index_wrapper((t.index or 0) + 1, max_num)
+
 		t[idx] = next_val
 		t.index = idx
 	end
 
 	local num_elements = #t
-	local sum = 0
-	local min = 0
-	local max = 0
+	local sum, min, max = 0, 0, 0
 
 	for i = 1, num_elements do
 		local d = t[i]
+
 		sum = sum + d
-
-		if d < min then
-			min = d or min
-		end
-
-		if max < d then
-			max = d or max
-		end
+		min = d < min and d or min
+		max = max < d and d or max
 	end
 
 	return sum / num_elements, min, max
@@ -1016,7 +1020,7 @@ end
 
 table.enum_lookup = function (...)
 	local arr = {
-		...
+		...,
 	}
 	local lookup = table.mirror_array(arr)
 	local enum = table.ordered_enum(unpack(lookup))
@@ -1025,7 +1029,9 @@ table.enum_lookup = function (...)
 end
 
 table.insert_unique = function (t, value, index)
-	local _ = table.find(t, value) or index and table.insert(t, index, value) or table.insert(t, value)
+	if not table.find(t, value) and (not index or not table.insert(t, index, value)) then
+		local _ = table.insert(t, value)
+	end
 end
 
 table.remove_array_value = function (t, value)

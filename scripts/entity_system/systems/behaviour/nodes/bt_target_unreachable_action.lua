@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_target_unreachable_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTTargetUnreachableAction = class(BTTargetUnreachableAction, BTNode)
@@ -10,6 +12,7 @@ BTTargetUnreachableAction.name = "BTTargetUnreachableAction"
 
 BTTargetUnreachableAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
+
 	blackboard.action = action
 	blackboard.unreachable_timer = blackboard.chasing_timer or 0
 end
@@ -31,10 +34,10 @@ BTTargetUnreachableAction.run = function (self, unit, blackboard, t, dt)
 
 	local target_position = POSITION_LOOKUP[target_unit]
 	local distance_target_sq = Vector3.distance_squared(target_position, position)
-	local closest_position = nil
+	local closest_position
 	local best_score = math.huge
 	local reach_distance_squared = blackboard.breed.reach_distance^2
-	local position_list, target_on_mesh = nil
+	local position_list, target_on_mesh
 	local whereabouts_extension = ScriptUnit.has_extension(target_unit, "whereabouts_system")
 
 	if whereabouts_extension then
@@ -49,10 +52,11 @@ BTTargetUnreachableAction.run = function (self, unit, blackboard, t, dt)
 				score = distance_enemy_and_target_sq
 			else
 				local distance_point_sq = Vector3.distance_squared(test_position, position)
+
 				score = score + distance_point_sq + distance_target_sq
 			end
 
-			if best_score > score then
+			if score < best_score then
 				closest_position = test_position
 				best_score = score
 			end
@@ -63,6 +67,7 @@ BTTargetUnreachableAction.run = function (self, unit, blackboard, t, dt)
 		if distance_target_sq < 1 then
 			local to_target = Vector3.normalize(position - target_position)
 			local test_pos = position + to_target * 1.5
+
 			closest_position = ConflictUtils.find_center_tri(blackboard.nav_world, test_pos, 0.7, 0.7)
 		end
 
@@ -100,6 +105,7 @@ BTTargetUnreachableAction.move_closer = function (self, unit, blackboard, locomo
 		print("GO TO UNREACHABLE MOVING, DIST_SQ=", distance_sq, unit)
 
 		blackboard.move_state = "moving"
+
 		local action = blackboard.action
 		local start_anim, anim_driven = LocomotionUtils.get_start_anim(unit, blackboard, action.start_anims)
 

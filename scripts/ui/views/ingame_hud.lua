@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/ingame_hud.lua
+
 require("foundation/scripts/util/local_require")
 require("scripts/ui/hud_ui/hud_customizer")
 local_require("scripts/ui/hud_ui/component_list_definitions/hud_component_list_adventure")
@@ -19,6 +21,7 @@ end
 IngameHud._setup_components = function (self)
 	self._currently_visible_components = {}
 	self._current_group_name = nil
+
 	local ingame_ui_context = self._ingame_ui_context
 	local tobii_available = Managers.mechanism:mechanism_setting("tobii_available")
 	local has_tobii = rawget(_G, "Tobii")
@@ -27,6 +30,7 @@ IngameHud._setup_components = function (self)
 		ingame_ui_context.cleanui = UICleanUI.create(self._peer_id)
 		self._clean_ui = ingame_ui_context.cleanui
 		self._clean_ui.hud = self
+
 		local is_tobii_connected = Tobii.get_is_connected()
 		local clean_ui_enabled = Application.user_setting("tobii_eyetracking") and Application.user_setting("tobii_clean_ui")
 
@@ -39,6 +43,7 @@ IngameHud._setup_components = function (self)
 	local game_mode_settings = game_mode_manager:settings()
 	local hud_component_list_path = game_mode_settings.hud_component_list_path
 	local definitions = self:_setup_component_definitions(hud_component_list_path)
+
 	self._definitions = definitions
 	self._components_hud_scale_lookup = definitions.components_hud_scale_lookup
 
@@ -67,6 +72,7 @@ IngameHud._setup_component_definitions = function (self, hud_component_list_path
 
 	for _, settings in ipairs(visibility_groups) do
 		local name = settings.name
+
 		visibility_groups_lookup[name] = settings
 	end
 
@@ -102,6 +108,7 @@ IngameHud._setup_component_definitions = function (self, hud_component_list_path
 
 	for _, settings in ipairs(components) do
 		local name = settings.class_name
+
 		components_lookup[name] = settings
 
 		if settings.use_hud_scale then
@@ -128,6 +135,7 @@ IngameHud._setup_component_definitions = function (self, hud_component_list_path
 				end
 
 				local visible_components = visibility_group.visible_components
+
 				visible_components[class_name] = true
 			end
 		end
@@ -142,7 +150,7 @@ IngameHud._setup_component_definitions = function (self, hud_component_list_path
 		components_lookup = components_lookup,
 		components_hud_scale_lookup = components_hud_scale_lookup,
 		visibility_groups = visibility_groups,
-		visibility_groups_lookup = visibility_groups_lookup
+		visibility_groups_lookup = visibility_groups_lookup,
 	}
 end
 
@@ -186,9 +194,12 @@ IngameHud._add_component = function (self, component_list, components, component
 	if not validation_function or validation_function(ingame_ui_context, ingame_ui_context.is_in_inn) then
 		local class = rawget(_G, class_name)
 		local component = class:new(self, ingame_ui_context)
+
 		component.name = class_name
 		components[class_name] = component
+
 		local id = #components_array + 1
+
 		components_array[id] = component
 		components_array_id_lookup[component] = id
 	end
@@ -211,9 +222,11 @@ IngameHud._remove_component = function (self, component_list, components, compon
 	end
 
 	self._currently_visible_components[component.name] = nil
+
 	local id = components_array_id_lookup[component]
 	local last_component_id = #components_array
 	local last_component = components_array[last_component_id]
+
 	components_array[id] = last_component
 	components_array_id_lookup[last_component] = id
 
@@ -331,6 +344,7 @@ IngameHud._update_hud_scale = function (self)
 
 	if not self._scale_modified then
 		local hud_scale_multiplier = UISettings.hud_scale * 0.01
+
 		self._scale_modified = self._hud_scale_multiplier ~= hud_scale_multiplier
 		self._hud_scale_multiplier = hud_scale_multiplier
 	end
@@ -497,6 +511,7 @@ IngameHud.get_crosshair_position = function (self)
 					local viewport = ScriptWorld.viewport(world, viewport_name)
 					local camera = ScriptViewport.camera(viewport)
 					local position_in_screen = Camera.world_to_screen(camera, world_pos)
+
 					position_x = position_in_screen.x * inv_res_scale
 					position_y = position_in_screen.y * inv_res_scale
 				end

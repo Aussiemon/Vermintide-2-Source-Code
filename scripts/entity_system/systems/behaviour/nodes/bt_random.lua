@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_random.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTRandom = class(BTRandom, BTNode)
@@ -14,6 +16,7 @@ BTRandom.ready = function (self, lua_node)
 
 	for i = 1, #self._children do
 		local child = self._children[i]
+
 		probabilities[i] = child._tree_node.weight
 	end
 
@@ -22,6 +25,7 @@ end
 
 BTRandom.enter = function (self, unit, blackboard, t)
 	local child_index = LoadedDice.roll(self.prob, self.alias)
+
 	blackboard.node_data[self._identifier] = child_index
 end
 

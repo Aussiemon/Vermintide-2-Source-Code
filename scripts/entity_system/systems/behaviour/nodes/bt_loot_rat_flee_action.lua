@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_loot_rat_flee_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTLootRatFleeAction = class(BTLootRatFleeAction, BTNode)
@@ -7,6 +9,7 @@ BTLootRatFleeAction.init = function (self, ...)
 end
 
 BTLootRatFleeAction.name = "BTLootRatFleeAction"
+
 local CHECK_ESCAPED_PLAYERS_INTERVAL = 2
 local BREAK_NODE_MAX_DISTANCE_SQ = 400
 local BREAK_NODE_ASTAR_BOX_EXTENTS = 14
@@ -19,16 +22,17 @@ BTLootRatFleeAction.enter = function (self, unit, blackboard, t)
 	if not blackboard.flee_node_data then
 		local conflict_manager = Managers.state.conflict
 		local node_data = conflict_manager.main_path_info.merged_main_paths
+
 		blackboard.flee_node_data = {
 			direction = "fwd",
 			nodes = {
 				fwd = node_data.forward_list,
-				bwd = node_data.reversed_list
+				bwd = node_data.reversed_list,
 			},
 			break_nodes = {
 				fwd = node_data.forward_break_list,
-				bwd = node_data.reversed_break_list
-			}
+				bwd = node_data.reversed_break_list,
+			},
 		}
 	end
 
@@ -36,10 +40,11 @@ BTLootRatFleeAction.enter = function (self, unit, blackboard, t)
 		local astar = GwNavAStar.create()
 		local navigation_extension = blackboard.navigation_extension
 		local traverse_logic = navigation_extension:traverse_logic()
+
 		blackboard.flee_astar_data = {
 			doing_astar = false,
 			astar = astar,
-			traverse_logic = traverse_logic
+			traverse_logic = traverse_logic,
 		}
 	end
 
@@ -60,6 +65,7 @@ BTLootRatFleeAction.run = function (self, unit, blackboard, t, dt)
 		blackboard.move_state = "moving"
 		blackboard.start_anim_locked = nil
 		blackboard.movement_inited = true
+
 		local network_manager = Managers.state.network
 
 		network_manager:anim_event(unit, "move_fwd")
@@ -72,7 +78,7 @@ BTLootRatFleeAction.run = function (self, unit, blackboard, t, dt)
 		self:update_state_moving_to_level_end(unit, blackboard, t)
 	end
 
-	if blackboard.check_escaped_players_time < t then
+	if t > blackboard.check_escaped_players_time then
 		if self:has_escaped_players(unit, blackboard) then
 			self:despawn(unit, blackboard, "escaped_players")
 		end
@@ -110,7 +116,7 @@ BTLootRatFleeAction.enter_state_moving_to_level_end = function (self, unit, blac
 	local unit_position = POSITION_LOOKUP[unit]
 	local node_data = blackboard.flee_node_data
 	local nodes = node_data.nodes[node_data.direction]
-	local node_index = nil
+	local node_index
 
 	if node_data.target_node_index then
 		node_index = node_data.target_node_index
@@ -129,9 +135,10 @@ BTLootRatFleeAction.update_state_moving_to_level_end = function (self, unit, bla
 
 		if GwNavAStar.processing_finished(astar) then
 			astar_data.doing_astar = false
+
 			local node_data = blackboard.flee_node_data
 			local target_node_index = node_data.target_node_index
-			local next_node_index = nil
+			local next_node_index
 
 			if GwNavAStar.path_found(astar) and GwNavAStar.node_count(astar) > 0 then
 				next_node_index = target_node_index + 1
@@ -190,6 +197,7 @@ BTLootRatFleeAction.move_to_main_path_node = function (self, blackboard, node_in
 	local node_data = blackboard.flee_node_data
 	local nodes = node_data.nodes[node_data.direction]
 	local node = nodes[node_index]
+
 	node_data.target_node_index = node_index
 
 	blackboard.navigation_extension:move_to(node:unbox())
@@ -201,6 +209,7 @@ BTLootRatFleeAction.do_astar_to_between_main_path_nodes = function (self, blackb
 	local from_position = nodes[from_node_index]:unbox()
 	local to_position = nodes[from_node_index + 1]:unbox()
 	local astar_data = blackboard.flee_astar_data
+
 	astar_data.doing_astar = true
 
 	GwNavAStar.start_with_propagation_box(astar_data.astar, blackboard.nav_world, from_position, to_position, BREAK_NODE_ASTAR_BOX_EXTENTS, astar_data.traverse_logic)

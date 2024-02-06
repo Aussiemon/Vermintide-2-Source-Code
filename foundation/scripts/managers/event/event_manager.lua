@@ -1,3 +1,5 @@
+﻿-- chunkname: @foundation/scripts/managers/event/event_manager.lua
+
 EventManager = class(EventManager)
 
 EventManager.init = function (self)
@@ -13,7 +15,7 @@ EventManager.register = function (self, object, ...)
 		fassert(type(object) == "table" and type(object[callback_name]) == "function", "No function found with name %q on supplied object", callback_name)
 
 		self._events[event_name] = self._events[event_name] or setmetatable({}, {
-			__mode = "v"
+			__mode = "v",
 		})
 		self._events[event_name][object] = callback_name
 	end
@@ -39,18 +41,24 @@ EventManager.trigger = function (self, event_name, ...)
 			object[callback_name](object, ...)
 		end
 	end
+
+	if false then
+		-- Nothing
+	end
 end
 
 EventManager.register_referenced = function (self, reference, object, ...)
 	local referenced_events = self._referenced_events
 	local registered_events = referenced_events[reference] or {}
+
 	referenced_events[reference] = registered_events
 
 	for i = 1, select("#", ...), 2 do
 		local event_name = select(i, ...)
 		local callback_name = select(i + 1, ...)
+
 		registered_events[event_name] = registered_events[event_name] or setmetatable({}, {
-			__mode = "v"
+			__mode = "v",
 		})
 		registered_events[event_name][object] = callback_name
 	end

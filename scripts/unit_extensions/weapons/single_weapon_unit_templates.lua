@@ -1,6 +1,7 @@
-SingleWeaponUnitTemplates = {
-	templates = {}
-}
+﻿-- chunkname: @scripts/unit_extensions/weapons/single_weapon_unit_templates.lua
+
+SingleWeaponUnitTemplates = {}
+SingleWeaponUnitTemplates.templates = {}
 
 DLCUtils.require("single_weapon_templates")
 

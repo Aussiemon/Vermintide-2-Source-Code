@@ -1,19 +1,23 @@
+﻿-- chunkname: @scripts/settings/dlcs/wizards/wizards_interactions.lua
+
 local base_trail_light_urn_definition = table.clone(InteractionDefinitions.smartobject)
+
 base_trail_light_urn_definition.config = {
-	allow_rotation_update = false,
-	hud_verb = "player_interaction",
-	block_other_interactions = true,
 	activate_block = true,
-	hold = true,
-	swap_to_3p = true,
+	allow_rotation_update = false,
 	animation = "interaction_torch",
+	block_other_interactions = true,
+	hold = true,
+	hud_verb = "player_interaction",
 	rotate_toward_interactable = true,
-	show_weapons = true
+	show_weapons = true,
+	swap_to_3p = true,
 }
 InteractionDefinitions.trail_light_urn = base_trail_light_urn_definition
 
 base_trail_light_urn_definition.server.start = function (world, interactor_unit, interactable_unit, data, config, t)
 	local duration = Unit.get_data(interactable_unit, "interaction_data", "interaction_length")
+
 	data.done_time = t + duration
 	data.duration = duration
 end
@@ -24,8 +28,11 @@ base_trail_light_urn_definition.client.start = function (world, interactor_unit,
 	trail_urn_alignment_extension:on_client_start_interaction(interactor_unit, t)
 
 	data.start_time = t
+
 	local duration = Unit.get_data(interactable_unit, "interaction_data", "interaction_length")
+
 	data.duration = duration
+
 	local interactor_animation_name = Unit.get_data(interactable_unit, "interaction_data", "interactor_animation")
 	local interactor_animation_time_variable = Unit.get_data(interactable_unit, "interaction_data", "interactor_animation_time_variable")
 	local inventory_extension = ScriptUnit.extension(interactor_unit, "inventory_system")
@@ -60,7 +67,7 @@ base_trail_light_urn_definition.server.update = function (world, interactor_unit
 		return InteractionResult.FAILURE
 	end
 
-	if data.done_time < t then
+	if t > data.done_time then
 		return InteractionResult.SUCCESS
 	end
 
@@ -76,6 +83,7 @@ end
 base_trail_light_urn_definition.server.stop = function (world, interactor_unit, interactable_unit, data, config, t, result)
 	if result == InteractionResult.SUCCESS then
 		local interactable_system = ScriptUnit.extension(interactable_unit, "interactable_system")
+
 		interactable_system.num_times_successfully_completed = interactable_system.num_times_successfully_completed + 1
 
 		if Unit.get_data(interactable_unit, "interaction_data", "only_once") then

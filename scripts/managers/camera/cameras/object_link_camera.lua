@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/camera/cameras/object_link_camera.lua
+
 require("scripts/managers/camera/cameras/base_camera")
 
 ObjectLinkCamera = class(ObjectLinkCamera, BaseCamera)
@@ -16,11 +18,13 @@ ObjectLinkCamera.parse_parameters = function (self, camera_settings, parent_node
 end
 
 ObjectLinkCamera.update = function (self, dt, position, rotation, data)
-	local new_position, new_rotation = nil
+	local new_position, new_rotation
 	local root_unit = self._root_unit
 	local root_object = Unit.node(root_unit, self._object_name)
+
 	new_position = Unit.world_position(root_unit, root_object)
 	new_rotation = Unit.world_rotation(root_unit, root_object)
+
 	local curve_data = data[self._curve_data_parameter_name]
 
 	table.clear(self._curve_params)
@@ -32,6 +36,7 @@ ObjectLinkCamera.update = function (self, dt, position, rotation, data)
 
 		for _, param in ipairs(curve_data.camera_parameters) do
 			local param_value = AnimationCurves.sample(curve_data.resource, self._object_name, param, curve_data.t, curve_data.use_step_sampling)
+
 			self._curve_params[param] = param_value
 		end
 
@@ -64,5 +69,5 @@ end
 ObjectLinkCamera.vertical_fov = function (self)
 	local yfov = self._curve_params.yfov
 
-	return yfov and yfov * math.pi / 180 or ObjectLinkCamera.super.vertical_fov(self)
+	return yfov and yfov * (math.pi / 180) or ObjectLinkCamera.super.vertical_fov(self)
 end

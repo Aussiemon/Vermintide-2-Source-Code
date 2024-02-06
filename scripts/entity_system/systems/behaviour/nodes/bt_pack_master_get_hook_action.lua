@@ -1,7 +1,10 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_pack_master_get_hook_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTPackMasterGetHookAction = class(BTPackMasterGetHookAction, BTNode)
 BTPackMasterGetHookAction.name = "BTPackMasterGetHookAction"
+
 local DRAG_DESTINATIONS_N = 10
 local DESTINATION_POS_I = 1
 local DESTINATION_SCORE_I = 2
@@ -47,7 +50,7 @@ BTPackMasterGetHookAction.run = function (self, unit, blackboard, t, dt)
 	local nav_world = blackboard.nav_world
 
 	if blackboard.navigation_extension:has_reached_destination(1) then
-		if blackboard.end_time < t then
+		if t > blackboard.end_time then
 			return "done"
 		end
 
@@ -79,6 +82,7 @@ end
 BTPackMasterGetHookAction.find_hidden_cover = function (self, position, player_center_pos, blackboard)
 	blackboard.best_cover_score = -math.huge
 	blackboard.best_cover = nil
+
 	local found_cover_units = FrameTable.alloc_table()
 	local wanted_direction = Vector3.normalize(position - player_center_pos)
 	local max_rad = 19
@@ -91,6 +95,7 @@ BTPackMasterGetHookAction.find_hidden_cover = function (self, position, player_c
 	local max = math.max
 	local bp = Managers.state.conflict.level_analysis.cover_points_broadphase
 	local found_cover_units_n = Broadphase.query(bp, position, max_rad, found_cover_units)
+
 	min_rad = min_rad * min_rad
 	max_rad = max_rad * max_rad
 
@@ -112,7 +117,7 @@ BTPackMasterGetHookAction.find_hidden_cover = function (self, position, player_c
 			local direction_dot = dot(pm_to_cover_point, wanted_direction)
 			local hidden_dot = dot(Quaternion.forward(rot), -wanted_direction)
 
-			if blackboard.best_cover_score < direction_dot and hidden_dot > 0 then
+			if direction_dot > blackboard.best_cover_score and hidden_dot > 0 then
 				blackboard.best_cover_score = direction_dot
 				blackboard.best_cover = Vector3Box(pos)
 			end

@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/managers/curl/curl_manager.lua
+
 CurlManager = class(CurlManager)
+
 local curl_info_types = {
 	[0] = "info_text",
 	"info_header_in",
@@ -6,7 +9,7 @@ local curl_info_types = {
 	"info_data_in",
 	"info_data_out",
 	"info_ssl_data_in",
-	"info_ssl_data_out"
+	"info_ssl_data_out",
 }
 
 local function debug_output(type, data)
@@ -37,12 +40,13 @@ CurlManager.destroy = function (self)
 	end
 end
 
-local Request = {
-	__index = Request
-}
+local Request = {}
+
+Request.__index = Request
 
 Request.new = function ()
 	local self = setmetatable({}, Request)
+
 	self.headers = {}
 
 	return self
@@ -108,7 +112,7 @@ CurlManager.add_request = function (self, request_type, url, body, headers, user
 			easy:setopt_httpheader(headers)
 		else
 			easy:setopt_httpheader({
-				headers
+				headers,
 			})
 		end
 	end
@@ -124,9 +128,11 @@ CurlManager.add_request = function (self, request_type, url, body, headers, user
 	end
 
 	local request = Request.new()
+
 	request.cb = user_cb
 	request.userdata = userdata
 	request.url = url
+
 	local response_cb = callback(request, "OnResponse")
 	local header_cb = callback(request, "OnHeader")
 
@@ -177,6 +183,7 @@ CurlManager.upload = function (self, url, data, cb)
 	easy:setopt_readfunction(create_read_function(data))
 
 	local request = Request.new()
+
 	request.cb = cb
 
 	self._multi:add_handle(easy)

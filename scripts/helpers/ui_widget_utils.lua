@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/helpers/ui_widget_utils.lua
+
 UIWidgetUtils = UIWidgetUtils or {}
 
 UIWidgetUtils.animate_default_button = function (widget, dt)
@@ -53,6 +55,7 @@ UIWidgetUtils.animate_default_button = function (widget, dt)
 
 	if hover_glow_style then
 		local hover_alpha = 255 * combined_progress
+
 		hover_glow_style.color[1] = hover_alpha
 	end
 
@@ -61,6 +64,7 @@ UIWidgetUtils.animate_default_button = function (widget, dt)
 	if text_disabled_style then
 		local disabled_default_text_color = text_disabled_style.default_text_color
 		local disabled_text_color = text_disabled_style.text_color
+
 		disabled_text_color[2] = disabled_default_text_color[2] * 0.4
 		disabled_text_color[3] = disabled_default_text_color[3] * 0.4
 		disabled_text_color[4] = disabled_default_text_color[4] * 0.4
@@ -140,10 +144,14 @@ UIWidgetUtils.animate_default_icon_tabs = function (widget, dt)
 		local combined_in_progress = math.max(hover_easing_in_progress, select_easing_in_progress)
 		local clicked_rect_name = "clicked_rect" .. name_suffix
 		local input_alpha = 255 * input_progress
+
 		style[clicked_rect_name].color[1] = 100 * input_progress
+
 		local hover_glow_name = "hover_glow" .. name_suffix
 		local hover_alpha = 255 * combined_progress
+
 		style[hover_glow_name].color[1] = hover_alpha
+
 		local icon_name = "icon" .. name_suffix
 		local icon_style = style[icon_name]
 		local icon_color = icon_style.color
@@ -221,9 +229,11 @@ UIWidgetUtils.animate_default_checkbox_button = function (widget, dt)
 	local text_disabled_style = style[text_disabled_name]
 	local disabled_default_text_color = text_disabled_style.default_text_color
 	local disabled_text_color = text_disabled_style.text_color
+
 	disabled_text_color[2] = disabled_default_text_color[2] * 0.4
 	disabled_text_color[3] = disabled_default_text_color[3] * 0.4
 	disabled_text_color[4] = disabled_default_text_color[4] * 0.4
+
 	local text_name = "text"
 	local text_style = style[text_name]
 	local text_color = text_style.text_color
@@ -282,17 +292,23 @@ UIWidgetUtils.animate_default_checkbox_button_console = function (widget, dt)
 	local combined_in_progress = math.max(hover_easing_in_progress, select_easing_in_progress)
 	local clicked_rect_name = "clicked_rect"
 	local input_alpha = 255 * input_progress
+
 	style[clicked_rect_name].color[1] = 100 * input_progress
+
 	local hover_glow_name = "hover_glow"
 	local hover_alpha = 255 * hover_progress
+
 	style[hover_glow_name].color[1] = hover_alpha
+
 	local text_disabled_name = "text_disabled"
 	local text_disabled_style = style[text_disabled_name]
 	local disabled_default_text_color = text_disabled_style.default_text_color
 	local disabled_text_color = text_disabled_style.text_color
+
 	disabled_text_color[2] = disabled_default_text_color[2] * 0.4
 	disabled_text_color[3] = disabled_default_text_color[3] * 0.4
 	disabled_text_color[4] = disabled_default_text_color[4] * 0.4
+
 	local text_name = "text"
 	local text_style = style[text_name]
 	local text_color = text_style.text_color
@@ -355,17 +371,23 @@ UIWidgetUtils.animate_default_text_tabs = function (widget, dt)
 		local combined_in_progress = math.max(hover_easing_in_progress, select_easing_in_progress)
 		local clicked_rect_name = "clicked_rect" .. name_suffix
 		local input_alpha = 255 * input_progress
+
 		style[clicked_rect_name].color[1] = 100 * input_progress
+
 		local hover_glow_name = "hover_glow" .. name_suffix
 		local hover_alpha = 255 * combined_progress
+
 		style[hover_glow_name].color[1] = hover_alpha
+
 		local text_disabled_name = "text_disabled" .. name_suffix
 		local text_disabled_style = style[text_disabled_name]
 		local disabled_default_text_color = text_disabled_style.default_text_color
 		local disabled_text_color = text_disabled_style.text_color
+
 		disabled_text_color[2] = disabled_default_text_color[2] * 0.4
 		disabled_text_color[3] = disabled_default_text_color[3] * 0.4
 		disabled_text_color[4] = disabled_default_text_color[4] * 0.4
+
 		local text_name = "text" .. name_suffix
 		local text_style = style[text_name]
 		local text_color = text_style.text_color
@@ -424,19 +446,25 @@ UIWidgetUtils.animate_option_button = function (widget, dt)
 	local combined_out_progress = math.max(select_easing_out_progress, hover_easing_out_progress)
 	local combined_in_progress = math.max(hover_easing_in_progress, select_easing_in_progress)
 	local input_alpha = 255 * input_progress
+
 	style.button_clicked_rect.color[1] = 100 * input_progress
 	style.hover_glow.color[1] = 255 * combined_progress
+
 	local select_alpha = 255 * selection_progress
+
 	style.select_glow.color[1] = select_alpha
 	style.icon_selected.color[1] = select_alpha
 	style.skull_select_glow.color[1] = select_alpha
 	style.icon_bg_glow.color[1] = select_alpha
+
 	local text_disabled_style = style.button_text_disabled
 	local disabled_default_text_color = text_disabled_style.default_text_color
 	local disabled_text_color = text_disabled_style.text_color
+
 	disabled_text_color[2] = disabled_default_text_color[2] * 0.4
 	disabled_text_color[3] = disabled_default_text_color[3] * 0.4
 	disabled_text_color[4] = disabled_default_text_color[4] * 0.4
+
 	local button_text_style = style.button_text
 	local button_text_color = button_text_style.text_color
 	local default_text_color = button_text_style.default_text_color
@@ -445,12 +473,15 @@ UIWidgetUtils.animate_option_button = function (widget, dt)
 	Colors.lerp_color_tables(default_text_color, select_text_color, combined_progress, button_text_color)
 
 	local icon_color = style.icon.color
+
 	icon_color[2] = button_text_color[2]
 	icon_color[3] = button_text_color[3]
 	icon_color[4] = button_text_color[4]
+
 	local background_icon_style = style.background_icon
 	local background_icon_color = background_icon_style.color
 	local background_icon_default_color = background_icon_style.default_color
+
 	background_icon_color[2] = background_icon_default_color[2] + combined_progress * (255 - background_icon_default_color[2])
 	background_icon_color[3] = background_icon_default_color[3] + combined_progress * (255 - background_icon_default_color[3])
 	background_icon_color[4] = background_icon_default_color[4] + combined_progress * (255 - background_icon_default_color[4])
@@ -473,6 +504,7 @@ UIWidgetUtils.animate_start_game_console_setting_button = function (widget, dt)
 	end
 
 	local alpha = 255 * selected_progress
+
 	style.bg_effect.color[1] = alpha
 	style.icon_texture_glow.color[1] = alpha
 	content.selected_progress = selected_progress
@@ -503,6 +535,7 @@ UIWidgetUtils.animate_arrow_button = function (widget, dt)
 	end
 
 	local combined_progress = math.max(hover_progress, selection_progress)
+
 	style.texture_hover_id.color[1] = 255 * combined_progress
 	hotspot.hover_progress = hover_progress
 	hotspot.selection_progress = selection_progress
@@ -589,14 +622,17 @@ UIWidgetUtils.animate_play_button = function (widget, dt)
 	local combined_out_progress = math.max(select_easing_out_progress, hover_easing_out_progress)
 	local combined_in_progress = math.max(hover_easing_in_progress, select_easing_in_progress)
 	local hover_alpha = 255 * hover_progress
+
 	style.text.text_color[1] = 255 - hover_alpha
 	style.text_hover.text_color[1] = hover_alpha
 	style.texture_icon_id.color[1] = 255 - hover_alpha
 	style.texture_icon_hover_id.color[1] = hover_alpha
 	style.texture_text_bg_effect_id.color[1] = hover_alpha
+
 	local active_progress = is_disabled and 0 or 1
 	local active_alpha_progress = 0.5 + math.sin(Managers.time:time("ui") * 5) * 0.5
 	local active_alpha = math.max(hover_alpha, active_progress * (active_alpha_progress * 200 + 55))
+
 	style.texture_hover_id.color[1] = active_alpha
 	hotspot.hover_progress = hover_progress
 	hotspot.input_progress = input_progress
@@ -622,7 +658,7 @@ UIWidgetUtils.animate_game_option_button = function (widget, dt)
 		local on_hover_enter = hotspot.on_hover_enter
 		local is_hover = hotspot.is_hover
 		local gamepad_active = Managers.input:is_device_active("gamepad")
-		local speed = (is_hover or is_selected) and 14 or 200
+		local speed = not (not is_hover and not is_selected) and 14 or 200
 		local pulse_speed = 3
 		local hover_progress = hotspot.hover_progress or 0
 		local pulse_progress = hotspot.pulse_progress or 1
@@ -672,11 +708,13 @@ UIWidgetUtils.animate_game_option_button = function (widget, dt)
 
 		style.hover_frame.color[1] = alpha
 		style.inner_frame.color[1] = 200 * combined_progress
+
 		local icon_texture_style = style.icon_texture
 
 		if icon_texture_style then
 			local clolor_value = 200 + 55 * combined_progress
 			local icon_texture_color = icon_texture_style.color
+
 			icon_texture_color[2] = clolor_value
 			icon_texture_color[3] = clolor_value
 			icon_texture_color[4] = clolor_value
@@ -687,13 +725,16 @@ UIWidgetUtils.animate_game_option_button = function (widget, dt)
 		if icon_texture_locked_style then
 			local clolor_value = 200 + 55 * combined_progress
 			local icon_texture_color = icon_texture_locked_style.color
+
 			icon_texture_color[2] = clolor_value
 			icon_texture_color[3] = clolor_value
 			icon_texture_color[4] = clolor_value
 		end
 
 		local pulse_alpha = 255 - 255 * pulse_progress
+
 		style.pulse_frame.color[1] = pulse_alpha
+
 		local title_text_style = style.title_text
 		local text_color = title_text_style.text_color
 		local default_text_color = title_text_style.default_text_color
@@ -738,6 +779,7 @@ UIWidgetUtils.animate_game_option_button = function (widget, dt)
 
 		if input_text_locked_style then
 			local locked_color = input_text_locked_style.color
+
 			locked_color[2] = text_color[2]
 			locked_color[3] = text_color[3]
 			locked_color[4] = text_color[4]

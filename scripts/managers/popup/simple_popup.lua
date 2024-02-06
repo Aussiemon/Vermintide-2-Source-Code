@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/popup/simple_popup.lua
+
 SimplePopup = class(SimplePopup)
 
 SimplePopup.init = function (self)
@@ -6,6 +8,7 @@ end
 
 SimplePopup.queue_popup = function (self, text, topic, ...)
 	local id = Managers.popup:queue_popup(text, topic, ...)
+
 	self._tracked_popups[#self._tracked_popups + 1] = id
 end
 

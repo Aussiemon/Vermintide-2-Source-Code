@@ -1,9 +1,12 @@
+﻿-- chunkname: @scripts/unit_extensions/default_player_unit/states/player_character_state_leave_ledge_hanging_pull_up.lua
+
 PlayerCharacterStateLeaveLedgeHangingPullUp = class(PlayerCharacterStateLeaveLedgeHangingPullUp, PlayerCharacterState)
 
 PlayerCharacterStateLeaveLedgeHangingPullUp.init = function (self, character_state_init_context)
 	PlayerCharacterState.init(self, character_state_init_context, "leave_ledge_hanging_pull_up")
 
 	local context = character_state_init_context
+
 	self.is_server = Managers.player.is_server
 	self.end_position = Vector3Box()
 end
@@ -20,6 +23,7 @@ PlayerCharacterStateLeaveLedgeHangingPullUp.on_enter = function (self, unit, inp
 	local first_person_extension = self.first_person_extension
 	local ledge_unit = params.ledge_unit
 	local start_rotation_box = params.start_rotation_box
+
 	self.ledge_unit = ledge_unit
 	self.start_rotation_box = start_rotation_box
 
@@ -28,11 +32,13 @@ PlayerCharacterStateLeaveLedgeHangingPullUp.on_enter = function (self, unit, inp
 	self:on_enter_animation_event()
 
 	local movement_settings_table = PlayerUnitMovementSettings.get_movement_settings_table(unit)
+
 	self.finish_time = t + movement_settings_table.ledge_hanging.leaving_animation_time
 end
 
 PlayerCharacterStateLeaveLedgeHangingPullUp.on_exit = function (self, unit, input, dt, context, t, next_state)
 	local status_extension = self.status_extension
+
 	self.start_rotation_box = nil
 
 	if next_state then
@@ -51,6 +57,7 @@ PlayerCharacterStateLeaveLedgeHangingPullUp.on_exit = function (self, unit, inpu
 	self.first_person_extension:toggle_visibility(CameraTransitionSettings.perspective_transition_time)
 
 	status_extension.start_climb_rotation = nil
+
 	local include_local_player = false
 
 	CharacterStateHelper.show_inventory_3p(unit, true, include_local_player, self.is_server, self.inventory_extension)
@@ -86,7 +93,7 @@ PlayerCharacterStateLeaveLedgeHangingPullUp.update = function (self, unit, input
 	if is_catapulted then
 		local params = {
 			sound_event = "Play_hit_by_ratogre",
-			direction = direction
+			direction = direction,
 		}
 
 		csm:change_state("catapulted", params)
@@ -94,10 +101,14 @@ PlayerCharacterStateLeaveLedgeHangingPullUp.update = function (self, unit, input
 		return
 	end
 
-	if self.finish_time < t then
+	if t > self.finish_time then
 		csm:change_state("walking")
 
 		return
+	end
+
+	if false then
+		-- Nothing
 	end
 
 	if status_extension.start_climb_rotation then
@@ -134,6 +145,10 @@ PlayerCharacterStateLeaveLedgeHangingPullUp.calculate_end_position = function (s
 
 	if nav_mesh_pos and is_close then
 		new_position = nav_mesh_pos
+	end
+
+	if false then
+		-- Nothing
 	end
 
 	self.end_position:store(new_position)

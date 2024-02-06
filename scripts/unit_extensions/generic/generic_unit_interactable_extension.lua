@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/generic/generic_unit_interactable_extension.lua
+
 GenericUnitInteractableExtension = class(GenericUnitInteractableExtension)
 
 GenericUnitInteractableExtension.init = function (self, extension_init_context, unit, extension_init_data)

@@ -1,8 +1,11 @@
+﻿-- chunkname: @scripts/unit_extensions/default_player_unit/buffs/buff_area_extension.lua
+
 BuffAreaExtension = class(BuffAreaExtension)
 
 BuffAreaExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	local world = extension_init_context.world
 	local unit_spawner = Managers.state.unit_spawner
+
 	self._unit_spawner = unit_spawner
 	self._world = world
 	self._unit = unit
@@ -10,19 +13,26 @@ BuffAreaExtension.init = function (self, extension_init_context, unit, extension
 	Unit.set_unit_visibility(self._unit, false)
 
 	local t = Managers.time:time("game")
+
 	self.removal_proc_function_name = extension_init_data.removal_proc_function_name
 	self.add_proc_function_name = extension_init_data.add_proc_function_name
 	self._duration = t + (extension_init_data.duration or math.huge)
+
 	local template = extension_init_data.sub_buff_template
+
 	self.template = template
+
 	local radius = extension_init_data.radius
+
 	self.owner_unit = extension_init_data.owner_unit
 	self.source_unit = extension_init_data.source_unit
 	self.radius = radius
 	self.radius_squared = radius * radius
 	self._buff_area_system = extension_init_context.owning_system
 	self._unlimited = self.template.unlimited
+
 	local side_by_unit = Managers.state.side.side_by_unit
+
 	self.side = side_by_unit[self.source_unit] or side_by_unit[self.owner_unit]
 	self._buff_allies = template.buff_allies
 	self._buff_enemies = template.buff_enemies
@@ -61,7 +71,7 @@ BuffAreaExtension._cleanup_inside_units = function (self)
 end
 
 BuffAreaExtension.update = function (self, unit, input, dt, context, t)
-	if self._duration and self._duration < t then
+	if self._duration and t > self._duration then
 		self:_remove_unit()
 		self:_cleanup_inside_units()
 
@@ -90,7 +100,9 @@ BuffAreaExtension._check_ai = function (self, position, radius)
 
 	for i = 1, num_ai do
 		local ai_unit = ai_units[i]
+
 		inside_this_frame[ai_unit] = true
+
 		local already_inside = inside[ai_unit]
 
 		if not already_inside then
@@ -114,6 +126,7 @@ BuffAreaExtension._check_players = function (self, position)
 
 	if self._buff_self then
 		local unit = self.source_unit or self.owner_unit
+
 		inside_this_frame[unit] = self:_update_by_position(unit)
 	end
 
@@ -124,6 +137,7 @@ BuffAreaExtension._check_players = function (self, position)
 
 		for i = 1, #player_units do
 			local unit = player_units[i]
+
 			inside_this_frame[unit] = self:_update_by_position(unit)
 		end
 	end
@@ -133,6 +147,7 @@ BuffAreaExtension._check_players = function (self, position)
 
 		for i = 1, #player_units do
 			local unit = player_units[i]
+
 			inside_this_frame[unit] = self:_update_by_position(unit)
 		end
 	end
@@ -154,6 +169,7 @@ BuffAreaExtension._update_by_position = function (self, unit)
 	if unit_pos then
 		local own_pos = POSITION_LOOKUP[self._unit]
 		local distance_squared = Vector3.length_squared(own_pos - unit_pos)
+
 		within_distance = distance_squared <= self.radius_squared
 	end
 
@@ -172,6 +188,7 @@ end
 
 BuffAreaExtension.set_duration = function (self, duration)
 	local t = Managers.time:time("game")
+
 	self._duration = t + duration
 end
 
@@ -207,8 +224,11 @@ end
 
 BuffAreaExtension._set_inside = function (self, inside_table, unit)
 	local refs = inside_table[unit] or {}
+
 	inside_table[unit] = refs
+
 	local first_ref = table.is_empty(refs)
+
 	refs[self] = true
 
 	if first_ref then

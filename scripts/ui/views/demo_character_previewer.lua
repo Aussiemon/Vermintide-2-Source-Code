@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/demo_character_previewer.lua
+
 DemoCharacterPreviewer = class(DemoCharacterPreviewer)
 
 DemoCharacterPreviewer.init = function (self, world, profile_name, career_index, position, rotation, zoom_offset)
@@ -11,10 +13,9 @@ DemoCharacterPreviewer.init = function (self, world, profile_name, career_index,
 	self.item_names = {}
 	self._packages_to_load = {}
 	self._loaded_packages = {}
-	self._equipment_units = {
-		[InventorySettings.slots_by_name.slot_melee.slot_index] = {},
-		[InventorySettings.slots_by_name.slot_ranged.slot_index] = {}
-	}
+	self._equipment_units = {}
+	self._equipment_units[InventorySettings.slots_by_name.slot_melee.slot_index] = {}
+	self._equipment_units[InventorySettings.slots_by_name.slot_ranged.slot_index] = {}
 
 	if BUILD == "dev" or BUILD == "debug" then
 		self._line_object = World.create_line_object(self._world)
@@ -160,6 +161,7 @@ DemoCharacterPreviewer.cb_spawn_hero_unit = function (self, profile, career, ski
 	if box_dimension then
 		local default_unit_height_dimension = 1.7
 		local default_diff = box_dimension.z - default_unit_height_dimension
+
 		self.unit_max_look_height = default_unit_height_dimension < box_dimension.z and 1.5 or 0.9
 	else
 		self.unit_max_look_height = 0.9
@@ -185,6 +187,7 @@ DemoCharacterPreviewer._update_hover = function (self)
 		return
 	else
 		local scale = RESOLUTION_LOOKUP.scale
+
 		cursor.x = cursor.x * scale
 		cursor.y = cursor.y * scale
 	end
@@ -200,8 +203,10 @@ DemoCharacterPreviewer._update_hover = function (self)
 	local direction = to - from
 	local physics_world = World.physics_world(self._world)
 	local unit_box, box_dimension = Unit.box(self._character_unit)
+
 	box_dimension[1] = box_dimension[1] * 0.25
 	box_dimension[2] = box_dimension[2] * 0.25
+
 	local hit = Intersect.ray_box(from, direction, unit_box, box_dimension)
 
 	if hit then
@@ -222,6 +227,7 @@ end
 
 DemoCharacterPreviewer._update_pressed = function (self, dt, t)
 	self._was_pressed_this_frame = nil
+
 	local input_service = Managers.input:get_service("main_menu")
 
 	if input_service:get("start") then
@@ -297,6 +303,7 @@ end
 
 DemoCharacterPreviewer.was_pressed_this_frame = function (self)
 	local was_pressed_this_frame = self._was_pressed_this_frame
+
 	self._was_pressed_this_frame = nil
 
 	return was_pressed_this_frame
@@ -363,6 +370,7 @@ end
 
 DemoCharacterPreviewer._equip_item = function (self, item_name, slot)
 	self.items_loaded = nil
+
 	local item_slot_type = slot.type
 	local slot_index = slot.slot_index
 	local item_data = ItemMasterList[item_name]
@@ -379,6 +387,7 @@ DemoCharacterPreviewer._equip_item = function (self, item_name, slot)
 
 		if left_hand_unit then
 			local left_unit = left_hand_unit .. "_3p"
+
 			units_to_spawn_data[#units_to_spawn_data + 1] = {
 				left_hand = true,
 				despawn_both_hands_units = despawn_both_hands_units,
@@ -386,13 +395,14 @@ DemoCharacterPreviewer._equip_item = function (self, item_name, slot)
 				item_slot_type = item_slot_type,
 				slot_index = slot_index,
 				unit_attachment_node_linking = item_template.left_hand_attachment_node_linking.third_person,
-				material_settings = material_settings
+				material_settings = material_settings,
 			}
 			package_names[#package_names + 1] = left_unit
 		end
 
 		if right_hand_unit then
 			local right_unit = right_hand_unit .. "_3p"
+
 			units_to_spawn_data[#units_to_spawn_data + 1] = {
 				right_hand = true,
 				despawn_both_hands_units = despawn_both_hands_units,
@@ -400,7 +410,7 @@ DemoCharacterPreviewer._equip_item = function (self, item_name, slot)
 				item_slot_type = item_slot_type,
 				slot_index = slot_index,
 				unit_attachment_node_linking = item_template.right_hand_attachment_node_linking.third_person,
-				material_settings = material_settings
+				material_settings = material_settings,
 			}
 
 			if right_hand_unit ~= left_hand_unit then
@@ -418,11 +428,12 @@ DemoCharacterPreviewer._equip_item = function (self, item_name, slot)
 			end
 
 			local attachment_slot_name = item_template.slots[attachment_slot_lookup_index]
+
 			units_to_spawn_data[#units_to_spawn_data + 1] = {
 				unit_name = unit,
 				item_slot_type = item_slot_type,
 				slot_index = slot_index,
-				unit_attachment_node_linking = item_template.attachment_node_linking[attachment_slot_name]
+				unit_attachment_node_linking = item_template.attachment_node_linking[attachment_slot_name],
 			}
 			package_names[#package_names + 1] = unit
 		end
@@ -456,8 +467,10 @@ end
 
 DemoCharacterPreviewer.on_load_complete = function (self, package_name, item_name)
 	local loaded_packages = self._loaded_packages
+
 	loaded_packages[package_name] = true
 	self._packages_to_load[package_name] = nil
+
 	local item_names = self.item_names
 	local spawn_data = self.item_spawn_data[item_name]
 
@@ -536,6 +549,7 @@ DemoCharacterPreviewer._spawn_item = function (self, item_name)
 				end
 
 				local unit = World.spawn_unit(world, unit_name)
+
 				self._equipment_units[slot_index] = unit
 
 				self:equip_item_unit(unit, item_slot_type, item_template, unit_attachment_node_linking, scene_graph_links)

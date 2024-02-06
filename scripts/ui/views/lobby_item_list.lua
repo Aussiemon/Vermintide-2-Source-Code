@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/lobby_item_list.lua
+
 require("foundation/scripts/util/local_require")
 require("scripts/managers/telemetry/iso_country_names")
 require("scripts/settings/level_settings")
@@ -15,27 +17,27 @@ local large_window_frame = window_default_settings.large_window_frame
 local large_window_frame_width = UIFrameSettings[large_window_frame].texture_sizes.vertical[1]
 local inner_window_size = {
 	window_size[1] * 3 + window_spacing * 2 + large_window_frame_width * 2,
-	window_size[2] + large_window_frame_width * 2
+	window_size[2] + large_window_frame_width * 2,
 }
 local filter_frame_size = {
 	400,
-	inner_window_size[2]
+	inner_window_size[2],
 }
 local info_frame_size = {
 	400,
-	inner_window_size[2]
+	inner_window_size[2],
 }
 local window_size = {
 	inner_window_size[1] - filter_frame_size[1] - info_frame_size[1] + 12,
-	inner_window_size[2] - 60
+	inner_window_size[2] - 60,
 }
 local element_settings = {
-	height_spacing = 7,
 	height = 45,
-	width = window_size[1] - 50
+	height_spacing = 7,
+	width = window_size[1] - 50,
 }
 local ListSettings = {
-	font_size = 18
+	font_size = 18,
 }
 local scrollbar_width = 22
 local max_list_entries = 100
@@ -43,52 +45,52 @@ local time_until_remove = 5
 local title_text_position = {
 	20,
 	0,
-	2
+	2,
 }
 local level_text_position = {
 	window_size[1] * 0.3,
 	0,
-	2
+	2,
 }
 local difficulty_text_position = {
 	window_size[1] * 0.6,
 	0,
-	2
+	2,
 }
 local num_players_text_position = {
 	window_size[1] * 0.8,
 	0,
-	2
+	2,
 }
 local status_text_position = {
 	window_size[1] * 0.6,
 	0,
-	2
+	2,
 }
 local country_text_position = {
 	-5,
 	0,
-	2
+	2,
 }
 local country_button_position = {
 	-50,
 	0,
-	2
+	2,
 }
 local level_lock_position = {
 	level_text_position[1] - 25,
 	10,
-	3
+	3,
 }
 local difficulty_lock_position = {
 	difficulty_text_position[1] - 25,
 	10,
-	3
+	3,
 }
 local status_lock_position = {
 	status_text_position[1] - 25,
 	10,
-	3
+	3,
 }
 local definitions = {
 	scenegraph_definition = {
@@ -96,160 +98,160 @@ local definitions = {
 			is_root = true,
 			size = {
 				1920,
-				1080
+				1080,
 			},
 			position = {
 				0,
 				0,
-				UILayer.default + 20
-			}
+				UILayer.default + 20,
+			},
 		},
 		menu_root = {
-			vertical_alignment = "center",
-			parent = "root",
 			horizontal_alignment = "center",
+			parent = "root",
+			vertical_alignment = "center",
 			size = {
 				1920,
-				1080
+				1080,
 			},
 			position = {
 				0,
 				0,
-				0
-			}
+				0,
+			},
 		},
 		window = {
-			vertical_alignment = "center",
-			parent = "menu_root",
 			horizontal_alignment = "center",
+			parent = "menu_root",
+			vertical_alignment = "center",
 			size = inner_window_size,
 			position = {
 				0,
 				0,
-				1
-			}
+				1,
+			},
 		},
 		item_list = {
-			vertical_alignment = "bottom",
-			parent = "window",
 			horizontal_alignment = "left",
+			parent = "window",
+			vertical_alignment = "bottom",
 			size = {
 				window_size[1],
-				window_size[2]
+				window_size[2],
 			},
 			position = {
 				filter_frame_size[1] + 8,
 				12,
-				1
-			}
+				1,
+			},
 		},
 		loading_overlay = {
-			vertical_alignment = "bottom",
-			parent = "item_list",
 			horizontal_alignment = "left",
+			parent = "item_list",
+			vertical_alignment = "bottom",
 			size = {
 				window_size[1] - 16,
-				window_size[2] + 7
+				window_size[2] + 7,
 			},
 			position = {
 				-4,
 				-8,
-				6
-			}
+				6,
+			},
 		},
 		loading_icon = {
-			vertical_alignment = "center",
-			parent = "loading_overlay",
 			horizontal_alignment = "center",
+			parent = "loading_overlay",
+			vertical_alignment = "center",
 			position = {
 				0,
 				0,
-				1
+				1,
 			},
 			size = {
 				50,
-				50
-			}
+				50,
+			},
 		},
 		loading_text = {
-			vertical_alignment = "center",
-			parent = "loading_icon",
 			horizontal_alignment = "center",
+			parent = "loading_icon",
+			vertical_alignment = "center",
 			position = {
 				0,
 				-90,
-				1
+				1,
 			},
 			size = {
 				800,
-				50
-			}
+				50,
+			},
 		},
 		scrollbar_root = {
-			vertical_alignment = "top",
-			parent = "item_list",
 			horizontal_alignment = "right",
+			parent = "item_list",
+			vertical_alignment = "top",
 			position = {
 				-24,
 				-7,
-				20
+				20,
 			},
 			size = {
 				22,
-				520
-			}
+				520,
+			},
 		},
 		label_root = {
-			vertical_alignment = "top",
-			parent = "item_list",
 			horizontal_alignment = "left",
+			parent = "item_list",
+			vertical_alignment = "top",
 			position = {
 				0,
 				35,
-				0
+				0,
 			},
 			size = {
 				window_size[1],
-				40
-			}
+				40,
+			},
 		},
 		host_text_button = {
-			vertical_alignment = "top",
-			parent = "label_root",
 			horizontal_alignment = "left",
+			parent = "label_root",
+			vertical_alignment = "top",
 			position = title_text_position,
 			size = {
 				100,
-				40
-			}
+				40,
+			},
 		},
 		level_text_button = {
-			parent = "label_root",
 			horizontal_alignment = "left",
+			parent = "label_root",
 			position = level_text_position,
 			size = {
 				100,
-				40
-			}
+				40,
+			},
 		},
 		difficulty_text_button = {
-			parent = "label_root",
 			horizontal_alignment = "left",
+			parent = "label_root",
 			position = difficulty_text_position,
 			size = {
 				130,
-				40
-			}
+				40,
+			},
 		},
 		players_text_button = {
-			parent = "label_root",
 			horizontal_alignment = "left",
+			parent = "label_root",
 			position = num_players_text_position,
 			size = {
 				120,
-				40
-			}
-		}
+				40,
+			},
+		},
 	},
 	widget_definitions = {
 		inventory_list_widget = {
@@ -257,26 +259,26 @@ local definitions = {
 			element = {
 				passes = {
 					{
-						style_id = "list_style",
-						pass_type = "list_pass",
 						content_id = "list_content",
+						pass_type = "list_pass",
+						style_id = "list_style",
 						passes = {
 							{
-								style_id = "background",
+								content_id = "button_hotspot",
 								pass_type = "hotspot",
-								content_id = "button_hotspot"
+								style_id = "background",
 							},
 							{
-								pass_type = "on_click",
 								click_check_content_id = "button_hotspot",
+								pass_type = "on_click",
 								click_function = function (ui_scenegraph, ui_style, ui_content, input_service)
 									ui_content.button_hotspot.is_selected = true
-								end
+								end,
 							},
 							{
 								pass_type = "texture_frame",
 								style_id = "frame",
-								texture_id = "frame"
+								texture_id = "frame",
 							},
 							{
 								pass_type = "texture",
@@ -286,7 +288,7 @@ local definitions = {
 									local button_hotspot = ui_content.button_hotspot
 
 									return button_hotspot.is_hover and not button_hotspot.is_selected
-								end
+								end,
 							},
 							{
 								pass_type = "texture",
@@ -296,7 +298,7 @@ local definitions = {
 									local button_hotspot = ui_content.button_hotspot
 
 									return button_hotspot.is_selected and not button_hotspot.is_hover
-								end
+								end,
 							},
 							{
 								pass_type = "texture",
@@ -306,7 +308,7 @@ local definitions = {
 									local button_hotspot = ui_content.button_hotspot
 
 									return button_hotspot.is_selected and button_hotspot.is_hover
-								end
+								end,
 							},
 							{
 								pass_type = "texture",
@@ -314,7 +316,7 @@ local definitions = {
 								texture_id = "locked_level",
 								content_check_function = function (ui_content)
 									return ui_content.level_is_locked
-								end
+								end,
 							},
 							{
 								pass_type = "texture",
@@ -322,65 +324,65 @@ local definitions = {
 								texture_id = "locked_difficulty",
 								content_check_function = function (ui_content)
 									return ui_content.difficulty_is_locked
-								end
+								end,
 							},
 							{
+								pass_type = "text",
 								style_id = "title_text",
-								pass_type = "text",
-								text_id = "title_text"
+								text_id = "title_text",
 							},
 							{
+								pass_type = "text",
 								style_id = "level_text",
-								pass_type = "text",
-								text_id = "level_text"
+								text_id = "level_text",
 							},
 							{
+								pass_type = "text",
 								style_id = "difficulty_text",
-								pass_type = "text",
-								text_id = "difficulty_text"
+								text_id = "difficulty_text",
 							},
 							{
-								style_id = "num_players_text",
 								pass_type = "text",
-								text_id = "num_players_text"
-							}
-						}
+								style_id = "num_players_text",
+								text_id = "num_players_text",
+							},
+						},
 					},
 					{
-						style_id = "hover",
+						content_id = "hotspot",
 						pass_type = "hover",
-						content_id = "hotspot"
-					}
-				}
+						style_id = "hover",
+					},
+				},
 			},
 			content = {
-				list_content = {}
+				list_content = {},
 			},
 			style = {
 				list_style = {},
 				hover = {
 					offset = {
 						0,
-						306
+						306,
 					},
 					size = {
 						1100,
-						530
-					}
-				}
-			}
+						530,
+					},
+				},
+			},
 		},
 		test = UIWidgets.create_simple_rect("item_list", {
 			200,
 			0,
 			255,
-			0
+			0,
 		}),
 		window = UIWidgets.create_simple_rect("window", {
 			200,
 			255,
 			0,
-			0
+			0,
 		}),
 		host_text_button = UIWidgets.create_text_button("host_text_button", "lb_host", ListSettings.font_size),
 		level_text_button = UIWidgets.create_text_button("level_text_button", "lb_level", ListSettings.font_size),
@@ -390,14 +392,14 @@ local definitions = {
 			100,
 			0,
 			0,
-			0
+			0,
 		}),
 		loading_icon = UIWidgets.create_simple_rotated_texture("matchmaking_connecting_icon", 0, {
 			25,
-			25
+			25,
 		}, "loading_icon"),
-		loading_text = UIWidgets.create_simple_text("matchmaking_status_cannot_find_game", "loading_text", 28, Colors.get_color_table_with_alpha("cheeseburger", 0))
-	}
+		loading_text = UIWidgets.create_simple_text("matchmaking_status_cannot_find_game", "loading_text", 28, Colors.get_color_table_with_alpha("cheeseburger", 0)),
+	},
 }
 
 local function setup_list_hover_area(width, height)
@@ -406,6 +408,7 @@ local function setup_list_hover_area(width, height)
 	local hover_style = list_definition.style.hover
 	local size = hover_style.size
 	local offset = hover_style.offset
+
 	size[1] = width
 	size[2] = height
 	offset[2] = 0
@@ -413,20 +416,22 @@ end
 
 local function setup_mouse_scroll_widget_definition(scroll_field_width, scroll_field_height)
 	definitions.scenegraph_definition.scrollbar_root.size[2] = scroll_field_height
+
 	local scenegraph_id = "mouse_scroll_field"
 	local scroll_field_scenegraph_definition = {
 		horizontal_alignment = "right",
 		position = {
 			0,
 			-2,
-			1
+			1,
 		},
 		size = {
 			scroll_field_width + 24,
-			scroll_field_height
+			scroll_field_height,
 		},
-		parent = "scrollbar_root"
 	}
+
+	scroll_field_scenegraph_definition.parent = "scrollbar_root"
 	definitions.scenegraph_definition[scenegraph_id] = scroll_field_scenegraph_definition
 	definitions.widget_definitions.scroll_field = {
 		element = {
@@ -436,18 +441,19 @@ local function setup_mouse_scroll_widget_definition(scroll_field_width, scroll_f
 					scroll_function = function (ui_scenegraph, ui_style, ui_content, input_service, scroll_axis)
 						local scroll_step = ui_content.scroll_step or 0.1
 						local current_scroll_value = ui_content.internal_scroll_value
+
 						current_scroll_value = current_scroll_value + scroll_step * -scroll_axis.y
 						ui_content.internal_scroll_value = math.clamp(current_scroll_value, 0, 1)
-					end
-				}
-			}
+					end,
+				},
+			},
 		},
 		content = {
+			internal_scroll_value = 0,
 			scroll_step = 0.05,
-			internal_scroll_value = 0
 		},
 		style = {},
-		scenegraph_id = scenegraph_id
+		scenegraph_id = scenegraph_id,
 	}
 end
 
@@ -660,14 +666,14 @@ local function create_lobby_list_entry_content(lobby_data)
 	local status_text_parsed = is_invalid and "[INV]" .. status_text or status_text
 	local country_text = lobby_country_text(lobby_data)
 	local content = {
-		locked_difficulty = "locked_icon_01",
-		locked_status = "locked_icon_01",
-		background_selected = "lb_list_item_clicked",
-		background_normal_hover = "lb_list_item_hover",
-		visible = true,
-		background_selected_hover = "lb_list_item_clicked",
 		background_normal = "lb_list_item_normal",
+		background_normal_hover = "lb_list_item_hover",
+		background_selected = "lb_list_item_clicked",
+		background_selected_hover = "lb_list_item_clicked",
+		locked_difficulty = "locked_icon_01",
 		locked_level = "locked_icon_01",
+		locked_status = "locked_icon_01",
+		visible = true,
 		button_hotspot = {},
 		lobby_data = lobby_data,
 		title_text = title_text,
@@ -679,7 +685,7 @@ local function create_lobby_list_entry_content(lobby_data)
 		level_is_locked = level_is_locked(lobby_data),
 		difficulty_is_locked = difficulty_is_locked(lobby_data),
 		status_is_locked = status_is_locked(lobby_data),
-		frame = entry_frame_settings.texture
+		frame = entry_frame_settings.texture,
 	}
 
 	return content
@@ -687,21 +693,21 @@ end
 
 local function create_empty_lobby_list_entry_content()
 	local content = {
-		difficulty_text = "",
-		title_text = "",
-		num_players_text = "",
 		background_normal = "lb_list_item_bg",
-		fake = true,
-		country_text = "",
 		background_normal_hover = "lb_list_item_bg",
 		background_selected = "lb_list_item_bg",
-		level_text = "",
-		status_text = "",
 		background_selected_hover = "lb_list_item_bg",
+		country_text = "",
+		difficulty_text = "",
+		fake = true,
+		level_text = "",
+		num_players_text = "",
+		status_text = "",
+		title_text = "",
 		button_hotspot = {
-			allow_multi_hover = true
+			allow_multi_hover = true,
 		},
-		frame = entry_frame_settings.texture
+		frame = entry_frame_settings.texture,
 	}
 
 	return content
@@ -716,132 +722,132 @@ local function create_lobby_list_entry_style()
 				255,
 				255,
 				255,
-				255
+				255,
 			},
 			size = {
 				element_settings.width,
-				element_settings.height
+				element_settings.height,
 			},
 			offset = {
 				0,
 				0,
-				5
-			}
+				5,
+			},
 		},
 		background = {
 			size = {
 				element_settings.width,
-				element_settings.height
+				element_settings.height,
 			},
 			offset = {
 				0,
 				0,
-				1
-			}
+				1,
+			},
 		},
 		locked_level = {
 			size = {
 				20,
-				26
+				26,
 			},
-			offset = level_lock_position
+			offset = level_lock_position,
 		},
 		locked_difficulty = {
 			size = {
 				20,
-				26
+				26,
 			},
-			offset = difficulty_lock_position
+			offset = difficulty_lock_position,
 		},
 		locked_status = {
 			size = {
 				20,
-				26
+				26,
 			},
-			offset = status_lock_position
+			offset = status_lock_position,
 		},
 		title_text = {
-			vertical_alignment = "center",
-			horizontal_alignment = "left",
 			font_type = "arial",
+			horizontal_alignment = "left",
+			vertical_alignment = "center",
 			size = {
 				element_settings.width,
-				element_settings.height
+				element_settings.height,
 			},
 			text_color = Colors.color_definitions.white,
 			font_size = ListSettings.font_size,
-			offset = title_text_position
+			offset = title_text_position,
 		},
 		level_text = {
-			word_wrap = false,
-			horizontal_alignment = "left",
-			vertical_alignment = "center",
 			dynamic_font_size = true,
 			font_type = "arial",
+			horizontal_alignment = "left",
+			vertical_alignment = "center",
+			word_wrap = false,
 			size = {
 				element_settings.width,
-				element_settings.height
+				element_settings.height,
 			},
 			text_color = Colors.color_definitions.white,
 			font_size = ListSettings.font_size,
 			area_size = {
 				240,
-				50
+				50,
 			},
-			offset = level_text_position
+			offset = level_text_position,
 		},
 		difficulty_text = {
-			vertical_alignment = "center",
-			horizontal_alignment = "left",
 			font_type = "arial",
+			horizontal_alignment = "left",
+			vertical_alignment = "center",
 			size = {
 				element_settings.width,
-				element_settings.height
+				element_settings.height,
 			},
 			text_color = Colors.color_definitions.white,
 			font_size = ListSettings.font_size,
-			offset = difficulty_text_position
+			offset = difficulty_text_position,
 		},
 		num_players_text = {
-			vertical_alignment = "center",
-			horizontal_alignment = "left",
 			font_type = "arial",
+			horizontal_alignment = "left",
+			vertical_alignment = "center",
 			size = {
 				element_settings.width,
-				element_settings.height
+				element_settings.height,
 			},
 			text_color = Colors.color_definitions.white,
 			font_size = ListSettings.font_size,
 			offset = {
 				num_players_text_position[1] + 5,
 				num_players_text_position[2],
-				num_players_text_position[3]
-			}
+				num_players_text_position[3],
+			},
 		},
 		status_text = {
-			vertical_alignment = "center",
-			horizontal_alignment = "left",
 			font_type = "arial",
+			horizontal_alignment = "left",
+			vertical_alignment = "center",
 			size = {
 				element_settings.width,
-				element_settings.height
+				element_settings.height,
 			},
 			text_color = Colors.color_definitions.white,
 			font_size = ListSettings.font_size,
-			offset = status_text_position
+			offset = status_text_position,
 		},
 		country_text = {
-			vertical_alignment = "center",
-			horizontal_alignment = "right",
 			font_type = "arial",
+			horizontal_alignment = "right",
+			vertical_alignment = "center",
 			size = {
 				element_settings.width,
-				element_settings.height
+				element_settings.height,
 			},
 			text_color = Colors.color_definitions.white,
 			font_size = ListSettings.font_size,
-			offset = country_text_position
-		}
+			offset = country_text_position,
+		},
 	}
 
 	return style
@@ -852,6 +858,7 @@ LobbyItemsList = class(LobbyItemsList)
 LobbyItemsList.init = function (self, ingame_ui_context, settings)
 	self.ui_renderer = ingame_ui_context.ui_top_renderer
 	self.input_manager = ingame_ui_context.input_manager
+
 	local num_list_items = settings.num_list_items
 
 	if settings.use_top_renderer then
@@ -861,15 +868,19 @@ LobbyItemsList.init = function (self, ingame_ui_context, settings)
 	end
 
 	self.world_manager = ingame_ui_context.world_manager
+
 	local world = self.world_manager:world("level_world")
+
 	self.wwise_world = Managers.world:wwise_world(world)
+
 	local scenegraph_definition = definitions.scenegraph_definition
 	local item_list_definitions = scenegraph_definition.item_list
 	local scroll_field_width = item_list_definitions.size[1]
 	local scroll_field_height = item_list_definitions.size[2]
+
 	settings.list_size = {
 		item_list_definitions.size[1],
-		item_list_definitions.size[2]
+		item_list_definitions.size[2],
 	}
 
 	setup_mouse_scroll_widget_definition(scroll_field_width, scroll_field_height)
@@ -886,15 +897,15 @@ LobbyItemsList.init = function (self, ingame_ui_context, settings)
 	self:create_ui_elements(settings.offset)
 
 	self.list_style = {
-		vertical_alignment = "top",
 		scenegraph_id = "item_list",
+		vertical_alignment = "top",
 		size = settings.list_size,
 		list_member_offset = {
 			0,
 			-(element_settings.height + element_settings.height_spacing),
-			0
+			0,
 		},
-		item_styles = {}
+		item_styles = {},
 	}
 	self.selected_list_index = 1
 end
@@ -932,8 +943,10 @@ end
 
 LobbyItemsList.create_ui_elements = function (self, offset)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(self.scenegraph_definition)
+
 	local scrollbar_scenegraph_id = "scrollbar_root"
 	local scrollbar_scenegraph = self.scenegraph_definition[scrollbar_scenegraph_id]
+
 	self.scrollbar_widget = UIWidget.init(UIWidgets.create_scrollbar(scrollbar_scenegraph_id, scrollbar_scenegraph.size))
 	self.item_list_widget = UIWidget.init(self.widget_definitions.inventory_list_widget)
 	self.scroll_field_widget = UIWidget.init(self.widget_definitions.scroll_field)
@@ -951,6 +964,7 @@ LobbyItemsList.create_ui_elements = function (self, offset)
 
 	if offset then
 		local window_position = self.ui_scenegraph.window.local_position
+
 		window_position[1] = window_position[1] + offset[1]
 		window_position[2] = window_position[2] + offset[2]
 		window_position[3] = window_position[3] + offset[3]
@@ -984,7 +998,7 @@ local function sort_lobbies_on_levels_desc(lobby_a, lobby_b)
 	local mission_a = lobby_a.selected_mission_id or lobby_a.mission_id or "lb_unknown"
 	local mission_b = lobby_b.selected_mission_id or lobby_b.mission_id or "lb_unknown"
 
-	return Localize(mission_b) < Localize(mission_a)
+	return Localize(mission_a) > Localize(mission_b)
 end
 
 local function sort_lobbies_on_difficulty_asc(lobby_a, lobby_b)
@@ -1026,7 +1040,7 @@ local function sort_lobbies_on_num_players_desc(lobby_a, lobby_b)
 	local num_players_a = tonumber(lobby_a.num_players) or 0
 	local num_players_b = tonumber(lobby_b.num_players) or 0
 
-	return num_players_a > num_players_b
+	return num_players_b < num_players_a
 end
 
 local function sort_lobbies_on_country_asc(lobby_a, lobby_b)
@@ -1055,6 +1069,7 @@ LobbyItemsList.update = function (self, dt, loading)
 	end
 
 	self._loading_previous_frame = loading
+
 	local item_list_widget = self.item_list_widget
 	local list_content = item_list_widget.content.list_content
 	local list_style = item_list_widget.style.list_style
@@ -1063,8 +1078,10 @@ LobbyItemsList.update = function (self, dt, loading)
 	local number_of_items_in_list = self.number_of_items_in_list
 	local input_manager = self.input_manager
 	local gamepad_active = input_manager:is_device_active("gamepad")
+
 	self.lobby_list_index_changed = nil
 	self.inventory_list_index_pressed = nil
+
 	local num_list_content = #list_content
 
 	if gamepad_active then
@@ -1147,9 +1164,11 @@ LobbyItemsList.handle_gamepad_input = function (self, dt, num_elements)
 
 	if controller_cooldown and controller_cooldown > 0 then
 		self.controller_cooldown = controller_cooldown - dt
+
 		local speed_multiplier = self.speed_multiplier or 1
 		local decrease = GamepadSettings.menu_speed_multiplier_frame_decrease
 		local min_multiplier = GamepadSettings.menu_min_speed_multiplier
+
 		self.speed_multiplier = math.max(speed_multiplier - decrease, min_multiplier)
 
 		return
@@ -1158,7 +1177,7 @@ LobbyItemsList.handle_gamepad_input = function (self, dt, num_elements)
 
 		if selected_list_index then
 			local speed_multiplier = self.speed_multiplier or 1
-			local new_list_index = nil
+			local new_list_index
 			local move_up = input_service:get("move_up")
 			local move_up_hold = input_service:get("move_up_hold")
 
@@ -1225,7 +1244,7 @@ LobbyItemsList.is_entry_outside = function (self, index)
 
 		if index < current_start_index then
 			return true, "above"
-		elseif math.min(current_start_index + max_visible_elements - 1, total_elements) < index then
+		elseif index > math.min(current_start_index + max_visible_elements - 1, total_elements) then
 			return true, "below"
 		end
 	end
@@ -1250,9 +1269,12 @@ end
 LobbyItemsList.rotate_loading_icon = function (self, dt)
 	local loading_icon_style = self.loading_icon.style.texture_id
 	local angle_fraction = loading_icon_style.fraction or 0
+
 	angle_fraction = (angle_fraction + dt) % 1
+
 	local anim_fraction = math.easeOutCubic(angle_fraction)
 	local angle = anim_fraction * math.degrees_to_radians(360)
+
 	loading_icon_style.angle = angle
 	loading_icon_style.fraction = angle_fraction
 end
@@ -1362,7 +1384,7 @@ LobbyItemsList.populate_lobby_list = function (self, lobbies, ignore_scroll_rese
 			list_content[num_lobbies] = content
 			list_style.item_styles[num_lobbies] = style
 
-			if max_list_entries <= num_lobbies then
+			if num_lobbies >= max_list_entries then
 				break
 			end
 		end
@@ -1375,16 +1397,18 @@ LobbyItemsList.populate_lobby_list = function (self, lobbies, ignore_scroll_rese
 	item_list_widget.style.list_style.start_index = 1
 	item_list_widget.style.list_style.num_draws = settings.num_list_items
 	item_list_widget.element.pass_data[1].num_list_elements = nil
+
 	local num_draws = item_list_widget.style.list_style.num_draws
 
 	if num_lobbies < num_draws then
 		local num_empty = num_draws - num_lobbies % num_draws
 
-		if num_draws >= num_empty then
+		if num_empty <= num_draws then
 			for i = 1, num_empty do
 				local content = create_empty_lobby_list_entry_content()
 				local style = create_lobby_list_entry_style()
 				local index = #list_content + 1
+
 				list_content[index] = content
 				list_style.item_styles[index] = style
 			end
@@ -1413,6 +1437,7 @@ LobbyItemsList.set_scroll_amount = function (self, value)
 
 	if not current_scroll_value or value ~= current_scroll_value then
 		local widget_scroll_bar_info = self.scrollbar_widget.content.scroll_bar_info
+
 		widget_scroll_bar_info.value = value
 		self.scroll_field_widget.content.internal_scroll_value = value
 		self.scroll_value = value
@@ -1429,14 +1454,14 @@ LobbyItemsList.set_scrollbar_length = function (self, start_scroll_value, ignore
 	local item_diff_count = math.max(number_of_items_in_list - total_inventory_slots, 0)
 	local scrollbar_content = self.scrollbar_widget.content
 	local widget_scroll_bar_info = scrollbar_content.scroll_bar_info
-	local bar_fraction = 0
-	local step_fraction = 0
+	local bar_fraction, step_fraction = 0, 0
 
 	if item_diff_count > 0 then
 		local number_of_elements_per_step = columns and columns or 1
 		local number_of_steps_possible = math.ceil(item_diff_count / number_of_elements_per_step)
 		local number_of_steps_total = math.ceil(number_of_items_in_list / number_of_elements_per_step)
 		local list_fraction = 1 / number_of_steps_total
+
 		bar_fraction = 1 - list_fraction * number_of_steps_possible
 		step_fraction = 1 / number_of_steps_possible
 	else
@@ -1450,6 +1475,7 @@ LobbyItemsList.set_scrollbar_length = function (self, start_scroll_value, ignore
 
 	if ignore_scroll_reset then
 		local current_scroll_value = self.scroll_value
+
 		self.scroll_value = nil
 
 		self:set_scroll_amount(current_scroll_value or 0)
@@ -1524,6 +1550,7 @@ end
 
 LobbyItemsList.set_selected_lobby = function (self, selected_lobby_data)
 	self.selected_list_index = nil
+
 	local selected_lobby_id = selected_lobby_data.id
 	local item_list_widget = self.item_list_widget
 	local list_content = item_list_widget.content.list_content

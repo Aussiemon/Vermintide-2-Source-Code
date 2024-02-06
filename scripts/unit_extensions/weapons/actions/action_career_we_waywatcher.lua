@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/weapons/actions/action_career_we_waywatcher.lua
+
 ActionCareerWEWaywatcher = class(ActionCareerWEWaywatcher, ActionTrueFlightBow)
 
 ActionCareerWEWaywatcher.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
@@ -13,6 +15,7 @@ ActionCareerWEWaywatcher.client_owner_start_action = function (self, new_action,
 	self:_play_vo()
 
 	self._cooldown_started = false
+
 	local inventory_extension = ScriptUnit.extension(self.owner_unit, "inventory_system")
 
 	inventory_extension:check_and_drop_pickups("career_ability")

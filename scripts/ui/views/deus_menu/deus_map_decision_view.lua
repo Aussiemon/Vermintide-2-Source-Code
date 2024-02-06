@@ -1,8 +1,11 @@
+﻿-- chunkname: @scripts/ui/views/deus_menu/deus_map_decision_view.lua
+
 require("scripts/network/shared_state")
 require("scripts/ui/views/deus_menu/deus_map_view")
 require("scripts/settings/dlcs/morris/deus_map_visibility_settings")
 
 DeusMapDecisionView = class(DeusMapDecisionView, DeusMapView)
+
 local START_COUNTDOWN = 5
 local VOTING_COUNTDOWN = 30
 local VOTING_FINISHING_COUNTDOWN = 5
@@ -14,79 +17,79 @@ local REAL_PLAYER_LOCAL_ID = 1
 local VISIBILITY_CONFIG = {
 	[DeusMapVisibilitySettings.WEAK_FOG_LEVEL] = {
 		conflict_settings = true,
+		level = true,
+		minor_modifier = true,
 		shop = true,
 		terror_event_power_up = true,
 		theme = true,
-		minor_modifier = true,
-		level = true
 	},
 	[DeusMapVisibilitySettings.WEAK_FOG_LEVEL + 1] = {
 		conflict_settings = false,
+		level = true,
+		minor_modifier = true,
 		shop = true,
 		terror_event_power_up = true,
 		theme = true,
-		minor_modifier = true,
-		level = true
 	},
 	[DeusMapVisibilitySettings.WEAK_FOG_LEVEL + 2] = {
 		conflict_settings = false,
+		level = false,
+		minor_modifier = false,
 		shop = true,
 		terror_event_power_up = false,
 		theme = true,
-		minor_modifier = false,
-		level = false
 	},
 	[DeusMapVisibilitySettings.WEAK_FOG_LEVEL + 3] = {
 		conflict_settings = false,
+		level = false,
+		minor_modifier = false,
 		shop = false,
 		terror_event_power_up = false,
 		theme = false,
-		minor_modifier = false,
-		level = false
-	}
+	},
 }
 local SOUND_EVENTS = {
 	ingame_final_node_selected = "hud_morris_world_map_level_chosen",
-	token_move = "hud_morris_world_map_token_move",
 	node_hover = "hud_morris_world_map_hover",
 	node_pressed = "hud_morris_world_map_chose_level",
-	shrine_final_node_selected = "hud_morris_map_shrine_open"
+	shrine_final_node_selected = "hud_morris_map_shrine_open",
+	token_move = "hud_morris_world_map_token_move",
 }
 local states = {
-	TWITCH_STARTING = "TWITCH_STARTING",
-	VOTING = "VOTING",
 	FINISHED = "FINISHED",
-	WAITING = "WAITING",
-	VOTING_FINISHING = "VOTING_FINISHING",
-	TWITCH_WAITING = "TWITCH_WAITING",
 	FINISHING = "FINISHING",
-	STARTING = "STARTING"
+	STARTING = "STARTING",
+	TWITCH_STARTING = "TWITCH_STARTING",
+	TWITCH_WAITING = "TWITCH_WAITING",
+	VOTING = "VOTING",
+	VOTING_FINISHING = "VOTING_FINISHING",
+	WAITING = "WAITING",
 }
 local shared_state_spec = {
 	server = {
 		map_state = {
 			default_value = "",
 			type = "string",
-			composite_keys = {}
+			composite_keys = {},
 		},
 		final_node_selected = {
 			default_value = "",
 			type = "string",
-			composite_keys = {}
-		}
+			composite_keys = {},
+		},
 	},
 	peer = {
 		ready = {
 			default_value = false,
 			type = "boolean",
-			composite_keys = {}
+			composite_keys = {},
 		},
 		vote = {
 			default_value = "",
 			type = "string",
-			composite_keys = {}
-		}
-	}
+			composite_keys = {},
+		},
+	},
 }
 
 SharedState.validate_spec(shared_state_spec)
@@ -113,6 +116,7 @@ DeusMapDecisionView.init = function (self, context)
 	self._network_server = context.network_server
 	self._wwise_world = context.wwise_world
 	self._world = context.world
+
 	local event = Managers.state.event
 
 	event:register(self, "ingame_menu_opened", "on_ingame_menu_opened")
@@ -121,7 +125,9 @@ end
 
 DeusMapDecisionView._start = function (self)
 	self._state = states.IDLE
+
 	local current_node_key = self._deus_run_controller:get_current_node_key()
+
 	self._shared_state = SharedState:new("deus_map_" .. self._deus_run_controller:get_run_id() .. "_" .. current_node_key, shared_state_spec, self._is_server, self._network_server, self._server_peer_id, self._own_peer_id)
 
 	self._shared_state:register_rpcs(self._network_event_delegate)
@@ -144,9 +150,11 @@ DeusMapDecisionView._start = function (self)
 
 		self._shared_state:set_server(self._shared_state:get_key("final_node_selected"), "")
 
-		local start_dialogue_event = nil
+		local start_dialogue_event
 		local next_node_types = get_next_node_types(self._deus_run_controller)
+
 		start_dialogue_event = table.contains(next_node_types, "shop") and "deus_before_shrine_tutorial" or "deus_map_tutorial"
+
 		local vo_unit = LevelHelper:find_dialogue_unit(self._world, "ferry_lady_01")
 		local dialogue_input = ScriptUnit.extension_input(vo_unit, "dialogue_system")
 		local event_data = FrameTable.alloc_table()
@@ -172,7 +180,9 @@ DeusMapDecisionView._start = function (self)
 	self._ui:fade_out(CAMERA_TRANSITION_DURATION)
 
 	self._initial_animation_duration_left = CAMERA_TRANSITION_DURATION
+
 	local visibility_data = self._deus_run_controller:get_map_visibility()
+
 	self._visibility_data = visibility_data
 
 	self._scene:setup_fog(visibility_data)
@@ -526,6 +536,7 @@ end
 
 DeusMapDecisionView._on_enter_finishing = function (self, dt, t)
 	self._final_countdown = FINAL_COUNTDOWN
+
 	local current_node_key = self._deus_run_controller:get_current_node_key()
 	local current_node = self._deus_run_controller:get_current_node()
 	local vote = self._shared_state:get_own(self._shared_state:get_key("vote")) or ""
@@ -591,7 +602,7 @@ DeusMapDecisionView._update_player_state = function (self)
 	local player_data = {}
 	local local_peer_id = Network.peer_id()
 	local deus_graph_data = self._deus_run_controller:get_graph_data()
-	local local_peer_index = nil
+	local local_peer_index
 	local peers = self._deus_run_controller:get_peers()
 
 	for i, peer_id in ipairs(peers) do
@@ -614,7 +625,9 @@ DeusMapDecisionView._update_player_state = function (self)
 			data.grenade_consumable = self._deus_run_controller:get_player_consumable_grenade_slot(peer_id, REAL_PLAYER_LOCAL_ID)
 			data.ammo_percentage = self._deus_run_controller:get_player_ranged_ammo(peer_id, REAL_PLAYER_LOCAL_ID)
 			data.soft_currency = self._deus_run_controller:get_player_soft_currency(peer_id) or 0
+
 			local vote = self._shared_state:get_peer(peer_id, self._shared_state:get_key("vote")) or ""
+
 			data.vote = vote ~= "" and deus_graph_data[vote].base_level or nil
 		else
 			data.profile_index = 0
@@ -630,6 +643,7 @@ DeusMapDecisionView._update_player_state = function (self)
 
 	if local_peer_index then
 		local first_player_data = player_data[1]
+
 		player_data[1] = player_data[local_peer_index]
 		player_data[local_peer_index] = first_player_data
 	end
@@ -642,7 +656,7 @@ DeusMapDecisionView._update_player_state = function (self)
 		true,
 		true,
 		true,
-		true
+		true,
 	}
 	local final_node_selected = self._shared_state:get_server(self._shared_state:get_key("final_node_selected"))
 
@@ -686,6 +700,7 @@ DeusMapDecisionView._handle_voting_end = function (self)
 
 		if vote ~= "" then
 			local vote_count = votes[vote]
+
 			vote_count = vote_count and vote_count + 1 or 1
 			votes[vote] = vote_count
 

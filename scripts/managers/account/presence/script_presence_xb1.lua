@@ -1,8 +1,10 @@
+﻿-- chunkname: @scripts/managers/account/presence/script_presence_xb1.lua
+
 ScriptPresence = class(ScriptPresence)
 PRESENCE_LUT = {
-	playing = "update_playing",
 	menu = "update_menu",
-	none = "update_none"
+	none = "update_none",
+	playing = "update_playing",
 }
 ScriptPresence.PRESENCE_UPDATE_TIME = 5
 ScriptPresence.USE_ASYNC = true
@@ -78,15 +80,11 @@ ScriptPresence.update_playing = function (self, user_id)
 		local prefix = ""
 
 		if self:_has_new_data(current_level, current_difficulty, current_num_players, is_private) then
-			if current_num_players == 4 or is_private then
-				prefix = "playing"
-			else
-				prefix = "needs_assistance"
-			end
+			prefix = not (current_num_players ~= 4 and not is_private) and "playing" or "needs_assistance"
 
 			self:_setup_stat_data(current_level, current_difficulty, current_num_players)
 
-			local presence_string = nil
+			local presence_string
 
 			if game_mode_key == "weave" then
 				local is_quick_game = Managers.matchmaking:is_quick_game()

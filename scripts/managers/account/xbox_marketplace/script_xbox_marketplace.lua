@@ -1,10 +1,14 @@
+﻿-- chunkname: @scripts/managers/account/xbox_marketplace/script_xbox_marketplace.lua
+
 ScriptXboxMarketplace = class(ScriptXboxMarketplace)
 
 ScriptXboxMarketplace.init = function (self)
 	self._state = nil
 	self._response_cb = nil
 	self._error_code = nil
+
 	local settings = Application.settings()
+
 	self._initialized = XboxMarketplace.initialize(settings.xb1_product_id)
 end
 
@@ -25,7 +29,7 @@ ScriptXboxMarketplace.get_product_details = function (self, user_id, product_ids
 
 	if not success then
 		response_callback({
-			error = "failed calling XboxMarketplace.get_catalog_items"
+			error = "failed calling XboxMarketplace.get_catalog_items",
 		})
 	else
 		self._state = "_waiting_for_catalog_details_result"
@@ -43,16 +47,17 @@ ScriptXboxMarketplace._waiting_for_catalog_details_result = function (self, dt)
 end
 
 ScriptXboxMarketplace._get_catalog_details_information = function (self, dt)
-	local error_string = nil
+	local error_string
 
 	if self._error_code ~= 0 then
 		local error_code = "0x" .. string.sub(string.format("%02X", self._error_code), 9)
+
 		error_string = string.format("There was an error while getting catalog items with the error code %q", error_code)
 	end
 
 	local result = {
 		error = error_string,
-		product_details = XboxMarketplace.get_result()
+		product_details = XboxMarketplace.get_result(),
 	}
 
 	self._response_cb(result)

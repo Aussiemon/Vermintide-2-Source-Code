@@ -1,10 +1,12 @@
+﻿-- chunkname: @scripts/utils/keystroke_helper.lua
+
 KeystrokeHelper = KeystrokeHelper or {}
 
 KeystrokeHelper.num_utf8chars = function (text)
 	local length = #text
 	local index = 1
 	local num_chars = 0
-	local _ = nil
+	local _
 
 	while index <= length do
 		_, index = Utf8.location(text, index)
@@ -48,6 +50,7 @@ KeystrokeHelper._build_utf8_table = function (text, external_table)
 
 	while index <= length do
 		local _, end_index = Utf8.location(text, index)
+
 		text_table[character_index] = string.sub(text, index, end_index - 1)
 		character_index = character_index + 1
 		index = end_index
@@ -69,26 +72,20 @@ end
 KeystrokeHelper[Keyboard.LEFT] = function (text_table, index, mode)
 	return math.max(index - 1, 1), mode
 end
-
 KeystrokeHelper[Keyboard.RIGHT] = function (text_table, index, mode)
 	return math.min(index + 1, #text_table + 1), mode
 end
-
 KeystrokeHelper[Keyboard.UP] = nil
 KeystrokeHelper[Keyboard.DOWN] = nil
-
 KeystrokeHelper[Keyboard.INSERT] = function (text_table, index, mode)
 	return index, mode == "insert" and "overwrite" or "insert"
 end
-
 KeystrokeHelper[Keyboard.HOME] = function (text_table, index, mode)
 	return 1, mode
 end
-
 KeystrokeHelper[Keyboard.END] = function (text_table, index, mode)
 	return #text_table + 1, mode
 end
-
 KeystrokeHelper[Keyboard.BACKSPACE] = function (text_table, index, mode)
 	local backspace_index = index - 1
 
@@ -100,12 +97,10 @@ KeystrokeHelper[Keyboard.BACKSPACE] = function (text_table, index, mode)
 
 	return backspace_index, mode
 end
-
 KeystrokeHelper[Keyboard.TAB] = nil
 KeystrokeHelper[Keyboard.PAGE_UP] = nil
 KeystrokeHelper[Keyboard.PAGE_DOWN] = nil
 KeystrokeHelper[Keyboard.ESCAPE] = nil
-
 KeystrokeHelper[Keyboard.DELETE] = function (text_table, index, mode)
 	if text_table[index] then
 		table.remove(text_table, index)

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/default_player_unit/states/player_character_state_pounced_down.lua
+
 PlayerCharacterStatePouncedDown = class(PlayerCharacterStatePouncedDown, PlayerCharacterState)
 
 PlayerCharacterStatePouncedDown.init = function (self, character_state_init_context)
@@ -30,8 +32,10 @@ end
 
 PlayerCharacterStatePouncedDown.on_exit = function (self, unit, input, dt, context, t, next_state)
 	local first_person_extension = self.first_person_extension
+
 	self.liberated = nil
 	self.liberation_time = nil
+
 	local network_manager = Managers.state.network
 
 	if network_manager:game() and next_state then
@@ -110,7 +114,7 @@ PlayerCharacterStatePouncedDown.update = function (self, unit, input, dt, contex
 	end
 
 	if self.liberated then
-		if self.liberation_time < t then
+		if t > self.liberation_time then
 			csm:change_state("standing")
 		end
 

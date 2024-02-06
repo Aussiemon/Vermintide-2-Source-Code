@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_find_ranged_position_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTFindRangedPositionAction = class(BTFindRangedPositionAction, BTNode)
@@ -10,6 +12,7 @@ BTFindRangedPositionAction.name = "BTFindRangedPositionAction"
 
 BTFindRangedPositionAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
+
 	blackboard.action = action
 
 	if blackboard.move_state ~= "idle" then
@@ -23,6 +26,7 @@ BTFindRangedPositionAction.enter = function (self, unit, blackboard, t)
 	blackboard.locomotion_extension:set_wanted_velocity(Vector3(0, 0, 0))
 
 	blackboard.num_failed_find_position_attempts = 0
+
 	local network_manager = Managers.state.network
 
 	network_manager:anim_event(unit, "idle")
@@ -76,7 +80,7 @@ BTFindRangedPositionAction._find_ranged_position = function (self, unit, blackbo
 		end
 	end
 
-	local wanted_position = nil
+	local wanted_position
 	local max_tries = 3
 
 	if projected_start_pos then
@@ -88,30 +92,37 @@ BTFindRangedPositionAction._find_ranged_position = function (self, unit, blackbo
 		local random_deg_range_2 = math.min(90 + num_find_position_attempts * 10, 180)
 
 		for i = 1, max_tries do
-			local pi = math.pi
-			local max_dist = math.random(action.max_dist[1], action.max_dist[2])
-			local min_dist = action.min_dist
-			local rand_deg = math.random(random_deg_range_1, random_deg_range_2)
-			local radians = rand_deg * pi / 180
-			local randomized_direction = Vector3(math.sin(radians), math.cos(radians), 0)
-			local randomized_rotation = Quaternion.look(randomized_direction)
-			local wanted_rotation = Quaternion.multiply(target_to_self_rotation, randomized_rotation)
-			local wanted_direction = Quaternion.forward(wanted_rotation)
-			local projected_end_pos = target_position + wanted_direction * max_dist
+			repeat
+				local pi = math.pi
+				local max_dist = math.random(action.max_dist[1], action.max_dist[2])
+				local min_dist = action.min_dist
+				local rand_deg = math.random(random_deg_range_1, random_deg_range_2)
+				local radians = rand_deg * pi / 180
+				local randomized_direction = Vector3(math.sin(radians), math.cos(radians), 0)
+				local randomized_rotation = Quaternion.look(randomized_direction)
+				local wanted_rotation = Quaternion.multiply(target_to_self_rotation, randomized_rotation)
+				local wanted_direction = Quaternion.forward(wanted_rotation)
+				local projected_end_pos = target_position + wanted_direction * max_dist
 
-			if projected_end_pos then
-				local _, hit_position = GwNavQueries.raycast(nav_world, projected_start_pos, projected_end_pos)
+				if projected_end_pos then
+					local _, hit_position = GwNavQueries.raycast(nav_world, projected_start_pos, projected_end_pos)
 
-				if hit_position then
-					local distance = Vector3.distance(hit_position, target_position)
-					local is_within_bounds = min_dist < distance
+					if hit_position then
+						local distance = Vector3.distance(hit_position, target_position)
+						local is_within_bounds = min_dist < distance
 
-					if is_within_bounds then
-						local wanted_pos = target_position + wanted_direction * math.random(min_dist, distance)
-						wanted_position = LocomotionUtils.pos_on_mesh(nav_world, wanted_pos, 1, 1)
+						if is_within_bounds then
+							local wanted_pos = target_position + wanted_direction * math.random(min_dist, distance)
+
+							wanted_position = LocomotionUtils.pos_on_mesh(nav_world, wanted_pos, 1, 1)
+
+							break
+						end
+
+						break
 					end
 				end
-			end
+			until true
 		end
 	end
 

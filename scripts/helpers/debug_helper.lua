@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/helpers/debug_helper.lua
+
 DebugHelper = DebugHelper or {}
 
 DebugHelper.remove_debug_stuff = function ()
@@ -38,7 +40,7 @@ DebugHelper.enable_physics_dump = function ()
 	local physics_namespaces = {
 		"PhysicsWorld",
 		"Actor",
-		"Mover"
+		"Mover",
 	}
 
 	for _, namespace in pairs(physics_namespaces) do

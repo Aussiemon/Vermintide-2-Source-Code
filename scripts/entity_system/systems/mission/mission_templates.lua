@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/mission/mission_templates.lua
+
 MissionTemplates = {
 	collect = {
 		init = function (mission_data, unit)
@@ -7,9 +9,9 @@ MissionTemplates = {
 			local mission_text = Localize(mission_data.text)
 			local evaluate_at_level_end = mission_data.evaluate_at_level_end
 			local data = {
+				current_amount = 0,
 				info_slate_type = "mission_objective",
 				manual_update = true,
-				current_amount = 0,
 				update_sound = true,
 				get_current_amount = function (self)
 					return self.current_amount
@@ -37,7 +39,7 @@ MissionTemplates = {
 				dice_per_amount = mission_data.dice_per_amount,
 				tokens_per_amount = mission_data.tokens_per_amount,
 				dice_type = mission_data.dice_type,
-				token_type = mission_data.token_type
+				token_type = mission_data.token_type,
 			}
 
 			return data
@@ -57,6 +59,7 @@ MissionTemplates = {
 			local current_amount = data:get_current_amount()
 			local text = string.format("%s/%s\n%s", tostring(current_amount), tostring(collect_amount), data.mission_text)
 			local center_text = string.format("%s/%s %s", tostring(current_amount), tostring(collect_amount), data.mission_text)
+
 			data.text = text
 			data.center_text = center_text
 		end,
@@ -65,14 +68,14 @@ MissionTemplates = {
 		end,
 		create_sync_data = function (data)
 			local sync_data = {
-				data:get_current_amount()
+				data:get_current_amount(),
 			}
 
 			return sync_data
 		end,
 		sync = function (data, sync_data)
 			data:set_current_amount(sync_data[1])
-		end
+		end,
 	},
 	defend = {
 		init = function (mission_data, unit)
@@ -81,21 +84,22 @@ MissionTemplates = {
 			local defend_amount = mission_data.defend_amount
 			local mission_text = Localize(mission_data.text)
 			local data = {
-				info_slate_type = "mission_objective",
-				update_sound = true,
-				manual_update = true,
 				flow_update = true,
+				info_slate_type = "mission_objective",
+				manual_update = true,
+				update_sound = true,
 				defend_amount = defend_amount,
 				current_amount = defend_amount,
 				mission_text = mission_text,
 				unit = unit,
-				mission_data = mission_data
+				mission_data = mission_data,
 			}
 
 			return data
 		end,
 		update = function (data, dt)
 			local current_amount = data.current_amount - 1
+
 			data.current_amount = current_amount
 
 			return current_amount == 0
@@ -104,6 +108,7 @@ MissionTemplates = {
 			local defend_amount = data.defend_amount
 			local current_amount = data.current_amount
 			local text = data.mission_text
+
 			data.text = text
 		end,
 		evaluate_mission = function (data, dt)
@@ -111,30 +116,31 @@ MissionTemplates = {
 		end,
 		create_sync_data = function (data)
 			local sync_data = {
-				data.current_amount
+				data.current_amount,
 			}
 
 			return sync_data
 		end,
 		sync = function (data, sync_data)
 			local current_amount = sync_data[1]
+
 			data.current_amount = current_amount
-		end
+		end,
 	},
 	simple = {
 		init = function (mission_data, unit)
 			local mission_text = Localize(mission_data.text)
 			local text = string.format("%s", mission_text)
 			local data = {
-				info_slate_type = "mission_objective",
-				update_sound = true,
-				manual_update = true,
 				done = false,
 				flow_update = true,
+				info_slate_type = "mission_objective",
+				manual_update = true,
+				update_sound = true,
 				mission_text = mission_text,
 				unit = unit,
 				mission_data = mission_data,
-				text = text
+				text = text,
 			}
 
 			return data
@@ -157,7 +163,7 @@ MissionTemplates = {
 		end,
 		sync = function (data, sync_data)
 			return
-		end
+		end,
 	},
 	timed = {
 		init = function (mission_data, unit)
@@ -172,13 +178,14 @@ MissionTemplates = {
 				time_left = time_left,
 				mission_text = mission_text,
 				unit = unit,
-				mission_data = mission_data
+				mission_data = mission_data,
 			}
 
 			return data
 		end,
 		update = function (data, positive, dt, network_time)
 			local end_time = data.end_time
+
 			data.time_left = math.max(end_time - network_time, 0)
 
 			return end_time <= network_time
@@ -192,6 +199,7 @@ MissionTemplates = {
 			local sseconds = seconds >= 10 and tostring(seconds) or string.format("0%s", tostring(seconds))
 			local text = string.format("%s", data.mission_text)
 			local duration_text = string.format("%s:%s", sminutes, sseconds)
+
 			data.text = text
 			data.duration_text = duration_text
 		end,
@@ -200,26 +208,27 @@ MissionTemplates = {
 		end,
 		create_sync_data = function (data)
 			local sync_data = {
-				data.end_time
+				data.end_time,
 			}
 
 			return sync_data
 		end,
 		sync = function (data, sync_data)
 			local end_time = sync_data[1]
+
 			data.end_time = end_time
-		end
+		end,
 	},
 	goal = {
 		init = function (mission_data, unit)
 			local mission_text = Localize(mission_data.text)
 			local data = {
-				manual_update = true,
 				info_slate_type = "mission_goal",
 				is_goal = true,
+				manual_update = true,
 				mission_text = mission_text,
 				mission_data = mission_data,
-				unit = unit
+				unit = unit,
 			}
 
 			return data
@@ -240,7 +249,7 @@ MissionTemplates = {
 		end,
 		sync = function (data, sync_data)
 			return
-		end
+		end,
 	},
 	players_alive = {
 		init = function (mission_data, unit)
@@ -253,7 +262,7 @@ MissionTemplates = {
 				mission_data = mission_data,
 				evaluate_at_level_end = evaluate_at_level_end,
 				experience_per_amount = mission_data.experience_per_amount,
-				evaluation_type = mission_data.evaluation_type
+				evaluation_type = mission_data.evaluation_type,
 			}
 
 			return data
@@ -289,19 +298,19 @@ MissionTemplates = {
 		end,
 		sync = function (data, sync_data)
 			return
-		end
+		end,
 	},
 	survival = {
 		init = function (mission_data, unit)
 			local wave = SurvivalSettings.wave
 			local starting_wave = SurvivalSettings.initial_wave
 			local states = {
-				wave = 2,
 				completed = 3,
-				prepare = 1
+				prepare = 1,
+				wave = 2,
 			}
 			local wave_state = states.prepare
-			local wave_completed_text = nil
+			local wave_completed_text
 
 			if mission_data.wave_completed_text then
 				wave_completed_text = Localize(mission_data.wave_completed_text)
@@ -309,7 +318,7 @@ MissionTemplates = {
 				wave_completed_text = nil
 			end
 
-			local wave_prepare_text = nil
+			local wave_prepare_text
 
 			if mission_data.wave_prepare_text then
 				wave_prepare_text = Localize(mission_data.wave_prepare_text)
@@ -320,11 +329,11 @@ MissionTemplates = {
 			local mission_text = Localize(mission_data.wave_text)
 			local start_time = Managers.state.network:network_time()
 			local data = {
+				flow_update = true,
 				info_slate_type = "mission_objective",
 				manual_update = true,
-				flow_update = true,
-				wave_completed = 0,
 				update_sound = true,
+				wave_completed = 0,
 				mission_text = mission_text,
 				mission_data = mission_data,
 				unit = unit,
@@ -337,7 +346,7 @@ MissionTemplates = {
 				experience_per_percent = mission_data.experience_per_percent,
 				start_time = start_time,
 				wave_completed_time = start_time,
-				starting_wave = starting_wave
+				starting_wave = starting_wave,
 			}
 
 			return data
@@ -380,37 +389,48 @@ MissionTemplates = {
 				data.start_time,
 				data.wave_completed,
 				data.wave_completed_time,
-				data.starting_wave
+				data.starting_wave,
 			}
 
 			return sync_data
 		end,
 		sync = function (data, sync_data)
 			local wave_num = sync_data[1]
+
 			data.wave = wave_num
+
 			local state = sync_data[2]
+
 			data.wave_state = state
+
 			local start_time = sync_data[3]
+
 			data.start_time = start_time
+
 			local wave_completed = sync_data[4]
+
 			data.wave_completed = wave_completed
+
 			local wave_completed_time = sync_data[5]
+
 			data.wave_completed_time = wave_completed_time
+
 			local starting_wave = sync_data[6]
+
 			data.starting_wave = starting_wave
-		end
+		end,
 	},
 	tutorial = {
 		init = function (mission_data, unit)
 			local start_time = Managers.state.network:network_time()
 			local data = {
-				manual_update = true,
-				info_slate_type = "mission_goal",
 				done = false,
 				flow_update = true,
+				info_slate_type = "mission_goal",
+				manual_update = true,
 				start_time = start_time,
 				unit = unit,
-				mission_data = mission_data
+				mission_data = mission_data,
 			}
 
 			return data
@@ -433,8 +453,8 @@ MissionTemplates = {
 		end,
 		sync = function (data, sync_data)
 			return
-		end
-	}
+		end,
+	},
 }
 MissionTemplates.collect_uncompletable = table.clone(MissionTemplates.collect)
 

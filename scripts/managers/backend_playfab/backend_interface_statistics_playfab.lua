@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/managers/backend_playfab/backend_interface_statistics_playfab.lua
+
 local PlayFabClientApi = require("PlayFab.PlayFabClientApi")
+
 BackendInterfaceStatisticsPlayFab = class(BackendInterfaceStatisticsPlayFab)
 
 BackendInterfaceStatisticsPlayFab.update = function (self, dt)
@@ -20,7 +23,7 @@ BackendInterfaceStatisticsPlayFab.init = function (self, mirror)
 	end
 
 	local request = {
-		FunctionName = "loadPlayerStatistics"
+		FunctionName = "loadPlayerStatistics",
 	}
 
 	self._request_queue:enqueue(request, success_callback)
@@ -115,8 +118,8 @@ BackendInterfaceStatisticsPlayFab.get_stat_save_request = function (self)
 	local request = {
 		FunctionName = "savePlayerStatistics3",
 		FunctionParameter = {
-			stats = stats_to_save
-		}
+			stats = stats_to_save,
+		},
 	}
 
 	return request, stats_to_save
@@ -154,8 +157,8 @@ BackendInterfaceStatisticsPlayFab.reset = function (self)
 	local request = {
 		FunctionName = "devResetPlayerStatistics",
 		FunctionParameter = {
-			stats = stats_to_reset
-		}
+			stats = stats_to_reset,
+		},
 	}
 
 	local function success_callback(result)

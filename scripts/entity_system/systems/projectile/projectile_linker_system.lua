@@ -1,12 +1,15 @@
+﻿-- chunkname: @scripts/entity_system/systems/projectile/projectile_linker_system.lua
+
 require("scripts/unit_extensions/weapons/projectiles/projectile_linker_extension")
 
 ProjectileLinkerSystem = class(ProjectileLinkerSystem, ExtensionSystemBase)
+
 local RPCS = {
 	"rpc_link_pickup",
-	"rpc_spawn_and_link_units"
+	"rpc_spawn_and_link_units",
 }
 local extensions = {
-	"ProjectileLinkerExtension"
+	"ProjectileLinkerExtension",
 }
 local LINKED_PROJECTILE_LIFETIME = 30
 
@@ -14,6 +17,7 @@ ProjectileLinkerSystem.init = function (self, entity_system_creation_context, sy
 	ProjectileLinkerSystem.super.init(self, entity_system_creation_context, system_name, extensions)
 
 	local network_event_delegate = entity_system_creation_context.network_event_delegate
+
 	self.network_event_delegate = network_event_delegate
 
 	network_event_delegate:register(self, unpack(RPCS))
@@ -139,10 +143,10 @@ ProjectileLinkerSystem.update = function (self, context, t)
 
 	for owner_unit, linked_projectiles in pairs(linked_projectile_units) do
 		for linked_projectile_unit, link_data in pairs(linked_projectiles) do
-			if link_data.end_time <= t then
+			if t >= link_data.end_time then
 				linked_projectiles_to_remove[linked_projectile_unit] = {
 					cb_function = link_data.cb_timeout,
-					owner_unit = owner_unit
+					owner_unit = owner_unit,
 				}
 			end
 		end
@@ -175,7 +179,7 @@ ProjectileLinkerSystem.add_linked_projectile_reference = function (self, owner_u
 
 	self.linked_projectile_units[owner_unit][linked_projectile_unit] = {
 		end_time = t + LINKED_PROJECTILE_LIFETIME,
-		cb_timeout = self[timeout_cb_name or "cb_linked_projectile_timeout"]
+		cb_timeout = self[timeout_cb_name or "cb_linked_projectile_timeout"],
 	}
 end
 

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/dlcs/cog/cog_interactions.lua
+
 InteractionDefinitions.cog_missing_cog_pickup = InteractionDefinitions.cog_missing_cog_pickup or table.clone(InteractionDefinitions.smartobject)
 InteractionDefinitions.cog_missing_cog_pickup.config.swap_to_3p = false
 

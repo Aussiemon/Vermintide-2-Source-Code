@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_utility_node.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTUtilityNode = class(BTUtilityNode, BTNode)
@@ -30,6 +32,7 @@ end
 
 local function swap(t, i, j)
 	local temp = t[i]
+
 	t[i] = t[j]
 	t[j] = temp
 end
@@ -53,7 +56,7 @@ local function randomize_actions(unit, actions, blackboard, t, node_children)
 	end
 
 	for i = 1, num_actions do
-		local picked_index = nil
+		local picked_index
 		local random_utility_score = math.random() * total_utility_score
 
 		for j = i, num_actions do
@@ -98,14 +101,16 @@ BTUtilityNode.run = function (self, unit, blackboard, t, dt)
 
 	local running_node = self:current_running_child(blackboard)
 	local result = "failed"
-	local evaluate_next_frame = nil
+	local evaluate_next_frame
 
 	if running_node and not blackboard.evaluate then
 		local running_node_id = running_node._identifier
+
 		result, evaluate_next_frame = running_node:evaluate(unit, blackboard, t, dt)
 
 		if result == "done" then
 			local utility_data = blackboard.utility_actions[running_node_id]
+
 			utility_data.last_done_time = t
 		end
 
@@ -131,8 +136,11 @@ BTUtilityNode.run = function (self, unit, blackboard, t, dt)
 		end
 
 		local utility_data = blackboard.utility_actions[action_name]
+
 		utility_data.last_time = t
+
 		local node_id = node._identifier
+
 		result, evaluate_next_frame = node:evaluate(unit, blackboard, t, dt)
 
 		if result ~= "running" then
@@ -157,6 +165,7 @@ BTUtilityNode.run = function (self, unit, blackboard, t, dt)
 	end
 
 	local fail_cooldown_blackboard_identifier = action_data and action_data.fail_cooldown_blackboard_identifier
+
 	fail_cooldown_t = fail_cooldown_blackboard_identifier and blackboard[fail_cooldown_blackboard_identifier]
 
 	if fail_cooldown_t == nil then

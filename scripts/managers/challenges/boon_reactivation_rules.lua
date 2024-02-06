@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/challenges/boon_reactivation_rules.lua
+
 BoonReactivationRules = BoonReactivationRules or {}
 
 BoonReactivationRules.questing_knight = function (player_unique_id)

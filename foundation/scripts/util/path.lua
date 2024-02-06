@@ -1,16 +1,19 @@
-Path = {
-	normalize_path = function (string_path)
-		string_path = string_path:gsub("\\", "/")
-		string_path = string_path:gsub("//", "/")
+﻿-- chunkname: @foundation/scripts/util/path.lua
 
-		return string_path
-	end
-}
+Path = {}
+
+Path.normalize_path = function (string_path)
+	string_path = string_path:gsub("\\", "/")
+	string_path = string_path:gsub("//", "/")
+
+	return string_path
+end
 
 Path.path_from_string = function (string_path)
 	string_path = Path.normalize_path(string_path)
+
 	local path = {
-		size = 0
+		size = 0,
 	}
 	local path_n = 0
 	local string_path_len = #string_path
@@ -19,6 +22,7 @@ Path.path_from_string = function (string_path)
 	while index ~= nil do
 		local next_slash_index = string_path:find("/", index)
 		local path_part = string_path:sub(index, next_slash_index and next_slash_index - 1 or nil)
+
 		path_n = path_n + 1
 		path[path_n] = path_part
 
@@ -37,11 +41,12 @@ end
 Path.path_from_parts = function (...)
 	local path_n = select("#", ...)
 	local path = {
-		size = path_n
+		size = path_n,
 	}
 
 	for i = 1, path_n do
 		local part = select(i, ...)
+
 		path[i] = part
 	end
 
@@ -50,7 +55,7 @@ end
 
 Path.copy = function (path)
 	local path_new = {
-		size = path.size
+		size = path.size,
 	}
 
 	for i = 1, path.size do
@@ -90,6 +95,7 @@ end
 
 Path.tostring = function (path, separator)
 	separator = separator or "/"
+
 	local string_path = ""
 
 	for i = 1, path.size - 1 do

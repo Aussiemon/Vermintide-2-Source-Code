@@ -1,7 +1,10 @@
+﻿-- chunkname: @scripts/utils/ai_debugger.lua
+
 require("scripts/utils/script_gui")
 require("scripts/utils/draw_ai_behavior")
 
 script_data.ai_debugger_freeflight_only = script_data.ai_debugger_freeflight_only or Development.parameter("ai_debugger_freeflight_only")
+
 local font_size = 26
 local font_size_medium = 22
 local font_size_blackboard = 16
@@ -20,6 +23,7 @@ local function table_as_sorted_string_arrays(source, key_dest, value_dest)
 
 	for i = 1, count do
 		local key = key_dest[i]
+
 		value_dest[i] = source[key]
 	end
 
@@ -52,7 +56,7 @@ AIDebugger.lazy_create_drawer = function (self)
 
 	self.drawer = Managers.state.debug:drawer({
 		mode = "immediate",
-		name = "AIDebugger"
+		name = "AIDebugger",
 	})
 end
 
@@ -187,6 +191,7 @@ AIDebugger.update = function (self, t, dt)
 
 		if DebugKeyHandler.key_pressed("m", "show blackboard", "ai debugger", "left ctrl") then
 			self.cycle_info = (self.cycle_info + 1) % 3
+
 			local c = self.cycle_info
 
 			if c == 1 then
@@ -200,7 +205,7 @@ AIDebugger.update = function (self, t, dt)
 		end
 
 		local platform = PLATFORM
-		local toggle_bt_pressed = nil
+		local toggle_bt_pressed
 
 		if IS_CONSOLE then
 			toggle_bt_pressed = DebugKeyHandler.key_pressed("show_behaviour", "show behaviour graph", "ai debugger")
@@ -274,7 +279,7 @@ AIDebugger.perlin_path = function (self, t, x, y, xsize, ysize)
 		Color(255, 130, 40, 170),
 		Color(255, 130, 240, 70),
 		Color(255, 0, 40, 170),
-		Color(255, 230, 40, 230)
+		Color(255, 230, 40, 230),
 	}
 	local gui = self.screen_gui
 	local seed = 60337
@@ -290,10 +295,11 @@ AIDebugger.perlin_path = function (self, t, x, y, xsize, ysize)
 	for i = 1, #oktaves do
 		local octave = oktaves[i]
 		local p1 = Vector3(x + octave[0][1] * xsize, y + (1 - octave[0][2] * mul_with) * ysize, 0)
-		local p2 = nil
+		local p2
 
 		for j = 1, #octave do
 			local p = octave[j]
+
 			p2 = Vector3(x + p[1] * xsize, y + (1 - p[2] * mul_with) * ysize, 0)
 
 			ScriptGUI.hud_iline(gui, resx, resy, p1, p2, layer, line_width, colors[i % 5 + 1])
@@ -319,6 +325,7 @@ AIDebugger.update_selection = function (self, input, dt)
 
 	if DebugKeyHandler.key_pressed("period", "select next bot", "ai debugger", nil, "FreeFlight") then
 		local units = Managers.state.entity:get_entities("AISimpleExtension")
+
 		self.active_unit = next(units, self.active_unit)
 	end
 end
@@ -364,7 +371,7 @@ AIDebugger.closest_unit_in_aim_dir = function (self, in_free_flight)
 	local camera_rotation = first_person_extension:current_rotation()
 	local camera_direction = Quaternion.forward(camera_rotation)
 	local min_dot = 999
-	local best_unit = nil
+	local best_unit
 	local units = {}
 	local entity_manager = Managers.state.entity
 	local ai_units = Managers.state.entity:system("ai_system").unit_extension_data
@@ -411,6 +418,7 @@ AIDebugger.mouse_raycast = function (self, input)
 	local direction = Camera.screen_to_world(camera, Vector3(mouse.x, mouse.y, 0), 1) - position
 	local raycast_dir = Vector3.normalize(direction)
 	local hit, hit_position, distance, normal, actor = PhysicsWorld.immediate_raycast(physics_world, position, raycast_dir, 100, "closest", "collision_filter", "filter_character_trigger")
+
 	self.hot_unit = nil
 	self.hot_actor = nil
 
@@ -428,9 +436,9 @@ AIDebugger.mouse_raycast = function (self, input)
 end
 
 local damage_direction = {
-	z = -1,
 	x = 0,
-	y = 0
+	y = 0,
+	z = -1,
 }
 
 AIDebugger.update_mouse_input = function (self, input)
@@ -478,6 +486,7 @@ AIDebugger.draw_nearby_navmesh = function (self, ai_unit)
 	local drawer = self.drawer
 	local position = POSITION_LOOKUP[ai_unit]
 	local offset = Vector3(0, 0, 0.2)
+
 	self._line_object = self._line_object or World.create_line_object(self.world, false)
 
 	LineObject.reset(self._line_object)
@@ -490,14 +499,15 @@ AIDebugger.draw_nearby_navmesh = function (self, ai_unit)
 	end
 
 	local triangles = {
-		triangle
+		triangle,
 	}
 	local num_triangles = 1
 	local i = 0
 
-	while num_triangles > i do
+	while i < num_triangles do
 		i = i + 1
 		triangle = triangles[i]
+
 		local p1, p2, p3 = GwNavTraversal.get_triangle_vertices(nav_world, triangle)
 		local triangle_center = p1 + p2 + p3
 		local table_index = math.ceil((triangle_center.x + triangle_center.y) % 24 + 1)
@@ -509,7 +519,7 @@ AIDebugger.draw_nearby_navmesh = function (self, ai_unit)
 		LineObject.add_line(self._line_object, Color(0, 0, 200), p2 + offset, p3 + offset)
 
 		local neighbors = {
-			GwNavTraversal.get_neighboring_triangles(triangle)
+			GwNavTraversal.get_neighboring_triangles(triangle),
 		}
 
 		for j = 1, #neighbors do
@@ -547,10 +557,8 @@ AIDebugger.draw_blackboard = function (self, ai_unit)
 
 	local gui = self.screen_gui
 	local blackboard = BLACKBOARDS[ai_unit]
-	local key_dest_root = {}
-	local value_dest_root = {}
-	local key_dest_subtree = {}
-	local value_dest_subtree = {}
+	local key_dest_root, value_dest_root = {}, {}
+	local key_dest_subtree, value_dest_subtree = {}, {}
 	local count_root = table_as_sorted_string_arrays(blackboard, key_dest_root, value_dest_root)
 	local res_x, res_y = Application.resolution()
 	local start_y = res_y - 100
@@ -567,6 +575,7 @@ AIDebugger.draw_blackboard = function (self, ai_unit)
 	for i = 1, count_root do
 		local key = key_dest_root[i]
 		local value = value_dest_root[i]
+
 		pos.y = pos.y - font_size_blackboard
 
 		if pos.y < 100 then
@@ -639,6 +648,7 @@ AIDebugger.draw_behavior_tree = function (self, ai_unit, t, dt)
 
 	self.tree_x = self.tree_x or 0.45
 	self.tree_y = self.tree_y or 0
+
 	local ai_extension = ScriptUnit.has_extension(ai_unit, "ai_system")
 
 	if ai_extension then
@@ -647,11 +657,12 @@ AIDebugger.draw_behavior_tree = function (self, ai_unit, t, dt)
 
 		DrawAiBehaviour.tree_width(self.screen_gui, root_node)
 
-		local extra_info = nil
+		local extra_info
 		local group_extension = ScriptUnit.has_extension(ai_unit, "ai_group_system")
 
 		if group_extension and group_extension.template then
 			local group_template = AIGroupTemplates[group_extension.template]
+
 			extra_info = group_template.BT_debug and group_template.BT_debug(group_extension.group)
 		end
 
@@ -666,6 +677,7 @@ AIDebugger.draw_behavior_tree = function (self, ai_unit, t, dt)
 		if mouse_middle_held or pan_mouse_vertical then
 			local input_service = self.free_flight_manager.input_manager:get_service("Debug")
 			local look = input_service:get("look")
+
 			self.tree_x = self.tree_x - look.x * 0.001
 
 			if pan_mouse_vertical then
@@ -674,6 +686,7 @@ AIDebugger.draw_behavior_tree = function (self, ai_unit, t, dt)
 		elseif right_shoulder_held then
 			local input_service = self.free_flight_manager.input_manager:get_service("Debug")
 			local look = input_service:get("look_raw")
+
 			self.tree_x = self.tree_x - look.x * 0.1
 			self.tree_y = self.tree_y - look.y * 0.1
 		end
@@ -686,7 +699,7 @@ AIDebugger.draw_behavior_tree = function (self, ai_unit, t, dt)
 end
 
 AIDebugger.draw_reticule = function (self)
-	return
+	do return end
 
 	local crosshair = "crosshair_texture_1"
 	local atlas_name = "hud_assets"
@@ -706,14 +719,12 @@ AIDebugger.debug_player_intensity = function (self, t, dt)
 		Color(200, 160, 145, 0),
 		Color(200, 90, 150, 170),
 		Color(200, 10, 200, 100),
-		Color(200, 190, 50, 190)
+		Color(200, 190, 50, 190),
 	}
 	local gui = self.screen_gui
 	local res_x, res_y = Application.resolution()
 	local players = Managers.player:human_players()
-	local bar_width = 0.15
-	local bar_height = 0.02
-	local wedge = 0.0025
+	local bar_width, bar_height, wedge = 0.15, 0.02, 0.0025
 	local win_x = 1 - (bar_width + wedge)
 	local win_y = 0.15
 	local row = win_y
@@ -762,6 +773,7 @@ AIDebugger.debug_player_intensity = function (self, t, dt)
 	end
 
 	row = row + bar_height * 1.5
+
 	local small_font_size = 22
 
 	ScriptGUI.itext(gui, res_x, res_y, decay_text, font_mtrl, small_font_size, font, win_x, row + bar_height * 0.75, 3, Color(255, 200, 200, 32))
@@ -772,19 +784,19 @@ AIDebugger.debug_pacing = function (self, t, dt)
 	local cm = Managers.state.conflict
 	local res_x, res_y = Application.resolution()
 	local text_height = 0.02
-	local width = 0.3
-	local height = 0.2
-	local wedge = 0.0025
+	local width, height, wedge = 0.3, 0.2, 0.0025
 	local win_x = 0.45
 	local win_y = 0.01
 	local row = win_y
 	local info = CurrentPacing.name or "default"
 	local nx = ScriptGUI.itext_next_xy(gui, res_x, res_y, "Pacing: ", font_mtrl, font_size, font, win_x + wedge, row + text_height, 3, Color(255, 237, 237, 152))
+
 	nx = ScriptGUI.itext_next_xy(gui, res_x, res_y, info, font_mtrl, font_size, font, nx, row + text_height, 3, Color(255, 137, 237, 137))
 	nx = ScriptGUI.itext_next_xy(gui, res_x, res_y, "Conflict setting: ", font_mtrl, font_size, font, nx, row + text_height, 3, Color(255, 237, 237, 152))
 	nx = ScriptGUI.itext_next_xy(gui, res_x, res_y, tostring(cm.current_conflict_settings), font_mtrl, font_size, font, nx, row + text_height, 3, Color(255, 137, 237, 137))
 	row = row + 0.03
-	local text, spawning_text = nil
+
+	local text, spawning_text
 	local state_name, state_start_time, threat_population, specials_population, horde_population, end_time = cm.pacing:get_pacing_data()
 	local roamers = threat_population > 0 and "[Roamers]" or "[NO Roamers]"
 	local specials = horde_population > 0 and "[Specials]" or "[NO Specials]"
@@ -792,6 +804,7 @@ AIDebugger.debug_pacing = function (self, t, dt)
 
 	if end_time then
 		local count_down = math.clamp(end_time - t, 0, 999999)
+
 		text = string.format("State: %s time left: %.1f", state_name, count_down)
 		spawning_text = string.format("%s%s%s", roamers, specials, horde)
 	else
@@ -806,7 +819,8 @@ AIDebugger.debug_pacing = function (self, t, dt)
 	ScriptGUI.itext(gui, res_x, res_y, spawning_text, font_mtrl, font_size_medium, font, win_x + wedge, row + text_height, 3, Color(255, 137, 237, 152))
 
 	row = row + 0.03
-	local s1 = nil
+
+	local s1
 
 	if script_data.ai_horde_spawning_disabled then
 		s1 = string.format("Horde spawning is disabled")
@@ -894,9 +908,9 @@ AIDebugger.create_fake_players = function (self)
 	local player_unit = player.player_unit
 	local center_position = POSITION_LOOKUP[player_unit]
 	local nav_world = Managers.state.entity:system("ai_system"):nav_world()
-	self._fake_players = {
-		Vector3Box(center_position)
-	}
+
+	self._fake_players = {}
+	self._fake_players[1] = Vector3Box(center_position)
 
 	for i = 2, 4 do
 		self._fake_players[i] = Vector3Box(LocomotionUtils.new_random_goal(nav_world, nil, center_position, 5, 20, 10))
@@ -925,6 +939,7 @@ AIDebugger.draw_extensions = function (self, ai_unit)
 	Gui.text(gui, header, font_mtrl, font_size, font, pos, Color(255, 255, 255, 255))
 
 	pos.y = pos.y - font_size
+
 	local unit_extensions = ScriptUnit.extensions(ai_unit)
 
 	for system_name, _ in pairs(unit_extensions) do

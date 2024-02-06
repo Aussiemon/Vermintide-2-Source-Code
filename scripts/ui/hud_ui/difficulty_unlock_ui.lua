@@ -1,10 +1,14 @@
+﻿-- chunkname: @scripts/ui/hud_ui/difficulty_unlock_ui.lua
+
 require("scripts/settings/difficulty_settings")
 
 local definitions = local_require("scripts/ui/hud_ui/difficulty_unlock_ui_definitions")
 local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animations
 local survival_start_wave_by_difficulty = SurvivalStartWaveByDifficulty
+
 DifficultyUnlockUI = class(DifficultyUnlockUI)
+
 local DO_RELOAD = false
 
 DifficultyUnlockUI.init = function (self, parent, ingame_ui_context)
@@ -25,11 +29,13 @@ end
 
 DifficultyUnlockUI.create_ui_elements = function (self)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+
 	local widget_definitions = definitions.widget_definitions
 	local icon_widgets = {}
 
 	for i = 1, 5 do
 		local definition_name = "difficulty_icon_" .. i
+
 		icon_widgets[i] = UIWidget.init(widget_definitions[definition_name])
 	end
 
@@ -58,6 +64,7 @@ DifficultyUnlockUI.difficulty_set = function (self)
 	local current_difficulty = self.difficulty_manager:get_difficulty()
 	local start_index = table.find(mirrored_level_difficulties, current_difficulty)
 	local highest_completed_difficulty_index = LevelUnlockUtils.completed_level_difficulty_index(statistics_db, player_stats_id, level_key) or 0
+
 	highest_completed_difficulty_index = highest_completed_difficulty_index + 1
 
 	if start_index and current_difficulty ~= level_difficulties[#level_difficulties] then
@@ -70,6 +77,7 @@ DifficultyUnlockUI.difficulty_set = function (self)
 
 			if difficulty ~= current_difficulty and highest_completed_difficulty_index < i then
 				local wave_by_difficulty = survival_start_wave_by_difficulty[difficulty]
+
 				persentation_wave_list[#persentation_wave_list + 1] = wave_by_difficulty - original_start_wave
 				persentation_wave_difficulty_list[#persentation_wave_difficulty_list + 1] = difficulty
 			end
@@ -96,6 +104,7 @@ DifficultyUnlockUI.align_icon_widgets = function (self)
 			local scenegraph_id = widget.scenegraph_id
 			local widget_scenegraph = ui_scenegraph[scenegraph_id]
 			local local_position = widget_scenegraph.local_position
+
 			local_position[1] = draw_position_x
 			draw_position_x = draw_position_x + widget_width
 			widget.element.dirty = true
@@ -111,6 +120,7 @@ end
 
 DifficultyUnlockUI.set_visible = function (self, visible)
 	self.is_visible = visible
+
 	local ui_renderer = self.ui_renderer
 	local icon_widgets = self.icon_widgets
 
@@ -125,7 +135,7 @@ DifficultyUnlockUI._check_for_presentation_start = function (self, mission_data)
 	local previous_wave_completed = self.previous_wave_completed or 0
 	local wave_completed = mission_data.wave_completed - mission_data.starting_wave
 
-	if previous_wave_completed >= wave_completed then
+	if wave_completed <= previous_wave_completed then
 		return
 	end
 
@@ -181,7 +191,7 @@ DifficultyUnlockUI.update = function (self, dt, mission_data)
 		return
 	end
 
-	local is_dirty = nil
+	local is_dirty
 	local ui_animations = self.ui_animations
 
 	if ui_animations then
@@ -289,6 +299,7 @@ DifficultyUnlockUI.display_unlock = function (self, level_key, difficulty)
 	local difficulty_settings = DifficultySettings[difficulty]
 	local rank = difficulty_settings.rank
 	local display_name = difficulty_settings.display_name
+
 	self.difficulty_text_widget.content.text = display_name
 
 	self:set_difficulty_amount(rank)
@@ -303,7 +314,7 @@ end
 
 DifficultyUnlockUI.start_presentation_animation = function (self)
 	local params = {
-		wwise_world = self.wwise_world
+		wwise_world = self.wwise_world,
 	}
 	local widgets = {}
 	local icon_draw_count = self.icon_draw_count
@@ -326,7 +337,7 @@ end
 
 DifficultyUnlockUI.start_explode_animation = function (self)
 	local params = {
-		wwise_world = self.wwise_world
+		wwise_world = self.wwise_world,
 	}
 	local widgets = {}
 	local icon_draw_count = self.icon_draw_count
@@ -344,6 +355,8 @@ DifficultyUnlockUI.start_explode_animation = function (self)
 	widgets.background_glow = self.background_glow_widget
 	widgets.difficulty_text = self.difficulty_text_widget
 	widgets.difficulty_title_text = self.difficulty_title_text_widget
+
 	local animation_name = icon_draw_count == 4 and "explode_parts_4" or "explode_parts_5"
+
 	self.explode_anim_id = self.ui_animator:start_animation(animation_name, widgets, scenegraph_definition, params)
 end

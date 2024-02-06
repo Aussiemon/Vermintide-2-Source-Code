@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/dlcs/shovel/action_career_bw_necromancer_command_vent.lua
+
 ActionCareerBWNecromancerCommandVent = class(ActionCareerBWNecromancerCommandVent, ActionBase)
 
 ActionCareerBWNecromancerCommandVent.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
@@ -32,8 +34,11 @@ ActionCareerBWNecromancerCommandVent.client_owner_start_action = function (self,
 	if fp_extension then
 		local fp_unit = fp_extension:get_first_person_unit()
 		local trail_node = Unit.node(fp_unit, "j_aim_target")
+
 		self._sacrifice_vfx_trail = ScriptWorld.create_particles_linked(self._world, "fx/pet_skeleton_sacrifice_trail", fp_unit, trail_node, "destroy")
+
 		local hand_node = Unit.node(fp_unit, "j_righthand")
+
 		self._sacrifice_vfx_hand = ScriptWorld.create_particles_linked(self._world, "fx/necromancer_skeleton_sacrifice_hand", fp_unit, hand_node, "destroy")
 		self._vfx_stop_t = t + 0.8
 	end
@@ -50,7 +55,7 @@ ActionCareerBWNecromancerCommandVent.client_owner_start_action = function (self,
 end
 
 ActionCareerBWNecromancerCommandVent.client_owner_post_update = function (self, dt, t, world, can_damage)
-	if self._vfx_stop_t and self._vfx_stop_t < t then
+	if self._vfx_stop_t and t > self._vfx_stop_t then
 		World.stop_spawning_particles(self._world, self._sacrifice_vfx_trail)
 
 		self._vfx_stop_t = nil

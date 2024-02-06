@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/mutators/mutator_beasts.lua
+
 return {
 	description = "weaves_beasts_mutator_desc",
 	display_name = "weaves_beasts_mutator_name",
@@ -34,6 +36,7 @@ return {
 
 		if data.update_timer > 1 then
 			data.update_timer = 0
+
 			local host_player = Managers.player:local_player()
 			local host_unit = host_player and host_player.player_unit
 
@@ -69,9 +72,11 @@ return {
 						if totem.respawn_time <= 0 then
 							totem.active = true
 							totem.respawn_time = data.totem_respawn_time
+
 							local position = Unit.local_position(totem.unit, 0)
 							local rotation = Unit.local_rotation(totem.unit, 0)
 							local unit = Managers.state.unit_spawner:spawn_network_unit(data.unit_name, data.unit_extension_template, data.extension_init_data, position, rotation)
+
 							totem.unit = unit
 						end
 					end
@@ -90,6 +95,7 @@ return {
 
 			for i = 1, #to_remove do
 				local ai_unit = to_remove[i]
+
 				data.old_ai_units_inside[ai_unit] = nil
 			end
 
@@ -98,6 +104,7 @@ return {
 
 				if buff_extension and not buff_extension:get_non_stacking_buff(data.buff_template_name) and not buff_extension:get_non_stacking_buff("healing_standard") then
 					local buff_id = data.buff_system:add_buff(ai_unit, data.buff_template_name, ai_unit, true)
+
 					data.old_ai_units_inside[ai_unit] = buff_id
 				end
 			end
@@ -111,6 +118,7 @@ return {
 		local difficulty_name = Managers.state.difficulty:get_difficulty()
 		local wind_strength = weave_manager:get_wind_strength()
 		local wind_settings = weave_manager:get_active_wind_settings()
+
 		data.beacon_unit = wind_settings.beacon_unit
 		data.physics_world = World.physics_world(context.world)
 		data.audio_system = Managers.state.entity:system("audio_system")
@@ -128,12 +136,13 @@ return {
 		data.extension_init_data = {
 			health_system = {
 				damage_cap_per_hit = 1,
-				health = 5
+				health = 5,
 			},
 			hit_reaction_system = {
-				hit_reaction_template = "level_object"
-			}
+				hit_reaction_template = "level_object",
+			},
 		}
+
 		local mutator_item_config = objective.mutator_item_config
 		local mutator_item_system = Managers.state.entity:system("mutator_item_system")
 		local units = mutator_item_system:spawn_mutator_items(mutator_item_config)
@@ -145,8 +154,9 @@ return {
 				active = true,
 				unit = unit,
 				respawn_time = data.totem_respawn_time,
-				ai_units_inside = {}
+				ai_units_inside = {},
 			}
+
 			data.totems[#data.totems + 1] = totem
 		end
 	end,
@@ -161,5 +171,5 @@ return {
 		end
 
 		data.template.update_totems(context, data, dt, t)
-	end
+	end,
 }

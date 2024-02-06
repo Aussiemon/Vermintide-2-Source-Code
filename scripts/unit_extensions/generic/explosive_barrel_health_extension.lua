@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/generic/explosive_barrel_health_extension.lua
+
 ExplosiveBarrelHealthExtension = class(ExplosiveBarrelHealthExtension, GenericHealthExtension)
 
 ExplosiveBarrelHealthExtension.init = function (self, extension_init_context, unit, extension_init_data)
@@ -5,13 +7,16 @@ ExplosiveBarrelHealthExtension.init = function (self, extension_init_context, un
 
 	self.in_hand = extension_init_data.in_hand
 	self.item_name = extension_init_data.item_name
+
 	local data = extension_init_data.health_data
 
 	if data then
 		self.ignited = true
 		self.explode_time = data.explode_time
 		self.fuse_time = data.fuse_time
+
 		local last_damage_data = self.last_damage_data
+
 		last_damage_data.attacker_unit_id = data.attacker_unit_id
 		self.insta_explode = not self.in_hand
 
@@ -63,11 +68,11 @@ ExplosiveBarrelHealthExtension.update = function (self, dt, context, t)
 
 		Unit.set_data(self.unit, "fuse_time_percent", fuse_time_percent)
 
-		if self.explode_time <= network_time then
+		if network_time >= self.explode_time then
 			self.insta_explode = true
 
 			self:add_damage(self.unit, self.health, "full", "undefined", Unit.world_position(self.unit, 0), Vector3(0, 0, -1), nil, nil, self.last_attacker_unit)
-		elseif not self.in_hand and not self.insta_explode and self.insta_explode_time <= network_time then
+		elseif not self.in_hand and not self.insta_explode and network_time >= self.insta_explode_time then
 			self.insta_explode = true
 		elseif not self.played_fuse_out and network_time >= self.explode_time - 1.2 then
 			Unit.flow_event(self.unit, "exploding_barrel_fuse_out")
@@ -87,6 +92,7 @@ ExplosiveBarrelHealthExtension.add_damage = function (self, attacker_unit, damag
 	end
 
 	self.last_attacker_unit = attacker_unit
+
 	local did_damage = damage_amount > 0
 	local unit = self.unit
 	local network_manager = Managers.state.network
@@ -104,6 +110,7 @@ ExplosiveBarrelHealthExtension.add_damage = function (self, attacker_unit, damag
 
 	if not self:get_is_invincible() and not self.dead then
 		local internal_damage_amount = did_damage and self.insta_explode and self.health or 0
+
 		self.damage = self.damage + internal_damage_amount
 
 		if self:_should_die() and (self.is_server or not unit_id) then
@@ -141,7 +148,7 @@ ExplosiveBarrelHealthExtension.health_data = function (self)
 	local data = {
 		fuse_time = self.fuse_time,
 		explode_time = self.explode_time,
-		attacker_unit_id = last_damage_data.attacker_unit_id
+		attacker_unit_id = last_damage_data.attacker_unit_id,
 	}
 
 	return data

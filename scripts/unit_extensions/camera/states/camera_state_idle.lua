@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/camera/states/camera_state_idle.lua
+
 CameraStateIdle = class(CameraStateIdle, CameraState)
 
 CameraStateIdle.init = function (self, camera_state_init_context)

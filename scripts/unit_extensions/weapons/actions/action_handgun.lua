@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/weapons/actions/action_handgun.lua
+
 ActionHandgun = class(ActionHandgun, ActionBase)
 
 ActionHandgun.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
@@ -14,6 +16,7 @@ ActionHandgun.client_owner_start_action = function (self, new_action, t, chain_a
 	local owner_unit = self.owner_unit
 	local is_critical_strike = ActionUtils.is_critical_strike(owner_unit, new_action, t)
 	local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
+
 	self.current_action = new_action
 	self.power_level = power_level
 
@@ -26,7 +29,7 @@ ActionHandgun.client_owner_start_action = function (self, new_action, t, chain_a
 
 	if not Managers.player:owner(self.owner_unit).bot_player then
 		Managers.state.controller_features:add_effect("rumble", {
-			rumble_effect = "light_swing"
+			rumble_effect = "light_swing",
 		})
 	end
 
@@ -53,6 +56,7 @@ ActionHandgun.client_owner_start_action = function (self, new_action, t, chain_a
 	self.uses_ability_cooldown = new_action.use_ability_cooldown
 	self.used_ammo = false
 	self.active_reload_time = new_action.active_reload_time and t + new_action.active_reload_time
+
 	local hud_extension = ScriptUnit.has_extension(owner_unit, "hud_system")
 
 	self:_handle_critical_strike(is_critical_strike, buff_extension, hud_extension, nil, "on_critical_shot", nil)
@@ -65,7 +69,7 @@ ActionHandgun.client_owner_post_update = function (self, dt, t, world, can_damag
 	local owner_unit = self.owner_unit
 	local current_action = self.current_action
 
-	if self.state == "waiting_to_shoot" and self.time_to_shoot <= t then
+	if self.state == "waiting_to_shoot" and t >= self.time_to_shoot then
 		self.state = "shooting"
 
 		if self.ammo_extension and not self.extra_buff_shot and self.ammo_usage then
@@ -105,7 +109,7 @@ ActionHandgun.client_owner_post_update = function (self, dt, t, world, can_damag
 
 		if not Managers.player:owner(self.owner_unit).bot_player then
 			Managers.state.controller_features:add_effect("rumble", {
-				rumble_effect = "handgun_fire"
+				rumble_effect = "handgun_fire",
 			})
 		end
 
@@ -132,9 +136,9 @@ ActionHandgun.client_owner_post_update = function (self, dt, t, world, can_damag
 
 		local physics_world = World.get_data(world, "physics_world")
 		local auto_hit_chance = current_action.aim_assist_auto_hit_chance or 0
-		local direction = nil
+		local direction
 
-		if math.random() <= auto_hit_chance and Managers.input:is_device_active("gamepad") and ScriptUnit.has_extension(owner_unit, "smart_targeting_system") then
+		if auto_hit_chance >= math.random() and Managers.input:is_device_active("gamepad") and ScriptUnit.has_extension(owner_unit, "smart_targeting_system") then
 			local targeting_extension = ScriptUnit.extension(owner_unit, "smart_targeting_system")
 			local targeting_data = targeting_extension:get_targeting_data()
 			local target_position = targeting_data.target_position
@@ -145,7 +149,8 @@ ActionHandgun.client_owner_post_update = function (self, dt, t, world, can_damag
 		end
 
 		direction = direction or Quaternion.forward(rotation)
-		local result = nil
+
+		local result
 
 		if current_action.projectile_info then
 			local angle = ActionUtils.pitch_from_rotation(rotation)
@@ -193,7 +198,7 @@ ActionHandgun.client_owner_post_update = function (self, dt, t, world, can_damag
 	if self.state == "shot" and self.active_reload_time then
 		local input_extension = ScriptUnit.extension(owner_unit, "input_system")
 
-		if self.active_reload_time < t then
+		if t > self.active_reload_time then
 			local ammo_extension = self.ammo_extension
 
 			if (input_extension:get("weapon_reload") or input_extension:get_buffer("weapon_reload")) and ammo_extension:can_reload() then
@@ -246,6 +251,7 @@ ActionHandgun.finish = function (self, reason)
 	end
 
 	self.charge_multiplier = nil
+
 	local hud_extension = ScriptUnit.has_extension(owner_unit, "hud_system")
 
 	if hud_extension then

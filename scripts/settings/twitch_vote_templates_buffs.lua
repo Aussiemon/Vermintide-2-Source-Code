@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/twitch_vote_templates_buffs.lua
+
 local function debug_print(message, ...)
 	if DEBUG_TWITCH then
 		print("[Twitch] " .. string.format(message, ...))
@@ -5,15 +7,17 @@ local function debug_print(message, ...)
 end
 
 TwitchVoteTemplates = TwitchVoteTemplates or {}
+
 local twitch_settings = TwitchSettings
+
 TwitchVoteTemplates.twitch_add_speed_potion_buff = {
 	cost = -200,
-	use_frame_texture = true,
-	texture_id = "twitch_icon_boon_of_speed",
 	text = "twitch_vote_speed_potion_buff_all",
+	texture_id = "twitch_icon_boon_of_speed",
+	use_frame_texture = true,
 	texture_size = {
 		70,
-		70
+		70,
 	},
 	condition_func = function ()
 		return not twitch_settings.disable_positive_votes
@@ -35,16 +39,16 @@ TwitchVoteTemplates.twitch_add_speed_potion_buff = {
 				end
 			end
 		end
-	end
+	end,
 }
 TwitchVoteTemplates.twitch_add_damage_potion_buff = {
 	cost = -200,
-	use_frame_texture = true,
-	texture_id = "twitch_icon_boon_of_strength",
 	text = "twitch_vote_damage_potion_buff_all",
+	texture_id = "twitch_icon_boon_of_strength",
+	use_frame_texture = true,
 	texture_size = {
 		70,
-		70
+		70,
 	},
 	condition_func = function ()
 		return not twitch_settings.disable_positive_votes
@@ -66,16 +70,16 @@ TwitchVoteTemplates.twitch_add_damage_potion_buff = {
 				end
 			end
 		end
-	end
+	end,
 }
 TwitchVoteTemplates.twitch_add_cooldown_potion_buff = {
 	cost = -200,
-	use_frame_texture = true,
-	texture_id = "twitch_icon_boon_of_concentration",
 	text = "twitch_vote_cooldown_potion_buff_all",
+	texture_id = "twitch_icon_boon_of_concentration",
+	use_frame_texture = true,
 	texture_size = {
 		70,
-		70
+		70,
 	},
 	condition_func = function ()
 		return not twitch_settings.disable_positive_votes
@@ -97,16 +101,16 @@ TwitchVoteTemplates.twitch_add_cooldown_potion_buff = {
 				end
 			end
 		end
-	end
+	end,
 }
 TwitchVoteTemplates.twitch_grimoire_health_debuff = {
 	cost = 200,
-	use_frame_texture = true,
-	texture_id = "twitch_icon_curse_of_the_rat",
 	text = "twitch_vote_grimoire_health_debuff_all",
+	texture_id = "twitch_icon_curse_of_the_rat",
+	use_frame_texture = true,
 	texture_size = {
 		70,
-		70
+		70,
 	},
 	on_success = function (is_server)
 		if is_server then
@@ -125,16 +129,16 @@ TwitchVoteTemplates.twitch_grimoire_health_debuff = {
 				end
 			end
 		end
-	end
+	end,
 }
 TwitchVoteTemplates.twitch_no_overcharge_no_ammo_reloads = {
 	cost = -200,
-	use_frame_texture = true,
-	texture_id = "twitch_icon_guns_blazing",
 	text = "twitch_vote_twitch_no_overcharge_no_ammo_reloads_all",
+	texture_id = "twitch_icon_guns_blazing",
+	use_frame_texture = true,
 	texture_size = {
 		70,
-		70
+		70,
 	},
 	condition_func = function ()
 		return not twitch_settings.disable_positive_votes
@@ -170,16 +174,16 @@ TwitchVoteTemplates.twitch_no_overcharge_no_ammo_reloads = {
 				end
 			end
 		end
-	end
+	end,
 }
 TwitchVoteTemplates.twitch_health_regen = {
 	cost = -200,
-	use_frame_texture = true,
-	texture_id = "twitch_icon_blessing_of_regeneration",
 	text = "twitch_vote_health_regen_all",
+	texture_id = "twitch_icon_blessing_of_regeneration",
+	use_frame_texture = true,
 	texture_size = {
 		70,
-		70
+		70,
 	},
 	condition_func = function ()
 		return not twitch_settings.disable_positive_votes
@@ -201,17 +205,17 @@ TwitchVoteTemplates.twitch_health_regen = {
 				end
 			end
 		end
-	end
+	end,
 }
 TwitchVoteTemplates.twitch_health_degen = {
 	cost = 100,
-	use_frame_texture = true,
-	texture_id = "twitch_icon_blood_loss",
 	multiple_choice = true,
 	text = "twitch_vote_health_degen_all",
+	texture_id = "twitch_icon_blood_loss",
+	use_frame_texture = true,
 	texture_size = {
 		70,
-		70
+		70,
 	},
 	on_success = function (is_server, vote_index)
 		if is_server then
@@ -237,16 +241,16 @@ TwitchVoteTemplates.twitch_health_degen = {
 				end
 			end
 		end
-	end
+	end,
 }
 TwitchVoteTemplates.twitch_vote_activate_root_all = {
 	cost = 200,
-	use_frame_texture = true,
-	texture_id = "twitch_icon_root_all_players",
 	text = "display_name_twitch_root_all",
+	texture_id = "twitch_icon_root_all_players",
+	use_frame_texture = true,
 	texture_size = {
 		70,
-		70
+		70,
 	},
 	condition_func = function ()
 		local total_intensity = Managers.state.conflict.pacing:get_pacing_intensity()
@@ -270,17 +274,17 @@ TwitchVoteTemplates.twitch_vote_activate_root_all = {
 				end
 			end
 		end
-	end
+	end,
 }
 TwitchVoteTemplates.twitch_vote_activate_root = {
 	cost = 100,
-	use_frame_texture = true,
-	texture_id = "twitch_icon_root_player",
 	multiple_choice = true,
 	text = "display_name_twitch_root",
+	texture_id = "twitch_icon_root_player",
+	use_frame_texture = true,
 	texture_size = {
 		70,
-		70
+		70,
 	},
 	condition_func = function ()
 		local total_intensity = Managers.state.conflict.pacing:get_pacing_intensity()
@@ -311,17 +315,17 @@ TwitchVoteTemplates.twitch_vote_activate_root = {
 				end
 			end
 		end
-	end
+	end,
 }
 TwitchVoteTemplates.twitch_vote_hemmoraghe = {
 	cost = 200,
-	use_frame_texture = true,
-	texture_id = "twitch_icon_hemmohage",
 	multiple_choice = true,
 	text = "display_name_hemmoraghe",
+	texture_id = "twitch_icon_hemmohage",
+	use_frame_texture = true,
 	texture_size = {
 		70,
-		70
+		70,
 	},
 	on_success = function (is_server, vote_index)
 		if is_server then
@@ -347,16 +351,16 @@ TwitchVoteTemplates.twitch_vote_hemmoraghe = {
 				end
 			end
 		end
-	end
+	end,
 }
 TwitchVoteTemplates.twitch_vote_full_temp_hp = {
 	cost = -200,
-	use_frame_texture = true,
-	texture_id = "twitch_icon_shield",
 	text = "display_name_twitch_full_temp_hp",
+	texture_id = "twitch_icon_shield",
+	use_frame_texture = true,
 	texture_size = {
 		70,
-		70
+		70,
 	},
 	condition_func = function ()
 		return not twitch_settings.disable_positive_votes
@@ -378,16 +382,16 @@ TwitchVoteTemplates.twitch_vote_full_temp_hp = {
 				end
 			end
 		end
-	end
+	end,
 }
 TwitchVoteTemplates.twitch_vote_critical_strikes = {
 	cost = -200,
-	use_frame_texture = true,
-	texture_id = "twitch_icon_critical_senses",
 	text = "display_name_twitch_critical_strikes",
+	texture_id = "twitch_icon_critical_senses",
+	use_frame_texture = true,
 	texture_size = {
 		70,
-		70
+		70,
 	},
 	condition_func = function ()
 		return not twitch_settings.disable_positive_votes
@@ -409,17 +413,17 @@ TwitchVoteTemplates.twitch_vote_critical_strikes = {
 				end
 			end
 		end
-	end
+	end,
 }
 TwitchVoteTemplates.twitch_vote_infinite_bombs = {
 	cost = -200,
-	use_frame_texture = true,
-	texture_id = "twitch_icon_infinite_bomb",
 	multiple_choice = true,
 	text = "display_name_twitch_infinite_bombs",
+	texture_id = "twitch_icon_infinite_bomb",
+	use_frame_texture = true,
 	texture_size = {
 		70,
-		70
+		70,
 	},
 	condition_func = function ()
 		return not twitch_settings.disable_positive_votes
@@ -448,17 +452,17 @@ TwitchVoteTemplates.twitch_vote_infinite_bombs = {
 				end
 			end
 		end
-	end
+	end,
 }
 TwitchVoteTemplates.twitch_vote_invincibility = {
 	cost = -200,
-	use_frame_texture = true,
-	texture_id = "twitch_icon_invincibility",
 	multiple_choice = true,
 	text = "display_name_twitch_invincibility",
+	texture_id = "twitch_icon_invincibility",
+	use_frame_texture = true,
 	texture_size = {
 		70,
-		70
+		70,
 	},
 	condition_func = function ()
 		local total_intensity = Managers.state.conflict.pacing:get_pacing_intensity()
@@ -489,5 +493,5 @@ TwitchVoteTemplates.twitch_vote_invincibility = {
 				end
 			end
 		end
-	end
+	end,
 }

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/room/room_manager_server.lua
+
 require("scripts/managers/room/room_handler")
 
 RoomManagerServer = class(RoomManagerServer)
@@ -17,9 +19,10 @@ RoomManagerServer.create_room = function (self, peer_id, local_player_id)
 	local profile = SPProfiles[profile_index]
 	local room_profile = profile.room_profile
 	local room_id = self._room_handler:create_room(room_profile)
+
 	self._peer_rooms[peer_id] = {
 		room_id = room_id,
-		profile_index = profile_index
+		profile_index = profile_index,
 	}
 	self._room_order[room_id] = peer_id
 
@@ -81,15 +84,19 @@ RoomManagerServer.move_players_from_room = function (self, room_id)
 				local spawn_rot = spawn_point.rot:unbox()
 
 				if player.local_player then
-					local locomotion_extension = ScriptUnit.extension(player_unit, "locomotion_system")
+					do
+						local locomotion_extension = ScriptUnit.extension(player_unit, "locomotion_system")
 
-					locomotion_extension:teleport_to(spawn_pos, spawn_rot)
-				else
-					local unit_id = network_manager:unit_game_object_id(player_unit)
-					local channel_id = PEER_ID_TO_CHANNEL[peer_id]
+						locomotion_extension:teleport_to(spawn_pos, spawn_rot)
+					end
 
-					RPC.rpc_teleport_unit_to(channel_id, unit_id, spawn_pos, spawn_rot)
+					break
 				end
+
+				local unit_id = network_manager:unit_game_object_id(player_unit)
+				local channel_id = PEER_ID_TO_CHANNEL[peer_id]
+
+				RPC.rpc_teleport_unit_to(channel_id, unit_id, spawn_pos, spawn_rot)
 			end
 		until true
 	end

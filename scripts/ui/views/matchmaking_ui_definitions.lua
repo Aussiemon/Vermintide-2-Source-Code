@@ -1,503 +1,516 @@
+﻿-- chunkname: @scripts/ui/views/matchmaking_ui_definitions.lua
+
 local scenegraph_definition = {
 	screen = {
 		scale = "fit",
 		size = {
 			1920,
-			1080
+			1080,
 		},
 		position = {
 			0,
 			0,
-			UILayer.matchmaking - 10
-		}
+			UILayer.matchmaking - 10,
+		},
 	},
 	window_root = {
-		vertical_alignment = "top",
-		parent = "screen",
 		horizontal_alignment = "right",
+		parent = "screen",
+		vertical_alignment = "top",
 		size = {
 			0,
-			0
+			0,
 		},
 		position = {
 			0,
 			0,
-			0
-		}
+			0,
+		},
 	},
 	window = {
-		vertical_alignment = "top",
-		parent = "window_root",
 		horizontal_alignment = "right",
+		parent = "window_root",
+		vertical_alignment = "top",
 		size = {
 			506,
-			136
+			136,
 		},
 		position = {
 			0,
 			0,
-			5
-		}
+			5,
+		},
 	},
 	loading_icon = {
-		vertical_alignment = "top",
-		parent = "window",
 		horizontal_alignment = "right",
+		parent = "window",
+		vertical_alignment = "top",
 		size = {
 			141,
-			141
+			141,
 		},
 		position = {
 			15,
 			15,
-			1
-		}
+			1,
+		},
 	},
 	loading_status_frame = {
-		vertical_alignment = "center",
-		parent = "loading_icon",
 		horizontal_alignment = "center",
+		parent = "loading_icon",
+		vertical_alignment = "center",
 		size = {
 			141,
-			141
+			141,
 		},
 		position = {
 			0,
 			0,
-			1
-		}
+			1,
+		},
 	},
 	status_text = {
-		vertical_alignment = "top",
-		parent = "window",
 		horizontal_alignment = "left",
+		parent = "window",
+		vertical_alignment = "top",
 		size = {
 			360,
-			35
+			35,
 		},
 		position = {
 			43,
 			-28,
-			1
-		}
+			1,
+		},
 	},
 	window_party = {
-		vertical_alignment = "bottom",
-		parent = "window",
 		horizontal_alignment = "center",
+		parent = "window",
+		vertical_alignment = "bottom",
 		size = {
 			400,
-			50
+			50,
 		},
 		position = {
 			0,
 			-80,
-			1
-		}
+			1,
+		},
 	},
 	detailed_info_box = {
-		vertical_alignment = "top",
-		parent = "window_root",
 		horizontal_alignment = "right",
+		parent = "window_root",
+		vertical_alignment = "top",
 		size = {
 			400,
-			150
+			150,
 		},
 		position = {
 			0,
 			-60,
-			0
-		}
+			0,
+		},
 	},
 	level_key_info_box = {
-		vertical_alignment = "top",
-		parent = "detailed_info_box",
 		horizontal_alignment = "left",
+		parent = "detailed_info_box",
+		vertical_alignment = "top",
 		size = {
 			270,
-			150
+			150,
 		},
 		position = {
 			0,
 			0,
-			0
-		}
+			0,
+		},
 	},
 	party_slot_root = {
-		vertical_alignment = "top",
-		parent = "detailed_info_box",
 		horizontal_alignment = "center",
+		parent = "detailed_info_box",
+		vertical_alignment = "top",
 		size = {
 			0,
-			0
+			0,
 		},
 		position = {
 			0,
 			-50,
-			1
-		}
+			1,
+		},
 	},
 	party_slot_1 = {
-		vertical_alignment = "center",
-		parent = "party_slot_root",
 		horizontal_alignment = "center",
+		parent = "party_slot_root",
+		vertical_alignment = "center",
 		size = {
 			60,
-			70
+			70,
 		},
 		position = {
 			-135,
 			-52,
-			1
-		}
+			1,
+		},
 	},
 	party_slot_2 = {
-		vertical_alignment = "center",
-		parent = "party_slot_root",
 		horizontal_alignment = "center",
+		parent = "party_slot_root",
+		vertical_alignment = "center",
 		size = {
 			60,
-			70
+			70,
 		},
 		position = {
 			-45,
 			-52,
-			1
-		}
+			1,
+		},
 	},
 	party_slot_3 = {
-		vertical_alignment = "center",
-		parent = "party_slot_root",
 		horizontal_alignment = "center",
+		parent = "party_slot_root",
+		vertical_alignment = "center",
 		size = {
 			60,
-			70
+			70,
 		},
 		position = {
 			45,
 			-52,
-			1
-		}
+			1,
+		},
 	},
 	party_slot_4 = {
-		vertical_alignment = "center",
-		parent = "party_slot_root",
 		horizontal_alignment = "center",
+		parent = "party_slot_root",
+		vertical_alignment = "center",
 		size = {
 			60,
-			70
+			70,
 		},
 		position = {
 			135,
 			-52,
-			1
-		}
+			1,
+		},
 	},
 	slot_reservations = {
-		vertical_alignment = "center",
-		parent = "detailed_info_box",
 		horizontal_alignment = "center",
+		parent = "detailed_info_box",
+		vertical_alignment = "center",
 		size = {
 			556,
-			160
+			160,
 		},
 		position = {
 			0,
 			-30,
-			1
-		}
+			1,
+		},
 	},
 	timer_bg = {
-		vertical_alignment = "top",
-		parent = "detailed_info_box",
 		horizontal_alignment = "center",
+		parent = "detailed_info_box",
+		vertical_alignment = "top",
 		size = {
 			400,
-			16
+			16,
 		},
 		position = {
 			0,
 			-140,
-			3
-		}
+			3,
+		},
 	},
 	timer_fg = {
-		vertical_alignment = "center",
-		parent = "timer_bg",
 		horizontal_alignment = "left",
+		parent = "timer_bg",
+		vertical_alignment = "center",
 		size = {
 			392,
-			16
+			16,
 		},
 		position = {
 			4,
 			0,
-			3
-		}
+			3,
+		},
 	},
 	timer_glow = {
-		vertical_alignment = "center",
-		parent = "timer_fg",
 		horizontal_alignment = "right",
+		parent = "timer_fg",
+		vertical_alignment = "center",
 		size = {
 			45,
-			80
+			80,
 		},
 		position = {
 			22,
 			0,
-			3
-		}
+			3,
+		},
 	},
 	cancel_text_field = {
-		vertical_alignment = "bottom",
-		parent = "detailed_info_box",
 		horizontal_alignment = "center",
+		parent = "detailed_info_box",
+		vertical_alignment = "bottom",
 		size = {
 			400,
-			50
+			50,
 		},
 		position = {
 			0,
 			-50,
-			3
-		}
+			3,
+		},
 	},
 	cancel_input_backround = {
-		vertical_alignment = "center",
-		parent = "cancel_text_field",
 		horizontal_alignment = "center",
+		parent = "cancel_text_field",
+		vertical_alignment = "center",
 		size = {
 			411,
-			61
+			61,
 		},
 		position = {
 			0,
 			0,
-			1
-		}
+			1,
+		},
 	},
 	cancel_text_input = {
-		vertical_alignment = "center",
-		parent = "cancel_text_field",
 		horizontal_alignment = "center",
+		parent = "cancel_text_field",
+		vertical_alignment = "center",
 		size = {
 			400,
-			50
+			50,
 		},
 		position = {
 			200,
 			0,
-			2
-		}
+			2,
+		},
 	},
 	cancel_text_prefix = {
-		vertical_alignment = "center",
-		parent = "cancel_text_field",
 		horizontal_alignment = "center",
+		parent = "cancel_text_field",
+		vertical_alignment = "center",
 		size = {
 			400,
-			50
+			50,
 		},
 		position = {
 			200,
 			0,
-			2
-		}
+			2,
+		},
 	},
 	cancel_text_suffix = {
-		vertical_alignment = "center",
-		parent = "cancel_text_field",
 		horizontal_alignment = "center",
+		parent = "cancel_text_field",
+		vertical_alignment = "center",
 		size = {
 			400,
-			50
+			50,
 		},
 		position = {
 			200,
 			0,
-			2
-		}
+			2,
+		},
 	},
 	cancel_icon = {
-		vertical_alignment = "center",
-		parent = "cancel_text_field",
 		horizontal_alignment = "center",
+		parent = "cancel_text_field",
+		vertical_alignment = "center",
 		size = {
 			36,
-			26
+			26,
 		},
 		position = {
 			0,
 			0,
-			2
-		}
+			2,
+		},
 	},
 	versus_cancel_text_input = {
-		vertical_alignment = "center",
-		parent = "cancel_text_field",
 		horizontal_alignment = "center",
+		parent = "cancel_text_field",
+		vertical_alignment = "center",
 		size = {
 			400,
-			50
+			50,
 		},
 		position = {
 			100,
 			0,
-			2
-		}
+			2,
+		},
 	},
 	versus_cancel_text_prefix = {
-		vertical_alignment = "center",
-		parent = "cancel_text_field",
 		horizontal_alignment = "center",
+		parent = "cancel_text_field",
+		vertical_alignment = "center",
 		size = {
 			400,
-			50
+			50,
 		},
 		position = {
 			100,
 			0,
-			2
-		}
+			2,
+		},
 	},
 	versus_cancel_text_suffix = {
-		vertical_alignment = "center",
-		parent = "cancel_text_field",
 		horizontal_alignment = "center",
+		parent = "cancel_text_field",
+		vertical_alignment = "center",
 		size = {
 			400,
-			50
+			50,
 		},
 		position = {
 			100,
 			0,
-			2
-		}
+			2,
+		},
 	},
 	versus_cancel_icon = {
-		vertical_alignment = "center",
-		parent = "cancel_text_field",
 		horizontal_alignment = "center",
+		parent = "cancel_text_field",
+		vertical_alignment = "center",
 		size = {
 			36,
-			26
+			26,
 		},
 		position = {
 			-100,
 			0,
-			2
-		}
+			2,
+		},
 	},
 	versus_menu_text_input = {
-		vertical_alignment = "center",
-		parent = "cancel_text_field",
 		horizontal_alignment = "center",
+		parent = "cancel_text_field",
+		vertical_alignment = "center",
 		size = {
 			400,
-			50
+			50,
 		},
 		position = {
 			300,
 			0,
-			2
-		}
+			2,
+		},
 	},
 	versus_menu_text_prefix = {
-		vertical_alignment = "center",
-		parent = "cancel_text_field",
 		horizontal_alignment = "center",
+		parent = "cancel_text_field",
+		vertical_alignment = "center",
 		size = {
 			400,
-			50
+			50,
 		},
 		position = {
 			300,
 			0,
-			2
-		}
+			2,
+		},
 	},
 	versus_menu_text_suffix = {
-		vertical_alignment = "center",
-		parent = "cancel_text_field",
 		horizontal_alignment = "center",
+		parent = "cancel_text_field",
+		vertical_alignment = "center",
 		size = {
 			400,
-			50
+			50,
 		},
 		position = {
 			300,
 			0,
-			2
-		}
+			2,
+		},
 	},
 	versus_menu_icon = {
-		vertical_alignment = "center",
-		parent = "cancel_text_field",
 		horizontal_alignment = "center",
+		parent = "cancel_text_field",
+		vertical_alignment = "center",
 		size = {
 			36,
-			26
+			26,
 		},
 		position = {
 			100,
 			0,
-			2
-		}
-	}
+			2,
+		},
+	},
 }
 local window_corner_radius = 5
 local window_background_color = {
 	255,
 	10,
 	10,
-	10
+	10,
 }
 local default_text_style = {
 	font_size = 22,
-	upper_case = true,
-	word_wrap = true,
-	use_shadow = true,
-	horizontal_alignment = "center",
-	vertical_alignment = "center",
 	font_type = "hell_shark",
+	horizontal_alignment = "center",
+	upper_case = true,
+	use_shadow = true,
+	vertical_alignment = "center",
+	word_wrap = true,
 	text_color = Colors.get_color_table_with_alpha("font_default", 255),
 	offset = {
 		0,
 		0,
-		2
-	}
+		2,
+	},
 }
 local title_text_style = table.clone(default_text_style)
+
 title_text_style.vertical_alignment = "top"
 title_text_style.horizontal_alignment = "left"
 title_text_style.dynamic_font_size = true
 title_text_style.offset[2] = -10
 title_text_style.offset[1] = 15
 title_text_style.text_color = Colors.get_color_table_with_alpha("font_title", 255)
+
 local difficulty_text_style = table.clone(default_text_style)
+
 difficulty_text_style.vertical_alignment = "top"
 difficulty_text_style.horizontal_alignment = "left"
 difficulty_text_style.font_size = 16
 difficulty_text_style.offset[1] = 15
 difficulty_text_style.offset[2] = -35
+
 local deus_difficulty_text_style = table.clone(difficulty_text_style)
+
 deus_difficulty_text_style.default_color = {
 	255,
 	200,
 	200,
-	200
+	200,
 }
+
 local matchmaking_status_text_style = table.clone(default_text_style)
+
 matchmaking_status_text_style.vertical_alignment = "center"
 matchmaking_status_text_style.horizontal_alignment = "center"
 matchmaking_status_text_style.font_size = 26
 matchmaking_status_text_style.dynamic_font_size = true
 matchmaking_status_text_style.word_wrap = false
 matchmaking_status_text_style.offset[2] = 2
+
 local deus_matchmaking_status_text_style = table.clone(matchmaking_status_text_style)
+
 deus_matchmaking_status_text_style.text_color = Colors.get_table("font_title")
+
 local cancel_input_text_style = table.clone(default_text_style)
+
 cancel_input_text_style.vertical_alignment = "center"
 cancel_input_text_style.horizontal_alignment = "left"
 cancel_input_text_style.use_shadow = true
@@ -505,7 +518,9 @@ cancel_input_text_style.font_size = 28
 cancel_input_text_style.dynamic_font_size = true
 cancel_input_text_style.offset[2] = 2
 cancel_input_text_style.text_color = Colors.get_color_table_with_alpha("font_title", 255)
+
 local cancel_text_style = table.clone(cancel_input_text_style)
+
 cancel_text_style.text_color = Colors.get_color_table_with_alpha("white", 255)
 
 local function create_status_widget(texture, offset)
@@ -514,8 +529,8 @@ local function create_status_widget(texture, offset)
 		element = {
 			passes = {
 				{
-					style_id = "texture_id",
 					pass_type = "texture",
+					style_id = "texture_id",
 					texture_id = "texture_id",
 					content_check_function = function (content)
 						return content.is_connecting or content.is_connected
@@ -525,42 +540,45 @@ local function create_status_widget(texture, offset)
 
 						if content.is_connecting then
 							local color_progress = ((content.color_progress or 1) + dt) % 1
+
 							content.color_progress = color_progress
+
 							local anim_progress = math.ease_pulse(color_progress)
+
 							color[1] = 255 * anim_progress
 						elseif content.is_connected then
 							color[1] = 255
 						end
-					end
-				}
-			}
+					end,
+				},
+			},
 		},
 		content = {
 			is_connected = false,
 			is_connecting = false,
-			texture_id = texture
+			texture_id = texture,
 		},
 		style = {
 			texture_id = {
-				vertical_alignment = "botom",
 				horizontal_alignment = "right",
+				vertical_alignment = "botom",
 				texture_size = {
 					30,
-					30
+					30,
 				},
 				color = {
 					255,
 					255,
 					255,
-					255
+					255,
 				},
 				offset = {
 					offset[1] or 0,
 					offset[2] or 0,
-					offset[3] or 0
-				}
-			}
-		}
+					offset[3] or 0,
+				},
+			},
+		},
 	}
 end
 
@@ -569,30 +587,30 @@ local widget_definitions = {
 	loading_icon = UIWidgets.create_simple_texture("matchmaking_icon", "loading_icon"),
 	loading_status_frame = UIWidgets.create_simple_rotated_texture("matchmaking_icon_effect", 0, {
 		71,
-		71
+		71,
 	}, "loading_status_frame"),
 	window_hotspot = UIWidgets.create_simple_hotspot("window"),
 	status_text = UIWidgets.create_simple_text("n/a", "status_text", nil, nil, matchmaking_status_text_style),
 	player_status_1 = create_status_widget("matchmaking_light_02", {
 		-89,
 		43,
-		1
+		1,
 	}),
 	player_status_2 = create_status_widget("matchmaking_light_02", {
 		-71,
 		22,
-		1
+		1,
 	}),
 	player_status_3 = create_status_widget("matchmaking_light_02", {
 		-45,
 		12,
-		1
+		1,
 	}),
 	player_status_4 = create_status_widget("matchmaking_light_02", {
 		-18,
 		15,
-		1
-	})
+		1,
+	}),
 }
 local widget_detail_definitions = {
 	detailed_info_box_frame = UIWidgets.create_frame("detailed_info_box", scenegraph_definition.detailed_info_box.size, "menu_frame_09", 1),
@@ -607,58 +625,58 @@ local widget_detail_definitions = {
 	timer_fg = UIWidgets.create_simple_uv_texture("timer_fg", {
 		{
 			0,
-			0
+			0,
 		},
 		{
 			1,
-			1
-		}
+			1,
+		},
 	}, "timer_fg"),
-	timer_glow = UIWidgets.create_simple_texture("timer_detail", "timer_glow")
+	timer_glow = UIWidgets.create_simple_texture("timer_detail", "timer_glow"),
 }
 local deus_widget_definitions = {
 	window = UIWidgets.create_simple_texture("matchmaking_top", "window", false, false, nil, {
 		-10,
 		15,
-		0
+		0,
 	}, "native"),
 	loading_icon = UIWidgets.create_simple_texture("matchmaking_icon_morris", "loading_icon", false, false, nil, {
 		0,
 		3,
-		0
+		0,
 	}),
 	loading_status_frame = UIWidgets.create_simple_rotated_texture("matchmaking_icon_effect_morris", 0, {
 		71,
-		71
+		71,
 	}, "loading_status_frame", false, false, nil, nil, {
 		0,
 		3,
-		0
+		0,
 	}),
 	window_hotspot = UIWidgets.create_simple_hotspot("window"),
 	status_text = UIWidgets.create_simple_text("n/a", "status_text", nil, nil, deus_matchmaking_status_text_style),
 	player_status_1 = create_status_widget("matchmaking_light_02", {
 		-87,
-		46
+		46,
 	}),
 	player_status_2 = create_status_widget("matchmaking_light_02", {
 		-70,
-		25
+		25,
 	}),
 	player_status_3 = create_status_widget("matchmaking_light_02", {
 		-44,
-		15
+		15,
 	}),
 	player_status_4 = create_status_widget("matchmaking_light_02", {
 		-17,
-		19
-	})
+		19,
+	}),
 }
 local deus_widget_detail_definitions = {
 	detailed_info_box = UIWidgets.create_simple_texture("matchmaking_animated_panel", "detailed_info_box", false, false, nil, {
 		-5,
 		-7,
-		0
+		0,
 	}, "native"),
 	title_text = UIWidgets.create_simple_text("n/a", "level_key_info_box", nil, nil, title_text_style),
 	difficulty_text = UIWidgets.create_simple_text("n/a", "detailed_info_box", nil, nil, deus_difficulty_text_style),
@@ -669,35 +687,37 @@ local deus_widget_detail_definitions = {
 	timer_bg = UIWidgets.create_simple_texture("matchmaking_progressbar_border", "timer_bg", false, false, nil, {
 		5,
 		-15,
-		0
+		0,
 	}, "native"),
 	timer_fg = UIWidgets.create_simple_uv_texture("timer_fg", {
 		{
 			0,
-			0
+			0,
 		},
 		{
 			1,
-			1
-		}
+			1,
+		},
 	}, "timer_fg", false, false, nil, {
 		19,
 		-1,
-		2
+		2,
 	}),
 	timer_glow = UIWidgets.create_simple_texture("timer_detail", "timer_glow", false, false, nil, {
 		19,
 		-1,
-		2
-	})
+		2,
+	}),
 }
+
 deus_widget_detail_definitions.detailed_info_box.content.no_background_changes = true
+
 local cancel_input_widgets = {
 	cancel_text_input = UIWidgets.create_simple_text(Localize("matchmaking_suffix_cancel"), "cancel_text_input", nil, nil, cancel_input_text_style),
 	cancel_text_suffix = UIWidgets.create_simple_text(Localize("matchmaking_suffix_cancel"), "cancel_text_suffix", nil, nil, cancel_text_style),
 	cancel_text_prefix = UIWidgets.create_simple_text(Localize("matchmaking_suffix_cancel"), "cancel_text_prefix", nil, nil, cancel_text_style),
 	cancel_icon = UIWidgets.create_simple_texture("xbone_button_icon_a", "cancel_icon"),
-	cancel_input_backround = UIWidgets.create_simple_texture("tab_menu_bg_02", "cancel_input_backround")
+	cancel_input_backround = UIWidgets.create_simple_texture("tab_menu_bg_02", "cancel_input_backround"),
 }
 local debug_widget_definitions = {
 	debug_box = {
@@ -706,39 +726,39 @@ local debug_widget_definitions = {
 			passes = {
 				{
 					pass_type = "rect",
-					style_id = "background_rect"
+					style_id = "background_rect",
 				},
 				{
-					style_id = "debug_text",
 					pass_type = "text",
-					text_id = "debug_text"
-				}
-			}
+					style_id = "debug_text",
+					text_id = "debug_text",
+				},
+			},
 		},
 		content = {
-			debug_text = ""
+			debug_text = "",
 		},
 		style = {
 			debug_text = {
-				scenegraph_id = "debug_box_text",
-				font_size = 28,
-				word_wrap = true,
-				pixel_perfect = true,
-				horizontal_alignment = "left",
-				vertical_alignment = "top",
 				dynamic_font = true,
+				font_size = 28,
 				font_type = "hell_shark",
-				text_color = Colors.get_color_table_with_alpha("white", 255)
+				horizontal_alignment = "left",
+				pixel_perfect = true,
+				scenegraph_id = "debug_box_text",
+				vertical_alignment = "top",
+				word_wrap = true,
+				text_color = Colors.get_color_table_with_alpha("white", 255),
 			},
 			background_rect = {
 				color = {
 					180,
 					0,
 					0,
-					0
-				}
-			}
-		}
+					0,
+				},
+			},
+		},
 	},
 	debug_lobbies = {
 		scenegraph_id = "debug_lobbies_box",
@@ -746,313 +766,313 @@ local debug_widget_definitions = {
 			passes = {
 				{
 					pass_type = "rect",
-					style_id = "background_rect"
+					style_id = "background_rect",
 				},
 				{
 					pass_type = "rect",
-					style_id = "debug_divider_0"
+					style_id = "debug_divider_0",
 				},
 				{
 					pass_type = "rect",
-					style_id = "debug_divider_1"
+					style_id = "debug_divider_1",
 				},
 				{
+					pass_type = "text",
 					style_id = "debug_text",
-					pass_type = "text",
-					text_id = "debug_text"
+					text_id = "debug_text",
 				},
 				{
+					pass_type = "text",
 					style_id = "debug_match_text",
-					pass_type = "text",
-					text_id = "debug_match_text"
+					text_id = "debug_match_text",
 				},
 				{
+					pass_type = "text",
 					style_id = "debug_broken_text",
-					pass_type = "text",
-					text_id = "debug_broken_text"
+					text_id = "debug_broken_text",
 				},
 				{
+					pass_type = "text",
 					style_id = "debug_valid_text",
-					pass_type = "text",
-					text_id = "debug_valid_text"
+					text_id = "debug_valid_text",
 				},
 				{
+					pass_type = "text",
 					style_id = "debug_server_text",
-					pass_type = "text",
-					text_id = "debug_server_text"
+					text_id = "debug_server_text",
 				},
 				{
+					pass_type = "text",
 					style_id = "debug_level_key_text",
-					pass_type = "text",
-					text_id = "debug_level_key_text"
+					text_id = "debug_level_key_text",
 				},
 				{
+					pass_type = "text",
 					style_id = "debug_selected_level_key_text",
-					pass_type = "text",
-					text_id = "debug_selected_level_key_text"
+					text_id = "debug_selected_level_key_text",
 				},
 				{
+					pass_type = "text",
 					style_id = "debug_matchmaking_text",
-					pass_type = "text",
-					text_id = "debug_matchmaking_text"
+					text_id = "debug_matchmaking_text",
 				},
 				{
+					pass_type = "text",
 					style_id = "debug_difficulty_text",
-					pass_type = "text",
-					text_id = "debug_difficulty_text"
+					text_id = "debug_difficulty_text",
 				},
 				{
+					pass_type = "text",
 					style_id = "debug_num_players_text",
-					pass_type = "text",
-					text_id = "debug_num_players_text"
+					text_id = "debug_num_players_text",
 				},
 				{
+					pass_type = "text",
 					style_id = "debug_wh_text",
-					pass_type = "text",
-					text_id = "debug_wh_text"
+					text_id = "debug_wh_text",
 				},
 				{
+					pass_type = "text",
 					style_id = "debug_we_text",
-					pass_type = "text",
-					text_id = "debug_we_text"
+					text_id = "debug_we_text",
 				},
 				{
+					pass_type = "text",
 					style_id = "debug_dr_text",
-					pass_type = "text",
-					text_id = "debug_dr_text"
+					text_id = "debug_dr_text",
 				},
 				{
+					pass_type = "text",
 					style_id = "debug_bw_text",
-					pass_type = "text",
-					text_id = "debug_bw_text"
+					text_id = "debug_bw_text",
 				},
 				{
+					pass_type = "text",
 					style_id = "debug_es_text",
-					pass_type = "text",
-					text_id = "debug_es_text"
+					text_id = "debug_es_text",
 				},
 				{
+					pass_type = "text",
 					style_id = "debug_rp_text",
-					pass_type = "text",
-					text_id = "debug_rp_text"
+					text_id = "debug_rp_text",
 				},
 				{
+					pass_type = "text",
 					style_id = "debug_host_text",
-					pass_type = "text",
-					text_id = "debug_host_text"
+					text_id = "debug_host_text",
 				},
 				{
+					pass_type = "text",
 					style_id = "debug_lobby_id_text",
-					pass_type = "text",
-					text_id = "debug_lobby_id_text"
+					text_id = "debug_lobby_id_text",
 				},
 				{
-					style_id = "debug_hash_text",
 					pass_type = "text",
-					text_id = "debug_hash_text"
-				}
-			}
+					style_id = "debug_hash_text",
+					text_id = "debug_hash_text",
+				},
+			},
 		},
 		content = {
-			debug_es_text = "",
-			debug_num_players_text = "",
-			debug_bw_text = "",
-			debug_match_text = "",
-			debug_wh_text = "",
-			debug_lobby_id_text = "",
-			debug_server_text = "",
-			debug_host_text = "",
-			debug_valid_text = "",
-			debug_level_key_text = "",
-			debug_we_text = "",
-			debug_selected_level_key_text = "",
-			debug_rp_text = "",
-			debug_text = "Lobbies",
 			debug_broken_text = "",
+			debug_bw_text = "",
 			debug_difficulty_text = "",
-			debug_matchmaking_text = "",
+			debug_dr_text = "",
+			debug_es_text = "",
 			debug_hash_text = "",
-			debug_dr_text = ""
+			debug_host_text = "",
+			debug_level_key_text = "",
+			debug_lobby_id_text = "",
+			debug_match_text = "",
+			debug_matchmaking_text = "",
+			debug_num_players_text = "",
+			debug_rp_text = "",
+			debug_selected_level_key_text = "",
+			debug_server_text = "",
+			debug_text = "Lobbies",
+			debug_valid_text = "",
+			debug_we_text = "",
+			debug_wh_text = "",
 		},
 		style = {
 			debug_text = {
-				vertical_alignment = "top",
-				scenegraph_id = "debug_lobbies_text",
-				horizontal_alignment = "left",
-				word_wrap = true,
 				font_size = 14,
 				font_type = "hell_shark",
-				text_color = Colors.get_table("white", 255)
+				horizontal_alignment = "left",
+				scenegraph_id = "debug_lobbies_text",
+				vertical_alignment = "top",
+				word_wrap = true,
+				text_color = Colors.get_table("white", 255),
 			},
 			debug_server_text = {
-				vertical_alignment = "top",
-				scenegraph_id = "debug_server_text",
-				horizontal_alignment = "left",
-				word_wrap = true,
 				font_size = 14,
 				font_type = "hell_shark",
-				text_color = Colors.get_table("white", 255)
+				horizontal_alignment = "left",
+				scenegraph_id = "debug_server_text",
+				vertical_alignment = "top",
+				word_wrap = true,
+				text_color = Colors.get_table("white", 255),
 			},
 			debug_match_text = {
-				vertical_alignment = "top",
-				scenegraph_id = "debug_match_text",
-				horizontal_alignment = "left",
-				word_wrap = true,
 				font_size = 14,
 				font_type = "hell_shark",
-				text_color = Colors.get_table("white", 255)
+				horizontal_alignment = "left",
+				scenegraph_id = "debug_match_text",
+				vertical_alignment = "top",
+				word_wrap = true,
+				text_color = Colors.get_table("white", 255),
 			},
 			debug_broken_text = {
-				vertical_alignment = "top",
-				scenegraph_id = "debug_broken_text",
-				horizontal_alignment = "left",
-				word_wrap = true,
 				font_size = 14,
 				font_type = "hell_shark",
-				text_color = Colors.get_table("white", 255)
+				horizontal_alignment = "left",
+				scenegraph_id = "debug_broken_text",
+				vertical_alignment = "top",
+				word_wrap = true,
+				text_color = Colors.get_table("white", 255),
 			},
 			debug_valid_text = {
-				vertical_alignment = "top",
-				scenegraph_id = "debug_valid_text",
-				horizontal_alignment = "left",
-				word_wrap = true,
 				font_size = 14,
 				font_type = "hell_shark",
-				text_color = Colors.get_table("white", 255)
+				horizontal_alignment = "left",
+				scenegraph_id = "debug_valid_text",
+				vertical_alignment = "top",
+				word_wrap = true,
+				text_color = Colors.get_table("white", 255),
 			},
 			debug_level_key_text = {
-				vertical_alignment = "top",
-				scenegraph_id = "debug_level_key_text",
-				horizontal_alignment = "left",
-				word_wrap = true,
 				font_size = 14,
 				font_type = "hell_shark",
-				text_color = Colors.get_table("white", 255)
+				horizontal_alignment = "left",
+				scenegraph_id = "debug_level_key_text",
+				vertical_alignment = "top",
+				word_wrap = true,
+				text_color = Colors.get_table("white", 255),
 			},
 			debug_selected_level_key_text = {
-				vertical_alignment = "top",
-				scenegraph_id = "debug_selected_level_key_text",
-				horizontal_alignment = "left",
-				word_wrap = true,
 				font_size = 14,
 				font_type = "hell_shark",
-				text_color = Colors.get_table("white", 255)
+				horizontal_alignment = "left",
+				scenegraph_id = "debug_selected_level_key_text",
+				vertical_alignment = "top",
+				word_wrap = true,
+				text_color = Colors.get_table("white", 255),
 			},
 			debug_matchmaking_text = {
-				vertical_alignment = "top",
-				scenegraph_id = "debug_matchmaking_text",
-				horizontal_alignment = "left",
-				word_wrap = true,
 				font_size = 14,
 				font_type = "hell_shark",
-				text_color = Colors.get_table("white", 255)
+				horizontal_alignment = "left",
+				scenegraph_id = "debug_matchmaking_text",
+				vertical_alignment = "top",
+				word_wrap = true,
+				text_color = Colors.get_table("white", 255),
 			},
 			debug_difficulty_text = {
-				vertical_alignment = "top",
-				scenegraph_id = "debug_difficulty_text",
-				horizontal_alignment = "left",
-				word_wrap = true,
 				font_size = 14,
 				font_type = "hell_shark",
-				text_color = Colors.get_table("white", 255)
+				horizontal_alignment = "left",
+				scenegraph_id = "debug_difficulty_text",
+				vertical_alignment = "top",
+				word_wrap = true,
+				text_color = Colors.get_table("white", 255),
 			},
 			debug_num_players_text = {
-				vertical_alignment = "top",
-				scenegraph_id = "debug_num_players_text",
-				horizontal_alignment = "left",
-				word_wrap = true,
 				font_size = 14,
 				font_type = "hell_shark",
-				text_color = Colors.get_table("white", 255)
+				horizontal_alignment = "left",
+				scenegraph_id = "debug_num_players_text",
+				vertical_alignment = "top",
+				word_wrap = true,
+				text_color = Colors.get_table("white", 255),
 			},
 			debug_wh_text = {
-				vertical_alignment = "top",
-				scenegraph_id = "debug_wh_text",
-				horizontal_alignment = "left",
-				word_wrap = true,
 				font_size = 14,
 				font_type = "hell_shark",
-				text_color = Colors.get_table("white", 255)
+				horizontal_alignment = "left",
+				scenegraph_id = "debug_wh_text",
+				vertical_alignment = "top",
+				word_wrap = true,
+				text_color = Colors.get_table("white", 255),
 			},
 			debug_we_text = {
-				vertical_alignment = "top",
-				scenegraph_id = "debug_we_text",
-				horizontal_alignment = "left",
-				word_wrap = true,
 				font_size = 14,
 				font_type = "hell_shark",
-				text_color = Colors.get_table("white", 255)
+				horizontal_alignment = "left",
+				scenegraph_id = "debug_we_text",
+				vertical_alignment = "top",
+				word_wrap = true,
+				text_color = Colors.get_table("white", 255),
 			},
 			debug_dr_text = {
-				vertical_alignment = "top",
-				scenegraph_id = "debug_dr_text",
-				horizontal_alignment = "left",
-				word_wrap = true,
 				font_size = 14,
 				font_type = "hell_shark",
-				text_color = Colors.get_table("white", 255)
+				horizontal_alignment = "left",
+				scenegraph_id = "debug_dr_text",
+				vertical_alignment = "top",
+				word_wrap = true,
+				text_color = Colors.get_table("white", 255),
 			},
 			debug_bw_text = {
-				vertical_alignment = "top",
-				scenegraph_id = "debug_bw_text",
-				horizontal_alignment = "left",
-				word_wrap = true,
 				font_size = 14,
 				font_type = "hell_shark",
-				text_color = Colors.get_table("white", 255)
+				horizontal_alignment = "left",
+				scenegraph_id = "debug_bw_text",
+				vertical_alignment = "top",
+				word_wrap = true,
+				text_color = Colors.get_table("white", 255),
 			},
 			debug_es_text = {
-				vertical_alignment = "top",
-				scenegraph_id = "debug_es_text",
-				horizontal_alignment = "left",
-				word_wrap = true,
 				font_size = 14,
 				font_type = "hell_shark",
-				text_color = Colors.get_table("white", 255)
+				horizontal_alignment = "left",
+				scenegraph_id = "debug_es_text",
+				vertical_alignment = "top",
+				word_wrap = true,
+				text_color = Colors.get_table("white", 255),
 			},
 			debug_rp_text = {
-				vertical_alignment = "top",
-				scenegraph_id = "debug_rp_text",
-				horizontal_alignment = "left",
-				word_wrap = true,
 				font_size = 14,
 				font_type = "hell_shark",
-				text_color = Colors.get_table("white", 255)
+				horizontal_alignment = "left",
+				scenegraph_id = "debug_rp_text",
+				vertical_alignment = "top",
+				word_wrap = true,
+				text_color = Colors.get_table("white", 255),
 			},
 			debug_host_text = {
-				vertical_alignment = "top",
-				scenegraph_id = "debug_host_text",
-				horizontal_alignment = "left",
-				word_wrap = true,
 				font_size = 14,
 				font_type = "hell_shark",
-				text_color = Colors.get_table("white", 255)
+				horizontal_alignment = "left",
+				scenegraph_id = "debug_host_text",
+				vertical_alignment = "top",
+				word_wrap = true,
+				text_color = Colors.get_table("white", 255),
 			},
 			debug_lobby_id_text = {
-				vertical_alignment = "top",
-				scenegraph_id = "debug_lobby_id_text",
-				horizontal_alignment = "left",
-				word_wrap = true,
 				font_size = 14,
 				font_type = "hell_shark",
-				text_color = Colors.get_table("white", 255)
+				horizontal_alignment = "left",
+				scenegraph_id = "debug_lobby_id_text",
+				vertical_alignment = "top",
+				word_wrap = true,
+				text_color = Colors.get_table("white", 255),
 			},
 			debug_hash_text = {
-				vertical_alignment = "top",
-				scenegraph_id = "debug_hash_text",
-				horizontal_alignment = "left",
-				word_wrap = true,
 				font_size = 14,
 				font_type = "hell_shark",
-				text_color = Colors.get_table("white", 255)
+				horizontal_alignment = "left",
+				scenegraph_id = "debug_hash_text",
+				vertical_alignment = "top",
+				word_wrap = true,
+				text_color = Colors.get_table("white", 255),
 			},
 			background_rect = {
 				color = {
 					180,
 					0,
 					0,
-					0
-				}
+					0,
+				},
 			},
 			debug_divider_0 = {
 				scenegraph_id = "debug_divider_0",
@@ -1060,8 +1080,8 @@ local debug_widget_definitions = {
 					150,
 					255,
 					255,
-					255
-				}
+					255,
+				},
 			},
 			debug_divider_1 = {
 				scenegraph_id = "debug_divider_1",
@@ -1069,11 +1089,11 @@ local debug_widget_definitions = {
 					150,
 					255,
 					255,
-					255
-				}
-			}
-		}
-	}
+					255,
+				},
+			},
+		},
+	},
 }
 
 return {
@@ -1084,5 +1104,5 @@ return {
 	cancel_input_widgets = cancel_input_widgets,
 	versus_input_widgets = versus_input_widgets,
 	debug_widget_definitions = debug_widget_definitions,
-	scenegraph_definition = scenegraph_definition
+	scenegraph_definition = scenegraph_definition,
 }

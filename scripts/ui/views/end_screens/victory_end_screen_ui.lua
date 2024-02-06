@@ -1,7 +1,10 @@
+﻿-- chunkname: @scripts/ui/views/end_screens/victory_end_screen_ui.lua
+
 require("scripts/ui/views/end_screens/base_end_screen_ui")
 require("scripts/ui/act_presentation/act_presentation_ui")
 
 local definitions = local_require("scripts/ui/views/end_screens/victory_end_screen_ui_definitions")
+
 VictoryEndScreenUI = class(VictoryEndScreenUI, BaseEndScreenUI)
 
 VictoryEndScreenUI.init = function (self, ingame_ui_context, input_service, screen_context)
@@ -34,8 +37,9 @@ VictoryEndScreenUI._start = function (self)
 	local scenegraph_definition = definitions.scenegraph_definition
 	local params = {
 		draw_flags = self._draw_flags,
-		wwise_world = self._wwise_world
+		wwise_world = self._wwise_world,
 	}
+
 	self._victory_anim_id = self._ui_animator:start_animation("victory", self._widgets_by_name, scenegraph_definition, params)
 
 	if self._act_presentation_ui then

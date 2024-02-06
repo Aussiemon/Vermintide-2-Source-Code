@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_teleport_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTTeleportAction = class(BTTeleportAction, BTNode)
@@ -14,6 +16,7 @@ BTTeleportAction.enter = function (self, unit, blackboard, t)
 	local entrance_pos = next_smart_object_data.entrance_pos:unbox()
 	local exit_pos = next_smart_object_data.exit_pos:unbox()
 	local smart_object_data = next_smart_object_data.smart_object_data
+
 	blackboard.smart_object_data = smart_object_data
 	blackboard.teleport_position = Vector3Box(exit_pos)
 	blackboard.entrance_position = Vector3Box(entrance_pos)
@@ -23,8 +26,12 @@ BTTeleportAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	blackboard.teleport_position = nil
 	blackboard.entrance_position = nil
 	blackboard.teleport_timeout = nil
+
 	local navigation_extension = blackboard.navigation_extension
-	local success = navigation_extension:is_using_smart_object() and navigation_extension:use_smart_object(false)
+
+	if navigation_extension:is_using_smart_object() then
+		local success = navigation_extension:use_smart_object(false)
+	end
 end
 
 BTTeleportAction.run = function (self, unit, blackboard, t, dt)
@@ -46,7 +53,7 @@ BTTeleportAction.run = function (self, unit, blackboard, t, dt)
 
 	local dist_sq = target_offset.x + target_offset.y + target_offset.z
 
-	if dist_sq < 1 or blackboard.teleport_timeout and blackboard.teleport_timeout < t then
+	if dist_sq < 1 or blackboard.teleport_timeout and t > blackboard.teleport_timeout then
 		local teleport_position = blackboard.teleport_position:unbox()
 
 		navigation_extension:set_navbot_position(teleport_position)

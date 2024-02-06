@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/generated/bt_selector_shadow_skull.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 local unit_alive = Unit.alive
@@ -21,8 +23,7 @@ BTSelector_shadow_skull.leave = function (self, unit, blackboard, t, reason)
 end
 
 BTSelector_shadow_skull.run = function (self, unit, blackboard, t, dt)
-	local Profiler_start = Profiler.start
-	local Profiler_stop = Profiler.stop
+	local Profiler_start, Profiler_stop = Profiler.start, Profiler.stop
 	local child_running = self:current_running_child(blackboard)
 	local children = self._children
 	local node_homing = children[1]

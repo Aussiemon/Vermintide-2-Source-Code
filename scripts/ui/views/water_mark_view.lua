@@ -1,14 +1,17 @@
+﻿-- chunkname: @scripts/ui/views/water_mark_view.lua
+
 require("scripts/ui/ui_renderer")
 require("scripts/ui/ui_elements")
 
 local definitions = require("scripts/ui/views/water_mark_view_definitions")
+
 WaterMarkView = class(WaterMarkView)
 
 WaterMarkView.init = function (self, world)
 	self._world = world
 	self._ui_renderer = UIRenderer.create(world, "material", "materials/ui/ui_1080p_watermarks")
 	self._render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 
 	self:_create_ui_elements()

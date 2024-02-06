@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/utils/ik_chain.lua
+
 IkChain = class(IkChain)
 
 local function unbox_pos_array(boxed_source_array, target_array, num)
@@ -16,12 +18,14 @@ end
 
 IkChain.init = function (self, joints, start_pos, target_pos, tolerance, use_max_joint_angle)
 	self._nodes = {}
+
 	local lengths = {}
 	local sum = 0
 	local boxed_joints = {}
 
 	for i = 1, #joints - 1 do
 		local d = Vector3.length(joints[i] - joints[i + 1])
+
 		lengths[i] = d
 		sum = sum + d
 	end
@@ -67,6 +71,7 @@ IkChain.update_whip = function (self, joints, angular_velocity, t, dt)
 	local j2 = joints[n2]
 	local k = j2 - j1
 	local k2 = Quaternion.rotate(q, k)
+
 	joints[n2] = j1 + k2
 
 	QuickDrawer:line(joints[n1], joints[n2], Color(20, 255, 175))
@@ -93,6 +98,7 @@ IkChain.backward = function (self, joints, lengths, num_joints, target_pos)
 		local r = joints[i + 1] - joints[i]
 		local l = lengths[i] / Vector3.length(r)
 		local pos = (1 - l) * joints[i + 1] + l * joints[i]
+
 		joints[i] = pos
 	end
 end
@@ -104,6 +110,7 @@ IkChain.forward = function (self, joints, lengths, num_joints, start_pos)
 		local r = joints[i + 1] - joints[i]
 		local l = lengths[i] / Vector3.length(r)
 		local pos = (1 - l) * joints[i] + l * joints[i + 1]
+
 		joints[i + 1] = pos
 	end
 end
@@ -115,7 +122,9 @@ IkChain.forward_constrained = function (self, joints, lengths, num_joints, start
 	local dot_constrain = self.dot_constrain
 	local constrain_angle = self.constrain_angle
 	local up = Vector3.up()
+
 	joints[1] = start_pos
+
 	local cone_dir = Vector3.normalize(joints[2] - start_pos)
 
 	for i = 1, num_joints - 1 do
@@ -131,6 +140,7 @@ IkChain.forward_constrained = function (self, joints, lengths, num_joints, start
 			local axis_dir = Vector3.cross(cone_dir, wanted_dir)
 			local axis_rot = Quaternion(axis_dir, constrain_angle)
 			local constrained_vec = Quaternion.rotate(axis_rot, cone_dir)
+
 			joints[i + 1] = joints[i] + constrained_vec * lengths[i]
 		end
 
@@ -160,16 +170,17 @@ IkChain.solve = function (self, t, dt)
 	local count = 0
 	local distance = Vector3.length(joints[1] - target_pos)
 
-	if self.totallength < distance then
+	if distance > self.totallength then
 		for i = 1, num_joints - 1 do
 			local r = Vector3.length(target_pos - joints[i])
 			local l = lengths[i] / r
+
 			joints[i + 1] = (1 - l) * joints[i] + l * target_pos
 		end
 	else
 		local dif = Vector3.length(joints[num_joints] - target_pos)
 
-		while self.tolerance < dif do
+		while dif > self.tolerance do
 			self:backward(joints, lengths, num_joints, target_pos)
 
 			if self.constrain_angle then
@@ -207,10 +218,11 @@ IkChain.solve_dragging = function (self, t, dt)
 	local count = 0
 	local distance = Vector3.length(joints[1] - target_pos)
 
-	if self.totallength < distance then
+	if distance > self.totallength then
 		for i = 1, num_joints - 1 do
 			local r = Vector3.length(target_pos - joints[i])
 			local l = lengths[i] / r
+
 			joints[i + 1] = (1 - l) * joints[i] + l * target_pos
 		end
 	else

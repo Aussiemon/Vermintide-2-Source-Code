@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/achievements/achievement_templates_belakor.lua
+
 local PLACEHOLDER_ICON = AchievementTemplateHelper.PLACEHOLDER_ICON
 local achievements = AchievementTemplates.achievements
 local achievement_settings = DLCSettings.belakor
@@ -17,23 +19,24 @@ local register_kill_stats_id = 1
 local register_kill_victim_unit = 2
 local register_kill_damage_data = 3
 local register_kill_victim_breed = 4
+
 achievements.blk_complete_arena = {
-	name = "achv_blk_complete_arena_name",
+	desc = "achv_blk_complete_arena_desc",
 	display_completion_ui = true,
 	icon = "achievement_morris_complete_arena",
-	desc = "achv_blk_complete_arena_desc",
+	name = "achv_blk_complete_arena_name",
 	completed = function (statistics_db, stats_id)
 		return AchievementTemplateHelper.check_level(statistics_db, stats_id, "arena_belakor")
-	end
+	end,
 }
 achievements.blk_three_champions = {
-	name = "achv_blk_three_champions_name",
+	desc = "achv_blk_three_champions_desc",
 	display_completion_ui = true,
 	icon = "achievement_morris_shadow_champions_active",
-	desc = "achv_blk_three_champions_desc",
+	name = "achv_blk_three_champions_name",
 	events = {
 		"register_lieutenant_spawned",
-		"register_kill"
+		"register_kill",
 	},
 	completed = function (statistics_db, stats_id, template_data)
 		return statistics_db:get_persistent_stat(stats_id, "blk_three_champions") > 0
@@ -60,15 +63,15 @@ achievements.blk_three_champions = {
 				template_data.num_champs = template_data.num_champs - 1
 			end
 		end
-	end
+	end,
 }
 achievements.blk_fast_arena = {
-	name = "achv_blk_fast_arena_name",
+	desc = "achv_blk_fast_arena_desc",
 	display_completion_ui = true,
 	icon = "achievement_morris_complete_arena_fast",
-	desc = "achv_blk_fast_arena_desc",
+	name = "achv_blk_fast_arena_name",
 	events = {
-		"register_locus_destroyed"
+		"register_locus_destroyed",
 	},
 	completed = function (statistics_db, stats_id, template_data)
 		return statistics_db:get_persistent_stat(stats_id, "blk_fast_arena") >= 1
@@ -85,17 +88,19 @@ achievements.blk_fast_arena = {
 		if template_data.locus_destroyed >= 3 and current_t <= 240 then
 			statistics_db:increment_stat(stats_id, "blk_fast_arena")
 		end
-	end
+	end,
 }
+
 local totem_life_time_threshold = 10
+
 achievements.blk_fast_kill_totems = {
-	name = "achv_blk_fast_kill_totems_name",
+	desc = "achv_blk_fast_kill_totems_desc",
 	display_completion_ui = true,
 	icon = "achievement_morris_complete_arena_totems_destroyed",
-	desc = "achv_blk_fast_kill_totems_desc",
+	name = "achv_blk_fast_kill_totems_name",
 	events = {
 		"register_totem_state_change",
-		"register_completed_level"
+		"register_completed_level",
 	},
 	completed = function (statistics_db, stats_id, template_data)
 		return statistics_db:get_persistent_stat(stats_id, "blk_fast_kill_totems") >= 1
@@ -120,7 +125,7 @@ achievements.blk_fast_kill_totems = {
 				else
 					local spawn_time = template_data.totem_life_time[spawned_unit]
 
-					if spawn_time and totem_life_time_threshold < current_t - spawn_time then
+					if spawn_time and current_t - spawn_time > totem_life_time_threshold then
 						template_data.failed = true
 					end
 
@@ -131,7 +136,7 @@ achievements.blk_fast_kill_totems = {
 				local failed = false
 
 				for unit, spawn_t in pairs(template_data.totem_life_time) do
-					if totem_life_time_threshold < current_t - spawn_t then
+					if current_t - spawn_t > totem_life_time_threshold then
 						failed = true
 
 						break
@@ -143,16 +148,18 @@ achievements.blk_fast_kill_totems = {
 				end
 			end
 		end
-	end
+	end,
 }
+
 local synced_destruction_window = 2
+
 achievements.blk_synced_destruction = {
-	name = "achv_blk_synced_destruction_name",
+	desc = "achv_blk_synced_destruction_desc",
 	display_completion_ui = true,
 	icon = "achievement_morris_destroy_locis",
-	desc = "achv_blk_synced_destruction_desc",
+	name = "achv_blk_synced_destruction_name",
 	events = {
-		"register_locus_destroyed"
+		"register_locus_destroyed",
 	},
 	completed = function (statistics_db, stats_id, template_data)
 		return statistics_db:get_persistent_stat(stats_id, "blk_synced_destruction") >= 1
@@ -169,15 +176,15 @@ achievements.blk_synced_destruction = {
 		if #template_data.locus_destroyed >= 3 and template_data.locus_destroyed[#template_data.locus_destroyed] - template_data.locus_destroyed[1] <= synced_destruction_window then
 			statistics_db:increment_stat(stats_id, "blk_synced_destruction")
 		end
-	end
+	end,
 }
 achievements.blk_white_run = {
-	name = "achv_blk_white_run_name",
+	desc = "achv_blk_white_run_desc",
 	display_completion_ui = true,
 	icon = "achievement_morris_complete_arena_no_upgrades",
-	desc = "achv_blk_white_run_desc",
+	name = "achv_blk_white_run_name",
 	events = {
-		"register_completed_level"
+		"register_completed_level",
 	},
 	completed = function (statistics_db, stats_id, template_data)
 		return statistics_db:get_persistent_stat(stats_id, "blk_white_run") >= 1
@@ -202,22 +209,22 @@ achievements.blk_white_run = {
 		if coins_spent == 0 and cursed_shrine == 0 then
 			statistics_db:increment_stat(stats_id, "blk_white_run")
 		end
-	end
+	end,
 }
 achievements.blk_clutch_skull = {
-	name = "achv_blk_clutch_skull_name",
+	desc = "achv_blk_clutch_skull_desc",
 	display_completion_ui = true,
 	icon = "achievement_morris_destroy_skulls_before_hit",
-	desc = "achv_blk_clutch_skull_desc",
+	name = "achv_blk_clutch_skull_name",
 	events = {
-		"register_damage"
+		"register_damage",
 	},
 	progress = function (statistics_db, stats_id, template_data)
 		local completed = statistics_db:get_persistent_stat(stats_id, "blk_clutch_skull")
 
 		return {
 			completed,
-			5
+			5,
 		}
 	end,
 	completed = function (statistics_db, stats_id, template_data)
@@ -262,16 +269,16 @@ achievements.blk_clutch_skull = {
 				statistics_db:increment_stat(stats_id, "blk_clutch_skull")
 			end
 		end
-	end
+	end,
 }
 achievements.blk_no_totem = {
-	name = "achv_blk_no_totem_name",
+	desc = "achv_blk_no_totem_desc",
 	display_completion_ui = true,
 	icon = "achievement_morris_complete_arena_totems_alive",
-	desc = "achv_blk_no_totem_desc",
+	name = "achv_blk_no_totem_name",
 	events = {
 		"register_kill",
-		"register_completed_level"
+		"register_completed_level",
 	},
 	completed = function (statistics_db, stats_id, template_data)
 		return statistics_db:get_persistent_stat(stats_id, "blk_no_totem") >= 1
@@ -286,16 +293,16 @@ achievements.blk_no_totem = {
 		elseif Managers.state.game_mode:has_activated_mutator("curse_belakor_totems") and not template_data.failed then
 			statistics_db:increment_stat(stats_id, "blk_no_totem")
 		end
-	end
+	end,
 }
 achievements.blk_hitless_skull = {
-	name = "achv_blk_hitless_skull_name",
+	desc = "achv_blk_hitless_skull_desc",
 	display_completion_ui = true,
 	icon = "achievement_morris_destroy_skulls_within_time",
-	desc = "achv_blk_hitless_skull_desc",
+	name = "achv_blk_hitless_skull_name",
 	events = {
 		"register_skull_hit",
-		"register_completed_level"
+		"register_completed_level",
 	},
 	completed = function (statistics_db, stats_id, template_data)
 		return statistics_db:get_persistent_stat(stats_id, "blk_hitless_skull") >= 1
@@ -312,8 +319,9 @@ achievements.blk_hitless_skull = {
 		elseif Managers.state.game_mode:has_activated_mutator("curse_shadow_homing_skulls") and not template_data.failed then
 			statistics_db:increment_stat(stats_id, "blk_hitless_skull")
 		end
-	end
+	end,
 }
+
 local all_challenges = {
 	"blk_complete_arena",
 	"blk_three_champions",
@@ -323,7 +331,7 @@ local all_challenges = {
 	"blk_white_run",
 	"blk_clutch_skull",
 	"blk_no_totem",
-	"blk_hitless_skull"
+	"blk_hitless_skull",
 }
 
 add_meta_challenge(achievements, "complete_all_belakor_challenges", all_challenges, "achievement_morris_complete_all_challenges", nil, nil, nil)

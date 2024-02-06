@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/hero_view/item_grid_ui.lua
+
 ItemGridUI = class(InventoryGridUI)
 
 local function tablefind_item_key(tab, item_key)
@@ -29,6 +31,7 @@ end
 
 ItemGridUI._append_widget_content = function (self, widget, params)
 	local widget_content = widget.content
+
 	widget_content.profile_index = params and params.profile_index
 	widget_content.career_index = params and params.career_index
 end
@@ -186,6 +189,7 @@ ItemGridUI.update_items_status = function (self)
 			local is_locked = backend_id and locked_items and locked_items[backend_id] ~= nil
 			local can_wield_table = item_data and item_data.can_wield
 			local can_wield = can_wield_table and table.contains(can_wield_table, career_name)
+
 			item_content[locked_icon_name] = locked_item_icon
 
 			if equipped_items then
@@ -261,10 +265,12 @@ end
 
 ItemGridUI.set_item_selected = function (self, item)
 	self._selected_item = item
+
 	local widget = self._widget
 	local content = widget.content
 	local rows = content.rows
 	local columns = content.columns
+
 	self._selected_item_row = nil
 	self._selected_item_column = nil
 	self._selected_item_equipped = nil
@@ -277,6 +283,7 @@ ItemGridUI.set_item_selected = function (self, item)
 			local grid_item = content["item" .. name_sufix]
 			local is_selected = item and grid_item and item.backend_id == grid_item.backend_id
 			local is_equipped = hotspot.equipped
+
 			hotspot.is_selected = is_selected
 
 			if is_selected then
@@ -324,7 +331,7 @@ ItemGridUI.handle_favorite_marking = function (self, input_service)
 		local input_pressed = input_service:get("hotkey_mark_favorite_item")
 
 		if input_pressed then
-			local item = nil
+			local item
 			local gamepad_active = Managers.input:is_device_active("gamepad")
 
 			if gamepad_active then
@@ -446,6 +453,7 @@ ItemGridUI.add_item_to_slot_index = function (self, slot_index, item, optional_a
 	local item_content = content[hotspot_name]
 	local item_style = style[item_icon_name]
 	local backend_id = item and item.backend_id
+
 	content["item" .. name_sufix] = item
 
 	if item then
@@ -464,7 +472,7 @@ ItemGridUI.add_item_to_slot_index = function (self, slot_index, item, optional_a
 			content[rarity_texture_name] = UISettings.item_rarity_textures[rarity]
 		end
 
-		local amount = nil
+		local amount
 
 		if backend_id then
 			amount = optional_amount or backend_items:get_item_amount(backend_id)
@@ -473,7 +481,7 @@ ItemGridUI.add_item_to_slot_index = function (self, slot_index, item, optional_a
 		end
 
 		if amount then
-			local color_value_1, color_value_2, color_value_3 = nil
+			local color_value_1, color_value_2, color_value_3
 
 			if item.insufficient_amount then
 				color_value_1 = 255
@@ -481,6 +489,7 @@ ItemGridUI.add_item_to_slot_index = function (self, slot_index, item, optional_a
 				color_value_3 = 0
 			else
 				local amount_default_color = style[item_amount_name].default_color
+
 				color_value_1 = amount_default_color[2]
 				color_value_2 = amount_default_color[3]
 				color_value_3 = amount_default_color[4]
@@ -494,6 +503,7 @@ ItemGridUI.add_item_to_slot_index = function (self, slot_index, item, optional_a
 		end
 
 		local item_tooltip_name = "item_tooltip" .. name_sufix
+
 		content[item_tooltip_name] = display_name
 		item_content[item_icon_name] = inventory_icon
 		item_content[item_amount_name] = item_data.can_stack and amount or ""
@@ -562,6 +572,7 @@ ItemGridUI._populate_inventory_page = function (self, items, start_read_index)
 			local item_style = style[item_icon_name]
 			local item = items[item_read_index]
 			local backend_id = item and item.backend_id
+
 			content["item" .. name_sufix] = backend_id and item
 
 			if item then
@@ -580,7 +591,7 @@ ItemGridUI._populate_inventory_page = function (self, items, start_read_index)
 					content[rarity_texture_name] = UISettings.item_rarity_textures[rarity]
 				end
 
-				local amount = nil
+				local amount
 
 				if backend_id then
 					amount = backend_items:get_item_amount(backend_id)
@@ -589,7 +600,7 @@ ItemGridUI._populate_inventory_page = function (self, items, start_read_index)
 				end
 
 				if amount then
-					local color_value_1, color_value_2, color_value_3 = nil
+					local color_value_1, color_value_2, color_value_3
 
 					if item.insufficient_amount then
 						color_value_1 = 255
@@ -597,6 +608,7 @@ ItemGridUI._populate_inventory_page = function (self, items, start_read_index)
 						color_value_3 = 0
 					else
 						local amount_default_color = style[item_amount_name].default_color
+
 						color_value_1 = amount_default_color[2]
 						color_value_2 = amount_default_color[3]
 						color_value_3 = amount_default_color[4]
@@ -610,6 +622,7 @@ ItemGridUI._populate_inventory_page = function (self, items, start_read_index)
 				end
 
 				local item_tooltip_name = "item_tooltip" .. name_sufix
+
 				content[item_tooltip_name] = display_name
 				item_content[item_icon_name] = inventory_icon
 				item_content[item_amount_name] = item_data.can_stack and amount or ""
@@ -664,6 +677,7 @@ ItemGridUI.clear_item_grid = function (self)
 			local hotspot_name = "hotspot" .. name_sufix
 			local item_content = content[hotspot_name]
 			local item_style = style[item_icon_name]
+
 			content["item" .. name_sufix] = nil
 			item_content[item_icon_name] = nil
 			item_content[item_amount_name] = ""
@@ -685,6 +699,7 @@ ItemGridUI._on_category_index_change = function (self, index, keep_page_index)
 
 	if hero_specific_filter then
 		local temp_item_filter = item_filter and "and " .. item_filter or ""
+
 		item_filter = "can_wield_by_current_hero " .. temp_item_filter
 	end
 
@@ -699,6 +714,7 @@ ItemGridUI._on_category_index_change = function (self, index, keep_page_index)
 	local widget = self._widget
 	local content = widget.content
 	local title_text = display_name
+
 	content.title_text = title_text
 
 	if keep_page_index then
@@ -736,6 +752,7 @@ end
 
 ItemGridUI.change_item_filter = function (self, item_filter, change_page, optional_search_query)
 	item_filter = "available_in_current_mechanism and ( " .. item_filter .. " )"
+
 	local items_1 = self:_get_items_by_filter("can_wield_by_current_career and ( " .. item_filter .. " )")
 	local items_2 = self:_get_items_by_filter("not can_wield_by_current_career and ( " .. item_filter .. " )")
 	local item_sort_func = self._item_sort_func
@@ -756,11 +773,13 @@ ItemGridUI.change_item_filter = function (self, item_filter, change_page, option
 	end
 
 	self._items = items
+
 	local widget = self._widget
 	local content = widget.content
 	local num_slots = content.slots
 	local num_items = #items
 	local total_pages = math.max(math.ceil(num_items / num_slots), 1)
+
 	self._total_item_pages = total_pages
 
 	if change_page then
@@ -813,7 +832,7 @@ ItemGridUI._handle_page_arrow_pressed = function (self)
 		return
 	end
 
-	local new_page_index = nil
+	local new_page_index
 
 	if page_hotspot_left and page_hotspot_left.on_release then
 		new_page_index = math.max(selected_page_index - 1, 1)
@@ -958,6 +977,7 @@ ItemGridUI.highlight_slots = function (self, enabled, optional_alpha)
 			local hotspot_name = "hotspot" .. name_sufix
 			local slot_hover_name = "slot_hover" .. name_sufix
 			local slot_hotspot = content[hotspot_name]
+
 			slot_hotspot.highlight = enabled
 			style[slot_hover_name].color[1] = enabled and (optional_alpha or 255) or 255
 		end
@@ -978,8 +998,11 @@ ItemGridUI.highlight_drop_slots = function (self, enabled)
 			local item_icon_name = "item_icon" .. name_sufix
 			local slot_hover_name = "slot_hover" .. name_sufix
 			local slot_hotspot = content[hotspot_name]
+
 			slot_hotspot.highlight = enabled
+
 			local alpha = slot_hotspot.internal_is_hover and 255 or 100
+
 			style[slot_hover_name].color[1] = enabled and alpha or 255
 		end
 	end
@@ -990,7 +1013,7 @@ ItemGridUI.is_item_dragged = function (self)
 	local content = widget.content
 	local rows = content.rows
 	local columns = content.columns
-	local dragged_item, slot_index = nil
+	local dragged_item, slot_index
 
 	for i = 1, rows do
 		for k = 1, columns do
@@ -1001,6 +1024,7 @@ ItemGridUI.is_item_dragged = function (self)
 
 			if slot_hotspot[item_icon_name] and slot_hotspot.on_drag_stopped then
 				local item = content["item" .. name_sufix]
+
 				dragged_item = item
 
 				break
@@ -1016,7 +1040,7 @@ ItemGridUI.is_dragging_item = function (self)
 	local content = widget.content
 	local rows = content.rows
 	local columns = content.columns
-	local dragged_item = nil
+	local dragged_item
 
 	for i = 1, rows do
 		for k = 1, columns do
@@ -1027,6 +1051,7 @@ ItemGridUI.is_dragging_item = function (self)
 
 			if slot_hotspot[item_icon_name] and slot_hotspot.is_dragging then
 				local item = content["item" .. name_sufix]
+
 				dragged_item = item
 
 				break

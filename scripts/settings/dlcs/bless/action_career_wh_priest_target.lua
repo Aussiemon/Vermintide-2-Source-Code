@@ -1,7 +1,10 @@
+﻿-- chunkname: @scripts/settings/dlcs/bless/action_career_wh_priest_target.lua
+
 ActionCareerWHPriestTarget = class(ActionCareerWHPriestTarget, ActionBase)
+
 local crosshair_lookup = {
+	target_ally = "wh_priest_ally",
 	target_self = "wh_priest_self",
-	target_ally = "wh_priest_ally"
 }
 
 ActionCareerWHPriestTarget.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
@@ -42,6 +45,7 @@ ActionCareerWHPriestTarget._start_charge_sound = function (self)
 
 		if is_local then
 			local wwise_playing_id, wwise_source_id = ActionUtils.start_charge_sound(wwise_world, self.weapon_unit, owner_unit, current_action)
+
 			self.charging_sound_id = wwise_playing_id
 			self.wwise_source_id = wwise_source_id
 		end
@@ -98,7 +102,7 @@ ActionCareerWHPriestTarget.client_owner_post_update = function (self, dt, t, wor
 	end
 
 	if not is_bot then
-		if not self.played_aim_sound and self.aim_sound_time <= t then
+		if not self.played_aim_sound and t >= self.aim_sound_time then
 			local sound_event = current_action.aim_sound_event
 
 			if sound_event then
@@ -179,7 +183,7 @@ ActionCareerWHPriestTarget._target_ally_from_crosshair = function (self)
 	local side = Managers.state.side.side_by_unit[owner_unit]
 	local friendly_units = side and side.PLAYER_AND_BOT_UNITS
 	local num_friendly_units = friendly_units and #friendly_units or 0
-	local best_target = nil
+	local best_target
 	local best_distance = 0
 	local best_dot_value = 0
 
@@ -223,11 +227,12 @@ ActionCareerWHPriestTarget.finish = function (self, reason, data)
 
 	if is_bot then
 		local blackboard = BLACKBOARDS[self.owner_unit]
+
 		aimed_target = blackboard and blackboard.activate_ability_data.target_unit or self.owner_unit
 	end
 
 	local chain_action_data = {
-		target = aimed_target
+		target = aimed_target,
 	}
 	local current_action = self.current_action
 

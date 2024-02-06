@@ -1,5 +1,9 @@
+﻿-- chunkname: @scripts/ui/views/telemetry_survey_view.lua
+
 local definitions = local_require("scripts/ui/views/telemetry_survey_view_definitions")
+
 TelemetrySurveyView = class(TelemetrySurveyView)
+
 local SURVEY_TIMEOUT = 20
 
 TelemetrySurveyView.init = function (self, ingame_ui_context)
@@ -24,7 +28,9 @@ TelemetrySurveyView.init = function (self, ingame_ui_context)
 	self:create_ui_elements()
 
 	local world = self.world_manager:world("level_world")
+
 	self.wwise_world = Managers.world:wwise_world(world)
+
 	local input_manager = self.input_manager
 
 	input_manager:create_input_service("telemetry_survey", "IngameMenuKeymaps", "IngameMenuFilters")
@@ -62,6 +68,7 @@ TelemetrySurveyView.create_ui_elements = function (self)
 	self.background_1 = UIWidget.init(definitions.widget_definitions.background_1)
 	self.background_2 = UIWidget.init(definitions.widget_definitions.background_2)
 	self.headers = UIWidget.init(definitions.widget_definitions.headers)
+
 	local survey_ratings = {}
 
 	for i = 1, 5 do
@@ -131,7 +138,7 @@ TelemetrySurveyView.update = function (self, dt)
 	self:handle_interaction(dt)
 	self:draw(dt)
 
-	if self.end_time <= curr_time then
+	if curr_time >= self.end_time then
 		self.timed_out = true
 
 		self:transition()
@@ -162,14 +169,17 @@ end
 
 TelemetrySurveyView.update_button_disabled = function (self)
 	self.continue_button.content.disabled = not self.survey_answered
+
 	local is_disabled = self.continue_button.content.disabled
 	local text_style = self.continue_button.style.text
 	local text_color = is_disabled and text_style.disabled_color or text_style.base_color
+
 	text_style.text_color = text_color
 end
 
 TelemetrySurveyView.set_active = function (self, active)
 	self.active = active
+
 	local input_manager = self.input_manager
 
 	if active then

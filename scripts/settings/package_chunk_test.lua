@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/package_chunk_test.lua
+
 PackageChunkPackages = {
 	"backend/local_backend/local_backend",
 	"core/stingray_renderer/renderer",
@@ -238,7 +240,7 @@ PackageChunkPackages = {
 	"units/beings/player/first_person_base/state_machines/career/skill_waywatcher",
 	"units/beings/player/first_person_base/state_machines/ranged/longbow",
 	"units/beings/player/first_person_base/state_machines/ranged/longbow_es",
-	"units/beings/player/first_person_base/state_machines/career/skill_ranger"
+	"units/beings/player/first_person_base/state_machines/career/skill_ranger",
 }
 
 function find_playgo_package(element)

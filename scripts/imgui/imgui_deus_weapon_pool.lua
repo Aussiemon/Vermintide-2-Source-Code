@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/imgui/imgui_deus_weapon_pool.lua
+
 ImguiDeusWeaponPool = class(ImguiDeusWeaponPool)
 
 ImguiDeusWeaponPool.init = function (self)
@@ -69,14 +71,14 @@ ImguiDeusWeaponPool.draw = function (self, is_open)
 					in_pool = in_pool,
 					text_color = text_color,
 					slot_type = slot_type,
-					order = order
+					order = order,
 				}
 
 				table.insert(ordered_draw_data, draw_data)
 			end
 
 			table.sort(ordered_draw_data, function (a, b)
-				return b.order < a.order
+				return a.order > b.order
 			end)
 
 			local melee_drawn = false

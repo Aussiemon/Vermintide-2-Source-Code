@@ -1,10 +1,13 @@
+﻿-- chunkname: @scripts/settings/dlcs/cog/cog_achievements_settings.lua
+
 local settings = DLCSettings.cog
+
 settings.achievement_outline = {
 	heroes = {
 		categories = {
 			{
-				sorting = 2,
 				name = "inventory_name_dwarf_ranger",
+				sorting = 2,
 				entries = {
 					"cog_complete_all_helmgart_levels_recruit_dr_engineer",
 					"cog_complete_all_helmgart_levels_veteran_dr_engineer",
@@ -35,13 +38,13 @@ settings.achievement_outline = {
 					"cog_exploding_barrel_kills",
 					"cog_long_crank_fire",
 					"cog_missing_cog",
-					"complete_all_engineer_challenges"
-				}
-			}
-		}
-	}
+					"complete_all_engineer_challenges",
+				},
+			},
+		},
+	},
 }
 settings.achievement_template_file_names = {
-	"scripts/managers/achievements/achievement_templates_cog"
+	"scripts/managers/achievements/achievement_templates_cog",
 }
 settings.achievement_events = {}

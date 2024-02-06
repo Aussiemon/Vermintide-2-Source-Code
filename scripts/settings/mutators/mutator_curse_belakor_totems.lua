@@ -1,9 +1,13 @@
+﻿-- chunkname: @scripts/settings/mutators/mutator_curse_belakor_totems.lua
+
 local TOTEM_STATES = {
-	COOLDOWN = "COOLDOWN",
 	ACTIVE = "ACTIVE",
-	READY = "READY"
+	COOLDOWN = "COOLDOWN",
+	READY = "READY",
 }
+
 script_data.belakor_totems_debug = true
+
 local TIME_BETWEEN_SPAWNS = 0.5
 local global_printf = printf
 
@@ -52,7 +56,7 @@ Totem.update = function (self, dt, t)
 		if not self._cooldown_end_t then
 			self._cooldown_end_t = t + Math.random_range(MIN_COOLDOWN, MAX_COOLDOWN)
 			self._state = TOTEM_STATES.READY
-		elseif self._cooldown_end_t < t then
+		elseif t > self._cooldown_end_t then
 			self._state = TOTEM_STATES.READY
 
 			dprintf("-%s- new state %s", self._logging_prefix, self._state)
@@ -97,13 +101,14 @@ Totem.spawn = function (self, spawn_position)
 		self:_clear_active_totem()
 	end
 
-	local optional_data = {
-		prepare_func = function (breed, extension_init_data)
-			local is_husk = false
+	local optional_data = {}
 
-			breed:modify_extension_init_data(is_husk, extension_init_data)
-		end
-	}
+	optional_data.prepare_func = function (breed, extension_init_data)
+		local is_husk = false
+
+		breed.modify_extension_init_data(breed, is_husk, extension_init_data)
+	end
+
 	local _self = self
 
 	optional_data.spawned_func = function (unit, breed, optional_data)
@@ -114,9 +119,10 @@ Totem.spawn = function (self, spawn_position)
 
 	local rotation = Quaternion.identity()
 	local queue_id = Managers.state.conflict:spawn_queued_unit(Breeds.shadow_totem, Vector3Box(spawn_position), QuaternionBox(rotation), "mutator", "spawn_idle", "terror_event", optional_data)
+
 	self._active_totem_data = {
 		queue_id = queue_id,
-		starting_position = Vector3Box(spawn_position)
+		starting_position = Vector3Box(spawn_position),
 	}
 	self._state = TOTEM_STATES.ACTIVE
 
@@ -157,8 +163,8 @@ end
 local TOTEM_COUNT = 1
 
 return {
-	description = "curse_belakor_totems_desc",
 	curse_package_name = "resource_packages/mutators/mutator_curse_belakor_totems",
+	description = "curse_belakor_totems_desc",
 	display_name = "curse_belakor_totems_name",
 	icon = "deus_curse_belakor_01",
 	server_start_function = function (context, data)
@@ -216,11 +222,13 @@ return {
 
 					for player_index = 1, #players do
 						local unit = players[player_index]
+
 						forbidden_position_list[#forbidden_position_list + 1] = POSITION_LOOKUP[unit]
 					end
 
 					for i = 1, #totems do
 						local other_totem = totems[i]
+
 						forbidden_position_list[#forbidden_position_list + 1] = other_totem:get_position()
 					end
 
@@ -246,5 +254,5 @@ return {
 	end,
 	server_player_hit_function = function (context, data, hit_unit, attacker_unit, hit_data)
 		return
-	end
+	end,
 }

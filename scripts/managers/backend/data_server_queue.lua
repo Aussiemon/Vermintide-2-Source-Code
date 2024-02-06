@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/backend/data_server_queue.lua
+
 BEQueueItem = class(BEQueueItem)
 
 BEQueueItem.init = function (self, caller, queue_id, script_name, ...)
@@ -6,7 +8,7 @@ BEQueueItem.init = function (self, caller, queue_id, script_name, ...)
 	self._queue_id = queue_id
 	self._script_name = script_name
 	self._data = {
-		...
+		...,
 	}
 end
 
@@ -27,18 +29,21 @@ BEQueueItem.poll_backend = function (self, caller)
 	if items then
 		if error_message or parameters.queue_id ~= self._queue_id then
 			local error_string = "Backend data server error"
+
 			error_string = error_string .. "\n script: " .. self._script_name
 			error_string = error_string .. "\n error_message.details : " .. tostring(error_message.details)
 			error_string = error_string .. "\n error_message.reason : " .. tostring(error_message.reason)
 			error_string = error_string .. "\n queue_id: " .. tostring(self._queue_id) .. " (expected)"
 			error_string = error_string .. "\n queue_id: " .. tostring(parameters.queue_id) .. " (actual)"
 			error_string = error_string .. "\n parameters:"
+
 			local num_parameters = #self._data
 
 			if num_parameters > 0 then
 				for ii = 1, 2, num_parameters do
 					local key = self._data[ii]
 					local value = self._data[ii + 1]
+
 					error_string = error_string .. "\n  " .. tostring(key) .. ": " .. tostring(value)
 				end
 			end
@@ -198,7 +203,7 @@ DataServerQueue.check_for_errors = function (self)
 
 		return {
 			reason = "data_server_error",
-			details = error_message.details
+			details = error_message.details,
 		}
 	end
 end

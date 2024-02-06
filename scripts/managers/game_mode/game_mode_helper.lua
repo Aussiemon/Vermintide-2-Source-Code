@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/game_mode/game_mode_helper.lua
+
 GameModeHelper = class(GameModeHelper)
 
 GameModeHelper.side_is_dead = function (side_name, ignore_bots)
@@ -55,8 +57,7 @@ end
 
 GameModeHelper.try_change_player_to_selected_profile = function (profile_synchronizer, network_server, peer_id, local_player_id)
 	local status = Managers.party:get_player_status(peer_id, local_player_id)
-	local selected_profile_index = status.selected_profile_index
-	local selected_career_index = status.selected_career_index
+	local selected_profile_index, selected_career_index = status.selected_profile_index, status.selected_career_index
 
 	if selected_profile_index and selected_career_index then
 		local current_profile_index, current_career_index = profile_synchronizer:profile_by_peer(peer_id, local_player_id)
@@ -90,7 +91,7 @@ GameModeHelper.get_object_sets = function (level_name, game_mode_key)
 			local object_set_table = {
 				type = "",
 				key = key,
-				units = LevelResource.nested_level_unit_indices_in_object_set(level_name, 1, set)
+				units = LevelResource.nested_level_unit_indices_in_object_set(level_name, 1, set),
 			}
 
 			if game_mode_object_sets[set] or set == "shadow_lights" then
@@ -112,7 +113,7 @@ GameModeHelper.get_object_sets = function (level_name, game_mode_key)
 			local object_set_table = {
 				type = "",
 				key = key,
-				units = LevelResource.unit_indices_in_object_set(level_name, set)
+				units = LevelResource.unit_indices_in_object_set(level_name, set),
 			}
 
 			if game_mode_object_sets[set] or set == "shadow_lights" then

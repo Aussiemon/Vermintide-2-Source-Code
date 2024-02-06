@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/ui/views/voice_chat_ui.lua
+
 VoiceChatUI = class(VoiceChatUI)
+
 local RETAINED_MODE_ENABLED = true
 local NUM_SLOTS = 4
 local PLAYER_NAME_MAX_LENGTH = 16
@@ -7,182 +10,182 @@ local scenegraph_definition = {
 		scale = "fit",
 		size = {
 			1920,
-			1080
+			1080,
 		},
 		position = {
 			0,
 			0,
-			UILayer.chat
-		}
+			UILayer.chat,
+		},
 	},
 	icon_slot_1 = {
-		vertical_alignment = "top",
-		parent = "root",
 		horizontal_alignment = "left",
+		parent = "root",
+		vertical_alignment = "top",
 		size = {
 			24,
-			25
+			25,
 		},
 		position = {
 			140,
 			-54,
-			1
-		}
+			1,
+		},
 	},
 	icon_slot_2 = {
-		vertical_alignment = "bottom",
-		parent = "icon_slot_1",
 		horizontal_alignment = "center",
+		parent = "icon_slot_1",
+		vertical_alignment = "bottom",
 		size = {
 			24,
-			25
+			25,
 		},
 		position = {
 			0,
 			-30,
-			0
-		}
+			0,
+		},
 	},
 	icon_slot_3 = {
-		vertical_alignment = "bottom",
-		parent = "icon_slot_2",
 		horizontal_alignment = "center",
+		parent = "icon_slot_2",
+		vertical_alignment = "bottom",
 		size = {
 			24,
-			25
+			25,
 		},
 		position = {
 			0,
 			-30,
-			0
-		}
+			0,
+		},
 	},
 	icon_slot_4 = {
-		vertical_alignment = "bottom",
-		parent = "icon_slot_3",
 		horizontal_alignment = "center",
+		parent = "icon_slot_3",
+		vertical_alignment = "bottom",
 		size = {
 			24,
-			25
+			25,
 		},
 		position = {
 			0,
 			-30,
-			0
-		}
+			0,
+		},
 	},
 	name_slot_1 = {
-		vertical_alignment = "center",
-		parent = "icon_slot_1",
 		horizontal_alignment = "left",
+		parent = "icon_slot_1",
+		vertical_alignment = "center",
 		size = {
 			400,
-			24
+			24,
 		},
 		position = {
 			25,
 			0,
-			0
-		}
+			0,
+		},
 	},
 	name_slot_2 = {
-		vertical_alignment = "center",
-		parent = "icon_slot_2",
 		horizontal_alignment = "left",
+		parent = "icon_slot_2",
+		vertical_alignment = "center",
 		size = {
 			400,
-			24
+			24,
 		},
 		position = {
 			25,
 			0,
-			0
-		}
+			0,
+		},
 	},
 	name_slot_3 = {
-		vertical_alignment = "center",
-		parent = "icon_slot_3",
 		horizontal_alignment = "left",
+		parent = "icon_slot_3",
+		vertical_alignment = "center",
 		size = {
 			400,
-			24
+			24,
 		},
 		position = {
 			25,
 			0,
-			0
-		}
+			0,
+		},
 	},
 	name_slot_4 = {
-		vertical_alignment = "center",
-		parent = "icon_slot_4",
 		horizontal_alignment = "left",
+		parent = "icon_slot_4",
+		vertical_alignment = "center",
 		size = {
 			400,
-			24
+			24,
 		},
 		position = {
 			25,
 			0,
-			0
-		}
+			0,
+		},
 	},
 	bg_slot_1 = {
-		vertical_alignment = "center",
-		parent = "icon_slot_1",
 		horizontal_alignment = "left",
+		parent = "icon_slot_1",
+		vertical_alignment = "center",
 		size = {
 			250,
-			25
+			25,
 		},
 		position = {
 			-5,
 			0,
-			-1
-		}
+			-1,
+		},
 	},
 	bg_slot_2 = {
-		vertical_alignment = "center",
-		parent = "icon_slot_2",
 		horizontal_alignment = "left",
+		parent = "icon_slot_2",
+		vertical_alignment = "center",
 		size = {
 			250,
-			25
+			25,
 		},
 		position = {
 			-5,
 			0,
-			-1
-		}
+			-1,
+		},
 	},
 	bg_slot_3 = {
-		vertical_alignment = "center",
-		parent = "icon_slot_3",
 		horizontal_alignment = "left",
+		parent = "icon_slot_3",
+		vertical_alignment = "center",
 		size = {
 			250,
-			25
+			25,
 		},
 		position = {
 			-5,
 			0,
-			-1
-		}
+			-1,
+		},
 	},
 	bg_slot_4 = {
-		vertical_alignment = "center",
-		parent = "icon_slot_4",
 		horizontal_alignment = "left",
+		parent = "icon_slot_4",
+		vertical_alignment = "center",
 		size = {
 			250,
-			25
+			25,
 		},
 		position = {
 			-5,
 			0,
-			-1
-		}
-	}
+			-1,
+		},
+	},
 }
 
 if not IS_WINDOWS then
@@ -194,33 +197,33 @@ local icon_widget_definitions = {
 	UIWidgets.create_simple_texture("voice_chat_icon_01", "icon_slot_1", false, RETAINED_MODE_ENABLED),
 	UIWidgets.create_simple_texture("voice_chat_icon_01", "icon_slot_2", false, RETAINED_MODE_ENABLED),
 	UIWidgets.create_simple_texture("voice_chat_icon_01", "icon_slot_3", false, RETAINED_MODE_ENABLED),
-	UIWidgets.create_simple_texture("voice_chat_icon_01", "icon_slot_4", false, RETAINED_MODE_ENABLED)
+	UIWidgets.create_simple_texture("voice_chat_icon_01", "icon_slot_4", false, RETAINED_MODE_ENABLED),
 }
 local bg_widget_definitions = {
 	UIWidgets.create_simple_texture("voice_chat_bg_01", "bg_slot_1", false, RETAINED_MODE_ENABLED),
 	UIWidgets.create_simple_texture("voice_chat_bg_01", "bg_slot_2", false, RETAINED_MODE_ENABLED),
 	UIWidgets.create_simple_texture("voice_chat_bg_01", "bg_slot_3", false, RETAINED_MODE_ENABLED),
-	UIWidgets.create_simple_texture("voice_chat_bg_01", "bg_slot_4", false, RETAINED_MODE_ENABLED)
+	UIWidgets.create_simple_texture("voice_chat_bg_01", "bg_slot_4", false, RETAINED_MODE_ENABLED),
 }
 local name_style = {
-	vertical_alignment = "center",
 	font_size = 18,
-	localize = false,
-	horizontal_alignment = "left",
-	word_wrap = false,
 	font_type = "hell_shark",
+	horizontal_alignment = "left",
+	localize = false,
+	vertical_alignment = "center",
+	word_wrap = false,
 	text_color = Colors.get_color_table_with_alpha("white", 150),
 	offset = {
 		0,
 		0,
-		2
-	}
+		2,
+	},
 }
 local name_widget_definitions = {
 	UIWidgets.create_simple_text("player_1", "name_slot_1", nil, nil, name_style, nil, RETAINED_MODE_ENABLED),
 	UIWidgets.create_simple_text("player_2", "name_slot_2", nil, nil, name_style, nil, RETAINED_MODE_ENABLED),
 	UIWidgets.create_simple_text("player_3", "name_slot_3", nil, nil, name_style, nil, RETAINED_MODE_ENABLED),
-	UIWidgets.create_simple_text("player_4", "name_slot_4", nil, nil, name_style, nil, RETAINED_MODE_ENABLED)
+	UIWidgets.create_simple_text("player_4", "name_slot_4", nil, nil, name_style, nil, RETAINED_MODE_ENABLED),
 }
 local DO_RELOAD = false
 local UI_REMOVE_DELAY = 0.3
@@ -250,6 +253,7 @@ VoiceChatUI.create_ui_elements = function (self)
 
 	for _, definition in ipairs(icon_widget_definitions) do
 		local widget = UIWidget.init(definition)
+
 		widget.content.visible = false
 		widget.style.texture_id.color = Colors.get_color_table_with_alpha("white", 150)
 		self.icon_widgets[#self.icon_widgets + 1] = widget
@@ -259,6 +263,7 @@ VoiceChatUI.create_ui_elements = function (self)
 
 	for _, definition in ipairs(bg_widget_definitions) do
 		local widget = UIWidget.init(definition)
+
 		widget.content.visible = false
 		self.bg_widgets[#self.bg_widgets + 1] = widget
 	end
@@ -267,6 +272,7 @@ VoiceChatUI.create_ui_elements = function (self)
 
 	for _, definition in ipairs(name_widget_definitions) do
 		local widget = UIWidget.init(definition)
+
 		widget.content.visible = false
 		self.name_widgets[#self.name_widgets + 1] = widget
 	end
@@ -335,6 +341,7 @@ VoiceChatUI._update_talking_state = function (self, members_table)
 	for peer_id, _ in pairs(members_table) do
 		local is_talking = self.voip:is_talking(peer_id)
 		local was_talking = self._talking_peers[peer_id]
+
 		self._talking_peers[peer_id] = is_talking and self._timer + UI_REMOVE_DELAY or was_talking
 		self._dirty = not was_talking and is_talking or self._dirty
 	end
@@ -358,19 +365,24 @@ VoiceChatUI._update_widgets = function (self)
 		local icon_widget = self.icon_widgets[index]
 		local icon_widget_content = icon_widget.content
 		local icon_widget_element = icon_widget.element
+
 		icon_widget_content.visible = true
 		icon_widget_element.dirty = true
+
 		local bg_widget = self.bg_widgets[index]
 		local bg_widget_content = bg_widget.content
 		local bg_widget_element = bg_widget.element
+
 		bg_widget_content.visible = true
 		bg_widget_element.dirty = true
-		local name = nil
+
+		local name
 
 		if HAS_STEAM then
 			name = Steam.user_name(peer_id)
 		else
 			local player = Managers.player:player_from_peer_id(peer_id, 1)
+
 			name = player and player:name()
 		end
 
@@ -379,9 +391,10 @@ VoiceChatUI._update_widgets = function (self)
 		end
 
 		local name_widget = self.name_widgets[index]
-		local cropped_name = PLAYER_NAME_MAX_LENGTH < UTF8Utils.string_length(name) and UIRenderer.crop_text_width(self.ui_top_renderer, name, 250, name_widget.style.text) or name
+		local cropped_name = UTF8Utils.string_length(name) > PLAYER_NAME_MAX_LENGTH and UIRenderer.crop_text_width(self.ui_top_renderer, name, 250, name_widget.style.text) or name
 		local name_widget_content = name_widget.content
 		local name_widget_element = name_widget.element
+
 		name_widget_content.text = cropped_name
 		name_widget_content.visible = true
 		name_widget_element.dirty = true
@@ -392,16 +405,21 @@ VoiceChatUI._update_widgets = function (self)
 		local icon_widget = self.icon_widgets[i]
 		local icon_widget_content = icon_widget.content
 		local icon_widget_element = icon_widget.element
+
 		icon_widget_content.visible = false
 		icon_widget_element.dirty = true
+
 		local bg_widget = self.bg_widgets[i]
 		local bg_widget_content = bg_widget.content
 		local bg_widget_element = bg_widget.element
+
 		bg_widget_content.visible = false
 		bg_widget_element.dirty = true
+
 		local name_widget = self.name_widgets[i]
 		local name_widget_content = name_widget.content
 		local name_widget_element = name_widget.element
+
 		name_widget_content.visible = false
 		name_widget_element.dirty = true
 	end

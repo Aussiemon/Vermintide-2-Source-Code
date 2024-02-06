@@ -1,8 +1,11 @@
+﻿-- chunkname: @scripts/ui/views/start_game_view/windows/start_game_window_twitch_game_settings.lua
+
 local definitions = local_require("scripts/ui/views/start_game_view/windows/definitions/start_game_window_twitch_game_settings_definitions")
 local widget_definitions = definitions.widgets
 local other_options_widget_definitions = definitions.other_options_widgets
 local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
+
 StartGameWindowTwitchGameSettings = class(StartGameWindowTwitchGameSettings)
 StartGameWindowTwitchGameSettings.NAME = "StartGameWindowTwitchGameSettings"
 
@@ -10,17 +13,21 @@ StartGameWindowTwitchGameSettings.on_enter = function (self, params, offset)
 	print("[StartGameWindow] Enter Substate StartGameWindowTwitchGameSettings")
 
 	self.parent = params.parent
+
 	local ingame_ui_context = params.ingame_ui_context
+
 	self.ui_renderer = ingame_ui_context.ui_renderer
 	self.input_manager = ingame_ui_context.input_manager
 	self.statistics_db = ingame_ui_context.statistics_db
 	self.render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 	self._network_lobby = ingame_ui_context.network_lobby
 	self._mechanism_name = Managers.mechanism:current_mechanism_name()
+
 	local player_manager = Managers.player
 	local local_player = player_manager:local_player()
+
 	self._stats_id = local_player:stats_id()
 	self.player_manager = player_manager
 	self.peer_id = ingame_ui_context.peer_id
@@ -36,13 +43,16 @@ end
 
 StartGameWindowTwitchGameSettings.create_ui_elements = function (self, params, offset)
 	local ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+
 	self.ui_scenegraph = ui_scenegraph
+
 	local on_dedicated_server = self._network_lobby:is_dedicated_server()
 	local widgets = {}
 	local widgets_by_name = {}
 
 	for name, widget_definition in pairs(widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		widgets[#widgets + 1] = widget
 		widgets_by_name[name] = widget
 	end
@@ -51,6 +61,7 @@ StartGameWindowTwitchGameSettings.create_ui_elements = function (self, params, o
 
 	for name, widget_definition in pairs(other_options_widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		widget.content.visible = not on_dedicated_server
 		other_options_widgets[#other_options_widgets + 1] = widget
 		widgets_by_name[name] = widget
@@ -66,6 +77,7 @@ StartGameWindowTwitchGameSettings.create_ui_elements = function (self, params, o
 
 	if offset then
 		local window_position = ui_scenegraph.window.local_position
+
 		window_position[1] = window_position[1] + offset[1]
 		window_position[2] = window_position[2] + offset[2]
 		window_position[3] = window_position[3] + offset[3]
@@ -90,12 +102,19 @@ end
 
 StartGameWindowTwitchGameSettings._set_additional_options_enabled_state = function (self, enabled)
 	local widgets_by_name = self._widgets_by_name
+
 	widgets_by_name.additional_option.content.button_hotspot.disable_button = not enabled
+
 	local private_button = widgets_by_name.private_button
+
 	private_button.content.button_hotspot.disable_button = not enabled
+
 	local host_button = widgets_by_name.host_button
+
 	host_button.content.button_hotspot.disable_button = not enabled
+
 	local strict_matchmaking_button = widgets_by_name.strict_matchmaking_button
+
 	strict_matchmaking_button.content.button_hotspot.disable_button = not enabled
 	self._additional_option_enabled = enabled
 end
@@ -288,14 +307,19 @@ StartGameWindowTwitchGameSettings._update_additional_options = function (self, f
 		local always_host_is_selected = true
 		local strict_matchmaking_is_selected = false
 		local private_button = widgets_by_name.private_button
+
 		private_button.content.button_hotspot.disable_button = true
 		private_button.content.button_hotspot.is_selected = private_is_selected
 		private_button.style.hover_glow.color[1] = 0
+
 		local host_button = widgets_by_name.host_button
+
 		host_button.content.button_hotspot.disable_button = true
 		host_button.content.button_hotspot.is_selected = always_host_is_selected
 		host_button.style.hover_glow.color[1] = 0
+
 		local strict_matchmaking_button = widgets_by_name.strict_matchmaking_button
+
 		strict_matchmaking_button.content.button_hotspot.disable_button = true
 		strict_matchmaking_button.content.button_hotspot.is_selected = strict_matchmaking_is_selected
 		strict_matchmaking_button.style.hover_glow.color[1] = 0
@@ -316,8 +340,10 @@ StartGameWindowTwitchGameSettings._update_difficulty_option = function (self)
 		self:_set_difficulty_option(difficulty_key)
 
 		self._difficulty_key = difficulty_key
+
 		local enable_play = DifficultySettings[difficulty_key] ~= nil and rawget(LevelSettings, self._selected_level_id) ~= nil
 		local widgets_by_name = self._widgets_by_name
+
 		self._enable_play = enable_play and twitch_active
 		widgets_by_name.play_button.content.button_hotspot.disable_button = not self._enable_play
 
@@ -335,6 +361,7 @@ StartGameWindowTwitchGameSettings._set_difficulty_option = function (self, diffi
 	local display_image = difficulty_settings and difficulty_settings.display_image
 	local completed_frame_texture = difficulty_settings and difficulty_settings.completed_frame_texture or "map_frame_00"
 	local widgets_by_name = self._widgets_by_name
+
 	widgets_by_name.game_option_2.content.option_text = display_name and Localize(display_name) or ""
 	widgets_by_name.game_option_2.content.icon = display_image or nil
 	widgets_by_name.game_option_2.content.icon_frame = completed_frame_texture
@@ -361,14 +388,19 @@ StartGameWindowTwitchGameSettings._set_selected_level = function (self, level_id
 		local level_settings = LevelSettings[level_id]
 		local display_name = level_settings.display_name
 		local level_image = level_settings.level_image
+
 		text = Localize(display_name)
+
 		local icon_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(level_image)
 		local texture_size = widget.style.icon.texture_size
+
 		texture_size[1] = icon_texture_settings.size[1]
 		texture_size[2] = icon_texture_settings.size[2]
 		widget.content.icon = level_image
+
 		local completed_difficulty_index = self.parent:get_completed_level_difficulty_index(self.statistics_db, self._stats_id, level_id)
 		local level_frame = UIWidgetUtils.get_level_frame_by_difficulty_index(completed_difficulty_index)
+
 		widget.content.icon_frame = level_frame
 	end
 
@@ -421,6 +453,7 @@ StartGameWindowTwitchGameSettings._create_style_animation_enter = function (self
 	if animation_duration > 0 and not instant then
 		local ui_animations = self._ui_animations
 		local animation_name = "game_option_" .. style_id
+
 		ui_animations[animation_name .. "_hover_" .. widget_index] = self:_animate_element_by_time(pass_style.color, 1, current_color_value, target_color_value, animation_duration)
 	else
 		pass_style.color[1] = target_color_value
@@ -443,6 +476,7 @@ StartGameWindowTwitchGameSettings._create_style_animation_exit = function (self,
 	if animation_duration > 0 and not instant then
 		local ui_animations = self._ui_animations
 		local animation_name = "game_option_" .. style_id
+
 		ui_animations[animation_name .. "_hover_" .. widget_index] = self:_animate_element_by_time(pass_style.color, 1, current_color_value, target_color_value, animation_duration)
 	else
 		pass_style.color[1] = target_color_value

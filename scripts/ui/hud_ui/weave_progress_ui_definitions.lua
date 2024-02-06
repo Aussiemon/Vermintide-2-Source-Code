@@ -1,26 +1,27 @@
-local SIZE_X = 1920
-local SIZE_Y = 1080
+﻿-- chunkname: @scripts/ui/hud_ui/weave_progress_ui_definitions.lua
+
+local SIZE_X, SIZE_Y = 1920, 1080
 local multiplier = 1.5
 local BAR_SIZE = {
 	250 * multiplier,
-	22 * multiplier
+	22 * multiplier,
 }
 local TIP_SIZE = {
 	21 * multiplier,
-	21 * multiplier
+	21 * multiplier,
 }
 local ICON_SIZE = {
 	42.5,
-	42.5
+	42.5,
 }
 local WINDOW_SIZE = {
 	325 * multiplier,
-	50 * multiplier
+	50 * multiplier,
 }
 local progress_ui_multiplier = 1
 local PROGRESS_UI_WINDOW_SIZE = {
 	325 * progress_ui_multiplier,
-	50 * progress_ui_multiplier
+	50 * progress_ui_multiplier,
 }
 local scenegraph_definition = {
 	screen = {
@@ -28,57 +29,57 @@ local scenegraph_definition = {
 		position = {
 			0,
 			0,
-			UILayer.hud
+			UILayer.hud,
 		},
 		size = {
 			SIZE_X,
-			SIZE_Y
-		}
+			SIZE_Y,
+		},
 	},
 	progress_ui = {
-		vertical_alignment = "top",
-		parent = "screen",
 		horizontal_alignment = "right",
+		parent = "screen",
+		vertical_alignment = "top",
 		position = {
 			0,
 			-25,
-			0
+			0,
 		},
-		size = PROGRESS_UI_WINDOW_SIZE
+		size = PROGRESS_UI_WINDOW_SIZE,
 	},
 	progress_window = {
-		vertical_alignment = "top",
-		parent = "screen",
 		horizontal_alignment = "right",
+		parent = "screen",
+		vertical_alignment = "top",
 		position = {
 			-20,
 			-20,
-			0
+			0,
 		},
-		size = WINDOW_SIZE
+		size = WINDOW_SIZE,
 	},
 	progress_icon = {
-		vertical_alignment = "center",
-		parent = "progress_window",
 		horizontal_alignment = "left",
+		parent = "progress_window",
+		vertical_alignment = "center",
 		position = {
 			60,
 			0,
-			1
+			1,
 		},
-		size = ICON_SIZE
+		size = ICON_SIZE,
 	},
 	progress_bar = {
-		vertical_alignment = "center",
-		parent = "progress_window",
 		horizontal_alignment = "right",
+		parent = "progress_window",
+		vertical_alignment = "center",
 		position = {
 			0,
 			0,
-			1
+			1,
 		},
-		size = BAR_SIZE
-	}
+		size = BAR_SIZE,
+	},
 }
 
 local function create_progress_bar(scenegraph_id, texture)
@@ -89,66 +90,66 @@ local function create_progress_bar(scenegraph_id, texture)
 			passes = {
 				{
 					pass_type = "rect",
-					style_id = "background"
+					style_id = "background",
 				},
 				{
 					pass_type = "texture",
 					style_id = "mask",
-					texture_id = "mask_id"
+					texture_id = "mask_id",
 				},
 				{
 					pass_type = "texture",
 					style_id = "glass",
-					texture_id = "glass_id"
+					texture_id = "glass_id",
 				},
 				{
-					style_id = "progress_bar_fill",
-					pass_type = "texture_uv",
 					content_id = "progress_bar_fill_id",
+					pass_type = "texture_uv",
+					style_id = "progress_bar_fill",
 					content_change_function = function (content, style)
 						style.texture_size[1] = content.parent.bar_progress * BAR_SIZE[1]
 						content.uvs[2][1] = content.parent.bar_progress
-					end
+					end,
 				},
 				{
+					pass_type = "texture",
 					style_id = "progress_bar_tip",
 					texture_id = "progress_bar_tip_id",
-					pass_type = "texture",
 					content_change_function = function (content, style)
 						style.offset[1] = content.bar_progress * BAR_SIZE[1] - 4
-					end
+					end,
 				},
 				{
-					texture_id = "frame_id",
+					pass_type = "texture_frame",
 					style_id = "frame",
-					pass_type = "texture_frame"
+					texture_id = "frame_id",
 				},
 				{
-					style_id = "progress_bar_end_left",
+					content_id = "progress_bar_end_left_id",
 					pass_type = "texture_uv",
-					content_id = "progress_bar_end_left_id"
+					style_id = "progress_bar_end_left",
 				},
 				{
 					pass_type = "texture",
 					style_id = "progress_bar_end_right",
-					texture_id = "progress_bar_end_id"
+					texture_id = "progress_bar_end_id",
 				},
 				{
-					style_id = "progress_bar_fill_bg",
-					pass_type = "texture_uv",
 					content_id = "progress_bar_fill_bg_id",
+					pass_type = "texture_uv",
+					style_id = "progress_bar_fill_bg",
 					content_check_function = function (content, style)
 						return content.parent.bar_progress < content.parent.progress
 					end,
 					content_change_function = function (content, style)
 						style.texture_size[1] = content.parent.progress * BAR_SIZE[1]
 						content.uvs[2][1] = content.parent.progress
-					end
+					end,
 				},
 				{
-					style_id = "glow",
-					pass_type = "texture_uv",
 					content_id = "glow_id",
+					pass_type = "texture_uv",
+					style_id = "glow",
 					content_check_function = function (content, style)
 						return content.parent.bar_progress < content.parent.progress or content.parent.bar_progress == 1
 					end,
@@ -164,85 +165,85 @@ local function create_progress_bar(scenegraph_id, texture)
 							style.offset[1] = content.parent.bar_progress * BAR_SIZE[1]
 							style.texture_size[1] = (content.parent.progress - content.parent.bar_progress) * BAR_SIZE[1]
 						end
-					end
+					end,
 				},
 				{
+					pass_type = "texture",
 					style_id = "progress_bar_glow_tip",
 					texture_id = "progress_bar_tip_id",
-					pass_type = "texture",
 					content_check_function = function (content, style)
 						return content.bar_progress < content.progress
 					end,
 					content_change_function = function (content, style)
 						style.offset[1] = content.progress * BAR_SIZE[1] - 4
-					end
+					end,
 				},
 				{
+					content_id = "progress_icon_effect",
+					pass_type = "texture_uv",
 					scenegraph_id = "progress_icon",
 					style_id = "progress_icon_effect",
-					pass_type = "texture_uv",
-					content_id = "progress_icon_effect"
 				},
 				{
-					texture_id = "mask_texture",
+					pass_type = "texture",
 					style_id = "mask_top",
-					pass_type = "texture"
+					texture_id = "mask_texture",
 				},
 				{
-					texture_id = "mask_texture",
+					pass_type = "texture",
 					style_id = "mask_bottom",
-					pass_type = "texture"
-				}
-			}
+					texture_id = "mask_texture",
+				},
+			},
 		},
 		content = {
-			progress_bar_end_id = "weave_bar_end",
-			progress = 0,
-			progress_bar_tip_id = "weave_bar_fill_gain_glow_progress_end",
-			test = "weave_bar_fill_gain_progress_glow",
+			bar_progress = 0,
 			glass_id = "button_glass_01",
 			mask_id = "bar_blur",
-			bar_progress = 0,
 			mask_texture = "mask_rect",
+			progress = 0,
+			progress_bar_end_id = "weave_bar_end",
+			progress_bar_tip_id = "weave_bar_fill_gain_glow_progress_end",
+			test = "weave_bar_fill_gain_progress_glow",
 			progress_bar_fill_id = {
 				texture_id = "weave_bar_fill_progress",
 				uvs = {
 					{
 						0,
-						0
+						0,
 					},
 					{
 						1,
-						1
-					}
-				}
+						1,
+					},
+				},
 			},
 			progress_bar_fill_bg_id = {
 				texture_id = "weave_bar_fill_progress",
 				uvs = {
 					{
 						0,
-						0
+						0,
 					},
 					{
 						1,
-						1
-					}
-				}
+						1,
+					},
+				},
 			},
 			glow_id = {
-				timer = 0,
 				texture_id = "weave_bar_fill_gain_progress_glow",
+				timer = 0,
 				uvs = {
 					{
 						0,
-						0
+						0,
 					},
 					{
 						1,
-						1
-					}
-				}
+						1,
+					},
+				},
 			},
 			frame_id = frame_settings.texture,
 			progress_bar_end_left_id = {
@@ -250,148 +251,148 @@ local function create_progress_bar(scenegraph_id, texture)
 				uvs = {
 					{
 						1,
-						0
+						0,
 					},
 					{
 						0,
-						1
-					}
-				}
+						1,
+					},
+				},
 			},
 			progress_icon_effect = {
 				texture_id = "weave_progress_effect",
 				uvs = {
 					{
 						0,
-						0
+						0,
 					},
 					{
 						1,
-						1
-					}
-				}
-			}
+						1,
+					},
+				},
+			},
 		},
 		style = {
 			progress_icon_effect = {
-				vertical_alignment = "bottom",
 				horizontal_alignment = "center",
+				vertical_alignment = "bottom",
 				texture_size = {
 					67.5,
-					87.5
+					87.5,
 				},
 				offset = {
 					-0,
 					-2,
-					50
+					50,
 				},
 				color = {
 					255,
 					255,
 					131,
-					0
-				}
+					0,
+				},
 			},
 			background = {
 				color = {
 					128,
 					0,
 					0,
-					0
+					0,
 				},
 				offset = {
 					0,
 					0,
-					0
-				}
+					0,
+				},
 			},
 			mask = {
-				vertical_alignment = "center",
 				horizontal_alignment = "center",
+				vertical_alignment = "center",
 				color = {
 					255,
 					255,
 					255,
-					255
+					255,
 				},
 				offset = {
 					0,
 					0,
-					0
+					0,
 				},
 				texture_size = {
 					BAR_SIZE[1] + 15,
-					BAR_SIZE[2] + 18
-				}
+					BAR_SIZE[2] + 18,
+				},
 			},
 			mask_top = {
-				vertical_alignment = "top",
 				horizontal_alignment = "center",
+				vertical_alignment = "top",
 				color = {
 					255,
 					255,
 					255,
-					255
+					255,
 				},
 				offset = {
 					0,
 					BAR_SIZE[2] * 0.25,
-					10
+					10,
 				},
 				texture_size = {
 					BAR_SIZE[1] - 17 * multiplier * 2,
-					BAR_SIZE[2] * 0.4
-				}
+					BAR_SIZE[2] * 0.4,
+				},
 			},
 			mask_bottom = {
-				vertical_alignment = "bottom",
 				horizontal_alignment = "center",
+				vertical_alignment = "bottom",
 				color = {
 					255,
 					255,
 					255,
-					255
+					255,
 				},
 				offset = {
 					0,
 					-BAR_SIZE[2] * 0.25,
-					10
+					10,
 				},
 				texture_size = {
 					BAR_SIZE[1] - 17 * multiplier * 2,
-					BAR_SIZE[2] * 0.4
-				}
+					BAR_SIZE[2] * 0.4,
+				},
 			},
 			glass = {
 				color = {
 					255,
 					255,
 					255,
-					255
+					255,
 				},
 				offset = {
 					0,
 					0,
-					4
+					4,
 				},
 				texture_size = {
 					BAR_SIZE[1],
-					BAR_SIZE[2]
-				}
+					BAR_SIZE[2],
+				},
 			},
 			progress_bar_fill = {
-				vertical_alignment = "center",
 				horizontal_alignment = "left",
+				vertical_alignment = "center",
 				color = Colors.get_color_table_with_alpha("white", 255),
 				offset = {
 					0,
 					0,
-					3
+					3,
 				},
 				texture_size = {
 					BAR_SIZE[1],
-					BAR_SIZE[2] + 22
-				}
+					BAR_SIZE[2] + 22,
+				},
 			},
 			progress_bar_tip = {
 				masked = true,
@@ -399,100 +400,100 @@ local function create_progress_bar(scenegraph_id, texture)
 					255,
 					255,
 					255,
-					255
+					255,
 				},
 				texture_size = TIP_SIZE,
 				offset = {
 					0,
 					0,
-					3
-				}
+					3,
+				},
 			},
 			frame = {
 				color = {
 					255,
 					255,
 					255,
-					255
+					255,
 				},
 				offset = {
 					0,
 					0,
-					5
+					5,
 				},
 				texture_size = frame_settings.texture_size,
-				texture_sizes = frame_settings.texture_sizes
+				texture_sizes = frame_settings.texture_sizes,
 			},
 			progress_bar_end_right = {
-				vertical_alignment = "center",
 				horizontal_alignment = "right",
+				vertical_alignment = "center",
 				color = {
 					255,
 					255,
 					255,
-					255
+					255,
 				},
 				offset = {
 					0,
 					0,
-					5
+					5,
 				},
 				texture_size = {
 					17 * multiplier,
-					21 * multiplier
-				}
+					21 * multiplier,
+				},
 			},
 			progress_bar_end_left = {
-				vertical_alignment = "center",
 				horizontal_alignment = "left",
+				vertical_alignment = "center",
 				color = {
 					255,
 					255,
 					255,
-					255
+					255,
 				},
 				offset = {
 					0,
 					0,
-					5
+					5,
 				},
 				texture_size = {
 					17 * multiplier,
-					21 * multiplier
-				}
+					21 * multiplier,
+				},
 			},
 			progress_bar_fill_bg = {
-				vertical_alignment = "center",
 				horizontal_alignment = "left",
+				vertical_alignment = "center",
 				color = Colors.get_color_table_with_alpha("white", 255),
 				offset = {
 					0,
 					0,
-					2
+					2,
 				},
 				texture_size = {
 					0,
-					BAR_SIZE[2] + 22
-				}
+					BAR_SIZE[2] + 22,
+				},
 			},
 			glow = {
-				vertical_alignment = "center",
 				horizontal_alignment = "left",
+				vertical_alignment = "center",
 				color = {
 					255,
 					255,
 					255,
-					255
+					255,
 				},
 				offset = {
 					12,
 					0,
-					6
+					6,
 				},
 				texture_size = {
 					BAR_SIZE[1],
-					BAR_SIZE[2] + 16
-				}
+					BAR_SIZE[2] + 16,
+				},
 			},
 			progress_bar_glow_tip = {
 				masked = true,
@@ -500,17 +501,17 @@ local function create_progress_bar(scenegraph_id, texture)
 					255,
 					255,
 					255,
-					255
+					255,
 				},
 				texture_size = TIP_SIZE,
 				offset = {
 					0,
 					0,
-					3
-				}
-			}
+					3,
+				},
+			},
 		},
-		scenegraph_id = scenegraph_id
+		scenegraph_id = scenegraph_id,
 	}
 end
 
@@ -539,51 +540,58 @@ local function create_progress_ui(scenegraph_id)
 				{
 					pass_type = "texture",
 					style_id = "background",
-					texture_id = "background_id"
+					texture_id = "background_id",
 				},
 				{
 					pass_type = "texture",
 					style_id = "background_filled",
-					texture_id = "background_filled_id"
+					texture_id = "background_filled_id",
 				},
 				{
 					pass_type = "texture",
 					style_id = "essence_icon",
-					texture_id = "essence_icon_id"
+					texture_id = "essence_icon_id",
 				},
 				{
-					style_id = "bar",
-					pass_type = "texture_uv",
 					content_id = "bar_content",
+					pass_type = "texture_uv",
+					style_id = "bar",
 					content_change_function = function (content, style)
 						local parent_content = content.parent
 						local progress = parent_content.bar_progress
 						local uvs = content.uvs
+
 						uvs[2][1] = progress
+
 						local base_offset_x = style.base_offset_x
+
 						style.texture_size[1] = progress * bar_texture_settings.size[1]
-					end
+					end,
 				},
 				{
-					style_id = "bar_glow",
 					pass_type = "rect",
+					style_id = "bar_glow",
 					content_change_function = function (content, style)
 						local progress = content.progress
+
 						style.texture_size[1] = progress * bar_texture_settings.size[1]
-					end
+					end,
 				},
 				{
+					pass_type = "texture",
 					style_id = "bar_edge_glow",
 					texture_id = "bar_edge_glow_id",
-					pass_type = "texture",
 					content_change_function = function (content, style)
 						local size = bar_texture_settings.size[1]
 						local progress = content.bar_progress
 						local base_offset_x = style.base_offset_x
+
 						style.offset[1] = base_offset_x + progress * size
+
 						local time = Managers.time:time("main")
+
 						style.color[1] = 192 + 63 * math.sin(time * 4)
-					end
+					end,
 				},
 				{
 					pass_type = "texture",
@@ -594,7 +602,7 @@ local function create_progress_ui(scenegraph_id)
 						local current_bar_score = Managers.weave:current_bar_score()
 
 						return bar_cutoff < 100 and bar_cutoff <= current_bar_score
-					end
+					end,
 				},
 				{
 					pass_type = "texture",
@@ -605,41 +613,41 @@ local function create_progress_ui(scenegraph_id)
 						local current_bar_score = Managers.weave:current_bar_score()
 
 						return bar_cutoff < 100 and current_bar_score < bar_cutoff
-					end
+					end,
 				},
 				{
 					pass_type = "texture",
 					style_id = "bar_bg",
-					texture_id = "bar_bg_id"
+					texture_id = "bar_bg_id",
 				},
 				{
+					pass_type = "text",
 					style_id = "standard_objective",
-					pass_type = "text",
-					text_id = "standard_objective_text_id"
+					text_id = "standard_objective_text_id",
 				},
 				{
+					pass_type = "text",
 					style_id = "standard_objective_shadow",
-					pass_type = "text",
-					text_id = "standard_objective_text_id"
+					text_id = "standard_objective_text_id",
 				},
 				{
+					pass_type = "text",
 					style_id = "bonus_time",
-					pass_type = "text",
-					text_id = "bonus_time"
+					text_id = "bonus_time",
 				},
 				{
-					style_id = "bonus_time_shadow",
 					pass_type = "text",
-					text_id = "bonus_time"
-				}
-			}
+					style_id = "bonus_time_shadow",
+					text_id = "bonus_time",
+				},
+			},
 		},
 		content = {
-			progress = 0,
 			bar_cutoff = 100,
+			bar_progress = 0,
 			bonus_time = "+ 0:00",
 			essence_id = "Essence:",
-			bar_progress = 0,
+			progress = 0,
 			standard_objective_text_id = "objective_kill_enemies",
 			bubble_icon_id = bubble_icon_texture,
 			bubble_icon_grayscale_id = bubble_icon_grayscale_texture,
@@ -651,324 +659,324 @@ local function create_progress_ui(scenegraph_id)
 				uvs = {
 					{
 						0,
-						0
+						0,
 					},
 					{
 						1,
-						1
-					}
-				}
+						1,
+					},
+				},
 			},
 			bar_edge_glow_id = bar_edge_glow_texture,
 			bar_bg_id = bar_bg_texture,
-			essence_amount_id = max_essence .. "/" .. max_essence
+			essence_amount_id = max_essence .. "/" .. max_essence,
 		},
 		style = {
 			background = {
-				vertical_alignment = "top",
 				horizontal_alignment = "right",
+				vertical_alignment = "top",
 				texture_size = background_texture_settings.size,
 				color = {
 					255,
 					255,
 					255,
-					255
+					255,
 				},
 				offset = {
 					0,
 					0,
-					0
-				}
+					0,
+				},
 			},
 			background_filled = {
-				vertical_alignment = "top",
 				horizontal_alignment = "right",
+				vertical_alignment = "top",
 				texture_size = background_filled_texture_settings.size,
 				color = {
 					0,
 					255,
 					255,
-					255
+					255,
 				},
 				offset = {
 					0,
 					26,
-					1
-				}
+					1,
+				},
 			},
 			essence_icon = {
-				vertical_alignment = "center",
 				horizontal_alignment = "left",
+				vertical_alignment = "center",
 				texture_size = essence_icon_texture_settings.size,
 				color = {
 					255,
 					255,
 					255,
-					255
+					255,
 				},
 				offset = {
 					45,
 					3,
-					10
-				}
+					10,
+				},
 			},
 			bar = {
-				vertical_alignment = "center",
 				horizontal_alignment = "left",
+				vertical_alignment = "center",
 				texture_size = bar_texture_settings.size,
 				color = {
 					255,
 					255,
 					255,
-					255
+					255,
 				},
 				offset = {
 					80,
 					0,
-					10
-				}
+					10,
+				},
 			},
 			bar_glow = {
-				vertical_alignment = "center",
 				horizontal_alignment = "left",
+				vertical_alignment = "center",
 				texture_size = {
 					0,
-					6
+					6,
 				},
 				color = {
 					0,
 					255,
 					255,
-					255
+					255,
 				},
 				offset = {
 					80,
 					0,
-					9
-				}
+					9,
+				},
 			},
 			bar_edge_glow = {
-				vertical_alignment = "center",
 				base_offset_x = 57,
 				horizontal_alignment = "left",
+				vertical_alignment = "center",
 				texture_size = bar_edge_glow_texture_settings.size,
 				color = {
 					255,
 					255,
 					255,
-					255
+					255,
 				},
 				offset = {
 					57,
 					0,
-					7
-				}
+					7,
+				},
 			},
 			bubble_icon = {
-				vertical_alignment = "center",
 				horizontal_alignment = "left",
+				vertical_alignment = "center",
 				texture_size = bubble_icon_texture_settings.size,
 				color = {
 					255,
 					255,
 					255,
-					255
+					255,
 				},
 				offset = {
 					200,
 					5,
-					10
+					10,
 				},
-				base_offset_x = 53 + bubble_icon_texture_settings.size[1] * 0.5
+				base_offset_x = 53 + bubble_icon_texture_settings.size[1] * 0.5,
 			},
 			bar_bg = {
-				vertical_alignment = "center",
 				horizontal_alignment = "center",
+				vertical_alignment = "center",
 				texture_size = bar_bg_texture_settings.size,
 				color = {
 					255,
 					255,
 					255,
-					255
+					255,
 				},
 				offset = {
 					15,
 					0,
-					5
-				}
+					5,
+				},
 			},
 			essence = {
-				word_wrap = false,
-				upper_case = false,
-				localize = false,
 				font_size = 16,
-				horizontal_alignment = "left",
-				vertical_alignment = "bottom",
 				font_type = "hell_shark_header",
+				horizontal_alignment = "left",
+				localize = false,
+				upper_case = false,
+				vertical_alignment = "bottom",
+				word_wrap = false,
 				text_color = {
 					255,
 					231,
 					99,
-					253
+					253,
 				},
 				offset = {
 					80,
 					-3,
-					5
-				}
+					5,
+				},
 			},
 			essence_shadow = {
-				word_wrap = false,
-				upper_case = false,
-				localize = false,
 				font_size = 16,
-				horizontal_alignment = "left",
-				vertical_alignment = "bottom",
 				font_type = "hell_shark_header",
+				horizontal_alignment = "left",
+				localize = false,
+				upper_case = false,
+				vertical_alignment = "bottom",
+				word_wrap = false,
 				text_color = {
 					255,
 					0,
 					0,
-					0
+					0,
 				},
 				offset = {
 					82,
 					-5,
-					4
-				}
+					4,
+				},
 			},
 			essence_amount = {
-				word_wrap = false,
-				upper_case = false,
-				localize = false,
 				font_size = 16,
-				horizontal_alignment = "right",
-				vertical_alignment = "bottom",
 				font_type = "hell_shark_header",
+				horizontal_alignment = "right",
+				localize = false,
+				upper_case = false,
+				vertical_alignment = "bottom",
+				word_wrap = false,
 				text_color = {
 					255,
 					255,
 					255,
-					255
+					255,
 				},
 				offset = {
 					-120,
 					-3,
-					5
-				}
+					5,
+				},
 			},
 			essence_amount_shadow = {
-				word_wrap = false,
-				upper_case = false,
-				localize = false,
 				font_size = 16,
-				horizontal_alignment = "right",
-				vertical_alignment = "bottom",
 				font_type = "hell_shark_header",
+				horizontal_alignment = "right",
+				localize = false,
+				upper_case = false,
+				vertical_alignment = "bottom",
+				word_wrap = false,
 				text_color = {
 					255,
 					0,
 					0,
-					0
+					0,
 				},
 				offset = {
 					-118,
 					-5,
-					4
-				}
+					4,
+				},
 			},
 			standard_objective = {
-				word_wrap = false,
-				upper_case = false,
-				localize = true,
-				font_size = 22,
-				horizontal_alignment = "left",
-				vertical_alignment = "bottom",
 				dynamic_font_size = true,
+				font_size = 22,
 				font_type = "hell_shark_header",
+				horizontal_alignment = "left",
+				localize = true,
+				upper_case = false,
+				vertical_alignment = "bottom",
+				word_wrap = false,
 				text_color = {
 					255,
 					255,
 					255,
-					255
+					255,
 				},
 				offset = {
 					80,
 					-48,
-					1
+					1,
 				},
 				size = {
 					PROGRESS_UI_WINDOW_SIZE[1] - 80,
-					PROGRESS_UI_WINDOW_SIZE[2]
-				}
+					PROGRESS_UI_WINDOW_SIZE[2],
+				},
 			},
 			standard_objective_shadow = {
-				word_wrap = false,
-				upper_case = false,
-				localize = true,
-				font_size = 22,
-				horizontal_alignment = "left",
-				vertical_alignment = "bottom",
 				dynamic_font_size = true,
+				font_size = 22,
 				font_type = "hell_shark_header",
+				horizontal_alignment = "left",
+				localize = true,
+				upper_case = false,
+				vertical_alignment = "bottom",
+				word_wrap = false,
 				text_color = {
 					255,
 					0,
 					0,
-					0
+					0,
 				},
 				offset = {
 					82,
 					-50,
-					0
+					0,
 				},
 				size = {
 					PROGRESS_UI_WINDOW_SIZE[1] - 80,
-					PROGRESS_UI_WINDOW_SIZE[2]
-				}
+					PROGRESS_UI_WINDOW_SIZE[2],
+				},
 			},
 			bonus_time = {
-				word_wrap = false,
-				upper_case = false,
-				localize = false,
 				font_size = 16,
-				horizontal_alignment = "center",
-				vertical_alignment = "center",
 				font_type = "hell_shark_header",
+				horizontal_alignment = "center",
+				localize = false,
+				upper_case = false,
+				vertical_alignment = "center",
+				word_wrap = false,
 				text_color = {
 					255,
 					255,
 					255,
-					255
+					255,
 				},
 				offset = {
 					62,
 					-19,
-					1
-				}
+					1,
+				},
 			},
 			bonus_time_shadow = {
-				word_wrap = false,
-				upper_case = false,
-				localize = false,
 				font_size = 16,
-				horizontal_alignment = "center",
-				vertical_alignment = "center",
 				font_type = "hell_shark_header",
+				horizontal_alignment = "center",
+				localize = false,
+				upper_case = false,
+				vertical_alignment = "center",
+				word_wrap = false,
 				text_color = {
 					255,
 					0,
 					0,
-					0
+					0,
 				},
 				offset = {
 					64,
 					-21,
-					0
-				}
-			}
+					0,
+				},
+			},
 		},
-		scenegraph_id = scenegraph_id
+		scenegraph_id = scenegraph_id,
 	}
 end
 
@@ -979,58 +987,58 @@ local function create_bonus_objective_header_func()
 		element = {
 			passes = {
 				{
-					style_id = "bonus_objective",
 					pass_type = "text",
-					text_id = "bonus_objective_text_id"
+					style_id = "bonus_objective",
+					text_id = "bonus_objective_text_id",
 				},
 				{
-					style_id = "bonus_objective_shadow",
 					pass_type = "text",
-					text_id = "bonus_objective_text_id"
-				}
-			}
+					style_id = "bonus_objective_shadow",
+					text_id = "bonus_objective_text_id",
+				},
+			},
 		},
 		content = {
-			bonus_objective_text_id = "weave_bonus_essence_header"
+			bonus_objective_text_id = "weave_bonus_essence_header",
 		},
 		style = {
 			bonus_objective = {
-				word_wrap = false,
-				upper_case = false,
-				localize = true,
 				font_size = 26,
-				horizontal_alignment = "left",
-				vertical_alignment = "bottom",
 				font_type = "hell_shark_header",
+				horizontal_alignment = "left",
+				localize = true,
+				upper_case = false,
+				vertical_alignment = "bottom",
+				word_wrap = false,
 				text_color = Colors.get_color_table_with_alpha("font_default", 255),
 				offset = {
 					80,
 					-90,
-					1
-				}
+					1,
+				},
 			},
 			bonus_objective_shadow = {
-				word_wrap = false,
-				upper_case = false,
-				localize = true,
 				font_size = 26,
-				horizontal_alignment = "left",
-				vertical_alignment = "bottom",
 				font_type = "hell_shark_header",
+				horizontal_alignment = "left",
+				localize = true,
+				upper_case = false,
+				vertical_alignment = "bottom",
+				word_wrap = false,
 				text_color = {
 					255,
 					0,
 					0,
-					0
+					0,
 				},
 				offset = {
 					82,
 					-92,
-					0
-				}
-			}
+					0,
+				},
+			},
 		},
-		scenegraph_id = scenegraph_id
+		scenegraph_id = scenegraph_id,
 	}
 end
 
@@ -1047,11 +1055,11 @@ local function create_bonus_objective_func(display_name, score, index, stack_nam
 		element = {
 			passes = {
 				{
-					style_id = "stroke",
 					pass_type = "rect",
+					style_id = "stroke",
 					content_check_function = function (content)
 						return content.is_done
-					end
+					end,
 				},
 				{
 					pass_type = "texture",
@@ -1059,7 +1067,7 @@ local function create_bonus_objective_func(display_name, score, index, stack_nam
 					texture_id = "bullet_id",
 					content_check_function = function (content)
 						return not content.is_done
-					end
+					end,
 				},
 				{
 					pass_type = "texture",
@@ -1067,7 +1075,7 @@ local function create_bonus_objective_func(display_name, score, index, stack_nam
 					texture_id = "checkmark_id",
 					content_check_function = function (content)
 						return content.is_done
-					end
+					end,
 				},
 				{
 					pass_type = "texture",
@@ -1075,11 +1083,11 @@ local function create_bonus_objective_func(display_name, score, index, stack_nam
 					texture_id = "checkmark_id",
 					content_check_function = function (content)
 						return content.is_done
-					end
+					end,
 				},
 				{
-					style_id = "objective_name",
 					pass_type = "text",
+					style_id = "objective_name",
 					text_id = "objective_name_id",
 					content_change_function = function (content)
 						if not content.stack then
@@ -1087,21 +1095,23 @@ local function create_bonus_objective_func(display_name, score, index, stack_nam
 						end
 
 						content.objective_name_id = content.base_objective_name_id
+
 						local stack = content.stack
 						local done_stack = content.done_stack
+
 						content.objective_name_id = content.objective_name_id .. " " .. table.size(done_stack) .. "/" .. table.size(stack)
-					end
+					end,
 				},
 				{
-					style_id = "objective_name_shadow",
 					pass_type = "text",
-					text_id = "objective_name_id"
-				}
-			}
+					style_id = "objective_name_shadow",
+					text_id = "objective_name_id",
+				},
+			},
 		},
 		content = {
-			show_marker = false,
 			is_done = false,
+			show_marker = false,
 			essence_icon_id = essence_icon_texture,
 			checkmark_id = checkmark_texture,
 			bullet_id = bullet_texture,
@@ -1109,7 +1119,7 @@ local function create_bonus_objective_func(display_name, score, index, stack_nam
 			base_objective_name_id = Localize(display_name),
 			objective_name_id = Localize(display_name),
 			stack = objective_name and {
-				objective_name
+				objective_name,
 			},
 			done_stack = {},
 			stack_name = stack_name,
@@ -1119,163 +1129,163 @@ local function create_bonus_objective_func(display_name, score, index, stack_nam
 				end
 
 				return table.find(content.done_stack, objective_name)
-			end
+			end,
 		},
 		style = {
 			stroke = {
-				vertical_alignment = "top",
 				horizontal_alignment = "left",
+				vertical_alignment = "top",
 				texture_size = {
 					0,
-					2
+					2,
 				},
 				color = Colors.get_color_table_with_alpha("black", 128),
 				offset = {
 					80,
 					-97,
-					1
-				}
+					1,
+				},
 			},
 			bullet = {
-				vertical_alignment = "top",
 				horizontal_alignment = "left",
+				vertical_alignment = "top",
 				texture_size = bullet_texture_settings.size,
 				text_color = Colors.get_color_table_with_alpha("white", 255),
 				offset = {
 					65,
 					-90,
-					1
-				}
+					1,
+				},
 			},
 			checkmark = {
-				vertical_alignment = "center",
 				horizontal_alignment = "center",
+				vertical_alignment = "center",
 				texture_size = {
 					checkmark_texture_settings.size[1] * 0.5,
-					checkmark_texture_settings.size[2] * 0.5
+					checkmark_texture_settings.size[2] * 0.5,
 				},
 				color = Colors.get_color_table_with_alpha("font_title", 255),
 				offset = {
 					-90,
 					-72,
-					1
-				}
+					1,
+				},
 			},
 			checkmark_shadow = {
-				vertical_alignment = "center",
 				horizontal_alignment = "center",
+				vertical_alignment = "center",
 				texture_size = {
 					checkmark_texture_settings.size[1],
-					checkmark_texture_settings.size[2]
+					checkmark_texture_settings.size[2],
 				},
 				color = Colors.get_color_table_with_alpha("black", 255),
 				offset = {
 					-88,
 					-74,
-					0
-				}
+					0,
+				},
 			},
 			objective_name = {
-				word_wrap = false,
-				upper_case = false,
-				localize = false,
 				font_size = 22,
-				horizontal_alignment = "left",
-				vertical_alignment = "top",
 				font_type = "hell_shark_header",
+				horizontal_alignment = "left",
+				localize = false,
+				upper_case = false,
+				vertical_alignment = "top",
+				word_wrap = false,
 				text_color = Colors.get_color_table_with_alpha("white", 255),
 				offset = {
 					80,
 					-85,
-					1
-				}
+					1,
+				},
 			},
 			objective_name_shadow = {
-				word_wrap = false,
-				upper_case = false,
-				localize = false,
 				font_size = 22,
-				horizontal_alignment = "left",
-				vertical_alignment = "top",
 				font_type = "hell_shark_header",
+				horizontal_alignment = "left",
+				localize = false,
+				upper_case = false,
+				vertical_alignment = "top",
+				word_wrap = false,
 				text_color = {
 					255,
 					0,
 					0,
-					0
+					0,
 				},
 				offset = {
 					82,
 					-87,
-					0
-				}
+					0,
+				},
 			},
 			essence_icon = {
-				vertical_alignment = "bottom",
 				horizontal_alignment = "left",
+				vertical_alignment = "bottom",
 				texture_size = {
 					essence_icon_texture_settings.size[1] * 0.75,
-					essence_icon_texture_settings.size[2] * 0.75
+					essence_icon_texture_settings.size[2] * 0.75,
 				},
 				color = Colors.get_color_table_with_alpha("white", 255),
 				offset = {
 					80,
 					-82,
-					1
-				}
+					1,
+				},
 			},
 			score = {
-				word_wrap = false,
-				upper_case = false,
-				localize = false,
 				font_size = 18,
-				horizontal_alignment = "left",
-				vertical_alignment = "bottom",
 				font_type = "hell_shark_header",
+				horizontal_alignment = "left",
+				localize = false,
+				upper_case = false,
+				vertical_alignment = "bottom",
+				word_wrap = false,
 				text_color = Colors.get_color_table_with_alpha("white", 255),
 				offset = {
 					105,
 					-85,
-					1
-				}
+					1,
+				},
 			},
 			score_shadow = {
-				word_wrap = false,
-				upper_case = false,
-				localize = false,
 				font_size = 18,
-				horizontal_alignment = "left",
-				vertical_alignment = "bottom",
 				font_type = "hell_shark_header",
+				horizontal_alignment = "left",
+				localize = false,
+				upper_case = false,
+				vertical_alignment = "bottom",
+				word_wrap = false,
 				text_color = {
 					255,
 					0,
 					0,
-					0
+					0,
 				},
 				offset = {
 					107,
 					-87,
-					0
-				}
-			}
+					0,
+				},
+			},
 		},
 		scenegraph_id = scenegraph_id,
 		offset = {
 			0,
 			-50 + index * -25,
-			5
-		}
+			5,
+		},
 	}
 end
 
 local widgets = {
-	progress_ui = create_progress_ui("progress_ui")
+	progress_ui = create_progress_ui("progress_ui"),
 }
 
 return {
 	scenegraph_definition = scenegraph_definition,
 	create_bonus_objective_header_func = create_bonus_objective_header_func,
 	create_bonus_objective_func = create_bonus_objective_func,
-	widgets = widgets
+	widgets = widgets,
 }

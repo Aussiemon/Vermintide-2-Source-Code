@@ -1,6 +1,9 @@
+﻿-- chunkname: @scripts/settings/dlcs/celebrate/celebrate_sound_settings.lua
+
 local settings = DLCSettings.celebrate
+
 settings.blocked_auto_load_files = {
-	dlc_celebrate_crawl = true
+	dlc_celebrate_crawl = true,
 }
 settings.dialogue_lookup = {
 	"dialogues/generated/lookup_witch_hunter_crawl",
@@ -15,7 +18,7 @@ settings.dialogue_lookup = {
 	"dialogues/generated/lookup_dwarf_ranger_game_play_crawl",
 	"dialogues/generated/lookup_wood_elf_game_play_crawl",
 	"dialogues/generated/lookup_enemies_celebration_level",
-	"dialogues/generated/lookup_hub_conversations_crawl"
+	"dialogues/generated/lookup_hub_conversations_crawl",
 }
 settings.dialogue_settings = {
 	dlc_celebrate_crawl = {
@@ -30,6 +33,6 @@ settings.dialogue_settings = {
 		"dialogues/generated/bright_wizard_game_play_crawl",
 		"dialogues/generated/dwarf_ranger_game_play_crawl",
 		"dialogues/generated/wood_elf_game_play_crawl",
-		"dialogues/generated/enemies_celebration_level"
-	}
+		"dialogues/generated/enemies_celebration_level",
+	},
 }

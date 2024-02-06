@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/unit_extensions/default_player_unit/states/player_character_state_lunging.lua
+
 local POSITION_LOOKUP = POSITION_LOOKUP
+
 PlayerCharacterStateLunging = class(PlayerCharacterStateLunging, PlayerCharacterState)
 
 PlayerCharacterStateLunging.init = function (self, character_state_init_context)
@@ -27,18 +30,23 @@ PlayerCharacterStateLunging.on_enter = function (self, unit, input, dt, context,
 	local first_person_extension = self.first_person_extension
 	local status_extension = self.status_extension
 	local lunge_data = self.status_extension.do_lunge
+
 	self._lunge_data = lunge_data
 	self.status_extension.do_lunge = false
 	self.career_extension = ScriptUnit.extension(unit, "career_system")
+
 	local first_person_unit = first_person_extension:get_first_person_unit()
+
 	self._first_person_unit = first_person_unit
 	self.damage_start_time = lunge_data.damage_start_time and t + lunge_data.damage_start_time or t
 	self.ledge_falloff_immunity_time = lunge_data.ledge_falloff_immunity and t + lunge_data.ledge_falloff_immunity
+
 	local forward_direction = Quaternion.forward(self.first_person_extension:current_rotation())
 
 	Vector3.set_z(forward_direction, 0)
 
 	forward_direction = Vector3.normalize(forward_direction)
+
 	local flat_rotation = Quaternion.look(forward_direction, Vector3.up())
 
 	Unit.set_local_rotation(unit, 0, flat_rotation)
@@ -58,6 +66,7 @@ PlayerCharacterStateLunging.on_enter = function (self, unit, input, dt, context,
 
 	self._falling = false
 	self._stop = false
+
 	local lunge_events = lunge_data.lunge_events
 
 	if lunge_events then
@@ -75,12 +84,17 @@ PlayerCharacterStateLunging.on_enter = function (self, unit, input, dt, context,
 	if damage_settings then
 		local damage_profile_name = damage_settings.damage_profile or "default"
 		local damage_profile_id, power_level, hit_zone_id, ignore_shield = self:_parse_attack_data(damage_settings)
+
 		self.damage_profile_id = NetworkLookup.damage_profiles[damage_profile_name]
+
 		local damage_profile = DamageProfileTemplates[damage_profile_name]
+
 		self.damage_profile = damage_profile
+
 		local difficulty_level = Managers.state.difficulty:get_difficulty()
 		local cleave_power_level = ActionUtils.scale_power_levels(power_level, "cleave", unit, difficulty_level)
 		local max_targets_attack, max_targets_impact = ActionUtils.get_max_targets(damage_profile, cleave_power_level)
+
 		self.max_targets_attack = max_targets_attack
 		self.max_targets_impact = max_targets_impact
 		self.max_targets = max_targets_impact < max_targets_attack and max_targets_attack or max_targets_impact
@@ -212,7 +226,7 @@ PlayerCharacterStateLunging.update = function (self, unit, input, dt, context, t
 
 	local world = self.world
 
-	if (not self.ledge_falloff_immunity_time or self.ledge_falloff_immunity_time < t) and CharacterStateHelper.is_ledge_hanging(world, unit, self.temp_params) then
+	if (not self.ledge_falloff_immunity_time or t > self.ledge_falloff_immunity_time) and CharacterStateHelper.is_ledge_hanging(world, unit, self.temp_params) then
 		self._stop = true
 
 		csm:change_state("ledge_hanging", self.temp_params)
@@ -298,7 +312,7 @@ PlayerCharacterStateLunging.update = function (self, unit, input, dt, context, t
 end
 
 PlayerCharacterStateLunging._update_movement = function (self, unit, dt, t, lunge_data)
-	local move_state = nil
+	local move_state
 
 	if self._falling then
 		move_state = self:_move_in_air(unit, dt, t, lunge_data)
@@ -316,13 +330,16 @@ PlayerCharacterStateLunging._check_ledge_hang = function (self, unit, dt, t, mov
 	local step_distance = 0.1
 	local steps = predicted_distance / step_distance
 	local world = self.world
+
 	self.temp_params.z_offset = z_offset
 	self.temp_params.collision_filter = "filter_lunge_ledge_collision"
 	self.temp_params.radius = step_distance * 1.5
 
 	for i = 1, steps do
-		local ray_position = current_pos + move_direction * step_distance * i
+		local ray_position = current_pos + move_direction * (step_distance * i)
+
 		self.temp_params.ray_position = ray_position
+
 		local will_ledge_hang = CharacterStateHelper.will_be_ledge_hanging(world, unit, self.temp_params)
 
 		if will_ledge_hang then
@@ -338,17 +355,18 @@ PlayerCharacterStateLunging._move_on_ground = function (self, unit, dt, t, lunge
 	local first_person_extension = self.first_person_extension
 	local duration = lunge_data.duration
 	local lunge_time = t - self._start_time
-	local move_direction = nil
+	local move_direction
 
 	if lunge_data.allow_rotation then
 		local forward_direction = Quaternion.forward(first_person_extension:current_rotation())
+
 		move_direction = Vector3.normalize(Vector3.flat(forward_direction))
 	else
 		move_direction = self._direction:unbox()
 	end
 
 	local speed_function = lunge_data.speed_function
-	local speed = nil
+	local speed
 
 	if speed_function then
 		speed = speed_function(lunge_time, duration)
@@ -357,7 +375,7 @@ PlayerCharacterStateLunging._move_on_ground = function (self, unit, dt, t, lunge
 	end
 
 	local base_speed = 1
-	local use_base_speed = speed > base_speed
+	local use_base_speed = base_speed < speed
 	local speed_to_use = use_base_speed and base_speed or speed
 	local will_ledge_hang = self:_check_ledge_hang(unit, dt, t, move_direction, speed, -1.6)
 
@@ -381,17 +399,18 @@ PlayerCharacterStateLunging._move_in_air = function (self, unit, dt, t, lunge_da
 	local first_person_extension = self.first_person_extension
 	local duration = lunge_data.duration
 	local lunge_time = t - self._start_time
-	local move_direction = nil
+	local move_direction
 
 	if lunge_data.allow_rotation then
 		local forward_direction = Quaternion.forward(first_person_extension:current_rotation())
+
 		move_direction = Vector3.normalize(Vector3.flat(forward_direction))
 	else
 		move_direction = self._direction:unbox()
 	end
 
 	local speed_function = lunge_data.speed_function
-	local speed = nil
+	local speed
 
 	if speed_function then
 		speed = speed_function(lunge_time, duration)
@@ -420,7 +439,9 @@ PlayerCharacterStateLunging._parse_attack_data = function (self, damage_settings
 	local career_power_level = self.career_extension:get_career_power_level()
 	local power_level_multiplier = damage_settings.power_level_multiplier
 	local power_level = career_power_level * power_level_multiplier
+
 	power_level = math.clamp(power_level, MIN_POWER_LEVEL, MAX_POWER_LEVEL)
+
 	local damage_profile_name = damage_settings.damage_profile or "default"
 	local damage_profile_id = NetworkLookup.damage_profiles[damage_profile_name]
 	local hit_zone_hit_name = damage_settings.hit_zone_hit_name
@@ -440,6 +461,7 @@ PlayerCharacterStateLunging._calculate_hit_mass = function (self, shield_blocked
 
 		if action_mass_override and action_mass_override[breed.name] then
 			local mass_cost_multiplier = current_action.hit_mass_count[breed.name]
+
 			hit_mass_total = hit_mass_total * (mass_cost_multiplier or 1)
 		end
 
@@ -480,70 +502,84 @@ PlayerCharacterStateLunging._update_damage = function (self, unit, dt, t, damage
 		repeat
 			local hit_actor = actors[i]
 			local hit_unit = Actor.unit(hit_actor)
-			local is_enemy = side_manager:is_enemy(unit, hit_unit)
 
-			if not is_enemy then
-				break
-			end
+			if not hit_units[hit_unit] then
+				hit_units[hit_unit] = true
 
-			local breed = Unit.get_data(hit_unit, "breed")
-
-			if not breed then
-				break
-			end
-
-			buff_hit_target_index = buff_hit_target_index + 1
-			local hit_unit_id = network_manager:unit_game_object_id(hit_unit)
-			local hit_unit_pos = POSITION_LOOKUP[hit_unit]
-			local damage_profile_id, power_level, hit_zone_id, ignore_shield = self:_parse_attack_data(damage_data)
-			local shield_blocked = not ignore_shield and AiUtils.attack_is_shield_blocked(hit_unit, unit)
-			shield_blocked = self:_calculate_hit_mass(shield_blocked, damage_data, hit_unit, breed, unit)
-			local final_stagger_direction = nil
-
-			if damage_data.stagger_angles then
-				local owner_to_hit_dir = Vector3.normalize(hit_unit_pos - new_pos)
-				local cross = Vector3.cross(Vector3.flat(owner_to_hit_dir), Vector3.flat(forward_direction))
-				local additional_stagger_angle = Math.random(damage_data.stagger_angles.min, damage_data.stagger_angles.max) * (cross.z < 0 and -1 or 1)
-				local new_attack_direction = attack_direction
-				new_attack_direction.x = math.cos(additional_stagger_angle) * attack_direction.x - math.sin(additional_stagger_angle) * attack_direction.y
-				new_attack_direction.y = math.sin(additional_stagger_angle) * attack_direction.x + math.cos(additional_stagger_angle) * attack_direction.y
-				final_stagger_direction = Vector3.normalize(new_attack_direction)
-			else
-				final_stagger_direction = attack_direction
-			end
-
-			local damage_source = "charge_ability_hit"
-			local damage_source_id = NetworkLookup.damage_sources[damage_source]
-			local actual_hit_target_index = nil
-			local shield_break_procc = false
-			local boost_curve_multiplier = 0
-			local is_critical_strike = false
-			local can_damage = true
-			local can_stagger = true
-
-			weapon_system:send_rpc_attack_hit(damage_source_id, attacker_unit_id, hit_unit_id, hit_zone_id, hit_unit_pos, final_stagger_direction, damage_profile_id, "power_level", power_level, "hit_target_index", actual_hit_target_index, "blocking", shield_blocked, "shield_break_procced", shield_break_procc, "boost_curve_multiplier", boost_curve_multiplier, "is_critical_strike", is_critical_strike, "can_damage", can_damage, "can_stagger", can_stagger)
-
-			self._num_impacts = self._num_impacts + 1
-			local lunge_events = self._lunge_data.lunge_events
-
-			if lunge_events then
-				local impact_event_function = lunge_events.impact
-
-				if impact_event_function then
-					impact_event_function(self)
+				if not HEALTH_ALIVE[hit_unit] then
+					break
 				end
-			end
 
-			if self._lunge_data.first_person_hit_animation_event then
-				CharacterStateHelper.play_animation_event_first_person(first_person_extension, self._lunge_data.first_person_hit_animation_event)
-			end
+				local is_enemy = side_manager:is_enemy(unit, hit_unit)
 
-			local hit_mass_count_reached = self.max_targets <= self._amount_of_mass_hit or breed.armor_category == 2 or breed.armor_category == 3
+				if not is_enemy then
+					break
+				end
 
-			if damage_data.interrupt_on_first_hit or hit_mass_count_reached and damage_data.interrupt_on_max_hit_mass then
-				self:_do_blast(new_pos, forward_direction)
+				local breed = Unit.get_data(hit_unit, "breed")
 
-				return true
+				if not breed then
+					break
+				end
+
+				buff_hit_target_index = buff_hit_target_index + 1
+
+				local hit_unit_id = network_manager:unit_game_object_id(hit_unit)
+				local hit_unit_pos = POSITION_LOOKUP[hit_unit]
+				local damage_profile_id, power_level, hit_zone_id, ignore_shield = self:_parse_attack_data(damage_data)
+				local shield_blocked = not ignore_shield and AiUtils.attack_is_shield_blocked(hit_unit, unit)
+
+				shield_blocked = self:_calculate_hit_mass(shield_blocked, damage_data, hit_unit, breed, unit)
+
+				local final_stagger_direction
+
+				if damage_data.stagger_angles then
+					local owner_to_hit_dir = Vector3.normalize(hit_unit_pos - new_pos)
+					local cross = Vector3.cross(Vector3.flat(owner_to_hit_dir), Vector3.flat(forward_direction))
+					local additional_stagger_angle = Math.random(damage_data.stagger_angles.min, damage_data.stagger_angles.max) * (cross.z < 0 and -1 or 1)
+					local new_attack_direction = attack_direction
+
+					new_attack_direction.x = math.cos(additional_stagger_angle) * attack_direction.x - math.sin(additional_stagger_angle) * attack_direction.y
+					new_attack_direction.y = math.sin(additional_stagger_angle) * attack_direction.x + math.cos(additional_stagger_angle) * attack_direction.y
+					final_stagger_direction = Vector3.normalize(new_attack_direction)
+				else
+					final_stagger_direction = attack_direction
+				end
+
+				local damage_source = "charge_ability_hit"
+				local damage_source_id = NetworkLookup.damage_sources[damage_source]
+				local actual_hit_target_index
+				local shield_break_procc = false
+				local boost_curve_multiplier = 0
+				local is_critical_strike = false
+				local can_damage = true
+				local can_stagger = true
+
+				weapon_system:send_rpc_attack_hit(damage_source_id, attacker_unit_id, hit_unit_id, hit_zone_id, hit_unit_pos, final_stagger_direction, damage_profile_id, "power_level", power_level, "hit_target_index", actual_hit_target_index, "blocking", shield_blocked, "shield_break_procced", shield_break_procc, "boost_curve_multiplier", boost_curve_multiplier, "is_critical_strike", is_critical_strike, "can_damage", can_damage, "can_stagger", can_stagger)
+
+				self._num_impacts = self._num_impacts + 1
+
+				local lunge_events = self._lunge_data.lunge_events
+
+				if lunge_events then
+					local impact_event_function = lunge_events.impact
+
+					if impact_event_function then
+						impact_event_function(self)
+					end
+				end
+
+				if self._lunge_data.first_person_hit_animation_event then
+					CharacterStateHelper.play_animation_event_first_person(first_person_extension, self._lunge_data.first_person_hit_animation_event)
+				end
+
+				local hit_mass_count_reached = self._amount_of_mass_hit >= self.max_targets or breed.armor_category == 2 or breed.armor_category == 3
+
+				if damage_data.interrupt_on_first_hit or hit_mass_count_reached and damage_data.interrupt_on_max_hit_mass then
+					self:_do_blast(new_pos, forward_direction)
+
+					return true
+				end
 			end
 		until true
 	end
@@ -555,6 +591,7 @@ local hit_units = {}
 
 PlayerCharacterStateLunging._do_blast = function (self, new_pos, forward_direction)
 	self._hit = true
+
 	local lunge_data = self._lunge_data
 	local damage_data = lunge_data.damage
 	local blast_damage_data = damage_data and damage_data.on_interrupt_blast
@@ -584,6 +621,7 @@ PlayerCharacterStateLunging._do_blast = function (self, new_pos, forward_directi
 				end
 
 				hit_units[hit_unit] = true
+
 				local breed = Unit.get_data(hit_unit, "breed")
 
 				if not breed then
@@ -598,13 +636,15 @@ PlayerCharacterStateLunging._do_blast = function (self, new_pos, forward_directi
 
 				local damage_profile_id, power_level, hit_zone_id, ignore_shield = self:_parse_attack_data(blast_damage_data)
 				local hit_unit_id = network_manager:unit_game_object_id(hit_unit)
+
 				buff_hit_target_index = buff_hit_target_index + 1
+
 				local damage_source = "charge_ability_hit_blast"
 				local damage_source_id = NetworkLookup.damage_sources[damage_source]
 				local target_position = POSITION_LOOKUP[hit_unit]
 				local attack_direction = Vector3.normalize(blast_pos - target_position)
 				local boost_curve_multiplier = 0
-				local actual_hit_target_index = nil
+				local actual_hit_target_index
 				local shield_blocked = not ignore_shield and AiUtils.attack_is_shield_blocked(hit_unit, unit)
 				local shield_break_procc = false
 				local is_critical_strike = false

@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/unit_extensions/default_player_unit/player_unit_health_extension.lua
+
 local buff_perks = require("scripts/unit_extensions/default_player_unit/buffs/settings/buff_perk_names")
+
 PlayerUnitHealthExtension = class(PlayerUnitHealthExtension, GenericHealthExtension)
 
 PlayerUnitHealthExtension.init = function (self, extension_init_context, unit, extension_init_data)
@@ -7,6 +10,7 @@ PlayerUnitHealthExtension.init = function (self, extension_init_context, unit, e
 	local player = extension_init_data.player
 	local is_local_player = player.local_player
 	local is_bot = not player:is_player_controlled()
+
 	self.player = player
 	self.is_bot = is_bot
 	self.is_local_player = is_local_player
@@ -53,10 +57,11 @@ PlayerUnitHealthExtension.create_health_game_object = function (self)
 		max_health = max_health_alive,
 		uncursed_max_health = max_health_alive,
 		current_wounds = difficulty_settings.wounds,
-		max_wounds = difficulty_settings.wounds
+		max_wounds = difficulty_settings.wounds,
 	}
 	local callback = callback(self, "cb_game_session_disconnect")
 	local health_game_object_id = self.network_manager:create_game_object("player_unit_health", game_object_data_table, callback)
+
 	self.health_game_object_id = health_game_object_id
 	self.previous_max_health = max_health_alive
 	self.previous_state = self.state
@@ -103,7 +108,7 @@ PlayerUnitHealthExtension._calculate_buffed_max_health = function (self)
 	local buff_extension = self.buff_extension
 	local health_state = self.state
 	local max_health_alive, max_health_kd = self:_get_base_max_health()
-	local max_health = nil
+	local max_health
 
 	if health_state == "alive" then
 		max_health = buff_extension:apply_buffs_to_value(max_health_alive, "max_health_alive")
@@ -136,6 +141,7 @@ PlayerUnitHealthExtension._calculate_max_health = function (self)
 	local num_mutator_curses = buff_extension:num_buff_perk("mutator_curse")
 	local mutator_curse_multiplier = buff_extension:apply_buffs_to_value(WindSettings.light.curse_settings.value[difficulty_name], "curse_protection")
 	local cursed_health = buff_extension:apply_buffs_to_value(0, "health_curse")
+
 	cursed_health = buff_extension:apply_buffs_to_value(cursed_health, "curse_protection")
 
 	if health_state == "knocked_down" then
@@ -148,6 +154,7 @@ PlayerUnitHealthExtension._calculate_max_health = function (self)
 	end
 
 	local max_health = self:_calculate_buffed_max_health()
+
 	max_health = max_health * math.max(modifier, 0.01)
 
 	return max_health
@@ -223,8 +230,11 @@ PlayerUnitHealthExtension.update = function (self, dt, context, t)
 
 		if game or game_object_id then
 			local max_health = self:_calculate_max_health()
+
 			max_health = DamageUtils.networkify_health(max_health)
+
 			local uncursed_max_health = self:_calculate_buffed_max_health()
+
 			uncursed_max_health = DamageUtils.networkify_health(uncursed_max_health)
 
 			GameSession.set_game_object_field(game, game_object_id, "max_health", max_health)
@@ -258,7 +268,7 @@ PlayerUnitHealthExtension.update = function (self, dt, context, t)
 					end
 				end
 			elseif max_health ~= previous_max_health then
-				local previous_health_percentage, previous_temporary_health_percentage = nil
+				local previous_health_percentage, previous_temporary_health_percentage
 
 				if previous_max_health == 0 then
 					previous_health_percentage = 0
@@ -292,7 +302,7 @@ PlayerUnitHealthExtension.update = function (self, dt, context, t)
 			GameSession.set_game_object_field(game, game_object_id, "current_health", health)
 			GameSession.set_game_object_field(game, game_object_id, "current_temporary_health", temporary_health)
 
-			if self.wounded_degen_timer <= t then
+			if t >= self.wounded_degen_timer then
 				local wounded = status_extension:is_wounded()
 				local degen_amount = PlayerUnitStatusSettings.WOUNDED_DEGEN_AMOUNT
 				local degen_delay = PlayerUnitStatusSettings.WOUNDED_DEGEN_DELAY
@@ -359,7 +369,7 @@ PlayerUnitHealthExtension._update_outline_color = function (self, t, dt)
 		return
 	end
 
-	local new_outline_color = nil
+	local new_outline_color
 	local outline_ext = self._outline_extension
 	local is_disabled = self.status_extension:is_disabled()
 	local current_health_percent = self:current_health_percent()
@@ -376,14 +386,14 @@ PlayerUnitHealthExtension._update_outline_color = function (self, t, dt)
 
 	if not self._outline_id then
 		self._outline_id = outline_ext:add_outline({
-			priority = 2,
 			method = "always",
+			priority = 2,
 			outline_color = new_outline_color,
-			flag = OutlineSettings.flags.non_wall_occluded
+			flag = OutlineSettings.flags.non_wall_occluded,
 		})
 	elseif self._current_outline_color ~= new_outline_color then
 		outline_ext:update_outline({
-			outline_color = new_outline_color
+			outline_color = new_outline_color,
 		}, self._outline_id)
 	end
 
@@ -391,7 +401,7 @@ PlayerUnitHealthExtension._update_outline_color = function (self, t, dt)
 end
 
 local FORCED_PERMANENT_DAMAGE_TYPES = {
-	death_explosion = true
+	death_explosion = true,
 }
 
 PlayerUnitHealthExtension.apply_client_predicted_damage = function (self, predicted_damage)
@@ -444,6 +454,7 @@ PlayerUnitHealthExtension.add_damage = function (self, attacker_unit, damage_amo
 
 	self._recent_damage_type = damage_type
 	self._recent_hit_react_type = hit_react_type
+
 	local controller_features_manager = Managers.state.controller_features
 
 	if controller_features_manager then
@@ -452,7 +463,7 @@ PlayerUnitHealthExtension.add_damage = function (self, attacker_unit, damage_amo
 		if player.local_player and damage_amount > 0 and damage_type ~= "temporary_health_degen" then
 			controller_features_manager:add_effect("hit_rumble", {
 				damage_amount = damage_amount,
-				unit = unit
+				unit = unit,
 			})
 		end
 	end
@@ -515,9 +526,9 @@ PlayerUnitHealthExtension.add_damage = function (self, attacker_unit, damage_amo
 			local force_permanent_damage = FORCED_PERMANENT_DAMAGE_TYPES[damage_type]
 			local current_health = GameSession.game_object_field(game, game_object_id, "current_health")
 			local current_temporary_health = GameSession.game_object_field(game, game_object_id, "current_temporary_health")
-			local permanent_damage_amount, temporary_damage_amount = nil
+			local permanent_damage_amount, temporary_damage_amount
 			local total_health = current_health + current_temporary_health
-			local modified_damage_amount = damage_amount >= total_health and total_health - min_health or damage_amount
+			local modified_damage_amount = total_health <= damage_amount and total_health - min_health or damage_amount
 
 			if force_permanent_damage then
 				permanent_damage_amount = current_health < modified_damage_amount and current_health or modified_damage_amount
@@ -552,6 +563,7 @@ PlayerUnitHealthExtension.add_damage = function (self, attacker_unit, damage_amo
 			local hit_ragdoll_actor_id = NetworkLookup.hit_ragdoll_actors[hit_ragdoll_actor or "n/a"]
 			local hit_react_type_id = NetworkLookup.hit_react_types[hit_react_type or "light"]
 			local attack_type_id = NetworkLookup.buff_attack_types[attack_type or "n/a"]
+
 			is_critical_strike = is_critical_strike or false
 			added_dot = added_dot or false
 			first_hit = first_hit or false
@@ -603,6 +615,7 @@ PlayerUnitHealthExtension.add_heal = function (self, healer_unit, heal_amount, h
 			if heal_type ~= "career_passive" and not status_extension:is_wounded() then
 				local t = Managers.time:time("game")
 				local _, _, degen_start = self:health_degen_settings()
+
 				self.wounded_degen_timer = t + degen_start
 			end
 
@@ -626,6 +639,7 @@ PlayerUnitHealthExtension.die = function (self, damage_type)
 	end
 
 	damage_type = damage_type or "undefined"
+
 	local unit = self.unit
 
 	if self.is_bot and damage_type == "volume_insta_kill" then
@@ -688,6 +702,7 @@ end
 PlayerUnitHealthExtension.reset = function (self)
 	if self.is_server then
 		self.state = "alive"
+
 		local game = self.game
 		local game_object_id = self.health_game_object_id
 
@@ -785,6 +800,7 @@ PlayerUnitHealthExtension.current_health = function (self)
 	end
 
 	local max_health = self:_calculate_max_health()
+
 	max_health = DamageUtils.networkify_health(max_health)
 
 	return max_health
@@ -801,6 +817,7 @@ PlayerUnitHealthExtension.current_permanent_health = function (self)
 	end
 
 	local max_health = self:_calculate_max_health()
+
 	max_health = DamageUtils.networkify_health(max_health)
 
 	return max_health
@@ -817,6 +834,7 @@ PlayerUnitHealthExtension.current_temporary_health = function (self)
 	end
 
 	local max_health = self:_calculate_max_health()
+
 	max_health = DamageUtils.networkify_health(max_health)
 
 	return max_health
@@ -833,6 +851,7 @@ PlayerUnitHealthExtension.get_max_health = function (self)
 	end
 
 	local max_health = self:_calculate_max_health()
+
 	max_health = DamageUtils.networkify_health(max_health)
 
 	return max_health
@@ -855,6 +874,7 @@ PlayerUnitHealthExtension.get_uncursed_max_health = function (self)
 	end
 
 	local max_health = self:_calculate_max_health()
+
 	max_health = DamageUtils.networkify_health(max_health)
 
 	return max_health
@@ -967,6 +987,7 @@ PlayerUnitHealthExtension.set_dead = function (self)
 	self.status_extension:set_dead(true)
 
 	local unit = self.unit
+
 	HEALTH_ALIVE[unit] = nil
 
 	if ScriptUnit.has_extension(unit, "dialogue_system") then

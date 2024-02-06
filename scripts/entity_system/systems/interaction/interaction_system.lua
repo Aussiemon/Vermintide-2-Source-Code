@@ -1,24 +1,28 @@
+﻿-- chunkname: @scripts/entity_system/systems/interaction/interaction_system.lua
+
 require("scripts/unit_extensions/generic/generic_unit_interactor_extension")
 require("scripts/unit_extensions/generic/generic_husk_interactor_extension")
 
 InteractionSystem = class(InteractionSystem, ExtensionSystemBase)
+
 local RPCS = {
 	"rpc_interaction_approved",
 	"rpc_interaction_denied",
 	"rpc_interaction_completed",
 	"rpc_interaction_abort",
 	"rpc_sync_interactable_used_state",
-	"rpc_sync_interaction_state"
+	"rpc_sync_interaction_state",
 }
 local extensions = {
 	"GenericHuskInteractorExtension",
-	"GenericUnitInteractorExtension"
+	"GenericUnitInteractorExtension",
 }
 
 InteractionSystem.init = function (self, entity_system_creation_context, system_name)
 	InteractionSystem.super.init(self, entity_system_creation_context, system_name, extensions)
 
 	local network_event_delegate = entity_system_creation_context.network_event_delegate
+
 	self.network_event_delegate = network_event_delegate
 
 	network_event_delegate:register(self, unpack(RPCS))
@@ -37,6 +41,7 @@ InteractionSystem.rpc_interaction_approved = function (self, channel_id, interac
 
 	if is_level_unit then
 		local level = LevelHelper:current_level(self.world)
+
 		interactable_unit = Level.unit_by_index(level, interactable_go_id)
 
 		fassert(interactable_unit, "Couldn't find level unit to interact with.")

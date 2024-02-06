@@ -1,6 +1,9 @@
+﻿-- chunkname: @scripts/settings/terror_events/terror_event_utils.lua
+
 require("scripts/settings/grudge_mark_settings")
 
 TerrorEventUtils = {}
+
 local TerrorEventUtils = TerrorEventUtils
 local terror_seed = terror_seed or nil
 
@@ -10,6 +13,7 @@ end
 
 TerrorEventUtils.random = function (...)
 	local seed, value = Math.next_random(terror_seed or 0, ...)
+
 	terror_seed = seed
 
 	return value
@@ -57,9 +61,10 @@ end
 
 TerrorEventUtils.generate_enhanced_breed = function (num_enhancements, breed_name, enhancement_set)
 	enhancement_set = enhancement_set or BossGrudgeMarks
+
 	local t = {}
 	local result_list = {
-		BreedEnhancements.base
+		BreedEnhancements.base,
 	}
 
 	for name, _ in pairs(enhancement_set) do
@@ -115,6 +120,7 @@ TerrorEventUtils.generate_enhanced_breed_from_set = function (enhancement_set)
 	for name, value in pairs(enhancement_set) do
 		if value and BreedEnhancements[name] then
 			local enhancement = BreedEnhancements[name]
+
 			list[#list + 1] = enhancement
 		end
 	end
@@ -139,6 +145,7 @@ end
 
 TerrorEventUtils.add_enhancements_for_difficulty = function (optional_data, difficulty, breed_name, event, difficulty_tweak, enhancement_set)
 	optional_data = optional_data or {}
+
 	local num_enhancements = DifficultyTweak.converters.closest_tweak_match(difficulty, difficulty_tweak, BREED_ENHANCEMENTS_PER_DIFFICULTY) or 0
 
 	if num_enhancements > 0 then

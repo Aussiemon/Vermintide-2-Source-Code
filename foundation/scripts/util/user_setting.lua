@@ -1,3 +1,5 @@
+﻿-- chunkname: @foundation/scripts/util/user_setting.lua
+
 Development = Development or {}
 PATCHED_USER_SETTINGS = PATCHED_USER_SETTINGS or false
 
@@ -10,12 +12,14 @@ if IS_CONSOLE and not PATCHED_USER_SETTINGS then
 
 		for i = 1, num_args - 2 do
 			local key = select(i, ...)
+
 			t[key] = type(t[key]) == "table" and t[key] or {}
 			t = t[key]
 		end
 
 		local set_key = select(num_args - 1, ...)
 		local set_value = select(num_args, ...)
+
 		t[set_key] = set_value
 	end
 
@@ -25,6 +29,7 @@ if IS_CONSOLE and not PATCHED_USER_SETTINGS then
 
 		for i = 1, num_args - 1 do
 			local key = select(i, ...)
+
 			t = t[key]
 
 			if type(t) ~= "table" then
@@ -47,16 +52,15 @@ Development.user_setting_disable = function ()
 		return
 	end
 
-	Development.setting = nop
-	Development.set_setting = nop
+	Development.set_setting, Development.setting = nop, nop
 end
 
 Development.init_user_settings = function ()
 	local enabled_platforms = {
+		macosx = true,
 		ps4 = true,
 		win32 = true,
-		macosx = true,
-		xb1 = true
+		xb1 = true,
 	}
 	local current_platform = PLATFORM
 
@@ -107,6 +111,7 @@ Application.test_user_setting = function (...)
 
 	for i = 1, num_args - 1 do
 		local key = select(i, ...)
+
 		t = t[key]
 
 		if type(t) ~= "table" then

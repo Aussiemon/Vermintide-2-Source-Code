@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/chaos_spawn/bt_chew_attack_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTChewAttackAction = class(BTChewAttackAction, BTNode)
@@ -10,6 +12,7 @@ end
 BTChewAttackAction.enter = function (self, unit, blackboard, t)
 	local network_manager = Managers.state.network
 	local action = self._tree_node.action_data
+
 	blackboard.action = action
 	blackboard.active_node = self
 
@@ -28,6 +31,7 @@ BTChewAttackAction.enter = function (self, unit, blackboard, t)
 
 	blackboard.is_chewing = true
 	blackboard.grabbed_state = "chew"
+
 	local victim = blackboard.victim_grabbed
 	local victim_profile = ScriptUnit.extension(victim, "dialogue_system").context.player_profile
 
@@ -70,7 +74,7 @@ BTChewAttackAction.run = function (self, unit, blackboard, t, dt)
 		blackboard.anim_cb_chew_attack_finished = false
 	end
 
-	if blackboard.target_dist < 4 and blackboard.action.max_chew_attacks <= blackboard.chew_attacks_done then
+	if blackboard.target_dist < 4 and blackboard.chew_attacks_done >= blackboard.action.max_chew_attacks then
 		return "done"
 	end
 
@@ -80,20 +84,23 @@ end
 BTChewAttackAction.anim_cb_chew_attack = function (self, unit, blackboard)
 	local action = blackboard.action
 	local chew_damage = AiUtils.damage_target(blackboard.victim_grabbed, unit, action, action.damage)
+
 	blackboard.chew_attacks_done = blackboard.chew_attacks_done + 1
 
 	if chew_damage > 0 then
 		local heal_type = "leech"
 		local difficulty_level = Managers.state.difficulty:get_difficulty()
 		local heal_amount = chew_damage * action.health_leech_multiplier[difficulty_level]
+
 		heal_amount = heal_amount * blackboard.chew_attacks_done
 		heal_amount = DamageUtils.networkify_damage(heal_amount)
+
 		local health_extension = ScriptUnit.extension(unit, "health_system")
 
 		health_extension:add_heal(unit, heal_amount, nil, heal_type)
 	end
 
-	if action.max_chew_attacks <= blackboard.chew_attacks_done then
+	if blackboard.chew_attacks_done >= action.max_chew_attacks then
 		blackboard.wants_to_throw = true
 	end
 end

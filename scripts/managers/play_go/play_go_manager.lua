@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/play_go/play_go_manager.lua
+
 PlayGoManager = class(PlayGoManager)
 
 PlayGoManager.init = function (self)

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_critter_nurgling_roam_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTCritterNurglingRoamAction = class(BTCritterNurglingRoamAction, BTNode)

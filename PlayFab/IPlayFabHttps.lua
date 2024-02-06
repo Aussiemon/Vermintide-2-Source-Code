@@ -1,6 +1,8 @@
+﻿-- chunkname: @PlayFab/IPlayFabHttps.lua
+
 local PlayFabSettings = require("PlayFab.PlayFabSettings")
 local IPlayFabHttps = {
-	_defaultHttpsFile = "PlayFab.PlayFabHttps_LuaSec"
+	_defaultHttpsFile = "PlayFab.PlayFabHttps_LuaSec",
 }
 
 IPlayFabHttps.SetHttp = function (httpInterface)

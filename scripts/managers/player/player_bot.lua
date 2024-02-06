@@ -1,13 +1,16 @@
+﻿-- chunkname: @scripts/managers/player/player_bot.lua
+
 require("scripts/managers/player/bulldozer_player")
 
 PlayerBot = class(PlayerBot, BulldozerPlayer)
 EnergyData = EnergyData or {}
+
 local BOT_COLORS = {
 	bright_wizard = QuaternionBox(255, 255, 127, 0),
 	witch_hunter = QuaternionBox(255, 255, 215, 0),
 	dwarf_ranger = QuaternionBox(255, 125, 125, 200),
 	wood_elf = QuaternionBox(255, 50, 205, 50),
-	empire_soldier = QuaternionBox(255, 220, 20, 60)
+	empire_soldier = QuaternionBox(255, 220, 20, 60),
 }
 
 PlayerBot.init = function (self, network_manager, player_name, bot_profile_name, is_server, profile_index, career_index, local_player_id, unique_id, ui_id, account_id)
@@ -23,7 +26,9 @@ PlayerBot.init = function (self, network_manager, player_name, bot_profile_name,
 	self.color = BOT_COLORS[player_name]
 	self.viewport_name = player_name
 	self.network_manager = network_manager
+
 	local profile = SPProfiles[self._profile_index]
+
 	self.character_name = Localize(profile.character_name)
 	self._local_player_id = local_player_id
 	self._telemetry_id = "Bot_" .. local_player_id
@@ -141,38 +146,38 @@ PlayerBot.spawn = function (self, position, rotation, is_initial_spawn, ammo_mel
 		ai_system = {
 			player = self,
 			bot_profile = self.bot_profile,
-			nav_world = nav_world
+			nav_world = nav_world,
 		},
 		ai_bot_group_system = {
 			initial_inventory = initial_inventory,
-			side = side
+			side = side,
 		},
 		input_system = {
-			player = self
+			player = self,
 		},
 		character_state_machine_system = {
 			start_state = "standing",
 			nav_world = nav_world,
 			character_state_class_list = character_state_class_list,
-			player = self
+			player = self,
 		},
 		health_system = {
 			player = self,
 			profile_index = profile_index,
-			career_index = career_index
+			career_index = career_index,
 		},
 		status_system = {
 			wounds = player_wounds,
 			profile_id = profile_index,
-			player = self
+			player = self,
 		},
 		hit_reaction_system = {
+			hit_reaction_template = "player",
 			is_husk = false,
-			hit_reaction_template = "player"
 		},
 		death_system = {
 			death_reaction_template = "player",
-			is_husk = false
+			is_husk = false,
 		},
 		inventory_system = {
 			profile = profile,
@@ -180,89 +185,89 @@ PlayerBot.spawn = function (self, position, rotation, is_initial_spawn, ammo_mel
 			player = self,
 			ammo_percent = {
 				slot_melee = ammo_melee,
-				slot_ranged = ammo_ranged
-			}
+				slot_ranged = ammo_ranged,
+			},
 		},
 		locomotion_system = {
-			player = self
+			player = self,
 		},
 		camera_system = {
-			player = self
+			player = self,
 		},
 		dialogue_context_system = {
-			profile = profile
+			profile = profile,
 		},
 		dialogue_system = {
-			wwise_career_switch_group = "player_career",
 			faction = "player",
+			wwise_career_switch_group = "player_career",
 			wwise_voice_switch_group = "character",
 			profile = profile,
 			wwise_voice_switch_value = profile.character_vo,
-			wwise_career_switch_value = career_name
+			wwise_career_switch_value = career_name,
 		},
 		first_person_system = {
 			profile = profile,
-			skin_name = skin_name
+			skin_name = skin_name,
 		},
 		ai_navigation_system = {
-			nav_world = nav_world
+			nav_world = nav_world,
 		},
 		whereabouts_system = {
-			player = self
+			player = self,
 		},
 		aim_system = {
 			is_husk = false,
-			template = "player"
+			template = "player",
 		},
 		attachment_system = {
 			profile = profile,
-			player = self
+			player = self,
 		},
 		cosmetic_system = {
 			profile = profile,
 			skin_name = skin_name,
 			frame_name = frame_name,
-			player = self
+			player = self,
 		},
 		buff_system = {
-			is_husk = false
+			is_husk = false,
 		},
 		statistics_system = {
 			template = "player",
-			statistics_id = self.peer_id
+			statistics_id = self.peer_id,
 		},
 		ai_slot_system = {
-			profile_index = profile_index
+			profile_index = profile_index,
 		},
 		talent_system = {
 			player = self,
-			profile_index = profile_index
+			profile_index = profile_index,
 		},
 		career_system = {
 			player = self,
 			profile_index = profile_index,
 			career_index = career_index,
-			ability_cooldown_percent_int = ability_cooldown_percent_int
+			ability_cooldown_percent_int = ability_cooldown_percent_int,
 		},
 		overcharge_system = {
-			overcharge_data = overcharge_data
+			overcharge_data = overcharge_data,
 		},
 		energy_system = {
-			energy_data = energy_data
+			energy_data = energy_data,
 		},
 		aggro_system = {
-			side = side
+			side = side,
 		},
 		proximity_system = {
 			side = side,
-			breed = breed
+			breed = breed,
 		},
 		target_override_system = {
-			side = side
+			side = side,
 		},
 		ai_commander_system = {
-			player = self
-		}
+			player = self,
+		},
 	}
 	local unit_template_name = "player_bot_unit"
 	local unit_name = skin_data.third_person
@@ -297,10 +302,11 @@ PlayerBot.create_game_object = function (self)
 		go_type = NetworkLookup.go_types.player,
 		network_id = self:network_id(),
 		local_player_id = self:local_player_id(),
-		account_id = self.peer_id
+		account_id = self.peer_id,
 	}
 	local callback = callback(self, "cb_game_session_disconnect")
 	local game_object_id = Managers.state.network:create_player_game_object("bot_player", game_object_data_table, callback)
+
 	self.game_object_id = game_object_id
 
 	self:create_sync_data()

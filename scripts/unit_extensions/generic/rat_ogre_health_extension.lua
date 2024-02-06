@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/generic/rat_ogre_health_extension.lua
+
 RatOgreHealthExtension = class(RatOgreHealthExtension, GenericHealthExtension)
 
 RatOgreHealthExtension.init = function (self, extension_init_context, unit, ...)

@@ -1,6 +1,9 @@
+﻿-- chunkname: @scripts/settings/dlcs/shovel/action_career_bw_necromancer_raise_dead_targeting.lua
+
 local DECAL_NAME = "fx/bw_necromancer_ability_indicator"
 local RAYCAST_SPEED = 15
 local RAYCAST_GRAVITY = -12
+
 ActionCareerBWNecromancerRaiseDeadTargeting = class(ActionCareerBWNecromancerRaiseDeadTargeting, ActionBase)
 
 ActionCareerBWNecromancerRaiseDeadTargeting.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
@@ -19,7 +22,7 @@ ActionCareerBWNecromancerRaiseDeadTargeting.init = function (self, world, item_n
 	self._decal_diameter_id = World.find_particles_variable(self._world, DECAL_NAME, "diameter")
 	self._unit_spawner = Managers.state.unit_spawner
 	self._buff_unit_params = {
-		is_husk = true
+		is_husk = true,
 	}
 
 	self._nav_callback = function ()
@@ -48,8 +51,9 @@ ActionCareerBWNecromancerRaiseDeadTargeting.client_owner_start_action = function
 		controlled_unit_template = new_action.controlled_unit_template,
 		breed_to_spawn = breed_to_spawn,
 		spawns_per_second = new_action.spawns_per_second,
-		target_center = Vector3Box()
+		target_center = Vector3Box(),
 	}
+
 	local owner_unit = self._owner_unit
 
 	self._first_person_extension:play_unit_sound_event("Play_career_necro_ability_raise_dead_target", owner_unit, 0, false)
@@ -67,6 +71,7 @@ end
 
 ActionCareerBWNecromancerRaiseDeadTargeting._start_targeting = function (self)
 	local world = self._world
+
 	self._spawn_decal_id = World.create_particles(world, DECAL_NAME, Vector3(0, 0, -600))
 
 	World.set_particles_variable(world, self._spawn_decal_id, self._decal_diameter_id, Vector3(self._diameter, self._diameter, 1))
@@ -99,13 +104,13 @@ ActionCareerBWNecromancerRaiseDeadTargeting._get_projectile_position = function 
 
 	if good_target_position then
 		local nav_world = Managers.state.entity:system("ai_system"):nav_world()
-		local above = 1
-		local below = 1
+		local above, below = 1, 1
 		local nav_position = LocomotionUtils.pos_on_mesh(nav_world, target_position, above, below)
 
 		if not nav_position then
 			local horizontal_tolerance = 3
 			local distance_from_obstacle = 0.5
+
 			nav_position = GwNavQueries.inside_position_from_outside_position(nav_world, target_position, above, below, horizontal_tolerance, distance_from_obstacle)
 		end
 
@@ -142,12 +147,16 @@ ActionCareerBWNecromancerRaiseDeadTargeting.finish = function (self, reason, dat
 		local target_center = self._spawn_data.target_center:unbox()
 		local buff_unit = self._unit_spawner:spawn_network_unit("units/hub_elements/empty", "buff_unit", self._buff_unit_params, target_center, Quaternion.identity(), nil)
 		local params = FrameTable.alloc_table()
+
 		params.source_attacker_unit = self._owner_unit
+
 		local buff_system = Managers.state.entity:system("buff_system")
 		local buff_id = buff_system:add_buff_synced(buff_unit, "raise_dead_ability", BuffSyncType.All, params)
 		local buff_extension = ScriptUnit.extension(buff_unit, "buff_system")
 		local buff = buff_extension:get_buff_by_id(buff_id)
+
 		buff.spawn_data = self._spawn_data
+
 		local owner_unit = self._owner_unit
 		local dialogue_input = ScriptUnit.extension_input(owner_unit, "dialogue_system")
 		local event_data = FrameTable.alloc_table()

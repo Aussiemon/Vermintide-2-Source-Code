@@ -1,8 +1,11 @@
+﻿-- chunkname: @scripts/managers/crafting/crafting_manager.lua
+
 CraftingManager = class(CraftingManager)
 CraftingManager.NAME = "CraftingManager"
 
 CraftingManager.init = function (self)
 	local crafting_interface = Managers.backend:get_interface("crafting")
+
 	self._crafting_interface = crafting_interface
 end
 
@@ -53,6 +56,7 @@ CraftingManager.craft = function (self, items, recipe_override)
 
 		if recipe.name == "salvage" then
 			local salvaged_items = statistics_db:get_persistent_stat(stats_id, "salvaged_items")
+
 			salvaged_items = salvaged_items + #items
 
 			statistics_db:set_stat(stats_id, "salvaged_items", salvaged_items)

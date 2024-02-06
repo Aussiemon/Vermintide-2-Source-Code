@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/game_mode/game_mode_manager.lua
+
 require("scripts/settings/game_mode_settings")
 require("scripts/managers/game_mode/game_mode_helper")
 require("scripts/managers/game_mode/game_modes/game_mode_adventure")
@@ -16,7 +18,7 @@ local RPCS = {
 	"rpc_apply_environment_variation",
 	"rpc_change_game_mode_state",
 	"rpc_trigger_round_over",
-	"rpc_trigger_level_event"
+	"rpc_trigger_level_event",
 }
 local GAME_MODE_STATE_NETWORK_IDS = {}
 
@@ -35,6 +37,7 @@ GameModeManager = class(GameModeManager)
 
 GameModeManager.init = function (self, world, lobby_host, lobby_client, network_event_delegate, statistics_db, game_mode_key, network_server, network_transmit, profile_synchronizer, game_mode_settings)
 	local level_key = Managers.level_transition_handler:get_current_level_keys()
+
 	self._lobby_host = lobby_host
 	self._lobby_client = lobby_client
 	self.is_server = not not lobby_host
@@ -67,15 +70,18 @@ GameModeManager.init = function (self, world, lobby_host, lobby_client, network_
 
 	self._object_sets = nil
 	self._object_set_names = nil
+
 	local max_size = 8192
+
 	self._flow_set_data = {
-		units_per_frame = 150,
-		write_index = 1,
 		read_index = 1,
 		size = 0,
+		units_per_frame = 150,
+		write_index = 1,
 		ring_buffer = Script.new_array(max_size),
-		max_size = max_size
+		max_size = max_size,
 	}
+
 	local mutators = self._game_mode:mutators()
 	local level_settings = LevelSettings[self._level_key]
 	local level_mutators = level_settings.mutators
@@ -89,6 +95,7 @@ GameModeManager.init = function (self, world, lobby_host, lobby_client, network_
 	end
 
 	local has_local_client = not DEDICATED_SERVER
+
 	self._mutator_handler = MutatorHandler:new(mutators, self.is_server, has_local_client, world, network_event_delegate, network_transmit)
 	self._looping_event_timers = {}
 	self._disable_spawning_reasons = {}
@@ -306,7 +313,9 @@ GameModeManager._set_flow_object_set_enabled = function (self, set, enable, set_
 	end
 
 	local level = LevelHelper:current_level(self._world)
+
 	set.flow_set_enabled = enable
+
 	local data = self._flow_set_data
 	local buffer = data.ring_buffer
 	local write_index = data.write_index
@@ -420,7 +429,7 @@ GameModeManager._set_flow_object_set_unit_enabled = function (self, level, index
 
 	local enable = not enabled and refs > 0
 	local disable = enabled and refs == 0
-	local new_state = nil
+	local new_state
 
 	if enable then
 		new_state = true
@@ -475,7 +484,7 @@ GameModeManager._set_flow_object_set_unit_enabled = function (self, level, index
 				Unit_flow_event(unit, "unit_object_set_disabled")
 			end
 		else
-			local actor_list = nil
+			local actor_list
 
 			if new_state then
 				actor_list = Unit_get_data(unit, "flow_object_set_actor_list")
@@ -556,6 +565,7 @@ GameModeManager._init_game_mode = function (self, game_mode_key, game_mode_setti
 
 	local settings = GameModeSettings[game_mode_key]
 	local class = rawget(_G, settings.class_name)
+
 	self._game_mode = class:new(settings, self._world, self.network_server, self.is_server, self._profile_synchronizer, self._level_key, self.statistics_db, game_mode_settings)
 end
 
@@ -573,6 +583,7 @@ end
 
 GameModeManager.gm_event_round_started = function (self)
 	self._round_started = true
+
 	local level = LevelHelper:current_level(self._world)
 	local round_started_string = self._game_mode_key .. "_round_started"
 
@@ -647,6 +658,7 @@ GameModeManager.start_specific_level = function (self, level_key, time_until_sta
 	else
 		self.specific_level_to_start = nil
 		self.specific_level_start_timer = nil
+
 		local level_transition_handler = Managers.level_transition_handler
 		local environment_variation_id = LevelHelper:get_environment_variation_id(level_key)
 
@@ -676,10 +688,11 @@ end
 
 GameModeManager.register_looping_event_timer = function (self, timer_name, delay, event_name)
 	local os_t = os.clock()
+
 	self._looping_event_timers[timer_name] = {
 		delay = delay,
 		next_trigger_time = os_t + delay,
-		event_name = event_name
+		event_name = event_name,
 	}
 end
 
@@ -710,7 +723,7 @@ GameModeManager.update = function (self, dt, t)
 	local level = LevelHelper:current_level(self._world)
 
 	for name, timer in pairs(self._looping_event_timers) do
-		if timer.next_trigger_time < os_t then
+		if os_t > timer.next_trigger_time then
 			Level.trigger_event(level, timer.event_name)
 
 			timer.next_trigger_time = timer.next_trigger_time + timer.delay
@@ -764,6 +777,7 @@ GameModeManager.server_update = function (self, dt, t)
 
 				self._end_conditions_met = true
 				self._end_reason = reason
+
 				local checkpoint_available = reason == "lost" and Managers.state.spawn:checkpoint_data() and true or false
 				local mission_system = Managers.state.entity:system("mission_system")
 				local percentages_completed = mission_system:percentages_completed()
@@ -775,10 +789,12 @@ GameModeManager.server_update = function (self, dt, t)
 				self:_save_last_level_completed(reason)
 
 				self._ready_for_transition = {}
+
 				local human_players = Managers.player:human_players()
 
 				for _, player in pairs(human_players) do
 					local peer_id = player.peer_id
+
 					self._ready_for_transition[peer_id] = false
 				end
 			end
@@ -811,6 +827,7 @@ end
 
 GameModeManager._save_last_level_completed = function (self, reason)
 	local level_key = self:level_key()
+
 	SaveData.last_played_level = level_key
 	SaveData.last_played_level_result = reason
 
@@ -819,6 +836,7 @@ end
 
 GameModeManager.rpc_is_ready_for_transition = function (self, channel_id)
 	local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
 	self._ready_for_transition[peer_id] = true
 end
 
@@ -1031,6 +1049,7 @@ GameModeManager._update_end_level_areas = function (self)
 
 			if non_disabled then
 				num_non_disabled_players = num_non_disabled_players + 1
+
 				local pos = POSITION_LOOKUP[player_unit]
 				local in_end_area = false
 
@@ -1038,9 +1057,7 @@ GameModeManager._update_end_level_areas = function (self)
 					local node = Unit.node(unit, data.object)
 					local object_pos = Unit.world_position(unit, node)
 					local object_rot = Unit.world_rotation(unit, node)
-					local right = Quaternion.right(object_rot)
-					local forward = Quaternion.forward(object_rot)
-					local up = Quaternion.up(object_rot)
+					local right, forward, up = Quaternion.right(object_rot), Quaternion.forward(object_rot), Quaternion.up(object_rot)
 					local offset = data.offset:unbox()
 					local center_pos = object_pos + right * offset.x + forward * offset.y + up * offset.z
 					local extents = data.extents:unbox()

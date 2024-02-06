@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/unit_extensions/default_player_unit/careers/career_ability_bw_adept.lua
+
 CareerAbilityBWAdept = class(CareerAbilityBWAdept)
+
 local EPSILON = 0.01
 local SEGMENT_LIST = {}
 
@@ -28,7 +31,9 @@ CareerAbilityBWAdept.init = function (self, extension_init_context, unit, extens
 	self._owner_unit = unit
 	self._world = extension_init_context.world
 	self._wwise_world = Managers.world:wwise_world(self._world)
+
 	local player = extension_init_data.player
+
 	self._player = player
 	self._is_server = player.is_server
 	self._local_player = player.local_player
@@ -132,6 +137,7 @@ CareerAbilityBWAdept._start_priming = function (self)
 	if self._local_player then
 		local world = self._world
 		local effect_name = self._effect_name
+
 		self._effect_id = World.create_particles(world, effect_name, Vector3.zero())
 	end
 
@@ -216,6 +222,7 @@ CareerAbilityBWAdept._run_ability = function (self)
 		local above = 2
 		local below = 30
 		local projected_start_pos = LocomotionUtils.pos_on_mesh(nav_world, unit_pos, above, below)
+
 		projected_start_pos = projected_start_pos or GwNavQueries.inside_position_from_outside_position(nav_world, unit_pos, above, below, 2, 0.5)
 
 		if projected_start_pos then
@@ -265,7 +272,7 @@ CareerAbilityBWAdept._run_ability = function (self)
 					local status_ext = ScriptUnit.extension(unit_3p, "status_system")
 
 					status_ext:set_invisible(true, nil, "skill_adept")
-				end
+				end,
 			},
 			{
 				distance_percentage = 0.2,
@@ -280,7 +287,7 @@ CareerAbilityBWAdept._run_ability = function (self)
 					local area_damage_system = Managers.state.entity:system("area_damage_system")
 
 					area_damage_system:create_explosion(unit_3p, position, rotation, explosion_template, scale, "career_ability", career_power_level, false)
-				end
+				end,
 			},
 			start = function (this)
 				local unit_3p = this.unit
@@ -325,8 +332,8 @@ CareerAbilityBWAdept._run_ability = function (self)
 
 					network_transmit:send_rpc_server("rpc_status_change_bool", NetworkLookup.statuses.dodging, false, unit_id, 0)
 				end
-			end
-		}
+			end,
+		},
 	}
 
 	if talent_extension:has_talent("sienna_adept_ability_trail_double") then

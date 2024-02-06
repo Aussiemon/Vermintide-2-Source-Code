@@ -1,9 +1,12 @@
+﻿-- chunkname: @scripts/unit_extensions/default_player_unit/states/player_character_state_dodging.lua
+
 PlayerCharacterStateDodging = class(PlayerCharacterStateDodging, PlayerCharacterState)
 
 PlayerCharacterStateDodging.init = function (self, character_state_init_context)
 	PlayerCharacterState.init(self, character_state_init_context, "dodging")
 
 	local context = character_state_init_context
+
 	self.movement_speed = 0
 	self.dodge_direction = Vector3Box(0, 0, 0)
 	self.last_position = Vector3Box(0, 0, 0)
@@ -18,7 +21,7 @@ PlayerCharacterStateDodging.on_enter_animation = function (self, unit)
 	local variable_value = self.estimated_dodge_time
 	local first_person_extension = self.first_person_extension
 
-	if math.abs(x_value) < math.abs(y_value) then
+	if math.abs(y_value) > math.abs(x_value) then
 		CharacterStateHelper.play_animation_event_with_variable_float(unit, "dodge_bwd", variable_name, variable_value)
 		CharacterStateHelper.play_animation_event_first_person(first_person_extension, "dodge_bwd")
 	elseif x_value > 0 then
@@ -41,6 +44,7 @@ PlayerCharacterStateDodging.on_enter = function (self, unit, input, dt, context,
 	self.dodge_direction:store(params.dodge_direction)
 
 	params.dodge_direction = nil
+
 	local movement_settings_table = PlayerUnitMovementSettings.get_movement_settings_table(unit)
 
 	status_extension:set_dodge_jump_override_t(t, movement_settings_table.dodging.dodge_jump_override_timer)
@@ -55,6 +59,7 @@ PlayerCharacterStateDodging.on_enter = function (self, unit, input, dt, context,
 	Vector3.set_z(forward_direction, 0)
 
 	forward_direction = Vector3.normalize(forward_direction)
+
 	local flat_rotation = Quaternion.look(forward_direction, Vector3(0, 0, 1))
 
 	Unit.set_local_rotation(unit, 0, flat_rotation)
@@ -95,6 +100,7 @@ PlayerCharacterStateDodging.update = function (self, unit, input, dt, context, t
 	local input_extension = self.input_extension
 	local status_extension = self.status_extension
 	local first_person_extension = self.first_person_extension
+
 	self.time_in_dodge = self.time_in_dodge + dt
 
 	ScriptUnit.extension(unit, "whereabouts_system"):set_is_onground()
@@ -120,6 +126,7 @@ PlayerCharacterStateDodging.update = function (self, unit, input, dt, context, t
 
 		local params = movement_settings_table.stun_settings.pushed
 		local hit_react_type = status_extension:hit_react_type()
+
 		params.hit_react_type = hit_react_type .. "_push"
 
 		csm:change_state("stunned", params)
@@ -129,6 +136,7 @@ PlayerCharacterStateDodging.update = function (self, unit, input, dt, context, t
 
 	if CharacterStateHelper.is_charged(status_extension) then
 		local params = movement_settings_table.charged_settings.charged
+
 		params.hit_react_type = "charged"
 
 		csm:change_state("charged", params)
@@ -140,6 +148,7 @@ PlayerCharacterStateDodging.update = function (self, unit, input, dt, context, t
 		status_extension:set_block_broken(false)
 
 		local params = movement_settings_table.stun_settings.parry_broken
+
 		params.hit_react_type = "medium_push"
 
 		csm:change_state("stunned", params)
@@ -158,6 +167,7 @@ PlayerCharacterStateDodging.update = function (self, unit, input, dt, context, t
 
 		local config = interactor_extension:interaction_config()
 		local params = self.temp_params
+
 		params.swap_to_3p = config.swap_to_3p
 		params.show_weapons = config.show_weapons
 		params.activate_block = config.activate_block
@@ -174,6 +184,7 @@ PlayerCharacterStateDodging.update = function (self, unit, input, dt, context, t
 
 	if (input_extension:get("jump") or input_extension:get("jump_only")) and status_extension:can_override_dodge_with_jump(t) and self.locomotion_extension:jump_allowed() then
 		local params = self.temp_params
+
 		params.post_dodge_jump = true
 
 		csm:change_state("jumping", params)
@@ -230,6 +241,7 @@ PlayerCharacterStateDodging.update_dodge = function (self, unit, dt, t)
 	local speed_at_times = movement_settings_table.dodging.speed_at_times
 	local breaked = false
 	local start_point = self.current_speed_setting_index + 1
+
 	self.current_speed_setting_index = #speed_at_times
 
 	for index = start_point, #speed_at_times do
@@ -248,6 +260,7 @@ PlayerCharacterStateDodging.update_dodge = function (self, unit, dt, t)
 		local time_between_settings = speed_at_times[next_speed_setting_index].time_in_dodge - speed_at_times[current_speed_setting_index].time_in_dodge
 		local time_in_setting = time_in_dodge - speed_at_times[current_speed_setting_index].time_in_dodge
 		local percentage_in_between = time_in_setting / time_between_settings
+
 		self.speed = math.lerp(speed_at_times[current_speed_setting_index].speed, speed_at_times[next_speed_setting_index].speed, percentage_in_between) * speed_modifier * diminishing_return_factor
 	else
 		self.speed = speed_at_times[current_speed_setting_index].speed * speed_modifier * diminishing_return_factor
@@ -260,6 +273,7 @@ PlayerCharacterStateDodging.update_dodge = function (self, unit, dt, t)
 	self.locomotion_extension:set_wanted_velocity(move_direction * self.speed)
 
 	local move_delta = self.speed * dt
+
 	self.distance_supposed_to_move = move_delta
 	self.distance_left = self.distance_left - move_delta
 
@@ -311,9 +325,11 @@ PlayerCharacterStateDodging.calculate_dodge_total_time = function (self, unit)
 
 	while not_hit_end do
 		time_in_dodge = time_in_dodge + time_step
+
 		local speed_at_times = movement_settings_table.dodging.speed_at_times
 		local breaked = false
 		local start_point = current_speed_setting_index + 1
+
 		current_speed_setting_index = #speed_at_times
 
 		for index = start_point, #speed_at_times do
@@ -330,6 +346,7 @@ PlayerCharacterStateDodging.calculate_dodge_total_time = function (self, unit)
 			local time_between_settings = speed_at_times[next_speed_setting_index].time_in_dodge - speed_at_times[current_speed_setting_index].time_in_dodge
 			local time_in_setting = time_in_dodge - speed_at_times[current_speed_setting_index].time_in_dodge
 			local percentage_in_between = time_in_setting / time_between_settings
+
 			speed = math.lerp(speed_at_times[current_speed_setting_index].speed, speed_at_times[next_speed_setting_index].speed, percentage_in_between) * speed_modifier * diminishing_return_factor
 		else
 			speed = speed_at_times[current_speed_setting_index].speed * speed_modifier

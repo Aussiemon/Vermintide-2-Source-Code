@@ -1,4 +1,7 @@
+﻿-- chunkname: @foundation/scripts/util/script_unit.lua
+
 ScriptUnit = ScriptUnit or {}
+
 local Entities = rawget(_G, "G_Entities")
 
 if not Entities then
@@ -97,7 +100,8 @@ ScriptUnit.add_extension = function (extension_init_context, unit, extension_nam
 
 	fassert(extension_class, "No class found for extension with name %q", extension_name)
 
-	local extension = nil
+	local extension
+
 	extension = extension_class:new(extension_init_context, unit, extension_init_data)
 
 	fassert(not ScriptUnit.has_extension(unit, extension_alias), "An extension already exists with name %q belonging to unit %s", extension_alias, unit)
@@ -160,6 +164,7 @@ ScriptUnit.extension_definitions = function (unit)
 
 	while Unit.has_data(unit, "extensions", i) do
 		local class_name = Unit.get_data(unit, "extensions", i)
+
 		i = i + 1
 		extensions[i] = class_name
 	end
@@ -178,9 +183,10 @@ ScriptUnit.save_scene_graph = function (unit)
 	for node_index = 0, Unit.num_scene_graph_items(unit) - 1 do
 		local parent_node = Unit.scene_graph_parent(unit, node_index)
 		local local_pose = Matrix4x4Box(Unit.local_pose(unit, node_index))
+
 		link_table[node_index] = {
 			parent = parent_node,
-			local_pose = local_pose
+			local_pose = local_pose,
 		}
 	end
 

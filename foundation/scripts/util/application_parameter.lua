@@ -1,3 +1,5 @@
+﻿-- chunkname: @foundation/scripts/util/application_parameter.lua
+
 require("foundation/scripts/util/table")
 
 script_data = script_data or {}
@@ -8,6 +10,7 @@ Development.init_application_parameters = function (args, do_pretty_print_args)
 	print("Development.init_application_parameters")
 
 	Development.application_parameter = {}
+
 	local application_parameters = Development.application_parameter
 
 	local function printf(...)
@@ -30,7 +33,7 @@ Development.init_application_parameters = function (args, do_pretty_print_args)
 	local i = 1
 
 	local function has_more_args()
-		return i <= num_args
+		return num_args >= i
 	end
 
 	local function has_more_args_after_current()
@@ -57,12 +60,9 @@ Development.init_application_parameters = function (args, do_pretty_print_args)
 
 	local function warn_multiple_definitions(parameter_name, old)
 		local value = application_parameters[parameter_name]
-
-		if type(value) ~= "table" or not value then
-			local t = {
-				value
-			}
-		end
+		local t = type(value) == "table" and value or {
+			value,
+		}
 
 		printf("[parse_application_parameters] multiple defintions of '%s' using [%s]. old value [%s]", parameter_name, table.tostring(t), table.tostring(old))
 	end
@@ -96,6 +96,7 @@ Development.init_application_parameters = function (args, do_pretty_print_args)
 			step_to_next_arg()
 		else
 			local param = parameter(arg)
+
 			max_param_string_length = math.max(max_param_string_length, #param)
 
 			if application_parameters[param] then
@@ -131,12 +132,14 @@ Development.init_application_parameters = function (args, do_pretty_print_args)
 						application_parameters[param] = value
 					elseif type(application_parameters[param]) == "table" then
 						local value_table = application_parameters[param]
+
 						value_table[#value_table + 1] = value
 					else
 						local value_table = {
 							current_value,
-							value
+							value,
 						}
+
 						application_parameters[param] = value_table
 					end
 				end
@@ -150,13 +153,14 @@ Development.init_application_parameters = function (args, do_pretty_print_args)
 		if application_parameters["use-clean-settings"] then
 			script_data = {
 				build_identifier = script_data.build_identifier,
-				settings = script_data.settings or {}
+				settings = script_data.settings or {},
 			}
 		end
 
 		for param, value in pairs(application_parameters) do
 			if type(value) == "string" then
 				local fixedparam = string.gsub(param, "-", "_")
+
 				script_data[fixedparam] = value
 			else
 				script_data[param] = value

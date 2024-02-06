@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/matchmaking/matchmaking_state_idle.lua
+
 MatchmakingStateIdle = class(MatchmakingStateIdle)
 MatchmakingStateIdle.NAME = "MatchmakingStateIdle"
 

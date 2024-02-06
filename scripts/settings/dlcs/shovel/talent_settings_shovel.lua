@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/dlcs/shovel/talent_settings_shovel.lua
+
 local buff_perks = require("scripts/unit_extensions/default_player_unit/buffs/settings/buff_perk_names")
 
 require("scripts/entity_system/systems/buff/buff_sync_type")
@@ -5,244 +7,245 @@ require("scripts/settings/profiles/career_constants")
 
 SHOVEL_BUFF_TWEAK_DATA = {
 	sienna_necromancer_passive_balefire = {
-		multiplier = 0.2
+		multiplier = 0.2,
 	},
 	sienna_necromancer_perk_dot_duration = {
-		multiplier = CareerConstants.bw_necromancer.passive_dot_duration
+		multiplier = CareerConstants.bw_necromancer.passive_dot_duration,
 	},
 	sienna_necromancer_ability_cooldown_on_hit = {
-		bonus = 0.25
+		bonus = 0.25,
 	},
 	sienna_necromancer_ability_cooldown_on_damage_taken = {
-		bonus = 0.25
+		bonus = 0.25,
 	},
 	sienna_necromancer_2_1 = {
-		skeleton_count = 4
+		skeleton_count = 4,
 	},
 	sienna_necromancer_2_1_attack_speed = {
-		multiplier = 0.12
+		multiplier = 0.12,
 	},
 	sienna_necromancer_2_2_buff = {
+		duration = 6,
 		max_stacks = 5,
 		multiplier = 0.05,
-		duration = 6
 	},
 	sienna_necromancer_2_3 = {
-		multiplier = 0.25
+		multiplier = 0.25,
 	},
 	sienna_necromancer_4_2_soul_rip_stack = {
-		max_stacks = 8
+		max_stacks = 8,
 	},
 	sienna_necromancer_4_3_withering_touch = {
-		duration = 15
+		duration = 15,
 	},
 	sienna_necromancer_5_1_reduced_overcharge = {
-		multiplier = 0.15
+		multiplier = 0.15,
 	},
 	sienna_necromancer_5_1_buff = {
 		duration = 6,
-		multiplier = 0.3
+		multiplier = 0.3,
 	},
 	sienna_necromancer_5_2_counter = {
-		max_stacks = 3
+		max_stacks = 3,
 	},
 	sienna_necromancer_5_2_buff = {
-		multiplier = -0.8
+		multiplier = -0.8,
 	},
 	sienna_necromancer_5_3 = {
-		overcharge_threshold = 0.12
+		overcharge_threshold = 0.12,
 	},
 	sienna_necromancer_6_1 = {
+		breed_to_spawn = "pet_skeleton",
 		controlled_unit_template = "necromancer_pet",
 		num_skeletons = 5,
-		breed_to_spawn = "pet_skeleton"
 	},
 	sienna_necromancer_cursed_area = {
-		duration = 10
+		duration = 10,
 	},
 	sienna_necromancer_command_item_sacrifice = {
-		multiplier = 0.7
+		multiplier = 0.7,
 	},
 	sienna_necromancer_command_item_attack = {
+		duration = 8,
 		multiplier = 0.6,
-		duration = 8
 	},
 	sienna_necromancer_command_item_defend = {
-		multiplier = 0.8
-	}
+		multiplier = 0.8,
+	},
 }
+
 local talent_buff_templates = {
 	sienna_necromancer_passive_balefire = {
 		buffs = {
 			{
+				name = "sienna_necromancer_passive_balefire",
 				stat_buff = "increased_damage_to_balefire",
-				name = "sienna_necromancer_passive_balefire"
-			}
-		}
+			},
+		},
 	},
 	sienna_necromancer_perk_dot_duration = {
 		buffs = {
 			{
+				name = "sienna_necromancer_perk_dot_duration",
 				stat_buff = "increased_balefire_dot_duration",
-				name = "sienna_necromancer_perk_dot_duration"
-			}
-		}
+			},
+		},
 	},
 	sienna_necromancer_ability_cooldown_on_hit = {
 		buffs = {
 			{
+				buff_func = "reduce_activated_ability_cooldown",
 				event = "on_hit",
-				buff_func = "reduce_activated_ability_cooldown"
-			}
-		}
+			},
+		},
 	},
 	sienna_necromancer_ability_cooldown_on_damage_taken = {
 		buffs = {
 			{
+				buff_func = "reduce_activated_ability_cooldown_on_damage_taken",
 				event = "on_damage_taken",
-				buff_func = "reduce_activated_ability_cooldown_on_damage_taken"
-			}
-		}
+			},
+		},
 	},
 	sienna_necromancer_1_1 = {
 		buffs = {
 			{
-				max_targets = 5,
-				multiplier = -0.05,
+				bonus = 0.25,
 				buff_func = "heal_damage_targets_on_melee",
 				event = "on_player_damage_dealt",
-				bonus = 0.25,
+				max_targets = 5,
+				multiplier = -0.05,
 				perks = {
-					buff_perks.linesman_healing
-				}
-			}
-		}
+					buff_perks.linesman_healing,
+				},
+			},
+		},
 	},
 	sienna_necromancer_1_2 = {
 		buffs = {
 			{
-				multiplier = 0.45,
-				heal_cap = 0.25,
 				buff_func = "heal_percentage_of_enemy_hp_on_melee_kill",
 				event = "on_kill",
+				heal_cap = 0.25,
+				multiplier = 0.45,
 				perks = {
-					buff_perks.smiter_healing
-				}
-			}
-		}
+					buff_perks.smiter_healing,
+				},
+			},
+		},
 	},
 	sienna_necromancer_1_3 = {
 		buffs = {
 			{
+				buff_func = "heal_other_players_percent_at_range",
 				event = "on_healed_consumeable",
 				multiplier = 0.2,
 				range = 10,
-				buff_func = "heal_other_players_percent_at_range"
-			}
-		}
+			},
+		},
 	},
 	sienna_necromancer_2_1 = {
 		buffs = {
 			{
-				event = "on_controlled_unit_added",
+				buff_func = "thank_you_skeletal_add",
 				buff_to_add = "sienna_necromancer_2_1_attack_speed",
-				buff_func = "thank_you_skeletal_add"
-			}
-		}
+				event = "on_controlled_unit_added",
+			},
+		},
 	},
 	sienna_necromancer_2_1_removed_tracker = {
 		buffs = {
 			{
-				event = "on_controlled_unit_removed",
-				buff_to_remove = "sienna_necromancer_2_1_attack_speed",
 				buff_func = "thank_you_skeletal_remove",
-				skeleton_count = SHOVEL_BUFF_TWEAK_DATA.sienna_necromancer_2_1.skeleton_count
-			}
-		}
+				buff_to_remove = "sienna_necromancer_2_1_attack_speed",
+				event = "on_controlled_unit_removed",
+				skeleton_count = SHOVEL_BUFF_TWEAK_DATA.sienna_necromancer_2_1.skeleton_count,
+			},
+		},
 	},
 	sienna_necromancer_2_1_attack_speed = {
 		buffs = {
 			{
-				max_stacks = 1,
 				icon = "sienna_necromancer_2_1",
-				stat_buff = "attack_speed"
-			}
-		}
+				max_stacks = 1,
+				stat_buff = "attack_speed",
+			},
+		},
 	},
 	sienna_necromancer_2_2 = {
 		buffs = {
 			{
-				event = "on_spell_used",
+				buff_func = "add_buff_local",
 				buff_to_add = "sienna_necromancer_2_2_buff",
-				buff_func = "add_buff_local"
-			}
-		}
+				event = "on_spell_used",
+			},
+		},
 	},
 	sienna_necromancer_2_2_buff = {
 		buffs = {
 			{
-				refresh_durations = true,
 				icon = "sienna_necromancer_2_2",
-				stat_buff = "power_level_ranged"
-			}
-		}
+				refresh_durations = true,
+				stat_buff = "power_level_ranged",
+			},
+		},
 	},
 	sienna_necromancer_2_3 = {
 		buffs = {
 			{
 				stat_buff = "power_level_critical_strike",
 				perks = {
-					buff_perks.crit_unlimited_cleave
-				}
-			}
-		}
+					buff_perks.crit_unlimited_cleave,
+				},
+			},
+		},
 	},
 	sienna_necromancer_4_1_cursed_blood = {
 		buffs = {
 			{
+				buff_func = "necromancer_crit_burst",
 				event = "on_damage_dealt",
-				radius = 3.5,
 				propagation_multiplier = 0.25,
-				buff_func = "necromancer_crit_burst"
-			}
-		}
+				radius = 3.5,
+			},
+		},
 	},
 	sienna_necromancer_4_2_soul_rip = {
 		buffs = {
 			{
+				buff_func = "spawn_ripped_soul",
 				event = "on_kill",
 				remove_buff_func = "necromancer_remove_orb_buffs",
-				buff_func = "spawn_ripped_soul",
 				orb_settings = {
-					orb_name = "necromancer_ripped_soul"
-				}
-			}
-		}
+					orb_name = "necromancer_ripped_soul",
+				},
+			},
+		},
 	},
 	sienna_necromancer_4_2_soul_rip_stack = {
 		buffs = {
 			{
-				reset_on_max_stacks = true,
+				icon = "sienna_necromancer_4_2",
 				is_cooldown = true,
 				on_max_stacks_func = "add_remove_buffs",
-				icon = "sienna_necromancer_4_2",
+				reset_on_max_stacks = true,
 				max_stack_data = {
 					buffs_to_add = {
-						"sienna_necromancer_4_2_execute"
-					}
-				}
-			}
-		}
+						"sienna_necromancer_4_2_execute",
+					},
+				},
+			},
+		},
 	},
 	sienna_necromancer_4_2_soul_rip_handler = {
 		buffs = {
 			{
+				buff_func = "remove_ref_buff_stack_woods",
+				buff_to_remove = "sienna_necromancer_4_2_execute",
 				event = "on_critical_action",
 				max_stacks = 1,
-				buff_to_remove = "sienna_necromancer_4_2_execute",
-				buff_func = "remove_ref_buff_stack_woods"
-			}
-		}
+			},
+		},
 	},
 	sienna_necromancer_4_2_execute = {
 		buffs = {
@@ -250,525 +253,525 @@ local talent_buff_templates = {
 				icon = "sienna_necromancer_4_2",
 				priority_buff = true,
 				perks = {
-					buff_perks.guaranteed_crit
+					buff_perks.guaranteed_crit,
 				},
-				max_stacks = math.huge
-			}
-		}
+				max_stacks = math.huge,
+			},
+		},
 	},
 	sienna_necromancer_4_3_withering_touch = {
 		buffs = {
 			{
-				max_stacks = 1,
-				refresh_durations = true,
 				buff_func = "apply_dot_on_hit",
+				dot_template_name = "sienna_necromancer_4_3_dot",
 				event = "on_hit",
 				icon = "sienna_necromancer_4_3",
-				dot_template_name = "sienna_necromancer_4_3_dot"
-			}
-		}
+				max_stacks = 1,
+				refresh_durations = true,
+			},
+		},
 	},
 	sienna_necromancer_4_3_dot = {
 		buffs = {
 			{
-				damage_profile = "sienna_necromancer_4_3_dot_damage",
-				name = "sienna_necromancer_4_3_dot",
-				update_func = "apply_dot_damage",
 				apply_buff_func = "start_dot_damage",
-				update_start_delay = 0.9,
-				time_between_dot_damages = 0.9,
+				damage_profile = "sienna_necromancer_4_3_dot_damage",
 				damage_type = "burninating",
-				max_stacks = 3,
 				duration = 4,
+				max_stacks = 3,
+				name = "sienna_necromancer_4_3_dot",
+				time_between_dot_damages = 0.9,
+				update_func = "apply_dot_damage",
+				update_start_delay = 0.9,
 				perks = {
-					buff_perks.burning_balefire
-				}
-			}
-		}
+					buff_perks.burning_balefire,
+				},
+			},
+		},
 	},
 	sienna_necromancer_5_1_reduced_overcharge = {
 		buffs = {
 			{
+				buff_func = "sienna_necromancer_5_1_on_kill",
 				event = "on_kill",
-				buff_func = "sienna_necromancer_5_1_on_kill"
-			}
-		}
+			},
+		},
 	},
 	sienna_necromancer_5_1_buff = {
 		buffs = {
 			{
-				max_stacks = 1,
 				icon = "sienna_necromancer_5_1",
+				max_stacks = 1,
+				refresh_durations = true,
 				stat_buff = "cooldown_regen",
-				refresh_durations = true
-			}
-		}
+			},
+		},
 	},
 	sienna_necromancer_5_1_cdr = {
 		buffs = {
 			{
+				multiplier = 0.3,
 				stat_buff = "cooldown_regen",
-				multiplier = 0.3
-			}
-		}
+			},
+		},
 	},
 	sienna_necromancer_5_1_reduce_hp = {
 		buffs = {
 			{
+				multiplier = -0.3,
 				stat_buff = "max_health",
-				multiplier = -0.3
-			}
-		}
+			},
+		},
 	},
 	sienna_necromancer_5_2 = {
 		buffs = {
 			{
-				event = "on_ability_activated",
 				buff_func = "cursed_vigor_proc",
-				buffs_to_add = table.fill({}, SHOVEL_BUFF_TWEAK_DATA.sienna_necromancer_5_2_counter.max_stacks, "sienna_necromancer_5_2_counter")
-			}
-		}
+				event = "on_ability_activated",
+				buffs_to_add = table.fill({}, SHOVEL_BUFF_TWEAK_DATA.sienna_necromancer_5_2_counter.max_stacks, "sienna_necromancer_5_2_counter"),
+			},
+		},
 	},
 	sienna_necromancer_5_2_counter = {
 		buffs = {
 			{
-				synced_buff_to_add = "sienna_necromancer_5_2_buff",
-				on_stack_buff_first_add = "add_buff_synced",
-				on_last_stack_removed = "remove_buff_synced",
 				icon = "sienna_necromancer_5_2",
+				on_last_stack_removed = "remove_buff_synced",
+				on_stack_buff_first_add = "add_buff_synced",
+				synced_buff_to_add = "sienna_necromancer_5_2_buff",
 				synced_buff_to_remove = "sienna_necromancer_5_2_buff",
-				sync_type = BuffSyncType.ClientAndServer
-			}
-		}
+				sync_type = BuffSyncType.ClientAndServer,
+			},
+		},
 	},
 	sienna_necromancer_5_2_counter_remover = {
 		buffs = {
 			{
-				event = "on_damage_taken",
 				buff_func = "remove_buff_stack",
+				event = "on_damage_taken",
 				remove_buff_stack_data = {
 					{
 						buff_to_remove = "sienna_necromancer_5_2_counter",
-						num_stacks = 1
-					}
-				}
-			}
-		}
+						num_stacks = 1,
+					},
+				},
+			},
+		},
 	},
 	sienna_necromancer_5_2_buff = {
 		buffs = {
 			{
-				stat_buff = "damage_taken"
-			}
-		}
+				stat_buff = "damage_taken",
+			},
+		},
 	},
 	sienna_necromancer_5_3 = {
 		buffs = {
 			{
-				event = "on_overcharge_lost",
 				apply_buff_func = "necromancer_5_3_setup",
-				buff_func = "trapped_souls_overcharge_lost"
-			}
-		}
+				buff_func = "trapped_souls_overcharge_lost",
+				event = "on_overcharge_lost",
+			},
+		},
 	},
 	sienna_necromancer_6_1 = {
 		buffs = {
-			{}
-		}
+			{},
+		},
 	},
 	sienna_necromancer_6_2_pet_buff = {
 		buffs = {
 			{
-				event = "on_damage_dealt",
+				buff_func = "apply_dot_on_hit",
 				dot_template_name = "sienna_necromancer_4_3_dot",
-				buff_func = "apply_dot_on_hit"
-			}
-		}
+				event = "on_damage_dealt",
+			},
+		},
 	},
 	sienna_necromancer_cursed_area = {
 		buffs = {
 			{
-				icon = "sienna_necromancer_6_3",
-				name = "sienna_necromancer_cursed_area",
-				buff_area_buff = "sienna_necromancer_empowered_overcharge",
-				area_unit_name = "units/hub_elements/empty",
-				enter_area_func = "enter_buff_area",
-				refresh_durations = false,
-				refresh_buff_area_position = true,
-				buff_self = true,
 				area_radius = 8,
+				area_unit_name = "units/hub_elements/empty",
 				buff_area = true,
+				buff_area_buff = "sienna_necromancer_empowered_overcharge",
+				buff_self = true,
+				enter_area_func = "enter_buff_area",
+				exit_area_func = "exit_buff_area",
+				icon = "sienna_necromancer_6_3",
 				max_stacks = 1,
-				exit_area_func = "exit_buff_area"
-			}
-		}
+				name = "sienna_necromancer_cursed_area",
+				refresh_buff_area_position = true,
+				refresh_durations = false,
+			},
+		},
 	},
 	sienna_necromancer_cursed_area_buff = {
 		buffs = {
 			{
-				max_stacks = 1,
-				icon = "sienna_necromancer_6_3",
 				apply_buff_func = "necromancer_cursed_area_buff",
-				remove_buff_func = "necromancer_cursed_area_buff_remove"
-			}
-		}
+				icon = "sienna_necromancer_6_3",
+				max_stacks = 1,
+				remove_buff_func = "necromancer_cursed_area_buff_remove",
+			},
+		},
 	},
 	sienna_necromancer_6_3_available_charge = {
 		buffs = {
-			{}
-		}
+			{},
+		},
 	},
 	sienna_necromancer_6_3_cooldown_charge = {
 		buffs = {
 			{
 				buff_to_add = "sienna_necromancer_6_3_available_charge",
-				icon = "sienna_necromancer_6_3",
+				duration = 2,
 				duration_end_func = "add_buff_local",
+				icon = "sienna_necromancer_6_3",
 				is_cooldown = true,
-				duration = 2
-			}
-		}
-	}
+			},
+		},
+	},
 }
 local talent_trees = {
 	{
 		{
 			"sienna_necromancer_1_1",
 			"sienna_necromancer_1_2",
-			"sienna_necromancer_1_3"
+			"sienna_necromancer_1_3",
 		},
 		{
 			"sienna_necromancer_2_1",
 			"sienna_necromancer_2_2",
-			"sienna_necromancer_2_3"
+			"sienna_necromancer_2_3",
 		},
 		{
 			"sienna_necromancer_3_1",
 			"sienna_necromancer_3_2",
-			"sienna_necromancer_3_3"
+			"sienna_necromancer_3_3",
 		},
 		{
 			"sienna_necromancer_4_1",
 			"sienna_necromancer_4_2",
-			"sienna_necromancer_4_3"
+			"sienna_necromancer_4_3",
 		},
 		{
 			"sienna_necromancer_5_1",
 			"sienna_necromancer_5_2",
-			"sienna_necromancer_5_3"
+			"sienna_necromancer_5_3",
 		},
 		{
 			"sienna_necromancer_6_1",
 			"sienna_necromancer_6_2",
-			"sienna_necromancer_6_3"
-		}
-	}
+			"sienna_necromancer_6_3",
+		},
+	},
 }
 local talents = {
 	{
+		buffer = "server",
 		description = "reaper_desc",
-		name = "sienna_necromancer_1_1",
-		buffer = "server",
-		num_ranks = 1,
 		icon = "sienna_necromancer_1_1",
+		name = "sienna_necromancer_1_1",
+		num_ranks = 1,
 		description_values = {
 			{
-				value = BuffTemplates.reaper.buffs[1].max_targets
-			}
+				value = BuffTemplates.reaper.buffs[1].max_targets,
+			},
 		},
 		buffs = {
-			"sienna_necromancer_1_1"
-		}
+			"sienna_necromancer_1_1",
+		},
 	},
 	{
+		buffer = "server",
 		description = "bloodlust_desc_3",
-		name = "sienna_necromancer_1_2",
-		buffer = "server",
-		num_ranks = 1,
 		icon = "sienna_necromancer_1_2",
+		name = "sienna_necromancer_1_2",
+		num_ranks = 1,
 		description_values = {
 			{
 				value_type = "percent",
-				value = BuffTemplates.bloodlust.buffs[1].multiplier
-			}
+				value = BuffTemplates.bloodlust.buffs[1].multiplier,
+			},
 		},
 		buffs = {
-			"sienna_necromancer_1_2"
-		}
+			"sienna_necromancer_1_2",
+		},
 	},
 	{
-		description = "conqueror_desc_3",
-		name = "sienna_necromancer_1_3",
 		buffer = "server",
-		num_ranks = 1,
+		description = "conqueror_desc_3",
 		icon = "sienna_necromancer_1_3",
+		name = "sienna_necromancer_1_3",
+		num_ranks = 1,
 		description_values = {
 			{
 				value_type = "percent",
-				value = BuffTemplates.conqueror.buffs[1].multiplier
-			}
+				value = BuffTemplates.conqueror.buffs[1].multiplier,
+			},
 		},
 		buffs = {
-			"sienna_necromancer_1_3"
-		}
+			"sienna_necromancer_1_3",
+		},
 	},
 	{
-		description = "sienna_necromancer_2_1_desc",
-		name = "sienna_necromancer_2_1",
 		buffer = "client",
-		num_ranks = 1,
+		description = "sienna_necromancer_2_1_desc",
 		icon = "sienna_necromancer_2_1",
+		name = "sienna_necromancer_2_1",
+		num_ranks = 1,
 		description_values = {
 			{
 				value_type = "percent",
-				value = SHOVEL_BUFF_TWEAK_DATA.sienna_necromancer_2_1_attack_speed.multiplier
+				value = SHOVEL_BUFF_TWEAK_DATA.sienna_necromancer_2_1_attack_speed.multiplier,
 			},
 			{
-				value = SHOVEL_BUFF_TWEAK_DATA.sienna_necromancer_2_1.skeleton_count
-			}
+				value = SHOVEL_BUFF_TWEAK_DATA.sienna_necromancer_2_1.skeleton_count,
+			},
 		},
 		buffs = {
 			"sienna_necromancer_2_1",
-			"sienna_necromancer_2_1_removed_tracker"
-		}
+			"sienna_necromancer_2_1_removed_tracker",
+		},
 	},
 	{
-		description = "sienna_necromancer_2_2_desc",
-		name = "sienna_necromancer_2_2",
 		buffer = "client",
-		num_ranks = 1,
+		description = "sienna_necromancer_2_2_desc",
 		icon = "sienna_necromancer_2_2",
+		name = "sienna_necromancer_2_2",
+		num_ranks = 1,
 		description_values = {
 			{
 				value_type = "percent",
-				value = SHOVEL_BUFF_TWEAK_DATA.sienna_necromancer_2_2_buff.multiplier
+				value = SHOVEL_BUFF_TWEAK_DATA.sienna_necromancer_2_2_buff.multiplier,
 			},
 			{
-				value = SHOVEL_BUFF_TWEAK_DATA.sienna_necromancer_2_2_buff.duration
+				value = SHOVEL_BUFF_TWEAK_DATA.sienna_necromancer_2_2_buff.duration,
 			},
 			{
-				value = SHOVEL_BUFF_TWEAK_DATA.sienna_necromancer_2_2_buff.max_stacks
-			}
+				value = SHOVEL_BUFF_TWEAK_DATA.sienna_necromancer_2_2_buff.max_stacks,
+			},
 		},
 		buffs = {
-			"sienna_necromancer_2_2"
-		}
+			"sienna_necromancer_2_2",
+		},
 	},
 	{
-		description = "sienna_necromancer_2_3_desc",
-		name = "sienna_necromancer_2_3",
 		buffer = "both",
-		num_ranks = 1,
+		description = "sienna_necromancer_2_3_desc",
 		icon = "sienna_necromancer_2_3",
+		name = "sienna_necromancer_2_3",
+		num_ranks = 1,
 		description_values = {
 			{
 				value_type = "percent",
-				value = SHOVEL_BUFF_TWEAK_DATA.sienna_necromancer_2_3.multiplier
-			}
+				value = SHOVEL_BUFF_TWEAK_DATA.sienna_necromancer_2_3.multiplier,
+			},
 		},
 		buffs = {
-			"sienna_necromancer_2_3"
-		}
+			"sienna_necromancer_2_3",
+		},
 	},
 	{
+		buffer = "server",
 		description = "linesman_unbalance_desc",
-		name = "sienna_necromancer_3_1",
-		buffer = "server",
-		num_ranks = 1,
 		icon = "sienna_necromancer_3_2",
+		name = "sienna_necromancer_3_1",
+		num_ranks = 1,
 		description_values = {
 			{
 				value_type = "percent",
-				value = BuffTemplates.linesman_unbalance.buffs[1].display_multiplier
+				value = BuffTemplates.linesman_unbalance.buffs[1].display_multiplier,
 			},
 			{
 				value_type = "percent",
-				value = BuffTemplates.linesman_unbalance.buffs[1].max_display_multiplier
-			}
+				value = BuffTemplates.linesman_unbalance.buffs[1].max_display_multiplier,
+			},
 		},
 		buffs = {
-			"linesman_unbalance"
-		}
+			"linesman_unbalance",
+		},
 	},
 	{
+		buffer = "server",
 		description = "smiter_unbalance_desc",
-		name = "sienna_necromancer_3_2",
-		buffer = "server",
-		num_ranks = 1,
 		icon = "sienna_necromancer_3_1",
+		name = "sienna_necromancer_3_2",
+		num_ranks = 1,
 		description_values = {
 			{
 				value_type = "percent",
-				value = BuffTemplates.smiter_unbalance.buffs[1].display_multiplier
+				value = BuffTemplates.smiter_unbalance.buffs[1].display_multiplier,
 			},
 			{
 				value_type = "percent",
-				value = BuffTemplates.smiter_unbalance.buffs[1].max_display_multiplier
-			}
+				value = BuffTemplates.smiter_unbalance.buffs[1].max_display_multiplier,
+			},
 		},
 		buffs = {
-			"smiter_unbalance"
-		}
+			"smiter_unbalance",
+		},
 	},
 	{
-		description = "power_level_unbalance_desc",
-		name = "sienna_necromancer_3_3",
 		buffer = "server",
-		num_ranks = 1,
+		description = "power_level_unbalance_desc",
 		icon = "sienna_necromancer_3_3",
+		name = "sienna_necromancer_3_3",
+		num_ranks = 1,
 		description_values = {
 			{
 				value_type = "percent",
-				value = BuffTemplates.power_level_unbalance.buffs[1].multiplier
-			}
+				value = BuffTemplates.power_level_unbalance.buffs[1].multiplier,
+			},
 		},
 		buffs = {
-			"power_level_unbalance"
-		}
+			"power_level_unbalance",
+		},
 	},
 	{
-		description = "sienna_necromancer_4_1_desc",
-		name = "sienna_necromancer_4_1",
 		buffer = "server",
-		num_ranks = 1,
+		description = "sienna_necromancer_4_1_desc",
 		icon = "sienna_necromancer_4_1",
+		name = "sienna_necromancer_4_1",
+		num_ranks = 1,
 		description_values = {},
 		buffs = {
-			"sienna_necromancer_4_1_cursed_blood"
-		}
+			"sienna_necromancer_4_1_cursed_blood",
+		},
 	},
 	{
 		description = "sienna_necromancer_4_2_desc",
+		icon = "sienna_necromancer_4_2",
 		name = "sienna_necromancer_4_2",
 		num_ranks = 1,
-		icon = "sienna_necromancer_4_2",
 		description_values = {
 			{
-				value = SHOVEL_BUFF_TWEAK_DATA.sienna_necromancer_4_2_soul_rip_stack.max_stacks
-			}
+				value = SHOVEL_BUFF_TWEAK_DATA.sienna_necromancer_4_2_soul_rip_stack.max_stacks,
+			},
 		},
 		buffs = {
 			"sienna_necromancer_4_2_soul_rip",
-			"sienna_necromancer_4_2_soul_rip_handler"
-		}
+			"sienna_necromancer_4_2_soul_rip_handler",
+		},
 	},
 	{
-		description = "sienna_necromancer_4_3_desc",
-		name = "sienna_necromancer_4_3",
 		buffer = "client",
-		num_ranks = 1,
+		description = "sienna_necromancer_4_3_desc",
 		icon = "sienna_necromancer_4_3",
+		name = "sienna_necromancer_4_3",
+		num_ranks = 1,
 		description_values = {
 			{
-				value = SHOVEL_BUFF_TWEAK_DATA.sienna_necromancer_4_3_withering_touch.duration
-			}
+				value = SHOVEL_BUFF_TWEAK_DATA.sienna_necromancer_4_3_withering_touch.duration,
+			},
 		},
-		buffs = {}
+		buffs = {},
 	},
 	{
-		description = "sienna_necromancer_5_1_desc",
-		name = "sienna_necromancer_5_1",
 		buffer = "both",
-		num_ranks = 1,
+		description = "sienna_necromancer_5_1_desc",
 		icon = "sienna_necromancer_5_1",
+		name = "sienna_necromancer_5_1",
+		num_ranks = 1,
 		description_values = {
 			{
 				value_type = "percent",
-				value = SHOVEL_BUFF_TWEAK_DATA.sienna_necromancer_5_1_reduced_overcharge.multiplier
+				value = SHOVEL_BUFF_TWEAK_DATA.sienna_necromancer_5_1_reduced_overcharge.multiplier,
 			},
 			{
-				value = 6
-			}
+				value = 6,
+			},
 		},
 		buffs = {
-			"sienna_necromancer_5_1_reduced_overcharge"
-		}
+			"sienna_necromancer_5_1_reduced_overcharge",
+		},
 	},
 	{
-		description = "sienna_necromancer_5_2_desc",
-		name = "sienna_necromancer_5_2",
 		buffer = "client",
-		num_ranks = 1,
+		description = "sienna_necromancer_5_2_desc",
 		icon = "sienna_necromancer_5_2",
+		name = "sienna_necromancer_5_2",
+		num_ranks = 1,
 		description_values = {
 			{
 				value_type = "percent",
-				value = -SHOVEL_BUFF_TWEAK_DATA.sienna_necromancer_5_2_buff.multiplier
+				value = -SHOVEL_BUFF_TWEAK_DATA.sienna_necromancer_5_2_buff.multiplier,
 			},
 			{
-				value = SHOVEL_BUFF_TWEAK_DATA.sienna_necromancer_5_2_counter.max_stacks
-			}
+				value = SHOVEL_BUFF_TWEAK_DATA.sienna_necromancer_5_2_counter.max_stacks,
+			},
 		},
 		buffs = {
 			"sienna_necromancer_5_2",
-			"sienna_necromancer_5_2_counter_remover"
-		}
+			"sienna_necromancer_5_2_counter_remover",
+		},
 	},
 	{
-		description = "sienna_necromancer_5_3_desc",
-		name = "sienna_necromancer_5_3",
 		buffer = "client",
-		num_ranks = 1,
+		description = "sienna_necromancer_5_3_desc",
 		icon = "sienna_necromancer_5_3",
+		name = "sienna_necromancer_5_3",
+		num_ranks = 1,
 		description_values = {
 			{
 				value_type = "percent",
-				value = SHOVEL_BUFF_TWEAK_DATA.sienna_necromancer_5_3.overcharge_threshold
+				value = SHOVEL_BUFF_TWEAK_DATA.sienna_necromancer_5_3.overcharge_threshold,
 			},
 			{
-				value = 2
-			}
+				value = 2,
+			},
 		},
 		buffs = {
-			"sienna_necromancer_5_3"
+			"sienna_necromancer_5_3",
 		},
 		requires_packages = {
 			trapped_soul_skull = {
-				"units/beings/player/bright_wizard_necromancer/talents/trapped_soul_skull"
-			}
-		}
+				"units/beings/player/bright_wizard_necromancer/talents/trapped_soul_skull",
+			},
+		},
 	},
 	{
-		description = "sienna_necromancer_6_1_desc_b",
-		name = "sienna_necromancer_6_1",
 		buffer = "both",
-		num_ranks = 1,
+		description = "sienna_necromancer_6_1_desc_b",
 		icon = "sienna_necromancer_6_1",
+		name = "sienna_necromancer_6_1",
+		num_ranks = 1,
 		description_values = {
 			{
-				value = 6
+				value = 6,
 			},
 			{
-				value = 20
-			}
+				value = 20,
+			},
 		},
 		buffs = {
-			"sienna_necromancer_6_1"
-		}
+			"sienna_necromancer_6_1",
+		},
 	},
 	{
-		description = "sienna_necromancer_6_2_desc",
-		name = "sienna_necromancer_6_2",
 		buffer = "both",
-		num_ranks = 1,
+		description = "sienna_necromancer_6_2_desc",
 		icon = "sienna_necromancer_6_2",
+		name = "sienna_necromancer_6_2",
+		num_ranks = 1,
 		description_values = {},
-		buffs = {}
+		buffs = {},
 	},
 	{
-		description = "sienna_necromancer_6_3_desc",
-		name = "sienna_necromancer_6_3",
 		buffer = "client",
-		num_ranks = 1,
+		description = "sienna_necromancer_6_3_desc",
 		icon = "sienna_necromancer_6_3",
+		name = "sienna_necromancer_6_3",
+		num_ranks = 1,
 		description_values = {
 			{
 				value = 0.5,
-				value_type = "percent"
-			}
+				value_type = "percent",
+			},
 		},
-		buffs = {}
-	}
+		buffs = {},
+	},
 }
 local hero_name = "bright_wizard"
 
@@ -780,7 +783,7 @@ WeaveLoadoutSettings = WeaveLoadoutSettings or {}
 WeaveLoadoutSettings.bw_necromancer = {
 	talent_tree = talent_trees[1],
 	properties = {},
-	traits = {}
+	traits = {},
 }
 
 for name, data in pairs(talent_buff_templates) do
@@ -789,6 +792,7 @@ for name, data in pairs(talent_buff_templates) do
 	fassert(#buffs == 1, "talent buff has more than one sub buff, add multiple buffs from the talent instead")
 
 	local buff = buffs[1]
+
 	buff.name = name
 end
 

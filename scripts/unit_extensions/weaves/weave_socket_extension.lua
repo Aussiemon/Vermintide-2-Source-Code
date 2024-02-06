@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/weaves/weave_socket_extension.lua
+
 WeaveSocketExtension = class(WeaveSocketExtension)
 WeaveSocketExtension.NAME = "WeaveSocketExtension"
 
@@ -41,9 +43,10 @@ WeaveSocketExtension.activate = function (self, game_object_id, objective_data)
 		local game_object_data_table = {
 			go_type = NetworkLookup.go_types.weave_objective,
 			objective_name = NetworkLookup.weave_objective_names[self._objective_name],
-			value = self:get_percentage_done() * 100
+			value = self:get_percentage_done() * 100,
 		}
 		local callback = callback(self, "cb_game_session_disconnect")
+
 		self._game_object_id = Managers.state.network:create_game_object("weave_objective", game_object_data_table, callback)
 	else
 		self._game_object_id = game_object_id
@@ -109,7 +112,7 @@ end
 WeaveSocketExtension._server_update = function (self, dt, t)
 	local num_closed_sockets = self._objective_socket_extension.num_closed_sockets
 
-	if self._num_closed_sockets < num_closed_sockets then
+	if num_closed_sockets > self._num_closed_sockets then
 		self._num_closed_sockets = num_closed_sockets
 
 		if self._on_start_func then
@@ -128,7 +131,7 @@ WeaveSocketExtension._server_update = function (self, dt, t)
 			GameSession.set_game_object_field(game_session, self._game_object_id, "value", self:get_percentage_done() * 100)
 		end
 
-		if self._num_sockets <= num_closed_sockets then
+		if num_closed_sockets >= self._num_sockets then
 			self._is_done = true
 		end
 	end

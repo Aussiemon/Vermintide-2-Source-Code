@@ -1,49 +1,52 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/trees/chaos/chaos_greed_pinata_behavior.lua
+
 local ACTIONS = BreedActions.chaos_greed_pinata
+
 BreedBehaviors.chaos_greed_pinata = {
 	"BTSelector",
 	{
 		"BTSpawningAction",
 		condition = "spawn",
-		name = "spawn"
+		name = "spawn",
 	},
 	{
 		"BTSelector",
 		{
 			"BTTeleportAction",
-			name = "teleport",
 			condition = "at_teleport_smartobject",
-			action_data = ACTIONS.teleport
+			name = "teleport",
+			action_data = ACTIONS.teleport,
 		},
 		{
 			"BTChaosSorcererTeleportAction",
-			name = "climb_teleport",
 			condition = "at_climb_smartobject",
-			action_data = ACTIONS.teleport
+			name = "climb_teleport",
+			action_data = ACTIONS.teleport,
 		},
 		{
 			"BTChaosSorcererTeleportAction",
-			name = "jump_teleport",
 			condition = "at_jump_smartobject",
-			action_data = ACTIONS.teleport
+			name = "jump_teleport",
+			action_data = ACTIONS.teleport,
 		},
 		{
 			"BTChaosSorcererTeleportAction",
-			name = "door_teleport",
 			condition = "at_door_smartobject",
-			action_data = ACTIONS.teleport
+			name = "door_teleport",
+			action_data = ACTIONS.teleport,
 		},
 		condition = "at_smartobject",
-		name = "smartobject"
+		name = "smartobject",
 	},
 	{
 		"BTLootRatFleeAction",
 		name = "flee",
-		action_data = ACTIONS.flee
+		action_data = ACTIONS.flee,
 	},
 	{
 		"BTIdleAction",
 		name = "idle",
-		action_data = ACTIONS.idle
+		action_data = ACTIONS.idle,
 	},
-	name = "horde"
+	name = "horde",
 }

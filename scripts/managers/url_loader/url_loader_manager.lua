@@ -1,35 +1,45 @@
+﻿-- chunkname: @scripts/managers/url_loader/url_loader_manager.lua
+
 UrlLoaderManager = class(UrlLoaderManager)
 
 if not UrlLoader then
 	Application.warning("[UrlLoaderManager] UrlLoader doesnt exist in this engine branch!")
 
-	UrlLoader = {
-		init = function (loader)
-			return
-		end,
-		load_texture = function (loader, url)
-			return 0
-		end,
-		unload = function (loader, job)
-			return
-		end,
-		done = function (loader, job)
-			return false
-		end,
-		success = function (loader, job)
-			return false
-		end,
-		texture = function (loader, job)
-			return nil
-		end,
-		update = function (loader)
-			return
-		end,
-		destroy = function (loader)
-			return
-		end,
-		is_stub = true
-	}
+	UrlLoader = {}
+
+	UrlLoader.init = function (loader)
+		return
+	end
+
+	UrlLoader.load_texture = function (loader, url)
+		return 0
+	end
+
+	UrlLoader.unload = function (loader, job)
+		return
+	end
+
+	UrlLoader.done = function (loader, job)
+		return false
+	end
+
+	UrlLoader.success = function (loader, job)
+		return false
+	end
+
+	UrlLoader.texture = function (loader, job)
+		return nil
+	end
+
+	UrlLoader.update = function (loader)
+		return
+	end
+
+	UrlLoader.destroy = function (loader)
+		return
+	end
+
+	UrlLoader.is_stub = true
 end
 
 UrlLoaderManager.init = function (self)
@@ -52,12 +62,12 @@ UrlLoaderManager.load_resource = function (self, reference_name, url, callback, 
 
 	if not self._jobs[cache_key] then
 		local url_job = UrlLoader.load_texture(self._url_loader, url, cache_key, cache_version, texture_category)
-		local job = {
-			url_job = url_job,
-			cache_key = cache_key,
-			cache_version = cache_version,
-			texture_category = texture_category
-		}
+		local job = {}
+
+		job.url_job = url_job
+		job.cache_key = cache_key
+		job.cache_version = cache_version
+		job.texture_category = texture_category
 		self._jobs[cache_key] = job
 		self._url_jobs[cache_key] = url_job
 	end
@@ -77,7 +87,7 @@ end
 UrlLoaderManager.unload_resource = function (self, reference_name)
 	local reference_counters = self._reference_counters
 	local reference_callbacks = self._reference_callbacks
-	local reference_cache_key = nil
+	local reference_cache_key
 
 	for cache_key, references in pairs(reference_counters) do
 		if references[reference_name] then
@@ -104,7 +114,9 @@ UrlLoaderManager.unload_resource = function (self, reference_name)
 
 	jobs[reference_cache_key] = nil
 	url_jobs[reference_cache_key] = nil
+
 	local texture_resources = self._texture_resources
+
 	texture_resources[reference_cache_key] = nil
 	self._cleanup = true
 end
@@ -116,6 +128,7 @@ UrlLoaderManager._on_job_complete = function (self, job, success)
 
 	if success then
 		local texture_resource = UrlLoader.texture(url_loader, url_job)
+
 		self._texture_resources[cache_key] = texture_resource
 	else
 		local reference_counters = self._reference_counters
@@ -133,10 +146,12 @@ UrlLoaderManager._on_job_complete = function (self, job, success)
 		UrlLoader.unload(url_loader, url_job)
 
 		local url_jobs = self._url_jobs
+
 		url_jobs[cache_key] = nil
 	end
 
 	local jobs = self._jobs
+
 	jobs[cache_key] = nil
 end
 

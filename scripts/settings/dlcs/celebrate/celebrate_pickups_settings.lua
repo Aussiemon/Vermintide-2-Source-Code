@@ -1,23 +1,26 @@
+﻿-- chunkname: @scripts/settings/dlcs/celebrate/celebrate_pickups_settings.lua
+
 local settings = DLCSettings.celebrate
+
 settings.pickups = {
 	potions = {
 		beer_bottle = {
-			only_once = true,
-			item_description = "interaction_beer",
-			spawn_weighting = 1e-06,
-			debug_pickup_category = "consumables",
-			pickup_sound_event = "pickup_potion",
 			consumable_item = true,
-			item_name = "wpn_beer_bottle",
-			unit_name = "units/weapons/player/pup_ale/pup_ale",
-			type = "inventory_item",
-			slot_name = "slot_level_event",
-			wield_on_pickup = true,
-			local_pickup_sound = true,
+			debug_pickup_category = "consumables",
 			hud_description = "interaction_beer",
+			item_description = "interaction_beer",
+			item_name = "wpn_beer_bottle",
+			local_pickup_sound = true,
+			only_once = true,
+			pickup_sound_event = "pickup_potion",
+			slot_name = "slot_level_event",
+			spawn_weighting = 1e-06,
+			type = "inventory_item",
+			unit_name = "units/weapons/player/pup_ale/pup_ale",
+			wield_on_pickup = true,
 			action_on_wield = {
 				action = "action_one",
-				sub_action = "default"
+				sub_action = "default",
 			},
 			on_pick_up_func = function (world, interactor_unit, is_server)
 				local buff_extension = ScriptUnit.extension(interactor_unit, "buff_system")
@@ -37,25 +40,25 @@ settings.pickups = {
 				local is_falling_down = buff_extension:has_buff_perk("falling_down")
 
 				return not is_in_cooldown and not is_falling_down
-			end
+			end,
 		},
 		beer_bottle_unique = {
-			only_once = true,
-			item_description = "interaction_beer",
-			spawn_weighting = 1e-06,
-			debug_pickup_category = "consumables",
-			pickup_sound_event = "pickup_potion",
 			consumable_item = true,
-			item_name = "wpn_beer_bottle",
-			unit_name = "units/weapons/player/pup_ale/pup_ale",
-			type = "inventory_item",
-			slot_name = "slot_level_event",
-			wield_on_pickup = true,
-			local_pickup_sound = true,
+			debug_pickup_category = "consumables",
 			hud_description = "interaction_beer",
+			item_description = "interaction_beer",
+			item_name = "wpn_beer_bottle",
+			local_pickup_sound = true,
+			only_once = true,
+			pickup_sound_event = "pickup_potion",
+			slot_name = "slot_level_event",
+			spawn_weighting = 1e-06,
+			type = "inventory_item",
+			unit_name = "units/weapons/player/pup_ale/pup_ale",
+			wield_on_pickup = true,
 			action_on_wield = {
 				action = "action_one",
-				sub_action = "default"
+				sub_action = "default",
 			},
 			on_pick_up_func = function (world, interactor_unit, is_server)
 				local buff_extension = ScriptUnit.extension(interactor_unit, "buff_system")
@@ -69,7 +72,7 @@ settings.pickups = {
 				local is_falling_down = buff_extension:has_buff_perk("falling_down")
 
 				return not is_in_cooldown and not is_falling_down
-			end
-		}
-	}
+			end,
+		},
+	},
 }

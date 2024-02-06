@@ -1,16 +1,18 @@
+﻿-- chunkname: @scripts/settings/equipment/attack_templates_dlc_anvil.lua
+
 AttackTemplates = AttackTemplates or {}
 AttackTemplates.pull_smiter = {
-	stagger_value = 2,
-	sound_type = "medium",
-	damage_type = "pull_smiter",
 	always_stagger = true,
-	stagger_angle = "pull"
+	damage_type = "pull_smiter",
+	sound_type = "medium",
+	stagger_angle = "pull",
+	stagger_value = 2,
 }
 AttackTemplates.projectile_axe = {
-	stagger_angle = "stab",
-	shield_break = true,
-	sound_type = "heavy",
 	damage_type = "projectile_axe",
 	ranged_stagger = true,
-	stagger_value = 2
+	shield_break = true,
+	sound_type = "heavy",
+	stagger_angle = "stab",
+	stagger_value = 2,
 }

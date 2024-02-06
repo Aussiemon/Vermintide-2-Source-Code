@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/profiles/sp_profiles.lua
+
 require("scripts/settings/script_input_settings")
 require("scripts/settings/equipment/weapons")
 require("scripts/settings/profiles/room_profiles")
@@ -11,7 +13,7 @@ if script_data.honduras_demo then
 		5,
 		4,
 		1,
-		2
+		2,
 	}
 elseif LAUNCH_MODE == "attract_benchmark" then
 	ProfilePriority = {
@@ -19,7 +21,7 @@ elseif LAUNCH_MODE == "attract_benchmark" then
 		4,
 		2,
 		1,
-		5
+		5,
 	}
 else
 	ProfilePriority = {
@@ -27,7 +29,7 @@ else
 		3,
 		4,
 		1,
-		2
+		2,
 	}
 end
 
@@ -42,8 +44,9 @@ SPProfilesAbbreviation = {
 	"bw",
 	"dr",
 	"we",
-	"es"
+	"es",
 }
+
 local base_character_states = {
 	"PlayerCharacterStateDead",
 	"PlayerCharacterStateInteracting",
@@ -76,7 +79,7 @@ local base_character_states = {
 	"PlayerCharacterStateLeaping",
 	"PlayerCharacterStateOverpowered",
 	"PlayerCharacterStateInHangingCage",
-	"PlayerCharacterStateGrabbedByCorruptor"
+	"PlayerCharacterStateGrabbedByCorruptor",
 }
 local base_camera_states = {
 	"CameraStateIdle",
@@ -89,7 +92,7 @@ local base_camera_states = {
 	"CameraStateFollowThirdPersonTunneling",
 	"CameraStateFollowChaosSpawnGrabbed",
 	"CameraStateObserver",
-	"CameraStateInteraction"
+	"CameraStateInteraction",
 }
 local hud_components = {
 	"LootObjectiveUI",
@@ -112,7 +115,7 @@ local hud_components = {
 	"WeaveProgressUI",
 	"WeaveTimerUI",
 	"WorldMarkerUI",
-	"ChallengeTrackerUI"
+	"ChallengeTrackerUI",
 }
 local default_state_machine = "units/beings/player/first_person_base/state_machines/common"
 
@@ -128,29 +131,29 @@ end
 
 SPProfiles = {
 	{
+		affiliation = "heroes",
 		career_voice_parameter = "victor_career_voice_effect",
-		display_name = "witch_hunter",
-		ingame_short_display_name = "witch_hunter_short",
-		hero_selection_image = "hero_icon_wh",
 		character_name = "inventory_name_witch_hunter",
 		character_vo = "witch_hunter",
-		unit_name = "witch_hunter",
-		supports_motion_sickness_modes = true,
 		default_wielded_slot = "slot_melee",
-		role = "hero",
+		display_name = "witch_hunter",
+		hero_selection_image = "hero_icon_wh",
 		ingame_display_name = "inventory_name_witch_hunter",
-		affiliation = "heroes",
+		ingame_short_display_name = "witch_hunter_short",
+		role = "hero",
+		supports_motion_sickness_modes = true,
 		ui_portrait = "unit_frame_portrait_victor_captain",
+		unit_name = "witch_hunter",
 		career_voice_parameter_values = {
 			0,
 			100,
-			50
+			50,
 		},
 		equipment_slots = {
 			slot_melee = ItemMasterList.wh_1h_axe,
 			slot_ranged = ItemMasterList.wh_brace_of_pistols,
 			slot_hat = ItemMasterList.wh_hat_0001,
-			slot_healthkit = ItemMasterList.healthkit_first_aid_kit_01
+			slot_healthkit = ItemMasterList.healthkit_first_aid_kit_01,
 		},
 		room_profile = RoomProfiles.witch_hunter,
 		base_units = BaseUnits.witch_hunter,
@@ -159,43 +162,43 @@ SPProfiles = {
 		first_person_heights = {
 			charged = 1,
 			crouch = 1,
-			stand = 1.7,
+			grabbed_by_tentacle = 1.9,
 			knocked_down = 1,
-			grabbed_by_tentacle = 1.9
+			stand = 1.7,
 		},
 		mood_settings = {},
 		careers = {
 			CareerSettings.wh_captain,
 			CareerSettings.wh_bountyhunter,
-			CareerSettings.wh_zealot
+			CareerSettings.wh_zealot,
 		},
 		base_character_states = base_character_states,
-		base_camera_states = base_camera_states
+		base_camera_states = base_camera_states,
 	},
 	{
+		affiliation = "heroes",
 		career_voice_parameter = "sienna_career_voice_effect",
-		display_name = "bright_wizard",
-		ingame_short_display_name = "bright_wizard_short",
-		hero_selection_image = "hero_icon_bw",
 		character_name = "inventory_name_bright_wizard",
 		character_vo = "bright_wizard",
-		unit_name = "bright_wizard",
-		supports_motion_sickness_modes = true,
 		default_wielded_slot = "slot_melee",
-		role = "hero",
+		display_name = "bright_wizard",
+		hero_selection_image = "hero_icon_bw",
 		ingame_display_name = "inventory_name_bright_wizard",
-		affiliation = "heroes",
+		ingame_short_display_name = "bright_wizard_short",
+		role = "hero",
+		supports_motion_sickness_modes = true,
 		ui_portrait = "unit_frame_portrait_sienna_scholar",
+		unit_name = "bright_wizard",
 		career_voice_parameter_values = {
 			0,
 			100,
-			50
+			50,
 		},
 		equipment_slots = {
 			slot_melee = ItemMasterList.bw_sword,
 			slot_ranged = ItemMasterList.bw_skullstaff_fireball,
 			slot_hat = ItemMasterList.bw_gate_0001,
-			slot_healthkit = ItemMasterList.healthkit_first_aid_kit_01
+			slot_healthkit = ItemMasterList.healthkit_first_aid_kit_01,
 		},
 		room_profile = RoomProfiles.bright_wizard,
 		base_units = BaseUnits.bright_wizard,
@@ -204,43 +207,43 @@ SPProfiles = {
 		first_person_heights = {
 			charged = 0.9,
 			crouch = 1,
-			stand = 1.55,
+			grabbed_by_tentacle = 1.7,
 			knocked_down = 0.95,
-			grabbed_by_tentacle = 1.7
+			stand = 1.55,
 		},
 		mood_settings = {},
 		careers = {
 			CareerSettings.bw_adept,
 			CareerSettings.bw_scholar,
-			CareerSettings.bw_unchained
+			CareerSettings.bw_unchained,
 		},
 		base_character_states = base_character_states,
-		base_camera_states = base_camera_states
+		base_camera_states = base_camera_states,
 	},
 	{
+		affiliation = "heroes",
 		career_voice_parameter = "dwarf_career_voice_effect",
-		display_name = "dwarf_ranger",
-		ingame_short_display_name = "dwarf_ranger_short",
-		hero_selection_image = "hero_icon_dr",
 		character_name = "inventory_name_dwarf_ranger",
 		character_vo = "dwarf_ranger",
-		unit_name = "dwarf_ranger",
-		supports_motion_sickness_modes = true,
 		default_wielded_slot = "slot_melee",
-		role = "hero",
+		display_name = "dwarf_ranger",
+		hero_selection_image = "hero_icon_dr",
 		ingame_display_name = "inventory_name_dwarf_ranger",
-		affiliation = "heroes",
+		ingame_short_display_name = "dwarf_ranger_short",
+		role = "hero",
+		supports_motion_sickness_modes = true,
 		ui_portrait = "unit_frame_portrait_bardin_ranger",
+		unit_name = "dwarf_ranger",
 		career_voice_parameter_values = {
 			0,
 			100,
-			50
+			50,
 		},
 		equipment_slots = {
 			slot_melee = ItemMasterList.dr_2h_hammer,
 			slot_ranged = ItemMasterList.dr_crossbow,
 			slot_hat = ItemMasterList.dr_helmet_0001,
-			slot_healthkit = ItemMasterList.healthkit_first_aid_kit_01
+			slot_healthkit = ItemMasterList.healthkit_first_aid_kit_01,
 		},
 		room_profile = RoomProfiles.dwarf_ranger,
 		base_units = BaseUnits.dwarf_ranger,
@@ -249,43 +252,43 @@ SPProfiles = {
 		first_person_heights = {
 			charged = 0.75,
 			crouch = 1,
-			stand = 1.3,
+			grabbed_by_tentacle = 1.7,
 			knocked_down = 0.7,
-			grabbed_by_tentacle = 1.7
+			stand = 1.3,
 		},
 		mood_settings = {},
 		careers = {
 			CareerSettings.dr_ranger,
 			CareerSettings.dr_ironbreaker,
-			CareerSettings.dr_slayer
+			CareerSettings.dr_slayer,
 		},
 		base_character_states = base_character_states,
-		base_camera_states = base_camera_states
+		base_camera_states = base_camera_states,
 	},
 	{
+		affiliation = "heroes",
 		career_voice_parameter = "kerillian_career_voice_effect",
-		display_name = "wood_elf",
-		ingame_short_display_name = "wood_elf_short",
-		hero_selection_image = "hero_icon_ww",
 		character_name = "inventory_name_wood_elf",
 		character_vo = "wood_elf",
-		unit_name = "way_watcher",
-		supports_motion_sickness_modes = true,
 		default_wielded_slot = "slot_melee",
-		role = "hero",
+		display_name = "wood_elf",
+		hero_selection_image = "hero_icon_ww",
 		ingame_display_name = "inventory_name_wood_elf",
-		affiliation = "heroes",
+		ingame_short_display_name = "wood_elf_short",
+		role = "hero",
+		supports_motion_sickness_modes = true,
 		ui_portrait = "unit_frame_portrait_kerillian_waywatcher",
+		unit_name = "way_watcher",
 		career_voice_parameter_values = {
 			0,
 			100,
-			50
+			50,
 		},
 		equipment_slots = {
 			slot_melee = ItemMasterList.we_dual_wield_daggers,
 			slot_ranged = ItemMasterList.we_shortbow,
 			slot_hat = ItemMasterList.ww_hood_0001,
-			slot_healthkit = ItemMasterList.healthkit_first_aid_kit_01
+			slot_healthkit = ItemMasterList.healthkit_first_aid_kit_01,
 		},
 		room_profile = RoomProfiles.wood_elf,
 		base_units = BaseUnits.wood_elf,
@@ -294,43 +297,43 @@ SPProfiles = {
 		first_person_heights = {
 			charged = 0.85,
 			crouch = 1,
-			stand = 1.5,
+			grabbed_by_tentacle = 1.7,
 			knocked_down = 1,
-			grabbed_by_tentacle = 1.7
+			stand = 1.5,
 		},
 		mood_settings = {},
 		careers = {
 			CareerSettings.we_waywatcher,
 			CareerSettings.we_maidenguard,
-			CareerSettings.we_shade
+			CareerSettings.we_shade,
 		},
 		base_character_states = base_character_states,
-		base_camera_states = base_camera_states
+		base_camera_states = base_camera_states,
 	},
 	{
+		affiliation = "heroes",
 		career_voice_parameter = "markus_career_voice_effect",
-		display_name = "empire_soldier",
-		ingame_short_display_name = "empire_soldier_short",
-		hero_selection_image = "hero_icon_es",
 		character_name = "inventory_name_empire_soldier",
 		character_vo = "empire_soldier",
-		unit_name = "empire_soldier",
-		supports_motion_sickness_modes = true,
 		default_wielded_slot = "slot_melee",
-		role = "hero",
+		display_name = "empire_soldier",
+		hero_selection_image = "hero_icon_es",
 		ingame_display_name = "inventory_name_empire_soldier",
-		affiliation = "heroes",
+		ingame_short_display_name = "empire_soldier_short",
+		role = "hero",
+		supports_motion_sickness_modes = true,
 		ui_portrait = "unit_frame_portrait_kruber_huntsman",
+		unit_name = "empire_soldier",
 		career_voice_parameter_values = {
 			0,
 			100,
-			50
+			50,
 		},
 		equipment_slots = {
 			slot_melee = ItemMasterList.es_sword_shield,
 			slot_ranged = ItemMasterList.es_blunderbuss,
 			slot_hat = ItemMasterList.es_hat_0001,
-			slot_healthkit = ItemMasterList.healthkit_first_aid_kit_01
+			slot_healthkit = ItemMasterList.healthkit_first_aid_kit_01,
 		},
 		room_profile = RoomProfiles.empire_soldier,
 		base_units = BaseUnits.empire_soldier,
@@ -339,64 +342,64 @@ SPProfiles = {
 		first_person_heights = {
 			charged = 1,
 			crouch = 1,
-			stand = 1.65,
+			grabbed_by_tentacle = 1.9,
 			knocked_down = 1,
-			grabbed_by_tentacle = 1.9
+			stand = 1.65,
 		},
 		mood_settings = {},
 		careers = {
 			CareerSettings.es_mercenary,
 			CareerSettings.es_huntsman,
-			CareerSettings.es_knight
+			CareerSettings.es_knight,
 		},
 		base_character_states = base_character_states,
-		base_camera_states = base_camera_states
+		base_camera_states = base_camera_states,
 	},
 	{
+		affiliation = "tutorial",
 		career_voice_parameter = "markus_career_voice_effect",
-		display_name = "empire_soldier_tutorial",
-		ingame_short_display_name = "empire_soldier_short",
-		hero_selection_image = "hero_icon_es",
 		character_name = "inventory_name_empire_soldier",
 		character_vo = "empire_soldier",
+		default_wielded_slot = "slot_melee",
+		display_name = "empire_soldier_tutorial",
+		hero_selection_image = "hero_icon_es",
+		ingame_display_name = "inventory_name_empire_soldier",
+		ingame_short_display_name = "empire_soldier_short",
+		role = "hero",
+		supports_motion_sickness_modes = true,
+		tutorial_profile = true,
+		ui_portrait = "unit_frame_portrait_kruber_knight",
 		unit_name = "empire_soldier",
 		unit_template_name = "player_unit_3rd_tutorial",
-		tutorial_profile = true,
-		supports_motion_sickness_modes = true,
-		default_wielded_slot = "slot_melee",
-		role = "hero",
-		ingame_display_name = "inventory_name_empire_soldier",
-		affiliation = "tutorial",
-		ui_portrait = "unit_frame_portrait_kruber_knight",
 		career_voice_parameter_values = {
 			0,
 			100,
-			50
+			50,
 		},
 		equipment_slots = {
 			slot_melee = ItemMasterList.es_sword_shield,
 			slot_hat = ItemMasterList.es_hat_0001,
-			slot_healthkit = ItemMasterList.healthkit_first_aid_kit_01
+			slot_healthkit = ItemMasterList.healthkit_first_aid_kit_01,
 		},
 		room_profile = RoomProfiles.empire_soldier,
 		base_units = BaseUnits.empire_soldier,
 		default_state_machine = default_state_machine,
 		first_person_attachment = FirstPersonAttachments.empire_soldier,
 		first_person_heights = {
+			crouch = 1,
 			grabbed_by_tentacle = 1.9,
 			knocked_down = 1,
-			crouch = 1,
-			stand = 1.65
+			stand = 1.65,
 		},
 		mood_settings = {},
 		careers = {
 			CareerSettings.empire_soldier_tutorial,
 			CareerSettings.empire_soldier_tutorial,
-			CareerSettings.empire_soldier_tutorial
+			CareerSettings.empire_soldier_tutorial,
 		},
 		base_character_states = base_character_states,
-		base_camera_states = base_camera_states
-	}
+		base_camera_states = base_camera_states,
+	},
 }
 TUTORIAL_PROFILE_INDEX = nil
 
@@ -414,6 +417,7 @@ local function process_profiles()
 		if not PROFILES_BY_NAME[profile_name] then
 			profile.index = i
 			PROFILES_BY_NAME[profile_name] = profile
+
 			local affiliation = profile.affiliation or "unfinished"
 
 			if not PROFILES_BY_AFFILIATION[affiliation] then
@@ -421,6 +425,7 @@ local function process_profiles()
 			end
 
 			local affiliation_profiles = PROFILES_BY_AFFILIATION[affiliation]
+
 			affiliation_profiles[#affiliation_profiles + 1] = profile_name
 			affiliation_profiles[profile_name] = true
 		end
@@ -481,8 +486,10 @@ PROFILES_BY_AFFILIATION = {}
 
 for i = 1, #SPProfiles do
 	local profile = SPProfiles[i]
+
 	profile.index = i
 	PROFILES_BY_NAME[profile.display_name] = profile
+
 	local affiliation = profile.affiliation or "unfinished"
 
 	if not PROFILES_BY_AFFILIATION[affiliation] then
@@ -490,8 +497,10 @@ for i = 1, #SPProfiles do
 	end
 
 	local affiliation_profiles = PROFILES_BY_AFFILIATION[affiliation]
+
 	affiliation_profiles[#affiliation_profiles + 1] = profile.display_name
 	affiliation_profiles[profile.display_name] = true
+
 	local careers = profile.careers
 
 	for career_index, career in ipairs(careers) do
@@ -523,9 +532,10 @@ end
 DefaultUnits = {
 	standard = {
 		backlit_camera = "units/generic/backlit_camera",
-		camera = "core/units/camera"
-	}
+		camera = "core/units/camera",
+	},
 }
+
 local character_state_names = {}
 local camera_state_names = {}
 

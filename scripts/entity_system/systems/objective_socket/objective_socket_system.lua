@@ -1,11 +1,14 @@
+﻿-- chunkname: @scripts/entity_system/systems/objective_socket/objective_socket_system.lua
+
 require("scripts/unit_extensions/objective_socket/objective_socket_unit_extension")
 
 ObjectiveSocketSystem = class(ObjectiveSocketSystem, ExtensionSystemBase)
+
 local RPCS = {
-	"rpc_objective_entered_socket_zone"
+	"rpc_objective_entered_socket_zone",
 }
 local extensions = {
-	"ObjectiveSocketUnitExtension"
+	"ObjectiveSocketUnitExtension",
 }
 
 ObjectiveSocketSystem.init = function (self, entity_system_creation_context, system_name)
@@ -56,10 +59,13 @@ ObjectiveSocketSystem.init = function (self, entity_system_creation_context, sys
 		fassert(socket.open == true, "Socket was already occupied.")
 
 		socket.open = false
+
 		local num_open_sockets = extension.num_open_sockets - 1
 		local num_closed_sockets = extension.num_closed_sockets + 1
+
 		extension.num_open_sockets = num_open_sockets
 		extension.num_closed_sockets = num_closed_sockets
+
 		local flow_event = "lua_" .. socket.socket_name .. "_occupied"
 
 		Unit.flow_event(extension.unit, flow_event)

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/title_main_ui.lua
+
 require("scripts/ui/ui_animations")
 
 local definitions = local_require("scripts/ui/views/title_main_ui_definitions")
@@ -20,21 +22,25 @@ local legal_texts = {
 	"gw_legal_1",
 	"gw_legal_2",
 	"gw_legal_3",
-	"gw_legal_4"
+	"gw_legal_4",
 }
+
 TitleMainUI = class(TitleMainUI)
 
 TitleMainUI.init = function (self, world)
 	self._world = world
+
 	local platform = PLATFORM
+
 	self.platform = platform
 	self.render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 	self._game_type = nil
 	self._disable_input = false
 	self._alpha_multiplier = 0
 	self._disabled_buttons = {}
+
 	local materials = {}
 
 	if IS_WINDOWS then
@@ -56,7 +62,7 @@ TitleMainUI.init = function (self, world)
 			"material",
 			menu_videos.main.video_name,
 			"material",
-			menu_videos.main_menu.video_name
+			menu_videos.main_menu.video_name,
 		}
 	else
 		materials = {
@@ -81,7 +87,7 @@ TitleMainUI.init = function (self, world)
 			"material",
 			menu_videos.main.video_name,
 			"material",
-			menu_videos.main_menu.video_name
+			menu_videos.main_menu.video_name,
 		}
 	end
 
@@ -150,10 +156,13 @@ TitleMainUI._create_ui_elements = function (self)
 	self._information_text = UIWidget.init(single_widget_definitions.information_text)
 	self._information_text.style.text.localize = false
 	self._legal_text = UIWidget.init(single_widget_definitions.legal_text)
+
 	local legal_text_widget = self._legal_text
 	local legal_text_style = legal_text_widget.style.text
+
 	legal_text_style.localize = false
 	legal_text_style.vertical_alignment = "bottom"
+
 	local legal_display_text = ""
 
 	for _, text in ipairs(legal_texts) do
@@ -185,21 +194,25 @@ TitleMainUI._reset_menu_buttons = function (self)
 	self._menu_selection_left = UIWidget.init(single_widget_definitions.start_screen_selection_left)
 	self._menu_selection_right = UIWidget.init(single_widget_definitions.start_screen_selection_right)
 	self._sub_menu_widgets = {}
+
 	local selection_callback = callback(self, "current_menu_index")
 
 	for idx, definition in ipairs(menu_button_definitions) do
 		local menu_item_widget = UIWidget.init(definition)
+
 		menu_item_widget.content.selection_callback = selection_callback
 		menu_item_widget.content.index = idx
 		self._sub_menu_widgets[#self._sub_menu_widgets + 1] = menu_item_widget
+
 		local widget_style = menu_item_widget.style
 		local font, size_of_font = UIFontByResolution(widget_style.text, widget_style.scale)
-		local font_material = font[1]
-		local font_size = font[2]
-		local font_name = font[3]
+		local font_material, font_size, font_name = font[1], font[2], font[3]
+
 		font_size = size_of_font
+
 		local widget_content = menu_item_widget.content
 		local width, height, min = UIRenderer.text_size(self._ui_renderer, Localize(widget_content.text_field), font_material, font_size)
+
 		widget_style.icon.offset[1] = -width * 0.6 - widget_style.icon.texture_size[1]
 	end
 
@@ -207,17 +220,20 @@ TitleMainUI._reset_menu_buttons = function (self)
 
 	for idx, definition in ipairs(base_menu_button_definitions) do
 		local menu_item_widget = UIWidget.init(definition)
+
 		menu_item_widget.content.selection_callback = selection_callback
 		menu_item_widget.content.index = idx
 		self._base_menu_widgets[#self._base_menu_widgets + 1] = menu_item_widget
+
 		local widget_style = menu_item_widget.style
 		local font, size_of_font = UIFontByResolution(widget_style.text, widget_style.scale)
-		local font_material = font[1]
-		local font_size = font[2]
-		local font_name = font[3]
+		local font_material, font_size, font_name = font[1], font[2], font[3]
+
 		font_size = size_of_font
+
 		local widget_content = menu_item_widget.content
 		local width, height, min = UIRenderer.text_size(self._ui_renderer, Localize(widget_content.text_field), font_material, font_size)
+
 		widget_style.icon.offset[1] = -width * 0.6 - widget_style.icon.texture_size[1]
 	end
 
@@ -244,6 +260,7 @@ TitleMainUI._update_animations = function (self, dt)
 
 		if UIAnimation.completed(ui_animation) then
 			self._ui_animations[name] = nil
+
 			local animation_callback = self._ui_animation_callbacks[name]
 
 			if animation_callback then
@@ -320,6 +337,7 @@ TitleMainUI._create_videos = function (self)
 	for name, video_data in pairs(menu_videos) do
 		local video_player = World.create_video_player(self._world, video_data.video_name, true, false)
 		local video_widget = UIWidget.init(UIWidgets.create_splash_video(video_data))
+
 		video_widget.content.video_content.video_player = video_player
 		self._video_widgets[name] = video_widget
 	end
@@ -362,6 +380,7 @@ TitleMainUI._handle_menu_input = function (self, dt, t)
 		if gamepad_active then
 			if input_service:get("down") then
 				current_index = 1 + current_index % #self._menu_widgets
+
 				local content = self._menu_widgets[current_index].content
 
 				while content.disabled do
@@ -372,6 +391,7 @@ TitleMainUI._handle_menu_input = function (self, dt, t)
 				self:_play_sound("Play_console_menu_hover")
 			elseif input_service:get("up") then
 				current_index = current_index - 1 < 1 and #self._menu_widgets or current_index - 1
+
 				local content = self._menu_widgets[current_index].content
 
 				while content.disabled do
@@ -459,6 +479,7 @@ end
 TitleMainUI._set_info_text = function (self, current_index)
 	local text = info_texts[current_index]
 	local content = self._info_icon_text_widget.content
+
 	content.text = text
 end
 
@@ -602,7 +623,7 @@ TitleMainUI._draw = function (self, dt, t, render_background_only)
 
 		if self._show_menu then
 			local render_settings = {
-				alpha_multiplier = self._alpha_multiplier
+				alpha_multiplier = self._alpha_multiplier,
 			}
 
 			UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt, nil, render_settings)
@@ -657,6 +678,7 @@ end
 TitleMainUI.show_menu = function (self, show, force)
 	self._show_menu = show
 	self._show_menu_when_ready = nil
+
 	local is_beta = script_data.settings.use_beta_mode and not GameSettingsDevelopment.allow_offline_mode_in_beta
 
 	if not show then
@@ -731,6 +753,7 @@ TitleMainUI.anim_select_button = function (self, animation_data, index, dt)
 	animation_data.timer = animation_data.timer or animation_data.progress * MENU_ITEM_FADE_IN
 	animation_data.timer = animation_data.timer + dt
 	animation_data.progress = math.clamp(animation_data.timer / MENU_ITEM_FADE_IN, 0, 1)
+
 	local menu_item = self._menu_widgets[index]
 	local item_disabled = menu_item.content.disabled
 	local color = item_disabled and Colors.color_definitions.gray or Colors.color_definitions.font_title
@@ -745,14 +768,19 @@ TitleMainUI.anim_select_button = function (self, animation_data, index, dt)
 
 	local menu_item_scenegraph_id = menu_item.scenegraph_id
 	local ui_scenegraph = self._ui_scenegraph
+
 	ui_scenegraph.selection_anchor.local_position[2] = ui_scenegraph[menu_item_scenegraph_id].local_position[2] + 5
+
 	local widget_style = menu_item.style
 	local text = menu_item.content.text_field
 
 	if text then
 		local spacing = 20
+
 		spacing = menu_item.content.spacing or spacing
+
 		local text_width, text_height = self:_get_word_wrap_size(Localize(text), widget_style.text, 1000)
+
 		ui_scenegraph.selection_anchor.size[1] = (text_width or 0) + spacing
 		self._menu_selection_left.offset[1] = math.lerp(-50, 0, math.smoothstep(animation_data.progress, 0, 1))
 		self._menu_selection_right.offset[1] = math.lerp(50, 0, math.smoothstep(animation_data.progress, 0, 1))
@@ -813,12 +841,13 @@ end
 TitleMainUI._add_menu_item_animation = function (self, index, func, widgets)
 	self._menu_item_animations[index] = {
 		progress = self._menu_item_animations[index] and self._menu_item_animations[index].progress or 0,
-		func = func
+		func = func,
 	}
 end
 
 TitleMainUI.set_information_text = function (self, optinal_text)
 	self._draw_information_text = true
+
 	local widget = self._information_text
 	local widget_content = widget.content
 	local widget_style = widget.style
@@ -864,11 +893,14 @@ TitleMainUI.set_menu_item_enable_state_by_index = function (self, item_lookup_na
 	end
 
 	local menu_item = menu_item_widgets[index]
+
 	menu_item.content.disabled = not enabled
+
 	local color = enabled and Colors.color_definitions.font_title or Colors.color_definitions.gray
 
 	if menu_item.style.text then
 		local text_color = menu_item.style.text.text_color
+
 		text_color[2] = color[2]
 		text_color[3] = color[3]
 		text_color[4] = color[4]
@@ -878,7 +910,7 @@ TitleMainUI.set_menu_item_enable_state_by_index = function (self, item_lookup_na
 		self._disabled_buttons[item_lookup_name] = {
 			enabled = enabled,
 			sub_menu = sub_menu,
-			reason = reason
+			reason = reason,
 		}
 	else
 		self._disabled_buttons[item_lookup_name] = nil

@@ -1,53 +1,57 @@
+﻿-- chunkname: @scripts/settings/mutators/mutator_explosive_loot_rats.lua
+
 return {
 	description = "description_explosive_loot_rats",
-	icon = "mutator_icon_explosive_loot_rats",
 	display_name = "display_name_explosive_loot_rats",
+	icon = "mutator_icon_explosive_loot_rats",
 	server_initialize_function = function (context, data)
 		data.amount_of_rats_per_difficulty = {
 			normal = {
 				3,
-				5
+				5,
 			},
 			hard = {
 				4,
-				7
+				7,
 			},
 			harder = {
 				6,
-				9
+				9,
 			},
 			hardest = {
 				7,
-				11
+				11,
 			},
 			cataclysm = {
 				9,
-				13
-			}
+				13,
+			},
 		}
 		data.spawn_frequency_per_difficulty = {
 			normal = {
 				34,
-				40
+				40,
 			},
 			hard = {
 				30,
-				36
+				36,
 			},
 			harder = {
 				28,
-				35
+				35,
 			},
 			hardest = {
 				24,
-				32
+				32,
 			},
 			cataclysm = {
 				20,
-				28
-			}
+				28,
+			},
 		}
+
 		local side = Managers.state.side:get_side_from_name("dark_pact")
+
 		data.side_id = side.side_id
 	end,
 	server_players_left_safe_zone = function (context, data)
@@ -61,7 +65,7 @@ return {
 
 		local t = Managers.time:time("game")
 
-		if not global_is_inside_inn and data.spawn_loot_rats_at < t then
+		if not global_is_inside_inn and t > data.spawn_loot_rats_at then
 			local difficulty = Managers.state.difficulty:get_difficulty()
 			local num_rats_range = data.amount_of_rats_per_difficulty[difficulty]
 			local spawn_frequency_range = data.spawn_frequency_per_difficulty[difficulty]
@@ -87,5 +91,5 @@ return {
 	end,
 	server_stop_function = function (context, data)
 		return
-	end
+	end,
 }

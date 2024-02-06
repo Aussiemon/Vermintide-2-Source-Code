@@ -1,6 +1,9 @@
+﻿-- chunkname: @scripts/managers/blood/blood_manager.lua
+
 require("scripts/managers/blood/blood_settings")
 
 BloodManager = class(BloodManager)
+
 local BLOOD_BALL_RING_BUFFER_SIZE = 64
 local NUM_BLOOD_BALLS_TO_SPAWN_PER_FRAME = 15
 
@@ -13,6 +16,7 @@ BloodManager.init = function (self, world)
 	self:_create_blood_ball_buffer()
 
 	local max_bloodballs_per_frame = 5
+
 	self._blood_system = EngineOptimizedExtensions.blood_init_system(self._blood_system, self._world, "blood_ball", max_bloodballs_per_frame)
 
 	self:_init_settings()
@@ -70,6 +74,7 @@ end
 
 BloodManager._init_settings = function (self)
 	local blood_enabled = Application.user_setting("blood_enabled")
+
 	blood_enabled = blood_enabled or blood_enabled == nil
 
 	self:update_blood_enabled(blood_enabled)
@@ -79,16 +84,19 @@ BloodManager._init_settings = function (self)
 	self:update_num_blood_decals(num_blood_decals)
 
 	local screen_blood_enabled = Application.user_setting("screen_blood_enabled")
+
 	screen_blood_enabled = screen_blood_enabled or screen_blood_enabled == nil
 
 	self:update_screen_blood_enabled(screen_blood_enabled)
 
 	local dismemberment_enabled = Application.user_setting("dismemberment_enabled")
+
 	dismemberment_enabled = dismemberment_enabled or dismemberment_enabled == nil
 
 	self:update_dismemberment_enabled(dismemberment_enabled)
 
 	local ragdoll_enabled = Application.user_setting("ragdoll_enabled")
+
 	ragdoll_enabled = ragdoll_enabled or ragdoll_enabled == nil
 
 	self:update_ragdoll_enabled(ragdoll_enabled)
@@ -190,19 +198,20 @@ end
 
 BloodManager._create_blood_ball_buffer = function (self)
 	local buffer_size = BLOOD_BALL_RING_BUFFER_SIZE
+
 	self._blood_ball_ring_buffer = {
-		write_index = 1,
 		read_index = 1,
 		size = 0,
+		write_index = 1,
 		buffer = Script.new_array(buffer_size),
-		max_size = buffer_size
+		max_size = buffer_size,
 	}
 
 	for index = 1, buffer_size do
 		self._blood_ball_ring_buffer.buffer[index] = {
 			velocity = 0,
 			position = Vector3Box(),
-			direction = Vector3Box()
+			direction = Vector3Box(),
 		}
 	end
 end
@@ -294,7 +303,9 @@ BloodManager._spawn_effects = function (self, hit_unit, breed, health_ext)
 		if current_threshold < inverse_health_percentage then
 			if not data.triggered then
 				local effect_id = World.create_particles(self._world, effect_name, Vector3(0, 0, 0))
+
 				blood_effect_data[idx].effect_id = effect_id
+
 				local node_index = Unit.node(hit_unit, data.node)
 				local pose = Matrix4x4.from_quaternion(Unit.local_rotation(hit_unit, node_index))
 
@@ -339,6 +350,7 @@ BloodManager.add_weapon_blood = function (self, attacker, damage_type)
 			local weapon_left = equipment.left_hand_wielded_unit
 			local weapon_left_3p = equipment.left_hand_wielded_unit_3p
 			local amount = BloodSettings.weapon_blood[damage_type] or BloodSettings.weapon_blood.default
+
 			self._weapon_blood[attacker] = self._weapon_blood[attacker] or {}
 
 			if weapon_right then
@@ -375,6 +387,7 @@ BloodManager.add_enemy_blood = function (self, position, unit)
 		local t_position = Matrix4x4.transform(inv_world, real_position)
 		local t_normal = Vector3.normalize(Matrix4x4.transform_without_translation(inv_world, normal))
 		local t_tangent = Vector3.normalize(Matrix4x4.transform_without_translation(inv_world, tangent))
+
 		t_position = Color(t_position[1], t_position[2], t_position[3], 1)
 		t_normal = Color(t_normal[1], t_normal[2], t_normal[3], 0)
 		t_tangent = Color(t_tangent[1], t_tangent[2], t_tangent[3], 0)

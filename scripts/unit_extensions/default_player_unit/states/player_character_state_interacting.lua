@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/default_player_unit/states/player_character_state_interacting.lua
+
 PlayerCharacterStateInteracting = class(PlayerCharacterStateInteracting, PlayerCharacterState)
 
 PlayerCharacterStateInteracting.init = function (self, character_state_init_context)
@@ -8,6 +10,7 @@ PlayerCharacterStateInteracting.on_enter = function (self, unit, input, dt, cont
 	self.has_started_interacting = false
 	self.swap_to_3p = params.swap_to_3p
 	self.allow_rotation_update = params.allow_rotation_update
+
 	local locomotion_extension = self.locomotion_extension
 
 	locomotion_extension:set_wanted_velocity(Vector3.zero())
@@ -37,7 +40,9 @@ PlayerCharacterStateInteracting.on_enter = function (self, unit, input, dt, cont
 
 	if params.activate_block then
 		self.activate_block = params.activate_block
+
 		local status_extension = self.status_extension
+
 		self.deactivate_block_on_exit = not status_extension:is_blocking()
 
 		if not LEVEL_EDITOR_TEST and Managers.state.network:game() then
@@ -155,6 +160,7 @@ PlayerCharacterStateInteracting.update = function (self, unit, input, dt, contex
 
 		local params = movement_settings_table.stun_settings.pushed
 		local hit_react_type = status_extension:hit_react_type()
+
 		params.hit_react_type = hit_react_type .. "_push"
 
 		csm:change_state("stunned", params)
@@ -167,6 +173,7 @@ PlayerCharacterStateInteracting.update = function (self, unit, input, dt, contex
 		status_extension:set_block_broken(false)
 
 		local params = movement_settings_table.stun_settings.parry_broken
+
 		params.hit_react_type = "medium_push"
 
 		csm:change_state("stunned", params)

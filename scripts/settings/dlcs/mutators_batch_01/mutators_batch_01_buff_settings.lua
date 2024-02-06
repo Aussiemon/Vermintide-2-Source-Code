@@ -1,36 +1,39 @@
+﻿-- chunkname: @scripts/settings/dlcs/mutators_batch_01/mutators_batch_01_buff_settings.lua
+
 local settings = DLCSettings.mutators_batch_01
+
 settings.buff_templates = {
 	mutator_ticking_bomb = {
 		buffs = {
 			{
+				apply_buff_func = "apply_ticking_bomb",
 				duration = 8,
-				name = "mutator_ticking_bomb",
-				remove_buff_func = "remove_ticking_bomb",
 				icon = "buff_icon_mutator_ticking_bomb",
 				max_stacks = 1,
+				name = "mutator_ticking_bomb",
+				remove_buff_func = "remove_ticking_bomb",
 				update_func = "update_ticking_bomb",
-				apply_buff_func = "apply_ticking_bomb"
-			}
-		}
+			},
+		},
 	},
 	ticking_bomb_decrease_movement = {
 		buffs = {
 			{
 				apply_buff_func = "apply_action_lerp_movement_buff",
+				duration = 3,
+				lerp_time = 2,
+				max_stacks = 1,
 				multiplier = 0.5,
-				update_func = "update_action_lerp_movement_buff",
 				name = "decrease_speed",
 				remove_buff_func = "remove_action_lerp_movement_buff",
 				remove_buff_name = "planted_return_to_normal_movement",
-				lerp_time = 2,
-				max_stacks = 1,
-				duration = 3,
+				update_func = "update_action_lerp_movement_buff",
 				path_to_movement_setting_to_modify = {
-					"move_speed"
-				}
-			}
-		}
-	}
+					"move_speed",
+				},
+			},
+		},
+	},
 }
 settings.buff_function_templates = {
 	apply_ticking_bomb = function (unit, buff, params, world)
@@ -86,5 +89,5 @@ settings.buff_function_templates = {
 		end
 
 		WwiseUtils.trigger_unit_event(world, "Stop_mutator_ticking_bomb_tick", unit, 0)
-	end
+	end,
 }

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/achievements/achievement_templates_woods.lua
+
 local achievements = AchievementTemplates.achievements
 local achievement_settings = DLCSettings.woods
 local add_levels_complete_per_hero_challenge = AchievementTemplateHelper.add_levels_complete_per_hero_challenge
@@ -32,22 +34,23 @@ local register_damage_victim_unit = 2
 local register_damage_damage_data = 3
 local register_damage_attacker_unit = 4
 local register_damage_target_breed = 5
+
 achievements.woods_javelin_melee = {
-	name = "achv_woods_javelin_melee_name",
-	required_dlc_extra = "woods",
 	desc = "achv_woods_javelin_melee_desc",
 	display_completion_ui = true,
 	icon = "achievement_trophy_thornsister_catch_a_dying_breath",
+	name = "achv_woods_javelin_melee_name",
 	required_dlc = "woods",
+	required_dlc_extra = "woods",
 	events = {
-		"register_kill"
+		"register_kill",
 	},
 	progress = function (statistics_db, stats_id, template_data)
 		local completed = statistics_db:get_persistent_stat(stats_id, "woods_javelin_melee_kills")
 
 		return {
 			completed,
-			500
+			500,
 		}
 	end,
 	completed = function (statistics_db, stats_id, template_data)
@@ -79,17 +82,17 @@ achievements.woods_javelin_melee = {
 
 			statistics_db:increment_stat(stats_id, "woods_javelin_melee_kills")
 		end
-	end
+	end,
 }
 achievements.woods_javelin_combo = {
-	name = "achv_woods_javelin_combo_name",
-	required_dlc_extra = "woods",
 	desc = "achv_woods_javelin_combo_desc",
 	display_completion_ui = true,
 	icon = "achievement_trophy_thornsister_dance_of_the_willow",
+	name = "achv_woods_javelin_combo_name",
 	required_dlc = "woods",
+	required_dlc_extra = "woods",
 	events = {
-		"register_kill"
+		"register_kill",
 	},
 	completed = function (statistics_db, stats_id, template_data)
 		return statistics_db:get_persistent_stat(stats_id, "woods_javelin_combo") > 0
@@ -130,24 +133,24 @@ achievements.woods_javelin_combo = {
 				statistics_db:increment_stat(stats_id, "woods_javelin_combo")
 			end
 		end
-	end
+	end,
 }
 achievements.woods_wall_kill_grind = {
-	name = "achv_woods_wall_kill_grind_name",
-	required_dlc_extra = "woods",
 	desc = "achv_woods_wall_kill_grind_desc",
 	display_completion_ui = true,
 	icon = "achievement_trophy_thornsister_the_awakening_of_the_woods",
+	name = "achv_woods_wall_kill_grind_name",
 	required_dlc = "woods",
+	required_dlc_extra = "woods",
 	events = {
-		"register_kill"
+		"register_kill",
 	},
 	progress = function (statistics_db, stats_id, template_data)
 		local completed = statistics_db:get_persistent_stat(stats_id, "woods_wall_kill")
 
 		return {
 			completed,
-			500
+			500,
 		}
 	end,
 	completed = function (statistics_db, stats_id, template_data)
@@ -175,26 +178,26 @@ achievements.woods_wall_kill_grind = {
 		end
 
 		statistics_db:increment_stat(stats_id, "woods_wall_kill")
-	end
+	end,
 }
 achievements.woods_lifted_kill = {
-	required_dlc = "woods",
-	name = "achv_woods_lifted_kill_name",
-	required_dlc_extra = "woods",
-	display_completion_ui = true,
-	desc = "achv_woods_lifted_kill_desc",
-	required_career = "we_thornsister",
-	icon = "achievement_trophy_thornsister_ancients_vengeful_embrace",
 	always_run = true,
+	desc = "achv_woods_lifted_kill_desc",
+	display_completion_ui = true,
+	icon = "achievement_trophy_thornsister_ancients_vengeful_embrace",
+	name = "achv_woods_lifted_kill_name",
+	required_career = "we_thornsister",
+	required_dlc = "woods",
+	required_dlc_extra = "woods",
 	events = {
-		"register_kill"
+		"register_kill",
 	},
 	progress = function (statistics_db, stats_id, template_data)
 		local completed = statistics_db:get_persistent_stat(stats_id, "woods_lift_kills")
 
 		return {
 			completed,
-			250
+			250,
 		}
 	end,
 	completed = function (statistics_db, stats_id, template_data)
@@ -228,19 +231,19 @@ achievements.woods_lifted_kill = {
 		if bb.in_vortex then
 			rpc_increment_stat(attacker_unit, "woods_lift_kills")
 		end
-	end
+	end,
 }
 achievements.woods_triple_lift = {
-	required_dlc = "woods",
-	name = "achv_woods_triple_lift_name",
-	required_dlc_extra = "woods",
-	display_completion_ui = true,
-	desc = "achv_woods_triple_lift_desc",
-	required_career = "we_thornsister",
-	icon = "achievement_trophy_thornsister_away_with_the_faeries",
 	always_run = true,
+	desc = "achv_woods_triple_lift_desc",
+	display_completion_ui = true,
+	icon = "achievement_trophy_thornsister_away_with_the_faeries",
+	name = "achv_woods_triple_lift_name",
+	required_career = "we_thornsister",
+	required_dlc = "woods",
+	required_dlc_extra = "woods",
 	events = {
-		"vortex_caught_unit"
+		"vortex_caught_unit",
 	},
 	completed = function (statistics_db, stats_id, template_data)
 		return statistics_db:get_persistent_stat(stats_id, "woods_triple_lift") > 0
@@ -270,6 +273,7 @@ achievements.woods_triple_lift = {
 		end
 
 		template_data.lifted_units[lifted_unit] = true
+
 		local num_vortexed_units = 0
 
 		for unit, data in pairs(template_data.lifted_units) do
@@ -289,24 +293,24 @@ achievements.woods_triple_lift = {
 		if num_vortexed_units >= 3 then
 			rpc_increment_stat(attacker_unit, "woods_triple_lift")
 		end
-	end
+	end,
 }
 achievements.woods_heal_grind = {
-	name = "achv_woods_heal_grind_name",
-	required_dlc_extra = "woods",
 	desc = "achv_woods_heal_grind_desc",
 	display_completion_ui = true,
 	icon = "achievement_trophy_thornsister_handmaiden_of_isha",
+	name = "achv_woods_heal_grind_name",
 	required_dlc = "woods",
+	required_dlc_extra = "woods",
 	events = {
-		"register_heal"
+		"register_heal",
 	},
 	progress = function (statistics_db, stats_id, template_data)
 		local completed = statistics_db:get_persistent_stat(stats_id, "woods_amount_healed")
 
 		return {
 			completed,
-			2000
+			2000,
 		}
 	end,
 	completed = function (statistics_db, stats_id, template_data)
@@ -346,24 +350,24 @@ achievements.woods_heal_grind = {
 		local new_amount = old_amount + amount_healed
 
 		statistics_db:set_stat(stats_id, "woods_amount_healed", new_amount)
-	end
+	end,
 }
 achievements.woods_bleed_grind = {
-	name = "achv_woods_bleed_grind_name",
-	required_dlc_extra = "woods",
 	desc = "achv_woods_bleed_grind_desc",
 	display_completion_ui = true,
 	icon = "achievement_trophy_thornsister_well_earned_agony",
+	name = "achv_woods_bleed_grind_name",
 	required_dlc = "woods",
+	required_dlc_extra = "woods",
 	events = {
-		"register_damage"
+		"register_damage",
 	},
 	progress = function (statistics_db, stats_id, template_data)
 		local completed = statistics_db:get_persistent_stat(stats_id, "woods_bleed_tics")
 
 		return {
 			completed,
-			2000
+			2000,
 		}
 	end,
 	completed = function (statistics_db, stats_id, template_data)
@@ -400,21 +404,21 @@ achievements.woods_bleed_grind = {
 		end
 
 		statistics_db:increment_stat(stats_id, "woods_bleed_tics")
-	end
+	end,
 }
 achievements.woods_chaos_pinata = {
-	required_dlc = "woods",
-	name = "achv_woods_chaos_pinata_name",
-	required_dlc_extra = "woods",
-	display_completion_ui = true,
-	desc = "achv_woods_chaos_pinata_desc",
-	required_career = "we_thornsister",
-	icon = "achievement_trophy_thornsister_together_we",
 	always_run = true,
+	desc = "achv_woods_chaos_pinata_desc",
+	display_completion_ui = true,
+	icon = "achievement_trophy_thornsister_together_we",
+	name = "achv_woods_chaos_pinata_name",
+	required_career = "we_thornsister",
+	required_dlc = "woods",
+	required_dlc_extra = "woods",
 	events = {
 		"vortex_caught_unit",
 		"register_damage",
-		"register_kill"
+		"register_kill",
 	},
 	completed = function (statistics_db, stats_id, template_data)
 		return statistics_db:get_persistent_stat(stats_id, "woods_chaos_pinata") > 0
@@ -488,10 +492,11 @@ achievements.woods_chaos_pinata = {
 
 			if bb and bb.in_vortex_state and (bb.in_vortex_state == "in_vortex_init" or bb.in_vortex_state == "in_vortex") then
 				local num_hits = 0
-				local sott_unit = nil
+				local sott_unit
 
 				for unit, data in pairs(template_data.lifted_units[victim_unit]) do
 					num_hits = num_hits + 1
+
 					local career_extension = ScriptUnit.has_extension(unit, "career_system")
 
 					if career_extension and career_extension:career_name() == "we_thornsister" then
@@ -504,17 +509,17 @@ achievements.woods_chaos_pinata = {
 				end
 			end
 		end
-	end
+	end,
 }
 achievements.woods_ability_combo = {
-	name = "achv_woods_ability_combo_name",
-	required_dlc_extra = "woods",
 	desc = "achv_woods_ability_combo_desc",
 	display_completion_ui = true,
 	icon = "achievement_trophy_thornsister_rippling_radiance",
+	name = "achv_woods_ability_combo_name",
 	required_dlc = "woods",
+	required_dlc_extra = "woods",
 	events = {
-		"any_ability_used"
+		"any_ability_used",
 	},
 	completed = function (statistics_db, stats_id, template_data)
 		return statistics_db:get_persistent_stat(stats_id, "woods_ability_combo") > 0
@@ -573,24 +578,24 @@ achievements.woods_ability_combo = {
 				statistics_db:increment_stat(stats_id, "woods_ability_combo")
 			end
 		end
-	end
+	end,
 }
 achievements.woods_wall_tank = {
-	name = "achv_woods_wall_tank_name",
-	required_dlc_extra = "woods",
 	desc = "achv_woods_wall_tank_desc",
 	display_completion_ui = true,
 	icon = "achievement_trophy_thornsister_roots_of_ages",
+	name = "achv_woods_wall_tank_name",
 	required_dlc = "woods",
+	required_dlc_extra = "woods",
 	events = {
-		"register_thorn_wall_damage"
+		"register_thorn_wall_damage",
 	},
 	progress = function (statistics_db, stats_id, template_data)
 		local completed = statistics_db:get_persistent_stat(stats_id, "woods_wall_hits_soaked")
 
 		return {
 			completed,
-			1000
+			1000,
 		}
 	end,
 	completed = function (statistics_db, stats_id, template_data)
@@ -618,24 +623,24 @@ achievements.woods_wall_tank = {
 				statistics_db:increment_stat(stats_id, "woods_wall_hits_soaked")
 			end
 		end
-	end
+	end,
 }
 achievements.woods_wall_block_ratling = {
-	name = "achv_woods_wall_block_ratling_name",
-	required_dlc_extra = "woods",
 	desc = "achv_woods_wall_block_ratling_desc",
 	display_completion_ui = true,
 	icon = "achievement_trophy_thornsister_sheltering_thicket",
+	name = "achv_woods_wall_block_ratling_name",
 	required_dlc = "woods",
+	required_dlc_extra = "woods",
 	events = {
-		"register_thorn_wall_damage"
+		"register_thorn_wall_damage",
 	},
 	progress = function (statistics_db, stats_id, template_data)
 		local completed = statistics_db:get_persistent_stat(stats_id, "woods_ratling_shots_soaked")
 
 		return {
 			completed,
-			500
+			500,
 		}
 	end,
 	completed = function (statistics_db, stats_id, template_data)
@@ -657,18 +662,18 @@ achievements.woods_wall_block_ratling = {
 		if attacker_breed and attacker_breed.name == "skaven_ratling_gunner" and attack_type and attack_type == "projectile" then
 			statistics_db:increment_stat(stats_id, "woods_ratling_shots_soaked")
 		end
-	end
+	end,
 }
 achievements.woods_bleed_boss = {
-	name = "achv_woods_bleed_boss_name",
-	required_dlc_extra = "woods",
 	desc = "achv_woods_bleed_boss_desc",
 	display_completion_ui = true,
 	icon = "achievement_trophy_thornsister_an_offering_of_pain",
+	name = "achv_woods_bleed_boss_name",
 	required_dlc = "woods",
+	required_dlc_extra = "woods",
 	events = {
 		"register_damage",
-		"register_kill"
+		"register_kill",
 	},
 	completed = function (statistics_db, stats_id, template_data)
 		return statistics_db:get_persistent_stat(stats_id, "woods_bleed_boss") > 0
@@ -716,6 +721,7 @@ achievements.woods_bleed_boss = {
 			end
 
 			template_data.target_bosses[target_unit] = template_data.target_bosses[target_unit] + damage_data[DamageDataIndex.DAMAGE_AMOUNT]
+
 			local target_health_extension = ScriptUnit.has_extension(target_unit, "health_system")
 
 			if not target_health_extension then
@@ -753,19 +759,19 @@ achievements.woods_bleed_boss = {
 				end
 			end
 		end
-	end
+	end,
 }
 achievements.woods_wall_kill_gutter = {
-	required_dlc = "woods",
-	name = "achv_woods_wall_kill_gutter_name",
-	required_dlc_extra = "woods",
-	display_completion_ui = true,
-	desc = "achv_woods_wall_kill_gutter_desc",
-	required_career = "we_thornsister",
-	icon = "achievement_trophy_thornsister_shall_not_pass",
 	always_run = true,
+	desc = "achv_woods_wall_kill_gutter_desc",
+	display_completion_ui = true,
+	icon = "achievement_trophy_thornsister_shall_not_pass",
+	name = "achv_woods_wall_kill_gutter_name",
+	required_career = "we_thornsister",
+	required_dlc = "woods",
+	required_dlc_extra = "woods",
 	events = {
-		"register_kill"
+		"register_kill",
 	},
 	completed = function (statistics_db, stats_id, template_data)
 		return statistics_db:get_persistent_stat(stats_id, "woods_wall_kill_gutter") > 0
@@ -802,19 +808,19 @@ achievements.woods_wall_kill_gutter = {
 		if jump_data and (jump_data.state == "in_air" or jump_data.state == "in_air_no_target" or jump_data.state == "snapping") then
 			rpc_increment_stat(attacker_unit, "woods_wall_kill_gutter")
 		end
-	end
+	end,
 }
 achievements.woods_wall_dual_save = {
-	required_dlc = "woods",
-	name = "achv_woods_wall_dual_save_name",
-	required_dlc_extra = "woods",
-	display_completion_ui = true,
-	desc = "achv_woods_wall_dual_save_desc",
-	required_career = "we_thornsister",
-	icon = "achievement_trophy_thornsister_thorny_rescue",
 	always_run = true,
+	desc = "achv_woods_wall_dual_save_desc",
+	display_completion_ui = true,
+	icon = "achievement_trophy_thornsister_thorny_rescue",
+	name = "achv_woods_wall_dual_save_name",
+	required_career = "we_thornsister",
+	required_dlc = "woods",
+	required_dlc_extra = "woods",
 	events = {
-		"register_damage"
+		"register_damage",
 	},
 	completed = function (statistics_db, stats_id, template_data)
 		return statistics_db:get_persistent_stat(stats_id, "woods_wall_dual_save") > 0
@@ -882,26 +888,26 @@ achievements.woods_wall_dual_save = {
 
 			template_data.last_timed_interrupt = t
 		end
-	end
+	end,
 }
 achievements.woods_free_ability_grind = {
-	required_dlc = "woods",
-	name = "achv_woods_free_ability_grind_name",
-	required_dlc_extra = "woods",
-	display_completion_ui = true,
-	desc = "achv_woods_free_ability_grind_desc",
-	required_career = "we_thornsister",
-	icon = "achievement_trophy_thornsister_weaves_bounty",
 	always_run = true,
+	desc = "achv_woods_free_ability_grind_desc",
+	display_completion_ui = true,
+	icon = "achievement_trophy_thornsister_weaves_bounty",
+	name = "achv_woods_free_ability_grind_name",
+	required_career = "we_thornsister",
+	required_dlc = "woods",
+	required_dlc_extra = "woods",
 	events = {
-		"free_cast_used"
+		"free_cast_used",
 	},
 	progress = function (statistics_db, stats_id, template_data)
 		local completed = statistics_db:get_persistent_stat(stats_id, "woods_free_abilities_used")
 
 		return {
 			completed,
-			50
+			50,
 		}
 	end,
 	completed = function (statistics_db, stats_id, template_data)
@@ -931,8 +937,9 @@ achievements.woods_free_ability_grind = {
 		end
 
 		statistics_db:increment_stat(stats_id, "woods_free_abilities_used")
-	end
+	end,
 }
+
 local act_1_levels = GameActs.act_1
 local act_2_levels = GameActs.act_2
 local act_3_levels = GameActs.act_3
@@ -942,7 +949,7 @@ local difficulties = {
 	"hard",
 	"harder",
 	"hardest",
-	"cataclysm"
+	"cataclysm",
 }
 
 for i = 1, #difficulties do
@@ -978,7 +985,7 @@ local all_challenges = {
 	"woods_ability_combo",
 	"woods_wall_tank",
 	"woods_wall_block_ratling",
-	"woods_free_ability_grind"
+	"woods_free_ability_grind",
 }
 
 add_meta_challenge(achievements, "complete_all_thorn_sister_challenges", all_challenges, "achievement_trophy_thornsister_reborn_through_the_weave", "woods", nil, nil)

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/default_player_unit/player_eyetracking_extension.lua
+
 PlayerEyeTrackingExtension = class(PlayerEyeTrackingExtension)
 
 PlayerEyeTrackingExtension.init = function (self, extension_init_context, unit, extension_init_data)
@@ -12,7 +14,7 @@ PlayerEyeTrackingExtension.init = function (self, extension_init_context, unit, 
 	self.is_aiming_cancelled = false
 	self.extended_view = {
 		pitch = 0,
-		yaw = 0
+		yaw = 0,
 	}
 	self.aim_fade_out_time = 0.4
 	self.current_fade_out_time = 0
@@ -59,7 +61,7 @@ PlayerEyeTrackingExtension.update_extended_view = function (self, dt)
 	if self.is_aiming then
 		self.current_fade_out_time = self.current_fade_out_time + dt
 
-		if self.aim_fade_out_time < self.current_fade_out_time then
+		if self.current_fade_out_time > self.aim_fade_out_time then
 			self.current_fade_out_time = self.aim_fade_out_time
 		end
 	else
@@ -70,12 +72,14 @@ PlayerEyeTrackingExtension.update_extended_view = function (self, dt)
 		end
 
 		local yaw, pitch = Tobii.get_extended_view()
+
 		self.extended_view.yaw = yaw
 		self.extended_view.pitch = pitch
 	end
 
 	self.extended_view.yaw = self.extended_view.yaw * (1 - self.current_fade_out_time / self.aim_fade_out_time)
 	self.extended_view.pitch = self.extended_view.pitch * (1 - self.current_fade_out_time / self.aim_fade_out_time)
+
 	local input_manager = Managers.input
 	local player_input_service = input_manager:get_service("Player")
 	local controlling_player = not player_input_service:is_blocked()
@@ -104,8 +108,10 @@ PlayerEyeTrackingExtension.get_direction_without_extended_view = function (self,
 	end
 
 	local yaw_offset = Quaternion(Vector3.up(), self.extended_view.yaw)
+
 	yaw_offset = Quaternion.multiply(Quaternion.inverse(rotation), yaw_offset)
 	yaw_offset = Quaternion.multiply(yaw_offset, rotation)
+
 	local pitch_offset = Quaternion(Vector3.right(), -self.extended_view.pitch)
 	local total_offset = Quaternion.multiply(yaw_offset, pitch_offset)
 
@@ -150,8 +156,7 @@ end
 PlayerEyeTrackingExtension.calc_gaze_forward = function (self)
 	local first_person_extension = ScriptUnit.extension(self.unit, "first_person_system")
 	local gaze_point_x, gaze_point_y = Tobii.get_gaze_point()
-	local screen_width = RESOLUTION_LOOKUP.res_w
-	local screen_height = RESOLUTION_LOOKUP.res_h
+	local screen_width, screen_height = RESOLUTION_LOOKUP.res_w, RESOLUTION_LOOKUP.res_h
 	local gaze_x = screen_width * (1 + gaze_point_x) * 0.5
 	local gaze_y = screen_height * (1 + gaze_point_y) * 0.5
 	local player = Managers.player:owner(self.unit)

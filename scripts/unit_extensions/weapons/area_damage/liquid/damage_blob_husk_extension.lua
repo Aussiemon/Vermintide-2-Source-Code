@@ -1,19 +1,26 @@
+﻿-- chunkname: @scripts/unit_extensions/weapons/area_damage/liquid/damage_blob_husk_extension.lua
+
 DamageBlobHuskExtension = class(DamageBlobHuskExtension)
 
 DamageBlobHuskExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	local world = extension_init_context.world
+
 	self.world = world
 	self.game = Managers.state.network:game()
 	self.unit = unit
 	self.nav_world = Managers.state.entity:system("ai_system"):nav_world()
 	self._source_unit = extension_init_data.source_unit
 	self.physics_world = World.physics_world(world)
+
 	local unit_storage = Managers.state.unit_storage
+
 	self.go_id = unit_storage:go_id(unit)
 	self.fx_list = {}
 	self.sfx_list = {}
+
 	local template_name = extension_init_data.damage_blob_template_name
 	local template = DamageBlobTemplates.templates[template_name]
+
 	self.fx_name_filled = template.fx_name_filled
 	self.fx_name_rim = template.fx_name_rim
 	self.fx_size_variable = template.fx_size_variable
@@ -23,6 +30,7 @@ DamageBlobHuskExtension.init = function (self, extension_init_context, unit, ext
 	self._sfx_name_stop = template.sfx_name_stop
 	self._sfx_name_start_remains = template.sfx_name_start_remains
 	self._sfx_name_stop_remains = template.sfx_name_stop_remains
+
 	local init_function = template.init_function
 
 	if init_function then
@@ -95,7 +103,7 @@ DamageBlobHuskExtension.update = function (self, unit, input, dt, context, t)
 	local blob_update_function = self._blob_update_function
 
 	if blob_update_function then
-		local result = self:_blob_update_function(t, dt, unit, self.physics_world)
+		local result = self._blob_update_function(self, t, dt, unit, self.physics_world)
 
 		if not result then
 			self._blob_update_function = nil
@@ -118,8 +126,10 @@ DamageBlobHuskExtension.update_blobs_fx_and_sfx = function (self, t, dt)
 
 		if fx_size then
 			local particle_size = fx_size:unbox()
+
 			particle_size[1] = math.min(particle_size[1] + dt * 1.5, fx_max_radius)
 			particle_size[2] = math.min(particle_size[2] + dt * 2, fx_max_height)
+
 			local effect_variable_id = World.find_particles_variable(world, fx_name_filled, fx_size_variable)
 
 			World.set_particles_variable(world, fx_id, effect_variable_id, particle_size)
@@ -161,6 +171,7 @@ DamageBlobHuskExtension.add_damage_blob_fx = function (self, position, life_time
 	local particle_size = Vector3Box(0.6, 1.2, 0)
 	local fx_max_radius = self.fx_max_radius
 	local fx_max_height = self.fx_max_height
+
 	particle_size[1] = math.min(particle_size[1] + time_past * 1.5, fx_max_radius)
 	particle_size[2] = math.min(particle_size[2] + time_past * 2, fx_max_height)
 
@@ -168,21 +179,26 @@ DamageBlobHuskExtension.add_damage_blob_fx = function (self, position, life_time
 
 	local fx_list = self.fx_list
 	local fx_id_filled = World.create_particles(world, self.fx_name_filled, position, rotation)
+
 	fx_list[#fx_list + 1] = {
 		id = fx_id_filled,
 		time = blob_death_time,
-		size = particle_size
+		size = particle_size,
 	}
+
 	local fx_id_rim = World.create_particles(world, self.fx_name_rim, position, rotation)
+
 	fx_list[#fx_list + 1] = {
 		id = fx_id_rim,
-		time = blob_death_time
+		time = blob_death_time,
 	}
+
 	local id, source = WwiseUtils.trigger_position_event(world, self._sfx_name_start_remains, position)
 	local sfx_list = self.sfx_list
+
 	sfx_list[#sfx_list + 1] = {
 		source = source,
-		time = blob_death_time
+		time = blob_death_time,
 	}
 end
 

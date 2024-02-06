@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/default_player_unit/player_input_extension.lua
+
 require("scripts/unit_extensions/generic/generic_state_machine")
 
 PlayerInputExtension = class(PlayerInputExtension)
@@ -28,15 +30,15 @@ PlayerInputExtension.init = function (self, extension_init_context, unit, extens
 	self.minimum_dodge_input = 0.3
 	self._game_options_dirty = true
 	self.priority_input = {
+		wield_1 = 2,
 		wield_2 = 1,
-		wield_next = 1,
+		wield_3 = 1,
+		wield_4 = 1,
 		wield_5 = 1,
+		wield_next = 1,
 		wield_prev = 1,
 		wield_scroll = 1,
-		wield_3 = 1,
-		wield_1 = 2,
-		wield_4 = 1,
-		wield_switch = 3
+		wield_switch = 3,
 	}
 
 	Managers.state.event:register(self, "on_game_options_changed", "_set_game_options_dirty")
@@ -102,7 +104,7 @@ PlayerInputExtension.update = function (self, unit, input, dt, context, t)
 	end
 
 	if self.wield_cooldown then
-		if self.wield_cooldown_timer < t then
+		if t > self.wield_cooldown_timer then
 			self.wield_cooldown = false
 			self.wield_cooldown_timer_clock = 0
 		else
@@ -158,12 +160,13 @@ PlayerInputExtension.get = function (self, input_key, consume)
 
 	if value and input_key_scale_data then
 		local t = self._t
-		local scale = nil
+		local scale
 
-		if input_key_scale_data.lerp_end_t == nil or input_key_scale_data.lerp_end_t <= t then
+		if input_key_scale_data.lerp_end_t == nil or t >= input_key_scale_data.lerp_end_t then
 			scale = input_key_scale_data.end_scale
 		else
 			local p = (t - input_key_scale_data.lerp_start_t) / (input_key_scale_data.lerp_end_t - input_key_scale_data.lerp_start_t)
+
 			scale = math.lerp(input_key_scale_data.start_scale, input_key_scale_data.end_scale, p)
 		end
 
@@ -186,10 +189,11 @@ PlayerInputExtension.set_input_key_scale = function (self, input_key, scale, ler
 	local input_key_scale_data = self.input_key_scale[input_key]
 
 	if input_key_scale_data then
-		if input_key_scale_data.lerp_end_t == nil or input_key_scale_data.lerp_end_t <= t then
+		if input_key_scale_data.lerp_end_t == nil or t >= input_key_scale_data.lerp_end_t then
 			start_scale = input_key_scale_data.end_scale
 		else
 			local p = (t - input_key_scale_data.lerp_start_t) / (input_key_scale_data.lerp_end_t - input_key_scale_data.lerp_start_t)
+
 			start_scale = math.lerp(input_key_scale_data.start_scale, input_key_scale_data.end_scale, p)
 		end
 	else
@@ -273,9 +277,9 @@ PlayerInputExtension.get_buffer = function (self, input_key)
 end
 
 local action_one_variants = {
-	action_one_release = true,
 	action_one = true,
-	action_one_hold = true
+	action_one_hold = true,
+	action_one_release = true,
 }
 
 PlayerInputExtension.reset_input_buffer = function (self)
@@ -331,7 +335,7 @@ PlayerInputExtension.add_buffer = function (self, input_key, doubleclick_window)
 		if priority then
 			local last_priority = priority_lookup[self.buffer_key] or -1
 
-			if priority >= last_priority then
+			if last_priority <= priority then
 				self.input_buffer_timer = self.priority_input_buffer_user_setting
 				self.input_buffer = value
 				self.buffer_key = input_key

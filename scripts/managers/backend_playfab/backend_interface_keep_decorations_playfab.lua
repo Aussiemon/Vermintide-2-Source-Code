@@ -1,10 +1,15 @@
+﻿-- chunkname: @scripts/managers/backend_playfab/backend_interface_keep_decorations_playfab.lua
+
 local PlayFabClientApi = require("PlayFab.PlayFabClientApi")
+
 BackendInterfaceKeepDecorationsPlayFab = class(BackendInterfaceKeepDecorationsPlayFab)
 
 BackendInterfaceKeepDecorationsPlayFab.init = function (self, backend_mirror)
 	self._backend_mirror = backend_mirror
 	self._keep_decorations = {}
+
 	local keep_decorations = backend_mirror:get_read_only_data("keep_decorations") or "{}"
+
 	self._keep_decorations = cjson.decode(keep_decorations)
 
 	self:_refresh()
@@ -27,7 +32,9 @@ end
 BackendInterfaceKeepDecorationsPlayFab._refresh = function (self)
 	local mirror = self._backend_mirror
 	local unlocked_keep_decorations = mirror:get_unlocked_keep_decorations()
+
 	self._unlocked_keep_decorations = unlocked_keep_decorations
+
 	local new_keep_decoration_ids = ItemHelper.get_new_keep_decoration_ids()
 
 	if new_keep_decoration_ids then

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/steam/steam_manager.lua
+
 SteamManager = class(SteamManager)
 
 SteamManager.init = function (self)
@@ -69,7 +71,7 @@ SteamManager.on_price_result = function (self, result, currency)
 	print("[SteamManager] on_price_result", result, currency)
 
 	if self._refresh_item_prices_callback then
-		local price_list = nil
+		local price_list
 
 		if result == 1 then
 			price_list = SteamInventory.get_items_with_prices()

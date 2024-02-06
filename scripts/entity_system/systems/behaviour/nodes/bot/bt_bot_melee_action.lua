@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bot/bt_bot_melee_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTBotMeleeAction = class(BTBotMeleeAction, BTNode)
@@ -7,6 +9,7 @@ BTBotMeleeAction.init = function (self, ...)
 end
 
 BTBotMeleeAction.name = "BTBotMeleeAction"
+
 local PATROL_PASSIVE_RANGE = 50
 local DEFAULT_MAXIMAL_MELEE_RANGE = 5
 local DEFAULT_ENEMY_HITBOX_RADIUS_APPROXIMATION = 0.5
@@ -39,6 +42,7 @@ local function get_engage_pos(nav_world, target_unit_pos, engage_from, melee_dis
 
 	for i = 1, subdivisions_per_side do
 		local angle = angle_inc * i
+
 		success, pos = check_angle(nav_world, target_unit_pos, start_direction, angle, melee_distance)
 
 		if success then
@@ -64,18 +68,21 @@ end
 BTBotMeleeAction.enter = function (self, unit, blackboard, t)
 	blackboard.node_timer = t
 	blackboard.melee = {
-		engage_update_time = 0,
-		engage_position_set = false,
 		engage_change_time = 0,
+		engage_position_set = false,
+		engage_update_time = 0,
 		engaging = false,
-		engage_position = Vector3Box(0, 0, 0)
+		engage_position = Vector3Box(0, 0, 0),
 	}
+
 	local inventory_ext = blackboard.inventory_extension
 	local wielded_slot_name = inventory_ext:get_wielded_slot_name()
 	local slot_data = inventory_ext:get_slot_data(wielded_slot_name)
 	local item_data = slot_data.item_data
 	local item_template = BackendUtils.get_item_template(item_data)
+
 	blackboard.wielded_item_template = item_template
+
 	local input_ext = blackboard.input_extension
 	local soft_aiming = true
 
@@ -114,7 +121,7 @@ BTBotMeleeAction._update_engage_position = function (self, unit, target_unit, bl
 	local nav_world = blackboard.nav_world
 	local self_position = POSITION_LOOKUP[unit]
 	local target_unit_position = self:_target_unit_position(self_position, target_unit, nav_world)
-	local engage_position, engage_from, should_stop = nil
+	local engage_position, engage_from, should_stop
 	local targeting_me, breed = self:_is_targeting_me(unit, target_unit)
 	local enemy_offset = target_unit_position - self_position
 	local melee_distance = melee_range - 0.5
@@ -141,7 +148,7 @@ BTBotMeleeAction._update_engage_position = function (self, unit, target_unit, bl
 			local normalized_enemy_dir = Vector3.normalize(Vector3.flat(enemy_dir))
 			local normalized_enemy_offset = Vector3.normalize(Vector3.flat(enemy_offset))
 			local offset_angle = Vector3.flat_angle(-normalized_enemy_offset, normalized_enemy_dir)
-			local new_angle = nil
+			local new_angle
 
 			if offset_angle > 0 then
 				new_angle = offset_angle + math.pi / 8
@@ -150,11 +157,12 @@ BTBotMeleeAction._update_engage_position = function (self, unit, target_unit, bl
 			end
 
 			local new_rot = Quaternion.multiply(Quaternion(Vector3.up(), -new_angle), enemy_rot)
+
 			engage_from = -Quaternion.forward(new_rot)
 		end
 
 		engage_position = get_engage_pos(nav_world, target_unit_position, engage_from, melee_distance)
-	elseif Vector3.distance_squared(self_position, target_unit_position) <= melee_distance_sq then
+	elseif melee_distance_sq >= Vector3.distance_squared(self_position, target_unit_position) then
 		engage_position = self_position
 		should_stop = true
 	else
@@ -180,6 +188,7 @@ BTBotMeleeAction._update_engage_position = function (self, unit, target_unit, bl
 		local min_dist = 3
 		local max_dist = 7
 		local interval = math.auto_lerp(min_dist, max_dist, 0.2, 2, math.clamp(distance, min_dist, max_dist))
+
 		melee_bb.engage_update_time = t + interval
 	end
 end
@@ -188,17 +197,17 @@ local DEFAULT_ATTACK_META_DATA = {
 	tap_attack = {
 		arc = 0,
 		penetrating = false,
-		max_range = DEFAULT_MAXIMAL_MELEE_RANGE
+		max_range = DEFAULT_MAXIMAL_MELEE_RANGE,
 	},
 	hold_attack = {
 		arc = 2,
 		penetrating = true,
-		max_range = DEFAULT_MAXIMAL_MELEE_RANGE
-	}
+		max_range = DEFAULT_MAXIMAL_MELEE_RANGE,
+	},
 }
 
 BTBotMeleeAction._choose_attack = function (self, blackboard, target_unit)
-	local best_attack_input, best_attack_meta_data = nil
+	local best_attack_input, best_attack_meta_data
 	local wielded_slot = blackboard.wielded_slot_name
 	local weapon_scores = wielded_slot and blackboard.weapon_scores
 	local equipped_weapon_data = weapon_scores and weapon_scores[wielded_slot]
@@ -209,6 +218,7 @@ BTBotMeleeAction._choose_attack = function (self, blackboard, target_unit)
 	else
 		local combat_conditions = AiUtils.get_combat_conditions(blackboard)
 		local item_template = blackboard.wielded_item_template
+
 		best_attack_input, best_attack_meta_data = AiUtils.get_melee_weapon_score(combat_conditions, item_template)
 	end
 
@@ -225,7 +235,7 @@ BTBotMeleeAction._is_in_melee_range = function (self, current_position, aim_posi
 	local check_position = current_position + relative_velocity * time_to_next_attack
 	local melee_range_sq = melee_range^2
 
-	return Vector3.distance_squared(aim_position, check_position) < melee_range_sq
+	return melee_range_sq > Vector3.distance_squared(aim_position, check_position)
 end
 
 BTBotMeleeAction._is_in_engage_range = function (self, self_unit, target_unit, nav_world, action_data, follow_pos)
@@ -254,7 +264,7 @@ BTBotMeleeAction._aim_position = function (self, target_unit, blackboard)
 end
 
 BTBotMeleeAction._target_unit_position = function (self, self_position, target_unit, nav_world)
-	local target_unit_position = nil
+	local target_unit_position
 
 	if self._tree_node.action_data.destroy_object then
 		local nav_graph_system = Managers.state.entity:system("nav_graph_system")
@@ -265,11 +275,13 @@ BTBotMeleeAction._target_unit_position = function (self, self_position, target_u
 			local smart_object_data = smart_objects[1]
 			local entrance_position = Vector3Aux.unbox(smart_object_data.pos1)
 			local exit_position = Vector3Aux.unbox(smart_object_data.pos2)
+
 			target_unit_position = math.closest_position(self_position, entrance_position, exit_position)
 		else
 			local node_name = "rp_center"
 			local node = Unit.has_node(target_unit, node_name) and Unit.node(target_unit, node_name) or 0
 			local node_position = Unit.world_position(target_unit, node)
+
 			target_unit_position = LocomotionUtils.pos_on_mesh(nav_world, node_position, 0.5, 2) or node_position
 		end
 	else
@@ -420,7 +432,7 @@ BTBotMeleeAction._update_melee = function (self, unit, blackboard, dt, t)
 
 	input_ext:set_aim_position(aim_position)
 
-	local wants_engage, eval_timer = nil
+	local wants_engage, eval_timer
 	local current_position = blackboard.first_person_extension:current_position()
 	local follow_pos = blackboard.follow and blackboard.follow.target_position:unbox() or current_position
 	local attack_input, attack_meta_data = self:_choose_attack(blackboard, target_unit)
@@ -468,7 +480,7 @@ BTBotMeleeAction._update_melee = function (self, unit, blackboard, dt, t)
 		already_engaged = false
 	end
 
-	if already_engaged and (not melee_bb.engage_update_time or melee_bb.engage_update_time < t) and not action_data.do_not_update_engage_position then
+	if already_engaged and (not melee_bb.engage_update_time or t > melee_bb.engage_update_time) and not action_data.do_not_update_engage_position then
 		self:_update_engage_position(unit, target_unit, blackboard, t, melee_range)
 	end
 
@@ -476,7 +488,7 @@ BTBotMeleeAction._update_melee = function (self, unit, blackboard, dt, t)
 end
 
 local DEFAULT_DEFENSE_META_DATA = {
-	push = "medium"
+	push = "medium",
 }
 
 BTBotMeleeAction._defend = function (self, unit, blackboard, target_unit, input_ext, t, in_melee_range)
@@ -575,6 +587,7 @@ end
 
 BTBotMeleeAction._disengage = function (self, unit, t, blackboard, position)
 	local bb = blackboard.melee
+
 	bb.engaging = false
 	bb.engage_change_time = t
 
@@ -585,6 +598,7 @@ end
 
 BTBotMeleeAction._engage = function (self, t, blackboard)
 	local bb = blackboard.melee
+
 	bb.engaging = true
 	bb.engage_change_time = t
 end

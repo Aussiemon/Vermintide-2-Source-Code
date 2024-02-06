@@ -1,51 +1,53 @@
+﻿-- chunkname: @scripts/utils/benchmark/benchmark_settings.lua
+
 require("scripts/settings/level_settings")
 
 BenchmarkSettings = {
-	cycle_view_time = 30,
-	main_path_teleport_time = 2,
-	initial_cycle_time = 30,
-	debug = false,
-	bot_selection_timer = 3,
-	cycle_views = true,
-	overview_downtime = 60,
 	attract_benchmark = false,
-	overview_duration = 10,
-	cycle_time = 90,
-	is_story_based = true,
-	destroy_close_enemies_radius = 20,
 	auto_host_level = "military",
 	bot_damage_multiplier = 5,
-	game_seed = 846387,
+	bot_selection_timer = 3,
+	cycle_time = 90,
+	cycle_view_time = 30,
+	cycle_views = true,
+	debug = false,
+	destroy_close_enemies_radius = 20,
 	destroy_close_enemies_timer = 90,
+	game_seed = 846387,
+	initial_cycle_time = 30,
+	is_story_based = true,
+	main_path_teleport_time = 2,
+	overview_downtime = 60,
+	overview_duration = 10,
 	initial_overview_time = math.huge,
 	parameters = {
-		hide_fps = true,
-		network_debug = false,
-		disable_tutorial_at_start = true,
-		disable_gutter_runner = true,
-		hide_version_info = true,
-		network_debug_connections = false,
-		honduras_demo = false,
-		spawn_empty_chest = true,
-		disable_debug_draw = true,
-		disable_pack_master = true,
-		network_log_messages = false,
-		disable_intro_trailer = true,
-		force_steam = true,
 		debug_interactions = false,
-		screen_space_player_camera_reactions = false,
+		disable_debug_draw = true,
+		disable_gutter_runner = true,
+		disable_intro_trailer = true,
+		disable_pack_master = true,
+		disable_tutorial_at_start = true,
+		force_steam = true,
+		hide_fps = true,
+		hide_version_info = true,
+		honduras_demo = false,
 		infinite_ammo = true,
+		network_debug = false,
+		network_debug_connections = false,
+		network_log_messages = false,
 		player_invincible = true,
-		wanted_profile = "empire_soldier_tutorial"
+		screen_space_player_camera_reactions = false,
+		spawn_empty_chest = true,
+		wanted_profile = "empire_soldier_tutorial",
 	},
 	attract_mode_settings = {
 		display_name = "intel_loading_screen_attract_mode",
-		loading_screen_wwise_events = {}
+		loading_screen_wwise_events = {},
 	},
 	benchmark_mode_settings = {
 		display_name = "intel_loading_screen_benchmark_mode",
-		loading_screen_wwise_events = {}
-	}
+		loading_screen_wwise_events = {},
+	},
 }
 
 local function setup_parameters(parameters)
@@ -59,6 +61,7 @@ end
 local function override_display_name(mode_settings)
 	local level_key = BenchmarkSettings.auto_host_level
 	local level_settings = LevelSettings[level_key]
+
 	level_settings.display_name = mode_settings.display_name
 	level_settings.loading_screen_wwise_events = mode_settings.loading_screen_wwise_events
 	script_data.no_loading_screen_tip_texts = true
@@ -74,7 +77,7 @@ end
 
 local DEMO_MODE = false
 local args = {
-	Application.argv()
+	Application.argv(),
 }
 
 for _, arg in pairs(args) do
@@ -123,7 +126,7 @@ BenchmarkSettings.demo_mode_overrides = function ()
 		SpecialsSettings.chaos.breeds = {
 			"skaven_pack_master",
 			"skaven_gutter_runner",
-			"skaven_warpfire_thrower"
+			"skaven_warpfire_thrower",
 		}
 	end
 end

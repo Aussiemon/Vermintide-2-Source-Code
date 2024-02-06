@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/unit_extensions/default_player_unit/third_person_idle_fullbody_animation_control.lua
+
 ThirdPersonIdleFullbodyAnimationControl = class(ThirdPersonIdleFullbodyAnimationControl)
+
 local MOVE_TRANSITION_TIME = 0.12
 local STOP_TRANSITION_TIME = 0.25
 local CROUCH_TRANSITION_TIME = 0.25
@@ -45,6 +48,7 @@ ThirdPersonIdleFullbodyAnimationControl._wanted_fullbody_value = function (self,
 	local crouch_from = crouching and 1 or 0
 	local crouch_to = 1 - crouch_from
 	local crouch_multiplier = math.clamp01(math.inv_lerp(crouch_from, crouch_to, time_since_crouch / CROUCH_TRANSITION_TIME))
+
 	wanted_value = wanted_value * crouch_multiplier
 
 	return wanted_value, progress

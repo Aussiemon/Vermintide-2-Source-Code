@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/game_state/title_screen_substates/xb1/state_loading_restart_network.lua
+
 require("scripts/network/lobby_host")
 require("scripts/network/lobby_client")
 require("scripts/network/lobby_finder")
@@ -48,6 +50,7 @@ StateLoadingRestartNetwork._init_network = function (self)
 
 	if loading_context.previous_session_error then
 		local previous_session_error = loading_context.previous_session_error
+
 		loading_context.previous_session_error = nil
 
 		self.parent:create_popup(previous_session_error, nil, "continue")

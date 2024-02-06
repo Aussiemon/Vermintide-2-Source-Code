@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/account/smartmatch_cleaner.lua
+
 local debug = true
 
 local function cleanup_print(...)

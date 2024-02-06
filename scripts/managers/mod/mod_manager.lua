@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/mod/mod_manager.lua
+
 require("scripts/managers/mod/mod_shim")
 
 ModManager = class(ModManager)
@@ -7,15 +9,16 @@ ModManager.init = function (self, boot_gui)
 	self._num_mods = nil
 	self._state = "not_loaded"
 	self._settings = Application.user_setting("mod_settings") or {
-		toposort = false,
+		developer_mode = false,
 		log_level = 1,
-		developer_mode = false
+		toposort = false,
 	}
 	self._chat_print_buffer = {}
 	self._reload_data = {}
 	self._gui = boot_gui
 	self._ui_time = 0
 	self._network_callbacks = {}
+
 	local in_modded_realm = script_data["eac-untrusted"]
 
 	Crashify.print_property("realm", in_modded_realm and "modded" or "official")
@@ -53,13 +56,16 @@ end
 ModManager._draw_state_to_gui = function (self, gui, dt)
 	local state = self._state
 	local t = self._ui_time + dt
+
 	self._ui_time = t
+
 	local status_str = "Loading mods"
 
 	if state == "scanning" then
 		status_str = "Scanning for mods"
 	elseif state == "loading" then
 		local mod = self._mods[self._mod_load_index]
+
 		status_str = string.format("Loading mod %q", mod.name)
 	elseif state == "fetching_metadata" then
 		status_str = "Fetching mod metadata"
@@ -152,6 +158,7 @@ ModManager.update = function (self, dt)
 
 			if next_index > #mod_data.packages then
 				mod.state = "running"
+
 				local ok, object = pcall(mod_data.run)
 
 				if not ok then
@@ -159,6 +166,7 @@ ModManager.update = function (self, dt)
 				end
 
 				local name = mod.name
+
 				mod.object = object or {}
 
 				self:_run_callback(mod, "init", self._reload_data[mod.id])
@@ -213,7 +221,7 @@ end
 ModManager._fetch_mod_metadata = function (self)
 	local url = "http://cdn.fatsharkgames.se/mod_metadata.txt"
 	local headers = {
-		["User-Agent"] = "Warhammer: Vermintide 2"
+		["User-Agent"] = "Warhammer: Vermintide 2",
 	}
 
 	Managers.curl:get(url, headers, callback(self, "_cb_mod_metadata"))
@@ -304,13 +312,13 @@ ModManager._build_mod_table = function (self, mod_handles)
 		end
 
 		self._mods[i] = {
-			state = "not_loaded",
 			callbacks_disabled = false,
+			state = "not_loaded",
 			id = id,
 			name = mod_data.name,
 			enabled = enabled,
 			handle = handle,
-			loaded_packages = {}
+			loaded_packages = {},
 		}
 	end
 
@@ -325,6 +333,7 @@ end
 
 ModManager._load_mod = function (self, index)
 	self._ui_time = 0
+
 	local mods = self._mods
 	local mod = mods[index]
 
@@ -386,6 +395,7 @@ end
 
 ModManager._load_package = function (self, mod, index)
 	mod.package_index = index
+
 	local package_name = mod.data.packages[index]
 
 	if not package_name then
@@ -395,6 +405,7 @@ ModManager._load_package = function (self, mod, index)
 	self:print("info", "loading package %q", package_name)
 
 	local resource_handle = Mod.resource_package(mod.handle, package_name)
+
 	self._loading_resource_handle = resource_handle
 
 	ResourcePackage.load(resource_handle)
@@ -478,8 +489,7 @@ ModManager.on_game_state_changed = function (self, status, state_name, state_obj
 end
 
 ModManager._topologically_sorted = function (self, mod_list)
-	local visited = {}
-	local sorted = {}
+	local visited, sorted = {}, {}
 
 	for _, mod_data in ipairs(mod_list) do
 		if not visited[mod_data] then
@@ -504,6 +514,7 @@ ModManager._visit = function (self, mod_list, visited, sorted, mod_data)
 	end
 
 	visited[mod_data] = false
+
 	local enabled = mod_data.enabled or false
 
 	for i = 1, mod_data.num_children or 0 do
@@ -528,10 +539,10 @@ ModManager._visit = function (self, mod_list, visited, sorted, mod_data)
 end
 
 local LOG_LEVELS = {
-	spew = 4,
+	error = 1,
 	info = 3,
+	spew = 4,
 	warning = 2,
-	error = 1
 }
 
 ModManager.print = function (self, level, str, ...)

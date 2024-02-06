@@ -1,14 +1,17 @@
+﻿-- chunkname: @scripts/entity_system/systems/projectile_locomotion/projectile_locomotion_system.lua
+
 require("scripts/unit_extensions/weapons/projectiles/projectile_physics_husk_locomotion_extension")
 require("scripts/unit_extensions/weapons/projectiles/projectile_physics_unit_locomotion_extension")
 require("scripts/unit_extensions/weapons/projectiles/projectile_script_unit_locomotion_extension")
 require("scripts/unit_extensions/weapons/projectiles/projectile_sticky_locomotion")
 
 ProjectileLocomotionSystem = class(ProjectileLocomotionSystem, ExtensionSystemBase)
+
 local RPCS = {
 	"rpc_set_projectile_state",
 	"rpc_projectile_stick_unit",
 	"rpc_projectile_stick_position",
-	"rpc_hot_join_sync_projectile_sticky"
+	"rpc_hot_join_sync_projectile_sticky",
 }
 local extensions = {
 	"ProjectilePhysicsHuskLocomotionExtension",
@@ -18,13 +21,14 @@ local extensions = {
 	"ProjectileHomingSkullLocomotionExtension",
 	"ProjectileExtrapolatedHuskLocomotionExtension",
 	"ProjectileStickyLocomotion",
-	"ProjectileEtherealSkullLocomotionExtension"
+	"ProjectileEtherealSkullLocomotionExtension",
 }
 
 ProjectileLocomotionSystem.init = function (self, entity_system_creation_context, name)
 	ProjectileLocomotionSystem.super.init(self, entity_system_creation_context, name, extensions)
 
 	local network_event_delegate = entity_system_creation_context.network_event_delegate
+
 	self.network_event_delegate = network_event_delegate
 
 	network_event_delegate:register(self, unpack(RPCS))

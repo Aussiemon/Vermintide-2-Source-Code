@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/projectile_impact/projectile_impact_system.lua
+
 require("scripts/unit_extensions/weapons/projectiles/projectile_impact/projectile_base_impact_unit_extension")
 require("scripts/unit_extensions/weapons/projectiles/projectile_impact/projectile_raycast_impact_unit_extension")
 require("scripts/unit_extensions/weapons/projectiles/projectile_impact/projectile_linear_sphere_sweep_impact_unit_extension")
@@ -5,19 +7,21 @@ require("scripts/unit_extensions/weapons/projectiles/projectile_impact/projectil
 require("scripts/unit_extensions/weapons/projectiles/projectile_impact/player_projectile_impact_unit_extension")
 
 ProjectileImpactSystem = class(ProjectileImpactSystem, ExtensionSystemBase)
+
 local RPCS = {}
 local extensions = {
 	"ProjectileBaseImpactUnitExtension",
 	"ProjectileRaycastImpactUnitExtension",
 	"PlayerProjectileImpactUnitExtension",
 	"ProjectileFixedImpactUnitExtension",
-	"ProjectileLinearSphereSweepImpactUnitExtension"
+	"ProjectileLinearSphereSweepImpactUnitExtension",
 }
 
 ProjectileImpactSystem.init = function (self, entity_system_creation_context, system_name)
 	ProjectileImpactSystem.super.init(self, entity_system_creation_context, system_name, extensions)
 
 	local network_event_delegate = entity_system_creation_context.network_event_delegate
+
 	self.network_event_delegate = network_event_delegate
 
 	network_event_delegate:register(self, unpack(RPCS))

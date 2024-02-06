@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/debug/debug_drawer.lua
+
 DebugDrawer = class(DebugDrawer)
 
 DebugDrawer.init = function (self, line_object, mode)
@@ -46,6 +48,7 @@ end
 DebugDrawer.box_sweep = function (self, pose, extents, movement_vector, color1, color2)
 	color1 = color1 or Color(255, 255, 255)
 	color2 = color2 or Color(255, 0, 0)
+
 	local rot = Matrix4x4.rotation(pose)
 	local pos = Matrix4x4.translation(pose)
 	local box2_pose = Matrix4x4.from_quaternion_position(rot, pos + movement_vector)
@@ -125,6 +128,7 @@ end
 DebugDrawer.cylinder = function (self, pos1, pos2, radius, color, segments)
 	color = color or Color(255, 255, 255)
 	segments = segments or 5
+
 	local step = (pos2 - pos1) / segments
 	local pos = pos1
 	local normal = Vector3.normalize(step)
@@ -140,6 +144,7 @@ end
 
 DebugDrawer.vector = function (self, position, vector, color)
 	color = color or Color(255, 255, 255)
+
 	local length = Vector3.length(vector)
 	local normalized = Vector3.normalize(vector)
 	local tip_scale = 0.2
@@ -166,6 +171,7 @@ end
 
 DebugDrawer.matrix4x4 = function (self, matrix, scale)
 	scale = scale or 1
+
 	local position = Matrix4x4.translation(matrix)
 
 	self:sphere(position, scale * 0.25)
@@ -177,12 +183,15 @@ end
 
 DebugDrawer.unit = function (self, unit, color)
 	color = color or Color(255, 255, 255)
+
 	local box_pose, box_extents = Unit.box(unit)
 
 	self:box(box_pose, box_extents, color)
 
 	local position = Unit.world_position(unit, 0)
+
 	position.z = position.z + box_extents.z
+
 	local rotation = Unit.world_rotation(unit, 0)
 
 	self:quaternion(position, rotation)

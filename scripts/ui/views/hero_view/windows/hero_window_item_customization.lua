@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/hero_view/windows/hero_window_item_customization.lua
+
 require("scripts/ui/views/menu_world_previewer")
 
 local crafting_recipes, crafting_recipes_by_name, crafting_recipes_lookup = dofile("scripts/settings/crafting/crafting_recipes")
@@ -19,75 +21,76 @@ local background_rect_definition = definitions.background_rect
 local generic_input_actions = definitions.generic_input_actions
 local states = {
 	item_setting = {
-		setup_function = "_state_setup_overview",
 		craft_complete_func_name = "_apply_weapon_skin_craft_complete",
-		gamepad_input_func = "_update_skin_gamepad_input",
-		transition_time = 0.3,
-		fov = 30,
 		draw_function = "_state_draw_overview",
+		fov = 30,
+		gamepad_input_func = "_update_skin_gamepad_input",
+		setup_function = "_state_setup_overview",
+		transition_time = 0.3,
 		camera_position = {
 			0,
 			0,
-			0
-		}
+			0,
+		},
 	},
 	item_properties = {
-		setup_function = "_state_setup_property_reroll",
 		craft_complete_func_name = "_state_setup_property_reroll",
-		transition_time = 0.3,
-		fov = 30,
 		draw_function = "_state_draw_property_reroll",
+		fov = 30,
+		setup_function = "_state_setup_property_reroll",
+		transition_time = 0.3,
 		camera_position = {
 			0,
 			-1,
-			0
+			0,
 		},
 		recipe_by_slot_type = {
-			trinket = "reroll_jewellery_properties",
-			ranged = "reroll_weapon_properties",
+			melee = "reroll_weapon_properties",
 			necklace = "reroll_jewellery_properties",
+			ranged = "reroll_weapon_properties",
 			ring = "reroll_jewellery_properties",
-			melee = "reroll_weapon_properties"
-		}
+			trinket = "reroll_jewellery_properties",
+		},
 	},
 	item_trait = {
-		setup_function = "_state_setup_trait_reroll",
 		craft_complete_func_name = "_state_setup_trait_reroll",
-		transition_time = 0.3,
-		fov = 30,
 		draw_function = "_state_draw_trait_reroll",
+		fov = 30,
+		setup_function = "_state_setup_trait_reroll",
+		transition_time = 0.3,
 		camera_position = {
 			0,
 			-1,
-			0
+			0,
 		},
 		recipe_by_slot_type = {
-			trinket = "reroll_jewellery_traits",
-			ranged = "reroll_weapon_traits",
+			melee = "reroll_weapon_traits",
 			necklace = "reroll_jewellery_traits",
+			ranged = "reroll_weapon_traits",
 			ring = "reroll_jewellery_traits",
-			melee = "reroll_weapon_traits"
-		}
+			trinket = "reroll_jewellery_traits",
+		},
 	},
 	item_upgrade = {
-		setup_function = "_state_setup_upgrade",
 		craft_complete_func_name = "_upgrade_item_craft_complete",
-		transition_time = 0.3,
-		fov = 30,
 		draw_function = "_state_draw_upgrade",
+		fov = 30,
+		setup_function = "_state_setup_upgrade",
+		transition_time = 0.3,
 		camera_position = {
 			0,
 			-1,
-			0
+			0,
 		},
 		recipe_by_rarity = {
 			common = "upgrade_item_rarity_rare",
+			exotic = "upgrade_item_rarity_unique",
 			plentiful = "upgrade_item_rarity_common",
 			rare = "upgrade_item_rarity_exotic",
-			exotic = "upgrade_item_rarity_unique"
-		}
-	}
+		},
+	},
 }
+
 HeroWindowItemCustomization = class(HeroWindowItemCustomization)
 HeroWindowItemCustomization.NAME = "HeroWindowItemCustomization"
 
@@ -96,26 +99,32 @@ HeroWindowItemCustomization.on_enter = function (self, params)
 
 	self._params = params
 	self._parent = params.parent
+
 	local ingame_ui_context = params.ingame_ui_context
+
 	self._ui_renderer = ingame_ui_context.ui_renderer
 	self._ui_top_renderer = ingame_ui_context.ui_top_renderer
 	self._career_index = params.career_index
 	self._profile_index = params.profile_index
+
 	local hero_data = SPProfiles[self._profile_index]
 	local career_data = hero_data.careers[self._career_index]
+
 	self._career_name = career_data.name
 	self._render_settings = {
 		alpha_multiplier = 1,
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 	self._state_render_settings = {
-		alpha_multiplier = 0
+		alpha_multiplier = 0,
 	}
 	self._animations = {}
 	self._ui_animations = {}
 	self._animation_callbacks = {}
 	self._craft_progress = 0
+
 	local item = params.item_to_customize
+
 	self._item_backend_id = item.backend_id
 
 	self:_create_ui_elements()
@@ -130,6 +139,7 @@ end
 HeroWindowItemCustomization._setup_menu_input_description = function (self)
 	local gui_layer = UILayer.default + 30
 	local input_service = self._parent:window_input_service()
+
 	self._menu_input_description = MenuInputDescriptionUI:new(nil, self._ui_top_renderer, input_service, 5, gui_layer, generic_input_actions.default, true)
 
 	self._menu_input_description:set_input_description(nil)
@@ -137,10 +147,11 @@ end
 
 HeroWindowItemCustomization._find_equipment_slot = function (self)
 	local backend_items = Managers.backend:get_interface("items")
-	local equipment_slot_name = nil
+	local equipment_slot_name
 
 	for _, slot_data in pairs(InventorySettings.equipment_slots) do
 		equipment_slot_name = slot_data.name
+
 		local equipped_item_backend_id = backend_items:get_loadout_item_id(self._career_name, equipment_slot_name)
 
 		if equipped_item_backend_id == self._item_backend_id then
@@ -152,6 +163,7 @@ HeroWindowItemCustomization._find_equipment_slot = function (self)
 		local item = self:_get_item(self._item_backend_id)
 		local item_data = item.data
 		local slot_type = item_data.slot_type
+
 		equipment_slot_name = InventorySettings.slot_names_by_type[slot_type][1]
 	end
 
@@ -166,35 +178,36 @@ HeroWindowItemCustomization._setup_availble_states = function (self, item)
 
 	if item_rarity == "default" or item_rarity == "promo" then
 		self._available_states = {
-			"item_setting"
+			"item_setting",
 		}
 	elseif rarity_rating <= rarity_rating_table.unique then
 		self._available_states = {
 			"item_setting",
 			"item_properties",
-			"item_trait"
+			"item_trait",
 		}
 	elseif rarity_rating <= rarity_rating_table.exotic then
 		self._available_states = {
 			"item_setting",
 			"item_properties",
 			"item_trait",
-			"item_upgrade"
+			"item_upgrade",
 		}
 	elseif rarity_rating <= rarity_rating_table.common then
 		self._available_states = {
 			"item_setting",
 			"item_properties",
-			"item_upgrade"
+			"item_upgrade",
 		}
 	elseif rarity_rating <= rarity_rating_table.plentiful then
 		self._available_states = {
 			"item_setting",
-			"item_upgrade"
+			"item_upgrade",
 		}
 	end
 
 	self._states = {}
+
 	local widgets_by_name = self._widgets_by_name
 
 	for state_name, _ in pairs(states) do
@@ -205,11 +218,13 @@ HeroWindowItemCustomization._setup_availble_states = function (self, item)
 		end
 
 		local widget = widgets_by_name[state_name]
+
 		widget.content.visible = available
 	end
 
 	if self._state and not self._states[self._state] then
 		local widget = self._widgets_by_name[self._state]
+
 		widget.content.button_hotspot.is_selected = false
 		widget.style.hover_frame.saturated = false
 
@@ -264,6 +279,7 @@ HeroWindowItemCustomization._change_state = function (self, new_state)
 		fassert(state_data, "[HeroWindowItemCustomization:_change_state] There is no state called %s", tostring(new_state))
 
 		self._state = new_state
+
 		local setup_function = state_data.setup_function
 
 		if setup_function then
@@ -274,11 +290,13 @@ HeroWindowItemCustomization._change_state = function (self, new_state)
 	end
 
 	self._state_start_fov = self:_camera_fov()
+
 	local camera_position = self:_camera_position()
+
 	self._state_start_camera_position = {
 		camera_position.x,
 		camera_position.y,
-		camera_position.z
+		camera_position.z,
 	}
 	self._state_transition_timer = 0
 
@@ -293,6 +311,7 @@ end
 
 HeroWindowItemCustomization._get_item = function (self, backend_id)
 	self._item_backend_id = backend_id
+
 	local backend_items = Managers.backend:get_interface("items")
 
 	return backend_items:get_item_from_id(backend_id)
@@ -301,10 +320,11 @@ end
 HeroWindowItemCustomization._start_transition_animation = function (self, animation_name)
 	local params = {
 		render_settings = self._render_settings,
-		state_render_settings = self._state_render_settings
+		state_render_settings = self._state_render_settings,
 	}
 	local widgets = {}
 	local anim_id = self._ui_animator:start_animation(animation_name, widgets, scenegraph_definition, params)
+
 	self._animations[animation_name] = anim_id
 end
 
@@ -316,23 +336,28 @@ HeroWindowItemCustomization._create_ui_elements = function (self)
 	end
 
 	local ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+
 	self._ui_scenegraph = ui_scenegraph
 	self._background_widget = UIWidget.init(background_rect_definition)
+
 	local widgets = {}
 	local widgets_by_name = {}
 
 	for name, widget_definition in pairs(widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		widgets[#widgets + 1] = widget
 		widgets_by_name[name] = widget
 	end
 
 	self._widgets = widgets
 	self._widgets_by_name = widgets_by_name
+
 	local crafting_widgets = {}
 
 	for name, widget_definition in pairs(crafting_widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		crafting_widgets[#crafting_widgets + 1] = widget
 		self._widgets_by_name[name] = widget
 	end
@@ -348,6 +373,7 @@ end
 HeroWindowItemCustomization._create_preview_widget = function (self)
 	local item_preview_definition = self:_create_item_preview_widget_definition()
 	local item_preview_widget = UIWidget.init(item_preview_definition)
+
 	self._preview_widget = item_preview_widget
 
 	self:_register_object_sets(self._preview_widget, item_preview_definition)
@@ -355,52 +381,53 @@ end
 
 HeroWindowItemCustomization._create_item_preview_widget_definition = function (self)
 	local widget = {
-		element = {}
+		element = {},
 	}
 	local passes = {
 		{
 			pass_type = "viewport",
-			style_id = "viewport"
+			style_id = "viewport",
 		},
 		{
+			content_id = "button_hotspot",
 			pass_type = "hotspot",
-			content_id = "button_hotspot"
-		}
+		},
 	}
 	local content = {
 		activated = true,
-		button_hotspot = {}
+		button_hotspot = {},
 	}
 	local style = {
 		viewport = {
-			viewport_type = "default_forward",
-			layer = 962,
-			shading_environment = "environment/ui_store_preview",
-			viewport_name = "item_preview",
-			level_name = "levels/ui_store_preview/world",
 			enable_sub_gui = true,
 			fov = 65,
+			layer = 962,
+			level_name = "levels/ui_store_preview/world",
+			shading_environment = "environment/ui_store_preview",
+			viewport_name = "item_preview",
+			viewport_type = "default_forward",
 			world_name = "item_preview",
 			object_sets = LevelResource.object_set_names("levels/ui_store_preview/world"),
 			camera_position = {
 				0,
 				0,
-				0
+				0,
 			},
 			camera_lookat = {
 				0,
 				0,
-				0
-			}
-		}
+				0,
+			},
+		},
 	}
+
 	widget.element.passes = passes
 	widget.content = content
 	widget.style = style
 	widget.offset = {
 		0,
 		0,
-		0
+		0,
 	}
 	widget.scenegraph_id = "item_preview"
 
@@ -483,7 +510,7 @@ HeroWindowItemCustomization._register_object_sets = function (self, viewport_wid
 	for _, set_name in ipairs(available_level_sets) do
 		object_sets[set_name] = {
 			set_enabled = true,
-			units = LevelResource.unit_indices_in_object_set(level_name, set_name)
+			units = LevelResource.unit_indices_in_object_set(level_name, set_name),
 		}
 	end
 
@@ -491,7 +518,7 @@ HeroWindowItemCustomization._register_object_sets = function (self, viewport_wid
 		world = pass_data.world,
 		level = pass_data.level,
 		object_sets = object_sets,
-		level_name = level_name
+		level_name = level_name,
 	}
 
 	self:_show_object_set(nil, true)
@@ -563,6 +590,7 @@ HeroWindowItemCustomization._update_environment = function (self, item_preview_e
 	local object_set_data = viewport_widget_content.object_set_data
 	local world = object_set_data.world
 	local shading_settings = World.get_data(world, "shading_settings")
+
 	shading_settings[1] = force_default and "default" or item_preview_environment
 end
 
@@ -652,6 +680,7 @@ HeroWindowItemCustomization._handle_gamepad_input = function (self, input_servic
 					end
 
 					local progress = math.easeOutCubic(craft_progress)
+
 					self._ui_scenegraph.experience_bar.size[1] = 390 * progress
 					experience_bar.content.texture_id.uvs[2][1] = progress
 					experience_bar.content.visible = true
@@ -673,7 +702,7 @@ HeroWindowItemCustomization._handle_input = function (self, input_service, dt, t
 	local parent = self._parent
 	local input_handled = false
 	local widgets_by_name = self._widgets_by_name
-	local hover_index = nil
+	local hover_index
 
 	for i = 1, #self._available_states do
 		local widget_name = self._available_states[i]
@@ -702,7 +731,7 @@ HeroWindowItemCustomization._handle_input = function (self, input_service, dt, t
 	local illusion_widgets = self._illusion_widgets
 	local weapon_illusion_base_widgets_by_name = self._weapon_illusion_base_widgets_by_name
 	local illusions_name_content = weapon_illusion_base_widgets_by_name.illusions_name.content
-	local selected_skin, hover_skin = nil
+	local selected_skin, hover_skin
 
 	for i = 1, #illusion_widgets do
 		local widget = illusion_widgets[i]
@@ -716,6 +745,7 @@ HeroWindowItemCustomization._handle_input = function (self, input_service, dt, t
 
 	local current_skin = hover_skin or selected_skin or item_skin or default_skin
 	local item_data = current_skin and ItemMasterList[current_skin]
+
 	illusions_name_content.text = item_data and Localize(item_data.display_name) or ""
 
 	if self._material_items and self._current_recipe_name then
@@ -745,6 +775,7 @@ HeroWindowItemCustomization._handle_input = function (self, input_service, dt, t
 		end
 
 		local progress = math.easeOutCubic(craft_progress)
+
 		self._ui_scenegraph.experience_bar.size[1] = 390 * progress
 		experience_bar.content.texture_id.uvs[2][1] = progress
 		experience_bar.content.visible = true
@@ -764,6 +795,7 @@ end
 HeroWindowItemCustomization._update_active_preview = function (self)
 	local input_index = self._active_selection_index or self._hover_index or self._input_index
 	local selector_name = self._available_states[input_index]
+
 	self._active_selector_preview = selector_name
 end
 
@@ -783,14 +815,21 @@ HeroWindowItemCustomization._option_selected = function (self, input_index, igno
 		self:_change_state(selected_widget_name)
 	end
 
+	if false then
+		-- Nothing
+	end
+
 	local mouse_active = Managers.input:is_device_active("mouse")
 	local old_selection_index = self._active_selection_index
+
 	self._active_selection_index = select_option and input_index
+
 	local widgets_by_name = self._widgets_by_name
 
 	for i = 1, #self._available_states do
 		local widget_state_name = self._available_states[i]
 		local widget = widgets_by_name[widget_state_name]
+
 		widget.style.hover_frame.saturated = select_option and input_index == i or not mouse_active and i == old_selection_index
 	end
 
@@ -830,6 +869,7 @@ HeroWindowItemCustomization._set_setting_option_selected = function (self, widge
 			local hotspot_name = "button_hotspot_" .. i
 			local hotspot = content[hotspot_name]
 			local is_selected = select_all or i == index
+
 			hotspot.is_selected = is_selected
 		end
 	end
@@ -837,7 +877,9 @@ end
 
 HeroWindowItemCustomization._handle_new_selection = function (self, input_index)
 	local num_inputs = #self._available_states
+
 	input_index = input_index and math.clamp(input_index, 1, num_inputs)
+
 	local mouse_active = Managers.input:is_device_active("mouse")
 	local widgets_by_name = self._widgets_by_name
 
@@ -845,6 +887,7 @@ HeroWindowItemCustomization._handle_new_selection = function (self, input_index)
 		local widget_name = self._available_states[i]
 		local widget = widgets_by_name[widget_name]
 		local is_selected = i == input_index
+
 		widget.content.button_hotspot.is_selected = is_selected or i == self._active_selection_index
 
 		if not mouse_active then
@@ -914,7 +957,9 @@ HeroWindowItemCustomization._animate_state_transition = function (self, dt)
 	local states = self._states
 	local state_data = states[state]
 	local transition_time = state_data.transition_time
+
 	state_transition_timer = state_transition_timer + dt
+
 	local progress = math.clamp(state_transition_timer / transition_time, 0, 1)
 	local anim_progress = math.smoothstep(progress, 0, 1)
 	local start_fov = self._state_start_fov
@@ -965,7 +1010,7 @@ HeroWindowItemCustomization._draw = function (self, input_service, dt)
 	local ui_top_renderer = self._ui_top_renderer
 	local ui_scenegraph = self._ui_scenegraph
 	local render_settings = self._render_settings
-	local parent_scenegraph_id = nil
+	local parent_scenegraph_id
 	local gamepad_active = Managers.input:is_device_active("gamepad")
 	local alpha_multiplier = render_settings.alpha_multiplier or 1
 
@@ -1085,6 +1130,7 @@ HeroWindowItemCustomization._handle_gamepad_activity = function (self)
 	if not mouse_active then
 		if not self.gamepad_active_last_frame or force_update then
 			self.gamepad_active_last_frame = true
+
 			local widgets_by_name = self._widgets_by_name
 
 			if not self._input_index then
@@ -1095,6 +1141,7 @@ HeroWindowItemCustomization._handle_gamepad_activity = function (self)
 		end
 	elseif self.gamepad_active_last_frame or force_update then
 		self.gamepad_active_last_frame = false
+
 		local widgets_by_name = self._widgets_by_name
 
 		if not self._active_selection_index then
@@ -1118,13 +1165,9 @@ HeroWindowItemCustomization._update_item_rarity = function (self)
 
 	for i = 1, #item_rarities do
 		local rarity_name = item_rarities[i]
-		local rarity_texture = nil
+		local rarity_texture
 
-		if rarity_index < i then
-			rarity_texture = "item_tier_empty"
-		else
-			rarity_texture = "item_tier_" .. rarity_name
-		end
+		rarity_texture = rarity_index < i and "item_tier_empty" or "item_tier_" .. rarity_name
 
 		if UIAtlasHelper.has_texture_by_name(rarity_texture) then
 			count = count + 1
@@ -1142,8 +1185,9 @@ HeroWindowItemCustomization._update_item_rarity = function (self)
 		255,
 		math.floor(rarity_color[2] * color_multiplier),
 		math.floor(rarity_color[3] * color_multiplier),
-		math.floor(rarity_color[4] * color_multiplier)
+		math.floor(rarity_color[4] * color_multiplier),
 	}
+
 	item_setting_input_text_style.text_color = active_color
 	item_setting_input_text_style.default_text_color = active_color
 	item_setting_input_text_style.select_text_color = rarity_color
@@ -1160,6 +1204,7 @@ HeroWindowItemCustomization._update_property_option = function (self)
 
 		for property_key, property_value in pairs(properties) do
 			property_count = property_count + 1
+
 			local property_data = WeaponProperties.properties[property_key]
 			local buff_name = property_data.buff_name
 			local buff_template = BuffTemplates[buff_name]
@@ -1168,6 +1213,7 @@ HeroWindowItemCustomization._update_property_option = function (self)
 			local property_title_text, advanced_description = UIUtils.get_property_description(property_key, property_value)
 			local option_hotspot_name = "button_hotspot_" .. property_count
 			local option_text_name = "option_text_" .. property_count
+
 			content[option_hotspot_name].disable_button = false
 			content[option_text_name] = property_title_text
 		end
@@ -1211,6 +1257,7 @@ HeroWindowItemCustomization._update_upgrade_option = function (self)
 	end
 
 	local upgrade_description_text = Localize("upgrade_description_text_" .. rarity)
+
 	content.sub_title = upgrade_description_text
 	content.locked = rarity == "unique"
 
@@ -1221,8 +1268,9 @@ HeroWindowItemCustomization._update_upgrade_option = function (self)
 			255,
 			math.floor(rarity_name_color[1] * color_multiplier),
 			math.floor(rarity_name_color[2] * color_multiplier),
-			math.floor(rarity_name_color[3] * color_multiplier)
+			math.floor(rarity_name_color[3] * color_multiplier),
 		}
+
 		sub_title_style.text_color = rarity_name_color
 		sub_title_style.default_text_color = active_color
 		sub_title_style.select_text_color = active_color
@@ -1230,6 +1278,7 @@ HeroWindowItemCustomization._update_upgrade_option = function (self)
 
 	local text_style = style.sub_title
 	local text_height = math.floor(UIUtils.get_text_height(ui_renderer, default_size, text_style, upgrade_description_text)) + 50
+
 	new_height = new_height + text_height
 	style.title_text.size[2] = new_height
 	style.title_text_shadow.size[2] = new_height
@@ -1239,7 +1288,9 @@ HeroWindowItemCustomization._update_upgrade_option = function (self)
 	style.input_text_locked_shadow.size[2] = new_height
 	style.sub_title.size[2] = new_height
 	style.sub_title_shadow.size[2] = new_height
+
 	local size = ui_scenegraph[scenegraph_id].size
+
 	size[2] = new_height
 end
 
@@ -1265,12 +1316,15 @@ HeroWindowItemCustomization._update_trait_option = function (self)
 			local trait_icon = trait_data.icon
 			local title_text = Localize(trait_name)
 			local description_text = UIUtils.get_trait_description(trait_key)
+
 			content.icon_texture = trait_icon
 			content.input_text = title_text
 			content.sub_title = description_text
 			content.locked = false
+
 			local text_style = style.sub_title
 			local text_height = math.floor(UIUtils.get_text_height(ui_renderer, default_size, text_style, description_text))
+
 			new_height = new_height + text_height
 
 			if new_height ~= content.size[2] then
@@ -1288,6 +1342,7 @@ HeroWindowItemCustomization._update_trait_option = function (self)
 
 	local size = ui_scenegraph[scenegraph_id].size
 	local local_position = ui_scenegraph[scenegraph_id].local_position
+
 	size[2] = new_height
 	local_position[2] = -new_height
 end
@@ -1315,11 +1370,13 @@ HeroWindowItemCustomization._present_item = function (self, item, ignore_spin, c
 	local widgets_by_name = self._widgets_by_name
 	local item_setting_widget = widgets_by_name.item_setting
 	local item_setting_content = item_setting_widget.content
+
 	item_setting_content.input_text = Localize(display_name)
 	item_setting_content.sub_title = Localize(slot_type)
 	item_setting_content.icon_texture = inventory_icon or "icons_placeholder"
 	item_setting_content.icon_bg = rarity_icon_background or "icons_placeholder"
 	item_setting_content.item = item
+
 	local item_preview_object_set_name = item_data.item_preview_object_set_name or "flow_weapon_lights"
 	local item_preview_environment = item_data.item_preview_environment or "weapons_default_01"
 
@@ -1341,9 +1398,9 @@ HeroWindowItemCustomization._spawn_item_unit = function (self, item, ignore_spin
 	local preview_position = custom_spawn_position or {
 		0,
 		1,
-		0
+		0,
 	}
-	local unique_id, invert_start_rotation, display_unit_key, use_highest_mip_levels, delayed_spawn = nil
+	local unique_id, invert_start_rotation, display_unit_key, use_highest_mip_levels, delayed_spawn
 	local career_name_override = self._career_name
 	local item_previewer = LootItemUnitPreviewer:new(item, preview_position, world, viewport, unique_id, invert_start_rotation, display_unit_key, use_highest_mip_levels, delayed_spawn, career_name_override)
 	local spawn_callback = callback(self, "cb_on_item_loaded", item_key, ignore_spin)
@@ -1386,13 +1443,14 @@ HeroWindowItemCustomization._on_illusion_index_pressed = function (self, index, 
 	local content = widget.content
 	local skin_key = content.skin_key
 	local item_data = ItemMasterList[skin_key]
+
 	self._skin_dirty = false
 
 	if not ignore_item_spawn then
 		local locked = content.locked
 		local item = {
 			data = item_data,
-			skin = skin_key
+			skin = skin_key,
 		}
 
 		self:_spawn_item_unit(item, true)
@@ -1407,6 +1465,7 @@ HeroWindowItemCustomization._on_illusion_index_pressed = function (self, index, 
 			if skin_key ~= item_skin then
 				local item_interface = Managers.backend:get_interface("items")
 				local skin_backend_id, _ = item_interface:get_weapon_skin_from_skin_key(skin_key)
+
 				self._material_items[#self._material_items + 1] = skin_backend_id
 
 				self:_enable_craft_button(true, true)
@@ -1421,13 +1480,16 @@ HeroWindowItemCustomization._on_illusion_index_pressed = function (self, index, 
 	end
 
 	local weapon_illusion_base_widgets_by_name = self._weapon_illusion_base_widgets_by_name
+
 	weapon_illusion_base_widgets_by_name.illusions_name.content.text = Localize(item_data.display_name)
+
 	local widgets = self._illusion_widgets
 
 	for i, widget in ipairs(widgets) do
 		local is_selected = i == index
 		local content = widget.content
 		local button_hotspot = content.button_hotspot
+
 		button_hotspot.is_selected = is_selected
 
 		if mark_as_equipped then
@@ -1450,7 +1512,7 @@ local function sort_illusion_widgets(a, b)
 	local a_order = item_rarity_order[a_rarity] or 0
 	local b_order = item_rarity_order[b_rarity] or 0
 
-	return a_order > b_order
+	return b_order < a_order
 end
 
 local EMPTY_TABLE = {}
@@ -1465,7 +1527,7 @@ HeroWindowItemCustomization._setup_illusions = function (self, item)
 	local backend_crafting = Managers.backend:get_interface("crafting")
 	local unlocked_weapon_skins = backend_crafting:get_unlocked_weapon_skins()
 	local default_skin = WeaponSkins.default_skins[item_key]
-	local default_skin_key = nil
+	local default_skin_key
 	local width = 51
 	local spacing = -5
 	local total_width = -spacing
@@ -1481,9 +1543,7 @@ HeroWindowItemCustomization._setup_illusions = function (self, item)
 					if not rarity_settings[weapon_skins_rarity] then
 						local weapon_skin_data = WeaponSkins.skins[skin]
 
-						if weapon_skin_data then
-							weapon_skins_rarity = weapon_skin_data.rarity or weapon_skins_rarity
-						end
+						weapon_skins_rarity = weapon_skin_data and weapon_skin_data.rarity or weapon_skins_rarity
 					end
 
 					local unlocked = unlocked_weapon_skins[skin] or skin == default_skin
@@ -1509,8 +1569,11 @@ HeroWindowItemCustomization._setup_illusions = function (self, item)
 						end
 
 						local widget = UIWidget.init(widget_definition)
+
 						widgets[#widgets + 1] = widget
+
 						local content = widget.content
+
 						content.skin_key = skin
 						content.icon_texture = icon_texture
 						content.locked = not unlocked
@@ -1533,8 +1596,11 @@ HeroWindowItemCustomization._setup_illusions = function (self, item)
 		end
 
 		local widget = UIWidget.init(widget_definition)
+
 		widgets[#widgets + 1] = widget
+
 		local content = widget.content
+
 		content.skin_key = default_skin
 		content.icon_texture = icon_texture
 		content.locked = not unlocked
@@ -1549,11 +1615,13 @@ HeroWindowItemCustomization._setup_illusions = function (self, item)
 
 	for _, widget in ipairs(widgets) do
 		local offset = widget.offset
+
 		offset[1] = -total_width / 2 + x_offset
 		x_offset = x_offset + width + spacing
 	end
 
 	self._illusion_widgets = widgets
+
 	local item_skin = item.skin or default_skin
 	local ignore_item_spawn = true
 	local mark_as_equipped = true
@@ -1561,6 +1629,7 @@ HeroWindowItemCustomization._setup_illusions = function (self, item)
 	self:_select_illusion_by_key(item_skin, ignore_item_spawn, mark_as_equipped)
 
 	local weapon_illusion_base_widgets_by_name = self._weapon_illusion_base_widgets_by_name
+
 	weapon_illusion_base_widgets_by_name.illusions_counter.content.text = "(" .. tostring(num_unlocked_skins) .. "/" .. tostring(#widgets) .. ")"
 end
 
@@ -1570,23 +1639,27 @@ HeroWindowItemCustomization._state_setup_overview = function (self)
 
 	for name, widget_definition in pairs(info_widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		info_widgets[#info_widgets + 1] = widget
 		info_widgets_by_name[name] = widget
 	end
 
 	self._info_widgets = info_widgets
 	self._info_widgets_by_name = info_widgets_by_name
+
 	local weapon_illusion_base_widgets = {}
 	local weapon_illusion_base_widgets_by_name = {}
 
 	for name, widget_definition in pairs(weapon_illusion_base_widgets_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		weapon_illusion_base_widgets[#weapon_illusion_base_widgets + 1] = widget
 		weapon_illusion_base_widgets_by_name[name] = widget
 	end
 
 	self._weapon_illusion_base_widgets = weapon_illusion_base_widgets
 	self._weapon_illusion_base_widgets_by_name = weapon_illusion_base_widgets_by_name
+
 	local item = self:_get_item(self._item_backend_id)
 	local inventory_icon, display_name, description, _ = UIUtils.get_ui_information_from_item(item)
 	local item_data = item.data
@@ -1597,7 +1670,9 @@ HeroWindowItemCustomization._state_setup_overview = function (self)
 	local power_level = item.power_level
 	local feature_widgets = {}
 	local widget_power = self:_create_item_feature_widget(Localize("tooltips_power"), power_level)
+
 	feature_widgets[#feature_widgets + 1] = widget_power
+
 	local is_weapon = slot_type == "melee" or slot_type == "ranged"
 
 	if is_weapon then
@@ -1617,21 +1692,22 @@ HeroWindowItemCustomization._state_setup_overview = function (self)
 			end
 
 			local text_style = {
-				word_wrap = true,
 				font_size = 28,
+				font_type = "hell_shark",
+				horizontal_alignment = "center",
 				localize = false,
 				use_shadow = true,
-				horizontal_alignment = "center",
 				vertical_alignment = "center",
-				font_type = "hell_shark",
+				word_wrap = true,
 				text_color = Colors.get_color_table_with_alpha("white", 255),
 				offset = {
 					0,
 					0,
-					2
-				}
+					2,
+				},
 			}
 			local widget_keywords, description_size = self:_create_description_widget("info_keyword_text", keyword_text, text_style)
+
 			info_widgets[#info_widgets + 1] = widget_keywords
 		end
 	else
@@ -1643,12 +1719,15 @@ HeroWindowItemCustomization._state_setup_overview = function (self)
 	if slot_type == "melee" then
 		local block_angle = item_template.block_angle
 		local widget_block_angle = self:_create_item_feature_widget(Localize("tutorial_tooltip_block"), block_angle)
+
 		feature_widgets[#feature_widgets + 1] = widget_block_angle
+
 		local max_fatigue_points = item_template.max_fatigue_points
 		local widget_stamina = self:_create_item_feature_widget(Localize("tooltips_stamina"), max_fatigue_points)
+
 		feature_widgets[#feature_widgets + 1] = widget_stamina
 	elseif slot_type == "ranged" then
-		local ammo_text, ammo_texture = nil
+		local ammo_text, ammo_texture
 		local ammo_data = item_template.ammo_data
 
 		if ammo_data and not ammo_data.hide_ammo_ui then
@@ -1656,17 +1735,21 @@ HeroWindowItemCustomization._state_setup_overview = function (self)
 			local reload_time = ammo_data.reload_time
 			local max_ammo = ammo_data.max_ammo
 			local ammo_per_clip = ammo_data.ammo_per_clip
+
 			ammo_text = tostring(max_ammo)
 		else
 			ammo_texture = "icon_fire"
 		end
 
 		local widget_ammunition = self:_create_item_feature_widget(Localize("tooltips_ammunition"), ammo_text, ammo_texture)
+
 		feature_widgets[#feature_widgets + 1] = widget_ammunition
+
 		local crosshairs = UISettings.crosshair_styles.ranged
 		local crosshair_style = item_template.crosshair_style
 		local crosshair_data = crosshairs[crosshair_style] or UISettings.crosshair_types.default
 		local widget_crosshair = self:_create_item_feature_widget("Crosshair", nil, crosshair_data.crosshair_icon)
+
 		feature_widgets[#feature_widgets + 1] = widget_crosshair
 	end
 
@@ -1674,17 +1757,20 @@ HeroWindowItemCustomization._state_setup_overview = function (self)
 
 	for i = 1, num_feature_widgets do
 		local widget = feature_widgets[i]
+
 		widget.offset[1] = widget.content.size[1] * (i - 1)
 		info_widgets[#info_widgets + 1] = widget
 	end
 
 	if is_weapon then
 		local widget_diagram = self:_create_weapon_diagram_widget(item_template)
+
 		info_widgets[#info_widgets + 1] = widget_diagram
 		info_widgets_by_name.weapon_diagram = widget_diagram
 	end
 
 	local widget_description, description_size = self:_create_description_widget("info_description_text", Localize(description))
+
 	info_widgets[#info_widgets + 1] = widget_description
 	self._ui_scenegraph.info_description_text.local_position[2] = -(description_size[2] + 10)
 	self._ui_scenegraph.keyword_divider_bottom.local_position[2] = is_weapon and -10 or 350
@@ -1697,7 +1783,7 @@ HeroWindowItemCustomization._state_setup_overview = function (self)
 	self:_update_state_craft_button(self._current_recipe_name, Localize("input_description_apply"), nil, nil, {
 		0,
 		-40,
-		0
+		0,
 	})
 	self:_enable_craft_button(false)
 	self._menu_input_description:change_generic_actions(generic_input_actions.default)
@@ -1709,12 +1795,14 @@ HeroWindowItemCustomization._state_setup_property_reroll = function (self)
 
 	for name, widget_definition in pairs(property_reroll_widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		property_reroll_widgets[#property_reroll_widgets + 1] = widget
 		property_reroll_widgets_by_name[name] = widget
 	end
 
 	self._property_reroll_widgets = property_reroll_widgets
 	self._property_reroll_widgets_by_name = property_reroll_widgets_by_name
+
 	local item = self:_get_item(self._item_backend_id)
 	local item_data = item.data
 	local slot_type = item_data.slot_type
@@ -1751,10 +1839,13 @@ HeroWindowItemCustomization._state_setup_property_reroll = function (self)
 			local property_name = property_data.display_name
 			local value = 1
 			local property_title_text, advanced_description = UIUtils.get_property_description(property_key, value)
+
 			property_title_text = string.gsub(property_title_text, "%d", "")
 			property_title_text = string.gsub(property_title_text, "%p", "")
+
 			local text = property_title_text
 			local widget = self:_create_property_option_entry(property_title_text, advanced_description)
+
 			widgets[#widgets + 1] = widget
 			widget.offset[2] = -y_offset
 			y_offset = y_offset + spacing
@@ -1763,10 +1854,15 @@ HeroWindowItemCustomization._state_setup_property_reroll = function (self)
 
 	y_offset = y_offset - edge_spacing
 	self._property_reroll_option_widgets = widgets
+
 	local widget_description, description_size = self:_create_description_widget("info_description_text_2", Localize("description_crafting_recipe_weapon_reroll_properties"))
+
 	property_reroll_widgets[#property_reroll_widgets + 1] = widget_description
+
 	local description_text_height = description_size[2] + 10
+
 	self._ui_scenegraph.info_description_text_2.local_position[2] = -description_text_height
+
 	local step_size = spacing * 2
 
 	self:_initialize_scrollbar(y_offset, step_size)
@@ -1774,6 +1870,7 @@ HeroWindowItemCustomization._state_setup_property_reroll = function (self)
 	local state_data = self._states[self._state]
 	local recipe_by_slot_type = state_data.recipe_by_slot_type
 	local recipe_name = recipe_by_slot_type[slot_type]
+
 	self._current_recipe_name = recipe_name
 
 	self:_update_state_craft_button(recipe_name, Localize("crafting_recipe_weapon_reroll_properties"), Colors.get_color_table_with_alpha("corn_flower_blue", 255))
@@ -1786,15 +1883,22 @@ HeroWindowItemCustomization._enable_craft_button = function (self, enable, disab
 	end
 
 	local widgets_by_name = self._widgets_by_name
+
 	widgets_by_name.button_top_edge_left.content.visible = not disable_edges and enable or false
 	widgets_by_name.button_top_edge_right.content.visible = not disable_edges and enable or false
 	widgets_by_name.button_top_edge_glow.content.visible = not disable_edges and enable or false
+
 	local widget_craft_button = widgets_by_name.craft_button
+
 	widget_craft_button.content.visible = enable
 	widget_craft_button.content.button_hotspot.disable_button = not enable
+
 	local widget_experience_bar = widgets_by_name.experience_bar
+
 	widget_experience_bar.content.visible = enable
+
 	local widget_experience_bar_edge = widgets_by_name.experience_bar_edge
+
 	widget_experience_bar_edge.content.visible = enable
 
 	if not enable then
@@ -1806,11 +1910,14 @@ end
 
 HeroWindowItemCustomization._update_state_craft_button = function (self, recipe_name, button_text, glow_color, force_disable, offset)
 	local has_all_requirements, total_width = self:_create_material_requirement_widgets(recipe_name)
+
 	total_width = math.max(total_width + 30, 100)
+
 	local widgets_by_name = self._widgets_by_name
 	local widget_button_edge_left = widgets_by_name.button_top_edge_left
 	local widget_button_edge_right = widgets_by_name.button_top_edge_right
 	local widget_button_top_edge_glow = widgets_by_name.button_top_edge_glow
+
 	widget_button_edge_left.offset[1] = -total_width / 2
 	widget_button_edge_right.offset[1] = total_width / 2
 	self._ui_scenegraph.button_top_edge_glow.size[1] = total_width
@@ -1820,10 +1927,13 @@ HeroWindowItemCustomization._update_state_craft_button = function (self, recipe_
 	end
 
 	local widget_craft_button = widgets_by_name.craft_button
+
 	widget_craft_button.content.button_hotspot.disable_button = force_disable or not has_all_requirements or script_data["eac-untrusted"]
 	widget_craft_button.content.title_text = button_text
 	self._has_all_crafting_requirements = has_all_requirements
+
 	local visible = true
+
 	widget_button_edge_left.content.visible = visible
 	widget_button_edge_right.content.visible = visible
 	widget_button_top_edge_glow.content.visible = visible
@@ -1831,7 +1941,7 @@ HeroWindowItemCustomization._update_state_craft_button = function (self, recipe_
 	self._ui_scenegraph.craft_button.local_position = offset or {
 		0,
 		0,
-		0
+		0,
 	}
 end
 
@@ -1840,7 +1950,7 @@ local FALLBACK_WEAPON_DIAGRAM = {
 	0,
 	0,
 	0,
-	0
+	0,
 }
 
 HeroWindowItemCustomization._create_weapon_diagram_widget = function (self, item_template)
@@ -1863,11 +1973,13 @@ HeroWindowItemCustomization._create_weapon_diagram_widget = function (self, item
 	local speed = math.clamp(math.floor(light_attack[DamageTypes.SPEED] + 0.5), 0, num_steps - 1)
 	local stagger = math.clamp(math.floor(light_attack[DamageTypes.STAGGER] + 0.5), 0, num_steps - 1)
 	local damage = math.clamp(math.floor(light_attack[DamageTypes.DAMAGE] + 0.5), 0, num_steps - 1)
+
 	nodes[#nodes + 1] = starting_offset + step_size * armor_piercing + armor_piercing * epsilon
 	nodes[#nodes + 1] = starting_offset + step_size * cleave + cleave * epsilon
 	nodes[#nodes + 1] = starting_offset + step_size * speed + speed * epsilon
 	nodes[#nodes + 1] = starting_offset + step_size * stagger + stagger * epsilon
 	nodes[#nodes + 1] = starting_offset + step_size * damage + damage * epsilon
+
 	local heavy_attack = weapon_diagram_data and weapon_diagram_data.heavy_attack
 
 	if not heavy_attack then
@@ -1881,11 +1993,13 @@ HeroWindowItemCustomization._create_weapon_diagram_widget = function (self, item
 	local speed = math.clamp(math.floor(heavy_attack[DamageTypes.SPEED] + 0.5), 0, num_steps - 1)
 	local stagger = math.clamp(math.floor(heavy_attack[DamageTypes.STAGGER] + 0.5), 0, num_steps - 1)
 	local damage = math.clamp(math.floor(heavy_attack[DamageTypes.DAMAGE] + 0.5), 0, num_steps - 1)
+
 	nodes[#nodes + 1] = starting_offset + step_size * armor_piercing + armor_piercing * epsilon
 	nodes[#nodes + 1] = starting_offset + step_size * cleave + cleave * epsilon
 	nodes[#nodes + 1] = starting_offset + step_size * speed + speed * epsilon
 	nodes[#nodes + 1] = starting_offset + step_size * stagger + stagger * epsilon
 	nodes[#nodes + 1] = starting_offset + step_size * damage + damage * epsilon
+
 	local masked = false
 	local scenegraph_id = "weapon_stats_diagram"
 	local size = scenegraph_definition[scenegraph_id].size
@@ -1907,27 +2021,30 @@ end
 
 HeroWindowItemCustomization._create_description_widget = function (self, scenegraph_id, text, text_style)
 	local masked = false
+
 	text_style = text_style or {
-		word_wrap = true,
 		font_size = 20,
+		horizontal_alignment = "left",
 		localize = false,
 		use_shadow = true,
-		horizontal_alignment = "left",
 		vertical_alignment = "top",
+		word_wrap = true,
 		font_type = masked and "hell_shark_masked" or "hell_shark",
 		text_color = Colors.get_color_table_with_alpha("font_default", 255),
 		offset = {
 			0,
 			0,
-			2
-		}
+			2,
+		},
 	}
+
 	local widget_definition = UIWidgets.create_simple_text(text, scenegraph_id, nil, nil, text_style)
 	local widget = UIWidget.init(widget_definition)
 	local ui_renderer = self._ui_top_renderer
 	local default_size = scenegraph_definition[scenegraph_id].size
 	local text_height = math.floor(UIUtils.get_text_height(ui_renderer, default_size, text_style, text))
 	local size = self._ui_scenegraph[scenegraph_id].size
+
 	size[2] = text_height
 
 	return widget, size
@@ -1943,6 +2060,7 @@ HeroWindowItemCustomization._create_property_option_entry = function (self, text
 	local color_override_table = text_style.color_override_table
 	local value_text_length = value_range_text and UTF8Utils.string_length(value_range_text) or 0
 	local default_text_length = UTF8Utils.string_length(text) or 0
+
 	color_override_table.start_index = default_text_length + 1
 	color_override_table.end_index = default_text_length + value_text_length
 	text_style.color_override[1] = color_override_table
@@ -1962,6 +2080,7 @@ HeroWindowItemCustomization._destroy_scrollbar = function (self)
 
 	local widgets_by_name = self._widgets_by_name
 	local scrollbar_widget = widgets_by_name.scrollbar
+
 	scrollbar_widget.content.visible = false
 end
 
@@ -1974,12 +2093,18 @@ HeroWindowItemCustomization._initialize_scrollbar = function (self, content_leng
 	local info_window_world_y = ui_scenegraph.info_window.world_position[2]
 	local scroll_area_world_y = ui_scenegraph.property_options_title.world_position[2]
 	local draw_length = scroll_area_world_y - info_window_world_y
-	local draw = content_length > draw_length
+	local draw = draw_length < content_length
+
 	ui_scenegraph.scrollbar.size[2] = draw_length
+
 	local scrollbar_widget = widgets_by_name.scrollbar
+
 	scrollbar_widget.content.visible = draw
+
 	local scrollbar_logic = ScrollBarLogic:new(scrollbar_widget)
+
 	self._scrollbar_logic = scrollbar_logic
+
 	local scroll_step_multiplier = 1
 	local scrollbar_length = draw_length
 
@@ -2031,12 +2156,14 @@ HeroWindowItemCustomization._create_material_requirement_widgets = function (sel
 	for index, data in ipairs(ingredients) do
 		if not data.catergory then
 			local widget = UIWidget.init(widget_definition)
+
 			widgets[#widgets + 1] = widget
+
 			local item_key = data.name
 			local required_amount = data.amount
 			local texture = material_textures[item_key]
 			local amount_owned = 0
-			local required_backend_id = nil
+			local required_backend_id
 
 			for _, item in ipairs(crafting_material_items) do
 				local backend_id = item.backend_id
@@ -2053,11 +2180,12 @@ HeroWindowItemCustomization._create_material_requirement_widgets = function (sel
 			local has_required_amount = required_amount <= amount_owned
 			local presentation_amount = (amount_owned < UISettings.max_craft_material_presentation_amount and tostring(amount_owned) or "*") .. "/" .. tostring(required_amount)
 			local content = widget.content
+
 			content.text = presentation_amount
 			content.icon = texture
 			content.warning = not has_required_amount
 			content.item = {
-				data = table.clone(ItemMasterList[item_key])
+				data = table.clone(ItemMasterList[item_key]),
 			}
 
 			if has_required_amount then
@@ -2076,6 +2204,7 @@ HeroWindowItemCustomization._create_material_requirement_widgets = function (sel
 	for i = 1, num_materials do
 		local widget = widgets[i]
 		local offset = widget.offset
+
 		offset[1] = offset_x
 		offset_x = offset_x + spacing
 	end
@@ -2095,12 +2224,14 @@ HeroWindowItemCustomization._state_setup_trait_reroll = function (self)
 
 	for name, widget_definition in pairs(trait_reroll_widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		trait_reroll_widgets[#trait_reroll_widgets + 1] = widget
 		trait_reroll_widgets_by_name[name] = widget
 	end
 
 	self._trait_reroll_widgets = trait_reroll_widgets
 	self._trait_reroll_widgets_by_name = trait_reroll_widgets_by_name
+
 	local item = self:_get_item(self._item_backend_id)
 	local item_data = item.data
 	local slot_type = item_data.slot_type
@@ -2139,6 +2270,7 @@ HeroWindowItemCustomization._state_setup_trait_reroll = function (self)
 			local title_text = Localize(trait_name)
 			local description_text = UIUtils.get_trait_description(trait_key)
 			local widget, additional_height = self:_create_trait_option_entry(title_text, description_text, trait_icon)
+
 			widgets[#widgets + 1] = widget
 			widget.offset[2] = -y_offset
 			y_offset = y_offset + spacing + additional_height
@@ -2147,11 +2279,16 @@ HeroWindowItemCustomization._state_setup_trait_reroll = function (self)
 
 	y_offset = y_offset - edge_spacing
 	self._trait_reroll_option_widgets = widgets
+
 	local widget_description, description_size = self:_create_description_widget("info_description_text_2", Localize("description_crafting_recipe_weapon_reroll_traits"))
+
 	trait_reroll_widgets[#trait_reroll_widgets + 1] = widget_description
+
 	local description_text_height = description_size[2] + 10
 	local ui_scenegraph = self._ui_scenegraph
+
 	ui_scenegraph.info_description_text_2.local_position[2] = -description_text_height
+
 	local step_size = spacing * 2
 
 	self:_initialize_scrollbar(y_offset, step_size)
@@ -2159,6 +2296,7 @@ HeroWindowItemCustomization._state_setup_trait_reroll = function (self)
 	local state_data = self._states[self._state]
 	local recipe_by_slot_type = state_data.recipe_by_slot_type
 	local recipe_name = recipe_by_slot_type[slot_type]
+
 	self._current_recipe_name = recipe_name
 
 	self:_update_state_craft_button(recipe_name, Localize("crafting_recipe_weapon_reroll_traits"), Colors.get_color_table_with_alpha("font_title", 255))
@@ -2215,12 +2353,14 @@ HeroWindowItemCustomization._state_setup_upgrade = function (self)
 
 	for name, widget_definition in pairs(upgrade_widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		upgrade_widgets[#upgrade_widgets + 1] = widget
 		upgrade_widgets_by_name[name] = widget
 	end
 
 	self._upgrade_widgets = upgrade_widgets
 	self._upgrade_widgets_by_name = upgrade_widgets_by_name
+
 	local item = self:_get_item(self._item_backend_id)
 	local item_data = item.data
 	local rarity = item.rarity or item_data.rarity
@@ -2251,25 +2391,38 @@ HeroWindowItemCustomization._state_setup_upgrade = function (self)
 
 	local upgrade_description_text = Localize("upgrade_description_text_" .. rarity)
 	local rarity_title_widget = upgrade_widgets_by_name.upgrade_rarity_name
+
 	rarity_title_widget.content.text = rarity_name
 	rarity_title_widget.style.text.text_color = rarity_name_color
+
 	local upgrade_icons_widget = upgrade_widgets_by_name.upgrade_icons
+
 	upgrade_icons_widget.content.texture_id = upgrade_icons
+
 	local upgrade_description_widget = upgrade_widgets_by_name.upgrade_description_text
+
 	upgrade_description_widget.content.text = upgrade_description_text
+
 	local upgrade_icon_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(upgrade_icons[1])
 	local upgrade_icon_size = upgrade_icon_settings.size
+
 	upgrade_icons_widget.style.texture_id.texture_size[1] = upgrade_icon_size[1]
 	upgrade_icons_widget.style.texture_id.texture_size[2] = upgrade_icon_size[2]
 	upgrade_icons_widget.style.texture_id.texture_amount = #upgrade_icons
+
 	local widget_description, description_size = self:_create_description_widget("info_description_text_2", Localize("description_crafting_upgrade_item_rarity_common"))
+
 	upgrade_widgets[#upgrade_widgets + 1] = widget_description
+
 	local description_text_height = description_size[2] + 10
 	local ui_scenegraph = self._ui_scenegraph
+
 	ui_scenegraph.info_description_text_2.local_position[2] = -description_text_height
+
 	local state_data = self._states[self._state]
 	local recipe_by_rarity = state_data.recipe_by_rarity
 	local recipe_name = recipe_by_rarity[rarity]
+
 	self._current_recipe_name = recipe_name
 
 	self:_update_state_craft_button(recipe_name, Localize("hero_view_crafting_upgrade"), rarity_name_color)
@@ -2298,7 +2451,9 @@ HeroWindowItemCustomization._craft = function (self, ingredients, recipe_overrid
 	local item = self:_get_item(self._item_backend_id)
 	local backend_id = item.backend_id
 	local items = table.clone(ingredients)
+
 	items[#items + 1] = backend_id
+
 	local craft_id = Managers.state.crafting:craft(items, recipe_override)
 
 	if craft_id then
@@ -2308,8 +2463,9 @@ HeroWindowItemCustomization._craft = function (self, ingredients, recipe_overrid
 
 		self._current_crafting_data = {
 			craft_id = craft_id,
-			state_name = self._state
+			state_name = self._state,
 		}
+
 		local widget = self._widgets_by_name.loading_icon
 
 		self:_start_transition_animation("on_crafting_enter")
@@ -2432,7 +2588,7 @@ HeroWindowItemCustomization._upgrade_item_craft_complete = function (self, resul
 	self:_present_item(item, nil, {
 		0,
 		2,
-		0
+		0,
 	})
 
 	for i, profile_index in ipairs(ProfilePriority) do

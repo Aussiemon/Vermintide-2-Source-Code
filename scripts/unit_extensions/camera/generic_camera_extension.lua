@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/camera/generic_camera_extension.lua
+
 GenericCameraExtension = class(GenericCameraExtension)
 
 GenericCameraExtension.init = function (self, extension_init_context, unit, extension_init_data)
@@ -61,7 +63,7 @@ end
 GenericCameraExtension.get_follow_data = function (self)
 	local player = self.player
 	local player_unit = player.player_unit
-	local first_person_unit, node = nil
+	local first_person_unit, node
 
 	if player.respawning then
 		return
@@ -71,6 +73,7 @@ GenericCameraExtension.get_follow_data = function (self)
 		return self.override_follow_unit, self.override_follow_node
 	elseif player_unit and ScriptUnit.has_extension(player_unit, "first_person_system") then
 		local first_person_extension = ScriptUnit.extension(player_unit, "first_person_system")
+
 		first_person_unit = first_person_extension:get_first_person_unit()
 		node = Unit.node(first_person_unit, "camera_node")
 	end

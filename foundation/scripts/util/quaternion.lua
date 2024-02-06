@@ -1,3 +1,5 @@
+﻿-- chunkname: @foundation/scripts/util/quaternion.lua
+
 Quaternion.yaw = function (q)
 	local x, y, z, w = Quaternion.to_elements(q)
 

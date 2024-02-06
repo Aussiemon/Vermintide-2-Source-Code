@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/weaves/weave_capture_point_extension.lua
+
 WeaveCapturePointExtension = class(WeaveCapturePointExtension)
 WeaveCapturePointExtension.NAME = "WeaveCapturePointExtension"
 
@@ -23,6 +25,7 @@ WeaveCapturePointExtension.init = function (self, extension_init_context, unit, 
 	self._capture_rate_multiplier = extension_init_data.capture_rate_multiplier or 5
 	self._timer = self._max_time
 	self._weave_objective_system = Managers.state.entity:system("weave_objective_system")
+
 	local scale = extension_init_data.scale
 
 	Unit.set_local_scale(unit, 0, scale)
@@ -45,7 +48,7 @@ WeaveCapturePointExtension._calculate_size = function (self)
 	local scale = Unit.local_scale(self._unit, 0)
 	local _, extents = Unit.box(self._unit)
 
-	if extents[2] < extents[1] then
+	if extents[1] > extents[2] then
 		self._size = extents[1] * scale[1]
 	else
 		self._size = extents[2] * scale[2]
@@ -63,9 +66,10 @@ WeaveCapturePointExtension.activate = function (self, game_object_id, objective_
 		local game_object_data_table = {
 			value = 0,
 			go_type = NetworkLookup.go_types.weave_objective,
-			objective_name = NetworkLookup.weave_objective_names[self._objective_name]
+			objective_name = NetworkLookup.weave_objective_names[self._objective_name],
 		}
 		local callback = callback(self, "cb_game_session_disconnect")
+
 		self._game_object_id = Managers.state.network:create_game_object("weave_objective", game_object_data_table, callback)
 	else
 		self._game_object_id = game_object_id
@@ -75,9 +79,12 @@ WeaveCapturePointExtension.activate = function (self, game_object_id, objective_
 	end
 
 	local mesh = Unit.mesh(self._unit, "g_projector002")
+
 	self._material = Mesh.material(mesh, "projector")
-	local frame_color, runes_color = nil
+
+	local frame_color, runes_color
 	local wind = Managers.weave:get_active_wind()
+
 	self._wind = wind
 
 	if wind == "fire" then
@@ -117,10 +124,7 @@ WeaveCapturePointExtension.activate = function (self, game_object_id, objective_
 
 		local num_extra_players = self._num_start_players - self._num_players_required
 
-		if num_extra_players == 0 then
-			num_extra_players = 1
-		end
-
+		num_extra_players = num_extra_players == 0 and 1 or num_extra_players
 		self._capture_rate_multiplier = 1 / num_extra_players
 	end
 end
@@ -183,6 +187,7 @@ end
 WeaveCapturePointExtension._update_num_players_required = function (self, num_players)
 	local percentage = self._percentage_of_players_required
 	local num_players_req = math.floor(num_players * percentage)
+
 	self._num_players_required = num_players_req == 0 and 1 or num_players_req
 	self._num_players = num_players
 end
@@ -218,7 +223,7 @@ WeaveCapturePointExtension._server_update = function (self, dt, t)
 		self:_update_num_players_required(num_players)
 	end
 
-	local new_time = nil
+	local new_time
 	local num_players_required = self._num_players_required
 
 	if num_players_required <= num_players_inside then
@@ -240,7 +245,7 @@ WeaveCapturePointExtension._server_update = function (self, dt, t)
 			self._is_already_inside = true
 		end
 
-		local capture_rate = nil
+		local capture_rate
 
 		if num_players_inside == self._num_start_players and num_players_inside == num_players_required then
 			capture_rate = 1 + self._capture_rate_multiplier
@@ -271,6 +276,7 @@ WeaveCapturePointExtension._server_update = function (self, dt, t)
 
 	if new_time ~= self._timer then
 		self._timer = new_time
+
 		local percentage_done = self:get_percentage_done()
 
 		Material.set_scalar(self._material, "radial_cutoff", percentage_done)
@@ -292,9 +298,7 @@ WeaveCapturePointExtension._client_update = function (self, dt, t)
 
 	local value = GameSession.game_object_field(game_session, self._game_object_id, "value")
 
-	if self._new_value < value then
-		value = (value + 2) * 0.01
-	end
+	value = value > self._new_value and (value + 2) * 0.01 or value
 
 	if value ~= self._new_value then
 		self._current_value = math.lerp(self._current_value, self._new_value, self._lerp_step)

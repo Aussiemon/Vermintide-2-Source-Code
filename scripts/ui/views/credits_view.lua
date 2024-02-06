@@ -1,21 +1,26 @@
+﻿-- chunkname: @scripts/ui/views/credits_view.lua
+
 local credits = local_require("scripts/settings/credits")
 local definitions = local_require("scripts/ui/views/credits_view_definitions")
 local colors = {
 	header = Colors.color_definitions.credits_header,
 	title = Colors.color_definitions.credits_title,
-	normal = Colors.color_definitions.credits_normal
+	normal = Colors.color_definitions.credits_normal,
 }
 local font_sizes = {
 	legal = 15,
-	normal = 30
+	normal = 30,
 }
+
 CreditsView = class(CreditsView)
 
 CreditsView.init = function (self, ingame_ui_context)
 	self._ui_renderer = ingame_ui_context.ui_renderer
 	self._ui_top_renderer = ingame_ui_context.ui_top_renderer
 	self._ingame_ui = ingame_ui_context.ingame_ui
+
 	local input_manager = ingame_ui_context.input_manager
+
 	self._input_manager = input_manager
 
 	input_manager:create_input_service("credits_view", "IngameMenuKeymaps", "IngameMenuFilters")
@@ -79,7 +84,9 @@ CreditsView.update = function (self, dt)
 	end
 
 	local current_offset = math.max(0, self._current_offset + dt * 50 - scroll_value * 30)
+
 	self._current_offset = current_offset
+
 	local ui_top_renderer = self._ui_top_renderer
 	local widget = self._credits_widget
 	local content = widget.content
@@ -87,8 +94,7 @@ CreditsView.update = function (self, dt)
 
 	UIRenderer.begin_pass(ui_top_renderer, self._ui_scenegraph, input_service, dt)
 
-	local w = RESOLUTION_LOOKUP.res_w
-	local h = RESOLUTION_LOOKUP.res_h
+	local w, h = RESOLUTION_LOOKUP.res_w, RESOLUTION_LOOKUP.res_h
 	local inverse_scale = RESOLUTION_LOOKUP.inv_scale
 
 	UIRenderer.draw_texture(ui_top_renderer, "gradient_credits_menu", Vector3(0, 0, UILayer.credits_gradient), Vector2(w * inverse_scale, h * inverse_scale))
@@ -97,6 +103,7 @@ CreditsView.update = function (self, dt)
 
 	for i = 1, self._num_credits do
 		local entry = credit_entries[i]
+
 		content.text_field = entry.localized_str or entry.localized and Localize(entry.text) or entry.text
 		entry.localized_str = content.text_field
 

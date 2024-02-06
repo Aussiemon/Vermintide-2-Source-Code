@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/achievements/achievement_templates_penny_part_1.lua
+
 local add_event_challenge = AchievementTemplateHelper.add_event_challenge
 local add_levels_complete_challenge = AchievementTemplateHelper.add_levels_complete_challenge
 local add_meta_challenge = AchievementTemplateHelper.add_meta_challenge
@@ -5,10 +7,10 @@ local PLACEHOLDER_ICON = AchievementTemplateHelper.PLACEHOLDER_ICON
 local achievements = AchievementTemplates.achievements
 local XB1_ACHIEVEMENT_ID = {
 	penny_portals_heads = 86,
-	penny_portals_vintage = 87
+	penny_portals_vintage = 87,
 }
 local PS4_ACHIEVEMENT_ID = {
-	penny_portals_vintage = "081"
+	penny_portals_vintage = "081",
 }
 
 add_event_challenge(achievements, "penny_portals_portal", nil, nil, nil, XB1_ACHIEVEMENT_ID.penny_portals_portal, PS4_ACHIEVEMENT_ID.penny_portals_portal)
@@ -18,14 +20,14 @@ add_event_challenge(achievements, "penny_portals_vintage", nil, nil, nil, XB1_AC
 add_event_challenge(achievements, "penny_portals_hideout", nil, nil, nil, XB1_ACHIEVEMENT_ID.penny_portals_hideout, PS4_ACHIEVEMENT_ID.penny_portals_hideout)
 
 local portals = {
-	LevelSettings.dlc_portals
+	LevelSettings.dlc_portals,
 }
 local difficulties = {
 	"normal",
 	"hard",
 	"harder",
 	"hardest",
-	"cataclysm"
+	"cataclysm",
 }
 
 for i = 1, #difficulties do
@@ -41,5 +43,5 @@ add_meta_challenge(achievements, "penny_complete_portals", {
 	"penny_portals_heads",
 	"penny_portals_cleanser",
 	"penny_portals_vintage",
-	"penny_portals_hideout"
+	"penny_portals_hideout",
 })

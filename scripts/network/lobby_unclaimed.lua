@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/network/lobby_unclaimed.lua
+
 LobbyUnclaimed = class(LobbyUnclaimed)
 
 LobbyUnclaimed.init = function (self)

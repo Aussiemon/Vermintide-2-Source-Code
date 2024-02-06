@@ -1,10 +1,12 @@
+﻿-- chunkname: @scripts/helpers/attachment_utils.lua
+
 AttachmentUtils = {}
 
 AttachmentUtils.create_attachment = function (world, owner_unit, attachments, slot_name, item_data, show)
 	assert(attachments.slots[slot_name] == nil, "Slot is not empty, remove attachment before creating a new one.")
 
 	local item_template = BackendUtils.get_item_template(item_data)
-	local unit = nil
+	local unit
 
 	if item_data.unit then
 		local item_units = BackendUtils.get_item_units(item_data)
@@ -36,7 +38,7 @@ AttachmentUtils.create_attachment = function (world, owner_unit, attachments, sl
 	local slot_data = {
 		unit = unit,
 		name = item_data.name,
-		item_data = item_data
+		item_data = item_data,
 	}
 
 	return slot_data
@@ -101,7 +103,8 @@ AttachmentUtils.hot_join_sync = function (peer_id, unit, slots, synced_buffs)
 end
 
 AttachmentUtils.get_syncable_buff_params = function (synced_buffs)
-	local buff_name_1, buff_variable_data_1, buff_data_type_1, buff_value_1, buff_name_2, buff_variable_data_2, buff_data_type_2, buff_value_2, buff_name_3, buff_variable_data_3, buff_data_type_3, buff_value_3, buff_name_4, buff_variable_data_4, buff_data_type_4, buff_value_4 = nil
+	local buff_name_1, buff_variable_data_1, buff_data_type_1, buff_value_1, buff_name_2, buff_variable_data_2, buff_data_type_2, buff_value_2, buff_name_3, buff_variable_data_3, buff_data_type_3, buff_value_3, buff_name_4, buff_variable_data_4, buff_data_type_4, buff_value_4
+
 	buff_name_1, buff_variable_data_1 = next(synced_buffs)
 
 	if buff_name_1 then
@@ -133,10 +136,12 @@ AttachmentUtils.get_syncable_buff_params = function (synced_buffs)
 	local buff_data_type_2_id = buff_name_2 and NetworkLookup.buff_data_types[buff_data_type_2] or default_buff_data_type_id
 	local buff_data_type_3_id = buff_name_3 and NetworkLookup.buff_data_types[buff_data_type_3] or default_buff_data_type_id
 	local buff_data_type_4_id = buff_name_4 and NetworkLookup.buff_data_types[buff_data_type_4] or default_buff_data_type_id
+
 	buff_value_1 = buff_value_1 or 1
 	buff_value_2 = buff_value_2 or 1
 	buff_value_3 = buff_value_3 or 1
 	buff_value_4 = buff_value_4 or 1
+
 	local params = {
 		buff_1_id,
 		buff_data_type_1_id,
@@ -149,7 +154,7 @@ AttachmentUtils.get_syncable_buff_params = function (synced_buffs)
 		buff_value_3,
 		buff_4_id,
 		buff_data_type_4_id,
-		buff_value_4
+		buff_value_4,
 	}
 
 	return params

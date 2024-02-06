@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_skulk_idle_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTSkulkIdleAction = class(BTSkulkIdleAction, BTNode)
@@ -9,8 +11,11 @@ end
 
 BTSkulkIdleAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
+
 	blackboard.action = action
+
 	local skulk_data = blackboard.skulk_data
+
 	skulk_data.skulk_idle_timer = t + math.random(5, 10)
 
 	Managers.state.network:anim_event(unit, "to_crouch")
@@ -22,7 +27,7 @@ BTSkulkIdleAction.enter = function (self, unit, blackboard, t)
 
 	ai_simple_extension:set_perception("perception_all_seeing_re_evaluate", "pick_ninja_skulking_target")
 
-	if not skulk_data.attack_timer or skulk_data.attack_timer < t then
+	if not skulk_data.attack_timer or t > skulk_data.attack_timer then
 		skulk_data.attack_timer = t + math.random(25, 30)
 	end
 end
@@ -32,6 +37,7 @@ BTSkulkIdleAction.leave = function (self, unit, blackboard, t, reason, destroy)
 
 	if blackboard.approach_target then
 		local skulk_data = blackboard.skulk_data
+
 		skulk_data.attack_timer = nil
 	end
 
@@ -44,7 +50,7 @@ local move_distance_squared = 400
 BTSkulkIdleAction.run = function (self, unit, blackboard, t, dt)
 	local skulk_data = blackboard.skulk_data
 
-	if skulk_data.attack_timer < t then
+	if t > skulk_data.attack_timer then
 		blackboard.approach_target = true
 
 		return "failed"
@@ -58,7 +64,7 @@ BTSkulkIdleAction.run = function (self, unit, blackboard, t, dt)
 		return "failed"
 	end
 
-	if skulk_data.skulk_idle_timer < t then
+	if t > skulk_data.skulk_idle_timer then
 		return "done"
 	end
 

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/game_state/title_screen_substates/xb1/state_title_screen_init_network.lua
+
 require("scripts/network/lobby_host")
 require("scripts/network/lobby_client")
 require("scripts/network/lobby_finder")
@@ -54,6 +56,7 @@ StateTitleScreenInitNetwork._create_session = function (self)
 	local auto_join_setting = Development.parameter("auto_join")
 	local unique_server_name = Development.parameter("unique_server_name")
 	local loading_context = self.parent.parent.loading_context
+
 	self._network_event_delegate = NetworkEventDelegate:new()
 
 	Managers.level_transition_handler:register_rpcs(self._network_event_delegate)
@@ -111,6 +114,7 @@ StateTitleScreenInitNetwork._join_session = function (self, dt, t)
 	level_transition_handler:load_current_level()
 
 	local loading_context = self.parent.parent.loading_context
+
 	self._network_server = NetworkServer:new(Managers.player, self._lobby_host, nil)
 	self._network_transmit = loading_context.network_transmit or NetworkTransmit:new(true, self._network_server.server_peer_id)
 
@@ -138,6 +142,7 @@ StateTitleScreenInitNetwork._update_host_lobby = function (self, dt, t)
 
 		if lobby_state == LobbyState.FAILED and not self._popup_id and self._wanted_game_state then
 			local text_id = "failure_start_no_lan"
+
 			self._popup_id = Managers.popup:queue_popup(Localize(text_id), Localize("popup_error_topic"), "quit", Localize("menu_quit"))
 		end
 	end
@@ -269,7 +274,9 @@ StateTitleScreenInitNetwork._next_state = function (self)
 			end
 
 			self._profile_synchronizer = nil
+
 			local network_options = Managers.lobby:network_options()
+
 			self._lobby_host = LobbyHost:new(network_options)
 			self._network_state = "_creating_session_host"
 		elseif result == "continue" then
@@ -368,13 +375,15 @@ StateTitleScreenInitNetwork.on_exit = function (self, application_shutdown)
 		end
 	else
 		local loading_context = {
-			network_transmit = self._network_transmit
+			network_transmit = self._network_transmit,
 		}
 
 		if self._lobby_host then
 			loading_context.lobby_host = self._lobby_host
+
 			local level_key = Managers.level_transition_handler:get_current_level_keys()
 			local stored_lobby_host_data = self._lobby_host:get_stored_lobby_data() or {}
+
 			stored_lobby_host_data.level_key = level_key
 			stored_lobby_host_data.unique_server_name = stored_lobby_host_data.unique_server_name or LobbyAux.get_unique_server_name()
 			stored_lobby_host_data.host = stored_lobby_host_data.host or Network.peer_id()
@@ -411,6 +420,7 @@ StateTitleScreenInitNetwork._packages_loaded = function (self)
 	if level_transition_handler:all_packages_loaded() then
 		if self._network_server and not self._has_sent_level_loaded then
 			self._has_sent_level_loaded = true
+
 			local level_name = level_transition_handler:get_current_level_keys()
 			local level_index = NetworkLookup.level_keys[level_name]
 

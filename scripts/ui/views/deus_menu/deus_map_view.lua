@@ -1,8 +1,12 @@
+﻿-- chunkname: @scripts/ui/views/deus_menu/deus_map_view.lua
+
 require(script_data.FEATURE_old_map_ui and "scripts/ui/views/deus_menu/deus_map_ui" or "scripts/ui/views/deus_menu/deus_map_ui_v2")
 require("scripts/ui/views/deus_menu/deus_map_scene")
 
 local REAL_PLAYER_LOCAL_ID = 1
+
 DeusMapView = class(DeusMapView)
+
 local INPUT_SERVICE_NAME = "deus_map_input_service_name"
 
 DeusMapView.init = function (self, context)
@@ -10,7 +14,9 @@ DeusMapView.init = function (self, context)
 	self._scene = DeusMapScene:new()
 	self._active = false
 	self._deus_run_controller = context.deus_run_controller
+
 	local input_manager = context.input_manager
+
 	self._input_manager = input_manager
 	self._network_event_delegate = context.network_event_delegate
 
@@ -25,10 +31,11 @@ DeusMapView.start = function (self, params)
 
 	self._finish_cb = params.finish_cb
 	self._active = true
+
 	local input_manager = self._input_manager
 
 	input_manager:capture_input({
-		"mouse"
+		"mouse",
 	}, 1, INPUT_SERVICE_NAME, "DeusMapView")
 	ShowCursorStack.push()
 	input_manager:enable_gamepad_cursor()
@@ -44,7 +51,7 @@ DeusMapView._finish = function (self)
 	local input_manager = self._input_manager
 
 	input_manager:release_input({
-		"mouse"
+		"mouse",
 	}, 1, INPUT_SERVICE_NAME, "DeusMapView")
 	ShowCursorStack.pop()
 	input_manager:disable_gamepad_cursor()

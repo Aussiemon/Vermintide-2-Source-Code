@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/generic/generic_unit_aim_extension.lua
+
 require("scripts/unit_extensions/generic/aim_templates")
 
 GenericUnitAimExtension = class(GenericUnitAimExtension)
@@ -16,6 +18,7 @@ GenericUnitAimExtension.extensions_ready = function (self)
 	template[self.network_type].init(self.unit, self.data)
 
 	local breed = Unit.get_data(self.unit, "breed")
+
 	self.always_aim = DEDICATED_SERVER or breed and breed.always_look_at_target or self.template == "innkeeper"
 end
 

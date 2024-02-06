@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/hero_view/windows/definitions/hero_window_inventory_definitions.lua
+
 local window_default_settings = UISettings.game_start_windows
 local window_background = window_default_settings.background
 local window_frame = window_default_settings.frame
@@ -11,345 +13,345 @@ local scenegraph_definition = {
 		is_root = true,
 		size = {
 			1920,
-			1080
+			1080,
 		},
 		position = {
 			0,
 			0,
-			UILayer.default
-		}
+			UILayer.default,
+		},
 	},
 	root_fit = {
 		scale = "fit",
 		size = {
 			1920,
-			1080
+			1080,
 		},
 		position = {
 			0,
 			0,
-			UILayer.default
-		}
+			UILayer.default,
+		},
 	},
 	menu_root = {
-		vertical_alignment = "center",
-		parent = "root",
 		horizontal_alignment = "center",
+		parent = "root",
+		vertical_alignment = "center",
 		size = {
 			1920,
-			1080
+			1080,
 		},
 		position = {
 			0,
 			0,
-			0
-		}
+			0,
+		},
 	},
 	window = {
-		vertical_alignment = "center",
-		parent = "menu_root",
 		horizontal_alignment = "center",
+		parent = "menu_root",
+		vertical_alignment = "center",
 		size = window_size,
 		position = {
 			0,
 			0,
-			1
-		}
+			1,
+		},
 	},
 	window_fade = {
-		vertical_alignment = "bottom",
-		parent = "window",
 		horizontal_alignment = "center",
+		parent = "window",
+		vertical_alignment = "bottom",
 		size = {
 			window_size[1],
-			window_size[2] - 100
+			window_size[2] - 100,
 		},
 		position = {
 			0,
 			0,
-			0
-		}
+			0,
+		},
 	},
 	material_icons_bg = {
-		vertical_alignment = "top",
-		parent = "window",
 		horizontal_alignment = "center",
+		parent = "window",
+		vertical_alignment = "top",
 		size = {
 			window_size[1],
-			100
+			100,
 		},
 		position = {
 			0,
 			0,
-			1
-		}
+			1,
+		},
 	},
 	material_icons_divider = {
-		vertical_alignment = "bottom",
-		parent = "material_icons_bg",
 		horizontal_alignment = "center",
+		parent = "material_icons_bg",
+		vertical_alignment = "bottom",
 		size = {
 			window_size[1],
-			0
+			0,
 		},
 		position = {
 			0,
 			0,
-			2
-		}
+			2,
+		},
 	},
 	material_text_1 = {
-		vertical_alignment = "bottom",
-		parent = "material_icons_bg",
 		horizontal_alignment = "center",
+		parent = "material_icons_bg",
+		vertical_alignment = "bottom",
 		size = {
 			window_size[1] / 7 - 5,
-			100
+			100,
 		},
 		position = {
 			-210,
 			0,
-			2
-		}
+			2,
+		},
 	},
 	material_text_2 = {
-		vertical_alignment = "bottom",
-		parent = "material_icons_bg",
 		horizontal_alignment = "center",
+		parent = "material_icons_bg",
+		vertical_alignment = "bottom",
 		size = {
 			window_size[1] / 7 - 5,
-			100
+			100,
 		},
 		position = {
 			-140,
 			0,
-			2
-		}
+			2,
+		},
 	},
 	material_text_3 = {
-		vertical_alignment = "bottom",
-		parent = "material_icons_bg",
 		horizontal_alignment = "center",
+		parent = "material_icons_bg",
+		vertical_alignment = "bottom",
 		size = {
 			window_size[1] / 7 - 5,
-			100
+			100,
 		},
 		position = {
 			-70,
 			0,
-			2
-		}
+			2,
+		},
 	},
 	material_text_4 = {
-		vertical_alignment = "bottom",
-		parent = "material_icons_bg",
 		horizontal_alignment = "center",
+		parent = "material_icons_bg",
+		vertical_alignment = "bottom",
 		size = {
 			window_size[1] / 7 - 5,
-			100
+			100,
 		},
 		position = {
 			0,
 			0,
-			2
-		}
+			2,
+		},
 	},
 	material_text_5 = {
-		vertical_alignment = "bottom",
-		parent = "material_icons_bg",
 		horizontal_alignment = "center",
+		parent = "material_icons_bg",
+		vertical_alignment = "bottom",
 		size = {
 			window_size[1] / 7 - 5,
-			100
+			100,
 		},
 		position = {
 			70,
 			0,
-			2
-		}
+			2,
+		},
 	},
 	material_text_6 = {
-		vertical_alignment = "bottom",
-		parent = "material_icons_bg",
 		horizontal_alignment = "center",
+		parent = "material_icons_bg",
+		vertical_alignment = "bottom",
 		size = {
 			window_size[1] / 7 - 5,
-			100
+			100,
 		},
 		position = {
 			140,
 			0,
-			2
-		}
+			2,
+		},
 	},
 	material_text_7 = {
-		vertical_alignment = "bottom",
-		parent = "material_icons_bg",
 		horizontal_alignment = "center",
+		parent = "material_icons_bg",
+		vertical_alignment = "bottom",
 		size = {
 			window_size[1] / 7 - 5,
-			100
+			100,
 		},
 		position = {
 			210,
 			0,
-			2
-		}
+			2,
+		},
 	},
 	item_grid = {
-		vertical_alignment = "bottom",
-		parent = "page_button_divider",
 		horizontal_alignment = "center",
+		parent = "page_button_divider",
+		vertical_alignment = "bottom",
 		size = {
 			window_size[1],
-			window_size[2] - 130
+			window_size[2] - 130,
 		},
 		position = {
 			0,
 			-5,
-			-10
-		}
+			-10,
+		},
 	},
 	item_grid_divider = {
-		vertical_alignment = "top",
-		parent = "item_grid",
 		horizontal_alignment = "center",
+		parent = "item_grid",
+		vertical_alignment = "top",
 		size = {
 			window_size[1],
-			0
+			0,
 		},
 		position = {
 			0,
 			25,
-			7
-		}
+			7,
+		},
 	},
 	page_button_next = {
-		vertical_alignment = "bottom",
-		parent = "window",
 		horizontal_alignment = "right",
+		parent = "window",
+		vertical_alignment = "bottom",
 		size = {
 			window_size[1] * 0.4,
-			42
+			42,
 		},
 		position = {
 			0,
 			0,
-			1
-		}
+			1,
+		},
 	},
 	page_button_edge_right = {
-		vertical_alignment = "center",
-		parent = "page_button_next",
 		horizontal_alignment = "left",
+		parent = "page_button_next",
+		vertical_alignment = "center",
 		size = {
 			0,
-			42
+			42,
 		},
 		position = {
 			0,
 			0,
-			10
-		}
+			10,
+		},
 	},
 	page_button_previous = {
-		vertical_alignment = "bottom",
-		parent = "window",
 		horizontal_alignment = "left",
+		parent = "window",
+		vertical_alignment = "bottom",
 		size = {
 			window_size[1] * 0.4,
-			42
+			42,
 		},
 		position = {
 			0,
 			0,
-			1
-		}
+			1,
+		},
 	},
 	page_button_edge_left = {
-		vertical_alignment = "center",
-		parent = "page_button_previous",
 		horizontal_alignment = "right",
+		parent = "page_button_previous",
+		vertical_alignment = "center",
 		size = {
 			0,
-			42
+			42,
 		},
 		position = {
 			0,
 			0,
-			10
-		}
+			10,
+		},
 	},
 	page_button_divider = {
-		vertical_alignment = "bottom",
-		parent = "window",
 		horizontal_alignment = "center",
+		parent = "window",
+		vertical_alignment = "bottom",
 		size = {
 			window_size[1],
-			0
+			0,
 		},
 		position = {
 			0,
 			42,
-			14
-		}
+			14,
+		},
 	},
 	page_text_area = {
-		vertical_alignment = "bottom",
-		parent = "window",
 		horizontal_alignment = "center",
+		parent = "window",
+		vertical_alignment = "bottom",
 		size = {
 			window_size[1] * 0.2,
-			42
+			42,
 		},
 		position = {
 			0,
 			0,
-			3
-		}
-	}
+			3,
+		},
+	},
 }
 local page_number_left_text_style = {
-	vertical_alignment = "center",
 	font_size = 20,
-	localize = false,
-	horizontal_alignment = "right",
-	word_wrap = true,
 	font_type = "hell_shark",
+	horizontal_alignment = "right",
+	localize = false,
+	vertical_alignment = "center",
+	word_wrap = true,
 	text_color = Colors.get_color_table_with_alpha("font_default", 255),
 	offset = {
 		-(window_size[1] * 0.1 + 5),
 		4,
-		2
-	}
+		2,
+	},
 }
 local page_number_right_text_style = {
-	vertical_alignment = "center",
 	font_size = 20,
-	localize = false,
-	horizontal_alignment = "left",
-	word_wrap = true,
 	font_type = "hell_shark",
+	horizontal_alignment = "left",
+	localize = false,
+	vertical_alignment = "center",
+	word_wrap = true,
 	text_color = Colors.get_color_table_with_alpha("font_default", 255),
 	offset = {
 		window_size[1] * 0.1 + 4,
 		4,
-		2
-	}
+		2,
+	},
 }
 local page_number_center_text_style = {
-	vertical_alignment = "center",
 	font_size = 20,
-	localize = false,
-	horizontal_alignment = "center",
-	word_wrap = true,
 	font_type = "hell_shark",
+	horizontal_alignment = "center",
+	localize = false,
+	vertical_alignment = "center",
+	word_wrap = true,
 	text_color = Colors.get_color_table_with_alpha("font_default", 255),
 	offset = {
 		0,
 		4,
-		2
-	}
+		2,
+	},
 }
 
 local function create_window_divider(scenegraph_id, size)
@@ -357,26 +359,26 @@ local function create_window_divider(scenegraph_id, size)
 		element = {
 			passes = {
 				{
-					texture_id = "bottom_edge",
+					pass_type = "tiled_texture",
 					style_id = "bottom_edge",
-					pass_type = "tiled_texture"
+					texture_id = "bottom_edge",
 				},
 				{
-					texture_id = "edge_holder_left",
+					pass_type = "texture",
 					style_id = "edge_holder_left",
-					pass_type = "texture"
+					texture_id = "edge_holder_left",
 				},
 				{
-					texture_id = "edge_holder_right",
+					pass_type = "texture",
 					style_id = "edge_holder_right",
-					pass_type = "texture"
-				}
-			}
+					texture_id = "edge_holder_right",
+				},
+			},
 		},
 		content = {
-			edge_holder_right = "menu_frame_09_divider_right",
+			bottom_edge = "menu_frame_09_divider",
 			edge_holder_left = "menu_frame_09_divider_left",
-			bottom_edge = "menu_frame_09_divider"
+			edge_holder_right = "menu_frame_09_divider_right",
 		},
 		style = {
 			bottom_edge = {
@@ -384,63 +386,63 @@ local function create_window_divider(scenegraph_id, size)
 					255,
 					255,
 					255,
-					255
+					255,
 				},
 				offset = {
 					5,
 					0,
-					6
+					6,
 				},
 				size = {
 					size[1] - 10,
-					5
+					5,
 				},
 				texture_tiling_size = {
 					size[1] - 10,
-					5
-				}
+					5,
+				},
 			},
 			edge_holder_left = {
 				color = {
 					255,
 					255,
 					255,
-					255
+					255,
 				},
 				offset = {
 					3,
 					-6,
-					10
+					10,
 				},
 				size = {
 					9,
-					17
-				}
+					17,
+				},
 			},
 			edge_holder_right = {
 				color = {
 					255,
 					255,
 					255,
-					255
+					255,
 				},
 				offset = {
 					size[1] - 12,
 					-6,
-					10
+					10,
 				},
 				size = {
 					9,
-					17
-				}
-			}
+					17,
+				},
+			},
 		},
 		scenegraph_id = scenegraph_id,
 		offset = {
 			0,
 			0,
-			0
-		}
+			0,
+		},
 	}
 
 	return widget
@@ -451,26 +453,26 @@ local function create_vertical_window_divider(scenegraph_id, size)
 		element = {
 			passes = {
 				{
-					texture_id = "edge",
+					pass_type = "tiled_texture",
 					style_id = "edge",
-					pass_type = "tiled_texture"
+					texture_id = "edge",
 				},
 				{
-					texture_id = "edge_holder_top",
+					pass_type = "texture",
 					style_id = "edge_holder_top",
-					pass_type = "texture"
+					texture_id = "edge_holder_top",
 				},
 				{
-					texture_id = "edge_holder_bottom",
+					pass_type = "texture",
 					style_id = "edge_holder_bottom",
-					pass_type = "texture"
-				}
-			}
+					texture_id = "edge_holder_bottom",
+				},
+			},
 		},
 		content = {
 			edge = "menu_frame_09_divider_vertical",
+			edge_holder_bottom = "menu_frame_09_divider_bottom",
 			edge_holder_top = "menu_frame_09_divider_top",
-			edge_holder_bottom = "menu_frame_09_divider_bottom"
 		},
 		style = {
 			edge = {
@@ -478,63 +480,63 @@ local function create_vertical_window_divider(scenegraph_id, size)
 					255,
 					255,
 					255,
-					255
+					255,
 				},
 				offset = {
 					0,
 					6,
-					6
+					6,
 				},
 				size = {
 					5,
-					size[2] - 9
+					size[2] - 9,
 				},
 				texture_tiling_size = {
 					5,
-					size[2] - 9
-				}
+					size[2] - 9,
+				},
 			},
 			edge_holder_top = {
 				color = {
 					255,
 					255,
 					255,
-					255
+					255,
 				},
 				offset = {
 					-6,
 					size[2] - 7,
-					10
+					10,
 				},
 				size = {
 					17,
-					9
-				}
+					9,
+				},
 			},
 			edge_holder_bottom = {
 				color = {
 					255,
 					255,
 					255,
-					255
+					255,
 				},
 				offset = {
 					-6,
 					3,
-					10
+					10,
 				},
 				size = {
 					17,
-					9
-				}
-			}
+					9,
+				},
+			},
 		},
 		scenegraph_id = scenegraph_id,
 		offset = {
 			0,
 			0,
-			0
-		}
+			0,
+		},
 	}
 
 	return widget
@@ -545,178 +547,178 @@ local function create_craft_material_widget(scenegraph_id)
 		element = {
 			passes = {
 				{
+					content_id = "button_hotspot",
 					pass_type = "hotspot",
-					content_id = "button_hotspot"
 				},
 				{
 					pass_type = "texture",
 					style_id = "icon",
-					texture_id = "icon"
+					texture_id = "icon",
 				},
 				{
 					pass_type = "rotated_texture",
 					style_id = "effect",
-					texture_id = "effect"
+					texture_id = "effect",
 				},
 				{
+					pass_type = "text",
 					style_id = "text",
-					pass_type = "text",
-					text_id = "text"
+					text_id = "text",
 				},
 				{
+					pass_type = "text",
 					style_id = "text_shadow",
-					pass_type = "text",
-					text_id = "text"
+					text_id = "text",
 				},
 				{
 					pass_type = "rect",
-					style_id = "text_bg"
+					style_id = "text_bg",
 				},
 				{
 					pass_type = "rect",
-					style_id = "text_bg_2"
+					style_id = "text_bg_2",
 				},
 				{
 					item_id = "item",
 					pass_type = "item_tooltip",
 					content_check_function = function (content)
 						return content.button_hotspot.is_hover and content.item
-					end
-				}
-			}
+					end,
+				},
+			},
 		},
 		content = {
-			text = "0",
-			icon = "icon_crafting_dust_01_small",
 			effect = "sparkle_effect",
-			button_hotspot = {}
+			icon = "icon_crafting_dust_01_small",
+			text = "0",
+			button_hotspot = {},
 		},
 		style = {
 			text_bg = {
-				vertical_alignment = "bottom",
 				horizontal_alignment = "center",
+				vertical_alignment = "bottom",
 				texture_size = {
 					60,
-					80
+					80,
 				},
 				color = {
 					0,
 					10,
 					10,
-					10
+					10,
 				},
 				offset = {
 					2,
 					10,
-					1
-				}
+					1,
+				},
 			},
 			text_bg_2 = {
-				vertical_alignment = "bottom",
 				horizontal_alignment = "center",
+				vertical_alignment = "bottom",
 				texture_size = {
 					60,
-					25
+					25,
 				},
 				color = {
 					180,
 					5,
 					5,
-					5
+					5,
 				},
 				offset = {
 					0,
 					12,
-					0
-				}
+					0,
+				},
 			},
 			icon = {
-				vertical_alignment = "top",
 				horizontal_alignment = "center",
+				vertical_alignment = "top",
 				texture_size = {
 					50,
-					50
+					50,
 				},
 				color = {
 					255,
 					255,
 					255,
-					255
+					255,
 				},
 				offset = {
 					0,
 					-10,
-					3
-				}
+					3,
+				},
 			},
 			hover = {
-				vertical_alignment = "center",
 				horizontal_alignment = "center",
+				vertical_alignment = "center",
 				texture_size = {
 					140,
-					89
+					89,
 				},
 				color = {
 					255,
 					255,
 					255,
-					255
+					255,
 				},
 				offset = {
 					0,
 					0,
-					1
-				}
+					1,
+				},
 			},
 			effect = {
-				vertical_alignment = "top",
 				angle = 0,
 				horizontal_alignment = "right",
+				vertical_alignment = "top",
 				offset = {
 					110,
 					120,
-					4
+					4,
 				},
 				pivot = {
 					128,
-					128
+					128,
 				},
 				texture_size = {
 					256,
-					256
+					256,
 				},
-				color = Colors.get_color_table_with_alpha("white", 0)
+				color = Colors.get_color_table_with_alpha("white", 0),
 			},
 			text = {
-				vertical_alignment = "bottom",
 				font_size = 20,
-				localize = false,
-				horizontal_alignment = "center",
-				word_wrap = true,
 				font_type = "hell_shark",
+				horizontal_alignment = "center",
+				localize = false,
+				vertical_alignment = "bottom",
+				word_wrap = true,
 				text_color = Colors.get_color_table_with_alpha("font_default", 255),
 				offset = {
 					0,
 					10,
-					3
-				}
+					3,
+				},
 			},
 			text_shadow = {
-				vertical_alignment = "bottom",
 				font_size = 20,
-				localize = false,
-				horizontal_alignment = "center",
-				word_wrap = true,
 				font_type = "hell_shark",
+				horizontal_alignment = "center",
+				localize = false,
+				vertical_alignment = "bottom",
+				word_wrap = true,
 				text_color = Colors.get_color_table_with_alpha("black", 255),
 				offset = {
 					2,
 					8,
-					2
-				}
-			}
+					2,
+				},
+			},
 		},
-		scenegraph_id = scenegraph_id
+		scenegraph_id = scenegraph_id,
 	}
 end
 
@@ -746,49 +748,51 @@ local widgets = {
 		255,
 		0,
 		0,
-		0
-	})
+		0,
+	}),
 }
 local animation_definitions = {
 	on_enter = {
 		{
+			end_progress = 0.3,
 			name = "fade_in",
 			start_progress = 0,
-			end_progress = 0.3,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				params.render_settings.alpha_multiplier = 0
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_progress = math.easeOutCubic(progress)
+
 				params.render_settings.alpha_multiplier = anim_progress
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				return
-			end
-		}
+			end,
+		},
 	},
 	on_exit = {
 		{
+			end_progress = 0.3,
 			name = "fade_out",
 			start_progress = 0,
-			end_progress = 0.3,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				params.render_settings.alpha_multiplier = 1
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_progress = math.easeOutCubic(progress)
+
 				params.render_settings.alpha_multiplier = 1 - anim_progress
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				return
-			end
-		}
-	}
+			end,
+		},
+	},
 }
 
 return {
 	widgets = widgets,
 	node_widgets = node_widgets,
 	scenegraph_definition = scenegraph_definition,
-	animation_definitions = animation_definitions
+	animation_definitions = animation_definitions,
 }

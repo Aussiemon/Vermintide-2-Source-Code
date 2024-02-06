@@ -1,6 +1,9 @@
+﻿-- chunkname: @scripts/unit_extensions/default_player_unit/states/player_character_state_catapulted.lua
+
 require("scripts/settings/player_movement_settings")
 
 PlayerCharacterStateCatapulted = class(PlayerCharacterStateCatapulted, PlayerCharacterState)
+
 local position_lookup = POSITION_LOOKUP
 local DIRECTIONS = PlayerUnitMovementSettings.catapulted.directions
 
@@ -27,6 +30,7 @@ PlayerCharacterStateCatapulted.on_enter = function (self, unit, input, dt, conte
 	locomotion_extension:set_wanted_velocity(velocity)
 
 	self._direction = direction
+
 	local anim = DIRECTIONS[direction].start_animation
 	local anim_1p = DIRECTIONS[direction].start_animation_1p
 

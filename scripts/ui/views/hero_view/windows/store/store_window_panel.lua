@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/hero_view/windows/store/store_window_panel.lua
+
 local definitions = local_require("scripts/ui/views/hero_view/windows/store/definitions/store_window_panel_definitions")
 local widget_definitions = definitions.widgets
 local top_widget_definitions = definitions.top_widgets
@@ -5,6 +7,7 @@ local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
 local INPUT_ACTION_NEXT = "cycle_next"
 local INPUT_ACTION_PREVIOUS = "cycle_previous"
+
 StoreWindowPanel = class(StoreWindowPanel)
 StoreWindowPanel.NAME = "StoreWindowPanel"
 
@@ -13,7 +16,9 @@ StoreWindowPanel.on_enter = function (self, params, offset)
 
 	self._params = params
 	self._parent = params.parent
+
 	local ui_renderer, ui_top_renderer = self._parent:get_renderers()
+
 	self._ui_renderer = ui_renderer
 	self._ui_top_renderer = ui_top_renderer
 	self._layout_settings = params.layout_settings
@@ -28,6 +33,7 @@ StoreWindowPanel._create_ui_elements = function (self, params, offset)
 	self._ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
 	self._widgets, self._widgets_by_name = UIUtils.create_widgets(widget_definitions)
 	self._top_widgets, self._top_widgets_by_name = UIUtils.create_widgets(top_widget_definitions)
+
 	local title_button_widgets = {}
 	local layout_settings = self._layout_settings
 	local window_layouts = layout_settings.window_layouts
@@ -38,12 +44,12 @@ StoreWindowPanel._create_ui_elements = function (self, params, offset)
 	local font_size = 28
 	local optional_horizontal_alignment = "center"
 	local temp_text_style = {
-		upper_case = true,
-		localize = true,
 		dynamic_font_size = true,
-		word_wrap = false,
 		font_type = "hell_shark_header",
-		font_size = font_size
+		localize = true,
+		upper_case = true,
+		word_wrap = false,
+		font_size = font_size,
 	}
 	local tab_cat = self._parent.tab_cat
 
@@ -58,20 +64,23 @@ StoreWindowPanel._create_ui_elements = function (self, params, offset)
 		local text_width = self:_get_text_width(temp_text_style, display_name)
 		local option_size = {
 			math.min(text_width + 40, 400),
-			size[2]
+			size[2],
 		}
 		local optional_offset = {
 			total_length,
 			0,
-			0
+			0,
 		}
 		local widget_definition = UIWidgets.create_store_panel_button(scenegraph_id, option_size, display_name, font_size, optional_offset, optional_horizontal_alignment)
+
 		total_length = total_length + option_size[1]
+
 		local widget = UIWidget.init(widget_definition)
 
 		self:_set_text_button_size(widget, option_size[1])
 
 		local content = widget.content
+
 		content.page_name = page_name
 
 		if tab_cat[page_name] > 0 then
@@ -84,12 +93,14 @@ StoreWindowPanel._create_ui_elements = function (self, params, offset)
 	self.tab_cat = tab_cat
 	self._ui_scenegraph.panel_entry_area.size[1] = total_length
 	self._title_button_widgets = title_button_widgets
+
 	local mark_all_seen_button = self._widgets_by_name.mark_all_seen_button
+
 	mark_all_seen_button.content.new = true
 	mark_all_seen_button.style.new_marker.offset = {
 		-80,
 		8,
-		10
+		10,
 	}
 
 	UIRenderer.clear_scenegraph_queue(self._ui_renderer)
@@ -98,6 +109,7 @@ StoreWindowPanel._create_ui_elements = function (self, params, offset)
 
 	if offset then
 		local window_position = self._ui_scenegraph.window.local_position
+
 		window_position[1] = window_position[1] + offset[1]
 		window_position[2] = window_position[2] + offset[2]
 		window_position[3] = window_position[3] + offset[3]
@@ -158,8 +170,11 @@ StoreWindowPanel._update_animations = function (self, dt)
 		local page_name = content.page_name
 		local page_settings = StoreLayoutConfig.pages[page_name]
 		local rotation_timestamp = page_settings.rotation_timestamp
-		content.timer = rotation_timestamp and os.time() < rotation_timestamp
+
+		content.timer = rotation_timestamp and rotation_timestamp > os.time()
+
 		local num_unseen = tab_cat[page_name]
+
 		content.new = num_unseen > 0
 		sum_unseen = sum_unseen + num_unseen
 	end
@@ -167,8 +182,10 @@ StoreWindowPanel._update_animations = function (self, dt)
 	local gamepad_active = Managers.input:is_device_active("gamepad")
 	local mark_all_seen_button = self._widgets_by_name.mark_all_seen_button
 	local mark_all_shown = sum_unseen > 0
+
 	mark_all_seen_button.content.visible = not gamepad_active and mark_all_shown
 	mark_all_seen_button.content.enabled = not gamepad_active and mark_all_shown
+
 	local widgets_by_name = self._widgets_by_name
 	local back_button = widgets_by_name.back_button
 	local close_button = widgets_by_name.close_button
@@ -263,7 +280,7 @@ StoreWindowPanel._on_panel_button_selected = function (self, index)
 	local widget = self._title_button_widgets[index]
 	local page_name = widget.content.page_name
 	local path = {
-		page_name
+		page_name,
 	}
 
 	parent:go_to_store_path(path)
@@ -328,19 +345,22 @@ StoreWindowPanel._setup_input_buttons = function (self)
 	local input_1_widget = widgets_by_name.panel_input_area_1
 	local input_2_widget = widgets_by_name.panel_input_area_2
 	local icon_style_input_1 = input_1_widget.style.texture_id
+
 	icon_style_input_1.horizontal_alignment = "center"
 	icon_style_input_1.vertical_alignment = "center"
 	icon_style_input_1.texture_size = {
 		input_1_texture_data.size[1],
-		input_1_texture_data.size[2]
+		input_1_texture_data.size[2],
 	}
 	input_1_widget.content.texture_id = input_1_texture_data.texture
+
 	local icon_style_input_2 = input_2_widget.style.texture_id
+
 	icon_style_input_2.horizontal_alignment = "center"
 	icon_style_input_2.vertical_alignment = "center"
 	icon_style_input_2.texture_size = {
 		input_2_texture_data.size[1],
-		input_2_texture_data.size[2]
+		input_2_texture_data.size[2],
 	}
 	input_2_widget.content.texture_id = input_2_texture_data.texture
 end
@@ -350,6 +370,7 @@ StoreWindowPanel._handle_back_button_visibility = function (self)
 		local close_on_exit = self._parent:close_on_exit()
 		local back_button = self._widgets_by_name.back_button
 		local new_visibility = not close_on_exit
+
 		back_button.content.visible = new_visibility
 	end
 end
@@ -369,7 +390,9 @@ StoreWindowPanel._handle_gamepad_activity = function (self)
 	if gamepad_active then
 		if not self.gamepad_active_last_frame or force_update then
 			self.gamepad_active_last_frame = true
+
 			local widgets_by_name = self._widgets_by_name
+
 			widgets_by_name.panel_input_area_1.content.visible = true
 			widgets_by_name.panel_input_area_2.content.visible = true
 			widgets_by_name.back_button.content.visible = false
@@ -379,7 +402,9 @@ StoreWindowPanel._handle_gamepad_activity = function (self)
 		end
 	elseif self.gamepad_active_last_frame or force_update then
 		self.gamepad_active_last_frame = false
+
 		local widgets_by_name = self._widgets_by_name
+
 		widgets_by_name.panel_input_area_1.content.visible = false
 		widgets_by_name.panel_input_area_2.content.visible = false
 		widgets_by_name.close_button.content.visible = true
@@ -391,10 +416,13 @@ end
 StoreWindowPanel._set_text_button_size = function (self, widget, width)
 	local ui_scenegraph = self._ui_scenegraph
 	local scenegraph_id = widget.scenegraph_id
+
 	ui_scenegraph[scenegraph_id].size[1] = width
+
 	local style = widget.style
 	local text_width_offset = 5
 	local text_width = width - text_width_offset * 2
+
 	style.text.size[1] = text_width
 	style.text_shadow.size[1] = text_width
 	style.text_hover.size[1] = text_width
@@ -423,6 +451,7 @@ end
 
 StoreWindowPanel._set_text_button_horizontal_position = function (self, widget, x_position)
 	local offset = widget.offset
+
 	offset[1] = x_position
 end
 
@@ -438,9 +467,11 @@ StoreWindowPanel._animate_title_entry = function (self, widget, dt)
 	local selection_progress = hotspot.selection_progress or 0
 	local speed = 8
 	local input_speed = 20
+
 	input_progress = UIUtils.animate_value(input_progress, dt * input_speed, input_pressed)
 	hover_progress = UIUtils.animate_value(hover_progress, dt * speed, is_hover)
 	selection_progress = UIUtils.animate_value(selection_progress, dt * speed, is_selected)
+
 	local hover_easing_out_progress = math.easeOutCubic(hover_progress)
 	local hover_easing_in_progress = math.easeInCubic(hover_progress)
 	local select_easing_out_progress = math.easeOutCubic(selection_progress)
@@ -452,6 +483,7 @@ StoreWindowPanel._animate_title_entry = function (self, widget, dt)
 
 	if style.text then
 		local text_height_offset = 1 * combined_progress
+
 		style.text.offset[2] = -(2 + text_height_offset)
 		style.text_shadow.offset[2] = -(4 + text_height_offset)
 		style.text_hover.offset[2] = -(2 + text_height_offset)
@@ -460,6 +492,7 @@ StoreWindowPanel._animate_title_entry = function (self, widget, dt)
 
 	if style.new_marker then
 		local new_marker_progress = 0.5 + math.sin(Managers.time:time("ui") * 5) * 0.5
+
 		style.new_marker.color[1] = 100 + 155 * new_marker_progress
 	end
 
@@ -480,9 +513,11 @@ StoreWindowPanel._animate_back_button = function (self, widget, dt)
 	local selection_progress = hotspot.selection_progress or 0
 	local speed = 8
 	local input_speed = 20
+
 	input_progress = UIUtils.animate_value(input_progress, dt * input_speed, input_pressed)
 	hover_progress = UIUtils.animate_value(hover_progress, dt * speed, is_hover)
 	selection_progress = UIUtils.animate_value(selection_progress, dt * speed, is_selected)
+
 	local hover_easing_out_progress = math.easeOutCubic(hover_progress)
 	local hover_easing_in_progress = math.easeInCubic(hover_progress)
 	local select_easing_out_progress = math.easeOutCubic(selection_progress)
@@ -491,6 +526,7 @@ StoreWindowPanel._animate_back_button = function (self, widget, dt)
 	local combined_out_progress = math.max(select_easing_out_progress, hover_easing_out_progress)
 	local combined_in_progress = math.max(hover_easing_in_progress, select_easing_in_progress)
 	local hover_alpha = 255 * combined_progress
+
 	style.texture_id.color[1] = 255 - hover_alpha
 	style.texture_hover_id.color[1] = hover_alpha
 	style.selected_texture.color[1] = hover_alpha
@@ -504,8 +540,10 @@ StoreWindowPanel._sync_wallet_matchmaking_location = function (self)
 
 	if is_game_matchmaking ~= self._is_game_matchmaking then
 		self._is_game_matchmaking = is_game_matchmaking
+
 		local ui_scenegraph = self._ui_scenegraph
 		local offset_value = is_game_matchmaking and 390 or 0
+
 		ui_scenegraph.currency_area.position[1] = scenegraph_definition.currency_area.position[1] - offset_value
 	end
 end
@@ -517,11 +555,14 @@ StoreWindowPanel._sync_player_wallet = function (self)
 
 	if currency_amount ~= self._currency_amount then
 		self._currency_amount = currency_amount
+
 		local top_widgets_by_name = self._top_widgets_by_name
 		local widget_currency_icon = top_widgets_by_name.currency_icon
 		local widget_currency_text = top_widgets_by_name.currency_text
 		local currency_text = UIUtils.comma_value(tostring(currency_amount))
+
 		widget_currency_text.content.text = currency_text
+
 		local ui_renderer = self._ui_renderer
 		local text_width = UIUtils.get_text_width(ui_renderer, widget_currency_text.style.text, currency_text)
 		local icon_width = scenegraph_definition.currency_icon.size[1]
@@ -530,11 +571,16 @@ StoreWindowPanel._sync_player_wallet = function (self)
 		local ui_scenegraph = self._ui_scenegraph
 		local background_margin = 60
 		local background_size = total_length + background_margin
+
 		ui_scenegraph.currency_area.size[1] = background_size
+
 		local frame_background_margin = 12
+
 		ui_scenegraph.currency_area_frame.size[1] = background_size + frame_background_margin
+
 		local is_game_matchmaking = Managers.matchmaking:is_game_matchmaking()
 		local offset_value = is_game_matchmaking and 390 or 0
+
 		ui_scenegraph.currency_area.position[1] = scenegraph_definition.currency_area.position[1] - offset_value
 	end
 end
@@ -545,12 +591,15 @@ StoreWindowPanel._start_panel_selection_animation = function (self, previous_sel
 	local selection_offset = entry_panel_selection.offset
 	local selection_size = entry_panel_selection.content.size
 	local panel_selection_animation = self._panel_selection_animation or {}
+
 	self._panel_selection_animation = panel_selection_animation
+
 	local start_offset = selection_offset[1]
 	local start_width = selection_size[1]
 	local target_offset = self._title_button_widgets[new_selected_index].offset[1]
 	local target_width = self._title_button_widgets[new_selected_index].content.size[1]
 	local animation_duration = 0.3
+
 	panel_selection_animation.duration = animation_duration
 	panel_selection_animation.total_duration = animation_duration
 	panel_selection_animation.target_offset = target_offset
@@ -573,6 +622,7 @@ StoreWindowPanel._update_panel_selection_animation = function (self, dt)
 	end
 
 	duration = math.max(duration - dt, 0)
+
 	local start_offset = panel_selection_animation.start_offset
 	local target_offset = panel_selection_animation.target_offset
 	local start_width = panel_selection_animation.start_width
@@ -589,10 +639,13 @@ StoreWindowPanel._update_panel_selection_animation = function (self, dt)
 	local panel_selection_mask_size = entry_panel_selection.style.write_mask.texture_size
 	local panel_selection_size = entry_panel_selection.content.size
 	local panel_selection_scenegraph_id = entry_panel_selection.scenegraph_id
+
 	panel_selection_size[1] = current_width
 	panel_selection_mask_size[1] = current_width * 1.5
 	self._ui_scenegraph[panel_selection_scenegraph_id].size[1] = current_width
+
 	local selection_offset = entry_panel_selection.offset
+
 	selection_offset[1] = current_distance
 
 	if duration == 0 then

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/unlock/always_unlocked.lua
+
 AlwaysUnlocked = class(AlwaysUnlocked)
 
 AlwaysUnlocked.init = function (self, name, app_id, backend_reward_id, cosmetic, fallback_id, requires_restart, is_legacy_console_dlc)

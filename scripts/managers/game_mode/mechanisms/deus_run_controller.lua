@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/game_mode/mechanisms/deus_run_controller.lua
+
 require("scripts/helpers/deus_power_up_utils")
 require("scripts/helpers/rarity_utils")
 require("scripts/managers/game_mode/mechanisms/deus_generate_graph")
@@ -10,6 +12,7 @@ require("scripts/managers/game_mode/mechanisms/deus_run_state")
 require("scripts/utils/hash_utils")
 
 DeusRunController = class(DeusRunController)
+
 local RPCS = {
 	"rpc_deus_shop_heal_player",
 	"rpc_deus_shop_blessing_selected",
@@ -20,143 +23,145 @@ local RPCS = {
 	"rpc_deus_set_initial_setup",
 	"rpc_deus_chest_unlocked",
 	"rpc_deus_soft_currency_picked_up",
-	"rpc_deus_grant_end_of_level_power_ups"
+	"rpc_deus_grant_end_of_level_power_ups",
 }
 local REAL_PLAYER_LOCAL_ID = 1
 local DISCOUNT_CONVERSION_EPSILON = 10000
 local stats_to_save = {
 	{
 		"kills_per_breed",
-		"skaven_storm_vermin"
+		"skaven_storm_vermin",
 	},
 	{
 		"kills_per_breed",
-		"skaven_storm_vermin_commander"
+		"skaven_storm_vermin_commander",
 	},
 	{
 		"kills_per_breed",
-		"skaven_storm_vermin_with_shield"
+		"skaven_storm_vermin_with_shield",
 	},
 	{
 		"kills_per_breed",
-		"skaven_plague_monk"
+		"skaven_plague_monk",
 	},
 	{
 		"kills_per_breed",
-		"chaos_warrior"
+		"chaos_warrior",
 	},
 	{
 		"kills_per_breed",
-		"chaos_berzerker"
+		"chaos_berzerker",
 	},
 	{
 		"kills_per_breed",
-		"chaos_raider"
+		"chaos_raider",
 	},
 	{
 		"kills_per_breed",
-		"beastmen_bestigor"
+		"beastmen_bestigor",
 	},
 	{
 		"kills_per_breed",
-		"skaven_gutter_runner"
+		"skaven_gutter_runner",
 	},
 	{
 		"kills_per_breed",
-		"skaven_poison_wind_globadier"
+		"skaven_poison_wind_globadier",
 	},
 	{
 		"kills_per_breed",
-		"skaven_pack_master"
+		"skaven_pack_master",
 	},
 	{
 		"kills_per_breed",
-		"skaven_ratling_gunner"
+		"skaven_ratling_gunner",
 	},
 	{
 		"kills_per_breed",
-		"skaven_warpfire_thrower"
+		"skaven_warpfire_thrower",
 	},
 	{
 		"kills_per_breed",
-		"chaos_corruptor_sorcerer"
+		"chaos_corruptor_sorcerer",
 	},
 	{
 		"kills_per_breed",
-		"chaos_vortex_sorcerer"
+		"chaos_vortex_sorcerer",
 	},
 	{
 		"kills_per_breed",
-		"beastmen_standard_bearer"
+		"beastmen_standard_bearer",
 	},
 	{
-		"kills_total"
+		"kills_total",
 	},
 	{
-		"kills_melee"
+		"kills_melee",
 	},
 	{
-		"kills_ranged"
+		"kills_ranged",
 	},
 	{
-		"damage_taken"
+		"damage_taken",
 	},
 	{
-		"damage_dealt"
+		"damage_dealt",
 	},
 	{
 		"damage_dealt_per_breed",
-		"skaven_rat_ogre"
+		"skaven_rat_ogre",
 	},
 	{
 		"damage_dealt_per_breed",
-		"skaven_stormfiend"
+		"skaven_stormfiend",
 	},
 	{
 		"damage_dealt_per_breed",
-		"chaos_spawn"
+		"chaos_spawn",
 	},
 	{
 		"damage_dealt_per_breed",
-		"chaos_troll"
+		"chaos_troll",
 	},
 	{
 		"damage_dealt_per_breed",
-		"beastmen_minotaur"
+		"beastmen_minotaur",
 	},
 	{
-		"headshots"
+		"headshots",
 	},
 	{
-		"saves"
+		"saves",
 	},
 	{
-		"revives"
-	}
+		"revives",
+	},
 }
 local loot_chest_rewards = {
 	normal = {
 		"loot_chest_01_06",
-		2
+		2,
 	},
 	hard = {
 		"loot_chest_02_06",
-		2
+		2,
 	},
 	harder = {
 		"loot_chest_03_06",
-		2
+		2,
 	},
 	hardest = {
 		"loot_chest_04_06",
-		2
+		2,
 	},
 	cataclysm = {
 		"loot_chest_04_06",
-		2
-	}
+		2,
+	},
 }
+
 script_data.deus_run_controller_debug = true
+
 local global_print = print
 
 local function dprint(...)
@@ -180,7 +185,7 @@ local function low_precision_float_comparison(a, b)
 end
 
 local function calculate_next_shop_heal(current_health, current_coins, default_heal_amount, default_heal_cost)
-	local heal_amount, heal_cost = nil
+	local heal_amount, heal_cost
 	local health_per_coin = default_heal_amount / default_heal_cost
 
 	if current_health <= 1 - DeusShopSettings.heal_amount then
@@ -208,7 +213,9 @@ DeusRunController.network_context_created = function (self, lobby, server_peer_i
 	self._run_state:network_context_created(lobby, server_peer_id, own_peer_id, is_server, network_handler)
 
 	self._network_handler = network_handler
+
 	local host_migration_count = self._run_state:get_host_migration_count()
+
 	host_migration_count = host_migration_count + 1
 
 	self._run_state:set_host_migration_count(host_migration_count)
@@ -270,6 +277,7 @@ DeusRunController.setup_run = function (self, run_seed, difficulty, journey_name
 	self._run_state:set_belakor_enabled(with_belakor)
 
 	local populate_config = DEUS_MAP_POPULATE_SETTINGS[journey_name] or DEUS_MAP_POPULATE_SETTINGS.default
+
 	self._path_graph = deus_generate_graph(run_seed, journey_name, dominant_god, populate_config, with_belakor)
 
 	self._run_state:set_current_node_key("start")
@@ -280,17 +288,20 @@ DeusRunController.setup_run = function (self, run_seed, difficulty, journey_name
 
 	local own_peer_id = self._run_state:get_own_peer_id()
 	local profile_index, career_index = self._run_state:get_player_profile(own_peer_id, REAL_PLAYER_LOCAL_ID)
-	local melee_item_string, ranged_item_string, initial_talents_for_career = nil
+	local melee_item_string, ranged_item_string, initial_talents_for_career
 
 	if profile_index ~= 0 then
 		local profile = SPProfiles[profile_index]
 		local career_name = profile.careers[career_index].name
 		local initial_talents = self._run_state:get_own_initial_talents()
+
 		initial_talents_for_career = initial_talents[career_name]
+
 		local initial_loadout = self._run_state:get_own_initial_loadout()
 		local initial_loadout_for_career = initial_loadout[career_name]
 		local melee_item = initial_loadout_for_career.slot_melee
 		local ranged_item = initial_loadout_for_career.slot_ranged
+
 		melee_item_string = DeusWeaponGeneration.serialize_weapon(melee_item)
 		ranged_item_string = DeusWeaponGeneration.serialize_weapon(ranged_item)
 	end
@@ -333,7 +344,7 @@ DeusRunController.rpc_deus_set_initial_soft_currency = function (self, sender_ch
 	local sender = CHANNEL_TO_PEER_ID[sender_channel_id]
 
 	if not self._run_state:get_peer_initialized(sender) then
-		local progress = nil
+		local progress
 		local current_node_key = self._run_state:get_current_node_key()
 		local path_graph = self:_get_graph_data()
 		local current_node = path_graph[current_node_key]
@@ -355,12 +366,17 @@ DeusRunController.rpc_deus_set_initial_soft_currency = function (self, sender_ch
 		end
 
 		progress = progress or 0
+
 		local extra_coins = DeusNewLoadoutSettings.coin_formula(progress)
 		local new_coins = extra_coins + initial_own_soft_currency
 
 		self._run_state:set_player_soft_currency(sender, REAL_PLAYER_LOCAL_ID, new_coins)
 		self._run_state:set_peer_initialized(sender, true)
 		self:_add_coin_tracking_entry(sender, REAL_PLAYER_LOCAL_ID, new_coins, "set initial soft currency")
+	end
+
+	if false then
+		-- Nothing
 	end
 end
 
@@ -371,6 +387,10 @@ DeusRunController.rpc_deus_set_initial_setup = function (self, sender_channel_id
 		self:_add_initial_talents_as_power_ups(sender, REAL_PLAYER_LOCAL_ID, profile_index, career_index, initial_talents_for_career)
 		self:_add_initial_weapons_to_loadout(sender, REAL_PLAYER_LOCAL_ID, profile_index, career_index, melee_item_string, ranged_item_string)
 		self._run_state:set_profile_initialized(sender, REAL_PLAYER_LOCAL_ID, profile_index, career_index, true)
+	end
+
+	if false then
+		-- Nothing
 	end
 
 	local granted_non_party_end_of_level_power_ups = self._run_state:get_granted_non_party_end_of_level_power_ups(sender, REAL_PLAYER_LOCAL_ID, profile_index, career_index)
@@ -397,9 +417,12 @@ DeusRunController.rpc_deus_grant_end_of_level_power_ups = function (self, sender
 	local existing_power_ups = self._run_state:get_player_power_ups(local_peer_id, REAL_PLAYER_LOCAL_ID, profile_index, career_index)
 	local profile = SPProfiles[profile_index]
 	local career_name = profile.careers[career_index].name
-	local new_power_ups = nil
+	local new_power_ups
+
 	_, new_power_ups = DeusPowerUpUtils.generate_random_power_ups(power_up_seed, granted_random_power_up_count, existing_power_ups, self._run_state:get_run_difficulty(), run_progress, DeusPowerUpAvailabilityTypes.weapon_chest, career_name, power_up_rarity)
+
 	local skip_metatable = true
+
 	existing_power_ups = table.clone(existing_power_ups, skip_metatable)
 
 	table.append(existing_power_ups, new_power_ups)
@@ -454,6 +477,7 @@ DeusRunController._add_initial_talents_as_power_ups = function (self, peer_id, l
 
 		if column ~= 0 then
 			local power_up, rarity = DeusPowerUpUtils.get_talent_power_up_from_tier_and_column(tier, column)
+
 			talent_power_ups[#talent_power_ups + 1] = DeusPowerUpUtils.generate_specific_power_up(power_up.name, rarity)
 		end
 	end
@@ -495,6 +519,7 @@ DeusRunController.handle_level_won = function (self)
 	self:_blessings_handle_level_won()
 
 	local completed_level_count = self._run_state:get_completed_level_count()
+
 	completed_level_count = completed_level_count + 1
 
 	self._run_state:set_completed_level_count(completed_level_count)
@@ -502,6 +527,7 @@ DeusRunController.handle_level_won = function (self)
 	local traversed_nodes = self._run_state:get_traversed_nodes()
 	local current_node_key = self._run_state:get_current_node_key()
 	local skip_metatable = true
+
 	traversed_nodes = table.clone(traversed_nodes, skip_metatable)
 	traversed_nodes[#traversed_nodes + 1] = current_node_key
 
@@ -515,6 +541,7 @@ DeusRunController.handle_level_won = function (self)
 
 		for _, peer in ipairs(peers) do
 			local cursed_nodes_completed = self._run_state:get_cursed_levels_completed(peer)
+
 			cursed_nodes_completed = cursed_nodes_completed + 1
 
 			self._run_state:set_cursed_levels_completed(peer, cursed_nodes_completed)
@@ -557,6 +584,7 @@ DeusRunController.handle_shrine_entered = function (self, shrine_node_key)
 
 	local traversed_nodes = self._run_state:get_traversed_nodes()
 	local skip_metatable = true
+
 	traversed_nodes = table.clone(traversed_nodes, skip_metatable)
 	traversed_nodes[#traversed_nodes + 1] = shrine_node_key
 
@@ -570,7 +598,7 @@ end
 DeusRunController.get_unreachable_nodes = function (self)
 	local current_node_key = self:get_current_node_key()
 	local reachable_nodes = {
-		[current_node_key] = true
+		[current_node_key] = true,
 	}
 	local traversed_nodes = self._run_state:get_traversed_nodes()
 
@@ -634,7 +662,7 @@ DeusRunController.get_map_visibility = function (self)
 		level_data[node_key] = DeusMapVisibilitySettings.WEAK_FOG_LEVEL
 
 		local function spread_level_reduction(nested_node_key, levels_to_go)
-			if DeusMapVisibilitySettings.STRONG_FOG_LEVEL < levels_to_go then
+			if levels_to_go > DeusMapVisibilitySettings.STRONG_FOG_LEVEL then
 				return
 			end
 
@@ -700,25 +728,26 @@ DeusRunController.get_end_of_level_rewards_arguments = function (self, game_won,
 			cursed_chests_purified = self._run_state:get_cursed_chests_purified(own_peer_id),
 			cursed_levels_completed = self._run_state:get_cursed_levels_completed(own_peer_id),
 			coin_chests_collected = self._run_state:get_coin_chests_collected(own_peer_id),
-			run_progress = run_progress
-		}
+			run_progress = run_progress,
+		},
 	}
 end
 
 DeusRunController.get_mission_results = function (self)
 	local mission_results = {}
 	local peer_id = self._run_state:get_own_peer_id()
+
 	mission_results[#mission_results + 1] = {
 		text = "deus_cursed_chests_purified",
-		experience = self._run_state:get_cursed_chests_purified(peer_id) * DeusExperienceSettings.CURSED_CHESTS
+		experience = self._run_state:get_cursed_chests_purified(peer_id) * DeusExperienceSettings.CURSED_CHESTS,
 	}
 	mission_results[#mission_results + 1] = {
 		text = "deus_cursed_levels_beaten",
-		experience = self._run_state:get_cursed_levels_completed(peer_id) * DeusExperienceSettings.CURSES
+		experience = self._run_state:get_cursed_levels_completed(peer_id) * DeusExperienceSettings.CURSES,
 	}
 	mission_results[#mission_results + 1] = {
 		text = "deus_coin_chests_collected",
-		experience = self._run_state:get_coin_chests_collected(peer_id) * DeusExperienceSettings.COINS
+		experience = self._run_state:get_coin_chests_collected(peer_id) * DeusExperienceSettings.COINS,
 	}
 
 	return mission_results
@@ -729,6 +758,7 @@ DeusRunController.record_cursed_chest_purified = function (self)
 
 	for _, peer in ipairs(peers) do
 		local cursed_chests_purified = self._run_state:get_cursed_chests_purified(peer)
+
 		cursed_chests_purified = cursed_chests_purified + 1
 
 		self._run_state:set_cursed_chests_purified(peer, cursed_chests_purified)
@@ -757,6 +787,7 @@ DeusRunController.restore_persisted_score = function (self, statistics_db, peer_
 	for index, stat_type in ipairs(stats_to_save) do
 		local value = persisted_score[index]
 		local args = table.clone(stat_type)
+
 		args[#args + 1] = value or 0
 
 		statistics_db:set_non_persistent_stat(stats_id, unpack(args))
@@ -855,11 +886,13 @@ DeusRunController.on_soft_currency_picked_up = function (self, amount, type)
 		RPC.rpc_deus_soft_currency_picked_up(server_channel_id, amount, type)
 	elseif type == DeusSoftCurrencySettings.types.GROUND then
 		local ground_coins_picked_up = self._run_state:get_ground_coins_picked_up()
+
 		ground_coins_picked_up = ground_coins_picked_up + 1
 
 		self._run_state:set_ground_coins_picked_up(ground_coins_picked_up)
 	elseif type == DeusSoftCurrencySettings.types.MONSTER then
 		local monster_coins_picked_up = self._run_state:get_monster_coins_picked_up()
+
 		monster_coins_picked_up = monster_coins_picked_up + 1
 
 		self._run_state:set_monster_coins_picked_up(monster_coins_picked_up)
@@ -878,6 +911,7 @@ end
 
 DeusRunController._add_soft_currency_to_peer = function (self, peer_id, amount)
 	local coin_chests_collected = self._run_state:get_coin_chests_collected(peer_id)
+
 	coin_chests_collected = coin_chests_collected + 1
 
 	self._run_state:set_coin_chests_collected(peer_id, coin_chests_collected)
@@ -896,6 +930,7 @@ DeusRunController.get_shop_heal_data = function (self)
 	local current_coins = self._run_state:get_player_soft_currency(local_peer_id, REAL_PLAYER_LOCAL_ID)
 	local heal_amount = DeusShopSettings.heal_amount
 	local heal_cost = DeusShopSettings.heal_cost
+
 	heal_amount, heal_cost = calculate_next_shop_heal(current_health, current_coins, heal_amount, heal_cost)
 
 	return heal_amount, heal_cost
@@ -911,6 +946,10 @@ DeusRunController.shop_buy_health = function (self)
 
 		RPC.rpc_deus_shop_heal_player(server_channel_id)
 	end
+
+	if false then
+		-- Nothing
+	end
 end
 
 DeusRunController.shop_buy_blessing = function (self, blessing_name)
@@ -921,6 +960,10 @@ DeusRunController.shop_buy_blessing = function (self, blessing_name)
 		local server_channel_id = PEER_ID_TO_CHANNEL[server_peer_id]
 
 		RPC.rpc_deus_shop_blessing_selected(server_channel_id, blessing_name)
+	end
+
+	if false then
+		-- Nothing
 	end
 end
 
@@ -943,6 +986,7 @@ DeusRunController._try_buy_health = function (self, peer_id)
 	if current_health < 1 then
 		local heal_amount = DeusShopSettings.heal_amount
 		local heal_cost = DeusShopSettings.heal_cost
+
 		heal_amount, heal_cost = calculate_next_shop_heal(current_health, current_coins, heal_amount, heal_cost)
 
 		if heal_cost <= current_coins then
@@ -988,10 +1032,14 @@ end
 
 DeusRunController.rpc_deus_shop_power_up_bought = function (self, sender_channel_id, rarity, power_up_name, power_up_client_id, discount)
 	local sender = CHANNEL_TO_PEER_ID[sender_channel_id]
+
 	discount = discount / DISCOUNT_CONVERSION_EPSILON
+
 	local skip_metatable = true
 	local power_up = table.clone(DeusPowerUps[rarity][power_up_name], skip_metatable)
+
 	power_up.client_id = power_up_client_id
+
 	local success = self:_try_buy_power_up(sender, power_up, discount)
 
 	if not success then
@@ -1025,6 +1073,7 @@ end
 
 DeusRunController.generate_random_power_ups = function (self, count, availability_type, extra_seed)
 	extra_seed = extra_seed or "0"
+
 	local local_peer_id = self._run_state:get_own_peer_id()
 	local current_node_key = self._run_state:get_current_node_key()
 	local graph_data = self:_get_graph_data()
@@ -1036,7 +1085,8 @@ DeusRunController.generate_random_power_ups = function (self, count, availabilit
 	local existing_power_ups = self._run_state:get_player_power_ups(local_peer_id, REAL_PLAYER_LOCAL_ID, profile_index, career_index)
 	local profile = SPProfiles[profile_index]
 	local career_name = profile.careers[career_index].name
-	local new_power_ups = nil
+	local new_power_ups
+
 	power_up_seed, new_power_ups = DeusPowerUpUtils.generate_random_power_ups(power_up_seed, count, existing_power_ups, self._run_state:get_run_difficulty(), run_progress, availability_type, career_name)
 
 	return new_power_ups
@@ -1053,6 +1103,7 @@ DeusRunController.add_power_ups = function (self, new_power_ups, local_player_id
 	local profile_index, career_index = self._run_state:get_player_profile(local_peer_id, local_player_id)
 	local power_ups = self._run_state:get_player_power_ups(local_peer_id, local_player_id, profile_index, career_index)
 	local skip_metatable = true
+
 	power_ups = table.clone(power_ups, skip_metatable)
 
 	table.append(power_ups, new_power_ups)
@@ -1086,12 +1137,14 @@ DeusRunController.try_grant_end_of_level_deus_power_ups = function (self)
 		local career_name = profile.careers[career_index].name
 		local _, new_power_ups = DeusPowerUpUtils.generate_random_power_ups(power_up_seed, granted_random_power_up_count, existing_power_ups, self._run_state:get_run_difficulty(), run_progress, DeusPowerUpAvailabilityTypes.weapon_chest, career_name, power_up_rarity)
 		local skip_metatable = true
+
 		existing_power_ups = table.clone(existing_power_ups, skip_metatable)
 
 		table.append(existing_power_ups, new_power_ups)
 		self._run_state:set_player_power_ups(local_peer_id, REAL_PLAYER_LOCAL_ID, profile_index, career_index, existing_power_ups)
 
 		local granted_non_party_end_of_level_power_ups = self._run_state:get_granted_non_party_end_of_level_power_ups(local_peer_id, REAL_PLAYER_LOCAL_ID, profile_index, career_index)
+
 		granted_non_party_end_of_level_power_ups = table.clone(granted_non_party_end_of_level_power_ups, skip_metatable)
 		granted_non_party_end_of_level_power_ups[#granted_non_party_end_of_level_power_ups + 1] = current_node_key
 
@@ -1114,13 +1167,14 @@ DeusRunController.try_grant_end_of_level_deus_power_ups = function (self)
 			local power_up = DeusPowerUpUtils.generate_specific_power_up(power_up_name, power_up_rarity)
 			local party_power_ups = self._run_state:get_party_power_ups()
 			local skip_metatable = true
+
 			party_power_ups = table.clone(party_power_ups, skip_metatable)
 			party_power_ups[#party_power_ups + 1] = power_up
 
 			self._run_state:set_party_power_ups(party_power_ups)
 
 			return {
-				power_up
+				power_up,
 			}
 		end
 	end
@@ -1142,6 +1196,7 @@ DeusRunController.rpc_deus_add_power_ups = function (self, sender_channel_id, po
 	local profile_index, career_index = self._run_state:get_player_profile(sender, REAL_PLAYER_LOCAL_ID)
 	local power_ups = self._run_state:get_player_power_ups(sender, REAL_PLAYER_LOCAL_ID, profile_index, career_index)
 	local skip_metatable = true
+
 	power_ups = table.clone(power_ups, skip_metatable)
 
 	table.append(new_power_ups, power_ups)
@@ -1149,6 +1204,7 @@ DeusRunController.rpc_deus_add_power_ups = function (self, sender_channel_id, po
 
 	if granted_by_end_of_level_node_key ~= "" then
 		local granted_non_party_end_of_level_power_ups = self._run_state:get_granted_non_party_end_of_level_power_ups(sender, REAL_PLAYER_LOCAL_ID, profile_index, career_index)
+
 		granted_non_party_end_of_level_power_ups = table.clone(granted_non_party_end_of_level_power_ups, skip_metatable)
 		granted_non_party_end_of_level_power_ups[#granted_non_party_end_of_level_power_ups + 1] = granted_by_end_of_level_node_key
 
@@ -1171,7 +1227,7 @@ DeusRunController.has_blessing = function (self, blessing_name)
 end
 
 DeusRunController.generate_random_blessing_name = function (self)
-	local random_blessing_name = nil
+	local random_blessing_name
 	local blessing_keys = {}
 	local current_node_key = self._run_state:get_current_node_key()
 	local path_graph = self:_get_graph_data()
@@ -1188,6 +1244,7 @@ DeusRunController.generate_random_blessing_name = function (self)
 
 	if #blessing_keys > 0 then
 		local _, random_blessing_index = Math.next_random(seed, 1, #blessing_keys)
+
 		random_blessing_name = blessing_keys[random_blessing_index]
 	end
 
@@ -1197,6 +1254,7 @@ end
 DeusRunController.remove_blessing = function (self, blessing_to_remove)
 	local blessings_with_buyer = self._run_state:get_blessings_with_buyer()
 	local skip_metatable = true
+
 	blessings_with_buyer = table.clone(blessings_with_buyer, skip_metatable)
 
 	for blessing_name, _ in pairs(blessings_with_buyer) do
@@ -1250,6 +1308,7 @@ DeusRunController._blessings_handle_level_won = function (self)
 
 		if not blessing_data.is_permanent then
 			local lifetime = self._run_state:get_blessing_lifetime(blessing_name)
+
 			lifetime = lifetime - 1
 
 			self._run_state:set_blessing_lifetime(blessing_name, lifetime)
@@ -1302,7 +1361,7 @@ DeusRunController._try_buy_blessing = function (self, buyer, blessing_name)
 				if slot_count then
 					local current_item_count = additional_items[slot_name] and #additional_items[slot_name].items or 0
 
-					return slot_count > current_item_count
+					return current_item_count < slot_count
 				else
 					return false
 				end
@@ -1314,11 +1373,9 @@ DeusRunController._try_buy_blessing = function (self, buyer, blessing_name)
 		local function add_to_additional_items()
 			additional_items = table.clone(additional_items)
 
-			if not additional_items[slot_name] then
-				local slot_additional_items = {
-					items = {}
-				}
-			end
+			local slot_additional_items = additional_items[slot_name] or {
+				items = {},
+			}
 
 			slot_additional_items.items[#slot_additional_items.items + 1] = ItemMasterList[item_name]
 			additional_items[slot_name] = slot_additional_items
@@ -1371,6 +1428,7 @@ DeusRunController._try_buy_blessing = function (self, buyer, blessing_name)
 
 			if melee_item_string then
 				local melee_item = DeusWeaponGeneration.deserialize_weapon(melee_item_string)
+
 				melee_item.power_level = melee_item.power_level + power_level
 				melee_item_string = DeusWeaponGeneration.serialize_weapon(melee_item)
 
@@ -1379,6 +1437,7 @@ DeusRunController._try_buy_blessing = function (self, buyer, blessing_name)
 
 			if ranged_item_string then
 				local ranged_item = DeusWeaponGeneration.deserialize_weapon(ranged_item_string)
+
 				ranged_item.power_level = ranged_item.power_level + power_level
 				ranged_item_string = DeusWeaponGeneration.serialize_weapon(ranged_item)
 
@@ -1389,6 +1448,7 @@ DeusRunController._try_buy_blessing = function (self, buyer, blessing_name)
 
 	local blessings_with_buyer = self._run_state:get_blessings_with_buyer()
 	local skip_metatable = true
+
 	blessings_with_buyer = table.clone(blessings_with_buyer, skip_metatable)
 	blessings_with_buyer[blessing_name] = buyer
 
@@ -1396,6 +1456,7 @@ DeusRunController._try_buy_blessing = function (self, buyer, blessing_name)
 	self._run_state:set_player_soft_currency(buyer, REAL_PLAYER_LOCAL_ID, current_coins - blessing_cost)
 
 	local bought_blessings = self._run_state:get_bought_blessings()
+
 	bought_blessings = table.clone(bought_blessings, skip_metatable)
 	bought_blessings[#bought_blessings + 1] = blessing_name
 
@@ -1414,7 +1475,9 @@ DeusRunController._try_buy_power_up = function (self, buyer, power_up, discount)
 
 	local rarity = power_up.rarity
 	local power_up_cost = DeusCostSettings.shop.power_ups[rarity]
+
 	power_up_cost = power_up_cost - math.round(power_up_cost * discount)
+
 	local profile_index, career_index = self._run_state:get_player_profile(buyer, REAL_PLAYER_LOCAL_ID)
 	local current_coins = self._run_state:get_player_soft_currency(buyer, REAL_PLAYER_LOCAL_ID)
 
@@ -1424,6 +1487,7 @@ DeusRunController._try_buy_power_up = function (self, buyer, power_up, discount)
 
 	local power_ups = self._run_state:get_player_power_ups(buyer, REAL_PLAYER_LOCAL_ID, profile_index, career_index)
 	local skip_metatable = true
+
 	power_ups = table.clone(power_ups, skip_metatable)
 
 	table.insert(power_ups, power_up)
@@ -1438,6 +1502,7 @@ DeusRunController._try_buy_power_up = function (self, buyer, power_up, discount)
 	self:_add_coin_tracking_entry(buyer, REAL_PLAYER_LOCAL_ID, -power_up_cost, tracking_event)
 
 	local bought_power_ups = self._run_state:get_bought_power_ups()
+
 	bought_power_ups = table.clone(bought_power_ups, skip_metatable)
 	bought_power_ups[#bought_power_ups + 1] = power_up.name
 
@@ -1454,6 +1519,7 @@ DeusRunController.grant_party_power_up = function (self, power_up_name, power_up
 	local power_up = DeusPowerUpUtils.generate_specific_power_up(power_up_name, power_up_rarity)
 	local party_power_ups = self._run_state:get_party_power_ups()
 	local skip_metatable = true
+
 	party_power_ups = table.clone(party_power_ups, skip_metatable)
 	party_power_ups[#party_power_ups + 1] = power_up
 
@@ -1542,13 +1608,15 @@ DeusRunController.restore_game_mode_data = function (self, peer_id, local_player
 		data.health_state = "alive"
 		data.health_percentage = 1
 		data.ammo = {
+			slot_melee = 1,
 			slot_ranged = 1,
-			slot_melee = 1
 		}
 		data.consumables = {}
 		data.additional_items = {}
+
 		local difficulty = self._run_state:get_run_difficulty()
 		local difficulty_settings = DifficultySettings[difficulty]
+
 		data.consumables.slot_healthkit = difficulty_settings.slot_healthkit
 		data.consumables.slot_potion = difficulty_settings.slot_potion
 		data.consumables.slot_grenade = difficulty_settings.slot_grenade
@@ -1559,14 +1627,15 @@ DeusRunController.restore_game_mode_data = function (self, peer_id, local_player
 		data.health_percentage = self._run_state:get_player_health_percentage(peer_id, local_player_id, profile_index, career_index)
 		data.ammo = {
 			slot_melee = self._run_state:get_player_melee_ammo(peer_id, local_player_id, profile_index, career_index),
-			slot_ranged = self._run_state:get_player_ranged_ammo(peer_id, local_player_id, profile_index, career_index)
+			slot_ranged = self._run_state:get_player_ranged_ammo(peer_id, local_player_id, profile_index, career_index),
 		}
-		data.consumables = {
-			slot_healthkit = self._run_state:get_player_consumable_healthkit_slot(peer_id, local_player_id, profile_index, career_index),
-			slot_potion = self._run_state:get_player_consumable_potion_slot(peer_id, local_player_id, profile_index, career_index),
-			slot_grenade = self._run_state:get_player_consumable_grenade_slot(peer_id, local_player_id, profile_index, career_index)
-		}
+		data.consumables = {}
+		data.consumables.slot_healthkit = self._run_state:get_player_consumable_healthkit_slot(peer_id, local_player_id, profile_index, career_index)
+		data.consumables.slot_potion = self._run_state:get_player_consumable_potion_slot(peer_id, local_player_id, profile_index, career_index)
+		data.consumables.slot_grenade = self._run_state:get_player_consumable_grenade_slot(peer_id, local_player_id, profile_index, career_index)
+
 		local skip_metatable = true
+
 		data.additional_items = table.clone(self._run_state:get_player_additional_items(peer_id, local_player_id, profile_index, career_index), skip_metatable)
 	end
 
@@ -1701,6 +1770,7 @@ DeusRunController._get_graph_data = function (self)
 
 	if current_arena_belakor_node and not self._swapped_arena_belakor_node then
 		local node_to_edit = self._path_graph[current_arena_belakor_node]
+
 		node_to_edit.minor_modifier_group = {}
 		node_to_edit.level_type = "ARENA"
 		node_to_edit.base_level = "arena_belakor"
@@ -1777,8 +1847,10 @@ DeusRunController.unlock_arena_belakor = function (self)
 
 	if possible_arena_belakor_nodes then
 		local seed = current_node.level_seed
-		local next_index = nil
+		local next_index
+
 		seed, next_index = Math.next_random(seed, 1, #possible_arena_belakor_nodes)
+
 		local arena_belakor_node = possible_arena_belakor_nodes[next_index]
 
 		self._run_state:set_arena_belakor_node(arena_belakor_node)
@@ -1862,10 +1934,11 @@ DeusRunController.get_base_weapon_pool = function (self)
 
 	if not is_weapon_pool_valid then
 		local base_weapon_pool = DeusWeaponGeneration.generate_weapon_pool(career_name, self._run_state:get_weapon_group_whitelist())
+
 		weapon_pool_data = {
 			profile_index = profile_index,
 			career_index = career_index,
-			base_weapon_pool = base_weapon_pool
+			base_weapon_pool = base_weapon_pool,
 		}
 
 		self._run_state:set_own_weapon_pool_data(weapon_pool_data)
@@ -1933,7 +2006,7 @@ DeusRunController.rpc_deus_chest_unlocked = function (self, sender_channel_id, c
 	self._run_state:set_player_soft_currency(sender, REAL_PLAYER_LOCAL_ID, new_coins)
 	self:_record_chest_purchased_for_tracking(rarity, chest_type)
 
-	local event_type = nil
+	local event_type
 
 	if chest_type == DEUS_CHEST_TYPES.power_up then
 		event_type = chest_type .. "_chest"
@@ -1947,11 +2020,12 @@ end
 DeusRunController._record_chest_purchased_for_tracking = function (self, rarity, chest_type)
 	if chest_type == DEUS_CHEST_TYPES.power_up then
 		local count = self._run_state:get_power_up_chests_used()
+
 		count = count + 1
 
 		self._run_state:set_power_up_chests_used(count)
 	else
-		local chest_table = nil
+		local chest_table
 
 		if chest_type == DEUS_CHEST_TYPES.swap_melee then
 			chest_table = self._run_state:get_melee_swap_chests_used()
@@ -1964,6 +2038,7 @@ DeusRunController._record_chest_purchased_for_tracking = function (self, rarity,
 		fassert(chest_table, "unknown %s chest_type", chest_type)
 
 		local skip_metatable = true
+
 		chest_table = table.clone(chest_table, skip_metatable)
 		chest_table[rarity] = chest_table[rarity] and chest_table[rarity] + 1 or 1
 
@@ -1993,7 +2068,7 @@ DeusRunController.request_standard_twitch_level_vote = function (self, twitch_ma
 	local next_node_b = graph[next_node_keys[2]]
 	local vote_templates = {
 		TwitchVoteDeusSelectLevelNames[next_node_a.base_level],
-		TwitchVoteDeusSelectLevelNames[next_node_b.base_level]
+		TwitchVoteDeusSelectLevelNames[next_node_b.base_level],
 	}
 	local vote_time = Application.user_setting("twitch_vote_time") or TwitchSettings.default_vote_time
 
@@ -2018,11 +2093,13 @@ DeusRunController._add_coin_tracking_entry = function (self, peer_id, local_play
 
 	if coins > 0 then
 		local coins_earned = self._run_state:get_coins_earned()
+
 		coins_earned = coins_earned + coins
 
 		self._run_state:set_coins_earned(coins_earned)
 	else
 		local coins_spent = self._run_state:get_coins_spent()
+
 		coins_spent = coins_spent + coins
 
 		self._run_state:set_coins_spent(coins_spent)
@@ -2060,6 +2137,7 @@ DeusRunController.get_deus_weapon_chest_type = function (self)
 		end
 
 		local seed = current_node.level_seed
+
 		seed = HashUtils.fnv32_hash(seed)
 
 		table.shuffle(chest_distribution, seed)
@@ -2068,6 +2146,7 @@ DeusRunController.get_deus_weapon_chest_type = function (self)
 	end
 
 	local chest_type = chest_distribution[#chest_distribution]
+
 	chest_distribution[#chest_distribution] = nil
 
 	return chest_type
@@ -2104,7 +2183,7 @@ DeusRunController.get_level_ended_tracking_data = function (self, statistics_db,
 		level_duration_in_seconds = level_duration_in_seconds,
 		game_won = game_won,
 		times_revived = times_revived,
-		num_bots = num_bots
+		num_bots = num_bots,
 	}
 end
 
@@ -2128,7 +2207,7 @@ DeusRunController.get_level_started_tracking_data = function (self, statistics_d
 		path = current_node.path,
 		curse = current_node.curse or "None",
 		theme = current_node.theme,
-		num_bots = num_bots
+		num_bots = num_bots,
 	}
 end
 
@@ -2149,6 +2228,7 @@ DeusRunController.get_run_tracking_data = function (self, game_won)
 
 	for _, traversed_node_key in ipairs(traversed_nodes) do
 		local node = path_graph[traversed_node_key]
+
 		completed_levels[#completed_levels + 1] = node.level
 
 		if node.level_type == "SIGNATURE" then
@@ -2179,6 +2259,6 @@ DeusRunController.get_run_tracking_data = function (self, game_won)
 		shops_visited = shops_visited,
 		signature_levels_completed = completed_signature_levels,
 		travel_levels_completed = completed_travel_levels,
-		host_migration_count = run_state:get_host_migration_count()
+		host_migration_count = run_state:get_host_migration_count(),
 	}
 end

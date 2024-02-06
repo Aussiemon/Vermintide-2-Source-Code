@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/game_mode/mutator_templates.lua
+
 local mutator_settings = local_require("scripts/settings/mutator_settings")
 
 local function modify_breed_health_start(context, data)
@@ -11,6 +13,7 @@ local function modify_breed_health_start(context, data)
 		for _, breed_name in ipairs(modify_health_breeds) do
 			local breed = Breeds[breed_name]
 			local max_health = breed.max_health
+
 			vanilla_breed_health[breed_name] = table.clone(max_health)
 
 			for i, health in ipairs(max_health) do
@@ -110,6 +113,7 @@ local function default_start_function_server(context, data)
 
 		for i = 1, #remove_pickup_settings do
 			local pickup_type = remove_pickup_settings[i]
+
 			pickup_types[pickup_type] = true
 		end
 

@@ -1,8 +1,12 @@
+﻿-- chunkname: @scripts/settings/dlcs/morris/deus_swap_weapon_interaction_ui.lua
+
 DeusSwapWeaponInteractionUI = class(DeusSwapWeaponInteractionUI)
+
 local definitions = local_require("scripts/settings/dlcs/morris/deus_swap_weapon_interaction_ui_definitions")
 local scenegraph_definition = definitions.scenegraph_definition
 local widget_definitions = definitions.widgets
 local animation_definitions = definitions.animation_definitions
+
 DeusSwapWeaponInteractionUI.TYPE = "swap_melee"
 
 DeusSwapWeaponInteractionUI.init = function (self, parent, ingame_ui_context)
@@ -11,7 +15,7 @@ DeusSwapWeaponInteractionUI.init = function (self, parent, ingame_ui_context)
 	self._ui_renderer = ingame_ui_context.ui_renderer
 	self._current_interactable_unit = nil
 	self._render_settings = {
-		alpha_multiplier = 0
+		alpha_multiplier = 0,
 	}
 	self._animations = {}
 	self._type = "melee"
@@ -19,7 +23,7 @@ DeusSwapWeaponInteractionUI.init = function (self, parent, ingame_ui_context)
 	self._offset = {
 		0,
 		0,
-		0
+		0,
 	}
 	self._calculate_offset = false
 
@@ -46,6 +50,7 @@ DeusSwapWeaponInteractionUI._create_ui_elements = function (self)
 
 	for name, widget_definition in pairs(widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		self._widgets[#self._widgets + 1] = widget
 		self._widgets_by_name[name] = widget
 	end
@@ -70,6 +75,7 @@ DeusSwapWeaponInteractionUI._evaluate_interactable = function (self, player_unit
 	local profile_synchronizer = network_manager.profile_synchronizer
 	local others_actually_ingame = profile_synchronizer:others_actually_ingame()
 	local prev_others_actually_ingame = self._others_actually_ingame
+
 	self._others_actually_ingame = others_actually_ingame
 
 	if self._current_interactable_unit ~= interactable_unit or prev_others_actually_ingame ~= others_actually_ingame then
@@ -79,7 +85,9 @@ DeusSwapWeaponInteractionUI._evaluate_interactable = function (self, player_unit
 		local melee_weapon, ranged_weapon = deus_run_controller:get_own_loadout()
 		local weapon_slot_name = wielded_slot_name == "slot_melee" and "slot_melee" or "slot_ranged"
 		local new_weapon = not self._weapon_slot_name or weapon_slot_name ~= self._weapon_slot_name
+
 		self._weapon_slot_name = weapon_slot_name
+
 		local peer_id = deus_run_controller:get_own_peer_id()
 		local soft_currency = deus_run_controller:get_player_soft_currency(peer_id)
 
@@ -91,11 +99,13 @@ end
 
 DeusSwapWeaponInteractionUI._start_animation = function (self, animation_name)
 	self._render_settings = self._render_settings or {
-		alpha_multiplier = 0
+		alpha_multiplier = 0,
 	}
+
 	local params = {
-		render_settings = self._render_settings
+		render_settings = self._render_settings,
 	}
+
 	self._animations[animation_name] = self._ui_animator:start_animation(animation_name, self._widgets, self._ui_scenegraph, params, nil, 0)
 end
 
@@ -115,11 +125,14 @@ DeusSwapWeaponInteractionUI._populate_widget = function (self, interactable_unit
 	local melee, ranged = deus_run_controller:get_own_loadout()
 	local equipped_item = self._type == "melee" and melee or ranged
 	local tooltip_widget = self._widgets_by_name.weapon_tooltip
+
 	tooltip_widget.content.item = equipped_item
 	tooltip_widget.style.item.draw_end_passes = true
+
 	local chest_info_widget = self._widgets_by_name.chest_content
 	local rarity = stored_purchase.rarity
 	local rarity_color = Colors.get_table(rarity)
+
 	chest_info_widget.content.rarity_text = RaritySettings[rarity].display_name
 	chest_info_widget.style.rarity.text_color = rarity_color
 	chest_info_widget.content.cost_text = soft_currency_amount .. "/" .. cost
@@ -127,14 +140,16 @@ DeusSwapWeaponInteractionUI._populate_widget = function (self, interactable_unit
 		255,
 		255,
 		255,
-		255
+		255,
 	} or {
 		255,
 		255,
 		0,
-		0
+		0,
 	}
+
 	local power_level = stored_purchase.power_level
+
 	chest_info_widget.content.reward_info_text = power_level .. " " .. Localize("deus_weapon_chest_" .. self._type .. "_weapon_description")
 	self._current_interactable_unit = interactable_unit
 	self._soft_currency_amount = soft_currency_amount
@@ -207,6 +222,7 @@ DeusSwapWeaponInteractionUI._draw = function (self, dt, t)
 	local ui_scenegraph = self._ui_scenegraph
 	local input_service = Managers.input:get_service("Player")
 	local render_settings = self._render_settings
+
 	ui_scenegraph.pivot.local_position = self._offset
 
 	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt, nil, render_settings)

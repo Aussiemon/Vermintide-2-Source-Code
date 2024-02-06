@@ -1,51 +1,54 @@
+﻿-- chunkname: @scripts/managers/achievements/achievement_templates_karak_azgaraz_part_2.lua
+
 local add_event_challenge = AchievementTemplateHelper.add_event_challenge
 local add_levels_complete_challenge = AchievementTemplateHelper.add_levels_complete_challenge
 local add_meta_challenge = AchievementTemplateHelper.add_meta_challenge
 local achievements = AchievementTemplates.achievements
 local add_console_achievements = AchievementTemplateHelper.add_console_achievements
 local XB1_ACHIEVEMENT_ID = {
-	karak_azgaraz_complete_dlc_dwarf_exterior_legend = 120,
 	dwarf_jump_puzzle = 116,
-	dwarf_towers = 117
+	dwarf_towers = 117,
+	karak_azgaraz_complete_dlc_dwarf_exterior_legend = 120,
 }
 local PS4_ACHIEVEMENT_ID = {
-	dwarf_jump_puzzle = "090"
+	dwarf_jump_puzzle = "090",
 }
 local all_difficulties = {}
 local portals = {
-	LevelSettings.dlc_dwarf_exterior
+	LevelSettings.dlc_dwarf_exterior,
 }
 local difficulties = {
 	"normal",
 	"hard",
 	"harder",
 	"hardest",
-	"cataclysm"
+	"cataclysm",
 }
 local player_facing_diff_names = {
-	hardest = "legend",
+	cataclysm = "cataclysm",
 	hard = "veteran",
 	harder = "champion",
-	cataclysm = "cataclysm",
-	normal = "recruit"
+	hardest = "legend",
+	normal = "recruit",
 }
 
 for i = 1, #difficulties do
 	local difficulty_name = difficulties[i]
 	local name = "karak_azgaraz_complete_dlc_dwarf_exterior_" .. player_facing_diff_names[difficulty_name]
 	local icon = "achievement_exterior_" .. player_facing_diff_names[difficulty_name]
+
 	all_difficulties[i] = name
 
 	add_levels_complete_challenge(achievements, name, portals, DifficultySettings[difficulty_name].rank, icon, nil, XB1_ACHIEVEMENT_ID[name], PS4_ACHIEVEMENT_ID[name])
 end
 
 achievements.dwarf_towers = {
-	name = "achv_dwarf_towers_name",
+	desc = "achv_dwarf_towers_desc",
 	display_completion_ui = true,
 	icon = "achievement_dwarf_towers",
-	desc = "achv_dwarf_towers_desc",
+	name = "achv_dwarf_towers_name",
 	events = {
-		"progress_dwarf_towers_challenge"
+		"progress_dwarf_towers_challenge",
 	},
 	on_event = function (statistics_db, stats_id, template_data, event_name, event_data)
 		if not template_data.num_fires then
@@ -62,18 +65,20 @@ achievements.dwarf_towers = {
 	end,
 	completed = function (statistics_db, stats_id, template_data)
 		return statistics_db:get_persistent_stat(stats_id, "dwarf_towers") >= 1
-	end
+	end,
 }
+
 local DWARF_CHAIN_TIME_LIMIT = 6
+
 achievements.dwarf_chain_speed = {
-	name = "achv_dwarf_chain_speed_name",
 	display_completion_ui = true,
 	icon = "achievement_dwarf_chain_speed",
+	name = "achv_dwarf_chain_speed_name",
 	desc = function ()
 		return string.format(Localize("achv_dwarf_chain_speed_desc"), DWARF_CHAIN_TIME_LIMIT)
 	end,
 	events = {
-		"progress_dwarf_chain_speed_challenge"
+		"progress_dwarf_chain_speed_challenge",
 	},
 	completed = function (statistics_db, stats_id, template_data)
 		return statistics_db:get_persistent_stat(stats_id, "dwarf_chain_speed") >= 1
@@ -108,44 +113,46 @@ achievements.dwarf_chain_speed = {
 				network_transmit:send_rpc_server("rpc_increment_stat_party", stat_id)
 			end
 		end
-	end
+	end,
 }
 achievements.dwarf_jump_puzzle = {
-	name = "achv_dwarf_jump_puzzle_name",
+	desc = "achv_dwarf_jump_puzzle_desc",
 	display_completion_ui = true,
 	icon = "achievement_dwarf_jump_puzzle",
-	desc = "achv_dwarf_jump_puzzle_desc",
+	name = "achv_dwarf_jump_puzzle_name",
 	events = {
-		"complete_dwarf_jump_puzzle_challenge"
+		"complete_dwarf_jump_puzzle_challenge",
 	},
 	completed = function (statistics_db, stats_id, template_data)
 		return statistics_db:get_persistent_stat(stats_id, "dwarf_jump_puzzle") >= 1
 	end,
 	on_event = function (statistics_db, stats_id, template_data, event_name, event_data)
 		statistics_db:increment_stat(stats_id, "dwarf_jump_puzzle")
-	end
+	end,
 }
+
 local DWARF_PUSH_AMOUNT = 200
+
 achievements.dwarf_push = {
-	name = "achv_dwarf_push_name",
 	display_completion_ui = true,
 	icon = "achievement_dwarf_push",
+	name = "achv_dwarf_push_name",
 	desc = function ()
 		return string.format(Localize("achv_dwarf_push_desc"), DWARF_PUSH_AMOUNT)
 	end,
 	events = {
-		"register_kill"
+		"register_kill",
 	},
 	progress = function (statistics_db, stats_id, template_data)
 		local completed = statistics_db:get_persistent_stat(stats_id, "dwarf_push")
 
 		return {
 			completed,
-			DWARF_PUSH_AMOUNT
+			DWARF_PUSH_AMOUNT,
 		}
 	end,
 	completed = function (statistics_db, stats_id, template_data)
-		return DWARF_PUSH_AMOUNT <= statistics_db:get_persistent_stat(stats_id, "dwarf_push")
+		return statistics_db:get_persistent_stat(stats_id, "dwarf_push") >= DWARF_PUSH_AMOUNT
 	end,
 	on_event = function (statistics_db, stats_id, template_data, event_name, event_data)
 		local level_key = Managers.state.game_mode:level_key()
@@ -181,7 +188,7 @@ achievements.dwarf_push = {
 
 			statistics_db:increment_stat(stats_id, "dwarf_push")
 		end
-	end
+	end,
 }
 exterior_all_challenges = table.clone(all_difficulties)
 

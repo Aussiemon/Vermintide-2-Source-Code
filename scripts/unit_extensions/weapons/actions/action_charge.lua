@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/weapons/actions/action_charge.lua
+
 ActionCharge = class(ActionCharge, ActionBase)
 
 ActionCharge.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
@@ -7,6 +9,7 @@ ActionCharge.init = function (self, world, item_name, is_server, owner_unit, dam
 		local inventory_extension = ScriptUnit.extension(self.owner_unit, "inventory_system")
 		local slot_name = inventory_extension:get_wielded_slot_name()
 		local slot_data = inventory_extension:get_slot_data(slot_name)
+
 		self.left_unit = slot_data.left_unit_1p
 	end
 
@@ -23,12 +26,14 @@ ActionCharge.client_owner_start_action = function (self, new_action, t)
 	ActionCharge.super.client_owner_start_action(self, new_action, t)
 
 	local owner_unit = self.owner_unit
+
 	self.current_action = new_action
 	self.audio_loop_id = new_action.audio_loop_id or "charge"
 	self.charge_ready_sound_event = self.current_action.charge_ready_sound_event
 	self.charge_flow_event_left_weapon = new_action.charge_flow_event_left_weapon
 	self.venting_overcharge = nil
 	self._max_charge = false
+
 	local overcharge_extension = self.overcharge_extension
 
 	if new_action.vent_overcharge and overcharge_extension and overcharge_extension:get_overcharge_value() > 0 then
@@ -40,7 +45,9 @@ ActionCharge.client_owner_start_action = function (self, new_action, t)
 	self.fully_charged_triggered = false
 	self.total_overcharge_added = 0
 	self.remove_overcharge_on_interrupt = new_action.remove_overcharge_on_interrupt
+
 	local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
+
 	self.buff_extension = buff_extension
 	self.charge_level = 0
 	self.charge_time = buff_extension:apply_buffs_to_value(new_action.charge_time, "reduced_ranged_charge_time")
@@ -58,10 +65,12 @@ ActionCharge.client_owner_start_action = function (self, new_action, t)
 	if charge_effect_name then
 		local unit = self.weapon_unit
 		local node = Unit.node(unit, "fx_muzzle")
+
 		self.particle_id = ScriptWorld.create_particles_linked(self.world, charge_effect_name, unit, node, "destroy")
 
 		if self.left_unit then
 			local left_node = Unit.node(self.left_unit, "fx_muzzle")
+
 			self.left_particle_id = ScriptWorld.create_particles_linked(self.world, charge_effect_name, self.left_unit, left_node, "destroy")
 		end
 	end
@@ -156,7 +165,7 @@ ActionCharge.client_owner_post_update = function (self, dt, t, world, can_damage
 	end
 
 	local overcharge_type = current_action.overcharge_type
-	local current_charge_time = nil
+	local current_charge_time
 
 	if full_charge_time > 0 and charge_time > 0 then
 		current_charge_time = 1 - full_charge_time / charge_time
@@ -190,7 +199,7 @@ ActionCharge.client_owner_post_update = function (self, dt, t, world, can_damage
 	if current_action.overcharge_interval then
 		self.overcharge_timer = self.overcharge_timer + dt
 
-		if current_action.overcharge_interval <= self.overcharge_timer then
+		if self.overcharge_timer >= current_action.overcharge_interval then
 			if overcharge_type then
 				local overcharge_amount = PlayerUnitStatusSettings.overcharge_values[overcharge_type]
 
@@ -272,7 +281,7 @@ ActionCharge.client_owner_post_update = function (self, dt, t, world, can_damage
 
 	if charge_level >= 1 and not Managers.player:owner(self.owner_unit).bot_player and not self._rumble_effect_id then
 		self._rumble_effect_id = Managers.state.controller_features:add_effect("persistent_rumble", {
-			rumble_effect = "reload_start"
+			rumble_effect = "reload_start",
 		})
 	end
 
@@ -344,7 +353,7 @@ ActionCharge.finish = function (self, reason)
 	self.buff_extension:trigger_procs("on_charge_finished")
 
 	return {
-		charge_level = self.charge_level
+		charge_level = self.charge_level,
 	}
 end
 

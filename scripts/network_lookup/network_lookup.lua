@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/network_lookup/network_lookup.lua
+
 require("scripts/settings/environmental_hazards")
 require("scripts/settings/level_settings")
 require("scripts/settings/level_unlock_settings")
@@ -39,6 +41,7 @@ setmetatable(MarkerLookup, nil)
 table.clear(MarkerLookup)
 
 MarkerLookup_n = 0
+
 local dialogue_lookup_tables = {
 	"dialogues/generated/lookup_bright_wizard_honduras",
 	"dialogues/generated/lookup_dwarf_ranger_honduras",
@@ -132,8 +135,9 @@ local dialogue_lookup_tables = {
 	"dialogues/generated/lookup_dwarf_ranger_generic_vo",
 	"dialogues/generated/lookup_witch_hunter_generic_vo",
 	"dialogues/generated/lookup_weather_vo",
-	"dialogues/generated/lookup_fleur_conversations"
+	"dialogues/generated/lookup_fleur_conversations",
 }
+
 NetworkLookup = {}
 
 function create_lookup(lookup, hashtable)
@@ -157,6 +161,7 @@ for _, dlc in pairs(DLCSettings) do
 			if type(table_data) == "table" then
 				local table_name = table_data.table_name
 				local base_table = table_data.base_table or {}
+
 				NetworkLookup[name] = create_lookup(base_table, rawget(_G, table_name))
 			else
 				local table_names = string.split(table_data, ".")
@@ -164,6 +169,7 @@ for _, dlc in pairs(DLCSettings) do
 
 				for i = 2, #table_names do
 					local table_name = table_names[i]
+
 					table_values = table_values[table_name]
 				end
 
@@ -187,8 +193,9 @@ dofile("scripts/network_lookup/anims_lookup_table")
 
 NetworkLookup.item_drop_reasons = {
 	"death",
-	"shield_break"
+	"shield_break",
 }
+
 local attachments_table = {}
 
 for attachment_name, _ in pairs(Attachments) do
@@ -196,9 +203,11 @@ for attachment_name, _ in pairs(Attachments) do
 end
 
 NetworkLookup.cosmetics = create_lookup({
-	"default"
+	"default",
 }, Cosmetics)
+
 local item_template_table = {}
+
 NetworkLookup.actions = {}
 NetworkLookup.sub_actions = {}
 
@@ -219,10 +228,10 @@ for item_template_name, item_template in pairs(Weapons) do
 end
 
 NetworkLookup.item_names = create_lookup({
-	"n/a"
+	"n/a",
 }, ItemMasterList)
 NetworkLookup.item_template_names = {
-	"n/a"
+	"n/a",
 }
 
 table.append(NetworkLookup.item_template_names, item_template_table)
@@ -254,7 +263,7 @@ for _, breed in pairs(Breeds) do
 end
 
 local hit_ragdoll_actors = {
-	"n/a"
+	"n/a",
 }
 
 for ragdoll_actor, _ in pairs(temp) do
@@ -262,6 +271,7 @@ for ragdoll_actor, _ in pairs(temp) do
 end
 
 NetworkLookup.hit_ragdoll_actors = hit_ragdoll_actors
+
 local damage_sources = {
 	"undefined",
 	"debug",
@@ -280,7 +290,7 @@ local damage_sources = {
 	"charge_ability_hit_blast",
 	"corpse_explosion",
 	"buff",
-	"life_tap"
+	"life_tap",
 }
 
 for hazard, _ in pairs(EnvironmentalHazards) do
@@ -495,7 +505,7 @@ NetworkLookup.husks = {
 	"units/weapons/player/wpn_we_quiver_t1/wpn_we_arrow_t1_3p",
 	"units/weapons/player/wpn_we_quiver_t1/wpn_we_broken_arrow_01_3ps",
 	"units/weapons/player/wpn_we_quiver_t1/wpn_we_broken_arrow_02_3ps",
-	"units/weapons/player/wpn_we_quiver_t1/wpn_we_broken_arrow_03_3ps"
+	"units/weapons/player/wpn_we_quiver_t1/wpn_we_broken_arrow_03_3ps",
 }
 
 DLCUtils.append("husk_lookup", NetworkLookup.husks)
@@ -591,7 +601,7 @@ NetworkLookup.go_types = {
 	"horde_surge",
 	"engineer_career_data",
 	"priest_career_data",
-	"dialogue_node"
+	"dialogue_node",
 }
 
 DLCUtils.append("network_go_types", NetworkLookup.go_types)
@@ -604,32 +614,32 @@ NetworkLookup.spawn_health_state = {
 	"dead",
 	"unhurt",
 	"wounded",
-	"down"
+	"down",
 }
 NetworkLookup.attack_arm = {
 	"attack_left",
-	"attack_right"
+	"attack_right",
 }
 NetworkLookup.die_types = {
 	"wood",
 	"metal",
 	"gold",
-	"warpstone"
+	"warpstone",
 }
 NetworkLookup.voice = {
 	"husk_vce_charge_swing",
 	"husk_vce_swing",
-	"chr_vce_finish_off"
+	"chr_vce_finish_off",
 }
 NetworkLookup.stamina_state = {
 	"normal",
-	"tired"
+	"tired",
 }
 NetworkLookup.door_states = {
 	"closed",
 	"open_forward",
 	"open_backward",
-	"open"
+	"open",
 }
 NetworkLookup.heal_types = {
 	"n/a",
@@ -652,7 +662,7 @@ NetworkLookup.heal_types = {
 	"bandage_temp_health",
 	"buff_shared_medpack_temp_health",
 	"mutator",
-	"raw_heal"
+	"raw_heal",
 }
 NetworkLookup.conflict_director_lock_lookup = create_lookup({}, ConflictDirectorLockedFunctions)
 NetworkLookup.dlcs = create_lookup({}, UnlockSettings[1].unlocks)
@@ -660,7 +670,7 @@ NetworkLookup.difficulties = create_lookup({}, DifficultySettings)
 NetworkLookup.linked_particle_policies = {
 	"destroy",
 	"stop",
-	"unlink"
+	"unlink",
 }
 NetworkLookup.collision_filters = {
 	"filter_player_and_enemy_hit_box_check",
@@ -669,7 +679,7 @@ NetworkLookup.collision_filters = {
 	"filter_player_ray_projectile_no_player",
 	"filter_enemy_unit",
 	"filter_ray_projectile",
-	"n/a"
+	"n/a",
 }
 NetworkLookup.hit_zones = {
 	"head",
@@ -687,7 +697,7 @@ NetworkLookup.hit_zones = {
 	"aux",
 	"left_tentacle",
 	"weakspot",
-	"ward"
+	"ward",
 }
 NetworkLookup.lobby_data = {
 	"network_hash",
@@ -708,16 +718,16 @@ NetworkLookup.lobby_data = {
 	"session_id",
 	"is_private",
 	"matchmaking_type",
-	"mechanism"
+	"mechanism",
 }
 NetworkLookup.lobby_data_values = {
 	"false",
 	"true",
-	"searching"
+	"searching",
 }
 NetworkLookup.mechanisms = {
 	"weave",
-	"adventure"
+	"adventure",
 }
 
 DLCUtils.append("mechanisms", NetworkLookup.mechanisms)
@@ -732,7 +742,7 @@ NetworkLookup.game_modes = {
 	"twitch",
 	"deed",
 	"weave",
-	"adventure_mode"
+	"adventure_mode",
 }
 
 DLCUtils.append("game_modes", NetworkLookup.game_modes)
@@ -744,7 +754,7 @@ NetworkLookup.matchmaking_types = {
 	"tutorial",
 	"demo",
 	"event",
-	"deed"
+	"deed",
 }
 
 DLCUtils.append("matchmaking_types", NetworkLookup.matchmaking_types)
@@ -759,7 +769,7 @@ NetworkLookup.buff_attack_types = {
 	"heavy_instant_projectile",
 	"grenade",
 	"ability",
-	"action_push"
+	"action_push",
 }
 NetworkLookup.keep_decoration_trophies = {
 	"hub_trophy_empty",
@@ -770,8 +780,9 @@ NetworkLookup.keep_decoration_trophies = {
 	"hub_trophy_burblespue",
 	"hub_trophy_nurgloth",
 	"hub_trophy_bogenhafen",
-	"hub_trophy_rasknitt"
+	"hub_trophy_rasknitt",
 }
+
 local anims_temp = {}
 local actions_temp = {}
 
@@ -867,7 +878,7 @@ local smart_object_animation_types = {
 	"animation_edge",
 	"animation_fence",
 	"animation_land",
-	"animation_jump"
+	"animation_jump",
 }
 
 for _, template in pairs(SmartObjectSettings.templates) do
@@ -897,7 +908,7 @@ for _, direction in pairs(PlayerUnitMovementSettings.catapulted.directions) do
 end
 
 NetworkLookup.bt_action_names = create_lookup({
-	"n/a"
+	"n/a",
 }, actions_temp)
 
 for _, variation_table in pairs(BTHesitationVariations) do
@@ -1041,7 +1052,7 @@ NetworkLookup.damage_types = {
 	"volume_insta_kill",
 	"inside_forbidden_tag_volume",
 	"undefined",
-	"charge_death"
+	"charge_death",
 }
 
 for _, dlc in pairs(DLCSettings) do
@@ -1053,14 +1064,14 @@ for _, dlc in pairs(DLCSettings) do
 end
 
 NetworkLookup.weave_names = create_lookup({
-	"n/a"
+	"n/a",
 }, WeaveSettings.templates)
 NetworkLookup.weave_objective_names = create_lookup({}, WeaveSettings.weave_objective_names)
 NetworkLookup.weave_item_template_names = create_lookup({}, WeaveItemTemplates)
 
 if GameModeSettings.versus then
 	NetworkLookup.versus_objective_names = create_lookup({
-		"n/a"
+		"n/a",
 	}, GameModeSettings.versus.objective_names)
 end
 
@@ -1068,27 +1079,27 @@ NetworkLookup.hit_react_types = {
 	"light",
 	"medium",
 	"heavy",
-	"slow_bomb"
+	"slow_bomb",
 }
 NetworkLookup.buff_weapon_types = {
 	"n/a",
 	"MELEE_1H",
 	"MELEE_2H",
 	"RANGED",
-	"RANGED_ABILITY"
+	"RANGED_ABILITY",
 }
 NetworkLookup.single_weapon_states = {
 	"shoot_start",
 	"stop_shooting",
 	"shoot_end",
 	"windup_start",
-	"windup_end"
+	"windup_end",
 }
 NetworkLookup.buff_templates = create_lookup({
-	"n/a"
+	"n/a",
 }, BuffTemplates)
 NetworkLookup.group_buff_templates = create_lookup({
-	"n/a"
+	"n/a",
 }, GroupBuffTemplates)
 NetworkLookup.traits = create_lookup({}, WeaponTraits.traits)
 NetworkLookup.traits = create_lookup(NetworkLookup.traits, WeaveTraits.traits)
@@ -1097,7 +1108,7 @@ NetworkLookup.properties = create_lookup(NetworkLookup.properties, WeaveProperti
 NetworkLookup.buff_data_types = {
 	"n/a",
 	"variable_value",
-	"external_optional_multiplier"
+	"external_optional_multiplier",
 }
 NetworkLookup.proc_events = {
 	"on_reload",
@@ -1106,7 +1117,7 @@ NetworkLookup.proc_events = {
 	"on_last_ammo_used",
 	"on_gained_ammo_from_no_ammo",
 	"on_bardin_consumable_picked_up_any_player",
-	"on_push"
+	"on_push",
 }
 NetworkLookup.proc_functions = create_lookup({}, ProcFunctions)
 NetworkLookup.coop_feedback = {
@@ -1117,7 +1128,7 @@ NetworkLookup.coop_feedback = {
 	"assisted_respawn",
 	"revive",
 	"discarded_grimoire",
-	"collected_isha_reward"
+	"collected_isha_reward",
 }
 NetworkLookup.projectile_templates = {
 	"throw_trajectory",
@@ -1133,7 +1144,7 @@ NetworkLookup.projectile_templates = {
 	"no_owner_direct_impact",
 	"straight_target_traversal",
 	"straight_direction_traversal",
-	"spiral_trajectory"
+	"spiral_trajectory",
 }
 
 for _, dlc in pairs(DLCSettings) do
@@ -1145,14 +1156,14 @@ for _, dlc in pairs(DLCSettings) do
 end
 
 NetworkLookup.projectile_external_event = {
-	"detonate"
+	"detonate",
 }
 NetworkLookup.overpowered_templates = create_lookup({}, PlayerUnitMovementSettings.overpowered_templates)
 NetworkLookup.vortex_templates = create_lookup({}, VortexTemplates)
 NetworkLookup.tentacle_templates = create_lookup({}, TentacleTemplates)
 NetworkLookup.standard_templates = create_lookup({}, BeastmenStandardTemplates)
 NetworkLookup.explosion_templates = create_lookup({
-	"n/a"
+	"n/a",
 }, ExplosionTemplates)
 NetworkLookup.area_damage_templates = create_lookup({}, AreaDamageTemplates.templates)
 NetworkLookup.liquid_area_damage_templates = create_lookup({}, LiquidAreaDamageTemplates.templates)
@@ -1162,7 +1173,7 @@ NetworkLookup.game_end_reasons = {
 	"won",
 	"lost",
 	"start_game",
-	"reload"
+	"reload",
 }
 
 for _, settings in pairs(GameModeSettings) do
@@ -1177,21 +1188,21 @@ NetworkLookup.set_wounded_reasons = {
 	"healed",
 	"knocked_down",
 	"revived",
-	"reached_min_health"
+	"reached_min_health",
 }
 NetworkLookup.level_keys = create_lookup({
 	"next_level",
-	"n/a"
+	"n/a",
 }, LevelSettings)
 NetworkLookup.mission_ids = create_lookup({
 	"weave_any",
 	"next_level",
 	"n/a",
-	"any"
+	"any",
 }, LevelSettings)
 NetworkLookup.mission_ids = create_lookup(NetworkLookup.mission_ids, WeaveSettings.templates)
 NetworkLookup.act_keys = create_lookup({
-	"n/a"
+	"n/a",
 }, GameActs)
 NetworkLookup.mechanism_keys = create_lookup({}, MechanismSettings)
 NetworkLookup.game_mode_keys = create_lookup({}, GameModeSettings)
@@ -1208,7 +1219,7 @@ NetworkLookup.pickup_spawn_types = {
 	"loot",
 	"rare",
 	"debug",
-	"buff"
+	"buff",
 }
 NetworkLookup.effects = {
 	"n/a",
@@ -1273,7 +1284,7 @@ NetworkLookup.effects = {
 	"fx/drachenfels_flies_impact",
 	"fx/drachenfels_boss_teleport_enter",
 	"fx/mutator_death_03",
-	"fx/wpnfx_poison_wind_globe_impact_death_01"
+	"fx/wpnfx_poison_wind_globe_impact_death_01",
 }
 
 for _, dlc in pairs(DLCSettings) do
@@ -1296,7 +1307,7 @@ NetworkLookup.flow_events = {
 	"arrow_right",
 	"arrow_center",
 	"despawned",
-	"vfx_career_ability_start"
+	"vfx_career_ability_start",
 }
 NetworkLookup.localized_strings = {
 	"level_completed",
@@ -1306,7 +1317,7 @@ NetworkLookup.localized_strings = {
 	"defenders_win",
 	"attackers_zone",
 	"defenders_zone",
-	"neutral_zone"
+	"neutral_zone",
 }
 NetworkLookup.surface_material_effects = create_lookup({}, MaterialEffectMappings)
 NetworkLookup.local_player_id = {
@@ -1318,7 +1329,7 @@ NetworkLookup.local_player_id = {
 	"player_bot_2",
 	"player_bot_3",
 	"player_bot_4",
-	"enemy_main"
+	"enemy_main",
 }
 NetworkLookup.interactions = create_lookup({}, InteractionDefinitions)
 NetworkLookup.interaction_states = {
@@ -1326,7 +1337,7 @@ NetworkLookup.interaction_states = {
 	"doing_interaction",
 	"waiting_to_interact",
 	"stopping_interaction",
-	"waiting_for_abort"
+	"waiting_for_abort",
 }
 NetworkLookup.statuses = {
 	"knocked_down",
@@ -1364,19 +1375,19 @@ NetworkLookup.statuses = {
 	"invisible",
 	"in_end_zone",
 	"in_liquid",
-	"overpowered"
+	"overpowered",
 }
 NetworkLookup.grabbed_by_tentacle = {
 	"portal_hanging",
 	"portal_consume",
-	"portal_release"
+	"portal_release",
 }
 NetworkLookup.grabbed_by_chaos_spawn = {
 	"grabbed",
 	"beating_with",
 	"thrown_away",
 	"chewed_on",
-	"idle"
+	"idle",
 }
 NetworkLookup.sound_events = {
 	"weapon_stormvermin_champion_sword_block",
@@ -1551,40 +1562,43 @@ NetworkLookup.sound_events = {
 	"Stop_wpn_engineer_pistol_spinning_loop",
 	"Play_mutator_enemy_split_large",
 	"enemy_grudge_cursed_enter",
-	"Play_skulls_event_mutator_extra_hordes"
+	"Play_skulls_event_mutator_extra_hordes",
 }
-local add_these_breed_sound_events = {
-	"attack_player_sound_event",
-	"attack_general_sound_event",
-	"backstab_player_sound_event",
-	"death_sound_event"
-}
-local num_breed_sound_events = #add_these_breed_sound_events
-local added = {}
 
-for breed_name, breed in pairs(Breeds) do
-	for i = 1, num_breed_sound_events do
-		local sound_event = add_these_breed_sound_events[i]
+do
+	local add_these_breed_sound_events = {
+		"attack_player_sound_event",
+		"attack_general_sound_event",
+		"backstab_player_sound_event",
+		"death_sound_event",
+	}
+	local num_breed_sound_events = #add_these_breed_sound_events
+	local added = {}
 
-		if breed[sound_event] then
-			local event_name = breed[sound_event]
+	for breed_name, breed in pairs(Breeds) do
+		for i = 1, num_breed_sound_events do
+			local sound_event = add_these_breed_sound_events[i]
 
-			if not added[event_name] then
-				added[event_name] = true
-				NetworkLookup.sound_events[#NetworkLookup.sound_events + 1] = event_name
+			if breed[sound_event] then
+				local event_name = breed[sound_event]
+
+				if not added[event_name] then
+					added[event_name] = true
+					NetworkLookup.sound_events[#NetworkLookup.sound_events + 1] = event_name
+				end
 			end
 		end
 	end
-end
 
-for formation_name, formation_settings in pairs(PatrolFormationSettings) do
-	local sounds = type(formation_settings) == "table" and formation_settings.settings and formation_settings.settings.sounds
+	for formation_name, formation_settings in pairs(PatrolFormationSettings) do
+		local sounds = type(formation_settings) == "table" and formation_settings.settings and formation_settings.settings.sounds
 
-	if sounds then
-		for action, event_name in pairs(sounds) do
-			if not added[event_name] then
-				added[event_name] = true
-				NetworkLookup.sound_events[#NetworkLookup.sound_events + 1] = event_name
+		if sounds then
+			for action, event_name in pairs(sounds) do
+				if not added[event_name] then
+					added[event_name] = true
+					NetworkLookup.sound_events[#NetworkLookup.sound_events + 1] = event_name
+				end
 			end
 		end
 	end
@@ -1596,6 +1610,7 @@ for _, dlc in pairs(DLCSettings) do
 	if sound_events then
 		for i = 1, #sound_events do
 			local sound_event = sound_events[i]
+
 			NetworkLookup.sound_events[#NetworkLookup.sound_events + 1] = sound_event
 		end
 	end
@@ -1608,8 +1623,9 @@ NetworkLookup.global_parameter_names = {
 	"champion_crowd_voices",
 	"champion_crowd_voices_walla",
 	"charge_parameter",
-	"morris_music_intensity"
+	"morris_music_intensity",
 }
+
 local weapon_sound_events = {}
 
 for _, weapon_table in pairs(Weapons) do
@@ -1627,6 +1643,7 @@ for _, weapon_table in pairs(Weapons) do
 end
 
 NetworkLookup.sound_events = create_lookup(NetworkLookup.sound_events, weapon_sound_events)
+
 local attack_template_sound_types = {}
 
 for _, attack_template in pairs(AttackTemplates) do
@@ -1638,26 +1655,26 @@ for _, attack_template in pairs(AttackTemplates) do
 end
 
 NetworkLookup.melee_impact_sound_types = create_lookup({
-	"n/a"
+	"n/a",
 }, attack_template_sound_types)
 NetworkLookup.sound_event_param_names = {
 	"drakegun_charge_fire",
-	"enemy_vo"
+	"enemy_vo",
 }
 NetworkLookup.sound_event_param_string_values = {
-	"skaven_slave"
+	"skaven_slave",
 }
 NetworkLookup.gate_states = {
 	"open",
-	"closed"
+	"closed",
 }
 NetworkLookup.movement_funcs = {
 	"none",
-	"update_local_animation_driven_movement"
+	"update_local_animation_driven_movement",
 }
 NetworkLookup.ai_inventory = create_lookup({}, InventoryConfigurations)
 NetworkLookup.controlled_unit_templates = create_lookup({
-	"n/a"
+	"n/a",
 }, ControlledUnitTemplates)
 NetworkLookup.connection_fails = {
 	"no_peer_data_on_join",
@@ -1675,7 +1692,7 @@ NetworkLookup.connection_fails = {
 	"client_is_banned",
 	"cannot_join_weave",
 	"game_aborted",
-	"signal_done_timeout"
+	"signal_done_timeout",
 }
 NetworkLookup.health_statuses = {
 	"alive",
@@ -1685,7 +1702,7 @@ NetworkLookup.health_statuses = {
 	"dead",
 	"unhurt",
 	"wounded",
-	"down"
+	"down",
 }
 NetworkLookup.dialogue_events = {
 	"startled",
@@ -1715,7 +1732,7 @@ NetworkLookup.dialogue_events = {
 	"overcharge_high",
 	"overcharge_critical",
 	"overcharge_explode",
-	"overcharge_lockout_end"
+	"overcharge_lockout_end",
 }
 NetworkLookup.dialogue_event_data_names = {
 	"num_units",
@@ -1770,7 +1787,7 @@ NetworkLookup.dialogue_event_data_names = {
 	"healthkit_first_aid_kit_01",
 	"ranged_weapon",
 	"fail_reason",
-	"out_of_ammo"
+	"out_of_ammo",
 }
 
 DLCUtils.append("dialogue_event_data_lookup", NetworkLookup.dialogue_event_data_names)
@@ -1782,21 +1799,21 @@ NetworkLookup.hero_names = {
 	"bright_wizard",
 	"witch_hunter",
 	"empire_soldier",
-	"empire_soldier_tutorial"
+	"empire_soldier_tutorial",
 }
 NetworkLookup.music_states = {
-	"in_combat"
+	"in_combat",
 }
 NetworkLookup.liquid_damage_blob_states = {
 	"filled",
 	"remove",
-	"destroy"
+	"destroy",
 }
 NetworkLookup.damage_wave_states = {
 	"arrived",
 	"impact",
 	"hide",
-	"running"
+	"running",
 }
 NetworkLookup.music_group_states = {
 	"high_battle",
@@ -1856,14 +1873,14 @@ NetworkLookup.music_group_states = {
 	"terror_remix2",
 	"terror_remix3",
 	"ussingen",
-	"winds"
+	"winds",
 }
 NetworkLookup.locations = {
 	"test",
-	"test2"
+	"test2",
 }
 NetworkLookup.statistics_group_name = {
-	"season_1"
+	"season_1",
 }
 NetworkLookup.statistics = {
 	"elven_ruins_speed_event",
@@ -1925,7 +1942,7 @@ NetworkLookup.statistics = {
 	"scorpion_bestigor_charge_chaos_warrior",
 	"scorpion_kill_minotaur_farmlands_oak",
 	"scorpion_kill_archers_kill_minotaur",
-	"scorpion_slay_gors_warpfire_damage"
+	"scorpion_slay_gors_warpfire_damage",
 }
 
 DLCUtils.append("statistics_lookup", NetworkLookup.statistics)
@@ -1972,18 +1989,18 @@ NetworkLookup.tutorials = {
 	"chaos_spawn_exalted_champion_norsca",
 	"chaos_zombie",
 	"chaos_exalted_champion_warcamp",
-	"chaos_exalted_champion_norsca"
+	"chaos_exalted_champion_norsca",
 }
 NetworkLookup.objective_tooltips = {
 	"objective_pickup",
 	"objective_socket",
-	"objective_unit"
+	"objective_unit",
 }
 NetworkLookup.pacing = {
 	"pacing_build_up",
 	"pacing_sustain_peak",
 	"pacing_peak_fade",
-	"pacing_relax"
+	"pacing_relax",
 }
 NetworkLookup.game_ping_reply = {
 	"lobby_ok",
@@ -1994,17 +2011,17 @@ NetworkLookup.game_ping_reply = {
 	"obsolete_request",
 	"cannot_join_weave",
 	"dlc_required",
-	"user_blocked"
+	"user_blocked",
 }
 NetworkLookup.sync_names = {
 	"ferry_lady",
-	"ferry_lady2"
+	"ferry_lady2",
 }
 NetworkLookup.tentacle_template = {
 	"attack",
 	"evaded",
 	"release",
-	"fate_sealed"
+	"fate_sealed",
 }
 NetworkLookup.matchmaking_regions = {
 	"south_east_asia",
@@ -2022,32 +2039,32 @@ NetworkLookup.matchmaking_regions = {
 	"china",
 	"europe",
 	"africa",
-	"default"
+	"default",
 }
 NetworkLookup.debug_commands = {
 	"load_patched_items_into_backend",
 	"set_time_scale",
-	"set_time_paused"
+	"set_time_paused",
 }
 NetworkLookup.twitch_rpc_types = {
 	"rpc_add_client_twitch_vote",
 	"rpc_finish_twitch_vote",
-	"rpc_disconnected_from_twitch"
+	"rpc_disconnected_from_twitch",
 }
 NetworkLookup.twitch_vote_types = {
 	"standard_vote",
-	"multiple_choice"
+	"multiple_choice",
 }
 NetworkLookup.spawn_states = {
 	"w8_to_spawn",
 	"w8_for_profile",
 	"spawning",
 	"spawned",
-	"dead"
+	"dead",
 }
 NetworkLookup.lobby_type = {
 	"lobby",
-	"server"
+	"server",
 }
 NetworkLookup.weave_winds = {
 	"none",
@@ -2058,40 +2075,40 @@ NetworkLookup.weave_winds = {
 	"light",
 	"shadow",
 	"life",
-	"metal"
+	"metal",
 }
 NetworkLookup.connection_states = {
 	"connecting",
 	"connected",
 	"disconnecting",
-	"disconnected"
+	"disconnected",
 }
 NetworkLookup.rarities = create_lookup({
 	"default",
-	"magic"
+	"magic",
 }, RaritySettings)
 NetworkLookup.bot_orders = create_lookup({}, AIBotGroupSystem.bot_orders)
 NetworkLookup.twitch_vote_templates = create_lookup({
 	"draw",
-	"none"
+	"none",
 }, TwitchVoteTemplates)
 NetworkLookup.attack_templates = create_lookup({
-	"n/a"
+	"n/a",
 }, AttackTemplates)
 NetworkLookup.damage_profiles = create_lookup({}, DamageProfileTemplates)
 NetworkLookup.dot_type_lookup = create_lookup({
-	"n/a"
+	"n/a",
 }, DotTypeLookup)
 NetworkLookup.boost_curves = create_lookup({}, BoostCurves)
 NetworkLookup.spawn_unit_templates = create_lookup({}, SpawnUnitTemplates)
 NetworkLookup.weapon_skins = create_lookup({
-	"n/a"
+	"n/a",
 }, WeaponSkins.skins)
 NetworkLookup.performance_titles = create_lookup({
-	"n/a"
+	"n/a",
 }, PerformanceTitles.titles)
 NetworkLookup.social_wheel_events = create_lookup({
-	"n/a"
+	"n/a",
 }, SocialWheelSettingsLookup)
 NetworkLookup.challenges = create_lookup({}, InGameChallengeTemplates)
 NetworkLookup.challenge_rewards = create_lookup({}, InGameChallengeRewards)
@@ -2102,7 +2119,7 @@ DLCUtils.append("challenge_categories", NetworkLookup.challenge_categories)
 NetworkLookup.boon_consume_types = {
 	"time",
 	"venture",
-	"charges"
+	"charges",
 }
 
 local function is_sync_statistics(stat)
@@ -2141,6 +2158,7 @@ NetworkLookup.projectile_gravity_settings = create_lookup({}, ProjectileGravityS
 NetworkLookup.projectile_units = create_lookup({}, ProjectileUnits)
 NetworkLookup.voting_types = create_lookup({}, VoteTemplates)
 NetworkLookup.session_stats = create_lookup({}, StatisticsDefinitions.session)
+
 local attributes = {}
 
 for _, category in pairs(AttributeDefinition) do
@@ -2149,6 +2167,7 @@ end
 
 NetworkLookup.attributes = attributes
 NetworkLookup.attribute_categories = create_lookup({}, AttributeDefinition)
+
 local flow_events = {}
 
 for level_key, terror_events in pairs(TerrorEventBlueprints) do
@@ -2175,6 +2194,7 @@ end
 
 NetworkLookup.terror_flow_events = create_lookup({}, flow_events)
 NetworkLookup.inventory_packages = dofile("scripts/network_lookup/inventory_package_list")
+
 local career_packages = dofile("scripts/network_lookup/career_package_list")
 
 table.append(NetworkLookup.inventory_packages, career_packages)
@@ -2185,7 +2205,7 @@ NetworkLookup.network_packages = {}
 DLCUtils.append("network_packages", NetworkLookup.network_packages)
 
 local NETWORK_LOOKUP_DUPLICATES_ALLOWED = {
-	locations = true
+	locations = true,
 }
 
 local function init(self, name)
@@ -2201,18 +2221,21 @@ local function init(self, name)
 	local meta = {
 		__index = function (_, key)
 			error(index_error_print .. tostring(key))
-		end
+		end,
 	}
 
 	setmetatable(self, meta)
 end
 
 local DialogueLookup = DialogueLookup
+
 NetworkLookup.dialogues = DialogueLookup
 NetworkLookup.dialogue_profiles = {
-	"inn_keeper"
+	"inn_keeper",
 }
+
 local MarkerLookup = MarkerLookup
+
 NetworkLookup.markers = MarkerLookup or {}
 
 for key, lookup_table in pairs(NetworkLookup) do

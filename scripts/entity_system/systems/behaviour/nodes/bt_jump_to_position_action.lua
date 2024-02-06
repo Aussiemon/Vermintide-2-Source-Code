@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_jump_to_position_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 local function randomize(event)
@@ -18,10 +20,12 @@ BTJumpToPositionAction.name = "BTJumpToPositionAction"
 
 BTJumpToPositionAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
+
 	blackboard.action = action
+
 	local drawer = Managers.state.debug:drawer({
 		mode = "retained",
-		name = "BTJumpToPositionAction"
+		name = "BTJumpToPositionAction",
 	})
 
 	drawer:reset()
@@ -29,9 +33,11 @@ BTJumpToPositionAction.enter = function (self, unit, blackboard, t)
 
 	local entrance_pos = blackboard.jump_from_pos:unbox()
 	local exit_pos = blackboard.exit_pos:unbox()
+
 	blackboard.jump_entrance_pos = Vector3Box(entrance_pos)
 	blackboard.jump_exit_pos = Vector3Box(exit_pos)
 	blackboard.jump_ledge_lookat_direction = Vector3Box(Vector3.normalize(Vector3.flat(exit_pos - entrance_pos)))
+
 	local locomotion_extension = blackboard.locomotion_extension
 
 	locomotion_extension:set_affected_by_gravity(false)
@@ -69,6 +75,7 @@ BTJumpToPositionAction.leave = function (self, unit, blackboard, t, reason, dest
 	navigation_extension:set_enabled(true)
 
 	local hit_reaction_extension = ScriptUnit.extension(unit, "hit_reaction_system")
+
 	hit_reaction_extension.force_ragdoll_on_death = nil
 end
 
@@ -114,12 +121,15 @@ BTJumpToPositionAction.run = function (self, unit, blackboard, t, dt)
 			Managers.state.network:anim_event(unit, blackboard.action.jump_animation)
 
 			local hit_reaction_extension = ScriptUnit.extension(unit, "hit_reaction_system")
+
 			hit_reaction_extension.force_ragdoll_on_death = true
+
 			local jump_vector = exit_pos - entrance_pos
 			local horizontal_length = Vector3.length(Vector3.flat(jump_vector))
 			local animation_distance = blackboard.action.horizontal_length
 			local forward_factor = horizontal_length / animation_distance
 			local height_factor = jump_vector.z
+
 			blackboard.jump_state = "waiting_to_reach_end"
 		end
 	end

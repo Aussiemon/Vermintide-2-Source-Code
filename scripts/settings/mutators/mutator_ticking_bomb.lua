@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/mutators/mutator_ticking_bomb.lua
+
 return {
 	description = "description_mutator_ticking_bomb",
 	display_name = "display_name_mutator_ticking_bomb",
@@ -18,7 +20,9 @@ return {
 	end,
 	server_players_left_safe_zone = function (context, data)
 		data.has_left_safe_zone = true
+
 		local t = Managers.time:time("game")
+
 		data.apply_bomb_buff_at_t = t + 5
 	end,
 	server_update_function = function (context, data, dt, t)
@@ -29,7 +33,7 @@ return {
 		local player_bomb_data = data.player_bomb_data
 		local buff_system = data.buff_system
 
-		if data.apply_bomb_buff_at_t < t then
+		if t > data.apply_bomb_buff_at_t then
 			table.clear(player_bomb_data)
 
 			local hero_side = data.hero_side
@@ -45,9 +49,11 @@ return {
 					buff_system:add_buff(random_player_unit, data.buff_name, random_player_unit)
 
 					data.applied_buff_at_t = t
+
 					local bomb_data = {
-						player_unit = random_player_unit
+						player_unit = random_player_unit,
 					}
+
 					data.applied_bot_threat = nil
 					data.should_add_movement_debuff = true
 					player_bomb_data[#player_bomb_data + 1] = bomb_data
@@ -55,6 +61,7 @@ return {
 			end
 
 			local random_bomb_delay = math.random(12, 20) + random_num_affected_players
+
 			data.apply_bomb_buff_at_t = t + random_bomb_delay
 		end
 
@@ -85,5 +92,5 @@ return {
 				bomb_data.applied_movement_debuff = true
 			end
 		end
-	end
+	end,
 }

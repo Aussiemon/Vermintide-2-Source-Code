@@ -1,6 +1,9 @@
+﻿-- chunkname: @scripts/entity_system/systems/props/end_zone_system.lua
+
 EndZoneSystem = class(EndZoneSystem, ExtensionSystemBase)
+
 local extensions = {
-	"EndZoneExtension"
+	"EndZoneExtension",
 }
 
 EndZoneSystem.init = function (self, entity_system_creation_context, system_name)

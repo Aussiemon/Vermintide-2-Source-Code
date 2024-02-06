@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/managers/conflict_director/conflict_director_tests.lua
+
 ConflictDirectorTests = {}
+
 local utility_comparison = false
 
 ConflictDirectorTests.start_utility_comparison = function ()
@@ -9,7 +12,7 @@ local function compare_utility()
 	local consideration = UtilityConsiderations.storm_vermin_push_attack.distance_to_target
 	local blackboard_value = 0.7
 	local f1 = EngineOptimized.utility_from_spline
-	local utility = nil
+	local utility
 
 	for ii = 1, 1000 do
 		utility = f1(consideration.engine_spline_index, blackboard_value)
@@ -65,8 +68,9 @@ ConflictDirectorTests.test_main_path_optimization = function (self, t, dt)
 		local p = MainPathUtils.point_on_mainpath(main_paths, 10)
 		local pos, best_travel_dist, move_percent, best_main_path, best_sub_index = MainPathUtils.closest_pos_at_main_path(main_paths, p)
 		local total_path_dist = MainPathUtils.total_path_dist()
+
 		test_points = {
-			Vector3Box(p)
+			Vector3Box(p),
 		}
 
 		for i = 2, num_points do
@@ -79,6 +83,7 @@ ConflictDirectorTests.test_main_path_optimization = function (self, t, dt)
 			end
 
 			local index = #test_points + 1
+
 			test_points[index] = Vector3Box(pos)
 		end
 	end
@@ -107,7 +112,7 @@ ConflictDirectorTests.test_main_path_optimization = function (self, t, dt)
 	local p = self.hero_player_positions[1]
 	local p1 = Vector3(100, 20, 130)
 	local p2 = Vector3(-100, -420, 30)
-	local res = nil
+	local res
 	local EngineOptimized_closest_point_on_line = EngineOptimized.closest_point_on_line
 
 	for i = 1, 250 do
@@ -197,6 +202,7 @@ function test_player_path_pos_and_50m_ahead(self)
 	local path_pos, travel_dist = MainPathUtils.closest_pos_at_main_path(main_paths, pos)
 	local total_path_dist = MainPathUtils.total_path_dist()
 	local ahead_pos = MainPathUtils.point_on_mainpath(main_paths, travel_dist + 10)
+
 	ahead_pos = ahead_pos or MainPathUtils.point_on_mainpath(main_paths, total_path_dist - 10)
 
 	QuickDrawer:sphere(ahead_pos, 3)
@@ -213,7 +219,7 @@ function test_angled_trajectory(self)
 	local p2 = Vector3(19, 16, 2)
 	local physics_world = World.get_data(self._world, "physics_world")
 	local gravity = -9.82
-	local jump_speed = nil
+	local jump_speed
 	local angle = math.degrees_to_radians(45)
 	local success, velocity, tof = WeaponHelper.test_angled_trajectory(physics_world, p1, p2, gravity, jump_speed, angle)
 
@@ -232,7 +238,7 @@ ConflictDirectorTests.setup_reachable_coverpoints_test = function (self)
 
 	self._reachable_processing = LevelAnalysis.setup_unreachable_processing(self.nav_world, self.main_path_info.main_paths, point_list, {
 		max_concurrent_astars = 5,
-		line_object = QuickDrawerStay
+		line_object = QuickDrawerStay,
 	})
 
 	print("Points to test:", num_found)
@@ -263,7 +269,7 @@ function setup_reachable_navgraph_test(self)
 	self._reachable_navgraph_processing = LevelAnalysis.setup_unreachable_processing(self.nav_world, self.main_path_info.main_paths, point_list, {
 		max_concurrent_astars = 5,
 		line_object = QuickDrawerStay,
-		fail_color = Color(212, 48, 0)
+		fail_color = Color(212, 48, 0),
 	})
 
 	print("Points to test:", #point_list)
@@ -372,7 +378,7 @@ ConflictDirectorTests.update_jslots = function (self, unit)
 		num = 0,
 		slots = {},
 		units = {},
-		adjusted_dirs = {}
+		adjusted_dirs = {},
 	}
 	local p = POSITION_LOOKUP[unit]
 
@@ -396,12 +402,14 @@ ConflictDirectorTests.update_jslots = function (self, unit)
 			if first then
 				local slot_dir = Vector3.normalize(pa - p)
 				local num = jslot.num
+
 				num = num + 1
 				slots[num] = slot_dir * slot_dist
 				jslot.num = num
 				units[attacker_unit] = jslot.num
 			else
 				local first_slot_dir = Vector3.normalize(pa - p)
+
 				jslot.slots[1] = first_slot_dir * slot_dist
 				jslot.num = 1
 				units[attacker_unit] = 1
@@ -454,7 +462,7 @@ ConflictDirectorTests.sparse_grid_test = function (pos, unit)
 			u = unit,
 			x = xp * cell_size_xy,
 			y = yp * cell_size_xy,
-			z = zp * cell_size_z
+			z = zp * cell_size_z,
 		}
 
 		print("SPARSE GRID:", hash, pos)
@@ -481,14 +489,16 @@ ConflictDirectorTests.lean_slot_test = function ()
 			ConflictDirectorTests.lean_slots = nil
 		else
 			lean_slots.lean_dogpile = target_index
+
 			local angle = lean_slots.center_angle + (target_index - 1) * slot_angle
 			local slot_dist = dist * 0.5
 			local x = math.cos(angle) * slot_dist
 			local y = math.sin(angle) * slot_dist
+
 			lean_slots[target_index] = {
 				x,
 				y,
-				pos.z
+				pos.z,
 			}
 		end
 	else
@@ -500,16 +510,17 @@ ConflictDirectorTests.lean_slot_test = function ()
 
 		local center_angle = math.atan2(y - pos.y, x - pos.x)
 		local slot_dist = dist * 0.5
+
 		x = math.cos(center_angle) * slot_dist
 		y = math.sin(center_angle) * slot_dist
 		lean_slots = {
 			{
 				x,
 				y,
-				pos.z
+				pos.z,
 			},
 			lean_dogpile = 1,
-			center_angle = center_angle
+			center_angle = center_angle,
 		}
 		ConflictDirectorTests.lean_slots = lean_slots
 	end
@@ -537,10 +548,11 @@ ConflictDirectorTests.drag_test_start = function (side)
 	else
 		local start_pos = side.PLAYER_POSITIONS[1] + Vector3(0, 0, 1.8)
 		local target_pos = side.PLAYER_POSITIONS[1] + Vector3(2, 0, 1.8)
+
 		ConflictDirectorTests.drag_test = {
 			pole_length = 2,
 			apos = Vector3Box(start_pos),
-			bpos = Vector3Box(target_pos)
+			bpos = Vector3Box(target_pos),
 		}
 	end
 end
@@ -633,7 +645,7 @@ ConflictDirectorTests.spawn_mesh_cut = function (conflict_director)
 
 			QuickDrawerStay:sphere(pos, radius)
 
-			local o = nil
+			local o
 
 			if cut_type == "soft" then
 				o = GwNavCylinderObstacle.create(nav_world, pos, 3, radius, false, Color(255, 255, 0), LAYER_ID_MAPPING.fire_grenade)
@@ -669,10 +681,10 @@ ConflictDirectorTests.spawn_liquid_blob = function (conflict_director, t, dt)
 
 	local extension_init_data = {
 		props_system = {
-			start_size = 0.3,
 			duration = 0.5,
-			end_size = 1
-		}
+			end_size = 1,
+			start_size = 0.3,
+		},
 	}
 	local spawn_unit_name = "units/props/nurgle_liquid_blob/nurgle_liquid_blob_01"
 	local network_template_name = "nurgle_liquid_blob"
@@ -727,7 +739,7 @@ ConflictDirectorTests.update_kill_tester = function (self)
 		"chaos_marauder",
 		"chaos_fanatic",
 		"chaos_fanatic",
-		"chaos_fanatic"
+		"chaos_fanatic",
 	}
 
 	if not self._kill_list then
@@ -736,7 +748,9 @@ ConflictDirectorTests.update_kill_tester = function (self)
 	end
 
 	local kill_spawn_index = self._kill_spawn_index % #breeds + 1
+
 	self._kill_spawn_index = kill_spawn_index
+
 	local kill_list = self._kill_list
 	local breed_name = breeds[kill_spawn_index]
 	local breed = Breeds[breed_name]
@@ -744,7 +758,7 @@ ConflictDirectorTests.update_kill_tester = function (self)
 		ignore_breed_limits = true,
 		spawned_func = function (ai_unit, breed, optional_data)
 			table.insert(self._kill_list, 1, ai_unit)
-		end
+		end,
 	}
 	local spawn_pos = Vector3Box(Vector3(0, 0, 0) + Vector3(kill_spawn_index * 1, 0, 0))
 	local spawn_rot = QuaternionBox()
@@ -755,7 +769,9 @@ ConflictDirectorTests.update_kill_tester = function (self)
 
 	if size >= 3 then
 		local kill_unit = kill_list[size]
+
 		kill_list[size] = nil
+
 		local health_extension = ScriptUnit.has_extension(kill_unit, "health_system")
 
 		if health_extension and health_extension:is_alive() then
@@ -785,6 +801,7 @@ ConflictDirectorTests.nav_group_astar_test = function (self, side)
 		local group2 = self.navigation_group_manager:get_polygon_group(tri2)
 		local nav_groups = self.navigation_group_manager._navigation_groups
 		local path, length = LuaAStar.a_star_plain(nav_groups, group1, group2)
+
 		self.astar_path = path
 
 		print("Generated path:", #path, length)
@@ -794,7 +811,7 @@ end
 ConflictDirectorTests.update_group_astar_test = function (self, side)
 	if self.astar_path then
 		local path = self.astar_path
-		local old_pos = nil
+		local old_pos
 
 		for i = 1, #path do
 			local pos = path[i]:get_group_center():unbox()
@@ -817,7 +834,7 @@ local function fake_broadphase(in_list, pos, rad)
 		local u = in_list[i]
 		local p = Vector3(u.pos[1], u.pos[2], 0)
 
-		if Vector3.distance(pos, u) < rad then
+		if rad > Vector3.distance(pos, u) then
 			out_list[#out_list + 1] = u
 		end
 	end
@@ -827,11 +844,13 @@ end
 
 local function get_lean_target(enemy_list)
 	local best_dogpile_value = 99
-	local target_blackboard, best_target_unit = nil
+	local target_blackboard, best_target_unit
 
 	for i = 1, #enemy_list do
 		local target_unit = enemy_list[i]
+
 		target_blackboard = BLACKBOARDS[target_unit]
+
 		local dogpile = target_blackboard.lean_dogpile
 
 		if target_blackboard ~= blackboard and enemy_units_lookup[target_unit] and dogpile < best_dogpile_value then
@@ -867,53 +886,53 @@ function setup_slot_testing()
 			lean_dogpile = 0,
 			pos = {
 				-1,
-				3
-			}
+				3,
+			},
 		},
 		{
 			lean_dogpile = 0,
 			pos = {
 				0,
-				3
-			}
+				3,
+			},
 		},
 		{
 			lean_dogpile = 0,
 			pos = {
 				1,
-				3
-			}
+				3,
+			},
 		},
 		{
 			lean_dogpile = 0,
 			pos = {
 				2,
-				3
-			}
+				3,
+			},
 		},
 		{
 			lean_dogpile = 0,
 			pos = {
 				3,
-				3
-			}
-		}
+				3,
+			},
+		},
 	}
 	local units_2 = {
 		{
 			lean_dogpile = 0,
 			pos = {
 				1,
-				0
-			}
+				0,
+			},
 		},
 		{
 			lean_dogpile = 0,
 			pos = {
 				2,
-				0
-			}
-		}
+				0,
+			},
+		},
 	}
 
 	slot_testing(units_1, units_2)
@@ -921,6 +940,7 @@ end
 
 ConflictDirectorTests.start_test = function (conflict_director, t, dt, test)
 	local side = Managers.state.side:get_side_from_name("heroes") or Managers.state.side:get_side(1)
+
 	test = test or "spawn_encampment"
 	conflict_director.conflict_director_tests_name = test
 
@@ -977,8 +997,8 @@ ConflictDirectorTests.start_test = function (conflict_director, t, dt, test)
 			debug_pos = position,
 			debug_dir = {
 				0,
-				1
-			}
+				1,
+			},
 		}
 
 		TerrorEventMixer.start_event("encampment4", event_data)
@@ -988,8 +1008,8 @@ ConflictDirectorTests.start_test = function (conflict_director, t, dt, test)
 			debug_pos = position + Vector3(0, 8, 0),
 			debug_dir = {
 				0,
-				-1
-			}
+				-1,
+			},
 		}
 
 		TerrorEventMixer.start_event("encampment4", event_data)
@@ -1002,7 +1022,7 @@ ConflictDirectorTests.start_test = function (conflict_director, t, dt, test)
 
 		for i = 1, num do
 			local a = hull[i]
-			local b = nil
+			local b
 
 			if i == num then
 				b = hull[1]
@@ -1026,6 +1046,7 @@ end
 ConflictDirectorTests.update = function (conflict_director, t, dt)
 	local test = conflict_director.conflict_director_tests_name
 	local side = Managers.state.side:get_side_from_name("heroes") or Managers.state.side:get_side(1)
+
 	conflict_director.hero_player_and_bot_positions = side.PLAYER_AND_BOT_POSITIONS
 	conflict_director.hero_player_positions = side.PLAYER_POSITIONS
 

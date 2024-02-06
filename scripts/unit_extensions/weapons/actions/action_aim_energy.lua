@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/weapons/actions/action_aim_energy.lua
+
 ActionAimEnergy = class(ActionAimEnergy, ActionAim)
 
 ActionAimEnergy.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
@@ -44,7 +46,7 @@ ActionAimEnergy._fire_shot = function (self, t)
 	local hero_name = local_player:profile_display_name()
 	local career_name = local_player:career_name()
 	local power_level = BackendUtils.get_total_power_level(hero_name, career_name)
-	local action_init_data = nil
+	local action_init_data
 	local weapon_extension = ScriptUnit.extension(self.weapon_unit, "weapon_system")
 
 	weapon_extension:start_action(action_name, sub_action_name, actions, t, power_level, action_init_data)

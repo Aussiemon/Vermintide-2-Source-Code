@@ -1,19 +1,23 @@
+﻿-- chunkname: @scripts/entity_system/systems/weaves/weave_loadout_system.lua
+
 require("scripts/unit_extensions/default_player_unit/weaves/player_unit_weave_loadout_extension")
 require("scripts/unit_extensions/default_player_unit/weaves/player_husk_weave_loadout_extension")
 
 WeaveLoadoutSystem = class(WeaveLoadoutSystem, ExtensionSystemBase)
+
 local RPCS = {
-	"rpc_add_weave_buffs"
+	"rpc_add_weave_buffs",
 }
 local extension_list = {
 	"PlayerUnitWeaveLoadoutExtension",
-	"PlayerHuskWeaveLoadoutExtension"
+	"PlayerHuskWeaveLoadoutExtension",
 }
 
 WeaveLoadoutSystem.init = function (self, entity_system_creation_context, system_name)
 	WeaveLoadoutSystem.super.init(self, entity_system_creation_context, system_name, extension_list)
 
 	local network_event_delegate = entity_system_creation_context.network_event_delegate
+
 	self.network_event_delegate = network_event_delegate
 
 	network_event_delegate:register(self, unpack(RPCS))

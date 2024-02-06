@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/controller_features/controller_features_manager.lua
+
 require("scripts/managers/controller_features/controller_features_implementation")
 require("scripts/settings/controller_features_settings")
 

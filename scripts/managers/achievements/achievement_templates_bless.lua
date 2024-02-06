@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/achievements/achievement_templates_bless.lua
+
 local PLACEHOLDER_ICON = AchievementTemplateHelper.PLACEHOLDER_ICON
 local achievements = AchievementTemplates.achievements
 local achievement_settings = DLCSettings.bless
@@ -34,31 +36,32 @@ local difficulties = {
 	"hard",
 	"harder",
 	"hardest",
-	"cataclysm"
+	"cataclysm",
 }
 
 add_career_mission_count_challenge(achievements, "bless_complete_25_missions", "completed_career_levels", "wh_priest", difficulties, 25, nil, "achievement_trophy_bless_complete_25_missions_wh_priest", "bless", nil, nil)
 
 local bless_heal_allies_amount = 1500
+
 achievements.bless_heal_allies = {
-	name = "achv_bless_heal_allies_name",
 	desc = "achv_bless_heal_allies_desc",
 	display_completion_ui = true,
 	icon = "achievement_trophy_bless_heal_allies",
+	name = "achv_bless_heal_allies_name",
 	required_dlc = "bless",
 	events = {
-		"register_heal"
+		"register_heal",
 	},
 	progress = function (statistics_db, stats_id, template_data)
 		local completed = statistics_db:get_persistent_stat(stats_id, "bless_heal_allies")
 
 		return {
 			completed,
-			bless_heal_allies_amount
+			bless_heal_allies_amount,
 		}
 	end,
 	completed = function (statistics_db, stats_id, template_data)
-		return bless_heal_allies_amount <= statistics_db:get_persistent_stat(stats_id, "bless_heal_allies")
+		return statistics_db:get_persistent_stat(stats_id, "bless_heal_allies") >= bless_heal_allies_amount
 	end,
 	on_event = function (statistics_db, stats_id, template_data, event_name, event_data)
 		local healer_unit = event_data[1]
@@ -82,30 +85,32 @@ achievements.bless_heal_allies = {
 		end
 
 		statistics_db:modify_stat_by_amount(stats_id, "bless_heal_allies", heal_amount)
-	end
+	end,
 }
+
 local bless_saved_by_perk_amount = 5
+
 achievements.bless_saved_by_perk = {
-	name = "achv_bless_saved_by_perk_name",
 	desc = "achv_bless_saved_by_perk_desc",
 	display_completion_ui = true,
 	icon = "achievement_trophy_bless_saved_by_perk",
+	name = "achv_bless_saved_by_perk_name",
 	required_dlc = "bless",
 	events = {
 		"register_damage_taken",
 		"player_dead",
-		"player_knocked_down"
+		"player_knocked_down",
 	},
 	progress = function (statistics_db, stats_id, template_data)
 		local completed = statistics_db:get_persistent_stat(stats_id, "bless_saved_by_perk")
 
 		return {
 			completed,
-			bless_saved_by_perk_amount
+			bless_saved_by_perk_amount,
 		}
 	end,
 	completed = function (statistics_db, stats_id, template_data)
-		return bless_saved_by_perk_amount <= statistics_db:get_persistent_stat(stats_id, "bless_saved_by_perk")
+		return statistics_db:get_persistent_stat(stats_id, "bless_saved_by_perk") >= bless_saved_by_perk_amount
 	end,
 	on_event = function (statistics_db, stats_id, template_data, event_name, event_data)
 		if event_name == "register_damage_taken" then
@@ -136,7 +141,9 @@ achievements.bless_saved_by_perk = {
 
 			if result < 6 and damage_type == "life_tap" then
 				local timer_handles = template_data.timer_handles or {}
+
 				template_data.timer_handles = timer_handles
+
 				local current_victim_handle = timer_handles[victim_unit]
 
 				if not current_victim_handle or not current_victim_handle.valid then
@@ -164,28 +171,28 @@ achievements.bless_saved_by_perk = {
 
 			template_data.timer_handles[victim_unit] = nil
 		end
-	end
+	end,
 }
 bless_book_run_amount = 5
 achievements.bless_book_run = {
-	name = "achv_bless_book_run_name",
 	desc = "achv_bless_book_run_desc",
 	display_completion_ui = true,
 	icon = "achievement_trophy_bless_book_run",
+	name = "achv_bless_book_run_name",
 	required_dlc = "bless",
 	events = {
-		"register_completed_level"
+		"register_completed_level",
 	},
 	progress = function (statistics_db, stats_id, template_data)
 		local completed = statistics_db:get_persistent_stat(stats_id, "bless_book_run")
 
 		return {
 			completed,
-			bless_book_run_amount
+			bless_book_run_amount,
 		}
 	end,
 	completed = function (statistics_db, stats_id, template_data)
-		return bless_book_run_amount <= statistics_db:get_persistent_stat(stats_id, "bless_book_run")
+		return statistics_db:get_persistent_stat(stats_id, "bless_book_run") >= bless_book_run_amount
 	end,
 	on_event = function (statistics_db, stats_id, template_data, event_name, event_data)
 		local career_name = event_data[3]
@@ -216,30 +223,32 @@ achievements.bless_book_run = {
 				end
 			end
 		end
-	end
+	end,
 }
+
 local bless_fast_shield_amount = 10
 local bless_fast_shield_window = 1
+
 achievements.bless_fast_shield = {
-	name = "achv_bless_fast_shield_name",
 	desc = "achv_bless_fast_shield_desc",
 	display_completion_ui = true,
 	icon = "achievement_trophy_bless_fast_shield",
+	name = "achv_bless_fast_shield_name",
 	required_dlc = "bless",
 	events = {
 		"register_shield_applied",
-		"register_player_disabled"
+		"register_player_disabled",
 	},
 	progress = function (statistics_db, stats_id, template_data)
 		local completed = statistics_db:get_persistent_stat(stats_id, "bless_fast_shield")
 
 		return {
 			completed,
-			bless_fast_shield_amount
+			bless_fast_shield_amount,
 		}
 	end,
 	completed = function (statistics_db, stats_id, template_data)
-		return bless_fast_shield_amount <= statistics_db:get_persistent_stat(stats_id, "bless_fast_shield")
+		return statistics_db:get_persistent_stat(stats_id, "bless_fast_shield") >= bless_fast_shield_amount
 	end,
 	on_event = function (statistics_db, stats_id, template_data, event_name, event_data)
 		if event_name == "register_shield_applied" then
@@ -280,39 +289,42 @@ achievements.bless_fast_shield = {
 			local current_t = Managers.time:time("game")
 
 			for unit, incapacitated_t in pairs(incapacitated_units) do
-				if not ALIVE[unit] or bless_fast_shield_window < current_t - incapacitated_t then
+				if not ALIVE[unit] or current_t - incapacitated_t > bless_fast_shield_window then
 					incapacitated_units[unit] = nil
 				end
 			end
 
 			local unit = event_data[1]
+
 			incapacitated_units[unit] = current_t
 			template_data.incapacitated_units = incapacitated_units
 		end
-	end
+	end,
 }
+
 local bless_unbreakable_damage_block_amount = 500
+
 achievements.bless_unbreakable_damage_block = {
 	always_run = true,
-	name = "achv_bless_unbreakable_damage_block_name",
-	display_completion_ui = true,
 	desc = "achv_bless_unbreakable_damage_block_desc",
-	required_career = "wh_priest",
+	display_completion_ui = true,
 	icon = "achievement_trophy_bless_unbreakable_damage_block",
+	name = "achv_bless_unbreakable_damage_block_name",
+	required_career = "wh_priest",
 	required_dlc = "bless",
 	events = {
-		"bless_delay_damage"
+		"bless_delay_damage",
 	},
 	progress = function (statistics_db, stats_id, template_data)
 		local completed = statistics_db:get_persistent_stat(stats_id, "bless_unbreakable_damage_block")
 
 		return {
 			completed,
-			bless_unbreakable_damage_block_amount
+			bless_unbreakable_damage_block_amount,
 		}
 	end,
 	completed = function (statistics_db, stats_id, template_data)
-		return bless_unbreakable_damage_block_amount <= statistics_db:get_persistent_stat(stats_id, "bless_unbreakable_damage_block")
+		return statistics_db:get_persistent_stat(stats_id, "bless_unbreakable_damage_block") >= bless_unbreakable_damage_block_amount
 	end,
 	on_event = function (statistics_db, stats_id, template_data, event_name, event_data)
 		local victim_unit = event_data[1]
@@ -328,27 +340,29 @@ achievements.bless_unbreakable_damage_block = {
 			return
 		end
 
-		if buff_extension:num_buff_stacks("victor_priest_activated_ability_invincibility") <= 0 and buff_extension:num_buff_stacks("victor_priest_activated_ability_invincibility_improved") <= 0 then
+		if not (buff_extension:num_buff_stacks("victor_priest_activated_ability_invincibility") > 0) and not (buff_extension:num_buff_stacks("victor_priest_activated_ability_invincibility_improved") > 0) then
 			return
 		end
 
 		damage_amount = DamageUtils.networkify_damage(damage_amount)
 
 		rpc_modify_stat(victim_unit, "bless_unbreakable_damage_block", damage_amount)
-	end
+	end,
 }
+
 local bless_punch_back_time_window = 3
+
 achievements.bless_punch_back = {
 	always_run = true,
-	name = "achv_bless_punch_back_name",
-	display_completion_ui = true,
 	desc = "achv_bless_punch_back_desc",
-	required_career = "wh_priest",
+	display_completion_ui = true,
 	icon = "achievement_trophy_bless_punch_back",
+	name = "achv_bless_punch_back_name",
+	required_career = "wh_priest",
 	required_dlc = "bless",
 	events = {
 		"register_damage_taken",
-		"register_damage"
+		"register_damage",
 	},
 	completed = function (statistics_db, stats_id, template_data)
 		return statistics_db:get_persistent_stat(stats_id, "bless_punch_back") >= 1
@@ -388,7 +402,7 @@ achievements.bless_punch_back = {
 
 				if not template_data.last_hit then
 					template_data.last_hit = {
-						[attacker_unit] = t
+						[attacker_unit] = t,
 					}
 					template_data.last_hit_n = 1
 				else
@@ -400,7 +414,7 @@ achievements.bless_punch_back = {
 					local last_hit_buffer = template_data.last_hit
 					local last_hit_n = template_data.last_hit_n
 
-					for unit, attack_t in last_hit_buffer, nil, nil do
+					for unit, attack_t in last_hit_buffer do
 						if not ALIVE[unit] or t > attack_t + bless_punch_back_time_window then
 							last_hit_buffer[unit] = nil
 							last_hit_n = last_hit_n - 1
@@ -431,17 +445,17 @@ achievements.bless_punch_back = {
 				end
 			end
 		end
-	end
+	end,
 }
 achievements.bless_cluch_revive = {
-	display_completion_ui = true,
-	name = "achv_bless_cluch_revive_name",
 	desc = "achv_bless_cluch_revive_desc",
-	required_career = "wh_priest",
+	display_completion_ui = true,
 	icon = "achievement_trophy_bless_cluch_revive",
+	name = "achv_bless_cluch_revive_name",
+	required_career = "wh_priest",
 	required_dlc = "bless",
 	events = {
-		"register_revive"
+		"register_revive",
 	},
 	completed = function (statistics_db, stats_id, template_data)
 		return statistics_db:get_persistent_stat(stats_id, "bless_cluch_revive") >= 1
@@ -468,7 +482,7 @@ achievements.bless_cluch_revive = {
 			return
 		end
 
-		if buff_extension:num_buff_stacks("victor_priest_activated_ability_invincibility") <= 0 and buff_extension:num_buff_stacks("victor_priest_activated_ability_invincibility_improved") <= 0 then
+		if not (buff_extension:num_buff_stacks("victor_priest_activated_ability_invincibility") > 0) and not (buff_extension:num_buff_stacks("victor_priest_activated_ability_invincibility_improved") > 0) then
 			return
 		end
 
@@ -497,22 +511,24 @@ achievements.bless_cluch_revive = {
 		end
 
 		statistics_db:increment_stat(stats_id, "bless_cluch_revive")
-	end
+	end,
 }
+
 local bless_ranged_raki_count = 2
 local bless_ranged_raki_breeds = {
 	skaven_ratling_gunner = true,
-	skaven_warpfire_thrower = true
+	skaven_warpfire_thrower = true,
 }
+
 achievements.bless_ranged_raki = {
-	display_completion_ui = true,
-	name = "achv_bless_ranged_raki_name",
 	desc = "achv_bless_ranged_raki_desc",
-	required_career = "wh_priest",
+	display_completion_ui = true,
 	icon = "achievement_trophy_bless_ranged_raki",
+	name = "achv_bless_ranged_raki_name",
+	required_career = "wh_priest",
 	required_dlc = "bless",
 	events = {
-		"register_kill"
+		"register_kill",
 	},
 	completed = function (statistics_db, stats_id, template_data)
 		return statistics_db:get_persistent_stat(stats_id, "bless_ranged_raki") >= 1
@@ -555,25 +571,27 @@ achievements.bless_ranged_raki = {
 
 			template_data.kill_count = template_data.kill_count + 1
 
-			if bless_ranged_raki_count <= template_data.kill_count then
+			if template_data.kill_count >= bless_ranged_raki_count then
 				statistics_db:increment_stat(stats_id, "bless_ranged_raki")
 			end
 		end
-	end
+	end,
 }
+
 local bless_chaos_warriors_count = 5
+
 achievements.bless_chaos_warriors = {
-	display_completion_ui = true,
-	name = "achv_bless_chaos_warriors_name",
 	desc = "achv_bless_chaos_warriors_desc",
-	required_career = "wh_priest",
+	display_completion_ui = true,
 	icon = "achievement_trophy_bless_chaos_warriors",
+	name = "achv_bless_chaos_warriors_name",
+	required_career = "wh_priest",
 	required_dlc = "bless",
 	events = {
 		"register_kill",
 		"righteous_fury_start",
 		"righteous_fury_end",
-		"player_dead"
+		"player_dead",
 	},
 	completed = function (statistics_db, stats_id, template_data)
 		return statistics_db:get_persistent_stat(stats_id, "bless_chaos_warriors") >= 1
@@ -590,25 +608,27 @@ achievements.bless_chaos_warriors = {
 			if breed and breed.name == "chaos_warrior" then
 				template_data.kill_count = template_data.kill_count + 1
 
-				if bless_chaos_warriors_count <= template_data.kill_count then
+				if template_data.kill_count >= bless_chaos_warriors_count then
 					statistics_db:increment_stat(stats_id, "bless_chaos_warriors")
 				end
 			end
 		end
-	end
+	end,
 }
+
 local bless_very_righteous_length = 50
+
 achievements.bless_very_righteous = {
-	display_completion_ui = true,
-	name = "achv_bless_very_righteous_name",
 	desc = "achv_bless_very_righteous_desc",
-	required_career = "wh_priest",
+	display_completion_ui = true,
 	icon = "achievement_trophy_bless_very_righteous",
+	name = "achv_bless_very_righteous_name",
+	required_career = "wh_priest",
 	required_dlc = "bless",
 	events = {
 		"righteous_fury_start",
 		"righteous_fury_end",
-		"player_dead"
+		"player_dead",
 	},
 	completed = function (statistics_db, stats_id, template_data)
 		return statistics_db:get_persistent_stat(stats_id, "bless_very_righteous") >= 1
@@ -621,33 +641,35 @@ achievements.bless_very_righteous = {
 		elseif event_name == "righteous_fury_end" and event_data[2] or event_name == "player_dead" and event_data[1] and event_data[1].local_player then
 			local last_activated_t = template_data.righteous_fury_active
 
-			if last_activated_t and bless_very_righteous_length <= t - last_activated_t then
+			if last_activated_t and t - last_activated_t >= bless_very_righteous_length then
 				statistics_db:increment_stat(stats_id, "bless_very_righteous")
 			end
 		end
-	end
+	end,
 }
+
 local bless_smite_enemies_amount = 250
+
 achievements.bless_smite_enemies = {
-	display_completion_ui = true,
-	name = "achv_bless_smite_enemies_name",
 	desc = "achv_bless_smite_enemies_desc",
-	required_career = "wh_priest",
+	display_completion_ui = true,
 	icon = "achievement_trophy_bless_smite_enemies",
+	name = "achv_bless_smite_enemies_name",
+	required_career = "wh_priest",
 	required_dlc = "bless",
 	events = {
-		"register_kill"
+		"register_kill",
 	},
 	progress = function (statistics_db, stats_id, template_data)
 		local completed = statistics_db:get_persistent_stat(stats_id, "bless_smite_enemies")
 
 		return {
 			completed,
-			bless_smite_enemies_amount
+			bless_smite_enemies_amount,
 		}
 	end,
 	completed = function (statistics_db, stats_id, template_data)
-		return bless_smite_enemies_amount <= statistics_db:get_persistent_stat(stats_id, "bless_smite_enemies")
+		return statistics_db:get_persistent_stat(stats_id, "bless_smite_enemies") >= bless_smite_enemies_amount
 	end,
 	on_event = function (statistics_db, stats_id, template_data, event_name, event_data)
 		local damage_data = event_data[register_kill_damage_data]
@@ -678,29 +700,31 @@ achievements.bless_smite_enemies = {
 		end
 
 		statistics_db:increment_stat(stats_id, "bless_smite_enemies")
-	end
+	end,
 }
+
 local bless_great_hammer_headshots_count = 40
+
 achievements.bless_great_hammer_headshots = {
-	display_completion_ui = true,
-	name = "achv_bless_great_hammer_headshots_name",
 	desc = "achv_bless_great_hammer_headshots_desc",
-	required_career = "wh_priest",
+	display_completion_ui = true,
 	icon = "achievement_trophy_bless_great_hammer_headshots",
+	name = "achv_bless_great_hammer_headshots_name",
+	required_career = "wh_priest",
 	required_dlc = "bless",
 	events = {
-		"on_hit"
+		"on_hit",
 	},
 	progress = function (statistics_db, stats_id, template_data)
 		local completed = statistics_db:get_persistent_stat(stats_id, "bless_great_hammer_headshots")
 
 		return {
 			completed,
-			bless_great_hammer_headshots_count
+			bless_great_hammer_headshots_count,
 		}
 	end,
 	completed = function (statistics_db, stats_id, template_data)
-		return bless_great_hammer_headshots_count <= statistics_db:get_persistent_stat(stats_id, "bless_great_hammer_headshots")
+		return statistics_db:get_persistent_stat(stats_id, "bless_great_hammer_headshots") >= bless_great_hammer_headshots_count
 	end,
 	on_event = function (statistics_db, stats_id, template_data, event_name, event_data)
 		local attacker_unit = event_data[on_hit_unit]
@@ -739,29 +763,31 @@ achievements.bless_great_hammer_headshots = {
 				statistics_db:increment_stat(stats_id, "bless_great_hammer_headshots")
 			end
 		end
-	end
+	end,
 }
+
 local bless_kill_specials_hammer_book_map = {
-	skaven_ratling_gunner = 8,
-	skaven_poison_wind_globadier = 2,
+	beastmen_standard_bearer = 128,
 	chaos_corruptor_sorcerer = 32,
 	chaos_vortex_sorcerer = 64,
+	skaven_gutter_runner = 1,
 	skaven_pack_master = 4,
+	skaven_poison_wind_globadier = 2,
+	skaven_ratling_gunner = 8,
 	skaven_warpfire_thrower = 16,
-	beastmen_standard_bearer = 128,
-	skaven_gutter_runner = 1
 }
 local bless_kill_specials_hammer_book_map_n = 8
 local bless_kill_specials_hammer_book_complete = 255
+
 achievements.bless_kill_specials_hammer_book = {
-	display_completion_ui = true,
-	name = "achv_bless_kill_specials_hammer_book_name",
 	desc = "achv_bless_kill_specials_hammer_book_desc",
-	required_career = "wh_priest",
+	display_completion_ui = true,
 	icon = "achievement_trophy_bless_kill_specials_hammer_book",
+	name = "achv_bless_kill_specials_hammer_book_name",
+	required_career = "wh_priest",
 	required_dlc = "bless",
 	events = {
-		"register_kill"
+		"register_kill",
 	},
 	progress = function (statistics_db, stats_id, template_data)
 		local killed_specials_n = 0
@@ -775,11 +801,11 @@ achievements.bless_kill_specials_hammer_book = {
 
 		return {
 			killed_specials_n,
-			bless_kill_specials_hammer_book_map_n
+			bless_kill_specials_hammer_book_map_n,
 		}
 	end,
 	completed = function (statistics_db, stats_id, template_data)
-		return bless_kill_specials_hammer_book_complete <= statistics_db:get_persistent_stat(stats_id, "bless_kill_specials_hammer_book")
+		return statistics_db:get_persistent_stat(stats_id, "bless_kill_specials_hammer_book") >= bless_kill_specials_hammer_book_complete
 	end,
 	requirements = function (statistics_db, stats_id)
 		local out_table = {}
@@ -788,10 +814,11 @@ achievements.bless_kill_specials_hammer_book = {
 
 		for breed_name, mask in pairs(bless_kill_specials_hammer_book_map) do
 			local completed = bit.band(killed_specials_bitfield, mask) == mask
+
 			out_n = out_n + 1
 			out_table[out_n] = {
 				name = breed_name,
-				completed = completed
+				completed = completed,
 			}
 		end
 
@@ -852,17 +879,17 @@ achievements.bless_kill_specials_hammer_book = {
 
 			statistics_db:set_stat(stats_id, "bless_kill_specials_hammer_book", killed_specials_bitfield)
 		end
-	end
+	end,
 }
 achievements.bless_mighty_blow = {
-	display_completion_ui = true,
-	name = "achv_bless_mighty_blow_name",
 	desc = "achv_bless_mighty_blow_desc",
-	required_career = "wh_priest",
+	display_completion_ui = true,
 	icon = "achievement_trophy_bless_mighty_blow",
+	name = "achv_bless_mighty_blow_name",
+	required_career = "wh_priest",
 	required_dlc = "bless",
 	events = {
-		"register_kill"
+		"register_kill",
 	},
 	completed = function (statistics_db, stats_id, template_data)
 		return statistics_db:get_persistent_stat(stats_id, "bless_mighty_blow") >= 1
@@ -903,30 +930,32 @@ achievements.bless_mighty_blow = {
 		end
 
 		statistics_db:increment_stat(stats_id, "bless_mighty_blow")
-	end
+	end,
 }
+
 local bless_block_attacks_count = 800
+
 achievements.bless_block_attacks = {
 	always_run = true,
-	name = "achv_bless_block_attacks_name",
-	display_completion_ui = true,
 	desc = "achv_bless_block_attacks_desc",
-	required_career = "wh_priest",
+	display_completion_ui = true,
 	icon = "achievement_trophy_bless_block_attacks",
+	name = "achv_bless_block_attacks_name",
+	required_career = "wh_priest",
 	required_dlc = "bless",
 	events = {
-		"register_damage_resisted_immune"
+		"register_damage_resisted_immune",
 	},
 	progress = function (statistics_db, stats_id, template_data)
 		local completed = statistics_db:get_persistent_stat(stats_id, "bless_block_attacks")
 
 		return {
 			completed,
-			bless_block_attacks_count
+			bless_block_attacks_count,
 		}
 	end,
 	completed = function (statistics_db, stats_id, template_data)
-		return bless_block_attacks_count <= statistics_db:get_persistent_stat(stats_id, "bless_block_attacks")
+		return statistics_db:get_persistent_stat(stats_id, "bless_block_attacks") >= bless_block_attacks_count
 	end,
 	on_event = function (statistics_db, stats_id, template_data, event_name, event_data)
 		local victim_unit = event_data[1]
@@ -962,30 +991,32 @@ achievements.bless_block_attacks = {
 		if ALIVE[source_unit] then
 			rpc_increment_stat(source_unit, "bless_block_attacks")
 		end
-	end
+	end,
 }
+
 local bless_righteous_stagger_count = 800
+
 achievements.bless_righteous_stagger = {
 	always_run = true,
-	name = "achv_bless_righteous_stagger_name",
-	display_completion_ui = true,
 	desc = "achv_bless_righteous_stagger_desc",
-	required_career = "wh_priest",
+	display_completion_ui = true,
 	icon = "achievement_trophy_bless_righteous_stagger",
+	name = "achv_bless_righteous_stagger_name",
+	required_career = "wh_priest",
 	required_dlc = "bless",
 	events = {
-		"register_ai_stagger"
+		"register_ai_stagger",
 	},
 	progress = function (statistics_db, stats_id, template_data)
 		local completed = statistics_db:get_persistent_stat(stats_id, "bless_righteous_stagger")
 
 		return {
 			completed,
-			bless_righteous_stagger_count
+			bless_righteous_stagger_count,
 		}
 	end,
 	completed = function (statistics_db, stats_id, template_data)
-		return bless_righteous_stagger_count <= statistics_db:get_persistent_stat(stats_id, "bless_righteous_stagger")
+		return statistics_db:get_persistent_stat(stats_id, "bless_righteous_stagger") >= bless_righteous_stagger_count
 	end,
 	on_event = function (statistics_db, stats_id, template_data, event_name, event_data)
 		if not Managers.state.network.is_server then
@@ -1010,19 +1041,21 @@ achievements.bless_righteous_stagger = {
 		if passive and passive:is_active() then
 			rpc_increment_stat(attacker_unit, "bless_righteous_stagger")
 		end
-	end
+	end,
 }
+
 local bless_charged_hammer_hit_count = 60
 local bless_charged_hammer_hit_window = 0.2
+
 achievements.bless_charged_hammer = {
-	display_completion_ui = true,
-	name = "achv_bless_charged_hammer_name",
 	desc = "achv_bless_charged_hammer_desc",
-	required_career = "wh_priest",
+	display_completion_ui = true,
 	icon = "achievement_trophy_bless_charged_hammer",
+	name = "achv_bless_charged_hammer_name",
+	required_career = "wh_priest",
 	required_dlc = "bless",
 	events = {
-		"register_damage"
+		"register_damage",
 	},
 	completed = function (statistics_db, stats_id, template_data)
 		return statistics_db:get_persistent_stat(stats_id, "bless_charged_hammer") >= 1
@@ -1077,22 +1110,24 @@ achievements.bless_charged_hammer = {
 			template_data.hit_count = template_data.hit_count + 1
 			template_data.victim_units[victim_unit] = true
 
-			if bless_charged_hammer_hit_count <= template_data.hit_count then
+			if template_data.hit_count >= bless_charged_hammer_hit_count then
 				statistics_db:increment_stat(stats_id, "bless_charged_hammer")
 			end
 		end
-	end
+	end,
 }
+
 local bless_protected_killing_count = 50
+
 achievements.bless_protected_killing = {
-	display_completion_ui = true,
-	name = "achv_bless_protected_killing_name",
 	desc = "achv_bless_protected_killing_desc",
-	required_career = "wh_priest",
+	display_completion_ui = true,
 	icon = "achievement_trophy_bless_protected_killing",
+	name = "achv_bless_protected_killing_name",
+	required_career = "wh_priest",
 	required_dlc = "bless",
 	events = {
-		"register_kill"
+		"register_kill",
 	},
 	completed = function (statistics_db, stats_id, template_data)
 		return statistics_db:get_persistent_stat(stats_id, "bless_protected_killing") >= 1
@@ -1122,13 +1157,14 @@ achievements.bless_protected_killing = {
 			if buff then
 				buff._bless_protected_killing_count = (buff._bless_protected_killing_count or 0) + 1
 
-				if bless_protected_killing_count <= buff._bless_protected_killing_count then
+				if buff._bless_protected_killing_count >= bless_protected_killing_count then
 					statistics_db:increment_stat(stats_id, "bless_protected_killing")
 				end
 			end
 		end
-	end
+	end,
 }
+
 local all_challenges = {
 	"bless_complete_all_helmgart_levels_wh_priest",
 	"bless_complete_25_missions_wh_priest",
@@ -1149,7 +1185,7 @@ local all_challenges = {
 	"bless_block_attacks",
 	"bless_righteous_stagger",
 	"bless_charged_hammer",
-	"bless_protected_killing"
+	"bless_protected_killing",
 }
 
 add_meta_challenge(achievements, "complete_all_warrior_priest_challenges", all_challenges, "achievement_trophy_complete_all_warrior_priest_challenges", "bless", nil, nil)

@@ -1,34 +1,37 @@
+﻿-- chunkname: @scripts/ui/views/start_game_view/windows/start_game_window_lobby_browser_console.lua
+
 require("scripts/ui/views/lobby_browser_console_ui")
 require("scripts/network/lobby_aux")
 
 local definitions = local_require("scripts/ui/views/start_game_view/windows/definitions/start_game_window_lobby_browser_console_definitions")
 local input_delay_before_start_new_search = 0
 local network_options = {
-	project_hash = "bulldozer",
 	config_file_name = "global",
+	project_hash = "bulldozer",
 	lobby_port = GameSettingsDevelopment.network_port,
 	server_port = GameSettingsDevelopment.network_port,
-	max_members = MatchmakingSettings.MAX_NUMBER_OF_PLAYERS
+	max_members = MatchmakingSettings.MAX_NUMBER_OF_PLAYERS,
 }
 local GAME_MODE_LOOKUP_STRINGS = {
-	weave = "lb_game_type_weave",
-	deed = "lb_game_type_deed",
-	event = "lb_game_type_event",
-	custom = "lb_game_type_custom",
-	demo = "lb_game_type_none",
 	adventure = "lb_game_type_quick_play",
+	any = "lobby_browser_mission",
+	custom = "lb_game_type_custom",
+	deed = "lb_game_type_deed",
+	demo = "lb_game_type_none",
+	event = "lb_game_type_event",
+	["n/a"] = "lb_game_type_none",
 	tutorial = "lb_game_type_prologue",
 	twitch = "lb_game_type_twitch",
-	["n/a"] = "lb_game_type_none",
-	any = "lobby_browser_mission"
+	weave = "lb_game_type_weave",
 }
 local GAME_TYPE_LOOKUP_STRINGS = {
-	deus = "area_selection_morris_name",
 	adventure = "area_selection_campaign",
-	weave = "menu_weave_area_no_wom_title",
+	any = "lobby_browser_mission",
+	deus = "area_selection_morris_name",
 	versus = "vs_ui_versus_tag",
-	any = "lobby_browser_mission"
+	weave = "menu_weave_area_no_wom_title",
 }
+
 StartGameWindowLobbyBrowserConsole = class(StartGameWindowLobbyBrowserConsole)
 StartGameWindowLobbyBrowserConsole.NAME = "StartGameWindowLobbyBrowserConsole"
 
@@ -36,17 +39,25 @@ StartGameWindowLobbyBrowserConsole.on_enter = function (self, params, offset)
 	print("[StartGameWindow] Enter Substate StartGameWindowLobbyBrowserConsole")
 
 	self._parent = params.parent
+
 	local ingame_ui_context = params.ingame_ui_context
+
 	self._statistics_db = ingame_ui_context.statistics_db
+
 	local player_manager = Managers.player
 	local local_player = player_manager:local_player()
+
 	self._profile_name = local_player:profile_display_name()
 	self._career_name = local_player:career_name()
 	self._stats_id = local_player:stats_id()
 	self._friend_names = {}
+
 	local lobby_finder = LobbyFinder:new(network_options, MatchmakingSettings.MAX_NUM_LOBBIES, IS_WINDOWS and true)
+
 	self._lobby_finder = lobby_finder
+
 	local ignore_dlc_check = false
+
 	self._current_weave = LevelUnlockUtils.current_weave(self._statistics_db, self._stats_id, ignore_dlc_check)
 	self._game_mode_data = definitions.setup_game_mode_data(self._statistics_db, self._stats_id)
 	self._lobby_browser_console_ui = LobbyBrowserConsoleUI:new(self, ingame_ui_context, self._game_mode_data, definitions.show_lobbies_table, definitions.distance_table)
@@ -244,9 +255,7 @@ StartGameWindowLobbyBrowserConsole._valid_lobby = function (self, lobby_data)
 		if mechanism == "weave" then
 			local weave_template = WeaveSettings.templates[mission_id]
 
-			if weave_template then
-				level_key = weave_template.objectives[1].level_id or level_key
-			end
+			level_key = weave_template and weave_template.objectives[1].level_id or level_key
 		end
 
 		local level_unlocked = LevelUnlockUtils.level_unlocked(statistics_db, player_stats_id, level_key)
@@ -291,6 +300,7 @@ end
 
 StartGameWindowLobbyBrowserConsole.dirty = function (self)
 	local dirty = self._dirty
+
 	self._dirty = false
 
 	return dirty
@@ -305,6 +315,7 @@ StartGameWindowLobbyBrowserConsole._update_auto_refresh = function (self, dt)
 
 		if lobby_list_update_timer < 0 and not is_refreshing then
 			self._lobby_list_update_timer = MatchmakingSettings.TIME_BETWEEN_EACH_SEARCH
+
 			local skip_populate = true
 
 			self:_search(skip_populate)
@@ -323,7 +334,7 @@ end
 StartGameWindowLobbyBrowserConsole.reset_filters = function (self, selected_game_mode, selected_level, selected_difficulty, selected_filter, selected_distance)
 	self:set_level(selected_level or "any")
 	self:set_difficulty(selected_difficulty or "any")
-	self:set_lobby_filter(selected_filter or (BUILD == "dev" or BUILD == "debug") and "lb_show_all" or "lb_show_joinable")
+	self:set_lobby_filter(selected_filter or not (BUILD ~= "dev" and BUILD ~= "debug") and "lb_show_all" or "lb_show_joinable")
 	self:set_distance_filter(selected_distance or "map_zone_options_5")
 	self:set_game_mode(selected_game_mode or "any")
 	self:_search()
@@ -349,7 +360,7 @@ StartGameWindowLobbyBrowserConsole._create_filter_requirements = function (self)
 		filters = {},
 		near_filters = {},
 		free_slots = free_slots,
-		distance_filter = not IS_PS4 and distance_filter
+		distance_filter = not IS_PS4 and distance_filter,
 	}
 
 	if IS_PS4 then
@@ -358,55 +369,56 @@ StartGameWindowLobbyBrowserConsole._create_filter_requirements = function (self)
 		if distance_filter == "close" then
 			requirements.filters.primary_region = {
 				comparison = "equal",
-				value = MatchmakingRegionLookup.primary[user_region] or MatchmakingRegionLookup.secondary[user_region] or "default"
+				value = MatchmakingRegionLookup.primary[user_region] or MatchmakingRegionLookup.secondary[user_region] or "default",
 			}
 		elseif distance_filter == "medium" then
 			requirements.filters.secondary_region = {
 				comparison = "equal",
-				value = MatchmakingRegionLookup.secondary[user_region] or MatchmakingRegionLookup.primary[user_region] or "default"
+				value = MatchmakingRegionLookup.secondary[user_region] or MatchmakingRegionLookup.primary[user_region] or "default",
 			}
 		end
 	end
 
 	local eac_state = EAC.state()
 	local eac_authorized = eac_state == "trusted"
+
 	requirements.filters.eac_authorized = {
 		comparison = "equal",
-		value = eac_authorized and "true" or "false"
+		value = eac_authorized and "true" or "false",
 	}
 
 	if difficulty_key ~= "any" and difficulty_key then
 		requirements.filters.difficulty = {
 			comparison = "equal",
-			value = difficulty_key
+			value = difficulty_key,
 		}
 	end
 
 	if level_key ~= "any" and level_key then
 		requirements.filters.selected_mission_id = {
 			comparison = "equal",
-			value = level_key
+			value = level_key,
 		}
 	end
 
 	if mechanism ~= "any" and mechanism then
 		requirements.filters.mechanism = {
 			comparison = "equal",
-			value = mechanism
+			value = mechanism,
 		}
 	end
 
 	if only_show_valid_lobbies then
 		requirements.filters.network_hash = {
 			comparison = "equal",
-			value = lobby_finder:network_hash()
+			value = lobby_finder:network_hash(),
 		}
 	end
 
 	if only_show_joinable then
 		requirements.filters.matchmaking = {
+			comparison = "not_equal",
 			value = "false",
-			comparison = "not_equal"
 		}
 	end
 
@@ -506,6 +518,7 @@ StartGameWindowLobbyBrowserConsole.set_level = function (self, level)
 
 	if level ~= "any" then
 		local level_setting = LevelSettings[level]
+
 		level_display_name = level_setting.display_name
 	end
 
@@ -523,6 +536,7 @@ StartGameWindowLobbyBrowserConsole.set_difficulty = function (self, difficulty)
 
 	if difficulty ~= "any" then
 		local difficulty_setting = DifficultySettings[difficulty]
+
 		difficulty_display_name = difficulty_setting.display_name
 	end
 
@@ -536,6 +550,7 @@ StartGameWindowLobbyBrowserConsole.set_lobby_filter = function (self, lobby_filt
 	local show_lobbies_table = definitions.show_lobbies_table
 	local new_index = table.find(show_lobbies_table, lobby_filter)
 	local show_lobbies_text = show_lobbies_table[new_index]
+
 	self._selected_show_lobbies_index = new_index
 	self._search_timer = input_delay_before_start_new_search
 
@@ -546,6 +561,7 @@ StartGameWindowLobbyBrowserConsole.set_distance_filter = function (self, distanc
 	local distance_table = definitions.distance_table
 	local new_index = table.find(distance_table, distance)
 	local distance_text = distance_table[new_index]
+
 	self._selected_distance_index = new_index
 	self._search_timer = input_delay_before_start_new_search
 
@@ -592,7 +608,7 @@ StartGameWindowLobbyBrowserConsole.is_lobby_joinable = function (self, lobby_dat
 	local quick_game = lobby_data.quick_game == "true"
 	local mechanism = lobby_data.mechanism
 	local mechanism_settings = MechanismSettings[mechanism]
-	local difficulty_lock_reason = nil
+	local difficulty_lock_reason
 
 	if mechanism == "weave" then
 		if mission_id ~= "false" and not quick_game then

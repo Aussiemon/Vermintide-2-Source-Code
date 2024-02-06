@@ -1,15 +1,17 @@
+﻿-- chunkname: @foundation/scripts/managers/player/player.lua
+
 Player = class(Player)
 Player._allowed_transitions = {
 	despawned = {
-		spawned = true
+		spawned = true,
 	},
 	queued_for_despawn = {
-		despawned = true
+		despawned = true,
 	},
 	spawned = {
+		despawned = true,
 		queued_for_despawn = true,
-		despawned = true
-	}
+	},
 }
 
 Player.init = function (self, network_manager, input_source, viewport_name, viewport_world_name, is_server)

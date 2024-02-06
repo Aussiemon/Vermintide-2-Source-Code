@@ -1,3 +1,5 @@
+﻿-- chunkname: @foundation/scripts/util/grow_queue.lua
+
 GrowQueue = class(GrowQueue)
 
 GrowQueue.init = function (self)
@@ -12,11 +14,12 @@ GrowQueue.push_back = function (self, item)
 end
 
 GrowQueue.pop_first = function (self)
-	if self.last < self.first then
+	if self.first > self.last then
 		return
 	end
 
 	local item = self.queue[self.first]
+
 	self.queue[self.first] = nil
 
 	if self.first == self.last then

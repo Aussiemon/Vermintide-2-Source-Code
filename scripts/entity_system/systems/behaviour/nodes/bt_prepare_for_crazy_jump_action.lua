@@ -1,7 +1,10 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_prepare_for_crazy_jump_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTPrepareForCrazyJumpAction = class(BTPrepareForCrazyJumpAction, BTNode)
 BTPrepareForCrazyJumpAction.name = "BTPrepareForCrazyJumpAction"
+
 local position_lookup = POSITION_LOOKUP
 local AiUtils = AiUtils
 local unit_alive = Unit.alive
@@ -20,6 +23,7 @@ BTPrepareForCrazyJumpAction.enter = function (self, unit, blackboard, t)
 	aiprint("ENTER BTPrepareForCrazyJumpAction")
 
 	local action = self._tree_node.action_data
+
 	blackboard.action = action
 
 	LocomotionUtils.set_animation_driven_movement(unit, false)
@@ -31,9 +35,10 @@ BTPrepareForCrazyJumpAction.enter = function (self, unit, blackboard, t)
 	blackboard.jump_data = {
 		crouching = false,
 		ready_crouch_time = false,
-		segment_list = {}
+		segment_list = {},
 	}
 	blackboard.remembered_threat_pos = nil
+
 	local tutorial_message_template = action and action.tutorial_message_template
 
 	if tutorial_message_template then
@@ -48,6 +53,7 @@ BTPrepareForCrazyJumpAction.leave = function (self, unit, blackboard, t, reason,
 	aiprint("LEAVE BTPrepareForCrazyJumpAction")
 
 	blackboard.jump_data.jump_at_target_outside_mesh = nil
+
 	local default_move_speed = AiUtils.get_default_breed_move_speed(unit, blackboard)
 	local navigation_extension = blackboard.navigation_extension
 
@@ -64,7 +70,7 @@ BTPrepareForCrazyJumpAction.run = function (self, unit, blackboard, t, dt)
 	local locomotion = ScriptUnit.extension(unit, "locomotion_system")
 	local breed = blackboard.breed
 
-	if breed.jump_range < blackboard.target_dist then
+	if blackboard.target_dist > breed.jump_range then
 		return "failed"
 	end
 
@@ -90,7 +96,7 @@ BTPrepareForCrazyJumpAction.run = function (self, unit, blackboard, t, dt)
 		LocomotionUtils.follow_target(unit, blackboard, t, dt)
 		locomotion:set_wanted_rotation(nil)
 
-		if blackboard.move_closer_to_target_timer < t then
+		if t > blackboard.move_closer_to_target_timer then
 			local data = blackboard.jump_data
 			local in_los, velocity, time_of_flight = BTPrepareForCrazyJumpAction.ready_to_jump(unit, blackboard, data, false)
 
@@ -137,7 +143,7 @@ BTPrepareForCrazyJumpAction.run = function (self, unit, blackboard, t, dt)
 				locomotion:set_wanted_rotation(nil)
 			end
 
-			if data.ready_crouch_time < t then
+			if t > data.ready_crouch_time then
 				local in_los, velocity, time_of_flight = BTPrepareForCrazyJumpAction.ready_to_jump(unit, blackboard, data, true)
 
 				if in_los then
@@ -174,6 +180,7 @@ BTPrepareForCrazyJumpAction.start_crawling = function (unit, blackboard, t, data
 	network_manager:anim_event(unit, "to_crouch")
 
 	local prepare_jump_time = action.difficulty_prepare_jump_time[Managers.state.difficulty:get_difficulty_rank()]
+
 	data.crouching = true
 	data.ready_crouch_time = t + (prepare_jump_time or 0.5)
 end
@@ -183,13 +190,16 @@ BTPrepareForCrazyJumpAction.ready_to_jump = function (unit, blackboard, data, se
 	local p1 = position_lookup[unit]
 	local p2 = Unit.world_position(blackboard.target_unit, 0) + Vector3(0, 0, 0.2)
 	local move_forward = Vector3.normalize(p2 - p1) * 0.3
+
 	p1 = p1 + move_forward
+
 	local total_distance = Vector3.distance(p1, p2)
-	local in_los, velocity, time_of_flight = nil
+	local in_los, velocity, time_of_flight
 
 	if total_distance < 2.5 then
 		if LocomotionUtils.target_in_los(unit, blackboard) then
 			local jump_speed = blackboard.breed.jump_speed
+
 			velocity = BTPrepareForCrazyJumpAction.test_simple_jump(p2 - p1, jump_speed)
 
 			if velocity then
@@ -198,6 +208,7 @@ BTPrepareForCrazyJumpAction.ready_to_jump = function (unit, blackboard, data, se
 		end
 	else
 		local wedge = Vector3(0, 0, 0.05)
+
 		in_los, velocity, time_of_flight = BTPrepareForCrazyJumpAction.test_trajectory(blackboard, p1 + wedge, p2 + wedge, data.segment_list, true)
 	end
 
@@ -214,7 +225,7 @@ end
 BTPrepareForCrazyJumpAction.test_trajectory = function (blackboard, p1, p2, segment_list, multiple_raycasts)
 	local physics_world = World.get_data(blackboard.world, "physics_world")
 	local gravity = blackboard.breed.jump_gravity
-	local jump_angle = nil
+	local jump_angle
 	local jump_speed = blackboard.breed.jump_speed
 	local wedge = Vector3(0, 0, 0.05)
 	local acceptable_accuracy = 1
@@ -222,7 +233,7 @@ BTPrepareForCrazyJumpAction.test_trajectory = function (blackboard, p1, p2, segm
 	local target_velocity = player_locomotion.velocity_current:unbox()
 	local to_target_dir = Vector3.normalize(p2 - p1)
 	local dot = Vector3.dot(to_target_dir, Vector3(0, 0, 1))
-	local high_arc = nil
+	local high_arc
 	local height = p1.z - p2.z
 
 	if dot < -0.5 and height > 2 and height < 6 then
@@ -258,6 +269,7 @@ BTPrepareForCrazyJumpAction.test_trajectory = function (blackboard, p1, p2, segm
 		end
 
 		local right = Vector3.cross(Vector3.normalize(p2 - p1), Vector3.up()) * 0.4
+
 		in_los = WeaponHelper.ray_segmented_test(physics_world, segment_list, Vector3(0, 0, 0.7) + right)
 
 		if not in_los then

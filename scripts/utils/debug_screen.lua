@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/utils/debug_screen.lua
+
 local font = "arial"
 local font_mtrl = "materials/fonts/" .. font
 local fade_speed = 10
@@ -13,9 +15,11 @@ local indicator_offset = 0
 
 local function update_option(cs, option_index, dont_save)
 	local option = cs.options[option_index]
+
 	cs.selected_id = option_index
 
 	if option == "[clear value]" then
+		option = nil
 		cs.selected_id = nil
 	end
 
@@ -74,22 +78,27 @@ local function activate_preset(cs)
 end
 
 DebugScreen = DebugScreen or {}
+
 local DebugScreen = DebugScreen
+
 DebugScreen.console_width = DebugScreen.console_width or 800 * (RESOLUTION_LOOKUP.scale or 1)
 DebugScreen.font_size = DebugScreen.font_size or 20 * (RESOLUTION_LOOKUP.scale or 1)
 
 DebugScreen.setup = function (world, settings, callbacks)
 	local DebugScreen = DebugScreen
+
 	DebugScreen.world = world
 	DebugScreen.gui = World.create_screen_gui(world, "material", "materials/fonts/gw_fonts", "material", "materials/menu/debug_screen", "immediate")
 	DebugScreen.active = false
+
 	local script_data = script_data
+
 	DebugScreen.console_settings = {}
 
 	for i = 1, #settings do
 		local cs = {
 			hot_id = 1,
-			options = {}
+			options = {},
 		}
 		local setting = settings[i]
 
@@ -101,6 +110,7 @@ DebugScreen.setup = function (world, settings, callbacks)
 			else
 				for k, v in pairs(item_source) do
 					local option = k
+
 					cs.options[#cs.options + 1] = option
 				end
 			end
@@ -124,6 +134,7 @@ DebugScreen.setup = function (world, settings, callbacks)
 
 			for j = 1, #setting.command_list do
 				local command = setting.command_list[j]
+
 				cs.options[#cs.options + 1] = command.description
 				cs.commands[#cs.commands + 1] = command.commands
 			end
@@ -179,12 +190,12 @@ DebugScreen.setup = function (world, settings, callbacks)
 	DebugScreen.shortcut_list = {}
 	DebugScreen.shortcuts = Development.setting("debug_shortcuts") or {
 		"numpad 0",
-		"debug_weapons"
+		"debug_weapons",
 	}
 
 	for i = 1, #DebugScreen.shortcuts do
-		local shortcut_input = DebugScreen.shortcuts[i]
-		local shortcut_setting = DebugScreen.shortcuts[i + 1]
+		local shortcut_input, shortcut_setting = DebugScreen.shortcuts[i], DebugScreen.shortcuts[i + 1]
+
 		i = i + 1
 
 		for j = 1, #DebugScreen.console_settings do
@@ -208,6 +219,7 @@ DebugScreen.setup = function (world, settings, callbacks)
 
 			if cs.title == favorite then
 				local cs_copy = table.clone(cs)
+
 				cs_copy.category = "Favorites"
 				cs.copy = cs_copy
 				cs_copy.copy = cs
@@ -232,7 +244,7 @@ DebugScreen.setup = function (world, settings, callbacks)
 	DebugScreen.hold_to_move_timer = 0
 	DebugScreen.is_holding = false
 	DebugScreen.active_shortcut_data = {
-		time = 0
+		time = 0,
 	}
 	DebugScreen.unblocked_services = {}
 	DebugScreen.unblocked_services_n = 0
@@ -263,7 +275,9 @@ DebugScreen.update = function (dt, t, input_service, input_manager)
 	end
 
 	local gui = DebugScreen.gui
+
 	dt = dt / GLOBAL_TIME_SCALE
+
 	local script_data = script_data
 	local opened_this_frame = false
 	local font_size = DebugScreen.font_size
@@ -298,7 +312,7 @@ DebugScreen.update = function (dt, t, input_service, input_manager)
 				end
 
 				if cs.func then
-					cs:func(cs.hot_id)
+					cs.func(cs, cs.hot_id)
 				else
 					update_option(cs, cs.hot_id)
 				end
@@ -347,11 +361,13 @@ DebugScreen.update = function (dt, t, input_service, input_manager)
 			end
 		elseif setting_search_string ~= "" then
 			filtered_console_settings = {}
+
 			local search_string = string.gsub(setting_search_string, "[_ ]", "")
 
 			for i = 1, #DebugScreen.console_settings do
 				local cs = DebugScreen.console_settings[i]
 				local current_item = cs.title:lower()
+
 				current_item = string.gsub(current_item, "[_ ]", "")
 
 				if current_item:find(search_string, 1, true) ~= nil then
@@ -372,6 +388,7 @@ DebugScreen.update = function (dt, t, input_service, input_manager)
 	end
 
 	DebugScreen.filtered_console_settings = filtered_console_settings
+
 	local filtered_option_ids = {}
 
 	if DebugScreen.active_id ~= nil then
@@ -384,6 +401,7 @@ DebugScreen.update = function (dt, t, input_service, input_manager)
 				local option = cs_current.options[j]
 				local option_name = tostring(option)
 				local current_item = option_name:lower()
+
 				current_item = string.gsub(current_item, "[_ ]", "")
 
 				if current_item:find(search_string, 1, true) ~= nil then
@@ -404,9 +422,10 @@ DebugScreen.update = function (dt, t, input_service, input_manager)
 		end
 	end
 
-	if input_service:get("up_key") and DebugScreen.hold_to_move_timer < t then
+	if input_service:get("up_key") and t > DebugScreen.hold_to_move_timer then
 		if DebugScreen.is_holding then
 			local accelerate_factor = DebugScreen.accelerate_factor
+
 			DebugScreen.hold_to_move_timer = t + 0.1 * GLOBAL_TIME_SCALE * accelerate_factor
 			DebugScreen.accelerate_factor = accelerate_factor * 0.95
 		else
@@ -426,6 +445,7 @@ DebugScreen.update = function (dt, t, input_service, input_manager)
 
 				while hot_id > 1 do
 					hot_id = hot_id - 1
+
 					local cs = filtered_console_settings[hot_id]
 					local cs_value_changed = not cs.is_boolean and cs.selected_id ~= nil or cs.options[cs.selected_id]
 
@@ -451,14 +471,16 @@ DebugScreen.update = function (dt, t, input_service, input_manager)
 
 			if current_filtered_id then
 				local next_filtered_id = (current_filtered_id + num_filtered_options - 2) % num_filtered_options + 1
+
 				cs.hot_id = filtered_option_ids[next_filtered_id]
 			end
 		end
 	end
 
-	if input_service:get("down_key") and DebugScreen.hold_to_move_timer < t then
+	if input_service:get("down_key") and t > DebugScreen.hold_to_move_timer then
 		if DebugScreen.is_holding then
 			local accelerate_factor = DebugScreen.accelerate_factor
+
 			DebugScreen.hold_to_move_timer = t + 0.1 * GLOBAL_TIME_SCALE * accelerate_factor
 			DebugScreen.accelerate_factor = accelerate_factor * 0.95
 		else
@@ -478,6 +500,7 @@ DebugScreen.update = function (dt, t, input_service, input_manager)
 
 				while hot_id < #filtered_console_settings do
 					hot_id = hot_id + 1
+
 					local cs = filtered_console_settings[hot_id]
 					local cs_value_changed = not cs.is_boolean and cs.selected_id ~= nil or cs.options[cs.selected_id]
 
@@ -503,6 +526,7 @@ DebugScreen.update = function (dt, t, input_service, input_manager)
 
 			if current_filtered_id then
 				local next_filtered_id = current_filtered_id % num_filtered_options + 1
+
 				cs.hot_id = filtered_option_ids[next_filtered_id]
 			end
 		end
@@ -541,8 +565,7 @@ DebugScreen.update = function (dt, t, input_service, input_manager)
 	local num_categories_total = table.size(category_list_total) - 1
 	local offset_lerp = ease_out_quad(DebugScreen.fade_timer, 0, 1, 1)
 	local offset_x = offset_lerp * console_width
-	local res_x = RESOLUTION_LOOKUP.res_w
-	local res_y = RESOLUTION_LOOKUP.res_h
+	local res_x, res_y = RESOLUTION_LOOKUP.res_w, RESOLUTION_LOOKUP.res_h
 	local pos_y = res_y - 100
 	local pos_x = -console_width + offset_x
 	local wanted_y_offset = 0
@@ -604,7 +627,7 @@ DebugScreen.update = function (dt, t, input_service, input_manager)
 	local row_highlight_color = Color(offset_lerp * 150, 100, 100, 50)
 	local setting_x = 30
 	local option_x = 50
-	local category_current = nil
+	local category_current
 	local category_text_layer = base_layer + 2
 	local base_text_layer = base_layer + 2
 	local row_highlight_layer = base_layer + 1
@@ -626,7 +649,7 @@ DebugScreen.update = function (dt, t, input_service, input_manager)
 		end
 
 		local current_selected_option_position = Vector3(offset_x - 400, pos_y, base_text_layer)
-		local option_text = nil
+		local option_text
 
 		if cs.selected_id ~= nil then
 			option_text = string.format("< %s >", tostring(cs.options[cs.selected_id]))
@@ -651,6 +674,7 @@ DebugScreen.update = function (dt, t, input_service, input_manager)
 			Gui.text(gui, text, font_mtrl, font_size, font, Vector3(setting_x, pos_y, base_text_layer), text_color_active)
 
 			pos_y = pos_y - (font_size + 2)
+
 			local reuse_global_table = true
 			local description_word_wrapped = Gui.word_wrap(gui, cs.description, font_mtrl, font_size, 500, " ", "", "\n", reuse_global_table)
 
@@ -690,14 +714,14 @@ DebugScreen.update = function (dt, t, input_service, input_manager)
 								start_position = {
 									option_x,
 									pos_y,
-									base_text_layer
+									base_text_layer,
 								},
 								end_position = {
 									current_selected_option_position.x,
 									current_selected_option_position.y,
-									current_selected_option_position.z
+									current_selected_option_position.z,
 								},
-								text = tostring(option)
+								text = tostring(option),
 							}
 
 							if cs.close_when_selected then
@@ -812,6 +836,7 @@ DebugScreen.update = function (dt, t, input_service, input_manager)
 			if not DebugScreen.search_active and input_service:get("console_favorite_key") then
 				if cs.category == "Favorites" then
 					cs.copy.copy = nil
+
 					local unfiltered_index = table.find(DebugScreen.console_settings, cs)
 
 					table.remove(DebugScreen.console_settings, unfiltered_index)
@@ -827,6 +852,7 @@ DebugScreen.update = function (dt, t, input_service, input_manager)
 					break
 				elseif not cs.copy then
 					local cs_copy = table.clone(cs)
+
 					cs_copy.category = "Favorites"
 					cs.copy = cs_copy
 					cs_copy.copy = cs
@@ -896,6 +922,7 @@ DebugScreen.update = function (dt, t, input_service, input_manager)
 
 	while i <= num_effects do
 		local effect = text_effects[i]
+
 		effect.time = effect.time + dt
 
 		if effect.time > 0.5 then
@@ -932,6 +959,10 @@ DebugScreen.reset_settings = function ()
 		elseif cs.bitmap then
 			-- Nothing
 		elseif cs.func then
+			-- Nothing
+		end
+
+		if false then
 			-- Nothing
 		end
 	end
@@ -1003,19 +1034,21 @@ DebugScreen.update_search = function (input_manager, input_service, gui, t, dt)
 	local search_text_box_layer = base_layer + 3
 	local search_text_layer = base_layer + 4
 	local hot_anim_t = (math.sin(t / GLOBAL_TIME_SCALE * 10) + 1) * 0.5
-	local res_x = RESOLUTION_LOOKUP.res_w
-	local res_y = RESOLUTION_LOOKUP.res_h
+	local res_x, res_y = RESOLUTION_LOOKUP.res_w, RESOLUTION_LOOKUP.res_h
 	local search_title_box_pos = Vector3(50, res_y - 60, search_text_box_layer)
 	local search_text_box_pos = Vector3(250, res_y - 60, search_text_box_layer)
 	local search_title_pos = Vector3(60, res_y - 50, search_text_layer)
 	local search_text_pos = Vector3(260, res_y - 50, search_text_layer)
 	local font_size = DebugScreen.font_size
+
 	DebugScreen.search_text_box_width = DebugScreen.search_text_box_width or 0
 
 	if not DebugScreen.search_active then
 		DebugScreen.search_text_box_width = math.max(0, DebugScreen.search_text_box_width - 2000 * dt)
 
-		if DebugScreen.hot_id <= 5 then
+		if DebugScreen.hot_id > 5 then
+			-- Nothing
+		else
 			Gui.rect(gui, search_text_box_pos, Vector2(DebugScreen.search_text_box_width, 35), Colors.get_color_with_alpha("dark_olive_green", 100 + math.cos(hot_anim_t) * 25))
 			Gui.rect(gui, search_title_box_pos, Vector2(200, 35), Colors.get_color_with_alpha("orange", 15 + math.cos(hot_anim_t) * 5))
 			Gui.text(gui, "Search (backspace) ", font_mtrl, font_size, font, search_title_pos, Colors.get_color_with_alpha("white", 100 + math.cos(hot_anim_t) * 100))
@@ -1042,6 +1075,7 @@ DebugScreen.update_search = function (input_manager, input_service, gui, t, dt)
 	end
 
 	DebugScreen.search_text_box_width = math.min(400, DebugScreen.search_text_box_width + 2000 * dt)
+
 	local keystrokes = Keyboard.keystrokes()
 
 	for i = 1, #keystrokes do
@@ -1056,6 +1090,7 @@ DebugScreen.update_search = function (input_manager, input_service, gui, t, dt)
 		elseif stroke == Keyboard.BACKSPACE and #DebugScreen.search_string > 0 then
 			local string_length = string.len(DebugScreen.search_string)
 			local character_index = Utf8.location(DebugScreen.search_string, string_length)
+
 			DebugScreen.search_string = DebugScreen.search_string:sub(1, character_index - 1)
 
 			if DebugScreen.search_string:find(".", 1, true) == nil then

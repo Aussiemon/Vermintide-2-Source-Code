@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/hero_view/windows/store/store_window_featured.lua
+
 local definitions = local_require("scripts/ui/views/hero_view/windows/store/definitions/store_window_featured_definitions")
 local widget_definitions = definitions.widgets
 local content_widget_definitions = definitions.content_widgets
@@ -7,60 +9,62 @@ local MAX_SLIDESHOW_ITEMS = definitions.max_slideshow_items
 local generic_input_actions = definitions.generic_input_actions
 local SLIDESHOW_WAIT_TIME = 8
 local PRODUCT_PLACEHOLDER_TEXTURE_PATH = "gui/1080p/single_textures/generic/transparent_placeholder_texture"
+
 StoreWindowFeatured = class(StoreWindowFeatured)
 StoreWindowFeatured.NAME = "StoreWindowFeatured"
+
 local GRID_SIZE = {
 	3,
-	3
+	3,
 }
 local GRID_SIZE_BY_TYPE = {
 	dlc = {
 		1,
-		3
+		3,
 	},
 	bundle = {
 		1,
-		3
+		3,
 	},
 	item = {
 		1,
-		1
+		1,
 	},
 	weapon_skin = {
 		1,
-		1
+		1,
 	},
 	hat = {
 		1,
-		1
+		1,
 	},
 	skin = {
 		1,
-		1
-	}
+		1,
+	},
 }
 local BACKFILL_ITEM_ORDER = {
 	"dlc",
 	"bundles",
 	"items",
-	"shilling_items"
+	"shilling_items",
 }
 local PRODUCT_SORT_ORDER = {
-	default = 15,
-	discounted_item = 7,
-	item = 11,
 	bundle = 2,
-	premium_hat = 5,
-	skin = 12,
-	premium_weapon_skin = 6,
-	premium_item = 3,
-	weapon_skin = 14,
+	default = 15,
 	discounted_hat = 9,
-	dlc = 1,
+	discounted_item = 7,
 	discounted_skin = 8,
-	premium_skin = 4,
+	discounted_weapon_skin = 10,
+	dlc = 1,
 	hat = 13,
-	discounted_weapon_skin = 10
+	item = 11,
+	premium_hat = 5,
+	premium_item = 3,
+	premium_skin = 4,
+	premium_weapon_skin = 6,
+	skin = 12,
+	weapon_skin = 14,
 }
 
 StoreWindowFeatured.on_enter = function (self, params, offset)
@@ -69,13 +73,15 @@ StoreWindowFeatured.on_enter = function (self, params, offset)
 	self._params = params
 	self._offset = offset
 	self._parent = params.parent
+
 	local ui_renderer, ui_top_renderer = self._parent:get_renderers()
+
 	self._ui_renderer = ui_renderer
 	self._ui_top_renderer = ui_top_renderer
 	self._render_settings = {
 		alpha_multiplier = 0,
 		content_alpha_multiplier = 0,
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 	self._layout_settings = params.layout_settings
 	self._animations = {}
@@ -87,6 +93,7 @@ StoreWindowFeatured.on_enter = function (self, params, offset)
 	self._material_references_to_unload = {}
 	self._is_open = true
 	self._current_read_index = 1
+
 	local parent = self._parent
 	local path = parent:get_store_path()
 	local page_name = path[#path]
@@ -95,6 +102,7 @@ StoreWindowFeatured.on_enter = function (self, params, offset)
 	local current_page = pages[page_name]
 	local slideshow_content = current_page.slideshow and table.clone(current_page.slideshow)
 	local grid_content = current_page.grid and table.clone(current_page.grid)
+
 	self._page_name = page_name
 
 	if slideshow_content and #slideshow_content == 0 then
@@ -118,9 +126,9 @@ StoreWindowFeatured.on_enter = function (self, params, offset)
 		{
 			content = {
 				page_name = "featured",
-				text = "Featured"
-			}
-		}
+				text = "Featured",
+			},
+		},
 	})
 	self._parent:change_generic_actions(generic_input_actions.featured)
 	self:_initialize_time_until_rotation()
@@ -128,13 +136,14 @@ end
 
 StoreWindowFeatured._start_transition_animation = function (self, animation_name)
 	local params = {
-		render_settings = self._render_settings
+		render_settings = self._render_settings,
 	}
 	local widgets = {
 		widgets_by_name = self._widgets_by_name,
-		grid_widgets = self._grid_widgets
+		grid_widgets = self._grid_widgets,
 	}
 	local anim_id = self._ui_animator:start_animation(animation_name, widgets, scenegraph_definition, params)
+
 	self._animations[animation_name] = anim_id
 end
 
@@ -203,7 +212,7 @@ StoreWindowFeatured._sync_login_rewards = function (self)
 	local next_claim_timestamp = os.time(os.date("!*t", login_rewards.next_claim_timestamp / 1000))
 	local cooldown = next_claim_timestamp - now
 	local can_claim = cooldown <= 0
-	local active_content = nil
+	local active_content
 
 	if login_rewards.event_type == "calendar" then
 		active_content = gotwf_rewards_content
@@ -219,7 +228,9 @@ StoreWindowFeatured._sync_login_rewards = function (self)
 		active_content.title = login_rewards.title or "store_login_claim_reward_title"
 	else
 		active_content.is_claimable = false
+
 		local timer = UIUtils.format_duration(cooldown)
+
 		active_content.subtitle = Localize("store_login_rewards_next_available_in") .. timer
 		active_content.title = login_rewards.title or "store_login_rewards_title"
 	end
@@ -231,16 +242,20 @@ StoreWindowFeatured._update_rotation_timer = function (self, dt)
 	if time_until_rotation then
 		time_until_rotation = math.max(0, time_until_rotation - dt)
 		self._time_until_rotation = time_until_rotation
+
 		local widget = self._widgets_by_name.discount_banner
 		local text = string.format("%s - %s: %s", Utf8.upper(Localize("menu_store_featured_page_banner_title_default")), Localize("timer_prefix_time_left"), UIUtils.format_duration(math.ceil(time_until_rotation)))
+
 		widget.content.text = "{#grad(true);color(255,205,70);color2(255,255,255)}" .. text
 		widget.content.text_shadow = text
 
 		if time_until_rotation == 0 and not self._refreshed_store_layout_once then
 			self._refreshed_store_layout_once = true
 			self._time_until_rotation = nil
+
 			local backend_store = Managers.backend:get_interface("peddler")
 			local cb = callback(self, "_refresh_cb")
+
 			self._refresh_counter = 4
 
 			backend_store:refresh_stock(cb)
@@ -256,7 +271,7 @@ StoreWindowFeatured._refresh_cb = function (self)
 
 	if self._refresh_counter <= 0 then
 		self._parent:go_to_store_path({
-			"featured"
+			"featured",
 		})
 	end
 end
@@ -498,7 +513,7 @@ StoreWindowFeatured._align_grid_widgets = function (self)
 		offset[2] = widget_position_y
 		content.row = row
 		content.column = column
-		widget_position_x = widget_position_x + width + spacing
+		widget_position_x = widget_position_x + (width + spacing)
 
 		if index == num_widgets then
 			total_height = math.abs(widget_position_y - height)
@@ -526,7 +541,7 @@ StoreWindowFeatured._sort_slideshow = function (self, slideshow_content)
 	end
 
 	local function sort_func(a, b)
-		return b.prio < a.prio
+		return a.prio > b.prio
 	end
 
 	table.sort(slideshow_content, sort_func)
@@ -549,7 +564,7 @@ StoreWindowFeatured._append_filtered_slideshow_content = function (self, slidesh
 				header = settings.name,
 				product_id = settings.dlc_name or settings.item_key,
 				product_type = product_type,
-				prio = settings.prio or 0
+				prio = settings.prio or 0,
 			}
 		end
 	end
@@ -644,6 +659,7 @@ StoreWindowFeatured._setup_grid_products = function (self, grid_content)
 		local product_data = grid_content[i]
 		local product, product_type = self:_add_product(product_data)
 		local grid_size = GRID_SIZE_BY_TYPE[product_type]
+
 		grid_occupied = grid_occupied + grid_size[1] * grid_size[2]
 
 		if product then
@@ -660,7 +676,7 @@ end
 StoreWindowFeatured._add_product = function (self, product_data)
 	local product_id = product_data.id
 	local product_type = product_data.type
-	local product, item_type = nil
+	local product, item_type
 
 	if product_type == "dlc" then
 		local dlc_settings = StoreDlcSettingsByName[product_id]
@@ -669,7 +685,7 @@ StoreWindowFeatured._add_product = function (self, product_data)
 			product = {
 				dlc_settings = dlc_settings,
 				type = product_type,
-				product_id = product_id
+				product_id = product_id,
 			}
 		else
 			printf("[StoreWindowFeatured] Warning: dlc %q not found", product_id)
@@ -683,10 +699,12 @@ StoreWindowFeatured._add_product = function (self, product_data)
 				type = product_type,
 				product_id = product_id,
 				settings = {
-					mask_price_strike_through_hack = true
-				}
+					mask_price_strike_through_hack = true,
+				},
 			}
+
 			local item_data = item.data
+
 			item_type = item_data.item_type
 		else
 			printf("[StoreWindowFeatured] Warning: item %q not found", product_id)
@@ -702,6 +720,7 @@ StoreWindowFeatured._setup_slideshow = function (self, widget, data)
 	local slideshow_content = {}
 	local unlock_manager = Managers.unlock
 	local backend_store = Managers.backend:get_interface("peddler")
+
 	self._reference_id = (self._reference_id or 0) + 1
 
 	for index, slideshow in ipairs(data) do
@@ -715,8 +734,10 @@ StoreWindowFeatured._setup_slideshow = function (self, widget, data)
 			if product_type == "dlc" then
 				if unlock_manager:dlc_exists(product_id) and StoreDlcSettingsByName[product_id] then
 					valid = true
+
 					local dlc_id = unlock_manager:dlc_id(product_id)
 					local price_data = backend_store:get_app_price(IS_WINDOWS and dlc_id or product_id)
+
 					is_discounted = price_data and price_data.current_price ~= price_data.regular_price
 				end
 			elseif product_type == "item" then
@@ -737,6 +758,7 @@ StoreWindowFeatured._setup_slideshow = function (self, widget, data)
 			if backend_texture_name then
 				local reference_name = "slideshow_" .. index .. "_" .. self._reference_id
 				local material_name = self:_setup_backend_image_material(reference_name, backend_texture_name)
+
 				slideshow.reference_name = reference_name
 				slideshow.texture = material_name
 			elseif not slideshow.texture or not Gui.material(self._ui_top_renderer.gui, slideshow.texture) then
@@ -751,6 +773,7 @@ StoreWindowFeatured._setup_slideshow = function (self, widget, data)
 	local num_entries = #slideshow_content
 	local draw_slideshow = num_entries > 0
 	local content = widget.content
+
 	content.visible = draw_slideshow
 
 	if draw_slideshow then
@@ -758,9 +781,12 @@ StoreWindowFeatured._setup_slideshow = function (self, widget, data)
 		local list_style = style.list_style
 		local default_size = content.size
 		local default_width = default_size[1]
+
 		list_style.num_draws = num_entries
+
 		local page_thumb_width = list_style.size[1]
 		local total_page_thumb_width = page_thumb_width * num_entries
+
 		list_style.offset[1] = default_width / 2 - total_page_thumb_width / 2
 		content.slideshow_content = slideshow_content
 		content.wait_time = SLIDESHOW_WAIT_TIME
@@ -784,7 +810,7 @@ StoreWindowFeatured._setup_backend_image_material = function (self, reference_na
 	local cb = callback(self, "_cb_on_backend_url_loaded", gui, reference_name, texture_name, material_name)
 
 	cdn:get_resource_urls({
-		texture_name
+		texture_name,
 	}, cb)
 
 	return material_name
@@ -802,6 +828,7 @@ StoreWindowFeatured._cb_on_backend_url_loaded = function (self, gui, reference_n
 	end
 
 	self._material_references_to_unload[reference_name] = true
+
 	local cb = callback(self, "_cb_on_backend_image_loaded", gui, reference_name, material_name)
 
 	Managers.url_loader:load_resource(reference_name, texture_url, cb, texture_name)
@@ -826,6 +853,7 @@ end
 
 StoreWindowFeatured._create_material_instance = function (self, gui, new_material_name, template_material_name, reference_name)
 	local cloned_materials_by_reference = self._cloned_materials_by_reference
+
 	cloned_materials_by_reference[reference_name] = new_material_name
 
 	return Gui.clone_material_from_template(gui, new_material_name, template_material_name)
@@ -874,6 +902,7 @@ StoreWindowFeatured._handle_slideshow_logic = function (self, widget, dt, input_
 		local hover_progress = page_thumb_hotspot.hover_progress
 		local selection_progress = page_thumb_hotspot.selection_progress
 		local combined_progress = math.max(hover_progress, selection_progress)
+
 		page_thumb_style.icon.color[1] = 255 * combined_progress
 
 		if page_thumb_hotspot.on_hover_enter then
@@ -925,6 +954,7 @@ StoreWindowFeatured._handle_slideshow_logic = function (self, widget, dt, input_
 
 	if delay_timer then
 		delay_timer = math.max(delay_timer - dt, 0)
+
 		local delay_progress = 1 - delay_timer / wait_time
 		local timer_bar_style = style.timer_bar
 		local timer_bar_texture_width = timer_bar_style.texture_width
@@ -942,7 +972,9 @@ StoreWindowFeatured._handle_slideshow_logic = function (self, widget, dt, input_
 	end
 
 	local progress = content.progress or 1
+
 	progress = progress - dt * 0.3
+
 	local current_read_index = content.read_index or 1
 	local read_index = current_read_index
 
@@ -958,6 +990,7 @@ StoreWindowFeatured._handle_slideshow_logic = function (self, widget, dt, input_
 
 	progress = progress % 1
 	content.progress = progress
+
 	local anim_progress = math.smoothstep(progress, 0, 1)
 
 	self:_set_slideshow_animation_progress(widget, anim_progress)
@@ -968,11 +1001,15 @@ StoreWindowFeatured._set_slideshow_selected_read_index = function (self, widget,
 	local slideshow_content = content.slideshow_content
 	local slide_content = slideshow_content[index]
 	local wait_time = content.wait_time
+
 	content.read_index = index
 	content.delay_timer = wait_time
 	content.show_hourglass = slide_content.is_discounted
+
 	local header = slide_content.header or slide_content.backend_header or "tutorial_no_text"
+
 	content.title_text = Localize(header)
+
 	local description = slide_content.description or slide_content.backend_description or "tutorial_no_text"
 	local description_func_name = slide_content.description_func
 
@@ -1037,7 +1074,7 @@ StoreWindowFeatured._on_slideshow_pressed = function (self, widget)
 end
 
 StoreWindowFeatured._on_list_index_selected = function (self, index)
-	local row, column = nil
+	local row, column
 	local widgets = self._grid_widgets
 	local num_widgets = #widgets
 
@@ -1045,6 +1082,7 @@ StoreWindowFeatured._on_list_index_selected = function (self, index)
 		local content = widget.content
 		local hotspot = content.hotspot
 		local is_selected = widget_index == index
+
 		hotspot.is_selected = is_selected
 
 		if is_selected then
@@ -1108,6 +1146,7 @@ StoreWindowFeatured._set_slideshow_animation_progress = function (self, widget, 
 
 		local slideshow = slideshow_content[local_read_index]
 		local texture = slideshow.texture
+
 		icon_content.texture_id = texture
 	end
 end
@@ -1183,7 +1222,7 @@ StoreWindowFeatured._handle_gamepad_grid_selection = function (self, input_servi
 	local current_selected_column = self._selected_gamepad_grid_column
 	local previous_selected_row = self._previous_gamepad_grid_row
 	local previous_selected_column = self._previous_gamepad_grid_column
-	local new_index = nil
+	local new_index
 	local gamepad_navigation = self._gamepad_navigation
 	local num_rows = #gamepad_navigation
 
@@ -1197,7 +1236,7 @@ StoreWindowFeatured._handle_gamepad_grid_selection = function (self, input_servi
 						self:_select_slideshow_widget(true)
 						self:_on_list_index_selected(nil)
 
-						return
+						do return end
 
 						break
 					end
@@ -1214,30 +1253,39 @@ StoreWindowFeatured._handle_gamepad_grid_selection = function (self, input_servi
 				end
 
 				if input_service:get("move_up_hold_continuous") then
-					if row > 1 and num_columns_on_row == 1 and previous_selected_row and previous_selected_column then
-						new_index = gamepad_navigation[row - 1][previous_selected_column]
+					if row > 1 then
+						if num_columns_on_row == 1 and previous_selected_row and previous_selected_column then
+							new_index = gamepad_navigation[row - 1][previous_selected_column]
+
+							break
+						end
+
+						local next_row_columns = gamepad_navigation[row - 1]
+						local next_column = math.min(column, #next_row_columns)
+
+						new_index = next_row_columns[next_column]
+					end
+
+					break
+				end
+
+				if input_service:get("move_down_hold_continuous") and row < num_rows then
+					if num_columns_on_row == 1 and previous_selected_row and previous_selected_column then
+						do
+							local next_row_columns = gamepad_navigation[row + 1]
+							local next_column = math.min(previous_selected_column, #next_row_columns)
+
+							new_index = next_row_columns[next_column]
+						end
 
 						break
 					end
 
-					local next_row_columns = gamepad_navigation[row - 1]
-					local next_column = math.min(column, #next_row_columns)
-					new_index = next_row_columns[next_column]
-
-					break
-				end
-
-				if input_service:get("move_down_hold_continuous") and row < num_rows and num_columns_on_row == 1 and previous_selected_row and previous_selected_column then
 					local next_row_columns = gamepad_navigation[row + 1]
-					local next_column = math.min(previous_selected_column, #next_row_columns)
+					local next_column = math.min(column, #next_row_columns)
+
 					new_index = next_row_columns[next_column]
-
-					break
 				end
-
-				local next_row_columns = gamepad_navigation[row + 1]
-				local next_column = math.min(column, #next_row_columns)
-				new_index = next_row_columns[next_column]
 
 				break
 			end
@@ -1252,6 +1300,7 @@ end
 StoreWindowFeatured._select_slideshow_widget = function (self, is_selected)
 	local content_widgets_by_name = self._content_widgets_by_name
 	local slideshow = content_widgets_by_name.slideshow
+
 	slideshow.content.hotspot.is_selected = is_selected
 	slideshow.content.hotspot.on_hover_enter = is_selected
 	self._slideshow_selected = is_selected

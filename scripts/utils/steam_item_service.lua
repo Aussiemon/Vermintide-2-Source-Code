@@ -1,9 +1,12 @@
+﻿-- chunkname: @scripts/utils/steam_item_service.lua
+
 SteamItemService = SteamItemService or {}
 
 local function make_price_table(str_data, out)
 	for currency_amount in string.gmatch(str_data, "[^,]+") do
 		local currency = string.sub(currency_amount, 1, 3)
 		local amount = tonumber(string.sub(currency_amount, 4))
+
 		out[currency] = amount
 	end
 
@@ -21,16 +24,19 @@ SteamItemService.parse = function (price_data_string)
 		return nil, "unknown version"
 	end
 
-	local out = {
-		regular_prices = make_price_table(_price_chunks[2], {})
-	}
+	local out = {}
+
+	out.regular_prices = make_price_table(_price_chunks[2], {})
+
 	local discounts_string = _price_chunks[3]
 
 	if discounts_string then
 		out.discount_prices = make_price_table(string.sub(discounts_string, 34), {})
+
 		local discount_start = string.sub(discounts_string, 1, 16)
 		local discount_end = string.sub(discounts_string, 18, 33)
 		local current_date = os.date("!%Y%m%dT%H%M%SZ")
+
 		out.discount_is_active = discount_start <= current_date and current_date < discount_end
 		out.discount_start = discount_start
 		out.discount_end = discount_end

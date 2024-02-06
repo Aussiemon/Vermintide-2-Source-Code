@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_pack_master_attack_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTPackMasterAttackAction = class(BTPackMasterAttackAction, BTNode)
@@ -10,6 +12,7 @@ BTPackMasterAttackAction.name = "BTPackMasterAttackAction"
 
 BTPackMasterAttackAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
+
 	blackboard.action = action
 	blackboard.active_node = BTPackMasterAttackAction
 	blackboard.attacks_done = 0
@@ -93,13 +96,13 @@ BTPackMasterAttackAction.attack = function (self, unit, t, dt, blackboard)
 
 	locomotion_extension:set_wanted_rotation(rotation)
 
-	if blackboard.create_bot_threat_at and blackboard.create_bot_threat_at < t then
+	if blackboard.create_bot_threat_at and t > blackboard.create_bot_threat_at then
 		self:create_bot_threat(unit, blackboard, t)
 
 		blackboard.create_bot_threat_at = nil
 	end
 
-	if not blackboard.attack_time_ends or blackboard.attack_time_ends < t then
+	if not blackboard.attack_time_ends or t > blackboard.attack_time_ends then
 		blackboard.attack_aborted = true
 	end
 end

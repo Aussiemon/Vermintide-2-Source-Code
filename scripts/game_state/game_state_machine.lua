@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/game_state/game_state_machine.lua
+
 require("foundation/scripts/util/state_machine")
 
 GameStateMachine = class(GameStateMachine, StateMachine)

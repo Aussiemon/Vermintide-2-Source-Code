@@ -1,8 +1,12 @@
+﻿-- chunkname: @core/gwnav/lua/runtime/navworld.lua
+
 require("core/gwnav/lua/safe_require")
 
 local NavWorld = safe_require_guard()
 local NavClass = safe_require("core/gwnav/lua/runtime/navclass")
+
 NavWorld = NavClass(NavWorld)
+
 local NavHelpers = safe_require("core/gwnav/lua/runtime/navhelpers")
 local NavBot = safe_require("core/gwnav/lua/runtime/navbot")
 local NavBoxObstacle = safe_require("core/gwnav/lua/runtime/navboxobstacle")
@@ -55,6 +59,7 @@ NavWorld.init = function (self, world, level)
 	self.markers = {}
 	self.gwnavworld = GwNavWorld.create(self.transform:unbox())
 	self.render_mesh = false
+
 	local visualdebug_server_port = 4888
 	local bot_units = {}
 
@@ -170,6 +175,7 @@ end
 
 NavWorld.init_bot_configuration = function (self, unit)
 	local configuration_name = Unit.get_data(unit, "GwNavBotConfiguration", "configuration_name")
+
 	self.bot_configurations[configuration_name] = NavBotConfiguration(unit)
 end
 
@@ -216,7 +222,9 @@ NavWorld.init_graph_connector = function (self, unit)
 
 		control_points[start_idx] = temp_a - right * current_vertex_left_offset
 		control_points[down_idx] = temp_b - right * current_vertex_left_offset
+
 		local navgraph = NavGraph(self.gwnavworld, bidirectional_edges, control_points, color, layer_id, smartobject_id, user_data_id)
+
 		self.navgraphs[#self.navgraphs + 1] = navgraph
 
 		self.navgraphs[#self.navgraphs]:add_to_database()
@@ -240,10 +248,11 @@ NavWorld.init_tagbox = function (self, unit)
 		unitPos + forward * extent_x - right * extent_y,
 		unitPos + forward * extent_x + right * extent_y,
 		unitPos - forward * extent_x + right * extent_y,
-		unitPos - forward * extent_x - right * extent_y
+		unitPos - forward * extent_x - right * extent_y,
 	}
 	local alt_min = unitPos[3] - extent_z
 	local alt_max = unitPos[3] + extent_z
+
 	self.navtagvolumes[#self.navtagvolumes + 1] = NavTagVolume(self.gwnavworld, point_table, alt_min, alt_max, is_exclusive, color, layer_id, smartobject_id)
 
 	self.navtagvolumes[#self.navtagvolumes]:add_to_world()

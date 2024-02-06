@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/hud_ui/deus_debug_ui.lua
+
 DeusDebugUI = class(DeusDebugUI)
 
 DeusDebugUI.init = function (self, parent, ingame_ui_context)

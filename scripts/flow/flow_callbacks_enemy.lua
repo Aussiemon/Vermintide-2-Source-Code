@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/flow/flow_callbacks_enemy.lua
+
 require("foundation/scripts/util/table")
 require("scripts/settings/unit_variation_settings")
 require("scripts/settings/unit_gib_settings")
@@ -10,13 +12,13 @@ function flow_callback_enemy_dissolve_data(params)
 	return {
 		dissovle_time = enemy_dissovle_time,
 		darken_time = enemy_darken_time,
-		darken_to = enemy_darken_to_value
+		darken_to = enemy_darken_to_value,
 	}
 end
 
 function flow_callback_enemy_dissolve_darken_vector(params)
 	return {
-		darken_vector = Vector3(1, enemy_darken_to_value, enemy_darken_time)
+		darken_vector = Vector3(1, enemy_darken_to_value, enemy_darken_time),
 	}
 end
 
@@ -74,7 +76,7 @@ local function enemy_variation_tint_part(unit, outfit_units, variation, material
 				material = variation.materials[i],
 				variable = variation.variables[j],
 				value = variable_value,
-				meshes = variation.meshes
+				meshes = variation.meshes,
 			})
 		end
 	end
@@ -114,7 +116,7 @@ local function enemy_variation_enable_parts(unit, outfit_units, variationsetting
 end
 
 local function enemy_variation_scale_nodes(unit, outfit_units, variationsettings, scaling_result)
-	local node_id = nil
+	local node_id
 
 	for _, scale_nodes in pairs(variationsettings.scale_variation) do
 		for j = 1, #scale_nodes do
@@ -278,7 +280,12 @@ end
 
 local function enemy_dismember_get_helmet_units(unit, unit_inventory_extension)
 	local helmet_units = {}
-	helmet_units = unit_inventory_extension ~= nil and unit_inventory_extension.inventory_item_helmet_units or Unit.get_data(unit, "helmet_items") or {}
+
+	if unit_inventory_extension ~= nil then
+		helmet_units = unit_inventory_extension.inventory_item_helmet_units
+	else
+		helmet_units = Unit.get_data(unit, "helmet_items") or {}
+	end
 
 	return helmet_units
 end
@@ -304,13 +311,14 @@ local function enemy_dismember_spawn_gib(unit_spawner, unit, world, gibsettings,
 
 		if unit_ai_system_extension ~= nil then
 			local scale = unit_ai_system_extension._size_variation or 1
+
 			unit_scale = Vector3(scale, scale, scale)
 		end
 
 		Matrix4x4.set_scale(spawn_pose, unit_scale)
 	end
 
-	local gib_unit = nil
+	local gib_unit
 
 	if unit_spawner ~= nil then
 		if gibsettings.gib_unit_template ~= nil then
@@ -334,7 +342,9 @@ local function enemy_dismember_spawn_gib(unit_spawner, unit, world, gibsettings,
 
 	local actor = Unit.actor(gib_unit, gibsettings.gib_push_actor)
 
-	if actor then
+	if not actor then
+		-- Nothing
+	else
 		if Unit.has_node(gib_unit, "a_push") then
 			node_id = Unit.node(gib_unit, "a_push")
 		else
@@ -342,7 +352,7 @@ local function enemy_dismember_spawn_gib(unit_spawner, unit, world, gibsettings,
 		end
 
 		if force_multiplier ~= 1 then
-			Actor.add_velocity(actor, Quaternion.rotate(Unit.world_rotation(gib_unit, node_id), Vector3(2 + math.random(-0.5, 0.5), math.random(-1, 1), math.random(-1, 1))) * gibsettings.gib_push_force * 0.75 * force_multiplier)
+			Actor.add_velocity(actor, Quaternion.rotate(Unit.world_rotation(gib_unit, node_id), Vector3(2 + math.random(-0.5, 0.5), math.random(-1, 1), math.random(-1, 1))) * (gibsettings.gib_push_force * 0.75) * force_multiplier)
 			Actor.add_angular_velocity(actor, Vector3(math.random(0, 2), math.random(0, 2), math.random(0, 2)) * force_multiplier)
 		else
 			Actor.add_velocity(actor, Quaternion.rotate(Unit.world_rotation(gib_unit, node_id), Vector3(2 + 0.5 * math.random(), math.random() - 0.5, math.random() - 0.5)) * gibsettings.gib_push_force)
@@ -354,7 +364,7 @@ end
 
 local function enemy_dismember_spawn_stump(unit_spawner, unit, world, gibsettings, pulp)
 	local node_id = Unit.node(unit, gibsettings.stump_parent_align_node)
-	local stump_unit_name = nil
+	local stump_unit_name
 
 	if pulp and gibsettings.pulp_stump_unit then
 		if type(gibsettings.pulp_stump_unit) == "table" then
@@ -366,7 +376,7 @@ local function enemy_dismember_spawn_stump(unit_spawner, unit, world, gibsetting
 		stump_unit_name = gibsettings.stump_unit
 	end
 
-	local stump_unit = nil
+	local stump_unit
 
 	if unit_spawner ~= nil then
 		stump_unit = unit_spawner:spawn_local_unit(stump_unit_name, Unit.world_position(unit, node_id), Unit.world_rotation(unit, node_id))
@@ -547,7 +557,7 @@ local function enemy_dismember(params, spawn_gib)
 	end
 
 	local world = Unit.world(unit)
-	local node_id, unit_inventory_extension, unit_ai_system_extension, unit_spawner = nil
+	local node_id, unit_inventory_extension, unit_ai_system_extension, unit_spawner
 
 	if ScriptUnit ~= nil then
 		unit_inventory_extension = ScriptUnit.has_extension(unit, "ai_inventory_system")
@@ -561,7 +571,7 @@ local function enemy_dismember(params, spawn_gib)
 		end
 	end
 
-	local gib_unit = nil
+	local gib_unit
 
 	if spawn_gib then
 		gib_unit = enemy_dismember_spawn_gib(unit_spawner, unit, world, gibsettings, 1, unit_inventory_extension, unit_ai_system_extension)
@@ -592,7 +602,7 @@ local function enemy_dismember(params, spawn_gib)
 		end
 	end
 
-	local gibbed_nodes = nil
+	local gibbed_nodes
 
 	if unit_inventory_extension ~= nil then
 		gibbed_nodes = unit_inventory_extension.gibbed_nodes or {}
@@ -648,6 +658,7 @@ local function enemy_dismember(params, spawn_gib)
 
 	if not spawn_gib and bodypart == "head" then
 		local wwise_world = Wwise.wwise_world(world)
+
 		node_id = Unit.node(stump_unit, "a_vfx")
 
 		WwiseWorld.trigger_event(wwise_world, "Play_combat_enemy_head_crush", stump_unit, node_id)
@@ -729,7 +740,7 @@ function enemy_explode(params)
 	end
 
 	local world = Unit.world(unit)
-	local unit_inventory_extension, unit_spawner = nil
+	local unit_inventory_extension, unit_spawner
 
 	if ScriptUnit ~= nil then
 		unit_inventory_extension = ScriptUnit.has_extension(unit, "ai_inventory_system")
@@ -748,7 +759,7 @@ function enemy_explode(params)
 		return
 	end
 
-	local already_burned = nil
+	local already_burned
 
 	if Unit.get_data(unit, "was_burned") then
 		already_burned = true
@@ -763,7 +774,9 @@ function enemy_explode(params)
 	end
 
 	for i = 1, #part_combo do
-		if UnitGibSettings[breed_type].parts[part_combo[i]] ~= nil then
+		if UnitGibSettings[breed_type].parts[part_combo[i]] == nil then
+			-- Nothing
+		else
 			local gibsettings = UnitGibSettings[breed_type].parts[part_combo[i]]
 			local gib_unit = enemy_dismember_spawn_gib(unit_spawner, unit, world, gibsettings, push_force_multiplier, unit_inventory_extension)
 

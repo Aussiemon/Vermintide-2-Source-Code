@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/achievements/achievement_manager.lua
+
 require("scripts/managers/achievements/achievement_templates")
 
 local outline = require("scripts/managers/achievements/achievements_outline")
@@ -37,6 +39,7 @@ if IS_CONSOLE then
 end
 
 AchievementManager = class(AchievementManager)
+
 local ACHIEVEMENT_CHECK_DELAY = 1
 
 AchievementManager.init = function (self, world, statistics_db)
@@ -56,7 +59,9 @@ AchievementManager.init = function (self, world, statistics_db)
 	self._canceled_timed_events = {}
 	self._platform_achievements_to_verify = {}
 	self._verify_platform_achievements_data = {}
+
 	local backend_interface_loot = Managers.backend:get_interface("loot")
+
 	self._backend_interface_loot = backend_interface_loot
 
 	if IS_WINDOWS or IS_LINUX then
@@ -79,6 +84,7 @@ AchievementManager.init = function (self, world, statistics_db)
 	for _, template in pairs(AchievementTemplates.achievements) do
 		if self.platform == "steam" and template.ID_STEAM or IS_PS4 and template.ID_PS4 or IS_XB1 and template.ID_XB1 or self.platform == "debug" then
 			local idx = template_count + 1
+
 			self._templates[idx] = template
 			template_count = idx
 		end
@@ -122,7 +128,7 @@ AchievementManager.trigger_event = function (self, event_name, ...)
 	local template_list = event_mappings[event_name]
 	local unlocked_achievements = self._unlocked_achievements
 	local event_data = {
-		...
+		...,
 	}
 
 	if template_list then
@@ -148,6 +154,7 @@ AchievementManager.trigger_event = function (self, event_name, ...)
 				if not profile_index then
 					local player_unit = player.player_unit
 					local owner_player = player_unit and player_manager:owner(player_unit)
+
 					profile_index = owner_player and owner_player:profile_index()
 				end
 
@@ -189,8 +196,9 @@ AchievementManager.register_timed_event = function (self, achievement_id, event_
 		event_name,
 		delay,
 		data,
-		valid = true
+		valid = true,
 	}
+
 	self._timed_events[handle] = t + (delay or 0)
 
 	return handle
@@ -199,7 +207,9 @@ end
 AchievementManager.cancel_timed_event = function (self, handle)
 	if self._timed_events[handle] then
 		handle.valid = false
+
 		local canceled_n = self._canceled_timed_events_n
+
 		canceled_n = canceled_n + 1
 		self._canceled_timed_events[canceled_n] = handle
 		self._canceled_timed_events_n = canceled_n
@@ -215,6 +225,7 @@ AchievementManager.reset_timed_event = function (self, handle)
 
 	if timed_event and handle.valid then
 		local t = Managers.time:time("game")
+
 		timed_event[handle] = t + timed_event[TIMED_EVENT_DELAY]
 
 		return true
@@ -233,6 +244,7 @@ AchievementManager._update_timed_events = function (self, dt, t)
 	end
 
 	self._canceled_timed_events_n = 0
+
 	local local_player = Managers.player:local_player()
 	local stats_id = local_player:stats_id()
 	local statistics_db = self._statistics_db
@@ -343,12 +355,13 @@ AchievementManager.update = function (self, dt, t)
 	local should_process = not unlocked_achievements[template_id] and not unlock_tasks[template_id]
 
 	if should_process then
-		local token, error_msg, achievement_completed = nil
+		local token, error_msg, achievement_completed
 
 		if platform_functions.set_progress and template.progress then
 			local progress_table = template.progress(statistics_db, stats_id, template_event_data[template.id])
 			local progress = progress_table[1]
 			local max_progress = progress_table[2]
+
 			token, error_msg, achievement_completed = platform_functions.set_progress(template, progress, max_progress)
 		else
 			achievement_completed = template.completed(statistics_db, stats_id, template_event_data[template.id])
@@ -365,7 +378,7 @@ AchievementManager.update = function (self, dt, t)
 
 			unlock_tasks[template_id] = {
 				token = token,
-				achievement_completed = achievement_completed
+				achievement_completed = achievement_completed,
 			}
 		elseif error_msg then
 			Crashify.print_exception("[AchievementManager]", "ERROR: %s", error_msg)
@@ -374,7 +387,7 @@ AchievementManager.update = function (self, dt, t)
 
 	template_idx = template_idx + 1
 
-	if self._template_count < template_idx then
+	if template_idx > self._template_count then
 		template_idx = 1
 	end
 
@@ -604,7 +617,8 @@ end
 AchievementManager._check_initialized_achievements = function (self)
 	if not self._initialized_achievements then
 		self._initialized_achievements = true
-		local unlocked, error_msg = nil
+
+		local unlocked, error_msg
 
 		for i = 1, self._template_count do
 			local template = self._templates[i]
@@ -653,7 +667,7 @@ AchievementManager._check_for_completed_achievements = function (self)
 
 		incompleted_template_idx = incompleted_template_idx + 1
 
-		if self._incompleted_template_count < incompleted_template_idx then
+		if incompleted_template_idx > self._incompleted_template_count then
 			incompleted_template_idx = 1
 		end
 
@@ -683,6 +697,7 @@ AchievementManager.setup_incompleted_achievements = function (self)
 	for id, template in pairs(AchievementTemplates.achievements) do
 		if not self:_achievement_completed(id) and template.display_completion_ui then
 			local idx = template_count + 1
+
 			self._incompleted_achievements[idx] = template
 			template_count = idx
 		end
@@ -697,7 +712,7 @@ AchievementManager._setup_achievement_data = function (self, achievement_id)
 
 	fassert(achievement_data, "Missing achievemnt for [\"%s\"]", achievement_id)
 
-	local name, desc, completed, progress, requirements, claimed, required_dlc = nil
+	local name, desc, completed, progress, requirements, claimed, required_dlc
 	local player_manager = Managers.player
 	local player = player_manager:local_player()
 
@@ -780,7 +795,9 @@ AchievementManager._setup_achievement_data = function (self, achievement_id)
 	end
 
 	local backend_interface_loot = self._backend_interface_loot
+
 	claimed = backend_interface_loot:achievement_rewards_claimed(achievement_id)
+
 	local reward = backend_interface_loot:get_achievement_rewards(achievement_id)
 	local achievement_data = {
 		id = achievement_id,
@@ -793,13 +810,15 @@ AchievementManager._setup_achievement_data = function (self, achievement_id)
 		progress = progress,
 		requirements = requirements,
 		reward = reward,
-		claimed = claimed or false
+		claimed = claimed or false,
 	}
+
 	self._achievement_data[achievement_id] = achievement_data
 end
 
 AchievementManager._add_achievement_to_platform_unlock_verification = function (self, achievement_id)
 	local achievement_template = AchievementTemplates.achievements[achievement_id]
+
 	self._platform_achievements_to_verify[#self._platform_achievements_to_verify + 1] = achievement_template
 end
 
@@ -853,8 +872,7 @@ AchievementManager.debug_draw = function (self)
 	end
 
 	local gui = self.gui
-	local res_x = RESOLUTION_LOOKUP.res_w
-	local res_y = RESOLUTION_LOOKUP.res_h
+	local res_x, res_y = RESOLUTION_LOOKUP.res_w, RESOLUTION_LOOKUP.res_h
 	local header_color = Color(250, 255, 255, 100)
 	local bg_color = Color(240, 25, 50, 25)
 	local key_color = Color(250, 255, 120, 0)
@@ -869,7 +887,9 @@ AchievementManager.debug_draw = function (self)
 	for i = 1, self._template_count do
 		local template = self._templates[i]
 		local id = template.id
+
 		pos.y = pos.y - 20
+
 		local color = key_color
 
 		Gui.text(gui, id, font_mtrl, font_size, font, pos, color)

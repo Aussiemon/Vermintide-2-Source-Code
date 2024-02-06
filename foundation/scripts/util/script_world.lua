@@ -1,3 +1,5 @@
+﻿-- chunkname: @foundation/scripts/util/script_world.lua
+
 ScriptWorld = ScriptWorld or {}
 
 ScriptWorld.name = function (world)
@@ -44,20 +46,20 @@ ScriptWorld.create_viewport = function (world, name, template, layer, position, 
 			SPLITSCREEN_OFFSET_X,
 			SPLITSCREEN_OFFSET_Y,
 			SPLITSCREEN_WIDTH,
-			SPLITSCREEN_HEIGHT
+			SPLITSCREEN_HEIGHT,
 		})
 	else
 		Viewport.set_data(viewport, "rect", {
 			0,
 			0,
 			1,
-			1
+			1,
 		})
 	end
 
 	Viewport.set_rect(viewport, unpack(Viewport.get_data(viewport, "rect")))
 
-	local camera_unit = nil
+	local camera_unit
 
 	if position and rotation then
 		camera_unit = World.spawn_unit(world, "core/units/camera", position, rotation)
@@ -147,14 +149,13 @@ ScriptWorld.create_global_free_flight_viewport = function (world, template)
 	end
 
 	local bottom_layer = math.huge
-	local bottom_layer_vp = nil
+	local bottom_layer_vp
 
 	for key, vp in pairs(viewports) do
 		local layer = Viewport.get_data(vp, "layer")
 
 		if layer < bottom_layer then
-			bottom_layer_vp = vp
-			bottom_layer = layer
+			bottom_layer, bottom_layer_vp = layer, vp
 		end
 	end
 
@@ -209,6 +210,7 @@ ScriptWorld.create_free_flight_viewport = function (world, overridden_viewport_n
 	fassert(free_flight_viewports[overridden_viewport_name] == nil, "Free flight viewport %q already exists", overridden_viewport_name)
 
 	free_flight_viewports[overridden_viewport_name] = free_flight_viewport
+
 	local camera_unit = World.spawn_unit(world, "core/units/camera")
 	local camera = Unit.camera(camera_unit, "camera")
 
@@ -231,7 +233,9 @@ ScriptWorld.destroy_free_flight_viewport = function (world, name)
 	fassert(viewports[name], "Viewport %q doesn't exist", name)
 
 	local viewport = viewports[name]
+
 	viewports[name] = nil
+
 	local camera = Viewport.get_data(viewport, "camera")
 	local camera_unit = Camera.get_data(camera, "unit")
 
@@ -246,7 +250,9 @@ ScriptWorld.destroy_viewport = function (world, name)
 	fassert(viewports[name], "Viewport %q doesn't exist", name)
 
 	local viewport = viewports[name]
+
 	viewports[name] = nil
+
 	local camera = Viewport.get_data(viewport, "camera")
 	local camera_unit = Camera.get_data(camera, "unit")
 
@@ -272,7 +278,7 @@ ScriptWorld.has_viewport = function (world, name)
 end
 
 ScriptWorld.viewport = function (world, name, return_free_flight_viewport)
-	local viewport = nil
+	local viewport
 
 	if return_free_flight_viewport then
 		viewport = World.get_data(world, "free_flight_viewports")[name] or World.get_data(world, "viewports")[name]
@@ -341,7 +347,7 @@ ScriptWorld.create_shading_environment = function (world, shading_environment_na
 	World.set_data(world, "shading_callback", shading_callback)
 	World.set_data(world, "shading_settings", {
 		mood_setting,
-		1
+		1,
 	})
 
 	return shading_env
@@ -353,7 +359,7 @@ ScriptWorld.spawn_level = function (world, name, object_sets, position, rotation
 	fassert(levels[name] == nil, "Level %q already loaded", name)
 
 	local spawn_non_background_units = true
-	local level = nil
+	local level
 
 	if time_sliced_spawn then
 		level = World.spawn_level_time_sliced(world, name, position or Vector3.zero(), rotation or Quaternion.identity(), Vector3(1, 1, 1), object_sets or {})
@@ -363,11 +369,13 @@ ScriptWorld.spawn_level = function (world, name, object_sets, position, rotation
 
 	local nested_levels = Level.nested_levels(level)
 	local logic_level = nested_levels[1] or level
+
 	levels[name] = {
 		level = level,
 		nested_levels = nested_levels,
-		spawning = time_sliced_spawn
+		spawning = time_sliced_spawn,
 	}
+
 	local shading_env_name = Level.get_data(level, "shading_environment")
 
 	if shading_env_name:len() > 0 then
@@ -383,7 +391,7 @@ ScriptWorld.spawn_level = function (world, name, object_sets, position, rotation
 			if mood_setting then
 				World.set_data(world, "shading_settings", {
 					mood_setting,
-					1
+					1,
 				})
 			end
 		else
@@ -521,6 +529,7 @@ end
 
 ScriptWorld.create_particles_linked = function (world, effect_name, unit, node, policy, pose)
 	local id = World.create_particles(world, effect_name, Vector3(0, 0, 0))
+
 	pose = pose or Matrix4x4.identity()
 
 	World.link_particles(world, id, unit, node, pose, policy)

@@ -1,10 +1,13 @@
+﻿-- chunkname: @scripts/imgui/imgui_render_caps.lua
+
 local RENDER_CAPS = {
 	"d3d12",
 	"dlss_supported",
 	"dlss_g_supported",
 	"reflex_supported",
-	"use_deferred_contexts"
+	"use_deferred_contexts",
 }
+
 ImguiRenderCaps = class(ImguiRenderCaps)
 
 ImguiRenderCaps.init = function (self)

@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/managers/backend_playfab/backend_interface_quests_playfab.lua
+
 local PlayFabClientApi = require("PlayFab.PlayFabClientApi")
+
 BackendInterfaceQuestsPlayfab = class(BackendInterfaceQuestsPlayfab)
 
 BackendInterfaceQuestsPlayfab.init = function (self, backend_mirror)
@@ -18,8 +21,10 @@ BackendInterfaceQuestsPlayfab._refresh = function (self)
 	local talents = self._talents
 	local backend_mirror = self._backend_mirror
 	local quest_data = backend_mirror:get_quest_data()
+
 	self._quests.daily = quest_data.current_daily_quests
 	self._quests.event = quest_data.current_event_quests
+
 	local weekly_quests = {}
 
 	for quest_id, quest in pairs(quest_data.current_weekly_quests) do
@@ -37,6 +42,7 @@ BackendInterfaceQuestsPlayfab._refresh = function (self)
 	self._quests.weekly = weekly_quests
 	self._refresh_available = quest_data.daily_quest_refresh_available
 	self._daily_quest_update_time = math.ceil(quest_data.daily_quest_update_time / 1000)
+
 	local weekly_quest_update_time = quest_data.weekly_quest_update_time
 
 	if weekly_quest_update_time ~= nil then
@@ -96,7 +102,7 @@ BackendInterfaceQuestsPlayfab.update_quests = function (self, quests_updated_cb)
 
 	if refresh_quests then
 		local request = {
-			FunctionName = "getQuests"
+			FunctionName = "getQuests",
 		}
 		local success_callback = callback(self, "get_quests_cb")
 		local request_queue = self._backend_mirror:request_queue()
@@ -197,8 +203,8 @@ BackendInterfaceQuestsPlayfab.refresh_daily_quest = function (self, key)
 	local request = {
 		FunctionName = "refreshQuest",
 		FunctionParameter = {
-			quest_key = key
-		}
+			quest_key = key,
+		},
 	}
 	local success_callback = callback(self, "refresh_quest_cb", id, key)
 	local request_queue = self._backend_mirror:request_queue()
@@ -227,7 +233,7 @@ BackendInterfaceQuestsPlayfab.refresh_quest_cb = function (self, id, key, result
 	backend_mirror:set_quest_data("daily_quest_refresh_available", to_boolean(daily_quest_refresh_available))
 
 	self._refresh_requests[id] = {
-		quest_key = key
+		quest_key = key,
 	}
 	self._dirty = true
 end
@@ -280,11 +286,11 @@ BackendInterfaceQuestsPlayfab.claim_quest_rewards = function (self, key)
 	local id = self:_new_id()
 	local data = {
 		quest_key = key,
-		id = id
+		id = id,
 	}
 	local request = {
 		FunctionName = "generateQuestRewards",
-		FunctionParameter = data
+		FunctionParameter = data,
 	}
 	local success_callback = callback(self, "quest_rewards_request_cb", data)
 	local request_queue = self._backend_mirror:request_queue()
@@ -310,7 +316,7 @@ BackendInterfaceQuestsPlayfab.quest_rewards_request_cb = function (self, data, r
 	local backend_mirror = self._backend_mirror
 	local rewards = {
 		quest_key = data.quest_key,
-		loot = {}
+		loot = {},
 	}
 	local loot = rewards.loot
 
@@ -325,7 +331,7 @@ BackendInterfaceQuestsPlayfab.quest_rewards_request_cb = function (self, data, r
 			loot[i] = {
 				type = "item",
 				backend_id = backend_id,
-				amount = amount
+				amount = amount,
 			}
 		end
 	end
@@ -340,7 +346,7 @@ BackendInterfaceQuestsPlayfab.quest_rewards_request_cb = function (self, data, r
 
 			loot[#loot + 1] = {
 				type = "keep_decoration_painting",
-				keep_decoration_name = keep_decoration_name
+				keep_decoration_name = keep_decoration_name,
 			}
 		end
 	end
@@ -355,7 +361,7 @@ BackendInterfaceQuestsPlayfab.quest_rewards_request_cb = function (self, data, r
 
 			loot[#loot + 1] = {
 				type = "weapon_skin",
-				weapon_skin_name = weapon_skin_name
+				weapon_skin_name = weapon_skin_name,
 			}
 		end
 	end
@@ -368,15 +374,16 @@ BackendInterfaceQuestsPlayfab.quest_rewards_request_cb = function (self, data, r
 		for i = 1, #new_cosmetics do
 			local cosmetic_name = new_cosmetics[i]
 			local backend_id = backend_mirror:add_item(nil, {
-				ItemId = cosmetic_name
+				ItemId = cosmetic_name,
 			})
 
 			if backend_id then
 				local item = item_master_list[cosmetic_name]
+
 				loot[#loot + 1] = {
 					amount = 1,
 					type = item.slot_type,
-					backend_id = backend_id
+					backend_id = backend_id,
 				}
 			end
 		end
@@ -389,11 +396,12 @@ BackendInterfaceQuestsPlayfab.quest_rewards_request_cb = function (self, data, r
 			local code = data.code
 			local amount = data.amount
 			local current_amount = rewarded_currency[code]
+
 			rewarded_currency[code] = current_amount and current_amount or 0 + amount
 			loot[#loot + 1] = {
 				type = "currency",
 				currency_code = code,
-				amount = amount
+				amount = amount,
 			}
 		end
 	end
@@ -408,7 +416,7 @@ BackendInterfaceQuestsPlayfab.quest_rewards_request_cb = function (self, data, r
 		end
 	end
 
-	local claimed_quest_name, claimed_quest_type = nil
+	local claimed_quest_name, claimed_quest_type
 
 	if function_result.quest_name then
 		claimed_quest_name = function_result.quest_name
@@ -417,12 +425,12 @@ BackendInterfaceQuestsPlayfab.quest_rewards_request_cb = function (self, data, r
 		local quest_types = {
 			"current_daily_quests",
 			"current_event_quests",
-			"current_weekly_quests"
+			"current_weekly_quests",
 		}
 		local quest_types_map = {
+			current_daily_quests = "daily",
 			current_event_quests = "event",
 			current_weekly_quests = "weekly",
-			current_daily_quests = "daily"
 		}
 		local quest_data = backend_mirror:get_quest_data()
 
@@ -491,8 +499,9 @@ BackendInterfaceQuestsPlayfab.claim_multiple_quest_rewards = function (self, key
 	for i = 1, #keys do
 		local key = keys[i]
 		local data = {
-			quest_key = key
+			quest_key = key,
 		}
+
 		quest_data[#quest_data + 1] = data
 	end
 
@@ -500,8 +509,8 @@ BackendInterfaceQuestsPlayfab.claim_multiple_quest_rewards = function (self, key
 		FunctionName = "generateQuestRewards",
 		FunctionParameter = {
 			quest_data = quest_data,
-			id = id
-		}
+			id = id,
+		},
 	}
 	local success_callback = callback(self, "claim_multiple_quest_rewards_request_cb", quest_data, id)
 	local request_queue = self._backend_mirror:request_queue()
@@ -534,7 +543,7 @@ BackendInterfaceQuestsPlayfab.claim_multiple_quest_rewards_request_cb = function
 
 	local rewards = {
 		quest_key = quest_keys,
-		loot = {}
+		loot = {},
 	}
 	local loot = rewards.loot
 
@@ -549,7 +558,7 @@ BackendInterfaceQuestsPlayfab.claim_multiple_quest_rewards_request_cb = function
 			loot[i] = {
 				type = "item",
 				backend_id = backend_id,
-				amount = amount
+				amount = amount,
 			}
 		end
 	end
@@ -564,7 +573,7 @@ BackendInterfaceQuestsPlayfab.claim_multiple_quest_rewards_request_cb = function
 
 			loot[#loot + 1] = {
 				type = "keep_decoration_painting",
-				keep_decoration_name = keep_decoration_name
+				keep_decoration_name = keep_decoration_name,
 			}
 		end
 	end
@@ -579,7 +588,7 @@ BackendInterfaceQuestsPlayfab.claim_multiple_quest_rewards_request_cb = function
 
 			loot[#loot + 1] = {
 				type = "weapon_skin",
-				weapon_skin_name = weapon_skin_name
+				weapon_skin_name = weapon_skin_name,
 			}
 		end
 	end
@@ -592,15 +601,16 @@ BackendInterfaceQuestsPlayfab.claim_multiple_quest_rewards_request_cb = function
 		for i = 1, #new_cosmetics do
 			local cosmetic_name = new_cosmetics[i]
 			local backend_id = backend_mirror:add_item(nil, {
-				ItemId = cosmetic_name
+				ItemId = cosmetic_name,
 			})
 
 			if backend_id then
 				local item = item_master_list[cosmetic_name]
+
 				loot[#loot + 1] = {
 					amount = 1,
 					type = item.slot_type,
-					backend_id = backend_id
+					backend_id = backend_id,
 				}
 			end
 		end
@@ -613,11 +623,12 @@ BackendInterfaceQuestsPlayfab.claim_multiple_quest_rewards_request_cb = function
 			local code = data.code
 			local amount = data.amount
 			local current_amount = rewarded_currency[code]
+
 			rewarded_currency[code] = current_amount and current_amount or 0 + amount
 			loot[#loot + 1] = {
 				type = "currency",
 				currency_code = code,
-				amount = amount
+				amount = amount,
 			}
 		end
 	end
@@ -633,7 +644,7 @@ BackendInterfaceQuestsPlayfab.claim_multiple_quest_rewards_request_cb = function
 	end
 
 	local claimed_quest_names = {}
-	local claimed_quest_type = nil
+	local claimed_quest_type
 
 	if quest_names then
 		for i = 1, #quest_names do
@@ -645,12 +656,12 @@ BackendInterfaceQuestsPlayfab.claim_multiple_quest_rewards_request_cb = function
 		local quest_types = {
 			"current_daily_quests",
 			"current_event_quests",
-			"current_weekly_quests"
+			"current_weekly_quests",
 		}
 		local quest_types_map = {
+			current_daily_quests = "daily",
 			current_event_quests = "event",
 			current_weekly_quests = "weekly",
-			current_daily_quests = "daily"
 		}
 		local quest_data = backend_mirror:get_quest_data()
 

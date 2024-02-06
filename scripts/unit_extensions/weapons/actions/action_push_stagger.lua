@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/weapons/actions/action_push_stagger.lua
+
 ActionPushStagger = class(ActionPushStagger, ActionBase)
 
 ActionPushStagger.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
@@ -20,14 +22,18 @@ ActionPushStagger.client_owner_start_action = function (self, new_action, t, cha
 	ActionPushStagger.super.client_owner_start_action(self, new_action, t, chain_action_data, power_level, action_init_data)
 
 	self.current_action = new_action
+
 	local owner_unit = self.owner_unit
 	local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
 	local career_extension = ScriptUnit.extension(owner_unit, "career_system")
 	local status_extension = self._status_extension
+
 	self.owner_buff_extension = buff_extension
 	self.owner_career_extension = career_extension
+
 	local _, melee_boost_curve_multiplier = career_extension:has_melee_boost()
 	local is_critical_strike = ActionUtils.is_critical_strike(owner_unit, new_action, t)
+
 	self.melee_boost_curve_multiplier = melee_boost_curve_multiplier
 	self.power_level = power_level
 	self.has_played_rumble_effect = false
@@ -44,21 +50,25 @@ ActionPushStagger.client_owner_start_action = function (self, new_action, t, cha
 
 	if not self.bot_player then
 		Managers.state.controller_features:add_effect("rumble", {
-			rumble_effect = "light_swing"
+			rumble_effect = "light_swing",
 		})
 	end
 
 	local action_hand = action_init_data and action_init_data.action_hand
 	local damage_profile_name_inner = action_hand and new_action["damage_profile_inner_" .. action_hand] or new_action.damage_profile_inner or "default"
+
 	self.damage_profile_inner_id = NetworkLookup.damage_profiles[damage_profile_name_inner]
 	self.damage_profile_inner = DamageProfileTemplates[damage_profile_name_inner]
+
 	local damage_profile_name_outer = action_hand and new_action["damage_profile_outer_" .. action_hand] or new_action.damage_profile_outer or "default"
+
 	self.damage_profile_outer_id = NetworkLookup.damage_profiles[damage_profile_name_outer]
 	self.damage_profile_outer = DamageProfileTemplates[damage_profile_name_outer]
 
 	self:_handle_fatigue(buff_extension, status_extension, new_action, true)
 
 	self.block_end_time = t + 0.5
+
 	local hud_extension = ScriptUnit.has_extension(owner_unit, "hud_system")
 	local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
 
@@ -83,11 +93,12 @@ end
 
 local callback_context = {
 	has_gotten_callback = false,
-	overlap_units = {}
+	overlap_units = {},
 }
 
 local function callback(actors)
 	callback_context.has_gotten_callback = true
+
 	local overlap_units = callback_context.overlap_units
 
 	for k, actor in pairs(actors) do
@@ -106,7 +117,7 @@ ActionPushStagger.client_owner_post_update = function (self, dt, t, world, can_d
 	local owner_unit = self.owner_unit
 	local weapon_system = self.weapon_system
 
-	if self.block_end_time and self.block_end_time < t then
+	if self.block_end_time and t > self.block_end_time then
 		if not LEVEL_EDITOR_TEST then
 			local go_id = Managers.state.unit_storage:go_id(owner_unit)
 
@@ -126,6 +137,7 @@ ActionPushStagger.client_owner_post_update = function (self, dt, t, world, can_d
 	if not callback_context.has_gotten_callback and can_damage then
 		self.waiting_for_callback = true
 		callback_context.num_hits = 0
+
 		local physics_world = World.get_data(world, "physics_world")
 		local pos = POSITION_LOOKUP[owner_unit]
 		local buff_extension = self.owner_buff_extension
@@ -143,6 +155,7 @@ ActionPushStagger.client_owner_post_update = function (self, dt, t, world, can_d
 	elseif self.waiting_for_callback and callback_context.has_gotten_callback then
 		self.waiting_for_callback = false
 		callback_context.has_gotten_callback = false
+
 		local network_manager = Managers.state.network
 		local attacker_unit_id = network_manager:unit_game_object_id(owner_unit)
 		local overlap_units = callback_context.overlap_units
@@ -166,36 +179,47 @@ ActionPushStagger.client_owner_post_update = function (self, dt, t, world, can_d
 				end
 
 				local hit_unit = Actor.unit(hit_actor)
-				local breed = Unit.get_data(hit_unit, "breed")
 
-				if not breed then
-					return
+				if hit_units[hit_unit] == nil and HEALTH_ALIVE[hit_unit] then
+					hit_units[hit_unit] = true
+
+					local is_enemy = DamageUtils.is_enemy(owner_unit, hit_unit)
+
+					if not is_enemy then
+						break
+					end
+
+					local breed = Unit.get_data(hit_unit, "breed")
+
+					if not breed then
+						return
+					end
+
+					local node = Actor.node(hit_actor)
+					local hit_zone = breed.hit_zones_lookup[node]
+					local hit_zone_name = hit_zone.name
+					local attack_direction = Vector3.normalize(POSITION_LOOKUP[hit_unit] - POSITION_LOOKUP[owner_unit])
+					local attack_direction_flat = Vector3.flat(attack_direction)
+					local dot = Vector3.dot(attack_direction_flat, player_direction_flat)
+					local angle_to_target = math.acos(dot)
+					local inner_push = angle_to_target <= push_half_angle
+					local outer_push = push_half_angle < angle_to_target and angle_to_target <= outer_push_half_angle
+
+					if not inner_push and not outer_push then
+						break
+					end
+
+					total_hits = total_hits + 1
+					push_units[hit_unit] = {
+						hit_actor = hit_actor,
+						hit_zone_name = hit_zone_name,
+						inner_push = inner_push,
+						outer_push = outer_push,
+						node = node,
+						attack_direction = attack_direction,
+						target_index = total_hits,
+					}
 				end
-
-				local node = Actor.node(hit_actor)
-				local hit_zone = breed.hit_zones_lookup[node]
-				local hit_zone_name = hit_zone.name
-				local attack_direction = Vector3.normalize(POSITION_LOOKUP[hit_unit] - POSITION_LOOKUP[owner_unit])
-				local attack_direction_flat = Vector3.flat(attack_direction)
-				local dot = Vector3.dot(attack_direction_flat, player_direction_flat)
-				local angle_to_target = math.acos(dot)
-				local inner_push = angle_to_target <= push_half_angle
-				local outer_push = push_half_angle < angle_to_target and angle_to_target <= outer_push_half_angle
-
-				if not inner_push and not outer_push then
-					break
-				end
-
-				total_hits = total_hits + 1
-				push_units[hit_unit] = {
-					hit_actor = hit_actor,
-					hit_zone_name = hit_zone_name,
-					inner_push = inner_push,
-					outer_push = outer_push,
-					node = node,
-					attack_direction = attack_direction,
-					target_index = total_hits
-				}
 			until true
 		end
 
@@ -243,6 +267,7 @@ ActionPushStagger.client_owner_post_update = function (self, dt, t, world, can_d
 
 					local sound_event_id = NetworkLookup.sound_events[sound_event]
 					local sound_type_id = NetworkLookup.melee_impact_sound_types[sound_type]
+
 					hit_position = Vector3(math.clamp(hit_position.x, -600, 600), math.clamp(hit_position.y, -600, 600), math.clamp(hit_position.z, -600, 600))
 
 					if self.is_server then
@@ -264,7 +289,7 @@ ActionPushStagger.client_owner_post_update = function (self, dt, t, world, can_d
 
 				if Managers.state.controller_features and self.owner.local_player and not self.has_played_rumble_effect then
 					Managers.state.controller_features:add_effect("rumble", {
-						rumble_effect = "push_hit"
+						rumble_effect = "push_hit",
 					})
 
 					self.has_played_rumble_effect = true
@@ -290,7 +315,7 @@ ActionPushStagger.client_owner_post_update = function (self, dt, t, world, can_d
 
 		if hit_once and not self.bot_player then
 			Managers.state.controller_features:add_effect("rumble", {
-				rumble_effect = "hit_character_light"
+				rumble_effect = "hit_character_light",
 			})
 		end
 	end
@@ -305,6 +330,7 @@ ActionPushStagger.finish = function (self, reason)
 
 	self.waiting_for_callback = false
 	callback_context.has_gotten_callback = false
+
 	local ammo_extension = self.ammo_extension
 	local current_action = self.current_action
 	local owner_unit = self.owner_unit

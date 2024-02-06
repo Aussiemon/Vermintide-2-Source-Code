@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_tentacle_idle_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTTentacleIdleAction = class(BTTentacleIdleAction, BTNode)
@@ -22,7 +24,9 @@ BTTentacleIdleAction.run = function (self, unit, blackboard, t, dt, bt_name)
 
 	if current_length > 0 then
 		local breed = blackboard.breed
+
 		data.current_length = data.current_length - dt * breed.fail_retract_speed
+
 		local tentacle_extension = blackboard.tentacle_spline_extension
 
 		tentacle_extension:set_reach_dist(current_length)

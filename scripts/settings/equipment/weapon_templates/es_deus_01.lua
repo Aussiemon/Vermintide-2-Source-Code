@@ -1,321 +1,324 @@
+﻿-- chunkname: @scripts/settings/equipment/weapon_templates/es_deus_01.lua
+
 local push_radius = 3
 local time_mod = 0.8
 local weapon_template = {}
+
 weapon_template.actions = {
 	action_one = {
 		default = {
+			aim_assist_max_ramp_multiplier = 0.4,
+			aim_assist_ramp_decay_delay = 0.1,
 			aim_assist_ramp_multiplier = 0.2,
 			anim_end_event = "attack_finished",
-			kind = "melee_start",
-			attack_hold_input = "action_one_hold",
-			aim_assist_ramp_decay_delay = 0.1,
-			aim_assist_max_ramp_multiplier = 0.4,
-			uninterruptible = true,
 			anim_event = "attack_swing_charge_left",
+			attack_hold_input = "action_one_hold",
+			kind = "melee_start",
+			uninterruptible = true,
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
 			total_time = math.huge,
 			buff_data = {
 				{
-					start_time = 0,
+					buff_name = "planted_charging_decrease_movement",
 					external_multiplier = 0.3,
-					buff_name = "planted_charging_decrease_movement"
-				}
+					start_time = 0,
+				},
 			},
 			allowed_chain_actions = {
 				{
-					sub_action = "light_attack_left",
-					start_time = 0,
 					action = "action_one",
 					end_time = 0.3,
-					input = "action_one_release"
+					input = "action_one_release",
+					start_time = 0,
+					sub_action = "light_attack_left",
 				},
 				{
-					sub_action = "heavy_attack",
-					start_time = 0.4,
 					action = "action_one",
 					force_release_input = "action_one_hold",
-					input = "action_one_release"
+					input = "action_one_release",
+					start_time = 0.4,
+					sub_action = "heavy_attack",
 				},
 				{
-					sub_action = "default",
-					start_time = 0,
 					action = "action_two",
-					input = "action_two_hold"
-				},
-				{
-					sub_action = "default",
+					input = "action_two_hold",
 					start_time = 0,
-					action = "action_wield",
-					input = "action_wield"
+					sub_action = "default",
 				},
 				{
-					start_time = 0.5,
+					action = "action_wield",
+					input = "action_wield",
+					start_time = 0,
+					sub_action = "default",
+				},
+				{
 					blocker = true,
 					end_time = 1,
-					input = "action_one_hold"
+					input = "action_one_hold",
+					start_time = 0.5,
 				},
 				{
-					sub_action = "heavy_attack",
-					start_time = 0.7,
 					action = "action_one",
-					auto_chain = true
-				}
-			}
+					auto_chain = true,
+					start_time = 0.7,
+					sub_action = "heavy_attack",
+				},
+			},
 		},
 		default_right = {
-			aim_assist_ramp_multiplier = 0.2,
-			aim_assist_ramp_decay_delay = 0.1,
-			anim_end_event = "attack_finished",
-			kind = "melee_start",
 			aim_assist_max_ramp_multiplier = 0.4,
-			uninterruptible = true,
+			aim_assist_ramp_decay_delay = 0.1,
+			aim_assist_ramp_multiplier = 0.2,
+			anim_end_event = "attack_finished",
 			anim_event = "attack_swing_charge_stab",
+			kind = "melee_start",
+			uninterruptible = true,
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
 			total_time = math.huge,
 			buff_data = {
 				{
-					start_time = 0,
+					buff_name = "planted_charging_decrease_movement",
 					external_multiplier = 0.5,
-					buff_name = "planted_charging_decrease_movement"
-				}
+					start_time = 0,
+				},
 			},
 			allowed_chain_actions = {
 				{
-					sub_action = "light_attack_last",
-					start_time = 0,
 					action = "action_one",
 					end_time = 0.3,
-					input = "action_one_release"
+					input = "action_one_release",
+					start_time = 0,
+					sub_action = "light_attack_last",
 				},
 				{
-					sub_action = "heavy_attack_stab",
-					start_time = 1,
 					action = "action_one",
 					force_release_input = "action_one_hold",
-					input = "action_one_release"
+					input = "action_one_release",
+					start_time = 1,
+					sub_action = "heavy_attack_stab",
 				},
 				{
-					sub_action = "default",
-					start_time = 0,
 					action = "action_two",
-					input = "action_two_hold"
-				},
-				{
-					sub_action = "default",
+					input = "action_two_hold",
 					start_time = 0,
-					action = "action_wield",
-					input = "action_wield"
+					sub_action = "default",
 				},
 				{
-					start_time = 0.5,
+					action = "action_wield",
+					input = "action_wield",
+					start_time = 0,
+					sub_action = "default",
+				},
+				{
 					blocker = true,
 					end_time = 1,
-					input = "action_one_hold"
+					input = "action_one_hold",
+					start_time = 0.5,
 				},
 				{
-					sub_action = "heavy_attack_stab",
-					start_time = 0.7,
 					action = "action_one",
-					auto_chain = true
-				}
-			}
+					auto_chain = true,
+					start_time = 0.7,
+					sub_action = "heavy_attack_stab",
+				},
+			},
 		},
 		default_left_heavy = {
-			aim_assist_ramp_multiplier = 0.2,
-			aim_assist_ramp_decay_delay = 0.1,
-			anim_end_event = "attack_finished",
-			kind = "melee_start",
 			aim_assist_max_ramp_multiplier = 0.4,
-			uninterruptible = true,
+			aim_assist_ramp_decay_delay = 0.1,
+			aim_assist_ramp_multiplier = 0.2,
+			anim_end_event = "attack_finished",
 			anim_event = "attack_swing_charge_right_diagonal_pose",
+			kind = "melee_start",
+			uninterruptible = true,
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
 			total_time = math.huge,
 			buff_data = {
 				{
-					start_time = 0,
+					buff_name = "planted_charging_decrease_movement",
 					external_multiplier = 0.3,
-					buff_name = "planted_charging_decrease_movement"
-				}
+					start_time = 0,
+				},
 			},
 			allowed_chain_actions = {
 				{
-					sub_action = "light_attack_right",
-					start_time = 0,
 					action = "action_one",
 					end_time = 0.3,
-					input = "action_one_release"
+					input = "action_one_release",
+					start_time = 0,
+					sub_action = "light_attack_right",
 				},
 				{
-					sub_action = "heavy_attack_right",
-					start_time = 0.5,
 					action = "action_one",
 					force_release_input = "action_one_hold",
-					input = "action_one_release"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_two",
-					input = "action_two_hold"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_wield",
-					input = "action_wield"
-				},
-				{
+					input = "action_one_release",
 					start_time = 0.5,
+					sub_action = "heavy_attack_right",
+				},
+				{
+					action = "action_two",
+					input = "action_two_hold",
+					start_time = 0,
+					sub_action = "default",
+				},
+				{
+					action = "action_wield",
+					input = "action_wield",
+					start_time = 0,
+					sub_action = "default",
+				},
+				{
 					blocker = true,
 					end_time = 1,
-					input = "action_one_hold"
+					input = "action_one_hold",
+					start_time = 0.5,
 				},
 				{
-					sub_action = "heavy_attack_right",
-					start_time = 0.7,
 					action = "action_one",
-					auto_chain = true
-				}
-			}
+					auto_chain = true,
+					start_time = 0.7,
+					sub_action = "heavy_attack_right",
+				},
+			},
 		},
 		default_stab_heavy = {
-			aim_assist_ramp_multiplier = 0.2,
-			aim_assist_ramp_decay_delay = 0.1,
-			anim_end_event = "attack_finished",
-			kind = "melee_start",
 			aim_assist_max_ramp_multiplier = 0.4,
-			uninterruptible = true,
+			aim_assist_ramp_decay_delay = 0.1,
+			aim_assist_ramp_multiplier = 0.2,
+			anim_end_event = "attack_finished",
 			anim_event = "attack_swing_charge_stab",
+			kind = "melee_start",
+			uninterruptible = true,
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
 			total_time = math.huge,
 			buff_data = {
 				{
-					start_time = 0,
+					buff_name = "planted_charging_decrease_movement",
 					external_multiplier = 0.6,
-					buff_name = "planted_charging_decrease_movement"
-				}
+					start_time = 0,
+				},
 			},
 			allowed_chain_actions = {
 				{
-					sub_action = "light_attack_left",
-					start_time = 0,
 					action = "action_one",
 					end_time = 0.3,
-					input = "action_one_release"
+					input = "action_one_release",
+					start_time = 0,
+					sub_action = "light_attack_left",
 				},
 				{
-					sub_action = "heavy_attack_stab",
-					start_time = 1,
 					action = "action_one",
 					force_release_input = "action_one_hold",
-					input = "action_one_release"
+					input = "action_one_release",
+					start_time = 1,
+					sub_action = "heavy_attack_stab",
 				},
 				{
-					sub_action = "default",
-					start_time = 0,
 					action = "action_two",
-					input = "action_two_hold"
-				},
-				{
-					sub_action = "default",
+					input = "action_two_hold",
 					start_time = 0,
-					action = "action_wield",
-					input = "action_wield"
+					sub_action = "default",
 				},
 				{
-					start_time = 0.5,
+					action = "action_wield",
+					input = "action_wield",
+					start_time = 0,
+					sub_action = "default",
+				},
+				{
 					blocker = true,
 					end_time = 1,
-					input = "action_one_hold"
+					input = "action_one_hold",
+					start_time = 0.5,
 				},
 				{
-					sub_action = "heavy_attack_stab",
-					start_time = 0.7,
 					action = "action_one",
-					auto_chain = true
-				}
-			}
+					auto_chain = true,
+					start_time = 0.7,
+					sub_action = "heavy_attack_stab",
+				},
+			},
 		},
 		heavy_attack = {
+			additional_critical_strike_chance = 0,
+			anim_end_event = "attack_finished",
+			anim_event = "attack_swing_heavy_left",
+			damage_profile = "medium_slashing_tank_es_01",
+			damage_window_end = 0.43,
 			damage_window_start = 0.28,
-			kind = "sweep",
+			dedicated_target_range = 2,
 			first_person_hit_anim = "shake_hit",
+			hit_effect = "melee_hit_sword_1h",
+			hit_stop_anim = "attack_hit",
+			impact_sound_event = "slashing_hit",
+			invert_attack_direction = true,
+			kind = "sweep",
+			no_damage_impact_sound_event = "slashing_hit_armour",
 			range_mod = 1.35,
 			sweep_z_offset = 0.05,
-			width_mod = 35,
-			no_damage_impact_sound_event = "slashing_hit_armour",
-			invert_attack_direction = true,
-			hit_effect = "melee_hit_sword_1h",
-			use_precision_sweep = false,
-			damage_window_end = 0.43,
-			impact_sound_event = "slashing_hit",
-			damage_profile = "medium_slashing_tank_es_01",
-			anim_end_event = "attack_finished",
-			additional_critical_strike_chance = 0,
-			dedicated_target_range = 2,
-			weapon_up_offset_mod = 0.25,
-			uninterruptible = true,
-			anim_event = "attack_swing_heavy_left",
-			hit_stop_anim = "attack_hit",
 			total_time = 1,
+			uninterruptible = true,
+			use_precision_sweep = false,
+			weapon_up_offset_mod = 0.25,
+			width_mod = 35,
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
 			anim_time_scale = time_mod,
 			buff_data = {
 				{
-					start_time = 0,
-					external_multiplier = 1.8,
+					buff_name = "planted_fast_decrease_movement",
 					end_time = 0.3,
-					buff_name = "planted_fast_decrease_movement"
-				}
+					external_multiplier = 1.8,
+					start_time = 0,
+				},
 			},
 			allowed_chain_actions = {
 				{
-					sub_action = "default_left_heavy",
-					start_time = 0.5,
 					action = "action_one",
 					doubleclick_window = 0,
-					release_required = "action_one_hold",
 					end_time = 1,
-					input = "action_one"
+					input = "action_one",
+					release_required = "action_one_hold",
+					start_time = 0.5,
+					sub_action = "default_left_heavy",
 				},
 				{
-					sub_action = "default_left_heavy",
-					start_time = 0.5,
 					action = "action_one",
 					doubleclick_window = 0,
-					release_required = "action_one_hold",
 					end_time = 1,
-					input = "action_one_hold"
+					input = "action_one_hold",
+					release_required = "action_one_hold",
+					start_time = 0.5,
+					sub_action = "default_left_heavy",
 				},
 				{
-					sub_action = "default",
+					action = "action_two",
+					doubleclick_window = 0,
+					input = "action_two",
 					start_time = 1,
-					action = "action_two",
-					doubleclick_window = 0,
-					input = "action_two"
+					sub_action = "default",
 				},
 				{
-					sub_action = "default",
-					start_time = 0.5,
 					action = "action_two",
-					input = "action_two_hold"
+					input = "action_two_hold",
+					start_time = 0.5,
+					sub_action = "default",
 				},
 				{
-					sub_action = "default",
-					start_time = 0.5,
 					action = "action_wield",
-					input = "action_wield"
-				}
+					input = "action_wield",
+					start_time = 0.5,
+					sub_action = "default",
+				},
 			},
 			enter_function = function (attacker_unit, input_extension)
 				return input_extension:reset_release_input()
@@ -331,7 +334,7 @@ weapon_template.actions = {
 					0.4826394021511078,
 					-0.5212758183479309,
 					0.46281129121780396,
-					-0.5302230715751648
+					-0.5302230715751648,
 				},
 				{
 					0.2827777777777778,
@@ -341,7 +344,7 @@ weapon_template.actions = {
 					0.6319555640220642,
 					-0.36937788128852844,
 					0.32199686765670776,
-					-0.6004248857498169
+					-0.6004248857498169,
 				},
 				{
 					0.3188888888888889,
@@ -351,7 +354,7 @@ weapon_template.actions = {
 					0.6992065906524658,
 					-0.13304929435253143,
 					0.16318976879119873,
-					-0.6832109093666077
+					-0.6832109093666077,
 				},
 				{
 					0.355,
@@ -361,7 +364,7 @@ weapon_template.actions = {
 					0.6735708117485046,
 					0.0876287892460823,
 					-0.0059226141311228275,
-					-0.7338859438896179
+					-0.7338859438896179,
 				},
 				{
 					0.3911111111111111,
@@ -371,7 +374,7 @@ weapon_template.actions = {
 					0.5820369124412537,
 					0.33827102184295654,
 					-0.19743135571479797,
-					-0.7126196026802063
+					-0.7126196026802063,
 				},
 				{
 					0.42722222222222217,
@@ -381,7 +384,7 @@ weapon_template.actions = {
 					0.40503209829330444,
 					0.5593182444572449,
 					-0.40102019906044006,
-					-0.6019095778465271
+					-0.6019095778465271,
 				},
 				{
 					0.4633333333333333,
@@ -391,81 +394,81 @@ weapon_template.actions = {
 					0.7278453707695007,
 					-0.3012484014034271,
 					-0.24588492512702942,
-					-0.5648283958435059
-				}
-			}
+					-0.5648283958435059,
+				},
+			},
 		},
 		heavy_attack_right = {
-			damage_window_start = 0.3,
-			anim_end_event = "attack_finished",
-			kind = "sweep",
-			first_person_hit_anim = "shake_hit",
-			range_mod = 1.35,
-			sweep_z_offset = 0.05,
-			width_mod = 35,
-			no_damage_impact_sound_event = "slashing_hit_armour",
 			additional_critical_strike_chance = 0,
-			use_precision_sweep = true,
-			hit_effect = "melee_hit_sword_1h",
+			anim_end_event = "attack_finished",
+			anim_event = "attack_swing_heavy_down_right",
 			damage_profile = "medium_slashing_tank_es_01",
 			damage_window_end = 0.38,
-			impact_sound_event = "slashing_hit",
+			damage_window_start = 0.3,
 			dedicated_target_range = 2.5,
-			weapon_up_offset_mod = 0.25,
-			uninterruptible = true,
-			anim_event = "attack_swing_heavy_down_right",
+			first_person_hit_anim = "shake_hit",
+			hit_effect = "melee_hit_sword_1h",
 			hit_stop_anim = "attack_hit",
+			impact_sound_event = "slashing_hit",
+			kind = "sweep",
+			no_damage_impact_sound_event = "slashing_hit_armour",
+			range_mod = 1.35,
+			sweep_z_offset = 0.05,
 			total_time = 2.25,
+			uninterruptible = true,
+			use_precision_sweep = true,
+			weapon_up_offset_mod = 0.25,
+			width_mod = 35,
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
 			anim_time_scale = time_mod,
 			buff_data = {
 				{
-					start_time = 0,
-					external_multiplier = 1.6,
+					buff_name = "planted_fast_decrease_movement",
 					end_time = 0.35,
-					buff_name = "planted_fast_decrease_movement"
-				}
+					external_multiplier = 1.6,
+					start_time = 0,
+				},
 			},
 			allowed_chain_actions = {
 				{
-					sub_action = "default_stab_heavy",
-					start_time = 0.5,
 					action = "action_one",
 					doubleclick_window = 0,
-					release_required = "action_one_hold",
 					end_time = 1.05,
-					input = "action_one"
+					input = "action_one",
+					release_required = "action_one_hold",
+					start_time = 0.5,
+					sub_action = "default_stab_heavy",
 				},
 				{
-					sub_action = "default_stab_heavy",
-					start_time = 0.5,
 					action = "action_one",
 					doubleclick_window = 0,
-					release_required = "action_one_hold",
 					end_time = 1.05,
-					input = "action_one_hold"
+					input = "action_one_hold",
+					release_required = "action_one_hold",
+					start_time = 0.5,
+					sub_action = "default_stab_heavy",
 				},
 				{
-					sub_action = "default",
+					action = "action_one",
+					doubleclick_window = 0,
+					input = "action_one",
 					start_time = 1.05,
-					action = "action_one",
-					doubleclick_window = 0,
-					input = "action_one"
+					sub_action = "default",
 				},
 				{
-					sub_action = "default",
-					start_time = 0.4,
 					action = "action_two",
-					input = "action_two_hold"
+					input = "action_two_hold",
+					start_time = 0.4,
+					sub_action = "default",
 				},
 				{
-					sub_action = "default",
-					start_time = 0.5,
 					action = "action_wield",
-					input = "action_wield"
-				}
+					input = "action_wield",
+					start_time = 0.5,
+					sub_action = "default",
+				},
 			},
 			chain_condition_func = function (attacker_unit, input_extension)
 				input_extension:reset_release_input()
@@ -481,7 +484,7 @@ weapon_template.actions = {
 					-0.6984267830848694,
 					0.22516123950481415,
 					-0.1596071720123291,
-					-0.6603241562843323
+					-0.6603241562843323,
 				},
 				{
 					0.2911111111111111,
@@ -491,7 +494,7 @@ weapon_template.actions = {
 					-0.36037781834602356,
 					0.25068724155426025,
 					-0.09310238063335419,
-					-0.8936530351638794
+					-0.8936530351638794,
 				},
 				{
 					0.31555555555555553,
@@ -501,7 +504,7 @@ weapon_template.actions = {
 					0.19784392416477203,
 					0.15410447120666504,
 					0.005756710190325975,
-					-0.9680271148681641
+					-0.9680271148681641,
 				},
 				{
 					0.33999999999999997,
@@ -511,7 +514,7 @@ weapon_template.actions = {
 					0.5842611789703369,
 					0.12894073128700256,
 					0.07257296144962311,
-					-0.7979638576507568
+					-0.7979638576507568,
 				},
 				{
 					0.36444444444444446,
@@ -521,7 +524,7 @@ weapon_template.actions = {
 					0.849442720413208,
 					0.13708895444869995,
 					0.08929070830345154,
-					-0.5016781687736511
+					-0.5016781687736511,
 				},
 				{
 					0.3888888888888889,
@@ -531,7 +534,7 @@ weapon_template.actions = {
 					0.9154361486434937,
 					0.17865405976772308,
 					0.10376108437776566,
-					-0.345388263463974
+					-0.345388263463974,
 				},
 				{
 					0.41333333333333333,
@@ -541,87 +544,87 @@ weapon_template.actions = {
 					0.909425675868988,
 					0.14736054837703705,
 					0.09400830417871475,
-					-0.377348929643631
-				}
-			}
+					-0.377348929643631,
+				},
+			},
 		},
 		heavy_attack_stab = {
-			damage_window_start = 0.25,
-			anim_end_event = "attack_finished",
-			kind = "sweep",
-			first_person_hit_anim = "shake_hit",
-			range_mod = 1.35,
-			sweep_z_offset = 0.05,
-			width_mod = 25,
-			no_damage_impact_sound_event = "stab_hit_armour",
 			additional_critical_strike_chance = 0,
-			use_precision_sweep = true,
-			hit_effect = "melee_hit_sword_1h",
+			anim_end_event = "attack_finished",
+			anim_event = "attack_swing_heavy_stab",
 			damage_profile = "medium_stab_es_01",
 			damage_window_end = 0.33,
-			impact_sound_event = "stab_hit",
+			damage_window_start = 0.25,
 			dedicated_target_range = 2.75,
-			weapon_up_offset_mod = 0.25,
-			uninterruptible = true,
-			anim_event = "attack_swing_heavy_stab",
+			first_person_hit_anim = "shake_hit",
+			hit_effect = "melee_hit_sword_1h",
 			hit_stop_anim = "attack_hit",
+			impact_sound_event = "stab_hit",
+			kind = "sweep",
+			no_damage_impact_sound_event = "stab_hit_armour",
+			range_mod = 1.35,
+			sweep_z_offset = 0.05,
 			total_time = 2.25,
+			uninterruptible = true,
+			use_precision_sweep = true,
+			weapon_up_offset_mod = 0.25,
+			width_mod = 25,
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
 			anim_time_scale = time_mod,
 			buff_data = {
 				{
-					start_time = 0,
-					external_multiplier = 2,
+					buff_name = "planted_fast_decrease_movement",
 					end_time = 0.4,
-					buff_name = "planted_fast_decrease_movement"
+					external_multiplier = 2,
+					start_time = 0,
 				},
 				{
-					start_time = 0.4,
-					external_multiplier = 0.6,
+					buff_name = "planted_fast_decrease_movement",
 					end_time = 0.6,
-					buff_name = "planted_fast_decrease_movement"
-				}
+					external_multiplier = 0.6,
+					start_time = 0.4,
+				},
 			},
 			allowed_chain_actions = {
 				{
-					sub_action = "default",
-					start_time = 0.55,
 					action = "action_one",
 					doubleclick_window = 0,
-					release_required = "action_one_hold",
 					end_time = 1.05,
-					input = "action_one"
+					input = "action_one",
+					release_required = "action_one_hold",
+					start_time = 0.55,
+					sub_action = "default",
 				},
 				{
-					sub_action = "default",
-					start_time = 0.55,
 					action = "action_one",
 					doubleclick_window = 0,
-					release_required = "action_one_hold",
 					end_time = 1.05,
-					input = "action_one_hold"
+					input = "action_one_hold",
+					release_required = "action_one_hold",
+					start_time = 0.55,
+					sub_action = "default",
 				},
 				{
-					sub_action = "default",
+					action = "action_one",
+					doubleclick_window = 0,
+					input = "action_one",
 					start_time = 1.05,
-					action = "action_one",
-					doubleclick_window = 0,
-					input = "action_one"
+					sub_action = "default",
 				},
 				{
-					sub_action = "default",
-					start_time = 0.4,
 					action = "action_two",
-					input = "action_two_hold"
+					input = "action_two_hold",
+					start_time = 0.4,
+					sub_action = "default",
 				},
 				{
-					sub_action = "default",
-					start_time = 0.5,
 					action = "action_wield",
-					input = "action_wield"
-				}
+					input = "action_wield",
+					start_time = 0.5,
+					sub_action = "default",
+				},
 			},
 			chain_condition_func = function (attacker_unit, input_extension)
 				input_extension:reset_release_input()
@@ -637,7 +640,7 @@ weapon_template.actions = {
 					0.22026298940181732,
 					0.6558993458747864,
 					0.642512857913971,
-					-0.32932907342910767
+					-0.32932907342910767,
 				},
 				{
 					0.2411111111111111,
@@ -647,7 +650,7 @@ weapon_template.actions = {
 					0.21957795321941376,
 					0.6612789630889893,
 					0.6347355842590332,
-					-0.3340757191181183
+					-0.3340757191181183,
 				},
 				{
 					0.26555555555555554,
@@ -657,7 +660,7 @@ weapon_template.actions = {
 					0.2238517850637436,
 					0.6622756123542786,
 					0.622538685798645,
-					-0.35174861550331116
+					-0.35174861550331116,
 				},
 				{
 					0.29000000000000004,
@@ -667,7 +670,7 @@ weapon_template.actions = {
 					0.23339329659938812,
 					0.6675761938095093,
 					0.5985477566719055,
-					-0.37631142139434814
+					-0.37631142139434814,
 				},
 				{
 					0.31444444444444447,
@@ -677,7 +680,7 @@ weapon_template.actions = {
 					0.24898973107337952,
 					0.6520776748657227,
 					0.6066932082176208,
-					-0.380423903465271
+					-0.380423903465271,
 				},
 				{
 					0.3388888888888889,
@@ -687,7 +690,7 @@ weapon_template.actions = {
 					0.268057644367218,
 					0.6581366658210754,
 					0.5886135697364807,
-					-0.38540297746658325
+					-0.38540297746658325,
 				},
 				{
 					0.36333333333333334,
@@ -697,83 +700,83 @@ weapon_template.actions = {
 					0.26417556405067444,
 					0.6487610936164856,
 					0.5935956835746765,
-					-0.3961874842643738
-				}
-			}
+					-0.3961874842643738,
+				},
+			},
 		},
 		light_attack_left = {
+			additional_critical_strike_chance = 0,
+			anim_end_event = "attack_finished",
+			anim_event = "attack_swing_heavy_left",
+			damage_profile = "medium_slashing_linesman_spear_es_01",
+			damage_window_end = 0.43,
 			damage_window_start = 0.28,
-			kind = "sweep",
+			dedicated_target_range = 2,
 			first_person_hit_anim = "shake_hit",
+			hit_effect = "melee_hit_sword_1h",
+			hit_stop_anim = "attack_hit",
+			impact_sound_event = "slashing_hit",
+			invert_attack_direction = true,
+			kind = "sweep",
+			no_damage_impact_sound_event = "slashing_hit_armour",
 			range_mod = 1.35,
 			sweep_z_offset = 0.05,
-			width_mod = 35,
-			no_damage_impact_sound_event = "slashing_hit_armour",
-			invert_attack_direction = true,
-			hit_effect = "melee_hit_sword_1h",
-			use_precision_sweep = false,
-			damage_window_end = 0.43,
-			impact_sound_event = "slashing_hit",
-			damage_profile = "medium_slashing_linesman_spear_es_01",
-			anim_end_event = "attack_finished",
-			additional_critical_strike_chance = 0,
-			dedicated_target_range = 2,
-			weapon_up_offset_mod = 0.25,
-			uninterruptible = true,
-			anim_event = "attack_swing_heavy_left",
-			hit_stop_anim = "attack_hit",
 			total_time = 1,
+			uninterruptible = true,
+			use_precision_sweep = false,
+			weapon_up_offset_mod = 0.25,
+			width_mod = 35,
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
 			anim_time_scale = time_mod,
 			buff_data = {
 				{
-					start_time = 0,
-					external_multiplier = 1.1,
+					buff_name = "planted_fast_decrease_movement",
 					end_time = 0.3,
-					buff_name = "planted_fast_decrease_movement"
+					external_multiplier = 1.1,
+					start_time = 0,
 				},
 				{
-					start_time = 0.3,
-					external_multiplier = 0.6,
+					buff_name = "planted_decrease_movement",
 					end_time = 0.5,
-					buff_name = "planted_decrease_movement"
-				}
+					external_multiplier = 0.6,
+					start_time = 0.3,
+				},
 			},
 			allowed_chain_actions = {
 				{
-					sub_action = "default_left_heavy",
-					start_time = 0.48,
 					action = "action_one",
+					input = "action_one",
 					release_required = "action_one_hold",
-					input = "action_one"
+					start_time = 0.48,
+					sub_action = "default_left_heavy",
 				},
 				{
-					sub_action = "default_left_heavy",
-					start_time = 0.48,
 					action = "action_one",
+					input = "action_one_hold",
 					release_required = "action_one_hold",
-					input = "action_one_hold"
+					start_time = 0.48,
+					sub_action = "default_left_heavy",
 				},
 				{
-					sub_action = "default",
+					action = "action_one",
+					input = "action_one",
 					start_time = 1,
-					action = "action_one",
-					input = "action_one"
+					sub_action = "default",
 				},
 				{
-					sub_action = "default",
-					start_time = 0,
 					action = "action_two",
-					input = "action_two_hold"
+					input = "action_two_hold",
+					start_time = 0,
+					sub_action = "default",
 				},
 				{
-					sub_action = "default",
-					start_time = 0.5,
 					action = "action_wield",
-					input = "action_wield"
-				}
+					input = "action_wield",
+					start_time = 0.5,
+					sub_action = "default",
+				},
 			},
 			enter_function = function (attacker_unit, input_extension)
 				return input_extension:reset_release_input()
@@ -789,7 +792,7 @@ weapon_template.actions = {
 					0.4799545705318451,
 					-0.523966372013092,
 					0.46462851762771606,
-					-0.5284156203269958
+					-0.5284156203269958,
 				},
 				{
 					0.2827777777777778,
@@ -799,7 +802,7 @@ weapon_template.actions = {
 					0.6310396194458008,
 					-0.3702182471752167,
 					0.322862446308136,
-					-0.6004059910774231
+					-0.6004059910774231,
 				},
 				{
 					0.3188888888888889,
@@ -809,7 +812,7 @@ weapon_template.actions = {
 					0.6985636353492737,
 					-0.1316533386707306,
 					0.1622193306684494,
-					-0.6843692064285278
+					-0.6843692064285278,
 				},
 				{
 					0.355,
@@ -819,7 +822,7 @@ weapon_template.actions = {
 					0.676491379737854,
 					0.06696722656488419,
 					0.0058189393021166325,
-					-0.7333763837814331
+					-0.7333763837814331,
 				},
 				{
 					0.3911111111111111,
@@ -829,7 +832,7 @@ weapon_template.actions = {
 					0.581235408782959,
 					0.3394211232662201,
 					-0.19847822189331055,
-					-0.7124360799789429
+					-0.7124360799789429,
 				},
 				{
 					0.42722222222222217,
@@ -839,7 +842,7 @@ weapon_template.actions = {
 					0.4119667112827301,
 					0.5527673363685608,
 					-0.39824458956718445,
-					-0.6050893068313599
+					-0.6050893068313599,
 				},
 				{
 					0.4633333333333333,
@@ -849,82 +852,82 @@ weapon_template.actions = {
 					0.7248932719230652,
 					-0.2973615527153015,
 					-0.2416881024837494,
-					-0.5724445581436157
-				}
-			}
+					-0.5724445581436157,
+				},
+			},
 		},
 		light_attack_right = {
-			damage_window_start = 0.33,
-			anim_end_event = "attack_finished",
-			kind = "sweep",
-			first_person_hit_anim = "shake_hit",
-			range_mod = 1.35,
-			sweep_z_offset = 0.05,
-			width_mod = 35,
-			no_damage_impact_sound_event = "slashing_hit_armour",
 			additional_critical_strike_chance = 0,
-			use_precision_sweep = true,
-			hit_effect = "melee_hit_sword_1h",
+			anim_end_event = "attack_finished",
+			anim_event = "attack_swing_up",
 			damage_profile = "medium_slashing_linesman_spear_es_01",
 			damage_window_end = 0.47,
-			impact_sound_event = "slashing_hit",
+			damage_window_start = 0.33,
 			dedicated_target_range = 2.5,
-			weapon_up_offset_mod = 0.25,
-			uninterruptible = true,
-			anim_event = "attack_swing_up",
+			first_person_hit_anim = "shake_hit",
+			hit_effect = "melee_hit_sword_1h",
 			hit_stop_anim = "attack_hit",
+			impact_sound_event = "slashing_hit",
+			kind = "sweep",
+			no_damage_impact_sound_event = "slashing_hit_armour",
+			range_mod = 1.35,
+			sweep_z_offset = 0.05,
 			total_time = 2.25,
+			uninterruptible = true,
+			use_precision_sweep = true,
+			weapon_up_offset_mod = 0.25,
+			width_mod = 35,
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
 			anim_time_scale = time_mod,
 			buff_data = {
 				{
-					start_time = 0,
-					external_multiplier = 1.1,
+					buff_name = "planted_fast_decrease_movement",
 					end_time = 0.3,
-					buff_name = "planted_fast_decrease_movement"
+					external_multiplier = 1.1,
+					start_time = 0,
 				},
 				{
-					start_time = 0.3,
-					external_multiplier = 0.6,
+					buff_name = "planted_decrease_movement",
 					end_time = 0.5,
-					buff_name = "planted_decrease_movement"
-				}
+					external_multiplier = 0.6,
+					start_time = 0.3,
+				},
 			},
 			allowed_chain_actions = {
 				{
-					sub_action = "default_right",
-					start_time = 0.43,
 					action = "action_one",
+					input = "action_one",
 					release_required = "action_one_hold",
-					input = "action_one"
+					start_time = 0.43,
+					sub_action = "default_right",
 				},
 				{
-					sub_action = "default_right",
-					start_time = 0.43,
 					action = "action_one",
+					input = "action_one_hold",
 					release_required = "action_one_hold",
-					input = "action_one_hold"
+					start_time = 0.43,
+					sub_action = "default_right",
 				},
 				{
-					sub_action = "default",
+					action = "action_one",
+					input = "action_one",
 					start_time = 1.05,
-					action = "action_one",
-					input = "action_one"
+					sub_action = "default",
 				},
 				{
-					sub_action = "default",
-					start_time = 0,
 					action = "action_two",
-					input = "action_two_hold"
+					input = "action_two_hold",
+					start_time = 0,
+					sub_action = "default",
 				},
 				{
-					sub_action = "default",
-					start_time = 0.5,
 					action = "action_wield",
-					input = "action_wield"
-				}
+					input = "action_wield",
+					start_time = 0.5,
+					sub_action = "default",
+				},
 			},
 			chain_condition_func = function (attacker_unit, input_extension)
 				input_extension:reset_release_input()
@@ -940,7 +943,7 @@ weapon_template.actions = {
 					-0.5297349095344543,
 					0.6274950504302979,
 					0.13246557116508484,
-					-0.5550529956817627
+					-0.5550529956817627,
 				},
 				{
 					0.33111111111111113,
@@ -950,7 +953,7 @@ weapon_template.actions = {
 					0.12731346487998962,
 					0.8041661381721497,
 					0.012413541786372662,
-					-0.5804774165153503
+					-0.5804774165153503,
 				},
 				{
 					0.3655555555555556,
@@ -960,7 +963,7 @@ weapon_template.actions = {
 					0.571546196937561,
 					0.3999144434928894,
 					0.10060828179121017,
-					-0.7094232439994812
+					-0.7094232439994812,
 				},
 				{
 					0.4,
@@ -970,7 +973,7 @@ weapon_template.actions = {
 					0.5838332772254944,
 					0.11313144862651825,
 					0.2736157774925232,
-					-0.7559592127799988
+					-0.7559592127799988,
 				},
 				{
 					0.4344444444444444,
@@ -980,7 +983,7 @@ weapon_template.actions = {
 					0.5475032925605774,
 					-0.09208259731531143,
 					0.32170698046684265,
-					-0.766984760761261
+					-0.766984760761261,
 				},
 				{
 					0.4688888888888889,
@@ -990,7 +993,7 @@ weapon_template.actions = {
 					0.640425443649292,
 					-0.15314507484436035,
 					0.5856018662452698,
-					-0.47272852063179016
+					-0.47272852063179016,
 				},
 				{
 					0.5033333333333333,
@@ -1000,77 +1003,77 @@ weapon_template.actions = {
 					0.6209182739257812,
 					-0.3256509304046631,
 					0.5538483262062073,
-					-0.44907012581825256
-				}
-			}
+					-0.44907012581825256,
+				},
+			},
 		},
 		light_attack_last = {
-			damage_window_start = 0.28,
-			range_mod = 1.35,
-			kind = "sweep",
-			first_person_hit_anim = "shake_hit",
-			no_damage_impact_sound_event = "slashing_hit_armour",
-			sweep_z_offset = 0.05,
-			width_mod = 25,
 			additional_critical_strike_chance = 0,
-			hit_shield_stop_anim = "attack_hit_shield",
-			use_precision_sweep = true,
-			hit_effect = "melee_hit_hammers_2h",
+			anim_end_event = "attack_finished",
+			anim_event = "attack_swing_stab",
 			damage_profile = "light_slash_stab_es_01",
 			damage_window_end = 0.42,
-			impact_sound_event = "slashing_hit",
-			anim_end_event = "attack_finished",
+			damage_window_start = 0.28,
 			dedicated_target_range = 2.5,
-			range_mod_add = 0.5,
-			weapon_up_offset_mod = -0.25,
-			anim_event = "attack_swing_stab",
+			first_person_hit_anim = "shake_hit",
+			hit_effect = "melee_hit_hammers_2h",
+			hit_shield_stop_anim = "attack_hit_shield",
 			hit_stop_anim = "attack_hit",
+			impact_sound_event = "slashing_hit",
+			kind = "sweep",
+			no_damage_impact_sound_event = "slashing_hit_armour",
+			range_mod = 1.35,
+			range_mod_add = 0.5,
+			sweep_z_offset = 0.05,
 			total_time = 2.1,
+			use_precision_sweep = true,
+			weapon_up_offset_mod = -0.25,
+			width_mod = 25,
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
 			anim_time_scale = time_mod * 1.15,
 			buff_data = {
 				{
-					start_time = 0,
-					external_multiplier = 1.1,
+					buff_name = "planted_fast_decrease_movement",
 					end_time = 0.3,
-					buff_name = "planted_fast_decrease_movement"
+					external_multiplier = 1.1,
+					start_time = 0,
 				},
 				{
-					start_time = 0.3,
-					external_multiplier = 0.6,
+					buff_name = "planted_decrease_movement",
 					end_time = 0.5,
-					buff_name = "planted_decrease_movement"
-				}
+					external_multiplier = 0.6,
+					start_time = 0.3,
+				},
 			},
 			allowed_chain_actions = {
 				{
-					sub_action = "default",
-					start_time = 0.65,
 					action = "action_one",
+					input = "action_one",
 					release_required = "action_one_hold",
-					input = "action_one"
+					start_time = 0.65,
+					sub_action = "default",
 				},
 				{
-					sub_action = "default",
-					start_time = 0.65,
 					action = "action_one",
+					input = "action_one_hold",
 					release_required = "action_one_hold",
-					input = "action_one_hold"
+					start_time = 0.65,
+					sub_action = "default",
 				},
 				{
-					sub_action = "default",
-					start_time = 0,
 					action = "action_two",
-					input = "action_two_hold"
+					input = "action_two_hold",
+					start_time = 0,
+					sub_action = "default",
 				},
 				{
-					sub_action = "default",
-					start_time = 0.5,
 					action = "action_wield",
-					input = "action_wield"
-				}
+					input = "action_wield",
+					start_time = 0.5,
+					sub_action = "default",
+				},
 			},
 			baked_sweep = {
 				{
@@ -1081,7 +1084,7 @@ weapon_template.actions = {
 					0.6290478706359863,
 					0.2673751711845398,
 					0.1767760068178177,
-					-0.7082087397575378
+					-0.7082087397575378,
 				},
 				{
 					0.28111111111111114,
@@ -1091,7 +1094,7 @@ weapon_template.actions = {
 					0.6496372818946838,
 					0.18432587385177612,
 					0.11865314096212387,
-					-0.7279539108276367
+					-0.7279539108276367,
 				},
 				{
 					0.3155555555555556,
@@ -1101,7 +1104,7 @@ weapon_template.actions = {
 					0.6537732481956482,
 					0.17135392129421234,
 					0.09943803399801254,
-					-0.7302948236465454
+					-0.7302948236465454,
 				},
 				{
 					0.35,
@@ -1111,7 +1114,7 @@ weapon_template.actions = {
 					0.6507267355918884,
 					0.17911216616630554,
 					0.11024989932775497,
-					-0.7296016216278076
+					-0.7296016216278076,
 				},
 				{
 					0.3844444444444445,
@@ -1121,7 +1124,7 @@ weapon_template.actions = {
 					0.6454718112945557,
 					0.18999792635440826,
 					0.1240837424993515,
-					-0.7292943000793457
+					-0.7292943000793457,
 				},
 				{
 					0.41888888888888887,
@@ -1131,7 +1134,7 @@ weapon_template.actions = {
 					0.6420650482177734,
 					0.20294398069381714,
 					0.13239461183547974,
-					-0.7273499369621277
+					-0.7273499369621277,
 				},
 				{
 					0.4533333333333333,
@@ -1141,77 +1144,77 @@ weapon_template.actions = {
 					0.6494554877281189,
 					0.1894325315952301,
 					0.10258472710847855,
-					-0.7292457818984985
-				}
-			}
+					-0.7292457818984985,
+				},
+			},
 		},
 		light_attack_stab_postpush = {
-			damage_window_start = 0.25,
-			range_mod = 1.35,
-			kind = "sweep",
-			first_person_hit_anim = "shake_hit",
-			no_damage_impact_sound_event = "slashing_hit_armour",
-			sweep_z_offset = 0.05,
-			width_mod = 25,
 			additional_critical_strike_chance = 0,
-			hit_shield_stop_anim = "attack_hit_shield",
-			use_precision_sweep = true,
-			hit_effect = "melee_hit_hammers_2h",
-			damage_profile = "light_slash_stab_es_01",
-			attack_direction = "up",
-			damage_window_end = 0.4,
-			impact_sound_event = "slashing_hit",
 			anim_end_event = "attack_finished",
-			dedicated_target_range = 2.5,
-			weapon_up_offset_mod = 0.25,
 			anim_event = "push_stab",
+			attack_direction = "up",
+			damage_profile = "light_slash_stab_es_01",
+			damage_window_end = 0.4,
+			damage_window_start = 0.25,
+			dedicated_target_range = 2.5,
+			first_person_hit_anim = "shake_hit",
+			hit_effect = "melee_hit_hammers_2h",
+			hit_shield_stop_anim = "attack_hit_shield",
 			hit_stop_anim = "attack_hit",
+			impact_sound_event = "slashing_hit",
+			kind = "sweep",
+			no_damage_impact_sound_event = "slashing_hit_armour",
+			range_mod = 1.35,
+			sweep_z_offset = 0.05,
 			total_time = 1.1,
+			use_precision_sweep = true,
+			weapon_up_offset_mod = 0.25,
+			width_mod = 25,
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
 			anim_time_scale = time_mod * 1.15,
 			buff_data = {
 				{
-					start_time = 0,
-					external_multiplier = 1.5,
+					buff_name = "planted_fast_decrease_movement",
 					end_time = 0.3,
-					buff_name = "planted_fast_decrease_movement"
+					external_multiplier = 1.5,
+					start_time = 0,
 				},
 				{
-					start_time = 0.3,
-					external_multiplier = 0.75,
+					buff_name = "planted_fast_decrease_movement",
 					end_time = 0.5,
-					buff_name = "planted_fast_decrease_movement"
-				}
+					external_multiplier = 0.75,
+					start_time = 0.3,
+				},
 			},
 			allowed_chain_actions = {
 				{
-					sub_action = "default_left_heavy",
-					start_time = 0.4,
 					action = "action_one",
+					input = "action_one",
 					release_required = "action_two_hold",
-					input = "action_one"
+					start_time = 0.4,
+					sub_action = "default_left_heavy",
 				},
 				{
-					sub_action = "default_left_heavy",
-					start_time = 0.4,
 					action = "action_one",
+					input = "action_one_hold",
 					release_required = "action_two_hold",
-					input = "action_one_hold"
+					start_time = 0.4,
+					sub_action = "default_left_heavy",
 				},
 				{
-					sub_action = "default",
-					start_time = 0.5,
 					action = "action_two",
-					input = "action_two_hold"
+					input = "action_two_hold",
+					start_time = 0.5,
+					sub_action = "default",
 				},
 				{
-					sub_action = "default",
-					start_time = 0.4,
 					action = "action_wield",
-					input = "action_wield"
-				}
+					input = "action_wield",
+					start_time = 0.4,
+					sub_action = "default",
+				},
 			},
 			baked_sweep = {
 				{
@@ -1222,7 +1225,7 @@ weapon_template.actions = {
 					0.36571961641311646,
 					0.6804249882698059,
 					0.5457020998001099,
-					-0.3247770369052887
+					-0.3247770369052887,
 				},
 				{
 					0.25277777777777777,
@@ -1232,7 +1235,7 @@ weapon_template.actions = {
 					0.4074326753616333,
 					0.6428639888763428,
 					0.556913435459137,
-					-0.33252355456352234
+					-0.33252355456352234,
 				},
 				{
 					0.2888888888888889,
@@ -1242,7 +1245,7 @@ weapon_template.actions = {
 					0.27958551049232483,
 					0.6775707006454468,
 					0.5497443675994873,
-					-0.4006381630897522
+					-0.4006381630897522,
 				},
 				{
 					0.325,
@@ -1252,7 +1255,7 @@ weapon_template.actions = {
 					0.2854025959968567,
 					0.6817827820777893,
 					0.5615207552909851,
-					-0.3720378577709198
+					-0.3720378577709198,
 				},
 				{
 					0.36111111111111116,
@@ -1262,7 +1265,7 @@ weapon_template.actions = {
 					0.277598112821579,
 					0.6659989953041077,
 					0.5751744508743286,
-					-0.3854335844516754
+					-0.3854335844516754,
 				},
 				{
 					0.39722222222222225,
@@ -1272,7 +1275,7 @@ weapon_template.actions = {
 					0.2756649851799011,
 					0.6620834469795227,
 					0.5763586163520813,
-					-0.39174607396125793
+					-0.39174607396125793,
 				},
 				{
 					0.43333333333333335,
@@ -1282,98 +1285,98 @@ weapon_template.actions = {
 					0.27351775765419006,
 					0.6637547016143799,
 					0.5748099684715271,
-					-0.3926975131034851
-				}
-			}
+					-0.3926975131034851,
+				},
+			},
 		},
 		push = {
-			damage_window_start = 0.05,
-			outer_push_angle = 180,
-			kind = "push_stagger",
 			anim_end_event = "attack_finished",
-			no_damage_impact_sound_event = "slashing_hit_armour",
-			damage_profile_outer = "medium_push",
-			weapon_action_hand = "right",
-			push_angle = 100,
-			hit_effect = "melee_hit_sword_1h",
-			fatigue_regen_delay = 0.75,
-			damage_window_end = 0.2,
-			impact_sound_event = "slashing_hit",
-			dedicated_target_range = 2,
 			anim_event = "attack_push",
 			damage_profile_inner = "shield_push",
+			damage_profile_outer = "medium_push",
+			damage_window_end = 0.2,
+			damage_window_start = 0.05,
+			dedicated_target_range = 2,
+			fatigue_regen_delay = 0.75,
+			hit_effect = "melee_hit_sword_1h",
+			impact_sound_event = "slashing_hit",
+			kind = "push_stagger",
+			no_damage_impact_sound_event = "slashing_hit_armour",
+			outer_push_angle = 180,
+			push_angle = 100,
 			total_time = 0.4,
+			weapon_action_hand = "right",
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
 			anim_time_scale = time_mod * 0.9,
 			buff_data = {
 				{
-					start_time = 0,
-					external_multiplier = 1.25,
+					buff_name = "planted_fast_decrease_movement",
 					end_time = 0.2,
-					buff_name = "planted_fast_decrease_movement"
-				}
+					external_multiplier = 1.25,
+					start_time = 0,
+				},
 			},
 			allowed_chain_actions = {
 				{
-					sub_action = "default",
-					start_time = 0.2,
 					action = "action_one",
+					input = "action_one",
 					release_required = "action_two_hold",
-					input = "action_one"
+					start_time = 0.2,
+					sub_action = "default",
 				},
 				{
-					sub_action = "default",
-					start_time = 0.2,
 					action = "action_one",
-					release_required = "action_two_hold",
 					doubleclick_window = 0,
-					input = "action_one_hold"
+					input = "action_one_hold",
+					release_required = "action_two_hold",
+					start_time = 0.2,
+					sub_action = "default",
 				},
 				{
-					sub_action = "light_attack_stab_postpush",
-					start_time = 0.2,
 					action = "action_one",
 					doubleclick_window = 0,
 					end_time = 0.8,
 					input = "action_one_hold",
+					start_time = 0.2,
+					sub_action = "light_attack_stab_postpush",
 					hold_required = {
 						"action_two_hold",
-						"action_one_hold"
-					}
+						"action_one_hold",
+					},
 				},
 				{
-					sub_action = "default",
-					start_time = 0.3,
 					action = "action_two",
+					input = "action_two_hold",
 					send_buffer = true,
-					input = "action_two_hold"
+					start_time = 0.3,
+					sub_action = "default",
 				},
 				{
-					sub_action = "default",
-					start_time = 0.2,
 					action = "action_wield",
-					input = "action_wield"
-				}
+					input = "action_wield",
+					start_time = 0.2,
+					sub_action = "default",
+				},
 			},
 			push_radius = push_radius,
 			chain_condition_func = function (attacker_unit, input_extension)
 				local status_extension = ScriptUnit.extension(attacker_unit, "status_system")
 
 				return not status_extension:fatigued()
-			end
-		}
+			end,
+		},
 	},
 	action_two = {
 		default = {
-			cooldown = 0.15,
-			minimum_hold_time = 0.2,
 			anim_end_event = "parry_finished",
-			kind = "block",
-			weapon_action_hand = "left",
-			hold_input = "action_two_hold",
 			anim_event = "parry_pose",
+			cooldown = 0.15,
+			hold_input = "action_two_hold",
+			kind = "block",
+			minimum_hold_time = 0.2,
+			weapon_action_hand = "left",
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action"
 			end,
@@ -1383,121 +1386,121 @@ weapon_template.actions = {
 			end,
 			buff_data = {
 				{
-					start_time = 0,
+					buff_name = "planted_decrease_movement",
 					external_multiplier = 0.6,
-					buff_name = "planted_decrease_movement"
-				}
+					start_time = 0,
+				},
 			},
 			allowed_chain_actions = {
 				{
-					sub_action = "push",
-					start_time = 0.2,
 					action = "action_one",
 					doubleclick_window = 0,
 					input = "action_one",
+					start_time = 0.2,
+					sub_action = "push",
 					hold_required = {
-						"action_two_hold"
-					}
+						"action_two_hold",
+					},
 				},
 				{
-					sub_action = "default",
-					start_time = 0.2,
 					action = "action_one",
-					release_required = "action_two_hold",
 					doubleclick_window = 0,
-					input = "action_one"
-				},
-				{
-					sub_action = "parry_stab",
+					input = "action_one",
+					release_required = "action_two_hold",
 					start_time = 0.2,
-					action = "action_three",
-					input = "action_three"
-				},
-				{
 					sub_action = "default",
+				},
+				{
+					action = "action_three",
+					input = "action_three",
 					start_time = 0.2,
+					sub_action = "parry_stab",
+				},
+				{
 					action = "action_wield",
-					input = "action_wield"
-				}
-			}
-		}
+					input = "action_wield",
+					start_time = 0.2,
+					sub_action = "default",
+				},
+			},
+		},
 	},
 	action_three = {
 		default = {
 			kind = "dummy",
 			total_time = 0,
-			allowed_chain_actions = {}
+			allowed_chain_actions = {},
 		},
 		parry_stab = {
-			damage_window_start = 0.18,
-			anim_end_event = "attack_finished",
-			fatigue_cost = "action_stun_push",
-			kind = "sweep",
-			first_person_hit_anim = "shake_hit",
-			no_damage_impact_sound_event = "slashing_hit_armour",
-			sweep_z_offset = 0.05,
-			width_mod = 25,
-			keep_block = true,
-			hit_shield_stop_anim = "attack_hit_shield",
-			hit_effect = "melee_hit_hammers_2h",
-			damage_profile = "light_slash_stab_es_01",
-			use_precision_sweep = true,
-			damage_window_end = 0.38,
-			impact_sound_event = "slashing_hit",
-			charge_value = "action_push",
 			add_fatigue_on_hit = true,
-			range_mod = 1.35,
-			weapon_action_hand = "right",
-			dedicated_target_range = 2.5,
-			range_mod_add = 0.5,
-			weapon_up_offset_mod = -0.25,
+			anim_end_event = "attack_finished",
 			anim_event = "parry_stab",
+			charge_value = "action_push",
+			damage_profile = "light_slash_stab_es_01",
+			damage_window_end = 0.38,
+			damage_window_start = 0.18,
+			dedicated_target_range = 2.5,
+			fatigue_cost = "action_stun_push",
+			first_person_hit_anim = "shake_hit",
+			hit_effect = "melee_hit_hammers_2h",
+			hit_shield_stop_anim = "attack_hit_shield",
 			hit_stop_anim = "attack_hit",
+			impact_sound_event = "slashing_hit",
+			keep_block = true,
+			kind = "sweep",
+			no_damage_impact_sound_event = "slashing_hit_armour",
+			range_mod = 1.35,
+			range_mod_add = 0.5,
+			sweep_z_offset = 0.05,
 			total_time = 1,
+			use_precision_sweep = true,
+			weapon_action_hand = "right",
+			weapon_up_offset_mod = -0.25,
+			width_mod = 25,
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
 			anim_time_scale = time_mod,
 			buff_data = {
 				{
-					start_time = 0,
-					external_multiplier = 1.5,
+					buff_name = "planted_fast_decrease_movement",
 					end_time = 0.3,
-					buff_name = "planted_fast_decrease_movement"
+					external_multiplier = 1.5,
+					start_time = 0,
 				},
 				{
-					start_time = 0.3,
-					external_multiplier = 0.75,
+					buff_name = "planted_fast_decrease_movement",
 					end_time = 0.5,
-					buff_name = "planted_fast_decrease_movement"
-				}
+					external_multiplier = 0.75,
+					start_time = 0.3,
+				},
 			},
 			allowed_chain_actions = {
 				{
-					sub_action = "parry_stab_02",
-					start_time = 0.5,
 					action = "action_three",
-					input = "action_three"
+					input = "action_three",
+					start_time = 0.5,
+					sub_action = "parry_stab_02",
 				},
 				{
-					sub_action = "default",
-					start_time = 0.7,
 					action = "action_one",
+					input = "action_one",
 					release_required = "action_two_hold",
-					input = "action_one"
+					start_time = 0.7,
+					sub_action = "default",
 				},
 				{
-					sub_action = "default",
-					start_time = 0.65,
 					action = "action_two",
-					input = "action_two_hold"
+					input = "action_two_hold",
+					start_time = 0.65,
+					sub_action = "default",
 				},
 				{
-					sub_action = "default",
-					start_time = 0.3,
 					action = "action_wield",
-					input = "action_wield"
-				}
+					input = "action_wield",
+					start_time = 0.3,
+					sub_action = "default",
+				},
 			},
 			chain_condition_func = function (attacker_unit, input_extension)
 				local status_extension = ScriptUnit.extension(attacker_unit, "status_system")
@@ -1513,7 +1516,7 @@ weapon_template.actions = {
 					0.26957789063453674,
 					0.676841676235199,
 					0.6439840197563171,
-					-0.23344726860523224
+					-0.23344726860523224,
 				},
 				{
 					0.19111111111111112,
@@ -1523,7 +1526,7 @@ weapon_template.actions = {
 					0.2197238802909851,
 					0.6910976767539978,
 					0.623090922832489,
-					-0.29302406311035156
+					-0.29302406311035156,
 				},
 				{
 					0.23555555555555557,
@@ -1533,7 +1536,7 @@ weapon_template.actions = {
 					0.2712305784225464,
 					0.6384264230728149,
 					0.5922515392303467,
-					-0.4099801480770111
+					-0.4099801480770111,
 				},
 				{
 					0.28,
@@ -1543,7 +1546,7 @@ weapon_template.actions = {
 					0.26309746503829956,
 					0.6502934098243713,
 					0.5927720665931702,
-					-0.39562541246414185
+					-0.39562541246414185,
 				},
 				{
 					0.3244444444444444,
@@ -1553,7 +1556,7 @@ weapon_template.actions = {
 					0.2589230537414551,
 					0.6463744044303894,
 					0.5929133296012878,
-					-0.4044908583164215
+					-0.4044908583164215,
 				},
 				{
 					0.36888888888888893,
@@ -1563,7 +1566,7 @@ weapon_template.actions = {
 					0.25401440262794495,
 					0.6433561444282532,
 					0.5932517647743225,
-					-0.4118518531322479
+					-0.4118518531322479,
 				},
 				{
 					0.41333333333333333,
@@ -1573,80 +1576,80 @@ weapon_template.actions = {
 					0.252244234085083,
 					0.6412175893783569,
 					0.5954651236534119,
-					-0.41307878494262695
-				}
-			}
+					-0.41307878494262695,
+				},
+			},
 		},
 		parry_stab_02 = {
-			damage_window_start = 0.31,
-			anim_end_event = "attack_finished",
-			fatigue_cost = "action_stun_push",
-			kind = "sweep",
-			first_person_hit_anim = "shake_hit",
-			no_damage_impact_sound_event = "slashing_hit_armour",
-			sweep_z_offset = 0.05,
-			width_mod = 25,
-			keep_block = true,
-			hit_shield_stop_anim = "attack_hit_shield",
-			hit_effect = "melee_hit_hammers_2h",
-			damage_profile = "light_slash_stab_es_01",
-			use_precision_sweep = true,
-			damage_window_end = 0.53,
-			impact_sound_event = "slashing_hit",
-			charge_value = "action_push",
 			add_fatigue_on_hit = true,
-			range_mod = 1.35,
-			weapon_action_hand = "right",
-			dedicated_target_range = 2.5,
-			range_mod_add = 0.5,
-			weapon_up_offset_mod = -0.25,
+			anim_end_event = "attack_finished",
 			anim_event = "parry_stab_02",
+			charge_value = "action_push",
+			damage_profile = "light_slash_stab_es_01",
+			damage_window_end = 0.53,
+			damage_window_start = 0.31,
+			dedicated_target_range = 2.5,
+			fatigue_cost = "action_stun_push",
+			first_person_hit_anim = "shake_hit",
+			hit_effect = "melee_hit_hammers_2h",
+			hit_shield_stop_anim = "attack_hit_shield",
 			hit_stop_anim = "attack_hit",
+			impact_sound_event = "slashing_hit",
+			keep_block = true,
+			kind = "sweep",
+			no_damage_impact_sound_event = "slashing_hit_armour",
+			range_mod = 1.35,
+			range_mod_add = 0.5,
+			sweep_z_offset = 0.05,
 			total_time = 1,
+			use_precision_sweep = true,
+			weapon_action_hand = "right",
+			weapon_up_offset_mod = -0.25,
+			width_mod = 25,
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
 			anim_time_scale = time_mod,
 			buff_data = {
 				{
-					start_time = 0,
-					external_multiplier = 1.5,
+					buff_name = "planted_fast_decrease_movement",
 					end_time = 0.4,
-					buff_name = "planted_fast_decrease_movement"
+					external_multiplier = 1.5,
+					start_time = 0,
 				},
 				{
-					start_time = 0.4,
-					external_multiplier = 0.4,
+					buff_name = "planted_fast_decrease_movement",
 					end_time = 0.8,
-					buff_name = "planted_fast_decrease_movement"
-				}
+					external_multiplier = 0.4,
+					start_time = 0.4,
+				},
 			},
 			allowed_chain_actions = {
 				{
-					sub_action = "parry_stab",
-					start_time = 0.8,
 					action = "action_three",
-					input = "action_three"
+					input = "action_three",
+					start_time = 0.8,
+					sub_action = "parry_stab",
 				},
 				{
-					sub_action = "default",
-					start_time = 1.2,
 					action = "action_one",
+					input = "action_one",
 					release_required = "action_two_hold",
-					input = "action_one"
+					start_time = 1.2,
+					sub_action = "default",
 				},
 				{
-					sub_action = "default",
-					start_time = 0.9,
 					action = "action_two",
-					input = "action_two_hold"
+					input = "action_two_hold",
+					start_time = 0.9,
+					sub_action = "default",
 				},
 				{
-					sub_action = "default",
-					start_time = 0.3,
 					action = "action_wield",
-					input = "action_wield"
-				}
+					input = "action_wield",
+					start_time = 0.3,
+					sub_action = "default",
+				},
 			},
 			chain_condition_func = function (attacker_unit, input_extension)
 				local status_extension = ScriptUnit.extension(attacker_unit, "status_system")
@@ -1662,7 +1665,7 @@ weapon_template.actions = {
 					0.512812614440918,
 					0.628240168094635,
 					0.5451871156692505,
-					-0.2123878449201584
+					-0.2123878449201584,
 				},
 				{
 					0.3244444444444444,
@@ -1672,7 +1675,7 @@ weapon_template.actions = {
 					0.4567553699016571,
 					0.5742567181587219,
 					0.6471295952796936,
-					-0.20694683492183685
+					-0.20694683492183685,
 				},
 				{
 					0.37222222222222223,
@@ -1682,7 +1685,7 @@ weapon_template.actions = {
 					0.23103636503219604,
 					0.7156341075897217,
 					0.5535199046134949,
-					-0.35791850090026855
+					-0.35791850090026855,
 				},
 				{
 					0.42000000000000004,
@@ -1692,7 +1695,7 @@ weapon_template.actions = {
 					0.2794119119644165,
 					0.69120192527771,
 					0.5292873978614807,
-					-0.4049984812736511
+					-0.4049984812736511,
 				},
 				{
 					0.4677777777777778,
@@ -1702,7 +1705,7 @@ weapon_template.actions = {
 					0.28122836351394653,
 					0.6858335733413696,
 					0.527849555015564,
-					-0.4146296977996826
+					-0.4146296977996826,
 				},
 				{
 					0.5155555555555555,
@@ -1712,7 +1715,7 @@ weapon_template.actions = {
 					0.2842657268047333,
 					0.6816337704658508,
 					0.5252355933189392,
-					-0.4227244257926941
+					-0.4227244257926941,
 				},
 				{
 					0.5633333333333334,
@@ -1722,10 +1725,10 @@ weapon_template.actions = {
 					0.28221914172172546,
 					0.6804654002189636,
 					0.5249077081680298,
-					-0.42636963725090027
-				}
-			}
-		}
+					-0.42636963725090027,
+				},
+			},
+		},
 	},
 	action_inspect = ActionTemplates.action_inspect,
 	action_wield = ActionTemplates.wield,
@@ -1736,7 +1739,7 @@ weapon_template.actions = {
 	action_instant_equip_tome = ActionTemplates.instant_equip_tome,
 	action_instant_equip_grimoire = ActionTemplates.instant_equip_grimoire,
 	action_instant_equip_grenade = ActionTemplates.instant_equip_grenade_only,
-	action_instant_equip_healing_draught = ActionTemplates.instant_equip_and_drink_healing_draught
+	action_instant_equip_healing_draught = ActionTemplates.instant_equip_and_drink_healing_draught,
 }
 weapon_template.right_hand_unit = "units/weapons/player/wpn_es_deus_spear_01/wpn_es_deus_spear_01"
 weapon_template.right_hand_attachment_node_linking = AttachmentNodeLinking.one_handed_melee_weapon.right
@@ -1756,35 +1759,35 @@ weapon_template.block_fatigue_point_multiplier = 0.2
 weapon_template.outer_block_fatigue_point_multiplier = 2
 weapon_template.buffs = {
 	change_dodge_distance = {
-		external_optional_multiplier = 1.05
+		external_optional_multiplier = 1.05,
 	},
 	change_dodge_speed = {
-		external_optional_multiplier = 1.05
-	}
+		external_optional_multiplier = 1.05,
+	},
 }
 weapon_template.attack_meta_data = {
 	tap_attack = {
+		arc = 1,
 		penetrating = false,
-		arc = 1
 	},
 	hold_attack = {
+		arc = 2,
 		penetrating = true,
-		arc = 2
-	}
+	},
 }
 weapon_template.defense_meta_data = {
-	push = "heavy"
+	push = "heavy",
 }
 weapon_template.aim_assist_settings = {
-	max_range = 5,
-	no_aim_input_multiplier = 0,
 	base_multiplier = 0,
 	effective_max_range = 4,
+	max_range = 5,
+	no_aim_input_multiplier = 0,
 	breed_scalars = {
-		skaven_storm_vermin = 1,
 		skaven_clan_rat = 1,
-		skaven_slave = 1
-	}
+		skaven_slave = 1,
+		skaven_storm_vermin = 1,
+	},
 }
 weapon_template.weapon_diagram = {
 	light_attack = {
@@ -1792,50 +1795,50 @@ weapon_template.weapon_diagram = {
 		[DamageTypes.CLEAVE] = 2,
 		[DamageTypes.SPEED] = 3,
 		[DamageTypes.STAGGER] = 1,
-		[DamageTypes.DAMAGE] = 3
+		[DamageTypes.DAMAGE] = 3,
 	},
 	heavy_attack = {
 		[DamageTypes.ARMOR_PIERCING] = 4,
 		[DamageTypes.CLEAVE] = 4,
 		[DamageTypes.SPEED] = 2,
 		[DamageTypes.STAGGER] = 2,
-		[DamageTypes.DAMAGE] = 4
-	}
+		[DamageTypes.DAMAGE] = 4,
+	},
 }
 weapon_template.tooltip_keywords = {
 	"weapon_keyword_fast_attacks",
 	"weapon_keyword_wide_sweeps",
-	"weapon_keyword_powerful_blocks"
+	"weapon_keyword_powerful_blocks",
 }
 weapon_template.tooltip_compare = {
 	light = {
 		action_name = "action_one",
-		sub_action_name = "light_attack_left"
+		sub_action_name = "light_attack_left",
 	},
 	heavy = {
 		action_name = "action_one",
-		sub_action_name = "heavy_attack"
-	}
+		sub_action_name = "heavy_attack",
+	},
 }
 weapon_template.tooltip_detail = {
 	light = {
 		action_name = "action_one",
-		sub_action_name = "default"
+		sub_action_name = "default",
 	},
 	heavy = {
 		action_name = "action_one",
-		sub_action_name = "default"
+		sub_action_name = "default",
 	},
 	push = {
 		action_name = "action_one",
-		sub_action_name = "push"
-	}
+		sub_action_name = "push",
+	},
 }
 weapon_template.tooltip_special_action_description = "special_action_spear_and_shield_deus"
 weapon_template.wwise_dep_right_hand = {
-	"wwise/es_deus_01"
+	"wwise/es_deus_01",
 }
 
 return {
-	es_deus_01_template = weapon_template
+	es_deus_01_template = weapon_template,
 }

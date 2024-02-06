@@ -1,30 +1,39 @@
+﻿-- chunkname: @scripts/unit_extensions/ai_supplementary/beastmen_standard_extension.lua
+
 BeastmenStandardExtension = class(BeastmenStandardExtension)
 
 BeastmenStandardExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	local world = extension_init_context.world
+
 	self.world = world
 	self.unit = unit
 	self.is_server = Managers.player.is_server
+
 	local self_pos = Unit.local_position(unit, 0)
+
 	self.self_position_boxed = Vector3Box(self_pos)
+
 	local standard_template_name = extension_init_data.standard_template_name
 	local standard_template = BeastmenStandardTemplates[standard_template_name]
+
 	self.standard_template = standard_template
 	self.standard_template_name = standard_template_name
 	self.standard_template_buff_name = standard_template.buff_template_name
 	self.standard_bearer_unit = extension_init_data.standard_bearer_unit
 	self.side = Managers.state.side.side_by_unit[self.standard_bearer_unit]
 	self.apply_buff_frequency = 0.5
+
 	local t = Managers.time:time("game")
+
 	self.next_apply_buff_t = t
 	self.affected_units_effects = {}
 	self.ai_units_broadphase_result = {}
 	self.ai_units_inside = {}
-	self.standard_data = {
-		challenge_time = t + QuestSettings.standard_bearer_alive_seconds,
-		is_server = self.is_server,
-		standard_bearer_unit = self.standard_bearer_unit
-	}
+	self.standard_data = {}
+	self.standard_data.challenge_time = t + QuestSettings.standard_bearer_alive_seconds
+	self.standard_data.is_server = self.is_server
+	self.standard_data.standard_bearer_unit = self.standard_bearer_unit
+
 	local side_manager = Managers.state.side
 	local side = side_manager.side_by_unit[self.standard_bearer_unit] or side_manager:get_side_from_name("dark_pact")
 
@@ -33,14 +42,15 @@ BeastmenStandardExtension.init = function (self, extension_init_context, unit, e
 	if self.is_server then
 		self.astar_check_frequency = standard_template.astar_check_frequency or 15
 		self.nav_world = Managers.state.entity:system("ai_system"):nav_world()
+
 		local astar_to_players_allowed_layers = {
+			bot_poison_wind = 1,
+			bot_ratling_gun_fire = 1,
+			doors = 1,
+			fire_grenade = 1,
 			ledges = 1,
 			ledges_with_fence = 1,
-			doors = 1,
-			bot_poison_wind = 1,
 			planks = 1,
-			bot_ratling_gun_fire = 1,
-			fire_grenade = 1
 		}
 		local player_astar_navtag_layer_cost_table = GwNavTagLayerCostTable.create()
 
@@ -48,21 +58,22 @@ BeastmenStandardExtension.init = function (self, extension_init_context, unit, e
 		AiUtils.initialize_cost_table(player_astar_navtag_layer_cost_table, astar_to_players_allowed_layers)
 
 		local player_astar_traverse_logic = GwNavTraverseLogic.create(self.nav_world, player_astar_navtag_layer_cost_table)
+
 		self.player_astar_navtag_layer_cost_table = player_astar_navtag_layer_cost_table
 		self.player_astar_traverse_logic = player_astar_traverse_logic
 		self.player_astar_data = {
 			{
-				next_astar_check_t = t + self.astar_check_frequency
+				next_astar_check_t = t + self.astar_check_frequency,
 			},
 			{
-				next_astar_check_t = t + self.astar_check_frequency
+				next_astar_check_t = t + self.astar_check_frequency,
 			},
 			{
-				next_astar_check_t = t + self.astar_check_frequency
+				next_astar_check_t = t + self.astar_check_frequency,
 			},
 			{
-				next_astar_check_t = t + self.astar_check_frequency
-			}
+				next_astar_check_t = t + self.astar_check_frequency,
+			},
 		}
 
 		Managers.state.conflict:add_unit_to_standards(unit)
@@ -97,6 +108,7 @@ BeastmenStandardExtension.on_death = function (self, killer_unit)
 
 				if buff_extension:has_buff_type(self.standard_template_buff_name) then
 					local buff = buff_extension:get_non_stacking_buff(self.standard_template_buff_name)
+
 					buff.standard_is_destroyed = true
 				end
 
@@ -169,7 +181,7 @@ BeastmenStandardExtension.update = function (self, unit, input, dt, context, t)
 
 	local standard_template = self.standard_template
 
-	if self.is_server and standard_template.apply_buff_to_ai and self.next_apply_buff_t <= t then
+	if self.is_server and standard_template.apply_buff_to_ai and t >= self.next_apply_buff_t then
 		local ai_units_inside = self.ai_units_inside
 		local ai_units_broadphase_result = self.ai_units_broadphase_result
 
@@ -189,6 +201,7 @@ BeastmenStandardExtension.update = function (self, unit, input, dt, context, t)
 
 			if is_beastmen and buff_extension and not ai_units_inside[ai_unit] and not buff_extension:get_non_stacking_buff(self.standard_template_buff_name) then
 				local buff_id = buff_system:add_buff(ai_unit, buff_template_name, ai_unit, true)
+
 				ai_units_inside[ai_unit] = buff_id
 			end
 		end
@@ -219,10 +232,10 @@ BeastmenStandardExtension.update = function (self, unit, input, dt, context, t)
 	end
 
 	if standard_template.custom_update_func then
-		standard_template:custom_update_func(self.standard_data, t, dt, unit, self.ai_units_inside)
+		standard_template.custom_update_func(standard_template, self.standard_data, t, dt, unit, self.ai_units_inside)
 	end
 
-	if self.is_server and self.next_vo_trigger_event_t < t then
+	if self.is_server and t > self.next_vo_trigger_event_t then
 		Managers.state.entity:system("surrounding_aware_system"):add_system_event(unit, "standard_bearer_buff_active", DialogueSettings.special_proximity_distance_heard)
 
 		self.next_vo_trigger_event_t = t + 15
@@ -252,6 +265,7 @@ BeastmenStandardExtension._update_self_destruction = function (self, unit, dt, t
 
 				if done then
 					local path_found = GwNavAStar.path_found(astar)
+
 					data.has_calculated_path = true
 
 					if path_found then
@@ -280,7 +294,7 @@ BeastmenStandardExtension._update_self_destruction = function (self, unit, dt, t
 
 					data.astar = nil
 				end
-			elseif data.next_astar_check_t < t then
+			elseif t > data.next_astar_check_t then
 				local target_position = POSITION_LOOKUP[player_unit]
 				local success, z = GwNavQueries.triangle_from_position(nav_world, target_position, 1, 1)
 
@@ -315,7 +329,7 @@ BeastmenStandardExtension._update_self_destruction = function (self, unit, dt, t
 		end
 	end
 
-	local has_path_to_any_player = nil
+	local has_path_to_any_player
 	local num_path_calculations = 0
 
 	for i = 1, #player_astar_data do

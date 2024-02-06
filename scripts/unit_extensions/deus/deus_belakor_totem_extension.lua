@@ -1,12 +1,14 @@
+﻿-- chunkname: @scripts/unit_extensions/deus/deus_belakor_totem_extension.lua
+
 require("scripts/settings/dlcs/belakor/belakor_balancing")
 
 local STATE = {
-	INITIAL = 0,
 	COOLDOWN_FROM_SPAWN = 2,
-	WAITING_TO_SPAWN_ENEMIES = 1,
-	SPAWNING_ENEMIES = 4,
+	DECAL_SPAWNED = 3,
 	DESPAWNED = 5,
-	DECAL_SPAWNED = 3
+	INITIAL = 0,
+	SPAWNING_ENEMIES = 4,
+	WAITING_TO_SPAWN_ENEMIES = 1,
 }
 local SPAWN_DECAL_UNIT_NAME = "units/decals/deus_decal_aoe_cursedchest_01"
 local SPAWN_SCALE = 2
@@ -19,7 +21,7 @@ local function is_totem_in_range(totem_position, player_positions, range)
 	for i = 1, #player_positions do
 		local player_position = player_positions[i]
 
-		if player_position and Vector3.distance_squared(totem_position, player_position) < range_sq then
+		if player_position and range_sq > Vector3.distance_squared(totem_position, player_position) then
 			return true
 		end
 	end
@@ -70,7 +72,8 @@ local function totem_has_los(world, totem_position, player_positions)
 end
 
 local function spawn_enemies(unit, seed, terror_event_name)
-	local terror_event_id = nil
+	local terror_event_id
+
 	terror_event_id = Managers.state.conflict:start_terror_event(terror_event_name, seed, unit)
 	seed = Math.next_random(seed)
 
@@ -88,9 +91,10 @@ function push_players_away(unit_list, push_center, radius, push_speed)
 		local target_position = POSITION_LOOKUP[target_unit]
 		local towards_player = target_position - push_center
 
-		if Vector3.length_squared(towards_player) <= radius_sq then
+		if radius_sq >= Vector3.length_squared(towards_player) then
 			local flat_towards_player = Vector3.normalize(Vector3.flat(towards_player))
 			local push_velocity = flat_towards_player * length
+
 			push_velocity.z = height
 
 			StatusUtils.set_catapulted_network(target_unit, true, push_velocity)
@@ -110,7 +114,9 @@ DeusBelakorTotemExtension.init = function (self, extension_init_context, unit, e
 	self.spawn_count = 0
 	self._is_server = Managers.player.is_server
 	self._world = extension_init_context.world
+
 	local side = Managers.state.side:get_side_from_name("heroes")
+
 	self._hero_side = side
 	self._network_transmit = extension_init_context.network_transmit
 
@@ -124,7 +130,9 @@ end
 
 DeusBelakorTotemExtension.game_object_initialized = function (self, unit, go_id)
 	self._current_state = STATE.COOLDOWN_FROM_SPAWN
+
 	local level_seed = Managers.mechanism:get_level_seed()
+
 	self._seed = HashUtils.fnv32_hash(go_id .. "_" .. level_seed)
 end
 
@@ -183,6 +191,7 @@ DeusBelakorTotemExtension.update = function (self, unit, input, dt, context, t)
 		local camera_position = first_person_extension:current_position()
 		local camera_rotation = first_person_extension:current_rotation()
 		local camera_forward = Quaternion.forward(camera_rotation)
+
 		player_seeing_totem = is_local_player_seeing_totem(self._world, camera_forward, camera_position, totem_position)
 	end
 
@@ -228,7 +237,7 @@ DeusBelakorTotemExtension.update = function (self, unit, input, dt, context, t)
 					self._decal_unit, self._decal_unit_go_id = spawn_pre_spawn_decal(totem_position)
 				end
 
-				if self._spawn_decal_end_t < t then
+				if t > self._spawn_decal_end_t then
 					Unit.flow_event(self._decal_unit, "despawned")
 					self._network_transmit:send_rpc_clients("rpc_flow_event", self._decal_unit_go_id, NetworkLookup.flow_events.despawned)
 
@@ -247,7 +256,7 @@ DeusBelakorTotemExtension.update = function (self, unit, input, dt, context, t)
 					self._current_state = STATE.DECAL_SPAWNED
 				end
 			elseif current_state == STATE.SPAWNING_ENEMIES then
-				if BelakorBalancing.harder_spawn_interval <= self.spawn_count then
+				if self.spawn_count >= BelakorBalancing.harder_spawn_interval then
 					self.spawn_count = 0
 					self._seed, self._totem_terror_event_id = spawn_enemies(self._unit, self._seed, "belakor_hard_totem_spawns")
 				else

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/default_player_unit/energy/player_unit_energy_extension.lua
+
 require("scripts/unit_extensions/default_player_unit/energy/energy_data")
 
 PlayerUnitEnergyExtension = class(PlayerUnitEnergyExtension)
@@ -6,7 +8,9 @@ PlayerUnitEnergyExtension.init = function (self, extension_init_context, unit, e
 	self.world = extension_init_context.world
 	self.unit = unit
 	self.network_manager = Managers.state.network
+
 	local energy_data = extension_init_data.energy_data
+
 	self._max_energy = energy_data.max_value or 40
 	self._energy = self._max_energy
 	self._recharge_delay_timer = 0
@@ -36,7 +40,7 @@ PlayerUnitEnergyExtension._update_game_object = function (self)
 		local max_energy = self:get_max()
 		local is_on_depletion_cooldown = self:_is_on_depletion_cooldown()
 
-		fassert(NetworkConstants.max_energy.min <= max_energy and max_energy <= NetworkConstants.max_energy.max, "Max energy outside value bounds allowed by network variable!")
+		fassert(max_energy >= NetworkConstants.max_energy.min and max_energy <= NetworkConstants.max_energy.max, "Max energy outside value bounds allowed by network variable!")
 		GameSession.set_game_object_field(game, go_id, "energy_percentage", current_value_percentage)
 		GameSession.set_game_object_field(game, go_id, "energy_max_value", max_energy)
 		GameSession.set_game_object_field(game, go_id, "is_on_depletion_cooldown", is_on_depletion_cooldown)
@@ -89,6 +93,7 @@ PlayerUnitEnergyExtension.drain = function (self, amount)
 
 	local energy = self._energy
 	local new_energy_amount = energy - amount
+
 	new_energy_amount = math.clamp(new_energy_amount, 0, energy)
 	self._energy = new_energy_amount
 	self._recharge_delay_timer = Managers.time:time("game") + self._recharge_delay
@@ -100,6 +105,7 @@ PlayerUnitEnergyExtension.add_energy = function (self, amount)
 	local energy = self._energy
 	local new_energy_amount = energy + amount
 	local max_energy = self._max_energy
+
 	new_energy_amount = math.clamp(new_energy_amount, 0, max_energy)
 	self._energy = new_energy_amount
 end
@@ -136,7 +142,7 @@ PlayerUnitEnergyExtension._process_recharge = function (self, dt, t)
 end
 
 PlayerUnitEnergyExtension._is_on_depletion_cooldown = function (self)
-	return Managers.time:time("game") < self._depletion_cooldown_timer
+	return self._depletion_cooldown_timer > Managers.time:time("game")
 end
 
 PlayerUnitEnergyExtension._is_recharging = function (self)

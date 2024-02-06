@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/dlcs/skulls_2023/buff_settings_skulls_2023.lua
+
 local settings = DLCSettings.skulls_2023
 local BUFF_DURATION = 20
 local MAX_STACKS = 5
@@ -7,7 +9,7 @@ local buff_order = {
 	"skulls_2023_buff_attack_speed",
 	"skulls_2023_buff_crit_chance",
 	"skulls_2023_buff_movement_speed",
-	"skulls_2023_buff_cooldown_regen"
+	"skulls_2023_buff_cooldown_regen",
 }
 local MIN_BUFF_DURATION = 20
 local BUFF_DURATION_PER_STACK = 10
@@ -25,7 +27,7 @@ end
 
 local function apply_buffs_from_stacks(target_unit, stack_count)
 	local params = {
-		external_optional_duration = buff_duration_func(stack_count)
+		external_optional_duration = buff_duration_func(stack_count),
 	}
 	local buff_system = Managers.state.entity:system("buff_system")
 
@@ -39,164 +41,164 @@ settings.buff_templates = {
 		buffs = {
 			{
 				name = "skulls_2023_buff",
-				max_stacks = MAX_STACKS
+				max_stacks = MAX_STACKS,
 			},
 			{
+				buff_func = "on_kill_skulls_2023_buff",
 				event = "on_kill",
-				name = "skulls_2023_buff_kill_tracker",
 				max_stacks = 1,
-				buff_func = "on_kill_skulls_2023_buff"
+				name = "skulls_2023_buff_kill_tracker",
 			},
 			{
-				name = "skulls_2023_buff_main",
-				refresh_durations = true,
-				duration_end_func = "cleanup_skulls_2023_buff",
-				event = "on_knocked_down",
-				remove_buff_func = "remove_skulls_2023_buff",
 				apply_buff_func = "apply_skulls_2023_buff",
 				buff_func = "dummy_function",
-				remove_on_proc = true,
+				duration_end_func = "cleanup_skulls_2023_buff",
+				event = "on_knocked_down",
 				max_stacks = 1,
+				name = "skulls_2023_buff_main",
 				reapply_buff_func = "reapply_skulls_2023_buff",
+				refresh_durations = true,
+				remove_buff_func = "remove_skulls_2023_buff",
+				remove_on_proc = true,
 				duration = BUFF_DURATION,
-				duration_modifier_func = buff_duration_modifier_func
-			}
-		}
+				duration_modifier_func = buff_duration_modifier_func,
+			},
+		},
 	},
 	skulls_2023_buff_power_level = {
 		buffs = {
 			{
-				name = "skulls_2023_buff_power_level",
-				multiplier = 0.15,
-				stat_buff = "power_level",
 				buff_func = "dummy_function",
 				event = "on_knocked_down",
-				refresh_durations = true,
-				priority_buff = true,
-				remove_on_proc = true,
-				max_stacks = 1,
 				icon = "potion_liquid_bravado",
-				duration = BUFF_DURATION
-			}
-		}
+				max_stacks = 1,
+				multiplier = 0.15,
+				name = "skulls_2023_buff_power_level",
+				priority_buff = true,
+				refresh_durations = true,
+				remove_on_proc = true,
+				stat_buff = "power_level",
+				duration = BUFF_DURATION,
+			},
+		},
 	},
 	skulls_2023_buff_attack_speed = {
 		buffs = {
 			{
-				name = "skulls_2023_buff_attack_speed",
-				multiplier = 0.12,
-				stat_buff = "attack_speed",
 				buff_func = "dummy_function",
 				event = "on_knocked_down",
-				refresh_durations = true,
-				priority_buff = true,
-				remove_on_proc = true,
-				max_stacks = 1,
 				icon = "grudge_mark_frenzy_debuff",
-				duration = BUFF_DURATION
-			}
-		}
+				max_stacks = 1,
+				multiplier = 0.12,
+				name = "skulls_2023_buff_attack_speed",
+				priority_buff = true,
+				refresh_durations = true,
+				remove_on_proc = true,
+				stat_buff = "attack_speed",
+				duration = BUFF_DURATION,
+			},
+		},
 	},
 	skulls_2023_buff_crit_chance = {
 		buffs = {
 			{
-				name = "skulls_2023_buff_crit_chance",
-				stat_buff = "critical_strike_chance",
+				bonus = 0.2,
 				buff_func = "dummy_function",
 				event = "on_knocked_down",
-				refresh_durations = true,
-				priority_buff = true,
-				remove_on_proc = true,
-				max_stacks = 1,
 				icon = "bardin_slayer_crit_chance",
-				bonus = 0.2,
-				duration = BUFF_DURATION
-			}
-		}
+				max_stacks = 1,
+				name = "skulls_2023_buff_crit_chance",
+				priority_buff = true,
+				refresh_durations = true,
+				remove_on_proc = true,
+				stat_buff = "critical_strike_chance",
+				duration = BUFF_DURATION,
+			},
+		},
 	},
 	skulls_2023_buff_movement_speed = {
 		buffs = {
 			{
-				priority_buff = true,
-				name = "skulls_2023_buff_movement_speed",
-				icon = "mutator_skulls_movement_speed",
+				apply_buff_func = "apply_movement_buff",
 				buff_func = "dummy_function",
 				event = "on_knocked_down",
-				remove_buff_func = "remove_movement_buff",
-				refresh_durations = true,
-				multiplier = 1.2,
-				apply_buff_func = "apply_movement_buff",
-				remove_on_proc = true,
+				icon = "mutator_skulls_movement_speed",
 				max_stacks = 1,
+				multiplier = 1.2,
+				name = "skulls_2023_buff_movement_speed",
+				priority_buff = true,
+				refresh_durations = true,
+				remove_buff_func = "remove_movement_buff",
+				remove_on_proc = true,
 				path_to_movement_setting_to_modify = {
-					"move_speed"
+					"move_speed",
 				},
-				duration = BUFF_DURATION
-			}
-		}
+				duration = BUFF_DURATION,
+			},
+		},
 	},
 	skulls_2023_buff_cooldown_regen = {
 		buffs = {
 			{
-				name = "skulls_2023_buff_cooldown_regen",
-				multiplier = 0.25,
-				stat_buff = "cooldown_regen",
 				buff_func = "dummy_function",
 				event = "on_knocked_down",
-				refresh_durations = true,
-				priority_buff = true,
-				remove_on_proc = true,
-				max_stacks = 1,
 				icon = "mutator_skulls_cooldown_reduction",
-				duration = BUFF_DURATION
-			}
-		}
+				max_stacks = 1,
+				multiplier = 0.25,
+				name = "skulls_2023_buff_cooldown_regen",
+				priority_buff = true,
+				refresh_durations = true,
+				remove_on_proc = true,
+				stat_buff = "cooldown_regen",
+				duration = BUFF_DURATION,
+			},
+		},
 	},
 	skulls_2023_buff_refresh = {
 		buffs = {
 			{
-				reset_on_max_stacks = true,
-				name = "skulls_2023_buff_refresh",
 				buff_func = "dummy_function",
-				on_max_stacks_func = "skulls_2023_stack_refresh",
-				icon = "buff_icon_mutator_icon_slayer_curse",
 				event = "on_knocked_down",
+				icon = "buff_icon_mutator_icon_slayer_curse",
+				name = "skulls_2023_buff_refresh",
+				on_max_stacks_func = "skulls_2023_stack_refresh",
 				remove_on_proc = true,
-				max_stacks = BUFF_REFRESH_STACKS
-			}
-		}
+				reset_on_max_stacks = true,
+				max_stacks = BUFF_REFRESH_STACKS,
+			},
+		},
 	},
 	skulls_2023_debuff = {
 		buffs = {
 			{
-				priority_buff = true,
-				name = "skulls_2023_debuff",
-				icon = "grudge_mark_cursed_debuff",
-				buff_func = "dummy_function",
-				event = "on_knocked_down",
-				remove_buff_func = "remove_skulls_2023_debuff",
 				apply_buff_func = "apply_skulls_2023_debuff",
-				refresh_durations = true,
-				remove_on_proc = true,
+				buff_func = "dummy_function",
 				debuff = true,
+				event = "on_knocked_down",
+				icon = "grudge_mark_cursed_debuff",
+				name = "skulls_2023_debuff",
+				priority_buff = true,
+				refresh_durations = true,
+				remove_buff_func = "remove_skulls_2023_debuff",
+				remove_on_proc = true,
 				duration = DEBUFF_DURATION,
-				max_stacks = MAX_STACKS
+				max_stacks = MAX_STACKS,
 			},
 			{
-				name = "skulls_2023_debuff_dot",
-				damage_percentage = 0.01,
 				buff_func = "dummy_function",
+				damage_percentage = 0.01,
 				event = "on_knocked_down",
+				max_stacks = 1,
+				name = "skulls_2023_debuff_dot",
 				refresh_durations = true,
 				remove_on_proc = true,
-				update_start_delay = 1,
-				max_stacks = 1,
-				update_func = "update_skulls_2023_debuff_dot",
 				update_frequency = 1,
-				duration = DEBUFF_DURATION
-			}
-		}
-	}
+				update_func = "update_skulls_2023_debuff_dot",
+				update_start_delay = 1,
+				duration = DEBUFF_DURATION,
+			},
+		},
+	},
 }
 
 local function is_local(unit)
@@ -264,7 +266,7 @@ settings.buff_function_templates = {
 
 			World.set_particles_material_scalar(world, effect_id, "overlay", "shadow_amount", effect_strength)
 
-			if MAX_STACKS <= num_buff_stacks and not buff.sound_played then
+			if num_buff_stacks >= MAX_STACKS and not buff.sound_played then
 				local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
 
 				first_person_extension:play_hud_sound_event("Play_skulls_event_buff_max_stacks")
@@ -306,7 +308,7 @@ settings.buff_function_templates = {
 
 			for i = 1, num_buff_stacks do
 				buff_system:add_buff_synced(unit, "skulls_2023_debuff", BuffSyncType.LocalAndServer, {
-					external_optional_value = num_buff_stacks
+					external_optional_value = num_buff_stacks,
 				})
 			end
 		end
@@ -338,8 +340,10 @@ settings.buff_function_templates = {
 
 		if num_buff_stacks <= 0 then
 			local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
+
 			buff.effect_id = first_person_extension:create_screen_particles("fx/skulls_2023/screenspace_skulls_2023_debuff")
 			buff.effect_size_id = World.find_particles_variable(world, "fx/skulls_2023/screenspace_skulls_2023_debuff", "size")
+
 			local effect_id = buff.effect_id
 			local effect_size_id = buff.effect_size_id
 			local effect_lerp = ((params.value or 1) - 1) / (MAX_STACKS - 1)
@@ -369,7 +373,7 @@ settings.buff_function_templates = {
 		local current_health = player_health_extension:current_health()
 		local min_health = 1
 
-		if current_health > min_health then
+		if min_health < current_health then
 			local buff_extension = ScriptUnit.extension(unit, "buff_system")
 			local debuff_stacks = buff_extension:num_buff_stacks("skulls_2023_debuff")
 			local max_health = player_health_extension:get_max_health()
@@ -382,7 +386,7 @@ settings.buff_function_templates = {
 				DamageUtils.add_damage_network(unit, unit, modified_damage_amount, "torso", "wounded_dot", nil, damage_direction)
 			end
 		end
-	end
+	end,
 }
 settings.proc_functions = {
 	on_kill_skulls_2023_buff = function (owner_unit, buff, params)
@@ -402,7 +406,7 @@ settings.proc_functions = {
 				end
 			end
 		end
-	end
+	end,
 }
 settings.stacking_buff_functions = {
 	skulls_2023_buff_refresh = function (owner_unit, sub_buff_template)
@@ -418,8 +422,8 @@ settings.stacking_buff_functions = {
 			local buff_system = Managers.state.entity:system("buff_system")
 
 			buff_system:add_buff_synced(owner_unit, "skulls_2023_buff", BuffSyncType.LocalAndServer, {
-				refresh_duration_only = true
+				refresh_duration_only = true,
 			})
 		end
-	end
+	end,
 }

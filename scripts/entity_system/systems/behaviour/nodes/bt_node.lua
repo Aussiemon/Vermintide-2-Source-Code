@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_node.lua
+
 BTNode = class(BTNode)
 
 require("scripts/entity_system/systems/behaviour/nodes/bt_conditions")
@@ -12,6 +14,7 @@ BTNode.init = function (self, identifier, parent, condition_name, enter_hook_nam
 	self._parent = parent
 	self._identifier = identifier
 	self._tree_node = tree_node
+
 	local condition = CONDITIONS[condition_name]
 
 	fassert(condition, "No condition called %q", condition_name)

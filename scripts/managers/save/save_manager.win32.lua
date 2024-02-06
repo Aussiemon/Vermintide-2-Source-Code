@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/save/save_manager.win32.lua
+
 require("scripts/managers/save/script_save_token")
 
 SaveManager = class(SaveManager)

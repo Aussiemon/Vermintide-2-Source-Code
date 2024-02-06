@@ -1,9 +1,12 @@
+﻿-- chunkname: @scripts/entity_system/systems/extension_system_base.lua
+
 ExtensionSystemBase = class(ExtensionSystemBase)
 
 ExtensionSystemBase.init = function (self, entity_system_creation_context, system_name, extension_list)
 	self.is_server = entity_system_creation_context.is_server
 	self.world = entity_system_creation_context.world
 	self.name = system_name
+
 	local entity_manager = entity_system_creation_context.entity_manager
 
 	entity_manager:register_system(self, system_name, extension_list)
@@ -22,7 +25,7 @@ ExtensionSystemBase.init = function (self, entity_system_creation_context, syste
 		statistics_db = self.statistics_db,
 		ingame_ui = entity_system_creation_context.ingame_ui,
 		is_server = entity_system_creation_context.is_server,
-		owning_system = self
+		owning_system = self,
 	}
 	self.update_list = {}
 	self.extensions = {}
@@ -30,10 +33,11 @@ ExtensionSystemBase.init = function (self, entity_system_creation_context, syste
 
 	for i = 1, #extension_list do
 		local extension_name = extension_list[i]
+
 		self.update_list[extension_name] = {
 			pre_update = {},
 			update = {},
-			post_update = {}
+			post_update = {},
 		}
 		self.extensions[extension_name] = 0
 		self.profiler_names[extension_name] = extension_name .. " [ALL]"
@@ -42,8 +46,9 @@ end
 
 ExtensionSystemBase.on_add_extension = function (self, world, unit, extension_name, extension_init_data)
 	local extension_alias = self.NAME
-	local extension_pool_table = nil
+	local extension_pool_table
 	local extension = ScriptUnit.add_extension(self.extension_init_context, unit, extension_name, extension_alias, extension_init_data, extension_pool_table)
+
 	self.extensions[extension_name] = (self.extensions[extension_name] or 0) + 1
 
 	if extension.pre_update then

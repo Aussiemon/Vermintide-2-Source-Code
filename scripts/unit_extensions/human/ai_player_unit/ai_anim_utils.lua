@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/unit_extensions/human/ai_player_unit/ai_anim_utils.lua
+
 AiAnimUtils = AiAnimUtils or {}
+
 local POSITION_LOOKUP = POSITION_LOOKUP
 
 AiAnimUtils.get_animation_rotation_scale = function (unit, target_pos, animation_name, anims_data)
@@ -10,6 +13,7 @@ AiAnimUtils.get_animation_rotation_scale = function (unit, target_pos, animation
 	local target_rot_radians = math.atan2(target_dir.y, target_dir.x)
 	local unit_to_target_rot_radians = target_rot_radians - unit_rot_radians
 	local rotation_sign = anims_data[animation_name].dir
+
 	unit_to_target_rot_radians = unit_to_target_rot_radians * rotation_sign
 
 	if unit_to_target_rot_radians < 0 then
@@ -31,7 +35,7 @@ local function randomize(event)
 end
 
 AiAnimUtils.get_start_move_animation = function (unit, target_pos, anims_table)
-	local animation_name = nil
+	local animation_name
 	local current_pos = POSITION_LOOKUP[unit]
 	local target_vector_flat = Vector3.normalize(Vector3.flat(target_pos - current_pos))
 	local rotation = Unit.local_rotation(unit, 0)
@@ -39,10 +43,11 @@ AiAnimUtils.get_start_move_animation = function (unit, target_pos, anims_table)
 	local dot_product = Vector3.dot(forward_vector_flat, target_vector_flat)
 	local inv_sqrt_2 = 0.707
 
-	if dot_product >= inv_sqrt_2 then
+	if inv_sqrt_2 <= dot_product then
 		animation_name = anims_table.fwd
 	elseif dot_product > -inv_sqrt_2 then
 		local is_to_the_left = Vector3.cross(forward_vector_flat, target_vector_flat).z > 0
+
 		animation_name = is_to_the_left and anims_table.left or anims_table.right
 	else
 		animation_name = anims_table.bwd
@@ -119,10 +124,11 @@ local VEL_FROM_NETWORK_SCALE = 0.1
 AiAnimUtils.velocity_network_scale = function (velocity, is_sending)
 	if is_sending then
 		velocity = velocity * VEL_TO_NETWORK_SCALE
+
 		local result = {
 			math.round(velocity.x),
 			math.round(velocity.y),
-			math.round(velocity.z)
+			math.round(velocity.z),
 		}
 
 		return result
@@ -139,10 +145,11 @@ local POS_FROM_NETWORK_SCALE = 0.01
 AiAnimUtils.position_network_scale = function (position, is_sending)
 	if is_sending then
 		position = position * POS_TO_NETWORK_SCALE
+
 		local result = {
 			math.round(position.x),
 			math.round(position.y),
-			math.round(position.z)
+			math.round(position.z),
 		}
 
 		return result
@@ -163,7 +170,7 @@ AiAnimUtils.rotation_network_scale = function (rotation, is_sending)
 			math.round(x * ROT_TO_NETWORK_SCALE),
 			math.round(y * ROT_TO_NETWORK_SCALE),
 			math.round(z * ROT_TO_NETWORK_SCALE),
-			math.round(w * ROT_TO_NETWORK_SCALE)
+			math.round(w * ROT_TO_NETWORK_SCALE),
 		}
 
 		return result
@@ -178,6 +185,7 @@ AiAnimUtils.cycle_anims = function (blackboard, anims, blackboard_index_name)
 	local num_anims = #anims
 	local i = blackboard[blackboard_index_name] % num_anims + 1
 	local anim_name = anims[i]
+
 	blackboard[blackboard_index_name] = i
 
 	return anim_name

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/network/voip.lua
+
 local function voip_info_print(...)
 	if script_data.debug_voip then
 		printf(...)
@@ -9,6 +11,7 @@ local function voip_warning_print(...)
 end
 
 Voip = class(Voip)
+
 local TALKING_THRESHOLD = -65
 local has_steam = rawget(_G, "Steam") and rawget(_G, "Steam").connected() and not Development.parameter("use_lan_backend")
 local disable_voip = Development.parameter("disable_voip")
@@ -21,23 +24,31 @@ if has_steam and not disable_voip then
 		SteamVoip.setup()
 
 		local world_name = "voip_world"
-		local shading_callback, layer = nil
+		local shading_callback, layer
 		local world = Managers.world:create_world(world_name, GameSettingsDevelopment.default_environment, shading_callback, layer, Application.DISABLE_PHYSICS, Application.DISABLE_APEX_CLOTH, Application.DISABLE_RENDERING)
+
 		self.world = world
 		self.wwise_world = Wwise.wwise_world(world)
 		self._lobby = params.lobby
 		self._member_buffer = {}
+
 		local member_list = {}
+
 		self.member_list = member_list
+
 		local added_members = {}
+
 		self.added_members = added_members
 		self.muted_peers = {}
 		self._peer_playing_id = {}
+
 		local my_peer_id = params.my_peer_id
+
 		self.peer_id = my_peer_id
 		self.push_to_talk = Application.user_setting("voip_push_to_talk")
 		self.push_to_talk_active = false
 		self.enabled = Application.user_setting("voip_is_enabled")
+
 		local is_server = params.is_server
 
 		if is_server then
@@ -66,13 +77,16 @@ if has_steam and not disable_voip then
 
 	Voip._create_gui = function (self)
 		local top_world = Managers.world:world("top_ingame_view")
+
 		self._ui_top_renderer = UIRenderer.create(top_world, "material", "materials/ui/ui_1080p_voice_chat", "material", "materials/fonts/gw_fonts")
+
 		local context = {
 			player_manager = Managers.player,
 			ui_top_renderer = self._ui_top_renderer,
 			voip = self,
-			lobby = self._lobby
+			lobby = self._lobby,
 		}
+
 		self._voice_chat_ui = VoiceChatUI:new(context)
 
 		self._voice_chat_ui:set_input_manager(Managers.input)
@@ -123,7 +137,9 @@ if has_steam and not disable_voip then
 		end
 
 		self.added_members[peer_id] = true
+
 		local playing_id = WwiseWorld.start_voip_output(self.wwise_world, "Play_voip")
+
 		self._peer_playing_id[peer_id] = playing_id
 
 		return playing_id
@@ -161,6 +177,7 @@ if has_steam and not disable_voip then
 
 	Voip.rpc_voip_room_to_join = function (self, channel_id, room_id)
 		self.requesting_room = false
+
 		local peer_id = CHANNEL_TO_PEER_ID[channel_id]
 
 		if self.room_id then
@@ -170,7 +187,9 @@ if has_steam and not disable_voip then
 
 			self.room_id = room_id
 			self.room_host = peer_id
+
 			local voip_client = SteamVoip.join_room(peer_id, room_id)
+
 			self.voip_client = voip_client
 		end
 	end
@@ -204,6 +223,7 @@ if has_steam and not disable_voip then
 		self._voice_chat_ui:destroy()
 
 		self._voice_chat_ui = nil
+
 		local top_world = Managers.world:world("top_ingame_view")
 
 		UIRenderer.destroy(self._ui_top_renderer, top_world)
@@ -439,7 +459,7 @@ if has_steam and not disable_voip then
 
 		local level = SteamVoipClient.audio_level(self.voip_client, peer_id)
 
-		return TALKING_THRESHOLD < level
+		return level > TALKING_THRESHOLD
 	end
 
 	Voip.audio_level = function (self, peer_id)

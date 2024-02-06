@@ -1,51 +1,54 @@
+﻿-- chunkname: @scripts/managers/achievements/achievement_templates_karak_azgaraz_part_1.lua
+
 local add_event_challenge = AchievementTemplateHelper.add_event_challenge
 local add_levels_complete_challenge = AchievementTemplateHelper.add_levels_complete_challenge
 local add_meta_challenge = AchievementTemplateHelper.add_meta_challenge
 local achievements = AchievementTemplates.achievements
 local add_console_achievements = AchievementTemplateHelper.add_console_achievements
 local XB1_ACHIEVEMENT_ID = {
-	dwarf_valaya_emote = 113,
 	dwarf_barrel_carry = 112,
-	karak_azgaraz_complete_dlc_dwarf_interior_legend = 119
+	dwarf_valaya_emote = 113,
+	karak_azgaraz_complete_dlc_dwarf_interior_legend = 119,
 }
 local PS4_ACHIEVEMENT_ID = {
-	dwarf_valaya_emote = "092"
+	dwarf_valaya_emote = "092",
 }
 local all_difficulties = {}
 local portals = {
-	LevelSettings.dlc_dwarf_interior
+	LevelSettings.dlc_dwarf_interior,
 }
 local difficulties = {
 	"normal",
 	"hard",
 	"harder",
 	"hardest",
-	"cataclysm"
+	"cataclysm",
 }
 local player_facing_diff_names = {
-	hardest = "legend",
+	cataclysm = "cataclysm",
 	hard = "veteran",
 	harder = "champion",
-	cataclysm = "cataclysm",
-	normal = "recruit"
+	hardest = "legend",
+	normal = "recruit",
 }
 
 for i = 1, #difficulties do
 	local difficulty_name = difficulties[i]
 	local name = "karak_azgaraz_complete_dlc_dwarf_interior_" .. player_facing_diff_names[difficulty_name]
 	local icon = "achievement_interior_" .. player_facing_diff_names[difficulty_name]
+
 	all_difficulties[i] = name
 
 	add_levels_complete_challenge(achievements, name, portals, DifficultySettings[difficulty_name].rank, icon, nil, XB1_ACHIEVEMENT_ID[name], PS4_ACHIEVEMENT_ID[name])
 end
 
 achievements.dwarf_valaya_emote = {
-	name = "achv_dwarf_valaya_emote_name",
+	desc = "achv_dwarf_valaya_emote_desc",
 	display_completion_ui = true,
 	icon = "achievement_dwarf_valaya_emote",
-	desc = "achv_dwarf_valaya_emote_desc",
+	name = "achv_dwarf_valaya_emote_name",
 	events = {
-		"dwarf_valaya_emote"
+		"dwarf_valaya_emote",
 	},
 	completed = function (statistics_db, stats_id, template_data)
 		return statistics_db:get_persistent_stat(stats_id, "dwarf_valaya_emote") >= 1
@@ -86,7 +89,7 @@ achievements.dwarf_valaya_emote = {
 			return
 		end
 
-		if template_data.end_t < t and not template_data.completed then
+		if t > template_data.end_t and not template_data.completed then
 			local audio_system_extension = Managers.state.entity:system("audio_system")
 
 			audio_system_extension:_play_event("Play_hud_small_puzzle_cue", unit)
@@ -109,31 +112,31 @@ achievements.dwarf_valaya_emote = {
 
 			template_data.completed = true
 		end
-	end
+	end,
 }
 achievements.dwarf_rune = {
-	name = "achv_dwarf_rune_name",
+	desc = "achv_dwarf_rune_desc",
 	display_completion_ui = true,
 	icon = "achievement_dwarf_rune",
-	desc = "achv_dwarf_rune_desc",
+	name = "achv_dwarf_rune_name",
 	events = {
-		"dwarf_rune"
+		"dwarf_rune",
 	},
 	completed = function (statistics_db, stats_id, template_data)
 		return statistics_db:get_persistent_stat(stats_id, "dwarf_rune") >= 1
 	end,
 	on_event = function (statistics_db, stats_id, template_data, event_name, event_data)
 		statistics_db:increment_stat(stats_id, "dwarf_rune")
-	end
+	end,
 }
 achievements.dwarf_barrel_carry = {
-	name = "achv_dwarf_barrel_carry_name",
+	desc = "achv_dwarf_barrel_carry_desc",
 	display_completion_ui = true,
 	icon = "achievement_dwarf_barrel_carry",
-	desc = "achv_dwarf_barrel_carry_desc",
+	name = "achv_dwarf_barrel_carry_name",
 	events = {
 		"objective_entered_socket_zone",
-		"dwarf_barrel_carry"
+		"dwarf_barrel_carry",
 	},
 	completed = function (statistics_db, stats_id, template_data)
 		return statistics_db:get_persistent_stat(stats_id, "dwarf_barrel_carry") >= 1
@@ -162,33 +165,35 @@ achievements.dwarf_barrel_carry = {
 		if success then
 			statistics_db:increment_stat(stats_id, "dwarf_barrel_carry")
 		end
-	end
+	end,
 }
 achievements.dwarf_bells = {
-	name = "achv_dwarf_bells_name",
+	desc = "achv_dwarf_bells_desc",
 	display_completion_ui = true,
 	icon = "achievement_dwarf_bells",
-	desc = "achv_dwarf_bells_desc",
+	name = "achv_dwarf_bells_name",
 	events = {
-		"dwarf_bells"
+		"dwarf_bells",
 	},
 	completed = function (statistics_db, stats_id, template_data)
 		return statistics_db:get_persistent_stat(stats_id, "dwarf_bells") >= 1
 	end,
 	on_event = function (statistics_db, stats_id, template_data, event_name, event_data)
 		statistics_db:increment_stat(stats_id, "dwarf_bells")
-	end
+	end,
 }
+
 local DWARF_PRESSURE_TIME_LIMIT = 8
+
 achievements.dwarf_pressure = {
-	name = "achv_dwarf_pressure_name",
 	display_completion_ui = true,
 	icon = "achievement_dwarf_pressure",
+	name = "achv_dwarf_pressure_name",
 	desc = function ()
 		return string.format(Localize("achv_dwarf_pressure_desc"), DWARF_PRESSURE_TIME_LIMIT)
 	end,
 	events = {
-		"dwarf_pressure"
+		"dwarf_pressure",
 	},
 	completed = function (statistics_db, stats_id, template_data)
 		return statistics_db:get_persistent_stat(stats_id, "dwarf_pressure") >= 1
@@ -229,7 +234,7 @@ achievements.dwarf_pressure = {
 
 			return
 		end
-	end
+	end,
 }
 interior_all_challenges = table.clone(all_difficulties)
 

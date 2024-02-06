@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/helpers/weapon_utils.lua
+
 WeaponUtils = WeaponUtils or {}
 
 WeaponUtils.add_bot_meta_data_chain_actions = function (actions, attack_chain_transitions)
@@ -8,13 +10,14 @@ WeaponUtils.add_bot_meta_data_chain_actions = function (actions, attack_chain_tr
 			local current_action_settings = actions[action_name][sub_action_name]
 			local allowed_chain_actions = current_action_settings.allowed_chain_actions
 			local chain_action = WeaponUtils.find_allowed_chain_action(allowed_chain_actions, action_name, sub_action_name, wanted_action_name, wanted_sub_action_name)
+
 			sub_action_data.chain_action = chain_action
 		end
 	end
 end
 
 WeaponUtils.find_allowed_chain_action = function (allowed_chain_actions, action_name, sub_action_name, wanted_action_name, wanted_sub_action_name)
-	local found_chain_action = nil
+	local found_chain_action
 	local num_allowed_chain_actions = #allowed_chain_actions
 
 	for i = 1, num_allowed_chain_actions do
@@ -42,11 +45,13 @@ WeaponUtils.get_weapon_packages = function (item_template, item_units, first_per
 		end
 
 		packages[#packages + 1] = left_hand_unit_name .. "_3p"
+
 		local wwise_deps = item_template.wwise_dep_left_hand
 
 		if wwise_deps then
 			for i = 1, #wwise_deps do
 				local wwise_dep = wwise_deps[i]
+
 				packages[#packages + 1] = wwise_dep
 			end
 		end
@@ -60,11 +65,13 @@ WeaponUtils.get_weapon_packages = function (item_template, item_units, first_per
 		end
 
 		packages[#packages + 1] = right_hand_unit_name .. "_3p"
+
 		local wwise_deps = item_template.wwise_dep_right_hand
 
 		if wwise_deps then
 			for i = 1, #wwise_deps do
 				local wwise_dep = wwise_deps[i]
+
 				packages[#packages + 1] = wwise_dep
 			end
 		end
@@ -78,11 +85,13 @@ WeaponUtils.get_weapon_packages = function (item_template, item_units, first_per
 		end
 
 		packages[#packages + 1] = item_units.ammo_unit_3p or ammo_unit_name .. "_3p"
+
 		local wwise_deps = item_template.wwise_dep_ammo
 
 		if wwise_deps then
 			for i = 1, #wwise_deps do
 				local wwise_dep = wwise_deps[i]
+
 				packages[#packages + 1] = wwise_dep
 			end
 		end

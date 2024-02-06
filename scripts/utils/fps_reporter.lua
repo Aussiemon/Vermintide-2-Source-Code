@@ -1,5 +1,8 @@
+﻿-- chunkname: @scripts/utils/fps_reporter.lua
+
 FPSReporter = class(FPSReporter)
 FPSReporter.NAME = "FPSReporter"
+
 local NUM_BUCKETS = 10
 
 FPSReporter.init = function (self)
@@ -27,6 +30,7 @@ end
 
 FPSReporter._update_histogram = function (self, fps)
 	local bucket_index = math.clamp(math.ceil(fps / NUM_BUCKETS), 1, NUM_BUCKETS + 1)
+
 	self._histogram[bucket_index] = self._histogram[bucket_index] + 1
 end
 

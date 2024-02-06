@@ -1,9 +1,12 @@
+﻿-- chunkname: @scripts/unit_extensions/level/crawl_space_extension.lua
+
 CrawlSpaceExtension = class(CrawlSpaceExtension)
 
 CrawlSpaceExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	self.unit = unit
 	self.partner_unit = nil
 	self.entrance_type = Unit.get_data(unit, "entrance_type")
+
 	local pos = Unit.local_position(unit, 0)
 	local rotation = Unit.local_rotation(unit, 0)
 
@@ -12,6 +15,7 @@ CrawlSpaceExtension.init = function (self, extension_init_context, unit, extensi
 	end
 
 	local look_dir = Vector3.flat(Quaternion.forward(rotation))
+
 	self.enter_rot = Vector3Box(look_dir)
 	self.enter_pos = Vector3Box(pos - look_dir + Vector3.down())
 	self.entrance_type = Unit.get_data(unit, "entrance_type")

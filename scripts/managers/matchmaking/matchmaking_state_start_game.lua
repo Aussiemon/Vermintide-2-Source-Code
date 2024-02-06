@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/matchmaking/matchmaking_state_start_game.lua
+
 MatchmakingStateStartGame = class(MatchmakingStateStartGame)
 MatchmakingStateStartGame.NAME = "MatchmakingStateStartGame"
 
@@ -83,7 +85,7 @@ MatchmakingStateStartGame._verify_requirements = function (self)
 		self._verifying_dlcs = true
 		self._verify_dlc_data = {
 			voters = self:_active_peers(),
-			results = {}
+			results = {},
 		}
 
 		Managers.state.network.network_transmit:send_rpc_all("rpc_matchmaking_verify_dlc", DLCS_TO_CHECK)
@@ -105,7 +107,7 @@ MatchmakingStateStartGame.update = function (self, dt, t)
 end
 
 MatchmakingStateStartGame._setup_lobby_data = function (self)
-	local mission_id, difficulty, difficulty_tweak, act_key, quick_game, private_game, excluded_level_keys, weave_name, conflict_settings = nil
+	local mission_id, difficulty, difficulty_tweak, act_key, quick_game, private_game, excluded_level_keys, weave_name, conflict_settings
 	local search_config = self.search_config
 	local matchmaking_type = search_config.matchmaking_type
 	local mechanism = search_config.mechanism
@@ -137,6 +139,7 @@ MatchmakingStateStartGame._setup_lobby_data = function (self)
 		if mechanism == "weave" then
 			local weave_index = Math.random(#WeaveSettings.templates_ordered)
 			local weave_template = WeaveSettings.templates_ordered[weave_index]
+
 			weave_name = weave_template.name
 			mission_id = weave_name
 
@@ -144,7 +147,9 @@ MatchmakingStateStartGame._setup_lobby_data = function (self)
 			Managers.weave:set_next_objective(1)
 		elseif mechanism == "deus" then
 			local unlocked_journeys = self._matchmaking_manager:gather_party_unlocked_journeys()
+
 			mission_id = unlocked_journeys[Math.random(1, #unlocked_journeys)]
+
 			local backend_deus = Managers.backend:get_interface("deus")
 			local journey_cycle = backend_deus:get_journey_cycle()
 			local journey_data = journey_cycle.journey_data
@@ -157,7 +162,7 @@ MatchmakingStateStartGame._setup_lobby_data = function (self)
 				mission_id = mission_id,
 				difficulty = difficulty,
 				dominant_god = dominant_god,
-				matchmaking_type = matchmaking_type
+				matchmaking_type = matchmaking_type,
 			}
 
 			Managers.mechanism:set_vote_data(vote_data)
@@ -187,6 +192,7 @@ MatchmakingStateStartGame._setup_lobby_data = function (self)
 	if IS_WINDOWS or IS_LINUX then
 		if DEDICATED_SERVER then
 			local eac_server = Managers.matchmaking.network_server:eac_server()
+
 			eac_authorized = EACServer.state(eac_server, Network.peer_id()) == "trusted"
 		else
 			local eac_state = EAC.state()
@@ -207,37 +213,37 @@ MatchmakingStateStartGame._setup_lobby_data = function (self)
 			"hardest",
 			"cataclysm",
 			"cataclysm_2",
-			"cataclysm_3"
+			"cataclysm_3",
 		}
 		local ticket_mission_id = mission_id
-		local matchmaking_types = nil
+		local matchmaking_types
 
 		if matchmaking_type == "event" then
 			matchmaking_types = {
-				"event"
+				"event",
 			}
 		elseif mechanism == "weave" then
 			if quick_game then
 				ticket_mission_id = "weave_any"
 				matchmaking_types = {
-					"weave_quick_game"
+					"weave_quick_game",
 				}
 			else
 				hopper_name = LobbyInternal.WEAVE_HOPPER_NAME
 				matchmaking_types = {
 					"weave",
-					mission_id
+					mission_id,
 				}
 			end
 		elseif mechanism == "deus" then
 			matchmaking_types = {
 				"deus_quick_game",
-				"deus_custom_game"
+				"deus_custom_game",
 			}
 		else
 			matchmaking_types = {
 				"quick_game",
-				"custom_game"
+				"custom_game",
 			}
 		end
 
@@ -261,7 +267,7 @@ MatchmakingStateStartGame._setup_lobby_data = function (self)
 		local weave_index = weave_template and table.find(WeaveSettings.templates_ordered, weave_template)
 		local ticket_params = {
 			level = {
-				ticket_mission_id
+				ticket_mission_id,
 			},
 			matchmaking_types = matchmaking_types,
 			difficulty = difficulty_id,
@@ -269,7 +275,7 @@ MatchmakingStateStartGame._setup_lobby_data = function (self)
 			strict_matchmaking = strict_matchmaking,
 			profiles = profiles,
 			network_hash = network_hash,
-			weave_index = weave_index
+			weave_index = weave_index,
 		}
 
 		self._lobby:enable_matchmaking(not private_game, ticket_params, 600, hopper_name)
@@ -295,6 +301,7 @@ MatchmakingStateStartGame._setup_lobby_data = function (self)
 		if weave_template then
 			local objective_index = Managers.weave:get_next_objective()
 			local objective = weave_template.objectives[objective_index]
+
 			level_key = objective.level_id
 			conflict_settings = objective.conflict_settings
 		end
@@ -336,8 +343,9 @@ MatchmakingStateStartGame._start_game = function (self)
 	if game_server_lobby_client then
 		self.next_transition_state = "start_lobby"
 		self.start_lobby_data = {
-			lobby_client = game_server_lobby_client
+			lobby_client = game_server_lobby_client,
 		}
+
 		local ip_address = game_server_lobby_client:ip_address()
 
 		self:_send_rpc_clients("rpc_matchmaking_broadcast_game_server_ip_address", ip_address)
@@ -408,6 +416,7 @@ end
 
 MatchmakingStateStartGame.rpc_matchmaking_verify_dlc_reply = function (self, channel_id, success)
 	local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
 	self._verify_dlc_data.results[peer_id] = success
 end
 
@@ -420,6 +429,7 @@ MatchmakingStateStartGame._update_voter_list_by_active_peers = function (self, a
 
 	for _, player in pairs(human_players) do
 		local peer_id = player.peer_id
+
 		active_peers[peer_id] = true
 	end
 
@@ -454,6 +464,7 @@ MatchmakingStateStartGame._active_peers = function (self)
 
 	for _, player in pairs(human_players) do
 		local peer_id = player.peer_id
+
 		peers_local[peer_id] = true
 	end
 

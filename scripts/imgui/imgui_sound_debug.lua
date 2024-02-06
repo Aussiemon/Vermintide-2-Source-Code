@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/imgui/imgui_sound_debug.lua
+
 ImguiSoundDebug = class(ImguiSoundDebug)
+
 local SHOULD_RELOAD = false
 local DEFAULT_WINDOW_X = 820
 local DEFAULT_WINDOW_Y = 500
@@ -71,7 +74,7 @@ ImguiSoundDebug._update_music_flags = function (self)
 	for key, value in pairs(flags) do
 		self._music_flags[key] = {
 			value = value,
-			update_disabled = flags_update_disabled[key] or false
+			update_disabled = flags_update_disabled[key] or false,
 		}
 	end
 end
@@ -88,13 +91,13 @@ ImguiSoundDebug._update_music_players = function (self)
 		for key, value in pairs(states) do
 			parsed_states[key] = {
 				value = value,
-				update_disabled = playing and playing.states_update_disabled[key]
+				update_disabled = playing and playing.states_update_disabled[key],
 			}
 		end
 
 		self._music_players[name] = {
 			is_playing = player:is_playing(),
-			states = parsed_states
+			states = parsed_states,
 		}
 	end
 end
@@ -107,6 +110,7 @@ ImguiSoundDebug.draw = function (self)
 	end
 
 	local do_close = Imgui.begin_window("Sound Debug")
+
 	self._is_persistent = Imgui.checkbox("Keep Window Open", self._is_persistent)
 
 	Imgui.separator()
@@ -161,6 +165,7 @@ ImguiSoundDebug._draw_music_flags = function (self)
 			end
 
 			local updates_disabled = Managers.music.flags_update_disabled
+
 			updates_disabled[key] = nil
 
 			Managers.music:set_flag(key, new_value)
@@ -214,6 +219,7 @@ ImguiSoundDebug._draw_music_players = function (self)
 
 			if enter_pressed and new_value ~= tostring(state_data.value) then
 				local updates_disabled = Managers.music._music_players[name]._playing.states_update_disabled
+
 				updates_disabled[key] = nil
 
 				Managers.music._music_players[name]:set_group_state(key, new_value)
@@ -245,7 +251,7 @@ local keys = {
 	"name",
 	"key",
 	"old_value",
-	"new_value"
+	"new_value",
 }
 
 ImguiSoundDebug._draw_history = function (self)
@@ -287,7 +293,7 @@ ImguiSoundDebug._draw_history = function (self)
 				if self._sort_direction == "asc" then
 					return a[self._sort_history_by]:lower() < b[self._sort_history_by]:lower()
 				else
-					return b[self._sort_history_by]:lower() < a[self._sort_history_by]:lower()
+					return a[self._sort_history_by]:lower() > b[self._sort_history_by]:lower()
 				end
 			end)
 		end
@@ -312,8 +318,13 @@ ImguiSoundDebug._draw_history = function (self)
 end
 
 ImguiSoundDebug._draw_sort_button = function (self, text)
-	local final_text = nil
-	final_text = self._sort_history_by == text and string.format("%s %s", text, self._sort_direction == "asc" and "/\\" or "\\/") or text
+	local final_text
+
+	if self._sort_history_by == text then
+		final_text = string.format("%s %s", text, self._sort_direction == "asc" and "/\\" or "\\/")
+	else
+		final_text = text
+	end
 
 	if Imgui.button(final_text) then
 		self._sort_history_by = text
@@ -329,8 +340,9 @@ ImguiSoundDebug.on_music_flag_change = function (self, flag, old_value, new_valu
 		timestamp = format_timestamp(os.time()),
 		key = flag,
 		old_value = old_value or "",
-		new_value = new_value or ""
+		new_value = new_value or "",
 	}
+
 	self._history[#self._history + 1] = data
 	self._history_sorted = false
 end
@@ -341,8 +353,9 @@ ImguiSoundDebug.on_music_player_state_change = function (self, music_player_name
 		name = music_player_name,
 		key = state_name,
 		old_value = old_value or "",
-		new_value = new_value or ""
+		new_value = new_value or "",
 	}
+
 	self._history[#self._history + 1] = data
 	self._history_sorted = false
 end

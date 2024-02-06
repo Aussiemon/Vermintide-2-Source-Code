@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/experience_settings.lua
+
 local experience_levels = {
 	0,
 	200,
@@ -33,7 +35,7 @@ local experience_levels = {
 	3100,
 	3200,
 	3300,
-	3400
+	3400,
 }
 local level_used_for_extra_levels_experience = 30
 local num_defined_levels = #experience_levels
@@ -69,7 +71,7 @@ end
 
 ExperienceSettings.get_account_level = function ()
 	local hero_attributes = Managers.backend:get_interface("hero_attributes")
-	local best_class, best_xp = nil
+	local best_class, best_xp
 	local level = ExperienceSettings.get_level(best_xp)
 
 	return level, best_xp, best_class
@@ -98,7 +100,7 @@ ExperienceSettings.get_level = function (experience)
 	local experience_into_level = 0
 	local previous_exp_total = 0
 
-	if total_defined_experience <= experience then
+	if experience >= total_defined_experience then
 		local experience_into_level = 0
 		local progress = 0
 
@@ -134,6 +136,7 @@ ExperienceSettings.get_total_experience_required_for_level = function (level)
 
 	for i = 1, level do
 		local level_experience = experience_levels[i] or experience_for_extra_levels
+
 		experience = experience + level_experience
 	end
 
@@ -165,6 +168,6 @@ ExperienceSettings.max_experience = total_defined_experience
 ExperienceSettings.max_level = num_defined_levels
 ExperienceSettings.multiplier = 1
 ExperienceSettings.level_length_experience_multiplier = {
+	long = 1,
 	short = 1,
-	long = 1
 }

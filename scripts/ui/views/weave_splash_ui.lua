@@ -1,11 +1,14 @@
+﻿-- chunkname: @scripts/ui/views/weave_splash_ui.lua
+
 local definitions = local_require("scripts/ui/views/weave_splash_ui_definitions")
 local scenegraph_definition = definitions.scenegraph_definition
 local widget_definitions = definitions.widget_definitions
 local create_weave_image_func = definitions.create_weave_image_func
 local weave_splash_images = {
-	"weave_loading_screen"
+	"weave_loading_screen",
 }
 local TIME_BETWEEN_SPLASHES = 5
+
 WeaveSplashUI = class(WeaveSplashUI)
 
 WeaveSplashUI.init = function (self, world)
@@ -19,7 +22,7 @@ end
 
 WeaveSplashUI._setup_ui = function (self)
 	self._render_settings = {
-		alpha_multiplier = 1
+		alpha_multiplier = 1,
 	}
 	self._ui_renderer = UIRenderer.create(self._world, "material", "materials/ui/loading_screens/loading_screen_default")
 end
@@ -36,10 +39,13 @@ WeaveSplashUI._create_ui_elements = function (self)
 
 	local image_name = Managers.mechanism:mechanism_setting("loading_screen_override") or weave_splash_images[1]
 	local widget_definition = create_weave_image_func(image_name, 255)
+
 	self._weave_splash_widgets[#self._weave_splash_widgets + 1] = UIWidget.init(widget_definition)
+
 	local next_image_index = 1 + self._current_splash_index % #weave_splash_images
 	local next_image_name = weave_splash_images[next_image_index]
 	local widget_definition = create_weave_image_func(next_image_name, 0)
+
 	self._weave_splash_widgets[#self._weave_splash_widgets + 1] = UIWidget.init(widget_definition)
 
 	UIRenderer.clear_scenegraph_queue(self._ui_renderer)
@@ -76,11 +82,14 @@ WeaveSplashUI._update_current_splash = function (self, dt, t)
 
 	if self._current_timer <= 0 then
 		local old_splash = self._current_splash_index
+
 		self._current_splash_index = 1 + self._current_splash_index % #weave_splash_images
+
 		local widget_1_content = self._weave_splash_widgets[1].content
 		local widget_1_style = self._weave_splash_widgets[1].style.bg_texture
 		local widget_2_content = self._weave_splash_widgets[2].content
 		local widget_2_style = self._weave_splash_widgets[2].style.bg_texture
+
 		widget_1_content.bg_texture = weave_splash_images[old_splash]
 		widget_2_content.bg_texture = weave_splash_images[self._current_splash_index]
 		self._animations.splash_image_1 = UIAnimation.init(UIAnimation.function_by_time, widget_1_style.color, 1, 255, 0, 0.5, math.easeInCubic)

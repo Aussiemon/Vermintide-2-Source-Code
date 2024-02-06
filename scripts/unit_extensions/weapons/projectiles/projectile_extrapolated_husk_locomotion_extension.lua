@@ -1,7 +1,10 @@
+﻿-- chunkname: @scripts/unit_extensions/weapons/projectiles/projectile_extrapolated_husk_locomotion_extension.lua
+
 ProjectileExtrapolatedHuskLocomotionExtension = class(ProjectileExtrapolatedHuskLocomotionExtension)
 
 ProjectileExtrapolatedHuskLocomotionExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	local t = Managers.time:time("game")
+
 	self._spawn_time = t
 	self._last_lerp_position = Vector3Box(Unit.local_position(unit, 0))
 	self._last_lerp_position_offset = Vector3Box()
@@ -27,21 +30,25 @@ ProjectileExtrapolatedHuskLocomotionExtension.update = function (self, unit, inp
 		local network_velocity = GameSession.game_object_field(game, id, "velocity")
 		local VELOCITY_EPSILON_SQ = NetworkConstants.VELOCITY_EPSILON * NetworkConstants.VELOCITY_EPSILON
 
-		if Vector3.length_squared(network_velocity) < VELOCITY_EPSILON_SQ then
+		if VELOCITY_EPSILON_SQ > Vector3.length_squared(network_velocity) then
 			network_velocity = Vector3(0, 0, 0)
 		end
 
 		local last_pos = self._last_lerp_position:unbox()
 		local last_pos_offset = self._last_lerp_position_offset:unbox()
 		local accumulated_movement = self._accumulated_movement:unbox()
+
 		self._pos_lerp_time = self._pos_lerp_time + dt
+
 		local lerp_t = self._pos_lerp_time / POS_LERP_TIME
 		local move_delta = network_velocity * dt
+
 		accumulated_movement = accumulated_movement + move_delta
+
 		local lerp_pos_offset = Vector3.lerp(last_pos_offset, Vector3.zero(), math.min(lerp_t, 1))
 		local lerp_pos = last_pos + accumulated_movement + lerp_pos_offset
 
-		if POS_EPSILON_SQ < Vector3.length_squared(network_pos - last_pos) then
+		if Vector3.length_squared(network_pos - last_pos) > POS_EPSILON_SQ then
 			self._pos_lerp_time = 0
 
 			self._last_lerp_position:store(network_pos)

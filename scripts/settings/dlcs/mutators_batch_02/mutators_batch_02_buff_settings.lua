@@ -1,64 +1,67 @@
+﻿-- chunkname: @scripts/settings/dlcs/mutators_batch_02/mutators_batch_02_buff_settings.lua
+
 local settings = DLCSettings.mutators_batch_02
 local buff_perks = require("scripts/unit_extensions/default_player_unit/buffs/settings/buff_perk_names")
+
 settings.buff_templates = {
 	slayer_curse_debuff = {
 		buffs = {
 			{
-				name = "slayer_curse_debuff",
-				icon = "buff_icon_mutator_icon_slayer_curse",
 				debuff = true,
+				icon = "buff_icon_mutator_icon_slayer_curse",
+				name = "slayer_curse_debuff",
 				perks = {
-					buff_perks.slayer_curse
-				}
-			}
-		}
+					buff_perks.slayer_curse,
+				},
+			},
+		},
 	},
 	mutator_bloodlust = {
 		buffs = {
 			{
+				duration = 4,
 				icon = "bardin_slayer_crit_chance",
-				name = "mutator_bloodlust",
-				stat_buff = "attack_speed",
+				max_stacks = 10,
 				multiplier = 0.05,
-				max_stacks = 10,
-				duration = 4,
-				refresh_durations = true
-			},
-			{
-				remove_buff_func = "remove_movement_buff",
-				name = "mutator_bloodlust_movement",
-				multiplier = 1.05,
-				max_stacks = 10,
-				duration = 4,
-				apply_buff_func = "apply_movement_buff",
+				name = "mutator_bloodlust",
 				refresh_durations = true,
-				path_to_movement_setting_to_modify = {
-					"move_speed"
-				}
+				stat_buff = "attack_speed",
 			},
 			{
+				apply_buff_func = "apply_movement_buff",
 				duration = 4,
+				max_stacks = 10,
+				multiplier = 1.05,
+				name = "mutator_bloodlust_movement",
+				refresh_durations = true,
+				remove_buff_func = "remove_movement_buff",
+				path_to_movement_setting_to_modify = {
+					"move_speed",
+				},
+			},
+			{
+				apply_buff_func = "apply_bloodlust",
+				duration = 4,
+				max_stacks = 10,
 				name = "mutator_bloodlust_trigger",
 				refresh_durations = true,
-				max_stacks = 10,
 				remove_buff_func = "remove_bloodlust",
-				apply_buff_func = "apply_bloodlust"
-			}
-		}
+			},
+		},
 	},
 	mutator_bloodlust_debuff = {
 		buffs = {
 			{
-				update_func = "update_bloodlust_debuff",
-				name = "mutator_bloodlust_debuff",
+				apply_buff_func = "apply_bloodlust_debuff",
+				damage_frequency = 1,
 				damage_percentage = 0.05,
 				icon = "troll_vomit_debuff",
+				name = "mutator_bloodlust_debuff",
 				remove_buff_func = "remove_bloodlust_debuff",
-				apply_buff_func = "apply_bloodlust_debuff",
-				damage_frequency = 1
-			}
-		}
-	}
+				update_func = "update_bloodlust_debuff",
+			},
+		},
+	},
 }
 
 local function is_local(unit)
@@ -86,6 +89,7 @@ settings.buff_function_templates = {
 		if num_buff_stacks <= 1 then
 			local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
 			local effect_id = first_person_extension:create_screen_particles("fx/screenspace_mutator_bloodlust_02")
+
 			buff.effect_id = effect_id
 		end
 	end,
@@ -114,7 +118,7 @@ settings.buff_function_templates = {
 
 		local t = params.t
 
-		if buff.next_damage_tick_t < t then
+		if t > buff.next_damage_tick_t then
 			local player_health_extension = ScriptUnit.extension(unit, "health_system")
 			local max_health = player_health_extension:get_max_health()
 			local current_health = player_health_extension:current_health()
@@ -132,5 +136,5 @@ settings.buff_function_templates = {
 	end,
 	remove_bloodlust_debuff = function (unit, buff, params, world)
 		return
-	end
+	end,
 }

@@ -1,9 +1,12 @@
+﻿-- chunkname: @scripts/entity_system/systems/damage/death_system.lua
+
 DeathSystem = class(DeathSystem, ExtensionSystemBase)
+
 local RPCS = {
-	"rpc_forced_kill"
+	"rpc_forced_kill",
 }
 local extensions = {
-	"GenericDeathExtension"
+	"GenericDeathExtension",
 }
 local BLACKBOARDS = BLACKBOARDS
 
@@ -11,6 +14,7 @@ DeathSystem.init = function (self, entity_system_creation_context, system_name)
 	DeathSystem.super.init(self, entity_system_creation_context, system_name, extensions)
 
 	local network_event_delegate = entity_system_creation_context.network_event_delegate
+
 	self.network_event_delegate = network_event_delegate
 
 	network_event_delegate:register(self, unpack(RPCS))
@@ -20,7 +24,7 @@ DeathSystem.init = function (self, entity_system_creation_context, system_name)
 	self.death_reactions_to_start = {}
 	self.active_reactions = {
 		unit = {},
-		husk = {}
+		husk = {},
 	}
 end
 
@@ -30,7 +34,9 @@ end
 
 DeathSystem.on_add_extension = function (self, world, unit, extension_name, extension_init_data)
 	local extension = ScriptUnit.add_extension(self.extension_init_context, unit, extension_name, self.NAME, extension_init_data)
+
 	self.unit_extensions[unit] = extension
+
 	local template = extension_init_data.death_reaction_template or Unit.get_data(unit, "death_reaction")
 
 	self:set_death_reaction_template(unit, template)
@@ -42,6 +48,7 @@ end
 DeathSystem.extensions_ready = function (self, world, unit, extension_name)
 	local extension = self.unit_extensions[unit]
 	local health_extension = ScriptUnit.extension(unit, "health_system")
+
 	extension.health_extension = health_extension
 end
 
@@ -97,9 +104,12 @@ end
 
 DeathSystem.set_death_reaction_template = function (self, unit, template_name)
 	local extension = self.unit_extensions[unit]
+
 	extension.death_reaction_template = template_name
+
 	local network_type = extension.network_type
 	local active_reactions = self.active_reactions[network_type]
+
 	active_reactions[template_name] = active_reactions[template_name] or {}
 
 	if not extension.is_alive and not extension.death_is_done then
@@ -128,6 +138,7 @@ local function start_death_reaction(unit, death_extension, killing_blow, active_
 	death_extension.death_reaction = death_reaction
 	death_extension.death_reaction_data = death_reaction_data
 	death_extension.death_is_done = death_is_done == DeathReactions.IS_DONE
+
 	local blackboard = BLACKBOARDS[unit]
 
 	if is_server and blackboard then
@@ -234,6 +245,7 @@ DeathSystem.kill_unit = function (self, unit, killing_blow)
 	end
 
 	local death_reactions_to_start = self.death_reactions_to_start
+
 	death_reactions_to_start[unit] = killing_blow
 end
 
@@ -244,6 +256,7 @@ DeathSystem._create_dummy_killing_blow = function (self, unit, damage_type)
 	local hit_zone_name = "full"
 	local damage_direction = Vector3.up()
 	local damage_direction_table = Vector3Aux.box(nil, damage_direction)
+
 	killing_blow[DamageDataIndex.DAMAGE_AMOUNT] = NetworkConstants.damage.max
 	killing_blow[DamageDataIndex.DAMAGE_TYPE] = damage_type
 	killing_blow[DamageDataIndex.ATTACKER] = unit

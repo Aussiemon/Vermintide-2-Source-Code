@@ -1,6 +1,9 @@
+﻿-- chunkname: @scripts/ui/hud_ui/weave_progress_ui.lua
+
 local definitions = local_require("scripts/ui/hud_ui/weave_progress_ui_definitions")
 local widget_definitions = definitions.widgets
 local scenegraph_definition = definitions.scenegraph_definition
+
 WeaveProgressUI = class(WeaveProgressUI)
 
 WeaveProgressUI.init = function (self, parent, ingame_ui_context)
@@ -62,18 +65,24 @@ WeaveProgressUI._sync_weave_objectives = function (self)
 	end
 
 	bar_cutoff = bar_cutoff or 100
+
 	local widget = self._widgets.progress_ui
 	local content = widget.content
+
 	content.bar_cutoff = bar_cutoff
+
 	local bar_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name("weaves_essence_bar_fill")
 	local bubble_icon_style = widget.style.bubble_icon
 	local base_offset_x = bubble_icon_style.base_offset_x
-	bubble_icon_style.offset[1] = base_offset_x + bar_texture_settings.size[1] * bar_cutoff * 0.01
+
+	bubble_icon_style.offset[1] = base_offset_x + bar_texture_settings.size[1] * (bar_cutoff * 0.01)
+
 	local bonus_time_text = ""
 	local bonus_time = objective_template.bonus_time_on_complete
 
 	if bonus_time then
 		local seconds = math.max(bonus_time, 0)
+
 		bonus_time_text = string.format("+ %d:%02d", math.floor(seconds / 60), seconds % 60)
 	end
 
@@ -125,6 +134,7 @@ WeaveProgressUI._update_bonus_objectives = function (self, dt, t)
 
 		for _, objective in pairs(current_objectives) do
 			local objective_name = objective:objective_name()
+
 			TEMP_TABLE[objective_name] = true
 
 			if not bonus_objective_lookup[objective_name] then
@@ -132,9 +142,10 @@ WeaveProgressUI._update_bonus_objectives = function (self, dt, t)
 
 				if objective_settings then
 					local sort_index = table.find(current_objective_ordered, objective_name)
+
 					OBJECTIVES_TO_ADD[#OBJECTIVES_TO_ADD + 1] = {
 						sort_index = sort_index,
-						objective = objective
+						objective = objective,
 					}
 				end
 			end
@@ -152,17 +163,20 @@ WeaveProgressUI._update_bonus_objectives = function (self, dt, t)
 				if not STACKS_ADDED[objective_settings.stack] then
 					local widget_definition = definitions.create_bonus_objective_func(display_name, score, table.size(bonus_objective_widgets) + table.size(bonus_objective_stack_widgets), objective_settings.stack, objective_name)
 					local stack = bonus_objective_stack_widgets[objective_settings.stack] or {}
+
 					stack[#stack + 1] = UIWidget.init(widget_definition)
 					bonus_objective_stack_widgets[objective_settings.stack] = stack
 					bonus_objective_lookup[objective_name] = stack[#stack]
 					STACKS_ADDED[objective_settings.stack] = true
 				else
 					local bonus_objective = bonus_objective_stack_widgets[objective_settings.stack][#bonus_objective_stack_widgets[objective_settings.stack]]
+
 					bonus_objective.content.stack[#bonus_objective.content.stack + 1] = objective_name
 					bonus_objective_lookup[objective_name] = bonus_objective
 				end
 			else
 				local widget_definition = definitions.create_bonus_objective_func(display_name, score, table.size(bonus_objective_widgets) + table.size(bonus_objective_stack_widgets))
+
 				bonus_objective_widgets[objective_name] = UIWidget.init(widget_definition)
 				bonus_objective_lookup[objective_name] = bonus_objective_widgets[objective_name]
 			end
@@ -171,12 +185,14 @@ WeaveProgressUI._update_bonus_objectives = function (self, dt, t)
 		for objective_name, widget in pairs(bonus_objective_lookup) do
 			if not TEMP_TABLE[objective_name] and not widget.content:is_done_func(objective_name) and self:_handle_stacks(widget, objective_name) then
 				widget.content.is_done = true
+
 				local text = widget.content.objective_name_id
 				local objective_style = widget.style.objective_name
 				local score_style = widget.style.score
 				local font, scaled_font_size = UIFontByResolution(objective_style)
 				local text_width = UIRenderer.text_size(self._ui_renderer, text, font[1], scaled_font_size)
 				local texture_size = table.clone(widget.style.checkmark.texture_size)
+
 				self._animations["checkmark_x_" .. objective_name] = UIAnimation.init(UIAnimation.function_by_time, widget.style.checkmark.texture_size, 1, texture_size[1] * 3, texture_size[1], 0.4, math.easeOutCubic)
 				self._animations["checkmark_y_" .. objective_name] = UIAnimation.init(UIAnimation.function_by_time, widget.style.checkmark.texture_size, 2, texture_size[2] * 3, texture_size[2], 0.4, math.easeOutCubic)
 				self._animations["checkmark_shadow_x_" .. objective_name] = UIAnimation.init(UIAnimation.function_by_time, widget.style.checkmark_shadow.texture_size, 1, texture_size[1] * 3, texture_size[1], 0.4, math.easeOutCubic)
@@ -184,13 +200,11 @@ WeaveProgressUI._update_bonus_objectives = function (self, dt, t)
 				self._animations["checkmark_color_r_" .. objective_name] = UIAnimation.init(UIAnimation.function_by_time, widget.style.checkmark.color, 2, 255, 192, 0.4, math.easeOutCubic)
 				self._animations["checkmark_color_g_" .. objective_name] = UIAnimation.init(UIAnimation.function_by_time, widget.style.checkmark.color, 3, 255, 192, 0.4, math.easeOutCubic)
 				self._animations["checkmark_color_b_" .. objective_name] = UIAnimation.init(UIAnimation.function_by_time, widget.style.checkmark.color, 4, 255, 192, 0.4, math.easeOutCubic)
-
 				self._animation_callbacks["checkmark_x_" .. objective_name] = function ()
 					self._animations["stroke_" .. objective_name] = UIAnimation.init(UIAnimation.function_by_time, widget.style.stroke.texture_size, 1, 0, text_width, 0.25, math.easeInCubic)
 					self._animations["essence_icon_r_" .. objective_name] = UIAnimation.init(UIAnimation.function_by_time, widget.style.essence_icon.color, 2, 255, 60, 0.4, math.easeOutCubic)
 					self._animations["essence_icon_g_" .. objective_name] = UIAnimation.init(UIAnimation.function_by_time, widget.style.essence_icon.color, 3, 255, 60, 0.4, math.easeOutCubic)
 					self._animations["essence_icon_b_" .. objective_name] = UIAnimation.init(UIAnimation.function_by_time, widget.style.essence_icon.color, 4, 255, 60, 0.4, math.easeOutCubic)
-
 					self._animation_callbacks["stroke_" .. objective_name] = function ()
 						self._animations["objective_color_r_" .. objective_name] = UIAnimation.init(UIAnimation.function_by_time, objective_style.text_color, 2, 255, 192, 0.5, math.easeInCubic)
 						self._animations["objective_color_g_" .. objective_name] = UIAnimation.init(UIAnimation.function_by_time, objective_style.text_color, 3, 255, 192, 0.5, math.easeInCubic)
@@ -214,6 +228,7 @@ WeaveProgressUI._handle_stacks = function (self, widget, objective_name)
 
 	local stack = widget_content.stack
 	local done_stack = widget_content.done_stack
+
 	done_stack[#done_stack + 1] = objective_name
 
 	return table.size(done_stack) == table.size(stack)
@@ -228,6 +243,7 @@ WeaveProgressUI._update_animations = function (self, dt)
 
 		if UIAnimation.completed(anmation) then
 			animations[animation_name] = nil
+
 			local cb = animation_callbacks[animation_name]
 
 			if cb then
@@ -246,12 +262,14 @@ WeaveProgressUI._update_bar = function (self, dt, t)
 	if weave_name then
 		local score = weave_manager:current_bar_score()
 		local old_progress = self._old_progress
+
 		self._progress = score / 100
 
 		if not old_progress or old_progress < self._progress then
 			local widget = self._widgets.progress_ui
 			local widget_content = widget.content
 			local widget_style = widget.style
+
 			self._animations.update_bar_glow = UIAnimation.init(UIAnimation.function_by_time, widget_style.bar_glow.color, 1, 255, 0, 0.5, math.easeInCubic)
 
 			self._animation_callbacks.update_bar_glow = function ()
@@ -263,10 +281,11 @@ WeaveProgressUI._update_bar = function (self, dt, t)
 
 		local widget = self._widgets.progress_ui
 		local widget_content = widget.content
+
 		widget_content.progress = self._progress
 		self._old_progress = self._progress
 
-		if widget_content.bar_cutoff <= score then
+		if score >= widget_content.bar_cutoff then
 			widget_content.bonus_time = ""
 		end
 	end

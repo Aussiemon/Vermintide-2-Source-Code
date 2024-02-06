@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_move_to_goal_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTMoveToGoalAction = class(BTMoveToGoalAction, BTNode)
@@ -12,11 +14,13 @@ BTMoveToGoalAction.enter = function (self, unit, blackboard, t)
 	blackboard.action = self._tree_node.action_data
 	blackboard.time_to_next_evaluate = t + (blackboard.action.eval_time or 0.5)
 	blackboard.time_to_next_friend_alert = t + 0.3
+
 	local goal_destination = blackboard.goal_destination:unbox()
 
 	blackboard.navigation_extension:move_to(goal_destination)
 
 	blackboard.new_move_to_goal = nil
+
 	local network_manager = Managers.state.network
 	local breed = blackboard.breed
 	local passive_in_patrol = breed.passive_in_patrol == nil or breed.passive_in_patrol and not blackboard.ignore_passive_on_patrol
@@ -54,6 +58,7 @@ BTMoveToGoalAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	blackboard.anim_cb_move = nil
 	blackboard.start_anim_done = nil
 	blackboard.skip_move_rotation = nil
+
 	local default_move_speed = AiUtils.get_default_breed_move_speed(unit, blackboard)
 	local navigation_extension = blackboard.navigation_extension
 
@@ -84,6 +89,7 @@ BTMoveToGoalAction.run = function (self, unit, blackboard, t, dt)
 
 		if ScriptUnit.has_extension(unit, "ai_group_system") then
 			local ai_group_extension = ScriptUnit.extension(unit, "ai_group_system")
+
 			in_patrol = ai_group_extension.in_patrol
 		end
 
@@ -105,10 +111,10 @@ BTMoveToGoalAction.run = function (self, unit, blackboard, t, dt)
 		end
 	end
 
-	local should_evaluate = nil
+	local should_evaluate
 	local navigation_extension = blackboard.navigation_extension
 
-	if blackboard.time_to_next_evaluate < t or navigation_extension:has_reached_destination() then
+	if t > blackboard.time_to_next_evaluate or navigation_extension:has_reached_destination() then
 		should_evaluate = "evaluate"
 		blackboard.time_to_next_evaluate = t + (blackboard.action.eval_time or 0.5)
 	end
@@ -155,6 +161,7 @@ BTMoveToGoalAction.start_move_rotation = function (self, unit, blackboard, t, dt
 		self:toggle_start_move_animation_lock(unit, false, blackboard)
 	else
 		blackboard.anim_cb_rotation_start = false
+
 		local target_pos = POSITION_LOOKUP[blackboard.target_unit]
 
 		if not target_pos and blackboard.goal_destination then

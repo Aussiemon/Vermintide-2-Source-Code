@@ -1,6 +1,9 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_prepare_jump_slam_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 local position_lookup = POSITION_LOOKUP
+
 BTPrepareJumpSlamAction = class(BTPrepareJumpSlamAction, BTNode)
 
 BTPrepareJumpSlamAction.init = function (self, ...)
@@ -11,9 +14,9 @@ BTPrepareJumpSlamAction.name = "BTPrepareJumpSlamAction"
 
 BTPrepareJumpSlamAction.enter = function (self, unit, blackboard, t)
 	blackboard.jump_slam_data = {
-		state = "start",
 		num_jump_tries = 1,
-		segment_list = {}
+		state = "start",
+		segment_list = {},
 	}
 end
 
@@ -82,7 +85,7 @@ BTPrepareJumpSlamAction.start_jump_animation = function (blackboard, unit)
 end
 
 BTPrepareJumpSlamAction.try_position = function (nav_world, pos, to_target_normalized)
-	local found_impact_pos = nil
+	local found_impact_pos
 	local angle = 0
 
 	for i = 1, 4 do
@@ -103,7 +106,7 @@ end
 
 BTPrepareJumpSlamAction.prepare_jump_new = function (blackboard, unit, data, t)
 	local p1 = position_lookup[unit]
-	local found_impact_pos = nil
+	local found_impact_pos
 	local p2 = position_lookup[blackboard.target_unit]
 	local to_target = p2 - p1
 	local distance = Vector3.length(to_target)
@@ -113,6 +116,7 @@ BTPrepareJumpSlamAction.prepare_jump_new = function (blackboard, unit, data, t)
 
 	if success then
 		local to_target_rotation = LocomotionUtils.look_at_position_flat(unit, hit_pos)
+
 		data.attack_rotation = QuaternionBox(to_target_rotation)
 		data.target_pos = Vector3Box(hit_pos)
 		data.time_of_flight = time_of_flight
@@ -124,10 +128,10 @@ end
 BTPrepareJumpSlamAction.test_trajectory_new = function (blackboard, p1, p2, segment_list, to_target_normalized, multiple_raycasts)
 	local physics_world = World.physics_world(blackboard.world)
 	local gravity = -blackboard.breed.jump_slam_gravity
-	local jump_speed = nil
+	local jump_speed
 	local jump_angle = math.pi / 4
 	local wedge = Vector3(0, 0, 0.05)
-	local in_los, velocity, time_of_flight = nil
+	local in_los, velocity, time_of_flight
 	local target_locomotion = ScriptUnit.extension(blackboard.target_unit, "locomotion_system")
 	local target_velocity = target_locomotion:current_velocity()
 	local target_speed_squared = Vector3.length_squared(target_velocity)
@@ -136,7 +140,7 @@ BTPrepareJumpSlamAction.test_trajectory_new = function (blackboard, p1, p2, segm
 		p2 = p2 - to_target_normalized * 2
 	end
 
-	local hit_pos = nil
+	local hit_pos
 	local acceptable_accuracy = 0.6
 
 	if jump_speed then
@@ -184,6 +188,7 @@ BTPrepareJumpSlamAction.test_trajectory_new = function (blackboard, p1, p2, segm
 			end
 
 			local right = Vector3.cross(Vector3.normalize(p2 - p1), Vector3.up()) * 1
+
 			in_los = WeaponHelper.ray_segmented_test(physics_world, segment_list, Vector3(0, 0, 1.5) + right)
 
 			if not in_los then

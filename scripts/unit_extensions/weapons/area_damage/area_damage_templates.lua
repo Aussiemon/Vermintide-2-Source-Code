@@ -1,5 +1,9 @@
+﻿-- chunkname: @scripts/unit_extensions/weapons/area_damage/area_damage_templates.lua
+
 AreaDamageTemplates = {}
+
 local ai_units = {}
+
 AreaDamageTemplates.templates = {
 	globadier_area_dot_damage = {
 		server = {
@@ -36,8 +40,9 @@ AreaDamageTemplates.templates = {
 										area_damage_template = "globadier_area_dot_damage",
 										unit = player_unit,
 										damage = damage,
-										damage_source = damage_source
+										damage_source = damage_source,
 									}
+
 									damage_buffer[#damage_buffer + 1] = damage_data
 								end
 							end
@@ -51,10 +56,10 @@ AreaDamageTemplates.templates = {
 				local hit_unit = data.unit
 				local damage = data.damage
 				local damage_source = data.damage_source
-				local hit_ragdoll_actor = nil
+				local hit_ragdoll_actor
 
 				DamageUtils.add_damage_network(hit_unit, extension_unit, damage, "torso", "damage_over_time", nil, Vector3(1, 0, 0), damage_source, hit_ragdoll_actor, source_attacker_unit)
-			end
+			end,
 		},
 		client = {
 			update = function (world, radius, aoe_unit, player_screen_effect_name, player_unit_particles, aoe_dot_player_take_damage, explosion_template_name, slow_modifier)
@@ -74,10 +79,12 @@ AreaDamageTemplates.templates = {
 
 						if is_inside_radius and not player_unit_particles[player_unit] then
 							local particle_id = World.create_particles(world, player_screen_effect_name, Vector3(0, 0, 0))
+
 							player_unit_particles[player_unit] = {
 								particle_id = particle_id,
-								start_time = t
+								start_time = t,
 							}
+
 							local status_extension = ScriptUnit.has_extension(player_unit, "status_system")
 
 							if status_extension then
@@ -95,9 +102,10 @@ AreaDamageTemplates.templates = {
 							World.stop_spawning_particles(world, particle_id)
 
 							local new_particle_id = World.create_particles(world, player_screen_effect_name, Vector3(0, 0, 0))
+
 							player_unit_particles[player_unit].fade_time = t + 1.5
 							player_unit_particles[player_unit].particle_id = new_particle_id
-						elseif not is_inside_radius and player_unit_particles[player_unit] and player_unit_particles[player_unit].fade_time <= t then
+						elseif not is_inside_radius and player_unit_particles[player_unit] and t >= player_unit_particles[player_unit].fade_time then
 							local particle_id = player_unit_particles[player_unit].particle_id
 
 							World.stop_spawning_particles(world, particle_id)
@@ -123,8 +131,8 @@ AreaDamageTemplates.templates = {
 			end,
 			destroy = function ()
 				return
-			end
-		}
+			end,
+		},
 	},
 	sorcerer_area_dot_damage = {
 		server = {
@@ -161,8 +169,9 @@ AreaDamageTemplates.templates = {
 										area_damage_template = "sorcerer_area_dot_damage",
 										unit = player_unit,
 										damage = damage,
-										damage_source = damage_source
+										damage_source = damage_source,
 									}
+
 									damage_buffer[#damage_buffer + 1] = damage_data
 								end
 							end
@@ -176,10 +185,10 @@ AreaDamageTemplates.templates = {
 				local hit_unit = data.unit
 				local damage = data.damage
 				local damage_source = data.damage_source
-				local hit_ragdoll_actor = nil
+				local hit_ragdoll_actor
 
 				DamageUtils.add_damage_network(hit_unit, unit, damage, "torso", "damage_over_time", nil, Vector3(1, 0, 0), damage_source, hit_ragdoll_actor, source_attacker_unit)
-			end
+			end,
 		},
 		client = {
 			update = function (world, radius, aoe_unit, player_screen_effect_name, player_unit_particles, aoe_dot_player_take_damage, explosion_template_name, slow_modifier)
@@ -199,9 +208,10 @@ AreaDamageTemplates.templates = {
 
 						if is_inside_radius and not player_unit_particles[player_unit] then
 							local particle_id = World.create_particles(world, player_screen_effect_name, Vector3(0, 0, 0))
+
 							player_unit_particles[player_unit] = {
 								particle_id = particle_id,
-								start_time = t
+								start_time = t,
 							}
 						elseif is_inside_radius and t >= player_unit_particles[player_unit].start_time + 5 then
 							local particle_id = player_unit_particles[player_unit].particle_id
@@ -215,9 +225,10 @@ AreaDamageTemplates.templates = {
 							World.stop_spawning_particles(world, particle_id)
 
 							local new_particle_id = World.create_particles(world, player_screen_effect_name, Vector3(0, 0, 0))
+
 							player_unit_particles[player_unit].fade_time = t + 1.5
 							player_unit_particles[player_unit].particle_id = new_particle_id
-						elseif not is_inside_radius and player_unit_particles[player_unit] and player_unit_particles[player_unit].fade_time <= t then
+						elseif not is_inside_radius and player_unit_particles[player_unit] and t >= player_unit_particles[player_unit].fade_time then
 							local particle_id = player_unit_particles[player_unit].particle_id
 
 							World.stop_spawning_particles(world, particle_id)
@@ -243,8 +254,8 @@ AreaDamageTemplates.templates = {
 			end,
 			destroy = function ()
 				return
-			end
-		}
+			end,
+		},
 	},
 	explosion_template_aoe = {
 		server = {
@@ -265,10 +276,11 @@ AreaDamageTemplates.templates = {
 
 				local attack_template_name = aoe_data.attack_template
 				local gravity_well = aoe_data.gravity_well
-				local num_ai_units = nil
+				local num_ai_units
 
 				if (attack_template_name or gravity_well) and (damage_timer <= 0 or damage_interval <= damage_timer) then
 					local broadphase_query_categories = side.enemy_broadphase_categories
+
 					num_ai_units = AiUtils.broadphase_query(area_damage_position, radius, ai_units, broadphase_query_categories)
 				end
 
@@ -305,8 +317,9 @@ AreaDamageTemplates.templates = {
 							unit = ai_unit,
 							damage_source = damage_source,
 							hit_zone_name = hit_zone_name,
-							aoe_data = aoe_data
+							aoe_data = aoe_data,
 						}
+
 						damage_buffer[#damage_buffer + 1] = damage_data
 					end
 
@@ -326,8 +339,9 @@ AreaDamageTemplates.templates = {
 									unit = player_unit,
 									damage_source = damage_source,
 									hit_zone_name = hit_zone_name,
-									aoe_data = aoe_data
+									aoe_data = aoe_data,
 								}
+
 								damage_buffer[#damage_buffer + 1] = damage_data
 							end
 						end
@@ -343,12 +357,14 @@ AreaDamageTemplates.templates = {
 				local damage_source = data.damage_source
 				local aoe_data = data.aoe_data
 				local custom_dot = FrameTable.alloc_table()
+
 				custom_dot.dot_template_name = aoe_data.dot_template_name
 				custom_dot.dot_balefire_variant = aoe_data.dot_balefire_variant
-				local damage_profile, target_index, power_level, boost_curve_multiplier, is_critical_strike = nil
+
+				local damage_profile, target_index, power_level, boost_curve_multiplier, is_critical_strike
 
 				DamageUtils.apply_dot(damage_profile, target_index, power_level, target_unit, attacker_unit, hit_zone_name, damage_source, boost_curve_multiplier, is_critical_strike, aoe_data, source_attacker_unit, custom_dot)
-			end
+			end,
 		},
 		client = {
 			update = function (world, radius, aoe_unit, player_screen_effect_name, player_unit_particles, damage_players, explosion_template_name, side)
@@ -367,8 +383,8 @@ AreaDamageTemplates.templates = {
 				end
 
 				return effect_id
-			end
-		}
+			end,
+		},
 	},
 	area_poison_ai_random_death = {
 		server = {
@@ -392,8 +408,9 @@ AreaDamageTemplates.templates = {
 						if die_roll <= chance_to_die then
 							local damage_data = {
 								area_damage_template = "area_poison_ai_random_death",
-								unit = ai_unit
+								unit = ai_unit,
 							}
+
 							damage_buffer[#damage_buffer + 1] = damage_data
 						end
 					end
@@ -424,8 +441,8 @@ AreaDamageTemplates.templates = {
 				if is_ai_unit and not HEALTH_ALIVE[unit] then
 					QuestSettings.check_num_enemies_killed_by_poison(unit, extension_unit)
 				end
-			end
-		}
+			end,
+		},
 	},
 	mutator_life_poison = {
 		server = {
@@ -462,8 +479,9 @@ AreaDamageTemplates.templates = {
 										area_damage_template = "mutator_life_poison",
 										unit = player_unit,
 										damage = damage,
-										damage_source = damage_source
+										damage_source = damage_source,
 									}
+
 									damage_buffer[#damage_buffer + 1] = damage_data
 								end
 							end
@@ -479,7 +497,7 @@ AreaDamageTemplates.templates = {
 				local damage_source = data.damage_source
 
 				DamageUtils.add_damage_network(hit_unit, extension_unit, damage, "torso", "damage_over_time", nil, Vector3(1, 0, 0), damage_source)
-			end
+			end,
 		},
 		client = {
 			update = function (world, radius, aoe_unit, player_screen_effect_name, player_unit_particles, aoe_dot_player_take_damage, explosion_template_name, slow_modifier)
@@ -507,9 +525,10 @@ AreaDamageTemplates.templates = {
 
 						if is_inside_radius and not player_unit_particles[player_unit] then
 							local particle_id = World.create_particles(world, player_screen_effect_name, Vector3(0, 0, 0))
+
 							player_unit_particles[player_unit] = {
 								particle_id = particle_id,
-								start_time = t
+								start_time = t,
 							}
 						elseif is_inside_radius and t >= player_unit_particles[player_unit].start_time + 5 then
 							local particle_id = player_unit_particles[player_unit].particle_id
@@ -523,9 +542,10 @@ AreaDamageTemplates.templates = {
 							World.stop_spawning_particles(world, particle_id)
 
 							local new_particle_id = World.create_particles(world, player_screen_effect_name, Vector3(0, 0, 0))
+
 							player_unit_particles[player_unit].fade_time = t + 1.5
 							player_unit_particles[player_unit].particle_id = new_particle_id
-						elseif not is_inside_radius and player_unit_particles[player_unit] and player_unit_particles[player_unit].fade_time <= t then
+						elseif not is_inside_radius and player_unit_particles[player_unit] and t >= player_unit_particles[player_unit].fade_time then
 							local particle_id = player_unit_particles[player_unit].particle_id
 
 							World.stop_spawning_particles(world, particle_id)
@@ -551,9 +571,9 @@ AreaDamageTemplates.templates = {
 			end,
 			destroy = function ()
 				return
-			end
-		}
-	}
+			end,
+		},
+	},
 }
 
 AreaDamageTemplates.get_template = function (area_damage_template, is_husk)

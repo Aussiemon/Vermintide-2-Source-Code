@@ -1,20 +1,24 @@
+﻿-- chunkname: @scripts/managers/weave/weave_manager.lua
+
 require("scripts/managers/conflict_director/weave_spawner")
 require("scripts/settings/wind_settings")
 require("scripts/settings/weave_settings")
 
 local weave_manager_testify = script_data.testify and require("scripts/managers/weave/weave_manager_testify")
+
 WeaveManager = class(WeaveManager)
+
 local RPCS = {
 	"rpc_set_active_weave",
 	"rpc_weave_objective_completed",
 	"rpc_weave_final_objective_completed",
 	"rpc_sync_end_of_weave_data",
 	"rpc_sync_player_count",
-	"rpc_bar_cutoff_reached"
+	"rpc_bar_cutoff_reached",
 }
 local EVENTS = {
 	"conflict_director_setup_done",
-	"event_conflict_director_setup_done"
+	"event_conflict_director_setup_done",
 }
 
 WeaveManager.init = function (self)
@@ -235,7 +239,7 @@ WeaveManager.update = function (self, dt, t)
 
 				GameSession.set_game_object_field(game, self._go_id, "remaining_time", remaining_time)
 
-				if objective_template.bar_cutoff <= self._bar_score and not self._bar_filled then
+				if self._bar_score >= objective_template.bar_cutoff and not self._bar_filled then
 					self:_objective_completed()
 
 					local network_transmit = Managers.state.network.network_transmit
@@ -472,6 +476,7 @@ end
 
 WeaveManager.sync_end_of_weave_data = function (self)
 	self._final_data_synced = true
+
 	local score = self._score
 	local remaining_time = self._remaining_time
 	local num_players = self._num_players
@@ -526,6 +531,7 @@ WeaveManager.mutators = function (self)
 	local wind = template.wind
 	local wind_settings = WindSettings[wind]
 	local mutator_name = wind_settings.mutator
+
 	mutators_temp[#mutators_temp + 1] = mutator_name
 
 	return mutators_temp
@@ -585,7 +591,9 @@ WeaveManager.increase_bar_score = function (self, amount)
 	if objective_template then
 		local bar_multiplier = objective_template.bar_multiplier
 		local bar_cutoff = objective_template.bar_cutoff
+
 		amount = amount * bar_multiplier
+
 		local game = Managers.state.network:game()
 
 		if game and self._go_id then
@@ -672,9 +680,10 @@ WeaveManager._create_game_object = function (self)
 	local go_data_table = {
 		go_type = NetworkLookup.go_types.weave,
 		bar_score = self._bar_score,
-		remaining_time = self._remaining_time
+		remaining_time = self._remaining_time,
 	}
 	local callback = callback(self, "cb_game_session_disconnect")
+
 	self._go_id = Managers.state.network:create_game_object("weave", go_data_table, callback)
 end
 
@@ -713,6 +722,7 @@ end
 
 WeaveManager._objective_completed = function (self)
 	self._bar_filled = true
+
 	local objective_template = self:get_active_objective_template()
 	local objective_completed_flow_event = objective_template.objective_completed_flow_event
 
@@ -753,6 +763,7 @@ WeaveManager._objective_completed = function (self)
 			local minutes = math.floor(seconds / 60)
 			local hours = math.floor(minutes / 60)
 			local timer_text = string.format("%d:%02d", minutes - hours * 60, seconds % 60)
+
 			text = text .. "\n+" .. timer_text
 		end
 
@@ -819,6 +830,7 @@ WeaveManager._track_ai_killed = function (self, breed_name)
 		self._enemies_killed[breed_name] = self._enemies_killed[breed_name] or 0
 		self._enemies_killed[breed_name] = self._enemies_killed[breed_name] + 1
 		self._num_enemies_killed = self._num_enemies_killed + 1
+
 		local difficulty_key = Managers.state.difficulty:get_difficulty()
 		local current_objective_template = self:get_active_objective_template()
 
@@ -836,6 +848,7 @@ end
 WeaveManager.rpc_bar_cutoff_reached = function (self, channel_id)
 	local objective_template = self:get_active_objective_template()
 	local bar_cutoff = objective_template.bar_cutoff
+
 	self._bar_score = bar_cutoff
 end
 

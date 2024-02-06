@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/default_player_unit/states/player_character_state_jumping.lua
+
 PlayerCharacterStateJumping = class(PlayerCharacterStateJumping, PlayerCharacterState)
 
 PlayerCharacterStateJumping.init = function (self, character_state_init_context)
@@ -28,7 +30,7 @@ PlayerCharacterStateJumping.on_enter = function (self, unit, input, dt, context,
 	locomotion_extension:force_on_ground(false)
 
 	local velocity_current = locomotion_extension:current_velocity()
-	local velocity_jump = nil
+	local velocity_jump
 
 	if params.post_dodge_jump then
 		velocity_current = velocity_current * PlayerUnitMovementSettings.post_dodge_jump_velocity_scale
@@ -41,14 +43,15 @@ PlayerCharacterStateJumping.on_enter = function (self, unit, input, dt, context,
 
 	local speed_current = Vector3.length(velocity_current)
 
-	if PlayerUnitMovementSettings.move_speed < speed_current then
-		velocity_current = velocity_current * PlayerUnitMovementSettings.move_speed / speed_current
+	if speed_current > PlayerUnitMovementSettings.move_speed then
+		velocity_current = velocity_current * (PlayerUnitMovementSettings.move_speed / speed_current)
 	end
 
 	if previous_state == "climbing_ladder" then
 		local ladder_unit = params.ladder_unit
 		local ladder_rotation = Unit.world_rotation(ladder_unit, 0)
 		local direction = Quaternion.forward(ladder_rotation)
+
 		velocity_jump = direction * movement_settings_table.ladder.jump_backwards_force
 		self.temp_params.ladder_shaking = params.ladder_shaking
 	else
@@ -58,8 +61,9 @@ PlayerCharacterStateJumping.on_enter = function (self, unit, input, dt, context,
 	locomotion_extension:set_forced_velocity(velocity_jump)
 	locomotion_extension:set_wanted_velocity(velocity_jump)
 
-	local move_anim = nil
+	local move_anim
 	local item_template = inventory_extension:get_wielded_slot_item_template()
+
 	self._play_fp_anim = item_template and item_template.jump_anim_enabled_1p
 	move_anim = CharacterStateHelper.has_move_input(input_extension) and "jump_fwd" or "jump_idle"
 
@@ -125,6 +129,7 @@ PlayerCharacterStateJumping.update = function (self, unit, input, dt, context, t
 
 		local params = movement_settings_table.stun_settings.pushed
 		local hit_react_type = status_extension:hit_react_type()
+
 		params.hit_react_type = hit_react_type .. "_push"
 
 		csm:change_state("stunned", params)
@@ -134,6 +139,7 @@ PlayerCharacterStateJumping.update = function (self, unit, input, dt, context, t
 
 	if CharacterStateHelper.is_charged(status_extension) then
 		local params = movement_settings_table.charged_settings.charged
+
 		params.hit_react_type = "charged"
 
 		csm:change_state("charged", params)
@@ -145,6 +151,7 @@ PlayerCharacterStateJumping.update = function (self, unit, input, dt, context, t
 		status_extension:set_block_broken(false)
 
 		local params = movement_settings_table.stun_settings.parry_broken
+
 		params.hit_react_type = "medium_push"
 
 		csm:change_state("stunned", params)
@@ -169,6 +176,7 @@ PlayerCharacterStateJumping.update = function (self, unit, input, dt, context, t
 	local inventory_extension = self.inventory_extension
 	local move_speed = math.clamp(movement_settings_table.move_speed, 0, PlayerUnitMovementSettings.move_speed)
 	local move_speed_multiplier = status_extension:current_move_speed_multiplier()
+
 	move_speed = move_speed * move_speed_multiplier
 	move_speed = move_speed * movement_settings_table.player_speed_scale
 	move_speed = move_speed * movement_settings_table.player_air_speed_scale
@@ -188,6 +196,7 @@ PlayerCharacterStateJumping.update = function (self, unit, input, dt, context, t
 
 		local config = interactor_extension:interaction_config()
 		local params = self.temp_params
+
 		params.swap_to_3p = config.swap_to_3p
 		params.show_weapons = config.show_weapons
 		params.activate_block = config.activate_block
@@ -205,6 +214,7 @@ PlayerCharacterStateJumping.update = function (self, unit, input, dt, context, t
 
 		local config = interactor_extension:interaction_config()
 		local params = self.temp_params
+
 		params.swap_to_3p = config.swap_to_3p
 		params.show_weapons = config.show_weapons
 		params.activate_block = config.activate_block

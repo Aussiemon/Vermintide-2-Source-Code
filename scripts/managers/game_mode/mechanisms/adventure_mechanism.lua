@@ -1,5 +1,8 @@
+﻿-- chunkname: @scripts/managers/game_mode/mechanisms/adventure_mechanism.lua
+
 AdventureMechanism = class(AdventureMechanism)
 AdventureMechanism.name = "Adventure"
+
 local live_event_packages = require("scripts/settings/live_events_packages")
 local HUB_LEVEL_NAME = "inn_level"
 local HUB_GAME_MODE_KEY = "inn"
@@ -42,7 +45,7 @@ local vote_requests = {
 			excluded_level_keys = params.excluded_level_keys,
 			matchmaking_type = params.matchmaking_type,
 			mechanism = params.mechanism,
-			vote_type = params.request_type
+			vote_type = params.request_type,
 		}
 		local vote_template = "game_settings_vote"
 
@@ -63,7 +66,7 @@ local vote_requests = {
 			excluded_level_keys = params.excluded_level_keys,
 			matchmaking_type = params.matchmaking_type,
 			mechanism = params.mechanism,
-			vote_type = params.request_type
+			vote_type = params.request_type,
 		}
 
 		Managers.state.voting:request_vote("game_settings_deed_vote", vote_data, Network.peer_id())
@@ -82,7 +85,7 @@ local vote_requests = {
 			excluded_level_keys = params.excluded_level_keys,
 			matchmaking_type = params.matchmaking_type,
 			mechanism = params.mechanism,
-			vote_type = params.request_type
+			vote_type = params.request_type,
 		}
 
 		Managers.state.voting:request_vote("game_settings_event_vote", vote_data, Network.peer_id())
@@ -97,7 +100,7 @@ local vote_requests = {
 			always_host = params.always_host,
 			matchmaking_type = params.matchmaking_type,
 			mechanism = params.mechanism,
-			vote_type = params.request_type
+			vote_type = params.request_type,
 		}
 
 		Managers.state.voting:request_vote("game_settings_weave_quick_play_vote", vote_data, Network.peer_id())
@@ -114,14 +117,14 @@ local vote_requests = {
 			always_host = params.always_host,
 			matchmaking_type = params.matchmaking_type,
 			mechanism = params.mechanism,
-			vote_type = params.request_type
+			vote_type = params.request_type,
 		}
 
 		Managers.state.voting:request_vote("game_settings_weave_vote", vote_data, Network.peer_id())
-	end
+	end,
 }
 local RPCS = {
-	"rpc_sync_adventure_data_to_peer"
+	"rpc_sync_adventure_data_to_peer",
 }
 
 AdventureMechanism.init = function (self, settings)
@@ -177,6 +180,7 @@ end
 AdventureMechanism._reset = function (self, settings, prior_state)
 	local level_key = self:get_hub_level_key()
 	local level_settings = LevelSettings[level_key]
+
 	self._prior_state = prior_state or self._state
 
 	if level_settings.hub_level then
@@ -200,9 +204,9 @@ AdventureMechanism.choose_next_state = function (self, next_state)
 
 	if state == HUB_STATE or state == TUTORIAL_STATE then
 		local acceptable_states = {
-			weave = true,
 			ingame = true,
-			tutorial = true
+			tutorial = true,
+			weave = true,
 		}
 
 		fassert(acceptable_states[next_state], "State (%s) is not an acceptable transition from current state (%s)", next_state, state)
@@ -224,6 +228,7 @@ AdventureMechanism.progress_state = function (self)
 		self._next_state = nil
 	else
 		local state = self._state
+
 		self._prior_state = state
 
 		if state == HUB_STATE then
@@ -274,6 +279,7 @@ AdventureMechanism.get_level_seed = function (self, level_seed, optional_system)
 
 	if weave_manager and weave_manager:get_active_weave() then
 		local active_objective = weave_manager:get_active_objective_template()
+
 		level_seed = optional_system and active_objective.system_seeds and active_objective.system_seeds[optional_system] or active_objective.level_seed or level_seed
 	end
 
@@ -283,10 +289,11 @@ end
 AdventureMechanism.get_end_of_level_rewards_arguments = function (self, game_won, quickplay, statistics_db, stats_id)
 	local is_weave_game_mode = self._current_game_mode == WEAVE_GAME_MODE_KEY
 	local kill_count = statistics_db:get_stat(stats_id, "kills_total")
-	local weave_tier, weave_progress = nil
+	local weave_tier, weave_progress
 
 	if is_weave_game_mode then
 		local weave_manager = Managers.weave
+
 		weave_tier = weave_manager:get_weave_tier()
 		weave_progress = weave_manager:current_bar_score()
 	end
@@ -307,7 +314,7 @@ AdventureMechanism.get_end_of_level_rewards_arguments = function (self, game_won
 		loot_dice = loot_dice and loot_dice.current_amount or 0,
 		painting_scraps = painting_scraps and painting_scraps.current_amount or 0,
 		quickplay = quickplay,
-		game_won = game_won
+		game_won = game_won,
 	}
 
 	return {
@@ -315,7 +322,7 @@ AdventureMechanism.get_end_of_level_rewards_arguments = function (self, game_won
 		weave_tier = weave_tier,
 		weave_progress = weave_progress,
 		kill_count = kill_count,
-		chest_upgrade_data = chest_upgrade_data
+		chest_upgrade_data = chest_upgrade_data,
 	}
 end
 
@@ -348,9 +355,10 @@ end
 
 AdventureMechanism.game_round_ended = function (self, t, dt, reason)
 	self._game_round_ended_reason = reason
-	local new_saved_game_mode_data = nil
+
+	local new_saved_game_mode_data
 	local state = self._state
-	local level_key, conflict_settings, level_seed, locked_director_functions, difficulty, difficulty_tweak = nil
+	local level_key, conflict_settings, level_seed, locked_director_functions, difficulty, difficulty_tweak
 
 	if state == HUB_STATE then
 		level_key = Managers.level_transition_handler:get_next_level_key()
@@ -382,7 +390,9 @@ AdventureMechanism.game_round_ended = function (self, t, dt, reason)
 			level_key = objective.level_id
 			conflict_settings = objective.conflict_settings
 			level_seed = Managers.mechanism:generate_level_seed()
+
 			local level_transition_handler = Managers.level_transition_handler
+
 			difficulty = level_transition_handler:get_current_difficulty()
 			difficulty_tweak = level_transition_handler:get_current_difficulty_tweak()
 			locked_director_functions = level_transition_handler:get_current_locked_director_functions()
@@ -398,6 +408,7 @@ AdventureMechanism.game_round_ended = function (self, t, dt, reason)
 		Managers.level_transition_handler:promote_next_level_data()
 	elseif reason == "won" or reason == "lost" then
 		self._saved_game_mode_data = new_saved_game_mode_data
+
 		local environment_variation_id = LevelHelper:get_environment_variation_id(level_key)
 
 		Managers.level_transition_handler:set_next_level(level_key, environment_variation_id, level_seed, nil, nil, conflict_settings, locked_director_functions, difficulty, difficulty_tweak)
@@ -416,7 +427,7 @@ AdventureMechanism.should_run_tutorial = function (self)
 end
 
 AdventureMechanism._get_next_game_mode_key = function (self)
-	local game_mode_key = nil
+	local game_mode_key
 	local state = self._state
 
 	if state == HUB_STATE then
@@ -441,10 +452,11 @@ end
 
 AdventureMechanism.start_next_round = function (self)
 	self._game_round_ended_reason = nil
+
 	local state = self._state
 
 	if state == HUB_STATE then
-		local settings = nil
+		local settings
 		local prior_state = self._prior_state
 
 		self:_reset(settings, prior_state)
@@ -452,15 +464,17 @@ AdventureMechanism.start_next_round = function (self)
 
 	local side_compositions = self:_build_side_compositions(state)
 	local game_mode_key = self:_get_next_game_mode_key()
+
 	self._current_game_mode = game_mode_key
-	local saved_game_mode_data = nil
+
+	local saved_game_mode_data
 
 	if self._saved_game_mode_data then
 		saved_game_mode_data = table.clone(self._saved_game_mode_data)
 	end
 
 	local game_mode_settings = {
-		game_mode_data = saved_game_mode_data
+		game_mode_data = saved_game_mode_data,
 	}
 
 	return game_mode_key, side_compositions, game_mode_settings
@@ -479,31 +493,31 @@ AdventureMechanism._build_side_compositions = function (self, state)
 			name = "heroes",
 			relations = {
 				enemy = {
-					"dark_pact"
-				}
+					"dark_pact",
+				},
 			},
 			party = party_manager:get_party(1),
 			add_these_settings = {
-				using_grims_and_tomes = true,
 				show_damage_feedback = false,
 				using_enemy_recycler = true,
-				available_profiles = available_profiles
-			}
+				using_grims_and_tomes = true,
+				available_profiles = available_profiles,
+			},
 		},
 		{
 			name = "dark_pact",
 			relations = {
 				enemy = {
-					"heroes"
-				}
-			}
+					"heroes",
+				},
+			},
 		},
 		{
 			name = "neutral",
 			relations = {
-				enemy = {}
-			}
-		}
+				enemy = {},
+			},
+		},
 	}
 
 	return side_compositions
@@ -692,6 +706,7 @@ AdventureMechanism._load_live_event_packages = function (self)
 
 	if special_events then
 		self._additional_packages = {}
+
 		local additional_packages = self._additional_packages
 
 		for i = 1, #special_events do
@@ -706,6 +721,7 @@ AdventureMechanism._load_live_event_packages = function (self)
 			if mutators then
 				for j = 1, #mutators do
 					local mutator = mutators[j]
+
 					event_packages = live_event_packages[mutator]
 
 					load_special_event_packages(additional_packages, mutator, event_packages)

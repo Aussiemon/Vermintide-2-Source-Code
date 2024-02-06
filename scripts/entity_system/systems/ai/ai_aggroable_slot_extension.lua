@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/ai/ai_aggroable_slot_extension.lua
+
 AIAggroableSlotExtension = class(AIAggroableSlotExtension, AIPlayerSlotExtension)
 
 AIAggroableSlotExtension.init = function (self, extension_init_context, unit, extension_init_data)

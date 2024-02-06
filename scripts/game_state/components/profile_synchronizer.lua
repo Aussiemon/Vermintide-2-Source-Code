@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/game_state/components/profile_synchronizer.lua
+
 require("scripts/settings/profiles/sp_profiles")
 
 local NUM_HERO_PROFILES = #PROFILES_BY_AFFILIATION.heroes
@@ -44,6 +46,7 @@ local function _add_slot_item_packages(packages_list, slot, item_data, optional_
 
 		for j = 1, #weapon_packages do
 			local package_name = weapon_packages[j]
+
 			packages_list[package_name] = false
 		end
 	elseif slot_category == "attachment" then
@@ -56,7 +59,9 @@ local function _add_slot_item_packages(packages_list, slot, item_data, optional_
 		if material_changes then
 			packages_list[material_changes.package_name] = false
 		end
-	elseif slot_category ~= "cosmetic" then
+	elseif slot_category == "cosmetic" then
+		-- Nothing
+	else
 		error("ProfileSynchronizer unknown slot_category: " .. slot_category)
 	end
 end
@@ -91,6 +96,7 @@ local function profile_packages(profile_index, career_index, is_first_person)
 
 	for i = 1, #skin_packages do
 		local package_name = skin_packages[i]
+
 		packages_list[package_name] = false
 	end
 
@@ -98,31 +104,33 @@ local function profile_packages(profile_index, career_index, is_first_person)
 		packages_list[career.package_name] = false
 	end
 
-	local talent_interface = Managers.backend:get_talents_interface()
-	local talent_ids = talent_interface:get_talent_ids(career_name)
-	local career_requires_packages = career.requires_packages
+	do
+		local talent_interface = Managers.backend:get_talents_interface()
+		local talent_ids = talent_interface:get_talent_ids(career_name)
+		local career_requires_packages = career.requires_packages
 
-	if career_requires_packages then
-		table.merge(_combined_requires_packages, career_requires_packages)
-	end
-
-	local talent_table = Talents[profile.display_name]
-
-	for talent_idx = 1, #talent_ids do
-		local talent = talent_table[talent_ids[talent_idx]]
-
-		if talent and talent.requires_packages then
-			table.merge(_combined_requires_packages, talent.requires_packages)
+		if career_requires_packages then
+			table.merge(_combined_requires_packages, career_requires_packages)
 		end
-	end
 
-	for _, group in pairs(_combined_requires_packages) do
-		for _, package_name in pairs(group) do
-			packages_list[package_name] = false
+		local talent_table = Talents[profile.display_name]
+
+		for talent_idx = 1, #talent_ids do
+			local talent = talent_table[talent_ids[talent_idx]]
+
+			if talent and talent.requires_packages then
+				table.merge(_combined_requires_packages, talent.requires_packages)
+			end
 		end
-	end
 
-	table.clear(_combined_requires_packages)
+		for _, group in pairs(_combined_requires_packages) do
+			for _, package_name in pairs(group) do
+				packages_list[package_name] = false
+			end
+		end
+
+		table.clear(_combined_requires_packages)
+	end
 
 	if career.talent_packages then
 		local talent_interface = Managers.backend:get_talents_interface()
@@ -165,7 +173,7 @@ local function update_inventory_data(state, peer_id, local_player_id, profile_in
 	state:set_inventory_data(peer_id, local_player_id, {
 		inventory_id = inventory_id,
 		first_person = inventory_list_first_person,
-		third_person = inventory_list
+		third_person = inventory_list,
 	})
 
 	return inventory_id
@@ -262,6 +270,7 @@ local function update_local_packages(state)
 	for missing_package, _ in pairs(missing_packages) do
 		if not package_manager:is_loading(missing_package) then
 			local async = true
+
 			loaded_or_loading_packages[missing_package] = true
 
 			package_manager:load(missing_package, PACKAGE_MANAGER_REFERENCE_NAME, nil, async)
@@ -303,12 +312,12 @@ ProfileSynchronizer.init = function (self, is_server, lobby_object, network_stat
 	self._lobby = lobby_object
 	self._cached_all_synced_for_peer = {
 		ingame = {},
-		any = {}
+		any = {},
 	}
 end
 
 local RPCS = {
-	"rpc_assign_peer_to_profile"
+	"rpc_assign_peer_to_profile",
 }
 
 ProfileSynchronizer.register_rpcs = function (self, network_event_delegate, network_transmit)
@@ -472,6 +481,7 @@ ProfileSynchronizer.all_synced = function (self)
 
 	if self._cached_all_synced_revision ~= current_revision then
 		local ignore_loading_peers = false
+
 		self._cached_all_synced = are_all_synced(self._state, ignore_loading_peers)
 		self._cached_all_synced_revision = current_revision
 	end
@@ -501,9 +511,10 @@ ProfileSynchronizer._all_synced_for_peer = function (self, peer_id, local_player
 
 	if not cached_data or cached_data[cached_data_revision_key] ~= current_revision then
 		local result = are_all_synced_for_peer(self._state, peer_id, local_player_id, ignore_loading_peers)
+
 		cached_data = {
 			current_revision,
-			result
+			result,
 		}
 		cache_for_peer = cache_for_peer or {}
 		cache_for_peer[local_player_id] = cached_data
@@ -579,6 +590,7 @@ ProfileSynchronizer._assign_peer_to_profile = function (self, peer_id, local_pla
 	self._state:set_profile(peer_id, local_player_id, profile_index, career_index, is_bot)
 
 	local status = Managers.party:get_player_status(peer_id, local_player_id)
+
 	status.profile_index = profile_index
 	status.career_index = career_index
 	status.selected_profile_index = profile_index
@@ -620,6 +632,7 @@ ProfileSynchronizer._sync_lobby_data = function (self)
 			lobby_data[key] = INVALID_OWNER
 		else
 			local local_player_id = 1
+
 			lobby_data[key] = join_lobby_entry(peer_id, local_player_id)
 		end
 	end
@@ -682,6 +695,7 @@ ProfileSynchronizer.unpack_lobby_profile_slots = function (peer_ids, player_indi
 		local slot_name = lobby_slot_name(profile_index)
 		local peer_id = peer_ids[profile_index]
 		local local_player_id = player_indices[profile_index]
+
 		lobby_data[slot_name] = join_lobby_entry(peer_id, local_player_id)
 	end
 end

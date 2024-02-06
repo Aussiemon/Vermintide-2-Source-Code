@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/game_state/title_screen_substates/xb1/state_title_screen_load_save.lua
+
 StateTitleScreenLoadSave = class(StateTitleScreenLoadSave)
 StateTitleScreenLoadSave.NAME = "StateTitleScreenLoadSave"
 
@@ -9,13 +11,13 @@ StateTitleScreenLoadSave.on_enter = function (self, params)
 	self._viewport = params.viewport
 	self._title_start_ui = params.ui
 	self._state = "get_user_profile"
-	self._network_event_meta_table = {
-		__index = function (event_table, event_key)
-			return function ()
-				Application.warning("Got RPC %s during forced network update when exiting StateTitleScreenMain", event_key)
-			end
+	self._network_event_meta_table = {}
+
+	self._network_event_meta_table.__index = function (event_table, event_key)
+		return function ()
+			Application.warning("Got RPC %s during forced network update when exiting StateTitleScreenMain", event_key)
 		end
-	}
+	end
 
 	Managers.transition:show_loading_icon(false)
 
@@ -28,6 +30,7 @@ end
 
 StateTitleScreenLoadSave._setup_input = function (self)
 	local input_manager = Managers.input
+
 	self.input_manager = input_manager
 end
 
@@ -87,11 +90,12 @@ end
 
 StateTitleScreenLoadSave._get_user_profile = function (self)
 	self._state = "waiting_for_profile"
+
 	local user_id = Managers.account:user_id()
 	local xuid = Managers.account:xbox_user_id()
 
 	Managers.account:get_user_profiles(user_id, {
-		xuid
+		xuid,
 	}, callback(self, "cb_profile_acquired"))
 end
 

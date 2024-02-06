@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/imgui/imgui_spawning.lua
+
 ImguiSpawning = class(ImguiSpawning)
 
 ImguiSpawning.init = function (self)
@@ -53,6 +55,7 @@ ImguiSpawning.draw = function (self)
 
 	if Imgui.button("Spawn Breed", 100, 20) and breed_name then
 		local conflict_director = Managers.state.conflict
+
 		debug_breed = breed_name
 		conflict_director.get_debug_breed = monkey_patched_get_debug_breed
 
@@ -70,6 +73,7 @@ ImguiSpawning.draw = function (self)
 
 	if Managers.state and Managers.state.conflict then
 		self._damage = Imgui.slider_int("Damage", self._damage, 1, 1000)
+
 		local world = Application.main_world()
 		local breed, pos, distance, normal, actor = Managers.state.conflict:player_aim_raycast(world, true, "filter_player_ray_projectile")
 

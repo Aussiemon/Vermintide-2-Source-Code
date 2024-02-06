@@ -1,5 +1,7 @@
+﻿-- chunkname: @scripts/ui/views/show_cursor_stack.lua
+
 ShowCursorStack = ShowCursorStack or {
-	stack_depth = 0
+	stack_depth = 0,
 }
 
 ShowCursorStack.render_cursor = function (allow_cursor_rendering)

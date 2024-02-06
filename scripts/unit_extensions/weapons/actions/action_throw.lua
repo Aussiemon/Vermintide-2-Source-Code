@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/weapons/actions/action_throw.lua
+
 ActionThrow = class(ActionThrow, ActionBase)
 
 ActionThrow.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
@@ -26,7 +28,7 @@ ActionThrow.client_owner_post_update = function (self, dt, t, world, can_damage)
 	local current_action = self.current_action
 	local throw_time = self.action_time_started + current_action.throw_time
 
-	if t >= throw_time then
+	if throw_time <= t then
 		self:_throw()
 
 		self.thrown = true
@@ -70,6 +72,7 @@ ActionThrow._throw = function (self)
 
 	if current_action.is_statue_and_needs_rotation_cause_reasons then
 		local statue_rotation_two = Quaternion(Vector3.up(), -math.pi)
+
 		proj_rotation = Quaternion.multiply(proj_rotation, statue_rotation_two)
 	end
 
@@ -100,6 +103,7 @@ ActionThrow._throw = function (self)
 	if not projectile_info.disable_throwing_dialogue and projectile_info.pickup_name then
 		local dialogue_input = ScriptUnit.extension_input(self.owner_unit, "dialogue_system")
 		local event_data = FrameTable.alloc_table()
+
 		event_data.item_type = projectile_info.pickup_name
 
 		dialogue_input:trigger_networked_dialogue_event("throwing_item", event_data)

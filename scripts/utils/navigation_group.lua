@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/utils/navigation_group.lua
+
 NavigationGroup = class(NavigationGroup)
 
 NavigationGroup.init = function (self, nav_world, poly_hash, poly, poly_center, poly_area, group_number)
@@ -20,6 +22,7 @@ NavigationGroup.make_string_of_group = function (self, write_string)
 
 	for group_neighbour, _ in pairs(self._group_neighbours) do
 		local group_id = group_neighbour._group_number
+
 		write_string = write_string .. group_id .. ","
 	end
 
@@ -36,6 +39,7 @@ end
 
 NavigationGroup.add_polygon = function (self, poly, poly_center, poly_area, nav_world)
 	local poly_hash = self:get_poly_hash(poly, nav_world)
+
 	self._group_polygons[poly_hash] = poly
 	self._group_size = self._group_size + 1
 	self._area = self._area + poly_area
@@ -98,8 +102,7 @@ NavigationGroup.calculate_group_center = function (self, poly_center, poly_hash,
 			if new_center == nil then
 				print("Fallback: Will use", poly_center, "as center for nav group", self._group_number)
 
-				new_center_hash = poly_hash
-				new_center = poly_center
+				new_center, new_center_hash = poly_center, poly_hash
 			end
 		end
 
@@ -114,10 +117,11 @@ end
 NavigationGroup.get_group_polygons_centers = function (self, list, nav_world)
 	error("not used?")
 
-	local poly_center = nil
+	local poly_center
 
 	for _, poly in pairs(self._group_polygons) do
 		local a, b, c = Script.temp_count()
+
 		poly_center = self:calc_polygon_center(poly, nav_world)
 
 		table.insert(list, Vector3Box(poly_center))
@@ -185,14 +189,19 @@ NavigationGroup.breadth_first_find_nearest_group_triangle = function (self, root
 	local b_queue = FrameTable.alloc_table()
 	local b_current = 1
 	local b_last = 1
+
 	b_queue[1] = root_triangle
+
 	local root_hash = self:get_poly_hash(root_triangle, nav_world)
+
 	triangle_lookup[root_hash] = true
+
 	local group_polygons = self._group_polygons
 
 	while b_current <= b_last do
 		local node_tri = b_queue[b_current]
 		local node_hash = self:get_poly_hash(node_tri, nav_world)
+
 		b_current = b_current + 1
 
 		if group_polygons[node_hash] then
@@ -202,7 +211,7 @@ NavigationGroup.breadth_first_find_nearest_group_triangle = function (self, root
 		end
 
 		local neighbours = {
-			GwNavTraversal.get_neighboring_triangles(node_tri)
+			GwNavTraversal.get_neighboring_triangles(node_tri),
 		}
 
 		for i = 1, #neighbours do
@@ -219,7 +228,7 @@ NavigationGroup.breadth_first_find_nearest_group_triangle = function (self, root
 			Script.set_temp_count(a, b, c)
 		end
 
-		if BREADTH_FIRST_MAX_NODES < b_current then
+		if b_current > BREADTH_FIRST_MAX_NODES then
 			local p1, p2, p3 = GwNavTraversal.get_triangle_vertices(nav_world, root_triangle)
 
 			print("WARNING: Navigation Group Breadth First Search failed. Triangle at:", p1)
@@ -264,6 +273,7 @@ end
 NavigationGroup.draw_poly_lines = function (self, poly, color, nav_world, line_object, debug_world_gui)
 	local a, b, c = Script.temp_count()
 	local p1, p2, p3 = GwNavTraversal.get_triangle_vertices(nav_world, poly)
+
 	p1 = p1 + Vector3(0, 0, 0.1)
 	p2 = p2 + Vector3(0, 0, 0.1)
 	p3 = p3 + Vector3(0, 0, 0.1)

@@ -1,13 +1,16 @@
-local jopt = require("jit.opt").start
-local format = string.format
+﻿-- chunkname: @scripts/imgui/imgui_jit.lua
+
+local jopt, format = require("jit.opt").start, string.format
+
 ImguiJIT = class(ImguiJIT)
 
 ImguiJIT.init = function (self)
 	if not self._bytes then
 		self._bytes = {
+			d = 0,
 			n = 240,
-			d = 0
 		}
+
 		local seed = collectgarbage("count")
 
 		for i = 1, self._bytes.n do
@@ -18,137 +21,139 @@ ImguiJIT.init = function (self)
 	self._gc = {
 		{
 			d = "The garbage-collector pause controls how long the collector waits before starting a new cycle.",
+			k = "setpause",
 			v = 200,
-			k = "setpause"
 		},
 		{
 			d = "The step multiplier controls the relative speed of the collector relative to memory allocation.",
+			k = "setstepmul",
 			v = 200,
-			k = "setstepmul"
-		}
+		},
 	}
 	self._gc_state = "running"
 	self._opts = {
 		{
+			k = "fold",
 			v = true,
-			k = "fold"
 		},
 		{
+			k = "cse",
 			v = true,
-			k = "cse"
 		},
 		{
+			k = "dce",
 			v = true,
-			k = "dce"
 		},
 		{
+			k = "fwd",
 			v = true,
-			k = "fwd"
 		},
 		{
+			k = "dse",
 			v = true,
-			k = "dse"
 		},
 		{
+			k = "narrow",
 			v = true,
-			k = "narrow"
 		},
 		{
+			k = "loop",
 			v = true,
-			k = "loop"
 		},
 		{
+			k = "abc",
 			v = true,
-			k = "abc"
 		},
 		{
+			k = "sink",
 			v = true,
-			k = "sink"
 		},
 		{
+			k = "fuse",
 			v = true,
-			k = "fuse"
-		}
+		},
 	}
 	self._params = {
 		{
 			d = "Max. # of traces in cache.",
+			k = "maxtrace",
 			v = 8000,
-			k = "maxtrace"
 		},
 		{
 			d = "Max. # of recorded IR instructions.",
+			k = "maxrecord",
 			v = 16000,
-			k = "maxrecord"
 		},
 		{
 			d = "Max. # of IR constants of a trace.",
+			k = "maxirconst",
 			v = 500,
-			k = "maxirconst"
 		},
 		{
 			d = "Max. # of side traces of a root trace.",
+			k = "maxside",
 			v = 100,
-			k = "maxside"
 		},
 		{
 			d = "Max. # of snapshots for a trace.",
+			k = "maxsnap",
 			v = 500,
-			k = "maxsnap"
 		},
 		{
 			d = "Min. # of IR ins for a stitched trace.",
+			k = "minstitch",
 			v = 3,
-			k = "minstitch"
 		},
 		{
 			d = "# of iter. to detect a hot loop/call.",
+			k = "hotloop",
 			v = 56,
-			k = "hotloop"
 		},
 		{
 			d = "# of taken exits to start a side trace.",
+			k = "hotexit",
 			v = 10,
-			k = "hotexit"
 		},
 		{
 			d = "# of attempts to compile a side trace.",
+			k = "tryside",
 			v = 4,
-			k = "tryside"
 		},
 		{
 			d = "Max. unroll for instable loops.",
+			k = "instunroll",
 			v = 4,
-			k = "instunroll"
 		},
 		{
 			d = "Max. unroll for loop ops in side traces.",
+			k = "loopunroll",
 			v = 15,
-			k = "loopunroll"
 		},
 		{
 			d = "Max. unroll for recursive calls.",
+			k = "callunroll",
 			v = 3,
-			k = "callunroll"
 		},
 		{
 			d = "Min. unroll for true recursion.",
+			k = "recunroll",
 			v = 2,
-			k = "recunroll"
 		},
 		{
 			d = "Size of each machine code area (in KBytes).",
+			k = "sizemcode",
 			v = 64,
-			k = "sizemcode"
 		},
 		{
 			d = "Max. total size of all machine code areas (in KBytes).",
+			k = "maxmcode",
 			v = 40960,
-			k = "maxmcode"
-		}
+		},
 	}
 	self._enabled = jit.status()
+
 	local traces = {}
+
 	self._traces = traces
 end
 
@@ -174,11 +179,7 @@ local function tooltip(text, key)
 end
 
 local function stats(t)
-	local min = math.huge
-	local max = -math.huge
-	local mean = 0
-	local M2 = 0
-	local C2 = 0
+	local min, max, mean, M2, C2 = math.huge, -math.huge, 0, 0, 0
 	local n = #t
 
 	for i = 1, n do
@@ -193,6 +194,7 @@ local function stats(t)
 		end
 
 		local dx = x - mean
+
 		mean = mean + dx / i
 		M2 = M2 + dx * (x - mean)
 		C2 = C2 + dx * (n - i - 0.5 * (i + 1))
@@ -268,8 +270,11 @@ ImguiJIT.draw = function (self)
 	if Imgui.collapsing_header("Garbage", false) then
 		local bytes = self._bytes
 		local n = Imgui.input_int("History period", math.max(0, bytes.n))
+
 		bytes.n = n
+
 		local bytes_last = collectgarbage("count")
+
 		bytes[#bytes + 1] = bytes_last
 
 		for i = 1, #bytes - n do

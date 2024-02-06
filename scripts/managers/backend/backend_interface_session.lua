@@ -1,9 +1,11 @@
+﻿-- chunkname: @scripts/managers/backend/backend_interface_session.lua
+
 local States = {
 	END_OF_ROUND = 3,
 	ERROR = 4,
-	IN_GAME = 2,
 	INITIALIZED = 1,
-	UNINITIALIZED = 0
+	IN_GAME = 2,
+	UNINITIALIZED = 0,
 }
 
 for key, value in pairs(States) do
@@ -51,6 +53,7 @@ end
 
 Session._dice_player_done = function (self, peer_id)
 	local players = self._dice_data.players
+
 	players[peer_id] = nil
 
 	if table.is_empty(players) and not self._debug_backend_session_stop_timeout then
@@ -115,18 +118,18 @@ Session.update = function (self, dt)
 
 	local dice_data = self._dice_data
 
-	if dice_data and dice_data.timeout < Managers.time:time("main") then
+	if dice_data and Managers.time:time("main") > dice_data.timeout then
 		for peer_id, _ in pairs(dice_data.players) do
 			self:_dice_player_done(peer_id)
 		end
 
 		self._error_data = {
-			reason = BACKEND_LUA_ERRORS.ERR_DICE_TIMEOUT2
+			reason = BACKEND_LUA_ERRORS.ERR_DICE_TIMEOUT2,
 		}
 	elseif self._post_dice_timeout then
 		if state == States.UNINITIALIZED then
 			self._post_dice_timeout = nil
-		elseif self._post_dice_timeout < Managers.time:time("main") then
+		elseif Managers.time:time("main") > self._post_dice_timeout then
 			self._post_dice_timeout = nil
 		end
 	end
@@ -148,11 +151,14 @@ end
 
 Session.end_of_round = function (self)
 	local dice_players = table.clone(self._peers)
+
 	dice_players[Network.peer_id()] = true
+
 	local timeout = Managers.time:time("main") + 20
+
 	self._dice_data = {
 		players = dice_players,
-		timeout = timeout
+		timeout = timeout,
 	}
 
 	BackendSession.end_of_round()
@@ -160,6 +166,7 @@ end
 
 Session.received_dice_game_loot = function (self)
 	self._post_dice_timeout = Managers.time:time("main") + 20
+
 	local network_manager = Managers.state.network
 
 	network_manager.network_transmit:send_rpc_server("rpc_backend_session_done")
@@ -167,6 +174,7 @@ end
 
 Session.check_for_errors = function (self)
 	local error_data = self._error_data
+
 	self._error_data = nil
 
 	return error_data

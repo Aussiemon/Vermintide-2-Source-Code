@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/unit_extensions/weapons/projectiles/projectile_impact/projectile_raycast_impact_unit_extension.lua
+
 ProjectileRaycastImpactUnitExtension = class(ProjectileRaycastImpactUnitExtension, ProjectileBaseImpactUnitExtension)
+
 local INDEX_POSITION = 1
 local INDEX_DISTANCE = 2
 local INDEX_NORMAL = 3
@@ -11,7 +14,9 @@ ProjectileRaycastImpactUnitExtension.init = function (self, extension_init_conte
 	self.network_manager = Managers.state.network
 	self.is_server = Managers.player.is_server
 	self.owner_unit = extension_init_data.owner_unit
+
 	local owner_player = Managers.player:owner(self.owner_unit)
+
 	self.owner_is_local = owner_player and owner_player.local_player or owner_player and owner_player.bot_player or false
 	self.server_side_raycast = extension_init_data.server_side_raycast
 	self.is_server = Managers.player.is_server
@@ -86,7 +91,7 @@ ProjectileRaycastImpactUnitExtension._do_raycast = function (self, unit, from, t
 
 		if valid then
 			local num_actors = Unit.num_actors(hit_unit)
-			local actor_index = nil
+			local actor_index
 
 			for j = 0, num_actors - 1 do
 				local actor = Unit.actor(hit_unit, j)

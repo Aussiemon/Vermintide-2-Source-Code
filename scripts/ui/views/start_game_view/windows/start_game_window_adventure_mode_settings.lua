@@ -1,7 +1,10 @@
+﻿-- chunkname: @scripts/ui/views/start_game_view/windows/start_game_window_adventure_mode_settings.lua
+
 local definitions = local_require("scripts/ui/views/start_game_view/windows/definitions/start_game_window_adventure_mode_settings_definitions")
 local widget_definitions = definitions.widgets
 local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
+
 StartGameWindowAdventureModeSettings = class(StartGameWindowAdventureModeSettings)
 StartGameWindowAdventureModeSettings.NAME = "StartGameWindowAdventureModeSettings"
 
@@ -9,15 +12,19 @@ StartGameWindowAdventureModeSettings.on_enter = function (self, params, offset)
 	print("[StartGameWindow] Enter Substate StartGameWindowAdventureModeSettings")
 
 	self.parent = params.parent
+
 	local ingame_ui_context = params.ingame_ui_context
+
 	self.ui_renderer = ingame_ui_context.ui_renderer
 	self.input_manager = ingame_ui_context.input_manager
 	self.statistics_db = ingame_ui_context.statistics_db
 	self.render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
+
 	local player_manager = Managers.player
 	local local_player = player_manager:local_player()
+
 	self._stats_id = local_player:stats_id()
 	self.player_manager = player_manager
 	self.peer_id = ingame_ui_context.peer_id
@@ -32,12 +39,15 @@ end
 
 StartGameWindowAdventureModeSettings.create_ui_elements = function (self, params, offset)
 	local ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+
 	self.ui_scenegraph = ui_scenegraph
+
 	local widgets = {}
 	local widgets_by_name = {}
 
 	for name, widget_definition in pairs(widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		widgets[#widgets + 1] = widget
 		widgets_by_name[name] = widget
 	end
@@ -51,6 +61,7 @@ StartGameWindowAdventureModeSettings.create_ui_elements = function (self, params
 
 	if offset then
 		local window_position = ui_scenegraph.window.local_position
+
 		window_position[1] = window_position[1] + offset[1]
 		window_position[2] = window_position[2] + offset[2]
 		window_position[3] = window_position[3] + offset[3]
@@ -58,6 +69,7 @@ StartGameWindowAdventureModeSettings.create_ui_elements = function (self, params
 
 	widgets_by_name.play_button.content.button_hotspot.disable_button = true
 	widgets_by_name.game_option_next_mission.content.button_hotspot.disable_button = false
+
 	local game_option_difficulty = widgets_by_name.game_option_difficulty
 	local anim = self:_animate_pulse(game_option_difficulty.style.glow_frame.color, 1, 255, 100, 2)
 
@@ -199,14 +211,19 @@ StartGameWindowAdventureModeSettings._set_selected_level = function (self, level
 		local level_settings = LevelSettings[level_id]
 		local display_name = level_settings.display_name
 		local level_image = level_settings.level_image
+
 		text = Localize(display_name)
+
 		local icon_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(level_image)
 		local texture_size = widget.style.icon.texture_size
+
 		texture_size[1] = icon_texture_settings.size[1]
 		texture_size[2] = icon_texture_settings.size[2]
 		widget.content.icon = level_image
+
 		local completed_difficulty_index = LevelUnlockUtils.completed_level_difficulty_index(self.statistics_db, self._stats_id, level_id) or 0
 		local level_frame = UIWidgetUtils.get_level_frame_by_difficulty_index(completed_difficulty_index)
+
 		widget.content.icon_frame = level_frame
 	end
 
@@ -219,6 +236,7 @@ StartGameWindowAdventureModeSettings._set_difficulty_option = function (self, di
 	local display_image = difficulty_settings and difficulty_settings.display_image
 	local completed_frame_texture = difficulty_settings and difficulty_settings.completed_frame_texture or "map_frame_00"
 	local widgets_by_name = self._widgets_by_name
+
 	widgets_by_name.game_option_difficulty.content.option_text = display_name and Localize(display_name) or ""
 	widgets_by_name.game_option_difficulty.content.icon = display_image or nil
 	widgets_by_name.game_option_difficulty.content.icon_frame = completed_frame_texture
@@ -285,6 +303,7 @@ StartGameWindowAdventureModeSettings._create_style_animation_enter = function (s
 	if animation_duration > 0 and not instant then
 		local ui_animations = self._ui_animations
 		local animation_name = "game_option_" .. style_id
+
 		ui_animations[animation_name .. "_hover_" .. widget_index] = self:_animate_element_by_time(pass_style.color, 1, current_color_value, target_color_value, animation_duration)
 	else
 		pass_style.color[1] = target_color_value
@@ -307,6 +326,7 @@ StartGameWindowAdventureModeSettings._create_style_animation_exit = function (se
 	if animation_duration > 0 and not instant then
 		local ui_animations = self._ui_animations
 		local animation_name = "game_option_" .. style_id
+
 		ui_animations[animation_name .. "_hover_" .. widget_index] = self:_animate_element_by_time(pass_style.color, 1, current_color_value, target_color_value, animation_duration)
 	else
 		pass_style.color[1] = target_color_value

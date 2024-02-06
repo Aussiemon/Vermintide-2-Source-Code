@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/dialogues/tag_query_database.lua
+
 require("scripts/entity_system/systems/dialogues/tag_query")
 
 TagQueryDatabase = class(TagQueryDatabase)
@@ -21,6 +23,7 @@ end
 
 TagQueryDatabase.add_object_context = function (self, object, context_name, context)
 	local object_context_list = self.contexts_by_object[object] or {}
+
 	self.contexts_by_object[object] = object_context_list
 	object_context_list[context_name] = context
 end
@@ -40,7 +43,7 @@ end
 TagQueryDatabase.create_query = function (self)
 	return setmetatable({
 		query_context = {},
-		tagquery_database = self
+		tagquery_database = self,
 	}, TagQuery)
 end
 
@@ -62,23 +65,26 @@ local operator_lookup = {
 	LTEQ = RuleDatabase.OPERATOR_LTEQ,
 	GTEQ = RuleDatabase.OPERATOR_GTEQ,
 	NEQ = RuleDatabase.OPERATOR_NOT_EQUAL,
-	RAND = RuleDatabase.OPERATOR_RAND
+	RAND = RuleDatabase.OPERATOR_RAND,
 }
 local context_indexes = table.mirror_array_inplace({
 	"global_context",
 	"query_context",
 	"user_context",
 	"user_memory",
-	"faction_memory"
+	"faction_memory",
 })
 
 TagQueryDatabase.define_rule = function (self, rule_definition)
 	local dialogue_name = rule_definition.name
 	local criterias = rule_definition.criterias
 	local real_criterias = table.clone(criterias)
+
 	rule_definition.real_criterias = real_criterias
+
 	local num_criterias = #criterias
 	local context_indexes = context_indexes
+
 	rule_definition.n_criterias = num_criterias
 
 	fassert(num_criterias <= (RuleDatabase.RULE_MAX_NUM_CRITERIA or 8), "Too many criteria in dialogue %s", dialogue_name)
@@ -90,7 +96,7 @@ TagQueryDatabase.define_rule = function (self, rule_definition)
 		fassert(context_indexes[context_name], "No such context name %q", context_name)
 
 		local operator = criteria[3]
-		local value = nil
+		local value
 
 		if operator == "TIMEDIFF" then
 			operator = criteria[4]
@@ -109,17 +115,13 @@ TagQueryDatabase.define_rule = function (self, rule_definition)
 		fassert(operator_index, "No such rule operator named %q in rule %q", tostring(operator), rule_definition.name)
 
 		criteria[3] = operator_index
+
 		local value_type = type(value)
 
 		if value_type == "string" then
 			criteria[4] = value
 		elseif value_type == "boolean" then
-			if value then
-				value = 1
-			else
-				value = 0
-			end
-
+			value = value and 1 or 0
 			criteria[4] = value
 		else
 			fassert(value_type == "number")
@@ -129,6 +131,7 @@ TagQueryDatabase.define_rule = function (self, rule_definition)
 	end
 
 	local rule_id = RuleDatabase.add_rule(self.database, dialogue_name, num_criterias, criterias)
+
 	self.rule_id_mapping[rule_id] = rule_definition
 	self.rule_id_mapping[rule_definition.name] = rule_id
 	self.rules_n = self.rules_n + 1
@@ -136,7 +139,7 @@ end
 
 TagQueryDatabase.iterate_queries = function (self, t)
 	local num_iterations = #self.queries
-	local best_query = nil
+	local best_query
 	local best_query_value = 0
 
 	for i = 1, num_iterations do
@@ -174,17 +177,19 @@ TagQueryDatabase.iterate_query = function (self, t)
 		return query
 	end
 
-	local nice_array = {
-		self.global_context or dummy_table,
-		query_context or dummy_table,
-		user_context_list.user_context or dummy_table,
-		user_context_list.user_memory or dummy_table,
-		user_context_list.faction_memory or dummy_table
-	}
+	local nice_array = {}
+
+	nice_array[1] = self.global_context or dummy_table
+	nice_array[2] = query_context or dummy_table
+	nice_array[3] = user_context_list.user_context or dummy_table
+	nice_array[4] = user_context_list.user_memory or dummy_table
+	nice_array[5] = user_context_list.faction_memory or dummy_table
+
 	local rule_index_found = RuleDatabase.iterate_query(self.database, nice_array, t)
 
 	if rule_index_found then
 		local rule = self.rule_id_mapping[rule_index_found]
+
 		query.validated_rule = rule
 		query.result = rule.response
 	end
@@ -270,18 +275,20 @@ TagQueryDatabase.debug_test_query = function (self, concept, source, test_query,
 		end
 	end
 
-	local query_call = {
-		self.global_context or dummy_table_2,
-		query_context or dummy_table_2,
-		user_context_list.user_context or dummy_table_2,
-		user_context_list.user_memory or dummy_table_2,
-		user_context_list.faction_memory or dummy_table_2
-	}
+	local query_call = {}
+
+	query_call[1] = self.global_context or dummy_table_2
+	query_call[2] = query_context or dummy_table_2
+	query_call[3] = user_context_list.user_context or dummy_table_2
+	query_call[4] = user_context_list.user_memory or dummy_table_2
+	query_call[5] = user_context_list.faction_memory or dummy_table_2
+
 	local t = Managers.time:time("game")
 	local rule_index_found = RuleDatabase.iterate_query(self.database, query_call, t)
 
 	if rule_index_found then
 		local rule = self.rule_id_mapping[rule_index_found]
+
 		query.validated_rule = rule
 		query.result = rule.response
 

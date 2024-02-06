@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/conflict_director/specials_pacing.lua
+
 SpecialsPacing = class(SpecialsPacing)
 
 SpecialsPacing.init = function (self, world, nav_world, nav_tag_volume_handler, specials_side)
@@ -67,8 +69,9 @@ local mutator_bosses_spawn = {
 	"chaos_spawn",
 	"skaven_rat_ogre",
 	"skaven_stormfiend",
-	"chaos_troll"
+	"chaos_troll",
 }
+
 SpecialsPacing.setup_functions = {
 	specials_by_slots = function (t, slots, method_data, state_data)
 		local specials_settings = CurrentSpecialsSettings
@@ -77,8 +80,7 @@ SpecialsPacing.setup_functions = {
 			return
 		end
 
-		local override_time = nil
-		local trickle_time = 2
+		local override_time, trickle_time = nil, 2
 
 		if method_data.always_coordinated then
 			override_time = t + ConflictUtils.random_interval(method_data.after_safe_zone_delay)
@@ -88,6 +90,7 @@ SpecialsPacing.setup_functions = {
 				local breeds = specials_settings.breeds
 				local pick_index = Math.random(1, #breeds)
 				local breed_name = breeds[pick_index]
+
 				state_data.override_breed_name = breed_name
 			end
 		end
@@ -98,7 +101,7 @@ SpecialsPacing.setup_functions = {
 			local breed_name, health_modifier = SpecialsPacing.select_breed_functions[method_data.select_next_breed](slots, specials_settings, method_data, state_data)
 			local time = override_time or t + ConflictUtils.random_interval(method_data.after_safe_zone_delay)
 			local breed = Breeds[breed_name]
-			local special_spawn_stinger, special_spawn_stinger_at_t = nil
+			local special_spawn_stinger, special_spawn_stinger_at_t
 
 			if breed.special_spawn_stinger then
 				special_spawn_stinger = breed.special_spawn_stinger
@@ -111,10 +114,10 @@ SpecialsPacing.setup_functions = {
 				time = time,
 				health_modifier = health_modifier,
 				special_spawn_stinger = special_spawn_stinger,
-				special_spawn_stinger_at_t = special_spawn_stinger_at_t
+				special_spawn_stinger_at_t = special_spawn_stinger_at_t,
 			}
 		end
-	end
+	end,
 }
 SpecialsPacing.select_breed_functions = {
 	get_least_used_breeds = function (slots, specials_settings, method_data, state_data)
@@ -126,6 +129,7 @@ SpecialsPacing.select_breed_functions = {
 
 		for i = 1, #slots do
 			local slot = slots[i]
+
 			count[slot.breed] = (count[slot.breed] or 0) + 1
 		end
 
@@ -164,15 +168,17 @@ SpecialsPacing.select_breed_functions = {
 
 		for i = 1, #slots do
 			local slot = slots[i]
+
 			count[slot.breed] = (count[slot.breed] or 0) + 1
 		end
 
 		local max_tries = 20
-		local breed = nil
+		local breed
 		local i = 0
 
 		repeat
 			local pick_index = Math.random(1, num_breeds)
+
 			breed = breeds[pick_index]
 			i = i + 1
 		until not count[breed] or count[breed] < method_data.max_of_same or max_tries <= i
@@ -188,10 +194,12 @@ SpecialsPacing.select_breed_functions = {
 		local batch_amount = state_data.batch_amount or 0
 		local t = Managers.time:time("game")
 
-		if not state_data.batch_breed or do_coordinated and state_data.coord_time_check < t or specials_settings.max_specials < batch_amount then
+		if not state_data.batch_breed or do_coordinated and t > state_data.coord_time_check or batch_amount > specials_settings.max_specials then
 			state_data.batch_amount = 0
+
 			local pick_index = Math.random(1, #breeds)
 			local breed = breeds[pick_index]
+
 			state_data.batch_breed = breed
 
 			if do_coordinated then
@@ -206,10 +214,11 @@ SpecialsPacing.select_breed_functions = {
 	get_chance_of_boss_breed = function (slots, specials_settings, method_data, state_data)
 		local breeds = specials_settings.breeds
 		local will_spawn_boss = Math.random() <= 0.25
-		local breed = nil
+		local breed
 
 		if will_spawn_boss then
 			breed = mutator_bosses_spawn[math.random(1, #mutator_bosses_spawn)]
+
 			local health_modifier = 0.25
 
 			return breed, health_modifier
@@ -218,6 +227,7 @@ SpecialsPacing.select_breed_functions = {
 
 			for i = 1, #slots do
 				local slot = slots[i]
+
 				count[slot.breed] = (count[slot.breed] or 0) + 1
 			end
 
@@ -226,23 +236,25 @@ SpecialsPacing.select_breed_functions = {
 
 			repeat
 				local pick_index = Math.random(1, #breeds)
+
 				breed = state_data.override_breed_name or breeds[pick_index]
 				i = i + 1
 			until not count[breed] or count[breed] < method_data.max_of_same or max_tries <= i
 		end
 
 		return breed
-	end
+	end,
 }
 
 SpecialsPacing.set_next_coordinated_attack = function (self, t, specials_settings, method_data, slots, spawn_queue)
 	local state_data = self._state_data
-	local same_breeds, trickle_time = nil
+	local same_breeds, trickle_time
 
 	if method_data.same_breeds then
 		local breeds = specials_settings.breeds
 		local pick_index = Math.random(1, #breeds)
 		local breed_name = breeds[pick_index]
+
 		state_data.override_breed_name = breed_name
 		trickle_time = method_data.coordinated_trickle_time
 	end
@@ -254,6 +266,7 @@ SpecialsPacing.set_next_coordinated_attack = function (self, t, specials_setting
 		local breed_name, health_modifier = SpecialsPacing.select_breed_functions[method_data.select_next_breed](slots, specials_settings, method_data, state_data)
 		local breed = Breeds[breed_name]
 		local trickle_time = method_data.coordinated_trickle_time
+
 		time = time + (trickle_time and i * trickle_time or 2)
 
 		if breed.special_spawn_stinger then
@@ -284,7 +297,7 @@ SpecialsPacing.specials_by_slots = function (self, t, specials_settings, method_
 	if method_data.always_coordinated then
 		local state_data = self._state_data
 
-		if state_data.coordinated_timer < t then
+		if t > state_data.coordinated_timer then
 			self:set_next_coordinated_attack(t, specials_settings, method_data, slots, spawn_queue)
 		end
 
@@ -297,7 +310,7 @@ SpecialsPacing.specials_by_slots = function (self, t, specials_settings, method_
 		local slot = slots[i]
 
 		if slot.state == "waiting" then
-			if slot.time < t then
+			if t > slot.time then
 				slot.unit = nil
 				spawn_queue[#spawn_queue + 1] = slot
 				slot.state = method_data.always_coordinated and "coordinating" or "wants_to_spawn"
@@ -307,7 +320,7 @@ SpecialsPacing.specials_by_slots = function (self, t, specials_settings, method_
 				waiting = waiting + 1
 			end
 
-			if slot.special_spawn_stinger and slot.special_spawn_stinger_at_t < t then
+			if slot.special_spawn_stinger and t > slot.special_spawn_stinger_at_t then
 				self:_play_stinger(slot.special_spawn_stinger, slot)
 
 				slot.special_spawn_stinger = nil
@@ -352,6 +365,7 @@ SpecialsPacing.specials_by_slots = function (self, t, specials_settings, method_
 			for i = 1, num_slots do
 				local slot = slots[i]
 				local slot_time = slot.time
+
 				average_slot_time = average_slot_time + slot_time
 			end
 
@@ -391,11 +405,11 @@ SpecialsPacing.specials_by_slots = function (self, t, specials_settings, method_
 end
 
 SpecialsPacing.specials_by_time_window = function (self, t, specials_settings, method_data, slots, spawn_queue, alive_specials)
-	if self._specials_timer < t then
+	if t > self._specials_timer then
 		local num_alive = #alive_specials
 		local i = 1
 
-		while num_alive >= i do
+		while i <= num_alive do
 			local unit = alive_specials[i]
 
 			if not ALIVE[unit] then
@@ -425,7 +439,7 @@ SpecialsPacing.specials_by_time_window = function (self, t, specials_settings, m
 					end
 
 					slots[i] = {
-						breed = breed_mix[j]
+						breed = breed_mix[j],
 					}
 					j = j - 1
 				end
@@ -441,14 +455,16 @@ SpecialsPacing.specials_by_time_window = function (self, t, specials_settings, m
 
 			for i = 1, max_specials do
 				local time = Math.random()
+
 				sum = sum + time
 				time_list[i] = sum
 			end
 
-			local last_time = nil
+			local last_time
 
 			for i = 1, max_specials do
 				local index = max_specials - i + 1
+
 				last_time = t + time_list[index] / sum * spawn_interval + lull_time
 				slots[i].time = last_time
 			end
@@ -460,7 +476,7 @@ SpecialsPacing.specials_by_time_window = function (self, t, specials_settings, m
 
 		local slot = slots[#slots]
 
-		if slot and slot.time < t then
+		if slot and t > slot.time then
 			slots[#slots] = nil
 			spawn_queue[#spawn_queue + 1] = slot
 		end
@@ -480,6 +496,7 @@ end
 local function cb_special_spawned(unit, breed, optional_data)
 	local slot = optional_data.slot
 	local alive_specials = optional_data.alive_specials
+
 	slot.unit = unit
 	slot.state = "alive"
 
@@ -505,7 +522,7 @@ SpecialsPacing.update = function (self, t, alive_specials, specials_population, 
 
 	local specials_spawn_queue = self._specials_spawn_queue
 
-	if self._specials_timer < t then
+	if t > self._specials_timer then
 		if Managers.state.conflict.delay_specials then
 			self._specials_timer = t + 3
 		else
@@ -525,7 +542,7 @@ SpecialsPacing.update = function (self, t, alive_specials, specials_population, 
 					alive_specials = alive_specials,
 					slot = slot,
 					parent = self,
-					max_health_modifier = slot.health_modifier
+					max_health_modifier = slot.health_modifier,
 				}
 
 				Managers.state.conflict:spawn_queued_unit(breed, Vector3Box(spawn_pos), QuaternionBox(Vector3.up(), 0), "specials_pacing", nil, nil, optional_data)
@@ -574,11 +591,12 @@ SpecialsPacing.delay_spawning = function (self, t, delay, per_unit_delay, ignore
 		local slot = slots[i]
 		local breed_name, health_modifier = SpecialsPacing.select_breed_functions[method_data.select_next_breed](slots, specials_settings, method_data, self._state_data)
 		local breed = Breeds[breed_name]
-		local time, desc = nil
+		local time, desc
 
 		if do_coordinated then
 			local coordinated_cooldown_multiplier = method_data.coordinated_attack_cooldown_multiplier or 0.5
 			local coordinated_time = delay * coordinated_cooldown_multiplier
+
 			time = t + coordinated_cooldown_multiplier + per_unit_delay * i * coordinated_cooldown_multiplier
 			desc = "coordinated attack"
 		else
@@ -619,7 +637,7 @@ SpecialsPacing.debug_spawn = function (self)
 		QuickDrawerStay:sphere(spawn_pos, 4, Color(125, 255, 47))
 		print("debug spawning special: ", breed_name)
 
-		local optional_data = nil
+		local optional_data
 
 		Managers.state.conflict:spawn_queued_unit(breed, Vector3Box(spawn_pos), QuaternionBox(Quaternion(Vector3.up(), 0)), "specials_pacing", nil, nil, optional_data)
 	else
@@ -638,9 +656,9 @@ SpecialsPacing.get_special_spawn_pos = function (self, spawning_rule)
 	local _, _, loneliness_value, loneliest_player_unit = conflict_director:get_cluster_and_loneliness(10, side.ENEMY_PLAYER_POSITIONS, side.ENEMY_PLAYER_UNITS)
 	local ahead_unit = main_path_info.ahead_unit
 	local behind_unit = main_path_info.behind_unit
-	local epicenter = nil
+	local epicenter
 	local random_pick = false
-	local debug_string = nil
+	local debug_string
 
 	if not ahead_unit or not behind_unit then
 		epicenter = POSITION_LOOKUP[loneliest_player_unit]
@@ -677,6 +695,7 @@ SpecialsPacing.get_special_spawn_pos = function (self, spawning_rule)
 
 	if not epicenter then
 		local enemy_positions = self._side.ENEMY_PLAYER_POSITIONS
+
 		epicenter = enemy_positions[math.random(#enemy_positions)]
 		debug_string = "specialspawn: fallback - epicenter around random player"
 	end
@@ -685,7 +704,7 @@ SpecialsPacing.get_special_spawn_pos = function (self, spawning_rule)
 	local avoid_positions = self._side.ENEMY_PLAYER_AND_BOT_POSITIONS
 	local level_settings = LevelHelper.current_level_settings()
 	local check_no_spawn_volumes = level_settings.check_no_spawn_volumes_for_special_spawning
-	local pos = nil
+	local pos
 
 	if epicenter then
 		pos = ConflictUtils.get_hidden_pos(world, self.nav_world, level, nav_tag_volume_handler, check_no_spawn_volumes, epicenter, avoid_positions, 30, 10, 225, 10)
@@ -736,7 +755,7 @@ local function find_suitable_intervention_spawn_position(world, nav_world, level
 end
 
 local function get_best_specials_slot(slots)
-	local best_slot = nil
+	local best_slot
 	local best_time = 0
 	local num_slots = #slots
 
@@ -754,12 +773,15 @@ end
 
 local function cb_rush_intervention_unit_spawned(unit, breed, optional_data)
 	local slot = optional_data.slot
+
 	slot.breed = breed.name
 	slot.unit = unit
 	slot.time = nil
 	slot.state = "alive"
 	slot.desc = "rush intervention"
+
 	local alive_specials = optional_data.alive_specials
+
 	alive_specials[#alive_specials + 1] = unit
 
 	print("rush intervention - spawning ", breed.name)
@@ -819,8 +841,9 @@ SpecialsPacing.request_rushing_intervention = function (self, t, player_unit, ma
 		local optional_data = {
 			spawned_func = cb_rush_intervention_unit_spawned,
 			slot = slot,
-			alive_specials = alive_specials
+			alive_specials = alive_specials,
 		}
+
 		slot.state = "wants_to_spawn"
 
 		if breed.special_spawn_stinger then
@@ -835,12 +858,15 @@ end
 
 local function cb_speed_running_intervention_unit_spawned(unit, breed, optional_data)
 	local slot = optional_data.slot
+
 	slot.breed = breed.name
 	slot.unit = unit
 	slot.time = nil
 	slot.state = "alive"
 	slot.desc = "speed running intervention"
+
 	local alive_specials = optional_data.alive_specials
+
 	alive_specials[#alive_specials + 1] = unit
 
 	print("Speed run intervention - spawning ", breed.name)
@@ -888,8 +914,9 @@ SpecialsPacing.request_speed_running_intervention = function (self, t, player_un
 		local optional_data = {
 			spawned_func = cb_speed_running_intervention_unit_spawned,
 			slot = slot,
-			alive_specials = alive_specials
+			alive_specials = alive_specials,
 		}
+
 		slot.state = "wants_to_spawn"
 
 		if breed.special_spawn_stinger then
@@ -906,7 +933,7 @@ end
 
 SpecialsPacing.get_relative_main_path_pos = function (self, main_paths, player_info, extra_distance)
 	local path_pos, path_index = MainPathUtils.point_on_mainpath(main_paths, player_info.travel_dist + extra_distance)
-	local epicenter, failed = nil
+	local epicenter, failed
 
 	if path_pos and path_index == player_info.path_index then
 		epicenter = path_pos

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/hero_view/windows/hero_window_character_preview.lua
+
 require("scripts/ui/views/menu_world_previewer")
 require("scripts/settings/hero_statistics_template")
 
@@ -9,6 +11,7 @@ local animation_definitions = definitions.animation_definitions
 local camera_position_by_character = definitions.camera_position_by_character
 local loading_overlay_widget_definitions = definitions.loading_overlay_widgets
 local DO_RELOAD = false
+
 HeroWindowCharacterPreview = class(HeroWindowCharacterPreview)
 HeroWindowCharacterPreview.NAME = "HeroWindowCharacterPreview"
 
@@ -16,17 +19,21 @@ HeroWindowCharacterPreview.on_enter = function (self, params, offset)
 	print("[HeroViewWindow] Enter Substate HeroWindowCharacterPreview")
 
 	self.parent = params.parent
+
 	local ingame_ui_context = params.ingame_ui_context
+
 	self.ingame_ui_context = ingame_ui_context
 	self.ui_renderer = ingame_ui_context.ui_renderer
 	self.ui_top_renderer = ingame_ui_context.ui_top_renderer
 	self.input_manager = ingame_ui_context.input_manager
 	self.statistics_db = ingame_ui_context.statistics_db
 	self.render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
+
 	local player_manager = Managers.player
 	local local_player = player_manager:local_player()
+
 	self._stats_id = local_player:stats_id()
 	self.player_manager = player_manager
 	self.peer_id = ingame_ui_context.peer_id
@@ -51,22 +58,26 @@ HeroWindowCharacterPreview.create_ui_elements = function (self, params, offset)
 	end
 
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+
 	local widgets = {}
 	local widgets_by_name = {}
 
 	for name, widget_definition in pairs(widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		widgets[#widgets + 1] = widget
 		widgets_by_name[name] = widget
 	end
 
 	self._widgets = widgets
 	self._widgets_by_name = widgets_by_name
+
 	local loading_overlay_widgets = {}
 	local loading_overlay_widgets_by_name = {}
 
 	for name, widget_definition in pairs(loading_overlay_widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		loading_overlay_widgets[#loading_overlay_widgets + 1] = widget
 		loading_overlay_widgets_by_name[name] = widget
 	end
@@ -80,13 +91,15 @@ HeroWindowCharacterPreview.create_ui_elements = function (self, params, offset)
 
 	if offset then
 		local window_position = self.ui_scenegraph.window.local_position
+
 		window_position[1] = window_position[1] + offset[1]
 		window_position[2] = window_position[2] + offset[2]
 		window_position[3] = window_position[3] + offset[3]
 	end
 
 	self._level_package_name = viewport_widget_definition.style.viewport.level_package_name
-	local callback = nil
+
+	local callback
 	local asynchronous = true
 
 	Managers.package:load(self._level_package_name, "HeroWindowCharacterPreview", callback, asynchronous)
@@ -389,6 +402,7 @@ HeroWindowCharacterPreview._update_loading_overlay_fadeout_animation = function 
 	local loading_overlay = loading_overlay_widgets_by_name.loading_overlay
 	local loading_overlay_loading_glow = loading_overlay_widgets_by_name.loading_overlay_loading_glow
 	local loading_overlay_loading_frame = loading_overlay_widgets_by_name.loading_overlay_loading_frame
+
 	loading_overlay.style.rect.color[1] = alpha
 	loading_overlay_loading_glow.style.texture_id.color[1] = alpha
 	loading_overlay_loading_frame.style.texture_id.color[1] = alpha
@@ -422,6 +436,7 @@ end
 HeroWindowCharacterPreview._activate_statistics = function (self)
 	local widgets_by_name = self._widgets_by_name
 	local widget = widgets_by_name.detailed
+
 	widget.content.active = true
 	widget.content.list_content.active = true
 
@@ -432,6 +447,7 @@ HeroWindowCharacterPreview._activate_statistics = function (self)
 	end
 
 	local drop_down_arrow = widget.style.drop_down_arrow
+
 	drop_down_arrow.angle = math.pi
 
 	self:_sync_statistics()
@@ -451,10 +467,13 @@ end
 HeroWindowCharacterPreview._deactivate_statistics = function (self)
 	local widgets_by_name = self._widgets_by_name
 	local widget = widgets_by_name.detailed
+
 	widget.content.active = false
 	widget.content.list_content.active = false
 	widget.content.scrollbar.active = false
+
 	local drop_down_arrow = widget.style.drop_down_arrow
+
 	drop_down_arrow.angle = 0
 end
 
@@ -471,7 +490,7 @@ HeroWindowCharacterPreview._update_statistics_widget = function (self, input_ser
 	local list_style = widget.style.list_style
 	local list_member_offset_y = list_style.list_member_offset[2]
 	local num_draws = list_style.num_draws
-	local total_size = nil
+	local total_size
 
 	if num_draws == 0 then
 		total_size = math.abs(list_member_offset_y)
@@ -484,6 +503,7 @@ HeroWindowCharacterPreview._update_statistics_widget = function (self, input_ser
 	local scenegraph_node = self.ui_scenegraph[list_scenegraph_id]
 	local scenegraph_pos = scenegraph_node.local_position
 	local value = 1 - widget.content.scrollbar.scroll_value
+
 	scenegraph_pos[2] = -detailed_button_size[2] + scroll_height * value
 end
 
@@ -515,6 +535,7 @@ HeroWindowCharacterPreview._populate_statistics = function (self, layout)
 		end
 
 		local content = list_content[i]
+
 		content.name = UIRenderer.crop_text_width(self.ui_renderer, name, 300, item_styles[i].name)
 		content.title = UIRenderer.crop_text_width(self.ui_renderer, title, 300, item_styles[i].title)
 		content.value = value
@@ -533,7 +554,7 @@ HeroWindowCharacterPreview._setup_tab_scrollbar = function (self, widget)
 	local list_style = widget.style.list_style
 	local list_member_offset_y = list_style.list_member_offset[2]
 	local num_draws = list_style.num_draws
-	local total_size = nil
+	local total_size
 
 	if num_draws == 0 then
 		total_size = math.abs(list_member_offset_y)
@@ -547,7 +568,9 @@ HeroWindowCharacterPreview._setup_tab_scrollbar = function (self, widget)
 	if percentage < 1 then
 		scrollbar_content.percentage = percentage
 		scrollbar_content.scroll_value = 1
+
 		local scroll_step_multiplier = 2
+
 		scrollbar_content.scroll_amount = list_member_offset_y / (total_size - detailed_list_size[2]) * scroll_step_multiplier
 	else
 		scrollbar_content.percentage = 1
@@ -558,6 +581,7 @@ end
 HeroWindowCharacterPreview._show_weapon_disclaimer = function (self, should_show)
 	local disclaimer_text_content = self._widgets_by_name.disclaimer_text.content
 	local disclaimer_text_background_content = self._widgets_by_name.disclaimer_text_background.content
+
 	disclaimer_text_background_content.visible = should_show
 	disclaimer_text_content.visible = should_show
 end

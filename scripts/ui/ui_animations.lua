@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/ui_animations.lua
+
 require("scripts/utils/varargs")
 
 UIAnimation = UIAnimation or {
@@ -19,6 +21,7 @@ UIAnimation = UIAnimation or {
 		end,
 		update = function (dt, target, target_index, target_value, p0, p1, p2, p3, time, progressed_time)
 			progressed_time = progressed_time + dt
+
 			local progress_fraction = math.min(progressed_time / time, 1)
 			local catmullrom_value = math.catmullrom(progress_fraction, p0, p1, p2, p3)
 			local new_value = catmullrom_value * target_value
@@ -32,7 +35,7 @@ UIAnimation = UIAnimation or {
 			end
 
 			return progressed_time <= time, progressed_time
-		end
+		end,
 	},
 	size_offset_scale = {
 		num_args = 9,
@@ -55,6 +58,7 @@ UIAnimation = UIAnimation or {
 		end,
 		update = function (dt, target, offset_target, target_index, target_value, p0, p1, p2, p3, time, progressed_time)
 			progressed_time = progressed_time + dt
+
 			local progress_fraction = math.min(progressed_time / time, 1)
 			local catmullrom_value = math.catmullrom(progress_fraction, p0, p1, p2, p3)
 			local new_value = catmullrom_value * target_value
@@ -71,7 +75,7 @@ UIAnimation = UIAnimation or {
 			end
 
 			return progressed_time <= time, progressed_time
-		end
+		end,
 	},
 	pulse_animation = {
 		num_args = 5,
@@ -83,12 +87,14 @@ UIAnimation = UIAnimation or {
 		end,
 		update = function (dt, target, target_index, min, max, speed, progressed_time)
 			progressed_time = progressed_time + dt
+
 			local wave_value = math.sin(progressed_time * speed)
 			local current_value = min + wave_value * wave_value * (max - min)
+
 			target[target_index] = current_value
 
 			return true, progressed_time
-		end
+		end,
 	},
 	pulse_animation2 = {
 		num_args = 4,
@@ -98,15 +104,17 @@ UIAnimation = UIAnimation or {
 		end,
 		update = function (dt, target, min, max, speed, progressed_time)
 			progressed_time = progressed_time + dt
+
 			local wave_value = math.sin(progressed_time * speed)
 
 			for target_index, target_value in pairs(target) do
 				local current_value = min[target_index] + wave_value * wave_value * (max[target_index] - min[target_index])
+
 				target[target_index] = math.floor(current_value)
 			end
 
 			return true, progressed_time
-		end
+		end,
 	},
 	pulse_animation3 = {
 		num_args = 6,
@@ -116,8 +124,9 @@ UIAnimation = UIAnimation or {
 		end,
 		update = function (dt, target, target_index, origin, mod, speed, time, progressed_time)
 			progressed_time = progressed_time + dt * speed
+
 			local alive = progressed_time <= time * speed
-			local value = nil
+			local value
 
 			if alive then
 				value = math.sirp(origin, mod, progressed_time)
@@ -128,7 +137,7 @@ UIAnimation = UIAnimation or {
 			target[target_index] = value
 
 			return alive, progressed_time
-		end
+		end,
 	},
 	text_flash = {
 		num_args = 6,
@@ -138,8 +147,9 @@ UIAnimation = UIAnimation or {
 		end,
 		update = function (dt, target, target_index, origin, mod, speed, time, progressed_time)
 			progressed_time = progressed_time + dt * speed
+
 			local alive = progressed_time <= time * speed
-			local value = nil
+			local value
 
 			if alive then
 				value = math.sirp(origin, mod, progressed_time)
@@ -152,7 +162,7 @@ UIAnimation = UIAnimation or {
 			end
 
 			return alive, progressed_time
-		end
+		end,
 	},
 	update_function_by_time = {
 		num_args = 6,
@@ -167,7 +177,7 @@ UIAnimation = UIAnimation or {
 			target[target_index] = from + func_ptr(progressed_time) * (to - from)
 
 			return true, progressed_time
-		end
+		end,
 	},
 	linear_scale2 = {
 		num_args = 6,
@@ -177,12 +187,14 @@ UIAnimation = UIAnimation or {
 		end,
 		update = function (dt, target, from_x, from_y, to_x, to_y, time, progressed_time)
 			progressed_time = progressed_time + dt
+
 			local delta_time = progressed_time / time
+
 			target[1] = (to_x - from_x) * delta_time + from_x
 			target[2] = (to_y - from_y) * delta_time + from_y
 
 			return progressed_time <= time, progressed_time
-		end
+		end,
 	},
 	linear_scale_color = {
 		num_args = 8,
@@ -192,13 +204,15 @@ UIAnimation = UIAnimation or {
 		end,
 		update = function (dt, target, from_2, from_3, from_4, to_2, to_3, to_4, time, progressed_time)
 			progressed_time = progressed_time + dt
+
 			local delta_time = math.min(1, progressed_time / time)
+
 			target[2] = (to_2 - from_2) * delta_time + from_2
 			target[3] = (to_3 - from_3) * delta_time + from_3
 			target[4] = (to_4 - from_4) * delta_time + from_4
 
 			return progressed_time <= time, progressed_time
-		end
+		end,
 	},
 	function_by_time = {
 		num_args = 6,
@@ -210,11 +224,13 @@ UIAnimation = UIAnimation or {
 		end,
 		update = function (dt, target, target_index, from, to, time, func_ptr, progressed_time)
 			progressed_time = progressed_time + dt
+
 			local delta_time = math.min(1, progressed_time / time)
+
 			target[target_index] = from + func_ptr(delta_time) * (to - from)
 
 			return progressed_time <= time, progressed_time
-		end
+		end,
 	},
 	function_by_time_with_offset = {
 		num_args = 7,
@@ -226,11 +242,13 @@ UIAnimation = UIAnimation or {
 		end,
 		update = function (dt, target, target_index, from, to, time, offset, func_ptr, progressed_time)
 			progressed_time = progressed_time + dt
+
 			local delta_time = math.min(1, progressed_time / time)
+
 			target[target_index] = from + func_ptr(delta_time, offset) * (to - from)
 
 			return progressed_time <= time, progressed_time
-		end
+		end,
 	},
 	linear_scale = {
 		num_args = 5,
@@ -242,11 +260,13 @@ UIAnimation = UIAnimation or {
 		end,
 		update = function (dt, target, target_index, from, to, time, progressed_time)
 			progressed_time = progressed_time + dt
+
 			local delta_time = math.min(1, progressed_time / time)
+
 			target[target_index] = (to - from) * delta_time + from
 
 			return progressed_time <= time, progressed_time
-		end
+		end,
 	},
 	wait = {
 		num_args = 1,
@@ -257,8 +277,8 @@ UIAnimation = UIAnimation or {
 		update = function (dt, time, progressed_time)
 			progressed_time = progressed_time + dt
 
-			return time >= progressed_time, progressed_time
-		end
+			return progressed_time <= time, progressed_time
+		end,
 	},
 	set_visible = {
 		num_args = 1,
@@ -270,7 +290,7 @@ UIAnimation = UIAnimation or {
 			target.visible = true
 
 			return false
-		end
+		end,
 	},
 	set_invisible = {
 		num_args = 1,
@@ -282,7 +302,7 @@ UIAnimation = UIAnimation or {
 			target.visible = false
 
 			return false
-		end
+		end,
 	},
 	picture_sequence = {
 		num_args = 4,
@@ -295,12 +315,14 @@ UIAnimation = UIAnimation or {
 		end,
 		update = function (dt, target, target_index, pictures, total_time, progressed_time, time_step)
 			progressed_time = math.min(progressed_time + dt, total_time)
+
 			local picture_id = math.floor(progressed_time / time_step) + 1
 			local picture = pictures[picture_id] or pictures[#pictures]
+
 			target[target_index] = picture
 
 			return progressed_time < total_time, progressed_time, time_step
-		end
+		end,
 	},
 	timestep_setter_tables = {
 		num_args = 4,
@@ -310,7 +332,8 @@ UIAnimation = UIAnimation or {
 		end,
 		update = function (dt, target, target_index, timer_steps, values, progressed_time)
 			progressed_time = progressed_time + dt
-			local timer_index = nil
+
+			local timer_index
 
 			for i, timer_step in ipairs(timer_steps) do
 				if progressed_time < timer_step then
@@ -321,18 +344,19 @@ UIAnimation = UIAnimation or {
 			end
 
 			local timer_value = values[timer_index or #values]
+
 			target[target_index] = timer_value
 
 			return timer_index and true or false, progressed_time
-		end
-	}
+		end,
+	},
 }
 
 UIAnimation.init = function (...)
 	local data_array = {}
 	local ui_animation = {
 		current_index = 1,
-		data_array = data_array
+		data_array = data_array,
 	}
 	local num_varargs = select("#", ...)
 	local i = 0
@@ -340,8 +364,10 @@ UIAnimation.init = function (...)
 
 	while i < num_varargs do
 		i = i + 1
+
 		local animation_type = select(i, ...)
 		local num_args = animation_type.num_args
+
 		data_array[current_index + 1] = animation_type
 
 		for j = 1, num_args do
@@ -381,7 +407,7 @@ UIAnimation.init_debug = function (...)
 	local data_array = {}
 	local ui_animation = {
 		current_index = 1,
-		data_array = data_array
+		data_array = data_array,
 	}
 	local num_varargs = select("#", ...)
 	local i = 0
@@ -389,6 +415,7 @@ UIAnimation.init_debug = function (...)
 
 	while i < num_varargs do
 		i = i + 1
+
 		local animation_type = select(i, ...)
 
 		if not animation_type or type(animation_type) ~= "table" then
@@ -398,6 +425,7 @@ UIAnimation.init_debug = function (...)
 		end
 
 		local num_args = animation_type.num_args
+
 		data_array[current_index + 1] = animation_type
 
 		for j = 1, num_args do
@@ -430,13 +458,13 @@ UIAnimation.update = function (ui_animation, dt)
 	local animation_type = data_array[current_index]
 
 	if animation_type then
-		local num_args = animation_type.num_args
-		local num_data = animation_type.num_data
+		local num_args, num_data = animation_type.num_args, animation_type.num_data
 		local continue = extract_continue_amount(num_data, data_array, current_index + num_args + 1, animation_type.update(dt, unpack_index[num_args + num_data](data_array, current_index + 1)))
 
 		if not continue then
 			current_index = current_index + num_args + num_data + 1
 			ui_animation.current_index = current_index
+
 			local new_animation = data_array[current_index]
 
 			if new_animation then

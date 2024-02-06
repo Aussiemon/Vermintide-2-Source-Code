@@ -1,19 +1,20 @@
-StatisticsTemplateCategories = {
-	player = {
-		"multikill"
-	}
+﻿-- chunkname: @scripts/entity_system/systems/statistics/statistics_templates.lua
+
+StatisticsTemplateCategories = {}
+StatisticsTemplateCategories.player = {
+	"multikill",
 }
 StatisticsTemplates = {}
 StatisticsTemplates.multikill = {
 	config = {
 		kills_to_get = 1,
-		time_window = 10
+		time_window = 10,
 	},
 	init = function ()
 		local data = {
-			kills_total_last = 0,
 			kill_times_n = 0,
-			kill_times = {}
+			kills_total_last = 0,
+			kill_times = {},
 		}
 
 		return data
@@ -33,7 +34,7 @@ StatisticsTemplates.multikill = {
 		local kill_times_n = data.kill_times_n
 		local i = 1
 
-		while kill_times_n >= i do
+		while i <= kill_times_n do
 			if t > kill_times[i] + time_window then
 				kill_times[i] = kill_times[kill_times_n]
 				kill_times[kill_times_n] = nil
@@ -54,8 +55,9 @@ StatisticsTemplates.multikill = {
 
 		data.kill_times_n = kill_times_n
 		data.kills_total_last = kills_total
-	end
+	end,
 }
+
 local templates = {}
 
 for name, template in pairs(StatisticsTemplates) do

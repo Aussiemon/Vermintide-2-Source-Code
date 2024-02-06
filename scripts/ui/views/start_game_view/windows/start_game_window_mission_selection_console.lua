@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/start_game_view/windows/start_game_window_mission_selection_console.lua
+
 local definitions = local_require("scripts/ui/views/start_game_view/windows/definitions/start_game_window_mission_selection_console_definitions")
 local widget_definitions = definitions.widgets
 local act_widget_definitions = definitions.act_widgets
@@ -14,6 +16,7 @@ local function sort_levels_by_order(a, b)
 end
 
 local SELECTION_INPUT = "confirm_press"
+
 StartGameWindowMissionSelectionConsole = class(StartGameWindowMissionSelectionConsole)
 StartGameWindowMissionSelectionConsole.NAME = "StartGameWindowMissionSelectionConsole"
 
@@ -21,15 +24,19 @@ StartGameWindowMissionSelectionConsole.on_enter = function (self, params, offset
 	print("[StartGameWindow] Enter Substate StartGameWindowMissionSelectionConsole")
 
 	self._parent = params.parent
+
 	local ingame_ui_context = params.ingame_ui_context
+
 	self._ui_renderer = ingame_ui_context.ui_renderer
 	self._ui_top_renderer = ingame_ui_context.ui_top_renderer
 	self._statistics_db = ingame_ui_context.statistics_db
 	self._render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
+
 	local player_manager = Managers.player
 	local local_player = player_manager:local_player()
+
 	self._stats_id = local_player:stats_id()
 	self._animations = {}
 
@@ -45,43 +52,51 @@ end
 
 StartGameWindowMissionSelectionConsole._start_transition_animation = function (self, animation_name)
 	local params = {
-		render_settings = self._render_settings
+		render_settings = self._render_settings,
 	}
 	local widgets = {}
 	local anim_id = self._ui_animator:start_animation(animation_name, widgets, scenegraph_definition, params)
+
 	self._animations[animation_name] = anim_id
 end
 
 StartGameWindowMissionSelectionConsole._create_ui_elements = function (self, params, offset)
 	local ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+
 	self._ui_scenegraph = ui_scenegraph
+
 	local widgets = {}
 	local widgets_by_name = {}
 
 	for name, widget_definition in pairs(widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		widgets[#widgets + 1] = widget
 		widgets_by_name[name] = widget
 	end
 
 	self._widgets = widgets
 	self._widgets_by_name = widgets_by_name
+
 	local node_widgets = {}
 	local node_widgets_by_name = {}
 
 	for name, widget_definition in pairs(node_widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		node_widgets[#node_widgets + 1] = widget
 		node_widgets_by_name[name] = widget
 	end
 
 	self._node_widgets = node_widgets
 	self._node_widgets_by_name = node_widgets_by_name
+
 	local act_widgets = {}
 	local act_widgets_by_name = {}
 
 	for name, widget_definition in pairs(act_widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		act_widgets[#act_widgets + 1] = widget
 		act_widgets_by_name[name] = widget
 	end
@@ -97,6 +112,7 @@ StartGameWindowMissionSelectionConsole._create_ui_elements = function (self, par
 
 	if offset then
 		local window_position = ui_scenegraph.window.local_position
+
 		window_position[1] = window_position[1] + offset[1]
 		window_position[2] = window_position[2] + offset[2]
 		window_position[3] = window_position[3] + offset[3]
@@ -107,6 +123,7 @@ StartGameWindowMissionSelectionConsole._setup_levels_by_area = function (self, a
 	local area_settings = AreaSettings[area_name]
 	local acts = area_settings.acts
 	local dlc_name = area_settings.dlc_name
+
 	self._is_dlc = dlc_name ~= nil
 
 	self:_setup_level_acts(acts)
@@ -130,6 +147,7 @@ StartGameWindowMissionSelectionConsole._setup_level_acts = function (self, acts)
 
 				local act_levels = levels_by_act[act]
 				local index = #act_levels + 1
+
 				act_levels[index] = level_settings
 				num_levels_added = num_levels_added + 1
 			end
@@ -179,7 +197,7 @@ StartGameWindowMissionSelectionConsole._present_act_levels = function (self, act
 			local act_index = (act_sorting - 1) % max_act_number + 1
 			local is_end_act = max_act_number < act_sorting
 			local act_position_y = 0
-			local act_widget = nil
+			local act_widget
 
 			if not is_end_act then
 				act_position_y = -level_height_spacing + (max_act_number - act_index) * level_height_spacing
@@ -190,9 +208,12 @@ StartGameWindowMissionSelectionConsole._present_act_levels = function (self, act
 
 			act_widgets[#act_widgets + 1] = act_widget
 			act_widget.offset[2] = act_position_y
+
 			local act_display_name = act_settings.display_name
+
 			act_widget.content.background = act_settings.banner_texture
 			act_widget.content.text = act_display_name and Localize(act_display_name) or ""
+
 			local area_name_width = UIUtils.get_text_width(self._ui_renderer, act_widget.style.text, act_widget.content.text)
 			local num_levels_in_act = #levels
 			local level_position_x = area_name_width - 50
@@ -211,14 +232,18 @@ StartGameWindowMissionSelectionConsole._present_act_levels = function (self, act
 				local level_key = level_data.level_id
 				local boss_level = level_data.boss_level
 				local level_display_name = level_data.display_name
+
 				content.text = Localize(level_display_name)
+
 				local level_unlocked = LevelUnlockUtils.level_unlocked(statistics_db, stats_id, level_key)
 				local completed_difficulty_index = LevelUnlockUtils.completed_level_difficulty_index(statistics_db, stats_id, level_key)
 				local selection_frame_texture = UIWidgetUtils.get_level_frame_by_difficulty_index(completed_difficulty_index)
+
 				content.frame = selection_frame_texture
 				content.locked = not level_unlocked
 				content.act_key = act_key
 				content.level_key = level_key
+
 				local level_image = level_data.level_image
 
 				if level_image then
@@ -229,7 +254,9 @@ StartGameWindowMissionSelectionConsole._present_act_levels = function (self, act
 
 				content.level_data = level_data
 				content.boss_level = boss_level
+
 				local offset = widget.offset
+
 				offset[1] = level_position_x
 				offset[2] = act_position_y + level_position_y
 				assigned_widgets[index] = widget
@@ -253,8 +280,11 @@ StartGameWindowMissionSelectionConsole._select_level = function (self, level_id)
 			local level_settings = content.level_data
 			local is_selected = level_settings.level_id == level_id
 			local button_hotspot = widget.content.button_hotspot
+
 			button_hotspot.is_selected = is_selected
+
 			local unlock_guidance = required_completed_levels[level_settings.level_id]
+
 			content.unlock_guidance = unlock_guidance
 		end
 	end
@@ -281,9 +311,13 @@ StartGameWindowMissionSelectionConsole._set_presentation_info = function (self, 
 		local level_image = level_settings.level_image
 		local boss_level = level_settings.boss_level
 		local display_name = level_settings.display_name
+
 		level_description_text = level_settings.description_text
+
 		local completed_difficulty_index = LevelUnlockUtils.completed_level_difficulty_index(statistics_db, stats_id, level_id)
+
 		frame_texture = UIWidgetUtils.get_level_frame_by_difficulty_index(completed_difficulty_index)
+
 		local is_locked = not LevelUnlockUtils.level_unlocked(statistics_db, stats_id, level_id)
 
 		if is_locked then
@@ -329,8 +363,7 @@ StartGameWindowMissionSelectionConsole._setup_mission_data = function (self, lev
 	local entry_width = 150
 	local spacing = 25
 	local offset_x = 0
-	local row = 0
-	local column = 0
+	local row, column = 0, 0
 	local mission_count = 0
 	local mission_settings = definitions.mission_settings
 
@@ -345,25 +378,28 @@ StartGameWindowMissionSelectionConsole._setup_mission_data = function (self, lev
 			local title_text = Localize(setting.title_text)
 			local widget_definition = create_loot_widget(texture, title_text)
 			local widget = UIWidget.init(widget_definition)
-			local data = {
-				name = key,
-				total_amount = total_amount > 0 and total_amount,
-				stat_name = stat_name,
-				widget = widget
-			}
+			local data = {}
+
+			data.name = key
+			data.total_amount = total_amount > 0 and total_amount
+			data.stat_name = stat_name
+			data.widget = widget
+
 			local texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(texture)
 			local texture_size = texture_settings.size
 			local text_style = widget.style.text
 			local row = math.floor(mission_count / entries_per_row)
+
 			column = mission_count % entries_per_row
 
 			if column > 0 then
-				offset_x = offset_x + texture_size[1] + entry_width + spacing
+				offset_x = offset_x + (texture_size[1] + entry_width + spacing)
 			else
 				offset_x = 0
 			end
 
 			local offset = widget.offset
+
 			offset[1] = offset_x
 			offset[2] = -(row - 1) * texture_size[2]
 			settings_data[key] = data
@@ -401,24 +437,27 @@ StartGameWindowMissionSelectionConsole._sync_completed_difficulty = function (se
 	local text_width = UIUtils.get_text_width(self._ui_renderer, text_style, title_text) + 20
 	local texture_size = {
 		80,
-		90
+		90,
 	}
-	local row = 0
-	local column = 0
+	local row, column = 0, 0
 	local entries_per_row = 2
 	local offset_x = 20
 	local row = math.floor(mission_count / entries_per_row)
+
 	column = mission_count % entries_per_row
 
 	if column > 0 then
-		offset_x = offset_x + texture_size[1] + entry_width - 20
+		offset_x = offset_x + (texture_size[1] + entry_width - 20)
 	else
 		offset_x = 0
 	end
 
 	local content = widget.content
+
 	content.completed_difficulty_index = completed_difficulty_index
+
 	local offset = widget.offset
+
 	offset[1] = offset_x
 	offset[2] = -(row - 1) * texture_size[2]
 	self._loot_object_widgets.difficulty = widget
@@ -464,15 +503,20 @@ StartGameWindowMissionSelectionConsole._sync_hero_completion = function (self, l
 			local icon_name = "icon_" .. i
 			local icon_name_disabled = icon_name .. "_disabled"
 			local frame_name = "frame_" .. i
+
 			content[icon_data_name][frame_name] = "map_frame_0" .. profile_difficulty_index_completed
 			content[icon_data_name][icon_name] = career_settings.picking_image
 			content[icon_data_name][icon_name_disabled] = career_settings.picking_image
-			content[icon_data_name].icon_disabled = completed_index <= 0
+			content[icon_data_name].icon_disabled = not (completed_index > 0)
+
 			local icon_disabled_style = style[icon_name_disabled]
+
 			icon_disabled_style.color = completed_index > 0 and icon_disabled_style.default_color or icon_disabled_style.disabled_color
 		else
-			content["hotspot_" .. i].disable_button = completed_index <= 0
+			content["hotspot_" .. i].disable_button = not (completed_index > 0)
+
 			local icon_style = style["icon_" .. i .. "_saturated"]
+
 			icon_style.color = completed_index > 0 and icon_style.default_color or icon_style.disabled_color
 		end
 	end
@@ -518,8 +562,10 @@ StartGameWindowMissionSelectionConsole._sync_missions = function (self, mission_
 		if current_amount ~= amount then
 			data.previous_amount = current_amount or 0
 			data.amount = amount
+
 			local content = widget.content
 			local counter_text_style = widget.style.counter_text
+
 			content.amount = amount
 			content.total_amount = total_amount or 0
 
@@ -548,12 +594,15 @@ StartGameWindowMissionSelectionConsole._setup_grid_navigation = function (self)
 
 			local act_settings = ActSettings[act_key]
 			local sorting = act_settings.sorting
+
 			navigation_grid[sorting] = level_ids
 		end
 	end
 
 	self._navigation_grid = navigation_grid
+
 	local row, column = self:_find_level_location_in_grid(self._selected_level_id)
+
 	self._current_row = row
 	self._current_column = column
 end
@@ -568,7 +617,7 @@ StartGameWindowMissionSelectionConsole._find_level_location_in_grid = function (
 		end
 	end
 
-	local row, column = nil
+	local row, column
 
 	if level_id then
 		for i = 1, num_rows do
@@ -592,8 +641,7 @@ StartGameWindowMissionSelectionConsole._find_level_location_in_grid = function (
 			end
 		end
 	else
-		column = 1
-		row = 1
+		row, column = 1, 1
 	end
 
 	if not IS_XB1 then
@@ -739,6 +787,7 @@ end
 StartGameWindowMissionSelectionConsole._update_grid_row = function (self, new_row)
 	local navigation_grid = self._navigation_grid
 	local num_rows = #navigation_grid
+
 	self._current_row = math.clamp(new_row, 1, num_rows)
 
 	self:_update_grid_column(self._current_column)
@@ -748,6 +797,7 @@ end
 StartGameWindowMissionSelectionConsole._update_grid_column = function (self, new_column)
 	local navigation_column = self._navigation_grid[self._current_row]
 	local num_columns = #navigation_column
+
 	self._current_column = math.clamp(new_column, 1, num_columns)
 
 	self:_update_selection_from_grid()
@@ -959,8 +1009,11 @@ StartGameWindowMissionSelectionConsole._animate_node_widget = function (self, wi
 	end
 
 	local style = widget.style
+
 	style.icon_glow.color[1] = 255 * selected_progress
+
 	local alpha_modifier = math.max(math.lerp(-2.5, 1, unlock_guidance_progress), 0)
+
 	style.icon_unlock_guidance_glow.color[1] = 255 * alpha_modifier
 	hotspot.selected_progress = selected_progress
 	content.unlock_guidance_progress = unlock_guidance_progress

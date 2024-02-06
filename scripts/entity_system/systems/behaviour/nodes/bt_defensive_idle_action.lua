@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_defensive_idle_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTDefensiveIdleAction = class(BTDefensiveIdleAction, BTNode)
@@ -11,8 +13,10 @@ BTDefensiveIdleAction.name = "BTDefensiveIdleAction"
 BTDefensiveIdleAction.enter = function (self, unit, blackboard, t)
 	local network_manager = Managers.state.network
 	local action = self._tree_node.action_data
+
 	blackboard.action = action
 	blackboard.active_node = BTDefensiveIdleAction
+
 	local animation = action.animation
 
 	network_manager:anim_event(unit, animation)
@@ -36,7 +40,7 @@ BTDefensiveIdleAction.leave = function (self, unit, blackboard, t, reason, destr
 end
 
 BTDefensiveIdleAction.run = function (self, unit, blackboard, t, dt)
-	if blackboard.idle_end_time < t then
+	if t > blackboard.idle_end_time then
 		return "done"
 	end
 

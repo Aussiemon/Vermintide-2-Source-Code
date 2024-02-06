@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/helpers/interaction_helper.lua
+
 script_data.debug_interactions = script_data.debug_interactions or Development.parameter("debug_interactions")
 InteractionHelper = InteractionHelper or {}
 InteractionHelper.interactions = {
@@ -36,7 +38,7 @@ InteractionHelper.interactions = {
 	weave_magic_forge_access = {},
 	weave_leaderboard_access = {},
 	inn_door_transition = {},
-	deus_door_transition = {}
+	deus_door_transition = {},
 }
 
 DLCUtils.map_list("interactions", function (interaction)

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/game_state/components/dice_keeper.lua
+
 DiceKeeper = class(DiceKeeper)
 
 DiceKeeper.init = function (self, num_normal)
@@ -5,7 +7,7 @@ DiceKeeper.init = function (self, num_normal)
 		gold = 0,
 		metal = 0,
 		warpstone = 0,
-		wood = num_normal
+		wood = num_normal,
 	}
 	self._new_dice = {}
 end
@@ -52,6 +54,6 @@ end
 
 DiceKeeper.calculcate_loot_die_chance_on_remaining_chests = function (self, percentage_chests_left)
 	if percentage_chests_left > 0 then
-		self._chest_loot_dice_chance = 0.05 * 1 / percentage_chests_left
+		self._chest_loot_dice_chance = 0.05 * (1 / percentage_chests_left)
 	end
 end

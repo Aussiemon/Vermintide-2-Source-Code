@@ -1,6 +1,9 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_jump_slam_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 local position_lookup = POSITION_LOOKUP
+
 BTJumpSlamAction = class(BTJumpSlamAction, BTNode)
 
 BTJumpSlamAction.init = function (self, ...)
@@ -11,10 +14,12 @@ BTJumpSlamAction.name = "BTJumpSlamAction"
 
 BTJumpSlamAction.enter = function (self, unit, blackboard, t)
 	local data = blackboard.jump_slam_data
+
 	data.anim_jump_rot_var = Unit.animation_find_variable(unit, "jump_rotation")
 	data.start_jump_time = t
 	data.landing_time = t + data.time_of_flight
 	blackboard.keep_target = true
+
 	local animation_system = Managers.state.entity:system("animation_system")
 
 	animation_system:start_anim_variable_update_by_time(unit, data.anim_jump_rot_var, data.time_of_flight, 2)
@@ -29,12 +34,14 @@ BTJumpSlamAction.enter = function (self, unit, blackboard, t)
 		local bot_threat = bot_threats[current_threat_index]
 		local bot_threat_start_time = bot_threat.start_time_before_landing
 		local landing_time = data.landing_time
+
 		blackboard.create_bot_threat_at_t = math.max(landing_time - bot_threat_start_time, 0)
 		blackboard.current_bot_threat_index = current_threat_index
 		blackboard.bot_threats_data = bot_threats
 	end
 
 	blackboard.action = action
+
 	local target_unit = blackboard.target_unit
 
 	AiUtils.add_attack_intensity(target_unit, action, blackboard)
@@ -75,6 +82,7 @@ BTJumpSlamAction.run = function (self, unit, blackboard, t, dt)
 
 	if z_speed < 0 and not data.constrained then
 		data.constrained = true
+
 		local constrain_max = POSITION_LOOKUP[unit] + Vector3.up() * 2
 		local constrain_min = data.target_pos:unbox()
 
@@ -97,6 +105,7 @@ BTJumpSlamAction.run = function (self, unit, blackboard, t, dt)
 
 		if next_bot_threat then
 			local landing_time = data.landing_time
+
 			blackboard.create_bot_threat_at_t = landing_time - next_bot_threat.start_time_before_landing
 			blackboard.current_bot_threat_index = next_bot_threat_index
 		else
@@ -105,7 +114,7 @@ BTJumpSlamAction.run = function (self, unit, blackboard, t, dt)
 		end
 	end
 
-	if data.landing_time <= t + dt then
+	if t + dt >= data.landing_time then
 		BTJumpSlamAction.progress_to_landing(blackboard, unit, data)
 
 		return "done"

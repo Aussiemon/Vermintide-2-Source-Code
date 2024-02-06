@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/ui/views/hero_view/loot_item_unit_previewer.lua
+
 local DEFAULT_ANGLE = 0
+
 LootItemUnitPreviewer = class(LootItemUnitPreviewer)
 
 LootItemUnitPreviewer.init = function (self, item, spawn_position, background_world, background_viewport, unique_id, invert_start_rotation, display_unit_key, use_highest_mip_levels, delayed_spawn, career_name_override)
@@ -129,7 +132,9 @@ LootItemUnitPreviewer.update = function (self, dt, t, input_service)
 		end
 
 		local character_xy_angle_new = math.lerp(self._camera_xy_angle_current, self._camera_xy_angle_target, 0.1)
+
 		self._camera_xy_angle_current = character_xy_angle_new
+
 		local auto_tilt_angle, auto_turn_angle = self:_auto_spin_values(dt, t)
 		local start_angle = self._invert_start_rotation and 0 or math.pi
 		local rotation = Quaternion.axis_angle(Vector3(0, auto_tilt_angle, 1), -(character_xy_angle_new + auto_turn_angle + start_angle))
@@ -142,6 +147,7 @@ LootItemUnitPreviewer.update = function (self, dt, t, input_service)
 		if self._zoom_dirty then
 			local zoom_fraction = self._zoom_fraction or 0
 			local unit_start_position = self._unit_start_position_boxed:unbox()
+
 			unit_start_position[1] = unit_start_position[1] * (1 - zoom_fraction)
 			unit_start_position[2] = unit_start_position[2] * (1 - zoom_fraction)
 
@@ -247,18 +253,20 @@ LootItemUnitPreviewer._load_item_units = function (self, item)
 	local item_skin = item.skin
 	local item_key = item_data.key or item.key
 	local item_data = ItemMasterList[item_key]
-	local item_template = nil
+	local item_template
 	local item_type = item_data.item_type
 
 	if item_type == "rune" or item_type == "material" or item_type == "ring" or item_type == "necklace" then
 		item_data = ItemMasterList[item_key]
 	elseif item_type == "weapon_skin" then
 		local matching_item_key = item_data.matching_item_key
+
 		item_template = ItemHelper.get_template_by_item_name(matching_item_key)
 		item_skin = item_skin or item_key
 	end
 
 	item_template = item_template or ItemHelper.get_template_by_item_name(item_key)
+
 	local item_units = BackendUtils.get_item_units(item_data, backend_id, item_skin, self._career_name_override)
 	local units_to_spawn_data = {}
 	local slot_type = item_data.slot_type
@@ -282,7 +290,7 @@ LootItemUnitPreviewer._load_item_units = function (self, item)
 			units_to_spawn_data[#units_to_spawn_data + 1] = {
 				unit_name = left_unit,
 				unit_attachment_node_linking = item_template.left_hand_attachment_node_linking.third_person.display,
-				material_settings = material_settings
+				material_settings = material_settings,
 			}
 		end
 
@@ -300,7 +308,7 @@ LootItemUnitPreviewer._load_item_units = function (self, item)
 			units_to_spawn_data[#units_to_spawn_data + 1] = {
 				unit_name = right_unit,
 				unit_attachment_node_linking = item_template.right_hand_attachment_node_linking.third_person.display,
-				material_settings = material_settings
+				material_settings = material_settings,
 			}
 		end
 	else
@@ -311,7 +319,7 @@ LootItemUnitPreviewer._load_item_units = function (self, item)
 
 			units_to_spawn_data[#units_to_spawn_data + 1] = {
 				unit_name = unit,
-				unit_attachment_node_linking = slot_type == "trinket" and item_template.attachment_node_linking.slot_trinket_1 or item_template.attachment_node_linking.slot_hat
+				unit_attachment_node_linking = slot_type == "trinket" and item_template.attachment_node_linking.slot_trinket_1 or item_template.attachment_node_linking.slot_hat,
 			}
 		end
 	end
@@ -362,6 +370,7 @@ LootItemUnitPreviewer.load_package = function (self, package_name)
 	end
 
 	self._packages_to_load[package_name] = true
+
 	local package_manager = Managers.package
 	local cb = callback(self, "_on_load_complete", package_name)
 	local reference_name = "LootItemUnitPreviewer"
@@ -426,9 +435,11 @@ LootItemUnitPreviewer._spawn_link_unit = function (self, item)
 
 	if item_type == "weapon_skin" then
 		local skin_template = WeaponSkins.skins[item_skin]
+
 		unit_name = skin_template[display_unit_key] or skin_template[default_display_unit_key] or unit_name
 	elseif not unit_name then
 		local item_template = ItemHelper.get_template_by_item_name(item_key)
+
 		unit_name = item_template[display_unit_key] or item_template[default_display_unit_key]
 	end
 
@@ -445,10 +456,13 @@ LootItemUnitPreviewer._spawn_link_unit = function (self, item)
 	local unit_spawn_rotation = Quaternion.multiply(camera_look_rotation, horizontal_rotation)
 	local camera_position = self:_get_camera_position()
 	local unit_spawn_position = camera_position + camera_forward_vector
+
 	unit_spawn_position = unit_spawn_position + Vector3(spawn_position[1], spawn_position[2], spawn_position[3])
+
 	local world = self._background_world
 	local link_unit = World.spawn_unit(world, unit_name, unit_spawn_position, unit_spawn_rotation)
 	local unit_start_position = Unit.world_position(link_unit, 0)
+
 	self._unit_start_position_boxed = Vector3Box(unit_start_position)
 
 	return link_unit
@@ -524,7 +538,7 @@ LootItemUnitPreviewer.present_item = function (self, item_key, ignore_spin)
 	if self._use_highest_mip_levels and not self:_update_manual_mip_streaming() then
 		self._request_show_settings = {
 			item_key = item_key,
-			ignore_spin = ignore_spin
+			ignore_spin = ignore_spin,
 		}
 	else
 		self:_enable_item_units_visibility(item_key, ignore_spin, true)
@@ -556,6 +570,7 @@ end
 
 LootItemUnitPreviewer._request_all_mips_for_unit = function (self, unit)
 	local requested_units = self._requested_all_mips_units
+
 	requested_units[#requested_units + 1] = unit
 
 	Renderer.request_to_stream_all_mips_for_unit(unit)

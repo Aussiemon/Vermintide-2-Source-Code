@@ -1,7 +1,10 @@
+﻿-- chunkname: @scripts/ui/views/start_game_view/windows/start_game_window_event_summary_console.lua
+
 local definitions = local_require("scripts/ui/views/start_game_view/windows/definitions/start_game_window_event_summary_console_definitions")
 local widget_definitions = definitions.widgets
 local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
+
 StartGameWindowEventSummaryConsole = class(StartGameWindowEventSummaryConsole)
 StartGameWindowEventSummaryConsole.NAME = "StartGameWindowEventSummaryConsole"
 
@@ -9,16 +12,20 @@ StartGameWindowEventSummaryConsole.on_enter = function (self, params, offset)
 	print("[StartGameWindow] Enter Substate StartGameWindowEventSummaryConsole")
 
 	self.parent = params.parent
+
 	local ingame_ui_context = params.ingame_ui_context
+
 	self.ui_renderer = ingame_ui_context.ui_renderer
 	self._ui_top_renderer = ingame_ui_context.ui_top_renderer
 	self.input_manager = ingame_ui_context.input_manager
 	self.statistics_db = ingame_ui_context.statistics_db
 	self.render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
+
 	local player_manager = Managers.player
 	local local_player = player_manager:local_player()
+
 	self._stats_id = local_player:stats_id()
 	self.player_manager = player_manager
 	self.peer_id = ingame_ui_context.peer_id
@@ -29,20 +36,23 @@ end
 
 StartGameWindowEventSummaryConsole._start_transition_animation = function (self, animation_name)
 	local params = {
-		render_settings = self.render_settings
+		render_settings = self.render_settings,
 	}
 	local widgets = {}
 	local anim_id = self.ui_animator:start_animation(animation_name, widgets, scenegraph_definition, params)
+
 	self._animations[animation_name] = anim_id
 end
 
 StartGameWindowEventSummaryConsole.create_ui_elements = function (self, params, offset)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+
 	local widgets = {}
 	local widgets_by_name = {}
 
 	for name, widget_definition in pairs(widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		widgets[#widgets + 1] = widget
 		widgets_by_name[name] = widget
 	end
@@ -56,6 +66,7 @@ StartGameWindowEventSummaryConsole.create_ui_elements = function (self, params, 
 
 	if offset then
 		local window_position = self.ui_scenegraph.window.local_position
+
 		window_position[1] = window_position[1] + offset[1]
 		window_position[2] = window_position[2] + offset[2]
 		window_position[3] = window_position[3] + offset[3]
@@ -71,9 +82,10 @@ StartGameWindowEventSummaryConsole._setup_content_from_backend = function (self)
 	local event_summary_widget = widgets_by_name.event_summary
 	local level_key = game_mode_data.level_key
 	local mutators = game_mode_data.mutators
+
 	event_summary_widget.content.item = {
 		level_key = level_key,
-		mutators = mutators
+		mutators = mutators,
 	}
 end
 

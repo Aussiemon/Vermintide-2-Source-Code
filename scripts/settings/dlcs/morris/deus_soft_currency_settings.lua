@@ -1,39 +1,42 @@
+﻿-- chunkname: @scripts/settings/dlcs/morris/deus_soft_currency_settings.lua
+
 local DEFAULT_BOSS_RANGE = {
 	{
 		max = 104,
-		min = 43
+		min = 43,
 	},
 	{
 		max = 90,
-		min = 37
+		min = 37,
 	},
 	{
 		max = 78,
-		min = 32
+		min = 32,
 	},
 	{
 		max = 68,
-		min = 28
-	}
+		min = 28,
+	},
 }
 local DEFAULT_RANGE = {
 	{
 		max = 59,
-		min = 28
+		min = 28,
 	},
 	{
 		max = 51,
-		min = 24
+		min = 24,
 	},
 	{
 		max = 44,
-		min = 21
+		min = 21,
 	},
 	{
 		max = 38,
-		min = 18
-	}
+		min = 18,
+	},
 }
+
 DeusSoftCurrencySettings = DeusSoftCurrencySettings or {
 	loot_amount = {
 		["n/a"] = DEFAULT_RANGE,
@@ -51,10 +54,10 @@ DeusSoftCurrencySettings = DeusSoftCurrencySettings or {
 		skaven_storm_vermin_warlord = DEFAULT_BOSS_RANGE,
 		skaven_stormfiend = DEFAULT_BOSS_RANGE,
 		skaven_stormfiend_boss = DEFAULT_BOSS_RANGE,
-		skaven_loot_rat = DEFAULT_BOSS_RANGE
+		skaven_loot_rat = DEFAULT_BOSS_RANGE,
 	},
 	types = {
 		GROUND = 1,
-		MONSTER = 2
-	}
+		MONSTER = 2,
+	},
 }

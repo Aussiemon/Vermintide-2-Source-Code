@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/generic/ai_line_of_sight_extension.lua
+
 AILineOfSightExtension = class(AILineOfSightExtension)
 
 AILineOfSightExtension.init = function (self, extension_init_context, unit, extension_init_data)
@@ -33,9 +35,11 @@ AILineOfSightExtension.has_line_of_sight = function (self, unit, blackboard, ove
 	end
 
 	local offsets = self._offsets
+
 	offsets[1] = Vector3(0, 0, 1.5)
 	offsets[2] = Vector3(0.5, 0, 1.5)
 	offsets[3] = Vector3(-0.5, 0, 1.5)
+
 	local ray_from_offset = Vector3(0, 0, 1.5)
 	local num_offsets = 3
 	local physics_world = self._physics_world
@@ -58,6 +62,7 @@ AILineOfSightExtension.has_line_of_sight = function (self, unit, blackboard, ove
 
 			if dist_sq < max_distance then
 				local target_offset = target_pos - self_pos
+
 				success = false
 
 				if math.abs(target_offset.x) < BENEATH_ABOVE_EPSILON and math.abs(target_offset.y) < BENEATH_ABOVE_EPSILON then
@@ -67,8 +72,9 @@ AILineOfSightExtension.has_line_of_sight = function (self, unit, blackboard, ove
 					local dist = math.max(Vector3.length(to_offset), 0.0001)
 					local dir = to_offset / dist
 
-					if RAY_DISTANCE_EPSILON < dist then
+					if dist > RAY_DISTANCE_EPSILON then
 						num_raycasts = num_raycasts + 1
+
 						local hit, _, _, _, hit_actor = PhysicsWorld.raycast(physics_world, from, dir, dist, "closest", "collision_filter", "filter_ai_line_of_sight_check")
 
 						if not hit or Actor.unit(hit_actor) == target then
@@ -82,6 +88,7 @@ AILineOfSightExtension.has_line_of_sight = function (self, unit, blackboard, ove
 
 					for i = 1, num_offsets do
 						num_raycasts = num_raycasts + 1
+
 						local offset = offsets[i]
 						local from = self_pos + ray_from_offset
 						local to_offset = target_offset + Vector3(right_vector.x * offset.x, right_vector.y * offset.x, offset.z - ray_from_offset.z)

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/weapons/actions/action_career_true_flight_aim.lua
+
 ActionCareerTrueFlightAim = class(ActionCareerTrueFlightAim, ActionTrueFlightBowAim)
 
 ActionCareerTrueFlightAim.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
@@ -10,6 +12,7 @@ ActionCareerTrueFlightAim.client_owner_start_action = function (self, new_action
 	ActionCareerTrueFlightAim.super.client_owner_start_action(self, new_action, t, chain_action_data, power_level, action_init_data)
 
 	self.not_wield_previous = new_action.not_wield_previous
+
 	local init_flow_event = self.current_action.init_flow_event
 
 	if init_flow_event then

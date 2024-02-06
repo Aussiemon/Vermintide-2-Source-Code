@@ -1,7 +1,10 @@
+﻿-- chunkname: @scripts/ui/views/deus_menu/deus_run_stats_ui.lua
+
 local definitions = local_require("scripts/ui/views/deus_menu/deus_run_stats_ui_definitions")
 local animations_definitions = definitions.animations_definitions
 local reminder_widgets_definitions = definitions.reminder_widgets
 local generic_input_actions = definitions.generic_input_actions
+
 DeusRunStatsUi = class(DeusRunStatsUi)
 
 DeusRunStatsUi.init = function (self, ingame_ui_context, parent)
@@ -10,7 +13,7 @@ DeusRunStatsUi.init = function (self, ingame_ui_context, parent)
 	self._wwise_world = ingame_ui_context.wwise_world
 	self._render_settings = {
 		alpha_multiplier = 1,
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 	self._ingame_ui_context = ingame_ui_context
 	self._parent = parent
@@ -41,19 +44,24 @@ end
 DeusRunStatsUi._start_animation = function (self, animation_name, info_type)
 	local params = {}
 	local widget = self._reminder_widgets_by_name.reminder_text
+
 	widget.content.info_type = info_type
+
 	local anim_id = self._ui_animator:start_animation(animation_name, widget, definitions.scenegraph, params)
+
 	self._animations[animation_name] = anim_id
 end
 
 DeusRunStatsUi._create_ui_elements = function (self)
 	self._ui_scenegraph = UISceneGraph.init_scenegraph(definitions.scenegraph)
+
 	local widgets = {}
 	local widgets_by_name = {}
 
 	for name, widget_definition in pairs(definitions.widgets) do
 		if widget_definition then
 			local widget = UIWidget.init(widget_definition)
+
 			widgets[#widgets + 1] = widget
 			widgets_by_name[name] = widget
 		end
@@ -65,6 +73,7 @@ DeusRunStatsUi._create_ui_elements = function (self)
 	for name, widget_definition in pairs(definitions.equipment_widgets) do
 		if widget_definition then
 			local widget = UIWidget.init(widget_definition)
+
 			equipment_widgets[#equipment_widgets + 1] = widget
 			equipment_widgets_by_name[name] = widget
 		end
@@ -76,6 +85,7 @@ DeusRunStatsUi._create_ui_elements = function (self)
 	for name, widget_definition in pairs(reminder_widgets_definitions) do
 		if widget_definition then
 			local widget = UIWidget.init(widget_definition)
+
 			reminder_widgets[#reminder_widgets + 1] = widget
 			reminder_widgets_by_name[name] = widget
 		end
@@ -92,7 +102,9 @@ DeusRunStatsUi._create_ui_elements = function (self)
 	UIRenderer.clear_scenegraph_queue(self._ui_top_renderer)
 
 	self._ui_animator = UIAnimator:new(self._ui_scenegraph, animations_definitions)
+
 	local input_service = self._parent:input_service()
+
 	self._menu_input_description = MenuInputDescriptionUI:new(self._ingame_ui_context, self._ui_top_renderer, input_service, 6, nil, generic_input_actions.default, false)
 
 	self._menu_input_description:set_input_description(nil)
@@ -123,8 +135,10 @@ end
 
 DeusRunStatsUi.lock = function (self, lock, show_fullscreen_fade)
 	local locked = self._locked
+
 	self._locked = lock
 	self._widgets_by_name.fullscreen_fade.content.visible = show_fullscreen_fade
+
 	local input_manager = Managers.input
 
 	if not locked and lock then
@@ -174,7 +188,7 @@ DeusRunStatsUi._handle_input = function (self, dt, t)
 	local ui_scenegraph = self._ui_scenegraph
 	local power_up_widgets = self._power_up_widgets
 	local power_up_description_widget = self._widgets_by_name.power_up_description
-	local current_power_up_name, power_up_rarity = nil
+	local current_power_up_name, power_up_rarity
 	local extend_left = false
 	local gamepad_selection_index = gamepad_active and self._gamepad_row_index + definitions.max_power_up_amount * 0.5 * (self._gamepad_column_index - 1)
 
@@ -184,6 +198,7 @@ DeusRunStatsUi._handle_input = function (self, dt, t)
 		if UIUtils.is_button_hover(widget) or gamepad_selection_index == i then
 			local scenegraph_id = widget.scenegraph_id
 			local world_position = UISceneGraph.get_world_position(ui_scenegraph, scenegraph_id)
+
 			ui_scenegraph.power_up_description_root.local_position[1] = world_position[1]
 			ui_scenegraph.power_up_description_root.local_position[2] = world_position[2]
 			power_up_description_widget.content.visible = true
@@ -216,6 +231,7 @@ DeusRunStatsUi._handle_gamepad_input = function (self, dt, t)
 
 	if input_service:get("move_down") then
 		local items_in_this_column = math.min(num_power_ups - items_in_a_column * (self._gamepad_column_index - 1), items_in_a_column)
+
 		self._gamepad_row_index = math.min(self._gamepad_row_index + 1, items_in_this_column)
 	elseif input_service:get("move_up") then
 		self._gamepad_row_index = math.max(self._gamepad_row_index - 1, 1)
@@ -238,18 +254,22 @@ DeusRunStatsUi._populate_power_up = function (self, power_up_name, power_up_rari
 	local power_up = DeusPowerUps[power_up_rarity][power_up_name]
 	local content = power_up_description_widget.content
 	local player = Managers.player:local_player()
-	local profile_index = player:profile_index()
-	local career_index = player:career_index()
+	local profile_index, career_index = player:profile_index(), player:career_index()
 	local rarity = power_up.rarity
+
 	content.title_text = DeusPowerUpUtils.get_power_up_name_text(power_up.name, power_up.talent_index, power_up.talent_tier, profile_index, career_index)
 	content.rarity_text = Localize(RaritySettings[rarity].display_name)
 	content.description_text = DeusPowerUpUtils.get_power_up_description(power_up, profile_index, career_index)
 	content.icon = DeusPowerUpUtils.get_power_up_icon(power_up, profile_index, career_index)
 	content.extend_left = true
+
 	local power_up_template = DeusPowerUpTemplates[power_up.name]
+
 	content.is_rectangular_icon = power_up_template.rectangular_icon
+
 	local style = power_up_description_widget.style
 	local rarity_color = Colors.get_table(rarity)
+
 	style.rarity_text.text_color = rarity_color
 	power_up_description_widget.content.visible = true
 end
@@ -371,7 +391,9 @@ end
 DeusRunStatsUi._update_blessings = function (self, blessings)
 	local has_blessings = #blessings > 0
 	local no_blessings_text_widget = self._widgets_by_name.no_blessings_text
+
 	no_blessings_text_widget.content.text = has_blessings and "" or Localize("no_active_blessings_text")
+
 	local widget_prefix = "blessing_"
 
 	for name, _ in pairs(self._widgets_by_name) do
@@ -395,6 +417,7 @@ DeusRunStatsUi._update_blessings = function (self, blessings)
 			local scenegraph_id = "blessing_" .. i
 			local widget_definition = UIWidgets.create_framed_info_box(scenegraph_id, widget_data.title_frame_name, widget_data.info_frame_name, nil, nil, icon, widget_data.icon_size, widget_data.icon_frame_name, title_text, info_text, widget_data.bottom_panel_size)
 			local widget = UIWidget.init(widget_definition)
+
 			blessings_widgets[i] = widget
 			self._widgets_by_name[widget_prefix .. i] = widget
 		end
@@ -425,7 +448,7 @@ DeusRunStatsUi._update_power_ups = function (self, party_power_ups, power_ups, p
 		local num_power_ups = math.min(#power_ups + #party_power_ups, definitions.max_power_up_amount)
 
 		for i = 1, num_power_ups do
-			local power_up_instance = nil
+			local power_up_instance
 
 			if i <= #power_ups then
 				power_up_instance = power_ups[i]
@@ -445,6 +468,7 @@ DeusRunStatsUi._update_power_ups = function (self, party_power_ups, power_ups, p
 			local scenegraph_id = "power_up_" .. idx
 			local widget_definition = UIWidgets.create_icon_info_box(scenegraph_id, icon, widget_data.icon_size, widget_data.icon_offset, widget_data.background_icon, widget_data.background_icon_size, widget_data.background_icon_offset, sub_text, title_text, text_color, widget_data.width, is_rectangular_icon, hide_text)
 			local widget = UIWidget.init(widget_definition)
+
 			widget.content.power_up_name = power_up.name
 			widget.content.power_up_rarity = power_up.rarity
 			power_up_widgets[#power_up_widgets + 1] = widget
@@ -460,14 +484,17 @@ end
 DeusRunStatsUi.set_loadout = function (self, melee, ranged, healing_slot, potion_slot, grenade_slot)
 	self._equipment_widgets_by_name.weapon_melee.content.item = melee
 	self._equipment_widgets_by_name.weapon_ranged.content.item = ranged
+
 	local healing_widget = self._equipment_widgets_by_name.healing_slot
 	local potion_widget = self._equipment_widgets_by_name.potion_slot
 	local grenade_widget = self._equipment_widgets_by_name.grenade_slot
 	local healing_item = healing_slot and ItemMasterList[healing_slot]
+
 	healing_widget.content.icon = healing_item and healing_item.hud_icon or "consumables_empty_medpack"
 	healing_widget.content.title_text = healing_item and Localize(healing_slot) or Localize("deus_weapon_inspect_title_unavailable")
 	healing_widget.content.info_text = healing_item and Localize(healing_item.description) or Localize("deus_weapon_inspect_info_unavailable")
 	healing_widget.content.visible = healing_item ~= nil
+
 	local potion_item = potion_slot and ItemMasterList[potion_slot]
 	local potion_icon = "consumables_empty_potion"
 	local potion_title_text = Localize("deus_weapon_inspect_title_unavailable")
@@ -483,7 +510,9 @@ DeusRunStatsUi.set_loadout = function (self, melee, ranged, healing_slot, potion
 	potion_widget.content.title_text = potion_title_text
 	potion_widget.content.info_text = potion_info_text
 	potion_widget.content.visible = potion_item ~= nil
+
 	local grenade_item = grenade_slot and ItemMasterList[grenade_slot]
+
 	grenade_widget.content.icon = grenade_item and grenade_item.hud_icon or "consumables_empty_grenade"
 	grenade_widget.content.title_text = grenade_item and Localize(grenade_slot) or Localize("deus_weapon_inspect_title_unavailable")
 	grenade_widget.content.info_text = grenade_item and Localize(grenade_item.description) or Localize("deus_weapon_inspect_info_unavailable")
@@ -501,5 +530,6 @@ end
 
 DeusRunStatsUi._set_widget_text = function (self, widget_name, text)
 	local widget = self._widgets_by_name[widget_name]
+
 	widget.content.text = text
 end

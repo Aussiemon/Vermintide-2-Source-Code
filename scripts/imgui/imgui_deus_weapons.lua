@@ -1,17 +1,20 @@
+﻿-- chunkname: @scripts/imgui/imgui_deus_weapons.lua
+
 ImguiDeusWeapons = class(ImguiDeusWeapons)
+
 local rarities = {
 	"plentiful",
 	"common",
 	"rare",
 	"exotic",
-	"unique"
+	"unique",
 }
 local difficulties = {
 	"normal",
 	"hard",
 	"harder",
 	"hardest",
-	"cataclysm"
+	"cataclysm",
 }
 
 local function render_weapon_group_selection(available_weapon_groups, current_weapon_group_index, available_rarities, current_rarity_index, available_difficulties, current_difficulty_index, current_run_progress)
@@ -31,7 +34,7 @@ local function equip_weapon(weapon, career_name, inventory_extension)
 
 	local backend_id = weapon.backend_id
 	local slot_type = weapon.data.slot_type
-	local slot_name = nil
+	local slot_name
 	local slots = InventorySettings.slots_by_slot_index
 
 	for _, slot in pairs(slots) do
@@ -86,6 +89,7 @@ local function render_property_setting(property_names, rarity, property_settings
 			property_settings[property_key] = 1
 		else
 			local value = Imgui.slider_float("Set Property " .. property_key .. " power", property_settings[property_key], 0, 1)
+
 			property_settings[property_key] = math.round_with_precision(value, 3)
 		end
 	end
@@ -132,6 +136,7 @@ ImguiDeusWeapons.update = function (self)
 		local hero_data = SPProfiles[profile_index]
 		local career_data = hero_data.careers[career_index]
 		local career_name = career_data.name
+
 		self._available_weapon_groups = {}
 
 		for group_key, _ in pairs(DeusWeaponGroups) do
@@ -152,7 +157,7 @@ ImguiDeusWeapons.update = function (self)
 	if self._equip_random_weapon then
 		local t = Managers.time:time("game")
 
-		if self._next_weapon_time < t then
+		if t > self._next_weapon_time then
 			local inventory_extension = self:_get_inventory_extension()
 
 			if inventory_extension and not inventory_extension:resyncing_loadout() then
@@ -192,21 +197,20 @@ ImguiDeusWeapons.draw = function (self, is_open)
 	Imgui.text("Select Weapon Group:")
 
 	self._selected_weapon_group_index, self._selected_rarity_index, self._difficulty_index, self._run_progress = render_weapon_group_selection(self._available_weapon_groups, self._selected_weapon_group_index, rarities, self._selected_rarity_index, difficulties, self._difficulty_index, self._run_progress)
+
 	local group = DeusWeaponGroups[self._available_weapon_groups[self._selected_weapon_group_index]]
 	local difficulty = difficulties[self._difficulty_index]
 	local rarity = rarities[self._selected_rarity_index]
 	local items_for_rarity = group.items_per_rarity[rarity]
-
-	if not items_for_rarity or #items_for_rarity <= 0 or not items_for_rarity then
-		local available_items = {
-			group.default
-		}
-	end
+	local available_items = items_for_rarity and #items_for_rarity > 0 and items_for_rarity or {
+		group.default,
+	}
 
 	Imgui.spacing()
 	Imgui.text("Select Item From Group:")
 
 	self._selected_item_key_index = Imgui.combo("Select item key", self._selected_item_key_index, available_items)
+
 	local item_key = available_items[self._selected_item_key_index]
 
 	if self._prev_item_key ~= item_key or self._prev_difficulty_index ~= self._difficulty_index or self._prev_rarity ~= rarity or self._prev_run_progress ~= self._run_progress then
@@ -230,7 +234,9 @@ ImguiDeusWeapons.draw = function (self, is_open)
 
 	if archetypes_available then
 		self._selected_archetype_index = Imgui.combo("Select archetype", self._selected_archetype_index, self._available_archetypes)
+
 		local archetype = DeusWeaponArchetypes[self._available_archetypes[self._selected_archetype_index]]
+
 		self._properties = archetype.properties
 		self._traits = archetype.traits
 	end
@@ -243,7 +249,9 @@ ImguiDeusWeapons.draw = function (self, is_open)
 		end
 
 		self._prev_selected_property_index = self._selected_property_index
+
 		local properties_to_apply = self._available_property_combinations[self._selected_property_index]
+
 		self._properties = render_property_setting(properties_to_apply, rarity, self._properties)
 	end
 
@@ -260,6 +268,7 @@ ImguiDeusWeapons.draw = function (self, is_open)
 	Imgui.spacing()
 
 	local generate = not self._weapon
+
 	generate = generate or self._weapon.deus_item_key ~= item_key
 
 	for prop, val in pairs(self._properties) do
@@ -290,7 +299,7 @@ ImguiDeusWeapons.draw = function (self, is_open)
 
 			local deus_run_controller = Managers.mechanism:game_mechanism():get_deus_run_controller()
 			local slot_type = self._weapon.data.slot_type
-			local slot_name = nil
+			local slot_name
 			local slots = InventorySettings.slots_by_slot_index
 
 			for _, slot in pairs(slots) do

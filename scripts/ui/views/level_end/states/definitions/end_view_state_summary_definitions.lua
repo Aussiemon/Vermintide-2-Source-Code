@@ -1,352 +1,354 @@
+﻿-- chunkname: @scripts/ui/views/level_end/states/definitions/end_view_state_summary_definitions.lua
+
 local scenegraph_definition = {
 	screen = {
 		scale = "fit",
 		size = {
 			1920,
-			1080
+			1080,
 		},
 		position = {
 			0,
 			0,
-			UILayer.end_screen
-		}
+			UILayer.end_screen,
+		},
 	},
 	background = {
-		vertical_alignment = "center",
-		parent = "screen",
 		horizontal_alignment = "center",
+		parent = "screen",
+		vertical_alignment = "center",
 		size = {
 			1094,
-			873
+			873,
 		},
 		position = {
 			0,
 			0,
-			1
-		}
+			1,
+		},
 	},
 	window = {
-		vertical_alignment = "bottom",
-		parent = "background",
 		horizontal_alignment = "center",
+		parent = "background",
+		vertical_alignment = "bottom",
 		size = {
 			978,
-			678
+			678,
 		},
 		position = {
 			0,
 			20,
-			1
-		}
+			1,
+		},
 	},
 	summary_title = {
-		vertical_alignment = "top",
-		parent = "background",
 		horizontal_alignment = "center",
+		parent = "background",
+		vertical_alignment = "top",
 		size = {
 			350,
-			50
+			50,
 		},
 		position = {
 			0,
 			-48,
-			1
-		}
+			1,
+		},
 	},
 	title_bg = {
-		vertical_alignment = "center",
-		parent = "summary_title",
 		horizontal_alignment = "center",
+		parent = "summary_title",
+		vertical_alignment = "center",
 		size = {
 			334,
-			60
+			60,
 		},
 		position = {
 			0,
 			0,
-			-1
-		}
+			-1,
+		},
 	},
 	experience_fg = {
-		vertical_alignment = "top",
-		parent = "background",
 		horizontal_alignment = "center",
+		parent = "background",
+		vertical_alignment = "top",
 		size = {
 			985,
-			91
+			91,
 		},
 		position = {
 			-2,
 			-80,
-			7
-		}
+			7,
+		},
 	},
 	sparkle_effect = {
-		vertical_alignment = "center",
-		parent = "experience_fg",
 		horizontal_alignment = "center",
+		parent = "experience_fg",
+		vertical_alignment = "center",
 		size = {
 			256,
-			256
+			256,
 		},
 		position = {
 			434,
 			15,
-			10
-		}
+			10,
+		},
 	},
 	experience_bar = {
-		vertical_alignment = "bottom",
-		parent = "experience_fg",
 		horizontal_alignment = "center",
+		parent = "experience_fg",
+		vertical_alignment = "bottom",
 		size = {
 			816,
-			70
+			70,
 		},
 		position = {
 			2,
 			0,
-			-6
-		}
+			-6,
+		},
 	},
 	next_level_text = {
-		vertical_alignment = "bottom",
-		parent = "experience_fg",
 		horizontal_alignment = "right",
+		parent = "experience_fg",
+		vertical_alignment = "bottom",
 		size = {
 			54,
-			54
+			54,
 		},
 		position = {
 			-9,
 			9,
-			-1
-		}
+			-1,
+		},
 	},
 	current_level_text = {
-		vertical_alignment = "bottom",
-		parent = "experience_fg",
 		horizontal_alignment = "left",
+		parent = "experience_fg",
+		vertical_alignment = "bottom",
 		size = {
 			54,
-			54
+			54,
 		},
 		position = {
 			13,
 			9,
-			-1
-		}
+			-1,
+		},
 	},
 	experience_entry_root = {
-		vertical_alignment = "top",
-		parent = "experience_bar",
 		horizontal_alignment = "center",
+		parent = "experience_bar",
+		vertical_alignment = "top",
 		size = {
 			250,
-			50
+			50,
 		},
 		position = {
 			0,
 			-60,
-			1
-		}
+			1,
+		},
 	},
 	summary_entry_root = {
-		vertical_alignment = "top",
-		parent = "window",
 		horizontal_alignment = "center",
+		parent = "window",
+		vertical_alignment = "top",
 		size = {
 			820,
-			40
+			40,
 		},
 		position = {
 			0,
 			-100,
-			1
-		}
+			1,
+		},
 	},
 	summary_entry_title = {
-		vertical_alignment = "center",
-		parent = "background",
 		horizontal_alignment = "center",
+		parent = "background",
+		vertical_alignment = "center",
 		size = {
 			820,
-			40
+			40,
 		},
 		position = {
 			0,
 			210,
-			1
-		}
+			1,
+		},
 	},
 	summary_entry_total_title = {
-		vertical_alignment = "center",
-		parent = "background",
 		horizontal_alignment = "center",
+		parent = "background",
+		vertical_alignment = "center",
 		size = {
 			820,
-			40
+			40,
 		},
 		position = {
 			0,
 			-260,
-			1
-		}
+			1,
+		},
 	},
 	summary_entry_total_essence_group = {
-		vertical_alignment = "center",
-		parent = "background",
 		horizontal_alignment = "center",
+		parent = "background",
+		vertical_alignment = "center",
 		size = {
 			838,
-			137
+			137,
 		},
 		position = {
 			0,
 			-340,
-			1
-		}
+			1,
+		},
 	},
 	summary_entry_essence_background = {
-		vertical_alignment = "center",
-		parent = "summary_entry_total_essence_group",
 		horizontal_alignment = "center",
+		parent = "summary_entry_total_essence_group",
+		vertical_alignment = "center",
 		size = {
 			890,
-			88
+			88,
 		},
 		position = {
 			0,
 			0,
-			1
-		}
+			1,
+		},
 	},
 	summary_entry_essence_background_effect_left = {
-		vertical_alignment = "center",
-		parent = "summary_entry_essence_background",
 		horizontal_alignment = "left",
+		parent = "summary_entry_essence_background",
+		vertical_alignment = "center",
 		size = {
 			240,
-			88
+			88,
 		},
 		position = {
 			0,
 			0,
-			1
-		}
+			1,
+		},
 	},
 	summary_entry_essence_background_effect_right = {
-		vertical_alignment = "center",
-		parent = "summary_entry_essence_background",
 		horizontal_alignment = "right",
+		parent = "summary_entry_essence_background",
+		vertical_alignment = "center",
 		size = {
 			240,
-			88
+			88,
 		},
 		position = {
 			0,
 			0,
-			1
-		}
+			1,
+		},
 	},
 	summary_entry_total_essence_title = {
-		vertical_alignment = "center",
-		parent = "summary_entry_essence_background",
 		horizontal_alignment = "left",
+		parent = "summary_entry_essence_background",
+		vertical_alignment = "center",
 		size = {
 			646,
-			97
+			97,
 		},
 		position = {
 			34,
 			0,
-			1
-		}
+			1,
+		},
 	},
 	summary_entry_total_essence_gained = {
-		vertical_alignment = "center",
-		parent = "summary_entry_essence_background",
 		horizontal_alignment = "right",
+		parent = "summary_entry_essence_background",
+		vertical_alignment = "center",
 		size = {
 			300,
-			97
+			97,
 		},
 		position = {
 			-34,
 			0,
-			1
-		}
+			1,
+		},
 	},
 	summary_entry_essence_icon = {
-		vertical_alignment = "center",
-		parent = "summary_entry_total_essence_gained",
 		horizontal_alignment = "right",
+		parent = "summary_entry_total_essence_gained",
+		vertical_alignment = "center",
 		size = {
 			32,
-			32
+			32,
 		},
 		position = {
 			0,
 			0,
-			1
-		}
+			1,
+		},
 	},
 	entry_window = {
-		vertical_alignment = "top",
-		parent = "window",
 		horizontal_alignment = "center",
+		parent = "window",
+		vertical_alignment = "top",
 		size = {
 			980,
-			64
+			64,
 		},
 		position = {
 			0,
 			0,
-			3
-		}
+			3,
+		},
 	},
 	stamp = {
-		vertical_alignment = "top",
-		parent = "entry_window",
 		horizontal_alignment = "center",
+		parent = "entry_window",
+		vertical_alignment = "top",
 		size = {
 			1024,
-			83
+			83,
 		},
 		position = {
 			0,
 			5,
-			5
-		}
+			5,
+		},
 	},
 	left_entry_holder = {
-		vertical_alignment = "center",
-		parent = "entry_window",
 		horizontal_alignment = "left",
+		parent = "entry_window",
+		vertical_alignment = "center",
 		size = {
 			50,
-			102
+			102,
 		},
 		position = {
 			0,
 			0,
-			2
-		}
+			2,
+		},
 	},
 	right_entry_holder = {
-		vertical_alignment = "center",
-		parent = "entry_window",
 		horizontal_alignment = "right",
+		parent = "entry_window",
+		vertical_alignment = "center",
 		size = {
 			50,
-			102
+			102,
 		},
 		position = {
 			0,
 			0,
-			2
-		}
-	}
+			2,
+		},
+	},
 }
 local summary_entry_widgets = {}
 local num_experience_entries = 10
@@ -356,174 +358,174 @@ for i = 1, num_experience_entries do
 end
 
 local summary_title_style = {
-	word_wrap = true,
-	upper_case = true,
-	localize = false,
-	use_shadow = true,
-	font_size = 28,
-	horizontal_alignment = "center",
-	vertical_alignment = "center",
 	dynamic_font_size = true,
+	font_size = 28,
 	font_type = "hell_shark_header",
+	horizontal_alignment = "center",
+	localize = false,
+	upper_case = true,
+	use_shadow = true,
+	vertical_alignment = "center",
+	word_wrap = true,
 	text_color = Colors.get_color_table_with_alpha("font_title", 255),
 	offset = {
 		0,
 		0,
-		2
-	}
+		2,
+	},
 }
 local level_text_style = {
-	word_wrap = true,
-	upper_case = true,
-	localize = false,
-	use_shadow = true,
 	font_size = 42,
-	horizontal_alignment = "center",
-	vertical_alignment = "center",
 	font_type = "hell_shark_header",
+	horizontal_alignment = "center",
+	localize = false,
+	upper_case = true,
+	use_shadow = true,
+	vertical_alignment = "center",
+	word_wrap = true,
 	text_color = Colors.get_color_table_with_alpha("font_default", 255),
 	offset = {
 		0,
 		0,
-		-2
-	}
+		-2,
+	},
 }
 local objective_title_text_style = {
 	font_size = 32,
-	upper_case = true,
-	word_wrap = true,
-	use_shadow = true,
-	horizontal_alignment = "left",
-	vertical_alignment = "bottom",
 	font_type = "hell_shark",
+	horizontal_alignment = "left",
+	upper_case = true,
+	use_shadow = true,
+	vertical_alignment = "bottom",
+	word_wrap = true,
 	text_color = {
 		255,
 		120,
 		120,
-		120
+		120,
 	},
 	offset = {
 		0,
 		0,
-		2
-	}
+		2,
+	},
 }
 local experience_title_text_style = {
 	font_size = 32,
-	upper_case = true,
-	word_wrap = true,
-	use_shadow = true,
-	horizontal_alignment = "right",
-	vertical_alignment = "bottom",
 	font_type = "hell_shark",
+	horizontal_alignment = "right",
+	upper_case = true,
+	use_shadow = true,
+	vertical_alignment = "bottom",
+	word_wrap = true,
 	text_color = {
 		255,
 		120,
 		120,
-		120
+		120,
 	},
 	offset = {
 		0,
 		0,
-		2
-	}
+		2,
+	},
 }
 local total_title_text_style = {
 	font_size = 32,
-	upper_case = true,
-	word_wrap = true,
-	use_shadow = true,
-	horizontal_alignment = "left",
-	vertical_alignment = "center",
 	font_type = "hell_shark",
+	horizontal_alignment = "left",
+	upper_case = true,
+	use_shadow = true,
+	vertical_alignment = "center",
+	word_wrap = true,
 	text_color = Colors.get_color_table_with_alpha("font_default", 255),
 	offset = {
 		0,
 		0,
-		2
-	}
+		2,
+	},
 }
 local experience_total_text_style = {
 	font_size = 32,
-	upper_case = true,
-	word_wrap = true,
-	use_shadow = true,
-	horizontal_alignment = "right",
-	vertical_alignment = "center",
 	font_type = "hell_shark",
+	horizontal_alignment = "right",
+	upper_case = true,
+	use_shadow = true,
+	vertical_alignment = "center",
+	word_wrap = true,
 	text_color = Colors.get_color_table_with_alpha("font_default", 255),
 	offset = {
 		0,
 		0,
-		2
-	}
+		2,
+	},
 }
 local level_up_text_style = {
 	font_size = 40,
-	upper_case = true,
-	word_wrap = true,
-	use_shadow = true,
-	horizontal_alignment = "center",
-	vertical_alignment = "center",
 	font_type = "hell_shark_header",
+	horizontal_alignment = "center",
+	upper_case = true,
+	use_shadow = true,
+	vertical_alignment = "center",
+	word_wrap = true,
 	text_color = Colors.get_color_table_with_alpha("white", 0),
 	offset = {
 		0,
 		2,
-		10
-	}
+		10,
+	},
 }
 local essence_text_style = {
 	font_size = 32,
-	upper_case = true,
-	word_wrap = true,
-	use_shadow = true,
-	horizontal_alignment = "left",
-	vertical_alignment = "center",
 	font_type = "hell_shark",
+	horizontal_alignment = "left",
+	upper_case = true,
+	use_shadow = true,
+	vertical_alignment = "center",
+	word_wrap = true,
 	text_color = Colors.get_color_table_with_alpha("font_button_normal", 255),
 	offset = {
 		0,
 		0,
-		2
-	}
+		2,
+	},
 }
 local essence_amount_style = {
+	dynamic_font_size = true,
 	font_size = 32,
+	font_type = "hell_shark",
+	horizontal_alignment = "right",
 	upper_case = true,
 	use_shadow = true,
-	word_wrap = true,
-	horizontal_alignment = "right",
 	vertical_alignment = "center",
-	dynamic_font_size = true,
-	font_type = "hell_shark",
+	word_wrap = true,
 	text_color = Colors.get_color_table_with_alpha("font_button_normal", 255),
 	offset = {
 		0,
 		0,
-		2
-	}
+		2,
+	},
 }
 local essence_max_amount_style = {
+	dynamic_font_size = true,
 	font_size = 32,
+	font_type = "hell_shark",
+	horizontal_alignment = "right",
 	upper_case = true,
 	use_shadow = true,
-	word_wrap = true,
-	horizontal_alignment = "right",
 	vertical_alignment = "center",
-	dynamic_font_size = true,
-	font_type = "hell_shark",
+	word_wrap = true,
 	text_color = {
 		255,
 		160,
 		160,
-		160
+		160,
 	},
 	offset = {
 		0,
 		0,
-		2
-	}
+		2,
+	},
 }
 local widgets = {
 	objective_title = UIWidgets.create_simple_text(Localize("summary_screen_objective_title"), "summary_entry_title", nil, nil, objective_title_text_style),
@@ -539,49 +541,49 @@ local widgets = {
 	experience_bar = UIWidgets.create_summary_experience_bar("experience_bar", scenegraph_definition.experience_bar.size),
 	sparkle_effect = UIWidgets.create_simple_rotated_texture("sparkle_effect", 0, {
 		128,
-		128
+		128,
 	}, "sparkle_effect", nil, nil, {
 		0,
 		255,
 		255,
-		255
+		255,
 	}),
 	essence_background = UIWidgets.create_tiled_texture("summary_entry_essence_background", "menu_frame_bg_06", {
 		256,
-		256
+		256,
 	}, nil, nil, {
 		255,
 		100,
 		100,
-		100
+		100,
 	}),
 	essence_background_shadow = UIWidgets.create_simple_texture("options_window_fade_01", "summary_entry_essence_background", nil, nil, nil, 2),
 	essence_background_effect_left = UIWidgets.create_simple_uv_texture("scorpion_icon_lit", {
 		{
 			1,
-			0
+			0,
 		},
 		{
 			0,
-			1
-		}
+			1,
+		},
 	}, "summary_entry_essence_background_effect_left", nil, nil, {
 		255,
 		100,
 		100,
-		100
+		100,
 	}),
 	essence_background_effect_right = UIWidgets.create_simple_texture("scorpion_icon_lit", "summary_entry_essence_background_effect_right", nil, nil, {
 		150,
 		255,
 		255,
-		255
+		255,
 	}),
 	essence_background_frame = UIWidgets.create_frame("summary_entry_essence_background", scenegraph_definition.summary_entry_essence_background.size, "button_frame_01", 3),
 	total_essence_title = UIWidgets.create_simple_text(Localize("summary_total_essence_title"), "summary_entry_total_essence_title", nil, nil, essence_text_style),
 	essence_total_text = UIWidgets.create_simple_text("", "summary_entry_total_essence_gained", nil, nil, essence_amount_style),
 	essence_total_text_max = UIWidgets.create_simple_text(Localize("weave_endscreen_max_essence"), "summary_entry_total_essence_gained", nil, nil, essence_max_amount_style),
-	icon_essence = UIWidgets.create_simple_texture("icon_crafting_essence_small", "summary_entry_essence_icon")
+	icon_essence = UIWidgets.create_simple_texture("icon_crafting_essence_small", "summary_entry_essence_icon"),
 }
 local num_experience_entries = 10
 
@@ -592,45 +594,47 @@ end
 local animation_definitions = {
 	transition_enter = {
 		{
+			end_progress = 2.3,
 			name = "fade_in",
 			start_progress = 2,
-			end_progress = 2.3,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				params.render_settings.alpha_multiplier = 0
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_progress = math.easeOutCubic(progress)
+
 				params.render_settings.alpha_multiplier = anim_progress
 				ui_scenegraph.background.local_position[2] = 400 * (1 - anim_progress)
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				return
-			end
-		}
+			end,
+		},
 	},
 	transition_exit = {
 		{
+			end_progress = 1.3,
 			name = "fade_out",
 			start_progress = 1,
-			end_progress = 1.3,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				params.render_settings.alpha_multiplier = 1
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_progress = math.easeInCubic(progress)
+
 				params.render_settings.alpha_multiplier = 1 - anim_progress
 				ui_scenegraph.background.local_position[2] = -400 * anim_progress
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				return
-			end
-		}
+			end,
+		},
 	},
 	summary_entry_initial = {
 		{
+			end_progress = 0.5,
 			name = "move",
 			start_progress = 0,
-			end_progress = 0.5,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				local widget = params.widget
 				local content = widget.content
@@ -642,6 +646,7 @@ local animation_definitions = {
 				local spacing = params.spacing
 				local start_position = (default_size[2] + spacing) * (list_index - 1)
 				local position_increase = default_size[2] + spacing
+
 				offset[2] = -start_position
 				offset[2] = -start_position
 			end,
@@ -654,22 +659,24 @@ local animation_definitions = {
 				local style = widget.style
 				local offset = widget.offset
 				local anim_progress = math.easeInCubic(1 - progress)
+
 				offset[1] = -30 * anim_progress
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				return
-			end
+			end,
 		},
 		{
+			end_progress = 1,
 			name = "description_entry",
 			start_progress = 0,
-			end_progress = 1,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				local widget = params.widget
 				local content = widget.content
 				local style = widget.style
 				local summary_text_style = style.summary_text
 				local summary_text_shadow_style = style.summary_text_shadow
+
 				summary_text_style.text_color[1] = 0
 				summary_text_shadow_style.text_color[1] = 0
 				content.summary_text = params.title_text or "n/a"
@@ -681,23 +688,25 @@ local animation_definitions = {
 				local summary_text_shadow_style = style.summary_text_shadow
 				local background_style = style.background
 				local alpha = math.easeOutCubic(progress) * 255
+
 				summary_text_style.text_color[1] = alpha
 				summary_text_shadow_style.text_color[1] = alpha
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				return
-			end
+			end,
 		},
 		{
+			end_progress = 1,
 			name = "xp_entry",
 			start_progress = 0.5,
-			end_progress = 1,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				local widget = params.widget
 				local content = widget.content
 				local style = widget.style
 				local xp_text_style = style.xp_text
 				local xp_text_shadow_style = style.xp_text_shadow
+
 				xp_text_style.text_color[1] = 0
 				xp_text_shadow_style.text_color[1] = 0
 				content.xp_text = ""
@@ -716,22 +725,24 @@ local animation_definitions = {
 
 				content.xp_count = counter
 				content.xp_text = tostring(counter)
+
 				local xp_text_style = style.xp_text
 				local xp_text_shadow_style = style.xp_text_shadow
 				local alpha = math.easeOutCubic(progress) * 255
+
 				xp_text_style.text_color[1] = alpha
 				xp_text_shadow_style.text_color[1] = alpha
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				return
-			end
-		}
+			end,
+		},
 	},
 	total_experience_increase = {
 		{
+			end_progress = 0.3,
 			name = "bump",
 			start_progress = 0,
-			end_progress = 0.3,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				local widget = widgets.experience_total_text
 				local content = widget.content
@@ -741,6 +752,7 @@ local animation_definitions = {
 				if experience then
 					local current_experience_count = content.experience or 0
 					local new_experience = current_experience_count + experience
+
 					content.text = tostring(new_experience)
 					content.experience = new_experience
 					content.animate = true
@@ -762,20 +774,21 @@ local animation_definitions = {
 					local target_font_size = 40
 					local anim_progress = math.ease_pulse(progress)
 					local new_font_size = start_font_size + (target_font_size - start_font_size) * anim_progress
+
 					text_style.font_size = new_font_size
 					text_shadow_style.font_size = new_font_size
 				end
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				return
-			end
-		}
+			end,
+		},
 	},
 	level_up = {
 		{
+			end_progress = 0.3,
 			name = "in",
 			start_progress = 0,
-			end_progress = 0.3,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				WwiseWorld.trigger_event(params.wwise_world, "play_gui_mission_summary_level_up")
 			end,
@@ -785,19 +798,22 @@ local animation_definitions = {
 				local content = widget.content
 				local offset = widget.offset
 				local anim_progress = math.easeOutCubic(1 - progress)
+
 				offset[1] = -(30 + 220 * anim_progress)
+
 				local alpha = 255 - anim_progress * 255
+
 				style.text.text_color[1] = alpha
 				style.text_shadow.text_color[1] = alpha
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				return
-			end
+			end,
 		},
 		{
+			end_progress = 1.3,
 			name = "move",
 			start_progress = 0.3,
-			end_progress = 1.3,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				return
 			end,
@@ -807,16 +823,17 @@ local animation_definitions = {
 				local content = widget.content
 				local offset = widget.offset
 				local anim_progress = math.easeOutCubic(progress)
+
 				offset[1] = -30 + 30 * anim_progress
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				return
-			end
+			end,
 		},
 		{
+			end_progress = 1.6,
 			name = "out",
 			start_progress = 1.3,
-			end_progress = 1.6,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				return
 			end,
@@ -826,19 +843,22 @@ local animation_definitions = {
 				local content = widget.content
 				local offset = widget.offset
 				local anim_progress = math.easeOutCubic(progress)
+
 				offset[1] = 250 * anim_progress
+
 				local alpha = 255 - anim_progress * 255
+
 				style.text.text_color[1] = alpha
 				style.text_shadow.text_color[1] = alpha
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				return
-			end
+			end,
 		},
 		{
+			end_progress = 1.9,
 			name = "spark",
 			start_progress = 1.2,
-			end_progress = 1.9,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				return
 			end,
@@ -850,17 +870,18 @@ local animation_definitions = {
 				local anim_progress = math.easeOutCubic(progress)
 				local degrees = 180 * anim_progress
 				local texture_style = style.texture_id
+
 				texture_style.angle = math.degrees_to_radians(degrees)
 				texture_style.color[1] = 255 * math.ease_pulse(progress)
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				return
-			end
+			end,
 		},
 		{
+			end_progress = 1.6,
 			name = "bump_next_level",
 			start_progress = 1.3,
-			end_progress = 1.6,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				return
 			end,
@@ -875,17 +896,18 @@ local animation_definitions = {
 				local anim_progress = math.easeOutCubic(progress)
 				local anim_progress = math.ease_pulse(anim_progress)
 				local new_font_size = start_font_size + (target_font_size - start_font_size) * anim_progress
+
 				text_style.font_size = new_font_size
 				text_shadow_style.font_size = new_font_size
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				return
-			end
+			end,
 		},
 		{
+			end_progress = 1.6,
 			name = "bump_current_level",
 			start_progress = 1.3,
-			end_progress = 1.6,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				return
 			end,
@@ -900,19 +922,20 @@ local animation_definitions = {
 				local anim_progress = math.easeOutCubic(progress)
 				local anim_progress = math.ease_pulse(anim_progress)
 				local new_font_size = start_font_size + (target_font_size - start_font_size) * anim_progress
+
 				text_style.font_size = new_font_size
 				text_shadow_style.font_size = new_font_size
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				return
-			end
-		}
+			end,
+		},
 	},
 	summary_entry_text_shadow = {
 		{
+			end_progress = 1.6,
 			name = "description",
 			start_progress = 1.2,
-			end_progress = 1.6,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				return
 			end,
@@ -921,16 +944,17 @@ local animation_definitions = {
 				local style = widget.style
 				local summary_text_shadow_style = style.summary_text_shadow
 				local alpha = math.easeOutCubic(1 - progress) * 255
+
 				summary_text_shadow_style.text_color[1] = alpha
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				return
-			end
+			end,
 		},
 		{
+			end_progress = 1.6,
 			name = "xp",
 			start_progress = 1.2,
-			end_progress = 1.6,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				return
 			end,
@@ -939,18 +963,19 @@ local animation_definitions = {
 				local style = widget.style
 				local xp_text_shadow_style = style.xp_text_shadow
 				local alpha = math.easeOutCubic(1 - progress) * 255
+
 				xp_text_shadow_style.text_color[1] = alpha
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				return
-			end
-		}
-	}
+			end,
+		},
+	},
 }
 
 return {
 	widgets = widgets,
 	summary_entry_widgets = summary_entry_widgets,
 	scenegraph_definition = scenegraph_definition,
-	animation_definitions = animation_definitions
+	animation_definitions = animation_definitions,
 }

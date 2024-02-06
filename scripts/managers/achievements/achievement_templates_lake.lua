@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/achievements/achievement_templates_lake.lua
+
 local add_event_challenge = AchievementTemplateHelper.add_event_challenge
 local add_levels_complete_challenge = AchievementTemplateHelper.add_levels_complete_challenge
 local add_levels_complete_per_hero_challenge = AchievementTemplateHelper.add_levels_complete_per_hero_challenge
@@ -17,23 +19,23 @@ local difficulties = {
 	"hard",
 	"harder",
 	"hardest",
-	"cataclysm"
+	"cataclysm",
 }
 local main_game_levels = HelmgartLevels
 
 add_event_challenge(achievements, "lake_charge_stagger", nil, nil, "lake_upgrade", XB1_ACHIEVEMENT_ID.lake_charge_stagger, PS4_ACHIEVEMENT_ID.lake_charge_stagger)
 add_event_challenge(achievements, "lake_bastard_block", nil, nil, "lake_upgrade", XB1_ACHIEVEMENT_ID.lake_bastard_block, PS4_ACHIEVEMENT_ID.lake_bastard_block)
 add_event_challenge(achievements, "lake_speed_quest", nil, {
-	achievement_settings.speed_quest_complete_time
+	achievement_settings.speed_quest_complete_time,
 }, "lake_upgrade", nil, nil)
 add_event_challenge(achievements, "lake_timing_quest", nil, {
-	achievement_settings.timing_quest_complete_margain
+	achievement_settings.timing_quest_complete_margain,
 }, "lake_upgrade", nil, nil)
 
 local harder_difficulties = {
 	"harder",
 	"hardest",
-	"cataclysm"
+	"cataclysm",
 }
 
 add_career_mission_count_challenge(achievements, "lake_complete_100_missions", "completed_career_levels", "es_questingknight", difficulties, 100, nil, nil, "lake_upgrade", nil, nil)
@@ -56,13 +58,14 @@ achievements.lake_kill_register = {
 	display_completion_ui = false,
 	required_dlc = "lake_upgrade",
 	events = {
-		"register_kill"
+		"register_kill",
 	},
 	completed = function (statistics_db, stats_id, template_data)
 		local max_count = 0
 
 		for i = 1, #boss_breeds do
 			local count = statistics_db:get_persistent_stat(stats_id, "weapon_kills_per_breed", "markus_questingknight_career_skill_weapon", boss_breeds[i])
+
 			max_count = max_count + count
 		end
 
@@ -104,11 +107,11 @@ achievements.lake_kill_register = {
 		if damage_source and killed_breed and killed_breed.name then
 			statistics_db:increment_stat(stats_id, "weapon_kills_per_breed", damage_source, killed_breed.name)
 		end
-	end
+	end,
 }
 
 add_weapon_kills_per_breeds_challenge(achievements, "lake_boss_killblow", {
-	"markus_questingknight_career_skill_weapon"
+	"markus_questingknight_career_skill_weapon",
 }, boss_breeds, 5, nil, "lake_upgrade", true, nil, nil)
 
 local act_1_levels = GameActs.act_1
@@ -141,7 +144,7 @@ local all_challenges = {
 	"lake_bastard_block",
 	"lake_untouchable",
 	"lake_speed_quest",
-	"lake_timing_quest"
+	"lake_timing_quest",
 }
 
 add_meta_challenge(achievements, "complete_all_grailknight_challenges", all_challenges, nil, "lake_upgrade", nil, nil)

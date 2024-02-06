@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/mutators/mutator_base_curse_marked_enemies.lua
+
 local function on_marked_enemy_killed(dialogue_event, killer_unit)
 	if HEALTH_ALIVE[killer_unit] then
 		local killed_by_player = Managers.player:is_player_unit(killer_unit)
@@ -19,6 +21,7 @@ return function (display_name, description, icon, buff, difficulty_data, markabl
 		icon = icon,
 		server_start_function = function (context, data)
 			local difficulty = Managers.state.difficulty:get_difficulty()
+
 			data.max_marked_enemies = difficulty_data[difficulty].max_marked_enemies
 			data.mark_chance = difficulty_data[difficulty].mark_chance
 			data.enemies_to_be_marked = {}
@@ -33,7 +36,8 @@ return function (display_name, description, icon, buff, difficulty_data, markabl
 				local breed_name = breed.name
 
 				if markable_enemies[breed_name] then
-					local random = nil
+					local random
+
 					data.seed, random = Math.next_random(data.seed)
 
 					if random <= data.mark_chance then
@@ -109,6 +113,6 @@ return function (display_name, description, icon, buff, difficulty_data, markabl
 				on_marked_enemy_killed(data.template.marked_enemy_killed_dialogue_event, killer_unit)
 				table.swap_delete(data.marked_enemies, index)
 			end
-		end
+		end,
 	}
 end

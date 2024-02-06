@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/network/network_transmit.lua
+
 local RPC = RPC
 local shared_scratchpad_table = {}
 
@@ -23,15 +25,15 @@ NetworkTransmit.init = function (self, is_server, server_peer_id)
 	self.server_peer_id = server_peer_id
 	self.local_rpc_queue = {
 		{},
-		{}
+		{},
 	}
 	self.local_rpc_queue_n = {
 		0,
-		0
+		0,
 	}
 	self.local_rpc_queue_contains_boxed = {
 		{},
-		{}
+		{},
 	}
 	self.local_rpc_buffer_index = 1
 	self.peer_ignore_list = {}
@@ -69,7 +71,7 @@ NetworkTransmit.queue_local_rpc = function (self, rpc_name, ...)
 
 	if self._pack_temp_types then
 		local arguments = {
-			...
+			...,
 		}
 		local contains_boxed = false
 
@@ -100,11 +102,14 @@ end
 
 NetworkTransmit.transmit_local_rpcs = function (self)
 	self._pack_temp_types = true
+
 	local local_rpc_buffer_index = self.local_rpc_buffer_index
 	local local_rpc_queue_contains_boxed = self.local_rpc_queue_contains_boxed[local_rpc_buffer_index]
 	local local_rpc_queue_n = self.local_rpc_queue_n[local_rpc_buffer_index]
 	local local_rpc_queue = self.local_rpc_queue[local_rpc_buffer_index]
+
 	self.local_rpc_buffer_index = 3 - local_rpc_buffer_index
+
 	local event_table = self.network_event_delegate.event_table
 	local channel_to_self = 0
 	local do_print_local_rpcs = Development.parameter("network_log_messages")
@@ -113,6 +118,7 @@ NetworkTransmit.transmit_local_rpcs = function (self)
 
 	while i < local_rpc_queue_n do
 		rpc_n = rpc_n + 1
+
 		local rpc_name = local_rpc_queue[i]
 		local rpc_num_args = local_rpc_queue[i + 1]
 
@@ -299,6 +305,7 @@ NetworkTransmit.send_rpc_side_clients = function (self, rpc_name, side, include_
 
 	for _, unit in ipairs(player_units) do
 		local player = Managers.player:owner(unit)
+
 		peer_ids[player:network_id()] = true
 	end
 
@@ -310,6 +317,7 @@ NetworkTransmit.send_rpc_side_clients = function (self, rpc_name, side, include_
 
 			for _, unit in ipairs(player_units) do
 				local player = Managers.player:owner(unit)
+
 				peer_ids[player:network_id()] = true
 			end
 		end
@@ -394,6 +402,7 @@ NetworkTransmit.send_rpc_side_clients_except = function (self, rpc_name, side, i
 
 	for _, unit in ipairs(player_units) do
 		local player = Managers.player:owner(unit)
+
 		peer_ids[player:network_id()] = true
 	end
 
@@ -405,6 +414,7 @@ NetworkTransmit.send_rpc_side_clients_except = function (self, rpc_name, side, i
 
 			for _, unit in ipairs(player_units) do
 				local player = Managers.player:owner(unit)
+
 				peer_ids[player:network_id()] = true
 			end
 		end

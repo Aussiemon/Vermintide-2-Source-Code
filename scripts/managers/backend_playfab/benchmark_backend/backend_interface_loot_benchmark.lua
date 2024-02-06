@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/backend_playfab/benchmark_backend/backend_interface_loot_benchmark.lua
+
 BackendInterfaceLootBenchmark = class(BackendInterfaceLootBenchmark)
 
 BackendInterfaceLootBenchmark.init = function (self, backend_mirror)

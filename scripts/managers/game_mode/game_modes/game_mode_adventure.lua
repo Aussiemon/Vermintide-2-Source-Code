@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/game_mode/game_modes/game_mode_adventure.lua
+
 require("scripts/managers/game_mode/game_modes/game_mode_base")
 require("scripts/managers/game_mode/spawning_components/adventure_spawning")
 require("scripts/managers/game_mode/adventure_profile_rules")
@@ -11,7 +13,9 @@ GameModeAdventure.init = function (self, settings, world, ...)
 	self.about_to_lose = false
 	self.lost_condition_timer = nil
 	self._adventure_profile_rules = AdventureProfileRules:new(self._profile_synchronizer, self._network_server)
+
 	local hero_side = Managers.state.side:get_side_from_name("heroes")
+
 	self._adventure_spawning = AdventureSpawning:new(self._profile_synchronizer, hero_side, self._is_server, self._network_server)
 
 	self:_register_player_spawner(self._adventure_spawning)
@@ -21,6 +25,7 @@ GameModeAdventure.init = function (self, settings, world, ...)
 	self:_setup_bot_spawn_priority_lookup()
 
 	self._available_profiles = table.clone(PROFILES_BY_AFFILIATION.heroes)
+
 	local event_manager = Managers.state.event
 
 	event_manager:register(self, "level_start_local_player_spawned", "event_local_player_spawned")
@@ -93,7 +98,7 @@ GameModeAdventure.evaluate_end_conditions = function (self, round_started, dt, t
 
 	if self.about_to_lose then
 		if lost then
-			if self.lost_condition_timer < t then
+			if t > self.lost_condition_timer then
 				return true, "lost"
 			else
 				return false
@@ -161,6 +166,7 @@ GameModeAdventure.remove_bot = function (self, peer_id, local_player_id, update_
 
 		if not removed then
 			local update_safe = update_safe or false
+
 			bot_player = self._bot_players[#self._bot_players]
 
 			self:_remove_bot(self._bot_players, #self._bot_players, update_safe)
@@ -171,19 +177,21 @@ GameModeAdventure.remove_bot = function (self, peer_id, local_player_id, update_
 end
 
 GameModeAdventure.get_end_screen_config = function (self, game_won, game_lost, player)
-	local screen_name = nil
+	local screen_name
 	local screen_config = {}
 
 	if game_won then
 		screen_name = "victory"
+
 		local stats_id = player:stats_id()
 		local statistics_db = self._statistics_db
 		local level_key = self._level_key
 		local previous_completed_difficulty_index = LevelUnlockUtils.completed_level_difficulty_index(statistics_db, stats_id, level_key) or 0
+
 		screen_config = {
 			show_act_presentation = true,
 			level_key = level_key,
-			previous_completed_difficulty_index = previous_completed_difficulty_index
+			previous_completed_difficulty_index = previous_completed_difficulty_index,
 		}
 	else
 		screen_name = "defeat"
@@ -341,6 +349,7 @@ GameModeAdventure._setup_bot_spawn_priority_lookup = function (self)
 
 			for i = 1, num_saved_priority do
 				local profile_id = saved_priority[i]
+
 				self._bot_profile_id_to_priority_id[profile_id] = i
 			end
 		else
@@ -411,6 +420,7 @@ GameModeAdventure._add_bot = function (self, bot_players)
 	end
 
 	local bot_player = self:_add_bot_to_party(party_id, profile_index, career_index)
+
 	bot_players[#bot_players + 1] = bot_player
 end
 
@@ -426,12 +436,13 @@ GameModeAdventure._remove_bot = function (self, bot_players, index, update_safe)
 	end
 
 	local last = #bot_players
+
 	bot_players[index] = bot_players[last]
 	bot_players[last] = nil
 end
 
 GameModeAdventure._remove_bot_by_profile = function (self, bot_players, profile_index, update_safe)
-	local bot_index = nil
+	local bot_index
 	local num_current_bots = #bot_players
 
 	for i = 1, num_current_bots do
@@ -445,11 +456,12 @@ GameModeAdventure._remove_bot_by_profile = function (self, bot_players, profile_
 		end
 	end
 
-	local bot_player = nil
+	local bot_player
 	local removed = false
 
 	if bot_index then
 		bot_player = bot_players[bot_index]
+
 		local update_safe = update_safe or false
 
 		self:_remove_bot(bot_players, bot_index, update_safe)

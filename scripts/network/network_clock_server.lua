@@ -1,7 +1,10 @@
+﻿-- chunkname: @scripts/network/network_clock_server.lua
+
 NetworkClockServer = class(NetworkClockServer)
+
 local RPCS = {
 	"rpc_network_clock_sync_request",
-	"rpc_network_current_server_time_request"
+	"rpc_network_current_server_time_request",
 }
 
 NetworkClockServer.init = function (self)

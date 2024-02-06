@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/level_unlock_settings.lua
+
 require("scripts/settings/act_settings")
 require("scripts/settings/area_settings")
 
@@ -17,21 +19,21 @@ GameActsOrder = {
 	"act_1",
 	"act_2",
 	"act_3",
-	"act_4"
+	"act_4",
 }
 AdventureActStartId = 2
 MapPresentationActs = {
 	"act_1",
 	"act_2",
 	"act_3",
-	"act_4"
+	"act_4",
 }
 GameActsDisplayNames = {
 	act_1 = "act_1_display_name",
-	prologue = "prologue_display_name",
-	act_4 = "act_4_display_name",
+	act_2 = "act_2_display_name",
 	act_3 = "act_3_display_name",
-	act_2 = "act_2_display_name"
+	act_4 = "act_4_display_name",
+	prologue = "prologue_display_name",
 }
 
 DLCUtils.dofile("level_unlock_settings")
@@ -130,7 +132,7 @@ for level_key, level_data in pairs(LevelSettings) do
 	end
 end
 
-local prologue_index = nil
+local prologue_index
 
 for i = 1, #MainGameLevels do
 	if MainGameLevels[i] == "prologue" then
@@ -296,7 +298,7 @@ LevelUnlockUtils.completed_main_game_difficulty = function (statistics_db, playe
 end
 
 LevelUnlockUtils.completed_dlc_difficulty = function (statistics_db, player_stats_id, dlc_name)
-	local dlc_area_settings = nil
+	local dlc_area_settings
 
 	for area_name, area_settings in pairs(AreaSettings) do
 		if area_settings.dlc_name == dlc_name then
@@ -345,7 +347,7 @@ LevelUnlockUtils.get_required_completed_levels = function (statistics_db, player
 
 	if required_acts then
 		for _, act_key in ipairs(required_acts) do
-			local last_act_level_key = nil
+			local last_act_level_key
 			local highest_presentation_order = -1
 			local act_levels = GameActs[act_key]
 
@@ -372,7 +374,7 @@ LevelUnlockUtils.get_required_completed_levels = function (statistics_db, player
 	local required_levels_unlocked_in_act = RequiredLevelUnlocksByLevel[level_key]
 
 	if required_levels_unlocked_in_act then
-		local last_act_level_key = nil
+		local last_act_level_key
 		local highest_presentation_order = -1
 
 		for _, required_act_level_key in ipairs(required_levels_unlocked_in_act) do
@@ -463,6 +465,7 @@ LevelUnlockUtils.weave_unlocked = function (statistics_db, player_stats_id, weav
 
 		for i = min_players, max_players do
 			local stat_name = ScorpionSeasonalSettings.get_weave_score_stat(weave_tier, i)
+
 			completed_season = statistics_db:get_persistent_stat(player_stats_id, ScorpionSeasonalSettings.current_season_name, stat_name) > 0
 
 			if completed_season then
@@ -595,7 +598,7 @@ LevelUnlockUtils.num_acts_completed = function (statistics_db, player_stats_id)
 end
 
 LevelUnlockUtils.all_dlc_levels_completed = function (statistics_db, player_stats_id, dlc_name)
-	local dlc_area_seetings = nil
+	local dlc_area_seetings
 
 	for area_name, area_settings in pairs(AreaSettings) do
 		if area_settings.dlc_name == dlc_name then

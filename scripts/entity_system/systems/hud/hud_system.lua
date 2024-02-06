@@ -1,17 +1,21 @@
+﻿-- chunkname: @scripts/entity_system/systems/hud/hud_system.lua
+
 require("scripts/unit_extensions/default_player_unit/player_hud")
 
 HUDSystem = class(HUDSystem, ExtensionSystemBase)
+
 local extensions = {
-	"PlayerHud"
+	"PlayerHud",
 }
 local RPCS = {
-	"rpc_set_current_location"
+	"rpc_set_current_location",
 }
 
 HUDSystem.init = function (self, entity_system_creation_context, system_name)
 	HUDSystem.super.init(self, entity_system_creation_context, system_name, extensions)
 
 	local network_event_delegate = entity_system_creation_context.network_event_delegate
+
 	self.network_event_delegate = network_event_delegate
 
 	network_event_delegate:register(self, unpack(RPCS))

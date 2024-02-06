@@ -1,3 +1,5 @@
+﻿-- chunkname: @foundation/scripts/util/stack.lua
+
 Stack = class(Stack)
 
 Stack.init = function (self)

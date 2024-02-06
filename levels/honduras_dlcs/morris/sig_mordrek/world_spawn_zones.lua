@@ -1,49 +1,51 @@
+﻿-- chunkname: @levels/honduras_dlcs/morris/sig_mordrek/world_spawn_zones.lua
+
 local path_markers = {
 	{
+		crossroads = "",
 		kind = "good",
 		main_path_index = 1,
-		crossroads = "",
 		marker_type = "normal",
 		order = 10,
 		pos = {
 			-11.079999923706055,
 			-4.130000114440918,
-			7.150999069213867
-		}
+			7.150999069213867,
+		},
 	},
 	{
+		crossroads = "",
 		kind = "good",
 		main_path_index = 1,
-		crossroads = "",
 		marker_type = "normal",
 		order = 20,
 		pos = {
 			-5.949999809265137,
 			-3.0999999046325684,
-			7.0920000076293945
-		}
-	}
+			7.0920000076293945,
+		},
+	},
 }
 local main_paths = {
 	{
 		path_length = 5.232734203338623,
 		travel_dist = {
-			[1.0] = 0,
-			[2.0] = 5.232734203338623
+			[1] = 0,
+			[2] = 5.232734203338623,
 		},
 		nodes = {
 			{
 				-11.079999923706055,
 				-4.130000114440918,
-				7.229452610015869
+				7.229452610015869,
 			},
 			{
 				-5.949999809265137,
 				-3.0999999046325684,
-				7.168576240539551
-			}
-		}
-	}
+				7.168576240539551,
+			},
+		},
+	},
 }
 local crossroads = {}
 local zones = {}
@@ -64,5 +66,5 @@ return {
 	position_lookup = position_lookup,
 	main_paths = main_paths,
 	crossroads = crossroads,
-	total_main_path_length = total_main_path_length
+	total_main_path_length = total_main_path_length,
 }

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/loading_icon_view.lua
+
 require("foundation/scripts/util/local_require")
 require("scripts/ui/ui_renderer")
 require("scripts/ui/ui_elements")
@@ -6,11 +8,13 @@ require("scripts/ui/ui_widgets")
 local definitions = require("scripts/ui/views/loading_icon_view_definitions")
 local FADE_TIME = 0.5
 local loading_icon_data = {
-	frames_per_second = 30
+	frames_per_second = 30,
 }
 local LOADING_ICON_BASE_NAME = "loadingicon_0000"
 local FRAME_COUNT = 86
+
 loading_icon_data.image_db = {}
+
 local image_db = loading_icon_data.image_db
 
 for i = 0, FRAME_COUNT - 1 do
@@ -23,7 +27,7 @@ LoadingIconView.init = function (self, world)
 	self._world = world
 	self._ui_renderer = UIRenderer.create(world, "material", "materials/ui/ui_1080p_loading")
 	self._render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 
 	self:_create_ui_elements()
@@ -47,11 +51,13 @@ end
 
 LoadingIconView.show_icon_background = function (self)
 	local widget = self._loading_icon_widget
+
 	widget.style.background_rect.color[1] = 255
 end
 
 LoadingIconView.hide_icon_background = function (self)
 	local widget = self._loading_icon_widget
+
 	widget.style.background_rect.color[1] = 0
 end
 
@@ -89,6 +95,7 @@ LoadingIconView._update_loading_icon = function (self, dt)
 
 		if timer <= 0 then
 			local new_index = 1 + current_index % #icon_data.image_db
+
 			loading_icon_content.current_index = new_index
 			loading_icon_content.loading_icon_id = icon_data.image_db[new_index]
 			self.icon_timer = timer + speed

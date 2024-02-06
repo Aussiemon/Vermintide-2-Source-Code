@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/human/player_bot_unit/player_bot_navigation.lua
+
 PlayerBotNavigation = class(PlayerBotNavigation)
 
 PlayerBotNavigation.init = function (self, extension_init_context, unit, extension_init_data)
@@ -73,8 +75,7 @@ PlayerBotNavigation.move_to = function (self, target_position, callback)
 	end
 
 	local position = POSITION_LOOKUP[self._unit]
-	local above = 0.75
-	local below = 0.5
+	local above, below = 0.75, 0.5
 	local success, z = GwNavQueries.triangle_from_position(self._nav_world, position, above, below)
 
 	if success then
@@ -89,7 +90,7 @@ PlayerBotNavigation.move_to = function (self, target_position, callback)
 
 	self._running_astar = true
 
-	if not self._final_goal_reached and SAME_DIRECTION_THRESHOLD < Vector3.dot(Vector3.normalize(target_position - position), Vector3.normalize(self._destination:unbox() - position)) then
+	if not self._final_goal_reached and Vector3.dot(Vector3.normalize(target_position - position), Vector3.normalize(self._destination:unbox() - position)) > SAME_DIRECTION_THRESHOLD then
 		self._last_path = self._path
 		self._last_path_index = self._path_index
 	end
@@ -154,10 +155,9 @@ PlayerBotNavigation.is_path_safe_from_vortex = function (self, path_check_distan
 	local self_unit = self._unit
 	local self_position = POSITION_LOOKUP[self_unit]
 	local previous_position = self_position
-	local result = nil
+	local result
 	local distance_checked = 0
-	local should_end = false
-	local check_node = true
+	local should_end, check_node = false, true
 
 	for i = heading_node_index, num_nodes do
 		local current_node = path[i]:unbox()
@@ -179,10 +179,12 @@ PlayerBotNavigation.is_path_safe_from_vortex = function (self, path_check_distan
 
 			if i == heading_node_index then
 				local intermediate_position_dot = Vector3.dot(to_intermediate_position, to_current_node)
+
 				check_intermediate = intermediate_position_dot > 0
 			end
 
 			local distance_to_intermediate_position = check_intermediate and distance_checked + Vector3.length(to_intermediate_position)
+
 			check_intermediate = check_intermediate and distance_to_intermediate_position <= path_check_distance
 
 			if check_intermediate then
@@ -239,7 +241,9 @@ PlayerBotNavigation._update_path = function (self, t)
 
 	if goal_reached then
 		self._path_index = self._path_index + 1
+
 		local final_reached = self._path_index > #path
+
 		self._final_goal_reached = final_reached
 
 		if final_reached then
@@ -256,10 +260,14 @@ end
 
 PlayerBotNavigation._reevaluate_current_nav_transition = function (self, self_unit, self_position, current_goal, new_goal)
 	local old_transition = self._current_transition
+
 	self._current_transition = nil
+
 	local blackboard = BLACKBOARDS[self_unit]
+
 	blackboard.breakable_object = nil
-	local best_ladder = nil
+
+	local best_ladder
 	local best_ladder_dist = math.huge
 
 	for unit, data in pairs(self._available_nav_transitions) do
@@ -273,7 +281,7 @@ PlayerBotNavigation._reevaluate_current_nav_transition = function (self, self_un
 		elseif data.type == "planks" then
 			local from = data.from:unbox()
 			local to = data.to:unbox()
-			local goal = nil
+			local goal
 
 			if is_same_point(current_goal, from) and is_same_point(new_goal, to) then
 				goal = "to"
@@ -296,7 +304,7 @@ PlayerBotNavigation._reevaluate_current_nav_transition = function (self, self_un
 			local waypoint = data.waypoint:unbox()
 			local from = data.from:unbox()
 			local to = data.to:unbox()
-			local goal = nil
+			local goal
 
 			if is_same_point(current_goal, from) and is_same_point(new_goal, waypoint) then
 				goal = "waypoint"
@@ -403,7 +411,7 @@ PlayerBotNavigation._update_astar = function (self, t)
 
 			local path_last_node_pos = GwNavAStar.node_at_index(astar, num_nodes)
 			local found_nav_mesh, z = GwNavQueries.triangle_from_position(self._nav_world, path_last_node_pos, 0.3, 0.3, self._traverse_data)
-			local last_node_pos = nil
+			local last_node_pos
 
 			if found_nav_mesh then
 				last_node_pos = Vector3Box(path_last_node_pos.x, path_last_node_pos.y, z)
@@ -420,6 +428,7 @@ PlayerBotNavigation._update_astar = function (self, t)
 
 				for i = 1, num_nodes - 1 do
 					local pos = GwNavAStar.node_at_index(astar, i)
+
 					self._path[i] = Vector3Box(pos)
 				end
 
@@ -455,6 +464,7 @@ PlayerBotNavigation._path_failed = function (self, t)
 	end
 
 	self._successive_failed_paths = self._successive_failed_paths + 1
+
 	local cb = self._path_callback
 
 	if cb then
@@ -465,6 +475,7 @@ end
 PlayerBotNavigation._path_successful = function (self, t)
 	self._last_successful_path = t
 	self._successive_failed_paths = 0
+
 	local cb = self._path_callback
 
 	if cb then
@@ -553,7 +564,7 @@ PlayerBotNavigation.flow_cb_entered_nav_transition = function (self, transition_
 	local transition = {
 		type = type,
 		from = Vector3Box(from),
-		to = Vector3Box(to)
+		to = Vector3Box(to),
 	}
 
 	if type ~= "ladder" then
@@ -571,6 +582,7 @@ end
 PlayerBotNavigation.flow_cb_left_nav_transition = function (self, transition_unit, actor)
 	local transitions = self._available_nav_transitions
 	local index = Unit.get_data(transition_unit, "bot_nav_transition_manager_index")
+
 	transitions[transition_unit] = nil
 end
 
@@ -583,13 +595,15 @@ PlayerBotNavigation.add_transition = function (self, transition_unit, type, from
 		unit = transition_unit,
 		type = type,
 		from = Vector3Box(from),
-		to = Vector3Box(to)
+		to = Vector3Box(to),
 	}
 	local transitions = self._available_nav_transitions
+
 	transitions[transition_unit] = transition
 end
 
 PlayerBotNavigation.remove_transition = function (self, transition_unit)
 	local transitions = self._available_nav_transitions
+
 	transitions[transition_unit] = nil
 end

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/game_mode/game_modes/game_mode_deus.lua
+
 require("scripts/managers/game_mode/game_modes/game_mode_base")
 require("scripts/managers/game_mode/spawning_components/deus_spawning")
 require("scripts/settings/dlcs/morris/deus_soft_currency_settings")
@@ -28,7 +30,9 @@ GameModeDeus.init = function (self, settings, world, network_server, is_server, 
 	self.about_to_lose = false
 	self.lost_condition_timer = nil
 	self._adventure_profile_rules = AdventureProfileRules:new(self._profile_synchronizer, self._network_server)
+
 	local hero_side = Managers.state.side:get_side_from_name("heroes")
+
 	self._mutators = game_mode_settings.mutators
 	self._deus_run_controller = game_mode_settings.deus_run_controller
 	self._deus_spawning = DeusSpawning:new(self._profile_synchronizer, hero_side, self._is_server, self._network_server, self._deus_run_controller)
@@ -40,6 +44,7 @@ GameModeDeus.init = function (self, settings, world, network_server, is_server, 
 	self:_setup_bot_spawn_priority_lookup()
 
 	self._available_profiles = table.clone(PROFILES_BY_AFFILIATION.heroes)
+
 	local event_manager = Managers.state.event
 
 	event_manager:register(self, "level_start_local_player_spawned", "event_local_player_spawned")
@@ -122,7 +127,7 @@ GameModeDeus.evaluate_end_conditions = function (self, round_started, dt, t, mut
 
 	if self.about_to_lose then
 		if lost then
-			if self.lost_condition_timer < t then
+			if t > self.lost_condition_timer then
 				return true, "lost"
 			else
 				return false
@@ -233,7 +238,7 @@ GameModeDeus.get_end_screen_config = function (self, game_won, game_lost, player
 		return game_won and "deus_victory" or "defeat", {
 			journey_name = journey_name,
 			profile_index = profile_index,
-			previous_completed_difficulty_index = previous_completed_difficulty_index
+			previous_completed_difficulty_index = previous_completed_difficulty_index,
 		}
 	else
 		local rewards = {}
@@ -246,16 +251,17 @@ GameModeDeus.get_end_screen_config = function (self, game_won, game_lost, player
 					type = "deus_power_up_end_of_level",
 					sounds = {
 						"hud_morris_weapon_chest_unlock",
-						"morris_reliquarys_get_boon"
+						"morris_reliquarys_get_boon",
 					},
-					power_up = granted_power_up
+					power_up = granted_power_up,
 				}
+
 				rewards[#rewards + 1] = reward
 			end
 		end
 
 		return "none", {}, {
-			rewards = rewards
+			rewards = rewards,
 		}
 	end
 end
@@ -320,7 +326,7 @@ GameModeDeus.local_player_game_starts = function (self, player, loading_context)
 				else
 					print("GameModeDeus:local_player_game_starts - No unit for curse intro vo")
 				end
-			end
+			end,
 		})
 	end
 
@@ -487,6 +493,7 @@ GameModeDeus._setup_bot_spawn_priority_lookup = function (self)
 
 			for i = 1, num_saved_priority do
 				local profile_id = saved_priority[i]
+
 				self._bot_profile_id_to_priority_id[profile_id] = i
 			end
 		else
@@ -557,7 +564,9 @@ GameModeDeus._add_bot = function (self, bot_players)
 	end
 
 	local bot_player = self:_add_bot_to_party(party_id, profile_index, career_index)
+
 	bot_players[#bot_players + 1] = bot_player
+
 	local peer_id = bot_player:network_id()
 	local local_player_id = bot_player:local_player_id()
 
@@ -581,12 +590,13 @@ GameModeDeus._remove_bot = function (self, bot_players, index, update_safe)
 	end
 
 	local last = #bot_players
+
 	bot_players[index] = bot_players[last]
 	bot_players[last] = nil
 end
 
 GameModeDeus._remove_bot_by_profile = function (self, bot_players, profile_index, update_safe)
-	local bot_index = nil
+	local bot_index
 	local num_current_bots = #bot_players
 
 	for i = 1, num_current_bots do
@@ -600,7 +610,7 @@ GameModeDeus._remove_bot_by_profile = function (self, bot_players, profile_index
 		end
 	end
 
-	local bot_player = nil
+	local bot_player
 	local removed = false
 
 	if bot_index then
@@ -670,7 +680,7 @@ GameModeDeus.on_picked_up_soft_currency = function (self, interactable_unit, int
 	deus_run_controller:on_soft_currency_picked_up(granted_coins_amount, type)
 
 	if UISettings.deus.show_coin_pickup_in_chat then
-		local interactor_name = nil
+		local interactor_name
 
 		if interactor_player:is_player_controlled() then
 			interactor_name = deus_run_controller:get_player_name(interactor_player.peer_id)
@@ -679,7 +689,7 @@ GameModeDeus.on_picked_up_soft_currency = function (self, interactable_unit, int
 		end
 
 		local pop_chat = true
-		local message = nil
+		local message
 
 		if not interactor_player.bot_player and not interactor_player.remote then
 			message = string.format(Localize("system_chat_local_player_picked_up_deus_currency"), granted_coins_amount)
@@ -714,7 +724,7 @@ GameModeDeus._get_coins_amount_and_type = function (self, interactable_unit)
 	local min_amount = loot_amount_by_player.min
 	local max_amount = loot_amount_by_player.max
 	local coins_amount = math.lerp(min_amount, max_amount, random)
-	local type = nil
+	local type
 
 	if not dropped_by_breed or dropped_by_breed == "n/a" then
 		type = DeusSoftCurrencySettings.types.GROUND

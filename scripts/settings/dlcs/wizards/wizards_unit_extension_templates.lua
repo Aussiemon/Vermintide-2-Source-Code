@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/dlcs/wizards/wizards_unit_extension_templates.lua
+
 local unit_extension_templates = {
 	ai_unit_chaos_exalted_sorcerer_drachenfels = {
 		base_template = "ai_unit_base",
@@ -5,21 +7,21 @@ local unit_extension_templates = {
 		self_owned_extensions = {
 			"AIInventoryExtension",
 			"PingTargetExtension",
-			"AILineOfSightExtension"
+			"AILineOfSightExtension",
 		},
 		husk_extensions = {
 			"AIInventoryExtension",
-			"PingTargetExtension"
+			"PingTargetExtension",
 		},
 		remove_when_killed = {
 			self_owned_extensions = {
 				"AILineOfSightExtension",
-				"PingTargetExtension"
+				"PingTargetExtension",
 			},
 			husk_extensions = {
-				"PingTargetExtension"
-			}
-		}
+				"PingTargetExtension",
+			},
+		},
 	},
 	trail_urn_alignment = {
 		go_type = "trail_urn_alignment",
@@ -28,15 +30,15 @@ local unit_extension_templates = {
 			"TrailUrnAlignmentExtension",
 			"GenericOutlineExtension",
 			"LookatTargetExtension",
-			"PingTargetExtension"
+			"PingTargetExtension",
 		},
 		husk_extensions = {
 			"GenericUnitInteractableExtension",
 			"TrailUrnAlignmentExtension",
 			"GenericOutlineExtension",
 			"LookatTargetExtension",
-			"PingTargetExtension"
-		}
+			"PingTargetExtension",
+		},
 	},
 	trail_cog_pickup_projectile_unit_limited = {
 		go_type = "pickup_projectile_unit_limited",
@@ -49,7 +51,7 @@ local unit_extension_templates = {
 			"LookatTargetExtension",
 			"PickupProjectileVolumeExtension",
 			"LimitedItemExtension",
-			"PingTargetExtension"
+			"PingTargetExtension",
 		},
 		husk_extensions = {
 			"ObjectivePickupTutorialExtension",
@@ -59,9 +61,9 @@ local unit_extension_templates = {
 			"ObjectiveLightOutlineExtension",
 			"LookatTargetExtension",
 			"LimitedItemExtension",
-			"PingTargetExtension"
-		}
-	}
+			"PingTargetExtension",
+		},
+	},
 }
 
 return unit_extension_templates

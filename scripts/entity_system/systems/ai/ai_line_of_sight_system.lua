@@ -1,6 +1,9 @@
+﻿-- chunkname: @scripts/entity_system/systems/ai/ai_line_of_sight_system.lua
+
 AILineOfSightSystem = class(AILineOfSightSystem, ExtensionSystemBase)
+
 local extensions = {
-	"AILineOfSightExtension"
+	"AILineOfSightExtension",
 }
 
 AILineOfSightSystem.init = function (self, context, system_name)
@@ -22,6 +25,7 @@ AILineOfSightSystem.on_add_extension = function (self, world, unit, extension_na
 	ScriptUnit.add_extension(nil, unit, extension_name, self.NAME, extension_init_data)
 
 	local extension = ScriptUnit.extension(unit, self.NAME)
+
 	self._extensions[unit] = extension
 
 	return extension
@@ -75,6 +79,7 @@ end
 
 AILineOfSightSystem.unfreeze = function (self, unit)
 	local extension = self._frozen_extensions[unit]
+
 	self._frozen_extensions[unit] = nil
 	self._extensions[unit] = extension
 end
@@ -85,6 +90,7 @@ end
 
 AILineOfSightSystem.extensions_ready = function (self, world, unit, extension_name)
 	local bb = BLACKBOARDS[unit]
+
 	self._extensions[unit].blackboard = bb
 end
 
@@ -101,7 +107,7 @@ AILineOfSightSystem.update = function (self, context, t)
 
 	while self._num_raycasts <= MAX_RAYCASTS do
 		local current_unit = self._current_unit
-		local unit, extension = nil
+		local unit, extension
 
 		if current_unit == nil or unit_extensions[current_unit] then
 			unit, extension = next(unit_extensions, current_unit)
@@ -110,6 +116,7 @@ AILineOfSightSystem.update = function (self, context, t)
 		if extension then
 			local blackboard = extension.blackboard
 			local success, num_raycasts = extension:has_line_of_sight(unit, blackboard)
+
 			self._num_raycasts = self._num_raycasts + num_raycasts
 			self._current_unit = unit
 			blackboard.has_line_of_sight = success

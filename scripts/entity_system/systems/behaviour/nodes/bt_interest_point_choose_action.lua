@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_interest_point_choose_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTInterestPointChooseAction = class(BTInterestPointChooseAction, BTNode)
@@ -19,7 +21,12 @@ BTInterestPointChooseAction.enter = function (self, unit, blackboard, t)
 		local position = blackboard.ip_root_pos:unbox()
 		local min_range = 0
 		local max_range = action.max_range
+
 		blackboard.ip_request_id = interest_point_system_api.start_async_claim_request(unit, position, min_range, max_range)
+	end
+
+	if false then
+		-- Nothing
 	end
 end
 

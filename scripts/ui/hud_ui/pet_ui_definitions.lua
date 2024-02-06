@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/hud_ui/pet_ui_definitions.lua
+
 local RETAINED_MODE_ENABLED = true
 local SKULL_TEXTURES = {
 	"necromancer_hud_skull_01",
@@ -5,7 +7,7 @@ local SKULL_TEXTURES = {
 	"necromancer_hud_skull_03",
 	"necromancer_hud_skull_04",
 	"necromancer_hud_skull_05",
-	"necromancer_hud_skull_06"
+	"necromancer_hud_skull_06",
 }
 local SKULL_GLOW_TEXTURES = {
 	"necromancer_hud_skull_01_eyes",
@@ -13,21 +15,21 @@ local SKULL_GLOW_TEXTURES = {
 	"necromancer_hud_skull_03_eyes",
 	"necromancer_hud_skull_04_eyes",
 	"necromancer_hud_skull_05_eyes",
-	"necromancer_hud_skull_06_eyes"
+	"necromancer_hud_skull_06_eyes",
 }
 local COMMAND_TO_ICON = {
 	[CommandStates.Following] = "necromancer_command_coin_follow",
 	[CommandStates.Attacking] = "necromancer_command_coin_attack",
-	[CommandStates.StandingGround] = "necromancer_command_coin_defend"
+	[CommandStates.StandingGround] = "necromancer_command_coin_defend",
 }
 local COMMAND_TO_TEXT = {
 	[CommandStates.Following] = "shovel_skeleton_state_follow",
 	[CommandStates.Attacking] = "shovel_skeleton_state_attack",
-	[CommandStates.StandingGround] = "shovel_skeleton_state_defend"
+	[CommandStates.StandingGround] = "shovel_skeleton_state_defend",
 }
 local ROOT_SIZE = {
 	1920,
-	1080
+	1080,
 }
 local scenegraph_definition = {
 	root = {
@@ -35,47 +37,47 @@ local scenegraph_definition = {
 		position = {
 			0,
 			0,
-			UILayer.hud
+			UILayer.hud,
 		},
-		size = ROOT_SIZE
+		size = ROOT_SIZE,
 	},
 	screen = {
 		position = {
 			0,
 			0,
-			UILayer.hud_inventory
+			UILayer.hud_inventory,
 		},
 		size = ROOT_SIZE,
-		scale = IS_CONSOLE and "hud_fit" or "fit"
+		scale = IS_CONSOLE and "hud_fit" or "fit",
 	},
 	container = {
-		vertical_alignment = "bottom",
-		parent = "screen",
 		horizontal_alignment = "center",
+		parent = "screen",
+		vertical_alignment = "bottom",
 		position = {
 			460,
 			0,
-			0
+			0,
 		},
 		size = {
 			300,
-			80
-		}
+			80,
+		},
 	},
 	skull_pivot = {
-		vertical_alignment = "top",
-		parent = "container",
 		horizontal_alignment = "left",
+		parent = "container",
+		vertical_alignment = "top",
 		position = {
 			2,
 			-11,
-			5
+			5,
 		},
 		size = {
 			64,
-			64
-		}
-	}
+			64,
+		},
+	},
 }
 local container_widget_definition = {
 	scenegraph_id = "container",
@@ -85,7 +87,7 @@ local container_widget_definition = {
 				pass_type = "texture",
 				style_id = "bg",
 				texture_id = "bg",
-				retained_mode = RETAINED_MODE_ENABLED
+				retained_mode = RETAINED_MODE_ENABLED,
 			},
 			{
 				pass_type = "texture",
@@ -94,16 +96,16 @@ local container_widget_definition = {
 				retained_mode = RETAINED_MODE_ENABLED,
 				content_check_function = function (content)
 					return Application.user_setting("numeric_ui")
-				end
+				end,
 			},
 			{
-				style_id = "help_text",
 				pass_type = "text",
+				style_id = "help_text",
 				text_id = "help_text",
 				retained_mode = RETAINED_MODE_ENABLED,
 				content_check_function = function (content)
 					return content.in_command_mode
-				end
+				end,
 			},
 			{
 				pass_type = "texture",
@@ -112,174 +114,174 @@ local container_widget_definition = {
 				retained_mode = RETAINED_MODE_ENABLED,
 				content_check_function = function (content)
 					return content.show_glow
-				end
+				end,
 			},
 			{
 				pass_type = "texture",
 				style_id = "state",
 				texture_id = "state",
-				retained_mode = RETAINED_MODE_ENABLED
+				retained_mode = RETAINED_MODE_ENABLED,
 			},
 			{
 				pass_type = "texture",
 				style_id = "state_icon",
 				texture_id = "state_icon",
-				retained_mode = RETAINED_MODE_ENABLED
+				retained_mode = RETAINED_MODE_ENABLED,
 			},
 			{
+				pass_type = "text",
 				style_id = "pet_amount_text",
-				pass_type = "text",
 				text_id = "pet_amount_text",
-				retained_mode = RETAINED_MODE_ENABLED
+				retained_mode = RETAINED_MODE_ENABLED,
 			},
 			{
-				style_id = "pet_amount_text_shadow",
 				pass_type = "text",
+				style_id = "pet_amount_text_shadow",
 				text_id = "pet_amount_text_shadow",
-				retained_mode = RETAINED_MODE_ENABLED
-			}
-		}
+				retained_mode = RETAINED_MODE_ENABLED,
+			},
+		},
 	},
 	content = {
-		pet_amount_text = "",
-		enumerator_bg = "necromancer_hud_enumerator_piece",
-		state_icon = "necromancer_command_coin_attack",
-		state = "necromancer_command_coin",
-		show_glow = false,
 		bg = "necromancer_hud_base",
+		enumerator_bg = "necromancer_hud_enumerator_piece",
+		pet_amount_text = "",
 		pet_amount_text_shadow = "",
-		state_glow = "necromancer_heavy_attack_fx"
+		show_glow = false,
+		state = "necromancer_command_coin",
+		state_glow = "necromancer_heavy_attack_fx",
+		state_icon = "necromancer_command_coin_attack",
 	},
 	style = {
 		bg = {
 			texture_size = {
 				300,
-				80
+				80,
 			},
 			offset = {
 				0,
 				0,
-				2
-			}
+				2,
+			},
 		},
 		state_glow = {
 			horizontal_alignment = "right",
 			texture_size = {
 				76,
-				84
+				84,
 			},
 			offset = {
 				15,
 				0,
-				1
-			}
+				1,
+			},
 		},
 		state = {
-			vertical_alignment = "top",
 			horizontal_alignment = "left",
+			vertical_alignment = "top",
 			texture_size = {
 				48,
-				48
+				48,
 			},
 			offset = {
 				244,
 				-18,
-				3
-			}
+				3,
+			},
 		},
 		state_icon = {
-			vertical_alignment = "top",
 			horizontal_alignment = "left",
+			vertical_alignment = "top",
 			texture_size = {
 				48,
-				48
+				48,
 			},
 			offset = {
 				244,
 				-18,
-				4
-			}
+				4,
+			},
 		},
 		help_text = {
-			vertical_alignment = "bottom",
-			horizontal_alignment = "left",
-			word_wrap = true,
 			font_size = 24,
 			font_type = "hell_shark_header",
+			horizontal_alignment = "left",
+			vertical_alignment = "bottom",
+			word_wrap = true,
 			text_color = {
 				255,
 				255,
 				255,
-				255
+				255,
 			},
 			offset = {
 				0,
 				scenegraph_definition.container.size[2] + 50,
-				4
-			}
+				4,
+			},
 		},
 		enumerator_bg = {
-			vertical_alignment = "bottom",
 			horizontal_alignment = "right",
+			vertical_alignment = "bottom",
 			texture_size = {
 				20,
-				18
+				18,
 			},
 			offset = {
 				-22,
 				-3,
-				3
-			}
+				3,
+			},
 		},
 		pet_amount_text = {
-			word_wrap = false,
 			font_size = 14,
-			localize = false,
-			horizontal_alignment = "center",
-			vertical_alignment = "center",
 			font_type = "hell_shark",
+			horizontal_alignment = "center",
+			localize = false,
+			vertical_alignment = "center",
+			word_wrap = false,
 			text_color = {
 				255,
 				255,
 				255,
-				160
+				160,
 			},
 			size = {
 				40,
-				18
+				18,
 			},
 			offset = {
 				248,
 				-2,
-				5
-			}
+				5,
+			},
 		},
 		pet_amount_text_shadow = {
-			word_wrap = false,
 			font_size = 14,
-			localize = false,
-			horizontal_alignment = "center",
-			vertical_alignment = "center",
 			font_type = "hell_shark",
+			horizontal_alignment = "center",
+			localize = false,
+			vertical_alignment = "center",
+			word_wrap = false,
 			text_color = Colors.get_color_table_with_alpha("black", 255),
 			size = {
 				40,
-				18
+				18,
 			},
 			offset = {
 				250,
 				-3,
-				4
-			}
-		}
-	}
+				4,
+			},
+		},
+	},
 }
 local pet_widget_definition = {
 	scenegraph_id = "skull_pivot",
 	offset = {
 		0,
 		0,
-		0
+		0,
 	},
 	element = {
 		passes = {
@@ -287,7 +289,7 @@ local pet_widget_definition = {
 				pass_type = "texture",
 				style_id = "icon",
 				texture_id = "icon",
-				retained_mode = RETAINED_MODE_ENABLED
+				retained_mode = RETAINED_MODE_ENABLED,
 			},
 			{
 				pass_type = "texture",
@@ -296,42 +298,42 @@ local pet_widget_definition = {
 				retained_mode = RETAINED_MODE_ENABLED,
 				content_check_function = function (content, style)
 					return style.color[1] > 0
-				end
-			}
-		}
+				end,
+			},
+		},
 	},
 	content = {
+		icon = "necromancer_hud_skull_01",
 		icon_glow = "necromancer_hud_skull_01_eyes",
-		icon = "necromancer_hud_skull_01"
 	},
 	style = {
 		icon = {
 			offset = {
 				0,
 				0,
-				1
+				1,
 			},
 			color = {
 				255,
 				255,
 				255,
-				255
-			}
+				255,
+			},
 		},
 		icon_glow = {
 			offset = {
 				0,
 				0,
-				2
+				2,
 			},
 			color = {
 				0,
 				255,
 				255,
-				255
-			}
-		}
-	}
+				255,
+			},
+		},
+	},
 }
 
 local function reposition_widget(widget, index, total)
@@ -349,9 +351,9 @@ end
 local animation_definitions = {
 	change_command_state = {
 		{
-			name = "spin_half_1",
 			delay = 0,
 			duration = 0.1,
+			name = "spin_half_1",
 			init = function (ui_scenegraph, _, container_widget, command_state)
 				return
 			end,
@@ -360,12 +362,12 @@ local animation_definitions = {
 			end,
 			on_complete = function (ui_scenegraph, _, container_widget, command_state)
 				container_widget.content.state_icon = COMMAND_TO_ICON[command_state] or "icons_placeholder"
-			end
+			end,
 		},
 		{
-			name = "spin_half_2",
 			delay = 0.1,
 			duration = 0.1,
+			name = "spin_half_2",
 			init = function (ui_scenegraph, _, container_widget, command_state)
 				return
 			end,
@@ -374,39 +376,35 @@ local animation_definitions = {
 			end,
 			on_complete = function (ui_scenegraph, _, container_widget, command_state)
 				set_progress(container_widget.content.materials, container_widget.content.retained_materials, 0)
-			end
-		}
+			end,
+		},
 	},
 	spawn_skeleton = {
 		{
-			name = "dissolve_icon",
 			delay = 0,
 			duration = 0.2,
+			name = "dissolve_icon",
 			init = function (ui_scenegraph, _, pet_widget)
 				local color = pet_widget.style.icon.color
-				color[4] = 0
-				color[3] = 0
-				color[2] = 0
-				color[1] = 0
+
+				color[1], color[2], color[3], color[4] = 0, 0, 0, 0
 			end,
 			update = function (ui_scenegraph, _, pet_widget, progress)
 				local value = 255 * progress
 				local color = pet_widget.style.icon.color
-				color[4] = value
-				color[3] = value
-				color[2] = value
-				color[1] = value
+
+				color[1], color[2], color[3], color[4] = value, value, value, value
 			end,
 			on_complete = function (ui_scenegraph, _, pet_widget)
 				return
-			end
-		}
+			end,
+		},
 	},
 	fade_in_skull_glow = {
 		{
-			name = "fade_in_skull_glow",
 			delay = 0.2,
 			duration = 0.2,
+			name = "fade_in_skull_glow",
 			init = function (ui_scenegraph, _, pet_widget)
 				pet_widget.style.icon_glow.color[1] = 0
 			end,
@@ -415,14 +413,14 @@ local animation_definitions = {
 			end,
 			on_complete = function (ui_scenegraph, _, pet_widget)
 				return
-			end
-		}
+			end,
+		},
 	},
 	fade_out_skull_glow = {
 		{
-			name = "fade_out_skull_glow",
 			delay = 0.2,
 			duration = 0.2,
+			name = "fade_out_skull_glow",
 			init = function (ui_scenegraph, _, pet_widget)
 				pet_widget.style.icon_glow.color[1] = 255
 			end,
@@ -431,9 +429,9 @@ local animation_definitions = {
 			end,
 			on_complete = function (ui_scenegraph, _, pet_widget)
 				return
-			end
-		}
-	}
+			end,
+		},
+	},
 }
 
 return {
@@ -446,5 +444,5 @@ return {
 	SKULL_GLOW_TEXTURES = SKULL_GLOW_TEXTURES,
 	COMMAND_TO_ICON = COMMAND_TO_ICON,
 	COMMAND_TO_TEXT = COMMAND_TO_TEXT,
-	RETAINED_MODE_ENABLED = RETAINED_MODE_ENABLED
+	RETAINED_MODE_ENABLED = RETAINED_MODE_ENABLED,
 }

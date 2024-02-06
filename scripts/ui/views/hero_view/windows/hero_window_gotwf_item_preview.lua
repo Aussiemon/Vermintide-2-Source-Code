@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/hero_view/windows/hero_window_gotwf_item_preview.lua
+
 require("scripts/ui/views/menu_world_previewer")
 
 local definitions = local_require("scripts/ui/views/hero_view/windows/definitions/hero_window_gotwf_item_preview_definitions")
@@ -12,6 +14,7 @@ local LIST_SPACING = 10
 local LIST_MAX_WIDTH = 800
 local CONSOLE_PRICE_WIDTH = 140
 local PRODUCT_PLACEHOLDER_TEXTURE_PATH = "gui/1080p/single_textures/generic/transparent_placeholder_texture"
+
 HeroWindowGotwfItemPreview = class(HeroWindowGotwfItemPreview)
 HeroWindowGotwfItemPreview.NAME = "HeroWindowGotwfItemPreview"
 
@@ -20,13 +23,17 @@ HeroWindowGotwfItemPreview.on_enter = function (self, params, offset)
 
 	self._params = params
 	self._parent = params.parent
+
 	local ingame_ui_context = params.ingame_ui_context
+
 	self._ingame_ui_context = ingame_ui_context
+
 	local ui_renderer, ui_top_renderer = self._parent:get_renderers()
+
 	self._ui_renderer = ui_renderer
 	self._ui_top_renderer = ui_top_renderer
 	self._render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 	self._is_in_inn = ingame_ui_context.is_in_inn
 	self._animations = {}
@@ -40,7 +47,7 @@ end
 
 HeroWindowGotwfItemPreview._start_transition_animation = function (self, animation_name)
 	local params = {
-		render_settings = self._render_settings
+		render_settings = self._render_settings,
 	}
 	local widgets = self._top_widgets_by_name
 	local old_anim_id = self._animations[animation_name]
@@ -52,6 +59,7 @@ HeroWindowGotwfItemPreview._start_transition_animation = function (self, animati
 	end
 
 	local anim_id = self._ui_animator:start_animation(animation_name, widgets, scenegraph_definition, params)
+
 	self._animations[animation_name] = anim_id
 end
 
@@ -63,38 +71,38 @@ HeroWindowGotwfItemPreview._create_viewport_definition = function (self)
 		element = UIElements.Viewport,
 		style = {
 			viewport = {
-				viewport_type = "default_forward",
-				layer = 990,
-				viewport_name = "item_preview_viewport",
-				world_name = "item_preview",
-				horizontal_alignment = "center",
-				vertical_alignment = "center",
-				level_name = "levels/ui_store_preview/world",
 				enable_sub_gui = false,
 				fov = 65,
+				horizontal_alignment = "center",
+				layer = 990,
+				level_name = "levels/ui_store_preview/world",
+				vertical_alignment = "center",
+				viewport_name = "item_preview_viewport",
+				viewport_type = "default_forward",
+				world_name = "item_preview",
 				shading_environment = shading_environment,
 				object_sets = LevelResource.object_set_names("levels/ui_store_preview/world"),
 				camera_position = {
 					0,
 					0,
-					0
+					0,
 				},
 				camera_lookat = {
 					0,
 					0,
-					0
+					0,
 				},
 				viewport_size = {
 					600,
-					500
-				}
-			}
+					500,
+				},
+			},
 		},
 		content = {
 			button_hotspot = {
-				allow_multi_hover = true
-			}
-		}
+				allow_multi_hover = true,
+			},
+		},
 	}
 end
 
@@ -106,26 +114,32 @@ HeroWindowGotwfItemPreview._create_ui_elements = function (self, params, offset)
 	end
 
 	self._ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+
 	local top_widgets = {}
 	local top_widgets_by_name = {}
 
 	for name, widget_definition in pairs(top_widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		top_widgets[#top_widgets + 1] = widget
 		top_widgets_by_name[name] = widget
 	end
 
 	self._top_widgets = top_widgets
 	self._top_widgets_by_name = top_widgets_by_name
+
 	local claimed_widget_definition = create_claimed_widget_func(self._ui_renderer)
 	local widget = UIWidget.init(claimed_widget_definition)
+
 	self._top_widgets[#self._top_widgets + 1] = widget
 	self._top_widgets_by_name.claimed = widget
+
 	local loading_widgets = {}
 	local loading_widgets_by_name = {}
 
 	for name, widget_definition in pairs(loading_widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		loading_widgets[#loading_widgets + 1] = widget
 		loading_widgets_by_name[name] = widget
 	end
@@ -139,6 +153,7 @@ HeroWindowGotwfItemPreview._create_ui_elements = function (self, params, offset)
 
 	if offset then
 		local window_position = self._ui_scenegraph.window.local_position
+
 		window_position[1] = window_position[1] + offset[1]
 		window_position[2] = window_position[2] + offset[2]
 		window_position[3] = window_position[3] + offset[3]
@@ -178,8 +193,7 @@ end
 HeroWindowGotwfItemPreview._update_previewers = function (self, dt, t)
 	if self._selected_product then
 		local input_service = self._parent:window_input_service()
-		local input_handled = false
-		local input_hovered = false
+		local input_handled, input_hovered = false, false
 
 		if self._world_previewer then
 			local parent = self._parent
@@ -212,7 +226,7 @@ HeroWindowGotwfItemPreview._register_object_sets = function (self, viewport_widg
 	for _, set_name in ipairs(available_level_sets) do
 		object_sets[set_name] = {
 			set_enabled = true,
-			units = LevelResource.unit_indices_in_object_set(level_name, set_name)
+			units = LevelResource.unit_indices_in_object_set(level_name, set_name),
 		}
 	end
 
@@ -220,7 +234,7 @@ HeroWindowGotwfItemPreview._register_object_sets = function (self, viewport_widg
 		world = pass_data.world,
 		level = pass_data.level,
 		object_sets = object_sets,
-		level_name = level_name
+		level_name = level_name,
 	}
 
 	self:_show_object_set(nil, true)
@@ -294,6 +308,7 @@ HeroWindowGotwfItemPreview._update_environment = function (self, item_preview_en
 	local object_set_data = viewport_widget_content.object_set_data
 	local world = object_set_data.world
 	local shading_settings = World.get_data(world, "shading_settings")
+
 	shading_settings[1] = force_default and "default" or item_preview_environment
 end
 
@@ -312,11 +327,14 @@ HeroWindowGotwfItemPreview._create_viewport_gui = function (self)
 	local is_tutorial = false
 	local is_in_inn = self._is_in_inn
 	local mechanism_key = Managers.mechanism:current_mechanism_name()
+
 	self._viewport_gui = World.create_screen_gui(world, "immediate", "material", "materials/ui/ui_1080p_lock_test")
+
 	local w, h = Gui.resolution()
+
 	self._gui_resolution = {
 		w,
-		h
+		h,
 	}
 end
 
@@ -446,20 +464,17 @@ HeroWindowGotwfItemPreview._render_viewport_mask = function (self)
 	local viewport_widget_content = viewport_widget.content
 	local viewport_size_x = viewport_widget_content.viewport_size_y
 	local viewport_size_y = viewport_widget_content.viewport_size_y
-	local x = viewport_size_x * w * 0.285
-	local y = viewport_size_y * h * 0.26
+	local x, y = viewport_size_x * w * 0.285, viewport_size_y * h * 0.26
 
 	Gui.bitmap(viewport_gui, "gui_lock_test_viewport_mask", Vector3(0, 0, 2), Vector2(x, y))
 	Gui.bitmap(viewport_gui, "gui_lock_test_viewport_mask", Vector3(w * viewport_size_x - x, 0, 2), Vector2(x, y))
 
-	local x = x
-	local y = viewport_size_y * h * 0.2
+	local x, y = x, viewport_size_y * h * 0.2
 
 	Gui.bitmap(viewport_gui, "gui_lock_test_viewport_mask", Vector3(0, h * viewport_size_y - y, 2), Vector2(x, y))
 	Gui.bitmap(viewport_gui, "gui_lock_test_viewport_mask", Vector3(w * viewport_size_x - x, h * viewport_size_y - y, 2), Vector2(x, y))
 
-	local x = viewport_size_x * w * 0.09
-	local y = viewport_size_y * h
+	local x, y = viewport_size_x * w * 0.09, viewport_size_y * h
 
 	Gui.bitmap(viewport_gui, "gui_lock_test_viewport_mask", Vector3(0, 0, 2), Vector2(x, y))
 	Gui.bitmap(viewport_gui, "gui_lock_test_viewport_mask", Vector3(w * viewport_size_x - x, 0, 2), Vector2(x, y))
@@ -473,8 +488,10 @@ HeroWindowGotwfItemPreview._start_loading_overlay = function (self)
 	self._show_loading_overlay = true
 	self._fadeout_loading_overlay = nil
 	self._fadeout_progress = nil
+
 	local loading_widgets_by_name = self._loading_widgets_by_name
 	local loading_icon = loading_widgets_by_name.loading_icon
+
 	loading_icon.style.texture_id.color[1] = 255
 end
 
@@ -490,6 +507,7 @@ HeroWindowGotwfItemPreview._update_loading_overlay_fadeout_animation = function 
 	local progress = math.min(1, (self._fadeout_progress or 0) + speed * dt)
 	local alpha = math.lerp(start, target, math.easeInCubic(progress))
 	local loading_icon = loading_widgets_by_name.loading_icon
+
 	loading_icon.style.texture_id.color[1] = alpha
 	self._fadeout_progress = progress
 
@@ -528,7 +546,9 @@ HeroWindowGotwfItemPreview._sync_presentation_item = function (self, force_updat
 
 	if selected_product ~= self._selected_product or force_update then
 		local reset_presentation = not selected_product or not self._selected_product or self._selected_product.item_id ~= selected_product.item_id
+
 		self._selected_product = selected_product
+
 		local item = selected_product
 
 		if reset_presentation then
@@ -547,11 +567,11 @@ end
 local EMPTY_TABLE = {}
 
 HeroWindowGotwfItemPreview._present_item = function (self, item)
-	local slot_type, item_type = nil
+	local slot_type, item_type
 	local item_id = item.item_id
 	local reward_type = item.reward_type
 	local masterlist_item = EMPTY_TABLE
-	local painting = nil
+	local painting
 
 	if reward_type == "keep_decoration_painting" then
 		painting = Paintings[item.item_id]
@@ -581,6 +601,7 @@ HeroWindowGotwfItemPreview._present_item = function (self, item)
 
 	if slot_type == "melee" or slot_type == "ranged" or slot_type == "weapon_skin" then
 		local matching_item_type = ItemMasterList[masterlist_item.matching_item_key].item_type
+
 		type_title_text = Localize(matching_item_type)
 		disclaimer_text = Localize(item_type)
 		item_preview_environment = item_preview_environment or "weapons_default_01"
@@ -601,6 +622,7 @@ HeroWindowGotwfItemPreview._present_item = function (self, item)
 		career_title_text = ""
 	elseif slot_type == "chips" then
 		local amount = item.amount
+
 		type_title_text = Localize(item_type)
 		description_text = Localize(masterlist_item.description)
 		amount_text = amount and amount .. " " .. Localize("menu_store_panel_currency_tooltip_title") or ""
@@ -608,6 +630,7 @@ HeroWindowGotwfItemPreview._present_item = function (self, item)
 		career_title_text = ""
 	elseif slot_type == "crafting_material" then
 		local amount = item.amount
+
 		type_title_text = Localize(item_type)
 		description_text = Localize(masterlist_item.description)
 		amount_text = amount and amount .. " " .. Localize(masterlist_item.display_name) or ""
@@ -640,12 +663,14 @@ HeroWindowGotwfItemPreview._update_claimed_status = function (self)
 	local claimed = self._params.selected_item_claimed
 	local already_owned = self._params.selected_item_already_owned
 	local widget = self._top_widgets_by_name.claimed
+
 	widget.content.visible = claimed
 	widget.content.already_owned = already_owned
 end
 
 HeroWindowGotwfItemPreview._create_material_instance = function (self, gui, new_material_name, template_material_name, reference_name)
 	local cloned_materials_by_reference = self._cloned_materials_by_reference
+
 	cloned_materials_by_reference[reference_name] = new_material_name
 
 	return Gui.clone_material_from_template(gui, new_material_name, template_material_name)
@@ -666,6 +691,7 @@ HeroWindowGotwfItemPreview._load_texture_package = function (self, package_name,
 	Managers.package:load(package_name, reference_name, callback, asynchronous, prioritize)
 
 	local loaded_package_names = self._loaded_package_names
+
 	loaded_package_names[reference_name] = package_name
 end
 
@@ -725,7 +751,7 @@ HeroWindowGotwfItemPreview._setup_painting_presentation = function (self, item)
 
 	local ui_top_renderer = self._ui_top_renderer
 	local top_gui = ui_top_renderer.gui
-	local package_name = nil
+	local package_name
 	local subpath = "keep_painting_" .. item_name
 	local no_package_required = string.find(item_name, "_none") ~= nil
 
@@ -734,6 +760,7 @@ HeroWindowGotwfItemPreview._setup_painting_presentation = function (self, item)
 	end
 
 	self._reference_id = (self._reference_id or 0) + 1
+
 	local reference_name = item_name .. "_" .. self._reference_id
 	local texture_name = "keep_painting_" .. item_name
 	local template_material_name = "template_store_diffuse_masked"
@@ -745,7 +772,9 @@ HeroWindowGotwfItemPreview._setup_painting_presentation = function (self, item)
 		local widget = UIWidget.init(widget_definition)
 		local content = widget.content
 		local style = widget.style
+
 		self._item_texture_widget = widget
+
 		local texture_path = "units/gameplay/keep_paintings/materials/" .. subpath .. "/" .. subpath .. "_df"
 
 		self:_set_material_diffuse(top_gui, texture_name, texture_path)
@@ -760,21 +789,21 @@ HeroWindowGotwfItemPreview._setup_painting_presentation = function (self, item)
 				uvs = {
 					{
 						0,
-						padding
+						padding,
 					},
 					{
 						1,
-						1 - padding
-					}
-				}
+						1 - padding,
+					},
+				},
 			}
 			style.painting.texture_size = {
 				base_size,
-				base_size * (1 - 2 * padding)
+				base_size * (1 - 2 * padding),
 			}
 			style.painting_frame.area_size = {
 				base_size,
-				base_size * (1 - 2 * padding)
+				base_size * (1 - 2 * padding),
 			}
 		else
 			content.painting = {
@@ -782,21 +811,21 @@ HeroWindowGotwfItemPreview._setup_painting_presentation = function (self, item)
 				uvs = {
 					{
 						padding,
-						0
+						0,
 					},
 					{
 						1 - padding,
-						1
-					}
-				}
+						1,
+					},
+				},
 			}
 			style.painting.texture_size = {
 				base_size * (1 - 2 * padding),
-				base_size
+				base_size,
 			}
 			style.painting_frame.area_size = {
 				base_size * (1 - 2 * padding),
-				base_size
+				base_size,
 			}
 		end
 
@@ -815,7 +844,7 @@ end
 HeroWindowGotwfItemPreview._setup_item_presentation = function (self, item)
 	local item_key = item.item_id
 	local reward_type = item.reward_type
-	local masterlist_item = nil
+	local masterlist_item
 
 	if reward_type == "chips" then
 		masterlist_item = Currencies[item_key]
@@ -835,18 +864,16 @@ HeroWindowGotwfItemPreview._setup_item_presentation = function (self, item)
 		local preview_position = {
 			0,
 			0,
-			0
+			0,
 		}
-		local unique_id = nil
-		local invert_start_rotation = true
-		local display_unit_key = nil
+		local unique_id, invert_start_rotation, display_unit_key = nil, true
 		local use_highest_mip_levels = true
 		local camera = ScriptViewport.camera(viewport)
 
 		ScriptCamera.set_local_rotation(camera, QuaternionBox(0, 0, 1, 0):unbox())
 
 		local item = {
-			data = masterlist_item
+			data = masterlist_item,
 		}
 		local item_previewer = LootItemUnitPreviewer:new(item, preview_position, world, viewport, unique_id, invert_start_rotation, display_unit_key, use_highest_mip_levels)
 		local callback = callback(self, "cb_unit_spawned_item_preview", item_previewer, item_key)
@@ -861,6 +888,7 @@ HeroWindowGotwfItemPreview._setup_item_presentation = function (self, item)
 		world_previewer:on_enter(viewport_widget)
 
 		self._world_previewer = world_previewer
+
 		local profile_name, profile_index, career_name, career_index = self:_get_hero_wield_info_by_item(masterlist_item)
 		local career_settings = CareerSettings[career_name]
 		local base_skin = career_settings.base_skin
@@ -872,6 +900,7 @@ HeroWindowGotwfItemPreview._setup_item_presentation = function (self, item)
 		world_previewer:on_enter(viewport_widget)
 
 		self._world_previewer = world_previewer
+
 		local optional_skin = item_key
 		local profile_name, profile_index, career_name, career_index = self:_get_hero_wield_info_by_item(masterlist_item)
 
@@ -880,14 +909,16 @@ HeroWindowGotwfItemPreview._setup_item_presentation = function (self, item)
 		local scenegraph_id = "item_texture"
 		local frame_name = masterlist_item.temporary_template or "default"
 		local scale = 1.5
-		local offset = nil
+		local offset
 		local masked = false
 		local skip_offset = true
 		local widget_definition = UIWidgets.create_base_portrait_frame(scenegraph_id, frame_name, scale, offset, masked, skip_offset)
+
 		self._item_texture_widget = UIWidget.init(widget_definition)
 		self._fadeout_loading_overlay = true
 	elseif slot_type == "loot_chest" or slot_type == "chips" or slot_type == "crafting_material" then
 		self._reference_id = (self._reference_id or 0) + 1
+
 		local reference_name = item_key .. "_" .. self._reference_id
 
 		if slot_type == "chips" then
@@ -901,17 +932,19 @@ HeroWindowGotwfItemPreview._setup_item_presentation = function (self, item)
 		local package_available = Application.can_get("package", package_name)
 
 		if package_available then
-			local texture_id = nil
+			local texture_id
 			local scenegraph_id = "item_texture"
-			local masked, retained, color, offset = nil
+			local masked, retained, color, offset
 			local texture_size = {
 				390,
-				330
+				330,
 			}
 			local widget_definition = create_texture_widget(texture_id, scenegraph_id, masked, retained, color, offset, texture_size)
 			local widget = UIWidget.init(widget_definition)
 			local content = widget.content
+
 			content.reference_name = reference_name
+
 			local ui_top_renderer = self._ui_top_renderer
 			local top_gui = ui_top_renderer.gui
 			local new_material_name = masked and texture_name .. "_masked" or texture_name
@@ -948,6 +981,7 @@ HeroWindowGotwfItemPreview._update_delayed_item_unit_presentation = function (se
 
 	if delay == 0 then
 		self._delayed_item_unit_presentation_delay = nil
+
 		local selected_product = self._selected_product
 		local item = selected_product
 
@@ -959,37 +993,45 @@ end
 
 HeroWindowGotwfItemPreview._set_title_name = function (self, text)
 	local widget = self._top_widgets_by_name.title_text
+
 	widget.content.text = text
 end
 
 HeroWindowGotwfItemPreview._set_sub_title_name = function (self, text)
 	local widget = self._top_widgets_by_name.sub_title_text
+
 	widget.content.text = text
 end
 
 HeroWindowGotwfItemPreview._set_description_text = function (self, text)
 	local widget = self._top_widgets_by_name.description_text
+
 	widget.content.text = text
 end
 
 HeroWindowGotwfItemPreview._set_sub_title_alpha_multiplier = function (self, alpha_multiplier)
 	local widget = self._top_widgets_by_name.sub_title_text
+
 	widget.alpha_multiplier = alpha_multiplier
 end
 
 HeroWindowGotwfItemPreview._set_type_title_name = function (self, text)
 	local widget = self._top_widgets_by_name.type_title_text
+
 	widget.content.text = text
 end
 
 HeroWindowGotwfItemPreview._set_career_title_name = function (self, text)
 	local widget = self._top_widgets_by_name.career_title_text
+
 	widget.content.text = text
 end
 
 HeroWindowGotwfItemPreview._set_disclaimer_text = function (self, text)
 	self._disclaimer_text = text
+
 	local widget = self._top_widgets_by_name.disclaimer_text
+
 	widget.content.text = text
 
 	self:_update_info_text_alignment()
@@ -997,6 +1039,7 @@ end
 
 HeroWindowGotwfItemPreview._set_amount_text = function (self, text)
 	local widget = self._top_widgets_by_name.amount_text
+
 	widget.content.text = text
 end
 
@@ -1006,7 +1049,7 @@ HeroWindowGotwfItemPreview._update_info_text_alignment = function (self)
 	local divider_widget = self._top_widgets_by_name.disclaimer_divider
 	local has_expire_text = self._expire_text and self._expire_text ~= ""
 	local has_disclaimer_text = self._disclaimer_text and self._disclaimer_text ~= ""
-	local text_widget_1, text_widget_2 = nil
+	local text_widget_1, text_widget_2
 
 	if has_expire_text then
 		if has_disclaimer_text then
@@ -1147,8 +1190,11 @@ HeroWindowGotwfItemPreview._get_can_wield_display_text = function (self, can_wie
 			end
 
 			added_careers = added_careers + 1
+
 			local career_display_name = career_settings.display_name
+
 			career_text = career_text .. Localize(career_display_name)
+
 			local hero_display_name_localized = Localize(hero_display_name)
 
 			if not string.find(hero_text, hero_display_name_localized) then
@@ -1208,6 +1254,7 @@ HeroWindowGotwfItemPreview._update_title_edge_animation = function (self, dt)
 	end
 
 	duration = math.max(duration - dt, 0)
+
 	local start_length = title_edge_animation_data.start_length
 	local target_length = title_edge_animation_data.target_length
 	local total_duration = title_edge_animation_data.total_duration
@@ -1219,6 +1266,7 @@ HeroWindowGotwfItemPreview._update_title_edge_animation = function (self, dt)
 	local item_widgets_by_name = self._item_widgets_by_name
 	local title_edge = item_widgets_by_name.title_edge
 	local ui_scenegraph = self._ui_scenegraph
+
 	ui_scenegraph[title_edge.scenegraph_id].size[1] = current_length
 
 	if duration == 0 then

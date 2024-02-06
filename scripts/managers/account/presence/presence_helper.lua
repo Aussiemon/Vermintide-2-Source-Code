@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/account/presence/presence_helper.lua
+
 PresenceHelper = PresenceHelper or {}
 
 PresenceHelper.lobby_level = function ()
@@ -13,8 +15,8 @@ PresenceHelper.lobby_difficulty = function ()
 end
 
 local hub_presence_lookup = {
+	deus = "deus_hub",
 	versus = "versus_hub",
-	deus = "deus_hub"
 }
 
 PresenceHelper.get_hub_presence = function ()

@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/unit_extensions/human/ai_player_unit/ai_navigation_extension.lua
+
 local NAVIGATION_NAVMESH_RADIUS = 0.38
+
 script_data.debug_ai_movement = script_data.debug_ai_movement or Development.parameter("debug_ai_movement")
 AINavigationExtension = class(AINavigationExtension)
 
@@ -20,7 +23,9 @@ AINavigationExtension.init = function (self, extension_init_context, unit, exten
 	self._failed_move_attempts = 0
 	self._wait_timer = 0
 	self._raycast_timer = 0
+
 	local modifier_table_size = 8
+
 	self._movement_modifiers = Script.new_array(modifier_table_size)
 	self._num_movement_modifiers = 0
 	self._movement_modifier_table_size = modifier_table_size
@@ -29,10 +34,11 @@ end
 
 AINavigationExtension.extensions_ready = function (self)
 	local blackboard = BLACKBOARDS[self._unit]
+
 	self._blackboard = blackboard
 	blackboard.next_smart_object_data = {
 		entrance_pos = Vector3Box(),
-		exit_pos = Vector3Box()
+		exit_pos = Vector3Box(),
 	}
 	self._far_pathing_allowed = blackboard.breed.cannot_far_path ~= true
 end
@@ -49,6 +55,7 @@ end
 AINavigationExtension.unfreeze = function (self)
 	local blackboard = self._blackboard
 	local next_smart_object_data = blackboard.next_smart_object_data
+
 	next_smart_object_data.next_smart_object_id = nil
 	next_smart_object_data.smart_object_type = nil
 	self._far_pathing_allowed = blackboard.breed.cannot_far_path ~= true
@@ -90,18 +97,18 @@ AINavigationExtension.release_bot = function (self)
 end
 
 local DEFAULT_AVOIDANCE_CONFIG = {
+	angle_span = 75,
+	enable_forcing = true,
+	enable_slowing = true,
+	enable_stop = false,
+	forcing_time_s = 1,
+	forcing_wait_time_s = 0.2,
+	frame_delay = 45,
 	half_height = 0.5,
 	radius = 4,
-	frame_delay = 45,
-	enable_forcing = true,
 	sample_count = 20,
-	enable_stop = false,
 	stop_wait_time_s = 1,
-	enable_slowing = true,
-	forcing_time_s = 1,
-	angle_span = 75,
 	time_to_collision = 1.25,
-	forcing_wait_time_s = 0.2
 }
 
 AINavigationExtension.init_position = function (self)
@@ -157,6 +164,7 @@ AINavigationExtension.init_position = function (self)
 	fassert(self._traverse_logic == nil, "Tried to create _traverse_logic but already had one, freeze bug?")
 
 	self._traverse_logic = traverse_logic
+
 	local allowed_layers = {}
 
 	if breed.allowed_layers then
@@ -220,6 +228,7 @@ AINavigationExtension.set_enabled = function (self, enabled)
 	end
 
 	local old_status = self._enabled
+
 	self._enabled = enabled
 
 	if not enabled then
@@ -360,10 +369,13 @@ AINavigationExtension.stop = function (self)
 
 	self._failed_move_attempts = 0
 	self._has_started_pathfind = nil
+
 	local blackboard = self._blackboard
+
 	blackboard.far_path = nil
 	blackboard.current_far_path_index = nil
 	blackboard.num_far_path_nodes = nil
+
 	local nav_bot = self._nav_bot
 
 	if self._is_computing_path then
@@ -397,7 +409,9 @@ AINavigationExtension.reset_destination = function (self, override_destination)
 	self._destination:store(position)
 
 	self._failed_move_attempts = 0
+
 	local blackboard = self._blackboard
+
 	blackboard.far_path = nil
 	blackboard.current_far_path_index = nil
 	blackboard.num_far_path_nodes = nil
@@ -417,6 +431,7 @@ end
 
 AINavigationExtension.distance_to_destination = function (self, position)
 	position = position or Unit.local_position(self._unit, 0)
+
 	local destination = self:destination()
 
 	return Vector3.distance(position, destination)
@@ -424,6 +439,7 @@ end
 
 AINavigationExtension.distance_to_destination_sq = function (self, position)
 	position = position or Unit.local_position(self._unit, 0)
+
 	local destination = self:destination()
 
 	return Vector3.distance_squared(position, destination)
@@ -447,7 +463,7 @@ AINavigationExtension.use_smart_object = function (self, do_use)
 		return
 	end
 
-	local success = nil
+	local success
 
 	if do_use then
 		fassert(self._blackboard.next_smart_object_data.next_smart_object_id ~= nil, "Tried to use smart object with a nil smart object id")
@@ -466,6 +482,7 @@ AINavigationExtension.use_smart_object = function (self, do_use)
 	end
 
 	local using_smart_object = do_use and success
+
 	self._using_smartobject = using_smart_object
 
 	return success

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/weaves/weave_item_templates.lua
+
 WeaveItemTemplates = {
 	target_hit = {
 		init = function (self)
@@ -11,7 +13,7 @@ WeaveItemTemplates = {
 		end,
 		destroy = function (self)
 			return
-		end
+		end,
 	},
 	destroy = {
 		init = function (self)
@@ -25,6 +27,6 @@ WeaveItemTemplates = {
 		end,
 		destroy = function (self)
 			return
-		end
-	}
+		end,
+	},
 }

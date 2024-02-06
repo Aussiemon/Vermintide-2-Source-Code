@@ -1,31 +1,34 @@
+﻿-- chunkname: @scripts/settings/dlcs/cog/cog_common_settings.lua
+
 local settings = DLCSettings.cog
+
 settings.career_setting_files = {
-	"scripts/settings/dlcs/cog/career_settings_cog"
+	"scripts/settings/dlcs/cog/career_settings_cog",
 }
 settings.career_ability_settings = {
 	"scripts/settings/dlcs/cog/passive_ability_engineer",
-	"scripts/settings/dlcs/cog/career_ability_settings_cog"
+	"scripts/settings/dlcs/cog/career_ability_settings_cog",
 }
 settings.action_template_files = {
-	"scripts/settings/dlcs/cog/action_templates_cog"
+	"scripts/settings/dlcs/cog/action_templates_cog",
 }
 settings.talent_settings = {
-	"scripts/settings/dlcs/cog/talent_settings_cog_dwarf_ranger"
+	"scripts/settings/dlcs/cog/talent_settings_cog_dwarf_ranger",
 }
 settings.profile_files = {
-	"scripts/settings/dlcs/cog/cog_profiles"
+	"scripts/settings/dlcs/cog/cog_profiles",
 }
 settings.statistics_definitions = {
-	"scripts/managers/backend/statistics_definitions_cog"
+	"scripts/managers/backend/statistics_definitions_cog",
 }
 settings.attachment_node_linking = {
-	"scripts/settings/dlcs/cog/attachment_node_linking_cog"
+	"scripts/settings/dlcs/cog/attachment_node_linking_cog",
 }
 settings.interactions = {
-	"cog_missing_cog_pickup"
+	"cog_missing_cog_pickup",
 }
 settings.interactions_filenames = {
-	"scripts/settings/dlcs/cog/cog_interactions"
+	"scripts/settings/dlcs/cog/cog_interactions",
 }
 settings.statistics_lookup = {
 	"cog_mission_streak_act1_legend_dr_engineer",
@@ -59,7 +62,7 @@ settings.statistics_lookup = {
 	"cog_only_crank",
 	"cog_long_crank_fire",
 	"cog_missing_cog",
-	"complete_all_engineer_challenges"
+	"complete_all_engineer_challenges",
 }
 settings.anim_lookup = {
 	"to_steam_pistol",
@@ -68,84 +71,84 @@ settings.anim_lookup = {
 	"switch_to_normal",
 	"switch_to_charged",
 	"cog_hammer_mode",
-	"to_engineer_career_skill"
+	"to_engineer_career_skill",
 }
 settings.effects = {}
 settings._tracked_weapon_kill_stats = {
 	bardin_engineer_career_skill_weapon = {
-		"cog"
+		"cog",
 	},
 	bardin_engineer_career_skill_weapon_heavy = {
-		"cog"
+		"cog",
 	},
 	dr_2h_cog_hammer = {
-		"cog"
-	}
+		"cog",
+	},
 }
 settings.unlock_settings = {
 	cog = {
-		id = "1443780",
 		class = "UnlockDlc",
-		requires_restart = true
+		id = "1443780",
+		requires_restart = true,
 	},
 	cog_upgrade = {
-		id = "1443790",
 		class = "UnlockDlc",
-		requires_restart = true
-	}
+		id = "1443790",
+		requires_restart = true,
+	},
 }
 settings.unlock_settings_xb1 = {
 	cog = {
-		id = "48544E39-5A31-3058-C047-324D54486800",
 		backend_reward_id = "cog",
 		class = "UnlockDlc",
-		requires_restart = true
+		id = "48544E39-5A31-3058-C047-324D54486800",
+		requires_restart = true,
 	},
 	cog_upgrade = {
-		id = "48544E39-5A31-3058-C047-324D54486800",
 		backend_reward_id = "cog_upgrade",
-		class = "UnlockDlc"
-	}
+		class = "UnlockDlc",
+		id = "48544E39-5A31-3058-C047-324D54486800",
+	},
 }
 settings.unlock_settings_ps4 = {
 	CUSA13595_00 = {
 		cog = {
-			product_label = "V2USENGINEERCARB",
 			backend_reward_id = "cog",
 			class = "UnlockDlc",
-			requires_restart = true,
-			id = "10cc3340ad9040e29daa599e48249a64"
-		},
-		cog_upgrade = {
 			id = "10cc3340ad9040e29daa599e48249a64",
 			product_label = "V2USENGINEERCARB",
+			requires_restart = true,
+		},
+		cog_upgrade = {
+			backend_reward_id = "cog_upgrade",
 			class = "UnlockDlc",
-			backend_reward_id = "cog_upgrade"
-		}
+			id = "10cc3340ad9040e29daa599e48249a64",
+			product_label = "V2USENGINEERCARB",
+		},
 	},
 	CUSA13645_00 = {
 		cog = {
-			product_label = "V2EUENGINEERCARB",
 			backend_reward_id = "cog",
 			class = "UnlockDlc",
-			requires_restart = true,
-			id = "1693ba3b42364865a57670ae52b05477"
-		},
-		cog_upgrade = {
 			id = "1693ba3b42364865a57670ae52b05477",
 			product_label = "V2EUENGINEERCARB",
+			requires_restart = true,
+		},
+		cog_upgrade = {
+			backend_reward_id = "cog_upgrade",
 			class = "UnlockDlc",
-			backend_reward_id = "cog_upgrade"
-		}
-	}
+			id = "1693ba3b42364865a57670ae52b05477",
+			product_label = "V2EUENGINEERCARB",
+		},
+	},
 }
 settings.progression_unlocks = {
 	dr_engineer = {
 		description = "end_screen_career_unlocked",
-		profile = "dwarf_ranger",
-		value = "dr_engineer",
-		title = "dr_engineer",
 		level_requirement = 0,
-		unlock_type = "career"
-	}
+		profile = "dwarf_ranger",
+		title = "dr_engineer",
+		unlock_type = "career",
+		value = "dr_engineer",
+	},
 }

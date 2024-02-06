@@ -1,21 +1,24 @@
+﻿-- chunkname: @scripts/settings/dlcs/belakor/belakor_sound_settings.lua
+
 local settings = DLCSettings.belakor
+
 settings.dialogue_lookup = {
 	"dialogues/generated/lookup_hero_conversations_dlc_cowbell_arena",
 	"dialogues/generated/lookup_hero_conversations_dlc_cowbell_ingame",
 	"dialogues/generated/lookup_hero_conversations_dlc_cowbell_map",
 	"dialogues/generated/lookup_hero_conversations_dlc_cowbell_banter",
-	"dialogues/generated/lookup_hub_conversations_cowbell"
+	"dialogues/generated/lookup_hub_conversations_cowbell",
 }
 settings.dialogue_settings = {
 	morris_hub = {
-		"dialogues/generated/hub_conversations_cowbell"
+		"dialogues/generated/hub_conversations_cowbell",
 	},
 	dlc_morris_map = {
-		"dialogues/generated/hero_conversations_dlc_cowbell_map"
+		"dialogues/generated/hero_conversations_dlc_cowbell_map",
 	},
 	arena_belakor = {
-		"dialogues/generated/hero_conversations_dlc_cowbell_arena"
-	}
+		"dialogues/generated/hero_conversations_dlc_cowbell_arena",
+	},
 }
 settings.dialogue_events = {}
 settings.auto_load_files = {}
@@ -35,5 +38,5 @@ settings.network_sound_events = {
 	"Play_special_spawn_stinger",
 	"shadow_lieutenant_spawn",
 	"boon_blazing_revenge_start",
-	"boon_blazing_revenge_end"
+	"boon_blazing_revenge_end",
 }

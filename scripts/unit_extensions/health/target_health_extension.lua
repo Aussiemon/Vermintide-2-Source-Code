@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/health/target_health_extension.lua
+
 TargetHealthExtension = class(TargetHealthExtension)
 
 TargetHealthExtension.init = function (self, extension_init_context, unit, extension_init_data)
@@ -10,10 +12,10 @@ TargetHealthExtension.init = function (self, extension_init_context, unit, exten
 	self._health = extension_init_data.health or Unit.get_data(unit, "health") or 1
 	self._max_health = self._health
 	self._health_regen = {
+		amount = 0,
 		interval = 1,
-		out_of_combat_only = false,
 		out_of_combat_delay = 0,
-		amount = 0
+		out_of_combat_only = false,
 	}
 
 	for key, value in pairs(extension_init_data.health_regen or {}) do
@@ -22,7 +24,7 @@ TargetHealthExtension.init = function (self, extension_init_context, unit, exten
 
 	self.damage_buffers = {
 		pdArray.new(),
-		pdArray.new()
+		pdArray.new(),
 	}
 end
 
@@ -36,9 +38,10 @@ TargetHealthExtension.update = function (self, dt, t)
 
 	local out_of_combat_only = self._health_regen.out_of_combat_only
 	local out_of_combat_delay = self._health_regen.out_of_combat_delay
+
 	self._out_of_combat_timer = math.min(self._out_of_combat_timer + dt, out_of_combat_delay)
 
-	if out_of_combat_only and self._out_of_combat_timer < out_of_combat_delay then
+	if out_of_combat_only and out_of_combat_delay > self._out_of_combat_timer then
 		return
 	end
 

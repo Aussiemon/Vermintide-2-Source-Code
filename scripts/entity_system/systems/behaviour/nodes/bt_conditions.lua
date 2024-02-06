@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_conditions.lua
+
 BTConditions = BTConditions or {}
 
 require("scripts/entity_system/systems/behaviour/nodes/bot/bt_bot_conditions")
@@ -36,6 +38,7 @@ BTConditions.ask_target_before_attacking = function (blackboard, condition_args,
 
 	if target_unit_attack_intensity_extension then
 		local attack_type = action.attack_intensity_type or "normal"
+
 		want_an_attack = target_unit_attack_intensity_extension:want_an_attack(attack_type)
 	end
 
@@ -119,7 +122,7 @@ BTConditions.target_changed_and_distant = function (blackboard)
 		elseif blackboard.target_dist and blackboard.target_dist > 15 then
 			local t = Managers.time:time("game")
 
-			return blackboard.next_rage_time and blackboard.next_rage_time < t
+			return blackboard.next_rage_time and t > blackboard.next_rage_time
 		else
 			blackboard.target_changed = nil
 		end
@@ -447,7 +450,7 @@ end
 
 BTConditions.comitted_to_target = function (blackboard)
 	local t = Managers.time:time("game")
-	local pounce_timer_is_finished = blackboard.initial_pounce_timer < t
+	local pounce_timer_is_finished = t > blackboard.initial_pounce_timer
 
 	return (blackboard.target_unit or blackboard.comitted_to_target) and pounce_timer_is_finished
 end
@@ -627,7 +630,7 @@ BTConditions.can_trigger_move_to = function (blackboard)
 	local t = Managers.time:time("game")
 	local trigger_time = blackboard.trigger_time or 0
 
-	return t > trigger_time and unit_alive(blackboard.target_unit)
+	return trigger_time < t and unit_alive(blackboard.target_unit)
 end
 
 BTConditions.globadier_skulked_for_too_long = function (blackboard)
@@ -768,7 +771,7 @@ BTConditions.beastmen_standard_bearer_pickup_standard = function (blackboard)
 	if blackboard.moving_to_pick_up_standard then
 		return true
 	else
-		return blackboard.has_placed_standard and unit_alive(blackboard.target_unit) and HEALTH_ALIVE[blackboard.standard_unit] and target_distance_to_standard and blackboard.breed.pickup_standard_distance < target_distance_to_standard
+		return blackboard.has_placed_standard and unit_alive(blackboard.target_unit) and HEALTH_ALIVE[blackboard.standard_unit] and target_distance_to_standard and target_distance_to_standard > blackboard.breed.pickup_standard_distance
 	end
 end
 

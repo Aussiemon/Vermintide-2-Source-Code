@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/chaos_spawn/bt_victim_grabbed_idle_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTVictimGrabbedIdleAction = class(BTVictimGrabbedIdleAction, BTNode)
@@ -11,6 +13,7 @@ BTVictimGrabbedIdleAction.enter = function (self, unit, blackboard, t)
 	local network_manager = Managers.state.network
 	local animation = "idle_grabbed"
 	local action = self._tree_node.action_data
+
 	blackboard.action = action
 
 	if blackboard.move_state ~= "idle" then

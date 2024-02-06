@@ -1,9 +1,8 @@
+﻿-- chunkname: @scripts/imgui/imgui_flamegraph.lua
+
 ImguiFlamegraph = class(ImguiFlamegraph)
-local Gui_rect = Gui.rect
-local Gui_text = Gui.text
-local V2 = Vector2
-local V3 = Vector3
-local Color = Color
+
+local Gui_rect, Gui_text, V2, V3, Color = Gui.rect, Gui.text, Vector2, Vector3, Color
 local Mouse = Mouse
 local profile = require("jit.profile")
 local dumpstack = profile.dumpstack
@@ -33,15 +32,13 @@ ImguiFlamegraph.do_cell = function (self, gui, cursor, name, record, s, w, h, x,
 	local color = Color(hsl2rgb(tonumber(sub(make_hash(name), 1, 2), 16) / 256, 0.4, 0.5))
 	local search = self._search
 	local border_color = search ~= "" and find(name, search) and Color(255, 255, 255) or Color(64, 64, 64)
-	local box_pos = V3(x, y, 999)
-	local box_size = V2(w, math.max(2, h))
+	local box_pos, box_size = V3(x, y, 999), V2(w, math.max(2, h))
 
 	Gui_rect(gui, box_pos, box_size, border_color)
 	Gui_rect(gui, box_pos + V3(1, 1, 1), box_size - V2(2, 2), color)
 
 	local wf = w / s
-	local cx = x
-	local cy = y - h
+	local cx, cy = x, y - h
 	local selected = point_is_inside_2d_box(cursor, box_pos, box_size)
 
 	if selected and Mouse.pressed(Mouse.button_id("left")) then
@@ -53,6 +50,7 @@ ImguiFlamegraph.do_cell = function (self, gui, cursor, name, record, s, w, h, x,
 		if name then
 			local cs = child[false]
 			local cw = wf * cs
+
 			selected = self:do_cell(gui, cursor, name, child, cs, cw, h, cx, cy) or selected
 			cx = cx + cw
 		end
@@ -94,7 +92,7 @@ end
 
 ImguiFlamegraph.clear_data = function (self)
 	ImguiFlamegraph._root = {
-		[false] = 0
+		[false] = 0,
 	}
 
 	self:reset_zoom()
@@ -118,6 +116,7 @@ ImguiFlamegraph.profile_cb = function (self, thread, samples, vmmode)
 	end
 
 	local record = ImguiFlamegraph._root
+
 	record[false] = record[false] + samples
 
 	for row in gmatch(stk, "[^;]+") do
@@ -127,7 +126,7 @@ ImguiFlamegraph.profile_cb = function (self, thread, samples, vmmode)
 			child[false] = child[false] + samples
 		else
 			child = {
-				[false] = samples
+				[false] = samples,
 			}
 			record[row] = child
 		end
@@ -160,17 +159,7 @@ ImguiFlamegraph.toggle_rendering = function (self, bool)
 	self._rendering = bool
 end
 
-local HELP_TEXT = [[
-Flamegraph help
----------------
-Uses LuaJIT's in-built statistical profiler.
-It needs to run for a while to capture nested calls.
-Flamegraph rendering is excluded from samples.
-It's still recommendable to disable it while recording.
-
-Left-click on a segment to focus on it.
-Right-click anywhere to reset the view.
-]]
+local HELP_TEXT = "Flamegraph help\n---------------\nUses LuaJIT's in-built statistical profiler.\nIt needs to run for a while to capture nested calls.\nFlamegraph rendering is excluded from samples.\nIt's still recommendable to disable it while recording.\n\nLeft-click on a segment to focus on it.\nRight-click anywhere to reset the view.\n"
 
 ImguiFlamegraph.draw = function (self)
 	local do_close = Imgui.begin_window("Flamegraph")

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/level_end/states/end_view_state_score.lua
+
 local definitions = local_require("scripts/ui/views/level_end/states/definitions/end_view_state_score_definitions")
 local widget_definitions = definitions.widgets
 local player_score_size = definitions.player_score_size
@@ -7,6 +9,7 @@ local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
 local PLAYER_NAME_MAX_LENGTH = 16
 local DO_RELOAD = false
+
 EndViewStateScore = class(EndViewStateScore)
 EndViewStateScore.NAME = "EndViewStateScore"
 
@@ -16,7 +19,9 @@ EndViewStateScore.on_enter = function (self, params)
 	self.parent = params.parent
 	self.game_won = params.game_won
 	self.game_mode_key = params.game_mode_key
+
 	local context = params.context
+
 	self._context = context
 	self.ui_renderer = context.ui_top_renderer
 	self.input_manager = context.input_manager
@@ -24,7 +29,7 @@ EndViewStateScore.on_enter = function (self, params)
 	self.rewards = context.rewards
 	self.render_settings = {
 		alpha_multiplier = 0,
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 	self.world_previewer = params.world_previewer
 	self.platform = PLATFORM
@@ -42,6 +47,7 @@ EndViewStateScore.on_enter = function (self, params)
 	self:_start_transition_animation("on_enter", "transition_enter")
 
 	self._exit_timer = nil
+
 	local players_session_score = self._context.players_session_score
 
 	self:_setup_player_scores(players_session_score)
@@ -66,13 +72,13 @@ EndViewStateScore.create_ui_elements = function (self, params)
 		UIWidget.init(hero_widget_definitions.player_frame_1),
 		UIWidget.init(hero_widget_definitions.player_frame_2),
 		UIWidget.init(hero_widget_definitions.player_frame_3),
-		UIWidget.init(hero_widget_definitions.player_frame_4)
+		UIWidget.init(hero_widget_definitions.player_frame_4),
 	}
 	self._score_widgets = {
 		UIWidget.init(score_widget_definitions.player_score_1),
 		UIWidget.init(score_widget_definitions.player_score_2),
 		UIWidget.init(score_widget_definitions.player_score_3),
-		UIWidget.init(score_widget_definitions.player_score_4)
+		UIWidget.init(score_widget_definitions.player_score_4),
 	}
 
 	UIRenderer.clear_scenegraph_queue(self.ui_renderer)
@@ -90,22 +96,23 @@ EndViewStateScore._create_gamepad_elements = function (self)
 	local offset = {
 		-frame_settings.texture_sizes.vertical[1],
 		-frame_settings.texture_sizes.horizontal[2],
-		0
+		0,
 	}
 	local size = {
 		scenegraph_size[1] + frame_settings.texture_sizes.vertical[1] * 2,
-		scenegraph_size[2] + frame_settings.texture_sizes.horizontal[2] * 2
+		scenegraph_size[2] + frame_settings.texture_sizes.horizontal[2] * 2,
 	}
 	local style = {
 		color = {
 			255,
 			255,
 			255,
-			255
+			255,
 		},
 		offset = offset,
-		size = size
+		size = size,
 	}
+
 	self._gamepad_selection_screen = UIWidget.init(UIWidgets.create_simple_frame(frame_settings.texture, frame_settings.texture_size, frame_settings.texture_sizes.corner, frame_settings.texture_sizes.vertical, frame_settings.texture_sizes.horizontal, "player_panel_1", style))
 	self._current_gamepad_selection = 1
 end
@@ -209,6 +216,7 @@ EndViewStateScore._update_gamepad_input = function (self, dt, input_service)
 	if new_selection ~= old_selection then
 		self._gamepad_selection_screen.scenegraph_id = "player_panel_" .. new_selection
 		self._current_gamepad_selection = new_selection
+
 		local player_data = self._players_by_widget_index[new_selection]
 
 		if player_data and player_data.is_player_controlled and is_online then
@@ -262,7 +270,7 @@ EndViewStateScore._update_animations = function (self, dt)
 end
 
 EndViewStateScore._update_entry_hover = function (self)
-	local hover_index = nil
+	local hover_index
 	local widgets_by_name = self._widgets_by_name
 	local topics_widget = widgets_by_name.scores_topics
 	local content = topics_widget.content
@@ -298,11 +306,13 @@ EndViewStateScore._set_entry_hover_index = function (self, hover_index)
 
 	for index, widget in ipairs(score_widgets) do
 		local content = widget.content
+
 		content.hover_index = hover_index
 	end
 
 	local topics_widget = widgets_by_name.scores_topics
 	local content = topics_widget.content
+
 	content.hover_index = hover_index
 end
 
@@ -380,10 +390,11 @@ EndViewStateScore._start_transition_animation = function (self, key, animation_n
 	local params = {
 		wwise_world = self.wwise_world,
 		render_settings = self.render_settings,
-		self = self
+		self = self,
 	}
 	local widgets = self._hero_widgets
 	local anim_id = self.ui_animator:start_animation(animation_name, widgets, scenegraph_definition, params)
+
 	self._animations[key] = anim_id
 end
 
@@ -401,7 +412,7 @@ end
 
 EndViewStateScore._transform_player_session_score = function (self, players_session_scores)
 	local transformed_player_session_score = {
-		group_scores = {}
+		group_scores = {},
 	}
 
 	for stats_id, player_data in pairs(players_session_scores) do
@@ -413,11 +424,12 @@ EndViewStateScore._transform_player_session_score = function (self, players_sess
 			for index, score_data in ipairs(group_data) do
 				if not transformed_player_session_score.group_scores[group_name][index] then
 					transformed_player_session_score.group_scores[group_name][index] = {
-						player_scores = {}
+						player_scores = {},
 					}
 				end
 
 				local highscore = transformed_player_session_score.group_scores[group_name][index].highscore or 0
+
 				transformed_player_session_score.group_scores[group_name][index].stat_name = score_data.stat_name
 				transformed_player_session_score.group_scores[group_name][index].display_name = score_data.display_name
 				transformed_player_session_score.group_scores[group_name][index].highscore = highscore < score_data.score and score_data.score or highscore
@@ -440,21 +452,24 @@ EndViewStateScore._group_scores_by_player_and_topic = function (self, score_pane
 		for index, score_data in ipairs(group_data) do
 			if not score_panel_scores[group_name][index] then
 				score_panel_scores[group_name][index] = {
-					player_scores = {}
+					player_scores = {},
 				}
 			end
 
 			local highscore = score_panel_scores[group_name][index].highscore or 0
 			local stat_name = score_data.stat_name
+
 			score_panel_scores[group_name][index].stat_name = stat_name
 			score_panel_scores[group_name][index].display_text = score_data.display_text
 			score_panel_scores[group_name][index].player_scores[player_index] = score_data.score
 
 			if stat_name == "damage_taken" then
-				local new_highscore = score_data.score < highscore and score_data.score or highscore
+				local new_highscore = highscore > score_data.score and score_data.score or highscore
+
 				score_panel_scores[group_name][index].highscore = new_highscore
 			else
 				local new_highscore = highscore < score_data.score and score_data.score or highscore
+
 				score_panel_scores[group_name][index].highscore = new_highscore
 			end
 		end
@@ -466,7 +481,9 @@ EndViewStateScore._setup_player_scores = function (self, players_session_scores)
 	local player_names = {}
 	local widget_index = 1
 	local score_index = 1
+
 	self._players_by_widget_index = {}
+
 	local players_by_widget_index = self._players_by_widget_index
 	local num_human_players = 0
 	local hero_widgets = self._hero_widgets
@@ -477,6 +494,7 @@ EndViewStateScore._setup_player_scores = function (self, players_session_scores)
 
 		player_names[widget_index] = player_data.name
 		players_by_widget_index[widget_index] = player_data
+
 		local peer_id = player_data.peer_id
 		local profile_index = player_data.profile_index
 		local career_index = player_data.career_index
@@ -494,6 +512,7 @@ EndViewStateScore._setup_player_scores = function (self, players_session_scores)
 
 		local level_text = is_player_controlled and (player_level and tostring(player_level) or "-") or "BOT"
 		local widget_definition = UIWidgets.create_portrait_frame("player_frame_" .. widget_index, portrait_frame, level_text, 1, nil, portrait_image)
+
 		hero_widgets[widget_index] = UIWidget.init(widget_definition)
 		widget_index = widget_index + 1
 	end
@@ -510,10 +529,13 @@ EndViewStateScore._setup_level_widget = function (self)
 	local level_key = self._context.level_key
 	local level_settings = LevelSettings[level_key]
 	local level_image = level_settings and level_settings.level_image or "level_image_any"
+
 	content.icon = level_image
+
 	local difficulty_key = self._context.difficulty
 	local difficulty_settings = DifficultySettings[difficulty_key]
 	local frame_image = difficulty_settings and difficulty_settings.completed_frame_texture or "map_frame_00"
+
 	content.frame = frame_image
 end
 
@@ -521,13 +543,13 @@ local position_colors = {
 	Colors.get_color_table_with_alpha("cyan", 255),
 	Colors.get_color_table_with_alpha("gold", 255),
 	Colors.get_color_table_with_alpha("silver", 255),
-	Colors.get_color_table_with_alpha("gray", 255)
+	Colors.get_color_table_with_alpha("gray", 255),
 }
 local position_textures = {
 	nil,
 	"scoreboard_topic_02",
 	"scoreboard_topic_03",
-	"scoreboard_topic_04"
+	"scoreboard_topic_04",
 }
 
 EndViewStateScore._set_topic_data = function (self, player_data, widget_index)
@@ -570,7 +592,8 @@ EndViewStateScore._setup_score_panel = function (self, score_panel_scores, playe
 				local score_text_name = "score_text" .. line_suffix
 				local row_name = "row_bg" .. line_suffix
 				local row_content = content[row_name]
-				local name = PLAYER_NAME_MAX_LENGTH < UTF8Utils.string_length(player_name) and UIRenderer.crop_text_width(self.ui_renderer, player_name, player_score_size[1] - 40, style[score_text_name]) or player_name
+				local name = UTF8Utils.string_length(player_name) > PLAYER_NAME_MAX_LENGTH and UIRenderer.crop_text_width(self.ui_renderer, player_name, player_score_size[1] - 40, style[score_text_name]) or player_name
+
 				row_content[score_text_name] = name
 			end
 
@@ -586,7 +609,9 @@ EndViewStateScore._setup_score_panel = function (self, score_panel_scores, playe
 				local widget = score_widgets[player_index]
 				local content = widget.content
 				local style = widget.style
+
 				player_score = math.round(player_score)
+
 				local title_text = "title_text_" .. tostring(total_row_index)
 				local score_text = "score_player_" .. tostring(player_index) .. "_" .. tostring(total_row_index)
 				local high_score_marker = "high_score_marker_" .. tostring(player_index) .. "_" .. tostring(total_row_index)
@@ -605,6 +630,7 @@ EndViewStateScore._setup_score_panel = function (self, score_panel_scores, playe
 				local score_text_name = "score_text" .. line_suffix
 				local row_name = "row_bg" .. line_suffix
 				local row_content = content[row_name]
+
 				row_content[score_text_name] = player_score
 				row_content.has_background = total_row_index % 2 == 0
 				row_content.has_highscore = has_highscore
@@ -627,6 +653,7 @@ EndViewStateScore._set_score_topic_by_row = function (self, row, text)
 	local score_text_name = "score_text" .. line_suffix
 	local row_name = "row_bg" .. line_suffix
 	local row_content = content[row_name]
+
 	row_content[score_text_name] = text
 	row_content.has_score = true
 	row_content.has_background = row % 2 == 0
@@ -644,51 +671,56 @@ EndViewStateScore._setup_hero_score_tooltip = function (self, widget, group_scor
 
 	for group_name, group_data in pairs(group_scores) do
 		content[group_name] = group_name
+
 		local group_value_name = group_name .. "_value"
+
 		content[group_value_name] = group_data.total_score
 		text_styles[#text_styles + 1] = {
-			vertical_alignment = "top",
-			horizontal_alignment = "left",
 			font_size = 20,
 			font_type = "hell_shark",
+			horizontal_alignment = "left",
+			vertical_alignment = "top",
 			word_wrap = true,
 			name = group_name,
 			text_color = Colors.get_color_table_with_alpha("font_title", 255),
 			value_style = {
-				vertical_alignment = "top",
-				word_wrap = true,
-				horizontal_alignment = "right",
 				font_size = 20,
 				font_type = "hell_shark",
+				horizontal_alignment = "right",
+				vertical_alignment = "top",
+				word_wrap = true,
 				name = group_value_name,
-				text_color = Colors.get_color_table_with_alpha("font_title", 255)
-			}
+				text_color = Colors.get_color_table_with_alpha("font_title", 255),
+			},
 		}
 
 		for _, score_data in ipairs(group_data) do
 			local stat_name = score_data.stat_name
 			local score = score_data.score
 			local display_text = score_data.display_text
+
 			content[stat_name] = Localize(display_text) .. ":"
+
 			local stat_value_name = stat_name .. "_value"
+
 			content[stat_value_name] = tostring(score)
 			text_styles[#text_styles + 1] = {
-				vertical_alignment = "top",
-				horizontal_alignment = "left",
 				font_size = 20,
 				font_type = "hell_shark",
+				horizontal_alignment = "left",
+				vertical_alignment = "top",
 				word_wrap = true,
 				name = stat_name,
 				text_color = Colors.get_color_table_with_alpha("font_default", 255),
 				value_style = {
-					vertical_alignment = "top",
-					word_wrap = true,
-					horizontal_alignment = "right",
 					font_size = 20,
 					font_type = "hell_shark",
+					horizontal_alignment = "right",
+					vertical_alignment = "top",
+					word_wrap = true,
 					name = stat_value_name,
-					text_color = Colors.get_color_table_with_alpha("font_default", 255)
-				}
+					text_color = Colors.get_color_table_with_alpha("font_default", 255),
+				},
 			}
 		end
 	end
@@ -708,7 +740,7 @@ end
 
 EndViewStateScore._start_hero_score_animation = function (self, animation_name)
 	local params = {
-		wwise_world = self.wwise_world
+		wwise_world = self.wwise_world,
 	}
 
 	return self.ui_animator:start_animation(animation_name, self._hero_widgets, scenegraph_definition, params)

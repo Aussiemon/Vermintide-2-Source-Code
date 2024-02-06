@@ -1,13 +1,16 @@
+﻿-- chunkname: @scripts/settings/dlcs/geheimnisnacht_2021/geheimnisnacht_2021_interactions.lua
+
 local SERVER_INTERACT = true
 local CLIENT_INTERACT = false
+
 InteractionDefinitions.geheimnisnacht_2021_altar = InteractionDefinitions.geheimnisnacht_2021_altar or table.clone(InteractionDefinitions.smartobject)
 InteractionDefinitions.geheimnisnacht_2021_altar.config = {
-	only_once = true,
-	hud_verb = "player_interaction",
-	hold = true,
-	swap_to_3p = false,
 	activate_block = true,
-	block_other_interactions = true
+	block_other_interactions = true,
+	hold = true,
+	hud_verb = "player_interaction",
+	only_once = true,
+	swap_to_3p = false,
 }
 
 InteractionDefinitions.geheimnisnacht_2021_altar.server.stop = function (world, interactor_unit, interactable_unit, data, config, t, result)

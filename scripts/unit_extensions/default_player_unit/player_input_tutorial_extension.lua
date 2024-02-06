@@ -1,6 +1,9 @@
+﻿-- chunkname: @scripts/unit_extensions/default_player_unit/player_input_tutorial_extension.lua
+
 require("scripts/unit_extensions/generic/generic_state_machine")
 
 local is_windows_platform = IS_WINDOWS
+
 PlayerInputTutorialExtension = class(PlayerInputTutorialExtension)
 
 PlayerInputTutorialExtension.get_window_is_in_focus = function ()
@@ -48,15 +51,15 @@ PlayerInputTutorialExtension.init = function (self, extension_init_context, unit
 	self.toggle_crouch = Application.user_setting("toggle_crouch")
 	self.toggle_alternate_attack = Application.user_setting("toggle_alternate_attack")
 	self.priority_input = {
+		wield_1 = true,
 		wield_2 = true,
-		wield_next = true,
+		wield_3 = true,
+		wield_4 = true,
 		wield_5 = true,
+		wield_next = true,
 		wield_prev = true,
 		wield_scroll = true,
-		wield_3 = true,
-		wield_1 = true,
-		wield_4 = true,
-		wield_switch = true
+		wield_switch = true,
 	}
 end
 
@@ -100,7 +103,7 @@ PlayerInputTutorialExtension.update = function (self, unit, input, dt, context, 
 	end
 
 	if self.wield_cooldown then
-		if self.wield_cooldown_timer < t then
+		if t > self.wield_cooldown_timer then
 			self.wield_cooldown = false
 			self.wield_cooldown_timer_clock = 0
 		else
@@ -168,10 +171,11 @@ PlayerInputTutorialExtension.set_input_key_scale = function (self, input_key, sc
 	local input_key_scale_data = self.input_key_scale[input_key]
 
 	if input_key_scale_data then
-		if input_key_scale_data.lerp_end_t == nil or input_key_scale_data.lerp_end_t <= t then
+		if input_key_scale_data.lerp_end_t == nil or t >= input_key_scale_data.lerp_end_t then
 			start_scale = input_key_scale_data.end_scale
 		else
 			local p = (t - input_key_scale_data.lerp_start_t) / (input_key_scale_data.lerp_end_t - input_key_scale_data.lerp_start_t)
+
 			start_scale = math.lerp(input_key_scale_data.start_scale, input_key_scale_data.end_scale, p)
 		end
 	else

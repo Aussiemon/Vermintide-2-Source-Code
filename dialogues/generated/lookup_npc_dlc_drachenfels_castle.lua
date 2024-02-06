@@ -1,3 +1,5 @@
+﻿-- chunkname: @dialogues/generated/lookup_npc_dlc_drachenfels_castle.lua
+
 assert(DialogueLookup[DialogueLookup_n + 1] == nil)
 assert(DialogueLookup[DialogueLookup_n + 2] == nil)
 assert(DialogueLookup[DialogueLookup_n + 3] == nil)

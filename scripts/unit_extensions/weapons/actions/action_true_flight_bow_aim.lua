@@ -1,7 +1,10 @@
+﻿-- chunkname: @scripts/unit_extensions/weapons/actions/action_true_flight_bow_aim.lua
+
 require("scripts/unit_extensions/weapons/projectiles/true_flight_templates")
 require("scripts/unit_extensions/weapons/projectiles/true_flight_utility")
 
 ActionTrueFlightBowAim = class(ActionTrueFlightBowAim, ActionBase)
+
 local actor_unit = Actor.unit
 local actor_node = Actor.node
 local unit_actor = Unit.actor
@@ -45,10 +48,14 @@ ActionTrueFlightBowAim.client_owner_start_action = function (self, new_action, t
 	self:_mark_target(self.target)
 
 	self.time_to_shoot = t
+
 	local owner_unit = self.owner_unit
+
 	self.side = Managers.state.side.side_by_unit[owner_unit]
 	self.target_broadphase_categories = self.side and self.side.enemy_broadphase_categories
+
 	local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
+
 	self.charge_time = buff_extension:apply_buffs_to_value(new_action.charge_time or 0, "reduced_ranged_charge_time")
 	self.overcharge_timer = 0
 	self.zoom_condition_function = new_action.zoom_condition_function
@@ -56,6 +63,7 @@ ActionTrueFlightBowAim.client_owner_start_action = function (self, new_action, t
 	self.played_aim_sound = false
 	self.aim_sound_time = t + (new_action.aim_sound_delay or 0)
 	self.aim_zoom_time = t + (new_action.aim_zoom_delay or 0)
+
 	local loaded_projectile_settings = new_action.loaded_projectile_settings
 
 	if loaded_projectile_settings then
@@ -85,6 +93,7 @@ ActionTrueFlightBowAim._start_charge_sound = function (self)
 
 	if is_local and not is_bot then
 		local wwise_playing_id, wwise_source_id = ActionUtils.start_charge_sound(wwise_world, self.weapon_unit, owner_unit, current_action)
+
 		self.charging_sound_id = wwise_playing_id
 		self.wwise_source_id = wwise_source_id
 	end
@@ -123,7 +132,7 @@ ActionTrueFlightBowAim.client_owner_post_update = function (self, dt, t, world, 
 	if current_action.overcharge_interval then
 		self.overcharge_timer = self.overcharge_timer + dt
 
-		if current_action.overcharge_interval <= self.overcharge_timer then
+		if self.overcharge_timer >= current_action.overcharge_interval then
 			if self.overcharge_extension then
 				local overcharge_amount = PlayerUnitStatusSettings.overcharge_values[current_action.overcharge_type]
 
@@ -139,7 +148,7 @@ ActionTrueFlightBowAim.client_owner_post_update = function (self, dt, t, world, 
 		local input_extension = ScriptUnit.extension(owner_unit, "input_system")
 		local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
 
-		if not status_extension:is_zooming() and self.aim_zoom_time <= t then
+		if not status_extension:is_zooming() and t >= self.aim_zoom_time then
 			status_extension:set_zooming(true, current_action.default_zoom)
 		end
 
@@ -150,7 +159,7 @@ ActionTrueFlightBowAim.client_owner_post_update = function (self, dt, t, world, 
 		end
 	end
 
-	if not self.played_aim_sound and self.aim_sound_time <= t and not is_bot then
+	if not self.played_aim_sound and t >= self.aim_sound_time and not is_bot then
 		local sound_event = current_action.aim_sound_event
 
 		if sound_event then
@@ -180,7 +189,7 @@ ActionTrueFlightBowAim.client_owner_post_update = function (self, dt, t, world, 
 		local first_person_extension = self.first_person_extension
 		local player_position, player_rotation = first_person_extension:get_projectile_start_position_rotation()
 		local direction = Vector3.normalize(Quaternion.forward(player_rotation))
-		local results, num_results = nil
+		local results, num_results
 
 		if current_action.aim_obstructed_by_walls then
 			results, num_results = PhysicsWorld.immediate_raycast_actors(physics_world, player_position, direction, "dynamic_collision_filter", "filter_ray_true_flight_ai_only", "dynamic_collision_filter", "filter_ray_true_flight_hitbox_only", "static_collision_filter", "filter_player_ray_projectile_static_only")
@@ -190,7 +199,7 @@ ActionTrueFlightBowAim.client_owner_post_update = function (self, dt, t, world, 
 
 		local side_manager = Managers.state.side
 		local side_by_unit = side_manager.side_by_unit
-		local hit_unit = nil
+		local hit_unit
 		local higest_priority = -1
 		local side = self.side
 
@@ -383,6 +392,7 @@ ActionTrueFlightBowAim.finish = function (self, reason, data)
 	if current_action.num_projectiles and current_action.num_projectiles > 1 then
 		local owner_player = Managers.player:owner(owner_unit)
 		local is_bot = owner_player and owner_player.bot_player
+
 		chain_action_data.targets = self:_get_visible_targets(self.target, current_action.num_projectiles, is_bot)
 	end
 
@@ -393,6 +403,7 @@ ActionTrueFlightBowAim.finish = function (self, reason, data)
 
 	self.targets = nil
 	self.target = nil
+
 	local inventory_extension = ScriptUnit.extension(owner_unit, "inventory_system")
 
 	inventory_extension:set_loaded_projectile_override(nil)

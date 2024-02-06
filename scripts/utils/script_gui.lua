@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/utils/script_gui.lua
+
 ScriptGUI = ScriptGUI or {}
 
 ScriptGUI.text = function (gui, text, font, font_size, material, pos, color, drop_shadow_color, drop_shadow_offset)
@@ -43,6 +45,7 @@ end
 ScriptGUI.hud_line = function (gui, p1, p2, layer, line_width, color)
 	line_width = line_width or 3
 	layer = layer or 1
+
 	local xd = p2.x - p1.x
 	local yd = p2.y - p1.y
 	local angle = -math.atan2(yd, xd)

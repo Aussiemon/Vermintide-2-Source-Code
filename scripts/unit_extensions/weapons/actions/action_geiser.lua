@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/weapons/actions/action_geiser.lua
+
 ActionGeiser = class(ActionGeiser, ActionBase)
 
 ActionGeiser.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
@@ -13,12 +15,15 @@ ActionGeiser.client_owner_start_action = function (self, new_action, t, chain_ac
 	ActionGeiser.super.client_owner_start_action(self, new_action, t, chain_action_data, power_level)
 
 	self.current_action = new_action
+
 	local owner_unit = self.owner_unit
 	local is_critical_strike = ActionUtils.is_critical_strike(owner_unit, new_action)
 	local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
 	local charge_value = chain_action_data.charge_value
+
 	self.charge_value = charge_value
 	self.power_level = ActionUtils.scale_geiser_power_level(power_level, charge_value)
+
 	local full_charge_boost = buff_extension:has_buff_perk("full_charge_boost")
 
 	if full_charge_boost and self.charge_value >= 1 then
@@ -47,7 +52,7 @@ end
 ActionGeiser.client_owner_post_update = function (self, dt, t, world, can_damage)
 	local current_action = self.current_action
 
-	if self.state == "waiting_to_shoot" and self.time_to_shoot <= t then
+	if self.state == "waiting_to_shoot" and t >= self.time_to_shoot then
 		self.state = "shooting"
 	end
 
@@ -78,6 +83,7 @@ ActionGeiser.finish = function (self, reason)
 	end
 
 	self.position = nil
+
 	local hud_extension = ScriptUnit.has_extension(self.owner_unit, "hud_system")
 
 	if hud_extension then
@@ -116,10 +122,12 @@ ActionGeiser.fire = function (self, reason)
 		size = "_medium"
 	elseif large_charge_value <= charge_value and can_create_aoe then
 		size = "_large"
+
 		local owner_unit_id = network_manager:unit_game_object_id(owner_unit)
 		local damage_source_id = NetworkLookup.damage_sources[self.item_name]
 		local explosion_template_name = current_action.aoe_name
 		local explosion_template_id = NetworkLookup.explosion_templates[explosion_template_name]
+
 		overcharge = current_action.overcharge_type_heavy
 
 		self.network_transmit:send_rpc_server("rpc_client_create_aoe", owner_unit_id, source_pos, damage_source_id, explosion_template_id, radius)
@@ -127,6 +135,7 @@ ActionGeiser.fire = function (self, reason)
 
 	if effect_name then
 		effect_name = effect_name .. size
+
 		local variable_name = current_action.particle_radius_variable
 		local effect_id = NetworkLookup.effects[effect_name]
 		local variable_id = NetworkLookup.effects[variable_name]
@@ -192,7 +201,7 @@ ActionGeiser.fire = function (self, reason)
 				if should_hit then
 					local attack_vector = hit_position - source_pos
 					local attack_distance = Vector3.length(attack_vector)
-					local target_index = nil
+					local target_index
 
 					if damage_profile.target_radius and damage_profile.targets then
 						local proximity_factor = attack_distance / radius
@@ -223,8 +232,9 @@ ActionGeiser.fire = function (self, reason)
 						damage_profile_name = damage_profile_name,
 						target_index = target_index,
 						allow_critical_proc = target_index == 1,
-						hit_index = hit_index
+						hit_index = hit_index,
 					}
+
 					damage_buffer[#damage_buffer + 1] = damage_data
 				end
 			end

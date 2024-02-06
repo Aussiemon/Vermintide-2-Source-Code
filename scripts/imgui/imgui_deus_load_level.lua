@@ -1,10 +1,13 @@
+﻿-- chunkname: @scripts/imgui/imgui_deus_load_level.lua
+
 ImguiDeusLoadLevel = class(ImguiDeusLoadLevel)
+
 local difficulties = {
 	"normal",
 	"hard",
 	"harder",
 	"hardest",
-	"cataclysm"
+	"cataclysm",
 }
 local levels = {}
 
@@ -41,6 +44,7 @@ ImguiDeusLoadLevel.draw = function (self, is_open)
 		Imgui.text("This UI only works when playing with the deus mechanism.")
 	else
 		local prev_base_level_index = self._base_level_index
+
 		self._base_level_index = Imgui.combo("Level", self._base_level_index, levels)
 
 		if prev_base_level_index ~= self._base_level_index then
@@ -50,7 +54,7 @@ ImguiDeusLoadLevel.draw = function (self, is_open)
 
 		local level_name = levels[self._base_level_index]
 		local deus_level = DEUS_LEVEL_SETTINGS[level_name]
-		local with_belakor = nil
+		local with_belakor
 
 		if level_name ~= "arena_belakor" then
 			self._path_index = Imgui.combo("Path", self._path_index, deus_level.paths)
@@ -76,13 +80,9 @@ ImguiDeusLoadLevel.draw = function (self, is_open)
 		Imgui.text_colored("If entered manually: Press return to confirm the entered seed", 255, 255, 255, 128)
 		Imgui.spacing()
 
-		local full_name = nil
+		local full_name
 
-		if level_name == "arena_belakor" then
-			full_name = "arena_belakor"
-		else
-			full_name = level_name .. "_" .. deus_level.themes[self._theme_index] .. "_path" .. deus_level.paths[self._path_index]
-		end
+		full_name = level_name == "arena_belakor" and "arena_belakor" or level_name .. "_" .. deus_level.themes[self._theme_index] .. "_path" .. deus_level.paths[self._path_index]
 
 		if Imgui.button("Load") then
 			local mechanism = Managers.mechanism:game_mechanism()

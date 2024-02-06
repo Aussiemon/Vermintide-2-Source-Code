@@ -1,13 +1,16 @@
+﻿-- chunkname: @scripts/entity_system/systems/cosmetic/cosmetic_system.lua
+
 require("scripts/unit_extensions/default_player_unit/cosmetic/player_unit_cosmetic_extension")
 
 CosmeticSystem = class(CosmeticSystem, ExtensionSystemBase)
+
 local RPCS = {
 	"rpc_set_equipped_frame",
 	"rpc_server_request_emote",
-	"rpc_server_cancel_emote"
+	"rpc_server_cancel_emote",
 }
 local extension_list = {
-	"PlayerUnitCosmeticExtension"
+	"PlayerUnitCosmeticExtension",
 }
 
 CosmeticSystem.init = function (self, entity_system_creation_context, system_name)
@@ -40,6 +43,7 @@ CosmeticSystem.get_equipped_frame = function (self, unit)
 	if Unit.alive(unit) then
 		local ext = ScriptUnit.extension(unit, "cosmetic_system")
 		local frame_name = ext:get_equipped_frame_name()
+
 		player_portrait_frame = frame_name
 	end
 
@@ -85,9 +89,10 @@ CosmeticSystem.rpc_server_request_emote = function (self, channel_id, unit_id, a
 
 	if unit and ALIVE[unit] then
 		local anim_event = NetworkLookup.anims[anim_event_id]
+
 		self._emote_states[unit_id] = {
 			anim_event = anim_event,
-			hide_weapons = hide_weapons
+			hide_weapons = hide_weapons,
 		}
 
 		CharacterStateHelper.play_animation_event(unit, anim_event)

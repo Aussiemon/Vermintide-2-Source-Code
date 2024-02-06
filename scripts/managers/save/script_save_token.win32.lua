@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/save/script_save_token.win32.lua
+
 ScriptSaveToken = class(ScriptSaveToken)
 
 ScriptSaveToken.init = function (self, adapter, token)

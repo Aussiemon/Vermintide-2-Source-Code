@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/invite/script_invite_token.lua
+
 ScriptInviteToken = class(ScriptInviteToken)
 
 ScriptInviteToken.init = function (self, token)

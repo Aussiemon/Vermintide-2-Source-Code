@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/help_screen/help_screen_ui.lua
+
 local definitions = dofile("scripts/ui/help_screen/help_screen_definitions")
 
 require("scripts/ui/help_screen/help_screen_settings")
@@ -10,9 +12,13 @@ HelpScreenUI.init = function (self, ingame_ui_context)
 	self._ui_top_renderer = ingame_ui_context.ui_top_renderer
 	self._ingame_ui = ingame_ui_context.ingame_ui
 	self._world_manager = ingame_ui_context.world_manager
+
 	local world = self._world_manager:world("level_world")
+
 	self._wwise_world = Managers.world:wwise_world(world)
+
 	local input_manager = ingame_ui_context.input_manager
+
 	self._input_manager = input_manager
 
 	input_manager:create_input_service("help_screen_view", "IngameMenuKeymaps", "IngameMenuFilters")
@@ -23,7 +29,7 @@ HelpScreenUI.init = function (self, ingame_ui_context)
 	self._input_service = self._input_manager:get_service("help_screen_view")
 	self._ingame_ui_context = ingame_ui_context
 	self._render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 	self._current_view = nil
 	self._current_index = 1
@@ -87,6 +93,7 @@ end
 HelpScreenUI._set_page = function (self, index)
 	local current_view_settings = HelpScreens[self._current_view]
 	local page_settings = current_view_settings[index]
+
 	self._help_screen_widget = UIWidget.init(definitions.help_screen_widget_func(#HelpScreens[self._current_view], index))
 
 	for setting_name, setting in pairs(page_settings) do

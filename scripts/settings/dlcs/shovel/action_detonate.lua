@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/dlcs/shovel/action_detonate.lua
+
 ActionDetonate = class(ActionDetonate, ActionBase)
 
 ActionDetonate.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
@@ -29,7 +31,7 @@ ActionDetonate.client_owner_start_action = function (self, new_action, t, chain_
 	local detonation_order = new_action.detonation_order
 	local projectile_system = Managers.state.entity:system("projectile_system")
 	local active_skull_count = projectile_system:get_indexed_projectile_count(owner_unit)
-	local start_idx, end_idx, increment = nil
+	local start_idx, end_idx, increment
 
 	if detonation_order == "front_first" then
 		start_idx = active_skull_count

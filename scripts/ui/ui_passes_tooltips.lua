@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/ui/ui_passes_tooltips.lua
+
 UITooltipPasses = UITooltipPasses or {}
+
 local UIRenderer = UIRenderer
 local UIRenderer_draw_texture = UIRenderer.draw_texture
 local UIRenderer_draw_texture_uv = UIRenderer.draw_texture_uv
@@ -24,14 +27,14 @@ UITooltipPasses = {
 					255,
 					3,
 					3,
-					3
+					3,
 				},
 				frame_color = {
 					255,
 					255,
 					255,
-					255
-				}
+					255,
+				},
 			}
 
 			return data
@@ -51,20 +54,24 @@ UITooltipPasses = {
 
 				size[2] = size[2] + edge_height * 2
 				position[3] = start_layer
+
 				local background_color = data.background_color
+
 				background_color[1] = alpha
 
 				UIRenderer.draw_rect(ui_renderer, position, size, background_color)
 
 				position[3] = start_layer + 5
+
 				local frame_color = data.frame_color
+
 				frame_color[1] = alpha
 
 				UIRenderer.draw_texture_frame(ui_renderer, position, size, frame_settings.texture, frame_settings.texture_size, frame_settings.texture_sizes, frame_color)
 			end
 
 			return edge_height * 2
-		end
+		end,
 	},
 	item_background = {
 		setup_data = function ()
@@ -77,30 +84,30 @@ UITooltipPasses = {
 				uvs = {
 					{
 						0,
-						0
+						0,
 					},
 					{
 						1,
-						1
-					}
+						1,
+					},
 				},
 				background_texture_size = {
 					300,
-					300
+					300,
 				},
 				background_color = {
 					255,
 					255,
 					255,
-					255
+					255,
 				},
 				frame_color = {
 					255,
 					255,
 					255,
-					255
+					255,
 				},
-				frame_margin = frame_edge_height * 2
+				frame_margin = frame_edge_height * 2,
 			}
 
 			return data
@@ -117,31 +124,39 @@ UITooltipPasses = {
 				local item_data = item.data
 				local rarity = item.rarity or item_data.rarity
 				local rarity_color = Colors.get_table(rarity)
+
 				position[2] = position[2] - size[2] - edge_height * 2
 				size[2] = size[2] + edge_height * 2 - 2
 				position[3] = start_layer
+
 				local background_texture = data.background_texture
 				local background_texture_size = data.background_texture_size
+
 				background_texture_size[1] = size[1]
+
 				local background_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(background_texture)
 				local background_size = background_texture_settings.size
 				local uvs = data.uvs
+
 				uvs[2][1] = math.min(size[1] / background_size[1], 1)
 				uvs[2][2] = math.min(size[2] / background_size[2], 1)
+
 				local color = data.background_color
 
 				UIRenderer.draw_tiled_texture(ui_renderer, background_texture, position, size, background_texture_size, color)
 
 				size[2] = size[2] + 2
 				position[3] = start_layer + 5
+
 				local frame_color = data.frame_color
+
 				frame_color[1] = alpha
 
 				UIRenderer.draw_texture_frame(ui_renderer, position, size, frame_settings.texture, frame_settings.texture_size, frame_settings.texture_sizes, frame_color)
 			end
 
 			return edge_height * 2
-		end
+		end,
 	},
 	console_item_background = {
 		setup_data = function ()
@@ -149,7 +164,7 @@ UITooltipPasses = {
 			local data = {
 				background_texture = "item_tooltip_background",
 				frame_name = frame_name,
-				color = table.clone(UISettings.console_menu_rect_color)
+				color = table.clone(UISettings.console_menu_rect_color),
 			}
 
 			return data
@@ -164,12 +179,15 @@ UITooltipPasses = {
 
 			if draw then
 				position[3] = start_layer
+
 				local color = data.color
+
 				color[1] = alpha
 
 				UIRenderer.draw_rect(ui_renderer, position, size, color)
 
 				local extra_margin = edge_height * 2
+
 				size[1] = size[1] + extra_margin
 				size[2] = size[2] + extra_margin
 				position[1] = position[1] - edge_height
@@ -180,7 +198,7 @@ UITooltipPasses = {
 			end
 
 			return edge_height * 2
-		end
+		end,
 	},
 	craft_item_background = {
 		setup_data = function ()
@@ -193,30 +211,30 @@ UITooltipPasses = {
 				uvs = {
 					{
 						0,
-						0
+						0,
 					},
 					{
 						1,
-						1
-					}
+						1,
+					},
 				},
 				background_texture_size = {
 					300,
-					300
+					300,
 				},
 				background_color = {
 					255,
 					255,
 					255,
-					255
+					255,
 				},
 				frame_color = {
 					255,
 					255,
 					255,
-					255
+					255,
 				},
-				frame_margin = frame_edge_height * 2
+				frame_margin = frame_edge_height * 2,
 			}
 
 			return data
@@ -234,30 +252,36 @@ UITooltipPasses = {
 				local item_data = item.data
 				local rarity = item.rarity or item_data.rarity
 				local rarity_color = Colors.get_table(rarity)
+
 				position[2] = position[2] + edge_height
 				size[2] = size[2] + edge_height + extra_height
 				position[3] = start_layer - 2
+
 				local background_texture = data.background_texture
 				local background_texture_size = data.background_texture_size
 				local background_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(background_texture)
 				local background_size = background_texture_settings.size
 				local uvs = data.uvs
+
 				uvs[2][1] = math.min(size[1] / background_size[1], 1)
 				uvs[2][2] = math.min(size[2] / background_size[2], 1)
+
 				local color = data.background_color
 
 				UIRenderer.draw_tiled_texture(ui_renderer, background_texture, position, size, background_texture_size, color)
 
 				size[2] = size[2]
 				position[3] = start_layer + 5
+
 				local frame_color = data.frame_color
+
 				frame_color[1] = alpha
 
 				UIRenderer.draw_texture_frame(ui_renderer, position, size, frame_settings.texture, frame_settings.texture_size, frame_settings.texture_sizes, frame_color)
 			end
 
 			return 0
-		end
+		end,
 	},
 	craft_item_new_frame = {
 		setup_data = function ()
@@ -270,9 +294,9 @@ UITooltipPasses = {
 					255,
 					255,
 					255,
-					255
+					255,
 				},
-				frame_margin = frame_edge_height * 2
+				frame_margin = frame_edge_height * 2,
 			}
 
 			return data
@@ -290,81 +314,84 @@ UITooltipPasses = {
 				local item_data = item.data
 				local rarity = item.rarity or item_data.rarity
 				local rarity_color = Colors.get_table(rarity)
+
 				position[1] = position[1] - edge_height
 				position[2] = position[2] - edge_height
 				size[1] = size[1] + edge_height * 2
 				size[2] = size[2] + edge_height * 2
+
 				local frame_color = data.frame_color
+
 				frame_color[1] = alpha
 
 				UIRenderer.draw_texture_frame(ui_renderer, position, size, frame_settings.texture, frame_settings.texture_size, frame_settings.texture_sizes, frame_color)
 			end
 
 			return edge_height * 2
-		end
+		end,
 	},
 	craft_item_reward_title = {
 		setup_data = function ()
 			local data = {
 				text_pass_data = {
-					text_id = "text"
+					text_id = "text",
 				},
 				text_size = {
 					0,
-					50
+					50,
 				},
 				background_size = {
 					0,
-					50
+					50,
 				},
 				texture_size = {
 					264,
-					32
+					32,
 				},
 				texture_color = {
 					255,
 					255,
 					255,
-					255
+					255,
 				},
 				header_glow_size = {
 					0,
-					80
+					80,
 				},
 				content = {
 					texture = "divider_01_top",
-					text = Localize("hero_view_crafting_result")
+					text = Localize("hero_view_crafting_result"),
 				},
 				style = {
 					title_text = {
-						vertical_alignment = "center",
-						upper_case = true,
-						word_wrap = true,
-						horizontal_alignment = "center",
 						font_type = "hell_shark_header",
+						horizontal_alignment = "center",
+						upper_case = true,
+						vertical_alignment = "center",
+						word_wrap = true,
 						font_size = setup_font_size(36),
 						text_color = Colors.get_color_table_with_alpha("font_title", 255),
 						offset = {
 							0,
 							0,
-							0
-						}
+							0,
+						},
 					},
 					title_text_shadow = {
-						vertical_alignment = "center",
-						upper_case = true,
-						word_wrap = true,
-						horizontal_alignment = "center",
 						font_type = "hell_shark_header",
+						horizontal_alignment = "center",
+						upper_case = true,
+						vertical_alignment = "center",
+						word_wrap = true,
 						font_size = setup_font_size(36),
 						text_color = Colors.get_color_table_with_alpha("black", 255),
 						offset = {
 							1,
 							-1,
-							-1
-						}
-					}
-				}
+							-1,
+						},
+					},
+				},
 			}
 
 			return data
@@ -387,27 +414,35 @@ UITooltipPasses = {
 			local title_text_shadow_style = style.title_text_shadow
 			local text_pass_data = data.text_pass_data
 			local text_size = data.text_size
+
 			text_size[1] = size[1] - frame_margin * 2
 			text_size[2] = 0
+
 			local title_text_height = UIUtils.get_text_height(ui_renderer, text_size, title_text_style, title_text)
 			local text_height = title_text_height
+
 			text_size[1] = size[1]
 			text_size[2] = text_height
+
 			local texture_color = data.texture_color
 			local texture_size = data.texture_size
 
 			if draw then
 				position[2] = position[2] + size[2] - (80 + texture_size[2])
 				position[3] = start_layer + 3
+
 				local old_x_position = position[1]
 				local old_y_position = position[2]
+
 				texture_color[1] = alpha
 				position[1] = position_x + size[1] / 2 - texture_size[1] / 2
+
 				local texture = content.texture
 
 				UIRenderer.draw_texture(ui_renderer, texture, position, texture_size, texture_color)
 
 				local text_extra_height = 30
+
 				position[1] = old_x_position + title_text_style.offset[1]
 				position[2] = old_y_position + text_extra_height + title_text_style.offset[2]
 				position[3] = start_layer + 6 + title_text_style.offset[3]
@@ -428,7 +463,7 @@ UITooltipPasses = {
 			position[3] = position_z
 
 			return 0
-		end
+		end,
 	},
 	weapon_stats = {
 		setup_data = function ()
@@ -438,7 +473,7 @@ UITooltipPasses = {
 					240,
 					3,
 					3,
-					3
+					3,
 				},
 				text_pass_data = {},
 				text_size = {},
@@ -448,81 +483,81 @@ UITooltipPasses = {
 						"stats_star",
 						"stats_star",
 						"stats_star",
-						"stats_star"
+						"stats_star",
 					},
 					left_star = {
 						"stats_star_left",
 						"stats_star_left",
 						"stats_star_left",
 						"stats_star_left",
-						"stats_star_left"
+						"stats_star_left",
 					},
 					right_star = {
 						"stats_star_right",
 						"stats_star_right",
 						"stats_star_right",
 						"stats_star_right",
-						"stats_star_right"
-					}
+						"stats_star_right",
+					},
 				},
 				style = {
 					attack_stars = {
-						direction = 1,
 						axis = 1,
+						direction = 1,
 						draw_count = 0,
 						texture_size = {
 							20,
-							20
+							20,
 						},
 						spacing = {
 							2,
-							0
+							0,
 						},
 						color = {
 							255,
 							255,
 							255,
-							255
+							255,
 						},
 						slot_color = {
 							200,
 							50,
 							50,
-							50
+							50,
 						},
 						offset = {
 							0,
 							0,
-							0
-						}
+							0,
+						},
 					},
 					stat_title = {
-						vertical_alignment = "top",
-						horizontal_alignment = "center",
-						word_wrap = true,
 						font_type = "hell_shark",
+						horizontal_alignment = "center",
+						vertical_alignment = "top",
+						word_wrap = true,
 						font_size = setup_font_size(18),
-						text_color = Colors.get_color_table_with_alpha("font_default", 255)
+						text_color = Colors.get_color_table_with_alpha("font_default", 255),
 					},
 					title_1 = {
-						text = "item_compare_attack_title_light",
-						word_wrap = true,
-						vertical_alignment = "bottom",
-						horizontal_alignment = "left",
 						font_type = "hell_shark",
+						horizontal_alignment = "left",
+						text = "item_compare_attack_title_light",
+						vertical_alignment = "bottom",
+						word_wrap = true,
 						font_size = setup_font_size(18),
-						text_color = Colors.get_color_table_with_alpha("font_title", 255)
+						text_color = Colors.get_color_table_with_alpha("font_title", 255),
 					},
 					title_2 = {
-						text = "item_compare_attack_title_heavy",
-						word_wrap = true,
-						vertical_alignment = "bottom",
-						horizontal_alignment = "right",
 						font_type = "hell_shark",
+						horizontal_alignment = "right",
+						text = "item_compare_attack_title_heavy",
+						vertical_alignment = "bottom",
+						word_wrap = true,
 						font_size = setup_font_size(18),
-						text_color = Colors.get_color_table_with_alpha("font_title", 255)
-					}
-				}
+						text_color = Colors.get_color_table_with_alpha("font_title", 255),
+					},
+				},
 			}
 
 			return data
@@ -541,7 +576,7 @@ UITooltipPasses = {
 			end
 
 			local backend_id = item.backend_id
-			local weapon_stats_data = nil
+			local weapon_stats_data
 
 			if not data.stats_data then
 				weapon_stats_data = ItemHelper.retrieve_weapon_item_statistics(item_data, backend_id)
@@ -576,12 +611,18 @@ UITooltipPasses = {
 					local text_id = "title_" .. i
 					local text_style = style[text_id]
 					local text_size = data.text_size
+
 					text_size[1] = size[1]
 					text_size[2] = star_height
+
 					local text_pass_data = data.text_pass_data
+
 					text_pass_data.text_id = text_id
+
 					local text = Localize(text_style.text)
+
 					content[text_id] = text
+
 					local text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, text)
 
 					if i == 2 then
@@ -598,6 +639,7 @@ UITooltipPasses = {
 					end
 
 					local text_color = text_style.text_color
+
 					text_color[1] = alpha
 
 					UIPasses.text.draw(ui_renderer, text_pass_data, ui_scenegraph, pass_definition, text_style, content, position, text_size, input_service, dt)
@@ -618,18 +660,24 @@ UITooltipPasses = {
 
 					if attack_index == 1 then
 						position[1] = position_x + frame_margin / 2
+
 						local text_id = "stat_title"
 						local text_style = style[text_id]
 						local text_size = data.text_size
+
 						text_size[1] = size[1] - frame_margin
 						text_size[2] = star_height
+
 						local text_pass_data = data.text_pass_data
+
 						text_pass_data.text_id = text_id
 						content[text_id] = title
+
 						local text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, title)
 
 						if draw then
 							local text_color = text_style.text_color
+
 							text_color[1] = alpha
 
 							UIPasses.text.draw(ui_renderer, text_pass_data, ui_scenegraph, pass_definition, text_style, content, position, text_size, input_service, dt)
@@ -658,7 +706,7 @@ UITooltipPasses = {
 
 					if draw then
 						for i = 1, 2 do
-							local content_id = nil
+							local content_id
 							local draw_count = 0
 
 							if i == 1 then
@@ -675,6 +723,7 @@ UITooltipPasses = {
 							local direction = texture_style.direction
 							local texture_colors = texture_style.texture_colors
 							local color = texture_style.color
+
 							color[1] = alpha
 
 							if texture_colors then
@@ -687,6 +736,7 @@ UITooltipPasses = {
 
 							if i == 1 then
 								local slot_color = texture_style.slot_color
+
 								slot_color[1] = alpha
 								position[3] = position[3] - 1
 
@@ -708,7 +758,7 @@ UITooltipPasses = {
 			position[3] = position_z
 
 			return total_height
-		end
+		end,
 	},
 	old_keywords = {
 		setup_data = function ()
@@ -718,45 +768,45 @@ UITooltipPasses = {
 					240,
 					3,
 					3,
-					3
+					3,
 				},
 				text_pass_data = {},
 				text_size = {},
 				entry_texture_size = {
 					20,
-					20
+					20,
 				},
 				entry_texture_pass_data = {},
 				entry_texture_pass_definition = {
+					style_id = "entry_texture",
 					texture_id = "entry_texture",
-					style_id = "entry_texture"
 				},
 				content = {
-					entry_texture = "stats_icon_yes"
+					entry_texture = "stats_icon_yes",
 				},
 				style = {
 					text = {
-						vertical_alignment = "center",
-						horizontal_alignment = "left",
-						word_wrap = true,
 						font_type = "hell_shark",
+						horizontal_alignment = "left",
+						vertical_alignment = "center",
+						word_wrap = true,
 						font_size = setup_font_size(24),
-						text_color = Colors.get_color_table_with_alpha("font_default", 255)
+						text_color = Colors.get_color_table_with_alpha("font_default", 255),
 					},
 					entry_texture = {
 						offset = {
 							0,
 							0,
-							0
+							0,
 						},
 						color = {
 							255,
 							255,
 							255,
-							255
-						}
-					}
-				}
+							255,
+						},
+					},
+				},
 			}
 
 			return data
@@ -785,11 +835,14 @@ UITooltipPasses = {
 			local position_z = position[3]
 			local total_height = 0
 			local entry_texture_size = data.entry_texture_size
+
 			position[3] = start_layer + 2
 			position[2] = position[2] + 100 + bottom_spacing
 			position[1] = position[1] + frame_margin + 100 + entry_texture_size[1]
+
 			local loop_func = ipairs
 			local text_size = data.text_size
+
 			text_size[1] = size[1] - (frame_margin * 2 + 100) - entry_texture_size[1]
 
 			if keywords then
@@ -797,14 +850,21 @@ UITooltipPasses = {
 					local text_id = "keyword_title_" .. index
 					local text_style = style.text
 					local text_pass_data = data.text_pass_data
+
 					text_pass_data.text_id = text_id
+
 					local text = Localize(keyword)
 					local text_size = data.text_size
+
 					text_size[2] = 0
+
 					local text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, text)
+
 					text_size[2] = text_height
 					position[2] = position[2] - text_height
+
 					local old_y_position = position[2]
+
 					content[text_id] = text
 
 					if draw then
@@ -812,16 +872,21 @@ UITooltipPasses = {
 						local entry_texture_style = data.style.entry_texture
 						local entry_texture_pass_data = data.entry_texture_pass_data
 						local entry_texture_pass_definition = data.entry_texture_pass_definition
+
 						position[1] = position[1] - entry_texture_size[1]
 						position[2] = position[2] + text_height / 2 - entry_texture_size[2] / 2
+
 						local color = entry_texture_style.color
+
 						color[1] = alpha
 
 						UIPasses.texture.draw(ui_renderer, entry_texture_pass_data, ui_scenegraph, entry_texture_pass_definition, entry_texture_style, content, position, entry_texture_size, input_service, dt)
 
 						position[1] = position[1] + entry_texture_size[1]
 						position[2] = old_y_position
+
 						local text_color = text_style.text_color
+
 						text_color[1] = alpha
 
 						UIPasses.text.draw(ui_renderer, text_pass_data, ui_scenegraph, pass_definition, text_style, content, position, data.text_size, input_service, dt)
@@ -837,7 +902,7 @@ UITooltipPasses = {
 			position[3] = position_z
 
 			return 0
-		end
+		end,
 	},
 	properties = {
 		setup_data = function ()
@@ -847,74 +912,74 @@ UITooltipPasses = {
 					240,
 					3,
 					3,
-					3
+					3,
 				},
 				title_text_pass_data = {
-					text_id = "title"
+					text_id = "title",
 				},
 				text_pass_data = {},
 				text_size = {
 					0,
-					0
+					0,
 				},
 				icon_pass_data = {},
 				icon_pass_definition = {
+					style_id = "icon",
 					texture_id = "icon",
-					style_id = "icon"
 				},
 				icon_size = {
 					13,
-					13
+					13,
 				},
 				content = {
 					icon = "tooltip_marker",
-					title = Localize("tooltips_properties") .. ":"
+					title = Localize("tooltips_properties") .. ":",
 				},
 				style = {
 					property_title = {
-						vertical_alignment = "center",
-						horizontal_alignment = "left",
-						word_wrap = true,
 						font_type = "hell_shark",
+						horizontal_alignment = "left",
+						vertical_alignment = "center",
+						word_wrap = true,
 						font_size = setup_font_size(18),
-						text_color = Colors.get_color_table_with_alpha("font_default", 255)
+						text_color = Colors.get_color_table_with_alpha("font_default", 255),
 					},
 					property_text = {
-						vertical_alignment = "center",
-						horizontal_alignment = "left",
-						word_wrap = true,
 						font_type = "hell_shark",
+						horizontal_alignment = "left",
+						vertical_alignment = "center",
+						word_wrap = true,
 						font_size = setup_font_size(16),
 						text_color = Colors.get_color_table_with_alpha("corn_flower_blue", 255),
 						color_override = {},
 						color_override_table = {
-							start_index = 0,
 							end_index = 0,
-							color = Colors.get_color_table_with_alpha("font_default", 255)
-						}
+							start_index = 0,
+							color = Colors.get_color_table_with_alpha("font_default", 255),
+						},
 					},
 					property_advanced_description = {
-						vertical_alignment = "top",
-						horizontal_alignment = "left",
-						word_wrap = true,
 						font_type = "hell_shark",
+						horizontal_alignment = "left",
+						vertical_alignment = "top",
+						word_wrap = true,
 						font_size = setup_font_size(16),
-						text_color = Colors.get_color_table_with_alpha("font_default", 255)
+						text_color = Colors.get_color_table_with_alpha("font_default", 255),
 					},
 					icon = {
 						color = {
 							255,
 							255,
 							255,
-							255
+							255,
 						},
 						offset = {
 							0,
 							0,
-							2
-						}
-					}
-				}
+							2,
+						},
+					},
+				},
 			}
 
 			return data
@@ -942,26 +1007,33 @@ UITooltipPasses = {
 			local position_y = position[2]
 			local position_z = position[3]
 			local total_height = 0
+
 			position[3] = start_layer + 2
 			position[2] = position[2]
+
 			local loop_func = pairs
 			local show_advanced_description = input_service:get("item_compare") or input_service:get("item_detail")
 
 			if properties then
 				position[1] = position[1] + frame_margin
+
 				local text_style = style.property_title
 				local title_text_pass_data = data.title_text_pass_data
 				local title_text = content.title
 				local text_size = data.text_size
+
 				text_size[1] = size[1] - (frame_margin * 2 + frame_margin)
 				text_size[2] = 0
+
 				local title_text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, title_text)
+
 				text_size[2] = title_text_height
 				position[2] = position[2] - title_text_height
 				total_height = total_height + title_text_height
 
 				if draw then
 					local text_color = text_style.text_color
+
 					text_color[1] = alpha
 
 					UIPasses.text.draw(ui_renderer, title_text_pass_data, ui_scenegraph, pass_definition, text_style, content, position, text_size, input_service, dt)
@@ -980,8 +1052,10 @@ UITooltipPasses = {
 						local text_id = "property_title_" .. index
 						local text_style = style.property_text
 						local text_pass_data = data.text_pass_data
+
 						text_pass_data.text_id = text_id
-						local text = nil
+
+						local text
 
 						if item.hidden_description then
 							text = HIDDEN_DESCRIPTION_TEXT
@@ -989,19 +1063,27 @@ UITooltipPasses = {
 							local description, advanced_description = UIUtils.get_property_description(property_key, property_value)
 							local additional_text_length = advanced_description and UTF8Utils.string_length(advanced_description) or 0
 							local default_text_length = text and UTF8Utils.string_length(text) or 0
+
 							text = description .. advanced_description
+
 							local color_override_table = text_style.color_override_table
+
 							color_override_table.start_index = default_text_length + 1
 							color_override_table.end_index = default_text_length + additional_text_length
 							text_style.color_override[1] = color_override_table
 						end
 
 						local text_size = data.text_size
+
 						text_size[2] = 0
+
 						local text_height, num_texts = UIUtils.get_text_height(ui_renderer, text_size, text_style, text)
+
 						text_size[2] = text_height
 						position[2] = position[2] - text_height
+
 						local old_y_position = position[2]
+
 						content[text_id] = text
 
 						if draw then
@@ -1010,6 +1092,7 @@ UITooltipPasses = {
 							local icon_style = style.icon
 							local icon_size = data.icon_size
 							local icon_color = icon_style.color
+
 							icon_color[1] = alpha
 							position[2] = position[2] + text_height - text_height / num_texts * 0.5 - (icon_size[2] * 0.5 + 2)
 
@@ -1017,7 +1100,9 @@ UITooltipPasses = {
 
 							position[2] = old_y_position
 							position[1] = position[1] + icon_size[1]
+
 							local text_color = text_style.text_color
+
 							text_color[1] = alpha
 
 							UIPasses.text.draw(ui_renderer, text_pass_data, ui_scenegraph, pass_definition, text_style, content, position, data.text_size, input_service, dt)
@@ -1039,7 +1124,7 @@ UITooltipPasses = {
 			position[3] = position_z
 
 			return total_height
-		end
+		end,
 	},
 	traits = {
 		setup_data = function ()
@@ -1052,55 +1137,55 @@ UITooltipPasses = {
 					240,
 					3,
 					3,
-					3
+					3,
 				},
 				text_pass_data = {},
 				text_size = {
 					0,
-					0
+					0,
 				},
 				icon_pass_data = {},
 				icon_pass_definition = {
+					style_id = "icon",
 					texture_id = "icon",
-					style_id = "icon"
 				},
 				icon_size = {
 					40,
-					40
+					40,
 				},
 				frame_pass_data = {},
 				frame_pass_definition = {
+					style_id = "frame",
 					texture_id = "frame",
-					style_id = "frame"
 				},
 				frame_size = {
 					0,
-					0
+					0,
 				},
 				content = {
 					icon = "icons_placeholder",
-					frame = frame_settings.texture
+					frame = frame_settings.texture,
 				},
 				style = {
 					trait_title = {
-						vertical_alignment = "center",
-						horizontal_alignment = "left",
-						word_wrap = true,
 						font_type = "hell_shark",
+						horizontal_alignment = "left",
+						vertical_alignment = "center",
+						word_wrap = true,
 						font_size = setup_font_size(16),
 						text_color = Colors.get_color_table_with_alpha("font_default", 255),
 						line_colors = {
 							Colors.get_color_table_with_alpha("font_title", 255),
-							Colors.get_color_table_with_alpha("font_default", 255)
-						}
+							Colors.get_color_table_with_alpha("font_default", 255),
+						},
 					},
 					trait_advanced_description = {
-						vertical_alignment = "top",
-						horizontal_alignment = "left",
-						word_wrap = true,
 						font_type = "hell_shark",
+						horizontal_alignment = "left",
+						vertical_alignment = "top",
+						word_wrap = true,
 						font_size = setup_font_size(16),
-						text_color = Colors.get_color_table_with_alpha("font_default", 255)
+						text_color = Colors.get_color_table_with_alpha("font_default", 255),
 					},
 					frame = {
 						texture_size = frame_settings.texture_size,
@@ -1109,41 +1194,41 @@ UITooltipPasses = {
 							255,
 							255,
 							255,
-							255
+							255,
 						},
 						offset = {
 							0,
 							0,
-							1
-						}
+							1,
+						},
 					},
 					icon = {
 						color = {
 							255,
 							255,
 							255,
-							255
+							255,
 						},
 						offset = {
 							0,
 							0,
-							2
-						}
+							2,
+						},
 					},
 					background = {
 						color = {
 							255,
 							10,
 							10,
-							10
+							10,
 						},
 						offset = {
 							0,
 							0,
-							-1
-						}
-					}
-				}
+							-1,
+						},
+					},
+				},
 			}
 
 			return data
@@ -1174,9 +1259,11 @@ UITooltipPasses = {
 				local position_x = position[1]
 				local position_y = position[2]
 				local position_z = position[3]
+
 				position[1] = position[1] + frame_margin
 				position[2] = position[2]
 				position[3] = start_layer + 2
+
 				local trait_spacing = 10
 				local loop_func = draw_downwards and ipairs or ripairs
 
@@ -1187,7 +1274,9 @@ UITooltipPasses = {
 						local text_id = "trait_title_" .. index
 						local text_style = style.trait_title
 						local text_pass_data = data.text_pass_data
+
 						text_pass_data.text_id = text_id
+
 						local trait_name = trait_data.display_name
 						local trait_advanced_description = trait_data.advanced_description
 						local trait_icon = trait_data.icon
@@ -1197,13 +1286,14 @@ UITooltipPasses = {
 						local icon_pass_data = data.icon_pass_data
 						local icon_style = data.style.icon
 						local icon_size = data.icon_size
+
 						content.icon = trait_icon or data.default_icon
 
 						if trait_advanced_description then
 							description_text = UIUtils.get_trait_description(trait_key)
 						end
 
-						local text = nil
+						local text
 
 						if item.hidden_description then
 							text = string.format("%s\n%s\n%s", HIDDEN_DESCRIPTION_TEXT, HIDDEN_DESCRIPTION_TEXT, HIDDEN_DESCRIPTION_TEXT)
@@ -1213,16 +1303,22 @@ UITooltipPasses = {
 						end
 
 						local text_size = data.text_size
+
 						text_size[1] = size[1] - frame_margin * 3 - icon_size[1]
 						text_size[2] = 0
+
 						local text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, text)
+
 						text_size[2] = text_height
+
 						local old_x_position = position[1]
 						local old_y_position = position[2]
+
 						content[text_id] = text
 
 						if draw then
 							local icon_color = icon_style.color
+
 							icon_color[1] = alpha
 							position[2] = old_y_position - icon_size[2]
 							position[1] = old_x_position
@@ -1231,8 +1327,10 @@ UITooltipPasses = {
 
 							position[2] = old_y_position - text_height
 							position[1] = old_x_position + icon_size[1] + frame_margin
+
 							local text_color = text_style.text_color
 							local line_colors = text_style.line_colors
+
 							text_color[1] = alpha
 							line_colors[1][1] = alpha
 							line_colors[2][1] = alpha
@@ -1257,7 +1355,7 @@ UITooltipPasses = {
 			end
 
 			return total_height
-		end
+		end,
 	},
 	advanced_input_helper = {
 		setup_data = function ()
@@ -1272,30 +1370,30 @@ UITooltipPasses = {
 					240,
 					3,
 					3,
-					3
+					3,
 				},
 				text_pass_data = {
-					text_id = "text"
+					text_id = "text",
 				},
 				text_size = {},
 				texture_pass_data = {},
 				texture_pass_definition = {
+					style_id = "input_button",
 					texture_id = "texture_id",
-					style_id = "input_button"
 				},
 				texture_size = {
 					0,
-					0
+					0,
 				},
 				macro_replacement = macro_replacement,
 				frame_pass_data = {},
 				frame_pass_definition = {
+					style_id = "frame",
 					texture_id = "frame",
-					style_id = "frame"
 				},
 				frame_size = {
 					0,
-					0
+					0,
 				},
 				content = {
 					text = "",
@@ -1303,7 +1401,7 @@ UITooltipPasses = {
 					text_gamepad = text_gamepad,
 					frame = frame_settings.texture,
 					texture_id = frame_settings.texture,
-					input_button_visible = gamepad_active
+					input_button_visible = gamepad_active,
 				},
 				style = {
 					frame = {
@@ -1313,55 +1411,55 @@ UITooltipPasses = {
 							255,
 							255,
 							255,
-							255
+							255,
 						},
 						offset = {
 							0,
 							0,
-							1
-						}
+							1,
+						},
 					},
 					text = {
-						vertical_alignment = "center",
-						horizontal_alignment = "center",
-						word_wrap = true,
 						font_type = "hell_shark",
+						horizontal_alignment = "center",
+						vertical_alignment = "center",
+						word_wrap = true,
 						font_size = setup_font_size(16),
-						text_color = Colors.get_color_table_with_alpha("font_title", 255)
+						text_color = Colors.get_color_table_with_alpha("font_title", 255),
 					},
 					input_button = {
-						vertical_alignment = "center",
 						horizontal_alignment = "center",
+						vertical_alignment = "center",
 						texture_size = {
 							0,
-							0
+							0,
 						},
 						offset = {
 							0,
 							0,
-							0
+							0,
 						},
 						color = {
 							255,
 							255,
 							255,
-							255
-						}
+							255,
+						},
 					},
 					background = {
 						color = {
 							255,
 							10,
 							10,
-							10
+							10,
 						},
 						offset = {
 							0,
 							0,
-							-1
-						}
-					}
-				}
+							-1,
+						},
+					},
+				},
 			}
 
 			return data
@@ -1390,6 +1488,7 @@ UITooltipPasses = {
 			local position_y = position[2]
 			local position_z = position[3]
 			local total_height = 0
+
 			position[3] = start_layer - 6
 
 			if properties and next(properties) then
@@ -1405,31 +1504,39 @@ UITooltipPasses = {
 
 				local text = content.text
 				local text_size = data.text_size
+
 				text_size[1] = size[1] - frame_margin * 2
 				text_size[2] = 0
+
 				local text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, text)
+
 				total_height = total_height + text_height
 				text_size[2] = text_height
+
 				local frame_size = data.frame_size
 				local frame_pass_data = data.frame_pass_data
 				local frame_pass_definition = data.frame_pass_definition
 				local frame_content = data.content
 				local frame_style = data.style.frame
+
 				frame_size[1] = text_size[1]
 				frame_size[2] = text_size[2] + frame_margin / 2
 				total_height = total_height + frame_size[2]
 				position[2] = position[2] - frame_size[2] - frame_margin / 2
 				position[1] = position[1] + frame_margin
+
 				local old_y_position = position[2]
 
 				if draw then
 					local frame_color = frame_style.color
+
 					frame_color[1] = alpha
 
 					UIPasses.texture_frame.draw(ui_renderer, frame_pass_data, ui_scenegraph, frame_pass_definition, frame_style, frame_content, position, frame_size, input_service, dt)
 
 					local background_style = data.style.background
 					local background_color = background_style.color
+
 					background_color[1] = alpha
 					position[3] = position[3] - 1
 
@@ -1443,6 +1550,7 @@ UITooltipPasses = {
 
 				if draw then
 					local text_color = text_style.text_color
+
 					text_color[1] = alpha
 
 					UIPasses.text.draw(ui_renderer, text_pass_data, ui_scenegraph, pass_definition, text_style, content, position, text_size, input_service, dt)
@@ -1457,9 +1565,11 @@ UITooltipPasses = {
 
 					if gamepad_active then
 						local button_texture_data = UISettings.get_gamepad_input_texture_data(input_service, "debug_pixeldistance_1", true)
+
 						texture_style.texture_size[1] = button_texture_data.size[1] * 0.8
 						texture_style.texture_size[2] = button_texture_data.size[2] * 0.8
 						content.texture_id = button_texture_data.texture
+
 						local position = position
 						local text = content.text
 						local start_index, end_index = string.find(text, macro_replacement)
@@ -1467,6 +1577,7 @@ UITooltipPasses = {
 						local font, scaled_font_size = UIFontByResolution(text_style)
 						local text_width = UIRenderer.text_size(ui_renderer, text, font[1], scaled_font_size)
 						local prefix_width = UIRenderer.text_size(ui_renderer, prefix, font[1], scaled_font_size)
+
 						position[1] = position[1] - text_width * 0.5 + prefix_width + button_texture_data.size[1] * 0.5
 						position[2] = position[2] - frame_margin * 0.5
 
@@ -1480,7 +1591,7 @@ UITooltipPasses = {
 			position[3] = position_z
 
 			return 0
-		end
+		end,
 	},
 	equipped_item_title = {
 		setup_data = function ()
@@ -1492,24 +1603,24 @@ UITooltipPasses = {
 					240,
 					3,
 					3,
-					3
+					3,
 				},
 				text_pass_data = {
-					text_id = "text"
+					text_id = "text",
 				},
 				text_size = {},
 				frame_pass_data = {},
 				frame_pass_definition = {
+					style_id = "frame",
 					texture_id = "frame",
-					style_id = "frame"
 				},
 				frame_size = {
 					0,
-					0
+					0,
 				},
 				content = {
 					text = Localize("equipped_item"),
-					frame = frame_settings.texture
+					frame = frame_settings.texture,
 				},
 				style = {
 					frame = {
@@ -1519,37 +1630,37 @@ UITooltipPasses = {
 							255,
 							255,
 							255,
-							255
+							255,
 						},
 						offset = {
 							0,
 							0,
-							1
-						}
+							1,
+						},
 					},
 					text = {
-						vertical_alignment = "center",
-						upper_case = true,
-						word_wrap = true,
-						horizontal_alignment = "center",
 						font_type = "hell_shark",
+						horizontal_alignment = "center",
+						upper_case = true,
+						vertical_alignment = "center",
+						word_wrap = true,
 						font_size = setup_font_size(20),
-						text_color = Colors.get_color_table_with_alpha("green", 255)
+						text_color = Colors.get_color_table_with_alpha("green", 255),
 					},
 					background = {
 						color = {
 							255,
 							10,
 							10,
-							10
+							10,
 						},
 						offset = {
 							0,
 							0,
-							-1
-						}
-					}
-				}
+							-1,
+						},
+					},
+				},
 			}
 
 			return data
@@ -1607,35 +1718,45 @@ UITooltipPasses = {
 			local position_y = position[2]
 			local position_z = position[3]
 			local total_height = 0
+
 			position[3] = start_layer - 6
+
 			local text_style = style.text
 			local text_pass_data = data.text_pass_data
 			local text = content.text
 			local text_size = data.text_size
+
 			text_size[1] = size[1] - frame_margin * 2
 			text_size[2] = 0
+
 			local text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, text)
+
 			text_size[2] = text_height
+
 			local frame_size = data.frame_size
 			local frame_pass_data = data.frame_pass_data
 			local frame_pass_definition = data.frame_pass_definition
 			local frame_content = data.content
 			local frame_style = data.style.frame
+
 			frame_size[1] = text_size[1]
 			frame_size[2] = text_size[2] + frame_margin / 2
 			total_height = frame_size[2]
 			position[2] = position[2] + frame_margin / 2
 			position[1] = position[1] + frame_margin
+
 			local old_y_position = position[2]
 
 			if draw then
 				local frame_color = frame_style.color
+
 				frame_color[1] = alpha
 
 				UIPasses.texture_frame.draw(ui_renderer, frame_pass_data, ui_scenegraph, frame_pass_definition, frame_style, frame_content, position, frame_size, input_service, dt)
 
 				local background_style = data.style.background
 				local background_color = background_style.color
+
 				background_color[1] = alpha
 				position[3] = position[3] - 1
 
@@ -1649,6 +1770,7 @@ UITooltipPasses = {
 
 			if draw then
 				local text_color = text_style.text_color
+
 				text_color[1] = alpha
 
 				UIPasses.text.draw(ui_renderer, text_pass_data, ui_scenegraph, pass_definition, text_style, content, position, text_size, input_service, dt)
@@ -1659,7 +1781,7 @@ UITooltipPasses = {
 			position[3] = position_z
 
 			return 0
-		end
+		end,
 	},
 	fatigue = {
 		setup_data = function ()
@@ -1668,57 +1790,57 @@ UITooltipPasses = {
 					240,
 					3,
 					3,
-					3
+					3,
 				},
 				title_text_pass_data = {
-					text_id = "title"
+					text_id = "title",
 				},
 				title_text_size = {
 					0,
-					0
+					0,
 				},
 				text_pass_data = {
-					text_id = "text"
+					text_id = "text",
 				},
 				text_size = {
 					0,
-					0
+					0,
 				},
 				icon_pass_data = {},
 				icon_pass_definition = {
+					style_id = "icon",
 					texture_id = "icon",
-					style_id = "icon"
 				},
 				block_arc_pass_data = {},
 				block_arc_pass_definition = {
+					style_id = "block_arc",
 					texture_id = "block_arc",
-					style_id = "block_arc"
 				},
 				icon_size = {
 					10,
-					14
+					14,
 				},
 				block_arc_size = {
 					30,
-					30
+					30,
 				},
 				content = {
-					text = "",
 					icon = "tooltip_block_arch_icon",
+					text = "",
 					title = Localize("tooltips_stamina"),
 					block_arc = {
 						block_arc = "block_arch_symbol",
 						uvs = {
 							{
 								1,
-								0
+								0,
 							},
 							{
 								0,
-								1
-							}
-						}
-					}
+								1,
+							},
+						},
+					},
 				},
 				style = {
 					icon = {
@@ -1726,50 +1848,50 @@ UITooltipPasses = {
 							255,
 							255,
 							255,
-							255
+							255,
 						},
 						offset = {
 							0,
 							0,
-							2
-						}
+							2,
+						},
 					},
 					block_arc = {
 						color = {
 							255,
 							255,
 							255,
-							255
+							255,
 						},
 						background_color = {
 							255,
 							20,
 							20,
-							20
+							20,
 						},
 						offset = {
 							0,
 							0,
-							2
-						}
+							2,
+						},
 					},
 					title = {
-						vertical_alignment = "center",
-						horizontal_alignment = "right",
-						word_wrap = true,
 						font_type = "hell_shark",
+						horizontal_alignment = "right",
+						vertical_alignment = "center",
+						word_wrap = true,
 						font_size = setup_font_size(18),
-						text_color = Colors.get_color_table_with_alpha("font_default", 255)
+						text_color = Colors.get_color_table_with_alpha("font_default", 255),
 					},
 					text = {
-						vertical_alignment = "center",
-						horizontal_alignment = "right",
-						word_wrap = true,
 						font_type = "hell_shark_header",
+						horizontal_alignment = "right",
+						vertical_alignment = "center",
+						word_wrap = true,
 						font_size = setup_font_size(28),
-						text_color = Colors.get_color_table_with_alpha("white", 255)
-					}
-				}
+						text_color = Colors.get_color_table_with_alpha("white", 255),
+					},
+				},
 			}
 
 			return data
@@ -1808,16 +1930,21 @@ UITooltipPasses = {
 			local backend_id = item.backend_id
 			local item_template = BackendUtils.get_item_template(item_data, backend_id)
 			local max_fatigue_points = item_template.max_fatigue_points
+
 			content.text = tostring(max_fatigue_points / 2)
 			position[3] = start_layer + 2
 			position[1] = position_x + frame_margin
+
 			local title_text_style = style.title
 			local title_text_pass_data = data.title_text_pass_data
 			local title_text = content.title
 			local title_text_size = data.title_text_size
+
 			title_text_size[1] = size[1] - frame_margin * 2
 			title_text_size[2] = 0
+
 			local title_text_height = UIUtils.get_text_height(ui_renderer, title_text_size, title_text_style, title_text)
+
 			title_text_size[2] = title_text_height
 			position[2] = position[2] - title_text_height
 			title_text_style.text_color[1] = alpha
@@ -1828,25 +1955,28 @@ UITooltipPasses = {
 			local text_pass_data = data.text_pass_data
 			local text = content.text
 			local text_size = data.text_size
+
 			text_size[1] = size[1] - frame_margin * 2
 			text_size[2] = 0
+
 			local text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, text)
 			local font, size_of_font = UIFontByResolution(text_style)
-			local font_material = font[1]
-			local font_size = font[2]
-			local font_name = font[3]
+			local font_material, font_size, font_name = font[1], font[2], font[3]
 			local text_width, _, _ = UIRenderer.text_size(ui_renderer, content.text, font_material, size_of_font, font_name)
+
 			text_size[2] = text_height
 			position[2] = position[2] - text_height
 
 			if draw then
 				local text_color = text_style.text_color
+
 				text_color[1] = alpha
 
 				UIPasses.text.draw(ui_renderer, text_pass_data, ui_scenegraph, pass_definition, text_style, content, position, text_size, input_service, dt)
 			end
 
 			position[2] = position_y - title_text_height
+
 			local block_angle = item_template.block_angle
 			local block_fraction = block_angle / 360
 			local block_fraction_steps = 10
@@ -1859,8 +1989,9 @@ UITooltipPasses = {
 			local block_arc_style = style.block_arc
 			local block_arc_color = style.block_arc.color
 			local background_color = block_arc_style.background_color
+
 			block_arc_color[1] = 255 * step_fraction * alpha_multiplier
-			position[1] = math.ceil(position_x + size[1] - block_arc_size[1] - frame_margin * 2 - text_width)
+			position[1] = math.ceil(position_x + (size[1] - block_arc_size[1]) - frame_margin * 2 - text_width)
 			position[2] = math.ceil(position[2] - block_arc_size[2])
 
 			if draw then
@@ -1875,11 +2006,13 @@ UITooltipPasses = {
 			UIPasses.texture_uv.draw(ui_renderer, block_arc_pass_data, ui_scenegraph, block_arc_pass_definition, block_arc_style, content.block_arc, position, block_arc_size, input_service, dt)
 
 			position[3] = position[3] + 1
+
 			local icon_style = style.icon
 			local icon_size = data.icon_size
 			local icon_pass_data = data.icon_pass_data
 			local icon_pass_definition = data.icon_pass_definition
 			local icon_color = icon_style.color
+
 			icon_color[1] = alpha
 			position[1] = position[1] + block_arc_size[1] / 2 - icon_size[1] / 2
 			position[2] = position[2] + block_arc_size[2] / 2 - icon_size[2] / 2
@@ -1893,7 +2026,7 @@ UITooltipPasses = {
 			position[3] = position_z
 
 			return 0
-		end
+		end,
 	},
 	ammunition = {
 		setup_data = function ()
@@ -1902,35 +2035,35 @@ UITooltipPasses = {
 					240,
 					3,
 					3,
-					3
+					3,
 				},
 				title_text_pass_data = {
-					text_id = "title"
+					text_id = "title",
 				},
 				title_text_size = {
 					0,
-					0
+					0,
 				},
 				text_pass_data = {
-					text_id = "text"
+					text_id = "text",
 				},
 				text_size = {
 					0,
-					0
+					0,
 				},
 				icon_pass_data = {},
 				icon_pass_definition = {
+					style_id = "icon",
 					texture_id = "icon",
-					style_id = "icon"
 				},
 				icon_size = {
 					44,
-					44
+					44,
 				},
 				content = {
-					text = "",
 					icon = "tooltip_icon_overheat",
-					title = Localize("tooltips_ammunition")
+					text = "",
+					title = Localize("tooltips_ammunition"),
 				},
 				style = {
 					icon = {
@@ -1938,31 +2071,31 @@ UITooltipPasses = {
 							255,
 							255,
 							255,
-							255
+							255,
 						},
 						offset = {
 							0,
 							0,
-							2
-						}
+							2,
+						},
 					},
 					title = {
-						vertical_alignment = "center",
-						horizontal_alignment = "right",
-						word_wrap = true,
 						font_type = "hell_shark",
+						horizontal_alignment = "right",
+						vertical_alignment = "center",
+						word_wrap = true,
 						font_size = setup_font_size(16),
-						text_color = Colors.get_color_table_with_alpha("font_default", 255)
+						text_color = Colors.get_color_table_with_alpha("font_default", 255),
 					},
 					text = {
-						vertical_alignment = "center",
-						horizontal_alignment = "right",
-						word_wrap = true,
 						font_type = "hell_shark_header",
+						horizontal_alignment = "right",
+						vertical_alignment = "center",
+						word_wrap = true,
 						font_size = setup_font_size(28),
-						text_color = Colors.get_color_table_with_alpha("white", 255)
-					}
-				}
+						text_color = Colors.get_color_table_with_alpha("white", 255),
+					},
+				},
 			}
 
 			return data
@@ -2007,7 +2140,7 @@ UITooltipPasses = {
 				local reload_time = ammo_data.reload_time
 				local max_ammo = ammo_data.max_ammo
 				local ammo_per_clip = ammo_data.ammo_per_clip
-				local ammo_text = nil
+				local ammo_text
 
 				if single_clip then
 					ammo_text = tostring(max_ammo) .. "/0"
@@ -2022,15 +2155,20 @@ UITooltipPasses = {
 
 			local content = data.content
 			local style = data.style
+
 			position[3] = start_layer + 2
 			position[1] = position_x + frame_margin
+
 			local title_text_style = style.title
 			local title_text_pass_data = data.title_text_pass_data
 			local title_text = content.title
 			local title_text_size = data.title_text_size
+
 			title_text_size[1] = size[1] - frame_margin * 2
 			title_text_size[2] = 0
+
 			local title_text_height = UIUtils.get_text_height(ui_renderer, title_text_size, title_text_style, title_text)
+
 			title_text_size[2] = title_text_height
 			position[2] = position[2] - title_text_height
 			title_text_style.text_color[1] = alpha
@@ -2042,9 +2180,12 @@ UITooltipPasses = {
 				local text_pass_data = data.text_pass_data
 				local text = content.text
 				local text_size = data.text_size
+
 				text_size[1] = size[1] - frame_margin * 2
 				text_size[2] = 0
+
 				local text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, text)
+
 				text_size[2] = text_height
 				position[2] = position[2] - text_height
 
@@ -2060,7 +2201,8 @@ UITooltipPasses = {
 				local icon_size = data.icon_size
 				local icon_pass_data = data.icon_pass_data
 				local icon_pass_definition = data.icon_pass_definition
-				position[1] = position_x + size[1] - icon_size[1] - frame_margin
+
+				position[1] = position_x + (size[1] - icon_size[1]) - frame_margin
 				position[2] = position[2] - icon_size[2]
 				icon_style.color[1] = alpha
 
@@ -2072,38 +2214,38 @@ UITooltipPasses = {
 			position[3] = position_z
 
 			return 0
-		end
+		end,
 	},
 	item_power_level = {
 		setup_data = function ()
 			local text_styles = {
 				{
-					vertical_alignment = "center",
-					name = "title",
-					localize = false,
-					word_wrap = true,
-					horizontal_alignment = "left",
 					font_type = "hell_shark",
+					horizontal_alignment = "left",
+					localize = false,
+					name = "title",
+					vertical_alignment = "center",
+					word_wrap = true,
 					font_size = setup_font_size(18),
-					text_color = Colors.get_color_table_with_alpha("font_default", 255)
+					text_color = Colors.get_color_table_with_alpha("font_default", 255),
 				},
 				{
-					vertical_alignment = "center",
-					name = "power",
-					localize = false,
-					word_wrap = true,
-					horizontal_alignment = "left",
 					font_type = "hell_shark_header",
+					horizontal_alignment = "left",
+					localize = false,
+					name = "power",
+					vertical_alignment = "center",
+					word_wrap = true,
 					font_size = setup_font_size(52),
-					text_color = Colors.get_color_table_with_alpha("white", 255)
-				}
+					text_color = Colors.get_color_table_with_alpha("white", 255),
+				},
 			}
-			local data = {
-				text_styles = text_styles,
-				text_content = {},
-				text_pass_data = {},
-				text_pass_size = {}
-			}
+			local data = {}
+
+			data.text_styles = text_styles
+			data.text_content = {}
+			data.text_pass_data = {}
+			data.text_pass_size = {}
 
 			return data
 		end,
@@ -2135,16 +2277,21 @@ UITooltipPasses = {
 
 			text_content.title = Localize("tooltips_power")
 			text_content.power = tostring(power_level)
+
 			local loop_func = ipairs
 			local position_x = position[1]
 			local position_y = position[2]
 			local position_z = position[3]
+
 			position[1] = position[1] + frame_margin
 			position[3] = start_layer + 2
+
 			local text_pass_data = data.text_pass_data
 			local text_size = data.text_pass_size
+
 			text_size[1] = size[1] - frame_margin * 2
 			text_size[2] = 0
+
 			local total_height = 0
 
 			for _, text_style in loop_func(text_styles) do
@@ -2159,12 +2306,14 @@ UITooltipPasses = {
 				if text then
 					text_pass_data.text_id = style_name
 					text_size[2] = 0
+
 					local text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, text)
+
 					position[2] = position[2] - text_height
 					total_height = total_height + text_height
 
 					if draw then
-						local comparison_texture_mame, comparison_texture_color, comparison_texture_uvs = nil
+						local comparison_texture_mame, comparison_texture_color, comparison_texture_uvs
 						local comparison_texture_size = Vector2(20, 20)
 
 						if pass_data.items and #pass_data.items > 1 and style_name == "power" then
@@ -2182,12 +2331,12 @@ UITooltipPasses = {
 								comparison_texture_uvs = {
 									{
 										0,
-										0
+										0,
 									},
 									{
 										1,
-										1
-									}
+										1,
+									},
 								}
 							elseif power_level < highest_compared_power_level then
 								comparison_texture_mame = "small_arrow"
@@ -2195,12 +2344,12 @@ UITooltipPasses = {
 								comparison_texture_uvs = {
 									{
 										0,
-										1
+										1,
 									},
 									{
 										1,
-										0
-									}
+										0,
+									},
 								}
 							end
 						end
@@ -2225,7 +2374,7 @@ UITooltipPasses = {
 			position[3] = position_z
 
 			return total_height
-		end
+		end,
 	},
 	item_titles = {
 		setup_data = function ()
@@ -2237,70 +2386,70 @@ UITooltipPasses = {
 					240,
 					3,
 					3,
-					3
+					3,
 				},
 				text_pass_data = {
-					text_id = "text"
+					text_id = "text",
 				},
 				text_size = {},
 				frame_pass_data = {},
 				frame_pass_definition = {
+					style_id = "frame",
 					texture_id = "frame",
-					style_id = "frame"
 				},
 				background_size = {
 					0,
-					50
+					50,
 				},
 				edge_size = {
 					0,
-					5
+					5,
 				},
 				edge_holder_size = {
 					9,
-					17
+					17,
 				},
 				header_glow_size = {
 					0,
-					50
+					50,
 				},
 				content = {
-					edge_texture = "menu_frame_12_divider",
 					edge_holder_left = "menu_frame_12_divider_left",
-					header_glow_texture = "tooltip_power_level_header_glow",
 					edge_holder_right = "menu_frame_12_divider_right",
-					frame = frame_settings.texture
+					edge_texture = "menu_frame_12_divider",
+					header_glow_texture = "tooltip_power_level_header_glow",
+					frame = frame_settings.texture,
 				},
 				style = {
 					edge = {
 						texture_size = {
 							1,
-							5
+							5,
 						},
 						color = {
 							255,
 							255,
 							255,
-							255
+							255,
 						},
 						offset = {
 							0,
 							0,
-							1
-						}
+							1,
+						},
 					},
 					edge_holder = {
 						color = {
 							255,
 							255,
 							255,
-							255
+							255,
 						},
 						offset = {
 							0,
 							0,
-							1
-						}
+							1,
+						},
 					},
 					frame = {
 						texture_size = frame_settings.texture_size,
@@ -2309,45 +2458,45 @@ UITooltipPasses = {
 							255,
 							255,
 							255,
-							255
+							255,
 						},
 						offset = {
 							0,
 							0,
-							1
-						}
+							1,
+						},
 					},
 					title_text = {
-						vertical_alignment = "center",
-						horizontal_alignment = "center",
-						word_wrap = true,
 						font_type = "hell_shark_header",
+						horizontal_alignment = "center",
+						vertical_alignment = "center",
+						word_wrap = true,
 						font_size = setup_font_size(28),
 						text_color = Colors.get_color_table_with_alpha("font_title", 255),
 						offset = {
 							0,
 							0,
-							0
-						}
+							0,
+						},
 					},
 					title_text_shadow = {
-						vertical_alignment = "center",
-						horizontal_alignment = "center",
-						word_wrap = true,
 						font_type = "hell_shark_header",
+						horizontal_alignment = "center",
+						vertical_alignment = "center",
+						word_wrap = true,
 						font_size = setup_font_size(28),
 						text_color = Colors.get_color_table_with_alpha("black", 255),
 						offset = {
 							1,
 							-1,
-							-1
-						}
+							-1,
+						},
 					},
 					text = {
-						word_wrap = true,
+						font_type = "hell_shark",
 						horizontal_alignment = "center",
 						vertical_alignment = "center",
-						font_type = "hell_shark",
+						word_wrap = true,
 						font_size = setup_font_size(18),
 						text_color = Colors.get_color_table_with_alpha("font_default", 255),
 						default_text_color = Colors.get_color_table_with_alpha("font_default", 255),
@@ -2355,49 +2504,49 @@ UITooltipPasses = {
 						offset = {
 							0,
 							0,
-							0
-						}
+							0,
+						},
 					},
 					text_shadow = {
-						vertical_alignment = "center",
-						horizontal_alignment = "center",
-						word_wrap = true,
 						font_type = "hell_shark",
+						horizontal_alignment = "center",
+						vertical_alignment = "center",
+						word_wrap = true,
 						font_size = setup_font_size(18),
 						text_color = Colors.get_color_table_with_alpha("black", 255),
 						offset = {
 							1,
 							-1,
-							-1
-						}
+							-1,
+						},
 					},
 					background = {
 						color = {
 							150,
 							0,
 							0,
-							0
+							0,
 						},
 						offset = {
 							0,
 							0,
-							-1
-						}
+							-1,
+						},
 					},
 					header = {
 						color = {
 							255,
 							255,
 							255,
-							255
+							255,
 						},
 						offset = {
 							0,
 							0,
-							1
-						}
-					}
-				}
+							1,
+						},
+					},
+				},
 			}
 
 			return data
@@ -2431,6 +2580,7 @@ UITooltipPasses = {
 
 				if profile_index and career_index then
 					local profile = SPProfiles[profile_index]
+
 					career_name = profile.careers[career_index].name
 				end
 
@@ -2449,16 +2599,23 @@ UITooltipPasses = {
 			local title_text_style = style.title_text
 			local title_text_shadow_style = style.title_text_shadow
 			local text_pass_data = data.text_pass_data
+
 			title_text_style.text_color = rarity_color
+
 			local text_size = data.text_size
+
 			text_size[1] = size[1] - frame_margin * 2
 			text_size[2] = 0
+
 			local title_text_height = UIUtils.get_text_height(ui_renderer, text_size, title_text_style, title_text)
 			local type_text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, type_text)
 			local text_height = title_text_height + type_text_height
+
 			text_size[2] = text_height
+
 			local background_size = data.background_size
 			local edge_style = data.style.edge
+
 			background_size[1] = size[1]
 			background_size[2] = text_height + frame_margin
 			total_height = total_height + background_size[2]
@@ -2466,13 +2623,19 @@ UITooltipPasses = {
 			if draw then
 				position[2] = position[2] - background_size[2] + frame_margin / 2
 				position[1] = position[1] + size[1] / 2 - background_size[1] / 2
+
 				local old_x_position = position[1]
 				local edge_size = data.edge_size
+
 				edge_size[1] = size[1]
+
 				local edge_color = edge_style.color
 				local edge_texture_size = edge_style.texture_size
+
 				edge_texture_size[1] = size[1]
+
 				local edge_texture = content.edge_texture
+
 				position[3] = start_layer + 4
 				edge_color[1] = alpha
 
@@ -2483,6 +2646,7 @@ UITooltipPasses = {
 				local edge_holder_color = edge_holder_style.color
 				local edge_holder_left_texture = content.edge_holder_left
 				local edge_holder_right_texture = content.edge_holder_right
+
 				edge_holder_color[1] = alpha
 				position[1] = position[1] + 3
 				position[2] = position[2] - 6
@@ -2495,8 +2659,10 @@ UITooltipPasses = {
 				UIRenderer.draw_texture(ui_renderer, edge_holder_right_texture, position, edge_holder_size, edge_holder_color)
 
 				position[2] = position[2] + 6
+
 				local background_style = style.background
 				local background_color = background_style.color
+
 				background_color[1] = alpha
 				position[1] = position_x
 				position[3] = start_layer + 2
@@ -2504,7 +2670,9 @@ UITooltipPasses = {
 				UIRenderer.draw_rect(ui_renderer, position, background_size, background_color)
 
 				position[3] = start_layer + 3
+
 				local header_glow_texture = content.header_glow_texture
+
 				rarity_color[1] = alpha
 
 				UIRenderer.draw_texture(ui_renderer, header_glow_texture, position, background_size, rarity_color)
@@ -2547,58 +2715,58 @@ UITooltipPasses = {
 			position[3] = position_z
 
 			return total_height
-		end
+		end,
 	},
 	console_item_titles = {
 		setup_data = function ()
 			local data = {
 				text_pass_data = {
-					text_id = "text"
+					text_id = "text",
 				},
 				text_size = {},
 				background_size = {
 					0,
-					50
+					50,
 				},
 				header_glow_size = {
 					0,
-					80
+					80,
 				},
 				content = {
-					header_glow_texture = "tooltip_power_level_header_glow_faded"
+					header_glow_texture = "tooltip_power_level_header_glow_faded",
 				},
 				style = {
 					title_text = {
-						vertical_alignment = "center",
-						horizontal_alignment = "center",
-						word_wrap = true,
 						font_type = "hell_shark_header",
+						horizontal_alignment = "center",
+						vertical_alignment = "center",
+						word_wrap = true,
 						font_size = setup_font_size(28),
 						text_color = Colors.get_color_table_with_alpha("font_title", 255),
 						offset = {
 							0,
 							0,
-							0
-						}
+							0,
+						},
 					},
 					title_text_shadow = {
-						vertical_alignment = "center",
-						horizontal_alignment = "center",
-						word_wrap = true,
 						font_type = "hell_shark_header",
+						horizontal_alignment = "center",
+						vertical_alignment = "center",
+						word_wrap = true,
 						font_size = setup_font_size(28),
 						text_color = Colors.get_color_table_with_alpha("black", 255),
 						offset = {
 							1,
 							-1,
-							-1
-						}
+							-1,
+						},
 					},
 					text = {
-						word_wrap = true,
+						font_type = "hell_shark",
 						horizontal_alignment = "center",
 						vertical_alignment = "center",
-						font_type = "hell_shark",
+						word_wrap = true,
 						font_size = setup_font_size(18),
 						text_color = Colors.get_color_table_with_alpha("font_default", 255),
 						default_text_color = Colors.get_color_table_with_alpha("font_default", 255),
@@ -2606,36 +2774,36 @@ UITooltipPasses = {
 						offset = {
 							0,
 							0,
-							0
-						}
+							0,
+						},
 					},
 					text_shadow = {
-						vertical_alignment = "center",
-						horizontal_alignment = "center",
-						word_wrap = true,
 						font_type = "hell_shark",
+						horizontal_alignment = "center",
+						vertical_alignment = "center",
+						word_wrap = true,
 						font_size = setup_font_size(18),
 						text_color = Colors.get_color_table_with_alpha("black", 255),
 						offset = {
 							1,
 							-1,
-							-1
-						}
+							-1,
+						},
 					},
 					background = {
 						color = {
 							150,
 							0,
 							0,
-							0
+							0,
 						},
 						offset = {
 							0,
 							0,
-							-1
-						}
-					}
-				}
+							-1,
+						},
+					},
+				},
 			}
 
 			return data
@@ -2659,9 +2827,11 @@ UITooltipPasses = {
 			local title_text = ""
 			local type_text = ""
 			local _, display_name, _ = UIUtils.get_ui_information_from_item(item)
+
 			title_text = Localize(display_name)
 			type_text = Localize(item_type)
 			text = title_text .. "\n" .. type_text
+
 			local text_style = style.text
 			local text_shadow_style = style.text_shadow
 			local player = pass_data.player
@@ -2673,6 +2843,7 @@ UITooltipPasses = {
 
 				if profile_index and career_index then
 					local profile = SPProfiles[profile_index]
+
 					career_name = profile.careers[career_index].name
 				end
 
@@ -2691,15 +2862,22 @@ UITooltipPasses = {
 			local title_text_style = style.title_text
 			local title_text_shadow_style = style.title_text_shadow
 			local text_pass_data = data.text_pass_data
+
 			title_text_style.text_color = rarity_color
+
 			local text_size = data.text_size
+
 			text_size[1] = size[1] - frame_margin * 2
 			text_size[2] = 0
+
 			local title_text_height = UIUtils.get_text_height(ui_renderer, text_size, title_text_style, title_text)
 			local type_text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, type_text)
 			local text_height = title_text_height + type_text_height
+
 			text_size[2] = text_height
+
 			local background_size = data.background_size
+
 			background_size[1] = size[1]
 			background_size[2] = text_height + frame_margin
 			total_height = total_height + background_size[2]
@@ -2707,14 +2885,20 @@ UITooltipPasses = {
 			if draw then
 				position[2] = position[2] - background_size[2] + frame_margin / 2
 				position[1] = position[1] + size[1] / 2 - background_size[1] / 2
+
 				local old_x_position = position[1]
 				local old_y_position = position[2]
+
 				position[1] = position_x
 				position[3] = start_layer + 3
+
 				local header_glow_size = data.header_glow_size
+
 				header_glow_size[1] = background_size[1]
 				header_glow_size[2] = background_size[2]
+
 				local header_glow_texture = content.header_glow_texture
+
 				rarity_color[1] = alpha
 				position[2] = position[2] - 5
 
@@ -2758,95 +2942,95 @@ UITooltipPasses = {
 			position[3] = position_z
 
 			return total_height
-		end
+		end,
 	},
 	item_text = {
 		setup_data = function ()
 			local text_styles = {
 				{
-					vertical_alignment = "bottom",
+					font_type = "hell_shark",
+					horizontal_alignment = "left",
 					name = "stat",
-					word_wrap = true,
-					horizontal_alignment = "left",
-					font_type = "hell_shark",
 					prefix_text = "Stamina:",
-					font_size = setup_font_size(20),
-					text_color = Colors.get_color_table_with_alpha("green", 255)
-				},
-				{
 					vertical_alignment = "bottom",
-					name = "properties",
 					word_wrap = true,
-					horizontal_alignment = "left",
-					font_type = "hell_shark",
-					prefix_text = "Properties:",
-					font_size = setup_font_size(16),
-					text_color = Colors.get_color_table_with_alpha("green", 255)
+					font_size = setup_font_size(20),
+					text_color = Colors.get_color_table_with_alpha("green", 255),
 				},
 				{
+					font_type = "hell_shark",
+					horizontal_alignment = "left",
+					name = "properties",
+					prefix_text = "Properties:",
+					vertical_alignment = "bottom",
 					word_wrap = true,
-					name = "tooltip_stat_attack_title_1",
-					localize = false,
+					font_size = setup_font_size(16),
+					text_color = Colors.get_color_table_with_alpha("green", 255),
+				},
+				{
+					font_type = "hell_shark",
 					horizontal_alignment = "left",
 					ignore_line_change = true,
+					localize = false,
+					name = "tooltip_stat_attack_title_1",
 					vertical_alignment = "bottom",
-					font_type = "hell_shark",
+					word_wrap = true,
 					text = Localize("item_compare_attack_title_light"),
 					font_size = setup_font_size(16),
-					text_color = Colors.get_color_table_with_alpha("font_title", 255)
+					text_color = Colors.get_color_table_with_alpha("font_title", 255),
 				},
 				{
-					word_wrap = true,
-					name = "tooltip_stat_attack_title_2",
-					localize = false,
-					horizontal_alignment = "right",
-					vertical_alignment = "bottom",
 					font_type = "hell_shark",
+					horizontal_alignment = "right",
+					localize = false,
+					name = "tooltip_stat_attack_title_2",
+					vertical_alignment = "bottom",
+					word_wrap = true,
 					text = Localize("item_compare_attack_title_heavy"),
 					font_size = setup_font_size(16),
-					text_color = Colors.get_color_table_with_alpha("font_title", 255)
-				}
+					text_color = Colors.get_color_table_with_alpha("font_title", 255),
+				},
 			}
 
 			for i = 1, 4 do
 				text_styles[#text_styles + 1] = {
-					vertical_alignment = "bottom",
-					localize = false,
-					word_wrap = true,
-					horizontal_alignment = "left",
 					font_type = "hell_shark",
+					horizontal_alignment = "left",
+					localize = false,
+					vertical_alignment = "bottom",
+					word_wrap = true,
 					name = "tooltip_title_" .. i,
 					font_size = setup_font_size(16),
-					text_color = Colors.get_color_table_with_alpha("font_title", 255)
+					text_color = Colors.get_color_table_with_alpha("font_title", 255),
 				}
 				text_styles[#text_styles + 1] = {
-					vertical_alignment = "bottom",
-					localize = false,
-					word_wrap = true,
-					horizontal_alignment = "left",
 					font_type = "hell_shark",
+					horizontal_alignment = "left",
+					localize = false,
+					vertical_alignment = "bottom",
+					word_wrap = true,
 					name = "tooltip_description_" .. i,
 					font_size = setup_font_size(16),
-					text_color = Colors.get_color_table_with_alpha("font_default", 255)
+					text_color = Colors.get_color_table_with_alpha("font_default", 255),
 				}
 				text_styles[#text_styles + 1] = {
-					vertical_alignment = "bottom",
-					localize = false,
-					word_wrap = true,
-					horizontal_alignment = "left",
 					font_type = "hell_shark",
+					horizontal_alignment = "left",
+					localize = false,
+					vertical_alignment = "bottom",
+					word_wrap = true,
 					name = "tooltip_warning_" .. i,
 					font_size = setup_font_size(16),
-					text_color = Colors.get_color_table_with_alpha("red", 255)
+					text_color = Colors.get_color_table_with_alpha("red", 255),
 				}
 			end
 
-			local data = {
-				text_styles = text_styles,
-				text_content = {},
-				text_pass_data = {},
-				text_pass_size = {}
-			}
+			local data = {}
+
+			data.text_styles = text_styles
+			data.text_content = {}
+			data.text_pass_data = {}
+			data.text_pass_size = {}
 
 			return data
 		end,
@@ -2904,18 +3088,24 @@ UITooltipPasses = {
 			local position_x = position[1]
 			local position_y = position[2]
 			local position_z = position[3]
+
 			position[1] = position[1] + frame_margin
 			position[2] = draw_downwards and position[2] - size[2] - frame_margin or position[2] + frame_margin
 			position[3] = start_layer + 5
+
 			local text_pass_data = data.text_pass_data
 			local text_size = data.text_pass_size
+
 			text_size[1] = size[1] - frame_margin * 2
 			text_size[2] = size[2]
+
 			local text_total_height = 0
 
 			for index, text_style in loop_func(text_styles) do
 				local ignore_line_change = text_style.ignore_line_change
+
 				text_style.vertical_alignment = draw_downwards and "top" or "bottom"
+
 				local style_name = text_style.name
 				local text = text_content[style_name]
 
@@ -2926,6 +3116,7 @@ UITooltipPasses = {
 
 				if text then
 					text_pass_data.text_id = style_name
+
 					local text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, text)
 
 					if draw then
@@ -2951,28 +3142,28 @@ UITooltipPasses = {
 			position[3] = position_z
 
 			return text_total_height
-		end
+		end,
 	},
 	unwieldable = {
 		setup_data = function ()
 			local data = {
 				text_pass_data = {
-					text_id = "text"
+					text_id = "text",
 				},
 				text_size = {},
 				content = {},
 				style = {
 					text = {
-						vertical_alignment = "center",
-						name = "description",
-						localize = false,
-						word_wrap = true,
-						horizontal_alignment = "center",
 						font_type = "hell_shark",
+						horizontal_alignment = "center",
+						localize = false,
+						name = "description",
+						vertical_alignment = "center",
+						word_wrap = true,
 						font_size = setup_font_size(24),
-						text_color = Colors.get_color_table_with_alpha("red", 255)
-					}
-				}
+						text_color = Colors.get_color_table_with_alpha("red", 255),
+					},
+				},
 			}
 
 			return data
@@ -3004,6 +3195,7 @@ UITooltipPasses = {
 
 				if profile_index and career_index then
 					local profile = SPProfiles[profile_index]
+
 					career_name = profile.careers[career_index].name
 				end
 
@@ -3019,6 +3211,7 @@ UITooltipPasses = {
 					for index, career_key in ipairs(can_wield_table) do
 						local settings = CareerSettings[career_key]
 						local display_name = settings.display_name
+
 						text = text .. Localize(display_name)
 						entry_count = entry_count - 1
 
@@ -3028,16 +3221,22 @@ UITooltipPasses = {
 					end
 
 					content.text = text
+
 					local position_x = position[1]
 					local position_y = position[2]
 					local position_z = position[3]
+
 					position[3] = start_layer + 5
+
 					local text_style = style.text
 					local text_pass_data = data.text_pass_data
 					local text_size = data.text_size
+
 					text_size[1] = size[1] - frame_margin * 2
 					text_size[2] = 0
+
 					local text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, text)
+
 					text_size[2] = text_height
 
 					if draw then
@@ -3059,30 +3258,30 @@ UITooltipPasses = {
 			else
 				return 0
 			end
-		end
+		end,
 	},
 	skin_applied = {
 		setup_data = function ()
 			local data = {
 				text_pass_data = {
-					text_id = "text"
+					text_id = "text",
 				},
 				text_size = {},
 				content = {
-					prefix_text = Localize("item_skin_applied_prefix")
+					prefix_text = Localize("item_skin_applied_prefix"),
 				},
 				style = {
 					text = {
-						vertical_alignment = "center",
-						name = "description",
-						localize = false,
-						word_wrap = true,
-						horizontal_alignment = "center",
 						font_type = "hell_shark",
+						horizontal_alignment = "center",
+						localize = false,
+						name = "description",
+						vertical_alignment = "center",
+						word_wrap = true,
 						font_size = setup_font_size(18),
-						text_color = Colors.get_color_table_with_alpha("promo", 255)
-					}
-				}
+						text_color = Colors.get_color_table_with_alpha("promo", 255),
+					},
+				},
 			}
 
 			return data
@@ -3110,16 +3309,22 @@ UITooltipPasses = {
 
 			if item_skin and item_type ~= "weapon_skin" and WeaponSkins.default_skins[item.ItemId] ~= item_skin then
 				content.text = item.hidden_description and HIDDEN_DESCRIPTION_TEXT or content.prefix_text
+
 				local position_x = position[1]
 				local position_y = position[2]
 				local position_z = position[3]
+
 				position[3] = start_layer + 5
+
 				local text_style = style.text
 				local text_pass_data = data.text_pass_data
 				local text_size = data.text_size
+
 				text_size[1] = size[1] - frame_margin * 2
 				text_size[2] = 0
+
 				local text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, content.text)
+
 				text_size[2] = text_height
 
 				if draw then
@@ -3138,28 +3343,28 @@ UITooltipPasses = {
 			else
 				return 0
 			end
-		end
+		end,
 	},
 	console_item_description = {
 		setup_data = function ()
 			local data = {
 				text_pass_data = {
-					text_id = "text"
+					text_id = "text",
 				},
 				text_size = {},
 				content = {},
 				style = {
 					text = {
-						vertical_alignment = "center",
-						name = "description",
-						localize = false,
-						word_wrap = true,
-						horizontal_alignment = "left",
 						font_type = "hell_shark",
+						horizontal_alignment = "left",
+						localize = false,
+						name = "description",
+						vertical_alignment = "center",
+						word_wrap = true,
 						font_size = setup_font_size(14),
-						text_color = Colors.get_color_table_with_alpha("font_button_normal", 255)
-					}
-				}
+						text_color = Colors.get_color_table_with_alpha("font_button_normal", 255),
+					},
+				},
 			}
 
 			return data
@@ -3181,7 +3386,7 @@ UITooltipPasses = {
 			local frame_margin = data.frame_margin or 0
 			local content = data.content
 			local style = data.style
-			local text = nil
+			local text
 			local item_data = item.data
 			local slot_type = item_data.slot_type
 			local _, _, description = UIUtils.get_ui_information_from_item(item)
@@ -3199,17 +3404,24 @@ UITooltipPasses = {
 			end
 
 			content.text = text
+
 			local position_x = position[1]
 			local position_y = position[2]
 			local position_z = position[3]
+
 			position[3] = start_layer + 5
+
 			local text_style = style.text
 			local text_pass_data = data.text_pass_data
 			local text_size = data.text_size
+
 			text_size[1] = size[1] - frame_margin * 2
 			text_size[2] = 0
+
 			local text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, text)
+
 			text_size[2] = text_height
+
 			local total_height = text_height + frame_margin * 0.5
 
 			if draw then
@@ -3225,7 +3437,7 @@ UITooltipPasses = {
 			position[3] = position_z
 
 			return total_height
-		end
+		end,
 	},
 	item_description = {
 		setup_data = function ()
@@ -3234,84 +3446,84 @@ UITooltipPasses = {
 					240,
 					3,
 					3,
-					3
+					3,
 				},
 				background_size = {
 					0,
-					50
+					50,
 				},
 				text_pass_data = {
-					text_id = "text"
+					text_id = "text",
 				},
 				text_size = {},
 				edge_size = {
 					0,
-					5
+					5,
 				},
 				edge_holder_size = {
 					9,
-					17
+					17,
 				},
 				content = {
+					edge_holder_left = "menu_frame_12_divider_left",
 					edge_holder_right = "menu_frame_12_divider_right",
 					edge_texture = "menu_frame_12_divider",
-					edge_holder_left = "menu_frame_12_divider_left"
 				},
 				style = {
 					edge = {
 						texture_size = {
 							1,
-							5
+							5,
 						},
 						color = {
 							255,
 							255,
 							255,
-							255
+							255,
 						},
 						offset = {
 							0,
 							0,
-							1
-						}
+							1,
+						},
 					},
 					edge_holder = {
 						color = {
 							255,
 							255,
 							255,
-							255
+							255,
 						},
 						offset = {
 							0,
 							0,
-							1
-						}
+							1,
+						},
 					},
 					text = {
-						vertical_alignment = "center",
-						name = "description",
-						localize = false,
-						word_wrap = true,
-						horizontal_alignment = "left",
 						font_type = "hell_shark",
+						horizontal_alignment = "left",
+						localize = false,
+						name = "description",
+						vertical_alignment = "center",
+						word_wrap = true,
 						font_size = setup_font_size(14),
-						text_color = Colors.get_color_table_with_alpha("font_button_normal", 255)
+						text_color = Colors.get_color_table_with_alpha("font_button_normal", 255),
 					},
 					background = {
 						color = {
 							150,
 							0,
 							0,
-							0
+							0,
 						},
 						offset = {
 							0,
 							0,
-							-1
-						}
-					}
-				}
+							-1,
+						},
+					},
+				},
 			}
 
 			return data
@@ -3333,7 +3545,7 @@ UITooltipPasses = {
 			local frame_margin = data.frame_margin or 0
 			local content = data.content
 			local style = data.style
-			local text = nil
+			local text
 			local item_data = item.data
 			local slot_type = item_data.slot_type
 			local _, _, description = UIUtils.get_ui_information_from_item(item)
@@ -3351,17 +3563,24 @@ UITooltipPasses = {
 			end
 
 			content.text = text
+
 			local position_x = position[1]
 			local position_y = position[2]
 			local position_z = position[3]
+
 			position[3] = start_layer + 5
+
 			local text_style = style.text
 			local text_pass_data = data.text_pass_data
 			local text_size = data.text_size
+
 			text_size[1] = size[1] - frame_margin * 2
 			text_size[2] = 0
+
 			local text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, text)
+
 			text_size[2] = text_height
+
 			local scale_inversed = RESOLUTION_LOOKUP.inv_scale
 			local total_height = text_height + frame_margin
 
@@ -3369,6 +3588,7 @@ UITooltipPasses = {
 				local background_size = data.background_size
 				local background_style = style.background
 				local background_color = background_style.color
+
 				background_color[1] = alpha
 				background_size[1] = size[1]
 				background_size[2] = total_height
@@ -3379,15 +3599,23 @@ UITooltipPasses = {
 
 				position[1] = position_x
 				position[2] = position_y
+
 				local edge_size = data.edge_size
+
 				edge_size[1] = size[1]
+
 				local edge_style = style.edge
 				local edge_color = edge_style.color
 				local edge_texture_size = edge_style.texture_size
+
 				edge_texture_size[1] = size[1]
+
 				local edge_texture = content.edge_texture
+
 				edge_color[1] = alpha
+
 				local start_position_y = position[2] - frame_margin * 0.5 * scale_inversed
+
 				position[2] = start_position_y
 				position[3] = start_layer + 4
 
@@ -3398,6 +3626,7 @@ UITooltipPasses = {
 				local edge_holder_color = edge_holder_style.color
 				local edge_holder_left_texture = content.edge_holder_left
 				local edge_holder_right_texture = content.edge_holder_right
+
 				edge_holder_color[1] = alpha
 				position[1] = position[1] + 3
 				position[2] = start_position_y - 6
@@ -3421,88 +3650,90 @@ UITooltipPasses = {
 			position[3] = position_z
 
 			return total_height
-		end
+		end,
 	},
 	talent_text = {
 		setup_data = function ()
 			local text_styles = {
 				{
-					word_wrap = true,
-					name = "title",
+					font_type = "hell_shark",
+					horizontal_alignment = "left",
 					localize = true,
+					name = "title",
 					use_shadow = true,
-					horizontal_alignment = "left",
 					vertical_alignment = "bottom",
-					font_type = "hell_shark",
+					word_wrap = true,
 					font_size = setup_font_size(24),
-					text_color = Colors.get_color_table_with_alpha("font_title", 255)
+					text_color = Colors.get_color_table_with_alpha("font_title", 255),
 				},
 				{
-					vertical_alignment = "bottom",
+					font_type = "hell_shark",
+					horizontal_alignment = "left",
+					localize = false,
 					name = "description",
-					localize = false,
+					vertical_alignment = "bottom",
 					word_wrap = true,
-					horizontal_alignment = "left",
-					font_type = "hell_shark",
 					font_size = setup_font_size(20),
-					text_color = Colors.get_color_table_with_alpha("font_default", 255)
+					text_color = Colors.get_color_table_with_alpha("font_default", 255),
 				},
 				{
-					word_wrap = true,
+					font_type = "hell_shark",
+					horizontal_alignment = "left",
+					localize = false,
 					name = "requirement",
-					localize = false,
 					use_shadow = true,
-					horizontal_alignment = "left",
 					vertical_alignment = "bottom",
-					font_type = "hell_shark",
+					word_wrap = true,
 					font_size = setup_font_size(16),
-					text_color = Colors.get_color_table_with_alpha("red", 255)
+					text_color = Colors.get_color_table_with_alpha("red", 255),
 				},
 				{
-					word_wrap = true,
-					name = "information",
-					localize = false,
-					use_shadow = true,
-					horizontal_alignment = "left",
-					vertical_alignment = "bottom",
 					font_type = "hell_shark",
+					horizontal_alignment = "left",
+					localize = false,
+					name = "information",
+					use_shadow = true,
+					vertical_alignment = "bottom",
+					word_wrap = true,
 					font_size = setup_font_size(16),
-					text_color = Colors.get_color_table_with_alpha("green", 255)
-				}
+					text_color = Colors.get_color_table_with_alpha("green", 255),
+				},
 			}
 			local texture_styles = {
 				information = {
-					vertical_alignment = "center",
 					horizontal_alignment = "left",
+					vertical_alignment = "center",
 					texture_size = {
 						0,
-						0
+						0,
 					},
 					offset = {
 						0,
 						0,
-						0
+						0,
 					},
 					color = {
 						255,
 						255,
 						255,
-						255
-					}
-				}
+						255,
+					},
+				},
 			}
-			local data = {
-				text_styles = text_styles,
-				texture_styles = texture_styles
-			}
+			local data = {}
+
+			data.text_styles = text_styles
+			data.texture_styles = texture_styles
+
 			local gamepad_active = Managers.input:is_device_active("gamepad")
+
 			data.text_content = {}
 			data.text_pass_data = {}
 			data.text_pass_size = {}
 			data.texture_pass_data = {}
 			data.texture_pass_definition = {
+				style_id = "information",
 				texture_id = "texture_id",
-				style_id = "information"
 			}
 
 			return data
@@ -3519,8 +3750,10 @@ UITooltipPasses = {
 
 			local disabled = ui_content.disabled
 			local is_selected = ui_content.is_selected
+
 			text_content.title = talent.name or "n/a"
-			local requirement_text, information_text = nil
+
+			local requirement_text, information_text
 
 			if disabled then
 				requirement_text = Localize("talent_locked_desc")
@@ -3531,22 +3764,29 @@ UITooltipPasses = {
 			text_content.requirement = requirement_text
 			text_content.information = information_text
 			text_content.description = UIUtils.get_talent_description(talent)
+
 			local loop_func = draw_downwards and ipairs or ripairs
 			local position_x = position[1]
 			local position_y = position[2]
 			local position_z = position[3]
+
 			position[1] = position[1] + frame_margin
 			position[2] = draw_downwards and position[2] - size[2] - frame_margin or position[2] + frame_margin
 			position[3] = start_layer + 5
+
 			local text_pass_data = data.text_pass_data
 			local text_size = data.text_pass_size
+
 			text_size[1] = size[1] - frame_margin * 2
 			text_size[2] = size[2]
+
 			local text_total_height = frame_margin
 
 			for index, text_style in loop_func(text_styles) do
 				local ignore_line_change = text_style.ignore_line_change
+
 				text_style.vertical_alignment = draw_downwards and "top" or "bottom"
+
 				local style_name = text_style.name
 				local text = text_content[style_name]
 				local texture_style = data.texture_styles[style_name]
@@ -3556,11 +3796,14 @@ UITooltipPasses = {
 					local texture_size = data.texture_size
 					local texture_pass_definition = data.texture_pass_definition
 					local button_texture_data = UISettings.get_gamepad_input_texture_data(input_service, "confirm", true)
+
 					texture_style.texture_size[1] = button_texture_data.size[1] * 0.8
 					texture_style.texture_size[2] = button_texture_data.size[2] * 0.8
 					texture_style.color[1] = alpha
 					ui_content.texture_id = button_texture_data.texture
+
 					local old_pos_y = position[2]
+
 					position[2] = position[2] - frame_margin
 
 					UIPasses.texture.draw(ui_renderer, texture_pass_data, ui_scenegraph, texture_pass_definition, texture_style, ui_content, position, text_size, input_service, dt)
@@ -3602,7 +3845,7 @@ UITooltipPasses = {
 			position[3] = position_z
 
 			return text_total_height
-		end
+		end,
 	},
 	generic_text = {
 		setup_data = function ()
@@ -3610,41 +3853,41 @@ UITooltipPasses = {
 				text_pass_data = {},
 				text_size = {},
 				content = {
-					text_content = {}
+					text_content = {},
 				},
 				style = {
 					title_text = {
-						word_wrap = true,
-						localize = true,
-						horizontal_alignment = "left",
-						vertical_alignment = "center",
 						font_type = "hell_shark",
+						horizontal_alignment = "left",
+						localize = true,
+						vertical_alignment = "center",
+						word_wrap = true,
 						font_size = setup_font_size(20),
 						text_color = Colors.get_color_table_with_alpha("font_default", 255),
 						line_colors = {
-							Colors.get_color_table_with_alpha("font_title", 255)
+							Colors.get_color_table_with_alpha("font_title", 255),
 						},
 						offset = {
 							0,
 							0,
-							0
-						}
+							0,
+						},
 					},
 					title_text_shadow = {
-						vertical_alignment = "center",
-						localize = true,
-						horizontal_alignment = "left",
-						word_wrap = true,
 						font_type = "hell_shark",
+						horizontal_alignment = "left",
+						localize = true,
+						vertical_alignment = "center",
+						word_wrap = true,
 						font_size = setup_font_size(20),
 						text_color = Colors.get_color_table_with_alpha("black", 255),
 						offset = {
 							1,
 							-1,
-							-1
-						}
-					}
-				}
+							-1,
+						},
+					},
+				},
 			}
 
 			return data
@@ -3671,25 +3914,34 @@ UITooltipPasses = {
 			local title_text_style = style.title_text
 			local title_text_shadow_style = style.title_text_shadow
 			local text_pass_data = data.text_pass_data
+
 			text_pass_data.text_id = text_id
+
 			local localize = not style_id or ui_style.localize
+
 			title_text_style.localize = localize
 			title_text_shadow_style.localize = localize
+
 			local text_size = data.text_size
 			local text_width = size[1] - frame_margin * 2
+
 			text_size[1] = text_width
 			text_size[2] = 0
+
 			local title_text_height = UIUtils.get_text_height(ui_renderer, text_size, title_text_style, text)
+
 			total_height = total_height + title_text_height
 			text_size[2] = title_text_height
 
 			if draw then
 				local old_x_position = position[1] + frame_margin
 				local old_y_position = position[2] - total_height + frame_margin
+
 				position[1] = old_x_position + title_text_style.offset[1]
 				position[2] = old_y_position - frame_margin + title_text_style.offset[2]
 				position[3] = start_layer + 6 + title_text_style.offset[3]
 				text_size[1] = text_width
+
 				local line_colors = title_text_style.line_colors
 
 				for _, color in ipairs(line_colors) do
@@ -3713,7 +3965,7 @@ UITooltipPasses = {
 			position[3] = position_z
 
 			return total_height
-		end
+		end,
 	},
 	level_info = {
 		setup_data = function ()
@@ -3723,12 +3975,12 @@ UITooltipPasses = {
 					255,
 					0,
 					0,
-					0
+					0,
 				},
 				text_pass_data = {},
 				text_size = {},
 				content = {
-					text_content = {}
+					text_content = {},
 				},
 				style = {
 					image_edge_fade = {
@@ -3736,34 +3988,34 @@ UITooltipPasses = {
 							255,
 							255,
 							255,
-							255
+							255,
 						},
 						size = {
 							280,
-							15
-						}
+							15,
+						},
 					},
 					text_styles = {
 						{
-							vertical_alignment = "center",
-							name = "title",
-							word_wrap = true,
-							horizontal_alignment = "center",
 							font_type = "hell_shark_header",
+							horizontal_alignment = "center",
+							name = "title",
+							vertical_alignment = "center",
+							word_wrap = true,
 							font_size = setup_font_size(28),
-							text_color = Colors.get_color_table_with_alpha("font_title", 255)
+							text_color = Colors.get_color_table_with_alpha("font_title", 255),
 						},
 						{
-							vertical_alignment = "center",
-							name = "description",
-							word_wrap = true,
-							horizontal_alignment = "center",
 							font_type = "hell_shark",
+							horizontal_alignment = "center",
+							name = "description",
+							vertical_alignment = "center",
+							word_wrap = true,
 							font_size = setup_font_size(18),
-							text_color = Colors.get_color_table_with_alpha("font_default", 255)
-						}
-					}
-				}
+							text_color = Colors.get_color_table_with_alpha("font_default", 255),
+						},
+					},
+				},
 			}
 
 			return data
@@ -3785,20 +4037,26 @@ UITooltipPasses = {
 			local frame_name = data.frame_name
 			local frame_settings = UIFrameSettings[frame_name]
 			local frame_edge_height = frame_settings.texture_sizes.horizontal[2]
+
 			text_content.title = Localize(display_name)
 			position[1] = position[1] + frame_margin
 			position[2] = draw_downwards and position[2] - total_height or position[2] + frame_edge_height
 			position[3] = start_layer + 5
+
 			local text_size = data.text_size
+
 			text_size[1] = size[1] - frame_margin * 2
 			text_size[2] = 0
+
 			local text_total_height = -frame_edge_height
 			local text_pass_data = data.text_pass_data
 			local loop_func = draw_downwards and ipairs or ripairs
 
 			for index, text_style in loop_func(text_styles) do
 				local ignore_line_change = text_style.ignore_line_change
+
 				text_style.vertical_alignment = draw_downwards and "top" or "top"
+
 				local style_name = text_style.name
 				local text = text_content[style_name]
 
@@ -3809,6 +4067,7 @@ UITooltipPasses = {
 
 				if text then
 					text_pass_data.text_id = style_name
+
 					local text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, text)
 
 					if not ignore_line_change and not draw_downwards then
@@ -3837,7 +4096,7 @@ UITooltipPasses = {
 			position[3] = position_z
 
 			return total_height
-		end
+		end,
 	},
 	additional_option_info = {
 		setup_data = function ()
@@ -3847,12 +4106,12 @@ UITooltipPasses = {
 					255,
 					0,
 					0,
-					0
+					0,
 				},
 				text_pass_data = {},
 				text_size = {},
 				content = {
-					text_content = {}
+					text_content = {},
 				},
 				style = {
 					image_edge_fade = {
@@ -3860,34 +4119,34 @@ UITooltipPasses = {
 							255,
 							255,
 							255,
-							255
+							255,
 						},
 						size = {
 							280,
-							15
-						}
+							15,
+						},
 					},
 					text_styles = {
 						{
-							vertical_alignment = "center",
-							name = "title",
-							word_wrap = true,
-							horizontal_alignment = "center",
 							font_type = "hell_shark_header",
+							horizontal_alignment = "center",
+							name = "title",
+							vertical_alignment = "center",
+							word_wrap = true,
 							font_size = setup_font_size(28),
-							text_color = Colors.get_color_table_with_alpha("font_title", 255)
+							text_color = Colors.get_color_table_with_alpha("font_title", 255),
 						},
 						{
-							vertical_alignment = "center",
-							name = "description",
-							word_wrap = true,
-							horizontal_alignment = "center",
 							font_type = "hell_shark",
+							horizontal_alignment = "center",
+							name = "description",
+							vertical_alignment = "center",
+							word_wrap = true,
 							font_size = setup_font_size(18),
-							text_color = Colors.get_color_table_with_alpha("font_default", 255)
-						}
-					}
-				}
+							text_color = Colors.get_color_table_with_alpha("font_default", 255),
+						},
+					},
+				},
 			}
 
 			return data
@@ -3906,7 +4165,9 @@ UITooltipPasses = {
 
 			if ui_style and ui_style.localize then
 				title = Localize(title)
+
 				local description_values = additional_option_data.description_values
+
 				description = UIUtils.format_localized_description(description, description_values)
 			end
 
@@ -3917,21 +4178,27 @@ UITooltipPasses = {
 			local frame_name = data.frame_name
 			local frame_settings = UIFrameSettings[frame_name]
 			local frame_edge_height = frame_settings.texture_sizes.horizontal[2]
+
 			text_content.title = title
 			text_content.description = description
 			position[1] = position[1] + frame_margin
 			position[2] = draw_downwards and position[2] - total_height or position[2] + frame_edge_height
 			position[3] = start_layer + 5
+
 			local text_size = data.text_size
+
 			text_size[1] = size[1] - frame_margin * 2
 			text_size[2] = 0
+
 			local text_total_height = -frame_edge_height
 			local text_pass_data = data.text_pass_data
 			local loop_func = draw_downwards and ipairs or ripairs
 
 			for index, text_style in loop_func(text_styles) do
 				local ignore_line_change = text_style.ignore_line_change
+
 				text_style.vertical_alignment = draw_downwards and "top" or "top"
+
 				local style_name = text_style.name
 				local text = text_content[style_name]
 
@@ -3942,6 +4209,7 @@ UITooltipPasses = {
 
 				if text then
 					text_pass_data.text_id = style_name
+
 					local text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, text)
 
 					if not ignore_line_change and not draw_downwards then
@@ -3970,48 +4238,48 @@ UITooltipPasses = {
 			position[3] = position_z
 
 			return total_height
-		end
+		end,
 	},
 	deed_mission = {
 		setup_data = function ()
 			local data = {
 				text_pass_data = {
-					text_id = "text"
+					text_id = "text",
 				},
 				text_size = {},
 				content = {},
 				style = {
 					title_text = {
-						vertical_alignment = "center",
-						horizontal_alignment = "left",
-						word_wrap = true,
 						font_type = "hell_shark_header",
+						horizontal_alignment = "left",
+						vertical_alignment = "center",
+						word_wrap = true,
 						font_size = setup_font_size(28),
 						text_color = Colors.get_color_table_with_alpha("font_title", 255),
 						offset = {
 							0,
 							0,
-							0
-						}
+							0,
+						},
 					},
 					title_text_shadow = {
-						vertical_alignment = "center",
-						horizontal_alignment = "left",
-						word_wrap = true,
 						font_type = "hell_shark_header",
+						horizontal_alignment = "left",
+						vertical_alignment = "center",
+						word_wrap = true,
 						font_size = setup_font_size(28),
 						text_color = Colors.get_color_table_with_alpha("black", 255),
 						offset = {
 							1,
 							-1,
-							-1
-						}
+							-1,
+						},
 					},
 					text = {
-						word_wrap = true,
+						font_type = "hell_shark",
 						horizontal_alignment = "left",
 						vertical_alignment = "center",
-						font_type = "hell_shark",
+						word_wrap = true,
 						font_size = setup_font_size(18),
 						text_color = Colors.get_color_table_with_alpha("font_default", 255),
 						default_text_color = Colors.get_color_table_with_alpha("font_default", 255),
@@ -4019,23 +4287,23 @@ UITooltipPasses = {
 						offset = {
 							0,
 							0,
-							0
-						}
+							0,
+						},
 					},
 					text_shadow = {
-						vertical_alignment = "center",
-						horizontal_alignment = "left",
-						word_wrap = true,
 						font_type = "hell_shark",
+						horizontal_alignment = "left",
+						vertical_alignment = "center",
+						word_wrap = true,
 						font_size = setup_font_size(18),
 						text_color = Colors.get_color_table_with_alpha("black", 255),
 						offset = {
 							1,
 							-1,
-							-1
-						}
-					}
-				}
+							-1,
+						},
+					},
+				},
 			}
 
 			return data
@@ -4066,15 +4334,19 @@ UITooltipPasses = {
 			local title_text_shadow_style = style.title_text_shadow
 			local text_pass_data = data.text_pass_data
 			local text_size = data.text_size
+
 			text_size[1] = size[1] - frame_margin * 2
 			text_size[2] = 0
+
 			local title_text_height = UIUtils.get_text_height(ui_renderer, text_size, title_text_style, title_text)
 			local type_text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, type_text)
 			local text_height = title_text_height + type_text_height
+
 			text_size[2] = text_height
 
 			if draw then
 				local old_x_position = position[1] + frame_margin
+
 				position[1] = old_x_position + title_text_style.offset[1]
 				position[2] = position_y - frame_margin - title_text_height + title_text_style.offset[2]
 				position[3] = start_layer + 6 + title_text_style.offset[3]
@@ -4113,48 +4385,48 @@ UITooltipPasses = {
 			position[3] = position_z
 
 			return text_height
-		end
+		end,
 	},
 	deed_difficulty = {
 		setup_data = function ()
 			local data = {
 				text_pass_data = {
-					text_id = "text"
+					text_id = "text",
 				},
 				text_size = {},
 				content = {},
 				style = {
 					title_text = {
-						vertical_alignment = "center",
-						horizontal_alignment = "left",
-						word_wrap = true,
 						font_type = "hell_shark_header",
+						horizontal_alignment = "left",
+						vertical_alignment = "center",
+						word_wrap = true,
 						font_size = setup_font_size(28),
 						text_color = Colors.get_color_table_with_alpha("font_title", 255),
 						offset = {
 							0,
 							0,
-							0
-						}
+							0,
+						},
 					},
 					title_text_shadow = {
-						vertical_alignment = "center",
-						horizontal_alignment = "left",
-						word_wrap = true,
 						font_type = "hell_shark_header",
+						horizontal_alignment = "left",
+						vertical_alignment = "center",
+						word_wrap = true,
 						font_size = setup_font_size(28),
 						text_color = Colors.get_color_table_with_alpha("black", 255),
 						offset = {
 							1,
 							-1,
-							-1
-						}
+							-1,
+						},
 					},
 					text = {
-						word_wrap = true,
+						font_type = "hell_shark",
 						horizontal_alignment = "left",
 						vertical_alignment = "center",
-						font_type = "hell_shark",
+						word_wrap = true,
 						font_size = setup_font_size(18),
 						text_color = Colors.get_color_table_with_alpha("font_default", 255),
 						default_text_color = Colors.get_color_table_with_alpha("font_default", 255),
@@ -4162,23 +4434,23 @@ UITooltipPasses = {
 						offset = {
 							0,
 							0,
-							0
-						}
+							0,
+						},
 					},
 					text_shadow = {
-						vertical_alignment = "center",
-						horizontal_alignment = "left",
-						word_wrap = true,
 						font_type = "hell_shark",
+						horizontal_alignment = "left",
+						vertical_alignment = "center",
+						word_wrap = true,
 						font_size = setup_font_size(18),
 						text_color = Colors.get_color_table_with_alpha("black", 255),
 						offset = {
 							1,
 							-1,
-							-1
-						}
-					}
-				}
+							-1,
+						},
+					},
+				},
 			}
 
 			return data
@@ -4211,15 +4483,19 @@ UITooltipPasses = {
 			local title_text_shadow_style = style.title_text_shadow
 			local text_pass_data = data.text_pass_data
 			local text_size = data.text_size
+
 			text_size[1] = size[1] - frame_margin * 2
 			text_size[2] = 0
+
 			local title_text_height = UIUtils.get_text_height(ui_renderer, text_size, title_text_style, title_text)
 			local type_text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, type_text)
 			local text_height = title_text_height + type_text_height
+
 			text_size[2] = text_height
 
 			if draw then
 				local old_x_position = position[1] + frame_margin
+
 				position[1] = old_x_position + title_text_style.offset[1]
 				position[2] = position_y - frame_margin - title_text_height + title_text_style.offset[2]
 				position[3] = start_layer + 6 + title_text_style.offset[3]
@@ -4258,7 +4534,7 @@ UITooltipPasses = {
 			position[3] = position_z
 
 			return text_height
-		end
+		end,
 	},
 	mutators = {
 		setup_data = function (pass_style)
@@ -4267,60 +4543,60 @@ UITooltipPasses = {
 				text_pass_data = {},
 				text_size = {
 					0,
-					0
+					0,
 				},
 				icon_pass_data = {},
 				icon_pass_definition = {
+					style_id = "icon",
 					texture_id = "icon",
-					style_id = "icon"
 				},
 				icon_size = {
 					40,
-					40
+					40,
 				},
 				content = {
-					icon = "icons_placeholder"
+					icon = "icons_placeholder",
 				},
 				style = {
 					text = pass_style and pass_style.text or {
-						vertical_alignment = "center",
-						horizontal_alignment = "left",
-						word_wrap = true,
 						font_type = "hell_shark",
+						horizontal_alignment = "left",
+						vertical_alignment = "center",
+						word_wrap = true,
 						font_size = setup_font_size(16),
 						text_color = Colors.get_color_table_with_alpha("font_default", 255),
 						line_colors = {
 							Colors.get_color_table_with_alpha("font_title", 255),
-							Colors.get_color_table_with_alpha("font_default", 255)
-						}
+							Colors.get_color_table_with_alpha("font_default", 255),
+						},
 					},
 					text_shadow = pass_style and pass_style.text_shadow or {
-						vertical_alignment = "center",
-						horizontal_alignment = "left",
-						word_wrap = true,
 						font_type = "hell_shark",
+						horizontal_alignment = "left",
+						vertical_alignment = "center",
+						word_wrap = true,
 						font_size = setup_font_size(16),
 						text_color = Colors.get_color_table_with_alpha("black", 255),
 						offset = {
 							1,
 							-1,
-							-1
-						}
+							-1,
+						},
 					},
 					icon = pass_style and pass_style.icon or {
 						color = {
 							255,
 							255,
 							255,
-							255
+							255,
 						},
 						offset = {
 							0,
 							0,
-							2
-						}
-					}
-				}
+							2,
+						},
+					},
+				},
 			}
 
 			return data
@@ -4345,9 +4621,11 @@ UITooltipPasses = {
 			local position_x = position[1]
 			local position_y = position[2]
 			local position_z = position[3]
+
 			position[1] = position[1] + frame_margin
 			position[2] = position[2] - total_height
 			position[3] = start_layer + 2
+
 			local trait_spacing = 10
 			local loop_func = draw_downwards and ipairs or ripairs
 
@@ -4360,26 +4638,36 @@ UITooltipPasses = {
 				local text_style = style.text
 				local text_shadow_style = style.text_shadow
 				local text_pass_data = data.text_pass_data
+
 				text_pass_data.text_id = text_id
+
 				local title_text = Localize(display_name)
 				local description_text = Localize(description)
 				local icon_pass_definition = data.icon_pass_definition
 				local icon_pass_data = data.icon_pass_data
 				local icon_style = data.style.icon
 				local icon_size = data.icon_size
+
 				content.icon = icon or data.default_icon
+
 				local text = title_text .. "\n" .. description_text
 				local text_size = data.text_size
+
 				text_size[1] = size[1] - frame_margin * 3 - icon_size[1]
 				text_size[2] = 0
+
 				local text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, text)
+
 				text_size[2] = text_height
+
 				local old_x_position = position[1]
 				local old_y_position = position[2]
+
 				content[text_id] = text
 
 				if draw then
 					local icon_color = icon_style.color
+
 					icon_color[1] = alpha
 					position[1] = old_x_position
 					position[2] = old_y_position - icon_size[2]
@@ -4387,6 +4675,7 @@ UITooltipPasses = {
 					UIPasses.texture.draw(ui_renderer, icon_pass_data, ui_scenegraph, icon_pass_definition, icon_style, content, position, icon_size, input_service, dt)
 
 					local text_color = text_shadow_style.text_color
+
 					text_color[1] = alpha
 					position[1] = old_x_position + icon_size[1] + frame_margin + text_shadow_style.offset[1]
 					position[2] = old_y_position - text_height + text_shadow_style.offset[2]
@@ -4396,7 +4685,9 @@ UITooltipPasses = {
 
 					text_color = text_style.text_color
 					text_color[1] = alpha
+
 					local line_colors = text_style.line_colors
+
 					line_colors[1][1] = alpha
 					line_colors[2][1] = alpha
 					position[1] = old_x_position + icon_size[1] + frame_margin
@@ -4421,7 +4712,7 @@ UITooltipPasses = {
 			total_height = total_height + bottom_spacing
 
 			return total_height
-		end
+		end,
 	},
 	deed_rewards = {
 		setup_data = function ()
@@ -4429,92 +4720,92 @@ UITooltipPasses = {
 				default_item_frame_texture = "item_frame",
 				default_item_texture = "icons_placeholder",
 				text_pass_data = {
-					text_id = "text"
+					text_id = "text",
 				},
 				text_size = {},
 				divider_size = {
 					264,
-					32
+					32,
 				},
 				item_size = {
 					80,
-					80
+					80,
 				},
 				tooltip_pass_definition = {
-					item_id = "item"
+					item_id = "item",
 				},
 				hotspot = {},
 				content = {
 					divider_texture = "divider_01_top",
-					item_texture = "icons_placeholder"
+					item_texture = "icons_placeholder",
 				},
 				style = {
 					title_text = {
-						vertical_alignment = "center",
-						horizontal_alignment = "center",
-						word_wrap = true,
 						font_type = "hell_shark_header",
+						horizontal_alignment = "center",
+						vertical_alignment = "center",
+						word_wrap = true,
 						font_size = setup_font_size(28),
 						text_color = Colors.get_color_table_with_alpha("font_title", 255),
 						offset = {
 							0,
 							0,
-							0
-						}
+							0,
+						},
 					},
 					title_text_shadow = {
-						vertical_alignment = "center",
-						horizontal_alignment = "center",
-						word_wrap = true,
 						font_type = "hell_shark_header",
+						horizontal_alignment = "center",
+						vertical_alignment = "center",
+						word_wrap = true,
 						font_size = setup_font_size(28),
 						text_color = Colors.get_color_table_with_alpha("black", 255),
 						offset = {
 							1,
 							-1,
-							-1
-						}
+							-1,
+						},
 					},
 					divider = {
 						color = {
 							255,
 							255,
 							255,
-							255
+							255,
 						},
 						offset = {
 							0,
 							0,
-							0
-						}
+							0,
+						},
 					},
 					item = {
 						color = {
 							255,
 							255,
 							255,
-							255
+							255,
 						},
 						offset = {
 							0,
 							0,
-							0
-						}
+							0,
+						},
 					},
 					item_frame = {
 						color = {
 							255,
 							255,
 							255,
-							255
+							255,
 						},
 						offset = {
 							0,
 							0,
-							1
-						}
-					}
-				}
+							1,
+						},
+					},
+				},
 			}
 
 			return data
@@ -4542,18 +4833,24 @@ UITooltipPasses = {
 			local title_text_shadow_style = style.title_text_shadow
 			local text_pass_data = data.text_pass_data
 			local text_size = data.text_size
+
 			text_size[1] = size[1] - frame_margin * 2
 			text_size[2] = 0
+
 			local title_text_height = UIUtils.get_text_height(ui_renderer, text_size, title_text_style, title_text)
 			local text_height = title_text_height
+
 			text_size[2] = text_height
+
 			local divider_size = data.divider_size
 			local item_size = data.item_size
 
 			if draw then
 				position[1] = position[1]
+
 				local old_x_position = position[1]
 				local old_y_position = position[2] - total_height
+
 				position[1] = old_x_position + title_text_style.offset[1]
 				position[2] = old_y_position + title_text_style.offset[2]
 				position[3] = start_layer + 6 + title_text_style.offset[3]
@@ -4573,10 +4870,11 @@ UITooltipPasses = {
 				local divider_texture = content.divider_texture
 				local divider_style = style.divider
 				local divider_color = divider_style.color
+
 				divider_color[1] = alpha
 				position[3] = start_layer + 6
 				position[2] = old_y_position - text_height
-				position[1] = old_x_position + size[1] / 2 - divider_size[1] / 2
+				position[1] = old_x_position + (size[1] / 2 - divider_size[1] / 2)
 
 				UIRenderer.draw_texture(ui_renderer, divider_texture, position, divider_size, divider_color)
 
@@ -4592,12 +4890,16 @@ UITooltipPasses = {
 					local item_texture = inventory_icon or data.default_item_texture
 					local item_style = style.item
 					local item_color = item_style.color
+
 					item_color[1] = alpha
-					local reward_position_x = old_x_position + size[1] / 2 - item_size[1] / 2 + start_offset
+
+					local reward_position_x = old_x_position + (size[1] / 2 - item_size[1] / 2) + start_offset
 					local reward_position_y = old_y_position - (text_height + item_size[2] + divider_size[2] / 2)
+
 					position[1] = reward_position_x
 					position[2] = reward_position_y
 					position[3] = start_layer + 4
+
 					local hotspot = data.hotspot
 
 					UIPasses.hover.draw(ui_renderer, text_pass_data, ui_scenegraph, pass_definition, item_style, hotspot, position, item_size, input_service, dt)
@@ -4605,7 +4907,7 @@ UITooltipPasses = {
 					if hotspot.is_hover then
 						if not content.item then
 							content.item = {
-								data = reward_item_data
+								data = reward_item_data,
 							}
 						else
 							content.item.data = reward_item_data
@@ -4629,6 +4931,7 @@ UITooltipPasses = {
 					UIRenderer.draw_texture(ui_renderer, item_texture, position, item_size, item_color)
 
 					local item_frame_texture = data.default_item_frame_texture
+
 					position[3] = start_layer + 5
 
 					UIRenderer.draw_texture(ui_renderer, item_frame_texture, position, item_size, item_color)
@@ -4643,48 +4946,48 @@ UITooltipPasses = {
 			position[3] = position_z
 
 			return total_height
-		end
+		end,
 	},
 	event_mission = {
 		setup_data = function ()
 			local data = {
 				text_pass_data = {
-					text_id = "text"
+					text_id = "text",
 				},
 				text_size = {},
 				content = {},
 				style = {
 					title_text = {
-						vertical_alignment = "center",
-						horizontal_alignment = "left",
-						word_wrap = true,
 						font_type = "hell_shark_header",
+						horizontal_alignment = "left",
+						vertical_alignment = "center",
+						word_wrap = true,
 						font_size = setup_font_size(28),
 						text_color = Colors.get_color_table_with_alpha("font_title", 255),
 						offset = {
 							0,
 							0,
-							0
-						}
+							0,
+						},
 					},
 					title_text_shadow = {
-						vertical_alignment = "center",
-						horizontal_alignment = "left",
-						word_wrap = true,
 						font_type = "hell_shark_header",
+						horizontal_alignment = "left",
+						vertical_alignment = "center",
+						word_wrap = true,
 						font_size = setup_font_size(28),
 						text_color = Colors.get_color_table_with_alpha("black", 255),
 						offset = {
 							1,
 							-1,
-							-1
-						}
+							-1,
+						},
 					},
 					text = {
-						word_wrap = true,
+						font_type = "hell_shark",
 						horizontal_alignment = "left",
 						vertical_alignment = "center",
-						font_type = "hell_shark",
+						word_wrap = true,
 						font_size = setup_font_size(18),
 						text_color = Colors.get_color_table_with_alpha("font_default", 255),
 						default_text_color = Colors.get_color_table_with_alpha("font_default", 255),
@@ -4692,23 +4995,23 @@ UITooltipPasses = {
 						offset = {
 							0,
 							0,
-							0
-						}
+							0,
+						},
 					},
 					text_shadow = {
-						vertical_alignment = "center",
-						horizontal_alignment = "left",
-						word_wrap = true,
 						font_type = "hell_shark",
+						horizontal_alignment = "left",
+						vertical_alignment = "center",
+						word_wrap = true,
 						font_size = setup_font_size(18),
 						text_color = Colors.get_color_table_with_alpha("black", 255),
 						offset = {
 							1,
 							-1,
-							-1
-						}
-					}
-				}
+							-1,
+						},
+					},
+				},
 			}
 
 			return data
@@ -4724,12 +5027,13 @@ UITooltipPasses = {
 			local position_y = position[2]
 			local position_z = position[3]
 			local title_text = Localize("start_game_window_mission")
-			local type_text = nil
+			local type_text
 			local level_key = item.level_key
 
 			if level_key then
 				local level_settings = LevelSettings[level_key]
 				local level_display_name = level_settings.display_name
+
 				type_text = Localize(level_display_name)
 			else
 				type_text = Localize("random_level")
@@ -4741,15 +5045,19 @@ UITooltipPasses = {
 			local title_text_shadow_style = style.title_text_shadow
 			local text_pass_data = data.text_pass_data
 			local text_size = data.text_size
+
 			text_size[1] = size[1] - frame_margin * 2
 			text_size[2] = 0
+
 			local title_text_height = UIUtils.get_text_height(ui_renderer, text_size, title_text_style, title_text)
 			local type_text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, type_text)
 			local text_height = title_text_height + type_text_height
+
 			text_size[2] = text_height
 
 			if draw then
 				local old_x_position = position[1] + frame_margin
+
 				position[1] = old_x_position + title_text_style.offset[1]
 				position[2] = position_y - frame_margin - title_text_height + title_text_style.offset[2]
 				position[3] = start_layer + 6 + title_text_style.offset[3]
@@ -4788,46 +5096,46 @@ UITooltipPasses = {
 			position[3] = position_z
 
 			return text_height
-		end
+		end,
 	},
 	loot_chest_description = {
 		setup_data = function ()
 			local data = {
 				text_pass_data = {
-					text_id = "text"
+					text_id = "text",
 				},
 				text_size = {},
 				content = {
-					prefix = Localize("loot_chest_item_description")
+					prefix = Localize("loot_chest_item_description"),
 				},
 				style = {
 					title_text = {
-						vertical_alignment = "center",
-						horizontal_alignment = "left",
-						word_wrap = true,
 						font_type = "hell_shark",
+						horizontal_alignment = "left",
+						vertical_alignment = "center",
+						word_wrap = true,
 						font_size = setup_font_size(20),
 						text_color = Colors.get_color_table_with_alpha("font_default", 255),
 						offset = {
 							0,
 							0,
-							0
-						}
+							0,
+						},
 					},
 					title_text_shadow = {
-						vertical_alignment = "center",
-						horizontal_alignment = "left",
-						word_wrap = true,
 						font_type = "hell_shark",
+						horizontal_alignment = "left",
+						vertical_alignment = "center",
+						word_wrap = true,
 						font_size = setup_font_size(20),
 						text_color = Colors.get_color_table_with_alpha("black", 255),
 						offset = {
 							1,
 							-1,
-							-1
-						}
-					}
-				}
+							-1,
+						},
+					},
+				},
 			}
 
 			return data
@@ -4856,16 +5164,20 @@ UITooltipPasses = {
 			local text_pass_data = data.text_pass_data
 			local text_size = data.text_size
 			local text_width = size[1] - frame_margin * 2
+
 			text_size[1] = text_width
 			text_size[2] = 0
+
 			local title_text_height = UIUtils.get_text_height(ui_renderer, text_size, title_text_style, title_text)
 			local text_height = title_text_height
+
 			total_height = total_height + title_text_height
 			text_size[2] = text_height
 
 			if draw then
 				local old_x_position = position[1] + frame_margin
 				local old_y_position = position[2] - total_height + frame_margin * 2
+
 				position[1] = old_x_position + title_text_style.offset[1]
 				position[2] = old_y_position - frame_margin + title_text_style.offset[2]
 				position[3] = start_layer + 6 + title_text_style.offset[3]
@@ -4888,46 +5200,46 @@ UITooltipPasses = {
 			position[3] = position_z
 
 			return total_height
-		end
+		end,
 	},
 	loot_chest_difficulty = {
 		setup_data = function ()
 			local data = {
 				text_pass_data = {
-					text_id = "text"
+					text_id = "text",
 				},
 				text_size = {},
 				content = {
-					prefix = Localize("loot_chest_obtained_at_difficulty") .. " "
+					prefix = Localize("loot_chest_obtained_at_difficulty") .. " ",
 				},
 				style = {
 					title_text = {
-						vertical_alignment = "center",
-						horizontal_alignment = "left",
-						word_wrap = true,
 						font_type = "hell_shark",
+						horizontal_alignment = "left",
+						vertical_alignment = "center",
+						word_wrap = true,
 						font_size = setup_font_size(20),
 						text_color = Colors.get_color_table_with_alpha("corn_flower_blue", 255),
 						offset = {
 							0,
 							0,
-							0
-						}
+							0,
+						},
 					},
 					title_text_shadow = {
-						vertical_alignment = "center",
-						horizontal_alignment = "left",
-						word_wrap = true,
 						font_type = "hell_shark",
+						horizontal_alignment = "left",
+						vertical_alignment = "center",
+						word_wrap = true,
 						font_size = setup_font_size(20),
 						text_color = Colors.get_color_table_with_alpha("black", 255),
 						offset = {
 							1,
 							-1,
-							-1
-						}
-					}
-				}
+							-1,
+						},
+					},
+				},
 			}
 
 			return data
@@ -4964,16 +5276,20 @@ UITooltipPasses = {
 			local text_pass_data = data.text_pass_data
 			local text_size = data.text_size
 			local text_width = size[1] - frame_margin * 2
+
 			text_size[1] = text_width
 			text_size[2] = 0
+
 			local title_text_height = UIUtils.get_text_height(ui_renderer, text_size, title_text_style, title_text)
 			local text_height = title_text_height
+
 			total_height = total_height + title_text_height
 			text_size[2] = text_height
 
 			if draw then
 				local old_x_position = position[1] + frame_margin
 				local old_y_position = position[2] - total_height + frame_margin * 2
+
 				position[1] = old_x_position + title_text_style.offset[1]
 				position[2] = old_y_position - frame_margin + title_text_style.offset[2]
 				position[3] = start_layer + 6 + title_text_style.offset[3]
@@ -4996,46 +5312,46 @@ UITooltipPasses = {
 			position[3] = position_z
 
 			return total_height
-		end
+		end,
 	},
 	loot_chest_power_range = {
 		setup_data = function ()
 			local data = {
 				text_pass_data = {
-					text_id = "text"
+					text_id = "text",
 				},
 				text_size = {},
 				content = {
-					prefix = Localize("loot_chest_power_level_cap") .. " "
+					prefix = Localize("loot_chest_power_level_cap") .. " ",
 				},
 				style = {
 					title_text = {
-						vertical_alignment = "center",
-						horizontal_alignment = "left",
-						word_wrap = true,
 						font_type = "hell_shark",
+						horizontal_alignment = "left",
+						vertical_alignment = "center",
+						word_wrap = true,
 						font_size = setup_font_size(20),
 						text_color = Colors.get_color_table_with_alpha("corn_flower_blue", 255),
 						offset = {
 							0,
 							0,
-							0
-						}
+							0,
+						},
 					},
 					title_text_shadow = {
-						vertical_alignment = "center",
-						horizontal_alignment = "left",
-						word_wrap = true,
 						font_type = "hell_shark",
+						horizontal_alignment = "left",
+						vertical_alignment = "center",
+						word_wrap = true,
 						font_size = setup_font_size(20),
 						text_color = Colors.get_color_table_with_alpha("black", 255),
 						offset = {
 							1,
 							-1,
-							-1
-						}
-					}
-				}
+							-1,
+						},
+					},
+				},
 			}
 
 			return data
@@ -5071,16 +5387,20 @@ UITooltipPasses = {
 			local text_pass_data = data.text_pass_data
 			local text_size = data.text_size
 			local text_width = size[1] - frame_margin * 2
+
 			text_size[1] = text_width
 			text_size[2] = 0
+
 			local title_text_height = UIUtils.get_text_height(ui_renderer, text_size, title_text_style, title_text)
 			local text_height = title_text_height
+
 			total_height = total_height + title_text_height
 			text_size[2] = text_height
 
 			if draw then
 				local old_x_position = position[1] + frame_margin
 				local old_y_position = position[2] - total_height + frame_margin * 2
+
 				position[1] = old_x_position + title_text_style.offset[1]
 				position[2] = old_y_position - frame_margin + title_text_style.offset[2]
 				position[3] = start_layer + 6 + title_text_style.offset[3]
@@ -5103,46 +5423,46 @@ UITooltipPasses = {
 			position[3] = position_z
 
 			return total_height
-		end
+		end,
 	},
 	item_information_text = {
 		setup_data = function ()
 			local data = {
 				text_pass_data = {
-					text_id = "text"
+					text_id = "text",
 				},
 				text_size = {},
 				content = {
-					prefix = Localize("weapon_skin_item_description")
+					prefix = Localize("weapon_skin_item_description"),
 				},
 				style = {
 					title_text = {
-						vertical_alignment = "center",
-						horizontal_alignment = "left",
-						word_wrap = true,
 						font_type = "hell_shark",
+						horizontal_alignment = "left",
+						vertical_alignment = "center",
+						word_wrap = true,
 						font_size = setup_font_size(20),
 						text_color = Colors.get_color_table_with_alpha("font_default", 255),
 						offset = {
 							0,
 							0,
-							0
-						}
+							0,
+						},
 					},
 					title_text_shadow = {
-						vertical_alignment = "center",
-						horizontal_alignment = "left",
-						word_wrap = true,
 						font_type = "hell_shark",
+						horizontal_alignment = "left",
+						vertical_alignment = "center",
+						word_wrap = true,
 						font_size = setup_font_size(20),
 						text_color = Colors.get_color_table_with_alpha("black", 255),
 						offset = {
 							1,
 							-1,
-							-1
-						}
-					}
-				}
+							-1,
+						},
+					},
+				},
 			}
 
 			return data
@@ -5169,15 +5489,19 @@ UITooltipPasses = {
 				local text_pass_data = data.text_pass_data
 				local text_size = data.text_size
 				local text_width = size[1] - frame_margin * 2
+
 				text_size[1] = text_width
 				text_size[2] = 0
+
 				local title_text_height = UIUtils.get_text_height(ui_renderer, text_size, title_text_style, title_text)
+
 				total_height = total_height + title_text_height
 				text_size[2] = title_text_height
 
 				if draw then
 					local old_x_position = position[1] + frame_margin
 					local old_y_position = position[2] - total_height + frame_margin * 2
+
 					position[1] = old_x_position + title_text_style.offset[1]
 					position[2] = old_y_position - frame_margin + title_text_style.offset[2]
 					position[3] = start_layer + 6 + title_text_style.offset[3]
@@ -5203,30 +5527,30 @@ UITooltipPasses = {
 			end
 
 			return 0
-		end
+		end,
 	},
 	weapon_skin_title = {
 		setup_data = function ()
 			local data = {
 				text_pass_data = {
-					text_id = "text"
+					text_id = "text",
 				},
 				text_size = {},
 				content = {
-					sufix_text = " " .. Localize("item_skin_applied_prefix")
+					sufix_text = " " .. Localize("item_skin_applied_prefix"),
 				},
 				style = {
 					text = {
-						vertical_alignment = "center",
-						name = "description",
-						localize = false,
-						word_wrap = true,
-						horizontal_alignment = "center",
 						font_type = "hell_shark",
+						horizontal_alignment = "center",
+						localize = false,
+						name = "description",
+						vertical_alignment = "center",
+						word_wrap = true,
 						font_size = setup_font_size(18),
-						text_color = Colors.get_color_table_with_alpha("promo", 255)
-					}
-				}
+						text_color = Colors.get_color_table_with_alpha("promo", 255),
+					},
+				},
 			}
 
 			return data
@@ -5261,17 +5585,24 @@ UITooltipPasses = {
 				local base_item_name = skin_item_name and string.match(skin_item_name, "^([%w_]+)_skin$")
 				local base_item = rawget(ItemMasterList, base_item_name)
 				local base_item_type = base_item and base_item.item_type or "lb_unknown"
+
 				content.text = Localize(base_item_type) .. content.sufix_text
+
 				local position_x = position[1]
 				local position_y = position[2]
 				local position_z = position[3]
+
 				position[3] = start_layer + 5
+
 				local text_style = style.text
 				local text_pass_data = data.text_pass_data
 				local text_size = data.text_size
+
 				text_size[1] = size[1] - frame_margin * 2
 				text_size[2] = 0
+
 				local text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, content.text)
+
 				text_size[2] = text_height
 
 				if draw then
@@ -5290,28 +5621,28 @@ UITooltipPasses = {
 			else
 				return 0
 			end
-		end
+		end,
 	},
 	console_keywords = {
 		setup_data = function ()
 			local data = {
 				text_pass_data = {
-					text_id = "text"
+					text_id = "text",
 				},
 				text_size = {},
 				content = {},
 				style = {
 					text = {
-						vertical_alignment = "center",
-						name = "description",
-						localize = false,
-						word_wrap = true,
-						horizontal_alignment = "center",
 						font_type = "hell_shark",
+						horizontal_alignment = "center",
+						localize = false,
+						name = "description",
+						vertical_alignment = "center",
+						word_wrap = true,
 						font_size = setup_font_size(16),
-						text_color = Colors.get_color_table_with_alpha("forest_green", 255)
-					}
-				}
+						text_color = Colors.get_color_table_with_alpha("forest_green", 255),
+					},
+				},
 			}
 
 			return data
@@ -5359,17 +5690,24 @@ UITooltipPasses = {
 				end
 
 				content.text = text
+
 				local position_x = position[1]
 				local position_y = position[2]
 				local position_z = position[3]
+
 				position[3] = start_layer + 5
+
 				local text_style = style.text
 				local text_pass_data = data.text_pass_data
 				local text_size = data.text_size
+
 				text_size[1] = size[1] - frame_margin * 2
 				text_size[2] = 0
+
 				local text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, text)
+
 				text_size[2] = text_height
+
 				local total_height = text_height + frame_margin * 0.5
 
 				if draw then
@@ -5390,7 +5728,7 @@ UITooltipPasses = {
 			end
 
 			return 0
-		end
+		end,
 	},
 	keywords = {
 		setup_data = function ()
@@ -5399,84 +5737,84 @@ UITooltipPasses = {
 					240,
 					3,
 					3,
-					3
+					3,
 				},
 				background_size = {
 					0,
-					50
+					50,
 				},
 				text_pass_data = {
-					text_id = "text"
+					text_id = "text",
 				},
 				text_size = {},
 				edge_size = {
 					0,
-					5
+					5,
 				},
 				edge_holder_size = {
 					9,
-					17
+					17,
 				},
 				content = {
+					edge_holder_left = "menu_frame_12_divider_left",
 					edge_holder_right = "menu_frame_12_divider_right",
 					edge_texture = "menu_frame_12_divider",
-					edge_holder_left = "menu_frame_12_divider_left"
 				},
 				style = {
 					edge = {
 						texture_size = {
 							1,
-							5
+							5,
 						},
 						color = {
 							255,
 							255,
 							255,
-							255
+							255,
 						},
 						offset = {
 							0,
 							0,
-							1
-						}
+							1,
+						},
 					},
 					edge_holder = {
 						color = {
 							255,
 							255,
 							255,
-							255
+							255,
 						},
 						offset = {
 							0,
 							0,
-							1
-						}
+							1,
+						},
 					},
 					text = {
-						vertical_alignment = "top",
-						name = "description",
-						localize = false,
-						word_wrap = true,
-						horizontal_alignment = "center",
 						font_type = "hell_shark",
+						horizontal_alignment = "center",
+						localize = false,
+						name = "description",
+						vertical_alignment = "top",
+						word_wrap = true,
 						font_size = setup_font_size(16),
-						text_color = Colors.get_color_table_with_alpha("forest_green", 255)
+						text_color = Colors.get_color_table_with_alpha("forest_green", 255),
 					},
 					background = {
 						color = {
 							150,
 							0,
 							0,
-							0
+							0,
 						},
 						offset = {
 							0,
 							0,
-							-1
-						}
-					}
-				}
+							-1,
+						},
+					},
+				},
 			}
 
 			return data
@@ -5538,23 +5876,31 @@ UITooltipPasses = {
 				end
 
 				content.text = text
+
 				local position_x = position[1]
 				local position_y = position[2]
 				local position_z = position[3]
+
 				position[3] = start_layer + 5
+
 				local text_style = style.text
 				local text_pass_data = data.text_pass_data
 				local text_size = data.text_size
+
 				text_size[1] = size[1] - frame_margin * 2
 				text_size[2] = 0
+
 				local text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, text)
+
 				text_size[2] = text_height
+
 				local total_height = text_height + frame_margin * 0.5
 
 				if draw then
 					local background_size = data.background_size
 					local background_style = style.background
 					local background_color = background_style.color
+
 					background_color[1] = alpha
 					background_size[2] = total_height
 					background_size[1] = size[1]
@@ -5565,13 +5911,19 @@ UITooltipPasses = {
 
 					position[1] = position_x
 					position[2] = position_y
+
 					local edge_size = data.edge_size
+
 					edge_size[1] = size[1]
+
 					local edge_style = style.edge
 					local edge_color = edge_style.color
 					local edge_texture_size = edge_style.texture_size
+
 					edge_texture_size[1] = size[1]
+
 					local edge_texture = content.edge_texture
+
 					edge_color[1] = alpha
 					position[3] = start_layer + 4
 
@@ -5582,6 +5934,7 @@ UITooltipPasses = {
 					local edge_holder_color = edge_holder_style.color
 					local edge_holder_left_texture = content.edge_holder_left
 					local edge_holder_right_texture = content.edge_holder_right
+
 					edge_holder_color[1] = alpha
 					position[1] = position[1] + 3
 					position[2] = position[2] - 6
@@ -5608,7 +5961,7 @@ UITooltipPasses = {
 			end
 
 			return 0
-		end
+		end,
 	},
 	hero_power_gained = {
 		setup_data = function ()
@@ -5618,24 +5971,24 @@ UITooltipPasses = {
 					240,
 					3,
 					3,
-					3
+					3,
 				},
 				title_text_pass_data = {
-					text_id = "title"
+					text_id = "title",
 				},
 				text_pass_data = {},
 				text_size = {
 					0,
-					0
+					0,
 				},
 				icon_pass_data = {},
 				icon_pass_definition = {
+					style_id = "icon",
 					texture_id = "icon",
-					style_id = "icon"
 				},
 				icon_size = {
 					13,
-					13
+					13,
 				},
 				content = {
 					icon = "tooltip_marker",
@@ -5643,59 +5996,59 @@ UITooltipPasses = {
 					entry_list = {
 						{
 							power_level_key = "hero",
-							text = Localize("tooltip_hero_power_description_level")
+							text = Localize("tooltip_hero_power_description_level"),
 						},
 						{
 							power_level_key = "item",
-							text = Localize("tooltip_hero_power_description_equipment")
-						}
+							text = Localize("tooltip_hero_power_description_equipment"),
+						},
 					},
-					power_level_list = {}
+					power_level_list = {},
 				},
 				style = {
 					property_title = {
-						vertical_alignment = "center",
-						horizontal_alignment = "left",
-						word_wrap = true,
 						font_type = "hell_shark",
+						horizontal_alignment = "left",
+						vertical_alignment = "center",
+						word_wrap = true,
 						font_size = setup_font_size(18),
-						text_color = Colors.get_color_table_with_alpha("font_title", 255)
+						text_color = Colors.get_color_table_with_alpha("font_title", 255),
 					},
 					entry_text = {
-						vertical_alignment = "center",
-						horizontal_alignment = "left",
-						word_wrap = true,
 						font_type = "hell_shark",
+						horizontal_alignment = "left",
+						vertical_alignment = "center",
+						word_wrap = true,
 						font_size = setup_font_size(16),
 						text_color = Colors.get_color_table_with_alpha("font_default", 255),
 						color_override = {},
 						color_override_table = {
-							start_index = 0,
 							end_index = 0,
-							color = Colors.get_color_table_with_alpha("white", 255)
-						}
+							start_index = 0,
+							color = Colors.get_color_table_with_alpha("white", 255),
+						},
 					},
 					icon = {
 						color = {
 							255,
 							255,
 							255,
-							255
+							255,
 						},
 						offset = {
 							0,
 							0,
-							2
-						}
-					}
-				}
+							2,
+						},
+					},
+				},
 			}
 
 			return data
 		end,
 		draw = function (data, draw, draw_downwards, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt)
 			local player = pass_data.player
-			local hero_name, career_name = nil
+			local hero_name, career_name
 
 			if player then
 				hero_name = player:profile_display_name()
@@ -5711,6 +6064,7 @@ UITooltipPasses = {
 
 			if profile_index and career_index then
 				local profile = SPProfiles[profile_index]
+
 				hero_name = profile.display_name
 				career_name = profile.careers[career_index].name
 			end
@@ -5725,29 +6079,37 @@ UITooltipPasses = {
 			local item_power_level = BackendUtils.get_average_item_power_level(career_name)
 			local hero_power_level = BackendUtils.get_hero_power_level_from_level(hero_name)
 			local power_level_list = content.power_level_list
+
 			power_level_list.hero = math.floor(hero_power_level)
 			power_level_list.item = math.floor(item_power_level)
+
 			local alpha_multiplier = pass_data.alpha_multiplier
 			local alpha = 255 * alpha_multiplier
 			local position_x = position[1]
 			local position_y = position[2]
 			local position_z = position[3]
 			local total_height = 0
+
 			position[3] = start_layer + 2
 			position[1] = position[1] + frame_margin
+
 			local text_style = style.property_title
 			local title_text_pass_data = data.title_text_pass_data
 			local title_text = content.title
 			local text_size = data.text_size
+
 			text_size[1] = size[1] - (frame_margin * 2 + frame_margin)
 			text_size[2] = 0
+
 			local title_text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, title_text)
+
 			text_size[2] = title_text_height
 			position[2] = position[2] - title_text_height
 			total_height = total_height + title_text_height
 
 			if draw then
 				local text_color = text_style.text_color
+
 				text_color[1] = alpha
 
 				UIPasses.text.draw(ui_renderer, title_text_pass_data, ui_scenegraph, pass_definition, text_style, content, position, text_size, input_service, dt)
@@ -5755,6 +6117,7 @@ UITooltipPasses = {
 
 			total_height = total_height + frame_margin * 0.5
 			position[2] = position[2] - frame_margin * 0.5
+
 			local index = 1
 			local entry_list = content.entry_list
 
@@ -5768,18 +6131,27 @@ UITooltipPasses = {
 				local entry_text_length = UTF8Utils.string_length(entry_text) or 0
 				local entry_text_style = style.entry_text
 				local color_override_table = entry_text_style.color_override_table
+
 				color_override_table.start_index = entry_text_length + 1
 				color_override_table.end_index = entry_text_length + power_text_length
 				entry_text_style.color_override[1] = color_override_table
+
 				local text_id = "entry_" .. index
 				local text_pass_data = data.text_pass_data
+
 				text_pass_data.text_id = text_id
+
 				local text_size = data.text_size
+
 				text_size[2] = 0
+
 				local text_height = UIUtils.get_text_height(ui_renderer, text_size, entry_text_style, text)
+
 				text_size[2] = text_height
 				position[2] = position[2] - text_height
+
 				local old_y_position = position[2]
+
 				content[text_id] = text
 
 				if draw then
@@ -5788,6 +6160,7 @@ UITooltipPasses = {
 					local icon_style = style.icon
 					local icon_size = data.icon_size
 					local icon_color = icon_style.color
+
 					icon_color[1] = alpha
 					position[2] = position[2] + text_height / 2 - icon_size[2] / 2 - 2
 
@@ -5795,7 +6168,9 @@ UITooltipPasses = {
 
 					position[2] = old_y_position
 					position[1] = position[1] + icon_size[1]
+
 					local text_color = entry_text_style.text_color
+
 					text_color[1] = alpha
 
 					UIPasses.text.draw(ui_renderer, text_pass_data, ui_scenegraph, pass_definition, entry_text_style, content, position, data.text_size, input_service, dt)
@@ -5814,7 +6189,7 @@ UITooltipPasses = {
 			position[3] = position_z
 
 			return total_height
-		end
+		end,
 	},
 	hero_power_perks = {
 		setup_data = function ()
@@ -5824,77 +6199,77 @@ UITooltipPasses = {
 					240,
 					3,
 					3,
-					3
+					3,
 				},
 				title_text_pass_data = {
-					text_id = "title"
+					text_id = "title",
 				},
 				text_pass_data = {},
 				text_size = {
 					0,
-					0
+					0,
 				},
 				icon_pass_data = {},
 				icon_pass_definition = {
+					style_id = "icon",
 					texture_id = "icon",
-					style_id = "icon"
 				},
 				icon_size = {
 					13,
-					13
+					13,
 				},
 				content = {
 					icon = "tooltip_marker",
 					title = Localize("tooltip_hero_power_affects_header") .. ":",
 					entry_list = {
 						{
-							text = Localize("tooltip_hero_power_description_affects_damage")
+							text = Localize("tooltip_hero_power_description_affects_damage"),
 						},
 						{
-							text = Localize("tooltip_hero_power_description_affects_cleave")
+							text = Localize("tooltip_hero_power_description_affects_cleave"),
 						},
 						{
-							text = Localize("tooltip_hero_power_description_affects_stagger")
-						}
-					}
+							text = Localize("tooltip_hero_power_description_affects_stagger"),
+						},
+					},
 				},
 				style = {
 					property_title = {
-						vertical_alignment = "center",
-						horizontal_alignment = "left",
-						word_wrap = true,
 						font_type = "hell_shark",
+						horizontal_alignment = "left",
+						vertical_alignment = "center",
+						word_wrap = true,
 						font_size = setup_font_size(18),
-						text_color = Colors.get_color_table_with_alpha("font_title", 255)
+						text_color = Colors.get_color_table_with_alpha("font_title", 255),
 					},
 					entry_text = {
-						vertical_alignment = "center",
-						horizontal_alignment = "left",
-						word_wrap = true,
 						font_type = "hell_shark",
+						horizontal_alignment = "left",
+						vertical_alignment = "center",
+						word_wrap = true,
 						font_size = setup_font_size(16),
 						text_color = Colors.get_color_table_with_alpha("font_default", 255),
 						color_override = {},
 						color_override_table = {
-							start_index = 0,
 							end_index = 0,
-							color = Colors.get_color_table_with_alpha("font_default", 255)
-						}
+							start_index = 0,
+							color = Colors.get_color_table_with_alpha("font_default", 255),
+						},
 					},
 					icon = {
 						color = {
 							255,
 							255,
 							255,
-							255
+							255,
 						},
 						offset = {
 							0,
 							0,
-							2
-						}
-					}
-				}
+							2,
+						},
+					},
+				},
 			}
 
 			return data
@@ -5911,22 +6286,28 @@ UITooltipPasses = {
 			local position_y = position[2]
 			local position_z = position[3]
 			local total_height = 0
+
 			position[3] = start_layer + 2
 			position[2] = position[2]
 			position[1] = position[1] + frame_margin
+
 			local text_style = style.property_title
 			local title_text_pass_data = data.title_text_pass_data
 			local title_text = content.title
 			local text_size = data.text_size
+
 			text_size[1] = size[1] - (frame_margin * 2 + frame_margin)
 			text_size[2] = 0
+
 			local title_text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, title_text)
+
 			text_size[2] = title_text_height
 			position[2] = position[2] - title_text_height
 			total_height = total_height + title_text_height
 
 			if draw then
 				local text_color = text_style.text_color
+
 				text_color[1] = alpha
 
 				UIPasses.text.draw(ui_renderer, title_text_pass_data, ui_scenegraph, pass_definition, text_style, content, position, text_size, input_service, dt)
@@ -5934,6 +6315,7 @@ UITooltipPasses = {
 
 			total_height = total_height + frame_margin * 0.5
 			position[2] = position[2] - frame_margin * 0.5
+
 			local index = 1
 			local entry_list = content.entry_list
 
@@ -5942,13 +6324,20 @@ UITooltipPasses = {
 				local text_id = "entry_" .. index
 				local text_style = style.entry_text
 				local text_pass_data = data.text_pass_data
+
 				text_pass_data.text_id = text_id
+
 				local text_size = data.text_size
+
 				text_size[2] = 0
+
 				local text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, text)
+
 				text_size[2] = text_height
 				position[2] = position[2] - text_height
+
 				local old_y_position = position[2]
+
 				content[text_id] = text
 
 				if draw then
@@ -5957,6 +6346,7 @@ UITooltipPasses = {
 					local icon_style = style.icon
 					local icon_size = data.icon_size
 					local icon_color = icon_style.color
+
 					icon_color[1] = alpha
 					position[2] = position[2] + text_height / 2 - icon_size[2] / 2 - 2
 
@@ -5964,7 +6354,9 @@ UITooltipPasses = {
 
 					position[2] = old_y_position
 					position[1] = position[1] + icon_size[1]
+
 					local text_color = text_style.text_color
+
 					text_color[1] = alpha
 
 					UIPasses.text.draw(ui_renderer, text_pass_data, ui_scenegraph, pass_definition, text_style, content, position, data.text_size, input_service, dt)
@@ -5983,71 +6375,71 @@ UITooltipPasses = {
 			position[3] = position_z
 
 			return total_height
-		end
+		end,
 	},
 	hero_power_description = {
 		setup_data = function ()
 			local data = {
 				text_pass_data = {
-					text_id = "text"
+					text_id = "text",
 				},
 				text_size = {},
 				edge_size = {
 					0,
-					5
+					5,
 				},
 				edge_holder_size = {
 					9,
-					17
+					17,
 				},
 				content = {
-					edge_texture = "menu_frame_12_divider",
 					edge_holder_left = "menu_frame_12_divider_left",
 					edge_holder_right = "menu_frame_12_divider_right",
-					text = Localize("tooltip_hero_power_description_calculation")
+					edge_texture = "menu_frame_12_divider",
+					text = Localize("tooltip_hero_power_description_calculation"),
 				},
 				style = {
 					edge = {
 						texture_size = {
 							1,
-							5
+							5,
 						},
 						color = {
 							255,
 							255,
 							255,
-							255
+							255,
 						},
 						offset = {
 							0,
 							0,
-							1
-						}
+							1,
+						},
 					},
 					edge_holder = {
 						color = {
 							255,
 							255,
 							255,
-							255
+							255,
 						},
 						offset = {
 							0,
 							0,
-							1
-						}
+							1,
+						},
 					},
 					text = {
-						vertical_alignment = "center",
-						name = "description",
-						localize = false,
-						word_wrap = true,
-						horizontal_alignment = "left",
 						font_type = "hell_shark",
+						horizontal_alignment = "left",
+						localize = false,
+						name = "description",
+						vertical_alignment = "center",
+						word_wrap = true,
 						font_size = setup_font_size(14),
-						text_color = Colors.get_color_table_with_alpha("font_button_normal", 255)
-					}
-				}
+						text_color = Colors.get_color_table_with_alpha("font_button_normal", 255),
+					},
+				},
 			}
 
 			return data
@@ -6062,26 +6454,39 @@ UITooltipPasses = {
 			local position_x = position[1]
 			local position_y = position[2]
 			local position_z = position[3]
+
 			position[3] = start_layer + 5
+
 			local text_style = style.text
 			local text_pass_data = data.text_pass_data
 			local text_size = data.text_size
+
 			text_size[1] = size[1] - frame_margin * 2
 			text_size[2] = 0
+
 			local text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, content.text)
+
 			text_size[2] = text_height
+
 			local total_height = text_height + frame_margin * 0.5
 
 			if draw then
 				local edge_size = data.edge_size
+
 				edge_size[1] = size[1]
+
 				local edge_style = style.edge
 				local edge_color = edge_style.color
 				local edge_texture_size = edge_style.texture_size
+
 				edge_texture_size[1] = size[1]
+
 				local edge_texture = content.edge_texture
+
 				edge_color[1] = alpha
+
 				local start_position_y = position[2] - frame_margin * 0.5
+
 				position[2] = start_position_y
 				position[3] = start_layer + 4
 
@@ -6092,6 +6497,7 @@ UITooltipPasses = {
 				local edge_holder_color = edge_holder_style.color
 				local edge_holder_left_texture = content.edge_holder_left
 				local edge_holder_right_texture = content.edge_holder_right
+
 				edge_holder_color[1] = alpha
 				position[1] = position[1] + 3
 				position[2] = start_position_y - 6
@@ -6115,30 +6521,30 @@ UITooltipPasses = {
 			position[3] = position_z
 
 			return total_height
-		end
+		end,
 	},
 	hero_power_title = {
 		setup_data = function ()
 			local data = {
 				text_pass_data = {
-					text_id = "text"
+					text_id = "text",
 				},
 				text_size = {},
 				content = {
-					prefix_text = Localize("hero_power_header")
+					prefix_text = Localize("hero_power_header"),
 				},
 				style = {
 					text = {
-						vertical_alignment = "center",
-						name = "description",
-						localize = false,
-						word_wrap = true,
-						horizontal_alignment = "center",
 						font_type = "hell_shark_header",
+						horizontal_alignment = "center",
+						localize = false,
+						name = "description",
+						vertical_alignment = "center",
+						word_wrap = true,
 						font_size = setup_font_size(28),
-						text_color = Colors.get_color_table_with_alpha("font_title", 255)
-					}
-				}
+						text_color = Colors.get_color_table_with_alpha("font_title", 255),
+					},
+				},
 			}
 
 			return data
@@ -6150,17 +6556,24 @@ UITooltipPasses = {
 			local frame_margin = data.frame_margin or 0
 			local content = data.content
 			local style = data.style
+
 			content.text = content.prefix_text
+
 			local position_x = position[1]
 			local position_y = position[2]
 			local position_z = position[3]
+
 			position[3] = start_layer + 5
+
 			local text_style = style.text
 			local text_pass_data = data.text_pass_data
 			local text_size = data.text_size
+
 			text_size[1] = size[1] - frame_margin * 2
 			text_size[2] = 0
+
 			local text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, content.text)
+
 			text_size[2] = text_height
 
 			if draw then
@@ -6176,7 +6589,7 @@ UITooltipPasses = {
 			position[3] = position_z
 
 			return text_height
-		end
+		end,
 	},
 	light_attack_stats = {
 		setup_data = function ()
@@ -6186,63 +6599,63 @@ UITooltipPasses = {
 					240,
 					3,
 					3,
-					3
+					3,
 				},
 				background_size = {
 					0,
-					50
+					50,
 				},
 				title_text_pass_data = {
-					text_id = "title"
+					text_id = "title",
 				},
 				text_pass_data = {},
 				text_size = {
 					0,
-					0
+					0,
 				},
 				content = {
 					icon = "tooltip_marker",
-					title = Localize("tutorial_tooltip_normal_attack")
+					title = Localize("tutorial_tooltip_normal_attack"),
 				},
 				style = {
 					title = {
-						vertical_alignment = "center",
-						horizontal_alignment = "center",
-						word_wrap = true,
 						font_type = "hell_shark",
+						horizontal_alignment = "center",
+						vertical_alignment = "center",
+						word_wrap = true,
 						font_size = setup_font_size(18),
-						text_color = Colors.get_color_table_with_alpha("font_title", 255)
+						text_color = Colors.get_color_table_with_alpha("font_title", 255),
 					},
 					stat_text = {
-						vertical_alignment = "center",
-						horizontal_alignment = "left",
-						word_wrap = true,
 						font_type = "hell_shark",
+						horizontal_alignment = "left",
+						vertical_alignment = "center",
+						word_wrap = true,
 						font_size = setup_font_size(16),
-						text_color = Colors.get_color_table_with_alpha("font_default", 255)
+						text_color = Colors.get_color_table_with_alpha("font_default", 255),
 					},
 					stat_value = {
-						vertical_alignment = "center",
-						horizontal_alignment = "right",
-						word_wrap = true,
 						font_type = "hell_shark",
+						horizontal_alignment = "right",
+						vertical_alignment = "center",
+						word_wrap = true,
 						font_size = setup_font_size(16),
-						text_color = Colors.get_color_table_with_alpha("font_default", 255)
+						text_color = Colors.get_color_table_with_alpha("font_default", 255),
 					},
 					background = {
 						color = {
 							150,
 							20,
 							20,
-							20
+							20,
 						},
 						offset = {
 							0,
 							0,
-							-1
-						}
-					}
-				}
+							-1,
+						},
+					},
+				},
 			}
 
 			return data
@@ -6271,63 +6684,65 @@ UITooltipPasses = {
 			local position_y = position[2]
 			local position_z = position[3]
 			local total_height = 0
+
 			position[3] = start_layer + 2
 			position[2] = position[2]
+
 			local stats = {
 				{
-					format_function_name = "get_chain_damages",
 					charge_type = "light",
+					format_function_name = "get_chain_damages",
 					format_type = "damage",
 					description = Localize("tooltip_item_damage"),
 					armor_types = {
-						1
-					}
+						1,
+					},
 				},
 				{
-					format_function_name = "get_chain_damages",
 					charge_type = "light",
+					format_function_name = "get_chain_damages",
 					format_type = "damage",
 					description = Localize("tooltip_item_damage_armor"),
 					armor_types = {
-						2
-					}
+						2,
+					},
 				},
 				{
-					empty = true
+					empty = true,
 				},
 				{
+					charge_type = "light",
 					format_function_name = "get_chain_max_targets",
-					charge_type = "light",
 					format_type = "max_targets",
-					description = Localize("tooltip_item_cleave")
+					description = Localize("tooltip_item_cleave"),
 				},
 				{
+					charge_type = "light",
 					format_function_name = "get_chain_stagger_strengths",
-					charge_type = "light",
 					format_type = "stagger_strength",
-					description = Localize("tooltip_item_stagger_strength")
+					description = Localize("tooltip_item_stagger_strength"),
 				},
 				{
-					empty = true
+					empty = true,
 				},
 				{
+					charge_type = "light",
 					format_function_name = "get_chain_critical_hit_chances",
-					charge_type = "light",
 					format_type = "crit",
-					description = Localize("tooltip_item_crit_hit_chance")
+					description = Localize("tooltip_item_crit_hit_chance"),
 				},
 				{
+					charge_type = "light",
 					format_function_name = "get_chain_boost_coefficients",
-					charge_type = "light",
 					format_type = "boost",
-					description = Localize("tooltip_item_boost")
+					description = Localize("tooltip_item_boost"),
 				},
 				{
-					format_function_name = "get_chain_headshot_boost_coefficients",
 					charge_type = "light",
+					format_function_name = "get_chain_headshot_boost_coefficients",
 					format_type = "boost",
-					description = Localize("tooltip_item_boost_headshot")
-				}
+					description = Localize("tooltip_item_boost_headshot"),
+				},
 			}
 
 			if stats then
@@ -6335,15 +6750,19 @@ UITooltipPasses = {
 				local title_text_pass_data = data.title_text_pass_data
 				local title_text = content.title
 				local text_size = data.text_size
+
 				text_size[1] = size[1] / 2 - frame_margin * 2
 				text_size[2] = 0
+
 				local title_text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, title_text)
+
 				text_size[2] = title_text_height
 				position[2] = position[2] - title_text_height
 				total_height = total_height + title_text_height
 
 				if draw then
 					local text_color = text_style.text_color
+
 					text_color[1] = alpha
 					position[1] = position[1] + frame_margin
 
@@ -6353,8 +6772,10 @@ UITooltipPasses = {
 				end
 
 				local title_spacing = 10
+
 				position[2] = position[2] - title_spacing
 				total_height = total_height + title_spacing
+
 				local index = 1
 				local text_style = style.stat_text
 				local value_style = style.stat_value
@@ -6365,7 +6786,7 @@ UITooltipPasses = {
 					local player_unit = player.player_unit
 					local value = not stat_descriptor.empty and UIUtils.get_item_tooltip_value(player_unit, item, stat_descriptor) or ""
 					local text_size = data.text_size
-					local text_height = nil
+					local text_height
 
 					if not stat_descriptor.empty then
 						text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, text)
@@ -6375,17 +6796,20 @@ UITooltipPasses = {
 
 					text_size[2] = text_height
 					position[2] = position[2] - text_height
+
 					local old_y_position = position[2]
 					local old_x_position = position[1]
 
 					if draw then
 						local text_id = "stat_" .. index
+
 						position[2] = old_y_position
 
 						if index % 2 == 0 then
 							local background_size = data.background_size
 							local background_style = style.background
 							local background_color = background_style.color
+
 							background_color[1] = alpha
 							background_size[2] = text_height
 							background_size[1] = size[1] / 2
@@ -6397,7 +6821,9 @@ UITooltipPasses = {
 						position[1] = old_x_position + frame_margin
 						position[2] = old_y_position
 						position[3] = start_layer + 3
+
 						local text_pass_data = data.text_pass_data
+
 						content[text_id] = text
 						text_pass_data.text_id = text_id
 						text_style.text_color[1] = alpha
@@ -6431,7 +6857,7 @@ UITooltipPasses = {
 			position[3] = position_z
 
 			return 0
-		end
+		end,
 	},
 	heavy_attack_stats = {
 		setup_data = function ()
@@ -6441,103 +6867,103 @@ UITooltipPasses = {
 					240,
 					3,
 					3,
-					3
+					3,
 				},
 				background_size = {
 					0,
-					50
+					50,
 				},
 				title_text_pass_data = {
-					text_id = "title"
+					text_id = "title",
 				},
 				text_pass_data = {},
 				text_size = {
 					0,
-					0
+					0,
 				},
 				edge_size = {
 					5,
-					0
+					0,
 				},
 				edge_holder_size = {
 					17,
-					9
+					9,
 				},
 				content = {
-					edge_texture = "menu_frame_12_divider_vertical",
 					edge_holder_bottom = "menu_frame_12_divider_bottom",
 					edge_holder_top = "menu_frame_12_divider_top",
-					title = Localize("tutorial_tooltip_alternative_attack")
+					edge_texture = "menu_frame_12_divider_vertical",
+					title = Localize("tutorial_tooltip_alternative_attack"),
 				},
 				style = {
 					title = {
-						vertical_alignment = "center",
-						horizontal_alignment = "center",
-						word_wrap = true,
 						font_type = "hell_shark",
+						horizontal_alignment = "center",
+						vertical_alignment = "center",
+						word_wrap = true,
 						font_size = setup_font_size(18),
-						text_color = Colors.get_color_table_with_alpha("font_title", 255)
+						text_color = Colors.get_color_table_with_alpha("font_title", 255),
 					},
 					stat_text = {
-						vertical_alignment = "center",
-						horizontal_alignment = "left",
-						word_wrap = true,
 						font_type = "hell_shark",
+						horizontal_alignment = "left",
+						vertical_alignment = "center",
+						word_wrap = true,
 						font_size = setup_font_size(16),
-						text_color = Colors.get_color_table_with_alpha("font_default", 255)
+						text_color = Colors.get_color_table_with_alpha("font_default", 255),
 					},
 					stat_value = {
-						vertical_alignment = "center",
-						horizontal_alignment = "right",
-						word_wrap = true,
 						font_type = "hell_shark",
+						horizontal_alignment = "right",
+						vertical_alignment = "center",
+						word_wrap = true,
 						font_size = setup_font_size(16),
-						text_color = Colors.get_color_table_with_alpha("font_default", 255)
+						text_color = Colors.get_color_table_with_alpha("font_default", 255),
 					},
 					background = {
 						color = {
 							150,
 							20,
 							20,
-							20
+							20,
 						},
 						offset = {
 							0,
 							0,
-							-1
-						}
+							-1,
+						},
 					},
 					edge = {
 						texture_size = {
 							5,
-							1
+							1,
 						},
 						color = {
 							255,
 							255,
 							255,
-							255
+							255,
 						},
 						offset = {
 							0,
 							0,
-							1
-						}
+							1,
+						},
 					},
 					edge_holder = {
 						color = {
 							255,
 							255,
 							255,
-							255
+							255,
 						},
 						offset = {
 							0,
 							0,
-							1
-						}
-					}
-				}
+							1,
+						},
+					},
+				},
 			}
 
 			return data
@@ -6566,63 +6992,65 @@ UITooltipPasses = {
 			local position_y = position[2]
 			local position_z = position[3]
 			local total_height = 0
+
 			position[3] = start_layer + 2
 			position[2] = position[2]
+
 			local stats = {
 				{
-					format_function_name = "get_chain_damages",
 					charge_type = "heavy",
+					format_function_name = "get_chain_damages",
 					format_type = "damage",
 					description = Localize("tooltip_item_damage"),
 					armor_types = {
-						1
-					}
+						1,
+					},
 				},
 				{
-					format_function_name = "get_chain_damages",
 					charge_type = "heavy",
+					format_function_name = "get_chain_damages",
 					format_type = "damage",
 					description = Localize("tooltip_item_damage_armor"),
 					armor_types = {
-						2
-					}
+						2,
+					},
 				},
 				{
-					empty = true
+					empty = true,
 				},
 				{
+					charge_type = "heavy",
 					format_function_name = "get_chain_max_targets",
-					charge_type = "heavy",
 					format_type = "max_targets",
-					description = Localize("tooltip_item_cleave")
+					description = Localize("tooltip_item_cleave"),
 				},
 				{
+					charge_type = "heavy",
 					format_function_name = "get_chain_stagger_strengths",
-					charge_type = "heavy",
 					format_type = "stagger_strength",
-					description = Localize("tooltip_item_stagger_strength")
+					description = Localize("tooltip_item_stagger_strength"),
 				},
 				{
-					empty = true
+					empty = true,
 				},
 				{
+					charge_type = "heavy",
 					format_function_name = "get_chain_critical_hit_chances",
-					charge_type = "heavy",
 					format_type = "crit",
-					description = Localize("tooltip_item_crit_hit_chance")
+					description = Localize("tooltip_item_crit_hit_chance"),
 				},
 				{
+					charge_type = "heavy",
 					format_function_name = "get_chain_boost_coefficients",
-					charge_type = "heavy",
 					format_type = "boost",
-					description = Localize("tooltip_item_boost")
+					description = Localize("tooltip_item_boost"),
 				},
 				{
-					format_function_name = "get_chain_headshot_boost_coefficients",
 					charge_type = "heavy",
+					format_function_name = "get_chain_headshot_boost_coefficients",
 					format_type = "boost",
-					description = Localize("tooltip_item_boost_headshot")
-				}
+					description = Localize("tooltip_item_boost_headshot"),
+				},
 			}
 
 			if stats then
@@ -6630,9 +7058,12 @@ UITooltipPasses = {
 				local title_text_pass_data = data.title_text_pass_data
 				local title_text = content.title
 				local text_size = data.text_size
+
 				text_size[1] = size[1] / 2 - frame_margin * 2
 				text_size[2] = 0
+
 				local title_text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, title_text)
+
 				text_size[2] = title_text_height
 				position[1] = position[1] + size[1] / 2
 				position[2] = position[2] - title_text_height
@@ -6640,6 +7071,7 @@ UITooltipPasses = {
 
 				if draw then
 					local text_color = text_style.text_color
+
 					text_color[1] = alpha
 					position[1] = position[1] + frame_margin
 
@@ -6649,8 +7081,10 @@ UITooltipPasses = {
 				end
 
 				local title_spacing = 10
+
 				position[2] = position[2] - title_spacing
 				total_height = total_height + title_spacing
+
 				local index = 1
 				local text_style = style.stat_text
 				local value_style = style.stat_value
@@ -6661,7 +7095,7 @@ UITooltipPasses = {
 					local player_unit = player.player_unit
 					local value = not stat_descriptor.empty and UIUtils.get_item_tooltip_value(player_unit, item, stat_descriptor) or ""
 					local text_size = data.text_size
-					local text_height = nil
+					local text_height
 
 					if not stat_descriptor.empty then
 						text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, text)
@@ -6671,17 +7105,20 @@ UITooltipPasses = {
 
 					text_size[2] = text_height
 					position[2] = position[2] - text_height
+
 					local old_y_position = position[2]
 					local old_x_position = position[1]
 
 					if draw then
 						local text_id = "stat_" .. index
+
 						position[2] = old_y_position
 
 						if index % 2 == 0 then
 							local background_size = data.background_size
 							local background_style = style.background
 							local background_color = background_style.color
+
 							background_color[1] = alpha
 							background_size[2] = text_height
 							background_size[1] = size[1] / 2
@@ -6693,7 +7130,9 @@ UITooltipPasses = {
 						position[1] = old_x_position + frame_margin
 						position[2] = old_y_position
 						position[3] = start_layer + 3
+
 						local text_pass_data = data.text_pass_data
+
 						content[text_id] = text
 						text_pass_data.text_id = text_id
 						text_style.text_color[1] = alpha
@@ -6720,12 +7159,16 @@ UITooltipPasses = {
 
 				if draw then
 					position[1] = position_x + size[1] / 2
+
 					local edge_size = data.edge_size
+
 					edge_size[2] = total_height
+
 					local edge_texture = content.edge_texture
 					local edge_style = style.edge
 					local edge_color = edge_style.color
 					local edge_texture_size = edge_style.texture_size
+
 					edge_texture_size[2] = total_height
 					edge_color[1] = alpha
 					position[1] = position[1] - edge_texture_size[1] / 2
@@ -6739,6 +7182,7 @@ UITooltipPasses = {
 					local edge_holder_color = edge_holder_style.color
 					local edge_holder_top_texture = content.edge_holder_top
 					local edge_holder_bottom_texture = content.edge_holder_bottom
+
 					edge_holder_color[1] = alpha
 					position[1] = position[1] - edge_holder_size[1] / 2 + 3
 					position[3] = start_layer + 6
@@ -6757,7 +7201,7 @@ UITooltipPasses = {
 			position[3] = position_z
 
 			return total_height
-		end
+		end,
 	},
 	detailed_stats_light = {
 		setup_data = function ()
@@ -6767,63 +7211,63 @@ UITooltipPasses = {
 					240,
 					3,
 					3,
-					3
+					3,
 				},
 				background_size = {
 					0,
-					50
+					50,
 				},
 				title_text_pass_data = {
-					text_id = "title"
+					text_id = "title",
 				},
 				text_pass_data = {},
 				text_size = {
 					0,
-					0
+					0,
 				},
 				content = {
 					icon = "tooltip_marker",
-					title = Localize("tutorial_tooltip_normal_attack")
+					title = Localize("tutorial_tooltip_normal_attack"),
 				},
 				style = {
 					title = {
-						vertical_alignment = "center",
-						horizontal_alignment = "center",
-						word_wrap = true,
 						font_type = "hell_shark",
+						horizontal_alignment = "center",
+						vertical_alignment = "center",
+						word_wrap = true,
 						font_size = setup_font_size(18),
-						text_color = Colors.get_color_table_with_alpha("font_title", 255)
+						text_color = Colors.get_color_table_with_alpha("font_title", 255),
 					},
 					stat_text = {
-						vertical_alignment = "center",
-						horizontal_alignment = "left",
-						word_wrap = true,
 						font_type = "hell_shark",
+						horizontal_alignment = "left",
+						vertical_alignment = "center",
+						word_wrap = true,
 						font_size = setup_font_size(16),
-						text_color = Colors.get_color_table_with_alpha("font_default", 255)
+						text_color = Colors.get_color_table_with_alpha("font_default", 255),
 					},
 					stat_value = {
-						vertical_alignment = "center",
-						horizontal_alignment = "right",
-						word_wrap = true,
 						font_type = "hell_shark",
+						horizontal_alignment = "right",
+						vertical_alignment = "center",
+						word_wrap = true,
 						font_size = setup_font_size(16),
-						text_color = Colors.get_color_table_with_alpha("font_default", 255)
+						text_color = Colors.get_color_table_with_alpha("font_default", 255),
 					},
 					background = {
 						color = {
 							150,
 							20,
 							20,
-							20
+							20,
 						},
 						offset = {
 							0,
 							0,
-							-1
-						}
-					}
-				}
+							-1,
+						},
+					},
+				},
 			}
 
 			return data
@@ -6852,77 +7296,79 @@ UITooltipPasses = {
 			local position_y = position[2]
 			local position_z = position[3]
 			local total_height = 0
+
 			position[3] = start_layer + 2
 			position[2] = position[2]
+
 			local stats = {
 				{
-					format_function_name = "get_chain_damages",
-					detailed = true,
 					charge_type = "light",
+					detailed = true,
+					format_function_name = "get_chain_damages",
 					format_type = "damage",
 					description = Localize("tooltip_item_damage"),
 					armor_types = {
-						1
-					}
+						1,
+					},
 				},
 				{
-					format_function_name = "get_chain_damages",
-					detailed = true,
 					charge_type = "light",
+					detailed = true,
+					format_function_name = "get_chain_damages",
 					format_type = "damage",
 					description = Localize("tooltip_item_damage_armor"),
 					armor_types = {
-						2
-					}
+						2,
+					},
 				},
 				{
-					empty = true
+					empty = true,
 				},
 				{
 					charge_type = "light",
 					detailed = true,
 					format_function_name = "get_chain_max_targets",
 					format_type = "max_targets",
-					description = Localize("tooltip_item_cleave")
+					description = Localize("tooltip_item_cleave"),
 				},
 				{
 					charge_type = "light",
 					detailed = true,
 					format_function_name = "get_chain_stagger_strengths",
 					format_type = "stagger_strength",
-					description = Localize("tooltip_item_stagger_strength")
+					description = Localize("tooltip_item_stagger_strength"),
 				},
 				{
 					charge_type = "light",
 					detailed = true,
 					format_function_name = "get_time_between_damage",
 					format_type = "time_between_damage",
-					description = Localize("tooltip_item_time_between_damage")
+					description = Localize("tooltip_item_time_between_damage"),
 				},
 				{
-					empty = true
+					empty = true,
 				},
 				{
 					charge_type = "light",
 					detailed = true,
 					format_function_name = "get_chain_critical_hit_chances",
 					format_type = "crit",
-					description = Localize("tooltip_item_crit_hit_chance")
+					description = Localize("tooltip_item_crit_hit_chance"),
 				},
 				{
 					charge_type = "light",
 					detailed = true,
 					format_function_name = "get_chain_boost_coefficients",
 					format_type = "boost",
-					description = Localize("tooltip_item_boost")
+					description = Localize("tooltip_item_boost"),
 				},
 				{
 					charge_type = "light",
 					detailed = true,
 					format_function_name = "get_chain_headshot_boost_coefficients",
 					format_type = "boost",
-					description = Localize("tooltip_item_boost_headshot")
-				}
+					description = Localize("tooltip_item_boost_headshot"),
+				},
 			}
 
 			if stats then
@@ -6930,15 +7376,19 @@ UITooltipPasses = {
 				local title_text_pass_data = data.title_text_pass_data
 				local title_text = content.title
 				local text_size = data.text_size
+
 				text_size[1] = size[1] - frame_margin * 2
 				text_size[2] = 0
+
 				local title_text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, title_text)
+
 				text_size[2] = title_text_height
 				position[2] = position[2] - title_text_height
 				total_height = total_height + title_text_height
 
 				if draw then
 					local text_color = text_style.text_color
+
 					text_color[1] = alpha
 					position[1] = position[1] + frame_margin
 
@@ -6948,8 +7398,10 @@ UITooltipPasses = {
 				end
 
 				local title_spacing = 10
+
 				position[2] = position[2] - title_spacing
 				total_height = total_height + title_spacing
+
 				local index = 1
 				local text_style = style.stat_text
 				local value_style = style.stat_value
@@ -6960,7 +7412,7 @@ UITooltipPasses = {
 					local player_unit = player.player_unit
 					local value = not stat_descriptor.empty and UIUtils.get_item_tooltip_value(player_unit, item, stat_descriptor) or ""
 					local text_size = data.text_size
-					local text_height = nil
+					local text_height
 
 					if not stat_descriptor.empty then
 						text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, text)
@@ -6970,17 +7422,20 @@ UITooltipPasses = {
 
 					text_size[2] = text_height
 					position[2] = position[2] - text_height
+
 					local old_y_position = position[2]
 					local old_x_position = position[1]
 
 					if draw then
 						local text_id = "stat_" .. index
+
 						position[2] = old_y_position
 
 						if index % 2 == 0 then
 							local background_size = data.background_size
 							local background_style = style.background
 							local background_color = background_style.color
+
 							background_color[1] = alpha
 							background_size[2] = text_height
 							background_size[1] = size[1]
@@ -6992,7 +7447,9 @@ UITooltipPasses = {
 						position[1] = old_x_position + frame_margin
 						position[2] = old_y_position
 						position[3] = start_layer + 3
+
 						local text_pass_data = data.text_pass_data
+
 						content[text_id] = text
 						text_pass_data.text_id = text_id
 						text_style.text_color[1] = alpha
@@ -7024,7 +7481,7 @@ UITooltipPasses = {
 			position[3] = position_z
 
 			return total_height
-		end
+		end,
 	},
 	detailed_stats_heavy = {
 		setup_data = function ()
@@ -7034,63 +7491,63 @@ UITooltipPasses = {
 					240,
 					3,
 					3,
-					3
+					3,
 				},
 				background_size = {
 					0,
-					50
+					50,
 				},
 				title_text_pass_data = {
-					text_id = "title"
+					text_id = "title",
 				},
 				text_pass_data = {},
 				text_size = {
 					0,
-					0
+					0,
 				},
 				content = {
 					icon = "tooltip_marker",
-					title = Localize("tutorial_tooltip_alternative_attack")
+					title = Localize("tutorial_tooltip_alternative_attack"),
 				},
 				style = {
 					title = {
-						vertical_alignment = "center",
-						horizontal_alignment = "center",
-						word_wrap = true,
 						font_type = "hell_shark",
+						horizontal_alignment = "center",
+						vertical_alignment = "center",
+						word_wrap = true,
 						font_size = setup_font_size(18),
-						text_color = Colors.get_color_table_with_alpha("font_title", 255)
+						text_color = Colors.get_color_table_with_alpha("font_title", 255),
 					},
 					stat_text = {
-						vertical_alignment = "center",
-						horizontal_alignment = "left",
-						word_wrap = true,
 						font_type = "hell_shark",
+						horizontal_alignment = "left",
+						vertical_alignment = "center",
+						word_wrap = true,
 						font_size = setup_font_size(16),
-						text_color = Colors.get_color_table_with_alpha("font_default", 255)
+						text_color = Colors.get_color_table_with_alpha("font_default", 255),
 					},
 					stat_value = {
-						vertical_alignment = "center",
-						horizontal_alignment = "right",
-						word_wrap = true,
 						font_type = "hell_shark",
+						horizontal_alignment = "right",
+						vertical_alignment = "center",
+						word_wrap = true,
 						font_size = setup_font_size(16),
-						text_color = Colors.get_color_table_with_alpha("font_default", 255)
+						text_color = Colors.get_color_table_with_alpha("font_default", 255),
 					},
 					background = {
 						color = {
 							150,
 							20,
 							20,
-							20
+							20,
 						},
 						offset = {
 							0,
 							0,
-							-1
-						}
-					}
-				}
+							-1,
+						},
+					},
+				},
 			}
 
 			return data
@@ -7119,77 +7576,79 @@ UITooltipPasses = {
 			local position_y = position[2]
 			local position_z = position[3]
 			local total_height = 0
+
 			position[3] = start_layer + 2
 			position[2] = position[2]
+
 			local stats = {
 				{
-					format_function_name = "get_chain_damages",
-					detailed = true,
 					charge_type = "heavy",
+					detailed = true,
+					format_function_name = "get_chain_damages",
 					format_type = "damage",
 					description = Localize("tooltip_item_damage"),
 					armor_types = {
-						1
-					}
+						1,
+					},
 				},
 				{
-					format_function_name = "get_chain_damages",
-					detailed = true,
 					charge_type = "heavy",
+					detailed = true,
+					format_function_name = "get_chain_damages",
 					format_type = "damage",
 					description = Localize("tooltip_item_damage_armor"),
 					armor_types = {
-						2
-					}
+						2,
+					},
 				},
 				{
-					empty = true
+					empty = true,
 				},
 				{
 					charge_type = "heavy",
 					detailed = true,
 					format_function_name = "get_chain_max_targets",
 					format_type = "max_targets",
-					description = Localize("tooltip_item_cleave")
+					description = Localize("tooltip_item_cleave"),
 				},
 				{
 					charge_type = "heavy",
 					detailed = true,
 					format_function_name = "get_chain_stagger_strengths",
 					format_type = "stagger_strength",
-					description = Localize("tooltip_item_stagger_strength")
+					description = Localize("tooltip_item_stagger_strength"),
 				},
 				{
 					charge_type = "heavy",
 					detailed = true,
 					format_function_name = "get_time_between_damage",
 					format_type = "time_between_damage",
-					description = Localize("tooltip_item_time_between_damage")
+					description = Localize("tooltip_item_time_between_damage"),
 				},
 				{
-					empty = true
+					empty = true,
 				},
 				{
 					charge_type = "heavy",
 					detailed = true,
 					format_function_name = "get_chain_critical_hit_chances",
 					format_type = "crit",
-					description = Localize("tooltip_item_crit_hit_chance")
+					description = Localize("tooltip_item_crit_hit_chance"),
 				},
 				{
 					charge_type = "heavy",
 					detailed = true,
 					format_function_name = "get_chain_boost_coefficients",
 					format_type = "boost",
-					description = Localize("tooltip_item_boost")
+					description = Localize("tooltip_item_boost"),
 				},
 				{
 					charge_type = "heavy",
 					detailed = true,
 					format_function_name = "get_chain_headshot_boost_coefficients",
 					format_type = "boost",
-					description = Localize("tooltip_item_boost_headshot")
-				}
+					description = Localize("tooltip_item_boost_headshot"),
+				},
 			}
 
 			if stats then
@@ -7197,15 +7656,19 @@ UITooltipPasses = {
 				local title_text_pass_data = data.title_text_pass_data
 				local title_text = content.title
 				local text_size = data.text_size
+
 				text_size[1] = size[1] - frame_margin * 2
 				text_size[2] = 0
+
 				local title_text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, title_text)
+
 				text_size[2] = title_text_height
 				position[2] = position[2] - title_text_height
 				total_height = total_height + title_text_height
 
 				if draw then
 					local text_color = text_style.text_color
+
 					text_color[1] = alpha
 					position[1] = position[1] + frame_margin
 
@@ -7215,8 +7678,10 @@ UITooltipPasses = {
 				end
 
 				local title_spacing = 10
+
 				position[2] = position[2] - title_spacing
 				total_height = total_height + title_spacing
+
 				local index = 1
 				local text_style = style.stat_text
 				local value_style = style.stat_value
@@ -7227,7 +7692,7 @@ UITooltipPasses = {
 					local player_unit = player.player_unit
 					local value = not stat_descriptor.empty and UIUtils.get_item_tooltip_value(player_unit, item, stat_descriptor) or ""
 					local text_size = data.text_size
-					local text_height = nil
+					local text_height
 
 					if not stat_descriptor.empty then
 						text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, text)
@@ -7237,17 +7702,20 @@ UITooltipPasses = {
 
 					text_size[2] = text_height
 					position[2] = position[2] - text_height
+
 					local old_y_position = position[2]
 					local old_x_position = position[1]
 
 					if draw then
 						local text_id = "stat_" .. index
+
 						position[2] = old_y_position
 
 						if index % 2 == 0 then
 							local background_size = data.background_size
 							local background_style = style.background
 							local background_color = background_style.color
+
 							background_color[1] = alpha
 							background_size[2] = text_height
 							background_size[1] = size[1]
@@ -7259,7 +7727,9 @@ UITooltipPasses = {
 						position[1] = old_x_position + frame_margin
 						position[2] = old_y_position
 						position[3] = start_layer + 3
+
 						local text_pass_data = data.text_pass_data
+
 						content[text_id] = text
 						text_pass_data.text_id = text_id
 						text_style.text_color[1] = alpha
@@ -7291,7 +7761,7 @@ UITooltipPasses = {
 			position[3] = position_z
 
 			return total_height
-		end
+		end,
 	},
 	detailed_stats_push = {
 		setup_data = function ()
@@ -7301,63 +7771,63 @@ UITooltipPasses = {
 					240,
 					3,
 					3,
-					3
+					3,
 				},
 				background_size = {
 					0,
-					50
+					50,
 				},
 				title_text_pass_data = {
-					text_id = "title"
+					text_id = "title",
 				},
 				text_pass_data = {},
 				text_size = {
 					0,
-					0
+					0,
 				},
 				content = {
 					icon = "tooltip_marker",
-					title = Localize("tutorial_tooltip_push")
+					title = Localize("tutorial_tooltip_push"),
 				},
 				style = {
 					title = {
-						vertical_alignment = "center",
-						horizontal_alignment = "center",
-						word_wrap = true,
 						font_type = "hell_shark",
+						horizontal_alignment = "center",
+						vertical_alignment = "center",
+						word_wrap = true,
 						font_size = setup_font_size(18),
-						text_color = Colors.get_color_table_with_alpha("font_title", 255)
+						text_color = Colors.get_color_table_with_alpha("font_title", 255),
 					},
 					stat_text = {
-						vertical_alignment = "center",
-						horizontal_alignment = "left",
-						word_wrap = true,
 						font_type = "hell_shark",
+						horizontal_alignment = "left",
+						vertical_alignment = "center",
+						word_wrap = true,
 						font_size = setup_font_size(16),
-						text_color = Colors.get_color_table_with_alpha("font_default", 255)
+						text_color = Colors.get_color_table_with_alpha("font_default", 255),
 					},
 					stat_value = {
-						vertical_alignment = "center",
-						horizontal_alignment = "right",
-						word_wrap = true,
 						font_type = "hell_shark",
+						horizontal_alignment = "right",
+						vertical_alignment = "center",
+						word_wrap = true,
 						font_size = setup_font_size(16),
-						text_color = Colors.get_color_table_with_alpha("font_default", 255)
+						text_color = Colors.get_color_table_with_alpha("font_default", 255),
 					},
 					background = {
 						color = {
 							150,
 							20,
 							20,
-							20
+							20,
 						},
 						offset = {
 							0,
 							0,
-							-1
-						}
-					}
-				}
+							-1,
+						},
+					},
+				},
 			}
 
 			return data
@@ -7386,23 +7856,25 @@ UITooltipPasses = {
 			local position_y = position[2]
 			local position_z = position[3]
 			local total_height = 0
+
 			position[3] = start_layer + 2
 			position[2] = position[2]
+
 			local stats = {
 				{
 					charge_type = "push",
 					detailed = true,
 					format_function_name = "get_push_angles",
 					format_type = "push_angle",
-					description = Localize("tooltip_item_push_angles")
+					description = Localize("tooltip_item_push_angles"),
 				},
 				{
 					charge_type = "push",
 					detailed = true,
 					format_function_name = "get_push_strengths",
 					format_type = "push_strength",
-					description = Localize("tooltip_item_stagger_strength")
-				}
+					description = Localize("tooltip_item_stagger_strength"),
+				},
 			}
 
 			if stats then
@@ -7410,15 +7882,19 @@ UITooltipPasses = {
 				local title_text_pass_data = data.title_text_pass_data
 				local title_text = content.title
 				local text_size = data.text_size
+
 				text_size[1] = size[1] - frame_margin * 2
 				text_size[2] = 0
+
 				local title_text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, title_text)
+
 				text_size[2] = title_text_height
 				position[2] = position[2] - title_text_height
 				total_height = total_height + title_text_height
 
 				if draw then
 					local text_color = text_style.text_color
+
 					text_color[1] = alpha
 					position[1] = position[1] + frame_margin
 
@@ -7428,8 +7904,10 @@ UITooltipPasses = {
 				end
 
 				local title_spacing = 10
+
 				position[2] = position[2] - title_spacing
 				total_height = total_height + title_spacing
+
 				local index = 1
 				local text_style = style.stat_text
 				local value_style = style.stat_value
@@ -7440,7 +7918,7 @@ UITooltipPasses = {
 					local player_unit = player.player_unit
 					local value = not stat_descriptor.empty and UIUtils.get_item_tooltip_value(player_unit, item, stat_descriptor) or ""
 					local text_size = data.text_size
-					local text_height = nil
+					local text_height
 
 					if not stat_descriptor.empty then
 						text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, text)
@@ -7450,17 +7928,20 @@ UITooltipPasses = {
 
 					text_size[2] = text_height
 					position[2] = position[2] - text_height
+
 					local old_y_position = position[2]
 					local old_x_position = position[1]
 
 					if draw then
 						local text_id = "stat_" .. index
+
 						position[2] = old_y_position
 
 						if index % 2 == 0 then
 							local background_size = data.background_size
 							local background_style = style.background
 							local background_color = background_style.color
+
 							background_color[1] = alpha
 							background_size[2] = text_height
 							background_size[1] = size[1]
@@ -7472,7 +7953,9 @@ UITooltipPasses = {
 						position[1] = old_x_position + frame_margin
 						position[2] = old_y_position
 						position[3] = start_layer + 3
+
 						local text_pass_data = data.text_pass_data
+
 						content[text_id] = text
 						text_pass_data.text_id = text_id
 						text_style.text_color[1] = alpha
@@ -7504,7 +7987,7 @@ UITooltipPasses = {
 			position[3] = position_z
 
 			return total_height
-		end
+		end,
 	},
 	detailed_stats_ranged_light = {
 		setup_data = function ()
@@ -7514,63 +7997,63 @@ UITooltipPasses = {
 					240,
 					3,
 					3,
-					3
+					3,
 				},
 				background_size = {
 					0,
-					50
+					50,
 				},
 				title_text_pass_data = {
-					text_id = "title"
+					text_id = "title",
 				},
 				text_pass_data = {},
 				text_size = {
 					0,
-					0
+					0,
 				},
 				content = {
 					icon = "tooltip_marker",
-					title = Localize("tutorial_tooltip_normal_attack")
+					title = Localize("tutorial_tooltip_normal_attack"),
 				},
 				style = {
 					title = {
-						vertical_alignment = "center",
-						horizontal_alignment = "center",
-						word_wrap = true,
 						font_type = "hell_shark",
+						horizontal_alignment = "center",
+						vertical_alignment = "center",
+						word_wrap = true,
 						font_size = setup_font_size(18),
-						text_color = Colors.get_color_table_with_alpha("font_title", 255)
+						text_color = Colors.get_color_table_with_alpha("font_title", 255),
 					},
 					stat_text = {
-						vertical_alignment = "center",
-						horizontal_alignment = "left",
-						word_wrap = true,
 						font_type = "hell_shark",
+						horizontal_alignment = "left",
+						vertical_alignment = "center",
+						word_wrap = true,
 						font_size = setup_font_size(16),
-						text_color = Colors.get_color_table_with_alpha("font_default", 255)
+						text_color = Colors.get_color_table_with_alpha("font_default", 255),
 					},
 					stat_value = {
-						vertical_alignment = "center",
-						horizontal_alignment = "right",
-						word_wrap = true,
 						font_type = "hell_shark",
+						horizontal_alignment = "right",
+						vertical_alignment = "center",
+						word_wrap = true,
 						font_size = setup_font_size(16),
-						text_color = Colors.get_color_table_with_alpha("font_default", 255)
+						text_color = Colors.get_color_table_with_alpha("font_default", 255),
 					},
 					background = {
 						color = {
 							150,
 							20,
 							20,
-							20
+							20,
 						},
 						offset = {
 							0,
 							0,
-							-1
-						}
-					}
-				}
+							-1,
+						},
+					},
+				},
 			}
 
 			return data
@@ -7599,77 +8082,79 @@ UITooltipPasses = {
 			local position_y = position[2]
 			local position_z = position[3]
 			local total_height = 0
+
 			position[3] = start_layer + 2
 			position[2] = position[2]
+
 			local stats = {
 				{
-					format_function_name = "get_chain_damages",
-					detailed = true,
 					charge_type = "light",
+					detailed = true,
+					format_function_name = "get_chain_damages",
 					format_type = "damage",
 					description = Localize("tooltip_item_damage"),
 					armor_types = {
-						1
-					}
+						1,
+					},
 				},
 				{
-					format_function_name = "get_chain_damages",
-					detailed = true,
 					charge_type = "light",
+					detailed = true,
+					format_function_name = "get_chain_damages",
 					format_type = "damage",
 					description = Localize("tooltip_item_damage_armor"),
 					armor_types = {
-						2
-					}
+						2,
+					},
 				},
 				{
-					empty = true
+					empty = true,
 				},
 				{
 					charge_type = "light",
 					detailed = true,
 					format_function_name = "get_chain_max_targets",
 					format_type = "max_targets",
-					description = Localize("tooltip_item_cleave")
+					description = Localize("tooltip_item_cleave"),
 				},
 				{
 					charge_type = "light",
 					detailed = true,
 					format_function_name = "get_chain_stagger_strengths",
 					format_type = "stagger_strength",
-					description = Localize("tooltip_item_stagger_strength")
+					description = Localize("tooltip_item_stagger_strength"),
 				},
 				{
 					charge_type = "light",
 					detailed = true,
 					format_function_name = "get_time_between_damage",
 					format_type = "time_between_damage",
-					description = Localize("tooltip_item_time_between_damage")
+					description = Localize("tooltip_item_time_between_damage"),
 				},
 				{
-					empty = true
+					empty = true,
 				},
 				{
 					charge_type = "light",
 					detailed = true,
 					format_function_name = "get_chain_critical_hit_chances",
 					format_type = "crit",
-					description = Localize("tooltip_item_crit_hit_chance")
+					description = Localize("tooltip_item_crit_hit_chance"),
 				},
 				{
 					charge_type = "light",
 					detailed = true,
 					format_function_name = "get_chain_boost_coefficients",
 					format_type = "boost",
-					description = Localize("tooltip_item_boost")
+					description = Localize("tooltip_item_boost"),
 				},
 				{
 					charge_type = "light",
 					detailed = true,
 					format_function_name = "get_chain_headshot_boost_coefficients",
 					format_type = "boost",
-					description = Localize("tooltip_item_boost_headshot")
-				}
+					description = Localize("tooltip_item_boost_headshot"),
+				},
 			}
 
 			if stats then
@@ -7677,15 +8162,19 @@ UITooltipPasses = {
 				local title_text_pass_data = data.title_text_pass_data
 				local title_text = content.title
 				local text_size = data.text_size
+
 				text_size[1] = size[1] - frame_margin * 2
 				text_size[2] = 0
+
 				local title_text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, title_text)
+
 				text_size[2] = title_text_height
 				position[2] = position[2] - title_text_height
 				total_height = total_height + title_text_height
 
 				if draw then
 					local text_color = text_style.text_color
+
 					text_color[1] = alpha
 					position[1] = position[1] + frame_margin
 
@@ -7695,8 +8184,10 @@ UITooltipPasses = {
 				end
 
 				local title_spacing = 10
+
 				position[2] = position[2] - title_spacing
 				total_height = total_height + title_spacing
+
 				local index = 1
 				local text_style = style.stat_text
 				local value_style = style.stat_value
@@ -7707,7 +8198,7 @@ UITooltipPasses = {
 					local player_unit = player.player_unit
 					local value = not stat_descriptor.empty and UIUtils.get_item_tooltip_value(player_unit, item, stat_descriptor) or ""
 					local text_size = data.text_size
-					local text_height = nil
+					local text_height
 
 					if not stat_descriptor.empty then
 						text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, text)
@@ -7717,17 +8208,20 @@ UITooltipPasses = {
 
 					text_size[2] = text_height
 					position[2] = position[2] - text_height
+
 					local old_y_position = position[2]
 					local old_x_position = position[1]
 
 					if draw then
 						local text_id = "stat_" .. index
+
 						position[2] = old_y_position
 
 						if index % 2 == 0 then
 							local background_size = data.background_size
 							local background_style = style.background
 							local background_color = background_style.color
+
 							background_color[1] = alpha
 							background_size[2] = text_height
 							background_size[1] = size[1]
@@ -7739,7 +8233,9 @@ UITooltipPasses = {
 						position[1] = old_x_position + frame_margin
 						position[2] = old_y_position
 						position[3] = start_layer + 3
+
 						local text_pass_data = data.text_pass_data
+
 						content[text_id] = text
 						text_pass_data.text_id = text_id
 						text_style.text_color[1] = alpha
@@ -7771,7 +8267,7 @@ UITooltipPasses = {
 			position[3] = position_z
 
 			return total_height
-		end
+		end,
 	},
 	detailed_stats_ranged_heavy = {
 		setup_data = function ()
@@ -7781,63 +8277,63 @@ UITooltipPasses = {
 					240,
 					3,
 					3,
-					3
+					3,
 				},
 				background_size = {
 					0,
-					50
+					50,
 				},
 				title_text_pass_data = {
-					text_id = "title"
+					text_id = "title",
 				},
 				text_pass_data = {},
 				text_size = {
 					0,
-					0
+					0,
 				},
 				content = {
 					icon = "tooltip_marker",
-					title = Localize("tutorial_tooltip_alternative_attack")
+					title = Localize("tutorial_tooltip_alternative_attack"),
 				},
 				style = {
 					title = {
-						vertical_alignment = "center",
-						horizontal_alignment = "center",
-						word_wrap = true,
 						font_type = "hell_shark",
+						horizontal_alignment = "center",
+						vertical_alignment = "center",
+						word_wrap = true,
 						font_size = setup_font_size(18),
-						text_color = Colors.get_color_table_with_alpha("font_title", 255)
+						text_color = Colors.get_color_table_with_alpha("font_title", 255),
 					},
 					stat_text = {
-						vertical_alignment = "center",
-						horizontal_alignment = "left",
-						word_wrap = true,
 						font_type = "hell_shark",
+						horizontal_alignment = "left",
+						vertical_alignment = "center",
+						word_wrap = true,
 						font_size = setup_font_size(16),
-						text_color = Colors.get_color_table_with_alpha("font_default", 255)
+						text_color = Colors.get_color_table_with_alpha("font_default", 255),
 					},
 					stat_value = {
-						vertical_alignment = "center",
-						horizontal_alignment = "right",
-						word_wrap = true,
 						font_type = "hell_shark",
+						horizontal_alignment = "right",
+						vertical_alignment = "center",
+						word_wrap = true,
 						font_size = setup_font_size(16),
-						text_color = Colors.get_color_table_with_alpha("font_default", 255)
+						text_color = Colors.get_color_table_with_alpha("font_default", 255),
 					},
 					background = {
 						color = {
 							150,
 							20,
 							20,
-							20
+							20,
 						},
 						offset = {
 							0,
 							0,
-							-1
-						}
-					}
-				}
+							-1,
+						},
+					},
+				},
 			}
 
 			return data
@@ -7866,77 +8362,79 @@ UITooltipPasses = {
 			local position_y = position[2]
 			local position_z = position[3]
 			local total_height = 0
+
 			position[3] = start_layer + 2
 			position[2] = position[2]
+
 			local stats = {
 				{
-					format_function_name = "get_chain_damages",
-					detailed = true,
 					charge_type = "heavy",
+					detailed = true,
+					format_function_name = "get_chain_damages",
 					format_type = "damage",
 					description = Localize("tooltip_item_damage"),
 					armor_types = {
-						1
-					}
+						1,
+					},
 				},
 				{
-					format_function_name = "get_chain_damages",
-					detailed = true,
 					charge_type = "heavy",
+					detailed = true,
+					format_function_name = "get_chain_damages",
 					format_type = "damage",
 					description = Localize("tooltip_item_damage_armor"),
 					armor_types = {
-						2
-					}
+						2,
+					},
 				},
 				{
-					empty = true
+					empty = true,
 				},
 				{
 					charge_type = "heavy",
 					detailed = true,
 					format_function_name = "get_chain_max_targets",
 					format_type = "max_targets",
-					description = Localize("tooltip_item_cleave")
+					description = Localize("tooltip_item_cleave"),
 				},
 				{
 					charge_type = "heavy",
 					detailed = true,
 					format_function_name = "get_chain_stagger_strengths",
 					format_type = "stagger_strength",
-					description = Localize("tooltip_item_stagger_strength")
+					description = Localize("tooltip_item_stagger_strength"),
 				},
 				{
 					charge_type = "heavy",
 					detailed = true,
 					format_function_name = "get_time_between_damage",
 					format_type = "time_between_damage",
-					description = Localize("tooltip_item_time_between_damage")
+					description = Localize("tooltip_item_time_between_damage"),
 				},
 				{
-					empty = true
+					empty = true,
 				},
 				{
 					charge_type = "heavy",
 					detailed = true,
 					format_function_name = "get_chain_critical_hit_chances",
 					format_type = "crit",
-					description = Localize("tooltip_item_crit_hit_chance")
+					description = Localize("tooltip_item_crit_hit_chance"),
 				},
 				{
 					charge_type = "heavy",
 					detailed = true,
 					format_function_name = "get_chain_boost_coefficients",
 					format_type = "boost",
-					description = Localize("tooltip_item_boost")
+					description = Localize("tooltip_item_boost"),
 				},
 				{
 					charge_type = "heavy",
 					detailed = true,
 					format_function_name = "get_chain_headshot_boost_coefficients",
 					format_type = "boost",
-					description = Localize("tooltip_item_boost_headshot")
-				}
+					description = Localize("tooltip_item_boost_headshot"),
+				},
 			}
 
 			if stats then
@@ -7944,15 +8442,19 @@ UITooltipPasses = {
 				local title_text_pass_data = data.title_text_pass_data
 				local title_text = content.title
 				local text_size = data.text_size
+
 				text_size[1] = size[1] - frame_margin * 2
 				text_size[2] = 0
+
 				local title_text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, title_text)
+
 				text_size[2] = title_text_height
 				position[2] = position[2] - title_text_height
 				total_height = total_height + title_text_height
 
 				if draw then
 					local text_color = text_style.text_color
+
 					text_color[1] = alpha
 					position[1] = position[1] + frame_margin
 
@@ -7962,8 +8464,10 @@ UITooltipPasses = {
 				end
 
 				local title_spacing = 10
+
 				position[2] = position[2] - title_spacing
 				total_height = total_height + title_spacing
+
 				local index = 1
 				local text_style = style.stat_text
 				local value_style = style.stat_value
@@ -7974,7 +8478,7 @@ UITooltipPasses = {
 					local player_unit = player.player_unit
 					local value = not stat_descriptor.empty and UIUtils.get_item_tooltip_value(player_unit, item, stat_descriptor) or ""
 					local text_size = data.text_size
-					local text_height = nil
+					local text_height
 
 					if not stat_descriptor.empty then
 						text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, text)
@@ -7984,17 +8488,20 @@ UITooltipPasses = {
 
 					text_size[2] = text_height
 					position[2] = position[2] - text_height
+
 					local old_y_position = position[2]
 					local old_x_position = position[1]
 
 					if draw then
 						local text_id = "stat_" .. index
+
 						position[2] = old_y_position
 
 						if index % 2 == 0 then
 							local background_size = data.background_size
 							local background_style = style.background
 							local background_color = background_style.color
+
 							background_color[1] = alpha
 							background_size[2] = text_height
 							background_size[1] = size[1]
@@ -8006,7 +8513,9 @@ UITooltipPasses = {
 						position[1] = old_x_position + frame_margin
 						position[2] = old_y_position
 						position[3] = start_layer + 3
+
 						local text_pass_data = data.text_pass_data
+
 						content[text_id] = text
 						text_pass_data.text_id = text_id
 						text_style.text_color[1] = alpha
@@ -8038,520 +8547,520 @@ UITooltipPasses = {
 			position[3] = position_z
 
 			return total_height
-		end
+		end,
 	},
 	weave_progression_slot_titles = {
 		setup_data = function ()
 			local styles = {
 				{
+					font_type = "hell_shark",
+					horizontal_alignment = "center",
 					name = "talent_title",
 					pass_type = "text",
-					word_wrap = true,
-					horizontal_alignment = "center",
 					vertical_alignment = "center",
-					font_type = "hell_shark",
+					word_wrap = true,
 					font_size = setup_font_size(18),
 					text_color = {
 						255,
 						87,
 						39,
-						141
+						141,
 					},
 					offset = {
 						0,
 						0,
-						0
-					}
+						0,
+					},
 				},
 				{
+					font_type = "hell_shark",
+					horizontal_alignment = "center",
 					name = "trait_title",
 					pass_type = "text",
-					word_wrap = true,
-					horizontal_alignment = "center",
 					vertical_alignment = "center",
-					font_type = "hell_shark",
+					word_wrap = true,
 					font_size = setup_font_size(18),
 					text_color = Colors.get_color_table_with_alpha("font_title", 255),
 					offset = {
 						0,
 						0,
-						0
-					}
+						0,
+					},
 				},
 				{
+					font_type = "hell_shark_header",
+					horizontal_alignment = "center",
 					name = "title",
 					pass_type = "text",
-					word_wrap = true,
-					horizontal_alignment = "center",
 					vertical_alignment = "center",
-					font_type = "hell_shark_header",
+					word_wrap = true,
 					font_size = setup_font_size(28),
 					text_color = Colors.get_color_table_with_alpha("font_title", 255),
 					offset = {
 						0,
 						0,
-						0
-					}
+						0,
+					},
 				},
 				{
+					font_type = "hell_shark",
+					horizontal_alignment = "center",
 					name = "property_title",
 					pass_type = "text",
-					word_wrap = true,
-					horizontal_alignment = "center",
 					vertical_alignment = "center",
-					font_type = "hell_shark",
+					word_wrap = true,
 					font_size = setup_font_size(18),
 					text_color = Colors.get_color_table_with_alpha("corn_flower_blue", 255),
 					offset = {
 						0,
 						0,
-						0
-					}
+						0,
+					},
 				},
 				{
+					font_type = "hell_shark",
+					horizontal_alignment = "center",
 					name = "sub_title",
 					pass_type = "text",
-					word_wrap = true,
-					horizontal_alignment = "center",
 					vertical_alignment = "center",
-					font_type = "hell_shark",
+					word_wrap = true,
 					font_size = setup_font_size(18),
 					text_color = {
 						255,
 						120,
 						120,
-						120
+						120,
 					},
 					offset = {
 						0,
 						0,
-						0
-					}
+						0,
+					},
 				},
 				{
+					font_type = "hell_shark",
+					horizontal_alignment = "center",
 					name = "description",
 					pass_type = "text",
-					word_wrap = true,
-					horizontal_alignment = "center",
 					vertical_alignment = "center",
-					font_type = "hell_shark",
+					word_wrap = true,
 					font_size = setup_font_size(18),
 					text_color = Colors.get_color_table_with_alpha("font_default", 255),
 					offset = {
 						0,
 						0,
-						0
-					}
+						0,
+					},
 				},
 				{
-					texture = "weave_forge_slot_divider_tooltip",
+					height_margin = 5,
+					horizontal_alignment = "center",
 					name = "divider",
 					pass_type = "texture",
-					horizontal_alignment = "center",
-					height_margin = 5,
+					texture = "weave_forge_slot_divider_tooltip",
 					vertical_alignment = "center",
 					texture_size = {
 						264,
-						3
+						3,
 					},
 					color = {
 						255,
 						255,
 						255,
-						255
+						255,
 					},
 					offset = {
 						0,
 						0,
-						0
-					}
+						0,
+					},
 				},
 				{
+					font_type = "hell_shark",
+					horizontal_alignment = "center",
 					name = "divider_description",
 					pass_type = "text",
-					word_wrap = true,
-					horizontal_alignment = "center",
 					vertical_alignment = "center",
-					font_type = "hell_shark",
+					word_wrap = true,
 					font_size = setup_font_size(18),
 					text_color = {
 						255,
 						120,
 						120,
-						120
+						120,
 					},
 					offset = {
 						0,
 						0,
-						0
-					}
+						0,
+					},
 				},
 				{
-					texture = "weave_forge_slot_divider_tooltip",
+					height_margin = 5,
+					height_spacing = 5,
+					horizontal_alignment = "center",
 					name = "description_divider",
 					pass_type = "texture",
-					horizontal_alignment = "center",
 					required_pass_style = "divider_description",
-					height_spacing = 5,
-					height_margin = 5,
+					texture = "weave_forge_slot_divider_tooltip",
 					vertical_alignment = "center",
 					texture_size = {
 						264,
-						3
+						3,
 					},
 					color = {
 						255,
 						255,
 						255,
-						255
+						255,
 					},
 					offset = {
 						0,
 						0,
-						0
-					}
+						0,
+					},
 				},
 				{
+					font_type = "hell_shark",
+					horizontal_alignment = "center",
 					name = "input",
 					pass_type = "text",
-					word_wrap = true,
-					horizontal_alignment = "center",
 					vertical_alignment = "center",
-					font_type = "hell_shark",
+					word_wrap = true,
 					font_size = setup_font_size(18),
 					text_color = {
 						255,
 						120,
 						120,
-						120
+						120,
 					},
 					offset = {
 						0,
 						0,
-						0
-					}
+						0,
+					},
 				},
 				{
+					font_type = "hell_shark_header",
+					horizontal_alignment = "center",
 					name = "essence_title",
 					pass_type = "text",
-					word_wrap = true,
-					horizontal_alignment = "center",
 					vertical_alignment = "center",
-					font_type = "hell_shark_header",
+					word_wrap = true,
 					font_size = setup_font_size(24),
 					text_color = Colors.get_color_table_with_alpha("font_title", 255),
 					offset = {
 						0,
 						0,
-						0
-					}
+						0,
+					},
 				},
 				{
+					font_type = "hell_shark",
+					horizontal_alignment = "center",
 					name = "input_highlight",
 					pass_type = "text",
-					word_wrap = true,
-					horizontal_alignment = "center",
 					vertical_alignment = "center",
-					font_type = "hell_shark",
+					word_wrap = true,
 					font_size = setup_font_size(18),
 					text_color = Colors.get_color_table_with_alpha("font_default", 255),
 					offset = {
 						0,
 						0,
-						0
-					}
+						0,
+					},
 				},
 				{
+					font_type = "hell_shark",
+					horizontal_alignment = "center",
 					name = "upgrade_effect_title",
 					pass_type = "text",
-					word_wrap = true,
-					horizontal_alignment = "center",
 					vertical_alignment = "center",
-					font_type = "hell_shark",
+					word_wrap = true,
 					font_size = setup_font_size(18),
 					text_color = {
 						255,
 						120,
 						120,
-						120
+						120,
 					},
 					offset = {
 						0,
 						0,
-						0
-					}
+						0,
+					},
 				},
 				{
-					name = "value",
-					localize = false,
-					pass_type = "text",
-					word_wrap = true,
-					horizontal_alignment = "center",
-					vertical_alignment = "center",
 					font_type = "hell_shark",
+					horizontal_alignment = "center",
+					localize = false,
+					name = "value",
+					pass_type = "text",
+					vertical_alignment = "center",
+					word_wrap = true,
 					font_size = setup_font_size(18),
 					text_color = {
 						255,
 						121,
 						193,
-						229
+						229,
 					},
 					offset = {
 						-35,
 						0,
-						0
-					}
+						0,
+					},
 				},
 				{
-					texture = "icon_mastery_small",
+					align_after_previous_width = true,
+					height_margin = 0,
+					horizontal_alignment = "center",
+					ignore_line_change = true,
 					name = "mastery_icon",
 					pass_type = "texture",
-					ignore_line_change = true,
 					required_pass_style = "value",
-					horizontal_alignment = "center",
-					height_margin = 0,
+					texture = "icon_mastery_small",
 					vertical_alignment = "center",
-					align_after_previous_width = true,
 					texture_size = {
 						35,
-						35
+						35,
 					},
 					color = {
 						255,
 						255,
 						255,
-						255
+						255,
 					},
 					offset = {
 						0,
 						0,
-						0
-					}
+						0,
+					},
 				},
 				{
+					font_type = "hell_shark",
+					height_spacing = 4,
+					horizontal_alignment = "left",
+					localize = false,
 					minimum_height = 50,
 					name = "upgrade_power_text",
-					localize = false,
 					pass_type = "text",
-					word_wrap = true,
-					horizontal_alignment = "left",
 					vertical_alignment = "center",
-					height_spacing = 4,
-					font_type = "hell_shark",
+					word_wrap = true,
 					font_size = setup_font_size(20),
 					text_color = Colors.get_color_table_with_alpha("font_default", 255),
 					offset = {
 						60,
 						0,
-						0
-					}
+						0,
+					},
 				},
 				{
-					texture = "reinforcement_kill",
+					height_margin = 0,
+					horizontal_alignment = "left",
+					ignore_line_change = true,
 					name = "mastery_upgrade_icon",
 					pass_type = "texture",
-					ignore_line_change = true,
 					required_pass_style = "upgrade_power_text",
-					horizontal_alignment = "left",
-					height_margin = 0,
+					texture = "reinforcement_kill",
 					vertical_alignment = "center",
 					texture_size = {
 						26,
-						26
+						26,
 					},
 					color = {
 						255,
 						255,
 						255,
-						255
+						255,
 					},
 					offset = {
 						21,
 						0,
-						0
-					}
+						0,
+					},
 				},
 				{
+					font_type = "hell_shark",
+					height_spacing = 4,
+					horizontal_alignment = "left",
+					localize = false,
 					minimum_height = 50,
 					name = "upgrade_mastery_text",
-					localize = false,
 					pass_type = "text",
-					word_wrap = true,
-					horizontal_alignment = "left",
 					vertical_alignment = "center",
-					height_spacing = 4,
-					font_type = "hell_shark",
+					word_wrap = true,
 					font_size = setup_font_size(20),
 					text_color = Colors.get_color_table_with_alpha("font_default", 255),
 					offset = {
 						60,
 						0,
-						0
-					}
+						0,
+					},
 				},
 				{
-					texture = "icon_mastery_big",
+					height_margin = 0,
+					horizontal_alignment = "left",
+					ignore_line_change = true,
 					name = "mastery_upgrade_icon",
 					pass_type = "texture",
-					ignore_line_change = true,
 					required_pass_style = "upgrade_mastery_text",
-					horizontal_alignment = "left",
-					height_margin = 0,
+					texture = "icon_mastery_big",
 					vertical_alignment = "center",
 					texture_size = {
 						38,
-						38
+						38,
 					},
 					color = {
 						255,
 						255,
 						255,
-						255
+						255,
 					},
 					offset = {
 						16,
 						0,
-						0
-					}
+						0,
+					},
 				},
 				{
+					font_type = "hell_shark",
+					height_spacing = 4,
+					horizontal_alignment = "left",
+					localize = false,
 					minimum_height = 50,
 					name = "upgrade_property_text",
-					localize = false,
 					pass_type = "text",
-					word_wrap = true,
-					horizontal_alignment = "left",
 					vertical_alignment = "center",
-					height_spacing = 4,
-					font_type = "hell_shark",
+					word_wrap = true,
 					font_size = setup_font_size(20),
 					text_color = Colors.get_color_table_with_alpha("font_default", 255),
 					offset = {
 						60,
 						0,
-						0
-					}
+						0,
+					},
 				},
 				{
-					texture = "athanor_tooltip_icon_property",
+					height_margin = 0,
+					horizontal_alignment = "left",
+					ignore_line_change = true,
 					name = "property_slot_icon",
 					pass_type = "texture",
-					ignore_line_change = true,
 					required_pass_style = "upgrade_property_text",
-					horizontal_alignment = "left",
-					height_margin = 0,
+					texture = "athanor_tooltip_icon_property",
 					vertical_alignment = "center",
 					texture_size = {
 						48,
-						48
+						48,
 					},
 					color = {
 						255,
 						255,
 						255,
-						255
+						255,
 					},
 					offset = {
 						10,
 						0,
-						0
-					}
+						0,
+					},
 				},
 				{
+					font_type = "hell_shark",
+					height_spacing = 4,
+					horizontal_alignment = "left",
+					localize = false,
 					minimum_height = 50,
 					name = "upgrade_trait_text",
-					localize = false,
 					pass_type = "text",
-					word_wrap = true,
-					horizontal_alignment = "left",
 					vertical_alignment = "center",
-					height_spacing = 4,
-					font_type = "hell_shark",
+					word_wrap = true,
 					font_size = setup_font_size(20),
 					text_color = Colors.get_color_table_with_alpha("font_default", 255),
 					offset = {
 						60,
 						0,
-						0
-					}
+						0,
+					},
 				},
 				{
-					texture = "athanor_tooltip_icon_trait",
+					height_margin = 0,
+					horizontal_alignment = "left",
+					ignore_line_change = true,
 					name = "trait_slot_icon",
 					pass_type = "texture",
-					ignore_line_change = true,
 					required_pass_style = "upgrade_trait_text",
-					horizontal_alignment = "left",
-					height_margin = 0,
+					texture = "athanor_tooltip_icon_trait",
 					vertical_alignment = "center",
 					texture_size = {
 						48,
-						48
+						48,
 					},
 					color = {
 						255,
 						255,
 						255,
-						255
+						255,
 					},
 					offset = {
 						10,
 						0,
-						0
-					}
+						0,
+					},
 				},
 				{
+					font_type = "hell_shark",
+					height_spacing = 4,
+					horizontal_alignment = "left",
+					localize = false,
 					minimum_height = 50,
 					name = "upgrade_talent_text",
-					localize = false,
 					pass_type = "text",
-					word_wrap = true,
-					horizontal_alignment = "left",
 					vertical_alignment = "center",
-					height_spacing = 4,
-					font_type = "hell_shark",
+					word_wrap = true,
 					font_size = setup_font_size(20),
 					text_color = Colors.get_color_table_with_alpha("font_default", 255),
 					offset = {
 						60,
 						0,
-						0
-					}
+						0,
+					},
 				},
 				{
-					texture = "athanor_tooltip_icon_talent",
+					height_margin = 0,
+					horizontal_alignment = "left",
+					ignore_line_change = true,
 					name = "talent_slot_icon",
 					pass_type = "texture",
-					ignore_line_change = true,
 					required_pass_style = "upgrade_talent_text",
-					horizontal_alignment = "left",
-					height_margin = 0,
+					texture = "athanor_tooltip_icon_talent",
 					vertical_alignment = "center",
 					texture_size = {
 						48,
-						48
+						48,
 					},
 					color = {
 						255,
 						255,
 						255,
-						255
+						255,
 					},
 					offset = {
 						10,
 						0,
-						0
-					}
-				}
+						0,
+					},
+				},
 			}
-			local data = {
-				styles = styles,
-				pass_content = {},
-				texture_pass_data = {},
-				texture_pass_definition = {},
-				text_pass_data = {},
-				text_pass_size = {}
-			}
+			local data = {}
+
+			data.styles = styles
+			data.pass_content = {}
+			data.texture_pass_data = {}
+			data.texture_pass_definition = {}
+			data.text_pass_data = {}
+			data.text_pass_size = {}
 
 			return data
 		end,
@@ -8571,15 +9080,19 @@ UITooltipPasses = {
 			local position_x = position[1]
 			local position_y = position[2]
 			local position_z = position[3]
+
 			position[1] = position[1] + frame_margin
 			position[3] = start_layer + 2
+
 			local texture_pass_definition = data.texture_pass_definition
 			local texture_pass_data = data.texture_pass_data
 			local text_pass_data = data.text_pass_data
 			local text_size = data.text_pass_size
+
 			size[1] = size[1] - frame_margin * 2
 			text_size[1] = size[1]
 			text_size[2] = 0
+
 			local total_height = 5
 			local latest_text_width = 0
 			local latest_text_height = 0
@@ -8615,6 +9128,7 @@ UITooltipPasses = {
 							text_pass_data.text_id = style_name
 							text_size[1] = size[1] - offset[1]
 							text_size[2] = 0
+
 							local text_height, num_texts = UIUtils.get_text_height(ui_renderer, text_size, style, text)
 							local text_width = UIUtils.get_text_width(ui_renderer, style, text)
 
@@ -8645,6 +9159,7 @@ UITooltipPasses = {
 					elseif pass_type == "texture" then
 						texture_pass_definition.texture_id = style_name
 						style.color[1] = alpha
+
 						local texture_size = style.texture_size
 						local texture_width = texture_size[1]
 						local texture_height = texture_size[2]
@@ -8683,96 +9198,96 @@ UITooltipPasses = {
 			position[3] = position_z
 
 			return total_height
-		end
+		end,
 	},
 	athanor_upgrade_tooltip = {
 		setup_data = function ()
 			local styles = {
 				upgrade_property_text = {
-					minimum_height = 35,
-					localize = false,
-					pass_type = "text",
-					word_wrap = true,
-					horizontal_alignment = "left",
-					vertical_alignment = "bottom",
 					font_type = "hell_shark",
+					horizontal_alignment = "left",
+					localize = false,
+					minimum_height = 35,
+					pass_type = "text",
+					vertical_alignment = "bottom",
+					word_wrap = true,
 					font_size = setup_font_size(20),
 					text_color = Colors.get_color_table_with_alpha("corn_flower_blue", 255),
 					offset = {
 						60,
 						0,
-						0
-					}
+						0,
+					},
 				},
 				property_slot_icon = {
-					vertical_alignment = "bottom",
 					height_spacing = 25,
-					pass_type = "texture",
 					horizontal_alignment = "left",
 					ignore_line_change = true,
+					pass_type = "texture",
+					vertical_alignment = "bottom",
 					texture_size = {
 						40,
-						40
+						40,
 					},
 					color = {
 						255,
 						255,
 						255,
-						255
+						255,
 					},
 					offset = {
 						10,
 						0,
-						0
-					}
+						0,
+					},
 				},
 				upgrade_trait_text = {
-					minimum_height = 35,
-					localize = false,
-					pass_type = "text",
-					word_wrap = true,
-					horizontal_alignment = "left",
-					vertical_alignment = "bottom",
 					font_type = "hell_shark",
+					horizontal_alignment = "left",
+					localize = false,
+					minimum_height = 35,
+					pass_type = "text",
+					vertical_alignment = "bottom",
+					word_wrap = true,
 					font_size = setup_font_size(20),
 					text_color = Colors.get_color_table_with_alpha("font_title", 255),
 					offset = {
 						60,
 						0,
-						0
-					}
+						0,
+					},
 				},
 				trait_slot_icon = {
-					vertical_alignment = "bottom",
 					height_spacing = 25,
-					pass_type = "texture",
 					horizontal_alignment = "left",
 					ignore_line_change = true,
+					pass_type = "texture",
+					vertical_alignment = "bottom",
 					texture_size = {
 						40,
-						40
+						40,
 					},
 					color = {
 						255,
 						255,
 						255,
-						255
+						255,
 					},
 					offset = {
 						10,
 						0,
-						0
-					}
-				}
+						0,
+					},
+				},
 			}
-			local data = {
-				styles = styles,
-				pass_content = {},
-				texture_pass_data = {},
-				texture_pass_definition = {},
-				text_pass_data = {},
-				text_pass_size = {}
-			}
+			local data = {}
+
+			data.styles = styles
+			data.pass_content = {}
+			data.texture_pass_data = {}
+			data.texture_pass_definition = {}
+			data.text_pass_data = {}
+			data.text_pass_size = {}
 
 			return data
 		end,
@@ -8792,15 +9307,19 @@ UITooltipPasses = {
 			local position_x = position[1]
 			local position_y = position[2]
 			local position_z = position[3]
+
 			position[1] = position[1] + frame_margin
 			position[3] = start_layer + 2
+
 			local texture_pass_definition = data.texture_pass_definition
 			local texture_pass_data = data.texture_pass_data
 			local text_pass_data = data.text_pass_data
 			local text_size = data.text_pass_size
+
 			size[1] = size[1] - frame_margin * 2
 			text_size[1] = size[1]
 			text_size[2] = 0
+
 			local total_height = 5
 			local latest_text_width = 0
 			local latest_text_height = 0
@@ -8814,22 +9333,22 @@ UITooltipPasses = {
 						for _, property in ipairs(value) do
 							presentation_data[#presentation_data + 1] = {
 								style_name = "property_slot_icon",
-								value = property.icon
+								value = property.icon,
 							}
 							presentation_data[#presentation_data + 1] = {
 								style_name = "upgrade_property_text",
-								value = property.text
+								value = property.text,
 							}
 						end
 					elseif key == "trait_unlock_table" then
 						for _, trait in ipairs(value) do
 							presentation_data[#presentation_data + 1] = {
 								style_name = "trait_slot_icon",
-								value = trait.icon
+								value = trait.icon,
 							}
 							presentation_data[#presentation_data + 1] = {
 								style_name = "upgrade_trait_text",
-								value = trait.text
+								value = trait.text,
 							}
 						end
 					end
@@ -8839,7 +9358,9 @@ UITooltipPasses = {
 			for index, presentation in ipairs(presentation_data) do
 				local style_name = presentation.style_name
 				local style = styles[style_name]
+
 				pass_content[style_name] = presentation.value
+
 				local pass_type = style.pass_type
 				local ignore_line_change = style.ignore_line_change
 				local minimum_height = style.minimum_height or 0
@@ -8862,6 +9383,7 @@ UITooltipPasses = {
 						text_pass_data.text_id = style_name
 						text_size[1] = size[1] - offset[1]
 						text_size[2] = 0
+
 						local text_height, num_texts = UIUtils.get_text_height(ui_renderer, text_size, style, text)
 						local text_width = UIUtils.get_text_width(ui_renderer, style, text)
 
@@ -8892,6 +9414,7 @@ UITooltipPasses = {
 				elseif pass_type == "texture" then
 					texture_pass_definition.texture_id = style_name
 					style.color[1] = alpha
+
 					local texture_size = style.texture_size
 					local texture_width = texture_size[1]
 					local texture_height = texture_size[2]
@@ -8932,48 +9455,48 @@ UITooltipPasses = {
 			position[3] = position_z
 
 			return total_height + bottom_spacing
-		end
+		end,
 	},
 	special_action_tooltip = {
 		setup_data = function ()
 			local data = {
 				frame_margin = 0,
 				text_pass_data = {
-					text_id = "text"
+					text_id = "text",
 				},
 				text_size = {},
 				content = {},
 				style_text = {
-					vertical_alignment = "center",
-					localize = false,
-					horizontal_alignment = "center",
-					word_wrap = true,
 					font_type = "hell_shark",
+					horizontal_alignment = "center",
+					localize = false,
+					vertical_alignment = "center",
+					word_wrap = true,
 					font_size = setup_font_size(16),
 					text_color = Colors.get_color_table_with_alpha("font_default", 255),
 					offset = {
 						0,
 						-5,
-						0
-					}
+						0,
+					},
 				},
 				style_background = {
 					color = {
 						255,
 						0,
 						0,
-						0
+						0,
 					},
 					texture_size = {
 						0,
-						0
+						0,
 					},
 					offset = {
 						0,
 						0,
-						9
-					}
-				}
+						9,
+					},
+				},
 			}
 
 			return data
@@ -8995,17 +9518,22 @@ UITooltipPasses = {
 			local content = data.content
 			local prefix_color = Colors.color_definitions.font_title
 			local text = string.format("{#color(%d,%d,%d)}%s:{#reset()} %s", prefix_color[2], prefix_color[3], prefix_color[4], Localize("action_three"), Localize(tooltip_special_action_description))
+
 			content.text = text
+
 			local position_x = position[1]
 			local position_y = position[2]
 			local position_z = position[3]
 			local style_text = data.style_text
 			local text_size = data.text_size
 			local text_width = size[1] - frame_margin * 2
+
 			text_size[1] = text_width
 			text_size[2] = 0
+
 			local title_text_height = UIUtils.get_text_height(ui_renderer, text_size, style_text, text)
 			local total_height = frame_margin + title_text_height
+
 			text_size[1] = text_width
 			text_size[2] = title_text_height
 
@@ -9013,6 +9541,7 @@ UITooltipPasses = {
 				local background_style = data.style_background
 				local background_size = background_style.texture_size
 				local background_color = background_style.color
+
 				background_color[1] = alpha
 				background_size[1] = size[1]
 				background_size[2] = total_height
@@ -9036,31 +9565,31 @@ UITooltipPasses = {
 			position[3] = position_z
 
 			return total_height
-		end
+		end,
 	},
 	console_special_action_tooltip = {
 		setup_data = function ()
 			local data = {
 				frame_margin = 0,
 				text_pass_data = {
-					text_id = "text"
+					text_id = "text",
 				},
 				text_size = {},
 				content = {},
 				style_text = {
-					vertical_alignment = "center",
-					localize = false,
-					horizontal_alignment = "center",
-					word_wrap = true,
 					font_type = "hell_shark",
+					horizontal_alignment = "center",
+					localize = false,
+					vertical_alignment = "center",
+					word_wrap = true,
 					font_size = setup_font_size(16),
 					text_color = Colors.get_color_table_with_alpha("font_default", 255),
 					offset = {
 						0,
 						0,
-						0
-					}
-				}
+						0,
+					},
+				},
 			}
 
 			return data
@@ -9082,17 +9611,22 @@ UITooltipPasses = {
 			local content = data.content
 			local prefix_color = Colors.color_definitions.font_title
 			local text = string.format("{#color(%d,%d,%d)}%s:{#reset()} %s", prefix_color[2], prefix_color[3], prefix_color[4], Localize("action_three"), Localize(tooltip_special_action_description))
+
 			content.text = text
+
 			local position_x = position[1]
 			local position_y = position[2]
 			local position_z = position[3]
 			local style_text = data.style_text
 			local text_size = data.text_size
 			local text_width = size[1] - frame_margin * 2
+
 			text_size[1] = text_width
 			text_size[2] = 0
+
 			local title_text_height = UIUtils.get_text_height(ui_renderer, text_size, style_text, text)
 			local total_height = frame_margin + title_text_height
+
 			text_size[2] = title_text_height
 
 			if draw then
@@ -9109,7 +9643,7 @@ UITooltipPasses = {
 			position[3] = position_z
 
 			return total_height
-		end
+		end,
 	},
 	other_equipped_careers_tooltip = {
 		setup_data = function ()
@@ -9118,89 +9652,89 @@ UITooltipPasses = {
 				frame_margin = 0,
 				prefix = string.format("{#color(%d,%d,%d)}%s:{#reset()} ", prefix_color[2], prefix_color[3], prefix_color[4], Localize("equipped_on_other_career")),
 				text_pass_data = {
-					text_id = "text"
+					text_id = "text",
 				},
 				text_size = {},
 				edge_size = {
 					0,
-					5
+					5,
 				},
 				edge_holder_size = {
 					9,
-					17
+					17,
 				},
 				content = {
+					edge_holder_left = "menu_frame_12_divider_left",
 					edge_holder_right = "menu_frame_12_divider_right",
 					edge_texture = "menu_frame_12_divider",
-					edge_holder_left = "menu_frame_12_divider_left"
 				},
 				edge = {
 					texture_size = {
 						1,
-						5
+						5,
 					},
 					color = {
 						255,
 						255,
 						255,
-						255
+						255,
 					},
 					offset = {
 						0,
 						0,
-						1
-					}
+						1,
+					},
 				},
 				edge_holder = {
 					color = {
 						255,
 						255,
 						255,
-						255
+						255,
 					},
 					offset = {
 						0,
 						0,
-						1
-					}
+						1,
+					},
 				},
 				style_text = {
-					vertical_alignment = "center",
-					localize = false,
-					horizontal_alignment = "center",
-					word_wrap = true,
 					font_type = "hell_shark",
+					horizontal_alignment = "center",
+					localize = false,
+					vertical_alignment = "center",
+					word_wrap = true,
 					font_size = setup_font_size(16),
 					text_color = Colors.get_color_table_with_alpha("font_default", 255),
 					offset = {
 						0,
 						0,
-						0
-					}
+						0,
+					},
 				},
 				style_background = {
 					color = {
 						255,
 						0,
 						0,
-						0
+						0,
 					},
 					texture_size = {
 						0,
-						0
+						0,
 					},
 					offset = {
 						0,
 						0,
-						9
-					}
-				}
+						9,
+					},
+				},
 			}
 
 			return data
 		end,
 		draw = function (data, draw, draw_downwards, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, item)
-			local item_id = nil
+			local item_id
 
 			if item.data and CosmeticUtils.is_cosmetic_item(item.data.slot_type) then
 				item_id = item.ItemId
@@ -9230,25 +9764,32 @@ UITooltipPasses = {
 			local text_pass_data = data.text_pass_data
 			local content = data.content
 			local text = data.prefix .. career_names_string
+
 			content.text = text
+
 			local position_x = position[1]
 			local position_y = position[2]
 			local position_z = position[3]
 			local style_text = data.style_text
 			local text_size = data.text_size
 			local text_width = size[1] - frame_margin * 2
+
 			text_size[1] = text_width
 			text_size[2] = 0
+
 			local title_text_height = UIUtils.get_text_height(ui_renderer, text_size, style_text, text)
 			local total_height = frame_margin + title_text_height
+
 			text_size[1] = text_width
 			text_size[2] = title_text_height
+
 			local scale_inversed = RESOLUTION_LOOKUP.inv_scale
 
 			if draw then
 				local background_style = data.style_background
 				local background_size = background_style.texture_size
 				local background_color = background_style.color
+
 				background_color[1] = alpha
 				background_size[1] = size[1]
 				background_size[2] = total_height
@@ -9259,15 +9800,23 @@ UITooltipPasses = {
 
 				position[2] = position_y
 				position[3] = position_z
+
 				local edge_size = data.edge_size
+
 				edge_size[1] = size[1]
+
 				local edge_style = data.edge
 				local edge_color = edge_style.color
 				local edge_texture_size = data.edge.texture_size
+
 				edge_texture_size[1] = size[1]
+
 				local edge_texture = content.edge_texture
+
 				edge_color[1] = alpha
+
 				local start_position_y = position[2] - frame_margin * 0.5 * scale_inversed
+
 				position[2] = start_position_y
 				position[3] = start_layer + 4
 
@@ -9278,6 +9827,7 @@ UITooltipPasses = {
 				local edge_holder_color = edge_holder_style.color
 				local edge_holder_left_texture = content.edge_holder_left
 				local edge_holder_right_texture = content.edge_holder_right
+
 				edge_holder_color[1] = alpha
 				position[1] = position[1] + 3
 				position[2] = start_position_y - 6
@@ -9302,7 +9852,7 @@ UITooltipPasses = {
 			position[3] = position_z
 
 			return total_height
-		end
+		end,
 	},
 	console_other_equipped_careers_tooltip = {
 		setup_data = function ()
@@ -9311,30 +9861,30 @@ UITooltipPasses = {
 				frame_margin = 0,
 				prefix = string.format("{#color(%d,%d,%d)}%s:{#reset()} ", prefix_color[2], prefix_color[3], prefix_color[4], Localize("equipped_on_other_career")),
 				text_pass_data = {
-					text_id = "text"
+					text_id = "text",
 				},
 				text_size = {},
 				content = {},
 				style_text = {
-					vertical_alignment = "center",
-					localize = false,
-					horizontal_alignment = "center",
-					word_wrap = true,
 					font_type = "hell_shark",
+					horizontal_alignment = "center",
+					localize = false,
+					vertical_alignment = "center",
+					word_wrap = true,
 					font_size = setup_font_size(16),
 					text_color = Colors.get_color_table_with_alpha("font_default", 255),
 					offset = {
 						0,
 						0,
-						0
-					}
-				}
+						0,
+					},
+				},
 			}
 
 			return data
 		end,
 		draw = function (data, draw, draw_downwards, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, item)
-			local item_id = nil
+			local item_id
 
 			if item.data and CosmeticUtils.is_cosmetic_item(item.data.slot_type) then
 				item_id = item.ItemId
@@ -9364,17 +9914,22 @@ UITooltipPasses = {
 			local text_pass_data = data.text_pass_data
 			local content = data.content
 			local text = data.prefix .. career_names_string
+
 			content.text = text
+
 			local position_x = position[1]
 			local position_y = position[2]
 			local position_z = position[3]
 			local style_text = data.style_text
 			local text_size = data.text_size
 			local text_width = size[1] - frame_margin * 2
+
 			text_size[1] = text_width
 			text_size[2] = 0
+
 			local text_height = UIUtils.get_text_height(ui_renderer, text_size, style_text, text)
 			local total_height = frame_margin * 0.5 + text_height
+
 			text_size[2] = text_height
 
 			if draw then
@@ -9391,6 +9946,6 @@ UITooltipPasses = {
 			position[3] = position_z
 
 			return total_height
-		end
-	}
+		end,
+	},
 }

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_set_defend_position_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTSetDefendPositionAction = class(BTSetDefendPositionAction, BTNode)
@@ -27,6 +29,7 @@ BTSetDefendPositionAction.run = function (self, unit, blackboard, t)
 
 	local action = blackboard.action
 	local move_pos = self:find_move_pos(blackboard, action)
+
 	blackboard.next_check = t + action.function_call_interval
 
 	if not move_pos then

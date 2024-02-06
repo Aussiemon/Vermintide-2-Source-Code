@@ -1,9 +1,11 @@
+﻿-- chunkname: @scripts/network/game_server/game_server_client.lua
+
 require("scripts/network/game_server/game_server_aux")
 
 GameServerLobbyClient = class(GameServerLobbyClient)
 
 local function dprintf(string, ...)
-	local s = string:format(...)
+	local s = string.format(string, ...)
 
 	printf("[GameServerLobbyClient]: %s", s)
 end
@@ -20,8 +22,10 @@ GameServerLobbyClient.init = function (self, network_options, game_server_data, 
 	end
 
 	self._game_server_lobby_data = game_server_data
+
 	local config_file_name = network_options.config_file_name
 	local project_hash = network_options.project_hash
+
 	self._network_hash = GameServerAux.create_network_hash(config_file_name, project_hash)
 	self.lobby = self._game_server_lobby
 	self.network_hash = self._network_hash
@@ -67,6 +71,7 @@ GameServerLobbyClient.update = function (self, dt)
 
 			if not PEER_ID_TO_CHANNEL[game_server_peer_id] then
 				local channel_id = GameServerInternal.open_channel(engine_lobby, game_server_peer_id)
+
 				PEER_ID_TO_CHANNEL[game_server_peer_id] = channel_id
 				CHANNEL_TO_PEER_ID[channel_id] = game_server_peer_id
 			end

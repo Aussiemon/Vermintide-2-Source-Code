@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/start_game_view/windows/start_game_window_weave_quickplay.lua
+
 local definitions = local_require("scripts/ui/views/start_game_view/windows/definitions/start_game_window_weave_quickplay_definitions")
 local widgets_definitions = definitions.widgets
 local create_difficulty_button = definitions.create_difficulty_button
@@ -5,6 +7,7 @@ local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
 local DO_RELOAD = false
 local STARTING_DIFFICULTY_INDEX = 1
+
 StartGameWindowWeaveQuickplay = class(StartGameWindowWeaveQuickplay)
 StartGameWindowWeaveQuickplay.NAME = "StartGameWindowWeaveQuickplay"
 
@@ -13,14 +16,16 @@ StartGameWindowWeaveQuickplay.on_enter = function (self, params, offset)
 
 	self._params = params
 	self._parent = params.parent
+
 	local ingame_ui_context = params.ingame_ui_context
+
 	self._ingame_ui = ingame_ui_context.ingame_ui
 	self._ui_renderer = ingame_ui_context.ui_renderer
 	self._ui_top_renderer = ingame_ui_context.ui_top_renderer
 	self._input_manager = ingame_ui_context.input_manager
 	self._statistics_db = ingame_ui_context.statistics_db
 	self._render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 	self._network_lobby = ingame_ui_context.network_lobby
 	self._is_server = ingame_ui_context.is_server
@@ -48,20 +53,23 @@ end
 
 StartGameWindowWeaveQuickplay._start_transition_animation = function (self, animation_name)
 	local params = {
-		render_settings = self._render_settings
+		render_settings = self._render_settings,
 	}
 	local widgets = self._widgets_by_name
 	local anim_id = self._ui_animator:start_animation(animation_name, widgets, scenegraph_definition, params)
+
 	self._animations[animation_name] = anim_id
 end
 
 StartGameWindowWeaveQuickplay._create_ui_elements = function (self, params, offset)
 	self._ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+
 	local widgets_by_name = {}
 	local widgets = {}
 
 	for name, widget_definition in pairs(widgets_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		widgets[#widgets + 1] = widget
 		widgets_by_name[name] = widget
 	end
@@ -82,11 +90,12 @@ StartGameWindowWeaveQuickplay._setup_input_buttons = function (self)
 	local widgets_by_name = self._widgets_by_name
 	local play_button_console = widgets_by_name.play_button_console
 	local input_texture_style = play_button_console.style.input_texture
+
 	input_texture_style.horizontal_alignment = "center"
 	input_texture_style.vertical_alignment = "center"
 	input_texture_style.texture_size = {
 		start_game_input_data.size[1],
-		start_game_input_data.size[2]
+		start_game_input_data.size[2],
 	}
 	play_button_console.content.input_texture = start_game_input_data.texture
 end
@@ -119,13 +128,17 @@ StartGameWindowWeaveQuickplay._handle_gamepad_activity = function (self)
 	if gamepad_active then
 		if not self.gamepad_active_last_frame or force_update then
 			self.gamepad_active_last_frame = true
+
 			local widgets_by_name = self._widgets_by_name
+
 			widgets_by_name.play_button.content.visible = false
 			widgets_by_name.play_button_console.content.visible = true
 		end
 	elseif self.gamepad_active_last_frame or force_update then
 		self.gamepad_active_last_frame = false
+
 		local widgets_by_name = self._widgets_by_name
+
 		widgets_by_name.play_button.content.visible = true
 		widgets_by_name.play_button_console.content.visible = false
 	end
@@ -135,6 +148,7 @@ StartGameWindowWeaveQuickplay._update_can_play = function (self)
 	local widgets_by_name = self._widgets_by_name
 	local is_matchmaking = Managers.matchmaking:is_game_matchmaking()
 	local was_matchmaking = self._is_matchmaking
+
 	self._is_matchmaking = is_matchmaking
 
 	if is_matchmaking ~= was_matchmaking then
@@ -182,6 +196,7 @@ StartGameWindowWeaveQuickplay._sync_selected_difficulty = function (self)
 			local content = widget.content
 			local difficulty_key = content.difficulty_key
 			local is_selected = difficulty_key == selected_difficulty_key
+
 			content.button_hotspot.is_selected = is_selected
 
 			if is_selected then
@@ -238,6 +253,7 @@ StartGameWindowWeaveQuickplay._handle_input = function (self, dt, t)
 		end
 	else
 		local old_current_difficulty_index = self._current_difficulty_index
+
 		self._current_difficulty_index = self._current_difficulty_index or 1
 
 		if input_service:get("move_left") then
@@ -268,10 +284,12 @@ StartGameWindowWeaveQuickplay._handle_input = function (self, dt, t)
 
 			if old_current_difficulty_index then
 				local widget = self._difficulty_widgets[old_current_difficulty_index]
+
 				widget.content.has_focus = false
 			end
 
 			local widget = self._difficulty_widgets[self._current_difficulty_index]
+
 			widget.content.has_focus = true
 		end
 	end
@@ -387,6 +405,7 @@ StartGameWindowWeaveQuickplay._set_difficulty_selected = function (self, difficu
 	local display_name = difficulty_settings.display_name
 	local description = difficulty_settings.description
 	local display_image = difficulty_settings.display_image
+
 	widgets_by_name.difficulty_title.content.text = display_name
 	widgets_by_name.difficulty_description.content.text = description
 	widgets_by_name.difficulty_selected.content.texture_id = display_image
@@ -413,20 +432,23 @@ StartGameWindowWeaveQuickplay._setup_difficulties = function (self)
 		local display_image = difficulty_settings.display_image
 		local widget = UIWidget.init(widget_definition)
 		local widget_name = widget_prefix .. widget_index_counter
+
 		widgets_by_name[widget_name] = widget
 		widgets[#widgets + 1] = widget
 		difficulty_widgets[#difficulty_widgets + 1] = widget
+
 		local offset = widget.offset
 		local content = widget.content
+
 		content.difficulty_key = difficulty_key
 		content.title_text = Localize(display_name)
 		content.icon = display_image
 		offset[1] = current_offset
-		current_offset = current_offset + size[1] + spacing
+		current_offset = current_offset + (size[1] + spacing)
 		widget_index_counter = widget_index_counter + 1
 	end
 
-	self._ui_scenegraph[scenegraph_id].position[1] = -(widget_index_counter * (size[1] + spacing) * 0.5) + size[1] + spacing
+	self._ui_scenegraph[scenegraph_id].position[1] = -(widget_index_counter * (size[1] + spacing) * 0.5) + (size[1] + spacing)
 	self._difficulty_widgets = difficulty_widgets
 end
 
@@ -458,6 +480,7 @@ StartGameWindowWeaveQuickplay._animate_difficulty_button = function (self, widge
 	local hover_alpha = 255 * hover_progress
 	local combined_alpha = 255 * combined_progress
 	local select_alpha = 255 * selection_progress
+
 	style.background_glow.color[1] = hover_alpha
 	style.title_text.text_color[1] = hover_alpha
 	style.title_text_shadow.text_color[1] = hover_alpha

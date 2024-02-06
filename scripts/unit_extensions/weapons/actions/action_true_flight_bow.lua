@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/weapons/actions/action_true_flight_bow.lua
+
 require("scripts/unit_extensions/weapons/projectiles/true_flight_templates")
 
 ActionTrueFlightBow = class(ActionTrueFlightBow, ActionBase)
@@ -26,11 +28,13 @@ ActionTrueFlightBow.client_owner_start_action = function (self, new_action, t, c
 	local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
 	local is_critical_strike = ActionUtils.is_critical_strike(owner_unit, new_action, t)
 	local num_extra_shots = self:_update_extra_shots(buff_extension) or 0
+
 	self.num_extra_shots = num_extra_shots
 
 	self:_update_extra_shots(buff_extension, num_extra_shots)
 
 	self.num_projectiles = (new_action.num_projectiles or 1) + num_extra_shots
+
 	local talent_extension = ScriptUnit.has_extension(owner_unit, "talent_system")
 
 	if talent_extension:has_talent("kerillian_waywatcher_activated_ability_additional_projectile") then
@@ -45,7 +49,7 @@ ActionTrueFlightBow.client_owner_start_action = function (self, new_action, t, c
 
 		if not self.targets then
 			self.targets = {
-				chain_action_data.target
+				chain_action_data.target,
 			}
 		end
 	end
@@ -55,7 +59,7 @@ ActionTrueFlightBow.client_owner_start_action = function (self, new_action, t, c
 
 		if not self.targets then
 			self.targets = {
-				action_init_data.target
+				action_init_data.target,
 			}
 		end
 	end
@@ -64,6 +68,7 @@ ActionTrueFlightBow.client_owner_start_action = function (self, new_action, t, c
 	self.time_to_shoot = t + (new_action.fire_time or 0)
 	self.power_level = power_level
 	self.extra_buff_shot = false
+
 	local hud_extension = ScriptUnit.has_extension(owner_unit, "hud_system")
 
 	self:_handle_critical_strike(is_critical_strike, buff_extension, hud_extension, nil, "on_critical_shot", nil)
@@ -74,7 +79,7 @@ end
 ActionTrueFlightBow.client_owner_post_update = function (self, dt, t, world, can_damage)
 	local current_action = self.current_action
 
-	if self.state == "waiting_to_shoot" and self.time_to_shoot <= t then
+	if self.state == "waiting_to_shoot" and t >= self.time_to_shoot then
 		self.state = "shooting"
 	end
 
@@ -82,6 +87,7 @@ ActionTrueFlightBow.client_owner_post_update = function (self, dt, t, world, can
 		self:fire(current_action)
 
 		self.state = "shot"
+
 		local first_person_extension = self.first_person_extension
 
 		if self.current_action.reset_aim_on_attack then
@@ -130,6 +136,7 @@ ActionTrueFlightBow.fire = function (self, current_action)
 				local spread_horizontal_angle = math.pi * (self.num_projectiles_shot % 2 + 0.5)
 				local shot_count_offset = self.num_projectiles_shot == 1 and 0 or math.round((self.num_projectiles_shot - 1) * 0.5, 0)
 				local angle_offset = self.multi_projectile_spread * shot_count_offset
+
 				fire_rotation = spread_extension:combine_spread_rotations(spread_horizontal_angle, angle_offset, fire_rotation)
 			end
 
@@ -164,6 +171,7 @@ ActionTrueFlightBow.fire = function (self, current_action)
 		end
 
 		self.num_projectiles_shot = self.num_projectiles_shot + 1
+
 		local overcharge_type = current_action.overcharge_type
 
 		if overcharge_type and not is_extra_shot then

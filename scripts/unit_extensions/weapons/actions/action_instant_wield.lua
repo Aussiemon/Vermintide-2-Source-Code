@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/weapons/actions/action_instant_wield.lua
+
 ActionInstantWield = class(ActionInstantWield, ActionBase)
 
 ActionInstantWield.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
@@ -19,6 +21,7 @@ ActionInstantWield.client_owner_start_action = function (self, new_action, t, ch
 	if slot_data then
 		local item_data = slot_data.item_data
 		local item_template = BackendUtils.get_item_template(item_data)
+
 		item_template.next_action = action_on_wield
 
 		self.inventory_extension:wield(slot)

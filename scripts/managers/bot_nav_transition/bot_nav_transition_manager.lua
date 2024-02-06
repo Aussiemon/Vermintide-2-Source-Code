@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/bot_nav_transition/bot_nav_transition_manager.lua
+
 local function debug_print(str, ...)
 	if script_data.ai_bots_debug or script_data.ai_bot_transition_debug then
 		printf("[BotNavTransitionManager] " .. str, ...)
@@ -6,31 +8,32 @@ end
 
 local IS_BIDIRECTIONAL = false
 local EXTRA_FALL_TRANSITION_WAYPOINT_DISTANCE = 0.1
+
 BotNavTransitionManager = class(BotNavTransitionManager)
 BotNavTransitionManager.TRANSITION_LAYERS = {
-	end_zone = 1,
-	bot_poison_wind = 20,
-	fire_grenade = 30,
 	barrel_explosion = 50,
 	bot_damage_drops = 10,
+	bot_drops = 1,
 	bot_jumps = 1,
-	temporary_wall = 1,
+	bot_ladders = 5,
 	bot_leap_of_faith = 3,
+	bot_poison_wind = 20,
 	bot_ratling_gun_fire = 30,
 	doors = 0.1,
+	end_zone = 1,
+	fire_grenade = 30,
 	planks = 0.1,
-	bot_ladders = 5,
-	bot_drops = 1
+	temporary_wall = 1,
 }
 BotNavTransitionManager.NAV_COST_MAP_LAYERS = {
-	plague_wave = 30,
-	mutator_heavens_zone = 50,
 	lamp_oil_fire = 30,
-	warpfire_thrower_warpfire = 30,
-	vortex_near = 50,
+	mutator_heavens_zone = 50,
+	plague_wave = 30,
 	stormfiend_warpfire = 50,
+	troll_bile = 30,
 	vortex_danger_zone = 75,
-	troll_bile = 30
+	vortex_near = 50,
+	warpfire_thrower_warpfire = 30,
 }
 
 BotNavTransitionManager.init = function (self, world, physics_world, nav_world, is_server, network_event_delegate, using_editor)
@@ -42,7 +45,9 @@ BotNavTransitionManager.init = function (self, world, physics_world, nav_world, 
 	self._max_amount = 100
 	self._bot_nav_transitions = {}
 	self._bot_nav_transition_lookup = {}
+
 	local nav_cost_map_cost_table = GwNavCostMap.create_tag_cost_table()
+
 	self._nav_cost_map_cost_table = nav_cost_map_cost_table
 
 	AiUtils.initialize_nav_cost_map_cost_table(nav_cost_map_cost_table, BotNavTransitionManager.NAV_COST_MAP_LAYERS)
@@ -50,6 +55,7 @@ BotNavTransitionManager.init = function (self, world, physics_world, nav_world, 
 	self._navtag_layer_cost_table = GwNavTagLayerCostTable.create()
 	self._layerless_traverse_logic = GwNavTraverseLogic.create(nav_world, nav_cost_map_cost_table)
 	self._traverse_logic = GwNavTraverseLogic.create(nav_world, nav_cost_map_cost_table)
+
 	local allowed_layers = table.clone(BotNavTransitionManager.TRANSITION_LAYERS)
 
 	table.merge(allowed_layers, NAV_TAG_VOLUME_LAYER_COST_BOTS)
@@ -125,8 +131,10 @@ end
 
 BotNavTransitionManager._destroy_transition = function (self, transitions, index)
 	local transition = transitions[index]
+
 	transitions[index] = nil
 	self._bot_nav_transition_lookup[transition.unit] = nil
+
 	local graph = transition.graph
 
 	GwNavGraph.destroy(graph)
@@ -154,13 +162,13 @@ BotNavTransitionManager.create_transition = function (self, from, via, wanted_to
 	end
 
 	local nav_world = self._nav_world
-	local above = 0.3
-	local beneath = 0.3
+	local above, beneath = 0.3, 0.3
 	local found_nav_mesh, z = GwNavQueries.triangle_from_position(nav_world, wanted_to, above, beneath, self._layerless_traverse_logic)
 
 	if not found_nav_mesh then
 		local lateral = 0.9
 		local old_wanted_to = wanted_to
+
 		wanted_to = GwNavQueries.inside_position_from_outside_position(nav_world, wanted_to, above, beneath, lateral)
 
 		if wanted_to then
@@ -193,7 +201,7 @@ BotNavTransitionManager.create_transition = function (self, from, via, wanted_to
 
 	fassert(layer_id, "Layer %s is not defined.", layer_name)
 
-	local waypoint = nil
+	local waypoint
 
 	if player_jumped then
 		waypoint = via
@@ -217,7 +225,7 @@ BotNavTransitionManager.create_transition = function (self, from, via, wanted_to
 	local graph = GwNavGraph.create(nav_world, IS_BIDIRECTIONAL, {
 		from,
 		waypoint,
-		to
+		to,
 	}, Colors.get("blue"), layer_id, index)
 
 	GwNavGraph.add_to_database(graph)
@@ -233,9 +241,10 @@ BotNavTransitionManager.create_transition = function (self, from, via, wanted_to
 		to = Vector3Box(to),
 		unit = unit,
 		type = layer_name,
-		permanent = make_permanent or false
+		permanent = make_permanent or false,
 	}
 	self._bot_nav_transition_lookup[unit] = index
+
 	local next_index = index
 
 	repeat
@@ -269,9 +278,11 @@ end
 
 BotNavTransitionManager.register_ladder = function (self, unit, index_offset, drawer)
 	local data = {}
-	local error_message = nil
+	local error_message
 	local index_offset = index_offset or 0
+
 	self._ladder_transitions[unit] = data
+
 	local nav_world = self._nav_world
 	local align_node = Unit.node(unit, "c_platform")
 	local unit_rot = Unit.world_rotation(unit, index_offset)
@@ -296,8 +307,9 @@ BotNavTransitionManager.register_ladder = function (self, unit, index_offset, dr
 		return error_message
 	end
 
-	local from, to, found_nav_mesh, z = nil
+	local from, to, found_nav_mesh, z
 	local transition_to = bottom_pos - down * length
+
 	found_nav_mesh, z = GwNavQueries.triangle_from_position(nav_world, transition_to, 0.3, 0.5, self._layerless_traverse_logic)
 
 	if found_nav_mesh then
@@ -308,6 +320,7 @@ BotNavTransitionManager.register_ladder = function (self, unit, index_offset, dr
 
 		for step_index = 1, max_steps do
 			local check_pos = transition_to - flat_back * step_size * step_index
+
 			found_nav_mesh, z = GwNavQueries.triangle_from_position(nav_world, check_pos, 0.3, 0.5, self._layerless_traverse_logic)
 
 			if found_nav_mesh then
@@ -334,6 +347,7 @@ BotNavTransitionManager.register_ladder = function (self, unit, index_offset, dr
 
 		for step_index = 1, max_steps do
 			local check_pos = hit_position + flat_back * step_size * step_index
+
 			found_nav_mesh, z = GwNavQueries.triangle_from_position(nav_world, check_pos, 0.3, 0.5, self._layerless_traverse_logic)
 
 			if found_nav_mesh then
@@ -350,7 +364,9 @@ BotNavTransitionManager.register_ladder = function (self, unit, index_offset, dr
 		end
 	end
 
-	if not data.failed then
+	if data.failed then
+		-- Nothing
+	else
 		local index = self._ladder_smart_object_index + 1
 		local climbable_height = 1.5
 		local ladder_is_bidirectional = hit_position.z > bottom_pos.z - climbable_height
@@ -363,7 +379,7 @@ BotNavTransitionManager.register_ladder = function (self, unit, index_offset, dr
 			to,
 			align_pos,
 			hit_position + back * 0.2,
-			from
+			from,
 		}, Colors.get("blue"), layer_id, index)
 
 		GwNavGraph.add_to_database(graph)

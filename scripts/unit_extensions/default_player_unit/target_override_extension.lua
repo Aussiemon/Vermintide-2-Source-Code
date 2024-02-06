@@ -1,5 +1,9 @@
+﻿-- chunkname: @scripts/unit_extensions/default_player_unit/target_override_extension.lua
+
 local stagger_types = require("scripts/utils/stagger_types")
+
 TargetOverrideExtension = class(TargetOverrideExtension)
+
 local OVERRIDE_RADIUS = 0.75
 local OVERRIDE_LIFETIME = 5
 
@@ -11,7 +15,7 @@ TargetOverrideExtension.init = function (self, extension_init_context, unit, ext
 		stagger_types.weak,
 		stagger_types.explosion,
 		stagger_types.none,
-		stagger_types.medium
+		stagger_types.medium,
 	}
 	self._side = extension_init_data.side
 	self._broadphase_categories = self._side.enemy_broadphase_categories
@@ -76,6 +80,7 @@ TargetOverrideExtension.update = function (self, unit, input, dt, context, t)
 				local ai_extension = ScriptUnit.extension(ai_unit, "ai_system")
 				local ai_blackboard = ai_extension:blackboard()
 				local previous_override_time = ai_blackboard.override_targets[unit]
+
 				ai_blackboard.override_targets[unit] = override_time
 
 				if previous_override_time == nil or previous_override_time < t then
@@ -90,6 +95,7 @@ end
 TargetOverrideExtension.add_to_override_targets = function (self, ai_unit, target_unit, ai_unit_blackboard, t)
 	local override_time = t + OVERRIDE_LIFETIME
 	local previous_override_time = ai_unit_blackboard.override_targets[target_unit]
+
 	ai_unit_blackboard.override_targets[target_unit] = override_time
 
 	if previous_override_time == nil or previous_override_time < t then

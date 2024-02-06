@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/news_ticker/news_ticker_manager.lua
+
 require("scripts/managers/news_ticker/news_ticker_token")
 
 NewsTickerManager = class(NewsTickerManager)
@@ -26,7 +28,7 @@ local function lines(str)
 		return ""
 	end
 
-	helper(str:gsub("(.-)\r?\n", helper))
+	helper((str:gsub("(.-)\r?\n", helper)))
 
 	return t
 end
@@ -41,7 +43,7 @@ end
 
 local function _callback_wrapper(success, http_code, response_headers, data, userdata_callback)
 	local info = {
-		done = false
+		done = false,
 	}
 
 	if success and http_code >= 200 and http_code < 300 then
@@ -71,7 +73,7 @@ NewsTickerManager._load = function (self, url, callback)
 
 				local info = {
 					done = true,
-					data = formatted_message
+					data = formatted_message,
 				}
 
 				callback(info)
@@ -81,15 +83,15 @@ NewsTickerManager._load = function (self, url, callback)
 		end
 
 		local info = {
+			data = "",
 			done = true,
-			data = ""
 		}
 
 		callback(info)
 	else
 		self:cb_loading_screen_loaded({
+			data = "This executable is built without Curl or Http. News ticker will be unavailable.",
 			done = true,
-			data = "This executable is built without Curl or Http. News ticker will be unavailable."
 		})
 	end
 end

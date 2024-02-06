@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_taunt_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTTauntAction = class(BTTauntAction, BTNode)

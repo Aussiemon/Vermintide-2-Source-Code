@@ -1,3 +1,5 @@
+﻿-- chunkname: @dialogues/generated/lookup_empire_soldier_dlc_drachenfels_portals.lua
+
 assert(DialogueLookup[DialogueLookup_n + 1] == nil)
 assert(DialogueLookup[DialogueLookup_n + 2] == nil)
 assert(DialogueLookup[DialogueLookup_n + 3] == nil)

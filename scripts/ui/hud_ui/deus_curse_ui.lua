@@ -1,13 +1,17 @@
+﻿-- chunkname: @scripts/ui/hud_ui/deus_curse_ui.lua
+
 local definitions = local_require("scripts/ui/hud_ui/deus_curse_ui_definitions")
 local animation_definitions = definitions.animation_definitions
 local scenegraph_definition = definitions.scenegraph_definition
 local scenegraph_methods = definitions.scenegraph_methods
 local text_background_width = definitions.text_background_width
 local CURSE_INITIAL_ACTIVATION_DELAY_DIFF = -2
+
 DeusCurseUI = class(DeusCurseUI)
 
 DeusCurseUI.init = function (self, parent, ingame_ui_context)
 	local mechanism = Managers.mechanism:game_mechanism()
+
 	self._curse = mechanism and mechanism:get_current_node_curse()
 	self._theme = mechanism and mechanism:get_current_node_theme()
 	self._has_curse = self._curse and self._theme
@@ -24,7 +28,7 @@ DeusCurseUI.init = function (self, parent, ingame_ui_context)
 	self.wwise_world = Managers.world:wwise_world(self._world)
 	self._animations = {}
 	self.render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 
 	self:create_ui_elements()
@@ -96,15 +100,17 @@ end
 
 DeusCurseUI.show_special_message = function (self, theme, name, description, duration)
 	self._timer = duration
+
 	local theme_settings = DeusThemeSettings[theme]
 	local theme_color = theme_settings.curse_description_color
 	local icon = theme_settings.icon or {
 		255,
 		255,
 		255,
-		255
+		255,
 	}
 	local title_text = theme_settings.curse_title and Localize(theme_settings.curse_title) or ""
+
 	name = Localize(name)
 	description = Localize(description)
 
@@ -127,7 +133,9 @@ DeusCurseUI.show_curse_info = function (self, theme, curse)
 	local game_mode_manager = Managers.state.game_mode
 	local round_started = game_mode_manager:is_round_started()
 	local display_time = self:_get_display_time()
+
 	self._timer = round_started and display_time or math.huge
+
 	local mutator_data = MutatorTemplates[curse]
 	local curse_name = Localize(mutator_data.display_name)
 	local curse_description = Localize(mutator_data.description)
@@ -137,7 +145,7 @@ DeusCurseUI.show_curse_info = function (self, theme, curse)
 		255,
 		255,
 		255,
-		255
+		255,
 	}
 	local title_text = theme_settings.curse_title and Localize(theme_settings.curse_title) or ""
 
@@ -158,18 +166,21 @@ end
 
 DeusCurseUI._update_description_widget = function (self, title_text, curse_name, curse_description, icon, color)
 	local content = self._description_widget.content
+
 	content.theme_icon = icon
 	content.title_text = title_text
 	content.curse_name = curse_name
 	content.area_text_content = curse_description
+
 	local text_height = UIUtils.get_text_height(self.ui_renderer, {
 		text_background_width,
-		0
+		0,
 	}, self._description_widget.style.area_text_style, curse_description)
 
 	scenegraph_methods.change_widget_height(text_height)
 
 	local style = self._description_widget.style
+
 	style.top_detail_glow.color = color
 	style.bottom_glow.color = color
 	style.bottom_edge_glow.color = color
@@ -195,9 +206,10 @@ end
 DeusCurseUI._start_animation = function (self, key, animation_name)
 	local params = {
 		wwise_world = self.wwise_world,
-		render_settings = self.render_settings
+		render_settings = self.render_settings,
 	}
 	local anim_id = self.ui_animator:start_animation(animation_name, self._description_widget, scenegraph_definition, params)
+
 	self._animations[key] = anim_id
 end
 

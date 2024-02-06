@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_allied_avoid_combat_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTAlliedAvoidCombatAction = class(BTAlliedAvoidCombatAction, BTNode)
@@ -10,13 +12,17 @@ BTAlliedAvoidCombatAction.name = "BTAlliedAvoidCombatAction"
 
 BTAlliedAvoidCombatAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
+
 	blackboard.action = action
 	blackboard.target_status_extension = ScriptUnit.extension(blackboard.player_controller_unit, "status_system")
+
 	local self_pos = POSITION_LOOKUP[unit]
 	local wanted_position = POSITION_LOOKUP[blackboard.player_controller_unit]
 	local pos_on_nav_mesh = LocomotionUtils.pos_on_mesh(blackboard.nav_world, wanted_position, 1, 1)
 	local final_pos = pos_on_nav_mesh or self_pos
+
 	blackboard.wanted_flee_pos = Vector3Box(final_pos)
+
 	local navigation_extension = blackboard.navigation_extension
 
 	navigation_extension:set_max_speed(blackboard.breed.run_speed)
@@ -49,6 +55,7 @@ end
 
 BTAlliedAvoidCombatAction._go_idle = function (self, unit, blackboard, locomotion_extension)
 	blackboard.move_state = "idle"
+
 	local action = blackboard.action
 
 	Managers.state.network:anim_event(unit, action.idle_anim or "idle")
@@ -82,6 +89,7 @@ BTAlliedAvoidCombatAction.flee = function (self, unit, t, dt, blackboard, locomo
 	end
 
 	local target_intensity = blackboard.target_status_extension and blackboard.target_status_extension:get_pacing_intensity()
+
 	blackboard.target_is_in_combat = target_intensity and target_intensity > 0
 end
 

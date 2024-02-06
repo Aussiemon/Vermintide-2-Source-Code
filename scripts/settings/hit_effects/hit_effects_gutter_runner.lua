@@ -1,787 +1,789 @@
+﻿-- chunkname: @scripts/settings/hit_effects/hit_effects_gutter_runner.lua
+
 HitEffectsGutterRunner = {
 	default = {
-		husk_hit_effect_name = "fx/impact_blood_02",
 		armour_type = "sand",
+		husk_hit_effect_name = "fx/impact_blood_02",
 		animations = {
-			"hit_reaction"
-		}
+			"hit_reaction",
+		},
 	},
 	default_noDamage = {
-		husk_effect_name = "fx/hit_armored",
 		armour_type = "sand",
+		husk_effect_name = "fx/hit_armored",
 		extra_conditions = {
-			damage = false
+			damage = false,
 		},
 		animations = {
-			"hit_reaction"
-		}
+			"hit_reaction",
+		},
 	},
 	default_death = {
+		armour_type = "sand",
 		flow_event = "gutter_death",
 		husk_hit_effect_name = "fx/impact_blood_02",
-		armour_type = "sand",
 		extra_conditions = {
-			death = true
+			death = true,
 		},
 		animations = {
-			"ragdoll"
-		}
+			"ragdoll",
+		},
 	},
 	heavy_slashing_buffed = {
 		inherits = "default",
 		extra_conditions = {
-			damage_type = "heavy_slashing_buffed"
+			damage_type = "heavy_slashing_buffed",
 		},
 		animations = {
-			"ragdoll"
+			"ragdoll",
 		},
 		push = {
 			distal_force = 30,
+			lateral_force = 40,
 			vertical_force = 35,
-			lateral_force = 40
-		}
+		},
 	},
 	light_slashing_linesman_death = {
 		inherits = "default_death",
 		extra_conditions = {
 			death = true,
 			damage_type = {
-				"light_slashing_linesman"
-			}
+				"light_slashing_linesman",
+			},
 		},
 		animations = {
-			"ragdoll"
+			"ragdoll",
 		},
 		push = {
 			distal_force = 20,
+			lateral_force = 30,
 			vertical_force = -10,
-			lateral_force = 30
-		}
+		},
 	},
 	light_slashing_linesman_death_head = {
 		inherits = "light_slashing_linesman_death",
 		extra_conditions = {
 			hit_zone = {
 				"neck",
-				"head"
-			}
+				"head",
+			},
 		},
 		animations = {
-			"ragdoll"
-		}
+			"ragdoll",
+		},
 	},
 	light_slashing_linesman_hs_death = {
-		inherits = "default",
 		flow_event = "gutter_death",
+		inherits = "default",
 		extra_conditions = {
 			death = true,
 			damage_type = {
-				"light_slashing_linesman_hs"
-			}
+				"light_slashing_linesman_hs",
+			},
 		},
 		animations = {
-			"ragdoll"
+			"ragdoll",
 		},
 		push = {
 			distal_force = 10,
+			lateral_force = 20,
 			vertical_force = -10,
-			lateral_force = 20
-		}
+		},
 	},
 	light_slashing_linesman_hs_death_head = {
 		inherits = "light_slashing_linesman_hs_death",
 		extra_conditions = {
 			hit_zone = {
 				"neck",
-				"head"
-			}
+				"head",
+			},
 		},
 		animations = {
-			"ragdoll"
-		}
+			"ragdoll",
+		},
 	},
 	slashing_linesman_death = {
 		inherits = "default_death",
 		extra_conditions = {
 			death = true,
 			damage_type = {
-				"slashing_linesman"
-			}
+				"slashing_linesman",
+			},
 		},
 		animations = {
-			"ragdoll"
+			"ragdoll",
 		},
 		push = {
 			distal_force = 20,
+			lateral_force = 40,
 			vertical_force = 0,
-			lateral_force = 40
-		}
+		},
 	},
 	slashing_linesman_death_right_arm = {
 		inherits = "slashing_linesman_death",
 		extra_conditions = {
-			hit_zone = "right_arm"
+			hit_zone = "right_arm",
 		},
 		animations = {
-			"ragdoll"
-		}
+			"ragdoll",
+		},
 	},
 	slashing_linesman_death_left_arm = {
 		inherits = "slashing_linesman_death",
 		extra_conditions = {
-			hit_zone = "left_arm"
+			hit_zone = "left_arm",
 		},
 		animations = {
-			"ragdoll"
-		}
+			"ragdoll",
+		},
 	},
 	slashing_linesman_death_head = {
 		inherits = "slashing_linesman_death",
 		extra_conditions = {
 			hit_zone = {
 				"neck",
-				"head"
-			}
+				"head",
+			},
 		},
 		animations = {
-			"ragdoll"
-		}
+			"ragdoll",
+		},
 	},
 	heavy_slashing_linesman_death = {
 		inherits = "default_death",
 		extra_conditions = {
 			death = true,
 			damage_type = {
-				"heavy_slashing_linesman"
-			}
+				"heavy_slashing_linesman",
+			},
 		},
 		animations = {
-			"ragdoll"
+			"ragdoll",
 		},
 		push = {
 			distal_force = 20,
+			lateral_force = 40,
 			vertical_force = 20,
-			lateral_force = 40
-		}
+		},
 	},
 	heavy_slashing_linesman_death_right_arm = {
 		inherits = "heavy_slashing_linesman_death",
 		extra_conditions = {
-			hit_zone = "right_arm"
+			hit_zone = "right_arm",
 		},
 		animations = {
-			"ragdoll"
-		}
+			"ragdoll",
+		},
 	},
 	heavy_slashing_linesman_death_left_arm = {
 		inherits = "heavy_slashing_linesman_death",
 		extra_conditions = {
-			hit_zone = "left_arm"
+			hit_zone = "left_arm",
 		},
 		animations = {
-			"ragdoll"
-		}
+			"ragdoll",
+		},
 	},
 	heavy_slashing_linesman_death_torso = {
 		inherits = "heavy_slashing_linesman_death",
 		extra_conditions = {
-			hit_zone = "torso"
+			hit_zone = "torso",
 		},
 		animations = {
-			"ragdoll"
-		}
+			"ragdoll",
+		},
 	},
 	heavy_slashing_linesman_death_head = {
 		inherits = "heavy_slashing_linesman_death",
 		extra_conditions = {
 			hit_zone = {
 				"neck",
-				"head"
-			}
+				"head",
+			},
 		},
 		animations = {
-			"ragdoll"
-		}
+			"ragdoll",
+		},
 	},
 	light_blunt_linesman_death = {
-		inherits = "default_death",
 		do_dismember = false,
+		inherits = "default_death",
 		extra_conditions = {
 			death = true,
 			damage_type = {
-				"light_blunt_linesman"
-			}
+				"light_blunt_linesman",
+			},
 		},
 		animations = {
-			"ragdoll"
+			"ragdoll",
 		},
 		push = {
 			distal_force = 10,
+			lateral_force = 30,
 			vertical_force = 0,
-			lateral_force = 30
-		}
+		},
 	},
 	blunt_linesman_death = {
-		inherits = "default_death",
 		do_dismember = false,
+		inherits = "default_death",
 		extra_conditions = {
 			death = true,
 			damage_type = {
-				"blunt_linesman"
-			}
+				"blunt_linesman",
+			},
 		},
 		animations = {
-			"ragdoll"
+			"ragdoll",
 		},
 		push = {
 			distal_force = 20,
+			lateral_force = 40,
 			vertical_force = 0,
-			lateral_force = 40
-		}
+		},
 	},
 	heavy_blunt_linesman_death = {
-		inherits = "default_death",
 		do_dismember = false,
+		inherits = "default_death",
 		extra_conditions = {
 			death = true,
 			damage_type = {
-				"heavy_blunt_linesman"
-			}
+				"heavy_blunt_linesman",
+			},
 		},
 		animations = {
-			"ragdoll"
+			"ragdoll",
 		},
 		push = {
 			distal_force = 20,
+			lateral_force = 50,
 			vertical_force = 40,
-			lateral_force = 50
-		}
+		},
 	},
 	heavy_blunt_linesman_death_head = {
-		inherits = "heavy_blunt_linesman_death",
 		flow_event = "explode_head",
+		inherits = "heavy_blunt_linesman_death",
 		extra_conditions = {
 			hit_zone = {
 				"neck",
-				"head"
-			}
+				"head",
+			},
 		},
 		animations = {
-			"ragdoll"
-		}
+			"ragdoll",
+		},
 	},
 	stab_smiter_death = {
-		inherits = "default",
 		flow_event = "gutter_death",
+		inherits = "default",
 		extra_conditions = {
 			death = true,
 			damage_type = {
-				"stab_smiter"
-			}
+				"stab_smiter",
+			},
 		},
 		animations = {
-			"ragdoll"
+			"ragdoll",
 		},
 		push = {
 			distal_force = 5,
+			lateral_force = 10,
 			vertical_force = -30,
-			lateral_force = 10
-		}
+		},
 	},
 	stab_smiter_death_torso = {
 		inherits = "stab_smiter_death",
 		extra_conditions = {
 			hit_zone = {
-				"torso"
-			}
+				"torso",
+			},
 		},
 		animations = {
-			"ragdoll"
+			"ragdoll",
 		},
 		push = {
 			distal_force = 5,
+			lateral_force = 10,
 			vertical_force = -30,
-			lateral_force = 10
-		}
+		},
 	},
 	stab_smiter_death_head = {
 		inherits = "stab_smiter_death",
 		extra_conditions = {
 			hit_zone = {
 				"head",
-				"neck"
-			}
+				"neck",
+			},
 		},
 		animations = {
-			"ragdoll"
+			"ragdoll",
 		},
 		push = {
 			distal_force = 5,
+			lateral_force = 10,
 			vertical_force = -30,
-			lateral_force = 10
-		}
+		},
 	},
 	heavy_stab_smiter_death = {
 		inherits = "default_death",
 		extra_conditions = {
 			damage_type = {
-				"heavy_stab_smiter"
-			}
+				"heavy_stab_smiter",
+			},
 		},
 		animations = {
-			"ragdoll"
+			"ragdoll",
 		},
 		push = {
 			distal_force = 150,
+			lateral_force = 0,
 			vertical_force = -10,
-			lateral_force = 0
-		}
+		},
 	},
 	light_slashing_smiter_death = {
 		inherits = "default_death",
 		extra_conditions = {
 			death = true,
 			damage_type = {
-				"light_slashing_smiter"
-			}
+				"light_slashing_smiter",
+			},
 		},
 		animations = {
-			"ragdoll"
+			"ragdoll",
 		},
 		push = {
 			distal_force = 0,
+			lateral_force = 5,
 			vertical_force = -20,
-			lateral_force = 5
-		}
+		},
 	},
 	light_slashing_smiter_death_head = {
 		inherits = "light_slashing_smiter_death",
 		extra_conditions = {
 			hit_zone = {
 				"neck",
-				"head"
-			}
+				"head",
+			},
 		},
 		animations = {
-			"ragdoll"
-		}
+			"ragdoll",
+		},
 	},
 	slashing_smiter_death = {
 		inherits = "default_death",
 		extra_conditions = {
 			death = true,
 			damage_type = {
-				"slashing_smiter"
-			}
+				"slashing_smiter",
+			},
 		},
 		animations = {
-			"ragdoll"
+			"ragdoll",
 		},
 		push = {
 			distal_force = 5,
+			lateral_force = 10,
 			vertical_force = -30,
-			lateral_force = 10
-		}
+		},
 	},
 	slashing_smiter_death_right_arm = {
 		inherits = "slashing_smiter_death",
 		extra_conditions = {
-			hit_zone = "right_arm"
+			hit_zone = "right_arm",
 		},
 		animations = {
-			"ragdoll"
+			"ragdoll",
 		},
 		push = {
 			distal_force = 0,
+			lateral_force = 15,
 			vertical_force = 0,
-			lateral_force = 15
-		}
+		},
 	},
 	slashing_smiter_death_left_arm = {
 		inherits = "slashing_smiter_death",
 		extra_conditions = {
-			hit_zone = "left_arm"
+			hit_zone = "left_arm",
 		},
 		animations = {
-			"ragdoll"
+			"ragdoll",
 		},
 		push = {
 			distal_force = 0,
+			lateral_force = -15,
 			vertical_force = 0,
-			lateral_force = -15
-		}
+		},
 	},
 	slashing_smiter_death_head = {
 		inherits = "slashing_smiter_death",
 		extra_conditions = {
 			hit_zone = {
 				"neck",
-				"head"
-			}
+				"head",
+			},
 		},
 		animations = {
-			"ragdoll"
+			"ragdoll",
 		},
 		push = {
 			distal_force = 20,
+			lateral_force = 0,
 			vertical_force = 0,
-			lateral_force = 0
-		}
+		},
 	},
 	heavy_slashing_smiter_death = {
 		inherits = "default_death",
 		extra_conditions = {
 			death = true,
 			damage_type = {
-				"heavy_slashing_smiter"
-			}
+				"heavy_slashing_smiter",
+			},
 		},
 		animations = {
-			"ragdoll"
+			"ragdoll",
 		},
 		push = {
 			distal_force = 10,
+			lateral_force = 10,
 			vertical_force = -60,
-			lateral_force = 10
-		}
+		},
 	},
 	heavy_slashing_smiter_death_right_arm = {
 		inherits = "heavy_slashing_smiter_death",
 		extra_conditions = {
-			hit_zone = "right_arm"
+			hit_zone = "right_arm",
 		},
 		animations = {
-			"ragdoll"
-		}
+			"ragdoll",
+		},
 	},
 	heavy_slashing_smiter_death_left_arm = {
 		inherits = "heavy_slashing_smiter_death",
 		extra_conditions = {
-			hit_zone = "left_arm"
+			hit_zone = "left_arm",
 		},
 		animations = {
-			"ragdoll"
-		}
+			"ragdoll",
+		},
 	},
 	heavy_slashing_smiter_death_torso = {
 		inherits = "heavy_slashing_smiter_death",
 		extra_conditions = {
-			hit_zone = "torso"
+			hit_zone = "torso",
 		},
 		animations = {
-			"ragdoll"
-		}
+			"ragdoll",
+		},
 	},
 	heavy_slashing_smiter_death_head = {
 		inherits = "heavy_slashing_smiter_death",
 		extra_conditions = {
 			hit_zone = {
 				"neck",
-				"head"
-			}
+				"head",
+			},
 		},
 		animations = {
-			"ragdoll"
-		}
+			"ragdoll",
+		},
 	},
 	light_blunt_smiter_death = {
-		inherits = "default_death",
 		do_dismember = false,
+		inherits = "default_death",
 		extra_conditions = {
 			death = true,
 			damage_type = {
-				"light_blunt_smiter"
-			}
+				"light_blunt_smiter",
+			},
 		},
 		animations = {
-			"ragdoll"
+			"ragdoll",
 		},
 		push = {
 			distal_force = 20,
+			lateral_force = 0,
 			vertical_force = -50,
-			lateral_force = 0
-		}
+		},
 	},
 	light_blunt_smiter_death_head = {
-		inherits = "light_blunt_smiter_death",
 		flow_event = "explode_head",
+		inherits = "light_blunt_smiter_death",
 		extra_conditions = {
 			hit_zone = {
 				"neck",
-				"head"
-			}
+				"head",
+			},
 		},
 		animations = {
-			"ragdoll"
-		}
+			"ragdoll",
+		},
 	},
 	blunt_smiter_death = {
-		inherits = "default_death",
 		do_dismember = false,
+		inherits = "default_death",
 		extra_conditions = {
 			death = true,
 			damage_type = {
-				"blunt_smiter"
-			}
+				"blunt_smiter",
+			},
 		},
 		animations = {
-			"ragdoll"
+			"ragdoll",
 		},
 		push = {
 			distal_force = 20,
+			lateral_force = 0,
 			vertical_force = -50,
-			lateral_force = 0
-		}
+		},
 	},
 	blunt_smiter_death_head = {
-		inherits = "blunt_smiter_death",
 		flow_event = "explode_head",
+		inherits = "blunt_smiter_death",
 		extra_conditions = {
 			hit_zone = {
 				"neck",
-				"head"
-			}
+				"head",
+			},
 		},
 		animations = {
-			"ragdoll"
-		}
+			"ragdoll",
+		},
 	},
 	heavy_blunt_smiter_death = {
-		inherits = "default_death",
 		do_dismember = false,
+		inherits = "default_death",
 		extra_conditions = {
 			death = true,
 			damage_type = {
-				"heavy_blunt_smiter"
-			}
+				"heavy_blunt_smiter",
+			},
 		},
 		animations = {
-			"ragdoll"
+			"ragdoll",
 		},
 		push = {
 			distal_force = 20,
+			lateral_force = 0,
 			vertical_force = -150,
-			lateral_force = 0
-		}
+		},
 	},
 	heavy_blunt_smiter_death_head = {
-		inherits = "heavy_blunt_smiter_death",
 		flow_event = "explode_head",
+		inherits = "heavy_blunt_smiter_death",
 		extra_conditions = {
 			hit_zone = {
 				"neck",
-				"head"
-			}
+				"head",
+			},
 		},
 		animations = {
-			"ragdoll"
-		}
+			"ragdoll",
+		},
 	},
 	light_stab_fencer_death = {
 		inherits = "default_death",
 		extra_conditions = {
 			death = true,
 			damage_type = {
-				"light_stab_fencer"
-			}
+				"light_stab_fencer",
+			},
 		},
 		animations = {
-			"ragdoll"
+			"ragdoll",
 		},
 		push = {
 			distal_force = 60,
+			lateral_force = 0,
 			vertical_force = 0,
-			lateral_force = 0
-		}
+		},
 	},
 	light_stab_fencer_death_head = {
 		inherits = "light_stab_fencer_death",
 		extra_conditions = {
 			hit_zone = {
 				"neck",
-				"head"
-			}
+				"head",
+			},
 		},
 		animations = {
-			"ragdoll"
-		}
+			"ragdoll",
+		},
 	},
 	light_stab_fencer_death_torso_front = {
 		inherits = "light_stab_fencer_death",
 		extra_conditions = {
 			hit_direction = "front",
 			hit_zone = {
-				"torso"
-			}
+				"torso",
+			},
 		},
 		animations = {
-			"ragdoll"
-		}
+			"ragdoll",
+		},
 	},
 	light_stab_fencer_death_torso_back = {
 		inherits = "light_stab_fencer_death",
 		extra_conditions = {
 			hit_direction = "back",
 			hit_zone = {
-				"torso"
-			}
+				"torso",
+			},
 		},
 		animations = {
-			"ragdoll"
-		}
+			"ragdoll",
+		},
 	},
 	stab_fencer_death = {
 		inherits = "default_death",
 		extra_conditions = {
 			death = true,
 			damage_type = {
-				"stab_fencer"
-			}
+				"stab_fencer",
+			},
 		},
 		animations = {
-			"ragdoll"
+			"ragdoll",
 		},
 		push = {
 			distal_force = 30,
+			lateral_force = 0,
 			vertical_force = 0,
-			lateral_force = 0
-		}
+		},
 	},
 	stab_fencer_death_head = {
 		inherits = "stab_fencer_death",
 		extra_conditions = {
 			hit_zone = {
 				"neck",
-				"head"
-			}
+				"head",
+			},
 		},
 		animations = {
-			"ragdoll"
-		}
+			"ragdoll",
+		},
 	},
 	stab_fencer_death_torso_front = {
 		inherits = "stab_fencer_death",
 		extra_conditions = {
 			hit_direction = "front",
 			hit_zone = {
-				"torso"
-			}
+				"torso",
+			},
 		},
 		animations = {
-			"ragdoll"
-		}
+			"ragdoll",
+		},
 	},
 	stab_fencer_death_torso_back = {
 		inherits = "stab_fencer_death",
 		extra_conditions = {
 			hit_direction = "back",
 			hit_zone = {
-				"torso"
-			}
+				"torso",
+			},
 		},
 		animations = {
-			"ragdoll"
-		}
+			"ragdoll",
+		},
 	},
 	burning_stab_fencer_death = {
 		inherits = "default_death",
 		extra_conditions = {
 			death = true,
 			damage_type = {
-				"burning_stab_fencer"
-			}
+				"burning_stab_fencer",
+			},
 		},
 		animations = {
-			"ragdoll"
+			"ragdoll",
 		},
 		push = {
 			distal_force = 30,
+			lateral_force = 0,
 			vertical_force = 0,
-			lateral_force = 0
 		},
-		timed_status = StatusEffectNames.burning
+		timed_status = StatusEffectNames.burning,
 	},
 	heavy_stab_fencer_death = {
 		inherits = "default_death",
 		extra_conditions = {
 			death = true,
 			damage_type = {
-				"heavy_stab_fencer"
-			}
+				"heavy_stab_fencer",
+			},
 		},
 		animations = {
-			"ragdoll"
+			"ragdoll",
 		},
 		push = {
 			distal_force = 40,
+			lateral_force = 0,
 			vertical_force = 0,
-			lateral_force = 0
-		}
+		},
 	},
 	heavy_stab_fencer_death_head = {
 		inherits = "heavy_stab_fencer_death",
 		extra_conditions = {
 			hit_zone = {
 				"neck",
-				"head"
-			}
+				"head",
+			},
 		},
 		animations = {
-			"ragdoll"
-		}
+			"ragdoll",
+		},
 	},
 	heavy_stab_fencer_death_torso_front = {
 		inherits = "heavy_stab_fencer_death",
 		extra_conditions = {
 			hit_direction = "front",
 			hit_zone = {
-				"torso"
-			}
+				"torso",
+			},
 		},
 		animations = {
-			"ragdoll"
-		}
+			"ragdoll",
+		},
 	},
 	heavy_stab_fencer_death_torso_back = {
 		inherits = "heavy_stab_fencer_death",
 		extra_conditions = {
 			hit_direction = "back",
 			hit_zone = {
-				"torso"
-			}
+				"torso",
+			},
 		},
 		animations = {
-			"ragdoll"
-		}
+			"ragdoll",
+		},
 	},
 	light_blunt_fencer_death = {
 		inherits = "default_death",
 		extra_conditions = {
 			death = true,
 			damage_type = {
-				"light_blunt_fencer"
-			}
+				"light_blunt_fencer",
+			},
 		},
 		animations = {
-			"ragdoll"
+			"ragdoll",
 		},
 		push = {
 			distal_force = 40,
+			lateral_force = 0,
 			vertical_force = 10,
-			lateral_force = 0
-		}
+		},
 	},
 	light_blunt_fencer_death_head = {
 		inherits = "light_blunt_fencer_death",
 		extra_conditions = {
 			hit_zone = {
 				"neck",
-				"head"
-			}
+				"head",
+			},
 		},
 		animations = {
-			"ragdoll"
-		}
+			"ragdoll",
+		},
 	},
 	blunt_fencer_death = {
 		inherits = "default_death",
@@ -789,188 +791,188 @@ HitEffectsGutterRunner = {
 			death = true,
 			damage_type = {
 				"blunt_fencer",
-				"push"
-			}
+				"push",
+			},
 		},
 		animations = {
-			"ragdoll"
+			"ragdoll",
 		},
 		push = {
 			distal_force = 40,
+			lateral_force = 0,
 			vertical_force = 10,
-			lateral_force = 0
-		}
+		},
 	},
 	blunt_fencer_death_head = {
-		inherits = "blunt_fencer_death",
 		flow_event = "explode_head",
+		inherits = "blunt_fencer_death",
 		extra_conditions = {
 			hit_zone = {
 				"neck",
-				"head"
-			}
+				"head",
+			},
 		},
 		animations = {
-			"ragdoll"
-		}
+			"ragdoll",
+		},
 	},
 	heavy_blunt_fencer_death = {
 		inherits = "default_death",
 		extra_conditions = {
 			death = true,
 			damage_type = {
-				"heavy_blunt_fencer"
-			}
+				"heavy_blunt_fencer",
+			},
 		},
 		animations = {
-			"ragdoll"
+			"ragdoll",
 		},
 		push = {
 			distal_force = 50,
+			lateral_force = 0,
 			vertical_force = 20,
-			lateral_force = 0
-		}
+		},
 	},
 	heavy_blunt_fencer_death_head = {
-		inherits = "heavy_blunt_fencer_death",
 		flow_event = "explode_head",
+		inherits = "heavy_blunt_fencer_death",
 		extra_conditions = {
 			hit_zone = {
 				"neck",
-				"head"
-			}
+				"head",
+			},
 		},
 		animations = {
-			"ragdoll"
-		}
+			"ragdoll",
+		},
 	},
 	push_death = {
 		inherits = "default_death",
 		extra_conditions = {
 			death = true,
 			damage_type = {
-				"push"
-			}
+				"push",
+			},
 		},
 		animations = {
-			"ragdoll"
+			"ragdoll",
 		},
 		push = {
 			distal_force = 50,
+			lateral_force = 0,
 			vertical_force = 20,
-			lateral_force = 0
-		}
+		},
 	},
 	light_slashing_fencer_death = {
-		inherits = "default_death",
 		do_dismember = false,
+		inherits = "default_death",
 		extra_conditions = {
 			death = true,
 			damage_type = {
-				"light_slashing_fencer"
-			}
+				"light_slashing_fencer",
+			},
 		},
 		animations = {
-			"ragdoll"
+			"ragdoll",
 		},
 		push = {
 			distal_force = 40,
+			lateral_force = 10,
 			vertical_force = 5,
-			lateral_force = 10
-		}
+		},
 	},
 	light_slashing_fencer_death_head = {
 		inherits = "light_slashing_fencer_death",
 		extra_conditions = {
 			hit_zone = {
 				"neck",
-				"head"
-			}
+				"head",
+			},
 		},
 		animations = {
-			"ragdoll"
-		}
+			"ragdoll",
+		},
 	},
 	slashing_fencer_death = {
 		inherits = "default_death",
 		extra_conditions = {
 			death = true,
 			damage_type = {
-				"slashing_fencer"
-			}
+				"slashing_fencer",
+			},
 		},
 		animations = {
-			"ragdoll"
+			"ragdoll",
 		},
 		push = {
 			distal_force = 40,
+			lateral_force = 0,
 			vertical_force = 10,
-			lateral_force = 0
-		}
+		},
 	},
 	slashing_fencer_death_head = {
 		inherits = "slashing_fencer_death",
 		extra_conditions = {
 			hit_zone = {
 				"neck",
-				"head"
-			}
+				"head",
+			},
 		},
 		animations = {
-			"ragdoll"
-		}
+			"ragdoll",
+		},
 	},
 	light_slashing_tank_death = {
-		inherits = "default_death",
 		do_dismember = false,
+		inherits = "default_death",
 		extra_conditions = {
 			death = true,
 			damage_type = {
-				"light_slashing_tank"
-			}
+				"light_slashing_tank",
+			},
 		},
 		animations = {
-			"ragdoll"
+			"ragdoll",
 		},
 		push = {
 			distal_force = 10,
+			lateral_force = 40,
 			vertical_force = 10,
-			lateral_force = 40
-		}
+		},
 	},
 	light_slashing_tank_death_head = {
 		inherits = "light_slashing_tank_death",
 		extra_conditions = {
 			hit_zone = {
 				"neck",
-				"head"
-			}
+				"head",
+			},
 		},
 		animations = {
-			"ragdoll"
+			"ragdoll",
 		},
 		push = {
 			distal_force = 10,
+			lateral_force = 40,
 			vertical_force = 10,
-			lateral_force = 40
-		}
+		},
 	},
 	slashing_tank_death = {
 		inherits = "default_death",
 		extra_conditions = {
 			death = true,
 			damage_type = {
-				"slashing_tank"
-			}
+				"slashing_tank",
+			},
 		},
 		animations = {
-			"ragdoll"
+			"ragdoll",
 		},
 		push = {
 			distal_force = 30,
+			lateral_force = 70,
 			vertical_force = 20,
-			lateral_force = 70
-		}
+		},
 	},
 	slashing_tank_death_head = {
 		inherits = "slashing_tank_death",
@@ -982,34 +984,34 @@ HitEffectsGutterRunner = {
 				"right_arm",
 				"left_leg",
 				"right_leg",
-				"tail"
-			}
+				"tail",
+			},
 		},
 		animations = {
-			"ragdoll"
+			"ragdoll",
 		},
 		push = {
 			distal_force = 30,
+			lateral_force = 70,
 			vertical_force = 20,
-			lateral_force = 70
-		}
+		},
 	},
 	heavy_slashing_tank_death = {
 		inherits = "default_death",
 		extra_conditions = {
 			death = true,
 			damage_type = {
-				"heavy_slashing_tank"
-			}
+				"heavy_slashing_tank",
+			},
 		},
 		animations = {
-			"ragdoll"
+			"ragdoll",
 		},
 		push = {
 			distal_force = 40,
+			lateral_force = 90,
 			vertical_force = 30,
-			lateral_force = 90
-		}
+		},
 	},
 	heavy_slashing_tank_death_head = {
 		inherits = "heavy_slashing_tank_death",
@@ -1021,250 +1023,250 @@ HitEffectsGutterRunner = {
 				"right_arm",
 				"left_leg",
 				"right_leg",
-				"tail"
-			}
+				"tail",
+			},
 		},
 		animations = {
-			"ragdoll"
+			"ragdoll",
 		},
 		push = {
 			distal_force = 40,
+			lateral_force = 90,
 			vertical_force = 30,
-			lateral_force = 90
-		}
+		},
 	},
 	light_blunt_tank_death = {
-		inherits = "default_death",
 		do_dismember = false,
+		inherits = "default_death",
 		extra_conditions = {
 			death = true,
 			damage_type = {
-				"light_blunt_tank"
-			}
+				"light_blunt_tank",
+			},
 		},
 		animations = {
-			"ragdoll"
+			"ragdoll",
 		},
 		push = {
 			distal_force = 10,
+			lateral_force = 40,
 			vertical_force = 10,
-			lateral_force = 40
-		}
+		},
 	},
 	light_blunt_tank_death_head = {
 		inherits = "light_blunt_tank_death",
 		extra_conditions = {
 			hit_zone = {
 				"neck",
-				"head"
-			}
+				"head",
+			},
 		},
 		animations = {
-			"ragdoll"
-		}
+			"ragdoll",
+		},
 	},
 	blunt_tank_death = {
-		inherits = "default_death",
 		do_dismember = false,
+		inherits = "default_death",
 		extra_conditions = {
 			death = true,
 			damage_type = {
-				"blunt_tank"
-			}
+				"blunt_tank",
+			},
 		},
 		animations = {
-			"ragdoll"
+			"ragdoll",
 		},
 		push = {
 			distal_force = 30,
+			lateral_force = 90,
 			vertical_force = 20,
-			lateral_force = 90
-		}
+		},
 	},
 	blunt_tank_death_head = {
 		inherits = "blunt_tank_death",
 		extra_conditions = {
 			hit_zone = {
 				"neck",
-				"head"
-			}
+				"head",
+			},
 		},
 		animations = {
-			"ragdoll"
-		}
+			"ragdoll",
+		},
 	},
 	heavy_blunt_tank_death = {
-		inherits = "default_death",
 		do_dismember = false,
+		inherits = "default_death",
 		extra_conditions = {
 			death = true,
 			damage_type = {
-				"heavy_blunt_tank"
-			}
+				"heavy_blunt_tank",
+			},
 		},
 		animations = {
-			"ragdoll"
+			"ragdoll",
 		},
 		push = {
 			distal_force = 60,
+			lateral_force = 120,
 			vertical_force = 60,
-			lateral_force = 120
-		}
+		},
 	},
 	heavy_blunt_tank_death_head = {
-		inherits = "heavy_blunt_tank_death",
 		flow_event = "explode_head",
+		inherits = "heavy_blunt_tank_death",
 		extra_conditions = {
 			hit_zone = {
 				"neck",
-				"head"
-			}
+				"head",
+			},
 		},
 		animations = {
-			"ragdoll"
-		}
+			"ragdoll",
+		},
 	},
 	burning_tank_death = {
-		inherits = "default_death",
 		do_dismember = false,
+		inherits = "default_death",
 		extra_conditions = {
 			death = true,
 			damage_type = {
-				"burning_tank"
-			}
+				"burning_tank",
+			},
 		},
 		animations = {
-			"ragdoll"
+			"ragdoll",
 		},
 		push = {
 			distal_force = 10,
+			lateral_force = 30,
 			vertical_force = 0,
-			lateral_force = 30
 		},
-		timed_status = StatusEffectNames.burning
+		timed_status = StatusEffectNames.burning,
 	},
 	burning_tank_death_head = {
 		inherits = "burning_tank_death",
 		extra_conditions = {
 			hit_zone = {
 				"neck",
-				"head"
-			}
+				"head",
+			},
 		},
 		animations = {
-			"ragdoll"
-		}
+			"ragdoll",
+		},
 	},
 	heavy_burning_tank_death = {
 		inherits = "default_death",
 		extra_conditions = {
 			death = true,
 			damage_type = {
-				"heavy_burning_tank"
-			}
+				"heavy_burning_tank",
+			},
 		},
 		animations = {
-			"ragdoll"
+			"ragdoll",
 		},
 		push = {
 			distal_force = 20,
+			lateral_force = 40,
 			vertical_force = 10,
-			lateral_force = 40
 		},
-		timed_status = StatusEffectNames.burning
+		timed_status = StatusEffectNames.burning,
 	},
 	heavy_burning_tank_death_head = {
 		inherits = "heavy_burning_tank_death",
 		extra_conditions = {
 			hit_zone = {
 				"neck",
-				"head"
-			}
+				"head",
+			},
 		},
 		animations = {
-			"ragdoll"
-		}
+			"ragdoll",
+		},
 	},
 	light_burning_linesman_death = {
 		inherits = "default_death",
 		extra_conditions = {
 			death = true,
 			damage_type = {
-				"light_burning_linesman"
-			}
+				"light_burning_linesman",
+			},
 		},
 		animations = {
-			"ragdoll"
+			"ragdoll",
 		},
 		push = {
 			distal_force = 20,
+			lateral_force = 30,
 			vertical_force = -10,
-			lateral_force = 30
-		}
+		},
 	},
 	light_burning_linesman_death_head = {
 		inherits = "light_burning_linesman_death",
 		extra_conditions = {
 			hit_zone = {
 				"neck",
-				"head"
-			}
+				"head",
+			},
 		},
 		animations = {
-			"ragdoll"
-		}
+			"ragdoll",
+		},
 	},
 	burning_linesman_death = {
 		inherits = "default_death",
 		extra_conditions = {
 			death = true,
 			damage_type = {
-				"burning_linesman"
-			}
+				"burning_linesman",
+			},
 		},
 		animations = {
-			"ragdoll"
+			"ragdoll",
 		},
 		push = {
 			distal_force = 20,
+			lateral_force = 40,
 			vertical_force = 0,
-			lateral_force = 40
-		}
+		},
 	},
 	burning_linesman_death_right_arm = {
 		inherits = "burning_linesman_death",
 		extra_conditions = {
-			hit_zone = "right_arm"
+			hit_zone = "right_arm",
 		},
 		animations = {
-			"ragdoll"
-		}
+			"ragdoll",
+		},
 	},
 	burning_linesman_death_left_arm = {
 		inherits = "burning_linesman_death",
 		extra_conditions = {
-			hit_zone = "left_arm"
+			hit_zone = "left_arm",
 		},
 		animations = {
-			"ragdoll"
-		}
+			"ragdoll",
+		},
 	},
 	burning_linesman_death_head = {
 		inherits = "burning_linesman_death",
 		extra_conditions = {
 			hit_zone = {
 				"neck",
-				"head"
-			}
+				"head",
+			},
 		},
 		animations = {
-			"ragdoll"
-		}
+			"ragdoll",
+		},
 	},
 	shot_default = {
+		armour_type = "flesh",
 		hit_effect_name = "fx/impact_blood_02",
 		husk_hit_effect_name = "fx/impact_blood_02",
-		armour_type = "flesh",
 		extra_conditions = {
 			damage = true,
 			damage_type = {
@@ -1272,168 +1274,168 @@ HitEffectsGutterRunner = {
 				"shot_carbine",
 				"shot_machinegun",
 				"shot_shotgun",
-				"shot_repeating_handgun"
-			}
+				"shot_repeating_handgun",
+			},
 		},
 		animations = {
-			"hit_reaction"
-		}
+			"hit_reaction",
+		},
 	},
 	shot_death = {
-		inherits = "default",
 		flow_event = "gutter_death",
+		inherits = "default",
 		extra_conditions = {
 			death = true,
 			damage_type = {
 				"shot_carbine",
-				"shot_machinegun"
-			}
+				"shot_machinegun",
+			},
 		},
 		animations = {
-			"ragdoll"
+			"ragdoll",
 		},
 		push = {
 			distal_force = 40,
+			lateral_force = 0,
 			vertical_force = 10,
-			lateral_force = 0
-		}
+		},
 	},
 	shot_death_head = {
-		inherits = "shot_death",
 		flow_event = "explode_head",
+		inherits = "shot_death",
 		extra_conditions = {
 			hit_zone = {
 				"head",
-				"neck"
-			}
+				"neck",
+			},
 		},
 		animations = {
-			"ragdoll"
-		}
+			"ragdoll",
+		},
 	},
 	shot_sniper_handgun_death = {
-		inherits = "default",
 		flow_event = "gutter_death",
+		inherits = "default",
 		extra_conditions = {
 			death = true,
 			damage_type = {
-				"shot_sniper"
-			}
+				"shot_sniper",
+			},
 		},
 		animations = {
-			"ragdoll"
+			"ragdoll",
 		},
 		push = {
 			distal_force = 120,
+			lateral_force = 0,
 			vertical_force = 40,
-			lateral_force = 0
-		}
+		},
 	},
 	shot_sniper_handgun_death_head = {
-		inherits = "shot_sniper_handgun_death",
 		flow_event = "explode_head",
+		inherits = "shot_sniper_handgun_death",
 		extra_conditions = {
 			hit_zone = {
 				"head",
-				"neck"
-			}
+				"neck",
+			},
 		},
 		animations = {
-			"ragdoll"
-		}
+			"ragdoll",
+		},
 	},
 	shot_sniper_handgun_death_dismember = {
-		inherits = "shot_sniper_handgun_death",
 		do_dismember = true,
+		inherits = "shot_sniper_handgun_death",
 		extra_conditions = {
 			hit_zone = {
 				"left_arm",
-				"right_arm"
-			}
+				"right_arm",
+			},
 		},
 		animations = {
-			"ragdoll"
-		}
+			"ragdoll",
+		},
 	},
 	shot_repeating_handgun_death = {
-		inherits = "default",
 		flow_event = "gutter_death",
+		inherits = "default",
 		extra_conditions = {
 			death = true,
 			damage_type = {
-				"shot_repeating_handgun"
-			}
+				"shot_repeating_handgun",
+			},
 		},
 		animations = {
-			"ragdoll"
+			"ragdoll",
 		},
 		push = {
 			distal_force = 60,
+			lateral_force = 0,
 			vertical_force = 10,
-			lateral_force = 0
-		}
+		},
 	},
 	shot_repeating_handgun_death_head = {
-		inherits = "shot_repeating_handgun_death",
 		flow_event = "explode_head",
+		inherits = "shot_repeating_handgun_death",
 		extra_conditions = {
 			hit_zone = {
 				"head",
-				"neck"
-			}
+				"neck",
+			},
 		},
 		animations = {
-			"ragdoll"
-		}
+			"ragdoll",
+		},
 	},
 	shot_repeating_handgun_death_dismember = {
-		inherits = "shot_repeating_handgun_death",
 		do_dismember = true,
+		inherits = "shot_repeating_handgun_death",
 		extra_conditions = {
 			hit_zone = {
 				"left_arm",
-				"right_arm"
-			}
+				"right_arm",
+			},
 		},
 		animations = {
-			"ragdoll"
-		}
+			"ragdoll",
+		},
 	},
 	shotgun_death = {
-		inherits = "default",
 		flow_event = "gutter_death",
+		inherits = "default",
 		extra_conditions = {
 			death = true,
 			damage_type = {
-				"shot_shotgun"
-			}
+				"shot_shotgun",
+			},
 		},
 		animations = {
-			"ragdoll"
+			"ragdoll",
 		},
 		push = {
 			distal_force = 80,
+			lateral_force = 0,
 			vertical_force = 20,
-			lateral_force = 0
-		}
+		},
 	},
 	shotgun_death_head = {
-		inherits = "shotgun_death",
 		flow_event = "explode_head",
+		inherits = "shotgun_death",
 		extra_conditions = {
 			hit_zone = {
 				"head",
-				"neck"
-			}
+				"neck",
+			},
 		},
 		animations = {
-			"ragdoll"
-		}
+			"ragdoll",
+		},
 	},
 	arrow_default = {
+		armour_type = "flesh",
 		hit_effect_name = "fx/impact_blood_02",
 		husk_hit_effect_name = "fx/impact_blood_02",
-		armour_type = "flesh",
 		extra_conditions = {
 			damage_type = {
 				"arrow_sniper",
@@ -1444,47 +1446,47 @@ HitEffectsGutterRunner = {
 				"bolt_sniper",
 				"bolt_carbine",
 				"bolt_machinegun",
-				"bolt_shotgun"
-			}
+				"bolt_shotgun",
+			},
 		},
 		animations = {
-			"hit_reaction"
-		}
+			"hit_reaction",
+		},
 	},
 	arrow_death = {
-		inherits = "arrow_default",
 		flow_event = "gutter_death",
+		inherits = "arrow_default",
 		extra_conditions = {
 			death = true,
 			damage_type = {
-				"arrow_machinegun"
-			}
+				"arrow_machinegun",
+			},
 		},
 		animations = {
-			"ragdoll"
+			"ragdoll",
 		},
 		push = {
 			distal_force = 20,
+			lateral_force = 0,
 			vertical_force = 10,
-			lateral_force = 0
-		}
+		},
 	},
 	arrow_death_head = {
 		inherits = "arrow_death",
 		extra_conditions = {
 			hit_zone = {
 				"head",
-				"neck"
-			}
+				"neck",
+			},
 		},
 		animations = {
-			"ragdoll"
+			"ragdoll",
 		},
 		push = {
 			distal_force = 20,
+			lateral_force = 0,
 			vertical_force = 30,
-			lateral_force = 0
-		}
+		},
 	},
 	arrow_carbine_death = {
 		inherits = "arrow_death",
@@ -1492,27 +1494,27 @@ HitEffectsGutterRunner = {
 			damage_type = {
 				"arrow_carbine",
 				"arrow_shotgun",
-				"elven_magic_arrow_carbine"
-			}
+				"elven_magic_arrow_carbine",
+			},
 		},
 		push = {
 			distal_force = 60,
+			lateral_force = 0,
 			vertical_force = 10,
-			lateral_force = 0
-		}
+		},
 	},
 	arrow_sniper_death = {
 		inherits = "arrow_death",
 		extra_conditions = {
 			damage_type = {
-				"arrow_sniper"
-			}
+				"arrow_sniper",
+			},
 		},
 		push = {
 			distal_force = 80,
+			lateral_force = 0,
 			vertical_force = 10,
-			lateral_force = 0
-		}
+		},
 	},
 	arrow_carbine_death_head = {
 		inherits = "arrow_death_head",
@@ -1520,356 +1522,356 @@ HitEffectsGutterRunner = {
 			damage_type = {
 				"arrow_carbine",
 				"arrow_shotgun",
-				"elven_magic_arrow_carbine"
-			}
+				"elven_magic_arrow_carbine",
+			},
 		},
 		push = {
 			distal_force = 60,
+			lateral_force = 0,
 			vertical_force = 10,
-			lateral_force = 0
-		}
+		},
 	},
 	arrow_sniper_death_head = {
 		inherits = "arrow_death_head",
 		extra_conditions = {
 			damage_type = {
-				"arrow_sniper"
-			}
+				"arrow_sniper",
+			},
 		},
 		push = {
 			distal_force = 80,
+			lateral_force = 0,
 			vertical_force = 10,
-			lateral_force = 0
-		}
+		},
 	},
 	poison_arrow = {
-		husk_hit_effect_name = "fx/impact_blood_02",
 		hit_effect_name = "fx/impact_blood_02",
+		husk_hit_effect_name = "fx/impact_blood_02",
 		extra_conditions = {
 			damage = true,
 			damage_type = {
-				"arrow_poison"
-			}
+				"arrow_poison",
+			},
 		},
 		animations = {
-			"hit_reaction"
-		}
+			"hit_reaction",
+		},
 	},
 	poison_arrow_nodamage = {
 		extra_conditions = {
 			damage = false,
 			damage_type = {
-				"arrow_poison"
-			}
-		}
+				"arrow_poison",
+			},
+		},
 	},
 	bolt_death = {
-		inherits = "arrow_default",
 		flow_event = "gutter_death",
+		inherits = "arrow_default",
 		extra_conditions = {
 			death = true,
 			damage_type = {
 				"bolt_carbine",
 				"bolt_machinegun",
-				"bolt_shotgun"
-			}
+				"bolt_shotgun",
+			},
 		},
 		animations = {
-			"ragdoll"
+			"ragdoll",
 		},
 		push = {
 			distal_force = 50,
+			lateral_force = 0,
 			vertical_force = 10,
-			lateral_force = 0
-		}
+		},
 	},
 	bolt_death_head = {
 		inherits = "bolt_death",
 		extra_conditions = {
 			hit_zone = {
 				"head",
-				"neck"
-			}
+				"neck",
+			},
 		},
 		animations = {
-			"ragdoll"
+			"ragdoll",
 		},
 		push = {
 			distal_force = 20,
+			lateral_force = 0,
 			vertical_force = 30,
-			lateral_force = 0
-		}
+		},
 	},
 	bolt_sniper_death = {
 		inherits = "bolt_death",
 		extra_conditions = {
 			damage_type = {
-				"bolt_sniper"
-			}
+				"bolt_sniper",
+			},
 		},
 		push = {
 			distal_force = 250,
+			lateral_force = 0,
 			vertical_force = 10,
-			lateral_force = 0
-		}
+		},
 	},
 	bolt_sniper_death_head = {
 		inherits = "bolt_death_head",
 		extra_conditions = {
 			hit_zone = {
 				"head",
-				"neck"
-			}
+				"neck",
+			},
 		},
 		push = {
 			distal_force = 120,
+			lateral_force = 0,
 			vertical_force = 30,
-			lateral_force = 0
-		}
+		},
 	},
 	throwing_axe_death = {
 		inherits = "bolt_death",
 		extra_conditions = {
 			damage_type = {
-				"throwing_axe"
-			}
+				"throwing_axe",
+			},
 		},
 		animations = {
-			"ragdoll"
+			"ragdoll",
 		},
 		push = {
 			distal_force = 180,
+			lateral_force = 0,
 			vertical_force = 10,
-			lateral_force = 0
-		}
+		},
 	},
 	throwing_axe_death_head = {
 		inherits = "throwing_axe_death",
 		extra_conditions = {
 			hit_zone = {
 				"head",
-				"neck"
-			}
+				"neck",
+			},
 		},
 		animations = {
-			"ragdoll"
+			"ragdoll",
 		},
 		push = {
 			distal_force = 120,
+			lateral_force = 0,
 			vertical_force = 30,
-			lateral_force = 0
-		}
+		},
 	},
 	burn = {
 		extra_conditions = {
-			damage_type = "burn"
-		}
+			damage_type = "burn",
+		},
 	},
 	burn_sniper = {
 		extra_conditions = {
-			damage_type = "burn_sniper"
+			damage_type = "burn_sniper",
 		},
 		animations = {
-			"hit_reaction"
-		}
+			"hit_reaction",
+		},
 	},
 	burn_shotgun = {
 		extra_conditions = {
 			damage = true,
-			damage_type = "burn_shotgun"
+			damage_type = "burn_shotgun",
 		},
 		animations = {
-			"hit_reaction"
-		}
+			"hit_reaction",
+		},
 	},
 	burn_machinegun = {
 		extra_conditions = {
-			damage_type = "burn_machinegun"
+			damage_type = "burn_machinegun",
 		},
 		animations = {
-			"hit_reaction"
-		}
+			"hit_reaction",
+		},
 	},
 	burn_carbine = {
 		extra_conditions = {
-			damage_type = "burn_machinegun"
+			damage_type = "burn_machinegun",
 		},
 		animations = {
-			"hit_reaction"
-		}
+			"hit_reaction",
+		},
 	},
 	burninating = {
 		extra_conditions = {
-			damage_type = "burninating"
-		}
+			damage_type = "burninating",
+		},
 	},
 	burninating_death = {
-		inherits = "burninating",
 		flow_event = "gutter_death",
+		inherits = "burninating",
 		extra_conditions = {
-			death = true
+			death = true,
 		},
 		animations = {
-			"ragdoll"
-		}
+			"ragdoll",
+		},
 	},
 	burn_death = {
 		flow_event = "gutter_death",
 		extra_conditions = {
+			damage_type = "burn",
 			death = true,
-			damage_type = "burn"
 		},
 		animations = {
-			"ragdoll"
+			"ragdoll",
 		},
-		timed_status = StatusEffectNames.burning
+		timed_status = StatusEffectNames.burning,
 	},
 	burn_sniper_death = {
 		extra_conditions = {
 			death = true,
 			damage_type = {
-				"burn_sniper"
-			}
+				"burn_sniper",
+			},
 		},
 		animations = {
-			"ragdoll"
+			"ragdoll",
 		},
 		flow_event = {
-			"gutter_death"
+			"gutter_death",
 		},
 		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 80,
+			lateral_force = 0,
 			vertical_force = 20,
-			lateral_force = 0
-		}
+		},
 	},
 	burn_sniper_death_dismember = {
 		inherits = "burn_sniper_death",
 		extra_conditions = {
 			hit_zone = {
-				"torso"
-			}
+				"torso",
+			},
 		},
 		animations = {
-			"ragdoll"
+			"ragdoll",
 		},
 		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 80,
+			lateral_force = 0,
 			vertical_force = 20,
-			lateral_force = 0
-		}
+		},
 	},
 	burn_shotgun_death = {
 		extra_conditions = {
 			death = true,
 			damage_type = {
-				"burn_shotgun"
-			}
+				"burn_shotgun",
+			},
 		},
 		animations = {
-			"ragdoll"
+			"ragdoll",
 		},
 		flow_event = {
-			"gutter_death"
+			"gutter_death",
 		},
 		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 30,
+			lateral_force = 0,
 			vertical_force = 30,
-			lateral_force = 0
-		}
+		},
 	},
 	burn_machinegun_death = {
 		extra_conditions = {
 			death = true,
 			damage_type = {
-				"burn_machinegun"
-			}
+				"burn_machinegun",
+			},
 		},
 		animations = {
-			"ragdoll"
+			"ragdoll",
 		},
 		flow_event = {
-			"gutter_death"
+			"gutter_death",
 		},
 		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 40,
+			lateral_force = 0,
 			vertical_force = 10,
-			lateral_force = 0
-		}
+		},
 	},
 	burn_machinegun_death_hs = {
 		inherits = "burn_machinegun_death",
 		extra_conditions = {
 			hit_zone = {
 				"head",
-				"neck"
-			}
+				"neck",
+			},
 		},
 		animations = {
-			"ragdoll"
+			"ragdoll",
 		},
 		flow_event = {
-			"explode_head"
+			"explode_head",
 		},
 		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 40,
+			lateral_force = 0,
 			vertical_force = 10,
-			lateral_force = 0
-		}
+		},
 	},
 	burn_carbine_death = {
 		extra_conditions = {
 			death = true,
 			damage_type = {
-				"burn_carbine"
-			}
+				"burn_carbine",
+			},
 		},
 		animations = {
-			"ragdoll"
+			"ragdoll",
 		},
 		flow_event = {
-			"gutter_death"
+			"gutter_death",
 		},
 		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 60,
+			lateral_force = 0,
 			vertical_force = 10,
-			lateral_force = 0
-		}
+		},
 	},
 	burn_carbine_death_hs = {
 		inherits = "burn_carbine_death",
 		extra_conditions = {
 			hit_zone = {
 				"head",
-				"neck"
-			}
+				"neck",
+			},
 		},
 		animations = {
-			"ragdoll"
+			"ragdoll",
 		},
 		flow_event = {
-			"explode_head"
+			"explode_head",
 		},
 		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 60,
+			lateral_force = 0,
 			vertical_force = 10,
-			lateral_force = 0
-		}
+		},
 	},
 	arrow_poison_dot = {
 		extra_conditions = {
 			damage_type = {
 				"arrow_poison_dot",
-				"aoe_poison_dot"
-			}
-		}
+				"aoe_poison_dot",
+			},
+		},
 	},
 	arrow_poison_dot_death = {
 		flow_event = "gutter_death",
@@ -1878,173 +1880,173 @@ HitEffectsGutterRunner = {
 			damage_type = {
 				"arrow_poison_dot",
 				"aoe_poison_dot",
-				"poison"
-			}
+				"poison",
+			},
 		},
 		animations = {
-			"ragdoll"
-		}
+			"ragdoll",
+		},
 	},
 	push = {
 		stagger = 10,
 		extra_conditions = {
-			damage_type = "push"
-		}
+			damage_type = "push",
+		},
 	},
 	forced_kill = {
 		flow_event = "gutter_death",
 		extra_conditions = {
+			damage_type = "forced",
 			death = true,
-			damage_type = "forced"
 		},
 		animations = {
-			"ragdoll"
-		}
+			"ragdoll",
+		},
 	},
 	grenade_glance_death = {
-		inherits = "default",
 		explosion_push = true,
 		flow_event = "gutter_death",
+		inherits = "default",
 		extra_conditions = {
+			damage_type = "grenade_glance",
 			death = true,
-			damage_type = "grenade_glance"
 		},
 		animations = {
-			"ragdoll"
+			"ragdoll",
 		},
 		push = {
 			distal_force = 100,
+			lateral_force = 0,
 			vertical_force = 30,
-			lateral_force = 0
-		}
+		},
 	},
 	grenade_death = {
-		inherits = "default",
 		explosion_push = true,
 		flow_event = "gutter_death",
+		inherits = "default",
 		extra_conditions = {
+			damage_type = "grenade",
 			death = true,
-			damage_type = "grenade"
 		},
 		animations = {
-			"ragdoll"
+			"ragdoll",
 		},
 		push = {
 			distal_force = 100,
+			lateral_force = 0,
 			vertical_force = 70,
-			lateral_force = 0
-		}
+		},
 	},
 	fire_grenade_glance_death = {
-		inherits = "default",
 		explosion_push = true,
 		flow_event = "gutter_death",
+		inherits = "default",
 		extra_conditions = {
+			damage_type = "fire_grenade_glance",
 			death = true,
-			damage_type = "fire_grenade_glance"
 		},
 		animations = {
-			"ragdoll"
+			"ragdoll",
 		},
 		push = {
 			distal_force = 50,
+			lateral_force = 0,
 			vertical_force = 30,
-			lateral_force = 0
-		}
+		},
 	},
 	fire_grenade_death = {
-		inherits = "default",
 		explosion_push = true,
 		flow_event = "gutter_death",
+		inherits = "default",
 		extra_conditions = {
+			damage_type = "grenade",
 			death = true,
-			damage_type = "grenade"
 		},
 		animations = {
-			"ragdoll"
+			"ragdoll",
 		},
 		push = {
 			distal_force = 50,
+			lateral_force = 0,
 			vertical_force = 50,
-			lateral_force = 0
-		}
+		},
 	},
 	gib_killing_blow_death = {
 		inherits = "default",
 		extra_conditions = {
+			damage_type = "killing_blow",
 			death = true,
-			damage_type = "killing_blow"
 		},
 		animations = {
-			"ragdoll"
-		}
+			"ragdoll",
+		},
 	},
 	drakegun = {
 		inherits = "default",
 		extra_conditions = {
 			damage_type = {
-				"drakegun"
-			}
-		}
+				"drakegun",
+			},
+		},
 	},
 	drakegun_death = {
-		inherits = "drakegun",
 		explosion_push = true,
 		flow_event = "gutter_death",
+		inherits = "drakegun",
 		extra_conditions = {
-			death = true
+			death = true,
 		},
 		animations = {
-			"ragdoll"
+			"ragdoll",
 		},
 		push = {
 			distal_force = 80,
-			vertical_force = 35
-		}
+			vertical_force = 35,
+		},
 	},
 	drakegun_glance = {
 		inherits = "default",
 		extra_conditions = {
-			damage_type = "drakegun_glance"
-		}
+			damage_type = "drakegun_glance",
+		},
 	},
 	drakegun_glance_death = {
-		inherits = "drakegun_glance",
 		explosion_push = true,
+		inherits = "drakegun_glance",
 		extra_conditions = {
-			death = true
+			death = true,
 		},
 		animations = {
-			"ragdoll"
+			"ragdoll",
 		},
 		flow_event = {
-			"gutter_death"
+			"gutter_death",
 		},
 		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 60,
-			vertical_force = 25
-		}
+			vertical_force = 25,
+		},
 	},
 	drakegun_shot_death = {
 		extra_conditions = {
 			death = true,
 			damage_type = {
-				"drakegun_shot"
-			}
+				"drakegun_shot",
+			},
 		},
 		animations = {
-			"ragdoll"
+			"ragdoll",
 		},
 		flow_event = {
-			"gutter_death"
+			"gutter_death",
 		},
 		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 100,
+			lateral_force = 0,
 			vertical_force = 40,
-			lateral_force = 0
-		}
+		},
 	},
 	drakegun_shot_death_dismember = {
 		inherits = "drakegun_shot_death",
@@ -2054,39 +2056,39 @@ HitEffectsGutterRunner = {
 				"right_arm",
 				"left_leg",
 				"right_leg",
-				"tail"
-			}
+				"tail",
+			},
 		},
 		animations = {
-			"ragdoll"
+			"ragdoll",
 		},
 		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 100,
+			lateral_force = 0,
 			vertical_force = 40,
-			lateral_force = 0
-		}
+		},
 	},
 	drakegun_shot_death_head = {
 		inherits = "drakegun_shot_death",
 		extra_conditions = {
 			hit_zone = {
 				"head",
-				"neck"
-			}
+				"neck",
+			},
 		},
 		animations = {
-			"ragdoll"
+			"ragdoll",
 		},
 		flow_event = {
-			"explode_head"
+			"explode_head",
 		},
 		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 100,
+			lateral_force = 0,
 			vertical_force = 40,
-			lateral_force = 0
-		}
+		},
 	},
 	default_burning = {
 		inherits = "default",
@@ -2096,9 +2098,9 @@ HitEffectsGutterRunner = {
 				"heavy_burning_tank",
 				"burning_stab_fencer",
 				"fire_grenade",
-				"fire_grenade_glance"
-			}
-		}
-	}
+				"fire_grenade_glance",
+			},
+		},
+	},
 }
 HitEffectsGutterRunner = table.create_copy(HitEffectsGutterRunner, HitEffectsGutterRunner)

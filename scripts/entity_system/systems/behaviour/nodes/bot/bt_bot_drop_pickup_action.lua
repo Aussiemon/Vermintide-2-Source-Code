@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bot/bt_bot_drop_pickup_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTBotDropPickupAction = class(BTBotDropPickupAction, BTNode)
@@ -17,9 +19,10 @@ BTBotDropPickupAction.enter = function (self, unit, blackboard, t)
 	local _, right_hand_weapon_extension, left_hand_weapon_extension = CharacterStateHelper.get_item_data_and_weapon_extensions(inventory_extension)
 	local _, current_action_extension, _ = CharacterStateHelper.get_current_action_data(left_hand_weapon_extension, right_hand_weapon_extension)
 	local weapon_extension = AiUtils.get_bot_weapon_extension(blackboard)
+
 	blackboard.drop = {
 		weapon_extension = weapon_extension,
-		wielded_item_template = item_template
+		wielded_item_template = item_template,
 	}
 end
 

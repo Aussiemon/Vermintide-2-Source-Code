@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/deus/deus_belakor_statue_socket_extension.lua
+
 DeusBelakorStatueSocketExtension = class(DeusBelakorStatueSocketExtension)
 
 local function should_objective_be_active(objective_extension, socket_extension)
@@ -33,6 +35,7 @@ end
 
 DeusBelakorStatueSocketExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	local world = extension_init_context.world
+
 	self._world = world
 	self._unit = unit
 end

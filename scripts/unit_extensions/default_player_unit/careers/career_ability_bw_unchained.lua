@@ -1,10 +1,14 @@
+﻿-- chunkname: @scripts/unit_extensions/default_player_unit/careers/career_ability_bw_unchained.lua
+
 CareerAbilityBWUnchained = class(CareerAbilityBWUnchained)
 
 CareerAbilityBWUnchained.init = function (self, extension_init_context, unit, extension_init_data)
 	self._owner_unit = unit
 	self._world = extension_init_context.world
 	self._wwise_world = Managers.world:wwise_world(self._world)
+
 	local player = extension_init_data.player
+
 	self._player = player
 	self._is_server = player.is_server
 	self._local_player = player.local_player
@@ -137,7 +141,7 @@ CareerAbilityBWUnchained._run_ability = function (self, new_initial_speed)
 	local buff_name = "sienna_unchained_activated_ability"
 
 	buff_extension:add_buff(buff_name, {
-		attacker_unit = owner_unit
+		attacker_unit = owner_unit,
 	})
 
 	if is_server and bot_player or local_player then
@@ -198,7 +202,7 @@ CareerAbilityBWUnchained._run_ability = function (self, new_initial_speed)
 
 	if talent_extension:has_talent("sienna_unchained_activated_ability_fire_aura") then
 		local buffs = {
-			"sienna_unchained_activated_ability_pulse"
+			"sienna_unchained_activated_ability_pulse",
 		}
 		local unit_object_id = network_manager:unit_game_object_id(owner_unit)
 
@@ -210,7 +214,7 @@ CareerAbilityBWUnchained._run_ability = function (self, new_initial_speed)
 				local buff_template_name_id = NetworkLookup.buff_templates[buff_name]
 
 				buff_extension:add_buff(buff_name, {
-					attacker_unit = owner_unit
+					attacker_unit = owner_unit,
 				})
 				network_transmit:send_rpc_clients("rpc_add_buff", unit_object_id, buff_template_name_id, unit_object_id, 0, false)
 			end
@@ -259,6 +263,7 @@ CareerAbilityBWUnchained._run_ability = function (self, new_initial_speed)
 	local lh_weapon_extension = lh_weapon_unit and ScriptUnit.has_extension(lh_weapon_unit, "weapon_system")
 	local rh_weapon_extension = rh_weapon_unit and ScriptUnit.has_extension(rh_weapon_unit, "weapon_system")
 	local has_action = lh_weapon_extension and lh_weapon_extension:has_current_action()
+
 	has_action = has_action or rh_weapon_extension and rh_weapon_extension:has_current_action()
 
 	if not has_action then

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/backend_playfab/playfab_mirror_base.lua
+
 require("scripts/managers/backend_playfab/playfab_request_queue")
 
 local PlayFabClientApi = require("PlayFab.PlayFabClientApi")
@@ -21,16 +23,17 @@ local CAREER_ID_LOOKUP = {
 	"wh_zealot",
 	"we_thornsister",
 	"wh_priest",
-	"bw_necromancer"
+	"bw_necromancer",
 }
 local ALLOWED_DATA_TYPES = {
-	string = true,
 	boolean = true,
-	number = true
+	number = true,
+	string = true,
 }
 local REDUCTION_INTERVAL = 80
 local DELAY_MULTIPLIER = 5
 local guid = IS_PS4 and math.uuid or Application.guid
+
 PlayFabMirrorBase = class(PlayFabMirrorBase)
 
 local function debug_printf(format, ...)
@@ -59,6 +62,7 @@ PlayFabMirrorBase.init = function (self, signin_result)
 	self.sum_best_power_levels = nil
 	self._belakor_data_loaded = false
 	self._playfab_id = signin_result.PlayFabId
+
 	local info_result_payload = signin_result.InfoResultPayload
 	local read_only_data = info_result_payload.UserReadOnlyData or {}
 	local read_only_data_values = {}
@@ -80,7 +84,9 @@ PlayFabMirrorBase.init = function (self, signin_result)
 
 	self._read_only_data = read_only_data_values
 	self._read_only_data_mirror = table.clone(read_only_data_values)
+
 	local title_data = info_result_payload.TitleData or {}
+
 	self._title_data = {}
 
 	for key, value in pairs(title_data) do
@@ -123,6 +129,7 @@ PlayFabMirrorBase._parse_claimed_achievements = function (self)
 
 	for i = 1, #split_achievements_string do
 		local value = split_achievements_string[i]
+
 		claimed_achievements[value] = true
 	end
 
@@ -233,7 +240,7 @@ PlayFabMirrorBase._verify_account_data = function (self)
 	end
 
 	local request = {
-		FunctionName = "verifyAccountData"
+		FunctionName = "verifyAccountData",
 	}
 	local success_callback = callback(self, "verify_account_data_cb")
 
@@ -254,7 +261,7 @@ PlayFabMirrorBase._migrate_characters = function (self)
 	if not characters_data or characters_data == "{}" or characters_data == "" or type(characters_data) == "table" and table.is_empty(characters_data) then
 		local request = {
 			FunctionName = "migrateCharacters",
-			FunctionParameter = {}
+			FunctionParameter = {},
 		}
 		local success_callback = callback(self, "migrate_characters_cb")
 
@@ -288,7 +295,7 @@ PlayFabMirrorBase._migrate_cosmetics = function (self)
 	end
 
 	local request = {
-		FunctionName = "migrateCosmetics"
+		FunctionName = "migrateCosmetics",
 	}
 	local success_callback = callback(self, "migrate_cosmetics_request_cb")
 
@@ -299,6 +306,7 @@ end
 
 PlayFabMirrorBase.migrate_cosmetics_request_cb = function (self, result)
 	self._num_items_to_load = self._num_items_to_load - 1
+
 	local data = result.FunctionResult
 	local unlocked_cosmetics = data.unlocked_cosmetics
 	local characters_data = data.characters_data
@@ -325,8 +333,8 @@ PlayFabMirrorBase._update_dlc_ownership = function (self)
 	local request = {
 		FunctionName = "updateDLCOwnership",
 		FunctionParameter = {
-			installed_dlcs = json_string
-		}
+			installed_dlcs = json_string,
+		},
 	}
 	local success_callback = callback(self, "dlc_ownership_request_cb")
 
@@ -342,14 +350,17 @@ end
 
 PlayFabMirrorBase.dlc_ownership_request_cb = function (self, result)
 	self._num_items_to_load = self._num_items_to_load - 1
+
 	local function_result = result.FunctionResult
 	local owned_dlcs = function_result.owned_dlcs
 	local platform_dlcs = function_result.platform_dlcs
 	local excluded_dlcs = function_result.excluded_dlcs
 	local new_dlcs = function_result.new_dlcs
 	local revoked_dlcs = function_result.revoked_dlcs
+
 	self._owned_dlcs = owned_dlcs or {}
 	self._platform_dlcs = platform_dlcs
+
 	local unlock_manager = Managers.unlock
 
 	unlock_manager:set_excluded_dlcs(excluded_dlcs, owned_dlcs)
@@ -383,7 +394,9 @@ PlayFabMirrorBase.dlc_ownership_request_cb = function (self, result)
 	self._claimed_event_quests = self:_parse_claimed_event_quests()
 	self._unlocked_weapon_skins = self:_parse_unlocked_weapon_skins()
 	self._unlocked_cosmetics = self:_parse_unlocked_cosmetics()
+
 	local unlocked_keep_decorations_json = self:get_read_only_data("unlocked_keep_decorations") or "{}"
+
 	self._unlocked_keep_decorations = cjson.decode(unlocked_keep_decorations_json)
 
 	if IS_CONSOLE then
@@ -400,7 +413,7 @@ end
 PlayFabMirrorBase._execute_dlc_specific_logic = function (self)
 	local request = {
 		FunctionName = "executeDLCLogic",
-		FunctionParameter = {}
+		FunctionParameter = {},
 	}
 	local success_callback = callback(self, "execute_dlc_logic_request_cb")
 
@@ -419,6 +432,7 @@ PlayFabMirrorBase._sync_unseen_rewards = function (self, new_rewards)
 	end
 
 	local unseen_rewards = self:get_user_data("unseen_rewards")
+
 	unseen_rewards = unseen_rewards and cjson.decode(unseen_rewards) or {}
 
 	for i = 1, #new_rewards do
@@ -430,14 +444,15 @@ PlayFabMirrorBase._sync_unseen_rewards = function (self, new_rewards)
 			local reward = {
 				reward_type = "keep_decoration_painting",
 				rewarded_from = item.Data.rewarded_from,
-				keep_decoration_name = item_id
+				keep_decoration_name = item_id,
 			}
+
 			unseen_rewards[#unseen_rewards + 1] = reward
 
 			self:add_keep_decoration(item_id)
 		elseif CosmeticUtils.is_cosmetic_item(item_type) then
 			local backend_id = self:add_item(nil, {
-				ItemId = item_id
+				ItemId = item_id,
 			})
 
 			if backend_id then
@@ -446,8 +461,9 @@ PlayFabMirrorBase._sync_unseen_rewards = function (self, new_rewards)
 					backend_id = backend_id,
 					rewarded_from = item.Data.rewarded_from,
 					item_type = item_type,
-					item_id = item_id
+					item_id = item_id,
 				}
+
 				unseen_rewards[#unseen_rewards + 1] = reward
 			end
 		else
@@ -464,8 +480,9 @@ PlayFabMirrorBase._sync_unseen_rewards = function (self, new_rewards)
 							reward_type = "currency",
 							currency_type = currency_type,
 							currency_amount = currency_amount,
-							rewarded_from = rewarded_from
+							rewarded_from = rewarded_from,
 						}
+
 						unseen_rewards[#unseen_rewards + 1] = reward
 					end
 				else
@@ -478,13 +495,14 @@ PlayFabMirrorBase._sync_unseen_rewards = function (self, new_rewards)
 							backend_id = backend_id,
 							rewarded_from = rewarded_from,
 							item_type = item_type,
-							item_id = item_id
+							item_id = item_id,
 						}
+
 						unseen_rewards[#unseen_rewards + 1] = reward
 					end
 
 					ItemHelper.mark_backend_id_as_new(backend_id, {
-						data = data
+						data = data,
 					})
 				end
 			end
@@ -496,6 +514,7 @@ end
 
 PlayFabMirrorBase.execute_dlc_logic_request_cb = function (self, result)
 	self._num_items_to_load = self._num_items_to_load - 1
+
 	local function_result = result.FunctionResult
 
 	if function_result then
@@ -504,12 +523,12 @@ PlayFabMirrorBase.execute_dlc_logic_request_cb = function (self, result)
 		if info then
 			local popup_text = info.presentation_text_localized and Localize(info.presentation_text_localized) or info.presentation_text
 			local popup_title = info.presentation_title_localized and Localize(info.presentation_title_localized) or info.presentation_title
-			local popup_url_button = nil
+			local popup_url_button
 
 			if info.presentation_url_button then
 				popup_url_button = {
 					text = info.presentation_url_button.text_localized and Localize(info.presentation_url_button.text_localized) or info.presentation_url_button.text,
-					url = info.presentation_url_button.url
+					url = info.presentation_url_button.url,
 				}
 			end
 
@@ -527,7 +546,7 @@ end
 PlayFabMirrorBase._request_best_power_levels = function (self)
 	local request = {
 		FunctionName = "bestPowerLevels",
-		FunctionParameter = {}
+		FunctionParameter = {},
 	}
 	local success_callback = callback(self, "best_power_levels_request_cb")
 
@@ -538,9 +557,12 @@ end
 
 PlayFabMirrorBase.best_power_levels_request_cb = function (self, result)
 	self._num_items_to_load = self._num_items_to_load - 1
+
 	local function_result = result.FunctionResult
 	local best_power_levels = function_result.best_power_levels
+
 	self._best_power_levels = best_power_levels
+
 	local sum = 0
 
 	for _, value in pairs(best_power_levels) do
@@ -555,7 +577,7 @@ end
 PlayFabMirrorBase._request_signin_reward = function (self)
 	local request = {
 		FunctionName = "signInRewards",
-		FunctionParameter = {}
+		FunctionParameter = {},
 	}
 	local success_callback = callback(self, "sign_in_reward_request_cb")
 
@@ -566,6 +588,7 @@ end
 
 PlayFabMirrorBase.sign_in_reward_request_cb = function (self, result)
 	self._num_items_to_load = self._num_items_to_load - 1
+
 	local function_result = result.FunctionResult
 	local rewards = function_result.rewards
 
@@ -599,7 +622,7 @@ PlayFabMirrorBase.sign_in_reward_request_cb = function (self, result)
 		if unlocked_cosmetics then
 			for i = 1, #unlocked_cosmetics do
 				self:add_item(nil, {
-					ItemId = unlocked_cosmetics[i]
+					ItemId = unlocked_cosmetics[i],
 				})
 			end
 		end
@@ -619,7 +642,7 @@ end
 PlayFabMirrorBase._request_quests = function (self)
 	local request = {
 		FunctionName = "getQuests",
-		FunctionParameter = {}
+		FunctionParameter = {},
 	}
 	local success_callback = callback(self, "get_quests_cb")
 
@@ -630,6 +653,7 @@ end
 
 PlayFabMirrorBase.get_quests_cb = function (self, result)
 	self._num_items_to_load = self._num_items_to_load - 1
+
 	local function_result = result.FunctionResult
 	local current_daily_quests = function_result.current_daily_quests
 	local daily_quest_refresh_available = function_result.daily_quest_refresh_available
@@ -650,7 +674,7 @@ end
 PlayFabMirrorBase._request_fix_inventory_data_1 = function (self)
 	local request = {
 		FunctionName = "fixInventoryData1",
-		FunctionParameter = {}
+		FunctionParameter = {},
 	}
 	local success_callback = callback(self, "fix_inventory_data_1_request_cb")
 
@@ -661,6 +685,7 @@ end
 
 PlayFabMirrorBase.fix_inventory_data_1_request_cb = function (self, result)
 	self._num_items_to_load = self._num_items_to_load - 1
+
 	local function_result = result.FunctionResult
 	local updated_xp_data = function_result and function_result.updated_xp_data
 	local new_read_only_data = function_result and function_result.new_read_only_data
@@ -689,7 +714,7 @@ end
 PlayFabMirrorBase._request_fix_inventory_data_2 = function (self)
 	local request = {
 		FunctionName = "fixInventoryData2",
-		FunctionParameter = {}
+		FunctionParameter = {},
 	}
 	local success_callback = callback(self, "fix_inventory_data_2_request_cb")
 
@@ -700,6 +725,7 @@ end
 
 PlayFabMirrorBase.fix_inventory_data_2_request_cb = function (self, result)
 	self._num_items_to_load = self._num_items_to_load - 1
+
 	local function_result = result.FunctionResult
 	local new_magic_level = function_result and function_result.new_magic_level
 
@@ -724,7 +750,7 @@ end
 PlayFabMirrorBase._handle_fix_data_ids = function (self)
 	local request = {
 		FunctionName = "handleFixDataIds",
-		FunctionParameter = {}
+		FunctionParameter = {},
 	}
 	local success_callback = callback(self, "handle_fix_data_ids_request_cb")
 
@@ -735,6 +761,7 @@ end
 
 PlayFabMirrorBase.handle_fix_data_ids_request_cb = function (self, result)
 	self._num_items_to_load = self._num_items_to_load - 1
+
 	local function_result = result.FunctionResult
 
 	if function_result.new_user_read_only_data then
@@ -756,7 +783,7 @@ PlayFabMirrorBase.handle_fix_data_ids_request_cb = function (self, result)
 	if function_result.new_cosmetics then
 		for i = 1, #function_result.new_cosmetics do
 			self:add_item(nil, {
-				ItemId = function_result.new_cosmetics[i]
+				ItemId = function_result.new_cosmetics[i],
 			})
 		end
 	end
@@ -791,7 +818,7 @@ end
 PlayFabMirrorBase._fix_excess_bogenhafen_chests = function (self)
 	local request = {
 		FunctionName = "removeExcessBogenhafenChests",
-		FunctionParameter = {}
+		FunctionParameter = {},
 	}
 	local success_callback = callback(self, "_fix_excess_bogenhafen_chests_cb")
 
@@ -809,7 +836,7 @@ end
 PlayFabMirrorBase._fix_excess_duplicate_bogenhafen_cosmetics = function (self)
 	local request = {
 		FunctionName = "removeDuplicateBogenhafenCosmetics",
-		FunctionParameter = {}
+		FunctionParameter = {},
 	}
 	local success_callback = callback(self, "_fix_excess_duplicate_bogenhafen_cosmetics_cb")
 
@@ -827,7 +854,7 @@ end
 PlayFabMirrorBase._request_read_only_data = function (self)
 	local request = {
 		FunctionName = "getReadOnlyData",
-		FunctionParameter = {}
+		FunctionParameter = {},
 	}
 	local success_callback = callback(self, "read_only_data_request_cb")
 
@@ -838,10 +865,14 @@ end
 
 PlayFabMirrorBase.read_only_data_request_cb = function (self, result)
 	self._num_items_to_load = self._num_items_to_load - 1
+
 	local function_result = result.FunctionResult
 	local achievement_rewards = function_result.achievement_rewards
+
 	self._achievement_rewards = cjson.decode(achievement_rewards)
+
 	local weaves_progression_settings = function_result.weaves_progression_settings
+
 	self._weaves_progression_settings = weaves_progression_settings and cjson.decode(weaves_progression_settings) or {}
 
 	self:_request_user_data()
@@ -890,7 +921,7 @@ end
 PlayFabMirrorBase._request_twitch_app_access_token = function (self)
 	local request = {
 		FunctionName = "getTwitchAccessToken",
-		FunctionParameter = {}
+		FunctionParameter = {},
 	}
 	local success_callback = callback(self, "_request_twitch_app_access_token_cb")
 
@@ -902,6 +933,7 @@ end
 PlayFabMirrorBase._request_twitch_app_access_token_cb = function (self, result)
 	self._num_items_to_load = self._num_items_to_load - 1
 	self._twitch_app_access_token = false
+
 	local function_result = result.FunctionResult
 
 	if function_result.success then
@@ -918,7 +950,7 @@ end
 PlayFabMirrorBase._weaves_player_setup = function (self)
 	local request = {
 		FunctionName = "weavesPlayerSetup",
-		FunctionParameter = {}
+		FunctionParameter = {},
 	}
 	local success_callback = callback(self, "weaves_player_setup_request_cb")
 
@@ -929,6 +961,7 @@ end
 
 PlayFabMirrorBase.weaves_player_setup_request_cb = function (self, result)
 	self._num_items_to_load = self._num_items_to_load - 1
+
 	local function_result = result.FunctionResult
 	local created = function_result.created
 	local essence = function_result.essence
@@ -952,7 +985,7 @@ end
 PlayFabMirrorBase._fix_total_collected_essence = function (self)
 	local request = {
 		FunctionName = "fixTotalCollectedEssence",
-		FunctionParameter = {}
+		FunctionParameter = {},
 	}
 	local success_callback = callback(self, "fix_total_collected_essence_cb")
 
@@ -963,6 +996,7 @@ end
 
 PlayFabMirrorBase.fix_total_collected_essence_cb = function (self, result)
 	self._num_items_to_load = self._num_items_to_load - 1
+
 	local function_result = result.FunctionResult
 	local total_essence = function_result.total_essence
 
@@ -983,7 +1017,7 @@ end
 PlayFabMirrorBase._request_win_tracks = function (self)
 	local request = {
 		FunctionName = "winTracksSetup",
-		FunctionParameter = {}
+		FunctionParameter = {},
 	}
 	local success_callback = callback(self, "win_tracks_request_cb")
 
@@ -994,6 +1028,7 @@ end
 
 PlayFabMirrorBase.win_tracks_request_cb = function (self, result)
 	self._num_items_to_load = self._num_items_to_load - 1
+
 	local function_result = result.FunctionResult
 	local new_read_only_data = function_result.new_read_only_data
 
@@ -1004,8 +1039,11 @@ PlayFabMirrorBase.win_tracks_request_cb = function (self, result)
 	end
 
 	local win_tracks = function_result.win_tracks
+
 	self._win_tracks = win_tracks
+
 	local win_tracks_progress = function_result.new_read_only_data.win_tracks_progress
+
 	self._current_win_track_id = win_tracks_progress.current_win_track_id
 
 	if DLCSettings.morris then
@@ -1023,7 +1061,7 @@ end
 PlayFabMirrorBase._deus_player_setup = function (self)
 	local request = {
 		FunctionName = "deusPlayerSetup",
-		FunctionParameter = {}
+		FunctionParameter = {},
 	}
 	local success_callback = callback(self, "deus_player_setup_request_cb")
 
@@ -1054,7 +1092,7 @@ end
 PlayFabMirrorBase._deus_setup_belakor_data = function (self)
 	local request = {
 		FunctionName = "deusSetBelakorCurse",
-		FunctionParameter = {}
+		FunctionParameter = {},
 	}
 	local success_callback = callback(self, "deus_setup_belakor_data_request_cb")
 
@@ -1065,16 +1103,18 @@ end
 
 PlayFabMirrorBase.deus_setup_belakor_data_request_cb = function (self, result)
 	self._belakor_data_loaded = true
+
 	local function_result = result.FunctionResult
 	local deus_belakor_curse_data = function_result.deus_belakor_curse_data
 
 	if deus_belakor_curse_data then
 		local current_time = Managers.time:time("main")
+
 		self._deus_belakor_curse_data = {
 			time_of_update = current_time,
 			span = deus_belakor_curse_data.span_ms / 1000,
 			remaining_time = deus_belakor_curse_data.remaining_time_ms / 1000,
-			cycle_count = deus_belakor_curse_data.cycle_count
+			cycle_count = deus_belakor_curse_data.cycle_count,
 		}
 	end
 end
@@ -1083,8 +1123,8 @@ PlayFabMirrorBase._set_up_additional_account_data = function (self, steps_comple
 	local request = {
 		FunctionName = "additionalAccountDataSetUp",
 		FunctionParameter = {
-			steps_completed = steps_completed
-		}
+			steps_completed = steps_completed,
+		},
 	}
 	local success_callback = callback(self, "additional_data_setup_request_cb")
 
@@ -1095,6 +1135,7 @@ end
 
 PlayFabMirrorBase.additional_data_setup_request_cb = function (self, result)
 	self._num_items_to_load = self._num_items_to_load - 1
+
 	local function_result = result.FunctionResult
 	local new_read_only_data = function_result.new_user_read_only_data
 	local new_currencies = function_result.new_currencies
@@ -1141,6 +1182,7 @@ end
 
 PlayFabMirrorBase.inventory_request_cb = function (self, result)
 	self._num_items_to_load = self._num_items_to_load - 1
+
 	local inventory_items = result.Inventory
 	local unlock_manager = Managers.unlock
 
@@ -1182,8 +1224,11 @@ PlayFabMirrorBase.inventory_request_cb = function (self, result)
 	end
 
 	local unlocked_weapon_skins = self:get_unlocked_weapon_skins()
+
 	unlocked_weapon_skins = unlocked_weapon_skins or {}
+
 	local unlocked_cosmetics = self:get_unlocked_cosmetics()
+
 	unlocked_cosmetics = unlocked_cosmetics or {}
 
 	self:_create_fake_inventory_items(unlocked_weapon_skins, "weapon_skins")
@@ -1225,7 +1270,9 @@ end
 
 PlayFabMirrorBase.add_steam_items = function (self, item_list)
 	local result_success = 1
+
 	self._num_items_to_load = self._num_items_to_load + 1
+
 	local skip_mark_as_new = false
 
 	self:_cb_steam_user_inventory(result_success, item_list, false, skip_mark_as_new)
@@ -1248,11 +1295,15 @@ PlayFabMirrorBase._cb_steam_user_inventory = function (self, result, item_list, 
 				local backend_id = steam_backend_unique_id
 				local steam_item = {
 					ItemId = item_key,
-					ItemInstanceId = backend_id
+					ItemInstanceId = backend_id,
 				}
 
 				self:add_item(backend_id, steam_item, true, skip_mark_as_new)
 				debug_printf("Steam Item: %q, %q, %q, %q, %q", item_key, steam_itemdefid, steam_backend_unique_id, flags, amount)
+			end
+
+			if false then
+				-- Nothing
 			end
 		end
 	else
@@ -1303,6 +1354,7 @@ PlayFabMirrorBase._set_inital_career_data = function (self, career_name, charact
 
 	for key, data in pairs(loadout) do
 		local value = type(data) == "table" and data.Value or data
+
 		career_data[key] = value
 		career_data_mirror[key] = value
 	end
@@ -1434,7 +1486,7 @@ PlayFabMirrorBase.ready = function (self)
 end
 
 PlayFabMirrorBase.update = function (self, dt, t)
-	local error_code, request_id = nil
+	local error_code, request_id
 
 	if self._request_queue_error then
 		return
@@ -1545,6 +1597,7 @@ end
 
 PlayFabMirrorBase.set_character_data = function (self, career_name, key, value, set_mirror)
 	local career_data = self._career_data[career_name]
+
 	career_data[key] = value
 
 	if set_mirror then
@@ -1587,7 +1640,7 @@ end
 PlayFabMirrorBase.log_player_exit = function (self, external_cb)
 	local request = {
 		FunctionName = "logPlayerExit",
-		FunctionParameter = {}
+		FunctionParameter = {},
 	}
 	local success_callback = callback(self, "log_player_exit_cb", external_cb)
 	local id = self._request_queue:enqueue(request, success_callback, false)
@@ -1608,9 +1661,11 @@ PlayFabMirrorBase._commit_user_data = function (self, new_data, commit, commit_i
 
 	if not table.is_empty(new_data) then
 		local user_data_request = {
-			Data = new_data
+			Data = new_data,
 		}
+
 		self._user_data_mirror = table.clone(self._user_data)
+
 		local cb_user_data = callback(self, "update_user_data_cb", commit_id)
 
 		PlayFabClientApi.UpdateUserData(user_data_request, cb_user_data)
@@ -1622,6 +1677,7 @@ end
 
 PlayFabMirrorBase.update_user_data_cb = function (self, commit_id, result)
 	local commit = self._commits[commit_id]
+
 	commit.wait_for_user_data = false
 end
 
@@ -1695,6 +1751,7 @@ end
 PlayFabMirrorBase.add_claimed_multiple_event_quests = function (self, quest_names)
 	for i = 1, #quest_names do
 		local quest_name = quest_names[i]
+
 		self._claimed_event_quests[quest_name] = true
 	end
 end
@@ -1746,10 +1803,11 @@ local new_fake_inventory_items = {}
 PlayFabMirrorBase._create_fake_inventory_items = function (self, fake_inventory_items, items_type)
 	table.clear(new_fake_inventory_items)
 
-	local lookup_table = nil
+	local lookup_table
 
 	if items_type == "weapon_skins" then
 		lookup_table = self._unlocked_weapon_skins
+
 		local weapon_skins = WeaponSkins
 
 		for skin_name, optional_offline_backend_id in pairs(fake_inventory_items) do
@@ -1765,8 +1823,8 @@ PlayFabMirrorBase._create_fake_inventory_items = function (self, fake_inventory_
 					ItemInstanceId = type(optional_offline_backend_id) == "string" and optional_offline_backend_id or guid(),
 					CustomData = {
 						skin = skin_name,
-						rarity = rarity
-					}
+						rarity = rarity,
+					},
 				}
 			else
 				lookup_table[skin_name] = nil
@@ -1780,7 +1838,7 @@ PlayFabMirrorBase._create_fake_inventory_items = function (self, fake_inventory_
 
 			if master_list_item then
 				local existing_backend_id = lookup_table[cosmetic_name]
-				local backend_id, override_id = nil
+				local backend_id, override_id
 
 				if type(existing_backend_id) == "string" then
 					backend_id = existing_backend_id
@@ -1797,7 +1855,7 @@ PlayFabMirrorBase._create_fake_inventory_items = function (self, fake_inventory_
 				new_fake_inventory_items[#new_fake_inventory_items + 1] = {
 					ItemId = cosmetic_name,
 					ItemInstanceId = backend_id,
-					override_id = override_id
+					override_id = override_id,
 				}
 			else
 				lookup_table[lookup_table] = nil
@@ -1817,6 +1875,7 @@ PlayFabMirrorBase._create_fake_inventory_items = function (self, fake_inventory_
 		local fake_item = new_fake_inventory_items[i]
 		local backend_id = fake_item.ItemInstanceId
 		local id = fake_item.override_id or fake_item.CustomData and fake_item.CustomData.skin or fake_item.ItemId
+
 		lookup_table[id] = backend_id
 
 		self:_update_data(fake_item, backend_id)
@@ -1831,6 +1890,7 @@ end
 
 PlayFabMirrorBase.set_achievement_claimed = function (self, achievement_id)
 	local claimed_achievements = self._claimed_achievements
+
 	claimed_achievements[achievement_id] = true
 end
 
@@ -1840,6 +1900,7 @@ end
 
 PlayFabMirrorBase.set_console_dlc_reward_claimed = function (self, reward_id, claimed)
 	local claimed_rewards = self._claimed_console_dlc_rewards
+
 	claimed_rewards[reward_id] = claimed and true or nil
 end
 
@@ -1849,6 +1910,7 @@ end
 
 PlayFabMirrorBase.set_quest_data = function (self, key, value)
 	local quest_data = self._quest_data
+
 	quest_data[key] = value
 end
 
@@ -1857,11 +1919,11 @@ PlayFabMirrorBase.check_for_errors = function (self)
 end
 
 local slot_type_to_best_power_level_key = {
+	melee = "best_melee_pl",
+	necklace = "best_necklace_pl",
 	ranged = "best_ranged_pl",
 	ring = "best_ring_pl",
-	necklace = "best_necklace_pl",
 	trinket = "best_trinket_pl",
-	melee = "best_melee_pl"
 }
 
 PlayFabMirrorBase._re_evaluate_best_power_level = function (self, item)
@@ -1883,6 +1945,7 @@ PlayFabMirrorBase._re_evaluate_best_power_level = function (self, item)
 
 	if current_best < item_power_level then
 		best_power_levels[power_level_key] = item_power_level
+
 		local sum = 0
 
 		for _, value in pairs(best_power_levels) do
@@ -1894,15 +1957,17 @@ PlayFabMirrorBase._re_evaluate_best_power_level = function (self, item)
 end
 
 PlayFabMirrorBase._add_new_weapon_skin = function (self, item, generate_new_id, optional_skin_name)
-	local fake_item_id = nil
+	local fake_item_id
 	local skin_name = optional_skin_name or item.ItemId
 	local create_new_id = not generate_new_id and Managers.account:offline_mode()
 
 	if create_new_id then
 		local ids = self:add_unlocked_weapon_skin(skin_name, item.ItemInstanceId)
+
 		fake_item_id = ids and ids[1]
 	else
 		local ids = self:add_unlocked_weapon_skin(skin_name)
+
 		fake_item_id = ids and ids[1]
 	end
 
@@ -1977,6 +2042,7 @@ PlayFabMirrorBase.update_item = function (self, backend_id, new_item)
 	fassert(inventory_items[backend_id], "Trying to update an item that does not exist with backend ID %s", backend_id)
 
 	inventory_items[backend_id] = new_item
+
 	local item = inventory_items[backend_id]
 
 	self:_update_data(item, backend_id)
@@ -1988,14 +2054,14 @@ PlayFabMirrorBase.add_unlocked_weapon_skin = function (self, weapon_skin, offlin
 
 		if existing_weapon_skin then
 			return {
-				existing_weapon_skin
+				existing_weapon_skin,
 			}
 		end
 
 		self._unlocked_weapon_skins[weapon_skin] = true
 
 		return self:_create_fake_inventory_items({
-			[weapon_skin] = offline_backend_id or true
+			[weapon_skin] = offline_backend_id or true,
 		}, "weapon_skins")
 	else
 		assert_or_print_exception(false, "Tried to add_unlocked_weapon_skin '%s' before unlocked_weapon_skins was created", weapon_skin)
@@ -2005,7 +2071,7 @@ end
 PlayFabMirrorBase.add_unlocked_cosmetic = function (self, cosmetic_name, offline_backend_id)
 	if self._unlocked_cosmetics then
 		local backend_id = self:_create_fake_inventory_items({
-			[cosmetic_name] = offline_backend_id or true
+			[cosmetic_name] = offline_backend_id or true,
 		}, "cosmetics")
 
 		if #backend_id > 0 then
@@ -2065,17 +2131,19 @@ PlayFabMirrorBase.handle_deus_result = function (self, result)
 
 	if deus_journey_cycle_data then
 		local current_time = Managers.time:time("main")
+
 		self._deus_journey_cycle_data = {
 			span = deus_journey_cycle_data.span_ms / 1000,
 			remaining_time = deus_journey_cycle_data.remaining_time_ms / 1000,
 			cycle_count = deus_journey_cycle_data.cycle_count,
-			time_of_update = current_time
+			time_of_update = current_time,
 		}
 	end
 end
 
 PlayFabMirrorBase.predict_deus_rolled_over_soft_currency = function (self, amount)
 	local roll_over_coins = math.ceil(amount * DeusRollOverSettings.roll_over)
+
 	self._deus_rolled_over_soft_currency = math.clamp(roll_over_coins, 0, DeusRollOverSettings.max)
 end
 
@@ -2100,7 +2168,7 @@ end
 
 PlayFabMirrorBase.commit = function (self, skip_queue, commit_complete_callback)
 	local queued_commit = self._queued_commit
-	local id = nil
+	local id
 
 	if skip_queue then
 		if self._commit_current_id then
@@ -2146,6 +2214,7 @@ PlayFabMirrorBase._queue_commit = function (self, commit_complete_callback)
 	local queued_commit = self._queued_commit
 	local timer = self._commit_limit_total * DELAY_MULTIPLIER
 	local id = self:_new_id()
+
 	queued_commit.timer = timer
 	queued_commit.id = id
 	queued_commit.active = true
@@ -2166,12 +2235,13 @@ PlayFabMirrorBase._commit_internal = function (self, queue_id, commit_complete_c
 		status = "success",
 		updates_to_make = 0,
 		commit_complete_callbacks = commit_complete_callbacks,
-		request_queue_ids = {}
+		request_queue_ids = {},
 	}
 
 	table.clear(self._queued_commit)
 
 	self._commit_current_id = commit_id
+
 	local stats_interface = Managers.backend:get_interface("statistics")
 	local game_mode_key = Managers.state and Managers.state.game_mode and Managers.state.game_mode:game_mode_key()
 
@@ -2199,9 +2269,10 @@ PlayFabMirrorBase._commit_internal = function (self, queue_id, commit_complete_c
 		if weave_user_data then
 			local weave_user_data_request = {
 				FunctionName = "updateWeaveUserData",
-				FunctionParameter = weave_user_data
+				FunctionParameter = weave_user_data,
 			}
 			local id = self._request_queue:enqueue(weave_user_data_request, callback(self, "update_weave_user_data_cb", commit_id), true)
+
 			commit.status = "waiting"
 			commit.wait_for_weave_user_data = true
 			commit.request_queue_ids[#commit.request_queue_ids + 1] = id
@@ -2215,14 +2286,16 @@ PlayFabMirrorBase._commit_internal = function (self, queue_id, commit_complete_c
 
 		if current_win_track_id ~= self._current_win_track_id then
 			self._current_win_track_id = current_win_track_id
+
 			local update_win_tracks_request = {
 				FunctionName = "updateCurrentWinTrack",
 				FunctionParameter = {
-					current_win_track_id = current_win_track_id
-				}
+					current_win_track_id = current_win_track_id,
+				},
 			}
 			local success_callback = callback(self, "update_current_win_track_cb", commit_id)
 			local id = self._request_queue:enqueue(update_win_tracks_request, success_callback, false)
+
 			commit.status = "waiting"
 			commit.wait_for_win_tracks_data = true
 			commit.request_queue_ids[#commit.request_queue_ids + 1] = id
@@ -2249,11 +2322,12 @@ PlayFabMirrorBase._commit_internal = function (self, queue_id, commit_complete_c
 		local update_read_only_data_request = {
 			FunctionName = "updateHeroAttributes",
 			FunctionParameter = {
-				hero_attributes = new_data
-			}
+				hero_attributes = new_data,
+			},
 		}
 		local success_callback = callback(self, "update_read_only_data_request_cb", commit_id)
 		local id = self._request_queue:enqueue(update_read_only_data_request, success_callback, false)
+
 		commit.status = "waiting"
 		commit.wait_for_read_only_data = true
 		commit.request_queue_ids[#commit.request_queue_ids + 1] = id
@@ -2325,7 +2399,9 @@ end
 
 PlayFabMirrorBase.update_weave_user_data_cb = function (self, commit_id, result)
 	local commit = self._commits[commit_id]
+
 	commit.wait_for_weave_user_data = false
+
 	local weaves_interface = Managers.backend:get_interface("weaves")
 
 	weaves_interface:clear_dirty_user_data()
@@ -2342,6 +2418,7 @@ end
 
 PlayFabMirrorBase.save_keep_decorations_cb = function (self, commit_id, on_complete, success)
 	local commit = self._commits[commit_id]
+
 	commit.wait_for_keep_decorations = false
 end
 
@@ -2363,14 +2440,16 @@ PlayFabMirrorBase._get_eac_response = function (self, challenge)
 	end
 
 	local eac_response = EAC.challenge_response(str)
-	local response = nil
+	local response
 
 	if eac_response then
 		local index = 1
+
 		response = {}
 
 		while string.byte(eac_response, index, index) do
 			local byte_value = string.byte(eac_response, index, index)
+
 			response[tostring(index - 1)] = byte_value
 			index = index + 1
 		end
@@ -2382,7 +2461,7 @@ end
 PlayFabMirrorBase._verify_dlc_careers = function (self)
 	local request = {
 		FunctionName = "verifyDlcCareers",
-		FunctionParameter = {}
+		FunctionParameter = {},
 	}
 	local success_callback = callback(self, "verify_dlc_careers_cb")
 
@@ -2409,23 +2488,27 @@ end
 PlayFabMirrorBase._setup_careers = function (self)
 	local characters_data_string = self:get_read_only_data(self._characters_data_key)
 	local characters_data = cjson.decode(characters_data_string)
+
 	self._career_data = {}
 	self._career_data_mirror = {}
 	self._career_lookup = {}
+
 	local broken_slots_data = {}
-	local slots_to_verify = nil
+	local slots_to_verify
 
 	for character_name, character_data in pairs(characters_data) do
 		local profile_index = FindProfileIndex(character_name)
 
 		if profile_index then
 			local profile = SPProfiles[profile_index]
+
 			slots_to_verify = self._verify_slot_keys_per_affiliation[profile.affiliation]
 
 			for career_name, career_data in pairs(character_data.careers) do
 				if CareerSettings[career_name] then
 					self._career_data[career_name] = {}
 					self._career_data_mirror[career_name] = {}
+
 					local broken_slots = self:_set_inital_career_data(career_name, career_data, slots_to_verify)
 
 					if broken_slots then
@@ -2456,8 +2539,8 @@ PlayFabMirrorBase._fix_career_data = function (self, broken_slots_data, override
 		FunctionName = "fixCareerData",
 		FunctionParameter = {
 			broken_slots = broken_slots_data,
-			mechanism = override_mechanism and override_mechanism or Managers.mechanism:current_mechanism_name()
-		}
+			mechanism = override_mechanism and override_mechanism or Managers.mechanism:current_mechanism_name(),
+		},
 	}
 	local success_callback = callback(self, override_cb_func or "fix_career_data_request_cb")
 
@@ -2469,10 +2552,12 @@ end
 PlayFabMirrorBase.fix_career_data_request_cb = function (self, result)
 	self.broken_slots_data = nil
 	self._num_items_to_load = self._num_items_to_load - 1
+
 	local function_result = result.FunctionResult
 	local character_starting_gear = function_result.character_starting_gear
 	local current_career_data = self._career_data
 	local mirror_career_data = self._career_data_mirror
+
 	self._characters_data = character_starting_gear
 	self._characters_data_mirror = table.clone(character_starting_gear)
 
@@ -2503,7 +2588,7 @@ local keys = {
 	"slot_ring",
 	"slot_trinket_1",
 	"slot_frame",
-	"talents"
+	"talents",
 }
 
 PlayFabMirrorBase._check_career_data = function (self, careers_data, career_data_mirror)
@@ -2511,7 +2596,7 @@ PlayFabMirrorBase._check_career_data = function (self, careers_data, career_data
 	local characters_data_mirror = self._characters_data_mirror
 	local dirty = false
 	local ignore_keys = {
-		"careers"
+		"careers",
 	}
 
 	for name, data in pairs(characters_data) do
@@ -2561,6 +2646,7 @@ end
 PlayFabMirrorBase.set_career_read_only_data = function (self, character, key, value, career, set_mirror)
 	local characters_data = self._characters_data
 	local data = career and characters_data[character].careers[career] or characters_data[character]
+
 	data[key] = value
 
 	if set_mirror then
@@ -2619,14 +2705,14 @@ end
 PlayFabMirrorBase._snippet_clear_inventory = function (self)
 	local function clear_inventory_cb(result)
 		local broken_slots = {
-			slot_necklace = true,
-			slot_hat = true,
-			slot_trinket_1 = true,
-			slot_skin = true,
 			slot_frame = true,
+			slot_hat = true,
 			slot_melee = true,
+			slot_necklace = true,
+			slot_ranged = true,
 			slot_ring = true,
-			slot_ranged = true
+			slot_skin = true,
+			slot_trinket_1 = true,
 		}
 		local careers = PROFILES_BY_CAREER_NAMES
 		local broken_heroes = {}
@@ -2644,9 +2730,9 @@ PlayFabMirrorBase._snippet_clear_inventory = function (self)
 		eac_check = false,
 		func = "devClearInventory",
 		args = {
-			exclude_types = {}
+			exclude_types = {},
 		},
-		success_cb = clear_inventory_cb
+		success_cb = clear_inventory_cb,
 	}
 end
 

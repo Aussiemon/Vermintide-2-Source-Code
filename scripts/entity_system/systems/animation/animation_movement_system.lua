@@ -1,11 +1,14 @@
+﻿-- chunkname: @scripts/entity_system/systems/animation/animation_movement_system.lua
+
 require("scripts/unit_extensions/generic/generic_unit_animation_movement_extension")
 
 local RPCS = {
-	"rpc_enable_animation_movement_system"
+	"rpc_enable_animation_movement_system",
 }
 local extensions = {
-	"GenericUnitAnimationMovementExtension"
+	"GenericUnitAnimationMovementExtension",
 }
+
 AnimationMovementSystem = class(AnimationMovementSystem, ExtensionSystemBase)
 
 AnimationMovementSystem.init = function (self, context, system_name)
@@ -13,7 +16,9 @@ AnimationMovementSystem.init = function (self, context, system_name)
 
 	self._extensions = {}
 	self._frozen_extensions = {}
+
 	local network_event_delegate = context.network_event_delegate
+
 	self.network_event_delegate = network_event_delegate
 
 	network_event_delegate:register(self, unpack(RPCS))
@@ -25,6 +30,7 @@ end
 
 AnimationMovementSystem.on_add_extension = function (self, world, unit, extension_name, extension_init_data)
 	local extension = ScriptUnit.add_extension(self.extension_init_context, unit, extension_name, self.NAME, extension_init_data)
+
 	self._extensions[unit] = extension
 
 	return extension

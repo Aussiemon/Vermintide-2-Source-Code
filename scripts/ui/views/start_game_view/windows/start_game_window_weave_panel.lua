@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/start_game_view/windows/start_game_window_weave_panel.lua
+
 local definitions = local_require("scripts/ui/views/start_game_view/windows/definitions/start_game_window_weave_panel_definitions")
 local widget_definitions = definitions.widgets
 local title_button_definitions = definitions.title_button_definitions
@@ -5,6 +7,7 @@ local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
 local INPUT_ACTION_NEXT = "cycle_next"
 local INPUT_ACTION_PREVIOUS = "cycle_previous"
+
 StartGameWindowWeavePanel = class(StartGameWindowWeavePanel)
 StartGameWindowWeavePanel.NAME = "StartGameWindowWeavePanel"
 
@@ -13,14 +16,16 @@ StartGameWindowWeavePanel.on_enter = function (self, params, offset)
 
 	self._params = params
 	self._parent = params.parent
+
 	local ingame_ui_context = params.ingame_ui_context
+
 	self._ingame_ui = ingame_ui_context.ingame_ui
 	self._ui_renderer = ingame_ui_context.ui_renderer
 	self._ui_top_renderer = ingame_ui_context.ui_top_renderer
 	self._input_manager = ingame_ui_context.input_manager
 	self._statistics_db = ingame_ui_context.statistics_db
 	self._render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 	self._layout_settings = params.layout_settings
 	self._animations = {}
@@ -32,17 +37,20 @@ end
 
 StartGameWindowWeavePanel._create_ui_elements = function (self, params, offset)
 	self._ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+
 	local widgets = {}
 	local widgets_by_name = {}
 
 	for name, widget_definition in pairs(widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		widgets[#widgets + 1] = widget
 		widgets_by_name[name] = widget
 	end
 
 	self._widgets = widgets
 	self._widgets_by_name = widgets_by_name
+
 	local title_button_widgets = {}
 	local layout_settings = self._layout_settings
 	local window_layouts = layout_settings.window_layouts
@@ -51,12 +59,12 @@ StartGameWindowWeavePanel._create_ui_elements = function (self, params, offset)
 	local font_size = 28
 	local optional_horizontal_alignment = "center"
 	local temp_text_style = {
-		upper_case = true,
-		localize = true,
 		dynamic_font_size = true,
-		word_wrap = false,
 		font_type = "hell_shark_header",
-		font_size = font_size
+		localize = true,
+		upper_case = true,
+		word_wrap = false,
+		font_size = font_size,
 	}
 	local parent = self._parent
 	local total_length = 0
@@ -68,20 +76,23 @@ StartGameWindowWeavePanel._create_ui_elements = function (self, params, offset)
 			local text_width = self:_get_text_width(temp_text_style, display_name)
 			local option_size = {
 				math.min(text_width + 40, 400),
-				size[2]
+				size[2],
 			}
 			local optional_offset = {
 				total_length,
 				0,
-				0
+				0,
 			}
 			local widget_definition = UIWidgets.create_weave_panel_button(scenegraph_id, option_size, display_name, font_size, optional_offset, optional_horizontal_alignment)
+
 			total_length = total_length + option_size[1]
+
 			local widget = UIWidget.init(widget_definition)
 
 			self:_set_text_button_size(widget, option_size[1])
 
 			local content = widget.content
+
 			content.layout_name = settings_name
 			title_button_widgets[#title_button_widgets + 1] = widget
 		end
@@ -302,19 +313,22 @@ StartGameWindowWeavePanel._setup_input_buttons = function (self)
 	local input_1_widget = widgets_by_name.panel_input_area_1
 	local input_2_widget = widgets_by_name.panel_input_area_2
 	local icon_style_input_1 = input_1_widget.style.texture_id
+
 	icon_style_input_1.horizontal_alignment = "center"
 	icon_style_input_1.vertical_alignment = "center"
 	icon_style_input_1.texture_size = {
 		input_1_texture_data.size[1],
-		input_1_texture_data.size[2]
+		input_1_texture_data.size[2],
 	}
 	input_1_widget.content.texture_id = input_1_texture_data.texture
+
 	local icon_style_input_2 = input_2_widget.style.texture_id
+
 	icon_style_input_2.horizontal_alignment = "center"
 	icon_style_input_2.vertical_alignment = "center"
 	icon_style_input_2.texture_size = {
 		input_2_texture_data.size[1],
-		input_2_texture_data.size[2]
+		input_2_texture_data.size[2],
 	}
 	input_2_widget.content.texture_id = input_2_texture_data.texture
 end
@@ -326,13 +340,17 @@ StartGameWindowWeavePanel._handle_gamepad_activity = function (self)
 	if gamepad_active then
 		if not self.gamepad_active_last_frame or force_update then
 			self.gamepad_active_last_frame = true
+
 			local widgets_by_name = self._widgets_by_name
+
 			widgets_by_name.panel_input_area_1.content.visible = true
 			widgets_by_name.panel_input_area_2.content.visible = true
 		end
 	elseif self.gamepad_active_last_frame or force_update then
 		self.gamepad_active_last_frame = false
+
 		local widgets_by_name = self._widgets_by_name
+
 		widgets_by_name.panel_input_area_1.content.visible = false
 		widgets_by_name.panel_input_area_2.content.visible = false
 	end
@@ -341,10 +359,13 @@ end
 StartGameWindowWeavePanel._set_text_button_size = function (self, widget, width)
 	local ui_scenegraph = self._ui_scenegraph
 	local scenegraph_id = widget.scenegraph_id
+
 	ui_scenegraph[scenegraph_id].size[1] = width
+
 	local style = widget.style
 	local text_width_offset = 5
 	local text_width = width - text_width_offset * 2
+
 	style.text.size[1] = text_width
 	style.text_shadow.size[1] = text_width
 	style.text_hover.size[1] = text_width
@@ -373,6 +394,7 @@ end
 
 StartGameWindowWeavePanel._set_text_button_horizontal_position = function (self, widget, x_position)
 	local offset = widget.offset
+
 	offset[1] = x_position
 end
 
@@ -422,6 +444,7 @@ StartGameWindowWeavePanel._animate_title_entry = function (self, widget, dt)
 
 	if style.text then
 		local text_height_offset = 1 * combined_progress
+
 		style.text.offset[2] = -(2 + text_height_offset)
 		style.text_shadow.offset[2] = -(4 + text_height_offset)
 		style.text_hover.offset[2] = -(2 + text_height_offset)
@@ -430,6 +453,7 @@ StartGameWindowWeavePanel._animate_title_entry = function (self, widget, dt)
 
 	if style.new_marker then
 		local new_marker_progress = 0.5 + math.sin(Managers.time:time("ui") * 5) * 0.5
+
 		style.new_marker.color[1] = 100 + 155 * new_marker_progress
 	end
 
@@ -444,12 +468,15 @@ StartGameWindowWeavePanel._start_panel_selection_animation = function (self, pre
 	local selection_offset = entry_panel_selection.offset
 	local selection_size = entry_panel_selection.content.size
 	local panel_selection_animation = self._panel_selection_animation or {}
+
 	self._panel_selection_animation = panel_selection_animation
+
 	local start_offset = selection_offset[1]
 	local start_width = selection_size[1]
 	local target_offset = self._title_button_widgets[new_selected_index].offset[1]
 	local target_width = self._title_button_widgets[new_selected_index].content.size[1]
 	local animation_duration = 0.3
+
 	panel_selection_animation.duration = animation_duration
 	panel_selection_animation.total_duration = animation_duration
 	panel_selection_animation.target_offset = target_offset
@@ -472,6 +499,7 @@ StartGameWindowWeavePanel._update_panel_selection_animation = function (self, dt
 	end
 
 	duration = math.max(duration - dt, 0)
+
 	local start_offset = panel_selection_animation.start_offset
 	local target_offset = panel_selection_animation.target_offset
 	local start_width = panel_selection_animation.start_width
@@ -489,11 +517,14 @@ StartGameWindowWeavePanel._update_panel_selection_animation = function (self, dt
 	local panel_effect_bottom_size = entry_panel_selection.style.effect_bottom.texture_size
 	local panel_selection_size = entry_panel_selection.content.size
 	local panel_selection_scenegraph_id = entry_panel_selection.scenegraph_id
+
 	panel_selection_size[1] = current_width
 	panel_effect_bottom_size[1] = current_width * 1.5
 	panel_effect_top_size[1] = current_width * 1.5
 	self._ui_scenegraph[panel_selection_scenegraph_id].size[1] = current_width
+
 	local selection_offset = entry_panel_selection.offset
+
 	selection_offset[1] = current_distance
 
 	if duration == 0 then

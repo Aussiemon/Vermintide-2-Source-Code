@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/mutators/mutator_heavens.lua
+
 return {
 	description = "weaves_heavens_mutator_desc",
 	display_name = "weaves_heavens_mutator_name",
@@ -10,6 +12,7 @@ return {
 
 			if Unit.alive(player_unit) then
 				data.extension_init_data.area_damage_system.follow_unit = player_unit
+
 				local unit = Managers.state.unit_spawner:spawn_network_unit(data.decal_unit_name, "timed_explosion_unit", data.extension_init_data, Unit.local_position(player_unit, 0))
 				local side_manager = Managers.state.side
 				local neutral_side = side_manager:get_side_from_name("neutral")
@@ -31,6 +34,7 @@ return {
 		local wind_strength = Managers.weave:get_wind_strength() or 1
 		local mutator_settings = Managers.weave:get_active_wind_settings()
 		local difficulty_name = Managers.state.difficulty:get_difficulty()
+
 		data.follow_time = mutator_settings.timed_explosion_extension_settings.follow_time[difficulty_name][wind_strength]
 		data.time_to_explode = mutator_settings.timed_explosion_extension_settings.time_to_explode[difficulty_name][wind_strength]
 		data.spawn_rate = mutator_settings.spawn_rate[difficulty_name][wind_strength]
@@ -41,12 +45,14 @@ return {
 		data.audio_system = Managers.state.entity:system("audio_system")
 		data.extension_init_data = {
 			area_damage_system = {
-				explosion_template_name = "lightning_strike"
-			}
+				explosion_template_name = "lightning_strike",
+			},
 		}
 		data.boss_lightning_challenge = {}
 		data.boss_lightning_challenge_counter = 0
+
 		local ai_system = Managers.state.entity:system("ai_system")
+
 		data.ai_system = ai_system
 		data._nav_cost_map_id = data._nav_cost_map_id or ai_system:create_nav_cost_map("mutator_heavens_zone", 4)
 		data._nav_cost_volume_ids = {}
@@ -98,7 +104,7 @@ return {
 	server_ai_spawned_function = function (context, data, spawned_unit)
 		local alive_bosses = Managers.state.conflict:alive_bosses()
 
-		if alive_bosses and data.boss_lightning_challenge_counter < #alive_bosses then
+		if alive_bosses and #alive_bosses > data.boss_lightning_challenge_counter then
 			local blackboard = BLACKBOARDS[spawned_unit]
 			local breed = blackboard.breed
 			local is_boss = breed.boss
@@ -209,5 +215,5 @@ return {
 		elseif last_spawn_time == nil then
 			data.last_spawn_time = t + data.initial_spawn_delay - spawn_rate
 		end
-	end
+	end,
 }

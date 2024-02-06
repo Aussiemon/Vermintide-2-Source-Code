@@ -1,9 +1,12 @@
+﻿-- chunkname: @scripts/settings/dlcs/cosmetics_2023_q4/cosmetics_2023_q4_equipment_settings.lua
+
 local settings = DLCSettings.cosmetics_2023_q4
+
 settings.cosmetics_files = {
-	"scripts/settings/dlcs/cosmetics_2023_q4/cosmetics_cosmetics_2023_q4"
+	"scripts/settings/dlcs/cosmetics_2023_q4/cosmetics_cosmetics_2023_q4",
 }
 settings.item_master_list_file_names = {
-	"scripts/settings/equipment/item_master_list_cosmetics_2023_q4"
+	"scripts/settings/equipment/item_master_list_cosmetics_2023_q4",
 }
 settings.inventory_package_list = {
 	"units/beings/player/bright_wizard_scholar/headpiece/bw_s_hat_17",
@@ -21,5 +24,5 @@ settings.inventory_package_list = {
 	"units/beings/player/way_watcher_upgraded_skin_02/first_person_base/chr_first_person_mesh",
 	"units/beings/player/way_watcher_upgraded_skin_02/third_person_base/chr_third_person_mesh",
 	"units/beings/player/witch_hunter_captain_skin_02/first_person_base/chr_first_person_mesh",
-	"units/beings/player/witch_hunter_captain_skin_02/third_person_base/chr_third_person_mesh"
+	"units/beings/player/witch_hunter_captain_skin_02/third_person_base/chr_third_person_mesh",
 }

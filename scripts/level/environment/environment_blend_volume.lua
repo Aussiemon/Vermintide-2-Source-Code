@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/level/environment/environment_blend_volume.lua
+
 EnvironmentBlendVolume = class(EnvironmentBlendVolume)
 
 EnvironmentBlendVolume.init = function (self, data)
@@ -15,7 +17,7 @@ EnvironmentBlendVolume.init = function (self, data)
 	self._is_inside = false
 	self._override_values = {
 		self._environment,
-		not data.override_sun_snap and "sun_direction" or nil
+		not data.override_sun_snap and "sun_direction" or nil,
 	}
 	self._data = data
 
@@ -69,12 +71,14 @@ EnvironmentBlendVolume.update = function (self, dt)
 
 	local camera = ScriptViewport.camera(self._viewport)
 	local volume_name = self._data.volume_name
+
 	self._is_inside = false
 
 	if self._enabled then
 		if self._data.is_sphere then
 			local camera_pos = ScriptCamera.position(camera)
 			local volume_pos = self._data.sphere_pos:unbox()
+
 			self._is_inside = Vector3.distance_squared(camera_pos, volume_pos) < self._data.sphere_radius * self._data.sphere_radius
 		else
 			self._is_inside = Level.is_point_inside_volume(self._level, self._volume_name, ScriptCamera.position(camera))
@@ -87,7 +91,7 @@ EnvironmentBlendVolume.update = function (self, dt)
 		self._current_timer = self._is_inside and 1 or 0
 		self._force_blend = false
 	else
-		self._current_timer = math.clamp(self._current_timer + 1 / self._blend_time * dt * target, 0, 1)
+		self._current_timer = math.clamp(self._current_timer + 1 / self._blend_time * (dt * target), 0, 1)
 	end
 
 	self._value = math.smoothstep(self._current_timer, 0, 1)

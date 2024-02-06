@@ -1,5 +1,9 @@
+﻿-- chunkname: @scripts/network/peer_states.lua
+
 PeerStates = {}
+
 local time_between_resend_rpc_notify_connected = 2
+
 PeerStates.Connecting = {
 	approved_for_joining = false,
 	on_enter = function (self, previous_state)
@@ -65,6 +69,7 @@ PeerStates.Connecting = {
 
 		if not self.has_received_rpc_notify_lobby_joined then
 			self.resend_timer = self.resend_timer - dt
+
 			local resend_rpc_notify_connected = self.resend_timer < 0
 
 			if resend_rpc_notify_connected then
@@ -147,6 +152,7 @@ PeerStates.Connecting = {
 			end
 		else
 			self.resend_post_game_timer = self.resend_post_game_timer - dt
+
 			local resend_rpc_notify_in_post_game = self.resend_post_game_timer < 0
 
 			if resend_rpc_notify_in_post_game then
@@ -167,7 +173,7 @@ PeerStates.Connecting = {
 		self._has_been_notfied_of_post_game_state = nil
 		self.has_received_rpc_notify_lobby_joined = nil
 		self._in_post_game = nil
-	end
+	end,
 }
 PeerStates.Loading = {
 	approved_for_joining = true,
@@ -193,6 +199,7 @@ PeerStates.Loading = {
 	end,
 	rpc_level_loaded = function (self, level_id)
 		self.loaded_level = NetworkLookup.level_keys[level_id]
+
 		local enemies_are_loaded = Managers.level_transition_handler.enemy_package_loader:load_sync_done_for_peer(self.peer_id)
 
 		if enemies_are_loaded then
@@ -217,7 +224,7 @@ PeerStates.Loading = {
 	end,
 	on_exit = function (self, new_state)
 		return
-	end
+	end,
 }
 PeerStates.LoadingProfilePackages = {
 	approved_for_joining = true,
@@ -246,7 +253,9 @@ PeerStates.LoadingProfilePackages = {
 			self.wanted_career_index = old_career_index
 		elseif wanted_profile_index == 0 then
 			self.wanted_profile_index, self.wanted_career_index = profile_synchronizer:get_first_free_profile()
-		elseif not is_tutorial then
+		elseif is_tutorial then
+			-- Nothing
+		else
 			self.wanted_profile_index = wanted_profile_index
 			self.wanted_career_index = wanted_career_index
 		end
@@ -266,7 +275,7 @@ PeerStates.LoadingProfilePackages = {
 	end,
 	on_exit = function (self, new_state)
 		return
-	end
+	end,
 }
 PeerStates.WaitingForEnterGame = {
 	approved_for_joining = true,
@@ -311,7 +320,7 @@ PeerStates.WaitingForEnterGame = {
 	end,
 	on_exit = function (self, new_state)
 		return
-	end
+	end,
 }
 PeerStates.WaitingForGameObjectSync = {
 	approved_for_joining = true,
@@ -352,7 +361,7 @@ PeerStates.WaitingForGameObjectSync = {
 	end,
 	on_exit = function (self, new_state)
 		return
-	end
+	end,
 }
 PeerStates.WaitingForPlayers = {
 	approved_for_joining = true,
@@ -374,7 +383,7 @@ PeerStates.WaitingForPlayers = {
 	end,
 	on_exit = function (self, new_state)
 		return
-	end
+	end,
 }
 PeerStates.InGame = {
 	approved_for_joining = true,
@@ -396,7 +405,7 @@ PeerStates.InGame = {
 	on_exit = function (self, new_state)
 		self.despawned_player = nil
 		self.respawn_player = nil
-	end
+	end,
 }
 PeerStates.InPostGame = {
 	approved_for_joining = true,
@@ -408,7 +417,7 @@ PeerStates.InPostGame = {
 	end,
 	on_exit = function (self, new_state)
 		return
-	end
+	end,
 }
 PeerStates.Disconnecting = {
 	approved_for_joining = false,
@@ -417,6 +426,7 @@ PeerStates.Disconnecting = {
 		Network.write_dump_tag(string.format("%s disconnecting", self.peer_id))
 
 		self.is_ingame = nil
+
 		local server = self.server
 		local game_session = server.game_session
 		local peer_id = self.peer_id
@@ -464,7 +474,7 @@ PeerStates.Disconnecting = {
 	end,
 	on_exit = function (self, new_state)
 		return
-	end
+	end,
 }
 PeerStates.Disconnected = {
 	approved_for_joining = false,
@@ -504,7 +514,7 @@ PeerStates.Disconnected = {
 	end,
 	on_exit = function (self, new_state)
 		Network.write_dump_tag(string.format("%s leaving disconnected", self.peer_id))
-	end
+	end,
 }
 
 for state_name, state_table in pairs(PeerStates) do
@@ -513,6 +523,6 @@ for state_name, state_table in pairs(PeerStates) do
 	setmetatable(state_table, {
 		__tostring = function ()
 			return state_name
-		end
+		end,
 	})
 end

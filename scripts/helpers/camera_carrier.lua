@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/helpers/camera_carrier.lua
+
 CameraCarrier = class(CameraCarrier)
 CameraCarrier.CAMERA_CARRIER_REEVALUATE_PERIOD = 10
 
@@ -22,7 +24,7 @@ CameraCarrier.update = function (self, dt)
 
 	self._time_since_reevaluate_camera_carrier = self._time_since_reevaluate_camera_carrier + dt
 
-	if CameraCarrier.CAMERA_CARRIER_REEVALUATE_PERIOD < self._time_since_reevaluate_camera_carrier then
+	if self._time_since_reevaluate_camera_carrier > CameraCarrier.CAMERA_CARRIER_REEVALUATE_PERIOD then
 		self:_reevaluate_camera_carrier()
 	end
 end
@@ -62,6 +64,7 @@ CameraCarrier._create_carrier_camera = function (self)
 	local position = Vector3.zero()
 	local rotation = Quaternion.identity()
 	local camera_unit = Managers.state.unit_spawner:spawn_local_unit(unit_name, position, rotation)
+
 	self._carrier_camera_unit = camera_unit
 end
 

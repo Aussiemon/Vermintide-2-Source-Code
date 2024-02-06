@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/network/lobby_xbox_live.lua
+
 require("scripts/network/lobby_aux")
 require("scripts/network/lobby_host")
 require("scripts/network/lobby_client")
@@ -19,7 +21,7 @@ LobbyInternal.state_map = {
 	[MultiplayerSession.READY] = LobbyState.JOINED,
 	[MultiplayerSession.WORKING] = LobbyState.WORKING,
 	[MultiplayerSession.SHUTDOWN] = LobbyState.SHUTDOWN,
-	[MultiplayerSession.BROKEN] = LobbyState.FAILED
+	[MultiplayerSession.BROKEN] = LobbyState.FAILED,
 }
 
 LobbyInternal.init_client = function (network_options)
@@ -38,7 +40,7 @@ LobbyInternal.create_lobby = function (network_options, lobby_session_name, lobb
 	local name = lobby_session_name or Application.guid()
 	local session_template_name = lobby_session_template or LobbyInternal.SESSION_TEMPLATE_NAME
 	local session_id = Network.create_multiplayer_session_host(Managers.account:user_id(), name, session_template_name, {
-		"server_name:" .. name
+		"server_name:" .. name,
 	})
 	local is_hosting = true
 
@@ -114,6 +116,7 @@ end
 LobbyInternal.get_lobby = function (lobby_browser, index)
 	local lobby_data = {}
 	local xbox_lobby_data = table.clone(lobby_browser:lobby(index))
+
 	lobby_data.name = xbox_lobby_data.name
 	lobby_data.template_name = xbox_lobby_data.template_name
 
@@ -121,6 +124,7 @@ LobbyInternal.get_lobby = function (lobby_browser, index)
 		local key_value = string.split(xbox_lobby_data.keywords[i], ":")
 		local key = key_value[1]
 		local value = tonumber(key_value[2]) or key_value[2]
+
 		lobby_data[key] = value
 	end
 
@@ -177,28 +181,30 @@ if script_data.debug_xbox_lobby then
 	end
 end
 
-local SMARTMATCH_STATUS_LUT = {
-	[SmartMatchStatus.UNKNOWN] = "UNKNOWN",
-	[SmartMatchStatus.SEARCHING] = "SEARCHING",
-	[SmartMatchStatus.EXPIRED] = "EXPIRED",
-	[SmartMatchStatus.FOUND] = "FOUND"
-}
-local SESSION_STATUS_LUT = {
-	[MultiplayerSession.READY] = "READY",
-	[MultiplayerSession.WORKING] = "WORKING",
-	[MultiplayerSession.SHUTDOWN] = "SHUTDOWN",
-	[MultiplayerSession.BROKEN] = "BROKEN"
-}
+local SMARTMATCH_STATUS_LUT = {}
+
+SMARTMATCH_STATUS_LUT[SmartMatchStatus.UNKNOWN] = "UNKNOWN"
+SMARTMATCH_STATUS_LUT[SmartMatchStatus.SEARCHING] = "SEARCHING"
+SMARTMATCH_STATUS_LUT[SmartMatchStatus.EXPIRED] = "EXPIRED"
+SMARTMATCH_STATUS_LUT[SmartMatchStatus.FOUND] = "FOUND"
+
+local SESSION_STATUS_LUT = {}
+
+SESSION_STATUS_LUT[MultiplayerSession.READY] = "READY"
+SESSION_STATUS_LUT[MultiplayerSession.WORKING] = "WORKING"
+SESSION_STATUS_LUT[MultiplayerSession.SHUTDOWN] = "SHUTDOWN"
+SESSION_STATUS_LUT[MultiplayerSession.BROKEN] = "BROKEN"
+
 local HOPPER_PARAMS_LUT = {
 	default_stage_hopper = {
 		"difficulty",
-		"stage"
+		"stage",
 	},
 	new_stage_hopper = {
 		"difficulty",
 		"level",
 		"powerlevel",
-		"strict_matchmaking"
+		"strict_matchmaking",
 	},
 	safe_profiles_hopper = {
 		"difficulty",
@@ -207,7 +213,7 @@ local HOPPER_PARAMS_LUT = {
 		"strict_matchmaking",
 		"profiles",
 		"network_hash",
-		"matchmaking_types"
+		"matchmaking_types",
 	},
 	weave_find_group_hopper = {
 		"difficulty",
@@ -215,20 +221,21 @@ local HOPPER_PARAMS_LUT = {
 		"profiles",
 		"network_hash",
 		"matchmaking_types",
-		"weave_index"
-	}
+		"weave_index",
+	},
 }
 local HOPPER_PARAM_TYPE_LUT = {
-	network_hash = "string",
-	strict_matchmaking = "number",
-	weave_index = "number",
-	powerlevel = "number",
+	difficulty = "number",
+	level = "collection",
 	matchmaking_types = "collection",
+	network_hash = "string",
+	powerlevel = "number",
 	profiles = "collection",
 	stage = "number",
-	difficulty = "number",
-	level = "collection"
+	strict_matchmaking = "number",
+	weave_index = "number",
 }
+
 XboxLiveLobby = class(XboxLiveLobby)
 
 XboxLiveLobby.init = function (self, session_id, unique_server_name, session_template_name, is_hosting)
@@ -295,7 +302,7 @@ XboxLiveLobby._cancel_matchmaking = function (self)
 			session_id = self._session_id,
 			hopper_name = self._hopper_name,
 			session_name = self._data.session_name,
-			ticket_id = self._ticket_id
+			ticket_id = self._ticket_id,
 		}
 
 		Managers.account:add_session_to_cleanup(session_data)
@@ -319,6 +326,7 @@ XboxLiveLobby.state = function (self)
 		MultiplayerSession.invite_friends_list(Managers.account:user_id(), self._session_id, self._friends_to_invite)
 
 		self._friends_to_invite = nil
+
 		local state = MultiplayerSession.status(self._session_id)
 
 		return state
@@ -487,7 +495,7 @@ XboxLiveLobby._update_smartmatching = function (self, dt)
 					session_id = self._session_id,
 					hopper_name = self._hopper_name,
 					session_name = self._data.session_name,
-					ticket_id = self._ticket_id
+					ticket_id = self._ticket_id,
 				}
 
 				Managers.account:add_session_to_cleanup(session_data)
@@ -512,7 +520,7 @@ XboxLiveLobby._update_smartmatching = function (self, dt)
 			session_id = self._session_id,
 			hopper_name = self._hopper_name,
 			session_name = self._data.session_name,
-			ticket_id = self._ticket_id
+			ticket_id = self._ticket_id,
 		}
 
 		Managers.account:add_session_to_cleanup(session_data)
@@ -624,7 +632,7 @@ XboxLiveLobby._create_smartmatch_broadcast = function (self, timeout)
 		self._smartmatch_ticket_params.profiles = profiles
 	end
 
-	local powerlevel = nil
+	local powerlevel
 
 	if Managers.matchmaking then
 		powerlevel = Managers.matchmaking:get_average_power_level()
@@ -634,7 +642,7 @@ XboxLiveLobby._create_smartmatch_broadcast = function (self, timeout)
 		end
 	end
 
-	local ticket_param_str = nil
+	local ticket_param_str
 
 	if self._smartmatch_ticket_params then
 		ticket_param_str = self:_convert_to_json(self._hopper_name, self._smartmatch_ticket_params)
@@ -660,13 +668,14 @@ XboxLiveLobby.leave = function (self)
 	dprintf("Destroying Lobby --> session_id: %s - session_name: %s", self._session_id, self._data.session_name)
 
 	self._activity_set = false
+
 	local session_data = {
 		destroy_session = true,
 		state = "_cleanup_ticket",
 		user_id = self._smartmatch_user_id,
 		session_id = self._session_id,
 		hopper_name = self._hopper_name,
-		session_name = self._data.session_name
+		session_name = self._data.session_name,
 	}
 
 	Managers.account:add_session_to_cleanup(session_data)

@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/ui/weave_tutorial/weave_onboarding_utils.lua
+
 WeaveOnboardingUtils = WeaveOnboardingUtils or {}
+
 local onboarding_step_stat = "scorpion_onboarding_step"
 local ui_onboarding_state_stat = "scorpion_ui_onboarding_state"
 
@@ -7,7 +10,7 @@ WeaveOnboardingUtils.tutorial_completed = function (ui_onboarding_state, tutoria
 end
 
 WeaveOnboardingUtils.reached_requirements = function (onboarding_step, tutorial)
-	return tutorial.onboarding_step <= onboarding_step
+	return onboarding_step >= tutorial.onboarding_step
 end
 
 WeaveOnboardingUtils.complete_tutorial = function (statistics_db, stats_id, tutorial)

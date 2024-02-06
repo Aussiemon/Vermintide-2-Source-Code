@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/end_screens/base_end_screen_ui.lua
+
 require("scripts/ui/hud_ui/rewards_popup_ui")
 
 BaseEndScreenUI = class(BaseEndScreenUI)
@@ -6,16 +8,18 @@ BaseEndScreenUI.init = function (self, ingame_ui_context, input_service, definit
 	self._ui_renderer = ingame_ui_context.ui_top_renderer
 	self._ingame_ui_context = ingame_ui_context
 	self._params = params
+
 	local world_manager = ingame_ui_context.world_manager
 	local world = world_manager:world("level_world")
+
 	self._wwise_world = world_manager:wwise_world(world)
 	self._input_service = input_service
 	self._render_settings = {
 		alpha_multiplier = 1,
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 	self._draw_flags = {
-		alpha_multiplier = 0
+		alpha_multiplier = 0,
 	}
 	self._started = false
 	self._completed = false
@@ -110,6 +114,7 @@ BaseEndScreenUI.draw = function (self, dt)
 	local input_service = self._input_service
 	local render_settings = self._render_settings
 	local draw_flags = self._draw_flags
+
 	render_settings.alpha_multiplier = draw_flags.alpha_multiplier or 0
 
 	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt, nil, render_settings)

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/mutators/mutator_nurgle_storm.lua
+
 return {
 	description = "description_nurgle_storm",
 	display_name = "display_name_nurgle_storm",
@@ -22,11 +24,11 @@ return {
 		local time = Managers.time:time("game")
 		local has_unchecked_positions = table.size(data.unchecked_positions) > 0
 
-		if data.summoning_vortex_t and data.summoning_vortex_t < time and not ALIVE[data.summoned_vortex_unit] then
+		if data.summoning_vortex_t and time > data.summoning_vortex_t and not ALIVE[data.summoned_vortex_unit] then
 			data.template.spawn_storm(data)
 		elseif ALIVE[data.summoned_vortex_unit] then
 			data.spawn_nurgle_storm_at = time + data.delay_between_spawns
-		elseif data.spawn_nurgle_storm_at < time and not has_unchecked_positions then
+		elseif time > data.spawn_nurgle_storm_at and not has_unchecked_positions then
 			local conflict_director = Managers.state.conflict
 			local main_path_info = conflict_director.main_path_info
 			local spawn_ahead = math.random() > 0.5
@@ -62,9 +64,11 @@ return {
 				if storm_spawn_position and backup_storm_spawn_position then
 					local directed_wander_distance = player_travel_dist + offset_spawn_distance * 2 * (spawn_ahead and -1 or 1)
 					local directed_wander_position = MainPathUtils.point_on_mainpath(nil, directed_wander_distance)
+
 					data.unchecked_positions.storm_spawn_position = Vector3Box(storm_spawn_position)
 					data.unchecked_positions.directed_wander_position = Vector3Box(directed_wander_position)
 					data.unchecked_positions.backup_storm_spawn_position = Vector3Box(backup_storm_spawn_position)
+
 					local bot_traverse_logic = Managers.state.bot_nav_transition:traverse_logic()
 
 					GwNavAStar.start_with_propagation_box(data.astar, nav_world, storm_spawn_position, directed_wander_position, 30, bot_traverse_logic)
@@ -92,7 +96,7 @@ return {
 		local spawn_radius = 2
 		local inner_radius_p = math.min(spawn_radius / vortex_template.full_inner_radius, 1)
 		local inner_decal_unit_name = data.inner_decal_unit_name
-		local inner_decal_unit = nil
+		local inner_decal_unit
 		local storm_spawn_position_unboxed = spawn_position:unbox()
 
 		if inner_decal_unit_name then
@@ -105,7 +109,7 @@ return {
 		end
 
 		local outer_decal_unit_name = data.outer_decal_unit_name
-		local outer_decal_unit = nil
+		local outer_decal_unit
 
 		if outer_decal_unit_name then
 			local outer_spawn_pose = Matrix4x4.from_quaternion_position(Quaternion.identity(), storm_spawn_position_unboxed)
@@ -117,6 +121,7 @@ return {
 		end
 
 		local t = Managers.time:time("game")
+
 		data.summoning_vortex_inner_decal_unit = inner_decal_unit
 		data.summoning_vortex_outer_decal_unit = outer_decal_unit
 		data.summoning_vortex_t = t + 2.5
@@ -134,14 +139,16 @@ return {
 				extension_init_data.ai_supplementary_system = {
 					vortex_template_name = data.vortex_template_name,
 					inner_decal_unit = data.summoning_vortex_inner_decal_unit,
-					outer_decal_unit = data.summoning_vortex_outer_decal_unit
+					outer_decal_unit = data.summoning_vortex_outer_decal_unit,
 				}
 			end,
 			spawned_func = function (vortex_unit, breed, optional_data)
 				data.summoned_vortex_unit = vortex_unit
+
 				local blackboard = BLACKBOARDS[vortex_unit]
+
 				blackboard.directed_wander_position_boxed = data.directed_wander_position_boxed
-			end
+			end,
 		}
 		local spawn_pos = data.storm_spawn_position
 
@@ -157,5 +164,5 @@ return {
 		end
 
 		GwNavAStar.destroy(data.astar)
-	end
+	end,
 }

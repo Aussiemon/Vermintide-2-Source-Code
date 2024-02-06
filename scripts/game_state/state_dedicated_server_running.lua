@@ -1,8 +1,11 @@
+﻿-- chunkname: @scripts/game_state/state_dedicated_server_running.lua
+
 StateDedicatedServerRunning = class(StateDedicatedServerRunning)
 StateDedicatedServerRunning.NAME = "StateDedicatedServerRunning"
 
 StateDedicatedServerRunning.on_enter = function (self, params)
 	local loading_context = self.parent.parent.loading_context
+
 	self._game_server = loading_context.game_server
 end
 

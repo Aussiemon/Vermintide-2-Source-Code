@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/debug/debug_event_manager_rpc.lua
+
 DebugEventManagerRPC = class(DebugEventManagerRPC)
 
 DebugEventManagerRPC.init = function (self, network_event_delegate)

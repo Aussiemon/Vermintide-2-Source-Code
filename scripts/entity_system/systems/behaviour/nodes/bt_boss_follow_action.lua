@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_boss_follow_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTBossFollowAction = class(BTBossFollowAction, BTNode)
@@ -10,12 +12,13 @@ BTBossFollowAction.name = "BTBossFollowAction"
 
 BTBossFollowAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
+
 	blackboard.action = action
 	blackboard.remembered_threat_pos = nil
 	blackboard.chasing_timer = blackboard.unreachable_timer or 0
 	blackboard.follow_data = blackboard.follow_data or {}
 
-	if blackboard.fling_skaven_timer and blackboard.fling_skaven_timer < t then
+	if blackboard.fling_skaven_timer and t > blackboard.fling_skaven_timer then
 		blackboard.fling_skaven_timer = t + 0.5
 	end
 
@@ -122,7 +125,7 @@ BTBossFollowAction.follow = function (self, unit, t, dt, blackboard, locomotion_
 		blackboard.wanted_destination = Vector3Box(new_destination)
 	end
 
-	if blackboard.fling_skaven_timer and blackboard.fling_skaven_timer < t then
+	if blackboard.fling_skaven_timer and t > blackboard.fling_skaven_timer then
 		blackboard.fling_skaven_timer = t + 0.5
 
 		self:check_fling_skaven(unit, blackboard, t)
@@ -136,7 +139,7 @@ BTBossFollowAction.follow = function (self, unit, t, dt, blackboard, locomotion_
 
 	local distance_sq = Vector3.length_squared(to_vec)
 
-	if blackboard.boss_follow_next_line_of_sight_check_t < t then
+	if t > blackboard.boss_follow_next_line_of_sight_check_t then
 		blackboard.has_los_to_any_player = PerceptionUtils.has_line_of_sight_to_any_player(unit)
 		blackboard.boss_follow_next_line_of_sight_check_t = t + 2.5
 	end
@@ -217,7 +220,7 @@ BTBossFollowAction._follow_target_stormfiend = function (self, unit, blackboard,
 	local target_distance = blackboard.target_dist
 	local navigation_extension = blackboard.navigation_extension
 	local at_goal = navigation_extension:has_reached_destination(0.5)
-	local position = nil
+	local position
 	local unit_position = POSITION_LOOKUP[unit]
 	local target_unit = blackboard.target_unit
 	local target_position = POSITION_LOOKUP[target_unit]
@@ -227,12 +230,14 @@ BTBossFollowAction._follow_target_stormfiend = function (self, unit, blackboard,
 	end
 
 	local follow_data = blackboard.follow_data
-	local remembered_target_position, target_has_moved = nil
+	local remembered_target_position, target_has_moved
 
 	if follow_data.remembered_target_position then
 		remembered_target_position = follow_data.remembered_target_position:unbox()
+
 		local target_distance_diff_sq = Vector3.distance_squared(target_position, remembered_target_position)
-		target_has_moved = STORMFIEND_TARGET_HAS_MOVED_DISTANCE_SQ < target_distance_diff_sq
+
+		target_has_moved = target_distance_diff_sq > STORMFIEND_TARGET_HAS_MOVED_DISTANCE_SQ
 	else
 		follow_data.remembered_target_position = Vector3Box(target_position)
 		remembered_target_position = target_position
@@ -258,8 +263,8 @@ BTBossFollowAction._follow_target_stormfiend = function (self, unit, blackboard,
 		end
 
 		if max_distance < 1 then
-			local above = 2
-			local below = 2
+			local above, below = 2, 2
+
 			position = LocomotionUtils.pos_on_mesh(nav_world, target_position, above, below)
 
 			if position == nil then
@@ -271,7 +276,7 @@ BTBossFollowAction._follow_target_stormfiend = function (self, unit, blackboard,
 
 		local distance_sq = position and Vector3.distance_squared(unit_position, position)
 
-		if position and STORMFIEND_MIN_REQUIRED_DISTANCE_CHANGE_SQ < distance_sq then
+		if position and distance_sq > STORMFIEND_MIN_REQUIRED_DISTANCE_CHANGE_SQ then
 			navigation_extension:move_to(position)
 
 			follow_data.min_angle = 0

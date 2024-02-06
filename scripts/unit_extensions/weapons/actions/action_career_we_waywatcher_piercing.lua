@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/weapons/actions/action_career_we_waywatcher_piercing.lua
+
 ActionCareerWEWaywatcherPiercing = class(ActionCareerWEWaywatcherPiercing, ActionBow)
 
 ActionCareerWEWaywatcherPiercing.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)

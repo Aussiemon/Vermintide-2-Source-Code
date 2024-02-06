@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/irc/irc_manager.lua
+
 require("scripts/managers/irc/script_irc_token")
 require("scripts/managers/irc/irc_utils")
 
@@ -6,6 +8,7 @@ Irc.LIST_END_MSG = 8
 Irc.META_MSG = 9
 Irc.TEAM_MSG = 10
 Irc.ALL_MSG = 11
+
 local DEBUG_PRINT = false
 local CONNECTION_RETRIES = 3
 local MESSAGES_TO_SEND = {}
@@ -37,7 +40,7 @@ IRCManager._reset = function (self)
 		[Irc.NAMES_MSG] = {},
 		[Irc.LIST_MSG] = {},
 		[Irc.LIST_END_MSG] = {},
-		[Irc.META_MSG] = {}
+		[Irc.META_MSG] = {},
 	}
 end
 
@@ -51,7 +54,9 @@ IRCManager.connect = function (self, user_name, optional_password, settings, cb)
 
 	self._host_address = address
 	self._port = port
+
 	local default_user_name = "justinfan" .. Math.random(99999)
+
 	self._user_name = user_name or self._user_name or default_user_name
 	self._user_name = string.gsub(self._user_name, " ", "_")
 	self._password = optional_password or nil
@@ -109,7 +114,7 @@ IRCManager.send_message = function (self, message, channel_or_user)
 
 			MESSAGES_TO_SEND[#MESSAGES_TO_SEND + 1] = {
 				message = message,
-				channel_or_user = channel_or_user
+				channel_or_user = channel_or_user,
 			}
 
 			return true
@@ -147,6 +152,7 @@ IRCManager._handle_irc_message = function (self, message_type, username, message
 	end
 
 	message_type = self:_handle_connections(message_type, username, message, parameter)
+
 	local callbacks = self._callback_by_type[message_type]
 
 	if callbacks then
@@ -165,8 +171,10 @@ IRCManager._handle_connections = function (self, message_type, username, message
 	if message_type == Irc.NAMES_MSG then
 		local channel = parameter
 		local new_members = string.split(message, " ")
+
 		self._channels[channel] = true
 		self._channel_members[channel] = self._channel_members[channel] or {}
+
 		local members = self._channel_members[channel]
 
 		for _, name in ipairs(new_members) do
@@ -176,37 +184,46 @@ IRCManager._handle_connections = function (self, message_type, username, message
 					info = "",
 					level = "n/a",
 					name = name,
-					time = Managers.time:time("main")
+					time = Managers.time:time("main"),
 				}
 			end
 		end
 	elseif message_type == Irc.LEAVE_MSG then
 		if username == self._user_name then
 			local channel = parameter
+
 			self._channel_members[channel] = nil
 			self._channels[channel] = nil
 		else
 			local channel = parameter
+
 			self._channel_members[channel] = self._channel_members[channel] or {}
+
 			local channel_members = self._channel_members[channel]
+
 			channel_members[username] = nil
 		end
 	elseif message_type == Irc.JOIN_MSG then
 		local channel = parameter
+
 		self._channel_members[channel] = self._channel_members[channel] or {}
-		local user_data, icon_id, level, info = nil
+
+		local user_data, icon_id, level, info
 
 		if username == self._user_name then
 			icon_id = 1
 			info = "vermintide owns"
+
 			local level = ExperienceSettings.get_highest_character_level()
+
 			user_data = {
 				name = username,
 				time = Managers.time:time("main"),
 				icon_id = icon_id,
 				level = level,
-				info = info
+				info = info,
 			}
+
 			local message = self:_create_metadata_table(username, icon_id, level, info)
 
 			Irc.send_message(message, parameter)
@@ -217,7 +234,7 @@ IRCManager._handle_connections = function (self, message_type, username, message
 				time = Managers.time:time("main"),
 				icon_id = icon_id,
 				level = level,
-				info = info
+				info = info,
 			}
 		end
 
@@ -250,6 +267,7 @@ end
 
 IRCManager._create_metadata_table = function (self, username, icon_id, level, info)
 	local message = "$META;"
+
 	message = message .. username .. ";" .. icon_id .. ";" .. level .. ";" .. info
 
 	return message
@@ -433,7 +451,7 @@ IRCStates.verify_connection = function (irc_manager, dt)
 			irc_manager:_change_state("connected")
 			irc_manager:_notify_connected(true)
 		end
-	elseif CONNECTION_RETRIES < irc_manager._connection_retries then
+	elseif irc_manager._connection_retries > CONNECTION_RETRIES then
 		local host_address = irc_manager._host_address
 		local host_port = irc_manager._port
 		local default_user_name = "justinfan" .. Math.random(9999)

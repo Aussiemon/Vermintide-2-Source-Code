@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/imgui/imgui_weapon_editor.lua
+
 rawset(_G, "DamageProfileTemplates_orig", nil)
 rawset(_G, "BoostCurves_orig", nil)
 rawset(_G, "PowerLevelTemplates_orig", nil)
@@ -29,7 +31,7 @@ local function clone(t)
 			m[t] = c
 
 			return c
-		end
+		end,
 	})[t]
 end
 
@@ -48,8 +50,7 @@ local function diff(x, ref, b)
 		return x, true
 	end
 
-	local d = {}
-	local bb = false
+	local d, bb = {}, false
 
 	for k, v in pairs(x) do
 		d[k], bb = diff(v, ref[k], bb)
@@ -82,7 +83,7 @@ ImguiWeaponEditor.init = function (self)
 		PowerLevelTemplates = PowerLevelTemplates,
 		AttackTemplates = AttackTemplates,
 		Weapons = Weapons,
-		TerrorEventBlueprints = TerrorEventBlueprints
+		TerrorEventBlueprints = TerrorEventBlueprints,
 	}
 	self._table_metadata = setmetatable({}, {
 		__mode = "k",
@@ -92,14 +93,15 @@ ImguiWeaponEditor.init = function (self)
 			table.sort(keys)
 
 			local v = {
-				new_value = "",
 				new_key = "",
-				keys = keys
+				new_value = "",
+				keys = keys,
 			}
+
 			t[k] = v
 
 			return v
-		end
+		end,
 	})
 
 	self:checkpoint()
@@ -126,7 +128,7 @@ ImguiWeaponEditor._defered_init = function (self)
 		buff_name = {
 			"planted_charging_decrease_movement",
 			"planted_decrease_movement",
-			"planted_fast_decrease_movement"
+			"planted_fast_decrease_movement",
 		},
 		buff_type = NetworkLookup.buff_weapon_types,
 		crosshair_style = {
@@ -135,7 +137,7 @@ ImguiWeaponEditor._defered_init = function (self)
 			"arrows",
 			"circle",
 			"shotgun",
-			"projectile"
+			"projectile",
 		},
 		damage_profile = table.keys(AttackTemplates),
 		damage_type = NetworkLookup.damage_types,
@@ -189,16 +191,16 @@ ImguiWeaponEditor._defered_init = function (self)
 			"career_bw_one",
 			"career_we_three",
 			"career_we_three_piercing",
-			"career_wh_two"
+			"career_wh_two",
 		},
 		sound_type = NetworkLookup.melee_impact_sound_types,
 		stagger_angle = {
 			"down",
 			"smiter",
 			"stab",
-			"pull"
+			"pull",
 		},
-		wield_anim = sorted_anims
+		wield_anim = sorted_anims,
 	}
 	self._defered_init_done = true
 end
@@ -209,7 +211,7 @@ ImguiWeaponEditor.checkpoint = function (self)
 		DamageProfileTemplates = clone(DamageProfileTemplates),
 		PowerLevelTemplates = clone(PowerLevelTemplates),
 		AttackTemplates = clone(AttackTemplates),
-		Weapons = clone(Weapons)
+		Weapons = clone(Weapons),
 	}
 end
 
@@ -235,15 +237,15 @@ ImguiWeaponEditor.edit_table = function (self, t)
 				metadata.new_value = Imgui.input_text("Value", metadata.new_value)
 
 				if Imgui.small_button("Add field") then
-					local val = nil
+					local val
+
 					val, metadata.error = self:exec("local t = ... return " .. metadata.new_value, value)
 
 					if val ~= nil then
 						rawset(value, metadata.new_key, val)
 
 						metadata.keys[#metadata.keys + 1] = metadata.new_key
-						metadata.new_value = ""
-						metadata.new_key = ""
+						metadata.new_key, metadata.new_value = "", ""
 					end
 				end
 
@@ -260,8 +262,7 @@ ImguiWeaponEditor.edit_table = function (self, t)
 		elseif td == "number" then
 			t[key] = Imgui.input_float(key, value)
 		elseif td == "string" then
-			local lut = self._lut_lut[key]
-			local index = nil
+			local lut, index = self._lut_lut[key]
 
 			if lut then
 				index = table.find(lut, value)
@@ -285,6 +286,7 @@ end
 
 ImguiWeaponEditor.draw = function (self, _)
 	local do_close = Imgui.begin_window("Weapon Editor", "menu_bar")
+
 	self._persistent = Imgui.checkbox("Persistent window", self._persistent)
 
 	if Imgui.begin_menu_bar() then

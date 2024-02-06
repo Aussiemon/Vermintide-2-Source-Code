@@ -1,563 +1,565 @@
+﻿-- chunkname: @scripts/settings/dlcs/lake/talent_settings_lake_empire_soldier.lua
+
 local buff_perks = require("scripts/unit_extensions/default_player_unit/buffs/settings/buff_perk_names")
 local buff_tweak_data = {
 	markus_questing_knight_ability_cooldown_on_hit = {
-		bonus = 0.25
+		bonus = 0.25,
 	},
 	markus_questing_knight_ability_cooldown_on_damage_taken = {
-		bonus = 0.25
+		bonus = 0.25,
 	},
 	markus_questing_knight_perk_movement_speed = {
-		multiplier = 1.1
+		multiplier = 1.1,
 	},
 	markus_questing_knight_perk_first_target_damage = {
-		multiplier = 0.25
+		multiplier = 0.25,
 	},
 	markus_questing_knight_vanguard = {
-		multiplier = 1
+		multiplier = 1,
 	},
 	markus_questing_knight_bloodlust = {
 		heal_cap = 0.25,
-		multiplier = 0.45
+		multiplier = 0.45,
 	},
 	markus_questing_knight_conqueror = {
+		multiplier = 0.2,
 		range = 10,
-		multiplier = 0.2
 	},
 	markus_questing_knight_charged_attacks_increased_power = {
-		multiplier = 0.3
+		multiplier = 0.3,
 	},
 	markus_questing_knight_crit_can_insta_kill = {
+		boss_damage_multiplier = 2,
 		damage_multiplier = 4,
 		proc_chance = 1,
-		boss_damage_multiplier = 2
 	},
 	markus_questing_knight_kills_buff_power_stacking = {},
 	markus_questing_knight_kills_buff_power_stacking_buff = {
+		duration = 10,
 		max_stacks = 3,
 		multiplier = 0.08,
-		duration = 10
 	},
 	markus_questing_knight_passive_improved_reward = {
-		display_multiplier = 0.5
+		display_multiplier = 0.5,
 	},
 	markus_questing_knight_health_refund_over_time = {
-		heal_amount_fraction = 0.5
+		heal_amount_fraction = 0.5,
 	},
 	markus_questing_knight_health_refund_over_time_delayed_heal = {
-		duration = 5
+		duration = 5,
 	},
 	markus_questing_knight_parry_increased_power_buff = {
-		max_stacks = 1,
 		duration = 6,
-		multiplier = 0.2
+		max_stacks = 1,
+		multiplier = 0.2,
 	},
 	markus_questing_knight_push_arc = {
-		multiplier = 0.3
+		multiplier = 0.3,
 	},
 	markus_questing_knight_stamina_reg = {
-		multiplier = 0.3
+		multiplier = 0.3,
 	},
 	markus_questing_knight_ability_buff_on_kill_movement_speed = {
 		duration = 15,
-		multiplier = 1.35
-	}
+		multiplier = 1.35,
+	},
 }
 local talent_buff_templates = {
 	markus_questing_knight_ability_cooldown_on_hit = {
 		buffs = {
 			{
+				buff_func = "reduce_activated_ability_cooldown",
 				event = "on_hit",
-				buff_func = "reduce_activated_ability_cooldown"
-			}
-		}
+			},
+		},
 	},
 	markus_questing_knight_ability_cooldown_on_damage_taken = {
 		buffs = {
 			{
+				buff_func = "reduce_activated_ability_cooldown_on_damage_taken",
 				event = "on_damage_taken",
-				buff_func = "reduce_activated_ability_cooldown_on_damage_taken"
-			}
-		}
+			},
+		},
 	},
 	markus_questing_knight_perk_movement_speed = {
 		buffs = {
 			{
-				remove_buff_func = "remove_movement_buff",
 				apply_buff_func = "apply_movement_buff",
+				remove_buff_func = "remove_movement_buff",
 				path_to_movement_setting_to_modify = {
-					"move_speed"
-				}
-			}
-		}
+					"move_speed",
+				},
+			},
+		},
 	},
 	markus_questing_knight_perk_first_target_damage = {
 		buffs = {
 			{
-				stat_buff = "first_melee_hit_damage"
-			}
-		}
+				stat_buff = "first_melee_hit_damage",
+			},
+		},
 	},
 	markus_questing_knight_perk_power_block = {
 		buffs = {
 			{
 				perks = {
-					buff_perks.power_block
-				}
-			}
-		}
+					buff_perks.power_block,
+				},
+			},
+		},
 	},
 	markus_questing_knight_vanguard = {
 		buffs = {
 			{
+				buff_func = "heal_stagger_targets_on_melee",
 				event = "on_stagger",
 				name = "vanguard",
-				buff_func = "heal_stagger_targets_on_melee",
 				perks = {
-					buff_perks.tank_healing
-				}
-			}
-		}
+					buff_perks.tank_healing,
+				},
+			},
+		},
 	},
 	markus_questing_knight_bloodlust = {
 		buffs = {
 			{
+				buff_func = "heal_percentage_of_enemy_hp_on_melee_kill",
 				event = "on_kill",
 				name = "bloodlust",
-				buff_func = "heal_percentage_of_enemy_hp_on_melee_kill",
 				perks = {
-					buff_perks.smiter_healing
-				}
-			}
-		}
+					buff_perks.smiter_healing,
+				},
+			},
+		},
 	},
 	markus_questing_knight_conqueror = {
 		buffs = {
 			{
+				buff_func = "heal_other_players_percent_at_range",
 				event = "on_healed_consumeable",
 				name = "conqueror",
-				buff_func = "heal_other_players_percent_at_range"
-			}
-		}
+			},
+		},
 	},
 	markus_questing_knight_charged_attacks_increased_power = {
 		buffs = {
 			{
+				name = "markus_questing_knight_charged_attacks_increased_power",
 				stat_buff = "increased_weapon_damage_heavy_attack",
-				name = "markus_questing_knight_charged_attacks_increased_power"
-			}
-		}
+			},
+		},
 	},
 	markus_questing_knight_crit_can_insta_kill = {
 		buffs = {
 			{
+				buff_func = "check_for_instantly_killing_crit",
 				event = "on_player_damage_dealt",
 				name = "markus_questing_knight_crit_can_insta_kill",
-				buff_func = "check_for_instantly_killing_crit"
-			}
-		}
+			},
+		},
 	},
 	markus_questing_knight_kills_buff_power_stacking = {
 		buffs = {
 			{
+				buff_func = "add_buff",
+				buff_to_add = "markus_questing_knight_kills_buff_power_stacking_buff",
 				event = "on_kill",
 				name = "markus_questing_knight_kills_buff_power_stacking",
-				buff_to_add = "markus_questing_knight_kills_buff_power_stacking_buff",
-				buff_func = "add_buff"
-			}
-		}
+			},
+		},
 	},
 	markus_questing_knight_kills_buff_power_stacking_buff = {
 		buffs = {
 			{
-				refresh_durations = true,
+				icon = "markus_questing_knight_kills_buff_power_stacking",
 				name = "markus_questing_knight_kills_buff_power_stacking_buff",
+				refresh_durations = true,
 				stat_buff = "power_level",
-				icon = "markus_questing_knight_kills_buff_power_stacking"
-			}
-		}
+			},
+		},
 	},
 	markus_questing_knight_health_refund_over_time = {
 		buffs = {
 			{
-				event = "on_damage_taken",
+				buff_func = "add_heal_percent_of_damage_taken_over_time_buff",
 				buff_to_add = "markus_questing_knight_health_refund_over_time_delayed_heal",
-				buff_func = "add_heal_percent_of_damage_taken_over_time_buff"
-			}
-		}
+				event = "on_damage_taken",
+			},
+		},
 	},
 	markus_questing_knight_health_refund_over_time_delayed_heal = {
 		buffs = {
 			{
-				max_stacks = 1,
 				icon = "markus_questing_knight_health_refund_over_time",
+				max_stacks = 1,
 				refresh_durations = true,
-				remove_buff_func = "refund_damage_taken"
-			}
-		}
+				remove_buff_func = "refund_damage_taken",
+			},
+		},
 	},
 	markus_questing_knight_parry_increased_power = {
 		buffs = {
 			{
-				event = "on_timed_block",
+				buff_func = "add_buff",
 				buff_to_add = "markus_questing_knight_parry_increased_power_buff",
-				buff_func = "add_buff"
-			}
-		}
+				event = "on_timed_block",
+			},
+		},
 	},
 	markus_questing_knight_parry_increased_power_buff = {
 		buffs = {
 			{
-				refresh_durations = true,
 				icon = "markus_questing_knight_parry_increased_power",
-				stat_buff = "power_level"
-			}
-		}
+				refresh_durations = true,
+				stat_buff = "power_level",
+			},
+		},
 	},
 	markus_questing_knight_push_arc = {
 		buffs = {
 			{
-				stat_buff = "block_angle"
-			}
-		}
+				stat_buff = "block_angle",
+			},
+		},
 	},
 	markus_questing_knight_stamina_reg = {
 		buffs = {
 			{
-				stat_buff = "fatigue_regen"
-			}
-		}
+				stat_buff = "fatigue_regen",
+			},
+		},
 	},
 	markus_questing_knight_ability_buff_on_kill = {
 		buffs = {
 			{
-				event = "on_kill",
+				buff_func = "markus_questing_knight_ability_kill_buff_func",
 				buff_to_add = "markus_questing_knight_ability_buff_on_kill_movement_speed",
-				buff_func = "markus_questing_knight_ability_kill_buff_func"
-			}
-		}
+				event = "on_kill",
+			},
+		},
 	},
 	markus_questing_knight_ability_buff_on_kill_movement_speed = {
 		buffs = {
 			{
 				apply_buff_func = "apply_movement_buff",
-				remove_buff_func = "remove_movement_buff",
-				refresh_durations = true,
-				max_stacks = 1,
 				icon = "markus_questing_knight_ability_buff_on_kill",
+				max_stacks = 1,
+				refresh_durations = true,
+				remove_buff_func = "remove_movement_buff",
 				path_to_movement_setting_to_modify = {
-					"move_speed"
-				}
-			}
-		}
-	}
+					"move_speed",
+				},
+			},
+		},
+	},
 }
 local talent_trees = {
 	{
 		{
 			"markus_questing_knight_vanguard",
 			"markus_questing_knight_bloodlust_2",
-			"markus_questing_knight_heal_share"
+			"markus_questing_knight_heal_share",
 		},
 		{
 			"markus_questing_knight_kills_buff_power_stacking",
 			"markus_questing_knight_crit_can_insta_kill",
-			"markus_questing_knight_charged_attacks_increased_power"
+			"markus_questing_knight_charged_attacks_increased_power",
 		},
 		{
 			"markus_questing_knight_tank_unbalance",
 			"markus_questing_knight_smiter_unbalance",
-			"markus_questing_knight_power_level_unbalance"
+			"markus_questing_knight_power_level_unbalance",
 		},
 		{
 			"markus_questing_knight_passive_additional_quest",
 			"markus_questing_knight_passive_improved_reward",
-			"markus_questing_knight_passive_side_quest"
+			"markus_questing_knight_passive_side_quest",
 		},
 		{
 			"markus_questing_knight_health_refund_over_time",
 			"markus_questing_knight_parry_increased_power",
-			"markus_questing_knight_push_arc_stamina_reg"
+			"markus_questing_knight_push_arc_stamina_reg",
 		},
 		{
 			"markus_questing_knight_ability_double_activation",
 			"markus_questing_knight_ability_buff_on_kill",
-			"markus_questing_knight_ability_tank_attack"
-		}
-	}
+			"markus_questing_knight_ability_tank_attack",
+		},
+	},
 }
 local talents = {
 	{
-		description = "vanguard_desc",
-		name = "markus_questing_knight_vanguard",
 		buffer = "server",
-		num_ranks = 1,
+		description = "vanguard_desc",
 		icon = "markus_questing_knight_vanguard",
+		name = "markus_questing_knight_vanguard",
+		num_ranks = 1,
 		description_values = {},
 		buffs = {
-			"markus_questing_knight_vanguard"
-		}
+			"markus_questing_knight_vanguard",
+		},
 	},
 	{
+		buffer = "server",
 		description = "bloodlust_desc_3",
-		name = "markus_questing_knight_bloodlust_2",
-		buffer = "server",
-		num_ranks = 1,
 		icon = "markus_questing_knight_bloodlust_2",
+		name = "markus_questing_knight_bloodlust_2",
+		num_ranks = 1,
 		description_values = {
 			{
 				value_type = "percent",
-				value = BuffTemplates.bloodlust.buffs[1].multiplier
-			}
+				value = BuffTemplates.bloodlust.buffs[1].multiplier,
+			},
 		},
 		buffs = {
-			"markus_questing_knight_bloodlust"
-		}
+			"markus_questing_knight_bloodlust",
+		},
 	},
 	{
+		buffer = "server",
 		description = "conqueror_desc_3",
-		name = "markus_questing_knight_heal_share",
-		buffer = "server",
-		num_ranks = 1,
 		icon = "markus_questing_knight_heal_share",
+		name = "markus_questing_knight_heal_share",
+		num_ranks = 1,
 		description_values = {
 			{
 				value_type = "percent",
-				value = BuffTemplates.conqueror.buffs[1].multiplier
-			}
+				value = BuffTemplates.conqueror.buffs[1].multiplier,
+			},
 		},
 		buffs = {
-			"markus_questing_knight_conqueror"
-		}
+			"markus_questing_knight_conqueror",
+		},
 	},
 	{
+		buffer = "server",
 		description = "markus_questing_knight_kills_buff_power_stacking_desc",
-		name = "markus_questing_knight_kills_buff_power_stacking",
-		buffer = "server",
-		num_ranks = 1,
 		icon = "markus_questing_knight_kills_buff_power_stacking",
+		name = "markus_questing_knight_kills_buff_power_stacking",
+		num_ranks = 1,
 		description_values = {
 			{
 				value_type = "percent",
-				value = buff_tweak_data.markus_questing_knight_kills_buff_power_stacking_buff.multiplier
+				value = buff_tweak_data.markus_questing_knight_kills_buff_power_stacking_buff.multiplier,
 			},
 			{
-				value = buff_tweak_data.markus_questing_knight_kills_buff_power_stacking_buff.duration
+				value = buff_tweak_data.markus_questing_knight_kills_buff_power_stacking_buff.duration,
 			},
 			{
-				value = buff_tweak_data.markus_questing_knight_kills_buff_power_stacking_buff.max_stacks
-			}
+				value = buff_tweak_data.markus_questing_knight_kills_buff_power_stacking_buff.max_stacks,
+			},
 		},
 		buffs = {
-			"markus_questing_knight_kills_buff_power_stacking"
-		}
+			"markus_questing_knight_kills_buff_power_stacking",
+		},
 	},
 	{
+		buffer = "server",
 		description = "markus_questing_knight_crit_can_insta_kill_desc",
-		name = "markus_questing_knight_crit_can_insta_kill",
-		buffer = "server",
-		num_ranks = 1,
 		icon = "markus_questing_knight_crit_can_insta_kill",
+		name = "markus_questing_knight_crit_can_insta_kill",
+		num_ranks = 1,
 		description_values = {
 			{
-				value = buff_tweak_data.markus_questing_knight_crit_can_insta_kill.damage_multiplier
-			}
+				value = buff_tweak_data.markus_questing_knight_crit_can_insta_kill.damage_multiplier,
+			},
 		},
 		buffs = {
-			"markus_questing_knight_crit_can_insta_kill"
-		}
+			"markus_questing_knight_crit_can_insta_kill",
+		},
 	},
 	{
+		buffer = "server",
 		description = "markus_questing_knight_charged_attacks_increased_power_desc",
-		name = "markus_questing_knight_charged_attacks_increased_power",
-		buffer = "server",
-		num_ranks = 1,
 		icon = "markus_questing_knight_charged_attacks_increased_power",
+		name = "markus_questing_knight_charged_attacks_increased_power",
+		num_ranks = 1,
 		description_values = {
 			{
 				value_type = "percent",
-				value = buff_tweak_data.markus_questing_knight_charged_attacks_increased_power.multiplier
-			}
+				value = buff_tweak_data.markus_questing_knight_charged_attacks_increased_power.multiplier,
+			},
 		},
 		buffs = {
-			"markus_questing_knight_charged_attacks_increased_power"
-		}
+			"markus_questing_knight_charged_attacks_increased_power",
+		},
 	},
 	{
+		buffer = "server",
 		description = "tank_unbalance_desc",
-		name = "markus_questing_knight_tank_unbalance",
-		buffer = "server",
-		num_ranks = 1,
 		icon = "markus_questing_knight_tank_unbalance",
+		name = "markus_questing_knight_tank_unbalance",
+		num_ranks = 1,
 		description_values = {
 			{
 				value_type = "percent",
-				value = BuffTemplates.tank_unbalance_buff.buffs[1].bonus
+				value = BuffTemplates.tank_unbalance_buff.buffs[1].bonus,
 			},
 			{
-				value = BuffTemplates.tank_unbalance_buff.buffs[1].duration
-			},
-			{
-				value_type = "percent",
-				value = BuffTemplates.tank_unbalance.buffs[1].display_multiplier
+				value = BuffTemplates.tank_unbalance_buff.buffs[1].duration,
 			},
 			{
 				value_type = "percent",
-				value = BuffTemplates.tank_unbalance.buffs[1].max_display_multiplier
-			}
+				value = BuffTemplates.tank_unbalance.buffs[1].display_multiplier,
+			},
+			{
+				value_type = "percent",
+				value = BuffTemplates.tank_unbalance.buffs[1].max_display_multiplier,
+			},
 		},
 		buffs = {
-			"tank_unbalance"
-		}
+			"tank_unbalance",
+		},
 	},
 	{
+		buffer = "server",
 		description = "smiter_unbalance_desc",
-		name = "markus_questing_knight_smiter_unbalance",
-		buffer = "server",
-		num_ranks = 1,
 		icon = "markus_questing_knight_smiter_unbalance",
+		name = "markus_questing_knight_smiter_unbalance",
+		num_ranks = 1,
 		description_values = {
 			{
 				value_type = "percent",
-				value = BuffTemplates.smiter_unbalance.buffs[1].display_multiplier
+				value = BuffTemplates.smiter_unbalance.buffs[1].display_multiplier,
 			},
 			{
 				value_type = "percent",
-				value = BuffTemplates.smiter_unbalance.buffs[1].max_display_multiplier
-			}
+				value = BuffTemplates.smiter_unbalance.buffs[1].max_display_multiplier,
+			},
 		},
 		buffs = {
-			"smiter_unbalance"
-		}
+			"smiter_unbalance",
+		},
 	},
 	{
-		description = "power_level_unbalance_desc",
-		name = "markus_questing_knight_power_level_unbalance",
 		buffer = "server",
-		num_ranks = 1,
+		description = "power_level_unbalance_desc",
 		icon = "markus_questing_knight_power_level_unbalance",
+		name = "markus_questing_knight_power_level_unbalance",
+		num_ranks = 1,
 		description_values = {
 			{
 				value_type = "percent",
-				value = BuffTemplates.power_level_unbalance.buffs[1].multiplier
-			}
+				value = BuffTemplates.power_level_unbalance.buffs[1].multiplier,
+			},
 		},
 		buffs = {
-			"power_level_unbalance"
-		}
+			"power_level_unbalance",
+		},
 	},
 	{
 		description = "markus_questing_knight_passive_additional_quest_desc",
+		icon = "markus_questing_knight_passive_additional_quest",
 		name = "markus_questing_knight_passive_additional_quest",
 		num_ranks = 1,
-		icon = "markus_questing_knight_passive_additional_quest",
-		buffs = {}
+		buffs = {},
 	},
 	{
 		description = "markus_questing_knight_passive_side_quest_desc",
+		icon = "markus_questing_knight_passive_side_quest",
 		name = "markus_questing_knight_passive_side_quest",
 		num_ranks = 1,
-		icon = "markus_questing_knight_passive_side_quest",
-		buffs = {}
+		buffs = {},
 	},
 	{
 		description = "markus_questing_knight_passive_improved_reward_desc",
+		icon = "markus_questing_knight_passive_improved_reward",
 		name = "markus_questing_knight_passive_improved_reward",
 		num_ranks = 1,
-		icon = "markus_questing_knight_passive_improved_reward",
 		description_values = {
 			{
 				value_type = "percent",
-				value = buff_tweak_data.markus_questing_knight_passive_improved_reward.display_multiplier
-			}
+				value = buff_tweak_data.markus_questing_knight_passive_improved_reward.display_multiplier,
+			},
 		},
-		buffs = {}
+		buffs = {},
 	},
 	{
+		buffer = "both",
 		description = "markus_questing_knight_health_refund_over_time_desc",
-		name = "markus_questing_knight_health_refund_over_time",
-		buffer = "both",
-		num_ranks = 1,
 		icon = "markus_questing_knight_health_refund_over_time",
+		name = "markus_questing_knight_health_refund_over_time",
+		num_ranks = 1,
 		description_values = {
 			{
 				value_type = "percent",
-				value = buff_tweak_data.markus_questing_knight_health_refund_over_time.heal_amount_fraction
+				value = buff_tweak_data.markus_questing_knight_health_refund_over_time.heal_amount_fraction,
 			},
 			{
-				value = buff_tweak_data.markus_questing_knight_health_refund_over_time_delayed_heal.duration
-			}
+				value = buff_tweak_data.markus_questing_knight_health_refund_over_time_delayed_heal.duration,
+			},
 		},
 		buffs = {
-			"markus_questing_knight_health_refund_over_time"
-		}
+			"markus_questing_knight_health_refund_over_time",
+		},
 	},
 	{
-		description = "markus_questing_knight_parry_increased_power_desc",
-		name = "markus_questing_knight_parry_increased_power",
 		buffer = "both",
-		num_ranks = 1,
+		description = "markus_questing_knight_parry_increased_power_desc",
 		icon = "markus_questing_knight_parry_increased_power",
+		name = "markus_questing_knight_parry_increased_power",
+		num_ranks = 1,
 		description_values = {
 			{
 				value_type = "percent",
-				value = buff_tweak_data.markus_questing_knight_parry_increased_power_buff.multiplier
+				value = buff_tweak_data.markus_questing_knight_parry_increased_power_buff.multiplier,
 			},
 			{
-				value = buff_tweak_data.markus_questing_knight_parry_increased_power_buff.duration
-			}
+				value = buff_tweak_data.markus_questing_knight_parry_increased_power_buff.duration,
+			},
 		},
 		buffs = {
-			"markus_questing_knight_parry_increased_power"
-		}
+			"markus_questing_knight_parry_increased_power",
+		},
 	},
 	{
 		description = "markus_questing_knight_push_arc_stamina_reg_desc",
+		icon = "markus_questing_knight_push_arc_stamina_reg",
 		name = "markus_questing_knight_push_arc_stamina_reg",
 		num_ranks = 1,
-		icon = "markus_questing_knight_push_arc_stamina_reg",
 		description_values = {
 			{
 				value_type = "percent",
-				value = buff_tweak_data.markus_questing_knight_push_arc.multiplier
-			}
+				value = buff_tweak_data.markus_questing_knight_push_arc.multiplier,
+			},
 		},
 		buffs = {
 			"markus_questing_knight_push_arc",
-			"markus_questing_knight_stamina_reg"
-		}
+			"markus_questing_knight_stamina_reg",
+		},
 	},
 	{
 		description = "markus_questing_knight_ability_double_activation_desc",
+		icon = "markus_questing_knight_ability_double_activation",
 		name = "markus_questing_knight_ability_double_activation",
 		num_ranks = 1,
-		icon = "markus_questing_knight_ability_double_activation",
-		buffs = {}
+		buffs = {},
 	},
 	{
 		description = "markus_questing_knight_ability_buff_on_kill_desc",
+		icon = "markus_questing_knight_ability_buff_on_kill",
 		name = "markus_questing_knight_ability_buff_on_kill",
 		num_ranks = 1,
-		icon = "markus_questing_knight_ability_buff_on_kill",
 		description_values = {
 			{
 				value_type = "baked_percent",
-				value = buff_tweak_data.markus_questing_knight_ability_buff_on_kill_movement_speed.multiplier
+				value = buff_tweak_data.markus_questing_knight_ability_buff_on_kill_movement_speed.multiplier,
 			},
 			{
-				value = buff_tweak_data.markus_questing_knight_ability_buff_on_kill_movement_speed.duration
-			}
+				value = buff_tweak_data.markus_questing_knight_ability_buff_on_kill_movement_speed.duration,
+			},
 		},
 		buffs = {
-			"markus_questing_knight_ability_buff_on_kill"
-		}
+			"markus_questing_knight_ability_buff_on_kill",
+		},
 	},
 	{
 		description = "markus_questing_knight_ability_tank_attack_desc",
+		icon = "markus_questing_knight_ability_tank_attack",
 		name = "markus_questing_knight_ability_tank_attack",
 		num_ranks = 1,
-		icon = "markus_questing_knight_ability_tank_attack",
-		buffs = {}
-	}
+		buffs = {},
+	},
 }
 local hero_name = "empire_soldier"
 
@@ -569,7 +571,7 @@ WeaveLoadoutSettings = WeaveLoadoutSettings or {}
 WeaveLoadoutSettings.es_questingknight = {
 	talent_tree = talent_trees[1],
 	properties = {},
-	traits = {}
+	traits = {},
 }
 
 BuffUtils.copy_talent_buff_names(talent_buff_templates)

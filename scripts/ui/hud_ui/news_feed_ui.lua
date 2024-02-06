@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/hud_ui/news_feed_ui.lua
+
 require("scripts/settings/news_feed_templates")
 
 local definitions = local_require("scripts/ui/hud_ui/news_feed_ui_definitions")
@@ -12,6 +14,7 @@ local ANIM_STATE_ENTER = "enter"
 local MAX_NUMBER_OF_NEWS = definitions.MAX_NUMBER_OF_NEWS
 local WIDGET_SIZE = definitions.WIDGET_SIZE
 local NEWS_SPACING = definitions.NEWS_SPACING
+
 NewsFeedUI = class(NewsFeedUI)
 
 NewsFeedUI.init = function (self, parent, ingame_ui_context)
@@ -29,6 +32,7 @@ end
 
 NewsFeedUI._create_ui_elements = function (self)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+
 	local news_widgets = {}
 	local unused_news_widgets = {}
 
@@ -41,7 +45,7 @@ NewsFeedUI._create_ui_elements = function (self)
 	self._unused_news_widgets = unused_news_widgets
 	self._active_news = {}
 	self.conditions_params = {
-		rarities_to_ignore = table.enum_safe("magic")
+		rarities_to_ignore = table.enum_safe("magic"),
 	}
 	self.templates_on_cooldown = {}
 	self.feed_sync_delay = SYNC_WAIT_DURATION_TIME
@@ -116,6 +120,7 @@ NewsFeedUI._sync_news = function (self, dt, t)
 
 		for i = 1, #active_news do
 			local data = active_news[i]
+
 			data.verified = false
 		end
 
@@ -198,7 +203,7 @@ NewsFeedUI._add_entry = function (self, template)
 	local unused_news_widgets = self._unused_news_widgets
 	local num_news = #self._active_news
 
-	if MAX_NUMBER_OF_NEWS <= num_news then
+	if num_news >= MAX_NUMBER_OF_NEWS then
 		return false
 	end
 
@@ -209,9 +214,10 @@ NewsFeedUI._add_entry = function (self, template)
 		cooldown = cooldown,
 		infinite = infinite,
 		anim_duration = ENTER_DURATION_TIME,
-		removed_func = template.removed_func
+		removed_func = template.removed_func,
 	}
 	local active_news = self._active_news
+
 	active_news[#active_news + 1] = data
 	num_news = #self._active_news
 
@@ -219,6 +225,7 @@ NewsFeedUI._add_entry = function (self, template)
 		local widget = table.remove(unused_news_widgets, 1)
 		local widget_content = widget.content
 		local widget_style = widget.style
+
 		data.widget = widget
 		widget_content.title_text = Localize(title)
 		widget_content.text = Localize(description)
@@ -226,6 +233,7 @@ NewsFeedUI._add_entry = function (self, template)
 		widget_content.icon = icon
 		widget_style.icon.texture_size = icon_size
 		widget_style.icon.offset = icon_offset
+
 		local vertical_spacing = WIDGET_SIZE[2] + NEWS_SPACING
 		local widget_offset = widget.offset
 
@@ -252,6 +260,7 @@ NewsFeedUI._update_alignment_duration = function (self)
 		if widget then
 			local widget_offset = widget.offset
 			local current_position = widget_offset[2]
+
 			data.current_position = current_position
 		end
 	end
@@ -300,7 +309,9 @@ NewsFeedUI._remove_entry = function (self, index)
 
 	local name = data.name
 	local cooldown = data.cooldown
+
 	self.templates_on_cooldown[name] = cooldown
+
 	local removed_func = data.removed_func
 
 	if removed_func then
@@ -316,6 +327,7 @@ NewsFeedUI._update_alignment = function (self, dt)
 	end
 
 	alignment_duration = math.max(alignment_duration - dt, 0)
+
 	local progress = alignment_duration / ALIGNMENT_DURATION_TIME
 	local anim_progress = math.easeCubic(progress)
 
@@ -335,6 +347,7 @@ NewsFeedUI._update_alignment = function (self, dt)
 			local widget_offset = widget.offset
 			local current_position = data.current_position
 			local diff = current_position - widget_target_position
+
 			widget_offset[2] = current_position - diff * (1 - anim_progress)
 			widget_target_position = widget_target_position - vertical_spacing
 		end
@@ -353,6 +366,7 @@ NewsFeedUI._update_state_animations = function (self, dt)
 
 		if anim_duration then
 			anim_duration = math.max(anim_duration - dt, 0)
+
 			local progress = 0
 
 			if state == ANIM_STATE_ENTER then
@@ -405,23 +419,30 @@ NewsFeedUI._animate_widget = function (self, widget, state, progress)
 	end
 
 	local horizontal_diztance = 100
+
 	offset[1] = 100 - anim_progress * horizontal_diztance
+
 	local alpha = anim_progress * 255
+
 	style.text.text_color[1] = alpha
 	style.text_shadow.text_color[1] = alpha
 	style.title_text.text_color[1] = alpha
 	style.title_text_shadow.text_color[1] = alpha
 	style.background.color[1] = alpha
 	style.icon.color[1] = alpha
+
 	local effect_style = style.effect
 	local effect_color = effect_style.color
 
 	if state == ANIM_STATE_ENTER then
 		local effect_progress = math.ease_pulse(progress)
+
 		effect_color[1] = effect_progress * 255
 		effect_style.offset[1] = 120 - offset[1]
+
 		local degrees = 75
 		local rotation_progress = math.easeCubic(progress)
+
 		effect_style.angle = math.degrees_to_radians(degrees * rotation_progress)
 	elseif alpha < effect_color[1] then
 		effect_color[1] = alpha
@@ -430,6 +451,7 @@ end
 
 NewsFeedUI.set_position = function (self, x, y)
 	local position = self.ui_scenegraph.pivot.local_position
+
 	position[1] = x
 	position[2] = y
 end
@@ -440,6 +462,7 @@ end
 
 NewsFeedUI.set_visible = function (self, visible)
 	self._is_visible = visible
+
 	local ui_renderer = self.ui_renderer
 end
 

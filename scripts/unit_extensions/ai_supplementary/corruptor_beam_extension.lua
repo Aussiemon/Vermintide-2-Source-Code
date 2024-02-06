@@ -1,8 +1,12 @@
+﻿-- chunkname: @scripts/unit_extensions/ai_supplementary/corruptor_beam_extension.lua
+
 CorruptorBeamExtension = class(CorruptorBeamExtension)
+
 local position_lookup = POSITION_LOOKUP
 
 CorruptorBeamExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	local world = extension_init_context.world
+
 	self.world = world
 	self.unit = unit
 	self.is_server = Managers.player.is_server
@@ -88,8 +92,10 @@ CorruptorBeamExtension.set_state = function (self, state, target_unit)
 	if state == "projectile" and Unit.alive(target_unit) then
 		self.beam_effect = World.create_particles(world, self.beam_effect_name, self_pos)
 		self.beam_effect_variable_id = World.find_particles_variable(world, self.beam_effect_name, "trail_length")
+
 		local projectile_unit = World.spawn_unit(world, self.projectile_unit_name, self_pos, Quaternion.identity())
 		local pose = Matrix4x4.identity()
+
 		self.projectile_effect = World.create_particles(world, self.projectile_effect_name, self_pos)
 		self.state = state
 		self.target_unit = target_unit
@@ -108,8 +114,11 @@ CorruptorBeamExtension.set_state = function (self, state, target_unit)
 			WwiseUtils.trigger_unit_event(world, self.stop_projectile_sound, self.projectile_unit, 0)
 
 			local start_sound_id, start_source = WwiseUtils.trigger_unit_event(world, self.beam_start_sound, self.unit, Unit.node(self.unit, "a_voice"))
+
 			self.beam_start_sound_id = start_sound_id
+
 			local end_sound_id, end_source = WwiseUtils.trigger_unit_event(world, self.beam_end_sound, target_unit, Unit.node(target_unit, "j_neck"))
+
 			self.beam_end_sound_id = end_sound_id
 		end
 

@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/ui/hud_ui/energy_bar_ui.lua
+
 local definitions = local_require("scripts/ui/hud_ui/energy_bar_ui_definitions")
+
 EnergyBarUI = class(EnergyBarUI)
 
 EnergyBarUI.init = function (self, parent, ingame_ui_context)
@@ -7,7 +10,7 @@ EnergyBarUI.init = function (self, parent, ingame_ui_context)
 	self.input_manager = ingame_ui_context.input_manager
 	self.render_settings = {
 		alpha_multiplier = 1,
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 
 	self:create_ui_elements()
@@ -79,31 +82,36 @@ local colors = {
 		255,
 		0,
 		255,
-		255
-	}
+		255,
+	},
 }
 
 EnergyBarUI._set_charge_bar_fraction = function (self, energy_fraction, is_drainable)
 	local widget = self.charge_bar
 	local style = widget.style
 	local content = widget.content
+
 	energy_fraction = math.lerp(content.internal_gradient_threshold or 1, math.min(energy_fraction, 1), 0.3)
 	content.internal_gradient_threshold = energy_fraction
 	style.bar_1.gradient_threshold = energy_fraction
-	local color = nil
+
+	local color
 	local icon_color = style.icon.color
 	local bar_color = style.bar_1.color
+
 	color = colors.normal
 	bar_color[1] = color[1]
 	bar_color[2] = color[2]
 	bar_color[3] = color[3]
 	bar_color[4] = color[4]
+
 	local pulse_speed = 10
 	local pulse_alpha = 0
 
 	if not is_drainable then
 		local pulse_global_fraction = math.min(math.max(energy_fraction, 0.95) / 0.050000000000000044 * 1.3, 1)
 		local pulse_fraction = 0.5 + math.sin(Managers.time:time("ui") * pulse_speed) * 0.5
+
 		pulse_alpha = (100 + pulse_fraction * 155) * pulse_global_fraction
 	end
 
@@ -125,6 +133,7 @@ end
 EnergyBarUI._apply_crosshair_position = function (self, x, y)
 	local scenegraph_id = "screen_bottom_pivot"
 	local position = self.ui_scenegraph[scenegraph_id].local_position
+
 	position[1] = x
 	position[2] = y
 end

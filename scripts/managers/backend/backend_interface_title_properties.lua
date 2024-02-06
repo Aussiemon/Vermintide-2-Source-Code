@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/backend/backend_interface_title_properties.lua
+
 BackendInterfaceTitleProperties = class(BackendInterfaceTitleProperties)
 
 BackendInterfaceTitleProperties.init = function (self)

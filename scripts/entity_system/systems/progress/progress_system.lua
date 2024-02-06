@@ -1,10 +1,13 @@
+﻿-- chunkname: @scripts/entity_system/systems/progress/progress_system.lua
+
 ProgressSystem = class(ProgressSystem, ExtensionSystemBase)
+
 local extensions = {
-	"PlayerInZoneExtension"
+	"PlayerInZoneExtension",
 }
 local RPCS = {
 	"rpc_player_in_zone_set_active",
-	"rpc_player_in_zone_end_event"
+	"rpc_player_in_zone_end_event",
 }
 
 ProgressSystem.init = function (self, entity_system_creation_context, system_name)
@@ -20,6 +23,7 @@ end
 
 ProgressSystem.on_add_extension = function (self, world, unit, extension_name, extension_init_data)
 	local extension = ProgressSystem.super.on_add_extension(self, world, unit, extension_name)
+
 	self._existing_units[unit] = extension
 
 	return extension

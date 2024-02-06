@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/imgui/imgui_boons_debug.lua
+
 ImguiBoonsDebug = class(ImguiBoonsDebug)
+
 local SHOULD_RELOAD = true
 
 ImguiBoonsDebug.init = function (self)
@@ -83,7 +86,7 @@ ImguiBoonsDebug._update_controls = function (self)
 			return
 		end
 
-		local power_up_rarity = nil
+		local power_up_rarity
 
 		for rarity, boon_definitions in pairs(DeusPowerUpRarityPool) do
 			for i = 1, #boon_definitions do
@@ -108,7 +111,7 @@ ImguiBoonsDebug._update_controls = function (self)
 		local local_player_id = local_player:local_player_id()
 
 		deus_run_controller:add_power_ups({
-			power_up
+			power_up,
 		}, local_player_id)
 
 		local buff_system = Managers.state.entity:system("buff_system")
@@ -122,8 +125,8 @@ ImguiBoonsDebug._update_controls = function (self)
 		Managers.state.event:trigger("present_rewards", {
 			{
 				type = "deus_power_up",
-				power_up = power_up
-			}
+				power_up = power_up,
+			},
 		})
 	end
 end

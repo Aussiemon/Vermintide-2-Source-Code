@@ -1,113 +1,116 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/trees/skaven/skaven_grey_seer_behavior.lua
+
 local ACTIONS = BreedActions.skaven_grey_seer
+
 BreedBehaviors.grey_seer = {
 	"BTSelector",
 	{
 		"BTSpawningAction",
 		condition = "spawn",
-		name = "spawn"
+		name = "spawn",
 	},
 	{
 		"BTSelector",
+		action_data = ACTIONS.intro_sequence,
 		{
 			"BTDummyIdleAction",
 			enter_hook = "to_combat",
 			name = "intro_idle",
-			action_data = ACTIONS.intro_idle
+			action_data = ACTIONS.intro_idle,
 		},
-		name = "intro_sequence",
-		leave_hook = "on_grey_seer_intro_leave",
 		condition = "lord_intro",
 		enter_hook = "on_grey_seer_intro_enter",
-		action_data = ACTIONS.intro_sequence
+		leave_hook = "on_grey_seer_intro_leave",
+		name = "intro_sequence",
 	},
 	{
 		"BTMountUnitAction",
-		name = "mount_unit",
 		condition = "should_mount_unit",
-		action_data = ACTIONS.mount_unit
+		name = "mount_unit",
+		action_data = ACTIONS.mount_unit,
 	},
 	{
 		"BTIdleAction",
 		condition = "grey_seer_waiting_for_pickup",
-		name = "waiting_for_pickup_idle"
+		name = "waiting_for_pickup_idle",
 	},
 	{
 		"BTGreySeerMountedAction",
 		condition = "is_mounted",
-		name = "mounted_combat"
+		name = "mounted_combat",
 	},
 	{
 		"BTDummyIdleAction",
-		name = "wounded_idle",
 		condition = "grey_seer_waiting_death",
-		action_data = ACTIONS.wounded_idle
+		name = "wounded_idle",
+		action_data = ACTIONS.wounded_idle,
 	},
 	{
 		"BTSequence",
+		action_data = ACTIONS.grey_seer_death_sequence,
 		{
 			"BTQuickTeleportAction",
 			enter_hook = "grey_seer_death_sequence_teleport",
 			name = "quick_teleport",
-			action_data = ACTIONS.quick_teleport_death
+			action_data = ACTIONS.quick_teleport_death,
 		},
 		{
 			"BTQuickTeleportAction",
 			enter_hook = "grey_seer_death_sequence_teleport",
 			name = "quick_teleport",
-			action_data = ACTIONS.quick_teleport_death
+			action_data = ACTIONS.quick_teleport_death,
 		},
 		{
 			"BTQuickTeleportAction",
 			enter_hook = "grey_seer_death_sequence_teleport",
 			name = "quick_teleport",
-			action_data = ACTIONS.quick_teleport_death
+			action_data = ACTIONS.quick_teleport_death,
 		},
 		{
 			"BTQuickTeleportAction",
 			enter_hook = "grey_seer_death_sequence_teleport",
 			name = "quick_teleport",
-			action_data = ACTIONS.quick_teleport_death
+			action_data = ACTIONS.quick_teleport_death,
 		},
 		{
 			"BTQuickTeleportAction",
 			enter_hook = "grey_seer_death_sequence_teleport",
 			name = "quick_teleport",
-			action_data = ACTIONS.quick_teleport_death
+			action_data = ACTIONS.quick_teleport_death,
 		},
 		{
 			"BTQuickTeleportAction",
 			enter_hook = "grey_seer_death_sequence_teleport",
 			name = "quick_teleport",
-			action_data = ACTIONS.quick_teleport_death
+			action_data = ACTIONS.quick_teleport_death,
 		},
 		{
 			"BTQuickTeleportAction",
 			enter_hook = "grey_seer_death_sequence_teleport",
 			name = "quick_teleport",
-			action_data = ACTIONS.quick_teleport_death
+			action_data = ACTIONS.quick_teleport_death,
 		},
 		{
 			"BTQuickTeleportAction",
 			enter_hook = "grey_seer_death_sequence_teleport",
 			name = "quick_teleport",
-			action_data = ACTIONS.quick_teleport_death
+			action_data = ACTIONS.quick_teleport_death,
 		},
 		{
 			"BTQuickTeleportAction",
 			enter_hook = "grey_seer_death_sequence_teleport",
 			name = "quick_teleport",
-			action_data = ACTIONS.quick_teleport_death
+			action_data = ACTIONS.quick_teleport_death,
 		},
 		{
 			"BTQuickTeleportAction",
 			enter_hook = "grey_seer_death_sequence_teleport",
-			name = "quick_teleport",
 			leave_hook = "on_grey_seer_death_sequence_leave",
-			action_data = ACTIONS.quick_teleport_death
+			name = "quick_teleport",
+			action_data = ACTIONS.quick_teleport_death,
 		},
-		name = "grey_seer_death_sequence",
 		condition = "grey_seer_death",
-		action_data = ACTIONS.grey_seer_death_sequence
+		name = "grey_seer_death_sequence",
 	},
 	{
 		"BTSequence",
@@ -115,60 +118,60 @@ BreedBehaviors.grey_seer = {
 			"BTQuickTeleportAction",
 			enter_hook = "grey_seer_call_stormfiend_enter",
 			name = "quick_teleport",
-			action_data = ACTIONS.quick_teleport
+			action_data = ACTIONS.quick_teleport,
 		},
 		{
 			"BTIdleAction",
 			name = "defensive_idle",
-			action_data = ACTIONS.defensive_idle
+			action_data = ACTIONS.defensive_idle,
 		},
 		condition = "grey_seer_call_stormfiend",
-		name = "grey_seer_call_stormfiend"
+		name = "grey_seer_call_stormfiend",
 	},
 	{
 		"BTStaggerAction",
+		condition = "grey_seer_stagger",
 		enter_hook = "grey_seer_stagger_enter",
 		name = "stagger",
-		condition = "grey_seer_stagger",
-		action_data = ACTIONS.stagger
+		action_data = ACTIONS.stagger,
 	},
 	{
 		"BTSelector",
 		{
 			"BTQuickTeleportAction",
-			name = "quick_teleport",
 			condition = "grey_seer_teleport_spell",
-			action_data = ACTIONS.quick_teleport
+			name = "quick_teleport",
+			action_data = ACTIONS.quick_teleport,
 		},
 		{
 			"BTChaosSorcererSummoningAction",
-			name = "spawn_plague_wave",
 			condition = "grey_seer_vermintide_spell",
-			action_data = ACTIONS.spawn_plague_wave
+			name = "spawn_plague_wave",
+			action_data = ACTIONS.spawn_plague_wave,
 		},
 		{
 			"BTCastMissileAction",
-			name = "cast_missile",
 			condition = "grey_seer_warp_lightning_spell",
-			action_data = ACTIONS.cast_missile
+			name = "cast_missile",
+			action_data = ACTIONS.cast_missile,
 		},
 		condition = "ready_to_cast_spell",
-		name = "spell_casting"
+		name = "spell_casting",
 	},
 	{
 		"BTGreySeerGroundCombatAction",
-		name = "ground_combat",
 		condition = "knocked_off_mount",
-		action_data = ACTIONS.ground_combat
+		name = "ground_combat",
+		action_data = ACTIONS.ground_combat,
 	},
 	{
 		"BTIdleAction",
 		name = "defensive_idle",
-		action_data = ACTIONS.defensive_idle
+		action_data = ACTIONS.defensive_idle,
 	},
 	{
 		"BTIdleAction",
-		name = "idle"
+		name = "idle",
 	},
-	name = "grey_seer"
+	name = "grey_seer",
 }

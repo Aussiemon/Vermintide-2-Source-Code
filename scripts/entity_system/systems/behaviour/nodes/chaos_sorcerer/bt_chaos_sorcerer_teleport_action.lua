@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/chaos_sorcerer/bt_chaos_sorcerer_teleport_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTChaosSorcererTeleportAction = class(BTChaosSorcererTeleportAction, BTNode)
@@ -11,11 +13,15 @@ BTChaosSorcererTeleportAction.enter = function (self, unit, blackboard, t)
 	local next_smart_object_data = blackboard.next_smart_object_data
 	local entrance_pos = next_smart_object_data.entrance_pos:unbox()
 	local exit_pos = next_smart_object_data.exit_pos:unbox()
+
 	blackboard.active_node = BTChaosSorcererTeleportAction
+
 	local smart_object_data = next_smart_object_data.smart_object_data
+
 	blackboard.smart_object_data = smart_object_data
 	blackboard.teleport_position = Vector3Box(exit_pos)
 	blackboard.entrance_position = Vector3Box(entrance_pos)
+
 	local locomotion_extension = blackboard.locomotion_extension
 
 	locomotion_extension:set_wanted_velocity(Vector3.zero())
@@ -32,11 +38,14 @@ BTChaosSorcererTeleportAction.leave = function (self, unit, blackboard, t, reaso
 	blackboard.teleport_timeout = nil
 	blackboard.anim_cb_teleport_finished = nil
 	blackboard.active_node = nil
+
 	local navigation_extension = blackboard.navigation_extension
 
 	navigation_extension:set_enabled(true)
 
-	local success = navigation_extension:is_using_smart_object() and navigation_extension:use_smart_object(false)
+	if navigation_extension:is_using_smart_object() then
+		local success = navigation_extension:use_smart_object(false)
+	end
 end
 
 BTChaosSorcererTeleportAction.run = function (self, unit, blackboard, t, dt)
@@ -57,7 +66,7 @@ BTChaosSorcererTeleportAction.run = function (self, unit, blackboard, t, dt)
 		blackboard.teleport_timeout = nil
 	end
 
-	if (blackboard.teleport_timeout == nil or blackboard.teleport_timeout < t) and blackboard.anim_cb_teleport_finished then
+	if (blackboard.teleport_timeout == nil or t > blackboard.teleport_timeout) and blackboard.anim_cb_teleport_finished then
 		local locomotion_extension = blackboard.locomotion_extension
 		local teleport_position = blackboard.teleport_position:unbox()
 

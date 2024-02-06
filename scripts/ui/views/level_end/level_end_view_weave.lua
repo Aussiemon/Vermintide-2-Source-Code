@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/level_end/level_end_view_weave.lua
+
 require("scripts/ui/views/level_end/level_end_view_base")
 require("scripts/ui/views/level_end/states/end_view_state_summary")
 require("scripts/ui/views/team_previewer")
@@ -10,6 +12,7 @@ local generic_input_actions = definitions.generic_input_actions
 local debug_draw_scenegraph = false
 local debug_menu = false
 local level_end_view_weave_testify = script_data.testify and require("scripts/ui/views/level_end/level_end_view_weave_testify")
+
 LevelEndViewWeave = class(LevelEndViewWeave, LevelEndViewBase)
 
 LevelEndViewWeave.init = function (self, context)
@@ -34,7 +37,7 @@ LevelEndViewWeave.destroy = function (self)
 end
 
 LevelEndViewWeave.setup_pages = function (self, game_won, rewards)
-	local index_by_state_name = nil
+	local index_by_state_name
 
 	if self._is_untrusted then
 		index_by_state_name = self:_setup_pages_untrusted()
@@ -49,20 +52,20 @@ end
 
 LevelEndViewWeave._setup_pages_untrusted = function (self)
 	return {
-		EndViewStateWeave = 1
+		EndViewStateWeave = 1,
 	}
 end
 
 LevelEndViewWeave._setup_pages_victory = function (self, rewards)
 	return {
 		EndViewStateSummary = 2,
-		EndViewStateWeave = 1
+		EndViewStateWeave = 1,
 	}
 end
 
 LevelEndViewWeave._setup_pages_defeat = function (self, rewards)
 	return {
-		EndViewStateSummary = 1
+		EndViewStateSummary = 1,
 	}
 end
 
@@ -154,13 +157,14 @@ LevelEndViewWeave._setup_weave_data = function (self)
 		Managers.mechanism:progress_state()
 
 		local difficulty_key = current_weave_template.difficulty_key
-		local act_key = nil
+		local act_key
 		local private_game = true
 		local quick_game = false
 		local eac_authorized = false
 
 		if DEDICATED_SERVER then
 			local eac_server = Managers.matchmaking.network_server:eac_server()
+
 			eac_authorized = EACServer.state(eac_server, Network.peer_id()) == "trusted"
 		else
 			local eac_state = EAC.state()
@@ -187,60 +191,60 @@ local hero_locations = {
 		{
 			unit_x,
 			unit_y,
-			unit_z
-		}
+			unit_z,
+		},
 	},
 	{
 		{
 			unit_x + unit_x_seperation * 0.5,
 			unit_y + unit_y_seperation * 0.5,
-			unit_z
+			unit_z,
 		},
 		{
 			unit_x + unit_x_seperation * -0.5,
 			unit_y + unit_y_seperation * -0.5,
-			unit_z
-		}
+			unit_z,
+		},
 	},
 	{
 		{
 			unit_x + unit_x_seperation * 1,
 			unit_y + unit_y_seperation * 1,
-			unit_z
+			unit_z,
 		},
 		{
 			unit_x + unit_x_seperation * 0,
 			unit_y + unit_y_seperation * 0,
-			unit_z
+			unit_z,
 		},
 		{
 			unit_x + unit_x_seperation * -1,
 			unit_y + unit_y_seperation * -1,
-			unit_z
-		}
+			unit_z,
+		},
 	},
 	{
 		{
 			unit_x + unit_x_seperation * 1.5,
 			unit_y + unit_y_seperation * 1.5,
-			unit_z
+			unit_z,
 		},
 		{
 			unit_x + unit_x_seperation * 0.5,
 			unit_y + unit_y_seperation * 0.5,
-			unit_z
+			unit_z,
 		},
 		{
 			unit_x + unit_x_seperation * -0.5,
 			unit_y + unit_y_seperation * -0.5,
-			unit_z
+			unit_z,
 		},
 		{
 			unit_x + unit_x_seperation * -1.5,
 			unit_y + unit_y_seperation * -1.5,
-			unit_z
-		}
-	}
+			unit_z,
+		},
+	},
 }
 
 LevelEndViewWeave._destroy_team_previewer = function (self)
@@ -266,7 +270,9 @@ LevelEndViewWeave._setup_team_previewer = function (self, num_players)
 	end
 
 	local world, viewport = self:get_viewport_world()
+
 	self._team_previewer = TeamPreviewer:new(self.context, world, viewport)
+
 	local team_data = self._team_heroes
 	local player_count = #team_data
 
@@ -293,8 +299,11 @@ LevelEndViewWeave._setup_team_heroes = function (self, players_session_scores, n
 
 		if player_stat_id then
 			local player_data = players_session_scores[player_stat_id]
+
 			team_heroes[#team_heroes + 1] = self:get_hero_from_score(player_data)
+
 			local peer_id = player_data.peer_id
+
 			players_with_score[peer_id] = true
 		end
 	end
@@ -315,15 +324,15 @@ LevelEndViewWeave.get_hero_from_score = function (self, player_data)
 		weapon_slot = player_data.weapon and career_settings.preview_wield_slot or nil,
 		preview_items = {
 			player_data.hat,
-			player_data.weapon
-		}
+			player_data.weapon,
+		},
 	}
 end
 
 local level_name = "levels/end_screen_victory/world"
 
 LevelEndViewWeave.setup_camera = function (self)
-	local camera_pose = nil
+	local camera_pose
 	local unit_indices = LevelResource.unit_indices(level_name, "units/hub_elements/cutscene_camera/cutscene_camera")
 
 	for _, index in pairs(unit_indices) do
@@ -334,6 +343,7 @@ LevelEndViewWeave.setup_camera = function (self)
 			local position = LevelResource.unit_position(level_name, index)
 			local rotation = LevelResource.unit_rotation(level_name, index)
 			local pose = Matrix4x4.from_quaternion_position(rotation, position)
+
 			camera_pose = Matrix4x4Box(pose)
 
 			print("Found camera: " .. name)
@@ -362,7 +372,9 @@ LevelEndViewWeave._update_camera_look_up = function (self, dt, t)
 	local camera_look_up_degrees = self._camera_look_up_degrees
 	local previous_progress = math.clamp(camera_look_up_time / camera_look_up_duration, 0, 1)
 	local previous_animation_progress = math.easeCubic(previous_progress)
+
 	camera_look_up_time = camera_look_up_time + dt
+
 	local progress = math.clamp(camera_look_up_time / camera_look_up_duration, 0, 1)
 	local animation_progress = math.easeCubic(progress)
 	local previous_angle = math.degrees_to_radians(camera_look_up_degrees * previous_animation_progress)
@@ -382,7 +394,7 @@ end
 
 LevelEndViewWeave.spawn_level = function (self, context, world)
 	local object_sets = {}
-	local position, rotation, shading_callback, mood_setting = nil
+	local position, rotation, shading_callback, mood_setting
 	local time_sliced_spawn = false
 	local level = ScriptWorld.spawn_level(world, level_name, object_sets, position, rotation, shading_callback, mood_setting, time_sliced_spawn)
 

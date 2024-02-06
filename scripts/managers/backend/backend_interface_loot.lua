@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/backend/backend_interface_loot.lua
+
 require("scripts/managers/backend/data_server_queue")
 
 local function dprint(...)
@@ -5,6 +7,7 @@ local function dprint(...)
 end
 
 BackendInterfaceLoot = class(BackendInterfaceLoot)
+
 local DB_ENTITY_TYPE = "item"
 
 BackendInterfaceLoot.init = function (self)
@@ -29,7 +32,9 @@ BackendInterfaceLoot._command_loot_chest_generated = function (self, entity_id)
 	dprint("_command_loot_chest_generated ")
 
 	self.dirty = false
+
 	local backend_item = Managers.backend:get_interface("items")
+
 	self.last_generated_loot_chest = backend_item:get_item_from_id(entity_id).key
 
 	Backend.load_entities()
@@ -121,7 +126,7 @@ BackendInterfaceLoot.get_loot = function (self, backend_id)
 			properties[#properties + 1] = {
 				rune_value = "empty",
 				rune_slot = rune_slot,
-				property_key = property
+				property_key = property,
 			}
 		end
 

@@ -1,9 +1,11 @@
+﻿-- chunkname: @scripts/settings/mutators/mutator_challenge_test.lua
+
 require("scripts/settings/dlcs/morris/deus_blessing_settings")
 
 local challenge_settings = {
+	category = "deus_mutator",
 	reward = "deus_power_up_quest_test_reward_01",
 	type = "kill_elites",
-	category = "deus_mutator",
 	amount = {
 		1,
 		7,
@@ -12,8 +14,8 @@ local challenge_settings = {
 		10,
 		15,
 		15,
-		15
-	}
+		15,
+	},
 }
 
 return {
@@ -28,6 +30,7 @@ return {
 		local player_unique_id = player:unique_id()
 		local auto_resume = false
 		local challenge = challenge_manager:add_challenge(challenge_settings.type, is_repeatable, category, challenge_reward, player_unique_id, challenge_settings.amount[difficulty_rank], auto_resume)
+
 		data.challenge = challenge
 	end,
 	server_stop_function = function (context, data, unit)
@@ -38,5 +41,5 @@ return {
 
 			challenge_manager:remove_challenge(challenge)
 		end
-	end
+	end,
 }

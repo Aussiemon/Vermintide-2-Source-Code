@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/start_game_view/windows/start_game_window_mutator_grid_console.lua
+
 local definitions = local_require("scripts/ui/views/start_game_view/windows/definitions/start_game_window_mutator_grid_console_definitions")
 local widget_definitions = definitions.widgets
 local scenegraph_definition = definitions.scenegraph_definition
@@ -7,16 +9,16 @@ local delete_deeds_buttons_definition = definitions.delete_deeds_button_widgets
 local SELECTION_INPUT = "confirm_press"
 local grid_settings = {
 	{
-		wield = true,
-		name = "heroic_deeds",
 		display_name = "heroic_deeds",
-		item_filter = "slot_type == deed",
 		hero_specific_filter = false,
+		item_filter = "slot_type == deed",
+		name = "heroic_deeds",
+		wield = true,
 		item_types = {
-			"deed"
+			"deed",
 		},
-		icon = UISettings.slot_icons.melee
-	}
+		icon = UISettings.slot_icons.melee,
+	},
 }
 local delete_type = table.enum("clear", "delete_selected")
 
@@ -60,6 +62,7 @@ end
 
 local INPUT_ACTION_NEXT = "trigger_cycle_next"
 local INPUT_ACTION_PREVIOUS = "trigger_cycle_previous"
+
 StartGameWindowMutatorGridConsole = class(StartGameWindowMutatorGridConsole)
 StartGameWindowMutatorGridConsole.NAME = "StartGameWindowMutatorGridConsole"
 
@@ -67,16 +70,20 @@ StartGameWindowMutatorGridConsole.on_enter = function (self, params, offset)
 	print("[StartGameWindow] Enter Substate StartGameWindowMutatorGridConsole")
 
 	self.parent = params.parent
+
 	local ingame_ui_context = params.ingame_ui_context
+
 	self.ui_renderer = ingame_ui_context.ui_renderer
 	self._ui_top_renderer = ingame_ui_context.ui_top_renderer
 	self.input_manager = ingame_ui_context.input_manager
 	self.statistics_db = ingame_ui_context.statistics_db
 	self.render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
+
 	local player_manager = Managers.player
 	local local_player = player_manager:local_player()
+
 	self._stats_id = local_player:stats_id()
 	self.player_manager = player_manager
 	self.peer_id = ingame_ui_context.peer_id
@@ -86,6 +93,7 @@ StartGameWindowMutatorGridConsole.on_enter = function (self, params, offset)
 	self:create_ui_elements(params, offset)
 
 	self._previously_selected_backend_id = self.parent:get_selected_heroic_deed_backend_id()
+
 	local item_interface = Managers.backend:get_interface("items")
 	local item = item_interface:get_item_from_id(self._previously_selected_backend_id)
 
@@ -121,10 +129,11 @@ end
 
 StartGameWindowMutatorGridConsole._start_transition_animation = function (self, animation_name)
 	local params = {
-		render_settings = self.render_settings
+		render_settings = self.render_settings,
 	}
 	local widgets = {}
 	local anim_id = self.ui_animator:start_animation(animation_name, widgets, scenegraph_definition, params)
+
 	self._animations[animation_name] = anim_id
 end
 
@@ -136,6 +145,7 @@ StartGameWindowMutatorGridConsole.create_ui_elements = function (self, params, o
 
 	if script_data["eac-untrusted"] then
 		local delete_deed_widgets = self._delete_deeds_buttons_widgets_by_name
+
 		delete_deed_widgets.button_delete.content.button_hotspot.disable_button = true
 		delete_deed_widgets.button_clear.content.button_hotspot.disable_button = true
 	end
@@ -146,6 +156,7 @@ StartGameWindowMutatorGridConsole.create_ui_elements = function (self, params, o
 
 	if offset then
 		local window_position = self.ui_scenegraph.window.local_position
+
 		window_position[1] = window_position[1] + offset[1]
 		window_position[2] = window_position[2] + offset[2]
 		window_position[3] = window_position[3] + offset[3]
@@ -235,14 +246,16 @@ StartGameWindowMutatorGridConsole._handle_input = function (self, dt, t)
 	end
 
 	local gamepad_active = Managers.input:is_device_active("gamepad")
-	local item, item_content = nil
+	local item, item_content
 
 	if gamepad_active then
 		local r, c = item_grid:get_selected_item_grid_slot()
+
 		item = item_grid:get_item_in_slot(r, c)
 		item_content = item_grid:get_item_content(r, c)
 	else
 		local r, c = item_grid:get_item_hovered_slot()
+
 		item = item_grid:get_item_hovered()
 		item_content = item_grid:get_item_content(r, c)
 	end
@@ -256,6 +269,7 @@ StartGameWindowMutatorGridConsole._handle_input = function (self, dt, t)
 	elseif item and item.marked_for_deletion and (input_service and input_service:get("right_stick_press") or input_service:get("mouse_middle_press")) then
 		item.marked_for_deletion = false
 		item_content.reserved = false
+
 		local idx = table.index_of(self._deeds_marked_for_deletion, item)
 
 		table.swap_delete(self._deeds_marked_for_deletion, idx)
@@ -434,7 +448,9 @@ StartGameWindowMutatorGridConsole._update_page_info = function (self)
 		self._current_page = current_page
 		current_page = current_page or 1
 		total_pages = total_pages or 1
+
 		local widgets_by_name = self._widgets_by_name
+
 		widgets_by_name.page_text_left.content.text = tostring(current_page)
 		widgets_by_name.page_text_right.content.text = tostring(total_pages)
 		widgets_by_name.page_button_next.content.hotspot.disable_button = current_page == total_pages
@@ -448,21 +464,24 @@ StartGameWindowMutatorGridConsole._setup_input_buttons = function (self)
 	local input_1_texture_data = UISettings.get_gamepad_input_texture_data(input_service, INPUT_ACTION_NEXT, true)
 	local input_1_widget = widgets_by_name.input_icon_next
 	local icon_style_input_1 = input_1_widget.style.texture_id
+
 	icon_style_input_1.horizontal_alignment = "center"
 	icon_style_input_1.vertical_alignment = "center"
 	icon_style_input_1.texture_size = {
 		input_1_texture_data.size[1],
-		input_1_texture_data.size[2]
+		input_1_texture_data.size[2],
 	}
 	input_1_widget.content.texture_id = input_1_texture_data.texture
+
 	local input_2_texture_data = UISettings.get_gamepad_input_texture_data(input_service, INPUT_ACTION_PREVIOUS, true)
 	local input_2_widget = widgets_by_name.input_icon_previous
 	local icon_style_input_2 = input_2_widget.style.texture_id
+
 	icon_style_input_2.horizontal_alignment = "center"
 	icon_style_input_2.vertical_alignment = "center"
 	icon_style_input_2.texture_size = {
 		input_2_texture_data.size[1],
-		input_2_texture_data.size[2]
+		input_2_texture_data.size[2],
 	}
 	input_2_widget.content.texture_id = input_2_texture_data.texture
 end
@@ -473,6 +492,7 @@ StartGameWindowMutatorGridConsole._set_gamepad_input_buttons_visibility = functi
 	local input_2_widget = widgets_by_name.input_icon_previous
 	local input_arrow_1_widget = widgets_by_name.input_arrow_next
 	local input_arrow_2_widget = widgets_by_name.input_arrow_previous
+
 	input_1_widget.content.visible = visible
 	input_2_widget.content.visible = visible
 	input_arrow_1_widget.content.visible = visible
@@ -500,7 +520,7 @@ end
 
 StartGameWindowMutatorGridConsole._delete_deeds = function (self, all_deeds_items, marked_deeds)
 	local deed_manager = self._deed_manager
-	local deletion_id = nil
+	local deletion_id
 	local remaining_deeds, deletable_items, error = deed_manager:can_delete_deeds(all_deeds_items, marked_deeds)
 
 	if not deletable_items then
@@ -533,6 +553,7 @@ StartGameWindowMutatorGridConsole._handle_deeds_deletion = function (self)
 	end
 
 	local deletion_id, remaining_deeds = self:_delete_deeds(all_deeds_items, marked_deeds)
+
 	self._deed_removal_id = deletion_id
 end
 
@@ -573,7 +594,8 @@ StartGameWindowMutatorGridConsole._on_removal_complete = function (self)
 end
 
 StartGameWindowMutatorGridConsole._set_delete_buttons_visible = function (self, value)
-	local button_clear, button_delete_selection = nil
+	local button_clear, button_delete_selection
+
 	button_clear = self._delete_deeds_buttons_widgets_by_name.button_clear
 	button_delete_selection = self._delete_deeds_buttons_widgets_by_name.button_delete
 	button_clear.content.visible = value
@@ -582,6 +604,7 @@ end
 
 StartGameWindowMutatorGridConsole._mark_all_for_deletion = function (self)
 	self._deeds_marked_for_deletion = {}
+
 	local all_items = self._item_grid:items()
 
 	for _, item in ipairs(all_items) do

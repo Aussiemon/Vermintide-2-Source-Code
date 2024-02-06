@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/default_player_unit/states/player_character_state_inspecting.lua
+
 PlayerCharacterStateInspecting = class(PlayerCharacterStateInspecting, PlayerCharacterState)
 
 PlayerCharacterStateInspecting.init = function (self, character_state_init_context)

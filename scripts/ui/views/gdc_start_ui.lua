@@ -1,96 +1,98 @@
+﻿-- chunkname: @scripts/ui/views/gdc_start_ui.lua
+
 local scenegraph = {
 	root = {
 		is_root = true,
 		size = {
 			1920,
-			1080
+			1080,
 		},
 		position = {
 			0,
 			0,
-			UILayer.gdc_intro
-		}
+			UILayer.gdc_intro,
+		},
 	},
 	gdc_logo = {
-		vertical_alignment = "top",
-		parent = "root",
 		horizontal_alignment = "center",
+		parent = "root",
+		vertical_alignment = "top",
 		position = {
 			0,
 			-100,
-			1
+			1,
 		},
 		size = {
 			1237,
-			538
-		}
+			538,
+		},
 	},
 	input_root = {
 		parent = "root",
 		position = {
 			960,
 			320,
-			0
+			0,
 		},
 		size = {
 			1,
-			1
-		}
+			1,
+		},
 	},
 	input = {
-		vertical_alignment = "bottom",
 		parent = "input_root",
+		vertical_alignment = "bottom",
 		position = {
 			0,
 			0,
-			1
+			1,
 		},
 		size = {
 			200,
-			40
-		}
+			40,
+		},
 	},
 	input_text = {
-		vertical_alignment = "center",
 		parent = "input",
+		vertical_alignment = "center",
 		size = {
 			600,
-			62
+			62,
 		},
 		position = {
 			0,
 			0,
-			2
-		}
+			2,
+		},
 	},
 	input_prefix_text = {
-		vertical_alignment = "center",
-		parent = "input_icon",
 		horizontal_alignment = "left",
+		parent = "input_icon",
+		vertical_alignment = "center",
 		size = {
 			300,
-			62
+			62,
 		},
 		position = {
 			-300,
 			0,
-			2
-		}
+			2,
+		},
 	},
 	input_icon = {
-		vertical_alignment = "center",
-		parent = "input",
 		horizontal_alignment = "left",
+		parent = "input",
+		vertical_alignment = "center",
 		size = {
 			62,
-			62
+			62,
 		},
 		position = {
 			0,
 			0,
-			1
-		}
-	}
+			1,
+		},
+	},
 }
 local widget_definitions = {
 	input = {
@@ -98,113 +100,113 @@ local widget_definitions = {
 		element = {
 			passes = {
 				{
-					texture_id = "icon_textures",
+					pass_type = "multi_texture",
 					style_id = "icon_styles",
-					pass_type = "multi_texture"
+					texture_id = "icon_textures",
 				},
 				{
-					style_id = "button_text",
 					pass_type = "text",
+					style_id = "button_text",
 					text_id = "button_text",
 					content_check_function = function (content)
 						return content.text ~= ""
-					end
+					end,
 				},
 				{
-					style_id = "text",
 					pass_type = "text",
+					style_id = "text",
 					text_id = "text",
 					content_check_function = function (content)
 						return content.text
-					end
+					end,
 				},
 				{
-					style_id = "prefix_text",
 					pass_type = "text",
+					style_id = "prefix_text",
 					text_id = "prefix_text",
 					content_check_function = function (content)
 						return content.text
-					end
-				}
-			}
+					end,
+				},
+			},
 		},
 		content = {
-			text = "input_text",
-			prefix_text = "",
 			button_text = "",
+			prefix_text = "",
+			text = "input_text",
 			icon_textures = {
-				"pc_button_icon_left"
-			}
+				"pc_button_icon_left",
+			},
 		},
 		style = {
 			prefix_text = {
-				scenegraph_id = "input_prefix_text",
-				font_size = 36,
-				word_wrap = true,
-				pixel_perfect = true,
-				horizontal_alignment = "right",
-				vertical_alignment = "center",
 				dynamic_font = true,
+				font_size = 36,
 				font_type = "hell_shark",
+				horizontal_alignment = "right",
+				pixel_perfect = true,
+				scenegraph_id = "input_prefix_text",
+				vertical_alignment = "center",
+				word_wrap = true,
 				text_color = Colors.get_color_table_with_alpha("white", 255),
 				offset = {
 					0,
 					3,
-					1
-				}
+					1,
+				},
 			},
 			text = {
-				scenegraph_id = "input_text",
-				font_size = 36,
-				word_wrap = true,
-				pixel_perfect = true,
-				horizontal_alignment = "left",
-				vertical_alignment = "center",
 				dynamic_font = true,
+				font_size = 36,
 				font_type = "hell_shark",
+				horizontal_alignment = "left",
+				pixel_perfect = true,
+				scenegraph_id = "input_text",
+				vertical_alignment = "center",
+				word_wrap = true,
 				text_color = Colors.get_color_table_with_alpha("white", 255),
 				offset = {
 					0,
 					3,
-					1
-				}
+					1,
+				},
 			},
 			button_text = {
+				dynamic_font = true,
 				font_size = 24,
-				scenegraph_id = "input_icon",
+				font_type = "hell_shark",
 				horizontal_alignment = "center",
 				pixel_perfect = true,
+				scenegraph_id = "input_icon",
 				vertical_alignment = "center",
-				dynamic_font = true,
-				font_type = "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("white", 255),
 				offset = {
 					0,
 					2,
-					2
-				}
+					2,
+				},
 			},
 			icon_styles = {
 				scenegraph_id = "input_icon",
 				texture_sizes = {
 					{
 						20,
-						36
-					}
+						36,
+					},
 				},
 				offset = {
 					0,
 					0,
-					1
+					1,
 				},
 				color = {
 					255,
 					255,
 					255,
-					255
-				}
-			}
-		}
+					255,
+				},
+			},
+		},
 	},
 	logo = {
 		scenegraph_id = "gdc_logo",
@@ -212,16 +214,17 @@ local widget_definitions = {
 			passes = {
 				{
 					pass_type = "texture",
-					texture_id = "logo"
-				}
-			}
+					texture_id = "logo",
+				},
+			},
 		},
 		content = {
-			logo = "vermintide_logo_transparent"
+			logo = "vermintide_logo_transparent",
 		},
-		style = {}
-	}
+		style = {},
+	},
 }
+
 GDCStartUI = class(GDCStartUI)
 
 GDCStartUI.init = function (self, ingame_ui_context)
@@ -232,7 +235,9 @@ GDCStartUI.init = function (self, ingame_ui_context)
 	self.player_manager = ingame_ui_context.player_manager
 	self.peer_id = ingame_ui_context.peer_id
 	self.world_manager = ingame_ui_context.world_manager
+
 	local input_manager = ingame_ui_context.input_manager
+
 	self.input_manager = input_manager
 	self.ui_animations = {}
 
@@ -250,6 +255,7 @@ GDCStartUI.create_ui_elements = function (self)
 	self:set_input_text("waiting_for_other_players")
 
 	local input_widget_style = self.input_widget.style
+
 	self.ui_animations.button_text_pulse = UIAnimation.init(UIAnimation.pulse_animation, input_widget_style.button_text.text_color, 1, 100, 255, 2)
 	self.ui_animations.button_texture_pulse = UIAnimation.init(UIAnimation.pulse_animation, input_widget_style.icon_styles.color, 1, 100, 255, 2)
 end
@@ -345,9 +351,7 @@ GDCStartUI.check_start_input = function (self, input_service)
 	local ignore_player_count = Development.parameter("gdc_ignore_minimum_players")
 	local expected_num_of_players = Development.parameter("gdc_player_count") or 1
 
-	if ignore_player_count then
-		expected_num_of_players = 1
-	end
+	expected_num_of_players = ignore_player_count and 1 or expected_num_of_players
 
 	local human_players = Managers.player:human_players()
 	local num_of_human_players = 0
@@ -383,10 +387,7 @@ GDCStartUI.set_input_text = function (self, optinal_text)
 	local widget = self.input_widget
 	local widget_content = widget.content
 	local widget_style = widget.style
-	local text = ""
-	local prefix_text = ""
-	local button_text = ""
-	local button_texture_data = nil
+	local text, prefix_text, button_text, button_texture_data = "", "", ""
 
 	if not optinal_text then
 		local interact_action = "jump"
@@ -411,10 +412,10 @@ GDCStartUI.set_input_text = function (self, optinal_text)
 		if button_texture_data.texture then
 			widget_content.button_text = ""
 			widget_content.icon_textures = {
-				button_texture_data.texture
+				button_texture_data.texture,
 			}
 			widget_style.icon_styles.texture_sizes = {
-				button_texture_data.size
+				button_texture_data.size,
 			}
 			texture_size_x = button_texture_data.size[1]
 			texture_size_y = button_texture_data.size[2]
@@ -434,10 +435,7 @@ GDCStartUI.set_input_text = function (self, optinal_text)
 				end
 
 				texture_size_x = texture_size_x + sizes[i][1]
-
-				if texture_size_y < sizes[i][2] then
-					texture_size_y = sizes[i][2] or texture_size_y
-				end
+				texture_size_y = texture_size_y < sizes[i][2] and sizes[i][2] or texture_size_y
 			end
 
 			widget_content.icon_textures = textures
@@ -458,6 +456,7 @@ GDCStartUI.set_input_text = function (self, optinal_text)
 	local text_style = widget_style.text
 	local text_width, scaled_font_size = self:get_text_width(text_style, text)
 	local prefix_text_width = self:get_text_width(widget_style.prefix_text, prefix_text)
+
 	widget_content.text = text
 	widget_content.prefix_text = prefix_text
 	ui_scenegraph.input_text.position[2] = scaled_font_size == text_style.font_size and 3 or 0

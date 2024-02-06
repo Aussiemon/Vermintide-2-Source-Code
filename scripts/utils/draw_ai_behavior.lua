@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/utils/draw_ai_behavior.lua
+
 require("scripts/utils/script_gui")
 
 local SMALL_FONT_SIZE = 16
@@ -22,12 +24,15 @@ local state_counter = 1
 local draw_timers = {}
 local nodes = {}
 local row_heights = {
-	NODE_HEIGHT
+	NODE_HEIGHT,
 }
 local ROW_SPACING = NODE_HEIGHT * 0.5
 local BORDER_SPACING = NODE_HEIGHT
+
 DrawAiBehaviour = {}
+
 local DrawAiBehaviour = DrawAiBehaviour
+
 DrawAiBehaviour.winning_utility_value = 0
 DrawAiBehaviour.circle_array = {}
 DrawAiBehaviour.circle_array_index = 0
@@ -35,6 +40,7 @@ DrawAiBehaviour.circle_max_size = 12
 
 local function rshoot_action_debug(blackboard, fill_lines)
 	local attack_pattern_data = blackboard.attack_pattern_data
+
 	fill_lines[1] = "State:" .. tostring(attack_pattern_data and attack_pattern_data.state)
 
 	return 1
@@ -61,6 +67,7 @@ local function chaos_sorc_skulk_action_debug(blackboard, fill_lines)
 		local portal_out = blackboard.portal_unit and "1" or "0"
 		local count = portal_data.search_counter
 		local wall_index = tostring(portal_data.cover_point_index)
+
 		fill_lines[1] = sa .. " ,P:" .. portal_out .. ",SC:" .. count .. " ,Wi:" .. wall_index
 		fill_lines[2] = "type=" .. tostring(portal_data.placement)
 
@@ -73,6 +80,7 @@ local function chaos_sorc_skulk_action_debug(blackboard, fill_lines)
 		local t = Managers.time:time("game")
 		local next_cast_attempt = string.format("spawn_timer: %.2f | %.2f", vortex_data.spawn_timer, t)
 		local vortex_count = string.format("num_vortex_units: %d", #vortex_data.vortex_units)
+
 		fill_lines[1] = next_cast_attempt
 		fill_lines[2] = vortex_count
 
@@ -97,6 +105,7 @@ local function rat_ogre_jump_slam_action_debug(blackboard, fill_lines)
 
 	if landing_time then
 		local t = Managers.time:time("game")
+
 		fill_lines[1] = string.format("landing_time= %.2f | %.2f", landing_time, t)
 
 		return 1
@@ -109,98 +118,98 @@ local show_blackboard_data = {
 	BTFallAction = {
 		"is_falling",
 		"fall_done",
-		"fall_state"
+		"fall_state",
 	},
 	BTMoveToGoalAction = {
-		"is_passive"
+		"is_passive",
 	},
 	BTBossFollowAction = {
-		"move_state"
+		"move_state",
 	},
 	BTMeleeSlamAction = {
 		"move_state",
 		"attack_anim",
-		"attack_anim_driven"
+		"attack_anim_driven",
 	},
 	BTTargetUnreachableAction = {
 		"move_state",
-		"target_dist"
+		"target_dist",
 	},
 	BTCrazyJumpAction = {
-		"jump_data"
+		"jump_data",
 	},
 	BTSkulkAroundAction = {
 		"in_los",
 		"skulk_pos",
-		"debug_state"
+		"debug_state",
 	},
 	BTCirclePreyAction = {
-		"move_state"
+		"move_state",
 	},
 	BTAttackAction = {
 		"attacks_done",
 		"target_dist",
-		"slot_layer"
+		"slot_layer",
 	},
 	BTClanRatFollowAction = {
 		"move_state",
-		"using_smart_object"
+		"using_smart_object",
 	},
 	BTCombatShoutAction = {
 		"nav_target_dist_sq",
-		"slot_layer"
+		"slot_layer",
 	},
 	BTClimbAction = {
 		"is_in_smartobject_range",
 		"is_climbing",
-		"climb_state"
+		"climb_state",
 	},
 	BTSkulkAroundAction = {
-		"skulk_jump_tries"
+		"skulk_jump_tries",
 	},
 	BTPackMasterSkulkAroundAction = {
 		"skulk_in_los",
 		"skulk_dogpile",
 		"skulk_time_left",
-		"skulk_debug_state"
+		"skulk_debug_state",
 	},
 	BTPackMasterDragAction = {
 		"drag_check_index",
-		"drag_check_time_debug"
+		"drag_check_time_debug",
 	},
 	BTSkulkApproachAction = {
-		"target_dist"
+		"target_dist",
 	},
 	BTSkulkIdleAction = {
-		"skulk_data"
+		"skulk_data",
 	},
 	BTNinjaApproachAction = {
-		"skulk_pos_is_jump_off_point"
+		"skulk_pos_is_jump_off_point",
 	},
 	BTTrollDownedAction = {
-		"downed_state"
+		"downed_state",
 	},
 	BTRatlingGunnerShootAction = {
-		rshoot_action_debug
+		rshoot_action_debug,
 	},
 	BTTentacleAttackAction = {
-		tentacle_action_debug
+		tentacle_action_debug,
 	},
 	BTChaosSorcererSkulkApproachAction = {
-		chaos_sorc_skulk_action_debug
+		chaos_sorc_skulk_action_debug,
 	},
 	BTVortexWanderAction = {
-		"vortex_data"
+		"vortex_data",
 	},
 	BTInVortexAction = {
-		"in_vortex_state"
+		"in_vortex_state",
 	},
 	BTChaosExaltedSorcererSkulkAction = {
-		chaos_sorc_exalt_skulk_action_debug
+		chaos_sorc_exalt_skulk_action_debug,
 	},
 	BTJumpSlamAction = {
-		rat_ogre_jump_slam_action_debug
-	}
+		rat_ogre_jump_slam_action_debug,
+	},
 }
 
 local function reset_circle_array()
@@ -221,8 +230,7 @@ local function present_circle_array(gui, x, y)
 	local index = DrawAiBehaviour.circle_array_index
 	local max_items = DrawAiBehaviour.circle_max_size
 	local num_items = #a
-	local x1 = x
-	local y1 = y
+	local x1, y1 = x, y
 
 	ScriptGUI.icrect(gui, RES_X, RES_Y, x1 - 5, y1 - 5, x1 + 300, y1 + num_items * 20 + 10, LAYER, Color(100, 100, 100, 150))
 
@@ -236,9 +244,7 @@ local function present_circle_array(gui, x, y)
 end
 
 local function present_perception(gui, x, y, blackboard)
-	local x1 = x
-	local y1 = y
-	local y2 = y
+	local x1, y1, y2 = x, y, y
 	local i = 1
 	local unit = blackboard.unit
 
@@ -263,6 +269,7 @@ local function present_perception(gui, x, y, blackboard)
 			ScriptGUI.ictext(gui, RES_X, RES_Y, target_unit_text, FONT_MTRL, TINY_FONT_SIZE, FONT, x1 + 70, y2, 400, colr)
 
 			y2 = y2 + 17
+
 			local p = "p: " .. extension._perception_func_name
 			local t = "t: " .. extension._target_selection_func_name
 
@@ -297,6 +304,7 @@ local function present_perception(gui, x, y, blackboard)
 
 			local p = "p: " .. extension._perception_func_name
 			local t = "t: " .. extension._target_selection_func_name
+
 			y2 = y2 + 20
 
 			ScriptGUI.ictext(gui, RES_X, RES_Y, p, FONT_MTRL, MEDIUM_FONT_SIZE, FONT, x1, y2, 400, col1)
@@ -366,7 +374,7 @@ local function draw_blackboard(gui, node, blackboard, x1, y1, extra_info, node_w
 	local node_type = node.name
 	local bb_color = Color(255, 0, 0, 0)
 	local bb_items = show_blackboard_data[node_type]
-	local bb_text, text_length, longest_text = nil
+	local bb_text, text_length, longest_text
 	local longest_text_length = 0
 	local enter_hook = node._tree_node.enter_hook
 
@@ -389,6 +397,7 @@ local function draw_blackboard(gui, node, blackboard, x1, y1, extra_info, node_w
 				ScriptGUI.itext(gui, RES_X, RES_Y, bb_text, FONT_MTRL, SMALL_FONT_SIZE, FONT, pos_x, pos_y + extra_height, text_layer, bb_color)
 
 				longest_text, longest_text_length = longest_text_length_check(bb_text, longest_text, longest_text_length)
+
 				local sub_table = blackboard[key]
 
 				for sub_key, sub_value in pairs(sub_table) do
@@ -421,6 +430,7 @@ local function draw_blackboard(gui, node, blackboard, x1, y1, extra_info, node_w
 				end
 			else
 				extra_height = extra_height + text_height
+
 				local data = blackboard[key]
 
 				if type(data) == "number" then
@@ -436,6 +446,7 @@ local function draw_blackboard(gui, node, blackboard, x1, y1, extra_info, node_w
 		end
 	elseif extra_info then
 		extra_height = extra_height + 5 / RES_Y
+
 		local ecolor = Color(240, 255, 55, 100)
 
 		for k, string in ipairs(extra_info) do
@@ -450,6 +461,7 @@ local function draw_blackboard(gui, node, blackboard, x1, y1, extra_info, node_w
 	if longest_text_length > 0 then
 		local min_pos, max_pos = Gui.text_extents(gui, longest_text, FONT_MTRL, SMALL_FONT_SIZE)
 		local text_width = (max_pos.x - min_pos.x) / RES_X
+
 		node_width = math.max(node_width, text_width + TEXT_SPACING)
 	end
 
@@ -488,7 +500,7 @@ local function draw_utility_nodes(gui, blackboard, running, action_data, text, c
 		DrawAiBehaviour.winning_utility_value = utility
 	end
 
-	local sum_text = nil
+	local sum_text
 
 	if running then
 		sum_text = string.format("sum: %.1f, (%.1f)", utility, DrawAiBehaviour.winning_utility_value)
@@ -507,6 +519,7 @@ local function draw_hook_box(gui, node, node_width, extra_height, header_text, h
 	local text_height = SMALL_FONT_SIZE / RES_Y
 	local start_y = bottom_y
 	local pos_x = x1
+
 	bottom_y = start_y + text_height
 
 	ScriptGUI.itext(gui, RES_X, RES_Y, header_text, FONT_MTRL, SMALL_FONT_SIZE, FONT, pos_x, bottom_y, LAYER + 11, Color(255, 255, 255, 255))
@@ -525,7 +538,7 @@ local function draw_hook_box(gui, node, node_width, extra_height, header_text, h
 end
 
 local function draw_node(gui, node, text, running, x1, y1, node_width, extra_height, dt, tcolor)
-	local color = nil
+	local color
 
 	if running then
 		color = Color(200, 242, 152, 7)
@@ -568,8 +581,7 @@ local function draw_node(gui, node, text, running, x1, y1, node_width, extra_hei
 
 	ScriptGUI.itext(gui, RES_X, RES_Y, node.name, FONT_MTRL, SMALL_FONT_SIZE, FONT, x1 + TEXT_SPACING, y1 + NODE_HEIGHT * 0.28, LAYER + 1, tcolor)
 
-	local bottom_y = y1 + NODE_HEIGHT + extra_height
-	local box_height = nil
+	local bottom_y, box_height = y1 + NODE_HEIGHT + extra_height
 
 	ScriptGUI.irect(gui, RES_X, RES_Y, x1, y1, x1 + node_width, bottom_y, LAYER, color)
 	ScriptGUI.itext(gui, RES_X, RES_Y, text, FONT_MTRL, FONT_SIZE, FONT, x1 + TEXT_SPACING, y1 + NODE_HEIGHT * 0.7, LAYER + 1, tcolor)
@@ -594,7 +606,7 @@ end
 local function draw_node_children(bt, gui, node, node_children, blackboard, row, x1, y1, node_width, extra_node_height, total_width, extra_utility_height, t, dt)
 	local row_height = row_heights[row] or 0
 	local child_y = y1 + row_height + ROW_SPACING
-	local start_x, start_y = nil
+	local start_x, start_y
 
 	if node.name == "BTSequence" then
 		start_x = x1
@@ -604,8 +616,7 @@ local function draw_node_children(bt, gui, node, node_children, blackboard, row,
 		start_y = child_y
 	end
 
-	local cx = start_x
-	local cy = start_y
+	local cx, cy = start_x, start_y
 	local next_row = row + 1
 	local draw_utility = node.name == "BTUtilityNode"
 	local line_color_normal = Color(150, 100, 255, 100)
@@ -630,6 +641,7 @@ local function draw_node_children(bt, gui, node, node_children, blackboard, row,
 		end
 
 		local child_extra_total_width, child_extra_total_height, child_extra_height, child_width = DrawAiBehaviour.draw_tree(bt, gui, child, blackboard, next_row, t, dt, cx, cy, draw_utility)
+
 		max_child_extra_total_width = math.max(max_child_extra_total_width, child_extra_total_width)
 		max_child_extra_height = math.max(max_child_extra_height, child_extra_height)
 		max_child_width = math.max(max_child_width, child_width)
@@ -657,12 +669,13 @@ local function draw_node_children(bt, gui, node, node_children, blackboard, row,
 	end
 
 	row_heights[next_row] = NODE_HEIGHT + max_child_extra_height
+
 	local xb = 5 / RES_X
 	local yb = 5 / RES_Y
 	local ocolor = Color(70, 55, 155, 200)
 	local bounding_box_x1 = start_x - xb
 	local bounding_box_y1 = child_y - yb
-	local bounding_box_x2, bounding_box_y2 = nil
+	local bounding_box_x2, bounding_box_y2
 
 	if node.name == "BTSequence" then
 		bounding_box_x2 = start_x + max_child_width + xb
@@ -694,17 +707,19 @@ DrawAiBehaviour.tree_width = function (gui, node)
 	local id_width = (id_max.x - id_min.x) / RES_X + TEXT_SPACING
 	local name_width = (name_max.x - name_min.x) / RES_X + TEXT_SPACING
 	local text_width = math.max(MIN_NODE_WIDTH, id_width, name_width)
+
 	nodes[id] = {
-		w = text_width
+		w = text_width,
 	}
+
 	local node_children = node._children
 
 	if node_children then
-		local n = 0
-		local w = 0
+		local n, w = 0, 0
 
 		for _, child in pairs(node_children) do
 			local amount, width = DrawAiBehaviour.tree_width(gui, child)
+
 			n = n + amount
 
 			if node.name ~= "BTSequence" then
@@ -743,7 +758,9 @@ DrawAiBehaviour.draw_tree = function (bt, gui, node, blackboard, row, t, dt, x, 
 	local text = identifier
 	local tcolor = Color(240, 255, 255, 255)
 	local extra_height = 0
+
 	node_width, extra_height = draw_blackboard(gui, node, blackboard, x1, y1, extra_info, node_width, extra_height, tcolor)
+
 	local extra_utility_height = 0
 	local tree_node = node._tree_node
 	local action_data = tree_node and tree_node.action_data
@@ -754,6 +771,7 @@ DrawAiBehaviour.draw_tree = function (bt, gui, node, blackboard, row, t, dt, x, 
 	end
 
 	extra_height = draw_node(gui, node, text, running, x1, y1, node_width, extra_height, dt, tcolor)
+
 	local max_child_extra_width = 0
 	local max_child_extra_height = 0
 

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/save/save_data.win32.lua
+
 require("scripts/settings/player_data")
 
 local steam = rawget(_G, "Steam")
@@ -10,12 +12,12 @@ else
 end
 
 SaveData = SaveData or {
-	profiles_version = 45,
 	player_data_version = 8,
-	talents_version = 1,
+	profiles_version = 45,
 	save_loaded = false,
+	talents_version = 1,
+	version = 7,
 	video_version = 1,
-	version = 7
 }
 
 function populate_save_data(save_data)

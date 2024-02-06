@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/weapons/projectiles/projectile_physics_unit_locomotion_extension.lua
+
 ProjectilePhysicsUnitLocomotionExtension = class(ProjectilePhysicsUnitLocomotionExtension)
 script_data.debug_projectiles = script_data.debug_projectiles or Development.parameter("debug_projectiles")
 
@@ -13,9 +15,12 @@ ProjectilePhysicsUnitLocomotionExtension.init = function (self, extension_init_c
 	self.is_husk = not self.is_server
 	self.stopped = false
 	self.dropped = false
+
 	local network_manager = Managers.state.network
+
 	self.game = network_manager:game()
 	self.network_manager = network_manager
+
 	local position = AiAnimUtils.position_network_scale(self.network_position)
 	local rotation = AiAnimUtils.rotation_network_scale(self.network_rotation)
 	local velocity = AiAnimUtils.velocity_network_scale(self.network_velocity)
@@ -55,17 +60,18 @@ ProjectilePhysicsUnitLocomotionExtension.update = function (self, unit, input, d
 	local current_velocity = Actor.velocity(physics_actor)
 	local current_velocity_length = Vector3.length(current_velocity)
 
-	if current_velocity_length > STOP_VELOCITY_THRESHOLD then
+	if not (current_velocity_length <= STOP_VELOCITY_THRESHOLD) then
 		self.stop_time = nil
 
 		return
 	end
 
 	local stop_time = self.stop_time or 0
+
 	stop_time = stop_time + dt
 	self.stop_time = stop_time
 
-	if STOP_TIME_THRESHOLD <= stop_time then
+	if stop_time >= STOP_TIME_THRESHOLD then
 		self:stop()
 	end
 end
@@ -75,7 +81,7 @@ local BOUNCE_FORCE_THRESHOLD = 1
 ProjectilePhysicsUnitLocomotionExtension.bounce = function (self, touching_unit, position, normal, separation_distance, impulse_force)
 	local length = Vector3.length(impulse_force)
 
-	if BOUNCE_FORCE_THRESHOLD < length then
+	if length > BOUNCE_FORCE_THRESHOLD then
 		-- Nothing
 	end
 end

@@ -1,11 +1,13 @@
+﻿-- chunkname: @scripts/settings/dlcs/morris/morris_interactions.lua
+
 InteractionDefinitions.deus_access = InteractionDefinitions.deus_access or table.clone(InteractionDefinitions.smartobject)
 InteractionDefinitions.deus_access.config.swap_to_3p = false
 
 InteractionDefinitions.deus_access.client.stop = function (world, interactor_unit, interactable_unit, data, config, t, result)
 	if result == InteractionResult.SUCCESS and not data.is_husk then
 		Managers.ui:handle_transition("start_game_view_force", {
+			menu_state_name = "play",
 			use_fade = true,
-			menu_state_name = "play"
 		})
 	end
 end
@@ -58,11 +60,11 @@ end
 
 InteractionDefinitions.deus_cursed_chest = InteractionDefinitions.deus_cursed_chest or table.clone(InteractionDefinitions.smartobject)
 InteractionDefinitions.deus_cursed_chest.config = {
+	activate_block = true,
 	block_other_interactions = true,
-	hud_verb = "player_interaction",
 	hold = true,
+	hud_verb = "player_interaction",
 	swap_to_3p = false,
-	activate_block = true
 }
 
 InteractionDefinitions.deus_cursed_chest.server.start = function (world, interactor_unit, interactable_unit, data, config, t)
@@ -70,8 +72,10 @@ InteractionDefinitions.deus_cursed_chest.server.start = function (world, interac
 
 	if deus_cursed_chest_extension then
 		local duration = deus_cursed_chest_extension:get_interaction_length()
+
 		data.done_time = t + duration
 		data.duration = duration
+
 		local buff_template_name = Unit.get_data(interactable_unit, "interaction_data", "apply_buff")
 
 		if buff_template_name then
@@ -81,6 +85,7 @@ InteractionDefinitions.deus_cursed_chest.server.start = function (world, interac
 		local interactor_position = Unit.world_position(interactor_unit, 0)
 		local interactable_position = Unit.world_position(interactable_unit, 0)
 		local start_offset = interactor_position - interactable_position
+
 		data.start_offset = Vector3Box(start_offset)
 	end
 end
@@ -100,8 +105,11 @@ InteractionDefinitions.deus_cursed_chest.client.start = function (world, interac
 
 	if deus_cursed_chest_extension then
 		data.start_time = t
+
 		local duration = deus_cursed_chest_extension:get_interaction_length()
+
 		data.duration = duration
+
 		local interactor_animation_name = Unit.get_data(interactable_unit, "interaction_data", "interactor_animation")
 		local interactor_animation_time_variable = Unit.get_data(interactable_unit, "interaction_data", "interactor_animation_time_variable")
 		local inventory_extension = ScriptUnit.extension(interactor_unit, "inventory_system")
@@ -207,20 +215,20 @@ end
 
 InteractionDefinitions.deus_setup_rally_flag = {
 	config = {
+		activate_block = true,
 		block_other_interactions = true,
-		hud_verb = "setup",
-		hold = true,
-		swap_to_3p = true,
-		offset_flag = 0.5,
 		duration = 3,
-		activate_block = true
+		hold = true,
+		hud_verb = "setup",
+		offset_flag = 0.5,
+		swap_to_3p = true,
 	},
 	server = {
 		start = function (world, interactor_unit, interactable_unit, data, config, t)
 			data.done_time = t + config.duration
 		end,
 		update = function (world, interactor_unit, interactable_unit, data, config, dt, t)
-			if data.done_time < t then
+			if t > data.done_time then
 				return InteractionResult.SUCCESS
 			end
 
@@ -233,9 +241,8 @@ InteractionDefinitions.deus_setup_rally_flag = {
 				local forward = Quaternion.forward(player_rotation)
 				local position = player_position + forward * config.offset_flag
 				local nav_world = Managers.state.entity:system("ai_system"):nav_world()
-				local position_on_navmesh = nil
-				local above = 1
-				local below = 1
+				local position_on_navmesh
+				local above, below = 1, 1
 				local is_on_navmesh, altitude = GwNavQueries.triangle_from_position(nav_world, position, above, below)
 
 				if is_on_navmesh then
@@ -244,6 +251,7 @@ InteractionDefinitions.deus_setup_rally_flag = {
 				else
 					local horizontal_limit = 1
 					local distance_from_nav_border = 0.05
+
 					position_on_navmesh = GwNavQueries.inside_position_from_outside_position(nav_world, position, above, below, horizontal_limit, distance_from_nav_border) or Vector3.copy(position)
 				end
 
@@ -251,9 +259,9 @@ InteractionDefinitions.deus_setup_rally_flag = {
 					buff_system = {
 						breed = "n/a",
 						initial_buff_names = {
-							"deus_rally_flag_aoe_buff"
-						}
-					}
+							"deus_rally_flag_aoe_buff",
+						},
+					},
 				}
 
 				Managers.state.unit_spawner:spawn_network_unit("units/props/deus_rally_flag/deus_rally_flag", "buff_objective_unit", extension_init_data, position, player_rotation)
@@ -261,11 +269,12 @@ InteractionDefinitions.deus_setup_rally_flag = {
 		end,
 		can_interact = function (interactor_unit, interactable_unit)
 			return true
-		end
+		end,
 	},
 	client = {
 		start = function (world, interactor_unit, interactable_unit, data, config, t)
 			data.start_time = t
+
 			local interaction_duration_variable = Unit.animation_find_variable(interactor_unit, "interaction_duration")
 
 			Unit.animation_set_variable(interactor_unit, interaction_duration_variable, config.duration)
@@ -273,6 +282,7 @@ InteractionDefinitions.deus_setup_rally_flag = {
 
 			local inventory_extension = ScriptUnit.extension(interactor_unit, "inventory_system")
 			local wielded_slot_name = inventory_extension:get_wielded_slot_name()
+
 			data.item_slot_name = wielded_slot_name
 		end,
 		update = function (world, interactor_unit, interactable_unit, data, config, dt, t)
@@ -320,8 +330,8 @@ InteractionDefinitions.deus_setup_rally_flag = {
 		end,
 		hud_description = function (interactable_unit, data, config)
 			return "deus_rally_flag", "interaction_action_deus_setup_rally_flag"
-		end
-	}
+		end,
+	},
 }
 InteractionDefinitions.deus_debug_changelog = InteractionDefinitions.deus_debug_changelog or table.clone(InteractionDefinitions.smartobject)
 InteractionDefinitions.deus_debug_changelog.config.swap_to_3p = false

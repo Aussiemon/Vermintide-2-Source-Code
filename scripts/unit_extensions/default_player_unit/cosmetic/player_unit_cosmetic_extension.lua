@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/default_player_unit/cosmetic/player_unit_cosmetic_extension.lua
+
 require("scripts/helpers/cosmetic_utils")
 
 PlayerUnitCosmeticExtension = class(PlayerUnitCosmeticExtension)
@@ -12,13 +14,14 @@ PlayerUnitCosmeticExtension.init = function (self, extension_init_context, unit,
 	self._skin_material_changes = {}
 	self._tp_mesh_visible = true
 	self._player_afk_data = {
-		tickrate = 1,
-		triggered = false,
-		last_tick = 0,
-		trigger_event_dt = 120,
 		last_player_move_t = 0,
-		last_player_pos = Vector3Box()
+		last_tick = 0,
+		tickrate = 1,
+		trigger_event_dt = 120,
+		triggered = false,
+		last_player_pos = Vector3Box(),
 	}
+
 	local skin_name = extension_init_data.skin_name
 	local frame_name = extension_init_data.frame_name
 	local profile = extension_init_data.profile
@@ -26,6 +29,7 @@ PlayerUnitCosmeticExtension.init = function (self, extension_init_context, unit,
 	fassert(skin_name, "No skin name passed to CosmeticExtension, somthing went wrong!")
 
 	local skin_data = Cosmetics[skin_name]
+
 	self._cosmetics.skin = skin_data
 
 	CosmeticUtils.update_cosmetic_slot(self._player, "slot_skin", skin_name)
@@ -53,6 +57,7 @@ end
 PlayerUnitCosmeticExtension.extensions_ready = function (self, world, unit)
 	self._status_extension = ScriptUnit.extension(unit, "status_system")
 	self._attachment_extension = ScriptUnit.extension(unit, "attachment_system")
+
 	local hero_name = self._profile.display_name
 	local skin_data = self._cosmetics.skin
 	local material_changes = skin_data.material_changes
@@ -154,6 +159,7 @@ PlayerUnitCosmeticExtension._init_mesh_attachment = function (self, world, unit,
 	local tp_attachment_unit_name = third_person_attachment.unit
 	local tp_attachment_node_linking = third_person_attachment.attachment_node_linking
 	local tp_unit_mesh = Managers.state.unit_spawner:spawn_local_unit(tp_attachment_unit_name)
+
 	self._tp_unit_mesh = tp_unit_mesh
 
 	Unit.set_flow_variable(unit, "lua_third_person_mesh_unit", tp_unit_mesh)

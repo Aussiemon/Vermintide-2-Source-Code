@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/network/script_ps_restriction_token.lua
+
 ScriptPSRestrictionToken = class(ScriptPSRestrictionToken)
 
 ScriptPSRestrictionToken.init = function (self, token)

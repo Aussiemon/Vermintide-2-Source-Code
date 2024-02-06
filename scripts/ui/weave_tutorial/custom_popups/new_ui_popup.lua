@@ -1,9 +1,12 @@
+﻿-- chunkname: @scripts/ui/weave_tutorial/custom_popups/new_ui_popup.lua
+
 local definitions = local_require("scripts/ui/weave_tutorial/custom_popups/new_ui_popup_definitions")
 local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
 local generic_input_actions = definitions.generic_input_actions
 local page_data_definitions = definitions.page_data
 local VIDEO_REFERENCE_NAME = "new_ui_popup"
+
 NewUIPopup = class(NewUIPopup)
 
 NewUIPopup.init = function (self, ui_context, parent)
@@ -12,7 +15,7 @@ NewUIPopup.init = function (self, ui_context, parent)
 	self._world = ui_context.world
 	self._wwise_world = Managers.world:wwise_world(self.world)
 	self._render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 	self._parent = parent
 	self._animations = {}
@@ -20,6 +23,7 @@ NewUIPopup.init = function (self, ui_context, parent)
 	self:_create_ui_elements()
 
 	local input_service = Managers.input:get_service("weave_tutorial")
+
 	self._menu_input_description = MenuInputDescriptionUI:new(nil, self._ui_top_renderer, input_service, 3, 900, generic_input_actions.default)
 
 	self._menu_input_description:set_input_description(nil)
@@ -33,6 +37,7 @@ NewUIPopup._create_ui_elements = function (self)
 	self:_destroy_video()
 
 	self._ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+
 	local base_widgets = {}
 	local button_widgets = {}
 	local page_widgets = {}
@@ -41,6 +46,7 @@ NewUIPopup._create_ui_elements = function (self)
 
 	for name, widget_definition in pairs(base_widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		base_widgets[#base_widgets + 1] = widget
 		widgets_by_name[name] = widget
 	end
@@ -49,6 +55,7 @@ NewUIPopup._create_ui_elements = function (self)
 
 	for name, widget_definition in pairs(page_widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		page_widgets[#page_widgets + 1] = widget
 		widgets_by_name[name] = widget
 	end
@@ -99,7 +106,7 @@ NewUIPopup._change_page = function (self, index)
 	self._page_index = index
 	self._button_index = nil
 
-	if self._pages_seen < index then
+	if index > self._pages_seen then
 		self:start_transition_animation("page_enter", "page_" .. index)
 
 		self._pages_seen = index
@@ -117,6 +124,7 @@ end
 
 NewUIPopup._destroy_video = function (self)
 	local ui_top_renderer = self._ui_top_renderer
+
 	self._video_data = nil
 
 	if self._video_widget then
@@ -152,7 +160,7 @@ NewUIPopup._update_animations = function (self, dt)
 
 	local max_page_num = #page_data_definitions
 
-	if self._page_index < max_page_num then
+	if max_page_num > self._page_index then
 		UIWidgetUtils.animate_default_button(self._widgets_by_name.next_button, dt)
 	else
 		UIWidgetUtils.animate_default_button(self._widgets_by_name.ok_button, dt)
@@ -171,7 +179,7 @@ NewUIPopup._handle_input = function (self, dt, input_service)
 		local page_index = self._page_index
 		local max_page_num = #page_data_definitions
 
-		if self._page_index < max_page_num then
+		if max_page_num > self._page_index then
 			local widget = self._widgets_by_name.next_button
 
 			if widget.content.visible and UIUtils.is_button_pressed(self._widgets_by_name.next_button, nil, confirm_pressed) then
@@ -211,7 +219,7 @@ NewUIPopup._handle_keyboard_input = function (self, dt, input_service)
 		button_widgets[#button_widgets + 1] = widgets_by_name.prev_button
 	end
 
-	if self._page_index < max_page_num then
+	if max_page_num > self._page_index then
 		button_widgets[#button_widgets + 1] = widgets_by_name.next_button
 	else
 		button_widgets[#button_widgets + 1] = widgets_by_name.ok_button
@@ -222,6 +230,7 @@ NewUIPopup._handle_keyboard_input = function (self, dt, input_service)
 	if mouse_active then
 		for _, button_data in pairs(button_widgets) do
 			local button_widget = button_data
+
 			button_widget.content.button_hotspot.is_selected = false
 		end
 
@@ -243,6 +252,7 @@ NewUIPopup._handle_keyboard_input = function (self, dt, input_service)
 	if index ~= self._button_index then
 		for idx, button_data in ipairs(button_widgets) do
 			local button_widget = button_data
+
 			button_widget.content.button_hotspot.is_selected = index == idx
 		end
 
@@ -329,10 +339,11 @@ NewUIPopup.start_transition_animation = function (self, key, animation_name)
 		wwise_world = self._wwise_world,
 		render_settings = self._render_settings,
 		page_data = page_data_definitions[self._page_index],
-		video_widget = self._video_widget
+		video_widget = self._video_widget,
 	}
 	local widgets = self._widgets_by_name
 	local anim_id = self._ui_animator:start_animation(animation_name, widgets, scenegraph_definition, params)
+
 	self._animations[key] = anim_id
 end
 

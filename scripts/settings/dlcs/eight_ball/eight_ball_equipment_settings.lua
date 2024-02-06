@@ -1,9 +1,12 @@
+﻿-- chunkname: @scripts/settings/dlcs/eight_ball/eight_ball_equipment_settings.lua
+
 local settings = DLCSettings.eight_ball
+
 settings.cosmetics_files = {
-	"scripts/settings/dlcs/eight_ball/cosmetics_eight_ball"
+	"scripts/settings/dlcs/eight_ball/cosmetics_eight_ball",
 }
 settings.item_master_list_file_names = {
-	"scripts/settings/equipment/item_master_list_eight_ball"
+	"scripts/settings/equipment/item_master_list_eight_ball",
 }
 settings.inventory_package_list = {
 	"units/beings/player/witch_hunter_zealot/headpiece/wh_z_hat_09",
@@ -74,5 +77,5 @@ settings.inventory_package_list = {
 	"units/beings/player/way_watcher_upgraded/skins/white/chr_way_watcher_upgraded_white",
 	"units/beings/player/witch_hunter_bounty_hunter/skins/white/chr_witch_hunter_bounty_hunter_white",
 	"units/beings/player/witch_hunter_captain/skins/white/chr_witch_hunter_captain_white",
-	"units/beings/player/witch_hunter_zealot/skins/white/chr_witch_hunter_zealot_white"
+	"units/beings/player/witch_hunter_zealot/skins/white/chr_witch_hunter_zealot_white",
 }

@@ -1,11 +1,14 @@
+﻿-- chunkname: @PlayFab/PlayFabClientApi.lua
+
 local IPlayFabHttps = require("PlayFab.IPlayFabHttps")
 local PlayFabSettings = require("PlayFab.PlayFabSettings")
 local PlayFabClientApi = {
 	settings = PlayFabSettings.settings,
-	IsClientLoggedIn = function ()
-		return PlayFabSettings._internalSettings.sessionTicket ~= nil
-	end
 }
+
+PlayFabClientApi.IsClientLoggedIn = function ()
+	return PlayFabSettings._internalSettings.sessionTicket ~= nil
+end
 
 PlayFabClientApi._MultiStepClientLogin = function (needsAttribution)
 	if needsAttribution and not PlayFabSettings.settings.disableAdvertising and PlayFabSettings.settings.advertisingIdType and PlayFabSettings.settings.advertisingIdValue then
@@ -41,6 +44,7 @@ end
 
 PlayFabClientApi.LoginWithAndroidDeviceID = function (request, onSuccess, onError)
 	request.TitleId = PlayFabSettings.settings.titleId
+
 	local externalOnSuccess = onSuccess
 
 	local function wrappedOnSuccess(result)
@@ -60,6 +64,7 @@ end
 
 PlayFabClientApi.LoginWithCustomID = function (request, onSuccess, onError)
 	request.TitleId = PlayFabSettings.settings.titleId
+
 	local externalOnSuccess = onSuccess
 
 	local function wrappedOnSuccess(result)
@@ -79,6 +84,7 @@ end
 
 PlayFabClientApi.LoginWithEmailAddress = function (request, onSuccess, onError)
 	request.TitleId = PlayFabSettings.settings.titleId
+
 	local externalOnSuccess = onSuccess
 
 	local function wrappedOnSuccess(result)
@@ -98,6 +104,7 @@ end
 
 PlayFabClientApi.LoginWithFacebook = function (request, onSuccess, onError)
 	request.TitleId = PlayFabSettings.settings.titleId
+
 	local externalOnSuccess = onSuccess
 
 	local function wrappedOnSuccess(result)
@@ -117,6 +124,7 @@ end
 
 PlayFabClientApi.LoginWithGameCenter = function (request, onSuccess, onError)
 	request.TitleId = PlayFabSettings.settings.titleId
+
 	local externalOnSuccess = onSuccess
 
 	local function wrappedOnSuccess(result)
@@ -136,6 +144,7 @@ end
 
 PlayFabClientApi.LoginWithGoogleAccount = function (request, onSuccess, onError)
 	request.TitleId = PlayFabSettings.settings.titleId
+
 	local externalOnSuccess = onSuccess
 
 	local function wrappedOnSuccess(result)
@@ -155,6 +164,7 @@ end
 
 PlayFabClientApi.LoginWithIOSDeviceID = function (request, onSuccess, onError)
 	request.TitleId = PlayFabSettings.settings.titleId
+
 	local externalOnSuccess = onSuccess
 
 	local function wrappedOnSuccess(result)
@@ -174,6 +184,7 @@ end
 
 PlayFabClientApi.LoginWithKongregate = function (request, onSuccess, onError)
 	request.TitleId = PlayFabSettings.settings.titleId
+
 	local externalOnSuccess = onSuccess
 
 	local function wrappedOnSuccess(result)
@@ -193,6 +204,7 @@ end
 
 PlayFabClientApi.LoginWithPlayFab = function (request, onSuccess, onError)
 	request.TitleId = PlayFabSettings.settings.titleId
+
 	local externalOnSuccess = onSuccess
 
 	local function wrappedOnSuccess(result)
@@ -212,6 +224,7 @@ end
 
 PlayFabClientApi.LoginWithSteam = function (request, onSuccess, onError)
 	request.TitleId = PlayFabSettings.settings.titleId
+
 	local externalOnSuccess = onSuccess
 
 	local function wrappedOnSuccess(result)
@@ -231,6 +244,7 @@ end
 
 PlayFabClientApi.LoginWithXbox = function (request, onSuccess, onError)
 	request.TitleId = PlayFabSettings.settings.titleId
+
 	local externalOnSuccess = onSuccess
 
 	local function wrappedOnSuccess(result)
@@ -250,6 +264,7 @@ end
 
 PlayFabClientApi.LoginWithPSN = function (request, onSuccess, onError)
 	request.TitleId = PlayFabSettings.settings.titleId
+
 	local externalOnSuccess = onSuccess
 
 	local function wrappedOnSuccess(result)
@@ -269,6 +284,7 @@ end
 
 PlayFabClientApi.LoginWithTwitch = function (request, onSuccess, onError)
 	request.TitleId = PlayFabSettings.settings.titleId
+
 	local externalOnSuccess = onSuccess
 
 	local function wrappedOnSuccess(result)
@@ -288,6 +304,7 @@ end
 
 PlayFabClientApi.LoginWithWindowsHello = function (request, onSuccess, onError)
 	request.TitleId = PlayFabSettings.settings.titleId
+
 	local externalOnSuccess = onSuccess
 
 	local function wrappedOnSuccess(result)
@@ -307,6 +324,7 @@ end
 
 PlayFabClientApi.RegisterPlayFabUser = function (request, onSuccess, onError)
 	request.TitleId = PlayFabSettings.settings.titleId
+
 	local externalOnSuccess = onSuccess
 
 	local function wrappedOnSuccess(result)
@@ -326,6 +344,7 @@ end
 
 PlayFabClientApi.RegisterWithWindowsHello = function (request, onSuccess, onError)
 	request.TitleId = PlayFabSettings.settings.titleId
+
 	local externalOnSuccess = onSuccess
 
 	local function wrappedOnSuccess(result)

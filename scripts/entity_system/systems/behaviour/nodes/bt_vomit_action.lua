@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_vomit_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTVomitAction = class(BTVomitAction, BTNode)
@@ -17,6 +19,7 @@ end
 BTVomitAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
 	local world = blackboard.world
+
 	blackboard.action = action
 	blackboard.active_node = BTVomitAction
 	blackboard.physics_world = blackboard.physics_world or World.get_data(world, "physics_world")
@@ -35,6 +38,7 @@ BTVomitAction.enter = function (self, unit, blackboard, t)
 	end
 
 	blackboard.update_puke_pos_at_t = t + 0.2
+
 	local target_unit = blackboard.target_unit
 
 	AiUtils.add_attack_intensity(target_unit, action, blackboard)
@@ -62,7 +66,7 @@ BTVomitAction._get_vomit_position = function (self, unit, blackboard)
 	local target_direction = Vector3.normalize(to_target)
 	local target_distance = Vector3.length(to_target)
 	local physics_world = blackboard.physics_world
-	local pos_to_test, puke_distance_sq, puke_direction = nil
+	local pos_to_test, puke_distance_sq, puke_direction
 	local result, hit_position, hit_distance, normal, actor = PhysicsWorld.immediate_raycast(physics_world, troll_head_pos, target_direction, target_distance, "closest", "collision_filter", "filter_enemy_ray_projectile")
 
 	if result then
@@ -75,6 +79,7 @@ BTVomitAction._get_vomit_position = function (self, unit, blackboard)
 
 	if puke_pos then
 		local to_puke_pos = puke_pos - troll_head_pos
+
 		puke_distance_sq = Vector3.length_squared(to_puke_pos)
 		puke_direction = Vector3.normalize(to_puke_pos)
 	end
@@ -91,7 +96,7 @@ BTVomitAction.init_attack = function (self, unit, blackboard, action, t)
 
 	Managers.state.entity:system("surrounding_aware_system"):add_system_event(unit, "enemy_attack", DialogueSettings.pounced_down_broadcast_range, "attack_tag", "before_puke")
 
-	local vomit_animation = nil
+	local vomit_animation
 	local attack_anims = action.attack_anims
 
 	blackboard.navigation_extension:stop()
@@ -111,12 +116,14 @@ BTVomitAction.init_attack = function (self, unit, blackboard, action, t)
 	blackboard.attack_started_at_t = t
 	blackboard.puke_position = Vector3Box(puke_position)
 	blackboard.puke_direction = Vector3Box(puke_direction)
+
 	local bot_threats = action.bot_threats and (action.bot_threats[vomit_animation] or action.bot_threats[1] and action.bot_threats)
 
 	if bot_threats then
 		local current_threat_index = 1
 		local bot_threat = bot_threats[current_threat_index]
 		local bot_threat_start_time, bot_threat_duration = AiUtils.calculate_bot_threat_time(bot_threat)
+
 		blackboard.create_bot_threat_at_t = t + bot_threat_start_time
 		blackboard.current_bot_threat_index = current_threat_index
 		blackboard.bot_threat_duration = bot_threat_duration
@@ -124,7 +131,9 @@ BTVomitAction.init_attack = function (self, unit, blackboard, action, t)
 	end
 
 	local to_vomit_rotation = LocomotionUtils.look_at_position_flat(unit, puke_position)
+
 	blackboard.attack_rotation = QuaternionBox(to_vomit_rotation)
+
 	local locomotion = blackboard.locomotion_extension
 
 	locomotion:set_wanted_rotation(to_vomit_rotation)
@@ -183,10 +192,10 @@ BTVomitAction.run = function (self, unit, blackboard, t, dt)
 				blackboard.check_puke_time = t + 0.2
 			end
 
-			if blackboard.check_puke_time < t then
+			if t > blackboard.check_puke_time then
 				self.player_vomit_hit_check(unit, blackboard.puke_position:unbox(), blackboard.physics_world, blackboard)
 			end
-		elseif t < blackboard.rotation_time and (not target_unit_status_extension or not target_unit_status_extension:get_is_dodging() and not target_unit_status_extension:is_invisible()) and blackboard.update_puke_pos_at_t < t then
+		elseif t < blackboard.rotation_time and (not target_unit_status_extension or not target_unit_status_extension:get_is_dodging() and not target_unit_status_extension:is_invisible()) and t > blackboard.update_puke_pos_at_t then
 			local puke_position, puke_distance_sq, puke_direction = self:_get_vomit_position(unit, blackboard)
 
 			if puke_position and puke_direction then
@@ -226,6 +235,7 @@ BTVomitAction.run = function (self, unit, blackboard, t, dt)
 			if next_bot_threat then
 				local attack_started_at_t = blackboard.attack_started_at_t
 				local next_bot_threat_time, next_bot_threat_duration = AiUtils.calculate_bot_threat_time(next_bot_threat)
+
 				blackboard.create_bot_threat_at_t = attack_started_at_t + next_bot_threat_time
 				blackboard.bot_threat_duration = next_bot_threat_duration
 				blackboard.current_bot_threat_index = next_bot_threat_index
@@ -278,6 +288,7 @@ end
 
 BTVomitAction.create_aoe = function (self, unit, blackboard, action)
 	local puke_pos = blackboard.puke_position:unbox()
+
 	puke_pos = self:_position_on_navmesh(puke_pos, blackboard)
 
 	if puke_pos then
@@ -286,8 +297,8 @@ BTVomitAction.create_aoe = function (self, unit, blackboard, action)
 			area_damage_system = {
 				flow_dir = dir,
 				liquid_template = blackboard.near_vomit and "bile_troll_vomit_near" or "bile_troll_vomit",
-				source_unit = unit
-			}
+				source_unit = unit,
+			},
 		}
 		local aoe_unit_name = "units/hub_elements/empty"
 		local liquid_aoe_unit = Managers.state.unit_spawner:spawn_network_unit(aoe_unit_name, "liquid_aoe_unit", extension_init_data, puke_pos)

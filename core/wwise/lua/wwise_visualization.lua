@@ -1,4 +1,7 @@
+﻿-- chunkname: @core/wwise/lua/wwise_visualization.lua
+
 WwiseVisualization = WwiseVisualization or {}
+
 local Unit = stingray.Unit
 local Vector3 = stingray.Vector3
 local LineObject = stingray.LineObject
@@ -57,7 +60,7 @@ local function render_soundscape_unit(lines, lines_noz, unit)
 		scale.z = Unit.get_data(unit, "Wwise", "box_extents", 2) or default_scale
 	end
 
-	local range = nil
+	local range
 
 	if Unit.has_data(unit, "Wwise", "trigger_range") then
 		range = Unit.get_data(unit, "Wwise", "trigger_range")
@@ -89,7 +92,7 @@ WwiseVisualization.render = function (lines, lines_noz)
 		return
 	end
 
-	local current_selection, last_selected_level_object, last_selected_component_id = nil
+	local current_selection, last_selected_level_object, last_selected_component_id
 
 	if LevelEditor then
 		current_selection = Selection.objects(LevelEditor.selection)

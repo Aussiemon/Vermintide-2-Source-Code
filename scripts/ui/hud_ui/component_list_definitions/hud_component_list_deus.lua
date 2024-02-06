@@ -1,25 +1,27 @@
+﻿-- chunkname: @scripts/ui/hud_ui/component_list_definitions/hud_component_list_deus.lua
+
 local adventure_settings = local_require("scripts/ui/hud_ui/component_list_definitions/hud_component_list_adventure")
 local common_settings = require("scripts/ui/hud_ui/component_list_definitions/hud_component_list_deus_common")
 local deus_components = {
 	{
-		use_hud_scale = true,
 		class_name = "DeusCurseUI",
 		filename = "scripts/ui/hud_ui/deus_curse_ui",
+		use_hud_scale = true,
 		visibility_groups = {
-			"alive"
-		}
+			"alive",
+		},
 	},
 	{
-		use_hud_scale = true,
 		class_name = "DeusRunStatsView",
 		filename = "scripts/ui/views/deus_menu/deus_run_stats_view",
+		use_hud_scale = true,
 		visibility_groups = {
 			"deus_run_stats",
 			"game_mode_disable_hud",
 			"dead",
-			"alive"
-		}
-	}
+			"alive",
+		},
+	},
 }
 local components = {}
 
@@ -38,5 +40,5 @@ end
 
 return {
 	components = components,
-	visibility_groups = visibility_groups
+	visibility_groups = visibility_groups,
 }

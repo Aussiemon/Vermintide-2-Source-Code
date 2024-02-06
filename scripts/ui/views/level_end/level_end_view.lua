@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/level_end/level_end_view.lua
+
 require("scripts/ui/views/level_end/level_end_view_base")
 require("scripts/ui/views/level_end/states/end_view_state_summary")
 require("scripts/ui/views/level_end/states/end_view_state_score")
@@ -13,13 +15,14 @@ local weave_widget_definitions = definitions.weave_widget_definitions
 local debug_draw_scenegraph = false
 local debug_menu = false
 local level_end_view_testify = script_data.testify and require("scripts/ui/views/level_end/level_end_view_testify")
+
 LevelEndView = class(LevelEndView, LevelEndViewBase)
 
 LevelEndView.init = function (self, context)
 	LevelEndView.super.init(self, context)
 
 	self._weave_render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 
 	if context.players_session_score then
@@ -43,7 +46,7 @@ LevelEndView.start = function (self)
 end
 
 LevelEndView.setup_pages = function (self, game_won, rewards)
-	local index_by_state_name = nil
+	local index_by_state_name
 
 	if self._is_untrusted then
 		index_by_state_name = self:_setup_pages_untrusted()
@@ -58,7 +61,7 @@ end
 
 LevelEndView._setup_pages_untrusted = function (self)
 	local index_by_state_name = {
-		EndViewStateScore = 1
+		EndViewStateScore = 1,
 	}
 
 	return index_by_state_name
@@ -68,7 +71,9 @@ LevelEndView._setup_pages_victory = function (self, rewards)
 	local index_by_state_name = {}
 	local end_of_level_rewards = rewards.end_of_level_rewards
 	local chest = end_of_level_rewards.chest
+
 	index_by_state_name.EndViewStateSummary = table.size(index_by_state_name) + 1
+
 	local win_tracks_interface = Managers.backend:get_interface("win_tracks")
 
 	if win_tracks_interface then
@@ -89,9 +94,10 @@ LevelEndView._setup_pages_victory = function (self, rewards)
 end
 
 LevelEndView._setup_pages_defeat = function (self)
-	local index_by_state_name = {
-		EndViewStateSummary = table.size(index_by_state_name) + 1
-	}
+	local index_by_state_name = {}
+
+	index_by_state_name.EndViewStateSummary = table.size(index_by_state_name) + 1
+
 	local win_tracks_interface = Managers.backend:get_interface("win_tracks")
 
 	if win_tracks_interface then
@@ -113,7 +119,7 @@ LevelEndView.create_ui_elements = function (self)
 	self._static_widgets = {}
 	self._dynamic_widgets = {
 		timer_text = UIWidget.init(widget_definitions.timer_text),
-		timer_bg = UIWidget.init(widget_definitions.timer_bg)
+		timer_bg = UIWidget.init(widget_definitions.timer_bg),
 	}
 
 	if debug_menu then
@@ -121,6 +127,7 @@ LevelEndView.create_ui_elements = function (self)
 	end
 
 	local retry_button_def = UIWidgets.create_default_button("retry_button", scenegraph_definition.retry_button.size, nil, nil, Localize(self.game_won and "button_replay" or "button_retry"), 32, nil, nil, nil, true)
+
 	self._retry_button_widget = UIWidget.init(retry_button_def)
 	self._ready_button_widget = UIWidget.init(widget_definitions.ready_button)
 	self._retry_checkboxes_widget = UIWidget.init(widget_definitions.retry_checkboxes)
@@ -137,7 +144,9 @@ LevelEndView.create_ui_elements = function (self)
 	UIRenderer.clear_scenegraph_queue(self.ui_renderer)
 
 	self.ui_animator = UIAnimator:new(self.ui_scenegraph, animation_definitions)
+
 	local input_service = self.input_manager:get_service("end_of_level")
+
 	self._menu_input_description = MenuInputDescriptionUI:new(nil, self.ui_renderer, input_service, 5, 10, generic_input_actions.default)
 
 	self._menu_input_description:set_input_description(nil)
@@ -312,7 +321,7 @@ end
 LevelEndView._start_animation = function (self, animation_name)
 	local params = {
 		wwise_world = self.wwise_world,
-		render_settings = self.render_settings
+		render_settings = self.render_settings,
 	}
 	local widgets = self._dynamic_widgets
 
@@ -341,7 +350,7 @@ end
 LevelEndView.peer_signaled_done = function (self, peer_id, do_reload)
 	LevelEndView.super.peer_signaled_done(self, peer_id, do_reload)
 
-	local widget_content = nil
+	local widget_content
 
 	if do_reload then
 		widget_content = self._retry_checkboxes_widget.content
@@ -405,7 +414,7 @@ end
 local level_name = "levels/end_screen/world"
 
 LevelEndView._setup_camera = function (self)
-	local camera_pose = nil
+	local camera_pose
 	local unit_indices = LevelResource.unit_indices(level_name, "units/hub_elements/cutscene_camera/cutscene_camera")
 
 	for _, index in pairs(unit_indices) do
@@ -416,6 +425,7 @@ LevelEndView._setup_camera = function (self)
 			local position = LevelResource.unit_position(level_name, index)
 			local rotation = LevelResource.unit_rotation(level_name, index)
 			local pose = Matrix4x4.from_quaternion_position(rotation, position)
+
 			camera_pose = Matrix4x4Box(pose)
 
 			print("Found camera: " .. name)
@@ -431,9 +441,9 @@ LevelEndView.spawn_level = function (self, context, world)
 	local game_won = context.game_won
 	local object_set = game_won and "flow_victory" or "flow_defeat"
 	local object_sets = {
-		object_set
+		object_set,
 	}
-	local position, rotation, shading_callback, mood_setting = nil
+	local position, rotation, shading_callback, mood_setting
 	local time_sliced_spawn = false
 	local level = ScriptWorld.spawn_level(world, level_name, object_sets, position, rotation, shading_callback, mood_setting, time_sliced_spawn)
 

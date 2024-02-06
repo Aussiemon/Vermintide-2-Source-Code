@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/dialogues/tag_query.lua
+
 TagQuery = TagQuery or {}
 TagQuery.__index = TagQuery
 
@@ -10,6 +12,7 @@ TagQuery.add = function (self, ...)
 
 	for i = 1, n_args, 2 do
 		local key, value = select(i, ...)
+
 		query_context[key] = value
 	end
 
@@ -30,68 +33,68 @@ TagQuery.OP = TagQuery.OP or {
 	EQ = setmetatable({}, {
 		__tostring = function ()
 			return "EQ"
-		end
+		end,
 	}),
 	LT = setmetatable({}, {
 		__tostring = function ()
 			return "LT"
-		end
+		end,
 	}),
 	GT = setmetatable({}, {
 		__tostring = function ()
 			return "GT"
-		end
+		end,
 	}),
 	LTEQ = setmetatable({}, {
 		__tostring = function ()
 			return "LTEQ"
-		end
+		end,
 	}),
 	GTEQ = setmetatable({}, {
 		__tostring = function ()
 			return "GTEQ"
-		end
+		end,
 	}),
 	SUB = setmetatable({}, {
 		__tostring = function ()
 			return "SUB"
-		end
+		end,
 	}),
 	ADD = setmetatable({}, {
 		__tostring = function ()
 			return "ADD"
-		end
+		end,
 	}),
 	NEQ = setmetatable({}, {
 		__tostring = function ()
 			return "NEQ"
-		end
+		end,
 	}),
 	NOT = setmetatable({}, {
 		__tostring = function ()
 			return "NOT"
-		end
+		end,
 	}),
 	RAND = setmetatable({}, {
 		__tostring = function ()
 			return "RAND"
-		end
+		end,
 	}),
 	TIMEDIFF = setmetatable({}, {
 		__tostring = function ()
 			return "TIMEDIFF"
-		end
+		end,
 	}),
 	TIMESET = setmetatable({}, {
 		__tostring = function ()
 			return "TIMESET"
-		end
+		end,
 	}),
 	NUMSET = setmetatable({}, {
 		__tostring = function ()
 			return "NUMSET"
-		end
-	})
+		end,
+	}),
 }
 TagQuery.FilterOP = TagQuery.FilterOP or {
 	EQ = function (a, b)
@@ -111,5 +114,5 @@ TagQuery.FilterOP = TagQuery.FilterOP or {
 	end,
 	GTEQ = function (a, b)
 		return b <= a
-	end
+	end,
 }

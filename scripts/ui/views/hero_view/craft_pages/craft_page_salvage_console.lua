@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/hero_view/craft_pages/craft_page_salvage_console.lua
+
 require("scripts/ui/views/menu_world_previewer")
 
 local definitions = local_require("scripts/ui/views/hero_view/craft_pages/definitions/craft_page_salvage_console_definitions")
@@ -7,6 +9,7 @@ local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
 local NUM_CRAFT_SLOTS = definitions.NUM_CRAFT_SLOTS
 local DO_RELOAD = false
+
 CraftPageSalvageConsole = class(CraftPageSalvageConsole)
 CraftPageSalvageConsole.NAME = "CraftPageSalvageConsole"
 
@@ -15,18 +18,22 @@ CraftPageSalvageConsole.on_enter = function (self, params, settings)
 
 	self.parent = params.parent
 	self.super_parent = self.parent.parent
+
 	local ingame_ui_context = params.ingame_ui_context
+
 	self.ingame_ui_context = ingame_ui_context
 	self.ui_renderer = ingame_ui_context.ui_renderer
 	self.ui_top_renderer = ingame_ui_context.ui_top_renderer
 	self.input_manager = ingame_ui_context.input_manager
 	self.statistics_db = ingame_ui_context.statistics_db
 	self.render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 	self.crafting_manager = Managers.state.crafting
+
 	local player_manager = Managers.player
 	local local_player = player_manager:local_player()
+
 	self._stats_id = local_player:stats_id()
 	self.player_manager = player_manager
 	self.peer_id = ingame_ui_context.peer_id
@@ -55,20 +62,23 @@ end
 CraftPageSalvageConsole._start_transition_animation = function (self, animation_name)
 	local params = {
 		wwise_world = self.wwise_world,
-		render_settings = self.render_settings
+		render_settings = self.render_settings,
 	}
 	local widgets = {}
 	local anim_id = self.ui_animator:start_animation(animation_name, widgets, scenegraph_definition, params)
+
 	self._animations[animation_name] = anim_id
 end
 
 CraftPageSalvageConsole.create_ui_elements = function (self, params)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+
 	local widgets = {}
 	local widgets_by_name = {}
 
 	for name, widget_definition in pairs(widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		widgets[#widgets + 1] = widget
 		widgets_by_name[name] = widget
 	end
@@ -153,28 +163,19 @@ CraftPageSalvageConsole._handle_input = function (self, dt, t)
 	local filter_selected = super_parent:filter_selected()
 	local filter_active = super_parent:filter_active()
 	local filter_inactive = not filter_selected and not filter_active
+
 	unblocked = filter_inactive
+
 	local input_service = self.super_parent:window_input_service()
 	local widget = widgets_by_name.craft_button
 	local is_button_enabled = not widget.content.button_hotspot.disable_button
-	local auto_fill_rarity = nil
+	local auto_fill_rarity
 
 	if unblocked then
-		if UIUtils.is_button_pressed(widgets_by_name.auto_fill_plentiful) then
-			auto_fill_rarity = "plentiful"
-		end
-
-		if UIUtils.is_button_pressed(widgets_by_name.auto_fill_common) then
-			auto_fill_rarity = "common"
-		end
-
-		if UIUtils.is_button_pressed(widgets_by_name.auto_fill_rare) then
-			auto_fill_rarity = "rare"
-		end
-
-		if UIUtils.is_button_pressed(widgets_by_name.auto_fill_exotic) then
-			auto_fill_rarity = "exotic"
-		end
+		auto_fill_rarity = UIUtils.is_button_pressed(widgets_by_name.auto_fill_plentiful) and "plentiful" or auto_fill_rarity
+		auto_fill_rarity = UIUtils.is_button_pressed(widgets_by_name.auto_fill_common) and "common" or auto_fill_rarity
+		auto_fill_rarity = UIUtils.is_button_pressed(widgets_by_name.auto_fill_rare) and "rare" or auto_fill_rarity
+		auto_fill_rarity = UIUtils.is_button_pressed(widgets_by_name.auto_fill_exotic) and "exotic" or auto_fill_rarity
 
 		self.super_parent:set_auto_fill_rarity(auto_fill_rarity)
 	end
@@ -198,6 +199,7 @@ CraftPageSalvageConsole._handle_input = function (self, dt, t)
 
 		local max_time = UISettings.crafting_progress_time
 		local progress = math.min(self._craft_input_time / max_time, 1)
+
 		craft_input_accepted = self:_handle_craft_input_progress(progress)
 
 		WwiseWorld.set_global_parameter(self.wwise_world, "craft_forge_button_progress", progress)
@@ -348,7 +350,9 @@ CraftPageSalvageConsole._add_craft_item = function (self, backend_id, ignore_sou
 	end
 
 	local craft_items = self._craft_items
+
 	craft_items[backend_id] = true
+
 	local item_interface = Managers.backend:get_interface("items")
 	local item = backend_id and item_interface:get_item_from_id(backend_id)
 
@@ -377,6 +381,7 @@ CraftPageSalvageConsole._set_craft_counter_text = function (self, counter_text, 
 	local widgets_by_name = self._widgets_by_name
 	local counter_text_widget = widgets_by_name.counter_text
 	local max_counter_text_widget = widgets_by_name.max_counter_text
+
 	counter_text_widget.content.text = tostring(counter_text)
 	counter_text_widget.content.visible = visible
 	max_counter_text_widget.content.visible = visible
@@ -384,6 +389,7 @@ end
 
 CraftPageSalvageConsole._set_craft_button_disabled = function (self, disabled)
 	self._widgets_by_name.craft_button.content.button_hotspot.disable_button = disabled
+
 	local input_settings = not disabled and self.settings.name or "disabled"
 
 	if (self._num_craft_items or 0) < CraftingSettings.NUM_SALVAGE_SLOTS then
@@ -420,6 +426,7 @@ end
 CraftPageSalvageConsole._set_craft_button_text = function (self, text, localize)
 	local widgets_by_name = self._widgets_by_name
 	local widget = widgets_by_name.craft_button
+
 	widget.content.button_text = localize and Localize(text) or text
 end
 
@@ -432,7 +439,9 @@ CraftPageSalvageConsole._update_reward_material_fade_out = function (self, dt)
 
 	if material_fade_out_time then
 		local max_time = 2
+
 		material_fade_out_time = math.min(material_fade_out_time + dt, max_time)
+
 		local progress = 1 - material_fade_out_time / max_time
 		local anim_progress = math.easeOutCubic(progress)
 
@@ -468,6 +477,7 @@ CraftPageSalvageConsole._set_reward_material_alpha_fraction = function (self, fr
 		local text_style = style.text
 		local text_shadow_style = style.text_shadow
 		local icon_style = style.icon
+
 		text_style.text_color[1] = alpha
 		text_shadow_style.text_color[1] = alpha
 		icon_style.color[1] = alpha
@@ -484,6 +494,7 @@ CraftPageSalvageConsole._set_reward_material_alpha_fraction = function (self, fr
 		local text_style = style.text
 		local text_shadow_style = style.text_shadow
 		local icon_style = style.icon
+
 		text_style.text_color[1] = alpha
 		text_shadow_style.text_color[1] = alpha
 		icon_style.color[1] = alpha
@@ -501,6 +512,7 @@ CraftPageSalvageConsole._reset_reward_materials = function (self, visible)
 		local widget = widgets_by_name["material_text_" .. index]
 		local content = widget.content
 		local texture = material_textures[item_key]
+
 		content.icon = texture
 		content.visible = visible
 		content.text = "0"
@@ -521,10 +533,13 @@ CraftPageSalvageConsole._set_material_enabled_state = function (self, index, ena
 	local icon_style = style.icon
 	local color_value = enabled and 255 or 100
 	local text_color = text_style.text_color
+
 	text_color[2] = color_value
 	text_color[3] = color_value
 	text_color[4] = color_value
+
 	local icon_color = icon_style.color
+
 	icon_color[2] = color_value
 	icon_color[3] = color_value
 	icon_color[4] = color_value
@@ -539,10 +554,11 @@ CraftPageSalvageConsole._set_reward_material_by_index = function (self, backend_
 	local widgets_by_name = self._widgets_by_name
 	local widget = widgets_by_name["material_text_" .. index]
 	local content = widget.content
+
 	content.visible = true
 	content.text = amount_text
 	content.item = {
-		data = table.clone(ItemMasterList[item_key])
+		data = table.clone(ItemMasterList[item_key]),
 	}
 
 	self:_set_material_enabled_state(index, true)

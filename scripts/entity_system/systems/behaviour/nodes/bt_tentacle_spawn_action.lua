@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_tentacle_spawn_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTTentacleSpawnAction = class(BTTentacleSpawnAction, BTNode)
@@ -10,6 +12,7 @@ BTTentacleSpawnAction.name = "BTTentacleSpawnAction"
 
 BTTentacleSpawnAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
+
 	blackboard.action = action
 
 	if action and action.duration then
@@ -31,7 +34,7 @@ BTTentacleSpawnAction.run = function (self, unit, blackboard, t, dt)
 	local action = blackboard.action
 
 	if action and action.duration then
-		if blackboard.spawn_finished_t < t then
+		if t > blackboard.spawn_finished_t then
 			blackboard.spawn_finished_t = nil
 
 			return "done"

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/start_menu_view/states/start_menu_state_overview.lua
+
 require("scripts/settings/profiles/sp_profiles")
 
 local definitions = local_require("scripts/ui/views/start_menu_view/states/definitions/start_menu_state_overview_definitions")
@@ -23,8 +25,9 @@ local menu_functions = {
 	end,
 	function (this)
 		this:_activate_view("cinematics_view")
-	end
+	end,
 }
+
 StartMenuStateOverview = class(StartMenuStateOverview)
 StartMenuStateOverview.NAME = "StartMenuStateOverview"
 
@@ -33,22 +36,26 @@ StartMenuStateOverview.on_enter = function (self, params)
 	print("[HeroViewState] Enter Substate StartMenuStateOverview")
 
 	self._hero_name = params.hero_name
+
 	local ingame_ui_context = params.ingame_ui_context
+
 	self.ingame_ui_context = ingame_ui_context
 	self.ui_renderer = ingame_ui_context.ui_renderer
 	self.ui_top_renderer = ingame_ui_context.ui_top_renderer
 	self.input_manager = ingame_ui_context.input_manager
 	self.statistics_db = ingame_ui_context.statistics_db
 	self.render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 	self.profile_synchronizer = ingame_ui_context.profile_synchronizer
 	self.is_server = ingame_ui_context.is_server
 	self.world_previewer = params.world_previewer
 	self.wwise_world = params.wwise_world
 	self.platform = PLATFORM
+
 	local player_manager = Managers.player
 	local local_player = player_manager:local_player()
+
 	self._stats_id = local_player:stats_id()
 	self.player_manager = player_manager
 	self.peer_id = ingame_ui_context.peer_id
@@ -63,6 +70,7 @@ StartMenuStateOverview.on_enter = function (self, params)
 	local parent = self.parent
 	local input_service = self:input_service(true)
 	local gui_layer = UILayer.default + 30
+
 	self.menu_input_description = MenuInputDescriptionUI:new(ingame_ui_context, self.ui_top_renderer, input_service, 3, gui_layer, generic_input_actions.default)
 
 	self.menu_input_description:set_input_description(nil)
@@ -71,6 +79,7 @@ StartMenuStateOverview.on_enter = function (self, params)
 
 	self._hero_preview_skin = nil
 	self.use_user_skins = true
+
 	local profile_index = self.profile_synchronizer:profile_by_peer(self.peer_id, self.local_player_id)
 	local hero_name = self._hero_name
 
@@ -86,11 +95,13 @@ end
 
 StartMenuStateOverview.create_ui_elements = function (self, params)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+
 	local widgets = {}
 	local widgets_by_name = {}
 
 	for name, widget_definition in pairs(widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		widgets[#widgets + 1] = widget
 		widgets_by_name[name] = widget
 	end
@@ -101,6 +112,7 @@ StartMenuStateOverview.create_ui_elements = function (self, params)
 	if script_data.settings.use_beta_mode and IS_XB1 then
 		local tutorial_button = widgets_by_name.tutorial_button
 		local tutorial_button_content = tutorial_button.content
+
 		tutorial_button_content.button_hotspot.disable_button = true
 	end
 
@@ -204,6 +216,7 @@ StartMenuStateOverview.post_update = function (self, dt, t)
 			self.world_previewer:prepare_exit()
 		elseif self._spawn_hero then
 			self._spawn_hero = nil
+
 			local hero_name = self._selected_hero_name or self._hero_name
 
 			self:_spawn_hero_unit(hero_name)
@@ -317,17 +330,21 @@ StartMenuStateOverview._populate_career_page = function (self, hero_name, career
 	local display_name = career_settings.display_name
 	local icon = career_settings.icon
 	local widgets_by_name = self._widgets_by_name
+
 	widgets_by_name.info_career_name.content.text = Localize(display_name)
 	self._spawn_hero = true
 	self.career_index = career_index
-	local level = nil
+
+	local level
 
 	if Managers.mechanism:current_mechanism_name() == "versus" then
 		local experience = ExperienceSettings.get_versus_profile_experience()
+
 		level = ExperienceSettings.get_versus_profile_level_from_experience(experience)
 	else
 		local hero_attributes = Managers.backend:get_interface("hero_attributes")
 		local exp = hero_attributes:get(hero_name, "experience") or 0
+
 		level = ExperienceSettings.get_level(exp)
 	end
 
@@ -348,6 +365,7 @@ StartMenuStateOverview._get_portrait_frame = function (self, profile_index, care
 	if item then
 		local item_data = item.data
 		local frame_name = item_data.temporary_template
+
 		player_portrait_frame = frame_name or player_portrait_frame
 	end
 
@@ -356,6 +374,7 @@ end
 
 StartMenuStateOverview._set_hero_info = function (self, name, level)
 	local widgets_by_name = self._widgets_by_name
+
 	widgets_by_name.info_hero_name.content.text = name
 	widgets_by_name.info_hero_level.content.text = Localize("level") .. ": " .. level
 end
@@ -366,6 +385,7 @@ StartMenuStateOverview._create_player_portrait = function (self, portrait_image,
 	local retained_mode = false
 	local definition = UIWidgets.create_portrait_frame("portrait_root", player_portrait_frame, level_text, scale, retained_mode, portrait_image)
 	local widget = UIWidget.init(definition)
+
 	self._player_portrait_widget = widget
 end
 
@@ -379,6 +399,7 @@ StartMenuStateOverview._clear_keyboard_selection = function (self, button_grid)
 	for i, data in ipairs(button_grid) do
 		for j, button_name in ipairs(data) do
 			local widget = widgets_by_name[button_name]
+
 			widget.content.button_hotspot.is_selected = false
 		end
 	end
@@ -396,11 +417,11 @@ StartMenuStateOverview._handle_keyboard_input = function (self)
 			"tutorial_button",
 			"cinematics_button",
 			"credits_button",
-			"quit_button"
+			"quit_button",
 		},
 		{
-			"hero_button"
-		}
+			"hero_button",
+		},
 	}
 
 	if mouse_active or gamepad_active then
@@ -430,7 +451,7 @@ StartMenuStateOverview._handle_keyboard_input = function (self)
 		end,
 		hero_button = function ()
 			self.parent:requested_screen_change_by_name("character")
-		end
+		end,
 	}
 	local keyboard_grid_selection = self._keyboard_grid_selection or {}
 	local index_x = keyboard_grid_selection[1] or 1
@@ -457,6 +478,7 @@ StartMenuStateOverview._handle_keyboard_input = function (self)
 
 	index_x = math.clamp(index_x, 1, #button_grid)
 	index_y = math.clamp(index_y, 1, #button_grid[index_x])
+
 	local widgets_by_name = self._widgets_by_name
 
 	if index_x ~= keyboard_grid_selection[1] or index_y ~= keyboard_grid_selection[2] then
@@ -464,6 +486,7 @@ StartMenuStateOverview._handle_keyboard_input = function (self)
 			for grid_index_y, button_name in ipairs(data) do
 				local widget = widgets_by_name[button_name]
 				local button_hotspot = widget.content.button_hotspot
+
 				button_hotspot.is_selected = grid_index_x == index_x and grid_index_y == index_y
 			end
 		end
@@ -601,10 +624,11 @@ end
 StartMenuStateOverview._start_transition_animation = function (self, key, animation_name)
 	local params = {
 		wwise_world = self.wwise_world,
-		render_settings = self.render_settings
+		render_settings = self.render_settings,
 	}
 	local widgets = {}
 	local anim_id = self.ui_animator:start_animation(animation_name, widgets, scenegraph_definition, params)
+
 	self._animations[key] = anim_id
 end
 
@@ -664,10 +688,11 @@ end
 
 StartMenuStateOverview._init_menu_views = function (self)
 	local ingame_ui_context = self.ingame_ui_context
+
 	self._views = {
 		credits_view = CreditsView:new(ingame_ui_context),
 		options_view = OptionsView:new(ingame_ui_context),
-		cinematics_view = CinematicsView:new(ingame_ui_context)
+		cinematics_view = CinematicsView:new(ingame_ui_context),
 	}
 
 	for name, view in pairs(self._views) do
@@ -679,6 +704,7 @@ end
 
 StartMenuStateOverview._activate_view = function (self, new_view)
 	self._active_view = new_view
+
 	local views = self._views
 
 	assert(views[new_view])
@@ -700,6 +726,7 @@ StartMenuStateOverview.exit_current_view = function (self)
 	end
 
 	self._active_view = nil
+
 	local input_service = self:input_service(true)
 	local input_service_name = input_service.name
 	local input_manager = Managers.input

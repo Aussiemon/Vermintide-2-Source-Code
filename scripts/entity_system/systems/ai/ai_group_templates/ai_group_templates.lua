@@ -1,9 +1,14 @@
+﻿-- chunkname: @scripts/entity_system/systems/ai/ai_group_templates/ai_group_templates.lua
+
 AIGroupTemplates = AIGroupTemplates or {}
+
 local ScriptUnit_extension = ScriptUnit.extension
 local BLACKBOARDS = BLACKBOARDS
+
 AIGroupTemplates.mini_patrol = {
 	pre_unit_init = function (unit, group)
 		local blackboard = BLACKBOARDS[unit]
+
 		blackboard.sneaky = true
 	end,
 	init = function (world, nav_world, group, t)
@@ -14,12 +19,13 @@ AIGroupTemplates.mini_patrol = {
 	end,
 	destroy = function (world, nav_world, group)
 		Managers.state.conflict:mini_patrol_killed(group.id)
-	end
+	end,
 }
 AIGroupTemplates.horde = {
 	pre_unit_init = function (unit, group)
 		if group.sneaky then
 			local blackboard = BLACKBOARDS[unit]
+
 			blackboard.sneaky = true
 		end
 	end,
@@ -36,7 +42,7 @@ AIGroupTemplates.horde = {
 	destroy = function (world, nav_world, group)
 		Managers.state.conflict:horde_killed(group.group_data and group.group_data.horde_wave or "?")
 		Managers.state.conflict.horde_spawner:set_horde_is_done(group.id)
-	end
+	end,
 }
 AIGroupTemplates.boss_door_closers = {
 	pre_unit_init = function (unit, group)
@@ -50,11 +56,12 @@ AIGroupTemplates.boss_door_closers = {
 	end,
 	destroy = function (world, nav_world, group)
 		return
-	end
+	end,
 }
 AIGroupTemplates.resurrected = {
 	pre_unit_init = function (unit, group)
 		local blackboard = BLACKBOARDS[unit]
+
 		blackboard.ignore_interest_points = true
 		blackboard.ignore_passive_on_patrol = true
 	end,
@@ -71,7 +78,7 @@ AIGroupTemplates.resurrected = {
 			group.commanding_player.resurrected_group_id = nil
 			group.commanding_player = nil
 		end
-	end
+	end,
 }
 AIGroupTemplates.encampment = {
 	pre_unit_init = function (unit, group)
@@ -80,6 +87,7 @@ AIGroupTemplates.encampment = {
 		ai_simple:set_perception("perception_regular", "pick_encampment_target_idle")
 
 		local blackboard = BLACKBOARDS[unit]
+
 		blackboard.ignore_interest_points = true
 	end,
 	setup_group = function (world, nav_world, group, first_unit)
@@ -118,9 +126,7 @@ AIGroupTemplates.encampment = {
 		print("Encampment killed")
 	end,
 	wake_up_encampment = function (group, prime_target_unit)
-		Managers.state.entity:system("ai_group_system"):run_func_on_all_members(group, AIGroupTemplates.encampment.wake_up_unit, prime_target_unit)
-
-		group.idle = false
+		group.idle = false, Managers.state.entity:system("ai_group_system"):run_func_on_all_members(group, AIGroupTemplates.encampment.wake_up_unit, prime_target_unit)
 	end,
 	wake_up_unit = function (unit, group, prime_target_unit)
 		local ai_simple = ScriptUnit_extension(unit, "ai_system")
@@ -130,11 +136,12 @@ AIGroupTemplates.encampment = {
 		local breed = ai_simple._breed
 
 		ai_simple:set_perception(breed.perception, breed.target_selection)
-	end
+	end,
 }
 AIGroupTemplates.spawn_test = {
 	pre_unit_init = function (unit, group)
 		local blackboard = BLACKBOARDS[unit]
+
 		blackboard.far_off_despawn_immunity = true
 	end,
 	init = function (world, nav_world, group, t)
@@ -145,7 +152,7 @@ AIGroupTemplates.spawn_test = {
 		return
 	end,
 	update = function (world, nav_world, group, t)
-		if group.kill_after_time < t then
+		if t > group.kill_after_time then
 			for unit, extension in pairs(group.members) do
 				if HEALTH_ALIVE[unit] then
 					Managers.state.conflict:destroy_unit(unit, BLACKBOARDS[unit], "test")
@@ -155,6 +162,7 @@ AIGroupTemplates.spawn_test = {
 			end
 
 			local spawner_system = Managers.state.entity:system("spawner_system")
+
 			spawner_system.tests_running = spawner_system.tests_running - 1
 		end
 	end,
@@ -166,7 +174,7 @@ AIGroupTemplates.spawn_test = {
 		else
 			print("spawner id ", group.id, "is ok!")
 		end
-	end
+	end,
 }
 
 DLCUtils.merge("ai_group_templates", AIGroupTemplates)

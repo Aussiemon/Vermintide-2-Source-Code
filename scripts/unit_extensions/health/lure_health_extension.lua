@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/health/lure_health_extension.lua
+
 LureHealthExtension = class(LureHealthExtension)
 
 LureHealthExtension.init = function (self, extension_init_context, unit, extension_init_data)
@@ -7,7 +9,7 @@ LureHealthExtension.init = function (self, extension_init_context, unit, extensi
 	self._lifetime = Managers.time:time("game") + extension_init_data.duration
 	self.damage_buffers = {
 		pdArray.new(),
-		pdArray.new()
+		pdArray.new(),
 	}
 	self._network_transmit = extension_init_context.network_transmit
 	self._is_dead = false
@@ -48,7 +50,7 @@ LureHealthExtension.add_damage = function (self, ...)
 end
 
 LureHealthExtension.update = function (self, dt, context, t)
-	if self._is_server and not self._is_dead and self._lifetime < t then
+	if self._is_server and not self._is_dead and t > self._lifetime then
 		local death_system = Managers.state.entity:system("death_system")
 
 		death_system:kill_unit(self._unit, {})

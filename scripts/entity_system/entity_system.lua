@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/entity_system.lua
+
 require("scripts/entity_system/systems/extension_system_base")
 require("scripts/entity_system/systems/aggro/aggro_system")
 require("scripts/entity_system/systems/ai/ai_system")
@@ -176,8 +178,9 @@ local ai_supplementary_system_extension = {
 	"ThrownUnitHuskExtension",
 	"BeastmenStandardExtension",
 	"UnitSynchronizationExtension",
-	"GrudgeMarkSirenChainExtension"
+	"GrudgeMarkSirenChainExtension",
 }
+
 EntitySystem = class(EntitySystem)
 
 EntitySystem.init = function (self, entity_system_creation_context)
@@ -201,15 +204,13 @@ EntitySystem.init = function (self, entity_system_creation_context)
 end
 
 EntitySystem._init_systems = function (self, entity_system_creation_context)
-	local no_pre_update = false
-	local has_pre_update = true
-	local has_post_update = true
-	local dont_run_on_dedicated_server = true
+	local no_pre_update, has_pre_update, has_post_update, dont_run_on_dedicated_server = false, true, true, true
+
 	entity_system_creation_context.entity_system = self
 
 	self:_add_system("ai_bot_group_system", AIBotGroupSystem, entity_system_creation_context)
 	self:_add_system("target_override_system", TargetOverrideSystem, entity_system_creation_context, {
-		"TargetOverrideExtension"
+		"TargetOverrideExtension",
 	})
 	self:_add_system("ai_system", AISystem, entity_system_creation_context)
 	self:_add_system("ai_line_of_sight_system", AILineOfSightSystem, entity_system_creation_context)
@@ -217,17 +218,17 @@ EntitySystem._init_systems = function (self, entity_system_creation_context)
 	self:_add_system("input_system", ExtensionSystemBase, entity_system_creation_context, {
 		"PlayerInputExtension",
 		"PlayerInputTutorialExtension",
-		"PlayerBotInput"
+		"PlayerBotInput",
 	}, nil, has_pre_update)
 	self:_add_system("position_lookup_system", PositionLookupSystem, entity_system_creation_context)
 	self:_add_system("darkness_system", DarknessSystem, entity_system_creation_context, {
-		"LightSourceExtension"
+		"LightSourceExtension",
 	})
 	self:_add_system("character_state_machine_system", ExtensionSystemBase, entity_system_creation_context, {
-		"GenericCharacterStateMachineExtension"
+		"GenericCharacterStateMachineExtension",
 	})
 	self:_add_system("ladder_system", ExtensionSystemBase, entity_system_creation_context, {
-		"LadderExtension"
+		"LadderExtension",
 	})
 	self:_add_system("inventory_system", InventorySystem, entity_system_creation_context)
 	self:_add_system("pickup_system", PickupSystem, entity_system_creation_context)
@@ -235,7 +236,7 @@ EntitySystem._init_systems = function (self, entity_system_creation_context)
 	self:_add_system("cosmetic_system", CosmeticSystem, entity_system_creation_context)
 	self:_add_system("ai_shield_system", ExtensionSystemBase, entity_system_creation_context, {
 		"AIShieldUserExtension",
-		"AIShieldUserHuskExtension"
+		"AIShieldUserHuskExtension",
 	})
 	self:_add_system("ai_inventory_system", AIInventorySystem, entity_system_creation_context)
 	self:_add_system("ai_inventory_item_system", AIInventoryItemSystem, entity_system_creation_context)
@@ -246,7 +247,7 @@ EntitySystem._init_systems = function (self, entity_system_creation_context)
 	self:_add_system("aggro_system", AggroSystem, entity_system_creation_context)
 	self:_add_system("ping_system", PingSystem, entity_system_creation_context)
 	self:_add_system("smart_targeting_system", ExtensionSystemBase, entity_system_creation_context, {
-		"PlayerUnitSmartTargetingExtension"
+		"PlayerUnitSmartTargetingExtension",
 	})
 	self:_add_system("weapon_system", WeaponSystem, entity_system_creation_context)
 	self:_add_system("projectile_locomotion_system", ProjectileLocomotionSystem, entity_system_creation_context)
@@ -261,13 +262,13 @@ EntitySystem._init_systems = function (self, entity_system_creation_context)
 		"VersusPayloadObjectiveExtension",
 		"VersusSocketObjectiveExtension",
 		"VersusTargetObjectiveExtension",
-		"VersusMissionObjectiveExtension"
+		"VersusMissionObjectiveExtension",
 	})
 	self:_add_system("world_marker_system", WorldMarkerSystem, entity_system_creation_context)
 
 	if DEDICATED_SERVER then
 		self.entity_manager:add_ignore_extensions({
-			"UnitFlowOverrideExtension"
+			"UnitFlowOverrideExtension",
 		})
 	end
 
@@ -276,25 +277,25 @@ EntitySystem._init_systems = function (self, entity_system_creation_context)
 	self:_add_system("talent_system", TalentSystem, entity_system_creation_context)
 	self:_add_system("ammo_system", AmmoSystem, entity_system_creation_context)
 	self:_add_system("spread_system", ExtensionSystemBase, entity_system_creation_context, {
-		"WeaponSpreadExtension"
+		"WeaponSpreadExtension",
 	})
 	self:_add_system("health_system", HealthSystem, entity_system_creation_context)
 	self:_add_system("status_system", StatusSystem, entity_system_creation_context)
 	self:_add_system("attack_intensity_system", ExtensionSystemBase, entity_system_creation_context, {
-		"PlayerUnitAttackIntensityExtension"
+		"PlayerUnitAttackIntensityExtension",
 	})
 	self:_add_system("hit_reaction_system", HitReactionSystem, entity_system_creation_context)
 	self:_add_system("overcharge_system", ExtensionSystemBase, entity_system_creation_context, {
 		"PlayerUnitOverchargeExtension",
-		"PlayerHuskOverchargeExtension"
+		"PlayerHuskOverchargeExtension",
 	})
 	self:_add_system("trail_system", ExtensionSystemBase, entity_system_creation_context, {
-		"GenericTrailExtension"
+		"GenericTrailExtension",
 	})
 	self:_add_system("sound_effect_system", SoundEffectSystem, entity_system_creation_context)
 	self:_add_system("visual_effects_system", ExtensionSystemBase, entity_system_creation_context, {
 		"PlayerUnitVisualEffectsExtension",
-		"PlayerHuskVisualEffectsExtension"
+		"PlayerHuskVisualEffectsExtension",
 	}, nil, nil, nil, dont_run_on_dedicated_server)
 	self:_add_system("ai_slot_system", AISlotSystem2, entity_system_creation_context)
 	self:_add_system("ai_commander_system", AICommanderSystem, entity_system_creation_context)
@@ -305,42 +306,42 @@ EntitySystem._init_systems = function (self, entity_system_creation_context)
 	self:_add_system("ai_group_system", AIGroupSystem, entity_system_creation_context)
 	self:_add_system("ai_navigation_system", AINavigationSystem, entity_system_creation_context, {
 		"AINavigationExtension",
-		"PlayerBotNavigation"
+		"PlayerBotNavigation",
 	}, nil, no_pre_update, has_post_update)
 	self:_add_system("whereabouts_system", WhereaboutsSystem, entity_system_creation_context, {
 		"PlayerWhereaboutsExtension",
 		"LureWhereaboutsExtension",
-		"JumpsWhereaboutsExtension"
+		"JumpsWhereaboutsExtension",
 	}, nil, no_pre_update)
 	self:_add_system("ai_supplementary_system", ExtensionSystemBase, entity_system_creation_context, ai_supplementary_system_extension)
 	self:_add_system("ai_beam_effect_system", ExtensionSystemBase, entity_system_creation_context, {
 		"CorruptorBeamExtension",
 		"StormfiendBeamExtension",
-		"CurseCorruptorBeamExtension"
+		"CurseCorruptorBeamExtension",
 	})
 	self:_add_system("door_system", DoorSystem, entity_system_creation_context)
 	self:_add_system("payload_system", PayloadSystem, entity_system_creation_context)
 	self:_add_system("career_system", CareerSystem, entity_system_creation_context)
 	self:_add_system("event_spawner_system", ExtensionSystemBase, entity_system_creation_context, {
-		"EventLightSpawnerExtension"
+		"EventLightSpawnerExtension",
 	})
 	self:_add_system("disrupt_ritual_system", DisruptRitualSystem, entity_system_creation_context, {
-		"DisruptRitualExtension"
+		"DisruptRitualExtension",
 	})
 
 	if Managers.state.game_mode:settings().use_keep_decorations then
 		self:_add_system("keep_decoration_system", KeepDecorationSystem, entity_system_creation_context)
 	else
 		self.entity_manager:add_ignore_extensions({
-			"KeepDecorationPaintingExtension"
+			"KeepDecorationPaintingExtension",
 		})
 	end
 
 	self:_add_system("aim_system", AimSystem, entity_system_creation_context, {
-		"GenericUnitAimExtension"
+		"GenericUnitAimExtension",
 	})
 	self:_add_system("animation_movement_system", AnimationMovementSystem, entity_system_creation_context, {
-		"GenericUnitAnimationMovementSystem"
+		"GenericUnitAnimationMovementSystem",
 	})
 	self:_add_system("transportation_system", TransportationSystem, entity_system_creation_context, nil, nil, no_pre_update, has_post_update)
 	self:_add_system("locomotion_system", LocomotionSystem, entity_system_creation_context, nil, nil, no_pre_update, has_post_update)
@@ -348,7 +349,7 @@ EntitySystem._init_systems = function (self, entity_system_creation_context)
 
 	if IS_WINDOWS then
 		self:_add_system("eyetracking_system", ExtensionSystemBase, entity_system_creation_context, {
-			"PlayerEyeTrackingExtension"
+			"PlayerEyeTrackingExtension",
 		})
 	end
 
@@ -361,7 +362,7 @@ EntitySystem._init_systems = function (self, entity_system_creation_context)
 	end
 
 	self:_add_system("camera_state_machine_system", ExtensionSystemBase, entity_system_creation_context, {
-		"GenericCameraStateMachineExtension"
+		"GenericCameraStateMachineExtension",
 	})
 	self:_add_system("camera_system", CameraSystem, entity_system_creation_context, nil, nil, no_pre_update, has_post_update)
 	self:_add_system("sound_sector_system", SoundSectorSystem, entity_system_creation_context, nil, nil, nil, nil, dont_run_on_dedicated_server)
@@ -375,10 +376,10 @@ EntitySystem._init_systems = function (self, entity_system_creation_context)
 	self:_add_system("round_started_system", RoundStartedSystem, entity_system_creation_context)
 	self:_add_system("spawner_system", SpawnerSystem, entity_system_creation_context)
 	self:_add_system("props_system", PropsSystem, entity_system_creation_context, {
-		"BotNavTransitionExtension"
+		"BotNavTransitionExtension",
 	}, {
 		"PerlinLightExtension",
-		"QuestChallengePropExtension"
+		"QuestChallengePropExtension",
 	})
 	self:_add_system("end_zone_system", EndZoneSystem, entity_system_creation_context)
 	self:_add_system("progress_system", ProgressSystem, entity_system_creation_context)
@@ -400,10 +401,10 @@ EntitySystem._init_systems = function (self, entity_system_creation_context)
 	self:_add_system("proximity_system", ProximitySystem, entity_system_creation_context, nil, nil, no_pre_update, has_post_update)
 	self:_add_system("energy_system", ExtensionSystemBase, entity_system_creation_context, {
 		"PlayerUnitEnergyExtension",
-		"PlayerHuskEnergyExtension"
+		"PlayerHuskEnergyExtension",
 	})
 	self:_add_system("boon_system", ExtensionSystemBase, entity_system_creation_context, {
-		"BoonExtension"
+		"BoonExtension",
 	})
 	self:_add_system("unit_flow_override_system", UnitFlowOverrideSystem, entity_system_creation_context, nil, nil, nil, nil, dont_run_on_dedicated_server)
 
@@ -479,6 +480,7 @@ end
 
 EntitySystem.system_update = function (self, update_func, dt)
 	local entity_system_update_context = self.system_update_context
+
 	entity_system_update_context.world = self.world
 	entity_system_update_context.dt = dt
 	entity_system_update_context.entity_manager = self.entity_manager
@@ -496,6 +498,7 @@ end
 
 EntitySystem.commit_and_remove_pending_units = function (self)
 	local unit_spawner = self.unit_spawner
+
 	unit_spawner.locked = false
 
 	unit_spawner:commit_and_remove_pending_units()

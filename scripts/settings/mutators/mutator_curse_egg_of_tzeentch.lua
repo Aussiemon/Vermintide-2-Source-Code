@@ -1,9 +1,11 @@
+﻿-- chunkname: @scripts/settings/mutators/mutator_curse_egg_of_tzeentch.lua
+
 local MONSTERS = {
 	"chaos_troll",
 	"chaos_spawn",
 	"skaven_rat_ogre",
 	"skaven_stormfiend",
-	"beastmen_minotaur"
+	"beastmen_minotaur",
 }
 local NORMAL = 2
 local HARD = 3
@@ -15,28 +17,28 @@ local NEXT_EGG_COOLDOWN = {
 	[HARD] = 30,
 	[HARDER] = 30,
 	[HARDEST] = 30,
-	[CATACLYSM] = 30
+	[CATACLYSM] = 30,
 }
 local EGG_AMOUNT = {
 	[NORMAL] = math.huge,
 	[HARD] = math.huge,
 	[HARDER] = math.huge,
 	[HARDEST] = math.huge,
-	[CATACLYSM] = math.huge
+	[CATACLYSM] = math.huge,
 }
 local EGG_HEALTH = {
 	[NORMAL] = 100,
 	[HARD] = 150,
 	[HARDER] = 200,
 	[HARDEST] = 250,
-	[CATACLYSM] = 300
+	[CATACLYSM] = 300,
 }
 local SOUND_EVENTS = {
-	EGG_DESTROYED = "Play_curse_egg_of_tzeentch_alert_egg_destroyed",
-	ALERT_MEDIUM = "Play_curse_egg_of_tzeentch_alert_medium",
+	ALERT_HIGH = "Play_curse_egg_of_tzeentch_alert_high",
 	ALERT_LOW = "Play_curse_egg_of_tzeentch_alert_low",
+	ALERT_MEDIUM = "Play_curse_egg_of_tzeentch_alert_medium",
+	EGG_DESTROYED = "Play_curse_egg_of_tzeentch_alert_egg_destroyed",
 	EGG_EXPLOSION = "Play_curse_egg_of_tzeentch_explosion",
-	ALERT_HIGH = "Play_curse_egg_of_tzeentch_alert_high"
 }
 local VFX_EGG_EXPLOSION = "fx/magic_wind_essence_explosion_02"
 local EGG_MISSION_NAME = "egg_of_tzeentch"
@@ -47,19 +49,19 @@ local EGG_EXTENSION_INIT_DATA = {
 		breed = "n/a",
 		initial_buff_names = {
 			"objective_unit",
-			"health_bar"
-		}
+			"health_bar",
+		},
 	},
 	health_system = {},
 	death_system = {
-		death_reaction_template = "destructible_buff_objective_unit"
+		death_reaction_template = "destructible_buff_objective_unit",
 	},
 	hit_reaction_system = {
-		hit_reaction_template = "level_object"
+		hit_reaction_template = "level_object",
 	},
 	timed_spawner_system = {
-		max_spawn_amount = 1
-	}
+		max_spawn_amount = 1,
+	},
 }
 
 local function filter_by_available_breeds(breeds, contained_breeds)
@@ -76,6 +78,7 @@ end
 
 local function get_position_on_nav_mesh(nav_world, position)
 	local nav_position = LocomotionUtils.pos_on_mesh(nav_world, position, 1, 1)
+
 	nav_position = nav_position or GwNavQueries.inside_position_from_outside_position(nav_world, position, 6, 6, 8, 0.5)
 
 	return nav_position
@@ -83,6 +86,7 @@ end
 
 local function spawn_egg_on_path(conflict_director, unit_spawner, nav_world, mission_system, extension_init_data, spawn_distance)
 	spawn_distance = math.clamp(spawn_distance, 0, MainPathUtils.total_path_dist() - 0.1)
+
 	local main_paths = conflict_director.level_analysis:get_main_paths()
 	local position = MainPathUtils.point_on_mainpath(main_paths, spawn_distance)
 	local nav_position = position and get_position_on_nav_mesh(nav_world, position)
@@ -138,10 +142,10 @@ local function is_valid_spawn_distance(ahead_player_travel_dist, egg_spawn_dista
 end
 
 return {
+	curse_package_name = "resource_packages/mutators/mutator_curse_egg_of_tzeentch",
+	description = "curse_egg_of_tzeentch_desc",
 	display_name = "curse_egg_of_tzeentch_name",
 	icon = "deus_curse_tzeentch_01",
-	description = "curse_egg_of_tzeentch_desc",
-	curse_package_name = "resource_packages/mutators/mutator_curse_egg_of_tzeentch",
 	client_start_function = function (context, data)
 		data.vfx_ids = {}
 		data.wwise_world = Managers.world:wwise_world(context.world)
@@ -151,7 +155,9 @@ return {
 		data.difficulty_rank = Managers.state.difficulty:get_difficulty_rank()
 		data.mission_system = Managers.state.entity:system("mission_system")
 		data.unit_spawner = Managers.state.unit_spawner
+
 		local ai_system = Managers.state.entity:system("ai_system")
+
 		data.nav_world = ai_system:nav_world()
 		data.num_available_eggs = EGG_AMOUNT[data.difficulty_rank] or EGG_AMOUNT[NORMAL]
 		data.num_destroyed_eggs = 0
@@ -165,6 +171,7 @@ return {
 	end,
 	update_conflict_settings = function (context, data)
 		local boss_settings = CurrentBossSettings
+
 		boss_settings.disabled = true
 	end,
 	server_players_left_safe_zone = function (context, data)
@@ -192,11 +199,13 @@ return {
 		local egg_mission = Missions.egg_of_tzeentch
 		local alert_timer = data.alert_timer
 		local new_alert_timer = alert_timer and alert_timer - dt
+
 		data.alert_timer = new_alert_timer
 
 		if new_alert_timer then
 			if new_alert_timer < egg_mission.alert_medium_timer and not data.alert_medium_triggered then
 				data.alert_medium_triggered = true
+
 				local audio_system = Managers.state.entity:system("audio_system")
 
 				audio_system:play_2d_audio_event(SOUND_EVENTS.ALERT_MEDIUM)
@@ -211,6 +220,7 @@ return {
 				end
 			elseif new_alert_timer < egg_mission.alert_high_timer and not data.alert_high_triggered then
 				data.alert_high_triggered = true
+
 				local audio_system = Managers.state.entity:system("audio_system")
 
 				audio_system:play_2d_audio_event(SOUND_EVENTS.ALERT_HIGH)
@@ -246,18 +256,23 @@ return {
 		end
 
 		data.timer = nil
+
 		local difficulty = Managers.state.difficulty:get_difficulty()
 		local contained_breeds = CurrentConflictSettings.contained_breeds[difficulty]
 		local available_monsters = filter_by_available_breeds(MONSTERS, contained_breeds)
 		local egg_hatch_time = egg_mission.duration
 		local egg_extension_init_data = table.clone(EGG_EXTENSION_INIT_DATA)
+
 		egg_extension_init_data.health_system.health = EGG_HEALTH[data.difficulty_rank] or EGG_HEALTH[NORMAL]
+
 		local timed_spawner_system = egg_extension_init_data.timed_spawner_system
+
 		timed_spawner_system.spawn_rate = egg_hatch_time
 		timed_spawner_system.spawnable_breeds = available_monsters
 
 		timed_spawner_system.cb_unit_spawned_function = function (unit)
 			data.last_spawned_monster = unit
+
 			local audio_system = Managers.state.entity:system("audio_system")
 
 			audio_system:play_2d_audio_event(SOUND_EVENTS.EGG_DESTROYED)
@@ -315,6 +330,7 @@ return {
 	end,
 	server_stop_function = function (context, data, is_destroy)
 		local boss_settings = CurrentBossSettings
+
 		boss_settings.disabled = false
 	end,
 	client_level_object_killed_function = function (context, data, killed_unit)
@@ -341,5 +357,5 @@ return {
 		for _, vfx_id in ipairs(data.vfx_ids) do
 			World.destroy_particles(context.world, vfx_id)
 		end
-	end
+	end,
 }

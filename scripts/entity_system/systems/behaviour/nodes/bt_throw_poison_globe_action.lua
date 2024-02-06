@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_throw_poison_globe_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTThrowPoisonGlobeAction = class(BTThrowPoisonGlobeAction, BTNode)
@@ -14,9 +16,11 @@ BTThrowPoisonGlobeAction.enter = function (self, unit, blackboard, t)
 	ai_navigation:set_enabled(false)
 
 	local action = self._tree_node.action_data
+
 	blackboard.action = action
 	blackboard.anim_cb_spawn_projectile = false
 	blackboard.anim_cb_throw = false
+
 	local locomotion = ScriptUnit.extension(unit, "locomotion_system")
 
 	locomotion:set_rotation_speed(5)
@@ -36,6 +40,7 @@ BTThrowPoisonGlobeAction.leave = function (self, unit, blackboard, t, reason, de
 	end
 
 	blackboard.action = nil
+
 	local old_throw_target = blackboard.throw_target
 
 	if old_throw_target then
@@ -68,6 +73,7 @@ BTThrowPoisonGlobeAction.run = function (self, unit, blackboard, t, dt)
 		Managers.state.unit_spawner:mark_for_deletion(blackboard.dummy_projectile_unit)
 
 		blackboard.dummy_projectile_unit = nil
+
 		local throw_pos = blackboard.throw_globe_data.throw_pos:unbox()
 		local target_dir = blackboard.throw_globe_data.target_direction:unbox()
 		local angle = blackboard.throw_globe_data.angle
@@ -78,13 +84,14 @@ BTThrowPoisonGlobeAction.run = function (self, unit, blackboard, t, dt)
 
 		local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
 		local event_data = FrameTable.alloc_table()
+
 		event_data.attack_tag = "pwg_projectile"
 		event_data.distance = math.floor(Vector3.distance(throw_pos, POSITION_LOOKUP[unit]))
 
 		dialogue_input:trigger_networked_dialogue_event("enemy_attack", event_data)
 	end
 
-	if blackboard.start_anim_locked_time and blackboard.start_anim_locked_time < t then
+	if blackboard.start_anim_locked_time and t > blackboard.start_anim_locked_time then
 		LocomotionUtils.set_animation_driven_movement(unit, false)
 
 		blackboard.start_anim_locked_time = nil
@@ -114,10 +121,13 @@ BTThrowPoisonGlobeAction.attack_throw = function (self, unit, t, dt, blackboard,
 		blackboard.anim_locked = t + action.attack_time
 		blackboard.move_state = "throwing"
 		blackboard.times_thrown = blackboard.times_thrown and (blackboard.times_thrown + 1) % (action.barrage_count or 2) or 1
+
 		local action = blackboard.action
 		local throw_globe_data = blackboard.throw_globe_data
+
 		throw_globe_data.next_throw_at = t + (blackboard.times_thrown == 0 and action.time_between_throws[1] or action.time_between_throws[2])
 		throw_globe_data.last_throw_at = t
+
 		local attack_type = "poison_wind_globe"
 		local old_throw_target = blackboard.throw_target
 

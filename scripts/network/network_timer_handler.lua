@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/network/network_timer_handler.lua
+
 NetworkTimerHandler = class(NetworkTimerHandler)
 
 NetworkTimerHandler.init = function (self, world, network_clock, is_server)
@@ -9,7 +11,7 @@ NetworkTimerHandler.init = function (self, world, network_clock, is_server)
 end
 
 local RPCS = {
-	"rpc_start_network_timer"
+	"rpc_start_network_timer",
 }
 
 NetworkTimerHandler.register_rpcs = function (self, network_event_delegate)
@@ -51,9 +53,10 @@ NetworkTimerHandler.update = function (self, dt, t)
 
 	local current_time = self._network_clock:time()
 
-	if self._end_time <= current_time then
+	if current_time >= self._end_time then
 		self._timer_state = "inactive"
 		self._end_time = nil
+
 		local level = LevelHelper:current_level(self._world)
 
 		Level.trigger_event(level, "network_timer_done")

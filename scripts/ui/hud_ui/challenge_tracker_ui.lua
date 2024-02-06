@@ -1,5 +1,9 @@
+﻿-- chunkname: @scripts/ui/hud_ui/challenge_tracker_ui.lua
+
 local definitions = local_require("scripts/ui/hud_ui/challenge_tracker_ui_definitions")
+
 ChallengeTrackerUI = class(ChallengeTrackerUI)
+
 local RESTACK_SPEED = 500
 local RETAINED_MODE_ENABLED = definitions.RETAINED_MODE_ENABLED
 
@@ -29,18 +33,18 @@ ChallengeTrackerUI._create_ui_elements = function (self)
 
 	self._ui_scenegraph = UISceneGraph.init_scenegraph(definitions.scenegraph_definition)
 	self._render_settings = {
-		alpha_multiplier = 1
+		alpha_multiplier = 1,
 	}
 	self._ui_animator = UIAnimator:new(self._ui_scenegraph, definitions.animation_definitions)
 	self._data = {
 		offset = {
 			0,
 			0,
-			0
+			0,
 		},
 		widgets = {},
 		widget_by_challenge = {},
-		challenges = {}
+		challenges = {},
 	}
 	self._animation_queue = MakeTableWeakKeys({})
 	self._restack_targets = {}
@@ -122,6 +126,7 @@ ChallengeTrackerUI._cb_on_done = function (self, widget, challenge)
 	local data = self._data
 	local index = table.index_of(data.widgets, widget)
 	local num_widgets = #data.widgets
+
 	data.widgets[index] = nil
 	data.widget_by_challenge[challenge] = nil
 	self._animation_queue[widget] = nil
@@ -148,7 +153,7 @@ ChallengeTrackerUI._play_animation = function (self, name, widget, initial_delay
 
 	widget.content.animation_id = animator:start_animation(name, widget, definitions.scenegraph_definition, {
 		view = self,
-		ui_renderer = self._ui_renderer
+		ui_renderer = self._ui_renderer,
 	}, initial_delay)
 end
 
@@ -160,9 +165,10 @@ ChallengeTrackerUI._play_animation_queued = function (self, name, widget, initia
 		self:_play_animation(name, widget, initial_delay)
 	else
 		local queue = self._animation_queue[widget] or {}
+
 		queue[#queue + 1] = {
 			name = name,
-			initial_delay = initial_delay
+			initial_delay = initial_delay,
 		}
 		self._animation_queue[widget] = queue
 	end
@@ -201,6 +207,7 @@ ChallengeTrackerUI._update_restacking = function (self, dt)
 			restack_targets[widget] = nil
 		else
 			local step_size = math.min(math.abs(step), speed)
+
 			widget.offset[2] = current + math.clamp(step, -step_size, step_size)
 		end
 
@@ -240,12 +247,12 @@ ChallengeTrackerUI._handle_resolution_modified = function (self)
 end
 
 local customizer_data = {
+	drag_scenegraph_id = "quest",
+	label = "Duties",
+	lock_x = false,
 	lock_y = false,
 	registry_key = "questingknight",
-	drag_scenegraph_id = "quest",
 	root_scenegraph_id = "quest",
-	label = "Duties",
-	lock_x = false
 }
 
 ChallengeTrackerUI.update = function (self, dt, t)
@@ -266,7 +273,7 @@ ChallengeTrackerUI._draw = function (self, dt)
 	local ui_renderer = self._ui_renderer
 	local ui_scenegraph = self._ui_scenegraph
 	local render_settings = self._render_settings
-	local input_service = nil
+	local input_service
 	local UIRenderer = UIRenderer
 
 	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt, nil, render_settings)

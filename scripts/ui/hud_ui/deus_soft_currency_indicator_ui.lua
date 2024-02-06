@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/ui/hud_ui/deus_soft_currency_indicator_ui.lua
+
 local definitions = local_require("scripts/ui/hud_ui/deus_soft_currency_indicator_ui_definitions")
+
 DeusSoftCurrencyIndicatorUI = class(DeusSoftCurrencyIndicatorUI)
 
 DeusSoftCurrencyIndicatorUI.init = function (self, parent, ingame_ui_context)
@@ -22,9 +25,10 @@ DeusSoftCurrencyIndicatorUI.play_animation = function (self, animation_name, fro
 	local params = {
 		from_coin_count = from_coin_count,
 		to_coin_count = to_coin_count,
-		coin_delta = to_coin_count - from_coin_count
+		coin_delta = to_coin_count - from_coin_count,
 	}
 	local initial_delay = 0
+
 	self._animation_id = self._ui_animator:start_animation(animation_name, self._coin_widget, definitions.scenegraph_definition, params, nil, initial_delay)
 end
 

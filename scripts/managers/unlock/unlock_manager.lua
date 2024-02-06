@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/unlock/unlock_manager.lua
+
 require("scripts/managers/unlock/unlock_clan")
 require("scripts/managers/unlock/unlock_dlc")
 require("scripts/managers/unlock/unlock_game")
@@ -30,6 +32,7 @@ UnlockManager.init = function (self)
 
 		for _, dlc in ipairs(self._licensed_packages) do
 			local display_name = XboxDLC.display_name(dlc) or " "
+
 			display_name = string.gsub(display_name, "%c", "")
 			self._xbox_dlc_package_names[dlc] = display_name
 		end
@@ -61,6 +64,7 @@ UnlockManager._init_unlocks = function (self)
 			local is_legacy_console_dlc = unlock_config.is_legacy_console_dlc
 			local class = rawget(_G, class_name)
 			local instance = class:new(unlock_name, id, backend_reward_id, always_unlocked_game_app_ids, cosmetic, fallback_id, requires_restart, is_legacy_console_dlc)
+
 			unlocks[unlock_name] = instance
 			unlocks_indexed[i][unlock_name] = instance
 		end
@@ -76,6 +80,7 @@ UnlockManager.update = function (self, dt, t)
 	if IS_XB1 then
 		if self._update_unlocks then
 			self._dlc_status_changed = nil
+
 			local status = XboxDLC.status()
 
 			if status ~= XboxDLC.IDLE then
@@ -204,6 +209,7 @@ UnlockManager._check_licenses = function (self)
 	for _, dlc in ipairs(licensed_packages) do
 		if not table.find(self._licensed_packages, dlc) then
 			local display_name = XboxDLC.display_name(dlc) or " "
+
 			display_name = string.gsub(display_name, "%c", "")
 			new_licensed_dlc = new_licensed_dlc .. display_name .. "\n"
 			self._xbox_dlc_package_names[dlc] = display_name
@@ -213,6 +219,7 @@ UnlockManager._check_licenses = function (self)
 	for _, dlc in ipairs(self._licensed_packages) do
 		if not table.find(licensed_packages, dlc) then
 			local display_name = self._xbox_dlc_package_names[dlc] or " "
+
 			removed_dlc_licenses = removed_dlc_licenses .. display_name .. "\n"
 		end
 	end
@@ -290,6 +297,7 @@ UnlockManager._update_console_backend_unlocks = function (self)
 
 			if index > #self._unlocks_indexed then
 				self._state = "update_backend_dlcs"
+
 				local peddler_interface = Managers.backend:get_interface("peddler")
 
 				peddler_interface:refresh_chips()
@@ -298,6 +306,7 @@ UnlockManager._update_console_backend_unlocks = function (self)
 			end
 
 			self._query_unlocked_index = index
+
 			local settings = UnlockSettings[index]
 			local interface_name = settings.interface
 
@@ -396,14 +405,14 @@ UnlockManager.cb_reward_removed = function (self, unlock, success)
 end
 
 local type_sort_order = {
-	ranged = 2,
-	weapon_skin = 3,
-	hat = 4,
-	frame = 6,
-	melee = 1,
-	skin = 5,
 	deed = 8,
-	keep_decoration_painting = 7
+	frame = 6,
+	hat = 4,
+	keep_decoration_painting = 7,
+	melee = 1,
+	ranged = 2,
+	skin = 5,
+	weapon_skin = 3,
 }
 
 UnlockManager._add_reward = function (self, items, presentation_text)
@@ -427,7 +436,7 @@ UnlockManager._add_reward = function (self, items, presentation_text)
 
 	self._reward_queue[#self._reward_queue + 1] = {
 		items = items,
-		presentation_text = presentation_text
+		presentation_text = presentation_text,
 	}
 end
 
@@ -549,7 +558,7 @@ UnlockManager.open_dlc_page = function (self, dlc_name)
 		local product_label = ProductLabels[dlc_name]
 
 		Managers.system_dialog:open_commerce_dialog(NpCommerceDialog.MODE_PRODUCT, user_id, {
-			product_label
+			product_label,
 		})
 	end
 end
@@ -565,7 +574,7 @@ UnlockManager.ps4_dlc_product_label = function (self, name)
 end
 
 UnlockManager.debug_add_console_dlc_reward = function (self, reward_id)
-	local unlock, index = nil
+	local unlock, index
 
 	for i, unlocks in ipairs(self._unlocks_indexed) do
 		for _, u in pairs(unlocks) do
@@ -603,7 +612,7 @@ UnlockManager.debug_add_console_dlc_reward = function (self, reward_id)
 end
 
 UnlockManager.debug_remove_console_dlc_reward = function (self, reward_id)
-	local unlock, index = nil
+	local unlock, index
 
 	for i, unlocks in ipairs(self._unlocks_indexed) do
 		for _, u in pairs(unlocks) do
@@ -805,43 +814,46 @@ UnlockManager._handle_unseen_rewards = function (self)
 
 	for i = 1, #unseen_rewards do
 		local reward = unseen_rewards[i]
-		local item = nil
+		local item
 
 		if reward.item_type == "weapon_skin" then
 			local item_id = reward.item_id
 			local weapon_skin_data = WeaponSkins.skins[item_id]
 			local rarity = weapon_skin_data.rarity or "plentiful"
+
 			item = {
 				skin = item_id,
 				data = {
+					information_text = "information_weapon_skin",
 					item_type = "weapon_skin",
 					slot_type = "weapon_skin",
-					information_text = "information_weapon_skin",
 					matching_item_key = weapon_skin_data.item_type,
 					can_wield = CanWieldAllItemTemplates,
-					rarity = rarity
-				}
+					rarity = rarity,
+				},
 			}
 		elseif reward.reward_type == "keep_decoration_painting" then
 			local decoration_name = reward.keep_decoration_name
 			local painting_data = Paintings[decoration_name]
 			local rarity = reward.rarity or painting_data.rarity or "plentiful"
+
 			item = {
 				painting = decoration_name,
 				data = {
-					slot_type = "keep_decoration_painting",
 					information_text = "information_text_painting",
 					item_type = "keep_decoration_painting",
 					matching_item_key = "keep_decoration_painting",
+					slot_type = "keep_decoration_painting",
 					can_wield = CanWieldAllItemTemplates,
 					rarity = rarity,
 					display_name = painting_data.display_name,
 					description = painting_data.description,
-					inventory_icon = painting_data.icon
-				}
+					inventory_icon = painting_data.icon,
+				},
 			}
 		elseif CosmeticUtils.is_cosmetic_item(reward.reward_type) then
 			local backend_id = item_interface:get_backend_id_from_cosmetic_item(reward.item_id)
+
 			item = item_interface:get_item_from_id(backend_id)
 		else
 			item = item_interface:get_item_from_id(reward.backend_id)
@@ -890,6 +902,7 @@ UnlockManager.set_excluded_dlcs = function (self, dlcs_to_exclude)
 
 	for i = 1, #dlcs_to_exclude do
 		local dlc = dlcs_to_exclude[i]
+
 		excluded_dlcs[dlc] = true
 	end
 end

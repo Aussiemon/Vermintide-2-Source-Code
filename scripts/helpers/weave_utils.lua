@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/helpers/weave_utils.lua
+
 WeaveUtils = WeaveUtils or {}
 
 WeaveUtils.get_rating = function (score)
@@ -7,7 +9,7 @@ WeaveUtils.get_rating = function (score)
 
 	if score then
 		for i = 1, #rating_values do
-			if rating_values[i] < score then
+			if score > rating_values[i] then
 				rating = max_rating - i + 1
 
 				break

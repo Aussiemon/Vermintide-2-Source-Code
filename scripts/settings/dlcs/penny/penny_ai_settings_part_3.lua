@@ -1,9 +1,12 @@
+﻿-- chunkname: @scripts/settings/dlcs/penny/penny_ai_settings_part_3.lua
+
 local settings = DLCSettings.penny_part_3
+
 settings.breeds = {
-	"scripts/settings/breeds/breed_chaos_exalted_sorcerer_drachenfels"
+	"scripts/settings/breeds/breed_chaos_exalted_sorcerer_drachenfels",
 }
 settings.behaviour_trees_precompiled = {
-	"scripts/entity_system/systems/behaviour/nodes/generated/bt_selector_chaos_exalted_sorcerer_drachenfels"
+	"scripts/entity_system/systems/behaviour/nodes/generated/bt_selector_chaos_exalted_sorcerer_drachenfels",
 }
 settings.anim_lookup = {
 	"attack_float_01",
@@ -26,27 +29,30 @@ settings.anim_lookup = {
 	"toggle_movement",
 	"teleport_to_aoe",
 	"teleport_to_flying",
-	"float_teleport_death_end"
+	"float_teleport_death_end",
 }
 settings.behaviour_trees = {
-	"scripts/entity_system/systems/behaviour/trees/chaos/chaos_exalted_sorcerer_drachenfels_behavior"
+	"scripts/entity_system/systems/behaviour/trees/chaos/chaos_exalted_sorcerer_drachenfels_behavior",
 }
 settings.behaviour_tree_nodes = {
 	"scripts/entity_system/systems/behaviour/nodes/chaos_sorcerer/bt_chaos_sorcerer_charge_action",
-	"scripts/entity_system/systems/behaviour/nodes/chaos_sorcerer/bt_swarm_action"
+	"scripts/entity_system/systems/behaviour/nodes/chaos_sorcerer/bt_swarm_action",
 }
 
 local function setup_sorcerer_boss_drachenfels_spawning(unit, blackboard, data)
-	local call_position = nil
+	local call_position
 	local spawner = ConflictUtils.get_random_spawner_with_id("sorcerer_boss_drachenfels")
 
 	if spawner then
 		call_position = Unit.local_position(spawner, 0)
+
 		local fwd = Vector3.normalize(Vector3.flat(Quaternion.forward(ScriptUnit.extension(spawner, "spawner_system"):spawn_rotation())))
+
 		data.spawn_forward = Vector3Box(fwd)
-		local spawners = {
-			ConflictUtils.get_random_spawner_with_id("sorcerer_boss_drachenfels_minion")
-		}
+
+		local spawners = {}
+
+		spawners[1] = ConflictUtils.get_random_spawner_with_id("sorcerer_boss_drachenfels_minion")
 
 		print("found spawner for sorcerer_boss_drachenfels_minion:", spawners[1])
 
@@ -59,8 +65,9 @@ local function setup_sorcerer_boss_drachenfels_spawning(unit, blackboard, data)
 	else
 		local dummy_action = {
 			spawn_group = "default",
-			use_fallback_spawners = true
+			use_fallback_spawners = true,
 		}
+
 		call_position = BTSpawnAllies.find_spawn_point(unit, blackboard, dummy_action, data)
 	end
 
@@ -76,12 +83,14 @@ settings.bt_enter_hooks = {
 			local node_unit = node_units[1]
 			local pos = Unit.local_position(node_unit, 0)
 			local rot = Unit.local_rotation(node_unit, 0)
+
 			blackboard.quick_teleport_exit_pos = Vector3Box(pos)
 			blackboard.quick_teleport = true
 
 			Unit.set_local_rotation(unit, 0, rot)
 
 			local health_extension = ScriptUnit.extension(unit, "health_system")
+
 			health_extension.is_invincible = true
 		else
 			print("Found no generic AI node (sorcerer_boss_drachenfels_intro) for lord intro, ", unit)
@@ -100,18 +109,22 @@ settings.bt_enter_hooks = {
 	sorcerer_drachenfels_begin_defensive_mode = function (unit, blackboard, t)
 		local data = {
 			stay_still = true,
-			end_time = math.huge
+			end_time = math.huge,
 		}
 		local call_position = setup_sorcerer_boss_drachenfels_spawning(unit, blackboard, data)
+
 		blackboard.defensive_phase_duration = blackboard.defensive_phase_max_duration
 		blackboard.spawning_allies = data
 		blackboard.quick_teleport_exit_pos = Vector3Box(call_position)
 		blackboard.quick_teleport = true
 		data.call_position = blackboard.quick_teleport_exit_pos
 		blackboard.has_call_position = true
+
 		local health_extension = blackboard.health_extension
+
 		blackboard.teleport_health_percent = health_extension:current_health_percent() - 0.1
 		blackboard.spell_count = 0
+
 		local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
 		local event_data = FrameTable.alloc_table()
 
@@ -120,12 +133,13 @@ settings.bt_enter_hooks = {
 	sorcerer_drachenfels_re_enter_defensive_mode = function (unit, blackboard, t)
 		local data = {
 			stay_still = true,
-			end_time = math.huge
+			end_time = math.huge,
 		}
 		local level_analysis = Managers.state.conflict.level_analysis
 		local node_units = level_analysis.generic_ai_node_units.sorcerer_boss_drachenfels_intro
 		local node_unit = node_units[1]
 		local pos = Unit.local_position(node_unit, 0)
+
 		blackboard.spawning_allies = data
 		blackboard.quick_teleport_exit_pos = Vector3Box(pos)
 		blackboard.quick_teleport = true
@@ -135,6 +149,7 @@ settings.bt_enter_hooks = {
 		LevelHelper:flow_event(blackboard.world, "spawn_shield")
 
 		local health_extension = blackboard.health_extension
+
 		health_extension.is_invincible = true
 
 		if not blackboard.two_thirds_transition_done and not blackboard.one_third_transition_done then
@@ -145,6 +160,7 @@ settings.bt_enter_hooks = {
 
 		blackboard.teleport_health_percent = blackboard.health_extension:current_health_percent() - 0.1
 		blackboard.spell_count = 0
+
 		local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
 		local event_data = FrameTable.alloc_table()
 
@@ -153,7 +169,7 @@ settings.bt_enter_hooks = {
 	teleport_spawn_sequence_drachenfels = function (unit, blackboard, t)
 		local data = {
 			stay_still = true,
-			end_time = math.huge
+			end_time = math.huge,
 		}
 
 		setup_sorcerer_boss_drachenfels_spawning(unit, blackboard, data)
@@ -163,7 +179,7 @@ settings.bt_enter_hooks = {
 	trickle_spawn_drachenfels = function (unit, blackboard, t)
 		local data = {
 			stay_still = true,
-			end_time = math.huge
+			end_time = math.huge,
 		}
 
 		setup_sorcerer_boss_drachenfels_spawning(unit, blackboard, data)
@@ -173,12 +189,13 @@ settings.bt_enter_hooks = {
 	teleport_to_center_drachenfels = function (unit, blackboard, t)
 		local data = {
 			stay_still = true,
-			end_time = math.huge
+			end_time = math.huge,
 		}
 
 		setup_sorcerer_boss_drachenfels_spawning(unit, blackboard, data)
 
 		blackboard.spawning_allies = data
+
 		local level_analysis = Managers.state.conflict.level_analysis
 		local node_units = level_analysis.generic_ai_node_units.sorcerer_boss_drachenfels_center
 		local center_unit = node_units[1]
@@ -191,7 +208,7 @@ settings.bt_enter_hooks = {
 
 			return
 		end
-	end
+	end,
 }
 settings.bt_leave_hooks = {
 	sorcerer_drachenfels_go_offensive = function (unit, blackboard, t)
@@ -258,24 +275,25 @@ settings.bt_leave_hooks = {
 
 		for _, player_unit in pairs(player_units) do
 			local health_extension = ScriptUnit.extension(player_unit, "health_system")
+
 			health_extension.is_invincible = false
 		end
 
 		blackboard.stagger = nil
 		blackboard.stagger_immune_time = t + 2
-	end
+	end,
 }
 settings.utility_considerations_file_names = {
-	"scripts/settings/dlcs/penny/penny_utility_considerations"
+	"scripts/settings/dlcs/penny/penny_utility_considerations",
 }
 settings.unit_extension_templates = {
-	"scripts/settings/dlcs/penny/penny_unit_extension_templates"
+	"scripts/settings/dlcs/penny/penny_unit_extension_templates",
 }
 settings.ai_breed_snippets_file_names = {
-	"scripts/settings/dlcs/penny/penny_ai_breed_snippets"
+	"scripts/settings/dlcs/penny/penny_ai_breed_snippets",
 }
 settings.enemy_package_loader_breed_categories = {
 	level_specific = {
-		"chaos_exalted_sorcerer_drachenfels"
-	}
+		"chaos_exalted_sorcerer_drachenfels",
+	},
 }

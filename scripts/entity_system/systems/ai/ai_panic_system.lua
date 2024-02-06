@@ -1,9 +1,12 @@
+﻿-- chunkname: @scripts/entity_system/systems/ai/ai_panic_system.lua
+
 require("scripts/unit_extensions/human/ai_player_unit/ai_utils")
 
 local extensions = {
 	"AIPanicExtension",
-	"AIFearExtension"
+	"AIFearExtension",
 }
+
 AIPanicSystem = class(AIPanicSystem, ExtensionSystemBase)
 
 AIPanicSystem.init = function (self, context, system_name)
@@ -45,6 +48,7 @@ AIPanicSystem.on_add_extension = function (self, world, unit, extension_name, ex
 	if extension_name == "AIFearExtension" then
 		local fear_active_on_spawn = extension_init_data.fear_active_on_spawn
 		local fear_radius = extension_init_data.fear_radius
+
 		self.fear_units[#self.fear_units + 1] = unit
 		extension.fear_radius = fear_radius
 
@@ -112,6 +116,7 @@ AIPanicSystem.activate_fear = function (self, unit)
 	local position = POSITION_LOOKUP[unit]
 	local fear_radius = extension.fear_radius
 	local panic_zone = self:register_panic_zone(position, fear_radius)
+
 	extension.panic_zone = panic_zone
 	extension.active = true
 end
@@ -120,11 +125,12 @@ AIPanicSystem.register_panic_zone = function (self, position, radius)
 	local panic_zone = {
 		position = Vector3Box(position),
 		radius_squared = radius * radius,
-		radius = radius
+		radius = radius,
 	}
 	local panic_zones = self.panic_zones
 	local panic_zones_n = #panic_zones
 	local i = panic_zones_n + 1
+
 	panic_zones[i] = panic_zone
 
 	return panic_zone
@@ -223,6 +229,7 @@ AIPanicSystem.update_panic_units = function (self)
 		local panic_zone = self:inside_panic_zone(position)
 		local ai_extension = ScriptUnit.extension(unit, "ai_system")
 		local blackboard = ai_extension:blackboard()
+
 		blackboard.panic_zone = panic_zone
 	end
 
@@ -241,7 +248,7 @@ end
 AIPanicSystem.debug_draw_panic_zones = function (self)
 	local drawer = Managers.state.debug:drawer({
 		mode = "immediate",
-		name = "AIPanicSystem"
+		name = "AIPanicSystem",
 	})
 	local panic_zones = self.panic_zones
 	local panic_zone_n = #panic_zones

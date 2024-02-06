@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_loot_rat_dodge_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTLootRatDodgeAction = class(BTLootRatDodgeAction, BTNode)
@@ -7,12 +9,15 @@ BTLootRatDodgeAction.init = function (self, ...)
 end
 
 BTLootRatDodgeAction.name = "BTLootRatDodgeAction"
+
 local position_lookup = POSITION_LOOKUP
 local script_data = script_data
 
 BTLootRatDodgeAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
+
 	blackboard.action = action
+
 	local dodge_vector = blackboard.dodge_vector:unbox()
 	local threat_vector = blackboard.threat_vector:unbox()
 	local dodge_position, pass_check_position, right = self:dodge(unit, blackboard, dodge_vector, threat_vector)
@@ -58,7 +63,7 @@ BTLootRatDodgeAction.run = function (self, unit, blackboard, t, dt)
 		return "done"
 	end
 
-	if blackboard.dodge_end_time < t then
+	if t > blackboard.dodge_end_time then
 		return "done"
 	end
 
@@ -89,6 +94,7 @@ BTLootRatDodgeAction.leave = function (self, unit, blackboard, t, reason, destro
 	blackboard.dodge_vector = nil
 	blackboard.threat_vector = nil
 	blackboard.anim_cb_dodge_finished = nil
+
 	local default_move_speed = AiUtils.get_default_breed_move_speed(unit, blackboard)
 	local navigation_extension = blackboard.navigation_extension
 

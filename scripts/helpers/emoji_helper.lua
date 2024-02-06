@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/helpers/emoji_helper.lua
+
 ESCAPE_CHARACTERS = {
 	"%",
 	"(",
@@ -9,30 +11,30 @@ ESCAPE_CHARACTERS = {
 	"?",
 	"[",
 	"^",
-	"$"
+	"$",
 }
 EMOJI_SETTINGS = {
 	{
-		replacement_keys = ":)",
 		keys = ":smiley:",
+		replacement_keys = ":)",
 		texture = "emo_01",
 		color = {
 			255,
 			0,
 			255,
-			0
-		}
+			0,
+		},
 	},
 	{
-		replacement_keys = ":O",
 		keys = ":open_mouth:",
+		replacement_keys = ":O",
 		texture = "emo_02",
 		color = {
 			255,
 			255,
 			0,
-			0
-		}
+			0,
+		},
 	},
 	{
 		keys = ":shocked:",
@@ -41,63 +43,63 @@ EMOJI_SETTINGS = {
 			255,
 			0,
 			255,
-			0
-		}
+			0,
+		},
 	},
 	{
-		replacement_keys = ":/",
 		keys = ":confused:",
+		replacement_keys = ":/",
 		texture = "emo_04",
 		color = {
 			255,
 			0,
 			255,
-			0
-		}
+			0,
+		},
 	},
 	{
-		replacement_keys = ":p",
 		keys = ":stuck_out_tongue:",
+		replacement_keys = ":p",
 		texture = "emo_05",
 		color = {
 			255,
 			0,
 			255,
-			0
-		}
+			0,
+		},
 	},
 	{
-		replacement_keys = ":|",
 		keys = ":neutral_face:",
+		replacement_keys = ":|",
 		texture = "emo_06",
 		color = {
 			255,
 			0,
 			255,
-			0
-		}
+			0,
+		},
 	},
 	{
-		replacement_keys = ":(",
 		keys = ":disappointed:",
+		replacement_keys = ":(",
 		texture = "emo_07",
 		color = {
 			255,
 			0,
 			255,
-			0
-		}
+			0,
+		},
 	},
 	{
-		replacement_keys = ":'(",
 		keys = ":cry:",
+		replacement_keys = ":'(",
 		texture = "emo_08",
 		color = {
 			255,
 			0,
 			255,
-			0
-		}
+			0,
+		},
 	},
 	{
 		keys = ":smile:",
@@ -106,74 +108,74 @@ EMOJI_SETTINGS = {
 			255,
 			0,
 			255,
-			0
-		}
+			0,
+		},
 	},
 	{
-		replacement_keys = ";)",
 		keys = ":smirk:",
+		replacement_keys = ";)",
 		texture = "emo_10",
 		color = {
 			255,
 			0,
 			255,
-			0
-		}
+			0,
+		},
 	},
 	{
-		replacement_keys = ":D",
 		keys = ":grinning:",
+		replacement_keys = ":D",
 		texture = "emo_11",
 		color = {
 			255,
 			0,
 			255,
-			0
-		}
+			0,
+		},
 	},
 	{
-		replacement_keys = ">_<",
 		keys = ":tired_face:",
+		replacement_keys = ">_<",
 		texture = "emo_12",
 		color = {
 			255,
 			0,
 			255,
-			0
-		}
+			0,
+		},
 	},
 	{
-		replacement_keys = ">:(",
 		keys = ":angry:",
+		replacement_keys = ">:(",
 		texture = "emo_13",
 		color = {
 			255,
 			0,
 			255,
-			0
-		}
+			0,
+		},
 	},
 	{
-		replacement_keys = "<3",
 		keys = ":heart:",
+		replacement_keys = "<3",
 		texture = "emo_14",
 		color = {
 			255,
 			0,
 			255,
-			0
-		}
+			0,
+		},
 	},
 	{
-		replacement_keys = "</3",
 		keys = ":broken_heart:",
+		replacement_keys = "</3",
 		texture = "emo_15",
 		color = {
 			255,
 			0,
 			255,
-			0
-		}
+			0,
+		},
 	},
 	{
 		keys = ":sun:",
@@ -182,8 +184,8 @@ EMOJI_SETTINGS = {
 			255,
 			0,
 			255,
-			0
-		}
+			0,
+		},
 	},
 	{
 		keys = ":cross:",
@@ -192,9 +194,9 @@ EMOJI_SETTINGS = {
 			255,
 			0,
 			255,
-			0
-		}
-	}
+			0,
+		},
+	},
 }
 
 for _, emoji_data in ipairs(EMOJI_SETTINGS) do
@@ -205,6 +207,7 @@ for _, emoji_data in ipairs(EMOJI_SETTINGS) do
 	end
 
 	emoji_data.pattern = pattern
+
 	local pattern = emoji_data.replacement_keys
 
 	if pattern then
@@ -228,18 +231,19 @@ for idx, emoji_data in ipairs(EMOJI_SETTINGS) do
 	if emoji_data.replacement_keys then
 		EMOJI_REPLACEMENTS[#EMOJI_REPLACEMENTS + 1] = {
 			data = emoji_data,
-			size = string.len(emoji_data.replacement_keys)
+			size = string.len(emoji_data.replacement_keys),
 		}
 	end
 end
 
 local function sort_func(a, b)
-	return b.size < a.size
+	return a.size > b.size
 end
 
 table.sort(EMOJI_REPLACEMENTS, sort_func)
 
 EmojiHelper = {}
+
 local EMOJIS = {}
 
 EmojiHelper.parse_emojis = function (message)

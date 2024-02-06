@@ -1,16 +1,20 @@
+﻿-- chunkname: @scripts/entity_system/systems/talents/talent_system.lua
+
 TalentSystem = class(TalentSystem, ExtensionSystemBase)
+
 local RPCS = {
-	"rpc_sync_talents"
+	"rpc_sync_talents",
 }
 local extension_list = {
 	"TalentExtension",
-	"HuskTalentExtension"
+	"HuskTalentExtension",
 }
 
 TalentSystem.init = function (self, entity_system_creation_context, system_name)
 	TalentSystem.super.init(self, entity_system_creation_context, system_name, extension_list)
 
 	local network_event_delegate = entity_system_creation_context.network_event_delegate
+
 	self.network_event_delegate = network_event_delegate
 
 	network_event_delegate:register(self, unpack(RPCS))

@@ -1,111 +1,120 @@
+﻿-- chunkname: @scripts/managers/conflict_director/main_path_spawning_generator.lua
+
 require("foundation/scripts/util/error")
 
-MainPathSpawningGenerator = {
-	_remove_zones_due_to_crossroads = function (zones, num_main_zones, removed_path_distances)
-		local to_remove = FrameTable.alloc_table()
-		local num_removed_dist_pairs = #removed_path_distances
+MainPathSpawningGenerator = {}
 
-		for i = 1, num_main_zones do
-			local zone = zones[i]
-			local travel_dist = zone.travel_dist
+MainPathSpawningGenerator._remove_zones_due_to_crossroads = function (zones, num_main_zones, removed_path_distances)
+	local to_remove = FrameTable.alloc_table()
+	local num_removed_dist_pairs = #removed_path_distances
 
-			fassert(zone.type ~= "island", "Zones badly stored")
+	for i = 1, num_main_zones do
+		local zone = zones[i]
+		local travel_dist = zone.travel_dist
 
-			for j = 1, num_removed_dist_pairs do
-				local dist_pair = removed_path_distances[j]
+		fassert(zone.type ~= "island", "Zones badly stored")
 
-				if dist_pair[1] < travel_dist and travel_dist < dist_pair[2] then
-					to_remove[#to_remove + 1] = i
+		for j = 1, num_removed_dist_pairs do
+			local dist_pair = removed_path_distances[j]
 
-					break
-				end
-			end
-		end
-
-		for i = #to_remove, 1, -1 do
-			table.remove(zones, to_remove[i])
-		end
-
-		num_main_zones = num_main_zones - #to_remove
-
-		return num_main_zones
-	end,
-	inject_travel_dists = function (main_paths, overrride)
-		print("[MainPathSpawningGenerator] Injecting travel distances")
-
-		local Vector3_distance = Vector3.distance
-		local first_path = main_paths[1]
-
-		if not first_path.travel_dist or overrride then
-			local total_travel_dist = 0
-			local p1 = first_path.nodes[1]:unbox()
-
-			for i = 1, #main_paths do
-				local path = main_paths[i]
-				local nodes = path.nodes
-				local p2 = nodes[1]:unbox()
-				total_travel_dist = total_travel_dist + Vector3_distance(p1, p2)
-				local travel_dist = {
-					total_travel_dist
-				}
-
-				for j = 2, #nodes do
-					p1 = nodes[j - 1]:unbox()
-					p2 = nodes[j]:unbox()
-					total_travel_dist = total_travel_dist + Vector3_distance(p1, p2)
-					travel_dist[j] = total_travel_dist
-				end
-
-				p1 = p2
-				path.travel_dist = travel_dist
-			end
-		end
-	end,
-	main_path_has_marker_type = function (path_markers, main_path_index, marker_type)
-		local has_marker_type = nil
-
-		for i = 1, #path_markers do
-			local path_marker = path_markers[i]
-			local path_marker_main_path_index = path_marker.main_path_index
-			local path_marker_type = path_marker.marker_type
-
-			if path_marker_main_path_index == main_path_index and path_marker_type == marker_type then
-				has_marker_type = true
+			if travel_dist > dist_pair[1] and travel_dist < dist_pair[2] then
+				to_remove[#to_remove + 1] = i
 
 				break
 			end
 		end
-
-		return has_marker_type
-	end,
-	load_spawn_zone_data = function (spawn_zone_path)
-		local spawn_data = require(spawn_zone_path)
-		local path_markers = spawn_data.path_markers
-
-		for i = 1, #path_markers do
-			local marker = path_markers[i]
-			local p = marker.pos
-			marker.pos = Vector3Box(p[1], p[2], p[3])
-		end
-
-		return spawn_data
-	end,
-	generate_crossroad_path_choices = function (crossroads, seed)
-		if not crossroads or not next(crossroads) then
-			return nil
-		end
-
-		local chosen_road_id = nil
-		local chosen_crossroads = {}
-
-		for crossroad_id, crossroad in pairs(crossroads) do
-			seed, chosen_road_id = Math.next_random(seed, 1, #crossroad.roads)
-			chosen_crossroads[crossroad_id] = chosen_road_id
-		end
-
-		return chosen_crossroads
 	end
-}
+
+	for i = #to_remove, 1, -1 do
+		table.remove(zones, to_remove[i])
+	end
+
+	num_main_zones = num_main_zones - #to_remove
+
+	return num_main_zones
+end
+
+MainPathSpawningGenerator.inject_travel_dists = function (main_paths, overrride)
+	print("[MainPathSpawningGenerator] Injecting travel distances")
+
+	local Vector3_distance = Vector3.distance
+	local first_path = main_paths[1]
+
+	if not first_path.travel_dist or overrride then
+		local total_travel_dist = 0
+		local p1 = first_path.nodes[1]:unbox()
+
+		for i = 1, #main_paths do
+			local path = main_paths[i]
+			local nodes = path.nodes
+			local p2 = nodes[1]:unbox()
+
+			total_travel_dist = total_travel_dist + Vector3_distance(p1, p2)
+
+			local travel_dist = {
+				total_travel_dist,
+			}
+
+			for j = 2, #nodes do
+				p1 = nodes[j - 1]:unbox()
+				p2 = nodes[j]:unbox()
+				total_travel_dist = total_travel_dist + Vector3_distance(p1, p2)
+				travel_dist[j] = total_travel_dist
+			end
+
+			p1 = p2
+			path.travel_dist = travel_dist
+		end
+	end
+end
+
+MainPathSpawningGenerator.main_path_has_marker_type = function (path_markers, main_path_index, marker_type)
+	local has_marker_type
+
+	for i = 1, #path_markers do
+		local path_marker = path_markers[i]
+		local path_marker_main_path_index = path_marker.main_path_index
+		local path_marker_type = path_marker.marker_type
+
+		if path_marker_main_path_index == main_path_index and path_marker_type == marker_type then
+			has_marker_type = true
+
+			break
+		end
+	end
+
+	return has_marker_type
+end
+
+MainPathSpawningGenerator.load_spawn_zone_data = function (spawn_zone_path)
+	local spawn_data = require(spawn_zone_path)
+	local path_markers = spawn_data.path_markers
+
+	for i = 1, #path_markers do
+		local marker = path_markers[i]
+		local p = marker.pos
+
+		marker.pos = Vector3Box(p[1], p[2], p[3])
+	end
+
+	return spawn_data
+end
+
+MainPathSpawningGenerator.generate_crossroad_path_choices = function (crossroads, seed)
+	if not crossroads or not next(crossroads) then
+		return nil
+	end
+
+	local chosen_road_id
+	local chosen_crossroads = {}
+
+	for crossroad_id, crossroad in pairs(crossroads) do
+		seed, chosen_road_id = Math.next_random(seed, 1, #crossroad.roads)
+		chosen_crossroads[crossroad_id] = chosen_road_id
+	end
+
+	return chosen_crossroads
+end
 
 MainPathSpawningGenerator.remove_crossroads_extra_path_branches = function (crossroads, chosen_crossroads, main_paths, zones, num_main_zones, path_markers, seed)
 	if not crossroads or not next(crossroads) then
@@ -150,6 +159,7 @@ MainPathSpawningGenerator.remove_crossroads_extra_path_branches = function (cros
 	for i = #crossroad_main_path_indices, 1, -1 do
 		repeat
 			to_stitch[#to_stitch + 1] = {}
+
 			local crossroad_stitch = to_stitch[#to_stitch]
 			local index = crossroad_main_path_indices[i]
 			local previous_main_path_index = index - 1
@@ -214,6 +224,7 @@ MainPathSpawningGenerator.remove_crossroads_extra_path_branches = function (cros
 
 				for j = 1, #stitch_main_path_nodes do
 					local stiched_node = stitch_main_path_nodes[j]
+
 					wanted_main_path_nodes[#wanted_main_path_nodes + 1] = stiched_node
 				end
 
@@ -238,7 +249,7 @@ MainPathSpawningGenerator.remove_crossroads_extra_path_branches = function (cros
 		if not was_stitched_path then
 			removed_path_distances[#removed_path_distances + 1] = {
 				travel_dist[1],
-				travel_dist[#travel_dist]
+				travel_dist[#travel_dist],
 			}
 		end
 
@@ -251,9 +262,7 @@ MainPathSpawningGenerator.remove_crossroads_extra_path_branches = function (cros
 end
 
 MainPathSpawningGenerator.generate_great_cycles = function (conflict_director, mutator_list, zones, zone_convert, num_main_zones, spawn_cycle_length, level_seed)
-	local cycle_length = 0
-	local cycle_zones = {}
-	local great_cycles = {}
+	local cycle_length, cycle_zones, great_cycles = 0, {}, {}
 	local pack_spawning_setting = conflict_director.pack_spawning
 	local initial_roaming_set = pack_spawning_setting.roaming_set
 	local random_director_list = Managers.state.conflict.enemy_package_loader.random_director_list
@@ -331,15 +340,16 @@ MainPathSpawningGenerator.generate_great_cycles = function (conflict_director, m
 			pack_spawning_setting = pack_spawning_setting,
 			conflict_setting = conflict_director,
 			unique_zone_id = zone_layer.unique_zone_id,
-			mutators = zone_mutator_list
+			mutators = zone_mutator_list,
 		}
 
 		for j = 2, #zone_layer.sub do
 			local area = zone_layer.sub_areas[j]
+
 			total_zone_area = total_zone_area + (area or 0)
 			outer[#outer + 1] = {
 				nodes = zone_layer.sub[j],
-				area = area
+				area = area,
 			}
 		end
 
@@ -351,7 +361,7 @@ MainPathSpawningGenerator.generate_great_cycles = function (conflict_director, m
 		if spawn_cycle_length <= cycle_length or i == num_main_zones then
 			great_cycles[#great_cycles + 1] = {
 				zones = cycle_zones,
-				length = cycle_length
+				length = cycle_length,
 			}
 			cycle_length = cycle_length - spawn_cycle_length
 			cycle_zones = {}
@@ -376,9 +386,13 @@ MainPathSpawningGenerator.process_conflict_directors_zones = function (default_c
 
 			if conflict_directors then
 				conflict_directors = string.split(conflict_directors, "/")
-				local random_int = nil
+
+				local random_int
+
 				level_seed, random_int = Math.next_random(level_seed, 1, #conflict_directors)
+
 				local conflict_director_name = conflict_directors[random_int]
+
 				zone_layer.roaming_set = conflict_director_name
 
 				if conflict_director_name == "random" then

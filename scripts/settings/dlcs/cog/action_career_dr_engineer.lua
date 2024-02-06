@@ -1,10 +1,11 @@
+﻿-- chunkname: @scripts/settings/dlcs/cog/action_career_dr_engineer.lua
+
 ActionCareerDREngineer = class(ActionCareerDREngineer, ActionRangedBase)
+
 local buff_perks = require("scripts/unit_extensions/default_player_unit/buffs/settings/buff_perk_names")
 local BOT_THREAT_REFRESH_TIME = 1
 local BOT_THREAT_DURATION = 1.2
-local BOT_THREAT_AREA_W = 3
-local BOT_THREAT_AREA_H = 2
-local BOT_THREAT_AREA_D = 6
+local BOT_THREAT_AREA_W, BOT_THREAT_AREA_H, BOT_THREAT_AREA_D = 3, 2, 6
 local MAX_SHOTS_PER_FRAME = 3
 local FREE_ABILITY_AMMO_TIME = 10
 local unit_set_flow_variable = Unit.set_flow_variable
@@ -40,7 +41,9 @@ ActionCareerDREngineer.client_owner_start_action = function (self, new_action, t
 	self._rps_loss_per_second = new_action.rps_loss_per_second
 	self._rps_gain_per_shot = new_action.rps_gain_per_shot
 	self._projectiles_per_shot = new_action.shot_count
+
 	local windup = math.clamp(self.weapon_extension:get_custom_data("windup"), 0, 1)
+
 	self._current_rps = math.lerp(self._initial_rounds_per_second, self._max_rps, windup)
 	self._attack_speed_mod = 1
 
@@ -58,6 +61,7 @@ ActionCareerDREngineer.client_owner_start_action = function (self, new_action, t
 
 	self._time_to_shoot = math.max(old_time_to_shoot, t - 1 / self._current_rps)
 	self._first_shot = true
+
 	local fire_loop_start = new_action.fire_loop_start
 
 	if fire_loop_start then
@@ -81,7 +85,7 @@ end
 ActionCareerDREngineer._waiting_to_shoot = function (self, dt, t)
 	self:_update_animation_speed(self._current_rps)
 
-	if self._time_to_shoot <= t then
+	if t >= self._time_to_shoot then
 		local current_cooldown, max_cooldown = self.career_extension:current_ability_cooldown(1)
 		local ability_charge = max_cooldown - current_cooldown
 
@@ -174,7 +178,7 @@ end
 ActionCareerDREngineer.apply_shot_cost = function (self, t)
 	self:_fake_activate_ability(t)
 
-	local should_consume_ammo = self._free_ammo_t < t
+	local should_consume_ammo = t > self._free_ammo_t
 	local buff_extension = self.buff_extension
 
 	if buff_extension and buff_extension:has_buff_perk(buff_perks.free_ability_engineer) then
@@ -198,7 +202,7 @@ end
 ActionCareerDREngineer._has_ammo = function (self)
 	local ability_cooldown, max_cooldown = self.career_extension:current_ability_cooldown(1)
 
-	return self._shot_cost <= max_cooldown - ability_cooldown
+	return max_cooldown - ability_cooldown >= self._shot_cost
 end
 
 ActionCareerDREngineer._play_vo = function (self)
@@ -215,6 +219,7 @@ end
 
 ActionCareerDREngineer._update_animation_speed = function (self, shots_per_second)
 	local anim_time_scale = self._base_anim_speed * shots_per_second
+
 	anim_time_scale = math.clamp(anim_time_scale, NetworkConstants.animation_variable_float.min, NetworkConstants.animation_variable_float.max)
 
 	self.first_person_extension:animation_set_variable("attack_speed", anim_time_scale)
@@ -250,6 +255,7 @@ end
 ActionCareerDREngineer._update_bot_avoidance = function (self, t)
 	if not self.is_bot and t > self._last_avoidance_t + BOT_THREAT_REFRESH_TIME then
 		self._last_avoidance_t = t
+
 		local current_position, current_rotation = self.first_person_extension:get_projectile_start_position_rotation()
 		local threat_position, threat_rotation, threat_size = AiUtils.calculate_oobb(BOT_THREAT_AREA_D, current_position, current_rotation, BOT_THREAT_AREA_H, BOT_THREAT_AREA_W)
 
@@ -301,10 +307,11 @@ ActionCareerDREngineer._handle_infinite_stacks = function (self, dt, t)
 			end
 
 			local first_buff = buffs[1]
+
 			first_buff.duration = CareerConstants.dr_engineer.talent_4_3_stack_duration
 			first_buff.start_time = t
 		else
-			local duration_buff = nil
+			local duration_buff
 
 			for i = 1, #buffs do
 				local buff = buffs[i]

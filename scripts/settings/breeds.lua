@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/breeds.lua
+
 require("scripts/utils/benchmark/benchmark_handler")
 require("scripts/unit_extensions/human/ai_player_unit/ai_utils")
 require("scripts/managers/bot_nav_transition/bot_nav_transition_manager")
@@ -75,31 +77,32 @@ BEASTMEN = {}
 UNDEAD = {}
 CRITTER = {}
 ELITES = {}
+
 local DEFAULT_NAVTAG_LAYERS = {
-	end_zone = 0,
-	ledges = 1.5,
 	barrel_explosion = 10,
-	jumps = 1.5,
-	bot_ratling_gun_fire = 3,
-	temporary_wall = 0,
-	planks = 1.5,
 	big_boy_destructible = 0,
-	destructible_wall = 5,
-	ledges_with_fence = 1.5,
-	doors = 1.5,
-	teleporters = 5,
 	bot_poison_wind = 1.5,
-	fire_grenade = 10
+	bot_ratling_gun_fire = 3,
+	destructible_wall = 5,
+	doors = 1.5,
+	end_zone = 0,
+	fire_grenade = 10,
+	jumps = 1.5,
+	ledges = 1.5,
+	ledges_with_fence = 1.5,
+	planks = 1.5,
+	teleporters = 5,
+	temporary_wall = 0,
 }
 local DEFAULT_NAV_COST_MAP_LAYERS = {
-	plague_wave = 20,
-	mutator_heavens_zone = 1,
 	lamp_oil_fire = 10,
-	warpfire_thrower_warpfire = 20,
-	vortex_near = 1,
+	mutator_heavens_zone = 1,
+	plague_wave = 20,
 	stormfiend_warpfire = 30,
+	troll_bile = 20,
 	vortex_danger_zone = 1,
-	troll_bile = 20
+	vortex_near = 1,
+	warpfire_thrower_warpfire = 20,
 }
 local available_nav_tag_layers = table.clone(DEFAULT_NAVTAG_LAYERS)
 local available_nav_cost_map_layers = table.clone(DEFAULT_NAV_COST_MAP_LAYERS)
@@ -107,7 +110,7 @@ local armor_category_mapping = {
 	BreedCategory.Infantry,
 	BreedCategory.Armored,
 	[5] = BreedCategory.Berserker,
-	[6] = BreedCategory.SuperArmor
+	[6] = BreedCategory.SuperArmor,
 }
 
 local function inject_breed_category_mask(breed_data)
@@ -231,6 +234,7 @@ function SET_BREED_DIFFICULTY()
 
 			if difficulty_diminishing_damage then
 				local damage = difficulty_manager:get_difficulty_value_from_table(difficulty_diminishing_damage)
+
 				action_data.diminishing_damage = table.clone(damage)
 			end
 
@@ -238,6 +242,7 @@ function SET_BREED_DIFFICULTY()
 
 			if difficulty_damage then
 				local damage = difficulty_manager:get_difficulty_value_from_table(difficulty_damage)
+
 				action_data.damage = damage
 			end
 
@@ -245,6 +250,7 @@ function SET_BREED_DIFFICULTY()
 
 			if blocked_difficulty_damage then
 				local blocked_damage = difficulty_manager:get_difficulty_value_from_table(blocked_difficulty_damage)
+
 				action_data.blocked_damage = blocked_damage
 			end
 
@@ -276,16 +282,18 @@ end
 
 DEFAULT_NAV_TAG_VOLUME_LAYER_COST_AI = {}
 DEFAULT_NAV_TAG_VOLUME_LAYER_COST_BOTS = {
+	NO_BOTS = 0,
 	NO_BOTS_NO_SPAWN = 0,
-	NO_BOTS = 0
 }
 NAV_TAG_VOLUME_LAYER_COST_AI = NAV_TAG_VOLUME_LAYER_COST_AI or {}
 NAV_TAG_VOLUME_LAYER_COST_BOTS = NAV_TAG_VOLUME_LAYER_COST_BOTS or {}
 
 for _, layer_name in ipairs(NavTagVolumeLayers) do
 	LAYER_ID_MAPPING[#LAYER_ID_MAPPING + 1] = layer_name
+
 	local default_cost_ai = DEFAULT_NAV_TAG_VOLUME_LAYER_COST_AI[layer_name] or 1
 	local default_cost_bots = DEFAULT_NAV_TAG_VOLUME_LAYER_COST_BOTS[layer_name] or 1
+
 	NAV_TAG_VOLUME_LAYER_COST_AI[layer_name] = NAV_TAG_VOLUME_LAYER_COST_AI[layer_name] or default_cost_ai
 	NAV_TAG_VOLUME_LAYER_COST_BOTS[layer_name] = NAV_TAG_VOLUME_LAYER_COST_BOTS[layer_name] or default_cost_bots
 end
@@ -294,36 +302,36 @@ table.mirror_array_inplace(LAYER_ID_MAPPING)
 table.mirror_array_inplace(NAV_COST_MAP_LAYER_ID_MAPPING)
 
 local PerceptionTypes = {
-	perception_pack_master = true,
-	perception_no_seeing = true,
+	perception_all_seeing = true,
 	perception_all_seeing_boss = true,
+	perception_all_seeing_re_evaluate = true,
+	perception_no_seeing = true,
+	perception_pack_master = true,
+	perception_rat_ogre = true,
 	perception_regular = true,
 	perception_regular_update_aggro = true,
-	perception_all_seeing_re_evaluate = true,
 	perception_standard_bearer = true,
-	perception_all_seeing = true,
-	perception_rat_ogre = true
 }
 local TargetSelectionTypes = {
-	pick_closest_target_with_filter = true,
-	pick_ninja_approach_target = true,
-	pick_chaos_warrior_target_with_weights = true,
-	pick_flee_target = true,
-	pick_closest_target_near_detection_source_position = true,
-	pick_bestigor_target_with_weights = true,
-	pick_rat_ogre_target_idle = true,
-	pick_player_controller_allied = true,
-	pick_solitary_target = true,
-	pick_mutator_sorcerer_target = true,
-	pick_closest_target = true,
-	pick_corruptor_target = true,
-	pick_rat_ogre_target_with_weights = true,
-	pick_closest_vortex_target = true,
-	pick_closest_target_with_spillover = true,
 	horde_pick_closest_target_with_spillover = true,
-	pick_pack_master_target = true,
+	pick_bestigor_target_with_weights = true,
+	pick_boss_sorcerer_target = true,
+	pick_chaos_warrior_target_with_weights = true,
+	pick_closest_target = true,
+	pick_closest_target_near_detection_source_position = true,
+	pick_closest_target_with_filter = true,
+	pick_closest_target_with_spillover = true,
+	pick_closest_vortex_target = true,
+	pick_corruptor_target = true,
+	pick_flee_target = true,
+	pick_mutator_sorcerer_target = true,
+	pick_ninja_approach_target = true,
 	pick_no_targets = true,
-	pick_boss_sorcerer_target = true
+	pick_pack_master_target = true,
+	pick_player_controller_allied = true,
+	pick_rat_ogre_target_idle = true,
+	pick_rat_ogre_target_with_weights = true,
+	pick_solitary_target = true,
 }
 
 for name, breed in pairs(Breeds) do
@@ -392,6 +400,7 @@ for name, breed in pairs(Breeds) do
 			for anim_i = 1, #anims do
 				local anim_name = anims[anim_i]
 				local compiled_variables = compiled[anim_name] or {}
+
 				compiled[anim_name] = compiled_variables
 
 				for variable_name, variable_data in pairs(variables) do

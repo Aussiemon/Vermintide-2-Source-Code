@@ -1,15 +1,19 @@
+﻿-- chunkname: @scripts/entity_system/systems/mutator_item/mutator_item_system.lua
+
 require("scripts/unit_extensions/mutator_items/mutator_item_spawner_extension")
 
 MutatorItemSystem = class(MutatorItemSystem, ExtensionSystemBase)
+
 local RPCS = {}
 local extensions = {
-	"MutatorItemSpawnerExtension"
+	"MutatorItemSpawnerExtension",
 }
 
 MutatorItemSystem.init = function (self, entity_system_creation_context, system_name)
 	MutatorItemSystem.super.init(self, entity_system_creation_context, system_name, extensions)
 
 	local network_event_delegate = entity_system_creation_context.network_event_delegate
+
 	self.network_event_delegate = network_event_delegate
 
 	network_event_delegate:register(self, unpack(RPCS))
@@ -21,8 +25,11 @@ end
 MutatorItemSystem.on_add_extension = function (self, world, unit, extension_name, extension_init_data, ...)
 	if extension_name == "MutatorItemSpawnerExtension" then
 		local spawners = self._spawners
+
 		spawners[#spawners + 1] = unit
+
 		local spawner_name = Unit.get_data(unit, "mutator_item_spawner_id")
+
 		self._spawners_by_name[spawner_name] = unit
 	end
 
@@ -51,7 +58,12 @@ MutatorItemSystem.spawn_mutator_items = function (self, config)
 			local position = Unit.local_position(spawner, 0)
 			local rotation = Unit.local_rotation(spawner, 0)
 			local unit = Managers.state.unit_spawner:spawn_network_unit(unit_name, unit_extension_template, extension_init_data, position, rotation)
+
 			units[#units + 1] = unit
+		end
+
+		if false then
+			-- Nothing
 		end
 	end
 

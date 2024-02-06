@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/settings/dlcs/bless/action_book_charge.lua
+
 ActionBookCharge = class(ActionBookCharge, ActionMeleeStart)
+
 local unit_set_flow_variable = Unit.set_flow_variable
 local unit_flow_event = Unit.flow_event
 
@@ -9,7 +12,9 @@ ActionBookCharge.init = function (self, world, item_name, is_server, owner_unit,
 	self.inventory_extension = ScriptUnit.extension(owner_unit, "inventory_system")
 	self.first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
 	self.owner_unit = owner_unit
+
 	local left_hand_unit, right_hand_unit = self.inventory_extension:get_all_weapon_unit()
+
 	self._left_hand_unit = left_hand_unit
 	self._right_hand_unit = right_hand_unit
 	self._current_segment = -1
@@ -24,7 +29,7 @@ local function scale_charge_value(action_settings, value, owner_unit, buff_exten
 	if increase then
 		new_value = new_value * time_scale
 	else
-		new_value = new_value * 1 / time_scale
+		new_value = new_value * (1 / time_scale)
 	end
 
 	return new_value
@@ -34,8 +39,10 @@ ActionBookCharge.client_owner_start_action = function (self, new_action, t, chai
 	ActionBookCharge.super.client_owner_start_action(self, new_action, t, chain_action_data, power_level, action_init_data)
 
 	self.charge = self.weapon_extension:get_custom_data("charge")
+
 	local owner_unit = self.owner_unit
 	local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
+
 	self.charge_speed = scale_charge_value(new_action, new_action.charge_speed or 0.3, owner_unit, buff_extension, true)
 	self.initial_charge_delay = scale_charge_value(new_action, new_action.initial_charge_delay or 0, owner_unit, buff_extension, false)
 	self.start_time = t

@@ -1,7 +1,12 @@
+﻿-- chunkname: @scripts/utils/global_utils.lua
+
 local release_build = BUILD == "release"
 local script_data = script_data
+
 script_data.disable_debug_position_lookup = release_build and true or nil
+
 local unit_alive = Unit.alive
+
 PACKAGED_BUILD = script_data.packaged_build and true or false
 RESOLUTION_LOOKUP = RESOLUTION_LOOKUP or {}
 POSITION_LOOKUP = POSITION_LOOKUP or Script.new_map(256)
@@ -9,8 +14,10 @@ BLACKBOARDS = BLACKBOARDS or Script.new_map(256)
 HEALTH_ALIVE = HEALTH_ALIVE or Script.new_map(1024)
 ALIVE = POSITION_LOOKUP
 FROZEN = FROZEN or {}
+
 local position_lookup = POSITION_LOOKUP
 local resolution_lookup = RESOLUTION_LOOKUP
+
 BREED_DIE_LOOKUP = BREED_DIE_LOOKUP or {}
 
 function CLEAR_POSITION_LOOKUP()
@@ -25,7 +32,9 @@ end
 
 function UPDATE_RESOLUTION_LOOKUP(force_update, optional_scale_multiplier)
 	local is_minimized = Window.is_minimized()
+
 	resolution_lookup.minimized = is_minimized
+
 	local w, h = Application.resolution()
 
 	if is_minimized then
@@ -38,9 +47,7 @@ function UPDATE_RESOLUTION_LOOKUP(force_update, optional_scale_multiplier)
 	local height_scale = h / 1080
 	local scale = math.min(width_scale, height_scale)
 
-	if Application.user_setting("hud_clamp_ui_scaling") then
-		scale = math.min(scale, 1) or scale
-	end
+	scale = Application.user_setting("hud_clamp_ui_scaling") and math.min(scale, 1) or scale
 
 	local scale_modified = false
 

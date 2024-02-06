@@ -1,10 +1,12 @@
+﻿-- chunkname: @foundation/scripts/util/verify_plugins.lua
+
 if false and IS_WINDOWS and BUILD == "release" then
 	local loaded_plugins = Application.all_plugin_names()
 	local plugin_check_list = {
 		"fishtank",
 		"navigation",
 		"rule database",
-		"wwise_plugin"
+		"wwise_plugin",
 	}
 
 	local function find_in_array(t, element)
@@ -32,7 +34,7 @@ if false and IS_WINDOWS and BUILD == "release" then
 	end
 
 	if num_missing > 0 then
-		local error_string = nil
+		local error_string
 
 		if num_missing > 1 then
 			error_string = string.format("Game could not load the following plugins: %s. Missing files. Please verify game integrity of game cache in steam, or delete local content and download game again.", missing_plugins)

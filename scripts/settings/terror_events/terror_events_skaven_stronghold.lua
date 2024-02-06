@@ -1,100 +1,102 @@
+﻿-- chunkname: @scripts/settings/terror_events/terror_events_skaven_stronghold.lua
+
 local function count_event_breed(breed_name)
 	return Managers.state.conflict:count_units_by_breed_during_event(breed_name)
 end
 
-local weighted_random_terror_events = nil
+local weighted_random_terror_events
 local terror_event_blueprints = {
 	stronghold_pacing_off = {
 		{
 			"control_pacing",
-			enable = false
+			enable = false,
 		},
 		{
 			"control_specials",
-			enable = false
-		}
+			enable = false,
+		},
 	},
 	stronghold_pacing_on = {
 		{
 			"control_pacing",
-			enable = true
+			enable = true,
 		},
 		{
 			"control_specials",
-			enable = true
-		}
+			enable = true,
+		},
 	},
 	stronghold_horde_water_wheels = {
 		{
 			"set_master_event_running",
-			name = "stronghold_horde_water_wheels"
+			name = "stronghold_horde_water_wheels",
 		},
 		{
 			"set_freeze_condition",
-			max_active_enemies = 100
+			max_active_enemies = 100,
 		},
 		{
 			"event_horde",
+			composition_type = "event_smaller",
 			spawner_id = "stronghold_horde_water_wheels",
-			composition_type = "event_smaller"
 		},
 		{
 			"delay",
-			duration = 5
+			duration = 5,
 		},
 		{
 			"control_specials",
-			enable = true
+			enable = true,
 		},
 		{
 			"continue_when",
 			condition = function (t)
 				return count_event_breed("skaven_slave") < 6
-			end
+			end,
 		},
 		{
 			"flow_event",
-			flow_event_name = "stronghold_horde_water_wheels_done"
-		}
+			flow_event_name = "stronghold_horde_water_wheels_done",
+		},
 	},
 	stronghold_boss = {
 		{
 			"control_pacing",
-			enable = false
+			enable = false,
 		},
 		{
 			"control_specials",
-			enable = false
+			enable = false,
 		},
 		{
-			"disable_kick"
+			"disable_kick",
 		},
 		{
 			"set_master_event_running",
-			name = "stronghold_boss"
+			name = "stronghold_boss",
 		},
 		{
 			"spawn_at_raw",
+			breed_name = "skaven_storm_vermin_warlord",
 			spawner_id = "stronghold_boss",
-			breed_name = "skaven_storm_vermin_warlord"
 		},
 		{
 			"continue_when",
 			condition = function (t)
 				return count_event_breed("skaven_storm_vermin_warlord") == 1
-			end
+			end,
 		},
 		{
 			"continue_when",
 			condition = function (t)
 				return count_event_breed("skaven_storm_vermin_warlord") < 1
-			end
+			end,
 		},
 		{
 			"flow_event",
-			flow_event_name = "stronghold_boss_killed"
-		}
-	}
+			flow_event_name = "stronghold_boss_killed",
+		},
+	},
 }
 
 return terror_event_blueprints, weighted_random_terror_events

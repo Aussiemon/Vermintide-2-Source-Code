@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/hero_view/states/hero_view_state_weave_forge.lua
+
 local_require("scripts/ui/views/hero_view/windows/hero_window_weave_properties")
 local_require("scripts/ui/views/hero_view/windows/hero_window_weave_forge_overview")
 local_require("scripts/ui/views/hero_view/windows/hero_window_weave_forge_weapons")
@@ -13,11 +15,12 @@ local generic_input_actions = definitions.generic_input_actions
 local DO_RELOAD = false
 local rarity_index = {
 	common = 2,
-	plentiful = 1,
 	exotic = 4,
+	plentiful = 1,
 	rare = 3,
-	unique = 5
+	unique = 5,
 }
+
 HeroViewStateWeaveForge = class(HeroViewStateWeaveForge)
 HeroViewStateWeaveForge.NAME = "HeroViewStateWeaveForge"
 
@@ -26,7 +29,9 @@ HeroViewStateWeaveForge.on_enter = function (self, params)
 
 	self.parent = params.parent
 	self._gamepad_style_active = self:_setup_menu_layout()
+
 	local ingame_ui_context = params.ingame_ui_context
+
 	self.ingame_ui_context = ingame_ui_context
 	self.ui_renderer = ingame_ui_context.ui_renderer
 	self.ui_top_renderer = ingame_ui_context.ui_top_renderer
@@ -35,26 +40,30 @@ HeroViewStateWeaveForge.on_enter = function (self, params)
 	self.profile_synchronizer = ingame_ui_context.profile_synchronizer
 	self.statistics_db = ingame_ui_context.statistics_db
 	self.render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 	self.wwise_world = params.wwise_world
 	self.ingame_ui = ingame_ui_context.ingame_ui
 	self.is_in_inn = ingame_ui_context.is_in_inn
 	self.world_previewer = params.world_previewer
 	self.platform = PLATFORM
+
 	local player_manager = Managers.player
 	local local_player = player_manager:local_player()
+
 	self._stats_id = local_player:stats_id()
 	self.player_manager = player_manager
 	self.peer_id = ingame_ui_context.peer_id
 	self.local_player_id = ingame_ui_context.local_player_id
 	self.player = local_player
+
 	local profile_index = self.profile_synchronizer:profile_by_peer(self.peer_id, self.local_player_id)
 	local profile_settings = SPProfiles[profile_index]
 	local display_name = profile_settings.display_name
 	local character_name = profile_settings.character_name
 	local hero_attributes = Managers.backend:get_interface("hero_attributes")
 	local career_index = hero_attributes:get(display_name, "career")
+
 	self.hero_name = display_name
 	self.career_index = career_index
 	self.profile_index = profile_index
@@ -82,7 +91,7 @@ HeroViewStateWeaveForge.on_enter = function (self, params)
 		hero_name = self.hero_name,
 		career_index = self.career_index,
 		profile_index = self.profile_index,
-		start_state = params.start_state
+		start_state = params.start_state,
 	}
 
 	self:_initial_windows_setups(window_params)
@@ -134,10 +143,11 @@ HeroViewStateWeaveForge._setup_gamepad_gui = function (self)
 		local gui_data = {}
 		local world_name = "weave_forge_gamepad"
 		local renderer, world, viewport_name = self:_setup_gamepad_renderer(world_name, 1, GameSettingsDevelopment.default_environment)
+
 		gui_data.bottom = {
 			renderer = renderer,
 			world = world,
-			viewport_name = viewport_name
+			viewport_name = viewport_name,
 		}
 		self._gui_data = gui_data
 	end
@@ -146,7 +156,7 @@ end
 HeroViewStateWeaveForge._setup_gamepad_renderer = function (self, name, layer, shading_environment)
 	local world_flags = {
 		Application.DISABLE_SOUND,
-		Application.DISABLE_ESRAM
+		Application.DISABLE_ESRAM,
 	}
 	local world_name = name
 	local viewport_name = name
@@ -178,6 +188,7 @@ end
 
 HeroViewStateWeaveForge._setup_menu_layout = function (self)
 	local use_gamepad_layout = IS_CONSOLE or Managers.input:is_device_active("gamepad") or not UISettings.use_pc_menu_layout
+
 	self._layout_settings = local_require("scripts/ui/views/hero_view/states/weave_forge_window_layout")
 	self._windows_settings = self._layout_settings.windows
 	self._window_layouts = self._layout_settings.window_layouts
@@ -189,12 +200,14 @@ end
 HeroViewStateWeaveForge.create_ui_elements = function (self, params)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
 	self._console_cursor_widget = UIWidget.init(console_cursor_definition)
+
 	local widgets = {}
 	local widgets_by_name = {}
 
 	for name, widget_definition in pairs(widget_definitions) do
 		if widget_definition then
 			local widget = UIWidget.init(widget_definition)
+
 			widgets[#widgets + 1] = widget
 			widgets_by_name[name] = widget
 		end
@@ -207,9 +220,11 @@ HeroViewStateWeaveForge.create_ui_elements = function (self, params)
 	UIRenderer.clear_scenegraph_queue(self.ui_renderer)
 
 	self.ui_animator = UIAnimator:new(self.ui_scenegraph, animation_definitions)
+
 	local gui_layer = UILayer.default + 30
 	local input_service = self:input_service()
 	local use_fullscreen_layout = self._gamepad_style_active
+
 	self._menu_input_description = MenuInputDescriptionUI:new(nil, self.ui_top_renderer, input_service, 6, gui_layer, generic_input_actions.default, use_fullscreen_layout)
 
 	self._menu_input_description:set_input_description(nil)
@@ -236,6 +251,7 @@ end
 HeroViewStateWeaveForge.disable_player_world = function (self)
 	if not self._player_world_disabled then
 		self._player_world_disabled = true
+
 		local viewport_name = "player_1"
 		local world = Managers.world:world("level_world")
 		local viewport = ScriptWorld.viewport(world, viewport_name)
@@ -247,6 +263,7 @@ end
 HeroViewStateWeaveForge.enable_player_world = function (self)
 	if self._player_world_disabled then
 		self._player_world_disabled = false
+
 		local viewport_name = "player_1"
 		local world = Managers.world:world("level_world")
 		local viewport = ScriptWorld.viewport(world, viewport_name)
@@ -258,6 +275,7 @@ end
 HeroViewStateWeaveForge.enable_ingame_overlay = function (self)
 	if not self._ingame_overlay_enabled then
 		self._ingame_overlay_enabled = true
+
 		local world = Managers.world:world("level_world")
 
 		World.set_data(world, "fullscreen_blur", 0.5)
@@ -268,6 +286,7 @@ end
 HeroViewStateWeaveForge.disable_ingame_overlay = function (self)
 	if self._ingame_overlay_enabled then
 		self._ingame_overlay_enabled = false
+
 		local world = Managers.world:world("level_world")
 
 		World.set_data(world, "fullscreen_blur", nil)
@@ -277,9 +296,11 @@ end
 
 HeroViewStateWeaveForge._initial_windows_setups = function (self, params)
 	local active_windows = {}
+
 	self._active_windows = active_windows
 	self._window_params = params
 	self._layouts_index_history = {}
+
 	local start_state = params.start_state
 
 	if start_state then
@@ -322,7 +343,7 @@ HeroViewStateWeaveForge._change_window = function (self, window_index, window_na
 	local window_class = rawget(_G, window_class_name)
 	local window = window_class:new()
 	local ignore_alignment = new_window_settings.ignore_alignment
-	local window_offset = nil
+	local window_offset
 
 	if not ignore_alignment then
 		local alignment_index = new_window_settings.alignment_index or window_index
@@ -334,10 +355,11 @@ HeroViewStateWeaveForge._change_window = function (self, window_index, window_na
 		local total_windows_width = 3 * window_width
 		local start_width_offset = -(total_windows_width / 2 + window_width / 2) - (total_spacing / 2 + window_spacing)
 		local window_width_offset = start_width_offset + alignment_index * window_width + alignment_index * window_spacing
+
 		window_offset = {
 			window_width_offset,
 			0,
-			3
+			3,
 		}
 	end
 
@@ -529,6 +551,7 @@ HeroViewStateWeaveForge.on_exit = function (self, params)
 	print("[HeroViewState] Exit Substate HeroViewStateWeaveForge")
 
 	self.ui_animator = nil
+
 	local friends_component_ui = self._friends_component_ui
 
 	if friends_component_ui and self:is_friends_list_active() then
@@ -752,6 +775,7 @@ HeroViewStateWeaveForge._handle_input = function (self, dt, t)
 
 		if layouts_index_history and #layouts_index_history >= 1 then
 			local previous_visited_layout_index = layouts_index_history[#layouts_index_history]
+
 			layouts_index_history[#layouts_index_history] = nil
 
 			self:set_layout(previous_visited_layout_index, true)
@@ -839,10 +863,11 @@ end
 HeroViewStateWeaveForge._start_transition_animation = function (self, key, animation_name)
 	local params = {
 		wwise_world = self.wwise_world,
-		render_settings = self.render_settings
+		render_settings = self.render_settings,
 	}
 	local widgets = {}
 	local anim_id = self.ui_animator:start_animation(animation_name, widgets, scenegraph_definition, params)
+
 	self._animations[key] = anim_id
 end
 
@@ -861,6 +886,7 @@ end
 
 HeroViewStateWeaveForge.block_input = function (self, start_loading_icon)
 	self._input_blocked = true
+
 	local widgets_by_name = self._widgets_by_name
 
 	if start_loading_icon then
@@ -875,7 +901,9 @@ end
 
 HeroViewStateWeaveForge.unblock_input = function (self)
 	self._input_blocked = false
+
 	local widgets_by_name = self._widgets_by_name
+
 	widgets_by_name.loading_icon.content.visible = false
 	widgets_by_name.exit_button.content.button_hotspot.disable_button = false
 	widgets_by_name.back_button.content.button_hotspot.disable_button = false

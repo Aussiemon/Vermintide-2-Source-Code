@@ -1,10 +1,13 @@
+﻿-- chunkname: @scripts/entity_system/systems/fade/fade_system_dummy.lua
+
 require("foundation/scripts/util/api_verification")
 require("scripts/entity_system/systems/fade/fade_system")
 
 FadeSystemDummy = class(FadeSystemDummy, ExtensionSystemBase)
+
 local extensions = {
 	"PlayerUnitFadeExtension",
-	"AIUnitFadeExtension"
+	"AIUnitFadeExtension",
 }
 
 FadeSystemDummy.init = function (self, entity_system_creation_context, system_name)

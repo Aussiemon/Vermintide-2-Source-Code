@@ -1,311 +1,314 @@
+﻿-- chunkname: @scripts/ui/views/store_welcome_popup.lua
+
 local function setup_ui_definitions(window_width, list_width, list_height)
 	local list_size = {
 		list_width,
-		math.min(list_height, 400)
+		math.min(list_height, 400),
 	}
 	local window_size = {
 		window_width,
-		list_size[2] + 350
+		list_size[2] + 350,
 	}
 	local list_entry_size = {
 		list_width - 50,
-		50
+		50,
 	}
 	local list_scrollbar_size = {
 		5,
-		list_size[2]
+		list_size[2],
 	}
 	local animation_definitions = {
 		on_enter = {
 			{
+				end_progress = 0.5,
 				name = "fade_in",
 				start_progress = 0,
-				end_progress = 0.5,
 				init = function (ui_scenegraph, scenegraph_definition, widgets, params)
 					params.render_settings.alpha_multiplier = 0
 				end,
 				update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 					local anim_progress = math.easeOutCubic(progress)
+
 					params.render_settings.alpha_multiplier = anim_progress
 					ui_scenegraph.window.position[2] = scenegraph_definition.window.position[2] + 100 * (1 - anim_progress)
 				end,
 				on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
 					return
-				end
-			}
-		}
+				end,
+			},
+		},
 	}
 	local scenegraph_definition = {
 		root = {
 			is_root = true,
 			size = {
 				1920,
-				1080
+				1080,
 			},
 			position = {
 				0,
 				0,
-				UILayer.default
-			}
+				UILayer.default,
+			},
 		},
 		screen = {
 			scale = "fit",
 			size = {
 				1920,
-				1080
+				1080,
 			},
 			position = {
 				0,
 				0,
-				UILayer.default
-			}
+				UILayer.default,
+			},
 		},
 		screen_overlay = {
 			scale = "fit",
 			size = {
 				1920,
-				1080
+				1080,
 			},
 			position = {
 				0,
 				0,
-				900
-			}
+				900,
+			},
 		},
 		window = {
-			vertical_alignment = "center",
-			parent = "screen_overlay",
 			horizontal_alignment = "center",
+			parent = "screen_overlay",
+			vertical_alignment = "center",
 			size = window_size,
 			position = {
 				0,
 				0,
-				1
-			}
+				1,
+			},
 		},
 		window_button = {
-			vertical_alignment = "bottom",
-			parent = "window",
 			horizontal_alignment = "center",
+			parent = "window",
+			vertical_alignment = "bottom",
 			size = {
 				300,
-				70
+				70,
 			},
 			position = {
 				0,
 				-32,
-				10
-			}
+				10,
+			},
 		},
 		window_title = {
-			vertical_alignment = "top",
-			parent = "window",
 			horizontal_alignment = "center",
+			parent = "window",
+			vertical_alignment = "top",
 			size = {
 				window_size[1] - 40,
-				50
+				50,
 			},
 			position = {
 				0,
 				-40,
-				1
-			}
+				1,
+			},
 		},
 		currency_area = {
-			vertical_alignment = "bottom",
-			parent = "window",
 			horizontal_alignment = "center",
+			parent = "window",
+			vertical_alignment = "bottom",
 			size = {
 				window_size[1] + 20,
-				64
+				64,
 			},
 			position = {
 				0,
 				100,
-				3
-			}
+				3,
+			},
 		},
 		currency_area_frame = {
-			vertical_alignment = "center",
-			parent = "currency_area",
 			horizontal_alignment = "center",
+			parent = "currency_area",
+			vertical_alignment = "center",
 			size = {
 				window_size[1] + 20 + 12,
-				76
+				76,
 			},
 			position = {
 				0,
 				0,
-				0
-			}
+				0,
+			},
 		},
 		currency_text = {
-			vertical_alignment = "center",
-			parent = "currency_area",
 			horizontal_alignment = "right",
+			parent = "currency_area",
+			vertical_alignment = "center",
 			size = {
 				64,
-				200
+				200,
 			},
 			position = {
 				-40,
 				-2,
-				1
-			}
+				1,
+			},
 		},
 		currency_title = {
-			vertical_alignment = "center",
-			parent = "currency_area",
 			horizontal_alignment = "left",
+			parent = "currency_area",
+			vertical_alignment = "center",
 			size = {
 				64,
-				200
+				200,
 			},
 			position = {
 				40,
 				-2,
-				1
-			}
+				1,
+			},
 		},
 		currency_icon = {
-			vertical_alignment = "center",
-			parent = "currency_text",
 			horizontal_alignment = "left",
+			parent = "currency_text",
+			vertical_alignment = "center",
 			size = {
 				64,
-				64
+				64,
 			},
 			position = {
 				-64,
 				0,
-				1
-			}
+				1,
+			},
 		},
 		currency_area_detail_left = {
-			vertical_alignment = "center",
-			parent = "currency_area",
 			horizontal_alignment = "left",
+			parent = "currency_area",
+			vertical_alignment = "center",
 			size = {
 				84,
-				112
+				112,
 			},
 			position = {
 				-40,
 				0,
-				10
-			}
+				10,
+			},
 		},
 		currency_area_detail_right = {
-			vertical_alignment = "center",
-			parent = "currency_area",
 			horizontal_alignment = "right",
+			parent = "currency_area",
+			vertical_alignment = "center",
 			size = {
 				84,
-				112
+				112,
 			},
 			position = {
 				40,
 				0,
-				10
-			}
+				10,
+			},
 		},
 		list_window = {
-			vertical_alignment = "top",
-			parent = "window",
 			horizontal_alignment = "center",
+			parent = "window",
+			vertical_alignment = "top",
 			size = list_size,
 			position = {
 				0,
 				-115,
-				1
-			}
+				1,
+			},
 		},
 		list = {
-			vertical_alignment = "top",
-			parent = "list_window",
 			horizontal_alignment = "right",
+			parent = "list_window",
+			vertical_alignment = "top",
 			size = list_size,
 			position = {
 				0,
 				-list_size[2],
-				0
-			}
+				0,
+			},
 		},
 		list_scrollbar = {
-			vertical_alignment = "center",
-			parent = "list_window",
 			horizontal_alignment = "right",
+			parent = "list_window",
+			vertical_alignment = "center",
 			size = list_scrollbar_size,
 			position = {
 				-20,
 				0,
-				1
-			}
+				1,
+			},
 		},
 		list_root = {
-			vertical_alignment = "top",
-			parent = "list",
 			horizontal_alignment = "left",
+			parent = "list",
+			vertical_alignment = "top",
 			size = {
 				0,
-				0
+				0,
 			},
 			position = {
 				0,
 				0,
-				1
-			}
-		}
+				1,
+			},
+		},
 	}
 	local title_text_style = {
-		use_shadow = true,
-		upper_case = false,
-		localize = true,
-		font_size = 52,
-		horizontal_alignment = "center",
-		vertical_alignment = "center",
 		dynamic_font_size = true,
+		font_size = 52,
 		font_type = "hell_shark_header",
+		horizontal_alignment = "center",
+		localize = true,
+		upper_case = false,
+		use_shadow = true,
+		vertical_alignment = "center",
 		text_color = Colors.get_color_table_with_alpha("font_title", 255),
 		offset = {
 			0,
 			0,
-			2
-		}
+			2,
+		},
 	}
 	local currency_text_style = {
-		word_wrap = false,
-		upper_case = true,
-		localize = false,
-		use_shadow = true,
-		font_size = 32,
-		horizontal_alignment = "right",
-		vertical_alignment = "center",
 		dynamic_font_size = false,
+		font_size = 32,
 		font_type = "hell_shark_header",
+		horizontal_alignment = "right",
+		localize = false,
+		upper_case = true,
+		use_shadow = true,
+		vertical_alignment = "center",
+		word_wrap = false,
 		text_color = Colors.get_color_table_with_alpha("white", 255),
 		offset = {
 			0,
 			0,
-			2
-		}
+			2,
+		},
 	}
 	local currency_title_style = {
-		word_wrap = false,
-		upper_case = false,
-		localize = false,
-		use_shadow = true,
-		font_size = 32,
-		horizontal_alignment = "left",
-		vertical_alignment = "center",
 		dynamic_font_size = false,
+		font_size = 32,
 		font_type = "hell_shark_header",
+		horizontal_alignment = "left",
+		localize = false,
+		upper_case = false,
+		use_shadow = true,
+		vertical_alignment = "center",
+		word_wrap = false,
 		text_color = Colors.get_color_table_with_alpha("white", 255),
 		offset = {
 			0,
 			0,
-			2
-		}
+			2,
+		},
 	}
 
 	local function create_list_mask(scenegraph_id, list_scenegraph_id, size)
@@ -313,31 +316,31 @@ local function setup_ui_definitions(window_width, list_width, list_height)
 		local element = {
 			passes = {
 				{
-					style_id = "hotspot",
+					content_id = "button_hotspot",
 					pass_type = "hotspot",
-					content_id = "button_hotspot"
+					style_id = "hotspot",
 				},
 				{
-					style_id = "list_hotspot",
+					content_id = "list_hotspot",
 					pass_type = "hotspot",
-					content_id = "list_hotspot"
+					style_id = "list_hotspot",
 				},
 				{
 					pass_type = "texture",
 					style_id = "mask",
-					texture_id = "mask_texture"
+					texture_id = "mask_texture",
 				},
 				{
 					pass_type = "texture",
 					style_id = "mask_top",
-					texture_id = "mask_edge"
+					texture_id = "mask_edge",
 				},
 				{
 					pass_type = "rotated_texture",
 					style_id = "mask_bottom",
-					texture_id = "mask_edge"
-				}
-			}
+					texture_id = "mask_edge",
+				},
+			},
 		}
 		local content = {
 			mask_edge = "mask_rect_edge_fade",
@@ -345,108 +348,108 @@ local function setup_ui_definitions(window_width, list_width, list_height)
 			list_hotspot = {},
 			button_hotspot = {},
 			scrollbar = {
-				scroll_amount = 0.1,
 				percentage = 0.1,
-				scroll_value = 1
-			}
+				scroll_amount = 0.1,
+				scroll_value = 1,
+			},
 		}
 		local style = {
 			hotspot = {
 				size = {
 					size[1],
-					size[2]
+					size[2],
 				},
 				offset = {
 					0,
 					0,
-					0
-				}
+					0,
+				},
 			},
 			list_hotspot = {
 				size = {
 					size[1],
-					size[2] + fade_distance * 2
+					size[2] + fade_distance * 2,
 				},
 				color = {
 					255,
 					255,
 					255,
-					255
+					255,
 				},
 				offset = {
 					0,
 					-fade_distance,
-					0
-				}
+					0,
+				},
 			},
 			mask = {
 				size = {
 					size[1],
-					size[2]
+					size[2],
 				},
 				color = {
 					255,
 					255,
 					255,
-					255
+					255,
 				},
 				offset = {
 					0,
 					0,
-					0
-				}
+					0,
+				},
 			},
 			mask_top = {
 				size = {
 					size[1],
-					fade_distance
+					fade_distance,
 				},
 				color = {
 					255,
 					255,
 					255,
-					255
+					255,
 				},
 				offset = {
 					0,
 					size[2],
-					0
-				}
+					0,
+				},
 			},
 			mask_bottom = {
 				size = {
 					size[1],
-					fade_distance
+					fade_distance,
 				},
 				color = {
 					255,
 					255,
 					255,
-					255
+					255,
 				},
 				offset = {
 					0,
 					-fade_distance,
-					0
+					0,
 				},
 				angle = math.pi,
 				pivot = {
 					size[1] / 2,
-					fade_distance / 2
-				}
-			}
-		}
-		local widget = {
-			element = element,
-			content = content,
-			style = style,
-			offset = {
-				0,
-				0,
-				0
+					fade_distance / 2,
+				},
 			},
-			scenegraph_id = scenegraph_id
 		}
+		local widget = {}
+
+		widget.element = element
+		widget.content = content
+		widget.style = style
+		widget.offset = {
+			0,
+			0,
+			0,
+		}
+		widget.scenegraph_id = scenegraph_id
 
 		return widget
 	end
@@ -459,31 +462,31 @@ local function setup_ui_definitions(window_width, list_width, list_height)
 		220,
 		10,
 		10,
-		10
+		10,
 	}
 	local window_dop_shadow_color = {
 		220,
 		0,
 		0,
-		0
+		0,
 	}
 	local widget_definitions = {
 		screen_overlay = UIWidgets.create_simple_rect("screen_overlay", {
 			50,
 			10,
 			10,
-			10
+			10,
 		}),
 		window_background = UIWidgets.create_simple_rect("window", window_background_color),
 		window_drop_shadow = UIWidgets.create_frame("window", scenegraph_definition.window.size, frame_name, 0, window_dop_shadow_color, {
 			-frame_height,
-			-frame_height
+			-frame_height,
 		}),
 		window_frame = UIWidgets.create_frame("window", scenegraph_definition.window.size, "menu_frame_12_gold", 1, {
 			255,
 			255,
 			255,
-			255
+			255,
 		}),
 		window_button = UIWidgets.create_default_button("window_button", scenegraph_definition.window_button.size, "button_frame_02_gold", nil, Localize("welcome_currency_popup_button_claim"), 30, nil, "button_detail_01_gold", nil, disable_with_gamepad),
 		window_title = UIWidgets.create_simple_text("interact_open_store", "window_title", scenegraph_definition.window_title.size, nil, title_text_style),
@@ -492,46 +495,46 @@ local function setup_ui_definitions(window_width, list_width, list_height)
 		currency_text = UIWidgets.create_simple_text("-", "currency_text", nil, nil, currency_text_style),
 		currency_area = UIWidgets.create_tiled_texture("currency_area", "menu_frame_bg_07", {
 			512,
-			256
+			256,
 		}, nil, nil, {
 			255,
 			255,
 			255,
-			255
+			255,
 		}),
 		currency_area_frame = UIWidgets.create_frame("currency_area_frame", scenegraph_definition.currency_area_frame.size, "button_frame_01_gold", 1),
 		currency_area_detail_left = UIWidgets.create_simple_uv_texture("button_detail_08_gold", {
 			{
 				0,
-				0
+				0,
 			},
 			{
 				1,
-				1
-			}
+				1,
+			},
 		}, "currency_area_detail_left"),
 		currency_area_detail_right = UIWidgets.create_simple_uv_texture("button_detail_08_gold", {
 			{
 				1,
-				0
+				0,
 			},
 			{
 				0,
-				1
-			}
+				1,
+			},
 		}, "currency_area_detail_right"),
 		list = create_list_mask("list_window", "list", list_size, list_entry_size),
 		list_scrollbar = UIWidgets.create_scrollbar("list_scrollbar", list_scrollbar_size, "window", {
 			255,
 			120,
 			120,
-			120
+			120,
 		}, {
 			255,
 			30,
 			30,
-			30
-		})
+			30,
+		}),
 	}
 
 	return scenegraph_definition, widget_definitions, animation_definitions
@@ -539,13 +542,14 @@ end
 
 local LIST_SPACING = 10
 local LIST_MAX_WIDTH = 800
+
 StoreWelcomePopup = class(StoreWelcomePopup)
 
 StoreWelcomePopup.init = function (self, ingame_ui, layout, total_amount)
 	self._ingame_ui = ingame_ui
 	self._top_world = ingame_ui.top_world
 	self._render_settings = {
-		alpha_multiplier = 1
+		alpha_multiplier = 1,
 	}
 	self._animations = {}
 	self._ui_animations = {}
@@ -553,13 +557,16 @@ StoreWelcomePopup.init = function (self, ingame_ui, layout, total_amount)
 	self:_setup_renderers()
 
 	local world = Managers.world:world("level_world")
+
 	self._wwise_world = Managers.world:wwise_world(world)
 	self._level_world = world
+
 	local window_width = 700
 	local list_width = window_width - 70
+
 	self._entry_size = {
 		list_width - 50,
-		50
+		50,
 	}
 
 	self:_setup_list_widgets(layout)
@@ -581,15 +588,18 @@ end
 StoreWelcomePopup._setup_renderers = function (self)
 	local world_name = "store_welcome_ui_world"
 	local layer = 999
+
 	self._welcome_ui_world_viewport_name = "store_welcome_ui_world_viewport"
 	self._welcome_ui_world = Managers.world:create_world(world_name, GameSettingsDevelopment.default_environment, nil, layer, Application.DISABLE_PHYSICS, Application.DISABLE_APEX_CLOTH)
 
 	ScriptWorld.create_viewport(self._welcome_ui_world, self._welcome_ui_world_viewport_name, "overlay", 1)
 
 	self._welcome_ui_renderer = self._ingame_ui:create_ui_renderer(self._welcome_ui_world, false, true)
+
 	local blur_layer = 998
 	local blur_world_name = "store_welcome_ui_blur_world"
 	local blur_shading_environment = "environment/ui_store_default"
+
 	self._blur_welcome_ui_world_viewport_name = "store_welcome_ui_blur_world_viewport"
 	self._blur_welcome_ui_world = Managers.world:create_world(blur_world_name, blur_shading_environment, nil, blur_layer, Application.DISABLE_PHYSICS, Application.DISABLE_APEX_CLOTH)
 
@@ -619,10 +629,11 @@ end
 StoreWelcomePopup._start_transition_animation = function (self, key, animation_name, optional_widgets)
 	local params = {
 		wwise_world = self._wwise_world,
-		render_settings = self._render_settings
+		render_settings = self._render_settings,
 	}
 	local widgets = optional_widgets or self._widgets_by_name
 	local anim_id = self._ui_animator:start_animation(animation_name, widgets, self._scenegraph_definition, params)
+
 	self._animations[key] = anim_id
 
 	return params
@@ -635,11 +646,12 @@ end
 StoreWelcomePopup._create_gamepad_input_description = function (self, input_service)
 	local generic_input_actions = {
 		{
+			description_text = "welcome_currency_popup_button_claim",
 			input_action = "confirm",
 			priority = 2,
-			description_text = "welcome_currency_popup_button_claim"
-		}
+		},
 	}
+
 	self._menu_input_description = MenuInputDescriptionUI:new(nil, self._welcome_ui_renderer, input_service, 6, nil, generic_input_actions, true)
 
 	self._menu_input_description:set_input_description(nil)
@@ -647,6 +659,7 @@ end
 
 StoreWelcomePopup._set_fullscreen_effect_enable_state = function (self, enabled, progress, world)
 	local shading_env = World.get_data(world, "shading_environment")
+
 	progress = progress or enabled and 1 or 0
 
 	if shading_env then
@@ -672,12 +685,14 @@ end
 
 StoreWelcomePopup._create_ui_elements = function (self, params)
 	self._ui_scenegraph = UISceneGraph.init_scenegraph(self._scenegraph_definition)
+
 	local widgets_by_name = {}
 	local widgets_by_state = {}
 	local widgets = {}
 
 	for name, widget_definition in pairs(self._widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		widgets[#widgets + 1] = widget
 		widgets_by_name[name] = widget
 	end
@@ -839,17 +854,19 @@ StoreWelcomePopup._setup_list_widgets = function (self, layout)
 	for i, entry in ipairs(layout) do
 		local entry_type = entry.type
 		local settings = entry.settings
-		local widget = nil
+		local widget
 
 		if entry_type == "body" then
 			local height_spacing = 5
 			local widget_definition = UIWidgets.create_store_body_text_definition(scenegraph_id, entry_size, masked)
+
 			widget = UIWidget.init(widget_definition)
 
 			self:_populate_text_widget(widget, settings, height_spacing)
 		elseif entry_type == "summary_title" then
 			local height_spacing = 5
 			local widget_definition = UIWidgets.create_store_currency_summary_title_definition(scenegraph_id, entry_size, masked)
+
 			widget = UIWidget.init(widget_definition)
 
 			self:_populate_text_widget(widget, settings, height_spacing)
@@ -857,6 +874,7 @@ StoreWelcomePopup._setup_list_widgets = function (self, layout)
 		elseif entry_type == "summary_entry" then
 			local widget_definition = UIWidgets.create_store_currency_summary_entry_definition(scenegraph_id, entry_size, masked)
 			local height_spacing = -5
+
 			widget = UIWidget.init(widget_definition)
 
 			self:_populate_text_widget(widget, settings, height_spacing)
@@ -894,7 +912,9 @@ StoreWelcomePopup._populate_text_widget = function (self, widget, settings, heig
 
 	text_offset[2] = -text_size[2]
 	content.size[2] = text_size[2]
+
 	local text_shadow_style = style.text_shadow
+
 	text_shadow_style.size[2] = text_size[2]
 	text_shadow_style.offset[2] = -(text_size[2] + 2)
 	content.text = text
@@ -907,18 +927,26 @@ StoreWelcomePopup._populate_currency_title_widget = function (self, widget, sett
 	local text_size = text_style.size
 	local divider_style = style.divider
 	local divider_offset = divider_style.offset
+
 	divider_offset[2] = -text_size[2]
+
 	local divider_shadow_style = style.divider_shadow
 	local divider_shadow_offset = divider_shadow_style.offset
+
 	divider_shadow_offset[2] = -(text_size[2] + 2)
+
 	local text2_style = style.text2
 	local text2_size = text2_style.size
 	local text2_offset = text2_style.offset
+
 	text2_size[2] = text_size[2]
 	text2_offset[2] = -text_size[2]
+
 	local text2_shadow_style = style.text2_shadow
+
 	text2_shadow_style.size[2] = text_size[2]
 	text2_shadow_style.offset[2] = -(text_size[2] + 2)
+
 	local text2 = settings.text2
 
 	if settings.localize then
@@ -936,13 +964,18 @@ StoreWelcomePopup._populate_currency_entry_widget = function (self, widget, sett
 	local text2_style = style.text2
 	local text2_size = text2_style.size
 	local text2_offset = text2_style.offset
+
 	text2_size[2] = text_size[2]
 	text2_offset[2] = -text_size[2]
+
 	local text2_shadow_style = style.text2_shadow
+
 	text2_shadow_style.size[2] = text_size[2]
 	text2_shadow_style.offset[2] = -(text_size[2] + 2)
+
 	local value = settings.value
 	local value_text = UIUtils.comma_value(value)
+
 	content.text2 = value_text
 end
 
@@ -963,7 +996,7 @@ StoreWelcomePopup._align_dlc_widgets = function (self)
 		local size = content.size
 		local width = size[1]
 		local height = size[2]
-		local change_row = LIST_MAX_WIDTH < widget_position_x + width
+		local change_row = widget_position_x + width > LIST_MAX_WIDTH
 
 		if change_row then
 			column = 1
@@ -978,7 +1011,7 @@ StoreWelcomePopup._align_dlc_widgets = function (self)
 		widget.default_offset = table.clone(offset)
 		content.row = row
 		content.column = column
-		widget_position_x = widget_position_x + width + LIST_SPACING
+		widget_position_x = widget_position_x + (width + LIST_SPACING)
 
 		if index == num_widgets then
 			total_height = math.abs(widget_position_y - height)
@@ -997,7 +1030,9 @@ end
 
 StoreWelcomePopup._initialize_scrollbar = function (self)
 	local scrollbar_widget = self._widgets_by_name.list_scrollbar
+
 	self._scrollbar_logic = ScrollBarLogic:new(scrollbar_widget)
+
 	local list_window_size = self._scenegraph_definition.list_window.size
 	local list_scrollbar_size = self._scenegraph_definition.list_scrollbar.size
 	local draw_length = list_window_size[2]
@@ -1062,7 +1097,9 @@ StoreWelcomePopup._set_total_amount = function (self, total_amount)
 	local widget_currency_icon = widgets_by_name.currency_icon
 	local widget_currency_text = widgets_by_name.currency_text
 	local currency_text = UIUtils.comma_value(tostring(total_amount))
+
 	widget_currency_text.content.text = currency_text
+
 	local welcome_ui_renderer = self._welcome_ui_renderer
 	local text_width = UIUtils.get_text_width(welcome_ui_renderer, widget_currency_text.style.text, currency_text)
 	local icon_width = self._scenegraph_definition.currency_icon.size[1]
@@ -1070,5 +1107,6 @@ StoreWelcomePopup._set_total_amount = function (self, total_amount)
 	local total_length = text_width + text_spacing
 	local ui_scenegraph = self._ui_scenegraph
 	local text_scenegraph_id = widget_currency_text.scenegraph_id
+
 	ui_scenegraph[text_scenegraph_id].size[1] = total_length
 end

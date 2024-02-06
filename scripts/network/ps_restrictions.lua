@@ -1,20 +1,23 @@
+﻿-- chunkname: @scripts/network/ps_restrictions.lua
+
 require("scripts/network/script_ps_restriction_token")
 
 PSRestrictions = class(PSRestrictions)
+
 local default_restrictions = {
 	"network_availability",
 	"playstation_plus",
-	"parental_control"
+	"parental_control",
 }
 local start_funcs = {
-	playstation_plus = "_playstation_plus_start",
 	network_availability = "_network_availability_start",
-	parental_control = "_parental_control_start"
+	parental_control = "_parental_control_start",
+	playstation_plus = "_playstation_plus_start",
 }
 local callbacks = {
-	playstation_plus = "cb_playstation_plus",
 	network_availability = "cb_network_availability",
-	parental_control = "cb_parental_control"
+	parental_control = "cb_parental_control",
+	playstation_plus = "cb_playstation_plus",
 }
 
 local function dprint(string, ...)
@@ -39,7 +42,7 @@ end
 
 PSRestrictions.add_user = function (self, user_id)
 	self._current_users[user_id] = {
-		restrictions = table.clone(default_restrictions)
+		restrictions = table.clone(default_restrictions),
 	}
 
 	self:_start_restriction_access_fetched(user_id)
@@ -70,7 +73,7 @@ PSRestrictions._fetch_next_restriction_access = function (self, user_id)
 		Managers.token:register_token(script_token, callback(self, callback_name, user_id, restriction))
 	else
 		self[callback_name](self, user_id, restriction, {
-			error = PS4.SCE_NP_ERROR_SIGNED_OUT
+			error = PS4.SCE_NP_ERROR_SIGNED_OUT,
 		})
 	end
 end
@@ -116,6 +119,7 @@ PSRestrictions.refetch_restriction_access = function (self, user_id, restriction
 	fassert(self._current_users[user_id] ~= nil, "User (%d) is not added", user_id)
 
 	local user = self._current_users[user_id]
+
 	user.restrictions = table.clone(restrictions)
 
 	for i, restriction in ipairs(restrictions) do
@@ -164,7 +168,7 @@ PSRestrictions.cb_network_availability = function (self, user_id, restriction, i
 
 		self._current_users[user_id][restriction] = {
 			access = false,
-			error = error
+			error = error,
 		}
 	else
 		local result = NpCheck.result(info.token)
@@ -173,7 +177,7 @@ PSRestrictions.cb_network_availability = function (self, user_id, restriction, i
 
 		self._current_users[user_id][restriction] = {
 			error = false,
-			access = result
+			access = result,
 		}
 	end
 
@@ -189,7 +193,7 @@ PSRestrictions.cb_playstation_plus = function (self, user_id, restriction, info)
 
 		self._current_users[user_id][restriction] = {
 			access = false,
-			error = error
+			error = error,
 		}
 	else
 		local result = NpCheck.result(info.token)
@@ -198,7 +202,7 @@ PSRestrictions.cb_playstation_plus = function (self, user_id, restriction, info)
 
 		self._current_users[user_id][restriction] = {
 			error = false,
-			access = result
+			access = result,
 		}
 	end
 
@@ -214,23 +218,24 @@ PSRestrictions.cb_parental_control = function (self, user_id, restriction, info)
 
 		self._current_users[user_id].chat = {
 			access = false,
-			error = error
+			error = error,
 		}
 		self._current_users[user_id].user_generated_content = {
 			access = false,
-			error = error
+			error = error,
 		}
 	else
 		local result = NpCheck.parental_control_info_result(info.token)
 		local chat = result.chat_restriction == false
 		local ugc = result.ugc_restriction == false
+
 		self._current_users[user_id].chat = {
 			error = false,
-			access = chat
+			access = chat,
 		}
 		self._current_users[user_id].user_generated_content = {
 			error = false,
-			access = ugc
+			access = ugc,
 		}
 
 		dprint("\"chat\" access for user (%d) result (%s)", user_id, tostring(chat))

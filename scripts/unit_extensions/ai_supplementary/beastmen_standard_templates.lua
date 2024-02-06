@@ -1,29 +1,31 @@
+﻿-- chunkname: @scripts/unit_extensions/ai_supplementary/beastmen_standard_templates.lua
+
 BeastmenStandardTemplates = {
 	invincibility_standard = {
+		ai_buff_proc_vfx_name = "",
+		ai_buff_vfx_name = "",
+		apply_buff_to_ai = true,
+		astar_check_frequency = 10,
 		buff_template_name = "invincibility_standard",
 		radius = 20,
-		astar_check_frequency = 10,
-		apply_buff_to_ai = true,
 		vfx_picked_up_standard = "fx/chr_beastmen_standard_bearer_end_02",
-		ai_buff_proc_vfx_name = "",
-		ai_buff_vfx_name = ""
 	},
 	healing_standard = {
-		apply_buff_to_player = false,
-		radius = 15,
-		sfx_taking_damage = "Play_enemy_beastmen_standar_taking_damage",
-		apply_buff_to_ai = true,
-		sfx_destroyed = "Play_enemy_beastmen_standar_destroy",
 		ai_buff_proc_vfx_name = "fx/chr_beastmen_standard_bearer_buff_02",
+		ai_buff_vfx_name = "fx/chr_beastmen_standard_bearer_buff_01",
+		apply_buff_to_ai = true,
+		apply_buff_to_player = false,
 		astar_check_frequency = 10,
 		buff_template_name = "healing_standard",
-		sfx_placed = "Play_enemy_standard_bearer_place_standar",
-		sfx_loop_stop = "Stop_enemy_beastmen_standar_spell_loop",
-		vfx_picked_up_standard = "fx/chr_beastmen_standard_bearer_end_02",
+		radius = 15,
+		sfx_destroyed = "Play_enemy_beastmen_standar_destroy",
 		sfx_loop = "Play_enemy_standard_bearer_place_standar",
-		ai_buff_vfx_name = "fx/chr_beastmen_standard_bearer_buff_01",
+		sfx_loop_stop = "Stop_enemy_beastmen_standar_spell_loop",
+		sfx_placed = "Play_enemy_standard_bearer_place_standar",
+		sfx_taking_damage = "Play_enemy_beastmen_standar_taking_damage",
+		vfx_picked_up_standard = "fx/chr_beastmen_standard_bearer_end_02",
 		custom_update_func = function (template, data, t, dt, unit, units_inside)
-			if data.is_server and not data.challenge_done and data.challenge_time < t and HEALTH_ALIVE[data.standard_bearer_unit] then
+			if data.is_server and not data.challenge_done and t > data.challenge_time and HEALTH_ALIVE[data.standard_bearer_unit] then
 				local stat_name = "scorpion_keep_standard_bearer_alive"
 				local stat_name_index = NetworkLookup.statistics[stat_name]
 				local statistics_db = Managers.player:statistics_db()
@@ -38,22 +40,22 @@ BeastmenStandardTemplates = {
 
 				data.challenge_done = true
 			end
-		end
+		end,
 	},
 	horde_standard = {
-		sfx_loop_stop = "Stop_enemy_beastmen_standar_spell_loop",
+		astar_check_frequency = 10,
+		composition = "standard_bearer_ambush",
 		radius = 12,
 		sfx_destroyed = "Play_enemy_beastmen_standar_destroy",
-		astar_check_frequency = 10,
-		vfx_picked_up_standard = "fx/chr_beastmen_standard_bearer_end_02",
+		sfx_loop = "Play_enemy_standard_bearer_place_standar",
+		sfx_loop_stop = "Stop_enemy_beastmen_standar_spell_loop",
 		sfx_placed = "Play_enemy_standard_bearer_place_standar",
 		sfx_taking_damage = "Play_enemy_beastmen_standar_taking_damage",
-		sfx_loop = "Play_enemy_standard_bearer_place_standar",
-		composition = "standard_bearer_ambush",
+		vfx_picked_up_standard = "fx/chr_beastmen_standard_bearer_end_02",
 		custom_update_func = function (template, data, t, dt, unit, units_inside)
 			local next_horde_t = data.next_horde_t or 0
 
-			if t > next_horde_t then
+			if next_horde_t < t then
 				local conflict_director = Managers.state.conflict
 				local override_epicenter_pos = Unit.local_position(unit, 0)
 				local override_composition_table = HordeCompositions[template.composition]
@@ -61,7 +63,7 @@ BeastmenStandardTemplates = {
 				local composition_difficulty_rank = DifficultyTweak.converters.composition_rank(current_difficulty_rank, difficulty_tweak)
 				local override_composition = override_composition_table[composition_difficulty_rank - 1]
 				local extra_data = {
-					sound_settings = template.horde_sound_settings
+					sound_settings = template.horde_sound_settings,
 				}
 
 				conflict_director.horde_spawner:execute_ambush_horde(extra_data, conflict_director.default_enemy_side_id, false, override_epicenter_pos, override_composition)
@@ -72,9 +74,9 @@ BeastmenStandardTemplates = {
 		horde_sound_settings = {
 			stinger_sound_event = "enemy_horde_beastmen_stinger",
 			music_states = {
+				horde = "horde_beastmen",
 				pre_ambush = "pre_ambush_beastmen",
-				horde = "horde_beastmen"
-			}
-		}
-	}
+			},
+		},
+	},
 }

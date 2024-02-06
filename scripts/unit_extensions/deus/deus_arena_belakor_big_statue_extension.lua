@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/deus/deus_arena_belakor_big_statue_extension.lua
+
 DeusArenaBelakorBigStatueExtension = class(DeusArenaBelakorBigStatueExtension)
 
 DeusArenaBelakorBigStatueExtension.init = function (self, extension_init_context, unit, extension_init_data)

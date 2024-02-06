@@ -1,6 +1,9 @@
+﻿-- chunkname: @scripts/entity_system/systems/position_lookup/position_lookup_system.lua
+
 PositionLookupSystem = class(PositionLookupSystem, ExtensionSystemBase)
+
 local extensions = {
-	"PositionLookupExtension"
+	"PositionLookupExtension",
 }
 
 PositionLookupSystem.init = function (self, entity_system_creation_context, system_name)
@@ -15,8 +18,9 @@ PositionLookupSystem.on_add_extension = function (self, world, unit, extension_n
 	fassert(self.extensions[extension_name], "[PositionLookupSystem] There is no known extension called %s", extension_name)
 
 	POSITION_LOOKUP[unit] = Unit.world_position(unit, 0)
+
 	local extension = {
-		position = POSITION_LOOKUP[unit]
+		position = POSITION_LOOKUP[unit],
 	}
 
 	ScriptUnit.set_extension(unit, self.NAME, extension)

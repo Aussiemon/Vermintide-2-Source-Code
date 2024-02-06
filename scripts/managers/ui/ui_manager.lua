@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/ui/ui_manager.lua
+
 require("scripts/managers/ui/popup_settings")
 
 UIManager = class(UIManager)
@@ -160,6 +162,7 @@ end
 
 UIManager.restart_game = function (self)
 	local ingame_ui = self._ingame_ui
+
 	ingame_ui.restart_game = true
 end
 

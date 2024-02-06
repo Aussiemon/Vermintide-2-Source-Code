@@ -1,8 +1,11 @@
+﻿-- chunkname: @foundation/scripts/util/frame_table.lua
+
 if rawget(_G, "FrameTable") then
 	return
 end
 
 FrameTable = {}
+
 local frame_table_max_size = 256
 local frame_table_buffer = Script.new_array(frame_table_max_size)
 local frame_table_back_buffer = Script.new_array(frame_table_max_size)
@@ -17,8 +20,9 @@ end
 FrameTable.alloc_table = function ()
 	frame_table_count = frame_table_count + 1
 
-	if frame_table_max_size < frame_table_count then
+	if frame_table_count > frame_table_max_size then
 		local n = frame_table_max_size
+
 		frame_table_max_size = 2 * n
 
 		Application.warning("[FrameTable] WARNING: Expanding frame table size from %d to %d", n, frame_table_max_size)
@@ -39,8 +43,7 @@ FrameTable.swap_and_clear = function ()
 		table_clear(frame_table_back_buffer[i])
 	end
 
-	frame_table_back_buffer = frame_table_buffer
-	frame_table_buffer = frame_table_back_buffer
+	frame_table_buffer, frame_table_back_buffer = frame_table_back_buffer, frame_table_buffer
 	frame_table_back_count = frame_table_count
 	frame_table_count = 0
 end

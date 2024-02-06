@@ -1,9 +1,12 @@
+﻿-- chunkname: @scripts/managers/telemetry/telemetry_reporters.lua
+
 require("scripts/managers/telemetry/reporters/heartbeat_reporter")
 
 TelemetryReporters = class(TelemetryReporters)
 TelemetryReporters.NAME = "TelemetryReporters"
+
 local REPORTER_CLASS_MAP = {
-	heartbeat = HeartbeatReporter
+	heartbeat = HeartbeatReporter,
 }
 
 TelemetryReporters.init = function (self)
@@ -14,6 +17,7 @@ end
 
 TelemetryReporters.start_reporter = function (self, name, params)
 	local reporter_class = REPORTER_CLASS_MAP[name]
+
 	self._reporters[name] = reporter_class:new(params)
 end
 

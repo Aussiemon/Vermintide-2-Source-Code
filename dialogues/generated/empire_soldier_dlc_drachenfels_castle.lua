@@ -1,3 +1,5 @@
+﻿-- chunkname: @dialogues/generated/empire_soldier_dlc_drachenfels_castle.lua
+
 return function ()
 	define_rule({
 		name = "pes_castle_intro_line_a",
@@ -7,41 +9,41 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"seen_item"
+				"seen_item",
 			},
 			{
 				"query_context",
 				"item_tag",
 				OP.EQ,
-				"castle_intro_line_a"
+				"castle_intro_line_a",
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"faction_memory",
 				"castle_intro_line_a",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"castle_intro_line_a",
 				OP.ADD,
-				1
-			}
-		}
+				1,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_castle_intro_line_b",
@@ -51,41 +53,41 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"dialogue_name_nopre",
 				OP.EQ,
-				"castle_intro_line_a"
+				"castle_intro_line_a",
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"faction_memory",
 				"castle_intro_line_b",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"castle_intro_line_b",
 				OP.ADD,
-				1
-			}
-		}
+				1,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_castle_intro_line_c",
@@ -95,46 +97,46 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"dialogue_name_nopre",
 				OP.EQ,
-				"castle_intro_line_b"
+				"castle_intro_line_b",
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"faction_memory",
 				"castle_intro_line_c",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"castle_intro_line_c",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_casual_quotes",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_castle_vo_approaching_throne_room",
@@ -144,41 +146,41 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"seen_item"
+				"seen_item",
 			},
 			{
 				"query_context",
 				"item_tag",
 				OP.EQ,
-				"castle_vo_approaching_throne_room"
+				"castle_vo_approaching_throne_room",
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"faction_memory",
 				"castle_vo_approaching_throne_room",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"castle_vo_approaching_throne_room",
 				OP.ADD,
-				1
-			}
-		}
+				1,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_castle_vo_blockage",
@@ -188,41 +190,41 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"seen_item"
+				"seen_item",
 			},
 			{
 				"query_context",
 				"item_tag",
 				OP.EQ,
-				"castle_vo_blockage"
+				"castle_vo_blockage",
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"faction_memory",
 				"castle_vo_blockage",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"castle_vo_blockage",
 				OP.ADD,
-				1
-			}
-		}
+				1,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_castle_vo_blood_pool",
@@ -232,41 +234,41 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"seen_item"
+				"seen_item",
 			},
 			{
 				"query_context",
 				"item_tag",
 				OP.EQ,
-				"castle_vo_blood_pool"
+				"castle_vo_blood_pool",
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"faction_memory",
 				"castle_vo_blood_pool",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"castle_vo_blood_pool",
 				OP.ADD,
-				1
-			}
-		}
+				1,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_castle_vo_crypt_discovered",
@@ -276,41 +278,41 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"seen_item"
+				"seen_item",
 			},
 			{
 				"query_context",
 				"item_tag",
 				OP.EQ,
-				"castle_vo_crypt_discovered"
+				"castle_vo_crypt_discovered",
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"faction_memory",
 				"castle_vo_crypt_discovered",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"castle_vo_crypt_discovered",
 				OP.ADD,
-				1
-			}
-		}
+				1,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_castle_vo_crypt_not_discovered",
@@ -320,41 +322,41 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"seen_item"
+				"seen_item",
 			},
 			{
 				"query_context",
 				"item_tag",
 				OP.EQ,
-				"castle_vo_crypt_not_discovered"
+				"castle_vo_crypt_not_discovered",
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"faction_memory",
 				"castle_vo_crypt_not_discovered",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"castle_vo_crypt_not_discovered",
 				OP.ADD,
-				1
-			}
-		}
+				1,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_castle_vo_do_not_recognize",
@@ -364,41 +366,41 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"seen_item"
+				"seen_item",
 			},
 			{
 				"query_context",
 				"item_tag",
 				OP.EQ,
-				"castle_vo_do_not_recognize"
+				"castle_vo_do_not_recognize",
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"faction_memory",
 				"castle_vo_do_not_recognize",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"castle_vo_do_not_recognize",
 				OP.ADD,
-				1
-			}
-		}
+				1,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_castle_vo_door_open",
@@ -408,41 +410,41 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"seen_item"
+				"seen_item",
 			},
 			{
 				"query_context",
 				"item_tag",
 				OP.EQ,
-				"castle_vo_door_open"
+				"castle_vo_door_open",
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"faction_memory",
 				"castle_vo_door_open",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"castle_vo_door_open",
 				OP.ADD,
-				1
-			}
-		}
+				1,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_castle_vo_drop_down",
@@ -452,41 +454,41 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"seen_item"
+				"seen_item",
 			},
 			{
 				"query_context",
 				"item_tag",
 				OP.EQ,
-				"castle_vo_drop_down"
+				"castle_vo_drop_down",
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"faction_memory",
 				"castle_vo_drop_down",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"castle_vo_drop_down",
 				OP.ADD,
-				1
-			}
-		}
+				1,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_castle_vo_enter",
@@ -496,41 +498,41 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"seen_item"
+				"seen_item",
 			},
 			{
 				"query_context",
 				"item_tag",
 				OP.EQ,
-				"castle_vo_enter"
+				"castle_vo_enter",
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"faction_memory",
 				"castle_vo_enter",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"castle_vo_enter",
 				OP.ADD,
-				1
-			}
-		}
+				1,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_castle_vo_find_a_way_up",
@@ -540,41 +542,41 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"seen_item"
+				"seen_item",
 			},
 			{
 				"query_context",
 				"item_tag",
 				OP.EQ,
-				"castle_vo_find_a_way_up"
+				"castle_vo_find_a_way_up",
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"faction_memory",
 				"castle_vo_find_a_way_up",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"castle_vo_find_a_way_up",
 				OP.ADD,
-				1
-			}
-		}
+				1,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_castle_vo_halls",
@@ -584,41 +586,41 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"seen_item"
+				"seen_item",
 			},
 			{
 				"query_context",
 				"item_tag",
 				OP.EQ,
-				"castle_vo_halls"
+				"castle_vo_halls",
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"faction_memory",
 				"castle_vo_halls",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"castle_vo_halls",
 				OP.ADD,
-				1
-			}
-		}
+				1,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_castle_vo_hello",
@@ -628,41 +630,41 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"seen_item"
+				"seen_item",
 			},
 			{
 				"query_context",
 				"item_tag",
 				OP.EQ,
-				"castle_vo_hello"
+				"castle_vo_hello",
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"faction_memory",
 				"castle_vo_hello",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"castle_vo_hello",
 				OP.ADD,
-				1
-			}
-		}
+				1,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_castle_vo_landed",
@@ -672,41 +674,41 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"seen_item"
+				"seen_item",
 			},
 			{
 				"query_context",
 				"item_tag",
 				OP.EQ,
-				"castle_vo_landed"
+				"castle_vo_landed",
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"faction_memory",
 				"castle_vo_landed",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"castle_vo_landed",
 				OP.ADD,
-				1
-			}
-		}
+				1,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_castle_vo_meet_sorcerer",
@@ -716,41 +718,41 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"seen_item"
+				"seen_item",
 			},
 			{
 				"query_context",
 				"item_tag",
 				OP.EQ,
-				"castle_vo_meet_sorcerer"
+				"castle_vo_meet_sorcerer",
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"faction_memory",
 				"castle_vo_meet_sorcerer",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"castle_vo_meet_sorcerer",
 				OP.ADD,
-				1
-			}
-		}
+				1,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_castle_vo_recognize",
@@ -760,41 +762,41 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"seen_item"
+				"seen_item",
 			},
 			{
 				"query_context",
 				"item_tag",
 				OP.EQ,
-				"castle_vo_recognize"
+				"castle_vo_recognize",
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"faction_memory",
 				"castle_vo_recognize",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"castle_vo_recognize",
 				OP.ADD,
-				1
-			}
-		}
+				1,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_castle_vo_search_again",
@@ -804,41 +806,41 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"seen_item"
+				"seen_item",
 			},
 			{
 				"query_context",
 				"item_tag",
 				OP.EQ,
-				"castle_vo_search_again"
+				"castle_vo_search_again",
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"faction_memory",
 				"castle_vo_search_again",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"castle_vo_search_again",
 				OP.ADD,
-				1
-			}
-		}
+				1,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_castle_vo_secret_door",
@@ -848,41 +850,41 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"seen_item"
+				"seen_item",
 			},
 			{
 				"query_context",
 				"item_tag",
 				OP.EQ,
-				"castle_vo_secret_door"
+				"castle_vo_secret_door",
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"faction_memory",
 				"castle_vo_secret_door",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"castle_vo_secret_door",
 				OP.ADD,
-				1
-			}
-		}
+				1,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_castle_vo_sorcerer_slain",
@@ -892,41 +894,41 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"seen_item"
+				"seen_item",
 			},
 			{
 				"query_context",
 				"item_tag",
 				OP.EQ,
-				"castle_vo_sorcerer_slain"
+				"castle_vo_sorcerer_slain",
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"faction_memory",
 				"castle_vo_sorcerer_slain",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"castle_vo_sorcerer_slain",
 				OP.ADD,
-				1
-			}
-		}
+				1,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_castle_vo_this_way",
@@ -936,41 +938,41 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"seen_item"
+				"seen_item",
 			},
 			{
 				"query_context",
 				"item_tag",
 				OP.EQ,
-				"castle_vo_this_way"
+				"castle_vo_this_way",
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"faction_memory",
 				"castle_vo_this_way",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"castle_vo_this_way",
 				OP.ADD,
-				1
-			}
-		}
+				1,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_castle_vo_throne_room_approach",
@@ -980,41 +982,41 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"seen_item"
+				"seen_item",
 			},
 			{
 				"query_context",
 				"item_tag",
 				OP.EQ,
-				"castle_vo_throne_room_approach"
+				"castle_vo_throne_room_approach",
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"faction_memory",
 				"castle_vo_throne_room_approach",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"castle_vo_throne_room_approach",
 				OP.ADD,
-				1
-			}
-		}
+				1,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_castle_vo_traces_one",
@@ -1024,41 +1026,41 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"seen_item"
+				"seen_item",
 			},
 			{
 				"query_context",
 				"item_tag",
 				OP.EQ,
-				"castle_vo_traces_one"
+				"castle_vo_traces_one",
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"faction_memory",
 				"castle_vo_traces_one",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"castle_vo_traces_one",
 				OP.ADD,
-				1
-			}
-		}
+				1,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_castle_vo_trap_switch",
@@ -1068,41 +1070,41 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"seen_item"
+				"seen_item",
 			},
 			{
 				"query_context",
 				"item_tag",
 				OP.EQ,
-				"castle_vo_trap_switch"
+				"castle_vo_trap_switch",
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"faction_memory",
 				"castle_vo_trap_switch",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"castle_vo_trap_switch",
 				OP.ADD,
-				1
-			}
-		}
+				1,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_castle_vo_vista",
@@ -1112,1026 +1114,1026 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"seen_item"
+				"seen_item",
 			},
 			{
 				"query_context",
 				"item_tag",
 				OP.EQ,
-				"castle_vo_vista"
+				"castle_vo_vista",
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"faction_memory",
 				"castle_vo_vista",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"castle_vo_vista",
 				OP.ADD,
-				1
-			}
-		}
+				1,
+			},
+		},
 	})
 	add_dialogues({
 		pes_castle_intro_line_a = {
-			randomize_indexes_n = 0,
-			face_animations_n = 2,
-			database = "empire_soldier_dlc_drachenfels_castle",
-			sound_events_n = 2,
 			category = "level_talk",
+			database = "empire_soldier_dlc_drachenfels_castle",
 			dialogue_animations_n = 2,
+			face_animations_n = 2,
+			randomize_indexes_n = 0,
+			sound_events_n = 2,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
+				[2] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm",
-				[2.0] = "face_calm"
+				[1] = "face_calm",
+				[2] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pes_castle_intro_line_a_01",
-				[2.0] = "pes_castle_intro_line_a_02"
+				[1] = "pes_castle_intro_line_a_01",
+				[2] = "pes_castle_intro_line_a_02",
 			},
 			randomize_indexes = {},
 			sound_events = {
-				[1.0] = "pes_castle_intro_line_a_01",
-				[2.0] = "pes_castle_intro_line_a_02"
+				[1] = "pes_castle_intro_line_a_01",
+				[2] = "pes_castle_intro_line_a_02",
 			},
 			sound_events_duration = {
-				[1.0] = 5.2668747901917,
-				[2.0] = 4.765604019165
-			}
+				[1] = 5.2668747901917,
+				[2] = 4.765604019165,
+			},
 		},
 		pes_castle_intro_line_b = {
-			randomize_indexes_n = 0,
-			face_animations_n = 2,
-			database = "empire_soldier_dlc_drachenfels_castle",
-			sound_events_n = 2,
 			category = "level_talk",
+			database = "empire_soldier_dlc_drachenfels_castle",
 			dialogue_animations_n = 2,
+			face_animations_n = 2,
+			randomize_indexes_n = 0,
+			sound_events_n = 2,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
+				[2] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm",
-				[2.0] = "face_calm"
+				[1] = "face_calm",
+				[2] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pes_castle_intro_line_b_01",
-				[2.0] = "pes_castle_intro_line_b_02"
+				[1] = "pes_castle_intro_line_b_01",
+				[2] = "pes_castle_intro_line_b_02",
 			},
 			randomize_indexes = {},
 			sound_events = {
-				[1.0] = "pes_castle_intro_line_b_01",
-				[2.0] = "pes_castle_intro_line_b_02"
+				[1] = "pes_castle_intro_line_b_01",
+				[2] = "pes_castle_intro_line_b_02",
 			},
 			sound_events_duration = {
-				[1.0] = 2.4528124332428,
-				[2.0] = 3.6227290630341
-			}
+				[1] = 2.4528124332428,
+				[2] = 3.6227290630341,
+			},
 		},
 		pes_castle_intro_line_c = {
-			randomize_indexes_n = 0,
-			face_animations_n = 2,
-			database = "empire_soldier_dlc_drachenfels_castle",
-			sound_events_n = 2,
 			category = "level_talk",
+			database = "empire_soldier_dlc_drachenfels_castle",
 			dialogue_animations_n = 2,
+			face_animations_n = 2,
+			randomize_indexes_n = 0,
+			sound_events_n = 2,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
+				[2] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm",
-				[2.0] = "face_calm"
+				[1] = "face_calm",
+				[2] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pes_castle_intro_line_c_01",
-				[2.0] = "pes_castle_intro_line_c_02"
+				[1] = "pes_castle_intro_line_c_01",
+				[2] = "pes_castle_intro_line_c_02",
 			},
 			randomize_indexes = {},
 			sound_events = {
-				[1.0] = "pes_castle_intro_line_c_01",
-				[2.0] = "pes_castle_intro_line_c_02"
+				[1] = "pes_castle_intro_line_c_01",
+				[2] = "pes_castle_intro_line_c_02",
 			},
 			sound_events_duration = {
-				[1.0] = 3.3237707614899,
-				[2.0] = 2.9898228645325
-			}
+				[1] = 3.3237707614899,
+				[2] = 2.9898228645325,
+			},
 		},
 		pes_castle_vo_approaching_throne_room = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "empire_soldier_dlc_drachenfels_castle",
-			sound_events_n = 4,
 			category = "level_talk",
+			database = "empire_soldier_dlc_drachenfels_castle",
 			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
-				"dialogue_talk"
+				"dialogue_talk",
 			},
 			face_animations = {
 				"face_calm",
 				"face_calm",
 				"face_calm",
-				"face_calm"
+				"face_calm",
 			},
 			localization_strings = {
 				"pes_castle_vo_approaching_throne_room_01",
 				"pes_castle_vo_approaching_throne_room_02",
 				"pes_castle_vo_approaching_throne_room_03",
-				"pes_castle_vo_approaching_throne_room_04"
+				"pes_castle_vo_approaching_throne_room_04",
 			},
 			randomize_indexes = {},
 			sound_events = {
 				"pes_castle_vo_approaching_throne_room_01",
 				"pes_castle_vo_approaching_throne_room_02",
 				"pes_castle_vo_approaching_throne_room_03",
-				"pes_castle_vo_approaching_throne_room_04"
+				"pes_castle_vo_approaching_throne_room_04",
 			},
 			sound_events_duration = {
 				2.4938333034515,
 				3.9053542613983,
 				3.1235625743866,
-				2.7332499027252
-			}
+				2.7332499027252,
+			},
 		},
 		pes_castle_vo_blockage = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "empire_soldier_dlc_drachenfels_castle",
-			sound_events_n = 4,
 			category = "level_talk",
+			database = "empire_soldier_dlc_drachenfels_castle",
 			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
-				"dialogue_talk"
+				"dialogue_talk",
 			},
 			face_animations = {
 				"face_calm",
 				"face_calm",
 				"face_calm",
-				"face_calm"
+				"face_calm",
 			},
 			localization_strings = {
 				"pes_castle_vo_blockage_01",
 				"pes_castle_vo_blockage_02",
 				"pes_castle_vo_blockage_03",
-				"pes_castle_vo_blockage_04"
+				"pes_castle_vo_blockage_04",
 			},
 			randomize_indexes = {},
 			sound_events = {
 				"pes_castle_vo_blockage_01",
 				"pes_castle_vo_blockage_02",
 				"pes_castle_vo_blockage_03",
-				"pes_castle_vo_blockage_04"
+				"pes_castle_vo_blockage_04",
 			},
 			sound_events_duration = {
 				0.96564584970474,
 				1.2841249704361,
 				1.7470208406448,
-				2.9096040725708
-			}
+				2.9096040725708,
+			},
 		},
 		pes_castle_vo_blood_pool = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "empire_soldier_dlc_drachenfels_castle",
-			sound_events_n = 4,
 			category = "level_talk",
+			database = "empire_soldier_dlc_drachenfels_castle",
 			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
-				"dialogue_talk"
+				"dialogue_talk",
 			},
 			face_animations = {
 				"face_calm",
 				"face_calm",
 				"face_calm",
-				"face_calm"
+				"face_calm",
 			},
 			localization_strings = {
 				"pes_castle_vo_blood_pool_01",
 				"pes_castle_vo_blood_pool_02",
 				"pes_castle_vo_blood_pool_03",
-				"pes_castle_vo_blood_pool_04"
+				"pes_castle_vo_blood_pool_04",
 			},
 			randomize_indexes = {},
 			sound_events = {
 				"pes_castle_vo_blood_pool_01",
 				"pes_castle_vo_blood_pool_02",
 				"pes_castle_vo_blood_pool_03",
-				"pes_castle_vo_blood_pool_04"
+				"pes_castle_vo_blood_pool_04",
 			},
 			sound_events_duration = {
 				2.8253333568573,
 				2.7076041698456,
 				3.1256875991821,
-				3.9008541107178
-			}
+				3.9008541107178,
+			},
 		},
 		pes_castle_vo_crypt_discovered = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "empire_soldier_dlc_drachenfels_castle",
-			sound_events_n = 4,
 			category = "level_talk",
+			database = "empire_soldier_dlc_drachenfels_castle",
 			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
-				"dialogue_talk"
+				"dialogue_talk",
 			},
 			face_animations = {
 				"face_calm",
 				"face_calm",
 				"face_calm",
-				"face_calm"
+				"face_calm",
 			},
 			localization_strings = {
 				"pes_castle_vo_crypt_discovered_01",
 				"pes_castle_vo_crypt_discovered_02",
 				"pes_castle_vo_crypt_discovered_03",
-				"pes_castle_vo_crypt_discovered_04"
+				"pes_castle_vo_crypt_discovered_04",
 			},
 			randomize_indexes = {},
 			sound_events = {
 				"pes_castle_vo_crypt_discovered_01",
 				"pes_castle_vo_crypt_discovered_02",
 				"pes_castle_vo_crypt_discovered_03",
-				"pes_castle_vo_crypt_discovered_04"
+				"pes_castle_vo_crypt_discovered_04",
 			},
 			sound_events_duration = {
 				3.3694167137146,
 				3.5015833377838,
 				3.1243751049042,
-				4.1153125762939
-			}
+				4.1153125762939,
+			},
 		},
 		pes_castle_vo_crypt_not_discovered = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "empire_soldier_dlc_drachenfels_castle",
-			sound_events_n = 4,
 			category = "level_talk",
+			database = "empire_soldier_dlc_drachenfels_castle",
 			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
-				"dialogue_talk"
+				"dialogue_talk",
 			},
 			face_animations = {
 				"face_calm",
 				"face_calm",
 				"face_calm",
-				"face_calm"
+				"face_calm",
 			},
 			localization_strings = {
 				"pes_castle_vo_crypt_not_discovered_01",
 				"pes_castle_vo_crypt_not_discovered_02",
 				"pes_castle_vo_crypt_not_discovered_03",
-				"pes_castle_vo_crypt_not_discovered_04"
+				"pes_castle_vo_crypt_not_discovered_04",
 			},
 			randomize_indexes = {},
 			sound_events = {
 				"pes_castle_vo_crypt_not_discovered_01",
 				"pes_castle_vo_crypt_not_discovered_02",
 				"pes_castle_vo_crypt_not_discovered_03",
-				"pes_castle_vo_crypt_not_discovered_04"
+				"pes_castle_vo_crypt_not_discovered_04",
 			},
 			sound_events_duration = {
 				3.0245833396912,
 				1.6643542051315,
 				4.0902915000916,
-				3.7941040992737
-			}
+				3.7941040992737,
+			},
 		},
 		pes_castle_vo_do_not_recognize = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "empire_soldier_dlc_drachenfels_castle",
-			sound_events_n = 4,
 			category = "level_talk",
+			database = "empire_soldier_dlc_drachenfels_castle",
 			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
-				"dialogue_talk"
+				"dialogue_talk",
 			},
 			face_animations = {
 				"face_calm",
 				"face_calm",
 				"face_calm",
-				"face_calm"
+				"face_calm",
 			},
 			localization_strings = {
 				"pes_castle_vo_do_not_recognize_01",
 				"pes_castle_vo_do_not_recognize_02",
 				"pes_castle_vo_do_not_recognize_03",
-				"pes_castle_vo_do_not_recognize_04"
+				"pes_castle_vo_do_not_recognize_04",
 			},
 			randomize_indexes = {},
 			sound_events = {
 				"pes_castle_vo_do_not_recognize_01",
 				"pes_castle_vo_do_not_recognize_02",
 				"pes_castle_vo_do_not_recognize_03",
-				"pes_castle_vo_do_not_recognize_04"
+				"pes_castle_vo_do_not_recognize_04",
 			},
 			sound_events_duration = {
 				3.5043957233429,
 				3.7019791603088,
 				1.8539999723434,
-				3.0175416469574
-			}
+				3.0175416469574,
+			},
 		},
 		pes_castle_vo_door_open = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "empire_soldier_dlc_drachenfels_castle",
-			sound_events_n = 4,
 			category = "level_talk",
+			database = "empire_soldier_dlc_drachenfels_castle",
 			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
-				"dialogue_talk"
+				"dialogue_talk",
 			},
 			face_animations = {
 				"face_calm",
 				"face_calm",
 				"face_calm",
-				"face_calm"
+				"face_calm",
 			},
 			localization_strings = {
 				"pes_castle_vo_door_open_01",
 				"pes_castle_vo_door_open_02",
 				"pes_castle_vo_door_open_03",
-				"pes_castle_vo_door_open_04"
+				"pes_castle_vo_door_open_04",
 			},
 			randomize_indexes = {},
 			sound_events = {
 				"pes_castle_vo_door_open_01",
 				"pes_castle_vo_door_open_02",
 				"pes_castle_vo_door_open_03",
-				"pes_castle_vo_door_open_04"
+				"pes_castle_vo_door_open_04",
 			},
 			sound_events_duration = {
 				5.1703333854675,
 				2.1166250705719,
 				3.9332292079926,
-				2.4173958301544
-			}
+				2.4173958301544,
+			},
 		},
 		pes_castle_vo_drop_down = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "empire_soldier_dlc_drachenfels_castle",
-			sound_events_n = 4,
 			category = "level_talk",
+			database = "empire_soldier_dlc_drachenfels_castle",
 			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
-				"dialogue_talk"
+				"dialogue_talk",
 			},
 			face_animations = {
 				"face_calm",
 				"face_calm",
 				"face_calm",
-				"face_calm"
+				"face_calm",
 			},
 			localization_strings = {
 				"pes_castle_vo_drop_down_01",
 				"pes_castle_vo_drop_down_02",
 				"pes_castle_vo_drop_down_03",
-				"pes_castle_vo_drop_down_04"
+				"pes_castle_vo_drop_down_04",
 			},
 			randomize_indexes = {},
 			sound_events = {
 				"pes_castle_vo_drop_down_01",
 				"pes_castle_vo_drop_down_02",
 				"pes_castle_vo_drop_down_03",
-				"pes_castle_vo_drop_down_04"
+				"pes_castle_vo_drop_down_04",
 			},
 			sound_events_duration = {
 				1.6254374980927,
 				4.4937500953674,
 				3.2436459064484,
-				2.7293748855591
-			}
+				2.7293748855591,
+			},
 		},
 		pes_castle_vo_enter = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "empire_soldier_dlc_drachenfels_castle",
-			sound_events_n = 4,
 			category = "level_talk",
+			database = "empire_soldier_dlc_drachenfels_castle",
 			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
-				"dialogue_talk"
+				"dialogue_talk",
 			},
 			face_animations = {
 				"face_calm",
 				"face_calm",
 				"face_calm",
-				"face_calm"
+				"face_calm",
 			},
 			localization_strings = {
 				"pes_castle_vo_enter_01",
 				"pes_castle_vo_enter_02",
 				"pes_castle_vo_enter_03",
-				"pes_castle_vo_enter_04"
+				"pes_castle_vo_enter_04",
 			},
 			randomize_indexes = {},
 			sound_events = {
 				"pes_castle_vo_enter_01",
 				"pes_castle_vo_enter_02",
 				"pes_castle_vo_enter_03",
-				"pes_castle_vo_enter_04"
+				"pes_castle_vo_enter_04",
 			},
 			sound_events_duration = {
 				1.2123750448227,
 				2.784083366394,
 				2.6095209121704,
-				1.7272708415985
-			}
+				1.7272708415985,
+			},
 		},
 		pes_castle_vo_find_a_way_up = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "empire_soldier_dlc_drachenfels_castle",
-			sound_events_n = 4,
 			category = "level_talk_must_play",
+			database = "empire_soldier_dlc_drachenfels_castle",
 			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
-				"dialogue_talk"
+				"dialogue_talk",
 			},
 			face_animations = {
 				"face_calm",
 				"face_calm",
 				"face_calm",
-				"face_calm"
+				"face_calm",
 			},
 			localization_strings = {
 				"pes_castle_vo_find_a_way_up_01",
 				"pes_castle_vo_find_a_way_up_02",
 				"pes_castle_vo_find_a_way_up_03",
-				"pes_castle_vo_find_a_way_up_04"
+				"pes_castle_vo_find_a_way_up_04",
 			},
 			randomize_indexes = {},
 			sound_events = {
 				"pes_castle_vo_find_a_way_up_01",
 				"pes_castle_vo_find_a_way_up_02",
 				"pes_castle_vo_find_a_way_up_03",
-				"pes_castle_vo_find_a_way_up_04"
+				"pes_castle_vo_find_a_way_up_04",
 			},
 			sound_events_duration = {
 				1.9917500019074,
 				3.5522084236145,
 				1.7714791297913,
-				2.1842083930969
-			}
+				2.1842083930969,
+			},
 		},
 		pes_castle_vo_halls = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "empire_soldier_dlc_drachenfels_castle",
-			sound_events_n = 4,
 			category = "level_talk",
+			database = "empire_soldier_dlc_drachenfels_castle",
 			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
-				"dialogue_talk"
+				"dialogue_talk",
 			},
 			face_animations = {
 				"face_calm",
 				"face_calm",
 				"face_calm",
-				"face_calm"
+				"face_calm",
 			},
 			localization_strings = {
 				"pes_castle_vo_halls_01",
 				"pes_castle_vo_halls_02",
 				"pes_castle_vo_halls_03",
-				"pes_castle_vo_halls_04"
+				"pes_castle_vo_halls_04",
 			},
 			randomize_indexes = {},
 			sound_events = {
 				"pes_castle_vo_halls_01",
 				"pes_castle_vo_halls_02",
 				"pes_castle_vo_halls_03",
-				"pes_castle_vo_halls_04"
+				"pes_castle_vo_halls_04",
 			},
 			sound_events_duration = {
 				1.6523958444595,
 				4.2540831565857,
 				2.4104790687561,
-				2.178750038147
-			}
+				2.178750038147,
+			},
 		},
 		pes_castle_vo_hello = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "empire_soldier_dlc_drachenfels_castle",
-			sound_events_n = 4,
 			category = "level_talk",
+			database = "empire_soldier_dlc_drachenfels_castle",
 			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
-				"dialogue_talk"
+				"dialogue_talk",
 			},
 			face_animations = {
 				"face_calm",
 				"face_calm",
 				"face_calm",
-				"face_calm"
+				"face_calm",
 			},
 			localization_strings = {
 				"pes_castle_vo_hello_01",
 				"pes_castle_vo_hello_02",
 				"pes_castle_vo_hello_03",
-				"pes_castle_vo_hello_04"
+				"pes_castle_vo_hello_04",
 			},
 			randomize_indexes = {},
 			sound_events = {
 				"pes_castle_vo_hello_01",
 				"pes_castle_vo_hello_02",
 				"pes_castle_vo_hello_03",
-				"pes_castle_vo_hello_04"
+				"pes_castle_vo_hello_04",
 			},
 			sound_events_duration = {
 				1.4148958921433,
 				3.5601665973663,
 				2.419625043869,
-				1.1198749542236
-			}
+				1.1198749542236,
+			},
 		},
 		pes_castle_vo_landed = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "empire_soldier_dlc_drachenfels_castle",
-			sound_events_n = 4,
 			category = "level_talk",
+			database = "empire_soldier_dlc_drachenfels_castle",
 			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
-				"dialogue_talk"
+				"dialogue_talk",
 			},
 			face_animations = {
 				"face_calm",
 				"face_calm",
 				"face_calm",
-				"face_calm"
+				"face_calm",
 			},
 			localization_strings = {
 				"pes_castle_vo_landed_01",
 				"pes_castle_vo_landed_02",
 				"pes_castle_vo_landed_03",
-				"pes_castle_vo_landed_04"
+				"pes_castle_vo_landed_04",
 			},
 			randomize_indexes = {},
 			sound_events = {
 				"pes_castle_vo_landed_01",
 				"pes_castle_vo_landed_02",
 				"pes_castle_vo_landed_03",
-				"pes_castle_vo_landed_04"
+				"pes_castle_vo_landed_04",
 			},
 			sound_events_duration = {
 				3.3518333435059,
 				2.4423959255219,
 				2.6526250839233,
-				2.6537499427795
-			}
+				2.6537499427795,
+			},
 		},
 		pes_castle_vo_meet_sorcerer = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "empire_soldier_dlc_drachenfels_castle",
-			sound_events_n = 4,
 			category = "level_talk",
+			database = "empire_soldier_dlc_drachenfels_castle",
 			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
-				"dialogue_talk"
+				"dialogue_talk",
 			},
 			face_animations = {
 				"face_calm",
 				"face_calm",
 				"face_calm",
-				"face_calm"
+				"face_calm",
 			},
 			localization_strings = {
 				"pes_castle_vo_meet_sorcerer_01",
 				"pes_castle_vo_meet_sorcerer_02",
 				"pes_castle_vo_meet_sorcerer_03",
-				"pes_castle_vo_meet_sorcerer_04"
+				"pes_castle_vo_meet_sorcerer_04",
 			},
 			randomize_indexes = {},
 			sound_events = {
 				"pes_castle_vo_meet_sorcerer_01",
 				"pes_castle_vo_meet_sorcerer_02",
 				"pes_castle_vo_meet_sorcerer_03",
-				"pes_castle_vo_meet_sorcerer_04"
+				"pes_castle_vo_meet_sorcerer_04",
 			},
 			sound_events_duration = {
 				5.7882914543152,
 				3.3156042098999,
 				2.251791715622,
-				2.6129584312439
-			}
+				2.6129584312439,
+			},
 		},
 		pes_castle_vo_recognize = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "empire_soldier_dlc_drachenfels_castle",
-			sound_events_n = 4,
 			category = "level_talk",
+			database = "empire_soldier_dlc_drachenfels_castle",
 			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
-				"dialogue_talk"
+				"dialogue_talk",
 			},
 			face_animations = {
 				"face_calm",
 				"face_calm",
 				"face_calm",
-				"face_calm"
+				"face_calm",
 			},
 			localization_strings = {
 				"pes_castle_vo_recognize_01",
 				"pes_castle_vo_recognize_02",
 				"pes_castle_vo_recognize_03",
-				"pes_castle_vo_recognize_04"
+				"pes_castle_vo_recognize_04",
 			},
 			randomize_indexes = {},
 			sound_events = {
 				"pes_castle_vo_recognize_01",
 				"pes_castle_vo_recognize_02",
 				"pes_castle_vo_recognize_03",
-				"pes_castle_vo_recognize_04"
+				"pes_castle_vo_recognize_04",
 			},
 			sound_events_duration = {
 				2.3449583053589,
 				1.8663125038147,
 				4.3904581069946,
-				3.2056040763855
-			}
+				3.2056040763855,
+			},
 		},
 		pes_castle_vo_search_again = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "empire_soldier_dlc_drachenfels_castle",
-			sound_events_n = 4,
 			category = "level_talk",
+			database = "empire_soldier_dlc_drachenfels_castle",
 			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
-				"dialogue_talk"
+				"dialogue_talk",
 			},
 			face_animations = {
 				"face_calm",
 				"face_calm",
 				"face_calm",
-				"face_calm"
+				"face_calm",
 			},
 			localization_strings = {
 				"pes_castle_vo_search_again_01",
 				"pes_castle_vo_search_again_02",
 				"pes_castle_vo_search_again_03",
-				"pes_castle_vo_search_again_04"
+				"pes_castle_vo_search_again_04",
 			},
 			randomize_indexes = {},
 			sound_events = {
 				"pes_castle_vo_search_again_01",
 				"pes_castle_vo_search_again_02",
 				"pes_castle_vo_search_again_03",
-				"pes_castle_vo_search_again_04"
+				"pes_castle_vo_search_again_04",
 			},
 			sound_events_duration = {
 				2.1256875991821,
 				2.3976666927338,
 				2.3260834217072,
-				3.6737604141235
-			}
+				3.6737604141235,
+			},
 		},
 		pes_castle_vo_secret_door = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "empire_soldier_dlc_drachenfels_castle",
-			sound_events_n = 4,
 			category = "level_talk",
+			database = "empire_soldier_dlc_drachenfels_castle",
 			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
-				"dialogue_talk"
+				"dialogue_talk",
 			},
 			face_animations = {
 				"face_calm",
 				"face_calm",
 				"face_calm",
-				"face_calm"
+				"face_calm",
 			},
 			localization_strings = {
 				"pes_castle_vo_secret_door_01",
 				"pes_castle_vo_secret_door_02",
 				"pes_castle_vo_secret_door_03",
-				"pes_castle_vo_secret_door_04"
+				"pes_castle_vo_secret_door_04",
 			},
 			randomize_indexes = {},
 			sound_events = {
 				"pes_castle_vo_secret_door_01",
 				"pes_castle_vo_secret_door_02",
 				"pes_castle_vo_secret_door_03",
-				"pes_castle_vo_secret_door_04"
+				"pes_castle_vo_secret_door_04",
 			},
 			sound_events_duration = {
 				1.7486666440964,
 				2.0526459217072,
 				2.7913334369659,
-				1.8678541183472
-			}
+				1.8678541183472,
+			},
 		},
 		pes_castle_vo_sorcerer_slain = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "empire_soldier_dlc_drachenfels_castle",
-			sound_events_n = 4,
 			category = "level_talk",
+			database = "empire_soldier_dlc_drachenfels_castle",
 			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
-				"dialogue_talk"
+				"dialogue_talk",
 			},
 			face_animations = {
 				"face_calm",
 				"face_calm",
 				"face_calm",
-				"face_calm"
+				"face_calm",
 			},
 			localization_strings = {
 				"pes_castle_vo_sorcerer_slain_01",
 				"pes_castle_vo_sorcerer_slain_02",
 				"pes_castle_vo_sorcerer_slain_03",
-				"pes_castle_vo_sorcerer_slain_04"
+				"pes_castle_vo_sorcerer_slain_04",
 			},
 			randomize_indexes = {},
 			sound_events = {
 				"pes_castle_vo_sorcerer_slain_01",
 				"pes_castle_vo_sorcerer_slain_02",
 				"pes_castle_vo_sorcerer_slain_03",
-				"pes_castle_vo_sorcerer_slain_04"
+				"pes_castle_vo_sorcerer_slain_04",
 			},
 			sound_events_duration = {
 				2.5735833644867,
 				5.7061667442322,
 				5.1990418434143,
-				5.7409167289734
-			}
+				5.7409167289734,
+			},
 		},
 		pes_castle_vo_this_way = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "empire_soldier_dlc_drachenfels_castle",
-			sound_events_n = 4,
 			category = "level_talk",
+			database = "empire_soldier_dlc_drachenfels_castle",
 			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
-				"dialogue_talk"
+				"dialogue_talk",
 			},
 			face_animations = {
 				"face_calm",
 				"face_calm",
 				"face_calm",
-				"face_calm"
+				"face_calm",
 			},
 			localization_strings = {
 				"pes_castle_vo_this_way_01",
 				"pes_castle_vo_this_way_02",
 				"pes_castle_vo_this_way_03",
-				"pes_castle_vo_this_way_04"
+				"pes_castle_vo_this_way_04",
 			},
 			randomize_indexes = {},
 			sound_events = {
 				"pes_castle_vo_this_way_01",
 				"pes_castle_vo_this_way_02",
 				"pes_castle_vo_this_way_03",
-				"pes_castle_vo_this_way_04"
+				"pes_castle_vo_this_way_04",
 			},
 			sound_events_duration = {
 				1.3788750171661,
 				1.9117292165756,
 				1.3727707862854,
-				1.5285416841507
-			}
+				1.5285416841507,
+			},
 		},
 		pes_castle_vo_throne_room_approach = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "empire_soldier_dlc_drachenfels_castle",
-			sound_events_n = 4,
 			category = "level_talk",
+			database = "empire_soldier_dlc_drachenfels_castle",
 			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
-				"dialogue_talk"
+				"dialogue_talk",
 			},
 			face_animations = {
 				"face_calm",
 				"face_calm",
 				"face_calm",
-				"face_calm"
+				"face_calm",
 			},
 			localization_strings = {
 				"pes_castle_vo_throne_room_approach_01",
 				"pes_castle_vo_throne_room_approach_02",
 				"pes_castle_vo_throne_room_approach_03",
-				"pes_castle_vo_throne_room_approach_04"
+				"pes_castle_vo_throne_room_approach_04",
 			},
 			randomize_indexes = {},
 			sound_events = {
 				"pes_castle_vo_throne_room_approach_01",
 				"pes_castle_vo_throne_room_approach_02",
 				"pes_castle_vo_throne_room_approach_03",
-				"pes_castle_vo_throne_room_approach_04"
+				"pes_castle_vo_throne_room_approach_04",
 			},
 			sound_events_duration = {
 				4.4421668052673,
 				3.5498750209808,
 				3.2623541355133,
-				2.8339583873749
-			}
+				2.8339583873749,
+			},
 		},
 		pes_castle_vo_traces_one = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "empire_soldier_dlc_drachenfels_castle",
-			sound_events_n = 4,
 			category = "level_talk",
+			database = "empire_soldier_dlc_drachenfels_castle",
 			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
-				"dialogue_talk"
+				"dialogue_talk",
 			},
 			face_animations = {
 				"face_calm",
 				"face_calm",
 				"face_calm",
-				"face_calm"
+				"face_calm",
 			},
 			localization_strings = {
 				"pes_castle_vo_traces_one_01",
 				"pes_castle_vo_traces_one_02",
 				"pes_castle_vo_traces_one_03",
-				"pes_castle_vo_traces_one_04"
+				"pes_castle_vo_traces_one_04",
 			},
 			randomize_indexes = {},
 			sound_events = {
 				"pes_castle_vo_traces_one_01",
 				"pes_castle_vo_traces_one_02",
 				"pes_castle_vo_traces_one_03",
-				"pes_castle_vo_traces_one_04"
+				"pes_castle_vo_traces_one_04",
 			},
 			sound_events_duration = {
 				2.2758333683014,
 				2.6766457557678,
 				2.9223124980927,
-				4.6904997825623
-			}
+				4.6904997825623,
+			},
 		},
 		pes_castle_vo_trap_switch = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "empire_soldier_dlc_drachenfels_castle",
-			sound_events_n = 4,
 			category = "level_talk",
+			database = "empire_soldier_dlc_drachenfels_castle",
 			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
-				"dialogue_talk"
+				"dialogue_talk",
 			},
 			face_animations = {
 				"face_calm",
 				"face_calm",
 				"face_calm",
-				"face_calm"
+				"face_calm",
 			},
 			localization_strings = {
 				"pes_castle_vo_trap_switch_01",
 				"pes_castle_vo_trap_switch_02",
 				"pes_castle_vo_trap_switch_03",
-				"pes_castle_vo_trap_switch_04"
+				"pes_castle_vo_trap_switch_04",
 			},
 			randomize_indexes = {},
 			sound_events = {
 				"pes_castle_vo_trap_switch_01",
 				"pes_castle_vo_trap_switch_02",
 				"pes_castle_vo_trap_switch_03",
-				"pes_castle_vo_trap_switch_04"
+				"pes_castle_vo_trap_switch_04",
 			},
 			sound_events_duration = {
 				3.0958125591278,
 				2.332729101181,
 				2.6972708702087,
-				2.5796666145325
-			}
+				2.5796666145325,
+			},
 		},
 		pes_castle_vo_vista = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "empire_soldier_dlc_drachenfels_castle",
-			sound_events_n = 4,
 			category = "level_talk",
+			database = "empire_soldier_dlc_drachenfels_castle",
 			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
-				"dialogue_talk"
+				"dialogue_talk",
 			},
 			face_animations = {
 				"face_calm",
 				"face_calm",
 				"face_calm",
-				"face_calm"
+				"face_calm",
 			},
 			localization_strings = {
 				"pes_castle_vo_vista_01",
 				"pes_castle_vo_vista_02",
 				"pes_castle_vo_vista_03",
-				"pes_castle_vo_vista_04"
+				"pes_castle_vo_vista_04",
 			},
 			randomize_indexes = {},
 			sound_events = {
 				"pes_castle_vo_vista_01",
 				"pes_castle_vo_vista_02",
 				"pes_castle_vo_vista_03",
-				"pes_castle_vo_vista_04"
+				"pes_castle_vo_vista_04",
 			},
 			sound_events_duration = {
 				2.7843332290649,
 				4.3219375610352,
 				4.1100625991821,
-				4.478000164032
-			}
-		}
+				4.478000164032,
+			},
+		},
 	})
 end

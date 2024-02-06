@@ -1,9 +1,11 @@
+﻿-- chunkname: @scripts/helpers/nav_tag_volume_utils.lua
+
 NavTagVolumeUtils = NavTagVolumeUtils or {}
 
 NavTagVolumeUtils.nav_tags_from_position = function (nav_world, position, above, below, layer_name_optional)
 	local layer_id_optional = layer_name_optional and LAYER_ID_MAPPING[layer_name_optional]
 	local query_output = GwNavQueries.tag_volumes_from_position(nav_world, position, above, below)
-	local nav_tags = nil
+	local nav_tags
 
 	if query_output then
 		local tag_volume_n = GwNavQueries.nav_tag_volume_count(query_output)
@@ -19,7 +21,7 @@ NavTagVolumeUtils.nav_tags_from_position = function (nav_world, position, above,
 					color = color,
 					layer_id = layer_id,
 					smart_object_id = smart_object_id,
-					user_data_id = user_data_id
+					user_data_id = user_data_id,
 				}
 			end
 		end
@@ -33,7 +35,7 @@ end
 NavTagVolumeUtils.inside_nav_tag_layer = function (nav_world, position, above, below, layer_name)
 	local layer = LAYER_ID_MAPPING[layer_name]
 	local query_output = GwNavQueries.tag_volumes_from_position(nav_world, position, above, below)
-	local result = nil
+	local result
 
 	if query_output then
 		local tag_volume_n = GwNavQueries.nav_tag_volume_count(query_output)

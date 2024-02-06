@@ -1,3 +1,5 @@
+﻿-- chunkname: @foundation/scripts/managers/time/timer.lua
+
 Timer = class(Timer)
 
 Timer.init = function (self, name, parent, start_time)
@@ -13,6 +15,7 @@ end
 
 Timer.update = function (self, dt, global_scale)
 	local local_scale = self._local_scale
+
 	dt = math.max(dt * local_scale, 1e-06)
 	global_scale = global_scale * local_scale
 

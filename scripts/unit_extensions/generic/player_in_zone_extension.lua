@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/generic/player_in_zone_extension.lua
+
 PlayerInZoneExtension = class(PlayerInZoneExtension)
 
 PlayerInZoneExtension.init = function (self, extension_init_context, unit)
@@ -38,26 +40,33 @@ PlayerInZoneExtension._get_script_data = function (self)
 	self._show_progress_bar_global = Unit.get_data(self._unit, "player_in_zone", "show_progress_bar_global")
 	self._show_progress_bar_personal = Unit.get_data(self._unit, "player_in_zone", "show_progress_bar_personal")
 	self._progress_zone_size = Unit.get_data(self._unit, "player_in_zone", "zone_radius")
+
 	local time_modifier_has_data = Unit.has_data(self._unit, "player_in_zone", "time_modifier_per_player")
+
 	self._time_modifier_per_player = time_modifier_has_data and Unit.get_data(self._unit, "player_in_zone", "time_modifier_per_player") or 0
+
 	local player_side = Unit.get_data(self._unit, "player_in_zone", "player_side")
 	local side_name = player_side or "heroes"
 	local side = Managers.state.side:get_side_from_name(side_name)
+
 	self._player_units = side.PLAYER_UNITS
 end
 
 PlayerInZoneExtension._create_game_object = function (self)
 	local level = LevelHelper:current_level(self._world)
+
 	self._level_unit_index = Level.unit_index(level, self._unit)
+
 	local go_data_table = {
 		progress_time = 0,
 		go_type = NetworkLookup.go_types.progress_timer,
 		level_unit_index = self._level_unit_index,
 		unit_in_progress = self._unit_in_progress,
 		progress_is_frozen = self._progress_is_frozen,
-		counting_up = self._progress_bar_countdown
+		counting_up = self._progress_bar_countdown,
 	}
 	local callback = callback(self, "cb_game_session_disconnect")
+
 	self._go_id = Managers.state.network:create_game_object("progress_timer", go_data_table, callback)
 end
 
@@ -180,6 +189,7 @@ end
 PlayerInZoneExtension._client_progress = function (self, counting_up, progress_time, dt)
 	if counting_up then
 		local _, num_players = self:_fulfill_in_zone_check()
+
 		self._state_data.end_progression_timer = self:_count_up(dt, num_players)
 	else
 		self._state_data.end_progression_timer = self:_count_down(dt)
@@ -266,7 +276,7 @@ PlayerInZoneExtension._fulfill_in_zone_check = function (self)
 	local progress_zone_size = self._progress_zone_size * self._progress_zone_size
 	local closest_player = self._closest_player_distance
 
-	if closest_player > progress_zone_size then
+	if not (closest_player <= progress_zone_size) then
 		return false, 0
 	end
 
@@ -283,7 +293,7 @@ PlayerInZoneExtension._fulfill_in_zone_check = function (self)
 
 	local all_inside = total_players == players_in_zone
 
-	return all_inside or self._num_player_in_zone <= players_in_zone, players_in_zone
+	return all_inside or players_in_zone >= self._num_player_in_zone, players_in_zone
 end
 
 PlayerInZoneExtension._local_player_in_zone = function (self)
@@ -307,7 +317,7 @@ PlayerInZoneExtension._local_player_in_zone = function (self)
 
 	local progress_zone_size = self._progress_zone_size * self._progress_zone_size
 
-	if player_distance > progress_zone_size then
+	if progress_zone_size < player_distance then
 		return false
 	end
 
@@ -332,7 +342,7 @@ end
 PlayerInZoneExtension._progress_check = function (self, dt, t)
 	local go_id = self._go_id
 	local game = self._game
-	local new_state = nil
+	local new_state
 
 	if not self._progress_check_entered then
 		self._progress_check_entered = true
@@ -435,7 +445,7 @@ PlayerInZoneExtension._check_progress_percent = function (self, end_progression_
 	for percent, is_triggerd in pairs(self._progression_percentage) do
 		local small_percent = percent / 100
 
-		if end_progression_timer > small_percent and not is_triggerd then
+		if small_percent < end_progression_timer and not is_triggerd then
 			Unit.flow_event(unit, "lua_check_progression_" .. percent .. "_start")
 
 			progression_percentage[percent] = true
@@ -499,7 +509,7 @@ end
 PlayerInZoneExtension._debug_drawer = function (self, current_debug_state)
 	if current_debug_state == "counting" then
 		self._drawer = self._drawer or Managers.state.debug:drawer({
-			mode = "immediate"
+			mode = "immediate",
 		})
 
 		self._drawer:reset()
@@ -511,14 +521,14 @@ PlayerInZoneExtension._debug_drawer = function (self, current_debug_state)
 		self._drawer:sphere(Unit.local_position(self._unit, 0), self._progress_zone_size, Color(red, green, 0), 30, 30)
 	elseif current_debug_state == "stop" then
 		self._drawer = self._drawer or Managers.state.debug:drawer({
-			mode = "immediate"
+			mode = "immediate",
 		})
 
 		self._drawer:reset()
 		self._drawer:sphere(Unit.local_position(self._unit, 0), self._progress_zone_size, Color(255, 255, 0), 10, 10)
 	elseif current_debug_state == "idle" then
 		self._drawer = self._drawer or Managers.state.debug:drawer({
-			mode = "immediate"
+			mode = "immediate",
 		})
 
 		self._drawer:reset()

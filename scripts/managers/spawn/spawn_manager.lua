@@ -1,6 +1,9 @@
+﻿-- chunkname: @scripts/managers/spawn/spawn_manager.lua
+
 require("scripts/utils/hero_spawner_handler")
 
 SpawnManager = class(SpawnManager)
+
 local NUM_PLAYERS = 8
 
 SpawnManager.init = function (self, world, is_server, network_event_delegate, unit_spawner, profile_synchronizer, network_server, checkpoint_data)
@@ -12,7 +15,9 @@ SpawnManager.init = function (self, world, is_server, network_event_delegate, un
 	self.new_spawns = {}
 	self.unit_spawner = unit_spawner
 	self.num_new_spawns = 0
+
 	local game_mode_manager = Managers.state.game_mode
+
 	self._game_mode = game_mode_manager:game_mode()
 	self.hero_spawner_handler = HeroSpawnerHandler:new(is_server, profile_synchronizer, network_event_delegate)
 	self._bot_profile_release_list = {}
@@ -49,17 +54,18 @@ SpawnManager._default_player_statuses = function (self)
 
 	for i = 1, num_slots do
 		local status = {
-			temporary_health_percentage = 0,
-			spawn_state = "not_spawned",
 			health_percentage = 1,
 			health_state = "alive",
+			spawn_state = "not_spawned",
+			temporary_health_percentage = 0,
 			last_update = -math.huge,
 			consumables = {},
 			ammo = {
+				slot_melee = 1,
 				slot_ranged = 1,
-				slot_melee = 1
-			}
+			},
 		}
+
 		statuses[i] = status
 	end
 
@@ -85,6 +91,7 @@ SpawnManager.flow_callback_set_checkpoint = function (self, no_spawn_volume, saf
 	local pickup_data = Managers.state.entity:system("pickup_system"):create_checkpoint_data()
 	local level_analysis_data = Managers.state.conflict.level_analysis:create_checkpoint_data()
 	local networked_flow_state_data = Managers.state.networked_flow_state:create_checkpoint_data()
+
 	self._checkpoint_data = {
 		player_statuses = self:_clone_player_status(self._player_statuses),
 		spawns = self:_pack_spawn_unit_level_indices(...),
@@ -93,12 +100,13 @@ SpawnManager.flow_callback_set_checkpoint = function (self, no_spawn_volume, saf
 		pickup = pickup_data,
 		level_analysis = level_analysis_data,
 		mission = mission_data,
-		networked_flow_state = networked_flow_state_data
+		networked_flow_state = networked_flow_state_data,
 	}
 end
 
 SpawnManager.load_checkpoint_data = function (self, data)
 	self._checkpoint_data = data
+
 	local statuses = self:_clone_player_status(data.player_statuses)
 	local level = LevelHelper:current_level(self.world)
 
@@ -147,9 +155,10 @@ SpawnManager._pack_spawn_unit_level_indices = function (self, ...)
 	local level = LevelHelper:current_level(self.world)
 
 	for i, unit in ipairs({
-		...
+		...,
 	}) do
 		local level_index = Level.unit_index(level, unit)
+
 		return_table[i] = level_index
 	end
 
@@ -164,6 +173,7 @@ end
 
 SpawnManager.delayed_despawn = function (self, player)
 	local despawn_queue = self._despawn_queue
+
 	self._despawn_queue_size = self._despawn_queue_size + 1
 	despawn_queue[self._despawn_queue_size] = player
 

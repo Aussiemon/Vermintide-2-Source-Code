@@ -1,3 +1,5 @@
+﻿-- chunkname: @dialogues/generated/lookup_hero_conversations_ground_zero.lua
+
 assert(DialogueLookup[DialogueLookup_n + 1] == nil)
 assert(DialogueLookup[DialogueLookup_n + 2] == nil)
 assert(DialogueLookup[DialogueLookup_n + 3] == nil)

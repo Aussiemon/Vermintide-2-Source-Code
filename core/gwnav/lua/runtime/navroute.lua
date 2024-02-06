@@ -1,8 +1,12 @@
+﻿-- chunkname: @core/gwnav/lua/runtime/navroute.lua
+
 require("core/gwnav/lua/safe_require")
 
 local NavRoute = safe_require_guard()
 local NavClass = safe_require("core/gwnav/lua/runtime/navclass")
+
 NavRoute = NavClass(NavRoute)
+
 local Vector3Box = stingray.Vector3Box
 
 NavRoute.init = function (self)

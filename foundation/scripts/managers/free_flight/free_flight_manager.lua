@@ -1,7 +1,10 @@
+﻿-- chunkname: @foundation/scripts/managers/free_flight/free_flight_manager.lua
+
 require("foundation/scripts/managers/free_flight/free_flight_controller_settings")
 require("foundation/scripts/managers/free_flight/control_points")
 
 local free_flight_manager_testify = script_data.testify and require("foundation/scripts/managers/free_flight/free_flight_manager_testify")
+
 FreeFlightManager = class(FreeFlightManager)
 
 FreeFlightManager.init = function (self)
@@ -35,7 +38,7 @@ FreeFlightManager.init = function (self)
 					return Vector3(0, 0, 0)
 				end
 			end
-		end
+		end,
 	}
 end
 
@@ -199,12 +202,13 @@ FreeFlightManager._exit_frustum_freeze = function (self, data, world, viewport, 
 end
 
 FreeFlightManager._enter_frustum_freeze = function (self, data, world, viewport, create_new_camera)
-	local camera = nil
+	local camera
 	local cam = ScriptViewport.camera(viewport)
 	local cam_fov = Camera.vertical_fov(cam)
 
 	if create_new_camera then
 		local camera_unit = World.spawn_unit(world, "core/units/camera")
+
 		camera = Unit.camera(camera_unit, "camera")
 
 		Camera.set_data(camera, "unit", camera_unit)
@@ -249,6 +253,7 @@ end
 
 FreeFlightManager._pause_game = function (self, set)
 	self._paused = set
+
 	local data = self.data.global
 	local world = Managers.world:world(data.viewport_world_name)
 
@@ -275,6 +280,7 @@ FreeFlightManager._update_global_free_flight = function (self, dt, data, input_s
 
 	local translation_change_speed = data.translation_speed * 0.5
 	local speed_change = Vector3.y(input_service:get("speed_change"))
+
 	data.translation_speed = data.translation_speed + speed_change * translation_change_speed
 
 	if data.translation_speed < 0.001 then
@@ -287,16 +293,21 @@ FreeFlightManager._update_global_free_flight = function (self, dt, data, input_s
 
 	if data.projection_type == Camera.ORTHOGRAPHIC then
 		local ortho_data = data.orthographic_data
+
 		ortho_data.yaw = (ortho_data.yaw or 0) - Vector3.x(mouse) * data.rotation_speed
+
 		local q1 = Quaternion(Vector3(0, 0, 1), ortho_data.yaw)
 		local q2 = Quaternion(Vector3.right(), -math.half_pi)
 		local q = Quaternion.multiply(q1, q2)
 		local x_trans = (input_service:get("move_right") - input_service:get("move_left")) * dt * 250
 		local y_trans = (input_service:get("move_forward") - input_service:get("move_back")) * dt * 250
 		local pos = trans + Quaternion.up(q) * y_trans + Quaternion.right(q) * x_trans
+
 		cm = Matrix4x4.from_quaternion_position(q, pos)
+
 		local size = ortho_data.size
-		size = size - speed_change * size * dt
+
+		size = size - speed_change * (size * dt)
 		ortho_data.size = size
 
 		Camera.set_orthographic_view(cam, -size, size, -size, size)
@@ -306,18 +317,22 @@ FreeFlightManager._update_global_free_flight = function (self, dt, data, input_s
 		local q1 = Quaternion(Vector3(0, 0, 1), -Vector3.x(mouse) * data.rotation_speed)
 		local q2 = Quaternion(Matrix4x4.x(cm), -Vector3.y(mouse) * data.rotation_speed)
 		local q = Quaternion.multiply(q1, q2)
+
 		cm = Matrix4x4.multiply(cm, Matrix4x4.from_quaternion(q))
+
 		local x_trans = input_service:get("move_right") - input_service:get("move_left")
 		local y_trans = input_service:get("move_forward") - input_service:get("move_back")
 
 		if IS_XB1 then
 			local move = input_service:get("move")
+
 			x_trans = move.x * 2
 			y_trans = move.y * 2
 		end
 
 		local z_trans = input_service:get("move_up") - input_service:get("move_down")
 		local offset = Matrix4x4.transform(cm, Vector3(x_trans, y_trans, z_trans) * data.translation_speed)
+
 		trans = Vector3.add(trans, offset)
 
 		Matrix4x4.set_translation(cm, trans)
@@ -414,6 +429,7 @@ FreeFlightManager._enter_global_free_flight = function (self, data)
 
 	data.active = true
 	data.viewport_world_name = ScriptWorld.name(world)
+
 	local cam = ScriptViewport.camera(viewport)
 	local tm = Camera.local_pose(cam)
 	local position = Matrix4x4.translation(tm)
@@ -501,22 +517,23 @@ end
 
 FreeFlightManager.register_player = function (self, local_player_id)
 	local input_service = self.input_manager:get_service("FreeFlight")
+
 	self.data[local_player_id] = {
-		mode = "paused",
-		current_translation_max_speed = 10,
-		dof_focal_distance = 10,
 		acceleration = 10,
-		dof_focal_region_end = 4,
-		dof_focal_near_scale = 1,
-		rotation_speed = 0.003,
-		dof_focal_far_scale = 1,
-		dof_focal_region_start = 4,
-		dof_enabled = 0,
 		active = false,
+		current_translation_max_speed = 10,
+		dof_enabled = 0,
+		dof_focal_distance = 10,
+		dof_focal_far_scale = 1,
+		dof_focal_near_scale = 1,
 		dof_focal_region = 8,
+		dof_focal_region_end = 4,
+		dof_focal_region_start = 4,
+		mode = "paused",
+		rotation_speed = 0.003,
 		input_service = input_service,
 		rotation_accumulation = Vector3Box(),
-		current_translation_speed = Vector3Box()
+		current_translation_speed = Vector3Box(),
 	}
 end
 
@@ -534,14 +551,14 @@ end
 
 FreeFlightManager._setup_data = function (self, data)
 	data.global = {
-		translation_speed = 0.05,
-		rotation_speed = 0.003,
-		mode = "paused",
 		active = false,
+		mode = "paused",
+		rotation_speed = 0.003,
+		translation_speed = 0.05,
 		projection_type = Camera.PERSPECTIVE,
 		orthographic_data = {
-			size = 100
-		}
+			size = 100,
+		},
 	}
 end
 
@@ -552,9 +569,11 @@ FreeFlightManager._enter_free_flight = function (self, player, data)
 	local viewports = World.get_data(world, "viewports")
 	local cam = ScriptViewport.camera(viewports[viewport_name])
 	local cam_fov = Camera.vertical_fov(cam)
+
 	data.active = true
 	data.viewport_name = player.viewport_name
 	data.viewport_world_name = world_name
+
 	local viewport = ScriptWorld.create_free_flight_viewport(world, viewport_name, "default")
 	local cam = ScriptViewport.camera(viewport)
 	local tm = Camera.local_pose(cam)
@@ -586,6 +605,7 @@ FreeFlightManager._exit_free_flight = function (self, player, data)
 	end
 
 	local viewport_name = data.viewport_name
+
 	data.active = false
 	data.viewport_name = nil
 	data.viewport_world_name = nil
@@ -620,7 +640,9 @@ FreeFlightManager._update_free_flight = function (self, dt, player, data)
 	local input = self.input_manager:get_service("FreeFlight")
 	local translation_change_speed = data.current_translation_max_speed * 0.5
 	local speed_change = Vector3.y(input:get("speed_change") or Vector3(0, 0, 0))
+
 	data.current_translation_max_speed = math.max(data.current_translation_max_speed + speed_change * translation_change_speed, 0.01)
+
 	local cm = Camera.local_pose(cam)
 	local trans = Matrix4x4.translation(cm)
 
@@ -635,7 +657,9 @@ FreeFlightManager._update_free_flight = function (self, dt, player, data)
 	local q1 = Quaternion(Vector3(0, 0, 1), -Vector3.x(rotation) * data.rotation_speed)
 	local q2 = Quaternion(Matrix4x4.x(cm), -Vector3.y(rotation) * data.rotation_speed)
 	local q = Quaternion.multiply(q1, q2)
+
 	cm = Matrix4x4.multiply(cm, Matrix4x4.from_quaternion(q))
+
 	local wanted_speed = input:get("move") * data.current_translation_max_speed
 	local current_speed = data.current_translation_speed:unbox()
 	local speed_difference = wanted_speed - current_speed
@@ -657,6 +681,7 @@ FreeFlightManager._update_free_flight = function (self, dt, player, data)
 
 	local rot = Matrix4x4.rotation(cm)
 	local offset = (Quaternion.forward(rot) * new_speed.y + Quaternion.right(rot) * new_speed.x + Quaternion.up(rot) * new_speed.z) * dt
+
 	trans = Vector3.add(trans, offset)
 
 	Matrix4x4.set_translation(cm, trans)

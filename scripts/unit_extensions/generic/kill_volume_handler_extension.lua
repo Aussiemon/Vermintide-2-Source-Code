@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/generic/kill_volume_handler_extension.lua
+
 KillVolumeHandlerExtension = class(KillVolumeHandlerExtension)
 
 KillVolumeHandlerExtension.init = function (self, extension_init_context, unit, extension_init_data)
@@ -21,6 +23,7 @@ KillVolumeHandlerExtension.on_hit_kill_volume = function (self)
 
 	for i = 1, #self._callbacks do
 		local cb = self._callbacks[i]
+
 		handled = cb() or handled
 	end
 

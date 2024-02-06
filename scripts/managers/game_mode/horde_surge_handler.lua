@@ -1,7 +1,10 @@
+﻿-- chunkname: @scripts/managers/game_mode/horde_surge_handler.lua
+
 HordeSurgeHandler = class(HordeSurgeHandler)
+
 local RPCS = {
 	"rpc_horde_surge_freeze",
-	"rpc_horde_surge_set_level"
+	"rpc_horde_surge_set_level",
 }
 
 HordeSurgeHandler.init = function (self, is_server, world, events, seed, activate_on_init)
@@ -32,8 +35,9 @@ HordeSurgeHandler.init = function (self, is_server, world, events, seed, activat
 	if self._is_server then
 		local game_object_data_table = {
 			progress = 0,
-			go_type = NetworkLookup.go_types.horde_surge
+			go_type = NetworkLookup.go_types.horde_surge,
 		}
+
 		self._game_object_id = Managers.state.network:create_game_object("horde_surge", game_object_data_table)
 	else
 		self._target_progress = 0
@@ -84,7 +88,7 @@ HordeSurgeHandler.server_update = function (self, t, dt)
 			self._first_update = false
 		end
 
-		if self._end_time < t then
+		if t > self._end_time then
 			self:_trigger_event()
 			self:_next_level(t, game_session)
 		end
@@ -127,6 +131,7 @@ HordeSurgeHandler.client_update = function (self, t, dt)
 
 	if self._progress ~= self._target_progress then
 		local progress_dif = self._target_progress - self._progress
+
 		self._progress = math.min(self._progress + progress_dif / self._time_until_next_update * dt, self._target_progress)
 		self._time_until_next_update = self._time_until_next_update - dt
 	end
@@ -145,7 +150,9 @@ end
 HordeSurgeHandler._trigger_event = function (self)
 	local event_data = {}
 	local seed, index = Math.next_random(self._seed, 1, #self._current_event.terror_events)
+
 	self._seed = seed
+
 	local terror_event = self._current_event.terror_events[index]
 
 	TerrorEventMixer.start_event(terror_event, event_data)
@@ -165,6 +172,7 @@ HordeSurgeHandler._next_level = function (self, t, game_session)
 	end
 
 	local time = self._current_event.time * self._time_modifier
+
 	self._start_time = t
 	self._end_time = t + time
 

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/hero_view/loot_crates_previewer.lua
+
 LootCratesPreviewer = class(LootCratesPreviewer)
 
 LootCratesPreviewer.init = function (self, rewards, units, spawn_positions, end_positions, background_world, background_viewport)
@@ -8,11 +10,13 @@ LootCratesPreviewer.init = function (self, rewards, units, spawn_positions, end_
 	self.units = units
 	self._rewards = rewards
 	self._spawned_units = self:spawn_units(units)
+
 	local item_key_by_unit = {}
 
 	for index, item_data in ipairs(rewards) do
 		local item_key = item_data.key
 		local unit = self._spawned_units[index]
+
 		item_key_by_unit[unit] = item_key
 	end
 
@@ -51,7 +55,9 @@ LootCratesPreviewer._animate_entry_positions = function (self, dt, t)
 	local end_positions = self.end_positions
 	local progress_multiplier = 1
 	local entry_progress = self._entry_progress or 0
+
 	entry_progress = math.min(entry_progress + dt * progress_multiplier, 1)
+
 	local anim_progress = math.easeInCubic(entry_progress)
 	local world = self.background_world
 	local spawned_units = self._spawned_units
@@ -64,6 +70,7 @@ LootCratesPreviewer._animate_entry_positions = function (self, dt, t)
 		local distance_total = spawn_position[3] - end_position[3]
 		local distance_left = unit_position[3] - end_position[3]
 		local new_position_y = spawn_position[3] - anim_progress * distance_total
+
 		unit_position[3] = new_position_y
 
 		Unit.set_local_position(unit, 0, unit_position)

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/default_player_unit/states/player_character_state_waiting_for_assisted_respawn.lua
+
 PlayerCharacterStateWaitingForAssistedRespawn = class(PlayerCharacterStateWaitingForAssistedRespawn, PlayerCharacterState)
 
 PlayerCharacterStateWaitingForAssistedRespawn.init = function (self, character_state_init_context)
@@ -22,6 +24,7 @@ PlayerCharacterStateWaitingForAssistedRespawn.on_enter = function (self, unit, i
 
 	local status_extension = self.status_extension
 	local flavour_unit = status_extension.assisted_respawn_flavour_unit
+
 	self.flavour_unit = flavour_unit
 
 	LocomotionUtils.enable_linked_movement(self.world, unit, flavour_unit, 0, Vector3.zero())
@@ -61,6 +64,7 @@ PlayerCharacterStateWaitingForAssistedRespawn.on_exit = function (self, unit, in
 
 	self.recovery_timer = nil
 	self.recovered = false
+
 	local status_extension = self.status_extension
 
 	status_extension:set_assisted_respawning(false)
@@ -90,10 +94,11 @@ PlayerCharacterStateWaitingForAssistedRespawn.update = function (self, unit, inp
 		if not self.recovery_timer then
 			local flavour_unit = self.flavour_unit
 			local recovery_time = Unit.get_data(flavour_unit, "recovery_time")
+
 			self.recovery_timer = t + recovery_time
 
 			CharacterStateHelper.play_animation_event(unit, "respawn_revive")
-		elseif self.recovery_timer <= t then
+		elseif t >= self.recovery_timer then
 			csm:change_state("standing")
 
 			return

@@ -1,16 +1,19 @@
+﻿-- chunkname: @scripts/ui/hud_ui/pet_ui.lua
+
 require("scripts/unit_extensions/ai_commander/ai_commander_extension")
 
 local definitions = local_require("scripts/ui/hud_ui/pet_ui_definitions")
 local SKULL_TEXTURES = definitions.SKULL_TEXTURES
 local SKULL_GLOW_TEXTURES = definitions.SKULL_GLOW_TEXTURES
 local RETAINED_MODE_ENABLED = definitions.RETAINED_MODE_ENABLED
+
 PetUI = class(PetUI)
 
 PetUI.init = function (self, parent, ingame_ui_context)
 	self._parent = parent
 	self._ui_renderer = ingame_ui_context.ui_renderer
 	self._render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 	self._global_pet_counter = 0
 	self._last_amount_pets = 0
@@ -51,19 +54,21 @@ PetUI._create_ui_elements = function (self)
 	self._pet_widget_animation_ids = {}
 	self._pet_attack_status = {}
 	self._container_widget = UIWidget.init(definitions.container_widget_definition)
+
 	local gui = self._ui_renderer.gui
 	local retained_gui = self._ui_renderer.gui_retained
+
 	self._container_widget.content.materials = {
 		Gui.material(gui, "necromancer_command_coin_follow"),
 		Gui.material(gui, "necromancer_command_coin_attack"),
 		Gui.material(gui, "necromancer_command_coin_defend"),
-		Gui.material(gui, "necromancer_command_coin")
+		Gui.material(gui, "necromancer_command_coin"),
 	}
 	self._container_widget.content.retained_materials = {
 		Gui.material(retained_gui, "necromancer_command_coin_follow"),
 		Gui.material(retained_gui, "necromancer_command_coin_attack"),
 		Gui.material(retained_gui, "necromancer_command_coin_defend"),
-		Gui.material(retained_gui, "necromancer_command_coin")
+		Gui.material(retained_gui, "necromancer_command_coin"),
 	}
 	self._dirty = true
 end
@@ -103,10 +108,9 @@ PetUI._create_pet_widget = function (self, pet_unit)
 	local widget = UIWidget.init(definitions.pet_widget_definition)
 	local content = widget.content
 	local skull_index = math.random(index, #SKULL_TEXTURES)
-	SKULL_TEXTURES[index] = SKULL_TEXTURES[skull_index]
-	SKULL_TEXTURES[skull_index] = SKULL_TEXTURES[index]
-	SKULL_GLOW_TEXTURES[index] = SKULL_GLOW_TEXTURES[skull_index]
-	SKULL_GLOW_TEXTURES[skull_index] = SKULL_GLOW_TEXTURES[index]
+
+	SKULL_TEXTURES[skull_index], SKULL_TEXTURES[index] = SKULL_TEXTURES[index], SKULL_TEXTURES[skull_index]
+	SKULL_GLOW_TEXTURES[skull_index], SKULL_GLOW_TEXTURES[index] = SKULL_GLOW_TEXTURES[index], SKULL_GLOW_TEXTURES[skull_index]
 	widget.content.icon = SKULL_TEXTURES[index] or SKULL_TEXTURES[1]
 	widget.content.icon_glow = SKULL_GLOW_TEXTURES[index] or SKULL_GLOW_TEXTURES[1]
 	self._pet_widget_by_unit[pet_unit] = widget
@@ -114,7 +118,9 @@ PetUI._create_pet_widget = function (self, pet_unit)
 	self._global_pet_counter = self._global_pet_counter + 1
 	content.order_index = self._global_pet_counter
 	self._pet_widget_list[index] = widget
+
 	local spawn_animation_id = self._ui_animator:start_animation("spawn_skeleton", widget, definitions.scenegraph_definition)
+
 	self._pet_widget_animation_ids[widget] = spawn_animation_id
 
 	return widget
@@ -125,7 +131,7 @@ local function action_input_name(input_service_name, keymap_name)
 	local command_keymapping = player_input_service and player_input_service:get_keymapping(keymap_name)
 	local device = command_keymapping and command_keymapping[1]
 	local button_id = command_keymapping and command_keymapping[2]
-	local button_name = nil
+	local button_name
 
 	if button_id ~= UNASSIGNED_KEY then
 		if device == "keyboard" then
@@ -194,6 +200,7 @@ PetUI._update_animations = function (self, dt)
 
 	for i = 1, #TO_REMOVE do
 		local widget = TO_REMOVE[i]
+
 		self._pet_widget_animation_ids[widget] = nil
 	end
 end
@@ -222,6 +229,7 @@ PetUI._update_pet_container = function (self, dt, t, player)
 
 	local buff_extension = ScriptUnit.has_extension(player_unit, "buff_system")
 	local did_show_glow = container_widget.content.show_glow
+
 	container_widget.content.show_glow = not not buff_extension:get_buff_type("sienna_necromancer_6_3_available_charge")
 
 	if did_show_glow ~= container_widget.content.show_glow then
@@ -242,6 +250,7 @@ PetUI._update_pet_container = function (self, dt, t, player)
 		if has_template and HEALTH_ALIVE[unit] then
 			if not pet_widget_by_unit[unit] then
 				local widget = self:_create_pet_widget(unit)
+
 				reposition_widgets = true
 
 				self:add_pet_nameplate(unit, widget)
@@ -253,9 +262,11 @@ PetUI._update_pet_container = function (self, dt, t, player)
 
 			if buff_active and not pet_attack_status[unit] then
 				local spawn_animation_id = self._ui_animator:start_animation("fade_in_skull_glow", pet_widget, definitions.scenegraph_definition)
+
 				self._pet_widget_animation_ids[pet_widget] = spawn_animation_id
 			elseif not buff_active and pet_attack_status[unit] then
 				local spawn_animation_id = self._ui_animator:start_animation("fade_out_skull_glow", pet_widget, definitions.scenegraph_definition)
+
 				self._pet_widget_animation_ids[pet_widget] = spawn_animation_id
 			end
 
@@ -286,6 +297,7 @@ PetUI._update_pet_container = function (self, dt, t, player)
 
 		if not keep then
 			pet_widget_by_unit[pet_unit] = nil
+
 			local marker_id = widget.content.marker_id
 
 			if marker_id then
@@ -410,6 +422,7 @@ PetUI._update_pet_widget = function (self, widget, commander_extension, in_comma
 
 	if marker_widget then
 		marker_widget.content.visible = in_command_mode
+
 		local pet_ui_type = template.pet_ui_type
 
 		if pet_ui_type == "health" then
@@ -418,6 +431,7 @@ PetUI._update_pet_widget = function (self, widget, commander_extension, in_comma
 	end
 
 	local was_highlighted = content.is_highlighted
+
 	content.is_highlighted = in_command_mode and pet_unit == hovered_unit
 
 	if was_highlighted ~= content.is_highlighted then

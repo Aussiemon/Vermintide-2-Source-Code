@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/camera/states/camera_state.lua
+
 CameraState = class(CameraState)
 
 CameraState.init = function (self, character_state_init_context, name)

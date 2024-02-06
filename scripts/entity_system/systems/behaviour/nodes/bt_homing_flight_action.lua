@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_homing_flight_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTHomingFlightAction = class(BTHomingFlightAction, BTNode)

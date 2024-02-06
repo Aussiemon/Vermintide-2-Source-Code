@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/dlcs/morris/morris_loading_tips.lua
+
 return {
 	general = {
 		"deus_loading_tip_01",
@@ -35,30 +37,30 @@ return {
 		"deus_loading_tip_taal_01",
 		"deus_loading_tip_taal_02",
 		"deus_loading_tip_taal_03",
-		"deus_loading_tip_taal_04"
+		"deus_loading_tip_taal_04",
 	},
 	khorne = {
 		"deus_loading_tip_khorne_01",
 		"deus_loading_tip_khorne_02",
 		"deus_loading_tip_khorne_03",
-		"deus_loading_tip_khorne_04"
+		"deus_loading_tip_khorne_04",
 	},
 	slaanesh = {
 		"deus_loading_tip_slaanesh_01",
 		"deus_loading_tip_slaanesh_02",
 		"deus_loading_tip_slaanesh_03",
-		"deus_loading_tip_slaanesh_04"
+		"deus_loading_tip_slaanesh_04",
 	},
 	tzeentch = {
 		"deus_loading_tip_tzeentch_01",
 		"deus_loading_tip_tzeentch_02",
 		"deus_loading_tip_tzeentch_03",
-		"deus_loading_tip_tzeentch_04"
+		"deus_loading_tip_tzeentch_04",
 	},
 	nurgle = {
 		"deus_loading_tip_nurgle_01",
 		"deus_loading_tip_nurgle_02",
 		"deus_loading_tip_nurgle_03",
-		"deus_loading_tip_nurgle_04"
-	}
+		"deus_loading_tip_nurgle_04",
+	},
 }

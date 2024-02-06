@@ -1,7 +1,10 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/chaos_sorcerer/bt_chaos_exalted_sorcerer_skulk_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTChaosExaltedSorcererSkulkAction = class(BTChaosExaltedSorcererSkulkAction, BTNode)
 BTChaosExaltedSorcererSkulkAction.name = "BTChaosExaltedSorcererSkulkAction"
+
 local BTChaosExaltedSorcererSkulkAction = BTChaosExaltedSorcererSkulkAction
 local Unit_alive = Unit.alive
 local POSITION_LOOKUP = POSITION_LOOKUP
@@ -17,6 +20,7 @@ BTChaosExaltedSorcererSkulkAction.enter = function (self, unit, blackboard, t)
 	local breed = blackboard.breed
 	local target_dist = blackboard.target_dist
 	local skulk_data = blackboard.skulk_data or {}
+
 	blackboard.skulk_data = skulk_data
 	skulk_data.direction = skulk_data.direction or 1 - math.random(0, 1) * 2
 	skulk_data.radius = skulk_data.radius or blackboard.target_dist
@@ -42,9 +46,11 @@ BTChaosExaltedSorcererSkulkAction.enter = function (self, unit, blackboard, t)
 	blackboard.health_extension = ScriptUnit.extension(unit, "health_system")
 	blackboard.teleport_health_percent = blackboard.health_extension:current_health_percent() - action.part_hp_lost_to_teleport
 	blackboard.travel_teleport_timer = t + ConflictUtils.random_interval(action.teleport_cooldown)
+
 	local available_spells = action.available_spells
 	local spell_name = available_spells[Math.random(1, #available_spells)]
 	local spell = blackboard.spells_lookup[spell_name]
+
 	blackboard.current_spell = spell
 	blackboard.current_spell_name = spell.name
 	blackboard.face_target_while_summoning = true
@@ -65,6 +71,7 @@ BTChaosExaltedSorcererSkulkAction.leave = function (self, unit, blackboard, t, r
 		end
 
 		local difficulty = Managers.state.difficulty:get_difficulty()
+
 		blackboard.done_casting_timer = t + blackboard.action.after_casting_delay[difficulty]
 	end
 
@@ -79,7 +86,7 @@ BTChaosExaltedSorcererSkulkAction.run = function (self, unit, blackboard, t, dt)
 	local action = blackboard.action
 	local spell = blackboard.current_spell
 
-	if blackboard.done_casting_timer < t and spell and spell.search_func(self, unit, blackboard, t, spell) then
+	if t > blackboard.done_casting_timer and spell and spell.search_func(self, unit, blackboard, t, spell) then
 		return "done"
 	end
 
@@ -97,7 +104,7 @@ BTChaosExaltedSorcererSkulkAction.run = function (self, unit, blackboard, t, dt)
 		local center_pos = unit_pos
 		local target_dist_sq = Vector3.distance_squared(unit_pos, target_pos)
 
-		if action.far_away_from_target_sq < target_dist_sq then
+		if target_dist_sq > action.far_away_from_target_sq then
 			center_pos = target_pos
 		end
 
@@ -114,7 +121,7 @@ BTChaosExaltedSorcererSkulkAction.run = function (self, unit, blackboard, t, dt)
 
 			return "done"
 		end
-	elseif blackboard.travel_teleport_timer < t then
+	elseif t > blackboard.travel_teleport_timer then
 		local teleport_pos = BTChaosExaltedSorcererSkulkAction.get_skulk_target(unit, blackboard, true)
 
 		if teleport_pos and blackboard.valid_teleport_pos_func(teleport_pos, blackboard) then
@@ -244,6 +251,7 @@ BTChaosExaltedSorcererSkulkAction.get_skulk_target = function (unit, blackboard,
 		end
 
 		local pos = target_position + Quaternion.rotate(Quaternion(cross_dir, alpha * i), rot_vec)
+
 		pos = ConflictUtils.find_center_tri(nav_world, pos)
 
 		if pos then
@@ -299,7 +307,9 @@ BTChaosExaltedSorcererSkulkAction.update_cast_missile = function (self, unit, bl
 	local pos = Vector3(x, y, z)
 	local throw_offset = Quaternion.rotate(rot, pos)
 	local throw_pos = curr_pos + throw_offset
+
 	curr_pos.z = throw_pos.z
+
 	local root_to_throw = throw_pos - curr_pos
 	local direction = Vector3.normalize(root_to_throw)
 	local length = Vector3.length(root_to_throw)

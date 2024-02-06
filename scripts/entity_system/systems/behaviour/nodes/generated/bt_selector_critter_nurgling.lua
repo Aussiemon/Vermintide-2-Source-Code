@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/generated/bt_selector_critter_nurgling.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 local unit_alive = Unit.alive
@@ -21,84 +23,92 @@ BTSelector_critter_nurgling.leave = function (self, unit, blackboard, t, reason)
 end
 
 BTSelector_critter_nurgling.run = function (self, unit, blackboard, t, dt)
-	local Profiler_start = Profiler.start
-	local Profiler_stop = Profiler.stop
+	local Profiler_start, Profiler_stop = Profiler.start, Profiler.stop
 	local child_running = self:current_running_child(blackboard)
 	local children = self._children
-	local node_spawn = children[1]
-	local condition_result = blackboard.spawn
 
-	if condition_result then
-		self:set_running_child(unit, blackboard, t, node_spawn, "aborted")
+	do
+		local node_spawn = children[1]
+		local condition_result = blackboard.spawn
 
-		local result, evaluate = node_spawn:run(unit, blackboard, t, dt)
+		if condition_result then
+			self:set_running_child(unit, blackboard, t, node_spawn, "aborted")
 
-		if result ~= "running" then
-			self:set_running_child(unit, blackboard, t, nil, result)
+			local result, evaluate = node_spawn:run(unit, blackboard, t, dt)
+
+			if result ~= "running" then
+				self:set_running_child(unit, blackboard, t, nil, result)
+			end
+
+			if result ~= "failed" then
+				return result, evaluate
+			end
+		elseif node_spawn == child_running then
+			self:set_running_child(unit, blackboard, t, nil, "failed")
 		end
-
-		if result ~= "failed" then
-			return result, evaluate
-		end
-	elseif node_spawn == child_running then
-		self:set_running_child(unit, blackboard, t, nil, "failed")
 	end
 
-	local node_in_vortex = children[2]
-	local condition_result = blackboard.in_vortex
+	do
+		local node_in_vortex = children[2]
+		local condition_result = blackboard.in_vortex
 
-	if condition_result then
-		self:set_running_child(unit, blackboard, t, node_in_vortex, "aborted")
+		if condition_result then
+			self:set_running_child(unit, blackboard, t, node_in_vortex, "aborted")
 
-		local result, evaluate = node_in_vortex:run(unit, blackboard, t, dt)
+			local result, evaluate = node_in_vortex:run(unit, blackboard, t, dt)
 
-		if result ~= "running" then
-			self:set_running_child(unit, blackboard, t, nil, result)
+			if result ~= "running" then
+				self:set_running_child(unit, blackboard, t, nil, result)
+			end
+
+			if result ~= "failed" then
+				return result, evaluate
+			end
+		elseif node_in_vortex == child_running then
+			self:set_running_child(unit, blackboard, t, nil, "failed")
 		end
-
-		if result ~= "failed" then
-			return result, evaluate
-		end
-	elseif node_in_vortex == child_running then
-		self:set_running_child(unit, blackboard, t, nil, "failed")
 	end
 
-	local node_flee_sequence = children[3]
-	local condition_result = unit_alive(blackboard.target_unit) or blackboard.is_fleeing
+	do
+		local node_flee_sequence = children[3]
+		local condition_result = unit_alive(blackboard.target_unit) or blackboard.is_fleeing
 
-	if condition_result then
-		self:set_running_child(unit, blackboard, t, node_flee_sequence, "aborted")
+		if condition_result then
+			self:set_running_child(unit, blackboard, t, node_flee_sequence, "aborted")
 
-		local result, evaluate = node_flee_sequence:run(unit, blackboard, t, dt)
+			local result, evaluate = node_flee_sequence:run(unit, blackboard, t, dt)
 
-		if result ~= "running" then
-			self:set_running_child(unit, blackboard, t, nil, result)
+			if result ~= "running" then
+				self:set_running_child(unit, blackboard, t, nil, result)
+			end
+
+			if result ~= "failed" then
+				return result, evaluate
+			end
+		elseif node_flee_sequence == child_running then
+			self:set_running_child(unit, blackboard, t, nil, "failed")
 		end
-
-		if result ~= "failed" then
-			return result, evaluate
-		end
-	elseif node_flee_sequence == child_running then
-		self:set_running_child(unit, blackboard, t, nil, "failed")
 	end
 
-	local node_roam_sequence = children[4]
-	local condition_result = blackboard.nurgling_spawned_by_altar
+	do
+		local node_roam_sequence = children[4]
+		local condition_result = blackboard.nurgling_spawned_by_altar
 
-	if condition_result then
-		self:set_running_child(unit, blackboard, t, node_roam_sequence, "aborted")
+		if condition_result then
+			self:set_running_child(unit, blackboard, t, node_roam_sequence, "aborted")
 
-		local result, evaluate = node_roam_sequence:run(unit, blackboard, t, dt)
+			local result, evaluate = node_roam_sequence:run(unit, blackboard, t, dt)
 
-		if result ~= "running" then
-			self:set_running_child(unit, blackboard, t, nil, result)
+			if result ~= "running" then
+				self:set_running_child(unit, blackboard, t, nil, result)
+			end
+
+			if result ~= "failed" then
+				return result, evaluate
+			end
+		elseif node_roam_sequence == child_running then
+			self:set_running_child(unit, blackboard, t, nil, "failed")
 		end
-
-		if result ~= "failed" then
-			return result, evaluate
-		end
-	elseif node_roam_sequence == child_running then
-		self:set_running_child(unit, blackboard, t, nil, "failed")
 	end
 
 	local node_idle = children[5]

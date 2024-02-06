@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/controller_settings_view.lua
+
 ControllerSettingsView = class(ControllerSettingsView)
 
 ControllerSettingsView.init = function (self, ingame_ui_context)
@@ -9,16 +11,16 @@ end
 local controller_settings_to_add = {
 	{
 		"Player",
-		PlayerControllerKeymaps
+		PlayerControllerKeymaps,
 	},
 	{
 		"ingame_menu",
-		IngameMenuKeymaps
+		IngameMenuKeymaps,
 	},
 	{
 		"chat_input",
-		ChatControllerSettings
-	}
+		ChatControllerSettings,
+	},
 }
 local scenegraph_definition = {
 	root = {
@@ -26,67 +28,69 @@ local scenegraph_definition = {
 		position = {
 			0,
 			0,
-			UILayer.default
+			UILayer.default,
 		},
 		size = {
 			1920,
-			1080
-		}
+			1080,
+		},
 	},
 	widget_start = {
+		parent = "root",
 		vertical_alignment = "top",
-		parent = "root"
-	}
+	},
 }
+
 UIElements.KeyBindElement = {
 	passes = {
 		{
+			content_id = "button_hotspot",
 			pass_type = "hover",
-			content_id = "button_hotspot"
 		},
 		{
+			content_id = "button_hotspot",
 			pass_type = "click",
-			content_id = "button_hotspot"
 		},
 		{
+			pass_type = "text",
 			style_id = "text",
-			pass_type = "text",
 			text_id = "text_field",
 			content_check_function = function (content)
 				return content.button_hotspot.is_hover
-			end
+			end,
 		},
 		{
-			style_id = "hover_text",
 			pass_type = "text",
+			style_id = "hover_text",
 			text_id = "text_field",
 			content_check_function = function (content)
 				return content.button_hotspot.is_hover
-			end
-		}
-	}
+			end,
+		},
+	},
 }
+
 local widget_definition = {
 	scenegraph_id = "",
 	element = UIElements.KeyBindElement,
 	content = {
 		text_field = "TEST",
-		button_hotspot = {}
+		button_hotspot = {},
 	},
 	style = {
 		text = {
 			font_size = 14,
 			font_type = "hell_shark",
 			horizontal_alignment = "center",
-			text_color = Colors.color_definitions.white
+			text_color = Colors.color_definitions.white,
 		},
 		hover_text = {
 			font_size = 14,
 			font_type = "hell_shark",
 			horizontal_alignment = "center",
-			text_color = Colors.color_definitions.green
-		}
-	}
+			text_color = Colors.color_definitions.green,
+		},
+	},
 }
 
 local function get_button_name(input_service, keymap)
@@ -95,7 +99,7 @@ local function get_button_name(input_service, keymap)
 	local input_device = device_list[1]
 	local button_type = keymap[3]
 	local button_index = keymap[2]
-	local text = nil
+	local text
 
 	if button_type == "axis" then
 		text = input_device.axis_name(button_index)
@@ -115,6 +119,7 @@ ControllerSettingsView.create_ui_elements = function (self)
 
 	for _, settings_data in ipairs(controller_settings_to_add) do
 		local service_name = settings_data[1]
+
 		n_widgets = n_widgets + 1
 		widget_definition.content[service_name] = service_name
 		UIElements.KeyBindElement.passes[3].text_id = service_name
@@ -125,18 +130,20 @@ ControllerSettingsView.create_ui_elements = function (self)
 			offset = {
 				0,
 				-n_widgets * 16,
-				1
+				1,
 			},
 			size = {
 				1920,
-				16
-			}
+				16,
+			},
 		}
 		ui_widgets[n_widgets] = UIWidget.init(widget_definition)
+
 		local input_service = input_manager:get_service(service_name)
 
 		for map_name, _ in pairs(settings_data[2]) do
 			n_widgets = n_widgets + 1
+
 			local keymapping = input_service:get_keymapping(map_name)
 			local keymap_1 = keymapping.input_mappings[1]
 			local keymap_2 = keymapping.input_mappings[2]
@@ -153,6 +160,7 @@ ControllerSettingsView.create_ui_elements = function (self)
 
 			local index_name = "index_" .. tostring(n_widgets)
 			local total_text = string.format("%s: %20s | %-20s", map_name, keymap_1_text, keymap_2_text)
+
 			widget_definition.content[index_name] = total_text
 			UIElements.KeyBindElement.passes[3].text_id = index_name
 			UIElements.KeyBindElement.passes[4].text_id = index_name
@@ -162,12 +170,12 @@ ControllerSettingsView.create_ui_elements = function (self)
 				offset = {
 					0,
 					-n_widgets * 16,
-					1
+					1,
 				},
 				size = {
 					1920,
-					16
-				}
+					16,
+				},
 			}
 			ui_widgets[n_widgets] = UIWidget.init(widget_definition)
 		end

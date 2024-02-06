@@ -1,142 +1,144 @@
+﻿-- chunkname: @scripts/settings/inventory_settings.lua
+
 ItemType = {
-	MELEE = "melee",
 	FRAME = "frame",
 	HAT = "hat",
+	LOOT_CHEST = "loot_chest",
+	MELEE = "melee",
+	NECKLACE = "necklace",
 	RANGED = "ranged",
 	RING = "ring",
-	NECKLACE = "necklace",
+	SKIN = "skin",
 	TRINKET = "trinket",
-	LOOT_CHEST = "loot_chest",
-	SKIN = "skin"
 }
 InventorySettings = {
 	slots = {
 		{
-			name = "slot_melee",
-			wield_input = "wield_1",
 			category = "weapon",
-			slot_index = 1,
 			hud_index = 1,
+			name = "slot_melee",
+			slot_index = 1,
 			ui_slot_index = 1,
-			type = ItemType.MELEE
+			wield_input = "wield_1",
+			type = ItemType.MELEE,
 		},
 		{
-			name = "slot_ranged",
-			wield_input = "wield_2",
 			category = "weapon",
-			slot_index = 2,
 			hud_index = 2,
+			name = "slot_ranged",
+			slot_index = 2,
 			ui_slot_index = 2,
-			type = ItemType.RANGED
+			wield_input = "wield_2",
+			type = ItemType.RANGED,
 		},
 		{
+			category = "attachment",
 			name = "slot_necklace",
 			slot_index = 3,
-			category = "attachment",
-			unequippable = true,
 			ui_slot_index = 3,
-			type = ItemType.NECKLACE
+			unequippable = true,
+			type = ItemType.NECKLACE,
 		},
 		{
+			category = "attachment",
 			name = "slot_ring",
 			slot_index = 4,
-			category = "attachment",
-			unequippable = true,
 			ui_slot_index = 4,
-			type = ItemType.RING
+			unequippable = true,
+			type = ItemType.RING,
 		},
 		{
+			category = "attachment",
 			name = "slot_trinket_1",
 			slot_index = 5,
-			category = "attachment",
-			unequippable = true,
 			ui_slot_index = 5,
-			type = ItemType.TRINKET
+			unequippable = true,
+			type = ItemType.TRINKET,
 		},
 		{
-			name = "slot_hat",
-			slot_index = 6,
 			category = "attachment",
 			cosmetic_index = 1,
-			type = ItemType.HAT
+			name = "slot_hat",
+			slot_index = 6,
+			type = ItemType.HAT,
 		},
 		{
-			name = "slot_skin",
-			slot_index = 8,
 			category = "cosmetic",
 			cosmetic_index = 2,
-			type = ItemType.SKIN
+			name = "slot_skin",
+			slot_index = 8,
+			type = ItemType.SKIN,
 		},
 		{
-			name = "slot_frame",
-			slot_index = 9,
 			category = "cosmetic",
 			cosmetic_index = 3,
-			type = ItemType.FRAME
+			name = "slot_frame",
+			slot_index = 9,
+			type = ItemType.FRAME,
 		},
 		{
+			category = "weapon",
+			console_hud_index = 2,
+			hud_index = 3,
 			name = "slot_healthkit",
 			wield_input = "wield_3",
-			category = "weapon",
-			hud_index = 3,
-			console_hud_index = 2,
 			drop_reasons = {
-				death = true
-			}
+				death = true,
+			},
 		},
 		{
+			category = "weapon",
+			console_hud_index = 4,
+			hud_index = 4,
 			name = "slot_potion",
 			wield_input = "wield_4",
-			category = "weapon",
-			hud_index = 4,
 			wield_input_alt = "wield_4_alt",
-			console_hud_index = 4,
 			drop_reasons = {
-				death = true
-			}
+				death = true,
+			},
 		},
 		{
+			category = "weapon",
+			console_hud_index = 3,
+			hud_index = 5,
 			name = "slot_grenade",
 			wield_input = "wield_5",
-			category = "weapon",
-			hud_index = 5,
-			console_hud_index = 3,
 			drop_reasons = {
-				death = true
-			}
+				death = true,
+			},
 		},
 		{
-			name = "slot_packmaster_claw",
 			category = "enemy_weapon",
+			name = "slot_packmaster_claw",
 			drop_reasons = {
-				death = true
-			}
+				death = true,
+			},
 		},
 		{
-			name = "slot_level_event",
 			category = "level_event",
+			name = "slot_level_event",
 			drop_reasons = {
+				career_ability = true,
+				death = true,
 				grabbed_by_chaos_spawn = true,
 				grabbed_by_corruptor = true,
 				grabbed_by_pack_master = true,
-				pounced_down = true,
-				death = true,
+				grabbed_by_tentacle = true,
 				knocked_down = true,
-				career_ability = true,
-				grabbed_by_tentacle = true
-			}
+				pounced_down = true,
+			},
 		},
 		{
+			category = "career_skill_weapon",
 			hud_index = 6,
 			name = "slot_career_skill_weapon",
-			category = "career_skill_weapon"
-		}
+		},
 	},
-	weapon_slots = {},
-	enemy_weapon_slots = {},
-	attachment_slots = {},
-	career_skill_weapon_slots = {}
 }
+InventorySettings.weapon_slots = {}
+InventorySettings.enemy_weapon_slots = {}
+InventorySettings.attachment_slots = {}
+InventorySettings.career_skill_weapon_slots = {}
 
 for index, slot in ipairs(InventorySettings.slots) do
 	if slot.category == "enemy_weapon" then
@@ -165,6 +167,7 @@ for index, slot in ipairs(InventorySettings.slots) do
 		end
 
 		local slot_names_table = InventorySettings.slot_names_by_type[slot.type]
+
 		slot_names_table[#slot_names_table + 1] = slot.name
 	end
 end
@@ -175,6 +178,7 @@ for index, slot in ipairs(InventorySettings.slots) do
 	if slot.wield_input then
 		local index_string = string.sub(slot.wield_input, 7)
 		local index = tonumber(index_string)
+
 		slot.wield_index = index
 		InventorySettings.slots_by_wield_input[index] = slot
 	end
@@ -221,12 +225,13 @@ for index, slot in ipairs(InventorySettings.slots) do
 end
 
 local equipment_slots = {
-	slot_necklace = true,
-	slot_trinket_1 = true,
-	slot_ring = true,
 	slot_melee = true,
-	slot_ranged = true
+	slot_necklace = true,
+	slot_ranged = true,
+	slot_ring = true,
+	slot_trinket_1 = true,
 }
+
 InventorySettings.equipment_slots = {}
 
 for index, slot in ipairs(InventorySettings.slots) do
@@ -237,9 +242,10 @@ end
 
 local jewellery_slots = {
 	slot_necklace = true,
+	slot_ring = true,
 	slot_trinket_1 = true,
-	slot_ring = true
 }
+
 InventorySettings.jewellery_slots = {}
 
 for index, slot in ipairs(InventorySettings.slots) do
@@ -293,7 +299,7 @@ InventorySettings.item_types = {
 	"ww_longbow",
 	"ww_shortbow",
 	"ww_sword_and_dagger",
-	"ww_trueflight"
+	"ww_trueflight",
 }
 
 DLCUtils.require_list("inventory_settings")

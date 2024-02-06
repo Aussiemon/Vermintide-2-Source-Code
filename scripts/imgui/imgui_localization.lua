@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/imgui/imgui_localization.lua
+
 ImguiLocalization = class(ImguiLocalization)
+
 local LOCALES = {
 	"br-pt",
 	"de",
@@ -8,14 +11,14 @@ local LOCALES = {
 	"it",
 	"pl",
 	"ru",
-	"zh"
+	"zh",
 }
 
 ImguiLocalization.init = function (self)
 	self._text = ""
 	self._cached_localizations = {}
 	self._action_queue = {
-		n = 0
+		n = 0,
 	}
 end
 
@@ -29,6 +32,7 @@ end
 
 ImguiLocalization.action_push = function (self, thunk)
 	local queue = self._action_queue
+
 	queue.n = queue.n + 1
 
 	table.insert(queue, 1, thunk)
@@ -67,12 +71,15 @@ ImguiLocalization.draw = function (self)
 	Imgui.separator()
 
 	local text = Imgui.input_text("Localize text", self._text)
+
 	self._text = text
+
 	local queue = self._action_queue
 	local cache = self._cached_localizations
 
 	if Imgui.button("Localize") and is_queue_empty then
 		queue.n = 0
+
 		local j = table.find(LOCALES, current_locale)
 
 		for i, locale in ipairs(LOCALES) do

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/chaos_sorcerer/bt_swarm_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTSwarmAction = class(BTSwarmAction, BTNode)
@@ -9,9 +11,12 @@ end
 
 BTSwarmAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
+
 	blackboard.action = action
 	blackboard.active_node = BTSwarmAction
+
 	local valid_action = self:_calculate_swarm_targets(unit, blackboard)
+
 	blackboard.abort_action = not valid_action
 
 	blackboard.navigation_extension:stop()
@@ -23,6 +28,7 @@ end
 
 BTSwarmAction._calculate_swarm_targets = function (self, unit, blackboard)
 	blackboard.valid_swarm_targets = {}
+
 	local side = blackboard.side
 	local player_and_bot_units = side.ENEMY_PLAYER_AND_BOT_UNITS
 	local valid_player_units = {}
@@ -97,7 +103,7 @@ BTSwarmAction.run = function (self, unit, blackboard, t, dt)
 			return "done"
 		end
 
-		local new_target = nil
+		local new_target
 
 		while not new_target or new_target == blackboard.target_unit do
 			new_target = blackboard.valid_swarm_targets[math.random(#blackboard.valid_swarm_targets)]

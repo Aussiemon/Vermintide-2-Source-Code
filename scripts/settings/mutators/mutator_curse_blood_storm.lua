@@ -1,4 +1,7 @@
-local refactored_mutator = nil
+﻿-- chunkname: @scripts/settings/mutators/mutator_curse_blood_storm.lua
+
+local refactored_mutator
+
 refactored_mutator = require("scripts/settings/mutators/mutator_curse_blood_storm_v2")
 
 if refactored_mutator then
@@ -7,23 +10,26 @@ end
 
 local base_nurgle_storm = require("scripts/settings/mutators/mutator_nurgle_storm")
 local curse_blood_storm = table.clone(base_nurgle_storm)
+
 curse_blood_storm.curse_package_name = "resource_packages/mutators/mutator_curse_blood_storm"
 curse_blood_storm.display_name = "curse_blood_storm_name"
 curse_blood_storm.description = "curse_blood_storm_desc"
 curse_blood_storm.icon = "deus_curse_khorne_01"
+
 local DIFFICULTY_POWER_LEVEL = {
-	harder = 60,
-	hard = 45,
-	normal = 30,
-	hardest = 80,
 	cataclysm = 100,
-	cataclysm_3 = 130,
 	cataclysm_2 = 110,
-	easy = 20
+	cataclysm_3 = 130,
+	easy = 20,
+	hard = 45,
+	harder = 60,
+	hardest = 80,
+	normal = 30,
 }
 
 curse_blood_storm.server_start_function = function (context, data)
 	local time = Managers.time:time("game")
+
 	data.spawn_nurgle_storm_at = time + 30
 	data.next_bleed_time = 0
 	data.bleed_rate = 0.2

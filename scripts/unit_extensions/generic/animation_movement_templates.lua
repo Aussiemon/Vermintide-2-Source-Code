@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/unit_extensions/generic/animation_movement_templates.lua
+
 AnimationMovementTemplates = AnimationMovementTemplates or {}
+
 local BLACKBOARDS = BLACKBOARDS
 local animation_set_variable = Unit.animation_set_variable
 
@@ -15,11 +18,9 @@ local function lean_towards_position(unit, dt, data, target_position, lerp_speed
 	local leaning_left = right_dot < 0
 	local target_lean = (1 - abs_fwd_dot) * lean_amount
 
-	if leaning_left then
-		target_lean = -target_lean or target_lean
-	end
-
+	target_lean = leaning_left and -target_lean or target_lean
 	target_lean = math.clamp(target_lean, -1, 1)
+
 	local current_lean = data.current_lean or 0
 	local lean = math.lerp(current_lean, target_lean, lerp_speed * dt)
 	local animation_variable_lean = data.animation_variable_lean
@@ -33,6 +34,7 @@ AnimationMovementTemplates.chaos_troll = {
 	owner = {
 		init = function (unit, data)
 			local blackboard = BLACKBOARDS[unit]
+
 			data.blackboard = blackboard
 			data.ai_extension = ScriptUnit.extension(unit, "ai_system")
 			data.animation_variable_lean = Unit.animation_find_variable(unit, "lean")
@@ -63,7 +65,7 @@ AnimationMovementTemplates.chaos_troll = {
 			if animation_variable_lean then
 				animation_set_variable(unit, animation_variable_lean, 0)
 			end
-		end
+		end,
 	},
 	husk = {
 		init = function (unit, data)
@@ -95,8 +97,8 @@ AnimationMovementTemplates.chaos_troll = {
 			if animation_variable_lean then
 				animation_set_variable(unit, animation_variable_lean, 0)
 			end
-		end
-	}
+		end,
+	},
 }
 
 DLCUtils.require_list("animation_movement_templates_file_names")

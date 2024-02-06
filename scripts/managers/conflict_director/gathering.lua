@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/conflict_director/gathering.lua
+
 Gathering = class(Gathering)
 
 Gathering.init = function (self, nav_world, traverse_logic, start_pos)
@@ -21,7 +23,7 @@ local DEBUG_SIDE_COLORS = {
 	"red",
 	"blue",
 	"green",
-	"yellow"
+	"yellow",
 }
 
 Gathering.write_dogpiled_attackers = function (self, dogpiled_attackers_on_unit)
@@ -46,6 +48,7 @@ Gathering.write_dogpiled_attackers = function (self, dogpiled_attackers_on_unit)
 
 				if attacker_list and next(attacker_list) then
 					t = t .. " | ("
+
 					local first = true
 
 					for attacker_unit, b in pairs(attacker_list) do
@@ -54,6 +57,10 @@ Gathering.write_dogpiled_attackers = function (self, dogpiled_attackers_on_unit)
 					end
 
 					t = t .. ") -> u" .. tostring(Unit.get_data(unit, "unique_id"))
+				end
+
+				if false then
+					-- Nothing
 				end
 			end
 		end
@@ -88,6 +95,7 @@ Gathering.draw = function (self)
 
 		local attacker_list = dogpiled_attackers_on_unit[ball.owner_unit]
 		local num_dogpiled = attacker_list and table.size(attacker_list) or 0
+
 		s = s .. " | " .. ball.id .. "(" .. num_dogpiled .. ")"
 	end
 
@@ -106,6 +114,7 @@ end
 
 Gathering.add_static_ball = function (self, pos, rad, unit)
 	local ball = self:add_ball(pos, rad, unit, nil, true)
+
 	self.static_units[unit] = ball
 end
 
@@ -129,29 +138,31 @@ Gathering.add_ball = function (self, pos, rad, owner_unit, target_unit, is_stati
 		pos = {
 			pos.x,
 			pos.y,
-			pos.z
+			pos.z,
 		},
 		last_pos = {
 			pos.x,
 			pos.y,
-			pos.z
+			pos.z,
 		},
 		rad = rad,
 		owner_unit = owner_unit,
 		target_unit = target_unit,
 		side_id = side.side_id,
 		is_static = is_static,
-		broadphase_id = broadphase_id
+		broadphase_id = broadphase_id,
 	}
+
 	balls[id] = ball
 	self.num_balls = id
 	self.target_unit_to_ball_lookup[target_unit] = ball
 	self.lookup_broadphase_id[broadphase_id] = ball
+
 	local dogpiled_attackers = self.dogpiled_attackers_on_unit[target_unit]
 
 	if not dogpiled_attackers then
 		self.dogpiled_attackers_on_unit[target_unit] = {
-			[owner_unit] = ball
+			[owner_unit] = ball,
 		}
 
 		return ball
@@ -168,10 +179,14 @@ Gathering.remove_ball = function (self, ball)
 	end
 
 	local attacker_list = self.dogpiled_attackers_on_unit[ball.target_unit]
+
 	attacker_list[ball.owner_unit] = nil
+
 	local balls = self.balls
 	local id = ball.id
+
 	self.target_unit_to_ball_lookup[ball.target_unit] = nil
+
 	local b_id = ball.broadphase_id
 
 	if self.version == "fast" then
@@ -179,9 +194,13 @@ Gathering.remove_ball = function (self, ball)
 	end
 
 	self.lookup_broadphase_id[b_id] = nil
+
 	local num_balls = self.num_balls
+
 	ball.destroyed = true
+
 	local replace_ball = balls[num_balls]
+
 	balls[id] = replace_ball
 	replace_ball.id = id
 	balls[num_balls] = nil
@@ -279,7 +298,7 @@ Gathering.update_efficient = function (self, t, dt)
 	local start_index = self.last_index
 	local end_index = self.last_index + max_checks
 
-	if self.num_balls <= end_index then
+	if end_index >= self.num_balls then
 		self.last_index = 1
 		end_index = self.num_balls
 	else
@@ -301,6 +320,7 @@ Gathering.update_efficient = function (self, t, dt)
 			pos[1] = pos[1] - (pos[1] - ppos[1]) * dt
 			pos[2] = pos[2] - (pos[2] - ppos[2]) * dt
 			pos[3] = ppos[3]
+
 			local broadphase_p = Vector3(pos[1], pos[2], 0)
 			local num_boids = Broadphase.query(ball_broadphase, broadphase_p, 1, result_table)
 
@@ -351,6 +371,7 @@ Gathering.update_efficient = function (self, t, dt)
 
 			if target_pos then
 				local _, end_pos = GwNavQueries.raycast(nav_world, target_pos, position, traverse_logic)
+
 				position = end_pos
 			end
 
@@ -358,12 +379,8 @@ Gathering.update_efficient = function (self, t, dt)
 
 			Broadphase.move(ball_broadphase, ball.broadphase_id, broadphase_pos)
 
-			pos[3] = position[3]
-			pos[2] = position[2]
-			pos[1] = position[1]
-			last_pos[3] = position[3]
-			last_pos[2] = position[2]
-			last_pos[1] = position[1]
+			pos[1], pos[2], pos[3] = position[1], position[2], position[3]
+			last_pos[1], last_pos[2], last_pos[3] = position[1], position[2], position[3]
 		end
 	end
 
@@ -383,11 +400,13 @@ Gathering.update_brute_force = function (self, t, dt)
 
 		if target_unit then
 			local ppos = POSITION_LOOKUP[target_unit]
+
 			ppos = GwNavQueries.inside_position_from_outside_position(nav_world, ppos, 2, 2) or ppos
 			pos[1] = pos[1] - (pos[1] - ppos[1]) * dt
 			pos[2] = pos[2] - (pos[2] - ppos[2]) * dt
 		elseif ball.is_static then
 			local new_pos = POSITION_LOOKUP[ball.owner_unit]
+
 			pos[1] = new_pos.x
 			pos[2] = new_pos.y
 		end
@@ -414,6 +433,7 @@ Gathering.update_brute_force = function (self, t, dt)
 				if do_circles_overlap(pos[1], pos[2], rad, pos2[1], pos2[2], rad2) then
 					local dist = Vector3.distance(Vector3(pos[1], pos[2], 0), Vector3(pos2[1], pos2[2], 0))
 					local overlap = (dist - rad - rad2) * 0.5
+
 					pos[1] = pos[1] - overlap * (pos[1] - pos2[1]) / dist
 					pos[2] = pos[2] - overlap * (pos[2] - pos2[2]) / dist
 					pos2[1] = pos2[1] + overlap * (pos[1] - pos2[1]) / dist

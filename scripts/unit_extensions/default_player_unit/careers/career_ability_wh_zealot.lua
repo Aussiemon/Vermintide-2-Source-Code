@@ -1,10 +1,14 @@
+﻿-- chunkname: @scripts/unit_extensions/default_player_unit/careers/career_ability_wh_zealot.lua
+
 CareerAbilityWHZealot = class(CareerAbilityWHZealot)
 
 CareerAbilityWHZealot.init = function (self, extension_init_context, unit, extension_init_data)
 	self._owner_unit = unit
 	self._world = extension_init_context.world
 	self._wwise_world = Managers.world:wwise_world(self._world)
+
 	local player = extension_init_data.player
+
 	self._player = player
 	self._is_server = player.is_server
 	self._local_player = player.local_player
@@ -85,14 +89,16 @@ CareerAbilityWHZealot._start_priming = function (self)
 	if self._local_player then
 		local decal_unit_name = self._decal_unit_name
 		local unit_spawner = Managers.state.unit_spawner
+
 		self._decal_unit = unit_spawner:spawn_local_unit(decal_unit_name)
 	end
 
 	local buff_extension = self._buff_extension
 	local buff_template_name = "planted_decrease_movement"
 	local buff_params = {
-		external_optional_multiplier = 0.3
+		external_optional_multiplier = 0.3,
 	}
+
 	self._buff_id = buff_extension:add_buff(buff_template_name, buff_params)
 	self._is_priming = true
 end
@@ -111,6 +117,7 @@ CareerAbilityWHZealot._update_priming = function (self, dt)
 		local total_lerp_time = 1.9
 		local lerp_value = self._fov_lerp_time / total_lerp_time
 		local fov_multiplier = math.lerp(1, 1.07, lerp_value)
+
 		self._fov_lerp_time = math.min(self._fov_lerp_time + dt, total_lerp_time)
 
 		Managers.state.camera:set_additional_fov_multiplier(fov_multiplier)
@@ -153,7 +160,7 @@ CareerAbilityWHZealot._run_ability = function (self)
 	local career_extension = self._career_extension
 	local buff_extension = self._buff_extension
 	local buff_names = {
-		"victor_zealot_activated_ability"
+		"victor_zealot_activated_ability",
 	}
 	local talent_extension = ScriptUnit.extension(owner_unit, "talent_system")
 
@@ -167,7 +174,7 @@ CareerAbilityWHZealot._run_ability = function (self)
 
 	if talent_extension:has_talent("victor_zealot_activated_ability_cooldown_stack_on_hit", "witch_hunter", true) then
 		buff_extension:add_buff("victor_zealot_activated_ability_cooldown_stack_on_hit", {
-			attacker_unit = owner_unit
+			attacker_unit = owner_unit,
 		})
 	end
 
@@ -178,7 +185,7 @@ CareerAbilityWHZealot._run_ability = function (self)
 
 		if is_server then
 			buff_extension:add_buff(buff_name, {
-				attacker_unit = owner_unit
+				attacker_unit = owner_unit,
 			})
 			network_transmit:send_rpc_clients("rpc_add_buff", unit_object_id, buff_template_name_id, unit_object_id, 0, false)
 		else
@@ -206,43 +213,43 @@ CareerAbilityWHZealot._run_ability = function (self)
 	status_extension:set_noclip(true, "skill_zealot")
 
 	status_extension.do_lunge = {
-		animation_end_event = "zealot_active_ability_charge_hit",
 		allow_rotation = false,
-		first_person_animation_end_event = "dodge_bwd",
-		first_person_hit_animation_event = "charge_react",
-		falloff_to_speed = 8,
-		dodge = true,
-		first_person_animation_event = "shade_stealth_ability",
-		first_person_animation_end_event_hit = "dodge_bwd",
-		duration = 0.75,
-		initial_speed = 25,
+		animation_end_event = "zealot_active_ability_charge_hit",
 		animation_event = "zealot_active_ability_charge_start",
+		dodge = true,
+		duration = 0.75,
+		falloff_to_speed = 8,
+		first_person_animation_end_event = "dodge_bwd",
+		first_person_animation_end_event_hit = "dodge_bwd",
+		first_person_animation_event = "shade_stealth_ability",
+		first_person_hit_animation_event = "charge_react",
+		initial_speed = 25,
 		damage = {
+			allow_backstab = true,
+			collision_filter = "filter_explosion_overlap_no_player",
+			damage_profile = "heavy_slashing_linesman",
 			depth_padding = 0.4,
 			height = 1.8,
-			collision_filter = "filter_explosion_overlap_no_player",
 			hit_zone_hit_name = "full",
 			ignore_shield = true,
+			interrupt_on_first_hit = false,
 			interrupt_on_max_hit_mass = true,
 			power_level_multiplier = 0.8,
-			interrupt_on_first_hit = false,
-			damage_profile = "heavy_slashing_linesman",
 			width = 1.5,
-			allow_backstab = true,
 			stagger_angles = {
 				max = 90,
-				min = 45
+				min = 45,
 			},
 			on_interrupt_blast = {
 				allow_backstab = false,
-				radius = 3,
-				power_level_multiplier = 1,
-				hit_zone_hit_name = "full",
+				collision_filter = "filter_explosion_overlap_no_player",
 				damage_profile = "heavy_slashing_linesman",
+				hit_zone_hit_name = "full",
 				ignore_shield = false,
-				collision_filter = "filter_explosion_overlap_no_player"
-			}
-		}
+				power_level_multiplier = 1,
+				radius = 3,
+			},
+		},
 	}
 
 	career_extension:start_activated_ability_cooldown()

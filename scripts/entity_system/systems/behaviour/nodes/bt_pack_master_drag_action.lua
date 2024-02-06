@@ -1,6 +1,9 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_pack_master_drag_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTPackMasterDragAction = class(BTPackMasterDragAction, BTNode)
+
 local DRAG_DESTINATIONS_N = 10
 local DESTINATION_POS_I = 1
 local DESTINATION_SCORE_I = 2
@@ -16,6 +19,7 @@ BTPackMasterDragAction.name = "BTPackMasterDragAction"
 
 BTPackMasterDragAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
+
 	blackboard.action = action
 	blackboard.active_node = BTPackMasterDragAction
 	blackboard.drag_check_radius = 4
@@ -43,6 +47,7 @@ BTPackMasterDragAction.enter = function (self, unit, blackboard, t)
 	end
 
 	blackboard.last_path_direction = Vector3Box(Vector3.normalize(POSITION_LOOKUP[unit] - POSITION_LOOKUP[blackboard.drag_target_unit]))
+
 	local success, destination = self:find_escape_destination(unit, blackboard)
 
 	if success then
@@ -73,6 +78,7 @@ BTPackMasterDragAction.leave = function (self, unit, blackboard, t, reason, dest
 	blackboard.test_destinations = nil
 	blackboard.test_next_destination = nil
 	blackboard.last_path_direction = nil
+
 	local default_move_speed = AiUtils.get_default_breed_move_speed(unit, blackboard)
 	local navigation_extension = blackboard.navigation_extension
 
@@ -112,7 +118,9 @@ BTPackMasterDragAction.find_hoist_pos = function (self, nav_world, unit, blackbo
 
 	for i = 1, 6 do
 		angle = angle + DELTA_ANGLE
+
 		local direction = Quaternion.rotate(Quaternion(Vector3.up(), angle), start_direction)
+
 		new_pos = validate_pos(nav_world, player_pos + direction)
 
 		if new_pos then
@@ -192,7 +200,7 @@ BTPackMasterDragAction.run = function (self, unit, blackboard, t, dt)
 	local position = POSITION_LOOKUP[unit]
 	local nav_world = blackboard.nav_world
 
-	if blackboard.hoist_time < t then
+	if t > blackboard.hoist_time then
 		if self:can_hoist(unit, blackboard) and self:safe_to_hoist(unit, blackboard) then
 			if blackboard.hoist_pos then
 				if Vector3.distance_squared(position, blackboard.hoist_pos:unbox()) < 0.1 then
@@ -220,7 +228,7 @@ BTPackMasterDragAction.run = function (self, unit, blackboard, t, dt)
 
 	blackboard.locomotion_extension:set_wanted_rotation(rotation)
 
-	if blackboard.time_to_damage < t then
+	if t > blackboard.time_to_damage then
 		local action = blackboard.action
 
 		DamageUtils.add_damage_network(drag_target_unit, unit, action.damage_amount, action.hit_zone_name, action.damage_type, nil, Vector3.up(), blackboard.breed.name, nil, nil, nil, action.hit_react_type)
@@ -244,7 +252,7 @@ BTPackMasterDragAction.run = function (self, unit, blackboard, t, dt)
 
 	local got_threat_pos = false
 
-	if blackboard.drag_check_time < t then
+	if t > blackboard.drag_check_time then
 		blackboard.drag_check_time = t + 1
 
 		if not blackboard.threatened then
@@ -316,12 +324,14 @@ function find_position_to_avoid(unit, blackboard, test)
 	for idx, enemy_unit in pairs(ENEMY_PLAYER_AND_BOT_UNITS) do
 		if blackboard.drag_target_unit ~= enemy_unit and not ScriptUnit.extension(enemy_unit, "status_system"):is_disabled() then
 			threatening_players_n = threatening_players_n + 1
+
 			local enemy_pos = ENEMY_PLAYER_AND_BOT_POSITIONS[idx]
 			local distance_sq = Vector3.distance_squared(enemy_pos, position)
 
 			if distance_sq > 0 and distance_sq < max_distance_sq then
 				local dir = enemy_pos - position
 				local normalized_dir = Vector3.normalize(dir)
+
 				normalized_dir = normalized_dir / math.sqrt(distance_sq)
 				threat_vec = threat_vec - normalized_dir
 			end
@@ -338,7 +348,7 @@ function find_position_to_avoid(unit, blackboard, test)
 end
 
 local function sorting_function(a, b)
-	return b[DESTINATION_SCORE_I] < a[DESTINATION_SCORE_I]
+	return a[DESTINATION_SCORE_I] > b[DESTINATION_SCORE_I]
 end
 
 BTPackMasterDragAction.find_valid_covers = function (self, position, destinations, wanted_direction, player_aggro_pos)
@@ -354,6 +364,7 @@ BTPackMasterDragAction.find_valid_covers = function (self, position, destination
 	local min_rad = 3
 	local bp = Managers.state.conflict.level_analysis.cover_points_broadphase
 	local found_cover_units_n = Broadphase.query(bp, position, max_rad, found_cover_units)
+
 	min_rad = min_rad * min_rad
 	max_rad = max_rad * max_rad
 
@@ -390,7 +401,7 @@ BTPackMasterDragAction.find_valid_covers = function (self, position, destination
 			destinations[cover_index][2] = score
 			cover_index = cover_index + 1
 
-			if DRAG_DESTINATIONS_N < cover_index then
+			if cover_index > DRAG_DESTINATIONS_N then
 				break
 			end
 		end
@@ -441,7 +452,7 @@ BTPackMasterDragAction.find_valid_interest_points = function (self, position, de
 						destinations[ip_index][2] = score
 						ip_index = ip_index + 1
 
-						if DRAG_DESTINATIONS_N < ip_index then
+						if ip_index > DRAG_DESTINATIONS_N then
 							break
 						end
 					end
@@ -500,8 +511,8 @@ BTPackMasterDragAction.find_nav_group_neighbour = function (self, blackboard, po
 				if nav_pos then
 					nav_group_position = nav_pos
 				elseif script_data.debug_ai_movement then
-					QuickDrawerStay:sphere(nav_group_position, 2, Colors.get("purple"))
-					QuickDrawerStay:sphere(nav_group_position, 4, Colors.get("purple"))
+					QuickDrawerStay:sphere(nav_group_position, 2, (Colors.get("purple")))
+					QuickDrawerStay:sphere(nav_group_position, 4, (Colors.get("purple")))
 				end
 			end
 
@@ -509,7 +520,7 @@ BTPackMasterDragAction.find_nav_group_neighbour = function (self, blackboard, po
 			destinations[destination_index][DESTINATION_SCORE_I] = score
 			destination_index = destination_index + 1
 
-			if DRAG_DESTINATIONS_N < destination_index then
+			if destination_index > DRAG_DESTINATIONS_N then
 				break
 			end
 		end
@@ -526,7 +537,7 @@ BTPackMasterDragAction.find_escape_destination = function (self, unit, blackboar
 	local last_path_direction = blackboard.last_path_direction:unbox()
 	local escape_point = POSITION_LOOKUP[unit] + Vector3(0, 0, 0.5)
 	local found_destination_point = false
-	local destination = nil
+	local destination
 	local angle_towards_pull = math.atan2(last_path_direction.y, last_path_direction.x, 0)
 	local num_segments = 5
 	local angle_per_segment = math.pi / (num_segments - 1)
@@ -548,6 +559,7 @@ BTPackMasterDragAction.find_escape_destination = function (self, unit, blackboar
 			if raycango_success then
 				position_end_cw.z = altitude_cw
 				destination = position_end_cw
+
 				local position_end_cw = escape_point + offset_cw * 5
 				local success_cw, altitude_cw = GwNavQueries.triangle_from_position(nav_world, position_end_cw, 0.5, 1)
 
@@ -588,6 +600,7 @@ BTPackMasterDragAction.setup_destination_test = function (self, unit, blackboard
 	table.sort(blackboard.packmaster_destinations, sorting_function)
 
 	local last_path_direction = Vector3.normalize(POSITION_LOOKUP[unit] - POSITION_LOOKUP[blackboard.drag_target_unit])
+
 	blackboard.last_path_direction = Vector3Box(last_path_direction)
 end
 
@@ -613,11 +626,13 @@ BTPackMasterDragAction.test_destinations = function (self, unit, blackboard)
 		else
 			blackboard.test_destinations = false
 			blackboard.test_next_destination = false
+
 			local best_score = blackboard.best_destination_score
 			local found_destination = true
 
 			if best_score < 0.01 then
-				local escape_destination = nil
+				local escape_destination
+
 				found_destination, escape_destination = self:find_escape_destination(unit, blackboard)
 
 				if found_destination then
@@ -642,18 +657,23 @@ BTPackMasterDragAction.test_destinations = function (self, unit, blackboard)
 			fassert(path_length > 0, "Path length is 0, this will cause div by 0")
 
 			path_length = path_length * path_length
+
 			local current_destination = destinations[destination_test_index][1]:unbox()
 			local destination_score = destinations[destination_test_index][2]
 			local diff = current_destination - packmaster_position
 			local distance2 = Vector3.length_squared(diff)
 			local first_dir = GwNavAStar.node_at_index(astar, 2) - GwNavAStar.node_at_index(astar, 1)
+
 			first_dir = Vector3.normalize(first_dir)
+
 			local reverse_dot = Vector3.dot(last_path_direction, first_dir)
 			local reverse_score_modifier = reverse_dot * 0.75 + 0.25
 			local path_length_ratio = distance2 / path_length
 			local final_score = path_length_ratio * reverse_score_modifier
 			local new_destination_score = destination_score * final_score
+
 			destinations[destination_test_index][2] = new_destination_score
+
 			local good_path = path_length_ratio > 0.4444444444444444 and reverse_score_modifier > 0
 
 			if good_path then
@@ -678,7 +698,7 @@ BTPackMasterDragAction.test_destinations = function (self, unit, blackboard)
 			else
 				blackboard.test_next_destination = true
 
-				if blackboard.best_destination_score < new_destination_score then
+				if new_destination_score > blackboard.best_destination_score then
 					blackboard.best_destination_score = new_destination_score
 					blackboard.best_destination = Vector3Box(current_destination)
 				end

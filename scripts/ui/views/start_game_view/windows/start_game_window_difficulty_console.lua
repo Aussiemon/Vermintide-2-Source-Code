@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/start_game_view/windows/start_game_window_difficulty_console.lua
+
 local definitions = local_require("scripts/ui/views/start_game_view/windows/definitions/start_game_window_difficulty_console_definitions")
 local widget_definitions = definitions.widgets
 local scenegraph_definition = definitions.scenegraph_definition
@@ -5,6 +7,7 @@ local create_difficulty_button = definitions.create_difficulty_button
 local animation_definitions = definitions.animation_definitions
 local STARTING_DIFFICULTY_INDEX = 1
 local SELECTION_INPUT = "confirm_press"
+
 StartGameWindowDifficultyConsole = class(StartGameWindowDifficultyConsole)
 StartGameWindowDifficultyConsole.NAME = "StartGameWindowDifficultyConsole"
 
@@ -12,16 +15,20 @@ StartGameWindowDifficultyConsole.on_enter = function (self, params, offset)
 	print("[StartGameWindow] Enter Substate StartGameWindowDifficultyConsole")
 
 	self.parent = params.parent
+
 	local ingame_ui_context = params.ingame_ui_context
+
 	self.ui_renderer = ingame_ui_context.ui_renderer
 	self.ui_top_renderer = ingame_ui_context.ui_top_renderer
 	self.input_manager = ingame_ui_context.input_manager
 	self.statistics_db = ingame_ui_context.statistics_db
 	self.render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
+
 	local player_manager = Managers.player
 	local local_player = player_manager:local_player()
+
 	self._stats_id = local_player:stats_id()
 	self.player_manager = player_manager
 	self.peer_id = ingame_ui_context.peer_id
@@ -59,20 +66,23 @@ end
 
 StartGameWindowDifficultyConsole._start_transition_animation = function (self, animation_name)
 	local params = {
-		render_settings = self.render_settings
+		render_settings = self.render_settings,
 	}
 	local widgets = {}
 	local anim_id = self.ui_animator:start_animation(animation_name, widgets, scenegraph_definition, params)
+
 	self._animations[animation_name] = anim_id
 end
 
 StartGameWindowDifficultyConsole.create_ui_elements = function (self, params, offset)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+
 	local widgets = {}
 	local widgets_by_name = {}
 
 	for name, widget_definition in pairs(widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		widgets[#widgets + 1] = widget
 		widgets_by_name[name] = widget
 	end
@@ -86,6 +96,7 @@ StartGameWindowDifficultyConsole.create_ui_elements = function (self, params, of
 
 	if offset then
 		local window_position = self.ui_scenegraph.window.local_position
+
 		window_position[1] = window_position[1] + offset[1]
 		window_position[2] = window_position[2] + offset[2]
 		window_position[3] = window_position[3] + offset[3]
@@ -112,11 +123,14 @@ StartGameWindowDifficultyConsole._setup_difficulties = function (self)
 		local frame_texture = difficulty_settings.completed_frame_texture
 		local widget = UIWidget.init(widget_definition)
 		local widget_name = widget_prefix .. widget_index_counter
+
 		widgets_by_name[widget_name] = widget
 		widgets[#widgets + 1] = widget
 		difficulty_widgets[#difficulty_widgets + 1] = widget
+
 		local offset = widget.offset
 		local content = widget.content
+
 		content.difficulty_key = difficulty_key
 		content.title_text = Localize(display_name)
 		content.icon = display_image
@@ -269,7 +283,9 @@ StartGameWindowDifficultyConsole._update_difficulty_selection = function (self, 
 
 	if not new_navigation_id then
 		new_navigation_id = self._difficulty_navigation_id + navigation_id_change
+
 		local num_difficulties = #difficulties
+
 		new_navigation_id = math.clamp(new_navigation_id, 1, num_difficulties)
 	end
 
@@ -303,6 +319,7 @@ StartGameWindowDifficultyConsole._set_selected_difficulty_option = function (sel
 		local content = widget.content
 		local difficulty_key = content.difficulty_key
 		local is_selected = difficulty_key == new_difficulty_key
+
 		content.is_selected = is_selected
 	end
 end
@@ -314,6 +331,7 @@ StartGameWindowDifficultyConsole._set_info_window = function (self, difficulty_k
 	local display_image = difficulty_settings.display_image
 	local chest_max_powerlevel = difficulty_settings.max_chest_power_level
 	local widgets_by_name = self._widgets_by_name
+
 	widgets_by_name.difficulty_title.content.text = Localize(display_name)
 	widgets_by_name.difficulty_texture.content.texture_id = display_image
 	widgets_by_name.description_text.content.text = Localize(description)
@@ -353,6 +371,7 @@ StartGameWindowDifficultyConsole._update_difficulty_lock = function (self)
 				if below_power_level then
 					local required_power_level = difficulty_settings.required_power_level
 					local difficulty_lock_text = Localize("required_power_level")
+
 					widgets_by_name.difficulty_lock_text.content.text = string.format("%s: %s", difficulty_lock_text, tostring(UIUtils.presentable_hero_power_level(required_power_level)))
 					widgets_by_name.difficulty_second_lock_text.content.text = extra_requirement_failed and Localize(extra_requirement_failed) or ""
 				else
@@ -467,7 +486,7 @@ StartGameWindowDifficultyConsole._show_storepage = function (self, store_page_ur
 
 			if product_label then
 				Managers.system_dialog:open_commerce_dialog(NpCommerceDialog.MODE_PRODUCT, user_id, {
-					product_label
+					product_label,
 				})
 			else
 				Application.error(string.format("[StartGameWindowAreaSelection:_show_storepage] No product_id for dlc: %s", dlc_name))

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/camera/cameras/offset_camera.lua
+
 require("scripts/managers/camera/cameras/base_camera")
 
 OffsetCamera = class(OffsetCamera, BaseCamera)
@@ -17,6 +19,7 @@ OffsetCamera.update = function (self, dt, position, rotation, data)
 	local offset_x = offset_position.x * Quaternion.right(rotation)
 	local offset_y = offset_position.y * Quaternion.forward(rotation)
 	local offset_z = offset_position.z * Quaternion.up(rotation)
+
 	position = position + offset_x + offset_y + offset_z
 
 	BaseCamera.update(self, dt, position, rotation, data)

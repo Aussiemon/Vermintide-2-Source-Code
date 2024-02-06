@@ -1,1291 +1,1294 @@
+﻿-- chunkname: @scripts/managers/talents/talent_settings_bardin.lua
+
 require("scripts/entity_system/systems/buff/buff_sync_type")
 
 local buff_perks = require("scripts/unit_extensions/default_player_unit/buffs/settings/buff_perk_names")
 local buff_tweak_data = {
 	bardin_ironbreaker_ability_cooldown_on_hit = {
-		bonus = 0.25
+		bonus = 0.25,
 	},
 	bardin_ironbreaker_ability_cooldown_on_damage_taken = {
-		bonus = 0.5
+		bonus = 0.5,
 	},
 	bardin_ironbreaker_passive_increased_defence = {
-		multiplier = -0.3
+		multiplier = -0.3,
 	},
 	bardin_ironbreaker_passive_increased_stamina = {
-		bonus = 2
+		bonus = 2,
 	},
 	bardin_ironbreaker_passive_reduced_stun_duration = {
-		multiplier = 0.5
+		multiplier = 0.5,
 	},
 	bardin_ironbreaker_gromril_delay = {
-		duration = 20
+		duration = 20,
 	},
 	bardin_ironbreaker_gromril_antistun = {
-		multiplier = -0.5
+		multiplier = -0.5,
 	},
 	bardin_ironbreaker_activated_ability = {
-		range = 10,
-		multiplier_damage_taken = -0.5,
-		duration = 10,
 		attack_intensity_decay_multiplier = 1,
-		multiplier_block_cost = -1
+		duration = 10,
+		multiplier_block_cost = -1,
+		multiplier_damage_taken = -0.5,
+		range = 10,
 	},
 	bardin_ironbreaker_vanguard = {},
 	bardin_ironbreaker_bloodlust = {},
 	bardin_ironbreaker_conqueror = {},
 	bardin_ironbreaker_power_on_nearby_allies_buff = {
 		max_stacks = 3,
-		multiplier = 0.05
+		multiplier = 0.05,
 	},
 	bardin_ironbreaker_decreased_overcharge = {
-		multiplier = -1
+		multiplier = -1,
 	},
 	bardin_ironbreaker_increased_ranged_power = {
-		multiplier = 0.3
+		multiplier = 0.3,
 	},
 	bardin_ironbreaker_increased_ranged_attack_speed = {
-		multiplier = 1
+		multiplier = 1,
 	},
 	bardin_ironbreaker_party_power_on_blocked_attacks_buff = {
+		duration = 10,
 		max_stacks = 5,
 		multiplier = 0.02,
-		duration = 10
 	},
 	bardin_ironbreaker_gromril_attack_speed = {
+		multiplier = 0.08,
 		presentation_delay = 7,
-		multiplier = 0.08
 	},
 	bardin_ironbreaker_gromril_buff = {
-		bonus = -0.5
+		bonus = -0.5,
 	},
 	bardin_ironbreaker_drakefire_changing_attack_speed = {
+		chunk_size = 3,
 		multiplier = 1,
-		chunk_size = 3
 	},
 	bardin_ironbreaker_drakefire_attack_speed = {
-		multiplier = -0.15
+		multiplier = -0.15,
 	},
 	bardin_ironbreaker_drakefire_changing_ranged_power = {
 		chunk_size = 3,
-		multiplier = -0.8
+		multiplier = -0.8,
 	},
 	bardin_ironbreaker_drakefire_ranged_power = {
-		multiplier = 0.2
+		multiplier = 0.2,
 	},
 	bardin_ironbreaker_power_on_blocked_attacks_buff = {
 		max_stacks = 5,
-		multiplier = 0.05
+		multiplier = 0.05,
 	},
 	bardin_ironbreaker_overcharge_increase_power_lowers_attack_speed_desc = {
-		final_power = 1.2,
 		final_attack_speed = -0.5,
+		final_power = 1.2,
+		inital_power = -0.8,
 		initial_attack_speed = 1,
-		inital_power = -0.8
 	},
 	bardin_ironbreaker_gromril_stamina_regen = {
-		multiplier = 0.5
+		multiplier = 0.5,
 	},
 	bardin_ironbreaker_gromril_delay_short = {
-		duration = 10
+		duration = 10,
 	},
 	bardin_ironbreaker_regen_stamina_on_charged_attacks_buff = {
 		duration = 2,
-		multiplier = 0.4
+		multiplier = 0.4,
 	},
 	bardin_ironbreaker_regen_stamina_on_block_broken = {
-		proc_chance = 0.5
+		proc_chance = 0.5,
 	},
 	bardin_ironbreaker_cooldown_reduction_on_kill_while_full_stamina = {
-		cooldown_reduction = 0.02
+		cooldown_reduction = 0.02,
 	},
 	bardin_ironbreaker_activated_ability_taunt_range_and_duration = {
-		display_multiplier = 0.5,
-		range = 15,
-		multiplier_damage_taken = -0.5,
-		duration = 15,
 		attack_intensity_decay_multiplier = 1,
-		multiplier_block_cost = -1
+		display_multiplier = 0.5,
+		duration = 15,
+		multiplier_block_cost = -1,
+		multiplier_damage_taken = -0.5,
+		range = 15,
 	},
 	bardin_ironbreaker_activated_ability_duration = {
 		display_multiplier = 0.5,
-		duration = 15
+		duration = 15,
 	},
 	bardin_ironbreaker_activated_ability_power_buff = {
+		duration = 10,
 		multiplier = 0.2,
 		range = 15,
-		duration = 10
 	},
 	bardin_slayer_ability_cooldown_on_hit = {
-		bonus = 0.5
+		bonus = 0.5,
 	},
 	bardin_slayer_ability_cooldown_on_damage_taken = {
-		bonus = 0.1
+		bonus = 0.1,
 	},
 	bardin_slayer_passive_stacking_damage_buff = {
+		duration = 2,
 		max_stacks = 3,
 		multiplier = 0.1,
-		duration = 2
 	},
 	bardin_slayer_passive_attack_speed = {
-		multiplier = 0.075
+		multiplier = 0.075,
 	},
 	bardin_slayer_activated_ability = {
 		duration = 10,
-		multiplier = 0.3
+		multiplier = 0.3,
 	},
 	bardin_slayer_reaper = {},
 	bardin_slayer_bloodlust = {},
 	bardin_slayer_conqueror = {},
 	bardin_slayer_crit_chance = {
-		bonus = 0.1
+		bonus = 0.1,
 	},
 	bardin_slayer_attack_speed_on_double_one_handed_weapons_buff = {
-		multiplier = 0.1
+		multiplier = 0.1,
 	},
 	bardin_slayer_power_on_double_two_handed_weapons_buff = {
-		multiplier = 0.15
+		multiplier = 0.15,
 	},
 	bardin_slayer_passive_cooldown_reduction_on_max_stacks = {
-		multiplier = 2
+		multiplier = 2,
 	},
 	bardin_slayer_passive_increased_max_stacks = {
+		display_value = 1,
+		duration = 2,
 		max_stacks = 4,
 		multiplier = 0.1,
-		duration = 2,
-		display_value = 1
 	},
 	bardin_slayer_passive_movement_speed = {
+		duration = 2,
 		max_stacks = 3,
 		multiplier = 1.1,
-		duration = 2
 	},
 	bardin_slayer_damage_taken_capped = {
-		value = 10
+		value = 10,
 	},
 	bardin_slayer_damage_reduction_on_melee_charge_action_buff = {
 		duration = 5,
-		multiplier = -0.4
+		multiplier = -0.4,
 	},
 	bardin_slayer_activated_ability_movement = {
-		multiplier = 1.25
+		multiplier = 1.25,
 	},
 	bardin_slayer_activated_ability_leap_range = {
-		display_multiplier = 0.5
+		display_multiplier = 0.5,
 	},
 	bardin_slayer_activated_ability_leap_damage_buff = {
-		multiplier = 1.5
+		multiplier = 1.5,
 	},
 	bardin_slayer_activated_ability_impact_damage = {
-		display_multiplier = 1
+		display_multiplier = 1,
 	},
 	bardin_ranger_ability_cooldown_on_hit = {
-		bonus = 0.3
+		bonus = 0.3,
 	},
 	bardin_ranger_ability_cooldown_on_damage_taken = {
-		bonus = 0.3
+		bonus = 0.3,
 	},
 	bardin_ranger_passive = {
-		drop_chance = 1
+		drop_chance = 1,
 	},
 	bardin_ranger_passive_consumeable_dupe_healing = {
-		proc_chance = 0.1
+		proc_chance = 0.1,
 	},
 	bardin_ranger_passive_consumeable_dupe_potion = {
-		proc_chance = 0.1
+		proc_chance = 0.1,
 	},
 	bardin_ranger_passive_consumeable_dupe_grenade = {
-		proc_chance = 0.1
+		proc_chance = 0.1,
 	},
 	bardin_survival_ale_buff_presentation = {
+		duration = 5,
 		max_stacks = 3,
 		multiplier = 1.04,
-		duration = 5,
-		multiplier_2 = 0.03
+		multiplier_2 = 0.03,
 	},
 	bardin_ranger_passive_reload_speed = {
-		multiplier = -0.15
+		multiplier = -0.15,
 	},
 	bardin_ranger_passive_increased_ammunition = {
-		multiplier = 0.5
+		multiplier = 0.5,
 	},
 	bardin_ranger_activated_ability = {
-		duration = 10
+		duration = 10,
 	},
 	bardin_ranger_vanguard = {},
 	bardin_ranger_reaper = {},
 	bardin_ranger_conqueror = {},
 	bardin_ranger_melee_damage_on_no_ammo = {
-		multiplier = 0.25
+		multiplier = 0.25,
 	},
 	bardin_ranger_cooldown_on_reload = {
-		bonus = 2
+		bonus = 2,
 	},
 	bardin_ranger_attack_speed = {
-		multiplier = 0.05
+		multiplier = 0.05,
 	},
 	bardin_ranger_smoke_attack_buff = {
-		multiplier = 0.08
+		multiplier = 0.08,
 	},
 	bardin_ranger_passive_improved_ammo = {
-		multiplier = 0.3
+		multiplier = 0.3,
 	},
 	bardin_ranger_passive_spawn_potions_or_bombs = {
-		display_multiplier = 0.2
+		display_multiplier = 0.2,
 	},
 	bardin_ranger_movement_speed = {
-		multiplier = 1.1
+		multiplier = 1.1,
 	},
 	bardin_ranger_reduced_damage_taken_headshot_buff = {
 		duration = 7,
-		multiplier = -0.3
+		multiplier = -0.3,
 	},
 	bardin_ranger_reload_speed_on_multi_hit_buff = {
 		duration = 2,
-		multiplier = -0.35
+		multiplier = -0.35,
 	},
 	bardin_ranger_reload_speed_on_multi_hit_add = {
-		target_number = 2
+		target_number = 2,
 	},
 	bardin_ranger_smoke_attack = {
-		duration = 10
+		duration = 10,
 	},
 	bardin_ranger_smoke_heal = {
-		duration = 10
+		duration = 10,
 	},
 	bardin_ranger_smoke_heal_buff = {
+		heal_amount = 3,
 		time_between_heals = 1,
-		heal_amount = 3
 	},
 	bardin_ranger_activated_ability_stealth_outside_of_smoke = {
-		duration = 10
-	}
+		duration = 10,
+	},
 }
+
 TalentBuffTemplates = TalentBuffTemplates or {}
 TalentBuffTemplates.dwarf_ranger = {
 	bardin_ironbreaker_ability_cooldown_on_hit = {
 		buffs = {
 			{
+				buff_func = "reduce_activated_ability_cooldown",
 				event = "on_hit",
-				buff_func = "reduce_activated_ability_cooldown"
-			}
-		}
+			},
+		},
 	},
 	bardin_ironbreaker_ability_cooldown_on_damage_taken = {
 		buffs = {
 			{
+				buff_func = "reduce_activated_ability_cooldown_on_damage_taken",
 				event = "on_damage_taken",
-				buff_func = "reduce_activated_ability_cooldown_on_damage_taken"
-			}
-		}
+			},
+		},
 	},
 	bardin_ironbreaker_passive_increased_defence = {
 		buffs = {
 			{
-				stat_buff = "damage_taken"
-			}
-		}
+				stat_buff = "damage_taken",
+			},
+		},
 	},
 	bardin_ironbreaker_passive_increased_stamina = {
 		buffs = {
 			{
-				stat_buff = "max_fatigue"
-			}
-		}
+				stat_buff = "max_fatigue",
+			},
+		},
 	},
 	bardin_ironbreaker_passive_reduced_stun_duration = {
 		buffs = {
 			{
-				stat_buff = "stun_duration"
-			}
-		}
+				stat_buff = "stun_duration",
+			},
+		},
 	},
 	bardin_ironbreaker_gromril_delay = {
 		buffs = {
 			{
 				buff_to_add = "bardin_ironbreaker_gromril_armour",
+				duration_end_func = "add_buff_local",
+				icon = "bardin_ironbreaker_gromril_armour",
+				is_cooldown = true,
 				max_stacks = 1,
 				refresh_durations = true,
-				duration_end_func = "add_buff_local",
-				is_cooldown = true,
-				icon = "bardin_ironbreaker_gromril_armour"
-			}
-		}
+			},
+		},
 	},
 	bardin_ironbreaker_refresh_gromril_armour = {
 		buffs = {
 			{
-				event = "on_gromril_armour_removed",
 				buff_func = "add_gromril_delay",
 				buff_to_add = "bardin_ironbreaker_gromril_buff",
-				base_duration = buff_tweak_data.bardin_ironbreaker_gromril_delay.duration
-			}
-		}
+				event = "on_gromril_armour_removed",
+				base_duration = buff_tweak_data.bardin_ironbreaker_gromril_delay.duration,
+			},
+		},
 	},
 	bardin_ironbreaker_gromril_buff = {
 		buffs = {
 			{
+				max_stacks = 30,
 				stat_buff = "gromril_cooldown",
-				max_stacks = 30
-			}
-		}
+			},
+		},
 	},
 	bardin_ironbreaker_gromril_armour = {
 		buffs = {
 			{
-				max_stacks = 1,
 				icon = "bardin_ironbreaker_gromril_armour",
-				refresh_durations = true
-			}
-		}
+				max_stacks = 1,
+				refresh_durations = true,
+			},
+		},
 	},
 	bardin_ironbreaker_gromril_antistun = {
 		buffs = {
 			{
 				max_stacks = 1,
-				stat_buff = "stun_duration"
-			}
-		}
+				stat_buff = "stun_duration",
+			},
+		},
 	},
 	bardin_ironbreaker_activated_ability = {
 		activation_effect = "fx/screenspace_potion_03",
 		buffs = {
 			{
 				icon = "bardin_ironbreaker_activated_ability",
-				stat_buff = "damage_taken",
+				max_stacks = 1,
 				name = "bardin_ironbreaker_activated_ability",
 				refresh_durations = true,
 				remove_buff_func = "end_bardin_ironbreaker_activated_ability",
-				max_stacks = 1,
+				stat_buff = "damage_taken",
 				update_func = "update_bardin_ironbreaker_activated_ability",
 				perks = {
-					buff_perks.reduced_hit_react
+					buff_perks.reduced_hit_react,
 				},
-				multiplier = buff_tweak_data.bardin_ironbreaker_activated_ability.multiplier_damage_taken
-			}
-		}
+				multiplier = buff_tweak_data.bardin_ironbreaker_activated_ability.multiplier_damage_taken,
+			},
+		},
 	},
 	bardin_ironbreaker_activated_ability_block_cost = {
 		buffs = {
 			{
-				name = "bardin_ironbreaker_ability_stamina",
-				stat_buff = "block_cost",
-				refresh_durations = true,
 				max_stacks = 1,
+				name = "bardin_ironbreaker_ability_stamina",
+				refresh_durations = true,
+				stat_buff = "block_cost",
 				multiplier = buff_tweak_data.bardin_ironbreaker_activated_ability.multiplier_block_cost,
-				duration = buff_tweak_data.bardin_ironbreaker_activated_ability.duration
-			}
-		}
+				duration = buff_tweak_data.bardin_ironbreaker_activated_ability.duration,
+			},
+		},
 	},
 	bardin_ironbreaker_activated_ability_attack_intensity_decay_increase = {
 		buffs = {
 			{
-				name = "bardin_ironbreaker_activated_ability_attack_intensity_decay_increase",
-				stat_buff = "attack_intensity_decay",
-				refresh_durations = true,
 				max_stacks = 1,
+				name = "bardin_ironbreaker_activated_ability_attack_intensity_decay_increase",
+				refresh_durations = true,
+				stat_buff = "attack_intensity_decay",
 				multiplier = buff_tweak_data.bardin_ironbreaker_activated_ability.attack_intensity_decay_multiplier,
-				duration = buff_tweak_data.bardin_ironbreaker_activated_ability.duration
-			}
-		}
+				duration = buff_tweak_data.bardin_ironbreaker_activated_ability.duration,
+			},
+		},
 	},
 	bardin_ironbreaker_vanguard = {
 		buffs = {
 			{
-				name = "vanguard",
-				multiplier = 1,
 				buff_func = "heal_stagger_targets_on_melee",
 				event = "on_stagger",
+				multiplier = 1,
+				name = "vanguard",
 				perks = {
-					buff_perks.tank_healing
-				}
-			}
-		}
+					buff_perks.tank_healing,
+				},
+			},
+		},
 	},
 	bardin_ironbreaker_bloodlust = {
 		buffs = {
 			{
-				name = "bloodlust",
-				multiplier = 0.45,
-				heal_cap = 0.25,
 				buff_func = "heal_percentage_of_enemy_hp_on_melee_kill",
 				event = "on_kill",
+				heal_cap = 0.25,
+				multiplier = 0.45,
+				name = "bloodlust",
 				perks = {
-					buff_perks.smiter_healing
-				}
-			}
-		}
+					buff_perks.smiter_healing,
+				},
+			},
+		},
 	},
 	bardin_ironbreaker_conqueror = {
 		buffs = {
 			{
-				name = "conqueror",
-				multiplier = 0.2,
-				range = 10,
 				buff_func = "heal_other_players_percent_at_range",
-				event = "on_healed_consumeable"
-			}
-		}
+				event = "on_healed_consumeable",
+				multiplier = 0.2,
+				name = "conqueror",
+				range = 10,
+			},
+		},
 	},
 	bardin_ironbreaker_power_on_nearby_allies = {
 		buffs = {
 			{
 				buff_to_add = "bardin_ironbreaker_power_on_nearby_allies_buff",
 				chunk_size = 1,
-				range = 5,
 				max_stacks = 3,
-				update_func = "activate_buff_stacks_based_on_ally_proximity"
-			}
-		}
+				range = 5,
+				update_func = "activate_buff_stacks_based_on_ally_proximity",
+			},
+		},
 	},
 	bardin_ironbreaker_power_on_nearby_allies_buff = {
 		buffs = {
 			{
+				icon = "bardin_ironbreaker_power_on_nearby_allies2",
 				stat_buff = "power_level",
-				icon = "bardin_ironbreaker_power_on_nearby_allies2"
-			}
-		}
+			},
+		},
 	},
 	bardin_ironbreaker_drakefire_changing_attack_speed = {
 		buffs = {
 			{
 				buff_to_add = "bardin_ironbreaker_drakefire_attack_speed",
-				stat_buff = "attack_speed_drakefire",
 				max_stacks = 10,
+				stat_buff = "attack_speed_drakefire",
 				update_func = "activate_buff_stacks_based_on_overcharge_chunks",
 				perks = {
-					buff_perks.overcharge_no_slow
-				}
-			}
-		}
+					buff_perks.overcharge_no_slow,
+				},
+			},
+		},
 	},
 	bardin_ironbreaker_drakefire_attack_speed = {
 		buffs = {
 			{
-				stat_buff = "attack_speed_drakefire"
-			}
-		}
+				stat_buff = "attack_speed_drakefire",
+			},
+		},
 	},
 	bardin_ironbreaker_drakefire_changing_ranged_power = {
 		buffs = {
 			{
 				buff_to_add = "bardin_ironbreaker_drakefire_ranged_power",
-				update_func = "activate_server_buff_stacks_based_on_overcharge_chunks",
+				max_sub_buff_stacks = 10,
 				stat_buff = "power_level_ranged_drakefire",
-				max_sub_buff_stacks = 10
-			}
-		}
+				update_func = "activate_server_buff_stacks_based_on_overcharge_chunks",
+			},
+		},
 	},
 	bardin_ironbreaker_drakefire_ranged_power = {
 		buffs = {
 			{
-				stat_buff = "power_level_ranged_drakefire"
-			}
-		}
+				stat_buff = "power_level_ranged_drakefire",
+			},
+		},
 	},
 	bardin_ironbreaker_decreased_overcharge = {
 		buffs = {
 			{
+				max_stacks = 1,
 				stat_buff = "reduced_overcharge",
-				max_stacks = 1
-			}
-		}
+			},
+		},
 	},
 	bardin_ironbreaker_increased_ranged_power = {
 		buffs = {
 			{
+				max_stacks = 1,
 				stat_buff = "power_level_ranged_drakefire",
-				max_stacks = 1
-			}
-		}
+			},
+		},
 	},
 	bardin_ironbreaker_increased_ranged_attack_speed = {
 		buffs = {
 			{
+				max_stacks = 1,
 				stat_buff = "attack_speed",
-				max_stacks = 1
-			}
-		}
+			},
+		},
 	},
 	bardin_ironbreaker_party_power_on_blocked_attacks_add = {
 		buffs = {
 			{
+				buff_func = "add_buff_to_all_players",
 				buff_to_add = "bardin_ironbreaker_party_power_on_blocked_attacks_buff",
 				chunk_size = 1,
-				max_stacks = 1,
-				buff_func = "add_buff_to_all_players",
 				event = "on_block",
-				max_sub_buff_stacks = 5
-			}
-		}
+				max_stacks = 1,
+				max_sub_buff_stacks = 5,
+			},
+		},
 	},
 	bardin_ironbreaker_party_power_on_blocked_attacks_buff = {
 		buffs = {
 			{
-				refresh_durations = true,
 				icon = "bardin_ironbreaker_power_on_blocked_attacks",
-				stat_buff = "power_level_melee"
-			}
-		}
+				refresh_durations = true,
+				stat_buff = "power_level_melee",
+			},
+		},
 	},
 	bardin_ironbreaker_power_on_blocked_attacks_add = {
 		buffs = {
 			{
+				buff_func = "bardin_ironbreaker_add_power_buff_on_block",
 				buff_to_add = "bardin_ironbreaker_power_on_blocked_attacks_buff",
 				event = "on_block",
 				max_stacks = 1,
-				buff_func = "bardin_ironbreaker_add_power_buff_on_block"
-			}
-		}
+			},
+		},
 	},
 	bardin_ironbreaker_power_on_blocked_attacks_remove_damage = {
 		buffs = {
 			{
-				max_stacks = 1,
-				chunk_size = 1,
-				buff_to_remove = "bardin_ironbreaker_power_on_blocked_attacks_buff",
 				buff_func = "bardin_ironbreaker_remove_on_block_power_buff",
+				buff_to_remove = "bardin_ironbreaker_power_on_blocked_attacks_buff",
+				chunk_size = 1,
 				event = "on_player_damage_dealt",
-				reference_buff = "bardin_ironbreaker_power_on_blocked_attacks_add"
-			}
-		}
+				max_stacks = 1,
+				reference_buff = "bardin_ironbreaker_power_on_blocked_attacks_add",
+			},
+		},
 	},
 	bardin_ironbreaker_power_on_blocked_attacks_remove_stagger = {
 		buffs = {
 			{
-				max_stacks = 1,
-				chunk_size = 1,
-				buff_to_remove = "bardin_ironbreaker_power_on_blocked_attacks_buff",
 				buff_func = "bardin_ironbreaker_remove_on_block_power_buff",
+				buff_to_remove = "bardin_ironbreaker_power_on_blocked_attacks_buff",
+				chunk_size = 1,
 				event = "on_stagger",
-				reference_buff = "bardin_ironbreaker_power_on_blocked_attacks_add"
-			}
-		}
+				max_stacks = 1,
+				reference_buff = "bardin_ironbreaker_power_on_blocked_attacks_add",
+			},
+		},
 	},
 	bardin_ironbreaker_power_on_blocked_attacks_buff = {
 		buffs = {
 			{
+				icon = "bardin_ironbreaker_power_on_blocked_attacks",
 				stat_buff = "power_level_melee",
-				icon = "bardin_ironbreaker_power_on_blocked_attacks"
-			}
-		}
+			},
+		},
 	},
 	bardin_ironbreaker_stacking_buff_gromril = {
 		buffs = {
 			{
-				buff_on_pop = "bardin_ironbreaker_gromril_attack_speed",
 				activation_buff = "bardin_ironbreaker_gromril_armour",
-				buff_to_add = "bardin_ironbreaker_gromril_rising_anger",
 				buff_func = "bardin_ironbreaker_gromril_trigger_rising_anger",
+				buff_on_pop = "bardin_ironbreaker_gromril_attack_speed",
+				buff_to_add = "bardin_ironbreaker_gromril_rising_anger",
 				event = "on_gromril_armour_removed",
-				update_func = "bardin_ironbreaker_stacking_buff_gromril",
 				max_sub_buff_stacks = 5,
-				update_frequency = 7
-			}
-		}
+				update_frequency = 7,
+				update_func = "bardin_ironbreaker_stacking_buff_gromril",
+			},
+		},
 	},
 	bardin_ironbreaker_gromril_attack_speed = {
 		buffs = {
 			{
 				duration = 10,
 				icon = "bardin_ironbreaker_power_on_blocked_attacks",
-				stat_buff = "attack_speed"
-			}
-		}
+				stat_buff = "attack_speed",
+			},
+		},
 	},
 	bardin_ironbreaker_gromril_stamina_regen = {
 		buffs = {
 			{
-				max_stacks = 5,
 				icon = "bardin_ironbreaker_stamina_regen_during_gromril",
-				stat_buff = "fatigue_regen"
-			}
-		}
+				max_stacks = 5,
+				stat_buff = "fatigue_regen",
+			},
+		},
 	},
 	bardin_ironbreaker_gromril_rising_anger = {
 		buffs = {
 			{
+				icon = "bardin_ironbreaker_stamina_regen_during_gromril",
 				max_stacks = 5,
-				icon = "bardin_ironbreaker_stamina_regen_during_gromril"
-			}
-		}
+			},
+		},
 	},
 	bardin_ironbreaker_gromril_delay_short = {
 		buffs = {
 			{
 				buff_to_add = "bardin_ironbreaker_gromril_armour",
-				name = "gromril_delay",
-				max_stacks = 1,
 				duration_end_func = "add_buff_local",
-				is_cooldown = true,
 				icon = "bardin_ironbreaker_gromril_armour",
-				refresh_durations = true
-			}
-		}
+				is_cooldown = true,
+				max_stacks = 1,
+				name = "gromril_delay",
+				refresh_durations = true,
+			},
+		},
 	},
 	bardin_ironbreaker_gromril_stagger = {
 		buffs = {
 			{
-				event = "on_gromril_armour_removed",
 				buff_func = "bardin_ironbreaker_gromril_stagger",
-				explosion_template = ExplosionTemplates.bardin_ironbreaker_gromril_stagger
-			}
-		}
+				event = "on_gromril_armour_removed",
+				explosion_template = ExplosionTemplates.bardin_ironbreaker_gromril_stagger,
+			},
+		},
 	},
 	bardin_ironbreaker_regen_stamina_on_charged_attacks = {
 		buffs = {
 			{
+				buff_func = "bardin_ironbreaker_regen_stamina_on_charged_attacks",
 				event = "on_hit",
-				buff_func = "bardin_ironbreaker_regen_stamina_on_charged_attacks"
-			}
-		}
+			},
+		},
 	},
 	bardin_ironbreaker_regen_stamina_on_charged_attacks_buff = {
 		buffs = {
 			{
-				max_stacks = 1,
 				icon = "bardin_ironbreaker_regen_stamina_on_charged_attacks",
+				max_stacks = 1,
+				refresh_durations = true,
 				stat_buff = "fatigue_regen",
-				refresh_durations = true
-			}
-		}
+			},
+		},
 	},
 	bardin_ironbreaker_regen_stamina_on_block_broken = {
 		buffs = {
 			{
+				buff_func = "bardin_ironbreaker_regen_stamina_on_block_broken",
 				event = "on_block_broken",
-				buff_func = "bardin_ironbreaker_regen_stamina_on_block_broken"
-			}
-		}
+			},
+		},
 	},
 	bardin_ironbreaker_cooldown_reduction_on_kill_while_full_stamina = {
 		buffs = {
 			{
+				buff_func = "bardin_ironbreaker_cooldown_reduction_on_kill_while_full_stamina",
 				event = "on_kill",
-				buff_func = "bardin_ironbreaker_cooldown_reduction_on_kill_while_full_stamina"
-			}
-		}
+			},
+		},
 	},
 	bardin_ironbreaker_activated_ability_taunt_range_and_duration = {
 		activation_effect = "fx/screenspace_potion_03",
-		deactivation_sound = "hud_gameplay_stance_deactivate",
 		activation_sound = "hud_gameplay_stance_tank_activate",
+		deactivation_sound = "hud_gameplay_stance_deactivate",
 		buffs = {
 			{
 				icon = "bardin_ironbreaker_activated_ability",
-				stat_buff = "damage_taken",
+				max_stacks = 1,
 				name = "bardin_ironbreaker_activated_ability_duration",
 				refresh_durations = true,
 				remove_buff_func = "end_bardin_ironbreaker_activated_ability",
-				max_stacks = 1,
+				stat_buff = "damage_taken",
 				update_func = "update_bardin_ironbreaker_activated_ability",
 				perks = {
-					buff_perks.reduced_hit_react
+					buff_perks.reduced_hit_react,
 				},
-				multiplier = buff_tweak_data.bardin_ironbreaker_activated_ability_taunt_range_and_duration.multiplier_damage_taken
-			}
-		}
+				multiplier = buff_tweak_data.bardin_ironbreaker_activated_ability_taunt_range_and_duration.multiplier_damage_taken,
+			},
+		},
 	},
 	bardin_ironbreaker_activated_ability_taunt_range_and_duration_block_cost = {
 		buffs = {
 			{
+				max_stacks = 1,
 				refresh_durations = true,
 				stat_buff = "block_cost",
-				max_stacks = 1,
 				multiplier = buff_tweak_data.bardin_ironbreaker_activated_ability_taunt_range_and_duration.multiplier_block_cost,
-				duration = buff_tweak_data.bardin_ironbreaker_activated_ability_taunt_range_and_duration.duration
-			}
-		}
+				duration = buff_tweak_data.bardin_ironbreaker_activated_ability_taunt_range_and_duration.duration,
+			},
+		},
 	},
 	bardin_ironbreaker_activated_ability_taunt_range_and_duration_attack_intensity_decay_increase = {
 		buffs = {
 			{
-				name = "bardin_ironbreaker_activated_ability_attack_intensity_decay_increase",
-				stat_buff = "attack_intensity_decay",
-				refresh_durations = true,
 				max_stacks = 1,
+				name = "bardin_ironbreaker_activated_ability_attack_intensity_decay_increase",
+				refresh_durations = true,
+				stat_buff = "attack_intensity_decay",
 				multiplier = buff_tweak_data.bardin_ironbreaker_activated_ability_taunt_range_and_duration.attack_intensity_decay_multiplier,
-				duration = buff_tweak_data.bardin_ironbreaker_activated_ability_taunt_range_and_duration.duration
-			}
-		}
+				duration = buff_tweak_data.bardin_ironbreaker_activated_ability_taunt_range_and_duration.duration,
+			},
+		},
 	},
 	bardin_ironbreaker_activated_ability_power_buff = {
 		buffs = {
 			{
-				max_stacks = 1,
 				icon = "bardin_ironbreaker_activated_ability_power_buff_allies",
+				max_stacks = 1,
+				refresh_durations = true,
 				stat_buff = "power_level",
-				refresh_durations = true
-			}
-		}
+			},
+		},
 	},
 	bardin_slayer_ability_cooldown_on_hit = {
 		buffs = {
 			{
+				buff_func = "reduce_activated_ability_cooldown",
 				event = "on_hit",
-				buff_func = "reduce_activated_ability_cooldown"
-			}
-		}
+			},
+		},
 	},
 	bardin_slayer_ability_cooldown_on_damage_taken = {
 		buffs = {
 			{
+				buff_func = "reduce_activated_ability_cooldown_on_damage_taken",
 				event = "on_damage_taken",
-				buff_func = "reduce_activated_ability_cooldown_on_damage_taken"
-			}
-		}
+			},
+		},
 	},
 	bardin_slayer_passive_attack_speed = {
 		buffs = {
 			{
-				stat_buff = "attack_speed"
-			}
-		}
+				stat_buff = "attack_speed",
+			},
+		},
 	},
 	bardin_slayer_passive_uninterruptible_heavy = {
 		buffs = {
 			{
 				perks = {
-					buff_perks.uninterruptible_heavy
-				}
-			}
-		}
+					buff_perks.uninterruptible_heavy,
+				},
+			},
+		},
 	},
 	bardin_slayer_passive_uninterruptible_leap = {
 		buffs = {
 			{
 				max_stacks = 1,
 				perks = {
-					buff_perks.uninterruptible
-				}
-			}
-		}
+					buff_perks.uninterruptible,
+				},
+			},
+		},
 	},
 	bardin_slayer_passive_stacking_damage_buff_on_hit = {
 		buffs = {
 			{
-				event = "on_hit",
 				buff_func = "add_bardin_slayer_passive_buff",
-				max_stacks = buff_tweak_data.bardin_slayer_passive_stacking_damage_buff.max_stacks
-			}
-		}
+				event = "on_hit",
+				max_stacks = buff_tweak_data.bardin_slayer_passive_stacking_damage_buff.max_stacks,
+			},
+		},
 	},
 	bardin_slayer_passive_stacking_damage_buff = {
 		buffs = {
 			{
-				refresh_durations = true,
 				icon = "bardin_slayer_passive",
-				stat_buff = "increased_weapon_damage"
-			}
-		}
+				refresh_durations = true,
+				stat_buff = "increased_weapon_damage",
+			},
+		},
 	},
 	bardin_slayer_activated_ability = {
 		buffs = {
 			{
 				icon = "bardin_slayer_activated_ability",
-				name = "bardin_slayer_frenzy",
-				stat_buff = "attack_speed",
 				max_stacks = 1,
-				remove_buff_func = "end_slayer_activated_ability",
+				name = "bardin_slayer_frenzy",
 				refresh_durations = true,
+				remove_buff_func = "end_slayer_activated_ability",
+				stat_buff = "attack_speed",
 				perks = {
-					buff_perks.no_ranged_knockback
-				}
-			}
-		}
+					buff_perks.no_ranged_knockback,
+				},
+			},
+		},
 	},
 	bardin_slayer_reaper = {
 		buffs = {
 			{
-				multiplier = -0.05,
-				name = "reaper",
+				bonus = 0.25,
 				buff_func = "heal_damage_targets_on_melee",
 				event = "on_player_damage_dealt",
 				max_targets = 5,
-				bonus = 0.25,
+				multiplier = -0.05,
+				name = "reaper",
 				perks = {
-					buff_perks.linesman_healing
-				}
-			}
-		}
+					buff_perks.linesman_healing,
+				},
+			},
+		},
 	},
 	bardin_slayer_bloodlust = {
 		buffs = {
 			{
-				name = "bloodlust",
-				multiplier = 0.45,
-				heal_cap = 0.25,
 				buff_func = "heal_percentage_of_enemy_hp_on_melee_kill",
 				event = "on_kill",
+				heal_cap = 0.25,
+				multiplier = 0.45,
+				name = "bloodlust",
 				perks = {
-					buff_perks.smiter_healing
-				}
-			}
-		}
+					buff_perks.smiter_healing,
+				},
+			},
+		},
 	},
 	bardin_slayer_conqueror = {
 		buffs = {
 			{
-				name = "conqueror",
-				multiplier = 0.2,
-				range = 10,
 				buff_func = "heal_other_players_percent_at_range",
-				event = "on_healed_consumeable"
-			}
-		}
+				event = "on_healed_consumeable",
+				multiplier = 0.2,
+				name = "conqueror",
+				range = 10,
+			},
+		},
 	},
 	bardin_slayer_crit_chance = {
 		buffs = {
 			{
-				stat_buff = "critical_strike_chance"
-			}
-		}
+				stat_buff = "critical_strike_chance",
+			},
+		},
 	},
 	bardin_slayer_power_on_double_two_handed_weapons = {
 		buffs = {
 			{
 				buff_to_add = "bardin_slayer_power_on_double_two_handed_weapons_buff",
+				buff_type = "MELEE_2H",
 				update_func = "bardin_slayer_activate_buff_on_loadout",
-				buff_type = "MELEE_2H"
-			}
-		}
+			},
+		},
 	},
 	bardin_slayer_power_on_double_two_handed_weapons_buff = {
 		buffs = {
 			{
-				max_stacks = 1,
 				icon = "bardin_slayer_power_on_double_two_handed_weapons",
-				stat_buff = "power_level"
-			}
-		}
+				max_stacks = 1,
+				stat_buff = "power_level",
+			},
+		},
 	},
 	bardin_slayer_attack_speed_on_double_one_handed_weapons = {
 		buffs = {
 			{
 				buff_to_add = "bardin_slayer_attack_speed_on_double_one_handed_weapons_buff",
+				buff_type = "MELEE_1H",
 				update_func = "bardin_slayer_activate_buff_on_loadout",
-				buff_type = "MELEE_1H"
-			}
-		}
+			},
+		},
 	},
 	bardin_slayer_attack_speed_on_double_one_handed_weapons_buff = {
 		buffs = {
 			{
-				max_stacks = 1,
 				icon = "bardin_slayer_attack_speed_on_double_one_handed_weapons",
-				stat_buff = "attack_speed"
-			}
-		}
+				max_stacks = 1,
+				stat_buff = "attack_speed",
+			},
+		},
 	},
 	bardin_slayer_passive_cooldown_reduction_on_max_stacks = {
 		buffs = {
 			{
 				icon = "bardin_slayer_passive_cooldown_reduction_on_max_stacks",
-				stat_buff = "cooldown_regen",
 				max_stacks = 1,
 				refresh_durations = true,
-				duration = buff_tweak_data.bardin_slayer_passive_stacking_damage_buff.duration
-			}
-		}
+				stat_buff = "cooldown_regen",
+				duration = buff_tweak_data.bardin_slayer_passive_stacking_damage_buff.duration,
+			},
+		},
 	},
 	bardin_slayer_passive_increased_max_stacks = {
 		buffs = {
 			{
-				refresh_durations = true,
 				icon = "bardin_slayer_passive",
-				stat_buff = "increased_weapon_damage"
-			}
-		}
+				refresh_durations = true,
+				stat_buff = "increased_weapon_damage",
+			},
+		},
 	},
 	bardin_slayer_passive_movement_speed = {
 		buffs = {
 			{
-				remove_buff_func = "remove_movement_buff",
 				apply_buff_func = "apply_movement_buff",
 				refresh_durations = true,
+				remove_buff_func = "remove_movement_buff",
 				path_to_movement_setting_to_modify = {
-					"move_speed"
-				}
-			}
-		}
+					"move_speed",
+				},
+			},
+		},
 	},
 	bardin_slayer_damage_taken_capped = {
 		buffs = {
 			{
-				stat_buff = "max_damage_taken_from_boss_or_elite"
-			}
-		}
+				stat_buff = "max_damage_taken_from_boss_or_elite",
+			},
+		},
 	},
 	bardin_slayer_damage_reduction_on_melee_charge_action = {
 		buffs = {
 			{
+				buff_func = "add_buff_on_charged_attack_hit",
 				buff_to_add = "bardin_slayer_damage_reduction_on_melee_charge_action_buff",
 				event = "on_hit",
-				buff_func = "add_buff_on_charged_attack_hit",
 				max_stacks = 1,
-				server_controlled = false
-			}
-		}
+				server_controlled = false,
+			},
+		},
 	},
 	bardin_slayer_damage_reduction_on_melee_charge_action_buff = {
 		buffs = {
 			{
-				max_stacks = 1,
 				icon = "bardin_slayer_damage_reduction_on_melee_charge_action",
+				max_stacks = 1,
+				refresh_durations = true,
 				stat_buff = "damage_taken",
-				refresh_durations = true
-			}
-		}
+			},
+		},
 	},
 	bardin_slayer_push_on_dodge = {
 		buffs = {
 			{
+				buff_func = "bardin_slayer_push_on_dodge",
 				event = "on_dodge",
 				explosion_template = "bardin_slayer_push_on_dodge",
-				buff_func = "bardin_slayer_push_on_dodge"
-			}
-		}
+			},
+		},
 	},
 	bardin_slayer_activated_ability_leap_damage_add = {
 		buffs = {
 			{
-				event = "on_leap_start",
+				buff_func = "bardin_slayer_add_buff_on_leap_start",
 				buff_to_add = "bardin_slayer_activated_ability_leap_damage_buff",
+				event = "on_leap_start",
 				max_stacks = 1,
-				buff_func = "bardin_slayer_add_buff_on_leap_start"
-			}
-		}
+			},
+		},
 	},
 	bardin_slayer_activated_ability_leap_damage_remove = {
 		buffs = {
 			{
+				buff_func = "bardin_slayer_remove_buff_on_leap_finished",
 				event = "on_leap_finished",
-				parent_buff = "bardin_slayer_activated_ability_leap_damage_add",
 				max_stacks = 1,
-				buff_func = "bardin_slayer_remove_buff_on_leap_finished"
-			}
-		}
+				parent_buff = "bardin_slayer_activated_ability_leap_damage_add",
+			},
+		},
 	},
 	bardin_slayer_activated_ability_leap_damage_buff = {
 		buffs = {
 			{
-				max_stacks = 1,
 				icon = "bardin_slayer_activated_ability_leap_damage",
+				max_stacks = 1,
 				stat_buff = "power_level",
 				perks = {
-					buff_perks.bloody_mess
-				}
-			}
-		}
+					buff_perks.bloody_mess,
+				},
+			},
+		},
 	},
 	bardin_slayer_activated_ability_movement = {
 		buffs = {
 			{
 				apply_buff_func = "apply_movement_buff",
-				refresh_durations = true,
 				max_stacks = 1,
+				refresh_durations = true,
 				remove_buff_func = "remove_movement_buff",
 				duration = buff_tweak_data.bardin_slayer_activated_ability.duration,
 				path_to_movement_setting_to_modify = {
-					"move_speed"
-				}
-			}
-		}
+					"move_speed",
+				},
+			},
+		},
 	},
 	bardin_ranger_ability_cooldown_on_hit = {
 		buffs = {
 			{
+				buff_func = "reduce_activated_ability_cooldown",
 				event = "on_hit",
-				buff_func = "reduce_activated_ability_cooldown"
-			}
-		}
+			},
+		},
 	},
 	bardin_ranger_ability_cooldown_on_damage_taken = {
 		buffs = {
 			{
+				buff_func = "reduce_activated_ability_cooldown_on_damage_taken",
 				event = "on_damage_taken",
-				buff_func = "reduce_activated_ability_cooldown_on_damage_taken"
-			}
-		}
+			},
+		},
 	},
 	bardin_ranger_passive = {
 		buffs = {
 			{
+				buff_func = "bardin_ranger_scavenge_proc",
 				event = "on_special_killed",
-				buff_func = "bardin_ranger_scavenge_proc"
-			}
-		}
+			},
+		},
 	},
 	bardin_ranger_passive_consumeable_dupe_healing = {
 		buffs = {
 			{
-				stat_buff = "not_consume_medpack"
-			}
-		}
+				stat_buff = "not_consume_medpack",
+			},
+		},
 	},
 	bardin_ranger_passive_consumeable_dupe_potion = {
 		buffs = {
 			{
-				stat_buff = "not_consume_potion"
-			}
-		}
+				stat_buff = "not_consume_potion",
+			},
+		},
 	},
 	bardin_ranger_passive_consumeable_dupe_grenade = {
 		buffs = {
 			{
-				stat_buff = "not_consume_grenade"
-			}
-		}
+				stat_buff = "not_consume_grenade",
+			},
+		},
 	},
 	bardin_ranger_passive_reload_speed = {
 		buffs = {
 			{
-				stat_buff = "reload_speed"
-			}
-		}
+				stat_buff = "reload_speed",
+			},
+		},
 	},
 	bardin_ranger_passive_increased_ammunition = {
 		buffs = {
 			{
-				stat_buff = "total_ammo"
-			}
-		}
+				stat_buff = "total_ammo",
+			},
+		},
 	},
 	bardin_ranger_activated_ability = {
 		buffs = {
 			{
+				apply_buff_func = "play_sound_synced",
+				area_radius = 8,
+				area_unit_name = "units/hub_elements/empty",
+				buff_area = true,
+				buff_area_buff = "bardin_ranger_activated_ability_buff",
+				buff_self = true,
+				enter_area_func = "enter_buff_area",
+				exit_area_func = "exit_buff_area",
 				icon = "bardin_ranger_activated_ability",
 				name = "bardin_ranger_activated_ability",
-				buff_area_buff = "bardin_ranger_activated_ability_buff",
-				area_radius = 8,
-				enter_area_func = "enter_buff_area",
-				apply_buff_func = "play_sound_synced",
-				buff_self = true,
-				area_unit_name = "units/hub_elements/empty",
 				shared_area = true,
-				buff_area = true,
 				sound_to_play = "Play_career_ability_bardin_ranger_enter",
-				exit_area_func = "exit_buff_area",
-				buff_sync_type = BuffSyncType.LocalAndServer
-			}
-		}
+				buff_sync_type = BuffSyncType.LocalAndServer,
+			},
+		},
 	},
 	bardin_ranger_activated_ability_buff = {
 		buffs = {
 			{
 				apply_buff_func = "ranger_activated_ability_buff",
 				icon = "bardin_ranger_activated_ability",
+				remove_buff_func = "ranger_activated_ability_buff_remove",
 				status_effect = "invis_ranger",
-				remove_buff_func = "ranger_activated_ability_buff_remove"
-			}
-		}
+			},
+		},
 	},
 	bardin_ranger_reaper = {
 		buffs = {
 			{
-				multiplier = -0.05,
-				name = "reaper",
+				bonus = 0.25,
 				buff_func = "heal_damage_targets_on_melee",
 				event = "on_player_damage_dealt",
 				max_targets = 5,
-				bonus = 0.25,
+				multiplier = -0.05,
+				name = "reaper",
 				perks = {
-					buff_perks.linesman_healing
-				}
-			}
-		}
+					buff_perks.linesman_healing,
+				},
+			},
+		},
 	},
 	bardin_ranger_vanguard = {
 		buffs = {
 			{
-				name = "vanguard",
-				multiplier = 1,
 				buff_func = "heal_stagger_targets_on_melee",
 				event = "on_stagger",
+				multiplier = 1,
+				name = "vanguard",
 				perks = {
-					buff_perks.tank_healing
-				}
-			}
-		}
+					buff_perks.tank_healing,
+				},
+			},
+		},
 	},
 	bardin_ranger_conqueror = {
 		buffs = {
 			{
-				name = "conqueror",
-				multiplier = 0.2,
-				range = 10,
 				buff_func = "heal_other_players_percent_at_range",
-				event = "on_healed_consumeable"
-			}
-		}
+				event = "on_healed_consumeable",
+				multiplier = 0.2,
+				name = "conqueror",
+				range = 10,
+			},
+		},
 	},
 	bardin_ranger_increased_melee_damage_on_no_ammo_add = {
 		buffs = {
 			{
-				event = "on_last_ammo_used",
+				buff_func = "bardin_ranger_add_power_on_no_ammo_proc",
 				buff_to_add = "bardin_ranger_melee_damage_on_no_ammo",
-				buff_func = "bardin_ranger_add_power_on_no_ammo_proc"
-			}
-		}
+				event = "on_last_ammo_used",
+			},
+		},
 	},
 	bardin_ranger_increased_melee_damage_on_no_ammo_remove = {
 		buffs = {
 			{
-				event = "on_gained_ammo_from_no_ammo",
+				buff_func = "bardin_ranger_remove_power_on_no_ammo_proc",
 				buff_to_remove = "bardin_ranger_melee_damage_on_no_ammo",
-				buff_func = "bardin_ranger_remove_power_on_no_ammo_proc"
-			}
-		}
+				event = "on_gained_ammo_from_no_ammo",
+			},
+		},
 	},
 	bardin_ranger_melee_damage_on_no_ammo = {
 		buffs = {
 			{
-				max_stacks = 1,
 				icon = "bardin_ranger_increased_melee_damage_on_no_ammo",
+				max_stacks = 1,
 				priority_buff = true,
-				stat_buff = "power_level"
-			}
-		}
+				stat_buff = "power_level",
+			},
+		},
 	},
 	bardin_ranger_cooldown_on_reload = {
 		buffs = {
 			{
+				buff_func = "reduce_activated_ability_cooldown",
 				event = "on_reload",
-				buff_func = "reduce_activated_ability_cooldown"
-			}
-		}
+			},
+		},
 	},
 	bardin_ranger_attack_speed = {
 		buffs = {
 			{
-				stat_buff = "attack_speed"
-			}
-		}
+				stat_buff = "attack_speed",
+			},
+		},
 	},
 	bardin_ranger_movement_speed = {
 		buffs = {
 			{
-				remove_buff_func = "remove_movement_buff",
 				apply_buff_func = "apply_movement_buff",
+				remove_buff_func = "remove_movement_buff",
 				path_to_movement_setting_to_modify = {
-					"move_speed"
-				}
-			}
-		}
+					"move_speed",
+				},
+			},
+		},
 	},
 	bardin_ranger_reduced_damage_taken_headshot = {
 		buffs = {
 			{
-				event = "on_hit",
+				buff_func = "add_buff_on_headshot",
 				buff_to_add = "bardin_ranger_reduced_damage_taken_headshot_buff",
-				buff_func = "add_buff_on_headshot"
-			}
-		}
+				event = "on_hit",
+			},
+		},
 	},
 	bardin_ranger_reduced_damage_taken_headshot_buff = {
 		buffs = {
 			{
-				max_stacks = 1,
 				icon = "bardin_ranger_reduced_damage_taken_headshot",
+				max_stacks = 1,
+				refresh_durations = true,
 				stat_buff = "damage_taken",
-				refresh_durations = true
-			}
-		}
+			},
+		},
 	},
 	bardin_ranger_reload_speed_on_multi_hit_add = {
 		buffs = {
 			{
-				event = "on_hit",
+				buff_func = "bardin_ranger_add_reload_speed_buff",
 				buff_to_add = "bardin_ranger_reload_speed_on_multi_hit_buff",
-				buff_func = "bardin_ranger_add_reload_speed_buff"
-			}
-		}
+				event = "on_hit",
+			},
+		},
 	},
 	bardin_ranger_reload_speed_on_multi_hit_buff = {
 		buffs = {
 			{
-				max_stacks = 1,
 				icon = "bardin_ranger_reload_speed_on_multi_hit",
+				max_stacks = 1,
+				refresh_durations = true,
 				stat_buff = "reload_speed",
-				refresh_durations = true
-			}
-		}
+			},
+		},
 	},
 	bardin_ranger_smoke_attack = {
 		buffs = {
 			{
 				area_radius = 8,
-				name = "bardin_ranger_activated_ability_attack",
-				buff_area_buff = "bardin_ranger_smoke_attack_buff",
-				enter_area_func = "enter_buff_area",
-				buff_self = true,
-				shared_area = true,
+				area_unit_name = "units/hub_elements/empty",
 				buff_allies = true,
 				buff_area = true,
-				area_unit_name = "units/hub_elements/empty",
+				buff_area_buff = "bardin_ranger_smoke_attack_buff",
+				buff_self = true,
+				enter_area_func = "enter_buff_area",
 				exit_area_func = "exit_buff_area",
-				buff_sync_type = BuffSyncType.All
-			}
-		}
+				name = "bardin_ranger_activated_ability_attack",
+				shared_area = true,
+				buff_sync_type = BuffSyncType.All,
+			},
+		},
 	},
 	bardin_ranger_smoke_attack_buff = {
 		buffs = {
 			{
-				refresh_durations = true,
 				icon = "bardin_ranger_activated_ability_duration",
-				stat_buff = "attack_speed"
-			}
-		}
+				refresh_durations = true,
+				stat_buff = "attack_speed",
+			},
+		},
 	},
 	bardin_ranger_smoke_heal = {
 		buffs = {
 			{
 				area_radius = 8,
-				name = "bardin_ranger_activated_ability_heal",
-				buff_area_buff = "bardin_ranger_smoke_heal_buff",
-				enter_area_func = "enter_buff_area",
-				buff_self = true,
-				shared_area = true,
+				area_unit_name = "units/hub_elements/empty",
 				buff_allies = true,
 				buff_area = true,
-				area_unit_name = "units/hub_elements/empty",
+				buff_area_buff = "bardin_ranger_smoke_heal_buff",
+				buff_self = true,
+				enter_area_func = "enter_buff_area",
 				exit_area_func = "exit_buff_area",
-				buff_sync_type = BuffSyncType.LocalAndServer
-			}
-		}
+				name = "bardin_ranger_activated_ability_heal",
+				shared_area = true,
+				buff_sync_type = BuffSyncType.LocalAndServer,
+			},
+		},
 	},
 	bardin_ranger_smoke_heal_buff = {
 		buffs = {
 			{
+				refresh_durations = true,
 				update_func = "bardin_ranger_heal_smoke",
-				refresh_durations = true
-			}
-		}
+			},
+		},
 	},
 	bardin_ranger_activated_ability_stealth_outside_of_smoke = {
 		buffs = {
 			{
+				apply_buff_func = "add_buff_local",
 				buff_to_add = "bardin_ranger_activated_ability_buff",
-				name = "bardin_ranger_activated_ability",
 				icon = "bardin_ranger_activated_ability",
 				max_stacks = 1,
+				name = "bardin_ranger_activated_ability",
 				refresh_durations = true,
-				apply_buff_func = "add_buff_local"
-			}
-		}
+			},
+		},
 	},
 	bardin_ranger_ability_free_grenade_buff = {
 		buffs = {
 			{
 				event = "on_grenade_use",
-				remove_on_proc = true,
-				max_stacks = 1,
 				icon = "bardin_ranger_ability_free_grenade",
+				max_stacks = 1,
+				remove_on_proc = true,
 				perks = {
-					buff_perks.free_grenade
-				}
-			}
-		}
-	}
+					buff_perks.free_grenade,
+				},
+			},
+		},
+	},
 }
 TalentTrees = TalentTrees or {}
 TalentTrees.dwarf_ranger = {
@@ -1293,978 +1296,978 @@ TalentTrees.dwarf_ranger = {
 		{
 			"bardin_ironbreaker_vanguard",
 			"bardin_ironbreaker_bloodlust_2",
-			"bardin_ironbreaker_heal_share"
+			"bardin_ironbreaker_heal_share",
 		},
 		{
 			"bardin_ironbreaker_overcharge_increase_power_lowers_attack_speed",
 			"bardin_ironbreaker_power_on_nearby_allies",
-			"bardin_ironbreaker_party_power_on_blocked_attacks"
+			"bardin_ironbreaker_party_power_on_blocked_attacks",
 		},
 		{
 			"bardin_ironbreaker_tank_unbalance",
 			"bardin_ironbreaker_smiter_unbalance",
-			"bardin_ironbreaker_power_level_unbalance"
+			"bardin_ironbreaker_power_level_unbalance",
 		},
 		{
 			"bardin_ironbreaker_rising_attack_speed",
 			"bardin_ironbreaker_gromril_stagger",
-			"bardin_ironbreaker_max_gromril_delay"
+			"bardin_ironbreaker_max_gromril_delay",
 		},
 		{
 			"bardin_ironbreaker_regen_stamina_on_block_broken",
 			"bardin_ironbreaker_cooldown_reduction_on_kill_while_full_stamina",
-			"bardin_ironbreaker_regen_stamina_on_charged_attacks"
+			"bardin_ironbreaker_regen_stamina_on_charged_attacks",
 		},
 		{
 			"bardin_ironbreaker_activated_ability_power_buff_allies",
 			"bardin_ironbreaker_activated_ability_taunt_bosses",
-			"bardin_ironbreaker_activated_ability_taunt_range_and_duration"
-		}
+			"bardin_ironbreaker_activated_ability_taunt_range_and_duration",
+		},
 	},
 	{
 		{
 			"bardin_slayer_reaper",
 			"bardin_slayer_bloodlust_2",
-			"bardin_slayer_heal_share"
+			"bardin_slayer_heal_share",
 		},
 		{
 			"bardin_slayer_attack_speed_on_double_one_handed_weapons",
 			"bardin_slayer_power_on_double_two_handed_weapons",
-			"bardin_slayer_crit_chance"
+			"bardin_slayer_crit_chance",
 		},
 		{
 			"bardin_slayer_smiter_unbalance",
 			"bardin_slayer_linesman_unbalance",
-			"bardin_slayer_power_level_unbalance"
+			"bardin_slayer_power_level_unbalance",
 		},
 		{
 			"bardin_slayer_passive_movement_speed",
 			"bardin_slayer_passive_increased_max_stacks",
-			"bardin_slayer_passive_cooldown_reduction_on_max_stacks"
+			"bardin_slayer_passive_cooldown_reduction_on_max_stacks",
 		},
 		{
 			"bardin_slayer_damage_taken_capped",
 			"bardin_slayer_damage_reduction_on_melee_charge_action",
-			"bardin_slayer_push_on_dodge"
+			"bardin_slayer_push_on_dodge",
 		},
 		{
 			"bardin_slayer_activated_ability_impact_damage",
 			"bardin_slayer_activated_ability_leap_damage",
-			"bardin_slayer_activated_ability_movement"
-		}
+			"bardin_slayer_activated_ability_movement",
+		},
 	},
 	{
 		{
 			"bardin_ranger_vanguard",
 			"bardin_ranger_reaper",
-			"bardin_ranger_heal_share"
+			"bardin_ranger_heal_share",
 		},
 		{
 			"bardin_ranger_increased_melee_damage_on_no_ammo",
 			"bardin_ranger_cooldown_on_reload",
-			"bardin_ranger_attack_speed"
+			"bardin_ranger_attack_speed",
 		},
 		{
 			"bardin_ranger_tank_unbalance",
 			"bardin_ranger_linesman_unbalance",
-			"bardin_ranger_power_level_unbalance"
+			"bardin_ranger_power_level_unbalance",
 		},
 		{
 			"bardin_ranger_passive_ale",
 			"bardin_ranger_passive_improved_ammo",
-			"bardin_ranger_passive_spawn_potions_or_bombs"
+			"bardin_ranger_passive_spawn_potions_or_bombs",
 		},
 		{
 			"bardin_ranger_movement_speed",
 			"bardin_ranger_reduced_damage_taken_headshot",
-			"bardin_ranger_reload_speed_on_multi_hit"
+			"bardin_ranger_reload_speed_on_multi_hit",
 		},
 		{
 			"bardin_ranger_smoke_attack",
 			"bardin_ranger_activated_ability_stealth_outside_of_smoke",
-			"bardin_ranger_ability_free_grenade"
-		}
-	}
+			"bardin_ranger_ability_free_grenade",
+		},
+	},
 }
 Talents = Talents or {}
 Talents.dwarf_ranger = {
 	{
-		description = "vanguard_desc",
-		name = "bardin_ironbreaker_vanguard",
 		buffer = "server",
-		num_ranks = 1,
+		description = "vanguard_desc",
 		icon = "bardin_ironbreaker_regrowth",
+		name = "bardin_ironbreaker_vanguard",
+		num_ranks = 1,
 		description_values = {},
 		buffs = {
-			"bardin_ironbreaker_vanguard"
-		}
+			"bardin_ironbreaker_vanguard",
+		},
 	},
 	{
+		buffer = "server",
 		description = "bloodlust_desc_3",
-		name = "bardin_ironbreaker_bloodlust_2",
-		buffer = "server",
-		num_ranks = 1,
 		icon = "bardin_ironbreaker_bloodlust",
+		name = "bardin_ironbreaker_bloodlust_2",
+		num_ranks = 1,
 		description_values = {
 			{
 				value_type = "percent",
-				value = BuffTemplates.bloodlust.buffs[1].multiplier
-			}
+				value = BuffTemplates.bloodlust.buffs[1].multiplier,
+			},
 		},
 		buffs = {
-			"bardin_ironbreaker_bloodlust"
-		}
+			"bardin_ironbreaker_bloodlust",
+		},
 	},
 	{
+		buffer = "server",
 		description = "conqueror_desc_3",
-		name = "bardin_ironbreaker_heal_share",
-		buffer = "server",
-		num_ranks = 1,
 		icon = "bardin_ironbreaker_conqueror",
+		name = "bardin_ironbreaker_heal_share",
+		num_ranks = 1,
 		description_values = {
 			{
 				value_type = "percent",
-				value = BuffTemplates.conqueror.buffs[1].multiplier
-			}
+				value = BuffTemplates.conqueror.buffs[1].multiplier,
+			},
 		},
 		buffs = {
-			"bardin_ironbreaker_conqueror"
-		}
+			"bardin_ironbreaker_conqueror",
+		},
 	},
 	{
-		description = "bardin_ironbreaker_power_on_nearby_allies_desc",
-		name = "bardin_ironbreaker_power_on_nearby_allies",
 		buffer = "server",
-		num_ranks = 1,
+		description = "bardin_ironbreaker_power_on_nearby_allies_desc",
 		icon = "bardin_ironbreaker_power_on_nearby_allies2",
+		name = "bardin_ironbreaker_power_on_nearby_allies",
+		num_ranks = 1,
 		description_values = {
 			{
 				value_type = "percent",
-				value = buff_tweak_data.bardin_ironbreaker_power_on_nearby_allies_buff.multiplier
-			}
+				value = buff_tweak_data.bardin_ironbreaker_power_on_nearby_allies_buff.multiplier,
+			},
 		},
 		buffs = {
-			"bardin_ironbreaker_power_on_nearby_allies"
-		}
+			"bardin_ironbreaker_power_on_nearby_allies",
+		},
 	},
 	{
-		description = "bardin_ironbreaker_overcharge_increase_power_lowers_attack_speed_desc",
-		name = "bardin_ironbreaker_overcharge_increase_power_lowers_attack_speed",
 		buffer = "both",
-		num_ranks = 1,
+		description = "bardin_ironbreaker_overcharge_increase_power_lowers_attack_speed_desc",
 		icon = "bardin_ironbreaker_increased_overcharge_increased_range_power",
+		name = "bardin_ironbreaker_overcharge_increase_power_lowers_attack_speed",
+		num_ranks = 1,
 		description_values = {
 			{
 				value_type = "percent",
-				value = buff_tweak_data.bardin_ironbreaker_overcharge_increase_power_lowers_attack_speed_desc.inital_power
+				value = buff_tweak_data.bardin_ironbreaker_overcharge_increase_power_lowers_attack_speed_desc.inital_power,
 			},
 			{
 				value_type = "percent",
-				value = buff_tweak_data.bardin_ironbreaker_overcharge_increase_power_lowers_attack_speed_desc.final_power
+				value = buff_tweak_data.bardin_ironbreaker_overcharge_increase_power_lowers_attack_speed_desc.final_power,
 			},
 			{
 				value_type = "percent",
-				value = buff_tweak_data.bardin_ironbreaker_overcharge_increase_power_lowers_attack_speed_desc.initial_attack_speed
+				value = buff_tweak_data.bardin_ironbreaker_overcharge_increase_power_lowers_attack_speed_desc.initial_attack_speed,
 			},
 			{
 				value_type = "percent",
-				value = buff_tweak_data.bardin_ironbreaker_overcharge_increase_power_lowers_attack_speed_desc.final_attack_speed
-			}
+				value = buff_tweak_data.bardin_ironbreaker_overcharge_increase_power_lowers_attack_speed_desc.final_attack_speed,
+			},
 		},
 		buffs = {
 			"bardin_ironbreaker_drakefire_changing_attack_speed",
-			"bardin_ironbreaker_drakefire_changing_ranged_power"
-		}
+			"bardin_ironbreaker_drakefire_changing_ranged_power",
+		},
 	},
 	{
-		description = "bardin_ironbreaker_party_power_on_blocked_attacks_desc",
-		name = "bardin_ironbreaker_party_power_on_blocked_attacks",
 		buffer = "server",
-		num_ranks = 1,
+		description = "bardin_ironbreaker_party_power_on_blocked_attacks_desc",
 		icon = "bardin_ironbreaker_power_on_blocked_attacks",
+		name = "bardin_ironbreaker_party_power_on_blocked_attacks",
+		num_ranks = 1,
 		description_values = {
 			{
 				value_type = "percent",
-				value = buff_tweak_data.bardin_ironbreaker_party_power_on_blocked_attacks_buff.multiplier
+				value = buff_tweak_data.bardin_ironbreaker_party_power_on_blocked_attacks_buff.multiplier,
 			},
 			{
-				value = buff_tweak_data.bardin_ironbreaker_party_power_on_blocked_attacks_buff.duration
+				value = buff_tweak_data.bardin_ironbreaker_party_power_on_blocked_attacks_buff.duration,
 			},
 			{
-				value = buff_tweak_data.bardin_ironbreaker_party_power_on_blocked_attacks_buff.max_stacks
-			}
+				value = buff_tweak_data.bardin_ironbreaker_party_power_on_blocked_attacks_buff.max_stacks,
+			},
 		},
 		buffs = {
-			"bardin_ironbreaker_party_power_on_blocked_attacks_add"
-		}
+			"bardin_ironbreaker_party_power_on_blocked_attacks_add",
+		},
 	},
 	{
 		description = "bardin_ironbreaker_rising_attack_speed_desc",
+		icon = "bardin_ironbreaker_stamina_regen_during_gromril",
 		name = "bardin_ironbreaker_rising_attack_speed",
 		num_ranks = 1,
-		icon = "bardin_ironbreaker_stamina_regen_during_gromril",
 		description_values = {
 			{
-				value = buff_tweak_data.bardin_ironbreaker_gromril_attack_speed.presentation_delay
+				value = buff_tweak_data.bardin_ironbreaker_gromril_attack_speed.presentation_delay,
 			},
 			{
 				value_type = "percent",
-				value = buff_tweak_data.bardin_ironbreaker_gromril_attack_speed.multiplier
-			}
+				value = buff_tweak_data.bardin_ironbreaker_gromril_attack_speed.multiplier,
+			},
 		},
 		buffs = {
-			"bardin_ironbreaker_stacking_buff_gromril"
-		}
+			"bardin_ironbreaker_stacking_buff_gromril",
+		},
 	},
 	{
 		description = "bardin_ironbreaker_max_gromril_delay_desc",
+		icon = "bardin_ironbreaker_max_gromril_delay",
 		name = "bardin_ironbreaker_max_gromril_delay",
 		num_ranks = 1,
-		icon = "bardin_ironbreaker_max_gromril_delay",
 		description_values = {
 			{
-				value = buff_tweak_data.bardin_ironbreaker_gromril_delay_short.duration
-			}
+				value = buff_tweak_data.bardin_ironbreaker_gromril_delay_short.duration,
+			},
 		},
-		buffs = {}
+		buffs = {},
 	},
 	{
-		description = "bardin_ironbreaker_gromril_stagger_desc",
-		name = "bardin_ironbreaker_gromril_stagger",
 		buffer = "server",
-		num_ranks = 1,
+		description = "bardin_ironbreaker_gromril_stagger_desc",
 		icon = "bardin_ironbreaker_gromril_stagger",
+		name = "bardin_ironbreaker_gromril_stagger",
+		num_ranks = 1,
 		description_values = {},
 		buffs = {
-			"bardin_ironbreaker_gromril_stagger"
-		}
+			"bardin_ironbreaker_gromril_stagger",
+		},
 	},
 	{
 		description = "bardin_ironbreaker_regen_stamina_on_charged_attacks_desc",
+		icon = "bardin_ironbreaker_regen_stamina_on_charged_attacks",
 		name = "bardin_ironbreaker_regen_stamina_on_charged_attacks",
 		num_ranks = 1,
-		icon = "bardin_ironbreaker_regen_stamina_on_charged_attacks",
 		description_values = {
 			{
 				value_type = "percent",
-				value = buff_tweak_data.bardin_ironbreaker_regen_stamina_on_charged_attacks_buff.multiplier
+				value = buff_tweak_data.bardin_ironbreaker_regen_stamina_on_charged_attacks_buff.multiplier,
 			},
 			{
-				value = buff_tweak_data.bardin_ironbreaker_regen_stamina_on_charged_attacks_buff.duration
-			}
+				value = buff_tweak_data.bardin_ironbreaker_regen_stamina_on_charged_attacks_buff.duration,
+			},
 		},
 		buffs = {
-			"bardin_ironbreaker_regen_stamina_on_charged_attacks"
-		}
+			"bardin_ironbreaker_regen_stamina_on_charged_attacks",
+		},
 	},
 	{
 		description = "bardin_ironbreaker_regen_stamina_on_block_broken_desc",
+		icon = "bardin_ironbreaker_regen_stamina_on_block_broken",
 		name = "bardin_ironbreaker_regen_stamina_on_block_broken",
 		num_ranks = 1,
-		icon = "bardin_ironbreaker_regen_stamina_on_block_broken",
 		description_values = {
 			{
 				value_type = "percent",
-				value = buff_tweak_data.bardin_ironbreaker_regen_stamina_on_block_broken.proc_chance
-			}
+				value = buff_tweak_data.bardin_ironbreaker_regen_stamina_on_block_broken.proc_chance,
+			},
 		},
 		buffs = {
-			"bardin_ironbreaker_regen_stamina_on_block_broken"
-		}
+			"bardin_ironbreaker_regen_stamina_on_block_broken",
+		},
 	},
 	{
 		description = "bardin_ironbreaker_cooldown_reduction_on_kill_while_full_stamina_desc",
+		icon = "bardin_ironbreaker_cooldown_reduction_on_kill_while_full_stamina",
 		name = "bardin_ironbreaker_cooldown_reduction_on_kill_while_full_stamina",
 		num_ranks = 1,
-		icon = "bardin_ironbreaker_cooldown_reduction_on_kill_while_full_stamina",
 		description_values = {
 			{
 				value_type = "percent",
-				value = buff_tweak_data.bardin_ironbreaker_cooldown_reduction_on_kill_while_full_stamina.cooldown_reduction
-			}
+				value = buff_tweak_data.bardin_ironbreaker_cooldown_reduction_on_kill_while_full_stamina.cooldown_reduction,
+			},
 		},
 		buffs = {
-			"bardin_ironbreaker_cooldown_reduction_on_kill_while_full_stamina"
-		}
+			"bardin_ironbreaker_cooldown_reduction_on_kill_while_full_stamina",
+		},
 	},
 	{
 		description = "bardin_ironbreaker_activated_ability_power_buff_allies_desc",
+		icon = "bardin_ironbreaker_activated_ability_power_buff_allies",
 		name = "bardin_ironbreaker_activated_ability_power_buff_allies",
 		num_ranks = 1,
-		icon = "bardin_ironbreaker_activated_ability_power_buff_allies",
 		description_values = {
 			{
 				value_type = "percent",
-				value = buff_tweak_data.bardin_ironbreaker_activated_ability_power_buff.multiplier
+				value = buff_tweak_data.bardin_ironbreaker_activated_ability_power_buff.multiplier,
 			},
 			{
-				value = buff_tweak_data.bardin_ironbreaker_activated_ability_power_buff.duration
-			}
+				value = buff_tweak_data.bardin_ironbreaker_activated_ability_power_buff.duration,
+			},
 		},
-		buffs = {}
+		buffs = {},
 	},
 	{
 		description = "bardin_ironbreaker_activated_ability_taunt_bosses_desc",
+		icon = "bardin_ironbreaker_activated_ability_taunt_bosses",
 		name = "bardin_ironbreaker_activated_ability_taunt_bosses",
 		num_ranks = 1,
-		icon = "bardin_ironbreaker_activated_ability_taunt_bosses",
-		buffs = {}
+		buffs = {},
 	},
 	{
 		description = "bardin_ironbreaker_activated_ability_taunt_range_and_duration_desc",
+		icon = "bardin_ironbreaker_activated_ability_duration",
 		name = "bardin_ironbreaker_activated_ability_taunt_range_and_duration",
 		num_ranks = 1,
-		icon = "bardin_ironbreaker_activated_ability_duration",
 		description_values = {
 			{
 				value_type = "percent",
-				value = buff_tweak_data.bardin_ironbreaker_activated_ability_taunt_range_and_duration.display_multiplier
+				value = buff_tweak_data.bardin_ironbreaker_activated_ability_taunt_range_and_duration.display_multiplier,
 			},
 			{
-				value = buff_tweak_data.bardin_ironbreaker_activated_ability_taunt_range_and_duration.duration
-			}
+				value = buff_tweak_data.bardin_ironbreaker_activated_ability_taunt_range_and_duration.duration,
+			},
 		},
-		buffs = {}
+		buffs = {},
 	},
 	{
+		buffer = "server",
 		description = "tank_unbalance_desc",
-		name = "bardin_ironbreaker_tank_unbalance",
-		buffer = "server",
-		num_ranks = 1,
 		icon = "bardin_ironbreaker_tank_unbalance",
+		name = "bardin_ironbreaker_tank_unbalance",
+		num_ranks = 1,
 		description_values = {
 			{
 				value_type = "percent",
-				value = BuffTemplates.tank_unbalance_buff.buffs[1].bonus
+				value = BuffTemplates.tank_unbalance_buff.buffs[1].bonus,
 			},
 			{
-				value = BuffTemplates.tank_unbalance_buff.buffs[1].duration
-			},
-			{
-				value_type = "percent",
-				value = BuffTemplates.tank_unbalance.buffs[1].display_multiplier
+				value = BuffTemplates.tank_unbalance_buff.buffs[1].duration,
 			},
 			{
 				value_type = "percent",
-				value = BuffTemplates.tank_unbalance.buffs[1].max_display_multiplier
-			}
+				value = BuffTemplates.tank_unbalance.buffs[1].display_multiplier,
+			},
+			{
+				value_type = "percent",
+				value = BuffTemplates.tank_unbalance.buffs[1].max_display_multiplier,
+			},
 		},
 		buffs = {
-			"tank_unbalance"
-		}
+			"tank_unbalance",
+		},
 	},
 	{
+		buffer = "server",
 		description = "smiter_unbalance_desc",
-		name = "bardin_ironbreaker_smiter_unbalance",
-		buffer = "server",
-		num_ranks = 1,
 		icon = "bardin_ironbreaker_smiter_unbalance",
+		name = "bardin_ironbreaker_smiter_unbalance",
+		num_ranks = 1,
 		description_values = {
 			{
 				value_type = "percent",
-				value = BuffTemplates.smiter_unbalance.buffs[1].display_multiplier
+				value = BuffTemplates.smiter_unbalance.buffs[1].display_multiplier,
 			},
 			{
 				value_type = "percent",
-				value = BuffTemplates.smiter_unbalance.buffs[1].max_display_multiplier
-			}
+				value = BuffTemplates.smiter_unbalance.buffs[1].max_display_multiplier,
+			},
 		},
 		buffs = {
-			"smiter_unbalance"
-		}
+			"smiter_unbalance",
+		},
 	},
 	{
+		buffer = "server",
 		description = "power_level_unbalance_desc",
-		name = "bardin_ironbreaker_power_level_unbalance",
-		buffer = "server",
-		num_ranks = 1,
 		icon = "bardin_ironbreaker_power_level_unbalance",
+		name = "bardin_ironbreaker_power_level_unbalance",
+		num_ranks = 1,
 		description_values = {
 			{
 				value_type = "percent",
-				value = BuffTemplates.power_level_unbalance.buffs[1].multiplier
-			}
+				value = BuffTemplates.power_level_unbalance.buffs[1].multiplier,
+			},
 		},
 		buffs = {
-			"power_level_unbalance"
-		}
+			"power_level_unbalance",
+		},
 	},
 	{
+		buffer = "server",
 		description = "reaper_desc",
-		name = "bardin_slayer_reaper",
-		buffer = "server",
-		num_ranks = 1,
 		icon = "bardin_slayer_regrowth",
+		name = "bardin_slayer_reaper",
+		num_ranks = 1,
 		description_values = {
 			{
-				value = BuffTemplates.reaper.buffs[1].max_targets
-			}
+				value = BuffTemplates.reaper.buffs[1].max_targets,
+			},
 		},
 		buffs = {
-			"bardin_slayer_reaper"
-		}
+			"bardin_slayer_reaper",
+		},
 	},
 	{
+		buffer = "server",
 		description = "bloodlust_desc_3",
-		name = "bardin_slayer_bloodlust_2",
-		buffer = "server",
-		num_ranks = 1,
 		icon = "bardin_slayer_bloodlust",
+		name = "bardin_slayer_bloodlust_2",
+		num_ranks = 1,
 		description_values = {
 			{
 				value_type = "percent",
-				value = BuffTemplates.bloodlust.buffs[1].multiplier
-			}
+				value = BuffTemplates.bloodlust.buffs[1].multiplier,
+			},
 		},
 		buffs = {
-			"bardin_slayer_bloodlust"
-		}
+			"bardin_slayer_bloodlust",
+		},
 	},
 	{
-		description = "conqueror_desc_3",
-		name = "bardin_slayer_heal_share",
 		buffer = "server",
-		num_ranks = 1,
+		description = "conqueror_desc_3",
 		icon = "bardin_slayer_conqueror",
+		name = "bardin_slayer_heal_share",
+		num_ranks = 1,
 		description_values = {
 			{
 				value_type = "percent",
-				value = BuffTemplates.conqueror.buffs[1].multiplier
-			}
+				value = BuffTemplates.conqueror.buffs[1].multiplier,
+			},
 		},
 		buffs = {
-			"bardin_slayer_conqueror"
-		}
+			"bardin_slayer_conqueror",
+		},
 	},
 	{
 		description = "bardin_slayer_crit_chance_desc",
+		icon = "bardin_slayer_crit_chance",
 		name = "bardin_slayer_crit_chance",
 		num_ranks = 1,
-		icon = "bardin_slayer_crit_chance",
 		description_values = {
 			{
 				value_type = "percent",
-				value = buff_tweak_data.bardin_slayer_crit_chance.bonus
-			}
+				value = buff_tweak_data.bardin_slayer_crit_chance.bonus,
+			},
 		},
 		buffs = {
-			"bardin_slayer_crit_chance"
-		}
+			"bardin_slayer_crit_chance",
+		},
 	},
 	{
+		buffer = "server",
 		description = "bardin_slayer_power_on_double_two_handed_weapons_desc",
-		name = "bardin_slayer_power_on_double_two_handed_weapons",
-		buffer = "server",
-		num_ranks = 1,
 		icon = "bardin_slayer_power_on_double_two_handed_weapons",
+		name = "bardin_slayer_power_on_double_two_handed_weapons",
+		num_ranks = 1,
 		description_values = {
 			{
 				value_type = "percent",
-				value = buff_tweak_data.bardin_slayer_power_on_double_two_handed_weapons_buff.multiplier
-			}
+				value = buff_tweak_data.bardin_slayer_power_on_double_two_handed_weapons_buff.multiplier,
+			},
 		},
 		buffs = {
-			"bardin_slayer_power_on_double_two_handed_weapons"
-		}
+			"bardin_slayer_power_on_double_two_handed_weapons",
+		},
 	},
 	{
+		buffer = "server",
 		description = "bardin_slayer_attack_speed_on_double_one_handed_weapons_desc",
-		name = "bardin_slayer_attack_speed_on_double_one_handed_weapons",
-		buffer = "server",
-		num_ranks = 1,
 		icon = "bardin_slayer_attack_speed_on_double_one_handed_weapons",
+		name = "bardin_slayer_attack_speed_on_double_one_handed_weapons",
+		num_ranks = 1,
 		description_values = {
 			{
 				value_type = "percent",
-				value = buff_tweak_data.bardin_slayer_attack_speed_on_double_one_handed_weapons_buff.multiplier
-			}
+				value = buff_tweak_data.bardin_slayer_attack_speed_on_double_one_handed_weapons_buff.multiplier,
+			},
 		},
 		buffs = {
-			"bardin_slayer_attack_speed_on_double_one_handed_weapons"
-		}
+			"bardin_slayer_attack_speed_on_double_one_handed_weapons",
+		},
 	},
 	{
-		description = "bardin_slayer_passive_cooldown_reduction_on_max_stacks_desc",
-		name = "bardin_slayer_passive_cooldown_reduction_on_max_stacks",
 		buffer = "server",
-		num_ranks = 1,
+		description = "bardin_slayer_passive_cooldown_reduction_on_max_stacks_desc",
 		icon = "bardin_slayer_passive_cooldown_reduction_on_max_stacks",
+		name = "bardin_slayer_passive_cooldown_reduction_on_max_stacks",
+		num_ranks = 1,
 		description_values = {},
-		buffs = {}
+		buffs = {},
 	},
 	{
-		description = "bardin_slayer_passive_movement_speed_desc",
-		name = "bardin_slayer_passive_movement_speed",
 		buffer = "both",
-		num_ranks = 1,
+		description = "bardin_slayer_passive_movement_speed_desc",
 		icon = "bardin_slayer_passive_movement_speed",
+		name = "bardin_slayer_passive_movement_speed",
+		num_ranks = 1,
 		description_values = {
 			{
 				value_type = "baked_percent",
-				value = buff_tweak_data.bardin_slayer_passive_movement_speed.multiplier
-			}
+				value = buff_tweak_data.bardin_slayer_passive_movement_speed.multiplier,
+			},
 		},
-		buffs = {}
+		buffs = {},
 	},
 	{
+		buffer = "server",
 		description = "bardin_slayer_passive_increased_max_stacks_desc",
-		name = "bardin_slayer_passive_increased_max_stacks",
-		buffer = "server",
-		num_ranks = 1,
 		icon = "bardin_slayer_passive_increased_max_stacks",
+		name = "bardin_slayer_passive_increased_max_stacks",
+		num_ranks = 1,
 		description_values = {
 			{
-				value = buff_tweak_data.bardin_slayer_passive_increased_max_stacks.display_value
-			}
+				value = buff_tweak_data.bardin_slayer_passive_increased_max_stacks.display_value,
+			},
 		},
-		buffs = {}
+		buffs = {},
 	},
 	{
-		description = "bardin_slayer_damage_taken_capped_desc_2",
-		name = "bardin_slayer_damage_taken_capped",
 		buffer = "server",
-		num_ranks = 1,
+		description = "bardin_slayer_damage_taken_capped_desc_2",
 		icon = "bardin_slayer_damage_taken_capped",
+		name = "bardin_slayer_damage_taken_capped",
+		num_ranks = 1,
 		description_values = {
 			{
-				value = buff_tweak_data.bardin_slayer_damage_taken_capped.value
-			}
+				value = buff_tweak_data.bardin_slayer_damage_taken_capped.value,
+			},
 		},
 		buffs = {
-			"bardin_slayer_damage_taken_capped"
-		}
+			"bardin_slayer_damage_taken_capped",
+		},
 	},
 	{
-		description = "bardin_slayer_damage_reduction_on_melee_charge_action_desc_2",
-		name = "bardin_slayer_damage_reduction_on_melee_charge_action",
 		buffer = "server",
-		num_ranks = 1,
+		description = "bardin_slayer_damage_reduction_on_melee_charge_action_desc_2",
 		icon = "bardin_slayer_damage_reduction_on_melee_charge_action",
+		name = "bardin_slayer_damage_reduction_on_melee_charge_action",
+		num_ranks = 1,
 		description_values = {
 			{
 				value_type = "percent",
-				value = buff_tweak_data.bardin_slayer_damage_reduction_on_melee_charge_action_buff.multiplier
+				value = buff_tweak_data.bardin_slayer_damage_reduction_on_melee_charge_action_buff.multiplier,
 			},
 			{
-				value = buff_tweak_data.bardin_slayer_damage_reduction_on_melee_charge_action_buff.duration
-			}
+				value = buff_tweak_data.bardin_slayer_damage_reduction_on_melee_charge_action_buff.duration,
+			},
 		},
 		buffs = {
-			"bardin_slayer_damage_reduction_on_melee_charge_action"
-		}
+			"bardin_slayer_damage_reduction_on_melee_charge_action",
+		},
 	},
 	{
 		description = "bardin_slayer_push_on_dodge_desc",
+		icon = "bardin_slayer_push_on_dodge",
 		name = "bardin_slayer_push_on_dodge",
 		num_ranks = 1,
-		icon = "bardin_slayer_push_on_dodge",
 		description_values = {},
 		buffs = {
-			"bardin_slayer_push_on_dodge"
-		}
-	},
-	{
-		description = "bardin_slayer_activated_ability_leap_range_desc",
-		name = "bardin_slayer_activated_ability_leap_range",
-		buffer = "server",
-		num_ranks = 1,
-		icon = "bardin_slayer_activated_ability_leap_range",
-		description_values = {
-			{
-				value_type = "percent",
-				value = buff_tweak_data.bardin_slayer_activated_ability_leap_range.display_multiplier
-			}
+			"bardin_slayer_push_on_dodge",
 		},
-		buffs = {}
 	},
 	{
-		description = "bardin_slayer_activated_ability_leap_damage_desc",
-		name = "bardin_slayer_activated_ability_leap_damage",
 		buffer = "server",
+		description = "bardin_slayer_activated_ability_leap_range_desc",
+		icon = "bardin_slayer_activated_ability_leap_range",
+		name = "bardin_slayer_activated_ability_leap_range",
 		num_ranks = 1,
-		icon = "bardin_slayer_activated_ability_leap_damage",
 		description_values = {
 			{
 				value_type = "percent",
-				value = buff_tweak_data.bardin_slayer_activated_ability_leap_damage_buff.multiplier
-			}
+				value = buff_tweak_data.bardin_slayer_activated_ability_leap_range.display_multiplier,
+			},
+		},
+		buffs = {},
+	},
+	{
+		buffer = "server",
+		description = "bardin_slayer_activated_ability_leap_damage_desc",
+		icon = "bardin_slayer_activated_ability_leap_damage",
+		name = "bardin_slayer_activated_ability_leap_damage",
+		num_ranks = 1,
+		description_values = {
+			{
+				value_type = "percent",
+				value = buff_tweak_data.bardin_slayer_activated_ability_leap_damage_buff.multiplier,
+			},
 		},
 		buffs = {
 			"bardin_slayer_activated_ability_leap_damage_add",
-			"bardin_slayer_activated_ability_leap_damage_remove"
-		}
+			"bardin_slayer_activated_ability_leap_damage_remove",
+		},
 	},
 	{
 		description = "bardin_slayer_activated_ability_impact_damage_desc_2",
+		icon = "bardin_slayer_activated_ability_impact_damage",
 		name = "bardin_slayer_activated_ability_impact_damage",
 		num_ranks = 1,
-		icon = "bardin_slayer_activated_ability_impact_damage",
 		description_values = {
 			{
 				value_type = "percent",
-				value = buff_tweak_data.bardin_slayer_activated_ability_impact_damage.display_multiplier
-			}
+				value = buff_tweak_data.bardin_slayer_activated_ability_impact_damage.display_multiplier,
+			},
 		},
-		buffs = {}
+		buffs = {},
 	},
 	{
 		description = "bardin_slayer_activated_ability_movement_desc_2",
+		icon = "bardin_slayer_activated_ability_movement",
 		name = "bardin_slayer_activated_ability_movement",
 		num_ranks = 1,
-		icon = "bardin_slayer_activated_ability_movement",
 		description_values = {
 			{
 				value_type = "baked_percent",
-				value = buff_tweak_data.bardin_slayer_activated_ability_movement.multiplier
-			}
+				value = buff_tweak_data.bardin_slayer_activated_ability_movement.multiplier,
+			},
 		},
-		buffs = {}
+		buffs = {},
 	},
 	{
+		buffer = "server",
 		description = "smiter_unbalance_desc",
-		name = "bardin_slayer_smiter_unbalance",
-		buffer = "server",
-		num_ranks = 1,
 		icon = "bardin_slayer_smiter_unbalance",
+		name = "bardin_slayer_smiter_unbalance",
+		num_ranks = 1,
 		description_values = {
 			{
 				value_type = "percent",
-				value = BuffTemplates.smiter_unbalance.buffs[1].display_multiplier
+				value = BuffTemplates.smiter_unbalance.buffs[1].display_multiplier,
 			},
 			{
 				value_type = "percent",
-				value = BuffTemplates.smiter_unbalance.buffs[1].max_display_multiplier
-			}
+				value = BuffTemplates.smiter_unbalance.buffs[1].max_display_multiplier,
+			},
 		},
 		buffs = {
-			"smiter_unbalance"
-		}
+			"smiter_unbalance",
+		},
 	},
 	{
+		buffer = "server",
 		description = "linesman_unbalance_desc",
-		name = "bardin_slayer_linesman_unbalance",
-		buffer = "server",
-		num_ranks = 1,
 		icon = "bardin_slayer_linesman_unbalance",
+		name = "bardin_slayer_linesman_unbalance",
+		num_ranks = 1,
 		description_values = {
 			{
 				value_type = "percent",
-				value = BuffTemplates.linesman_unbalance.buffs[1].display_multiplier
+				value = BuffTemplates.linesman_unbalance.buffs[1].display_multiplier,
 			},
 			{
 				value_type = "percent",
-				value = BuffTemplates.linesman_unbalance.buffs[1].max_display_multiplier
-			}
+				value = BuffTemplates.linesman_unbalance.buffs[1].max_display_multiplier,
+			},
 		},
 		buffs = {
-			"linesman_unbalance"
-		}
+			"linesman_unbalance",
+		},
 	},
 	{
-		description = "power_level_unbalance_desc",
-		name = "bardin_slayer_power_level_unbalance",
 		buffer = "server",
-		num_ranks = 1,
+		description = "power_level_unbalance_desc",
 		icon = "bardin_slayer_power_level_unbalance",
+		name = "bardin_slayer_power_level_unbalance",
+		num_ranks = 1,
 		description_values = {
 			{
 				value_type = "percent",
-				value = BuffTemplates.power_level_unbalance.buffs[1].multiplier
-			}
+				value = BuffTemplates.power_level_unbalance.buffs[1].multiplier,
+			},
 		},
 		buffs = {
-			"power_level_unbalance"
-		}
+			"power_level_unbalance",
+		},
 	},
 	{
-		description = "vanguard_desc",
-		name = "bardin_ranger_vanguard",
 		buffer = "server",
-		num_ranks = 1,
+		description = "vanguard_desc",
 		icon = "bardin_ranger_regrowth",
+		name = "bardin_ranger_vanguard",
+		num_ranks = 1,
 		description_values = {},
 		buffs = {
-			"bardin_ranger_vanguard"
-		}
+			"bardin_ranger_vanguard",
+		},
 	},
 	{
+		buffer = "server",
 		description = "reaper_desc",
-		name = "bardin_ranger_reaper",
-		buffer = "server",
-		num_ranks = 1,
 		icon = "bardin_ranger_bloodlust",
+		name = "bardin_ranger_reaper",
+		num_ranks = 1,
 		description_values = {
 			{
-				value = BuffTemplates.reaper.buffs[1].max_targets
-			}
+				value = BuffTemplates.reaper.buffs[1].max_targets,
+			},
 		},
 		buffs = {
-			"bardin_ranger_reaper"
-		}
+			"bardin_ranger_reaper",
+		},
 	},
 	{
-		description = "conqueror_desc_3",
-		name = "bardin_ranger_heal_share",
 		buffer = "server",
-		num_ranks = 1,
+		description = "conqueror_desc_3",
 		icon = "bardin_ranger_conqueror",
+		name = "bardin_ranger_heal_share",
+		num_ranks = 1,
 		description_values = {
 			{
 				value_type = "percent",
-				value = BuffTemplates.conqueror.buffs[1].multiplier
-			}
+				value = BuffTemplates.conqueror.buffs[1].multiplier,
+			},
 		},
 		buffs = {
-			"bardin_ranger_conqueror"
-		}
+			"bardin_ranger_conqueror",
+		},
 	},
 	{
-		description = "bardin_ranger_increased_melee_damage_on_no_ammo_desc",
-		name = "bardin_ranger_increased_melee_damage_on_no_ammo",
 		buffer = "both",
-		num_ranks = 1,
+		description = "bardin_ranger_increased_melee_damage_on_no_ammo_desc",
 		icon = "bardin_ranger_increased_melee_damage_on_no_ammo",
+		name = "bardin_ranger_increased_melee_damage_on_no_ammo",
+		num_ranks = 1,
 		description_values = {
 			{
 				value_type = "percent",
-				value = buff_tweak_data.bardin_ranger_melee_damage_on_no_ammo.multiplier
-			}
+				value = buff_tweak_data.bardin_ranger_melee_damage_on_no_ammo.multiplier,
+			},
 		},
 		buffs = {
 			"bardin_ranger_increased_melee_damage_on_no_ammo_add",
-			"bardin_ranger_increased_melee_damage_on_no_ammo_remove"
-		}
+			"bardin_ranger_increased_melee_damage_on_no_ammo_remove",
+		},
 	},
 	{
-		description = "bardin_ranger_cooldown_on_reload_desc",
-		name = "bardin_ranger_cooldown_on_reload",
 		buffer = "both",
-		num_ranks = 1,
+		description = "bardin_ranger_cooldown_on_reload_desc",
 		icon = "bardin_ranger_cooldown_on_reload",
+		name = "bardin_ranger_cooldown_on_reload",
+		num_ranks = 1,
 		description_values = {
 			{
-				value = buff_tweak_data.bardin_ranger_cooldown_on_reload.bonus
-			}
+				value = buff_tweak_data.bardin_ranger_cooldown_on_reload.bonus,
+			},
 		},
 		buffs = {
-			"bardin_ranger_cooldown_on_reload"
-		}
+			"bardin_ranger_cooldown_on_reload",
+		},
 	},
 	{
 		description = "bardin_ranger_attack_speed_desc",
+		icon = "bardin_ranger_attack_speed",
 		name = "bardin_ranger_attack_speed",
 		num_ranks = 1,
-		icon = "bardin_ranger_attack_speed",
 		description_values = {
 			{
 				value_type = "percent",
-				value = buff_tweak_data.bardin_ranger_attack_speed.multiplier
-			}
+				value = buff_tweak_data.bardin_ranger_attack_speed.multiplier,
+			},
 		},
 		buffs = {
-			"bardin_ranger_attack_speed"
-		}
+			"bardin_ranger_attack_speed",
+		},
 	},
 	{
 		description = "bardin_ranger_passive_spawn_potions_or_bombs_desc",
+		icon = "bardin_ranger_passive_spawn_potions",
 		name = "bardin_ranger_passive_spawn_potions_or_bombs",
 		num_ranks = 1,
-		icon = "bardin_ranger_passive_spawn_potions",
 		description_values = {
 			{
 				value_type = "percent",
-				value = buff_tweak_data.bardin_ranger_passive_spawn_potions_or_bombs.display_multiplier
-			}
+				value = buff_tweak_data.bardin_ranger_passive_spawn_potions_or_bombs.display_multiplier,
+			},
 		},
-		buffs = {}
+		buffs = {},
 	},
 	{
 		description = "bardin_ranger_passive_improved_ammo_desc_2",
+		icon = "bardin_ranger_passive_improved_ammo",
 		name = "bardin_ranger_passive_improved_ammo",
 		num_ranks = 1,
-		icon = "bardin_ranger_passive_improved_ammo",
 		description_values = {
 			{
 				value_type = "percent",
-				value = buff_tweak_data.bardin_ranger_passive_improved_ammo.multiplier
-			}
+				value = buff_tweak_data.bardin_ranger_passive_improved_ammo.multiplier,
+			},
 		},
-		buffs = {}
+		buffs = {},
 	},
 	{
 		description = "bardin_ranger_passive_ale_desc",
+		icon = "buff_icon_mutator_icon_drunk",
 		name = "bardin_ranger_passive_ale",
 		num_ranks = 1,
-		icon = "buff_icon_mutator_icon_drunk",
 		description_values = {
 			{
 				value_type = "percent",
-				value = buff_tweak_data.bardin_survival_ale_buff_presentation.multiplier_2
+				value = buff_tweak_data.bardin_survival_ale_buff_presentation.multiplier_2,
 			},
 			{
 				value_type = "baked_percent",
-				value = buff_tweak_data.bardin_survival_ale_buff_presentation.multiplier
+				value = buff_tweak_data.bardin_survival_ale_buff_presentation.multiplier,
 			},
 			{
-				value = buff_tweak_data.bardin_survival_ale_buff_presentation.duration
+				value = buff_tweak_data.bardin_survival_ale_buff_presentation.duration,
 			},
 			{
-				value = buff_tweak_data.bardin_survival_ale_buff_presentation.max_stacks
-			}
+				value = buff_tweak_data.bardin_survival_ale_buff_presentation.max_stacks,
+			},
 		},
-		buffs = {}
+		buffs = {},
 	},
 	{
 		description = "bardin_ranger_movement_speed_desc",
+		icon = "bardin_ranger_movement_speed",
 		name = "bardin_ranger_movement_speed",
 		num_ranks = 1,
-		icon = "bardin_ranger_movement_speed",
 		description_values = {
 			{
 				value_type = "baked_percent",
-				value = buff_tweak_data.bardin_ranger_movement_speed.multiplier
-			}
+				value = buff_tweak_data.bardin_ranger_movement_speed.multiplier,
+			},
 		},
 		buffs = {
-			"bardin_ranger_movement_speed"
-		}
+			"bardin_ranger_movement_speed",
+		},
 	},
 	{
-		description = "bardin_ranger_reduced_damage_taken_headshot_desc_2",
-		name = "bardin_ranger_reduced_damage_taken_headshot",
 		buffer = "server",
-		num_ranks = 1,
+		description = "bardin_ranger_reduced_damage_taken_headshot_desc_2",
 		icon = "bardin_ranger_reduced_damage_taken_headshot",
+		name = "bardin_ranger_reduced_damage_taken_headshot",
+		num_ranks = 1,
 		description_values = {
 			{
 				value_type = "percent",
-				value = buff_tweak_data.bardin_ranger_reduced_damage_taken_headshot_buff.multiplier
+				value = buff_tweak_data.bardin_ranger_reduced_damage_taken_headshot_buff.multiplier,
 			},
 			{
-				value = buff_tweak_data.bardin_ranger_reduced_damage_taken_headshot_buff.duration
-			}
+				value = buff_tweak_data.bardin_ranger_reduced_damage_taken_headshot_buff.duration,
+			},
 		},
 		buffs = {
-			"bardin_ranger_reduced_damage_taken_headshot"
-		}
+			"bardin_ranger_reduced_damage_taken_headshot",
+		},
 	},
 	{
 		description = "bardin_ranger_reload_speed_on_multi_hit_desc",
+		icon = "bardin_ranger_reload_speed_on_multi_hit",
 		name = "bardin_ranger_reload_speed_on_multi_hit",
 		num_ranks = 1,
-		icon = "bardin_ranger_reload_speed_on_multi_hit",
 		description_values = {
 			{
-				value = buff_tweak_data.bardin_ranger_reload_speed_on_multi_hit_add.target_number
+				value = buff_tweak_data.bardin_ranger_reload_speed_on_multi_hit_add.target_number,
 			},
 			{
 				value_type = "percent",
-				value = buff_tweak_data.bardin_ranger_reload_speed_on_multi_hit_buff.multiplier
-			}
+				value = buff_tweak_data.bardin_ranger_reload_speed_on_multi_hit_buff.multiplier,
+			},
 		},
 		buffs = {
-			"bardin_ranger_reload_speed_on_multi_hit_add"
-		}
+			"bardin_ranger_reload_speed_on_multi_hit_add",
+		},
 	},
 	{
 		description = "bardin_ranger_smoke_attack_desc",
+		icon = "bardin_ranger_activated_ability_duration",
 		name = "bardin_ranger_smoke_attack",
 		num_ranks = 1,
-		icon = "bardin_ranger_activated_ability_duration",
 		description_values = {
 			{
 				value_type = "percent",
-				value = buff_tweak_data.bardin_ranger_smoke_attack_buff.multiplier
+				value = buff_tweak_data.bardin_ranger_smoke_attack_buff.multiplier,
 			},
 			{
-				value = buff_tweak_data.bardin_ranger_smoke_heal_buff.heal_amount
-			}
+				value = buff_tweak_data.bardin_ranger_smoke_heal_buff.heal_amount,
+			},
 		},
-		buffs = {}
+		buffs = {},
 	},
 	{
 		description = "bardin_ranger_activated_ability_stealth_outside_of_smoke_desc",
+		icon = "bardin_ranger_activated_ability_stealth_outside_of_smoke",
 		name = "bardin_ranger_activated_ability_stealth_outside_of_smoke",
 		num_ranks = 1,
-		icon = "bardin_ranger_activated_ability_stealth_outside_of_smoke",
 		description_values = {},
-		buffs = {}
+		buffs = {},
 	},
 	{
 		description = "bardin_ranger_ability_free_grenade_desc",
+		icon = "bardin_ranger_ability_free_grenade",
 		name = "bardin_ranger_ability_free_grenade",
 		num_ranks = 1,
-		icon = "bardin_ranger_ability_free_grenade",
 		description_values = {},
-		buffs = {}
+		buffs = {},
 	},
 	{
+		buffer = "server",
 		description = "tank_unbalance_desc",
-		name = "bardin_ranger_tank_unbalance",
-		buffer = "server",
-		num_ranks = 1,
 		icon = "bardin_ranger_tank_unbalance",
+		name = "bardin_ranger_tank_unbalance",
+		num_ranks = 1,
 		description_values = {
 			{
 				value_type = "percent",
-				value = BuffTemplates.tank_unbalance_buff.buffs[1].bonus
+				value = BuffTemplates.tank_unbalance_buff.buffs[1].bonus,
 			},
 			{
-				value = BuffTemplates.tank_unbalance_buff.buffs[1].duration
-			},
-			{
-				value_type = "percent",
-				value = BuffTemplates.tank_unbalance.buffs[1].display_multiplier
+				value = BuffTemplates.tank_unbalance_buff.buffs[1].duration,
 			},
 			{
 				value_type = "percent",
-				value = BuffTemplates.tank_unbalance.buffs[1].max_display_multiplier
-			}
+				value = BuffTemplates.tank_unbalance.buffs[1].display_multiplier,
+			},
+			{
+				value_type = "percent",
+				value = BuffTemplates.tank_unbalance.buffs[1].max_display_multiplier,
+			},
 		},
 		buffs = {
-			"tank_unbalance"
-		}
+			"tank_unbalance",
+		},
 	},
 	{
+		buffer = "server",
 		description = "linesman_unbalance_desc",
-		name = "bardin_ranger_linesman_unbalance",
-		buffer = "server",
-		num_ranks = 1,
 		icon = "bardin_ranger_linesman_unbalance",
+		name = "bardin_ranger_linesman_unbalance",
+		num_ranks = 1,
 		description_values = {
 			{
 				value_type = "percent",
-				value = BuffTemplates.linesman_unbalance.buffs[1].display_multiplier
+				value = BuffTemplates.linesman_unbalance.buffs[1].display_multiplier,
 			},
 			{
 				value_type = "percent",
-				value = BuffTemplates.linesman_unbalance.buffs[1].max_display_multiplier
-			}
+				value = BuffTemplates.linesman_unbalance.buffs[1].max_display_multiplier,
+			},
 		},
 		buffs = {
-			"linesman_unbalance"
-		}
+			"linesman_unbalance",
+		},
 	},
 	{
-		description = "power_level_unbalance_desc",
-		name = "bardin_ranger_power_level_unbalance",
 		buffer = "server",
-		num_ranks = 1,
+		description = "power_level_unbalance_desc",
 		icon = "bardin_ranger_power_level_unbalance",
+		name = "bardin_ranger_power_level_unbalance",
+		num_ranks = 1,
 		description_values = {
 			{
 				value_type = "percent",
-				value = BuffTemplates.power_level_unbalance.buffs[1].multiplier
-			}
+				value = BuffTemplates.power_level_unbalance.buffs[1].multiplier,
+			},
 		},
 		buffs = {
-			"power_level_unbalance"
-		}
+			"power_level_unbalance",
+		},
 	},
 	{
 		description = "bardin_placeholder",
-		name = "bardin_placeholder"
-	}
+		name = "bardin_placeholder",
+	},
 }
 
 BuffUtils.copy_talent_buff_names(TalentBuffTemplates.dwarf_ranger)

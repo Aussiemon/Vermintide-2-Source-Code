@@ -1,12 +1,15 @@
+﻿-- chunkname: @scripts/unit_extensions/deus/deus_chest_preload_extension.lua
+
 DeusChestPreloadExtension = class(DeusChestPreloadExtension)
+
 local REAL_PLAYER_LOCAL_ID = 1
 local package_exclusion_list = {
+	["units/weapons/player/wpn_bw_deus_01/wpn_bw_deus_01_3p"] = true,
+	["units/weapons/player/wpn_bw_deus_01/wpn_bw_deus_01_magic_3p"] = true,
 	["units/weapons/player/wpn_bw_deus_01/wpn_bw_deus_01_runed_3p"] = true,
 	["units/weapons/player/wpn_bw_deus_02/wpn_bw_deus_02_3p"] = true,
+	["units/weapons/player/wpn_bw_deus_02/wpn_bw_deus_02_magic_3p"] = true,
 	["units/weapons/player/wpn_bw_deus_02/wpn_bw_deus_02_runed_3p"] = true,
-	["units/weapons/player/wpn_bw_deus_01/wpn_bw_deus_01_magic_3p"] = true,
-	["units/weapons/player/wpn_bw_deus_01/wpn_bw_deus_01_3p"] = true,
-	["units/weapons/player/wpn_bw_deus_02/wpn_bw_deus_02_magic_3p"] = true
 }
 
 local function get_weapon_packages(stored_purchase, career_name)
@@ -40,6 +43,7 @@ end
 
 DeusChestPreloadExtension.extensions_ready = function (self, world, unit)
 	local mechanism = Managers.mechanism:game_mechanism()
+
 	self._deus_run_controller = mechanism:get_deus_run_controller()
 
 	fassert(self._deus_run_controller, "deus pickup unit can only be used in a deus run")

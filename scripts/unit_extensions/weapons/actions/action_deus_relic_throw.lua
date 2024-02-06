@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/weapons/actions/action_deus_relic_throw.lua
+
 ActionDeusRelicThrow = class(ActionDeusRelicThrow, ActionThrow)
 
 ActionDeusRelicThrow._throw = function (self)
@@ -24,6 +26,7 @@ ActionDeusRelicThrow._throw = function (self)
 
 	if current_action.is_statue_and_needs_rotation_cause_reasons then
 		local statue_rotation_two = Quaternion(Vector3.up(), -math.pi)
+
 		proj_rotation = Quaternion.multiply(proj_rotation, statue_rotation_two)
 	end
 

@@ -34,207 +34,207 @@ local generic_input_actions = {
 	main_menu = {
 		default = {
 			{
-				priority = 49,
 				description_text = "input_description_information",
 				ignore_keybinding = true,
-				input_action = IS_PS4 and "l2" or "left_trigger"
+				priority = 49,
+				input_action = IS_PS4 and "l2" or "left_trigger",
 			},
 			{
+				description_text = "input_description_change_tab",
+				ignore_keybinding = true,
 				input_action = "l1_r1",
 				priority = 49,
-				description_text = "input_description_change_tab",
-				ignore_keybinding = true
 			},
 			{
+				description_text = "input_description_close",
 				input_action = "back",
 				priority = 50,
-				description_text = "input_description_close"
-			}
+			},
 		},
 		reset = {
 			{
-				priority = 46,
 				description_text = "input_description_information",
 				ignore_keybinding = true,
-				input_action = IS_PS4 and "l2" or "left_trigger"
+				priority = 46,
+				input_action = IS_PS4 and "l2" or "left_trigger",
 			},
 			{
+				description_text = "input_description_change_tab",
+				ignore_keybinding = true,
 				input_action = "l1_r1",
 				priority = 47,
-				description_text = "input_description_change_tab",
-				ignore_keybinding = true
 			},
 			{
+				description_text = "input_description_reset",
 				input_action = "special_1",
 				priority = 49,
-				description_text = "input_description_reset"
 			},
 			{
+				description_text = "input_description_close",
 				input_action = "back",
 				priority = 50,
-				description_text = "input_description_close"
-			}
+			},
 		},
 		reset_and_apply = {
 			{
-				priority = 45,
 				description_text = "input_description_information",
 				ignore_keybinding = true,
-				input_action = IS_PS4 and "l2" or "left_trigger"
+				priority = 45,
+				input_action = IS_PS4 and "l2" or "left_trigger",
 			},
 			{
+				description_text = "input_description_change_tab",
+				ignore_keybinding = true,
 				input_action = "l1_r1",
 				priority = 46,
-				description_text = "input_description_change_tab",
-				ignore_keybinding = true
 			},
 			{
+				description_text = "input_description_reset",
 				input_action = "special_1",
 				priority = 48,
-				description_text = "input_description_reset"
 			},
 			{
+				description_text = "input_description_apply",
 				input_action = "refresh",
 				priority = 49,
-				description_text = "input_description_apply"
 			},
 			{
+				description_text = "input_description_close",
 				input_action = "back",
 				priority = 50,
-				description_text = "input_description_close"
-			}
+			},
 		},
 		apply = {
 			{
-				priority = 46,
 				description_text = "input_description_information",
 				ignore_keybinding = true,
-				input_action = IS_PS4 and "l2" or "left_trigger"
+				priority = 46,
+				input_action = IS_PS4 and "l2" or "left_trigger",
 			},
 			{
+				description_text = "input_description_change_tab",
+				ignore_keybinding = true,
 				input_action = "l1_r1",
 				priority = 47,
-				description_text = "input_description_change_tab",
-				ignore_keybinding = true
 			},
 			{
+				description_text = "input_description_apply",
 				input_action = "refresh",
 				priority = 49,
-				description_text = "input_description_apply"
 			},
 			{
+				description_text = "input_description_close",
 				input_action = "back",
 				priority = 50,
-				description_text = "input_description_close"
-			}
-		}
+			},
+		},
 	},
 	sub_menu = {
 		default = {
 			{
-				priority = 47,
 				description_text = "input_description_information",
 				ignore_keybinding = true,
-				input_action = IS_PS4 and "l2" or "left_trigger"
+				priority = 47,
+				input_action = IS_PS4 and "l2" or "left_trigger",
 			},
 			{
+				description_text = "input_description_change_tab",
+				ignore_keybinding = true,
 				input_action = "l1_r1",
 				priority = 48,
-				description_text = "input_description_change_tab",
-				ignore_keybinding = true
 			},
 			{
+				description_text = "input_description_back",
 				input_action = "back",
 				priority = 50,
-				description_text = "input_description_back"
-			}
+			},
 		},
 		reset = {
 			{
-				priority = 47,
 				description_text = "input_description_information",
 				ignore_keybinding = true,
-				input_action = IS_PS4 and "l2" or "left_trigger"
+				priority = 47,
+				input_action = IS_PS4 and "l2" or "left_trigger",
 			},
 			{
+				description_text = "input_description_change_tab",
+				ignore_keybinding = true,
 				input_action = "l1_r1",
 				priority = 48,
-				description_text = "input_description_change_tab",
-				ignore_keybinding = true
 			},
 			{
+				description_text = "input_description_reset",
 				input_action = "special_1",
 				priority = 50,
-				description_text = "input_description_reset"
 			},
 			{
+				description_text = "input_description_back",
 				input_action = "back",
 				priority = 51,
-				description_text = "input_description_back"
-			}
+			},
 		},
 		reset_and_apply = {
 			{
-				priority = 46,
 				description_text = "input_description_information",
 				ignore_keybinding = true,
-				input_action = IS_PS4 and "l2" or "left_trigger"
+				priority = 46,
+				input_action = IS_PS4 and "l2" or "left_trigger",
 			},
 			{
+				description_text = "input_description_change_tab",
+				ignore_keybinding = true,
 				input_action = "l1_r1",
 				priority = 47,
-				description_text = "input_description_change_tab",
-				ignore_keybinding = true
 			},
 			{
+				description_text = "input_description_reset",
 				input_action = "special_1",
 				priority = 49,
-				description_text = "input_description_reset"
 			},
 			{
+				description_text = "input_description_apply",
 				input_action = "refresh",
 				priority = 50,
-				description_text = "input_description_apply"
 			},
 			{
+				description_text = "input_description_back",
 				input_action = "back",
 				priority = 51,
-				description_text = "input_description_back"
-			}
+			},
 		},
 		apply = {
 			{
-				priority = 47,
 				description_text = "input_description_information",
 				ignore_keybinding = true,
-				input_action = IS_PS4 and "l2" or "left_trigger"
+				priority = 47,
+				input_action = IS_PS4 and "l2" or "left_trigger",
 			},
 			{
+				description_text = "input_description_change_tab",
+				ignore_keybinding = true,
 				input_action = "l1_r1",
 				priority = 48,
-				description_text = "input_description_change_tab",
-				ignore_keybinding = true
 			},
 			{
+				description_text = "input_description_apply",
 				input_action = "refresh",
 				priority = 50,
-				description_text = "input_description_apply"
 			},
 			{
+				description_text = "input_description_back",
 				input_action = "back",
 				priority = 51,
-				description_text = "input_description_back"
-			}
-		}
-	}
+			},
+		},
+	},
 }
 local disabled_mouse_input_table = {
 	activate_chat_input = {
 		"left",
 		"right",
 		"left_double",
-		"right_double"
-	}
+		"right_double",
+	},
 }
 
 local function mouse_input_allowed(content_actions, mouse_input)
@@ -261,7 +261,7 @@ OptionsView.init = function (self, ingame_ui_context)
 	self.ingame_ui = ingame_ui_context.ingame_ui
 	self.voip = ingame_ui_context.voip
 	self.render_settings = {
-		snap_pixel_positions = false
+		snap_pixel_positions = false,
 	}
 	self.is_in_tutorial = ingame_ui_context.is_in_tutorial
 	self.platform = PLATFORM
@@ -744,7 +744,7 @@ OptionsView._setup_input_functions = function (self)
 		end,
 		gamepad_layout = function ()
 			return
-		end
+		end,
 	}
 end
 
@@ -850,9 +850,9 @@ OptionsView.create_ui_elements = function (self)
 
 	local calibrate_ui_settings_list_dummy = {
 		hide_reset = true,
-		widgets_n = 0,
 		scenegraph_id_start = "calibrate_ui_dummy",
-		widgets = {}
+		widgets_n = 0,
+		widgets = {},
 	}
 	local settings_lists = {}
 
@@ -870,8 +870,8 @@ OptionsView.create_ui_elements = function (self)
 					{
 						text = "settings_view_header_eyetracker_not_found",
 						url = "http://tobiigaming.com/",
-						widget_type = "text_link"
-					}
+						widget_type = "text_link",
+					},
 				}
 			end
 
@@ -1020,7 +1020,7 @@ OptionsView.build_settings_list = function (self, definition, scenegraph_id)
 		local base_offset = {
 			0,
 			-list_size_y,
-			0
+			0,
 		}
 		local widget, size_y = nil, 0
 		local widget_type = element.widget_type
@@ -1102,37 +1102,37 @@ OptionsView.build_settings_list = function (self, definition, scenegraph_id)
 	local size_x = mask_size[1]
 
 	scenegraph_definition[scenegraph_id] = {
-		vertical_alignment = "top",
-		parent = "list_mask",
 		horizontal_alignment = "center",
+		parent = "list_mask",
+		vertical_alignment = "top",
 		position = {
 			0,
 			0,
-			-1
+			-1,
 		},
 		offset = {
 			0,
 			0,
-			0
+			0,
 		},
 		size = {
 			size_x,
-			list_size_y
-		}
+			list_size_y,
+		},
 	}
 	scenegraph_definition[scenegraph_id_start] = {
-		vertical_alignment = "top",
 		horizontal_alignment = "left",
+		vertical_alignment = "top",
 		parent = scenegraph_id,
 		position = {
 			30,
 			0,
-			10
+			10,
 		},
 		size = {
 			1,
-			1
-		}
+			1,
+		},
 	}
 
 	local scrollbar, max_offset_y = false, 0
@@ -1149,7 +1149,7 @@ OptionsView.build_settings_list = function (self, definition, scenegraph_id)
 		scrollbar = scrollbar,
 		max_offset_y = max_offset_y,
 		widgets = widgets,
-		widgets_n = widgets_n
+		widgets_n = widgets_n,
 	}
 
 	return widget_list
@@ -3256,7 +3256,7 @@ end
 
 local temp_pos_table = {
 	0,
-	0
+	0,
 }
 
 OptionsView.update_settings_list = function (self, settings_list, ui_renderer, ui_scenegraph, input_service, dt, disable_all_input)
@@ -3393,7 +3393,7 @@ OptionsView.update_scrollbar = function (self, settings_list, ui_scenegraph)
 	scenegraph.offset = scenegraph.offset or {
 		0,
 		0,
-		0
+		0,
 	}
 	scenegraph.offset[2] = offset_y
 end
@@ -4135,7 +4135,7 @@ OptionsView.on_stepper_arrow_pressed = function (self, widget, style_id)
 	local pass_style = widget_style[style_id]
 	local default_size = {
 		28,
-		34
+		34,
 	}
 	local current_alpha = pass_style.color[1]
 	local target_alpha = 255
@@ -4225,23 +4225,23 @@ OptionsView.drop_down_test_setup = function (self)
 			text = "1920x1080",
 			value = {
 				1920,
-				1080
-			}
+				1080,
+			},
 		},
 		{
 			text = "1680x1050",
 			value = {
 				1680,
-				1050
-			}
+				1050,
+			},
 		},
 		{
 			text = "1680x1050",
 			value = {
 				1680,
-				1050
-			}
-		}
+				1050,
+			},
+		},
 	}
 
 	return 1, options, "Resolution"
@@ -4262,16 +4262,16 @@ OptionsView.cb_stepper_test_setup = function (self)
 	local options = {
 		{
 			text = "value_1",
-			value = 1
+			value = 1,
 		},
 		{
 			text = "value_2_maddafakkaaa",
-			value = 2
+			value = 2,
 		},
 		{
 			text = "value_3_yobro",
-			value = 3
-		}
+			value = 3,
+		},
 	}
 
 	return 1, options, "stepper_test"
@@ -4293,12 +4293,12 @@ OptionsView.cb_vsync_setup = function (self)
 	local options = {
 		{
 			value = false,
-			text = Localize("menu_settings_off")
+			text = Localize("menu_settings_off"),
 		},
 		{
 			value = true,
-			text = Localize("menu_settings_on")
-		}
+			text = Localize("menu_settings_on"),
+		},
 	}
 	local vsync = Application.user_setting("vsync") or false
 	local selection = vsync and 2 or 1
@@ -4337,12 +4337,12 @@ OptionsView.cb_hud_clamp_ui_scaling_setup = function (self)
 	local options = {
 		{
 			value = false,
-			text = Localize("menu_settings_off")
+			text = Localize("menu_settings_off"),
 		},
 		{
 			value = true,
-			text = Localize("menu_settings_on")
-		}
+			text = Localize("menu_settings_on"),
+		},
 	}
 	local hud_clamp_ui_scaling = Application.user_setting("hud_clamp_ui_scaling") or false
 	local selection = hud_clamp_ui_scaling and 2 or 1
@@ -4373,12 +4373,12 @@ OptionsView.cb_hud_custom_scale_setup = function (self)
 	local options = {
 		{
 			value = false,
-			text = Localize("menu_settings_off")
+			text = Localize("menu_settings_off"),
 		},
 		{
 			value = true,
-			text = Localize("menu_settings_on")
-		}
+			text = Localize("menu_settings_on"),
+		},
 	}
 	local use_custom_hud_scale = Application.user_setting("use_custom_hud_scale") or false
 	local selection = use_custom_hud_scale and 2 or 1
@@ -4415,12 +4415,12 @@ OptionsView.cb_enabled_pc_menu_layout_setup = function (self)
 	local options = {
 		{
 			value = false,
-			text = Localize("menu_settings_off")
+			text = Localize("menu_settings_off"),
 		},
 		{
 			value = true,
-			text = Localize("menu_settings_on")
-		}
+			text = Localize("menu_settings_on"),
+		},
 	}
 	local use_pc_menu_layout = Application.user_setting("use_pc_menu_layout") or false
 	local selection = use_pc_menu_layout and 2 or 1
@@ -4446,16 +4446,16 @@ OptionsView.cb_enabled_gamepad_hud_layout_setup = function (self)
 	local options = {
 		{
 			value = "auto",
-			text = Localize("map_host_option_1")
+			text = Localize("map_host_option_1"),
 		},
 		{
 			value = "always",
-			text = Localize("map_host_option_2")
+			text = Localize("map_host_option_2"),
 		},
 		{
 			value = "never",
-			text = Localize("map_host_option_3")
-		}
+			text = Localize("map_host_option_3"),
+		},
 	}
 	local use_gamepad_hud_layout = Application.user_setting("use_gamepad_hud_layout") or "auto"
 	local selection, default_value = 1, 1
@@ -4493,16 +4493,16 @@ OptionsView.cb_fullscreen_setup = function (self)
 	local options = {
 		{
 			value = "fullscreen",
-			text = Localize("menu_settings_fullscreen")
+			text = Localize("menu_settings_fullscreen"),
 		},
 		{
 			value = "borderless_fullscreen",
-			text = Localize("menu_settings_borderless_window")
+			text = Localize("menu_settings_borderless_window"),
 		},
 		{
 			value = "windowed",
-			text = Localize("menu_settings_windowed")
-		}
+			text = Localize("menu_settings_windowed"),
+		},
 	}
 	local fullscreen = Application.user_setting("fullscreen")
 	local borderless_fullscreen = Application.user_setting("borderless_fullscreen")
@@ -4563,7 +4563,7 @@ OptionsView.cb_adapter_setup = function (self)
 	for i = 0, num_adapters - 1 do
 		options[#options + 1] = {
 			text = tostring(i),
-			value = i
+			value = i,
 		}
 	end
 
@@ -4595,12 +4595,12 @@ OptionsView.cb_minimize_on_alt_tab_setup = function (self)
 	local options = {
 		{
 			value = true,
-			text = Localize("menu_settings_on")
+			text = Localize("menu_settings_on"),
 		},
 		{
 			value = false,
-			text = Localize("menu_settings_off")
-		}
+			text = Localize("menu_settings_off"),
+		},
 	}
 	local minimize_on_alt_tab = Application.user_setting("fullscreen_minimize_on_alt_tab")
 	local selected_option = 1
@@ -4644,28 +4644,28 @@ OptionsView.cb_graphics_quality_setup = function (self)
 	local options = {
 		{
 			value = "custom",
-			text = Localize("menu_settings_custom")
+			text = Localize("menu_settings_custom"),
 		},
 		{
 			value = "lowest",
-			text = Localize("menu_settings_lowest")
+			text = Localize("menu_settings_lowest"),
 		},
 		{
 			value = "low",
-			text = Localize("menu_settings_low")
+			text = Localize("menu_settings_low"),
 		},
 		{
 			value = "medium",
-			text = Localize("menu_settings_medium")
+			text = Localize("menu_settings_medium"),
 		},
 		{
 			value = "high",
-			text = Localize("menu_settings_high")
+			text = Localize("menu_settings_high"),
 		},
 		{
 			value = "extreme",
-			text = Localize("menu_settings_extreme")
-		}
+			text = Localize("menu_settings_extreme"),
+		},
 	}
 	local graphics_quality = Application.user_setting("graphics_quality")
 	local selected_option = 1
@@ -4758,9 +4758,9 @@ OptionsView.cb_resolutions_setup = function (self)
 				text = "1280x720 -- NO OUTPUTS",
 				value = {
 					1280,
-					720
-				}
-			}
+					720,
+				},
+			},
 		}, "menu_settings_resolution"
 	end
 
@@ -4781,8 +4781,8 @@ OptionsView.cb_resolutions_setup = function (self)
 				text = text,
 				value = {
 					width,
-					height
-				}
+					height,
+				},
 			}
 		until true
 	end
@@ -4853,37 +4853,37 @@ local FRAMERATE_CAP_LOOKUP = table.mirror_array_inplace({
 	90,
 	120,
 	144,
-	165
+	165,
 })
 local FRAMERATE_CAP_OPTIONS = {
 	{
 		value = 0,
-		text = Localize("menu_settings_off")
+		text = Localize("menu_settings_off"),
 	},
 	{
 		text = "30",
-		value = 30
+		value = 30,
 	},
 	{
 		text = "60",
-		value = 60
+		value = 60,
 	},
 	{
 		text = "90",
-		value = 90
+		value = 90,
 	},
 	{
 		text = "120",
-		value = 120
+		value = 120,
 	},
 	{
 		text = "144",
-		value = 144
+		value = 144,
 	},
 	{
 		text = "165",
-		value = 165
-	}
+		value = 165,
+	},
 }
 
 OptionsView.cb_lock_framerate_setup = function (self)
@@ -4910,24 +4910,24 @@ OptionsView.cb_max_stacking_frames_setup = function (self)
 	local options = {
 		{
 			value = -1,
-			text = Localize("menu_settings_auto")
+			text = Localize("menu_settings_auto"),
 		},
 		{
 			text = "1",
-			value = 1
+			value = 1,
 		},
 		{
 			text = "2",
-			value = 2
+			value = 2,
 		},
 		{
 			text = "3",
-			value = 3
+			value = 3,
 		},
 		{
 			text = "4",
-			value = 4
-		}
+			value = 4,
+		},
 	}
 	local default_value = DefaultUserSettings.get("user_settings", "max_stacking_frames")
 	local default_option
@@ -4971,16 +4971,16 @@ OptionsView.cb_anti_aliasing_setup = function (self)
 	local options = {
 		{
 			value = "none",
-			text = Localize("menu_settings_none")
+			text = Localize("menu_settings_none"),
 		},
 		{
 			value = "FXAA",
-			text = Localize("menu_settings_fxaa")
+			text = Localize("menu_settings_fxaa"),
 		},
 		{
 			value = "TAA",
-			text = Localize("menu_settings_taa")
-		}
+			text = Localize("menu_settings_taa"),
+		},
 	}
 	local fxaa_enabled = Application.user_setting("render_settings", "fxaa_enabled")
 	local taa_enabled = Application.user_setting("render_settings", "taa_enabled")
@@ -5076,12 +5076,12 @@ OptionsView.cb_fsr_enabled_setup = function (self)
 	local options = {
 		{
 			value = false,
-			text = Localize("menu_settings_off")
+			text = Localize("menu_settings_off"),
 		},
 		{
 			value = true,
-			text = Localize("menu_settings_on")
-		}
+			text = Localize("menu_settings_on"),
+		},
 	}
 	local fsr_enabled = Application.user_setting("render_settings", "fsr_enabled")
 	local default_value = DefaultUserSettings.get("render_settings", "fsr_enabled")
@@ -5136,20 +5136,20 @@ OptionsView.cb_fsr_quality_setup = function (self)
 	local options = {
 		{
 			value = 1,
-			text = Localize("menu_settings_performance")
+			text = Localize("menu_settings_performance"),
 		},
 		{
 			value = 2,
-			text = Localize("menu_settings_balanced")
+			text = Localize("menu_settings_balanced"),
 		},
 		{
 			value = 3,
-			text = Localize("menu_settings_quality")
+			text = Localize("menu_settings_quality"),
 		},
 		{
 			value = 4,
-			text = Localize("menu_settings_ultra_quality")
-		}
+			text = Localize("menu_settings_ultra_quality"),
+		},
 	}
 	local fsr_quality = Application.user_setting("render_settings", "fsr_quality")
 	local default_value = DefaultUserSettings.get("render_settings", "fsr_quality")
@@ -5192,12 +5192,12 @@ OptionsView.cb_fsr2_enabled_setup = function (self)
 	local options = {
 		{
 			value = false,
-			text = Localize("menu_settings_off")
+			text = Localize("menu_settings_off"),
 		},
 		{
 			value = true,
-			text = Localize("menu_settings_on")
-		}
+			text = Localize("menu_settings_on"),
+		},
 	}
 	local current_value = Application.user_setting("fsr2_enabled")
 	local default_value = DefaultUserSettings.get("user_settings", "fsr2_enabled")
@@ -5257,27 +5257,27 @@ local FSR2_QUALITY_LOOKUP = table.mirror_array_inplace({
 	"quality",
 	"balanced",
 	"performance",
-	"ultra_performance"
+	"ultra_performance",
 })
 
 OptionsView.cb_fsr2_quality_setup = function (self)
 	local options = {
 		{
 			value = "quality",
-			text = Localize("menu_settings_quality")
+			text = Localize("menu_settings_quality"),
 		},
 		{
 			value = "balanced",
-			text = Localize("menu_settings_balanced")
+			text = Localize("menu_settings_balanced"),
 		},
 		{
 			value = "performance",
-			text = Localize("menu_settings_performance")
+			text = Localize("menu_settings_performance"),
 		},
 		{
 			value = "ultra_performance",
-			text = Localize("menu_settings_ultra_performance")
-		}
+			text = Localize("menu_settings_ultra_performance"),
+		},
 	}
 	local default_option = FSR2_QUALITY_LOOKUP.quality
 	local selected_option = default_option
@@ -5334,12 +5334,12 @@ OptionsView.cb_dlss_enabled_setup = function (self)
 	local options = {
 		{
 			value = false,
-			text = Localize("menu_settings_off")
+			text = Localize("menu_settings_off"),
 		},
 		{
 			value = true,
-			text = Localize("menu_settings_on")
-		}
+			text = Localize("menu_settings_on"),
+		},
 	}
 	local current_value = Application.user_setting("dlss_enabled")
 	local default_value = DefaultUserSettings.get("user_settings", "dlss_enabled")
@@ -5384,12 +5384,12 @@ OptionsView.cb_dlss_frame_generation_setup = function (self)
 	local options = {
 		{
 			value = false,
-			text = Localize("menu_settings_off")
+			text = Localize("menu_settings_off"),
 		},
 		{
 			value = true,
-			text = Localize("menu_settings_on")
-		}
+			text = Localize("menu_settings_on"),
+		},
 	}
 	local dlss_g_enabled = Application.user_setting("render_settings", "dlss_g_enabled")
 	local default_value = DefaultUserSettings.get("render_settings", "dlss_g_enabled")
@@ -5437,39 +5437,39 @@ local DLSS_SR_QUALITY_LOOKUP = table.mirror_array_inplace({
 	"balanced",
 	"performance",
 	"ultra_performance",
-	"dlaa"
+	"dlaa",
 })
 
 OptionsView.cb_dlss_super_resolution_setup = function (self)
 	local options = {
 		{
 			value = "none",
-			text = Localize("menu_settings_off")
+			text = Localize("menu_settings_off"),
 		},
 		{
 			value = "auto",
-			text = Localize("menu_settings_auto")
+			text = Localize("menu_settings_auto"),
 		},
 		{
 			value = "quality",
-			text = Localize("menu_settings_quality")
+			text = Localize("menu_settings_quality"),
 		},
 		{
 			value = "balanced",
-			text = Localize("menu_settings_balanced")
+			text = Localize("menu_settings_balanced"),
 		},
 		{
 			value = "performance",
-			text = Localize("menu_settings_performance")
+			text = Localize("menu_settings_performance"),
 		},
 		{
 			value = "ultra_performance",
-			text = Localize("menu_settings_ultra_performance")
+			text = Localize("menu_settings_ultra_performance"),
 		},
 		{
 			value = "dlaa",
-			text = Localize("menu_settings_dlaa")
-		}
+			text = Localize("menu_settings_dlaa"),
+		},
 	}
 	local default_option = DLSS_SR_QUALITY_LOOKUP.none
 	local upscaling_quality
@@ -5532,16 +5532,16 @@ OptionsView.cb_reflex_low_latency_setup = function (self)
 	local options = {
 		{
 			value = 1,
-			text = Localize("menu_settings_off")
+			text = Localize("menu_settings_off"),
 		},
 		{
 			value = 2,
-			text = Localize("menu_settings_reflex_enabled")
+			text = Localize("menu_settings_reflex_enabled"),
 		},
 		{
 			value = 3,
-			text = Localize("menu_settings_reflex_boost")
-		}
+			text = Localize("menu_settings_reflex_boost"),
+		},
 	}
 	local selected_option = to_reflex_low_latency_value(Application.user_setting("render_settings", "nv_low_latency_mode"), Application.user_setting("render_settings", "nv_low_latency_boost"))
 	local default_option = to_reflex_low_latency_value(DefaultUserSettings.get("render_settings", "nv_low_latency_mode"), DefaultUserSettings.get("render_settings", "nv_low_latency_boost"))
@@ -5613,24 +5613,24 @@ OptionsView.cb_sun_shadows_setup = function (self)
 	local options = {
 		{
 			value = "off",
-			text = Localize("menu_settings_off")
+			text = Localize("menu_settings_off"),
 		},
 		{
 			value = "low",
-			text = Localize("menu_settings_low")
+			text = Localize("menu_settings_low"),
 		},
 		{
 			value = "medium",
-			text = Localize("menu_settings_medium")
+			text = Localize("menu_settings_medium"),
 		},
 		{
 			value = "high",
-			text = Localize("menu_settings_high")
+			text = Localize("menu_settings_high"),
 		},
 		{
 			value = "extreme",
-			text = Localize("menu_settings_extreme")
-		}
+			text = Localize("menu_settings_extreme"),
+		},
 	}
 	local sun_shadows = Application.user_setting("render_settings", "sun_shadows")
 	local sun_shadow_quality = Application.user_setting("sun_shadow_quality")
@@ -5706,16 +5706,16 @@ OptionsView.cb_lod_quality_setup = function (self)
 	local options = {
 		{
 			value = 0.6,
-			text = Localize("menu_settings_low")
+			text = Localize("menu_settings_low"),
 		},
 		{
 			value = 0.8,
-			text = Localize("menu_settings_medium")
+			text = Localize("menu_settings_medium"),
 		},
 		{
 			value = 1,
-			text = Localize("menu_settings_high")
-		}
+			text = Localize("menu_settings_high"),
+		},
 	}
 	local default_value = DefaultUserSettings.get("render_settings", "lod_object_multiplier")
 	local default_option
@@ -5761,24 +5761,24 @@ OptionsView.cb_scatter_density_setup = function (self)
 	local options = {
 		{
 			value = 0,
-			text = Localize("menu_settings_off")
+			text = Localize("menu_settings_off"),
 		},
 		{
 			text = "25%",
-			value = 0.25
+			value = 0.25,
 		},
 		{
 			text = "50%",
-			value = 0.5
+			value = 0.5,
 		},
 		{
 			text = "75%",
-			value = 0.75
+			value = 0.75,
 		},
 		{
 			text = "100%",
-			value = 1
-		}
+			value = 1,
+		},
 	}
 	local default_value = DefaultUserSettings.get("render_settings", "lod_scatter_density")
 	local default_option
@@ -5828,24 +5828,24 @@ OptionsView.cb_decoration_density_setup = function (self)
 	local options = {
 		{
 			value = 0,
-			text = Localize("menu_settings_off")
+			text = Localize("menu_settings_off"),
 		},
 		{
 			text = "25%",
-			value = 0.25
+			value = 0.25,
 		},
 		{
 			text = "50%",
-			value = 0.5
+			value = 0.5,
 		},
 		{
 			text = "75%",
-			value = 0.75
+			value = 0.75,
 		},
 		{
 			text = "100%",
-			value = 1
-		}
+			value = 1,
+		},
 	}
 	local saved_option = Application.user_setting("render_settings", "lod_decoration_density") or 1
 	local selected_option = 1
@@ -5915,24 +5915,24 @@ OptionsView.cb_local_light_shadow_quality_setup = function (self)
 	local options = {
 		{
 			value = "off",
-			text = Localize("menu_settings_off")
+			text = Localize("menu_settings_off"),
 		},
 		{
 			value = "low",
-			text = Localize("menu_settings_low")
+			text = Localize("menu_settings_low"),
 		},
 		{
 			value = "medium",
-			text = Localize("menu_settings_medium")
+			text = Localize("menu_settings_medium"),
 		},
 		{
 			value = "high",
-			text = Localize("menu_settings_high")
+			text = Localize("menu_settings_high"),
 		},
 		{
 			value = "extreme",
-			text = Localize("menu_settings_extreme")
-		}
+			text = Localize("menu_settings_extreme"),
+		},
 	}
 	local local_light_shadow_quality = Application.user_setting("local_light_shadow_quality")
 	local deferred_local_lights_cast_shadows = Application.user_setting("render_settings", "deferred_local_lights_cast_shadows")
@@ -6006,12 +6006,12 @@ OptionsView.cb_motion_blur_setup = function (self)
 	local options = {
 		{
 			value = false,
-			text = Localize("menu_settings_off")
+			text = Localize("menu_settings_off"),
 		},
 		{
 			value = true,
-			text = Localize("menu_settings_on")
-		}
+			text = Localize("menu_settings_on"),
+		},
 	}
 	local motion_blur_enabled = Application.user_setting("render_settings", "motion_blur_enabled")
 
@@ -6053,12 +6053,12 @@ OptionsView.cb_dof_setup = function (self)
 	local options = {
 		{
 			value = false,
-			text = Localize("menu_settings_off")
+			text = Localize("menu_settings_off"),
 		},
 		{
 			value = true,
-			text = Localize("menu_settings_on")
-		}
+			text = Localize("menu_settings_on"),
+		},
 	}
 	local dof_enabled = Application.user_setting("render_settings", "dof_enabled")
 	local selected_option = dof_enabled and 2 or 1
@@ -6087,12 +6087,12 @@ OptionsView.cb_bloom_setup = function (self)
 	local options = {
 		{
 			value = false,
-			text = Localize("menu_settings_off")
+			text = Localize("menu_settings_off"),
 		},
 		{
 			value = true,
-			text = Localize("menu_settings_on")
-		}
+			text = Localize("menu_settings_on"),
+		},
 	}
 	local bloom_enabled = Application.user_setting("render_settings", "bloom_enabled") or false
 	local default_value = DefaultUserSettings.get("render_settings", "bloom_enabled")
@@ -6123,12 +6123,12 @@ OptionsView.cb_light_shafts_setup = function (self)
 	local options = {
 		{
 			value = false,
-			text = Localize("menu_settings_off")
+			text = Localize("menu_settings_off"),
 		},
 		{
 			value = true,
-			text = Localize("menu_settings_on")
-		}
+			text = Localize("menu_settings_on"),
+		},
 	}
 	local light_shafts_enabled = Application.user_setting("render_settings", "light_shafts_enabled") or false
 	local default_value = DefaultUserSettings.get("render_settings", "light_shafts_enabled")
@@ -6159,12 +6159,12 @@ OptionsView.cb_sun_flare_setup = function (self)
 	local options = {
 		{
 			value = false,
-			text = Localize("menu_settings_off")
+			text = Localize("menu_settings_off"),
 		},
 		{
 			value = true,
-			text = Localize("menu_settings_on")
-		}
+			text = Localize("menu_settings_on"),
+		},
 	}
 	local sun_flare_enabled = Application.user_setting("render_settings", "sun_flare_enabled") or false
 	local default_value = DefaultUserSettings.get("render_settings", "sun_flare_enabled")
@@ -6195,12 +6195,12 @@ OptionsView.cb_sharpen_setup = function (self)
 	local options = {
 		{
 			value = false,
-			text = Localize("menu_settings_off")
+			text = Localize("menu_settings_off"),
 		},
 		{
 			value = true,
-			text = Localize("menu_settings_on")
-		}
+			text = Localize("menu_settings_on"),
+		},
 	}
 	local sharpen_enabled = Application.user_setting("render_settings", "sharpen_enabled") or false
 	local default_value = DefaultUserSettings.get("render_settings", "sharpen_enabled")
@@ -6236,12 +6236,12 @@ OptionsView.cb_lens_quality_setup = function (self)
 	local options = {
 		{
 			value = false,
-			text = Localize("menu_settings_off")
+			text = Localize("menu_settings_off"),
 		},
 		{
 			value = true,
-			text = Localize("menu_settings_on")
-		}
+			text = Localize("menu_settings_on"),
+		},
 	}
 	local lens_quality_enabled = Application.user_setting("render_settings", "lens_quality_enabled") or false
 	local default_value = DefaultUserSettings.get("render_settings", "lens_quality_enabled")
@@ -6272,12 +6272,12 @@ OptionsView.cb_skin_shading_setup = function (self)
 	local options = {
 		{
 			value = false,
-			text = Localize("menu_settings_off")
+			text = Localize("menu_settings_off"),
 		},
 		{
 			value = true,
-			text = Localize("menu_settings_on")
-		}
+			text = Localize("menu_settings_on"),
+		},
 	}
 	local skin_material_enabled = Application.user_setting("render_settings", "skin_material_enabled") or false
 	local default_value = DefaultUserSettings.get("render_settings", "skin_material_enabled")
@@ -6308,20 +6308,20 @@ OptionsView.cb_ssao_setup = function (self)
 	local options = {
 		{
 			value = "off",
-			text = Localize("menu_settings_off")
+			text = Localize("menu_settings_off"),
 		},
 		{
 			value = "medium",
-			text = Localize("menu_settings_medium")
+			text = Localize("menu_settings_medium"),
 		},
 		{
 			value = "high",
-			text = Localize("menu_settings_high")
+			text = Localize("menu_settings_high"),
 		},
 		{
 			value = "extreme",
-			text = Localize("menu_settings_extreme")
-		}
+			text = Localize("menu_settings_extreme"),
+		},
 	}
 	local ao_quality = Application.user_setting("ao_quality")
 	local default_value = DefaultUserSettings.get("user_settings", "ao_quality")
@@ -6375,16 +6375,16 @@ OptionsView.cb_char_texture_quality_setup = function (self)
 	local options = {
 		{
 			value = "low",
-			text = Localize("menu_settings_low")
+			text = Localize("menu_settings_low"),
 		},
 		{
 			value = "medium",
-			text = Localize("menu_settings_medium")
+			text = Localize("menu_settings_medium"),
 		},
 		{
 			value = "high",
-			text = Localize("menu_settings_high")
-		}
+			text = Localize("menu_settings_high"),
+		},
 	}
 	local char_texture_quality = Application.user_setting("char_texture_quality")
 	local default_value = DefaultUserSettings.get("user_settings", "char_texture_quality")
@@ -6434,16 +6434,16 @@ OptionsView.cb_env_texture_quality_setup = function (self)
 	local options = {
 		{
 			value = "low",
-			text = Localize("menu_settings_low")
+			text = Localize("menu_settings_low"),
 		},
 		{
 			value = "medium",
-			text = Localize("menu_settings_medium")
+			text = Localize("menu_settings_medium"),
 		},
 		{
 			value = "high",
-			text = Localize("menu_settings_high")
-		}
+			text = Localize("menu_settings_high"),
+		},
 	}
 	local env_texture_quality = Application.user_setting("env_texture_quality")
 	local default_value = DefaultUserSettings.get("user_settings", "env_texture_quality")
@@ -6493,12 +6493,12 @@ OptionsView.cb_subtitles_setup = function (self)
 	local options = {
 		{
 			value = false,
-			text = Localize("menu_settings_off")
+			text = Localize("menu_settings_off"),
 		},
 		{
 			value = true,
-			text = Localize("menu_settings_on")
-		}
+			text = Localize("menu_settings_on"),
+		},
 	}
 	local use_subtitles = Application.user_setting("use_subtitles") or false
 	local selection = use_subtitles and 2 or 1
@@ -6524,36 +6524,36 @@ OptionsView.cb_language_setup = function (self)
 	local options = {
 		{
 			value = "en",
-			text = Localize("english")
+			text = Localize("english"),
 		},
 		{
 			value = "fr",
-			text = Localize("french")
+			text = Localize("french"),
 		},
 		{
 			value = "pl",
-			text = Localize("polish")
+			text = Localize("polish"),
 		},
 		{
 			value = "es",
-			text = Localize("spanish")
+			text = Localize("spanish"),
 		},
 		{
 			value = "tr",
-			text = Localize("turkish")
+			text = Localize("turkish"),
 		},
 		{
 			value = "de",
-			text = Localize("german")
+			text = Localize("german"),
 		},
 		{
 			value = "br-pt",
-			text = Localize("brazilian")
+			text = Localize("brazilian"),
 		},
 		{
 			value = "ru",
-			text = Localize("russian")
-		}
+			text = Localize("russian"),
+		},
 	}
 	local language_id = Application.user_setting("language_id") or rawget(_G, "Steam") and Steam.language() or "en"
 	local default_value = DefaultUserSettings.get("user_settings", "language_id") or "en"
@@ -6984,20 +6984,20 @@ OptionsView.cb_max_upload_speed_setup = function (self)
 	local options = {
 		{
 			value = 256,
-			text = Localize("menu_settings_256kbit")
+			text = Localize("menu_settings_256kbit"),
 		},
 		{
 			value = 512,
-			text = Localize("menu_settings_512kbit")
+			text = Localize("menu_settings_512kbit"),
 		},
 		{
 			value = 1024,
-			text = Localize("menu_settings_1mbit")
+			text = Localize("menu_settings_1mbit"),
 		},
 		{
 			value = 2048,
-			text = Localize("menu_settings_2mbit_plus")
-		}
+			text = Localize("menu_settings_2mbit_plus"),
+		},
 	}
 	local default_value = DefaultUserSettings.get("user_settings", "max_upload_speed")
 	local user_settings_value = Application.user_setting("max_upload_speed")
@@ -7045,12 +7045,12 @@ OptionsView.cb_small_network_packets_setup = function (self)
 	local options = {
 		{
 			value = false,
-			text = Localize("menu_settings_off")
+			text = Localize("menu_settings_off"),
 		},
 		{
 			value = true,
-			text = Localize("menu_settings_on")
-		}
+			text = Localize("menu_settings_on"),
+		},
 	}
 	local default_value = DefaultUserSettings.get("user_settings", "small_network_packets")
 	local small_network_packets = Application.user_setting("small_network_packets")
@@ -7077,12 +7077,12 @@ OptionsView.cb_max_quick_play_search_range_setup = function (self)
 	local options = {
 		{
 			value = "close",
-			text = Localize("menu_settings_near")
+			text = Localize("menu_settings_near"),
 		},
 		{
 			value = "far",
-			text = Localize("menu_settings_far")
-		}
+			text = Localize("menu_settings_far"),
+		},
 	}
 	local default_value = DefaultUserSettings.get("user_settings", "max_quick_play_search_range")
 	local user_settings_value = Application.user_setting("max_quick_play_search_range")
@@ -7123,12 +7123,12 @@ OptionsView.cb_mouse_look_invert_y_setup = function (self)
 	local options = {
 		{
 			value = false,
-			text = Localize("menu_settings_off")
+			text = Localize("menu_settings_off"),
 		},
 		{
 			value = true,
-			text = Localize("menu_settings_on")
-		}
+			text = Localize("menu_settings_on"),
+		},
 	}
 	local default_value = DefaultUserSettings.get("user_settings", "mouse_look_invert_y")
 	local invert_mouse_y = Application.user_setting("mouse_look_invert_y")
@@ -7163,12 +7163,12 @@ OptionsView.cb_gamepad_look_invert_y_setup = function (self)
 	local options = {
 		{
 			value = false,
-			text = Localize("menu_settings_off")
+			text = Localize("menu_settings_off"),
 		},
 		{
 			value = true,
-			text = Localize("menu_settings_on")
-		}
+			text = Localize("menu_settings_on"),
+		},
 	}
 	local default_value = DefaultUserSettings.get("user_settings", "gamepad_look_invert_y") or false
 	local invert_gamepad_y = Application.user_setting("gamepad_look_invert_y")
@@ -7290,12 +7290,12 @@ OptionsView.cb_gamepad_auto_aim_enabled_setup = function (self)
 	local options = {
 		{
 			value = true,
-			text = Localize("menu_settings_on")
+			text = Localize("menu_settings_on"),
 		},
 		{
 			value = false,
-			text = Localize("menu_settings_off")
-		}
+			text = Localize("menu_settings_off"),
+		},
 	}
 	local default_value = DefaultUserSettings.get("user_settings", "gamepad_auto_aim_enabled") or true
 	local enable_auto_aim = Application.user_setting("gamepad_auto_aim_enabled")
@@ -7322,12 +7322,12 @@ OptionsView.cb_gamepad_acceleration_enabled_setup = function (self)
 	local options = {
 		{
 			value = true,
-			text = Localize("menu_settings_on")
+			text = Localize("menu_settings_on"),
 		},
 		{
 			value = false,
-			text = Localize("menu_settings_off")
-		}
+			text = Localize("menu_settings_off"),
+		},
 	}
 	local default_value = DefaultUserSettings.get("user_settings", "enable_gamepad_acceleration") or true
 	local enable_gamepad_acceleration = Application.user_setting("enable_gamepad_acceleration")
@@ -7354,12 +7354,12 @@ OptionsView.cb_gamepad_rumble_enabled_setup = function (self)
 	local options = {
 		{
 			value = true,
-			text = Localize("menu_settings_on")
+			text = Localize("menu_settings_on"),
 		},
 		{
 			value = false,
-			text = Localize("menu_settings_off")
-		}
+			text = Localize("menu_settings_off"),
+		},
 	}
 	local default_value = DefaultUserSettings.get("user_settings", "gamepad_rumble_enabled") or true
 	local enable_rumble = Application.user_setting("gamepad_rumble_enabled")
@@ -7386,12 +7386,12 @@ OptionsView.cb_motion_controls_enabled_setup = function (self)
 	local options = {
 		{
 			value = true,
-			text = Localize("menu_settings_on")
+			text = Localize("menu_settings_on"),
 		},
 		{
 			value = false,
-			text = Localize("menu_settings_off")
-		}
+			text = Localize("menu_settings_off"),
+		},
 	}
 	local default_value = DefaultUserSettings.get("user_settings", "use_motion_controls") or false
 	local motion_controls_enabled = Application.user_setting("use_motion_controls")
@@ -7486,12 +7486,12 @@ OptionsView.cb_disable_right_stick_look_setup = function (self)
 	local options = {
 		{
 			value = true,
-			text = Localize("menu_settings_on")
+			text = Localize("menu_settings_on"),
 		},
 		{
 			value = false,
-			text = Localize("menu_settings_off")
-		}
+			text = Localize("menu_settings_off"),
+		},
 	}
 	local default_value = DefaultUserSettings.get("user_settings", "motion_disable_right_stick_vertical")
 	local motion_disable_right_stick_vertical = Application.user_setting("motion_disable_right_stick_vertical")
@@ -7524,12 +7524,12 @@ OptionsView.cb_yaw_motion_enabled_setup = function (self)
 	local options = {
 		{
 			value = true,
-			text = Localize("menu_settings_on")
+			text = Localize("menu_settings_on"),
 		},
 		{
 			value = false,
-			text = Localize("menu_settings_off")
-		}
+			text = Localize("menu_settings_off"),
+		},
 	}
 	local default_value = DefaultUserSettings.get("user_settings", "motion_enable_yaw_motion")
 	local motion_enable_yaw_motion = Application.user_setting("motion_enable_yaw_motion")
@@ -7562,12 +7562,12 @@ OptionsView.cb_pitch_motion_enabled_setup = function (self)
 	local options = {
 		{
 			value = true,
-			text = Localize("menu_settings_on")
+			text = Localize("menu_settings_on"),
 		},
 		{
 			value = false,
-			text = Localize("menu_settings_off")
-		}
+			text = Localize("menu_settings_off"),
+		},
 	}
 	local default_value = DefaultUserSettings.get("user_settings", "motion_enable_pitch_motion")
 	local motion_enable_pitch_motion = Application.user_setting("motion_enable_pitch_motion")
@@ -7600,12 +7600,12 @@ OptionsView.cb_invert_yaw_enabled_setup = function (self)
 	local options = {
 		{
 			value = true,
-			text = Localize("menu_settings_on")
+			text = Localize("menu_settings_on"),
 		},
 		{
 			value = false,
-			text = Localize("menu_settings_off")
-		}
+			text = Localize("menu_settings_off"),
+		},
 	}
 	local default_value = DefaultUserSettings.get("user_settings", "motion_invert_yaw")
 	local motion_invert_yaw = Application.user_setting("motion_invert_yaw")
@@ -7638,12 +7638,12 @@ OptionsView.cb_invert_pitch_enabled_setup = function (self)
 	local options = {
 		{
 			value = true,
-			text = Localize("menu_settings_on")
+			text = Localize("menu_settings_on"),
 		},
 		{
 			value = false,
-			text = Localize("menu_settings_off")
-		}
+			text = Localize("menu_settings_off"),
+		},
 	}
 	local default_value = DefaultUserSettings.get("user_settings", "motion_invert_pitch")
 	local motion_invert_pitch = Application.user_setting("motion_invert_pitch")
@@ -7676,12 +7676,12 @@ OptionsView.cb_gamepad_use_ps4_style_input_icons_setup = function (self)
 	local options = {
 		{
 			value = false,
-			text = Localize("menu_settings_auto")
+			text = Localize("menu_settings_auto"),
 		},
 		{
 			value = true,
-			text = Localize("menu_settings_ps4_input_icons")
-		}
+			text = Localize("menu_settings_ps4_input_icons"),
+		},
 	}
 	local default_value = DefaultUserSettings.get("user_settings", "gamepad_use_ps4_style_input_icons") or false
 	local use_ps4_style_icons = Application.user_setting("gamepad_use_ps4_style_input_icons")
@@ -7787,12 +7787,12 @@ OptionsView.cb_gamepad_left_handed_enabled_setup = function (self)
 	local options = {
 		{
 			value = true,
-			text = Localize("menu_settings_on")
+			text = Localize("menu_settings_on"),
 		},
 		{
 			value = false,
-			text = Localize("menu_settings_off")
-		}
+			text = Localize("menu_settings_off"),
+		},
 	}
 	local default_value = DefaultUserSettings.get("user_settings", "gamepad_left_handed") or false
 	local enable_left_handed = Application.user_setting("gamepad_left_handed")
@@ -7823,12 +7823,12 @@ OptionsView.cb_toggle_crouch_setup = function (self)
 	local options = {
 		{
 			value = true,
-			text = Localize("menu_settings_on")
+			text = Localize("menu_settings_on"),
 		},
 		{
 			value = false,
-			text = Localize("menu_settings_off")
-		}
+			text = Localize("menu_settings_off"),
+		},
 	}
 	local default_value = DefaultUserSettings.get("user_settings", "toggle_crouch")
 	local toggle_crouch = Application.user_setting("toggle_crouch")
@@ -7855,12 +7855,12 @@ OptionsView.cb_toggle_stationary_dodge_setup = function (self)
 	local options = {
 		{
 			value = true,
-			text = Localize("menu_settings_on")
+			text = Localize("menu_settings_on"),
 		},
 		{
 			value = false,
-			text = Localize("menu_settings_off")
-		}
+			text = Localize("menu_settings_off"),
+		},
 	}
 	local default_value = DefaultUserSettings.get("user_settings", "toggle_stationary_dodge")
 	local toggle_stationary_dodge = Application.user_setting("toggle_stationary_dodge")
@@ -7895,14 +7895,14 @@ OptionsView.cb_matchmaking_region_setup = function (self)
 	local options = {
 		{
 			value = "auto",
-			text = Localize("menu_settings_auto")
-		}
+			text = Localize("menu_settings_auto"),
+		},
 	}
 
 	for region, _ in pairs(temp) do
 		options[#options + 1] = {
 			text = Localize(region),
-			value = region
+			value = region,
 		}
 	end
 
@@ -8018,16 +8018,16 @@ OptionsView.cb_weapon_scroll_type_setup = function (self)
 	local options = {
 		{
 			value = "scroll_wrap",
-			text = Localize("menu_settings_scroll_type_wrap")
+			text = Localize("menu_settings_scroll_type_wrap"),
 		},
 		{
 			value = "scroll_clamp",
-			text = Localize("menu_settings_scroll_type_clamp")
+			text = Localize("menu_settings_scroll_type_clamp"),
 		},
 		{
 			value = "scroll_disabled",
-			text = Localize("menu_settings_off")
-		}
+			text = Localize("menu_settings_off"),
+		},
 	}
 	local default_value = DefaultUserSettings.get("user_settings", "weapon_scroll_type")
 	local scroll_type = Application.user_setting("weapon_scroll_type") or "scroll_wrap"
@@ -8061,12 +8061,12 @@ OptionsView.cb_double_tap_dodge_setup = function (self)
 	local options = {
 		{
 			value = true,
-			text = Localize("menu_settings_on")
+			text = Localize("menu_settings_on"),
 		},
 		{
 			value = false,
-			text = Localize("menu_settings_off")
-		}
+			text = Localize("menu_settings_off"),
+		},
 	}
 	local default_value = DefaultUserSettings.get("user_settings", "double_tap_dodge")
 	local enabled = Application.user_setting("double_tap_dodge")
@@ -8095,12 +8095,12 @@ OptionsView.cb_tutorials_enabled_setup = function (self)
 	local options = {
 		{
 			value = true,
-			text = Localize("menu_settings_on")
+			text = Localize("menu_settings_on"),
 		},
 		{
 			value = false,
-			text = Localize("menu_settings_off")
-		}
+			text = Localize("menu_settings_off"),
+		},
 	}
 	local default_value = DefaultUserSettings.get("user_settings", "tutorials_enabled")
 	local tutorials_enabled = Application.user_setting("tutorials_enabled")
@@ -8262,12 +8262,12 @@ OptionsView.cb_voip_enabled_setup = function (self)
 	local options = {
 		{
 			value = true,
-			text = Localize("menu_settings_on")
+			text = Localize("menu_settings_on"),
 		},
 		{
 			value = false,
-			text = Localize("menu_settings_off")
-		}
+			text = Localize("menu_settings_off"),
+		},
 	}
 	local voip_enabled = Application.user_setting("voip_is_enabled")
 	local default_value = DefaultUserSettings.get("user_settings", "voip_is_enabled")
@@ -8329,12 +8329,12 @@ OptionsView.cb_voip_push_to_talk_setup = function (self)
 	local options = {
 		{
 			value = true,
-			text = Localize("menu_settings_on")
+			text = Localize("menu_settings_on"),
 		},
 		{
 			value = false,
-			text = Localize("menu_settings_off")
-		}
+			text = Localize("menu_settings_off"),
+		},
 	}
 	local voip_push_to_talk = Application.user_setting("voip_push_to_talk")
 	local default_value = DefaultUserSettings.get("user_settings", "voip_push_to_talk")
@@ -8394,12 +8394,12 @@ OptionsView.cb_particles_resolution_setup = function (self)
 	local options = {
 		{
 			value = false,
-			text = Localize("menu_settings_high")
+			text = Localize("menu_settings_high"),
 		},
 		{
 			value = true,
-			text = Localize("menu_settings_low")
-		}
+			text = Localize("menu_settings_low"),
+		},
 	}
 	local low_res_transparency = Application.user_setting("render_settings", "low_res_transparency")
 	local selected_option = low_res_transparency and 2 or 1
@@ -8428,24 +8428,24 @@ OptionsView.cb_particles_quality_setup = function (self)
 	local options = {
 		{
 			value = "lowest",
-			text = Localize("menu_settings_lowest")
+			text = Localize("menu_settings_lowest"),
 		},
 		{
 			value = "low",
-			text = Localize("menu_settings_low")
+			text = Localize("menu_settings_low"),
 		},
 		{
 			value = "medium",
-			text = Localize("menu_settings_medium")
+			text = Localize("menu_settings_medium"),
 		},
 		{
 			value = "high",
-			text = Localize("menu_settings_high")
+			text = Localize("menu_settings_high"),
 		},
 		{
 			value = "extreme",
-			text = Localize("menu_settings_extreme")
-		}
+			text = Localize("menu_settings_extreme"),
+		},
 	}
 	local particles_quality = Application.user_setting("particles_quality")
 	local default_value = DefaultUserSettings.get("user_settings", "particles_quality")
@@ -8499,12 +8499,12 @@ OptionsView.cb_ambient_light_quality_setup = function (self)
 	local options = {
 		{
 			value = "low",
-			text = Localize("menu_settings_low")
+			text = Localize("menu_settings_low"),
 		},
 		{
 			value = "high",
-			text = Localize("menu_settings_high")
-		}
+			text = Localize("menu_settings_high"),
+		},
 	}
 	local ambient_light_quality = Application.user_setting("ambient_light_quality")
 	local default_value = DefaultUserSettings.get("user_settings", "ambient_light_quality")
@@ -8585,24 +8585,24 @@ OptionsView.cb_volumetric_fog_quality_setup = function (self)
 	local options = {
 		{
 			value = "lowest",
-			text = Localize("menu_settings_lowest")
+			text = Localize("menu_settings_lowest"),
 		},
 		{
 			value = "low",
-			text = Localize("menu_settings_low")
+			text = Localize("menu_settings_low"),
 		},
 		{
 			value = "medium",
-			text = Localize("menu_settings_medium")
+			text = Localize("menu_settings_medium"),
 		},
 		{
 			value = "high",
-			text = Localize("menu_settings_high")
+			text = Localize("menu_settings_high"),
 		},
 		{
 			value = "extreme",
-			text = Localize("menu_settings_extreme")
-		}
+			text = Localize("menu_settings_extreme"),
+		},
 	}
 	local volumetric_fog_quality = Application.user_setting("volumetric_fog_quality")
 	local default_value = DefaultUserSettings.get("user_settings", "volumetric_fog_quality")
@@ -8656,12 +8656,12 @@ OptionsView.cb_physic_debris_setup = function (self)
 	local options = {
 		{
 			value = false,
-			text = Localize("menu_settings_off")
+			text = Localize("menu_settings_off"),
 		},
 		{
 			value = true,
-			text = Localize("menu_settings_on")
-		}
+			text = Localize("menu_settings_on"),
+		},
 	}
 	local use_physic_debris = Application.user_setting("use_physic_debris")
 
@@ -8700,12 +8700,12 @@ OptionsView.cb_alien_fx_setup = function (self)
 	local options = {
 		{
 			value = false,
-			text = Localize("menu_settings_off")
+			text = Localize("menu_settings_off"),
 		},
 		{
 			value = true,
-			text = Localize("menu_settings_on")
-		}
+			text = Localize("menu_settings_on"),
+		},
 	}
 	local use_alien_fx = Application.user_setting("use_alien_fx")
 
@@ -8745,12 +8745,12 @@ OptionsView.cb_razer_chroma_setup = function (self)
 	local options = {
 		{
 			value = false,
-			text = Localize("menu_settings_off")
+			text = Localize("menu_settings_off"),
 		},
 		{
 			value = true,
-			text = Localize("menu_settings_on")
-		}
+			text = Localize("menu_settings_on"),
+		},
 	}
 	local use_razer_chroma = Application.user_setting("use_razer_chroma")
 
@@ -8788,12 +8788,12 @@ OptionsView.cb_ssr_setup = function (self)
 	local options = {
 		{
 			value = false,
-			text = Localize("menu_settings_off")
+			text = Localize("menu_settings_off"),
 		},
 		{
 			value = true,
-			text = Localize("menu_settings_on")
-		}
+			text = Localize("menu_settings_on"),
+		},
 	}
 	local ssr_enabled = Application.user_setting("render_settings", "ssr_enabled") or false
 	local default_value = DefaultUserSettings.get("render_settings", "ssr_enabled")
@@ -8871,20 +8871,20 @@ OptionsView.cb_enabled_crosshairs_setup = function (self)
 	local options = {
 		{
 			value = "all",
-			text = Localize("menu_settings_crosshair_all")
+			text = Localize("menu_settings_crosshair_all"),
 		},
 		{
 			value = "melee",
-			text = Localize("menu_settings_crosshair_melee")
+			text = Localize("menu_settings_crosshair_melee"),
 		},
 		{
 			value = "ranged",
-			text = Localize("menu_settings_crosshair_ranged")
+			text = Localize("menu_settings_crosshair_ranged"),
 		},
 		{
 			value = "none",
-			text = Localize("menu_settings_crosshair_none")
-		}
+			text = Localize("menu_settings_crosshair_none"),
+		},
 	}
 	local default_value = DefaultUserSettings.get("user_settings", "enabled_crosshairs")
 	local user_settings_value = Application.user_setting("enabled_crosshairs")
@@ -8925,12 +8925,12 @@ OptionsView.cb_blood_enabled_setup = function (self)
 	local options = {
 		{
 			value = true,
-			text = Localize("menu_settings_on")
+			text = Localize("menu_settings_on"),
 		},
 		{
 			value = false,
-			text = Localize("menu_settings_off")
-		}
+			text = Localize("menu_settings_off"),
+		},
 	}
 	local blood_enabled = Application.user_setting("blood_enabled")
 	local default_value = DefaultUserSettings.get("user_settings", "blood_enabled")
@@ -8986,12 +8986,12 @@ OptionsView.cb_screen_blood_enabled_setup = function (self)
 	local options = {
 		{
 			value = true,
-			text = Localize("menu_settings_on")
+			text = Localize("menu_settings_on"),
 		},
 		{
 			value = false,
-			text = Localize("menu_settings_off")
-		}
+			text = Localize("menu_settings_off"),
+		},
 	}
 	local screen_blood_enabled = Application.user_setting("screen_blood_enabled")
 	local default_value = DefaultUserSettings.get("user_settings", "screen_blood_enabled")
@@ -9047,12 +9047,12 @@ OptionsView.cb_dismemberment_enabled_setup = function (self)
 	local options = {
 		{
 			value = true,
-			text = Localize("menu_settings_on")
+			text = Localize("menu_settings_on"),
 		},
 		{
 			value = false,
-			text = Localize("menu_settings_off")
-		}
+			text = Localize("menu_settings_off"),
+		},
 	}
 	local dismemberment_enabled = Application.user_setting("dismemberment_enabled")
 	local default_value = DefaultUserSettings.get("user_settings", "dismemberment_enabled")
@@ -9108,12 +9108,12 @@ OptionsView.cb_ragdoll_enabled_setup = function (self)
 	local options = {
 		{
 			value = true,
-			text = Localize("menu_settings_on")
+			text = Localize("menu_settings_on"),
 		},
 		{
 			value = false,
-			text = Localize("menu_settings_off")
-		}
+			text = Localize("menu_settings_off"),
+		},
 	}
 	local ragdoll_enabled = Application.user_setting("ragdoll_enabled")
 	local default_value = DefaultUserSettings.get("user_settings", "ragdoll_enabled")
@@ -9169,12 +9169,12 @@ OptionsView.cb_chat_enabled_setup = function (self)
 	local options = {
 		{
 			value = true,
-			text = Localize("menu_settings_on")
+			text = Localize("menu_settings_on"),
 		},
 		{
 			value = false,
-			text = Localize("menu_settings_off")
-		}
+			text = Localize("menu_settings_off"),
+		},
 	}
 	local chat_enabled = Application.user_setting("chat_enabled")
 	local default_value = DefaultUserSettings.get("user_settings", "chat_enabled")
@@ -9243,24 +9243,24 @@ OptionsView.cb_chat_font_size_setup = function (self)
 	local options = {
 		{
 			text = "16",
-			value = 16
+			value = 16,
 		},
 		{
 			text = "20",
-			value = 20
+			value = 20,
 		},
 		{
 			text = "24",
-			value = 24
+			value = 24,
 		},
 		{
 			text = "28",
-			value = 28
+			value = 28,
 		},
 		{
 			text = "32",
-			value = 32
-		}
+			value = 32,
+		},
 	}
 	local default_value = DefaultUserSettings.get("user_settings", "chat_font_size")
 	local user_settings_value = Application.user_setting("chat_font_size")
@@ -9301,8 +9301,8 @@ OptionsView.cb_clan_tag_setup = function (self)
 	local options = {
 		{
 			value = "0",
-			text = Localize("menu_settings_none")
-		}
+			text = Localize("menu_settings_none"),
+		},
 	}
 	local clan_tag = Application.user_setting("clan_tag")
 	local clans = SteamHelper.clans_short()
@@ -9314,7 +9314,7 @@ OptionsView.cb_clan_tag_setup = function (self)
 		if clan_name ~= "" then
 			options[i] = {
 				text = clan_name,
-				value = id
+				value = id,
 			}
 
 			if id == clan_tag then
@@ -9390,16 +9390,16 @@ OptionsView.cb_dynamic_range_sound_setup = function (self)
 	local options = {
 		{
 			value = "high",
-			text = Localize("menu_settings_high")
+			text = Localize("menu_settings_high"),
 		},
 		{
 			value = "medium",
-			text = Localize("menu_settings_medium")
+			text = Localize("menu_settings_medium"),
 		},
 		{
 			value = "low",
-			text = Localize("menu_settings_low")
-		}
+			text = Localize("menu_settings_low"),
+		},
 	}
 	local default_value = DefaultUserSettings.get("user_settings", "dynamic_range_sound")
 	local dynamic_range_sound = Application.user_setting("dynamic_range_sound") or default_value
@@ -9455,12 +9455,12 @@ OptionsView.cb_sound_panning_rule_setup = function (self)
 	local options = {
 		{
 			value = "headphones",
-			text = Localize("menu_settings_headphones")
+			text = Localize("menu_settings_headphones"),
 		},
 		{
 			value = "speakers",
-			text = Localize("menu_settings_speakers")
-		}
+			text = Localize("menu_settings_speakers"),
+		},
 	}
 	local selected_option = 1
 	local default_option
@@ -9511,16 +9511,16 @@ OptionsView.cb_sound_quality_setup = function (self)
 	local options = {
 		{
 			value = "low",
-			text = Localize("menu_settings_low")
+			text = Localize("menu_settings_low"),
 		},
 		{
 			value = "medium",
-			text = Localize("menu_settings_medium")
+			text = Localize("menu_settings_medium"),
 		},
 		{
 			value = "high",
-			text = Localize("menu_settings_high")
-		}
+			text = Localize("menu_settings_high"),
+		},
 	}
 	local sound_quality = Application.user_setting("sound_quality")
 	local default_option = DefaultUserSettings.get("user_settings", "sound_quality")
@@ -9591,16 +9591,16 @@ OptionsView.cb_player_outlines_setup = function (self)
 	local options = {
 		{
 			value = "off",
-			text = Localize("menu_settings_off")
+			text = Localize("menu_settings_off"),
 		},
 		{
 			value = "on",
-			text = Localize("menu_settings_on")
+			text = Localize("menu_settings_on"),
 		},
 		{
 			value = "always_on",
-			text = Localize("menu_settings_always_on")
-		}
+			text = Localize("menu_settings_always_on"),
+		},
 	}
 	local player_outlines = Application.user_setting("player_outlines")
 	local default_value = DefaultUserSettings.get("user_settings", "player_outlines")
@@ -9655,16 +9655,16 @@ OptionsView.cb_minion_outlines_setup = function (self)
 	local options = {
 		{
 			value = "off",
-			text = Localize("menu_settings_off")
+			text = Localize("menu_settings_off"),
 		},
 		{
 			value = "on",
-			text = Localize("menu_settings_on")
+			text = Localize("menu_settings_on"),
 		},
 		{
 			value = "always_on",
-			text = Localize("menu_settings_always_on")
-		}
+			text = Localize("menu_settings_always_on"),
+		},
 	}
 	local minion_outlines = Application.user_setting("minion_outlines")
 	local default_value = DefaultUserSettings.get("user_settings", "minion_outlines")
@@ -9707,12 +9707,12 @@ local function AddTobiiStepperSetting(setting_name, setter_cb)
 		local options = {
 			{
 				value = false,
-				text = Localize("menu_settings_off")
+				text = Localize("menu_settings_off"),
 			},
 			{
 				value = true,
-				text = Localize("menu_settings_on")
-			}
+				text = Localize("menu_settings_on"),
+			},
 		}
 		local use_tobii = Application.user_setting(setting_name)
 
@@ -9792,7 +9792,7 @@ local tobii_custom_callbacks = {
 	end,
 	use_clean_ui = function (self, value)
 		self.ingame_ui.ingame_hud:enable_clean_ui(value)
-	end
+	end,
 }
 
 AddTobiiStepperSetting("tobii_eyetracking")
@@ -9835,7 +9835,7 @@ OptionsView.cb_keybind_setup = function (self, keymappings_key, keymappings_tabl
 
 		actions_info[i] = {
 			action = action,
-			keybind = table.clone(keybind)
+			keybind = table.clone(keybind),
 		}
 	end
 
@@ -9847,7 +9847,7 @@ OptionsView.cb_keybind_setup = function (self, keymappings_key, keymappings_tabl
 	local default_keybind = default_keymappings[actions[1]]
 	local default_value = {
 		controller = default_keybind[1],
-		key = default_keybind[2]
+		key = default_keybind[2],
 	}
 
 	return button_locale_name_1, button_locale_name_2, actions_info, default_value
@@ -9871,7 +9871,7 @@ OptionsView.cb_keybind_saved_value = function (self, widget)
 
 		actions_info[i] = {
 			action = action,
-			keybind = table.clone(keybind)
+			keybind = table.clone(keybind),
 		}
 	end
 
@@ -9987,28 +9987,28 @@ OptionsView.cb_twitch_vote_time_setup = function (self)
 	local options = {
 		{
 			text = "15",
-			value = 15
+			value = 15,
 		},
 		{
 			text = "30",
-			value = 30
+			value = 30,
 		},
 		{
 			text = "45",
-			value = 45
+			value = 45,
 		},
 		{
 			text = "60",
-			value = 60
+			value = 60,
 		},
 		{
 			text = "75",
-			value = 75
+			value = 75,
 		},
 		{
 			text = "90",
-			value = 90
-		}
+			value = 90,
+		},
 	}
 	local default_value = DefaultUserSettings.get("user_settings", "twitch_vote_time")
 	local user_settings_value = Application.user_setting("twitch_vote_time")
@@ -10057,32 +10057,32 @@ OptionsView.cb_twitch_time_between_votes_setup = function (self)
 	local options = {
 		{
 			text = "5",
-			value = 5
+			value = 5,
 		},
 		{
 			text = "15",
-			value = 15
+			value = 15,
 		},
 		{
 			text = "30",
-			value = 30
+			value = 30,
 		},
 		{
 			text = "45",
-			value = 45
+			value = 45,
 		},
 		{
 			text = "60",
-			value = 60
+			value = 60,
 		},
 		{
 			text = "75",
-			value = 75
+			value = 75,
 		},
 		{
 			text = "90",
-			value = 90
-		}
+			value = 90,
+		},
 	}
 	local default_value = DefaultUserSettings.get("user_settings", "twitch_time_between_votes")
 	local user_settings_value = Application.user_setting("twitch_time_between_votes")

@@ -1,16 +1,20 @@
+﻿-- chunkname: @scripts/entity_system/systems/sound/sound_sector_system.lua
+
 require("scripts/entity_system/systems/sound/sound_sector_event_templates")
 
 local NUM_OF_SECTORS = 1
 local RPCS = {
-	"rpc_enemy_has_target"
+	"rpc_enemy_has_target",
 }
+
 SoundSectorSystem = class(SoundSectorSystem, ExtensionSystemBase)
 SoundSectorSystem.system_extensions = {
-	"SoundSectorExtension"
+	"SoundSectorExtension",
 }
 
 SoundSectorSystem.init = function (self, context, system_name)
 	self.unit_storage = context.unit_storage
+
 	local extensions = SoundSectorSystem.system_extensions
 	local entity_manager = context.entity_manager
 
@@ -18,7 +22,9 @@ SoundSectorSystem.init = function (self, context, system_name)
 
 	self.world = context.world
 	self.wwise_world = Managers.world:wwise_world(self.world)
+
 	local network_event_delegate = context.network_event_delegate
+
 	self.network_event_delegate = network_event_delegate
 
 	network_event_delegate:register(self, unpack(RPCS))
@@ -33,14 +39,17 @@ SoundSectorSystem.init = function (self, context, system_name)
 
 	for i = 1, NUM_OF_SECTORS do
 		self._sectors[i] = {}
+
 		local sound_source_unit = World.spawn_unit(self.world, "units/testunits/camera")
+
 		self._sector_sound_source_units[i] = sound_source_unit
 	end
 
 	self._events = {
+		ai_unit_activated = "event_ai_unit_activated",
 		ai_unit_deactivated = "event_ai_unit_deactivated",
-		ai_unit_activated = "event_ai_unit_activated"
 	}
+
 	local event_manager = Managers.state.event
 
 	for event_name, cb_name in pairs(self._events) do
@@ -94,6 +103,7 @@ SoundSectorSystem.extensions_ready = function (self, world, unit, extension_name
 
 		if sector_index then
 			local death_extension = ScriptUnit.extension(unit, "death_system")
+
 			self._sectors[sector_index][unit] = death_extension
 		end
 	end
@@ -151,6 +161,7 @@ end
 
 SoundSectorSystem.unfreeze = function (self, unit)
 	local extension = self._frozen_extensions[unit]
+
 	self._frozen_extensions[unit] = nil
 	self._extensions[unit] = extension
 
@@ -160,6 +171,7 @@ SoundSectorSystem.unfreeze = function (self, unit)
 
 		if sector_index then
 			local death_extension = ScriptUnit.extension(unit, "death_system")
+
 			self._sectors[sector_index][unit] = death_extension
 		end
 
@@ -173,7 +185,9 @@ SoundSectorSystem.update = function (self, context, t, dt)
 	end
 
 	local camera_position = Unit.local_position(self.camera_unit, 0)
+
 	camera_position = Vector3.is_valid(camera_position) and camera_position or Vector3(0, 0, 0)
+
 	local sector_sound_source_ids = self._sector_sound_source_ids
 
 	self:_update_sectors(camera_position)
@@ -182,7 +196,9 @@ SoundSectorSystem.update = function (self, context, t, dt)
 	local wwise_world = self.wwise_world
 	local Unit_set_local_position = Unit.set_local_position
 	local WwiseWorld_set_source_parameter = WwiseWorld.set_source_parameter
+
 	self._sector_process_index = 1
+
 	local sector_index = self._sector_process_index
 
 	for _, sound_event_template in pairs(SoundSectorEventTemplates) do
@@ -218,6 +234,7 @@ SoundSectorSystem._update_sectors = function (self, camera_position)
 
 			if sector_index then
 				local death_extension = ScriptUnit.extension(unit, "death_system")
+
 				self._sectors[sector_index][unit] = death_extension
 			end
 
@@ -251,7 +268,9 @@ SoundSectorSystem._stop_sector_sound_event = function (self, sector_index, sound
 	WwiseWorld.trigger_event(wwise_world, sound_event, wwise_source_id)
 
 	self._sector_sound_source_ids[sound_id] = nil
+
 	local source_ref_counts = self._sector_sound_source_refs
+
 	source_ref_counts[wwise_source_id] = source_ref_counts[wwise_source_id] - 1
 
 	if source_ref_counts[wwise_source_id] <= 0 then
@@ -274,7 +293,7 @@ SoundSectorSystem._calc_unit_sector = function (self, camera_position, unit)
 	local unit_position = POSITION_LOOKUP[unit]
 	local distance = Vector3.distance_squared(camera_position, unit_position)
 
-	if distance < MIN_DISTANCE_THRESHOLD_SQ or MAX_DISTANCE_THRESHOLD_SQ < distance then
+	if distance < MIN_DISTANCE_THRESHOLD_SQ or distance > MAX_DISTANCE_THRESHOLD_SQ then
 		return false
 	else
 		return 1

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/default_player_unit/energy/player_husk_energy_extension.lua
+
 require("scripts/unit_extensions/default_player_unit/energy/energy_data")
 
 PlayerHuskEnergyExtension = class(PlayerHuskEnergyExtension)
@@ -5,7 +7,9 @@ PlayerHuskEnergyExtension = class(PlayerHuskEnergyExtension)
 PlayerHuskEnergyExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	self.network_manager = Managers.state.network
 	self.unit = unit
+
 	local energy_data = extension_init_data.energy_data
+
 	self._max_energy = energy_data.max_value or 40
 	self._energy = self._max_energy
 	self._recharge_delay_timer = 0
@@ -36,6 +40,7 @@ PlayerHuskEnergyExtension._update_game_object = function (self)
 
 	if game and go_id then
 		local max_energy = GameSession.game_object_field(game, go_id, "energy_max_value")
+
 		self._depletion_cooldown_active = GameSession.game_object_field(game, go_id, "is_on_depletion_cooldown")
 		self._energy = max_energy * GameSession.game_object_field(game, go_id, "energy_percentage")
 		self._max_energy = max_energy

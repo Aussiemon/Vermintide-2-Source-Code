@@ -1,6 +1,10 @@
+﻿-- chunkname: @scripts/managers/backend_playfab/playfab_request_queue.lua
+
 local PlayFabClientApi = require("PlayFab.PlayFabClientApi")
 local guid = IS_PS4 and math.uuid or Application.guid
+
 PlayFabRequestQueue = class(PlayFabRequestQueue)
+
 local MAX_RETRIES = 2
 local TIMEOUT_TIME = 20
 local MAX_THROTTLE_REQUESTS = 10
@@ -24,22 +28,22 @@ PlayFabRequestQueue.enqueue = function (self, request, success_callback, send_ea
 
 	if not parameters then
 		request.FunctionParameter = {
-			metadata = self._metadata
+			metadata = self._metadata,
 		}
 	else
 		parameters.metadata = self._metadata
 	end
 
 	local entry = {
-		resends = 0,
-		eac_challenge_success = false,
 		api_function_name = "ExecuteCloudScript",
+		eac_challenge_success = false,
+		resends = 0,
 		request = table.clone(request),
 		success_callback = success_callback,
 		error_callback = error_callback,
 		send_eac_challenge = IS_WINDOWS and send_eac_challenge,
 		timeout = TIMEOUT_TIME,
-		id = id
+		id = id,
 	}
 
 	print("[PlayFabRequestQueue] Enqueuing ExecuteCloudScript request", request.FunctionName, id)
@@ -60,7 +64,7 @@ PlayFabRequestQueue.enqueue_api_request = function (self, api_function_name, req
 		success_callback = success_callback,
 		error_callback = optional_error_callback,
 		timeout = TIMEOUT_TIME,
-		id = id
+		id = id,
 	}
 
 	print("[PlayFabRequestQueue] Enqueuing Client API request", api_function_name, id)
@@ -75,7 +79,7 @@ PlayFabRequestQueue._need_throttle = function (self, func_name, t)
 	local data = self._throttle_per_func[func_name] or {}
 	local new_num_requests = #data + 1
 
-	if MAX_THROTTLE_REQUESTS <= new_num_requests then
+	if new_num_requests >= MAX_THROTTLE_REQUESTS then
 		return true
 	end
 
@@ -89,7 +93,7 @@ PlayFabRequestQueue._update_throttling = function (self, t, entry)
 	for key, data in pairs(self._throttle_per_func) do
 		local expire_date = data[1] or t + 1
 
-		while t > expire_date do
+		while expire_date < t do
 			table.remove(data, 1)
 
 			expire_date = data[1] or t + 1
@@ -147,6 +151,7 @@ PlayFabRequestQueue.update = function (self, dt, t)
 
 	local entry = table.remove(self._queue, 1)
 	local request = entry.request
+
 	self._active_entry = entry
 
 	if entry.send_eac_challenge then
@@ -156,9 +161,10 @@ PlayFabRequestQueue.update = function (self, dt, t)
 			FunctionName = "generateChallenge",
 			FunctionParameter = {
 				eac_id = eac_id,
-				metadata = self._metadata
-			}
+				metadata = self._metadata,
+			},
 		}
+
 		entry.expected_eac_id = eac_id
 		self._eac_id = eac_id
 
@@ -182,7 +188,7 @@ PlayFabRequestQueue.eac_challenge_success_cb = function (self, result)
 		return
 	end
 
-	local eac_response, response = nil
+	local eac_response, response
 
 	if challenge then
 		eac_response, response = self:_get_eac_response(challenge)
@@ -205,10 +211,13 @@ end
 
 PlayFabRequestQueue._challenge_response_received = function (self, response)
 	local entry = self._active_entry
+
 	entry.eac_challenge_success = true
 	entry.timeout = TIMEOUT_TIME
+
 	local request = entry.request
 	local function_params = request.FunctionParameter or {}
+
 	function_params.response = response
 	request.FunctionParameter = function_params
 
@@ -257,7 +266,7 @@ PlayFabRequestQueue.playfab_request_success_cb = function (self, success_callbac
 
 		if function_to_wait_for and function_to_wait_for == request.FunctionName then
 			Testify:respond_to_request("wait_for_playfab_response", {
-				request.FunctionName
+				request.FunctionName,
 			}, 1)
 		end
 	end
@@ -292,14 +301,16 @@ PlayFabRequestQueue._get_eac_response = function (self, challenge)
 	end
 
 	local eac_response = EAC.challenge_response(str)
-	local response = nil
+	local response
 
 	if eac_response then
 		local index = 1
+
 		response = {}
 
 		while string.byte(eac_response, index, index) do
 			local byte_value = string.byte(eac_response, index, index)
+
 			response[tostring(index - 1)] = byte_value
 			index = index + 1
 		end

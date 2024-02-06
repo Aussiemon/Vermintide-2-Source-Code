@@ -1,11 +1,14 @@
+﻿-- chunkname: @scripts/settings/dlcs/wizards/wizards_achievements_settings_part_2.lua
+
 local settings = DLCSettings.wizards_part_2
+
 settings.achievement_outline = {
 	levels = {
 		entries = {},
 		categories = {
 			{
-				sorting = 8,
 				name = "area_selection_onions_name",
+				sorting = 8,
 				entries = {
 					"tower_skulls",
 					"tower_wall_illusions",
@@ -19,12 +22,12 @@ settings.achievement_outline = {
 					"tower_harder",
 					"tower_hardest",
 					"tower_cataclysm",
-					"tower_all_challenges"
-				}
-			}
-		}
-	}
+					"tower_all_challenges",
+				},
+			},
+		},
+	},
 }
 settings.achievement_template_file_names = {
-	"scripts/managers/achievements/achievement_templates_wizards_part_2"
+	"scripts/managers/achievements/achievement_templates_wizards_part_2",
 }

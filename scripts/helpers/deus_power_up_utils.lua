@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/helpers/deus_power_up_utils.lua
+
 require("scripts/settings/dlcs/morris/deus_power_up_settings")
 
 PowerUpClientIdCount = PowerUpClientIdCount or 0
@@ -8,7 +10,8 @@ end
 
 local function get_random_power_up(seed, power_ups)
 	if #power_ups > 0 then
-		local power_up_index = nil
+		local power_up_index
+
 		seed, power_up_index = Math.next_random(seed, 1, #power_ups)
 
 		return seed, power_ups[power_up_index]
@@ -19,14 +22,17 @@ end
 
 local function get_random_power_up_rarity(seed, difficulty, run_progress)
 	local config = DeusPowerUpRarityChance[difficulty] or DeusPowerUpRarityChance.default
-	local random = nil
+	local random
+
 	seed, random = Math.next_random(seed)
-	local index = nil
+
+	local index
 	local weight_sum = 0
 
 	for rarity, weights in pairs(config) do
 		index = index or math.floor(#weights * run_progress + 1)
 		weight_sum = weight_sum + weights[index]
+
 		local value = weight_sum
 
 		if random < value then
@@ -46,6 +52,7 @@ local function get_maxed_out_power_ups(power_ups)
 
 		if power_up.max_amount then
 			local amount = power_ups_by_amount[power_up.name] or power_up.max_amount
+
 			amount = amount - 1
 			power_ups_by_amount[power_up.name] = amount
 
@@ -131,7 +138,7 @@ end
 
 local function generate_random_power_up(seed, new_power_ups, existing_power_ups, difficulty, run_progress, availability_type, career_name, forced_rarity)
 	local possible_power_ups = {}
-	local rarity = nil
+	local rarity
 
 	if forced_rarity then
 		rarity = forced_rarity
@@ -163,12 +170,14 @@ local function generate_random_power_up(seed, new_power_ups, existing_power_ups,
 
 	fassert(#possible_power_ups > 0, "not enough power_ups left in the pool")
 
-	local power_up = nil
+	local power_up
+
 	seed, power_up = get_random_power_up(seed, possible_power_ups)
+
 	local power_up_instance = {
 		name = power_up.name,
 		rarity = power_up.rarity,
-		client_id = generate_random_id()
+		client_id = generate_random_id(),
 	}
 
 	return seed, power_up_instance
@@ -178,7 +187,7 @@ local function generate_specific_power_up(power_up_name, rarity)
 	return {
 		name = power_up_name,
 		rarity = rarity,
-		client_id = generate_random_id()
+		client_id = generate_random_id(),
 	}
 end
 
@@ -244,11 +253,12 @@ DeusPowerUpUtils.get_power_up_icon = function (power_up_instance, profile_index,
 end
 
 DeusPowerUpUtils.get_power_up_name_text = function (name, talent_index, talent_tier, profile_index, career_index)
-	local title_text = nil
+	local title_text
 	local sub_text = ""
 
 	if talent_index and talent_tier then
 		local talent = DeusPowerUpUtils.get_talent_from_power_up(talent_index, talent_tier, profile_index, career_index)
+
 		title_text = Localize(talent.name)
 	else
 		title_text = get_power_up_title_text(name)
@@ -286,7 +296,7 @@ DeusPowerUpUtils.string_to_power_ups = function (power_ups_string)
 		table.insert(power_ups, {
 			name = power_up_name,
 			rarity = rarity,
-			client_id = power_up_client_id
+			client_id = power_up_client_id,
 		})
 	end
 
@@ -300,10 +310,12 @@ end
 DeusPowerUpUtils.generate_random_power_ups = function (seed, count, existing_power_ups, difficulty, run_progress, availability_type, career_name, forced_rarity)
 	local new_power_ups = {}
 	local skip_metatable = true
+
 	existing_power_ups = table.clone(existing_power_ups, skip_metatable)
 
 	for i = 1, count do
-		local power_up = nil
+		local power_up
+
 		seed, power_up = generate_random_power_up(seed, new_power_ups, existing_power_ups, difficulty, run_progress, availability_type, career_name, forced_rarity)
 
 		table.insert(new_power_ups, power_up)
@@ -330,6 +342,7 @@ DeusPowerUpUtils.activate_deus_power_up = function (power_up_instance, buff_syst
 		local talent_name = TalentTrees[profile_name][talent_tree_index][talent_tier][talent_index]
 		local lookup = TalentIDLookup[talent_name]
 		local talent_id = lookup.talent_id
+
 		talent_ids[#talent_ids + 1] = talent_id
 
 		deus_backend:set_deus_talent_ids(career_name, talent_ids)

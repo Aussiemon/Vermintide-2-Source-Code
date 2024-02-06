@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/mutators/mutator_blessing_of_shallya.lua
+
 require("scripts/settings/dlcs/morris/deus_blessing_settings")
 
 return {
@@ -6,5 +8,5 @@ return {
 	icon = DeusBlessingSettings.blessing_of_shallya.icon,
 	server_update_function = function (context, data, dt, t)
 		MutatorUtils.apply_buff_to_alive_player_units(context, data, "blessing_of_shallya_buff")
-	end
+	end,
 }

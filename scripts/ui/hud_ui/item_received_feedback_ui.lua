@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/hud_ui/item_received_feedback_ui.lua
+
 require("scripts/settings/ui_player_portrait_frame_settings")
 
 local definitions = local_require("scripts/ui/hud_ui/item_received_feedback_ui_definitions")
@@ -16,26 +18,27 @@ local event_settings = {
 		end,
 		icon_function = function (hero_portrait_texture, item_icon)
 			return hero_portrait_texture, item_icon
-		end
-	}
+		end,
+	},
 }
 local event_colors = {
 	fade_to = Colors.get_table("white"),
 	default = Colors.get_table("cheeseburger"),
 	kill = Colors.get_table("red"),
-	personal = Colors.get_table("dodger_blue")
+	personal = Colors.get_table("dodger_blue"),
 }
 local item_icons = {
-	potion_speed_boost_01 = "killfeed_icon_04",
-	grenade_fire_02 = "killfeed_icon_09",
-	potion_healing_draught_01 = "killfeed_icon_06",
-	grenade_frag_02 = "killfeed_icon_05",
 	grenade_fire_01 = "killfeed_icon_09",
+	grenade_fire_02 = "killfeed_icon_09",
 	grenade_frag_01 = "killfeed_icon_05",
+	grenade_frag_02 = "killfeed_icon_05",
+	healthkit_first_aid_kit_01 = "reinforcement_heal",
 	potion_cooldown_reduction_01 = "killfeed_icon_13",
 	potion_damage_boost_01 = "killfeed_icon_10",
-	healthkit_first_aid_kit_01 = "reinforcement_heal"
+	potion_healing_draught_01 = "killfeed_icon_06",
+	potion_speed_boost_01 = "killfeed_icon_04",
 }
+
 ItemReceivedFeedbackUI = class(ItemReceivedFeedbackUI)
 
 ItemReceivedFeedbackUI.init = function (self, parent, ingame_ui_context)
@@ -46,7 +49,7 @@ ItemReceivedFeedbackUI.init = function (self, parent, ingame_ui_context)
 	self.peer_id = ingame_ui_context.peer_id
 	self.world = ingame_ui_context.world_manager:world("level_world")
 	self.render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 
 	self:create_ui_elements()
@@ -55,6 +58,7 @@ ItemReceivedFeedbackUI.init = function (self, parent, ingame_ui_context)
 	self._hash_order = {}
 	self._hash_widget_lookup = {}
 	self._animations = {}
+
 	local event_manager = Managers.state.event
 
 	event_manager:register(self, "give_item_feedback", "event_give_item_feedback")
@@ -74,6 +78,7 @@ ItemReceivedFeedbackUI.create_ui_elements = function (self)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(definitions.scenegraph_definition)
 	self.message_widgets = {}
 	self._unused_widgets = {}
+
 	local i = 0
 
 	for _, widget in pairs(definitions.message_widgets) do
@@ -88,6 +93,7 @@ ItemReceivedFeedbackUI.remove_event = function (self, index)
 	local event = table.remove(events, index)
 	local widget = event.widget
 	local unused_widgets = self._unused_widgets
+
 	unused_widgets[#unused_widgets + 1] = widget
 end
 
@@ -109,15 +115,15 @@ ItemReceivedFeedbackUI.add_event = function (self, hash, color_from, event_type,
 		local widget = table.remove(unused_widgets, 1)
 		local offset = widget.offset
 		local event = {
-			text = "",
-			shown_amount = 0,
 			amount = 0,
+			shown_amount = 0,
+			text = "",
 			widget = widget,
 			event_type = event_type,
 			next_increment = t - increment_duration,
 			data = {
-				...
-			}
+				...,
+			},
 		}
 		local event_index = #events + 1
 
@@ -132,6 +138,7 @@ ItemReceivedFeedbackUI.add_event = function (self, hash, color_from, event_type,
 		content.icon = item_icon
 		offset[2] = 0
 		offset[1] = 0
+
 		local text_style_ids = content.text_style_ids
 
 		for _, style_id in ipairs(text_style_ids) do
@@ -151,15 +158,17 @@ end
 
 local temp_portrait_size = {
 	96,
-	112
+	112,
 }
 
 ItemReceivedFeedbackUI._assign_portrait_texture = function (self, widget, pass_name, texture)
 	widget.content[pass_name].texture_id = texture
+
 	local portrait_size = table.clone(temp_portrait_size)
 
 	if UIAtlasHelper.has_atlas_settings_by_texture_name(texture) then
 		local texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(texture)
+
 		portrait_size[1] = texture_settings.size[1]
 		portrait_size[2] = texture_settings.size[2]
 	end
@@ -167,6 +176,7 @@ ItemReceivedFeedbackUI._assign_portrait_texture = function (self, widget, pass_n
 	local style = widget.style[pass_name]
 	local portrait_offset = style.portrait_offset
 	local offset = style.offset
+
 	offset[1] = portrait_offset[1] - portrait_size[1] / 2
 	offset[2] = portrait_offset[2] - portrait_size[2] / 2
 	style.size = portrait_size
@@ -198,10 +208,10 @@ ItemReceivedFeedbackUI._get_hero_portrait = function (self, profile_index, caree
 end
 
 local customizer_data = {
-	root_scenegraph_id = "message_animated",
+	drag_scenegraph_id = "message_animated_dragger",
 	label = "Item received",
 	registry_key = "item_received",
-	drag_scenegraph_id = "message_animated_dragger"
+	root_scenegraph_id = "message_animated",
 }
 
 ItemReceivedFeedbackUI.update = function (self, dt, t)
@@ -242,7 +252,7 @@ ItemReceivedFeedbackUI.update = function (self, dt, t)
 
 		if not event.remove_time then
 			event.remove_time = t + show_duration
-		elseif event.remove_time < t then
+		elseif t > event.remove_time then
 			self:remove_event(index)
 
 			removed = true
@@ -264,9 +274,11 @@ ItemReceivedFeedbackUI.update = function (self, dt, t)
 
 			local move_time_left = math.max(time_left - (show_duration - move_duration), 0)
 			local offset_progress = 1 - math.clamp(move_time_left / move_duration, 0, 1)
+
 			offset[1] = 50 * math.easeOutCubic(offset_progress)
 			style.arrow.offset[1] = 35 * math.easeOutCubic(offset_progress)
 			style.icon.offset[1] = 80 * math.easeOutCubic(offset_progress)
+
 			local anim_progress = math.easeOutCubic(fade_out_progress)
 			local alpha = 255 * anim_progress
 			local text_style_ids = content.text_style_ids

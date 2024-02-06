@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/mutators/mutator_pacing_frozen.lua
+
 return {
 	hide_from_player_ui = true,
 	server_start_function = function (context, data)
@@ -17,5 +19,5 @@ return {
 				conflict_director.pacing:enable()
 			end
 		end
-	end
+	end,
 }

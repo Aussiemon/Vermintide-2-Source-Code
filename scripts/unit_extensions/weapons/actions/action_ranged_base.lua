@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/unit_extensions/weapons/actions/action_ranged_base.lua
+
 ActionRangedBase = class(ActionRangedBase, ActionBase)
+
 local HAS_TOBII = rawget(_G, "Tobii") and Application.user_setting("tobii_eyetracking")
 local MAX_SHOTS_PER_FRAME = 3
 local unit_has_extension = ScriptUnit.has_extension
@@ -30,6 +33,7 @@ ActionRangedBase.client_owner_start_action = function (self, new_action, t, chai
 	local owner_unit = self.owner_unit
 	local buff_extension = self.buff_extension
 	local hud_extension = self.hud_extension
+
 	self._state = "waiting_to_shoot"
 	self._time_to_shoot = t + (new_action.fire_time or 0)
 	self._active_reload_time = new_action.active_reload_time and t + new_action.active_reload_time
@@ -118,7 +122,7 @@ ActionRangedBase.finish = function (self, reason)
 end
 
 ActionRangedBase._waiting_to_shoot = function (self, dt, t)
-	if self._time_to_shoot <= t then
+	if t >= self._time_to_shoot then
 		self._state = "start_shooting"
 	end
 end
@@ -221,7 +225,7 @@ ActionRangedBase._finished_shooting = function (self, t)
 
 		local input_extension = self.input_extension
 
-		if self._active_reload_time < t then
+		if t > self._active_reload_time then
 			local ammo_extension = self.ammo_extension
 
 			if (input_extension:get("weapon_reload") or input_extension:get_buffer("weapon_reload")) and ammo_extension:can_reload() then
@@ -250,6 +254,7 @@ ActionRangedBase.shoot = function (self, num_shots_this_frame, shots_fired, num_
 
 	for i = 1, num_shots_this_frame do
 		shots_fired = shots_fired + 1
+
 		local rotation = current_rotation
 
 		if spread_extension then
@@ -322,7 +327,7 @@ ActionRangedBase.fire_projectile = function (self, position, rotation)
 end
 
 ActionRangedBase.fire_hitscan = function (self, position, direction, range)
-	local result = nil
+	local result
 
 	if self.current_action.ray_against_large_hitbox then
 		result = PhysicsWorld.immediate_raycast_actors(self.physics_world, position, direction, range, "static_collision_filter", "filter_player_ray_projectile_static_only", "dynamic_collision_filter", "filter_player_ray_projectile_ai_only", "dynamic_collision_filter", "filter_player_ray_projectile_hitbox_only", "dynamic_collision_filter", "filter_enemy_trigger")

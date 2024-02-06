@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/dlcs/shovel/action_damage_target.lua
+
 ActionDamageTarget = class(ActionDamageTarget, ActionBase)
 
 ActionDamageTarget.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
@@ -37,16 +39,22 @@ ActionDamageTarget.client_owner_start_action = function (self, new_action, t, ch
 	self._damage_steps = new_action.damage_steps
 	self._step_idx = 1
 	self._num_repeats = 0
+
 	local anim_time_scale = ActionUtils.get_action_time_scale(self.owner_unit, new_action)
+
 	self._anim_time_scale = anim_time_scale
 	self._next_update_t = t + new_action.damage_steps[1].start_delay / self._anim_time_scale
 	self._done = false
+
 	local target_unit = self._target_unit
 	local target_node_id = Unit.has_node(target_unit, "j_spine") and Unit.node(target_unit, "j_spine") or 0
+
 	self._target_node_id = target_node_id
 	self._target_hit_zone = new_action.target_node
 	self._target_hit_zone_id = NetworkLookup.hit_zones[new_action.target_node]
+
 	local network_manager = Managers.state.network
+
 	self._attacker_unit_id = network_manager:unit_game_object_id(self.owner_unit)
 	self._hit_unit_id = network_manager:unit_game_object_id(chain_action_data.target)
 
@@ -55,6 +63,7 @@ ActionDamageTarget.client_owner_start_action = function (self, new_action, t, ch
 
 	if not self.is_bot then
 		local wwise_playing_id, wwise_source_id = ActionUtils.start_charge_sound(self.wwise_world, self.weapon_unit, self.owner_unit, new_action)
+
 		self.charging_sound_id = wwise_playing_id
 		self.wwise_source_id = wwise_source_id
 	end
@@ -126,7 +135,7 @@ ActionDamageTarget.client_owner_post_update = function (self, dt, t, world, can_
 		self:_start_forced_action(t)
 	end
 
-	if not self._done and self._next_update_t <= t then
+	if not self._done and t >= self._next_update_t then
 		local current_step = self._damage_steps[self._step_idx]
 
 		self:_apply_damage_step(target_unit, self._power_level, current_step, t)
@@ -137,6 +146,7 @@ ActionDamageTarget.client_owner_post_update = function (self, dt, t, world, can_
 			self._next_update_t = t + current_step.repeat_delay / self._anim_time_scale
 		else
 			self._step_idx = self._step_idx + 1
+
 			local next_step = self._damage_steps[self._step_idx]
 
 			if next_step then

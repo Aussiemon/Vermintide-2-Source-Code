@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/account/script_connected_storage_token.lua
+
 ScriptConnectedStorageToken = class(ScriptConnectedStorageToken, ScriptSaveToken)
 
 ScriptConnectedStorageToken.info = function (self)
@@ -7,13 +9,13 @@ ScriptConnectedStorageToken.info = function (self)
 		print("GET STORAGE ID SUCCESS", self._status)
 
 		info = {
-			storage_id = self._token
+			storage_id = self._token,
 		}
 	else
 		print("GET STORAGE ID ERROR", self._status)
 
 		info = {
-			error = self:_parse_error(self._status)
+			error = self:_parse_error(self._status),
 		}
 	end
 
@@ -31,7 +33,7 @@ ScriptConnectedStorageQueryToken.info = function (self)
 		print("QUERY ERROR")
 
 		info = {
-			error = self:_parse_error(self._status)
+			error = self:_parse_error(self._status),
 		}
 	end
 
@@ -47,7 +49,7 @@ ScriptConnectedStorageDeleteToken.info = function (self)
 		print("DELETE ERROR")
 
 		info = {
-			error = self:_parse_error(self._status)
+			error = self:_parse_error(self._status),
 		}
 	end
 

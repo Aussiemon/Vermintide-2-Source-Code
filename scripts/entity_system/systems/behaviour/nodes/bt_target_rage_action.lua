@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_target_rage_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTTargetRageAction = class(BTTargetRageAction, BTNode)
@@ -18,9 +20,11 @@ BTTargetRageAction.name = "BTTargetRageAction"
 
 BTTargetRageAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
+
 	blackboard.action = action
 	blackboard.active_node = self
-	local start_anims = nil
+
+	local start_anims
 	local is_close = action.close_anims_name and blackboard.target_dist < action.close_anims_dist
 
 	if is_close then
@@ -66,6 +70,7 @@ BTTargetRageAction.enter = function (self, unit, blackboard, t)
 	blackboard.navigation_extension:stop()
 
 	blackboard.move_state = "attacking"
+
 	local network_manager = Managers.state.network
 
 	network_manager:anim_event(unit, rage_anim)

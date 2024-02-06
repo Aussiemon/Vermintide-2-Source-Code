@@ -1,16 +1,19 @@
+﻿-- chunkname: @scripts/ui/views/console_cursor_view.lua
+
 require("scripts/ui/ui_renderer")
 require("scripts/ui/ui_elements")
 require("scripts/ui/ui_widgets")
 
 local definitions = dofile("scripts/ui/views/console_cursor_view_definitions")
 local DO_RELOAD = true
+
 ConsoleCursorView = class(ConsoleCursorView)
 
 ConsoleCursorView.init = function (self, world)
 	self._world = world
 	self._ui_renderer = UIRenderer.create(world, "material", "materials/ui/ui_1080p_loading")
 	self._render_settings = {
-		snap_pixel_positions = false
+		snap_pixel_positions = false,
 	}
 
 	self:_create_ui_elements()

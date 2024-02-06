@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/dlcs/morris/deus_map_seed_whitelist.lua
+
 DEUS_MAP_SEED_WHITELIST = {
 	use_base_gen_whitelist = false,
 	use_full_gen_whitelist = false,
@@ -12,7 +14,7 @@ DEUS_MAP_SEED_WHITELIST = {
 			67,
 			82,
 			88,
-			89
+			89,
 		},
 		journey_cave = {
 			8,
@@ -22,7 +24,7 @@ DEUS_MAP_SEED_WHITELIST = {
 			13,
 			19,
 			21,
-			23
+			23,
 		},
 		journey_ice = {
 			25,
@@ -34,7 +36,7 @@ DEUS_MAP_SEED_WHITELIST = {
 			37,
 			41,
 			46,
-			49
+			49,
 		},
 		journey_citadel = {
 			24,
@@ -44,8 +46,8 @@ DEUS_MAP_SEED_WHITELIST = {
 			6,
 			16,
 			19,
-			26
-		}
+			26,
+		},
 	},
 	full_gen_whitelist = {
 		default = {
@@ -80,7 +82,7 @@ DEUS_MAP_SEED_WHITELIST = {
 			151,
 			152,
 			153,
-			154
+			154,
 		},
 		journey_citadel = {
 			13,
@@ -90,7 +92,7 @@ DEUS_MAP_SEED_WHITELIST = {
 			21,
 			27,
 			28,
-			32
-		}
-	}
+			32,
+		},
+	},
 }

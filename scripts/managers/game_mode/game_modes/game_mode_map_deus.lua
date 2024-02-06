@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/game_mode/game_modes/game_mode_map_deus.lua
+
 require("scripts/managers/game_mode/game_modes/game_mode_base")
 require("scripts/ui/views/deus_menu/deus_map_decision_view")
 require(script_data.FEATURE_old_map_ui and "scripts/ui/views/deus_menu/deus_shop_view" or "scripts/ui/views/deus_menu/deus_shop_view_v2")
@@ -18,7 +20,7 @@ local UI_RENDERER_MATERIALS = {
 	"material",
 	"materials/ui/ui_1080p_morris_single_textures",
 	"material",
-	"materials/ui/ui_1080p_belakor_atlas"
+	"materials/ui/ui_1080p_belakor_atlas",
 }
 
 for _, dlc in pairs(DLCSettings) do
@@ -36,27 +38,27 @@ local COMPLETE_LEVEL_VAR = false
 local FAIL_LEVEL_VAR = false
 local FADE_DURATION = 1
 local states = {
-	WAITING_FOR_PLAYERS_AFTER_SHOP = 4,
+	FINISHING = 5,
 	MAP_DECISION = 1,
 	SHOP = 3,
-	FINISHING = 5,
-	WAITING_FOR_PLAYERS_AFTER_MAP_DECISION = 2
+	WAITING_FOR_PLAYERS_AFTER_MAP_DECISION = 2,
+	WAITING_FOR_PLAYERS_AFTER_SHOP = 4,
 }
 local shared_state_spec = {
 	server = {
 		state = {
 			default_value = 0,
 			type = "number",
-			composite_keys = {}
-		}
+			composite_keys = {},
+		},
 	},
 	peer = {
 		state = {
 			default_value = 0,
 			type = "number",
-			composite_keys = {}
-		}
-	}
+			composite_keys = {},
+		},
+	},
 }
 
 SharedState.validate_spec(shared_state_spec)
@@ -69,11 +71,14 @@ GameModeMapDeus.init = function (self, settings, world, network_server, is_serve
 
 	self._deus_run_controller = game_mode_settings.deus_run_controller
 	self._own_peer_id = self._deus_run_controller:get_own_peer_id()
+
 	local server_peer_id = self._deus_run_controller:get_server_peer_id()
+
 	self._shared_state = SharedState:new("deus_game_mode_map_" .. self._deus_run_controller:get_run_id(), shared_state_spec, is_server, network_server, server_peer_id, self._own_peer_id)
 	self._is_server = is_server
 	self._ui_done = true
 	self._adventure_profile_rules = AdventureProfileRules:new(self._profile_synchronizer, self._network_server)
+
 	local ui_renderer = UIRenderer.create(self._world, unpack(UI_RENDERER_MATERIALS))
 	local top_world = Managers.world:world("top_ingame_view")
 	local ui_top_renderer = UIRenderer.create(top_world, unpack(UI_RENDERER_MATERIALS))
@@ -87,8 +92,9 @@ GameModeMapDeus.init = function (self, settings, world, network_server, is_serve
 		wwise_world = Managers.world:wwise_world(world),
 		network_server = network_server,
 		own_peer_id = self._own_peer_id,
-		world = world
+		world = world,
 	}
+
 	self._map_decision_view = DeusMapDecisionView:new(context)
 	self._shop_view = DeusShopView:new(context)
 end
@@ -197,7 +203,7 @@ GameModeMapDeus.update = function (self, t, dt)
 			Managers.ui:handle_transition("close_active", {
 				use_fade = true,
 				fade_in_speed = FADE_DURATION,
-				fade_out_speed = FADE_DURATION
+				fade_out_speed = FADE_DURATION,
 			})
 
 			local transition_params = {
@@ -209,7 +215,7 @@ GameModeMapDeus.update = function (self, t, dt)
 					Managers.transition:fade_in(FADE_DURATION, function ()
 						self._ui_done = true
 					end)
-				end
+				end,
 			}
 
 			self._map_decision_view:start(transition_params)
@@ -222,7 +228,7 @@ GameModeMapDeus.update = function (self, t, dt)
 			Managers.ui:handle_transition("close_active", {
 				use_fade = true,
 				fade_in_speed = FADE_DURATION,
-				fade_out_speed = FADE_DURATION
+				fade_out_speed = FADE_DURATION,
 			})
 
 			local transition_params = {
@@ -236,7 +242,7 @@ GameModeMapDeus.update = function (self, t, dt)
 
 						self._ui_done = true
 					end)
-				end
+				end,
 			}
 
 			self._shop_view:start(transition_params)

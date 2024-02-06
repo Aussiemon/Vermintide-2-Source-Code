@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/dlc_upsell/common_popup_handler.lua
+
 require("scripts/ui/dlc_upsell/common_popup_settings")
 require("scripts/ui/dlc_upsell/unlock_reminder_popup")
 require("scripts/ui/dlc_upsell/upsell_popup")
@@ -9,7 +11,9 @@ CommonPopupHandler.init = function (self, context)
 	self._popups = {}
 	self._n_popups = 0
 	self._popup_ids = 0
+
 	local menu_active = context.ingame_ui.menu_active or context.ingame_ui.current_view or context.ingame_ui._transition_fade_data
+
 	self._menu_active = menu_active
 
 	Managers.state.event:register(self, "ui_show_popup", "ui_show_popup")
@@ -65,12 +69,14 @@ CommonPopupHandler.update = function (self, dt, t)
 end
 
 CommonPopupHandler.queue_popup = function (self, ui_popup)
-	local n_popups = self._n_popups
-	local popups = self._popups
+	local n_popups, popups = self._n_popups, self._popups
+
 	n_popups = n_popups + 1
 	self._n_popups = n_popups
 	self._popup_ids = self._popup_ids + 1
+
 	local popup_id = tostring(self._popup_ids)
+
 	ui_popup.popup_id = popup_id
 
 	if n_popups > 1 then

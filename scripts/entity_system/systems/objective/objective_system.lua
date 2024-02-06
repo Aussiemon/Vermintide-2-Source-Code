@@ -1,13 +1,18 @@
+﻿-- chunkname: @scripts/entity_system/systems/objective/objective_system.lua
+
 local objective_system_testify = script_data.testify and require("scripts/entity_system/systems/objective/objective_system_testify")
+
 ObjectiveSystem = class(ObjectiveSystem, ExtensionSystemBase)
+
 local RPCS = {
-	"rpc_sync_objectives"
+	"rpc_sync_objectives",
 }
 
 ObjectiveSystem.init = function (self, entity_system_creation_context, system_name, extensions)
 	ExtensionSystemBase.init(self, entity_system_creation_context, system_name, extensions)
 
 	local network_event_delegate = entity_system_creation_context.network_event_delegate
+
 	self.network_event_delegate = network_event_delegate
 
 	network_event_delegate:register(self, unpack(RPCS))
@@ -104,6 +109,7 @@ end
 
 ObjectiveSystem._server_activate_objectives = function (self, objective_sets)
 	self._objective_lists = objective_sets
+
 	local num_main_objectives = 0
 
 	for _, objective_set in ipairs(objective_sets) do
@@ -127,6 +133,7 @@ ObjectiveSystem._server_activate_objectives = function (self, objective_sets)
 
 	self._total_num_main_objectives = num_main_objectives
 	self._initial_activation_done = true
+
 	local current_objectives = self._objective_lists[self._current_objective_index]
 
 	if num_main_objectives > 0 then
@@ -139,6 +146,7 @@ end
 
 ObjectiveSystem._client_activate_objectives = function (self, objective_sets)
 	self._objective_lists = objective_sets
+
 	local num_main_objectives = 0
 
 	for _, objective_set in ipairs(objective_sets) do
@@ -162,6 +170,7 @@ ObjectiveSystem._client_activate_objectives = function (self, objective_sets)
 
 	self._total_num_main_objectives = num_main_objectives
 	self._initial_activation_done = true
+
 	local current_objectives = self._objective_lists[self._current_objective_index]
 
 	if num_main_objectives > 0 then
@@ -196,7 +205,7 @@ ObjectiveSystem._activate_objectives = function (self, objectives, parent_object
 		if objective_data.sub_objectives then
 			self._sub_objectives[objective_name] = {
 				data = objective_data,
-				extensions = {}
+				extensions = {},
 			}
 
 			self:_activate_objectives(objective_data.sub_objectives, objective_name, true)
@@ -220,8 +229,10 @@ ObjectiveSystem._activate_objectives = function (self, objectives, parent_object
 				if self._is_server then
 					if parent_objective then
 						self._current_num_sub_objectives = self._current_num_sub_objectives + 1
+
 						local parent_sub_objetives = self._sub_objectives[parent_objective]
 						local extensions = parent_sub_objetives.extensions
+
 						extensions[#extensions + 1] = objective_extension
 					else
 						self._main_objectives[#self._main_objectives + 1] = objective_extension
@@ -236,9 +247,11 @@ end
 
 ObjectiveSystem.on_add_extension = function (self, world, unit, extension_name, extension_init_data)
 	local extension_alias = self.NAME
-	local extension_pool_table = nil
+	local extension_pool_table
 	local extension = ScriptUnit.add_extension(self.extension_init_context, unit, extension_name, extension_alias, extension_init_data, extension_pool_table)
+
 	self.extensions[extension_name] = (self.extensions[extension_name] or 0) + 1
+
 	local objective_name = extension:objective_name()
 
 	if objective_name then
@@ -268,7 +281,7 @@ end
 
 ObjectiveSystem.game_object_destroyed = function (self, game_object_id)
 	local extension = self._main_objectives[game_object_id]
-	local event_name = nil
+	local event_name
 
 	if extension then
 		self._main_objectives[game_object_id] = nil
@@ -286,7 +299,7 @@ ObjectiveSystem.game_object_destroyed = function (self, game_object_id)
 		self._num_completed_sub_objectives = self._num_completed_sub_objectives + 1
 		self._current_num_completed_sub_objectives = self._current_num_completed_sub_objectives + 1
 
-		if self._current_num_sub_objectives <= self._current_num_completed_sub_objectives then
+		if self._current_num_completed_sub_objectives >= self._current_num_sub_objectives then
 			self._num_completed_main_objectives = self._num_completed_main_objectives + 1
 			self._current_num_completed_main_objectives = self._current_num_completed_main_objectives + 1
 		end
@@ -456,6 +469,7 @@ ObjectiveSystem._complete_objective = function (self, id, extension, objects_to_
 	extension:complete()
 
 	objects_to_remove[#objects_to_remove + 1] = id
+
 	local objective_name = extension:objective_name()
 
 	if not is_sub_objective then

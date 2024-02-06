@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/dlc_morris/views/start_game_view/windows/start_game_window_deus_twitch.lua
+
 local definitions = local_require("scripts/ui/dlc_morris/views/start_game_view/windows/definitions/start_game_window_deus_twitch_definitions")
 local scenegraph_definition = definitions.scenegraph_definition
 local widget_definitions = definitions.widgets
@@ -10,6 +12,7 @@ local selector_input_definition = definitions.selector_input_definition
 local START_GAME_INPUT = "refresh_press"
 local SELECTION_INPUT = "confirm_press"
 local CONNECT_INPUT = "special_1_press"
+
 StartGameWindowDeusTwitch = class(StartGameWindowDeusTwitch)
 StartGameWindowDeusTwitch.NAME = "StartGameWindowDeusTwitch"
 
@@ -17,7 +20,9 @@ StartGameWindowDeusTwitch.on_enter = function (self, params, offset)
 	print("[StartGameViewWindow] Enter Substate StartGameWindowTwitchOverviewConsole")
 
 	self._parent = params.parent
+
 	local ingame_ui_context = params.ingame_ui_context
+
 	self._ingame_ui_context = ingame_ui_context
 	self._ui_renderer = ingame_ui_context.ui_renderer
 	self._ui_top_renderer = ingame_ui_context.ui_top_renderer
@@ -25,11 +30,13 @@ StartGameWindowDeusTwitch.on_enter = function (self, params, offset)
 	self._statistics_db = ingame_ui_context.statistics_db
 	self._is_server = ingame_ui_context.is_server
 	self._mechanism_name = Managers.mechanism:current_mechanism_name()
+
 	local player_manager = Managers.player
 	local local_player = player_manager:local_player()
+
 	self._stats_id = local_player:stats_id()
 	self._render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 	self._is_focused = false
 	self._play_button_pressed = false
@@ -68,6 +75,7 @@ StartGameWindowDeusTwitch._create_ui_elements = function (self, params, offset)
 	self._ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
 	self._widgets, self._widgets_by_name = UIUtils.create_widgets(widget_definitions)
 	self._expedition_widgets = {}
+
 	local selection_widgets = {}
 	local selection_widgets_by_name = {}
 
@@ -92,6 +100,7 @@ StartGameWindowDeusTwitch._create_ui_elements = function (self, params, offset)
 
 	if offset then
 		local window_position = self._ui_scenegraph.window.local_position
+
 		window_position[1] = window_position[1] + offset[1]
 		window_position[2] = window_position[2] + offset[2]
 		window_position[3] = window_position[3] + offset[3]
@@ -100,6 +109,7 @@ StartGameWindowDeusTwitch._create_ui_elements = function (self, params, offset)
 	if IS_PS4 then
 		local frame_widget = self._widgets_by_name.frame_widget
 		local frame_widget_content = frame_widget.content
+
 		frame_widget_content.twitch_name = PlayerData.twitch_user_name or ""
 	end
 
@@ -129,6 +139,7 @@ StartGameWindowDeusTwitch._set_disconnect_button_text = function (self)
 
 	if disconnect_button_widget then
 		local user_name = Managers.twitch and Managers.twitch:user_name() or "N/A"
+
 		disconnect_button_widget.content.button_hotspot.text = string.format(Localize("start_game_window_twitch_disconnect"), user_name)
 	end
 end
@@ -137,12 +148,12 @@ StartGameWindowDeusTwitch.cb_on_message_received = function (self, key, message_
 	local chat_output_widget = self._widgets_by_name.chat_output_widget
 	local chat_output_content = chat_output_widget.content
 	local message_tables = chat_output_content.message_tables
-	local new_message_table = {
-		is_dev = false,
-		is_system = false,
-		sender = string.format("%s: ", user_name),
-		message = message
-	}
+	local new_message_table = {}
+
+	new_message_table.is_dev = false
+	new_message_table.is_system = false
+	new_message_table.sender = string.format("%s: ", user_name)
+	new_message_table.message = message
 	message_tables[#message_tables + 1] = new_message_table
 
 	if #message_tables > 45 then
@@ -211,6 +222,7 @@ StartGameWindowDeusTwitch._handle_twitch_login_input = function (self, dt, t, in
 					Managers.chat:block_chat_input_for_one_frame()
 
 					local keystrokes = Keyboard.keystrokes()
+
 					frame_widget_content.twitch_name, frame_widget_content.caret_index = KeystrokeHelper.parse_strokes(frame_widget_content.twitch_name, frame_widget_content.caret_index, "insert", keystrokes)
 
 					if input_service:get("execute_chat_input", true) then
@@ -242,6 +254,7 @@ StartGameWindowDeusTwitch._handle_twitch_login_input = function (self, dt, t, in
 					local title = Localize("start_game_window_twitch_login_hint")
 					local position = definitions.twitch_keyboard_anchor_point
 					local inv_scale = RESOLUTION_LOOKUP.inv_scale
+
 					self._virtual_keyboard_id = Managers.system_dialog:open_virtual_keyboard(user_id, title, twitch_user_name, position)
 				elseif IS_XB1 then
 					local twitch_user_name = PlayerData.twitch_user_name
@@ -255,6 +268,7 @@ StartGameWindowDeusTwitch._handle_twitch_login_input = function (self, dt, t, in
 
 					if frame_widget then
 						local frame_widget_content = frame_widget.content
+
 						user_name = string.gsub(frame_widget_content.twitch_name, " ", "")
 					end
 
@@ -288,6 +302,7 @@ end
 
 StartGameWindowDeusTwitch._setup_connected_status = function (self)
 	local user_name = Managers.twitch and Managers.twitch:user_name() or "N/A"
+
 	self._widgets_by_name.frame_widget.content.connected = Localize("start_game_window_twitch_connected_to") .. user_name
 end
 
@@ -324,15 +339,22 @@ StartGameWindowDeusTwitch._setup_journey_widgets = function (self)
 		local widget_data = UIWidgets.create_expedition_widget_func("level_root_node", index, journey_data, journey_name, settings)
 		local widget = UIWidget.init(widget_data)
 		local content = widget.content
+
 		content.text = Localize(journey_data.display_name)
+
 		local width_to_next_journey = settings.width + settings.spacing_x
+
 		journey_position_x = journey_position_x + width_to_next_journey
+
 		local offset = widget.offset
+
 		offset[1] = journey_position_x
 		offset[2] = 0
+
 		local completed_difficulty_index = LevelUnlockUtils.completed_level_difficulty_index(statistics_db, stats_id, journey_name)
 		local selection_frame_texture = UIWidgetUtils.get_level_frame_by_difficulty_index(completed_difficulty_index)
 		local is_unlocked = unlocked_journeys[journey_name]
+
 		content.level_icon = journey_data.level_image
 		content.locked = not is_unlocked
 		content.frame = selection_frame_texture
@@ -366,6 +388,7 @@ StartGameWindowDeusTwitch._update_journey_god_icons = function (self)
 		local content = widget.content
 		local theme = journey_cycle.journey_data[content.journey_name].dominant_god
 		local theme_settings = DeusThemeSettings[theme]
+
 		content.theme_icon = theme_settings.text_icon
 	end
 end
@@ -412,7 +435,7 @@ StartGameWindowDeusTwitch._handle_input = function (self, dt, t)
 
 	if self._is_server then
 		if not mouse_active then
-			local input_change = nil
+			local input_change
 			local input_index = self._input_index
 
 			if input_service:get("move_down") then
@@ -444,7 +467,7 @@ StartGameWindowDeusTwitch._handle_input = function (self, dt, t)
 					if UIUtils.is_button_hover(widget, "info_hotspot") or UIUtils.is_button_hover(self._widgets_by_name.difficulty_info, "widget_hotspot") then
 						local widgets = {
 							difficulty_info = self._widgets_by_name.difficulty_info,
-							upsell_button = self._widgets_by_name.upsell_button
+							upsell_button = self._widgets_by_name.upsell_button,
 						}
 
 						if not self.diff_info_anim_played then
@@ -486,6 +509,7 @@ StartGameWindowDeusTwitch._handle_input = function (self, dt, t)
 				end
 
 				widget.content.button_hotspot.is_selected = true
+
 				local journey_name = widget.content.journey_name
 
 				parent:set_selected_level_id(journey_name)
@@ -608,7 +632,7 @@ StartGameWindowDeusTwitch._draw = function (self, dt, t)
 	local ui_scenegraph = self._ui_scenegraph
 	local input_service = self._parent:window_input_service()
 	local render_settings = self._render_settings
-	local parent_scenegraph_id = nil
+	local parent_scenegraph_id
 
 	UIRenderer.begin_pass(ui_top_renderer, ui_scenegraph, input_service, dt, parent_scenegraph_id, render_settings)
 	UIRenderer.draw_all_widgets(ui_top_renderer, self._widgets)
@@ -624,9 +648,10 @@ end
 
 StartGameWindowDeusTwitch._start_transition_animation = function (self, animation_name)
 	local params = {
-		render_settings = self._render_settings
+		render_settings = self._render_settings,
 	}
 	local anim_id = self._ui_animator:start_animation(animation_name, nil, scenegraph_definition, params)
+
 	self._animations[animation_name] = anim_id
 end
 
@@ -637,21 +662,31 @@ StartGameWindowDeusTwitch._animate_button = function (self, widget, dt)
 	local input_speed = 20
 	local input_progress = hotspot.input_progress or 0
 	local input_pressed = hotspot.is_clicked and hotspot.is_clicked == 0
+
 	input_progress = UIUtils.animate_value(input_progress, dt * input_speed, input_pressed)
+
 	local speed = 8
 	local hover_progress = hotspot.hover_progress or 0
 	local is_hover = not hotspot.disable_button and hotspot.is_hover
+
 	hover_progress = UIUtils.animate_value(hover_progress, dt * speed, is_hover)
+
 	local selection_progress = hotspot.selection_progress or 0
 	local is_selected = not hotspot.disable_button and hotspot.is_selected
+
 	selection_progress = UIUtils.animate_value(selection_progress, dt * speed, is_selected)
+
 	local combined_progress = math.max(hover_progress, selection_progress)
 	local style = widget.style
 	local clicked_rect_name = "clicked_rect"
+
 	style[clicked_rect_name].color[1] = 100 * input_progress
+
 	local hover_glow_name = "hover_glow"
 	local hover_alpha = 255 * combined_progress
+
 	style[hover_glow_name].color[1] = hover_alpha
+
 	local text_name = "text"
 	local text_style = style[text_name]
 	local text_color = text_style.text_color
@@ -671,8 +706,11 @@ StartGameWindowDeusTwitch._animate_expedition_widget = function (self, widget, d
 	local is_selected = hotspot.is_selected
 	local selected_progress = hotspot.selected_progress or 0
 	local selected_speed = 1.5
+
 	selected_progress = UIUtils.animate_value(selected_progress, selected_speed * dt, is_selected)
+
 	local style = widget.style
+
 	style.purple_glow.color[1] = 255 * selected_progress
 	hotspot.selected_progress = selected_progress
 end
@@ -689,7 +727,9 @@ StartGameWindowDeusTwitch._handle_virtual_keyboard = function (self, dt, t)
 	if IS_XB1 then
 		if not XboxInterface.interface_active() then
 			local twitch_user_name = XboxInterface.get_keyboard_result()
+
 			self._virtual_keyboard_id = nil
+
 			local twitch_user_name = string.gsub(twitch_user_name, " ", "")
 
 			if twitch_user_name then
@@ -698,6 +738,7 @@ StartGameWindowDeusTwitch._handle_virtual_keyboard = function (self, dt, t)
 
 			local frame_widget = self._widgets_by_name.frame_widget
 			local frame_widget_content = frame_widget.content
+
 			frame_widget_content.twitch_name = twitch_user_name
 
 			Managers.twitch:connect(twitch_user_name, callback(Managers.twitch, "cb_connection_error_callback"), callback(self, "cb_connection_success_callback"))
@@ -718,6 +759,7 @@ StartGameWindowDeusTwitch._handle_virtual_keyboard = function (self, dt, t)
 
 				local frame_widget = self._widgets_by_name.frame_widget
 				local frame_widget_content = frame_widget.content
+
 				frame_widget_content.twitch_name = twitch_user_name
 
 				Managers.twitch:connect(twitch_user_name, callback(Managers.twitch, "cb_connection_error_callback"), callback(self, "cb_connection_success_callback"))
@@ -735,6 +777,7 @@ StartGameWindowDeusTwitch._handle_gamepad_activity = function (self, dt, t)
 		if not self.gamepad_active_last_frame or force_update then
 			self.gamepad_active_last_frame = true
 			self._input_index = 1
+
 			local input_funcs = selector_input_definition[self._input_index]
 
 			if input_funcs and input_funcs.enter_requirements(self) then
@@ -743,6 +786,7 @@ StartGameWindowDeusTwitch._handle_gamepad_activity = function (self, dt, t)
 		end
 	elseif self.gamepad_active_last_frame or force_update then
 		self.gamepad_active_last_frame = false
+
 		local input_funcs = selector_input_definition[self._input_index]
 
 		if input_funcs then
@@ -754,6 +798,7 @@ end
 StartGameWindowDeusTwitch._verify_selection_index = function (self, input_index, input_change)
 	local verified_index = self._input_index
 	local num_inputs = #selector_input_definition
+
 	input_index = math.clamp(input_index, 1, num_inputs)
 
 	if not input_change then
@@ -776,6 +821,7 @@ end
 
 StartGameWindowDeusTwitch._gamepad_selector_input_func = function (self, input_index, input_change)
 	local mouse_active = Managers.input:is_device_active("mouse")
+
 	input_index = self:_verify_selection_index(input_index, input_change)
 
 	if self._input_index ~= input_index and not mouse_active then
@@ -799,8 +845,11 @@ StartGameWindowDeusTwitch._update_difficulty_option = function (self, difficulty
 	if difficulty_key then
 		local difficulty_settings = DifficultySettings[difficulty_key]
 		local difficulty_widget = self._selection_widgets_by_name.difficulty_stepper
+
 		difficulty_widget.content.selected_difficulty_text = Localize(difficulty_settings.display_name)
+
 		local display_image = difficulty_settings.display_image
+
 		difficulty_widget.content.difficulty_icon = display_image
 
 		self:_set_info_window(difficulty_key)
@@ -868,7 +917,9 @@ StartGameWindowDeusTwitch._update_can_play = function (self, dt, t)
 
 		if self._previous_can_play ~= can_play then
 			self._previous_can_play = can_play
+
 			local play_button = self._selection_widgets_by_name.play_button
+
 			play_button.content.button_hotspot.disable_button = not can_play
 
 			if can_play then
@@ -914,6 +965,7 @@ StartGameWindowDeusTwitch._set_info_window = function (self, difficulty_key)
 	local description = difficulty_settings.description
 	local chest_max_power_level = difficulty_settings.max_chest_power_level
 	local selected_difficulty_info_widget = self._widgets_by_name.difficulty_info
+
 	selected_difficulty_info_widget.content.difficulty_description = Localize(description)
 	selected_difficulty_info_widget.content.highest_obtainable_level = Localize("difficulty_chest_max_powerlevel") .. ": " .. tostring(chest_max_power_level)
 end
@@ -965,11 +1017,11 @@ StartGameWindowDeusTwitch._update_difficulty_lock = function (self)
 
 	self:_resize_difficulty_info({
 		math.floor(scenegraph_definition.difficulty_info.size[1]),
-		math.floor(widget_height)
+		math.floor(widget_height),
 	}, {
 		0,
 		-offset_y,
-		1
+		1,
 	})
 
 	upsell_button.offset[2] = -math.floor(widget_height) / 2 + 24
@@ -980,7 +1032,9 @@ StartGameWindowDeusTwitch._calculate_difficulty_info_widget_size = function (sel
 	local description_text_style = diff_widget.style.difficulty_description
 	local description_text = diff_widget.content.difficulty_description
 	local description_text_height = UIUtils.get_text_height(self._ui_renderer, description_text_style.size, description_text_style, description_text)
+
 	diff_widget.content.difficulty_description_text_size = description_text_height
+
 	local chest_text_style = diff_widget.style.highest_obtainable_level
 	local chest_text = diff_widget.content.highest_obtainable_level
 	local chest_text_height = UIUtils.get_text_height(self._ui_renderer, chest_text_style.size, chest_text_style, chest_text) + spacing
@@ -1008,6 +1062,7 @@ end
 
 StartGameWindowDeusTwitch._resize_difficulty_info = function (self, new_size, new_offset)
 	local difficulty_info_widget = self._widgets_by_name.difficulty_info
+
 	difficulty_info_widget.content.should_resize = true
 	difficulty_info_widget.content.resize_size = new_size
 	difficulty_info_widget.content.resize_offset = new_offset
@@ -1052,6 +1107,7 @@ StartGameWindowDeusTwitch._set_expedition_text_highlight_offset = function (self
 		local prefix = string.sub(text, 1, index_start - 1)
 		local split_text_length = UIUtils.get_text_width(ui_renderer, game_mode_info_box.style.game_mode_text, prefix)
 		local new_offset = 25 + split_text_length
+
 		game_mode_info_box.content.expedition_highlight_text = expedition_word
 		expedition_text_style.offset[1] = new_offset
 	else
@@ -1063,6 +1119,7 @@ StartGameWindowDeusTwitch._update_additional_curse_frame = function (self, journ
 	for _, widget in ipairs(self._expedition_widgets) do
 		local content = widget.content
 		local with_belakor = content.journey_name == journey_name
+
 		content.level_icon_frame = with_belakor and "morris_expedition_select_border_belakor" or "morris_expedition_select_border"
 	end
 end

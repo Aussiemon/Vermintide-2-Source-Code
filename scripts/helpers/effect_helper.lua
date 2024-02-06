@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/helpers/effect_helper.lua
+
 require("scripts/settings/material_effect_mappings")
 require("scripts/helpers/network_utils")
 
@@ -8,7 +10,7 @@ EffectHelper.temporary_material_drawer_mapping = {}
 EffectHelper.play_surface_material_effects = function (effect_name, world, hit_unit, position, rotation, normal, sound_character, husk, unit, hit_actor)
 	local effect_settings = MaterialEffectMappings[effect_name]
 	local material_ids = EffectHelper.query_material_surface(hit_unit, position, normal)
-	local material = nil
+	local material
 	local has_material = true
 
 	if material_ids then
@@ -21,6 +23,7 @@ EffectHelper.play_surface_material_effects = function (effect_name, world, hit_u
 
 	if not has_material then
 		local level_settings = LevelHelper:current_level_settings()
+
 		material = level_settings.default_surface_material or DefaultSurfaceMaterial
 	else
 		material = MaterialIDToName.surface_material[material_ids[1]]
@@ -28,7 +31,7 @@ EffectHelper.play_surface_material_effects = function (effect_name, world, hit_u
 		if not material and script_data.debug_material_effects then
 			local drawer = Managers.state.debug:drawer({
 				mode = "retained",
-				name = "DEBUG_DRAW_IMPACT_DECAL_HIT"
+				name = "DEBUG_DRAW_IMPACT_DECAL_HIT",
 			})
 			local fwd = Quaternion.forward(rotation) * MaterialEffectSettings.material_query_depth
 			local draw_pos = position - fwd * 0.5
@@ -42,7 +45,7 @@ EffectHelper.play_surface_material_effects = function (effect_name, world, hit_u
 	if script_data.debug_material_effects and material then
 		local drawer = Managers.state.debug:drawer({
 			mode = "retained",
-			name = "DEBUG_DRAW_IMPACT_DECAL_HIT"
+			name = "DEBUG_DRAW_IMPACT_DECAL_HIT",
 		})
 		local fwd = Quaternion.forward(rotation) * MaterialEffectSettings.material_query_depth
 		local draw_pos = position - fwd * 0.5
@@ -74,9 +77,11 @@ EffectHelper.play_surface_material_effects = function (effect_name, world, hit_u
 
 			if decal_settings.random_rotation then
 				local random_angle = math.degrees_to_radians(Math.random(360000) * 0.001)
+
 				rotation = Quaternion.axis_angle(normal, random_angle)
 			elseif decal_settings.rotation then
 				local angle = math.degrees_to_radians(decal_settings.rotation)
+
 				rotation = Quaternion.axis_angle(normal, angle)
 			end
 
@@ -84,6 +89,7 @@ EffectHelper.play_surface_material_effects = function (effect_name, world, hit_u
 				local random_size_multiplier = decal_settings.random_size_multiplier
 				local random_value = Math.random(1000) * 0.001
 				local random_size_modifier = math.lerp(random_value, math.max(1 - random_size_multiplier, 0.01), 1 + random_size_multiplier)
+
 				extents[1] = extents[1] * random_size_modifier
 				extents[2] = extents[2] * random_size_modifier
 			end
@@ -94,7 +100,7 @@ EffectHelper.play_surface_material_effects = function (effect_name, world, hit_u
 		if script_data.debug_material_effects then
 			local drawer = Managers.state.debug:drawer({
 				mode = "retained",
-				name = "DEBUG_DRAW_IMPACT_DECAL_HIT"
+				name = "DEBUG_DRAW_IMPACT_DECAL_HIT",
 			})
 			local drawer_space = Matrix4x4.from_quaternion_position(rotation, position + Quaternion.forward(rotation) * decal_settings.depth / 2)
 			local drawer_extents = Vector3(decal_settings.width / 2, decal_settings.depth / 2, decal_settings.height / 2)
@@ -162,7 +168,7 @@ EffectHelper.play_surface_material_effects = function (effect_name, world, hit_u
 		if script_data.debug_material_effects then
 			local drawer = Managers.state.debug:drawer({
 				mode = "retained",
-				name = "DEBUG_DRAW_IMPACT_DECAL_HIT"
+				name = "DEBUG_DRAW_IMPACT_DECAL_HIT",
 			})
 
 			drawer:quaternion(position, normal_rotation)
@@ -194,7 +200,7 @@ EffectHelper.play_skinned_surface_material_effects = function (effect_name, worl
 		return
 	end
 
-	local material = nil
+	local material
 	local skip_particles = false
 
 	if hit_zone_name == "ward" then
@@ -403,13 +409,14 @@ EffectHelper.create_surface_material_drawer_mapping = function (effect_name)
 	local material_drawer_mapping = MaterialEffectMappings[effect_name].decal.material_drawer_mapping
 
 	for _, material in ipairs(MaterialEffectSettings.material_contexts.surface_material) do
-		local drawer = nil
+		local drawer
 
 		if type(material_drawer_mapping[material]) == "string" then
 			drawer = material_drawer_mapping[material]
 		elseif type(material_drawer_mapping[material]) == "table" then
 			local num_drawers = #material_drawer_mapping[material]
 			local drawer_num = math.random(1, num_drawers)
+
 			drawer = material_drawer_mapping[material][drawer_num]
 		else
 			drawer = nil
@@ -436,6 +443,7 @@ EffectHelper.flow_cb_play_surface_material_effect = function (effect_name, unit,
 		local hit_rotation = Unit.world_rotation(unit, 0)
 		local up = Quaternion.up(hit_rotation)
 		local forward = Quaternion.forward(hit_rotation)
+
 		hit_rotation = Quaternion.look(forward, up)
 
 		EffectHelper.play_surface_material_effects(effect_name, world, hit_unit, hit_position, hit_rotation, hit_normal, sound_character, husk, unit)
@@ -466,6 +474,7 @@ EffectHelper.flow_cb_play_footstep_surface_material_effects = function (effect_n
 		local rotation = Unit.world_rotation(unit, 0)
 		local up = Quaternion.up(rotation)
 		local forward = Quaternion.forward(rotation)
+
 		rotation = Quaternion.look(forward, up)
 
 		EffectHelper.play_surface_material_effects(effect_name, world, hit_unit, position, rotation, normal, sound_character, husk, unit)
@@ -510,7 +519,7 @@ EffectHelper.flow_cb_play_footstep_surface_material_effects = function (effect_n
 end
 
 local material = {
-	"surface_material"
+	"surface_material",
 }
 local output = {}
 

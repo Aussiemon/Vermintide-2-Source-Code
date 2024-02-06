@@ -1,29 +1,37 @@
+﻿-- chunkname: @scripts/ui/dlc_morris/views/start_game_view/windows/start_game_window_deus_custom_game.lua
+
 local definitions = local_require("scripts/ui/dlc_morris/views/start_game_view/windows/definitions/start_game_window_deus_custom_game_definitions")
 local scenegraph_definition = definitions.scenegraph_definition
 local widget_definitions = definitions.widgets
 local selection_widget_definitions = definitions.selection_widgets
 local animation_definitions = definitions.animation_definitions
 local selector_input_definitions = definitions.selector_input_definitions
+
 StartGameWindowDeusCustomGame = class(StartGameWindowDeusCustomGame)
 StartGameWindowDeusCustomGame.NAME = "StartGameWindowDeusCustomGame"
+
 local START_GAME_INPUT = "refresh_press"
 
 StartGameWindowDeusCustomGame.on_enter = function (self, params, offset)
 	print("[StartGameViewWindow] Enter Substate StartGameWindowDeusCustomGame")
 
 	self._parent = params.parent
+
 	local ingame_ui_context = params.ingame_ui_context
+
 	self._ingame_ui_context = ingame_ui_context
 	self._ui_top_renderer = ingame_ui_context.ui_top_renderer
 	self._input_manager = ingame_ui_context.input_manager
 	self._statistics_db = ingame_ui_context.statistics_db
 	self._ui_renderer = ingame_ui_context.ui_renderer
 	self._mechanism_name = Managers.mechanism:current_mechanism_name()
+
 	local local_player = Managers.player:local_player()
+
 	self._stats_id = local_player:stats_id()
 	self._expeditions_selection_index = 1
 	self._render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 	self._is_focused = false
 	self._play_button_pressed = false
@@ -53,10 +61,11 @@ end
 
 StartGameWindowDeusCustomGame._start_transition_animation = function (self, animation_name)
 	local params = {
-		render_settings = self._render_settings
+		render_settings = self._render_settings,
 	}
 	local widgets = {}
 	local anim_id = self._ui_animator:start_animation(animation_name, widgets, scenegraph_definition, params)
+
 	self._animations[animation_name] = anim_id
 end
 
@@ -66,6 +75,7 @@ end
 
 StartGameWindowDeusCustomGame._create_ui_elements = function (self, params, offset)
 	local ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+
 	self._ui_scenegraph = ui_scenegraph
 	self._widgets, self._widgets_by_name = UIUtils.create_widgets(widget_definitions)
 	self._selection_widgets, self._selection_widgets_by_name = UIUtils.create_widgets(selection_widget_definitions)
@@ -76,6 +86,7 @@ StartGameWindowDeusCustomGame._create_ui_elements = function (self, params, offs
 
 	if offset then
 		local window_position = ui_scenegraph.window.local_position
+
 		window_position[1] = window_position[1] + offset[1]
 		window_position[2] = window_position[2] + offset[2]
 		window_position[3] = window_position[3] + offset[3]
@@ -123,21 +134,15 @@ end
 StartGameWindowDeusCustomGame._update_can_play = function (self)
 	local can_play = self:_can_play()
 	local play_button = self._selection_widgets_by_name.play_button
+
 	play_button.content.button_hotspot.disable_button = not can_play
+
 	local input_desc = self._is_offline and "default_deus_custom_game_offline" or "default_deus_custom_game"
 
 	if can_play then
-		if self._is_offline then
-			input_desc = "default_deus_custom_game_offline_play"
-		else
-			input_desc = "default_deus_custom_game_play"
-		end
+		input_desc = self._is_offline and "default_deus_custom_game_offline_play" or "default_deus_custom_game_play"
 	elseif self._dlc_locked then
-		if self._is_offline then
-			input_desc = "default_deus_custom_game_offline_buy"
-		else
-			input_desc = "default_deus_custom_game_buy"
-		end
+		input_desc = self._is_offline and "default_deus_custom_game_offline_buy" or "default_deus_custom_game_buy"
 	end
 
 	if input_desc ~= self._prev_input_desc then
@@ -176,15 +181,22 @@ StartGameWindowDeusCustomGame._setup_journey_widgets = function (self)
 		local widget_data = UIWidgets.create_expedition_widget_func("level_root_node", index, journey_data, journey_name)
 		local widget = UIWidget.init(widget_data)
 		local content = widget.content
+
 		content.text = Localize(journey_data.display_name)
+
 		local width_to_next_journey = settings.width + settings.spacing_x
+
 		journey_position_x = journey_position_x + width_to_next_journey
+
 		local offset = widget.offset
+
 		offset[1] = journey_position_x
 		offset[2] = 0
+
 		local completed_difficulty_index = LevelUnlockUtils.completed_journey_difficulty_index(statistics_db, stats_id, journey_name)
 		local selection_frame_texture = UIWidgetUtils.get_level_frame_by_difficulty_index(completed_difficulty_index)
 		local is_unlocked = unlocked_journeys[journey_name]
+
 		content.level_icon = journey_data.level_image
 		content.locked = not is_unlocked
 		content.frame = selection_frame_texture
@@ -206,6 +218,7 @@ StartGameWindowDeusCustomGame._set_info_window = function (self, difficulty_key)
 	local description = difficulty_settings.description
 	local chest_max_power_level = difficulty_settings.max_chest_power_level
 	local selected_difficulty_info_widget = self._widgets_by_name.difficulty_info
+
 	selected_difficulty_info_widget.content.difficulty_description = Localize(description)
 	selected_difficulty_info_widget.content.highest_obtainable_level = Localize("difficulty_chest_max_powerlevel") .. ": " .. tostring(chest_max_power_level)
 end
@@ -214,8 +227,11 @@ StartGameWindowDeusCustomGame._update_difficulty_option = function (self, diffic
 	if difficulty_key then
 		local difficulty_settings = DifficultySettings[difficulty_key]
 		local difficulty_widget = self._selection_widgets_by_name.difficulty_stepper
+
 		difficulty_widget.content.selected_difficulty_text = Localize(difficulty_settings.display_name)
+
 		local display_image = difficulty_settings.display_image
+
 		difficulty_widget.content.difficulty_icon = display_image
 
 		self:_set_info_window(difficulty_key)
@@ -280,10 +296,12 @@ StartGameWindowDeusCustomGame._update_modifier_timer = function (self, current_t
 
 	if minutes > 0 then
 		local text_template = Localize("deus_start_game_mod_timer")
+
 		content.time_text = string.format(text_template, days, hours, minutes)
 	else
 		local seconds = floor(remaining_time)
 		local text_template = Localize("deus_start_game_mod_timer_seconds")
+
 		content.time_text = string.format(text_template, seconds)
 	end
 end
@@ -298,6 +316,7 @@ StartGameWindowDeusCustomGame._update_additional_curse_frame = function (self, j
 	for _, widget in ipairs(self._expedition_widgets) do
 		local content = widget.content
 		local with_belakor = content.journey_name == journey_name
+
 		content.level_icon_frame = with_belakor and "morris_expedition_select_border_belakor" or "morris_expedition_select_border"
 	end
 end
@@ -309,6 +328,7 @@ StartGameWindowDeusCustomGame._update_journey_god_icons = function (self)
 		local content = widget.content
 		local theme = journey_cycle.journey_data[content.journey_name].dominant_god
 		local theme_settings = DeusThemeSettings[theme]
+
 		content.theme_icon = theme_settings.text_icon
 	end
 end
@@ -335,6 +355,7 @@ end
 StartGameWindowDeusCustomGame._verify_selection_index = function (self, input_index, input_change)
 	local verified_index = self._input_index
 	local num_inputs = #selector_input_definitions
+
 	input_index = math.clamp(input_index, 1, num_inputs)
 
 	if not input_change then
@@ -357,6 +378,7 @@ end
 
 StartGameWindowDeusCustomGame._gamepad_selector_input_func = function (self, input_index, input_change)
 	local mouse_active = Managers.input:is_device_active("mouse")
+
 	input_index = self:_verify_selection_index(input_index, input_change)
 
 	if self._input_index ~= input_index and not mouse_active then
@@ -406,7 +428,7 @@ StartGameWindowDeusCustomGame._draw = function (self, dt)
 	local ui_scenegraph = self._ui_scenegraph
 	local input_service = self._parent:window_input_service()
 	local render_settings = self._render_settings
-	local parent_scenegraph_id = nil
+	local parent_scenegraph_id
 
 	UIRenderer.begin_pass(ui_top_renderer, ui_scenegraph, input_service, dt, parent_scenegraph_id, render_settings)
 
@@ -451,6 +473,7 @@ StartGameWindowDeusCustomGame._animate_expedition_widget = function (self, widge
 	end
 
 	local style = widget.style
+
 	style.purple_glow.color[1] = 255 * selected_progress
 	hotspot.selected_progress = selected_progress
 end
@@ -462,7 +485,7 @@ StartGameWindowDeusCustomGame._handle_input = function (self, dt, t)
 
 	if not mouse_active then
 		local input_index = self._input_index
-		local input_change = nil
+		local input_change
 
 		if input_service:get("move_down") then
 			input_index = input_index + 1
@@ -499,7 +522,7 @@ StartGameWindowDeusCustomGame._handle_input = function (self, dt, t)
 				if UIUtils.is_button_hover(widget, "info_hotspot") or UIUtils.is_button_hover(self._widgets_by_name.difficulty_info, "widget_hotspot") then
 					local widgets = {
 						difficulty_info = self._widgets_by_name.difficulty_info,
-						upsell_button = self._widgets_by_name.upsell_button
+						upsell_button = self._widgets_by_name.upsell_button,
 					}
 
 					if not self.diff_info_anim_played then
@@ -539,6 +562,7 @@ StartGameWindowDeusCustomGame._handle_input = function (self, dt, t)
 				end
 
 				widget.content.button_hotspot.is_selected = true
+
 				local journey_name = widget.content.journey_name
 
 				parent:set_selected_level_id(journey_name)
@@ -571,6 +595,7 @@ StartGameWindowDeusCustomGame._handle_input = function (self, dt, t)
 
 		if input_service:get(START_GAME_INPUT) or UIUtils.is_button_pressed(play_button_widget) then
 			self._play_button_pressed = true
+
 			local custom_game_settings = parent:get_custom_game_settings(self._mechanism_name) or parent:get_custom_game_settings("adventure")
 
 			self._parent:set_difficulty_option(self._current_difficulty)
@@ -626,6 +651,7 @@ StartGameWindowDeusCustomGame._handle_gamepad_activity = function (self)
 		if not self.gamepad_active_last_frame or force_update then
 			self.gamepad_active_last_frame = true
 			self._input_index = 1
+
 			local input_funcs = selector_input_definitions[self._input_index]
 
 			if input_funcs and input_funcs.enter_requirements(self) then
@@ -634,6 +660,7 @@ StartGameWindowDeusCustomGame._handle_gamepad_activity = function (self)
 		end
 	elseif self.gamepad_active_last_frame or force_update then
 		self.gamepad_active_last_frame = false
+
 		local input_funcs = selector_input_definitions[self._input_index]
 
 		input_funcs.on_exit(self)
@@ -713,11 +740,11 @@ StartGameWindowDeusCustomGame._update_difficulty_lock = function (self)
 
 	self:_resize_difficulty_info({
 		math.floor(scenegraph_definition.difficulty_info.size[1]),
-		math.floor(widget_height)
+		math.floor(widget_height),
 	}, {
 		0,
 		-offset_y,
-		1
+		1,
 	})
 
 	upsell_button.offset[2] = -math.floor(widget_height) / 2 + 24
@@ -728,7 +755,9 @@ StartGameWindowDeusCustomGame._calculate_difficulty_info_widget_size = function 
 	local description_text_style = diff_widget.style.difficulty_description
 	local description_text = diff_widget.content.difficulty_description
 	local description_text_height = UIUtils.get_text_height(self._ui_renderer, description_text_style.size, description_text_style, description_text)
+
 	diff_widget.content.difficulty_description_text_size = description_text_height
+
 	local chest_text_style = diff_widget.style.highest_obtainable_level
 	local chest_text = diff_widget.content.highest_obtainable_level
 	local chest_text_height = UIUtils.get_text_height(self._ui_renderer, chest_text_style.size, chest_text_style, chest_text) + spacing
@@ -756,6 +785,7 @@ end
 
 StartGameWindowDeusCustomGame._resize_difficulty_info = function (self, new_size, new_offset)
 	local difficulty_info_widget = self._widgets_by_name.difficulty_info
+
 	difficulty_info_widget.content.should_resize = true
 	difficulty_info_widget.content.resize_size = new_size
 	difficulty_info_widget.content.resize_offset = new_offset
@@ -774,6 +804,7 @@ StartGameWindowDeusCustomGame._set_expedition_text_highlight_offset = function (
 		local prefix = string.sub(text, 1, index_start - 1)
 		local split_text_length = UIUtils.get_text_width(ui_renderer, game_mode_info_box.style.game_mode_text, prefix)
 		local new_offset = 25 + split_text_length
+
 		game_mode_info_box.content.expedition_highlight_text = expedition_word
 		expedition_text_style.offset[1] = new_offset
 	else

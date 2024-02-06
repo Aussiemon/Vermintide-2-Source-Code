@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/buff/buff_system.lua
+
 require("scripts/entity_system/systems/buff/buff_sync_type")
 require("scripts/unit_extensions/default_player_unit/buffs/buff_templates")
 require("scripts/unit_extensions/default_player_unit/buffs/group_buff_templates")
@@ -6,6 +8,7 @@ require("scripts/unit_extensions/default_player_unit/buffs/buff_extension")
 
 BuffSystem = class(BuffSystem, ExtensionSystemBase)
 IGNORED_ITEM_TYPES_FOR_BUFFS = {}
+
 local RPCS = {
 	"rpc_add_buff",
 	"rpc_add_volume_buff_multiplier",
@@ -21,16 +24,17 @@ local RPCS = {
 	"rpc_add_buff_synced_relay",
 	"rpc_add_buff_synced_relay_params",
 	"rpc_add_buff_synced_response",
-	"rpc_remove_buff_synced"
+	"rpc_remove_buff_synced",
 }
 local extensions = {
-	"BuffExtension"
+	"BuffExtension",
 }
 
 BuffSystem.init = function (self, entity_system_creation_context, system_name)
 	BuffSystem.super.init(self, entity_system_creation_context, system_name, extensions)
 
 	local network_event_delegate = entity_system_creation_context.network_event_delegate
+
 	self.network_event_delegate = network_event_delegate
 
 	network_event_delegate:register(self, unpack(RPCS))
@@ -53,6 +57,7 @@ end
 
 BuffSystem.on_add_extension = function (self, world, unit, extension_name, extension_init_data)
 	local buff_extension = BuffSystem.super.on_add_extension(self, world, unit, extension_name, extension_init_data)
+
 	self.unit_extension_data[unit] = buff_extension
 
 	return buff_extension
@@ -164,6 +169,7 @@ BuffSystem.update = function (self, context, t)
 	if not script_data.buff_no_opt then
 		local dt = context.dt
 		local active_buff_units = self.active_buff_units
+
 		self.in_update = true
 
 		for unit, _ in pairs(active_buff_units) do
@@ -200,7 +206,7 @@ end
 BuffSystem._next_free_server_buff_id = function (self)
 	local free_buff_ids = self.free_server_buff_ids
 	local free_buff_ids_size = #free_buff_ids
-	local free_buff_id = nil
+	local free_buff_id
 
 	if free_buff_ids_size > 0 then
 		free_buff_id = free_buff_ids[free_buff_ids_size]
@@ -219,6 +225,7 @@ local params = {}
 
 BuffSystem._add_buff_helper_function = function (self, unit, template_name, attacker_unit, server_buff_id, power_level, source_attacker_unit)
 	local buff_extension = ScriptUnit.extension(unit, "buff_system")
+
 	params.attacker_unit = attacker_unit
 	params.power_level = power_level
 	params.source_attacker_unit = source_attacker_unit
@@ -239,11 +246,12 @@ BuffSystem._add_buff_helper_function = function (self, unit, template_name, atta
 
 		if not self.server_controlled_buffs[unit][server_buff_id] then
 			local local_buff_id = buff_extension:add_buff(template_name, params)
+
 			self.server_controlled_buffs[unit][server_buff_id] = {
 				local_buff_id = local_buff_id,
 				template_name = template_name,
 				attacker_unit = attacker_unit,
-				source_attacker_unit = source_attacker_unit
+				source_attacker_unit = source_attacker_unit,
 			}
 		end
 	else
@@ -295,11 +303,13 @@ BuffSystem.remove_server_controlled_buff = function (self, unit, server_buff_id)
 		if unit_server_buffs then
 			local unit_server_buff_table = unit_server_buffs[server_buff_id]
 			local id = unit_server_buff_table and unit_server_buff_table.local_buff_id
+
 			num_buffs_removed = id and buff_extension:remove_buff(id)
 			unit_server_buffs[server_buff_id] = nil
 		end
 
 		self.free_server_buff_ids[#self.free_server_buff_ids + 1] = server_buff_id
+
 		local network_manager = self.network_manager
 		local unit_object_id = network_manager:game_object_or_level_id(unit)
 
@@ -340,7 +350,7 @@ BuffSystem.add_volume_buff = function (self, unit, buff_template_name, multiplie
 
 	local buff_extension = ScriptUnit.extension(unit, "buff_system")
 	local params = {
-		external_optional_multiplier = multiplier
+		external_optional_multiplier = multiplier,
 	}
 
 	if not self.volume_buffs[unit] then
@@ -451,7 +461,7 @@ BuffSystem.rpc_add_group_buff = function (self, channel_id, group_buff_template_
 	for i = 1, num_instances do
 		local group_buff_data = {
 			group_buff_template_name = group_buff_template_name,
-			recipients = {}
+			recipients = {},
 		}
 
 		for _, unit in ipairs(player_units) do
@@ -459,6 +469,7 @@ BuffSystem.rpc_add_group_buff = function (self, channel_id, group_buff_template_
 				local buff_extension = ScriptUnit.extension(unit, "buff_system")
 				local id = buff_extension:add_buff(buff_per_instance)
 				local recipients = group_buff_data.recipients
+
 				recipients[unit] = id
 			end
 		end
@@ -473,7 +484,7 @@ BuffSystem.rpc_remove_group_buff = function (self, channel_id, group_buff_templa
 
 	for i = 1, num_instances do
 		local num_group_buffs = #group_buffs
-		local group_buff_data, index_to_remove = nil
+		local group_buff_data, index_to_remove
 
 		for j = 1, num_group_buffs do
 			group_buff_data = group_buffs[j]
@@ -606,62 +617,62 @@ end
 local buff_param_packing_methods = {
 	attacker_unit = {
 		pack = buff_param_pack_unit,
-		unpack = buff_param_unpack_unit
+		unpack = buff_param_unpack_unit,
 	},
 	source_attacker_unit = {
 		pack = buff_param_pack_unit,
-		unpack = buff_param_unpack_unit
+		unpack = buff_param_unpack_unit,
 	},
 	damage_source = {
 		pack = buff_param_damage_source,
-		unpack = buff_param_damage_source
+		unpack = buff_param_damage_source,
 	},
 	power_level = {
 		pack = buff_param_raw,
-		unpack = buff_param_raw
+		unpack = buff_param_raw,
 	},
 	variable_value = {
 		pack = buff_param_pack_float,
-		unpack = buff_param_unpack_float
+		unpack = buff_param_unpack_float,
 	},
 	external_optional_bonus = {
 		pack = buff_param_pack_float,
-		unpack = buff_param_unpack_float
+		unpack = buff_param_unpack_float,
 	},
 	external_optional_multiplier = {
 		pack = buff_param_pack_float,
-		unpack = buff_param_unpack_float
+		unpack = buff_param_unpack_float,
 	},
 	external_optional_value = {
 		pack = buff_param_pack_float,
-		unpack = buff_param_unpack_float
+		unpack = buff_param_unpack_float,
 	},
 	external_optional_proc_chance = {
 		pack = buff_param_pack_float,
-		unpack = buff_param_unpack_float
+		unpack = buff_param_unpack_float,
 	},
 	external_optional_duration = {
 		pack = buff_param_pack_float,
-		unpack = buff_param_unpack_float
+		unpack = buff_param_unpack_float,
 	},
 	external_optional_range = {
 		pack = buff_param_pack_float,
-		unpack = buff_param_unpack_float
+		unpack = buff_param_unpack_float,
 	},
 	_hot_join_sync_buff_age = {
 		pack = buff_param_pack_t,
-		unpack = buff_param_unpack_t
+		unpack = buff_param_unpack_t,
 	},
 	_flags = {
 		pack = buff_param_raw,
-		unpack = buff_param_raw
-	}
+		unpack = buff_param_raw,
+	},
 }
 local buff_params_list = table.keys(buff_param_packing_methods)
 local buff_params_list_lookup = table.mirror_array_inplace(table.keys(buff_param_packing_methods))
 local buff_param_count = #buff_params_list
 local packed_param_flags = {
-	"refresh_duration_only"
+	"refresh_duration_only",
 }
 
 table.mirror_array_inplace(packed_param_flags)
@@ -691,6 +702,10 @@ BuffSystem._pack_buff_params = function (self, buff_params, dest_param_ids, dest
 			num_params = num_params + 1
 			dest_param_ids[num_params] = buff_params_list_lookup[name]
 			dest_param_vals[num_params] = buff_param_packing_methods[name].pack(val, self, unit)
+		end
+
+		if false then
+			-- Nothing
 		end
 	end
 
@@ -728,6 +743,7 @@ BuffSystem._unpack_buff_params = function (self, dest_table, param_ids, param_va
 		local param_id = param_ids[i]
 		local param_name = buff_params_list[param_id]
 		local param_type_data = buff_param_packing_methods[param_name]
+
 		dest_table[param_name] = param_type_data.unpack(param_vals[i], self, unit)
 	end
 
@@ -742,7 +758,7 @@ BuffSystem._prepare_sync = function (self, target_unit, template_name, sync_type
 	local template_name_id = NetworkLookup.buff_templates[template_name]
 	local sync_type_id = BuffSyncTypeLookup[sync_type]
 	local rpc_name = "rpc_add_buff_synced"
-	local param_ids, param_vals = nil
+	local param_ids, param_vals
 
 	if params then
 		rpc_name = "rpc_add_buff_synced_params"
@@ -809,12 +825,12 @@ local sync_by_sync_type = {
 		else
 			network_transmit:send_rpc_server(rpc_name, target_unit_id, template_name_id, local_sync_id, sync_type_id, param_ids, param_vals)
 		end
-	end
+	end,
 }
 
 BuffSystem.add_buff_synced = function (self, target_unit, template_name, sync_type, params, optional_peer_id)
 	local buff_id = -1
-	local num_sub_buffs = nil
+	local num_sub_buffs
 	local buff_extension = self.unit_extension_data[target_unit]
 
 	if buff_extension then

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/weapons/actions/action_throw_grimoire.lua
+
 ActionThrowGrimoire = class(ActionThrowGrimoire, ActionBase)
 
 ActionThrowGrimoire.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
@@ -27,6 +29,7 @@ ActionThrowGrimoire.finish = function (self, reason)
 
 	local dialogue_input = ScriptUnit.extension_input(self.owner_unit, "dialogue_system")
 	local event_data = FrameTable.alloc_table()
+
 	event_data.item_type = "grimoire"
 
 	dialogue_input:trigger_networked_dialogue_event("throwing_item", event_data)

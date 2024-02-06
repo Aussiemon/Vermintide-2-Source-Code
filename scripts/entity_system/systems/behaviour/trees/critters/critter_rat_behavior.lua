@@ -1,39 +1,41 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/trees/critters/critter_rat_behavior.lua
+
 BreedBehaviors.critter_rat = {
 	"BTSelector",
 	{
 		"BTSpawningAction",
 		condition = "spawn",
-		name = "spawn"
+		name = "spawn",
 	},
 	{
 		"BTInVortexAction",
 		condition = "in_vortex",
-		name = "in_vortex"
+		name = "in_vortex",
 	},
 	{
 		"BTCritterRatScurryUnderDoorAction",
-		name = "under_door",
 		condition = "at_smart_object_and_door",
-		action_data = BreedActions.critter_rat.scurry_under_door
+		name = "under_door",
+		action_data = BreedActions.critter_rat.scurry_under_door,
 	},
 	{
 		"BTSequence",
 		{
 			"BTCritterRatFleeAction",
 			name = "flee",
-			action_data = BreedActions.critter_rat.flee
+			action_data = BreedActions.critter_rat.flee,
 		},
 		{
 			"BTCritterRatDigAction",
-			name = "dig"
+			name = "dig",
 		},
 		condition = "is_fleeing",
-		name = "flee_sequence"
+		name = "flee_sequence",
 	},
 	{
 		"BTIdleAction",
 		name = "idle",
-		action_data = BreedActions.critter_rat.idle
+		action_data = BreedActions.critter_rat.idle,
 	},
-	name = "critter_rat"
+	name = "critter_rat",
 }

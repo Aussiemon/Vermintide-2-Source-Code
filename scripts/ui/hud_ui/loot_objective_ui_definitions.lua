@@ -1,12 +1,13 @@
-local SIZE_X = 1920
-local SIZE_Y = 1080
+﻿-- chunkname: @scripts/ui/hud_ui/loot_objective_ui_definitions.lua
+
+local SIZE_X, SIZE_Y = 1920, 1080
 local ICON_SIZE = {
 	64,
-	64
+	64,
 }
 local BACKGROUND_SIZE = {
 	819,
-	60
+	60,
 }
 local scenegraph_definition = {
 	root = {
@@ -14,63 +15,64 @@ local scenegraph_definition = {
 		position = {
 			0,
 			0,
-			UILayer.hud
+			UILayer.hud,
 		},
 		size = {
 			SIZE_X,
-			SIZE_Y
-		}
+			SIZE_Y,
+		},
 	},
 	background_parent = {
-		vertical_alignment = "center",
-		parent = "root",
 		horizontal_alignment = "right",
+		parent = "root",
+		vertical_alignment = "center",
 		position = {
 			-200,
 			-100,
-			1
+			1,
 		},
 		size = {
 			383,
-			86
-		}
+			86,
+		},
 	},
 	background = {
-		vertical_alignment = "bottom",
-		parent = "background_parent",
 		horizontal_alignment = "left",
+		parent = "background_parent",
+		vertical_alignment = "bottom",
 		position = {
 			0,
 			0,
-			0
+			0,
 		},
 		size = {
 			383,
-			86
-		}
+			86,
+		},
 	},
 	pivot = {
-		vertical_alignment = "center",
-		parent = "background",
 		horizontal_alignment = "center",
+		parent = "background",
+		vertical_alignment = "center",
 		position = {
 			0,
 			0,
-			1
+			1,
 		},
 		size = {
 			0,
-			0
-		}
-	}
+			0,
+		},
+	},
 }
 local color = table.clone(Colors.color_definitions.white)
+
 color[1] = 0
 
 local function create_loot_widget(texture, amount)
 	local spacing = {
 		20,
-		20
+		20,
 	}
 	local texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(texture)
 	local texture_size = texture_settings.size
@@ -78,7 +80,7 @@ local function create_loot_widget(texture, amount)
 	local total_spacing = spacing[1] * (amount - 1)
 	local size = {
 		texture_total_width + total_spacing,
-		texture_size[2] + spacing[2]
+		texture_size[2] + spacing[2],
 	}
 	local frame_settings = UIFrameSettings.item_hover_01
 	local frame_corner_size = frame_settings.texture_sizes.corner
@@ -97,7 +99,7 @@ local function create_loot_widget(texture, amount)
 			0,
 			255,
 			255,
-			255
+			255,
 		}
 	end
 
@@ -108,33 +110,33 @@ local function create_loot_widget(texture, amount)
 				{
 					pass_type = "texture",
 					style_id = "background",
-					texture_id = "background"
+					texture_id = "background",
 				},
 				{
 					pass_type = "multi_texture",
 					style_id = "icon_textures",
-					texture_id = "icon_textures"
+					texture_id = "icon_textures",
 				},
 				{
 					pass_type = "multi_texture",
 					style_id = "background_icon_textures",
-					texture_id = "background_icon_textures"
+					texture_id = "background_icon_textures",
 				},
 				{
 					pass_type = "multi_texture",
 					style_id = "glow_icon_textures",
-					texture_id = "glow_icon_textures"
-				}
-			}
+					texture_id = "glow_icon_textures",
+				},
+			},
 		},
 		content = {
-			draw_count = 0,
 			background = "loot_objective_bg",
+			draw_count = 0,
 			amount = amount,
 			frame = frame_settings.texture,
 			icon_textures = icon_textures,
 			glow_icon_textures = glow_icon_textures,
-			background_icon_textures = background_icon_textures
+			background_icon_textures = background_icon_textures,
 		},
 		style = {
 			frame = {
@@ -144,50 +146,50 @@ local function create_loot_widget(texture, amount)
 					150,
 					255,
 					255,
-					255
+					255,
 				},
 				default_color = {
 					150,
 					255,
 					255,
-					255
+					255,
 				},
 				size = {
 					size[1] + frame_corner_size[1] * 2,
-					size[2] + frame_corner_size[2] * 2
+					size[2] + frame_corner_size[2] * 2,
 				},
 				offset = {
 					-frame_corner_size[1],
 					-frame_corner_size[2],
-					2
-				}
+					2,
+				},
 			},
 			background = {
 				color = {
 					255,
 					255,
 					255,
-					255
+					255,
 				},
 				default_color = {
 					255,
 					255,
 					255,
-					255
+					255,
 				},
 				offset = {
 					0,
 					0,
-					0
-				}
+					0,
+				},
 			},
 			icon_textures = {
-				scenegraph_id = "pivot",
 				axis = 1,
 				direction = 1,
+				scenegraph_id = "pivot",
 				spacing = {
 					spacing[1],
-					0
+					0,
 				},
 				texture_sizes = icon_texture_sizes,
 				texture_colors = icon_texture_colors,
@@ -195,83 +197,83 @@ local function create_loot_widget(texture, amount)
 					0,
 					255,
 					255,
-					255
+					255,
 				},
 				default_color = {
 					0,
 					255,
 					255,
-					255
+					255,
 				},
 				offset = {
 					-size[1] / 2,
 					-texture_size[2] / 2,
-					2
+					2,
 				},
-				draw_count = amount
+				draw_count = amount,
 			},
 			background_icon_textures = {
-				scenegraph_id = "pivot",
 				axis = 1,
 				direction = 1,
+				scenegraph_id = "pivot",
 				spacing = {
 					spacing[1],
-					0
+					0,
 				},
 				texture_sizes = icon_texture_sizes,
 				color = {
 					255,
 					255,
 					255,
-					255
+					255,
 				},
 				default_color = {
 					255,
 					255,
 					255,
-					255
+					255,
 				},
 				offset = {
 					-size[1] / 2,
 					-texture_size[2] / 2,
-					1
+					1,
 				},
-				draw_count = amount
+				draw_count = amount,
 			},
 			glow_icon_textures = {
-				scenegraph_id = "pivot",
 				axis = 1,
 				direction = 1,
+				scenegraph_id = "pivot",
 				spacing = {
 					spacing[1],
-					0
+					0,
 				},
 				texture_sizes = icon_texture_sizes,
 				color = {
 					255,
 					255,
 					255,
-					255
+					255,
 				},
 				default_color = {
 					255,
 					255,
 					255,
-					255
+					255,
 				},
 				offset = {
 					-size[1] / 2,
 					-texture_size[2] / 2,
-					3
+					3,
 				},
-				draw_count = amount
-			}
+				draw_count = amount,
+			},
 		},
 		offset = {
 			0,
 			0,
-			0
-		}
+			0,
+		},
 	}
 end
 
@@ -280,5 +282,5 @@ local widget_definitions = {}
 return {
 	scenegraph_definition = scenegraph_definition,
 	widget_definitions = widget_definitions,
-	create_loot_widget = create_loot_widget
+	create_loot_widget = create_loot_widget,
 }

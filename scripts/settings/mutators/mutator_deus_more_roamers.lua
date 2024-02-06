@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/mutators/mutator_deus_more_roamers.lua
+
 local density_multiplier = 2
 
 return {
@@ -7,5 +9,5 @@ return {
 	icon = "mutator_icon_deus_more_roamers",
 	tweak_pack_spawning_settings = function (conflict_director_name, pack_spawning_settings)
 		MutatorUtils.tweak_pack_spawning_settings_density_multiplier(pack_spawning_settings, density_multiplier)
-	end
+	end,
 }

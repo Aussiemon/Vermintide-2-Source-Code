@@ -1,5 +1,8 @@
+﻿-- chunkname: @scripts/ui/hud_ui/level_countdown_ui.lua
+
 local definitions = local_require("scripts/ui/hud_ui/level_countdown_ui_definitions")
 local DO_RELOAD = true
+
 LevelCountdownUI = class(LevelCountdownUI)
 
 LevelCountdownUI.init = function (self, parent, ingame_ui_context)
@@ -13,14 +16,16 @@ LevelCountdownUI.init = function (self, parent, ingame_ui_context)
 	self.world_manager = ingame_ui_context.world_manager
 	self.input_manager = ingame_ui_context.input_manager
 	self.matchmaking_manager = Managers.matchmaking
+
 	local world = self.world_manager:world("level_world")
+
 	self.wwise_world = Managers.world:wwise_world(world)
 
 	self:create_ui_elements()
 
 	self.colors = {
 		normal = Colors.get_table("font_default"),
-		selected = Colors.get_table("font_title")
+		selected = Colors.get_table("font_title"),
 	}
 end
 
@@ -38,7 +43,7 @@ LevelCountdownUI.update = function (self, dt)
 
 		self.colors = {
 			normal = Colors.get_table("font_default"),
-			selected = Colors.get_table("font_title")
+			selected = Colors.get_table("font_title"),
 		}
 	end
 
@@ -88,7 +93,7 @@ LevelCountdownUI.update_enter_game_counter = function (self, start_time, max_sta
 	local colors = self.colors
 	local new_timer_value = math.round(start_time)
 	local draw = new_timer_value ~= max_start_time
-	local play_sound_event = nil
+	local play_sound_event
 
 	if new_timer_value ~= self.last_timer_value then
 		if new_timer_value ~= 0 then
@@ -108,8 +113,11 @@ LevelCountdownUI.update_enter_game_counter = function (self, start_time, max_sta
 
 		if color_timer then
 			local total_color_time = 0.5
+
 			color_timer = math.min(color_timer + dt, total_color_time)
+
 			local color_progress = color_timer / total_color_time
+
 			self.color_timer = color_timer
 
 			Colors.lerp_color_tables(colors.normal, colors.selected, color_progress, widget_style.timer_text.text_color)

@@ -1,6 +1,9 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_move_to_players_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTMoveToPlayersAction = class(BTMoveToPlayersAction, BTNode)
+
 local EVALUATE_TIME = 0.25
 
 BTMoveToPlayersAction.init = function (self, ...)
@@ -11,6 +14,7 @@ BTMoveToPlayersAction.name = "BTMoveToPlayersAction"
 
 BTMoveToPlayersAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
+
 	blackboard.action = action
 
 	LocomotionUtils.set_animation_driven_movement(unit, false)
@@ -31,9 +35,9 @@ BTMoveToPlayersAction.enter = function (self, unit, blackboard, t)
 	end
 
 	local target_units = {}
-	local move_to_players = {
-		target_units = target_units
-	}
+	local move_to_players = {}
+
+	move_to_players.target_units = target_units
 	blackboard.move_to_players = move_to_players
 
 	self:_init_targets(move_to_players, t, unit, blackboard)
@@ -43,6 +47,7 @@ BTMoveToPlayersAction._init_targets = function (self, data, t, unit, blackboard)
 	data.index = 0
 	data.eval_timer = t + EVALUATE_TIME
 	data.find_move_position_attempts = 0
+
 	local side = blackboard.side
 	local ENEMY_PLAYER_UNITS = side.ENEMY_PLAYER_UNITS
 
@@ -52,6 +57,7 @@ end
 BTMoveToPlayersAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	blackboard.action = nil
 	blackboard.move_to_players = nil
+
 	local navigation_extension = blackboard.navigation_extension
 
 	if reason == "aborted" then
@@ -92,7 +98,7 @@ BTMoveToPlayersAction.run = function (self, unit, blackboard, t, dt)
 end
 
 BTMoveToPlayersAction._evalute_targets = function (self, unit, blackboard, data, t)
-	local should_evaluate_next_player = data.eval_timer < t
+	local should_evaluate_next_player = t > data.eval_timer
 
 	if should_evaluate_next_player then
 		data.eval_timer = t + EVALUATE_TIME
@@ -101,7 +107,7 @@ BTMoveToPlayersAction._evalute_targets = function (self, unit, blackboard, data,
 	end
 
 	local next_index = data.index
-	local next_target_unit = nil
+	local next_target_unit
 
 	repeat
 		next_index = next_index + 1
@@ -137,12 +143,10 @@ BTMoveToPlayersAction._find_target_globadier = function (self, unit, blackboard,
 			blackboard.has_thrown = true
 			blackboard.move_to_players_position = nil
 
-			if not blackboard.throw_globe_data then
-				local throw_data = {
-					throw_pos = Vector3Box(),
-					target_direction = Vector3Box()
-				}
-			end
+			local throw_data = blackboard.throw_globe_data or {
+				throw_pos = Vector3Box(),
+				target_direction = Vector3Box(),
+			}
 
 			throw_data.angle = angle
 			throw_data.speed = speed
@@ -164,6 +168,7 @@ BTMoveToPlayersAction._find_target_ratling_gunner = function (self, unit, blackb
 
 	if closest_enemy then
 		local data = blackboard.attack_pattern_data or {}
+
 		data.target_unit = closest_enemy
 		data.target_node_name = visible_node_name
 		blackboard.attack_pattern_data = data
@@ -178,7 +183,7 @@ BTMoveToPlayersAction._update_move_to_players_position = function (self, blackbo
 	local attempts = data.find_move_position_attempts
 	local above = 0.7 + attempts * 0.2
 	local below = 2 + attempts * 0.2
-	local goal_pos = nil
+	local goal_pos
 	local traverse_logic = navigation_extension:traverse_logic()
 	local nav_world = navigation_extension:nav_world()
 	local found_nav_mesh, z = GwNavQueries.triangle_from_position(nav_world, wanted_position, above, below, traverse_logic)
@@ -188,6 +193,7 @@ BTMoveToPlayersAction._update_move_to_players_position = function (self, blackbo
 	else
 		local distance_from_nav_mesh = 0
 		local lateral = attempts * 0.5
+
 		goal_pos = GwNavQueries.inside_position_from_outside_position(nav_world, wanted_position, below, above, lateral, distance_from_nav_mesh, traverse_logic)
 	end
 
@@ -212,7 +218,9 @@ BTMoveToPlayersAction._calculate_trajectory_to_target = function (self, unit, wo
 	local pos = Vector3(x, y, z)
 	local throw_offset = Quaternion.rotate(rot, pos)
 	local throw_pos = curr_pos + throw_offset
+
 	curr_pos.z = throw_pos.z
+
 	local root_to_throw = throw_pos - curr_pos
 	local direction = Vector3.normalize(root_to_throw)
 	local length = Vector3.length(root_to_throw)

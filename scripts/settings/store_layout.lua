@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/store_layout.lua
+
 require("scripts/settings/store_dlc_settings")
 
 if not StoreLayoutConfig then
@@ -6,145 +8,146 @@ if not StoreLayoutConfig then
 			"featured",
 			"cosmetics",
 			"bundles",
-			"dlc"
+			"dlc",
 		},
 		pages = {},
 		structure = {},
 		global_shader_flag_overrides = {
-			NECROMANCER_CAREER_REMAP = false
+			NECROMANCER_CAREER_REMAP = false,
 		},
-		structure = {
-			featured = 1,
-			bundles = 1,
-			dlc = 1,
-			cosmetics = {
-				bardin = {
-					ranger = {
-						weapon_skins = "item_details",
-						hats = "item_details",
-						skins = "item_details"
-					},
-					ironbreaker = {
-						weapon_skins = "item_details",
-						hats = "item_details",
-						skins = "item_details"
-					},
-					slayer = {
-						weapon_skins = "item_details",
-						hats = "item_details",
-						skins = "item_details"
-					},
-					engineer = {
-						weapon_skins = "item_details",
-						hats = "item_details",
-						skins = "item_details"
-					}
+	}
+	StoreLayoutConfig.structure = {
+		bundles = 1,
+		dlc = 1,
+		featured = 1,
+		cosmetics = {
+			bardin = {
+				ranger = {
+					hats = "item_details",
+					skins = "item_details",
+					weapon_skins = "item_details",
 				},
-				kruber = {
-					mercenary = {
-						weapon_skins = "item_details",
-						hats = "item_details",
-						skins = "item_details"
-					},
-					huntsman = {
-						weapon_skins = "item_details",
-						hats = "item_details",
-						skins = "item_details"
-					},
-					knight = {
-						weapon_skins = "item_details",
-						hats = "item_details",
-						skins = "item_details"
-					},
-					questingknight = {
-						weapon_skins = "item_details",
-						hats = "item_details",
-						skins = "item_details"
-					}
+				ironbreaker = {
+					hats = "item_details",
+					skins = "item_details",
+					weapon_skins = "item_details",
 				},
-				kerillian = {
-					waywatcher = {
-						weapon_skins = "item_details",
-						hats = "item_details",
-						skins = "item_details"
-					},
-					maidenguard = {
-						weapon_skins = "item_details",
-						hats = "item_details",
-						skins = "item_details"
-					},
-					shade = {
-						weapon_skins = "item_details",
-						hats = "item_details",
-						skins = "item_details"
-					}
+				slayer = {
+					hats = "item_details",
+					skins = "item_details",
+					weapon_skins = "item_details",
 				},
-				victor = {
-					captain = {
-						weapon_skins = "item_details",
-						hats = "item_details",
-						skins = "item_details"
-					},
-					bountyhunter = {
-						weapon_skins = "item_details",
-						hats = "item_details",
-						skins = "item_details"
-					},
-					zealot = {
-						weapon_skins = "item_details",
-						hats = "item_details",
-						skins = "item_details"
-					},
-					priest = {
-						weapon_skins = "item_details",
-						hats = "item_details",
-						skins = "item_details"
-					}
+				engineer = {
+					hats = "item_details",
+					skins = "item_details",
+					weapon_skins = "item_details",
 				},
-				sienna = {
-					scholar = {
-						weapon_skins = "item_details",
-						hats = "item_details",
-						skins = "item_details"
-					},
-					adept = {
-						weapon_skins = "item_details",
-						hats = "item_details",
-						skins = "item_details"
-					},
-					unchained = {
-						weapon_skins = "item_details",
-						hats = "item_details",
-						skins = "item_details"
-					}
-				}
-			}
-		}
+			},
+			kruber = {
+				mercenary = {
+					hats = "item_details",
+					skins = "item_details",
+					weapon_skins = "item_details",
+				},
+				huntsman = {
+					hats = "item_details",
+					skins = "item_details",
+					weapon_skins = "item_details",
+				},
+				knight = {
+					hats = "item_details",
+					skins = "item_details",
+					weapon_skins = "item_details",
+				},
+				questingknight = {
+					hats = "item_details",
+					skins = "item_details",
+					weapon_skins = "item_details",
+				},
+			},
+			kerillian = {
+				waywatcher = {
+					hats = "item_details",
+					skins = "item_details",
+					weapon_skins = "item_details",
+				},
+				maidenguard = {
+					hats = "item_details",
+					skins = "item_details",
+					weapon_skins = "item_details",
+				},
+				shade = {
+					hats = "item_details",
+					skins = "item_details",
+					weapon_skins = "item_details",
+				},
+			},
+			victor = {
+				captain = {
+					hats = "item_details",
+					skins = "item_details",
+					weapon_skins = "item_details",
+				},
+				bountyhunter = {
+					hats = "item_details",
+					skins = "item_details",
+					weapon_skins = "item_details",
+				},
+				zealot = {
+					hats = "item_details",
+					skins = "item_details",
+					weapon_skins = "item_details",
+				},
+				priest = {
+					hats = "item_details",
+					skins = "item_details",
+					weapon_skins = "item_details",
+				},
+			},
+			sienna = {
+				scholar = {
+					hats = "item_details",
+					skins = "item_details",
+					weapon_skins = "item_details",
+				},
+				adept = {
+					hats = "item_details",
+					skins = "item_details",
+					weapon_skins = "item_details",
+				},
+				unchained = {
+					hats = "item_details",
+					skins = "item_details",
+					weapon_skins = "item_details",
+				},
+			},
+		},
 	}
 	StoreLayoutConfig.pages.featured = {
-		sound_event_enter = "Play_hud_store_category_front",
-		layout = "featured",
 		display_name = "menu_store_panel_title_featured",
+		layout = "featured",
 		rotation_timer = false,
+		sound_event_enter = "Play_hud_store_category_front",
 		slideshow = {},
-		grid = {}
+		grid = {},
 	}
 	StoreLayoutConfig.pages.cosmetics = {
-		sound_event_enter = "Play_hud_store_category_cosmetics",
-		layout = "category",
-		item_filter = "item_type ~= bundle",
 		display_name = "menu_store_panel_title_cosmetics",
+		item_filter = "item_type ~= bundle",
+		layout = "category",
+		sound_event_enter = "Play_hud_store_category_cosmetics",
 		global_shader_flag_overrides = {
-			NECROMANCER_CAREER_REMAP = false
-		}
+			NECROMANCER_CAREER_REMAP = false,
+		},
 	}
 	StoreLayoutConfig.pages.discount_tab = {
-		sound_event_enter = "Play_hud_store_category_cosmetics",
-		layout = "item_list",
+		display_name = "menu_store_panel_title_discounts",
 		item_filter = "discounted_items",
+		layout = "item_list",
+		sound_event_enter = "Play_hud_store_category_cosmetics",
 		type = "item",
-		display_name = "menu_store_panel_title_discounts"
 	}
+
 	local dlc_content = {}
 	local bundle_dlc_content = {}
 	local bundle_lookup_table = {}
@@ -165,280 +168,280 @@ if not StoreLayoutConfig then
 
 	if IS_CONSOLE then
 		StoreLayoutConfig.pages.bundles = {
-			sound_event_enter = "Play_hud_store_category_button",
-			layout = "dlc_list",
-			display_name = "menu_store_category_title_bundles",
-			type = "dlc",
 			category_button_texture = "store_category_icon_weapons",
+			display_name = "menu_store_category_title_bundles",
+			layout = "dlc_list",
 			sort_order = 3,
-			content = bundle_dlc_content
+			sound_event_enter = "Play_hud_store_category_button",
+			type = "dlc",
+			content = bundle_dlc_content,
 		}
 
 		for bundle_dlc_name, dlc_settings in pairs(bundle_lookup_table) do
 			StoreLayoutConfig.pages[bundle_dlc_name] = {
 				layout = "item_list",
-				type = "bundle_items",
 				sort_order = 1,
+				type = "bundle_items",
 				dlc_name = dlc_settings.dlc_name,
 				bundle_contains = dlc_settings.bundle_contains,
-				display_name = dlc_settings.name
+				display_name = dlc_settings.name,
 			}
 		end
 	else
 		StoreLayoutConfig.pages.bundles = {
-			sound_event_enter = "Play_hud_store_category_button",
-			layout = "bundle_list",
+			category_button_texture = "store_category_icon_weapons",
 			display_name = "menu_store_category_title_bundles",
-			type = "item",
 			item_filter = "item_type == bundle",
+			layout = "bundle_list",
 			sort_order = 3,
-			category_button_texture = "store_category_icon_weapons"
+			sound_event_enter = "Play_hud_store_category_button",
+			type = "item",
 		}
 	end
 
 	StoreLayoutConfig.pages.dlc = {
-		sound_event_enter = "Play_hud_store_category_dlc",
-		layout = "dlc_list",
 		display_name = "menu_store_panel_title_dlcs",
+		layout = "dlc_list",
+		sound_event_enter = "Play_hud_store_category_dlc",
 		type = "dlc",
-		content = dlc_content
+		content = dlc_content,
 	}
 	StoreLayoutConfig.pages.item_details = {
-		layout = "item_detailed",
 		display_name = "item_details",
-		type = "item"
+		layout = "item_detailed",
+		type = "item",
 	}
 	StoreLayoutConfig.pages.all_items = {
-		layout = "item_list",
 		display_name = "menu_store_category_title_all",
-		type = "item"
+		layout = "item_list",
+		type = "item",
 	}
 	StoreLayoutConfig.pages.hats = {
-		sound_event_enter = "Play_hud_store_category_button",
-		layout = "item_list",
+		category_button_texture = "store_category_icon_hats",
 		display_name = "menu_store_category_title_character_hats",
-		type = "item",
 		item_filter = "item_type == hat",
+		layout = "item_list",
 		sort_order = 1,
-		category_button_texture = "store_category_icon_hats"
+		sound_event_enter = "Play_hud_store_category_button",
+		type = "item",
 	}
 	StoreLayoutConfig.pages.skins = {
-		sound_event_enter = "Play_hud_store_category_button",
-		layout = "item_list",
+		category_button_texture = "store_category_icon_skins",
 		display_name = "menu_store_category_title_character_skins",
-		type = "item",
 		item_filter = "item_type == skin",
+		layout = "item_list",
 		sort_order = 2,
-		category_button_texture = "store_category_icon_skins"
+		sound_event_enter = "Play_hud_store_category_button",
+		type = "item",
 	}
 	StoreLayoutConfig.pages.weapon_skins = {
-		sound_event_enter = "Play_hud_store_category_button",
-		layout = "item_list",
+		category_button_texture = "store_category_icon_weapons",
 		display_name = "menu_store_category_title_weapon_illusions",
-		type = "item",
 		item_filter = "item_type == weapon_skin",
+		layout = "item_list",
 		sort_order = 3,
-		category_button_texture = "store_category_icon_weapons"
+		sound_event_enter = "Play_hud_store_category_button",
+		type = "item",
 	}
 	StoreLayoutConfig.pages.bardin = {
-		sound_event_enter = "Play_hud_store_bardin",
-		layout = "category",
+		category_button_texture = "store_category_icon_bardin_ranger",
 		display_name = "inventory_name_dwarf_ranger",
 		item_filter = "can_wield_dwarf_ranger",
+		layout = "category",
 		sort_order = 2,
-		category_button_texture = "store_category_icon_bardin_ranger"
+		sound_event_enter = "Play_hud_store_bardin",
 	}
 	StoreLayoutConfig.pages.ironbreaker = {
-		sound_event_enter = "Play_hud_store_category_button",
-		layout = "category",
+		category_button_texture = "store_category_icon_bardin_ironbreaker",
 		display_name = "dr_ironbreaker",
 		item_filter = "can_wield_dr_ironbreaker",
+		layout = "category",
 		sort_order = 2,
-		category_button_texture = "store_category_icon_bardin_ironbreaker"
+		sound_event_enter = "Play_hud_store_category_button",
 	}
 	StoreLayoutConfig.pages.slayer = {
-		sound_event_enter = "Play_hud_store_category_button",
-		layout = "category",
+		category_button_texture = "store_category_icon_bardin_slayer",
 		display_name = "dr_slayer",
 		item_filter = "can_wield_dr_slayer",
+		layout = "category",
 		sort_order = 3,
-		category_button_texture = "store_category_icon_bardin_slayer"
+		sound_event_enter = "Play_hud_store_category_button",
 	}
 	StoreLayoutConfig.pages.ranger = {
-		sound_event_enter = "Play_hud_store_category_button",
-		layout = "category",
+		category_button_texture = "store_category_icon_bardin_ranger",
 		display_name = "dr_ranger",
 		item_filter = "can_wield_dr_ranger",
+		layout = "category",
 		sort_order = 1,
-		category_button_texture = "store_category_icon_bardin_ranger"
+		sound_event_enter = "Play_hud_store_category_button",
 	}
 	StoreLayoutConfig.pages.engineer = {
-		sound_event_enter = "Play_hud_store_category_button",
-		layout = "category",
+		category_button_texture = "store_category_icon_bardin_engineer",
 		display_name = "dr_engineer",
 		item_filter = "can_wield_dr_engineer",
+		layout = "category",
 		sort_order = 4,
-		category_button_texture = "store_category_icon_bardin_engineer"
+		sound_event_enter = "Play_hud_store_category_button",
 	}
 	StoreLayoutConfig.pages.kruber = {
-		sound_event_enter = "Play_hud_store_kruber",
-		layout = "category",
+		category_button_texture = "store_category_icon_kruber_mercenary",
 		display_name = "inventory_name_empire_soldier",
 		item_filter = "can_wield_empire_soldier",
+		layout = "category",
 		sort_order = 1,
-		category_button_texture = "store_category_icon_kruber_mercenary"
+		sound_event_enter = "Play_hud_store_kruber",
 	}
 	StoreLayoutConfig.pages.huntsman = {
-		sound_event_enter = "Play_hud_store_category_button",
-		layout = "category",
+		category_button_texture = "store_category_icon_kruber_huntsman",
 		display_name = "es_huntsman",
 		item_filter = "can_wield_es_huntsman",
+		layout = "category",
 		sort_order = 2,
-		category_button_texture = "store_category_icon_kruber_huntsman"
+		sound_event_enter = "Play_hud_store_category_button",
 	}
 	StoreLayoutConfig.pages.knight = {
-		sound_event_enter = "Play_hud_store_category_button",
-		layout = "category",
+		category_button_texture = "store_category_icon_kruber_knight",
 		display_name = "es_knight",
 		item_filter = "can_wield_es_knight",
+		layout = "category",
 		sort_order = 3,
-		category_button_texture = "store_category_icon_kruber_knight"
+		sound_event_enter = "Play_hud_store_category_button",
 	}
 	StoreLayoutConfig.pages.mercenary = {
-		sound_event_enter = "Play_hud_store_category_button",
-		layout = "category",
+		category_button_texture = "store_category_icon_kruber_mercenary",
 		display_name = "es_mercenary",
 		item_filter = "can_wield_es_mercenary",
+		layout = "category",
 		sort_order = 1,
-		category_button_texture = "store_category_icon_kruber_mercenary"
+		sound_event_enter = "Play_hud_store_category_button",
 	}
 	StoreLayoutConfig.pages.questingknight = {
-		sound_event_enter = "Play_hud_store_category_button",
-		layout = "category",
+		category_button_texture = "store_category_icon_kruber_questingknight",
 		display_name = "es_questingknight",
 		item_filter = "can_wield_es_questingknight",
+		layout = "category",
 		sort_order = 4,
-		category_button_texture = "store_category_icon_kruber_questingknight"
+		sound_event_enter = "Play_hud_store_category_button",
 	}
 	StoreLayoutConfig.pages.kerillian = {
-		sound_event_enter = "Play_hud_store_kerillian",
-		layout = "category",
+		category_button_texture = "store_category_icon_kerillian_waystalker",
 		display_name = "inventory_name_wood_elf",
 		item_filter = "can_wield_wood_elf",
+		layout = "category",
 		sort_order = 3,
-		category_button_texture = "store_category_icon_kerillian_waystalker"
+		sound_event_enter = "Play_hud_store_kerillian",
 	}
 	StoreLayoutConfig.pages.waywatcher = {
-		sound_event_enter = "Play_hud_store_category_button",
-		layout = "category",
+		category_button_texture = "store_category_icon_kerillian_waystalker",
 		display_name = "we_waywatcher",
 		item_filter = "can_wield_we_waywatcher",
+		layout = "category",
 		sort_order = 1,
-		category_button_texture = "store_category_icon_kerillian_waystalker"
+		sound_event_enter = "Play_hud_store_category_button",
 	}
 	StoreLayoutConfig.pages.maidenguard = {
-		sound_event_enter = "Play_hud_store_category_button",
-		layout = "category",
+		category_button_texture = "store_category_icon_kerillian_handmaiden",
 		display_name = "we_maidenguard",
 		item_filter = "can_wield_we_maidenguard",
+		layout = "category",
 		sort_order = 2,
-		category_button_texture = "store_category_icon_kerillian_handmaiden"
+		sound_event_enter = "Play_hud_store_category_button",
 	}
 	StoreLayoutConfig.pages.shade = {
-		sound_event_enter = "Play_hud_store_category_button",
-		layout = "category",
+		category_button_texture = "store_category_icon_kerillian_shade",
 		display_name = "we_shade",
 		item_filter = "can_wield_we_shade",
+		layout = "category",
 		sort_order = 3,
-		category_button_texture = "store_category_icon_kerillian_shade"
+		sound_event_enter = "Play_hud_store_category_button",
 	}
 	StoreLayoutConfig.pages.thornsister = {
-		sound_event_enter = "Play_hud_store_category_button",
-		layout = "category",
+		category_button_texture = "store_category_icon_kerillian_thornsister",
 		display_name = "we_thornsister",
 		item_filter = "can_wield_we_thornsister",
+		layout = "category",
 		sort_order = 4,
-		category_button_texture = "store_category_icon_kerillian_thornsister"
+		sound_event_enter = "Play_hud_store_category_button",
 	}
 	StoreLayoutConfig.pages.victor = {
-		sound_event_enter = "Play_hud_store_saltzpyre",
-		layout = "category",
+		category_button_texture = "store_category_icon_victor_captain",
 		display_name = "inventory_name_witch_hunter",
 		item_filter = "can_wield_witch_hunter",
+		layout = "category",
 		sort_order = 4,
-		category_button_texture = "store_category_icon_victor_captain"
+		sound_event_enter = "Play_hud_store_saltzpyre",
 	}
 	StoreLayoutConfig.pages.captain = {
-		sound_event_enter = "Play_hud_store_category_button",
-		layout = "category",
+		category_button_texture = "store_category_icon_victor_captain",
 		display_name = "wh_captain",
 		item_filter = "can_wield_wh_captain",
+		layout = "category",
 		sort_order = 1,
-		category_button_texture = "store_category_icon_victor_captain"
+		sound_event_enter = "Play_hud_store_category_button",
 	}
 	StoreLayoutConfig.pages.bountyhunter = {
-		sound_event_enter = "Play_hud_store_category_button",
-		layout = "category",
+		category_button_texture = "store_category_icon_victor_bountyhunter",
 		display_name = "wh_bountyhunter",
 		item_filter = "can_wield_wh_bountyhunter",
+		layout = "category",
 		sort_order = 2,
-		category_button_texture = "store_category_icon_victor_bountyhunter"
+		sound_event_enter = "Play_hud_store_category_button",
 	}
 	StoreLayoutConfig.pages.zealot = {
-		sound_event_enter = "Play_hud_store_category_button",
-		layout = "category",
+		category_button_texture = "store_category_icon_victor_zealot",
 		display_name = "wh_zealot",
 		item_filter = "can_wield_wh_zealot",
+		layout = "category",
 		sort_order = 3,
-		category_button_texture = "store_category_icon_victor_zealot"
+		sound_event_enter = "Play_hud_store_category_button",
 	}
 	StoreLayoutConfig.pages.priest = {
-		sound_event_enter = "Play_hud_store_category_button",
-		layout = "category",
+		category_button_texture = "store_category_icon_priest",
 		display_name = "wh_priest",
 		item_filter = "can_wield_wh_priest",
+		layout = "category",
 		sort_order = 4,
-		category_button_texture = "store_category_icon_priest"
+		sound_event_enter = "Play_hud_store_category_button",
 	}
 	StoreLayoutConfig.pages.sienna = {
-		sound_event_enter = "Play_hud_store_sienna",
-		layout = "category",
+		category_button_texture = "store_category_icon_sienna_scholar",
 		display_name = "inventory_name_bright_wizard",
 		item_filter = "can_wield_bright_wizard",
+		layout = "category",
 		sort_order = 5,
-		category_button_texture = "store_category_icon_sienna_scholar"
+		sound_event_enter = "Play_hud_store_sienna",
 	}
 	StoreLayoutConfig.pages.scholar = {
-		sound_event_enter = "Play_hud_store_category_button",
-		layout = "category",
+		category_button_texture = "store_category_icon_sienna_scholar",
 		display_name = "bw_scholar",
 		item_filter = "can_wield_bw_scholar",
+		layout = "category",
 		sort_order = 2,
-		category_button_texture = "store_category_icon_sienna_scholar"
+		sound_event_enter = "Play_hud_store_category_button",
 	}
 	StoreLayoutConfig.pages.adept = {
-		sound_event_enter = "Play_hud_store_category_button",
-		layout = "category",
+		category_button_texture = "store_category_icon_sienna_adept",
 		display_name = "bw_adept",
 		item_filter = "can_wield_bw_adept",
+		layout = "category",
 		sort_order = 1,
-		category_button_texture = "store_category_icon_sienna_adept"
+		sound_event_enter = "Play_hud_store_category_button",
 	}
 	StoreLayoutConfig.pages.unchained = {
-		sound_event_enter = "Play_hud_store_category_button",
-		layout = "category",
+		category_button_texture = "store_category_icon_sienna_unchained",
 		display_name = "bw_unchained",
 		item_filter = "can_wield_bw_unchained",
+		layout = "category",
 		sort_order = 3,
-		category_button_texture = "store_category_icon_sienna_unchained"
+		sound_event_enter = "Play_hud_store_category_button",
 	}
 	StoreLayoutConfig.pages.discounts = {
-		sound_event_enter = "Play_hud_store_kruber",
-		layout = "category",
+		category_button_texture = "store_category_icon_kruber_mercenary",
 		display_name = "inventory_discounts",
 		item_filter = "discounted_items",
+		layout = "category",
 		sort_order = 6,
-		category_button_texture = "store_category_icon_kruber_mercenary"
+		sound_event_enter = "Play_hud_store_kruber",
 	}
 
 	for dlc_name, dlc_settings in pairs(DLCSettings) do
@@ -452,12 +455,12 @@ end
 
 local ORDER_RARITY = {
 	common = 2,
-	promo = 7,
+	exotic = 4,
 	magic = 5,
 	plentiful = 1,
-	exotic = 4,
+	promo = 7,
 	rare = 3,
-	unique = 6
+	unique = 6,
 }
 
 StoreLayoutConfig.make_sort_key = function (item)
@@ -468,25 +471,20 @@ StoreLayoutConfig.make_sort_key = function (item)
 	local prio = item.prio or 0
 	local price = 0
 	local rarity = item.rarity or "plentiful"
-	local owned = (backend_items:has_item(key) or backend_items:has_weapon_illusion(key)) and 2 or 0
+	local owned = not (not backend_items:has_item(key) and not backend_items:has_weapon_illusion(key)) and 2 or 0
 
 	if data then
 		item_type = data.item_type
 
 		if item_type == "weapon_skin" then
 			item_type = data.matching_item_key or "weapon_skin"
-		elseif item_type == "bundle" then
-			item_type = "2.bundle"
-		elseif item_type == "skin" then
-			item_type = "1.skin"
-		elseif item_type == "hat" then
-			item_type = "0.hat"
 		else
-			item_type = key
+			item_type = item_type == "bundle" and "2.bundle" or item_type == "skin" and "1.skin" or item_type == "hat" and "0.hat" or key
 		end
 
 		prio = data.prio or prio
 		rarity = data.rarity or rarity
+
 		local current_prices = item.current_prices
 
 		if current_prices then

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bot/bt_bot_teleport_to_ally_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTBotTeleportToAllyAction = class(BTBotTeleportToAllyAction, BTNode)
@@ -25,21 +27,22 @@ BTBotTeleportToAllyAction.run = function (self, unit, blackboard, t, dt)
 	local nav_world = blackboard.nav_world
 	local navigation_extension = blackboard.navigation_extension
 	local traverse_logic = navigation_extension:traverse_logic()
-	local check_direction = nil
+	local check_direction
 	local game = Managers.state.network:game()
 
 	if game then
 		local game_object_id = Managers.state.unit_storage:go_id(follow_unit)
+
 		check_direction = -GameSession.game_object_field(game, game_object_id, "aim_direction")
 	else
 		local rotation = Unit.local_rotation(follow_unit, 0)
+
 		check_direction = -Quaternion.forward(rotation)
 	end
 
 	local follow_unit_whereabouts_extension = ScriptUnit.extension(follow_unit, "whereabouts_system")
 	local from_position = follow_unit_whereabouts_extension:last_position_on_navmesh()
-	local best_position = nil
-	local best_distance_sq = -math.huge
+	local best_position, best_distance_sq = nil, -math.huge
 	local angle_sign = 1
 
 	for i = 0, CHECKS_PER_DIRECTION do

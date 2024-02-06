@@ -1,5 +1,9 @@
+﻿-- chunkname: @scripts/unit_extensions/weapons/projectiles/projectile_templates.lua
+
 ProjectileTemplates = {}
-local check_for_afro_hit = nil
+
+local check_for_afro_hit
+
 ProjectileTemplates.trajectory_templates = {
 	straight_target_traversal = {
 		unit = {
@@ -11,7 +15,7 @@ ProjectileTemplates.trajectory_templates = {
 				local new_position = move_delta + position
 
 				return new_position
-			end
+			end,
 		},
 		husk = {
 			update = function (speed, radians, gravity, initial_position, target_vector, time_lived, dt, traversal_data)
@@ -22,8 +26,8 @@ ProjectileTemplates.trajectory_templates = {
 				local new_position = move_delta + position
 
 				return new_position
-			end
-		}
+			end,
+		},
 	},
 	right_spinning_target_traversal = {
 		unit = {
@@ -38,9 +42,9 @@ ProjectileTemplates.trajectory_templates = {
 				local current_lerp_t = 1 - dist_to_target / dist_from_init
 				local wanted_pos = Vector3.lerp(initial_position, target_position, current_lerp_t)
 				local lerp_t = current_lerp_t
-				local offset = nil
+				local offset
 				local spin_speed = speed * 2
-				local curve_lerp_t = nil
+				local curve_lerp_t
 
 				if lerp_t < max_t then
 					curve_lerp_t = math.clamp(lerp_t / max_t, 0, 1)
@@ -50,6 +54,7 @@ ProjectileTemplates.trajectory_templates = {
 					lerp_t = lerp_t / 1
 					curve_lerp_t = math.clamp((lerp_t - max_t) / (1 - max_t), 0, 1)
 					offset = 1 - math.easeOutCubic(curve_lerp_t)
+
 					local offset_speed = offset
 
 					if offset < 0.3 then
@@ -63,15 +68,17 @@ ProjectileTemplates.trajectory_templates = {
 				end
 
 				local offset_pos = Vector3(math.cos(time_lived * spin_speed), 0, -math.sin(time_lived * spin_speed))
+
 				offset_pos = Quaternion.rotate(Quaternion.look(direction, Vector3.up()), offset_pos) * offset
 				speed = speed * (1 + math.easeInCubic(lerp_t))
+
 				local max_move_distance = Vector3.distance(target_position, position)
 				local delta_move_distance = math.clamp(speed * dt, 0, max_move_distance)
 				local new_position = wanted_pos + direction * delta_move_distance + offset_pos
 
 				return new_position
-			end
-		}
+			end,
+		},
 	},
 	left_spinning_target_traversal = {
 		unit = {
@@ -86,9 +93,9 @@ ProjectileTemplates.trajectory_templates = {
 				local current_lerp_t = 1 - dist_to_target / dist_from_init
 				local wanted_pos = Vector3.lerp(initial_position, target_position, current_lerp_t)
 				local lerp_t = current_lerp_t
-				local offset = nil
+				local offset
 				local spin_speed = speed * 2
-				local curve_lerp_t = nil
+				local curve_lerp_t
 
 				if lerp_t < max_t then
 					curve_lerp_t = math.clamp(lerp_t / max_t, 0, 1)
@@ -98,6 +105,7 @@ ProjectileTemplates.trajectory_templates = {
 					lerp_t = lerp_t / 1
 					curve_lerp_t = math.clamp((lerp_t - max_t) / (1 - max_t), 0, 1)
 					offset = 1 - math.easeOutCubic(curve_lerp_t)
+
 					local offset_speed = offset
 
 					if offset < 0.3 then
@@ -111,15 +119,17 @@ ProjectileTemplates.trajectory_templates = {
 				end
 
 				local offset_pos = Vector3(math.sin(time_lived * spin_speed), 0, -math.cos(time_lived * spin_speed))
+
 				offset_pos = Quaternion.rotate(Quaternion.look(direction, Vector3.up()), offset_pos) * offset
 				speed = speed * (1 + math.easeInCubic(lerp_t))
+
 				local max_move_distance = Vector3.distance(target_position, position)
 				local delta_move_distance = math.clamp(speed * dt, 0, max_move_distance)
 				local new_position = wanted_pos + direction * delta_move_distance + offset_pos
 
 				return new_position
-			end
-		}
+			end,
+		},
 	},
 	random_spinning_target_traversal = {
 		unit = {
@@ -134,9 +144,9 @@ ProjectileTemplates.trajectory_templates = {
 				local current_lerp_t = 1 - dist_to_target / dist_from_init
 				local wanted_pos = Vector3.lerp(initial_position, target_position, current_lerp_t)
 				local lerp_t = current_lerp_t
-				local offset = nil
+				local offset
 				local spin_speed = speed * 2
-				local curve_lerp_t = nil
+				local curve_lerp_t
 
 				if lerp_t < max_t then
 					curve_lerp_t = math.clamp(lerp_t / max_t, 0, 1)
@@ -146,6 +156,7 @@ ProjectileTemplates.trajectory_templates = {
 					lerp_t = lerp_t / 1
 					curve_lerp_t = math.clamp((lerp_t - max_t) / (1 - max_t), 0, 1)
 					offset = 1 - math.easeOutCubic(curve_lerp_t)
+
 					local offset_speed = offset
 
 					if offset < 0.3 then
@@ -159,7 +170,7 @@ ProjectileTemplates.trajectory_templates = {
 				end
 
 				local random_spin_dir = target_data.random_spin_dir
-				local offset_pos = nil
+				local offset_pos
 
 				if random_spin_dir == 1 then
 					offset_pos = Vector3(-math.cos(time_lived * spin_speed), 0, math.sin(time_lived * spin_speed))
@@ -169,6 +180,7 @@ ProjectileTemplates.trajectory_templates = {
 
 				offset_pos = Quaternion.rotate(Quaternion.look(direction, Vector3.up()), offset_pos) * offset
 				speed = speed * (1 + math.easeInCubic(lerp_t))
+
 				local max_move_distance = Vector3.distance(target_position, position)
 				local delta_move_distance = math.clamp(speed * dt, 0, max_move_distance)
 				local new_position = wanted_pos + direction * delta_move_distance + offset_pos
@@ -176,8 +188,8 @@ ProjectileTemplates.trajectory_templates = {
 				QuickDrawer:sphere(new_position, 0.1, Color(255, 0, 0))
 
 				return new_position
-			end
-		}
+			end,
+		},
 	},
 	magic_missile_traversal = {
 		unit = {
@@ -192,14 +204,16 @@ ProjectileTemplates.trajectory_templates = {
 				local dist_to_wanted = Vector3.distance(initial_position, wanted_position)
 				local dist_to_target = Vector3.distance(initial_position, target_position)
 				local lerp_t = math.clamp(math.inv_lerp(0, dist_to_target, dist_to_wanted), 0, 1)
-				local offset = nil
+				local offset
 
 				if lerp_t < max_t then
 					local curve_lerp_t = math.clamp(lerp_t / max_t, 0, 1)
+
 					offset = math.easeInCubic(curve_lerp_t) * 0.75
 					speed = speed * (1 + math.easeInCubic(curve_lerp_t) / 2) * 0.75
 				elseif lerp_t < 1 then
 					local curve_lerp_t = math.clamp((lerp_t - max_t) / (1 - max_t), 0, 1)
+
 					offset = 1 - math.easeOutCubic(curve_lerp_t)
 					speed = speed * (1 + math.easeOutCubic(curve_lerp_t))
 				else
@@ -212,13 +226,15 @@ ProjectileTemplates.trajectory_templates = {
 				local offset_dir = Quaternion.rotate(Quaternion.look(direction), local_offset_dir)
 				local max_move_distance = Vector3.distance(target_position, position)
 				local delta_move_distance = math.clamp(speed * dt, 0, max_move_distance)
+
 				wanted_position = wanted_position + offset_dir * offset
+
 				local move = Vector3.normalize(wanted_position - position) * delta_move_distance
 				local new_position = position + move
 
 				return new_position
-			end
-		}
+			end,
+		},
 	},
 	straight_direction_traversal = {
 		unit = {
@@ -227,7 +243,7 @@ ProjectileTemplates.trajectory_templates = {
 				local new_position = move_delta + optional_data.position
 
 				return new_position
-			end
+			end,
 		},
 		husk = {
 			update = function (speed, radians, gravity, initial_position, target_vector, time_lived, dt, optional_data)
@@ -235,13 +251,13 @@ ProjectileTemplates.trajectory_templates = {
 				local new_position = move_delta + optional_data.position
 
 				return new_position
-			end
-		}
+			end,
+		},
 	},
 	throw_trajectory = {
 		prediction_function = function (speed, gravity, initial_position, target_position, target_velocity)
 			local t = 0
-			local angle = nil
+			local angle
 			local EPSILON = 0.01
 			local ITERATIONS = 10
 
@@ -251,6 +267,7 @@ ProjectileTemplates.trajectory_templates = {
 
 			for i = 1, ITERATIONS do
 				estimated_target_position = target_position + t * target_velocity
+
 				local height = estimated_target_position.z - initial_position.z
 				local speed_squared = speed^2
 				local flat_distance = Vector3.length(Vector3.flat(estimated_target_position - initial_position))
@@ -268,8 +285,11 @@ ProjectileTemplates.trajectory_templates = {
 				local second_degree_component = math.sqrt(sqrt_val)
 				local angle1 = math.atan((speed_squared + second_degree_component) / (gravity * flat_distance))
 				local angle2 = math.atan((speed_squared - second_degree_component) / (gravity * flat_distance))
+
 				angle = math.min(angle1, angle2)
+
 				local flat_distance = Vector3.length(Vector3.flat(estimated_target_position - initial_position))
+
 				t = flat_distance / (speed * math.cos(angle))
 			end
 
@@ -280,16 +300,16 @@ ProjectileTemplates.trajectory_templates = {
 				local position = WeaponHelper:position_on_trajectory(initial_position, target_vector, speed, radians, gravity, time_lived, dt)
 
 				return position
-			end
+			end,
 		},
 		husk = {
 			update = function (speed, radians, gravity, initial_position, target_vector, time_lived, dt, optional_data)
 				local position = WeaponHelper:position_on_trajectory(initial_position, target_vector, speed, radians, gravity, time_lived, dt)
 
 				return position
-			end
-		}
-	}
+			end,
+		},
+	},
 }
 ProjectileTemplates.impact_templates = {
 	explosion_impact = {
@@ -310,6 +330,7 @@ ProjectileTemplates.impact_templates = {
 
 				if ai_base_extension then
 					local blackboard = ai_base_extension:blackboard()
+
 					blackboard.explosion_impact = true
 				end
 
@@ -336,6 +357,7 @@ ProjectileTemplates.impact_templates = {
 					if dialogue_extension then
 						local dialogue_input = dialogue_extension.input
 						local event_data = FrameTable.alloc_table()
+
 						event_data.num_units = players_inside
 
 						dialogue_input:trigger_dialogue_event("pwg_projectile_hit", event_data)
@@ -343,7 +365,7 @@ ProjectileTemplates.impact_templates = {
 				end
 
 				return true
-			end
+			end,
 		},
 		client = {
 			execute = function (world, damage_source, unit, recent_impacts, num_impacts, owner_unit)
@@ -351,8 +373,8 @@ ProjectileTemplates.impact_templates = {
 				Unit.flow_event(unit, "lua_projectile_impact")
 
 				return true
-			end
-		}
+			end,
+		},
 	},
 	vs_globadier_impact = {
 		server = {
@@ -372,6 +394,7 @@ ProjectileTemplates.impact_templates = {
 
 				if ai_base_extension then
 					local blackboard = ai_base_extension:blackboard()
+
 					blackboard.explosion_impact = true
 				end
 
@@ -398,6 +421,7 @@ ProjectileTemplates.impact_templates = {
 					if dialogue_extension then
 						local dialogue_input = dialogue_extension.input
 						local event_data = FrameTable.alloc_table()
+
 						event_data.num_units = players_inside
 
 						dialogue_input:trigger_dialogue_event("pwg_projectile_hit", event_data)
@@ -405,7 +429,7 @@ ProjectileTemplates.impact_templates = {
 				end
 
 				return true
-			end
+			end,
 		},
 		client = {
 			execute = function (world, damage_source, unit, recent_impacts, num_impacts, owner_unit)
@@ -426,8 +450,8 @@ ProjectileTemplates.impact_templates = {
 				Unit.flow_event(unit, "lua_projectile_impact")
 
 				return true
-			end
-		}
+			end,
+		},
 	},
 	direct_impact = {
 		server = {
@@ -445,7 +469,7 @@ ProjectileTemplates.impact_templates = {
 						AiUtils.ai_explosion(projectile_unit, owner_unit, blackboard, damage_source, explosion_template)
 					end
 
-					local first_hit_position = nil
+					local first_hit_position
 
 					if explosion_template.aoe then
 						first_hit_position = Vector3Box.unbox(recent_impacts[ProjectileImpactDataIndex.POSITION])
@@ -461,7 +485,7 @@ ProjectileTemplates.impact_templates = {
 				end
 
 				return true
-			end
+			end,
 		},
 		client = {
 			execute = function (world, damage_source, unit, recent_impacts, num_impacts, owner_unit)
@@ -469,8 +493,8 @@ ProjectileTemplates.impact_templates = {
 				Unit.flow_event(unit, "lua_projectile_impact")
 
 				return true
-			end
-		}
+			end,
+		},
 	},
 	no_owner_direct_impact = {
 		server = {
@@ -482,7 +506,7 @@ ProjectileTemplates.impact_templates = {
 						AiUtils.ai_explosion(projectile_unit, owner_unit, blackboard, damage_source, explosion_template)
 					end
 
-					local first_hit_position = nil
+					local first_hit_position
 
 					if explosion_template.aoe then
 						first_hit_position = Vector3Box.unbox(recent_impacts[ProjectileImpactDataIndex.POSITION])
@@ -498,7 +522,7 @@ ProjectileTemplates.impact_templates = {
 				end
 
 				return true
-			end
+			end,
 		},
 		client = {
 			execute = function (world, damage_source, unit, recent_impacts, num_impacts, owner_unit)
@@ -506,8 +530,8 @@ ProjectileTemplates.impact_templates = {
 				Unit.flow_event(unit, "lua_projectile_impact")
 
 				return true
-			end
-		}
+			end,
+		},
 	},
 	vfx_impact = {
 		server = {
@@ -516,7 +540,7 @@ ProjectileTemplates.impact_templates = {
 				Unit.flow_event(unit, "lua_projectile_impact")
 
 				return true
-			end
+			end,
 		},
 		client = {
 			execute = function (world, damage_source, unit, recent_impacts, num_impacts, owner_unit)
@@ -524,8 +548,8 @@ ProjectileTemplates.impact_templates = {
 				Unit.flow_event(unit, "lua_projectile_impact")
 
 				return true
-			end
-		}
+			end,
+		},
 	},
 	necromancer_trapped_soul = {
 		owner_heal_amount = 2,
@@ -554,6 +578,7 @@ ProjectileTemplates.impact_templates = {
 						local actor_index = recent_impacts[ProjectileImpactDataIndex.ACTOR_INDEX]
 						local actor = Unit.actor(hit_unit, actor_index)
 						local node = Actor.node(actor)
+
 						hit_zone_name = breed.hit_zones_lookup[node] or hit_zone_name
 					end
 
@@ -578,7 +603,7 @@ ProjectileTemplates.impact_templates = {
 				end
 
 				return true
-			end
+			end,
 		},
 		client = {
 			execute = function (world, damage_source, unit, recent_impacts, num_impacts, owner_unit)
@@ -588,9 +613,9 @@ ProjectileTemplates.impact_templates = {
 				Unit.flow_event(unit, "lua_projectile_impact")
 
 				return true
-			end
-		}
-	}
+			end,
+		},
+	},
 }
 
 ProjectileTemplates.get_trajectory_template = function (trajectory_template_name, is_husk)
@@ -609,16 +634,18 @@ ProjectileTemplates.get_impact_template = function (impact_template_name)
 end
 
 function check_for_afro_hit(recent_impacts, num_impacts)
-	local hit_unit, actor_index, hit_actor, node_index = nil
+	local hit_unit, actor_index, hit_actor, node_index
 	local only_hit_afro = true
-	local non_afro_hit_index = nil
+	local non_afro_hit_index
 
 	for i = 1, num_impacts / ProjectileImpactDataIndex.STRIDE do
 		local j = (i - 1) * ProjectileImpactDataIndex.STRIDE
+
 		hit_unit = recent_impacts[j + ProjectileImpactDataIndex.UNIT]
 		actor_index = recent_impacts[j + ProjectileImpactDataIndex.ACTOR_INDEX]
 		hit_actor = Unit.actor(hit_unit, actor_index)
 		node_index = Actor.node(hit_actor)
+
 		local breed = Unit.get_data(hit_unit, "breed")
 
 		if breed then

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/dlcs/woods/woods_death_reactions.lua
+
 local death_reactions = {
 	thorn_wall = {
 		unit = {
@@ -6,6 +8,7 @@ local death_reactions = {
 			end,
 			start = function (unit, context, t, killing_blow, is_server)
 				local door_extension = ScriptUnit.extension(unit, "door_system")
+
 				door_extension.dead = true
 
 				door_extension:update_nav_graphs()
@@ -18,7 +21,7 @@ local death_reactions = {
 			end,
 			update = function (unit, dt, context, t, data)
 				return DeathReactions.IS_DONE
-			end
+			end,
 		},
 		husk = {
 			pre_start = function (unit, context, t, killing_blow)
@@ -33,9 +36,9 @@ local death_reactions = {
 			end,
 			update = function (unit, dt, context, t, data)
 				return DeathReactions.IS_DONE
-			end
-		}
-	}
+			end,
+		},
+	},
 }
 
 return death_reactions

@@ -1,21 +1,31 @@
+﻿-- chunkname: @scripts/unit_extensions/weapons/area_damage/liquid/damage_wave_husk_extension.lua
+
 DamageWaveHuskExtension = class(DamageWaveHuskExtension)
+
 local position_lookup = POSITION_LOOKUP
 
 DamageWaveHuskExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	local world = extension_init_context.world
 	local entity_manager = Managers.state.entity
+
 	self.world = world
 	self.game = Managers.state.network:game()
 	self.unit = unit
 	self.nav_world = entity_manager:system("ai_system"):nav_world()
+
 	local unit_storage = Managers.state.unit_storage
+
 	self.go_id = unit_storage:go_id(unit)
 	self.fx_list = {}
+
 	local buff_system = entity_manager:system("buff_system")
+
 	self.buff_system = buff_system
 	self.source_unit = extension_init_data.source_unit
+
 	local template_name = extension_init_data.damage_wave_template_name
 	local template = DamageWaveTemplates.templates[template_name]
+
 	self.template = template
 	self.fx_name_filled = template.fx_name_filled
 	self.fx_name_running = template.fx_name_running
@@ -94,13 +104,13 @@ DamageWaveHuskExtension.update = function (self, unit, input, dt, context, t)
 		end
 
 		if self._update_func then
-			self:_update_func(unit, pos, t, dt)
+			self._update_func(self, unit, pos, t, dt)
 		end
 	end
 end
 
 DamageWaveHuskExtension.add_damage_wave_fx = function (self, position, rotation, fx_idx, name_idx)
-	local name, config = nil
+	local name, config
 
 	if fx_idx == 0 then
 		name = self.fx_name_filled
@@ -109,16 +119,18 @@ DamageWaveHuskExtension.add_damage_wave_fx = function (self, position, rotation,
 		name = config.names[name_idx]
 	end
 
-	local unit_or_id = nil
+	local unit_or_id
 
 	if fx_idx == 0 or config.spawn_type == "effect" then
 		unit_or_id = World.create_particles(self.world, name, position, rotation)
+
 		local fx_list = self.fx_list
+
 		fx_list[#fx_list + 1] = {
 			id = unit_or_id,
 			position = Vector3Box(position),
 			rotation = QuaternionBox(rotation),
-			index = fx_idx
+			index = fx_idx,
 		}
 	elseif config.spawn_type == "unit" then
 		unit_or_id = World.spawn_unit(self.world, name, position, rotation)
@@ -139,17 +151,19 @@ DamageWaveHuskExtension.set_running_wave = function (self, unit)
 	World.link_particles(world, fx_id, unit, 0, Matrix4x4.identity(), self.particle_arrived_stop_mode)
 
 	self.running_wave_fx_id = fx_id
+
 	local launch_wave_sound = self.launch_wave_sound
 
 	if launch_wave_sound then
 		WwiseUtils.trigger_position_event(world, launch_wave_sound, position)
 	end
 
-	local id, source = nil
+	local id, source
 	local running_wave_sound = self.running_wave_sound
 
 	if running_wave_sound then
 		local id, source = WwiseUtils.trigger_unit_event(world, running_wave_sound, unit)
+
 		self.running_source_id = source
 	end
 
@@ -181,6 +195,7 @@ DamageWaveHuskExtension.set_wave_arrived = function (self, unit)
 	end
 
 	self.running_source_id = nil
+
 	local impact_wave_sound = self.impact_wave_sound
 
 	if impact_wave_sound then
@@ -227,7 +242,7 @@ DamageWaveHuskExtension.debug_render_wave = function (self, t, dt, pos, travel_d
 
 	for i = -half_segments, half_segments - 1 do
 		local size = math.sin(-math.pi + k / segments * math.pi) * self.max_height
-		local p = pos + travel_dir * i / segments * wave_length - size * Vector3(0, 0, 1) - Vector3(0, 0, height * 2)
+		local p = pos + travel_dir * (i / segments) * wave_length - size * Vector3(0, 0, 1) - Vector3(0, 0, height * 2)
 
 		QuickDrawer:circle(p, self.max_height, travel_dir, Colors.get("lime_green"))
 

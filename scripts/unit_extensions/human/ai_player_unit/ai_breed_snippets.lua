@@ -1,6 +1,10 @@
+﻿-- chunkname: @scripts/unit_extensions/human/ai_player_unit/ai_breed_snippets.lua
+
 local unit_get_data = Unit.get_data
 local script_data = script_data
+
 AiBreedSnippets = AiBreedSnippets or {}
+
 local vector3_distance = Vector3.distance
 
 local function set_initial_aggro(unit, blackboard)
@@ -9,7 +13,7 @@ local function set_initial_aggro(unit, blackboard)
 	local breed = blackboard.breed
 	local weights = breed.perception_weights
 	local best_score = 0
-	local best_enemy = nil
+	local best_enemy
 
 	for i = 1, #enemy_player_and_bot_units do
 		local enemy_unit = enemy_player_and_bot_units[i]
@@ -30,6 +34,7 @@ local function set_initial_aggro(unit, blackboard)
 
 	if best_enemy then
 		local aggro_list = blackboard.aggro_list
+
 		aggro_list[best_enemy] = 50
 
 		print("Boss gave ", best_enemy, "initial aggro")
@@ -46,12 +51,13 @@ local function setup_start_angry(unit, blackboard, conflict_director)
 
 		local main_paths = conflict_director.main_path_info.main_paths
 		local _, travel_dist = MainPathUtils.closest_pos_at_main_path(main_paths, POSITION_LOOKUP[unit])
+
 		blackboard.waiting = {
-			next_player_unit_index = 1,
 			awake_on_players_passing = true,
-			view_cone_dot = 1,
+			next_player_unit_index = 1,
 			next_update_time = 0,
-			travel_dist = travel_dist
+			view_cone_dot = 1,
+			travel_dist = travel_dist,
 		}
 	else
 		ai_simple:set_perception(breed.perception, breed.target_selection_angry)
@@ -65,11 +71,13 @@ end
 
 AiBreedSnippets.on_rat_ogre_spawn = function (unit, blackboard)
 	local breed = blackboard.breed
+
 	blackboard.cycle_rage_anim_index = 0
 	blackboard.aggro_list = {}
 	blackboard.fling_skaven_timer = 0
 	blackboard.next_move_check = 0
 	blackboard.is_valid_target_func = GenericStatusExtension.is_ogre_target
+
 	local conflict_director = Managers.state.conflict
 
 	setup_start_angry(unit, blackboard, conflict_director)
@@ -124,6 +132,7 @@ local function stop_stormfiend_firewall_ambience(unit, blackboard)
 	network_transmit:send_rpc_clients("rpc_client_audio_set_global_parameter_with_lerp", parameter_id, 0)
 
 	local group_blackboard = blackboard.group_blackboard
+
 	group_blackboard.firewall_environment_intensity = 0
 end
 
@@ -131,6 +140,7 @@ AiBreedSnippets.on_stormfiend_spawn = function (unit, blackboard)
 	blackboard.aggro_list = {}
 	blackboard.fling_skaven_timer = 0
 	blackboard.next_move_check = 0
+
 	local conflict_director = Managers.state.conflict
 
 	setup_start_angry(unit, blackboard, conflict_director)
@@ -275,7 +285,7 @@ AiBreedSnippets.on_loot_rat_alerted = function (unit, blackboard, alerting_unit,
 
 	if not cooldown_time or cooldown_time < t then
 		local breed = blackboard.breed
-		local dodge_vector, threat_vector = nil
+		local dodge_vector, threat_vector
 
 		if unit == alerting_unit and blackboard.dodge_damage_points > 0 then
 			dodge_vector, threat_vector = LocomotionUtils.on_alerted_dodge(unit, blackboard, alerting_unit, enemy_unit)
@@ -319,14 +329,18 @@ AiBreedSnippets.on_chaos_troll_spawn = function (unit, blackboard)
 	blackboard.displaced_units = {}
 	blackboard.next_move_check = 0
 	blackboard.next_rage_time = 0
+
 	local breed = blackboard.breed
 	local difficulty_rank = Managers.state.difficulty:get_difficulty_rank()
+
 	blackboard.max_health_regen_per_sec = breed.max_health_regen_per_sec[difficulty_rank]
 	blackboard.max_health_regen_time = breed.max_health_regen_time[difficulty_rank]
+
 	local can_start_angry = true
 
 	if ScriptUnit.has_extension(unit, "ai_group_system") then
 		local ai_group_extension = ScriptUnit.extension(unit, "ai_group_system")
+
 		can_start_angry = not ai_group_extension.in_patrol
 	end
 
@@ -374,8 +388,10 @@ AiBreedSnippets.on_chaos_dummy_troll_spawn = function (unit, blackboard)
 	blackboard.can_get_downed = true
 	blackboard.crouch_sticky_timer = 0
 	blackboard.displaced_units = {}
+
 	local breed = blackboard.breed
 	local difficulty_rank = Managers.state.difficulty:get_difficulty_rank()
+
 	blackboard.max_health_regen_per_sec = breed.max_health_regen_per_sec[difficulty_rank]
 	blackboard.max_health_regen_time = breed.max_health_regen_time[difficulty_rank]
 	blackboard.idle_sound_timer = Managers.time:time("game") + 2
@@ -392,6 +408,7 @@ AiBreedSnippets.on_chaos_dummy_troll_update = function (unit, blackboard)
 		audio_system:play_audio_unit_event("Play_enemy_troll_vce_alert", unit)
 
 		blackboard.play_alert = nil
+
 		local network_manager = Managers.state.network
 
 		network_manager:anim_event(unit, "to_combat")
@@ -412,11 +429,13 @@ end
 
 AiBreedSnippets.on_chaos_dummy_sorcerer_spawn = function (unit, blackboard, t)
 	local health_extension = ScriptUnit.extension(unit, "health_system")
+
 	health_extension.is_invincible = true
 end
 
 AiBreedSnippets.on_storm_vermin_champion_spawn = function (unit, blackboard)
 	local breed = blackboard.breed
+
 	blackboard.aggro_list = {}
 	blackboard.next_move_check = 0
 	blackboard.spawned_allies_wave = 0
@@ -454,8 +473,10 @@ AiBreedSnippets.on_storm_vermin_champion_spawn = function (unit, blackboard)
 	Actor.set_scene_query_enabled(actor, false)
 
 	local t = Managers.time:time("game")
+
 	blackboard.intro_timer = t + 10
 	blackboard.is_valid_target_func = GenericStatusExtension.is_lord_target
+
 	local level_analysis = Managers.state.conflict.level_analysis
 	local node_units = level_analysis.generic_ai_node_units.warlord_go_to
 
@@ -465,6 +486,7 @@ AiBreedSnippets.on_storm_vermin_champion_spawn = function (unit, blackboard)
 		for i = 1, #node_units do
 			local node_unit = node_units[i]
 			local pos = Unit.local_position(node_unit, 0)
+
 			spawn_allies_positions[#spawn_allies_positions + 1] = Vector3Box(pos)
 		end
 
@@ -502,7 +524,7 @@ AiBreedSnippets.on_storm_vermin_champion_update = function (unit, blackboard, t,
 	for i, position in ipairs(enemy_player_and_bot_positions) do
 		local player_unit = enemy_player_and_bot_units[i]
 
-		if Vector3.distance(self_pos, position) < range and not ScriptUnit.extension(player_unit, "status_system"):is_disabled() and not ScriptUnit.extension(player_unit, "status_system"):is_invisible() then
+		if range > Vector3.distance(self_pos, position) and not ScriptUnit.extension(player_unit, "status_system"):is_disabled() and not ScriptUnit.extension(player_unit, "status_system"):is_invisible() then
 			num = num + 1
 		end
 	end
@@ -513,14 +535,14 @@ AiBreedSnippets.on_storm_vermin_champion_update = function (unit, blackboard, t,
 		blackboard.surrounding_players_last = t
 	end
 
-	if blackboard.trickle_timer and blackboard.trickle_timer < t and not blackboard.defensive_mode_duration then
+	if blackboard.trickle_timer and t > blackboard.trickle_timer and not blackboard.defensive_mode_duration then
 		local conflict_director = Managers.state.conflict
 
 		if conflict_director:count_units_by_breed("skaven_slave") < 4 then
 			local strictly_not_close_to_players = true
 			local silent = true
 			local composition_type = "stronghold_boss_trickle"
-			local limit_spawners, terror_event_id = nil
+			local limit_spawners, terror_event_id
 			local side_id = side.side_id
 
 			conflict_director.horde_spawner:execute_event_horde(t, terror_event_id, side_id, composition_type, limit_spawners, silent, nil, strictly_not_close_to_players)
@@ -534,7 +556,7 @@ AiBreedSnippets.on_storm_vermin_champion_update = function (unit, blackboard, t,
 	local breed = blackboard.breed
 
 	if blackboard.dual_wield_mode then
-		if blackboard.dual_wield_timer < t and not blackboard.active_node or blackboard.defensive_mode_duration then
+		if t > blackboard.dual_wield_timer and not blackboard.active_node or blackboard.defensive_mode_duration then
 			blackboard.dual_wield_timer = t + 20
 			blackboard.dual_wield_mode = false
 		end
@@ -543,7 +565,9 @@ AiBreedSnippets.on_storm_vermin_champion_update = function (unit, blackboard, t,
 
 		if blackboard.current_phase == 2 and hp < 0.15 then
 			blackboard.current_phase = 3
+
 			local new_run_speed = breed.angry_run_speed
+
 			blackboard.run_speed = new_run_speed
 
 			if not blackboard.run_speed_overridden then
@@ -558,14 +582,14 @@ AiBreedSnippets.on_storm_vermin_champion_update = function (unit, blackboard, t,
 				blackboard.defensive_mode_duration_at_t = t + blackboard.defensive_mode_duration
 			end
 
-			if blackboard.defensive_mode_duration_at_t <= t then
+			if t >= blackboard.defensive_mode_duration_at_t then
 				blackboard.defensive_mode_duration = nil
 				blackboard.defensive_mode_duration_at_t = nil
 			else
 				blackboard.defensive_mode_duration = t - blackboard.defensive_mode_duration_at_t
 				blackboard.dual_wield_mode = false
 			end
-		elseif blackboard.dual_wield_timer < t and not blackboard.active_node then
+		elseif t > blackboard.dual_wield_timer and not blackboard.active_node then
 			blackboard.dual_wield_mode = true
 			blackboard.dual_wield_timer = t + 20
 		end
@@ -635,6 +659,7 @@ AiBreedSnippets.on_chaos_tentacle_despawn = function (unit, blackboard)
 
 	if boss_master_unit and Unit.alive(boss_master_unit) then
 		local boss_blackboard = BLACKBOARDS[boss_master_unit]
+
 		boss_blackboard.num_portals_alive = boss_blackboard.num_portals_alive - 1
 		boss_blackboard.tentacle_portal_units[unit] = nil
 	end
@@ -642,6 +667,7 @@ end
 
 AiBreedSnippets.on_chaos_spawn_spawn = function (unit, blackboard)
 	local breed = blackboard.breed
+
 	blackboard.aggro_list = {}
 	blackboard.fling_skaven_timer = 0
 	blackboard.next_move_check = 0
@@ -651,6 +677,7 @@ AiBreedSnippets.on_chaos_spawn_spawn = function (unit, blackboard)
 	blackboard.grabbed_time = 0
 	blackboard.chaos_spawn_is_throwing = false
 	blackboard.is_valid_target_func = GenericStatusExtension.is_chaos_spawn_target
+
 	local conflict_director = Managers.state.conflict
 
 	setup_start_angry(unit, blackboard, conflict_director)
@@ -689,6 +716,7 @@ end
 
 AiBreedSnippets.on_chaos_vortex_sorcerer_spawn = function (unit, blackboard)
 	local breed = blackboard.breed
+
 	blackboard.max_vortex_units = breed.max_vortex_units
 	blackboard.spell_count = 0
 
@@ -761,6 +789,7 @@ end
 AiBreedSnippets.on_chaos_exalted_sorcerer_spawn = function (unit, blackboard)
 	local t = Managers.time:time("game")
 	local breed = blackboard.breed
+
 	blackboard.max_vortex_units = breed.max_vortex_units
 	blackboard.done_casting_timer = 0
 	blackboard.spawned_allies_wave = 0
@@ -769,148 +798,190 @@ AiBreedSnippets.on_chaos_exalted_sorcerer_spawn = function (unit, blackboard)
 	blackboard.health_extension = ScriptUnit.extension(unit, "health_system")
 	blackboard.num_portals_alive = 0
 	blackboard.tentacle_portal_units = {}
+
 	local available_spells = breed.available_spells
-	local spells = {}
-	local spells_lookup = {}
+	local spells, spells_lookup = {}, {}
 	local physics_world = World.get_data(blackboard.world, "physics_world")
+
 	blackboard.spell_count = 0
-	local spell = {
-		spawn_timer = 3,
-		name = "vortex",
-		physics_world = physics_world,
-		vortex_units = {},
-		queued_vortex = {},
-		vortex_spawn_pos = Vector3Box(),
-		search_func = BTChaosSorcererSkulkApproachAction._update_vortex_search,
-		spawn_func = BTChaosSorcererSummoningAction._spawn_vortex
-	}
-	blackboard.vortex_data = spell
-	spells[#spells + 1] = spell
-	spells_lookup.vortex = spell
-	local spell = {
-		name = "boss_vortex",
-		spawn_timer = 3,
-		physics_world = physics_world,
-		vortex_units = {},
-		queued_vortex = {},
-		vortex_spawn_pos = Vector3Box(),
-		spawn_func = BTChaosSorcererSummoningAction._spawn_boss_vortex
-	}
-	blackboard.boss_vortex_data = spell
-	spells[#spells + 1] = spell
-	spells_lookup.boss_vortex = spell
-	local spell = {
-		name = "plague_wave",
-		plague_wave_timer = t + 10,
-		physics_world = physics_world,
-		target_starting_pos = Vector3Box(),
-		plague_wave_rot = QuaternionBox(),
-		search_func = BTChaosExaltedSorcererSkulkAction.update_plague_wave
-	}
-	blackboard.plague_wave_data = spell
-	spells[#spells + 1] = spell
-	spells_lookup.plague_wave = spell
-	local spell = {
-		name = "tentacle",
-		search_counter = 0,
-		chance_to_look_for_wall_spawn = 0.5,
-		portal_spawn_type = "n/a",
-		portal_search_timer = t + 3,
-		cover_units = {},
-		portal_spawn_pos = Vector3Box(),
-		portal_spawn_rot = QuaternionBox(),
-		physics_world = physics_world,
-		search_func = BTChaosSorcererSkulkApproachAction.update_portal_search,
-		spawn_func = BTChaosSorcererSummoningAction.spawn_portal
-	}
-	blackboard.portal_data = spell
-	spells[#spells + 1] = spell
-	spells_lookup.tentacle = spell
-	local spell = {
-		range = 40,
-		magic_missile = true,
-		magic_missile_speed = 20,
-		true_flight_template_name = "sorcerer_magic_missile",
-		projectile_unit_name = "units/weapons/projectile/magic_missile/magic_missile",
-		name = "magic_missile",
-		launch_angle = 0.7,
-		search_func = BTChaosExaltedSorcererSkulkAction.update_cast_missile,
-		throw_pos = Vector3Box(),
-		target_direction = Vector3Box()
-	}
-	blackboard.magic_missile_data = spell
-	spells[#spells + 1] = spell
-	spells_lookup.magic_missile = spell
-	local spell = {
-		range = 40,
-		magic_missile = true,
-		magic_missile_speed = 15,
-		true_flight_template_name = "sorcerer_strike_missile",
-		projectile_unit_name = "units/weapons/projectile/strike_missile/strike_missile",
-		name = "sorcerer_strike_missile",
-		explosion_template_name = "chaos_strike_missile_impact",
-		launch_angle = 1.25,
-		search_func = BTChaosExaltedSorcererSkulkAction.update_cast_missile,
-		throw_pos = Vector3Box(),
-		target_direction = Vector3Box()
-	}
-	blackboard.sorcerer_strike_missile_data = spell
-	spells[#spells + 1] = spell
-	spells_lookup.sorcerer_strike_missile = spell
-	local spell = {
-		range = 40,
-		name = "magic_missile_ground",
-		magic_missile = true,
-		magic_missile_speed = 20,
-		true_flight_template_name = "sorcerer_magic_missile_ground",
-		projectile_unit_name = "units/weapons/projectile/magic_missile/magic_missile",
-		search_func = BTChaosExaltedSorcererSkulkAction.update_cast_missile,
-		throw_pos = Vector3Box(),
-		target_direction = Vector3Box()
-	}
-	blackboard.magic_missile_ground_data = spell
-	spells[#spells + 1] = spell
-	spells_lookup.magic_missile_ground = spell
-	local spell = {
-		name = "missile_barrage",
-		magic_missile = true,
-		magic_missile_speed = 20,
-		range = 40,
-		search_func = BTChaosExaltedSorcererSkulkAction.update_cast_missile,
-		throw_pos = Vector3Box(),
-		target_direction = Vector3Box()
-	}
-	blackboard.missile_barrage_data = spell
-	spells[#spells + 1] = spell
-	spells_lookup.missile_barrage = spell
-	local spell = {
-		range = 40,
-		name = "seeking_bomb_missile",
-		magic_missile = true,
-		magic_missile_speed = 2.5,
-		true_flight_template_name = "sorcerer_slow_bomb_missile",
-		projectile_unit_name = "units/weapons/projectile/insect_swarm_missile/insect_swarm_missile_01",
-		explosion_template_name = "chaos_slow_bomb_missile",
-		life_time = 15,
-		search_func = BTChaosExaltedSorcererSkulkAction.update_cast_missile,
-		throw_pos = Vector3Box(),
-		target_direction = Vector3Box(),
-		projectile_size = {
-			3,
-			3,
-			3
+
+	do
+		local spell = {
+			name = "vortex",
+			spawn_timer = 3,
+			physics_world = physics_world,
+			vortex_units = {},
+			queued_vortex = {},
+			vortex_spawn_pos = Vector3Box(),
+			search_func = BTChaosSorcererSkulkApproachAction._update_vortex_search,
+			spawn_func = BTChaosSorcererSummoningAction._spawn_vortex,
 		}
-	}
-	blackboard.seeking_bomb_missile_data = spell
-	spells[#spells + 1] = spell
-	spells_lookup.seeking_bomb_missile = spell
-	local spell = {
-		name = "dummy",
-		search_func = BTChaosExaltedSorcererSkulkAction.update_dummy
-	}
-	blackboard.dummy_data = spell
-	spells[#spells + 1] = spell
-	spells_lookup.dummy = spell
+
+		blackboard.vortex_data = spell
+		spells[#spells + 1] = spell
+		spells_lookup.vortex = spell
+	end
+
+	do
+		local spell = {
+			name = "boss_vortex",
+			spawn_timer = 3,
+			physics_world = physics_world,
+			vortex_units = {},
+			queued_vortex = {},
+			vortex_spawn_pos = Vector3Box(),
+			spawn_func = BTChaosSorcererSummoningAction._spawn_boss_vortex,
+		}
+
+		blackboard.boss_vortex_data = spell
+		spells[#spells + 1] = spell
+		spells_lookup.boss_vortex = spell
+	end
+
+	do
+		local spell = {
+			name = "plague_wave",
+			plague_wave_timer = t + 10,
+			physics_world = physics_world,
+			target_starting_pos = Vector3Box(),
+			plague_wave_rot = QuaternionBox(),
+			search_func = BTChaosExaltedSorcererSkulkAction.update_plague_wave,
+		}
+
+		blackboard.plague_wave_data = spell
+		spells[#spells + 1] = spell
+		spells_lookup.plague_wave = spell
+	end
+
+	do
+		local spell = {
+			chance_to_look_for_wall_spawn = 0.5,
+			name = "tentacle",
+			portal_spawn_type = "n/a",
+			search_counter = 0,
+			portal_search_timer = t + 3,
+			cover_units = {},
+			portal_spawn_pos = Vector3Box(),
+			portal_spawn_rot = QuaternionBox(),
+			physics_world = physics_world,
+			search_func = BTChaosSorcererSkulkApproachAction.update_portal_search,
+			spawn_func = BTChaosSorcererSummoningAction.spawn_portal,
+		}
+
+		blackboard.portal_data = spell
+		spells[#spells + 1] = spell
+		spells_lookup.tentacle = spell
+	end
+
+	do
+		local spell = {
+			launch_angle = 0.7,
+			magic_missile = true,
+			magic_missile_speed = 20,
+			name = "magic_missile",
+			projectile_unit_name = "units/weapons/projectile/magic_missile/magic_missile",
+			range = 40,
+			true_flight_template_name = "sorcerer_magic_missile",
+			search_func = BTChaosExaltedSorcererSkulkAction.update_cast_missile,
+			throw_pos = Vector3Box(),
+			target_direction = Vector3Box(),
+		}
+
+		blackboard.magic_missile_data = spell
+		spells[#spells + 1] = spell
+		spells_lookup.magic_missile = spell
+	end
+
+	do
+		local spell = {
+			explosion_template_name = "chaos_strike_missile_impact",
+			launch_angle = 1.25,
+			magic_missile = true,
+			magic_missile_speed = 15,
+			name = "sorcerer_strike_missile",
+			projectile_unit_name = "units/weapons/projectile/strike_missile/strike_missile",
+			range = 40,
+			true_flight_template_name = "sorcerer_strike_missile",
+			search_func = BTChaosExaltedSorcererSkulkAction.update_cast_missile,
+			throw_pos = Vector3Box(),
+			target_direction = Vector3Box(),
+		}
+
+		blackboard.sorcerer_strike_missile_data = spell
+		spells[#spells + 1] = spell
+		spells_lookup.sorcerer_strike_missile = spell
+	end
+
+	do
+		local spell = {
+			magic_missile = true,
+			magic_missile_speed = 20,
+			name = "magic_missile_ground",
+			projectile_unit_name = "units/weapons/projectile/magic_missile/magic_missile",
+			range = 40,
+			true_flight_template_name = "sorcerer_magic_missile_ground",
+			search_func = BTChaosExaltedSorcererSkulkAction.update_cast_missile,
+			throw_pos = Vector3Box(),
+			target_direction = Vector3Box(),
+		}
+
+		blackboard.magic_missile_ground_data = spell
+		spells[#spells + 1] = spell
+		spells_lookup.magic_missile_ground = spell
+	end
+
+	do
+		local spell = {
+			magic_missile = true,
+			magic_missile_speed = 20,
+			name = "missile_barrage",
+			range = 40,
+			search_func = BTChaosExaltedSorcererSkulkAction.update_cast_missile,
+			throw_pos = Vector3Box(),
+			target_direction = Vector3Box(),
+		}
+
+		blackboard.missile_barrage_data = spell
+		spells[#spells + 1] = spell
+		spells_lookup.missile_barrage = spell
+	end
+
+	do
+		local spell = {
+			explosion_template_name = "chaos_slow_bomb_missile",
+			life_time = 15,
+			magic_missile = true,
+			magic_missile_speed = 2.5,
+			name = "seeking_bomb_missile",
+			projectile_unit_name = "units/weapons/projectile/insect_swarm_missile/insect_swarm_missile_01",
+			range = 40,
+			true_flight_template_name = "sorcerer_slow_bomb_missile",
+			search_func = BTChaosExaltedSorcererSkulkAction.update_cast_missile,
+			throw_pos = Vector3Box(),
+			target_direction = Vector3Box(),
+			projectile_size = {
+				3,
+				3,
+				3,
+			},
+		}
+
+		blackboard.seeking_bomb_missile_data = spell
+		spells[#spells + 1] = spell
+		spells_lookup.seeking_bomb_missile = spell
+	end
+
+	do
+		local spell = {
+			name = "dummy",
+			search_func = BTChaosExaltedSorcererSkulkAction.update_dummy,
+		}
+
+		blackboard.dummy_data = spell
+		spells[#spells + 1] = spell
+		spells_lookup.dummy = spell
+	end
+
 	local id_lookup = Managers.state.entity:system("spawner_system")._id_lookup
 	local level_analysis = Managers.state.conflict.level_analysis
 	local center_node_units = level_analysis.generic_ai_node_units.sorcerer_boss_center
@@ -919,6 +990,7 @@ AiBreedSnippets.on_chaos_exalted_sorcerer_spawn = function (unit, blackboard)
 
 	if level_has_boss_arena then
 		local center_marker = center_node_units[1]
+
 		blackboard.in_boss_arena = Vector3.distance(POSITION_LOOKUP[unit], Unit.local_position(center_marker, 0)) < 20
 	else
 		blackboard.in_boss_arena = false
@@ -926,15 +998,17 @@ AiBreedSnippets.on_chaos_exalted_sorcerer_spawn = function (unit, blackboard)
 
 	if blackboard.in_boss_arena then
 		blackboard.spawners = {
-			sorcerer_boss_center = center_node_units
+			sorcerer_boss_center = center_node_units,
 		}
 		blackboard.mode = "setup"
 		blackboard.phase_timer = t + 999
 		blackboard.intro_timer = t + 21
+
 		local center_unit = center_node_units[1]
 		local arena_center_pos = Unit.local_position(center_unit, 0) + Vector3(0, 0, 0.75)
 		local arena_rot = Unit.local_rotation(center_unit, 0)
 		local arena_pose_box = Matrix4x4Box(Matrix4x4.from_quaternion_position(arena_rot, arena_center_pos))
+
 		blackboard.arena_pose_boxed = arena_pose_box
 		blackboard.arena_half_extents = Vector3Box(12, 12, 1)
 
@@ -957,6 +1031,7 @@ AiBreedSnippets.on_chaos_exalted_sorcerer_spawn = function (unit, blackboard)
 
 	blackboard.spells = spells
 	blackboard.spells_lookup = spells_lookup
+
 	local effect_name_id = NetworkLookup.effects["fx/chr_chaos_sorcerer_teleport"]
 	local node_id = 0
 	local rotation_offset = Quaternion.identity()
@@ -998,6 +1073,7 @@ function check_for_recent_attackers(unit, blackboard, t, ranged_range)
 				blackboard.recent_attacker_unit = attacking_unit
 				blackboard.recent_attacker_timer = t + 3
 				blackboard.recent_attacker = true
+
 				local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
 				local event_data = FrameTable.alloc_table()
 
@@ -1010,12 +1086,12 @@ function check_for_recent_attackers(unit, blackboard, t, ranged_range)
 			end
 		end
 	elseif blackboard.recent_attacker then
-		if blackboard.recent_attacker_timer < t then
+		if t > blackboard.recent_attacker_timer then
 			blackboard.recent_attacker_unit = nil
 			blackboard.recent_attacker_timer = math.huge
 			blackboard.recent_attacker = false
 		end
-	elseif blackboard.recent_melee_attacker and blackboard.recent_melee_attacker_timer < t then
+	elseif blackboard.recent_melee_attacker and t > blackboard.recent_melee_attacker_timer then
 		blackboard.recent_melee_attacker_unit = nil
 		blackboard.recent_melee_attacker_timer = math.huge
 		blackboard.recent_melee_attacker = false
@@ -1044,22 +1120,23 @@ AiBreedSnippets.on_chaos_exalted_sorcerer_update = function (unit, blackboard, t
 
 	local phase = blackboard.phase
 	local mode = blackboard.mode
+
 	blackboard.can_spawn_portals = blackboard.num_portals_alive < 1
 
 	if mode == "defensive" then
 		if phase == "defensive_completed" then
 			blackboard.mode = "offensive"
 			blackboard.phase_timer = t + 20
-		elseif blackboard.phase_timer < t then
+		elseif t > blackboard.phase_timer then
 			blackboard.phase = "defensive_ends"
 		end
 	elseif mode == "offensive" then
-		if blackboard.phase_timer < t then
+		if t > blackboard.phase_timer then
 			blackboard.mode = "defensive"
 			blackboard.phase = "defensive_starts"
 			blackboard.phase_timer = t + 20
 		end
-	elseif blackboard.phase_timer < t then
+	elseif t > blackboard.phase_timer then
 		blackboard.mode = "defensive"
 		blackboard.phase = "defensive_starts"
 		blackboard.phase_timer = t + 20
@@ -1071,6 +1148,7 @@ AiBreedSnippets.on_chaos_exalted_sorcerer_update = function (unit, blackboard, t
 		local height = 1
 		local half_height = height * 0.5
 		local size = Vector3(radius, half_height, radius)
+
 		bot_threat_position = bot_threat_position - Vector3.up() * half_height
 
 		Managers.state.entity:system("ai_bot_group_system"):aoe_threat_created(bot_threat_position, "cylinder", size, nil, 1)
@@ -1094,7 +1172,7 @@ AiBreedSnippets.reward_boss_kill_loot = function (unit, blackboard)
 	local position = POSITION_LOOKUP[unit]
 	local below = 1
 	local above = 1
-	local wanted_drop_position = nil
+	local wanted_drop_position
 	local is_on_navmesh, altitude = GwNavQueries.triangle_from_position(nav_world, position, above, below)
 
 	if is_on_navmesh then
@@ -1103,10 +1181,12 @@ AiBreedSnippets.reward_boss_kill_loot = function (unit, blackboard)
 	else
 		local horizontal_limit = 2
 		local distance_from_nav_border = 0.05
+
 		wanted_drop_position = GwNavQueries.inside_position_from_outside_position(nav_world, position, above, below, horizontal_limit, distance_from_nav_border)
 	end
 
 	wanted_drop_position = wanted_drop_position or position
+
 	local breed = Unit.get_data(unit, "breed")
 	local breed_name = breed and breed.name
 	local extension_init_data = {
@@ -1114,8 +1194,8 @@ AiBreedSnippets.reward_boss_kill_loot = function (unit, blackboard)
 			has_physics = true,
 			spawn_type = "loot",
 			pickup_name = pickup_name,
-			dropped_by_breed = breed_name
-		}
+			dropped_by_breed = breed_name,
+		},
 	}
 	local pickup_settings = AllPickups[pickup_name]
 	local unit_name = pickup_settings.unit_name
@@ -1144,8 +1224,8 @@ AiBreedSnippets.drop_loot = function (num_die, pos, has_physics, unit)
 				spawn_type = "loot",
 				pickup_name = pickup_name,
 				has_physics = has_physics,
-				dropped_by_breed = breed_name
-			}
+				dropped_by_breed = breed_name,
+			},
 		}
 		local pickup_settings = AllPickups[pickup_name]
 		local unit_name = pickup_settings.unit_name
@@ -1187,6 +1267,7 @@ end
 AiBreedSnippets.on_chaos_exalted_champion_spawn = function (unit, blackboard)
 	local t = Managers.time:time("game")
 	local breed = blackboard.breed
+
 	blackboard.aggro_list = {}
 	blackboard.next_move_check = 0
 	blackboard.spawned_allies_wave = 0
@@ -1210,12 +1291,14 @@ AiBreedSnippets.on_chaos_exalted_champion_spawn = function (unit, blackboard)
 	blackboard.cheer_timer = t + math.random(15, 30)
 	blackboard.walla_sync_timer = t + 2
 	blackboard.ray_can_go_update_time = t + 0.5
+
 	local level_analysis = Managers.state.conflict.level_analysis
 	local node_units = level_analysis.generic_ai_node_units.chaos_exalted_defensive_move_to
 
 	if node_units then
 		local node_unit = node_units[1]
 		local pos = Unit.local_position(node_unit, 0)
+
 		blackboard.override_spawn_allies_call_position = Vector3Box(pos)
 	end
 
@@ -1226,6 +1309,7 @@ end
 AiBreedSnippets.on_chaos_exalted_champion_norsca_spawn = function (unit, blackboard)
 	local t = Managers.time:time("game")
 	local breed = blackboard.breed
+
 	blackboard.aggro_list = {}
 	blackboard.next_move_check = 0
 	blackboard.current_phase = 1
@@ -1245,6 +1329,7 @@ AiBreedSnippets.on_chaos_exalted_champion_norsca_spawn = function (unit, blackbo
 	blackboard.is_angry = true
 	blackboard.ray_can_go_update_time = t + 0.5
 	blackboard.is_valid_target_func = GenericStatusExtension.is_lord_target
+
 	local enemy_package_loader = Managers.level_transition_handler.enemy_package_loader
 	local transform_action_data = BreedActions.chaos_exalted_champion.transform
 	local transform_breed_name = transform_action_data.wanted_breed_transform
@@ -1268,7 +1353,7 @@ AiBreedSnippets.on_chaos_exalted_champion_update = function (unit, blackboard, t
 	for i, position in ipairs(enemy_player_and_bot_positions) do
 		local player_unit = enemy_player_and_bot_units[i]
 
-		if Vector3.distance(self_pos, position) < range and not ScriptUnit.extension(player_unit, "status_system"):is_disabled() and not ScriptUnit.extension(player_unit, "status_system"):is_invisible() then
+		if range > Vector3.distance(self_pos, position) and not ScriptUnit.extension(player_unit, "status_system"):is_disabled() and not ScriptUnit.extension(player_unit, "status_system"):is_invisible() then
 			num = num + 1
 		end
 
@@ -1276,6 +1361,7 @@ AiBreedSnippets.on_chaos_exalted_champion_update = function (unit, blackboard, t
 			player_average_hp = player_average_hp - 1
 		else
 			local player_hp = ScriptUnit.extension(player_unit, "health_system"):current_health_percent()
+
 			player_average_hp = player_average_hp + player_hp
 		end
 	end
@@ -1287,10 +1373,12 @@ AiBreedSnippets.on_chaos_exalted_champion_update = function (unit, blackboard, t
 	end
 
 	player_average_hp = player_average_hp / 4
+
 	local hp = ScriptUnit.extension(unit, "health_system"):current_health_percent()
 
 	if blackboard.current_phase == 1 and hp < 0.75 then
 		local new_run_speed = breed.angry_run_speed
+
 		blackboard.run_speed = new_run_speed
 
 		if not blackboard.run_speed_overridden then
@@ -1319,15 +1407,16 @@ AiBreedSnippets.on_chaos_exalted_champion_update = function (unit, blackboard, t
 		end
 	end
 
-	if hp > 0.05 and blackboard.trickle_timer and blackboard.trickle_timer < t and not blackboard.defensive_mode_duration then
+	if hp > 0.05 and blackboard.trickle_timer and t > blackboard.trickle_timer and not blackboard.defensive_mode_duration then
 		local timer = hp * 15
+
 		timer = math.max(timer, 5)
 
 		if conflict_director:count_units_by_breed("chaos_marauder") < 3 then
 			local strictly_not_close_to_players = true
 			local silent = true
 			local composition_type = "warcamp_boss_event_trickle"
-			local limit_spawners = nil
+			local limit_spawners
 			local terror_event_id = "warcamp_boss_minions"
 			local side_id = side.side_id
 
@@ -1345,9 +1434,10 @@ AiBreedSnippets.on_chaos_exalted_champion_update = function (unit, blackboard, t
 
 	AiBreedSnippets.update_exalted_champion_cheer_state(unit, blackboard, t, dt, player_average_hp)
 
-	if blackboard.ray_can_go_update_time < t and Unit.alive(blackboard.target_unit) then
+	if t > blackboard.ray_can_go_update_time and Unit.alive(blackboard.target_unit) then
 		local nav_world = blackboard.nav_world
 		local target_position = POSITION_LOOKUP[blackboard.target_unit]
+
 		blackboard.ray_can_go_to_target = LocomotionUtils.ray_can_go_on_mesh(nav_world, POSITION_LOOKUP[unit], target_position, nil, 1, 1)
 		blackboard.ray_can_go_update_time = t + 0.5
 	end
@@ -1361,15 +1451,19 @@ AiBreedSnippets.update_exalted_champion_cheer_state = function (unit, blackboard
 	local wwise_world = Managers.world:wwise_world(blackboard.world)
 	local hp_diff = (hp - player_average_hp) * 5
 	local walla_value = math.min(hp_diff + 1, 5)
+
 	walla_value = math.max(walla_value, 0)
+
 	local cheer_value = math.min(walla_value, 4)
+
 	cheer_value = math.ceil(cheer_value)
 
-	if blackboard.cheer_timer < t then
+	if t > blackboard.cheer_timer then
 		WwiseWorld.set_global_parameter(wwise_world, "champion_crowd_voices", 0)
 		audio_system:set_global_parameter_with_lerp("champion_crowd_voices", cheer_value)
 
 		blackboard.cheer_timer = t + math.random(10, 25)
+
 		local parameter_id = NetworkLookup.global_parameter_names.champion_crowd_voices
 
 		network_transmit:send_rpc_clients("rpc_client_audio_set_global_parameter", parameter_id, cheer_value)
@@ -1377,7 +1471,7 @@ AiBreedSnippets.update_exalted_champion_cheer_state = function (unit, blackboard
 
 	audio_system:set_global_parameter("champion_crowd_voices_walla", walla_value)
 
-	if blackboard.walla_sync_timer < t then
+	if t > blackboard.walla_sync_timer then
 		local parameter_id = NetworkLookup.global_parameter_names.champion_crowd_voices_walla
 
 		network_transmit:send_rpc_clients("rpc_client_audio_set_global_parameter", parameter_id, walla_value)
@@ -1399,9 +1493,10 @@ AiBreedSnippets.on_chaos_exalted_champion_norsca_update = function (unit, blackb
 		AiUtils.push_intersecting_players(unit, unit, blackboard.displaced_units, breed.displace_players_data, t, dt)
 	end
 
-	if blackboard.ray_can_go_update_time < t and blackboard.target_unit then
+	if t > blackboard.ray_can_go_update_time and blackboard.target_unit then
 		local nav_world = blackboard.nav_world
 		local target_position = POSITION_LOOKUP[blackboard.target_unit]
+
 		blackboard.ray_can_go_to_target = LocomotionUtils.ray_can_go_on_mesh(nav_world, POSITION_LOOKUP[unit], target_position, nil, 1, 1)
 		blackboard.ray_can_go_update_time = t + 0.5
 	end
@@ -1418,6 +1513,7 @@ AiBreedSnippets.on_chaos_exalted_champion_death = function (unit, blackboard)
 	WwiseWorld.set_global_parameter(wwise_world, "champion_crowd_voices", 1)
 
 	blackboard.override_spawn_allies_call_position = nil
+
 	local t = Managers.time:time("game")
 
 	Managers.state.conflict.specials_pacing:delay_spawning(t, 120, 20, true)
@@ -1458,8 +1554,11 @@ AiBreedSnippets.on_stormfiend_boss_spawn = function (unit, blackboard)
 	AiBreedSnippets.on_stormfiend_spawn(unit, blackboard)
 
 	local hp = ScriptUnit.extension(blackboard.unit, "health_system"):current_health_percent()
+
 	blackboard.hp_at_mounted = hp
+
 	local health_extension = ScriptUnit.extension(unit, "health_system")
+
 	health_extension.is_invincible = true
 	blackboard.current_phase = 1
 end
@@ -1478,7 +1577,7 @@ AiBreedSnippets.on_stormfiend_boss_update = function (unit, blackboard)
 	for i, position in ipairs(enemy_player_and_bot_positions) do
 		local player_unit = enemy_player_and_bot_units[i]
 
-		if Vector3.distance(self_pos, position) < range and not ScriptUnit.extension(player_unit, "status_system"):is_disabled() then
+		if range > Vector3.distance(self_pos, position) and not ScriptUnit.extension(player_unit, "status_system"):is_disabled() then
 			num = num + 1
 		end
 	end
@@ -1505,9 +1604,11 @@ AiBreedSnippets.on_stormfiend_boss_dismount = function (unit, blackboard)
 		network_manager:anim_event_with_variable_float(grey_seer_unit, "stagger_weakspot_fall_off", "stagger_scale", 1.2)
 
 		local t = Managers.time:time("game")
+
 		mounted_data.knocked_off_mounted_timer = t + 30
 		grey_seer_blackboard.stagger_immune_time = t + 5
 		blackboard.linked_unit = nil
+
 		local game = Managers.state.network:game()
 		local go_id = Managers.state.unit_storage:go_id(unit)
 		local target_go_id = Managers.state.unit_storage:go_id(grey_seer_unit)
@@ -1522,6 +1623,7 @@ AiBreedSnippets.on_grey_seer_spawn = function (unit, blackboard)
 	local breed = blackboard.breed
 	local t = Managers.time:time("game")
 	local physics_world = World.get_data(blackboard.world, "physics_world")
+
 	blackboard.aggro_list = {}
 
 	if Managers.state.difficulty:get_difficulty_rank() >= 2 then
@@ -1531,27 +1633,30 @@ AiBreedSnippets.on_grey_seer_spawn = function (unit, blackboard)
 	end
 
 	local spell = {
-		range = 40,
-		name = "magic_missile",
+		explosion_template_name = "grey_seer_warp_lightning_impact",
 		magic_missile = true,
 		magic_missile_speed = 20,
-		true_flight_template_name = "sorcerer_magic_missile",
+		name = "magic_missile",
 		projectile_unit_name = "units/weapons/projectile/warp_lightning_bolt/warp_lightning_bolt",
+		range = 40,
 		read_from_missile_data = true,
-		explosion_template_name = "grey_seer_warp_lightning_impact",
+		true_flight_template_name = "sorcerer_magic_missile",
 		search_func = BTChaosExaltedSorcererSkulkAction.update_cast_missile,
 		throw_pos = Vector3Box(),
-		target_direction = Vector3Box()
+		target_direction = Vector3Box(),
 	}
+
 	blackboard.magic_missile_data = spell
+
 	local spell = {
 		name = "plague_wave",
 		plague_wave_timer = t + 10,
 		physics_world = physics_world,
 		target_starting_pos = Vector3Box(),
 		plague_wave_rot = QuaternionBox(),
-		search_func = BTChaosExaltedSorcererSkulkAction.update_plague_wave
+		search_func = BTChaosExaltedSorcererSkulkAction.update_plague_wave,
 	}
+
 	blackboard.plague_wave_data = spell
 	blackboard.spell_count = 0
 	blackboard.phase = "magic_missile"
@@ -1566,11 +1671,13 @@ AiBreedSnippets.on_grey_seer_spawn = function (unit, blackboard)
 	blackboard.intro_timer = t + 15
 	blackboard.current_hit_reaction_type = "mounted"
 	blackboard.damage_wave_template_name = "vermintide"
+
 	local conflict_director = Managers.state.conflict
 
 	conflict_director:add_unit_to_bosses(unit)
 
 	blackboard.is_valid_target_func = GenericStatusExtension.is_lord_target
+
 	local level_analysis = Managers.state.conflict.level_analysis
 	local node_units = level_analysis.generic_ai_node_units.grey_seer_death_sequence
 
@@ -1580,6 +1687,7 @@ AiBreedSnippets.on_grey_seer_spawn = function (unit, blackboard)
 		for i = 1, #node_units do
 			local node_unit = node_units[i]
 			local pos = Unit.local_position(node_unit, 0)
+
 			death_sequence_positions[#death_sequence_positions + 1] = Vector3Box(pos)
 		end
 
@@ -1596,6 +1704,7 @@ AiBreedSnippets.on_grey_seer_spawn = function (unit, blackboard)
 		for i = 1, #node_units do
 			local node_unit = node_units[i]
 			local pos = Unit.local_position(node_unit, 0)
+
 			defensive_teleport_positions[#defensive_teleport_positions + 1] = Vector3Box(pos)
 		end
 
@@ -1612,6 +1721,7 @@ AiBreedSnippets.on_grey_seer_spawn = function (unit, blackboard)
 		for i = 1, #node_units do
 			local node_unit = node_units[i]
 			local pos = Unit.local_position(node_unit, 0)
+
 			call_stormfiend_positions[#call_stormfiend_positions + 1] = Vector3Box(pos)
 		end
 
@@ -1642,16 +1752,18 @@ AiBreedSnippets.on_grey_seer_update = function (unit, blackboard, t)
 
 	if blackboard.current_phase ~= 5 and blackboard.death_sequence then
 		blackboard.current_phase = 5
+
 		local event_data = FrameTable.alloc_table()
 
 		dialogue_input:trigger_networked_dialogue_event("egs_death_scene", event_data)
 
 		blackboard.face_player_when_teleporting = true
 		blackboard.death_sequence = nil
+
 		local strictly_not_close_to_players = true
 		local silent = true
 		local composition_type = "skittergate_grey_seer_trickle"
-		local limit_spawners, terror_event_id = nil
+		local limit_spawners, terror_event_id
 		local conflict_director = Managers.state.conflict
 		local side = blackboard.side
 		local side_id = side.side_id
@@ -1679,6 +1791,7 @@ AiBreedSnippets.on_grey_seer_update = function (unit, blackboard, t)
 
 	if blackboard.unlink_unit then
 		blackboard.unlink_unit = nil
+
 		local mount_blackboard = mount_unit and BLACKBOARDS[mount_unit]
 
 		if mount_blackboard then
@@ -1688,6 +1801,7 @@ AiBreedSnippets.on_grey_seer_update = function (unit, blackboard, t)
 		blackboard.quick_teleport_timer = t + 10
 		blackboard.quick_teleport = nil
 		blackboard.hp_at_knocked_off = hp
+
 		local game = Managers.state.network:game()
 		local mount_go_id = Managers.state.unit_storage:go_id(mount_unit)
 
@@ -1704,13 +1818,14 @@ AiBreedSnippets.on_grey_seer_update = function (unit, blackboard, t)
 
 	if blackboard.knocked_off_mount and HEALTH_ALIVE[mount_unit] then
 		local mount_blackboard = BLACKBOARDS[mount_unit]
-		local mounted_timer_finished = mounted_data.knocked_off_mounted_timer and mounted_data.knocked_off_mounted_timer <= t
+		local mounted_timer_finished = mounted_data.knocked_off_mounted_timer and t >= mounted_data.knocked_off_mounted_timer
 		local should_call_stormfiend = not blackboard.call_stormfiend and not mount_blackboard.intro_rage and mounted_timer_finished and not mount_blackboard.goal_position and not mount_blackboard.anim_cb_move
 
 		if should_call_stormfiend then
 			blackboard.call_stormfiend = true
 		elseif mounted_timer_finished then
 			blackboard.about_to_mount = true
+
 			local mount_unit_position = POSITION_LOOKUP[mount_unit]
 			local distance_to_goal = Vector3.distance(position, mount_unit_position)
 
@@ -1721,14 +1836,16 @@ AiBreedSnippets.on_grey_seer_update = function (unit, blackboard, t)
 				blackboard.about_to_mount = nil
 				blackboard.call_stormfiend = nil
 				mount_blackboard.should_mount_unit = true
+
 				local health_extension = ScriptUnit.extension(mount_unit, "health_system")
 				local mount_hp = health_extension:current_health_percent()
+
 				mount_blackboard.hp_at_mounted = mount_hp
 			end
 		end
 	end
 
-	if blackboard.trickle_timer and blackboard.trickle_timer < t and not blackboard.defensive_mode_duration and current_phase < 4 then
+	if blackboard.trickle_timer and t > blackboard.trickle_timer and not blackboard.defensive_mode_duration and current_phase < 4 then
 		local conflict_director = Managers.state.conflict
 		local timer = hp * 12
 
@@ -1740,7 +1857,7 @@ AiBreedSnippets.on_grey_seer_update = function (unit, blackboard, t)
 			local strictly_not_close_to_players = true
 			local silent = true
 			local composition_type = "skittergate_grey_seer_trickle"
-			local limit_spawners, terror_event_id = nil
+			local limit_spawners, terror_event_id
 			local side = blackboard.side
 			local side_id = side.side_id
 
@@ -1758,6 +1875,7 @@ AiBreedSnippets.on_grey_seer_update = function (unit, blackboard, t)
 		local height = 1
 		local half_height = height * 0.5
 		local size = Vector3(radius, half_height, radius)
+
 		bot_threat_position = bot_threat_position - Vector3.up() * half_height
 
 		Managers.state.entity:system("ai_bot_group_system"):aoe_threat_created(bot_threat_position, "cylinder", size, nil, 1)
@@ -1794,6 +1912,7 @@ end
 
 AiBreedSnippets.on_gutter_runner_spawn = function (unit, blackboard)
 	local t = Managers.time:time("game")
+
 	blackboard.initial_pounce_timer = t + math.random(2, 3)
 
 	Managers.state.entity:system("surrounding_aware_system"):add_system_event(unit, "heard_enemy", DialogueSettings.enemies_distant_distance, "enemy_tag", "skaven_gutter_runner")
@@ -1810,35 +1929,43 @@ AiBreedSnippets.update_enemy_sighting_within_commander_sticky = function (blackb
 
 		if blackboard.override_target_selection_name or blackboard.ability_spawned then
 			within_commander_range = true
-		elseif HEALTH_ALIVE[blackboard.commander_target] then
+
+			break
+		end
+
+		if HEALTH_ALIVE[blackboard.commander_target] then
 			within_commander_range = true
-		else
-			blackboard.commander_target = nil
 
-			if blackboard.stick_to_enemy_t then
-				local t = Managers.time:time("game")
+			break
+		end
 
-				if t < blackboard.stick_to_enemy_t then
-					within_commander_range = true
+		blackboard.commander_target = nil
 
-					break
-				else
-					blackboard.stick_to_enemy_t = nil
-				end
-			end
+		if blackboard.stick_to_enemy_t then
+			local t = Managers.time:time("game")
 
-			if blackboard.attack_token or blackboard.keep_target then
+			if t < blackboard.stick_to_enemy_t then
 				within_commander_range = true
-			else
-				local detection_source_pos = blackboard.detection_source_pos:unbox()
-				local distance_sq = Vector3.distance_squared(detection_source_pos, POSITION_LOOKUP[blackboard.target_unit])
-				local padding = 1
-				local detection_radius = blackboard.detection_radius + padding
 
-				if distance_sq < detection_radius * detection_radius then
-					within_commander_range = true
-				end
+				break
+			else
+				blackboard.stick_to_enemy_t = nil
 			end
+		end
+
+		if blackboard.attack_token or blackboard.keep_target then
+			within_commander_range = true
+
+			break
+		end
+
+		local detection_source_pos = blackboard.detection_source_pos:unbox()
+		local distance_sq = Vector3.distance_squared(detection_source_pos, POSITION_LOOKUP[blackboard.target_unit])
+		local padding = 1
+		local detection_radius = blackboard.detection_radius + padding
+
+		if distance_sq < detection_radius * detection_radius then
+			within_commander_range = true
 		end
 	until true
 
@@ -1851,7 +1978,9 @@ AiBreedSnippets.update_enemy_sighting_within_commander_sticky = function (blackb
 
 	if commanded_aggro_sound then
 		local t = Managers.time:time("game")
+
 		blackboard.last_in_combat_t = blackboard.last_in_combat_t or t
+
 		local required_time_out_of_combat = 2
 
 		if blackboard.target_unit and blackboard.command_state ~= CommandStates.Attacking and t > blackboard.last_in_combat_t + required_time_out_of_combat then

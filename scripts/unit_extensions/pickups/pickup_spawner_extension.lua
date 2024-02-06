@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/pickups/pickup_spawner_extension.lua
+
 PickupSpawnerExtension = class(PickupSpawnerExtension)
 
 PickupSpawnerExtension.init = function (self, extension_init_context, unit, extension_init_data)

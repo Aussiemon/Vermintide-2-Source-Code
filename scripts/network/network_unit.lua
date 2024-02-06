@@ -1,5 +1,8 @@
+﻿-- chunkname: @scripts/network/network_unit.lua
+
 NetworkUnit = NetworkUnit or {}
 NetworkUnitData = NetworkUnitData or {}
+
 local unit_network_data = NetworkUnitData
 
 NetworkUnit.reset_unit_data = function ()
@@ -23,6 +26,7 @@ NetworkUnit.reset_unit = function (unit)
 	assert(unit_network_data[unit] ~= nil)
 
 	local unit_data = unit_network_data[unit]
+
 	unit_data.go_type = nil
 	unit_data.go_id = nil
 	unit_data.owner = nil

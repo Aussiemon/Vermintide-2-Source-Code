@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/status_effect/status_effect_templates.lua
+
 StatusEffectTemplates = {}
 
 local function is_bot(unit)
@@ -27,9 +29,7 @@ local base_effect = {
 			local attach_unit = unit
 			local cosmetic_extension = ScriptUnit.has_extension(unit, "cosmetic_system")
 
-			if cosmetic_extension then
-				attach_unit = cosmetic_extension:get_third_person_mesh_unit() or attach_unit
-			end
+			attach_unit = cosmetic_extension and cosmetic_extension:get_third_person_mesh_unit() or attach_unit
 
 			local material_variable = status_template.unit_material_variable
 
@@ -38,8 +38,10 @@ local base_effect = {
 			end
 
 			local particle_id = ScriptWorld.create_particles_linked(world, vfx, attach_unit, node, "destroy")
+
 			apply_data.particle_id = particle_id
 			apply_data.attach_unit = attach_unit
+
 			local particle_material_variable = status_template.particle_material_variable
 
 			if status_template.particle_material_variable then
@@ -162,8 +164,9 @@ local base_effect = {
 				fp_extension:play_hud_sound_event(remove_hud_sound)
 			end
 		end
-	end
+	end,
 }
+
 StatusEffectTemplates.burning = table.clone(base_effect)
 StatusEffectTemplates.burning.link_object = "j_hips"
 StatusEffectTemplates.burning.unit_material_variable = {
@@ -171,29 +174,29 @@ StatusEffectTemplates.burning.unit_material_variable = {
 	value = {
 		7,
 		1,
-		0.02
-	}
+		0.02,
+	},
 }
 StatusEffectTemplates.burning.death_unit_material_variable = {
 	variable_name = "dissolve_emissive",
 	value = {
 		7,
 		1,
-		0.02
-	}
+		0.02,
+	},
 }
 StatusEffectTemplates.burning.particle_material_variable = {
-	variable_name = "remap_index",
+	cloud_name = "fire",
 	value = 0,
-	cloud_name = "fire"
+	variable_name = "remap_index",
 }
 StatusEffectTemplates.burning.sfx = "Play_enemy_on_fire_loop"
 StatusEffectTemplates.burning.stop_sfx = "Stop_enemy_on_fire_loop"
 StatusEffectTemplates.burning.death_flow_event = "burn_death"
 StatusEffectTemplates.burning.particle_by_category = {
-	small = "fx/chr_impact_fire_small_remap",
+	large = "fx/chr_impact_fire_large_remap",
 	medium = "fx/chr_impact_fire_medium_remap",
-	large = "fx/chr_impact_fire_large_remap"
+	small = "fx/chr_impact_fire_small_remap",
 }
 StatusEffectTemplates.burning_death_critical = table.clone(StatusEffectTemplates.burning)
 StatusEffectTemplates.burning_death_critical.default_timed_duration = 2
@@ -212,6 +215,7 @@ StatusEffectTemplates.burning_death_critical.on_decrement = function (unit, reas
 	end
 
 	apply_data.burning_death_decremented = true
+
 	local breed = Unit.get_data(unit, "breed")
 	local effect_settings = breed and breed.status_effect_settings
 
@@ -244,12 +248,12 @@ end
 
 StatusEffectTemplates.burning_warpfire = table.clone(StatusEffectTemplates.burning)
 StatusEffectTemplates.burning_warpfire.particle_by_category = {
-	small = "fx/chr_impact_fire_small_remap"
+	small = "fx/chr_impact_fire_small_remap",
 }
 StatusEffectTemplates.burning_warpfire.unit_material_variable.value = {
 	2,
 	5,
-	0.02
+	0.02,
 }
 StatusEffectTemplates.burning_warpfire.death_unit_material_variable = nil
 StatusEffectTemplates.burning_warpfire.particle_material_variable.value = 2
@@ -257,7 +261,7 @@ StatusEffectTemplates.burning_warpfire_death_critical = table.clone(StatusEffect
 StatusEffectTemplates.burning_warpfire_death_critical.unit_material_variable.value = {
 	2,
 	5,
-	0.02
+	0.02,
 }
 StatusEffectTemplates.burning_warpfire_death_critical.death_unit_material_variable = nil
 StatusEffectTemplates.burning_warpfire_death_critical.particle_material_variable.value = 2
@@ -265,7 +269,7 @@ StatusEffectTemplates.burning_elven_magic = table.clone(StatusEffectTemplates.bu
 StatusEffectTemplates.burning_elven_magic.unit_material_variable.value = {
 	0.22,
 	0.2,
-	3
+	3,
 }
 StatusEffectTemplates.burning_elven_magic.death_unit_material_variable = nil
 StatusEffectTemplates.burning_elven_magic.particle_material_variable.value = 3
@@ -273,7 +277,7 @@ StatusEffectTemplates.burning_elven_magic_death_critical = table.clone(StatusEff
 StatusEffectTemplates.burning_elven_magic_death_critical.unit_material_variable.value = {
 	0.22,
 	0.2,
-	3
+	3,
 }
 StatusEffectTemplates.burning_elven_magic_death_critical.death_unit_material_variable = nil
 StatusEffectTemplates.burning_elven_magic_death_critical.particle_material_variable.value = 3
@@ -281,7 +285,7 @@ StatusEffectTemplates.burning_balefire = table.clone(StatusEffectTemplates.burni
 StatusEffectTemplates.burning_balefire.unit_material_variable.value = {
 	0.02,
 	5,
-	3
+	3,
 }
 StatusEffectTemplates.burning_balefire.death_unit_material_variable = nil
 StatusEffectTemplates.burning_balefire.particle_material_variable.value = 1
@@ -289,14 +293,14 @@ StatusEffectTemplates.burning_balefire_death_critical = table.clone(StatusEffect
 StatusEffectTemplates.burning_balefire_death_critical.unit_material_variable.value = {
 	0.02,
 	5,
-	3
+	3,
 }
 StatusEffectTemplates.burning_balefire_death_critical.death_unit_material_variable = nil
 StatusEffectTemplates.burning_balefire_death_critical.particle_material_variable.value = 1
 StatusEffectTemplates.poisoned = table.clone(base_effect)
 StatusEffectTemplates.poisoned.particle_by_category = {
+	medium = "fx/chr_impact_poison_medium",
 	small = "fx/chr_impact_poison_small",
-	medium = "fx/chr_impact_poison_medium"
 }
 StatusEffectTemplates.poisoned.link_object = "root_point"
 StatusEffectTemplates.invis_ranger = table.clone(base_effect)
@@ -306,9 +310,11 @@ StatusEffectTemplates.invis_ranger.mood = "skill_ranger"
 StatusEffectTemplates.invis_ranger.hud_sound = "Play_career_ability_bardin_ranger_loop"
 StatusEffectTemplates.invis_ranger.remove_hud_sound = "Stop_career_ability_bardin_ranger_loop"
 StatusEffectTemplates.invis_ranger.career_state = "bardin_activate_ranger"
+
 local names = table.keys(StatusEffectTemplates)
+
 StatusEffectNames = table.enum(unpack(names))
 StatusEffectBalefireOverrides = {
 	[StatusEffectNames.burning] = StatusEffectNames.burning_balefire,
-	[StatusEffectNames.burning_death_critical] = StatusEffectNames.burning_balefire_death_critical
+	[StatusEffectNames.burning_death_critical] = StatusEffectNames.burning_balefire_death_critical,
 }

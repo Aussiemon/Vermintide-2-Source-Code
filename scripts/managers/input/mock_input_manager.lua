@@ -1,16 +1,18 @@
+﻿-- chunkname: @scripts/managers/input/mock_input_manager.lua
+
 MockInputService = class(MockInputService)
 
 MockInputService.init = function (self)
 	self._cursor_position = {
 		-100000,
 		-100000,
-		-100000
+		-100000,
 	}
 end
 
 local KEYS = {
 	left_hold = true,
-	left_press = true
+	left_press = true,
 }
 
 MockInputService.get = function (self, key)

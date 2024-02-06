@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/end_screens/deus_victory_end_screen_ui.lua
+
 require("scripts/helpers/deus_power_up_utils")
 require("scripts/ui/dlc_morris/views/end_screen/deus_journey_presentation_ui")
 require("scripts/ui/views/end_screens/base_end_screen_ui")
@@ -5,9 +7,10 @@ require("scripts/ui/views/end_screens/base_end_screen_ui")
 local definitions = local_require("scripts/ui/views/end_screens/deus_victory_end_screen_ui_definitions")
 local states = {
 	DONE = "DONE",
+	PRESENTING_JOURNEY = "PRESENTING_JOURNEY",
 	WAITING_TO_START = "WAITING_TO_START",
-	PRESENTING_JOURNEY = "PRESENTING_JOURNEY"
 }
+
 DeusVictoryEndScreenUI = class(DeusVictoryEndScreenUI, BaseEndScreenUI)
 
 DeusVictoryEndScreenUI.init = function (self, ingame_ui_context, input_service, screen_context)
@@ -42,8 +45,9 @@ DeusVictoryEndScreenUI._start = function (self)
 	local scenegraph_definition = definitions.scenegraph_definition
 	local params = {
 		draw_flags = self._draw_flags,
-		wwise_world = self._wwise_world
+		wwise_world = self._wwise_world,
 	}
+
 	self._victory_anim_id = self._ui_animator:start_animation("victory", self._widgets_by_name, scenegraph_definition, params)
 
 	if self._journey_presentation_ui then

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/outline/outline_extension.lua
+
 require("scripts/settings/outline_settings")
 
 OutlineExtension = class(OutlineExtension)
@@ -18,6 +20,7 @@ end
 OutlineExtension.add_outline = function (self, settings)
 	local unique_id = self._unique_id
 	local settings = table.clone(settings)
+
 	self._unique_id = self._unique_id + 1
 
 	if unique_id == 0 then
@@ -26,6 +29,7 @@ OutlineExtension.add_outline = function (self, settings)
 
 	settings._unique_id = unique_id
 	settings.priority = settings.priority or 0
+
 	local settings_bucket = self.outline_settings
 	local num_settings_buckets = #settings_bucket
 	local insert_index = num_settings_buckets + 1
@@ -34,7 +38,7 @@ OutlineExtension.add_outline = function (self, settings)
 	for i = 1, num_settings_buckets do
 		local current_bucket = settings_bucket[i][1]
 
-		if current_bucket.priority <= priority then
+		if priority >= current_bucket.priority then
 			insert_index = i
 
 			break
@@ -47,7 +51,7 @@ OutlineExtension.add_outline = function (self, settings)
 		table.insert(shared_priority_settings, 1, settings)
 	else
 		settings_bucket[insert_index] = {
-			settings
+			settings,
 		}
 	end
 
@@ -120,6 +124,7 @@ OutlineExtension._refresh_current_outline = function (self, reapply)
 	local default = self._default_settings
 	local current_settings = self.outline_settings[1][1]
 	local new_color = not current_settings.outline_color or self.outline_color ~= current_settings.outline_color
+
 	self.outline_color = current_settings.outline_color and current_settings.outline_color or default.outline_color
 	self.distance = current_settings.distance and current_settings.distance or default.distance
 	self.method = current_settings.method and current_settings.method or default.method
@@ -134,7 +139,7 @@ OutlineExtension.on_freeze = function (self)
 	table.clear(self.outline_settings)
 
 	self.outline_settings[1] = {
-		self._default_settings
+		self._default_settings,
 	}
 end
 

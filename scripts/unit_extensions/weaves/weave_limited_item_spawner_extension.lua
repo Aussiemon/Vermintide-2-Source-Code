@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/weaves/weave_limited_item_spawner_extension.lua
+
 require("scripts/unit_extensions/limited_item_track/limited_item_track_spawner_templates")
 
 WeaveLimitedItemSpawnerExtension = class(WeaveLimitedItemSpawnerExtension)
@@ -23,6 +25,7 @@ WeaveLimitedItemSpawnerExtension.init = function (self, extension_init_context, 
 	self._on_destroy_func = nil
 	self._on_spawn_func = nil
 	self._on_complete_func = nil
+
 	local limited_item_template_name = Unit.get_data(unit, "template_name")
 	local template = LimitedItemTrackSpawnerTemplates[limited_item_template_name]
 	local pickup_system = Managers.state.entity:system("pickup_system")
@@ -45,9 +48,10 @@ WeaveLimitedItemSpawnerExtension.activate = function (self, game_object_id, obje
 		local game_object_data_table = {
 			go_type = NetworkLookup.go_types.weave_objective,
 			objective_name = NetworkLookup.weave_objective_names[self._objective_name],
-			value = self._value
+			value = self._value,
 		}
 		local callback = callback(self, "cb_game_session_disconnect")
+
 		self._game_object_id = Managers.state.network:create_game_object("weave_objective", game_object_data_table, callback)
 		self._limited_item_track_extension = ScriptUnit.extension(self._unit, "limited_item_track_system")
 
@@ -79,6 +83,7 @@ WeaveLimitedItemSpawnerExtension.set_weave_settings = function (self, objective_
 	self._on_destroy_func = objective_data.on_destroy_func
 	self._on_spawn_func = objective_data.on_spawn_func
 	self._on_complete_func = objective_data.on_complete_func
+
 	local template_name = objective_data.template_name or Unit.get_data(self._unit, "template_name")
 	local pickup_name = template_name == "gargoyle_head_spawner" and "magic_crystal" or "magic_barrel"
 
@@ -163,6 +168,7 @@ WeaveLimitedItemSpawnerExtension._server_update = function (self, dt, t)
 
 	if limited_item_track_extension.num_socketed_items == limited_item_track_extension.pool then
 		self._value = 100
+
 		local limited_item_track_system = Managers.state.entity:system("limited_item_track_system")
 
 		limited_item_track_system:decrease_group_pool_size(self._objective_name)

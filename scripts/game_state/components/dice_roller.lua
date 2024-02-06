@@ -1,76 +1,78 @@
+﻿-- chunkname: @scripts/game_state/components/dice_roller.lua
+
 local directions = {
 	{
 		rot = 0,
 		up = {
 			0,
 			1,
-			0
-		}
+			0,
+		},
 	},
 	{
 		up = {
 			1,
 			0,
-			0
+			0,
 		},
-		rot = math.pi / 2
+		rot = math.pi / 2,
 	},
 	{
 		up = {
 			0,
 			1,
-			0
+			0,
 		},
-		rot = math.pi / 2
+		rot = math.pi / 2,
 	},
 	{
 		up = {
 			0,
 			1,
-			0
+			0,
 		},
-		rot = -math.pi / 2
+		rot = -math.pi / 2,
 	},
 	{
 		up = {
 			1,
 			0,
-			0
+			0,
 		},
-		rot = -math.pi / 2
+		rot = -math.pi / 2,
 	},
 	{
 		up = {
 			0,
 			1,
-			0
+			0,
 		},
-		rot = math.pi
+		rot = math.pi,
 	},
 	{
 		up = {
 			0,
 			0,
-			1
+			1,
 		},
-		rot = math.pi / 2
+		rot = math.pi / 2,
 	},
 	{
 		up = {
 			0,
 			0,
-			1
+			1,
 		},
-		rot = -math.pi / 2
+		rot = -math.pi / 2,
 	},
 	{
 		up = {
 			0,
 			0,
-			1
+			1,
 		},
-		rot = math.pi
-	}
+		rot = math.pi,
+	},
 }
 local rotation_mappings = {
 	{
@@ -79,7 +81,7 @@ local rotation_mappings = {
 		3,
 		4,
 		5,
-		6
+		6,
 	},
 	{
 		5,
@@ -87,7 +89,7 @@ local rotation_mappings = {
 		8,
 		7,
 		9,
-		2
+		2,
 	},
 	{
 		4,
@@ -95,7 +97,7 @@ local rotation_mappings = {
 		1,
 		9,
 		8,
-		3
+		3,
 	},
 	{
 		3,
@@ -103,7 +105,7 @@ local rotation_mappings = {
 		9,
 		1,
 		7,
-		4
+		4,
 	},
 	{
 		2,
@@ -111,7 +113,7 @@ local rotation_mappings = {
 		7,
 		8,
 		1,
-		5
+		5,
 	},
 	{
 		6,
@@ -119,40 +121,42 @@ local rotation_mappings = {
 		4,
 		3,
 		2,
-		1
-	}
+		1,
+	},
 }
 local dice_types_mapping = {
 	"wood",
 	"metal",
 	"gold",
-	"warpstone"
+	"warpstone",
 }
 local dice_type_success_amounts = {
 	gold = 3,
 	metal = 4,
 	warpstone = 1,
-	wood = 5
+	wood = 5,
 }
 local unit_names = {
 	gold = "units/props/dice_bowl/dice_tier_04",
 	metal = "units/props/dice_bowl/dice_tier_02",
 	warpstone = "units/props/dice_bowl/dice_tier_05",
-	wood = "units/props/dice_bowl/dice_tier_01"
+	wood = "units/props/dice_bowl/dice_tier_01",
 }
 local broken_heights = {
 	gold = 1.36,
 	metal = 1.34,
 	warpstone = 1.18,
-	wood = 1.18
+	wood = 1.18,
 }
 local SCALAR = 0.03
+
 DiceRoller = class(DiceRoller)
 
 DiceRoller.init = function (self, world, dice_keeper, rewards, hero_name)
 	self.world = world
 	self.simulation_world = Managers.world:create_world("dice_simulation", nil, nil, nil, Application.DISABLE_APEX_CLOTH, Application.DISABLE_RENDERING, Application.DISABLE_SOUND)
-	local object_sets, position, rotation, shading_callback, mood_setting = nil
+
+	local object_sets, position, rotation, shading_callback, mood_setting
 	local time_sliced_spawn = false
 	local simulation_level = ScriptWorld.spawn_level(self.simulation_world, "levels/dicegame/world", object_sets, position, rotation, shading_callback, mood_setting, time_sliced_spawn)
 
@@ -165,11 +169,14 @@ DiceRoller.init = function (self, world, dice_keeper, rewards, hero_name)
 	self.dice_types = {}
 	self.dice_results = {}
 	self.rewards = rewards
+
 	local dice = dice_keeper:get_dice()
+
 	self.dice_data = table.clone(dice)
+
 	local units = World.units(world)
 	local num_units = #units
-	local bowl_position = nil
+	local bowl_position
 
 	for i = 1, num_units do
 		local unit = units[i]
@@ -231,7 +238,7 @@ DiceRoller._check_for_achievement = function (self, reward_backend_id)
 		end
 
 		local trinket_traits = trinket.traits
-		local trinket_as_hero = nil
+		local trinket_as_hero
 
 		for _, trait_name in pairs(trinket_traits) do
 			local trait = BuffTemplates[trait_name]
@@ -353,7 +360,7 @@ DiceRoller.has_rerolls = function (self)
 end
 
 local dice_visibility_groups = {
-	normal = "lvl1"
+	normal = "lvl1",
 }
 
 local function set_emissive(unit, emissive)
@@ -371,7 +378,7 @@ end
 DiceRoller._add_to_glow_list = function (self, unit)
 	self._glow_dice[#self._glow_dice + 1] = {
 		time = 0,
-		unit = unit
+		unit = unit,
 	}
 
 	WwiseWorld.trigger_event(self.wwise_world, "hud_dice_game_glow")
@@ -383,6 +390,7 @@ DiceRoller._update_glow = function (self, dt)
 
 	for _, data in pairs(self._glow_dice) do
 		data.time = data.time + dt
+
 		local dist = math.min(1, data.time * duration)
 		local scale = math.sirp(0, 1, dist)
 		local emissive = target_emissive / scale
@@ -393,6 +401,7 @@ end
 
 DiceRoller._create_success_table = function (self, success_list)
 	local success_table = {}
+
 	self.remaining_dice = self.remaining_dice or table.clone(self.dice_data)
 
 	for _, dice_type in ipairs(dice_types_mapping) do
@@ -404,13 +413,11 @@ DiceRoller._create_success_table = function (self, success_list)
 			local success = success_count < success_amount
 			local data = {
 				dice_type = dice_type,
-				success = success
+				success = success,
 			}
-			success_table[#success_table + 1] = data
 
-			if success then
-				success_count = success_count + 1
-			end
+			success_table[#success_table + 1] = data
+			success_count = success and success_count + 1 or success_count
 		end
 	end
 
@@ -442,6 +449,7 @@ DiceRoller.roll_dices = function (self)
 	end
 
 	local sound_position = WwiseWorld.trigger_event(self.wwise_world, "hud_dice_game_roll_many")
+
 	self.rolling = true
 	self.roll_time = 0
 	self.dice_units = dice_units
@@ -461,8 +469,10 @@ DiceRoller.simulate_dice_rolls = function (self, success_list)
 	local dice_simulation_settings = table.clone(self._success_table)
 	local world = self.simulation_world
 	local num_dice = #dice_simulation_settings
+
 	self._sound_events = {}
 	self._dice_simulation_units = {}
+
 	local initial_positions = {}
 
 	for i = 1, num_dice do
@@ -493,7 +503,9 @@ DiceRoller.simulate_dice_rolls = function (self, success_list)
 		local initial_rotation = Quaternion.axis_angle(up_vector, rotation)
 		local unit_name = unit_names[dice_type]
 		local dice_unit = World.spawn_unit(world, unit_name, initial_positions[i], initial_rotation)
+
 		self._dice_simulation_units[dice_unit] = true
+
 		local actor = Unit.actor(dice_unit, 0)
 
 		Unit.set_unit_visibility(dice_unit, false)
@@ -501,6 +513,7 @@ DiceRoller.simulate_dice_rolls = function (self, success_list)
 		Actor.set_velocity(actor, Vector3(-0.25, -0.5, -0.07) * 65)
 
 		local wanted_dice_result = success and math.random(dice_type_success_amounts[dice_type], 6) or math.random(1, dice_type_success_amounts[dice_type] - 1)
+
 		dice_simulation_settings[i] = {
 			dice_result = 0,
 			unit = dice_unit,
@@ -510,7 +523,7 @@ DiceRoller.simulate_dice_rolls = function (self, success_list)
 			wanted_dice_result = wanted_dice_result,
 			success = success,
 			positions = {},
-			rotations = {}
+			rotations = {},
 		}
 	end
 
@@ -552,6 +565,7 @@ DiceRoller.run_simulation = function (self, dice_simulation_settings)
 
 		local finished_dice = 0
 		local has_rerolls = false
+
 		self._sound_events[#self._sound_events + 1] = false
 
 		for i = 1, dice_amount do
@@ -560,11 +574,13 @@ DiceRoller.run_simulation = function (self, dice_simulation_settings)
 			local actor = Unit.actor(unit, 0)
 			local actor_velocity = Actor.velocity(actor)
 			local index = #data.positions + 1
+
 			data.positions[index] = Vector3Box(Unit.local_position(unit, 0))
 			data.rotations[index] = QuaternionBox(Unit.local_rotation(unit, 0))
 
 			if Vector3.length(actor_velocity) < 0.001 then
 				finished_dice = finished_dice + 1
+
 				local result = self:get_dice_result(unit, data.dice_type)
 
 				if result == 0 then
@@ -604,6 +620,7 @@ DiceRoller.calculate_results = function (self, dice_simulation_settings)
 		local data = dice_simulation_settings[i]
 		local unit = data.unit
 		local dice_result = self:get_dice_result(unit, data.dice_type)
+
 		data.dice_result = dice_result
 	end
 end
@@ -617,7 +634,7 @@ DiceRoller.get_dice_result = function (self, unit, dice_type)
 	local down_vec = -up_vec
 	local back_vec = -forward_vec
 	local largest_z = math.max(up_vec.z, forward_vec.z, right_vec.z, down_vec.z, left_vec.z, back_vec.z)
-	local dice_result = nil
+	local dice_result
 
 	if up_vec.z == largest_z then
 		dice_result = 1
@@ -633,7 +650,7 @@ DiceRoller.get_dice_result = function (self, unit, dice_type)
 		dice_result = 5
 	end
 
-	if broken_heights[dice_type] <= Unit.world_position(unit, 0).z then
+	if Unit.world_position(unit, 0).z >= broken_heights[dice_type] then
 		dice_result = 0
 	end
 
@@ -668,6 +685,7 @@ DiceRoller.alter_rotations = function (self, dice_simulation_settings)
 			for i = 1, num_rotations do
 				local current_rotation = rotations[i]:unbox()
 				local new_rotation = Quaternion.multiply(current_rotation, rotation_to_apply)
+
 				rotations[i] = QuaternionBox(new_rotation)
 			end
 		until true
@@ -708,7 +726,7 @@ DiceRoller.update = function (self, dt)
 		Unit.set_local_position(dice_unit, 0, new_position)
 		Unit.set_local_rotation(dice_unit, 0, new_rotation)
 
-		if data.completed_index <= lower_index and data.success and not data.highlighted then
+		if lower_index >= data.completed_index and data.success and not data.highlighted then
 			self:_add_to_glow_list(dice_unit)
 
 			data.highlighted = true
@@ -748,6 +766,7 @@ DiceRoller.cleanup_post_roll = function (self)
 	local dice_units = self.dice_units
 	local dice_units_to_remove = {}
 	local finished_dice = 0
+
 	self.needs_rerolls = false
 
 	for dice_unit, data in pairs(dice_units) do
@@ -758,6 +777,7 @@ DiceRoller.cleanup_post_roll = function (self)
 			finished_dice = finished_dice + 1
 		else
 			local num_successes_per_type = self.remaining_dice[data.dice_type].successes or 0
+
 			self.remaining_dice[data.dice_type].successes = data.success and num_successes_per_type + 1 or num_successes_per_type
 			self.needs_rerolls = true
 		end
@@ -768,6 +788,7 @@ DiceRoller.cleanup_post_roll = function (self)
 	if self.needs_rerolls then
 		for i = 1, num_dice_units_to_remove do
 			local unit = dice_units_to_remove[i]
+
 			self.dice_units[unit] = nil
 
 			World.destroy_unit(self.world, unit)
@@ -787,224 +808,224 @@ if Development.parameter("dice_chance_simulation") then
 			7,
 			0,
 			0,
-			0
+			0,
 		},
 		{
 			6,
 			0,
 			1,
-			0
+			0,
 		},
 		{
 			6,
 			1,
 			0,
-			0
+			0,
 		},
 		{
 			6,
 			0,
 			0,
-			1
+			1,
 		},
 		{
 			5,
 			0,
 			2,
-			0
+			0,
 		},
 		{
 			5,
 			2,
 			0,
-			0
+			0,
 		},
 		{
 			5,
 			0,
 			0,
-			2
+			2,
 		},
 		{
 			5,
 			1,
 			1,
-			0
+			0,
 		},
 		{
 			5,
 			0,
 			1,
-			1
+			1,
 		},
 		{
 			5,
 			1,
 			0,
-			1
+			1,
 		},
 		{
 			4,
 			0,
 			3,
-			0
+			0,
 		},
 		{
 			4,
 			1,
 			2,
-			0
+			0,
 		},
 		{
 			4,
 			0,
 			2,
-			1
+			1,
 		},
 		{
 			4,
 			2,
 			1,
-			0
+			0,
 		},
 		{
 			4,
 			0,
 			1,
-			2
+			2,
 		},
 		{
 			4,
 			1,
 			1,
-			1
+			1,
 		},
 		{
 			4,
 			1,
 			0,
-			2
+			2,
 		},
 		{
 			4,
 			2,
 			0,
-			1
+			1,
 		},
 		{
 			3,
 			1,
 			3,
-			0
+			0,
 		},
 		{
 			3,
 			0,
 			3,
-			1
+			1,
 		},
 		{
 			3,
 			2,
 			2,
-			0
+			0,
 		},
 		{
 			3,
 			0,
 			2,
-			2
+			2,
 		},
 		{
 			3,
 			1,
 			2,
-			1
+			1,
 		},
 		{
 			3,
 			2,
 			1,
-			1
+			1,
 		},
 		{
 			3,
 			1,
 			1,
-			2
+			2,
 		},
 		{
 			3,
 			2,
 			0,
-			2
+			2,
 		},
 		{
 			2,
 			2,
 			3,
-			0
+			0,
 		},
 		{
 			2,
 			0,
 			3,
-			2
+			2,
 		},
 		{
 			2,
 			1,
 			3,
-			1
+			1,
 		},
 		{
 			2,
 			2,
 			2,
-			1
+			1,
 		},
 		{
 			2,
 			1,
 			2,
-			2
+			2,
 		},
 		{
 			2,
 			2,
 			1,
-			2
+			2,
 		},
 		{
 			1,
 			2,
 			3,
-			1
+			1,
 		},
 		{
 			1,
 			1,
 			3,
-			2
+			2,
 		},
 		{
 			1,
 			2,
 			2,
-			2
+			2,
 		},
 		{
 			0,
 			2,
 			3,
-			2
-		}
+			2,
+		},
 	}
 	local probabilities = {
 		0.3333333333333333,
 		0.5,
 		0.6666666666666666,
-		1
+		1,
 	}
 	local results = {}
 	local num_simulations = 20
@@ -1021,7 +1042,7 @@ if Development.parameter("dice_chance_simulation") then
 				local probability = probabilities[k]
 
 				for l = 1, die_amount do
-					if math.random() < probability then
+					if probability > math.random() then
 						num_successes = num_successes + 1
 					end
 				end

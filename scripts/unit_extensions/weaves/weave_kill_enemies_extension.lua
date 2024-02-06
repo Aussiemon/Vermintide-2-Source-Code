@@ -1,13 +1,16 @@
+﻿-- chunkname: @scripts/unit_extensions/weaves/weave_kill_enemies_extension.lua
+
 WeaveKillEnemiesExtension = class(WeaveKillEnemiesExtension)
 WeaveKillEnemiesExtension.NAME = "WeaveKillEnemiesExtension"
+
 local BASE_SCORE_MULTIPLIER = {
-	hardest = 0.7,
+	cataclysm = 0.6,
+	cataclysm_2 = 0.5,
+	cataclysm_3 = 0.4,
 	hard = 0.9,
 	harder = 0.8,
-	cataclysm_2 = 0.5,
-	cataclysm = 0.6,
-	cataclysm_3 = 0.4,
-	normal = 1
+	hardest = 0.7,
+	normal = 1,
 }
 
 WeaveKillEnemiesExtension.init = function (self, extension_init_context, unit, extension_init_data)
@@ -25,6 +28,7 @@ WeaveKillEnemiesExtension.init = function (self, extension_init_context, unit, e
 	self._kills_required = extension_init_data.amount or 0
 	self._base_score_per_kill = extension_init_data.base_score_per_kill or WeaveSettings.base_score_per_kill
 	self._breed_score_multipliers = extension_init_data.breed_score_multipliers or {}
+
 	local score_multiplier = extension_init_data.score_multiplier or 1
 	local difficulty_manager = Managers.state.difficulty
 	local difficulty = difficulty_manager:get_difficulty()
@@ -53,7 +57,7 @@ WeaveKillEnemiesExtension.init = function (self, extension_init_context, unit, e
 
 		if type(self._breed_score_multipliers) == "number" then
 			self._breed_score_multipliers = {
-				default = self._breed_score_multipliers
+				default = self._breed_score_multipliers,
 			}
 		else
 			local default_score_multiplier = WeaveSettings.enemies_score_multipliers
@@ -107,9 +111,10 @@ WeaveKillEnemiesExtension.activate = function (self, game_object_id, objective_d
 		local game_object_data_table = {
 			go_type = NetworkLookup.go_types.weave_objective,
 			objective_name = NetworkLookup.weave_objective_names[self._objective_name],
-			value = self:get_percentage_done() * 100
+			value = self:get_percentage_done() * 100,
 		}
 		local callback = callback(self, "cb_game_session_disconnect")
+
 		self._game_object_id = Managers.state.network:create_game_object("weave_objective", game_object_data_table, callback)
 	else
 		self._game_object_id = game_object_id
@@ -169,7 +174,7 @@ WeaveKillEnemiesExtension.is_done = function (self)
 		return false
 	end
 
-	return self._kills_required <= self._num_killed
+	return self._num_killed >= self._kills_required
 end
 
 WeaveKillEnemiesExtension.get_percentage_done = function (self)

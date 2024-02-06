@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/dlcs/bless/buff_settings_bless.lua
+
 require("scripts/settings/profiles/career_constants")
 
 local stagger_types = require("scripts/utils/stagger_types")
@@ -5,32 +7,33 @@ local buff_perks = require("scripts/unit_extensions/default_player_unit/buffs/se
 local settings = DLCSettings.bless
 local on_damage_taken_damage_amount = 2
 local on_damage_taken_damage_type = 3
+
 settings.buff_templates = {
 	victor_priest_activated_ability_invincibility = {
 		activation_sound = "career_ability_priest_buff_shield",
 		buffs = {
 			{
 				apply_buff_func = "victor_priest_on_career_skill_applied",
-				name = "victor_priest_activated_ability_invincibility",
+				duration = 5,
 				icon = "victor_priest_activated_ability",
-				update_func = "victor_priest_on_career_skill_update",
+				max_stacks = 1,
+				name = "victor_priest_activated_ability_invincibility",
+				priority_buff = true,
+				reapply_buff_func = "victor_priest_on_career_skill_applied",
 				refresh_durations = true,
 				remove_buff_func = "victor_priest_on_career_skill_removed",
-				priority_buff = true,
-				max_stacks = 1,
-				duration = 5,
-				reapply_buff_func = "victor_priest_on_career_skill_applied",
+				update_func = "victor_priest_on_career_skill_update",
 				perks = {
-					buff_perks.invulnerable
-				}
+					buff_perks.invulnerable,
+				},
 			},
 			{
-				stagger_distance = 1,
+				buff_func = "victor_priest_6_1_pulse_attack",
+				duration = 5,
+				event = "on_melee_hit",
 				name = "victor_priest_6_1_pulse_attack",
 				push_radius = 3.5,
-				buff_func = "victor_priest_6_1_pulse_attack",
-				event = "on_melee_hit",
-				duration = 5,
+				stagger_distance = 1,
 				apply_condition = function (unit, template, params)
 					if not Managers.state.network.is_server then
 						return false
@@ -50,50 +53,50 @@ settings.buff_templates = {
 					stagger_types.none,
 					stagger_types.none,
 					stagger_types.none,
-					stagger_types.none
-				}
-			}
-		}
+					stagger_types.none,
+				},
+			},
+		},
 	},
 	victor_priest_activated_ability_nuke = {
-		deactivation_sound = "career_ability_priest_buildup_stop",
 		activation_sound = "career_ability_priest_buildup",
+		deactivation_sound = "career_ability_priest_buildup_stop",
 		buffs = {
 			{
-				duration = 5,
-				name = "victor_priest_activated_ability_nuke",
 				apply_buff_func = "victor_priest_activated_ability_nuke_start",
-				reapply_buff_func = "victor_priest_activated_ability_nuke_start",
+				duration = 5,
 				max_stacks = 1,
-				refresh_durations = true,
+				name = "victor_priest_activated_ability_nuke",
 				priority_buff = true,
-				remove_buff_func = "victor_priest_activated_ability_nuke"
-			}
-		}
+				reapply_buff_func = "victor_priest_activated_ability_nuke_start",
+				refresh_durations = true,
+				remove_buff_func = "victor_priest_activated_ability_nuke",
+			},
+		},
 	},
 	victor_priest_activated_noclip = {
 		buffs = {
 			{
-				stagger_distance = 1,
+				apply_buff_func = "victor_priest_activated_noclip_apply",
+				duration = 5,
+				max_stacks = 1,
 				name = "victor_priest_activated_noclip",
 				push_cooldown = 1,
 				push_radius = 1.5,
 				refresh_durations = true,
-				apply_buff_func = "victor_priest_activated_noclip_apply",
 				remove_buff_func = "victor_priest_activated_noclip_remove",
-				duration = 5,
-				max_stacks = 1,
-				update_func = "victor_priest_activated_noclip_update",
+				stagger_distance = 1,
 				update_frequency = 0.1,
+				update_func = "victor_priest_activated_noclip_update",
 				perks = {
-					buff_perks.no_ranged_knockback
+					buff_perks.no_ranged_knockback,
 				},
 				stagger_impact = {
 					stagger_types.medium,
 					stagger_types.none,
 					stagger_types.none,
 					stagger_types.none,
-					stagger_types.none
+					stagger_types.none,
 				},
 				no_clip_filter = {
 					true,
@@ -101,115 +104,115 @@ settings.buff_templates = {
 					false,
 					false,
 					false,
-					false
-				}
-			}
-		}
+					false,
+				},
+			},
+		},
 	},
 	victor_priest_nuke_dot = {
 		buffs = {
 			{
+				apply_buff_func = "start_dot_damage",
+				damage_profile = "burning_dot",
+				damage_type = "burninating",
 				duration = 5,
 				name = "victor_priest_nuke_dot",
-				apply_buff_func = "start_dot_damage",
-				update_start_delay = 0.7,
 				time_between_dot_damages = 0.7,
-				damage_type = "burninating",
-				damage_profile = "burning_dot",
 				update_func = "apply_dot_damage",
+				update_start_delay = 0.7,
 				perks = {
-					buff_perks.burning
-				}
-			}
-		}
+					buff_perks.burning,
+				},
+			},
+		},
 	},
 	victor_priest_book_buff_attack_speed = {
 		buffs = {
 			{
+				icon = "victor_witchhunter_activated_ability_guaranteed_crit_self_buff",
+				max_stacks = 1,
 				multiplier = 0.1,
 				name = "victor_priest_book_buff_attack_speed",
 				stat_buff = "attack_speed",
-				max_stacks = 1,
-				icon = "victor_witchhunter_activated_ability_guaranteed_crit_self_buff"
 			},
 			{
+				bonus = 0.05,
 				max_stacks = 1,
 				name = "victor_priest_book_buff_crit",
 				stat_buff = "critical_strike_chance",
-				bonus = 0.05
-			}
-		}
+			},
+		},
 	},
 	victor_priest_book_buff_heal_on_damage = {
 		buffs = {
 			{
-				max_stacks = 1,
-				name = "victor_priest_book_buff_heal_on_damage",
 				buff_func = "victor_priest_book_buff_heal_on_kill_proc",
 				event = "on_kill",
-				icon = "bardin_ranger_increased_melee_damage_on_no_ammo"
-			}
-		}
+				icon = "bardin_ranger_increased_melee_damage_on_no_ammo",
+				max_stacks = 1,
+				name = "victor_priest_book_buff_heal_on_damage",
+			},
+		},
 	},
 	victor_priest_book_buff_stamina = {
 		buffs = {
 			{
 				max_stacks = 1,
+				multiplier = -0.3,
 				name = "victor_priest_book_buff_block_cost",
 				stat_buff = "block_cost",
-				multiplier = -0.3
 			},
 			{
+				bonus = 6,
 				max_stacks = 1,
 				name = "victor_priest_book_buff_stamina",
 				stat_buff = "max_fatigue",
-				bonus = 6
 			},
 			{
 				max_stacks = 1,
+				multiplier = 0.5,
 				name = "victor_priest_book_buff_push_angle",
 				stat_buff = "block_angle",
-				multiplier = 0.5
-			}
-		}
+			},
+		},
 	},
 	victor_priest_passive_aftershock = {
-		deactivation_sound = "career_priest_fury_stop",
 		activation_sound = "career_priest_fury_start",
+		deactivation_sound = "career_priest_fury_stop",
 		buffs = {
 			{
-				buff_to_add = "victor_priest_passive_smite",
-				name = "victor_priest_passive_aftershock",
-				max_stacks = 1,
 				buff_func = "add_buff_to_hit_enemy",
+				buff_to_add = "victor_priest_passive_smite",
+				buff_to_add_upgraded = "victor_priest_passive_smite_upgraded",
 				event = "on_damage_dealt",
 				icon = "victor_priest_passive",
-				buff_to_add_upgraded = "victor_priest_passive_smite_upgraded"
-			}
-		}
+				max_stacks = 1,
+				name = "victor_priest_passive_aftershock",
+			},
+		},
 	},
 	victor_priest_passive_smite = {
 		buffs = {
 			{
 				damage_multiplier = 0.2,
-				name = "victor_priest_passive_smite",
-				duration = 0.3,
 				damage_profile = "light_push",
-				remove_buff_func = "victor_priest_activated_ability_aftershock_update"
-			}
-		}
+				duration = 0.3,
+				name = "victor_priest_passive_smite",
+				remove_buff_func = "victor_priest_activated_ability_aftershock_update",
+			},
+		},
 	},
 	victor_priest_passive_smite_upgraded = {
 		buffs = {
 			{
-				name = "victor_priest_passive_smite",
-				duration = 0.3,
 				damage_profile = "light_push",
+				duration = 0.3,
+				name = "victor_priest_passive_smite",
 				remove_buff_func = "victor_priest_activated_ability_aftershock_update",
-				damage_multiplier = CareerConstants.wh_priest.talent_4_2_smite_improved_damage
-			}
-		}
-	}
+				damage_multiplier = CareerConstants.wh_priest.talent_4_2_smite_improved_damage,
+			},
+		},
+	},
 }
 settings.proc_functions = {
 	add_buff_to_hit_enemy = function (owner_unit, buff, params, world)
@@ -230,7 +233,7 @@ settings.proc_functions = {
 			if target_buff_extension then
 				local values = {
 					external_optional_value = params[3],
-					attacker_unit = owner_unit
+					attacker_unit = owner_unit,
 				}
 
 				target_buff_extension:add_buff(buff_to_add, values)
@@ -254,6 +257,7 @@ settings.proc_functions = {
 		end
 
 		local damage_taken = params[2]
+
 		damage_taken = damage_taken * CareerConstants.wh_priest.talent_4_1_fury_gain_mult
 
 		passive:modify_resource(damage_taken)
@@ -274,7 +278,7 @@ settings.proc_functions = {
 			if target_buff_extension then
 				local values = {
 					external_optional_value = params[3],
-					attacker_unit = owner_unit
+					attacker_unit = owner_unit,
 				}
 
 				target_buff_extension:add_buff(buff_to_add, values)
@@ -290,7 +294,9 @@ settings.proc_functions = {
 			local side = Managers.state.side.side_by_unit[owner_unit]
 			local breed = params[2]
 			local amount_to_heal = breed.bloodlust_health or 0
+
 			amount_to_heal = amount_to_heal / 2
+
 			local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
 
 			for i = 1, #player_and_bot_units do
@@ -343,7 +349,7 @@ settings.proc_functions = {
 					local data = {
 						temp_hp = true,
 						t = t,
-						damage_taken = inital_damage_taken
+						damage_taken = inital_damage_taken,
 					}
 
 					table.insert(buff.damage_table, data)
@@ -351,7 +357,7 @@ settings.proc_functions = {
 					local data = {
 						temp_hp = false,
 						t = t,
-						damage_taken = inital_damage_taken
+						damage_taken = inital_damage_taken,
 					}
 
 					table.insert(buff.damage_table, data)
@@ -359,7 +365,7 @@ settings.proc_functions = {
 					local data = {
 						temp_hp = true,
 						t = t,
-						damage_taken = current_temporary_health
+						damage_taken = current_temporary_health,
 					}
 
 					table.insert(buff.damage_table, data)
@@ -367,7 +373,7 @@ settings.proc_functions = {
 					data = {
 						temp_hp = false,
 						t = t,
-						damage_taken = damage_taken
+						damage_taken = damage_taken,
 					}
 
 					table.insert(buff.damage_table, data)
@@ -377,7 +383,7 @@ settings.proc_functions = {
 			buff.list_dirty = true
 
 			while buff.list_dirty do
-				if buff.template.heal_window < t - buff.damage_table[1].t then
+				if t - buff.damage_table[1].t > buff.template.heal_window then
 					table.remove(buff.damage_table, 1)
 				else
 					buff.list_dirty = false
@@ -403,7 +409,7 @@ settings.proc_functions = {
 			local damage_to_take = damage_amount * percent_to_absorb
 			local percentage_of_original = (damage_amount + damage_to_take) * template.percentage_to_take
 			local buff_params = {
-				external_optional_value = percentage_of_original
+				external_optional_value = percentage_of_original,
 			}
 			local damage_stagger_dot = buff_extension:get_buff_type("damage_stagger")
 
@@ -412,9 +418,12 @@ settings.proc_functions = {
 				local current_damage_dealt = damage_stagger_dot.damage_dealt or 0
 				local remaining_damage = current_damage - current_damage_dealt
 				local new_damage = percentage_of_original + remaining_damage
+
 				damage_stagger_dot.value = new_damage
 				damage_stagger_dot.damage_dealt = 0
+
 				local t = Managers.time:time("game")
+
 				damage_stagger_dot.start_time = t
 			end
 
@@ -494,12 +503,13 @@ settings.proc_functions = {
 
 			local buff_name = buff.template.buff_to_add
 			local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
+
 			buff.buff_ids[#buff.buff_ids + 1] = buff_extension:add_buff(buff_name)
 		end
 	end,
 	victor_priest_passive_resource = function (owner_unit, buff, params)
 		if ALIVE[owner_unit] then
-			local fury_to_add = nil
+			local fury_to_add
 			local template = buff.template
 			local breed_data = params[2]
 
@@ -609,6 +619,7 @@ settings.proc_functions = {
 
 			local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
 			local num_units = #player_and_bot_units
+
 			heal_amount = heal_amount * 0.5
 
 			for i = 1, num_units do
@@ -628,7 +639,9 @@ settings.proc_functions = {
 		local t = Managers.time:time("game")
 		local position = POSITION_LOOKUP[owner_unit]
 		local broadphase_results = FrameTable.alloc_table()
+
 		buff.broadphase_categories = buff.broadphase_categories or Managers.state.side.side_by_unit[owner_unit].enemy_broadphase_categories
+
 		local num_results = AiUtils.broadphase_query(position, push_radius, broadphase_results, buff.broadphase_categories)
 
 		for i = 1, num_results do
@@ -638,7 +651,7 @@ settings.proc_functions = {
 
 			AiUtils.stagger_target(owner_unit, hit_unit, stagger_distance, stagger_impact, push_direction, t)
 		end
-	end
+	end,
 }
 settings.buff_function_templates = {
 	victor_priest_passive_active_update = function (owner_unit, buff, params)
@@ -712,6 +725,7 @@ settings.buff_function_templates = {
 
 			if buff_extension then
 				local num_buffs = buff_extension:num_buff_type("victor_priest_4_2_stack")
+
 				multiplier = multiplier + 0.02 * num_buffs
 			end
 
@@ -833,6 +847,7 @@ settings.buff_function_templates = {
 		else
 			local node = Unit.node(owner_unit, "j_spine") or 0
 			local attach_pos = Unit.world_position(owner_unit, node)
+
 			buff._tp_node = node
 
 			if buff.third_person_effect_id then
@@ -874,6 +889,7 @@ settings.buff_function_templates = {
 
 				if damage_store_buff then
 					buff.heal_amount = 0
+
 					local damage_table = damage_store_buff.damage_table
 
 					if not damage_table then
@@ -895,6 +911,7 @@ settings.buff_function_templates = {
 							end
 
 							local damage_amount = damage_instance.damage_taken
+
 							buff.heal_amount = buff.heal_amount + damage_amount
 						end
 					end
@@ -906,8 +923,8 @@ settings.buff_function_templates = {
 							attacker_unit = attacker_unit,
 							external_optional_value = {
 								temp_hp = temp_hp_tot,
-								perm_hp = perm_hp_tot
-							}
+								perm_hp = perm_hp_tot,
+							},
 						}
 
 						buff_extension:add_buff("victor_priest_6_3_delayed_heal", params)
@@ -1019,6 +1036,7 @@ settings.buff_function_templates = {
 			end
 		else
 			local node = Unit.node(owner_unit, "j_spine")
+
 			buff.third_person_effect_id = ScriptWorld.create_particles_linked(world, third_person_effect, owner_unit, node, "destroy")
 		end
 
@@ -1082,7 +1100,9 @@ settings.buff_function_templates = {
 		if Managers.state.network.is_server then
 			buff.broadphase_results = {}
 			buff.pushed_units = {}
+
 			local proximity_system = Managers.state.entity:system("proximity_system")
+
 			buff.broadphase = proximity_system.enemy_broadphase
 		end
 	end,
@@ -1114,8 +1134,9 @@ settings.buff_function_templates = {
 			local hit_unit = broadphase_results[i]
 			local push_t = pushed_units[hit_unit] or 0
 
-			if t > push_t then
+			if push_t < t then
 				pushed_units[hit_unit] = t + push_cooldown
+
 				local hit_unit_pos = POSITION_LOOKUP[hit_unit]
 				local push_direction = Vector3.normalize(hit_unit_pos - position)
 
@@ -1124,5 +1145,5 @@ settings.buff_function_templates = {
 		end
 
 		table.clear(broadphase_results)
-	end
+	end,
 }

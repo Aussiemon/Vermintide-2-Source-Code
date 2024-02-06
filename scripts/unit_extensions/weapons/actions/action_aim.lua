@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/weapons/actions/action_aim.lua
+
 ActionAim = class(ActionAim, ActionBase)
 
 ActionAim.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
@@ -11,6 +13,7 @@ end
 local function scale_delay_value(action_settings, value, owner_unit, buff_extension)
 	local new_value = value
 	local time_scale = ActionUtils.get_action_time_scale(owner_unit, action_settings)
+
 	new_value = new_value / time_scale
 
 	return new_value
@@ -20,21 +23,27 @@ ActionAim.client_owner_start_action = function (self, new_action, t)
 	ActionAim.super.client_owner_start_action(self, new_action, t)
 
 	local owner_unit = self.owner_unit
+
 	self.current_action = new_action
 	self.zoom_condition_function = new_action.zoom_condition_function
 	self.played_aim_sound = false
 	self.heavy_aim_flow_done = false
 	self.fully_charged_triggered = false
+
 	local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
+
 	self.buff_extension = buff_extension
+
 	local aim_sound_delay = scale_delay_value(new_action, new_action.aim_sound_delay or 0, owner_unit, buff_extension)
 	local aim_zoom_delay = scale_delay_value(new_action, new_action.aim_zoom_delay or 0, owner_unit, buff_extension)
 	local heavy_aim_flow_delay = scale_delay_value(new_action, new_action.heavy_aim_flow_delay or 0, owner_unit, buff_extension)
 	local charge_time = scale_delay_value(new_action, new_action.charge_time or 0, owner_unit, buff_extension)
+
 	self.aim_sound_time = t + aim_sound_delay
 	self.aim_zoom_time = t + aim_zoom_delay
 	self.heavy_aim_flow_time = t + heavy_aim_flow_delay
 	self.charge_time_trigger = t + charge_time
+
 	local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
 
 	first_person_extension:disable_rig_movement()
@@ -69,6 +78,7 @@ ActionAim._start_charge_sound = function (self)
 
 	if is_local and not is_bot then
 		local wwise_playing_id, wwise_source_id = ActionUtils.start_charge_sound(wwise_world, self.weapon_unit, owner_unit, current_action)
+
 		self.charging_sound_id = wwise_playing_id
 		self.wwise_source_id = wwise_source_id
 	end
@@ -120,7 +130,7 @@ ActionAim.client_owner_post_update = function (self, dt, t, world, can_damage)
 		local input_extension = ScriptUnit.extension(owner_unit, "input_system")
 		local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
 
-		if not status_extension:is_zooming() and self.aim_zoom_time <= t then
+		if not status_extension:is_zooming() and t >= self.aim_zoom_time then
 			status_extension:set_zooming(true, current_action.default_zoom)
 		end
 
@@ -129,9 +139,9 @@ ActionAim.client_owner_post_update = function (self, dt, t, world, can_damage)
 		end
 	end
 
-	if not self.played_aim_sound and self.aim_sound_time <= t and not Managers.player:owner(self.owner_unit).bot_player then
+	if not self.played_aim_sound and t >= self.aim_sound_time and not Managers.player:owner(self.owner_unit).bot_player then
 		Managers.state.controller_features:add_effect("rumble", {
-			rumble_effect = "aim_start"
+			rumble_effect = "aim_start",
 		})
 
 		local sound_event = current_action.aim_sound_event
@@ -152,9 +162,9 @@ ActionAim.client_owner_post_update = function (self, dt, t, world, can_damage)
 		self.played_aim_sound = true
 	end
 
-	if not self.heavy_aim_flow_done and self.heavy_aim_flow_time <= t and not Managers.player:owner(self.owner_unit).bot_player then
+	if not self.heavy_aim_flow_done and t >= self.heavy_aim_flow_time and not Managers.player:owner(self.owner_unit).bot_player then
 		Managers.state.controller_features:add_effect("rumble", {
-			rumble_effect = "aim_start"
+			rumble_effect = "aim_start",
 		})
 
 		local heavy_aim_flow_event = current_action.heavy_aim_flow_event
@@ -174,7 +184,7 @@ ActionAim.client_owner_post_update = function (self, dt, t, world, can_damage)
 		self.heavy_aim_flow_done = true
 	end
 
-	if self.charge_time_trigger < t and not self.fully_charged_triggered then
+	if t > self.charge_time_trigger and not self.fully_charged_triggered then
 		self.fully_charged_triggered = true
 
 		self.buff_extension:trigger_procs("on_full_charge")
@@ -224,7 +234,7 @@ ActionAim.finish = function (self, reason)
 
 	if not owner.bot_player then
 		Managers.state.controller_features:add_effect("rumble", {
-			rumble_effect = "full_stop"
+			rumble_effect = "full_stop",
 		})
 	end
 

@@ -1,9 +1,12 @@
+﻿-- chunkname: @scripts/ui/views/hero_view/windows/hero_window_inventory.lua
+
 local crafting_recipes, crafting_recipes_by_name, crafting_recipes_lookup = dofile("scripts/settings/crafting/crafting_recipes")
 local definitions = local_require("scripts/ui/views/hero_view/windows/definitions/hero_window_inventory_definitions")
 local widget_definitions = definitions.widgets
 local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
 local DO_RELOAD = false
+
 HeroWindowInventory = class(HeroWindowInventory)
 HeroWindowInventory.NAME = "HeroWindowInventory"
 
@@ -11,16 +14,20 @@ HeroWindowInventory.on_enter = function (self, params, offset)
 	print("[HeroViewWindow] Enter Substate HeroWindowInventory")
 
 	self.parent = params.parent
+
 	local ingame_ui_context = params.ingame_ui_context
+
 	self.ui_renderer = ingame_ui_context.ui_renderer
 	self.ui_top_renderer = ingame_ui_context.ui_top_renderer
 	self.input_manager = ingame_ui_context.input_manager
 	self.statistics_db = ingame_ui_context.statistics_db
 	self.render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
+
 	local player_manager = Managers.player
 	local local_player = player_manager:local_player()
+
 	self._stats_id = local_player:stats_id()
 	self.player_manager = player_manager
 	self.peer_id = ingame_ui_context.peer_id
@@ -31,7 +38,9 @@ HeroWindowInventory.on_enter = function (self, params, offset)
 	self.hero_name = params.hero_name
 	self.career_index = params.career_index
 	self.profile_index = params.profile_index
+
 	local item_grid = ItemGridUI:new(crafting_recipes, self._widgets_by_name.item_grid, self.hero_name, self.career_index)
+
 	self._item_grid = item_grid
 
 	item_grid:mark_equipped_items(true)
@@ -40,6 +49,7 @@ HeroWindowInventory.on_enter = function (self, params, offset)
 	item_grid:disable_item_drag()
 
 	local inventory_sync_id = self.parent.inventory_sync_id
+
 	self._inventory_sync_id = inventory_sync_id
 
 	self.parent:set_inventory_grid(item_grid)
@@ -47,11 +57,13 @@ end
 
 HeroWindowInventory.create_ui_elements = function (self, params, offset)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+
 	local widgets = {}
 	local widgets_by_name = {}
 
 	for name, widget_definition in pairs(widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		widgets[#widgets + 1] = widget
 		widgets_by_name[name] = widget
 	end
@@ -65,6 +77,7 @@ HeroWindowInventory.create_ui_elements = function (self, params, offset)
 
 	if offset then
 		local window_position = self.ui_scenegraph.window.local_position
+
 		window_position[1] = window_position[1] + offset[1]
 		window_position[2] = window_position[2] + offset[2]
 		window_position[3] = window_position[3] + offset[3]
@@ -161,7 +174,9 @@ HeroWindowInventory._handle_input = function (self, dt, t)
 
 	if item then
 		local backend_id = item.backend_id
+
 		self._pressed_backend_id = backend_id
+
 		local is_drag_item = item_dragged ~= nil
 
 		parent:set_pressed_item_backend_id(backend_id, is_drag_item)
@@ -204,7 +219,9 @@ HeroWindowInventory._update_page_info = function (self)
 		self._current_page = current_page
 		current_page = current_page or 1
 		total_pages = total_pages or 1
+
 		local widgets_by_name = self._widgets_by_name
+
 		widgets_by_name.page_text_left.content.text = tostring(current_page)
 		widgets_by_name.page_text_right.content.text = tostring(total_pages)
 		widgets_by_name.page_button_next.content.button_hotspot.disable_button = current_page == total_pages
@@ -228,7 +245,7 @@ HeroWindowInventory._update_crafting_material_panel = function (self)
 		local amount = backend_id and backend_items:get_item_amount(backend_id) or 0
 		local widget = widgets_by_name["material_text_" .. index]
 		local content = widget.content
-		local amount_text = nil
+		local amount_text
 
 		if amount < 10000 then
 			amount_text = tostring(amount)
@@ -243,7 +260,7 @@ HeroWindowInventory._update_crafting_material_panel = function (self)
 
 		if not content.item then
 			content.item = item or {
-				data = table.clone(ItemMasterList[item_key])
+				data = table.clone(ItemMasterList[item_key]),
 			}
 		end
 	end
@@ -337,6 +354,7 @@ HeroWindowInventory._change_category_by_index = function (self, index, force_upd
 	end
 
 	self._current_category_index = index
+
 	local recipe_setting = crafting_recipes[index]
 	local recipe_name = recipe_setting.name
 	local item_sort_func = recipe_setting.item_sort_func

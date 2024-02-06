@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/dlcs/morris/twitch_vote_templates_morris.lua
+
 local function debug_print(message, ...)
 	if DEBUG_TWITCH then
 		print("[Twitch] " .. string.format(message, ...))
@@ -6,12 +8,12 @@ end
 
 local vote_level_template = {
 	cost = 0,
-	use_frame_texture = true,
-	texture_id = "level_image_any",
 	text = "twitch_vote_next_deus_level",
+	texture_id = "level_image_any",
+	use_frame_texture = true,
 	texture_size = {
 		70,
-		70
+		70,
 	},
 	condition_func = function ()
 		local game_mode_name = Managers.state.game_mode:game_mode_key()
@@ -42,15 +44,18 @@ local vote_level_template = {
 
 			assert(false, "Couldn't find level that was voted on by twitch")
 		end
-	end
+	end,
 }
+
 TwitchVoteDeusSelectLevelNames = TwitchVoteDeusSelectLevelNames or {}
 
 for _, level_settings in pairs(DEUS_LEVEL_SETTINGS) do
 	local base_level_name = level_settings.base_level_name
 	local new_vote_template = table.clone(vote_level_template)
+
 	new_vote_template.text = level_settings.display_name
 	new_vote_template.level_name = base_level_name
+
 	local texture_id = level_settings.texture_id
 
 	if texture_id then
@@ -58,14 +63,17 @@ for _, level_settings in pairs(DEUS_LEVEL_SETTINGS) do
 	end
 
 	local new_vote_template_name = "twitch_vote_deus_select_level_" .. base_level_name
+
 	TwitchVoteTemplates[new_vote_template_name] = new_vote_template
 	TwitchVoteDeusSelectLevelNames[base_level_name] = new_vote_template_name
 end
 
 for shop_name, settings in pairs(DeusShopSettings.shop_types) do
 	local new_vote_template = table.clone(vote_level_template)
+
 	new_vote_template.text = shop_name .. "_title"
 	new_vote_template.level_name = shop_name
+
 	local texture_id = settings.twitch_icon
 
 	if texture_id then
@@ -73,6 +81,7 @@ for shop_name, settings in pairs(DeusShopSettings.shop_types) do
 	end
 
 	local new_vote_template_name = "twitch_vote_deus_select_level_" .. shop_name
+
 	TwitchVoteTemplates[new_vote_template_name] = new_vote_template
 	TwitchVoteDeusSelectLevelNames[shop_name] = new_vote_template_name
 end

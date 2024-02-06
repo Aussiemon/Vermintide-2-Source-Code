@@ -1,15 +1,18 @@
+﻿-- chunkname: @scripts/helpers/ui_utils.lua
+
 require("scripts/helpers/item_tooltip_helper")
 
 UIUtils = UIUtils or {}
 FAKE_INPUT_SERVICE = {
 	get = NOP,
-	has = NOP
+	has = NOP,
 }
 ALL_INPUT_METHODS = {
 	"keyboard",
 	"gamepad",
-	"mouse"
+	"mouse",
 }
+
 local VALUE_LIST = {}
 
 UIUtils.format_localized_description = function (fmt_str, fmt_def)
@@ -96,6 +99,7 @@ UIUtils.get_weave_property_value_text = function (property_name, property_data, 
 		local value_type = data.value_type
 		local max_value = data.value
 		local display_value = max_value / num_costs
+
 		display_value = display_value * (amount or 1)
 
 		if value_type == "percent" then
@@ -114,19 +118,20 @@ UIUtils.get_property_description = function (property_name, lerp_value, optional
 	local property_data = optional_property_data or WeaponProperties.properties[property_name]
 	local description_text = Localize(property_data.display_name)
 	local description_values = property_data.description_values
-	local text = nil
+	local text
 	local advanced_description = ""
 
 	if description_values then
-		local min_value, max_value = nil
+		local min_value, max_value
 		local data = description_values[1]
 		local value_type = data.value_type
 		local value = data.value
-		local display_value = nil
+		local display_value
 
 		if type(value) == "table" then
 			if #value > 2 then
 				local index = lerp_value == 1 and #value or 1 + math.floor(lerp_value / (1 / #value))
+
 				display_value = value[index]
 				min_value = value[1]
 				max_value = value[#value]
@@ -163,7 +168,7 @@ UIUtils.get_trait_description = function (trait_name, optional_trait_data)
 	local trait_data = optional_trait_data or WeaponTraits.traits[trait_name]
 	local description_text = Localize(trait_data.advanced_description)
 	local description_values = trait_data.description_values
-	local text = nil
+	local text
 
 	if description_values then
 		local values = {}
@@ -192,11 +197,12 @@ UIUtils.get_ui_information_from_item = function (item)
 	local item_data = item.data
 	local item_type = item_data.item_type
 	local rarity = item.rarity
-	local inventory_icon, display_name, description, store_icon = nil
+	local inventory_icon, display_name, description, store_icon
 
 	if item_type == "weapon_skin" then
 		local skin = item.skin or item.key or item_data.key
 		local skin_template = WeaponSkins.skins[skin]
+
 		inventory_icon = skin_template.inventory_icon
 		store_icon = skin_template.store_icon
 		display_name = skin_template.display_name
@@ -204,6 +210,7 @@ UIUtils.get_ui_information_from_item = function (item)
 	elseif item.skin then
 		local skin = item.skin
 		local skin_template = WeaponSkins.skins[skin]
+
 		inventory_icon = skin_template.inventory_icon
 		store_icon = skin_template.store_icon
 		display_name = skin_template.display_name
@@ -266,7 +273,7 @@ UIUtils.get_hero_statistics_by_template = function (template)
 		local entry_type = entry.type
 		local display_name = entry.display_name
 		local description_name = entry.description_name
-		local value = nil
+		local value
 
 		if entry_type == "title" then
 			display_name = entry.display_name
@@ -285,7 +292,7 @@ UIUtils.get_hero_statistics_by_template = function (template)
 			description_name = description_name,
 			value = value,
 			value_text = tostring(value),
-			type = entry_type
+			type = entry_type,
 		}
 	end
 
@@ -414,17 +421,12 @@ UIUtils.animate_value = function (x, dx, dir)
 end
 
 UIUtils.comma_value = function (amount, comma)
-	local formatted = amount
-	local k = nil
+	local formatted, k = amount
 	local replacement = "%1" .. (comma or " ") .. "%2"
 
-	while true do
+	repeat
 		formatted, k = string.gsub(formatted, "^(-?%d+)(%d%d%d)", replacement)
-
-		if k == 0 then
-			break
-		end
-	end
+	until k == 0
 
 	return formatted
 end
@@ -444,6 +446,7 @@ UIUtils.create_widgets = function (widget_definitions, widgets, widgets_by_name)
 
 	for name, widget_definition in pairs(widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		widgets[#widgets + 1] = widget
 		widgets_by_name[name] = widget
 	end

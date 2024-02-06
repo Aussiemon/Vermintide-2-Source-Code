@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/helpers/wwise_utils.lua
+
 WwiseUtils = WwiseUtils or {}
 WwiseUtils.EVENT_ID_NONE = 0
 
@@ -29,7 +31,7 @@ end
 
 WwiseUtils.make_unit_auto_source = function (world, unit, node_id)
 	local wwise_world = Managers.world:wwise_world(world)
-	local source, position = nil
+	local source, position
 
 	if node_id then
 		source = WwiseWorld.make_auto_source(wwise_world, unit, node_id)
@@ -49,7 +51,7 @@ WwiseUtils.make_unit_auto_source = function (world, unit, node_id)
 end
 
 WwiseUtils.make_unit_manual_source = function (wwise_world, unit, node_id)
-	local source = nil
+	local source
 
 	if node_id then
 		source = WwiseWorld.make_manual_source(wwise_world, unit, node_id)

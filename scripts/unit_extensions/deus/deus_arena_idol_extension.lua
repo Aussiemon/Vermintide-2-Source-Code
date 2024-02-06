@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/unit_extensions/deus/deus_arena_idol_extension.lua
+
 DeusArenaIdolExtension = class(DeusArenaIdolExtension)
+
 local WITCH_HUNTER = 1
 local BRIGHT_WIZARD = 2
 local DWARF_RANGER = 3
@@ -9,7 +12,7 @@ local UNITS_BY_HERO = {
 	[BRIGHT_WIZARD] = "units/props/deus_idol/deus_myrmidia_01",
 	[DWARF_RANGER] = "units/props/deus_idol/deus_valaya_01",
 	[WOOD_ELF] = "units/props/deus_idol/deus_lileath_01",
-	[EMPIRE_SOLDIER] = "units/props/deus_idol/deus_taal_01"
+	[EMPIRE_SOLDIER] = "units/props/deus_idol/deus_taal_01",
 }
 
 DeusArenaIdolExtension.init = function (self, extension_init_context, unit, extension_init_data)

@@ -1,11 +1,14 @@
+﻿-- chunkname: @scripts/ui/views/friends_ui_component.lua
+
 local definitions = local_require("scripts/ui/views/friends_ui_component_definitions")
 local DO_RELOAD = true
+
 FriendsUIComponent = class(FriendsUIComponent)
 
 FriendsUIComponent.init = function (self, ingame_ui_context)
 	self._ui_top_renderer = ingame_ui_context.ui_top_renderer
 	self._render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 	self._network_lobby = ingame_ui_context.network_lobby
 	self._invite_cooldown = {}
@@ -15,6 +18,7 @@ end
 
 FriendsUIComponent._create_ui_elements = function (self)
 	self._ui_scenegraph = UISceneGraph.init_scenegraph(definitions.scenegraph_definition)
+
 	local widget_definitions = definitions.widget_definitions
 	local widgets = {}
 	local widgets_by_name = {}
@@ -22,6 +26,7 @@ FriendsUIComponent._create_ui_elements = function (self)
 	for name, widget_definition in pairs(widget_definitions) do
 		if name ~= "friends_button" then
 			local widget = UIWidget.init(widget_definition)
+
 			widgets[#widgets + 1] = widget
 			widgets_by_name[name] = widget
 		end
@@ -66,6 +71,7 @@ end
 
 FriendsUIComponent.join_lobby_data = function (self)
 	local join_lobby_data = self._join_lobby_data
+
 	self._join_lobby_data = nil
 
 	return join_lobby_data
@@ -75,6 +81,7 @@ local EMPTY_TABLE = {}
 
 FriendsUIComponent.cb_refresh_friends_done = function (self, friend_list)
 	friend_list = friend_list or EMPTY_TABLE
+
 	local playing_friends = {}
 	local online_friends = {}
 	local offline_friends = {}
@@ -101,6 +108,7 @@ FriendsUIComponent.cb_refresh_friends_done = function (self, friend_list)
 
 	for i = 1, #online_friends do
 		local friend = online_friends[i]
+
 		playing_friends[#playing_friends + 1] = friend
 	end
 
@@ -161,6 +169,7 @@ FriendsUIComponent._update_refresh_animations = function (self, dt)
 		local target = math.pi
 		local speed = 20
 		local rotate_progress = content.rotate_progress or start
+
 		rotate_progress = math.min(rotate_progress + dt * speed, target)
 
 		if rotate_progress == target then
@@ -169,7 +178,9 @@ FriendsUIComponent._update_refresh_animations = function (self, dt)
 		end
 
 		content.rotate_progress = rotate_progress
+
 		local style = refresh_button.style
+
 		style.button_texture.angle = rotate_progress
 		style.button_texture_hover.angle = rotate_progress
 	end
@@ -188,17 +199,19 @@ FriendsUIComponent._handle_input = function (self, input_service, dt)
 	end
 
 	if active then
-		local hotspot_area_content = widgets_by_name.hotspot_area.content
+		do
+			local hotspot_area_content = widgets_by_name.hotspot_area.content
 
-		if input_service:get("left_press") and (hotspot_area_content.is_hover or self._friends_button_widget.content.button_hotspot.is_hover) then
-			hotspot_area_content.disregard_exit = true
-		end
+			if input_service:get("left_press") and (hotspot_area_content.is_hover or self._friends_button_widget.content.button_hotspot.is_hover) then
+				hotspot_area_content.disregard_exit = true
+			end
 
-		if input_service:get("left_release") then
-			if hotspot_area_content.disregard_exit or hotspot_area_content.is_hover or self._friends_button_widget.content.button_hotspot.is_hover then
-				hotspot_area_content.disregard_exit = nil
-			else
-				self:deactivate_friends_ui()
+			if input_service:get("left_release") then
+				if hotspot_area_content.disregard_exit or hotspot_area_content.is_hover or self._friends_button_widget.content.button_hotspot.is_hover then
+					hotspot_area_content.disregard_exit = nil
+				else
+					self:deactivate_friends_ui()
+				end
 			end
 		end
 
@@ -236,6 +249,7 @@ FriendsUIComponent._update_active_tab = function (self, input_service, dt)
 	local scenegraph_node = self._ui_scenegraph[list_scenegraph_id]
 	local scenegraph_pos = scenegraph_node.position
 	local value = 1 - active_tab.content.scrollbar.scroll_value
+
 	scenegraph_pos[2] = -tabs_size[2] + size_y * value
 
 	self:_update_list(active_tab)
@@ -248,7 +262,7 @@ end
 
 local _update_list_temp_pos_table = {
 	0,
-	0
+	0,
 }
 
 FriendsUIComponent._update_list = function (self, active_tab)
@@ -265,14 +279,21 @@ FriendsUIComponent._update_list = function (self, active_tab)
 		local style = item_styles[i]
 		local size = style.size
 		local offset = style.list_member_offset
+
 		_update_list_temp_pos_table[1] = list_pos[1] + offset[1] * i + size[1] / 2
 		_update_list_temp_pos_table[2] = list_pos[2] + list_size[2] + offset[2] * i
+
 		local lower_visible = math.point_is_inside_2d_box(_update_list_temp_pos_table, mask_pos, mask_size)
+
 		_update_list_temp_pos_table[2] = _update_list_temp_pos_table[2] + size[2] / 2
+
 		local middle_visible = math.point_is_inside_2d_box(_update_list_temp_pos_table, mask_pos, mask_size)
+
 		_update_list_temp_pos_table[2] = _update_list_temp_pos_table[2] + size[2] / 2
+
 		local top_visible = math.point_is_inside_2d_box(_update_list_temp_pos_table, mask_pos, mask_size)
 		local visible = lower_visible or top_visible
+
 		content.visible = visible
 		content.invite_button.visible = visible
 		content.profile_button.visible = visible
@@ -334,17 +355,23 @@ end
 
 FriendsUIComponent._activate_tab = function (self, widget)
 	self._active_tab = widget
+
 	local scenegraph_id = widget.scenegraph_id
 	local scenegraph_node = self._ui_scenegraph[scenegraph_id]
 	local tabs_active_size = definitions.scenegraph_info.tabs_active_size
+
 	scenegraph_node.size[1] = tabs_active_size[1]
 	scenegraph_node.size[2] = tabs_active_size[2]
 	scenegraph_node.position[2] = -tabs_active_size[2]
 	widget.content.active = true
 	widget.content.list_content.active = true
+
 	local drop_down_arrow = widget.style.drop_down_arrow
+
 	drop_down_arrow.angle = math.pi
+
 	local tabs_size = definitions.scenegraph_info.tabs_size
+
 	widget.style.hotspot.offset[2] = tabs_active_size[2] - tabs_size[2]
 
 	if widget.content.scrollbar.percentage < 1 then
@@ -356,17 +383,22 @@ end
 
 FriendsUIComponent._deactivate_active_tab = function (self)
 	local widget = self._active_tab
+
 	self._active_tab = nil
+
 	local scenegraph_id = widget.scenegraph_id
 	local scenegraph_node = self._ui_scenegraph[scenegraph_id]
 	local tabs_size = definitions.scenegraph_info.tabs_size
+
 	scenegraph_node.size[1] = tabs_size[1]
 	scenegraph_node.size[2] = tabs_size[2]
 	scenegraph_node.position[2] = -tabs_size[2]
 	widget.content.active = false
 	widget.content.list_content.active = false
 	widget.content.scrollbar.active = false
+
 	local drop_down_arrow = widget.style.drop_down_arrow
+
 	drop_down_arrow.angle = 0
 	widget.style.hotspot.offset[2] = 0
 end
@@ -382,8 +414,10 @@ FriendsUIComponent._populate_tab = function (self, widget, list, allow_invite)
 	for i = 1, num_friends do
 		local friend = list[i]
 		local content = list_content[i]
+
 		content.name = UIRenderer.crop_text_width(self._ui_top_renderer, friend.name, 200, item_styles[i].name)
 		content.id = friend.id
+
 		local can_join = false
 		local playing_this_game = friend.playing_this_game
 
@@ -426,7 +460,7 @@ FriendsUIComponent._setup_tab_scrollbar = function (self, widget)
 	local list_style = widget.style.list_style
 	local list_member_offset_y = list_style.list_member_offset[2]
 	local num_draws = list_style.num_draws
-	local total_size = nil
+	local total_size
 
 	if num_draws == 0 then
 		total_size = list_member_offset_y
@@ -448,21 +482,24 @@ end
 
 local _get_mask_size_temp = {
 	0,
-	0
+	0,
 }
 local _get_mask_position_temp = {
 	0,
 	0,
-	0
+	0,
 }
 
 FriendsUIComponent._get_mask_position_and_size = function (self, widget)
 	local mask_style = widget.style.mask
 	local size = mask_style.size
+
 	_get_mask_size_temp[1] = size[1]
 	_get_mask_size_temp[2] = size[2]
+
 	local scenegraph_pos = UISceneGraph.get_world_position(self._ui_scenegraph, widget.scenegraph_id)
 	local offset = mask_style.offset
+
 	_get_mask_position_temp[1] = scenegraph_pos[1] + offset[1]
 	_get_mask_position_temp[2] = scenegraph_pos[2] + offset[2]
 	_get_mask_position_temp[3] = scenegraph_pos[3] + offset[3]
@@ -499,6 +536,7 @@ FriendsUIComponent._join_player = function (self, content)
 
 	if lobby_id then
 		local lobby_data = LobbyInternal.get_lobby_data_from_id(lobby_id)
+
 		lobby_data.id = lobby_id
 		self._join_lobby_data = lobby_data
 	end

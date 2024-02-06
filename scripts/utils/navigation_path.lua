@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/utils/navigation_path.lua
+
 NavigationPath = class(NavigationPath)
 
 NavigationPath.init = function (self, path, callback)
@@ -45,10 +47,10 @@ end
 NavigationPath.draw = function (self, color, offset)
 	local drawer = Managers.state.debug:drawer({
 		mode = "immediate",
-		name = "nav_path"
+		name = "nav_path",
 	})
 	local offset = offset or Vector3(0, 0, 0)
-	local previous_node = nil
+	local previous_node
 
 	for _, node in ipairs(self._path) do
 		drawer:sphere(node:unbox() + Vector3.up() * 0.05 + offset, 0.05, color)

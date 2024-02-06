@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/helpers/search_utils.lua
+
 SearchUtils = SearchUtils or {}
 
 local function find_synonym_match(query, query_index, tuple_list)
@@ -7,6 +9,7 @@ local function find_synonym_match(query, query_index, tuple_list)
 
 		for synonym in string.gmatch(synonyms, "[^,]+") do
 			synonym = Utf8.lower(string.gsub(synonym, "%s+", ""))
+
 			local end_index = query_index + #synonym - 1
 
 			if string.sub(query, query_index, end_index) == synonym then
@@ -42,9 +45,8 @@ SearchUtils.extract_queries = function (query, definitions, results)
 	return query, results
 end
 
-local find = string.find
-local lower = Utf8.lower
+local find, lower = string.find, Utf8.lower
 
 SearchUtils.simple_search = function (needle, haystack)
-	return find(lower(haystack), needle, 1, true)
+	return (find(lower(haystack), needle, 1, true))
 end

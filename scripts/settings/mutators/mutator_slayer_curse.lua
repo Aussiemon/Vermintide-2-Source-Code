@@ -1,12 +1,15 @@
+﻿-- chunkname: @scripts/settings/mutators/mutator_slayer_curse.lua
+
 return {
+	decay_start = 5,
+	decay_tick = 1,
 	description = "description_mutator_slayer_curse",
 	display_name = "display_name_mutator_slayer_curse",
-	decay_tick = 1,
 	icon = "mutator_icon_slayer_curse",
-	decay_start = 5,
 	add_buff = function (buffs, buff_system, player_unit)
 		local is_server_controlled = true
 		local server_buff_id = buff_system:add_buff(player_unit, "slayer_curse_debuff", player_unit, is_server_controlled)
+
 		buffs[#buffs + 1] = server_buff_id
 	end,
 	remove_buff = function (buffs, buff_system, player_unit)
@@ -39,7 +42,7 @@ return {
 				end
 
 				player_units[unit] = nil
-			elseif unit_data.next_decay <= t then
+			elseif t >= unit_data.next_decay then
 				local buffs = unit_data.buffs
 
 				template.remove_buff(buffs, data.buff_system, unit)
@@ -62,7 +65,7 @@ return {
 		if not player_units[killer_unit] then
 			player_units[killer_unit] = {
 				next_decay = 0,
-				buffs = {}
+				buffs = {},
 			}
 		end
 
@@ -88,5 +91,5 @@ return {
 				player_units[unit] = nil
 			end
 		end
-	end
+	end,
 }

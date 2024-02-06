@@ -1,8 +1,10 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/utility/utility_considerations.lua
+
 UtilityConsiderations = {
 	chaos_warrior_running_attack = {
 		distance_to_target = {
-			max_value = 8,
 			blackboard_input = "target_dist",
+			max_value = 8,
 			spline = {
 				0,
 				0,
@@ -15,12 +17,12 @@ UtilityConsiderations = {
 				0.6066666666666666,
 				0,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		target_move_speed = {
-			max_value = 10,
 			blackboard_input = "target_speed_away",
+			max_value = 10,
 			spline = {
 				0,
 				0,
@@ -29,12 +31,12 @@ UtilityConsiderations = {
 				0.26666666666666666,
 				1,
 				1,
-				0.9966666666666667
-			}
+				0.9966666666666667,
+			},
 		},
 		time_since_last = {
-			max_value = 8,
 			blackboard_input = "time_since_last",
+			max_value = 8,
 			spline = {
 				0,
 				0,
@@ -43,49 +45,49 @@ UtilityConsiderations = {
 				0.6733333333333333,
 				1,
 				1,
-				1
-			}
+				1,
+			},
 		},
 		not_walking = {
-			is_condition = true,
+			blackboard_input = "walking",
 			invert = true,
-			blackboard_input = "walking"
+			is_condition = true,
 		},
 		max_occupied_slots = {
-			max_value = 3,
 			blackboard_input = "target_num_occupied_slots",
+			max_value = 3,
 			spline = {
 				0,
 				1,
 				0.5033333333333333,
 				1,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		have_slot = {
-			max_value = 1,
 			blackboard_input = "have_slot",
+			max_value = 1,
 			spline = {
 				0,
 				0,
 				0.5033333333333333,
 				0,
 				1,
-				1
-			}
-		}
+				1,
+			},
+		},
 	},
 	chaos_warrior_target_changed = {
 		target_changed = {
+			blackboard_input = "target_changed",
 			is_condition = true,
-			blackboard_input = "target_changed"
-		}
+		},
 	},
 	storm_vermin_shield_combo_attack = {
 		distance_to_target_flat_sq = {
-			max_value = 15,
 			blackboard_input = "target_dist_xy_sq",
+			max_value = 15,
 			spline = {
 				0,
 				0,
@@ -100,43 +102,43 @@ UtilityConsiderations = {
 				0.8437957,
 				0,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		time_since_last_frenzy = {
-			max_value = 20,
 			blackboard_input = "time_since_last_combo",
+			max_value = 20,
 			spline = {
 				0,
 				0,
 				0.3,
 				0,
 				1,
-				1
-			}
+				1,
+			},
 		},
 		distance_to_target_height = {
+			blackboard_input = "target_dist_z_abs",
 			max_value = 1.75,
 			min_value = 0,
-			blackboard_input = "target_dist_z_abs",
 			spline = {
 				0,
 				1,
 				0.9,
 				1,
 				0.92,
-				0
-			}
+				0,
+			},
 		},
 		target_is_not_downed = {
 			blackboard_input = "target_is_not_downed",
-			is_condition = true
-		}
+			is_condition = true,
+		},
 	},
 	storm_vermin_warlord_dual_combo_attack = {
 		distance_to_target_flat_sq = {
-			max_value = 25,
 			blackboard_input = "target_dist_xy_sq",
+			max_value = 25,
 			spline = {
 				0,
 				0,
@@ -149,47 +151,47 @@ UtilityConsiderations = {
 				0.8437957,
 				0,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		time_since_last = {
-			max_value = 10,
 			blackboard_input = "time_since_last",
+			max_value = 10,
 			spline = {
 				0,
 				0,
 				0.3,
 				0,
 				1,
-				1
-			}
+				1,
+			},
 		},
 		distance_to_target_height = {
+			blackboard_input = "target_dist_z_abs",
 			max_value = 1.75,
 			min_value = 0,
-			blackboard_input = "target_dist_z_abs",
 			spline = {
 				0,
 				1,
 				0.9,
 				1,
 				0.92,
-				0
-			}
+				0,
+			},
 		},
 		target_is_not_downed = {
 			blackboard_input = "target_is_not_downed",
-			is_condition = true
+			is_condition = true,
 		},
 		has_line_of_sight = {
 			blackboard_input = "has_line_of_sight",
-			is_condition = true
-		}
+			is_condition = true,
+		},
 	},
 	storm_vermin_dual_pounce_attack = {
 		distance_to_target_flat_sq = {
-			max_value = 15,
 			blackboard_input = "target_dist_xy_sq",
+			max_value = 15,
 			spline = {
 				0,
 				0,
@@ -204,31 +206,31 @@ UtilityConsiderations = {
 				0.8437957,
 				0,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		distance_to_target_height = {
+			blackboard_input = "target_dist_z_abs",
 			max_value = 1.75,
 			min_value = 0,
-			blackboard_input = "target_dist_z_abs",
 			spline = {
 				0,
 				1,
 				0.9,
 				1,
 				0.92,
-				0
-			}
+				0,
+			},
 		},
 		target_is_not_downed = {
 			blackboard_input = "target_is_not_downed",
-			is_condition = true
-		}
+			is_condition = true,
+		},
 	},
 	advance_towards_players = {
 		distance_to_target = {
-			max_value = 30,
 			blackboard_input = "target_dist",
+			max_value = 30,
 			spline = {
 				0,
 				0.9966666666666667,
@@ -243,14 +245,14 @@ UtilityConsiderations = {
 				0.6366666666666667,
 				1,
 				1,
-				1
-			}
-		}
+				1,
+			},
+		},
 	},
 	storm_vermin_special_attack = {
 		distance_to_target = {
-			max_value = 4.5,
 			blackboard_input = "target_dist",
+			max_value = 4.5,
 			spline = {
 				0,
 				0,
@@ -263,12 +265,12 @@ UtilityConsiderations = {
 				0.7866666666666666,
 				0,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		target_move_speed = {
-			max_value = 10,
 			blackboard_input = "target_speed_away",
+			max_value = 10,
 			spline = {
 				0,
 				1,
@@ -277,12 +279,12 @@ UtilityConsiderations = {
 				0.15,
 				0,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		time_since_last = {
-			max_value = 7,
 			blackboard_input = "time_since_last",
+			max_value = 7,
 			spline = {
 				0,
 				0,
@@ -291,18 +293,18 @@ UtilityConsiderations = {
 				0.6733333333333333,
 				1,
 				1,
-				1
-			}
+				1,
+			},
 		},
 		has_line_of_sight = {
 			blackboard_input = "has_line_of_sight",
-			is_condition = true
-		}
+			is_condition = true,
+		},
 	},
 	chaos_raider_special_attack = {
 		distance_to_target = {
-			max_value = 4,
 			blackboard_input = "target_dist",
+			max_value = 4,
 			spline = {
 				0,
 				0,
@@ -315,12 +317,12 @@ UtilityConsiderations = {
 				0.85,
 				0,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		target_move_speed = {
-			max_value = 10,
 			blackboard_input = "target_speed_away",
+			max_value = 10,
 			spline = {
 				0,
 				1,
@@ -329,12 +331,12 @@ UtilityConsiderations = {
 				0.22999999999999998,
 				0,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		time_since_last = {
-			max_value = 7,
 			blackboard_input = "time_since_last",
+			max_value = 7,
 			spline = {
 				0,
 				0,
@@ -343,18 +345,18 @@ UtilityConsiderations = {
 				0.6733333333333333,
 				1,
 				1,
-				1
-			}
+				1,
+			},
 		},
 		has_line_of_sight = {
 			blackboard_input = "has_line_of_sight",
-			is_condition = true
-		}
+			is_condition = true,
+		},
 	},
 	plague_monk_normal_attack = {
 		distance_to_target_flat_sq = {
-			max_value = 13,
 			blackboard_input = "target_dist_xy_sq",
+			max_value = 13,
 			spline = {
 				0,
 				0,
@@ -369,17 +371,17 @@ UtilityConsiderations = {
 				0.8437957,
 				0,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		not_in_attack_cooldown = {
 			blackboard_input = "is_in_attack_cooldown",
 			invert = true,
-			is_condition = true
+			is_condition = true,
 		},
 		target_move_speed = {
-			max_value = 10,
 			blackboard_input = "target_speed_away",
+			max_value = 10,
 			spline = {
 				0,
 				1,
@@ -388,27 +390,27 @@ UtilityConsiderations = {
 				0.15,
 				0,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		distance_to_target_height = {
+			blackboard_input = "target_dist_z_abs",
 			max_value = 3.75,
 			min_value = 0,
-			blackboard_input = "target_dist_z_abs",
 			spline = {
 				0,
 				1,
 				0.9,
 				1,
 				0.92,
-				0
-			}
-		}
+				0,
+			},
+		},
 	},
 	marauder_running_attack = {
 		distance_to_target = {
-			max_value = 5,
 			blackboard_input = "target_dist",
+			max_value = 5,
 			spline = {
 				0,
 				0,
@@ -419,36 +421,36 @@ UtilityConsiderations = {
 				0.85,
 				1,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		have_slot = {
-			max_value = 1,
 			blackboard_input = "have_slot",
+			max_value = 1,
 			spline = {
 				0,
 				0,
 				0.5033333333333333,
 				0,
 				1,
-				1
-			}
+				1,
+			},
 		},
 		max_occupied_slots = {
-			max_value = 3,
 			blackboard_input = "target_num_occupied_slots",
+			max_value = 3,
 			spline = {
 				0,
 				1,
 				0.5033333333333333,
 				1,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		target_move_speed = {
-			max_value = 10,
 			blackboard_input = "target_speed_away",
+			max_value = 10,
 			spline = {
 				0,
 				0,
@@ -457,17 +459,17 @@ UtilityConsiderations = {
 				0.4,
 				0.5,
 				1,
-				0.9966666666666667
-			}
+				0.9966666666666667,
+			},
 		},
 		not_in_attack_cooldown = {
 			blackboard_input = "is_in_attack_cooldown",
 			invert = true,
-			is_condition = true
+			is_condition = true,
 		},
 		distance_to_destination = {
-			max_value = 12,
 			blackboard_input = "destination_dist",
+			max_value = 12,
 			spline = {
 				0,
 				0,
@@ -476,18 +478,18 @@ UtilityConsiderations = {
 				0.21,
 				1,
 				1,
-				1
-			}
+				1,
+			},
 		},
 		has_line_of_sight = {
 			blackboard_input = "has_line_of_sight",
-			is_condition = true
-		}
+			is_condition = true,
+		},
 	},
 	clan_rat_running_attack = {
 		distance_to_target = {
-			max_value = 4,
 			blackboard_input = "target_dist",
+			max_value = 4,
 			spline = {
 				0,
 				0,
@@ -498,24 +500,24 @@ UtilityConsiderations = {
 				0.55,
 				0.75,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		have_slot = {
-			max_value = 1,
 			blackboard_input = "have_slot",
+			max_value = 1,
 			spline = {
 				0,
 				0,
 				0.5033333333333333,
 				0,
 				1,
-				1
-			}
+				1,
+			},
 		},
 		target_move_speed = {
-			max_value = 10,
 			blackboard_input = "target_speed_away",
+			max_value = 10,
 			spline = {
 				0,
 				0,
@@ -524,17 +526,17 @@ UtilityConsiderations = {
 				0.4,
 				0.5,
 				1,
-				0.9966666666666667
-			}
+				0.9966666666666667,
+			},
 		},
 		not_in_attack_cooldown = {
 			blackboard_input = "is_in_attack_cooldown",
 			invert = true,
-			is_condition = true
+			is_condition = true,
 		},
 		distance_to_destination = {
-			max_value = 5,
 			blackboard_input = "destination_dist",
+			max_value = 5,
 			spline = {
 				0,
 				0,
@@ -543,18 +545,18 @@ UtilityConsiderations = {
 				0.21,
 				1,
 				1,
-				1
-			}
+				1,
+			},
 		},
 		has_line_of_sight = {
 			blackboard_input = "has_line_of_sight",
-			is_condition = true
-		}
+			is_condition = true,
+		},
 	},
 	running_command_attack = {
 		distance_to_target = {
-			max_value = 7,
 			blackboard_input = "target_dist",
+			max_value = 7,
 			spline = {
 				0,
 				0,
@@ -565,38 +567,38 @@ UtilityConsiderations = {
 				0.85,
 				1,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		have_slot = {
-			max_value = 1,
 			blackboard_input = "have_slot",
+			max_value = 1,
 			spline = {
 				0,
 				0,
 				0.5033333333333333,
 				0,
 				1,
-				1
-			}
+				1,
+			},
 		},
 		max_occupied_slots = {
-			max_value = 3,
 			blackboard_input = "target_num_occupied_slots",
+			max_value = 3,
 			spline = {
 				0,
 				1,
 				0.5033333333333333,
 				1,
 				1,
-				0
-			}
-		}
+				0,
+			},
+		},
 	},
 	jump_slam = {
 		distance_to_target = {
-			max_value = 25,
 			blackboard_input = "target_dist",
+			max_value = 25,
 			spline = {
 				0,
 				0,
@@ -613,12 +615,12 @@ UtilityConsiderations = {
 				0.6266666666666667,
 				0.0033333333333333335,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		chasing_timer = {
-			max_value = 25,
 			blackboard_input = "chasing_timer",
+			max_value = 25,
 			spline = {
 				0,
 				0,
@@ -627,14 +629,14 @@ UtilityConsiderations = {
 				0.36333333333333334,
 				1,
 				1,
-				1
-			}
-		}
+				1,
+			},
+		},
 	},
 	troll_melee_shove = {
 		distance_to_target = {
-			max_value = 6,
 			blackboard_input = "target_dist",
+			max_value = 6,
 			spline = {
 				0,
 				1,
@@ -643,22 +645,22 @@ UtilityConsiderations = {
 				0.6,
 				0,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		target_is_not_downed = {
 			blackboard_input = "target_is_not_downed",
-			is_condition = true
+			is_condition = true,
 		},
 		has_line_of_sight = {
+			blackboard_input = "has_line_of_sight",
 			is_condition = true,
-			blackboard_input = "has_line_of_sight"
-		}
+		},
 	},
 	troll_melee_sweep = {
 		distance_to_target = {
-			max_value = 7,
 			blackboard_input = "target_dist",
+			max_value = 7,
 			spline = {
 				0,
 				1,
@@ -667,34 +669,34 @@ UtilityConsiderations = {
 				0.9,
 				0,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		time_since_last = {
-			max_value = 4,
 			blackboard_input = "time_since_last",
+			max_value = 4,
 			spline = {
 				0,
 				0,
 				0.95,
 				0,
 				1,
-				1
-			}
+				1,
+			},
 		},
 		target_is_not_downed = {
 			blackboard_input = "target_is_not_downed",
-			is_condition = true
+			is_condition = true,
 		},
 		has_line_of_sight = {
+			blackboard_input = "has_line_of_sight",
 			is_condition = true,
-			blackboard_input = "has_line_of_sight"
-		}
+		},
 	},
 	melee_shove = {
 		distance_to_target = {
-			max_value = 5,
 			blackboard_input = "target_dist",
+			max_value = 5,
 			spline = {
 				0,
 				1,
@@ -703,30 +705,30 @@ UtilityConsiderations = {
 				0.6,
 				0,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		target_is_not_downed = {
 			blackboard_input = "target_is_not_downed",
-			is_condition = true
+			is_condition = true,
 		},
 		time_since_last = {
-			max_value = 5,
 			blackboard_input = "time_since_last",
+			max_value = 5,
 			spline = {
 				0,
 				0,
 				0.95,
 				0,
 				1,
-				1
-			}
-		}
+				1,
+			},
+		},
 	},
 	spawn_melee_shove = {
 		distance_to_target = {
-			max_value = 5,
 			blackboard_input = "target_dist",
+			max_value = 5,
 			spline = {
 				0,
 				1,
@@ -735,18 +737,18 @@ UtilityConsiderations = {
 				0.6,
 				0,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		target_is_not_downed = {
 			blackboard_input = "target_is_not_downed",
-			is_condition = true
-		}
+			is_condition = true,
+		},
 	},
 	chaos_spawn_tentacle_grab = {
 		distance_to_target = {
-			max_value = 5,
 			blackboard_input = "target_dist",
+			max_value = 5,
 			spline = {
 				0,
 				1,
@@ -755,84 +757,84 @@ UtilityConsiderations = {
 				0.6,
 				0,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		target_is_not_downed = {
 			blackboard_input = "target_is_not_downed",
-			is_condition = true
+			is_condition = true,
 		},
 		time_since_last = {
-			max_value = 18,
 			blackboard_input = "time_since_last",
+			max_value = 18,
 			spline = {
 				0,
 				0,
 				0.95,
 				0,
 				1,
-				1
-			}
-		}
+				1,
+			},
+		},
 	},
 	attack_grabbed_smash = {
 		current_health_percent = {
-			max_value = 1,
 			blackboard_input = "current_health_percent",
+			max_value = 1,
 			spline = {
 				0,
 				0,
 				0.4333333333333332,
 				1,
 				1,
-				1
-			}
-		}
+				1,
+			},
+		},
 	},
 	attack_grabbed_chew = {
 		current_health_percent = {
-			max_value = 1,
 			blackboard_input = "current_health_percent",
+			max_value = 1,
 			spline = {
 				0,
 				1,
 				0.6,
 				1,
 				1,
-				0.1
-			}
-		}
+				0.1,
+			},
+		},
 	},
 	attack_grabbed_throw = {
 		attack_grabbed_attacks = {
-			max_value = 4,
 			blackboard_input = "attack_grabbed_attacks",
+			max_value = 4,
 			spline = {
 				0,
 				0,
 				0.25,
 				0,
 				1,
-				1
-			}
+				1,
+			},
 		},
 		grabbed_time = {
-			max_value = 10,
 			blackboard_input = "grabbed_time",
+			max_value = 10,
 			spline = {
 				0,
 				0,
 				0.3,
 				0,
 				1,
-				1
-			}
-		}
+				1,
+			},
+		},
 	},
 	clan_rat_shout = {
 		distance_to_target = {
-			max_value = 15,
 			blackboard_input = "target_dist",
+			max_value = 15,
 			spline = {
 				0,
 				0,
@@ -847,12 +849,12 @@ UtilityConsiderations = {
 				0.9466666666666667,
 				0.10333333333333333,
 				1,
-				0.11333333333333333
-			}
+				0.11333333333333333,
+			},
 		},
 		distance_to_destination = {
-			max_value = 3,
 			blackboard_input = "destination_dist",
+			max_value = 3,
 			spline = {
 				0,
 				0.9133333333333333,
@@ -867,26 +869,26 @@ UtilityConsiderations = {
 				0.38,
 				0.05333333333333334,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		wait_slot_distance = {
-			max_value = 10,
 			blackboard_input = "wait_slot_distance",
+			max_value = 10,
 			spline = {
 				0,
 				0.9933333333333333,
 				0.39666666666666667,
 				0,
 				1,
-				0
-			}
-		}
+				0,
+			},
+		},
 	},
 	storm_vermin_shield_push_attack = {
 		distance_to_target = {
-			max_value = 4,
 			blackboard_input = "target_dist",
+			max_value = 4,
 			spline = {
 				0,
 				1,
@@ -895,12 +897,12 @@ UtilityConsiderations = {
 				0.45,
 				0,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		target_move_speed = {
-			max_value = 10,
 			blackboard_input = "target_speed_away",
+			max_value = 10,
 			spline = {
 				0,
 				1,
@@ -909,28 +911,28 @@ UtilityConsiderations = {
 				0.15,
 				0,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		push_attack = {
-			max_value = 15,
 			blackboard_input = "time_since_last",
+			max_value = 15,
 			spline = {
 				0,
 				0,
 				1,
-				1
-			}
+				1,
+			},
 		},
 		target_is_not_downed = {
 			blackboard_input = "target_is_not_downed",
-			is_condition = true
-		}
+			is_condition = true,
+		},
 	},
 	troll_follow = {
 		distance_to_target = {
-			max_value = 20,
 			blackboard_input = "target_dist",
+			max_value = 20,
 			spline = {
 				0,
 				0,
@@ -939,14 +941,14 @@ UtilityConsiderations = {
 				0.2,
 				1,
 				1,
-				1
-			}
-		}
+				1,
+			},
+		},
 	},
 	melee_slam = {
 		distance_to_target = {
-			max_value = 5,
 			blackboard_input = "target_dist",
+			max_value = 5,
 			spline = {
 				0,
 				1,
@@ -955,14 +957,14 @@ UtilityConsiderations = {
 				0.6,
 				0,
 				1,
-				0
-			}
-		}
+				0,
+			},
+		},
 	},
 	chaos_spawn_melee_slam = {
 		distance_to_target = {
-			max_value = 5,
 			blackboard_input = "target_dist",
+			max_value = 5,
 			spline = {
 				0,
 				1,
@@ -971,14 +973,14 @@ UtilityConsiderations = {
 				0.6,
 				0,
 				1,
-				0
-			}
-		}
+				0,
+			},
+		},
 	},
 	vomit = {
 		distance_to_target = {
-			max_value = 10,
 			blackboard_input = "target_dist",
+			max_value = 10,
 			spline = {
 				0,
 				1,
@@ -987,46 +989,46 @@ UtilityConsiderations = {
 				0.8,
 				0,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		time_since_last = {
-			max_value = 1,
 			blackboard_input = "time_since_last",
+			max_value = 1,
 			spline = {
 				0,
 				0,
 				0.8,
 				0,
 				1,
-				1
-			}
+				1,
+			},
 		},
 		time_since_last_done = {
-			max_value = 10,
 			blackboard_input = "time_since_last_done",
+			max_value = 10,
 			spline = {
 				0,
 				0,
 				0.8,
 				0,
 				1,
-				1
-			}
+				1,
+			},
 		},
 		target_is_not_downed = {
 			blackboard_input = "target_is_not_downed",
-			is_condition = true
+			is_condition = true,
 		},
 		has_line_of_sight = {
+			blackboard_input = "has_line_of_sight",
 			is_condition = true,
-			blackboard_input = "has_line_of_sight"
-		}
+		},
 	},
 	clan_rat_follow = {
 		distance_to_destination = {
-			max_value = 5,
 			blackboard_input = "destination_dist",
+			max_value = 5,
 			spline = {
 				0,
 				0,
@@ -1035,18 +1037,18 @@ UtilityConsiderations = {
 				0.15,
 				1,
 				1,
-				1
-			}
+				1,
+			},
 		},
 		is_navbot_following_path = {
+			blackboard_input = "is_navbot_following_path",
 			is_condition = true,
-			blackboard_input = "is_navbot_following_path"
-		}
+		},
 	},
 	reposition_on_slot = {
 		distance_to_target = {
-			max_value = 10,
 			blackboard_input = "target_dist",
+			max_value = 10,
 			spline = {
 				0,
 				0,
@@ -1055,12 +1057,12 @@ UtilityConsiderations = {
 				0.29,
 				0,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		distance_to_destination = {
-			max_value = 5,
 			blackboard_input = "destination_dist",
+			max_value = 5,
 			spline = {
 				0,
 				0,
@@ -1069,18 +1071,18 @@ UtilityConsiderations = {
 				0.15,
 				1,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		is_navbot_following_path = {
+			blackboard_input = "is_navbot_following_path",
 			is_condition = true,
-			blackboard_input = "is_navbot_following_path"
-		}
+		},
 	},
 	storm_vermin_shield_push_attack_wake_up = {
 		distance_to_target = {
-			max_value = 5,
 			blackboard_input = "target_dist",
+			max_value = 5,
 			spline = {
 				0,
 				1,
@@ -1089,24 +1091,24 @@ UtilityConsiderations = {
 				0.6,
 				0,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		push_attack = {
-			max_value = 500,
 			blackboard_input = "wake_up_push",
+			max_value = 500,
 			spline = {
 				0,
 				0,
 				1,
-				1
-			}
-		}
+				1,
+			},
+		},
 	},
 	anti_ladder_melee_slam = {
 		distance_to_ladder = {
-			max_value = 5,
 			blackboard_input = "ladder_distance",
+			max_value = 5,
 			spline = {
 				0,
 				1,
@@ -1115,14 +1117,14 @@ UtilityConsiderations = {
 				0.6,
 				0,
 				1,
-				0
-			}
-		}
+				0,
+			},
+		},
 	},
 	berzerker_frenzy_attack = {
 		distance_to_target_flat_sq = {
-			max_value = 15,
 			blackboard_input = "target_dist_xy_sq",
+			max_value = 15,
 			spline = {
 				0,
 				0,
@@ -1137,43 +1139,43 @@ UtilityConsiderations = {
 				0.8437957,
 				0,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		time_since_last_frenzy = {
-			max_value = 20,
 			blackboard_input = "time_since_last_combo",
+			max_value = 20,
 			spline = {
 				0,
 				0,
 				0.3,
 				0,
 				1,
-				1
-			}
+				1,
+			},
 		},
 		distance_to_target_height = {
+			blackboard_input = "target_dist_z_abs",
 			max_value = 3.75,
 			min_value = 0,
-			blackboard_input = "target_dist_z_abs",
 			spline = {
 				0,
 				1,
 				0.9,
 				1,
 				0.92,
-				0
-			}
+				0,
+			},
 		},
 		target_is_not_downed = {
 			blackboard_input = "target_is_not_downed",
-			is_condition = true
-		}
+			is_condition = true,
+		},
 	},
 	plague_monk_frenzy_attack = {
 		distance_to_target_flat_sq = {
-			max_value = 10,
 			blackboard_input = "target_dist_xy_sq",
+			max_value = 10,
 			spline = {
 				0,
 				0,
@@ -1188,43 +1190,43 @@ UtilityConsiderations = {
 				0.8437957,
 				0,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		time_since_last_frenzy = {
-			max_value = 20,
 			blackboard_input = "time_since_last_combo",
+			max_value = 20,
 			spline = {
 				0,
 				0,
 				0.3,
 				0,
 				1,
-				1
-			}
+				1,
+			},
 		},
 		distance_to_target_height = {
+			blackboard_input = "target_dist_z_abs",
 			max_value = 3.75,
 			min_value = 0,
-			blackboard_input = "target_dist_z_abs",
 			spline = {
 				0,
 				1,
 				0.9,
 				1,
 				0.92,
-				0
-			}
+				0,
+			},
 		},
 		target_is_not_downed = {
 			blackboard_input = "target_is_not_downed",
-			is_condition = true
-		}
+			is_condition = true,
+		},
 	},
 	attack_crouch_sweep = {
 		distance_to_target = {
-			max_value = 7,
 			blackboard_input = "target_dist",
+			max_value = 7,
 			spline = {
 				0,
 				1,
@@ -1233,14 +1235,14 @@ UtilityConsiderations = {
 				0.55,
 				0,
 				1,
-				0
-			}
-		}
+				0,
+			},
+		},
 	},
 	chaos_warrior_launch_attack = {
 		distance_to_target = {
-			max_value = 4,
 			blackboard_input = "target_dist",
+			max_value = 4,
 			spline = {
 				0,
 				0,
@@ -1253,28 +1255,28 @@ UtilityConsiderations = {
 				0.7866666666666666,
 				0,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		special_attack = {
-			max_value = 15,
 			blackboard_input = "time_since_last",
+			max_value = 15,
 			spline = {
 				0,
 				0,
 				0.6,
 				0,
 				1,
-				1
-			}
+				1,
+			},
 		},
 		has_line_of_sight = {
+			blackboard_input = "has_line_of_sight",
 			is_condition = true,
-			blackboard_input = "has_line_of_sight"
 		},
 		stagger_count = {
-			max_value = 5,
 			blackboard_input = "stagger_count",
+			max_value = 5,
 			spline = {
 				0,
 				0,
@@ -1283,14 +1285,14 @@ UtilityConsiderations = {
 				0.5666666666666669,
 				1,
 				1,
-				1
-			}
-		}
+				1,
+			},
+		},
 	},
 	storm_vermin_push_attack = {
 		distance_to_target = {
-			max_value = 4,
 			blackboard_input = "target_dist",
+			max_value = 4,
 			spline = {
 				0,
 				1,
@@ -1299,12 +1301,12 @@ UtilityConsiderations = {
 				0.45,
 				0,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		target_move_speed = {
-			max_value = 10,
 			blackboard_input = "target_speed_away",
+			max_value = 10,
 			spline = {
 				0,
 				1,
@@ -1313,34 +1315,34 @@ UtilityConsiderations = {
 				0.15,
 				0,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		has_line_of_sight = {
 			blackboard_input = "has_line_of_sight",
-			is_condition = true
+			is_condition = true,
 		},
 		push_attack = {
-			max_value = 15,
 			blackboard_input = "time_since_last",
+			max_value = 15,
 			spline = {
 				0,
 				0,
 				0.5,
 				0,
 				1,
-				1
-			}
+				1,
+			},
 		},
 		target_is_not_downed = {
 			blackboard_input = "target_is_not_downed",
-			is_condition = true
-		}
+			is_condition = true,
+		},
 	},
 	chaos_raider_push_attack = {
 		distance_to_target = {
-			max_value = 4,
 			blackboard_input = "target_dist",
+			max_value = 4,
 			spline = {
 				0,
 				1,
@@ -1349,12 +1351,12 @@ UtilityConsiderations = {
 				0.7,
 				0,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		target_move_speed = {
-			max_value = 10,
 			blackboard_input = "target_speed_away",
+			max_value = 10,
 			spline = {
 				0,
 				1,
@@ -1363,34 +1365,34 @@ UtilityConsiderations = {
 				0.15,
 				0,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		has_line_of_sight = {
 			blackboard_input = "has_line_of_sight",
-			is_condition = true
+			is_condition = true,
 		},
 		push_attack = {
-			max_value = 15,
 			blackboard_input = "time_since_last",
+			max_value = 15,
 			spline = {
 				0,
 				0,
 				0.5,
 				0,
 				1,
-				1
-			}
+				1,
+			},
 		},
 		target_is_not_downed = {
 			blackboard_input = "target_is_not_downed",
-			is_condition = true
-		}
+			is_condition = true,
+		},
 	},
 	plague_monk_frenzy_attack_ranged = {
 		distance_to_target_flat_sq = {
-			max_value = 30,
 			blackboard_input = "target_dist_xy_sq",
+			max_value = 30,
 			spline = {
 				0,
 				0,
@@ -1401,47 +1403,47 @@ UtilityConsiderations = {
 				0.81,
 				1,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		time_since_last_frenzy = {
-			max_value = 20,
 			blackboard_input = "time_since_last_combo",
+			max_value = 20,
 			spline = {
 				0,
 				0,
 				0.3,
 				0,
 				1,
-				1
-			}
+				1,
+			},
 		},
 		distance_to_target_height = {
+			blackboard_input = "target_dist_z_abs",
 			max_value = 3.75,
 			min_value = 0,
-			blackboard_input = "target_dist_z_abs",
 			spline = {
 				0,
 				1,
 				0.9,
 				1,
 				0.92,
-				0
-			}
+				0,
+			},
 		},
 		target_is_not_downed = {
 			blackboard_input = "target_is_not_downed",
-			is_condition = true
-		}
+			is_condition = true,
+		},
 	},
 	marauder_attack = {
 		has_line_of_sight = {
 			blackboard_input = "has_line_of_sight",
-			is_condition = true
+			is_condition = true,
 		},
 		distance_to_target_flat_sq = {
-			max_value = 20,
 			blackboard_input = "target_dist_xy_sq",
+			max_value = 20,
 			spline = {
 				0,
 				0,
@@ -1454,30 +1456,30 @@ UtilityConsiderations = {
 				0.8437957,
 				0,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		not_in_attack_cooldown = {
 			blackboard_input = "is_in_attack_cooldown",
 			invert = true,
-			is_condition = true
+			is_condition = true,
 		},
 		distance_to_target_height = {
+			blackboard_input = "target_dist_z_abs",
 			max_value = 3.75,
 			min_value = 0,
-			blackboard_input = "target_dist_z_abs",
 			spline = {
 				0,
 				1,
 				0.9,
 				1,
 				0.92,
-				0
-			}
+				0,
+			},
 		},
 		target_move_speed = {
-			max_value = 10,
 			blackboard_input = "target_speed_away",
+			max_value = 10,
 			spline = {
 				0,
 				1,
@@ -1486,18 +1488,18 @@ UtilityConsiderations = {
 				0.3999999999999999,
 				0,
 				1,
-				0
-			}
-		}
+				0,
+			},
+		},
 	},
 	clan_rat_attack = {
 		has_line_of_sight = {
 			blackboard_input = "has_line_of_sight",
-			is_condition = true
+			is_condition = true,
 		},
 		distance_to_target_flat_sq = {
-			max_value = 13,
 			blackboard_input = "target_dist_xy_sq",
+			max_value = 13,
 			spline = {
 				0,
 				0,
@@ -1512,42 +1514,42 @@ UtilityConsiderations = {
 				0.8437957,
 				0,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		have_slot = {
-			max_value = 1,
 			blackboard_input = "have_slot",
+			max_value = 1,
 			spline = {
 				0,
 				0,
 				0.5033333333333333,
 				0,
 				1,
-				1
-			}
+				1,
+			},
 		},
 		not_in_attack_cooldown = {
 			blackboard_input = "is_in_attack_cooldown",
 			invert = true,
-			is_condition = true
+			is_condition = true,
 		},
 		distance_to_target_height = {
+			blackboard_input = "target_dist_z_abs",
 			max_value = 3.75,
 			min_value = 0,
-			blackboard_input = "target_dist_z_abs",
 			spline = {
 				0,
 				1,
 				0.9,
 				1,
 				0.92,
-				0
-			}
+				0,
+			},
 		},
 		target_move_speed = {
-			max_value = 10,
 			blackboard_input = "target_speed_away",
+			max_value = 10,
 			spline = {
 				0,
 				1,
@@ -1556,14 +1558,14 @@ UtilityConsiderations = {
 				0.15,
 				0,
 				1,
-				0
-			}
-		}
+				0,
+			},
+		},
 	},
 	command_attack = {
 		distance_to_target_flat_sq = {
-			max_value = 30.25,
 			blackboard_input = "target_dist_xy_sq",
+			max_value = 30.25,
 			spline = {
 				0,
 				0,
@@ -1576,31 +1578,31 @@ UtilityConsiderations = {
 				0.8437957,
 				0,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		distance_to_target_height = {
+			blackboard_input = "target_dist_z_abs",
 			max_value = 3.75,
 			min_value = 0,
-			blackboard_input = "target_dist_z_abs",
 			spline = {
 				0,
 				1,
 				0.9,
 				1,
 				0.92,
-				0
-			}
-		}
+				0,
+			},
+		},
 	},
 	berzerker_attack = {
 		has_line_of_sight = {
 			blackboard_input = "has_line_of_sight",
-			is_condition = true
+			is_condition = true,
 		},
 		distance_to_target_flat_sq = {
-			max_value = 13,
 			blackboard_input = "target_dist_xy_sq",
+			max_value = 13,
 			spline = {
 				0,
 				0,
@@ -1615,42 +1617,42 @@ UtilityConsiderations = {
 				0.8437957,
 				0,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		time_since_last_frenzy = {
-			max_value = 20,
 			blackboard_input = "time_since_last_combo",
+			max_value = 20,
 			spline = {
 				0,
 				1,
 				0.3,
 				1,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		not_in_attack_cooldown = {
 			blackboard_input = "is_in_attack_cooldown",
 			invert = true,
-			is_condition = true
+			is_condition = true,
 		},
 		distance_to_target_height = {
+			blackboard_input = "target_dist_z_abs",
 			max_value = 3.75,
 			min_value = 0,
-			blackboard_input = "target_dist_z_abs",
 			spline = {
 				0,
 				1,
 				0.9,
 				1,
 				0.92,
-				0
-			}
+				0,
+			},
 		},
 		target_move_speed = {
-			max_value = 10,
 			blackboard_input = "target_speed_away",
+			max_value = 10,
 			spline = {
 				0,
 				1,
@@ -1659,14 +1661,14 @@ UtilityConsiderations = {
 				0.15,
 				0,
 				1,
-				0
-			}
-		}
+				0,
+			},
+		},
 	},
 	chaos_warrior_push_attack = {
 		distance_to_target = {
-			max_value = 3,
 			blackboard_input = "target_dist",
+			max_value = 3,
 			spline = {
 				0,
 				0,
@@ -1677,12 +1679,12 @@ UtilityConsiderations = {
 				0.75,
 				0,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		target_move_speed = {
-			max_value = 10,
 			blackboard_input = "target_speed_away",
+			max_value = 10,
 			spline = {
 				0,
 				1,
@@ -1691,28 +1693,28 @@ UtilityConsiderations = {
 				0.15,
 				0,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		push_attack = {
-			max_value = 15,
 			blackboard_input = "time_since_last",
+			max_value = 15,
 			spline = {
 				0,
 				0,
 				1,
-				1
-			}
+				1,
+			},
 		},
 		has_line_of_sight = {
+			blackboard_input = "has_line_of_sight",
 			is_condition = true,
-			blackboard_input = "has_line_of_sight"
-		}
+		},
 	},
 	chaos_raider_moving_attack = {
 		distance_to_target = {
-			max_value = 10,
 			blackboard_input = "target_dist",
+			max_value = 10,
 			spline = {
 				0,
 				0,
@@ -1727,12 +1729,12 @@ UtilityConsiderations = {
 				0.7506666666666666,
 				0,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		distance_to_destination = {
-			max_value = 10,
 			blackboard_input = "destination_dist",
+			max_value = 10,
 			spline = {
 				0,
 				0,
@@ -1743,24 +1745,24 @@ UtilityConsiderations = {
 				0.75,
 				0,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		have_slot = {
-			max_value = 1,
 			blackboard_input = "have_slot",
+			max_value = 1,
 			spline = {
 				0,
 				0,
 				0.5033333333333333,
 				0,
 				1,
-				1
-			}
+				1,
+			},
 		},
 		target_move_speed = {
-			max_value = 10,
 			blackboard_input = "target_speed_away",
+			max_value = 10,
 			spline = {
 				0,
 				0,
@@ -1769,24 +1771,24 @@ UtilityConsiderations = {
 				0.133333333,
 				1,
 				1,
-				0.9966666666666667
-			}
+				0.9966666666666667,
+			},
 		},
 		max_occupied_slots = {
-			max_value = 3,
 			blackboard_input = "target_num_occupied_slots",
+			max_value = 3,
 			spline = {
 				0,
 				1,
 				0.5033333333333333,
 				1,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		time_since_last = {
-			max_value = 10,
 			blackboard_input = "time_since_last",
+			max_value = 10,
 			spline = {
 				0,
 				0,
@@ -1797,18 +1799,18 @@ UtilityConsiderations = {
 				0.6733333333333333,
 				1,
 				1,
-				1
-			}
+				1,
+			},
 		},
 		has_line_of_sight = {
+			blackboard_input = "has_line_of_sight",
 			is_condition = true,
-			blackboard_input = "has_line_of_sight"
-		}
+		},
 	},
 	chaos_raider_running_attack = {
 		distance_to_target = {
-			max_value = 10,
 			blackboard_input = "target_dist",
+			max_value = 10,
 			spline = {
 				0,
 				0,
@@ -1819,16 +1821,16 @@ UtilityConsiderations = {
 				0.8,
 				0,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		has_line_of_sight = {
+			blackboard_input = "has_line_of_sight",
 			is_condition = true,
-			blackboard_input = "has_line_of_sight"
 		},
 		distance_to_destination = {
-			max_value = 10,
 			blackboard_input = "destination_dist",
+			max_value = 10,
 			spline = {
 				0,
 				0,
@@ -1839,36 +1841,36 @@ UtilityConsiderations = {
 				0.75,
 				0,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		have_slot = {
-			max_value = 1,
 			blackboard_input = "have_slot",
+			max_value = 1,
 			spline = {
 				0,
 				0,
 				0.5033333333333333,
 				0,
 				1,
-				1
-			}
+				1,
+			},
 		},
 		max_occupied_slots = {
-			max_value = 3,
 			blackboard_input = "target_num_occupied_slots",
+			max_value = 3,
 			spline = {
 				0,
 				1,
 				0.5033333333333333,
 				1,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		target_move_speed = {
-			max_value = 10,
 			blackboard_input = "target_speed_away",
+			max_value = 10,
 			spline = {
 				0,
 				0,
@@ -1877,26 +1879,26 @@ UtilityConsiderations = {
 				0.133333333,
 				1,
 				1,
-				0.9966666666666667
-			}
+				0.9966666666666667,
+			},
 		},
 		time_since_last = {
-			max_value = 10,
 			blackboard_input = "time_since_last",
+			max_value = 10,
 			spline = {
 				0,
 				0,
 				0.8,
 				0,
 				1,
-				1
-			}
-		}
+				1,
+			},
+		},
 	},
 	player_bot_default_combat = {
 		distance_to_target = {
-			max_value = 30,
 			blackboard_input = "target_dist",
+			max_value = 30,
 			spline = {
 				0,
 				1,
@@ -1905,14 +1907,14 @@ UtilityConsiderations = {
 				0.75,
 				0,
 				1,
-				0
-			}
-		}
+				0,
+			},
+		},
 	},
 	troll_cleave = {
 		distance_to_target = {
-			max_value = 7,
 			blackboard_input = "target_dist",
+			max_value = 7,
 			spline = {
 				0,
 				0,
@@ -1925,30 +1927,30 @@ UtilityConsiderations = {
 				0.92,
 				0,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		time_since_last = {
-			max_value = 10,
 			blackboard_input = "time_since_last",
+			max_value = 10,
 			spline = {
 				0,
 				0,
 				0.2,
 				0,
 				1,
-				1
-			}
+				1,
+			},
 		},
 		has_line_of_sight = {
+			blackboard_input = "has_line_of_sight",
 			is_condition = true,
-			blackboard_input = "has_line_of_sight"
-		}
+		},
 	},
 	chaos_warrior_special_attack = {
 		distance_to_target = {
-			max_value = 7,
 			blackboard_input = "target_dist",
+			max_value = 7,
 			spline = {
 				0,
 				0.006666666666666667,
@@ -1961,12 +1963,12 @@ UtilityConsiderations = {
 				0.7866666666666666,
 				0,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		target_move_speed = {
-			max_value = 10,
 			blackboard_input = "target_speed_away",
+			max_value = 10,
 			spline = {
 				0,
 				1,
@@ -1975,28 +1977,28 @@ UtilityConsiderations = {
 				0.45,
 				0,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		special_attack = {
-			max_value = 12,
 			blackboard_input = "time_since_last",
+			max_value = 12,
 			spline = {
 				0,
 				0,
 				0.4,
 				0,
 				1,
-				1
-			}
+				1,
+			},
 		},
 		has_line_of_sight = {
+			blackboard_input = "has_line_of_sight",
 			is_condition = true,
-			blackboard_input = "has_line_of_sight"
 		},
 		stagger_count = {
-			max_value = 5,
 			blackboard_input = "stagger_count",
+			max_value = 5,
 			spline = {
 				0,
 				1,
@@ -2005,14 +2007,14 @@ UtilityConsiderations = {
 				0.2966666666666667,
 				0,
 				1,
-				0.0033333333333333335
-			}
-		}
+				0.0033333333333333335,
+			},
+		},
 	},
 	chaos_warrior_sweep_attack = {
 		distance_to_target = {
-			max_value = 7,
 			blackboard_input = "target_dist",
+			max_value = 7,
 			spline = {
 				0,
 				0.006666666666666667,
@@ -2025,12 +2027,12 @@ UtilityConsiderations = {
 				0.7866666666666666,
 				0,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		target_move_speed = {
-			max_value = 10,
 			blackboard_input = "target_speed_away",
+			max_value = 10,
 			spline = {
 				0,
 				1,
@@ -2039,30 +2041,30 @@ UtilityConsiderations = {
 				0.45,
 				0,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		special_attack = {
-			max_value = 4,
 			blackboard_input = "time_since_last",
+			max_value = 4,
 			spline = {
 				0,
 				0,
 				0.3,
 				0,
 				1,
-				1
-			}
+				1,
+			},
 		},
 		has_line_of_sight = {
+			blackboard_input = "has_line_of_sight",
 			is_condition = true,
-			blackboard_input = "has_line_of_sight"
-		}
+		},
 	},
 	player_bot_default_follow = {
 		distance_to_target = {
-			max_value = 40,
 			blackboard_input = "ally_distance",
+			max_value = 40,
 			spline = {
 				0,
 				0.1,
@@ -2071,20 +2073,20 @@ UtilityConsiderations = {
 				0.75,
 				1,
 				1,
-				1
-			}
-		}
+				1,
+			},
+		},
 	},
 	target_outside_navmesh = {
 		target_outside_navmesh = {
 			blackboard_input = "target_outside_navmesh",
-			is_condition = true
-		}
+			is_condition = true,
+		},
 	},
 	stormfiend_charge = {
 		distance_to_target = {
-			max_value = 20,
 			blackboard_input = "target_dist",
+			max_value = 20,
 			spline = {
 				0,
 				0,
@@ -2097,20 +2099,20 @@ UtilityConsiderations = {
 				0.85,
 				0,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		ray_can_go_to_target = {
+			blackboard_input = "ray_can_go_to_target",
 			is_condition = true,
-			blackboard_input = "ray_can_go_to_target"
 		},
 		has_line_of_sight = {
+			blackboard_input = "has_line_of_sight",
 			is_condition = true,
-			blackboard_input = "has_line_of_sight"
 		},
 		time_since_last = {
-			max_value = 25,
 			blackboard_input = "time_since_last",
+			max_value = 25,
 			spline = {
 				0,
 				0,
@@ -2119,18 +2121,18 @@ UtilityConsiderations = {
 				0.9,
 				1,
 				1,
-				1
-			}
+				1,
+			},
 		},
 		weakspot_rage = {
+			blackboard_input = "weakspot_rage",
 			is_condition = true,
-			blackboard_input = "weakspot_rage"
-		}
+		},
 	},
 	stormfiend_boss_charge = {
 		distance_to_target = {
-			max_value = 20,
 			blackboard_input = "target_dist",
+			max_value = 20,
 			spline = {
 				0,
 				0,
@@ -2143,25 +2145,25 @@ UtilityConsiderations = {
 				0.85,
 				0,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		ray_can_go_to_target = {
+			blackboard_input = "ray_can_go_to_target",
 			is_condition = true,
-			blackboard_input = "ray_can_go_to_target"
 		},
 		mounted_unit_knocked_down = {
-			is_condition = true,
+			blackboard_input = "linked_unit",
 			invert = true,
-			blackboard_input = "linked_unit"
+			is_condition = true,
 		},
 		has_line_of_sight = {
+			blackboard_input = "has_line_of_sight",
 			is_condition = true,
-			blackboard_input = "has_line_of_sight"
 		},
 		time_since_last = {
-			max_value = 3,
 			blackboard_input = "time_since_last",
+			max_value = 3,
 			spline = {
 				0,
 				0,
@@ -2170,14 +2172,14 @@ UtilityConsiderations = {
 				0.9,
 				1,
 				1,
-				1
-			}
-		}
+				1,
+			},
+		},
 	},
 	stormfiend_boss_shoot = {
 		distance_to_target = {
-			max_value = 20,
 			blackboard_input = "target_dist",
+			max_value = 20,
 			spline = {
 				0,
 				0,
@@ -2188,42 +2190,42 @@ UtilityConsiderations = {
 				0.8,
 				0,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		time_since_last = {
-			max_value = 0.5,
 			blackboard_input = "time_since_last",
+			max_value = 0.5,
 			spline = {
 				0,
 				0,
 				0.8,
 				0,
 				1,
-				1
-			}
+				1,
+			},
 		},
 		time_since_last_done = {
-			max_value = 1.5,
 			blackboard_input = "time_since_last_done",
+			max_value = 1.5,
 			spline = {
 				0,
 				0,
 				0.7,
 				0,
 				1,
-				1
-			}
+				1,
+			},
 		},
 		target_is_not_downed = {
 			blackboard_input = "target_is_not_downed",
-			is_condition = true
-		}
+			is_condition = true,
+		},
 	},
 	stormfiend_boss_dual_shoot = {
 		distance_to_target = {
-			max_value = 15,
 			blackboard_input = "target_dist",
+			max_value = 15,
 			spline = {
 				0,
 				0,
@@ -2234,42 +2236,42 @@ UtilityConsiderations = {
 				0.8,
 				0,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		time_since_last = {
-			max_value = 10,
 			blackboard_input = "time_since_last",
+			max_value = 10,
 			spline = {
 				0,
 				0,
 				0.8,
 				0,
 				1,
-				1
-			}
+				1,
+			},
 		},
 		time_since_last_done = {
-			max_value = 1.5,
 			blackboard_input = "time_since_last_done",
+			max_value = 1.5,
 			spline = {
 				0,
 				0,
 				0.7,
 				0,
 				1,
-				1
-			}
+				1,
+			},
 		},
 		target_is_not_downed = {
 			blackboard_input = "target_is_not_downed",
-			is_condition = true
-		}
+			is_condition = true,
+		},
 	},
 	stormfiend_boss_melee_shove = {
 		distance_to_target = {
-			max_value = 4.5,
 			blackboard_input = "target_dist",
+			max_value = 4.5,
 			spline = {
 				0,
 				1,
@@ -2278,18 +2280,18 @@ UtilityConsiderations = {
 				0.7999999999999999,
 				0,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		target_is_not_downed = {
 			blackboard_input = "target_is_not_downed",
-			is_condition = true
-		}
+			is_condition = true,
+		},
 	},
 	stormfiend_shoot = {
 		distance_to_target = {
-			max_value = 20,
 			blackboard_input = "target_dist",
+			max_value = 20,
 			spline = {
 				0,
 				0,
@@ -2300,42 +2302,42 @@ UtilityConsiderations = {
 				0.8,
 				0,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		time_since_last = {
-			max_value = 0.5,
 			blackboard_input = "time_since_last",
+			max_value = 0.5,
 			spline = {
 				0,
 				0,
 				0.8,
 				0,
 				1,
-				1
-			}
+				1,
+			},
 		},
 		time_since_last_done = {
-			max_value = 2,
 			blackboard_input = "time_since_last_done",
+			max_value = 2,
 			spline = {
 				0,
 				0,
 				0.8,
 				0,
 				1,
-				1
-			}
+				1,
+			},
 		},
 		target_is_not_downed = {
 			blackboard_input = "target_is_not_downed",
-			is_condition = true
-		}
+			is_condition = true,
+		},
 	},
 	stormfiend_demo_shoot = {
 		distance_to_target = {
-			max_value = 20,
 			blackboard_input = "target_dist",
+			max_value = 20,
 			spline = {
 				0,
 				0,
@@ -2346,38 +2348,38 @@ UtilityConsiderations = {
 				0.6,
 				0,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		time_since_last = {
-			max_value = 0.5,
 			blackboard_input = "time_since_last",
+			max_value = 0.5,
 			spline = {
 				0,
 				0,
 				0.8,
 				0,
 				1,
-				1
-			}
+				1,
+			},
 		},
 		time_since_last_done = {
-			max_value = 2,
 			blackboard_input = "time_since_last_done",
+			max_value = 2,
 			spline = {
 				0,
 				0,
 				0.8,
 				0,
 				1,
-				1
-			}
-		}
+				1,
+			},
+		},
 	},
 	grey_seer_missile = {
 		time_since_last = {
-			max_value = 5,
 			blackboard_input = "time_since_last",
+			max_value = 5,
 			spline = {
 				0,
 				0,
@@ -2386,14 +2388,14 @@ UtilityConsiderations = {
 				0.9,
 				1,
 				1,
-				1
-			}
-		}
+				1,
+			},
+		},
 	},
 	grey_seer_vermintide_spell = {
 		time_since_last = {
-			max_value = 10,
 			blackboard_input = "time_since_last",
+			max_value = 10,
 			spline = {
 				0,
 				0,
@@ -2402,14 +2404,14 @@ UtilityConsiderations = {
 				0.9,
 				1,
 				1,
-				1
-			}
-		}
+				1,
+			},
+		},
 	},
 	shoot_warpfire_thrower = {
 		distance_to_target = {
-			max_value = 20,
 			blackboard_input = "target_dist",
+			max_value = 20,
 			spline = {
 				0,
 				0,
@@ -2420,12 +2422,12 @@ UtilityConsiderations = {
 				0.8,
 				0,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		time_since_last = {
-			max_value = 5,
 			blackboard_input = "time_since_last",
+			max_value = 5,
 			spline = {
 				0,
 				0,
@@ -2434,18 +2436,18 @@ UtilityConsiderations = {
 				0.2733333333333333,
 				1,
 				1,
-				1
-			}
+				1,
+			},
 		},
 		target_is_not_downed = {
 			blackboard_input = "target_is_not_downed",
-			is_condition = true
-		}
+			is_condition = true,
+		},
 	},
 	follow = {
 		distance_to_target = {
-			max_value = 20,
 			blackboard_input = "target_dist",
+			max_value = 20,
 			spline = {
 				0,
 				0,
@@ -2454,14 +2456,14 @@ UtilityConsiderations = {
 				0.2,
 				1,
 				1,
-				1
-			}
-		}
+				1,
+			},
+		},
 	},
 	stormfiend_follow = {
 		distance_to_target = {
-			max_value = 20,
 			blackboard_input = "target_dist",
+			max_value = 20,
 			spline = {
 				0,
 				0,
@@ -2470,19 +2472,19 @@ UtilityConsiderations = {
 				0.2,
 				1,
 				1,
-				1
-			}
+				1,
+			},
 		},
 		target_inside_navmesh = {
-			is_condition = true,
+			blackboard_input = "target_outside_navmesh",
 			invert = true,
-			blackboard_input = "target_outside_navmesh"
-		}
+			is_condition = true,
+		},
 	},
 	chaos_warrior_follow = {
 		distance_to_target = {
-			max_value = 8,
 			blackboard_input = "target_dist",
+			max_value = 8,
 			spline = {
 				0,
 				0,
@@ -2499,12 +2501,12 @@ UtilityConsiderations = {
 				0.7933333333333333,
 				1,
 				1,
-				1
-			}
+				1,
+			},
 		},
 		distance_to_destination = {
-			max_value = 5,
 			blackboard_input = "destination_dist",
+			max_value = 5,
 			spline = {
 				0,
 				0,
@@ -2513,18 +2515,18 @@ UtilityConsiderations = {
 				0.15,
 				1,
 				1,
-				1
-			}
+				1,
+			},
 		},
 		is_navbot_following_path = {
+			blackboard_input = "is_navbot_following_path",
 			is_condition = true,
-			blackboard_input = "is_navbot_following_path"
-		}
+		},
 	},
 	chaos_exalted_follow = {
 		distance_to_target = {
-			max_value = 8,
 			blackboard_input = "target_dist",
+			max_value = 8,
 			spline = {
 				0,
 				0,
@@ -2541,19 +2543,19 @@ UtilityConsiderations = {
 				0.7933333333333333,
 				1,
 				1,
-				1
-			}
+				1,
+			},
 		},
 		defensive = {
-			is_condition = true,
+			blackboard_input = "defensive_mode_duration",
 			invert = true,
-			blackboard_input = "defensive_mode_duration"
-		}
+			is_condition = true,
+		},
 	},
 	chaos_warrior_combat_step = {
 		distance_to_target = {
-			max_value = 8,
 			blackboard_input = "target_dist",
+			max_value = 8,
 			spline = {
 				0,
 				0,
@@ -2566,29 +2568,29 @@ UtilityConsiderations = {
 				0.79,
 				0,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		have_slot = {
-			max_value = 1,
 			blackboard_input = "have_slot",
+			max_value = 1,
 			spline = {
 				0,
 				0,
 				0.5033333333333333,
 				0,
 				1,
-				1
-			}
+				1,
+			},
 		},
 		not_following_target = {
-			is_condition = true,
+			blackboard_input = "is_following_target",
 			invert = true,
-			blackboard_input = "is_following_target"
+			is_condition = true,
 		},
 		target_move_speed = {
-			max_value = 5,
 			blackboard_input = "target_speed_away_small_sample",
+			max_value = 5,
 			spline = {
 				0,
 				1,
@@ -2601,12 +2603,12 @@ UtilityConsiderations = {
 				0.48333333333333334,
 				0,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		time_since_last = {
-			max_value = 5,
 			blackboard_input = "time_since_last",
+			max_value = 5,
 			spline = {
 				0,
 				0,
@@ -2615,69 +2617,69 @@ UtilityConsiderations = {
 				0.2733333333333333,
 				1,
 				1,
-				1
-			}
+				1,
+			},
 		},
 		is_navbot_following_path = {
+			blackboard_input = "is_navbot_following_path",
 			is_condition = true,
-			blackboard_input = "is_navbot_following_path"
 		},
 		distance_to_target_height = {
+			blackboard_input = "target_dist_z_abs",
 			max_value = 1.75,
 			min_value = 0,
-			blackboard_input = "target_dist_z_abs",
 			spline = {
 				0,
 				1,
 				0.9,
 				1,
 				0.92,
-				0
-			}
-		}
+				0,
+			},
+		},
 	},
 	ungor_backwards_combat_step = {
 		distance_to_target = {
-			max_value = 5,
 			blackboard_input = "target_dist",
+			max_value = 5,
 			spline = {
 				0,
 				1,
 				0.4,
 				1,
 				0.45066666666666666,
-				0
-			}
+				0,
+			},
 		},
 		have_slot = {
-			max_value = 1,
 			blackboard_input = "have_slot",
+			max_value = 1,
 			spline = {
 				0,
 				0,
 				0.5033333333333333,
 				0,
 				1,
-				1
-			}
+				1,
+			},
 		},
 		time_since_last = {
-			max_value = 3,
 			blackboard_input = "time_since_last",
+			max_value = 3,
 			spline = {
 				0,
 				0,
 				0.3506666666666667,
 				0,
 				1,
-				1
-			}
-		}
+				1,
+			},
+		},
 	},
 	chaos_marauder_combat_step = {
 		distance_to_target = {
-			max_value = 10,
 			blackboard_input = "target_dist",
+			max_value = 10,
 			spline = {
 				0,
 				0,
@@ -2690,29 +2692,29 @@ UtilityConsiderations = {
 				0.8500000000000001,
 				0,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		have_slot = {
-			max_value = 1,
 			blackboard_input = "have_slot",
+			max_value = 1,
 			spline = {
 				0,
 				0,
 				0.5033333333333333,
 				0,
 				1,
-				1
-			}
+				1,
+			},
 		},
 		not_following_target = {
-			is_condition = true,
+			blackboard_input = "is_following_target",
 			invert = true,
-			blackboard_input = "is_following_target"
+			is_condition = true,
 		},
 		target_move_speed = {
-			max_value = 8,
 			blackboard_input = "target_speed_away_small_sample",
+			max_value = 8,
 			spline = {
 				0,
 				1,
@@ -2725,55 +2727,55 @@ UtilityConsiderations = {
 				0.48333333333333334,
 				0,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		time_since_last = {
-			max_value = 5,
 			blackboard_input = "time_since_last",
+			max_value = 5,
 			spline = {
 				0,
 				0,
 				0.20666666666666667,
 				0,
 				1,
-				1
-			}
+				1,
+			},
 		},
 		distance_to_target_height = {
+			blackboard_input = "target_dist_z_abs",
 			max_value = 1.75,
 			min_value = 0,
-			blackboard_input = "target_dist_z_abs",
 			spline = {
 				0,
 				1,
 				0.9,
 				1,
 				0.92,
-				0
-			}
+				0,
+			},
 		},
 		is_navbot_following_path = {
+			blackboard_input = "is_navbot_following_path",
 			is_condition = true,
-			blackboard_input = "is_navbot_following_path"
 		},
 		wait_slot_distance = {
-			max_value = 10,
 			blackboard_input = "wait_slot_distance",
+			max_value = 10,
 			spline = {
 				0,
 				0,
 				0.39666666666666667,
 				0,
 				1,
-				1
-			}
-		}
+				1,
+			},
+		},
 	},
 	chaos_exalted_swing_attack = {
 		distance_to_target = {
-			max_value = 8,
 			blackboard_input = "target_dist",
+			max_value = 8,
 			spline = {
 				0,
 				1,
@@ -2784,18 +2786,18 @@ UtilityConsiderations = {
 				0.6066666666666666,
 				0,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		has_line_of_sight = {
+			blackboard_input = "has_line_of_sight",
 			is_condition = true,
-			blackboard_input = "has_line_of_sight"
-		}
+		},
 	},
 	chaos_exalted_overhead_cleave_attack = {
 		distance_to_target = {
-			max_value = 8,
 			blackboard_input = "target_dist",
+			max_value = 8,
 			spline = {
 				0,
 				1,
@@ -2806,18 +2808,18 @@ UtilityConsiderations = {
 				0.6066666666666666,
 				0,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		has_line_of_sight = {
+			blackboard_input = "has_line_of_sight",
 			is_condition = true,
-			blackboard_input = "has_line_of_sight"
-		}
+		},
 	},
 	chaos_sorcerer_combo_swing_attack = {
 		distance_to_target = {
-			max_value = 12,
 			blackboard_input = "target_dist",
+			max_value = 12,
 			spline = {
 				0,
 				1,
@@ -2828,18 +2830,18 @@ UtilityConsiderations = {
 				0.6066666666666666,
 				0,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		has_line_of_sight = {
+			blackboard_input = "has_line_of_sight",
 			is_condition = true,
-			blackboard_input = "has_line_of_sight"
-		}
+		},
 	},
 	chaos_exalted_cleave_attack = {
 		distance_to_target = {
-			max_value = 7,
 			blackboard_input = "target_dist",
+			max_value = 7,
 			spline = {
 				0,
 				0.006666666666666667,
@@ -2852,12 +2854,12 @@ UtilityConsiderations = {
 				0.7866666666666666,
 				0,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		target_move_speed = {
-			max_value = 10,
 			blackboard_input = "target_speed_away",
+			max_value = 10,
 			spline = {
 				0,
 				1,
@@ -2866,30 +2868,30 @@ UtilityConsiderations = {
 				0.45,
 				0,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		special_attack = {
-			max_value = 10,
 			blackboard_input = "time_since_last",
+			max_value = 10,
 			spline = {
 				0,
 				0,
 				0.4,
 				0,
 				1,
-				1
-			}
+				1,
+			},
 		},
 		has_line_of_sight = {
+			blackboard_input = "has_line_of_sight",
 			is_condition = true,
-			blackboard_input = "has_line_of_sight"
-		}
+		},
 	},
 	chaos_exalted_launch_attack = {
 		distance_to_target = {
-			max_value = 5,
 			blackboard_input = "target_dist",
+			max_value = 5,
 			spline = {
 				0,
 				1,
@@ -2900,12 +2902,12 @@ UtilityConsiderations = {
 				0.7866666666666666,
 				0,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		target_move_speed = {
-			max_value = 10,
 			blackboard_input = "target_speed_away",
+			max_value = 10,
 			spline = {
 				0,
 				1,
@@ -2914,30 +2916,30 @@ UtilityConsiderations = {
 				0.15,
 				0,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		time_since_last = {
-			max_value = 15,
 			blackboard_input = "time_since_last",
+			max_value = 15,
 			spline = {
 				0,
 				0,
 				0.5,
 				0,
 				1,
-				1
-			}
+				1,
+			},
 		},
 		has_line_of_sight = {
+			blackboard_input = "has_line_of_sight",
 			is_condition = true,
-			blackboard_input = "has_line_of_sight"
-		}
+		},
 	},
 	chaos_exalted_kick_attack = {
 		distance_to_target = {
-			max_value = 5,
 			blackboard_input = "target_dist",
+			max_value = 5,
 			spline = {
 				0,
 				1,
@@ -2948,30 +2950,30 @@ UtilityConsiderations = {
 				0.7866666666666666,
 				0,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		time_since_last = {
-			max_value = 15,
 			blackboard_input = "time_since_last",
+			max_value = 15,
 			spline = {
 				0,
 				0,
 				0.5,
 				0,
 				1,
-				1
-			}
+				1,
+			},
 		},
 		has_line_of_sight = {
+			blackboard_input = "has_line_of_sight",
 			is_condition = true,
-			blackboard_input = "has_line_of_sight"
-		}
+		},
 	},
 	chaos_exalted_launch_attack_defensive = {
 		distance_to_target = {
-			max_value = 5,
 			blackboard_input = "target_dist",
+			max_value = 5,
 			spline = {
 				0,
 				1,
@@ -2982,30 +2984,30 @@ UtilityConsiderations = {
 				0.7866666666666666,
 				0,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		time_since_last = {
-			max_value = 3,
 			blackboard_input = "time_since_last",
+			max_value = 3,
 			spline = {
 				0,
 				0,
 				0.5,
 				0,
 				1,
-				1
-			}
+				1,
+			},
 		},
 		has_line_of_sight = {
+			blackboard_input = "has_line_of_sight",
 			is_condition = true,
-			blackboard_input = "has_line_of_sight"
-		}
+		},
 	},
 	storm_vermin_running_attack = {
 		distance_to_target = {
-			max_value = 10,
 			blackboard_input = "target_dist",
+			max_value = 10,
 			spline = {
 				0,
 				1,
@@ -3014,24 +3016,24 @@ UtilityConsiderations = {
 				0.5066666666666666,
 				0,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		have_slot = {
-			max_value = 1,
 			blackboard_input = "have_slot",
+			max_value = 1,
 			spline = {
 				0,
 				0,
 				0.5033333333333333,
 				0,
 				1,
-				1
-			}
+				1,
+			},
 		},
 		target_move_speed = {
-			max_value = 10,
 			blackboard_input = "target_speed_away",
+			max_value = 10,
 			spline = {
 				0,
 				0,
@@ -3040,12 +3042,12 @@ UtilityConsiderations = {
 				0.133333333,
 				1,
 				1,
-				0.9966666666666667
-			}
+				0.9966666666666667,
+			},
 		},
 		time_since_last = {
-			max_value = 10,
 			blackboard_input = "time_since_last",
+			max_value = 10,
 			spline = {
 				0,
 				0,
@@ -3054,14 +3056,14 @@ UtilityConsiderations = {
 				0.6733333333333333,
 				1,
 				1,
-				1
-			}
-		}
+				1,
+			},
+		},
 	},
 	chaos_berzerker_running_attack = {
 		distance_to_target = {
-			max_value = 10,
 			blackboard_input = "target_dist",
+			max_value = 10,
 			spline = {
 				0,
 				0,
@@ -3074,24 +3076,24 @@ UtilityConsiderations = {
 				0.8,
 				0,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		have_slot = {
-			max_value = 1,
 			blackboard_input = "have_slot",
+			max_value = 1,
 			spline = {
 				0,
 				0,
 				0.5033333333333333,
 				0,
 				1,
-				1
-			}
+				1,
+			},
 		},
 		target_move_speed = {
-			max_value = 10,
 			blackboard_input = "target_speed_away",
+			max_value = 10,
 			spline = {
 				0,
 				0,
@@ -3100,12 +3102,12 @@ UtilityConsiderations = {
 				0.133333333,
 				1,
 				1,
-				0.9966666666666667
-			}
+				0.9966666666666667,
+			},
 		},
 		time_since_last = {
-			max_value = 10,
 			blackboard_input = "time_since_last",
+			max_value = 10,
 			spline = {
 				0,
 				0,
@@ -3114,26 +3116,26 @@ UtilityConsiderations = {
 				0.6733333333333333,
 				1,
 				1,
-				1
-			}
+				1,
+			},
 		},
 		time_since_last_frenzy = {
-			max_value = 20,
 			blackboard_input = "time_since_last_combo",
+			max_value = 20,
 			spline = {
 				0,
 				0,
 				0.3,
 				0,
 				1,
-				1
-			}
-		}
+				1,
+			},
+		},
 	},
 	chaos_spawn_combo = {
 		distance_to_target = {
-			max_value = 6,
 			blackboard_input = "target_dist",
+			max_value = 6,
 			spline = {
 				0,
 				0,
@@ -3144,30 +3146,30 @@ UtilityConsiderations = {
 				0.9,
 				0,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		time_since_last = {
-			max_value = 10,
 			blackboard_input = "time_since_last",
+			max_value = 10,
 			spline = {
 				0,
 				0,
 				0.4,
 				0,
 				1,
-				1
-			}
+				1,
+			},
 		},
 		target_is_not_downed = {
 			blackboard_input = "target_is_not_downed",
-			is_condition = true
-		}
+			is_condition = true,
+		},
 	},
 	rat_ogre_combo = {
 		distance_to_target = {
-			max_value = 6,
 			blackboard_input = "target_dist",
+			max_value = 6,
 			spline = {
 				0,
 				0,
@@ -3178,12 +3180,12 @@ UtilityConsiderations = {
 				0.95,
 				0.85,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		time_since_last = {
-			max_value = 10,
 			blackboard_input = "time_since_last",
+			max_value = 10,
 			spline = {
 				0,
 				0,
@@ -3192,14 +3194,14 @@ UtilityConsiderations = {
 				0.7,
 				0,
 				1,
-				1
-			}
-		}
+				1,
+			},
+		},
 	},
 	storm_vermin_champion_special_attack = {
 		distance_to_target = {
-			max_value = 10,
 			blackboard_input = "target_dist",
+			max_value = 10,
 			spline = {
 				0,
 				0,
@@ -3208,30 +3210,30 @@ UtilityConsiderations = {
 				0.3,
 				1,
 				0.5,
-				0
-			}
+				0,
+			},
 		},
 		target_move_speed = {
-			max_value = 10,
 			blackboard_input = "target_speed_away",
+			max_value = 10,
 			spline = {
 				0,
 				1,
 				0.14,
 				1,
 				0.2,
-				0
-			}
+				0,
+			},
 		},
 		has_line_of_sight = {
+			blackboard_input = "has_line_of_sight",
 			is_condition = true,
-			blackboard_input = "has_line_of_sight"
-		}
+		},
 	},
 	storm_vermin_champion_special_attack_defensive = {
 		distance_to_target = {
-			max_value = 10,
 			blackboard_input = "target_dist",
+			max_value = 10,
 			spline = {
 				0,
 				0,
@@ -3240,19 +3242,19 @@ UtilityConsiderations = {
 				0.3,
 				1,
 				0.5,
-				0
-			}
+				0,
+			},
 		},
 		has_line_of_sight = {
+			blackboard_input = "has_line_of_sight",
 			is_condition = true,
-			blackboard_input = "has_line_of_sight"
-		}
+		},
 	},
 	storm_vermin_champion_running_attack = {
 		distance_to_target = {
+			blackboard_input = "target_dist",
 			max_value = 4.5,
 			min_value = 2,
-			blackboard_input = "target_dist",
 			spline = {
 				0,
 				0,
@@ -3265,12 +3267,12 @@ UtilityConsiderations = {
 				0.7866666666666666,
 				0,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		target_move_speed = {
-			max_value = 4,
 			blackboard_input = "target_speed_away",
+			max_value = 4,
 			spline = {
 				0,
 				0,
@@ -3279,12 +3281,12 @@ UtilityConsiderations = {
 				0.3,
 				0.5,
 				1,
-				0.9966666666666667
-			}
+				0.9966666666666667,
+			},
 		},
 		distance_to_destination = {
-			max_value = 8,
 			blackboard_input = "destination_dist",
+			max_value = 8,
 			spline = {
 				0,
 				0,
@@ -3293,21 +3295,21 @@ UtilityConsiderations = {
 				0.21,
 				1,
 				1,
-				1
-			}
+				1,
+			},
 		},
 		has_line_of_sight = {
+			blackboard_input = "has_line_of_sight",
 			is_condition = true,
-			blackboard_input = "has_line_of_sight"
 		},
 		defensive = {
-			is_condition = true,
+			blackboard_input = "defensive_mode_duration",
 			invert = true,
-			blackboard_input = "defensive_mode_duration"
+			is_condition = true,
 		},
 		time_since_last = {
-			max_value = 8,
 			blackboard_input = "time_since_last",
+			max_value = 8,
 			spline = {
 				0,
 				0,
@@ -3316,14 +3318,14 @@ UtilityConsiderations = {
 				0.66,
 				0.2,
 				1,
-				1
-			}
-		}
+				1,
+			},
+		},
 	},
 	storm_vermin_champion_spin = {
 		surrounding_players = {
-			max_value = 4,
 			blackboard_input = "surrounding_players",
+			max_value = 4,
 			spline = {
 				0,
 				0,
@@ -3334,12 +3336,12 @@ UtilityConsiderations = {
 				0.75,
 				1,
 				1,
-				1
-			}
+				1,
+			},
 		},
 		time_since_last = {
-			max_value = 10,
 			blackboard_input = "time_since_last",
+			max_value = 10,
 			spline = {
 				0,
 				0,
@@ -3348,14 +3350,14 @@ UtilityConsiderations = {
 				0.66,
 				0.2,
 				1,
-				1
-			}
-		}
+				1,
+			},
+		},
 	},
 	chaos_exalted_aoe = {
 		time_since_last = {
-			max_value = 22,
 			blackboard_input = "time_since_last",
+			max_value = 22,
 			spline = {
 				0,
 				0,
@@ -3364,113 +3366,113 @@ UtilityConsiderations = {
 				0.66,
 				0.2,
 				1,
-				1
-			}
+				1,
+			},
 		},
 		surrounding_players = {
-			max_value = 4,
 			blackboard_input = "surrounding_players",
+			max_value = 4,
 			spline = {
 				0,
 				0,
 				0.5,
 				0,
 				1,
-				1
-			}
-		}
+				1,
+			},
+		},
 	},
 	dummy_defensive_seeking_bomb = {
 		time_since_last = {
-			max_value = 12,
 			blackboard_input = "time_since_last",
+			max_value = 12,
 			spline = {
 				0,
 				0,
 				0.5,
 				0,
 				1,
-				1
-			}
-		}
+				1,
+			},
+		},
 	},
 	swarm_players = {
 		time_since_last = {
+			blackboard_input = "time_since_last",
 			max_value = 15,
 			min_value = 10,
-			blackboard_input = "time_since_last",
 			spline = {
 				0,
 				0,
 				0.5,
 				0,
 				1,
-				1
-			}
-		}
+				1,
+			},
+		},
 	},
 	chaos_exalted_defensive_aoe = {
 		time_since_last = {
-			max_value = 4,
 			blackboard_input = "time_since_last",
+			max_value = 4,
 			spline = {
 				0,
 				0,
 				0.5,
 				0,
 				1,
-				1
-			}
+				1,
+			},
 		},
 		surrounding_players = {
-			max_value = 1,
 			blackboard_input = "surrounding_players",
+			max_value = 1,
 			spline = {
 				0,
 				0,
 				1,
-				1
-			}
+				1,
+			},
 		},
 		in_defensive_phase = {
+			blackboard_input = "defensive_mode_duration",
 			is_condition = true,
-			blackboard_input = "defensive_mode_duration"
-		}
+		},
 	},
 	stormfiend_boss_aoe = {
 		time_since_last = {
-			max_value = 10,
 			blackboard_input = "time_since_last",
+			max_value = 10,
 			spline = {
 				0,
 				0,
 				0.5,
 				0,
 				1,
-				1
-			}
+				1,
+			},
 		},
 		surrounding_players = {
-			max_value = 2,
 			blackboard_input = "surrounding_players",
+			max_value = 2,
 			spline = {
 				0,
 				0,
 				1,
-				1
-			}
-		}
+				1,
+			},
+		},
 	},
 	chaos_exalted_defensive_idle = {
 		in_defensive_phase = {
+			blackboard_input = "defensive_mode_duration",
 			is_condition = true,
-			blackboard_input = "defensive_mode_duration"
-		}
+		},
 	},
 	chaos_exalted_champion_lunge_attack = {
 		distance_to_target = {
-			max_value = 15,
 			blackboard_input = "target_dist",
+			max_value = 15,
 			spline = {
 				0,
 				0,
@@ -3487,20 +3489,20 @@ UtilityConsiderations = {
 				0.85,
 				0,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		ray_can_go_to_target = {
+			blackboard_input = "ray_can_go_to_target",
 			is_condition = true,
-			blackboard_input = "ray_can_go_to_target"
 		},
 		has_line_of_sight = {
+			blackboard_input = "has_line_of_sight",
 			is_condition = true,
-			blackboard_input = "has_line_of_sight"
 		},
 		time_since_last = {
-			max_value = 10,
 			blackboard_input = "time_since_last",
+			max_value = 10,
 			spline = {
 				0,
 				0,
@@ -3509,14 +3511,14 @@ UtilityConsiderations = {
 				0.9,
 				1,
 				1,
-				1
-			}
-		}
+				1,
+			},
+		},
 	},
 	chaos_exalted_champion_angry_lunge_attack = {
 		distance_to_target = {
-			max_value = 15,
 			blackboard_input = "target_dist",
+			max_value = 15,
 			spline = {
 				0,
 				0,
@@ -3533,20 +3535,20 @@ UtilityConsiderations = {
 				0.85,
 				0,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		ray_can_go_to_target = {
+			blackboard_input = "ray_can_go_to_target",
 			is_condition = true,
-			blackboard_input = "ray_can_go_to_target"
 		},
 		has_line_of_sight = {
+			blackboard_input = "has_line_of_sight",
 			is_condition = true,
-			blackboard_input = "has_line_of_sight"
 		},
 		time_since_last = {
-			max_value = 1,
 			blackboard_input = "time_since_last",
+			max_value = 1,
 			spline = {
 				0,
 				0,
@@ -3555,14 +3557,14 @@ UtilityConsiderations = {
 				0.9,
 				1,
 				1,
-				1
-			}
-		}
+				1,
+			},
+		},
 	},
 	chaos_exalted_champion_throw_attack = {
 		distance_to_target = {
-			max_value = 15,
 			blackboard_input = "target_dist",
+			max_value = 15,
 			spline = {
 				0,
 				0,
@@ -3577,20 +3579,20 @@ UtilityConsiderations = {
 				0.85,
 				0,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		ray_can_go_to_target = {
+			blackboard_input = "ray_can_go_to_target",
 			is_condition = true,
-			blackboard_input = "ray_can_go_to_target"
 		},
 		has_line_of_sight = {
+			blackboard_input = "has_line_of_sight",
 			is_condition = true,
-			blackboard_input = "has_line_of_sight"
 		},
 		time_since_last = {
-			max_value = 15,
 			blackboard_input = "time_since_last",
+			max_value = 15,
 			spline = {
 				0,
 				0,
@@ -3599,14 +3601,14 @@ UtilityConsiderations = {
 				0.9,
 				1,
 				1,
-				1
-			}
-		}
+				1,
+			},
+		},
 	},
 	storm_vermin_champion_lunge_attack = {
 		distance_to_target = {
-			max_value = 9,
 			blackboard_input = "target_dist",
+			max_value = 9,
 			spline = {
 				0,
 				0,
@@ -3619,16 +3621,16 @@ UtilityConsiderations = {
 				0.85,
 				0,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		has_line_of_sight = {
+			blackboard_input = "has_line_of_sight",
 			is_condition = true,
-			blackboard_input = "has_line_of_sight"
 		},
 		time_since_last = {
-			max_value = 10,
 			blackboard_input = "time_since_last",
+			max_value = 10,
 			spline = {
 				0,
 				0,
@@ -3637,64 +3639,64 @@ UtilityConsiderations = {
 				0.9,
 				1,
 				1,
-				1
-			}
+				1,
+			},
 		},
 		phase = {
-			max_value = 1,
 			blackboard_input = "spawned_allies_wave",
+			max_value = 1,
 			spline = {
 				0,
 				0,
 				1,
-				1
-			}
+				1,
+			},
 		},
 		defensive = {
-			is_condition = true,
+			blackboard_input = "defensive_mode_duration",
 			invert = true,
-			blackboard_input = "defensive_mode_duration"
-		}
+			is_condition = true,
+		},
 	},
 	storm_vermin_champion_shatter_attack = {
 		distance_to_target = {
-			max_value = 15,
 			blackboard_input = "target_dist",
+			max_value = 15,
 			spline = {
 				0,
 				1,
 				0.99,
 				1,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		has_line_of_sight = {
+			blackboard_input = "has_line_of_sight",
 			is_condition = true,
-			blackboard_input = "has_line_of_sight"
 		},
 		phase = {
-			max_value = 3,
 			blackboard_input = "current_phase",
+			max_value = 3,
 			spline = {
 				0,
 				0,
 				0.7,
 				0,
 				1,
-				1
-			}
+				1,
+			},
 		},
 		defensive = {
-			is_condition = true,
+			blackboard_input = "defensive_mode_duration",
 			invert = true,
-			blackboard_input = "defensive_mode_duration"
-		}
+			is_condition = true,
+		},
 	},
 	storm_vermin_champion_defensive_shatter_attack = {
 		distance_to_target = {
-			max_value = 9,
 			blackboard_input = "target_dist",
+			max_value = 9,
 			spline = {
 				0,
 				0,
@@ -3707,60 +3709,60 @@ UtilityConsiderations = {
 				0.85,
 				0,
 				1,
-				0
-			}
+				0,
+			},
 		},
 		has_line_of_sight = {
+			blackboard_input = "has_line_of_sight",
 			is_condition = true,
-			blackboard_input = "has_line_of_sight"
 		},
 		phase = {
-			max_value = 2,
 			blackboard_input = "current_phase",
+			max_value = 2,
 			spline = {
 				0,
 				0,
 				0.5,
 				1,
 				1,
-				1
-			}
+				1,
+			},
 		},
 		defensive = {
+			blackboard_input = "defensive_mode_duration",
 			is_condition = true,
-			blackboard_input = "defensive_mode_duration"
-		}
+		},
 	},
 	storm_vermin_champion_spawn = {
 		phase = {
-			max_value = 2,
 			blackboard_input = "current_phase",
+			max_value = 2,
 			spline = {
 				0,
 				0,
 				0.5,
 				0,
 				1,
-				1
-			}
+				1,
+			},
 		},
 		time_since_last = {
-			max_value = 2200,
 			blackboard_input = "time_since_last",
+			max_value = 2200,
 			spline = {
 				0,
 				0,
 				0.025,
 				0,
 				1,
-				1
-			}
-		}
+				1,
+			},
+		},
 	},
 	chaos_exalted_angry_charge_sequence = {
 		phase = {
-			max_value = 3,
 			blackboard_input = "current_phase",
+			max_value = 3,
 			spline = {
 				0,
 				0,
@@ -3769,26 +3771,26 @@ UtilityConsiderations = {
 				0.7,
 				0,
 				1,
-				1
-			}
+				1,
+			},
 		},
 		time_since_last = {
-			max_value = 2200,
 			blackboard_input = "time_since_last",
+			max_value = 2200,
 			spline = {
 				0,
 				0,
 				0.025,
 				0,
 				1,
-				1
-			}
-		}
+				1,
+			},
+		},
 	},
 	grey_seer_death_sequence = {
 		phase = {
-			max_value = 5,
 			blackboard_input = "current_phase",
+			max_value = 5,
 			spline = {
 				0,
 				0,
@@ -3797,14 +3799,14 @@ UtilityConsiderations = {
 				0.8,
 				0,
 				1,
-				1
-			}
-		}
+				1,
+			},
+		},
 	},
 	storm_vermin_champion_follow = {
 		distance_to_target = {
-			max_value = 20,
 			blackboard_input = "target_dist",
+			max_value = 20,
 			spline = {
 				0,
 				0,
@@ -3813,51 +3815,51 @@ UtilityConsiderations = {
 				0.2,
 				1,
 				1,
-				1
-			}
+				1,
+			},
 		},
 		defensive = {
-			is_condition = true,
+			blackboard_input = "defensive_mode_duration",
 			invert = true,
-			blackboard_input = "defensive_mode_duration"
-		}
+			is_condition = true,
+		},
 	},
 	storm_vermin_champion_turn_to_face_target = {
 		target_changed = {
+			blackboard_input = "target_changed",
 			is_condition = true,
-			blackboard_input = "target_changed"
-		}
+		},
 	},
 	storm_vermin_champion_defensive_spin = {
 		defensive = {
+			blackboard_input = "defensive_mode_duration",
 			is_condition = true,
-			blackboard_input = "defensive_mode_duration"
 		},
 		time_since_last = {
-			max_value = 4,
 			blackboard_input = "time_since_last",
+			max_value = 4,
 			spline = {
 				0,
 				0,
 				0.5,
-				1
-			}
+				1,
+			},
 		},
 		surrounding_players = {
-			max_value = 1,
 			blackboard_input = "surrounding_players",
+			max_value = 1,
 			spline = {
 				0,
 				0,
 				1,
-				1
-			}
-		}
+				1,
+			},
+		},
 	},
 	vortex_skulking = {
 		time_since_last_vortex = {
-			max_value = 10,
 			blackboard_input = "time_since_last",
+			max_value = 10,
 			spline = {
 				0,
 				0,
@@ -3866,12 +3868,12 @@ UtilityConsiderations = {
 				0.66,
 				0.2,
 				1,
-				1
-			}
+				1,
+			},
 		},
 		distance_to_target = {
-			max_value = 20,
 			blackboard_input = "target_dist",
+			max_value = 20,
 			spline = {
 				0,
 				0,
@@ -3880,14 +3882,14 @@ UtilityConsiderations = {
 				0.6,
 				1,
 				1,
-				1
-			}
-		}
+				1,
+			},
+		},
 	},
 	tentacle_skulking = {
 		time_since_last_tentacle = {
-			max_value = 30,
 			blackboard_input = "time_since_last",
+			max_value = 30,
 			spline = {
 				0,
 				0,
@@ -3896,12 +3898,12 @@ UtilityConsiderations = {
 				0.8,
 				0.8,
 				1,
-				1
-			}
+				1,
+			},
 		},
 		distance_to_target = {
-			max_value = 20,
 			blackboard_input = "target_dist",
+			max_value = 20,
 			spline = {
 				0,
 				0,
@@ -3910,14 +3912,14 @@ UtilityConsiderations = {
 				0.6,
 				1,
 				1,
-				1
-			}
-		}
+				1,
+			},
+		},
 	},
 	plague_wave_skulking = {
 		time_since_last_plague_wave = {
-			max_value = 10,
 			blackboard_input = "time_since_last",
+			max_value = 10,
 			spline = {
 				0,
 				0,
@@ -3926,12 +3928,12 @@ UtilityConsiderations = {
 				0.66,
 				0.2,
 				1,
-				1
-			}
+				1,
+			},
 		},
 		distance_to_target = {
-			max_value = 20,
 			blackboard_input = "target_dist",
+			max_value = 20,
 			spline = {
 				0,
 				0,
@@ -3940,14 +3942,14 @@ UtilityConsiderations = {
 				0.6,
 				1,
 				1,
-				1
-			}
-		}
+				1,
+			},
+		},
 	},
 	exalted_plague_wave_skulking = {
 		time_since_last_plague_wave = {
-			max_value = 8,
 			blackboard_input = "time_since_last",
+			max_value = 8,
 			spline = {
 				0,
 				0,
@@ -3956,14 +3958,14 @@ UtilityConsiderations = {
 				0.66,
 				0.2,
 				1,
-				1
-			}
-		}
+				1,
+			},
+		},
 	},
 	seeking_bomb_missile_skulking = {
 		time_since_last_bomb = {
-			max_value = 15,
 			blackboard_input = "time_since_last",
+			max_value = 15,
 			spline = {
 				0,
 				0,
@@ -3972,14 +3974,14 @@ UtilityConsiderations = {
 				0.66,
 				0.2,
 				1,
-				1
-			}
-		}
+				1,
+			},
+		},
 	},
 	magic_missile_skulking = {
 		time_since_last_missile = {
-			max_value = 5,
 			blackboard_input = "time_since_last",
+			max_value = 5,
 			spline = {
 				0,
 				0,
@@ -3988,12 +3990,12 @@ UtilityConsiderations = {
 				0.66,
 				1,
 				1,
-				1
-			}
+				1,
+			},
 		},
 		distance_to_target = {
-			max_value = 20,
 			blackboard_input = "target_dist",
+			max_value = 20,
 			spline = {
 				0,
 				0,
@@ -4002,160 +4004,160 @@ UtilityConsiderations = {
 				0.6,
 				1,
 				1,
-				1
-			}
+				1,
+			},
 		},
 		recent_attacker = {
-			is_condition = true,
+			blackboard_input = "recent_attacker",
 			invert = false,
-			blackboard_input = "recent_attacker"
-		}
+			is_condition = true,
+		},
 	},
 	defensive_magic_missile = {
 		time_since_last_missile_def = {
-			max_value = 10,
 			blackboard_input = "time_since_last",
+			max_value = 10,
 			spline = {
 				0,
 				0.1,
 				0.66,
 				0.2,
 				1,
-				1
-			}
+				1,
+			},
 		},
 		distance_to_target = {
-			max_value = 20,
 			blackboard_input = "target_dist",
+			max_value = 20,
 			spline = {
 				0,
 				0.1,
 				0.6,
 				1,
 				1,
-				1
-			}
+				1,
+			},
 		},
 		recent_attacker = {
-			is_condition = true,
+			blackboard_input = "recent_attacker_unit",
 			invert = false,
-			blackboard_input = "recent_attacker_unit"
+			is_condition = true,
 		},
 		target_unit = {
-			is_condition = true,
+			blackboard_input = "target_unit",
 			invert = false,
-			blackboard_input = "target_unit"
-		}
+			is_condition = true,
+		},
 	},
 	teleport_attack = {
 		time_since_last = {
+			blackboard_input = "time_since_last",
 			max_value = 15,
 			min_value = 10,
-			blackboard_input = "time_since_last",
 			spline = {
 				0,
 				0,
 				0.5,
 				0,
 				1,
-				1
-			}
-		}
+				1,
+			},
+		},
 	},
 	defensive_sorcerer_trickle = {
 		time_since_last = {
+			blackboard_input = "time_since_last",
 			max_value = 12,
 			min_value = 10,
-			blackboard_input = "time_since_last",
 			spline = {
 				0,
 				0,
 				0.36,
 				0.4,
 				1,
-				1
-			}
-		}
+				1,
+			},
+		},
 	},
 	defensive_seeking_bomb = {
 		time_since_last_bomb_def = {
+			blackboard_input = "time_since_last",
 			max_value = 10,
 			min_value = 6,
-			blackboard_input = "time_since_last",
 			spline = {
 				0,
 				0,
 				0.5,
 				0.5,
 				1,
-				1
-			}
+				1,
+			},
 		},
 		distance_to_target = {
-			max_value = 20,
 			blackboard_input = "target_dist",
+			max_value = 20,
 			spline = {
 				0,
 				0.1,
 				0.6,
 				1,
 				1,
-				1
-			}
-		}
+				1,
+			},
+		},
 	},
 	defensive_sorcerer_idle = {
 		time_since_last_idle = {
-			max_value = 10,
 			blackboard_input = "time_since_last",
+			max_value = 10,
 			spline = {
 				0,
 				0.1,
 				0.66,
 				0.2,
 				1,
-				1
-			}
-		}
+				1,
+			},
+		},
 	},
 	defensive_spawn_tentacle = {
 		time_since_last = {
-			max_value = 5,
 			blackboard_input = "time_since_last",
+			max_value = 5,
 			spline = {
 				0,
 				0,
 				0.7,
 				0,
 				1,
-				1
-			}
+				1,
+			},
 		},
 		can_spawn_portals = {
-			is_condition = true,
+			blackboard_input = "can_spawn_portals",
 			invert = false,
-			blackboard_input = "can_spawn_portals"
+			is_condition = true,
 		},
 		in_boss_arena = {
-			is_condition = true,
+			blackboard_input = "in_boss_arena",
 			invert = false,
-			blackboard_input = "in_boss_arena"
-		}
+			is_condition = true,
+		},
 	},
 	rat_explosion_attack = {
 		distance_to_target = {
-			max_value = 10,
 			blackboard_input = "target_dist",
+			max_value = 10,
 			spline = {
 				0,
 				1,
 				0.25,
 				1,
 				0.45,
-				0
-			}
-		}
-	}
+				0,
+			},
+		},
+	},
 }
 
 DLCUtils.require_list("utility_considerations_file_names")

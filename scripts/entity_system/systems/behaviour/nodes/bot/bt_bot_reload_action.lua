@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bot/bt_bot_reload_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTBotReloadAction = class(BTBotReloadAction, BTNode)

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/cutscene_overlay_templates/cutscene_utils.lua
+
 local M = {}
 
 function _convert_string_timestamp_to_seconds(string_timestamp)
@@ -15,6 +17,7 @@ M.convert_string_timestamps_to_seconds = function (cutscene_template_settings)
 			local start_time_in_seconds = _convert_string_timestamp_to_seconds(start_timestamp)
 			local end_time_in_seconds = _convert_string_timestamp_to_seconds(end_timestamp)
 			local duration = end_time_in_seconds - start_time_in_seconds
+
 			entry.duration = duration
 			entry.start_time = start_time_in_seconds
 			entry.end_time = end_time_in_seconds

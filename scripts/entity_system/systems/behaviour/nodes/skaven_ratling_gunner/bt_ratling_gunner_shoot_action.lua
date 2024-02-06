@@ -1,9 +1,13 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/skaven_ratling_gunner/bt_ratling_gunner_shoot_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTRatlingGunnerShootAction = class(BTRatlingGunnerShootAction, BTNode)
+
 local PI = math.pi
 local TWO_PI = PI * 2
 local BOT_THREAT_UPDATE_TIME = 1
+
 CLIENT_CONTROLLED_RATLING_GUN = true
 
 BTRatlingGunnerShootAction.init = function (self, ...)
@@ -17,6 +21,7 @@ BTRatlingGunnerShootAction.enter = function (self, unit, blackboard, t)
 	local data = blackboard.attack_pattern_data or {}
 	local new_target, node_name, old_target_visible = PerceptionUtils.pick_ratling_gun_target(unit, blackboard)
 	local target_unit = new_target or data.target_unit
+
 	blackboard.action = action
 	data.target_unit = target_unit
 	data.target_node_name = node_name or data.target_node_name
@@ -39,6 +44,7 @@ BTRatlingGunnerShootAction.enter = function (self, unit, blackboard, t)
 
 	if self._use_obstacle then
 		local lof_nav_obs, aos_nav_obs = self:_create_nav_obstacles(unit, target_unit, blackboard.nav_world, action)
+
 		data.line_of_fire_nav_obstacle = lof_nav_obs
 		data.arc_of_sight_nav_obstacle = aos_nav_obs
 	end
@@ -74,14 +80,16 @@ end
 BTRatlingGunnerShootAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	blackboard.anim_cb_attack_shoot_start_finished = nil
 	blackboard.anim_cb_attack_shoot_random_shot = nil
+
 	local drawer = Managers.state.debug:drawer({
 		mode = "retained",
-		name = "BTRatlingGunnerShootAction"
+		name = "BTRatlingGunnerShootAction",
 	})
 
 	drawer:reset()
 
 	local data = blackboard.attack_pattern_data
+
 	data.shoot_direction_box = nil
 	data.aim_position_box = nil
 	data.current_aim_rotation = nil
@@ -189,6 +197,7 @@ BTRatlingGunnerShootAction._notify_attacking = function (self, self_unit, target
 
 	if Unit.alive(target_unit) then
 		local status_extension = ScriptUnit.extension(target_unit, "status_system")
+
 		status_extension.under_ratling_gunner_attack = true
 	end
 end
@@ -198,12 +207,14 @@ BTRatlingGunnerShootAction._notify_no_longer_attacking = function (self, self_un
 
 	if Unit.alive(target_unit) then
 		local status_extension = ScriptUnit.extension(target_unit, "status_system")
+
 		status_extension.under_ratling_gunner_attack = false
 	end
 end
 
 BTRatlingGunnerShootAction.stop_shooting = function (self, unit, data)
 	data.is_shooting = nil
+
 	local owner_unit_id = Managers.state.unit_storage:go_id(unit)
 
 	Managers.state.network.network_transmit:send_rpc_clients("rpc_ai_weapon_shoot_end", owner_unit_id)
@@ -231,7 +242,7 @@ BTRatlingGunnerShootAction._update_shooting = function (self, unit, blackboard, 
 		self:_shoot(unit, blackboard, t, dt)
 	end
 
-	if data.update_bot_threat_t < t then
+	if t > data.update_bot_threat_t then
 		self:_create_bot_threat_box(unit, data, BOT_THREAT_UPDATE_TIME)
 
 		data.update_bot_threat_t = t + BOT_THREAT_UPDATE_TIME
@@ -247,7 +258,9 @@ BTRatlingGunnerShootAction._update_shooting = function (self, unit, blackboard, 
 		local rotation = Quaternion.look(direction, Vector3.up())
 		local fire_pose = Matrix4x4.from_quaternion_position(rotation, lof_position)
 		local sight_pose = Matrix4x4.from_quaternion_position(rotation, aos_position)
+
 		self.last_t = self.last_t or t
+
 		local fire_obstacle = data.line_of_fire_nav_obstacle
 		local sight_obstacle = data.arc_of_sight_nav_obstacle
 
@@ -324,7 +337,7 @@ local VIEW_CONE = 0.7071067
 BTRatlingGunnerShootAction._update_target = function (self, unit, blackboard, action, data, t, dt)
 	local switched_target = false
 
-	if data.target_check < t then
+	if t > data.target_check then
 		local old_target = data.target_unit
 		local target, node_name, old_target_visible, old_target_visible_node_name, target_distance_sq, old_target_distance_sq = PerceptionUtils.pick_ratling_gun_target(unit, blackboard, old_target, VIEW_CONE, data.shoot_direction_box:unbox())
 
@@ -373,7 +386,7 @@ BTRatlingGunnerShootAction._update_target = function (self, unit, blackboard, ac
 end
 
 BTRatlingGunnerShootAction._calculate_wanted_target_position = function (self, unit, target_unit, data)
-	local target_position, unit_position = nil
+	local target_position, unit_position
 	local obscured = data.target_obscured
 
 	if data.target_obscured then
@@ -391,12 +404,14 @@ end
 
 BTRatlingGunnerShootAction._start_align_towards_target = function (self, unit, blackboard, data, target_unit, t)
 	data.state = "align"
+
 	local start_direction = data.shoot_direction_box:unbox()
 	local target_position, wanted_rotation, unit_position = self:_calculate_wanted_target_position(unit, target_unit, data)
 	local flat_start_direction = Vector3.normalize(Vector3.flat(start_direction))
 	local flat_wanted_direction = Vector3.normalize(Vector3.flat(target_position - unit_position))
 	local angle = Vector3.flat_angle(flat_start_direction, flat_wanted_direction)
 	local action = blackboard.action
+
 	data.align_start = t
 	data.shoot_direction_start_box = Vector3Box(start_direction)
 	data.shoot_duration = AiUtils.random(action.attack_time[1], action.attack_time[2])
@@ -453,6 +468,7 @@ BTRatlingGunnerShootAction._update_align_towards_target = function (self, unit, 
 	end
 
 	data.align_speed = speed
+
 	local angle = 0 + speed * dt
 	local new_rot = Quaternion.multiply(current_rotation, Quaternion(Vector3.up(), angle))
 	local locomotion_extension = blackboard.locomotion_extension
@@ -468,7 +484,7 @@ BTRatlingGunnerShootAction._update_align_towards_target = function (self, unit, 
 end
 
 BTRatlingGunnerShootAction._angle_to_speed = function (self, angle_left)
-	if SLOW_DOWN_ANGLE < angle_left then
+	if angle_left > SLOW_DOWN_ANGLE then
 		return MAX_SPEED
 	elseif angle_left < -SLOW_DOWN_ANGLE then
 		return -MAX_SPEED
@@ -550,7 +566,7 @@ BTRatlingGunnerShootAction._fire_from_position_direction = function (self, black
 	local ratling_gun_unit = data.ratling_gun_unit
 	local fire_node = Unit.node(ratling_gun_unit, "p_fx")
 	local position = Unit.world_position(ratling_gun_unit, fire_node)
-	local direction = nil
+	local direction
 
 	if blackboard.in_hit_reaction then
 		direction = Quaternion.forward(Unit.world_rotation(ratling_gun_unit, fire_node))
@@ -585,7 +601,7 @@ BTRatlingGunnerShootAction._shoot = function (self, unit, blackboard)
 		hit_effect = light_weight_projectile_template.hit_effect,
 		player_push_velocity = Vector3Box(normalized_direction * light_weight_projectile_template.impact_push_speed),
 		projectile_linker = light_weight_projectile_template.projectile_linker,
-		first_person_hit_flow_events = light_weight_projectile_template.first_person_hit_flow_events
+		first_person_hit_flow_events = light_weight_projectile_template.first_person_hit_flow_events,
 	}
 	local projectile_system = Managers.state.entity:system("projectile_system")
 	local peer_id = data.peer_id

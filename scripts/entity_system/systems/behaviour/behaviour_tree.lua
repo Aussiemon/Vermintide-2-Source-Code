@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/behaviour_tree.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_random")
 require("scripts/entity_system/systems/behaviour/nodes/bt_selector")
 require("scripts/entity_system/systems/behaviour/nodes/bt_sequence")

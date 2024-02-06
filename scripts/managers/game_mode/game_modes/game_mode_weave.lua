@@ -1,8 +1,11 @@
+﻿-- chunkname: @scripts/managers/game_mode/game_modes/game_mode_weave.lua
+
 require("scripts/managers/game_mode/game_modes/game_mode_base")
 require("scripts/managers/game_mode/spawning_components/weave_spawning")
 
 script_data.disable_gamemode_end = script_data.disable_gamemode_end or Development.parameter("disable_gamemode_end")
 GameModeWeave = class(GameModeWeave, GameModeBase)
+
 local COMPLETE_LEVEL_VAR = false
 local FAIL_LEVEL_VAR = false
 
@@ -14,7 +17,9 @@ GameModeWeave.init = function (self, settings, world, network_server, is_server,
 	self.about_to_win = false
 	self.win_condition_timer = nil
 	self._adventure_profile_rules = AdventureProfileRules:new(self._profile_synchronizer, self._network_server)
+
 	local hero_side = Managers.state.side:get_side_from_name("heroes")
+
 	self._weave_spawning = WeaveSpawning:new(self._profile_synchronizer, hero_side, self._is_server, self._network_server, game_mode_settings and game_mode_settings.game_mode_data)
 
 	self:_register_player_spawner(self._weave_spawning)
@@ -26,6 +31,7 @@ GameModeWeave.init = function (self, settings, world, network_server, is_server,
 
 	self._local_player_spawned = false
 	self._quick_play = Managers.matchmaking:is_quick_game()
+
 	local event_manager = Managers.state.event
 
 	event_manager:register(self, "level_start_local_player_spawned", "event_local_player_spawned")
@@ -70,7 +76,7 @@ GameModeWeave.evaluate_end_conditions = function (self, round_started, dt, t, mu
 	local lost = not self._lose_condition_disabled and (mutator_lost or humans_dead or players_disabled or self._level_failed or time_up)
 
 	if self._about_to_win then
-		if self.win_condition_timer < t then
+		if t > self.win_condition_timer then
 			return true, "won"
 		else
 			return false
@@ -79,7 +85,7 @@ GameModeWeave.evaluate_end_conditions = function (self, round_started, dt, t, mu
 
 	if self.about_to_lose then
 		if lost then
-			if self.lost_condition_timer < t then
+			if t > self.lost_condition_timer then
 				return true, "lost"
 			else
 				return false
@@ -141,13 +147,13 @@ GameModeWeave.on_ai_unit_destroyed = function (self, unit, blackboard, reason)
 		local breed = blackboard.breed
 		local death_data = {
 			despawned = true,
-			breed = breed
+			breed = breed,
 		}
 		local weave_objective_system = Managers.state.entity:system("weave_objective_system")
 		local pos = Vector3Box(POSITION_LOOKUP[unit])
 		local rot = QuaternionBox(Unit.local_rotation(unit, 0))
 		local optional_data = {
-			spawn_type = spawn_type
+			spawn_type = spawn_type,
 		}
 
 		enemy_recycler:add_breed(breed.name, pos, rot, optional_data)
@@ -319,8 +325,7 @@ GameModeWeave.game_lost = function (self)
 end
 
 GameModeWeave.get_end_screen_config = function (self, game_won, game_lost, player)
-	local screen_name = "none"
-	local screen_config = {}
+	local screen_name, screen_config = "none", {}
 
 	if game_won then
 		local weave_manager = Managers.weave
@@ -329,7 +334,7 @@ GameModeWeave.get_end_screen_config = function (self, game_won, game_lost, playe
 		if not next_objective_index then
 			screen_name = "victory"
 			screen_config = {
-				show_act_presentation = false
+				show_act_presentation = false,
 			}
 		end
 	else
@@ -421,6 +426,7 @@ GameModeWeave._setup_bot_spawn_priority_lookup = function (self)
 
 			for i = 1, num_saved_priority do
 				local profile_id = saved_priority[i]
+
 				self._bot_profile_id_to_priority_id[profile_id] = i
 			end
 		else
@@ -493,6 +499,7 @@ GameModeWeave._add_bot = function (self, bot_players)
 	end
 
 	local bot_player = self:_add_bot_to_party(party_id, profile_index, career_index)
+
 	bot_players[#bot_players + 1] = bot_player
 end
 
@@ -508,12 +515,13 @@ GameModeWeave._remove_bot = function (self, bot_players, index, update_safe)
 	end
 
 	local last = #bot_players
+
 	bot_players[index] = bot_players[last]
 	bot_players[last] = nil
 end
 
 GameModeWeave._remove_bot_by_profile = function (self, bot_players, profile_index)
-	local bot_index = nil
+	local bot_index
 	local num_current_bots = #bot_players
 
 	for i = 1, num_current_bots do

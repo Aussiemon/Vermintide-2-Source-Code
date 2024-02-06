@@ -1,9 +1,10 @@
+﻿-- chunkname: @scripts/network/unit_storage.lua
+
 local function bimap_add(bm, a, b)
 	fassert(a and b, "bimap_add, nil arguments")
 	fassert(not bm[a] and not bm[b], "bimap_add, already contained a and/or b")
 
-	bm[b] = a
-	bm[a] = b
+	bm[a], bm[b] = b, a
 end
 
 local function bimap_remove(bm, a)
@@ -13,11 +14,11 @@ local function bimap_remove(bm, a)
 
 	fassert(b, "bimap_remove, didn't contain item")
 
-	bm[b] = nil
-	bm[a] = nil
+	bm[a], bm[b] = nil
 end
 
 local type = type
+
 NetworkUnitStorage = class(NetworkUnitStorage)
 
 NetworkUnitStorage.init = function (self)
@@ -132,6 +133,7 @@ end
 NetworkUnitStorage.transfer_go_id = function (self, unit, unit_new)
 	local bimap_goid_unit = self.bimap_goid_unit
 	local go_id = bimap_goid_unit[unit]
+
 	bimap_goid_unit[unit_new] = go_id
 	bimap_goid_unit[go_id] = unit_new
 	bimap_goid_unit[unit] = nil

@@ -1,6 +1,9 @@
+﻿-- chunkname: @scripts/managers/world_interaction/world_interaction_manager.lua
+
 require("scripts/managers/world_interaction/world_interaction_settings")
 
 WorldInteractionManager = class(WorldInteractionManager)
+
 local ENEMIES = {}
 
 WorldInteractionManager.init = function (self, world)
@@ -34,6 +37,7 @@ end
 WorldInteractionManager._add_water_ripple = function (self, pos, angle, material, random_size_diff, stretch_multiplier, ref_time, size, multiplier)
 	local water_settings = WorldInteractionSettings.water
 	local random_ripple_size_diff = water_settings.random_ripple_size_diff
+
 	self._water_ripples[#self._water_ripples + 1] = {
 		timer = 0,
 		pos = Vector3Box(pos),
@@ -43,7 +47,7 @@ WorldInteractionManager._add_water_ripple = function (self, pos, angle, material
 		stretch_multiplier = stretch_multiplier,
 		ref_time = ref_time,
 		default_size = size,
-		multiplier = multiplier
+		multiplier = multiplier,
 	}
 end
 
@@ -138,7 +142,9 @@ WorldInteractionManager._update_water_data = function (self, dt, t)
 	local speed_limit = water_settings.water_speed_limit
 	local ripple_time_step = water_settings.ripple_time_step
 	local max_contributing_units = water_settings.max_contributing_units
+
 	self._water_timer = self._water_timer or 0
+
 	local current_index = 1
 
 	if ripple_time_step <= self._water_timer then
@@ -203,7 +209,7 @@ WorldInteractionManager._update_water_data = function (self, dt, t)
 
 								if max_contributing_units <= contributing_units then
 									break
-								elseif available_units[unit] < t then
+								elseif t > available_units[unit] then
 									local wwise_source_id, wwise_world = WwiseUtils.make_position_auto_source(self._world, pos)
 
 									WwiseWorld.trigger_event(wwise_world, water_settings.ripple_sound_event, wwise_source_id)
@@ -238,11 +244,12 @@ WorldInteractionManager._update_water_ripples = function (self, dt, t)
 	local w, h = Gui.resolution()
 	local window_size = math.clamp(water_settings.window_size, 1, 100)
 	local counter = 0
-	local water_data = nil
+	local water_data
 	local num_water_data = #self._water_ripples
 
 	for idx = 1, num_water_data do
 		water_data = self._water_ripples[idx]
+
 		local ref_time = water_data.ref_time or default_ripple_timer
 		local pos = water_data.pos:unbox()
 		local stretch_multiplier = water_data.stretch_multiplier or ripple_stretch_multiplier
@@ -260,7 +267,9 @@ WorldInteractionManager._update_water_ripples = function (self, dt, t)
 		local realtive_start_pos = relative_screen_pos - relative_texture_size * 0.5
 		local tm = Rotation2D(Vector3(0, 0, 0), angle, realtive_start_pos + relative_texture_size * 0.5)
 		local value = 1 - math.pow(water_data.timer / ref_time, 3)
+
 		value = 1 - t
+
 		local alpha = value * 255
 
 		Gui.bitmap_3d(self._gui, water_data.material, tm, realtive_start_pos, layer, relative_texture_size, Color(alpha, 255, 255, 255))
@@ -345,7 +354,7 @@ WorldInteractionManager._update_foliage_players = function (self, dt, t)
 			local mover = Unit.mover(player_unit)
 
 			if Mover.collides_down(mover) then
-				local texture_size = nil
+				local texture_size
 
 				if player.local_player then
 					TEXTURE_SIZE[1] = texture_world_size[1] * local_player_multiplier
@@ -398,7 +407,7 @@ WorldInteractionManager._update_foliage_ai = function (self, local_player_unit, 
 	local w, h = Gui.resolution()
 	local player_pos = Unit.local_position(local_player_unit, 0)
 	local ai_broadphase = Managers.state.entity:system("ai_system").broadphase
-	local ai_unit = nil
+	local ai_unit
 	local num_enemies = Broadphase.query(ai_broadphase, player_pos, window_size * 0.5, ENEMIES)
 
 	for i = 1, num_enemies do

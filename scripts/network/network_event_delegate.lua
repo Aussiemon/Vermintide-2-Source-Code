@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/network/network_event_delegate.lua
+
 NetworkEventDelegate = class(NetworkEventDelegate)
+
 local delegate_metatable = getmetatable(NetworkEventDelegate)
 
 local function empty_function()
@@ -11,18 +14,20 @@ end
 
 NetworkEventDelegate.init = function (self)
 	self._registered_objects = {}
-	local event_meta_table = {
-		__index = function (t, key)
-			if key == "approve_channel" then
-				return empty_deny_function
-			end
 
-			visual_assert(false, "RPC not registered %q", key)
-			printf("RPC not registered %q", key)
+	local event_meta_table = {}
 
-			return empty_function
+	event_meta_table.__index = function (t, key)
+		if key == "approve_channel" then
+			return empty_deny_function
 		end
-	}
+
+		visual_assert(false, "RPC not registered %q", key)
+		printf("RPC not registered %q", key)
+
+		return empty_function
+	end
+
 	self.event_table = setmetatable({}, event_meta_table)
 	self._return_objects = {}
 end
@@ -73,7 +78,7 @@ end
 NetworkEventDelegate.unregister = function (self, object)
 	for callback_name, registered_objects in pairs(self._registered_objects) do
 		local num_registered_objects = #registered_objects
-		local found = nil
+		local found
 
 		for i = num_registered_objects, 1, -1 do
 			local registered_object = registered_objects[i]

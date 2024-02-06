@@ -1,16 +1,19 @@
+﻿-- chunkname: @scripts/entity_system/systems/keep_decoration/keep_decoration_system.lua
+
 require("scripts/settings/keep_decoration_settings")
 require("scripts/unit_extensions/level/keep_decoration_painting_extension")
 require("scripts/unit_extensions/level/keep_decoration_trophy_extension")
 require("scripts/settings/trophies")
 
 KeepDecorationSystem = class(KeepDecorationSystem, ExtensionSystemBase)
+
 local extensions = {
 	"KeepDecorationPaintingExtension",
-	"KeepDecorationTrophyExtension"
+	"KeepDecorationTrophyExtension",
 }
 local RPCS = {
 	"rpc_request_painting",
-	"rpc_send_painting"
+	"rpc_send_painting",
 }
 
 KeepDecorationSystem.init = function (self, entity_system_creation_context, system_name)
@@ -169,6 +172,7 @@ end
 
 KeepDecorationSystem._add_client_painting = function (self, player_id, painting)
 	local client_paintings = self._client_paintings
+
 	client_paintings[player_id] = painting
 end
 

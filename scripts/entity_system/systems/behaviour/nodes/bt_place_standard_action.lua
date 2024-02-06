@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_place_standard_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTPlaceStandardAction = class(BTPlaceStandardAction, BTNode)
@@ -18,6 +20,7 @@ end
 
 BTPlaceStandardAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
+
 	blackboard.action = action
 	blackboard.active_node = BTPlaceStandardAction
 
@@ -41,6 +44,7 @@ BTPlaceStandardAction.leave = function (self, unit, blackboard, t, reason, destr
 	blackboard.action = nil
 	blackboard.attacking_target = nil
 	blackboard.attack_aborted = nil
+
 	local ai_slot_system = Managers.state.entity:system("ai_slot_system")
 
 	ai_slot_system:do_slot_search(unit, true)
@@ -79,10 +83,9 @@ BTPlaceStandardAction.anim_cb_place_standard = function (self, unit, blackboard)
 	if game then
 		local self_pos = POSITION_LOOKUP[unit]
 		local position = self_pos + Quaternion.forward(Unit.local_rotation(unit, 0))
-		local position_on_navmesh = nil
+		local position_on_navmesh
 		local nav_world = blackboard.nav_world
-		local above = 1
-		local below = 1
+		local above, below = 1, 1
 		local is_on_navmesh, altitude = GwNavQueries.triangle_from_position(nav_world, position, above, below)
 
 		if is_on_navmesh then
@@ -91,6 +94,7 @@ BTPlaceStandardAction.anim_cb_place_standard = function (self, unit, blackboard)
 		else
 			local horizontal_limit = 1
 			local distance_from_nav_border = 0.05
+
 			position_on_navmesh = GwNavQueries.inside_position_from_outside_position(nav_world, position, above, below, horizontal_limit, distance_from_nav_border)
 		end
 
@@ -98,22 +102,24 @@ BTPlaceStandardAction.anim_cb_place_standard = function (self, unit, blackboard)
 			local action = blackboard.action
 			local extension_init_data = {
 				health_system = {
-					health = action.standard_health
+					health = action.standard_health,
 				},
 				death_system = {
-					death_reaction_template = "standard"
+					death_reaction_template = "standard",
 				},
 				ai_supplementary_system = {
 					standard_template_name = action.standard_template_name,
-					standard_bearer_unit = unit
+					standard_bearer_unit = unit,
 				},
 				ping_system = {
-					always_pingable = true
-				}
+					always_pingable = true,
+				},
 			}
 			local unit_name = "units/weapons/enemy/wpn_bm_standard_01/wpn_bm_standard_01_placed"
 			local standard_unit = Managers.state.unit_spawner:spawn_network_unit(unit_name, "standard_unit", extension_init_data, position_on_navmesh)
+
 			blackboard.standard_unit = standard_unit
+
 			local world = blackboard.world
 			local explosion_position = Unit.local_position(standard_unit, 0)
 			local explosion_template = ExplosionTemplates.standard_bearer_explosion

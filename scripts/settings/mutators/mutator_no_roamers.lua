@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/mutators/mutator_no_roamers.lua
+
 return {
 	hide_from_player_ui = true,
 	tweak_pack_spawning_settings = function (conflict_director_name, pack_spawning_settings)
@@ -6,5 +8,5 @@ return {
 		for _, difficulty_override in pairs(pack_spawning_settings.difficulty_overrides) do
 			difficulty_override.area_density_coefficient = 0
 		end
-	end
+	end,
 }

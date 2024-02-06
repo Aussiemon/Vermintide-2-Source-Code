@@ -1,25 +1,27 @@
+﻿-- chunkname: @levels/honduras_dlcs/bogenhafen/level_settings_bogenhafen.lua
+
 LevelSettings.dlc_bogenhafen_slum = {
-	act_unlock_order = 0,
-	climate_type = "",
-	ambient_sound_event = "silent_default_world_sound",
-	environment_state = "exterior",
-	player_aux_bus_name = "environment_reverb_outside",
-	display_name = "level_name_bogenhafen_slum",
 	act = "act_bogenhafen",
+	act_presentation_order = 1,
+	act_unlock_order = 0,
+	ambient_sound_event = "silent_default_world_sound",
+	boss_spawning_method = "hand_placed",
+	climate_type = "",
+	default_surface_material = "dirt",
+	description_text = "nik_loading_screen_dlc_pit_01",
+	display_name = "level_name_bogenhafen_slum",
+	dlc_name = "bogenhafen",
+	environment_state = "exterior",
+	knocked_down_setting = "knocked_down",
 	level_image = "level_icon_bgh_pit",
+	level_name = "levels/honduras_dlcs/bogenhafen/slum/world",
+	loading_ui_package_name = "loading_screen_16",
+	player_aux_bus_name = "environment_reverb_outside",
+	source_aux_bus_name = "environment_reverb_outside_source",
 	unlockable = true,
 	use_mini_patrols = true,
-	dlc_name = "bogenhafen",
-	description_text = "nik_loading_screen_dlc_pit_01",
-	act_presentation_order = 1,
-	boss_spawning_method = "hand_placed",
-	loading_ui_package_name = "loading_screen_16",
-	default_surface_material = "dirt",
-	knocked_down_setting = "knocked_down",
-	level_name = "levels/honduras_dlcs/bogenhafen/slum/world",
-	source_aux_bus_name = "environment_reverb_outside_source",
 	packages = {
-		"resource_packages/levels/dlcs/bogenhafen/slum"
+		"resource_packages/levels/dlcs/bogenhafen/slum",
 	},
 	level_particle_effects = {},
 	level_screen_effects = {},
@@ -39,101 +41,101 @@ LevelSettings.dlc_bogenhafen_slum = {
 		"location_bogenhafen_slum_river_gauntlet",
 		"location_bogenhafen_slum_south_slum",
 		"location_bogenhafen_slum_underpass",
-		"location_bogenhafen_slum_west_tower"
+		"location_bogenhafen_slum_west_tower",
 	},
 	pickup_settings = {
 		{
 			primary = {
 				ammo = 6,
+				grenades = 4,
 				painting_scrap = 3,
 				potions = 4,
-				grenades = 4,
 				healing = {
 					first_aid_kit = 3,
-					healing_draught = 5
+					healing_draught = 5,
 				},
 				level_events = {
 					explosive_barrel = 3,
-					lamp_oil = 3
-				}
+					lamp_oil = 3,
+				},
 			},
 			secondary = {
 				ammo = 5,
 				grenades = 5,
 				healing = 5,
-				potions = 5
-			}
+				potions = 5,
+			},
 		},
 		normal = {
 			primary = {
 				ammo = 6,
+				grenades = 6,
 				painting_scrap = 3,
 				potions = 6,
-				grenades = 6,
 				healing = {
 					first_aid_kit = 6,
-					healing_draught = 8
+					healing_draught = 8,
 				},
 				level_events = {
 					explosive_barrel = 3,
-					lamp_oil = 3
-				}
+					lamp_oil = 3,
+				},
 			},
 			secondary = {
 				ammo = 8,
 				grenades = 10,
 				healing = 12,
-				potions = 10
-			}
-		}
+				potions = 10,
+			},
+		},
 	},
 	loading_screen_wwise_events = {
 		"nik_loading_screen_dlc_pit_01",
 		"nik_loading_screen_dlc_pit_02",
 		dr_engineer = {
 			"pdr_de_loading_screen_dlc_pit_01",
-			"pdr_de_loading_screen_dlc_pit_02"
+			"pdr_de_loading_screen_dlc_pit_02",
 		},
 		we_thornsister = {
 			"pwe_st_loading_screen_dlc_pit_01",
-			"pwe_st_loading_screen_dlc_pit_02"
+			"pwe_st_loading_screen_dlc_pit_02",
 		},
 		es_questingknight = {
 			"pes_gk_loading_screen_dlc_pit_01",
-			"pes_gk_loading_screen_dlc_pit_02"
+			"pes_gk_loading_screen_dlc_pit_02",
 		},
 		wh_priest = {
 			"pwh_wp_loading_screen_dlc_pit_01",
-			"pwh_wp_loading_screen_dlc_pit_02"
+			"pwh_wp_loading_screen_dlc_pit_02",
 		},
 		bw_necromancer = {
 			"pbw_nm_loading_screen_dlc_pit_01",
-			"pbw_nm_loading_screen_dlc_pit_02"
-		}
-	}
+			"pbw_nm_loading_screen_dlc_pit_02",
+		},
+	},
 }
 LevelSettings.dlc_bogenhafen_city = {
-	act_unlock_order = 1,
-	climate_type = "",
-	player_aux_bus_name = "environment_reverb_outside",
-	environment_state = "exterior",
-	display_name = "level_name_bogenhafen_city",
 	act = "act_bogenhafen",
-	level_image = "level_icon_bgh_city",
-	loading_ui_package_name = "loading_screen_17",
-	use_mini_patrols = true,
-	description_text = "nik_loading_screen_dlc_bogenhafen_01",
-	dlc_name = "bogenhafen",
-	boss_spawning_method = "hand_placed",
 	act_presentation_order = 2,
+	act_unlock_order = 1,
 	ambient_sound_event = "ambience_bogenhafen_city_night",
+	boss_spawning_method = "hand_placed",
+	climate_type = "",
 	default_surface_material = "stone",
-	unlockable = true,
+	description_text = "nik_loading_screen_dlc_bogenhafen_01",
+	display_name = "level_name_bogenhafen_city",
+	dlc_name = "bogenhafen",
+	environment_state = "exterior",
 	knocked_down_setting = "knocked_down",
+	level_image = "level_icon_bgh_city",
 	level_name = "levels/honduras_dlcs/bogenhafen/city/world",
+	loading_ui_package_name = "loading_screen_17",
+	player_aux_bus_name = "environment_reverb_outside",
 	source_aux_bus_name = "environment_reverb_outside_source",
+	unlockable = true,
+	use_mini_patrols = true,
 	packages = {
-		"resource_packages/levels/dlcs/bogenhafen/city"
+		"resource_packages/levels/dlcs/bogenhafen/city",
 	},
 	level_particle_effects = {},
 	level_screen_effects = {},
@@ -160,83 +162,83 @@ LevelSettings.dlc_bogenhafen_city = {
 		"location_bogenhafen_city_square02",
 		"location_bogenhafen_city_templecourtyard",
 		"location_bogenhafen_city_temple",
-		"location_bogenhafen_city_waystone"
+		"location_bogenhafen_city_waystone",
 	},
 	darkness_settings = {
 		disable_screen_fx = true,
 		player_light_intensity = 0.15,
 		volumes = {
-			"sewerlight"
-		}
+			"sewerlight",
+		},
 	},
 	pickup_settings = {
 		{
 			primary = {
 				ammo = 4,
+				grenades = 4,
 				painting_scrap = 3,
 				potions = 4,
-				grenades = 4,
 				healing = {
 					first_aid_kit = 3,
-					healing_draught = 5
+					healing_draught = 5,
 				},
 				level_events = {
 					explosive_barrel = 4,
-					lamp_oil = 4
-				}
+					lamp_oil = 4,
+				},
 			},
 			secondary = {
 				ammo = 4,
 				grenades = 5,
 				healing = 6,
-				potions = 5
-			}
+				potions = 5,
+			},
 		},
 		normal = {
 			primary = {
 				ammo = 4,
+				grenades = 8,
 				painting_scrap = 3,
 				potions = 8,
-				grenades = 8,
 				healing = {
 					first_aid_kit = 6,
-					healing_draught = 10
+					healing_draught = 10,
 				},
 				level_events = {
 					explosive_barrel = 4,
-					lamp_oil = 4
-				}
+					lamp_oil = 4,
+				},
 			},
 			secondary = {
 				ammo = 8,
 				grenades = 10,
 				healing = 12,
-				potions = 10
-			}
-		}
+				potions = 10,
+			},
+		},
 	},
 	loading_screen_wwise_events = {
 		"nik_loading_screen_dlc_bogenhafen_01",
 		"nik_loading_screen_dlc_bogenhafen_02",
 		dr_engineer = {
 			"pdr_de_loading_screen_dlc_bogenhafen_01",
-			"pdr_de_loading_screen_dlc_bogenhafen_02"
+			"pdr_de_loading_screen_dlc_bogenhafen_02",
 		},
 		we_thornsister = {
 			"pwe_st_loading_screen_dlc_bogenhafen_01",
-			"pwe_st_loading_screen_dlc_bogenhafen_02"
+			"pwe_st_loading_screen_dlc_bogenhafen_02",
 		},
 		es_questingknight = {
 			"pes_gk_loading_screen_dlc_bogenhafen_01",
-			"pes_gk_loading_screen_dlc_bogenhafen_02"
+			"pes_gk_loading_screen_dlc_bogenhafen_02",
 		},
 		wh_priest = {
 			"pwh_wp_loading_screen_dlc_bogenhafen_01",
-			"pwh_wp_loading_screen_dlc_bogenhafen_02"
+			"pwh_wp_loading_screen_dlc_bogenhafen_02",
 		},
 		bw_necromancer = {
 			"pbw_nm_loading_screen_dlc_bogenhafen_01",
-			"pbw_nm_loading_screen_dlc_bogenhafen_02"
-		}
-	}
+			"pbw_nm_loading_screen_dlc_bogenhafen_02",
+		},
+	},
 }

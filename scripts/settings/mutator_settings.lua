@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/mutator_settings.lua
+
 require("scripts/helpers/mutator_utils")
 
 local mutators_to_add = {
@@ -33,7 +35,7 @@ local mutators_to_add = {
 	"fire",
 	"death",
 	"beasts",
-	"twitch_darkness"
+	"twitch_darkness",
 }
 
 DLCUtils.append("mutators", mutators_to_add)

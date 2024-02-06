@@ -1,8 +1,10 @@
+﻿-- chunkname: @scripts/entity_system/systems/animation/animation_callback_templates.lua
+
 local BLACKBOARDS = BLACKBOARDS
 local stagger_types = require("scripts/utils/stagger_types")
-AnimationCallbackTemplates = {
-	client = {}
-}
+
+AnimationCallbackTemplates = {}
+AnimationCallbackTemplates.client = {}
 
 AnimationCallbackTemplates.client.anim_cb_enable_second_hit_ragdoll = function (unit, param)
 	local death_ext = ScriptUnit.extension(unit, "death_system")
@@ -18,62 +20,72 @@ AnimationCallbackTemplates.client.anim_cb_push_finished = function (unit, param)
 	end
 end
 
-AnimationCallbackTemplates.server = {
-	anim_cb_spawn_finished = function (unit, param)
-		local blackboard = BLACKBOARDS[unit]
-		blackboard.spawning_finished = true
-	end,
-	anim_cb_push_finished = function (unit, param)
-		local blackboard = BLACKBOARDS[unit]
-		blackboard.stagger_anim_done = true
-	end,
-	anim_cb_stunned_finished = function (unit, param)
-		local blackboard = BLACKBOARDS[unit]
-		blackboard.blocked = nil
-	end,
-	anim_cb_tp_end_enter = function (unit, param)
-		local blackboard = BLACKBOARDS[unit]
+AnimationCallbackTemplates.server = {}
 
-		if blackboard.active_node and blackboard.active_node.anim_cb_tp_end_enter then
-			blackboard.active_node:anim_cb_tp_end_enter(unit, blackboard)
-		end
-	end,
-	anim_cb_hesitate_finished = function (unit, param)
-		local blackboard = BLACKBOARDS[unit]
+AnimationCallbackTemplates.server.anim_cb_spawn_finished = function (unit, param)
+	local blackboard = BLACKBOARDS[unit]
 
-		if blackboard.active_node and blackboard.active_node.anim_cb_hesitate_finished then
-			blackboard.active_node:anim_cb_hesitate_finished(unit, blackboard)
-		end
-	end,
-	anim_cb_emote_finished = function (unit, param)
-		local blackboard = BLACKBOARDS[unit]
+	blackboard.spawning_finished = true
+end
 
-		if blackboard.active_node and blackboard.active_node.anim_cb_emote_finished then
-			blackboard.active_node:anim_cb_emote_finished(unit, blackboard)
-		end
-	end,
-	anim_cb_direct_damage = function (unit, param)
-		local blackboard = BLACKBOARDS[unit]
+AnimationCallbackTemplates.server.anim_cb_push_finished = function (unit, param)
+	local blackboard = BLACKBOARDS[unit]
 
-		if not Unit.alive(blackboard.target_unit) then
-			return
-		end
+	blackboard.stagger_anim_done = true
+end
 
-		local action = blackboard.action
+AnimationCallbackTemplates.server.anim_cb_stunned_finished = function (unit, param)
+	local blackboard = BLACKBOARDS[unit]
 
-		if not action then
-			return
-		end
+	blackboard.blocked = nil
+end
 
-		local active_behavior_node = blackboard.active_node
+AnimationCallbackTemplates.server.anim_cb_tp_end_enter = function (unit, param)
+	local blackboard = BLACKBOARDS[unit]
 
-		if active_behavior_node and active_behavior_node.direct_damage then
-			active_behavior_node.direct_damage(unit, blackboard)
-		end
-
-		blackboard.attacks_done = blackboard.attacks_done + 1
+	if blackboard.active_node and blackboard.active_node.anim_cb_tp_end_enter then
+		blackboard.active_node:anim_cb_tp_end_enter(unit, blackboard)
 	end
-}
+end
+
+AnimationCallbackTemplates.server.anim_cb_hesitate_finished = function (unit, param)
+	local blackboard = BLACKBOARDS[unit]
+
+	if blackboard.active_node and blackboard.active_node.anim_cb_hesitate_finished then
+		blackboard.active_node:anim_cb_hesitate_finished(unit, blackboard)
+	end
+end
+
+AnimationCallbackTemplates.server.anim_cb_emote_finished = function (unit, param)
+	local blackboard = BLACKBOARDS[unit]
+
+	if blackboard.active_node and blackboard.active_node.anim_cb_emote_finished then
+		blackboard.active_node:anim_cb_emote_finished(unit, blackboard)
+	end
+end
+
+AnimationCallbackTemplates.server.anim_cb_direct_damage = function (unit, param)
+	local blackboard = BLACKBOARDS[unit]
+
+	if not Unit.alive(blackboard.target_unit) then
+		return
+	end
+
+	local action = blackboard.action
+
+	if not action then
+		return
+	end
+
+	local active_behavior_node = blackboard.active_node
+
+	if active_behavior_node and active_behavior_node.direct_damage then
+		active_behavior_node.direct_damage(unit, blackboard)
+	end
+
+	blackboard.attacks_done = blackboard.attacks_done + 1
+end
+
 local DEFAULT_SPEED_MODIFIER_ON_TARGET_DODGE_DAMAGE_DONE = 0
 local DEFAULT_ROTATION_STUN_TIME_ON_DODGE_DAMAGE_DONE = 0.6
 local DEFAULT_SPEED_LERP_TIME_ON_TARGET_DODGE_DAMAGE_DONE = 0.3
@@ -193,19 +205,23 @@ end
 AnimationCallbackTemplates.server.anim_cb_reset_attack_animation_locked = function (unit, param)
 	local ai_extension = ScriptUnit.extension(unit, "ai_system")
 	local blackboard = ai_extension:blackboard()
+
 	blackboard.reset_attack_animation_locked = true
 end
 
 AnimationCallbackTemplates.server.anim_cb_unlink_unit = function (unit, param)
 	local ai_extension = ScriptUnit.extension(unit, "ai_system")
 	local blackboard = ai_extension:blackboard()
+
 	blackboard.unlink_unit = true
 end
 
 AnimationCallbackTemplates.server.anim_cb_mounted_knocked_off = function (unit, param)
 	local ai_extension = ScriptUnit.extension(unit, "ai_system")
 	local blackboard = ai_extension:blackboard()
+
 	blackboard.knocked_off_mount = true
+
 	local locomotion_extension = blackboard.locomotion_extension
 
 	LocomotionUtils.set_animation_driven_movement(unit, false, false, true)
@@ -216,6 +232,7 @@ end
 AnimationCallbackTemplates.server.anim_cb_mounting_finished = function (unit, param)
 	local ai_extension = ScriptUnit.extension(unit, "ai_system")
 	local blackboard = ai_extension:blackboard()
+
 	blackboard.mounting_finished = true
 end
 
@@ -302,16 +319,19 @@ end
 
 AnimationCallbackTemplates.server.anim_cb_rotation_start = function (unit, param)
 	local blackboard = BLACKBOARDS[unit]
+
 	blackboard.anim_cb_rotation_start = true
 end
 
 AnimationCallbackTemplates.server.anim_cb_rotation_stop = function (unit, param)
 	local blackboard = BLACKBOARDS[unit]
+
 	blackboard.anim_cb_rotation_stop = true
 end
 
 AnimationCallbackTemplates.server.anim_cb_picked_up_standard = function (unit, param)
 	local blackboard = BLACKBOARDS[unit]
+
 	blackboard.anim_cb_picked_up_standard = true
 end
 
@@ -333,12 +353,14 @@ end
 
 AnimationCallbackTemplates.server.anim_cb_death_finished = function (unit, param)
 	local blackboard = BLACKBOARDS[unit]
+
 	blackboard.anim_cb_death_finished = true
 end
 
 AnimationCallbackTemplates.server.anim_cb_move = function (unit, param)
 	local blackboard = BLACKBOARDS[unit]
 	local active_node = blackboard.active_node
+
 	blackboard.anim_cb_move = true
 
 	if not active_node or blackboard.attack_aborted then
@@ -354,6 +376,7 @@ end
 
 AnimationCallbackTemplates.server.anim_cb_move_stop = function (unit, param)
 	local blackboard = BLACKBOARDS[unit]
+
 	blackboard.anim_cb_move_stop = true
 end
 
@@ -425,26 +448,31 @@ end
 
 AnimationCallbackTemplates.server.anim_cb_throw = function (unit, param)
 	local blackboard = BLACKBOARDS[unit]
+
 	blackboard.anim_cb_throw = true
 end
 
 AnimationCallbackTemplates.server.anim_cb_spawn_projectile = function (unit, param)
 	local blackboard = BLACKBOARDS[unit]
+
 	blackboard.anim_cb_spawn_projectile = true
 end
 
 AnimationCallbackTemplates.server.anim_cb_jump_start_finished = function (unit, param)
 	local blackboard = BLACKBOARDS[unit]
+
 	blackboard.jump_start_finished = true
 end
 
 AnimationCallbackTemplates.server.anim_cb_jump_climb_finished = function (unit, param)
 	local blackboard = BLACKBOARDS[unit]
+
 	blackboard.jump_climb_finished = true
 end
 
 AnimationCallbackTemplates.server.anim_cb_start_finished = function (unit, param)
 	local blackboard = BLACKBOARDS[unit]
+
 	blackboard.start_finished = true
 end
 
@@ -478,41 +506,49 @@ end
 
 AnimationCallbackTemplates.server.anim_cb_escape_finished = function (unit, param)
 	local blackboard = BLACKBOARDS[unit]
+
 	blackboard.anim_cb_escape_finished = true
 end
 
 AnimationCallbackTemplates.server.anim_cb_attack_cooldown = function (unit, param)
 	local blackboard = BLACKBOARDS[unit]
+
 	blackboard.anim_cb_attack_cooldown = true
 end
 
 AnimationCallbackTemplates.server.anim_cb_blocked_cooldown = function (unit, param)
 	local blackboard = BLACKBOARDS[unit]
+
 	blackboard.anim_cb_blocked_cooldown = true
 end
 
 AnimationCallbackTemplates.server.anim_cb_summoning_finished = function (unit, param)
 	local blackboard = BLACKBOARDS[unit]
+
 	blackboard.summoning_finished = true
 end
 
 AnimationCallbackTemplates.server.anim_cb_shout_finished = function (unit, param)
 	local blackboard = BLACKBOARDS[unit]
+
 	blackboard.anim_cb_shout_finished = true
 end
 
 AnimationCallbackTemplates.server.anim_cb_order_finished = function (unit, param)
 	local blackboard = BLACKBOARDS[unit]
+
 	blackboard.anim_cb_order_finished = true
 end
 
 AnimationCallbackTemplates.server.anim_cb_scurry_under_finished = function (unit, param)
 	local blackboard = BLACKBOARDS[unit]
+
 	blackboard.anim_cb_scurry_under_finished = true
 end
 
 AnimationCallbackTemplates.server.anim_cb_dig_finished = function (unit, param)
 	local blackboard = BLACKBOARDS[unit]
+
 	blackboard.anim_cb_dig_finished = true
 end
 
@@ -521,6 +557,7 @@ AnimationCallbackTemplates.server.anim_cb_attack_throw_score_finished = function
 
 	if ai_base_extension then
 		local blackboard = ai_base_extension:blackboard()
+
 		blackboard.anim_cb_attack_throw_score_finished = true
 	end
 end
@@ -530,6 +567,7 @@ AnimationCallbackTemplates.server.anim_cb_attack_jump_start_finished = function 
 
 	if ai_base_extension then
 		local blackboard = ai_base_extension:blackboard()
+
 		blackboard.anim_cb_attack_jump_start_finished = true
 	end
 end
@@ -539,6 +577,7 @@ AnimationCallbackTemplates.server.anim_cb_attack_shoot_start_finished = function
 
 	if ai_base_extension then
 		local blackboard = ai_base_extension:blackboard()
+
 		blackboard.anim_cb_attack_shoot_start_finished = true
 	end
 end
@@ -548,6 +587,7 @@ AnimationCallbackTemplates.server.anim_cb_reload_start_finished = function (unit
 
 	if ai_base_extension then
 		local blackboard = ai_base_extension:blackboard()
+
 		blackboard.anim_cb_reload_start_finished = true
 	end
 end
@@ -557,6 +597,7 @@ AnimationCallbackTemplates.server.anim_cb_attack_windup_start_finished = functio
 
 	if ai_base_extension then
 		local blackboard = ai_base_extension:blackboard()
+
 		blackboard.anim_cb_attack_windup_start_finished = true
 	end
 end
@@ -566,6 +607,7 @@ AnimationCallbackTemplates.server.anim_cb_attack_shoot_random_shot = function (u
 
 	if ai_base_extension then
 		local blackboard = ai_base_extension:blackboard()
+
 		blackboard.anim_cb_attack_shoot_random_shot = true
 	end
 end
@@ -575,6 +617,7 @@ AnimationCallbackTemplates.server.anim_cb_stormvermin_voice = function (unit, pa
 
 	if ai_base_extension then
 		local blackboard = ai_base_extension:blackboard()
+
 		blackboard.anim_cb_stormvermin_voice = true
 	end
 end
@@ -584,6 +627,7 @@ AnimationCallbackTemplates.server.anim_cb_patrol_sound = function (unit, param)
 
 	if ai_base_extension then
 		local blackboard = ai_base_extension:blackboard()
+
 		blackboard.anim_cb_patrol_sound = true
 	end
 end
@@ -593,6 +637,7 @@ AnimationCallbackTemplates.server.anim_cb_exit_shooting_hit_react = function (un
 
 	if ai_base_extension then
 		local blackboard = ai_base_extension:blackboard()
+
 		blackboard.in_hit_reaction = nil
 	end
 end
@@ -602,6 +647,7 @@ AnimationCallbackTemplates.server.anim_cb_enter_shooting_hit_react = function (u
 
 	if ai_base_extension then
 		local blackboard = ai_base_extension:blackboard()
+
 		blackboard.in_hit_reaction = true
 	end
 end
@@ -660,6 +706,7 @@ end
 
 AnimationCallbackTemplates.server.anim_cb_stormvermin_push_finished = function (unit, param)
 	local blackboard = BLACKBOARDS[unit]
+
 	blackboard.attack_finished = true
 end
 
@@ -695,26 +742,31 @@ end
 
 AnimationCallbackTemplates.server.anim_cb_vomit_end = function (unit, param)
 	local blackboard = BLACKBOARDS[unit]
+
 	blackboard.is_puking = nil
 end
 
 AnimationCallbackTemplates.server.anim_cb_dodge_finished = function (unit, param)
 	local blackboard = BLACKBOARDS[unit]
+
 	blackboard.anim_cb_dodge_finished = true
 end
 
 AnimationCallbackTemplates.server.anim_cb_downed_end_finished = function (unit, param)
 	local blackboard = BLACKBOARDS[unit]
+
 	blackboard.downed_end_finished = true
 end
 
 AnimationCallbackTemplates.server.anim_cb_landing_finished = function (unit, param)
 	local blackboard = BLACKBOARDS[unit]
+
 	blackboard.landing_finished = true
 end
 
 AnimationCallbackTemplates.server.anim_cb_teleport_finished = function (unit, param)
 	local blackboard = BLACKBOARDS[unit]
+
 	blackboard.anim_cb_teleport_finished = true
 end
 
@@ -747,6 +799,7 @@ end
 
 AnimationCallbackTemplates.server.anim_cb_stagger_immune = function (unit, param)
 	local blackboard = BLACKBOARDS[unit]
+
 	blackboard.anim_cb_stagger_immune = true
 end
 
@@ -804,6 +857,7 @@ AnimationCallbackTemplates.client.anim_cb_hide_weapons = function (unit, param)
 
 	if is_local_player then
 		local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
+
 		allowed_to_set = not first_person_extension.first_person_mode
 	end
 
@@ -827,6 +881,7 @@ AnimationCallbackTemplates.client.anim_cb_unhide_weapons = function (unit, param
 
 	if is_local_player then
 		local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
+
 		allowed_to_set = not first_person_extension.first_person_mode
 	end
 
@@ -839,6 +894,7 @@ end
 
 AnimationCallbackTemplates.client.anim_cb_climb_rotation_start = function (unit, param)
 	local status_extension = ScriptUnit.extension(unit, "status_system")
+
 	status_extension.start_climb_rotation = true
 end
 
@@ -862,6 +918,7 @@ end
 
 AnimationCallbackTemplates.server.anim_cb_chew_attack_finished = function (unit, param)
 	local blackboard = BLACKBOARDS[unit]
+
 	blackboard.anim_cb_chew_attack_finished = true
 end
 
@@ -886,6 +943,7 @@ end
 AnimationCallbackTemplates.client.anim_cb_enable_skeleton_collison = function (unit, param)
 	local breed = Unit.get_data(unit, "breed")
 	local ai_extension = ScriptUnit.extension(unit, "ai_system")
+
 	ai_extension.player_locomotion_constrain_radius = breed.player_locomotion_constrain_radius or nil
 end
 

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/camera/camera_manager.lua
+
 require("scripts/settings/camera_transition_templates")
 require("scripts/settings/camera_settings")
 require("scripts/settings/camera_effect_settings")
@@ -33,7 +35,7 @@ CameraManager.NODE_PROPERTY_MAP = {
 	"pitch_speed",
 	"shading_environment",
 	"fade_to_black",
-	"pitch_offset"
+	"pitch_offset",
 }
 
 CameraManager.init = function (self, world)
@@ -49,9 +51,9 @@ CameraManager.init = function (self, world)
 	self._listener_elevation_min = -math.huge
 	self._listener_elevation_max = math.huge
 	self._sequence_event_settings = {
-		time_to_recover = 0,
 		end_time = 0,
-		start_time = 0
+		start_time = 0,
+		time_to_recover = 0,
 	}
 	self._shake_event_settings = {}
 	self._recoil_event_settings = {}
@@ -71,7 +73,7 @@ CameraManager.init = function (self, world)
 	self._additional_fov_multiplier = 1
 	self._tobii_extended_view = {
 		pitch = 0,
-		yaw = 0
+		yaw = 0,
 	}
 end
 
@@ -104,9 +106,10 @@ CameraManager.register_shadow_lights = function (self, set)
 
 	for _, index in pairs(set.units) do
 		local unit = Level.unit_by_index(level, index)
+
 		self._shadow_lights[#self._shadow_lights + 1] = {
 			distance = 0,
-			unit = unit
+			unit = unit,
 		}
 
 		if not GameSettingsDevelopment.disable_shadow_lights_system then
@@ -165,7 +168,9 @@ CameraManager.add_viewport = function (self, viewport_name, position, rotation)
 	self._variables[viewport_name] = {}
 	self._camera_nodes[viewport_name] = {}
 	self._shadow_lights_viewport = viewport_name
+
 	local viewport = ScriptWorld.viewport(self._world, viewport_name)
+
 	self._environment_blenders[viewport_name] = EnvironmentBlender:new(self._world, viewport)
 end
 
@@ -193,8 +198,9 @@ CameraManager.load_node_tree = function (self, viewport_name, tree_id, tree_name
 	local root_node = self:_setup_child_nodes(node_table, viewport_name, tree_id, nil, tree_settings)
 	local tree_table = {
 		root_node = root_node,
-		nodes = node_table
+		nodes = node_table,
 	}
+
 	self._node_trees[viewport_name][tree_id] = tree_table
 end
 
@@ -298,7 +304,7 @@ CameraManager.shading_callback = function (self, world, shading_env, viewport)
 			end
 		end
 
-		local colors = nil
+		local colors
 		local local_player = Managers.player:local_player()
 
 		if local_player then
@@ -366,6 +372,7 @@ CameraManager.shading_callback = function (self, world, shading_env, viewport)
 		if Application.user_setting("render_settings", "particles_receive_shadows") then
 			local last_slice_idx = ShadingEnvironment.array_elements(shading_env, "sun_shadow_slice_depth_ranges") - 1
 			local last_slice_depths = ShadingEnvironment.array_vector2(shading_env, "sun_shadow_slice_depth_ranges", last_slice_idx)
+
 			last_slice_depths.x = 0
 
 			ShadingEnvironment.set_array_vector2(shading_env, "sun_shadow_slice_depth_ranges", last_slice_idx, last_slice_depths)
@@ -408,24 +415,28 @@ CameraManager.set_camera_node = function (self, viewport_name, tree_id, node_nam
 	end
 
 	local old_tree_id = self._current_trees[viewport_name]
+
 	self._current_trees[viewport_name] = tree_id
+
 	local camera_nodes = self._camera_nodes[viewport_name]
 	local current_node = camera_nodes[#camera_nodes]
 	local tree = self._node_trees[viewport_name][tree_id]
 	local next_node = {
-		node = tree.nodes[node_name]
+		node = tree.nodes[node_name],
 	}
 
 	assert(current_node ~= next_node)
 
 	if current_node then
-		local transition_template = nil
+		local transition_template
 
 		if old_tree_id ~= tree_id then
 			local tree_transitions = current_node.node:tree_transitions()
+
 			transition_template = tree_transitions[tree_id] or tree_transitions.default
 		else
 			local node_transitions = current_node.node:node_transitions()
+
 			transition_template = node_transitions[next_node.node:name()] or node_transitions.default
 		end
 
@@ -528,6 +539,7 @@ end
 CameraManager._setup_child_nodes = function (self, node_table, viewport_name, tree_id, parent_node, settings, root_node)
 	local node_settings = settings._node
 	local node = self:_setup_node(node_settings, parent_node, root_node)
+
 	root_node = root_node or node
 	node_table[node:name()] = node
 
@@ -593,7 +605,7 @@ CameraManager.set_additional_fov_multiplier_with_lerp_time = function (self, mul
 	self._additional_fov_multiplier_data = {
 		current_lerp_time = 0,
 		total_lerp_time = lerp_time,
-		fov_multiplier = multiplier
+		fov_multiplier = multiplier,
 	}
 end
 
@@ -657,11 +669,11 @@ CameraManager._smooth_camera_collision = function (self, camera_position, safe_p
 		return cast_to
 	end
 
-	local drawer = nil
+	local drawer
 
 	if script_data.camera_debug then
 		drawer = Managers.state.debug:drawer({
-			name = "Intersection"
+			name = "Intersection",
 		})
 
 		drawer:reset()
@@ -689,7 +701,7 @@ CameraManager._smooth_camera_collision = function (self, camera_position, safe_p
 		end
 
 		local hits = PhysicsWorld.linear_sphere_sweep(physics_world, cast_from, cast_to, cast_radius, 1, "types", "statics", "collision_filter", "filter_camera_sweep")
-		local hit = nil
+		local hit
 
 		if hits and #hits > 0 then
 			if script_data.camera_debug then
@@ -707,6 +719,7 @@ CameraManager._smooth_camera_collision = function (self, camera_position, safe_p
 			end
 
 			hit = hits[1]
+
 			local x = Vector3.dot(dir, hit.position - cast_from)
 			local y = Vector3.length(hit.position - cast_from - x * dir)
 
@@ -718,7 +731,7 @@ CameraManager._smooth_camera_collision = function (self, camera_position, safe_p
 				return pos
 			end
 
-			local cd = nil
+			local cd
 
 			if y < near_radius then
 				cd = x - cast_radius
@@ -726,7 +739,7 @@ CameraManager._smooth_camera_collision = function (self, camera_position, safe_p
 				cd = x + (y - near_radius) / (smooth_radius - near_radius) * (len - x) - cast_radius
 			end
 
-			if cast_distance > cd then
+			if cd < cast_distance then
 				cast_distance = cd
 				cast_to = cast_from + dir * cast_distance
 			end
@@ -748,7 +761,7 @@ CameraManager._smooth_camera_collision = function (self, camera_position, safe_p
 
 		iterations = iterations + 1
 
-		if MAX_ITERATIONS < iterations then
+		if iterations > MAX_ITERATIONS then
 			return cast_to
 		end
 	end
@@ -772,7 +785,7 @@ CameraManager.camera_effect_sequence_event = function (self, event, start_time)
 	end
 
 	local sequence_event_settings = self._sequence_event_settings
-	local previous_values = nil
+	local previous_values
 
 	if sequence_event_settings.event then
 		previous_values = sequence_event_settings.current_values
@@ -781,6 +794,7 @@ CameraManager.camera_effect_sequence_event = function (self, event, start_time)
 	sequence_event_settings.start_time = start_time
 	sequence_event_settings.event = CameraEffectSettings.sequence[event]
 	sequence_event_settings.transition_function = CameraEffectSettings.transition_functions.lerp
+
 	local duration = 0
 
 	for modifier_type, modifiers in pairs(sequence_event_settings.event.values) do
@@ -801,6 +815,7 @@ CameraManager.camera_effect_sequence_event = function (self, event, start_time)
 		fassert(recuperate_percentage > 0, "Camera effect sequence time_to_recuperate_to is %f", recuperate_percentage)
 
 		local time_to_recover = recuperate_percentage / 100 * duration
+
 		sequence_event_settings.time_to_recover = time_to_recover
 		sequence_event_settings.recovery_values = self:_calculate_sequence_event_values_normal(sequence_event_settings.event.values, time_to_recover)
 		sequence_event_settings.previous_values = previous_values
@@ -830,6 +845,7 @@ CameraManager.camera_effect_shake_event = function (self, event_name, start_time
 	data.seed = event.seed or Math.random(1, 100)
 	data.scale = scale or 1
 	self._shake_event_settings[data] = true
+
 	local use_rumble = not event.no_rumble
 
 	if use_rumble and Managers.state.controller_features then
@@ -837,7 +853,7 @@ CameraManager.camera_effect_shake_event = function (self, event_name, start_time
 			shake_settings = data,
 			scale = scale or 1,
 			duration = duration,
-			event_name = event_name
+			event_name = event_name,
 		})
 	end
 
@@ -899,6 +915,7 @@ CameraManager._apply_offset = function (self, current_data, t)
 	local y = offset_y * Quaternion.forward(current_data.rotation)
 	local z = Vector3(0, 0, offset_z)
 	local new_pos = current_data.position + x + y + z
+
 	new_data.position = new_pos
 
 	return new_data
@@ -913,6 +930,7 @@ CameraManager._update_additional_fov_multiplier = function (self, dt)
 
 	local lerp_value = data.current_lerp_time / data.total_lerp_time
 	local fov_multiplier = math.lerp(self._additional_fov_multiplier, data.fov_multiplier, lerp_value)
+
 	data.current_lerp_time = math.min(data.current_lerp_time + dt, data.total_lerp_time)
 
 	if data.current_lerp_time == data.total_lerp_time then
@@ -968,7 +986,7 @@ end
 
 CameraManager._apply_sequence_event = function (self, camera_data, t)
 	local sequence_event_settings = self._sequence_event_settings
-	local new_values = nil
+	local new_values
 	local time_to_recover = sequence_event_settings.time_to_recover
 	local start_time = sequence_event_settings.start_time
 
@@ -977,6 +995,7 @@ CameraManager._apply_sequence_event = function (self, camera_data, t)
 	else
 		local total_progress = t - sequence_event_settings.start_time
 		local event_values = sequence_event_settings.event.values
+
 		new_values = self:_calculate_sequence_event_values_normal(event_values, total_progress)
 	end
 
@@ -984,7 +1003,7 @@ CameraManager._apply_sequence_event = function (self, camera_data, t)
 	camera_data.rotation = self:_calculate_sequence_event_rotation(camera_data, new_values)
 	sequence_event_settings.current_values = new_values
 
-	if self._sequence_event_settings.end_time <= t then
+	if t >= self._sequence_event_settings.end_time then
 		sequence_event_settings.start_time = 0
 		sequence_event_settings.end_time = 0
 		sequence_event_settings.event = nil
@@ -997,12 +1016,12 @@ end
 
 CameraManager._calculate_sequence_event_values_recovery = function (self, t)
 	local new_values = {
+		pitch = 0,
+		roll = 0,
+		x = 0,
+		y = 0,
 		yaw = 0,
 		z = 0,
-		roll = 0,
-		y = 0,
-		pitch = 0,
-		x = 0
 	}
 	local sequence_event_settings = self._sequence_event_settings
 	local time_to_recover = sequence_event_settings.time_to_recover
@@ -1026,12 +1045,12 @@ end
 
 CameraManager._calculate_sequence_event_values_normal = function (self, event_values, total_progress)
 	local new_values = {
+		pitch = 0,
+		roll = 0,
+		x = 0,
+		y = 0,
 		yaw = 0,
 		z = 0,
-		roll = 0,
-		y = 0,
-		pitch = 0,
-		x = 0
 	}
 
 	for modifier_type, modifiers in pairs(event_values) do
@@ -1049,6 +1068,7 @@ CameraManager._calculate_sequence_event_values_normal = function (self, event_va
 				end
 
 				local lerp_progress = progress / time_stamp_difference
+
 				new_values[modifier_type] = self._sequence_event_settings.transition_function(current_settings.value, next_settings.value, lerp_progress)
 
 				break
@@ -1100,9 +1120,10 @@ CameraManager._apply_shake_event = function (self, settings, camera_data, t)
 	local yaw_offset = Quaternion(Vector3.up(), yaw_noise_value * deg_to_rad)
 	local pitch_offset = Quaternion(Vector3.right(), pitch_noise_value * deg_to_rad)
 	local total_offset = Quaternion.multiply(yaw_offset, pitch_offset)
+
 	camera_data.rotation = Quaternion.multiply(current_rot, total_offset)
 
-	if settings.end_time and settings.end_time <= t then
+	if settings.end_time and t >= settings.end_time then
 		shake_event_settings[settings] = nil
 	end
 end
@@ -1125,7 +1146,9 @@ CameraManager._apply_recoil_event = function (self, settings, current_data, dt, 
 	local current_rotation = current_data.rotation
 	local climbing = t < climb_end_time
 	local done_percentage = climbing and current_climb_time / climb_duration or current_restore_time / restore_duration
+
 	done_percentage = climbing and climb_function(done_percentage) or restore_function(done_percentage)
+
 	local starting_yaw_rotation = not climbing and math.degrees_to_radians(horizontal_climb) or 0
 	local starting_pitch_rotation = not climbing and math.degrees_to_radians(vertical_climb) or 0
 	local current_yaw_rotation = math.degrees_to_radians(climbing and horizontal_climb or -horizontal_climb) * done_percentage
@@ -1133,8 +1156,11 @@ CameraManager._apply_recoil_event = function (self, settings, current_data, dt, 
 	local yaw_offset = Quaternion(Vector3.up(), starting_yaw_rotation + current_yaw_rotation)
 	local pitch_offset = Quaternion(Vector3.right(), starting_pitch_rotation + current_pitch_rotation)
 	local total_offset = Quaternion.multiply(yaw_offset, pitch_offset)
+
 	self._total_recoil_offset = self._total_recoil_offset and self._total_recoil_offset:store(total_offset) or QuaternionBox(total_offset)
+
 	local final_rotation = Quaternion.multiply(current_rotation, total_offset)
+
 	new_data.rotation = final_rotation
 
 	if climbing then
@@ -1152,10 +1178,13 @@ end
 
 CameraManager._apply_extended_view = function (self, current_data)
 	local yaw_offset = Quaternion(Vector3.up(), -self._tobii_extended_view.yaw)
+
 	yaw_offset = Quaternion.multiply(Quaternion.inverse(current_data.rotation), yaw_offset)
 	yaw_offset = Quaternion.multiply(yaw_offset, current_data.rotation)
+
 	local pitch_offset = Quaternion(Vector3.right(), self._tobii_extended_view.pitch)
 	local total_offset = Quaternion.multiply(yaw_offset, pitch_offset)
+
 	current_data.rotation = Quaternion.multiply(current_data.rotation, total_offset)
 end
 
@@ -1173,11 +1202,13 @@ CameraManager._calculate_perlin_value = function (self, x, settings)
 	for i = 0, number_of_octaves do
 		local frequency = 2^i
 		local amplitude = persistance^i
+
 		total = total + self:_interpolated_noise(x * frequency, settings) * amplitude
 	end
 
 	local amplitude_multiplier = event_settings.amplitude or 1
 	local fade_multiplier = settings.fade_progress or 1
+
 	total = total * amplitude_multiplier * fade_multiplier
 
 	return total
@@ -1207,6 +1238,7 @@ CameraManager.apply_level_particle_effects = function (self, effects, viewport_n
 	for _, effect in ipairs(effects) do
 		local world = self._world
 		local effect_id = World.create_particles(world, effect, self:camera_position(viewport_name))
+
 		self._level_particle_effect_ids[effect_id] = true
 	end
 end
@@ -1215,6 +1247,7 @@ CameraManager.apply_level_screen_effects = function (self, effects, viewport_nam
 	for _, effect in ipairs(effects) do
 		local world = self._world
 		local effect_id = World.create_particles(world, effect, Vector3(0, 0, 0))
+
 		self._level_screen_effect_ids[effect_id] = true
 	end
 end
@@ -1235,7 +1268,7 @@ CameraManager._update_camera_properties = function (self, camera, shadow_cull_ca
 
 		if script_data.camera_debug and Managers.state.debug then
 			local drawer = Managers.state.debug:drawer({
-				name = "CameraManager"
+				name = "CameraManager",
 			})
 
 			if DebugKeyHandler.key_pressed("z", "clear camera debug") then
@@ -1309,6 +1342,7 @@ CameraManager._update_camera_properties = function (self, camera, shadow_cull_ca
 	end
 
 	local viewport = ScriptWorld.viewport(self._world, viewport_name)
+
 	self._shading_environment[viewport] = camera_data.shading_environment
 end
 
@@ -1359,6 +1393,7 @@ CameraManager._add_transition = function (self, viewport_name, from_node, to_nod
 			local speed = settings.speed
 			local transition_class = rawget(_G, settings.class)
 			local instance = transition_class:new(from_node.node, to_node.node, duration, speed, settings)
+
 			transition[property] = instance
 		end
 	end
@@ -1371,7 +1406,7 @@ CameraManager._update_transition = function (self, viewport_name, nodes, dt)
 
 	table.clear(values)
 
-	local value = nil
+	local value
 	local node_property_map = self.NODE_PROPERTY_MAP
 
 	for _prop_index, property in ipairs(node_property_map) do
@@ -1380,8 +1415,9 @@ CameraManager._update_transition = function (self, viewport_name, nodes, dt)
 			local transition_class = transition[property]
 
 			if transition_class then
-				local done = nil
+				local done
 				local update_time = _node_index == #nodes
+
 				value, done = transition_class:update(dt, value, update_time)
 
 				if done then
@@ -1396,7 +1432,7 @@ CameraManager._update_transition = function (self, viewport_name, nodes, dt)
 		value = nil
 	end
 
-	local remove_from_index = nil
+	local remove_from_index
 
 	for index, node_table in ipairs(nodes) do
 		if not next(node_table.transition) then

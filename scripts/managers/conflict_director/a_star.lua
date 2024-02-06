@@ -1,5 +1,8 @@
+﻿-- chunkname: @scripts/managers/conflict_director/a_star.lua
+
 LuaAStar = LuaAStar or {}
 LuaAStar.cached_paths = {}
+
 local cached_paths = LuaAStar.cached_paths
 
 function dist_between(pos_a, pos_b)
@@ -20,15 +23,14 @@ end
 
 function lowest_f_score_node(nodes, f_score)
 	local lowest = math.huge
-	local best_node = nil
+	local best_node
 
 	for i = 1, #nodes do
 		local node = nodes[i]
 		local score = f_score[node]
 
 		if score < lowest then
-			best_node = node
-			lowest = score
+			lowest, best_node = score, node
 		end
 	end
 
@@ -84,11 +86,12 @@ end
 LuaAStar.a_star_plain = function (nodes, node1, node2)
 	local closed_set = {}
 	local open_set = {
-		node1
+		node1,
 	}
 	local came_from = {}
 	local g_score = {}
 	local f_score = {}
+
 	g_score[node1] = 0
 	f_score[node1] = g_score[node1] + heuristic_cost_estimate(node1, node2)
 
@@ -97,6 +100,7 @@ LuaAStar.a_star_plain = function (nodes, node1, node2)
 
 		if current == node2 then
 			local path = reconstruct_path({}, came_from, node2)
+
 			path[#path + 1] = node2
 
 			return path, f_score[current]
@@ -105,6 +109,7 @@ LuaAStar.a_star_plain = function (nodes, node1, node2)
 		remove_node(open_set, current)
 
 		closed_set[#closed_set + 1] = current
+
 		local neighbour_nodes = neighbour_nodes(current, nodes)
 
 		for i = 1, #neighbour_nodes do
@@ -143,9 +148,10 @@ LuaAStar.a_star_cached = function (nodes, a1, a2)
 	end
 
 	local path, length = LuaAStar.a_star_plain(nodes, a1, a2)
+
 	cached_paths[a1][a2] = {
 		path,
-		length
+		length,
 	}
 
 	return path, length

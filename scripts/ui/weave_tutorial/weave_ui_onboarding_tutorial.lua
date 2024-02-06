@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/weave_tutorial/weave_ui_onboarding_tutorial.lua
+
 local_require("scripts/ui/weave_tutorial/weave_tutorial_popup_ui")
 require("scripts/ui/weave_tutorial/weave_ui_tutorials")
 require("scripts/ui/weave_tutorial/weave_onboarding_utils")
@@ -8,7 +10,9 @@ WeaveUIOnboardingTutorial.init = function (self, context)
 	self.onboarding_step = 0
 	self.ui_onboarding_state = 0
 	self.statistics_db = context.statistics_db
+
 	local player = Managers.player and Managers.player:local_player()
+
 	self.player_stats_id = player and player:stats_id()
 	self.delayed_tutorial = nil
 	self.tutorial_timer = 0
@@ -48,7 +52,7 @@ WeaveUIOnboardingTutorial.update = function (self, dt, t)
 		elseif self.delayed_tutorial then
 			self.tutorial_timer = self.tutorial_timer + dt
 
-			if self.delayed_tutorial.delay <= self.tutorial_timer then
+			if self.tutorial_timer >= self.delayed_tutorial.delay then
 				self:show_tutorial(self.delayed_tutorial)
 
 				self.delayed_tutorial = nil

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_vortex_fly_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTVortexFlyAction = class(BTVortexFlyAction, BTNode)
@@ -12,8 +14,10 @@ BTVortexFlyAction.enter = function (self, unit, blackboard, t)
 	local next_smart_object_data = blackboard.next_smart_object_data
 	local entrance_pos = next_smart_object_data.entrance_pos:unbox()
 	local exit_pos = next_smart_object_data.exit_pos:unbox()
+
 	blackboard.fly_entrance_pos = Vector3Box(entrance_pos)
 	blackboard.fly_exit_pos = Vector3Box(exit_pos)
+
 	local smart_object_data = next_smart_object_data.smart_object_data
 	local ledge_position = smart_object_data.ledge_position and Vector3Aux.unbox(smart_object_data.ledge_position)
 
@@ -42,7 +46,9 @@ BTVortexFlyAction.leave = function (self, unit, blackboard, t, reason, destroy)
 
 	navigation_extension:set_enabled(true)
 
-	local success = navigation_extension:is_using_smart_object() and navigation_extension:use_smart_object(false)
+	if navigation_extension:is_using_smart_object() then
+		local success = navigation_extension:use_smart_object(false)
+	end
 end
 
 BTVortexFlyAction._move_to_destination = function (self, current_position, destination, locomotion_extension, dt, max_speed)

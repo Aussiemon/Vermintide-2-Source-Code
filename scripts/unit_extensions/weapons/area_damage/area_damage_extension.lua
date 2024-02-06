@@ -1,5 +1,8 @@
+﻿-- chunkname: @scripts/unit_extensions/weapons/area_damage/area_damage_extension.lua
+
 AreaDamageExtension = class(AreaDamageExtension)
 script_data.debug_area_damage = script_data.debug_area_damage or Development.parameter("debug_area_damage")
+
 local approx_player_radius = 0.5
 
 AreaDamageExtension.init = function (self, extension_init_context, unit, extension_init_data)
@@ -45,6 +48,7 @@ AreaDamageExtension.init = function (self, extension_init_context, unit, extensi
 
 	local side_manager = Managers.state.side
 	local source_attacker_side = side_manager.side_by_unit[self.source_attacker_unit]
+
 	self._side = source_attacker_side
 
 	if self.invisible_unit then
@@ -52,7 +56,7 @@ AreaDamageExtension.init = function (self, extension_init_context, unit, extensi
 	end
 
 	self._custom_data_table = {
-		parent = self
+		parent = self,
 	}
 end
 
@@ -158,6 +162,7 @@ end
 
 AreaDamageExtension.start = function (self)
 	self.area_damage_started = true
+
 	local area_damage = AreaDamageTemplates.get_template(self.area_damage_template)
 
 	if self.is_server and self.aoe_init_damage then
@@ -171,8 +176,8 @@ AreaDamageExtension.start = function (self)
 	local particle_var_table = {
 		{
 			particle_variable = "pool_size",
-			value = Vector3(self.effect_size, self.effect_size, 1)
-		}
+			value = Vector3(self.effect_size, self.effect_size, 1),
+		},
 	}
 
 	if self.dot_effect_name then
@@ -197,7 +202,9 @@ AreaDamageExtension.start = function (self)
 		local pi = math.pi
 		local ids = {}
 		local num_particles = 0
+
 		self.nav_mesh_effect_ids = ids
+
 		local particle_radius = nav_mesh_effect.particle_radius
 		local particle_spacing = nav_mesh_effect.particle_spacing
 		local particle_name = nav_mesh_effect.particle_name
@@ -213,6 +220,7 @@ AreaDamageExtension.start = function (self)
 		end
 
 		local id = area_damage.client.spawn_effect(self.world, self.unit, particle_name, nil, unit_pos)
+
 		num_particles = num_particles + 1
 		ids[num_particles] = id
 
@@ -236,6 +244,7 @@ AreaDamageExtension.start = function (self)
 					end
 
 					local id = area_damage.client.spawn_effect(self.world, self.unit, particle_name, nil, particle_pos)
+
 					num_particles = num_particles + 1
 					ids[num_particles] = id
 				elseif debug then
@@ -270,6 +279,7 @@ AreaDamageExtension.start = function (self)
 			if self.nav_tag_volume_layer then
 				local volume_system = Managers.state.entity:system("volume_system")
 				local pos = Unit.world_position(self.unit, 0)
+
 				self.nav_tag_volume_id = volume_system:create_nav_tag_volume_from_data(pos, self.radius + approx_player_radius, self.nav_tag_volume_layer)
 			else
 				Application.warning(string.format("[AreaDamageExtension] create_nav_tag_volume is set but there are no nav_tag_volume_template set for unit %s", self.unit))
@@ -356,6 +366,7 @@ AreaDamageExtension._update_damage_buffer = function (self)
 
 		if Unit.alive(unit) then
 			num_hits = num_hits + 1
+
 			local area_damage = AreaDamageTemplates.get_template(damage_data.area_damage_template)
 
 			area_damage.server.do_damage(damage_data, self.unit, self.source_attacker_unit, self._custom_data_table)

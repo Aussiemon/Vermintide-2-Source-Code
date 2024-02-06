@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/dlcs/morris/deus_power_up_interaction_ui.lua
+
 require("scripts/settings/dlcs/morris/deus_swap_weapon_interaction_ui")
 
 DeusPowerUpInteractionUI = class(DeusPowerUpInteractionUI, DeusSwapWeaponInteractionUI)
@@ -27,20 +29,23 @@ DeusPowerUpInteractionUI._populate_widget = function (self, interactable_unit)
 	local cost = pickup_ext:get_purchase_cost()
 	local stored_purchase = pickup_ext:get_stored_purchase()
 	local chest_info_widget = self._widgets_by_name.chest_content
+
 	chest_info_widget.content.rarity_text = nil
 	chest_info_widget.content.cost_text = soft_currency_amount .. "/" .. cost
 	chest_info_widget.style.cost_text.text_color = cost <= soft_currency_amount and {
 		255,
 		255,
 		255,
-		255
+		255,
 	} or {
 		255,
 		255,
 		0,
-		0
+		0,
 	}
+
 	local power_level = stored_purchase.power_level
+
 	chest_info_widget.content.reward_info_text = Localize("deus_weapon_chest_upgrade_description")
 	self._current_interactable_unit = interactable_unit
 	self._soft_currency_amount = soft_currency_amount

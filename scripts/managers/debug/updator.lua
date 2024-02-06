@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/debug/updator.lua
+
 Updator = class(Updator)
 
 Updator.init = function (self)

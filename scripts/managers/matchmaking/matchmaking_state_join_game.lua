@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/matchmaking/matchmaking_state_join_game.lua
+
 MatchmakingStateJoinGame = class(MatchmakingStateJoinGame)
 MatchmakingStateJoinGame.NAME = "MatchmakingStateJoinGame"
 
@@ -70,6 +72,7 @@ MatchmakingStateJoinGame.update = function (self, dt, t)
 		if popup_result then
 			self._profile_picker_shown = false
 			self._selected_hero_at_t = t
+
 			local cancel_matchmaking = self:_handle_popup_result(popup_result, t)
 
 			if cancel_matchmaking then
@@ -163,6 +166,7 @@ MatchmakingStateJoinGame._update_lobby_data = function (self, dt, t)
 
 	if self._update_lobby_data_timer < 0 then
 		self._update_lobby_data_timer = 0.5
+
 		local lobby_data = self._lobby_data
 		local lobby_client = self.lobby_client
 		local selected_mission_id = lobby_client:lobby_data("selected_mission_id")
@@ -173,6 +177,7 @@ MatchmakingStateJoinGame._update_lobby_data = function (self, dt, t)
 
 		local difficulty = lobby_client:lobby_data("difficulty")
 		local difficulty_tweak = lobby_client:lobby_data("difficulty_tweak")
+
 		lobby_data.difficulty_tweak = difficulty_tweak
 
 		if lobby_data.difficulty ~= difficulty then
@@ -186,14 +191,16 @@ MatchmakingStateJoinGame._update_lobby_data = function (self, dt, t)
 end
 
 MatchmakingStateJoinGame._handle_popup_result = function (self, result, t)
-	local selected_hero_name = nil
+	local selected_hero_name
 	local cancel = false
 
 	if result.accepted then
 		mm_printf_force("Popup accepted")
 
 		selected_hero_name = result.selected_hero_name
+
 		local hero_index = FindProfileIndex(selected_hero_name)
+
 		self._selected_hero_name = selected_hero_name
 		self._selected_career_name = result.selected_career_name
 
@@ -235,7 +242,7 @@ MatchmakingStateJoinGame.get_transition = function (self)
 		local join_method = self._join_lobby_data.join_method or self.search_config and self.search_config.join_method
 		local start_lobby_data = {
 			lobby_client = self.lobby_client,
-			join_method = join_method
+			join_method = join_method,
 		}
 
 		return self._next_transition_state, start_lobby_data
@@ -261,7 +268,9 @@ MatchmakingStateJoinGame._spawn_join_popup = function (self, dt, t)
 	Managers.ui:open_popup("profile_picker", profile_index, career_index, auto_cancel_time, join_by_lobby_browser, difficulty, self._lobby_data)
 
 	self._profile_picker_shown = true
+
 	local time_manager = Managers.time
+
 	self._hero_popup_at_t = time_manager:time("game")
 	self._show_popup = false
 	self._popup_auto_cancel_time = nil
@@ -270,7 +279,7 @@ end
 MatchmakingStateJoinGame._update_popup_timeout = function (self, dt, t)
 	self._popup_auto_cancel_time = self._popup_auto_cancel_time or t + MatchmakingSettings.JOIN_LOBBY_TIME_UNTIL_AUTO_CANCEL
 
-	if self._popup_auto_cancel_time < t then
+	if t > self._popup_auto_cancel_time then
 		local status_message = "matchmaking_status_character_select_timed_out"
 
 		self._matchmaking_manager:send_system_chat_message(status_message)
@@ -281,6 +290,7 @@ end
 MatchmakingStateJoinGame._request_profile_from_host = function (self, hero_index)
 	local lobby_client = self.lobby_client
 	local host = lobby_client:lobby_host()
+
 	self._matchmaking_manager.selected_profile_index = hero_index
 
 	RPC.rpc_matchmaking_request_profile(PEER_ID_TO_CHANNEL[host], hero_index)
@@ -299,7 +309,7 @@ end
 MatchmakingStateJoinGame.rpc_matchmaking_request_profile_reply = function (self, channel_id, profile, reply)
 	local selected_hero_name = self._selected_hero_name
 	local selected_hero_index = FindProfileIndex(selected_hero_name)
-	local reason = nil
+	local reason
 
 	fassert(profile == selected_hero_index, "wrong profile in rpc_matchmaking_request_profile_reply")
 

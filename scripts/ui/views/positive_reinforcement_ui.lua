@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/positive_reinforcement_ui.lua
+
 require("scripts/settings/ui_player_portrait_frame_settings")
 
 local definitions = local_require("scripts/ui/views/positive_reinforcement_ui_definitions")
@@ -7,9 +9,10 @@ local event_colors = {
 	fade_to = Colors.get_table("white"),
 	default = Colors.get_table("cheeseburger"),
 	kill = Colors.get_table("red"),
-	personal = Colors.get_table("dodger_blue")
+	personal = Colors.get_table("dodger_blue"),
 }
 local breed_textures = UISettings.breed_textures
+
 PositiveReinforcementUI = class(PositiveReinforcementUI)
 
 PositiveReinforcementUI.init = function (self, parent, ingame_ui_context)
@@ -20,7 +23,7 @@ PositiveReinforcementUI.init = function (self, parent, ingame_ui_context)
 	self.peer_id = ingame_ui_context.peer_id
 	self.world = ingame_ui_context.world_manager:world("level_world")
 	self.render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 
 	self:create_ui_elements()
@@ -28,6 +31,7 @@ PositiveReinforcementUI.init = function (self, parent, ingame_ui_context)
 	self._positive_enforcement_events = {}
 	self._positive_enforcement_lookup = {}
 	self._animations = {}
+
 	local event_manager = Managers.state.event
 
 	event_manager:register(self, "add_coop_feedback", "event_add_positive_enforcement")
@@ -59,6 +63,7 @@ PositiveReinforcementUI.create_ui_elements = function (self)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
 	self.message_widgets = {}
 	self._unused_widgets = {}
+
 	local i = 0
 
 	for _, widget in pairs(definitions.message_widgets) do
@@ -72,8 +77,11 @@ PositiveReinforcementUI.remove_event = function (self, index)
 	local events = self._positive_enforcement_events
 	local event = table.remove(events, index)
 	local widget = event.widget
+
 	self._positive_enforcement_lookup[event.full_hash] = nil
+
 	local unused_widgets = self._unused_widgets
+
 	unused_widgets[#unused_widgets + 1] = widget
 end
 
@@ -112,6 +120,7 @@ PositiveReinforcementUI.add_event = function (self, hash, is_local_player, color
 		if old_event and settings_positive_reinforcement.folding_enabled then
 			local widget_content = old_event.widget.content
 			local count = widget_content.count + 1
+
 			widget_content.count_text = count .. "x"
 			widget_content.count = count
 			old_event.remove_time = nil
@@ -126,26 +135,29 @@ PositiveReinforcementUI.add_event = function (self, hash, is_local_player, color
 			local widget = table.remove(unused_widgets, 1)
 			local offset = widget.offset
 			local event = {
-				text = "",
-				shown_amount = 0,
 				amount = 0,
+				shown_amount = 0,
+				text = "",
 				full_hash = full_hash,
 				widget = widget,
 				event_type = event_type,
 				is_local_player = is_local_player,
 				data = {
-					...
-				}
+					...,
+				},
 			}
 			local event_index = #events + 1
 
 			table.insert(events, 1, event)
 
 			self._positive_enforcement_lookup[full_hash] = event
+
 			local content = widget.content
 			local style = widget.style
+
 			content.count = 1
 			content.count_text = nil
+
 			local texture_1, texture_2, texture_3 = settings.icon_function(...)
 
 			self:_assign_portrait_texture(widget, "portrait_1", texture_1)
@@ -153,6 +165,7 @@ PositiveReinforcementUI.add_event = function (self, hash, is_local_player, color
 
 			content.icon = texture_2
 			offset[2] = 0
+
 			local texte_style_ids = content.texte_style_ids
 
 			for _, style_id in ipairs(texte_style_ids) do
@@ -175,7 +188,7 @@ end
 
 local temp_portrait_size = {
 	96,
-	112
+	112,
 }
 
 PositiveReinforcementUI._assign_portrait_texture = function (self, widget, pass_name, texture)
@@ -184,17 +197,19 @@ PositiveReinforcementUI._assign_portrait_texture = function (self, widget, pass_
 	if not texture then
 		style.size = {
 			0,
-			0
+			0,
 		}
 
 		return
 	end
 
 	widget.content[pass_name].texture_id = texture
+
 	local portrait_size = table.clone(temp_portrait_size)
 
 	if UIAtlasHelper.has_atlas_settings_by_texture_name(texture) then
 		local texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(texture)
+
 		portrait_size[1] = texture_settings.size[1]
 		portrait_size[2] = texture_settings.size[2]
 	end
@@ -202,6 +217,7 @@ PositiveReinforcementUI._assign_portrait_texture = function (self, widget, pass_
 	local style = widget.style[pass_name]
 	local portrait_offset = style.portrait_offset
 	local offset = style.offset
+
 	offset[1] = portrait_offset[1] - portrait_size[1] / 2
 	offset[2] = portrait_offset[2] - portrait_size[2] / 2
 	style.size = portrait_size
@@ -279,10 +295,10 @@ PositiveReinforcementUI._get_hero_portrait = function (self, profile_index, care
 end
 
 local customizer_data = {
-	root_scenegraph_id = "pivot",
+	drag_scenegraph_id = "pivot_dragger",
 	label = "Kill feed",
 	registry_key = "kill_feed",
-	drag_scenegraph_id = "pivot_dragger"
+	root_scenegraph_id = "pivot",
 }
 
 PositiveReinforcementUI.update = function (self, dt, t)
@@ -320,7 +336,7 @@ PositiveReinforcementUI.update = function (self, dt, t)
 
 		if not event.remove_time then
 			event.remove_time = t + show_duration
-		elseif event.remove_time < t then
+		elseif t > event.remove_time then
 			self:remove_event(index)
 
 			removed = true
@@ -333,6 +349,7 @@ PositiveReinforcementUI.update = function (self, dt, t)
 
 			if new_height_offset < offset[2] then
 				local speed = 400
+
 				offset[2] = math.max(offset[2] - dt * speed, new_height_offset)
 			else
 				offset[2] = new_height_offset

@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/unit_extensions/wizards/ward_extension.lua
+
 WardExtension = class(WardExtension)
+
 local aggressive_dist_sq = 49
 local default_num_defenders = 8
 local num_defenders = default_num_defenders
@@ -11,11 +14,11 @@ local defender_group_template = "destructible_defenders"
 local defender_spawn_event = "ward"
 local defender_spawn_rot = QuaternionBox(Quaternion.identity())
 local state = {
+	aggressive = 1,
 	idle = 0,
-	aggressive = 1
 }
 local RPCS = {
-	"rpc_client_ward_hot_join_sync"
+	"rpc_client_ward_hot_join_sync",
 }
 
 WardExtension.init = function (self, extension_init_context, unit, extension_init_data)
@@ -61,7 +64,7 @@ WardExtension.update = function (self, unit, input, dt, context, t)
 
 	local ward_pos = self._ward_pos:unbox()
 
-	if self._next_check < t then
+	if t > self._next_check then
 		self._closest_player = self:get_closest_player(ward_pos)
 		self._next_check = t + closest_player_check_interval
 	end
@@ -85,11 +88,12 @@ WardExtension.get_closest_player = function (self, ward_pos)
 	end
 
 	local closest_player_dist_sq = math.huge
-	local closest_player, player_pos, player_unit = nil
+	local closest_player, player_pos, player_unit
 
 	for i = 1, num_players do
 		player_unit = nearby_player_units[i]
 		player_pos = POSITION_LOOKUP[player_unit]
+
 		local dist_sq = Vector3.distance_squared(ward_pos, player_pos)
 
 		if dist_sq < closest_player_dist_sq then
@@ -143,22 +147,22 @@ WardExtension.spawn_defenders = function (self, num_defenders)
 
 	num_defenders = num_defenders or default_num_defenders
 	self._defender_group_id = Managers.state.entity:system("ai_group_system"):generate_group_id()
+
 	local defender_optional_data = {
 		behavior = defender_behavior,
-		ward_pos = self._ward_pos
+		ward_pos = self._ward_pos,
+		spawned_func = function (unit, breed, optional_data)
+			local blackboard = BLACKBOARDS[unit]
+
+			blackboard.defend = true
+			blackboard.defend_get_in_position = true
+			blackboard.destructible_pos = optional_data.ward_pos
+		end,
 	}
-
-	defender_optional_data.spawned_func = function (unit, breed, optional_data)
-		local blackboard = BLACKBOARDS[unit]
-		blackboard.defend = true
-		blackboard.defend_get_in_position = true
-		blackboard.destructible_pos = optional_data.ward_pos
-	end
-
 	local defender_group_data = {
 		id = self._defender_group_id,
 		size = num_defenders,
-		template = defender_group_template
+		template = defender_group_template,
 	}
 
 	for i = 1, num_defenders do
@@ -185,7 +189,7 @@ WardExtension.toggle_health_bar_by_proximity = function (self, ward_unit)
 
 	local ward_pos = self._ward_pos:unbox()
 	local player_pos = Unit.world_position(local_player_unit, 0)
-	local in_range = Vector3.distance_squared(ward_pos, player_pos) < health_bar_toggle_dist_sq
+	local in_range = health_bar_toggle_dist_sq > Vector3.distance_squared(ward_pos, player_pos)
 
 	if in_range and not self._health_bar_on then
 		self._health_bar_on = true

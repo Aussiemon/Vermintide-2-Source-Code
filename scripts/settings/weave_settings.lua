@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/weave_settings.lua
+
 require("scripts/settings/horde_compositions")
 require("scripts/settings/horde_compositions_pacing")
 require("scripts/settings/difficulty_settings")
@@ -9,13 +11,14 @@ local max_objective_essence = 80
 local min_essence_from_enemies = 5
 local required_enemy_clear_rate = 0.8
 local include_terror_event_from_objectives = {
-	kill = true,
-	interactions = true,
-	targets = true,
-	sockets = true,
 	capture_points = false,
-	doom_wheels = true
+	doom_wheels = true,
+	interactions = true,
+	kill = true,
+	sockets = true,
+	targets = true,
 }
+
 WeaveSettings = WeaveSettings or {}
 WeaveSettings.damage_taken_score_weighting = 1
 WeaveSettings.time_score_weighting = 1
@@ -28,174 +31,175 @@ WeaveSettings.rating_values = {
 	9000,
 	6000,
 	3000,
-	0
+	0,
 }
 WeaveSettings.roaming_multiplier = {
-	xb1 = 0.3,
+	ps4 = 0.3,
 	win32 = 0.1,
-	ps4 = 0.3
+	xb1 = 0.3,
 }
 WeaveSettings.enemies_score_multipliers = {
-	default = 1,
-	skaven_plague_monk = 5,
-	skaven_clan_rat_with_shield = 2,
-	chaos_exalted_champion = 12,
-	skaven_poison_wind_globadier = 8,
 	beastmen_bestigor = 5,
-	chaos_raider = 5,
-	skaven_gutter_runner = 8,
-	chaos_marauder = 2,
+	beastmen_gor = 2,
 	beastmen_minotaur = 32,
+	beastmen_standard_bearer = 5,
+	beastmen_ungor = 1.5,
+	beastmen_ungor_archer = 1.5,
+	chaos_berzerker = 5,
+	chaos_corruptor_sorcerer = 8,
+	chaos_exalted_champion = 12,
+	chaos_exalted_sorcerer = 8,
 	chaos_fanatic = 1.5,
-	skaven_slave = 1,
-	skaven_storm_vermin_champion = 32,
-	skaven_storm_vermin_warlord = 32,
+	chaos_marauder = 2,
+	chaos_marauder_with_shield = 4,
+	chaos_raider = 5,
+	chaos_spawn = 32,
+	chaos_troll = 32,
+	chaos_vortex_sorcerer = 10,
+	chaos_warrior = 12,
+	default = 1,
 	skaven_clan_rat = 1.5,
+	skaven_clan_rat_with_shield = 2,
+	skaven_grey_seer = 8,
+	skaven_gutter_runner = 8,
+	skaven_pack_master = 8,
+	skaven_plague_monk = 5,
+	skaven_poison_wind_globadier = 8,
+	skaven_rat_ogre = 32,
+	skaven_ratling_gunner = 8,
+	skaven_slave = 1,
+	skaven_storm_vermin = 5,
+	skaven_storm_vermin_champion = 32,
+	skaven_storm_vermin_commander = 5,
+	skaven_storm_vermin_warlord = 32,
+	skaven_storm_vermin_with_shield = 8,
 	skaven_stormfiend = 32,
 	skaven_stormfiend_boss = 32,
-	skaven_storm_vermin_with_shield = 8,
-	chaos_exalted_sorcerer = 8,
-	skaven_rat_ogre = 32,
-	chaos_troll = 32,
-	chaos_spawn = 32,
-	chaos_corruptor_sorcerer = 8,
-	chaos_vortex_sorcerer = 10,
-	skaven_storm_vermin = 5,
-	beastmen_gor = 2,
-	beastmen_standard_bearer = 5,
-	chaos_berzerker = 5,
 	skaven_warpfire_thrower = 8,
-	chaos_marauder_with_shield = 4,
-	skaven_pack_master = 8,
-	beastmen_ungor = 1.5,
-	skaven_grey_seer = 8,
-	chaos_warrior = 12,
-	beastmen_ungor_archer = 1.5,
-	skaven_storm_vermin_commander = 5,
-	skaven_ratling_gunner = 8
 }
 WeaveSettings.score = {
 	{
-		essence = 80
+		essence = 80,
 	},
 	{
-		essence = 100
+		essence = 100,
 	},
 	{
-		essence = 105
+		essence = 105,
 	},
 	{
-		essence = 110
+		essence = 110,
 	},
 	{
-		essence = 120
+		essence = 120,
 	},
 	{
-		essence = 150
+		essence = 150,
 	},
 	{
-		essence = 180
+		essence = 180,
 	},
 	{
-		essence = 210
+		essence = 210,
 	},
 	{
-		essence = 280
+		essence = 280,
 	},
 	{
-		essence = 370
+		essence = 370,
 	},
 	{
-		essence = 500
+		essence = 500,
 	},
 	{
-		essence = 670
+		essence = 670,
 	},
 	{
-		essence = 920
+		essence = 920,
 	},
 	{
-		essence = 1260
+		essence = 1260,
 	},
 	{
-		essence = 1730
+		essence = 1730,
 	},
 	{
-		essence = 2380
+		essence = 2380,
 	},
 	{
-		essence = 3300
+		essence = 3300,
 	},
 	{
-		essence = 4580
+		essence = 4580,
 	},
 	{
-		essence = 6390
+		essence = 6390,
 	},
 	{
-		essence = 6390
+		essence = 6390,
 	},
 	{
-		essence = 7400
+		essence = 7400,
 	},
 	{
-		essence = 8320
+		essence = 8320,
 	},
 	{
-		essence = 9160
+		essence = 9160,
 	},
 	{
-		essence = 9940
+		essence = 9940,
 	},
 	{
-		essence = 10650
+		essence = 10650,
 	},
 	{
-		essence = 11300
+		essence = 11300,
 	},
 	{
-		essence = 11910
+		essence = 11910,
 	},
 	{
-		essence = 12470
+		essence = 12470,
 	},
 	{
-		essence = 13000
+		essence = 13000,
 	},
 	{
-		essence = 13490
+		essence = 13490,
 	},
 	{
-		essence = 13950
+		essence = 13950,
 	},
 	{
-		essence = 14380
+		essence = 14380,
 	},
 	{
-		essence = 14780
+		essence = 14780,
 	},
 	{
-		essence = 15160
+		essence = 15160,
 	},
 	{
-		essence = 15520
+		essence = 15520,
 	},
 	{
-		essence = 15860
+		essence = 15860,
 	},
 	{
-		essence = 16180
+		essence = 16180,
 	},
 	{
-		essence = 16480
+		essence = 16480,
 	},
 	{
-		essence = 16770
+		essence = 16770,
 	},
 	{
-		essence = 17040
-	}
+		essence = 17040,
+	},
 }
+
 local templates = {}
 local weaves_to_add = {
 	"weave_1",
@@ -237,8 +241,9 @@ local weaves_to_add = {
 	"weave_37",
 	"weave_38",
 	"weave_39",
-	"weave_40"
+	"weave_40",
 }
+
 WeaveSettings.weave_wind_ranges = {}
 
 for i = 1, #weaves_to_add do
@@ -249,7 +254,7 @@ for i = 1, #weaves_to_add do
 
 	if not WeaveSettings.weave_wind_ranges[wind_name] then
 		WeaveSettings.weave_wind_ranges[wind_name] = {
-			i
+			i,
 		}
 	else
 		table.insert(WeaveSettings.weave_wind_ranges[wind_name], i)
@@ -266,6 +271,7 @@ function generate_missing_weave_horde_compositions()
 		local name = weaves_to_add[i]
 		local path = string.format("scripts/settings/weaves/%s", name)
 		local template = local_require(path)
+
 		missing_composition_string = get_missing_horde_compositions_string(template, added_compositions, missing_composition_string)
 	end
 
@@ -273,6 +279,7 @@ function generate_missing_weave_horde_compositions()
 end
 
 local num_templates = #templates
+
 WeaveSettings.difficulty_increases = {
 	{
 		breakpoint = 10,
@@ -280,9 +287,9 @@ WeaveSettings.difficulty_increases = {
 		scaling_settings = {
 			enemy_damage = {
 				0,
-				0.35
-			}
-		}
+				0.35,
+			},
+		},
 	},
 	{
 		breakpoint = 20,
@@ -290,9 +297,9 @@ WeaveSettings.difficulty_increases = {
 		scaling_settings = {
 			enemy_damage = {
 				0,
-				0.35
-			}
-		}
+				0.35,
+			},
+		},
 	},
 	{
 		breakpoint = 30,
@@ -300,13 +307,13 @@ WeaveSettings.difficulty_increases = {
 		scaling_settings = {
 			enemy_damage = {
 				0,
-				0.5
-			}
-		}
+				0.5,
+			},
+		},
 	},
 	{
 		breakpoint = 40,
-		difficulty_key = "hardest"
+		difficulty_key = "hardest",
 	},
 	{
 		breakpoint = 60,
@@ -314,9 +321,9 @@ WeaveSettings.difficulty_increases = {
 		scaling_settings = {
 			diminishing_damage = {
 				0,
-				0.3
-			}
-		}
+				0.3,
+			},
+		},
 	},
 	{
 		breakpoint = 80,
@@ -324,9 +331,9 @@ WeaveSettings.difficulty_increases = {
 		scaling_settings = {
 			diminishing_damage = {
 				0.3,
-				0.6
-			}
-		}
+				0.6,
+			},
+		},
 	},
 	{
 		breakpoint = 90,
@@ -334,9 +341,9 @@ WeaveSettings.difficulty_increases = {
 		scaling_settings = {
 			diminishing_damage = {
 				0.6,
-				0.8
-			}
-		}
+				0.8,
+			},
+		},
 	},
 	{
 		breakpoint = 100,
@@ -344,9 +351,9 @@ WeaveSettings.difficulty_increases = {
 		scaling_settings = {
 			diminishing_damage = {
 				0.8,
-				1
-			}
-		}
+				1,
+			},
+		},
 	},
 	{
 		breakpoint = 110,
@@ -354,13 +361,13 @@ WeaveSettings.difficulty_increases = {
 		scaling_settings = {
 			diminishing_damage = {
 				1,
-				1
+				1,
 			},
 			enemy_damage = {
 				0,
-				0.25
-			}
-		}
+				0.25,
+			},
+		},
 	},
 	{
 		breakpoint = 120,
@@ -368,13 +375,13 @@ WeaveSettings.difficulty_increases = {
 		scaling_settings = {
 			diminishing_damage = {
 				1,
-				1
+				1,
 			},
 			enemy_damage = {
 				0.25,
-				0.75
-			}
-		}
+				0.75,
+			},
+		},
 	},
 	{
 		breakpoint = 130,
@@ -382,13 +389,13 @@ WeaveSettings.difficulty_increases = {
 		scaling_settings = {
 			diminishing_damage = {
 				1,
-				1
+				1,
 			},
 			enemy_damage = {
 				0.75,
-				2
-			}
-		}
+				2,
+			},
+		},
 	},
 	{
 		breakpoint = 140,
@@ -396,13 +403,13 @@ WeaveSettings.difficulty_increases = {
 		scaling_settings = {
 			diminishing_damage = {
 				1,
-				1
+				1,
 			},
 			enemy_damage = {
 				2,
-				5
-			}
-		}
+				5,
+			},
+		},
 	},
 	{
 		breakpoint = 150,
@@ -410,13 +417,13 @@ WeaveSettings.difficulty_increases = {
 		scaling_settings = {
 			diminishing_damage = {
 				1,
-				1
+				1,
 			},
 			enemy_damage = {
 				5,
-				9
-			}
-		}
+				9,
+			},
+		},
 	},
 	{
 		breakpoint = 160,
@@ -424,16 +431,18 @@ WeaveSettings.difficulty_increases = {
 		scaling_settings = {
 			diminishing_damage = {
 				1,
-				1
+				1,
 			},
 			enemy_damage = {
 				9,
-				9
-			}
-		}
-	}
+				9,
+			},
+		},
+	},
 }
+
 local weave_objective_names = {}
+
 WeaveSettings.winds = {
 	"fire",
 	"beasts",
@@ -442,7 +451,7 @@ WeaveSettings.winds = {
 	"light",
 	"shadow",
 	"life",
-	"metal"
+	"metal",
 }
 WeaveSettings.templates = {}
 WeaveSettings.templates_ordered = {}
@@ -450,9 +459,7 @@ WeaveSettings.templates_ordered = {}
 for i = 1, num_templates * 4 do
 	local index = i % num_templates
 
-	if index == 0 then
-		index = num_templates or index
-	end
+	index = index == 0 and num_templates or index
 
 	local template = table.clone(templates[index])
 	local name = "weave_" .. i
@@ -460,12 +467,14 @@ for i = 1, num_templates * 4 do
 	local objectives = template.objectives
 	local objective = objectives[1]
 	local wind_name = template.wind
+
 	template.display_name = objective.base_level_id .. "_" .. wind_name .. "_name"
 	template.name = name
 	template.tier = i
 	template.dlc_name = "scorpion"
+
 	local difficulty_key = "cataclysm_3"
-	local scaling_settings = nil
+	local scaling_settings
 
 	for _, increase_data in ipairs(WeaveSettings.difficulty_increases) do
 		if i <= increase_data.breakpoint then
@@ -500,6 +509,7 @@ end
 
 WeaveSettings.objective_names = objective_names
 WeaveSettings.weave_objective_names = weave_objective_names
+
 local max_int = math.pow(2, 32)
 local TEMP_TABLE = {}
 
@@ -513,6 +523,7 @@ local function sort_objective_indices(weave_template)
 
 	for objective_index, objective in ipairs(objectives) do
 		objectives_ordered[objective_index] = {}
+
 		local objective_settings = objective.objective_settings
 		local objective_lists = objective_settings and objective_settings.objective_lists
 
@@ -522,9 +533,10 @@ local function sort_objective_indices(weave_template)
 
 				for objective_name, objective_data in pairs(objective_list) do
 					local sort_index = objective_data.sort_index or max_int
+
 					TEMP_TABLE[#TEMP_TABLE + 1] = {
 						sort_index = sort_index,
-						objective_name = objective_name
+						objective_name = objective_name,
 					}
 				end
 
@@ -532,6 +544,7 @@ local function sort_objective_indices(weave_template)
 
 				for _, objective_data in pairs(TEMP_TABLE) do
 					local objective_name = objective_data.objective_name
+
 					objectives_ordered[objective_index][#objectives_ordered[objective_index] + 1] = objective_name
 				end
 			end
@@ -583,7 +596,7 @@ local function calc_spawn_weave_special(event, difficulty_rank, seed)
 		local num_to_spawn = event.amount or 1
 
 		for i = 1, num_to_spawn do
-			local breed_name, index = nil
+			local breed_name, index
 
 			if type(check_name) == "table" then
 				seed, index = Math.next_random(seed, 1, #check_name)
@@ -602,7 +615,7 @@ local function calc_spawn_weave_special(event, difficulty_rank, seed)
 end
 
 local function calc_spawn_weave_special_event(element, difficulty_key, seed)
-	local breed_name = nil
+	local breed_name
 	local check_name = element.breed_name
 	local num_to_spawn = element.amount or 1
 	local num_to_spawn_scaled = element.difficulty_amount
@@ -610,23 +623,27 @@ local function calc_spawn_weave_special_event(element, difficulty_key, seed)
 
 	if num_to_spawn_scaled then
 		local chosen_amount = num_to_spawn_scaled[difficulty_key]
+
 		chosen_amount = chosen_amount or num_to_spawn_scaled.hardest
 
 		if type(chosen_amount) == "table" then
-			local index = nil
+			local index
+
 			seed, index = Math.next_random(seed, 1, #chosen_amount)
 			num_to_spawn = chosen_amount[index]
 		else
 			num_to_spawn = chosen_amount
 		end
 	elseif type(num_to_spawn) == "table" then
-		local index = nil
+		local index
+
 		seed, index = Math.next_random(seed, 1, #num_to_spawn)
 		num_to_spawn = num_to_spawn[index]
 	end
 
 	if type(check_name) == "table" then
-		local index = nil
+		local index
+
 		seed, index = Math.next_random(seed, 1, #check_name)
 		breed_name = check_name[index]
 	else
@@ -650,10 +667,12 @@ local function calculate_enemy_count_from_terror_event(terror_event_name, diffic
 
 		if sub_event_name == "spawn_weave_special" then
 			local count = 0
+
 			count, seed = calc_spawn_weave_special(sub_event, difficulty_rank, seed)
 			enemy_count = enemy_count + count
 		elseif sub_event_name == "spawn_weave_special_event" then
 			local count = 0
+
 			count, seed = calc_spawn_weave_special_event(sub_event, difficulty_key, seed)
 			enemy_count = enemy_count + count
 		elseif sub_event_name == "spawn" or sub_event_name == "spawn_at_raw" then
@@ -690,6 +709,7 @@ end
 local function calculate_enemy_count(main_path_spawning, difficulty_key, weave_name, enemy_count, seed)
 	for _, event_data in ipairs(main_path_spawning) do
 		local terror_event_name = event_data.terror_event_name
+
 		enemy_count, _ = calculate_enemy_count_from_terror_event(terror_event_name, difficulty_key, enemy_count, seed)
 	end
 
@@ -755,6 +775,7 @@ local function calculate_score_multipliers(objective, weave_name)
 	for difficulty_key, _ in pairs(DifficultySettings) do
 		for breed_name, count in pairs(enemies_to_spawn[difficulty_key]) do
 			local breed_score = WeaveSettings.enemies_score_multipliers[breed_name] or WeaveSettings.enemies_score_multipliers.default
+
 			total_enemies_score[difficulty_key] = (total_enemies_score[difficulty_key] or 0) + breed_score * count
 		end
 	end

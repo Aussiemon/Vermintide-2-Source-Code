@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/dlcs/cog/action_career_dr_engineer_spin.lua
+
 ActionCareerDREngineerSpin = class(ActionCareerDREngineerSpin, ActionBase)
 
 ActionCareerDREngineerSpin.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
@@ -31,6 +33,7 @@ end
 ActionCareerDREngineerSpin.client_owner_post_update = function (self, dt, t, world, can_damage)
 	local weapon_extension = self.weapon_extension
 	local current_windup = self._current_windup
+
 	current_windup = math.clamp(current_windup + self._windup_speed * dt, self._initial_windup, 1)
 
 	weapon_extension:set_custom_data("windup", current_windup)
@@ -47,6 +50,7 @@ ActionCareerDREngineerSpin.finish = function (self, reason)
 	if self._override_visual_spinup then
 		local time_spent = self._last_update_t - self.action_start_t
 		local lerp_t = time_spent / self._visual_spinup_time
+
 		visual_spinup = math.lerp(self._visual_spinup_min, self._visual_spinup_max, lerp_t)
 	end
 
@@ -72,6 +76,7 @@ end
 
 ActionCareerDREngineerSpin._update_animation_speed = function (self, windup)
 	local anim_time_scale = windup / 3 + 0.67
+
 	anim_time_scale = math.clamp(anim_time_scale, NetworkConstants.animation_variable_float.min, NetworkConstants.animation_variable_float.max)
 
 	self.first_person_extension:animation_set_variable("barrel_spin_speed", anim_time_scale)

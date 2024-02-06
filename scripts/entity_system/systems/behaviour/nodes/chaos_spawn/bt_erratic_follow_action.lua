@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/chaos_spawn/bt_erratic_follow_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTErraticFollowAction = class(BTErraticFollowAction, BTNode)
@@ -7,14 +9,17 @@ BTErraticFollowAction.init = function (self, ...)
 end
 
 BTErraticFollowAction.name = "BTErraticFollowAction"
+
 local debug_movement = false
 
 BTErraticFollowAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
+
 	blackboard.action = action
 	blackboard.remembered_threat_pos = nil
 	blackboard.chasing_timer = blackboard.unreachable_timer or 0
 	blackboard.active_node = self
+
 	local move_state = blackboard.move_state
 	local target_pos = POSITION_LOOKUP[blackboard.target_unit]
 	local animation_name = AiAnimUtils.get_start_move_animation(unit, target_pos, action.start_anims_name)
@@ -37,7 +42,7 @@ BTErraticFollowAction.enter = function (self, unit, blackboard, t)
 		blackboard.random_dirs = {
 			action.move_jump_fwd_anims,
 			action.move_jump_right_anims,
-			action.move_jump_fwd_anims
+			action.move_jump_fwd_anims,
 		}
 	end
 
@@ -85,7 +90,9 @@ BTErraticFollowAction.run = function (self, unit, blackboard, t, dt)
 	local locomotion_extension = blackboard.locomotion_extension
 	local move_state = blackboard.move_state
 
-	if move_state ~= "jumping" then
+	if move_state == "jumping" then
+		-- Nothing
+	else
 		self:follow(unit, t, dt, blackboard, locomotion_extension)
 	end
 
@@ -129,8 +136,9 @@ BTErraticFollowAction.follow = function (self, unit, t, dt, blackboard, locomoti
 
 	local pos = POSITION_LOOKUP[unit]
 
-	if blackboard.target_dist > 10 and (blackboard.consecutive_jump or blackboard.next_jump_time < t) then
+	if blackboard.target_dist > 10 and (blackboard.consecutive_jump or t > blackboard.next_jump_time) then
 		blackboard.consecutive_jump = false
+
 		local success = self:investigate_jump(unit, t, blackboard, pos, locomotion_extension)
 
 		if success then
@@ -164,11 +172,12 @@ BTErraticFollowAction.follow = function (self, unit, t, dt, blackboard, locomoti
 	if new_destination then
 		local to_vec = Vector3.flat(new_destination - POSITION_LOOKUP[unit])
 		local distance_sq = Vector3.length_squared(to_vec)
+
 		blackboard.wanted_destination = Vector3Box(new_destination)
 		blackboard.walking_allowed = not previous_is_on_path and distance_sq <= action.enter_walk_dist_sq
 	end
 
-	if blackboard.boss_follow_next_line_of_sight_check_t < t then
+	if t > blackboard.boss_follow_next_line_of_sight_check_t then
 		blackboard.has_los_to_any_player = PerceptionUtils.has_line_of_sight_to_any_player(unit)
 		blackboard.boss_follow_next_line_of_sight_check_t = t + 2.5
 	end
@@ -176,7 +185,7 @@ BTErraticFollowAction.follow = function (self, unit, t, dt, blackboard, locomoti
 	local walking_allowed = blackboard.walking_allowed
 	local to_vec = Vector3.flat(navigation_extension:destination() - POSITION_LOOKUP[unit])
 	local distance_sq = Vector3.length_squared(to_vec)
-	local move_anim = nil
+	local move_anim
 
 	if action.override_move_speed then
 		navigation_extension:set_max_speed(action.override_move_speed)
@@ -187,11 +196,11 @@ BTErraticFollowAction.follow = function (self, unit, t, dt, blackboard, locomoti
 			navigation_extension:set_max_speed(breed.walk_speed)
 
 			move_anim = action.walk_anim
-		elseif breed.catch_up_speed and action.enter_catch_up_dist_sq < distance_sq and not blackboard.has_los_to_any_player then
+		elseif breed.catch_up_speed and distance_sq > action.enter_catch_up_dist_sq and not blackboard.has_los_to_any_player then
 			navigation_extension:set_max_speed(breed.catch_up_speed)
 
 			move_anim = action.move_anim
-		elseif action.leave_walk_dist_sq <= distance_sq then
+		elseif distance_sq >= action.leave_walk_dist_sq then
 			navigation_extension:set_max_speed(breed.run_speed)
 
 			move_anim = action.move_anim
@@ -210,7 +219,7 @@ BTErraticFollowAction.follow = function (self, unit, t, dt, blackboard, locomoti
 
 	if is_on_path and blackboard.move_state ~= "walking" and distance_sq <= action.enter_walk_dist_sq and walking_allowed then
 		self:_go_walking(unit, blackboard, move_anim)
-	elseif is_on_path and blackboard.move_state ~= "moving" and action.leave_walk_dist_sq <= distance_sq then
+	elseif is_on_path and blackboard.move_state ~= "moving" and distance_sq >= action.leave_walk_dist_sq then
 		self:_go_moving(unit, blackboard, move_anim)
 	elseif blackboard.move_state ~= "idle" and navigation_extension:has_reached_destination(0.2) then
 		self:_go_idle(unit, blackboard, locomotion_extension)
@@ -306,7 +315,7 @@ BTErraticFollowAction.investigate_jump = function (self, unit, t, blackboard, un
 	local dot = Vector3.dot(move_dir, travel_dir)
 	local nav_world = blackboard.nav_world
 	local traverse_logic = navigation_extension:traverse_logic()
-	local jump_anim, jump_data = nil
+	local jump_anim, jump_data
 	local moving_towards_target = dot > 0.25
 
 	if moving_towards_target then
@@ -362,7 +371,7 @@ BTErraticFollowAction.investigate_jump = function (self, unit, t, blackboard, un
 		blackboard.jump_color = {
 			math.random(100, 255),
 			math.random(100, 255),
-			math.random(100, 255)
+			math.random(100, 255),
 		}
 		blackboard.move_state = "jumping"
 

@@ -1,9 +1,12 @@
+﻿-- chunkname: @scripts/unit_extensions/default_player_unit/states/player_character_state_climbing_ladder.lua
+
 PlayerCharacterStateClimbingLadder = class(PlayerCharacterStateClimbingLadder, PlayerCharacterState)
 
 PlayerCharacterStateClimbingLadder.init = function (self, character_state_init_context)
 	PlayerCharacterState.init(self, character_state_init_context, "climbing_ladder")
 
 	local context = character_state_init_context
+
 	self.lerp_target_position = Vector3Box()
 	self.lerp_start_position = Vector3Box()
 end
@@ -43,8 +46,11 @@ PlayerCharacterStateClimbingLadder.on_enter = function (self, unit, input, dt, c
 	self.movement_speed = 1
 	self.animation_state = "no_animation"
 	self.climb_sfx_event = Unit.get_data(ladder_unit, "sfx_footstep_event") or "player_footstep_ladder"
+
 	local jump_node = Unit.node(ladder_unit, "c_platform")
+
 	self.jump_off_height = Vector3.z(Unit.world_position(ladder_unit, jump_node))
+
 	local loc_ext = self.locomotion_extension
 
 	loc_ext:enable_script_driven_ladder_movement()
@@ -52,6 +58,7 @@ PlayerCharacterStateClimbingLadder.on_enter = function (self, unit, input, dt, c
 
 	local ladder_pos = Unit.world_position(self.ladder_unit, 0)
 	local ladder_position_height = Vector3.z(ladder_pos)
+
 	self.ladder_position_height = ladder_position_height
 
 	if previous_state ~= "enter_ladder_top" then
@@ -130,6 +137,7 @@ PlayerCharacterStateClimbingLadder.update = function (self, unit, input, dt, con
 
 	if not csm.state_next and (input_extension:get("jump") or input_extension:get("jump_only") or ladder_shaking) then
 		local params = self.temp_params
+
 		params.ladder_unit = self.ladder_unit
 		params.ladder_shaking = true
 
@@ -147,6 +155,7 @@ PlayerCharacterStateClimbingLadder.update = function (self, unit, input, dt, con
 	if not self.position_lerp_timer then
 		if above_climb_off_height and current_velocity_z > 0 then
 			local params = self.temp_params
+
 			params.ladder_unit = self.ladder_unit
 
 			csm:change_state("leaving_ladder_top", params)
@@ -155,6 +164,7 @@ PlayerCharacterStateClimbingLadder.update = function (self, unit, input, dt, con
 		elseif not colliding_with_ladder then
 			if above_climb_off_height and current_velocity_z > 0 then
 				local params = self.temp_params
+
 				params.ladder_unit = self.ladder_unit
 
 				csm:change_state("leaving_ladder_top", params)
@@ -197,6 +207,7 @@ PlayerCharacterStateClimbingLadder.update = function (self, unit, input, dt, con
 
 	if not player.bot_player and self.accumilated_distance > 1 then
 		self.accumilated_distance = 0
+
 		local position = Unit.world_position(unit, 0)
 		local wwise_source_id, wwise_world = WwiseUtils.make_position_auto_source(self.world, position)
 
@@ -213,7 +224,7 @@ PlayerCharacterStateClimbingLadder._move_on_ladder = function (self, first_perso
 
 	local movement_settings_table = PlayerUnitMovementSettings.get_movement_settings_table(unit)
 	local mover = Unit.mover(unit)
-	local direction = nil
+	local direction
 	local collides_down = Mover.collides_down(mover)
 
 	if collides_down and y_input <= 0 then
@@ -232,7 +243,7 @@ PlayerCharacterStateClimbingLadder._move_on_ladder = function (self, first_perso
 		local pitch_value = math.clamp(math.auto_lerp(-speed_lerp_interval, speed_lerp_interval, -1, 1, pitch_value), -1, 1)
 
 		if y_input > 0 or y_input < 0 and not collides_down then
-			local percentage_to_increase_input = nil
+			local percentage_to_increase_input
 
 			if pitch_value > 0 then
 				percentage_to_increase_input = 1 - (1 - pitch_value) * (1 - pitch_value)
@@ -272,6 +283,7 @@ PlayerCharacterStateClimbingLadder.on_ladder_animation = function (self)
 	if current_velocity_z == 0 then
 		if self.animation_state ~= "animation_idle" then
 			self.animation_state = "animation_idle"
+
 			local time_in_move_animation = CharacterStateHelper.time_in_ladder_move_animation(unit, self.ladder_position_height)
 
 			if time_in_move_animation <= movement_settings_table.ladder.threshold_for_idle_right then

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/game_state/state_ingame_running.lua
+
 require("scripts/settings/experience_settings")
 require("scripts/settings/progression_unlocks")
 require("scripts/settings/equipment/loot_chest_data_1")
@@ -17,8 +19,9 @@ require("scripts/entity_system/systems/mission/rewards")
 local state_ingame_running_testify = script_data.testify and require("scripts/game_state/state_ingame_running_testify")
 local RPCS = {
 	"rpc_trigger_local_afk_system_message",
-	"rpc_follow_to_lobby"
+	"rpc_follow_to_lobby",
 }
+
 StateInGameRunning = class(StateInGameRunning)
 StateInGameRunning.NAME = "StateInGameRunning"
 
@@ -26,7 +29,9 @@ StateInGameRunning.on_enter = function (self, params)
 	GarbageLeakDetector.register_object(self, "StateInGameRunning")
 
 	self.world = self.parent.world
+
 	local viewport_name = params.viewport_name
+
 	self.viewport_name = viewport_name
 	self.world_name = params.world_name
 	self.is_server = params.is_server
@@ -37,7 +42,9 @@ StateInGameRunning.on_enter = function (self, params)
 	self.profile_synchronizer = params.profile_synchronizer
 	self.network_server = params.network_server
 	self.network_client = params.network_client
+
 	local input_manager = params.input_manager
+
 	self.input_manager = input_manager
 	self.is_in_inn = params.is_in_inn
 	self.is_in_tutorial = params.is_in_tutorial
@@ -58,12 +65,14 @@ StateInGameRunning.on_enter = function (self, params)
 	input_manager:map_device_to_service("Player", "gamepad")
 
 	self.player_index = params.player
+
 	local input_source = self.input_manager:get_service("Player")
 	local player_manager = Managers.player
 	local peer_id = Network.peer_id()
 	local local_player_id = params.local_player_id
 	local player = Managers.player:player(peer_id, local_player_id)
 	local stats_id = player:stats_id()
+
 	player.input_source = input_source
 	self.local_player_id = local_player_id
 	self.player = player
@@ -116,6 +125,7 @@ StateInGameRunning.on_enter = function (self, params)
 	self.network_event_delegate:register(self, unpack(RPCS))
 
 	local level_key = params.level_key
+
 	self.free_flight_manager = params.free_flight_manager
 
 	self.free_flight_manager:set_teleport_override(function (pos, rot)
@@ -159,10 +169,13 @@ StateInGameRunning.on_enter = function (self, params)
 		dialogue_system = entity_manager:system("dialogue_system"),
 		is_in_inn = params.is_in_inn,
 		is_in_tutorial = self.is_in_tutorial,
-		dice_keeper = params.dice_keeper
+		dice_keeper = params.dice_keeper,
 	}
+
 	DamageUtils.is_in_inn = params.is_in_inn
+
 	local loading_context = self.parent.parent.loading_context
+
 	self.ingame_ui_context = ingame_ui_context
 
 	if not script_data["-no-rendering"] then
@@ -173,10 +186,12 @@ StateInGameRunning.on_enter = function (self, params)
 
 	loading_context.play_end_of_level_game = nil
 	self.game_mode_key = Managers.state.game_mode:game_mode_key()
+
 	local quickplay_bonus = loading_context.quickplay_bonus or loading_context.local_quickplay_bonus
 
 	if not quickplay_bonus and self.game_mode_key == "weave" then
 		local lobby = self.is_server and self._lobby_host or self._lobby_client
+
 		quickplay_bonus = lobby:lobby_data("quick_game") == "true"
 	end
 
@@ -214,6 +229,7 @@ StateInGameRunning.on_enter = function (self, params)
 
 	if Development.parameter("attract_mode") then
 		local ingame_ui = Managers.ui:temporary_get_ingame_ui_called_from_state_ingame_running()
+
 		self._benchmark_handler = BenchmarkHandler:new(ingame_ui, self.world)
 	end
 
@@ -237,30 +253,31 @@ StateInGameRunning._setup_end_of_level_UI = function (self)
 	elseif not Managers.state.game_mode:setting("skip_level_end_view") then
 		local game_won = not self.game_lost
 		local game_mode_key = Managers.state.game_mode:game_mode_key()
-		local hero_name = nil
+		local hero_name
 		local peer_id = Network.peer_id()
 		local local_player_id = self.local_player_id
 		local profile_index = self.profile_synchronizer:profile_by_peer(peer_id, local_player_id)
 
 		if profile_index then
 			local profile = SPProfiles[profile_index]
+
 			hero_name = profile.display_name
 		end
 
-		local level_end_view_context = {
-			world_manager = Managers.world,
-			is_server = self.is_server,
-			is_quickplay = self.is_quickplay,
-			peer_id = peer_id,
-			local_player_hero_name = hero_name,
-			game_won = game_won,
-			game_mode_key = game_mode_key,
-			difficulty = Managers.state.difficulty:get_difficulty(),
-			level_key = Managers.state.game_mode:level_key(),
-			weave_personal_best_achieved = self._weave_personal_best_achieved,
-			completed_weave = self._completed_weave,
-			profile_synchronizer = self.profile_synchronizer
-		}
+		local level_end_view_context = {}
+
+		level_end_view_context.world_manager = Managers.world
+		level_end_view_context.is_server = self.is_server
+		level_end_view_context.is_quickplay = self.is_quickplay
+		level_end_view_context.peer_id = peer_id
+		level_end_view_context.local_player_hero_name = hero_name
+		level_end_view_context.game_won = game_won
+		level_end_view_context.game_mode_key = game_mode_key
+		level_end_view_context.difficulty = Managers.state.difficulty:get_difficulty()
+		level_end_view_context.level_key = Managers.state.game_mode:level_key()
+		level_end_view_context.weave_personal_best_achieved = self._weave_personal_best_achieved
+		level_end_view_context.completed_weave = self._completed_weave
+		level_end_view_context.profile_synchronizer = self.profile_synchronizer
 
 		if self.is_server then
 			local players_session_score = Managers.mechanism:get_players_session_score(self.statistics_db, self.profile_synchronizer, self._saved_scoreboard_stats)
@@ -278,15 +295,16 @@ StateInGameRunning._setup_end_of_level_UI = function (self)
 			local win_track_start_experience = self.rewards:get_win_track_experience_start()
 			local mechanism_name = Managers.mechanism:current_mechanism_name()
 			local rewards, end_of_level_rewards_arguments = self.rewards:get_rewards()
+
 			level_end_view_context.rewards = {
 				end_of_level_rewards = table.clone(rewards),
 				level_start = {
 					level,
 					start_experience,
-					start_experience_pool
+					start_experience_pool,
 				},
 				mission_results = table.clone(self.rewards:get_mission_results()),
-				win_track_start_experience = win_track_start_experience
+				win_track_start_experience = win_track_start_experience,
 			}
 			level_end_view_context.end_of_level_rewards_arguments = table.clone(end_of_level_rewards_arguments)
 		end
@@ -357,7 +375,7 @@ StateInGameRunning.check_invites = function (self)
 
 	if invite_data then
 		local lobby_id = invite_data.id or invite_data.name
-		local current_lobby_id = nil
+		local current_lobby_id
 
 		if IS_XB1 then
 			current_lobby_id = self._lobby_host and self._lobby_host.lobby._data.session_name or self._lobby_client.lobby._data.session_name
@@ -389,7 +407,7 @@ StateInGameRunning.check_invites = function (self)
 			self._invite_lobby_data = invite_data
 		elseif not self.popup_id then
 			Managers.matchmaking:request_join_lobby(invite_data, {
-				friend_join = true
+				friend_join = true,
 			})
 		end
 	end
@@ -446,13 +464,11 @@ StateInGameRunning.wanted_transition = function (self)
 
 	wanted_transition = wanted_transition or Managers.state.game_mode:wanted_transition()
 
-	if wanted_transition and IS_XB1 and not self.is_in_inn and not self.is_in_tutorial then
-		if Development.parameter("auto-host-level") ~= nil then
-			-- Nothing
-		elseif not self._xbox_event_end_triggered then
-			Application.warning("MultiplyerRoundStart was triggered without end conditions met")
-			self:_xbone_end_of_round_events(self.statistics_db)
-		end
+	if not wanted_transition or not IS_XB1 or self.is_in_inn or self.is_in_tutorial or Development.parameter("auto-host-level") ~= nil then
+		-- Nothing
+	elseif not self._xbox_event_end_triggered then
+		Application.warning("MultiplyerRoundStart was triggered without end conditions met")
+		self:_xbone_end_of_round_events(self.statistics_db)
 	end
 
 	return wanted_transition, data
@@ -475,7 +491,9 @@ StateInGameRunning.gm_event_end_conditions_met = function (self, reason, checkpo
 
 	local is_server = self.is_server
 	local player = self.player
+
 	self.end_conditions_met = true
+
 	local difficulty_key = Managers.state.difficulty:get_difficulty()
 	local level_key = Managers.state.game_mode:level_key()
 	local game_mode_key = self.game_mode_key
@@ -558,6 +576,7 @@ StateInGameRunning.gm_event_end_conditions_met = function (self, reason, checkpo
 				Managers.matchmaking:set_quick_game(false)
 			else
 				local saved_scoreboard_stats = ScoreboardHelper.get_weave_stats(self.statistics_db, self.profile_synchronizer)
+
 				self.parent.parent.loading_context.saved_scoreboard_stats = saved_scoreboard_stats
 			end
 		elseif game_mode_key == "versus" then
@@ -585,6 +604,7 @@ StateInGameRunning.gm_event_end_conditions_met = function (self, reason, checkpo
 		if game_mode_key == "versus" then
 			local mechanism = Managers.mechanism:game_mechanism()
 			local state = mechanism:get_state()
+
 			register_statistics = state == "inn"
 			is_final_objective = state == "inn"
 
@@ -613,7 +633,7 @@ StateInGameRunning.gm_event_end_conditions_met = function (self, reason, checkpo
 	local screen_name, screen_config, screen_params = Managers.state.game_mode:get_end_screen_config(game_won, game_lost, player)
 	local is_booted_unstrusted = self._booted_eac_untrusted
 	local is_game_mode_weave = game_mode_key == "weave"
-	local weave_tier, score, num_players, weave_progress = nil
+	local weave_tier, score, num_players, weave_progress
 
 	if is_game_mode_weave then
 		weave_tier, score, num_players = self:_get_weave_scores()
@@ -706,6 +726,7 @@ StateInGameRunning._award_end_of_level_rewards = function (self, statistics_db, 
 
 	if chest_settings then
 		local chests_package_name = chest_settings.package_name
+
 		self.chests_package_name = chests_package_name
 
 		Managers.package:load(chests_package_name, "global")
@@ -740,9 +761,12 @@ if not IS_WINDOWS and (BUILD == "dev" or BUILD == "debug") then
 
 		local input_source = Managers.input:get_service("Player")
 		local player = Managers.player:local_player()
+
 		player.input_source = input_source
+
 		local unit = player.player_unit
 		local input_extension = ScriptUnit.extension(unit, "input_system")
+
 		input_extension.input_service = input_source
 	end
 end
@@ -762,7 +786,7 @@ StateInGameRunning.update = function (self, dt, t)
 		end
 	end
 
-	if self._waiting_for_peers_message_timer and self._waiting_for_peers_message_timer < t then
+	if self._waiting_for_peers_message_timer and t > self._waiting_for_peers_message_timer then
 		if self.is_server then
 			local lobby_members_class = self._lobby_host:members()
 			local lobby_members = lobby_members_class:get_members()
@@ -872,12 +896,12 @@ StateInGameRunning.update_mood = function (self, dt, t)
 	local mood_handler = Managers.state.camera.mood_handler
 	local mood_timers = self.mood_timers
 	local mood_blackboard = MOOD_BLACKBOARD
-	local wanted_mood = nil
+	local wanted_mood
 
 	for i = 1, #mood_priority do
 		local mood = mood_priority[i]
 
-		if mood_timers[mood] and mood_timers[mood] < t then
+		if mood_timers[mood] and t > mood_timers[mood] then
 			mood_timers[mood] = nil
 			mood_blackboard[mood] = false
 		end
@@ -1029,6 +1053,7 @@ if IS_XB1 then
 
 		if not self._xbox_event_init_triggered then
 			self._xbox_event_init_triggered = true
+
 			local session_id = Managers.state.network:lobby().lobby:session_id()
 			local multiplayer_round_start_table = {
 				Managers.account:xbox_user_id(),
@@ -1038,14 +1063,14 @@ if IS_XB1 then
 				MultiplayerSession.multiplayer_correlation_id(session_id),
 				0,
 				0,
-				0
+				0,
 			}
 
 			Managers.transition:set_multiplayer_values("start", {
 				xuid = Managers.account:xbox_user_id(),
 				round_id = Managers.account:round_id(),
 				player_session_id = Managers.account:player_session_id(),
-				correlation_id = MultiplayerSession.multiplayer_correlation_id(session_id)
+				correlation_id = MultiplayerSession.multiplayer_correlation_id(session_id),
 			}, string.format("[StateInGameRunning] Writing MultiplayerRoundStart. CorrelationID: %s. RoundID: %s", tostring(MultiplayerSession.multiplayer_correlation_id(session_id)), tostring(Managers.account:round_id())))
 
 			local debug_string = string.format("[StateInGameRunning] Writing MultiplayerRoundStart. CorrelationID: %s. RoundID: %s", tostring(MultiplayerSession.multiplayer_correlation_id(session_id)), tostring(Managers.account:round_id()))
@@ -1062,6 +1087,7 @@ if IS_XB1 then
 
 		if not self._xbox_event_end_triggered then
 			self._xbox_event_end_triggered = true
+
 			local session_id = Managers.state.network:lobby().lobby:session_id()
 			local multiplayer_round_end_table = {
 				Managers.account:xbox_user_id(),
@@ -1073,7 +1099,7 @@ if IS_XB1 then
 				0,
 				0,
 				math.floor(Managers.time:time("game")),
-				0
+				0,
 			}
 
 			Managers.transition:set_multiplayer_values("end", {
@@ -1081,7 +1107,7 @@ if IS_XB1 then
 				round_id = Managers.account:round_id(),
 				player_session_id = Managers.account:player_session_id(),
 				correlation_id = MultiplayerSession.multiplayer_correlation_id(session_id),
-				time = Managers.time:time("game")
+				time = Managers.time:time("game"),
 			}, string.format("[StateInGameRunning] Writing MultiplayerRoundEnd. CorrelationID: %s. RoundID: %s", tostring(MultiplayerSession.multiplayer_correlation_id(session_id)), tostring(Managers.account:round_id())))
 
 			local debug_string = string.format("[StateInGameRunning] Writing MultiplayerRoundEnd. CorrelationID: %s. RoundID: %s", tostring(MultiplayerSession.multiplayer_correlation_id(session_id)), tostring(Managers.account:round_id()))
@@ -1093,10 +1119,11 @@ if IS_XB1 then
 
 		if not self._gameprogress_event_triggered then
 			self._gameprogress_event_triggered = true
+
 			local game_progress_table = {
 				Managers.account:xbox_user_id(),
 				Managers.account:player_session_id(),
-				StatisticsUtil.get_game_progress(statistics_db)
+				StatisticsUtil.get_game_progress(statistics_db),
 			}
 			local debug_string = "[StateInGameRunning] Writing GameProgress"
 			local debug_print_func = Application.warning
@@ -1109,6 +1136,7 @@ end
 StateInGameRunning._check_black_screen_transition_requirements = function (self)
 	if not self._game_mode_ready_to_start then
 		local game_mode_ready_to_start = Managers.state.game_mode:local_player_ready_to_start(self.player)
+
 		self._game_mode_ready_to_start = game_mode_ready_to_start
 	end
 
@@ -1199,7 +1227,7 @@ local afk_warn_timer = 120
 local afk_force_kick_timer = 180
 
 StateInGameRunning.update_player_afk_check = function (self, dt, t)
-	return
+	do return end
 
 	local cutscene_system = Managers.state.entity:system("cutscene_system")
 	local active_cutscene = cutscene_system.active_camera
@@ -1229,8 +1257,8 @@ StateInGameRunning.update_player_afk_check = function (self, dt, t)
 			self.last_active_time = self.last_active_time + dt
 		else
 			local time_since_active = t - self.last_active_time
-			local should_warn = afk_warn_timer < time_since_active
-			local should_kick = afk_force_kick_timer < time_since_active
+			local should_warn = time_since_active > afk_warn_timer
+			local should_kick = time_since_active > afk_force_kick_timer
 
 			if should_warn and not self.afk_popup_id then
 				self:_show_afk_warning()
@@ -1245,6 +1273,7 @@ end
 
 StateInGameRunning._show_afk_warning = function (self)
 	self.afk_popup_id = Managers.popup:queue_popup(Localize("afk_kick_warning"), Localize("popup_notice_topic"), "ok", Localize("button_ok"))
+
 	local can_flash_window = _G.Window ~= nil and Window.flash_window ~= nil and not Window.has_focus()
 
 	if can_flash_window then
@@ -1278,6 +1307,7 @@ StateInGameRunning.rpc_trigger_local_afk_system_message = function (self, channe
 
 		if IS_CONSOLE and not Managers.account:offline_mode() then
 			local lobby = Managers.state.network:lobby()
+
 			player_name = is_player_controlled and (lobby:user_name(peer_id) or tostring(peer_id)) or player:name()
 		end
 
@@ -1340,14 +1370,14 @@ StateInGameRunning.rpc_follow_to_lobby = function (self, channel_id, lobby_type,
 	end
 
 	local lobby_join_data = {
-		join_method = "party"
+		join_method = "party",
 	}
 
 	if NetworkLookup.lobby_type[lobby_type] == "server" then
 		lobby_join_data.is_server_invite = true
 		lobby_join_data.id = lobby_to_join
 		lobby_join_data.server_info = {
-			ip_port = lobby_to_join
+			ip_port = lobby_to_join,
 		}
 	else
 		lobby_join_data.is_server_invite = false
@@ -1355,7 +1385,7 @@ StateInGameRunning.rpc_follow_to_lobby = function (self, channel_id, lobby_type,
 	end
 
 	local state_context_params = {
-		friend_join = true
+		friend_join = true,
 	}
 
 	Managers.matchmaking:request_join_lobby(lobby_join_data, state_context_params)

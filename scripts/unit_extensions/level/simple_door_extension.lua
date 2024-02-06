@@ -1,15 +1,21 @@
+﻿-- chunkname: @scripts/unit_extensions/level/simple_door_extension.lua
+
 SimpleDoorExtension = class(SimpleDoorExtension)
+
 local SIMPLE_ANIMATION_FPS = 30
 local unit_alive = Unit.alive
 
 SimpleDoorExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	local world = extension_init_context.world
+
 	self.unit = unit
 	self.world = world
 	self.is_server = Managers.player.is_server
 	self.ignore_umbra = not World.umbra_available(world)
 	self.is_umbra_gate = Unit.get_data(unit, "umbra_gate")
+
 	local door_state = Unit.get_data(unit, "door_state")
+
 	self.current_state = door_state == 0 and "open_forward" or door_state == 1 and "closed"
 	self.animation_stop_time = 0
 end
@@ -64,8 +70,10 @@ SimpleDoorExtension.set_door_state_and_duration = function (self, new_state, fra
 	end
 
 	self.current_state = new_state
+
 	local animation_length = frames / SIMPLE_ANIMATION_FPS / speed
 	local t = Managers.time:time("game")
+
 	self.animation_stop_time = t + animation_length
 end
 
@@ -78,9 +86,10 @@ SimpleDoorExtension.update_nav_obstacle = function (self)
 	local obstacle = self.obstacle
 
 	if obstacle == nil then
-		local transform = nil
+		local transform
 		local unit = self.unit
 		local nav_world = GLOBAL_AI_NAVWORLD
+
 		obstacle, transform = NavigationUtils.create_exclusive_box_obstacle_from_unit_data(nav_world, unit)
 
 		GwNavBoxObstacle.add_to_world(obstacle)
@@ -101,6 +110,7 @@ SimpleDoorExtension.update = function (self, unit, input, dt, context, t)
 		self:update_nav_obstacle()
 
 		self.animation_stop_time = nil
+
 		local closed = self.current_state == "closed"
 
 		if closed and not self.ignore_umbra and self.is_umbra_gate then

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/end_screen_ui.lua
+
 local definitions = local_require("scripts/ui/views/end_screen_ui_definitions")
 local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animations
@@ -8,6 +10,7 @@ for _, definition in pairs(screens) do
 end
 
 local DO_RELOAD = false
+
 EndScreenUI = class(EndScreenUI)
 
 EndScreenUI.init = function (self, ingame_ui_context)
@@ -15,10 +18,12 @@ EndScreenUI.init = function (self, ingame_ui_context)
 	self.world_manager = ingame_ui_context.world_manager
 	self.render_settings = {
 		alpha_multiplier = 1,
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 	self._ingame_ui_context = ingame_ui_context
+
 	local input_manager = ingame_ui_context.input_manager
+
 	self.input_manager = input_manager
 
 	input_manager:create_input_service("end_screen_ui", "IngameMenuKeymaps", "IngameMenuFilters")
@@ -27,6 +32,7 @@ EndScreenUI.init = function (self, ingame_ui_context)
 	input_manager:map_device_to_service("end_screen_ui", "gamepad")
 
 	local world = self.world_manager:world("level_world")
+
 	self.wwise_world = Managers.world:wwise_world(world)
 
 	self:create_ui_elements()
@@ -41,9 +47,9 @@ end
 EndScreenUI.create_ui_elements = function (self)
 	DO_RELOAD = false
 	self.draw_flags = {
-		draw_text = false,
 		banner_alpha_multiplier = 0,
-		draw_background = false
+		draw_background = false,
+		draw_text = false,
 	}
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
 	self.background_rect_widget = UIWidget.init(definitions.widgets.background_rect)
@@ -63,6 +69,7 @@ EndScreenUI.on_enter = function (self, screen_name, screen_context, screen_param
 	fassert(screen_definition, "Unknown screen name: %s", screen_name)
 
 	self.is_active = true
+
 	local input_manager = self.input_manager
 
 	if not Managers.chat:chat_is_focused() then
@@ -77,6 +84,7 @@ EndScreenUI.on_enter = function (self, screen_name, screen_context, screen_param
 	local input_service = self:input_service()
 	local class_name = screen_definition.class_name
 	local screen_class = rawget(_G, class_name)
+
 	self._screen = screen_class:new(self._ingame_ui_context, input_service, screen_context, screen_params)
 
 	self._screen:on_fade_in()
@@ -85,6 +93,7 @@ end
 
 EndScreenUI.on_exit = function (self)
 	local draw_flags = self.draw_flags
+
 	self.is_active = false
 
 	if not Managers.chat:chat_is_focused() then
@@ -108,7 +117,7 @@ end
 
 EndScreenUI._fade_in_background = function (self)
 	self.background_in_anim_id = self.ui_animator:start_animation("fade_in_background", {
-		self.background_rect_widget
+		self.background_rect_widget,
 	}, scenegraph_definition, self.draw_flags)
 end
 

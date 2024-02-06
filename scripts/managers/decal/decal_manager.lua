@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/decal/decal_manager.lua
+
 require("scripts/settings/decal_settings")
 
 DecalManager = class(DecalManager)

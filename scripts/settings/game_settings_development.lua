@@ -1,10 +1,14 @@
+﻿-- chunkname: @scripts/settings/game_settings_development.lua
+
 require("scripts/helpers/debug_helper")
 require("scripts/settings/backend_settings")
 
 GameSettingsDevelopment = GameSettingsDevelopment or {}
+
 local argv = {
-	Application.argv()
+	Application.argv(),
 }
+
 GameSettingsDevelopment.trunk_path = GameSettingsDevelopment.trunk_path or false
 GameSettingsDevelopment.quicklaunch_params = GameSettingsDevelopment.quicklaunch_params or {}
 GameSettingsDevelopment.quicklaunch_params.level_key = LEVEL_EDITOR_TEST and "editor_level" or "castle_01"
@@ -20,7 +24,9 @@ GameSettingsDevelopment.store_nags = false
 GameSettingsDevelopment.store_nags = true
 GameSettingsDevelopment.use_global_chat = table.find(argv, "-use-global-chat") and true or false
 GameSettingsDevelopment.use_new_tab_menu = true
+
 local network_timeout = Development.parameter("network_timeout_really_long") and 10000 or 60
+
 GameSettingsDevelopment.network_timeout = Development.parameter("network_timeout") or network_timeout
 GameSettingsDevelopment.network_silence_warning_delay = 3
 GameSettingsDevelopment.show_version_info = true
@@ -33,7 +39,9 @@ GameSettingsDevelopment.use_engine_optimized_ai_locomotion = true
 GameSettingsDevelopment.allow_retry_weave = false
 GameSettingsDevelopment.disable_carousel = Development.parameter("disable_carousel") or not DLCSettings.carousel
 GameSettingsDevelopment.use_store_unload_list = true
+
 local script_data = script_data
+
 script_data.debug_behaviour_trees = script_data.debug_behaviour_trees ~= nil and script_data.debug_behaviour_trees or false
 
 fassert(not Development.parameter("use_offline_backend") and not Development.parameter("use_local_backend"), "Unable to use local backend with DEBUG stripped. Remove --use-local-backend or --use-offline-backend")
@@ -90,7 +98,7 @@ print("test_backend: " .. tostring(test_backend))
 
 if settings.steam or Development.parameter("force_steam") then
 	if rawget(_G, "Steam") or DEDICATED_SERVER then
-		local app_id = nil
+		local app_id
 
 		if DEDICATED_SERVER then
 			app_id = SteamGameServer.app_id()
@@ -197,73 +205,73 @@ GameSettingsDevelopment.debug_unit_colors = {
 	{
 		255,
 		0,
-		0
+		0,
 	},
 	{
 		0,
 		255,
-		0
+		0,
 	},
 	{
 		0,
 		255,
-		255
+		255,
 	},
 	{
 		255,
 		255,
-		0
+		0,
 	},
 	{
 		255,
 		0,
-		255
+		255,
 	},
 	{
 		100,
 		0,
-		0
+		0,
 	},
 	{
 		0,
 		100,
-		255
+		255,
 	},
 	{
 		100,
 		0,
-		255
+		255,
 	},
 	{
 		50,
 		150,
-		255
+		255,
 	},
 	{
 		25,
 		75,
-		100
+		100,
 	},
 	{
 		0,
 		255,
-		110
+		110,
 	},
 	{
 		10,
 		85,
-		10
+		10,
 	},
 	{
 		75,
 		75,
-		255
+		255,
 	},
 	{
 		65,
 		85,
-		100
-	}
+		100,
+	},
 }
 GameSettingsDevelopment.ignored_rpc_logs = {
 	"rpc_network_clock_sync_request",
@@ -363,7 +371,7 @@ GameSettingsDevelopment.ignored_rpc_logs = {
 	"rpc_shared_state_set_bool",
 	"rpc_shared_state_set_server_int",
 	"rpc_shared_state_set_server_string",
-	"rpc_shared_state_set_server_bool"
+	"rpc_shared_state_set_server_bool",
 }
 
 if not script_data.debug_interactions then
@@ -399,66 +407,66 @@ DefaultDisplayModes = {
 	{
 		640,
 		480,
-		0
+		0,
 	},
 	{
 		800,
 		600,
-		0
+		0,
 	},
 	{
 		1024,
 		768,
-		0
+		0,
 	},
 	{
 		1280,
 		720,
-		0
+		0,
 	},
 	{
 		1280,
 		1024,
-		0
+		0,
 	},
 	{
 		1344,
 		756,
-		0
+		0,
 	},
 	{
 		1366,
 		768,
-		0
+		0,
 	},
 	{
 		1440,
 		900,
-		0
+		0,
 	},
 	{
 		1600,
 		900,
-		0
+		0,
 	},
 	{
 		1600,
 		1024,
-		0
+		0,
 	},
 	{
 		1600,
 		1200,
-		0
+		0,
 	},
 	{
 		1680,
 		1050,
-		0
+		0,
 	},
 	{
 		1920,
 		1080,
-		0
-	}
+		0,
+	},
 }

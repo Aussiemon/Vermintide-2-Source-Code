@@ -1,9 +1,11 @@
+﻿-- chunkname: @scripts/imgui/imgui_call_interceptor.lua
+
 ImguiCallInterceptor = class(ImguiCallInterceptor)
 
 local function pack(...)
 	return {
 		n = select("#", ...),
-		...
+		...,
 	}
 end
 
@@ -31,9 +33,9 @@ __INTERCEPT_CALLS__ = setmetatable(__INTERCEPT_CALLS__ or {}, {
 
 		local func = obj[method]
 		local log = {
-			hits = 0,
 			buffer = 50,
-			enabled = enabled == nil or not not enabled
+			hits = 0,
+			enabled = enabled == nil or not not enabled,
 		}
 
 		local function decorator(...)
@@ -42,15 +44,17 @@ __INTERCEPT_CALLS__ = setmetatable(__INTERCEPT_CALLS__ or {}, {
 			end
 
 			log.hits = log.hits + 1
+
 			local t = Application.time_since_launch()
 			local entry = {
 				i = log.hits,
 				time = string.format("%d:%.4f", math.floor(t / 60), t % 60),
-				args = pack(...)
+				args = pack(...),
 			}
+
 			log[#log + 1] = entry
 
-			while log.buffer < #log do
+			while #log > log.buffer do
 				table.remove(log, 1)
 			end
 
@@ -59,7 +63,7 @@ __INTERCEPT_CALLS__ = setmetatable(__INTERCEPT_CALLS__ or {}, {
 
 		obj[method] = decorator
 		self[string.format("%s.%s", table.find(_G, obj) or obj, method)] = log
-	end
+	end,
 })
 
 ImguiCallInterceptor.init = function (self)
@@ -72,21 +76,7 @@ ImguiCallInterceptor.update = function (self)
 	return
 end
 
-local USAGE = [[
-Usage:
-	func = __INTERCEPT_CALLS__[[
-		UtilTable.func
-		ClassTable:method
-		instance_table:method
-	]]
-	(Note: there's no difference between `.` or `:`)
-
-Description:
-	Intercept calls and show input/output data.
-
-Example:
-	__INTERCEPT_CALLS__ "WwiseWorld.trigger_event"
-]]
+local USAGE = "Usage:\n\tfunc = __INTERCEPT_CALLS__[[\n\t\tUtilTable.func\n\t\tClassTable:method\n\t\tinstance_table:method\n\t]]\n\t(Note: there's no difference between `.` or `:`)\n\nDescription:\n\tIntercept calls and show input/output data.\n\nExample:\n\t__INTERCEPT_CALLS__ \"WwiseWorld.trigger_event\"\n"
 
 ImguiCallInterceptor.draw = function (self)
 	local do_close = Imgui.begin_window("Call Interceptor")

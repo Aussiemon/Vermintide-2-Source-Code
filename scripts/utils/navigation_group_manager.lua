@@ -1,7 +1,10 @@
+﻿-- chunkname: @scripts/utils/navigation_group_manager.lua
+
 require("foundation/scripts/util/math")
 require("scripts/utils/navigation_group")
 
 NavigationGroupManager = class(NavigationGroupManager)
+
 local MIN_AREA = 20
 
 NavigationGroupManager.init = function (self, using_editor)
@@ -29,13 +32,16 @@ NavigationGroupManager.form_groups = function (self, radius, finish_point, optio
 	assert(finish_point ~= nil, "Got nil for finish_point")
 
 	local time1 = os.clock()
+
 	self._groups_max_radius = radius or self._groups_max_radius
 	self._finish_point = finish_point
+
 	local nav_world = self.nav_world
 	local level_name = optional_level_name
 
 	if not optional_level_name then
 		local level_key = Managers.state.game_mode:level_key()
+
 		level_name = LevelSettings[level_key].level_name
 	end
 
@@ -46,10 +52,13 @@ NavigationGroupManager.form_groups = function (self, radius, finish_point, optio
 	end
 
 	local unit_indices = LevelResource.unit_indices(level_name, "core/gwnav/units/seedpoint/seedpoint")
+
 	self._num_groups = 0
+
 	local first_poly = GwNavTraversal.get_seed_triangle(nav_world, finish_point:unbox())
 	local in_group_queue = {}
 	local rejected_queue = {}
+
 	self._in_group_queue_pos = 0
 	self._rejected_queue_pos = 0
 	in_group_queue[#in_group_queue + 1] = first_poly
@@ -63,9 +72,12 @@ NavigationGroupManager.form_groups = function (self, radius, finish_point, optio
 
 	for i, unit_index in ipairs(unit_indices) do
 		local pos = LevelResource.unit_position(level_name, unit_index)
+
 		first_poly = GwNavTraversal.get_seed_triangle(nav_world, pos)
+
 		local in_group_queue2 = {}
 		local rejected_queue2 = {}
+
 		self._in_group_queue_pos = 0
 		self._rejected_queue_pos = 0
 		in_group_queue2[#in_group_queue2 + 1] = first_poly
@@ -95,11 +107,13 @@ NavigationGroupManager.form_groups_start = function (self, radius, finish_point,
 
 	self._groups_max_radius = radius or self._groups_max_radius
 	self._finish_point = finish_point
+
 	local nav_world = self.nav_world
 	local level_name = optional_level_name
 
 	if not optional_level_name then
 		local level_key = Managers.state.game_mode:level_key()
+
 		level_name = LevelSettings[level_key].level_name
 	end
 
@@ -110,12 +124,15 @@ NavigationGroupManager.form_groups_start = function (self, radius, finish_point,
 	end
 
 	local unit_indices = LevelResource.unit_indices(level_name, "core/gwnav/units/seedpoint/seedpoint")
+
 	self._seedpoint_unit_indices = unit_indices
 	self._level_name = level_name
 	self._num_groups = 0
+
 	local first_poly = GwNavTraversal.get_seed_triangle(nav_world, finish_point:unbox())
 	local in_group_queue = {}
 	local rejected_queue = {}
+
 	self._in_group_queue_pos = 0
 	self._rejected_queue_pos = 0
 	in_group_queue[#in_group_queue + 1] = first_poly
@@ -137,19 +154,24 @@ NavigationGroupManager.form_groups_update = function (self)
 	Debug.text("NavigationGroupManager: %d ", self._sum_iter_count)
 
 	local time1 = os.clock()
+
 	self._iter_count = 0
+
 	local all_work_done = false
+
 	self.form_groups_running = true
 
 	while self._iter_count < max_nodes_per_frame do
 		local a, b, c = self:assign_group(self._current_group, self._in_group_queue, self._rejected_queue)
 		local completed = not b
+
 		self._sum_iter_count = self._sum_iter_count + self._iter_count
 
 		print("\t\tworking on group -> count:", self._iter_count)
 
 		if completed then
 			self._spawn_point_index = self._spawn_point_index + 1
+
 			local unit_index = self._seedpoint_unit_indices[self._spawn_point_index]
 
 			if unit_index then
@@ -157,6 +179,7 @@ NavigationGroupManager.form_groups_update = function (self)
 
 				local pos = LevelResource.unit_position(self._level_name, unit_index)
 				local first_poly = GwNavTraversal.get_seed_triangle(self.nav_world, pos)
+
 				self._in_group_queue = {}
 				self._rejected_queue = {}
 				self._current_group = nil
@@ -202,10 +225,10 @@ end
 
 NavigationGroupManager._breadth_first_fill_main_path_index = function (self, main_path_index, starting_nav_group)
 	local added_to_queue = {
-		starting_nav_group = true
+		starting_nav_group = true,
 	}
 	local queue = {
-		starting_nav_group
+		starting_nav_group,
 	}
 	local read_index = 1
 	local write_index = #queue + 1
@@ -262,8 +285,11 @@ end
 
 NavigationGroupManager.assign_group = function (self, group, in_group_queue, rejected_queue)
 	local a, b, c = Script.temp_count()
+
 	self._iter_count = self._iter_count + 1
+
 	local poly, poly_hash, create_new_group = self:next_poly_in_queue(in_group_queue, rejected_queue)
+
 	create_new_group = create_new_group or not group
 
 	if not poly then
@@ -287,7 +313,7 @@ NavigationGroupManager.assign_group = function (self, group, in_group_queue, rej
 
 	Script.set_temp_count(a, b, c)
 
-	if max_nodes_per_frame < self._iter_count then
+	if self._iter_count > max_nodes_per_frame then
 		return group, in_group_queue, rejected_queue
 	end
 
@@ -296,6 +322,7 @@ end
 
 NavigationGroupManager.next_poly_in_queue = function (self, in_group_queue, rejected_queue)
 	self._in_group_queue_pos = self._in_group_queue_pos + 1
+
 	local poly = in_group_queue[self._in_group_queue_pos]
 	local poly_is_valid, poly_hash = self:poly_is_valid(poly)
 	local create_new_group = false
@@ -451,6 +478,10 @@ NavigationGroupManager.make_sure_group_centers_are_on_mesh = function (self)
 				if p then
 					group._group_center:store(p)
 				end
+
+				if false then
+					-- Nothing
+				end
 			end
 		end
 	end
@@ -503,7 +534,7 @@ end
 
 NavigationGroupManager.get_neighbours = function (self, poly)
 	local neighbours = {
-		GwNavTraversal.get_neighboring_triangles(poly)
+		GwNavTraversal.get_neighboring_triangles(poly),
 	}
 
 	return neighbours
@@ -512,8 +543,11 @@ end
 NavigationGroupManager.create_group = function (self, world, poly_hash, poly)
 	local poly_center = self:calc_polygon_center(poly)
 	local poly_area = self:calc_polygon_area(poly)
+
 	self._num_groups = self._num_groups + 1
+
 	local group = NavigationGroup:new(self.nav_world, poly_hash, poly, poly_center, poly_area, self._num_groups)
+
 	self._navigation_groups[group] = true
 	self._registered_polygons[poly_hash] = group
 
@@ -563,6 +597,7 @@ NavigationGroupManager.calc_distance_from_finish = function (self, group, first_
 		end
 
 		local distance_to_neighbour = Vector3.distance(group_center:unbox(), neighbour:get_group_center():unbox())
+
 		distance_from_finish = distance_from_finish + distance_to_neighbour
 	end
 
@@ -579,7 +614,9 @@ end
 NavigationGroupManager.calc_polygon_area = function (self, poly)
 	local p1, p2, p3 = self:get_polygon_sides(poly)
 	local perimeter = p1 + p2 + p3
+
 	perimeter = perimeter / 2
+
 	local area = math.sqrt(perimeter * (perimeter - p1) * (perimeter - p2) * (perimeter - p3))
 
 	return area
@@ -587,7 +624,8 @@ end
 
 NavigationGroupManager.get_polygon_sides = function (self, poly)
 	local p1, p2, p3 = GwNavTraversal.get_triangle_vertices(self.nav_world, poly)
-	local side_p1, side_p2, side_p3 = nil
+	local side_p1, side_p2, side_p3
+
 	side_p1 = Vector3.distance(p1, p2)
 	side_p2 = Vector3.distance(p1, p3)
 	side_p3 = Vector3.distance(p2, p3)
@@ -636,7 +674,9 @@ end
 
 NavigationGroupManager.draw_tri = function (self, triangle, h, col)
 	h = h or 0.1
+
 	local p1, p2, p3 = GwNavTraversal.get_triangle_vertices(self.nav_world, triangle)
+
 	p1 = p1 + Vector3(0, 0, h)
 	p2 = p2 + Vector3(0, 0, h)
 	p3 = p3 + Vector3(0, 0, h)
@@ -658,15 +698,20 @@ NavigationGroupManager.breadth_first_search_neighbours = function (self, root_tr
 	local b_queue = b_queue
 	local b_start = 1
 	local b_last = 1
+
 	b_queue[1] = root_triangle
+
 	local root_hash = self:get_poly_hash(root_triangle)
+
 	triangle_lookup[root_hash] = true
 
 	while b_start <= b_last do
 		local node_tri = b_queue[b_start]
 		local node_hash = self:get_poly_hash(node_tri)
+
 		b_start = b_start + 1
 		count = count + 1
+
 		local group = self._registered_polygons[node_hash]
 
 		if group then
@@ -678,8 +723,9 @@ NavigationGroupManager.breadth_first_search_neighbours = function (self, root_tr
 		end
 
 		patch_list[node_hash] = node_tri
+
 		local neighbours = {
-			GwNavTraversal.get_neighboring_triangles(node_tri)
+			GwNavTraversal.get_neighboring_triangles(node_tri),
 		}
 
 		for i = 1, #neighbours do
@@ -742,6 +788,7 @@ end
 NavigationGroupManager.get_group_polygons_centers = function (self, list)
 	for group, _ in pairs(self._navigation_groups) do
 		local a, b, c = Script.temp_count()
+
 		list = group:get_group_polygons_centers(list)
 
 		Script.set_temp_count(a, b, c)
@@ -762,9 +809,10 @@ NavigationGroupManager.print_groups = function (self, world, nav_world)
 		self._line_object = self._line_object or World.create_line_object(self._world, false)
 		self._drawer = self._drawer or Managers.state.debug:drawer({
 			mode = "perm",
-			name = "nav_group"
+			name = "nav_group",
 		})
 		self._debug_world_gui = World.create_world_gui(world, Matrix4x4.identity(), 1, 1, "material", "materials/fonts/gw_fonts")
+
 		local debug_world_gui = self._debug_world_gui
 		local a, b, c = Script.temp_count()
 
@@ -830,7 +878,7 @@ end
 NavigationGroupManager.draw_group_path = function (self, path)
 	local col = Color(255, 200, 255, 10)
 	local p1 = path[1]._group_center:unbox()
-	local p2 = nil
+	local p2
 
 	for i = 2, #path do
 		p2 = path[i]._group_center:unbox()
@@ -916,17 +964,18 @@ NavigationGroupManager.breadth_first_search_all_triangles = function (self, tria
 	local get_triangle_vertices = GwNavTraversal.get_triangle_vertices
 	local source_tri_hash = get_tri_hash(get_triangle_vertices(nav_world, triangle))
 	local triangles = {
-		triangle
+		triangle,
 	}
 	local tri_lookup = {
-		source_tri_hash = unique_id
+		source_tri_hash = unique_id,
 	}
 
 	while i < num_triangles do
 		i = i + 1
 		triangle = triangles[i]
+
 		local neighbors = {
-			get_neighboring_triangles(triangle)
+			get_neighboring_triangles(triangle),
 		}
 
 		for j = 1, #neighbors do

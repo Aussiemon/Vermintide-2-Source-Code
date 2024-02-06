@@ -1,9 +1,12 @@
+﻿-- chunkname: @scripts/settings/dlcs/cosmetics_2022_q2/cosmetics_2022_q2_equipment_settings.lua
+
 local settings = DLCSettings.cosmetics_2022_q2
+
 settings.cosmetics_files = {
-	"scripts/settings/dlcs/cosmetics_2022_q2/cosmetics_cosmetics_2022_q2"
+	"scripts/settings/dlcs/cosmetics_2022_q2/cosmetics_cosmetics_2022_q2",
 }
 settings.item_master_list_file_names = {
-	"scripts/settings/equipment/item_master_list_cosmetics_2022_q2"
+	"scripts/settings/equipment/item_master_list_cosmetics_2022_q2",
 }
 settings.inventory_package_list = {
 	"units/beings/player/bright_wizard_scholar/headpiece/bw_s_hat_14",
@@ -21,5 +24,5 @@ settings.inventory_package_list = {
 	"units/beings/player/way_watcher_maiden_guard_skin_01/first_person_base/chr_first_person_mesh",
 	"units/beings/player/way_watcher_maiden_guard_skin_01/third_person_base/chr_third_person_mesh",
 	"units/beings/player/witch_hunter_flagellant/first_person_base/chr_first_person_mesh",
-	"units/beings/player/witch_hunter_flagellant/third_person_base/chr_third_person_mesh"
+	"units/beings/player/witch_hunter_flagellant/third_person_base/chr_third_person_mesh",
 }

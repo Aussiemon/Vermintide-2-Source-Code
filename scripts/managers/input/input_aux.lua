@@ -1,5 +1,9 @@
+﻿-- chunkname: @scripts/managers/input/input_aux.lua
+
 InputAux = InputAux or {}
+
 local InputAux = InputAux
+
 InputAux.input_device_mapping = InputAux.input_device_mapping or {
 	gamepad = {
 		rawget(_G, "Pad1"),
@@ -9,24 +13,25 @@ InputAux.input_device_mapping = InputAux.input_device_mapping or {
 		rawget(_G, "Pad5"),
 		rawget(_G, "Pad6"),
 		rawget(_G, "Pad7"),
-		rawget(_G, "Pad8")
+		rawget(_G, "Pad8"),
 	},
 	mouse = {
-		rawget(_G, "Mouse")
+		rawget(_G, "Mouse"),
 	},
 	keyboard = {
-		rawget(_G, "Keyboard")
+		rawget(_G, "Keyboard"),
 	},
 	network = {
-		NetworkInputDevice
+		NetworkInputDevice,
 	},
 	recording = {
-		PlayRecordingInputDevice
-	}
+		PlayRecordingInputDevice,
+	},
 }
 
 if not InputAux.input_device_mapping.ps_pad then
 	InputAux.input_device_mapping.ps_pad = {}
+
 	local device_list = InputAux.input_device_mapping.gamepad
 
 	for _, device in ipairs(device_list) do
@@ -49,11 +54,11 @@ if not InputAux.input_device_type_lookup then
 end
 
 InputAux.input_map_types = {
-	soft_button = "number",
-	released = "boolean",
 	axis = "Vector3",
+	held = "boolean",
 	pressed = "boolean",
-	held = "boolean"
+	released = "boolean",
+	soft_button = "number",
 }
 
 InputAux.get_device_type = function (device)
@@ -91,11 +96,11 @@ InputAux.combination_functions = {
 	end,
 	["and"] = function (lhs, rhs)
 		return lhs and rhs
-	end
+	end,
 }
 InputAux.default_values_for_types = {
 	boolean = false,
-	number = 0
+	number = 0,
 }
 TestKeyMap = {
 	super_attack = {
@@ -106,18 +111,18 @@ TestKeyMap = {
 				"held",
 				"mouse",
 				"right",
-				"pressed"
-			}
-		}
+				"pressed",
+			},
+		},
 	},
 	weak_attack = {
 		input_mappings = {
 			{
 				"keyboard",
 				"k",
-				"held"
-			}
-		}
+				"held",
+			},
+		},
 	},
 	move_up = {
 		combination_type = "max",
@@ -125,51 +130,51 @@ TestKeyMap = {
 			{
 				"keyboard",
 				"oem_comma (< ,)",
-				"soft_button"
+				"soft_button",
 			},
 			{
 				"mouse",
 				"right",
-				"soft_button"
-			}
-		}
+				"soft_button",
+			},
+		},
 	},
 	move_down = {
 		input_mappings = {
 			{
 				"keyboard",
 				"o",
-				"soft_button"
-			}
-		}
+				"soft_button",
+			},
+		},
 	},
 	move_left = {
 		input_mappings = {
 			{
 				"keyboard",
 				"e",
-				"soft_button"
-			}
-		}
+				"soft_button",
+			},
+		},
 	},
 	move_right = {
 		input_mappings = {
 			{
 				"keyboard",
 				"a",
-				"soft_button"
-			}
-		}
-	}
+				"soft_button",
+			},
+		},
+	},
 }
 TestFilters = {
 	move = {
 		filter_type = "virtual_axis",
 		input_mappings = {
 			down = "move_down",
-			up = "move_up",
 			left = "move_left",
-			right = "move_right"
-		}
-	}
+			right = "move_right",
+			up = "move_up",
+		},
+	},
 }

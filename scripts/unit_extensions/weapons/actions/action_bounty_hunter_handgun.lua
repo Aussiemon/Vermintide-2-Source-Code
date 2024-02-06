@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/weapons/actions/action_bounty_hunter_handgun.lua
+
 ActionBountyHunterHandgun = class(ActionBountyHunterHandgun, ActionBase)
 
 ActionBountyHunterHandgun.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
@@ -11,6 +13,7 @@ ActionBountyHunterHandgun.client_owner_start_action = function (self, new_action
 	local owner_unit = self.owner_unit
 	local is_critical_strike = ActionUtils.is_critical_strike(owner_unit, new_action, t)
 	local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
+
 	self.current_action = new_action
 	self.power_level = power_level
 	self.owner_buff_extension = buff_extension
@@ -22,7 +25,7 @@ ActionBountyHunterHandgun.client_owner_start_action = function (self, new_action
 
 	if not Managers.player:owner(self.owner_unit).bot_player then
 		Managers.state.controller_features:add_effect("rumble", {
-			rumble_effect = "light_swing"
+			rumble_effect = "light_swing",
 		})
 	end
 
@@ -31,9 +34,12 @@ ActionBountyHunterHandgun.client_owner_start_action = function (self, new_action
 	end
 
 	local damage_profile_name = new_action.damage_profile or "default"
+
 	self.damage_profile_id = NetworkLookup.damage_profiles[damage_profile_name]
 	self.damage_profile = DamageProfileTemplates[damage_profile_name]
+
 	local damage_profile_name_aoe = new_action.damage_profile_aoe or "default"
+
 	self.damage_profile_aoe_id = NetworkLookup.damage_profiles[damage_profile_name_aoe]
 	self.damage_profile_aoe = DamageProfileTemplates[damage_profile_name_aoe]
 	self.upper_shot_done = nil
@@ -44,6 +50,7 @@ ActionBountyHunterHandgun.client_owner_start_action = function (self, new_action
 	self.time_to_aoe = t + new_action.aoe_time
 	self.hit_units = {}
 	self.shield_users_blocking = {}
+
 	local hud_extension = ScriptUnit.has_extension(owner_unit, "hud_system")
 
 	self:_handle_critical_strike(is_critical_strike, buff_extension, hud_extension, nil, "on_critical_shot", nil)
@@ -58,19 +65,19 @@ ActionBountyHunterHandgun.client_owner_start_action = function (self, new_action
 end
 
 ActionBountyHunterHandgun.client_owner_post_update = function (self, dt, t, world, can_damage, time_in_action)
-	if not self.upper_shot_done and self.time_to_shoot_upper <= t then
-		self:upper_shoot_function()
+	if not self.upper_shot_done and t >= self.time_to_shoot_upper then
+		self.upper_shoot_function(self)
 
 		self.upper_shot_done = true
 	end
 
-	if not self.lower_shot_done and self.time_to_shoot_lower <= t then
-		self:lower_shoot_function()
+	if not self.lower_shot_done and t >= self.time_to_shoot_lower then
+		self.lower_shoot_function(self)
 
 		self.lower_shot_done = true
 	end
 
-	if not self.aoe_done and self.time_to_aoe <= t then
+	if not self.aoe_done and t >= self.time_to_aoe then
 		self:_do_aoe()
 
 		self.aoe_done = true
@@ -84,7 +91,7 @@ ActionBountyHunterHandgun._railgun_shoot = function (self)
 
 	if not Managers.player:owner(self.owner_unit).bot_player then
 		Managers.state.controller_features:add_effect("rumble", {
-			rumble_effect = "handgun_fire"
+			rumble_effect = "handgun_fire",
 		})
 	end
 
@@ -139,7 +146,7 @@ ActionBountyHunterHandgun._shotgun_shoot = function (self)
 
 	if not Managers.player:owner(owner_unit).bot_player then
 		Managers.state.controller_features:add_effect("rumble", {
-			rumble_effect = "handgun_fire"
+			rumble_effect = "handgun_fire",
 		})
 	end
 
@@ -211,6 +218,7 @@ ActionBountyHunterHandgun._do_aoe = function (self)
 
 			if breed and not hit_units[hit_unit] and not breed.is_player then
 				hit_units[hit_unit] = true
+
 				local node = Actor.node(hit_actor)
 				local target_hit_position = Unit.world_position(hit_unit, node)
 				local attack_direction = Vector3.normalize(target_hit_position - attack_pos)
@@ -228,7 +236,7 @@ ActionBountyHunterHandgun._do_aoe = function (self)
 				local is_critical_strike = self.is_critical_strike
 				local can_damage = false
 				local can_stagger = true
-				local target_index = nil
+				local target_index
 
 				weapon_system:send_rpc_attack_hit(damage_source_id, attacker_unit_id, hit_unit_id, hit_zone_id, target_hit_position, attack_direction, damage_profile_id, "power_level", power_level, "hit_target_index", target_index, "blocking", shield_blocked, "shield_break_procced", false, "boost_curve_multiplier", ranged_boost_curve_multiplier, "is_critical_strike", is_critical_strike, "can_damage", can_damage, "can_stagger", can_stagger)
 			end

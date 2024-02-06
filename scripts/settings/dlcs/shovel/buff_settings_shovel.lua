@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/dlcs/shovel/buff_settings_shovel.lua
+
 require("scripts/settings/profiles/career_constants")
 
 local buff_perks = require("scripts/unit_extensions/default_player_unit/buffs/settings/buff_perk_names")
@@ -64,12 +66,13 @@ local function _spawn_skeleton_ability_fx(source_unit, target_position, buff, wo
 	buff.fx_spline_ids = buff.fx_spline_ids or {
 		World.find_particles_variable(world, "fx/wpnfx_staff_death/curse_spirit", "spline_1"),
 		World.find_particles_variable(world, "fx/wpnfx_staff_death/curse_spirit", "spline_2"),
-		World.find_particles_variable(world, "fx/wpnfx_staff_death/curse_spirit", "spline_3")
+		World.find_particles_variable(world, "fx/wpnfx_staff_death/curse_spirit", "spline_3"),
 	}
+
 	local fx_name_id = NetworkLookup.effects["fx/wpnfx_staff_death/curse_spirit_first"]
 	local start_pos = POSITION_LOOKUP[source_unit] + Vector3.up() * 0.5
 	local to_pos = target_position - start_pos
-	local rot = nil
+	local rot
 	local fp_extension = ScriptUnit.has_extension(source_unit, "first_person_system")
 
 	if fp_extension then
@@ -79,16 +82,20 @@ local function _spawn_skeleton_ability_fx(source_unit, target_position, buff, wo
 	end
 
 	local right = Quaternion.right(rot)
+
 	start_pos = start_pos + right * math.random(-0.5, 0.5)
+
 	local side = math.sign(Vector3.dot(to_pos, right))
 	local offset = math.pi * math.random(0.1, 0.25)
 	local side_offset = Quaternion.axis_angle(Vector3.up(), offset * side)
+
 	to_pos = Quaternion.rotate(side_offset, to_pos)
+
 	local mid_point = start_pos + to_pos * 0.5 + Vector3.up() * 2
 	local spline_points = {
 		start_pos,
 		mid_point,
-		target_position
+		target_position,
 	}
 end
 
@@ -105,7 +112,7 @@ local function _on_death_damage_nearby(owner_unit, buff, params, world)
 	local nearby_ai_units = FrameTable.alloc_table()
 	local debuff_spread_radius = buff.template.debuff_spread_radius
 	local num_nearby_units = AiUtils.broadphase_query(POSITION_LOOKUP[owner_unit], debuff_spread_radius, nearby_ai_units)
-	local closest_enemy = nil
+	local closest_enemy
 	local best_score = math.huge
 
 	for i = 1, num_nearby_units do
@@ -127,8 +134,10 @@ local function _on_death_damage_nearby(owner_unit, buff, params, world)
 
 		if enemy_buff_ext then
 			local spread_params = FrameTable.alloc_table()
+
 			spread_params.attacker_unit = owner_unit
 			spread_params.source_attacker_unit = necromancer_unit
+
 			local difficulty_name = Managers.state.difficulty:get_difficulty()
 			local breed = Unit.get_data(owner_unit, "breed")
 			local strengh = 1
@@ -155,42 +164,43 @@ local function _on_death_damage_nearby(owner_unit, buff, params, world)
 					24,
 					32,
 					40,
-					120
+					120,
 				},
 				hard = {
 					18,
 					36,
 					48,
 					60,
-					180
+					180,
 				},
 				harder = {
 					26.25,
 					52.5,
 					70,
 					87.5,
-					262.5
+					262.5,
 				},
 				hardest = {
 					39.75,
 					79.5,
 					106,
 					132.5,
-					397.5
+					397.5,
 				},
 				cataclysm = {
 					50.25,
 					100.5,
 					134,
 					167.5,
-					500
-				}
+					500,
+				},
 			}
+
 			spread_params.external_optional_value = damage_lookup[difficulty_name][strengh] or 1
 
 			enemy_buff_ext:add_buff("necromancer_on_death_delayed_health_damage", spread_params)
 
-			local target_position = nil
+			local target_position
 			local spine_node = Unit.has_node(closest_enemy, "j_spine") and Unit.node(closest_enemy, "j_spine")
 
 			if spine_node then
@@ -212,6 +222,7 @@ local function _delayed_health_damage(unit, buff, params)
 	end
 
 	buff.delayed_damage_procced = true
+
 	local necromancer_unit = buff.source_attacker_unit
 	local source_position = buff.source_spread_position:unbox()
 	local impact_position = POSITION_LOOKUP[unit]
@@ -232,7 +243,7 @@ local function _delayed_health_damage(unit, buff, params)
 	local stagger_length = 1
 	local stagger_type = stagger_types.medium
 	local stagger_duration = 1
-	local stagger_animation_scale = nil
+	local stagger_animation_scale
 	local t = Managers.time:time("game")
 	local stagger_value = 1
 	local always_stagger = true
@@ -252,8 +263,10 @@ local function _spawn_skeleton_ability(necromancer_unit, spawn_data, spawn_index
 	local radius = ability_radius * 0.8
 	local target_center = spawn_data.target_center:unbox()
 	local seed = spawn_data.seed or math.random_seed()
-	local x, y = nil
+	local x, y
+
 	spawn_data.seed, x, y = math.get_uniformly_random_point_inside_sector_seeded(seed, 0, radius, 0, 2 * math.pi)
+
 	local wanted_position = target_center + Vector3(x, y, 0)
 	local nav_world = Managers.state.entity:system("ai_system"):nav_world()
 	local traverse_logic = Managers.state.entity:system("ai_slot_system"):traverse_logic()
@@ -275,346 +288,346 @@ settings.buff_templates = {
 	sienna_necromancer_passive_cursed_blood = {
 		buffs = {
 			{
+				buff_func = "necromancer_apply_cursed_blood",
 				event = "on_critical_hit",
 				name = "sienna_necromancer_passive_cursed_blood",
-				buff_func = "necromancer_apply_cursed_blood"
-			}
-		}
+			},
+		},
 	},
 	sienna_necromancer_career_skill_damage_proc_aura = {
 		buffs = {
 			{
 				ai_buff_name = "sienna_necromancer_career_skill_damage_proc_aura_buff_ai",
-				range = 15,
 				name = "sienna_necromancer_career_skill_damage_proc_aura",
-				remove_buff_func = "remove_side_buff_aura",
 				owner_as_source = true,
 				player_buff_name = "sienna_necromancer_career_skill_damage_proc_aura_buff",
+				range = 15,
+				remove_buff_func = "remove_side_buff_aura",
 				server_only = true,
+				update_frequency = 1,
 				update_func = "side_buff_aura",
-				update_frequency = 1
-			}
-		}
+			},
+		},
 	},
 	sienna_necromancer_career_skill_damage_proc_aura_buff = {
 		buffs = {
 			{
+				buff_func = "sienna_necromancer_career_skill_damage_proc",
+				damage = 10,
+				event = "on_hit",
 				max_stacks = 1,
 				name = "sienna_necromancer_career_skill_damage_proc_aura_buff",
-				damage = 10,
-				buff_func = "sienna_necromancer_career_skill_damage_proc",
-				event = "on_hit"
-			}
-		}
+			},
+		},
 	},
 	sienna_necromancer_career_skill_damage_proc_aura_buff_ai = {
 		buffs = {
 			{
+				buff_func = "sienna_necromancer_career_skill_damage_proc",
+				damage = 10,
+				event = "on_damage_dealt",
 				max_stacks = 1,
 				name = "sienna_necromancer_career_skill_damage_proc_aura_buff_ai",
-				damage = 10,
-				buff_func = "sienna_necromancer_career_skill_damage_proc",
-				event = "on_damage_dealt"
-			}
-		}
+			},
+		},
 	},
 	sienna_necromancer_career_skill_on_hit_damage = {
 		buffs = {
 			{
-				remove_buff_func = "remove_attach_particle",
+				apply_buff_func = "sienna_necromancer_on_hit_apply",
+				duration = 10,
+				max_stacks = 1,
 				name = "sienna_necromancer_career_skill_on_hit_damage",
 				offset_rotation_y = 90,
 				particle_fx = "fx/skull_trap",
-				max_stacks = 1,
-				duration = 10,
-				apply_buff_func = "sienna_necromancer_on_hit_apply"
-			}
-		}
+				remove_buff_func = "remove_attach_particle",
+			},
+		},
 	},
 	necromancer_cursed_blood = {
 		buffs = {
 			{
-				explosion_template = "sienna_necromancer_passive_explosion",
-				name = "necromancer_cursed_blood",
-				max_stacks = 1,
 				buff_func = "necromancer_cursed_blood_on_death",
+				debuff_spread_radius = 5,
 				event = "on_death",
-				debuff_spread_radius = 5
-			}
-		}
+				explosion_template = "sienna_necromancer_passive_explosion",
+				max_stacks = 1,
+				name = "necromancer_cursed_blood",
+			},
+		},
 	},
 	necromancer_skeleton_timer = {
 		buffs = {
 			{
+				duration = 20,
 				icon = "sienna_necromancer_6_1",
 				name = "necromancer_cursed_blood",
-				duration = 20
-			}
-		}
+			},
+		},
 	},
 	necromancer_harvest_curse = {
 		buffs = {
 			{
 				max_stacks = 1,
-				name = "necromancer_harvest_curse"
-			}
-		}
+				name = "necromancer_harvest_curse",
+			},
+		},
 	},
 	necromancer_on_death_delayed_health_damage = {
 		buffs = {
 			{
+				apply_buff_func = "setup_delayed_damage",
+				buff_func = "delayed_health_damage",
 				debuff_spread_radius = 5,
+				event = "on_death",
+				max_stacks = 1,
 				name = "necromancer_on_death_delayed_health_damage",
 				remove_on_proc = true,
-				buff_func = "delayed_health_damage",
-				event = "on_death",
-				apply_buff_func = "setup_delayed_damage",
+				update_func = "delayed_health_damage",
 				update_start_delay = 0.1,
-				max_stacks = 1,
-				update_func = "delayed_health_damage"
-			}
-		}
+			},
+		},
 	},
 	necromancer_cursed_blood_dot = {
 		buffs = {
 			{
-				debuff_spread_radius = 5,
-				name = "necromancer_cursed_blood",
-				damage_profile = "bleed",
-				buff_func = "necromancer_cursed_blood_on_death",
-				event = "on_death",
 				apply_buff_func = "start_dot_damage",
-				update_start_delay = 1.5,
+				buff_func = "necromancer_cursed_blood_on_death",
+				damage_profile = "bleed",
+				debuff_spread_radius = 5,
+				event = "on_death",
 				explosion_template = "sienna_necromancer_passive_explosion",
-				time_between_dot_damages = 1.5,
 				max_stacks = 1,
+				name = "necromancer_cursed_blood",
+				time_between_dot_damages = 1.5,
 				update_func = "apply_dot_damage",
+				update_start_delay = 1.5,
 				perks = {
-					buff_perks.bleeding
-				}
-			}
-		}
+					buff_perks.bleeding,
+				},
+			},
+		},
 	},
 	necromancer_cursed_blood_delayed_damage = {
 		buffs = {
 			{
-				name = "necromancer_cursed_blood_delayed_damage",
-				max_stacks = 1,
-				update_func = "remove_and_apply_cursed_blood",
 				apply_buff_func = "setup_delayed_damage",
-				update_start_delay = 0.3
-			}
-		}
+				max_stacks = 1,
+				name = "necromancer_cursed_blood_delayed_damage",
+				update_func = "remove_and_apply_cursed_blood",
+				update_start_delay = 0.3,
+			},
+		},
 	},
 	sienna_necromancer_pet_on_spawn_buff = {
 		buffs = {
 			{
+				name = "lifetime",
 				remove_buff_func = "sienna_necromancer_expire_spawned_pet",
-				name = "lifetime"
 			},
 			{
+				buff_func = "on_pet_damage_dealt",
 				event = "on_damage_dealt",
 				name = "hud_sound_trigger",
-				buff_func = "on_pet_damage_dealt",
 				sounds_to_play = {
-					"career_necro_skeleton_damage"
-				}
-			}
-		}
+					"career_necro_skeleton_damage",
+				},
+			},
+		},
 	},
 	sienna_necromancer_pet_on_spawn_buff_charge = {
 		buffs = {
 			{
+				buff_func = "add_pet_charge",
 				event = "on_death",
 				name = "pet_tracker",
-				buff_func = "add_pet_charge"
-			}
-		}
+			},
+		},
 	},
 	sienna_necromancer_pet_attack_sfx = {
 		buffs = {
 			{
+				buff_func = "on_pet_damage_dealt",
 				event = "on_damage_dealt",
 				name = "hud_sound_trigger",
-				buff_func = "on_pet_damage_dealt",
 				sounds_to_play = {
-					"career_necro_skeleton_damage"
-				}
-			}
-		}
+					"career_necro_skeleton_damage",
+				},
+			},
+		},
 	},
 	sienna_necromancer_perk_1 = {
 		buffs = {
 			{
-				update_func = "sienna_necromancer_perk_1_func",
+				devour_health_percent = 0.15,
 				name = "sienna_necromancer_perk_1",
 				radius = 5,
-				devour_health_percent = 0.15
-			}
-		}
+				update_func = "sienna_necromancer_perk_1_func",
+			},
+		},
 	},
 	necromancer_invulnerability_aura = {
 		buffs = {
 			{
+				icon = "sienna_necromancer_passive",
 				max_stacks = 1,
 				name = "necromancer_invulnerability_aura",
-				icon = "sienna_necromancer_passive",
 				perks = {
-					buff_perks.invulnerable
-				}
-			}
-		}
+					buff_perks.invulnerable,
+				},
+			},
+		},
 	},
 	sienna_necromancer_perk_3 = {
 		buffs = {
 			{
+				buff_func = "add_buff",
+				buff_to_add = "sienna_necromancer_lifetaker_crit",
 				event = "on_kill",
 				name = "sienna_necromancer_perk_3",
-				buff_to_add = "sienna_necromancer_lifetaker_crit",
-				buff_func = "add_buff"
-			}
-		}
+			},
+		},
 	},
 	sienna_necromancer_lifetaker_crit = {
 		buffs = {
 			{
-				refresh_durations = true,
-				name = "sienna_necromancer_lifetaker_crit",
-				stat_buff = "critical_strike_chance",
 				icon = "sienna_necromancer_passive",
+				name = "sienna_necromancer_lifetaker_crit",
+				refresh_durations = true,
+				stat_buff = "critical_strike_chance",
 				bonus = CareerConstants.bw_necromancer.lifetaker_bonus,
 				max_stacks = CareerConstants.bw_necromancer.lifetaker_max_stacks,
-				duration = CareerConstants.bw_necromancer.lifetaker_duration
-			}
-		}
+				duration = CareerConstants.bw_necromancer.lifetaker_duration,
+			},
+		},
 	},
 	sienna_pets_alive_cooldown = {
 		buffs = {
 			{
 				multiplier = 5,
 				name = "sienna_pets_alive_cooldown",
-				stat_buff = "cooldown_regen"
-			}
-		}
+				stat_buff = "cooldown_regen",
+			},
+		},
 	},
 	sienna_pet_spawn_charge = {
 		buffs = {
 			{
 				duration = 20,
+				duration_end_func = "spawn_pet",
+				icon = "unit_frame_portrait_pet_skeleton",
+				is_cooldown = true,
+				max_stacks = 4,
 				name = "sienna_pet_spawn_charge",
 				refresh_other_stacks_on_remove = true,
-				duration_end_func = "spawn_pet",
-				max_stacks = 4,
-				icon = "unit_frame_portrait_pet_skeleton",
-				is_cooldown = true
-			}
-		}
+			},
+		},
 	},
 	necromancer_pet_ping_explosion = {
 		buffs = {
 			{
-				remove_buff_func = "pet_ping_explosion",
 				name = "sienna_pet_ping_explosion",
+				remove_buff_func = "pet_ping_explosion",
 				particles = {
 					{
-						orphaned_policy = "destroy",
+						continuous = true,
+						destroy_policy = "destroy",
 						effect = "fx/warp_lightning_bolt",
-						third_person = true,
 						first_person = false,
 						link_node = "j_spine",
-						continuous = true,
-						destroy_policy = "destroy"
-					}
-				}
-			}
-		}
+						orphaned_policy = "destroy",
+						third_person = true,
+					},
+				},
+			},
+		},
 	},
 	sienna_necromancer_empowered_overcharge = {
 		buffs = {
 			{
-				stat_buff = "overcharge_damage_immunity",
-				name = "sienna_necromancer_empowered_overcharge",
 				buff_func = "sienna_necromancer_empowered_overcharge_kill",
-				max_stacks = 1,
-				icon = "sienna_necromancer_6_3",
 				event = "on_kill",
+				icon = "sienna_necromancer_6_3",
+				max_stacks = 1,
+				name = "sienna_necromancer_empowered_overcharge",
 				percent_overcharge = 0.1,
+				stat_buff = "overcharge_damage_immunity",
 				perks = {
-					buff_perks.overcharge_no_slow
-				}
-			}
-		}
+					buff_perks.overcharge_no_slow,
+				},
+			},
+		},
 	},
 	death_staff_dot = {
 		buffs = {
 			{
+				apply_buff_func = "start_dot_damage",
+				damage_profile = "death_staff_dot",
+				damage_type = "burninating",
 				duration = 6,
 				name = "death_staff_dot",
-				apply_buff_func = "start_dot_damage",
-				update_start_delay = 1,
 				time_between_dot_damages = 1,
-				damage_type = "burninating",
-				damage_profile = "death_staff_dot",
 				update_func = "apply_dot_damage",
+				update_start_delay = 1,
 				perks = {
-					buff_perks.burning
-				}
-			}
-		}
+					buff_perks.burning,
+				},
+			},
+		},
 	},
 	dual_wield_skeleton_attack_speed = {
 		buffs = {
 			{
-				value = 1,
-				name = "dual_wield_skeleton_attack_speed",
 				apply_buff_func = "apply_ai_attack_speed",
-				remove_buff_func = "remove_ai_attack_speed"
-			}
-		}
+				name = "dual_wield_skeleton_attack_speed",
+				remove_buff_func = "remove_ai_attack_speed",
+				value = 1,
+			},
+		},
 	},
 	update_anim_movespeed = {
 		buffs = {
 			{
+				name = "update_anim_movespeed",
 				update_func = "update_anim_movespeed",
-				name = "update_anim_movespeed"
-			}
-		}
+			},
+		},
 	},
 	raise_dead_ability = {
 		buffs = {
 			{
-				update_frequency = 0.2,
+				apply_buff_func = "on_raise_dead_start",
 				name = "raise_dead_ability",
 				remove_buff_on_duration_end = true,
+				update_frequency = 0.2,
 				update_func = "raise_dead_update",
-				apply_buff_func = "on_raise_dead_start",
 				update_start_delay = 0.2,
 				apply_condition = function (owner_unit, template, params)
 					return is_local(params.source_attacker_unit)
 				end,
-				area_radius = ability_radius
+				area_radius = ability_radius,
 			},
 			{
-				name = "raise_dead_ability_curse_aura",
-				buff_area_buff = "sienna_necromancer_career_skill_on_hit_damage",
-				enter_area_func = "enter_buff_area",
-				buff_area = true,
 				area_unit_name = "units/hub_elements/empty",
-				exit_area_func = "exit_buff_area",
+				buff_area = true,
+				buff_area_buff = "sienna_necromancer_career_skill_on_hit_damage",
 				buff_enemies = true,
+				enter_area_func = "enter_buff_area",
+				exit_area_func = "exit_buff_area",
+				name = "raise_dead_ability_curse_aura",
 				apply_condition = function (owner_unit, template, params)
 					local talent_ext = ScriptUnit.has_extension(params.source_attacker_unit, "talent_system")
 
 					return talent_ext and talent_ext:has_talent("sienna_necromancer_6_2_2")
 				end,
-				area_radius = ability_radius
+				area_radius = ability_radius,
 			},
 			{
-				num_small_decals = 0,
-				name = "raise_dead_ability_visuals",
-				delay = 0.02,
-				remove_buff_func = "raise_dead_remove",
 				apply_buff_func = "raise_dead_apply",
+				delay = 0.02,
+				name = "raise_dead_ability_visuals",
+				num_small_decals = 0,
+				remove_buff_func = "raise_dead_remove",
 				skull_spawn_frequency = 0.15,
 				update_func = "raise_dead_visual_update",
 				unit_names = {
@@ -623,63 +636,63 @@ settings.buff_templates = {
 					"units/decals/necromancer_ability_decal_mark3",
 					"units/decals/necromancer_ability_decal_mark4",
 					"units/decals/necromancer_ability_decal_mark5",
-					"units/decals/necromancer_ability_decal_mark6"
+					"units/decals/necromancer_ability_decal_mark6",
 				},
 				num_skulls = {
 					max = 8,
-					min = 4
+					min = 4,
 				},
-				area_radius = ability_radius
-			}
-		}
+				area_radius = ability_radius,
+			},
+		},
 	},
 	raise_dead_ability_stagger = {
 		buffs = {
 			{
 				max_stacks = 1,
 				name = "raise_dead_ability_stagger",
-				update_func = "necromancer_ability_stagger_update",
 				update_frequency = 0.75,
+				update_func = "necromancer_ability_stagger_update",
 				apply_condition = function (owner_unit, template, params)
 					return Managers.state.network.is_server
-				end
+				end,
 			},
 			{
 				max_stacks = 1,
 				name = "raise_dead_ability_stagger_visuals",
-				update_func = "necromancer_ability_stagger_hands"
-			}
-		}
+				update_func = "necromancer_ability_stagger_hands",
+			},
+		},
 	},
 	command_elite_challenge_tracker = {
 		buffs = {
 			{
 				max_stacks = 1,
-				name = "command_elite_challenge_tracker"
-			}
-		}
+				name = "command_elite_challenge_tracker",
+			},
+		},
 	},
 	skeleton_command_attack_boost = {
 		buffs = {
 			{
-				multiplier = 1,
-				name = "skeleton_command_attack_boost",
-				stat_buff = "damage_dealt",
 				duration = 8,
 				max_stacks = 1,
-				refresh_durations = true
-			}
-		}
+				multiplier = 1,
+				name = "skeleton_command_attack_boost",
+				refresh_durations = true,
+				stat_buff = "damage_dealt",
+			},
+		},
 	},
 	skeleton_command_defend_boost = {
 		buffs = {
 			{
 				multiplier = -0.12,
 				name = "skeleton_command_defend_boost",
-				stat_buff = "damage_taken"
-			}
-		}
-	}
+				stat_buff = "damage_taken",
+			},
+		},
+	},
 }
 settings.proc_functions = {
 	sienna_necromancer_5_1_on_kill = function (owner_unit, buff, params)
@@ -712,6 +725,7 @@ settings.proc_functions = {
 			local buff_to_add = buff.template.buff_to_add
 			local buff_id = buff_extension:add_buff(buff_to_add)
 			local recast_buff = buff_extension:get_buff_by_id(buff_id)
+
 			recast_buff._source_buff = buff
 			recast_buff._needs_target = buff.template.needs_target
 		end
@@ -941,7 +955,7 @@ settings.proc_functions = {
 		local commander_ext = ScriptUnit.extension(owner_unit, "ai_commander_system")
 		local num_controlled = commander_ext:get_controlled_units_count()
 
-		if buff.template.skeleton_count <= num_controlled then
+		if num_controlled >= buff.template.skeleton_count then
 			local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
 			local buff_to_add = buff.template.buff_to_add
 
@@ -965,7 +979,9 @@ settings.proc_functions = {
 	trapped_souls_overcharge_lost = function (owner_unit, buff, params)
 		local overcharge_lost = params[1]
 		local max_overcharge = params[2]
+
 		buff.total_overcharge_lost = buff.total_overcharge_lost + overcharge_lost
+
 		local total_overcharge_lost = buff.total_overcharge_lost
 		local percentage_overcharge_lost = total_overcharge_lost / max_overcharge
 		local soul_threshold = buff.template.overcharge_threshold
@@ -1043,6 +1059,7 @@ settings.proc_functions = {
 
 		if buff_ext then
 			local stagger_buff = buff_ext:get_stacking_buff("raise_dead_ability_stagger_visuals")
+
 			stagger_buff = stagger_buff and stagger_buff[1]
 
 			if stagger_buff then
@@ -1173,7 +1190,7 @@ settings.proc_functions = {
 		if unit == caster_unit then
 			ProcFunctions.add_buff_local(unit, buff, params)
 		end
-	end
+	end,
 }
 
 local function is_bot(unit)
@@ -1203,7 +1220,7 @@ settings.buff_function_templates = {
 				if ALIVE[enemy_unit] and side_manager:is_enemy(player_unit, enemy_unit) then
 					local health_extension = ScriptUnit.has_extension(enemy_unit, "health_system")
 
-					if health_extension and health_extension:current_health_percent() < devour_health_percent then
+					if health_extension and devour_health_percent > health_extension:current_health_percent() then
 						local damage_amount = health_extension:current_health()
 
 						DamageUtils.add_damage_network(enemy_unit, player_unit, damage_amount, "full", "buff", nil, Vector3(1, 0, 0), "buff")
@@ -1218,7 +1235,9 @@ settings.buff_function_templates = {
 		end
 
 		local tracked_players = buff.knocked_down_players or {}
+
 		buff.knocked_down_players = tracked_players
+
 		local necromancer_side = Managers.state.side.side_by_unit[necromancer_unit]
 		local side_disabled = GameModeHelper.side_is_disabled(necromancer_side:name())
 		local player_units = necromancer_side.PLAYER_AND_BOT_UNITS
@@ -1239,32 +1258,41 @@ settings.buff_function_templates = {
 
 				if not ALIVE[other_unit] then
 					tracked_players[other_unit] = nil
-				else
-					local status_ext = ScriptUnit.extension(other_unit, "status_system")
 
-					if side_disabled or not status_ext:is_knocked_down() then
-						if tracked_buff_id then
-							buff_system:remove_buff_synced(other_unit, tracked_buff_id)
-						end
+					break
+				end
 
-						tracked_players[other_unit] = nil
-					else
-						local other_position = POSITION_LOOKUP[other_unit]
-						local distance_sq = Vector3.length_squared(other_position - necromancer_position)
+				local status_ext = ScriptUnit.extension(other_unit, "status_system")
 
-						if radius_sq < distance_sq then
-							if tracked_buff_id then
-								buff_system:remove_buff_synced(other_unit, tracked_buff_id)
-							end
-
-							tracked_players[other_unit] = nil
-						elseif not tracked_buff_id then
-							local invuln_buff = buff.template.buff_to_add
-							local player = Managers.player:owner(other_unit)
-							local buff_id = buff_system:add_buff_synced(other_unit, invuln_buff, BuffSyncType.ClientAndServer, nil, player.peer_id)
-							tracked_players[other_unit] = buff_id
-						end
+				if side_disabled or not status_ext:is_knocked_down() then
+					if tracked_buff_id then
+						buff_system:remove_buff_synced(other_unit, tracked_buff_id)
 					end
+
+					tracked_players[other_unit] = nil
+
+					break
+				end
+
+				local other_position = POSITION_LOOKUP[other_unit]
+				local distance_sq = Vector3.length_squared(other_position - necromancer_position)
+
+				if radius_sq < distance_sq then
+					if tracked_buff_id then
+						buff_system:remove_buff_synced(other_unit, tracked_buff_id)
+					end
+
+					tracked_players[other_unit] = nil
+
+					break
+				end
+
+				if not tracked_buff_id then
+					local invuln_buff = buff.template.buff_to_add
+					local player = Managers.player:owner(other_unit)
+					local buff_id = buff_system:add_buff_synced(other_unit, invuln_buff, BuffSyncType.ClientAndServer, nil, player.peer_id)
+
+					tracked_players[other_unit] = buff_id
 				end
 			until true
 		end
@@ -1327,7 +1355,9 @@ settings.buff_function_templates = {
 	sienna_necromancer_on_hit_apply = function (unit, buff, params, world)
 		if not buff.fx_id then
 			local fx = World.create_particles(world, buff.template.particle_fx, POSITION_LOOKUP[unit])
+
 			buff.fx_id = fx
+
 			local template = buff.template
 			local node = Unit.has_node(unit, "j_spine")
 
@@ -1342,6 +1372,7 @@ settings.buff_function_templates = {
 	end,
 	setup_delayed_damage = function (unit, buff, params)
 		local source_spread_unit = buff.attacker_unit
+
 		buff.source_spread_position = Vector3Box(POSITION_LOOKUP[source_spread_unit])
 	end,
 	career_skill_health_reduction = function (unit, buff, params)
@@ -1395,12 +1426,12 @@ settings.buff_function_templates = {
 		local hit_direction = Vector3.normalize(impact_position - source_position)
 		local damage_source = "buff"
 		local hit_ragdoll_actor = false
-		local boost_curve_multiplier = nil
+		local boost_curve_multiplier
 		local is_critical_strike = false
-		local added_dot = nil
+		local added_dot
 		local first_hit = true
 		local total_hits = 1
-		local backstab_multiplier = nil
+		local backstab_multiplier
 		local source_attacker_unit = necromancer_unit
 		local between_pos = source_position + (impact_position - source_position) * 0.5
 		local audio_system = Managers.state.entity:system("audio_system")
@@ -1412,7 +1443,7 @@ settings.buff_function_templates = {
 		local stagger_length = 1
 		local stagger_type = stagger_types.medium
 		local stagger_duration = 1
-		local stagger_animation_scale = nil
+		local stagger_animation_scale
 		local t = Managers.time:time("game")
 		local stagger_value = 1
 		local always_stagger = true
@@ -1522,7 +1553,9 @@ settings.buff_function_templates = {
 	end,
 	update_anim_movespeed = function (owner_unit, buff, params)
 		local pos = POSITION_LOOKUP[owner_unit]
+
 		buff.last_pos = buff.last_pos or Vector3Box(pos)
+
 		local last_pos = buff.last_pos:unbox()
 
 		buff.last_pos:store(pos)
@@ -1532,6 +1565,7 @@ settings.buff_function_templates = {
 
 		if predicted_ms > 0 then
 			local var_id = buff.var_id or Unit.animation_find_variable(owner_unit, "move_speed")
+
 			buff.var_id = var_id
 
 			Unit.animation_set_variable(owner_unit, var_id, predicted_ms)
@@ -1552,7 +1586,7 @@ settings.buff_function_templates = {
 		if buff._spawning_done then
 			buff._grace_timer = buff._grace_timer or params.time_into_buff + 0.5
 
-			if buff._grace_timer < params.time_into_buff then
+			if params.time_into_buff > buff._grace_timer then
 				local buff_ext = ScriptUnit.extension(owner_unit, "buff_system")
 
 				buff_ext:remove_buff(buff.id)
@@ -1564,6 +1598,7 @@ settings.buff_function_templates = {
 		local spawn_data = buff.spawn_data
 		local necromancer_unit = buff.source_attacker_unit
 		local spawn_index = (buff.spawn_index or 0) + 1
+
 		buff.spawn_index = spawn_index
 
 		local function nav_callback()
@@ -1591,6 +1626,7 @@ settings.buff_function_templates = {
 	raise_dead_apply = function (owner_unit, buff, params, world)
 		buff.skulls = {}
 		buff.num_skulls = 0
+
 		local go_id = Managers.state.unit_storage:go_id(owner_unit)
 		local seed = go_id
 		local pos_seed = go_id
@@ -1600,24 +1636,32 @@ settings.buff_function_templates = {
 		local radius = 0
 		local scale = Vector3(11, 11, 1)
 		local owner_pos = POSITION_LOOKUP[owner_unit]
+
 		buff.units = {}
+
 		local primary_buff = ScriptUnit.extension(owner_unit, "buff_system"):get_buff_type("raise_dead_ability")
 		local duration = primary_buff and primary_buff.duration or math.huge
-		local unit_name_index, pos_x, pos_y, rot_angle = nil
+		local unit_name_index, pos_x, pos_y, rot_angle
 		local decals_to_spawn = template.num_small_decals
 
 		for i = 1, decals_to_spawn do
 			seed, unit_name_index = Math.next_random(seed, 1, units_n)
+
 			local unit_name = unit_names[unit_name_index]
+
 			pos_seed, pos_x, pos_y = math.get_uniformly_random_point_inside_sector_seeded(pos_seed, 0, radius - 0.5, 0, math.pi * 2)
+
 			local pos = owner_pos + Vector3(pos_x, pos_y, 0)
+
 			seed, rot_angle = math.next_random_range(seed, 0, math.pi * 2)
+
 			local rot = Quaternion.axis_angle(Vector3.up(), rot_angle)
 			local unit = World.spawn_unit(world, unit_name, pos, rot)
 
 			Unit.set_local_scale(unit, 0, scale)
 
 			buff.units[i] = unit
+
 			local start_time = World.time(Application.main_world())
 			local end_time = start_time + duration
 			local fade_time = 1.5
@@ -1660,10 +1704,13 @@ settings.buff_function_templates = {
 		end
 
 		t = t - delay
+
 		local wanted_skulls = math.min(template.num_skulls.min + math.floor(t / template.skull_spawn_frequency), template.num_skulls.max)
 		local area_pos = POSITION_LOOKUP[owner_unit]
+
 		buff.skulls = buff.skulls
 		buff.num_skulls = buff.num_skulls
+
 		local owner_pos = POSITION_LOOKUP[owner_unit]
 
 		for i = buff.num_skulls, wanted_skulls do
@@ -1673,13 +1720,14 @@ settings.buff_function_templates = {
 			local unit_rot = Quaternion.look(Vector3.cross(Vector3.up(), rel_pos) * rot_direction)
 			local unit_name = "units/beings/player/bright_wizard_necromancer/talents/trapped_soul_skull"
 			local skull_unit = World.spawn_unit(world, unit_name, owner_pos + rel_pos, unit_rot)
+
 			buff.skulls[skull_unit] = {
 				start_t = t,
 				level_out_height = Math.random_range(1, 1),
 				start_angle = angle,
 				rot_direction = rot_direction,
 				angular_velocity = Math.random_range(0.5, 0.8) * math.pi,
-				outward_offset = Math.random_range(-0.1, 0) * template.area_radius
+				outward_offset = Math.random_range(-0.1, 0) * template.area_radius,
 			}
 			buff.num_skulls = buff.num_skulls + 1
 		end
@@ -1699,7 +1747,9 @@ settings.buff_function_templates = {
 			local rel_pos = Vector3.rotate(Vector3(template.area_radius + data.outward_offset, 0, 0), wanted_angle)
 			local curve_y = (1.3 * elapsed_t)^2
 			local wanted_height = 0.5 + curve_y * data.level_out_height
+
 			rel_pos[3] = wanted_height
+
 			local wanted_pos = area_pos + rel_pos
 			local unit_pos = Unit.local_position(skull_unit, 0)
 			local wanted_rot = Quaternion.look(wanted_pos - unit_pos)
@@ -1724,7 +1774,7 @@ settings.buff_function_templates = {
 		local stagger_length = math.min(math.max(Vector3.length(to_center) - 1, 0) * 0.25, 0.5)
 		local stagger_type = stagger_types.medium
 		local stagger_duration = 1.5
-		local stagger_animation_scale = nil
+		local stagger_animation_scale
 		local t = Managers.time:time("game")
 		local stagger_value = 2
 		local always_stagger = true
@@ -1759,5 +1809,5 @@ settings.buff_function_templates = {
 		local max_delay = dist_from_center < 1.5 and 3 or 0.8
 
 		return t + math.random(min_delay, max_delay)
-	end
+	end,
 }

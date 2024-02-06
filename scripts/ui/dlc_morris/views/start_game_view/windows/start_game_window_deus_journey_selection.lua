@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/dlc_morris/views/start_game_view/windows/start_game_window_deus_journey_selection.lua
+
 require("scripts/settings/dlcs/morris/deus_theme_settings")
 
 local definitions = local_require("scripts/ui/dlc_morris/views/start_game_view/windows/definitions/start_game_window_deus_journey_selection_definitions")
@@ -21,6 +23,7 @@ StartGameWindowDeusJourneySelection.on_enter = function (self, params, offset)
 	local ingame_ui_context = params.ingame_ui_context
 	local player_manager = Managers.player
 	local local_player = player_manager:local_player()
+
 	self._stats_id = local_player:stats_id()
 	self.player_manager = player_manager
 	self.peer_id = ingame_ui_context.peer_id
@@ -30,7 +33,7 @@ StartGameWindowDeusJourneySelection.on_enter = function (self, params, offset)
 	self.input_manager = ingame_ui_context.input_manager
 	self.statistics_db = ingame_ui_context.statistics_db
 	self.render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 	self._unlocked_journeys = self:_get_unlocked_journeys()
 	self._animations = {}
@@ -46,32 +49,38 @@ end
 
 StartGameWindowDeusJourneySelection._start_transition_animation = function (self, animation_name)
 	local params = {
-		render_settings = self.render_settings
+		render_settings = self.render_settings,
 	}
 	local widgets = {}
 	local anim_id = self.ui_animator:start_animation(animation_name, widgets, scenegraph_definition, params)
+
 	self._animations[animation_name] = anim_id
 end
 
 StartGameWindowDeusJourneySelection.create_ui_elements = function (self, params, offset)
 	local ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+
 	self.ui_scenegraph = ui_scenegraph
+
 	local widgets = {}
 	local widgets_by_name = {}
 
 	for name, widget_definition in pairs(widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		widgets[#widgets + 1] = widget
 		widgets_by_name[name] = widget
 	end
 
 	self._widgets = widgets
 	self._widgets_by_name = widgets_by_name
+
 	local node_widgets = {}
 	local node_widgets_by_name = {}
 
 	for name, widget_definition in pairs(node_widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		node_widgets[#node_widgets + 1] = widget
 		node_widgets_by_name[name] = widget
 	end
@@ -85,6 +94,7 @@ StartGameWindowDeusJourneySelection.create_ui_elements = function (self, params,
 
 	if offset then
 		local window_position = ui_scenegraph.window.local_position
+
 		window_position[1] = window_position[1] + offset[1]
 		window_position[2] = window_position[2] + offset[2]
 		window_position[3] = window_position[3] + offset[3]
@@ -117,15 +127,22 @@ StartGameWindowDeusJourneySelection._setup_journey_widgets = function (self)
 		local next_journey = available_journey_order[index + 1]
 		local widget = node_widgets[index]
 		local content = widget.content
+
 		content.text = Localize(journey_data.display_name)
+
 		local width_to_next_journey = settings.width + settings.spacing_x
+
 		journey_position_x = journey_position_x + width_to_next_journey
+
 		local offset = widget.offset
+
 		offset[1] = journey_position_x
 		offset[2] = 0
+
 		local completed_difficulty_index = LevelUnlockUtils.completed_journey_difficulty_index(statistics_db, stats_id, journey_name)
 		local selection_frame_texture = UIWidgetUtils.get_level_frame_by_difficulty_index(completed_difficulty_index)
 		local is_unlocked = unlocked_journeys[journey_name]
+
 		content.icon = journey_data.level_image
 		content.locked = not is_unlocked
 		content.frame = selection_frame_texture
@@ -181,9 +198,12 @@ StartGameWindowDeusJourneySelection._select_journey = function (self, selected_j
 			local content = widget.content
 			local is_selected = content.journey_name == selected_journey_name
 			local button_hotspot = widget.content.button_hotspot
+
 			button_hotspot.is_selected = is_selected
+
 			local is_a_required_journey = table.contains(required_completed_journeys, content.journey_name)
 			local show_unlock_guidance = is_a_required_journey and (content.locked or not is_selected_journey_unlocked)
+
 			content.unlock_guidance = show_unlock_guidance
 		end
 	end
@@ -197,7 +217,7 @@ end
 StartGameWindowDeusJourneySelection._set_presentation_info = function (self, journey_name)
 	local journey_name_text = ""
 	local journey_description_text = ""
-	local frame_texture = nil
+	local frame_texture
 	local draw_info = false
 	local widgets_by_name = self._widgets_by_name
 	local selected_journey_widget = widgets_by_name.selected_level
@@ -209,9 +229,13 @@ StartGameWindowDeusJourneySelection._set_presentation_info = function (self, jou
 		local journey_settings = DeusJourneySettings[journey_name]
 		local icon = journey_settings.level_image
 		local display_name = journey_settings.display_name
+
 		journey_description_text = journey_settings.description
+
 		local completed_difficulty_index = LevelUnlockUtils.completed_journey_difficulty_index(statistics_db, stats_id, journey_name)
+
 		frame_texture = UIWidgetUtils.get_level_frame_by_difficulty_index(completed_difficulty_index)
+
 		local is_unlocked = self._unlocked_journeys[journey_name]
 
 		if is_unlocked then
@@ -248,7 +272,9 @@ StartGameWindowDeusJourneySelection._setup_grid_navigation = function (self)
 	end
 
 	self._navigation_grid = navigation_grid
+
 	local column = self:_find_journey_location_in_grid(self._selected_journey_name)
+
 	self._current_column = column
 end
 
@@ -308,6 +334,7 @@ end
 
 StartGameWindowDeusJourneySelection._refresh_journey_cycle = function (self)
 	local backend_deus = Managers.backend:get_interface("deus")
+
 	self._journey_cycle = backend_deus:get_journey_cycle()
 
 	self:_on_new_journey_cycle()
@@ -330,10 +357,12 @@ StartGameWindowDeusJourneySelection._update_modifier_timer = function (self, cur
 
 	if minutes > 0 then
 		local text_template = Localize("deus_start_game_mod_timer")
+
 		content.time_text = string.format(text_template, days, hours, minutes)
 	else
 		local seconds = floor(remaining_time)
 		local text_template = Localize("deus_start_game_mod_timer_seconds")
+
 		content.time_text = string.format(text_template, seconds)
 	end
 end
@@ -344,11 +373,14 @@ StartGameWindowDeusJourneySelection._update_modifier_god_info = function (self, 
 	local content = widget.content
 	local theme = journey_cycle.journey_data[journey_name].dominant_god
 	local theme_settings = DeusThemeSettings[theme]
+
 	content.icon = theme_settings.text_icon
 	content.title = theme_settings.journey_title
 	content.description = Localize(theme_settings.journey_description)
+
 	local color = theme_settings.color
 	local style = widget.style
+
 	style.icon.color = color
 	style.title.text_color = color
 end
@@ -360,6 +392,7 @@ StartGameWindowDeusJourneySelection._update_journey_god_icons = function (self)
 		local content = node_widget.content
 		local theme = journey_cycle.journey_data[content.journey_name].dominant_god
 		local theme_settings = DeusThemeSettings[theme]
+
 		content.theme_icon = theme_settings.icon
 	end
 end
@@ -443,6 +476,7 @@ end
 
 StartGameWindowDeusJourneySelection._update_grid_column = function (self, new_column)
 	local num_columns = #self._navigation_grid
+
 	self._current_column = math.clamp(new_column, 1, num_columns)
 
 	self:_update_selection_from_grid()
@@ -588,8 +622,11 @@ StartGameWindowDeusJourneySelection._animate_node_widget = function (self, widge
 	end
 
 	local style = widget.style
+
 	style.icon_glow.color[1] = 255 * selected_progress
+
 	local alpha_modifier = math.max(math.lerp(-2.5, 1, unlock_guidance_progress), 0)
+
 	style.icon_unlock_guidance_glow.color[1] = 255 * alpha_modifier
 	hotspot.selected_progress = selected_progress
 	content.unlock_guidance_progress = unlock_guidance_progress

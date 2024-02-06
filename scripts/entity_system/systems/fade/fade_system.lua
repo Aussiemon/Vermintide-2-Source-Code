@@ -1,8 +1,11 @@
+﻿-- chunkname: @scripts/entity_system/systems/fade/fade_system.lua
+
 FadeSystem = class(FadeSystem, ExtensionSystemBase)
 FadeSystem.system_extensions = {
 	"PlayerUnitFadeExtension",
-	"AIUnitFadeExtension"
+	"AIUnitFadeExtension",
 }
+
 local unit_alive = Unit.alive
 local script_unit_extension = ScriptUnit.extension
 
@@ -62,7 +65,7 @@ FadeSystem.update = function (self, context, t)
 	local local_player = self.player
 	local local_player_id = local_player:local_player_id()
 	local viewport_name = local_player.viewport_name
-	local camera_position = nil
+	local camera_position
 	local freeflight_manager = Managers.free_flight
 
 	if freeflight_manager:active(local_player_id) then

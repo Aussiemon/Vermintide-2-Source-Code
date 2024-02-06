@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/utils/action_assert_funcs.lua
+
 ActionAssertFuncs = {
 	handgun = function (weapon_name, action_name, sub_action_name, action)
 		local impact_data = action.impact_data
@@ -148,5 +150,5 @@ ActionAssertFuncs = {
 			fassert(sub_action, "Linked to invalid sub_action [\"%s.%s\"] for [\"%s.%s\"] in weapon [\"%s\"]", linked_action, linked_sub_action, action_name, sub_action_name, weapon_name)
 			fassert(sub_action.kind ~= "action_selector", "Recursive action_selector in [\"%s.%s\"] -> [\"%s.%s\"]  in weapon [\"%s\"]", action_name, sub_action_name, linked_action, linked_sub_action, weapon_name)
 		end
-	end
+	end,
 }

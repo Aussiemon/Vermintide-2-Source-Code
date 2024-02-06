@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/conflict_settings.lua
+
 require("scripts/settings/horde_compositions")
 require("scripts/settings/horde_compositions_pacing")
 require("scripts/settings/difficulty_settings")
@@ -5,587 +7,60 @@ require("scripts/managers/conflict_director/conflict_utils")
 
 HordeSettingsBasics = {
 	ambush = {
+		max_spawners = math.huge,
 		max_size,
+		max_hidden_spawner_dist = 40,
 		max_horde_spawner_dist = 35,
 		min_hidden_spawner_dist = 5,
+		min_horde_spawner_dist = 1,
 		min_spawners = 3,
 		start_delay = 3.45,
-		max_hidden_spawner_dist = 40,
-		min_horde_spawner_dist = 1,
-		max_spawners = math.huge
 	},
 	vector = {
 		max_size,
-		max_horde_spawner_dist = 40,
-		start_delay = 8,
-		max_hidden_spawner_dist = 40,
-		min_hidden_spawner_dist = 0,
-		main_path_dist_from_players = 30,
-		max_spawners = 6,
 		main_path_chance_spawning_ahead = 0.67,
+		main_path_dist_from_players = 30,
+		max_hidden_spawner_dist = 40,
+		max_horde_spawner_dist = 40,
+		max_spawners = 6,
+		min_hidden_spawner_dist = 0,
+		min_horde_spawner_dist = 0,
 		raw_dist_from_players = 20,
-		min_horde_spawner_dist = 0
+		start_delay = 8,
 	},
 	vector_blob = {
 		max_size,
-		start_delay = 1,
 		main_path_chance_spawning_ahead = 0.67,
+		main_path_dist_from_players = 60,
 		raw_dist_from_players = 20,
-		main_path_dist_from_players = 60
-	}
+		start_delay = 1,
+	},
 }
-local weights = {}
-local crash = nil
-local num_comps = 0
 
-for name, composition in pairs(HordeCompositions) do
-	num_comps = num_comps + 1
+do
+	local weights = {}
+	local crash
+	local num_comps = 0
 
-	for i = 1, #composition do
-		table.clear_array(weights, #weights)
+	for name, composition in pairs(HordeCompositions) do
+		num_comps = num_comps + 1
 
-		local compositions = composition[i]
-
-		for j, variant in ipairs(compositions) do
-			weights[j] = variant.weight
-			local breeds = variant.breeds
-
-			for k = 1, #breeds, 2 do
-				local breed_name = breeds[k]
-				local breed = Breeds[breed_name]
-
-				if not breed then
-					print(string.format("Bad or non-existing breed in HordeCompositions table %s : '%s' defined in HordeCompositions.", name, tostring(breed_name)))
-
-					crash = true
-				elseif not breed.can_use_horde_spawners then
-					variant.must_use_hidden_spawners = true
-				end
-			end
-		end
-
-		compositions.loaded_probs = {
-			LoadedDice.create(weights)
-		}
-
-		fassert(not crash, "Found errors in HordeComposition table %s - see above. ", name)
-		fassert(compositions.loaded_probs, "Could not create horde compositison sprobablitity table, make sure the table '%s' in HordeCompositions is correctly structured and has an entry for each difficulty.", name)
-	end
-end
-
-HordeSettings = {
-	default = {
-		chance_of_vector = 0.5,
-		ambush_composition = "medium",
-		vector_composition = "medium",
-		mini_patrol_composition = "mini_patrol",
-		vector_blob_composition = "medium",
-		chance_of_vector_blob = 0.5,
-		disabled = false,
-		mix_paced_hordes = true,
-		compositions = HordeCompositions,
-		compositions_pacing = HordeCompositionsPacing,
-		ambush = HordeSettingsBasics.ambush,
-		vector = HordeSettingsBasics.vector,
-		vector_blob = HordeSettingsBasics.vector_blob,
-		difficulty_overrides = {
-			hard = {
-				vector_blob_composition = "medium",
-				ambush_composition = "medium",
-				vector_composition = "medium"
-			},
-			harder = {
-				vector_blob_composition = "large",
-				ambush_composition = "large",
-				vector_composition = "large"
-			},
-			hardest = {
-				vector_blob_composition = "large",
-				ambush_composition = "large",
-				vector_composition = "large"
-			},
-			cataclysm = {
-				ambush_composition = {
-					"skaven_huge",
-					"skaven_huge_shields",
-					"skaven_huge_armor",
-					"skaven_huge_berzerker"
-				},
-				vector_composition = {
-					"skaven_huge",
-					"skaven_huge_shields",
-					"skaven_huge_armor",
-					"skaven_huge_berzerker"
-				},
-				vector_blob_composition = {
-					"skaven_huge",
-					"skaven_huge_shields",
-					"skaven_huge_armor",
-					"skaven_huge_berzerker"
-				}
-			},
-			cataclysm_2 = {
-				ambush_composition = {
-					"skaven_huge",
-					"skaven_huge_shields",
-					"skaven_huge_armor",
-					"skaven_huge_berzerker"
-				},
-				vector_composition = {
-					"skaven_huge",
-					"skaven_huge_shields",
-					"skaven_huge_armor",
-					"skaven_huge_berzerker"
-				},
-				vector_blob_composition = {
-					"skaven_huge",
-					"skaven_huge_shields",
-					"skaven_huge_armor",
-					"skaven_huge_berzerker"
-				}
-			},
-			cataclysm_3 = {
-				ambush_composition = {
-					"skaven_huge",
-					"skaven_huge_shields",
-					"skaven_huge_armor",
-					"skaven_huge_berzerker"
-				},
-				vector_composition = {
-					"skaven_huge",
-					"skaven_huge_shields",
-					"skaven_huge_armor",
-					"skaven_huge_berzerker"
-				},
-				vector_blob_composition = {
-					"skaven_huge",
-					"skaven_huge_shields",
-					"skaven_huge_armor",
-					"skaven_huge_berzerker"
-				}
-			}
-		}
-	},
-	default_light = {
-		chance_of_vector = 0.5,
-		ambush_composition = "medium",
-		vector_composition = "medium",
-		mini_patrol_composition = "mini_patrol",
-		vector_blob_composition = "medium",
-		chance_of_vector_blob = 0.5,
-		disabled = false,
-		mix_paced_hordes = true,
-		compositions = HordeCompositions,
-		compositions_pacing = HordeCompositionsPacing,
-		ambush = HordeSettingsBasics.ambush,
-		vector = HordeSettingsBasics.vector,
-		vector_blob = HordeSettingsBasics.vector_blob,
-		difficulty_overrides = {
-			hard = {
-				vector_blob_composition = "medium",
-				ambush_composition = "medium",
-				vector_composition = "medium"
-			},
-			harder = {
-				vector_blob_composition = "large",
-				ambush_composition = "large",
-				vector_composition = "large"
-			},
-			hardest = {
-				vector_blob_composition = "large",
-				ambush_composition = "large",
-				vector_composition = "large"
-			},
-			cataclysm = {
-				ambush_composition = {
-					"skaven_huge",
-					"skaven_huge_shields",
-					"skaven_huge_armor",
-					"skaven_huge_berzerker"
-				},
-				vector_composition = {
-					"skaven_huge",
-					"skaven_huge_shields",
-					"skaven_huge_armor",
-					"skaven_huge_berzerker"
-				},
-				vector_blob_composition = {
-					"skaven_huge",
-					"skaven_huge_shields",
-					"skaven_huge_armor",
-					"skaven_huge_berzerker"
-				}
-			},
-			cataclysm_2 = {
-				ambush_composition = {
-					"skaven_huge",
-					"skaven_huge_shields",
-					"skaven_huge_armor",
-					"skaven_huge_berzerker"
-				},
-				vector_composition = {
-					"skaven_huge",
-					"skaven_huge_shields",
-					"skaven_huge_armor",
-					"skaven_huge_berzerker"
-				},
-				vector_blob_composition = {
-					"skaven_huge",
-					"skaven_huge_shields",
-					"skaven_huge_armor",
-					"skaven_huge_berzerker"
-				}
-			},
-			cataclysm_3 = {
-				ambush_composition = {
-					"skaven_huge",
-					"skaven_huge_shields",
-					"skaven_huge_armor",
-					"skaven_huge_berzerker"
-				},
-				vector_composition = {
-					"skaven_huge",
-					"skaven_huge_shields",
-					"skaven_huge_armor",
-					"skaven_huge_berzerker"
-				},
-				vector_blob_composition = {
-					"skaven_huge",
-					"skaven_huge_shields",
-					"skaven_huge_armor",
-					"skaven_huge_berzerker"
-				}
-			}
-		}
-	},
-	chaos = {
-		chance_of_vector = 1,
-		ambush_composition = "chaos_medium",
-		vector_composition = "chaos_medium",
-		mini_patrol_composition = "chaos_mini_patrol",
-		vector_blob_composition = "chaos_medium",
-		chance_of_vector_blob = 1,
-		disabled = false,
-		mix_paced_hordes = true,
-		compositions = HordeCompositions,
-		compositions_pacing = HordeCompositionsPacing,
-		ambush = HordeSettingsBasics.ambush,
-		vector = HordeSettingsBasics.vector,
-		vector_blob = HordeSettingsBasics.vector_blob,
-		difficulty_overrides = {
-			hard = {
-				vector_blob_composition = "chaos_medium",
-				ambush_composition = "chaos_medium",
-				vector_composition = "chaos_medium"
-			},
-			harder = {
-				vector_blob_composition = "chaos_large",
-				ambush_composition = "chaos_large",
-				vector_composition = "chaos_large"
-			},
-			hardest = {
-				vector_blob_composition = "chaos_large",
-				ambush_composition = "chaos_large",
-				vector_composition = "chaos_large"
-			},
-			cataclysm = {
-				ambush_composition = {
-					"chaos_huge",
-					"chaos_huge_shields",
-					"chaos_huge_armor",
-					"chaos_huge_berzerker"
-				},
-				vector_composition = {
-					"chaos_huge",
-					"chaos_huge_shields",
-					"chaos_huge_armor",
-					"chaos_huge_berzerker"
-				},
-				vector_blob_composition = {
-					"chaos_huge",
-					"chaos_huge_shields",
-					"chaos_huge_armor",
-					"chaos_huge_berzerker"
-				}
-			},
-			cataclysm_2 = {
-				ambush_composition = {
-					"chaos_huge",
-					"chaos_huge_shields",
-					"chaos_huge_armor",
-					"chaos_huge_berzerker"
-				},
-				vector_composition = {
-					"chaos_huge",
-					"chaos_huge_shields",
-					"chaos_huge_armor",
-					"chaos_huge_berzerker"
-				},
-				vector_blob_composition = {
-					"chaos_huge",
-					"chaos_huge_shields",
-					"chaos_huge_armor",
-					"chaos_huge_berzerker"
-				}
-			},
-			cataclysm_3 = {
-				ambush_composition = {
-					"chaos_huge",
-					"chaos_huge_shields",
-					"chaos_huge_armor",
-					"chaos_huge_berzerker"
-				},
-				vector_composition = {
-					"chaos_huge",
-					"chaos_huge_shields",
-					"chaos_huge_armor",
-					"chaos_huge_berzerker"
-				},
-				vector_blob_composition = {
-					"chaos_huge",
-					"chaos_huge_shields",
-					"chaos_huge_armor",
-					"chaos_huge_berzerker"
-				}
-			}
-		}
-	},
-	chaos_light = {
-		chance_of_vector = 1,
-		ambush_composition = "chaos_medium",
-		vector_composition = "chaos_medium",
-		mini_patrol_composition = "chaos_mini_patrol",
-		vector_blob_composition = "chaos_medium",
-		chance_of_vector_blob = 1,
-		disabled = false,
-		mix_paced_hordes = true,
-		compositions = HordeCompositions,
-		compositions_pacing = HordeCompositionsPacing,
-		ambush = HordeSettingsBasics.ambush,
-		vector = HordeSettingsBasics.vector,
-		vector_blob = HordeSettingsBasics.vector_blob,
-		difficulty_overrides = {
-			hard = {
-				vector_blob_composition = "chaos_medium",
-				ambush_composition = "chaos_medium",
-				vector_composition = "chaos_medium"
-			},
-			harder = {
-				vector_blob_composition = "chaos_large",
-				ambush_composition = "chaos_large",
-				vector_composition = "chaos_large"
-			},
-			hardest = {
-				vector_blob_composition = "chaos_large",
-				ambush_composition = "chaos_large",
-				vector_composition = "chaos_large"
-			},
-			cataclysm = {
-				ambush_composition = {
-					"chaos_huge",
-					"chaos_huge_shields",
-					"chaos_huge_armor",
-					"chaos_huge_berzerker"
-				},
-				vector_composition = {
-					"chaos_huge",
-					"chaos_huge_shields",
-					"chaos_huge_armor",
-					"chaos_huge_berzerker"
-				},
-				vector_blob_composition = {
-					"chaos_huge",
-					"chaos_huge_shields",
-					"chaos_huge_armor",
-					"chaos_huge_berzerker"
-				}
-			},
-			cataclysm_2 = {
-				ambush_composition = {
-					"chaos_huge",
-					"chaos_huge_shields",
-					"chaos_huge_armor",
-					"chaos_huge_berzerker"
-				},
-				vector_composition = {
-					"chaos_huge",
-					"chaos_huge_shields",
-					"chaos_huge_armor",
-					"chaos_huge_berzerker"
-				},
-				vector_blob_composition = {
-					"chaos_huge",
-					"chaos_huge_shields",
-					"chaos_huge_armor",
-					"chaos_huge_berzerker"
-				}
-			},
-			cataclysm_3 = {
-				ambush_composition = {
-					"chaos_huge",
-					"chaos_huge_shields",
-					"chaos_huge_armor",
-					"chaos_huge_berzerker"
-				},
-				vector_composition = {
-					"chaos_huge",
-					"chaos_huge_shields",
-					"chaos_huge_armor",
-					"chaos_huge_berzerker"
-				},
-				vector_blob_composition = {
-					"chaos_huge",
-					"chaos_huge_shields",
-					"chaos_huge_armor",
-					"chaos_huge_berzerker"
-				}
-			}
-		}
-	},
-	beastmen = {
-		chance_of_vector = 0.5,
-		ambush_composition = "beastmen_medium",
-		vector_composition = "beastmen_medium",
-		mini_patrol_composition = "beastmen_mini_patrol",
-		vector_blob_composition = "beastmen_medium",
-		chance_of_vector_blob = 0.5,
-		disabled = false,
-		mix_paced_hordes = false,
-		compositions = HordeCompositions,
-		compositions_pacing = HordeCompositionsPacing,
-		ambush = HordeSettingsBasics.ambush,
-		vector = HordeSettingsBasics.vector,
-		vector_blob = HordeSettingsBasics.vector_blob,
-		difficulty_overrides = {
-			hard = {
-				vector_blob_composition = "beastmen_medium",
-				ambush_composition = "beastmen_medium",
-				vector_composition = "beastmen_medium"
-			},
-			harder = {
-				vector_blob_composition = "beastmen_large",
-				ambush_composition = "beastmen_large",
-				vector_composition = "beastmen_large"
-			},
-			hardest = {
-				vector_blob_composition = "beastmen_large",
-				ambush_composition = "beastmen_large",
-				vector_composition = "beastmen_large"
-			},
-			cataclysm = {
-				ambush_composition = {
-					"beastmen_huge",
-					"beastmen_huge_armor"
-				},
-				vector_composition = {
-					"beastmen_huge",
-					"beastmen_huge_armor"
-				},
-				vector_blob_composition = {
-					"beastmen_huge",
-					"beastmen_huge_armor"
-				}
-			},
-			cataclysm_2 = {
-				ambush_composition = {
-					"beastmen_huge",
-					"beastmen_huge_armor"
-				},
-				vector_composition = {
-					"beastmen_huge",
-					"beastmen_huge_armor"
-				},
-				vector_blob_composition = {
-					"beastmen_huge",
-					"beastmen_huge_armor"
-				}
-			},
-			cataclysm_3 = {
-				ambush_composition = {
-					"beastmen_huge",
-					"beastmen_huge_armor"
-				},
-				vector_composition = {
-					"beastmen_huge",
-					"beastmen_huge_armor"
-				},
-				vector_blob_composition = {
-					"beastmen_huge",
-					"beastmen_huge_armor"
-				}
-			}
-		}
-	},
-	challenge_level = {
-		chance_of_vector = 0.5,
-		ambush_composition = "medium",
-		vector_composition = "medium",
-		mini_patrol_composition = "mini_patrol",
-		vector_blob_composition = "medium",
-		chance_of_vector_blob = 0.5,
-		disabled = true,
-		mix_paced_hordes = true,
-		compositions = HordeCompositions,
-		compositions_pacing = HordeCompositionsPacing,
-		ambush = HordeSettingsBasics.ambush,
-		vector = HordeSettingsBasics.vector,
-		vector_blob = HordeSettingsBasics.vector_blob,
-		difficulty_overrides = {
-			hard = {
-				vector_blob_composition = "medium",
-				ambush_composition = "medium",
-				vector_composition = "medium"
-			},
-			harder = {
-				vector_blob_composition = "large",
-				ambush_composition = "large",
-				vector_composition = "large"
-			},
-			hardest = {
-				vector_blob_composition = "large",
-				ambush_composition = "large",
-				vector_composition = "large"
-			},
-			cataclysm = {
-				vector_blob_composition = "huge",
-				ambush_composition = "huge",
-				vector_composition = "huge"
-			},
-			cataclysm_2 = {
-				vector_blob_composition = "huge",
-				ambush_composition = "huge",
-				vector_composition = "huge"
-			},
-			cataclysm_3 = {
-				vector_blob_composition = "huge",
-				ambush_composition = "huge",
-				vector_composition = "huge"
-			}
-		}
-	}
-}
-HordeSettings.disabled = table.clone(HordeSettings.default)
-HordeSettings.disabled.disabled = true
-local weights = {}
-local crash = nil
-
-for key, setting in pairs(HordeSettings) do
-	setting.name = key
-
-	if setting.compositions_pacing then
-		for name, composition in pairs(setting.compositions_pacing) do
+		for i = 1, #composition do
 			table.clear_array(weights, #weights)
 
-			for i, variant in ipairs(composition) do
-				weights[i] = variant.weight
+			local compositions = composition[i]
+
+			for j, variant in ipairs(compositions) do
+				weights[j] = variant.weight
+
 				local breeds = variant.breeds
 
-				for j = 1, #breeds, 2 do
-					local breed_name = breeds[j]
+				for k = 1, #breeds, 2 do
+					local breed_name = breeds[k]
 					local breed = Breeds[breed_name]
 
 					if not breed then
-						print(string.format("Bad or non-existing breed in HordeCompositionsPacing table %s : '%s' defined in HordeCompositionsPacing.", name, tostring(breed_name)))
+						print(string.format("Bad or non-existing breed in HordeCompositions table %s : '%s' defined in HordeCompositions.", name, tostring(breed_name)))
 
 						crash = true
 					elseif not breed.can_use_horde_spawners then
@@ -594,46 +69,582 @@ for key, setting in pairs(HordeSettings) do
 				end
 			end
 
-			composition.loaded_probs = {
-				LoadedDice.create(weights)
+			compositions.loaded_probs = {
+				LoadedDice.create(weights),
 			}
 
-			fassert(not crash, "Found errors in HordeCompositionsPacing table %s - see above. ", name)
-			fassert(composition.loaded_probs, "Could not create horde composition probablitity table, make sure the table '%s' in HordeCompositionsPacing is correctly structured.", name)
+			fassert(not crash, "Found errors in HordeComposition table %s - see above. ", name)
+			fassert(compositions.loaded_probs, "Could not create horde compositison sprobablitity table, make sure the table '%s' in HordeCompositions is correctly structured and has an entry for each difficulty.", name)
+		end
+	end
+end
+
+HordeSettings = {
+	default = {
+		ambush_composition = "medium",
+		chance_of_vector = 0.5,
+		chance_of_vector_blob = 0.5,
+		disabled = false,
+		mini_patrol_composition = "mini_patrol",
+		mix_paced_hordes = true,
+		vector_blob_composition = "medium",
+		vector_composition = "medium",
+		compositions = HordeCompositions,
+		compositions_pacing = HordeCompositionsPacing,
+		ambush = HordeSettingsBasics.ambush,
+		vector = HordeSettingsBasics.vector,
+		vector_blob = HordeSettingsBasics.vector_blob,
+		difficulty_overrides = {
+			hard = {
+				ambush_composition = "medium",
+				vector_blob_composition = "medium",
+				vector_composition = "medium",
+			},
+			harder = {
+				ambush_composition = "large",
+				vector_blob_composition = "large",
+				vector_composition = "large",
+			},
+			hardest = {
+				ambush_composition = "large",
+				vector_blob_composition = "large",
+				vector_composition = "large",
+			},
+			cataclysm = {
+				ambush_composition = {
+					"skaven_huge",
+					"skaven_huge_shields",
+					"skaven_huge_armor",
+					"skaven_huge_berzerker",
+				},
+				vector_composition = {
+					"skaven_huge",
+					"skaven_huge_shields",
+					"skaven_huge_armor",
+					"skaven_huge_berzerker",
+				},
+				vector_blob_composition = {
+					"skaven_huge",
+					"skaven_huge_shields",
+					"skaven_huge_armor",
+					"skaven_huge_berzerker",
+				},
+			},
+			cataclysm_2 = {
+				ambush_composition = {
+					"skaven_huge",
+					"skaven_huge_shields",
+					"skaven_huge_armor",
+					"skaven_huge_berzerker",
+				},
+				vector_composition = {
+					"skaven_huge",
+					"skaven_huge_shields",
+					"skaven_huge_armor",
+					"skaven_huge_berzerker",
+				},
+				vector_blob_composition = {
+					"skaven_huge",
+					"skaven_huge_shields",
+					"skaven_huge_armor",
+					"skaven_huge_berzerker",
+				},
+			},
+			cataclysm_3 = {
+				ambush_composition = {
+					"skaven_huge",
+					"skaven_huge_shields",
+					"skaven_huge_armor",
+					"skaven_huge_berzerker",
+				},
+				vector_composition = {
+					"skaven_huge",
+					"skaven_huge_shields",
+					"skaven_huge_armor",
+					"skaven_huge_berzerker",
+				},
+				vector_blob_composition = {
+					"skaven_huge",
+					"skaven_huge_shields",
+					"skaven_huge_armor",
+					"skaven_huge_berzerker",
+				},
+			},
+		},
+	},
+	default_light = {
+		ambush_composition = "medium",
+		chance_of_vector = 0.5,
+		chance_of_vector_blob = 0.5,
+		disabled = false,
+		mini_patrol_composition = "mini_patrol",
+		mix_paced_hordes = true,
+		vector_blob_composition = "medium",
+		vector_composition = "medium",
+		compositions = HordeCompositions,
+		compositions_pacing = HordeCompositionsPacing,
+		ambush = HordeSettingsBasics.ambush,
+		vector = HordeSettingsBasics.vector,
+		vector_blob = HordeSettingsBasics.vector_blob,
+		difficulty_overrides = {
+			hard = {
+				ambush_composition = "medium",
+				vector_blob_composition = "medium",
+				vector_composition = "medium",
+			},
+			harder = {
+				ambush_composition = "large",
+				vector_blob_composition = "large",
+				vector_composition = "large",
+			},
+			hardest = {
+				ambush_composition = "large",
+				vector_blob_composition = "large",
+				vector_composition = "large",
+			},
+			cataclysm = {
+				ambush_composition = {
+					"skaven_huge",
+					"skaven_huge_shields",
+					"skaven_huge_armor",
+					"skaven_huge_berzerker",
+				},
+				vector_composition = {
+					"skaven_huge",
+					"skaven_huge_shields",
+					"skaven_huge_armor",
+					"skaven_huge_berzerker",
+				},
+				vector_blob_composition = {
+					"skaven_huge",
+					"skaven_huge_shields",
+					"skaven_huge_armor",
+					"skaven_huge_berzerker",
+				},
+			},
+			cataclysm_2 = {
+				ambush_composition = {
+					"skaven_huge",
+					"skaven_huge_shields",
+					"skaven_huge_armor",
+					"skaven_huge_berzerker",
+				},
+				vector_composition = {
+					"skaven_huge",
+					"skaven_huge_shields",
+					"skaven_huge_armor",
+					"skaven_huge_berzerker",
+				},
+				vector_blob_composition = {
+					"skaven_huge",
+					"skaven_huge_shields",
+					"skaven_huge_armor",
+					"skaven_huge_berzerker",
+				},
+			},
+			cataclysm_3 = {
+				ambush_composition = {
+					"skaven_huge",
+					"skaven_huge_shields",
+					"skaven_huge_armor",
+					"skaven_huge_berzerker",
+				},
+				vector_composition = {
+					"skaven_huge",
+					"skaven_huge_shields",
+					"skaven_huge_armor",
+					"skaven_huge_berzerker",
+				},
+				vector_blob_composition = {
+					"skaven_huge",
+					"skaven_huge_shields",
+					"skaven_huge_armor",
+					"skaven_huge_berzerker",
+				},
+			},
+		},
+	},
+	chaos = {
+		ambush_composition = "chaos_medium",
+		chance_of_vector = 1,
+		chance_of_vector_blob = 1,
+		disabled = false,
+		mini_patrol_composition = "chaos_mini_patrol",
+		mix_paced_hordes = true,
+		vector_blob_composition = "chaos_medium",
+		vector_composition = "chaos_medium",
+		compositions = HordeCompositions,
+		compositions_pacing = HordeCompositionsPacing,
+		ambush = HordeSettingsBasics.ambush,
+		vector = HordeSettingsBasics.vector,
+		vector_blob = HordeSettingsBasics.vector_blob,
+		difficulty_overrides = {
+			hard = {
+				ambush_composition = "chaos_medium",
+				vector_blob_composition = "chaos_medium",
+				vector_composition = "chaos_medium",
+			},
+			harder = {
+				ambush_composition = "chaos_large",
+				vector_blob_composition = "chaos_large",
+				vector_composition = "chaos_large",
+			},
+			hardest = {
+				ambush_composition = "chaos_large",
+				vector_blob_composition = "chaos_large",
+				vector_composition = "chaos_large",
+			},
+			cataclysm = {
+				ambush_composition = {
+					"chaos_huge",
+					"chaos_huge_shields",
+					"chaos_huge_armor",
+					"chaos_huge_berzerker",
+				},
+				vector_composition = {
+					"chaos_huge",
+					"chaos_huge_shields",
+					"chaos_huge_armor",
+					"chaos_huge_berzerker",
+				},
+				vector_blob_composition = {
+					"chaos_huge",
+					"chaos_huge_shields",
+					"chaos_huge_armor",
+					"chaos_huge_berzerker",
+				},
+			},
+			cataclysm_2 = {
+				ambush_composition = {
+					"chaos_huge",
+					"chaos_huge_shields",
+					"chaos_huge_armor",
+					"chaos_huge_berzerker",
+				},
+				vector_composition = {
+					"chaos_huge",
+					"chaos_huge_shields",
+					"chaos_huge_armor",
+					"chaos_huge_berzerker",
+				},
+				vector_blob_composition = {
+					"chaos_huge",
+					"chaos_huge_shields",
+					"chaos_huge_armor",
+					"chaos_huge_berzerker",
+				},
+			},
+			cataclysm_3 = {
+				ambush_composition = {
+					"chaos_huge",
+					"chaos_huge_shields",
+					"chaos_huge_armor",
+					"chaos_huge_berzerker",
+				},
+				vector_composition = {
+					"chaos_huge",
+					"chaos_huge_shields",
+					"chaos_huge_armor",
+					"chaos_huge_berzerker",
+				},
+				vector_blob_composition = {
+					"chaos_huge",
+					"chaos_huge_shields",
+					"chaos_huge_armor",
+					"chaos_huge_berzerker",
+				},
+			},
+		},
+	},
+	chaos_light = {
+		ambush_composition = "chaos_medium",
+		chance_of_vector = 1,
+		chance_of_vector_blob = 1,
+		disabled = false,
+		mini_patrol_composition = "chaos_mini_patrol",
+		mix_paced_hordes = true,
+		vector_blob_composition = "chaos_medium",
+		vector_composition = "chaos_medium",
+		compositions = HordeCompositions,
+		compositions_pacing = HordeCompositionsPacing,
+		ambush = HordeSettingsBasics.ambush,
+		vector = HordeSettingsBasics.vector,
+		vector_blob = HordeSettingsBasics.vector_blob,
+		difficulty_overrides = {
+			hard = {
+				ambush_composition = "chaos_medium",
+				vector_blob_composition = "chaos_medium",
+				vector_composition = "chaos_medium",
+			},
+			harder = {
+				ambush_composition = "chaos_large",
+				vector_blob_composition = "chaos_large",
+				vector_composition = "chaos_large",
+			},
+			hardest = {
+				ambush_composition = "chaos_large",
+				vector_blob_composition = "chaos_large",
+				vector_composition = "chaos_large",
+			},
+			cataclysm = {
+				ambush_composition = {
+					"chaos_huge",
+					"chaos_huge_shields",
+					"chaos_huge_armor",
+					"chaos_huge_berzerker",
+				},
+				vector_composition = {
+					"chaos_huge",
+					"chaos_huge_shields",
+					"chaos_huge_armor",
+					"chaos_huge_berzerker",
+				},
+				vector_blob_composition = {
+					"chaos_huge",
+					"chaos_huge_shields",
+					"chaos_huge_armor",
+					"chaos_huge_berzerker",
+				},
+			},
+			cataclysm_2 = {
+				ambush_composition = {
+					"chaos_huge",
+					"chaos_huge_shields",
+					"chaos_huge_armor",
+					"chaos_huge_berzerker",
+				},
+				vector_composition = {
+					"chaos_huge",
+					"chaos_huge_shields",
+					"chaos_huge_armor",
+					"chaos_huge_berzerker",
+				},
+				vector_blob_composition = {
+					"chaos_huge",
+					"chaos_huge_shields",
+					"chaos_huge_armor",
+					"chaos_huge_berzerker",
+				},
+			},
+			cataclysm_3 = {
+				ambush_composition = {
+					"chaos_huge",
+					"chaos_huge_shields",
+					"chaos_huge_armor",
+					"chaos_huge_berzerker",
+				},
+				vector_composition = {
+					"chaos_huge",
+					"chaos_huge_shields",
+					"chaos_huge_armor",
+					"chaos_huge_berzerker",
+				},
+				vector_blob_composition = {
+					"chaos_huge",
+					"chaos_huge_shields",
+					"chaos_huge_armor",
+					"chaos_huge_berzerker",
+				},
+			},
+		},
+	},
+	beastmen = {
+		ambush_composition = "beastmen_medium",
+		chance_of_vector = 0.5,
+		chance_of_vector_blob = 0.5,
+		disabled = false,
+		mini_patrol_composition = "beastmen_mini_patrol",
+		mix_paced_hordes = false,
+		vector_blob_composition = "beastmen_medium",
+		vector_composition = "beastmen_medium",
+		compositions = HordeCompositions,
+		compositions_pacing = HordeCompositionsPacing,
+		ambush = HordeSettingsBasics.ambush,
+		vector = HordeSettingsBasics.vector,
+		vector_blob = HordeSettingsBasics.vector_blob,
+		difficulty_overrides = {
+			hard = {
+				ambush_composition = "beastmen_medium",
+				vector_blob_composition = "beastmen_medium",
+				vector_composition = "beastmen_medium",
+			},
+			harder = {
+				ambush_composition = "beastmen_large",
+				vector_blob_composition = "beastmen_large",
+				vector_composition = "beastmen_large",
+			},
+			hardest = {
+				ambush_composition = "beastmen_large",
+				vector_blob_composition = "beastmen_large",
+				vector_composition = "beastmen_large",
+			},
+			cataclysm = {
+				ambush_composition = {
+					"beastmen_huge",
+					"beastmen_huge_armor",
+				},
+				vector_composition = {
+					"beastmen_huge",
+					"beastmen_huge_armor",
+				},
+				vector_blob_composition = {
+					"beastmen_huge",
+					"beastmen_huge_armor",
+				},
+			},
+			cataclysm_2 = {
+				ambush_composition = {
+					"beastmen_huge",
+					"beastmen_huge_armor",
+				},
+				vector_composition = {
+					"beastmen_huge",
+					"beastmen_huge_armor",
+				},
+				vector_blob_composition = {
+					"beastmen_huge",
+					"beastmen_huge_armor",
+				},
+			},
+			cataclysm_3 = {
+				ambush_composition = {
+					"beastmen_huge",
+					"beastmen_huge_armor",
+				},
+				vector_composition = {
+					"beastmen_huge",
+					"beastmen_huge_armor",
+				},
+				vector_blob_composition = {
+					"beastmen_huge",
+					"beastmen_huge_armor",
+				},
+			},
+		},
+	},
+	challenge_level = {
+		ambush_composition = "medium",
+		chance_of_vector = 0.5,
+		chance_of_vector_blob = 0.5,
+		disabled = true,
+		mini_patrol_composition = "mini_patrol",
+		mix_paced_hordes = true,
+		vector_blob_composition = "medium",
+		vector_composition = "medium",
+		compositions = HordeCompositions,
+		compositions_pacing = HordeCompositionsPacing,
+		ambush = HordeSettingsBasics.ambush,
+		vector = HordeSettingsBasics.vector,
+		vector_blob = HordeSettingsBasics.vector_blob,
+		difficulty_overrides = {
+			hard = {
+				ambush_composition = "medium",
+				vector_blob_composition = "medium",
+				vector_composition = "medium",
+			},
+			harder = {
+				ambush_composition = "large",
+				vector_blob_composition = "large",
+				vector_composition = "large",
+			},
+			hardest = {
+				ambush_composition = "large",
+				vector_blob_composition = "large",
+				vector_composition = "large",
+			},
+			cataclysm = {
+				ambush_composition = "huge",
+				vector_blob_composition = "huge",
+				vector_composition = "huge",
+			},
+			cataclysm_2 = {
+				ambush_composition = "huge",
+				vector_blob_composition = "huge",
+				vector_composition = "huge",
+			},
+			cataclysm_3 = {
+				ambush_composition = "huge",
+				vector_blob_composition = "huge",
+				vector_composition = "huge",
+			},
+		},
+	},
+}
+HordeSettings.disabled = table.clone(HordeSettings.default)
+HordeSettings.disabled.disabled = true
+
+do
+	local weights = {}
+	local crash
+
+	for key, setting in pairs(HordeSettings) do
+		setting.name = key
+
+		if setting.compositions_pacing then
+			for name, composition in pairs(setting.compositions_pacing) do
+				table.clear_array(weights, #weights)
+
+				for i, variant in ipairs(composition) do
+					weights[i] = variant.weight
+
+					local breeds = variant.breeds
+
+					for j = 1, #breeds, 2 do
+						local breed_name = breeds[j]
+						local breed = Breeds[breed_name]
+
+						if not breed then
+							print(string.format("Bad or non-existing breed in HordeCompositionsPacing table %s : '%s' defined in HordeCompositionsPacing.", name, tostring(breed_name)))
+
+							crash = true
+						elseif not breed.can_use_horde_spawners then
+							variant.must_use_hidden_spawners = true
+						end
+					end
+				end
+
+				composition.loaded_probs = {
+					LoadedDice.create(weights),
+				}
+
+				fassert(not crash, "Found errors in HordeCompositionsPacing table %s - see above. ", name)
+				fassert(composition.loaded_probs, "Could not create horde composition probablitity table, make sure the table '%s' in HordeCompositionsPacing is correctly structured.", name)
+			end
 		end
 	end
 end
 
 PackDistributions = {
 	periodical = {
-		min_hi_dist = 2,
-		min_low_dist = 7,
-		max_low_density = 0.4,
-		min_hi_density = 0.65,
-		random_distribution = false,
-		zero_density_below = 0.1,
+		max_hi_density = 1,
 		max_hi_dist = 3,
-		min_low_density = 0,
-		zero_clamp_max_dist = 5,
+		max_low_density = 0.4,
 		max_low_dist = 10,
-		max_hi_density = 1
+		min_hi_density = 0.65,
+		min_hi_dist = 2,
+		min_low_density = 0,
+		min_low_dist = 7,
+		random_distribution = false,
+		zero_clamp_max_dist = 5,
+		zero_density_below = 0.1,
 	},
-	random = {}
+	random = {},
 }
 RoamingSettings = {
 	default = {
 		despawn_distance = 45,
-		despawn_path_distance = 75,
 		despawn_distance_z = 30,
-		disabled = false
+		despawn_path_distance = 75,
+		disabled = false,
 	},
 	disabled = {
 		despawn_distance = 45,
-		despawn_path_distance = 75,
 		despawn_distance_z = 30,
-		disabled = true
-	}
+		despawn_path_distance = 75,
+		disabled = true,
+	},
 }
+
 local SpecialDifficultyOverrides = {
 	hard = {
 		max_specials = 3,
@@ -644,23 +655,23 @@ local SpecialDifficultyOverrides = {
 			"skaven_poison_wind_globadier",
 			"chaos_vortex_sorcerer",
 			"chaos_corruptor_sorcerer",
-			"skaven_warpfire_thrower"
+			"skaven_warpfire_thrower",
 		},
 		methods = {
 			specials_by_slots = {
-				max_of_same = 2,
 				chance_of_coordinated_attack = 0,
+				max_of_same = 2,
 				select_next_breed = "get_random_breed",
 				after_safe_zone_delay = {
 					30,
-					60
+					60,
 				},
 				spawn_cooldown = {
 					60,
-					100
-				}
-			}
-		}
+					100,
+				},
+			},
+		},
 	},
 	harder = {
 		max_specials = 3,
@@ -671,23 +682,23 @@ local SpecialDifficultyOverrides = {
 			"skaven_poison_wind_globadier",
 			"chaos_vortex_sorcerer",
 			"chaos_corruptor_sorcerer",
-			"skaven_warpfire_thrower"
+			"skaven_warpfire_thrower",
 		},
 		methods = {
 			specials_by_slots = {
-				max_of_same = 2,
 				chance_of_coordinated_attack = 0.25,
+				max_of_same = 2,
 				select_next_breed = "get_random_breed",
 				after_safe_zone_delay = {
 					30,
-					60
+					60,
 				},
 				spawn_cooldown = {
 					50,
-					90
-				}
-			}
-		}
+					90,
+				},
+			},
+		},
 	},
 	hardest = {
 		max_specials = 4,
@@ -698,24 +709,24 @@ local SpecialDifficultyOverrides = {
 			"skaven_poison_wind_globadier",
 			"chaos_vortex_sorcerer",
 			"chaos_corruptor_sorcerer",
-			"skaven_warpfire_thrower"
+			"skaven_warpfire_thrower",
 		},
 		methods = {
 			specials_by_slots = {
-				max_of_same = 2,
-				coordinated_attack_cooldown_multiplier = 0.5,
 				chance_of_coordinated_attack = 0.5,
+				coordinated_attack_cooldown_multiplier = 0.5,
+				max_of_same = 2,
 				select_next_breed = "get_random_breed",
 				after_safe_zone_delay = {
 					30,
-					60
+					60,
 				},
 				spawn_cooldown = {
 					50,
-					90
-				}
-			}
-		}
+					90,
+				},
+			},
+		},
 	},
 	cataclysm = {
 		max_specials = 5,
@@ -726,24 +737,24 @@ local SpecialDifficultyOverrides = {
 			"skaven_poison_wind_globadier",
 			"chaos_vortex_sorcerer",
 			"chaos_corruptor_sorcerer",
-			"skaven_warpfire_thrower"
+			"skaven_warpfire_thrower",
 		},
 		methods = {
 			specials_by_slots = {
-				max_of_same = 3,
-				coordinated_attack_cooldown_multiplier = 0.5,
 				chance_of_coordinated_attack = 0.5,
+				coordinated_attack_cooldown_multiplier = 0.5,
+				max_of_same = 3,
 				select_next_breed = "get_random_breed",
 				after_safe_zone_delay = {
 					30,
-					60
+					60,
 				},
 				spawn_cooldown = {
 					40,
-					70
-				}
-			}
-		}
+					70,
+				},
+			},
+		},
 	},
 	cataclysm_2 = {
 		max_specials = 6,
@@ -754,24 +765,24 @@ local SpecialDifficultyOverrides = {
 			"skaven_poison_wind_globadier",
 			"chaos_vortex_sorcerer",
 			"chaos_corruptor_sorcerer",
-			"skaven_warpfire_thrower"
+			"skaven_warpfire_thrower",
 		},
 		methods = {
 			specials_by_slots = {
-				max_of_same = 3,
-				coordinated_attack_cooldown_multiplier = 0.5,
 				chance_of_coordinated_attack = 0.5,
+				coordinated_attack_cooldown_multiplier = 0.5,
+				max_of_same = 3,
 				select_next_breed = "get_random_breed",
 				after_safe_zone_delay = {
 					30,
-					60
+					60,
 				},
 				spawn_cooldown = {
 					30,
-					60
-				}
-			}
-		}
+					60,
+				},
+			},
+		},
 	},
 	cataclysm_3 = {
 		max_specials = 6,
@@ -782,25 +793,25 @@ local SpecialDifficultyOverrides = {
 			"skaven_poison_wind_globadier",
 			"chaos_vortex_sorcerer",
 			"chaos_corruptor_sorcerer",
-			"skaven_warpfire_thrower"
+			"skaven_warpfire_thrower",
 		},
 		methods = {
 			specials_by_slots = {
-				max_of_same = 3,
-				coordinated_attack_cooldown_multiplier = 0.5,
 				chance_of_coordinated_attack = 0.5,
+				coordinated_attack_cooldown_multiplier = 0.5,
+				max_of_same = 3,
 				select_next_breed = "get_random_breed",
 				after_safe_zone_delay = {
 					30,
-					60
+					60,
 				},
 				spawn_cooldown = {
 					30,
-					60
-				}
-			}
-		}
-	}
+					60,
+				},
+			},
+		},
+	},
 }
 local SpecialDifficultyOverrides_skaven = {
 	hard = {
@@ -810,23 +821,23 @@ local SpecialDifficultyOverrides_skaven = {
 			"skaven_pack_master",
 			"skaven_ratling_gunner",
 			"skaven_poison_wind_globadier",
-			"skaven_warpfire_thrower"
+			"skaven_warpfire_thrower",
 		},
 		methods = {
 			specials_by_slots = {
-				max_of_same = 2,
 				chance_of_coordinated_attack = 0,
+				max_of_same = 2,
 				select_next_breed = "get_random_breed",
 				after_safe_zone_delay = {
 					30,
-					60
+					60,
 				},
 				spawn_cooldown = {
 					60,
-					100
-				}
-			}
-		}
+					100,
+				},
+			},
+		},
 	},
 	harder = {
 		max_specials = 4,
@@ -835,23 +846,23 @@ local SpecialDifficultyOverrides_skaven = {
 			"skaven_pack_master",
 			"skaven_ratling_gunner",
 			"skaven_poison_wind_globadier",
-			"skaven_warpfire_thrower"
+			"skaven_warpfire_thrower",
 		},
 		methods = {
 			specials_by_slots = {
-				max_of_same = 2,
 				chance_of_coordinated_attack = 0.25,
+				max_of_same = 2,
 				select_next_breed = "get_random_breed",
 				after_safe_zone_delay = {
 					30,
-					60
+					60,
 				},
 				spawn_cooldown = {
 					60,
-					100
-				}
-			}
-		}
+					100,
+				},
+			},
+		},
 	},
 	hardest = {
 		max_specials = 4,
@@ -860,24 +871,24 @@ local SpecialDifficultyOverrides_skaven = {
 			"skaven_pack_master",
 			"skaven_ratling_gunner",
 			"skaven_poison_wind_globadier",
-			"skaven_warpfire_thrower"
+			"skaven_warpfire_thrower",
 		},
 		methods = {
 			specials_by_slots = {
-				max_of_same = 2,
-				coordinated_attack_cooldown_multiplier = 0.5,
 				chance_of_coordinated_attack = 0.5,
+				coordinated_attack_cooldown_multiplier = 0.5,
+				max_of_same = 2,
 				select_next_breed = "get_random_breed",
 				after_safe_zone_delay = {
 					30,
-					60
+					60,
 				},
 				spawn_cooldown = {
 					50,
-					90
-				}
-			}
-		}
+					90,
+				},
+			},
+		},
 	},
 	cataclysm = {
 		max_specials = 5,
@@ -886,24 +897,24 @@ local SpecialDifficultyOverrides_skaven = {
 			"skaven_pack_master",
 			"skaven_ratling_gunner",
 			"skaven_poison_wind_globadier",
-			"skaven_warpfire_thrower"
+			"skaven_warpfire_thrower",
 		},
 		methods = {
 			specials_by_slots = {
-				max_of_same = 3,
-				coordinated_attack_cooldown_multiplier = 0.5,
 				chance_of_coordinated_attack = 0.5,
+				coordinated_attack_cooldown_multiplier = 0.5,
+				max_of_same = 3,
 				select_next_breed = "get_random_breed",
 				after_safe_zone_delay = {
 					30,
-					60
+					60,
 				},
 				spawn_cooldown = {
 					40,
-					70
-				}
-			}
-		}
+					70,
+				},
+			},
+		},
 	},
 	cataclysm_2 = {
 		max_specials = 6,
@@ -912,24 +923,24 @@ local SpecialDifficultyOverrides_skaven = {
 			"skaven_pack_master",
 			"skaven_ratling_gunner",
 			"skaven_poison_wind_globadier",
-			"skaven_warpfire_thrower"
+			"skaven_warpfire_thrower",
 		},
 		methods = {
 			specials_by_slots = {
-				max_of_same = 3,
-				coordinated_attack_cooldown_multiplier = 0.5,
 				chance_of_coordinated_attack = 0.5,
+				coordinated_attack_cooldown_multiplier = 0.5,
+				max_of_same = 3,
 				select_next_breed = "get_random_breed",
 				after_safe_zone_delay = {
 					30,
-					60
+					60,
 				},
 				spawn_cooldown = {
 					30,
-					60
-				}
-			}
-		}
+					60,
+				},
+			},
+		},
 	},
 	cataclysm_3 = {
 		max_specials = 6,
@@ -938,25 +949,25 @@ local SpecialDifficultyOverrides_skaven = {
 			"skaven_pack_master",
 			"skaven_ratling_gunner",
 			"skaven_poison_wind_globadier",
-			"skaven_warpfire_thrower"
+			"skaven_warpfire_thrower",
 		},
 		methods = {
 			specials_by_slots = {
-				max_of_same = 3,
-				coordinated_attack_cooldown_multiplier = 0.5,
 				chance_of_coordinated_attack = 0.5,
+				coordinated_attack_cooldown_multiplier = 0.5,
+				max_of_same = 3,
 				select_next_breed = "get_random_breed",
 				after_safe_zone_delay = {
 					30,
-					60
+					60,
 				},
 				spawn_cooldown = {
 					30,
-					60
-				}
-			}
-		}
-	}
+					60,
+				},
+			},
+		},
+	},
 }
 local SpecialDifficultyOverrides_chaos = {
 	hard = {
@@ -969,23 +980,23 @@ local SpecialDifficultyOverrides_chaos = {
 			"chaos_vortex_sorcerer",
 			"chaos_corruptor_sorcerer",
 			"chaos_corruptor_sorcerer",
-			"skaven_warpfire_thrower"
+			"skaven_warpfire_thrower",
 		},
 		methods = {
 			specials_by_slots = {
-				max_of_same = 1,
 				chance_of_coordinated_attack = 0,
+				max_of_same = 1,
 				select_next_breed = "get_random_breed",
 				after_safe_zone_delay = {
 					30,
-					60
+					60,
 				},
 				spawn_cooldown = {
 					50,
-					90
-				}
-			}
-		}
+					90,
+				},
+			},
+		},
 	},
 	harder = {
 		max_specials = 3,
@@ -997,23 +1008,23 @@ local SpecialDifficultyOverrides_chaos = {
 			"chaos_vortex_sorcerer",
 			"chaos_corruptor_sorcerer",
 			"chaos_corruptor_sorcerer",
-			"skaven_warpfire_thrower"
+			"skaven_warpfire_thrower",
 		},
 		methods = {
 			specials_by_slots = {
-				max_of_same = 2,
 				chance_of_coordinated_attack = 0.25,
+				max_of_same = 2,
 				select_next_breed = "get_random_breed",
 				after_safe_zone_delay = {
 					30,
-					60
+					60,
 				},
 				spawn_cooldown = {
 					50,
-					90
-				}
-			}
-		}
+					90,
+				},
+			},
+		},
 	},
 	hardest = {
 		max_specials = 3,
@@ -1023,24 +1034,24 @@ local SpecialDifficultyOverrides_chaos = {
 			"skaven_poison_wind_globadier",
 			"chaos_vortex_sorcerer",
 			"chaos_corruptor_sorcerer",
-			"skaven_warpfire_thrower"
+			"skaven_warpfire_thrower",
 		},
 		methods = {
 			specials_by_slots = {
-				max_of_same = 2,
-				coordinated_attack_cooldown_multiplier = 0.5,
 				chance_of_coordinated_attack = 0.5,
+				coordinated_attack_cooldown_multiplier = 0.5,
+				max_of_same = 2,
 				select_next_breed = "get_random_breed",
 				after_safe_zone_delay = {
 					30,
-					60
+					60,
 				},
 				spawn_cooldown = {
 					45,
-					70
-				}
-			}
-		}
+					70,
+				},
+			},
+		},
 	},
 	cataclysm = {
 		max_specials = 5,
@@ -1050,24 +1061,24 @@ local SpecialDifficultyOverrides_chaos = {
 			"skaven_poison_wind_globadier",
 			"chaos_vortex_sorcerer",
 			"chaos_corruptor_sorcerer",
-			"skaven_warpfire_thrower"
+			"skaven_warpfire_thrower",
 		},
 		methods = {
 			specials_by_slots = {
-				max_of_same = 3,
-				coordinated_attack_cooldown_multiplier = 0.5,
 				chance_of_coordinated_attack = 0.5,
+				coordinated_attack_cooldown_multiplier = 0.5,
+				max_of_same = 3,
 				select_next_breed = "get_random_breed",
 				after_safe_zone_delay = {
 					30,
-					60
+					60,
 				},
 				spawn_cooldown = {
 					40,
-					70
-				}
-			}
-		}
+					70,
+				},
+			},
+		},
 	},
 	cataclysm_2 = {
 		max_specials = 6,
@@ -1077,24 +1088,24 @@ local SpecialDifficultyOverrides_chaos = {
 			"skaven_poison_wind_globadier",
 			"chaos_vortex_sorcerer",
 			"chaos_corruptor_sorcerer",
-			"skaven_warpfire_thrower"
+			"skaven_warpfire_thrower",
 		},
 		methods = {
 			specials_by_slots = {
-				max_of_same = 3,
-				coordinated_attack_cooldown_multiplier = 0.5,
 				chance_of_coordinated_attack = 0.5,
+				coordinated_attack_cooldown_multiplier = 0.5,
+				max_of_same = 3,
 				select_next_breed = "get_random_breed",
 				after_safe_zone_delay = {
 					30,
-					60
+					60,
 				},
 				spawn_cooldown = {
 					30,
-					60
-				}
-			}
-		}
+					60,
+				},
+			},
+		},
 	},
 	cataclysm_3 = {
 		max_specials = 6,
@@ -1104,25 +1115,25 @@ local SpecialDifficultyOverrides_chaos = {
 			"skaven_poison_wind_globadier",
 			"chaos_vortex_sorcerer",
 			"chaos_corruptor_sorcerer",
-			"skaven_warpfire_thrower"
+			"skaven_warpfire_thrower",
 		},
 		methods = {
 			specials_by_slots = {
-				max_of_same = 3,
-				coordinated_attack_cooldown_multiplier = 0.5,
 				chance_of_coordinated_attack = 0.5,
+				coordinated_attack_cooldown_multiplier = 0.5,
+				max_of_same = 3,
 				select_next_breed = "get_random_breed",
 				after_safe_zone_delay = {
 					30,
-					60
+					60,
 				},
 				spawn_cooldown = {
 					30,
-					60
-				}
-			}
-		}
-	}
+					60,
+				},
+			},
+		},
+	},
 }
 local SpecialDifficultyOverrides_beastmen = {
 	hard = {
@@ -1132,23 +1143,23 @@ local SpecialDifficultyOverrides_beastmen = {
 			"chaos_vortex_sorcerer",
 			"chaos_corruptor_sorcerer",
 			"skaven_gutter_runner",
-			"skaven_pack_master"
+			"skaven_pack_master",
 		},
 		methods = {
 			specials_by_slots = {
-				max_of_same = 2,
 				chance_of_coordinated_attack = 0,
+				max_of_same = 2,
 				select_next_breed = "get_random_breed",
 				after_safe_zone_delay = {
 					30,
-					60
+					60,
 				},
 				spawn_cooldown = {
 					40,
-					70
-				}
-			}
-		}
+					70,
+				},
+			},
+		},
 	},
 	harder = {
 		max_specials = 3,
@@ -1157,23 +1168,23 @@ local SpecialDifficultyOverrides_beastmen = {
 			"chaos_vortex_sorcerer",
 			"chaos_corruptor_sorcerer",
 			"skaven_gutter_runner",
-			"skaven_pack_master"
+			"skaven_pack_master",
 		},
 		methods = {
 			specials_by_slots = {
-				max_of_same = 2,
 				chance_of_coordinated_attack = 0.25,
+				max_of_same = 2,
 				select_next_breed = "get_random_breed",
 				after_safe_zone_delay = {
 					30,
-					60
+					60,
 				},
 				spawn_cooldown = {
 					40,
-					70
-				}
-			}
-		}
+					70,
+				},
+			},
+		},
 	},
 	hardest = {
 		max_specials = 3,
@@ -1182,24 +1193,24 @@ local SpecialDifficultyOverrides_beastmen = {
 			"chaos_vortex_sorcerer",
 			"chaos_corruptor_sorcerer",
 			"skaven_gutter_runner",
-			"skaven_pack_master"
+			"skaven_pack_master",
 		},
 		methods = {
 			specials_by_slots = {
-				max_of_same = 2,
-				coordinated_attack_cooldown_multiplier = 0.5,
 				chance_of_coordinated_attack = 0.5,
+				coordinated_attack_cooldown_multiplier = 0.5,
+				max_of_same = 2,
 				select_next_breed = "get_random_breed",
 				after_safe_zone_delay = {
 					30,
-					60
+					60,
 				},
 				spawn_cooldown = {
 					30,
-					60
-				}
-			}
-		}
+					60,
+				},
+			},
+		},
 	},
 	cataclysm = {
 		max_specials = 4,
@@ -1208,24 +1219,24 @@ local SpecialDifficultyOverrides_beastmen = {
 			"chaos_vortex_sorcerer",
 			"chaos_corruptor_sorcerer",
 			"skaven_gutter_runner",
-			"skaven_pack_master"
+			"skaven_pack_master",
 		},
 		methods = {
 			specials_by_slots = {
-				max_of_same = 3,
-				coordinated_attack_cooldown_multiplier = 0.5,
 				chance_of_coordinated_attack = 0.5,
+				coordinated_attack_cooldown_multiplier = 0.5,
+				max_of_same = 3,
 				select_next_breed = "get_random_breed",
 				after_safe_zone_delay = {
 					30,
-					60
+					60,
 				},
 				spawn_cooldown = {
 					30,
-					60
-				}
-			}
-		}
+					60,
+				},
+			},
+		},
 	},
 	cataclysm_2 = {
 		max_specials = 5,
@@ -1234,24 +1245,24 @@ local SpecialDifficultyOverrides_beastmen = {
 			"chaos_vortex_sorcerer",
 			"chaos_corruptor_sorcerer",
 			"skaven_gutter_runner",
-			"skaven_pack_master"
+			"skaven_pack_master",
 		},
 		methods = {
 			specials_by_slots = {
-				max_of_same = 3,
-				coordinated_attack_cooldown_multiplier = 0.5,
 				chance_of_coordinated_attack = 0.5,
+				coordinated_attack_cooldown_multiplier = 0.5,
+				max_of_same = 3,
 				select_next_breed = "get_random_breed",
 				after_safe_zone_delay = {
 					30,
-					60
+					60,
 				},
 				spawn_cooldown = {
 					30,
-					60
-				}
-			}
-		}
+					60,
+				},
+			},
+		},
 	},
 	cataclysm_3 = {
 		max_specials = 6,
@@ -1260,25 +1271,25 @@ local SpecialDifficultyOverrides_beastmen = {
 			"chaos_vortex_sorcerer",
 			"chaos_corruptor_sorcerer",
 			"skaven_gutter_runner",
-			"skaven_pack_master"
+			"skaven_pack_master",
 		},
 		methods = {
 			specials_by_slots = {
-				max_of_same = 4,
-				coordinated_attack_cooldown_multiplier = 0.5,
 				chance_of_coordinated_attack = 0.5,
+				coordinated_attack_cooldown_multiplier = 0.5,
+				max_of_same = 4,
 				select_next_breed = "get_random_breed",
 				after_safe_zone_delay = {
 					30,
-					60
+					60,
 				},
 				spawn_cooldown = {
 					30,
-					60
-				}
-			}
-		}
-	}
+					60,
+				},
+			},
+		},
+	},
 }
 local SpecialDifficultyOverrides_skaven_beastmen = {
 	hard = {
@@ -1289,23 +1300,23 @@ local SpecialDifficultyOverrides_skaven_beastmen = {
 			"skaven_ratling_gunner",
 			"skaven_poison_wind_globadier",
 			"skaven_warpfire_thrower",
-			"beastmen_standard_bearer"
+			"beastmen_standard_bearer",
 		},
 		methods = {
 			specials_by_slots = {
-				max_of_same = 2,
 				chance_of_coordinated_attack = 0,
+				max_of_same = 2,
 				select_next_breed = "get_random_breed",
 				after_safe_zone_delay = {
 					30,
-					60
+					60,
 				},
 				spawn_cooldown = {
 					40,
-					70
-				}
-			}
-		}
+					70,
+				},
+			},
+		},
 	},
 	harder = {
 		max_specials = 3,
@@ -1315,23 +1326,23 @@ local SpecialDifficultyOverrides_skaven_beastmen = {
 			"skaven_ratling_gunner",
 			"skaven_poison_wind_globadier",
 			"skaven_warpfire_thrower",
-			"beastmen_standard_bearer"
+			"beastmen_standard_bearer",
 		},
 		methods = {
 			specials_by_slots = {
-				max_of_same = 2,
 				chance_of_coordinated_attack = 0.25,
+				max_of_same = 2,
 				select_next_breed = "get_random_breed",
 				after_safe_zone_delay = {
 					30,
-					60
+					60,
 				},
 				spawn_cooldown = {
 					40,
-					70
-				}
-			}
-		}
+					70,
+				},
+			},
+		},
 	},
 	hardest = {
 		max_specials = 3,
@@ -1341,24 +1352,24 @@ local SpecialDifficultyOverrides_skaven_beastmen = {
 			"skaven_ratling_gunner",
 			"skaven_poison_wind_globadier",
 			"skaven_warpfire_thrower",
-			"beastmen_standard_bearer"
+			"beastmen_standard_bearer",
 		},
 		methods = {
 			specials_by_slots = {
-				max_of_same = 2,
-				coordinated_attack_cooldown_multiplier = 0.5,
 				chance_of_coordinated_attack = 0.5,
+				coordinated_attack_cooldown_multiplier = 0.5,
+				max_of_same = 2,
 				select_next_breed = "get_random_breed",
 				after_safe_zone_delay = {
 					30,
-					60
+					60,
 				},
 				spawn_cooldown = {
 					30,
-					60
-				}
-			}
-		}
+					60,
+				},
+			},
+		},
 	},
 	cataclysm = {
 		max_specials = 4,
@@ -1368,24 +1379,24 @@ local SpecialDifficultyOverrides_skaven_beastmen = {
 			"skaven_ratling_gunner",
 			"skaven_poison_wind_globadier",
 			"skaven_warpfire_thrower",
-			"beastmen_standard_bearer"
+			"beastmen_standard_bearer",
 		},
 		methods = {
 			specials_by_slots = {
-				max_of_same = 3,
-				coordinated_attack_cooldown_multiplier = 0.5,
 				chance_of_coordinated_attack = 0.5,
+				coordinated_attack_cooldown_multiplier = 0.5,
+				max_of_same = 3,
 				select_next_breed = "get_random_breed",
 				after_safe_zone_delay = {
 					30,
-					60
+					60,
 				},
 				spawn_cooldown = {
 					30,
-					60
-				}
-			}
-		}
+					60,
+				},
+			},
+		},
 	},
 	cataclysm_2 = {
 		max_specials = 5,
@@ -1395,24 +1406,24 @@ local SpecialDifficultyOverrides_skaven_beastmen = {
 			"skaven_ratling_gunner",
 			"skaven_poison_wind_globadier",
 			"skaven_warpfire_thrower",
-			"beastmen_standard_bearer"
+			"beastmen_standard_bearer",
 		},
 		methods = {
 			specials_by_slots = {
-				max_of_same = 3,
-				coordinated_attack_cooldown_multiplier = 0.5,
 				chance_of_coordinated_attack = 0.5,
+				coordinated_attack_cooldown_multiplier = 0.5,
+				max_of_same = 3,
 				select_next_breed = "get_random_breed",
 				after_safe_zone_delay = {
 					30,
-					60
+					60,
 				},
 				spawn_cooldown = {
 					30,
-					60
-				}
-			}
-		}
+					60,
+				},
+			},
+		},
 	},
 	cataclysm_3 = {
 		max_specials = 6,
@@ -1422,25 +1433,25 @@ local SpecialDifficultyOverrides_skaven_beastmen = {
 			"skaven_ratling_gunner",
 			"skaven_poison_wind_globadier",
 			"skaven_warpfire_thrower",
-			"beastmen_standard_bearer"
+			"beastmen_standard_bearer",
 		},
 		methods = {
 			specials_by_slots = {
-				max_of_same = 4,
-				coordinated_attack_cooldown_multiplier = 0.5,
 				chance_of_coordinated_attack = 0.5,
+				coordinated_attack_cooldown_multiplier = 0.5,
+				max_of_same = 4,
 				select_next_breed = "get_random_breed",
 				after_safe_zone_delay = {
 					30,
-					60
+					60,
 				},
 				spawn_cooldown = {
 					30,
-					60
-				}
-			}
-		}
-	}
+					60,
+				},
+			},
+		},
+	},
 }
 local SpecialDifficultyOverrides_chaos_beastmen = {
 	hard = {
@@ -1454,23 +1465,23 @@ local SpecialDifficultyOverrides_chaos_beastmen = {
 			"chaos_corruptor_sorcerer",
 			"chaos_corruptor_sorcerer",
 			"beastmen_standard_bearer",
-			"skaven_warpfire_thrower"
+			"skaven_warpfire_thrower",
 		},
 		methods = {
 			specials_by_slots = {
-				max_of_same = 1,
 				chance_of_coordinated_attack = 0,
+				max_of_same = 1,
 				select_next_breed = "get_random_breed",
 				after_safe_zone_delay = {
 					30,
-					60
+					60,
 				},
 				spawn_cooldown = {
 					50,
-					90
-				}
-			}
-		}
+					90,
+				},
+			},
+		},
 	},
 	harder = {
 		max_specials = 3,
@@ -1484,23 +1495,23 @@ local SpecialDifficultyOverrides_chaos_beastmen = {
 			"chaos_corruptor_sorcerer",
 			"beastmen_standard_bearer",
 			"beastmen_standard_bearer",
-			"skaven_warpfire_thrower"
+			"skaven_warpfire_thrower",
 		},
 		methods = {
 			specials_by_slots = {
-				max_of_same = 2,
 				chance_of_coordinated_attack = 0.25,
+				max_of_same = 2,
 				select_next_breed = "get_random_breed",
 				after_safe_zone_delay = {
 					30,
-					60
+					60,
 				},
 				spawn_cooldown = {
 					50,
-					90
-				}
-			}
-		}
+					90,
+				},
+			},
+		},
 	},
 	hardest = {
 		max_specials = 3,
@@ -1511,24 +1522,24 @@ local SpecialDifficultyOverrides_chaos_beastmen = {
 			"chaos_vortex_sorcerer",
 			"chaos_corruptor_sorcerer",
 			"beastmen_standard_bearer",
-			"skaven_warpfire_thrower"
+			"skaven_warpfire_thrower",
 		},
 		methods = {
 			specials_by_slots = {
-				max_of_same = 2,
-				coordinated_attack_cooldown_multiplier = 0.5,
 				chance_of_coordinated_attack = 0.5,
+				coordinated_attack_cooldown_multiplier = 0.5,
+				max_of_same = 2,
 				select_next_breed = "get_random_breed",
 				after_safe_zone_delay = {
 					30,
-					60
+					60,
 				},
 				spawn_cooldown = {
 					45,
-					70
-				}
-			}
-		}
+					70,
+				},
+			},
+		},
 	},
 	cataclysm = {
 		max_specials = 5,
@@ -1539,24 +1550,24 @@ local SpecialDifficultyOverrides_chaos_beastmen = {
 			"chaos_vortex_sorcerer",
 			"chaos_corruptor_sorcerer",
 			"beastmen_standard_bearer",
-			"skaven_warpfire_thrower"
+			"skaven_warpfire_thrower",
 		},
 		methods = {
 			specials_by_slots = {
-				max_of_same = 3,
-				coordinated_attack_cooldown_multiplier = 0.5,
 				chance_of_coordinated_attack = 0.5,
+				coordinated_attack_cooldown_multiplier = 0.5,
+				max_of_same = 3,
 				select_next_breed = "get_random_breed",
 				after_safe_zone_delay = {
 					30,
-					60
+					60,
 				},
 				spawn_cooldown = {
 					40,
-					70
-				}
-			}
-		}
+					70,
+				},
+			},
+		},
 	},
 	cataclysm_2 = {
 		max_specials = 6,
@@ -1567,24 +1578,24 @@ local SpecialDifficultyOverrides_chaos_beastmen = {
 			"chaos_vortex_sorcerer",
 			"chaos_corruptor_sorcerer",
 			"beastmen_standard_bearer",
-			"skaven_warpfire_thrower"
+			"skaven_warpfire_thrower",
 		},
 		methods = {
 			specials_by_slots = {
-				max_of_same = 3,
-				coordinated_attack_cooldown_multiplier = 0.5,
 				chance_of_coordinated_attack = 0.5,
+				coordinated_attack_cooldown_multiplier = 0.5,
+				max_of_same = 3,
 				select_next_breed = "get_random_breed",
 				after_safe_zone_delay = {
 					30,
-					60
+					60,
 				},
 				spawn_cooldown = {
 					30,
-					60
-				}
-			}
-		}
+					60,
+				},
+			},
+		},
 	},
 	cataclysm_3 = {
 		max_specials = 6,
@@ -1595,31 +1606,32 @@ local SpecialDifficultyOverrides_chaos_beastmen = {
 			"chaos_vortex_sorcerer",
 			"chaos_corruptor_sorcerer",
 			"beastmen_standard_bearer",
-			"skaven_warpfire_thrower"
+			"skaven_warpfire_thrower",
 		},
 		methods = {
 			specials_by_slots = {
-				max_of_same = 3,
-				coordinated_attack_cooldown_multiplier = 0.5,
 				chance_of_coordinated_attack = 0.5,
+				coordinated_attack_cooldown_multiplier = 0.5,
+				max_of_same = 3,
 				select_next_breed = "get_random_breed",
 				after_safe_zone_delay = {
 					30,
-					60
+					60,
 				},
 				spawn_cooldown = {
 					30,
-					60
-				}
-			}
-		}
-	}
+					60,
+				},
+			},
+		},
+	},
 }
+
 SpecialsSettings = {
 	default = {
-		spawn_method = "specials_by_slots",
 		disabled = false,
 		max_specials = 2,
+		spawn_method = "specials_by_slots",
 		breeds = {
 			"skaven_gutter_runner",
 			"skaven_pack_master",
@@ -1627,107 +1639,107 @@ SpecialsSettings = {
 			"skaven_poison_wind_globadier",
 			"chaos_vortex_sorcerer",
 			"chaos_corruptor_sorcerer",
-			"skaven_warpfire_thrower"
+			"skaven_warpfire_thrower",
 		},
 		methods = {
 			specials_by_slots = {
-				max_of_same = 1,
-				coordinated_attack_cooldown_multiplier = 0.5,
 				chance_of_coordinated_attack = 0,
+				coordinated_attack_cooldown_multiplier = 0.5,
+				max_of_same = 1,
 				select_next_breed = "get_random_breed",
 				after_safe_zone_delay = {
 					30,
-					60
+					60,
 				},
 				spawn_cooldown = {
 					60,
-					90
-				}
-			}
+					90,
+				},
+			},
 		},
 		rush_intervention = {
-			loneliness_value_for_ambush_horde = 25,
-			delay_between_interventions = 20,
 			chance_of_ambush_horde = 0.25,
-			loneliness_value_for_special = 30,
+			delay_between_interventions = 20,
 			distance_until_next_intervention = 30,
+			loneliness_value_for_ambush_horde = 25,
+			loneliness_value_for_special = 30,
 			breeds = {
 				"skaven_pack_master",
 				"skaven_gutter_runner",
-				"skaven_ratling_gunner"
-			}
+				"skaven_ratling_gunner",
+			},
 		},
 		speed_running_intervention = {
+			chance_of_vector_horde = 0.25,
+			required_time_spent_in_high_threat = 30,
+			time_required_in_pacing_peak_to_ignore_high_intensity = 40,
 			travel_distance_check_frequency = 10,
 			travel_distance_threshold = 40,
-			time_required_in_pacing_peak_to_ignore_high_intensity = 40,
-			required_time_spent_in_high_threat = 30,
-			chance_of_vector_horde = 0.25,
 			breeds = {
 				"skaven_pack_master",
 				"skaven_gutter_runner",
 				"chaos_corruptor_sorcerer",
-				"skaven_ratling_gunner"
+				"skaven_ratling_gunner",
 			},
 			delay_between_speed_running_intervention_special_spawn = {
 				{
 					15,
-					30
+					30,
 				},
 				{
 					12,
-					24
+					24,
 				},
 				{
 					8,
-					18
+					18,
 				},
 				{
 					5,
-					12
-				}
+					12,
+				},
 			},
 			delay_between_speed_running_intervention_horde_spawn = {
 				8,
-				12
+				12,
 			},
 			vector_horde_breeds = {
 				"skaven_plague_monk",
 				"chaos_berzerker",
 				"chaos_marauder",
-				"chaos_raider"
+				"chaos_raider",
 			},
 			vector_horde_config = {
 				skaven_plague_monk = {
 					2,
-					3
+					3,
 				},
 				chaos_berzerker = {
 					2,
-					3
+					3,
 				},
 				chaos_marauder = {
 					5,
-					8
+					8,
 				},
 				chaos_raider = {
 					2,
-					3
-				}
+					3,
+				},
 			},
 			total_travel_distance_scaling_thresholds = {
 				80,
 				160,
 				240,
-				320
-			}
+				320,
+			},
 		},
-		difficulty_overrides = SpecialDifficultyOverrides
+		difficulty_overrides = SpecialDifficultyOverrides,
 	},
 	default_light = {
-		spawn_method = "specials_by_slots",
 		disabled = false,
 		max_specials = 2,
+		spawn_method = "specials_by_slots",
 		breeds = {
 			"skaven_gutter_runner",
 			"skaven_pack_master",
@@ -1735,487 +1747,487 @@ SpecialsSettings = {
 			"skaven_poison_wind_globadier",
 			"chaos_vortex_sorcerer",
 			"chaos_corruptor_sorcerer",
-			"skaven_warpfire_thrower"
+			"skaven_warpfire_thrower",
 		},
 		methods = {
 			specials_by_slots = {
-				max_of_same = 1,
-				coordinated_attack_cooldown_multiplier = 0.5,
 				chance_of_coordinated_attack = 0,
+				coordinated_attack_cooldown_multiplier = 0.5,
+				max_of_same = 1,
 				select_next_breed = "get_random_breed",
 				after_safe_zone_delay = {
 					30,
-					60
+					60,
 				},
 				spawn_cooldown = {
 					60,
-					90
-				}
-			}
+					90,
+				},
+			},
 		},
 		rush_intervention = {
-			loneliness_value_for_ambush_horde = 25,
-			delay_between_interventions = 20,
 			chance_of_ambush_horde = 0.25,
-			loneliness_value_for_special = 30,
+			delay_between_interventions = 20,
 			distance_until_next_intervention = 30,
+			loneliness_value_for_ambush_horde = 25,
+			loneliness_value_for_special = 30,
 			breeds = {
 				"skaven_pack_master",
 				"skaven_gutter_runner",
-				"skaven_ratling_gunner"
-			}
+				"skaven_ratling_gunner",
+			},
 		},
-		difficulty_overrides = SpecialDifficultyOverrides
+		difficulty_overrides = SpecialDifficultyOverrides,
 	},
 	skaven = {
-		spawn_method = "specials_by_slots",
 		disabled = false,
 		max_specials = 2,
+		spawn_method = "specials_by_slots",
 		breeds = {
 			"skaven_gutter_runner",
 			"skaven_pack_master",
 			"skaven_ratling_gunner",
 			"skaven_poison_wind_globadier",
-			"skaven_warpfire_thrower"
+			"skaven_warpfire_thrower",
 		},
 		methods = {
 			specials_by_slots = {
-				max_of_same = 1,
-				coordinated_attack_cooldown_multiplier = 0.5,
 				chance_of_coordinated_attack = 0,
+				coordinated_attack_cooldown_multiplier = 0.5,
+				max_of_same = 1,
 				select_next_breed = "get_random_breed",
 				after_safe_zone_delay = {
 					30,
-					60
+					60,
 				},
 				spawn_cooldown = {
 					50,
-					90
-				}
-			}
+					90,
+				},
+			},
 		},
 		rush_intervention = {
-			loneliness_value_for_ambush_horde = 25,
-			delay_between_interventions = 20,
 			chance_of_ambush_horde = 0.25,
-			loneliness_value_for_special = 30,
+			delay_between_interventions = 20,
 			distance_until_next_intervention = 30,
+			loneliness_value_for_ambush_horde = 25,
+			loneliness_value_for_special = 30,
 			breeds = {
 				"skaven_pack_master",
 				"skaven_gutter_runner",
-				"skaven_ratling_gunner"
-			}
+				"skaven_ratling_gunner",
+			},
 		},
-		difficulty_overrides = SpecialDifficultyOverrides_skaven
+		difficulty_overrides = SpecialDifficultyOverrides_skaven,
 	},
 	skaven_light = {
-		spawn_method = "specials_by_slots",
 		disabled = false,
 		max_specials = 2,
+		spawn_method = "specials_by_slots",
 		breeds = {
 			"skaven_gutter_runner",
 			"skaven_pack_master",
 			"skaven_ratling_gunner",
 			"skaven_poison_wind_globadier",
-			"skaven_warpfire_thrower"
+			"skaven_warpfire_thrower",
 		},
 		methods = {
 			specials_by_slots = {
-				max_of_same = 1,
-				coordinated_attack_cooldown_multiplier = 0.5,
 				chance_of_coordinated_attack = 0,
+				coordinated_attack_cooldown_multiplier = 0.5,
+				max_of_same = 1,
 				select_next_breed = "get_random_breed",
 				after_safe_zone_delay = {
 					30,
-					60
+					60,
 				},
 				spawn_cooldown = {
 					50,
-					90
-				}
-			}
+					90,
+				},
+			},
 		},
 		rush_intervention = {
-			loneliness_value_for_ambush_horde = 25,
-			delay_between_interventions = 20,
 			chance_of_ambush_horde = 0.25,
-			loneliness_value_for_special = 30,
+			delay_between_interventions = 20,
 			distance_until_next_intervention = 30,
+			loneliness_value_for_ambush_horde = 25,
+			loneliness_value_for_special = 30,
 			breeds = {
 				"skaven_pack_master",
 				"skaven_gutter_runner",
-				"skaven_ratling_gunner"
-			}
+				"skaven_ratling_gunner",
+			},
 		},
-		difficulty_overrides = SpecialDifficultyOverrides_skaven
+		difficulty_overrides = SpecialDifficultyOverrides_skaven,
 	},
 	default_demo = {
-		spawn_method = "specials_by_slots",
 		disabled = false,
 		max_specials = 2,
+		spawn_method = "specials_by_slots",
 		breeds = {
 			"skaven_poison_wind_globadier",
 			"skaven_pack_master",
 			"skaven_ratling_gunner",
-			"skaven_warpfire_thrower"
+			"skaven_warpfire_thrower",
 		},
 		methods = {
 			specials_by_time_window = {
 				even_out_breeds = true,
 				spawn_interval = {
 					90,
-					120
+					120,
 				},
 				lull_time = {
 					20,
-					40
-				}
+					40,
+				},
 			},
 			specials_by_slots = {
-				max_of_same = 2,
-				coordinated_attack_cooldown_multiplier = 0.5,
 				chance_of_coordinated_attack = 0,
+				coordinated_attack_cooldown_multiplier = 0.5,
+				max_of_same = 2,
 				select_next_breed = "get_random_breed",
 				after_safe_zone_delay = {
 					5,
-					150
+					150,
 				},
 				spawn_cooldown = {
 					100,
-					200
-				}
-			}
+					200,
+				},
+			},
 		},
 		rush_intervention = {
-			loneliness_value_for_ambush_horde = 25,
-			delay_between_interventions = 30,
 			chance_of_ambush_horde = 0.25,
-			loneliness_value_for_special = 30,
+			delay_between_interventions = 30,
 			distance_until_next_intervention = 30,
+			loneliness_value_for_ambush_horde = 25,
+			loneliness_value_for_special = 30,
 			breeds = {
-				"skaven_pack_master"
-			}
-		}
+				"skaven_pack_master",
+			},
+		},
 	},
 	chaos_demo = {
-		spawn_method = "specials_by_slots",
 		disabled = false,
 		max_specials = 2,
+		spawn_method = "specials_by_slots",
 		breeds = {
 			"skaven_pack_master",
-			"skaven_warpfire_thrower"
+			"skaven_warpfire_thrower",
 		},
 		methods = {
 			specials_by_time_window = {
 				even_out_breeds = true,
 				spawn_interval = {
 					120,
-					240
+					240,
 				},
 				lull_time = {
 					40,
-					60
-				}
+					60,
+				},
 			},
 			specials_by_slots = {
-				max_of_same = 2,
-				coordinated_attack_cooldown_multiplier = 0.5,
 				chance_of_coordinated_attack = 0,
+				coordinated_attack_cooldown_multiplier = 0.5,
+				max_of_same = 2,
 				select_next_breed = "get_random_breed",
 				after_safe_zone_delay = {
 					30,
-					150
+					150,
 				},
 				spawn_cooldown = {
 					150,
-					250
-				}
-			}
+					250,
+				},
+			},
 		},
 		rush_intervention = {
-			loneliness_value_for_ambush_horde = 25,
-			delay_between_interventions = 30,
 			chance_of_ambush_horde = 0.25,
-			loneliness_value_for_special = 30,
+			delay_between_interventions = 30,
 			distance_until_next_intervention = 30,
+			loneliness_value_for_ambush_horde = 25,
+			loneliness_value_for_special = 30,
 			breeds = {
-				"skaven_pack_master"
-			}
-		}
+				"skaven_pack_master",
+			},
+		},
 	},
 	chaos_light_demo = {
-		spawn_method = "specials_by_slots",
 		disabled = true,
 		max_specials = 2,
+		spawn_method = "specials_by_slots",
 		breeds = {
 			"skaven_warpfire_thrower",
-			"skaven_pack_master"
+			"skaven_pack_master",
 		},
 		methods = {
 			specials_by_time_window = {
 				even_out_breeds = true,
 				spawn_interval = {
 					80,
-					120
+					120,
 				},
 				lull_time = {
 					20,
-					30
-				}
+					30,
+				},
 			},
 			specials_by_slots = {
-				max_of_same = 2,
-				coordinated_attack_cooldown_multiplier = 0.5,
 				chance_of_coordinated_attack = 0,
+				coordinated_attack_cooldown_multiplier = 0.5,
+				max_of_same = 2,
 				select_next_breed = "get_random_breed",
 				after_safe_zone_delay = {
 					30,
-					150
+					150,
 				},
 				spawn_cooldown = {
 					150,
-					250
-				}
-			}
+					250,
+				},
+			},
 		},
 		rush_intervention = {
-			loneliness_value_for_ambush_horde = 25,
-			delay_between_interventions = 30,
 			chance_of_ambush_horde = 0.25,
-			loneliness_value_for_special = 30,
+			delay_between_interventions = 30,
 			distance_until_next_intervention = 30,
+			loneliness_value_for_ambush_horde = 25,
+			loneliness_value_for_special = 30,
 			breeds = {
-				"skaven_pack_master"
-			}
-		}
+				"skaven_pack_master",
+			},
+		},
 	},
 	chaos = {
-		spawn_method = "specials_by_slots",
 		disabled = false,
 		max_specials = 2,
+		spawn_method = "specials_by_slots",
 		breeds = {
 			"skaven_gutter_runner",
 			"skaven_pack_master",
 			"skaven_poison_wind_globadier",
 			"chaos_vortex_sorcerer",
 			"chaos_corruptor_sorcerer",
-			"skaven_warpfire_thrower"
+			"skaven_warpfire_thrower",
 		},
 		methods = {
 			specials_by_time_window = {
 				even_out_breeds = true,
 				spawn_interval = {
 					60,
-					100
+					100,
 				},
 				lull_time = {
 					20,
-					30
-				}
+					30,
+				},
 			},
 			specials_by_slots = {
-				max_of_same = 1,
-				coordinated_attack_cooldown_multiplier = 0.5,
 				chance_of_coordinated_attack = 0,
+				coordinated_attack_cooldown_multiplier = 0.5,
+				max_of_same = 1,
 				select_next_breed = "get_random_breed",
 				after_safe_zone_delay = {
 					30,
-					60
+					60,
 				},
 				spawn_cooldown = {
 					50,
-					80
-				}
-			}
+					80,
+				},
+			},
 		},
 		rush_intervention = {
-			loneliness_value_for_ambush_horde = 25,
-			delay_between_interventions = 20,
 			chance_of_ambush_horde = 0.25,
-			loneliness_value_for_special = 30,
+			delay_between_interventions = 20,
 			distance_until_next_intervention = 30,
+			loneliness_value_for_ambush_horde = 25,
+			loneliness_value_for_special = 30,
 			breeds = {
-				"chaos_corruptor_sorcerer"
-			}
+				"chaos_corruptor_sorcerer",
+			},
 		},
-		difficulty_overrides = SpecialDifficultyOverrides_chaos
+		difficulty_overrides = SpecialDifficultyOverrides_chaos,
 	},
 	chaos_light = {
-		spawn_method = "specials_by_slots",
 		disabled = true,
 		max_specials = 2,
+		spawn_method = "specials_by_slots",
 		breeds = {
 			"skaven_gutter_runner",
 			"skaven_pack_master",
 			"skaven_poison_wind_globadier",
 			"chaos_vortex_sorcerer",
 			"chaos_corruptor_sorcerer",
-			"skaven_warpfire_thrower"
+			"skaven_warpfire_thrower",
 		},
 		methods = {
 			specials_by_time_window = {
 				even_out_breeds = true,
 				spawn_interval = {
 					60,
-					100
+					100,
 				},
 				lull_time = {
 					20,
-					30
-				}
+					30,
+				},
 			},
 			specials_by_slots = {
-				max_of_same = 1,
-				coordinated_attack_cooldown_multiplier = 0.5,
 				chance_of_coordinated_attack = 0,
+				coordinated_attack_cooldown_multiplier = 0.5,
+				max_of_same = 1,
 				select_next_breed = "get_random_breed",
 				after_safe_zone_delay = {
 					30,
-					60
+					60,
 				},
 				spawn_cooldown = {
 					50,
-					80
-				}
-			}
+					80,
+				},
+			},
 		},
 		rush_intervention = {
-			loneliness_value_for_ambush_horde = 25,
-			delay_between_interventions = 20,
 			chance_of_ambush_horde = 0.25,
-			loneliness_value_for_special = 30,
+			delay_between_interventions = 20,
 			distance_until_next_intervention = 30,
+			loneliness_value_for_ambush_horde = 25,
+			loneliness_value_for_special = 30,
 			breeds = {
-				"chaos_corruptor_sorcerer"
-			}
+				"chaos_corruptor_sorcerer",
+			},
 		},
-		difficulty_overrides = SpecialDifficultyOverrides_chaos
+		difficulty_overrides = SpecialDifficultyOverrides_chaos,
 	},
 	beastmen = {
-		spawn_method = "specials_by_slots",
 		disabled = false,
 		max_specials = 2,
+		spawn_method = "specials_by_slots",
 		breeds = {
 			"chaos_vortex_sorcerer",
 			"chaos_corruptor_sorcerer",
-			"beastmen_standard_bearer"
+			"beastmen_standard_bearer",
 		},
 		methods = {
 			specials_by_time_window = {
 				even_out_breeds = true,
 				spawn_interval = {
 					60,
-					100
+					100,
 				},
 				lull_time = {
 					20,
-					30
-				}
+					30,
+				},
 			},
 			specials_by_slots = {
-				max_of_same = 1,
-				coordinated_attack_cooldown_multiplier = 0.5,
 				chance_of_coordinated_attack = 0,
+				coordinated_attack_cooldown_multiplier = 0.5,
+				max_of_same = 1,
 				select_next_breed = "get_random_breed",
 				after_safe_zone_delay = {
 					30,
-					60
+					60,
 				},
 				spawn_cooldown = {
 					50,
-					80
-				}
-			}
+					80,
+				},
+			},
 		},
 		outside_navmesh_intervention = {
 			delay_between_interventions = 10,
-			needed_ordinary_enemy_aggro = 5,
 			disabled = true,
-			needed_special_enemy_aggro = 1,
 			intervention_time = 5,
+			needed_ordinary_enemy_aggro = 5,
+			needed_special_enemy_aggro = 1,
 			breeds = {
 				"skaven_warpfire_thrower",
-				"skaven_poison_wind_globadier"
-			}
+				"skaven_poison_wind_globadier",
+			},
 		},
 		rush_intervention = {
-			loneliness_value_for_ambush_horde = 25,
-			delay_between_interventions = 20,
 			chance_of_ambush_horde = 0.25,
-			loneliness_value_for_special = 30,
+			delay_between_interventions = 20,
 			distance_until_next_intervention = 30,
+			loneliness_value_for_ambush_horde = 25,
+			loneliness_value_for_special = 30,
 			breeds = {
-				"chaos_corruptor_sorcerer"
-			}
+				"chaos_corruptor_sorcerer",
+			},
 		},
-		difficulty_overrides = SpecialDifficultyOverrides_beastmen
+		difficulty_overrides = SpecialDifficultyOverrides_beastmen,
 	},
 	skaven_beastmen = {
-		spawn_method = "specials_by_slots",
 		disabled = false,
 		max_specials = 2,
+		spawn_method = "specials_by_slots",
 		breeds = {
 			"skaven_gutter_runner",
 			"skaven_pack_master",
 			"skaven_ratling_gunner",
 			"skaven_poison_wind_globadier",
 			"skaven_warpfire_thrower",
-			"beastmen_standard_bearer"
+			"beastmen_standard_bearer",
 		},
 		methods = {
 			specials_by_time_window = {
 				even_out_breeds = true,
 				spawn_interval = {
 					60,
-					100
+					100,
 				},
 				lull_time = {
 					20,
-					30
-				}
+					30,
+				},
 			},
 			specials_by_slots = {
-				max_of_same = 1,
-				coordinated_attack_cooldown_multiplier = 0.5,
 				chance_of_coordinated_attack = 0,
+				coordinated_attack_cooldown_multiplier = 0.5,
+				max_of_same = 1,
 				select_next_breed = "get_random_breed",
 				after_safe_zone_delay = {
 					30,
-					60
+					60,
 				},
 				spawn_cooldown = {
 					50,
-					80
-				}
-			}
+					80,
+				},
+			},
 		},
 		outside_navmesh_intervention = {
 			delay_between_interventions = 10,
-			needed_ordinary_enemy_aggro = 5,
 			disabled = true,
-			needed_special_enemy_aggro = 1,
 			intervention_time = 5,
+			needed_ordinary_enemy_aggro = 5,
+			needed_special_enemy_aggro = 1,
 			breeds = {
 				"skaven_warpfire_thrower",
-				"skaven_poison_wind_globadier"
-			}
+				"skaven_poison_wind_globadier",
+			},
 		},
 		rush_intervention = {
-			loneliness_value_for_ambush_horde = 25,
-			delay_between_interventions = 20,
 			chance_of_ambush_horde = 0.25,
-			loneliness_value_for_special = 30,
+			delay_between_interventions = 20,
 			distance_until_next_intervention = 30,
+			loneliness_value_for_ambush_horde = 25,
+			loneliness_value_for_special = 30,
 			breeds = {
-				"chaos_corruptor_sorcerer"
-			}
+				"chaos_corruptor_sorcerer",
+			},
 		},
-		difficulty_overrides = SpecialDifficultyOverrides_skaven_beastmen
+		difficulty_overrides = SpecialDifficultyOverrides_skaven_beastmen,
 	},
 	chaos_beastmen = {
-		spawn_method = "specials_by_slots",
 		disabled = false,
 		max_specials = 2,
+		spawn_method = "specials_by_slots",
 		breeds = {
 			"skaven_gutter_runner",
 			"skaven_pack_master",
@@ -2223,571 +2235,571 @@ SpecialsSettings = {
 			"chaos_vortex_sorcerer",
 			"chaos_corruptor_sorcerer",
 			"skaven_warpfire_thrower",
-			"beastmen_standard_bearer"
+			"beastmen_standard_bearer",
 		},
 		methods = {
 			specials_by_time_window = {
 				even_out_breeds = true,
 				spawn_interval = {
 					60,
-					100
+					100,
 				},
 				lull_time = {
 					20,
-					30
-				}
+					30,
+				},
 			},
 			specials_by_slots = {
-				max_of_same = 1,
-				coordinated_attack_cooldown_multiplier = 0.5,
 				chance_of_coordinated_attack = 0,
+				coordinated_attack_cooldown_multiplier = 0.5,
+				max_of_same = 1,
 				select_next_breed = "get_random_breed",
 				after_safe_zone_delay = {
 					30,
-					60
+					60,
 				},
 				spawn_cooldown = {
 					50,
-					80
-				}
-			}
+					80,
+				},
+			},
 		},
 		rush_intervention = {
-			loneliness_value_for_ambush_horde = 25,
-			delay_between_interventions = 20,
 			chance_of_ambush_horde = 0.25,
-			loneliness_value_for_special = 30,
+			delay_between_interventions = 20,
 			distance_until_next_intervention = 30,
+			loneliness_value_for_ambush_horde = 25,
+			loneliness_value_for_special = 30,
 			breeds = {
-				"chaos_corruptor_sorcerer"
-			}
+				"chaos_corruptor_sorcerer",
+			},
 		},
-		difficulty_overrides = SpecialDifficultyOverrides_chaos
+		difficulty_overrides = SpecialDifficultyOverrides_chaos,
 	},
 	disabled = {
 		disabled = true,
-		rush_intervention = {}
-	}
+		rush_intervention = {},
+	},
 }
 BossSettings = {
 	default = {
 		disabled = false,
 		boss_events = {
+			chance_of_encampment = 0,
 			debug_color = "deep_sky_blue",
 			name = "boss_events",
 			terror_events_using_packs = false,
-			chance_of_encampment = 0,
 			events = {
 				"event_boss",
 				"event_patrol",
-				"nothing"
+				"nothing",
 			},
 			event_lookup = {
 				event_boss = {
 					"boss_event_chaos_troll",
 					"boss_event_chaos_spawn",
 					"boss_event_storm_fiend",
-					"boss_event_rat_ogre"
+					"boss_event_rat_ogre",
 				},
 				event_patrol = {
-					"boss_event_spline_patrol"
-				}
-			}
+					"boss_event_spline_patrol",
+				},
+			},
 		},
 		rare_events = {
-			name = "rare_events",
 			debug_color = "deep_pink",
+			name = "rare_events",
 			events = {
-				"event_boss"
+				"event_boss",
 			},
 			event_lookup = {
 				event_boss = {
-					"rare_event_loot_rat"
-				}
-			}
-		}
+					"rare_event_loot_rat",
+				},
+			},
+		},
 	},
 	default_light = {
 		disabled = false,
 		boss_events = {
+			chance_of_encampment = 0,
 			debug_color = "deep_sky_blue",
 			name = "boss_events",
 			terror_events_using_packs = false,
-			chance_of_encampment = 0,
 			events = {
 				"event_boss",
 				"event_patrol",
-				"nothing"
+				"nothing",
 			},
 			event_lookup = {
 				event_boss = {
 					"boss_event_chaos_troll",
 					"boss_event_chaos_spawn",
 					"boss_event_storm_fiend",
-					"boss_event_rat_ogre"
+					"boss_event_rat_ogre",
 				},
 				event_patrol = {
-					"boss_event_spline_patrol"
-				}
-			}
+					"boss_event_spline_patrol",
+				},
+			},
 		},
 		rare_events = {
-			name = "rare_events",
 			debug_color = "deep_pink",
+			name = "rare_events",
 			events = {
-				"event_boss"
+				"event_boss",
 			},
 			event_lookup = {
 				event_boss = {
-					"rare_event_loot_rat"
-				}
-			}
-		}
+					"rare_event_loot_rat",
+				},
+			},
+		},
 	},
 	skaven = {
 		disabled = false,
 		boss_events = {
+			chance_of_encampment = 0,
 			debug_color = "deep_sky_blue",
 			name = "boss_events",
 			terror_events_using_packs = false,
-			chance_of_encampment = 0,
 			events = {
 				"event_boss",
 				"event_patrol",
-				"nothing"
+				"nothing",
 			},
 			event_lookup = {
 				event_boss = {
 					"boss_event_storm_fiend",
-					"boss_event_rat_ogre"
+					"boss_event_rat_ogre",
 				},
 				event_patrol = {
-					"boss_event_skaven_spline_patrol"
-				}
-			}
+					"boss_event_skaven_spline_patrol",
+				},
+			},
 		},
 		rare_events = {
-			name = "rare_events",
 			debug_color = "deep_pink",
+			name = "rare_events",
 			events = {
-				"event_boss"
+				"event_boss",
 			},
 			event_lookup = {
 				event_boss = {
-					"rare_event_loot_rat"
-				}
-			}
-		}
+					"rare_event_loot_rat",
+				},
+			},
+		},
 	},
 	skaven_light = {
 		disabled = false,
 		boss_events = {
+			chance_of_encampment = 0,
 			debug_color = "deep_sky_blue",
 			name = "boss_events",
 			terror_events_using_packs = false,
-			chance_of_encampment = 0,
 			events = {
 				"event_boss",
 				"event_patrol",
-				"nothing"
+				"nothing",
 			},
 			event_lookup = {
 				event_boss = {
 					"boss_event_storm_fiend",
-					"boss_event_rat_ogre"
+					"boss_event_rat_ogre",
 				},
 				event_patrol = {
-					"boss_event_skaven_spline_patrol"
-				}
-			}
+					"boss_event_skaven_spline_patrol",
+				},
+			},
 		},
 		rare_events = {
-			name = "rare_events",
 			debug_color = "deep_pink",
+			name = "rare_events",
 			events = {
-				"event_boss"
+				"event_boss",
 			},
 			event_lookup = {
 				event_boss = {
-					"rare_event_loot_rat"
-				}
-			}
-		}
+					"rare_event_loot_rat",
+				},
+			},
+		},
 	},
 	chaos = {
 		disabled = false,
 		boss_events = {
+			chance_of_encampment = 0,
 			debug_color = "deep_sky_blue",
 			name = "boss_events",
 			terror_events_using_packs = false,
-			chance_of_encampment = 0,
 			events = {
 				"event_boss",
 				"event_patrol",
-				"nothing"
+				"nothing",
 			},
 			event_lookup = {
 				event_boss = {
 					"boss_event_chaos_troll",
-					"boss_event_chaos_spawn"
+					"boss_event_chaos_spawn",
 				},
 				event_patrol = {
-					"boss_event_chaos_spline_patrol"
-				}
-			}
+					"boss_event_chaos_spline_patrol",
+				},
+			},
 		},
 		rare_events = {
-			name = "rare_events",
 			debug_color = "deep_pink",
+			name = "rare_events",
 			events = {
-				"event_boss"
+				"event_boss",
 			},
 			event_lookup = {
 				event_boss = {
-					"rare_event_loot_rat"
-				}
-			}
-		}
+					"rare_event_loot_rat",
+				},
+			},
+		},
 	},
 	chaos_light = {
 		disabled = true,
 		boss_events = {
+			chance_of_encampment = 0,
 			debug_color = "deep_sky_blue",
 			name = "boss_events",
 			terror_events_using_packs = false,
-			chance_of_encampment = 0,
 			events = {
 				"event_boss",
 				"event_patrol",
-				"nothing"
+				"nothing",
 			},
 			event_lookup = {
 				event_boss = {
 					"boss_event_chaos_troll",
-					"boss_event_chaos_spawn"
+					"boss_event_chaos_spawn",
 				},
 				event_patrol = {
-					"boss_event_spline_patrol"
-				}
-			}
+					"boss_event_spline_patrol",
+				},
+			},
 		},
 		rare_events = {
-			name = "rare_events",
 			debug_color = "deep_pink",
+			name = "rare_events",
 			events = {
-				"event_boss"
+				"event_boss",
 			},
 			event_lookup = {
 				event_boss = {
-					"rare_event_loot_rat"
-				}
-			}
-		}
+					"rare_event_loot_rat",
+				},
+			},
+		},
 	},
 	beastmen = {
 		disabled = false,
 		boss_events = {
+			chance_of_encampment = 0,
 			debug_color = "deep_sky_blue",
 			name = "boss_events",
 			terror_events_using_packs = false,
-			chance_of_encampment = 0,
 			events = {
 				"event_boss",
 				"event_patrol",
-				"nothing"
+				"nothing",
 			},
 			event_lookup = {
 				event_boss = {
 					"boss_event_minotaur",
-					"boss_event_chaos_spawn"
+					"boss_event_chaos_spawn",
 				},
 				event_patrol = {
-					"boss_event_beastmen_spline_patrol"
-				}
-			}
+					"boss_event_beastmen_spline_patrol",
+				},
+			},
 		},
 		rare_events = {
-			name = "rare_events",
 			debug_color = "deep_pink",
+			name = "rare_events",
 			events = {
-				"event_boss"
+				"event_boss",
 			},
 			event_lookup = {
 				event_boss = {
-					"rare_event_loot_rat"
-				}
-			}
-		}
+					"rare_event_loot_rat",
+				},
+			},
+		},
 	},
 	skaven_beastmen = {
 		disabled = false,
 		boss_events = {
+			chance_of_encampment = 0,
 			debug_color = "deep_sky_blue",
 			name = "boss_events",
 			terror_events_using_packs = false,
-			chance_of_encampment = 0,
 			events = {
 				"event_boss",
 				"event_patrol",
-				"nothing"
+				"nothing",
 			},
 			event_lookup = {
 				event_boss = {
 					"boss_event_minotaur",
 					"boss_event_chaos_spawn",
-					"boss_event_storm_fiend"
+					"boss_event_storm_fiend",
 				},
 				event_patrol = {
-					"boss_event_skaven_beastmen_spline_patrol"
-				}
-			}
+					"boss_event_skaven_beastmen_spline_patrol",
+				},
+			},
 		},
 		rare_events = {
-			name = "rare_events",
 			debug_color = "deep_pink",
+			name = "rare_events",
 			events = {
-				"event_boss"
+				"event_boss",
 			},
 			event_lookup = {
 				event_boss = {
-					"rare_event_loot_rat"
-				}
-			}
-		}
+					"rare_event_loot_rat",
+				},
+			},
+		},
 	},
 	chaos_beastmen = {
 		disabled = false,
 		boss_events = {
+			chance_of_encampment = 0,
 			debug_color = "deep_sky_blue",
 			name = "boss_events",
 			terror_events_using_packs = false,
-			chance_of_encampment = 0,
 			events = {
 				"event_boss",
 				"event_patrol",
-				"nothing"
+				"nothing",
 			},
 			event_lookup = {
 				event_boss = {
 					"boss_event_minotaur",
 					"boss_event_chaos_spawn",
-					"boss_event_chaos_troll"
+					"boss_event_chaos_troll",
 				},
 				event_patrol = {
-					"boss_event_chaos_beastmen_spline_patrol"
-				}
-			}
+					"boss_event_chaos_beastmen_spline_patrol",
+				},
+			},
 		},
 		rare_events = {
-			name = "rare_events",
 			debug_color = "deep_pink",
+			name = "rare_events",
 			events = {
-				"event_boss"
+				"event_boss",
 			},
 			event_lookup = {
 				event_boss = {
-					"rare_event_loot_rat"
-				}
-			}
-		}
+					"rare_event_loot_rat",
+				},
+			},
+		},
 	},
 	beastmen_light = {
 		disabled = true,
 		boss_events = {
+			chance_of_encampment = 0,
 			debug_color = "deep_sky_blue",
 			name = "boss_events",
 			terror_events_using_packs = false,
-			chance_of_encampment = 0,
 			events = {
 				"event_boss",
 				"event_patrol",
-				"nothing"
+				"nothing",
 			},
 			event_lookup = {
 				event_boss = {
 					"boss_event_minotaur",
-					"boss_event_chaos_spawn"
+					"boss_event_chaos_spawn",
 				},
 				event_patrol = {
-					"boss_event_beastmen_spline_patrol"
-				}
-			}
+					"boss_event_beastmen_spline_patrol",
+				},
+			},
 		},
 		rare_events = {
-			name = "rare_events",
 			debug_color = "deep_pink",
+			name = "rare_events",
 			events = {
-				"event_boss"
+				"event_boss",
 			},
 			event_lookup = {
 				event_boss = {
-					"rare_event_loot_rat"
-				}
-			}
-		}
+					"rare_event_loot_rat",
+				},
+			},
+		},
 	},
 	disabled = {
+		disabled = true,
 		safe_distance = 100,
-		disabled = true
 	},
 	no_patrols = {
 		disabled = false,
 		boss_events = {
+			chance_of_encampment = 0,
 			debug_color = "deep_sky_blue",
 			name = "boss_events",
 			terror_events_using_packs = false,
-			chance_of_encampment = 0,
 			events = {
 				"event_boss",
-				"nothing"
+				"nothing",
 			},
 			event_lookup = {
 				event_boss = {
 					"boss_event_chaos_troll",
 					"boss_event_chaos_spawn",
 					"boss_event_storm_fiend",
-					"boss_event_rat_ogre"
-				}
-			}
+					"boss_event_rat_ogre",
+				},
+			},
 		},
 		rare_events = {
-			name = "rare_events",
 			debug_color = "deep_pink",
+			name = "rare_events",
 			events = {
-				"event_boss"
+				"event_boss",
 			},
 			event_lookup = {
 				event_boss = {
-					"rare_event_loot_rat"
-				}
-			}
-		}
-	}
+					"rare_event_loot_rat",
+				},
+			},
+		},
+	},
 }
 IntensitySettings = {
 	default = {
-		intensity_add_per_percent_dmg_taken = 1,
 		decay_delay = 3,
 		decay_per_second = 2,
+		disabled = false,
 		intensity_add_knockdown = 50,
+		intensity_add_nearby_kill = 1,
+		intensity_add_per_percent_dmg_taken = 1,
 		intensity_add_pounced_down = 10,
 		max_intensity = 100,
-		intensity_add_nearby_kill = 1,
-		disabled = false,
 		difficulty_overrides = {
 			hard = {
+				decay_per_second = 3,
 				intensity_add_per_percent_dmg_taken = 1.5,
-				decay_per_second = 3
 			},
 			harder = {
+				decay_per_second = 3,
 				intensity_add_per_percent_dmg_taken = 1,
-				decay_per_second = 3
 			},
 			hardest = {
+				decay_per_second = 4,
 				intensity_add_per_percent_dmg_taken = 0.5,
-				decay_per_second = 4
 			},
 			cataclysm = {
+				decay_per_second = 6,
 				intensity_add_per_percent_dmg_taken = 0.2,
-				decay_per_second = 6
 			},
 			cataclysm_2 = {
+				decay_per_second = 6,
 				intensity_add_per_percent_dmg_taken = 0.2,
-				decay_per_second = 6
 			},
 			cataclysm_3 = {
+				decay_per_second = 6,
 				intensity_add_per_percent_dmg_taken = 0.2,
-				decay_per_second = 6
-			}
-		}
+			},
+		},
 	},
 	disabled = {
-		intensity_add_per_percent_dmg_taken = 0,
 		decay_delay = 0,
 		decay_per_second = 100,
 		disabled = true,
 		intensity_add_knockdown = 0,
-		intensity_add_pounced_down = 0,
 		intensity_add_nearby_kill = 0,
-		max_intensity = 100
-	}
+		intensity_add_per_percent_dmg_taken = 0,
+		intensity_add_pounced_down = 0,
+		max_intensity = 100,
+	},
 }
 PacingSettings = {
 	default = {
-		horde_in_relax_if_rushing = false,
-		relax_rushing_distance = 70,
 		disabled = false,
-		peak_fade_threshold = 32.5,
-		multiple_hordes = 3,
-		peak_intensity_threshold = 45,
+		horde_in_relax_if_rushing = false,
 		leave_relax_if_rushing = true,
 		leave_relax_if_zero_intensity = true,
+		multiple_hordes = 3,
+		peak_fade_threshold = 32.5,
+		peak_intensity_threshold = 45,
+		relax_rushing_distance = 70,
 		sustain_peak_duration = {
 			3,
-			5
+			5,
 		},
 		relax_duration = {
 			50,
-			70
+			70,
 		},
 		horde_frequency = {
 			70,
-			150
+			150,
 		},
 		multiple_horde_frequency = {
 			10,
-			15
+			15,
 		},
 		max_delay_until_next_horde = {
 			160,
-			200
+			200,
 		},
 		horde_startup_time = {
 			40,
-			120
+			120,
 		},
 		horde = HordeSettings.default,
 		horde_delay = {
 			0,
-			0
+			0,
 		},
 		delay_horde_threat_value = {
-			harder = 60,
-			hard = 50,
-			normal = 40,
-			hardest = 60,
 			cataclysm = 80,
-			cataclysm_3 = 100,
 			cataclysm_2 = 100,
-			easy = 40
+			cataclysm_3 = 100,
+			easy = 40,
+			hard = 50,
+			harder = 60,
+			hardest = 60,
+			normal = 40,
 		},
 		delay_mini_patrol_threat_value = {
-			harder = 50,
-			hard = 40,
-			normal = 35,
-			cataclysm_2 = 100,
 			cataclysm = 80,
+			cataclysm_2 = 100,
 			cataclysm_3 = 100,
-			easy = 35
+			easy = 35,
+			hard = 40,
+			harder = 50,
+			normal = 35,
 		},
 		delay_specials_threat_value = {
-			harder = 60,
-			hard = 50,
-			normal = 40,
-			hardest = 60,
 			cataclysm = 1000,
-			cataclysm_3 = 1000,
 			cataclysm_2 = 1000,
-			easy = 40
+			cataclysm_3 = 1000,
+			easy = 40,
+			hard = 50,
+			harder = 60,
+			hardest = 60,
+			normal = 40,
 		},
 		mini_patrol = {
 			only_spawn_above_intensity = 1,
-			override_timer = 20,
 			only_spawn_below_intensity = 15,
+			override_timer = 20,
 			frequency = {
 				15,
-				20
-			}
+				20,
+			},
 		},
 		difficulty_overrides = {
 			hard = {
@@ -2795,174 +2807,174 @@ PacingSettings = {
 				peak_intensity_threshold = 50,
 				horde_frequency = {
 					60,
-					110
+					110,
 				},
 				multiple_horde_frequency = {
 					8,
-					13
+					13,
 				},
 				relax_duration = {
 					35,
-					45
-				}
+					45,
+				},
 			},
 			harder = {
 				multiple_hordes = 3,
 				peak_intensity_threshold = 55,
 				horde_frequency = {
 					50,
-					100
+					100,
 				},
 				multiple_horde_frequency = {
 					8,
-					12
+					12,
 				},
 				relax_duration = {
 					35,
-					45
-				}
+					45,
+				},
 			},
 			hardest = {
 				multiple_hordes = 3,
 				peak_intensity_threshold = 70,
 				horde_frequency = {
 					50,
-					100
+					100,
 				},
 				multiple_horde_frequency = {
 					7,
-					10
+					10,
 				},
 				relax_duration = {
 					25,
-					35
-				}
+					35,
+				},
 			},
 			cataclysm = {
 				multiple_hordes = 3,
 				peak_intensity_threshold = 80,
 				horde_frequency = {
 					50,
-					100
+					100,
 				},
 				multiple_horde_frequency = {
 					7,
-					10
+					10,
 				},
 				relax_duration = {
 					25,
-					35
-				}
+					35,
+				},
 			},
 			cataclysm_2 = {
 				multiple_hordes = 3,
 				peak_intensity_threshold = 90,
 				horde_frequency = {
 					50,
-					100
+					100,
 				},
 				multiple_horde_frequency = {
 					7,
-					10
+					10,
 				},
 				relax_duration = {
 					25,
-					35
-				}
+					35,
+				},
 			},
 			cataclysm_3 = {
 				multiple_hordes = 3,
 				peak_intensity_threshold = 90,
 				horde_frequency = {
 					50,
-					100
+					100,
 				},
 				multiple_horde_frequency = {
 					7,
-					10
+					10,
 				},
 				relax_duration = {
 					25,
-					35
-				}
-			}
-		}
+					35,
+				},
+			},
+		},
 	},
 	chaos = {
-		horde_in_relax_if_rushing = false,
-		relax_rushing_distance = 70,
 		disabled = false,
-		peak_fade_threshold = 32.5,
-		multiple_hordes = 2,
-		peak_intensity_threshold = 45,
+		horde_in_relax_if_rushing = false,
 		leave_relax_if_rushing = true,
 		leave_relax_if_zero_intensity = true,
+		multiple_hordes = 2,
+		peak_fade_threshold = 32.5,
+		peak_intensity_threshold = 45,
+		relax_rushing_distance = 70,
 		sustain_peak_duration = {
 			3,
-			5
+			5,
 		},
 		relax_duration = {
 			50,
-			70
+			70,
 		},
 		horde_frequency = {
 			70,
-			150
+			150,
 		},
 		horde_startup_time = {
 			40,
-			120
+			120,
 		},
 		multiple_horde_frequency = {
 			10,
-			15
+			15,
 		},
 		max_delay_until_next_horde = {
 			180,
-			210
+			210,
 		},
 		horde = HordeSettings.chaos,
 		horde_delay = {
 			0,
-			0
+			0,
 		},
 		delay_horde_threat_value = {
-			harder = 60,
-			hard = 50,
-			normal = 40,
-			hardest = 60,
 			cataclysm = 80,
-			cataclysm_3 = 100,
 			cataclysm_2 = 100,
-			easy = 40
+			cataclysm_3 = 100,
+			easy = 40,
+			hard = 50,
+			harder = 60,
+			hardest = 60,
+			normal = 40,
 		},
 		delay_mini_patrol_threat_value = {
-			harder = 50,
-			hard = 40,
-			normal = 35,
-			cataclysm_2 = 100,
 			cataclysm = 80,
+			cataclysm_2 = 100,
 			cataclysm_3 = 100,
-			easy = 35
+			easy = 35,
+			hard = 40,
+			harder = 50,
+			normal = 35,
 		},
 		delay_specials_threat_value = {
-			harder = 60,
-			hard = 50,
-			normal = 40,
-			hardest = 60,
 			cataclysm = 1000,
-			cataclysm_3 = 1000,
 			cataclysm_2 = 1000,
-			easy = 40
+			cataclysm_3 = 1000,
+			easy = 40,
+			hard = 50,
+			harder = 60,
+			hardest = 60,
+			normal = 40,
 		},
 		mini_patrol = {
 			only_spawn_above_intensity = 1,
-			override_timer = 20,
 			only_spawn_below_intensity = 15,
+			override_timer = 20,
 			frequency = {
 				15,
-				20
-			}
+				20,
+			},
 		},
 		difficulty_overrides = {
 			hard = {
@@ -2970,174 +2982,174 @@ PacingSettings = {
 				peak_intensity_threshold = 50,
 				horde_frequency = {
 					60,
-					110
+					110,
 				},
 				multiple_horde_frequency = {
 					8,
-					13
+					13,
 				},
 				relax_duration = {
 					35,
-					45
-				}
+					45,
+				},
 			},
 			harder = {
 				multiple_hordes = 3,
 				peak_intensity_threshold = 55,
 				horde_frequency = {
 					50,
-					100
+					100,
 				},
 				multiple_horde_frequency = {
 					8,
-					12
+					12,
 				},
 				relax_duration = {
 					35,
-					45
-				}
+					45,
+				},
 			},
 			hardest = {
 				multiple_hordes = 3,
 				peak_intensity_threshold = 70,
 				horde_frequency = {
 					50,
-					100
+					100,
 				},
 				multiple_horde_frequency = {
 					7,
-					10
+					10,
 				},
 				relax_duration = {
 					35,
-					45
-				}
+					45,
+				},
 			},
 			cataclysm = {
 				multiple_hordes = 3,
 				peak_intensity_threshold = 80,
 				horde_frequency = {
 					50,
-					100
+					100,
 				},
 				multiple_horde_frequency = {
 					7,
-					10
+					10,
 				},
 				relax_duration = {
 					35,
-					45
-				}
+					45,
+				},
 			},
 			cataclysm_2 = {
 				multiple_hordes = 3,
 				peak_intensity_threshold = 90,
 				horde_frequency = {
 					50,
-					100
+					100,
 				},
 				multiple_horde_frequency = {
 					7,
-					10
+					10,
 				},
 				relax_duration = {
 					35,
-					45
-				}
+					45,
+				},
 			},
 			cataclysm_3 = {
 				multiple_hordes = 3,
 				peak_intensity_threshold = 90,
 				horde_frequency = {
 					50,
-					100
+					100,
 				},
 				multiple_horde_frequency = {
 					7,
-					10
+					10,
 				},
 				relax_duration = {
 					35,
-					45
-				}
-			}
-		}
+					45,
+				},
+			},
+		},
 	},
 	beastmen = {
-		horde_in_relax_if_rushing = false,
-		relax_rushing_distance = 70,
 		disabled = false,
-		peak_fade_threshold = 32.5,
-		multiple_hordes = 2,
-		peak_intensity_threshold = 45,
+		horde_in_relax_if_rushing = false,
 		leave_relax_if_rushing = true,
 		leave_relax_if_zero_intensity = true,
+		multiple_hordes = 2,
+		peak_fade_threshold = 32.5,
+		peak_intensity_threshold = 45,
+		relax_rushing_distance = 70,
 		sustain_peak_duration = {
 			3,
-			5
+			5,
 		},
 		relax_duration = {
 			50,
-			70
+			70,
 		},
 		horde_frequency = {
 			70,
-			150
+			150,
 		},
 		horde_startup_time = {
 			40,
-			120
+			120,
 		},
 		multiple_horde_frequency = {
 			10,
-			15
+			15,
 		},
 		max_delay_until_next_horde = {
 			180,
-			210
+			210,
 		},
 		horde = HordeSettings.chaos,
 		horde_delay = {
 			0,
-			0
+			0,
 		},
 		delay_horde_threat_value = {
-			harder = 60,
-			hard = 50,
-			normal = 40,
-			hardest = 60,
 			cataclysm = 80,
-			cataclysm_3 = 100,
 			cataclysm_2 = 100,
-			easy = 40
+			cataclysm_3 = 100,
+			easy = 40,
+			hard = 50,
+			harder = 60,
+			hardest = 60,
+			normal = 40,
 		},
 		delay_mini_patrol_threat_value = {
-			harder = 50,
-			hard = 40,
-			normal = 35,
-			cataclysm_2 = 100,
 			cataclysm = 80,
+			cataclysm_2 = 100,
 			cataclysm_3 = 100,
-			easy = 35
+			easy = 35,
+			hard = 40,
+			harder = 50,
+			normal = 35,
 		},
 		delay_specials_threat_value = {
-			harder = 60,
-			hard = 50,
-			normal = 40,
-			hardest = 60,
 			cataclysm = 1000,
-			cataclysm_3 = 1000,
 			cataclysm_2 = 1000,
-			easy = 40
+			cataclysm_3 = 1000,
+			easy = 40,
+			hard = 50,
+			harder = 60,
+			hardest = 60,
+			normal = 40,
 		},
 		mini_patrol = {
 			only_spawn_above_intensity = 1,
-			override_timer = 20,
 			only_spawn_below_intensity = 15,
+			override_timer = 20,
 			frequency = {
 				15,
-				20
-			}
+				20,
+			},
 		},
 		difficulty_overrides = {
 			hard = {
@@ -3145,201 +3157,201 @@ PacingSettings = {
 				peak_intensity_threshold = 50,
 				horde_frequency = {
 					60,
-					110
+					110,
 				},
 				multiple_horde_frequency = {
 					8,
-					13
+					13,
 				},
 				relax_duration = {
 					35,
-					45
-				}
+					45,
+				},
 			},
 			harder = {
 				multiple_hordes = 3,
 				peak_intensity_threshold = 55,
 				horde_frequency = {
 					50,
-					100
+					100,
 				},
 				multiple_horde_frequency = {
 					8,
-					12
+					12,
 				},
 				relax_duration = {
 					35,
-					45
-				}
+					45,
+				},
 			},
 			hardest = {
 				multiple_hordes = 3,
 				peak_intensity_threshold = 70,
 				horde_frequency = {
 					50,
-					100
+					100,
 				},
 				multiple_horde_frequency = {
 					7,
-					10
+					10,
 				},
 				relax_duration = {
 					35,
-					45
-				}
+					45,
+				},
 			},
 			cataclysm = {
 				multiple_hordes = 3,
 				peak_intensity_threshold = 80,
 				horde_frequency = {
 					50,
-					100
+					100,
 				},
 				multiple_horde_frequency = {
 					10,
-					12
+					12,
 				},
 				relax_duration = {
 					30,
-					40
-				}
+					40,
+				},
 			},
 			cataclysm_2 = {
 				multiple_hordes = 3,
 				peak_intensity_threshold = 90,
 				horde_frequency = {
 					50,
-					100
+					100,
 				},
 				multiple_horde_frequency = {
 					10,
-					12
+					12,
 				},
 				relax_duration = {
 					30,
-					40
-				}
+					40,
+				},
 			},
 			cataclysm_3 = {
 				multiple_hordes = 3,
 				peak_intensity_threshold = 90,
 				horde_frequency = {
 					50,
-					100
+					100,
 				},
 				multiple_horde_frequency = {
 					10,
-					12
+					12,
 				},
 				relax_duration = {
 					30,
-					40
-				}
-			}
-		}
+					40,
+				},
+			},
+		},
 	},
 	intense = {
-		peak_intensity_threshold = 80,
 		disabled = false,
 		peak_fade_threshold = 75,
+		peak_intensity_threshold = 80,
 		sustain_peak_duration = {
 			5,
-			10
+			10,
 		},
 		relax_duration = {
 			15,
-			25
+			25,
 		},
 		horde_frequency = {
 			15,
-			45
+			45,
 		},
 		horde_startup_time = {
 			15,
-			180
+			180,
 		},
 		horde = HordeSettings.default,
 		horde_delay = {
 			4,
-			5
-		}
+			5,
+		},
 	},
 	city_wall = {
-		peak_intensity_threshold = 35,
-		leave_relax_if_zero_intensity = true,
+		disabled = false,
 		horde_in_relax_if_rushing = false,
 		leave_relax_if_rushing = true,
-		relax_rushing_distance = 70,
-		disabled = false,
+		leave_relax_if_zero_intensity = true,
 		peak_fade_threshold = 32.5,
+		peak_intensity_threshold = 35,
+		relax_rushing_distance = 70,
 		sustain_peak_duration = {
 			3,
-			5
+			5,
 		},
 		relax_duration = {
 			25,
-			35
+			35,
 		},
 		horde_frequency = {
 			120,
-			180
+			180,
 		},
 		horde_startup_time = {
 			15,
-			180
+			180,
 		},
 		horde = HordeSettings.default,
 		horde_delay = {
 			0,
-			0
+			0,
 		},
 		mini_patrol = {
 			composition = "city_wall_extra_spice",
-			override_timer = 25,
 			only_spawn_below_intensity = 65,
+			override_timer = 25,
 			frequency = {
 				10,
-				15
-			}
-		}
+				15,
+			},
+		},
 	},
 	disabled = {
-		peak_intensity_threshold = 0,
 		disabled = true,
 		peak_fade_threshold = 75,
+		peak_intensity_threshold = 0,
 		sustain_peak_duration = {
 			5,
-			10
+			10,
 		},
 		relax_duration = {
 			10000,
-			10000
+			10000,
 		},
 		horde_frequency = {
 			0,
-			0
+			0,
 		},
 		horde_startup_time = {
 			0,
-			0
+			0,
 		},
 		horde = HordeSettings.disabled,
 		horde_delay = {
 			4,
-			5
-		}
-	}
+			5,
+		},
+	},
 }
 PackSpawningDistribution = {
 	standard = {
-		goal_density = 0.45,
+		calculate_nearby_islands = false,
 		clamp_main_path_zone_area = 100,
-		length_density_coefficient = 0,
-		spawn_cycle_length = 350,
 		clamp_outer_zones_used = 1,
 		distribution_method = "periodical",
-		calculate_nearby_islands = false
-	}
+		goal_density = 0.45,
+		length_density_coefficient = 0,
+		spawn_cycle_length = 350,
+	},
 }
 PackSpawningSettings = {
 	default = {
@@ -3349,30 +3361,30 @@ PackSpawningSettings = {
 			breed_packs = "standard",
 			breed_packs_peeks_overide_chance = {
 				0.5,
-				0.75
+				0.75,
 			},
 			breed_packs_override = {
 				{
 					"shield_rats",
 					2,
-					0.035
+					0.035,
 				},
 				{
 					"plague_monks",
 					2,
-					0.035
+					0.035,
 				},
 				{
 					"marauders",
 					2,
-					0.03
+					0.03,
 				},
 				{
 					"marauders_elites",
 					2,
-					0.03
-				}
-			}
+					0.03,
+				},
+			},
 		},
 		difficulty_overrides = {
 			hard = {
@@ -3381,24 +3393,24 @@ PackSpawningSettings = {
 					{
 						"shield_rats",
 						2,
-						0.04
+						0.04,
 					},
 					{
 						"plague_monks",
 						2,
-						0.035
+						0.035,
 					},
 					{
 						"marauders",
 						2,
-						0.035
+						0.035,
 					},
 					{
 						"marauders_elites",
 						2,
-						0.035
-					}
-				}
+						0.035,
+					},
+				},
 			},
 			harder = {
 				area_density_coefficient = 0.045,
@@ -3406,24 +3418,24 @@ PackSpawningSettings = {
 					{
 						"shield_rats",
 						2,
-						0.04
+						0.04,
 					},
 					{
 						"plague_monks",
 						2,
-						0.035
+						0.035,
 					},
 					{
 						"marauders",
 						2,
-						0.035
+						0.035,
 					},
 					{
 						"marauders_elites",
 						2,
-						0.035
-					}
-				}
+						0.035,
+					},
+				},
 			},
 			hardest = {
 				area_density_coefficient = 0.045,
@@ -3431,24 +3443,24 @@ PackSpawningSettings = {
 					{
 						"shield_rats",
 						2,
-						0.04
+						0.04,
 					},
 					{
 						"plague_monks",
 						2,
-						0.035
+						0.035,
 					},
 					{
 						"marauders",
 						2,
-						0.035
+						0.035,
 					},
 					{
 						"marauders_elites",
 						2,
-						0.035
-					}
-				}
+						0.035,
+					},
+				},
 			},
 			cataclysm = {
 				area_density_coefficient = 0.045,
@@ -3456,24 +3468,24 @@ PackSpawningSettings = {
 					{
 						"shield_rats",
 						2,
-						0.04
+						0.04,
 					},
 					{
 						"plague_monks",
 						2,
-						0.04
+						0.04,
 					},
 					{
 						"marauders",
 						2,
-						0.04
+						0.04,
 					},
 					{
 						"marauders_elites",
 						2,
-						0.04
-					}
-				}
+						0.04,
+					},
+				},
 			},
 			cataclysm_2 = {
 				area_density_coefficient = 0.045,
@@ -3481,24 +3493,24 @@ PackSpawningSettings = {
 					{
 						"shield_rats",
 						2,
-						0.04
+						0.04,
 					},
 					{
 						"plague_monks",
 						2,
-						0.04
+						0.04,
 					},
 					{
 						"marauders",
 						2,
-						0.04
+						0.04,
 					},
 					{
 						"marauders_elites",
 						2,
-						0.04
-					}
-				}
+						0.04,
+					},
+				},
 			},
 			cataclysm_3 = {
 				area_density_coefficient = 0.045,
@@ -3506,26 +3518,26 @@ PackSpawningSettings = {
 					{
 						"shield_rats",
 						2,
-						0.045
+						0.045,
 					},
 					{
 						"plague_monks",
 						2,
-						0.045
+						0.045,
 					},
 					{
 						"marauders",
 						2,
-						0.045
+						0.045,
 					},
 					{
 						"marauders_elites",
 						2,
-						0.045
-					}
-				}
-			}
-		}
+						0.045,
+					},
+				},
+			},
+		},
 	},
 	skaven_beastmen = {
 		area_density_coefficient = 0.045,
@@ -3534,30 +3546,30 @@ PackSpawningSettings = {
 			breed_packs = "skaven_beastmen",
 			breed_packs_peeks_overide_chance = {
 				0.5,
-				0.75
+				0.75,
 			},
 			breed_packs_override = {
 				{
 					"shield_rats",
 					2,
-					0.035
+					0.035,
 				},
 				{
 					"plague_monks",
 					2,
-					0.035
+					0.035,
 				},
 				{
 					"beastmen",
 					2,
-					0.035
+					0.035,
 				},
 				{
 					"beastmen_elites",
 					2,
-					0.035
-				}
-			}
+					0.035,
+				},
+			},
 		},
 		difficulty_overrides = {
 			hard = {
@@ -3566,24 +3578,24 @@ PackSpawningSettings = {
 					{
 						"shield_rats",
 						2,
-						0.04
+						0.04,
 					},
 					{
 						"plague_monks",
 						2,
-						0.035
+						0.035,
 					},
 					{
 						"beastmen",
 						2,
-						0.035
+						0.035,
 					},
 					{
 						"beastmen_elites",
 						2,
-						0.035
-					}
-				}
+						0.035,
+					},
+				},
 			},
 			harder = {
 				area_density_coefficient = 0.04,
@@ -3591,24 +3603,24 @@ PackSpawningSettings = {
 					{
 						"shield_rats",
 						2,
-						0.04
+						0.04,
 					},
 					{
 						"plague_monks",
 						2,
-						0.035
+						0.035,
 					},
 					{
 						"beastmen",
 						2,
-						0.035
+						0.035,
 					},
 					{
 						"beastmen_elites",
 						2,
-						0.035
-					}
-				}
+						0.035,
+					},
+				},
 			},
 			hardest = {
 				area_density_coefficient = 0.04,
@@ -3616,24 +3628,24 @@ PackSpawningSettings = {
 					{
 						"shield_rats",
 						2,
-						0.04
+						0.04,
 					},
 					{
 						"plague_monks",
 						2,
-						0.035
+						0.035,
 					},
 					{
 						"beastmen",
 						2,
-						0.035
+						0.035,
 					},
 					{
 						"beastmen_elites",
 						2,
-						0.035
-					}
-				}
+						0.035,
+					},
+				},
 			},
 			cataclysm = {
 				area_density_coefficient = 0.04,
@@ -3641,24 +3653,24 @@ PackSpawningSettings = {
 					{
 						"shield_rats",
 						2,
-						0.04
+						0.04,
 					},
 					{
 						"plague_monks",
 						2,
-						0.04
+						0.04,
 					},
 					{
 						"beastmen",
 						2,
-						0.04
+						0.04,
 					},
 					{
 						"beastmen_elites",
 						2,
-						0.04
-					}
-				}
+						0.04,
+					},
+				},
 			},
 			cataclysm_2 = {
 				area_density_coefficient = 0.045,
@@ -3666,24 +3678,24 @@ PackSpawningSettings = {
 					{
 						"shield_rats",
 						2,
-						0.04
+						0.04,
 					},
 					{
 						"plague_monks",
 						2,
-						0.04
+						0.04,
 					},
 					{
 						"beastmen",
 						2,
-						0.04
+						0.04,
 					},
 					{
 						"beastmen_elites",
 						2,
-						0.04
-					}
-				}
+						0.04,
+					},
+				},
 			},
 			cataclysm_3 = {
 				area_density_coefficient = 0.045,
@@ -3691,26 +3703,26 @@ PackSpawningSettings = {
 					{
 						"shield_rats",
 						2,
-						0.045
+						0.045,
 					},
 					{
 						"plague_monks",
 						2,
-						0.045
+						0.045,
 					},
 					{
 						"beastmen",
 						2,
-						0.045
+						0.045,
 					},
 					{
 						"beastmen_elites",
 						2,
-						0.045
-					}
-				}
-			}
-		}
+						0.045,
+					},
+				},
+			},
+		},
 	},
 	chaos_beastmen = {
 		area_density_coefficient = 0.045,
@@ -3719,30 +3731,30 @@ PackSpawningSettings = {
 			breed_packs = "chaos_beastmen",
 			breed_packs_peeks_overide_chance = {
 				0.5,
-				0.75
+				0.75,
 			},
 			breed_packs_override = {
 				{
 					"marauders",
 					2,
-					0.03
+					0.03,
 				},
 				{
 					"marauders_elites",
 					2,
-					0.03
+					0.03,
 				},
 				{
 					"beastmen",
 					2,
-					0.035
+					0.035,
 				},
 				{
 					"beastmen_elites",
 					2,
-					0.035
-				}
-			}
+					0.035,
+				},
+			},
 		},
 		difficulty_overrides = {
 			hard = {
@@ -3751,24 +3763,24 @@ PackSpawningSettings = {
 					{
 						"marauders",
 						2,
-						0.03
+						0.03,
 					},
 					{
 						"marauders_elites",
 						2,
-						0.03
+						0.03,
 					},
 					{
 						"beastmen",
 						2,
-						0.035
+						0.035,
 					},
 					{
 						"beastmen_elites",
 						2,
-						0.035
-					}
-				}
+						0.035,
+					},
+				},
 			},
 			harder = {
 				area_density_coefficient = 0.04,
@@ -3776,24 +3788,24 @@ PackSpawningSettings = {
 					{
 						"marauders",
 						2,
-						0.035
+						0.035,
 					},
 					{
 						"marauders_elites",
 						2,
-						0.035
+						0.035,
 					},
 					{
 						"beastmen",
 						2,
-						0.035
+						0.035,
 					},
 					{
 						"beastmen_elites",
 						2,
-						0.035
-					}
-				}
+						0.035,
+					},
+				},
 			},
 			hardest = {
 				area_density_coefficient = 0.045,
@@ -3801,24 +3813,24 @@ PackSpawningSettings = {
 					{
 						"marauders",
 						2,
-						0.035
+						0.035,
 					},
 					{
 						"marauders_elites",
 						2,
-						0.035
+						0.035,
 					},
 					{
 						"beastmen",
 						2,
-						0.035
+						0.035,
 					},
 					{
 						"beastmen_elites",
 						2,
-						0.035
-					}
-				}
+						0.035,
+					},
+				},
 			},
 			cataclysm = {
 				area_density_coefficient = 0.04,
@@ -3826,24 +3838,24 @@ PackSpawningSettings = {
 					{
 						"marauders",
 						2,
-						0.04
+						0.04,
 					},
 					{
 						"marauders_elites",
 						2,
-						0.04
+						0.04,
 					},
 					{
 						"beastmen",
 						2,
-						0.04
+						0.04,
 					},
 					{
 						"beastmen_elites",
 						2,
-						0.04
-					}
-				}
+						0.04,
+					},
+				},
 			},
 			cataclysm_2 = {
 				area_density_coefficient = 0.04,
@@ -3851,24 +3863,24 @@ PackSpawningSettings = {
 					{
 						"marauders",
 						2,
-						0.04
+						0.04,
 					},
 					{
 						"marauders_elites",
 						2,
-						0.04
+						0.04,
 					},
 					{
 						"beastmen",
 						2,
-						0.04
+						0.04,
 					},
 					{
 						"beastmen_elites",
 						2,
-						0.04
-					}
-				}
+						0.04,
+					},
+				},
 			},
 			cataclysm_3 = {
 				area_density_coefficient = 0.045,
@@ -3876,26 +3888,26 @@ PackSpawningSettings = {
 					{
 						"marauders",
 						2,
-						0.045
+						0.045,
 					},
 					{
 						"marauders_elites",
 						2,
-						0.045
+						0.045,
 					},
 					{
 						"beastmen",
 						2,
-						0.045
+						0.045,
 					},
 					{
 						"beastmen_elites",
 						2,
-						0.045
-					}
-				}
-			}
-		}
+						0.045,
+					},
+				},
+			},
+		},
 	},
 	default_light = {
 		area_density_coefficient = 0.045,
@@ -3904,26 +3916,26 @@ PackSpawningSettings = {
 			breed_packs = "standard_no_elites",
 			breed_packs_peeks_overide_chance = {
 				0.5,
-				0.75
+				0.75,
 			},
 			breed_packs_override = {
 				{
 					"plague_monks",
 					2,
-					0.035
+					0.035,
 				},
 				{
 					"marauders",
 					2,
-					0.035
+					0.035,
 				},
 				{
 					"marauders_elites",
 					2,
-					0.035
-				}
-			}
-		}
+					0.035,
+				},
+			},
+		},
 	},
 	skaven = {
 		area_density_coefficient = 0.045,
@@ -3932,20 +3944,20 @@ PackSpawningSettings = {
 			breed_packs = "skaven",
 			breed_packs_peeks_overide_chance = {
 				0.5,
-				1
+				1,
 			},
 			breed_packs_override = {
 				{
 					"shield_rats",
 					2,
-					0.035
+					0.035,
 				},
 				{
 					"plague_monks",
 					2,
-					0.03
-				}
-			}
+					0.03,
+				},
+			},
 		},
 		difficulty_overrides = {
 			hard = {
@@ -3954,14 +3966,14 @@ PackSpawningSettings = {
 					{
 						"shield_rats",
 						2,
-						0.04
+						0.04,
 					},
 					{
 						"plague_monks",
 						2,
-						0.035
-					}
-				}
+						0.035,
+					},
+				},
 			},
 			harder = {
 				area_density_coefficient = 0.045,
@@ -3969,14 +3981,14 @@ PackSpawningSettings = {
 					{
 						"shield_rats",
 						2,
-						0.04
+						0.04,
 					},
 					{
 						"plague_monks",
 						2,
-						0.035
-					}
-				}
+						0.035,
+					},
+				},
 			},
 			hardest = {
 				area_density_coefficient = 0.045,
@@ -3984,14 +3996,14 @@ PackSpawningSettings = {
 					{
 						"shield_rats",
 						2,
-						0.04
+						0.04,
 					},
 					{
 						"plague_monks",
 						2,
-						0.035
-					}
-				}
+						0.035,
+					},
+				},
 			},
 			cataclysm = {
 				area_density_coefficient = 0.045,
@@ -3999,14 +4011,14 @@ PackSpawningSettings = {
 					{
 						"shield_rats",
 						2,
-						0.04
+						0.04,
 					},
 					{
 						"plague_monks",
 						2,
-						0.035
-					}
-				}
+						0.035,
+					},
+				},
 			},
 			cataclysm_2 = {
 				area_density_coefficient = 0.045,
@@ -4014,14 +4026,14 @@ PackSpawningSettings = {
 					{
 						"shield_rats",
 						2,
-						0.04
+						0.04,
 					},
 					{
 						"plague_monks",
 						2,
-						0.035
-					}
-				}
+						0.035,
+					},
+				},
 			},
 			cataclysm_3 = {
 				area_density_coefficient = 0.045,
@@ -4029,16 +4041,16 @@ PackSpawningSettings = {
 					{
 						"shield_rats",
 						2,
-						0.04
+						0.04,
 					},
 					{
 						"plague_monks",
 						2,
-						0.035
-					}
-				}
-			}
-		}
+						0.035,
+					},
+				},
+			},
+		},
 	},
 	skaven_light = {
 		area_density_coefficient = 0.045,
@@ -4047,20 +4059,20 @@ PackSpawningSettings = {
 			breed_packs = "shield_rats_no_elites",
 			breed_packs_peeks_overide_chance = {
 				0.5,
-				1
+				1,
 			},
 			breed_packs_override = {
 				{
 					"shield_rats_no_elites",
 					2,
-					0.035
+					0.035,
 				},
 				{
 					"plague_monks",
 					2,
-					0.03
-				}
-			}
+					0.03,
+				},
+			},
 		},
 		difficulty_overrides = {
 			hard = {
@@ -4069,14 +4081,14 @@ PackSpawningSettings = {
 					{
 						"shield_rats",
 						2,
-						0.04
+						0.04,
 					},
 					{
 						"plague_monks",
 						2,
-						0.035
-					}
-				}
+						0.035,
+					},
+				},
 			},
 			harder = {
 				area_density_coefficient = 0.045,
@@ -4084,14 +4096,14 @@ PackSpawningSettings = {
 					{
 						"shield_rats",
 						2,
-						0.04
+						0.04,
 					},
 					{
 						"plague_monks",
 						2,
-						0.035
-					}
-				}
+						0.035,
+					},
+				},
 			},
 			hardest = {
 				area_density_coefficient = 0.045,
@@ -4099,14 +4111,14 @@ PackSpawningSettings = {
 					{
 						"shield_rats",
 						2,
-						0.04
+						0.04,
 					},
 					{
 						"plague_monks",
 						2,
-						0.035
-					}
-				}
+						0.035,
+					},
+				},
 			},
 			cataclysm = {
 				area_density_coefficient = 0.045,
@@ -4114,14 +4126,14 @@ PackSpawningSettings = {
 					{
 						"shield_rats",
 						2,
-						0.04
+						0.04,
 					},
 					{
 						"plague_monks",
 						2,
-						0.035
-					}
-				}
+						0.035,
+					},
+				},
 			},
 			cataclysm_2 = {
 				area_density_coefficient = 0.045,
@@ -4129,14 +4141,14 @@ PackSpawningSettings = {
 					{
 						"shield_rats",
 						2,
-						0.04
+						0.04,
 					},
 					{
 						"plague_monks",
 						2,
-						0.035
-					}
-				}
+						0.035,
+					},
+				},
 			},
 			cataclysm_3 = {
 				area_density_coefficient = 0.045,
@@ -4144,16 +4156,16 @@ PackSpawningSettings = {
 					{
 						"shield_rats",
 						2,
-						0.04
+						0.04,
 					},
 					{
 						"plague_monks",
 						2,
-						0.035
-					}
-				}
-			}
-		}
+						0.035,
+					},
+				},
+			},
+		},
 	},
 	chaos = {
 		area_density_coefficient = 0.035,
@@ -4162,30 +4174,30 @@ PackSpawningSettings = {
 			breed_packs = "marauders",
 			breed_packs_peeks_overide_chance = {
 				0.5,
-				1
+				1,
 			},
 			breed_packs_override = {
 				{
 					"marauders_and_warriors",
 					2,
-					0.03
+					0.03,
 				},
 				{
 					"marauders_shields",
 					2,
-					0.03
+					0.03,
 				},
 				{
 					"marauders_elites",
 					2,
-					0.03
+					0.03,
 				},
 				{
 					"marauders_berzerkers",
 					2,
-					0.03
-				}
-			}
+					0.03,
+				},
+			},
 		},
 		difficulty_overrides = {
 			hard = {
@@ -4194,24 +4206,24 @@ PackSpawningSettings = {
 					{
 						"marauders_and_warriors",
 						2,
-						0.035
+						0.035,
 					},
 					{
 						"marauders_shields",
 						2,
-						0.035
+						0.035,
 					},
 					{
 						"marauders_elites",
 						2,
-						0.035
+						0.035,
 					},
 					{
 						"marauders_berzerkers",
 						2,
-						0.035
-					}
-				}
+						0.035,
+					},
+				},
 			},
 			harder = {
 				area_density_coefficient = 0.045,
@@ -4219,24 +4231,24 @@ PackSpawningSettings = {
 					{
 						"marauders_and_warriors",
 						2,
-						0.035
+						0.035,
 					},
 					{
 						"marauders_shields",
 						2,
-						0.035
+						0.035,
 					},
 					{
 						"marauders_elites",
 						2,
-						0.035
+						0.035,
 					},
 					{
 						"marauders_berzerkers",
 						2,
-						0.035
-					}
-				}
+						0.035,
+					},
+				},
 			},
 			hardest = {
 				area_density_coefficient = 0.045,
@@ -4244,24 +4256,24 @@ PackSpawningSettings = {
 					{
 						"marauders_and_warriors",
 						2,
-						0.035
+						0.035,
 					},
 					{
 						"marauders_shields",
 						2,
-						0.035
+						0.035,
 					},
 					{
 						"marauders_elites",
 						2,
-						0.035
+						0.035,
 					},
 					{
 						"marauders_berzerkers",
 						2,
-						0.035
-					}
-				}
+						0.035,
+					},
+				},
 			},
 			cataclysm = {
 				area_density_coefficient = 0.045,
@@ -4269,24 +4281,24 @@ PackSpawningSettings = {
 					{
 						"marauders_and_warriors",
 						2,
-						0.035
+						0.035,
 					},
 					{
 						"marauders_shields",
 						2,
-						0.035
+						0.035,
 					},
 					{
 						"marauders_elites",
 						2,
-						0.035
+						0.035,
 					},
 					{
 						"marauders_berzerkers",
 						2,
-						0.035
-					}
-				}
+						0.035,
+					},
+				},
 			},
 			cataclysm_2 = {
 				area_density_coefficient = 0.045,
@@ -4294,24 +4306,24 @@ PackSpawningSettings = {
 					{
 						"marauders_and_warriors",
 						2,
-						0.035
+						0.035,
 					},
 					{
 						"marauders_shields",
 						2,
-						0.035
+						0.035,
 					},
 					{
 						"marauders_elites",
 						2,
-						0.035
+						0.035,
 					},
 					{
 						"marauders_berzerkers",
 						2,
-						0.035
-					}
-				}
+						0.035,
+					},
+				},
 			},
 			cataclysm_3 = {
 				area_density_coefficient = 0.045,
@@ -4319,26 +4331,26 @@ PackSpawningSettings = {
 					{
 						"marauders_and_warriors",
 						2,
-						0.035
+						0.035,
 					},
 					{
 						"marauders_shields",
 						2,
-						0.035
+						0.035,
 					},
 					{
 						"marauders_elites",
 						2,
-						0.035
+						0.035,
 					},
 					{
 						"marauders_berzerkers",
 						2,
-						0.035
-					}
-				}
-			}
-		}
+						0.035,
+					},
+				},
+			},
+		},
 	},
 	chaos_light = {
 		area_density_coefficient = 0.03,
@@ -4347,31 +4359,31 @@ PackSpawningSettings = {
 			breed_packs = "marauders",
 			breed_packs_peeks_overide_chance = {
 				0.94,
-				1
+				1,
 			},
 			breed_packs_override = {
 				{
 					"marauders",
 					1,
-					0.03
+					0.03,
 				},
 				{
 					"marauders_shields",
 					2,
-					0.025
+					0.025,
 				},
 				{
 					"marauders_elites",
 					2,
-					0.025
+					0.025,
 				},
 				{
 					"marauders_berzerkers",
 					2,
-					0.03
-				}
-			}
-		}
+					0.03,
+				},
+			},
+		},
 	},
 	beastmen = {
 		area_density_coefficient = 0.045,
@@ -4380,25 +4392,25 @@ PackSpawningSettings = {
 			breed_packs = "beastmen",
 			breed_packs_peeks_overide_chance = {
 				0.5,
-				0.75
+				0.75,
 			},
 			breed_packs_override = {
 				{
 					"beastmen_elites",
 					2,
-					0.035
+					0.035,
 				},
 				{
 					"beastmen",
 					2,
-					0.035
+					0.035,
 				},
 				{
 					"beastmen_light",
 					2,
-					0.04
-				}
-			}
+					0.04,
+				},
+			},
 		},
 		difficulty_overrides = {
 			hard = {
@@ -4407,19 +4419,19 @@ PackSpawningSettings = {
 					{
 						"beastmen_elites",
 						2,
-						0.035
+						0.035,
 					},
 					{
 						"beastmen",
 						2,
-						0.035
+						0.035,
 					},
 					{
 						"beastmen_light",
 						2,
-						0.04
-					}
-				}
+						0.04,
+					},
+				},
 			},
 			harder = {
 				area_density_coefficient = 0.04,
@@ -4427,19 +4439,19 @@ PackSpawningSettings = {
 					{
 						"beastmen_elites",
 						2,
-						0.035
+						0.035,
 					},
 					{
 						"beastmen",
 						2,
-						0.035
+						0.035,
 					},
 					{
 						"beastmen_light",
 						2,
-						0.04
-					}
-				}
+						0.04,
+					},
+				},
 			},
 			hardest = {
 				area_density_coefficient = 0.04,
@@ -4447,19 +4459,19 @@ PackSpawningSettings = {
 					{
 						"beastmen_elites",
 						2,
-						0.035
+						0.035,
 					},
 					{
 						"beastmen",
 						2,
-						0.035
+						0.035,
 					},
 					{
 						"beastmen_light",
 						2,
-						0.04
-					}
-				}
+						0.04,
+					},
+				},
 			},
 			cataclysm = {
 				area_density_coefficient = 0.045,
@@ -4467,19 +4479,19 @@ PackSpawningSettings = {
 					{
 						"beastmen_elites",
 						2,
-						0.04
+						0.04,
 					},
 					{
 						"beastmen",
 						2,
-						0.04
+						0.04,
 					},
 					{
 						"beastmen_light",
 						2,
-						0.045
-					}
-				}
+						0.045,
+					},
+				},
 			},
 			cataclysm_2 = {
 				area_density_coefficient = 0.045,
@@ -4487,19 +4499,19 @@ PackSpawningSettings = {
 					{
 						"beastmen_elites",
 						2,
-						0.04
+						0.04,
 					},
 					{
 						"beastmen",
 						2,
-						0.04
+						0.04,
 					},
 					{
 						"beastmen_light",
 						2,
-						0.045
-					}
-				}
+						0.045,
+					},
+				},
 			},
 			cataclysm_3 = {
 				area_density_coefficient = 0.045,
@@ -4507,21 +4519,21 @@ PackSpawningSettings = {
 					{
 						"beastmen_elites",
 						2,
-						0.045
+						0.045,
 					},
 					{
 						"beastmen",
 						2,
-						0.045
+						0.045,
 					},
 					{
 						"beastmen_light",
 						2,
-						0.045
-					}
-				}
-			}
-		}
+						0.045,
+					},
+				},
+			},
+		},
 	},
 	beastmen_light = {
 		area_density_coefficient = 0.045,
@@ -4530,16 +4542,16 @@ PackSpawningSettings = {
 			breed_packs = "beastmen",
 			breed_packs_peeks_overide_chance = {
 				0.5,
-				1
+				1,
 			},
 			breed_packs_override = {
 				{
 					"beastmen_light",
 					2,
-					0.04
-				}
-			}
-		}
+					0.04,
+				},
+			},
+		},
 	},
 	code_test = {
 		area_density_coefficient = 0.03,
@@ -4548,38 +4560,38 @@ PackSpawningSettings = {
 			breed_packs = "code_test",
 			breed_packs_peeks_overide_chance = {
 				0,
-				1
+				1,
 			},
 			breed_packs_override = {
 				{
 					"marauders",
 					1,
-					0.03
+					0.03,
 				},
 				{
 					"marauders_shields",
 					2,
-					0.025
+					0.025,
 				},
 				{
 					"marauders_elites",
 					2,
-					0.025
+					0.025,
 				},
 				{
 					"marauders_berzerkers",
 					2,
-					0.03
-				}
-			}
-		}
+					0.03,
+				},
+			},
+		},
 	},
 	disabled = {
 		area_density_coefficient = 0.03,
 		disabled = true,
 		basics = PackSpawningDistribution.standard,
-		roaming_set = {}
-	}
+		roaming_set = {},
+	},
 }
 DefaultConflictDirectorSet = {
 	"skaven",
@@ -4587,18 +4599,18 @@ DefaultConflictDirectorSet = {
 	"beastmen",
 	"skaven_beastmen",
 	"chaos_beastmen",
-	"default"
+	"default",
 }
 DefaultConflictPreferredFactionCountChances = {
 	1,
 	0.8,
-	0.2
+	0.2,
 }
 DefaultConflictFactionWeight = 1
 DefaultConflictFactionSetWeights = {
+	beastmen = 8,
 	chaos = 20,
 	skaven = 20,
-	beastmen = 8
 }
 ConflictDirectorLockedFunctions = {
 	beastmen = function (level_key)
@@ -4629,7 +4641,7 @@ ConflictDirectorLockedFunctions = {
 		end
 
 		return true
-	end
+	end,
 }
 ConflictDirectors = {
 	default = {
@@ -4644,8 +4656,8 @@ ConflictDirectors = {
 		horde = HordeSettings.default,
 		factions = {
 			"chaos",
-			"skaven"
-		}
+			"skaven",
+		},
 	},
 	default_light = {
 		debug_color = "maroon",
@@ -4659,8 +4671,8 @@ ConflictDirectors = {
 		horde = HordeSettings.default,
 		factions = {
 			"chaos",
-			"skaven"
-		}
+			"skaven",
+		},
 	},
 	skaven = {
 		debug_color = "orange",
@@ -4673,8 +4685,8 @@ ConflictDirectors = {
 		pack_spawning = PackSpawningSettings.skaven,
 		horde = HordeSettings.default,
 		factions = {
-			"skaven"
-		}
+			"skaven",
+		},
 	},
 	skaven_light = {
 		debug_color = "orange",
@@ -4687,8 +4699,8 @@ ConflictDirectors = {
 		pack_spawning = PackSpawningSettings.skaven_light,
 		horde = HordeSettings.default,
 		factions = {
-			"skaven"
-		}
+			"skaven",
+		},
 	},
 	chaos = {
 		debug_color = "purple",
@@ -4701,8 +4713,8 @@ ConflictDirectors = {
 		pack_spawning = PackSpawningSettings.chaos,
 		horde = HordeSettings.chaos,
 		factions = {
-			"chaos"
-		}
+			"chaos",
+		},
 	},
 	chaos_light = {
 		debug_color = "purple",
@@ -4715,8 +4727,8 @@ ConflictDirectors = {
 		pack_spawning = PackSpawningSettings.chaos_light,
 		horde = HordeSettings.chaos,
 		factions = {
-			"chaos"
-		}
+			"chaos",
+		},
 	},
 	marauders_and_warriors = {
 		debug_color = "purple",
@@ -4729,8 +4741,8 @@ ConflictDirectors = {
 		pack_spawning = PackSpawningSettings.chaos,
 		horde = HordeSettings.chaos,
 		factions = {
-			"chaos"
-		}
+			"chaos",
+		},
 	},
 	beastmen = {
 		debug_color = "purple",
@@ -4744,8 +4756,8 @@ ConflictDirectors = {
 		pack_spawning = PackSpawningSettings.beastmen,
 		horde = HordeSettings.beastmen,
 		factions = {
-			"beastmen"
-		}
+			"beastmen",
+		},
 	},
 	beastmen_light = {
 		debug_color = "purple",
@@ -4759,8 +4771,8 @@ ConflictDirectors = {
 		pack_spawning = PackSpawningSettings.beastmen,
 		horde = HordeSettings.beastmen,
 		factions = {
-			"beastmen"
-		}
+			"beastmen",
+		},
 	},
 	skaven_beastmen = {
 		debug_color = "orange",
@@ -4775,8 +4787,8 @@ ConflictDirectors = {
 		horde = HordeSettings.beastmen,
 		factions = {
 			"skaven",
-			"beastmen"
-		}
+			"beastmen",
+		},
 	},
 	chaos_beastmen = {
 		debug_color = "orange",
@@ -4791,8 +4803,8 @@ ConflictDirectors = {
 		horde = HordeSettings.beastmen,
 		factions = {
 			"chaos",
-			"beastmen"
-		}
+			"beastmen",
+		},
 	},
 	level_editor = {
 		debug_color = "maroon",
@@ -4803,7 +4815,7 @@ ConflictDirectors = {
 		specials = SpecialsSettings.disabled,
 		roaming = RoamingSettings.disabled,
 		pack_spawning = PackSpawningSettings.disabled,
-		horde = HordeSettings.disabled
+		horde = HordeSettings.disabled,
 	},
 	event_level_with_roaming_no_specials = {
 		debug_color = "maroon",
@@ -4814,7 +4826,7 @@ ConflictDirectors = {
 		specials = SpecialsSettings.disabled,
 		roaming = RoamingSettings.default,
 		pack_spawning = PackSpawningSettings.default,
-		horde = HordeSettings.default
+		horde = HordeSettings.default,
 	},
 	city_wall = {
 		debug_color = "maroon",
@@ -4825,7 +4837,7 @@ ConflictDirectors = {
 		specials = SpecialsSettings.default,
 		roaming = RoamingSettings.default,
 		pack_spawning = PackSpawningSettings.default,
-		horde = HordeSettings.default
+		horde = HordeSettings.default,
 	},
 	endboss = {
 		debug_color = "maroon",
@@ -4836,7 +4848,7 @@ ConflictDirectors = {
 		specials = SpecialsSettings.default,
 		roaming = RoamingSettings.default,
 		pack_spawning = PackSpawningSettings.default,
-		horde = HordeSettings.default
+		horde = HordeSettings.default,
 	},
 	disabled = {
 		debug_color = "black",
@@ -4847,7 +4859,7 @@ ConflictDirectors = {
 		specials = SpecialsSettings.disabled,
 		roaming = RoamingSettings.disabled,
 		pack_spawning = PackSpawningSettings.disabled,
-		horde = HordeSettings.disabled
+		horde = HordeSettings.disabled,
 	},
 	demo = {
 		debug_color = "blue",
@@ -4858,7 +4870,7 @@ ConflictDirectors = {
 		specials = SpecialsSettings.default,
 		roaming = RoamingSettings.default,
 		pack_spawning = PackSpawningSettings.default,
-		horde = HordeSettings.default
+		horde = HordeSettings.default,
 	},
 	tutorial = {
 		debug_color = "maroon",
@@ -4869,7 +4881,7 @@ ConflictDirectors = {
 		specials = SpecialsSettings.disabled,
 		roaming = RoamingSettings.disabled,
 		pack_spawning = PackSpawningSettings.default,
-		horde = HordeSettings.disabled
+		horde = HordeSettings.disabled,
 	},
 	code_test = {
 		debug_color = "maroon",
@@ -4880,7 +4892,7 @@ ConflictDirectors = {
 		specials = SpecialsSettings.default,
 		roaming = RoamingSettings.default,
 		pack_spawning = PackSpawningSettings.code_test,
-		horde = HordeSettings.default
+		horde = HordeSettings.default,
 	},
 	no_patrols = {
 		debug_color = "maroon",
@@ -4891,7 +4903,7 @@ ConflictDirectors = {
 		specials = SpecialsSettings.default,
 		roaming = RoamingSettings.default,
 		pack_spawning = PackSpawningSettings.default,
-		horde = HordeSettings.default
+		horde = HordeSettings.default,
 	},
 	challenge_level = {
 		debug_color = "maroon",
@@ -4902,7 +4914,7 @@ ConflictDirectors = {
 		specials = SpecialsSettings.disabled,
 		roaming = RoamingSettings.disabled,
 		pack_spawning = PackSpawningSettings.disabled,
-		horde = HordeSettings.challenge_level
+		horde = HordeSettings.challenge_level,
 	},
 	inn_level = {
 		disabled = false,
@@ -4912,7 +4924,7 @@ ConflictDirectors = {
 		specials = SpecialsSettings.disabled,
 		roaming = RoamingSettings.default,
 		pack_spawning = PackSpawningSettings.disabled,
-		horde = HordeSettings.disabled
+		horde = HordeSettings.disabled,
 	},
 	default_weave = {
 		debug_color = "maroon",
@@ -4923,7 +4935,7 @@ ConflictDirectors = {
 		specials = SpecialsSettings.disabled,
 		roaming = RoamingSettings.default,
 		pack_spawning = PackSpawningSettings.default,
-		horde = HordeSettings.disabled
+		horde = HordeSettings.disabled,
 	},
 	default_weave_light = {
 		debug_color = "maroon",
@@ -4934,7 +4946,7 @@ ConflictDirectors = {
 		specials = SpecialsSettings.disabled,
 		roaming = RoamingSettings.default,
 		pack_spawning = PackSpawningSettings.default_light,
-		horde = HordeSettings.disabled
+		horde = HordeSettings.disabled,
 	},
 	weave_disabled = {
 		debug_color = "maroon",
@@ -4945,7 +4957,7 @@ ConflictDirectors = {
 		specials = SpecialsSettings.disabled,
 		roaming = RoamingSettings.disabled,
 		pack_spawning = PackSpawningSettings.disabled,
-		horde = HordeSettings.disabled
+		horde = HordeSettings.disabled,
 	},
 	weave_beastmen = {
 		debug_color = "maroon",
@@ -4956,7 +4968,7 @@ ConflictDirectors = {
 		specials = SpecialsSettings.disabled,
 		roaming = RoamingSettings.default,
 		pack_spawning = PackSpawningSettings.beastmen,
-		horde = HordeSettings.disabled
+		horde = HordeSettings.disabled,
 	},
 	weave_beastmen_light = {
 		debug_color = "maroon",
@@ -4967,7 +4979,7 @@ ConflictDirectors = {
 		specials = SpecialsSettings.disabled,
 		roaming = RoamingSettings.default,
 		pack_spawning = PackSpawningSettings.beastmen_light,
-		horde = HordeSettings.disabled
+		horde = HordeSettings.disabled,
 	},
 	weave_chaos = {
 		debug_color = "maroon",
@@ -4978,7 +4990,7 @@ ConflictDirectors = {
 		specials = SpecialsSettings.disabled,
 		roaming = RoamingSettings.default,
 		pack_spawning = PackSpawningSettings.chaos,
-		horde = HordeSettings.disabled
+		horde = HordeSettings.disabled,
 	},
 	weave_chaos_light = {
 		debug_color = "maroon",
@@ -4989,7 +5001,7 @@ ConflictDirectors = {
 		specials = SpecialsSettings.disabled,
 		roaming = RoamingSettings.default,
 		pack_spawning = PackSpawningSettings.chaos_light,
-		horde = HordeSettings.disabled
+		horde = HordeSettings.disabled,
 	},
 	weave_skaven = {
 		debug_color = "maroon",
@@ -5000,7 +5012,7 @@ ConflictDirectors = {
 		specials = SpecialsSettings.disabled,
 		roaming = RoamingSettings.default,
 		pack_spawning = PackSpawningSettings.skaven,
-		horde = HordeSettings.disabled
+		horde = HordeSettings.disabled,
 	},
 	weave_skaven_light = {
 		debug_color = "maroon",
@@ -5011,7 +5023,7 @@ ConflictDirectors = {
 		specials = SpecialsSettings.disabled,
 		roaming = RoamingSettings.default,
 		pack_spawning = PackSpawningSettings.skaven_light,
-		horde = HordeSettings.disabled
+		horde = HordeSettings.disabled,
 	},
 	weave_skaven_beastmen = {
 		debug_color = "maroon",
@@ -5022,42 +5034,45 @@ ConflictDirectors = {
 		specials = SpecialsSettings.disabled,
 		roaming = RoamingSettings.default,
 		pack_spawning = PackSpawningSettings.skaven_beastmen,
-		horde = HordeSettings.disabled
-	}
+		horde = HordeSettings.disabled,
+	},
 }
+
 local force_local_require = true
 
 DLCUtils.require_list("conflict_settings_files", force_local_require)
 
-local difficulties = Difficulties
-local start_time = os.clock()
-local ConflictUtils_find_conflict_director_breeds = ConflictUtils.find_conflict_director_breeds
+do
+	local difficulties = Difficulties
+	local start_time = os.clock()
+	local ConflictUtils_find_conflict_director_breeds = ConflictUtils.find_conflict_director_breeds
 
-for conflict_director_name, data in pairs(ConflictDirectors) do
-	data.name = conflict_director_name
-	data.contained_breeds = {}
+	for conflict_director_name, data in pairs(ConflictDirectors) do
+		data.name = conflict_director_name
+		data.contained_breeds = {}
 
-	for i = 1, #difficulties do
-		local difficulty = difficulties[i]
-		local difficulty_breeds = {}
+		for i = 1, #difficulties do
+			local difficulty = difficulties[i]
+			local difficulty_breeds = {}
 
-		ConflictUtils_find_conflict_director_breeds(data, difficulty, difficulty_breeds)
+			ConflictUtils_find_conflict_director_breeds(data, difficulty, difficulty_breeds)
 
-		data.contained_breeds[difficulty] = difficulty_breeds
+			data.contained_breeds[difficulty] = difficulty_breeds
+		end
 	end
+
+	print("[ConflictSettings] Contained breeds generated in:", os.clock() - start_time)
 end
 
-print("[ConflictSettings] Contained breeds generated in:", os.clock() - start_time)
-
 RecycleSettings = {
-	destroy_stuck_distance_squared = 625,
-	destroy_los_distance_squared = 8100,
-	push_horde_in_time = true,
-	destroy_no_path_only_behind = true,
 	ai_stuck_check_start_time = 10,
-	push_horde_if_num_alive_grunts_above = 60,
+	destroy_los_distance_squared = 8100,
 	destroy_no_path_found_time = 10,
-	max_grunts = 90
+	destroy_no_path_only_behind = true,
+	destroy_stuck_distance_squared = 625,
+	max_grunts = 90,
+	push_horde_if_num_alive_grunts_above = 60,
+	push_horde_in_time = true,
 }
 CurrentConflictSettings = CurrentConflictSettings or false
 CurrentIntensitySettings = CurrentIntensitySettings or false
@@ -5067,65 +5082,70 @@ CurrentSpecialsSettings = CurrentSpecialsSettings or false
 CurrentHordeSettings = CurrentHordeSettings or false
 CurrentRoamingSettings = CurrentRoamingSettings or false
 CurrentPackSpawningSettings = CurrentPackSpawningSettings or false
-local crash = false
 
-for name, horde_setting in pairs(HordeSettings) do
-	local compositions = horde_setting.compositions
-	horde_setting.name = name
+do
+	local crash = false
 
-	for event_name, elements in pairs(TerrorEventBlueprints) do
-		for i = 1, #elements do
-			local element = elements[i]
-			local element_type = element[1]
+	for name, horde_setting in pairs(HordeSettings) do
+		local compositions = horde_setting.compositions
 
-			if element_type == "event_horde" and not compositions[element.composition_type] then
-				print(string.format("Bad or misspelled composition_type '%s' in event '%s', element number %d in horde setting %s", tostring(element.composition_type), event_name, i, name))
+		horde_setting.name = name
 
-				crash = true
+		for event_name, elements in pairs(TerrorEventBlueprints) do
+			for i = 1, #elements do
+				local element = elements[i]
+				local element_type = element[1]
+
+				if element_type == "event_horde" and not compositions[element.composition_type] then
+					print(string.format("Bad or misspelled composition_type '%s' in event '%s', element number %d in horde setting %s", tostring(element.composition_type), event_name, i, name))
+
+					crash = true
+				end
 			end
 		end
 	end
-end
 
-if crash then
-	error("Found errors in TerrorEventBlueprints, as shown here --^")
-end
+	if crash then
+		error("Found errors in TerrorEventBlueprints, as shown here --^")
+	end
 
-for id, setting in pairs(PackSpawningSettings) do
-	setting.name = id
+	for id, setting in pairs(PackSpawningSettings) do
+		setting.name = id
 
-	if not setting.disabled then
-		roaming_set = setting.roaming_set
-		roaming_set.name = id
-		local weights = {}
-		local breed_packs_override = roaming_set.breed_packs_override
+		if not setting.disabled then
+			roaming_set = setting.roaming_set
+			roaming_set.name = id
 
-		if breed_packs_override then
-			for i = 1, #breed_packs_override do
-				weights[i] = breed_packs_override[i][2]
+			local weights = {}
+			local breed_packs_override = roaming_set.breed_packs_override
+
+			if breed_packs_override then
+				for i = 1, #breed_packs_override do
+					weights[i] = breed_packs_override[i][2]
+				end
+
+				roaming_set.breed_packs_override_loaded_dice = {
+					LoadedDice.create(weights),
+				}
 			end
-
-			roaming_set.breed_packs_override_loaded_dice = {
-				LoadedDice.create(weights)
-			}
 		end
 	end
-end
 
-for name, boss_setting in pairs(BossSettings) do
-	boss_setting.name = name
-end
+	for name, boss_setting in pairs(BossSettings) do
+		boss_setting.name = name
+	end
 
-for name, intensity_setting in pairs(IntensitySettings) do
-	intensity_setting.name = name
-end
+	for name, intensity_setting in pairs(IntensitySettings) do
+		intensity_setting.name = name
+	end
 
-for name, specials_setting in pairs(SpecialsSettings) do
-	specials_setting.name = name
-end
+	for name, specials_setting in pairs(SpecialsSettings) do
+		specials_setting.name = name
+	end
 
-for name, pacing_setting in pairs(PacingSettings) do
-	pacing_setting.name = name
+	for name, pacing_setting in pairs(PacingSettings) do
+		pacing_setting.name = name
+	end
 end
 
 DebugBreedSpawns = {}

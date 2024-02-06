@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/unit_extensions/weapons/actions/action_flamethrower.lua
+
 ActionFlamethrower = class(ActionFlamethrower, ActionBase)
+
 local POSITION_TWEAK = -1.5
 local SPRAY_RANGE = math.abs(POSITION_TWEAK) + 10
 local SPRAY_RADIUS = 2
@@ -6,7 +9,7 @@ local MAX_TARGETS = 50
 local NODES = {
 	"j_leftshoulder",
 	"j_rightshoulder",
-	"j_spine1"
+	"j_spine1",
 }
 local NUM_NODES = #NODES
 
@@ -41,6 +44,7 @@ ActionFlamethrower.client_owner_start_action = function (self, new_action, t, ch
 	self.spray_range = new_action.spray_range and math.abs(POSITION_TWEAK) + new_action.spray_range or SPRAY_RANGE
 	self.charge_level = chain_action_data and chain_action_data.charge_level or 1
 	self.max_flame_time = new_action.fire_stop_time and t + new_action.fire_stop_time or t + self.charge_level * (new_action.charge_fuel_time_multiplier or 3)
+
 	local full_charge_boost = self.buff_extension:has_buff_perk("full_charge_boost")
 
 	if full_charge_boost and self.charge_level >= 1 then
@@ -66,8 +70,9 @@ ActionFlamethrower.client_owner_post_update = function (self, dt, t, world, can_
 	local network_transmit = self.network_transmit
 	local is_server = self.is_server
 
-	if self.state == "waiting_to_shoot" and self.time_to_shoot <= t then
+	if self.state == "waiting_to_shoot" and t >= self.time_to_shoot then
 		self.state = "shooting"
+
 		local muzzle_unit = current_action.first_person_muzzle and first_person_unit or self.weapon_unit
 		local muzzle_node_name = self.muzzle_node_name
 		local go_id = self.unit_id
@@ -117,7 +122,7 @@ ActionFlamethrower.client_owner_post_update = function (self, dt, t, world, can_
 
 	self.overcharge_timer = self.overcharge_timer + dt
 
-	if self.state == "shooting" and current_action.overcharge_interval <= self.overcharge_timer then
+	if self.state == "shooting" and self.overcharge_timer >= current_action.overcharge_interval then
 		local overcharge_amount = PlayerUnitStatusSettings.overcharge_values[current_action.overcharge_type]
 
 		if self.buff_extension then
@@ -140,7 +145,7 @@ ActionFlamethrower.client_owner_post_update = function (self, dt, t, world, can_
 
 		if not Managers.player:owner(owner_unit).bot_player and not self._rumble_effect_id then
 			self._rumble_effect_id = Managers.state.controller_features:add_effect("persistent_rumble", {
-				rumble_effect = "reload_start"
+				rumble_effect = "reload_start",
 			})
 		end
 
@@ -148,7 +153,7 @@ ActionFlamethrower.client_owner_post_update = function (self, dt, t, world, can_
 		local buff_target_number = 0
 
 		if do_damage then
-			if current_action.damage_interval <= self.damage_timer then
+			if self.damage_timer >= current_action.damage_interval then
 				self.damage_timer = 0
 			end
 
@@ -169,6 +174,7 @@ ActionFlamethrower.client_owner_post_update = function (self, dt, t, world, can_
 
 						if breed then
 							buff_target_number = buff_target_number + 1
+
 							local rand = math.round(Math.random_range(1, NUM_NODES))
 
 							for node_i = 1, NUM_NODES do
@@ -190,10 +196,10 @@ ActionFlamethrower.client_owner_post_update = function (self, dt, t, world, can_
 						if result then
 							local power_level = self.power_level
 							local consecutive_hits = self.old_targets and self.old_targets[current_target]
-							local override_damage_profile = nil
+							local override_damage_profile
 
 							if consecutive_hits then
-								power_level = power_level * math.clamp(consecutive_hits, 0, 4) * 0.5
+								power_level = power_level * (math.clamp(consecutive_hits, 0, 4) * 0.5)
 
 								if consecutive_hits < 5 then
 									override_damage_profile = current_action.initial_damage_profile or current_action.damage_profile or "default"
@@ -220,7 +226,7 @@ ActionFlamethrower.client_owner_post_update = function (self, dt, t, world, can_
 				local player_rotation = Unit.world_rotation(first_person_unit, 0)
 				local player_direction = Vector3.normalize(Quaternion.forward(player_rotation))
 				local result = PhysicsWorld.immediate_raycast_actors(physics_world, player_position, player_direction, flamethrower_range, "static_collision_filter", "filter_player_ray_projectile_static_only", "dynamic_collision_filter", "filter_player_ray_projectile_hitbox_only")
-				local hit_unit = nil
+				local hit_unit
 
 				if result then
 					local difficulty_settings = Managers.state.difficulty:get_difficulty_settings()
@@ -258,7 +264,7 @@ ActionFlamethrower.client_owner_post_update = function (self, dt, t, world, can_
 
 			self.damage_timer = self.damage_timer + dt
 		end
-	elseif self.max_flame_time <= t and self.state == "shooting" then
+	elseif t >= self.max_flame_time and self.state == "shooting" then
 		self.state = "shot"
 
 		self:_stop_fx()
@@ -339,6 +345,7 @@ ActionFlamethrower._clear_targets = function (self)
 
 	for i = 1, #targets do
 		local current_target_count = old_targets and old_targets[targets[i]] or 0
+
 		current_targets[targets[i]] = current_target_count + 1
 	end
 
@@ -388,7 +395,7 @@ ActionFlamethrower._select_targets = function (self, world, show_outline)
 					end
 				end
 
-				if MAX_TARGETS <= num_hit then
+				if num_hit >= MAX_TARGETS then
 					break
 				end
 			end
@@ -404,7 +411,7 @@ ActionFlamethrower._check_within_cone = function (self, player_position, player_
 	local target_cos_alpha = Vector3.dot(player_direction, target_direction)
 	local dot_threshold = is_enemy and self.dot_check or 0.99
 
-	if target_cos_alpha >= dot_threshold then
+	if dot_threshold <= target_cos_alpha then
 		return true
 	end
 

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_switch_weapons_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTSwitchWeaponsAction = class(BTSwitchWeaponsAction, BTNode)
@@ -9,6 +11,7 @@ end
 
 BTSwitchWeaponsAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
+
 	blackboard.action = action
 	blackboard.active_node = BTSwitchWeaponsAction
 
@@ -23,6 +26,7 @@ BTSwitchWeaponsAction.enter = function (self, unit, blackboard, t)
 	blackboard.inventory_item_set = wanted_set
 	blackboard.switching_done_time = t + (action and action.switch_done_time or 0.75)
 	blackboard.move_state = "idle"
+
 	local switch_animation = action and action.switch_animation
 
 	if switch_animation then
@@ -34,13 +38,14 @@ BTSwitchWeaponsAction.leave = function (self, unit, blackboard, t, reason, destr
 	blackboard.switching_weapons = false
 	blackboard.has_switched_weapons = true
 	blackboard.spawn_to_running = nil
+
 	local navigation_extension = blackboard.navigation_extension
 
 	navigation_extension:set_enabled(true)
 end
 
 BTSwitchWeaponsAction.run = function (self, unit, blackboard, t, dt)
-	if blackboard.switching_done_time < t then
+	if t > blackboard.switching_done_time then
 		return "done"
 	end
 

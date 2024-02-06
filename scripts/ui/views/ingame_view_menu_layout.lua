@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/ingame_view_menu_layout.lua
+
 local function player_stuck_cb()
 	local level_key = Managers.state.game_mode:level_key()
 	local player = Managers.player:local_player()
@@ -18,825 +20,825 @@ if IS_PS4 then
 		in_menu = {
 			alone = {
 				{
+					display_name = "return_to_game_button_name",
 					fade = false,
 					transition = "exit_menu",
-					display_name = "return_to_game_button_name"
 				},
 				{
 					disable_when_matchmaking_ready = true,
 					display_name = "profile_menu_button_name",
-					requires_player_unit = true,
 					fade = true,
+					requires_player_unit = true,
+					transition = "character_selection",
 					transition_state = "character",
-					transition = "character_selection"
 				},
 				{
 					display_name = "interact_open_inventory_chest",
-					requires_player_unit = true,
 					fade = true,
+					requires_player_unit = true,
+					transition = "hero_view_force",
 					transition_state = "overview",
-					transition = "hero_view_force"
 				},
 				{
+					disable_when_matchmaking_ready = true,
+					display_name = "options_menu_button_name",
 					fade = true,
 					transition = "options_menu",
-					display_name = "options_menu_button_name",
-					disable_when_matchmaking_ready = true
 				},
 				{
 					fade = false,
 					transition = "return_to_title_screen",
-					display_name = quit_menu_button_text
-				}
+					display_name = quit_menu_button_text,
+				},
 			},
 			host = {
 				{
+					display_name = "return_to_game_button_name",
 					fade = false,
 					transition = "exit_menu",
-					display_name = "return_to_game_button_name"
 				},
 				{
 					disable_when_matchmaking_ready = true,
 					display_name = "profile_menu_button_name",
-					requires_player_unit = true,
 					fade = true,
+					requires_player_unit = true,
+					transition = "character_selection",
 					transition_state = "character",
-					transition = "character_selection"
 				},
 				{
 					display_name = "interact_open_inventory_chest",
-					requires_player_unit = true,
 					fade = true,
+					requires_player_unit = true,
+					transition = "hero_view_force",
 					transition_state = "overview",
-					transition = "hero_view_force"
 				},
 				{
+					disable_when_matchmaking_ready = true,
+					display_name = "options_menu_button_name",
 					fade = true,
 					transition = "options_menu",
-					display_name = "options_menu_button_name",
-					disable_when_matchmaking_ready = true
 				},
 				{
 					fade = false,
 					transition = "leave_group",
-					display_name = disband_party_button_text
+					display_name = disband_party_button_text,
 				},
 				{
 					fade = false,
 					transition = "return_to_title_screen",
-					display_name = quit_menu_button_text
-				}
+					display_name = quit_menu_button_text,
+				},
 			},
 			client = {
 				{
+					display_name = "return_to_game_button_name",
 					fade = false,
 					transition = "exit_menu",
-					display_name = "return_to_game_button_name"
 				},
 				{
 					disable_when_matchmaking_ready = true,
 					display_name = "profile_menu_button_name",
-					requires_player_unit = true,
 					fade = true,
+					requires_player_unit = true,
+					transition = "character_selection",
 					transition_state = "character",
-					transition = "character_selection"
 				},
 				{
 					display_name = "interact_open_inventory_chest",
-					requires_player_unit = true,
 					fade = true,
+					requires_player_unit = true,
+					transition = "hero_view_force",
 					transition_state = "overview",
-					transition = "hero_view_force"
 				},
 				{
+					disable_when_matchmaking_ready = true,
+					display_name = "options_menu_button_name",
 					fade = true,
 					transition = "options_menu",
-					display_name = "options_menu_button_name",
-					disable_when_matchmaking_ready = true
 				},
 				{
 					fade = false,
 					transition = "leave_group",
-					display_name = leave_party_button_text
+					display_name = leave_party_button_text,
 				},
 				{
 					fade = false,
 					transition = "return_to_title_screen",
-					display_name = quit_menu_button_text
-				}
+					display_name = quit_menu_button_text,
+				},
 			},
 			demo = {
 				{
+					display_name = "return_to_game_button_name",
 					transition = "exit_menu",
-					display_name = "return_to_game_button_name"
 				},
 				{
+					display_name = "menu_restart",
 					transition = "restart_demo",
-					display_name = "menu_restart"
 				},
 				{
+					display_name = "menu_invert_controls",
 					transition = "demo_invert_controls",
-					display_name = "menu_invert_controls"
 				},
 				{
+					display_name = "menu_return_to_title_screen",
 					transition = "return_to_demo_title_screen",
-					display_name = "menu_return_to_title_screen"
-				}
-			}
+				},
+			},
 		},
 		in_game = {
 			alone = {
 				{
+					display_name = "return_to_game_button_name",
 					fade = false,
 					transition = "exit_menu",
-					display_name = "return_to_game_button_name"
 				},
 				{
+					disable_when_matchmaking_ready = true,
+					display_name = "options_menu_button_name",
 					fade = true,
 					transition = "options_menu",
-					display_name = "options_menu_button_name",
-					disable_when_matchmaking_ready = true
 				},
 				{
+					display_name = "leave_game_menu_button_name",
 					fade = false,
 					transition = "leave_group",
-					display_name = "leave_game_menu_button_name"
 				},
 				{
 					fade = false,
 					transition = "return_to_title_screen",
-					display_name = quit_menu_button_text
-				}
+					display_name = quit_menu_button_text,
+				},
 			},
 			host = {
 				{
+					display_name = "return_to_game_button_name",
 					fade = false,
 					transition = "exit_menu",
-					display_name = "return_to_game_button_name"
 				},
 				{
+					disable_when_matchmaking_ready = true,
+					display_name = "options_menu_button_name",
 					fade = true,
 					transition = "options_menu",
-					display_name = "options_menu_button_name",
-					disable_when_matchmaking_ready = true
 				},
 				{
 					fade = false,
 					transition = "leave_group",
-					display_name = disband_party_button_text
+					display_name = disband_party_button_text,
 				},
 				{
 					fade = false,
 					transition = "return_to_title_screen",
-					display_name = quit_menu_button_text
-				}
+					display_name = quit_menu_button_text,
+				},
 			},
 			client = {
 				{
+					display_name = "return_to_game_button_name",
 					fade = false,
 					transition = "exit_menu",
-					display_name = "return_to_game_button_name"
 				},
 				{
+					disable_when_matchmaking_ready = true,
+					display_name = "options_menu_button_name",
 					fade = true,
 					transition = "options_menu",
-					display_name = "options_menu_button_name",
-					disable_when_matchmaking_ready = true
 				},
 				{
 					fade = false,
 					transition = "leave_group",
-					display_name = leave_party_button_text
+					display_name = leave_party_button_text,
 				},
 				{
 					fade = false,
 					transition = "return_to_title_screen",
-					display_name = quit_menu_button_text
-				}
+					display_name = quit_menu_button_text,
+				},
 			},
 			tutorial = {
 				{
+					display_name = "return_to_game_button_name",
 					transition = "exit_menu",
-					display_name = "return_to_game_button_name"
 				},
 				{
+					display_name = "options_menu_button_name",
 					transition = "options_menu",
-					display_name = "options_menu_button_name"
 				},
 				{
+					display_name = "leave_game_menu_button_name",
 					fade = false,
 					transition = "leave_group",
-					display_name = "leave_game_menu_button_name"
 				},
 				{
 					transition = "return_to_title_screen",
-					display_name = quit_menu_button_text
-				}
+					display_name = quit_menu_button_text,
+				},
 			},
 			demo = {
 				{
+					display_name = "return_to_game_button_name",
 					transition = "exit_menu",
-					display_name = "return_to_game_button_name"
 				},
 				{
+					display_name = "menu_restart",
 					transition = "restart_demo",
-					display_name = "menu_restart"
 				},
 				{
+					display_name = "menu_invert_controls",
 					transition = "demo_invert_controls",
-					display_name = "menu_invert_controls"
 				},
 				{
+					display_name = "menu_return_to_title_screen",
 					transition = "return_to_demo_title_screen",
-					display_name = "menu_return_to_title_screen"
-				}
-			}
-		}
+				},
+			},
+		},
 	}
 elseif IS_XB1 then
 	menu_layouts = {
 		in_menu = {
 			alone = {
 				{
+					display_name = "return_to_game_button_name",
 					fade = false,
 					transition = "exit_menu",
-					display_name = "return_to_game_button_name"
 				},
 				{
 					disable_when_matchmaking_ready = true,
 					display_name = "profile_menu_button_name",
-					requires_player_unit = true,
 					fade = true,
+					requires_player_unit = true,
+					transition = "character_selection",
 					transition_state = "character",
-					transition = "character_selection"
 				},
 				{
 					display_name = "interact_open_inventory_chest",
-					requires_player_unit = true,
 					fade = true,
+					requires_player_unit = true,
+					transition = "hero_view_force",
 					transition_state = "overview",
-					transition = "hero_view_force"
 				},
 				{
+					disable_when_matchmaking_ready = true,
+					display_name = "options_menu_button_name",
 					fade = true,
 					transition = "options_menu",
-					display_name = "options_menu_button_name",
-					disable_when_matchmaking_ready = true
 				},
 				{
+					display_name = "leave_game_menu_button_name",
 					fade = false,
 					transition = "leave_group",
-					display_name = "leave_game_menu_button_name"
 				},
 				{
 					fade = false,
 					transition = "return_to_title_screen",
-					display_name = quit_menu_button_text
-				}
+					display_name = quit_menu_button_text,
+				},
 			},
 			host = {
 				{
+					display_name = "return_to_game_button_name",
 					fade = false,
 					transition = "exit_menu",
-					display_name = "return_to_game_button_name"
 				},
 				{
 					disable_when_matchmaking_ready = true,
 					display_name = "profile_menu_button_name",
-					requires_player_unit = true,
 					fade = true,
+					requires_player_unit = true,
+					transition = "character_selection",
 					transition_state = "character",
-					transition = "character_selection"
 				},
 				{
 					display_name = "interact_open_inventory_chest",
-					requires_player_unit = true,
 					fade = true,
+					requires_player_unit = true,
+					transition = "hero_view_force",
 					transition_state = "overview",
-					transition = "hero_view_force"
 				},
 				{
+					disable_when_matchmaking_ready = true,
+					display_name = "options_menu_button_name",
 					fade = true,
 					transition = "options_menu",
-					display_name = "options_menu_button_name",
-					disable_when_matchmaking_ready = true
 				},
 				{
 					fade = false,
 					transition = "leave_group",
-					display_name = disband_party_button_text
+					display_name = disband_party_button_text,
 				},
 				{
 					fade = false,
 					transition = "return_to_title_screen",
-					display_name = quit_menu_button_text
-				}
+					display_name = quit_menu_button_text,
+				},
 			},
 			client = {
 				{
+					display_name = "return_to_game_button_name",
 					fade = false,
 					transition = "exit_menu",
-					display_name = "return_to_game_button_name"
 				},
 				{
 					disable_when_matchmaking_ready = true,
 					display_name = "profile_menu_button_name",
-					requires_player_unit = true,
 					fade = true,
+					requires_player_unit = true,
+					transition = "character_selection",
 					transition_state = "character",
-					transition = "character_selection"
 				},
 				{
 					display_name = "interact_open_inventory_chest",
-					requires_player_unit = true,
 					fade = true,
+					requires_player_unit = true,
+					transition = "hero_view_force",
 					transition_state = "overview",
-					transition = "hero_view_force"
 				},
 				{
+					disable_when_matchmaking_ready = true,
+					display_name = "options_menu_button_name",
 					fade = true,
 					transition = "options_menu",
-					display_name = "options_menu_button_name",
-					disable_when_matchmaking_ready = true
 				},
 				{
 					fade = false,
 					transition = "leave_group",
-					display_name = leave_party_button_text
+					display_name = leave_party_button_text,
 				},
 				{
 					fade = false,
 					transition = "return_to_title_screen",
-					display_name = quit_menu_button_text
-				}
+					display_name = quit_menu_button_text,
+				},
 			},
 			demo = {
 				{
+					display_name = "return_to_game_button_name",
 					transition = "exit_menu",
-					display_name = "return_to_game_button_name"
 				},
 				{
+					display_name = "menu_restart",
 					transition = "restart_demo",
-					display_name = "menu_restart"
 				},
 				{
+					display_name = "menu_invert_controls",
 					transition = "demo_invert_controls",
-					display_name = "menu_invert_controls"
 				},
 				{
+					display_name = "menu_return_to_title_screen",
 					transition = "return_to_demo_title_screen",
-					display_name = "menu_return_to_title_screen"
-				}
-			}
+				},
+			},
 		},
 		in_game = {
 			alone = {
 				{
+					display_name = "return_to_game_button_name",
 					fade = false,
 					transition = "exit_menu",
-					display_name = "return_to_game_button_name"
 				},
 				{
+					disable_when_matchmaking_ready = true,
+					display_name = "options_menu_button_name",
 					fade = true,
 					transition = "options_menu",
-					display_name = "options_menu_button_name",
-					disable_when_matchmaking_ready = true
 				},
 				{
+					display_name = "leave_game_menu_button_name",
 					fade = false,
 					transition = "leave_group",
-					display_name = "leave_game_menu_button_name"
 				},
 				{
 					fade = false,
 					transition = "return_to_title_screen",
-					display_name = quit_menu_button_text
-				}
+					display_name = quit_menu_button_text,
+				},
 			},
 			host = {
 				{
+					display_name = "return_to_game_button_name",
 					fade = false,
 					transition = "exit_menu",
-					display_name = "return_to_game_button_name"
 				},
 				{
+					disable_when_matchmaking_ready = true,
+					display_name = "options_menu_button_name",
 					fade = true,
 					transition = "options_menu",
-					display_name = "options_menu_button_name",
-					disable_when_matchmaking_ready = true
 				},
 				{
 					fade = false,
 					transition = "leave_group",
-					display_name = disband_party_button_text
+					display_name = disband_party_button_text,
 				},
 				{
 					fade = false,
 					transition = "return_to_title_screen",
-					display_name = quit_menu_button_text
-				}
+					display_name = quit_menu_button_text,
+				},
 			},
 			client = {
 				{
+					display_name = "return_to_game_button_name",
 					fade = false,
 					transition = "exit_menu",
-					display_name = "return_to_game_button_name"
 				},
 				{
+					disable_when_matchmaking_ready = true,
+					display_name = "options_menu_button_name",
 					fade = true,
 					transition = "options_menu",
-					display_name = "options_menu_button_name",
-					disable_when_matchmaking_ready = true
 				},
 				{
 					fade = false,
 					transition = "leave_group",
-					display_name = leave_party_button_text
+					display_name = leave_party_button_text,
 				},
 				{
 					fade = false,
 					transition = "return_to_title_screen",
-					display_name = quit_menu_button_text
-				}
+					display_name = quit_menu_button_text,
+				},
 			},
 			tutorial = {
 				{
+					display_name = "return_to_game_button_name",
 					transition = "exit_menu",
-					display_name = "return_to_game_button_name"
 				},
 				{
+					display_name = "options_menu_button_name",
 					transition = "options_menu",
-					display_name = "options_menu_button_name"
 				},
 				{
+					display_name = "leave_game_menu_button_name",
 					fade = false,
 					transition = "leave_group",
-					display_name = "leave_game_menu_button_name"
 				},
 				{
 					transition = "return_to_title_screen",
-					display_name = quit_menu_button_text
-				}
+					display_name = quit_menu_button_text,
+				},
 			},
 			demo = {
 				{
+					display_name = "return_to_game_button_name",
 					transition = "exit_menu",
-					display_name = "return_to_game_button_name"
 				},
 				{
+					display_name = "menu_restart",
 					transition = "restart_demo",
-					display_name = "menu_restart"
 				},
 				{
+					display_name = "menu_invert_controls",
 					transition = "demo_invert_controls",
-					display_name = "menu_invert_controls"
 				},
 				{
+					display_name = "menu_return_to_title_screen",
 					transition = "return_to_demo_title_screen",
-					display_name = "menu_return_to_title_screen"
-				}
-			}
-		}
+				},
+			},
+		},
 	}
 else
 	menu_layouts = {
 		in_menu = {
 			alone = {
 				{
+					display_name = "return_to_game_button_name",
 					fade = false,
 					transition = "exit_menu",
-					display_name = "return_to_game_button_name"
 				},
 				{
 					disable_when_matchmaking_ready = true,
 					display_name = "profile_menu_button_name",
-					requires_player_unit = true,
 					fade = true,
+					requires_player_unit = true,
+					transition = "character_selection",
 					transition_state = "character",
-					transition = "character_selection"
 				},
 				{
 					disable_when_matchmaking_ready = true,
 					display_name = "inventory_menu_button_name",
-					requires_player_unit = true,
 					fade = true,
+					requires_player_unit = true,
+					transition = "hero_view",
 					transition_state = "overview",
-					transition = "hero_view"
 				},
 				{
+					disable_when_matchmaking_ready = true,
+					display_name = "options_menu_button_name",
 					fade = true,
 					transition = "options_menu",
-					display_name = "options_menu_button_name",
-					disable_when_matchmaking_ready = true
 				},
 				{
+					display_name = "menu_return_to_title_screen",
 					fade = false,
 					transition = "return_to_pc_menu",
-					display_name = "menu_return_to_title_screen"
 				},
 				{
+					display_name = "quit_menu_button_name",
 					fade = false,
 					transition = "quit_game",
-					display_name = "quit_menu_button_name"
-				}
+				},
 			},
 			host = {
 				{
+					display_name = "return_to_game_button_name",
 					fade = false,
 					transition = "exit_menu",
-					display_name = "return_to_game_button_name"
 				},
 				{
 					disable_when_matchmaking_ready = true,
 					display_name = "profile_menu_button_name",
-					requires_player_unit = true,
 					fade = true,
+					requires_player_unit = true,
+					transition = "character_selection",
 					transition_state = "character",
-					transition = "character_selection"
 				},
 				{
 					disable_when_matchmaking_ready = true,
 					display_name = "inventory_menu_button_name",
-					requires_player_unit = true,
 					fade = true,
+					requires_player_unit = true,
+					transition = "hero_view",
 					transition_state = "overview",
-					transition = "hero_view"
 				},
 				{
+					disable_when_matchmaking_ready = true,
+					display_name = "options_menu_button_name",
 					fade = true,
 					transition = "options_menu",
-					display_name = "options_menu_button_name",
-					disable_when_matchmaking_ready = true
 				},
 				{
 					fade = false,
 					transition = "leave_group",
-					display_name = disband_party_button_text
+					display_name = disband_party_button_text,
 				},
 				{
+					display_name = "menu_return_to_title_screen",
 					fade = false,
 					transition = "return_to_pc_menu",
-					display_name = "menu_return_to_title_screen"
 				},
 				{
+					display_name = "quit_menu_button_name",
 					fade = false,
 					transition = "quit_game",
-					display_name = "quit_menu_button_name"
-				}
+				},
 			},
 			client = {
 				{
+					display_name = "return_to_game_button_name",
 					fade = false,
 					transition = "exit_menu",
-					display_name = "return_to_game_button_name"
 				},
 				{
 					disable_when_matchmaking_ready = true,
 					display_name = "profile_menu_button_name",
-					requires_player_unit = true,
 					fade = true,
+					requires_player_unit = true,
+					transition = "character_selection",
 					transition_state = "character",
-					transition = "character_selection"
 				},
 				{
 					disable_when_matchmaking_ready = true,
 					display_name = "inventory_menu_button_name",
-					requires_player_unit = true,
 					fade = true,
+					requires_player_unit = true,
+					transition = "hero_view",
 					transition_state = "overview",
-					transition = "hero_view"
 				},
 				{
+					disable_when_matchmaking_ready = true,
+					display_name = "options_menu_button_name",
 					fade = true,
 					transition = "options_menu",
-					display_name = "options_menu_button_name",
-					disable_when_matchmaking_ready = true
 				},
 				{
 					fade = false,
 					transition = "leave_group",
-					display_name = leave_party_button_text
+					display_name = leave_party_button_text,
 				},
 				{
+					display_name = "menu_return_to_title_screen",
 					fade = false,
 					transition = "return_to_pc_menu",
-					display_name = "menu_return_to_title_screen"
 				},
 				{
+					display_name = "quit_menu_button_name",
 					fade = false,
 					transition = "quit_game",
-					display_name = "quit_menu_button_name"
-				}
+				},
 			},
 			demo = {
 				{
+					display_name = "return_to_game_button_name",
 					transition = "exit_menu",
-					display_name = "return_to_game_button_name"
 				},
 				{
+					display_name = "menu_restart",
 					transition = "restart_demo",
-					display_name = "menu_restart"
 				},
 				{
+					display_name = "menu_invert_controls",
 					transition = "demo_invert_controls",
-					display_name = "menu_invert_controls"
 				},
 				{
+					display_name = "menu_return_to_title_screen",
 					transition = "return_to_demo_title_screen",
-					display_name = "menu_return_to_title_screen"
-				}
-			}
+				},
+			},
 		},
 		in_game = {
 			alone = {
 				{
+					display_name = "return_to_game_button_name",
 					fade = false,
 					transition = "exit_menu",
-					display_name = "return_to_game_button_name"
 				},
 				{
+					disable_when_matchmaking_ready = true,
+					display_name = "options_menu_button_name",
 					fade = true,
 					transition = "options_menu",
-					display_name = "options_menu_button_name",
-					disable_when_matchmaking_ready = true
 				},
 				{
+					display_name = "leave_game_menu_button_name",
 					fade = false,
 					transition = "leave_group",
-					display_name = "leave_game_menu_button_name"
 				},
 				{
+					display_name = "quit_menu_button_name",
 					fade = false,
 					transition = "quit_game",
-					display_name = "quit_menu_button_name"
-				}
+				},
 			},
 			host = {
 				{
+					display_name = "return_to_game_button_name",
 					fade = false,
 					transition = "exit_menu",
-					display_name = "return_to_game_button_name"
 				},
 				{
+					disable_when_matchmaking_ready = true,
+					display_name = "options_menu_button_name",
 					fade = true,
 					transition = "options_menu",
-					display_name = "options_menu_button_name",
-					disable_when_matchmaking_ready = true
 				},
 				{
 					fade = false,
 					transition = "leave_group",
-					display_name = disband_party_button_text
+					display_name = disband_party_button_text,
 				},
 				{
+					display_name = "quit_menu_button_name",
 					fade = false,
 					transition = "quit_game",
-					display_name = "quit_menu_button_name"
-				}
+				},
 			},
 			client = {
 				{
+					display_name = "return_to_game_button_name",
 					fade = false,
 					transition = "exit_menu",
-					display_name = "return_to_game_button_name"
 				},
 				{
+					disable_when_matchmaking_ready = true,
+					display_name = "options_menu_button_name",
 					fade = true,
 					transition = "options_menu",
-					display_name = "options_menu_button_name",
-					disable_when_matchmaking_ready = true
 				},
 				{
 					fade = false,
 					transition = "leave_group",
-					display_name = leave_party_button_text
+					display_name = leave_party_button_text,
 				},
 				{
+					display_name = "quit_menu_button_name",
 					fade = false,
 					transition = "quit_game",
-					display_name = "quit_menu_button_name"
-				}
+				},
 			},
 			tutorial = {
 				{
+					display_name = "return_to_game_button_name",
 					transition = "exit_menu",
-					display_name = "return_to_game_button_name"
 				},
 				{
+					display_name = "options_menu_button_name",
 					transition = "options_menu",
-					display_name = "options_menu_button_name"
 				},
 				{
+					display_name = "leave_game_menu_button_name",
 					fade = false,
 					transition = "leave_group",
-					display_name = "leave_game_menu_button_name"
 				},
 				{
+					display_name = "quit_menu_button_name",
 					transition = "quit_game",
-					display_name = "quit_menu_button_name"
-				}
+				},
 			},
 			demo = {
 				{
+					display_name = "return_to_game_button_name",
 					transition = "exit_menu",
-					display_name = "return_to_game_button_name"
 				},
 				{
+					display_name = "menu_restart",
 					transition = "restart_demo",
-					display_name = "menu_restart"
 				},
 				{
+					display_name = "menu_invert_controls",
 					transition = "demo_invert_controls",
-					display_name = "menu_invert_controls"
 				},
 				{
+					display_name = "menu_return_to_title_screen",
 					transition = "return_to_demo_title_screen",
-					display_name = "menu_return_to_title_screen"
-				}
-			}
-		}
+				},
+			},
+		},
 	}
 end
 
 if GameSettingsDevelopment.use_global_chat and IS_WINDOWS then
 	table.insert(menu_layouts.in_menu.host, 4, {
+		display_name = "chat_menu_button_name",
 		fade = false,
 		transition = "chat_view",
-		display_name = "chat_menu_button_name"
 	})
 	table.insert(menu_layouts.in_menu.client, 4, {
+		display_name = "chat_menu_button_name",
 		fade = false,
 		transition = "chat_view",
-		display_name = "chat_menu_button_name"
 	})
 	table.insert(menu_layouts.in_menu.alone, 4, {
+		display_name = "chat_menu_button_name",
 		fade = false,
 		transition = "chat_view",
-		display_name = "chat_menu_button_name"
 	})
 	table.insert(menu_layouts.in_game.host, 4, {
+		display_name = "chat_menu_button_name",
 		fade = false,
 		transition = "chat_view",
-		display_name = "chat_menu_button_name"
 	})
 	table.insert(menu_layouts.in_game.client, 4, {
+		display_name = "chat_menu_button_name",
 		fade = false,
 		transition = "chat_view",
-		display_name = "chat_menu_button_name"
 	})
 	table.insert(menu_layouts.in_game.alone, 4, {
+		display_name = "chat_menu_button_name",
 		fade = false,
 		transition = "chat_view",
-		display_name = "chat_menu_button_name"
 	})
 end
 
 local full_access_layout = {
 	{
+		display_name = "return_to_game_button_name",
 		fade = false,
 		transition = "exit_menu",
-		display_name = "return_to_game_button_name"
 	},
 	{
+		disable_when_matchmaking = false,
 		display_name = "profile_menu_button_name",
-		requires_player_unit = true,
 		fade = true,
-		transition_state = "character",
+		requires_player_unit = true,
 		transition = "character_selection",
-		disable_when_matchmaking = false
+		transition_state = "character",
 	},
 	{
 		display_name = "inventory_menu_button_name",
+		fade = true,
 		requires_player_unit = true,
-		fade = true,
+		transition = "hero_view",
 		transition_state = "overview",
-		transition = "hero_view"
 	},
 	{
-		fade = true,
-		transition = "start_menu_view",
 		display_name = "start_menu_view",
-		requires_player_unit = true
+		fade = true,
+		requires_player_unit = true,
+		transition = "start_menu_view",
 	},
 	{
+		disable_when_matchmaking_ready = true,
+		display_name = "options_menu_button_name",
 		fade = true,
 		transition = "options_menu",
-		display_name = "options_menu_button_name",
-		disable_when_matchmaking_ready = true
 	},
 	{
+		display_name = "leave_game_menu_button_name",
 		fade = false,
 		transition = "leave_group",
-		display_name = "leave_game_menu_button_name"
 	},
 	{
+		display_name = "quit_menu_button_name",
 		fade = false,
 		transition = "quit_game",
-		display_name = "quit_menu_button_name"
-	}
+	},
 }
 
 return {
 	menu_layouts = menu_layouts,
-	full_access_layout = full_access_layout
+	full_access_layout = full_access_layout,
 }

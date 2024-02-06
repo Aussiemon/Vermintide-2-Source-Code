@@ -1,3 +1,5 @@
+﻿-- chunkname: @dialogues/generated/lookup_marker_events.lua
+
 assert(DialogueLookup[DialogueLookup_n + 1] == nil)
 
 DialogueLookup[DialogueLookup_n + 1] = "pdr_whistle_happy_01"

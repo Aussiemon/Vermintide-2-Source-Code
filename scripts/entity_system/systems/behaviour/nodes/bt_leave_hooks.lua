@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_leave_hooks.lua
+
 BTLeaveHooks = BTLeaveHooks or {}
+
 local BTLeaveHooks = BTLeaveHooks
 local unit_alive = Unit.alive
 local ScriptUnit = ScriptUnit
@@ -10,6 +13,7 @@ end
 BTLeaveHooks.check_if_victim_was_grabbed = function (unit, blackboard, t)
 	if blackboard.victim_grabbed then
 		blackboard.has_grabbed_victim = true
+
 		local status_extension = ScriptUnit.has_extension(blackboard.victim_grabbed, "status_system")
 		local is_grabbed = status_extension and status_extension:is_grabbed_by_chaos_spawn()
 
@@ -88,8 +92,11 @@ BTLeaveHooks.stormfiend_boss_rage_leave = function (unit, blackboard, t)
 	local network_manager = Managers.state.network
 	local game = network_manager:game()
 	local go_id = Managers.state.unit_storage:go_id(unit)
+
 	blackboard.intro_rage = nil
+
 	local health_extension = ScriptUnit.extension(unit, "health_system")
+
 	health_extension.is_invincible = false
 
 	GameSession.set_game_object_field(game, go_id, "show_health_bar", true)
@@ -103,6 +110,7 @@ BTLeaveHooks.stormfiend_boss_rage_leave = function (unit, blackboard, t)
 		local node_unit = node_units[1]
 		local pos = Unit.local_position(node_unit, 0)
 		local projected_wanted_pos = LocomotionUtils.pos_on_mesh(blackboard.nav_world, pos, 1, 1)
+
 		blackboard.goal_destination = Vector3Box(projected_wanted_pos)
 		blackboard.jump_down_intro = true
 	end
@@ -118,9 +126,12 @@ local function cb_grey_seer_intro_spawn_stormfiend(unit, breed, optional_data)
 	local goal_destination = optional_data.goal_destination
 	local blackboard = optional_data.blackboard
 	local t = Managers.time:time("game")
+
 	mounted_data.mount_unit = unit
 	mounted_data.knocked_off_mounted_timer = t
+
 	local mount_blackboard = BLACKBOARDS[unit]
+
 	mount_blackboard.goal_destination = goal_destination
 	mount_blackboard.anim_cb_move = true
 	mount_blackboard.intro_rage = true
@@ -138,13 +149,15 @@ BTLeaveHooks.on_grey_seer_intro_leave = function (unit, blackboard, t)
 			local pos = Unit.local_position(node_unit, 0)
 			local stormfiend_boss_breed = Breeds.skaven_stormfiend_boss
 			local spawn_category = "misc"
+
 			blackboard.knocked_off_mount = true
 			blackboard.waiting_for_pickup = true
+
 			local optional_data = {
 				spawned_func = cb_grey_seer_intro_spawn_stormfiend,
 				mounted_data = blackboard.mounted_data,
 				goal_destination = Vector3Box(POSITION_LOOKUP[unit]),
-				blackboard = blackboard
+				blackboard = blackboard,
 			}
 
 			conflict_director:spawn_queued_unit(stormfiend_boss_breed, Vector3Box(pos), QuaternionBox(Unit.local_rotation(unit, 0)), spawn_category, nil, nil, optional_data)
@@ -165,7 +178,9 @@ end
 
 BTLeaveHooks.on_grey_seer_death_sequence_leave = function (unit, blackboard, t)
 	blackboard.current_phase = 6
+
 	local health_extension = ScriptUnit.extension(blackboard.unit, "health_system")
+
 	health_extension.is_invincible = false
 
 	blackboard.navigation_extension:set_enabled(false)
@@ -190,7 +205,9 @@ end
 BTLeaveHooks.on_lord_intro_leave = function (unit, blackboard, t)
 	if HEALTH_ALIVE[unit] and not blackboard.exit_last_action then
 		local health_extension = ScriptUnit.extension(unit, "health_system")
+
 		health_extension.is_invincible = false
+
 		local game = Managers.state.network:game()
 		local go_id = Managers.state.unit_storage:go_id(unit)
 
@@ -209,7 +226,9 @@ end
 BTLeaveHooks.on_lord_warlord_intro_leave = function (unit, blackboard, t)
 	if HEALTH_ALIVE[unit] and not blackboard.exit_last_action then
 		local health_extension = ScriptUnit.extension(unit, "health_system")
+
 		health_extension.is_invincible = false
+
 		local game = Managers.state.network:game()
 		local go_id = Managers.state.unit_storage:go_id(unit)
 
@@ -219,6 +238,7 @@ BTLeaveHooks.on_lord_warlord_intro_leave = function (unit, blackboard, t)
 
 		blackboard.is_angry = true
 		blackboard.jump_down_timer = t + 5
+
 		local network_manager = Managers.state.network
 
 		network_manager:anim_event(unit, "to_dual_wield")
@@ -229,6 +249,7 @@ BTLeaveHooks.on_lord_warlord_intro_leave = function (unit, blackboard, t)
 		if node_units then
 			local center_unit = node_units[1]
 			local exit_pos = Unit.local_position(center_unit, 0)
+
 			blackboard.jump_from_pos = Vector3Box(POSITION_LOOKUP[unit])
 			blackboard.exit_pos = Vector3Box(exit_pos)
 		end
@@ -245,6 +266,7 @@ end
 
 BTLeaveHooks.remove_invincibility = function (unit, blackboard, t)
 	local health_extension = ScriptUnit.extension(unit, "health_system")
+
 	health_extension.is_invincible = false
 end
 
@@ -265,7 +287,9 @@ end
 BTLeaveHooks.beastmen_standard_bearer_leave_move_and_plant_standard = function (unit, blackboard, t)
 	blackboard.move_and_place_standard = nil
 	blackboard.stagger = nil
+
 	local health_extension = ScriptUnit.extension(unit, "health_system")
+
 	health_extension.is_invincible = false
 end
 

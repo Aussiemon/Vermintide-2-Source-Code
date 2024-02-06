@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/unit_extensions/weapons/area_damage/liquid/damage_blob_extension.lua
+
 DamageBlobExtension = class(DamageBlobExtension)
+
 local unit_alive = Unit.alive
 local position_lookup = POSITION_LOOKUP
 
@@ -7,6 +10,7 @@ DamageBlobExtension.init = function (self, extension_init_context, unit, extensi
 	local entity_manager = Managers.state.entity
 	local ai_system = entity_manager:system("ai_system")
 	local network_manager = Managers.state.network
+
 	self.world = world
 	self.game = network_manager:game()
 	self.unit = unit
@@ -21,12 +25,16 @@ DamageBlobExtension.init = function (self, extension_init_context, unit, extensi
 	self.sfx_list = {}
 	self.ai_units_inside = {}
 	self.player_units_inside = {}
+
 	local buff_system = entity_manager:system("buff_system")
+
 	self.buff_system = buff_system
 	self._source_unit = extension_init_data.source_unit
 	self._source_side = Managers.state.side.side_by_unit[self._source_unit]
+
 	local template_name = extension_init_data.damage_blob_template_name
 	local template = DamageBlobTemplates.templates[template_name]
+
 	self.template = template
 	self.damage_blob_template_name = template_name
 	self.immune_breeds = template.immune_breeds
@@ -49,6 +57,7 @@ DamageBlobExtension.init = function (self, extension_init_context, unit, extensi
 	self._sfx_name_stop_remains = template.sfx_name_stop_remains
 	self.is_server = Managers.player.is_server
 	self._create_blobs = template.create_blobs
+
 	local init_function = template.init_function
 
 	if init_function then
@@ -76,7 +85,9 @@ DamageBlobExtension.start_placing_blobs = function (self, wait_time, t)
 	self.last_blob_dist = 0
 	self.last_fx_pos = Vector3Box()
 	self.last_fx_dist = 0
+
 	local unit = self.unit
+
 	self.unit_id = Managers.state.network:unit_game_object_id(unit)
 	self.wait_time = t + wait_time
 
@@ -88,6 +99,7 @@ DamageBlobExtension.start_placing_blobs = function (self, wait_time, t)
 			local nav_cost_map_cost_type = template.nav_cost_map_cost_type
 			local num_volumes_guess = 10
 			local ai_system = self.ai_system
+
 			self._nav_cost_map_id = ai_system:create_nav_cost_map(nav_cost_map_cost_type, num_volumes_guess)
 		end
 
@@ -100,6 +112,7 @@ local BLOB_EXTRA_SAFE_DISTANCE = 0.5
 DamageBlobExtension.stop_placing_blobs = function (self, t)
 	self.state = "lingering"
 	self.linger_time = t + self.time_of_life
+
 	local unit = self.unit
 	local sfx_name_stop = self._sfx_name_stop
 
@@ -122,6 +135,7 @@ DamageBlobExtension.stop_placing_blobs = function (self, t)
 
 		if success_forward then
 			local rim_nodes = self.rim_nodes
+
 			rim_position_forward.z = altitude_forward
 			rim_nodes[#rim_nodes + 1] = Vector3Box(rim_position_forward)
 		end
@@ -255,9 +269,10 @@ DamageBlobExtension.place_blobs = function (self, unit, t)
 		if success then
 			local _, source = WwiseUtils.trigger_position_event(self.world, self._sfx_name_start_remains, position)
 			local sfx_list = self.sfx_list
+
 			sfx_list[#sfx_list + 1] = {
 				source = source,
-				time = t + self.blob_life_time
+				time = t + self.blob_life_time,
 			}
 		end
 	end
@@ -267,12 +282,13 @@ DamageBlobExtension.place_blobs = function (self, unit, t)
 	local fx_dist_sq = Vector3.length_squared(to_last_fx)
 	local fx_separation_dist_sq = self.fx_separation_dist^2
 
-	if fx_dist_sq >= fx_separation_dist_sq then
-		local rot = nil
+	if fx_separation_dist_sq <= fx_dist_sq then
+		local rot
 
 		if p1 then
 			local p1_to_p2 = p2 - p1
 			local normal = Vector3.cross(p1_to_p2 - p1, p3 - p1)
+
 			rot = Quaternion.look(p1_to_p2, normal)
 		else
 			rot = Quaternion.look(to_last_blob, Vector3(0, 0, 1))
@@ -292,14 +308,14 @@ DamageBlobExtension.update = function (self, unit, input, dt, context, t)
 	local state = self.state
 
 	if state == "waiting" then
-		if self.wait_time < t then
+		if t > self.wait_time then
 			self.state = "running"
 		end
 	elseif state == "running" then
 		if self._create_blobs then
 			self:place_blobs(unit, t)
 		end
-	elseif state == "lingering" and self.linger_time < t then
+	elseif state == "lingering" and t > self.linger_time then
 		Managers.state.unit_spawner:mark_for_deletion(unit)
 	end
 
@@ -311,7 +327,7 @@ DamageBlobExtension.update = function (self, unit, input, dt, context, t)
 	local blob_update_function = self._blob_update_function
 
 	if blob_update_function then
-		local result = self:_blob_update_function(t, dt, unit, self.physics_world)
+		local result = self._blob_update_function(self, t, dt, unit, self.physics_world)
 		local unit_id = self.unit_id
 
 		if not result and unit_id then
@@ -327,16 +343,18 @@ DamageBlobExtension.update = function (self, unit, input, dt, context, t)
 end
 
 DamageBlobExtension.insert_blob = function (self, position, radius, rotation, t, nav_world)
-	local nav_cost_map_volume_id = nil
+	local nav_cost_map_volume_id
 
 	if self.use_nav_cost_map_volumes then
 		local ai_system = self.ai_system
 		local cost_map_id = self._nav_cost_map_id
+
 		nav_cost_map_volume_id = ai_system:add_nav_cost_map_sphere_volume(position, radius, cost_map_id)
 	end
 
 	local blobs = self.blobs
 	local blob_index = #blobs + 1
+
 	blobs[blob_index] = {
 		position[1],
 		position[2],
@@ -344,7 +362,7 @@ DamageBlobExtension.insert_blob = function (self, position, radius, rotation, t,
 		radius,
 		{},
 		t + self.blob_life_time,
-		nav_cost_map_volume_id
+		nav_cost_map_volume_id,
 	}
 
 	self.last_blob_pos:store(position)
@@ -387,19 +405,23 @@ DamageBlobExtension.insert_fx = function (self, position, rot, t)
 	local blob_life_time = t + self.blob_life_time
 	local fx_name_filled = self.fx_name_filled
 	local fx_id_filled = World.create_particles(world, fx_name_filled, position, rot or Quaternion.identity())
+
 	fx_list[#fx_list + 1] = {
 		position = Vector3Box(position),
 		id = fx_id_filled,
 		time = blob_life_time,
-		size = Vector3Box(0.6, 1.2, 0)
+		size = Vector3Box(0.6, 1.2, 0),
 	}
+
 	local fx_name_rim = self.fx_name_rim
 	local fx_id_rim = World.create_particles(world, fx_name_rim, position, rot or Quaternion.identity())
+
 	fx_list[#fx_list + 1] = {
 		position = Vector3Box(position),
 		id = fx_id_rim,
-		time = blob_life_time
+		time = blob_life_time,
 	}
+
 	local unit_id = self.unit_id
 
 	if unit_id then
@@ -429,13 +451,16 @@ DamageBlobExtension.update_blobs_fx_and_sfx = function (self, t, dt)
 
 		if fx_entry then
 			self.current_fx_index = index
+
 			local fx_id = fx_entry.id
 			local fx_size = fx_entry.size
 
 			if fx_size then
 				local particle_size = fx_size:unbox()
+
 				particle_size[1] = math.min(particle_size[1] + dt * 1.5, fx_max_radius)
 				particle_size[2] = math.min(particle_size[2] + dt * 2, fx_max_height)
+
 				local effect_variable_id = World.find_particles_variable(world, fx_name_filled, fx_size_variable)
 
 				World.set_particles_variable(world, fx_id, effect_variable_id, particle_size)
@@ -483,8 +508,7 @@ DamageBlobExtension.update_blob_overlaps = function (self, t)
 
 	local unit = self.unit
 	local buff_system = self.buff_system
-	local first_blob = blobs[1]
-	local last_blob = blobs[num_blobs]
+	local first_blob, last_blob = blobs[1], blobs[num_blobs]
 	local first_blob_position = Vector3(first_blob[1], first_blob[2], first_blob[3])
 	local last_blob_position = Vector3(last_blob[1], last_blob[2], last_blob[3])
 
@@ -520,7 +544,7 @@ DamageBlobExtension.update_blob_overlaps = function (self, t)
 		local blob_radius = blob[4]
 		local ai_units_inside_blob = blob[5]
 
-		if blob[6] < t then
+		if t > blob[6] then
 			self:_remove_blob(blob, blob_index, blobs)
 
 			num_blobs = num_blobs - 1
@@ -599,14 +623,16 @@ DamageBlobExtension.check_overlap = function (self, unit, target_unit, blob_radi
 	elseif dist_sq < blob_radius_sq then
 		local line_dist = Vector3.distance(p1, pos_projected_on_wave_line)
 		local blob_index = math.floor(0.5 + line_dist * num_blobs) + 1
+
 		blob_index = math.clamp(blob_index, 1, num_blobs)
+
 		local blob = self.blobs[blob_index]
 		local z = blob[3]
 		local buff_template_name = self.buff_template_name
 		local buff_template_type = self.buff_template_type
 		local buff_extension = ScriptUnit.extension(target_unit, "buff_system")
 
-		if math.abs(test_pos.z - z) < blob_radius and not buff_extension:has_buff_type(buff_template_type) then
+		if blob_radius > math.abs(test_pos.z - z) and not buff_extension:has_buff_type(buff_template_type) then
 			if status_extension.in_liquid_unit ~= unit then
 				StatusUtils.set_in_liquid_network(target_unit, true, unit)
 			end

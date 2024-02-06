@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/demo_end_ui.lua
+
 local definitions = local_require("scripts/ui/views/demo_end_ui_definitions")
 local scenegraph_definition = definitions.scenegraph_definition
 local background_widget_definitions = definitions.background_widget_definitions
@@ -5,14 +7,17 @@ local widget_definitions = definitions.widget_definitions
 local demo_video = definitions.demo_video
 local DO_RELOAD = false
 local VIDEO_REFERENCE_NAME = "DemoEndUI"
+
 DemoEndUI = class(DemoEndUI)
 
 DemoEndUI.init = function (self, world)
 	self._world = world
+
 	local platform = PLATFORM
+
 	self.platform = platform
 	self.render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 	self._ui_renderer = UIRenderer.create(world, "material", "materials/fonts/gw_fonts", "material", "materials/ui/ui_1080p_common", "material", demo_video.video_name)
 

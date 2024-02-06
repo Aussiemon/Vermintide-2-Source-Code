@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/game_state/state_dedicated_server_init.lua
+
 require("scripts/managers/network/ban_list_manager")
 require("scripts/network/network_server")
 

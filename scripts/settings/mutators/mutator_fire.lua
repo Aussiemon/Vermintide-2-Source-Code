@@ -1,9 +1,11 @@
+﻿-- chunkname: @scripts/settings/mutators/mutator_fire.lua
+
 local blacklisted_units = {
 	"chaos_corruptor_sorcerer",
 	"chaos_vortex_sorcerer",
 	"skaven_warpfire_thrower",
 	"skaven_poison_wind_globadier",
-	"skaven_ratling_gunner"
+	"skaven_ratling_gunner",
 }
 
 return {
@@ -12,10 +14,12 @@ return {
 	icon = "mutator_icon_fire_burn",
 	server_start_function = function (context, data)
 		data.network_manager = Managers.state.network
+
 		local wind_settings = WindSettings.fire
 		local weave_manager = Managers.weave
 		local wind_strength = weave_manager:get_wind_strength()
 		local difficulty_name = Managers.state.difficulty:get_difficulty()
+
 		data.buff_time_player = wind_settings.buff_time_player[difficulty_name][wind_strength]
 		data.buff_time_enemy = wind_settings.buff_time_enemy[difficulty_name][wind_strength]
 		data.buff_system = Managers.state.entity:system("buff_system")
@@ -31,6 +35,7 @@ return {
 		local wind_settings = weave_manager:get_active_wind_settings()
 		local wind_strength = weave_manager:get_wind_strength()
 		local difficulty_name = Managers.state.difficulty:get_difficulty()
+
 		data.buff_time_player = wind_settings.buff_time_player[difficulty_name][wind_strength]
 		data.buff_name_player = "mutator_fire_player_dot"
 		data.buff_name_enemy = "mutator_fire_enemy_dot"
@@ -38,10 +43,11 @@ return {
 	update_buffs = function (context, data, dt)
 		for id, buff in pairs(data.applied_buffs) do
 			buff.duration = buff.duration + dt
+
 			local unit = buff.unit
 			local is_dead = not HEALTH_ALIVE[unit]
 
-			if data.buff_time_enemy < buff.duration or is_dead then
+			if buff.duration > data.buff_time_enemy or is_dead then
 				data.template.remove_buff(data, unit, id, is_dead)
 			end
 		end
@@ -87,16 +93,16 @@ return {
 				local is_server_controlled = true
 				local buff_id = data.buff_system:add_buff(hit_unit, buff_template_name, hit_unit, is_server_controlled)
 				local unit_id = data.network_manager:unit_game_object_id(hit_unit)
-				data.applied_buffs[unit_id] = {
-					buff_id = buff_id,
-					unit = hit_unit,
-					duration = 0
-				}
+
+				data.applied_buffs[unit_id] = {}
+				data.applied_buffs[unit_id].buff_id = buff_id
+				data.applied_buffs[unit_id].unit = hit_unit
+				data.applied_buffs[unit_id].duration = 0
 			else
 				local duration = data.buff_time_player
 				local buff_params = {
 					attacker_unit = attacker_unit,
-					external_optional_duration = duration
+					external_optional_duration = duration,
 				}
 
 				buff_extension:add_buff(buff_template_name, buff_params)
@@ -167,7 +173,7 @@ return {
 	server_ai_spawned_function = function (context, data, spawned_unit)
 		local alive_bosses = Managers.state.conflict:alive_bosses()
 
-		if alive_bosses and data.boss_spawned_counter < #alive_bosses then
+		if alive_bosses and #alive_bosses > data.boss_spawned_counter then
 			local blackboard = BLACKBOARDS[spawned_unit]
 			local breed = blackboard.breed
 			local is_boss = breed.boss
@@ -177,5 +183,5 @@ return {
 				data.boss_spawned_counter = data.boss_spawned_counter + 1
 			end
 		end
-	end
+	end,
 }

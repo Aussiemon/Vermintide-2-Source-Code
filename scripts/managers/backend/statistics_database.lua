@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/backend/statistics_database.lua
+
 require("scripts/managers/backend/statistics_util")
 require("scripts/managers/backend/statistics_definitions")
 
@@ -16,8 +18,11 @@ local function convert_from_backend(raw_value, database_type)
 
 			for i = 4, 1, -1 do
 				local hex_temp = hex_value / 2
+
 				hex_value = floor(hex_temp)
+
 				local new_value_n = value_n + i
+
 				value[new_value_n] = hex_value ~= hex_temp and true or false
 			end
 
@@ -49,6 +54,7 @@ local function convert_to_backend(value, database_type)
 			end
 
 			local hex_value = string.format("%X", dec_value)
+
 			raw_value = raw_value .. hex_value
 		end
 
@@ -84,7 +90,7 @@ local RPCS = {
 	"rpc_increment_stat_group",
 	"rpc_set_local_player_stat",
 	"rpc_modify_stat",
-	"rpc_increment_stat_party"
+	"rpc_increment_stat_party",
 }
 
 StatisticsDatabase.register_network_event_delegate = function (self, network_event_delegate)
@@ -187,7 +193,7 @@ end
 local function cap_sync_value(value)
 	local max_size = 65535
 
-	if value > max_size then
+	if max_size < value then
 		Application.warning(string.format("Trying to sync value exceeding maximum size %d > %d", value, max_size))
 		print(Script.callstack())
 
@@ -320,6 +326,7 @@ StatisticsDatabase.increment_stat = function (self, id, ...)
 
 	for i = 1, arg_n do
 		local arg_value = select(i, ...)
+
 		stat = stat[arg_value]
 	end
 
@@ -345,6 +352,7 @@ StatisticsDatabase.decrement_stat = function (self, id, ...)
 
 	for i = 1, arg_n do
 		local arg_value = select(i, ...)
+
 		stat = stat[arg_value]
 	end
 
@@ -380,11 +388,13 @@ StatisticsDatabase.modify_stat_by_amount = function (self, id, ...)
 
 	for i = 1, arg_n - 1 do
 		local arg_value = select(i, ...)
+
 		stat = stat[arg_value]
 	end
 
 	local increment_value = select(arg_n, ...)
 	local old_value = stat.value
+
 	stat.value = old_value + increment_value
 
 	if stat.persistent_value then
@@ -407,6 +417,7 @@ StatisticsDatabase.get_array_stat = function (self, id, ...)
 
 	for i = 1, arg_n - 1 do
 		local arg_value = select(i, ...)
+
 		array_stat = array_stat[arg_value]
 	end
 
@@ -421,6 +432,7 @@ StatisticsDatabase.get_persistent_array_stat = function (self, id, ...)
 
 	for i = 1, arg_n - 1 do
 		local arg_value = select(i, ...)
+
 		array_stat = array_stat[arg_value]
 	end
 
@@ -439,11 +451,13 @@ StatisticsDatabase.set_array_stat = function (self, id, ...)
 
 	for i = 1, arg_n - 2 do
 		local arg_value = select(i, ...)
+
 		array_stat = array_stat[arg_value]
 	end
 
 	local array_index = select(arg_n - 1, ...)
 	local new_stat_value = select(arg_n, ...)
+
 	array_stat.value[array_index] = new_stat_value
 
 	if array_stat.persistent_value then
@@ -459,10 +473,12 @@ StatisticsDatabase.set_stat = function (self, id, ...)
 
 	for i = 1, arg_n - 1 do
 		local arg_value = select(i, ...)
+
 		stat = stat[arg_value]
 	end
 
 	local new_value = select(arg_n, ...)
+
 	stat.dirty = stat.value ~= new_value
 	stat.value = new_value
 	stat.persistent_value = new_value
@@ -474,10 +490,12 @@ StatisticsDatabase.set_non_persistent_stat = function (self, id, ...)
 
 	for i = 1, arg_n - 1 do
 		local arg_value = select(i, ...)
+
 		stat = stat[arg_value]
 	end
 
 	local new_value = select(arg_n, ...)
+
 	stat.dirty = stat.value ~= new_value
 	stat.value = new_value
 end
@@ -488,6 +506,7 @@ StatisticsDatabase.get_stat = function (self, id, ...)
 
 	for i = 1, arg_n do
 		local arg_value = select(i, ...)
+
 		stat = stat[arg_value]
 	end
 
@@ -505,6 +524,7 @@ StatisticsDatabase.has_stat = function (self, id, ...)
 
 	for i = 1, arg_n do
 		local arg_value = select(i, ...)
+
 		stat = stat[arg_value]
 
 		if not stat then
@@ -521,6 +541,7 @@ StatisticsDatabase.get_persistent_stat = function (self, id, ...)
 
 	for i = 1, arg_n do
 		local arg_value = select(i, ...)
+
 		stat = stat[arg_value]
 	end
 
@@ -545,7 +566,7 @@ StatisticsDatabase.get_persistent_stat = function (self, id, ...)
 	error = error .. "\""
 
 	fassert(stat, error, unpack({
-		...
+		...,
 	}))
 end
 
@@ -769,13 +790,14 @@ local DB_UNIT_TEST = false
 
 if DB_UNIT_TEST then
 	local old_debug = script_data.statistics_debug
+
 	script_data.statistics_debug = true
 
 	dbprintf("Running statistics unit test")
 
 	local backend_stats = {
 		kills_total = 10,
-		lorebook_unlocks = "6F"
+		lorebook_unlocks = "6F",
 	}
 	local sdb = StatisticsDatabase:new()
 

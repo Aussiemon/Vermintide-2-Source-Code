@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/settings/dlcs/cog/passive_ability_engineer.lua
+
 PassiveAbilityEngineer = class(PassiveAbilityEngineer)
+
 local unit_alive = Unit.alive
 local unit_set_flow_variable = Unit.set_flow_variable
 local unit_flow_event = Unit.flow_event
@@ -76,11 +79,11 @@ PassiveAbilityEngineer.update = function (self, dt, t)
 		if self._is_local_player then
 			local visual_heat = self._weapon_visual_heat
 
-			if self._heat_cooldown_pause_t < t then
+			if t > self._heat_cooldown_pause_t then
 				visual_heat = math.clamp(visual_heat - self._visual_heat_cooldown_speed * dt, 0, 1)
 			end
 
-			if self._wind_down_cooldown_pause_t < t then
+			if t > self._wind_down_cooldown_pause_t then
 				self._wind_down_progress = math.clamp(math.lerp(self._wind_down_progress, 0, wind_down_speed_lerp_speed * dt), 0, 1)
 			end
 
@@ -92,6 +95,7 @@ PassiveAbilityEngineer.update = function (self, dt, t)
 			end
 		elseif self._game_object_id then
 			local synced_heat = game_session_game_object_field(game, game_object_id, "visual_heat")
+
 			self._weapon_visual_heat = math.clamp(math.lerp(self._weapon_visual_heat, synced_heat, net_heat_lerp_speed * dt), 0, 1)
 		end
 	end
@@ -113,7 +117,7 @@ PassiveAbilityEngineer.update = function (self, dt, t)
 end
 
 PassiveAbilityEngineer._update_career_weapon_particles = function (self, inventory_extension)
-	if not self._heat_particles_spawned and heat_particle_spawn_threshold <= self._weapon_visual_heat then
+	if not self._heat_particles_spawned and self._weapon_visual_heat >= heat_particle_spawn_threshold then
 		inventory_extension:start_weapon_fx("heat_shimmer")
 
 		self._heat_particles_spawned = true
@@ -139,6 +143,7 @@ PassiveAbilityEngineer._update_weapon_anim_variables = function (self, dt)
 	if first_person_extension then
 		local current_ability_charge = self._career_extension:current_ability_cooldown_percentage()
 		local ability_charge = math.clamp(math.lerp(self._last_ability_charge, current_ability_charge, dt * ability_charge_dial_lerp_speed), 0, 1)
+
 		self._last_ability_charge = ability_charge
 
 		first_person_extension:animation_set_variable("ammo_count", ability_charge)
@@ -148,8 +153,11 @@ end
 
 PassiveAbilityEngineer.on_engineer_weapon_fire = function (self, heat_to_add)
 	local new_heat = self._weapon_visual_heat + (heat_to_add or 0)
+
 	self._weapon_visual_heat = math.clamp(new_heat, 0, max_visual_heat_intensity)
+
 	local t = Managers.time:time("game")
+
 	self._heat_cooldown_pause_t = t + heat_pause_time
 	self._wind_down_progress = 1
 	self._wind_down_cooldown_pause_t = t + wind_down_pause_time
@@ -179,9 +187,10 @@ PassiveAbilityEngineer.create_game_object = function (self)
 	local game_object_data_table = {
 		go_type = NetworkLookup.go_types.engineer_career_data,
 		unit_game_object_id = game_object_id,
-		visual_heat = self._weapon_visual_heat
+		visual_heat = self._weapon_visual_heat,
 	}
 	local callback = callback(self, "cb_game_session_disconnect")
+
 	self._game_object_id = network_manager:create_game_object("engineer_career_data", game_object_data_table, callback)
 end
 
@@ -211,6 +220,7 @@ PassiveAbilityEngineer._add_5_2_bombs = function (self)
 	end
 
 	status.game_mode_data._engineer_upgraded_grenades_added = true
+
 	local item_name = "grenade_frag_01"
 	local slot_name = "slot_grenade"
 	local inventory_extension = self._inventory_extension

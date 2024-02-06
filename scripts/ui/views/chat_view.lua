@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/chat_view.lua
+
 require("scripts/utils/keystroke_helper")
 require("scripts/helpers/emoji_helper")
 
@@ -13,45 +15,47 @@ local WELCOME_MESSAGE = {
 	"    Current channel: %s                                    ",
 	"--------------------------------------------------------------------------",
 	" ",
-	" "
+	" ",
 }
 local tmp_icons = {}
+
 ChatView = class(ChatView)
 ChatView.MAX_CHARS = 512
 ChatView.MAX_CHANNEL_NAME = 30
 ChatView.MAX_POPULAR_CHANNELS = 5
+
 local COMMANDS = {
 	{
 		command = "/join",
 		description_text = "<channel_name> - Join a Channel",
 		parameter = "#",
-		color = Colors.get_table("red")
+		color = Colors.get_table("red"),
 	},
 	{
 		command = "/leave",
 		description_text = "<channel_name> - Leave a Channel",
-		color = Colors.get_table("red")
+		color = Colors.get_table("red"),
 	},
 	{
 		command = "/msg",
 		description_text = "<user_name> <message> - Send Message to Another User",
-		color = Colors.get_table("red")
+		color = Colors.get_table("red"),
 	},
 	{
 		command = "/reply",
 		description_text = "<message> - Replies to the Person You Last Spoke To",
-		color = Colors.get_table("red")
+		color = Colors.get_table("red"),
 	},
 	{
 		command = "/invite",
 		description_text = "<description> - Send an Invite to Your Game",
-		color = Colors.get_table("red")
+		color = Colors.get_table("red"),
 	},
 	{
 		command = "/clear",
 		description_text = "- Clears the chat",
-		color = Colors.get_table("red")
-	}
+		color = Colors.get_table("red"),
+	},
 }
 
 ChatView.init = function (self, ingame_ui_context)
@@ -60,7 +64,7 @@ ChatView.init = function (self, ingame_ui_context)
 	self._network_lobby = ingame_ui_context.network_lobby
 	self._matchmaking_manager = ingame_ui_context.matchmaking_manager
 	self._render_settings = {
-		snap_pixel_positions = false
+		snap_pixel_positions = false,
 	}
 	self._network_server = ingame_ui_context.network_server
 	self._current_channel_name = Managers.irc:home_channel()
@@ -72,6 +76,7 @@ ChatView.init = function (self, ingame_ui_context)
 	self._popular_channel_list = {}
 	self._popular_channel_list_lookup = {}
 	self._list_channels_cbs = {}
+
 	local has_joined_channel = false
 	local channels = Managers.irc:get_channels()
 
@@ -89,10 +94,10 @@ ChatView.init = function (self, ingame_ui_context)
 
 	local input_manager = ingame_ui_context.input_manager
 	local block_reasons = {
-		keybind = true,
 		channels_list = true,
 		debug_screen = true,
-		free_flight = true
+		free_flight = true,
+		keybind = true,
 	}
 
 	input_manager:create_input_service("chat_view", "ChatControllerSettings", "ChatControllerFilters", block_reasons)
@@ -100,9 +105,9 @@ ChatView.init = function (self, ingame_ui_context)
 	input_manager:map_device_to_service("chat_view", "mouse")
 
 	local block_reasons = {
-		keybind = true,
 		debug_screen = true,
-		free_flight = true
+		free_flight = true,
+		keybind = true,
 	}
 
 	input_manager:create_input_service("channels_list", "ChatControllerSettings", "ChatControllerFilters", block_reasons)
@@ -110,8 +115,10 @@ ChatView.init = function (self, ingame_ui_context)
 	input_manager:map_device_to_service("channels_list", "mouse")
 
 	self._input_manager = input_manager
+
 	local world_manager = ingame_ui_context.world_manager
 	local world = world_manager:world("level_world")
+
 	self._wwise_world = Managers.world:wwise_world(world)
 
 	Managers.irc:register_message_callback("chat_view_private_msg", Irc.PRIVATE_MSG, callback(self, "cb_private_message"))
@@ -135,16 +142,18 @@ ChatView.cb_private_message = function (self, key, message_type, username, messa
 	local chat_output_content = chat_output_widget.content
 	local private_message_content = private_messages_widget.content
 	local private_messages_table = chat_output_content.private_messages_table
+
 	private_messages_table[username] = private_messages_table[username] or {}
+
 	local private_message_table = private_messages_table[username]
 	local message, link_data = Managers.chat:check_meta(message, username, parameter)
 	local emojis = EmojiHelper.parse_emojis(message)
-	local new_message_table = {
-		sender = username .. ": ",
-		trimmed_sender = self:_strip_identifier_from_user_name(username) .. ": ",
-		message = message,
-		type = message_type
-	}
+	local new_message_table = {}
+
+	new_message_table.sender = username .. ": "
+	new_message_table.trimmed_sender = self:_strip_identifier_from_user_name(username) .. ": "
+	new_message_table.message = message
+	new_message_table.type = message_type
 
 	if link_data then
 		new_message_table.link = link_data
@@ -176,16 +185,18 @@ ChatView.cb_channel_message = function (self, key, message_type, username, messa
 	local chat_output_widget = self._widgets.chat_output_widget
 	local chat_output_content = chat_output_widget.content
 	local channel_messages_table = chat_output_content.channel_messages_table
+
 	channel_messages_table[parameter] = channel_messages_table[parameter] or {}
+
 	local message_tables = channel_messages_table[parameter]
 	local message, link_data = Managers.chat:check_meta(message, username, parameter)
 	local emojis = EmojiHelper.parse_emojis(message)
-	local new_message_table = {
-		sender = username .. ": ",
-		trimmed_sender = self:_strip_identifier_from_user_name(username) .. ": ",
-		message = message,
-		type = message_type
-	}
+	local new_message_table = {}
+
+	new_message_table.sender = username .. ": "
+	new_message_table.trimmed_sender = self:_strip_identifier_from_user_name(username) .. ": "
+	new_message_table.message = message
+	new_message_table.type = message_type
 
 	if link_data then
 		new_message_table.link = link_data
@@ -209,6 +220,7 @@ ChatView.cb_join_updated = function (self, key, message_type, username, message,
 	self:_update_members()
 
 	PlayerData.recent_irc_channels = PlayerData.recent_irc_channels or {}
+
 	local recent_irc_channels = PlayerData.recent_irc_channels
 	local channel = parameter
 
@@ -265,6 +277,7 @@ ChatView._change_channel = function (self, channel_name)
 	local chat_output_content = chat_output_widget.content
 	local name_list_widget = self._widgets.name_list_widget
 	local name_list_content = name_list_widget.content
+
 	self._current_channel_name = channel_name
 	self._channels = self._channels or {}
 	self._channels[channel_name] = channel_name
@@ -272,11 +285,15 @@ ChatView._change_channel = function (self, channel_name)
 	name_list_content.channel_name = channel_name
 	chat_output_content.private_user_name = nil
 	chat_output_content.trimmed_private_user_name = nil
+
 	local frame_widget = self._widgets.frame_widget
 	local frame_widget_content = frame_widget.content
+
 	frame_widget_content.private_user_name = nil
 	frame_widget_content.trimmed_private_user_name = nil
+
 	local message_tables = chat_output_content.channel_messages_table[channel_name] or {}
+
 	chat_output_content.text_start_offset = #message_tables
 
 	self:_update_members()
@@ -325,16 +342,23 @@ end
 ChatView._change_to_private = function (self, user_name)
 	local chat_output_widget = self._widgets.chat_output_widget
 	local chat_output_content = chat_output_widget.content
+
 	chat_output_content.private_user_name = user_name
 	chat_output_content.trimmed_private_user_name = self:_strip_identifier_from_user_name(user_name)
+
 	local message_tables = chat_output_content.private_messages_table[user_name] or {}
+
 	chat_output_content.text_start_offset = #message_tables
+
 	local frame_widget = self._widgets.frame_widget
 	local frame_widget_content = frame_widget.content
+
 	frame_widget_content.private_user_name = user_name
 	frame_widget_content.trimmed_private_user_name = self:_strip_identifier_from_user_name(user_name)
+
 	local private_messages_widget = self._widgets.private_messages_widget
 	local private_messages_widget_content = private_messages_widget.content
+
 	private_messages_widget_content.new_per_user[user_name] = nil
 
 	Managers.chat:add_message_target(user_name, Irc.PRIVATE_MSG)
@@ -345,12 +369,15 @@ ChatView._list_private_messages = function (self, user_name)
 	local chat_output_content = chat_output_widget.content
 	local name_list_widget = self._widgets.name_list_widget
 	local name_list_content = name_list_widget.content
+
 	self._current_channel_name = user_name
 	self._channels = self._channels or {}
 	self._channels[channel_name] = channel_name
 	chat_output_content.channel_name = channel_name
 	name_list_content.channel_name = channel_name
+
 	local message_tables = chat_output_content.channel_messages_table[channel_name] or {}
+
 	chat_output_content.text_start_offset = #message_tables
 end
 
@@ -359,7 +386,9 @@ ChatView.cb_leave_updated = function (self, key, message_type, username, message
 
 	if username == my_user_name then
 		self._channels[parameter] = nil
+
 		local channel_name = next(self._channels)
+
 		channel_name = channel_name or " "
 
 		self:_change_channel(channel_name)
@@ -368,6 +397,7 @@ ChatView.cb_leave_updated = function (self, key, message_type, username, message
 		local chat_output_content = chat_output_widget.content
 		local name_list_widget = self._widgets.name_list_widget
 		local name_list_content = name_list_widget.content
+
 		chat_output_content.channel_messages_table[parameter] = nil
 		name_list_content.channel_messages_table[parameter] = nil
 	end
@@ -381,21 +411,27 @@ end
 
 ChatView._create_ui_elements = function (self)
 	self._ui_scenegraph = UISceneGraph.init_scenegraph(definitions.scenegraph_definition)
+
 	local chat_message_tables = {}
 	local members_message_tables = {}
+
 	self._widgets = self._widgets or {}
+
 	local chat_output_widget = self._widgets.chat_output_widget
 
 	if chat_output_widget then
 		local chat_output_content = chat_output_widget.content
+
 		chat_message_tables = chat_output_content.channel_messages_table
 	end
 
 	self._widgets = self._widgets or {}
+
 	local name_list_widget = self._widgets.name_list_widget
 
 	if name_list_widget then
 		local name_list_content = name_list_widget.content
+
 		members_message_tables = name_list_content.channel_messages_table
 	end
 
@@ -415,6 +451,7 @@ ChatView._create_ui_elements = function (self)
 	self._channel_tabs = {}
 	self._channel_tab_lookup = {}
 	self._ui_animations = {}
+
 	local widget_definitions = definitions.widget_definitions
 
 	for name, widget in pairs(widget_definitions.widgets) do
@@ -423,19 +460,23 @@ ChatView._create_ui_elements = function (self)
 
 	local chat_output_widget = self._widgets.chat_output_widget
 	local chat_output_content = chat_output_widget.content
+
 	chat_output_content.channel_messages_table = chat_message_tables
 	chat_output_content.channel_name = self._current_channel_name
 	chat_output_content.text_start_offset = #chat_message_tables
+
 	local name_list_widget = self._widgets.name_list_widget
 	local name_list_content = name_list_widget.content
+
 	name_list_content.channel_messages_table = members_message_tables
 	name_list_content.channel_name = self._current_channel_name
+
 	local test_max_users = 60
 	local test_user_data = {}
 
 	for i = 1, test_max_users do
 		test_user_data[i] = {
-			name = "test_" .. i
+			name = "test_" .. i,
 		}
 	end
 
@@ -444,6 +485,7 @@ ChatView._create_ui_elements = function (self)
 	for i = 1, num_users_in_list do
 		local widget_definition = create_entry_func(i)
 		local widget = UIWidget.init(widget_definition)
+
 		user_entries[i] = widget
 	end
 
@@ -498,7 +540,9 @@ end
 
 ChatView._update_filter = function (self, filter)
 	local start = os.clock()
+
 	filter = string.gsub(filter, "%W", "")
+
 	local filter_table = KeystrokeHelper._build_utf8_table(filter)
 	local num_chars_in_filter = #filter_table
 
@@ -562,8 +606,7 @@ ChatView._update_recent_channels_input = function (self, dt, t)
 			self:_destroy_recent_channels_window()
 		elseif join_button_hotspot.on_pressed then
 			if recent_channels_window_content.selected_channel ~= nil then
-				local localize = false
-				local localize_parameters = false
+				local localize, localize_parameters = false, false
 
 				self:_destroy_recent_channels_window(true)
 				Managers.chat:send_chat_message(1, nil, "/join " .. recent_channels_window_content.selected_channel, localize, nil, localize_parameters, self._recent_message_index, recent_channels_window_content.selected_channel, Irc.CHANNEL_MSG)
@@ -605,8 +648,11 @@ end
 
 ChatView._create_recent_channels_window = function (self)
 	local widget_definitions = definitions.widget_definitions
+
 	self._recent_channels_widgets.recent_channels_window = UIWidget.init(widget_definitions.recent_channels_window)
+
 	local join_button = UIWidget.init(widget_definitions.recent_join_channel_button)
+
 	join_button.content.button_hotspot.disable_button = true
 	self._recent_channels_widgets.join_button = join_button
 
@@ -615,8 +661,10 @@ ChatView._create_recent_channels_window = function (self)
 	Irc.list_channels()
 
 	self._list_channels_cbs[#self._list_channels_cbs + 1] = callback(self, "cb_populate_recent_channels")
+
 	local widget = self._recent_channels_widgets.recent_channels_window
 	local widget_content = widget.content
+
 	widget_content.fetching_channels = true
 end
 
@@ -639,14 +687,17 @@ ChatView.cb_populate_recent_channels = function (self, channel_list, channel_lis
 		local channel_entry = UIWidget.init(widget_definitions.create_channel_list_entry_func("recent_channels_window_list_box_entry"))
 		local channel_entry_content = channel_entry.content
 		local channel_entry_style = channel_entry.style
+
 		channel_entry.offset[2] = offset_y
 		channel_entry_content.channel_name = channel_name
+
 		local cropped_channel_name = UIRenderer.crop_text_width(self._ui_renderer, channel_name, 160, channel_entry_style.channel_name)
+
 		channel_entry_content.channel_name_id = cropped_channel_name
 		channel_entry_content.num_members_id = num_members .. " Member(s)"
 		channel_entry_style.icon.texture_size = {
 			scenegraph_entry_size[2] - channels_width_spacing * 2,
-			scenegraph_entry_size[2] - channels_height_spacing * 2
+			scenegraph_entry_size[2] - channels_height_spacing * 2,
 		}
 		channel_entry_style.channel_name.offset[1] = scenegraph_entry_size[2] - channels_width_spacing * 2 + channels_width_spacing
 		channel_entry_style.num_members.offset[1] = scenegraph_entry_size[2] - channels_width_spacing * 2 + channels_width_spacing
@@ -658,6 +709,7 @@ ChatView.cb_populate_recent_channels = function (self, channel_list, channel_lis
 
 	local widget = self._recent_channels_widgets.recent_channels_window
 	local widget_content = widget.content
+
 	widget_content.fetching_channels = false
 end
 
@@ -675,6 +727,7 @@ end
 ChatView._create_invite_window = function (self)
 	local widget_definitions = definitions.widget_definitions
 	local scenegraph_definition = definitions.scenegraph_definition
+
 	self._invite_widgets.send_invite_window = UIWidget.init(widget_definitions.send_invite_window)
 	self._invite_widgets.send_invite_button = UIWidget.init(widget_definitions.send_invite_button)
 
@@ -683,6 +736,7 @@ ChatView._create_invite_window = function (self)
 
 	local send_invite_window_widget = self._invite_widgets.send_invite_window
 	local send_invite_window_content = send_invite_window_widget.content
+
 	send_invite_window_content.text_field_active = true
 end
 
@@ -707,6 +761,7 @@ ChatView._update_send_invite_input = function (self, dt, t)
 	local screen_hotspot = send_invite_window_content.screen_hotspot
 	local widget_hotspot = send_invite_window_content.widget_hotspot
 	local close_hotspot = send_invite_window_content.close_hotspot
+
 	send_invite_button_hotspot.disable_button = send_invite_window_content.chat_text_id == ""
 
 	UIWidgetUtils.animate_default_button(send_invite_button_widget, dt)
@@ -721,6 +776,7 @@ ChatView._update_send_invite_input = function (self, dt, t)
 
 			local frame_widget = self._widgets.frame_widget
 			local frame_widget_content = frame_widget.content
+
 			frame_widget_content.chat_text.text = "/invite " .. send_invite_window_content.chat_text_id
 
 			self:_send_message(frame_widget_content)
@@ -741,6 +797,7 @@ ChatView._update_send_invite_input = function (self, dt, t)
 
 				local frame_widget = self._widgets.frame_widget
 				local frame_widget_content = frame_widget.content
+
 				frame_widget_content.chat_text.text = "/invite " .. send_invite_window_content.chat_text_id
 
 				self:_send_message(frame_widget_content)
@@ -752,11 +809,13 @@ ChatView._update_send_invite_input = function (self, dt, t)
 			send_invite_window_content.chat_text_id = ""
 		elseif send_invite_window_content.caret_index < ChatView.MAX_CHARS then
 			local keystrokes = Keyboard.keystrokes()
+
 			send_invite_window_content.chat_text_id, send_invite_window_content.caret_index = KeystrokeHelper.parse_strokes(send_invite_window_content.chat_text_id, send_invite_window_content.caret_index, "insert", keystrokes)
 		elseif input_service:get("chat_backspace_pressed") then
 			local keystrokes = {
-				Keyboard.BACKSPACE
+				Keyboard.BACKSPACE,
 			}
+
 			send_invite_window_content.chat_text_id, send_invite_window_content.caret_index = KeystrokeHelper.parse_strokes(send_invite_window_content.chat_text_id, send_invite_window_content.caret_index, "insert", keystrokes)
 		end
 	end
@@ -765,6 +824,7 @@ end
 ChatView._create_create_channels_window = function (self)
 	local widget_definitions = definitions.widget_definitions
 	local scenegraph_definition = definitions.scenegraph_definition
+
 	self._create_channel_widgets.create_channel_window = UIWidget.init(widget_definitions.create_channel_window)
 	self._create_channel_widgets.create_button = UIWidget.init(widget_definitions.inner_create_channel_button)
 
@@ -773,6 +833,7 @@ ChatView._create_create_channels_window = function (self)
 
 	local create_channel_window_widget = self._create_channel_widgets.create_channel_window
 	local create_channel_window_content = create_channel_window_widget.content
+
 	create_channel_window_content.text_field_active = true
 end
 
@@ -791,8 +852,7 @@ ChatView._update_create_channel_input = function (self, dt, t)
 		return
 	end
 
-	local localize = false
-	local localize_parameters = false
+	local localize, localize_parameters = false, false
 	local input_service = Managers.input:get_service("channels_list")
 	local create_button_widget = self._create_channel_widgets.create_button
 	local create_channel_window_widget = self._create_channel_widgets.create_channel_window
@@ -803,6 +863,7 @@ ChatView._update_create_channel_input = function (self, dt, t)
 	local screen_hotspot = create_channel_window_content.screen_hotspot
 	local widget_hotspot = create_channel_window_content.widget_hotspot
 	local close_hotspot = create_channel_window_content.close_hotspot
+
 	create_button_hotspot.disable_button = create_channel_window_content.chat_text_id == ""
 
 	UIWidgetUtils.animate_default_button(create_button_widget, dt)
@@ -837,6 +898,7 @@ ChatView._update_create_channel_input = function (self, dt, t)
 			create_channel_window_content.chat_text_id = ""
 		elseif create_channel_window_content.caret_index < ChatView.MAX_CHANNEL_NAME then
 			local keystrokes = Keyboard.keystrokes()
+
 			create_channel_window_content.chat_text_id, create_channel_window_content.caret_index = KeystrokeHelper.parse_strokes(create_channel_window_content.chat_text_id, create_channel_window_content.caret_index, "insert", keystrokes)
 
 			for _, escape_character in ipairs(ESCAPE_CHARACTERS) do
@@ -848,8 +910,9 @@ ChatView._update_create_channel_input = function (self, dt, t)
 			create_channel_window_content.caret_index = UTF8Utils.string_length(create_channel_window_content.chat_text_id) + 1
 		elseif input_service:get("chat_backspace_pressed") then
 			local keystrokes = {
-				Keyboard.BACKSPACE
+				Keyboard.BACKSPACE,
 			}
+
 			create_channel_window_content.chat_text_id, create_channel_window_content.caret_index = KeystrokeHelper.parse_strokes(create_channel_window_content.chat_text_id, create_channel_window_content.caret_index, "insert", keystrokes)
 		end
 	end
@@ -860,7 +923,9 @@ local CHANNEL_MATCHES = {}
 ChatView._create_channels_list = function (self)
 	local widget_definitions = definitions.widget_definitions
 	local scenegraph_definition = definitions.scenegraph_definition
+
 	self._channels_list_widgets.channel_window_widget = UIWidget.init(widget_definitions.channels_window)
+
 	local input_manager = Managers.input
 	local input_service = input_manager:get_service("channels_list")
 
@@ -868,7 +933,9 @@ ChatView._create_channels_list = function (self)
 	input_manager:block_device_except_service("channels_list", "mouse", 1, "channels_list")
 
 	local channel_entry = UIWidget.init(widget_definitions.channel_entry)
+
 	self._channels_list_widgets.channel_entry = channel_entry
+
 	local channel_entry_style = channel_entry.style
 	local channel_entry_icon_style = channel_entry_style.icon
 	local channel_entry_channel_name_style = channel_entry_style.channel_name
@@ -888,29 +955,38 @@ ChatView._create_channels_list = function (self)
 	local height = parent_scenegraph_entry_size[2] - -channels_offset[2] * 2 - (max_rows - 3) * channels_height_spacing
 	local entry_width = width / channels_per_row
 	local entry_height = height / (max_rows - 2)
+
 	channels_list_settings.channels_entry_size = {
 		entry_width,
-		entry_height
+		entry_height,
 	}
 	channel_entry_icon_style.texture_size = {
 		entry_height - channels_width_spacing * 2,
-		entry_height - channels_height_spacing * 2
+		entry_height - channels_height_spacing * 2,
 	}
 	channel_entry_channel_name_style.offset[1] = entry_height - channels_width_spacing * 2 + channels_width_spacing
 	channel_entry_num_members_style.offset[1] = entry_height - channels_width_spacing * 2 + channels_width_spacing
 	channel_entry_background_style.size[1] = channels_list_settings.channels_entry_size[1]
 	channel_entry_background_style.size[2] = channels_list_settings.channels_entry_size[2] - channels_height_spacing
+
 	local channel_entry_style = channel_entry.style
 	local entry_scenegraph_id = channel_entry.scenegraph_id
 	local scenegraph_entry = ui_scenegraph[entry_scenegraph_id]
+
 	scenegraph_entry.size[1] = channels_list_settings.channels_entry_size[1]
 	scenegraph_entry.size[2] = channels_list_settings.channels_entry_size[2]
+
 	local join_button_widget = UIWidget.init(widget_definitions.join_channel_button)
+
 	self._channels_list_widgets.join_button = join_button_widget
 	join_button_widget.content.button_hotspot.disable_button = true
+
 	local create_channel_button_widget = UIWidget.init(widget_definitions.create_channel_button)
+
 	self._channels_list_widgets.create_channel_button = create_channel_button_widget
+
 	local recent_channels_button_widget = UIWidget.init(widget_definitions.recent_channels_button)
+
 	self._channels_list_widgets.recent_channels_button = recent_channels_button_widget
 
 	table.clear(self._popular_channel_list)
@@ -918,8 +994,10 @@ ChatView._create_channels_list = function (self)
 	Irc.list_channels()
 
 	self._list_channels_cbs[#self._list_channels_cbs + 1] = callback(self, "cb_populate_channels_list", nil)
+
 	local widget = self._channels_list_widgets.channel_window_widget
 	local widget_content = widget.content
+
 	widget_content.fetching_channels = true
 end
 
@@ -940,6 +1018,7 @@ ChatView.cb_populate_channels_list = function (self, search_text, channel_list, 
 	local channels_list_settings = definitions.channels_list_settings
 	local channel_window_widget = self._channels_list_widgets.channel_window_widget
 	local channel_window_widget_content = channel_window_widget.content
+
 	channel_window_widget_content.updating_channels = false
 	channel_window_widget_content.info_id = string.format("Search results for %q", search_text)
 
@@ -950,8 +1029,10 @@ ChatView.cb_populate_channels_list = function (self, search_text, channel_list, 
 	end
 
 	channels_list_settings.current_rows = math.ceil(#CHANNEL_MATCHES / channels_list_settings.channels_per_row)
+
 	local widget = self._channels_list_widgets.channel_window_widget
 	local widget_content = widget.content
+
 	widget_content.fetching_channels = false
 end
 
@@ -979,8 +1060,10 @@ ChatView._handle_and_draw_channels_list = function (self, ui_renderer, ui_sceneg
 	local channel_entry_style = channel_entry.style
 	local channel_entry_offset = channel_entry.offset
 	local base_offset = channels_list_settings.channels_offset
+
 	channel_entry_offset[2] = base_offset[2]
-	local channel_to_join = nil
+
+	local channel_to_join
 
 	for i = 1, math.min(rows_to_draw, 4) do
 		channel_entry_offset[2] = base_offset[2] - (i - 1) * channel_entry_size[2] - (i - 1) * channels_height_spacing
@@ -992,8 +1075,11 @@ ChatView._handle_and_draw_channels_list = function (self, ui_renderer, ui_sceneg
 				break
 			else
 				local strings = string.split(CHANNEL_MATCHES[index], ",")
+
 				channel_entry_content.channel_name = strings[1]
+
 				local cropped_channel_name = UIRenderer.crop_text_width(self._ui_renderer, channel_entry_content.channel_name, 160, channel_entry_style.channel_name)
+
 				channel_entry_content.channel_name_id = cropped_channel_name
 				channel_entry_content.num_members_id = strings[2] .. " Member(s)"
 			end
@@ -1067,8 +1153,7 @@ ChatView._update_channels_list_input = function (self, dt, t)
 			if self._channels[channel_to_join] then
 				self:_change_channel(channel_to_join)
 			else
-				local localize = false
-				local localize_parameters = false
+				local localize, localize_parameters = false, false
 
 				Managers.chat:send_chat_message(1, nil, "/join " .. channel_to_join, localize, nil, localize_parameters, self._recent_message_index, channel_to_join, Irc.CHANNEL_MSG)
 			end
@@ -1115,8 +1200,9 @@ ChatView._update_channels_list_input = function (self, dt, t)
 			end
 		elseif input_service:get("chat_backspace_pressed") then
 			local keystrokes = {
-				Keyboard.BACKSPACE
+				Keyboard.BACKSPACE,
 			}
+
 			channel_window_widget_content.chat_text_id, channel_window_widget_content.caret_index = KeystrokeHelper.parse_strokes(channel_window_widget_content.chat_text_id, channel_window_widget_content.caret_index, "insert", keystrokes)
 		end
 	end
@@ -1137,6 +1223,7 @@ ChatView._update_input = function (self, dt, t)
 	local command_list_frame_widget = self._commands_list_widgets.command_list_frame
 	local filtered_user_names_list_frame_widget = self._filtered_user_names_list_widgets.filtered_user_names_list_frame
 	local emoji_list_frame_widget = self._emoji_widgets.emoji_list_frame
+
 	frame_widget_content.channel_name = self._current_channel_name or " "
 
 	if input_service:get("deactivate_chat_input", true) then
@@ -1279,7 +1366,9 @@ ChatView._update_input = function (self, dt, t)
 				end
 
 				frame_widget_content.chat_text.text = recent_chat_messages[self._recent_message_index]
+
 				local text_table = KeystrokeHelper._build_utf8_table(frame_widget_content.chat_text.text)
+
 				frame_widget_content.caret_index = #text_table + 1
 			end
 		elseif input_service:get("chat_previous_old_message") then
@@ -1287,14 +1376,18 @@ ChatView._update_input = function (self, dt, t)
 			local num_recent_chat_messages = #recent_chat_messages
 
 			if self._recent_message_index then
-				if num_recent_chat_messages > 0 and self._recent_message_index < num_recent_chat_messages then
+				if num_recent_chat_messages > 0 and num_recent_chat_messages > self._recent_message_index then
 					self._recent_message_index = math.clamp(self._recent_message_index + 1, 1, num_recent_chat_messages)
 					frame_widget_content.chat_text.text = recent_chat_messages[self._recent_message_index]
+
 					local text_table = KeystrokeHelper._build_utf8_table(frame_widget_content.chat_text.text)
+
 					frame_widget_content.caret_index = #text_table + 1
 				elseif self.recent_message_index == num_recent_chat_messages and self._old_chat_message then
 					frame_widget_content.chat_text.text = self._old_chat_message
+
 					local text_table = KeystrokeHelper._build_utf8_table(frame_widget_content.chat_text.text)
+
 					frame_widget_content.caret_index = #text_table + 1
 					self._recent_message_index = nil
 					self._old_chat_message = nil
@@ -1326,6 +1419,7 @@ ChatView._update_input = function (self, dt, t)
 
 			frame_widget_content.caret_index = math.clamp(current_index, 1, #text_table + 1)
 			frame_widget_content.chat_text.text = ""
+
 			local num_chars = 0
 
 			for _, text_snippet in ipairs(text_table) do
@@ -1336,6 +1430,7 @@ ChatView._update_input = function (self, dt, t)
 			local keystrokes = Keyboard.keystrokes()
 			local ctrl_button_index = Keyboard.button_index("left ctrl")
 			local ctrl_held = Keyboard.pressed(ctrl_button_index) or Keyboard.button(ctrl_button_index) > 0
+
 			frame_widget_content.chat_text.text, frame_widget_content.caret_index = KeystrokeHelper.parse_strokes(frame_widget_content.chat_text.text, frame_widget_content.caret_index, "insert", keystrokes)
 
 			if #keystrokes > 0 then
@@ -1405,13 +1500,16 @@ ChatView._handle_command_list = function (self)
 		for idx, command_info in ipairs(COMMANDS) do
 			local command = command_info.command
 			local widget = UIWidget.init(create_command_entry_func(command, command_info.description_text, command_info.parameter, description_offset, command_info.color, -20 - 20 * cnt, frame_widget_content.chat_text))
+
 			self._commands_list_widgets["command_" .. cnt + 1] = widget
 			cnt = cnt + 1
+
 			local command_style = widget.style.command
 			local font, size_of_font = UIFontByResolution(command_style, nil)
 			local font_material = font[1]
 			local font_size = command_style.font_size
 			local command_width = UIRenderer.text_size(self._ui_renderer, command .. command_info.description_text, font_material, font_size) + 100
+
 			max_width = math.max(max_width, command_width)
 		end
 
@@ -1432,13 +1530,16 @@ ChatView._create_channel_list = function (self)
 
 	for channel, _ in pairs(channels) do
 		local widget = UIWidget.init(create_channel_entry_func(channel, -10 - 30 * cnt))
+
 		self._channel_list_widgets["channel_" .. cnt + 1] = widget
 		cnt = cnt + 1
+
 		local channel_style = widget.style.channel_name
 		local font, size_of_font = UIFontByResolution(channel_style, nil)
 		local font_material = font[1]
 		local font_size = channel_style.font_size
 		local channel_width = UIRenderer.text_size(self._ui_renderer, channel, font_material, font_size)
+
 		max_width = math.max(max_width, channel_width)
 	end
 
@@ -1461,9 +1562,12 @@ ChatView._create_emoji_list = function (self)
 
 	self._emoji_widgets.emoji_list_frame = UIWidget.init(widget_definitions.create_emoji_frame_func())
 	self._emoji_widgets.emoji = UIWidget.init(widget_definitions.create_emoji_func())
+
 	local emoji_list_settings = definitions.emoji_list_settings
 	local num_emojis = #EMOJI_SETTINGS
+
 	emoji_list_settings.current_rows = math.ceil(num_emojis / emoji_list_settings.emojis_per_row)
+
 	local ui_renderer = self._ui_renderer
 	local ui_scenegraph = self._ui_scenegraph
 	local input_service = self._input_manager:get_service("chat_view")
@@ -1472,26 +1576,31 @@ ChatView._create_emoji_list = function (self)
 	local scenegraph_entry = ui_scenegraph[emoji_widget.scenegraph_id]
 	local rows_to_handle = emoji_list_settings.max_rows - 1
 	local height = (rows_to_handle + 2) * scenegraph_entry.size[2] + (rows_to_handle - 1) * emoji_list_settings.emoji_height_spacing
+
 	emoji_widget.offset[2] = height
 	emoji_list_settings.height = height
+
 	local emoji_frame_widget = self._emoji_widgets.emoji_list_frame
 	local emoji_frame_widget_content = emoji_frame_widget.content
 	local emoji_frame_widget_style = emoji_frame_widget.style
 	local scenegraph_entry = ui_scenegraph[emoji_frame_widget.scenegraph_id]
+
 	scenegraph_entry.size = {
 		emoji_list_settings.emoji_size[1] * emoji_list_settings.emojis_per_row + (emoji_list_settings.emojis_per_row - 1) * emoji_list_settings.emoji_width_spacing + emoji_list_settings.emoji_offset[1] * 2 + 20,
-		height + emoji_list_settings.emoji_offset[2] * 2
+		height + emoji_list_settings.emoji_offset[2] * 2,
 	}
 	emoji_frame_widget_style.mask_rect.offset[2] = emoji_list_settings.emoji_size[2] + emoji_list_settings.emoji_height_spacing * 3
 	emoji_frame_widget_style.mask_rect.size = {
 		scenegraph_entry.size[1],
-		scenegraph_entry.size[2] - (emoji_list_settings.emoji_size[2] + emoji_list_settings.emoji_height_spacing * 3)
+		scenegraph_entry.size[2] - (emoji_list_settings.emoji_size[2] + emoji_list_settings.emoji_height_spacing * 3),
 	}
+
 	local emoji_scrollbar_widget = UIWidget.init(widget_definitions.create_emoji_scroller_func())
 	local scenegraph_entry = ui_scenegraph[emoji_scrollbar_widget.scenegraph_id]
+
 	scenegraph_entry.size[2] = height / emoji_list_settings.max_rows
 
-	if emoji_list_settings.max_rows < emoji_list_settings.current_rows then
+	if emoji_list_settings.current_rows > emoji_list_settings.max_rows then
 		self._emoji_widgets.emoji_scrollbar = emoji_scrollbar_widget
 	end
 end
@@ -1519,16 +1628,21 @@ ChatView._handle_and_draw_emoji_list_input = function (self, dt)
 	local max_rows = emoji_list_settings.max_rows
 	local rows_to_show = math.max(max_rows, rows)
 	local emoji_scrollbar_widget = self._emoji_widgets.emoji_scrollbar
+
 	self._emoji_scroll = 0
 
 	if emoji_scrollbar_widget then
 		local scroll_input = input_service:get("chat_scroll")[2]
-		self._emoji_scroll = math.abs(self._emoji_scroll) < math.abs(scroll_input) and scroll_input or self._emoji_scroll
+
+		self._emoji_scroll = math.abs(scroll_input) > math.abs(self._emoji_scroll) and scroll_input or self._emoji_scroll
 	end
 
 	local max_offset = rows * emoji_size[2] + (rows - 1) * emoji_offset[2]
+
 	self._base_offset = math.clamp((self._base_offset or 0) - self._emoji_scroll, 0, max_offset)
+
 	local row_index_offset = math.floor(self._base_offset / (emoji_size[2] + emoji_offset[2]))
+
 	self._emoji_scroll = math.lerp(math.abs(self._emoji_scroll), 0, dt * 2.5) * math.sign(self._emoji_scroll)
 	emoji_widget_offset[2] = height + self._base_offset % (emoji_size[2] + emoji_offset[2])
 
@@ -1552,9 +1666,12 @@ ChatView._handle_and_draw_emoji_list_input = function (self, dt)
 		for k = 1, emojis_per_row do
 			local row_start_index = k - 1
 			local x = row_start_index * (emoji_size[1] + emoji_width_spacing)
+
 			emoji_widget_offset[1] = x
+
 			local index = (i - 1) * emojis_per_row + k
 			local emoji_data = EMOJI_SETTINGS[index]
+
 			emoji_widget_content.texture_id = emoji_data and emoji_data.texture or nil
 
 			UIRenderer.draw_widget(ui_renderer, emoji_widget)
@@ -1566,11 +1683,16 @@ ChatView._handle_and_draw_emoji_list_input = function (self, dt)
 					local keys = EMOJI_SETTINGS[index].keys
 					local frame_widget = self._widgets.frame_widget
 					local frame_widget_content = frame_widget.content
+
 					frame_widget_content.chat_text.text = frame_widget_content.chat_text.text .. keys
+
 					local text_table = KeystrokeHelper._build_utf8_table(frame_widget_content.chat_text.text)
+
 					frame_widget_content.caret_index = #text_table + 1
+
 					local frame_widget = self._widgets.frame_widget
 					local frame_widget_content = frame_widget.content
+
 					frame_widget_content.text_field_active = true
 					destroy_emoji_list = true
 				elseif hotspot.is_hover then
@@ -1616,13 +1738,16 @@ ChatView._create_private_list = function (self)
 
 	for user, _ in pairs(private_messages) do
 		local widget = UIWidget.init(create_private_user_entry_func(user, -20 - 30 * cnt, new_per_user[user]))
+
 		self._private_list_widgets[user] = widget
 		cnt = cnt + 1
+
 		local user_style = widget.style.user_name
 		local font, size_of_font = UIFontByResolution(user_style, nil)
 		local font_material = font[1]
 		local font_size = user_style.font_size
 		local user_width = UIRenderer.text_size(self._ui_renderer, user, font_material, font_size)
+
 		max_width = math.max(max_width, user_width)
 	end
 
@@ -1650,13 +1775,16 @@ ChatView._create_filtered_user_list = function (self, filter)
 
 	for idx, user_name in ipairs(user_list) do
 		local widget = UIWidget.init(create_filtered_user_name_entry_func(string.gsub(user_name, "@", ""), -20 - 30 * cnt))
+
 		self._filtered_user_names_list_widgets[user_name] = widget
 		cnt = cnt + 1
+
 		local user_name_style = widget.style.user_name
 		local font, size_of_font = UIFontByResolution(user_name_style, nil)
 		local font_material = font[1]
 		local font_size = user_name_style.font_size
 		local user_name_width = UIRenderer.text_size(self._ui_renderer, user_name, font_material, font_size)
+
 		max_width = math.max(max_width, user_name_width)
 	end
 
@@ -1680,6 +1808,7 @@ ChatView._destroy_command_list = function (self)
 	local commands_button = self._widgets.commands_widget
 	local commands_button_content = commands_button.content
 	local commands_button_hotspot = commands_button_content.button_hotspot
+
 	commands_button_hotspot.disable_button = false
 end
 
@@ -1699,8 +1828,7 @@ ChatView._handle_channel_list_input = function (self)
 
 			return
 		elseif widget_content.exit_button_hotspot and widget_content.exit_button_hotspot.on_pressed then
-			local localize = false
-			local localize_parameters = false
+			local localize, localize_parameters = false, false
 
 			Managers.chat:send_chat_message(1, nil, "/leave " .. widget_content.channel_name, localize, nil, localize_parameters, self._recent_message_index, widget_content.channel_name, Irc.CHANNEL_MSG)
 			self:_destroy_channel_list()
@@ -1725,9 +1853,12 @@ ChatView._handle_private_list_input = function (self)
 			local chat_output_widget = self._widgets.chat_output_widget
 			local chat_output_widget_content = chat_output_widget.content
 			local private_messages_table = chat_output_widget_content.private_messages_table
+
 			private_messages_table[name] = nil
+
 			local private_messages_widget = self._widgets.private_messages_widget
 			local private_messages_widget_content = private_messages_widget.content
+
 			private_messages_widget_content.has_private_conversations = not table.is_empty(private_messages_table)
 
 			self:_destroy_private_list()
@@ -1747,14 +1878,18 @@ ChatView._handle_command_list_input = function (self)
 			local parameter = widget_content.parameter or ""
 			local frame_widget = self._widgets.frame_widget
 			local frame_widget_content = frame_widget.content
+
 			frame_widget_content.chat_text.text = command .. " " .. parameter
+
 			local text_table = KeystrokeHelper._build_utf8_table(frame_widget_content.chat_text.text)
+
 			frame_widget_content.caret_index = #text_table + 1
 
 			self:_destroy_command_list()
 
 			local frame_widget = self._widgets.frame_widget
 			local frame_widget_content = frame_widget.content
+
 			frame_widget_content.text_field_active = true
 
 			return
@@ -1770,8 +1905,11 @@ ChatView._handle_filtered_user_names_list_input = function (self)
 			local user_name = widget_content.user_name
 			local frame_widget = self._widgets.frame_widget
 			local frame_widget_content = frame_widget.content
+
 			frame_widget_content.chat_text.text = "/msg " .. user_name .. " "
+
 			local text_table = KeystrokeHelper._build_utf8_table(frame_widget_content.chat_text.text)
+
 			frame_widget_content.caret_index = #text_table + 1
 
 			self:_destroy_filtered_user_names_list()
@@ -1796,7 +1934,7 @@ ChatView._handle_user_list_scroll_input = function (self, input_service)
 	end
 
 	local scroll_input = input_service:get("chat_scroll")
-	local new_read_index = nil
+	local new_read_index
 
 	if input_service:get("chat_scroll_up") or scroll_input[2] > 0.5 then
 		new_read_index = math.max(current_read_index - 1, 1)
@@ -1825,6 +1963,7 @@ end
 
 ChatView._send_message = function (self, content)
 	content.chat_text.text = EmojiHelper.replace_emojis(content.chat_text.text)
+
 	local emojis = EmojiHelper.parse_emojis(content.chat_text.text)
 
 	if content.private_user_name then
@@ -1838,14 +1977,16 @@ ChatView._show_welcome_message = function (self)
 	local chat_output_widget = self._widgets.chat_output_widget
 	local chat_output_content = chat_output_widget.content
 	local channel_messages_table = chat_output_content.channel_messages_table
+
 	channel_messages_table[self._current_channel_name] = channel_messages_table[self._current_channel_name] or {}
+
 	local message_tables = channel_messages_table[self._current_channel_name]
 
 	for i = 1, #WELCOME_MESSAGE do
 		local message = WELCOME_MESSAGE[i]
-		local new_message_table = {
-			sender = string.format(message, self._current_channel_name)
-		}
+		local new_message_table = {}
+
+		new_message_table.sender = string.format(message, self._current_channel_name)
 		new_message_table.trimmed_sender = new_message_table.sender
 		new_message_table.message = ""
 		new_message_table.type = nil
@@ -1855,8 +1996,7 @@ ChatView._show_welcome_message = function (self)
 end
 
 ChatView._send_channel_message = function (self, content, emojis)
-	local localize = false
-	local localize_parameters = false
+	local localize, localize_parameters = false, false
 	local command, parameters, context_data = Managers.chat:send_chat_message(1, self._local_player_id, content.chat_text.text, localize, nil, localize_parameters, self._recent_message_index, self._current_channel_name, Irc.CHANNEL_MSG)
 
 	if not command then
@@ -1865,14 +2005,16 @@ ChatView._send_channel_message = function (self, content, emojis)
 			local chat_output_widget = self._widgets.chat_output_widget
 			local chat_output_content = chat_output_widget.content
 			local channel_messages_table = chat_output_content.channel_messages_table
+
 			channel_messages_table[self._current_channel_name] = channel_messages_table[self._current_channel_name] or {}
+
 			local message_tables = channel_messages_table[self._current_channel_name]
-			local new_message_table = {
-				sender = user_name .. ": ",
-				trimmed_sender = self:_strip_identifier_from_user_name(user_name) .. ": ",
-				message = content.chat_text.text,
-				type = Irc.CHANNEL_MSG
-			}
+			local new_message_table = {}
+
+			new_message_table.sender = user_name .. ": "
+			new_message_table.trimmed_sender = self:_strip_identifier_from_user_name(user_name) .. ": "
+			new_message_table.message = content.chat_text.text
+			new_message_table.type = Irc.CHANNEL_MSG
 
 			if #emojis > 0 then
 				new_message_table.emojis = table.clone(emojis)
@@ -1894,14 +2036,16 @@ ChatView._send_channel_message = function (self, content, emojis)
 		local chat_output_widget = self._widgets.chat_output_widget
 		local chat_output_content = chat_output_widget.content
 		local private_messages_table = chat_output_content.private_messages_table
+
 		private_messages_table[user_name] = private_messages_table[user_name] or {}
+
 		local message_tables = private_messages_table[user_name]
-		local new_message_table = {
-			sender = "To [" .. user_name .. "]: ",
-			trimmed_sender = "To [" .. self:_strip_identifier_from_user_name(user_name) .. "]: ",
-			message = message,
-			type = Irc.PRIVATE_MSG
-		}
+		local new_message_table = {}
+
+		new_message_table.sender = "To [" .. user_name .. "]: "
+		new_message_table.trimmed_sender = "To [" .. self:_strip_identifier_from_user_name(user_name) .. "]: "
+		new_message_table.message = message
+		new_message_table.type = Irc.PRIVATE_MSG
 
 		if #emojis > 0 then
 			new_message_table.emojis = table.clone(emojis)
@@ -1922,14 +2066,16 @@ ChatView._send_channel_message = function (self, content, emojis)
 		local chat_output_widget = self._widgets.chat_output_widget
 		local chat_output_content = chat_output_widget.content
 		local channel_messages_table = chat_output_content.channel_messages_table
+
 		channel_messages_table[self._current_channel_name] = channel_messages_table[self._current_channel_name] or {}
+
 		local message_tables = channel_messages_table[self._current_channel_name]
-		local new_message_table = {
-			sender = user_name .. ": ",
-			trimmed_sender = self:_strip_identifier_from_user_name(user_name) .. ": ",
-			message = message,
-			type = Irc.CHANNEL_MSG
-		}
+		local new_message_table = {}
+
+		new_message_table.sender = user_name .. ": "
+		new_message_table.trimmed_sender = self:_strip_identifier_from_user_name(user_name) .. ": "
+		new_message_table.message = message
+		new_message_table.type = Irc.CHANNEL_MSG
 
 		if context_data then
 			new_message_table.link = context_data
@@ -1945,7 +2091,9 @@ ChatView._send_channel_message = function (self, content, emojis)
 		local chat_output_widget = self._widgets.chat_output_widget
 		local chat_output_content = chat_output_widget.content
 		local channel_messages_table = chat_output_content.channel_messages_table
+
 		channel_messages_table[self._current_channel_name] = channel_messages_table[self._current_channel_name] or {}
+
 		local message_tables = channel_messages_table[self._current_channel_name]
 
 		table.clear(message_tables)
@@ -1960,8 +2108,7 @@ end
 
 ChatView._send_private_message = function (self, content, emojis)
 	local user_name = content.private_user_name
-	local localize = false
-	local localize_parameters = false
+	local localize, localize_parameters = false, false
 	local command, parameters, context_data = Managers.chat:send_chat_message(1, self._local_player_id, content.chat_text.text, localize, nil, localize_parameters, self._recent_message_index, user_name, Irc.PRIVATE_MSG)
 
 	if not command then
@@ -1969,14 +2116,16 @@ ChatView._send_private_message = function (self, content, emojis)
 			local chat_output_widget = self._widgets.chat_output_widget
 			local chat_output_content = chat_output_widget.content
 			local private_messages_table = chat_output_content.private_messages_table
+
 			private_messages_table[user_name] = private_messages_table[user_name] or {}
+
 			local message_tables = private_messages_table[user_name]
-			local new_message_table = {
-				sender = "To [" .. user_name .. "]: ",
-				trimmed_sender = "To [" .. self:_strip_identifier_from_user_name(user_name) .. "]: ",
-				message = content.chat_text.text,
-				type = Irc.PRIVATE_MSG
-			}
+			local new_message_table = {}
+
+			new_message_table.sender = "To [" .. user_name .. "]: "
+			new_message_table.trimmed_sender = "To [" .. self:_strip_identifier_from_user_name(user_name) .. "]: "
+			new_message_table.message = content.chat_text.text
+			new_message_table.type = Irc.PRIVATE_MSG
 
 			if #emojis > 0 then
 				new_message_table.emojis = table.clone(emojis)
@@ -1997,14 +2146,16 @@ ChatView._send_private_message = function (self, content, emojis)
 		local chat_output_widget = self._widgets.chat_output_widget
 		local chat_output_content = chat_output_widget.content
 		local private_messages_table = chat_output_content.private_messages_table
+
 		private_messages_table[user_name] = private_messages_table[user_name] or {}
+
 		local message_tables = private_messages_table[user_name]
-		local new_message_table = {
-			sender = "To [" .. user_name .. "]: ",
-			trimmed_sender = "To [" .. self:_strip_identifier_from_user_name(user_name) .. "]: ",
-			message = message,
-			type = Irc.PRIVATE_MSG
-		}
+		local new_message_table = {}
+
+		new_message_table.sender = "To [" .. user_name .. "]: "
+		new_message_table.trimmed_sender = "To [" .. self:_strip_identifier_from_user_name(user_name) .. "]: "
+		new_message_table.message = message
+		new_message_table.type = Irc.PRIVATE_MSG
 
 		if context_data then
 			new_message_table.link = context_data
@@ -2020,7 +2171,9 @@ ChatView._send_private_message = function (self, content, emojis)
 		local chat_output_widget = self._widgets.chat_output_widget
 		local chat_output_content = chat_output_widget.content
 		local private_messages_table = chat_output_content.private_messages_table
+
 		private_messages_table[user_name] = private_messages_table[user_name] or {}
+
 		local message_tables = private_messages_table[user_name]
 
 		table.clear(message_tables)
@@ -2198,6 +2351,7 @@ end
 ChatView._set_text_field_active = function (self, active)
 	local frame_widget = self._widgets.frame_widget
 	local frame_widget_content = frame_widget.content
+
 	frame_widget_content.text_field_active = active
 end
 
@@ -2237,6 +2391,7 @@ ChatView._populate_user_widgets = function (self, users, read_index)
 		end
 
 		local visible = user_data ~= nil
+
 		content.visible = visible
 		current_user_index = current_user_index + 1
 	end
@@ -2253,6 +2408,7 @@ end
 ChatView._update_members = function (self, read_index)
 	read_index = read_index or self._user_list_read_index or 1
 	self._current_channel_name = self._current_channel_name or Managers.irc:home_channel()
+
 	local local_user_name = Managers.irc:user_name()
 	local user_list = {}
 	local user_names = {}

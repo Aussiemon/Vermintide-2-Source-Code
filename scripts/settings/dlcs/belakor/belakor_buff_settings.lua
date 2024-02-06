@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/dlcs/belakor/belakor_buff_settings.lua
+
 require("scripts/settings/dlcs/belakor/belakor_balancing")
 
 local buff_perks = require("scripts/unit_extensions/default_player_unit/buffs/settings/buff_perk_names")
@@ -20,12 +22,13 @@ local function teleport_validation_func(pos, validation_data)
 end
 
 local GREY_WINGS_TELEPORT_STATES = {
-	IDLE = 1,
 	COOLDOWN = 5,
 	FINDING_TELEPORT_POSITION = 2,
+	IDLE = 1,
+	LANDING = 4,
 	TELEPORTING = 3,
-	LANDING = 4
 }
+
 settings.buff_function_templates = {
 	update_belakor_grey_wings_teleport_trigger = function (unit, buff, params)
 		if not is_server() then
@@ -51,7 +54,7 @@ settings.buff_function_templates = {
 		local distance = Vector3.length(target_unit_position - owner_position)
 		local template = buff.template
 
-		if template.max_distance_to_trigger_teleport_from_combo_attack < distance then
+		if distance > template.max_distance_to_trigger_teleport_from_combo_attack then
 			return
 		end
 
@@ -67,9 +70,12 @@ settings.buff_function_templates = {
 		end
 
 		local shared_table = buff.parent_buff_shared_table
+
 		shared_table.teleport_state = GREY_WINGS_TELEPORT_STATES.IDLE
+
 		local teleport_available_buff = buff.template.teleport_available_buff
 		local buff_extension = ScriptUnit.has_extension(unit, "buff_system")
+
 		shared_table.teleport_available_buff_id = buff_extension:add_buff(teleport_available_buff)
 		shared_table.blackboard = BLACKBOARDS[unit]
 		shared_table.side = Managers.state.side.side_by_unit[unit]
@@ -91,6 +97,7 @@ settings.buff_function_templates = {
 			shared_table.teleport = false
 			blackboard.umbral_leap = true
 			blackboard.in_vortex = true
+
 			local unit_pos = POSITION_LOOKUP[unit]
 			local teleport_effect = template.teleport_effect
 
@@ -107,6 +114,7 @@ settings.buff_function_templates = {
 		if shared_table.teleport_state == GREY_WINGS_TELEPORT_STATES.COOLDOWN then
 			if not shared_table.teleport_cooldown_t then
 				local teleport_cooldown = template.teleport_cooldown
+
 				shared_table.teleport_cooldown_t = t + teleport_cooldown
 			end
 
@@ -118,8 +126,9 @@ settings.buff_function_templates = {
 
 			shared_table.teleport = false
 
-			if shared_table.teleport_cooldown_t < t then
+			if t > shared_table.teleport_cooldown_t then
 				local teleport_available_buff = buff.template.teleport_available_buff
+
 				shared_table.teleport_available_buff_id = buff_extension:add_buff(teleport_available_buff)
 				shared_table.teleport_state = GREY_WINGS_TELEPORT_STATES.IDLE
 			end
@@ -140,12 +149,12 @@ settings.buff_function_templates = {
 					local target_unit_position = POSITION_LOOKUP[target_unit]
 					local distance = Vector3.length(target_unit_position - owner_position)
 
-					if template.min_distance_to_trigger_gap_closer_teleport < distance then
+					if distance > template.min_distance_to_trigger_gap_closer_teleport then
 						far_teleport = false
 					end
 				end
 
-				local teleport_position, min_dist, max_dist, min_player_dist = nil
+				local teleport_position, min_dist, max_dist, min_player_dist
 				local tries = template.find_valid_pos_attempts
 				local side = shared_table.side
 
@@ -161,8 +170,9 @@ settings.buff_function_templates = {
 
 				local validation_data = {
 					side = side,
-					min_dist_sqr = min_player_dist * min_player_dist
+					min_dist_sqr = min_player_dist * min_player_dist,
 				}
+
 				teleport_position = ConflictUtils.get_spawn_pos_on_circle_with_func_range(blackboard.nav_world, unit_pos, min_dist, max_dist, tries, teleport_validation_func, validation_data, 8, 8)
 
 				if teleport_position then
@@ -179,7 +189,7 @@ settings.buff_function_templates = {
 			ai_navigation_system:add_safe_navigation_callback(nav_callback)
 		end
 
-		if shared_table.teleport_state == GREY_WINGS_TELEPORT_STATES.TELEPORTING and ALIVE[unit] and shared_table.teleport_t < t then
+		if shared_table.teleport_state == GREY_WINGS_TELEPORT_STATES.TELEPORTING and ALIVE[unit] and t > shared_table.teleport_t then
 			local function nav_callback()
 				local unit_pos = POSITION_LOOKUP[unit]
 				local teleport_position = shared_table.teleport_position:unbox()
@@ -252,7 +262,7 @@ settings.buff_function_templates = {
 	end,
 	apply_homing_skull_achieve = function (unit, buff, params)
 		Managers.state.achievement:trigger_event("register_skull_hit", unit)
-	end
+	end,
 }
 settings.proc_functions = {
 	belakor_crystal_drop = function (owner_unit, buff, params)
@@ -299,13 +309,9 @@ settings.proc_functions = {
 				local event_data = FrameTable.alloc_table()
 				local level_transition_handler = Managers.level_transition_handler
 				local level_key = level_transition_handler:get_current_level_keys()
-				local event_name = nil
+				local event_name
 
-				if level_key ~= "arena_belakor" then
-					event_name = "shadow_curse_crystal_dropped"
-				else
-					event_name = "shadow_curse_vortex_crystal"
-				end
+				event_name = level_key ~= "arena_belakor" and "shadow_curse_crystal_dropped" or "shadow_curse_vortex_crystal"
 
 				dialogue_input:trigger_dialogue_event(event_name, event_data)
 			end
@@ -334,34 +340,35 @@ settings.proc_functions = {
 		end
 
 		buff.parent_buff_shared_table.teleport = true
-	end
+	end,
 }
 settings.explosion_templates = {
 	homing_skull_explosion = {
 		explosion = {
 			alert_enemies = false,
-			radius = 1,
-			always_stagger_ai = true,
 			allow_friendly_fire_override = true,
-			buff_to_apply = "belakor_homing_skull_debuff",
-			max_damage_radius_min = 0.5,
+			always_stagger_ai = true,
 			attack_template = "drakegun",
-			max_damage_radius_max = 1,
-			sound_event_name = "Play_curse_shadow_dagger_projectile_impact",
+			buff_to_apply = "belakor_homing_skull_debuff",
 			damage_profile = "homing_skull_explosion",
-			power_level = 500,
 			effect_name = "fx/belakor/blk_curse_skulls_explosion_fx",
+			max_damage_radius_max = 1,
+			max_damage_radius_min = 0.5,
+			power_level = 500,
+			radius = 1,
+			sound_event_name = "Play_curse_shadow_dagger_projectile_impact",
 			immune_breeds = {
 				chaos_zombie = true,
 				skaven_grey_seer = true,
-				skaven_stormfiend = true
-			}
-		}
+				skaven_stormfiend = true,
+			},
+		},
 	},
 	homing_skull_impact = {
 		server_hit_func = function (projectile_unit, damage_source, owner_unit, hit_position, recent_impacts, explosion_template)
 			local explosion_position = Unit.local_position(projectile_unit, 0)
 			local world = Managers.world:world("level_world")
+
 			explosion_template = ExplosionTemplates.homing_skull_explosion
 
 			DamageUtils.create_explosion(world, projectile_unit, explosion_position, Quaternion.identity(), explosion_template, 1, damage_source, true, false, owner_unit, false)
@@ -373,364 +380,366 @@ settings.explosion_templates = {
 
 			Managers.state.network.network_transmit:send_rpc_clients("rpc_create_explosion", attacker_unit_id, false, explosion_position, Quaternion.identity(), explosion_template_id, 1, damage_source_id, 0, false, attacker_unit_id)
 			AiUtils.kill_unit(projectile_unit, nil, nil, "undefined", nil)
-		end
+		end,
 	},
 	tiny_explosive_barrel = {
 		explosion = {
-			radius = 6,
-			dot_template_name = "burning_dot_1tick",
-			max_damage_radius = 1.75,
 			alert_enemies = true,
 			alert_enemies_radius = 10,
 			allow_friendly_fire_override = true,
 			attack_template = "drakegun",
-			sound_event_name = "boon_cluster_barrel_explosion",
 			damage_profile = "explosive_barrel",
+			dot_template_name = "burning_dot_1tick",
 			effect_name = "fx/wpnfx_barrel_explosion",
+			max_damage_radius = 1.75,
+			radius = 6,
+			sound_event_name = "boon_cluster_barrel_explosion",
 			difficulty_power_level = {
 				easy = {
+					power_level = 200,
 					power_level_glance = 100,
-					power_level = 200
 				},
 				normal = {
+					power_level = 400,
 					power_level_glance = 200,
-					power_level = 400
 				},
 				hard = {
+					power_level = 600,
 					power_level_glance = 300,
-					power_level = 600
 				},
 				harder = {
+					power_level = 800,
 					power_level_glance = 400,
-					power_level = 800
 				},
 				hardest = {
+					power_level = 1000,
 					power_level_glance = 500,
-					power_level = 1000
 				},
 				cataclysm = {
+					power_level = 1100,
 					power_level_glance = 550,
-					power_level = 1100
 				},
 				cataclysm_2 = {
+					power_level = 1150,
 					power_level_glance = 575,
-					power_level = 1150
 				},
 				cataclysm_3 = {
+					power_level = 1200,
 					power_level_glance = 600,
-					power_level = 1200
-				}
-			}
-		}
+				},
+			},
+		},
 	},
 	belakor_arena_finish = {
 		explosion = {
-			no_aggro = true,
-			radius = 300,
-			player_push_speed = 5,
 			alert_enemies = false,
+			collision_filter = "filter_simple_explosion_overlap",
 			damage_profile = "belakor_arena_finish",
-			power_level = 1000,
 			level_unit_damage = true,
-			collision_filter = "filter_simple_explosion_overlap"
-		}
-	}
+			no_aggro = true,
+			player_push_speed = 5,
+			power_level = 1000,
+			radius = 300,
+		},
+	},
 }
+
 local grey_wings_valid_damage_types = {
-	light_blunt_linesman = true,
-	light_slashing_tank = true,
-	drakegun = true,
-	blunt_linesman = true,
-	light_stab_linesman = true,
-	stab_tank = true,
-	light_slashing_linesman = true,
-	heavy_blunt_smiter = true,
-	blunt = true,
-	light_blunt_fencer = true,
-	heavy_blunt_linesman = true,
-	blunt_tank_uppercut = true,
-	heavy_blunt_tank = true,
-	heavy_slashing_smiter_uppercut = true,
 	arrow = true,
-	light_stab_smiter = true,
-	light_stab_fencer = true,
-	heavy_stab_fencer = true,
-	bolt_sniper = true,
-	piercing = true,
-	blunt_tank = true,
-	shot_repeating_handgun = true,
-	light_slashing_fencer = true,
-	projectile = true,
-	slashing_fencer = true,
-	heavy_slashing_fencer = true,
-	shot_sniper = true,
-	heavy_stab_smiter = true,
-	shot_machinegun = true,
-	heavy_slashing_tank = true,
-	shot_shotgun = true,
-	heavy_slashing_smiter = true,
-	light_slashing_linesman_hs = true,
-	heavy_stab_tank = true,
-	light_slashing_smiter = true,
-	slashing_smiter = true,
-	drakegun_shot = true,
-	arrow_sniper = true,
-	stab_smiter = true,
 	arrow_carbine = true,
-	throwing_axe = true,
-	heavy_blunt_fencer = true,
-	stab_fencer = true,
-	light_blunt_tank = true,
 	arrow_machinegun = true,
-	light_stab_tank = true,
-	slashing_linesman = true,
+	arrow_sniper = true,
+	blunt = true,
 	blunt_fencer = true,
-	slashing_smiter_uppercut = true,
-	slashing = true,
-	bolt_carbine = true,
-	light_blunt_smiter = true,
-	heavy_stab_linesman = true,
+	blunt_linesman = true,
 	blunt_smiter = true,
-	slashing_buffed = true,
-	shot_carbine = true,
+	blunt_tank = true,
+	blunt_tank_uppercut = true,
+	bolt_carbine = true,
 	bolt_machinegun = true,
-	slashing_tank = true,
-	cutting = true,
-	heavy_slashing_linesman = true,
+	bolt_sniper = true,
 	burning_stab_fencer = true,
-	stab_linesman = true
+	cutting = true,
+	drakegun = true,
+	drakegun_shot = true,
+	heavy_blunt_fencer = true,
+	heavy_blunt_linesman = true,
+	heavy_blunt_smiter = true,
+	heavy_blunt_tank = true,
+	heavy_slashing_fencer = true,
+	heavy_slashing_linesman = true,
+	heavy_slashing_smiter = true,
+	heavy_slashing_smiter_uppercut = true,
+	heavy_slashing_tank = true,
+	heavy_stab_fencer = true,
+	heavy_stab_linesman = true,
+	heavy_stab_smiter = true,
+	heavy_stab_tank = true,
+	light_blunt_fencer = true,
+	light_blunt_linesman = true,
+	light_blunt_smiter = true,
+	light_blunt_tank = true,
+	light_slashing_fencer = true,
+	light_slashing_linesman = true,
+	light_slashing_linesman_hs = true,
+	light_slashing_smiter = true,
+	light_slashing_tank = true,
+	light_stab_fencer = true,
+	light_stab_linesman = true,
+	light_stab_smiter = true,
+	light_stab_tank = true,
+	piercing = true,
+	projectile = true,
+	shot_carbine = true,
+	shot_machinegun = true,
+	shot_repeating_handgun = true,
+	shot_shotgun = true,
+	shot_sniper = true,
+	slashing = true,
+	slashing_buffed = true,
+	slashing_fencer = true,
+	slashing_linesman = true,
+	slashing_smiter = true,
+	slashing_smiter_uppercut = true,
+	slashing_tank = true,
+	stab_fencer = true,
+	stab_linesman = true,
+	stab_smiter = true,
+	stab_tank = true,
+	throwing_axe = true,
 }
+
 settings.buff_templates = {
 	orb_test_01 = {
 		buffs = {
 			{
+				buff_func = "spawn_orb",
 				event = "on_kill",
 				name = "orb_test_01",
-				buff_func = "spawn_orb",
 				orb_settings = {
-					orb_name = "test_orb_01"
-				}
-			}
-		}
+					orb_name = "test_orb_01",
+				},
+			},
+		},
 	},
 	orb_test_buff_01 = {
 		activation_effect = "fx/screenspace_potion_02",
 		buffs = {
 			{
-				name = "orb_test_buff_01",
-				multiplier = 0.5,
-				stat_buff = "attack_speed",
 				duration = 2,
-				max_stacks = 10,
 				icon = "potion_buff_02",
-				refresh_durations = true
-			}
-		}
+				max_stacks = 10,
+				multiplier = 0.5,
+				name = "orb_test_buff_01",
+				refresh_durations = true,
+				stat_buff = "attack_speed",
+			},
+		},
 	},
 	belakor_shadow_lieutenant = {
 		buffs = {
 			{
+				apply_buff_func = "apply_max_health_buff_for_ai",
 				multiplier = 1.75,
 				name = "belakor_shadow_lieutenant",
-				stat_buff = "max_health",
 				remove_buff_func = "remove_max_health_buff_for_ai",
-				apply_buff_func = "apply_max_health_buff_for_ai",
+				stat_buff = "max_health",
 				perks = {
-					"anti_oneshot"
-				}
+					"anti_oneshot",
+				},
 			},
 			{
-				name = "belakor_shadow_lieutenant_material_objective_unit",
+				apply_buff_func = "apply_objective_unit",
 				buff_func = "remove_objective_unit",
 				event = "on_death",
+				name = "belakor_shadow_lieutenant_material_objective_unit",
 				remove_buff_func = "remove_objective_unit",
-				apply_buff_func = "apply_objective_unit"
 			},
 			{
+				buff_func = "belakor_shadow_lieutenant_drop_crystal",
 				event = "on_death",
 				name = "belakor_shadow_lieutenant_drop_crystal",
-				buff_func = "belakor_shadow_lieutenant_drop_crystal"
-			}
-		}
+			},
+		},
 	},
 	belakor_crystal_spawn_on_death = {
 		buffs = {
 			{
+				buff_func = "belakor_crystal_drop",
 				event = "on_death",
 				name = "belakor_crystal_spawn_on_death",
-				buff_func = "belakor_crystal_drop",
-				crystal_count = BelakorBalancing.totem_crystal_count
-			}
-		}
+				crystal_count = BelakorBalancing.totem_crystal_count,
+			},
+		},
 	},
 	belakor_grey_wings = {
 		create_parent_buff_shared_table = true,
 		buffs = {
 			{
+				buff_func = "on_grey_wings_damage_taken",
 				event = "on_damage_taken",
 				name = "belakor_grey_wings",
-				buff_func = "on_grey_wings_damage_taken",
-				valid_damage_types = grey_wings_valid_damage_types
+				valid_damage_types = grey_wings_valid_damage_types,
 			},
 			{
-				min_dist_from_players_gap_closer = 3,
-				name = "belakor_grey_wings_teleport_logic",
-				min_distance_to_trigger_gap_closer_teleport = 10,
-				teleport_effect = "fx/blk_grey_wings_teleport_01",
-				remove_buff_func = "remove_belakor_grey_wings",
-				teleport_effect_trail = "fx/blk_grey_wings_teleport_direction_01",
-				min_teleport_distance_gap_closer = 3,
-				teleport_delay = 0.5,
-				teleport_cooldown = 1,
-				teleport_available_buff = "belakor_grey_wings_teleport_available",
-				max_teleport_distance_gap_closer = 6,
 				apply_buff_func = "apply_belakor_grey_wings",
-				max_teleport_distance = 13,
-				min_teleport_distance = 7,
 				find_valid_pos_attempts = 5,
+				max_teleport_distance = 13,
+				max_teleport_distance_gap_closer = 6,
+				min_dist_from_players = 5,
+				min_dist_from_players_gap_closer = 3,
+				min_distance_to_trigger_gap_closer_teleport = 10,
+				min_teleport_distance = 7,
+				min_teleport_distance_gap_closer = 3,
+				name = "belakor_grey_wings_teleport_logic",
+				remove_buff_func = "remove_belakor_grey_wings",
+				teleport_available_buff = "belakor_grey_wings_teleport_available",
+				teleport_cooldown = 1,
+				teleport_delay = 0.5,
+				teleport_effect = "fx/blk_grey_wings_teleport_01",
+				teleport_effect_trail = "fx/blk_grey_wings_teleport_direction_01",
 				update_func = "update_belakor_grey_wings",
-				min_dist_from_players = 5
 			},
 			{
-				update_func = "update_belakor_grey_wings_teleport_trigger",
+				max_distance_to_trigger_teleport_from_combo_attack = 5,
 				name = "belakor_grey_wings_on_combo",
-				max_distance_to_trigger_teleport_from_combo_attack = 5
+				update_func = "update_belakor_grey_wings_teleport_trigger",
 			},
 			{
+				apply_buff_func = "apply_max_health_buff_for_ai",
 				multiplier = 1,
 				name = "belakor_grey_wings_health",
-				stat_buff = "max_health",
 				remove_buff_func = "remove_max_health_buff_for_ai",
-				apply_buff_func = "apply_max_health_buff_for_ai"
-			}
-		}
+				stat_buff = "max_health",
+			},
+		},
 	},
 	belakor_grey_wings_teleport_available = {
 		buffs = {
 			{
 				name = "belakor_grey_wings_teleport_available",
 				perks = {
-					buff_perks.invulnerable_ranged
-				}
+					buff_perks.invulnerable_ranged,
+				},
 			},
 			{
-				remove_buff_func = "remove_attach_particle",
-				name = "belakor_grey_wings_particle",
 				apply_buff_func = "apply_attach_particle",
-				particle_fx = "fx/blk_grey_wings_01"
-			}
-		}
+				name = "belakor_grey_wings_particle",
+				particle_fx = "fx/blk_grey_wings_01",
+				remove_buff_func = "remove_attach_particle",
+			},
+		},
 	},
 	belakor_homing_skull_debuff = {
 		buffs = {
 			{
-				name = "belakor_homing_skull_debuff",
 				apply_buff_func = "apply_one_from_list",
+				name = "belakor_homing_skull_debuff",
 				buff_list = {
-					"belakor_homing_skull_debuff_delayed_stun_effect"
-				}
-			}
-		}
+					"belakor_homing_skull_debuff_delayed_stun_effect",
+				},
+			},
+		},
 	},
 	belakor_homing_skull_debuff_delayed_stun = {
 		buffs = {
 			{
 				buff_to_add = "belakor_homing_skull_debuff_delayed_stun_effect",
-				name = "belakor_homing_skull_debuff_delayed_stun",
-				is_cooldown = true,
-				icon = "deus_curse_slaanesh_01",
 				continuous_effect = "fx/screenspace_darkness_flash",
-				remove_buff_func = "add_buff",
-				priority_buff = true,
 				debuff = true,
+				duration = 3,
+				icon = "deus_curse_slaanesh_01",
+				is_cooldown = true,
 				max_stacks = 1,
-				duration = 3
-			}
-		}
+				name = "belakor_homing_skull_debuff_delayed_stun",
+				priority_buff = true,
+				remove_buff_func = "add_buff",
+			},
+		},
 	},
 	belakor_homing_skull_debuff_delayed_stun_effect = {
-		deactivation_sound = "stop_curse_belakor_shadow_skulls_player_disabled",
 		activation_sound = "play_curse_belakor_shadow_skulls_player_disabled_start",
+		deactivation_sound = "stop_curse_belakor_shadow_skulls_player_disabled",
 		buffs = {
 			{
-				priority_buff = true,
-				name = "belakor_homing_skull_debuff_delayed_stun_effect",
-				debuff = true,
-				icon = "deus_curse_belakor_02",
 				apply_buff_func = "apply_homing_skull_achieve",
 				continuous_effect = "fx/screenspace_darkness_flash",
-				max_stacks = 1,
+				debuff = true,
 				duration = 2.5,
+				icon = "deus_curse_belakor_02",
+				max_stacks = 1,
+				name = "belakor_homing_skull_debuff_delayed_stun_effect",
+				priority_buff = true,
 				perks = {
-					buff_perks.overpowered
-				}
+					buff_perks.overpowered,
+				},
 			},
 			{
-				particle_fx = "fx/skull_trap",
+				apply_buff_func = "apply_attach_particle",
+				duration = 2.5,
 				name = "belakor_homing_skull_debuff_particle",
 				offset_rotation_y = 90,
-				duration = 2.5,
+				particle_fx = "fx/skull_trap",
 				remove_buff_func = "remove_attach_particle",
-				apply_buff_func = "apply_attach_particle"
-			}
-		}
+			},
+		},
 	},
 	belakor_homing_skull_debuff_delayed_banish = {
 		buffs = {
 			{
-				icon = "twitch_icon_vanishing_act",
-				name = "belakor_homing_skull_debuff_delayed_banish",
 				continuous_effect = "fx/screenspace_inside_plague_vortex",
-				max_stacks = 1,
-				duration = 5,
-				priority_buff = true,
 				debuff = true,
+				duration = 5,
+				icon = "twitch_icon_vanishing_act",
+				max_stacks = 1,
+				name = "belakor_homing_skull_debuff_delayed_banish",
+				priority_buff = true,
 				perks = {
-					buff_perks.invulnerable
-				}
+					buff_perks.invulnerable,
+				},
 			},
 			{
+				duration = 5,
 				max_stacks = 1,
 				name = "belakor_homing_skull_debuff_delayed_banish_stun",
-				duration = 5,
 				perks = {
-					buff_perks.overpowered
-				}
-			}
-		}
+					buff_perks.overpowered,
+				},
+			},
+		},
 	},
 	belakor_cultists_buff = {
 		buffs = {
 			{
 				multiplier = 0.25,
 				name = "belakor_cultists_buff_damage",
-				stat_buff = "damage_dealt"
+				stat_buff = "damage_dealt",
 			},
 			{
 				multiplier = 1.25,
 				name = "belakor_cultists_buff_health",
-				stat_buff = "max_health"
+				stat_buff = "max_health",
 			},
 			{
-				remove_buff_func = "ai_update_max_health",
+				apply_buff_func = "ai_update_max_health",
 				name = "belakor_cultists_buff_health_update",
-				apply_buff_func = "ai_update_max_health"
+				remove_buff_func = "ai_update_max_health",
 			},
 			{
-				remove_buff_func = "belakor_cultists_remove_eye_glow",
+				apply_buff_func = "belakor_cultists_apply_eye_glow",
 				name = "belakor_cultists_buff_eye_glow",
-				apply_buff_func = "belakor_cultists_apply_eye_glow"
+				remove_buff_func = "belakor_cultists_remove_eye_glow",
 			},
 			{
 				multiplier = 1.1,
 				name = "belakor_cultists_buff_stagger",
-				stat_buff = "stagger_resistance"
+				stat_buff = "stagger_resistance",
 			},
 			{
 				multiplier = 0.9,
 				name = "belakor_cultists_buff_hit_mass",
-				stat_buff = "hit_mass_amount"
-			}
-		}
-	}
+				stat_buff = "hit_mass_amount",
+			},
+		},
+	},
 }

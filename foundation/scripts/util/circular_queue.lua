@@ -1,3 +1,5 @@
+﻿-- chunkname: @foundation/scripts/util/circular_queue.lua
+
 CircularQueue = class(CircularQueue)
 
 CircularQueue.init = function (self, capacity)
@@ -29,6 +31,7 @@ CircularQueue.pop_first = function (self)
 	fassert(self.num_items > 0, "Can't pop empty queue.")
 
 	local item = self.queue[self.first]
+
 	self.queue[self.first] = nil
 	self.num_items = self.num_items - 1
 	self.first = self.first % self.capacity + 1
@@ -114,6 +117,7 @@ end
 CircularQueue.tostring = function (self, tostringfunc, max_count)
 	tostringfunc = tostringfunc or tostring
 	max_count = max_count or self.num_items
+
 	local s = string.format("{[%d->%d][%d/%d] ", self.first, self.last, self.num_items, self.capacity)
 	local curr = self.first
 	local queue = self.queue
@@ -135,6 +139,7 @@ end
 CircularQueue.tostring2 = function (self, tostringfunc, max_count)
 	tostringfunc = tostringfunc or tostring
 	max_count = max_count or self.num_items
+
 	local s = string.format("{[%d->%d][%d/%d] ", self.first, self.last, self.num_items, self.capacity)
 	local queue = self.queue
 

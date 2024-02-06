@@ -1,9 +1,13 @@
+﻿-- chunkname: @scripts/ui/hud_ui/weave_timer_ui.lua
+
 local definitions = local_require("scripts/ui/hud_ui/weave_timer_ui_definitions")
 local widget_definitions = definitions.widgets
 local scenegraph_definition = definitions.scenegraph_definition
+
 WeaveTimerUI = class(WeaveTimerUI)
 PROGRESS_CUTOFF = 0.9
 BIG_SOUND_REMAINGING_TIME = 10
+
 local DO_RELOAD = false
 
 WeaveTimerUI.init = function (self, parent, ingame_ui_context)
@@ -29,6 +33,7 @@ WeaveTimerUI._create_ui_elements = function (self)
 
 	for name, widget in pairs(widget_definitions) do
 		local widget = UIWidget.init(widget)
+
 		self._widgets[name] = widget
 	end
 
@@ -60,9 +65,9 @@ WeaveTimerUI._update_timer = function (self, dt, t)
 		local progress = 1 - remaining_time_in_seconds / max_time
 		local time = Managers.time:time("game")
 
-		if old_progress < PROGRESS_CUTOFF and PROGRESS_CUTOFF <= progress then
+		if old_progress < PROGRESS_CUTOFF and progress >= PROGRESS_CUTOFF then
 			self:_play_sound("menu_wind_countdown_warning")
-		elseif PROGRESS_CUTOFF < progress and progress < 1 then
+		elseif progress > PROGRESS_CUTOFF and progress < 1 then
 			local old_time_progress = math.cos(self._old_time * math.pi * 2)
 			local time_progress = math.cos(time * math.pi * 2)
 			local diff = time_progress - old_time_progress
@@ -98,6 +103,7 @@ WeaveTimerUI._update_bar = function (self, dt, t)
 		local progress = 1 - remaining_time_in_seconds / max_time
 		local widget = self._widgets.timer_bar
 		local widget_content = widget.content
+
 		widget_content.progress = progress
 		widget_content.timer_text_id = timer_text
 	end

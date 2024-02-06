@@ -1,6 +1,9 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_dummy_stagger_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 local stagger_types = require("scripts/utils/stagger_types")
+
 BTDummyStaggerAction = class(BTDummyStaggerAction, BTNode)
 
 BTDummyStaggerAction.init = function (self, ...)
@@ -8,11 +11,13 @@ BTDummyStaggerAction.init = function (self, ...)
 end
 
 BTDummyStaggerAction.name = "BTDummyStaggerAction"
+
 local DEFAULT_IN_AIR_MOVER_CHECK_RADIUS = 0.35
 
 BTDummyStaggerAction.enter = function (self, unit, blackboard, t)
 	local breed = blackboard.breed
 	local was_already_in_stagger = blackboard.staggering_id and blackboard.stagger ~= blackboard.staggering_id
+
 	blackboard.stagger_anim_done = false
 	blackboard.stagger_hit_wall = nil
 	blackboard.stagger_ignore_anim_cb = nil
@@ -21,15 +26,20 @@ BTDummyStaggerAction.enter = function (self, unit, blackboard, t)
 	blackboard.move_state = "stagger"
 	blackboard.active_node = BTDummyStaggerAction
 	blackboard.stagger_time = t + 0.35
+
 	local action_data = self._tree_node.action_data
+
 	blackboard.action = action_data
+
 	local ai_base_extension = ScriptUnit.extension(unit, "ai_system")
 
 	ai_base_extension:increase_stagger_count()
 
-	local stagger_anims, idle_event, post_stagger_event, override_rotation = nil
+	local stagger_anims, idle_event, post_stagger_event, override_rotation
+
 	idle_event = "idle"
 	stagger_anims = action_data.stagger_anims[blackboard.stagger_type]
+
 	local impact_dir = blackboard.stagger_direction:unbox()
 	local push_anim, impact_rot = self:_select_animation(unit, blackboard, impact_dir, stagger_anims)
 	local network_manager = Managers.state.network
@@ -41,12 +51,14 @@ BTDummyStaggerAction._select_animation = function (self, unit, blackboard, impac
 	local impact_dir = Vector3.normalize(impact_vec)
 	local my_fwd = Quaternion.forward(Unit.local_rotation(unit, 0))
 	local dot = Vector3.dot(my_fwd, impact_dir)
+
 	dot = math.clamp(dot, -1, 1)
+
 	local angle = math.acos(dot)
 	local action = blackboard.action
 	local locomotion_extension = blackboard.locomotion_extension
 	local velocity = locomotion_extension and locomotion_extension:current_velocity() or Vector3(0, 0, 0)
-	local impact_rot, anim_table = nil
+	local impact_rot, anim_table
 	local moving_stagger_distance = action.moving_stagger_minimum_destination_distance
 	local in_moving_stagger_distane = moving_stagger_distance and moving_stagger_distance < blackboard.destination_dist
 	local moving_stagger_threshold = action.moving_stagger_threshold
@@ -75,10 +87,12 @@ BTDummyStaggerAction._select_animation = function (self, unit, blackboard, impac
 			anim_table = moving_stagger and stagger_anims.moving_fwd or stagger_anims.fwd
 		elseif Vector3.cross(my_fwd, impact_dir).z > 0 then
 			local dir = Vector3.cross(Vector3(0, 0, -1), impact_dir)
+
 			impact_rot = Quaternion.look(dir)
 			anim_table = moving_stagger and stagger_anims.moving_left or stagger_anims.left
 		else
 			local dir = Vector3.cross(Vector3(0, 0, 1), impact_dir)
+
 			impact_rot = Quaternion.look(dir)
 			anim_table = moving_stagger and stagger_anims.moving_right or stagger_anims.right
 		end
@@ -93,6 +107,7 @@ BTDummyStaggerAction._select_animation = function (self, unit, blackboard, impac
 	end
 
 	blackboard.last_stagger_anim = anim
+
 	local yaw = Quaternion.yaw(impact_rot)
 	local final_rotation = Quaternion(Vector3.up(), yaw)
 
@@ -121,7 +136,7 @@ BTDummyStaggerAction.leave = function (self, unit, blackboard, t, reason, destro
 
 	if not destroy then
 		local network_manager = Managers.state.network
-		local post_stagger_anim_event = nil
+		local post_stagger_anim_event
 
 		if blackboard.post_stagger_event then
 			post_stagger_anim_event = blackboard.post_stagger_event
@@ -140,6 +155,7 @@ BTDummyStaggerAction.leave = function (self, unit, blackboard, t, reason, destro
 	end
 
 	local hit_reaction_extension = ScriptUnit.has_extension(unit, "hit_reaction_system")
+
 	hit_reaction_extension.force_ragdoll_on_death = nil
 end
 
@@ -150,14 +166,14 @@ BTDummyStaggerAction.run = function (self, unit, blackboard, t, dt)
 
 	local locomotion_extension = blackboard.locomotion_extension
 	local stagger_anim_done = blackboard.stagger_anim_done
-	local stagger_time_finished = blackboard.stagger_time < t
+	local stagger_time_finished = t > blackboard.stagger_time
 	local stagger_ignore_anim_cb = blackboard.stagger_ignore_anim_cb
 
-	if blackboard.stagger_immune_time and blackboard.stagger_immune_time < t then
+	if blackboard.stagger_immune_time and t > blackboard.stagger_immune_time then
 		blackboard.stagger_immune_time = nil
 	end
 
-	if blackboard.heavy_stagger_immune_time and blackboard.heavy_stagger_immune_time < t then
+	if blackboard.heavy_stagger_immune_time and t > blackboard.heavy_stagger_immune_time then
 		blackboard.heavy_stagger_immune_time = nil
 	end
 

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/ai/ai_slot_utils.lua
+
 local AISlotUtils = {}
 local Vector3_copy = Vector3.copy
 local GwNavQueries_triangle_from_position = GwNavQueries.triangle_from_position
@@ -9,10 +11,12 @@ local SLOT_Z_MAX_DOWN = 7.5
 AISlotUtils.clamp_position_on_navmesh = function (position, nav_world, above, below)
 	below = below or Z_MAX_DIFFERENCE_BELOW
 	above = above or Z_MAX_DIFFERENCE_ABOVE
+
 	local is_on_navmesh, altitude = GwNavQueries_triangle_from_position(nav_world, position, above, below)
 
 	if is_on_navmesh then
 		local position_on_navmesh = Vector3_copy(position)
+
 		position_on_navmesh.z = altitude
 
 		return position_on_navmesh

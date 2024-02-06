@@ -1,10 +1,12 @@
+﻿-- chunkname: @scripts/settings/dlcs/woods/woods_bot_conditions.lua
+
 BTConditions.can_activate = BTConditions.can_activate or {}
 BTConditions.can_activate_non_combat = BTConditions.can_activate_non_combat or {}
 
 table.merge_recursive(BTConditions.ability_check_categories, {
 	activate_ability = {
-		we_thornsister = true
-	}
+		we_thornsister = true,
+	},
 })
 
 local wall_max_distance_sq = 100
@@ -27,7 +29,7 @@ BTConditions.can_activate.we_thornsister = function (blackboard)
 	local self_position = POSITION_LOOKUP[self_unit]
 	local target_unit = blackboard.target_unit
 	local target_blackboard = BLACKBOARDS[target_unit]
-	local wall_target = nil
+	local wall_target
 	local forward_offset = 0
 
 	if target_unit then

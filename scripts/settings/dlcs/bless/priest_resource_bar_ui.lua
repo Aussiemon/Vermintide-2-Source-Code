@@ -1,19 +1,23 @@
+﻿-- chunkname: @scripts/settings/dlcs/bless/priest_resource_bar_ui.lua
+
 local definitions = local_require("scripts/settings/dlcs/bless/priest_resource_bar_ui_definition")
+
 PriestResourceBarUI = class(PriestResourceBarUI)
+
 local passive_ui_data = {
 	material = "overcharge_bar_warrior_priest",
 	color = {
 		255,
 		144,
 		54,
-		36
-	}
+		36,
+	},
 }
 local passive_feedback_values = {
 	detail_bar_passive_active = 0.2,
-	glow_brightness_min = 0.1,
 	detail_bar_passive_inactive = -0.4,
-	glow_brightness_max = 0.8
+	glow_brightness_max = 0.8,
+	glow_brightness_min = 0.1,
 }
 
 PriestResourceBarUI.init = function (self, parent, ingame_ui_context)
@@ -30,7 +34,7 @@ PriestResourceBarUI.init = function (self, parent, ingame_ui_context)
 	self.player_manager = ingame_ui_context.player_manager
 	self.render_settings = {
 		alpha_multiplier = 1,
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 	self._previous_overcharge_fraction = 0
 	self._is_spectator = false
@@ -40,6 +44,7 @@ PriestResourceBarUI.init = function (self, parent, ingame_ui_context)
 	self._bar_feedback_state = "increase"
 	self._active_passive = false
 	self._animations = {}
+
 	local event_manager = Managers.state.event
 
 	event_manager:register(self, "on_spectator_target_changed", "on_spectator_target_changed")
@@ -99,15 +104,17 @@ PriestResourceBarUI.create_ui_elements = function (self)
 	UIRenderer.clear_scenegraph_queue(self.ui_renderer)
 
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(definitions.scenegraph_definition)
+
 	local widget_definitions = definitions.inventory_entry_definitions
+
 	self.charge_bar = UIWidget.init(definitions.widget_definitions.charge_bar)
 end
 
 local customizer_data = {
-	root_scenegraph_id = "screen_bottom_pivot_parent",
+	drag_scenegraph_id = "charge_bar",
 	label = "Overcharge",
 	registry_key = "overcharge",
-	drag_scenegraph_id = "charge_bar"
+	root_scenegraph_id = "screen_bottom_pivot_parent",
 }
 
 PriestResourceBarUI.update = function (self, dt, t, player)
@@ -155,22 +162,29 @@ PriestResourceBarUI.set_charge_bar_fraction = function (self, player, overcharge
 	local style = widget.style
 	local content = widget.content
 	local bar_size = content.size
+
 	overcharge_fraction = math.lerp(content.internal_gradient_threshold or 0, math.min(overcharge_fraction, 1), 0.3)
 	content.internal_gradient_threshold = overcharge_fraction
 	style.bar_1.gradient_threshold = overcharge_fraction
+
 	local bar_color = style.bar_1.color
 	local ui_data = passive_ui_data
 	local color = ui_data.color
+
 	content.bar_1 = ui_data.material
+
 	local glow_style = style.glow
 	local glow_size = glow_style.size
 	local glow_offset = glow_style.offset
+
 	glow_offset[1] = bar_size[1] * overcharge_fraction - glow_size[1] / 2 + 2
 
 	self:handle_glow_feedback(widget, dt)
 
 	local detail_style = style.bar_detail
+
 	detail_style.gradient_threshold = overcharge_fraction
+
 	local material_name = widget.content.bar_detail
 	local material = Gui.material(self._gui, material_name)
 
@@ -186,7 +200,7 @@ PriestResourceBarUI.set_charge_bar_fraction = function (self, player, overcharge
 
 		glow_style.size = {
 			150,
-			150
+			150,
 		}
 		glow_style.offset[2] = -75 + content.size[2] / 2
 
@@ -194,7 +208,7 @@ PriestResourceBarUI.set_charge_bar_fraction = function (self, player, overcharge
 	else
 		glow_style.size = {
 			75,
-			75
+			75,
 		}
 		glow_style.offset[2] = -37.5 + content.size[2] / 2
 
@@ -219,6 +233,7 @@ end
 PriestResourceBarUI._apply_crosshair_position = function (self, x, y)
 	local scenegraph_id = "screen_bottom_pivot"
 	local position = self.ui_scenegraph[scenegraph_id].local_position
+
 	position[1] = x
 	position[2] = y
 end
@@ -247,7 +262,7 @@ PriestResourceBarUI.handle_glow_feedback = function (self, widget, dt)
 	elseif self._bar_feedback_state == "decrease" then
 		value = value - 2.5 * dt
 
-		if min_value >= value then
+		if value <= min_value then
 			self._bar_feedback_state = "done"
 		end
 	elseif self._bar_feedback_state == "done" then
@@ -257,6 +272,7 @@ PriestResourceBarUI.handle_glow_feedback = function (self, widget, dt)
 	end
 
 	self._value = value
+
 	local material_name = widget.content.glow
 	local material = Gui.material(self._gui, material_name)
 

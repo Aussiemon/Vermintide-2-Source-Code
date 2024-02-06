@@ -1,10 +1,13 @@
+﻿-- chunkname: @scripts/settings/dlcs/woods/woods_achievements_settings.lua
+
 local settings = DLCSettings.woods
+
 settings.achievement_outline = {
 	heroes = {
 		categories = {
 			{
-				sorting = 3,
 				name = "inventory_name_wood_elf",
+				sorting = 3,
 				entries = {
 					"woods_complete_all_helmgart_levels_recruit_we_thornsister",
 					"woods_complete_all_helmgart_levels_veteran_we_thornsister",
@@ -26,13 +29,13 @@ settings.achievement_outline = {
 					"woods_wall_block_ratling",
 					"woods_wall_dual_save",
 					"woods_free_ability_grind",
-					"complete_all_thorn_sister_challenges"
-				}
-			}
-		}
-	}
+					"complete_all_thorn_sister_challenges",
+				},
+			},
+		},
+	},
 }
 settings.achievement_template_file_names = {
-	"scripts/managers/achievements/achievement_templates_woods"
+	"scripts/managers/achievements/achievement_templates_woods",
 }
 settings.achievement_events = {}

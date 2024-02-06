@@ -1,16 +1,19 @@
+﻿-- chunkname: @scripts/ui/hud_ui/unit_frames_handler.lua
+
 require("scripts/settings/ui_player_portrait_frame_settings")
 require("scripts/ui/hud_ui/unit_frame_ui")
 
 local allowed_consumable_slots = {
-	slot_healthkit = true,
 	slot_grenade = true,
-	slot_potion = true
+	slot_healthkit = true,
+	slot_potion = true,
 }
 local allowed_weapon_slots = {
+	slot_melee = true,
 	slot_ranged = true,
-	slot_melee = true
 }
 local NUM_PARTY_MEMBERS = 3
+
 UnitFramesHandler = class(UnitFramesHandler)
 
 UnitFramesHandler.init = function (self, parent, ingame_ui_context)
@@ -24,16 +27,20 @@ UnitFramesHandler.init = function (self, parent, ingame_ui_context)
 	self.lobby = ingame_ui_context.network_lobby
 	self.my_player = ingame_ui_context.player
 	self.cleanui = ingame_ui_context.cleanui
+
 	local network_manager = Managers.state.network
 	local network_transmit = network_manager.network_transmit
 	local server_peer_id = network_transmit.server_peer_id
+
 	self.host_peer_id = server_peer_id or network_transmit.peer_id
+
 	local party_manager = Managers.party
 	local local_player_id = 1
 	local player_status = party_manager:get_player_status(self.peer_id, local_player_id)
 	local party_id = player_status.party_id
 	local party = party_manager:get_party(party_id)
 	local side = Managers.state.side.side_by_party[party]
+
 	self._party_id = party_id
 	self.platform = PLATFORM
 	self._unit_frames = {}
@@ -44,6 +51,7 @@ UnitFramesHandler.init = function (self, parent, ingame_ui_context)
 	self._spectated_player_unit = nil
 	self._numeric_ui_enabled = false
 	self._should_use_gamepad = false
+
 	local event_manager = Managers.state.event
 
 	event_manager:register(self, "add_respawn_counter_event", "add_respawn_counter_event")
@@ -89,6 +97,7 @@ UnitFramesHandler.on_spectator_target_changed = function (self, spectated_player
 	self._unit_frame_index_by_ui_id = {}
 	self.unit_frame_by_player = {}
 	self._current_frame_index = 1
+
 	local side = Managers.state.side:get_side_from_player_unique_id(self._spectated_player:unique_id())
 	local is_dark_pact = side:name() == "dark_pact"
 
@@ -123,16 +132,22 @@ end
 UnitFramesHandler._create_player_unit_frame = function (self)
 	local player = self._is_spectator and self._spectated_player or self.my_player
 	local player_ui_id = player:ui_id()
-	local player_data = {
-		player_ui_id = player_ui_id,
-		player = player,
-		own_player = true
-	}
+	local player_data = {}
+
+	player_data.player_ui_id = player_ui_id
+	player_data.player = player
+	player_data.own_player = true
+
 	local peer_id = player:network_id()
+
 	player_data.peer_id = peer_id
+
 	local local_player_id = player:local_player_id()
+
 	player_data.local_player_id = local_player_id
+
 	local unit_frame, i = self:_get_unused_unit_frame()
+
 	unit_frame = unit_frame or self:_create_unit_frame_by_type("player")
 	unit_frame.player_data = player_data
 	unit_frame.sync = true
@@ -148,6 +163,7 @@ UnitFramesHandler._create_party_members_unit_frames = function (self)
 
 	for i = 1, NUM_PARTY_MEMBERS do
 		local unit_frame = self:_create_unit_frame_by_type("team", i)
+
 		unit_frames[#unit_frames + 1] = unit_frame
 	end
 
@@ -159,6 +175,7 @@ UnitFramesHandler._create_enemy_party_members_unit_frames = function (self)
 
 	for i = 1, NUM_PARTY_MEMBERS + 1 do
 		local unit_frame = self:_create_unit_frame_by_type("enemy_team", i)
+
 		unit_frames[#unit_frames + 1] = unit_frame
 	end
 
@@ -170,7 +187,7 @@ UnitFramesHandler._create_unit_frame_by_type = function (self, frame_type, frame
 	local unit_frame = {}
 	local state_data = {}
 	local player_data = {}
-	local definitions = nil
+	local definitions
 
 	if frame_type == "team" then
 		definitions = local_require("scripts/ui/hud_ui/team_member_unit_frame_ui_definitions")
@@ -269,6 +286,7 @@ UnitFramesHandler._handle_unit_frame_assigning = function (self)
 
 	if party then
 		local occupied_slots = party.occupied_slots
+
 		self._num_occupied_slots = #occupied_slots
 
 		for i = 1, #occupied_slots do
@@ -279,8 +297,10 @@ UnitFramesHandler._handle_unit_frame_assigning = function (self)
 
 			if player then
 				local player_ui_id = player:ui_id()
+
 				temp_active_ui_ids[player_ui_id] = true
 				temp_active_peer_ids[player_peer_id] = true
+
 				local own_player = player == my_player
 
 				if not own_player then
@@ -290,6 +310,7 @@ UnitFramesHandler._handle_unit_frame_assigning = function (self)
 
 						if game_mode_key == "tutorial" then
 							local play_go_tutorial_system = Managers.state.entity:system("play_go_tutorial_system")
+
 							add_unit_frame = play_go_tutorial_system:bot_portrait_enabled(player)
 						end
 
@@ -305,13 +326,13 @@ UnitFramesHandler._handle_unit_frame_assigning = function (self)
 
 								table.clear(avaiable_unit_frame.data)
 
-								local player_data = {
-									player_ui_id = player_ui_id,
-									player = player,
-									own_player = own_player,
-									peer_id = player_peer_id,
-									local_player_id = local_player_id
-								}
+								local player_data = {}
+
+								player_data.player_ui_id = player_ui_id
+								player_data.player = player
+								player_data.own_player = own_player
+								player_data.peer_id = player_peer_id
+								player_data.local_player_id = local_player_id
 								avaiable_unit_frame.player_data = player_data
 								avaiable_unit_frame.sync = true
 								frames_changed = true
@@ -335,10 +356,12 @@ UnitFramesHandler._handle_unit_frame_assigning = function (self)
 		local side = Managers.state.side.side_by_party[party]
 		local enemy_sides = side:get_enemy_sides()
 		local enemy_side = enemy_sides[1]
+
 		party = enemy_side and enemy_side.party
 
 		if party then
 			local occupied_slots = party.occupied_slots
+
 			self._num_enemy_occupied_slots = #occupied_slots
 
 			for i = 1, #occupied_slots do
@@ -349,8 +372,10 @@ UnitFramesHandler._handle_unit_frame_assigning = function (self)
 
 				if player then
 					local player_ui_id = player:ui_id()
+
 					temp_active_ui_ids[player_ui_id] = true
 					temp_active_peer_ids[player_peer_id] = true
+
 					local own_player = player == my_player
 
 					if not own_player then
@@ -360,6 +385,7 @@ UnitFramesHandler._handle_unit_frame_assigning = function (self)
 
 							if game_mode_key == "tutorial" then
 								local play_go_tutorial_system = Managers.state.entity:system("play_go_tutorial_system")
+
 								add_unit_frame = play_go_tutorial_system:bot_portrait_enabled(player)
 							end
 
@@ -375,14 +401,14 @@ UnitFramesHandler._handle_unit_frame_assigning = function (self)
 
 									table.clear(avaiable_unit_frame.data)
 
-									local player_data = {
-										player_ui_id = player_ui_id,
-										player = player,
-										is_enemy = true,
-										own_player = own_player,
-										peer_id = player_peer_id,
-										local_player_id = local_player_id
-									}
+									local player_data = {}
+
+									player_data.player_ui_id = player_ui_id
+									player_data.player = player
+									player_data.is_enemy = true
+									player_data.own_player = own_player
+									player_data.peer_id = player_peer_id
+									player_data.local_player_id = local_player_id
 									avaiable_unit_frame.player_data = player_data
 									avaiable_unit_frame.sync = true
 									frames_changed = true
@@ -441,7 +467,7 @@ UnitFramesHandler._handle_connecting_peers = function (self, active_peer_ids, nu
 							self:_reset_unit_frame(avaiable_unit_frame)
 
 							avaiable_unit_frame.player_data = {
-								connecting_peer_id = peer_id
+								connecting_peer_id = peer_id,
 							}
 							added_connection = true
 						end
@@ -509,7 +535,7 @@ UnitFramesHandler._align_party_member_frames = function (self)
 		local connecting_peer_id = player_data.connecting_peer_id
 
 		if (peer_id or connecting_peer_id) and is_visible then
-			local position_x, position_y = nil
+			local position_x, position_y
 
 			if player_data.is_enemy then
 				position_x = enemy_start_offset_x
@@ -531,7 +557,7 @@ UnitFramesHandler._align_party_member_frames = function (self)
 end
 
 local function get_ammunition_count(left_hand_wielded_unit, right_hand_wielded_unit, item_template)
-	local ammo_extension = nil
+	local ammo_extension
 
 	if not item_template.ammo_data then
 		return
@@ -565,13 +591,13 @@ local function get_overcharge_amount(unit)
 end
 
 UnitFramesHandler._set_player_extensions = function (self, player_data, player_unit)
-	local extensions = {
-		career = ScriptUnit.extension(player_unit, "career_system"),
-		health = ScriptUnit.extension(player_unit, "health_system"),
-		status = ScriptUnit.extension(player_unit, "status_system"),
-		inventory = ScriptUnit.extension(player_unit, "inventory_system"),
-		buff = ScriptUnit.extension(player_unit, "buff_system")
-	}
+	local extensions = {}
+
+	extensions.career = ScriptUnit.extension(player_unit, "career_system")
+	extensions.health = ScriptUnit.extension(player_unit, "health_system")
+	extensions.status = ScriptUnit.extension(player_unit, "status_system")
+	extensions.inventory = ScriptUnit.extension(player_unit, "inventory_system")
+	extensions.buff = ScriptUnit.extension(player_unit, "buff_system")
 	player_data.extensions = extensions
 	player_data.player_unit = player_unit
 end
@@ -611,7 +637,7 @@ UnitFramesHandler._sync_player_stats = function (self, unit_frame)
 		return
 	end
 
-	local health_percent, total_health_percent, active_percentage, is_knocked_down, needs_help, is_wounded, is_ready_for_assisted_respawn = nil
+	local health_percent, total_health_percent, active_percentage, is_knocked_down, needs_help, is_wounded, is_ready_for_assisted_respawn
 	local is_talking = false
 	local player_unit = player_data.player_unit
 
@@ -624,13 +650,14 @@ UnitFramesHandler._sync_player_stats = function (self, unit_frame)
 	local game = network_manager:game()
 	local ability_cooldown_percentage = 0
 	local extensions = player_data.extensions
-	local equipment, career_index, inventory_extension = nil
+	local equipment, career_index, inventory_extension
 
 	if extensions then
 		local career_extension = extensions.career
 		local buff_extension = extensions.buff
 		local status_extension = extensions.status
 		local health_extension = extensions.health
+
 		inventory_extension = extensions.inventory
 		total_health_percent = status_extension:is_dead() and 0 or health_extension:current_health_percent()
 		health_percent = status_extension:is_dead() and 0 or health_extension:current_permanent_health_percent()
@@ -638,6 +665,7 @@ UnitFramesHandler._sync_player_stats = function (self, unit_frame)
 		is_knocked_down = (status_extension:is_knocked_down() or status_extension:get_is_ledge_hanging()) and total_health_percent > 0
 		is_ready_for_assisted_respawn = status_extension:is_ready_for_assisted_respawn()
 		needs_help = status_extension:is_grabbed_by_pack_master() or status_extension:is_hanging_from_hook() or status_extension:is_pounced_down() or status_extension:is_grabbed_by_corruptor() or status_extension:is_in_vortex() or status_extension:is_grabbed_by_chaos_spawn()
+
 		local num_grimoires = buff_extension:num_buff_perk("skaven_grimoire")
 		local multiplier = buff_extension:apply_buffs_to_value(PlayerUnitDamageSettings.GRIMOIRE_HEALTH_DEBUFF, "curse_protection")
 		local num_twitch_grimoires = buff_extension:num_buff_perk("twitch_grimoire")
@@ -649,6 +677,7 @@ UnitFramesHandler._sync_player_stats = function (self, unit_frame)
 		local value = Managers.state.difficulty:get_difficulty_value_from_table(curse_settings_value)
 		local mutator_curse_multiplier = buff_extension:apply_buffs_to_value(value, "curse_protection")
 		local cursed_health = buff_extension:apply_buffs_to_value(0, "health_curse")
+
 		cursed_health = buff_extension:apply_buffs_to_value(cursed_health, "curse_protection")
 		active_percentage = 1 + num_grimoires * multiplier + num_twitch_grimoires * twitch_multiplier + num_slayer_curses * slayer_curse_multiplier + num_mutator_curses * mutator_curse_multiplier + cursed_health
 		equipment = inventory_extension:equipment()
@@ -683,8 +712,7 @@ UnitFramesHandler._sync_player_stats = function (self, unit_frame)
 	end
 
 	local dirty = false
-	local update_portrait_status = false
-	local update_health_bar_status = false
+	local update_portrait_status, update_health_bar_status = false, false
 
 	if data.connecting ~= connecting then
 		data.connecting = connecting
@@ -894,10 +922,12 @@ UnitFramesHandler._sync_player_stats = function (self, unit_frame)
 				if stored_slot_data.visible ~= slot_visible or stored_slot_data.item_name ~= item_name then
 					stored_slot_data.visible = slot_visible
 					stored_slot_data.item_name = item_name
+
 					local item_count = has_additional_item_slots and self:_slot_item_count(inventory_extension, slot_name)
 
 					if item_count and item_count <= 1 then
-						has_additional_item_slots, item_count = nil
+						has_additional_item_slots = nil
+						item_count = nil
 					end
 
 					stored_slot_data.has_additional_item_slots = has_additional_item_slots
@@ -910,7 +940,8 @@ UnitFramesHandler._sync_player_stats = function (self, unit_frame)
 					local item_count = self:_slot_item_count(inventory_extension, slot_name)
 
 					if item_count and item_count <= 1 then
-						has_additional_item_slots, item_count = nil
+						has_additional_item_slots = nil
+						item_count = nil
 					end
 
 					if stored_slot_data.item_count ~= item_count then
@@ -1047,6 +1078,7 @@ end
 
 UnitFramesHandler.set_visible = function (self, visible)
 	self._is_visible = visible
+
 	local parent = self._parent
 	local ignore_own_player = parent:is_own_player_dead() and not self._is_spectator
 	local unit_frames = self._unit_frames
@@ -1078,6 +1110,7 @@ UnitFramesHandler.on_gamepad_activated = function (self)
 		my_unit_frame.widget:destroy()
 
 		local new_unit_frame = self:_create_unit_frame_by_type("player")
+
 		new_unit_frame.player_data = my_unit_frame.player_data
 		new_unit_frame.sync = true
 		self._unit_frames[1] = new_unit_frame
@@ -1095,6 +1128,7 @@ UnitFramesHandler.on_gamepad_deactivated = function (self)
 		my_unit_frame.widget:destroy()
 
 		local new_unit_frame = self:_create_unit_frame_by_type("player")
+
 		new_unit_frame.player_data = my_unit_frame.player_data
 		new_unit_frame.sync = true
 		self._unit_frames[1] = new_unit_frame
@@ -1129,6 +1163,7 @@ UnitFramesHandler.update = function (self, dt, t)
 	self:_sync_player_stats(self._unit_frames[self._current_frame_index])
 
 	self._current_frame_index = 1 + self._current_frame_index % #self._unit_frames
+
 	local unit_frames = self._unit_frames
 
 	for i = 1, #unit_frames do

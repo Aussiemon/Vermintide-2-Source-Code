@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/level_end/level_end_view_wrapper.lua
+
 require("scripts/ui/views/level_end/level_end_view")
 
 for _, dlc in pairs(DLCSettings) do
@@ -19,6 +21,7 @@ LevelEndViewWrapper.init = function (self, level_end_view_context)
 
 	if level_end_view then
 		local class = rawget(_G, level_end_view)
+
 		self._level_end_view = class:new(level_end_view_context)
 	else
 		self._level_end_view = LevelEndView:new(level_end_view_context)
@@ -58,6 +61,7 @@ LevelEndViewWrapper.game_state_changed = function (self)
 	self:_create_input_service()
 
 	local input_manager = Managers.input
+
 	self._level_end_view_context.input_manager = input_manager
 
 	self._level_end_view:set_input_manager(input_manager)

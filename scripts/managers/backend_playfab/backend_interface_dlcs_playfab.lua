@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/managers/backend_playfab/backend_interface_dlcs_playfab.lua
+
 local PlayFabClientApi = require("PlayFab.PlayFabClientApi")
+
 BackendInterfaceDLCsPlayfab = class(BackendInterfaceDLCsPlayfab)
 
 BackendInterfaceDLCsPlayfab.init = function (self, backend_mirror)
@@ -31,8 +34,8 @@ BackendInterfaceDLCsPlayfab.update_dlc_ownership = function (self)
 	local request = {
 		FunctionName = "updateDLCOwnership",
 		FunctionParameter = {
-			installed_dlcs = json_string
-		}
+			installed_dlcs = json_string,
+		},
 	}
 	local success_callback = callback(self, "_update_owned_dlcs_cb")
 	local request_queue = self._backend_mirror:request_queue()
@@ -49,8 +52,10 @@ BackendInterfaceDLCsPlayfab._update_owned_dlcs_cb = function (self, result)
 	local excluded_dlcs = function_result.excluded_dlcs
 	local new_dlcs = function_result.new_dlcs
 	local revoked_dlcs = function_result.revoked_dlcs
+
 	self._owned_dlcs = owned_dlcs or {}
 	self._platform_dlcs = platform_dlcs
+
 	local unlock_manager = Managers.unlock
 
 	unlock_manager:set_excluded_dlcs(excluded_dlcs, owned_dlcs)
@@ -94,7 +99,7 @@ end
 BackendInterfaceDLCsPlayfab._execute_dlc_specific_logic = function (self)
 	local request = {
 		FunctionName = "executeDLCLogic",
-		FunctionParameter = {}
+		FunctionParameter = {},
 	}
 	local success_callback = callback(self, "_execute_dlc_logic_cb")
 	local request_queue = self._backend_mirror:request_queue()
@@ -106,6 +111,7 @@ BackendInterfaceDLCsPlayfab._execute_dlc_logic_cb = function (self, result)
 	local function_result = result.FunctionResult
 	local new_rewards = function_result.item_grant_results
 	local unseen_rewards = self._backend_mirror:get_user_data("unseen_rewards")
+
 	unseen_rewards = unseen_rewards and cjson.decode(unseen_rewards) or {}
 
 	for i = 1, #new_rewards do
@@ -117,14 +123,15 @@ BackendInterfaceDLCsPlayfab._execute_dlc_logic_cb = function (self, result)
 			local reward = {
 				reward_type = "keep_decoration_painting",
 				rewarded_from = item.Data.rewarded_from,
-				keep_decoration_name = item_id
+				keep_decoration_name = item_id,
 			}
+
 			unseen_rewards[#unseen_rewards + 1] = reward
 
 			self._backend_mirror:add_keep_decoration(item_id)
 		elseif CosmeticUtils.is_cosmetic_item(item_type) then
 			local backend_id = self._backend_mirror:add_item(nil, {
-				ItemId = item_id
+				ItemId = item_id,
 			})
 
 			if backend_id then
@@ -133,8 +140,9 @@ BackendInterfaceDLCsPlayfab._execute_dlc_logic_cb = function (self, result)
 					backend_id = backend_id,
 					rewarded_from = item.Data.rewarded_from,
 					item_type = item_type,
-					item_id = item_id
+					item_id = item_id,
 				}
+
 				unseen_rewards[#unseen_rewards + 1] = reward
 			end
 		else
@@ -151,8 +159,9 @@ BackendInterfaceDLCsPlayfab._execute_dlc_logic_cb = function (self, result)
 							reward_type = "currency",
 							currency_type = currency_type,
 							currency_amount = currency_amount,
-							rewarded_from = rewarded_from
+							rewarded_from = rewarded_from,
 						}
+
 						unseen_rewards[#unseen_rewards + 1] = reward
 					end
 
@@ -173,8 +182,9 @@ BackendInterfaceDLCsPlayfab._execute_dlc_logic_cb = function (self, result)
 						backend_id = backend_id,
 						rewarded_from = rewarded_from,
 						item_type = item_type,
-						item_id = item_id
+						item_id = item_id,
 					}
+
 					unseen_rewards[#unseen_rewards + 1] = reward
 				end
 

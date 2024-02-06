@@ -1,12 +1,16 @@
+﻿-- chunkname: @scripts/settings/mutators/mutator_curse_bolt_of_change.lua
+
 local base_lighting_strike = require("scripts/settings/mutators/mutator_lightning_strike")
 local bolt_of_change = table.clone(base_lighting_strike)
 local STOP_SPAWN_DISTANCE = 5
+
 bolt_of_change.curse_package_name = "resource_packages/mutators/mutator_curse_bolt_of_change"
 bolt_of_change.display_name = "curse_bolt_of_change_name"
 bolt_of_change.description = "curse_bolt_of_change_desc"
 bolt_of_change.icon = "deus_curse_tzeentch_01"
 bolt_of_change.spawn_rate = 40
 bolt_of_change.max_spawns = math.huge
+
 local BOT_DAMAGE_MODIFIER = 0.3
 local NORMAL = 2
 local HARD = 3
@@ -19,85 +23,86 @@ local difficulty_settings = {
 		[HARD] = 2,
 		[HARDER] = 2,
 		[HARDEST] = 2,
-		[CATACLYSM] = 2
+		[CATACLYSM] = 2,
 	},
 	change_limit = {
 		[NORMAL] = 1,
 		[HARD] = 2,
 		[HARDER] = 3,
 		[HARDEST] = 3,
-		[CATACLYSM] = 3
-	}
+		[CATACLYSM] = 3,
+	},
 }
 local BOLT_EXPLOSION_SOUND_EVENT = "morris_bolt_of_change_laughter"
 local breed_override = {
 	chaos_warrior = {
+		breed = "chaos_spawn",
 		chance = 0.3,
-		breed = "chaos_spawn"
 	},
 	beastmen_bestigor = {
+		breed = "chaos_spawn",
 		chance = 0.3,
-		breed = "chaos_spawn"
 	},
 	skaven_slave = {
+		breed = "critter_rat",
 		chance = 0.005,
-		breed = "critter_rat"
-	}
+	},
 }
 local max_spawn_amounts = {
-	chaos_spawn = 1
+	chaos_spawn = 1,
 }
 local max_specials = 2
 local unchangeable_breeds = {
-	chaos_troll = true,
-	chaos_spawn_exalted_champion_warcamp = true,
+	beastmen_minotaur = true,
+	chaos_exalted_champion_norsca = true,
 	chaos_exalted_champion_warcamp = true,
 	chaos_exalted_sorcerer = true,
-	skaven_storm_vermin_warlord = true,
+	chaos_exalted_sorcerer_drachenfels = true,
+	chaos_spawn = true,
+	chaos_spawn_exalted_champion_warcamp = true,
+	chaos_troll = true,
+	pet_pig = true,
 	pet_rat = true,
-	chaos_exalted_champion_norsca = true,
-	beastmen_minotaur = true,
-	skaven_stormfiend = true,
+	pet_wolf = true,
 	skaven_grey_seer = true,
 	skaven_rat_ogre = true,
-	pet_pig = true,
-	chaos_spawn = true,
-	chaos_exalted_sorcerer_drachenfels = true,
+	skaven_storm_vermin_champion = true,
+	skaven_storm_vermin_warlord = true,
+	skaven_stormfiend = true,
 	skaven_stormfiend_boss = true,
-	pet_wolf = true,
-	skaven_storm_vermin_champion = true
 }
 local excluded_random_breeds = {
-	chaos_spawn_exalted_champion_warcamp = true,
+	beastmen_minotaur = true,
+	beastmen_ungor = true,
+	chaos_exalted_champion_norsca = true,
 	chaos_exalted_champion_warcamp = true,
 	chaos_exalted_sorcerer = true,
-	beastmen_ungor = true,
-	skaven_storm_vermin_warlord = true,
+	chaos_exalted_sorcerer_drachenfels = true,
+	chaos_fanatic = true,
+	chaos_spawn = true,
+	chaos_spawn_exalted_champion_warcamp = true,
+	chaos_troll = true,
 	pet_pig = true,
 	pet_rat = true,
-	chaos_exalted_champion_norsca = true,
-	beastmen_minotaur = true,
-	chaos_fanatic = true,
-	skaven_slave = true,
-	skaven_stormfiend = true,
+	pet_wolf = true,
 	skaven_grey_seer = true,
 	skaven_rat_ogre = true,
-	chaos_troll = true,
-	chaos_spawn = true,
-	chaos_exalted_sorcerer_drachenfels = true,
+	skaven_slave = true,
+	skaven_storm_vermin_champion = true,
+	skaven_storm_vermin_warlord = true,
+	skaven_stormfiend = true,
 	skaven_stormfiend_boss = true,
-	pet_wolf = true,
-	skaven_storm_vermin_champion = true
 }
 
 local function in_range_to_end(range, total_path_dist, conflict_director)
 	local main_path_info = conflict_director.main_path_info
-	local ahead_player_travel_dist = nil
+	local ahead_player_travel_dist
 
 	if not main_path_info.ahead_unit then
 		ahead_player_travel_dist = 0
 	else
 		local ahead_player_info = conflict_director.main_path_player_info[main_path_info.ahead_unit]
+
 		ahead_player_travel_dist = ahead_player_info.travel_dist
 	end
 
@@ -122,7 +127,7 @@ bolt_of_change.server_start_function = function (context, data)
 
 		local unit_data = {
 			unit = unit,
-			breed_name = breed.name
+			breed_name = breed.name,
 		}
 
 		table.insert(data.spawned_units_data, unit_data)
@@ -137,8 +142,8 @@ bolt_of_change.server_start_function = function (context, data)
 	data.time_to_explode = data.explosion_template.time_to_explode
 	data.extension_init_data = {
 		area_damage_system = {
-			explosion_template_name = "bolt_of_change"
-		}
+			explosion_template_name = "bolt_of_change",
+		},
 	}
 	data.all_available_breeds = {}
 	data.available_breeds = {
@@ -146,7 +151,7 @@ bolt_of_change.server_start_function = function (context, data)
 		chaos = {},
 		beastmen = {},
 		undead = {},
-		critter = {}
+		critter = {},
 	}
 	data.difficulty_rank = Managers.state.difficulty:get_difficulty_rank()
 
@@ -192,6 +197,7 @@ bolt_of_change.spawn_lightning_strike_unit = function (data)
 	local players_array = table.clone(hero_side.PLAYER_UNITS)
 	local deus_run_controller = Managers.mechanism:game_mechanism():get_deus_run_controller()
 	local player_manager = Managers.player
+
 	players_array = filter_respawning_players(players_array, player_manager, deus_run_controller)
 	data.seed = table.shuffle(players_array, data.seed)
 
@@ -203,6 +209,7 @@ bolt_of_change.spawn_lightning_strike_unit = function (data)
 		end
 
 		data.extension_init_data.area_damage_system.follow_unit = player_unit
+
 		local unit = Managers.state.unit_spawner:spawn_network_unit(data.decal_unit_name, "timed_explosion_unit", data.extension_init_data, Unit.local_position(player_unit, 0))
 		local callback = data.lighting_strike_callback
 		local timed_explosion_extension = ScriptUnit.has_extension(unit, "area_damage_system")
@@ -252,19 +259,19 @@ bolt_of_change.server_update_function = function (context, data, dt, t)
 
 	base_lighting_strike.server_update_function(context, data, dt, t)
 
-	local delete_index = nil
+	local delete_index
 	local spawn_queue = data.spawn_queue
 
 	for i = 1, #spawn_queue do
 		local spawn_queue_entry = spawn_queue[i]
 
-		if spawn_queue_entry.spawn_at_t < t then
+		if t > spawn_queue_entry.spawn_at_t then
 			local breed = spawn_queue_entry.breed
 			local position_box = spawn_queue_entry.position_box
 			local rotation_box = spawn_queue_entry.rotation_box
 			local spawn_category = "mutator"
 			local optional_data = {
-				spawned_func = data.cb_enemy_spawned_function
+				spawned_func = data.cb_enemy_spawned_function,
 			}
 
 			Managers.state.conflict:spawn_queued_unit(breed, position_box, rotation_box, spawn_category, nil, "terror_event", optional_data)
@@ -307,7 +314,7 @@ bolt_of_change.populate_available_breeds = function (context, data)
 	local available_breeds = data.available_breeds
 
 	for breed_name, _ in pairs(contained_breeds) do
-		local race = nil
+		local race
 
 		if CHAOS[breed_name] then
 			race = "chaos"
@@ -360,10 +367,11 @@ bolt_of_change.get_overridden_breed = function (data, maxed_out_breeds, breed_na
 	local override = breed_override[breed_name]
 
 	if override then
-		local override_breed = nil
+		local override_breed
 
 		if override.chance then
-			local random = nil
+			local random
+
 			data.seed, random = Math.next_random(data.seed)
 
 			if random <= override.chance then
@@ -393,6 +401,7 @@ local function get_maxed_out_breeds(t)
 
 		if max_amount then
 			local amount = breeds_by_amount[breed_name] or max_amount
+
 			amount = amount - 1
 			breeds_by_amount[breed_name] = amount
 
@@ -495,7 +504,7 @@ bolt_of_change.spawn_new_breed = function (data, ai_unit, new_breed)
 				breed_name = new_breed,
 				rotation_box = QuaternionBox(rotation),
 				spawn_at_t = spawn_at_t,
-				position_box = Vector3Box(projected_start_pos)
+				position_box = Vector3Box(projected_start_pos),
 			}
 
 			table.insert(spawn_queue, spawn_queue_entry)
@@ -519,7 +528,9 @@ bolt_of_change.change_ai = function (data, ai_unit)
 	end
 
 	local excluded_breeds = table.clone(excluded_random_breeds)
+
 	excluded_breeds[breed.name] = true
+
 	local maxed_out_breeds = get_maxed_out_breeds(data.spawned_units_data)
 	local maxed_out_breeds_queued = get_maxed_out_breeds(data.spawn_queue)
 
@@ -528,7 +539,7 @@ bolt_of_change.change_ai = function (data, ai_unit)
 
 	local num_specials = get_num_specials(Managers.state.conflict, data.spawn_queue)
 
-	if max_specials <= num_specials then
+	if num_specials >= max_specials then
 		local special_breeds = array_to_table(CurrentSpecialsSettings.breeds)
 
 		table.merge(excluded_breeds, special_breeds)
@@ -536,12 +547,14 @@ bolt_of_change.change_ai = function (data, ai_unit)
 
 	local race = breed.race
 	local breeds = filter_available_breeds(data.available_breeds, race, excluded_breeds)
-	local new_breed = nil
+	local new_breed
+
 	data.seed, new_breed = table_next_random_value(data.seed, breeds)
 
 	if new_breed then
 		local template = data.template
 		local override_breed = template.get_overridden_breed(data, maxed_out_breeds, breed.name)
+
 		new_breed = override_breed or new_breed
 
 		template.spawn_new_breed(data, ai_unit, new_breed)

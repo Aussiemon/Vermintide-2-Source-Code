@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/imgui/imgui_ai_spawn_log.lua
+
 ImguiAISpawnLog = class(ImguiAISpawnLog)
+
 local SHOULD_RELOAD = false
 
 local function format_timestamp(time)
@@ -28,7 +31,7 @@ ImguiAISpawnLog.init = function (self)
 	self._event_type_names = {
 		"queued",
 		"canceled",
-		"spawned"
+		"spawned",
 	}
 	self._specials_only = false
 	self._drawer = nil
@@ -150,12 +153,12 @@ ImguiAISpawnLog.draw = function (self)
 	local normal_color = {
 		255,
 		255,
-		255
+		255,
 	}
 	local selected_color = {
 		255,
 		0,
-		0
+		0,
 	}
 	local filter_specials = self._specials_only
 	local segment_start = self._timeline_end - self._timeline_slice_size
@@ -175,15 +178,25 @@ ImguiAISpawnLog.draw = function (self)
 				local text = format_timestamp(timestamp)
 				local type_id = line[EVENT_TYPE_ID]
 				local type = type_names[type_id]
+
 				text = text .. " " .. type
+
 				local breed_name = breed and breed.name
+
 				text = text .. " " .. tostring(breed_name)
+
 				local spawn_category = line[SPAWN_CATEGORY_ID]
+
 				text = text .. " " .. tostring(spawn_category)
+
 				local spawn_type = line[SPAWN_TYPE_ID]
+
 				text = text .. " " .. tostring(spawn_type)
+
 				local queue_id = line[QUEUE_ID_ID]
+
 				text = text .. " " .. tostring(queue_id)
+
 				local is_selected = last_hovered_id == queue_id
 				local color = is_selected and selected_color or normal_color
 
@@ -239,7 +252,7 @@ ImguiAISpawnLog._log_event = function (self, event_type, boxed_location, breed, 
 		breed,
 		spawn_category,
 		spawn_type,
-		spawn_queue_id
+		spawn_queue_id,
 	}
 
 	if breed then
@@ -278,9 +291,11 @@ ImguiAISpawnLog._init_session = function (self)
 
 		self._drawer = state.debug:drawer({
 			mode = "immediate",
-			name = "ImguiAISpawnLog"
+			name = "ImguiAISpawnLog",
 		})
+
 		local side = state.side:get_side_from_name("heroes")
+
 		self._hero_side = side
 	end
 end
@@ -302,14 +317,12 @@ ImguiAISpawnLog._log_player_positions = function (self, game_time)
 					game_time,
 					position.x,
 					position.y,
-					position.z
+					position.z,
 				}
 			else
 				local recorded_player_pos = self._player_positions[unit]
 				local last_pos_id = #recorded_player_pos
-				local x = recorded_player_pos[last_pos_id - 2]
-				local y = recorded_player_pos[last_pos_id - 1]
-				local z = recorded_player_pos[last_pos_id]
+				local x, y, z = recorded_player_pos[last_pos_id - 2], recorded_player_pos[last_pos_id - 1], recorded_player_pos[last_pos_id]
 				local dist_sq = Vector3.distance_squared(position, Vector3(x, y, z))
 
 				if dist_tolerence <= dist_sq then
@@ -359,7 +372,7 @@ ImguiAISpawnLog._visualise_player_pos = function (self)
 
 				self._drawer:arrow_2d(location, next_location, player_color)
 
-				if positions[i] <= hovered_time and hovered_time <= positions[i + 4] then
+				if hovered_time >= positions[i] and hovered_time <= positions[i + 4] then
 					local interp_t = (hovered_time - positions[i]) / (positions[i + 4] - positions[i])
 					local interp_loc = Vector3.lerp(location, next_location, interp_t)
 
@@ -377,6 +390,7 @@ ImguiAISpawnLog._export_recap_data = function (self)
 	for name, counts in pairs(self._totals) do
 		local breed = Breeds[name]
 		local faction = breed and breed.race or "unknown"
+
 		output = output .. "\n"
 		output = output .. name .. ","
 		output = output .. faction .. ","
@@ -397,14 +411,20 @@ ImguiAISpawnLog._export_log_data = function (self)
 
 		if type == "spawned" then
 			output = output .. "\n"
+
 			local breed = line[BREED_ID]
 			local breed_name = breed and breed.name or "unknown"
 			local faction = breed and breed.race or "unknown"
+
 			output = output .. breed_name .. ","
 			output = output .. faction .. ","
+
 			local spawn_category = line[SPAWN_CATEGORY_ID]
+
 			output = output .. tostring(spawn_category) .. ","
+
 			local spawn_type = line[SPAWN_TYPE_ID]
+
 			output = output .. tostring(spawn_type)
 		end
 	end

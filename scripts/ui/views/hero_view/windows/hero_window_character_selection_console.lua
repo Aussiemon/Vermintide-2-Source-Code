@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/hero_view/windows/hero_window_character_selection_console.lua
+
 local definitions = local_require("scripts/ui/views/hero_view/windows/definitions/hero_window_character_selection_console_definitions")
 local widget_definitions = definitions.widgets
 local hero_widget_definition = definitions.hero_widget
@@ -7,6 +9,7 @@ local generic_input_actions = definitions.generic_input_actions
 local animation_definitions = definitions.animation_definitions
 local scenegraph_definition = definitions.scenegraph_definition
 local DO_RELOAD = false
+
 HeroWindowCharacterSelectionConsole = class(HeroWindowCharacterSelectionConsole)
 HeroWindowCharacterSelectionConsole.NAME = "HeroWindowCharacterSelectionConsole"
 
@@ -14,6 +17,7 @@ HeroWindowCharacterSelectionConsole.on_enter = function (self, params, offset)
 	print("[HeroViewWindow] Enter Substate HeroWindowCharacterSelectionConsole")
 
 	local ingame_ui_context = params.ingame_ui_context
+
 	self._ui_renderer = ingame_ui_context.ui_renderer
 	self._ui_top_renderer = ingame_ui_context.ui_top_renderer
 	self._profile_synchronizer = ingame_ui_context.profile_synchronizer
@@ -21,7 +25,7 @@ HeroWindowCharacterSelectionConsole.on_enter = function (self, params, offset)
 	self._parent = params.parent
 	self._wwise_world = params.wwise_world
 	self._render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 	self._hero_name = params.hero_name
 	self._career_index = params.career_index or 0
@@ -29,11 +33,15 @@ HeroWindowCharacterSelectionConsole.on_enter = function (self, params, offset)
 	self._profile_selectable = false
 	self._animations = {}
 	self._ui_animations = {}
+
 	local local_player = Managers.player:local_player()
+
 	self._peer_id = local_player:network_id()
 	self._local_player_id = local_player:local_player_id()
+
 	local gui_layer = UILayer.default + 30
 	local input_description_input_service = self._parent:window_input_service()
+
 	self._menu_input_description = MenuInputDescriptionUI:new(ingame_ui_context, self._ui_top_renderer, input_description_input_service, 4, gui_layer + 100, generic_input_actions.default, true)
 
 	self._menu_input_description:set_input_description(nil)
@@ -48,6 +56,7 @@ HeroWindowCharacterSelectionConsole.on_enter = function (self, params, offset)
 		if profile_index and career_index then
 			self._profile_index = profile_index
 			self._career_index = career_index
+
 			local hero_attributes = Managers.backend:get_interface("hero_attributes")
 
 			self:_select_hero(profile_index, career_index, true)
@@ -78,6 +87,7 @@ HeroWindowCharacterSelectionConsole._select_hero = function (self, profile_index
 
 	local hero_widgets = self._hero_widgets
 	local num_max_rows = self._num_max_hero_rows
+
 	self._selected_career_index = career_index
 	self._selected_profile_index = profile_index
 	self._selected_hero_name = hero_name
@@ -97,6 +107,7 @@ HeroWindowCharacterSelectionConsole._select_hero = function (self, profile_index
 			local is_selected = i == self._selected_hero_row and j == self._selected_hero_column
 			local widget = hero_widgets[widget_index]
 			local content = widget.content
+
 			content.button_hotspot.is_selected = is_selected
 			widget_index = widget_index + 1
 
@@ -115,7 +126,7 @@ HeroWindowCharacterSelectionConsole._select_hero = function (self, profile_index
 		if spawn_character then
 			Managers.state.event:trigger("respawn_hero", {
 				hero_name = hero_name,
-				career_index = career_index
+				career_index = career_index,
 			})
 		else
 			Managers.state.event:trigger("despawn_hero")
@@ -125,9 +136,11 @@ end
 
 HeroWindowCharacterSelectionConsole._update_selectable = function (self, selectable, dlc_name)
 	local select_button = self._widgets_by_name.select_button
+
 	select_button.content.button_hotspot.disable_button = not selectable
 	select_button.content.dlc_name = not selectable and dlc_name
 	self._widgets_by_name.info_text.content.visible = selectable
+
 	local input_action = "default"
 
 	if not selectable then
@@ -149,6 +162,7 @@ end
 
 HeroWindowCharacterSelectionConsole._set_hero_info = function (self, hero_name, career_name, level)
 	local widgets_by_name = self._widgets_by_name
+
 	widgets_by_name.info_hero_name.content.text = hero_name
 	widgets_by_name.info_career_name.content.text = career_name
 	widgets_by_name.info_hero_level.content.text = level
@@ -157,20 +171,23 @@ end
 HeroWindowCharacterSelectionConsole._start_transition_animation = function (self, key, animation_name)
 	local params = {
 		wwise_world = self._wwise_world,
-		render_settings = self._render_settings
+		render_settings = self._render_settings,
 	}
 	local widgets = {}
 	local anim_id = self._ui_animator:start_animation(animation_name, widgets, scenegraph_definition, params)
+
 	self._animations[key] = anim_id
 end
 
 HeroWindowCharacterSelectionConsole._create_ui_elements = function (self, params, offset)
 	self._ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+
 	local widgets = {}
 	local widgets_by_name = {}
 
 	for name, widget_definition in pairs(widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		widgets[#widgets + 1] = widget
 		widgets_by_name[name] = widget
 	end
@@ -185,6 +202,7 @@ HeroWindowCharacterSelectionConsole._create_ui_elements = function (self, params
 
 	if offset then
 		local window_position = self._ui_scenegraph.window.local_position
+
 		window_position[1] = window_position[1] + offset[1]
 		window_position[2] = window_position[2] + offset[2]
 		window_position[3] = window_position[3] + offset[3]
@@ -193,9 +211,13 @@ end
 
 HeroWindowCharacterSelectionConsole._setup_hero_selection_widgets = function (self)
 	local hero_widgets = {}
+
 	self._hero_widgets = hero_widgets
+
 	local hero_icon_widgets = {}
+
 	self._hero_icon_widgets = hero_icon_widgets
+
 	local hero_attributes = Managers.backend:get_interface("hero_attributes")
 	local current_profile_index, current_career_index = self._profile_synchronizer:profile_by_peer(self._peer_id, self._local_player_id)
 	local num_max_rows = #SPProfilesAbbreviation
@@ -213,24 +235,38 @@ HeroWindowCharacterSelectionConsole._setup_hero_selection_widgets = function (se
 		local hero_experience = hero_attributes:get(hero_name, "experience") or 0
 		local hero_level = ExperienceSettings.get_level(hero_experience)
 		local careers = profile_settings.careers
+
 		self._num_hero_columns[i] = #careers
+
 		local icon_widget = UIWidget.init(hero_icon_widget_definition)
+
 		hero_icon_widgets[#hero_icon_widgets + 1] = icon_widget
+
 		local hero_icon_offset = icon_widget.offset
+
 		hero_icon_offset[2] = -((i - 1) * 144)
+
 		local hero_icon_texture = "hero_icon_large_" .. hero_name
+
 		icon_widget.content.icon = hero_icon_texture
 		icon_widget.content.icon_selected = hero_icon_texture .. "_glow"
 
 		for j, career in ipairs(careers) do
 			local widget = UIWidget.init(hero_widget_definition)
+
 			hero_widgets[#hero_widgets + 1] = widget
+
 			local offset = widget.offset
 			local content = widget.content
+
 			content.career_settings = career
+
 			local portrait_image = career.portrait_image
+
 			content.portrait = "medium_" .. portrait_image
+
 			local is_career_unlocked, reason, dlc_name, localized = career:is_unlocked_function(hero_name, hero_level)
+
 			content.locked = not is_career_unlocked
 			content.locked_reason = not is_career_unlocked and (localized and reason or Localize(reason))
 			content.dlc_name = dlc_name
@@ -260,6 +296,7 @@ HeroWindowCharacterSelectionConsole._setup_hero_selection_widgets = function (se
 		for j = #careers + 1, 4 do
 			local widget = UIWidget.init(empty_hero_widget_definition)
 			local offset = widget.offset
+
 			offset[1] = offset[1] + 124 * (j - 1)
 			offset[2] = offset[2] - 144 * (i - 1)
 			widgets[#widgets + 1] = widget
@@ -273,12 +310,13 @@ HeroWindowCharacterSelectionConsole.on_exit = function (self, params)
 	print("[HeroViewWindow] Exit Substate HeroWindowCharacterSelectionConsole")
 
 	self._ui_animator = nil
+
 	local profile_index, career_index, hero_name = self._parent:currently_selected_profile()
 
 	if self._selected_profile_index ~= profile_index or self._selected_career_index ~= career_index then
 		Managers.state.event:trigger("respawn_hero", {
 			hero_name = hero_name,
-			career_index = career_index
+			career_index = career_index,
 		})
 
 		local profile = SPProfiles[profile_index]

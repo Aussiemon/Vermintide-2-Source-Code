@@ -1,10 +1,13 @@
+﻿-- chunkname: @scripts/settings/dlcs/lake/lake_achievements_settings.lua
+
 local settings = DLCSettings.lake
+
 settings.achievement_outline = {
 	heroes = {
 		categories = {
 			{
-				sorting = 1,
 				name = "inventory_name_empire_soldier",
+				sorting = 1,
 				entries = {
 					"lake_complete_all_helmgart_levels_recruit_es_questingknight",
 					"lake_complete_all_helmgart_levels_veteran_es_questingknight",
@@ -20,18 +23,19 @@ settings.achievement_outline = {
 					"lake_untouchable",
 					"lake_speed_quest",
 					"lake_timing_quest",
-					"complete_all_grailknight_challenges"
-				}
-			}
-		}
-	}
+					"complete_all_grailknight_challenges",
+				},
+			},
+		},
+	},
 }
 settings.achievement_template_file_names = {
-	"scripts/managers/achievements/achievement_templates_lake"
+	"scripts/managers/achievements/achievement_templates_lake",
 }
 settings.speed_quest_complete_time = 140
 settings.timing_quest_complete_margain = 5
-local speed_time = nil
+
+local speed_time
 
 local function _handle_speed_quest(player, completed)
 	local t = Managers.time:time("game")
@@ -49,7 +53,7 @@ local function _handle_speed_quest(player, completed)
 	end
 end
 
-local timing_time = nil
+local timing_time
 
 local function _handle_timing_quest(player, completed)
 	local t = Managers.time:time("game")
@@ -97,5 +101,5 @@ settings.achievement_events = {
 			_handle_speed_quest(local_player, completed)
 			_handle_timing_quest(local_player, completed)
 		end
-	end
+	end,
 }

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/tutorial/tutorial_system.lua
+
 require("scripts/entity_system/systems/tutorial/tutorial_templates")
 
 local TIME_TO_WAIT_BETWEEN_SHOWS = 30
@@ -17,6 +19,7 @@ end
 
 local function save(extension)
 	local save_data = SaveData
+
 	save_data.tutorial_points = extension.points
 	save_data.completed_tutorials = extension.completed_tutorials
 
@@ -28,8 +31,9 @@ local extensions = {
 	"ObjectiveHealthTutorialExtension",
 	"ObjectivePickupTutorialExtension",
 	"ObjectiveSocketTutorialExtension",
-	"ObjectiveUnitExtension"
+	"ObjectiveUnitExtension",
 }
+
 TutorialSystem = class(TutorialSystem, ExtensionSystemBase)
 
 TutorialSystem.init = function (self, entity_system_creation_context, system_name)
@@ -42,7 +46,9 @@ TutorialSystem.init = function (self, entity_system_creation_context, system_nam
 	self.raycast_units = {}
 	self._objective_tooltip_prioritized_list = nil
 	self.gui = World.create_screen_gui(self.world, "material", "materials/fonts/gw_fonts", "immediate")
+
 	local network_event_delegate = entity_system_creation_context.network_event_delegate
+
 	self.network_event_delegate = network_event_delegate
 
 	network_event_delegate:register(self, "rpc_tutorial_message", "rpc_pacing_changed", "rpc_objective_unit_set_active", "rpc_prioritize_objective_tooltip")
@@ -65,19 +71,20 @@ TutorialSystem.on_add_extension = function (self, world, unit, extension_name, e
 		extension.completed_tutorials = SaveData.completed_tutorials or {}
 		extension.points = #extension.completed_tutorials
 		extension.tooltip_tutorial = {
-			active = false
+			active = false,
 		}
 		extension.objective_tooltips = {
-			units_n = 0,
 			active = false,
-			units = {}
+			units_n = 0,
+			units = {},
 		}
 		extension.shown_times = {}
 		extension.data = {
 			player_id = Network.peer_id(),
 			statistics_db = self.statistics_db,
-			dice_keeper = self.dice_keeper
+			dice_keeper = self.dice_keeper,
 		}
+
 		local tutorial_templates = TutorialTemplates
 
 		for name, template in pairs(tutorial_templates) do
@@ -105,7 +112,7 @@ TutorialSystem.on_add_extension = function (self, world, unit, extension_name, e
 
 	if extension_name == "ObjectiveUnitExtension" then
 		local server_only = Unit.get_data(unit, "objective_server_only")
-		local network_synced = nil
+		local network_synced
 		local level_transition_handler = Managers.level_transition_handler
 		local level_key = level_transition_handler:get_current_level_keys()
 		local level_settings = LevelSettings[level_key]
@@ -116,7 +123,7 @@ TutorialSystem.on_add_extension = function (self, world, unit, extension_name, e
 			network_synced = true
 		end
 
-		local activate_func = nil
+		local activate_func
 
 		if Managers.player.is_server and not server_only then
 			function activate_func(extension, active)
@@ -124,6 +131,7 @@ TutorialSystem.on_add_extension = function (self, world, unit, extension_name, e
 					Application.warning("[ObjectiveUnitExtension] Trying to set active on unit %q to %q when it's already %q", tostring(unit), active, extension.active)
 				else
 					extension.active = active
+
 					local network_synced = extension.network_synced
 
 					if network_synced then
@@ -182,7 +190,9 @@ TutorialSystem.physics_async_update = function (self, context, t)
 
 	for unit, extension in pairs(self.player_units) do
 		local raycast_unit = raycast_units[unit]
+
 		raycast_units[unit] = nil
+
 		local interactor_extension = ScriptUnit.extension(unit, "interactor_system")
 		local is_looking_at_interactable = interactor_extension:is_looking_at_interactable()
 
@@ -217,8 +227,7 @@ TutorialSystem.physics_async_update = function (self, context, t)
 				Managers.state.event:trigger("tutorial_event_queue_info_slate_entry", "tutorial", "DEBUG INFO SLATE, LOOK AT IT GOOOO", duration + 5)
 			end
 
-			local res_x = RESOLUTION_LOOKUP.res_w
-			local res_y = RESOLUTION_LOOKUP.res_h
+			local res_x, res_y = RESOLUTION_LOOKUP.res_w, RESOLUTION_LOOKUP.res_h
 
 			Gui.rect(self.gui, Vector3(0, 0, 100), Vector2(350, res_y), Color(100, 25, 25, 25))
 			Debug.text("Tutorial points : %d", extension.points)
@@ -324,7 +333,7 @@ end
 
 local unit_local_position = Unit.local_position
 local vector3_distance_sq = Vector3.distance_squared
-local sort_unit_position_upvalue = nil
+local sort_unit_position_upvalue
 
 local function do_sort_objective_units(a, b)
 	local a_pos = unit_local_position(a, 0)
@@ -347,9 +356,9 @@ TutorialSystem.prioritize_objective_tooltip = function (self, objective_tooltip_
 	fassert(TutorialTemplates[objective_tooltip_name].display_type == "objective_tooltip", "[TutorialSystem] The tutorial template with the name %s is not an objective tooltip template (%s)", objective_tooltip_name, TutorialTemplates[objective_tooltip_name].display_type)
 
 	local objective_tooltip_templates_n = TutorialObjectiveTooltipTemplates_n
-	self._objective_tooltip_prioritized_list = {
-		[#self._objective_tooltip_prioritized_list + 1] = TutorialTemplates[objective_tooltip_name]
-	}
+
+	self._objective_tooltip_prioritized_list = {}
+	self._objective_tooltip_prioritized_list[#self._objective_tooltip_prioritized_list + 1] = TutorialTemplates[objective_tooltip_name]
 
 	for i = 1, objective_tooltip_templates_n do
 		if TutorialObjectiveTooltipTemplates[i].name ~= objective_tooltip_name then
@@ -364,6 +373,7 @@ TutorialSystem.iterate_objective_tooltips = function (self, t, unit, extension, 
 	local objective_tooltip_templates = self._objective_tooltip_prioritized_list or TutorialObjectiveTooltipTemplates
 	local objective_tooltip_templates_n = TutorialObjectiveTooltipTemplates_n
 	local objective_tooltips = extension.objective_tooltips
+
 	objective_tooltips.units_n = 0
 
 	for i = 1, objective_tooltip_templates_n do
@@ -402,6 +412,7 @@ TutorialSystem.iterate_objective_tooltips = function (self, t, unit, extension, 
 			objective_tooltips.active = true
 			objective_tooltips.name = name
 			objective_tooltips.units_n = objective_units_n
+
 			local saved_units = objective_tooltips.units
 
 			for i = 1, objective_units_n do
@@ -418,7 +429,9 @@ TutorialSystem.iterate_objective_tooltips = function (self, t, unit, extension, 
 			if objective_units_n > 1 then
 				local vector3_distance_sq = Vector3.distance_squared
 				local unit_position = POSITION_LOOKUP[unit]
+
 				sort_unit_position_upvalue = unit_position
+
 				local sort_func = do_sort_objective_units
 
 				table.sort(saved_units, sort_func)
@@ -459,7 +472,9 @@ TutorialSystem.iterate_info_slates = function (self, t, unit, extension, raycast
 
 				if template.can_show(t, unit, extension.data, raycast_unit, world) then
 					extension.shown_times[name] = t
+
 					local text = template.get_text and template.get_text(extension.data, template) or template.text
+
 					text = Localize(text)
 
 					Managers.state.event:trigger("tutorial_event_queue_info_slate_entry", text, nil, nil, template, unit, raycast_unit)
@@ -490,6 +505,7 @@ end
 
 TutorialSystem.rpc_pacing_changed = function (self, channel_id, pacing_id)
 	local pacing = NetworkLookup.pacing[pacing_id]
+
 	self.pacing = pacing
 
 	tutprintf("Changing pacing state to %s", pacing)
@@ -560,7 +576,7 @@ TutorialSystem.update = function (self, context, t)
 			extension.data = {
 				player_id = Network.peer_id(),
 				statistics_db = self.statistics_db,
-				dice_keeper = self.dice_keeper
+				dice_keeper = self.dice_keeper,
 			}
 
 			for name, template in pairs(TutorialTemplates) do
@@ -575,7 +591,7 @@ TutorialSystem.update = function (self, context, t)
 		local camera_rotation = first_person_extension:current_rotation()
 		local camera_forward = Quaternion.forward(camera_rotation)
 		local result, hit_position, hit_distance, normal, actor = PhysicsWorld.immediate_raycast(physics_world, camera_position + camera_forward, camera_forward, 30, "closest", "collision_filter", "filter_tutorial")
-		local raycast_unit = nil
+		local raycast_unit
 
 		if result and actor then
 			raycast_unit = Actor.unit(actor)

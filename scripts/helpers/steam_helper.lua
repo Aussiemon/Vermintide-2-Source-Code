@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/helpers/steam_helper.lua
+
 SteamHelper = SteamHelper or {}
+
 local FRIEND_STATUS = {
 	[0] = "offline",
 	"online",
@@ -6,7 +9,7 @@ local FRIEND_STATUS = {
 	"away",
 	"snooze",
 	"trading",
-	"looking_to_play"
+	"looking_to_play",
 }
 
 SteamHelper.debug_friends = function ()
@@ -15,11 +18,12 @@ SteamHelper.debug_friends = function ()
 
 	for i = 1, number_of_friends do
 		local id = "id_" .. i
+
 		friends[id] = {
 			playing_this_game = false,
 			name = "debug_friend_" .. i,
 			playing_game = i % 2 == 1,
-			status = math.random(1, 6)
+			status = math.random(1, 6),
 		}
 	end
 
@@ -35,11 +39,12 @@ SteamHelper.friends = function ()
 		local id = Friends.id(i)
 		local playing_game = Friends.playing_game(id)
 		local playing_this_game = playing_game and playing_game.app_id == app_id
+
 		friends[id] = {
 			name = Friends.name(id),
 			playing_game = playing_game,
 			playing_this_game = playing_this_game,
-			status = FRIEND_STATUS[Friends.status(id)]
+			status = FRIEND_STATUS[Friends.status(id)],
 		}
 	end
 
@@ -76,6 +81,7 @@ SteamHelper.clans_short = function ()
 		for i = 0, clan_count - 1 do
 			local id = Clans.clan_by_index(i)
 			local name = Clans.clan_tag(id)
+
 			clan_names[id] = name
 		end
 
@@ -92,6 +98,7 @@ SteamHelper.clans = function ()
 	for i = 0, clan_count - 1 do
 		local id = Clans.clan_by_index(i)
 		local name = Clans.clan_name(id)
+
 		clan_names[id] = name
 	end
 

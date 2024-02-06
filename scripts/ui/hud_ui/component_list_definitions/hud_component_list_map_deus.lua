@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/hud_ui/component_list_definitions/hud_component_list_map_deus.lua
+
 local adventure_settings = local_require("scripts/ui/hud_ui/component_list_definitions/hud_component_list_adventure")
 local common_settings = require("scripts/ui/hud_ui/component_list_definitions/hud_component_list_deus_common")
 local components = {
@@ -12,28 +14,28 @@ local components = {
 			"cutscene",
 			"realism",
 			"dead",
-			"alive"
+			"alive",
 		},
 		validation_function = function (context, is_in_inn)
 			local disable_news_ticker = script_data.disable_news_ticker
 
 			return not disable_news_ticker
-		end
+		end,
 	},
 	{
-		use_hud_scale = true,
 		class_name = "TwitchVoteUI",
 		filename = "scripts/ui/hud_ui/twitch_vote_ui",
+		use_hud_scale = true,
 		visibility_groups = {
 			"realism",
 			"alive",
-			"dead"
+			"dead",
 		},
 		validation_function = function (context, is_in_inn)
 			local use_twitch_ui = true
 
 			return use_twitch_ui
-		end
+		end,
 	},
 	{
 		class_name = "IngamePlayerListUI",
@@ -43,18 +45,18 @@ local components = {
 			"realism",
 			"game_mode_disable_hud",
 			"dead",
-			"alive"
-		}
+			"alive",
+		},
 	},
 	{
-		use_hud_scale = true,
 		class_name = "SubtitleGui",
 		filename = "scripts/ui/views/subtitle_gui",
+		use_hud_scale = true,
 		visibility_groups = {
 			"cutscene",
 			"realism",
 			"dead",
-			"alive"
+			"alive",
 		},
 		validation_function = function (context, is_in_inn)
 			if is_in_inn then
@@ -66,19 +68,19 @@ local components = {
 					return true
 				end
 			end
-		end
+		end,
 	},
 	{
-		use_hud_scale = true,
 		class_name = "DeusRunStatsView",
 		filename = "scripts/ui/views/deus_menu/deus_run_stats_view",
+		use_hud_scale = true,
 		visibility_groups = {
 			"deus_run_stats",
 			"game_mode_disable_hud",
 			"dead",
-			"alive"
-		}
-	}
+			"alive",
+		},
+	},
 }
 
 DLCUtils.append("ingame_hud_components", components)
@@ -91,5 +93,5 @@ table.append(visibility_groups, adventure_settings.visibility_groups)
 
 return {
 	components = components,
-	visibility_groups = visibility_groups
+	visibility_groups = visibility_groups,
 }

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/game_state/state_ingame_running_testify.lua
+
 local function is_level_end_screen_displayed(state_ingame_running)
 	return state_ingame_running.has_setup_end_of_level == true
 end
@@ -82,7 +84,7 @@ local StateInGameRunningTestify = {
 	end,
 	teleport_player_to_end_zone_position = function (state_ingame_running)
 		return retry_if_end_screen_not_displayed(state_ingame_running)
-	end
+	end,
 }
 
 return StateInGameRunningTestify

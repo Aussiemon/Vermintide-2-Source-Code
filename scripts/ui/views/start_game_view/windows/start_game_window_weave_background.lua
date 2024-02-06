@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/start_game_view/windows/start_game_window_weave_background.lua
+
 local definitions = local_require("scripts/ui/views/start_game_view/windows/definitions/start_game_window_weave_background_definitions")
 local top_widget_definitions = definitions.top_widgets
 local bottom_widget_definitions = definitions.bottom_widgets
@@ -5,6 +7,7 @@ local bottom_hdr_widget_definitions = definitions.bottom_hdr_widgets
 local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
 local DO_RELOAD = false
+
 StartGameWindowWeaveBackground = class(StartGameWindowWeaveBackground)
 StartGameWindowWeaveBackground.NAME = "StartGameWindowWeaveBackground"
 
@@ -13,14 +16,16 @@ StartGameWindowWeaveBackground.on_enter = function (self, params, offset)
 
 	self._params = params
 	self._parent = params.parent
+
 	local ingame_ui_context = params.ingame_ui_context
+
 	self._ingame_ui = ingame_ui_context.ingame_ui
 	self._ui_renderer = ingame_ui_context.ui_renderer
 	self._ui_top_renderer = ingame_ui_context.ui_top_renderer
 	self._input_manager = ingame_ui_context.input_manager
 	self._statistics_db = ingame_ui_context.statistics_db
 	self._render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 	self._network_lobby = ingame_ui_context.network_lobby
 	self._is_server = ingame_ui_context.is_server
@@ -36,11 +41,13 @@ end
 
 StartGameWindowWeaveBackground._create_ui_elements = function (self, params, offset)
 	self._ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+
 	local widgets_by_name = {}
 	local top_widgets = {}
 
 	for name, widget_definition in pairs(top_widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		top_widgets[#top_widgets + 1] = widget
 		widgets_by_name[name] = widget
 	end
@@ -49,6 +56,7 @@ StartGameWindowWeaveBackground._create_ui_elements = function (self, params, off
 
 	for name, widget_definition in pairs(bottom_widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		bottom_widgets[#bottom_widgets + 1] = widget
 		widgets_by_name[name] = widget
 	end
@@ -57,6 +65,7 @@ StartGameWindowWeaveBackground._create_ui_elements = function (self, params, off
 
 	for name, widget_definition in pairs(bottom_hdr_widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		bottom_hdr_widgets[#bottom_hdr_widgets + 1] = widget
 		widgets_by_name[name] = widget
 	end
@@ -129,6 +138,7 @@ StartGameWindowWeaveBackground._set_background_wheel_visibility = function (self
 	local widgets_by_name = self._widgets_by_name
 	local background_wheel_1 = widgets_by_name.background_wheel_1
 	local hdr_background_wheel_1 = widgets_by_name.hdr_background_wheel_1
+
 	background_wheel_1.content.visible = visible
 	hdr_background_wheel_1.content.visible = visible
 
@@ -139,6 +149,7 @@ StartGameWindowWeaveBackground._set_background_wheel_visibility = function (self
 		local hdr_wheel_ring_1 = widgets_by_name["hdr_wheel_ring_" .. i .. "_1"]
 		local hdr_wheel_ring_2 = widgets_by_name["hdr_wheel_ring_" .. i .. "_2"]
 		local hdr_wheel_ring_3 = widgets_by_name["hdr_wheel_ring_" .. i .. "_3"]
+
 		wheel_ring_1.content.visible = visible
 		wheel_ring_2.content.visible = visible
 		wheel_ring_3.content.visible = visible
@@ -165,6 +176,7 @@ StartGameWindowWeaveBackground._update_background_animations = function (self, d
 		local speed_1 = dt * 0.01
 		local speed_2 = dt * 0.008
 		local speed_3 = dt * 0.006
+
 		wheel_ring_1.style.texture_id.angle = (wheel_ring_1.style.texture_id.angle + radians * speed_1) % radians
 		wheel_ring_2.style.texture_id.angle = (wheel_ring_2.style.texture_id.angle - radians * speed_2) % -radians
 		wheel_ring_3.style.texture_id.angle = (wheel_ring_3.style.texture_id.angle + radians * speed_3) % radians
@@ -297,6 +309,7 @@ StartGameWindowWeaveBackground._animate_wheel_position = function (self, dt)
 	local definition = scenegraph_definition[scenegraph_id]
 	local position = scenegraph.position
 	local default_position = definition.position
+
 	position[target_index] = default_position[target_index] + destination
 	position[2] = default_position[2] + height
 	self._wheel_position_progress = wheel_position_progress

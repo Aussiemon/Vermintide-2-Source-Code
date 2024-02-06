@@ -1,5 +1,9 @@
+﻿-- chunkname: @scripts/ui/hud_ui/career_ability_bar_ui.lua
+
 local definitions = local_require("scripts/ui/hud_ui/career_ability_bar_ui_definitions")
+
 CareerAbilityBarUI = class(CareerAbilityBarUI)
+
 local DO_RELOAD = true
 
 CareerAbilityBarUI.init = function (self, parent, ingame_ui_context)
@@ -17,12 +21,13 @@ CareerAbilityBarUI.init = function (self, parent, ingame_ui_context)
 	self._player_manager = ingame_ui_context.player_manager
 	self._render_settings = {
 		alpha_multiplier = 1,
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 	self._is_spectator = false
 	self._spectated_player = nil
 	self._spectated_player_unit = nil
 	self._game_options_dirty = true
+
 	local event_manager = Managers.state.event
 
 	event_manager:register(self, "on_spectator_target_changed", "on_spectator_target_changed")
@@ -94,7 +99,9 @@ CareerAbilityBarUI._create_ui_elements = function (self)
 	UIRenderer.clear_scenegraph_queue(self._ui_renderer)
 
 	self._ui_scenegraph = UISceneGraph.init_scenegraph(definitions.scenegraph_definition)
+
 	local widget_definitions = definitions.inventory_entry_definitions
+
 	self._ability_bar = UIWidget.init(definitions.widget_definitions.ability_bar)
 	DO_RELOAD = false
 end
@@ -144,20 +151,20 @@ local colors = {
 		255,
 		223,
 		133,
-		228
+		228,
 	},
 	medium = {
 		255,
 		223,
 		133,
-		228
+		228,
 	},
 	high = {
 		255,
 		223,
 		133,
-		228
-	}
+		228,
+	},
 }
 
 CareerAbilityBarUI._set_ability_bar_fraction = function (self, ability_fraction, min_threshold_fraction, max_threshold_fraction, icon_pulse_fraction)
@@ -165,16 +172,20 @@ CareerAbilityBarUI._set_ability_bar_fraction = function (self, ability_fraction,
 	local style = widget.style
 	local content = widget.content
 	local bar_size = content.size
+
 	ability_fraction = math.lerp(content.internal_gradient_threshold or 0, math.min(ability_fraction, 1), 0.3)
 	content.internal_gradient_threshold = ability_fraction
+
 	local start_fraction = 0
 	local bar_total_fraction = 1
 	local bar_1_fraction = math.min(ability_fraction, min_threshold_fraction) * bar_total_fraction
 	local bar_2_fraction = math.min(ability_fraction, max_threshold_fraction) * bar_total_fraction
 	local bar_3_fraction = ability_fraction * bar_total_fraction
+
 	style.bar_1.gradient_threshold = bar_3_fraction
+
 	local alpha_multiplier = 1
-	local color = nil
+	local color
 	local icon_color = style.icon.color
 	local bar_color = style.bar_1.color
 
@@ -190,12 +201,14 @@ CareerAbilityBarUI._set_ability_bar_fraction = function (self, ability_fraction,
 	bar_color[2] = color[2]
 	bar_color[3] = color[3]
 	bar_color[4] = color[4]
+
 	local pulse_speed = 10
 	local pulse_value = 1 - ability_fraction
 	local pulse_frame_fraction = math.min(math.max(pulse_value - max_threshold_fraction, 0) / (1 - max_threshold_fraction) * 1.3, 1)
 	local pulse_icon_fraction = math.min(math.max(pulse_value - icon_pulse_fraction, 0) / (1 - icon_pulse_fraction) * 1.3, 1)
 	local pulse_fraction = 0.5 + math.sin(Managers.time:time("ui") * pulse_speed) * 0.5
 	local pulse_alpha = 100 + pulse_fraction * 155
+
 	style.frame.color[1] = pulse_alpha * pulse_frame_fraction
 	icon_color[1] = pulse_alpha * pulse_icon_fraction
 	icon_color[2] = 255
@@ -204,7 +217,9 @@ CareerAbilityBarUI._set_ability_bar_fraction = function (self, ability_fraction,
 	style.input_text.text_color[1] = pulse_alpha * pulse_icon_fraction
 	style.input_text_shadow.text_color[1] = pulse_alpha * pulse_icon_fraction * pulse_icon_fraction
 	style.ability_bar_highlight.texture_size[1] = 250 * ability_fraction
+
 	local t = Managers.time:time("main") * 0.25
+
 	content.ability_bar_highlight.uvs[1][1] = t % 1
 	content.ability_bar_highlight.uvs[2][1] = (0.5 + t) % 1
 end
@@ -223,6 +238,7 @@ end
 CareerAbilityBarUI._apply_crosshair_position = function (self, x, y)
 	local scenegraph_id = "screen_bottom_pivot"
 	local position = self._ui_scenegraph[scenegraph_id].local_position
+
 	position[1] = x
 	position[2] = y
 end
@@ -252,13 +268,16 @@ CareerAbilityBarUI._update_gamepad_input_button = function (self)
 
 	if button_texture_data then
 		local texture = button_texture_data.texture
+
 		content.icon = texture
 		content.input_text = ""
+
 		local icon_style = style.icon
 		local icon_texture_size = icon_style.texture_size
 		local icon_shadow_style = style.icon_shadow
 		local icon_shadow_texture_size = icon_shadow_style.texture_size
 		local size = button_texture_data.size
+
 		icon_texture_size[1] = size[1]
 		icon_texture_size[2] = size[2]
 		icon_shadow_texture_size[1] = size[1]

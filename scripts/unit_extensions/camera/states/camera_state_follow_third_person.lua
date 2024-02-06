@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/camera/states/camera_state_follow_third_person.lua
+
 CameraStateFollowThirdPerson = class(CameraStateFollowThirdPerson, CameraState)
 
 CameraStateFollowThirdPerson.init = function (self, camera_state_init_context)
@@ -34,11 +36,13 @@ CameraStateFollowThirdPerson.on_enter = function (self, unit, input, dt, context
 	end
 
 	local camera_offset = params.camera_offset
+
 	self._camera_offset = camera_offset and Vector3Box(camera_offset)
 	self._allow_camera_movement = params.allow_camera_movement
 	self._follow_unit_rotation = params.follow_unit_rotation == nil and true or params.follow_unit_rotation
 	self._follow_unit = follow_unit
 	self._follow_node = follow_node
+
 	local camera_manager = Managers.state.camera
 	local root_look_dir = Vector3.normalize(Vector3.flat(Quaternion.forward(Unit.local_rotation(follow_unit, 0))))
 	local yaw = math.atan2(root_look_dir.y, root_look_dir.x)

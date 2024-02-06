@@ -1,12 +1,16 @@
+﻿-- chunkname: @scripts/unit_extensions/generic/generic_state_machine.lua
+
 script_data.debug_state_machines = script_data.debug_state_machines or Development.parameter("debug_state_machines")
+
 local no_write_meta = {
 	__index = function (t, k)
 		return nil
 	end,
 	__newindex = function (t, k, v)
 		error("FAIL : tried to set [" .. k .. "] to [" .. tostring(v) .. "]")
-	end
+	end,
 }
+
 GenericStateMachine = class(GenericStateMachine)
 
 GenericStateMachine.init = function (self, extension_init_context, unit, states, start_state)
@@ -24,7 +28,7 @@ GenericStateMachine.post_init = function (self, states, start_state)
 		end,
 		on_exit = function ()
 			return
-		end
+		end,
 	}, no_write_meta)
 	self.state_current = self.dummy_state
 	self.state_next = start_state
@@ -72,7 +76,7 @@ end
 GenericStateMachine.exit_current_state = function (self)
 	if self.state_current then
 		local t = Managers.time:time("game")
-		local input, context, next_state, dt = nil
+		local input, context, next_state, dt
 
 		self.state_current:on_exit(self.unit, input, dt, context, t, next_state)
 

@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/settings/dlcs/woods/action_career_we_thornsister_target_wall.lua
+
 ActionCareerWEThornsisterTargetWall = class(ActionCareerWEThornsisterTargetWall, ActionBase)
+
 local MAX_SIM_STEPS = 10
 local MAX_SIM_TIME = 1.5
 local COLLISION_FILTER = "filter_geiser_check"
@@ -23,11 +26,11 @@ ActionCareerWEThornsisterTargetWall.init = function (self, world, item_name, is_
 	self._target_rot = QuaternionBox()
 	self._segment_positions = {
 		{
-			num_segments = 0
+			num_segments = 0,
 		},
 		{
-			num_segments = 0
-		}
+			num_segments = 0,
+		},
 	}
 	self._valid_segment_positions_idx = 0
 	self._current_segment_positions_idx = 1
@@ -64,11 +67,14 @@ ActionCareerWEThornsisterTargetWall.client_owner_start_action = function (self, 
 		self._bot_target_unit = true
 	elseif self.talent_extension:has_talent("kerillian_thorn_sister_tanky_wall") then
 		self._target_width = 8
+
 		local half_thickness = self._target_thickness / 2
+
 		self._num_segmetns_to_check = math.floor(self._target_width / half_thickness)
 		self._bot_target_unit = false
 	else
 		local half_thickness = self._target_thickness / 2
+
 		self._num_segmetns_to_check = math.floor(self._target_width / half_thickness)
 		self._bot_target_unit = false
 	end
@@ -102,10 +108,11 @@ ActionCareerWEThornsisterTargetWall._update_targeting = function (self)
 	local player_rotation_flat = Quaternion.look(player_direction_flat, Vector3.up())
 	local velocity = Quaternion.forward(start_rot) * self._target_sim_speed
 	local gravity = Vector3(0, 0, self._target_sim_gravity)
-	local success, target_pos = nil
+	local success, target_pos
 
 	if self.is_bot then
 		success = true
+
 		local blackboard = BLACKBOARDS[self.owner_unit]
 		local target_unit = blackboard.target_unit
 
@@ -119,7 +126,7 @@ ActionCareerWEThornsisterTargetWall._update_targeting = function (self)
 	end
 
 	if success then
-		local valid, right_offset, left_offset = nil
+		local valid, right_offset, left_offset
 
 		if self._wall_shape == WALL_SHAPES.radial then
 			valid, right_offset, left_offset = self:_check_wall_radial(target_pos, player_rotation_flat, self._target_width, self._target_thickness)
@@ -148,14 +155,14 @@ ActionCareerWEThornsisterTargetWall._update_targeting = function (self)
 		local half_thickness = self._target_thickness * 0.5
 		local wall_start_offset = self._wall_left_offset * 0.5
 		local wall_end_offset = self._wall_right_offset * 0.5
-		local wall_target_offset = Quaternion.right(player_rotation_flat) * (wall_end_offset - wall_start_offset) * 0.5
+		local wall_target_offset = Quaternion.right(player_rotation_flat) * ((wall_end_offset - wall_start_offset) * 0.5)
 		local target_pos = self._target_pos:unbox() + wall_target_offset
 		local target_rot = self._target_rot:unbox()
 
 		Unit.set_local_position(self._decal_unit, 0, target_pos)
 		Unit.set_local_rotation(self._decal_unit, 0, target_rot)
 
-		local wall_width_scale = nil
+		local wall_width_scale
 
 		if self._wall_shape == WALL_SHAPES.radial then
 			wall_width_scale = self._target_width * 0.5
@@ -182,7 +189,7 @@ ActionCareerWEThornsisterTargetWall.finish = function (self, reason)
 				position = self._target_pos,
 				rotation = self._target_rot,
 				segments = self._segment_positions[self._valid_segment_positions_idx],
-				num_segments = self._segment_positions[self._valid_segment_positions_idx].num_segments
+				num_segments = self._segment_positions[self._valid_segment_positions_idx].num_segments,
 			}
 
 			return targeting_data
@@ -208,11 +215,12 @@ ActionCareerWEThornsisterTargetWall._check_wall_linear = function (self, center,
 		local segment_increment = right * half_thickness
 		local wall_start = center - right * (half_width - half_thickness) - segment_increment * 0.5
 		local current_segment_idx = 0
-		local previous_pos = nil
+		local previous_pos
 		local wall_right_offset = 0
 
 		for i = middle_segment, segment_count - 1 do
 			local position = wall_start + segment_increment * i
+
 			previous_pos = self:_check_segment(previous_pos, position, forward)
 
 			if previous_pos then
@@ -227,10 +235,12 @@ ActionCareerWEThornsisterTargetWall._check_wall_linear = function (self, center,
 		end
 
 		previous_pos = nil
+
 		local wall_left_offset = 0
 
 		for i = middle_segment - 1, 0, -1 do
 			local position = wall_start + segment_increment * i
+
 			previous_pos = self:_check_segment(previous_pos, position, forward)
 
 			if previous_pos then
@@ -268,6 +278,7 @@ ActionCareerWEThornsisterTargetWall._check_wall_radial = function (self, center,
 
 		for i = 1, segment_count do
 			local position = center + Quaternion.rotate(Quaternion(Vector3.up(), segment_increment * i), forward_offset)
+
 			position = self:_check_segment(center, position, forward)
 
 			if position then
@@ -301,7 +312,7 @@ ActionCareerWEThornsisterTargetWall._check_segment = function (self, prev_positi
 		local result, hit_position, length = PhysicsWorld.immediate_raycast(physics_world, from, normalized_direction, distance, "closest", "types", "statics", "collision_filter", "filter_player_mover")
 
 		if result then
-			if prev_position and WALL_MAX_HEIGHT_OFFSET < math.abs(hit_position.z - prev_position.z) then
+			if prev_position and math.abs(hit_position.z - prev_position.z) > WALL_MAX_HEIGHT_OFFSET then
 				return false
 			end
 
@@ -313,9 +324,11 @@ ActionCareerWEThornsisterTargetWall._check_segment = function (self, prev_positi
 			if prev_position then
 				local sweep_from = prev_position + Vector3.up() * WALL_OVERLAP_HEIGHT_OFFSET
 				local sweep_results = PhysicsWorld.linear_obb_sweep(physics_world, sweep_from, overlap_pos, overlap_size, overlap_rot, 5, "collision_filter", "filter_player_mover", "types", "statics", "report_initial_overlap")
+
 				actor_count = sweep_results and #sweep_results or 0
 			else
-				local hit_actors = nil
+				local hit_actors
+
 				hit_actors, actor_count = PhysicsWorld.immediate_overlap(physics_world, "position", overlap_pos, "rotation", overlap_rot, "size", overlap_size, "shape", "oobb", "types", "statics", "collision_filter", "filter_player_mover")
 			end
 

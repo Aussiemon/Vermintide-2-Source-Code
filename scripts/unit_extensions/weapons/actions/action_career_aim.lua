@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/weapons/actions/action_career_aim.lua
+
 ActionCareerAim = class(ActionCareerAim, ActionAim)
 
 ActionCareerAim.client_owner_start_action = function (self, new_action, t, chain_action_data, power_level, action_init_data)

@@ -1,10 +1,12 @@
+﻿-- chunkname: @scripts/settings/dlcs/cog/cog_bot_conditions.lua
+
 BTConditions.can_activate = BTConditions.can_activate or {}
 BTConditions.can_activate_non_combat = BTConditions.can_activate_non_combat or {}
 
 table.merge_recursive(BTConditions.ability_check_categories, {
 	ranged_weapon = {
-		dr_engineer = true
-	}
+		dr_engineer = true,
+	},
 })
 
 local vector3_distance_squared = Vector3.distance_squared
@@ -46,7 +48,7 @@ BTConditions.can_activate.dr_engineer = function (blackboard)
 	local self_unit = blackboard.unit
 	local self_position = POSITION_LOOKUP[self_unit]
 
-	if ENGINEER_MAX_DISTANCE_SQ < vector3_distance_squared(self_position, POSITION_LOOKUP[target_unit]) then
+	if vector3_distance_squared(self_position, POSITION_LOOKUP[target_unit]) > ENGINEER_MAX_DISTANCE_SQ then
 		return false
 	end
 
@@ -60,7 +62,7 @@ BTConditions.can_activate.dr_engineer = function (blackboard)
 		if ALIVE[enemy_unit] then
 			local enemy_position = POSITION_LOOKUP[enemy_unit]
 
-			if vector3_distance_squared(self_position, enemy_position) <= max_distance_sq then
+			if max_distance_sq >= vector3_distance_squared(self_position, enemy_position) then
 				return false
 			end
 		end
@@ -77,7 +79,7 @@ BTConditions.reload_ability_weapon.dr_engineer = function (blackboard, args)
 	if career_extension then
 		local proximite_enemies = blackboard.proximite_enemies
 
-		return args.ability_cooldown_theshold < career_extension:current_ability_cooldown() and #proximite_enemies == 0
+		return career_extension:current_ability_cooldown() > args.ability_cooldown_theshold and #proximite_enemies == 0
 	end
 
 	return false

@@ -1,12 +1,14 @@
-DeathReactions = {
-	IS_NOT_DONE = "not_done",
-	IS_DONE = "done"
-}
+﻿-- chunkname: @scripts/unit_extensions/generic/death_reactions.lua
+
+DeathReactions = {}
+DeathReactions.IS_NOT_DONE = "not_done"
+DeathReactions.IS_DONE = "done"
+
 local DeathReactions = DeathReactions
 local BLACKBOARDS = BLACKBOARDS
 local SCREENSPACE_DEATH_EFFECTS = {
+	blunt = "fx/screenspace_blood_drops",
 	heavy = "fx/screenspace_blood_drops_heavy",
-	blunt = "fx/screenspace_blood_drops"
 }
 
 local function is_hot_join_sync(killing_blow)
@@ -75,7 +77,7 @@ local function handle_military_event_achievement(damage_type, breed_name, statis
 	if damage_type == "military_finish" and breed_name == "chaos_warrior" then
 		local stat_names = {
 			"military_statue_kill_chaos_warriors",
-			"military_statue_kill_chaos_warriors_cata"
+			"military_statue_kill_chaos_warriors_cata",
 		}
 
 		for i = 1, #stat_names do
@@ -119,6 +121,7 @@ local function handle_castle_boss_achievement(killing_blow, unit)
 
 			if boss_unit ~= unit then
 				local blackboard = BLACKBOARDS[boss_unit]
+
 				blackboard.no_kill_achievement = false
 			end
 		end
@@ -219,7 +222,7 @@ local function ai_default_unit_start(unit, context, t, killing_blow, is_server)
 	local data = {
 		breed = breed,
 		finish_time = t + (breed.time_to_unspawn_after_death or 3),
-		wall_nail_data = death_extension.wall_nail_data
+		wall_nail_data = death_extension.wall_nail_data,
 	}
 	local force_despawn = breed.force_despawn
 
@@ -241,12 +244,15 @@ end
 local function ai_chaos_tentacle_start(unit, context, t, killing_blow, is_server)
 	local data, result = ai_default_unit_start(unit, context, t, killing_blow, is_server)
 	local blackboard = BLACKBOARDS[unit]
+
 	data.blackboard = blackboard
+
 	local tentacle_data = blackboard.tentacle_data
 	local boss_master_unit = blackboard.boss_master_unit
 
 	if boss_master_unit and Unit.alive(boss_master_unit) then
 		local boss_blackboard = BLACKBOARDS[boss_master_unit]
+
 		boss_blackboard.num_portals_alive = boss_blackboard.num_portals_alive - 1
 		boss_blackboard.tentacle_portal_units[unit] = nil
 	end
@@ -299,7 +305,9 @@ local function ai_chaos_tentacle_update(unit, dt, context, t, data, is_server)
 
 		if tentacle_data.unit then
 			local current_length = tentacle_data.current_length - 7 * dt
+
 			tentacle_data.current_length = math.max(current_length, 0)
+
 			local tentacle_extension = blackboard.tentacle_spline_extension
 
 			tentacle_extension:set_target("attack", target_unit, current_length)
@@ -334,6 +342,7 @@ local function update_wall_nail(unit, dt, t, data)
 			fassert(Vector3.is_valid(position), "Position from actor is not valid.")
 
 			nail_data.position = Vector3Box(position)
+
 			local dir = nail_data.attack_direction:unbox()
 			local fly_time = 0.3
 			local ray_dist = nail_data.hit_speed * fly_time
@@ -393,7 +402,7 @@ local function ai_default_unit_update(unit, dt, context, t, data, is_server)
 		end
 	end
 
-	if data.push_to_death_watch_timer and data.push_to_death_watch_timer < t then
+	if data.push_to_death_watch_timer and t > data.push_to_death_watch_timer then
 		Managers.state.unit_spawner:push_unit_to_death_watch_list(unit, t, data)
 
 		data.push_to_death_watch_timer = nil
@@ -473,7 +482,7 @@ local function ai_default_husk_start(unit, context, t, killing_blow, is_server)
 	local data = {
 		breed = breed,
 		finish_time = t + 3,
-		wall_nail_data = death_extension.wall_nail_data
+		wall_nail_data = death_extension.wall_nail_data,
 	}
 
 	Managers.state.game_mode:ai_killed(unit, owner_unit, data, killing_blow)
@@ -547,6 +556,7 @@ local function trigger_unit_dialogue_death_event(killed_unit, killer_unit, hit_z
 
 		if killed_unit_name == "skaven_rat_ogre" then
 			local user_memory = killer_dialogue_extension.user_memory
+
 			user_memory.times_killed_rat_ogre = (user_memory.times_killed_rat_ogre or 0) + 1
 		end
 
@@ -556,13 +566,16 @@ local function trigger_unit_dialogue_death_event(killed_unit, killer_unit, hit_z
 		if weapon_slot == "slot_melee" or weapon_slot == "slot_ranged" then
 			local dot_type = false
 			local event_data = FrameTable.alloc_table()
+
 			event_data.killed_type = killed_unit_name
 			event_data.hit_zone = hit_zone
 			event_data.weapon_slot = weapon_slot
+
 			local weapon_data = inventory_extension:get_slot_data(weapon_slot)
 
 			if weapon_data then
 				event_data.weapon_type = weapon_data.item_data.item_type
+
 				local attack_template = AttackTemplates[damage_type]
 
 				if attack_template and attack_template.dot_type then
@@ -729,13 +742,14 @@ local function gors_killed_by_warpfire_challenge()
 
 	local num_killed_gors = statistics_db:get_local_stat("warpfire_killed_gors")
 
-	if QuestSettings.num_gors_killed_by_warpfire <= num_killed_gors then
+	if num_killed_gors >= QuestSettings.num_gors_killed_by_warpfire then
 		statistics_db:set_local_stat("warpfire_killed_gors", 0)
 		statistics_db:increment_stat_and_sync_to_clients("scorpion_slay_gors_warpfire_damage")
 	end
 end
 
 local pickup_params = {}
+
 DeathReactions.templates = {
 	ai_default = {
 		unit = {
@@ -763,7 +777,7 @@ DeathReactions.templates = {
 				local result = ai_default_unit_update(unit, dt, context, t, data)
 
 				return result
-			end
+			end,
 		},
 		husk = {
 			pre_start = function (unit, context, t, killing_blow)
@@ -788,8 +802,8 @@ DeathReactions.templates = {
 				local result = ai_default_husk_update(unit, dt, context, t, data)
 
 				return result
-			end
-		}
+			end,
+		},
 	},
 	chaos_tentacle = {
 		unit = {
@@ -808,7 +822,7 @@ DeathReactions.templates = {
 				local result = ai_chaos_tentacle_update(unit, dt, context, t, data)
 
 				return result
-			end
+			end,
 		},
 		husk = {
 			pre_start = function (unit, context, t, killing_blow)
@@ -827,8 +841,8 @@ DeathReactions.templates = {
 			end,
 			update = function (unit, dt, context, t, data)
 				return DeathReactions.IS_DONE
-			end
-		}
+			end,
+		},
 	},
 	chaos_tentacle_portal = {
 		unit = {
@@ -843,20 +857,20 @@ DeathReactions.templates = {
 				WwiseUtils.trigger_unit_event(context.world, "Play_enemy_sorcerer_portal_explode", unit, surface_node)
 
 				local data = {
-					despawn_after_time = t + 4.2
+					despawn_after_time = t + 4.2,
 				}
 
 				return data, DeathReactions.IS_NOT_DONE
 			end,
 			update = function (unit, dt, context, t, data)
-				if data.despawn_after_time < t then
+				if t > data.despawn_after_time then
 					Managers.state.unit_spawner:mark_for_deletion(unit)
 
 					return DeathReactions.IS_DONE
 				end
 
 				return DeathReactions.IS_NOT_DONE
-			end
+			end,
 		},
 		husk = {
 			pre_start = function (unit, context, t, killing_blow)
@@ -875,8 +889,8 @@ DeathReactions.templates = {
 			end,
 			update = function (unit, dt, context, t, data)
 				return DeathReactions.IS_DONE
-			end
-		}
+			end,
+		},
 	},
 	storm_vermin_champion = {
 		unit = {
@@ -907,7 +921,7 @@ DeathReactions.templates = {
 				local result = ai_default_unit_update(unit, dt, context, t, data)
 
 				return result
-			end
+			end,
 		},
 		husk = {
 			pre_start = function (unit, context, t, killing_blow)
@@ -928,8 +942,8 @@ DeathReactions.templates = {
 				local result = ai_default_husk_update(unit, dt, context, t, data)
 
 				return result
-			end
-		}
+			end,
+		},
 	},
 	gutter_runner = {
 		unit = {
@@ -938,6 +952,7 @@ DeathReactions.templates = {
 			end,
 			start = function (unit, context, t, killing_blow, is_server)
 				local data, result = ai_default_unit_start(unit, context, t, killing_blow, is_server)
+
 				data.despawn_after_time = t + 2
 
 				trigger_unit_dialogue_death_event(unit, killing_blow[DamageDataIndex.ATTACKER], killing_blow[DamageDataIndex.HIT_ZONE], killing_blow[DamageDataIndex.DAMAGE_TYPE])
@@ -946,14 +961,14 @@ DeathReactions.templates = {
 				return data, result
 			end,
 			update = function (unit, dt, context, t, data)
-				if data.despawn_after_time and data.despawn_after_time < t then
+				if data.despawn_after_time and t > data.despawn_after_time then
 					Managers.state.unit_spawner:mark_for_deletion(unit)
 
 					return DeathReactions.IS_DONE
 				end
 
 				return DeathReactions.IS_NOT_DONE
-			end
+			end,
 		},
 		husk = {
 			pre_start = function (unit, context, t, killing_blow)
@@ -978,8 +993,8 @@ DeathReactions.templates = {
 			end,
 			update = function (unit, dt, context, t, data)
 				return DeathReactions.IS_DONE
-			end
-		}
+			end,
+		},
 	},
 	poison_globadier = {
 		unit = {
@@ -1015,6 +1030,7 @@ DeathReactions.templates = {
 					return nil, DeathReactions.IS_DONE
 				else
 					local data, result = ai_default_unit_start(unit, context, t, killing_blow, is_server)
+
 					data.blackboard = blackboard
 
 					trigger_unit_dialogue_death_event(unit, killing_blow[DamageDataIndex.ATTACKER], killing_blow[DamageDataIndex.HIT_ZONE], killing_blow[DamageDataIndex.DAMAGE_TYPE])
@@ -1025,7 +1041,7 @@ DeathReactions.templates = {
 			end,
 			update = function (unit, dt, context, t, data)
 				local blackboard = data.blackboard
-				local result = nil
+				local result
 
 				if blackboard.suicide_run ~= nil and blackboard.suicide_run.explosion_started then
 					result = DeathReactions.IS_DONE
@@ -1034,7 +1050,7 @@ DeathReactions.templates = {
 				end
 
 				return result
-			end
+			end,
 		},
 		husk = {
 			pre_start = function (unit, context, t, killing_blow)
@@ -1056,8 +1072,8 @@ DeathReactions.templates = {
 				local result = ai_default_husk_update(unit, dt, context, t, data)
 
 				return result
-			end
-		}
+			end,
+		},
 	},
 	chaos_zombie = {
 		unit = {
@@ -1097,7 +1113,7 @@ DeathReactions.templates = {
 			end,
 			update = function (unit, dt, context, t, data)
 				local blackboard = BLACKBOARDS[unit]
-				local result = nil
+				local result
 
 				if blackboard.anim_cb_death_finished then
 					local action = BreedActions.chaos_zombie.explosion_attack
@@ -1110,7 +1126,7 @@ DeathReactions.templates = {
 				end
 
 				return result
-			end
+			end,
 		},
 		husk = {
 			pre_start = function (unit, context, t, killing_blow)
@@ -1127,8 +1143,8 @@ DeathReactions.templates = {
 				local result = ai_default_husk_update(unit, dt, context, t, data)
 
 				return result
-			end
-		}
+			end,
+		},
 	},
 	warpfire_thrower = {
 		unit = {
@@ -1162,7 +1178,7 @@ DeathReactions.templates = {
 			end,
 			update = function (unit, dt, context, t, data)
 				local blackboard = BLACKBOARDS[unit]
-				local result = nil
+				local result
 
 				if blackboard.explode_on_death then
 					local backpack_actor = Unit.actor(unit, "j_backpack")
@@ -1182,7 +1198,7 @@ DeathReactions.templates = {
 				end
 
 				return result
-			end
+			end,
 		},
 		husk = {
 			pre_start = function (unit, context, t, killing_blow)
@@ -1196,6 +1212,7 @@ DeathReactions.templates = {
 					Unit.flow_event(unit, "lua_hide_backpack")
 
 					local death_extension = ScriptUnit.extension(unit, "death_system")
+
 					death_extension.actor_to_disable_on_death = "j_backpack"
 				end
 
@@ -1213,7 +1230,7 @@ DeathReactions.templates = {
 				ai_default_husk_update(unit, dt, context, t, data)
 
 				local death_extension = ScriptUnit.extension(unit, "death_system")
-				local result = nil
+				local result
 
 				if death_extension.actor_to_disable_on_death then
 					local backpack_actor = Unit.actor(unit, death_extension.actor_to_disable_on_death)
@@ -1231,8 +1248,8 @@ DeathReactions.templates = {
 				end
 
 				return result
-			end
-		}
+			end,
+		},
 	},
 	loot_rat = {
 		unit = {
@@ -1265,6 +1282,7 @@ DeathReactions.templates = {
 						local pickup_settings = AllPickups[pickup_name]
 						local can_spawn_func = pickup_settings and pickup_settings.can_spawn_func
 						local can_spawn_pickup_type = pickup_settings ~= nil
+
 						pickup_params.dice_keeper = dice_keeper
 
 						if can_spawn_func and not can_spawn_func(pickup_params) then
@@ -1281,8 +1299,8 @@ DeathReactions.templates = {
 									has_physics = true,
 									spawn_type = "loot",
 									pickup_name = pickup_name,
-									dropped_by_breed = breed_name
-								}
+									dropped_by_breed = breed_name,
+								},
 							}
 							local unit_name = pickup_settings.unit_name
 							local unit_template_name = pickup_settings.unit_template_name or "pickup_unit"
@@ -1310,7 +1328,7 @@ DeathReactions.templates = {
 				local result = ai_default_unit_update(unit, dt, context, t, data)
 
 				return result
-			end
+			end,
 		},
 		husk = {
 			pre_start = function (unit, context, t, killing_blow)
@@ -1332,8 +1350,8 @@ DeathReactions.templates = {
 				local result = ai_default_husk_update(unit, dt, context, t, data)
 
 				return result
-			end
-		}
+			end,
+		},
 	},
 	explosive_loot_rat = {
 		unit = {
@@ -1353,15 +1371,15 @@ DeathReactions.templates = {
 
 				local chance_to_spawn_ammmo = 0.2
 
-				if math.random() <= chance_to_spawn_ammmo then
+				if chance_to_spawn_ammmo >= math.random() then
 					local pickup_name = "all_ammo_small"
 					local pickup_settings = AllPickups[pickup_name]
 					local extension_init_data = {
 						pickup_system = {
 							has_physics = false,
 							spawn_type = "loot",
-							pickup_name = pickup_name
-						}
+							pickup_name = pickup_name,
+						},
 					}
 					local unit_name = pickup_settings.unit_name
 					local unit_template_name = pickup_settings.unit_template_name or "pickup_unit"
@@ -1374,7 +1392,7 @@ DeathReactions.templates = {
 				return data, result
 			end,
 			update = function (unit, dt, context, t, data)
-				if BLACKBOARDS[unit].delete_at_t < t and not data.marked_for_deletion then
+				if t > BLACKBOARDS[unit].delete_at_t and not data.marked_for_deletion then
 					Managers.state.unit_spawner:mark_for_deletion(unit)
 
 					data.marked_for_deletion = true
@@ -1383,7 +1401,7 @@ DeathReactions.templates = {
 				local result = ai_default_unit_update(unit, dt, context, t, data)
 
 				return result
-			end
+			end,
 		},
 		husk = {
 			pre_start = function (unit, context, t, killing_blow)
@@ -1405,8 +1423,8 @@ DeathReactions.templates = {
 				local result = ai_default_husk_update(unit, dt, context, t, data)
 
 				return result
-			end
-		}
+			end,
+		},
 	},
 	critter_nurgling = {
 		unit = {
@@ -1420,7 +1438,7 @@ DeathReactions.templates = {
 			end,
 			update = function (unit, dt, context, t, data)
 				return ai_default_unit_update(unit, dt, context, t, data)
-			end
+			end,
 		},
 		husk = {
 			pre_start = function (unit, context, t, killing_blow)
@@ -1431,8 +1449,8 @@ DeathReactions.templates = {
 			end,
 			update = function (unit, dt, context, t, data)
 				return ai_default_husk_update(unit, dt, context, t, data)
-			end
-		}
+			end,
+		},
 	},
 	player = {
 		unit = {
@@ -1450,7 +1468,7 @@ DeathReactions.templates = {
 				Unit.flow_event(unit, "lua_on_death")
 
 				return nil, DeathReactions.IS_DONE
-			end
+			end,
 		},
 		husk = {
 			pre_start = function (unit, context, t, killing_blow)
@@ -1473,8 +1491,8 @@ DeathReactions.templates = {
 				end
 
 				return nil, DeathReactions.IS_DONE
-			end
-		}
+			end,
+		},
 	},
 	level_object = {
 		unit = {
@@ -1488,7 +1506,7 @@ DeathReactions.templates = {
 			end,
 			update = function (unit, dt, context, t, data)
 				return
-			end
+			end,
 		},
 		husk = {
 			pre_start = function (unit, context, t, killing_blow)
@@ -1500,8 +1518,8 @@ DeathReactions.templates = {
 			end,
 			update = function (unit, dt, context, t, data)
 				return
-			end
-		}
+			end,
+		},
 	},
 	standard = {
 		unit = {
@@ -1510,7 +1528,7 @@ DeathReactions.templates = {
 			end,
 			start = function (unit, context, t, killing_blow, is_server)
 				local data = {
-					despawn_after_time = t + 8
+					despawn_after_time = t + 8,
 				}
 				local standard_extension = ScriptUnit.has_extension(unit, "ai_supplementary_system")
 
@@ -1523,14 +1541,14 @@ DeathReactions.templates = {
 				return data, DeathReactions.IS_NOT_DONE
 			end,
 			update = function (unit, dt, context, t, data)
-				if data.despawn_after_time and data.despawn_after_time < t then
+				if data.despawn_after_time and t > data.despawn_after_time then
 					Managers.state.unit_spawner:mark_for_deletion(unit)
 
 					return DeathReactions.IS_DONE
 				end
 
 				return DeathReactions.IS_NOT_DONE
-			end
+			end,
 		},
 		husk = {
 			pre_start = function (unit, context, t, killing_blow)
@@ -1545,8 +1563,8 @@ DeathReactions.templates = {
 			end,
 			update = function (unit, dt, context, t, data)
 				return
-			end
-		}
+			end,
+		},
 	},
 	despawn = {
 		unit = {
@@ -1556,7 +1574,7 @@ DeathReactions.templates = {
 			start = function (unit, context, t, killing_blow, is_server, death_extension)
 				local data = {
 					despawn_after_time = death_extension.despawn_after_time or 0,
-					play_effect = death_extension.play_effect
+					play_effect = death_extension.play_effect,
 				}
 				local projectile_linker_system = Managers.state.entity:system("projectile_linker_system")
 
@@ -1565,7 +1583,7 @@ DeathReactions.templates = {
 				return data, DeathReactions.IS_NOT_DONE
 			end,
 			update = function (unit, dt, context, t, data)
-				if data.despawn_after_time < t then
+				if t > data.despawn_after_time then
 					local blackboard = BLACKBOARDS[unit]
 
 					Managers.state.conflict:destroy_unit(unit, blackboard, "death_reaction_despawn")
@@ -1584,7 +1602,7 @@ DeathReactions.templates = {
 				end
 
 				return DeathReactions.IS_NOT_DONE
-			end
+			end,
 		},
 		husk = {
 			pre_start = function (unit, context, t, killing_blow)
@@ -1595,8 +1613,8 @@ DeathReactions.templates = {
 			end,
 			update = function (unit, dt, context, t, data)
 				return
-			end
-		}
+			end,
+		},
 	},
 	killable_projectile = {
 		unit = {
@@ -1619,7 +1637,7 @@ DeathReactions.templates = {
 			end,
 			update = function (unit, dt, context, t, data)
 				return
-			end
+			end,
 		},
 		husk = {
 			pre_start = function (unit, context, t, killing_blow)
@@ -1630,8 +1648,8 @@ DeathReactions.templates = {
 			end,
 			update = function (unit, dt, context, t, data)
 				return
-			end
-		}
+			end,
+		},
 	},
 	explosive_barrel = {
 		unit = {
@@ -1644,7 +1662,7 @@ DeathReactions.templates = {
 				local attacker_unit = killing_blow[DamageDataIndex.ATTACKER]
 				local data = {
 					explode_time = explode_time,
-					killer_unit = attacker_unit
+					killer_unit = attacker_unit,
 				}
 				local health_extension = ScriptUnit.has_extension(unit, "health_system")
 				local damage_data = health_extension.last_damage_data
@@ -1655,6 +1673,7 @@ DeathReactions.templates = {
 				Managers.state.achievement:trigger_event("explosive_barrel_destroyed", stats_id, unit, killing_blow)
 
 				local death_extension = ScriptUnit.extension(unit, "death_system")
+
 				death_extension.death_has_started = true
 
 				return data, DeathReactions.IS_NOT_DONE
@@ -1711,7 +1730,7 @@ DeathReactions.templates = {
 
 					return DeathReactions.IS_DONE
 				end
-			end
+			end,
 		},
 		husk = {
 			pre_start = function (unit, context, t, killing_blow)
@@ -1722,7 +1741,7 @@ DeathReactions.templates = {
 				local explode_time = network_time
 				local data = {
 					explode_time = explode_time,
-					killer_unit = killing_blow[DamageDataIndex.ATTACKER]
+					killer_unit = killing_blow[DamageDataIndex.ATTACKER],
 				}
 				local health_extension = ScriptUnit.has_extension(unit, "health_system")
 				local damage_data = health_extension.last_damage_data
@@ -1733,6 +1752,7 @@ DeathReactions.templates = {
 				Managers.state.achievement:trigger_event("explosive_barrel_destroyed", stats_id, unit, killing_blow)
 
 				local death_extension = ScriptUnit.extension(unit, "death_system")
+
 				death_extension.death_has_started = true
 
 				return data, DeathReactions.IS_NOT_DONE
@@ -1767,8 +1787,8 @@ DeathReactions.templates = {
 				elseif network_time >= data.explode_time + 0.5 then
 					return DeathReactions.IS_DONE
 				end
-			end
-		}
+			end,
+		},
 	},
 	nurgle_liquid_blob = {
 		unit = {
@@ -1794,7 +1814,7 @@ DeathReactions.templates = {
 
 				local data = {
 					start_time = network_time,
-					shrink_and_despawn_time = shrink_and_despawn_time
+					shrink_and_despawn_time = shrink_and_despawn_time,
 				}
 
 				Unit.set_flow_variable(unit, "current_health", 0)
@@ -1848,13 +1868,15 @@ DeathReactions.templates = {
 						else
 							local rotation = Unit.local_rotation(unit, 0)
 							local direction = Quaternion.forward(rotation)
+
 							direction = Vector3.flat(direction)
+
 							local extension_init_data = {
 								area_damage_system = {
 									liquid_template = "nurgle_liquid",
 									flow_dir = direction,
-									source_unit = unit
-								}
+									source_unit = unit,
+								},
 							}
 							local aoe_unit_name = "units/hub_elements/empty"
 							local liquid_aoe_unit = Managers.state.unit_spawner:spawn_network_unit(aoe_unit_name, "liquid_aoe_unit", extension_init_data, position_on_navmesh)
@@ -1889,7 +1911,7 @@ DeathReactions.templates = {
 
 					return result
 				end
-			end
+			end,
 		},
 		husk = {
 			pre_start = function (unit, context, t, killing_blow)
@@ -1900,10 +1922,12 @@ DeathReactions.templates = {
 				local shrink_and_despawn_time = death_extension.extension_init_data.shrink_and_despawn_time
 				local data = {
 					start_time = network_time,
-					shrink_and_despawn_time = shrink_and_despawn_time
+					shrink_and_despawn_time = shrink_and_despawn_time,
 				}
 				local death_extension = ScriptUnit.extension(unit, "death_system")
+
 				death_extension.death_has_started = true
+
 				local buff_extension = ScriptUnit.has_extension(unit, "buff_system")
 
 				if buff_extension then
@@ -1953,8 +1977,8 @@ DeathReactions.templates = {
 				end
 
 				return result
-			end
-		}
+			end,
+		},
 	},
 	lamp_oil = {
 		unit = {
@@ -1965,9 +1989,10 @@ DeathReactions.templates = {
 				local network_time = Managers.state.network:network_time()
 				local data = {
 					killer_unit = killing_blow[DamageDataIndex.ATTACKER],
-					start_time = network_time
+					start_time = network_time,
 				}
 				local death_extension = ScriptUnit.extension(unit, "death_system")
+
 				death_extension.death_has_started = true
 
 				return data, DeathReactions.IS_NOT_DONE
@@ -1996,13 +2021,15 @@ DeathReactions.templates = {
 					else
 						local rotation = Unit.local_rotation(unit, 0)
 						local direction = Quaternion.forward(rotation)
+
 						direction = Vector3.flat(direction)
+
 						local extension_init_data = {
 							area_damage_system = {
 								liquid_template = "lamp_oil_fire",
 								flow_dir = direction,
-								source_unit = last_attacker_unit
-							}
+								source_unit = last_attacker_unit,
+							},
 						}
 						local aoe_unit_name = "units/hub_elements/empty"
 						local liquid_aoe_unit = Managers.state.unit_spawner:spawn_network_unit(aoe_unit_name, "liquid_aoe_unit", extension_init_data, position_on_navmesh)
@@ -2029,7 +2056,7 @@ DeathReactions.templates = {
 				end
 
 				return result
-			end
+			end,
 		},
 		husk = {
 			pre_start = function (unit, context, t, killing_blow)
@@ -2039,9 +2066,10 @@ DeathReactions.templates = {
 				local network_time = Managers.state.network:network_time()
 				local data = {
 					killer_unit = killing_blow[DamageDataIndex.ATTACKER],
-					start_time = network_time
+					start_time = network_time,
 				}
 				local death_extension = ScriptUnit.extension(unit, "death_system")
+
 				death_extension.death_has_started = true
 
 				return data, DeathReactions.IS_NOT_DONE
@@ -2067,7 +2095,9 @@ DeathReactions.templates = {
 						else
 							local rotation = Unit.local_rotation(unit, 0)
 							local direction = Quaternion.forward(rotation)
+
 							direction = Vector3.flat(direction)
+
 							local liquid_template_id = NetworkLookup.liquid_area_damage_templates.lamp_oil_fire
 							local network_manager = Managers.state.network
 							local last_damage_data = health_extension.last_damage_data
@@ -2091,8 +2121,8 @@ DeathReactions.templates = {
 				end
 
 				return result
-			end
-		}
+			end,
+		},
 	},
 	lure_unit = {
 		unit = {
@@ -2103,7 +2133,7 @@ DeathReactions.templates = {
 				Managers.state.unit_spawner:mark_for_deletion(unit)
 
 				return nil, DeathReactions.IS_DONE
-			end
+			end,
 		},
 		husk = {
 			pre_start = function (unit, context, t, killing_blow)
@@ -2111,80 +2141,80 @@ DeathReactions.templates = {
 			end,
 			start = function (unit, context, t, killing_blow, is_server)
 				return nil, DeathReactions.IS_DONE
-			end
-		}
-	},
-	minotaur = {
-		unit = {
-			pre_start = function (unit, context, t, killing_blow)
-				ai_default_unit_pre_start(unit, context, t, killing_blow)
 			end,
-			start = function (unit, context, t, killing_blow, is_server)
-				local attacker = killing_blow[DamageDataIndex.ATTACKER]
-				local player = Managers.player:unit_owner(attacker)
-
-				if player then
-					kill_minotaur_under_oak_challenge(player, unit)
-				end
-
-				ungor_archer_kill_minotaur_challenge(attacker)
-
-				return DeathReactions.templates.ai_default.unit.start(unit, context, t, killing_blow, is_server)
-			end,
-			update = function (unit, dt, context, t, data)
-				local result = ai_default_unit_update(unit, dt, context, t, data)
-
-				return result
-			end
 		},
-		husk = {
-			pre_start = function (unit, context, t, killing_blow)
-				ai_default_husk_pre_start(unit, context, t, killing_blow)
-			end,
-			start = function (unit, context, t, killing_blow, is_server)
-				return DeathReactions.templates.ai_default.husk.start(unit, context, t, killing_blow, is_server)
-			end,
-			update = function (unit, dt, context, t, data)
-				local result = ai_default_husk_update(unit, dt, context, t, data)
-
-				return result
-			end
-		}
 	},
-	gor = {
-		unit = {
-			pre_start = function (unit, context, t, killing_blow)
-				ai_default_unit_pre_start(unit, context, t, killing_blow)
-			end,
-			start = function (unit, context, t, killing_blow, is_server)
-				local damage_type = killing_blow[DamageDataIndex.DAMAGE_TYPE]
+}
+DeathReactions.templates.minotaur = {
+	unit = {
+		pre_start = function (unit, context, t, killing_blow)
+			ai_default_unit_pre_start(unit, context, t, killing_blow)
+		end,
+		start = function (unit, context, t, killing_blow, is_server)
+			local attacker = killing_blow[DamageDataIndex.ATTACKER]
+			local player = Managers.player:unit_owner(attacker)
 
-				if damage_type == "warpfire" or damage_type == "warpfire_ground" then
-					gors_killed_by_warpfire_challenge()
-				end
-
-				return DeathReactions.templates.ai_default.unit.start(unit, context, t, killing_blow, is_server)
-			end,
-			update = function (unit, dt, context, t, data)
-				local result = ai_default_unit_update(unit, dt, context, t, data)
-
-				return result
+			if player then
+				kill_minotaur_under_oak_challenge(player, unit)
 			end
-		},
-		husk = {
-			pre_start = function (unit, context, t, killing_blow)
-				ai_default_husk_pre_start(unit, context, t, killing_blow)
-			end,
-			start = function (unit, context, t, killing_blow, is_server)
-				return DeathReactions.templates.ai_default.husk.start(unit, context, t, killing_blow, is_server)
-			end,
-			update = function (unit, dt, context, t, data)
-				local result = ai_default_husk_update(unit, dt, context, t, data)
 
-				return result
+			ungor_archer_kill_minotaur_challenge(attacker)
+
+			return DeathReactions.templates.ai_default.unit.start(unit, context, t, killing_blow, is_server)
+		end,
+		update = function (unit, dt, context, t, data)
+			local result = ai_default_unit_update(unit, dt, context, t, data)
+
+			return result
+		end,
+	},
+	husk = {
+		pre_start = function (unit, context, t, killing_blow)
+			ai_default_husk_pre_start(unit, context, t, killing_blow)
+		end,
+		start = function (unit, context, t, killing_blow, is_server)
+			return DeathReactions.templates.ai_default.husk.start(unit, context, t, killing_blow, is_server)
+		end,
+		update = function (unit, dt, context, t, data)
+			local result = ai_default_husk_update(unit, dt, context, t, data)
+
+			return result
+		end,
+	},
+}
+DeathReactions.templates.gor = {
+	unit = {
+		pre_start = function (unit, context, t, killing_blow)
+			ai_default_unit_pre_start(unit, context, t, killing_blow)
+		end,
+		start = function (unit, context, t, killing_blow, is_server)
+			local damage_type = killing_blow[DamageDataIndex.DAMAGE_TYPE]
+
+			if damage_type == "warpfire" or damage_type == "warpfire_ground" then
+				gors_killed_by_warpfire_challenge()
 			end
-		}
-	}
+
+			return DeathReactions.templates.ai_default.unit.start(unit, context, t, killing_blow, is_server)
+		end,
+		update = function (unit, dt, context, t, data)
+			local result = ai_default_unit_update(unit, dt, context, t, data)
+
+			return result
+		end,
+	},
+	husk = {
+		pre_start = function (unit, context, t, killing_blow)
+			ai_default_husk_pre_start(unit, context, t, killing_blow)
+		end,
+		start = function (unit, context, t, killing_blow, is_server)
+			return DeathReactions.templates.ai_default.husk.start(unit, context, t, killing_blow, is_server)
+		end,
+		update = function (unit, dt, context, t, data)
+			local result = ai_default_husk_update(unit, dt, context, t, data)
+
+			return result
+		end,
+	},
 }
 DeathReactions.templates.shadow_skull = table.clone(DeathReactions.templates.ai_default)
 
@@ -2222,7 +2252,9 @@ DeathReactions.templates.tower_homing_skull = table.clone(DeathReactions.templat
 
 DeathReactions.templates.tower_homing_skull.unit.start = function (unit, context, t, killing_blow, is_server)
 	local data, result = DeathReactions.templates.ai_default.unit.start(unit, context, t, killing_blow, is_server)
+
 	data.despawn_after_time = t + 2.5
+
 	local projectile_extension = ScriptUnit.extension(unit, "projectile_system")
 
 	projectile_extension:destroy()
@@ -2235,7 +2267,7 @@ DeathReactions.templates.tower_homing_skull.unit.start = function (unit, context
 end
 
 DeathReactions.templates.tower_homing_skull.unit.update = function (unit, dt, context, t, data)
-	if data.despawn_after_time < t and not data.marked_for_deletion then
+	if t > data.despawn_after_time and not data.marked_for_deletion then
 		Managers.state.unit_spawner:mark_for_deletion(unit)
 
 		data.marked_for_deletion = true
@@ -2263,10 +2295,6 @@ DeathReactions.templates.tower_homing_skull.husk.start = function (unit, context
 	return data, result
 end
 
-DLCUtils.map_list("death_reactions", function (file)
-	return table.merge(DeathReactions.templates, require(file))
-end)
-
 DeathReactions.templates.destructible_ward = {
 	unit = {
 		pre_start = function (unit, context, t, killing_blow)
@@ -2277,12 +2305,12 @@ DeathReactions.templates.destructible_ward = {
 			Unit.set_flow_variable(unit, "current_health", 0)
 			Unit.flow_event(unit, "lua_on_death")
 			Managers.state.entity:remove_extensions_from_unit(unit, {
-				"WardExtension"
+				"WardExtension",
 			})
 		end,
 		update = function (unit, dt, context, t, data)
 			return
-		end
+		end,
 	},
 	husk = {
 		pre_start = function (unit, context, t, killing_blow)
@@ -2292,14 +2320,16 @@ DeathReactions.templates.destructible_ward = {
 			Managers.state.game_mode:level_object_killed(unit, killing_blow)
 			Unit.flow_event(unit, "lua_on_death")
 			Managers.state.entity:remove_extensions_from_unit(unit, {
-				"WardExtension"
+				"WardExtension",
 			})
 		end,
 		update = function (unit, dt, context, t, data)
 			return
-		end
-	}
-}
+		end,
+	},
+}, DLCUtils.map_list("death_reactions", function (file)
+	return table.merge(DeathReactions.templates, require(file))
+end)
 
 DeathReactions.get_reaction = function (death_reaction_template, is_husk)
 	local templates = DeathReactions.templates

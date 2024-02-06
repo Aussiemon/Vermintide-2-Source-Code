@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/managers/backend/backend_interface_runes.lua
+
 BackendInterfaceRunes = class(BackendInterfaceRunes)
+
 local DB_ENTITY_NAME_PREFIX = "runes_"
 local DB_ENTITY_TYPE = "runes"
 local DB_ATTRIBUTE_NAME_PREFIX = "rune_"
@@ -14,6 +17,7 @@ BackendInterfaceRunes._refresh_attributes = function (self)
 	for entity_id, entity in pairs(entities) do
 		local entity_name = entity.entity_name
 		local runes = entity.runes
+
 		runes.entity_id = entity_id
 		runes_by_entity_name[entity_name] = runes
 	end

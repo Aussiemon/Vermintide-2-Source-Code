@@ -1,13 +1,15 @@
+﻿-- chunkname: @scripts/settings/mutators/mutator_chasing_spirits.lua
+
 local MAX_RAYCASTS = 5
 
 return {
-	description = "chasing_spirits_mutator_desc",
+	chase_speed = 1,
 	chase_time = 5,
 	delay_time = 2,
-	chase_speed = 1,
-	spirit_power_level = 200,
-	icon = "mutator_icon_death_spirits",
+	description = "chasing_spirits_mutator_desc",
 	display_name = "chasing_spirits_mutator_name",
+	icon = "mutator_icon_death_spirits",
+	spirit_power_level = 200,
 	spawn_spirit = function (data, spawn_unit, target_unit)
 		local spawn_position = Vector3.add(Unit.local_position(spawn_unit, 0), Vector3(0, 0, data.offset))
 		local spirit_unit = data.unit_spawner:spawn_network_unit(data.spirit_unit_name, "position_synched_dummy_unit", data.extension_init_data, spawn_position)
@@ -15,7 +17,7 @@ return {
 			follow_unit = target_unit,
 			unit = spirit_unit,
 			chase_time = data.chase_time,
-			delay_time = data.delay_time
+			delay_time = data.delay_time,
 		}
 		local spirit_id = data.network_manager:unit_game_object_id(spirit_unit)
 
@@ -39,8 +41,10 @@ return {
 
 				if player_pos then
 					player_pos = player_pos + Vector3.up()
+
 					local direction = player_pos - spirit_position
 					local distance_squared = Vector3.length_squared(direction)
+
 					direction = Vector3.normalize(direction)
 
 					if distance_squared <= hit_distance_sqr then
@@ -73,11 +77,14 @@ return {
 
 					if player_pos then
 						spirit.chase_time = math.max(spirit.chase_time - dt, 0)
+
 						local unit_position = Unit.local_position(unit, 0)
 						local chase_target_position = player_pos + Vector3.up()
 						local direction_vector = chase_target_position - unit_position
+
 						direction_vector = Vector3.normalize(direction_vector)
-						local move_vector = direction_vector * dt * data.chase_speed
+
+						local move_vector = direction_vector * (dt * data.chase_speed)
 						local new_position = unit_position + move_vector
 
 						Unit.set_local_position(unit, 0, new_position)
@@ -118,11 +125,11 @@ return {
 
 			if not data.boss_drop_timers[boss_id] then
 				data.boss_drop_timers[boss_id] = {
-					timer = data.boss_drop_cooldown
+					timer = data.boss_drop_cooldown,
 				}
 			end
 
-			if data.boss_drop_cooldown <= data.boss_drop_timers[boss_id].timer then
+			if data.boss_drop_timers[boss_id].timer >= data.boss_drop_cooldown then
 				data.template.spawn_spirit(data, hit_unit, attacker_unit)
 
 				data.boss_drop_timers[boss_id].timer = 0
@@ -209,5 +216,5 @@ return {
 		end
 
 		data.template.update_spirits(context, data, dt, t)
-	end
+	end,
 }

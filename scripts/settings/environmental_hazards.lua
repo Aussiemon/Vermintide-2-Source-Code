@@ -1,9 +1,11 @@
+﻿-- chunkname: @scripts/settings/environmental_hazards.lua
+
 EnvironmentalHazards = {
 	spike_trap = {
 		enemy = {
-			damage_profile = "spike_trap",
 			can_damage = true,
 			can_stagger = true,
+			damage_profile = "spike_trap",
 			difficulty_power_level = {
 				500,
 				500,
@@ -12,31 +14,31 @@ EnvironmentalHazards = {
 				500,
 				500,
 				500,
-				500
-			}
+				500,
+			},
 		},
 		player = {
 			action_data = {
+				damage_type = "cutting",
 				player_push_speed = 1,
-				damage_type = "cutting"
 			},
 			difficulty_damage = {
-				harder = 18,
-				hard = 15,
-				normal = 12,
-				hardest = 23,
 				cataclysm = 30,
-				cataclysm_3 = 50,
 				cataclysm_2 = 40,
-				easy = 7
-			}
-		}
+				cataclysm_3 = 50,
+				easy = 7,
+				hard = 15,
+				harder = 18,
+				hardest = 23,
+				normal = 12,
+			},
+		},
 	},
 	thorn_trap = {
 		enemy = {
-			damage_profile = "spike_trap",
 			can_damage = true,
 			can_stagger = false,
+			damage_profile = "spike_trap",
 			difficulty_power_level = {
 				500,
 				500,
@@ -45,31 +47,31 @@ EnvironmentalHazards = {
 				500,
 				500,
 				500,
-				500
-			}
+				500,
+			},
 		},
 		player = {
 			action_data = {
+				damage_type = "cutting",
 				player_push_speed = 1,
-				damage_type = "cutting"
 			},
 			difficulty_damage = {
-				harder = 6,
-				hard = 5,
-				normal = 4,
-				hardest = 7,
 				cataclysm = 8,
-				cataclysm_3 = 10,
 				cataclysm_2 = 9,
-				easy = 3
-			}
-		}
+				cataclysm_3 = 10,
+				easy = 3,
+				hard = 5,
+				harder = 6,
+				hardest = 7,
+				normal = 4,
+			},
+		},
 	},
 	fire = {
 		enemy = {
-			damage_profile = "environment_fire",
 			can_damage = true,
 			can_stagger = false,
+			damage_profile = "environment_fire",
 			difficulty_power_level = {
 				500,
 				500,
@@ -78,31 +80,31 @@ EnvironmentalHazards = {
 				500,
 				500,
 				500,
-				500
-			}
+				500,
+			},
 		},
 		player = {
 			action_data = {
+				damage_type = "burn",
 				player_push_speed = 0,
-				damage_type = "burn"
 			},
 			difficulty_damage = {
-				harder = 6,
-				hard = 5,
-				normal = 4,
-				hardest = 7,
 				cataclysm = 8,
-				cataclysm_3 = 10,
 				cataclysm_2 = 9,
-				easy = 3
-			}
-		}
+				cataclysm_3 = 10,
+				easy = 3,
+				hard = 5,
+				harder = 6,
+				hardest = 7,
+				normal = 4,
+			},
+		},
 	},
 	payload = {
 		enemy = {
-			damage_profile = "payload_wagon",
 			can_damage = false,
 			can_stagger = true,
+			damage_profile = "payload_wagon",
 			difficulty_power_level = {
 				200,
 				200,
@@ -111,15 +113,15 @@ EnvironmentalHazards = {
 				600,
 				700,
 				700,
-				700
-			}
-		}
+				700,
+			},
+		},
 	},
 	sled = {
 		enemy = {
-			damage_profile = "sled",
 			can_damage = true,
 			can_stagger = true,
+			damage_profile = "sled",
 			difficulty_power_level = {
 				300,
 				300,
@@ -128,15 +130,15 @@ EnvironmentalHazards = {
 				600,
 				700,
 				800,
-				900
-			}
-		}
+				900,
+			},
+		},
 	},
 	trail_cog = {
 		enemy = {
-			damage_profile = "trail_cog",
 			can_damage = true,
 			can_stagger = true,
+			damage_profile = "trail_cog",
 			difficulty_power_level = {
 				200,
 				200,
@@ -145,9 +147,9 @@ EnvironmentalHazards = {
 				600,
 				700,
 				700,
-				700
-			}
-		}
+				700,
+			},
+		},
 	},
 	sawblade = {
 		enemy = {
@@ -162,7 +164,7 @@ EnvironmentalHazards = {
 				600,
 				700,
 				700,
-				700
+				700,
 			},
 			difficulty_damage = {
 				60,
@@ -172,15 +174,15 @@ EnvironmentalHazards = {
 				150,
 				190,
 				220,
-				250
-			}
-		}
+				250,
+			},
+		},
 	},
 	sawblade_instant_kill = {
 		enemy = {
-			damage_profile = "sawblade_instant_kill",
 			can_damage = true,
 			can_stagger = true,
+			damage_profile = "sawblade_instant_kill",
 			difficulty_power_level = {
 				1000,
 				1000,
@@ -189,8 +191,8 @@ EnvironmentalHazards = {
 				600,
 				700,
 				1000,
-				1500
-			}
-		}
-	}
+				1500,
+			},
+		},
+	},
 }

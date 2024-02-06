@@ -1,3 +1,5 @@
+﻿-- chunkname: @foundation/scripts/util/rectangle.lua
+
 Rectangle = class(Rectangle)
 
 Rectangle.init = function (self, x, y, width, height)

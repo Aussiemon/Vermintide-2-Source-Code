@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/start_game_view/states/start_game_state_settings_overview.lua
+
 require("scripts/ui/views/start_game_view/windows/start_game_window_adventure")
 require("scripts/ui/views/start_game_view/windows/start_game_window_adventure_settings")
 require("scripts/ui/views/start_game_view/windows/start_game_window_adventure_mode")
@@ -36,6 +38,7 @@ local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
 local DO_RELOAD = false
 local STREAMING_PLACEHOLDER_TEXTURE_PATH = "gui/1080p/single_textures/generic/transparent_placeholder_texture"
+
 StartGameStateSettingsOverview = class(StartGameStateSettingsOverview)
 StartGameStateSettingsOverview.NAME = "StartGameStateSettingsOverview"
 
@@ -49,20 +52,24 @@ StartGameStateSettingsOverview.on_enter = function (self, params)
 
 	self._wwise_world = params.wwise_world
 	self._hero_name = params.hero_name
+
 	local ingame_ui_context = params.ingame_ui_context
+
 	self._ingame_ui_context = ingame_ui_context
 	self._ui_renderer = ingame_ui_context.ui_renderer
 	self._ui_top_renderer = ingame_ui_context.ui_top_renderer
 	self._input_manager = ingame_ui_context.input_manager
 	self._statistics_db = ingame_ui_context.statistics_db
 	self._render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 	self._network_lobby = ingame_ui_context.network_lobby
 	self._is_in_inn = ingame_ui_context.is_in_inn
 	self._ingame_ui = ingame_ui_context.ingame_ui
+
 	local player_manager = Managers.player
 	local local_player = player_manager:local_player()
+
 	self._stats_id = local_player:stats_id()
 	self._animations = {}
 	self._ui_animations = {}
@@ -93,7 +100,7 @@ StartGameStateSettingsOverview.on_enter = function (self, params)
 		layout_settings = self._layout_settings,
 		start_state = params.start_state,
 		use_gamepad_layout = self._gamepad_style_active,
-		mechanism_name = self._mechanism_name
+		mechanism_name = self._mechanism_name,
 	}
 
 	self:set_confirm_button_visibility(false)
@@ -136,6 +143,7 @@ StartGameStateSettingsOverview._calculate_current_weave = function (self)
 
 	local weave_template = highest_consecutive_unlocked_weave and weave_templates[highest_consecutive_unlocked_weave] or weave_templates[1]
 	local weave_name = weave_template.name
+
 	self._next_weave = weave_name
 
 	if not self._selected_weave_id then
@@ -145,7 +153,7 @@ StartGameStateSettingsOverview._calculate_current_weave = function (self)
 end
 
 StartGameStateSettingsOverview._setup_menu_layout = function (self, mechanism_name)
-	local layout_settings = nil
+	local layout_settings
 	local use_gamepad_layout = IS_CONSOLE or Managers.input:is_device_active("gamepad") or not UISettings.use_pc_menu_layout or MechanismSettings[mechanism_name].use_gamepad_layout
 
 	if use_gamepad_layout then
@@ -170,12 +178,14 @@ end
 
 StartGameStateSettingsOverview._create_ui_elements = function (self, params)
 	self._ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+
 	local widgets = {}
 	local widgets_by_name = {}
 
 	for name, widget_definition in pairs(widget_definitions) do
 		if widget_definition then
 			local widget = UIWidget.init(widget_definition)
+
 			widgets[#widgets + 1] = widget
 			widgets_by_name[name] = widget
 		end
@@ -187,6 +197,7 @@ StartGameStateSettingsOverview._create_ui_elements = function (self, params)
 	UIRenderer.clear_scenegraph_queue(self._ui_renderer)
 
 	self.ui_animator = UIAnimator:new(self._ui_scenegraph, animation_definitions)
+
 	local gui_layer = UILayer.default + 30
 	local input_service = self:input_service()
 	local use_fullscreen_layout = self._gamepad_style_active
@@ -203,7 +214,7 @@ end
 StartGameStateSettingsOverview._create_hdr_gui = function (self)
 	local world_flags = {
 		Application.DISABLE_SOUND,
-		Application.DISABLE_ESRAM
+		Application.DISABLE_ESRAM,
 	}
 	local layer = 800
 	local world_name = "start_game_menu_hdr_view"
@@ -212,6 +223,7 @@ StartGameStateSettingsOverview._create_hdr_gui = function (self)
 	local world = Managers.world:create_world(world_name, shading_environment, nil, layer, unpack(world_flags))
 	local viewport_type = "overlay"
 	local viewport = ScriptWorld.create_viewport(world, viewport_name, viewport_type, layer)
+
 	self._ui_hdr_viewport_name = viewport_name
 	self._ui_hdr_world_name = world_name
 	self._ui_hdr_world = world
@@ -241,6 +253,7 @@ StartGameStateSettingsOverview._create_video_players = function (self)
 		for name, settings in pairs(self._video_resources) do
 			local resource = settings.resource
 			local video_player = World.create_video_player(world, resource, true, false)
+
 			video_players[name] = video_player
 		end
 	end
@@ -271,10 +284,11 @@ StartGameStateSettingsOverview._setup_gamepad_gui = function (self)
 		local gui_data = {}
 		local world_name = "start_weave_gamepad"
 		local renderer, world, viewport_name = self:_setup_gamepad_renderer(world_name, 1, GameSettingsDevelopment.default_environment)
+
 		gui_data.bottom = {
 			renderer = renderer,
 			world = world,
-			viewport_name = viewport_name
+			viewport_name = viewport_name,
 		}
 		self._gui_data = gui_data
 	end
@@ -283,7 +297,7 @@ end
 StartGameStateSettingsOverview._setup_gamepad_renderer = function (self, name, layer, shading_environment)
 	local world_flags = {
 		Application.DISABLE_SOUND,
-		Application.DISABLE_ESRAM
+		Application.DISABLE_ESRAM,
 	}
 	local world_name = name
 	local viewport_name = name
@@ -316,6 +330,7 @@ end
 StartGameStateSettingsOverview.disable_player_world = function (self)
 	if not self._player_world_disabled then
 		self._player_world_disabled = true
+
 		local viewport_name = "player_1"
 		local world = Managers.world:world("level_world")
 		local viewport = ScriptWorld.viewport(world, viewport_name)
@@ -327,6 +342,7 @@ end
 StartGameStateSettingsOverview.enable_player_world = function (self)
 	if self._player_world_disabled then
 		self._player_world_disabled = false
+
 		local viewport_name = "player_1"
 		local world = Managers.world:world("level_world")
 		local viewport = ScriptWorld.viewport(world, viewport_name)
@@ -354,6 +370,7 @@ end
 
 StartGameStateSettingsOverview._initial_windows_setups = function (self, params)
 	local active_windows = {}
+
 	self._active_windows = active_windows
 	self._window_params = params
 
@@ -404,7 +421,7 @@ StartGameStateSettingsOverview._change_window = function (self, window_index, wi
 	local window = window_class:new()
 	local ignore_alignment = new_window_settings.ignore_alignment
 	local parent_window_name = new_window_settings.parent_window_name
-	local window_offset = nil
+	local window_offset
 
 	if not ignore_alignment then
 		local window_default_settings = UISettings.game_start_windows
@@ -416,10 +433,11 @@ StartGameStateSettingsOverview._change_window = function (self, window_index, wi
 		local total_windows_width = max_active_windows * window_width
 		local start_width_offset = -(total_windows_width / 2 + window_width / 2) - (total_spacing / 2 + window_spacing)
 		local window_width_offset = start_width_offset + window_index * window_width + window_index * window_spacing
+
 		window_offset = {
 			window_width_offset,
 			0,
-			3
+			3,
 		}
 	end
 
@@ -442,6 +460,7 @@ StartGameStateSettingsOverview._set_new_save_data_table = function (self, table_
 		end
 
 		local table = mission_selection_save_data[table_name]
+
 		self._layout_save_settings = table
 
 		self:set_private_option_enabled(table.is_private)
@@ -545,24 +564,23 @@ StartGameStateSettingsOverview.set_layout = function (self, index)
 	local save_data_table_name = layout_setting.save_data_table
 	local save_data_table_map = self:get_save_data_table_map(self._mechanism_name) or self:get_quickplay_settings("adventure")
 
-	if save_data_table_map then
-		save_data_table_name = save_data_table_map[save_data_table_name] or save_data_table_name
-	end
+	save_data_table_name = save_data_table_map and save_data_table_map[save_data_table_name] or save_data_table_name
 
 	self:_set_new_save_data_table(save_data_table_name)
 
 	local close_on_exit = layout_setting.close_on_exit
 	local reset_on_exit = layout_setting.reset_on_exit
-	local windows = self._widgets_by_name.exit_button.content
+	local var_1_0 = self._widgets_by_name.exit_button.content
 
 	if reset_on_exit then
 		-- Nothing
 	end
 
-	windows.visible = close_on_exit
+	var_1_0.visible = close_on_exit
 	self._widgets_by_name.back_button.content.visible = reset_on_exit or not close_on_exit
 	self._close_on_exit = close_on_exit
 	self._reset_on_exit = reset_on_exit
+
 	local windows = layout_setting.windows
 	local max_active_windows = self._max_active_windows
 
@@ -598,6 +616,7 @@ StartGameStateSettingsOverview.set_layout = function (self, index)
 	end
 
 	self._selected_layout_name = layout_name
+
 	local input_focus_window = layout_setting.input_focus_window
 
 	self:set_window_input_focus(input_focus_window)
@@ -901,7 +920,7 @@ StartGameStateSettingsOverview._handle_input = function (self, dt, t)
 	elseif input_pressed or back_pressed or self:_is_button_pressed(back_button) then
 		self:play_sound("Play_hud_select")
 
-		local return_layout_name = nil
+		local return_layout_name
 		local window_params = self._window_params
 
 		if window_params then
@@ -937,32 +956,32 @@ StartGameStateSettingsOverview.play = function (self, t, vote_type, force_close_
 		local quick_game = false
 		local always_host = true
 		local strict_matchmaking = false
-		local deed_backend_id, event_data = nil
+		local deed_backend_id, event_data
 
 		self.parent:start_game(level_key, difficulty, is_private, quick_game, always_host, strict_matchmaking, t, matchmaking_type, deed_backend_id, event_data)
 	elseif vote_type == "adventure" then
 		local params = {
+			matchmaking_type = "standard",
 			mechanism = "adventure",
 			quick_game = true,
 			strict_matchmaking = false,
-			matchmaking_type = "standard",
 			difficulty = self._selected_difficulty_key,
 			private_game = is_offline,
 			always_host = is_offline,
-			request_type = vote_type
+			request_type = vote_type,
 		}
 
 		self.parent:start_game(params)
 	elseif vote_type == "weave_quick_play" then
 		local params = {
+			matchmaking_type = "standard",
 			mechanism = "weave",
 			quick_game = true,
 			strict_matchmaking = false,
-			matchmaking_type = "standard",
 			difficulty = self._selected_difficulty_key,
 			private_game = is_offline,
 			always_host = is_offline,
-			request_type = vote_type
+			request_type = vote_type,
 		}
 
 		self.parent:start_game(params)
@@ -973,8 +992,8 @@ StartGameStateSettingsOverview.play = function (self, t, vote_type, force_close_
 		local is_alone = num_members == 1
 		local always_host = is_private or self:is_always_host_option_enabled()
 		local params = {
-			mechanism = "adventure",
 			matchmaking_type = "custom",
+			mechanism = "adventure",
 			quick_game = false,
 			network_lobby = network_lobby,
 			num_members = num_members,
@@ -984,35 +1003,35 @@ StartGameStateSettingsOverview.play = function (self, t, vote_type, force_close_
 			private_game = is_private,
 			always_host = always_host,
 			strict_matchmaking = is_alone and not is_private and not always_host and self:is_strict_matchmaking_option_enabled(),
-			request_type = vote_type
+			request_type = vote_type,
 		}
 
 		self.parent:start_game(params)
 	elseif vote_type == "deed" then
 		local params = {
+			always_host = true,
 			is_private = true,
+			matchmaking_type = "deed",
 			mechanism = "adventure",
 			quick_game = false,
 			strict_matchmaking = false,
-			always_host = true,
-			matchmaking_type = "deed",
 			deed_backend_id = self:get_selected_heroic_deed_backend_id(),
-			request_type = vote_type
+			request_type = vote_type,
 		}
 
 		self.parent:start_game(params)
 	elseif vote_type == "twitch" then
 		local params = {
-			private_game = true,
-			strict_matchmaking = false,
 			always_host = true,
 			matchmaking_type = "custom",
 			mechanism = "adventure",
+			private_game = true,
 			quick_game = false,
+			strict_matchmaking = false,
 			twitch_enabled = true,
 			mission_id = self:get_selected_level_id(),
 			difficulty = self._selected_difficulty_key,
-			request_type = vote_type
+			request_type = vote_type,
 		}
 
 		self.parent:start_game(params)
@@ -1020,7 +1039,7 @@ StartGameStateSettingsOverview.play = function (self, t, vote_type, force_close_
 		local live_event_interface = Managers.backend:get_interface("live_events")
 		local game_mode_data = live_event_interface:get_weekly_events_game_mode_data()
 		local event_data = {
-			mutators = game_mode_data.mutators
+			mutators = game_mode_data.mutators,
 		}
 
 		if next(event_data) == nil then
@@ -1028,17 +1047,17 @@ StartGameStateSettingsOverview.play = function (self, t, vote_type, force_close_
 		end
 
 		local params = {
-			private_game = false,
-			strict_matchmaking = false,
 			always_host = false,
 			matchmaking_type = "event",
 			mechanism = "adventure",
+			private_game = false,
 			quick_game = false,
+			strict_matchmaking = false,
 			mission_id = game_mode_data.level_key,
 			difficulty = self._selected_difficulty_key,
 			event_data = event_data,
 			excluded_level_keys = game_mode_data.excluded_level_keys,
-			request_type = vote_type
+			request_type = vote_type,
 		}
 
 		self.parent:start_game(params)
@@ -1058,7 +1077,7 @@ StartGameStateSettingsOverview.play = function (self, t, vote_type, force_close_
 			objective_index = objective_index,
 			private_game = is_private,
 			always_host = is_offline,
-			request_type = vote_type
+			request_type = vote_type,
 		}
 
 		self.parent:start_game(params)
@@ -1071,7 +1090,9 @@ StartGameStateSettingsOverview.play = function (self, t, vote_type, force_close_
 		local backend_deus = Managers.backend:get_interface("deus")
 		local journey_cycle = backend_deus:get_journey_cycle()
 		local journey_name = self:get_selected_level_id()
+
 		journey_name = DeusJourneySettings[journey_name] and journey_name or AvailableJourneyOrder[1]
+
 		local dominant_god = journey_cycle.journey_data[journey_name].dominant_god
 		local params = {
 			matchmaking_type = "custom",
@@ -1083,7 +1104,7 @@ StartGameStateSettingsOverview.play = function (self, t, vote_type, force_close_
 			always_host = always_host,
 			strict_matchmaking = is_alone and not private_game and not always_host and self:is_strict_matchmaking_option_enabled(),
 			dominant_god = dominant_god,
-			request_type = vote_type
+			request_type = vote_type,
 		}
 
 		self.parent:start_game(params)
@@ -1091,33 +1112,35 @@ StartGameStateSettingsOverview.play = function (self, t, vote_type, force_close_
 		local backend_deus = Managers.backend:get_interface("deus")
 		local journey_cycle = backend_deus:get_journey_cycle()
 		local journey_name = self:get_selected_level_id()
+
 		journey_name = DeusJourneySettings[journey_name] and journey_name or AvailableJourneyOrder[1]
+
 		local dominant_god = journey_cycle.journey_data[journey_name].dominant_god
 		local params = {
-			private_game = true,
-			mechanism = "deus",
-			strict_matchmaking = false,
 			always_host = true,
 			matchmaking_type = "custom",
+			mechanism = "deus",
+			private_game = true,
 			quick_game = false,
+			strict_matchmaking = false,
 			twitch_enabled = true,
 			mission_id = journey_name,
 			difficulty = self._selected_difficulty_key,
 			dominant_god = dominant_god,
-			request_type = vote_type
+			request_type = vote_type,
 		}
 
 		self.parent:start_game(params)
 	elseif vote_type == "deus_quickplay" then
 		local params = {
+			matchmaking_type = "standard",
 			mechanism = "deus",
 			quick_game = true,
 			strict_matchmaking = false,
-			matchmaking_type = "standard",
 			difficulty = self._selected_difficulty_key,
 			private_game = is_offline,
 			always_host = is_offline,
-			request_type = vote_type
+			request_type = vote_type,
 		}
 
 		self.parent:start_game(params)
@@ -1204,10 +1227,11 @@ end
 StartGameStateSettingsOverview._start_transition_animation = function (self, key, animation_name)
 	local params = {
 		wwise_world = self._wwise_world,
-		render_settings = self._render_settings
+		render_settings = self._render_settings,
 	}
 	local widgets = {}
 	local anim_id = self.ui_animator:start_animation(animation_name, widgets, scenegraph_definition, params)
+
 	self._animations[key] = anim_id
 end
 
@@ -1377,7 +1401,7 @@ StartGameStateSettingsOverview.is_difficulty_approved = function (self, difficul
 	end
 
 	local difficulty_approved = true
-	local extra_requirement, dlc_requirement, below_power_level = nil
+	local extra_requirement, dlc_requirement, below_power_level
 	local human_players = Managers.player:human_players()
 	local players_below_difficulty = DifficultyManager.players_below_required_power_level(difficulty_key, human_players)
 
@@ -1399,6 +1423,7 @@ StartGameStateSettingsOverview.is_difficulty_approved = function (self, difficul
 		if #players_not_meeting_requirements > 0 then
 			local extra_requirement_name = difficulty_settings.extra_requirement_name
 			local requirement_data = ExtraDifficultyRequirements[extra_requirement_name]
+
 			extra_requirement = requirement_data.description_text
 			difficulty_approved = false
 		end
@@ -1508,7 +1533,7 @@ StartGameStateSettingsOverview.setup_backend_image_material = function (self, gu
 	local cb = callback(self, "_cb_on_backend_url_loaded", gui, reference_name, texture_name, material_name)
 
 	cdn:get_resource_urls({
-		texture_name
+		texture_name,
 	}, cb)
 
 	return material_name
@@ -1526,6 +1551,7 @@ StartGameStateSettingsOverview._cb_on_backend_url_loaded = function (self, gui, 
 	end
 
 	self._material_references_to_unload[reference_name] = true
+
 	local cb = callback(self, "_cb_on_backend_image_loaded", gui, reference_name, material_name)
 
 	Managers.url_loader:load_resource(reference_name, texture_url, cb, texture_name)
@@ -1547,8 +1573,11 @@ end
 
 StartGameStateSettingsOverview._create_material_instance = function (self, gui, new_material_name, template_material_name, reference_name)
 	local cloned_materials_by_reference = self._cloned_materials_by_reference
+
 	cloned_materials_by_reference[reference_name] = new_material_name
+
 	local gui_by_cloned_material_reference = self._gui_by_cloned_material_reference
+
 	gui_by_cloned_material_reference[reference_name] = gui
 
 	return Gui.clone_material_from_template(gui, new_material_name, template_material_name)

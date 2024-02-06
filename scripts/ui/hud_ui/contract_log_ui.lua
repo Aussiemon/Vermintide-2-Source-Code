@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/hud_ui/contract_log_ui.lua
+
 require("scripts/settings/quest_settings")
 
 local definitions = local_require("scripts/ui/hud_ui/contract_log_ui_definitions")
@@ -9,10 +11,11 @@ local default_color = {
 	170,
 	255,
 	255,
-	255
+	255,
 }
 local progress_color = Colors.get_color_table_with_alpha("sky_blue", 220)
 local complete_color = Colors.get_color_table_with_alpha("pale_green", 220)
+
 ContractLogUI = class(ContractLogUI)
 
 ContractLogUI.init = function (self, parent, ingame_ui_context)
@@ -23,15 +26,20 @@ ContractLogUI.init = function (self, parent, ingame_ui_context)
 	self.peer_id = ingame_ui_context.peer_id
 	self.player_manager = ingame_ui_context.player_manager
 	self.ui_animations = {}
+
 	local world = ingame_ui_context.world_manager:world("level_world")
+
 	self.wwise_world = Managers.world:wwise_world(world)
 	self.num_added_contracts = 0
 
 	self:_create_ui_elements()
 
 	local _, title_text_width = self:_get_text_size(self.title_widget.style.title_text, self.title_widget.content.title_text)
+
 	self.min_log_width = math.floor(title_text_width)
+
 	local quest_manager = Managers.state.quest
+
 	self.quest_manager = quest_manager
 
 	self:_align_widgets()
@@ -39,6 +47,7 @@ end
 
 ContractLogUI._create_ui_elements = function (self)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+
 	local widgets = {}
 	local unused_widgets = {}
 
@@ -65,9 +74,12 @@ ContractLogUI._align_widgets = function (self)
 
 	for index, widget in ipairs(self._used_widgets) do
 		local offset = widget.offset
+
 		offset[2] = -math.floor(start_position)
+
 		local text_width = widget.content.text_width
 		local total_height = widget.content.total_height
+
 		widget.style.texture_fade_bg.size[2] = total_height
 		start_position = start_position + total_height + spacing
 
@@ -83,6 +95,7 @@ end
 
 ContractLogUI.set_visible = function (self, visible)
 	self._is_visible = visible
+
 	local ui_renderer = self.ui_renderer
 
 	for _, widget in ipairs(self._widgets) do
@@ -178,7 +191,8 @@ ContractLogUI._update_contract_goal = function (self, entry_data)
 	local contract_progress = entry_data.contract_goal_start_progress
 	local current_session_progress = entry_data.contract_goal_session_progress
 	local task_text = ""
-	local add_unspecified_task_entry = nil
+	local add_unspecified_task_entry
+
 	widget_style.task_text.text_color = text_color
 
 	if task then
@@ -196,10 +210,14 @@ ContractLogUI._update_contract_goal = function (self, entry_data)
 		end
 
 		local make_dirty = task_progress ~= widget_content.task_progress
+
 		widget_content.task_progress = task_progress
 		widget_style.task_text.text_color = text_color
+
 		local text = Localize(QuestSettings.task_type_to_name_lookup[task.type]) .. ": " .. tostring(task_progress) .. "/" .. tostring(required)
+
 		task_text = task_text .. text
+
 		local task_current_session_progress = current_session_progress
 		local new_value = task_current_session_progress ~= task_session_progress
 		local progress_increased = task_progress ~= task_start_progress
@@ -236,7 +254,7 @@ end
 ContractLogUI._add_contract = function (self, contract_id)
 	local num_added_contracts = self.num_added_contracts or 0
 
-	if MAX_NUM_CONTRACT_ENTRIES <= num_added_contracts then
+	if num_added_contracts >= MAX_NUM_CONTRACT_ENTRIES then
 		return
 	end
 
@@ -245,6 +263,7 @@ ContractLogUI._add_contract = function (self, contract_id)
 	local widget = table.remove(self._unused_widgets, 1)
 	local widget_content = widget.content
 	local widget_style = widget.style
+
 	widget_style.task_text.text_color = default_color
 
 	UIRenderer.set_element_visible(self.ui_renderer, widget.element, true)
@@ -257,21 +276,25 @@ ContractLogUI._add_contract = function (self, contract_id)
 	local quest_reward = rewards.quest
 	local contract_color = quest_reward and QuestSettings.contract_ui_dlc_colors[quest_reward.quest_type] or Colors.get_table("white")
 	local icon_color = widget_style.texture_icon_bg.color
+
 	icon_color[2] = contract_color[2]
 	icon_color[3] = contract_color[3]
 	icon_color[4] = contract_color[4]
+
 	local contract_progress = self.quest_manager:get_contract_progress(contract_id)
-	local contract_session_progress = nil
+	local contract_session_progress
 	local task_text = ""
 
 	if task then
 		contract_session_progress = 0
+
 		local task_start_progress = contract_progress
 		local required = task.amount.required
 		local acquired = task.amount.acquired
 
 		if task_start_progress < required then
 			local text = Localize(QuestSettings.task_type_to_name_lookup[task.type]) .. ":  " .. tostring(task_start_progress) .. "/" .. tostring(required)
+
 			task_text = task_text .. text .. "\n"
 		end
 	end
@@ -295,6 +318,7 @@ ContractLogUI._add_contract = function (self, contract_id)
 	entry_data.contract_goal_start_progress = contract_progress
 	entry_data.contract_goal_session_progress = contract_session_progress
 	entry_data.contract_id = contract_id
+
 	local used_widgets = self._used_widgets
 
 	table.insert(used_widgets, #used_widgets + 1, widget)
@@ -314,7 +338,7 @@ ContractLogUI._remove_contract = function (self, contract_id)
 		return
 	end
 
-	local contract_data, index = nil
+	local contract_data, index
 	local log_entries = self._log_entries
 
 	for i = 1, #log_entries do
@@ -420,6 +444,7 @@ ContractLogUI._on_resolution_modified = function (self)
 	end
 
 	local _, title_text_width = self:_get_text_size(self.title_widget.style.title_text, self.title_widget.content.title_text)
+
 	self.min_log_width = math.floor(title_text_width)
 
 	self:_set_widget_dirty(self.title_widget)

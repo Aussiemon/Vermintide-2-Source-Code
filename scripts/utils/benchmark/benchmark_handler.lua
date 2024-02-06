@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/utils/benchmark/benchmark_handler.lua
+
 require("scripts/utils/benchmark/benchmark_settings")
 
 BenchmarkHandler = class(BenchmarkHandler)
@@ -148,7 +150,9 @@ BenchmarkHandler._setup_initial_values = function (self, t)
 
 	local local_player = Managers.player:local_player()
 	local player_unit = local_player.player_unit
+
 	self._local_player_unit = player_unit
+
 	local status_extension = ScriptUnit.extension(player_unit, "status_system")
 
 	status_extension:set_invisible(true, nil, "benchmark_handler")
@@ -185,7 +189,7 @@ end
 BenchmarkHandler.gather_performance_data = function (self, dt, t)
 	self._performance_data[#self._performance_data + 1] = {
 		dt,
-		t
+		t,
 	}
 end
 
@@ -267,7 +271,7 @@ BenchmarkHandler._handle_early_out = function (self, t)
 	end
 
 	local cutscene_system = Managers.state.entity:system("cutscene_system")
-	local setup = nil
+	local setup
 
 	if BenchmarkSettings.is_story_based then
 		if get_local_player_unit() then
@@ -336,7 +340,7 @@ BenchmarkHandler._disable_overview_camera = function (self)
 end
 
 BenchmarkHandler._update_overview = function (self, dt, t)
-	if self._overview_timer < t then
+	if t > self._overview_timer then
 		self:_disable_overview_camera()
 
 		self._overview = false
@@ -356,14 +360,15 @@ BenchmarkHandler._update_selected_bot = function (self, dt, t)
 		return
 	end
 
-	if self._overview_timer < t then
+	if t > self._overview_timer then
 		self:_set_overview_camera(t)
 
 		return
 	end
 
 	self._bot_selection_timer = BenchmarkSettings.bot_selection_timer
-	local potential_bot_index = nil
+
+	local potential_bot_index
 	local current_view = self._current_bot_view
 	local bots = Managers.player:bots()
 
@@ -410,6 +415,7 @@ BenchmarkHandler._update_bot_view = function (self, dt, t)
 		end
 
 		self._current_bot = bot_player.player_unit
+
 		local input_ext = ScriptUnit.has_extension(self._current_bot, "input_system")
 
 		input_ext:set_bot_in_attract_mode_focus(true)
@@ -430,7 +436,7 @@ local PLAYER_DISTANCE_SQR = {}
 BenchmarkHandler._update_main_path = function (self, dt, t, total_proximate_enemies)
 	self._time_since_last_teleport = self._time_since_last_teleport + dt
 
-	if BenchmarkSettings.destroy_close_enemies_timer < self._time_since_last_teleport then
+	if self._time_since_last_teleport > BenchmarkSettings.destroy_close_enemies_timer then
 		Managers.state.conflict:destroy_close_units(nil, nil, BenchmarkSettings.destroy_close_enemies_radius)
 
 		self._time_since_last_teleport = 0
@@ -440,7 +446,7 @@ BenchmarkHandler._update_main_path = function (self, dt, t, total_proximate_enem
 
 	local player_unit = self._local_player_unit
 	local min_dist_sqr = math.huge
-	local closest_ally = nil
+	local closest_ally
 	local player_pos = POSITION_LOOKUP[player_unit]
 	local hero_side = Managers.state.side:get_side_from_name("heroes")
 	local PLAYER_AND_BOT_UNITS = hero_side.PLAYER_AND_BOT_UNITS
@@ -449,6 +455,7 @@ BenchmarkHandler._update_main_path = function (self, dt, t, total_proximate_enem
 		if bot_unit ~= player_unit then
 			local bot_pos = POSITION_LOOKUP[bot_unit]
 			local dist_to_player = Vector3.distance_squared(bot_pos, player_pos)
+
 			PLAYER_DISTANCE_SQR[bot_unit] = dist_to_player
 
 			if dist_to_player < min_dist_sqr then
@@ -468,7 +475,7 @@ BenchmarkHandler._update_main_path = function (self, dt, t, total_proximate_enem
 
 			if blackboard.proximite_enemies == 0 then
 				local max = 0
-				local ally_in_need = nil
+				local ally_in_need
 
 				for _, bot_unit in ipairs(PLAYER_AND_BOT_UNITS) do
 					local blackboard = BLACKBOARDS[bot_unit]
@@ -585,6 +592,7 @@ BenchmarkHandler._get_teleporter_portals = function (self)
 		local portal_id = DynamicData.get(unit_data, "id")
 		local boxed_rot = QuaternionBox(Quaternion(Vector3.up(), math.degrees_to_radians(Math.random(1, 360))))
 		local boxed_pos = Vector3Box(pos)
+
 		portals[portal_id] = boxed_pos
 	end
 
@@ -625,8 +633,10 @@ BenchmarkHandler._update_input = function (self, dt, t)
 
 	if input_service:get("cycle_through_views") or self._trigger_cycle_view then
 		self._trigger_cycle_view = false
+
 		local bots = Managers.player:bots()
 		local num_bots = #bots
+
 		self._current_bot_view = 1 + (self._current_bot_view or 0) % num_bots
 
 		if self._current_bot_view > 0 then

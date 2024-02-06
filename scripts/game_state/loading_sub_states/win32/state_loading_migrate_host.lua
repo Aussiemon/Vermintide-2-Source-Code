@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/game_state/loading_sub_states/win32/state_loading_migrate_host.lua
+
 local function network_printf(format, ...)
 	if script_data.network_debug_connections then
 		printf("[StateLoadingMigrateHost] " .. format, ...)
@@ -6,6 +8,7 @@ end
 
 StateLoadingMigrateHost = class(StateLoadingMigrateHost)
 StateLoadingMigrateHost.NAME = "StateLoadingMigrateHost"
+
 local XB1_WAIT_TIME = 5
 
 StateLoadingMigrateHost.on_enter = function (self, params)
@@ -44,6 +47,7 @@ StateLoadingMigrateHost._init_network = function (self)
 
 		if host_migration_info.level_data then
 			local level_data = host_migration_info.level_data
+
 			host_migration_info.level_data = nil
 
 			level_transition_handler:set_next_level(level_data.level_key, level_data.environment_variation_id, level_data.level_seed, level_data.mechanism, level_data.game_mode_key, level_data.conflict_settings, level_data.locked_director_functions, level_data.difficulty, level_data.difficulty_tweak, level_data.extra_packages)
@@ -73,7 +77,7 @@ StateLoadingMigrateHost._init_network = function (self)
 
 		self.parent.parent.loading_context.join_lobby_data = {
 			name = host_to_migrate_to.session_id,
-			session_template_name = host_to_migrate_to.session_template_name
+			session_template_name = host_to_migrate_to.session_template_name,
 		}
 
 		self.parent:setup_join_lobby(XB1_WAIT_TIME)
@@ -82,15 +86,15 @@ StateLoadingMigrateHost._init_network = function (self)
 
 		local lobby_finder = self.parent:setup_lobby_finder(callback(self, "cb_lobby_joined"), nil, host_to_migrate_to)
 		local requirements = {
-			free_slots = 1,
 			distance_filter = "world",
+			free_slots = 1,
 			filters = {
 				host = {
 					comparison = "equal",
-					value = host_peer_id
-				}
+					value = host_peer_id,
+				},
 			},
-			near_filters = {}
+			near_filters = {},
 		}
 		local lobby_browser = lobby_finder:get_lobby_browser()
 

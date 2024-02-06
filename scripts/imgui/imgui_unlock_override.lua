@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/imgui/imgui_unlock_override.lua
+
 ImguiUnlockOverride = class(ImguiUnlockOverride)
 
 ImguiUnlockOverride.init = function (self)

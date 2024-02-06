@@ -1,8 +1,11 @@
+﻿-- chunkname: @scripts/entity_system/systems/buff/buff_area_system.lua
+
 require("scripts/unit_extensions/default_player_unit/buffs/buff_area_extension")
 
 BuffAreaSystem = class(BuffAreaSystem, ExtensionSystemBase)
+
 local extensions = {
-	"BuffAreaExtension"
+	"BuffAreaExtension",
 }
 
 BuffAreaSystem.init = function (self, entity_system_creation_context, system_name)
@@ -20,16 +23,17 @@ BuffAreaSystem.on_add_extension = function (self, world, unit, extension_name, .
 		local side = buff_area_extension.side
 		local name = buff_template.name
 		local inside = self._inside_by_side_and_template
+
 		inside[side] = inside[side] or {}
 		inside = inside[side]
 		inside[name] = inside[name] or {
 			by_broadphase = {},
-			by_position = {}
+			by_position = {},
 		}
 	else
 		self._inside_by_area[buff_area_extension] = {
 			by_broadphase = {},
-			by_position = {}
+			by_position = {},
 		}
 	end
 

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/utils/perlin_noise.lua
+
 PerlinNoise = class(PerlinNoise)
 
 PerlinNoise.init = function (self, world)
@@ -15,86 +17,87 @@ local colors = {
 	{
 		30,
 		30,
-		30
+		30,
 	},
 	{
 		45,
 		45,
-		45
+		45,
 	},
 	{
 		60,
 		60,
-		60
+		60,
 	},
 	{
 		85,
 		85,
-		85
+		85,
 	},
 	{
 		100,
 		100,
-		100
+		100,
 	},
 	{
 		115,
 		115,
-		115
+		115,
 	},
 	{
 		130,
 		130,
-		130
+		130,
 	},
 	{
 		145,
 		145,
-		145
+		145,
 	},
 	{
 		160,
 		160,
-		160
+		160,
 	},
 	{
 		175,
 		175,
-		175
+		175,
 	},
 	{
 		190,
 		190,
-		190
+		190,
 	},
 	{
 		205,
 		205,
-		205
+		205,
 	},
 	{
 		220,
 		220,
-		220
+		220,
 	},
 	{
 		235,
 		235,
-		235
+		235,
 	},
 	{
 		255,
 		255,
-		255
-	}
+		255,
+	},
 }
 
 PerlinNoise.draw_height = function (self, height, x, y, z, rad)
 	local drawer = Managers.state.debug:drawer({
 		mode = "lel",
-		name = "perlin noise"
+		name = "perlin noise",
 	})
 	local index = math.clamp(height * 100, -15, 15)
+
 	index = (index + 15) / 2
 	index = math.floor(index)
 
@@ -109,15 +112,13 @@ end
 
 PerlinNoise.filter_list_using_noise = function (self, list, height_threshold)
 	local a, b, c = Script.temp_count()
-	local lowest = 0
-	local highest = 0
+	local lowest, highest = 0, 0
 
 	for i = #list, 1, -1 do
 		local pos = list[i]:unbox()
-		local x = pos.x
-		local y = pos.y
+		local x, y = pos.x, pos.y
 		local height = self:get_height(x, y)
-		local radius = nil
+		local radius
 
 		if height < height_threshold then
 			list[i] = list[#list]
@@ -145,7 +146,8 @@ PerlinNoise.filter_list_using_noise = function (self, list, height_threshold)
 end
 
 PerlinNoise.normalize = function (self, gradient_x, gradient_y)
-	local s = nil
+	local s
+
 	s = math.sqrt(gradient_x * gradient_x + gradient_y * gradient_y)
 
 	assert(s ~= 0, "dividing by zero is not recommended")
@@ -161,8 +163,9 @@ PerlinNoise.setup = function (self)
 		self._permutations[i] = i
 		self._gradients[i] = {
 			false,
-			false
+			false,
 		}
+
 		local check = true
 
 		repeat
@@ -175,7 +178,7 @@ PerlinNoise.setup = function (self)
 		self._gradients[i][1], self._gradients[i][2] = self:normalize(self._gradients[i][1], self._gradients[i][2])
 	end
 
-	local k, j = nil
+	local k, j
 
 	for i = self._n, 1, -1 do
 		k = self._permutations[i]
@@ -188,7 +191,7 @@ PerlinNoise.setup = function (self)
 		self._permutations[self._n + i] = self._permutations[i]
 		self._gradients[self._n + i] = {
 			false,
-			false
+			false,
 		}
 
 		for j = 1, 2 do
@@ -198,8 +201,7 @@ PerlinNoise.setup = function (self)
 end
 
 PerlinNoise.get_height = function (self, x, y)
-	local point_x = x
-	local point_y = y
+	local point_x, point_y = x, y
 	local tx = x + 4096
 	local ty = y + 4096
 	local p0_x = math.floor(tx) % self._n
@@ -229,13 +231,12 @@ PerlinNoise.get_height = function (self, x, y)
 	local ry1 = ry0 - 1
 	local i = self._permutations[p0_x]
 	local j = self._permutations[p1_x]
-	local p00 = self._permutations[i + p0_y]
-	local p10 = self._permutations[j + p0_y]
-	local p01 = self._permutations[i + p1_y]
-	local p11 = self._permutations[j + p1_y]
+	local p00, p10 = self._permutations[i + p0_y], self._permutations[j + p0_y]
+	local p01, p11 = self._permutations[i + p1_y], self._permutations[j + p1_y]
 	local s_curve_x = self:getSCurve(rx0)
 	local s_curve_y = self:getSCurve(ry0)
-	local gradient, s, t, u, v = nil
+	local gradient, s, t, u, v
+
 	gradient = self._gradients[p00]
 	s = self:at2(gradient, rx0, ry0)
 	gradient = self._gradients[p10]
@@ -244,6 +245,7 @@ PerlinNoise.get_height = function (self, x, y)
 	u = self:at2(gradient, rx0, ry1)
 	gradient = self._gradients[p11]
 	v = self:at2(gradient, rx1, ry1)
+
 	local a = math.lerp(s, t, s_curve_x)
 	local b = math.lerp(u, v, s_curve_x)
 	local z = math.lerp(a, b, s_curve_y)
@@ -266,23 +268,25 @@ end
 PerlinNoise.simulate_points = function (self)
 	local drawer = Managers.state.debug:drawer({
 		mode = "lel",
-		name = "perlin noise"
+		name = "perlin noise",
 	})
 	local world_gui = self.world_gui
 	local m = Matrix4x4.identity()
 	local font_size = 0.1
 	local font = "arial"
 	local font_material = "materials/fonts/" .. font
-	local lowest = 0
-	local highest = 0
+	local lowest, highest = 0, 0
 
 	for i = self._lowest_point.x, self._highest_point.x do
 		local lal = i
+
 		i = i + Math.random(-1, 1) / 10
 
 		for j = self._lowest_point.y, self._highest_point.y do
 			local lalal = j
+
 			j = j + Math.random(-1, 1) / 10
+
 			local height = self:get_height(i, j)
 
 			if height < lowest then
@@ -293,6 +297,7 @@ PerlinNoise.simulate_points = function (self)
 
 			local index = math.clamp(height * 100, -15, 15)
 			local asd = (index + 15) / 2
+
 			index = asd
 			index = math.floor(index)
 
@@ -303,6 +308,7 @@ PerlinNoise.simulate_points = function (self)
 			print(index)
 
 			local color = colors[index]
+
 			j = lalal
 
 			drawer:sphere(Vector3(lal, lalal, 100), 0.5, Color(color[1], color[2], color[3]))

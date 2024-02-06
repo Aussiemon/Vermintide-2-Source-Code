@@ -1,8 +1,11 @@
+﻿-- chunkname: @scripts/unit_extensions/default_player_unit/inventory/gear_utils.lua
+
 GearUtils = {}
+
 local unit_node = Unit.node
 
 GearUtils.create_equipment = function (world, slot_name, item_data, unit_1p, unit_3p, is_bot, unit_template, extra_extension_data, ammo_percent, override_item_template, override_item_units, career_name)
-	local right_hand_weapon_unit_3p, right_hand_weapon_unit_1p, left_hand_weapon_unit_3p, left_hand_weapon_unit_1p, right_hand_ammo_unit_3p, right_hand_ammo_unit_1p, left_hand_ammo_unit_3p, left_hand_ammo_unit_1p = nil
+	local right_hand_weapon_unit_3p, right_hand_weapon_unit_1p, left_hand_weapon_unit_3p, left_hand_weapon_unit_1p, right_hand_ammo_unit_3p, right_hand_ammo_unit_1p, left_hand_ammo_unit_3p, left_hand_ammo_unit_1p
 	local item_template = override_item_template or BackendUtils.get_item_template(item_data)
 	local item_units = override_item_units or BackendUtils.get_item_units(item_data, nil, nil, career_name)
 
@@ -94,7 +97,7 @@ GearUtils.create_equipment = function (world, slot_name, item_data, unit_1p, uni
 		link_pickup_template_name = item_units.link_pickup_template_name,
 		destroy_indexed_projectiles = item_template.destroy_indexed_projectiles,
 		right_hand_unit_name = item_units.right_hand_unit,
-		left_hand_unit_name = item_units.left_hand_unit
+		left_hand_unit_name = item_units.left_hand_unit,
 	}
 
 	return slot_data
@@ -177,7 +180,7 @@ GearUtils.spawn_inventory_unit = function (world, hand, item_template, item_unit
 	local weapon_unit_name = item_units[hand .. "_hand_unit"]
 	local ammo_unit_name = item_units.ammo_unit
 	local ammo_unit_name_3p = item_units.ammo_unit_3p
-	local ammo_unit_3p = nil
+	local ammo_unit_3p
 
 	if ammo_data and ammo_data.ammo_hand == hand and ammo_unit_name then
 		local ammo_unit_attachment_node_linking = ammo_data.ammo_unit_attachment_node_linking
@@ -189,13 +192,13 @@ GearUtils.spawn_inventory_unit = function (world, hand, item_template, item_unit
 
 	local attachment_node_linking_3p = node_linking_settings.third_person.wielded
 	local unit_template_3p_name = item_data.third_person_extension_template or item_template.third_person_extension_template or "weapon_unit_3p"
-	local extension_init_data_3p = nil
+	local extension_init_data_3p
 
 	if item_template.uses_weapon_system_on_3p and not owner_unit_1p then
 		extension_init_data_3p = {
 			weapon_system = {
-				item_template = item_template
-			}
+				item_template = item_template,
+			},
 		}
 	else
 		unit_template_3p_name = "weapon_unit_3p"
@@ -223,7 +226,7 @@ GearUtils.spawn_inventory_unit = function (world, hand, item_template, item_unit
 				attach_nodes = attachment_node_linking_1p,
 				item_name = item_name,
 				item_template = item_template,
-				skin_name = item_units.skin
+				skin_name = item_units.skin,
 			},
 			ammo_system = {
 				owner_unit = owner_unit_3p,
@@ -234,19 +237,19 @@ GearUtils.spawn_inventory_unit = function (world, hand, item_template, item_unit
 				no_ammo_reload_event = item_template.no_ammo_reload_event,
 				last_reload_event = item_template.reload_end_event,
 				item_name = item_name,
-				slot_name = slot_name
+				slot_name = slot_name,
 			},
 			spread_system = {
 				owner_unit = owner_unit_3p,
-				item_name = item_name
+				item_name = item_name,
 			},
 			overcharge_system = {
 				ammo_percent = ammo_percent,
 				owner_unit = owner_unit_3p,
-				item_name = item_name
-			}
+				item_name = item_name,
+			},
 		}
-		local unit_template_1p, ammo_unit_1p = nil
+		local unit_template_1p, ammo_unit_1p
 		local ammo_hand = ammo_data and ammo_data.ammo_hand
 
 		if ammo_data then
@@ -264,15 +267,9 @@ GearUtils.spawn_inventory_unit = function (world, hand, item_template, item_unit
 				ammo_unit_1p = GearUtils._attach_ammo_unit(world, ammo_unit_name, ammo_unit_attachment_node_linking.first_person.wielded, owner_unit_1p)
 			end
 
-			if default_spread_template then
-				unit_template_1p = "weapon_unit_ammo_spread"
-			else
-				unit_template_1p = "weapon_unit_ammo"
-			end
-		elseif default_spread_template then
-			unit_template_1p = "weapon_unit_spread"
+			unit_template_1p = default_spread_template and "weapon_unit_ammo_spread" or "weapon_unit_ammo"
 		else
-			unit_template_1p = "weapon_unit"
+			unit_template_1p = default_spread_template and "weapon_unit_spread" or "weapon_unit"
 		end
 
 		if unit_template then
@@ -318,11 +315,12 @@ GearUtils.link_units = function (world, attachment_node_linking, link_table, sou
 		local target_node = attachment_nodes.target
 		local source_node_index = type(source_node) == "string" and Unit.node(source, source_node) or source_node
 		local target_node_index = type(target_node) == "string" and Unit.node(target, target_node) or target_node
+
 		link_table[#link_table + 1] = {
 			unit = target,
 			i = target_node_index,
 			parent = Unit.scene_graph_parent(target, target_node_index),
-			local_pose = Matrix4x4Box(Unit.local_pose(target, target_node_index))
+			local_pose = Matrix4x4Box(Unit.local_pose(target, target_node_index)),
 		}
 
 		World.link_unit(world, target, target_node_index, source, source_node_index)
@@ -493,6 +491,7 @@ GearUtils.hot_join_sync = function (peer_id, unit, equipment, additional_items)
 
 		for i = 1, #data.items do
 			local item = data.items[i]
+
 			temp_table[#temp_table + 1] = NetworkLookup.item_names[item.name]
 		end
 
@@ -512,7 +511,7 @@ GearUtils._setup_extension_init_data_type_impact = function (item_template, item
 		impact_effect_name = explosive_settings.impact_effect_name,
 		impact_sound_event = explosive_settings.impact_sound_event,
 		impact_area_damage_template = explosive_settings.impact_area_damage_template,
-		item_name = item_name
+		item_name = item_name,
 	}
 
 	return area_damage_system
@@ -533,7 +532,7 @@ GearUtils._setup_extension_init_data_type_dot = function (item_template, item_na
 		player_screen_effect_name = dot_settings.player_screen_effect_name,
 		area_damage_template = dot_settings.area_damage_template,
 		area_ai_random_death_template = dot_settings.area_ai_random_death_template,
-		item_name = item_name
+		item_name = item_name,
 	}
 
 	return area_damage_system
@@ -558,7 +557,7 @@ GearUtils.create_grenade_extension_init_data = function (owner_unit, item_name, 
 			network_angular_velocity = network_angular_velocity,
 			use_dynamic_collision = projectile_info.use_dynamic_collision,
 			collision_filter = projectile_info.collision_filter,
-			item_name = item_name
+			item_name = item_name,
 		},
 		projectile_system = {
 			owner_unit = owner_unit,
@@ -566,8 +565,8 @@ GearUtils.create_grenade_extension_init_data = function (owner_unit, item_name, 
 			item_name = item_name,
 			item_template_name = lookup_data.item_template_name,
 			action_name = lookup_data.action_name,
-			sub_action_name = lookup_data.sub_action_name
-		}
+			sub_action_name = lookup_data.sub_action_name,
+		},
 	}
 	local item_template = Weapons[lookup_data.item_template_name]
 
@@ -600,11 +599,11 @@ GearUtils.get_property_and_trait_buffs = function (backend_items, backend_id, bu
 			if BuffTemplates[buff_name] then
 				if only_no_wield_required and no_wield_required then
 					buffs_table[buffer][buff_name] = {
-						variable_value = property_value
+						variable_value = property_value,
 					}
 				elseif not only_no_wield_required and not no_wield_required then
 					buffs_table[buffer][buff_name] = {
-						variable_value = property_value
+						variable_value = property_value,
 					}
 				end
 			end
@@ -625,11 +624,11 @@ GearUtils.get_property_and_trait_buffs = function (backend_items, backend_id, bu
 			if BuffTemplates[buff_name] then
 				if only_no_wield_required and no_wield_required then
 					buffs_table[buffer][buff_name] = {
-						variable_value = 1
+						variable_value = 1,
 					}
 				elseif not only_no_wield_required and not no_wield_required then
 					buffs_table[buffer][buff_name] = {
-						variable_value = 1
+						variable_value = 1,
 					}
 				end
 			end
@@ -640,7 +639,7 @@ GearUtils.get_property_and_trait_buffs = function (backend_items, backend_id, bu
 end
 
 local function _get_item_particle_link_target(fx, equipment, unit_3p, unit_1p, is_first_person)
-	local link_target = nil
+	local link_target
 
 	if fx.link_target == "left_weapon" then
 		link_target = is_first_person and equipment.left_hand_wielded_unit or equipment.left_hand_wielded_unit_3p
@@ -668,7 +667,7 @@ GearUtils.create_attached_particles = function (world, particle_fx, equipment, u
 	local destroy_fx = {}
 	local fx_ids = {
 		stop_fx = stop_fx,
-		destroy_fx = destroy_fx
+		destroy_fx = destroy_fx,
 	}
 
 	for i = 1, #particle_fx do

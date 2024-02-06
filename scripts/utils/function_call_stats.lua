@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/utils/function_call_stats.lua
+
 local CALL_LIST = {}
 local COUNTER = 0
 local CALL_DATA = {}
@@ -7,9 +9,10 @@ local function on_function_call(event)
 
 	if res then
 		COUNTER = COUNTER + 1
+
 		local func_name = tostring(res.name)
 		local currentline = res.currentline
-		local name = nil
+		local name
 
 		if currentline ~= -1 then
 			name = res.short_src .. ":" .. tostring(currentline) .. " " .. func_name .. "()"
@@ -25,7 +28,7 @@ local function on_function_call(event)
 			CALL_LIST[name] = index
 			CALL_DATA[index] = {
 				num = 1,
-				position = name
+				position = name,
 			}
 		end
 
@@ -34,7 +37,7 @@ local function on_function_call(event)
 end
 
 local function compare(e1, e2)
-	return e2.num < e1.num
+	return e1.num > e2.num
 end
 
 function start_function_call_collection()

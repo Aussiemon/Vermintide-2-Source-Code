@@ -1,55 +1,16 @@
-local layout_template = [[
-    {
-        "pages": {
-          "featured": {
-            "rotation_timestamp": 1669633200,
-            "display_name": "menu_store_panel_title_featured",
-            "grid": [
-            ],
-            "layout": "featured",
-            "slideshow": [
-            ],
-            "sound_event_enter": "Play_hud_store_category_front"
-          },
-          "dlc": {
-            "content": [
-              "bless",
-              "bless_upgrade",
-              "woods",
-              "woods_upgrade",
-              "grass",
-              "cog",
-              "cog_upgrade",
-              "lake",
-              "lake_upgrade",
-              "scorpion",
-              "holly",
-              "bogenhafen",
-              "pre_order"
-            ],
-            "type": "dlc",
-            "display_name": "menu_store_panel_title_dlcs",
-            "layout": "dlc_list",
-            "sound_event_enter": "Play_hud_store_category_dlc"
-          }
-        }
-      }
-]]
-local save_file_template = [[
-    {
-        "featured": {
-        },
-        "discounts" : {
-        }
-    }
-]]
+﻿-- chunkname: @scripts/imgui/imgui_store_rotation.lua
+
+local layout_template = "    {\n        \"pages\": {\n          \"featured\": {\n            \"rotation_timestamp\": 1669633200,\n            \"display_name\": \"menu_store_panel_title_featured\",\n            \"grid\": [\n            ],\n            \"layout\": \"featured\",\n            \"slideshow\": [\n            ],\n            \"sound_event_enter\": \"Play_hud_store_category_front\"\n          },\n          \"dlc\": {\n            \"content\": [\n              \"bless\",\n              \"bless_upgrade\",\n              \"woods\",\n              \"woods_upgrade\",\n              \"grass\",\n              \"cog\",\n              \"cog_upgrade\",\n              \"lake\",\n              \"lake_upgrade\",\n              \"scorpion\",\n              \"holly\",\n              \"bogenhafen\",\n              \"pre_order\"\n            ],\n            \"type\": \"dlc\",\n            \"display_name\": \"menu_store_panel_title_dlcs\",\n            \"layout\": \"dlc_list\",\n            \"sound_event_enter\": \"Play_hud_store_category_dlc\"\n          }\n        }\n      }\n"
+local save_file_template = "    {\n        \"featured\": {\n        },\n        \"discounts\" : {\n        }\n    }\n"
 local APP_IDS = {
-	[1.0] = "795750",
-	[2.0] = "552500"
+	[1] = "795750",
+	[2] = "552500",
 }
 local SEARCH_TYPES = table.enum("slideshow", "featured", "discount")
 local relative_save_file_path = "/.shop/imgui_store_tool_save_file.json"
+
 ImguiStoreRotation = class(ImguiStoreRotation)
+
 local Imgui = Imgui
 local DO_RELOAD = true
 
@@ -104,7 +65,7 @@ ImguiStoreRotation.init = function (self)
 	self._tabs = {
 		"Feature Page Rotation",
 		"Store Discounts",
-		"Create Items and Bundles"
+		"Create Items and Bundles",
 	}
 	self._selected_tab = self._tabs[1]
 	self._save_successful_discount = ""
@@ -120,12 +81,10 @@ ImguiStoreRotation._cleanup_slideshow = function (self)
 		local is_dlc = self:_is_a_dlc(key)
 		local item = is_dlc and StoreDlcSettingsByName[key] or ItemMasterList[key]
 
-		if item then
-			if item.item_type ~= "bundle" and not is_dlc and not item.store_bundle_big_image then
-				-- Nothing
-			elseif item.item_type == "bundle" or is_dlc then
-				slideshow_items[#slideshow_items + 1] = key
-			end
+		if not item or item.item_type ~= "bundle" and not is_dlc and not item.store_bundle_big_image then
+			-- Nothing
+		elseif item.item_type == "bundle" or is_dlc then
+			slideshow_items[#slideshow_items + 1] = key
 		end
 	end
 
@@ -142,18 +101,18 @@ ImguiStoreRotation._filter_item_keys_list = function (self)
 		local is_dlc = self:_is_a_dlc(key)
 		local item = is_dlc and StoreDlcSettingsByName[key] or ItemMasterList[key]
 
-		if item then
-			if item.item_type ~= "deed" then
-				if item.item_type == "bundle" or is_dlc then
-					slideshow_items[#slideshow_items + 1] = key
-					featured_items[#featured_items + 1] = key
-				else
-					featured_items[#featured_items + 1] = key
-				end
+		if not item or item.item_type == "deed" then
+			-- Nothing
+		else
+			if item.item_type == "bundle" or is_dlc then
+				slideshow_items[#slideshow_items + 1] = key
+				featured_items[#featured_items + 1] = key
+			else
+				featured_items[#featured_items + 1] = key
+			end
 
-				if item.steam_itemdefid or item.current_prices then
-					discount_item_keys[#discount_item_keys + 1] = key
-				end
+			if item.steam_itemdefid or item.current_prices then
+				discount_item_keys[#discount_item_keys + 1] = key
 			end
 		end
 	end
@@ -168,10 +127,12 @@ ImguiStoreRotation._load_saved_data = function (self)
 
 	if script_data.source_dir then
 		local save_file_path = script_data.source_dir .. relative_save_file_path
+
 		self._save_file = io.open(save_file_path, "r")
 
 		if self._save_file then
 			local text_file = self._save_file:read("*all")
+
 			self._save_data = cjson.decode(text_file)
 
 			self._save_file:close()
@@ -193,6 +154,7 @@ ImguiStoreRotation._save_settings = function (self)
 	self._save_data.discounts.end_year = self._end_discount_year
 	self._save_data.discounts.end_month = self._end_discount_month
 	self._save_data.discounts.end_day = self._end_discount_day
+
 	local json_obj = cjson.encode(self._save_data)
 
 	if script_data.source_dir then
@@ -361,6 +323,7 @@ ImguiStoreRotation._do_edit_buttons = function (self)
 
 		if self._selected_item_index ~= -1 then
 			local selected_item_key = self._item_search_results[self._selected_item_index]
+
 			self._slideshow_items[#self._slideshow_items + 1] = self:_get_slideshow_item(selected_item_key)
 			self._is_selecting_slideshow_item = false
 			self._selected_item_index = -1
@@ -388,6 +351,7 @@ ImguiStoreRotation._do_edit_buttons = function (self)
 
 		if self._selected_item_index ~= -1 then
 			local selected_item_key = self._item_search_results[self._selected_item_index]
+
 			self._layout_items[#self._layout_items + 1] = self:_get_layout_item(selected_item_key)
 			self._is_selecting_item = false
 			self._selected_item_index = -1
@@ -530,7 +494,7 @@ end
 
 ImguiStoreRotation._get_slideshow_item = function (self, key)
 	local slideshow_item = {}
-	local product_type, header, texture, product_id, description, prio = nil
+	local product_type, header, texture, product_id, description, prio
 	local is_dlc = self:_is_a_dlc(key)
 	local product_type = is_dlc and "dlc" or "item"
 	local item = is_dlc and StoreDlcSettingsByName[key] or ItemMasterList[key]
@@ -587,7 +551,9 @@ ImguiStoreRotation._get_slideshow_item = function (self, key)
 	slideshow_item.texture = texture
 	slideshow_item.product_id = product_id
 	slideshow_item.description = description
+
 	local prio = self._prio + 100
+
 	slideshow_item.prio = prio
 	self._prio = prio
 
@@ -598,6 +564,7 @@ ImguiStoreRotation._draw_item_selection = function (self)
 	Imgui.text("Select Item")
 
 	local index, results, text = ImguiX.combo_search(self._selected_item_index, self._item_search_results, self._item_search_text, self._searcheable_item_keys[self._search_type])
+
 	self._selected_item_index = index
 	self._item_search_results = results
 	self._item_search_text = text
@@ -726,8 +693,9 @@ ImguiStoreRotation._calculate_timestamp = function (self, year, month, day, hour
 		hour = hour,
 		min = minutes,
 		sec = seconds,
-		isdst = is_daylight_saving_time
+		isdst = is_daylight_saving_time,
 	})
+
 	self._timestamp_error = false
 
 	return timestamp, true
@@ -761,7 +729,9 @@ ImguiStoreRotation._save_slideshow_items = function (self, slideshow_items)
 	table.clear(slideshow)
 
 	for _, value in pairs(slideshow_items) do
-		if not value.error_text then
+		if value.error_text then
+			-- Nothing
+		else
 			slideshow[#slideshow + 1] = value
 		end
 	end
@@ -821,6 +791,7 @@ ImguiStoreRotation._save_to_file = function (self)
 		local lua_layout_object = self._lua_layout
 		local json_object = cjson.encode(lua_layout_object)
 		local project_source = script_data.source_dir
+
 		self._fp = assert(io.open(project_source .. "/.shop/rotation/" .. self._new_rotation_file_name .. ".json", "w"))
 
 		self._fp:write(json_object)
@@ -850,13 +821,13 @@ ImguiStoreRotation._make_item_def = function (self, key, item, discount)
 	local original_price = SteamInventory.get_item_definition_property(steam_id, "price")
 
 	return {
-		item_quality = 2,
-		type = "item",
-		purchase_limit = 1,
-		tradable = false,
-		marketable = false,
-		store_hidden = false,
 		hidden = false,
+		item_quality = 2,
+		marketable = false,
+		purchase_limit = 1,
+		store_hidden = false,
+		tradable = false,
+		type = "item",
 		itemdefid = item.steam_itemdefid,
 		display_type = SteamInventory.get_item_definition_property(steam_id, "display_type"),
 		name = Localize(item.display_name),
@@ -864,7 +835,7 @@ ImguiStoreRotation._make_item_def = function (self, key, item, discount)
 		description = Localize(item.description),
 		name_color = SteamInventory.get_item_definition_property(steam_id, "name_color"),
 		background_color = SteamInventory.get_item_definition_property(steam_id, "background_color"),
-		icon_url = SteamInventory.get_item_definition_property(steam_id, "icon_url")
+		icon_url = SteamInventory.get_item_definition_property(steam_id, "icon_url"),
 	}
 end
 
@@ -873,13 +844,13 @@ ImguiStoreRotation._make_bundle_def = function (self, key, item, discount)
 	local original_price = SteamInventory.get_item_definition_property(steam_id, "price")
 
 	return {
-		item_quality = 2,
-		use_bundle_price = true,
-		type = "bundle",
-		tradable = false,
-		marketable = false,
 		hidden = false,
+		item_quality = 2,
+		marketable = false,
 		store_hidden = false,
+		tradable = false,
+		type = "bundle",
+		use_bundle_price = true,
 		itemdefid = item.steam_itemdefid,
 		display_type = SteamInventory.get_item_definition_property(steam_id, "display_type"),
 		bundle = SteamInventory.get_item_definition_property(steam_id, "bundle"),
@@ -888,7 +859,7 @@ ImguiStoreRotation._make_bundle_def = function (self, key, item, discount)
 		description = Localize(item and item.description or "not_assigned"),
 		name_color = SteamInventory.get_item_definition_property(steam_id, "name_color"),
 		background_color = SteamInventory.get_item_definition_property(steam_id, "background_color"),
-		icon_url = SteamInventory.get_item_definition_property(steam_id, "icon_url")
+		icon_url = SteamInventory.get_item_definition_property(steam_id, "icon_url"),
 	}
 end
 
@@ -975,6 +946,7 @@ ImguiStoreRotation._do_discount_rotation_file_name = function (self)
 	Imgui.dummy(2, 3)
 
 	self._new_discount_file_name = Imgui.input_text("Steam Discount File Name", self._new_discount_file_name)
+
 	local current_indx = Imgui.combo("Steam App Id", self._appid_idx, APP_IDS, 2)
 
 	if current_indx ~= self._appid_idx then
@@ -1028,15 +1000,16 @@ ImguiStoreRotation._do_discount_item_selection = function (self, is_valid_end_da
 				fassert(item, "Item %s is not in the ItemMasterList", selected_item_key)
 
 				local is_steam_item = _is_steam_item(item)
+
 				self._is_playfab_item = not is_steam_item
 
 				if is_steam_item then
 					local discount = self._discount_amount
 					local item = self:_generate_discounted_item(selected_item_key, item, discount)
-					local temp_item = {
-						key = selected_item_key,
-						item = item
-					}
+					local temp_item = {}
+
+					temp_item.key = selected_item_key
+					temp_item.item = item
 					self._discounted_items[#self._discounted_items + 1] = temp_item
 					self._has_error_discount = false
 					self._selected_item_index = -1
@@ -1111,7 +1084,7 @@ ImguiStoreRotation._get_from_to_discount_price = function (self, steam_itemdefid
 	local backend_store = self._backend_store
 	local preview_price_tamplate_string = "Discounted by %d percent from %.2f %s to %.2f %s"
 	local current_price, currency = backend_store:get_steam_item_price(steam_itemdefid)
-	local discounted_price = current_price - math.floor(current_price * self._discount_amount / 100)
+	local discounted_price = current_price - math.floor(current_price * (self._discount_amount / 100))
 	local preview_string = string.format(preview_price_tamplate_string, self._discount_amount, current_price * 0.01, currency, discounted_price * 0.01, currency)
 
 	return preview_string
@@ -1149,6 +1122,7 @@ ImguiStoreRotation._get_rotation_items = function (self)
 
 	for i = 1, #self._discounted_items do
 		local temp_item = self._discounted_items[i]
+
 		items[#items + 1] = temp_item.item
 	end
 
@@ -1160,10 +1134,13 @@ ImguiStoreRotation._save_discounts_to_file = function (self)
 		local items = self:_get_rotation_items()
 		local json_object = cjson.encode({
 			appid = self._appid,
-			items = items
+			items = items,
 		})
+
 		json_object = json_object:gsub("\\/", "/")
+
 		local project_source = script_data.source_dir
+
 		self._fp = assert(io.open(project_source .. "/.shop/rotation/" .. self._new_discount_file_name .. ".json", "w"))
 
 		self._fp:write(json_object)

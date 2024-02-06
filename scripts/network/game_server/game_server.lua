@@ -1,10 +1,12 @@
+﻿-- chunkname: @scripts/network/game_server/game_server.lua
+
 require("scripts/network/game_server/game_server_aux")
 require("scripts/network/lobby_members")
 
 GameServer = class(GameServer)
 
 local function dprintf(string, ...)
-	local s = string:format(...)
+	local s = string.format(string, ...)
 
 	printf("[GameServer]: %s", s)
 end
@@ -14,6 +16,7 @@ GameServer.init = function (self, network_options, server_name)
 
 	local config_file_name = network_options.config_file_name
 	local project_hash = network_options.project_hash
+
 	self._network_hash = GameServerAux.create_network_hash(config_file_name, project_hash)
 
 	assert(network_options.max_members, "Has to pass max_members to GameServer")
@@ -50,6 +53,7 @@ GameServer.update = function (self, dt, t)
 
 		if new_state == "connected" then
 			local data_table = self._data_table
+
 			data_table.network_hash = self._network_hash
 
 			for key, value in pairs(data_table) do

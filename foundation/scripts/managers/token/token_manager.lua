@@ -1,3 +1,5 @@
+﻿-- chunkname: @foundation/scripts/managers/token/token_manager.lua
+
 TokenManager = class(TokenManager)
 
 TokenManager.init = function (self)
@@ -8,7 +10,7 @@ TokenManager.register_token = function (self, token, callback, timeout)
 	self._tokens[#self._tokens + 1] = {
 		token = token,
 		callback = callback,
-		timeout = timeout or math.huge
+		timeout = timeout or math.huge,
 	}
 end
 
@@ -18,7 +20,7 @@ TokenManager.update = function (self, dt, t)
 
 		token:update()
 
-		if token:done() or entry.timeout <= t then
+		if token:done() or t >= entry.timeout then
 			local callback = entry.callback
 
 			if callback then

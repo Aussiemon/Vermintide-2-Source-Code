@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/weapons/actions/action_inspect.lua
+
 ActionInspect = class(ActionInspect, ActionBase)
 
 ActionInspect.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
@@ -21,6 +23,7 @@ ActionInspect.client_owner_start_action = function (self, new_action, t)
 
 	self.current_action = new_action
 	self.action_time_started = t
+
 	local spread_template_override = new_action.spread_template_override
 
 	if spread_template_override then

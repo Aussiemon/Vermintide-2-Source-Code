@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/mutators/mutator_life.lua
+
 return {
 	description = "weaves_life_mutator_desc",
 	display_name = "weaves_life_mutator_name",
@@ -11,7 +13,7 @@ return {
 
 		data.spawn_queue[#data.spawn_queue + 1] = {
 			position = positionBox,
-			rotation = rotationBox
+			rotation = rotationBox,
 		}
 	end,
 	spawn_bush = function (context, data, position, rotation)
@@ -38,11 +40,11 @@ return {
 
 			if not data.boss_drop_timers[boss_id] then
 				data.boss_drop_timers[boss_id] = {
-					timer = data.boss_drop_cooldown
+					timer = data.boss_drop_cooldown,
 				}
 			end
 
-			if data.boss_drop_cooldown <= data.boss_drop_timers[boss_id].timer then
+			if data.boss_drop_timers[boss_id].timer >= data.boss_drop_cooldown then
 				local position = Unit.local_position(hit_unit, 0)
 				local rotation = Unit.local_rotation(hit_unit, 0)
 
@@ -63,6 +65,7 @@ return {
 		local difficulty = Managers.state.difficulty:get_difficulty()
 		local weave_manager = Managers.weave
 		local wind_strength = weave_manager:get_wind_strength()
+
 		data.nav_world = Managers.state.entity:system("ai_system"):nav_world()
 		data.player_units = {}
 		data.boss_drop_timers = {}
@@ -72,23 +75,23 @@ return {
 		data.spawn_queue = {}
 		data.extension_init_data = {
 			area_damage_system = {
-				area_damage_template = "mutator_life_poison",
-				radius = 1,
-				nav_tag_volume_layer = "fire_grenade",
-				invisible_unit = false,
-				player_screen_effect_name = "fx/screenspace_poison_globe_impact",
-				create_nav_tag_volume = true,
-				damage_source = "dot_debuff",
 				aoe_dot_damage_interval = 0.25,
+				area_damage_template = "mutator_life_poison",
+				create_nav_tag_volume = true,
 				damage_players = true,
+				damage_source = "dot_debuff",
+				invisible_unit = false,
+				nav_tag_volume_layer = "fire_grenade",
+				player_screen_effect_name = "fx/screenspace_poison_globe_impact",
+				radius = 1,
 				aoe_dot_damage = wind_settings.thorns_damage[difficulty][wind_strength],
 				aoe_init_damage = wind_settings.thorns_damage[difficulty][wind_strength],
-				life_time = wind_settings.thorns_life_time[difficulty][wind_strength]
+				life_time = wind_settings.thorns_life_time[difficulty][wind_strength],
 			},
 			props_system = {
 				despawn_animation_time = 2,
-				spawn_animation_time = 4
-			}
+				spawn_animation_time = 4,
+			},
 		}
 	end,
 	server_update_function = function (context, data, dt, t)
@@ -108,5 +111,5 @@ return {
 
 			data.spawn_queue[num_spawns_queued] = nil
 		end
-	end
+	end,
 }

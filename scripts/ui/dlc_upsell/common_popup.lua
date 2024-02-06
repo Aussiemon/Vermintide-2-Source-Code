@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/dlc_upsell/common_popup.lua
+
 CommonPopup = class(CommonPopup)
 
 CommonPopup.init = function (self, ui_context, dlc_name, common_settings)
@@ -8,7 +10,7 @@ CommonPopup.init = function (self, ui_context, dlc_name, common_settings)
 	self._wwise_world = ui_context.wwise_world
 	self._render_settings = {
 		alpha_multiplier = 1,
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 	self._dlc_name = dlc_name
 	self._common_settings = common_settings
@@ -33,8 +35,11 @@ end
 
 CommonPopup.create_ui_elements = function (self)
 	local settings = self._common_settings
+
 	self._ui_scenegraph = UISceneGraph.init_scenegraph(settings.definitions.scenegraph_definition)
-	local widgets_by_name = nil
+
+	local widgets_by_name
+
 	self._widgets, widgets_by_name = UIUtils.create_widgets(settings.definitions.widget_definitions)
 	self._widgets_by_name = widgets_by_name
 

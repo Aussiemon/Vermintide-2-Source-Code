@@ -1,7 +1,10 @@
+﻿-- chunkname: @scripts/entity_system/systems/ai/ai_inventory_item_system.lua
+
 local RPCS = {}
 local extensions = {
-	"AIInventoryItemExtension"
+	"AIInventoryItemExtension",
 }
+
 AIInventoryItemSystem = class(AIInventoryItemSystem, ExtensionSystemBase)
 
 AIInventoryItemSystem.init = function (self, context, system_name)
@@ -13,7 +16,9 @@ AIInventoryItemSystem.init = function (self, context, system_name)
 	self.is_server = context.is_server
 	self.world = context.world
 	self.unit_storage = context.unit_storage
+
 	local network_event_delegate = context.network_event_delegate
+
 	self.network_event_delegate = network_event_delegate
 
 	network_event_delegate:register(self, unpack(RPCS))

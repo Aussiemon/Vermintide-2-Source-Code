@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_globadier_suicide_stagger_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTGlobadierSuicideStaggerAction = class(BTGlobadierSuicideStaggerAction, BTNode)

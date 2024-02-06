@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/unit_flow_override_system/unit_flow_override_system.lua
+
 require("scripts/entity_system/systems/unit_flow_override_system/unit_flow_event_override_settings")
 
 UnitFlowOverrideSystem = class(UnitFlowOverrideSystem, ExtensionSystemBase)
@@ -18,7 +20,7 @@ if not UNIT_FLOW_EVENT_OVERRIDDEN then
 end
 
 local extensions = {
-	"UnitFlowOverrideExtension"
+	"UnitFlowOverrideExtension",
 }
 
 UnitFlowOverrideSystem.init = function (self, entity_system_creation_context, system_name)
@@ -34,7 +36,7 @@ end
 UnitFlowOverrideSystem.add_ext_functions = {
 	UnitFlowOverrideExtension = function (self, extension)
 		extension.handle_flow_event = callback(self, "handle_flow_event")
-	end
+	end,
 }
 
 UnitFlowOverrideSystem.on_add_extension = function (self, world, unit, extension_name)
@@ -52,7 +54,9 @@ end
 
 UnitFlowOverrideSystem.handle_flow_event = function (self, unit, event_name, params)
 	local unit_data = self._unit_event_data[unit]
+
 	unit_data[event_name] = unit_data[event_name] or {}
+
 	local unit_event_data = unit_data[event_name]
 	local override = UnitFlowEventOverrideSettings[event_name]
 
@@ -72,6 +76,7 @@ end
 UnitFlowOverrideSystem._add_dynamic_event_data = function (self, unit, event_name, event_data)
 	local dynamic_events = self._dynamic_events
 	local unit_dynamic_events = dynamic_events[unit] or {}
+
 	unit_dynamic_events[event_name] = event_data
 	dynamic_events[unit] = unit_dynamic_events
 end

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/hud_ui/buff_ui.lua
+
 local definitions = local_require("scripts/ui/hud_ui/buff_ui_definitions")
 local scenegraph_definition = definitions.scenegraph_definition
 local MAX_BUFF_ROWS = definitions.MAX_BUFF_ROWS
@@ -11,10 +13,8 @@ local function BUFF_IS_INFINITE(buff)
 end
 
 local function BUFF_COMPARATOR_FUNC(a, b)
-	local a_content = a.content
-	local b_content = b.content
-	local a_buff = a_content.buff
-	local b_buff = b_content.buff
+	local a_content, b_content = a.content, b.content
+	local a_buff, b_buff = a_content.buff, b_content.buff
 
 	if BUFF_IS_INFINITE(a_buff) ~= BUFF_IS_INFINITE(b_buff) then
 		return BUFF_IS_INFINITE(b_buff)
@@ -35,7 +35,7 @@ BuffUI.init = function (self, parent, ingame_ui_context)
 	self._is_spectator = false
 	self._spectated_player_unit = nil
 	self._render_settings = {
-		alpha_multiplier = 1
+		alpha_multiplier = 1,
 	}
 
 	self:_create_ui_elements()
@@ -44,6 +44,7 @@ end
 
 BuffUI._create_ui_elements = function (self)
 	self._ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+
 	local buff_widgets = {}
 
 	for i = 1, MAX_NUMBER_OF_BUFFS do
@@ -69,7 +70,9 @@ BuffUI.on_spectator_target_changed = function (self, spectated_player_unit)
 	self:set_visible(true)
 
 	self._dirty = true
+
 	local career_extension = ScriptUnit.extension(spectated_player_unit, "career_system")
+
 	self._current_career_index = career_extension:career_index()
 end
 
@@ -79,6 +82,7 @@ BuffUI._sync_buffs = function (self)
 
 	for i = 1, #active_buff_widgets do
 		local widget_content = active_buff_widgets[i].content
+
 		widget_content.stack_count = 0
 	end
 
@@ -131,6 +135,7 @@ BuffUI._sync_buffs = function (self)
 					widget_content.progress = 0
 				else
 					local end_time = BUFF_END_TIME(buff)
+
 					widget_content.progress = 1 - math.clamp((end_time - t) / duration, 0, 1)
 				end
 
@@ -149,6 +154,7 @@ BuffUI._sync_buffs = function (self)
 				local widget_offset = widget.offset
 				local x = buff_index % MAX_BUFF_COLUMNS
 				local y = math.floor(buff_index / MAX_BUFF_COLUMNS)
+
 				widget_offset[1] = horizontal_spacing * x
 				widget_offset[2] = vertical_spacing * y
 				widget.element.dirty = true
@@ -162,13 +168,13 @@ local COLOR_BUFF = {
 	255,
 	48,
 	255,
-	0
+	0,
 }
 local COLOR_DEBUFF = {
 	255,
 	255,
 	30,
-	0
+	0,
 }
 
 BuffUI._add_buff = function (self, buff, icon)
@@ -183,7 +189,9 @@ BuffUI._add_buff = function (self, buff, icon)
 	if widget then
 		local widget_content = widget.content
 		local stack_count = widget_content.stack_count + 1
+
 		widget_content.stack_count = stack_count
+
 		local current_end_time = BUFF_END_TIME(widget_content.buff)
 
 		if end_time < current_end_time then
@@ -198,12 +206,13 @@ BuffUI._add_buff = function (self, buff, icon)
 	local active_buff_widgets = self._active_buff_widgets
 	local num_active_buffs = #active_buff_widgets
 
-	if MAX_NUMBER_OF_BUFFS <= num_active_buffs then
+	if num_active_buffs >= MAX_NUMBER_OF_BUFFS then
 		return false
 	end
 
 	local widget = table.remove(self._unused_buff_widgets)
 	local widget_content = widget.content
+
 	widget_content.texture_icon = icon
 	widget_content.is_cooldown = is_cooldown
 	widget_content.buff = buff
@@ -230,6 +239,7 @@ end
 BuffUI._remove_buff = function (self, index)
 	local widget = table.remove(self._active_buff_widgets, index)
 	local unused_buff_widgets = self._unused_buff_widgets
+
 	unused_buff_widgets[#unused_buff_widgets + 1] = widget
 	self._buff_name_to_widget[widget.content.name] = nil
 
@@ -243,6 +253,7 @@ end
 
 BuffUI.set_visible = function (self, visible)
 	self._is_visible = visible
+
 	local ui_renderer = self._ui_renderer
 	local active_buff_widgets = self._active_buff_widgets
 
@@ -256,10 +267,10 @@ BuffUI.set_visible = function (self, visible)
 end
 
 local customizer_data = {
-	root_scenegraph_id = "pivot",
+	drag_scenegraph_id = "pivot_dragger",
 	label = "Buff bar",
 	registry_key = "buff_ui",
-	drag_scenegraph_id = "pivot_dragger"
+	root_scenegraph_id = "pivot",
 }
 
 BuffUI.update = function (self, dt, t)

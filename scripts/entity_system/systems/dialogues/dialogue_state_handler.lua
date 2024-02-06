@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/entity_system/systems/dialogues/dialogue_state_handler.lua
+
 local MAX_DIALOGUE_CHECKS_PER_FRAME = 10
+
 DialogueStateHandler = class(DialogueStateHandler)
 DialogueStateHandler.debug = true
 
@@ -19,7 +22,7 @@ DialogueStateHandler.add_playing_dialogue = function (self, identifier, event_id
 		identifier = identifier,
 		event_id = event_id,
 		start_time = t,
-		expected_end = t + dialogue_duration
+		expected_end = t + dialogue_duration,
 	}
 end
 
@@ -39,7 +42,7 @@ DialogueStateHandler.update = function (self, t)
 	while true do
 		local dialogue_data = self._playing_dialogues[self._current_index]
 
-		if dialogue_data.expected_end < t then
+		if t > dialogue_data.expected_end then
 			Level.set_flow_variable(level, "dialogue_identifier", dialogue_data.identifier)
 			Level.trigger_event(level, "dialogue_ended")
 
@@ -51,7 +54,7 @@ DialogueStateHandler.update = function (self, t)
 		self._current_index = 1 + self._current_index % #self._playing_dialogues
 		num_checks = num_checks + 1
 
-		if self._current_index == start_index or MAX_DIALOGUE_CHECKS_PER_FRAME <= num_checks then
+		if self._current_index == start_index or num_checks >= MAX_DIALOGUE_CHECKS_PER_FRAME then
 			break
 		end
 	end

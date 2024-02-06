@@ -1,10 +1,13 @@
+﻿-- chunkname: @scripts/entity_system/systems/ai/ai_group_system.lua
+
 require("scripts/entity_system/systems/ai/ai_group_templates/ai_group_templates")
 require("scripts/entity_system/systems/ai/ai_group_templates/ai_group_templates_patrol")
 
 AIGroupSystem = class(AIGroupSystem, ExtensionSystemBase)
+
 local AIGroupTemplates = AIGroupTemplates
 local extensions = {
-	"AIGroupMember"
+	"AIGroupMember",
 }
 
 AIGroupSystem.init = function (self, context, system_name)
@@ -32,6 +35,7 @@ end
 function boxify_table_pos_array(array)
 	for i = 1, #array do
 		local p = array[i]
+
 		array[i] = Vector3Box(p[1], p[2], p[3])
 	end
 end
@@ -74,7 +78,7 @@ AIGroupSystem.add_ready_splines = function (self, waypoint_list, spline_type)
 			local spline_data = {
 				start_position = start_position_boxed,
 				start_direction = Vector3Box(start_direction),
-				spline_points = spline_points
+				spline_points = spline_points,
 			}
 
 			self:_add_spline(data.id, spline_data, spline_type)
@@ -115,8 +119,8 @@ AIGroupSystem.init_extension = function (self, unit, extension, extension_init_d
 	if group == nil then
 		group = {
 			members_n = 0,
-			start_forward = true,
 			num_spawned_members = 0,
+			start_forward = true,
 			id = id,
 			members = {},
 			size = extension_init_data.size,
@@ -130,13 +134,15 @@ AIGroupSystem.init_extension = function (self, unit, extension, extension_init_d
 			side_id = extension_init_data.side_id,
 			side = extension_init_data.side,
 			commanding_player = extension_init_data.commanding_player,
-			group_data = extension_init_data.group_data
+			group_data = extension_init_data.group_data,
 		}
+
 		local spline_name = group.spline_name
 		local spline = self._patrol_splines[spline_name] or self._roaming_splines[spline_name] or self._event_splines[spline_name]
 
 		if spline then
 			local spline_points = spline.spline_points
+
 			group.spline_points = spline_points
 			group.cached_splines = self._cached_splines[spline_name]
 		end
@@ -146,6 +152,7 @@ AIGroupSystem.init_extension = function (self, unit, extension, extension_init_d
 
 		self.groups[id] = group
 		self.groups_to_initialize[id] = group
+
 		local setup_group = AIGroupTemplates[template].setup_group
 
 		if setup_group then
@@ -160,6 +167,7 @@ AIGroupSystem.init_extension = function (self, unit, extension, extension_init_d
 
 	if breed and formation then
 		local group_position = extension_init_data.group_position
+
 		extension.group_row = group_position.row
 		extension.group_column = group_position.column
 	end
@@ -170,9 +178,11 @@ AIGroupSystem.init_extension = function (self, unit, extension, extension_init_d
 	extension.group = group
 	extension.template = template
 	extension.id = id
+
 	local template_data = AIGroupTemplates[template]
 	local in_patrol = template_data.in_patrol
 	local use_patrol_perception = template_data.use_patrol_perception
+
 	extension.in_patrol = in_patrol
 	extension.use_patrol_perception = extension_init_data.group_type == "spline_patrol"
 
@@ -232,6 +242,7 @@ AIGroupSystem.unfreeze = function (self, unit, extension_name, data)
 
 	self.frozen_unit_extension_data[unit] = nil
 	self.unit_extension_data[unit] = extension
+
 	local extension_init_data = data[8]
 
 	if extension_init_data and extension_init_data.id then
@@ -247,6 +258,7 @@ AIGroupSystem._cleanup_extension = function (self, unit, extension_name)
 	end
 
 	self.unit_extension_data[unit] = nil
+
 	local id = extension.id
 
 	if not id then
@@ -299,6 +311,7 @@ AIGroupSystem.set_level = function (self, level)
 	self._patrol_splines = {}
 	self._roaming_splines = {}
 	self._event_splines = {}
+
 	local world = self._world
 
 	for i = 1, MAX_PATROL_SPLINES do
@@ -314,8 +327,9 @@ AIGroupSystem.set_level = function (self, level)
 			local start_direction = Vector3.normalize(spline_points[3] - spline_points[1])
 			local data = {
 				start_position = Vector3Box(start_position),
-				start_direction = Vector3Box(start_direction)
+				start_direction = Vector3Box(start_direction),
 			}
+
 			self._patrol_splines[spline_name] = data
 			self._spline_lookup[spline_name] = data
 		until true
@@ -334,8 +348,9 @@ AIGroupSystem.set_level = function (self, level)
 			local start_direction = Vector3.normalize(spline_points[3] - spline_points[1])
 			local data = {
 				start_position = Vector3Box(start_position),
-				start_direction = Vector3Box(start_direction)
+				start_direction = Vector3Box(start_direction),
 			}
+
 			self._roaming_splines[spline_name] = data
 			self._spline_lookup[spline_name] = data
 		until true
@@ -354,8 +369,9 @@ AIGroupSystem.set_level = function (self, level)
 			local start_direction = Vector3.normalize(spline_points[3] - spline_points[1])
 			local data = {
 				start_position = Vector3Box(start_position),
-				start_direction = Vector3Box(start_direction)
+				start_direction = Vector3Box(start_direction),
 			}
+
 			self._event_splines[spline_name] = data
 			self._spline_lookup[spline_name] = data
 		until true
@@ -366,9 +382,9 @@ local MAX_RANDOM_DISTANCE_MODIFIER = 25
 local MAX_DISTANCE_ROAMING_SPLINE = 25
 
 AIGroupSystem.get_best_spline = function (self, position, spline_type)
-	local best_spline, best_spline_data = nil
+	local best_spline, best_spline_data
 	local best_distance = math.huge
-	local splines, max_distance = nil
+	local splines, max_distance
 
 	if spline_type == "patrol" then
 		splines = self._patrol_splines
@@ -425,7 +441,7 @@ AIGroupSystem.spline = function (self, spline_name)
 end
 
 AIGroupSystem.level_has_splines = function (self, spline_type)
-	local splines = nil
+	local splines
 
 	if spline_type == "patrol" then
 		splines = self._patrol_splines
@@ -444,7 +460,7 @@ AIGroupSystem.level_has_splines = function (self, spline_type)
 end
 
 AIGroupSystem.get_available_spline_type = function (self)
-	local splines = nil
+	local splines
 
 	if self._patrol_splines then
 		splines = self._patrol_splines
@@ -468,6 +484,7 @@ local position_lookup = POSITION_LOOKUP
 AIGroupSystem.check_recycler_despawn = function (self, player_positions, player_zones, use_player_zones)
 	local groups = self.groups_to_update
 	local group_id, group = next(groups, self._last_recycler_group_id)
+
 	self._last_recycler_group_id = group_id
 
 	if not group_id or group.group_type ~= "roaming_patrol" or group.patrol_in_combat then
@@ -507,7 +524,7 @@ AIGroupSystem.check_recycler_despawn = function (self, player_positions, player_
 
 			local dist = Vector3.length(to_dir)
 
-			if dist < wakeup_distance and math_abs(h) < wakeup_distance_z then
+			if dist < wakeup_distance and wakeup_distance_z > math_abs(h) then
 				local zone = player_zones[j]
 
 				if use_player_zones and zone then
@@ -549,7 +566,7 @@ end
 
 local debug_drawer_info = {
 	mode = "retained",
-	name = "AIGroupTemplates_retained"
+	name = "AIGroupTemplates_retained",
 }
 
 AIGroupSystem.update = function (self, context, t)
@@ -575,6 +592,10 @@ AIGroupSystem.update = function (self, context, t)
 			else
 				self.groups_to_initialize[group.id] = nil
 			end
+		end
+
+		if false then
+			-- Nothing
 		end
 	end
 
@@ -624,7 +645,7 @@ AIGroupSystem.update = function (self, context, t)
 					start_position = start_position_boxed,
 					start_direction = Vector3Box(start_direction),
 					spline_points = spline_points,
-					failed = spline.failed
+					failed = spline.failed,
 				}
 
 				self:_add_spline(spline_name, spline_data, spline_type)
@@ -803,26 +824,27 @@ AIGroupSystem.create_formation_data = function (self, position, formation, splin
 	local formation_length = (num_rows - 1) * anchor_offset_x
 	local group_size = 0
 	local spline = self._spline_lookup[spline_name]
-	local spline_curve = nil
+	local spline_curve
 
 	if spline.spline_points then
 		local cached_spline = self._cached_splines[spline_name]
 		local source_spline_points = spline.spline_points
 		local spline_points = AiUtils.remove_bad_boxed_spline_points(source_spline_points, spline_name)
+
 		spline_curve = SplineCurve:new(spline_points, "Hermite", "SplineMovementHermiteInterpolatedMetered", spline_name, 3, cached_spline)
 	else
 		local level = self._level
 		local source_spline_points = Level.spline(level, spline_name)
 		local spline_points = AiUtils.remove_bad_spline_points(source_spline_points, spline_name)
+
 		spline_curve = SplineCurve:new(spline_points, "Bezier", "SplineMovementHermiteInterpolatedMetered", spline_name, 10)
 	end
 
 	local start_spline_index = NavigationUtils.get_closest_index_on_spline(spline_curve, position)
-	local above = 1
-	local below = 1
+	local above, below = 1, 1
 	local inside_position_from_outside_position = GwNavQueries.inside_position_from_outside_position
 	local nav_world = self.nav_world
-	local position_on_spline, direction_on_spline, flat_start_direction, direction_on_spline_normal = nil
+	local position_on_spline, direction_on_spline, flat_start_direction, direction_on_spline_normal
 
 	if spawn_all_at_same_position then
 		position_on_spline, direction_on_spline = self:_get_position_on_spline_by_distance(0, spline_curve, start_spline_index)
@@ -843,6 +865,7 @@ AIGroupSystem.create_formation_data = function (self, position, formation, splin
 
 		if not spawn_all_at_same_position then
 			local distance = formation_length - (current_row - 1) * anchor_offset_x
+
 			position_on_spline, direction_on_spline = self:_get_position_on_spline_by_distance(distance, spline_curve, start_spline_index)
 
 			if position_on_spline == nil then
@@ -856,12 +879,13 @@ AIGroupSystem.create_formation_data = function (self, position, formation, splin
 
 		for column, breed_name in ipairs(columns) do
 			local num_columns_in_row = #columns
-			local column_length = (num_columns_in_row - 1) * anchor_offset_y * 2
+			local column_length = (num_columns_in_row - 1) * (anchor_offset_y * 2)
 			local offset = direction_on_spline_normal * (-column_length / 2 + anchor_offset_y * 2 * (column - 1))
 			local wanted_spawn_position = position_on_spline + offset
 
 			if Breeds[breed_name] then
 				local spawn_pos = LocomotionUtils.pos_on_mesh(nav_world, wanted_spawn_position, above, below)
+
 				spawn_pos = spawn_pos or LocomotionUtils.pos_on_mesh(nav_world, position_on_spline, above, below)
 				spawn_pos = spawn_pos or inside_position_from_outside_position(nav_world, wanted_spawn_position, above, below, 0.5, 0.2)
 
@@ -869,7 +893,7 @@ AIGroupSystem.create_formation_data = function (self, position, formation, splin
 					formation_data[current_row][column] = {
 						breed_name = breed_name,
 						start_position = Vector3Box(spawn_pos),
-						start_direction = Vector3Box(flat_start_direction)
+						start_direction = Vector3Box(flat_start_direction),
 					}
 					group_size = group_size + 1
 				else
@@ -879,13 +903,13 @@ AIGroupSystem.create_formation_data = function (self, position, formation, splin
 
 					formation_data[current_row][column] = {
 						start_position = Vector3Box(wanted_spawn_position),
-						start_direction = Vector3Box(flat_start_direction)
+						start_direction = Vector3Box(flat_start_direction),
 					}
 				end
 			else
 				formation_data[current_row][column] = {
 					start_position = Vector3Box(wanted_spawn_position),
-					start_direction = Vector3Box(flat_start_direction)
+					start_direction = Vector3Box(flat_start_direction),
 				}
 			end
 		end
@@ -897,6 +921,7 @@ AIGroupSystem.create_formation_data = function (self, position, formation, splin
 
 	for i = current_row, num_rows do
 		local columns = formation_data[i]
+
 		formation_data[i] = nil
 	end
 
@@ -932,6 +957,7 @@ AIGroupSystem._get_position_on_spline_by_distance = function (self, distance, sp
 		local current_position = movement:current_position()
 		local current_spline_curve_distance = movement:current_spline_curve_distance()
 		local current_distance = math.abs(current_spline_curve_distance - previous_spline_curve_distance)
+
 		total_distance = current_distance + total_distance
 
 		if distance <= total_distance or current_distance <= 0 then

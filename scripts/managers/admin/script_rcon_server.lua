@@ -1,74 +1,77 @@
+﻿-- chunkname: @scripts/managers/admin/script_rcon_server.lua
+
 ScriptRconServer = class(ScriptRconServer)
+
 local Commands = {
 	ban = {
 		arg_help = "rcon_server_command_args_ban",
-		min_args = 2,
 		help = "rcon_server_command_help_ban",
 		max_args = 3,
-		method = "_command_ban"
+		method = "_command_ban",
+		min_args = 2,
 	},
 	banlist = {
 		arg_help = "",
-		min_args = 0,
 		help = "rcon_server_command_help_banlist",
 		max_args = 0,
-		method = "_command_banlist"
+		method = "_command_banlist",
+		min_args = 0,
 	},
 	help = {
 		arg_help = "",
-		min_args = 0,
 		help = "rcon_server_command_help_help",
 		max_args = 0,
-		method = "_command_help"
+		method = "_command_help",
+		min_args = 0,
 	},
 	id = {
 		arg_help = "",
-		min_args = 0,
 		help = "rcon_server_command_help_id",
 		max_args = 0,
-		method = "_command_id"
+		method = "_command_id",
+		min_args = 0,
 	},
 	kick = {
 		arg_help = "rcon_server_command_args_kick",
-		min_args = 1,
 		help = "rcon_server_command_help_kick",
 		max_args = 1,
-		method = "_command_kick"
+		method = "_command_kick",
+		min_args = 1,
 	},
 	players = {
 		arg_help = "",
-		min_args = 0,
 		help = "rcon_server_command_help_players",
 		max_args = 0,
-		method = "_command_players"
+		method = "_command_players",
+		min_args = 0,
 	},
 	say = {
 		arg_help = "rcon_server_command_args_say",
-		min_args = 1,
+		help = "rcon_server_command_help_say",
 		method = "_command_say",
-		help = "rcon_server_command_help_say"
+		min_args = 1,
 	},
 	shutdown = {
 		arg_help = "",
-		min_args = 0,
 		help = "rcon_server_command_help_shutdown",
 		max_args = 0,
-		method = "_command_shutdown"
+		method = "_command_shutdown",
+		min_args = 0,
 	},
 	status = {
 		arg_help = "",
-		min_args = 0,
 		help = "rcon_server_command_help_status",
 		max_args = 0,
-		method = "_command_status"
+		method = "_command_status",
+		min_args = 0,
 	},
 	unban = {
 		arg_help = "rcon_server_command_args_unban",
-		min_args = 1,
 		help = "rcon_server_command_help_unban",
 		max_args = 1,
-		method = "_command_unban"
-	}
+		method = "_command_unban",
+		min_args = 1,
+	},
 }
 
 local function tr(localize_key)
@@ -117,7 +120,7 @@ end
 ScriptRconServer._find_player = function (self, find_str)
 	local disable_pattern_matching = true
 	local start_index = 1
-	local found_id = nil
+	local found_id
 
 	for _, player in pairs(Managers.player:players()) do
 		local peer_id = player:network_id()
@@ -138,7 +141,7 @@ ScriptRconServer._find_banned = function (self, find_str)
 	local list = Managers.ban_list:ban_list()
 	local disable_pattern_matching = true
 	local start_index = 1
-	local found_id = nil
+	local found_id
 
 	for _, player in ipairs(list) do
 		local peer_id = player.peer_id
@@ -187,7 +190,7 @@ ScriptRconServer.rcon_command = function (self, id, command_string)
 		return string.format("%s\n%s %s\n", tr("rcon_server_command_error_too_few_args"), command, tr(command_info.arg_help))
 	end
 
-	if command_info.max_args ~= nil and command_info.max_args < num_args then
+	if command_info.max_args ~= nil and num_args > command_info.max_args then
 		return string.format("%s\n%s %s\n", tr("rcon_server_command_error_too_many_args"), command, tr(command_info.arg_help))
 	end
 
@@ -213,13 +216,13 @@ ScriptRconServer._command_ban = function (self, peer_id, name, days_str)
 		return string.format("%s\n", tr("rcon_server_command_response_invalid_days"))
 	end
 
-	local days = nil
+	local days
 
 	if days_str ~= nil then
 		days = tonumber(days_str)
 	end
 
-	local unban_at = nil
+	local unban_at
 
 	if days ~= nil then
 		unban_at = os.time() + days * 24 * 60 * 60
@@ -245,6 +248,7 @@ ScriptRconServer._command_banlist = function (self)
 	for _, info in ipairs(list) do
 		if info.ban_end ~= nil then
 			local date = os.date("*t", info.ban_end)
+
 			result = string.format("%s%s %04d-%02d-%02d %q\n", result, info.peer_id, date.year, date.month, date.day, info.name)
 		else
 			result = string.format("%s%s xxxx-xx-xx %q\n", result, info.peer_id, info.name)
@@ -266,6 +270,7 @@ ScriptRconServer._command_help = function (self)
 
 	for _, command in ipairs(sorted_names) do
 		local command_info = Commands[command]
+
 		help_text = string.format("%s%s %s - %s\n", help_text, command, tr(command_info.arg_help), tr(command_info.help))
 	end
 
@@ -306,7 +311,9 @@ end
 
 ScriptRconServer._command_say = function (self, ...)
 	local say_text = varargs.join(" ", ...)
+
 	say_text = UTF8Utils.sub_string(say_text, 1, 128)
+
 	local chat = Managers.chat
 
 	if chat:has_channel(1) then

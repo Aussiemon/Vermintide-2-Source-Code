@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/settings/dlcs/bless/passive_ability_warrior_priest.lua
+
 PassiveAbilityWarriorPriest = class(PassiveAbilityWarriorPriest)
+
 local resouce_degen_rate = 6
 local unit_animation_set_variable = Unit.animation_set_variable
 local game_session_set_game_object_field = GameSession.set_game_object_field
@@ -28,6 +31,7 @@ PassiveAbilityWarriorPriest.extensions_ready = function (self, world, unit)
 
 	if self._first_person_extension then
 		local fp_unit = self._first_person_extension:get_first_person_unit()
+
 		self._fp_unit = fp_unit
 		self._anim_var_3p_id = Unit.animation_find_variable(unit, "talent_anim_type")
 
@@ -111,7 +115,7 @@ PassiveAbilityWarriorPriest.on_player_killed_enemy = function (self, killing_blo
 	local range = 6
 	local range_squared = range * range
 
-	if distance_squared > range_squared then
+	if range_squared < distance_squared then
 		return
 	end
 
@@ -153,6 +157,7 @@ PassiveAbilityWarriorPriest.modify_resource = function (self, amount, ignore_dif
 
 		if difficulty then
 			self._difficulty_rank = DifficultySettings[difficulty].rank
+
 			local difficulty_tweak = {
 				1,
 				1.5,
@@ -161,15 +166,16 @@ PassiveAbilityWarriorPriest.modify_resource = function (self, amount, ignore_dif
 				1,
 				1,
 				1,
-				0.7
+				0.7,
 			}
+
 			amount = amount * difficulty_tweak[self._difficulty_rank]
 		end
 	end
 
 	self._current_resource = math.clamp(self._current_resource + amount, 0, self._max_resource)
 
-	if self._max_resource <= self._current_resource and has_changed then
+	if self._current_resource >= self._max_resource and has_changed then
 		self:activate_buff()
 	end
 
@@ -199,7 +205,9 @@ end
 
 PassiveAbilityWarriorPriest.set_in_combat = function (self)
 	self._not_in_combat = false
+
 	local t = Managers.time:time("game")
+
 	self._combat_timer = t + self._time_to_ooc
 end
 
@@ -208,7 +216,7 @@ PassiveAbilityWarriorPriest.combat_timer_update = function (self, t)
 		self._combat_timer = t + self._time_to_ooc
 	end
 
-	if self._combat_timer < t then
+	if t > self._combat_timer then
 		self._not_in_combat = true
 	end
 end
@@ -216,10 +224,14 @@ end
 PassiveAbilityWarriorPriest.activate_buff = function (self)
 	if not self._is_active then
 		self._is_active = true
+
 		local t = Managers.time:time("game")
+
 		self._activation_time = t
+
 		local buff_system = self._buff_system
 		local owner_unit = self._owner_unit
+
 		self._buff_id = buff_system:add_buff_synced(owner_unit, "victor_priest_passive_aftershock", BuffSyncType.LocalAndServer)
 
 		Unit.flow_event(owner_unit, "lua_enable_eye_glow")
@@ -240,6 +252,7 @@ end
 PassiveAbilityWarriorPriest.deactivate_buff = function (self)
 	if self._is_active then
 		self._is_active = false
+
 		local buff_system = self._buff_system
 		local buff_id = self._buff_id
 		local owner_unit = self._owner_unit
@@ -282,8 +295,7 @@ PassiveAbilityWarriorPriest._set_fury_glow_enabled = function (self, enabled)
 	local equipment = inventory_extension:equipment()
 
 	if equipment then
-		local left_weapon_3p = equipment.left_hand_wielded_unit_3p
-		local right_weapon_3p = equipment.right_hand_wielded_unit_3p
+		local left_weapon_3p, right_weapon_3p = equipment.left_hand_wielded_unit_3p, equipment.right_hand_wielded_unit_3p
 
 		if left_weapon_3p then
 			Unit.flow_event(left_weapon_3p, flow_event)
@@ -325,6 +337,7 @@ PassiveAbilityWarriorPriest.on_talents_changed = function (self, unit, talent_ex
 	end
 
 	self._ability_on_4_1 = talent_extension:has_talent("victor_priest_4_1_new")
+
 	local fp_unit = self._fp_unit
 
 	if ALIVE[fp_unit] then
@@ -345,9 +358,10 @@ PassiveAbilityWarriorPriest.create_game_object = function (self)
 	local game_object_data_table = {
 		go_type = NetworkLookup.go_types.priest_career_data,
 		unit_game_object_id = game_object_id,
-		fury_active = self._is_active
+		fury_active = self._is_active,
 	}
 	local callback = callback(self, "cb_game_session_disconnect")
+
 	self._game_object_id = network_manager:create_game_object("priest_career_data", game_object_data_table, callback)
 end
 

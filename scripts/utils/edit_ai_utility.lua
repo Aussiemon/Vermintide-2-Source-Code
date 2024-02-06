@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/utils/edit_ai_utility.lua
+
 local serialize = require("scripts/utils/serialize")
 local font_size = 26
 local font = "arial"
@@ -9,7 +11,7 @@ local status = {}
 local resx, resy = Application.resolution()
 local spline_window_size = {
 	x = 300,
-	y = 300
+	y = 300,
 }
 local pixels_between_windows = 30
 local row_height = 30
@@ -19,45 +21,51 @@ local window_list = {}
 local action_list = false
 local action_list_layout = false
 local drag_point_list = {}
-local tool_pos = {
-	x = 250,
-	y = resy - spline_window_size.y - 200
-}
-local windows_x = 3
-local windows_y = 2
-local k = 1
 
-for j = 0, windows_y - 1 do
-	for i = 0, windows_x - 1 do
-		local xpos = tool_pos.x + spline_window_size.x * i + i * pixels_between_windows
-		local ypos = tool_pos.y - (spline_window_size.y * j + pixels_between_windows * j)
-		window_list[k] = {
-			x = xpos,
-			y = ypos
-		}
-		drag_point_list[k] = {
-			value = 0,
-			index = k,
-			x = xpos + spline_window_size.x - half_row_height / 2,
-			y = ypos - row_height / 2
-		}
-		k = k + 1
+do
+	local tool_pos = {
+		x = 250,
+		y = resy - spline_window_size.y - 200,
+	}
+	local windows_x = 3
+	local windows_y = 2
+	local k = 1
+
+	for j = 0, windows_y - 1 do
+		for i = 0, windows_x - 1 do
+			local xpos = tool_pos.x + spline_window_size.x * i + i * pixels_between_windows
+			local ypos = tool_pos.y - (spline_window_size.y * j + pixels_between_windows * j)
+
+			window_list[k] = {
+				x = xpos,
+				y = ypos,
+			}
+			drag_point_list[k] = {
+				value = 0,
+				index = k,
+				x = xpos + spline_window_size.x - half_row_height / 2,
+				y = ypos - row_height / 2,
+			}
+			k = k + 1
+		end
 	end
+
+	action_list = {}
+
+	local action_list_height = row_height
+
+	for action_name, data in pairs(UtilityConsiderations) do
+		action_list[#action_list + 1] = action_name
+		action_list_height = action_list_height + row_height
+	end
+
+	action_list_layout = {
+		size_x = 200,
+		x = 30,
+		y = resy - action_list_height,
+	}
 end
 
-action_list = {}
-local action_list_height = row_height
-
-for action_name, data in pairs(UtilityConsiderations) do
-	action_list[#action_list + 1] = action_name
-	action_list_height = action_list_height + row_height
-end
-
-action_list_layout = {
-	size_x = 200,
-	x = 30,
-	y = resy - action_list_height
-}
 local considerations = considerations or false
 
 local function pick_action(action_name)
@@ -76,6 +84,7 @@ local function pick_action(action_name)
 	end
 
 	local num_condiditons = #cons_lookup
+
 	considerations = UtilityConsiderations[action_name]
 end
 
@@ -109,15 +118,17 @@ end
 
 EditAiUtility.update = function (self, unit, t, dt, input_service, blackboard)
 	local mouse_pos = input_service:get("cursor")
+
 	status.left_pressed = input_service:get("mouse_left_held")
 
 	if not status.selected_drag_point then
 		status.hover_win_name, status.win_pos = self:hover_win(t, mouse_pos, window_list, spline_window_size)
-		local spline = status.hover_win_name and considerations[status.hover_win_name].spline
-		local spline_id = nil
+
+		local spline, spline_id = status.hover_win_name and considerations[status.hover_win_name].spline
 
 		if spline and spline == status.last_hover_spline then
 			local spline_window_pos = status.win_pos
+
 			status.hover_point = self:hover_spline_point(t, spline, spline_window_pos, spline_window_size, mouse_pos)
 
 			if status.hover_point and status.left_pressed and not status.selected_point then
@@ -170,8 +181,8 @@ EditAiUtility.update = function (self, unit, t, dt, input_service, blackboard)
 			local original_max_value = con.max_value
 			local xd, yd = EditAiUtility:drag_point_distance(t, point, mouse_pos)
 
-			if math.abs(yd) < safe_drag_lane and math.abs(xd) > 0 then
-				local value = nil
+			if safe_drag_lane > math.abs(yd) and math.abs(xd) > 0 then
+				local value
 
 				if xd > 0 then
 					value = 0.01 * math.pow(xd, 1.2) + original_max_value
@@ -187,7 +198,7 @@ EditAiUtility.update = function (self, unit, t, dt, input_service, blackboard)
 		else
 			local xd, yd = EditAiUtility:drag_point_distance(t, point, mouse_pos)
 
-			if math.abs(yd) < safe_drag_lane and point.max_value then
+			if safe_drag_lane > math.abs(yd) and point.max_value then
 				con.max_value = point.max_value
 			end
 
@@ -226,7 +237,9 @@ EditAiUtility.update = function (self, unit, t, dt, input_service, blackboard)
 
 			if blackboard then
 				local action = status.selected_action and action_list[status.selected_action]
+
 				utility_sum = utility_sum + EditAiUtility.draw_realtime_utility(gui, action, data, pos, win_size, blackboard)
+
 				local breed = blackboard.breed
 				local breed_name = breed.name
 				local breed_actions = BreedActions[breed_name]
@@ -285,7 +298,7 @@ end
 EditAiUtility.insert_spline_point = function (self, spline, win_pos, win_size, mouse_pos)
 	local x = (mouse_pos.x - win_pos.x) / win_size.x
 	local y = (mouse_pos.y - win_pos.y) / win_size.y
-	local insert_index = nil
+	local insert_index
 
 	for i = 1, #spline, 2 do
 		if x < spline[i] then
@@ -342,7 +355,7 @@ EditAiUtility.move_spline_point = function (self, t, spline, win_pos, win_size, 
 	local x = (new_pos.x - win_pos.x) / win_size.x
 	local y = (new_pos.y - win_pos.y) / win_size.y
 
-	if first_point_index < point_index and point_index < last_point_index and spline[point_index - 2] < x and x < spline[point_index + 2] then
+	if first_point_index < point_index and point_index < last_point_index and x > spline[point_index - 2] and x < spline[point_index + 2] then
 		spline[point_index] = x
 	end
 
@@ -374,9 +387,12 @@ EditAiUtility.drag_point_distance = function (self, t, point, mouse_pos)
 	local y = mouse_pos.y
 	local safe_zone = 10
 	local x_dist = x - point.x
-	x_dist = math.abs(x_dist) < safe_zone and 0 or x_dist - (x_dist > 0 and safe_zone or -safe_zone)
+
+	x_dist = safe_zone > math.abs(x_dist) and 0 or x_dist - (x_dist > 0 and safe_zone or -safe_zone)
+
 	local y_dist = y - point.y
-	y_dist = math.abs(y_dist) < safe_zone and 0 or y_dist - (y_dist > 0 and safe_zone or -safe_zone)
+
+	y_dist = safe_zone > math.abs(y_dist) and 0 or y_dist - (y_dist > 0 and safe_zone or -safe_zone)
 
 	return x_dist, y_dist
 end
@@ -423,6 +439,7 @@ end
 EditAiUtility.draw_square = function (gui, t, pos, width, color, thickness)
 	thickness = thickness or 5
 	width = width * 0.5
+
 	local x1 = pos.x - width
 	local y1 = pos.y - width
 	local x2 = pos.x + width
@@ -438,7 +455,7 @@ EditAiUtility.hover_action = function (self, t, layout, action_list, mouse_pos)
 	local height = #action_list * row_height
 	local x = mouse_pos.x
 	local y = mouse_pos.y
-	local inside_window = layout.x <= x and x <= layout.x + layout.size_x and layout.y <= y and y <= layout.y + height
+	local inside_window = x >= layout.x and x <= layout.x + layout.size_x and y >= layout.y and y <= layout.y + height
 
 	for i = 1, #action_list do
 		local pos = Vector3(layout.x + 10, layout.y + (i - 0.7) * row_height, 0)
@@ -454,7 +471,7 @@ end
 EditAiUtility.draw_action_list = function (self, unit, t, name, layout, action_list, bk_color, selected_action, blackboard)
 	local gui = self.screen_gui
 	local resx, resy = Application.resolution()
-	local color = nil
+	local color
 	local utility = 0
 
 	for i = 1, #action_list do
@@ -476,6 +493,7 @@ EditAiUtility.draw_action_list = function (self, unit, t, name, layout, action_l
 			local ai_extension = ScriptUnit.extension(unit, "ai_system")
 			local action_data = ai_extension:brain():bt():action_data()
 			local breed_action = action_data[text]
+
 			utility = math.floor(Utility.get_action_utility(breed_action, text, blackboard, t) * 10) / 10
 
 			ScriptGUI.text(gui, utility, font_mtrl, font_size, font, pos + Vector3(-40, 0, 0), color)
@@ -546,7 +564,7 @@ EditAiUtility.draw_utility_ruler = function (self, gui, consideration_data, pos,
 	for i = 0, num_divides do
 		ScriptGUI.hud_line(gui, Vector2(x, y), Vector2(x, y + 10), nil, 1)
 
-		local text = consideration_data.max_value * i / num_divides
+		local text = consideration_data.max_value * (i / num_divides)
 
 		ScriptGUI.text(gui, text, tiny_font_mtrl, tiny_font_size, tiny_font, Vector3(x + text_x_align, y + text_y_align, 10), Color(255, 255, 255, 255))
 
@@ -589,6 +607,7 @@ EditAiUtility.draw_utility_spline = function (gui, t, consideration_data, temp_m
 	local w = size.x
 	local h = size.y
 	local line_color = Color(255 * fade_factor, 255, 255, 255)
+
 	thickness = thickness or 5
 
 	for i = 1, #spline - 2, 2 do

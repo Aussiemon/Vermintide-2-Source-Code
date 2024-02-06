@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/deus_chest/deus_chest_preload_system.lua
+
 require("scripts/network/shared_state")
 
 DeusChestPreloadSystem = class(DeusChestPreloadSystem, ExtensionSystemBase)
@@ -50,6 +52,7 @@ local function decode_encode_preload_packages(json)
 
 	for _, network_package_id in ipairs(encoded_preload_packages) do
 		local package_name = inventory_packages_lut[network_package_id]
+
 		preload_packages[package_name] = true
 	end
 
@@ -63,12 +66,12 @@ local shared_state_spec = {
 			type = "table",
 			default_value = {},
 			composite_keys = {
-				local_player_id = true
+				local_player_id = true,
 			},
 			encode = encode_preload_packages,
-			decode = decode_encode_preload_packages
-		}
-	}
+			decode = decode_encode_preload_packages,
+		},
+	},
 }
 
 SharedState.validate_spec(shared_state_spec)
@@ -88,11 +91,14 @@ DeusChestPreloadSystem.init = function (self, context, system_name, extensions)
 	self._loaded_or_loading_packages = {}
 	self._player_manager = Managers.player
 	self._package_manager = Managers.package
+
 	local is_server = context.is_server
 	local network_server = Managers.mechanism:network_handler()
 	local server_peer_id = network_server.server_peer_id
 	local own_peer_id = Network.peer_id()
+
 	self._shared_state = SharedState:new("deus_chest_preload", shared_state_spec, is_server, network_server, server_peer_id, own_peer_id)
+
 	local network_event_delegate = context.network_event_delegate
 
 	self._shared_state:register_rpcs(network_event_delegate)
@@ -101,11 +107,12 @@ end
 
 DeusChestPreloadSystem._setup_weapon_preload_settings = function (self)
 	local success = false
-	local platform_type = nil
+	local platform_type
 	local deus_weapon_preload_settings = Managers.backend:get_deus_weapon_preload_settings()
 
 	if IS_XB1 then
 		platform_type = XboxOne.console_type_string()
+
 		local settings = deus_weapon_preload_settings[platform_type]
 		local default_settings = deus_weapon_preload_settings.default
 
@@ -225,7 +232,9 @@ DeusChestPreloadSystem.update = function (self, context, t)
 
 	local local_player_position = POSITION_LOOKUP[local_player_unit]
 	local num_deus_chests = Broadphase.query(self._broadphase, local_player_position, self._deus_chest_check_range, DEUS_CHEST_FETCH_RESULTS)
+
 	num_deus_chests = math.min(num_deus_chests, self._deus_chest_preload_amount)
+
 	local deus_chest_to_extension = self._deus_chest_to_extension
 
 	for i = 1, num_deus_chests do
@@ -270,6 +279,7 @@ DeusChestPreloadSystem.update = function (self, context, t)
 	for missing_package, _ in pairs(missing_packages) do
 		if not package_manager:is_loading(missing_package) then
 			local async = true
+
 			loaded_or_loading_packages[missing_package] = true
 
 			package_manager:load(missing_package, PACKAGE_MANAGER_REFERENCE_NAME, nil, async)
@@ -299,6 +309,7 @@ DeusChestPreloadSystem.on_add_extension = function (self, world, unit, extension
 	local extension = DeusChestPreloadSystem.super.on_add_extension(self, world, unit, extension_name, extension_init_data)
 	local position = POSITION_LOOKUP[unit]
 	local id = Broadphase.add(self._broadphase, unit, position, 0.1)
+
 	self._broadphase_ids[unit] = id
 	self._deus_chest_to_extension[unit] = extension
 

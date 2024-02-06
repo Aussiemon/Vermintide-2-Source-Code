@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_critter_nurgling_flee_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTCritterNurglingFleeAction = class(BTCritterNurglingFleeAction, BTNode)
@@ -34,6 +36,7 @@ BTCritterNurglingFleeAction.run = function (self, unit, blackboard, t)
 
 	if not blackboard.move_pos then
 		local move_pos = self:get_random_move_pos(unit, blackboard, action)
+
 		blackboard.move_pos = Vector3Box(move_pos)
 
 		navigation_extension:move_to(move_pos)
@@ -81,7 +84,7 @@ BTCritterNurglingFleeAction.has_escaped_players = function (self, unit, blackboa
 		local player_pos = POSITION_LOOKUP[player_unit]
 		local distance_to_player_sq = Vector3.distance_squared(unit_pos, player_pos)
 
-		if data.despawn_distance_sq < distance_to_player_sq then
+		if distance_to_player_sq > data.despawn_distance_sq then
 			return true
 		end
 	end
@@ -99,6 +102,7 @@ BTCritterNurglingFleeAction.get_random_move_pos = function (self, unit, blackboa
 	local above = data.above
 	local below = data.below
 	local move_pos = LocomotionUtils.new_random_goal(nav_world, blackboard, start_pos, min_dist, max_dist, max_tries, nil, above, below)
+
 	move_pos = move_pos or start_pos
 
 	return move_pos

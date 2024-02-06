@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/generated/bt_selector_training_dummy.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 local unit_alive = Unit.alive
@@ -21,35 +23,37 @@ BTSelector_training_dummy.leave = function (self, unit, blackboard, t, reason)
 end
 
 BTSelector_training_dummy.run = function (self, unit, blackboard, t, dt)
-	local Profiler_start = Profiler.start
-	local Profiler_stop = Profiler.stop
+	local Profiler_start, Profiler_stop = Profiler.start, Profiler.stop
 	local child_running = self:current_running_child(blackboard)
 	local children = self._children
-	local node_stagger = children[1]
-	local condition_result = nil
 
-	if blackboard.stagger then
-		if blackboard.stagger_prohibited then
-			blackboard.stagger = false
-		else
-			condition_result = true
-		end
-	end
+	do
+		local node_stagger = children[1]
+		local condition_result
 
-	if condition_result then
-		self:set_running_child(unit, blackboard, t, node_stagger, "aborted")
-
-		local result, evaluate = node_stagger:run(unit, blackboard, t, dt)
-
-		if result ~= "running" then
-			self:set_running_child(unit, blackboard, t, nil, result)
+		if blackboard.stagger then
+			if blackboard.stagger_prohibited then
+				blackboard.stagger = false
+			else
+				condition_result = true
+			end
 		end
 
-		if result ~= "failed" then
-			return result, evaluate
+		if condition_result then
+			self:set_running_child(unit, blackboard, t, node_stagger, "aborted")
+
+			local result, evaluate = node_stagger:run(unit, blackboard, t, dt)
+
+			if result ~= "running" then
+				self:set_running_child(unit, blackboard, t, nil, result)
+			end
+
+			if result ~= "failed" then
+				return result, evaluate
+			end
+		elseif node_stagger == child_running then
+			self:set_running_child(unit, blackboard, t, nil, "failed")
 		end
-	elseif node_stagger == child_running then
-		self:set_running_child(unit, blackboard, t, nil, "failed")
 	end
 
 	local node_do_nothing = children[2]

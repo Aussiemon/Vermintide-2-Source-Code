@@ -1,16 +1,18 @@
+﻿-- chunkname: @scripts/settings/player_data.lua
+
 require("scripts/settings/profiles/sp_profiles")
 
 DefaultPlayerData = {
+	bot_spawn_priority_version = 2,
 	controls_version = 18,
-	new_item_data_version = 6,
+	favorite_item_data_version = 1,
+	level_preferences_version = 1,
 	mission_selection_version = 3,
+	new_item_data_version = 6,
 	new_keep_decoration_version = 1,
+	new_sign_in_rewards_data_version = 2,
 	seen_shop_items_version = 1,
 	viewed_dialogues_version = 1,
-	level_preferences_version = 1,
-	bot_spawn_priority_version = 2,
-	new_sign_in_rewards_data_version = 2,
-	favorite_item_data_version = 1,
 	mission_selection = {},
 	favorite_item_ids = {},
 	favorite_item_ids_by_career = {},
@@ -24,9 +26,9 @@ DefaultPlayerData = {
 	new_keep_decoration_ids = {},
 	level_preferences = {
 		{},
-		{}
+		{},
 	},
-	seen_shop_items = {}
+	seen_shop_items = {},
 }
 PlayerData = PlayerData or table.clone(DefaultPlayerData)
 
@@ -124,7 +126,7 @@ function populate_player_data_from_save(save_data, id, version_match)
 		if DefaultPlayerData.level_preferences_version ~= player_save_data.level_preferences_version then
 			player_save_data.level_preferences = {
 				{},
-				{}
+				{},
 			}
 
 			print("Wrong level_preferences_version for save file, saved: ", tostring(player_save_data.level_preferences_version), " current: ", DefaultPlayerData.level_preferences_version)
@@ -142,6 +144,7 @@ function populate_player_data_from_save(save_data, id, version_match)
 	end
 
 	PlayerData = player_save_data
+
 	local input_manager = Managers.input
 
 	if input_manager then

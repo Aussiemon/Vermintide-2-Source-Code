@@ -1,6 +1,9 @@
+﻿-- chunkname: @scripts/ui/views/deus_menu/deus_map_scene.lua
+
 require("scripts/settings/dlcs/morris/deus_map_visibility_settings")
 
 DeusMapScene = class(DeusMapScene)
+
 local START_NODE_UNIT = "units/morris_map/deus_starting_position_token_01"
 local SIG_NODE_UNIT = "units/morris_map/deus_map_base_sig_belakor_01"
 local TRAVEL_NODE_UNIT = "units/morris_map/deus_map_base_travel_belakor_01"
@@ -16,7 +19,7 @@ local VISIBILITY_LEVEL_MAP = {
 	[DeusMapVisibilitySettings.WEAK_FOG_LEVEL] = 0,
 	[DeusMapVisibilitySettings.WEAK_FOG_LEVEL + 1] = 0.333,
 	[DeusMapVisibilitySettings.WEAK_FOG_LEVEL + 2] = 0.666,
-	[DeusMapVisibilitySettings.WEAK_FOG_LEVEL + 3] = 1
+	[DeusMapVisibilitySettings.WEAK_FOG_LEVEL + 3] = 1,
 }
 local FINAL_HOLE_RADIUS = 0.2
 local HOLE_RADIUS = 0.15
@@ -95,7 +98,7 @@ local function get_level_ref_values(level)
 			Matrix4x4Box(referenced_token_1_pose),
 			Matrix4x4Box(referenced_token_2_pose),
 			Matrix4x4Box(referenced_token_3_pose),
-			Matrix4x4Box(referenced_token_4_pose)
+			(Matrix4x4Box(referenced_token_4_pose)),
 		},
 		camera_zoom_bottom_left_pose = Matrix4x4Box(Unit.local_pose(camera_zoom_bottom_left, 0)),
 		camera_zoom_top_right_pose = Matrix4x4Box(Unit.local_pose(camera_zoom_top_right, 0)),
@@ -108,7 +111,7 @@ local function get_level_ref_values(level)
 		ref_b_node_from_pos = Vector3Box(Unit.local_position(ref_b_node_from, 0)),
 		ref_b_node_to_pos = Vector3Box(Unit.local_position(ref_b_node_to, 0)),
 		ref_b_edge_pos = Vector3Box(Unit.local_position(ref_b_edge, 0)),
-		ref_b_edge_scale = Vector3Box(Unit.local_scale(ref_b_edge, 0))
+		ref_b_edge_scale = Vector3Box(Unit.local_scale(ref_b_edge, 0)),
 	}
 
 	Unit.disable_physics(ref_a_node_from)
@@ -158,7 +161,8 @@ local function spawn_graph_units(world, level_ref_values, graph)
 	for key, node in pairs(graph) do
 		local bottom_part = bottom_vector * node.layout_x
 		local left_part = left_vector * node.layout_y
-		local pos = map_bottom_left_pos + bottom_part + left_part
+		local pos = map_bottom_left_pos + (bottom_part + left_part)
+
 		pos.z = pos.z + random_z_offset_to_fix_z_fighting()
 		positions[key] = pos
 	end
@@ -170,7 +174,7 @@ local function spawn_graph_units(world, level_ref_values, graph)
 
 	for key, node in pairs(graph) do
 		local level_name = node.level
-		local node_unit_name = nil
+		local node_unit_name
 
 		if key == "start" then
 			node_unit_name = START_NODE_UNIT
@@ -190,6 +194,7 @@ local function spawn_graph_units(world, level_ref_values, graph)
 
 		local pos = positions[key]
 		local node_unit = World.spawn_unit(world, node_unit_name, pos)
+
 		node_to_units[key] = node_unit
 
 		Unit.set_data(node_unit, "deus_node_key", key)
@@ -202,7 +207,9 @@ local function spawn_graph_units(world, level_ref_values, graph)
 			local next_pos = positions[next]
 			local between_nodes_vector = next_pos - pos
 			local edge_unit = World.spawn_unit(world, EDGE_UNIT)
+
 			edges_to_units[key][next] = edge_unit
+
 			local direction = Vector3.normalize(between_nodes_vector)
 			local rotation = Quaternion.look(direction, Vector3.up())
 
@@ -213,6 +220,7 @@ local function spawn_graph_units(world, level_ref_values, graph)
 			local distance_to_edge_squared = math.lerp(distance_to_edge_a_squared, distance_to_edge_b_squared, lerp_ratio)
 			local distance_to_edge = distance_to_edge_squared >= 0 and math.sqrt(distance_to_edge_squared) or 0
 			local edge_pos = pos + direction * distance_to_edge
+
 			edge_pos.z = edge_pos.z + random_z_offset_to_fix_z_fighting()
 
 			Unit.set_local_position(edge_unit, 0, edge_pos)
@@ -237,7 +245,7 @@ local function spawn_graph_units(world, level_ref_values, graph)
 		token_bw,
 		token_dr,
 		token_we,
-		token_es
+		token_es,
 	}
 
 	return node_to_units, edges_to_units, profile_index_to_token
@@ -270,8 +278,7 @@ local function setup_fog_plane(world, level_ref_values, graph_data, visibility_d
 	local uv_scale = Vector2(bottom_vector.x / bottom_fog_vector.x, left_vector.y / left_fog_vector.y)
 	local bottom_left_vector = map_bottom_left_pos - fog_bottom_left_pos
 	local uv_offset = Vector2(bottom_left_vector.x / bottom_fog_vector.x, bottom_left_vector.y / left_fog_vector.y)
-	local w = RESOLUTION_LOOKUP.res_w
-	local h = RESOLUTION_LOOKUP.res_h
+	local w, h = RESOLUTION_LOOKUP.res_w, RESOLUTION_LOOKUP.res_h
 
 	local function transform_uv(u, v)
 		return u * uv_scale.x + uv_offset.x + FOG_U_OFFSET, v * uv_scale.y + uv_offset.y + FOG_V_OFFSET
@@ -297,11 +304,15 @@ local function setup_fog_plane(world, level_ref_values, graph_data, visibility_d
 		local start_node = graph_data[start_node_key]
 		local end_node = graph_data[end_node_key]
 		local start_layout_x, start_layout_y = transform_uv(start_node.layout_x, start_node.layout_y)
+
 		start_layout_x = start_layout_x * w
 		start_layout_y = start_layout_y * h
+
 		local end_layout_x, end_layout_y = transform_uv(end_node.layout_x, end_node.layout_y)
+
 		end_layout_x = end_layout_x * w
 		end_layout_y = end_layout_y * h
+
 		local vector_x = end_layout_x - start_layout_x
 		local vector_y = end_layout_y - start_layout_y
 		local distance = math.sqrt(vector_x * vector_x + vector_y * vector_y)
@@ -326,8 +337,10 @@ local function setup_fog_plane(world, level_ref_values, graph_data, visibility_d
 		local alpha = VISIBILITY_LEVEL_MAP[visibility_data[node_key]]
 		local node = graph_data[node_key]
 		local layout_x, layout_y = transform_uv(node.layout_x, node.layout_y)
+
 		layout_x = layout_x * w
 		layout_y = layout_y * h
+
 		local hole_radius = node_key == "final" and FINAL_HOLE_RADIUS or HOLE_RADIUS
 		local hole_width = hole_radius * w
 		local hole_height = hole_radius * width_ratio * h
@@ -357,38 +370,22 @@ local function setup_fog_plane(world, level_ref_values, graph_data, visibility_d
 	draw_fog_from("start")
 
 	local start_layout_x, _ = transform_uv(graph_data.start.layout_x, graph_data.start.layout_y)
-	local ab2_x = 0
-	local ab2_y = 1
-	local ab1_x = 0
-	local ab1_y = 1 - BORDER_INSET_V
-	local ab4_x = start_layout_x
-	local ab4_y = 1
-	local ab3_x = start_layout_x
-	local ab3_y = 1 - BORDER_INSET_V
-	local aa2_x = 0
-	local aa2_y = BORDER_INSET_V
-	local aa1_x = 0
-	local aa1_y = 0
-	local aa4_x = start_layout_x
-	local aa4_y = BORDER_INSET_V
-	local aa3_x = start_layout_x
-	local aa3_y = 0
-	local ba2_x = 1 - BORDER_INSET_U
-	local ba2_y = BORDER_INSET_V
-	local ba1_x = 1 - BORDER_INSET_U
-	local ba1_y = 0
-	local ba4_x = 1
-	local ba4_y = BORDER_INSET_V
-	local ba3_x = 1
-	local ba3_y = 0
-	local bb2_x = 1 - BORDER_INSET_U
-	local bb2_y = 1
-	local bb1_x = 1 - BORDER_INSET_U
-	local bb1_y = 1 - BORDER_INSET_V
-	local bb4_x = 1
-	local bb4_y = 1
-	local bb3_x = 1
-	local bb3_y = 1 - BORDER_INSET_V
+	local ab2_x, ab2_y = 0, 1
+	local ab1_x, ab1_y = 0, 1 - BORDER_INSET_V
+	local ab4_x, ab4_y = start_layout_x, 1
+	local ab3_x, ab3_y = start_layout_x, 1 - BORDER_INSET_V
+	local aa2_x, aa2_y = 0, BORDER_INSET_V
+	local aa1_x, aa1_y = 0, 0
+	local aa4_x, aa4_y = start_layout_x, BORDER_INSET_V
+	local aa3_x, aa3_y = start_layout_x, 0
+	local ba2_x, ba2_y = 1 - BORDER_INSET_U, BORDER_INSET_V
+	local ba1_x, ba1_y = 1 - BORDER_INSET_U, 0
+	local ba4_x, ba4_y = 1, BORDER_INSET_V
+	local ba3_x, ba3_y = 1, 0
+	local bb2_x, bb2_y = 1 - BORDER_INSET_U, 1
+	local bb1_x, bb1_y = 1 - BORDER_INSET_U, 1 - BORDER_INSET_V
+	local bb4_x, bb4_y = 1, 1
+	local bb3_x, bb3_y = 1, 1 - BORDER_INSET_V
 
 	draw_quad("default_deus_map_fog_mask_border", 1, 0, ab1_x * w, ab1_y * h, aa2_x * w, aa2_y * h, aa4_x * w, aa4_y * h, ab3_x * w, ab3_y * h, 0, 0, 0, 0, 1, 0, 1, 0)
 	draw_quad("default_deus_map_fog_mask_border", 1, 0, ab1_x * w, ab1_y * h, ab3_x * w, ab3_y * h, ab4_x * w, ab4_y * h, ab2_x * w, ab2_y * h, 0, 0, 1, 0, 0, 0, 0, 0)
@@ -422,7 +419,7 @@ local function get_interpolated_camera_pose(bottom_left_pose, top_right_pose, x,
 end
 
 local function animate_camera(camera, fov, source_pose, target_pose, start_time, end_time, time)
-	local progress = nil
+	local progress
 	local interpolation_time = end_time - start_time
 
 	if interpolation_time <= 0.001 then
@@ -444,9 +441,9 @@ local function set_camera_pose(camera, fov, pose)
 end
 
 local STATES = {
-	paused = "paused",
 	active = "active",
-	initialized = "initialized"
+	initialized = "initialized",
+	paused = "paused",
 }
 
 DeusMapScene.init = function (self)
@@ -567,12 +564,12 @@ end
 local NilCursor = {
 	0,
 	0,
-	0
+	0,
 }
 
 DeusMapScene._update_cursor = function (self, gamepad_active)
 	local cursor = self._input_service:get("cursor") or NilCursor
-	local cursor_position = nil
+	local cursor_position
 
 	if IS_XB1 and not gamepad_active then
 		cursor_position = UIScaleVectorToResolution(Vector3(cursor[1], 1080 - cursor[2], cursor[3]))
@@ -583,10 +580,11 @@ DeusMapScene._update_cursor = function (self, gamepad_active)
 	end
 
 	local raycast, _, _, _, actor = raycast_screen(self._camera, self._physics_world, cursor_position, "closest", 3, "filter_deus_map_node_click", self._debug_drawer_stay)
-	local node_key_under_cursor = nil
+	local node_key_under_cursor
 
 	if raycast then
 		local unit_under_cursor = Actor.unit(actor)
+
 		node_key_under_cursor = Unit.get_data(unit_under_cursor, "deus_node_key")
 	end
 
@@ -632,8 +630,10 @@ DeusMapScene.animate_camera_to = function (self, x, y, duration)
 	self._camera_animation_start_time = nil
 	self._camera_animation_end_time = nil
 	self._camera_source_pose = Matrix4x4Box(ScriptCamera.pose(self._camera))
+
 	local bottom_left_pose = self._level_ref_values.camera_bottom_left_pose:unbox()
 	local top_right_pose = self._level_ref_values.camera_top_right_pose:unbox()
+
 	self._camera_target_pose = Matrix4x4Box(get_interpolated_camera_pose(bottom_left_pose, top_right_pose, x, y))
 end
 
@@ -643,8 +643,10 @@ DeusMapScene.zoom_camera_to = function (self, x, y, duration)
 	self._camera_animation_start_time = nil
 	self._camera_animation_end_time = nil
 	self._camera_source_pose = Matrix4x4Box(ScriptCamera.pose(self._camera))
+
 	local bottom_left_pose = self._level_ref_values.camera_zoom_bottom_left_pose:unbox()
 	local top_right_pose = self._level_ref_values.camera_zoom_top_right_pose:unbox()
+
 	self._camera_target_pose = Matrix4x4Box(get_interpolated_camera_pose(bottom_left_pose, top_right_pose, x, y))
 end
 

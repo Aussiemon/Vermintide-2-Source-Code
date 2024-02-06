@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/weaves/weave_interaction_extension.lua
+
 WeaveInteractionExtension = class(WeaveInteractionExtension)
 WeaveInteractionExtension.NAME = "WeaveInteractionExtension"
 
@@ -22,6 +24,7 @@ WeaveInteractionExtension.init = function (self, extension_init_context, unit, e
 	self._audio_system = Managers.state.entity:system("audio_system")
 	self._weave_objective_system = Managers.state.entity:system("weave_objective_system")
 	self._value = 0
+
 	local terror_event_spawner_id = extension_init_data.terror_event_spawner_id
 
 	Unit.set_data(unit, "terror_event_spawner_id", terror_event_spawner_id)
@@ -49,9 +52,10 @@ WeaveInteractionExtension.activate = function (self, game_object_id, objective_d
 		local game_object_data_table = {
 			go_type = NetworkLookup.go_types.weave_objective,
 			objective_name = NetworkLookup.weave_objective_names[self._objective_name],
-			value = self:get_percentage_done() * 100
+			value = self:get_percentage_done() * 100,
 		}
 		local callback = callback(self, "cb_game_session_disconnect")
+
 		self._game_object_id = Managers.state.network:create_game_object("weave_objective", game_object_data_table, callback)
 	else
 		self._game_object_id = game_object_id
@@ -135,6 +139,7 @@ WeaveInteractionExtension._server_update = function (self, dt, t)
 		self._interactable_state = interaction_result
 	elseif interaction_result ~= self._interactable_state and self._interactable_state ~= 0 then
 		local num_times_completed = self._interactable_system.num_times_successfully_completed
+
 		self._value = num_times_completed * self._duration
 		value_changed = true
 
@@ -165,7 +170,7 @@ WeaveInteractionExtension._client_update = function (self, dt, t)
 end
 
 WeaveInteractionExtension.is_done = function (self)
-	return self._num_times_to_complete <= self._interactable_system.num_times_successfully_completed
+	return self._interactable_system.num_times_successfully_completed >= self._num_times_to_complete
 end
 
 WeaveInteractionExtension.get_percentage_done = function (self)

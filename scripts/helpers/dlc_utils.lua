@@ -1,6 +1,8 @@
+﻿-- chunkname: @scripts/helpers/dlc_utils.lua
+
 if not DLCUtils then
 	DLCUtils = {
-		check_dupes = true
+		check_dupes = true,
 	}
 else
 	DLCUtils.check_dupes = false

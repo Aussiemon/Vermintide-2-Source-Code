@@ -1,13 +1,16 @@
+﻿-- chunkname: @scripts/entity_system/systems/volumes/volume_system.lua
+
 require("scripts/settings/volume_settings")
 require("scripts/unit_extensions/generic/generic_volume_templates")
 
 VolumeSystem = class(VolumeSystem, ExtensionSystemBase)
+
 local extensions = {
 	"PlayerVolumeExtension",
 	"BotVolumeExtension",
 	"AIVolumeExtension",
 	"PickupProjectileVolumeExtension",
-	"LocalPlayerVolumeExtension"
+	"LocalPlayerVolumeExtension",
 }
 
 VolumeSystem.init = function (self, context, name)
@@ -86,9 +89,9 @@ VolumeSystem.register_volume = function (self, volume_name, volume_type, params)
 				level = level,
 				params = params,
 				settings = settings,
-				inverted = params.invert_volume
+				inverted = params.invert_volume,
 			}
-			local on_enter, on_exit = nil
+			local on_enter, on_exit
 
 			if GenericVolumeTemplates.functions and GenericVolumeTemplates.functions[volume.volume_type] and GenericVolumeTemplates.functions[volume.volume_type][volume.params.sub_type] then
 				on_enter = GenericVolumeTemplates.functions[volume.volume_type][volume.params.sub_type].on_enter
@@ -103,6 +106,7 @@ VolumeSystem.register_volume = function (self, volume_name, volume_type, params)
 
 	if not LEVEL_EDITOR_TEST then
 		local layer_costs = VolumeSystemSettings.nav_tag_layer_costs
+
 		layer_costs = layer_costs[volume_type] and layer_costs[volume_type][sub_type]
 
 		if layer_costs then
@@ -112,10 +116,11 @@ VolumeSystem.register_volume = function (self, volume_name, volume_type, params)
 				self:create_nav_tag_volume(volume_name, layer_name, layer_costs)
 			else
 				local nav_tag_volumes_to_create = self.nav_tag_volumes_to_create
+
 				nav_tag_volumes_to_create[#nav_tag_volumes_to_create + 1] = {
 					volume_name = volume_name,
 					layer_name = layer_name,
-					layer_costs = layer_costs
+					layer_costs = layer_costs,
 				}
 			end
 		end
@@ -134,6 +139,7 @@ end
 
 VolumeSystem.ai_ready = function (self)
 	self.nav_tag_volume_handler = Managers.state.conflict.nav_tag_volume_handler
+
 	local nav_tag_volumes_to_create = self.nav_tag_volumes_to_create
 
 	for i = 1, #nav_tag_volumes_to_create do
@@ -190,6 +196,7 @@ VolumeSystem.create_nav_tag_volume = function (self, volume_name, layer_name, la
 
 	if layer_cost_bot then
 		NAV_TAG_VOLUME_LAYER_COST_BOTS[layer_name] = layer_cost_bot
+
 		local bot_nav_transition_manager = Managers.state.bot_nav_transition
 
 		bot_nav_transition_manager:set_layer_cost(layer_name, layer_cost_bot)
@@ -197,6 +204,7 @@ VolumeSystem.create_nav_tag_volume = function (self, volume_name, layer_name, la
 
 	if layer_cost_ai then
 		NAV_TAG_VOLUME_LAYER_COST_AI[layer_name] = layer_cost_ai
+
 		local ai_extensions = entity_manager:get_entities("AINavigationExtension")
 
 		for _, extension in pairs(ai_extensions) do

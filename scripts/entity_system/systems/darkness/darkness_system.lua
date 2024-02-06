@@ -1,14 +1,18 @@
+﻿-- chunkname: @scripts/entity_system/systems/darkness/darkness_system.lua
+
 require("scripts/settings/level_settings")
 
 DarknessSystem = class(DarknessSystem, ExtensionSystemBase)
+
 local extensions = {
 	"LightSourceExtension",
 	"PlayerUnitDarknessExtension",
-	"ShadowFlareExtension"
+	"ShadowFlareExtension",
 }
 local RPCS = {
-	"rpc_shadow_flare_done"
+	"rpc_shadow_flare_done",
 }
+
 DarknessSystem.DARKNESS_THRESHOLD = 0.025
 DarknessSystem.TOTAL_DARKNESS_TRESHOLD = 0.0125
 
@@ -18,6 +22,7 @@ DarknessSystem.init = function (self, entity_system_creation_context, system_nam
 	self._light_source_data = {}
 	self._player_unit_darkness_data = {}
 	self._screen_fx_name = "fx/screenspace_darkness_flash"
+
 	local level_settings = LevelHelper:current_level_settings()
 	local darkness_settings = level_settings.darkness_settings
 
@@ -28,6 +33,7 @@ DarknessSystem.init = function (self, entity_system_creation_context, system_nam
 
 		self._darkness_volumes = volumes
 		self._num_volumes = #volumes
+
 		local player_light_intensity = darkness_settings.player_light_intensity
 
 		if player_light_intensity then
@@ -73,7 +79,7 @@ DarknessSystem.on_add_extension = function (self, world, unit, extension_name, e
 
 	local script_data_intensity = Unit.get_data(unit, "light_intensity")
 	local extension = {
-		intensity = extension_init_data and extension_init_data.intensity or script_data_intensity or 1
+		intensity = extension_init_data and extension_init_data.intensity or script_data_intensity or 1,
 	}
 
 	ScriptUnit.set_extension(unit, self.name, extension)
@@ -115,8 +121,10 @@ DarknessSystem._update_light_sources = function (self, dt, t)
 	return
 end
 
-local IN = nil
+local IN
+
 LIGHT_LIGHT_VALUE = 0.05
+
 local IN_TWILIGHT_LIGHT_VALUE = 0.015
 local TWILIGHT_MAX_INTENSITY = 0.15
 
@@ -131,7 +139,7 @@ DarknessSystem._update_player_unit_darkness = function (self, dt, t)
 		local unit_position = POSITION_LOOKUP[unit] or Unit.world_position(unit, 0)
 		local pos = unit_position + Vector3(0, 0, 1)
 		local in_darkness = self:is_in_darkness_volume(pos)
-		local light_value = nil
+		local light_value
 
 		if in_darkness then
 			local side = Managers.state.side.side_by_unit[unit]
@@ -139,10 +147,10 @@ DarknessSystem._update_player_unit_darkness = function (self, dt, t)
 			if side then
 				light_value = self:calculate_light_value(pos, side.PLAYER_UNITS)
 
-				if LIGHT_LIGHT_VALUE < light_value then
+				if light_value > LIGHT_LIGHT_VALUE then
 					data.intensity = 0
 					data.in_darkness = false
-				elseif IN_TWILIGHT_LIGHT_VALUE < light_value then
+				elseif light_value > IN_TWILIGHT_LIGHT_VALUE then
 					data.intensity = math.auto_lerp(LIGHT_LIGHT_VALUE, IN_TWILIGHT_LIGHT_VALUE, 0, TWILIGHT_MAX_INTENSITY, light_value)
 					data.in_darkness = true
 				else
@@ -167,10 +175,11 @@ DarknessSystem._update_darkness_fx = function (self, dt, t)
 		local world = self.world
 		local camera_unit = player.camera_follow_unit
 		local camera_extension = ScriptUnit.has_extension(camera_unit, "camera_system")
-		local observed_player, unit = nil
+		local observed_player, unit
 
 		if camera_extension then
 			local observed_player_id = camera_extension:get_observed_player_id()
+
 			observed_player = observed_player_id and player_manager:players()[observed_player_id]
 		end
 
@@ -260,7 +269,8 @@ DarknessSystem.calculate_light_value = function (self, position, player_units)
 		local pos = POSITION_LOOKUP[unit]
 		local dist_sq = math.max(Vector3.distance_squared(position, pos), 1)
 		local intensity = data.intensity
-		light_value = light_value + intensity * 1 / dist_sq
+
+		light_value = light_value + intensity * (1 / dist_sq)
 	end
 
 	local player_light_intensity = self._player_light_intensity
@@ -278,7 +288,7 @@ DarknessSystem.calculate_light_value = function (self, position, player_units)
 			end
 		end
 
-		light_value = light_value + player_light_intensity * 1 / closest_distance_sq
+		light_value = light_value + player_light_intensity * (1 / closest_distance_sq)
 	end
 
 	return light_value

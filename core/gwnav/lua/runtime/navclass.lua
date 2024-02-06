@@ -1,3 +1,5 @@
+﻿-- chunkname: @core/gwnav/lua/runtime/navclass.lua
+
 require("core/gwnav/lua/safe_require")
 
 local NavClass = safe_require_guard()
@@ -6,19 +8,19 @@ NavClass.NavClass = function (class, super)
 	class = class or {}
 
 	if next(class) == nil then
-		local meta = {
-			__call = function (self, ...)
-				local object = {}
+		local meta = {}
 
-				setmetatable(object, class)
+		meta.__call = function (self, ...)
+			local object = {}
 
-				if object.init then
-					object:init(...)
-				end
+			setmetatable(object, class)
 
-				return object
+			if object.init then
+				object:init(...)
 			end
-		}
+
+			return object
+		end
 
 		setmetatable(class, meta)
 	end

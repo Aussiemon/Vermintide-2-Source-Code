@@ -1,5 +1,8 @@
+﻿-- chunkname: @scripts/ui/views/bonus_dice_ui.lua
+
 local definitions = local_require("scripts/ui/views/bonus_dice_ui_definitions")
 local math_ease_in_cubic = math.easeInCubic
+
 BonusDiceUI = class(BonusDiceUI)
 
 BonusDiceUI.init = function (self, parent, ingame_ui_context)
@@ -12,6 +15,7 @@ BonusDiceUI.init = function (self, parent, ingame_ui_context)
 	self.dice_widgets = {}
 	self.die_types = {}
 	self.die_count = {}
+
 	local dice_keeper = ingame_ui_context.dice_keeper
 	local dice = dice_keeper:get_dice()
 	local i = 0
@@ -45,6 +49,7 @@ BonusDiceUI.add_die = function (self, die_type)
 	local offset_y = 0
 	local x_times = (active_dice_widgets - 1) % num_dice_columns
 	local y_times = math.floor((active_dice_widgets - 1) / num_dice_columns)
+
 	offset_x = x_times * size[1] + gap * x_times
 	offset_y = -(y_times * size[2] + gap * y_times)
 	widget.style.offset[1] = offset_x
@@ -63,7 +68,7 @@ BonusDiceUI.destroy = function (self)
 end
 
 BonusDiceUI.update = function (self, dt)
-	return
+	do return end
 
 	if DebugKeyHandler.key_pressed("f3", "asdasd", "dadsa") then
 		self.dice_keeper:add_die("normal", 1)

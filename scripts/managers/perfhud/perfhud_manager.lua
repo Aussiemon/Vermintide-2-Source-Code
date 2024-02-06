@@ -1,32 +1,34 @@
+﻿-- chunkname: @scripts/managers/perfhud/perfhud_manager.lua
+
 PerfhudManager = class(PerfhudManager)
 PerfhudSettings = PerfhudSettings or {}
 PerfhudSettings.artist = {
 	key = "f1",
-	custom_parameters = {}
+	custom_parameters = {},
 }
 PerfhudSettings.network = {
 	key = "f2",
-	custom_parameters = {}
+	custom_parameters = {},
 }
 PerfhudSettings.network_peers = {
 	key = "f3",
-	custom_parameters = {}
+	custom_parameters = {},
 }
 PerfhudSettings.network_messages = {
 	key = "f4",
-	custom_parameters = {}
+	custom_parameters = {},
 }
 PerfhudSettings.network_qos = {
 	key = "f5",
-	custom_parameters = {}
+	custom_parameters = {},
 }
 PerfhudSettings.network_ping = {
 	key = "f6",
-	custom_parameters = {}
+	custom_parameters = {},
 }
 PerfhudSettings.lua = {
 	key = "f7",
-	custom_parameters = {}
+	custom_parameters = {},
 }
 
 PerfhudManager.init = function (self)

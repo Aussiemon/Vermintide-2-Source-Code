@@ -1,16 +1,21 @@
+﻿-- chunkname: @scripts/managers/game_mode/game_modes/game_mode_inn_deus.lua
+
 require("scripts/managers/game_mode/game_modes/game_mode_base")
 require("scripts/managers/game_mode/spawning_components/adventure_spawning")
 require("scripts/managers/game_mode/adventure_profile_rules")
 
 local COMPLETE_LEVEL_VAR = false
 local FAIL_LEVEL_VAR = false
+
 GameModeInnDeus = class(GameModeInnDeus, GameModeBase)
 
 GameModeInnDeus.init = function (self, settings, world, ...)
 	GameModeInnDeus.super.init(self, settings, world, ...)
 
 	self._adventure_profile_rules = AdventureProfileRules:new(self._profile_synchronizer, self._network_server)
+
 	local hero_side = Managers.state.side:get_side_from_name("heroes")
+
 	self._adventure_spawning = AdventureSpawning:new(self._profile_synchronizer, hero_side, self._is_server, self._network_server)
 
 	self:_register_player_spawner(self._adventure_spawning)
@@ -25,6 +30,7 @@ GameModeInnDeus.init = function (self, settings, world, ...)
 	self._waystone_type = 0
 	self._player_manager = Managers.player
 	self._statistics_db = self._player_manager:statistics_db()
+
 	local event_manager = Managers.state.event
 
 	event_manager:register(self, "level_start_local_player_spawned", "event_local_player_spawned")
@@ -171,7 +177,7 @@ end
 local WAYSTONE_TYPE = {
 	"waystone",
 	"waystone",
-	"waystone_weave"
+	"waystone_weave",
 }
 
 GameModeInnDeus._state_game_is_matchmaking = function (self)
@@ -190,6 +196,7 @@ GameModeInnDeus._state_game_is_matchmaking = function (self)
 
 	if self._waystone_is_active then
 		self._current_waystone_type = self._waystone_type
+
 		local unit_id = WAYSTONE_TYPE[self._waystone_type]
 
 		if unit_id ~= current_objective_id then
@@ -203,7 +210,7 @@ end
 
 local MAP_TYPE = {
 	"map",
-	"map"
+	"map",
 }
 
 GameModeInnDeus._state_choose_map = function (self)
@@ -227,6 +234,7 @@ GameModeInnDeus._activate_objective_marker = function (self, unit_id)
 
 	if unit then
 		self._current_objective_id = unit_id
+
 		local extension = ScriptUnit.extension(unit, "tutorial_system")
 
 		extension:set_active(true)
@@ -254,6 +262,7 @@ end
 GameModeInnDeus.hot_join_sync = function (self, peer_id)
 	self._waystone_is_active = false
 	self._waystone_type = 0
+
 	local channel_id = PEER_ID_TO_CHANNEL[peer_id]
 
 	RPC.rpc_waystone_active(channel_id, self._waystone_type, self._waystone_is_active, self._current_waystone_type)
@@ -269,6 +278,7 @@ end
 
 GameModeInnDeus.local_player_game_starts = function (self, player, loading_context)
 	local show_profile_on_startup = loading_context.show_profile_on_startup
+
 	loading_context.show_profile_on_startup = nil
 
 	if show_profile_on_startup and not LEVEL_EDITOR_TEST and not Development.parameter("skip-start-menu") then
@@ -276,7 +286,7 @@ GameModeInnDeus.local_player_game_starts = function (self, player, loading_conte
 
 		if IS_CONSOLE then
 			Managers.ui:handle_transition("initial_character_selection_force", {
-				menu_state_name = "character"
+				menu_state_name = "character",
 			})
 		else
 			local first_hero_selection_made = SaveData.first_hero_selection_made
@@ -284,7 +294,7 @@ GameModeInnDeus.local_player_game_starts = function (self, player, loading_conte
 			local show_hero_selection = not backend_waiting_for_input and not first_hero_selection_made
 
 			Managers.ui:handle_transition("initial_start_menu_view_force", {
-				menu_state_name = show_hero_selection and "character" or "overview"
+				menu_state_name = show_hero_selection and "character" or "overview",
 			})
 		end
 	end

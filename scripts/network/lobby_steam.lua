@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/network/lobby_steam.lua
+
 require("scripts/network/lobby_aux")
 require("scripts/network/lobby_host")
 require("scripts/network/lobby_client")
@@ -43,7 +45,7 @@ LobbyInternal.close_channel = function (lobby, channel)
 end
 
 LobbyInternal.is_orphaned = function (engine_lobby)
-	return engine_lobby:is_orphaned()
+	return engine_lobby.is_orphaned(engine_lobby)
 end
 
 LobbyInternal.init_client = function (network_options)
@@ -80,7 +82,9 @@ end
 LobbyInternal.get_lobby = function (lobby_browser, index)
 	local lobby_data = lobby_browser:lobby(index)
 	local lobby_data_all = lobby_browser:data_all(index)
+
 	lobby_data_all.id = lobby_data.id
+
 	local formatted_lobby_data = {}
 
 	for key, value in pairs(lobby_data_all) do
@@ -106,16 +110,14 @@ LobbyInternal.add_filter_requirements = function (requirements, lobby_browser)
 	mm_printf("Filter: Distance = %s", tostring(requirements.distance_filter))
 
 	for key, filter in pairs(requirements.filters) do
-		local value = filter.value
-		local comparison = filter.comparison
+		local value, comparison = filter.value, filter.comparison
 
 		SteamLobbyBrowser.add_filter(lobby_browser, key, value, comparison)
 		mm_printf("Filter: %s, comparison(%s), value=%s", tostring(key), tostring(comparison), tostring(value))
 	end
 
 	for _, filter in ipairs(requirements.near_filters) do
-		local key = filter.key
-		local value = filter.value
+		local key, value = filter.key, filter.value
 
 		SteamLobbyBrowser.add_near_filter(lobby_browser, key, value)
 		mm_printf("Near Filter: %s, value=%s", tostring(key), tostring(value))

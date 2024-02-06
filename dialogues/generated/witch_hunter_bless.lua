@@ -1,72 +1,74 @@
+﻿-- chunkname: @dialogues/generated/witch_hunter_bless.lua
+
 return function ()
 	define_rule({
-		response = "pwh_wp_activate_ability",
 		name = "pwh_wp_activate_ability",
+		response = "pwh_wp_activate_ability",
 		criterias = {
 			{
 				"query_context",
 				"concept",
 				OP.EQ,
-				"activate_ability"
+				"activate_ability",
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"witch_hunter"
+				"witch_hunter",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"witch_hunter"
+				"witch_hunter",
 			},
 			{
 				"user_context",
 				"player_career",
 				OP.EQ,
-				"wh_priest"
-			}
-		}
+				"wh_priest",
+			},
+		},
 	})
 	define_rule({
-		response = "pwh_wp_activate_fury",
 		name = "pwh_wp_activate_fury",
+		response = "pwh_wp_activate_fury",
 		criterias = {
 			{
 				"query_context",
 				"concept",
 				OP.EQ,
-				"activate_fury"
+				"activate_fury",
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"witch_hunter"
+				"witch_hunter",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"witch_hunter"
+				"witch_hunter",
 			},
 			{
 				"user_context",
 				"player_career",
 				OP.EQ,
-				"wh_priest"
-			}
-		}
+				"wh_priest",
+			},
+		},
 	})
 	add_dialogues({
 		pwh_wp_activate_ability = {
-			randomize_indexes_n = 0,
-			face_animations_n = 10,
-			database = "witch_hunter_bless",
-			sound_events_n = 10,
 			category = "activate_ability",
+			database = "witch_hunter_bless",
 			dialogue_animations_n = 10,
+			face_animations_n = 10,
+			randomize_indexes_n = 0,
+			sound_events_n = 10,
 			dialogue_animations = {
 				"dialogue_shout",
 				"dialogue_shout",
@@ -77,7 +79,7 @@ return function ()
 				"dialogue_shout",
 				"dialogue_shout",
 				"dialogue_shout",
-				"dialogue_shout"
+				"dialogue_shout",
 			},
 			face_animations = {
 				"face_angry",
@@ -89,7 +91,7 @@ return function ()
 				"face_angry",
 				"face_angry",
 				"face_angry",
-				"face_angry"
+				"face_angry",
 			},
 			localization_strings = {
 				"pwh_wp_activate_ability_01",
@@ -101,7 +103,7 @@ return function ()
 				"pwh_wp_activate_ability_07",
 				"pwh_wp_activate_ability_08",
 				"pwh_wp_activate_ability_09",
-				"pwh_wp_activate_ability_10"
+				"pwh_wp_activate_ability_10",
 			},
 			randomize_indexes = {},
 			sound_events = {
@@ -114,7 +116,7 @@ return function ()
 				"pwh_wp_activate_ability_07",
 				"pwh_wp_activate_ability_08",
 				"pwh_wp_activate_ability_09",
-				"pwh_wp_activate_ability_10"
+				"pwh_wp_activate_ability_10",
 			},
 			sound_events_duration = {
 				1.5986666679382,
@@ -126,16 +128,16 @@ return function ()
 				2.0018334388733,
 				1.7102916240692,
 				2.5258541107178,
-				3.718291759491
-			}
+				3.718291759491,
+			},
 		},
 		pwh_wp_activate_fury = {
-			randomize_indexes_n = 0,
-			face_animations_n = 15,
-			database = "witch_hunter_bless",
-			sound_events_n = 15,
 			category = "activate_ability",
+			database = "witch_hunter_bless",
 			dialogue_animations_n = 15,
+			face_animations_n = 15,
+			randomize_indexes_n = 0,
+			sound_events_n = 15,
 			dialogue_animations = {
 				"dialogue_shout",
 				"dialogue_shout",
@@ -151,7 +153,7 @@ return function ()
 				"dialogue_shout",
 				"dialogue_shout",
 				"dialogue_shout",
-				"dialogue_shout"
+				"dialogue_shout",
 			},
 			face_animations = {
 				"face_angry",
@@ -168,7 +170,7 @@ return function ()
 				"face_angry",
 				"face_angry",
 				"face_angry",
-				"face_angry"
+				"face_angry",
 			},
 			localization_strings = {
 				"pwh_wp_casting_bark_01",
@@ -185,7 +187,7 @@ return function ()
 				"pwh_wp_casting_bark_23",
 				"pwh_wp_casting_bark_25",
 				"pwh_wp_casting_bark_27",
-				"pwh_wp_casting_bark_29"
+				"pwh_wp_casting_bark_29",
 			},
 			randomize_indexes = {},
 			sound_events = {
@@ -203,7 +205,7 @@ return function ()
 				"pwh_wp_casting_bark_23",
 				"pwh_wp_casting_bark_25",
 				"pwh_wp_casting_bark_27",
-				"pwh_wp_casting_bark_29"
+				"pwh_wp_casting_bark_29",
 			},
 			sound_events_duration = {
 				1.324874997139,
@@ -220,8 +222,8 @@ return function ()
 				1.0914270579815,
 				1.8515207767487,
 				1.5521458387375,
-				1.4707499742508
-			}
-		}
+				1.4707499742508,
+			},
+		},
 	})
 end

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/blood/blood_manager_dummy.lua
+
 require("foundation/scripts/util/api_verification")
 require("scripts/managers/blood/blood_manager")
 

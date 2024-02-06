@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/entity_system/systems/audio/audio_system.lua
+
 AudioSystem = class(AudioSystem, ExtensionSystemBase)
+
 local RPCS = {
 	"rpc_play_2d_audio_event",
 	"rpc_play_2d_audio_unit_event_for_peer",
@@ -11,13 +14,14 @@ local RPCS = {
 	"rpc_server_audio_unit_param_int_event",
 	"rpc_server_audio_unit_param_float_event",
 	"rpc_client_audio_set_global_parameter_with_lerp",
-	"rpc_client_audio_set_global_parameter"
+	"rpc_client_audio_set_global_parameter",
 }
 
 AudioSystem.init = function (self, entity_system_creation_context, system_name)
 	AudioSystem.super.init(self, entity_system_creation_context, system_name, {})
 
 	local network_event_delegate = entity_system_creation_context.network_event_delegate
+
 	self.network_event_delegate = network_event_delegate
 
 	network_event_delegate:register(self, unpack(RPCS))
@@ -39,7 +43,7 @@ end
 
 local LERP_PROGRESS_PER_SECOND = {
 	default = 0.125,
-	demo_slowmo = 2
+	demo_slowmo = 2,
 }
 
 AudioSystem._update_global_parameters = function (self, dt)
@@ -60,7 +64,9 @@ AudioSystem._update_global_parameters = function (self, dt)
 			local start_value = data.interpolation_start_value
 			local end_value = data.interpolation_end_value
 			local increment_value = LERP_PROGRESS_PER_SECOND[name] or LERP_PROGRESS_PER_SECOND.default
+
 			progress = math.clamp(progress + dt * increment_value, 0, 1)
+
 			local current_value = math.lerp(start_value, end_value, progress)
 
 			if math.abs(end_value - current_value) < 0.005 then
@@ -196,6 +202,7 @@ end
 AudioSystem.set_global_parameter_with_lerp = function (self, name, value)
 	local global_parameter_data = self.global_parameter_data[name] or {}
 	local current_value = global_parameter_data.interpolation_current_value or 0
+
 	global_parameter_data.interpolation_start_value = current_value
 	global_parameter_data.interpolation_end_value = value
 	global_parameter_data.interpolation_progress_value = 0
@@ -257,7 +264,7 @@ AudioSystem.rpc_server_audio_event = function (self, channel_id, sound_id)
 	local sound_event = NetworkLookup.sound_events[sound_id]
 	local entity_manager = Managers.state.entity
 	local surrounding_aware_system = entity_manager:system("surrounding_aware_system")
-	local unit = nil
+	local unit
 	local event_name = "heard_sound"
 	local distance = math.huge
 
@@ -270,7 +277,7 @@ AudioSystem.rpc_server_audio_event_at_pos = function (self, channel_id, sound_id
 	local sound_event = NetworkLookup.sound_events[sound_id]
 	local entity_manager = Managers.state.entity
 	local surrounding_aware_system = entity_manager:system("surrounding_aware_system")
-	local unit = nil
+	local unit
 	local event_name = "heard_sound"
 	local distance = math.huge
 

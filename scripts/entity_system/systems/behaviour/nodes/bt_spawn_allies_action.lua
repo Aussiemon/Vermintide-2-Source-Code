@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_spawn_allies_action.lua
+
 BTSpawnAllies = class(BTSpawnAllies, BTNode)
 
 BTSpawnAllies.init = function (self, ...)
@@ -16,12 +18,14 @@ end
 
 BTSpawnAllies.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
+
 	blackboard.action = action
 	blackboard.active_node = BTSpawnAllies
 	blackboard.disable_improve_slot_position = true
+
 	local stay_still = action.stay_still
 	local find_spawn_points = action.find_spawn_points
-	local call_position, data = nil
+	local call_position, data
 
 	if blackboard.has_call_position then
 		data = blackboard.spawning_allies
@@ -29,7 +33,7 @@ BTSpawnAllies.enter = function (self, unit, blackboard, t)
 		blackboard.has_call_position = false
 	elseif find_spawn_points then
 		data = {
-			end_time = math.huge
+			end_time = math.huge,
 		}
 		blackboard.spawning_allies = data
 		call_position = BTSpawnAllies.find_spawn_point(unit, blackboard, action, data)
@@ -68,6 +72,7 @@ BTSpawnAllies.enter = function (self, unit, blackboard, t)
 				blackboard.follow_animation_locked = anim_locked
 				blackboard.anim_cb_rotation_start = nil
 				blackboard.move_animation_name = start_anim
+
 				local rot_scale = AiAnimUtils.get_animation_rotation_scale(unit, POSITION_LOOKUP[blackboard.target_unit], start_anim, action.start_anims_data)
 
 				LocomotionUtils.set_animation_rotation_scale(unit, rot_scale)
@@ -108,6 +113,7 @@ BTSpawnAllies.leave = function (self, unit, blackboard, t, reason)
 		if blackboard.action.defensive_mode_duration then
 			if type(blackboard.action.defensive_mode_duration) == "table" then
 				local difficulty_rank = Managers.state.difficulty:get_difficulty_rank()
+
 				blackboard.defensive_mode_duration = blackboard.action.defensive_mode_duration[difficulty_rank]
 			else
 				blackboard.defensive_mode_duration = blackboard.action.defensive_mode_duration
@@ -124,6 +130,7 @@ BTSpawnAllies.leave = function (self, unit, blackboard, t, reason)
 
 		if blackboard.action.defensive_mode_duration and type(blackboard.action.defensive_mode_duration) == "table" then
 			local difficulty_rank = Managers.state.difficulty:get_difficulty_rank()
+
 			blackboard.defensive_mode_duration = blackboard.action.defensive_mode_duration[difficulty_rank]
 		else
 			blackboard.defensive_mode_duration = blackboard.action.defensive_mode_duration or 20
@@ -198,13 +205,15 @@ BTSpawnAllies.find_spawn_point = function (unit, blackboard, action, data, overr
 	if num_players > 0 then
 		local flat_average_player_position = Vector3.flat(average_player_position / num_players)
 		local best_dist_sq = -math.huge
-		local best_index = nil
+		local best_index
 		local num_spawners = #spawners
 
 		for i = 1, num_spawners do
 			local spawner = spawners[i]
 			local pos = ScriptUnit.extension(spawner, "spawner_system"):spawn_position()
+
 			SPAWN_POS_TEMP[i] = pos
+
 			local dist_sq = Vector3_distance_squared(Vector3.flat(pos), flat_average_player_position)
 
 			if best_dist_sq < dist_sq then
@@ -218,7 +227,7 @@ BTSpawnAllies.find_spawn_point = function (unit, blackboard, action, data, overr
 		end
 
 		local best_pos = SPAWN_POS_TEMP[best_index]
-		local best_other_index = nil
+		local best_other_index
 		local best_other_dist_sq = math.huge
 
 		for i = 1, num_spawners do
@@ -236,13 +245,13 @@ BTSpawnAllies.find_spawn_point = function (unit, blackboard, action, data, overr
 		local spawner_1 = spawners[best_index]
 		local spawner_2 = spawners[best_other_index]
 		local fwd = Vector3.normalize(Vector3.flat(Quaternion.forward(ScriptUnit.extension(spawner_1, "spawner_system"):spawn_rotation()) + Quaternion.forward(ScriptUnit.extension(spawner_2, "spawner_system"):spawn_rotation())))
-		local pos1 = SPAWN_POS_TEMP[best_index]
-		local pos2 = SPAWN_POS_TEMP[best_other_index]
+		local pos1, pos2 = SPAWN_POS_TEMP[best_index], SPAWN_POS_TEMP[best_other_index]
 
 		draw("sphere", pos1, 0.34, Color(0, 255, 255))
 		draw("sphere", pos2, 0.34, Color(0, 255, 255))
 
 		local average_pos = (SPAWN_POS_TEMP[best_index] + SPAWN_POS_TEMP[best_other_index]) * 0.5
+
 		average_pos.z = math.max(SPAWN_POS_TEMP[best_index].z, SPAWN_POS_TEMP[best_other_index].z)
 
 		draw("sphere", average_pos, 0.34, Color(0, 255, 255))
@@ -251,14 +260,14 @@ BTSpawnAllies.find_spawn_point = function (unit, blackboard, action, data, overr
 		local step = 0.25
 		local nav_world = blackboard.nav_world
 		local check_pos = average_pos + fwd * 1.5
-		local above = 0.25
-		local below = 10
-		local success, z = nil
+		local above, below = 0.25, 10
+		local success, z
 
 		draw("line", average_pos, check_pos, Color(0, 255, 255))
 
 		for i = 1, 10 do
 			local old_check = check_pos
+
 			check_pos = check_pos + step * fwd
 			success, z = GwNavQueries.triangle_from_position(nav_world, check_pos, above, below)
 
@@ -280,7 +289,7 @@ BTSpawnAllies.find_spawn_point = function (unit, blackboard, action, data, overr
 		data.spawn_forward = Vector3Box(fwd)
 		data.spawners = {
 			spawners[best_index],
-			spawners[best_other_index]
+			spawners[best_other_index],
 		}
 
 		table.clear(SPAWN_POS_TEMP)
@@ -288,7 +297,7 @@ BTSpawnAllies.find_spawn_point = function (unit, blackboard, action, data, overr
 		data.spawn_forward = Vector3Box(Quaternion.forward(Unit.local_rotation(unit, 0)))
 		data.spawners = {
 			spawners[1],
-			spawners[2]
+			spawners[2],
 		}
 	end
 
@@ -331,7 +340,7 @@ BTSpawnAllies._spawn = function (self, unit, data, blackboard, t)
 			local unit = spawners[(i - 1) % #spawners + 1]
 
 			spawner_system:spawn_horde(unit, {
-				spawn_list[i]
+				spawn_list[i],
 			}, side_id)
 		end
 	end
@@ -348,9 +357,10 @@ BTSpawnAllies._spawn = function (self, unit, data, blackboard, t)
 		local group_template = {
 			size = 0,
 			template = "horde",
-			id = Managers.state.entity:system("ai_group_system"):generate_group_id()
+			id = Managers.state.entity:system("ai_group_system"):generate_group_id(),
 		}
 		local horde = conflict_director.horde_spawner:execute_event_horde(t, terror_event_id, side_id, composition_type, limit_spawners, silent, group_template, strictly_not_close_to_players, nil, use_closest_spawners, source_unit)
+
 		blackboard.spawn_allies_horde = horde
 	end
 end
@@ -362,7 +372,7 @@ BTSpawnAllies.run = function (self, unit, blackboard, t, dt)
 		return "done"
 	end
 
-	if data.end_time < t then
+	if t > data.end_time then
 		blackboard.played_stinger = nil
 
 		return "done"

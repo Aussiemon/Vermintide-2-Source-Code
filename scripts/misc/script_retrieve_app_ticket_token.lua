@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/misc/script_retrieve_app_ticket_token.lua
+
 ScriptReceiveAppTicketToken = class(ScriptReceiveAppTicketToken)
 
 ScriptReceiveAppTicketToken.init = function (self)
@@ -18,7 +20,7 @@ end
 ScriptReceiveAppTicketToken.info = function (self)
 	local info = {
 		encrypted_app_ticket = self._encrypted_app_ticket,
-		error = self._error
+		error = self._error,
 	}
 
 	return info

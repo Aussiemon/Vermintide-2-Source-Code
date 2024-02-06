@@ -1,7 +1,10 @@
+﻿-- chunkname: @scripts/entity_system/systems/animation/animation_system.lua
+
 require("scripts/entity_system/systems/animation/animation_callback_templates")
 require("scripts/entity_system/systems/animation/networked_animation_variable_templates")
 
 AnimationSystem = class(AnimationSystem, ExtensionSystemBase)
+
 local position_lookup = POSITION_LOOKUP
 local RPCS = {
 	"rpc_sync_anim_state_1",
@@ -23,7 +26,7 @@ local RPCS = {
 	"rpc_link_unit",
 	"rpc_anim_set_variable_by_distance",
 	"rpc_anim_set_variable_by_time",
-	"rpc_update_anim_variable_done"
+	"rpc_update_anim_variable_done",
 }
 local extensions = {}
 
@@ -32,6 +35,7 @@ AnimationSystem.init = function (self, entity_system_creation_context, system_na
 	Managers.state.event:register(self, "animation_callback", "animation_callback")
 
 	local network_event_delegate = entity_system_creation_context.network_event_delegate
+
 	self.network_event_delegate = network_event_delegate
 
 	network_event_delegate:register(self, unpack(RPCS))
@@ -45,7 +49,7 @@ AnimationSystem.destroy = function (self)
 end
 
 AnimationSystem.animation_callback = function (self, unit, callback, param)
-	local cb = nil
+	local cb
 
 	if self.is_server then
 		cb = AnimationCallbackTemplates.server[callback]
@@ -79,7 +83,7 @@ AnimationSystem.update_anim_variables = function (self, t)
 		local pos = position_lookup[unit]
 
 		if pos then
-			local anim_value = nil
+			local anim_value
 
 			if data.goal_pos then
 				local pos = position_lookup[unit]
@@ -91,10 +95,12 @@ AnimationSystem.update_anim_variables = function (self, t)
 
 				local distance = vector3_length(to_target)
 				local scale = data.scale
+
 				anim_value = math_clamp(scale - scale * distance / data.initial_distance, 0, scale)
 			else
 				local jump_time = t - data.start_time
 				local scale = data.scale
+
 				anim_value = math_clamp(scale * jump_time / data.duration, 0, scale)
 			end
 
@@ -199,7 +205,7 @@ AnimationSystem._init_networked_variables = function (self, unit, event_name)
 		local scratchpad = {
 			variable_name = variable_name,
 			variable_index = Unit.animation_find_variable(unit, variable_name),
-			variable_data = data
+			variable_data = data,
 		}
 		local template = NetworkedAnimationVariableTemplates[variable_name]
 
@@ -207,11 +213,9 @@ AnimationSystem._init_networked_variables = function (self, unit, event_name)
 			template.init(unit, scratchpad)
 		end
 
-		if not networked_anim_vars[unit] then
-			local unit_vars = {
-				updates = {}
-			}
-		end
+		local unit_vars = networked_anim_vars[unit] or {
+			updates = {},
+		}
 
 		if template.update then
 			unit_vars.updates[#unit_vars.updates + 1] = scratchpad
@@ -406,7 +410,7 @@ AnimationSystem._set_variable_by_distance = function (self, unit, anim_variable_
 			anim_variable_index = anim_variable_index,
 			initial_distance = initial_distance,
 			scale = scale,
-			flat_distance = flat_distance
+			flat_distance = flat_distance,
 		}
 	end
 end
@@ -433,7 +437,7 @@ AnimationSystem._set_variable_by_time = function (self, unit, anim_variable_inde
 			start_time = t,
 			duration = duration,
 			anim_variable_index = anim_variable_index,
-			scale = scale
+			scale = scale,
 		}
 	end
 end

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/ai/ai_commander_system.lua
+
 require("scripts/unit_extensions/ai_commander/command_states")
 require("scripts/unit_extensions/ai_commander/controlled_unit_templates")
 
@@ -7,11 +9,12 @@ local RPCS = {
 	"rpc_cancel_current_command",
 	"rpc_command_stand_ground",
 	"rpc_command_attack",
-	"rpc_set_controlled_unit_template"
+	"rpc_set_controlled_unit_template",
 }
 local extensions = {
-	"AICommanderExtension"
+	"AICommanderExtension",
 }
+
 AICommanderSystem = class(AICommanderSystem, ExtensionSystemBase)
 
 AICommanderSystem.init = function (self, entity_system_creation_context, system_name)
@@ -48,6 +51,7 @@ end
 
 AICommanderSystem.on_add_extension = function (self, world, unit, extension_name, extension_init_data)
 	local extension = AICommanderSystem.super.on_add_extension(self, world, unit, extension_name, extension_init_data)
+
 	self._extensions[unit] = extension
 
 	return extension

@@ -1,10 +1,13 @@
+﻿-- chunkname: @scripts/helpers/loadout_utils.lua
+
 LoadoutUtils = LoadoutUtils or {}
+
 local LOADOUT_SLOTS = LOADOUT_SLOTS or {
-	slot_necklace = true,
-	slot_trinket_1 = true,
-	slot_ring = true,
 	slot_melee = true,
-	slot_ranged = true
+	slot_necklace = true,
+	slot_ranged = true,
+	slot_ring = true,
+	slot_trinket_1 = true,
 }
 
 LoadoutUtils.sync_loadout_slot = function (player, slot_name, item, sync_to_specific_peer_id)
@@ -71,15 +74,15 @@ LoadoutUtils.create_loadout_item_from_rpc_data = function (slot_id, item_id, rar
 	local power_level = power_level
 	local num_properties, properties, traits = LoadoutUtils.properties_from_rpc_params(properties_array, properties_values_array, traits_array)
 	local item_template = ItemMasterList[item_key]
-	local item = {
-		data = item_template,
-		power_level = power_level,
-		rarity = rarity,
-		key = item_key,
-		ItemId = item_key,
-		properties = num_properties > 0 and properties or nil,
-		traits = #traits > 0 and traits or nil
-	}
+	local item = {}
+
+	item.data = item_template
+	item.power_level = power_level
+	item.rarity = rarity
+	item.key = item_key
+	item.ItemId = item_key
+	item.properties = num_properties > 0 and properties or nil
+	item.traits = #traits > 0 and traits or nil
 
 	return slot_name, item
 end
@@ -104,6 +107,7 @@ LoadoutUtils.properties_to_rpc_params = function (item)
 	if item_traits then
 		for i = 1, #item_traits do
 			local trait_name = item_traits[i]
+
 			traits_ids[#traits_ids + 1] = traits_lookup[trait_name]
 		end
 	end
@@ -122,12 +126,14 @@ LoadoutUtils.properties_from_rpc_params = function (properties_array, properties
 		local property_id = properties_array[i]
 		local property_name = properties_lookup[property_id]
 		local property_value = properties_values_array[i]
+
 		properties[property_name] = property_value
 		num_properties = num_properties + 1
 	end
 
 	for i = 1, #traits_array do
 		local trait_id = traits_array[i]
+
 		traits[#traits + 1] = traits_lookup[trait_id]
 	end
 

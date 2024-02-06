@@ -1,7 +1,10 @@
+﻿-- chunkname: @scripts/settings/dlcs/shovel/passive_ability_necromancer.lua
+
 local RPCS = {
-	"rpc_necromancer_passive_spawn_pet"
+	"rpc_necromancer_passive_spawn_pet",
 }
 local RAISE_DEAD_COST = 10
+
 PassiveAbilityNecromancer = class(PassiveAbilityNecromancer)
 
 PassiveAbilityNecromancer.init = function (self, extension_init_context, unit, extension_init_data, ability_init_data)
@@ -25,7 +28,7 @@ PassiveAbilityNecromancer.init = function (self, extension_init_context, unit, e
 
 	self._unit_storage = extension_init_context.unit_storage
 	self._ping_explosion_params = {
-		source_attacker_unit = unit
+		source_attacker_unit = unit,
 	}
 end
 
@@ -33,10 +36,12 @@ PassiveAbilityNecromancer.extensions_ready = function (self, world, unit)
 	self._buff_system = Managers.state.entity:system("buff_system")
 	self._buff_extension = ScriptUnit.extension(unit, "buff_system")
 	self._status_extension = ScriptUnit.extension(unit, "status_system")
+
 	local career_extension = ScriptUnit.has_extension(unit, "career_system")
 
 	if career_extension then
 		local ability_id = career_extension:ability_id("bw_necromancer")
+
 		self._career_ability = career_extension:ability_by_id(ability_id)
 	end
 
@@ -140,6 +145,7 @@ local angle_between_positions = math.pi * 0.05
 for i = 1, num_positions do
 	local angle = (i - (num_positions * 0.5 - 0.5)) * angle_between_positions
 	local relative_pos = Vector3Box(Quaternion.rotate(Quaternion.axis_angle(Vector3.up(), angle), Vector3.forward()) * offset)
+
 	relative_raise_positions[#relative_raise_positions + 1] = relative_pos
 end
 
@@ -150,6 +156,7 @@ PassiveAbilityNecromancer.spawn_pets = function (self, num_pets, template_name)
 
 	for i = 1, num_pets do
 		spawn_index = spawn_index + 1
+
 		local d = relative_raise_positions[spawn_index % #relative_raise_positions + 1]
 		local relative_pos = d:unbox()
 
@@ -157,7 +164,7 @@ PassiveAbilityNecromancer.spawn_pets = function (self, num_pets, template_name)
 			self._spawn_queue[#self._spawn_queue + 1] = {
 				breed_name = breed_name,
 				relative_pos = Vector3Box(relative_pos),
-				template_name = template_name
+				template_name = template_name,
 			}
 		else
 			local network_transmit = self._network_transmit
@@ -196,13 +203,14 @@ PassiveAbilityNecromancer.spawn_pet = function (self, breed_name, relative_pos, 
 				commander_ext:add_controlled_unit(pet_unit, template_name, t)
 
 				local params = FrameTable.alloc_table()
+
 				params.source_attacker_unit = necromancer_unit
 
 				self._buff_system:add_buff_synced(pet_unit, "sienna_necromancer_pet_attack_sfx", BuffSyncType.Local, params, self._player.peer_id)
 			end
-		end
+		end,
 	}
-	local fp_rotation_flat = nil
+	local fp_rotation_flat
 
 	if self._first_person_extension then
 		fp_rotation_flat = self._first_person_extension:current_rotation()
@@ -211,6 +219,7 @@ PassiveAbilityNecromancer.spawn_pet = function (self, breed_name, relative_pos, 
 		local game_object_id = self._unit_storage:go_id(necromancer_unit)
 		local game = Managers.state.network:game()
 		local aim_direction = GameSession.game_object_field(game, game_object_id, "aim_direction")
+
 		fp_rotation_flat = Quaternion.look(Vector3.flat(aim_direction), Vector3.up())
 	end
 
@@ -235,10 +244,10 @@ PassiveAbilityNecromancer.spawn_pet = function (self, breed_name, relative_pos, 
 end
 
 local ignored_life_essence_breeds = {
-	pet_skeleton_with_shield = true,
-	pet_skeleton_dual_wield = true,
 	pet_skeleton = true,
-	pet_skeleton_armored = true
+	pet_skeleton_armored = true,
+	pet_skeleton_dual_wield = true,
+	pet_skeleton_with_shield = true,
 }
 
 PassiveAbilityNecromancer.event_on_killed = function (self, killing_blow, breed_killed, breed_attacker, attacker_unit, killed_unit)
@@ -254,6 +263,7 @@ PassiveAbilityNecromancer.event_on_killed = function (self, killing_blow, breed_
 	end
 
 	self._death_stacks = self._death_stacks + life_essence
+
 	local dead_to_raise = math.floor(self._death_stacks / RAISE_DEAD_COST)
 
 	if dead_to_raise > 0 then
@@ -294,10 +304,11 @@ PassiveAbilityNecromancer.rpc_necromancer_passive_spawn_pet = function (self, ch
 
 	local breed_name = NetworkLookup.breeds[breed_id]
 	local template_name = NetworkLookup.controlled_unit_templates[template_id]
+
 	self._spawn_queue[#self._spawn_queue + 1] = {
 		breed_name = breed_name,
 		relative_pos = Vector3Box(relative_pos),
-		template_name = template_name
+		template_name = template_name,
 	}
 end
 
@@ -311,6 +322,7 @@ PassiveAbilityNecromancer._update_spawning = function (self)
 		local relative_pos = spawn_data.relative_pos
 		local template_name = spawn_data.template_name
 		local success = self:spawn_pet(breed_name, relative_pos:unbox(), template_name)
+
 		queue[i] = nil
 
 		if not success then

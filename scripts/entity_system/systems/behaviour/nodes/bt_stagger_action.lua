@@ -1,6 +1,9 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_stagger_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 local stagger_types = require("scripts/utils/stagger_types")
+
 BTStaggerAction = class(BTStaggerAction, BTNode)
 
 BTStaggerAction.init = function (self, ...)
@@ -8,6 +11,7 @@ BTStaggerAction.init = function (self, ...)
 end
 
 BTStaggerAction.name = "BTStaggerAction"
+
 local DEFAULT_IN_AIR_MOVER_CHECK_RADIUS = 0.35
 
 BTStaggerAction.enter = function (self, unit, blackboard, t)
@@ -32,13 +36,16 @@ BTStaggerAction.enter = function (self, unit, blackboard, t)
 	blackboard.attack_aborted = true
 	blackboard.move_state = "stagger"
 	blackboard.active_node = BTStaggerAction
+
 	local action_data = self._tree_node.action_data
+
 	blackboard.action = action_data
+
 	local ai_base_extension = ScriptUnit.extension(unit, "ai_system")
 
 	ai_base_extension:increase_stagger_count()
 
-	local stagger_anims, idle_event, post_stagger_event, override_rotation = nil
+	local stagger_anims, idle_event, post_stagger_event, override_rotation
 	local custom_enter_function = action_data.custom_enter_function
 
 	if custom_enter_function then
@@ -89,6 +96,7 @@ BTStaggerAction.enter = function (self, unit, blackboard, t)
 
 	if blackboard.stagger_type == stagger_types.heavy or blackboard.stagger_type == stagger_types.explosion then
 		local hit_reaction_extension = ScriptUnit.extension(unit, "hit_reaction_system")
+
 		hit_reaction_extension.force_ragdoll_on_death = true
 	end
 
@@ -97,6 +105,7 @@ BTStaggerAction.enter = function (self, unit, blackboard, t)
 	locomotion_extension:use_lerp_rotation(false)
 
 	blackboard.spawn_to_running = nil
+
 	local ai_slot_system = Managers.state.entity:system("ai_slot_system")
 
 	ai_slot_system:do_slot_search(unit, false)
@@ -107,12 +116,14 @@ BTStaggerAction._select_animation = function (self, unit, blackboard, impact_vec
 	local impact_dir = Vector3.normalize(impact_vec)
 	local my_fwd = Quaternion.forward(Unit.local_rotation(unit, 0))
 	local dot = Vector3.dot(my_fwd, impact_dir)
+
 	dot = math.clamp(dot, -1, 1)
+
 	local angle = math.acos(dot)
 	local action = blackboard.action
 	local locomotion_extension = blackboard.locomotion_extension
 	local velocity = locomotion_extension:current_velocity()
-	local impact_rot, anim_table = nil
+	local impact_rot, anim_table
 	local moving_stagger_distance = action.moving_stagger_minimum_destination_distance
 	local in_moving_stagger_distane = moving_stagger_distance and moving_stagger_distance < blackboard.destination_dist
 	local moving_stagger_threshold = action.moving_stagger_threshold
@@ -141,10 +152,12 @@ BTStaggerAction._select_animation = function (self, unit, blackboard, impact_vec
 			anim_table = moving_stagger and stagger_anims.moving_fwd or stagger_anims.fwd
 		elseif Vector3.cross(my_fwd, impact_dir).z > 0 then
 			local dir = Vector3.cross(Vector3(0, 0, -1), impact_dir)
+
 			impact_rot = Quaternion.look(dir)
 			anim_table = moving_stagger and stagger_anims.moving_left or stagger_anims.left
 		else
 			local dir = Vector3.cross(Vector3(0, 0, 1), impact_dir)
+
 			impact_rot = Quaternion.look(dir)
 			anim_table = moving_stagger and stagger_anims.moving_right or stagger_anims.right
 		end
@@ -159,6 +172,7 @@ BTStaggerAction._select_animation = function (self, unit, blackboard, impact_vec
 	end
 
 	blackboard.last_stagger_anim = anim
+
 	local yaw = Quaternion.yaw(impact_rot)
 	local final_rotation = Quaternion(Vector3.up(), yaw)
 
@@ -206,7 +220,7 @@ BTStaggerAction.leave = function (self, unit, blackboard, t, reason, destroy)
 		LocomotionUtils.set_animation_translation_scale(unit, Vector3(1, 1, 1))
 
 		local network_manager = Managers.state.network
-		local post_stagger_anim_event = nil
+		local post_stagger_anim_event
 
 		if blackboard.post_stagger_event then
 			post_stagger_anim_event = blackboard.post_stagger_event
@@ -229,7 +243,9 @@ BTStaggerAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	end
 
 	local hit_reaction_extension = ScriptUnit.has_extension(unit, "hit_reaction_system")
+
 	hit_reaction_extension.force_ragdoll_on_death = nil
+
 	local ai_slot_system = Managers.state.entity:system("ai_slot_system")
 
 	ai_slot_system:do_slot_search(unit, true)
@@ -269,14 +285,14 @@ BTStaggerAction.run = function (self, unit, blackboard, t, dt)
 		end
 	end
 
-	local stagger_time_finished = blackboard.stagger_time < t
+	local stagger_time_finished = t > blackboard.stagger_time
 	local stagger_ignore_anim_cb = blackboard.stagger_ignore_anim_cb
 
-	if blackboard.stagger_immune_time and blackboard.stagger_immune_time < t then
+	if blackboard.stagger_immune_time and t > blackboard.stagger_immune_time then
 		blackboard.stagger_immune_time = nil
 	end
 
-	if blackboard.heavy_stagger_immune_time and blackboard.heavy_stagger_immune_time < t then
+	if blackboard.heavy_stagger_immune_time and t > blackboard.heavy_stagger_immune_time then
 		blackboard.heavy_stagger_immune_time = nil
 	end
 

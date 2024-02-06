@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/start_game_view/windows/start_game_window_background_console.lua
+
 require("scripts/ui/views/menu_world_previewer")
 
 local definitions = local_require("scripts/ui/views/start_game_view/windows/definitions/start_game_window_background_console_definitions")
@@ -5,6 +7,7 @@ local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
 local camera_position_by_character = definitions.camera_position_by_character
 local loading_overlay_widget_definitions = definitions.loading_overlay_widgets
+
 StartGameWindowBackgroundConsole = class(StartGameWindowBackgroundConsole)
 StartGameWindowBackgroundConsole.NAME = "StartGameWindowBackgroundConsole"
 
@@ -12,13 +15,15 @@ StartGameWindowBackgroundConsole.on_enter = function (self, params, offset)
 	print("[StartGameViewWindow] Enter Substate StartGameWindowBackgroundConsole")
 
 	self.parent = params.parent
+
 	local ingame_ui_context = params.ingame_ui_context
+
 	self.ingame_ui_context = ingame_ui_context
 	self.ui_renderer = ingame_ui_context.ui_renderer
 	self.ui_top_renderer = ingame_ui_context.ui_top_renderer
 	self.input_manager = ingame_ui_context.input_manager
 	self.render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 	self._animations = {}
 
@@ -33,9 +38,9 @@ StartGameWindowBackgroundConsole._get_with_mechanism = function (self, lookup)
 end
 
 local MOOD_PER_MECHANISM = {
-	versus = "menu_versus",
 	adventure = "default",
-	deus = "menu_chaos_wastes_01"
+	deus = "menu_chaos_wastes_01",
+	versus = "menu_versus",
 }
 
 StartGameWindowBackgroundConsole._create_viewport_definition = function (self)
@@ -44,38 +49,38 @@ StartGameWindowBackgroundConsole._create_viewport_definition = function (self)
 		element = UIElements.Viewport,
 		style = {
 			viewport = {
-				layer = 990,
-				viewport_name = "character_preview_viewport",
-				shading_environment = "environment/ui_end_screen",
 				clear_screen_on_create = true,
-				level_name = "levels/ui_keep_menu/world",
 				enable_sub_gui = false,
 				fov = 50,
+				layer = 990,
+				level_name = "levels/ui_keep_menu/world",
+				shading_environment = "environment/ui_end_screen",
+				viewport_name = "character_preview_viewport",
 				world_name = "character_preview",
 				world_flags = {
 					Application.DISABLE_SOUND,
 					Application.DISABLE_ESRAM,
-					Application.ENABLE_VOLUMETRICS
+					Application.ENABLE_VOLUMETRICS,
 				},
 				object_sets = LevelResource.object_set_names("levels/ui_keep_menu/world"),
 				mood_setting = self:_get_with_mechanism(MOOD_PER_MECHANISM),
 				camera_position = {
 					0,
 					0,
-					0
+					0,
 				},
 				camera_lookat = {
 					0,
 					0,
-					0
-				}
-			}
+					0,
+				},
+			},
 		},
 		content = {
 			button_hotspot = {
-				allow_multi_hover = true
-			}
-		}
+				allow_multi_hover = true,
+			},
+		},
 	}
 end
 
@@ -97,6 +102,7 @@ StartGameWindowBackgroundConsole.create_ui_elements = function (self, params, of
 
 	if offset then
 		local window_position = self.ui_scenegraph.window.local_position
+
 		window_position[1] = window_position[1] + offset[1]
 		window_position[2] = window_position[2] + offset[2]
 		window_position[3] = window_position[3] + offset[3]
@@ -106,10 +112,12 @@ end
 StartGameWindowBackgroundConsole._setup_object_sets = function (self)
 	local level_name = self._viewport_widget_definition.style.viewport.level_name
 	local object_set_names = LevelResource.object_set_names(level_name)
+
 	self._object_sets = {}
 
 	for i = 1, #object_set_names do
 		local object_set_name = object_set_names[i]
+
 		self._object_sets[object_set_name] = LevelResource.unit_indices_in_object_set(level_name, object_set_name)
 	end
 end
@@ -178,7 +186,7 @@ StartGameWindowBackgroundConsole.post_update = function (self, dt, t)
 
 	if not self.initialized and self._viewport_widget then
 		local world_previewer = MenuWorldPreviewer:new(self.ingame_ui_context, camera_position_by_character, "StartGameWindowBackgroundConsole")
-		local hero_name = nil
+		local hero_name
 
 		world_previewer:on_enter(self._viewport_widget, hero_name)
 
@@ -239,6 +247,7 @@ StartGameWindowBackgroundConsole._update_loading_overlay_fadeout_animation = fun
 	local loading_overlay = loading_overlay_widgets_by_name.loading_overlay
 	local loading_overlay_loading_glow = loading_overlay_widgets_by_name.loading_overlay_loading_glow
 	local loading_overlay_loading_frame = loading_overlay_widgets_by_name.loading_overlay_loading_frame
+
 	loading_overlay.style.rect.color[1] = alpha
 	loading_overlay_loading_glow.style.texture_id.color[1] = alpha
 	loading_overlay_loading_frame.style.texture_id.color[1] = alpha

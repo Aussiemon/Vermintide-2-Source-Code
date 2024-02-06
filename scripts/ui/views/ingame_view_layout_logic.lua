@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/ingame_view_layout_logic.lua
+
 IngameViewLayoutLogic = class(IngameViewLayoutLogic)
 
 IngameViewLayoutLogic.init = function (self, ingame_ui_context, params, menu_layouts, full_access_layout)
@@ -5,7 +7,9 @@ IngameViewLayoutLogic.init = function (self, ingame_ui_context, params, menu_lay
 	self._full_access_layout = full_access_layout
 	self.ingame_ui = ingame_ui_context.ingame_ui
 	self._params = params
+
 	local is_in_inn = ingame_ui_context.is_in_inn
+
 	self.is_server = ingame_ui_context.is_server
 	self.layout_list = is_in_inn and menu_layouts.in_menu or menu_layouts.in_game
 end
@@ -36,6 +40,7 @@ IngameViewLayoutLogic.setup_button_layout = function (self, layout_data)
 			local requires_player_unit = data.requires_player_unit
 			local fade = data.fade
 			local force_open = data.force_open
+
 			active_button_data[#active_button_data + 1] = {
 				display_name = display_name,
 				display_name_func = display_name_func,
@@ -48,7 +53,7 @@ IngameViewLayoutLogic.setup_button_layout = function (self, layout_data)
 				disable_when_matchmaking_ready = disable_when_matchmaking_ready,
 				requires_player_unit = requires_player_unit,
 				fade = fade,
-				force_open = force_open
+				force_open = force_open,
 			}
 		end
 	end
@@ -64,12 +69,14 @@ IngameViewLayoutLogic._update_menu_options = function (self)
 	else
 		local num_human_players = Managers.player:num_human_players()
 		local update_layout = self.pause_menu_full_access or self.num_players ~= num_human_players
+
 		self.pause_menu_full_access = nil
 
 		if update_layout then
 			self.num_players = num_human_players
+
 			local layout_list = self.layout_list
-			local new_menu_layout = nil
+			local new_menu_layout
 			local level_key = Managers.state.game_mode:level_key()
 			local is_offline = Managers.account:offline_mode()
 
@@ -143,7 +150,7 @@ IngameViewLayoutLogic.execute_layout_option = function (self, index)
 			local transition_params = {
 				menu_state_name = transition_state,
 				menu_sub_state_name = transition_sub_state,
-				force_open = force_open
+				force_open = force_open,
 			}
 
 			if fade then

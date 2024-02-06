@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_combat_idle_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTCombatIdleAction = class(BTCombatIdleAction, BTNode)
@@ -44,6 +46,7 @@ BTCombatIdleAction._init_idle_anim = function (self, unit, blackboard)
 	local network_manager = Managers.state.network
 	local animation = "idle"
 	local action = self._tree_node.action_data
+
 	blackboard.action = action
 
 	if action and action.alerted_anims and blackboard.confirmed_player_sighting then
@@ -54,12 +57,14 @@ BTCombatIdleAction._init_idle_anim = function (self, unit, blackboard)
 		if action and action.animations then
 			local anims = action.animations
 			local index = action.anim_cycle_index % #anims + 1
+
 			animation = anims[index]
 			action.anim_cycle_index = index
 		end
 	elseif action and action.combat_animations then
 		local anims = action.combat_animations
 		local index = action.anim_cycle_index % #anims + 1
+
 		animation = anims[index]
 		action.anim_cycle_index = index
 	end

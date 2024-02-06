@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/hero_view/hero_view.lua
+
 require("scripts/ui/ui_unit_previewer")
 require("scripts/ui/views/menu_world_previewer")
 require("scripts/ui/views/hero_view/item_grid_ui")
@@ -25,6 +27,7 @@ end
 local DO_RELOAD = true
 local debug_draw_scenegraph = false
 local debug_menu = true
+
 HeroView = class(HeroView)
 
 HeroView.init = function (self, ingame_ui_context)
@@ -40,9 +43,13 @@ HeroView.init = function (self, ingame_ui_context)
 	self.is_server = ingame_ui_context.is_server
 	self.is_in_inn = ingame_ui_context.is_in_inn
 	self.world_manager = ingame_ui_context.world_manager
+
 	local world = self.world_manager:world("level_world")
+
 	self.wwise_world = Managers.world:wwise_world(world)
+
 	local input_manager = ingame_ui_context.input_manager
+
 	self.input_manager = input_manager
 
 	input_manager:create_input_service("hero_view", "IngameMenuKeymaps", "IngameMenuFilters")
@@ -55,8 +62,9 @@ HeroView.init = function (self, ingame_ui_context)
 		ingame_ui_context = ingame_ui_context,
 		parent = self,
 		settings_by_screen = settings_by_screen,
-		input_service = FAKE_INPUT_SERVICE
+		input_service = FAKE_INPUT_SERVICE,
 	}
+
 	self._state_machine_params = state_machine_params
 	self.units = {}
 	self.attachment_units = {}
@@ -79,6 +87,7 @@ HeroView._setup_state_machine = function (self, state_machine_params, optional_s
 
 	local start_state = optional_start_state or HeroViewStateOverview
 	local profiling_debugging_enabled = false
+
 	state_machine_params.start_state = optional_start_sub_state
 	state_machine_params.state_params = optional_params
 	self._machine = GameStateMachine:new(self, start_state, state_machine_params, profiling_debugging_enabled)
@@ -115,7 +124,7 @@ HeroView.create_ui_elements = function (self)
 	self._static_widgets = {}
 	self._loading_widgets = {
 		background = UIWidget.init(widget_definitions.loading_bg),
-		text = UIWidget.init(widget_definitions.loading_text)
+		text = UIWidget.init(widget_definitions.loading_text),
 	}
 
 	UIRenderer.clear_scenegraph_queue(self.ui_renderer)
@@ -130,10 +139,11 @@ HeroView._setup_hdr_gui = function (self)
 
 		if default_hdr_name then
 			local renderer, world, viewport_name = self:_setup_hdr_renderer(default_hdr_name, 600)
+
 			hdr_gui_data.bottom = {
 				renderer = renderer,
 				world = world,
-				viewport_name = viewport_name
+				viewport_name = viewport_name,
 			}
 		end
 
@@ -141,10 +151,11 @@ HeroView._setup_hdr_gui = function (self)
 
 		if top_hdr_name then
 			local renderer, world, viewport_name = self:_setup_hdr_renderer(top_hdr_name, 850)
+
 			hdr_gui_data.top = {
 				renderer = renderer,
 				world = world,
-				viewport_name = viewport_name
+				viewport_name = viewport_name,
 			}
 		end
 
@@ -155,7 +166,7 @@ end
 HeroView._setup_hdr_renderer = function (self, name, layer)
 	local world_flags = {
 		Application.DISABLE_SOUND,
-		Application.DISABLE_ESRAM
+		Application.DISABLE_ESRAM,
 	}
 	local world_name = name
 	local viewport_name = name
@@ -237,7 +248,9 @@ HeroView.update = function (self, dt, t)
 	local gamepad_active = input_manager:is_device_active("gamepad")
 	local input_blocked = self:input_blocked()
 	local input_service = input_blocked and FAKE_INPUT_SERVICE or self:input_service()
+
 	self._state_machine_params.input_service = input_service
+
 	local transitioning = self:transitioning()
 
 	self.ui_animator:update(dt)
@@ -274,6 +287,7 @@ HeroView.on_enter = function (self, params)
 	input_manager:block_device_except_service("hero_view", "gamepad", 1)
 
 	local state_machine_params = self._state_machine_params
+
 	state_machine_params.initial_state = true
 
 	self:create_ui_elements()
@@ -296,38 +310,36 @@ HeroView._handle_new_ui_disclaimer = function (self)
 	local mechanism_name = Managers.mechanism:current_mechanism_name()
 	local global_disclaimer_states = {
 		deus = {
-			store = false,
-			default = true,
-			loot = false,
-			system = false,
 			achievements = false,
-			keep_decorations = false
+			default = true,
+			keep_decorations = false,
+			loot = false,
+			store = false,
+			system = false,
 		},
 		adventure = {
-			store = false,
-			default = true,
-			loot = false,
-			system = false,
 			achievements = false,
-			keep_decorations = false
+			default = true,
+			keep_decorations = false,
+			loot = false,
+			store = false,
+			system = false,
 		},
 		default = {
-			store = false,
-			default = true,
-			loot = false,
-			system = false,
 			achievements = false,
-			keep_decorations = false
-		}
+			default = true,
+			keep_decorations = false,
+			loot = false,
+			store = false,
+			system = false,
+		},
 	}
 	local disclaimer_states = global_disclaimer_states[mechanism_name] or global_disclaimer_states.default
 	local on_enter_transition_params = self._on_enter_transition_params
 	local menu_state_name = on_enter_transition_params and on_enter_transition_params.menu_state_name or "default"
 	local menu_sub_state_name = on_enter_transition_params and on_enter_transition_params.menu_sub_state_name
 
-	if disclaimer_states[menu_sub_state_name] ~= nil then
-		menu_state_name = menu_sub_state_name or menu_state_name
-	end
+	menu_state_name = disclaimer_states[menu_sub_state_name] ~= nil and menu_sub_state_name or menu_state_name
 
 	Managers.ui:handle_new_ui_disclaimer(disclaimer_states, menu_state_name)
 end
@@ -336,8 +348,11 @@ HeroView.set_current_hero = function (self, profile_index)
 	local profile_settings = SPProfiles[profile_index]
 	local display_name = profile_settings.display_name
 	local character_name = profile_settings.character_name
+
 	self._hero_name = display_name
+
 	local state_machine_params = self._state_machine_params
+
 	state_machine_params.hero_name = display_name
 end
 
@@ -416,7 +431,7 @@ end
 HeroView.requested_screen_change_by_name = function (self, screen_name, sub_screen_name)
 	self._requested_screen_change_data = {
 		screen_name = screen_name,
-		sub_screen_name = sub_screen_name
+		sub_screen_name = sub_screen_name,
 	}
 end
 
@@ -444,6 +459,7 @@ end
 
 HeroView.post_update_on_enter = function (self)
 	self.waiting_for_post_update_enter = nil
+
 	local on_enter_transition_params = self._on_enter_transition_params
 
 	if on_enter_transition_params and on_enter_transition_params.menu_state_name then
@@ -502,6 +518,7 @@ end
 
 HeroView.exit = function (self, return_to_game, ignore_sound)
 	local exit_transition = "exit_menu"
+
 	self.exiting = true
 
 	if self.is_in_inn and not self._force_ingame_menu then
@@ -595,6 +612,7 @@ HeroView._set_loading_overlay_enabled = function (self, enabled, message)
 	local loading_text_widget = loading_widgets.text
 	local loading_bg_widget = loading_widgets.background
 	local alpha = enabled and 255 or 0
+
 	loading_bg_widget.style.color[1] = alpha
 	loading_text_widget.style.text.text_color[1] = alpha
 	loading_text_widget.content.text = message or ""

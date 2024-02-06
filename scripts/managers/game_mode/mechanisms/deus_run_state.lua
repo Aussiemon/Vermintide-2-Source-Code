@@ -1,7 +1,10 @@
+﻿-- chunkname: @scripts/managers/game_mode/mechanisms/deus_run_state.lua
+
 require("scripts/helpers/deus_power_up_utils")
 require("scripts/network/shared_state")
 
 local shared_state_spec = require("scripts/managers/game_mode/mechanisms/deus_run_state_spec")
+
 DeusRunState = class(DeusRunState)
 
 DeusRunState.init = function (self, run_id, is_server, network_handler, server_peer_id, own_peer_id, own_initial_loadout, own_initial_talents, weapon_group_whitelist)
@@ -10,7 +13,9 @@ DeusRunState.init = function (self, run_id, is_server, network_handler, server_p
 	self._server_peer_id = server_peer_id
 	self._own_peer_id = own_peer_id
 	self._network_handler = network_handler
+
 	local run_state_id_key = "deus_run_state_" .. run_id
+
 	self._shared_state = SharedState:new(run_state_id_key, shared_state_spec, is_server, network_handler, server_peer_id, own_peer_id)
 	self._own_initial_loadout = own_initial_loadout
 	self._own_initial_talents = own_initial_talents
@@ -166,6 +171,7 @@ end
 DeusRunState.set_blessing_lifetime = function (self, blessing_name, lifetime)
 	local blessing_lifetimes = self._shared_state:get_server(self._shared_state:get_key("blessing_lifetimes"))
 	local skip_metatable = true
+
 	blessing_lifetimes = table.clone(blessing_lifetimes, skip_metatable)
 	blessing_lifetimes[blessing_name] = lifetime
 

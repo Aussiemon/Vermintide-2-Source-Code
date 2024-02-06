@@ -1,20 +1,23 @@
+﻿-- chunkname: @scripts/unit_extensions/default_player_unit/states/player_character_state_charged.lua
+
 PlayerCharacterStateCharged = class(PlayerCharacterStateCharged, PlayerCharacterState)
 
 PlayerCharacterStateCharged.init = function (self, character_state_init_context)
 	PlayerCharacterState.init(self, character_state_init_context, "charged")
 
 	local context = character_state_init_context
+
 	self.inputs_to_buffer = {
-		wield_4_alt = true,
-		wield_2 = true,
-		wield_5 = true,
-		action_career_release = true,
 		action_career = true,
-		wield_3 = true,
-		wield_1 = true,
-		wield_4 = true,
+		action_career_release = true,
 		action_one = true,
-		wield_switch = true
+		wield_1 = true,
+		wield_2 = true,
+		wield_3 = true,
+		wield_4 = true,
+		wield_4_alt = true,
+		wield_5 = true,
+		wield_switch = true,
 	}
 	self.movement_speed = 0
 	self.movement_speed_limit = 1
@@ -35,10 +38,12 @@ PlayerCharacterStateCharged.on_enter = function (self, unit, input, dt, context,
 
 	local hit_react_settings = movement_settings_table.hit_react_settings[hit_react_type]
 	local look_override_x, look_override_y = hit_react_settings.look_override_function()
+
 	self.movement_speed = hit_react_settings.movement_speed_modifier
 	self.movement_speed_modifier = hit_react_settings.movement_speed_modifier
 	self.end_look_sense_override = hit_react_settings.end_look_sense_override
 	self.start_look_sense_override = hit_react_settings.start_look_sense_override
+
 	local duration = hit_react_settings.duration_function()
 	local onscreen_particle = hit_react_settings.onscreen_particle_function(duration)
 	local first_person_extension = ScriptUnit.has_extension(unit, "first_person_system")
@@ -104,6 +109,7 @@ PlayerCharacterStateCharged.update = function (self, unit, input, dt, context, t
 	local world = self.world
 	local movement_settings_table = PlayerUnitMovementSettings.get_movement_settings_table(unit)
 	local first_person_extension = self.first_person_extension
+
 	self.time_in_state = self.time_in_state + dt
 
 	if first_person_extension then
@@ -124,7 +130,7 @@ PlayerCharacterStateCharged.update = function (self, unit, input, dt, context, t
 		return
 	end
 
-	if self.end_time < t then
+	if t > self.end_time then
 		csm:change_state("standing")
 
 		return
@@ -161,6 +167,7 @@ PlayerCharacterStateCharged.update = function (self, unit, input, dt, context, t
 	move_speed = move_speed * move_speed_multiplier
 	move_speed = move_speed * movement_settings_table.player_speed_scale
 	move_speed = move_speed * self.movement_speed
+
 	local movement = Vector3(0, 0, 0)
 	local move_input = input_extension:get("move")
 
@@ -180,12 +187,14 @@ PlayerCharacterStateCharged.update = function (self, unit, input, dt, context, t
 		movement = movement + move_input_controller
 	end
 
-	local stagger = nil
+	local stagger
 
-	if self.next_pulse < t then
+	if t > self.next_pulse then
 		stagger = Vector3(2 * (math.random() - 0.5), 2 * (math.random() - 0.5), 0)
+
 		local stagger_direction = Vector3.normalize(stagger)
 		local stagger_speed = Vector3.length(stagger)
+
 		self.next_pulse = t + 0.2
 
 		self.last_stagger:store(stagger)
@@ -196,7 +205,9 @@ PlayerCharacterStateCharged.update = function (self, unit, input, dt, context, t
 	movement = movement + self.last_stagger:unbox()
 	self.current_stagger_speed = math.max(0, self.current_stagger_speed - movement_settings_table.move_acceleration_down * dt)
 	move_speed = move_speed * self.current_stagger_speed * self.movement_speed_modifier
-	local move_input_direction = nil
+
+	local move_input_direction
+
 	move_input_direction = Vector3.normalize(movement)
 
 	if Vector3.length(move_input_direction) == 0 then
@@ -215,7 +226,7 @@ PlayerCharacterStateCharged.update = function (self, unit, input, dt, context, t
 		return
 	end
 
-	local look_override = nil
+	local look_override
 
 	if self.look_override then
 		look_override = self.look_override:unbox()

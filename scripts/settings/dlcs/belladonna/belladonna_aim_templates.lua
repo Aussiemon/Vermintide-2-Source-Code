@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/dlcs/belladonna/belladonna_aim_templates.lua
+
 AimTemplates = AimTemplates or {}
 
 local function look_at_target_unit(unit, data, dt, target_unit, target_distance, head_constraint_target, always_on)
@@ -15,13 +17,14 @@ local function look_at_target_unit(unit, data, dt, target_unit, target_distance,
 		return
 	end
 
-	local look_target = nil
+	local look_target
 	local first_person_extension = ScriptUnit.has_extension(target_unit, "first_person_system")
 
 	if first_person_extension ~= nil then
 		look_target = first_person_extension:current_position()
 	else
 		local head_index = Unit.node(target_unit, "j_head")
+
 		look_target = Unit.world_position(target_unit, head_index)
 	end
 
@@ -49,6 +52,7 @@ local function look_at_target_unit(unit, data, dt, target_unit, target_distance,
 	if previously_used_head_constraint and not data.lerp_aiming_disabled then
 		local previous_look_target = data.previous_look_target:unbox()
 		local lerp_t = math.min(dt * 5, 1)
+
 		look_target = Vector3.lerp(previous_look_target, look_target, lerp_t)
 	end
 
@@ -60,6 +64,7 @@ AimTemplates.ungor_archer = {
 	owner = {
 		init = function (unit, data)
 			local blackboard = BLACKBOARDS[unit]
+
 			data.blackboard = blackboard
 			data.ai_extension = ScriptUnit.extension(unit, "ai_system")
 			data.head_constraint_target = Unit.animation_find_constraint_target(unit, "aim_bow_target")
@@ -99,6 +104,7 @@ AimTemplates.ungor_archer = {
 
 			if use_head_constraint then
 				local previous_aim_target_unit = data.previous_aim_target_unit
+
 				data.lerp_aiming_disabled = true
 
 				if not DEDICATED_SERVER then
@@ -124,7 +130,7 @@ AimTemplates.ungor_archer = {
 
 				Unit.animation_event(unit, "aim_bow_off")
 			end
-		end
+		end,
 	},
 	husk = {
 		init = function (unit, data)
@@ -153,7 +159,9 @@ AimTemplates.ungor_archer = {
 						local target_unit = unit_storage:unit(target_unit_id)
 						local target_distance = target_unit and Vector3.distance(POSITION_LOOKUP[unit], POSITION_LOOKUP[target_unit])
 						local head_constraint_target = data.head_constraint_target
+
 						data.lerp_aiming_disabled = true
+
 						local has_head_index = target_unit and Unit.has_node(target_unit, "j_head")
 
 						if has_head_index then
@@ -173,6 +181,6 @@ AimTemplates.ungor_archer = {
 
 				Unit.animation_event(unit, "aim_bow_off")
 			end
-		end
-	}
+		end,
+	},
 }

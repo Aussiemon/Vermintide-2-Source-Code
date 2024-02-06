@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/managers/events/xbox_event_manager.lua
+
 XboxEventManager = class(XboxEventManager)
+
 local TIME_BETWEEN_EVENTS = 2
 
 XboxEventManager.init = function (self)
@@ -11,7 +14,7 @@ end
 XboxEventManager.write = function (self, event, event_data, debug_string, debug_print_func, prioritize, skip_wait_time)
 	Application.warning("[XboxEventManager:write] No Stats are implemented yet")
 
-	return
+	do return end
 
 	Application.error(string.format("Adding%sEvent: %s", prioritize and " prioritized " or " ", event))
 
@@ -20,21 +23,21 @@ XboxEventManager.write = function (self, event, event_data, debug_string, debug_
 			event = event,
 			event_data = event_data,
 			debug_string = string.format("Skipping wait time for event: %s", event),
-			debug_print_func = Application.warning
+			debug_print_func = Application.warning,
 		}
 	elseif prioritize then
 		self._priority_events_queue[#self._priority_events_queue + 1] = {
 			event = event,
 			event_data = event_data,
 			debug_string = debug_string,
-			debug_print_func = debug_print_func
+			debug_print_func = debug_print_func,
 		}
 	else
 		self._events_to_write_queue[#self._events_to_write_queue + 1] = {
 			event = event,
 			event_data = event_data,
 			debug_string = debug_string,
-			debug_print_func = debug_print_func
+			debug_print_func = debug_print_func,
 		}
 	end
 end
@@ -107,7 +110,7 @@ end
 XboxEventManager.flush = function (self)
 	Application.warning("[XboxEventManager:flush] No Stats are implemented yet")
 
-	return
+	do return end
 
 	for _, current_priority_event in pairs(self._priority_events_queue) do
 		Application.error(string.format("Writing Event: %s", current_priority_event.event))

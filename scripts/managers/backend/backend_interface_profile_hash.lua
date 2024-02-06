@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/backend/backend_interface_profile_hash.lua
+
 BackendInterfaceProfileHash = class(BackendInterfaceProfileHash)
 
 BackendInterfaceProfileHash.init = function (self)

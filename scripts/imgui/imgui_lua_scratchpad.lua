@@ -1,69 +1,73 @@
+﻿-- chunkname: @scripts/imgui/imgui_lua_scratchpad.lua
+
 ImguiLuaScratchpad = class(ImguiLuaScratchpad)
+
 local fallback_color = {
 	199,
 	206,
 	234,
-	255
+	255,
 }
+
 ImguiLuaScratchpad._TYPE_TO_COLOR = setmetatable({
 	["function"] = {
 		181,
 		234,
 		215,
-		255
+		255,
 	},
 	string = {
 		226,
 		240,
 		203,
-		255
+		255,
 	},
 	number = {
 		255,
 		218,
 		193,
-		255
+		255,
 	},
 	boolean = {
 		255,
 		183,
 		178,
-		255
+		255,
 	},
 	userdata = {
 		255,
 		154,
 		162,
-		255
+		255,
 	},
 	table = {
 		255,
 		247,
 		154,
-		255
-	}
+		255,
+	},
 }, {
 	__index = function ()
 		return fallback_color
-	end
+	end,
 })
+
 local has_util, util = pcall(require, "jit.util")
 local magic_mt = {
 	__mode = "kv",
 	__index = function (t, fn)
 		local i = util.funcinfo(fn)
+
 		t[fn] = i
 
 		return i
-	end
+	end,
 }
 local format = string.format
 
 ImguiLuaScratchpad.init = function (self)
 	self._expr = ""
-	self._val = nil
-	self._error = nil
-	self._thunk = nil
+	self._thunk, self._error, self._val = nil
 	self._func_info_magic = setmetatable({}, magic_mt)
 	self._is_persistent = false
 	self._sort_keys = false
@@ -75,6 +79,7 @@ end
 
 ImguiLuaScratchpad.draw = function (self)
 	local do_close = Imgui.begin_window("Lua Inspector")
+
 	self._is_persistent = Imgui.checkbox("Is persistent", self._is_persistent)
 
 	Imgui.same_line()
@@ -100,6 +105,7 @@ ImguiLuaScratchpad.draw = function (self)
 	end
 
 	local last_expr = self._expr
+
 	self._expr = Imgui.input_text_multiline("Input", last_expr)
 
 	if last_expr ~= self._expr then
@@ -116,6 +122,7 @@ end
 
 ImguiLuaScratchpad._inspect_pair = function (self, k, v)
 	k = tostring(k)
+
 	local t = type(v)
 
 	if t == "table" then
@@ -254,8 +261,7 @@ local function traceback_table(err)
 			break
 		end
 
-		local slots = {}
-		local ups = {}
+		local slots, ups = {}, {}
 
 		for j = 1, 9999 do
 			local k, v = debug.getlocal(i, j)
@@ -281,13 +287,13 @@ local function traceback_table(err)
 			name = info.name,
 			info = info,
 			slots = slots,
-			ups = ups
+			ups = ups,
 		}
 	end
 
 	return {
 		error = err or "?",
-		stack = stack
+		stack = stack,
 	}
 end
 
@@ -295,11 +301,9 @@ ImguiLuaScratchpad._execute_thunk = function (self)
 	local ok, val = xpcall(self._thunk, traceback_table)
 
 	if ok then
-		self._error = nil
-		self._val = val
+		self._val, self._error = val
 	else
-		self._error = "Runtime error"
-		self._val = val
+		self._val, self._error = val, "Runtime error"
 	end
 end
 

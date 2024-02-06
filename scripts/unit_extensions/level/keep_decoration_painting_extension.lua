@@ -1,8 +1,11 @@
+﻿-- chunkname: @scripts/unit_extensions/level/keep_decoration_painting_extension.lua
+
 KeepDecorationPaintingExtension = class(KeepDecorationPaintingExtension)
 
 KeepDecorationPaintingExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	local world = extension_init_context.world
 	local level = LevelHelper:current_level(world)
+
 	self.keep_decoration_system = nil
 	self._decoration_settings_key = Unit.get_data(unit, "decoration_settings_key")
 	self._unit = unit
@@ -21,8 +24,10 @@ KeepDecorationPaintingExtension.init = function (self, extension_init_context, u
 	self._slot = nil
 	self._loading_painting_material = nil
 	self._next_painting = {}
+
 	local settings_key = Unit.get_data(unit, "decoration_settings_key")
 	local settings = KeepDecorationSettings[settings_key]
+
 	self._settings = settings
 	self._backend_key = settings.backend_key
 end
@@ -67,6 +72,7 @@ KeepDecorationPaintingExtension.extensions_ready = function (self)
 	end
 
 	local selected_painting = self._is_client_painting and "hidden" or self:get_selected_decoration()
+
 	self._current_preview_painting = selected_painting
 
 	local function on_material_loaded()
@@ -160,7 +166,9 @@ KeepDecorationPaintingExtension.distributed_update = function (self)
 
 			if painting_index ~= self._go_painting_index then
 				self._go_painting_index = painting_index
+
 				local painting = self._paintings_lookup[painting_index]
+
 				self._currently_set_painting = painting
 
 				self:_load_painting(painting)
@@ -178,6 +186,7 @@ KeepDecorationPaintingExtension.distributed_update = function (self)
 
 			if not start_hidden then
 				self._start_hidden = false
+
 				local painting = self._currently_set_painting
 
 				Unit.set_unit_visibility(self._unit, false)
@@ -251,6 +260,7 @@ KeepDecorationPaintingExtension._set_selected_painting = function (self, paintin
 	local backend_key = self._backend_key
 	local backend_manager = Managers.backend
 	local backend_interface = backend_manager:get_interface("keep_decorations")
+
 	self._currently_set_painting = painting
 
 	backend_interface:set_decoration(backend_key, painting)
@@ -259,9 +269,11 @@ end
 
 KeepDecorationPaintingExtension._load_painting = function (self, painting, callback)
 	painting = painting or "hor_none"
+
 	local painting_data = Paintings[painting]
 	local painting_orientation = painting_data.orientation
 	local painting_frame = painting_data.frame
+
 	self._current_preview_painting = painting
 
 	if painting_orientation == "vertical" then
@@ -293,7 +305,7 @@ end
 KeepDecorationPaintingExtension._load_painting_frame = function (self, data)
 	local painting_orientation = data.orientation
 	local painting_frame = data.frame
-	local painting_unit = nil
+	local painting_unit
 	local unit = self._unit
 	local position = Unit.local_position(unit, 0)
 	local rotation = Unit.local_rotation(unit, 0)
@@ -321,6 +333,7 @@ KeepDecorationPaintingExtension._load_painting_frame = function (self, data)
 
 	self._temporarily_set_frame = painting_frame
 	self._temporarily_set_orientation = painting_orientation
+
 	local current_unit = self._painting_unit
 
 	if current_unit then
@@ -333,7 +346,7 @@ end
 KeepDecorationPaintingExtension._load_painting_material = function (self, name, cb_done)
 	local subpath = "keep_painting_" .. name
 	local no_package_required = string.find(name, "_none") ~= nil
-	local package_name = nil
+	local package_name
 	local reference_name = self._decoration_settings_key
 
 	if not no_package_required then
@@ -397,9 +410,10 @@ KeepDecorationPaintingExtension._create_game_object = function (self, painting)
 	local go_data_table = {
 		go_type = NetworkLookup.go_types.keep_decoration_painting,
 		level_unit_index = self._level_unit_index,
-		painting_index = self._paintings_lookup[painting]
+		painting_index = self._paintings_lookup[painting],
 	}
 	local callback = callback(self, "cb_game_session_disconnect")
+
 	self._go_id = Managers.state.network:create_game_object("keep_decoration_painting", go_data_table, callback)
 end
 

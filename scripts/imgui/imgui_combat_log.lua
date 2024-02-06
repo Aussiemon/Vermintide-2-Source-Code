@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/imgui/imgui_combat_log.lua
+
 ImguiCombatLog = class(ImguiCombatLog)
+
 local SHOULD_RELOAD = false
 local DEFAULT_WINDOW_X = 800
 local DEFAULT_WINDOW_Y = 500
@@ -16,36 +19,36 @@ ImguiCombatLog.init = function (self)
 	self._start_time = os.time() - os.clock()
 	self.categories = {
 		{
+			enabled = true,
 			name = "Damage",
-			enabled = true,
-			type = "damage"
+			type = "damage",
 		},
 		{
+			enabled = true,
 			name = "Heal",
-			enabled = true,
-			type = "heal"
+			type = "heal",
 		},
 		{
+			enabled = true,
 			name = "Buff",
-			enabled = true,
-			type = "buff"
+			type = "buff",
 		},
 		{
+			enabled = true,
 			name = "Buff Proc",
-			enabled = true,
-			type = "buff_proc"
+			type = "buff_proc",
 		},
 		{
-			name = "Action",
 			enabled = true,
-			type = "action"
-		}
+			name = "Action",
+			type = "action",
+		},
 	}
 	self._type_ids = {}
 	self._settings = {
 		auto_start_recording = true,
 		show_timestamp = true,
-		show_type = true
+		show_type = true,
 	}
 	self._first_run = true
 
@@ -117,6 +120,7 @@ ImguiCombatLog.draw = function (self, is_open)
 	end
 
 	local do_close = Imgui.begin_window("Combat Log")
+
 	self._settings.show_timestamp = Imgui.checkbox("Timestamp", self._settings.show_timestamp)
 
 	Imgui.same_line()
@@ -126,6 +130,7 @@ ImguiCombatLog.draw = function (self, is_open)
 	Imgui.same_line()
 
 	self._settings.auto_start_recording = Imgui.checkbox("Auto Start Recording", self._settings.auto_start_recording)
+
 	local categories = self.categories
 
 	for i = 1, #categories do
@@ -134,6 +139,7 @@ ImguiCombatLog.draw = function (self, is_open)
 		end
 
 		local category = categories[i]
+
 		category.enabled = Imgui.checkbox(category.name, category.enabled)
 	end
 
@@ -292,18 +298,18 @@ ImguiCombatLog._get_type_name = function (self, type)
 end
 
 ImguiCombatLog._add_line = function (self, type)
-	local new_line = {
-		timestamp = "[" .. format_timestamp(self._start_time + os.clock()) .. "]",
-		content = {},
-		type_id = self._type_ids[type] or 0,
-		type_name = "[" .. self:_get_type_name(type) .. "]"
-	}
+	local new_line = {}
+
+	new_line.timestamp = "[" .. format_timestamp(self._start_time + os.clock()) .. "]"
+	new_line.content = {}
+	new_line.type_id = self._type_ids[type] or 0
+	new_line.type_name = "[" .. self:_get_type_name(type) .. "]"
 
 	table.insert(self._log, 1, new_line)
 
 	local num_lines = #self._log
 
-	if self._max_lines < num_lines then
+	if num_lines > self._max_lines then
 		table.remove(self._log, num_lines)
 	end
 
@@ -316,7 +322,7 @@ ImguiCombatLog._add_colored_segment = function (self, line, text, color)
 
 	table.insert(line.content, {
 		text_to_add,
-		color_to_add
+		color_to_add,
 	})
 end
 
@@ -346,6 +352,7 @@ ImguiCombatLog.copy_to_clipboard = function (self, copy_all)
 			for i = 1, #line_contents do
 				local data = line_contents[i]
 				local text = data[1]
+
 				output = output .. " " .. text
 			end
 
@@ -360,11 +367,12 @@ ImguiCombatLog._save_settings = function (self)
 	local categories = self.categories
 	local saved_settings = {
 		categories = {},
-		settings = self._settings
+		settings = self._settings,
 	}
 
 	for i = 1, #categories do
 		local type = categories[i].type
+
 		saved_settings.categories[type] = categories[i].enabled
 	end
 

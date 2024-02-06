@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/sound_quality_settings.lua
+
 local platform = PLATFORM
 
 if IS_WINDOWS then
@@ -5,80 +7,80 @@ if IS_WINDOWS then
 		templates = {
 			low = {
 				max_num_voices = 28,
+				occlusion = false,
 				sound_performance = 1,
-				occlusion = false
 			},
 			medium = {
 				max_num_voices = 64,
+				occlusion = false,
 				sound_performance = 0.5,
-				occlusion = false
 			},
 			high = {
 				max_num_voices = 80,
+				occlusion = true,
 				sound_performance = 0,
-				occlusion = true
-			}
-		}
+			},
+		},
 	}
 elseif IS_LINUX then
 	SoundQualitySettings = {
 		templates = {
 			low = {
 				max_num_voices = 28,
+				occlusion = false,
 				sound_performance = 1,
-				occlusion = false
 			},
 			medium = {
 				max_num_voices = 64,
+				occlusion = false,
 				sound_performance = 0.5,
-				occlusion = false
 			},
 			high = {
 				max_num_voices = 80,
+				occlusion = true,
 				sound_performance = 0,
-				occlusion = true
-			}
-		}
+			},
+		},
 	}
 elseif IS_XB1 then
 	SoundQualitySettings = {
 		templates = {
 			low = {
 				max_num_voices = 28,
+				occlusion = false,
 				sound_performance = 1,
-				occlusion = false
 			},
 			medium = {
 				max_num_voices = 64,
+				occlusion = false,
 				sound_performance = 0.5,
-				occlusion = false
 			},
 			high = {
 				max_num_voices = 80,
+				occlusion = true,
 				sound_performance = 0,
-				occlusion = true
-			}
-		}
+			},
+		},
 	}
 elseif IS_PS4 then
 	SoundQualitySettings = {
 		templates = {
 			low = {
 				max_num_voices = 28,
+				occlusion = false,
 				sound_performance = 1,
-				occlusion = false
 			},
 			medium = {
 				max_num_voices = 64,
+				occlusion = false,
 				sound_performance = 0.5,
-				occlusion = false
 			},
 			high = {
 				max_num_voices = 80,
+				occlusion = true,
 				sound_performance = 0,
-				occlusion = true
-			}
-		}
+			},
+		},
 	}
 end
 
@@ -89,6 +91,7 @@ SoundQualitySettings.get_quality_template = function (sound_quality)
 
 	if not quality_template then
 		local default_sound_quality = DefaultUserSettings.get("user_settings", "sound_quality")
+
 		quality_template = SoundQualitySettings.templates[default_sound_quality]
 
 		if not LEVEL_EDITOR_TEST then

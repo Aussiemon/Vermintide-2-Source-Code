@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/settings/dlcs/bless/action_wheel_selector.lua
+
 ActionWheelSelector = class(ActionWheelSelector, ActionBase)
+
 local STOP_LERP_TIME = 0.125
 local STOP_LERP_TIME_CONTROLLER = 0.25
 local START_LERP_TIME = 0.01
@@ -19,7 +22,7 @@ ActionWheelSelector.client_owner_start_action = function (self, new_action, t, c
 	self._timer = t + self.timer_per_seg
 	self.current_seg = self.current_seg and self.current_seg + 1 or 1
 
-	if self.num_seg < self.current_seg then
+	if self.current_seg > self.num_seg then
 		self.current_seg = 1
 	end
 
@@ -27,10 +30,10 @@ ActionWheelSelector.client_owner_start_action = function (self, new_action, t, c
 end
 
 ActionWheelSelector.client_owner_post_update = function (self, dt, t, world, can_damage)
-	if self._timer < t then
+	if t > self._timer then
 		self.current_seg = self.current_seg + 1
 
-		if self.num_seg < self.current_seg then
+		if self.current_seg > self.num_seg then
 			self.current_seg = 1
 		end
 

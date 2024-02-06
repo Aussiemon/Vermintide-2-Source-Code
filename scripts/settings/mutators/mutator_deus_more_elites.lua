@@ -1,11 +1,13 @@
+﻿-- chunkname: @scripts/settings/mutators/mutator_deus_more_elites.lua
+
 require("scripts/settings/dlcs/morris/deus_terror_event_tags")
 
 local conversion_table = {
-	shield_rats_no_elites = "shield_rats",
 	beastmen = "beastmen_elites",
-	marauders_and_warriors = "marauders_elites",
 	beastmen_light = "beastmen",
-	standard_no_elites = "standard"
+	marauders_and_warriors = "marauders_elites",
+	shield_rats_no_elites = "shield_rats",
+	standard_no_elites = "standard",
 }
 
 return {
@@ -18,5 +20,5 @@ return {
 	end,
 	get_terror_event_tags = function (context, data, terror_event_tags)
 		terror_event_tags[#terror_event_tags + 1] = DeusTerrorEventTags.MORE_ELITES
-	end
+	end,
 }

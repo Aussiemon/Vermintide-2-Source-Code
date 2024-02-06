@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/weapons/actions/action_catch.lua
+
 ActionCatch = class(ActionCatch, ActionBase)
 
 ActionCatch.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
@@ -8,9 +10,12 @@ ActionCatch.client_owner_start_action = function (self, new_action, t, chain_act
 	ActionCatch.super.client_owner_start_action(self, new_action, t, chain_action_data, power_level, action_init_data)
 
 	local owner_unit = self.owner_unit
+
 	self._inventory_extension = ScriptUnit.extension(owner_unit, "inventory_system")
+
 	local buffed_anim_time_scale = ActionUtils.get_action_time_scale(owner_unit, new_action)
-	local catch_time = (new_action.catch_time or 0) * 1 / buffed_anim_time_scale
+	local catch_time = (new_action.catch_time or 0) * (1 / buffed_anim_time_scale)
+
 	self._catch_time = t + catch_time
 	self._state = "waiting_to_catch"
 	self._should_not_remove = new_action.should_not_remove
@@ -21,7 +26,7 @@ ActionCatch.client_owner_start_action = function (self, new_action, t, chain_act
 end
 
 ActionCatch.client_owner_post_update = function (self, dt, t, world, can_damage)
-	if self._state == "waiting_to_catch" and self._catch_time <= t then
+	if self._state == "waiting_to_catch" and t >= self._catch_time then
 		self:_add_ammo()
 
 		self._state = "caught"
@@ -46,6 +51,7 @@ ActionCatch._remove_pickup = function (self)
 
 		if not axe_found then
 			local projectile_system = Managers.state.entity:system("projectile_system")
+
 			axe_unit = projectile_system:get_and_delete_indexed_projectile(self.owner_unit, index)
 
 			if axe_unit and Unit.alive(axe_unit) then
@@ -57,7 +63,7 @@ end
 
 ActionCatch._add_ammo = function (self)
 	local inventory_extension = self._inventory_extension
-	local ammo_extension = nil
+	local ammo_extension
 	local equipment = inventory_extension:equipment()
 	local inventory_slots = equipment.slots
 	local slot_data = inventory_slots.slot_ranged

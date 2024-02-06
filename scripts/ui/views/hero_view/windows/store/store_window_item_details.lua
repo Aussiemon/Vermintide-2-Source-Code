@@ -1,8 +1,11 @@
+﻿-- chunkname: @scripts/ui/views/hero_view/windows/store/store_window_item_details.lua
+
 local definitions = local_require("scripts/ui/views/hero_view/windows/store/definitions/store_window_item_details_definitions")
 local widget_definitions = definitions.widgets
 local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
 local create_career_icon = definitions.create_career_icon
+
 StoreWindowItemDetails = class(StoreWindowItemDetails)
 StoreWindowItemDetails.NAME = "StoreWindowItemDetails"
 
@@ -11,11 +14,13 @@ StoreWindowItemDetails.on_enter = function (self, params, offset)
 
 	self._params = params
 	self._parent = params.parent
+
 	local ui_renderer, ui_top_renderer = self._parent:get_renderers()
+
 	self._ui_renderer = ui_renderer
 	self._ui_top_renderer = ui_top_renderer
 	self._render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 	self._layout_settings = params.layout_settings
 	self._animations = {}
@@ -30,20 +35,23 @@ end
 
 StoreWindowItemDetails._start_transition_animation = function (self, animation_name)
 	local params = {
-		render_settings = self._render_settings
+		render_settings = self._render_settings,
 	}
 	local widgets = self._widgets_by_name
 	local anim_id = self._ui_animator:start_animation(animation_name, widgets, scenegraph_definition, params)
+
 	self._animations[animation_name] = anim_id
 end
 
 StoreWindowItemDetails._create_ui_elements = function (self, params, offset)
 	self._ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+
 	local widgets = {}
 	local widgets_by_name = {}
 
 	for name, widget_definition in pairs(widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		widgets[#widgets + 1] = widget
 		widgets_by_name[name] = widget
 	end
@@ -102,6 +110,7 @@ StoreWindowItemDetails._sync_presentation_item = function (self)
 
 	if selected_product ~= self._selected_product then
 		local reset_presentation = not self._selected_product or self._selected_product.product_id ~= selected_product.product_id
+
 		self._selected_product = selected_product
 
 		if reset_presentation then
@@ -196,10 +205,15 @@ StoreWindowItemDetails._setup_career_icons = function (self, careers)
 			local career_name = careers[i]
 			local settings = CareerSettings[career_name]
 			local display_name = settings.display_name
+
 			offset_x = offset_x + step_size
+
 			local widget = UIWidget.init(widget_definition)
+
 			widget.offset[1] = offset_x
+
 			local tooltip_data = widget.content.tooltip
+
 			tooltip_data.title = Localize(display_name)
 			tooltip_data.description = Localize("menu_store_product_wieldable_tooltip_desc")
 			widget.content.icon = settings.store_tag_icon or "store_tag_icon_" .. career_name
@@ -212,17 +226,21 @@ end
 
 StoreWindowItemDetails._set_item_icon = function (self, texture)
 	local widget = self._widgets_by_name.item_icon
+
 	widget.content.texture_id = texture
 end
 
 StoreWindowItemDetails._set_title_text_color = function (self, text_color)
 	local widget = self._widgets_by_name.title_text
+
 	widget.style.text.text_color = text_color
 end
 
 StoreWindowItemDetails._set_title_text = function (self, text)
 	local widget = self._widgets_by_name.title_text
+
 	widget.content.text = text
+
 	local scenegraph_id = widget.scenegraph_id
 	local default_scenegraph = scenegraph_definition[scenegraph_id]
 	local default_size = default_scenegraph.size
@@ -230,28 +248,34 @@ StoreWindowItemDetails._set_title_text = function (self, text)
 	local text_style = widget.style.text
 	local height = UIUtils.get_text_height(ui_top_renderer, default_size, text_style, text)
 	local ui_scenegraph = self._ui_scenegraph
+
 	ui_scenegraph[scenegraph_id].size[2] = height
 	ui_scenegraph.description_text.size[2] = 250 - height
 end
 
 StoreWindowItemDetails._set_hero_text = function (self, text)
 	local widget = self._widgets_by_name.hero_text
+
 	widget.content.text = text
 end
 
 StoreWindowItemDetails._set_sub_title_text = function (self, text)
 	local widget = self._widgets_by_name.sub_title_text
+
 	widget.content.text = text
+
 	local ui_top_renderer = self._ui_top_renderer
 	local text_style = widget.style.text
 	local length = UIUtils.get_text_width(ui_top_renderer, text_style, text)
 	local scenegraph_id = widget.scenegraph_id
 	local ui_scenegraph = self._ui_scenegraph
+
 	ui_scenegraph[scenegraph_id].size[1] = length + 20
 end
 
 StoreWindowItemDetails._set_description_text = function (self, text)
 	local widget = self._widgets_by_name.description_text
+
 	widget.content.text = text
 end
 

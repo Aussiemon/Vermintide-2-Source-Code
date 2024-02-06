@@ -1,6 +1,9 @@
+﻿-- chunkname: @scripts/managers/debug/debug.lua
+
 local font_size = 26
 local font = "arial"
 local font_mtrl = "materials/fonts/" .. font
+
 Debug = Debug or {}
 
 Debug.setup = function (world, world_name)
@@ -26,6 +29,7 @@ Debug.font_size = 26
 
 Debug.create_line_object = function (name)
 	local disable_depth_test = false
+
 	Debug.line_objects[name] = World.create_line_object(Debug.world, disable_depth_test)
 
 	return Debug.line_objects[name]
@@ -34,6 +38,7 @@ end
 Debug.test_popup = function ()
 	local header = Localize("popup_debug_header")
 	local message = Localize("popup_debug_message") .. "\nhost_name"
+
 	Debug.popup_id = Managers.popup:queue_popup(message, header, "cancel", Localize("popup_choice_cancel"))
 
 	Managers.popup:activate_timer(Debug.popup_id, 120, "cancel")
@@ -55,15 +60,14 @@ Debug.update = function (t, dt)
 	end
 
 	local show_debug_text_background = not script_data.hide_debug_text_background
-	local res_x = RESOLUTION_LOOKUP.res_w
-	local res_y = RESOLUTION_LOOKUP.res_h
+	local res_x, res_y = RESOLUTION_LOOKUP.res_w, RESOLUTION_LOOKUP.res_h
 	local gui = Debug.gui
 	local pos = res_y - 100
 	local text_color = Color(120, 220, 0)
 	local num_debug_texts = #Debug.debug_texts
 	local max = 100
 
-	if num_debug_texts > max then
+	if max < num_debug_texts then
 		-- Nothing
 	end
 
@@ -93,7 +97,7 @@ Debug.update = function (t, dt)
 	if num_sticky > 0 then
 		local i = 1
 
-		while num_sticky >= i do
+		while i <= num_sticky do
 			local text, display_time = unpack(sticky_texts[i])
 
 			Gui.text(gui, text, font_mtrl, font_size, font, Vector3(10, pos, 700), text_color, bitmaskflags)
@@ -127,7 +131,7 @@ Debug.update = function (t, dt)
 		if inventory_view then
 			local next_select_at = Debug.next_select_at or 0
 
-			if t > next_select_at then
+			if next_select_at < t then
 				local selected_item = Debug.previous_selected_item or 1
 				local next_select_item = selected_item + 1
 
@@ -155,6 +159,7 @@ Debug.text = function (...)
 	end
 
 	local text_table = FrameTable.alloc_table()
+
 	text_table.text = string.format(...)
 
 	table.insert(Debug.debug_texts, text_table)
@@ -166,6 +171,7 @@ Debug.colored_text = function (color, ...)
 	end
 
 	local text_table = FrameTable.alloc_table()
+
 	text_table.text = string.format(...)
 	text_table.color = ColorBox(color)
 
@@ -177,38 +183,38 @@ local debug_colors = {
 	red = {
 		255,
 		0,
-		0
+		0,
 	},
 	green = {
 		0,
 		200,
-		0
+		0,
 	},
 	blue = {
 		0,
 		0,
-		200
+		200,
 	},
 	white = {
 		255,
 		255,
-		255
+		255,
 	},
 	yellow = {
 		200,
 		200,
-		0
+		0,
 	},
 	teal = {
 		0,
 		200,
-		200
+		200,
 	},
 	purple = {
 		200,
 		0,
-		160
-	}
+		160,
+	},
 }
 
 Debug.update_world_texts = function ()
@@ -226,6 +232,7 @@ Debug.update_world_texts = function ()
 		local text = item[1]
 		local min, max, caret = Gui.text_extents(world_gui, text, font_mtrl, 2)
 		local textpos = Vector3(item[2], item[3], item[4])
+
 		textpos.x = textpos.x - (max.x - min.x) / 2
 
 		Gui.text_3d(world_gui, text, font_mtrl, 1.5, font, tm, textpos, 1, Color(item[5], item[6], item[7]))
@@ -277,7 +284,7 @@ Debug.world_text = function (pos, text, color_name)
 			pos[2],
 			color[1],
 			color[2],
-			color[3]
+			color[3],
 		}
 	end
 end
@@ -289,13 +296,15 @@ Debug.world_sticky_text = function (pos, text, color_name)
 
 	local wt = Debug.world_sticky_texts
 	local index = Debug.world_sticky_index
+
 	index = index + 1
 
-	if max_world_sticky < index then
+	if index > max_world_sticky then
 		index = 1
 	end
 
 	Debug.num_world_sticky_texts = math.clamp(Debug.num_world_sticky_texts + 1, 0, max_world_sticky)
+
 	local color = debug_colors[color_name] or debug_colors.white
 
 	if wt[index] then
@@ -314,7 +323,7 @@ Debug.world_sticky_text = function (pos, text, color_name)
 			pos[2],
 			color[1],
 			color[2],
-			color[3]
+			color[3],
 		}
 	end
 
@@ -332,23 +341,23 @@ Debug.sticky_text = function (...)
 	end
 
 	local t = {
-		...
+		...,
 	}
 	local delay = 3
 
-	if t[#t - 1] == "delay" then
-		delay = t[#t] or delay
-	end
+	delay = t[#t - 1] == "delay" and t[#t] or delay
 
 	table.insert(Debug.sticky_texts, {
 		string.format(...),
-		Managers.time:time("game") + delay
+		Managers.time:time("game") + delay,
 	})
 end
 
 Debug.drawer = function (name, disabled)
 	name = name or "default"
+
 	local lo = Debug.line_objects[name]
+
 	lo = lo or Debug.create_line_object(name)
 
 	return DebugDrawer:new(lo, to_boolean(not disabled))
@@ -372,6 +381,7 @@ end
 
 Debug.teardown = function ()
 	Debug.active = false
+
 	local w = Debug.world
 
 	for lo_name, lo in pairs(Debug.line_objects) do
@@ -420,7 +430,7 @@ Debug.load_level = function (level_name, environment_variation_id, debug_environ
 
 	if debug_environment_level_flow_event ~= nil then
 		StateIngame._level_flow_events = {
-			debug_environment_level_flow_event
+			debug_environment_level_flow_event,
 		}
 	else
 		StateIngame._level_flow_events = nil
@@ -511,6 +521,7 @@ end
 Debug.test_spawn_unit = function (profile_name, career_index)
 	profile_name = profile_name or "wood_elf"
 	career_index = career_index or 1
+
 	local profile_index = FindProfileIndex(profile_name)
 	local profile = SPProfiles[profile_index]
 	local career = profile.careers[career_index]
@@ -522,10 +533,12 @@ Debug.test_spawn_unit = function (profile_name, career_index)
 	local skin_data = Cosmetics[skin_name]
 	local unit_name = skin_data.third_person
 	local material_changes = skin_data.material_changes
+
 	package_names[#package_names + 1] = unit_name
 
 	if material_changes then
 		local material_package = material_changes.package_name
+
 		package_names[#package_names + 1] = material_package
 	end
 
@@ -564,6 +577,7 @@ Debug.test_despawn_unit = function (profile_name, career_index)
 
 	profile_name = profile_name or "wood_elf"
 	career_index = career_index or 1
+
 	local profile_index = FindProfileIndex(profile_name)
 	local profile = SPProfiles[profile_index]
 	local career = profile.careers[career_index]
@@ -575,10 +589,12 @@ Debug.test_despawn_unit = function (profile_name, career_index)
 	local skin_data = Cosmetics[skin_name]
 	local unit_name = skin_data.third_person
 	local material_changes = skin_data.material_changes
+
 	package_names[#package_names + 1] = unit_name
 
 	if material_changes then
 		local material_package = material_changes.package_name
+
 		package_names[#package_names + 1] = material_package
 	end
 

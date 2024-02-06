@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/dlcs/celebrate/celebrate_buff_settings.lua
+
 local buff_perks = require("scripts/unit_extensions/default_player_unit/buffs/settings/buff_perk_names")
 local settings = DLCSettings.celebrate
 
@@ -21,20 +23,20 @@ settings.buff_templates = {
 	celebrate_group = {
 		buffs = {
 			{
+				apply_buff_func = "hot_joined",
 				max_stacks = 1,
 				name = "celebrate_group",
-				apply_buff_func = "hot_joined"
-			}
-		}
+			},
+		},
 	},
 	beer_bottle_pickup_cooldown = {
 		buffs = {
 			{
+				duration = 2.5,
 				max_stacks = 1,
 				name = "beer_bottle_pickup_cooldown",
-				duration = 2.5
-			}
-		}
+			},
+		},
 	},
 	hinder_career_ability = {
 		buffs = {
@@ -42,238 +44,238 @@ settings.buff_templates = {
 				duration = 2.1,
 				name = "hinder_career_ability",
 				perks = {
-					buff_perks.disable_career_ability
-				}
-			}
-		}
+					buff_perks.disable_career_ability,
+				},
+			},
+		},
 	},
 	intoxication_base = {
 		buffs = {
 			{
 				max_stacks = 1,
 				name = "intoxication_base",
+				remove_buff_func = "remove_intoxication_base",
 				update_func = "update_intoxication_level",
-				remove_buff_func = "remove_intoxication_base"
-			}
-		}
+			},
+		},
 	},
 	intoxication_stagger = {
 		buffs = {
 			{
 				duration = 2.5,
-				name = "intoxication_stagger",
 				max_stacks = 1,
+				name = "intoxication_stagger",
 				refresh_durations = true,
 				perks = {
-					buff_perks.intoxication_stagger
-				}
-			}
-		}
+					buff_perks.intoxication_stagger,
+				},
+			},
+		},
 	},
 	increase_intoxication_level = {
 		activation_effect = "fx/screenspace_drink_01",
 		buffs = {
 			{
+				apply_buff_func = "increase_intoxication_level",
+				base_buff = "intoxication_base",
 				effect_buff = "intoxication_effect",
 				name = "increase_intoxication_level",
-				apply_buff_func = "increase_intoxication_level",
-				base_buff = "intoxication_base"
 			},
 			{
+				apply_buff_func = "add_buff",
 				buff_to_add = "intoxication_stagger",
 				name = "add_intoxication_stagger",
-				apply_buff_func = "add_buff"
 			},
 			{
+				apply_buff_func = "add_buff",
 				buff_to_add = "beer_bottle_pickup_cooldown",
 				name = "add_intoxication_pickup_cooldown",
-				apply_buff_func = "add_buff"
-			}
-		}
+			},
+		},
 	},
 	intoxication_effect_vfx = {
 		buffs = {
 			{
-				refresh_durations = true,
-				name = "intoxication_effect_vfx",
 				continuous_effect = "fx/screenspace_drunken_lens_01",
+				duration = 30,
 				max_stacks = 1,
-				duration = 30
-			}
-		}
+				name = "intoxication_effect_vfx",
+				refresh_durations = true,
+			},
+		},
 	},
 	intoxication_effect_max_stacks_vfx = {
 		buffs = {
 			{
-				refresh_durations = true,
-				name = "intoxication_effect_max_stacks_vfx",
 				continuous_effect = "fx/screenspace_drunken_lens_05",
+				duration = 30,
 				max_stacks = 1,
-				duration = 30
-			}
-		}
+				name = "intoxication_effect_max_stacks_vfx",
+				refresh_durations = true,
+			},
+		},
 	},
 	intoxication_effect = {
 		buffs = {
 			{
-				remove_buff_func = "end_intoxication_effect",
-				name = "intoxication_effect",
-				duration = 30,
 				continuous_effect = "fx/screenspace_drunken_lens_01",
-				max_stacks = 3,
+				duration = 30,
 				icon = "buff_icon_mutator_icon_drunk",
+				max_stacks = 3,
+				name = "intoxication_effect",
 				priority_buff = true,
-				refresh_durations = true
+				refresh_durations = true,
+				remove_buff_func = "end_intoxication_effect",
 			},
 			{
-				refresh_durations = true,
+				duration = 30,
+				max_stacks = 1,
 				name = "intoxication_effect_bloody_mess",
-				max_stacks = 1,
-				duration = 30,
+				refresh_durations = true,
 				perks = {
-					buff_perks.bloody_mess
-				}
+					buff_perks.bloody_mess,
+				},
 			},
 			{
-				refresh_durations = true,
+				duration = 30,
+				max_stacks = 1,
 				name = "intoxication_effect_drunk_stagger",
-				max_stacks = 1,
-				duration = 30,
+				refresh_durations = true,
 				perks = {
-					buff_perks.drunk_stagger
-				}
+					buff_perks.drunk_stagger,
+				},
 			},
 			{
-				name = "intoxication_power_level",
+				duration = 30,
+				max_stacks = 3,
 				multiplier = 0.1,
+				name = "intoxication_power_level",
+				refresh_durations = true,
 				stat_buff = "power_level",
-				refresh_durations = true,
-				max_stacks = 3,
-				duration = 30
 			},
 			{
-				name = "intoxication_critical_hit_chance",
+				duration = 30,
+				max_stacks = 3,
 				multiplier = 0.15,
+				name = "intoxication_critical_hit_chance",
+				refresh_durations = true,
 				stat_buff = "critical_strike_chance",
-				refresh_durations = true,
-				max_stacks = 3,
-				duration = 30
 			},
 			{
-				name = "intoxication_cooldown_regen_increase",
+				duration = 30,
+				max_stacks = 3,
 				multiplier = 1.5,
-				stat_buff = "cooldown_regen",
+				name = "intoxication_cooldown_regen_increase",
 				refresh_durations = true,
-				max_stacks = 3,
-				duration = 30
+				stat_buff = "cooldown_regen",
 			},
 			{
 				max_stacks = 3,
+				multiplier = 0.02,
 				name = "drunk_attack_speed_slowdown",
 				stat_buff = "attack_speed",
-				multiplier = 0.02
-			}
-		}
+			},
+		},
 	},
 	falling_down_effect = {
-		deactivation_effect = "fx/screenspace_hungover_01",
 		activation_effect = "fx/screenspace_hungover_01",
+		deactivation_effect = "fx/screenspace_hungover_01",
 		buffs = {
 			{
-				name = "falling_down_attack_speed_slowdown",
-				stat_buff = "attack_speed",
 				continuous_effect = "fx/screenspace_drink_looping",
-				max_stacks = 1,
-				remove_buff_func = "remove_falling_down_effect",
-				multiplier = -0.5,
 				duration = 5,
+				max_stacks = 1,
+				multiplier = -0.5,
+				name = "falling_down_attack_speed_slowdown",
+				remove_buff_func = "remove_falling_down_effect",
+				stat_buff = "attack_speed",
 				perks = {
-					buff_perks.falling_down
-				}
+					buff_perks.falling_down,
+				},
 			},
 			{
 				apply_buff_func = "apply_action_lerp_movement_buff",
+				duration = 5,
+				lerp_time = 1,
+				max_stacks = 1,
 				multiplier = 0.5,
 				name = "falling_down_decrease_speed",
-				duration = 5,
 				remove_buff_func = "remove_action_lerp_movement_buff",
 				remove_buff_name = "planted_return_to_normal_movement",
-				lerp_time = 1,
-				max_stacks = 1,
 				update_func = "update_action_lerp_movement_buff",
 				path_to_movement_setting_to_modify = {
-					"move_speed"
-				}
+					"move_speed",
+				},
 			},
 			{
 				apply_buff_func = "apply_action_lerp_movement_buff",
+				duration = 5,
+				lerp_time = 1,
+				max_stacks = 1,
 				multiplier = 0.5,
 				name = "falling_down_decrease_crouch_speed",
-				duration = 5,
 				remove_buff_func = "remove_action_lerp_movement_buff",
 				remove_buff_name = "planted_return_to_normal_crouch_movement",
-				lerp_time = 1,
-				max_stacks = 1,
 				update_func = "update_charging_action_lerp_movement_buff",
 				path_to_movement_setting_to_modify = {
-					"crouch_move_speed"
-				}
+					"crouch_move_speed",
+				},
 			},
 			{
 				apply_buff_func = "apply_action_lerp_movement_buff",
-				multiplier = 0.5,
-				name = "falling_down_decrease_walk_speed",
 				duration = 5,
-				remove_buff_func = "remove_action_lerp_movement_buff",
-				remove_buff_name = "planted_return_to_normal_walk_movement",
 				lerp_time = 1,
 				max_stacks = 1,
+				multiplier = 0.5,
+				name = "falling_down_decrease_walk_speed",
+				remove_buff_func = "remove_action_lerp_movement_buff",
+				remove_buff_name = "planted_return_to_normal_walk_movement",
 				update_func = "update_charging_action_lerp_movement_buff",
 				path_to_movement_setting_to_modify = {
-					"walk_move_speed"
-				}
-			}
-		}
+					"walk_move_speed",
+				},
+			},
+		},
 	},
 	hungover_effect = {
 		activation_effect = "fx/screenspace_hungover_01",
 		buffs = {
 			{
 				continuous_effect = "fx/screenspace_hungover_lens_01",
-				name = "hungover_effect",
 				debuff = true,
-				max_stacks = 3,
 				icon = "debuff_icon_mutator_icon_drunk",
-				priority_buff = true
+				max_stacks = 3,
+				name = "hungover_effect",
+				priority_buff = true,
 			},
 			{
 				max_stacks = 3,
 				name = "hungover_effect_stagger",
 				perks = {
-					buff_perks.hungover_stagger
-				}
+					buff_perks.hungover_stagger,
+				},
 			},
 			{
 				max_stacks = 3,
+				multiplier = -0.05,
 				name = "hungover_attack_speed_slowdown",
 				stat_buff = "attack_speed",
-				multiplier = -0.05
 			},
 			{
 				max_stacks = 3,
+				multiplier = -0.2,
 				name = "hungover_regen_increase",
 				stat_buff = "fatigue_regen",
-				multiplier = -0.2
 			},
 			{
 				max_stacks = 1,
 				name = "hungover_effect_perk",
 				perks = {
-					buff_perks.hungover
-				}
-			}
-		}
-	}
+					buff_perks.hungover,
+				},
+			},
+		},
+	},
 }
 settings.buff_function_templates = {
 	update_intoxication_level = function (unit, buff, params, world)
@@ -316,6 +318,7 @@ settings.buff_function_templates = {
 
 			for i = 1, num_wanted_buffs do
 				local buff_id = buff_extension:add_buff("intoxication_effect")
+
 				buff.intoxication_stack_ids[#buff.intoxication_stack_ids + 1] = buff_id
 			end
 
@@ -329,6 +332,7 @@ settings.buff_function_templates = {
 				table.clear(buff.intoxication_vfx_stack_ids)
 
 				local buff_id = buff_extension:add_buff("intoxication_effect_max_stacks_vfx")
+
 				buff.intoxication_vfx_max_stack_ids[#buff.intoxication_vfx_max_stack_ids + 1] = buff_id
 			else
 				for i = 1, #buff.intoxication_vfx_max_stack_ids do
@@ -340,6 +344,7 @@ settings.buff_function_templates = {
 				table.clear(buff.intoxication_vfx_max_stack_ids)
 
 				local buff_id = buff_extension:add_buff("intoxication_effect_vfx")
+
 				buff.intoxication_vfx_stack_ids[#buff.intoxication_vfx_stack_ids + 1] = buff_id
 			end
 
@@ -377,6 +382,7 @@ settings.buff_function_templates = {
 
 				for i = #buff.hungover_stack_ids + 1, num_buffs_to_add do
 					local buff_id = buff_extension:add_buff("hungover_effect")
+
 					buff.hungover_stack_ids[i] = buff_id
 				end
 			else
@@ -419,6 +425,7 @@ settings.buff_function_templates = {
 
 			if not buff.shake_id then
 				local shake_id = Managers.state.camera:camera_effect_shake_event("intoxication_after_effect", t)
+
 				buff.shake_id = shake_id
 			end
 
@@ -426,18 +433,20 @@ settings.buff_function_templates = {
 
 			MOOD_BLACKBOARD.drunk_01 = false
 			MOOD_BLACKBOARD.hangover_01 = true
+
 			local blink_sound_event_name = "Play_eye_blink_hangover"
 			local first_person_extension = ScriptUnit.has_extension(unit, "first_person_system")
 
 			first_person_extension:play_hud_sound_event(blink_sound_event_name)
 
 			buff.next_blink_t = t + 3
+
 			local hungover_sound_event_name = "Play_player_celebrate_hangover"
 
 			first_person_extension:play_hud_sound_event(hungover_sound_event_name)
 		end
 
-		if buff.delayed_vce_time and buff.delayed_vce_time < t then
+		if buff.delayed_vce_time and t > buff.delayed_vce_time then
 			local delayed_vce_event = buff.delayed_vce_event
 			local event_data = FrameTable.alloc_table()
 
@@ -447,7 +456,7 @@ settings.buff_function_templates = {
 			buff.delayed_vce_event = nil
 		end
 
-		if buff.delayed_drink_vce_time and buff.delayed_drink_vce_time < t then
+		if buff.delayed_drink_vce_time and t > buff.delayed_drink_vce_time then
 			local delayed_drink_vce_event = buff.delayed_drink_vce_event
 			local event_data = FrameTable.alloc_table()
 
@@ -460,6 +469,7 @@ settings.buff_function_templates = {
 		if not buff.shake_event_settings then
 			local shake_event_settings = {}
 			local event = CameraEffectSettings.shake.intoxication_after_effect
+
 			shake_event_settings.event = event
 			shake_event_settings.start_time = t
 			shake_event_settings.seed = event.seed or Math.random(1, 100)
@@ -474,11 +484,13 @@ settings.buff_function_templates = {
 					for i = 0, number_of_octaves do
 						local frequency = 2^i
 						local amplitude = persistance^i
+
 						total = total + buff.shake_functions.interpolated_noise_func(buff, x * frequency) * amplitude
 					end
 
 					local amplitude_multiplier = shake_settings.amplitude or 1
 					local fade_multiplier = settings.fade_progress or 1
+
 					total = total * amplitude_multiplier * fade_multiplier
 
 					return total
@@ -499,11 +511,11 @@ settings.buff_function_templates = {
 					local _, value = Math.next_random(next_seed)
 
 					return value * 2 - 1
-				end
+				end,
 			}
 		end
 
-		if buff.next_blink_t and buff.next_blink_t < t then
+		if buff.next_blink_t and t > buff.next_blink_t then
 			local sound_event_name = "Play_eye_blink_hangover"
 			local first_person_extension = ScriptUnit.has_extension(unit, "first_person_system")
 
@@ -512,8 +524,9 @@ settings.buff_function_templates = {
 			buff.next_blink_t = nil
 		end
 
-		if not buff.next_noise_t or buff.next_noise_t < t then
+		if not buff.next_noise_t or t > buff.next_noise_t then
 			buff.next_noise_t = t + 2
+
 			local pitch_value = buff.shake_functions.calculate_perlin_value_func(buff, t - buff.shake_event_settings.start_time, buff.shake_event_settings)
 			local yaw_value = buff.shake_functions.calculate_perlin_value_func(buff, t - buff.shake_event_settings.start_time + 10, buff.shake_event_settings)
 			local sine_value = math.abs(math.sin(t * math.pi * 0.5))
@@ -524,6 +537,7 @@ settings.buff_function_templates = {
 
 			pitch_value = pitch_value / square
 			yaw_value = yaw_value / square
+
 			local final_value = math.abs(math.lerp(pitch_value, yaw_value, sine_value)) * math.sign(intoxication_level) * 200 + math.sign(intoxication_level) * 200 * (math.abs(intoxication_level) - 1)
 			local final_value_2 = math.abs(math.lerp(pitch_value, yaw_value, sine_value_2)) * math.sign(intoxication_level) * 200 + math.sign(intoxication_level) * 200 * (math.abs(intoxication_level) - 1)
 			local wwise_world = Managers.world:wwise_world(world)
@@ -622,6 +636,7 @@ settings.buff_function_templates = {
 
 		base_buff.delayed_drink_vce_time = params.t + 1.6
 		base_buff.delayed_drink_vce_event = "player_drank_vce"
+
 		local drunk_sound_event_name = "Play_player_celebrate_drunk"
 		local first_person_extension = ScriptUnit.has_extension(unit, "first_person_system")
 
@@ -674,97 +689,97 @@ settings.buff_function_templates = {
 			status_extension:add_intoxication_level(1)
 			status_extension:invert_intoxication_level()
 		end
-	end
+	end,
 }
 settings.group_buff_templates = {
 	celebrate_group = {
 		buff_per_instance = "celebrate_group",
-		side_name = "heroes"
-	}
+		side_name = "heroes",
+	},
 }
 settings.add_sub_buffs_to_core_buffs = {
 	{
 		buff_name = "damage_boost_potion",
 		sub_buff_to_add = {
 			apply_buff_func = "check_celebrate_buff",
-			name = "check celebrate"
-		}
+			name = "check celebrate",
+		},
 	},
 	{
 		buff_name = "speed_boost_potion",
 		sub_buff_to_add = {
 			apply_buff_func = "check_celebrate_buff",
-			name = "check celebrate"
-		}
+			name = "check celebrate",
+		},
 	},
 	{
 		buff_name = "cooldown_reduction_potion",
 		sub_buff_to_add = {
 			apply_buff_func = "check_celebrate_buff",
-			name = "check celebrate"
-		}
+			name = "check celebrate",
+		},
 	},
 	{
 		buff_name = "invulnerability_potion",
 		sub_buff_to_add = {
 			apply_buff_func = "check_celebrate_buff",
-			name = "check celebrate"
-		}
+			name = "check celebrate",
+		},
 	},
 	{
 		buff_name = "damage_boost_potion_increased",
 		sub_buff_to_add = {
 			apply_buff_func = "check_celebrate_buff",
-			name = "check celebrate"
-		}
+			name = "check celebrate",
+		},
 	},
 	{
 		buff_name = "speed_boost_potion_increased",
 		sub_buff_to_add = {
 			apply_buff_func = "check_celebrate_buff",
-			name = "check celebrate"
-		}
+			name = "check celebrate",
+		},
 	},
 	{
 		buff_name = "cooldown_reduction_potion_increased",
 		sub_buff_to_add = {
 			apply_buff_func = "check_celebrate_buff",
-			name = "check celebrate"
-		}
+			name = "check celebrate",
+		},
 	},
 	{
 		buff_name = "invulnerability_potion_increased",
 		sub_buff_to_add = {
 			apply_buff_func = "check_celebrate_buff",
-			name = "check celebrate"
-		}
+			name = "check celebrate",
+		},
 	},
 	{
 		buff_name = "damage_boost_potion_reduced",
 		sub_buff_to_add = {
 			apply_buff_func = "check_celebrate_buff",
-			name = "check celebrate"
-		}
+			name = "check celebrate",
+		},
 	},
 	{
 		buff_name = "speed_boost_potion_reduced",
 		sub_buff_to_add = {
 			apply_buff_func = "check_celebrate_buff",
-			name = "check celebrate"
-		}
+			name = "check celebrate",
+		},
 	},
 	{
 		buff_name = "cooldown_reduction_potion_reduced",
 		sub_buff_to_add = {
 			apply_buff_func = "check_celebrate_buff",
-			name = "check celebrate"
-		}
+			name = "check celebrate",
+		},
 	},
 	{
 		buff_name = "invulnerability_potion_reduced",
 		sub_buff_to_add = {
 			apply_buff_func = "check_celebrate_buff",
-			name = "check celebrate"
-		}
-	}
+			name = "check celebrate",
+		},
+	},
 }

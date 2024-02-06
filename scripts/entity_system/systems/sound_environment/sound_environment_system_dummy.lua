@@ -1,7 +1,10 @@
+﻿-- chunkname: @scripts/entity_system/systems/sound_environment/sound_environment_system_dummy.lua
+
 require("foundation/scripts/util/api_verification")
 require("scripts/entity_system/systems/sound_environment/sound_environment_system")
 
 SoundEnvironmentSystemDummy = class(SoundEnvironmentSystemDummy, ExtensionSystemBase)
+
 local RPCS = {}
 local extensions = {}
 
@@ -9,6 +12,7 @@ SoundEnvironmentSystemDummy.init = function (self, entity_system_creation_contex
 	SoundEnvironmentSystemDummy.super.init(self, entity_system_creation_context, system_name, extensions)
 
 	local world = self.world
+
 	self.wwise_world = Managers.world:wwise_world(world)
 end
 

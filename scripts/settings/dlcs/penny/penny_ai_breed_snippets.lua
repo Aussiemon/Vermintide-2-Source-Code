@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/dlcs/penny/penny_ai_breed_snippets.lua
+
 AiBreedSnippets = AiBreedSnippets or {}
 
 local function check_for_recent_attackers_drachenfels(unit, blackboard, t, ranged_range)
@@ -19,6 +21,7 @@ local function check_for_recent_attackers_drachenfels(unit, blackboard, t, range
 				blackboard.recent_attacker_unit = attacking_unit
 				blackboard.recent_attacker_timer = t + 3
 				blackboard.recent_attacker = true
+
 				local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
 				local event_data = FrameTable.alloc_table()
 
@@ -30,12 +33,12 @@ local function check_for_recent_attackers_drachenfels(unit, blackboard, t, range
 			end
 		end
 	elseif blackboard.recent_attacker then
-		if blackboard.recent_attacker_timer < t then
+		if t > blackboard.recent_attacker_timer then
 			blackboard.recent_attacker_unit = nil
 			blackboard.recent_attacker_timer = math.huge
 			blackboard.recent_attacker = false
 		end
-	elseif blackboard.recent_melee_attacker and blackboard.recent_melee_attacker_timer < t then
+	elseif blackboard.recent_melee_attacker and t > blackboard.recent_melee_attacker_timer then
 		blackboard.recent_melee_attacker_unit = nil
 		blackboard.recent_melee_attacker_timer = math.huge
 		blackboard.recent_melee_attacker = false
@@ -45,6 +48,7 @@ end
 AiBreedSnippets.on_chaos_exalted_sorcerer_drachenfels_spawn = function (unit, blackboard)
 	local t = Managers.time:time("game")
 	local breed = blackboard.breed
+
 	blackboard.next_move_check = 0
 	blackboard.max_vortex_units = breed.max_vortex_units
 	blackboard.done_casting_timer = 0
@@ -67,114 +71,144 @@ AiBreedSnippets.on_chaos_exalted_sorcerer_drachenfels_spawn = function (unit, bl
 	blackboard.ring_pulse_rate = 0
 	blackboard.defensive_phase_duration = 0
 	blackboard.defensive_phase_max_duration = 60
+
 	local available_spells = breed.available_spells
-	local spells = {}
-	local spells_lookup = {}
+	local spells, spells_lookup = {}, {}
 	local physics_world = World.get_data(blackboard.world, "physics_world")
 	local level_analysis = Managers.state.conflict.level_analysis
 	local node_units = level_analysis.generic_ai_node_units.sorcerer_boss_drachenfels_center
 	local center_unit = node_units[1]
+
 	blackboard.no_kill_achievement = true
 	blackboard.ring_center_position = Vector3Box(Unit.local_position(center_unit, 0))
 	blackboard.spell_count = 0
-	local spell = {
-		name = "plague_wave",
-		plague_wave_timer = t + 10,
-		physics_world = physics_world,
-		target_starting_pos = Vector3Box(),
-		plague_wave_rot = QuaternionBox(),
-		search_func = BTChaosExaltedSorcererSkulkAction.update_plague_wave
-	}
-	blackboard.plague_wave_data = spell
-	spells[#spells + 1] = spell
-	spells_lookup.plague_wave = spell
-	local spell = {
-		range = 40,
-		magic_missile = true,
-		magic_missile_speed = 20,
-		true_flight_template_name = "sorcerer_magic_missile",
-		projectile_unit_name = "units/weapons/projectile/magic_missile/magic_missile",
-		name = "magic_missile",
-		launch_angle = 0.7,
-		search_func = BTChaosExaltedSorcererSkulkAction.update_cast_missile,
-		throw_pos = Vector3Box(),
-		target_direction = Vector3Box()
-	}
-	blackboard.magic_missile_data = spell
-	spells[#spells + 1] = spell
-	spells_lookup.magic_missile = spell
-	local spell = {
-		range = 40,
-		magic_missile = true,
-		magic_missile_speed = 15,
-		true_flight_template_name = "sorcerer_strike_missile",
-		projectile_unit_name = "units/weapons/projectile/strike_missile/strike_missile",
-		name = "sorcerer_strike_missile",
-		explosion_template_name = "chaos_strike_missile_impact",
-		launch_angle = 1.25,
-		search_func = BTChaosExaltedSorcererSkulkAction.update_cast_missile,
-		throw_pos = Vector3Box(),
-		target_direction = Vector3Box()
-	}
-	blackboard.sorcerer_strike_missile_data = spell
-	spells[#spells + 1] = spell
-	spells_lookup.sorcerer_strike_missile = spell
-	local spell = {
-		range = 40,
-		name = "magic_missile_ground",
-		magic_missile = true,
-		magic_missile_speed = 10,
-		target_ground = true,
-		projectile_unit_name = "units/weapons/projectile/strike_missile_drachenfels/strike_missile_drachenfels",
-		true_flight_template_name = "sorcerer_magic_missile_ground",
-		explosion_template_name = "chaos_drachenfels_strike_missile_impact",
-		search_func = BTChaosExaltedSorcererSkulkAction.update_cast_missile,
-		throw_pos = Vector3Box(),
-		target_direction = Vector3Box()
-	}
-	blackboard.magic_missile_ground_data = spell
-	spells[#spells + 1] = spell
-	spells_lookup.magic_missile_ground = spell
-	local spell = {
-		name = "missile_barrage",
-		magic_missile = true,
-		magic_missile_speed = 20,
-		range = 40,
-		search_func = BTChaosExaltedSorcererSkulkAction.update_cast_missile,
-		throw_pos = Vector3Box(),
-		target_direction = Vector3Box()
-	}
-	blackboard.missile_barrage_data = spell
-	spells[#spells + 1] = spell
-	spells_lookup.missile_barrage = spell
-	local spell = {
-		range = 40,
-		name = "seeking_bomb_missile",
-		magic_missile = true,
-		magic_missile_speed = 2.5,
-		true_flight_template_name = "sorcerer_slow_bomb_missile",
-		projectile_unit_name = "units/weapons/projectile/insect_swarm_missile_drachenfels/insect_swarm_missile_drachenfels_01",
-		explosion_template_name = "chaos_slow_bomb_missile_new",
-		life_time = 15,
-		search_func = BTChaosExaltedSorcererSkulkAction.update_cast_missile,
-		throw_pos = Vector3Box(),
-		target_direction = Vector3Box(),
-		projectile_size = {
-			3,
-			3,
-			3
+
+	do
+		local spell = {
+			name = "plague_wave",
+			plague_wave_timer = t + 10,
+			physics_world = physics_world,
+			target_starting_pos = Vector3Box(),
+			plague_wave_rot = QuaternionBox(),
+			search_func = BTChaosExaltedSorcererSkulkAction.update_plague_wave,
 		}
-	}
-	blackboard.seeking_bomb_missile_data = spell
-	spells[#spells + 1] = spell
-	spells_lookup.seeking_bomb_missile = spell
-	local spell = {
-		name = "dummy",
-		search_func = BTChaosExaltedSorcererSkulkAction.update_dummy
-	}
-	blackboard.dummy_data = spell
-	spells[#spells + 1] = spell
-	spells_lookup.dummy = spell
+
+		blackboard.plague_wave_data = spell
+		spells[#spells + 1] = spell
+		spells_lookup.plague_wave = spell
+	end
+
+	do
+		local spell = {
+			launch_angle = 0.7,
+			magic_missile = true,
+			magic_missile_speed = 20,
+			name = "magic_missile",
+			projectile_unit_name = "units/weapons/projectile/magic_missile/magic_missile",
+			range = 40,
+			true_flight_template_name = "sorcerer_magic_missile",
+			search_func = BTChaosExaltedSorcererSkulkAction.update_cast_missile,
+			throw_pos = Vector3Box(),
+			target_direction = Vector3Box(),
+		}
+
+		blackboard.magic_missile_data = spell
+		spells[#spells + 1] = spell
+		spells_lookup.magic_missile = spell
+	end
+
+	do
+		local spell = {
+			explosion_template_name = "chaos_strike_missile_impact",
+			launch_angle = 1.25,
+			magic_missile = true,
+			magic_missile_speed = 15,
+			name = "sorcerer_strike_missile",
+			projectile_unit_name = "units/weapons/projectile/strike_missile/strike_missile",
+			range = 40,
+			true_flight_template_name = "sorcerer_strike_missile",
+			search_func = BTChaosExaltedSorcererSkulkAction.update_cast_missile,
+			throw_pos = Vector3Box(),
+			target_direction = Vector3Box(),
+		}
+
+		blackboard.sorcerer_strike_missile_data = spell
+		spells[#spells + 1] = spell
+		spells_lookup.sorcerer_strike_missile = spell
+	end
+
+	do
+		local spell = {
+			explosion_template_name = "chaos_drachenfels_strike_missile_impact",
+			magic_missile = true,
+			magic_missile_speed = 10,
+			name = "magic_missile_ground",
+			projectile_unit_name = "units/weapons/projectile/strike_missile_drachenfels/strike_missile_drachenfels",
+			range = 40,
+			target_ground = true,
+			true_flight_template_name = "sorcerer_magic_missile_ground",
+			search_func = BTChaosExaltedSorcererSkulkAction.update_cast_missile,
+			throw_pos = Vector3Box(),
+			target_direction = Vector3Box(),
+		}
+
+		blackboard.magic_missile_ground_data = spell
+		spells[#spells + 1] = spell
+		spells_lookup.magic_missile_ground = spell
+	end
+
+	do
+		local spell = {
+			magic_missile = true,
+			magic_missile_speed = 20,
+			name = "missile_barrage",
+			range = 40,
+			search_func = BTChaosExaltedSorcererSkulkAction.update_cast_missile,
+			throw_pos = Vector3Box(),
+			target_direction = Vector3Box(),
+		}
+
+		blackboard.missile_barrage_data = spell
+		spells[#spells + 1] = spell
+		spells_lookup.missile_barrage = spell
+	end
+
+	do
+		local spell = {
+			explosion_template_name = "chaos_slow_bomb_missile_new",
+			life_time = 15,
+			magic_missile = true,
+			magic_missile_speed = 2.5,
+			name = "seeking_bomb_missile",
+			projectile_unit_name = "units/weapons/projectile/insect_swarm_missile_drachenfels/insect_swarm_missile_drachenfels_01",
+			range = 40,
+			true_flight_template_name = "sorcerer_slow_bomb_missile",
+			search_func = BTChaosExaltedSorcererSkulkAction.update_cast_missile,
+			throw_pos = Vector3Box(),
+			target_direction = Vector3Box(),
+			projectile_size = {
+				3,
+				3,
+				3,
+			},
+		}
+
+		blackboard.seeking_bomb_missile_data = spell
+		spells[#spells + 1] = spell
+		spells_lookup.seeking_bomb_missile = spell
+	end
+
+	do
+		local spell = {
+			name = "dummy",
+			search_func = BTChaosExaltedSorcererSkulkAction.update_dummy,
+		}
+
+		blackboard.dummy_data = spell
+		spells[#spells + 1] = spell
+		spells_lookup.dummy = spell
+	end
+
 	local id_lookup = Managers.state.entity:system("spawner_system")._id_lookup
 	local level_analysis = Managers.state.conflict.level_analysis
 	local center_node_units = level_analysis.generic_ai_node_units.sorcerer_boss_drachenfels_center
@@ -183,6 +217,7 @@ AiBreedSnippets.on_chaos_exalted_sorcerer_drachenfels_spawn = function (unit, bl
 
 	if level_has_boss_arena then
 		local center_marker = center_node_units[1]
+
 		blackboard.in_boss_arena = Vector3.distance(POSITION_LOOKUP[unit], Unit.local_position(center_marker, 0)) < 20
 	else
 		blackboard.in_boss_arena = false
@@ -190,14 +225,16 @@ AiBreedSnippets.on_chaos_exalted_sorcerer_drachenfels_spawn = function (unit, bl
 
 	if blackboard.in_boss_arena then
 		blackboard.spawners = {
-			sorcerer_boss_center = center_node_units
+			sorcerer_boss_center = center_node_units,
 		}
 		blackboard.mode = "setup"
 		blackboard.intro_timer = t + 12.3
+
 		local center_unit = center_node_units[1]
 		local arena_center_pos = Unit.local_position(center_unit, 0) + Vector3(0, 0, 0.75)
 		local arena_rot = Unit.local_rotation(center_unit, 0)
 		local arena_pose_box = Matrix4x4Box(Matrix4x4.from_quaternion_position(arena_rot, arena_center_pos))
+
 		blackboard.arena_pose_boxed = arena_pose_box
 		blackboard.arena_half_extents = Vector3Box(12, 12, 1)
 
@@ -223,11 +260,13 @@ AiBreedSnippets.on_chaos_exalted_sorcerer_drachenfels_spawn = function (unit, bl
 
 	for _, player_unit in pairs(player_units) do
 		local health_extension = ScriptUnit.extension(player_unit, "health_system")
+
 		health_extension.is_invincible = true
 	end
 
 	blackboard.spells = spells
 	blackboard.spells_lookup = spells_lookup
+
 	local breed = blackboard.breed
 	local audio_system_extension = Managers.state.entity:system("audio_system")
 
@@ -265,7 +304,7 @@ AiBreedSnippets.on_chaos_exalted_sorcerer_drachenfels_update = function (unit, b
 	for i, position in ipairs(enemy_player_and_bot_positions) do
 		local player_unit = enemy_player_and_bot_units[i]
 
-		if Vector3.distance(self_pos, position) < range and not ScriptUnit.extension(player_unit, "status_system"):is_disabled() and not ScriptUnit.extension(player_unit, "status_system"):is_invisible() then
+		if range > Vector3.distance(self_pos, position) and not ScriptUnit.extension(player_unit, "status_system"):is_disabled() and not ScriptUnit.extension(player_unit, "status_system"):is_invisible() then
 			num = num + 1
 		end
 	end
@@ -289,6 +328,7 @@ AiBreedSnippets.on_chaos_exalted_sorcerer_drachenfels_update = function (unit, b
 		local height = 1
 		local half_height = height * 0.5
 		local size = Vector3(radius, half_height, radius)
+
 		bot_threat_position = bot_threat_position - Vector3.up() * half_height
 
 		Managers.state.entity:system("ai_bot_group_system"):aoe_threat_created(bot_threat_position, "cylinder", size, nil, 1)
@@ -297,16 +337,17 @@ AiBreedSnippets.on_chaos_exalted_sorcerer_drachenfels_update = function (unit, b
 	end
 
 	if blackboard.third_phase_in_progress and blackboard.current_health ~= 1 then
-		if blackboard.ring_pulse_rate < t and not blackboard.ring_damage_effect_time then
+		if t > blackboard.ring_pulse_rate and not blackboard.ring_damage_effect_time then
 			local origin_pos = Vector3Box.unbox(blackboard.ring_center_position)
 			local premonition_time = 3
+
 			blackboard.sorcerer_allow_tricke_spawn = false
 
 			Managers.state.network:rpc_play_particle_effect_no_rotation(nil, NetworkLookup.effects["fx/drachenfels_boss_indicator_donut_medium_part_1"], NetworkConstants.invalid_game_object_id, 0, origin_pos, false)
 			Managers.state.network:rpc_play_particle_effect_no_rotation(nil, NetworkLookup.effects["fx/drachenfels_boss_indicator_donut_large_part_1"], NetworkConstants.invalid_game_object_id, 0, origin_pos, false)
 
 			blackboard.ring_damage_effect_time = t + premonition_time - 0.75
-		elseif blackboard.ring_damage_effect_time and blackboard.ring_damage_effect_time <= t then
+		elseif blackboard.ring_damage_effect_time and t >= blackboard.ring_damage_effect_time then
 			local audio_system = Managers.state.entity:system("audio_system")
 			local origin_pos = Vector3Box.unbox(blackboard.ring_center_position)
 			local inner_radius = 8
@@ -314,14 +355,14 @@ AiBreedSnippets.on_chaos_exalted_sorcerer_drachenfels_update = function (unit, b
 			local inner_squared = inner_radius * inner_radius
 			local outer_squared = outer_radius * outer_radius
 			local power_level = {
-				harder = 100,
-				hard = 75,
-				normal = 50,
-				hardest = 150,
 				cataclysm = 400,
-				cataclysm_3 = 400,
 				cataclysm_2 = 400,
-				easy = 50
+				cataclysm_3 = 400,
+				easy = 50,
+				hard = 75,
+				harder = 100,
+				hardest = 150,
+				normal = 50,
 			}
 
 			Managers.state.network:rpc_play_particle_effect_no_rotation(nil, NetworkLookup.effects["fx/drachenfels_boss_indicator_donut_medium_part_2"], NetworkConstants.invalid_game_object_id, 0, origin_pos, false)
@@ -353,6 +394,7 @@ AiBreedSnippets.on_chaos_exalted_sorcerer_drachenfels_update = function (unit, b
 				local distance_squared = Vector3.distance_squared(position, origin_pos)
 				local catapult_direction = "in"
 				local direction = catapult_direction == "in" and origin_pos - position or position - origin_pos
+
 				direction = Vector3.normalize(direction)
 
 				if distance_squared < outer_squared and inner_squared < distance_squared then

@@ -1,13 +1,18 @@
+﻿-- chunkname: @scripts/network/lobby_client.lua
+
 require("scripts/network/lobby_aux")
 
 LobbyClient = class(LobbyClient)
 
 LobbyClient.init = function (self, network_options, lobby_data, joined_lobby)
 	local lobby = joined_lobby or LobbyInternal.join_lobby(lobby_data)
+
 	self.lobby = lobby
 	self.stored_lobby_data = lobby_data
+
 	local config_file_name = network_options.config_file_name
 	local project_hash = network_options.project_hash
+
 	self.network_hash = LobbyAux.create_network_hash(config_file_name, project_hash)
 	self.peer_id = Network.peer_id()
 	self._host_peer_id = nil
@@ -45,7 +50,7 @@ end
 LobbyClient.update = function (self, dt)
 	local engine_lobby = self.lobby
 	local host_peer_id = engine_lobby:lobby_host()
-	local new_state = engine_lobby:state()
+	local new_state = engine_lobby.state(engine_lobby)
 	local old_state = self.state
 
 	if new_state ~= old_state then
@@ -90,6 +95,7 @@ LobbyClient.update = function (self, dt)
 
 		if host ~= nil then
 			local channel_id = LobbyInternal.open_channel(engine_lobby, host)
+
 			self._host_peer_id = host
 			self._host_channel_id = channel_id
 			PEER_ID_TO_CHANNEL[host] = channel_id

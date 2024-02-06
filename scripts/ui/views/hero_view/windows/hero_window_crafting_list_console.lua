@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/hero_view/windows/hero_window_crafting_list_console.lua
+
 local definitions = local_require("scripts/ui/views/hero_view/windows/definitions/hero_window_crafting_list_console_definitions")
 local crafting_recipes, crafting_recipes_by_name, crafting_recipes_lookup = dofile("scripts/settings/crafting/crafting_recipes")
 local widget_definitions = definitions.widgets
@@ -7,51 +9,52 @@ local animation_definitions = definitions.animation_definitions
 local generic_input_actions = definitions.generic_input_actions
 local page_settings = {
 	{
-		sound_event_enter = "play_gui_equipment_button",
-		name = "salvage",
 		class_name = "CraftPageSalvage",
-		sound_event_exit = "play_gui_equipment_close"
+		name = "salvage",
+		sound_event_enter = "play_gui_equipment_button",
+		sound_event_exit = "play_gui_equipment_close",
 	},
 	{
-		sound_event_enter = "play_gui_equipment_button",
-		name = "craft_random_item",
 		class_name = "CraftPageCraftItem",
-		sound_event_exit = "play_gui_equipment_close"
+		name = "craft_random_item",
+		sound_event_enter = "play_gui_equipment_button",
+		sound_event_exit = "play_gui_equipment_close",
 	},
 	{
-		sound_event_enter = "play_gui_equipment_button",
-		name = "reroll_weapon_properties",
 		class_name = "CraftPageRollProperties",
-		sound_event_exit = "play_gui_equipment_close"
+		name = "reroll_weapon_properties",
+		sound_event_enter = "play_gui_equipment_button",
+		sound_event_exit = "play_gui_equipment_close",
 	},
 	{
-		sound_event_enter = "play_gui_equipment_button",
-		name = "reroll_weapon_traits",
 		class_name = "CraftPageRollTrait",
-		sound_event_exit = "play_gui_equipment_close"
+		name = "reroll_weapon_traits",
+		sound_event_enter = "play_gui_equipment_button",
+		sound_event_exit = "play_gui_equipment_close",
 	},
 	{
-		sound_event_enter = "play_gui_equipment_button",
-		name = "upgrade_item_rarity_common",
 		class_name = "CraftPageUpgradeItem",
-		sound_event_exit = "play_gui_equipment_close"
+		name = "upgrade_item_rarity_common",
+		sound_event_enter = "play_gui_equipment_button",
+		sound_event_exit = "play_gui_equipment_close",
 	},
 	{
-		sound_event_enter = "play_gui_equipment_button",
-		name = "apply_weapon_skin",
 		class_name = "CraftPageApplySkin",
-		sound_event_exit = "play_gui_equipment_close"
+		name = "apply_weapon_skin",
+		sound_event_enter = "play_gui_equipment_button",
+		sound_event_exit = "play_gui_equipment_close",
 	},
 	{
-		sound_event_enter = "play_gui_equipment_button",
-		name = "convert_blue_dust",
 		class_name = "CraftPageConvertDust",
-		sound_event_exit = "play_gui_equipment_close"
-	}
+		name = "convert_blue_dust",
+		sound_event_enter = "play_gui_equipment_button",
+		sound_event_exit = "play_gui_equipment_close",
+	},
 }
 local INPUT_ACTION_NEXT = "move_down_hold_continuous"
 local INPUT_ACTION_PREVIOUS = "move_up_hold_continuous"
 local DO_RELOAD = false
+
 HeroWindowCraftingListConsole = class(HeroWindowCraftingListConsole)
 HeroWindowCraftingListConsole.NAME = "HeroWindowCraftingListConsole"
 
@@ -60,31 +63,37 @@ HeroWindowCraftingListConsole.on_enter = function (self, params, offset)
 
 	self._params = params
 	self.parent = params.parent
+
 	local ingame_ui_context = params.ingame_ui_context
+
 	self.ui_renderer = ingame_ui_context.ui_renderer
 	self.ui_top_renderer = ingame_ui_context.ui_top_renderer
 	self.input_manager = ingame_ui_context.input_manager
 	self.statistics_db = ingame_ui_context.statistics_db
 	self.render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 	self._animation_settings = {
-		entry_alignment_progress = 0
+		entry_alignment_progress = 0,
 	}
+
 	local player_manager = Managers.player
 	local local_player = player_manager:local_player()
+
 	self._stats_id = local_player:stats_id()
 	self.player_manager = player_manager
 	self.peer_id = ingame_ui_context.peer_id
 	self.hero_name = params.hero_name
 	self.career_index = params.career_index
 	self.profile_index = params.profile_index
+
 	local hero_name = self.hero_name
 	local career_index = self.career_index
 	local profile_index = FindProfileIndex(hero_name)
 	local profile = SPProfiles[profile_index]
 	local career_data = profile.careers[career_index]
 	local career_name = career_data.name
+
 	self._animations = {}
 	self._ui_animations = {}
 
@@ -93,7 +102,7 @@ HeroWindowCraftingListConsole.on_enter = function (self, params, offset)
 	self.conditions_params = {
 		hero_name = self.hero_name,
 		career_name = career_name,
-		rarities_to_ignore = table.enum_safe("magic")
+		rarities_to_ignore = table.enum_safe("magic"),
 	}
 
 	self:_populate_buttons(page_settings)
@@ -109,30 +118,35 @@ HeroWindowCraftingListConsole._start_transition_animation = function (self, anim
 	local params = {
 		wwise_world = self.wwise_world,
 		render_settings = self.render_settings,
-		animation_settings = self._animation_settings
+		animation_settings = self._animation_settings,
 	}
 	local widgets = {}
 	local anim_id = self.ui_animator:start_animation(animation_name, widgets, scenegraph_definition, params)
+
 	self._animations[animation_name] = anim_id
 end
 
 HeroWindowCraftingListConsole.create_ui_elements = function (self, params, offset)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+
 	local widgets = {}
 	local widgets_by_name = {}
 
 	for name, widget_definition in pairs(widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		widgets[#widgets + 1] = widget
 		widgets_by_name[name] = widget
 	end
 
 	self._widgets = widgets
 	self._widgets_by_name = widgets_by_name
+
 	local title_button_widgets = {}
 
 	for name, widget_definition in pairs(title_button_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		title_button_widgets[#title_button_widgets + 1] = widget
 	end
 
@@ -144,6 +158,7 @@ HeroWindowCraftingListConsole.create_ui_elements = function (self, params, offse
 
 	if offset then
 		local window_position = self.ui_scenegraph.window.local_position
+
 		window_position[1] = window_position[1] + offset[1]
 		window_position[2] = window_position[2] + offset[2]
 		window_position[3] = window_position[3] + offset[3]
@@ -151,6 +166,7 @@ HeroWindowCraftingListConsole.create_ui_elements = function (self, params, offse
 
 	local input_service = Managers.input:get_service("hero_view")
 	local gui_layer = UILayer.default + 30
+
 	self._menu_input_description = MenuInputDescriptionUI:new(nil, self.ui_top_renderer, input_service, 4, gui_layer, generic_input_actions.default, true)
 
 	self._menu_input_description:set_input_description(nil)
@@ -341,6 +357,7 @@ HeroWindowCraftingListConsole._on_button_selected = function (self, index, ignor
 	local widgets_by_name = self._widgets_by_name
 	local description_widget = widgets_by_name.description_text
 	local title_widget = widgets_by_name.tite_text
+
 	description_widget.content.text = Localize(description_text)
 	title_widget.content.text = Localize(display_name)
 
@@ -384,12 +401,14 @@ HeroWindowCraftingListConsole._populate_buttons = function (self, page_settings)
 		local page_setting = page_settings[index]
 		local content = widget.content
 		local style = widget.style
+
 		content.visible = page_setting ~= nil
 
 		if page_setting then
 			local recipe_name = page_setting.name
 			local recipe = crafting_recipes_by_name[recipe_name]
 			local display_icon = recipe.display_icon_console
+
 			content.icon = display_icon
 		end
 	end
@@ -409,12 +428,15 @@ HeroWindowCraftingListConsole._set_alignment_progress = function (self, progress
 		local content = widget.content
 		local style = widget.style
 		local offset = widget.offset
+
 		offset[2] = start_height * progress
 		offset[1] = -0.00055 * offset[2]^2
+
 		local angle = 0.001 * offset[2]
+
 		style.holder.angle = -(angle * progress)
 		start_height = start_height - spacing
-		layer_index = math.ceil(num_recipies / 2) < index and layer_index - 1 or layer_index + 1
+		layer_index = index > math.ceil(num_recipies / 2) and layer_index - 1 or layer_index + 1
 
 		if content.button_hotspot.is_selected then
 			offset[3] = (num_recipies + 1) * num_layers
@@ -443,6 +465,7 @@ HeroWindowCraftingListConsole._setup_text_button_size = function (self, widget)
 	local ui_top_renderer = self.ui_top_renderer
 	local font, scaled_font_size = UIFontByResolution(text_style)
 	local text_width, text_height, min = UIRenderer.text_size(ui_top_renderer, text, font[1], scaled_font_size)
+
 	ui_scenegraph[scenegraph_id].size[1] = text_width
 
 	return text_width
@@ -451,6 +474,7 @@ end
 HeroWindowCraftingListConsole._set_text_button_horizontal_position = function (self, widget, x_position)
 	local ui_scenegraph = self.ui_scenegraph
 	local scenegraph_id = widget.scenegraph_id
+
 	ui_scenegraph[scenegraph_id].local_position[1] = x_position
 end
 
@@ -497,8 +521,11 @@ HeroWindowCraftingListConsole._animate_entry = function (self, widget, dt)
 	local combined_out_progress = math.max(select_easing_out_progress, hover_easing_out_progress)
 	local combined_in_progress = math.max(hover_easing_in_progress, select_easing_in_progress)
 	local hover_alpha = 255 * combined_progress
+
 	style.selection.color[1] = hover_alpha
+
 	local icon_color_value = 100 + 155 * combined_progress
+
 	style.icon.color[2] = icon_color_value
 	style.icon.color[3] = icon_color_value
 	style.icon.color[4] = icon_color_value

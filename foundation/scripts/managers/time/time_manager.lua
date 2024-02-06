@@ -1,10 +1,12 @@
+﻿-- chunkname: @foundation/scripts/managers/time/time_manager.lua
+
 require("foundation/scripts/managers/time/timer")
 
 TimeManager = class(TimeManager)
 
 TimeManager.init = function (self)
 	self._timers = {
-		main = Timer:new("main", nil)
+		main = Timer:new("main", nil),
 	}
 	self._dt_stack = {}
 	self._dt_stack_max_size = 10
@@ -71,6 +73,7 @@ end
 
 TimeManager._update_demo_timer = function (self, dt)
 	self._demo_timer = (self._demo_timer or DemoSettings.demo_idle_timer) - dt
+
 	local device = Managers.input and Managers.input:get_most_recent_device()
 
 	if not device then
@@ -108,8 +111,10 @@ end
 
 TimeManager._update_mean_dt = function (self, dt)
 	local dt_stack = self._dt_stack
+
 	self._dt_stack_index = self._dt_stack_index % self._dt_stack_max_size + 1
 	dt_stack[self._dt_stack_index] = dt
+
 	local dt_sum = 0
 
 	for i, dt in ipairs(dt_stack) do
@@ -178,8 +183,11 @@ TimeManager._update_global_time_scale_lerp = function (self, dt)
 	local end_value = self._global_time_scale_lerp_end
 	local progress = self._global_time_scale_lerp_progress
 	local lerp_increment = self._global_time_scale_lerp_increment
+
 	progress = math.clamp(progress + dt * lerp_increment, 0, 1)
+
 	local current_value = math.lerp(start_value, end_value, progress)
+
 	self._global_time_scale = current_value
 	self._global_time_scale_lerp_progress = progress
 

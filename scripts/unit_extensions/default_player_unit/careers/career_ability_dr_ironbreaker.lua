@@ -1,10 +1,14 @@
+﻿-- chunkname: @scripts/unit_extensions/default_player_unit/careers/career_ability_dr_ironbreaker.lua
+
 CareerAbilityDRIronbreaker = class(CareerAbilityDRIronbreaker)
 
 CareerAbilityDRIronbreaker.init = function (self, extension_init_context, unit, extension_init_data)
 	self._owner_unit = unit
 	self._world = extension_init_context.world
 	self._wwise_world = Managers.world:wwise_world(self._world)
+
 	local player = extension_init_data.player
+
 	self._player = player
 	self._is_server = player.is_server
 	self._local_player = player.local_player
@@ -84,6 +88,7 @@ CareerAbilityDRIronbreaker._start_priming = function (self)
 	if self._local_player then
 		local world = self._world
 		local effect_name = self._priming_fx_name
+
 		self._priming_fx_id = World.create_particles(world, effect_name, Vector3.zero())
 	end
 
@@ -134,7 +139,7 @@ CareerAbilityDRIronbreaker._run_ability = function (self)
 	local buffs = {
 		"bardin_ironbreaker_activated_ability",
 		"bardin_ironbreaker_activated_ability_block_cost",
-		"bardin_ironbreaker_activated_ability_attack_intensity_decay_increase"
+		"bardin_ironbreaker_activated_ability_attack_intensity_decay_increase",
 	}
 
 	if talent_extension:has_talent("bardin_ironbreaker_activated_ability_taunt_range_and_duration") then
@@ -143,12 +148,14 @@ CareerAbilityDRIronbreaker._run_ability = function (self)
 		buffs = {
 			"bardin_ironbreaker_activated_ability_taunt_range_and_duration",
 			"bardin_ironbreaker_activated_ability_taunt_range_and_duration_block_cost",
-			"bardin_ironbreaker_activated_ability_taunt_range_and_duration_attack_intensity_decay_increase"
+			"bardin_ironbreaker_activated_ability_taunt_range_and_duration_attack_intensity_decay_increase",
 		}
 	end
 
 	local targets = FrameTable.alloc_table()
+
 	targets[1] = owner_unit
+
 	local range = 10
 	local duration = 10
 
@@ -208,7 +215,7 @@ CareerAbilityDRIronbreaker._run_ability = function (self)
 
 			if is_server then
 				target_buff_extension:add_buff(buff_name, {
-					attacker_unit = owner_unit
+					attacker_unit = owner_unit,
 				})
 				network_transmit:send_rpc_clients("rpc_add_buff", target_unit_object_id, buff_template_name_id, owner_unit_id, 0, false)
 			else

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/game_state/components/level_transition_handler.lua
+
 require("scripts/game_state/components/enemy_package_loader")
 require("scripts/game_state/components/transient_package_loader")
 
@@ -28,8 +30,11 @@ LevelTransitionHandler.init = function (self)
 	self.enemy_package_loader = EnemyPackageLoader:new()
 	self.transient_package_loader = TransientPackageLoader:new()
 	self._network_state = nil
-	local level_key, environment_variation_id, level_seed, mechanism, game_mode, conflict_director, locked_director_functions, difficulty, difficulty_tweak, extra_packages = nil
+
+	local level_key, environment_variation_id, level_seed, mechanism, game_mode, conflict_director, locked_director_functions, difficulty, difficulty_tweak, extra_packages
+
 	level_key, environment_variation_id, level_seed, mechanism, game_mode, conflict_director, locked_director_functions, difficulty, difficulty_tweak, extra_packages = LevelTransitionHandler.apply_defaults_to_level_data(level_key, level_seed, environment_variation_id, mechanism, game_mode, conflict_director, locked_director_functions, difficulty, difficulty_tweak, extra_packages)
+
 	local default_level_data = {
 		level_transition_type = "load_next_level",
 		level_key = level_key,
@@ -41,8 +46,9 @@ LevelTransitionHandler.init = function (self)
 		locked_director_functions = locked_director_functions,
 		difficulty = difficulty,
 		difficulty_tweak = difficulty_tweak,
-		extra_packages = extra_packages
+		extra_packages = extra_packages,
 	}
+
 	self._offline_level_data = table.clone(default_level_data)
 	self._offline_level_data.level_session_id = math.random_seed()
 	self._default_level_data = default_level_data
@@ -91,6 +97,7 @@ LevelTransitionHandler.reload_level = function (self, optional_checkpoint_data, 
 	print("reload_level")
 
 	self._checkpoint_data = optional_checkpoint_data
+
 	local level_transition_type = "reload_level"
 
 	self:_set_next_level(level_transition_type, self:get_current_level_key(), self:get_current_environment_variation_id(), optional_level_seed or self:get_current_level_seed(), self:get_current_mechanism(), self:get_current_game_mode(), self:get_current_conflict_director(), self:get_current_locked_director_functions(), self:get_current_difficulty(), self:get_current_difficulty_tweak(), self:get_current_extra_packages())
@@ -231,6 +238,7 @@ LevelTransitionHandler._load_extra_packages = function (self, level_key, extra_p
 		fassert(self._extra_packages == nil, "Trying to load level before releasing previous one properly. _extra_packages have not been unloaded.")
 
 		self._extra_packages = extra_packages
+
 		local async = true
 		local reference_name = level_key
 		local package_manager = Managers.package
@@ -412,7 +420,7 @@ LevelTransitionHandler._set_next_level = function (self, level_transition_type, 
 		difficulty_tweak = difficulty_tweak,
 		level_session_id = new_level_session_id,
 		level_transition_type = level_transition_type,
-		extra_packages = extra_packages
+		extra_packages = extra_packages,
 	}
 end
 
@@ -439,6 +447,7 @@ LevelTransitionHandler._load_level_packages = function (self, level_key)
 
 		if not profile_index then
 			local network_handler = Managers.mechanism:network_handler()
+
 			profile_index = network_handler and network_handler.wanted_profile_index
 		end
 
@@ -526,6 +535,7 @@ LevelTransitionHandler.create_level_seed = function ()
 	local date_time = os.time()
 	local low_time = tonumber(tostring(string.format("%d", date_time)):reverse():sub(1, 6))
 	local seed = (time_since_start + low_time) % 15485867
+
 	seed = math.floor(seed)
 
 	return seed
@@ -535,6 +545,7 @@ LevelTransitionHandler.apply_defaults_to_level_data = function (level_key, envir
 	if not mechanism then
 		if level_key then
 			local level_settings = LevelSettings[level_key]
+
 			mechanism = level_settings.mechanism
 		else
 			mechanism = SaveData.last_mechanism or "adventure"
@@ -545,10 +556,12 @@ LevelTransitionHandler.apply_defaults_to_level_data = function (level_key, envir
 		local mechanism_settings = MechanismSettings[mechanism]
 		local class_name = mechanism_settings.class_name
 		local class = rawget(_G, class_name)
+
 		level_key = class.get_starting_level()
 	end
 
 	local level_settings = LevelSettings[level_key]
+
 	game_mode = game_mode or level_settings.game_mode
 
 	if not game_mode then

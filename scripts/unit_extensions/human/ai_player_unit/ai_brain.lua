@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/human/ai_player_unit/ai_brain.lua
+
 require("scripts/settings/player_bots_settings")
 require("scripts/entity_system/systems/behaviour/behaviour_tree")
 require("scripts/entity_system/systems/behaviour/bt_minion")
@@ -5,6 +7,7 @@ require("scripts/entity_system/systems/behaviour/bt_bot")
 require("scripts/unit_extensions/human/ai_player_unit/debug_breeds/debug_globadier")
 
 AIBrain = class(AIBrain)
+
 local BLACKBOARDS = BLACKBOARDS
 
 AIBrain.init = function (self, world, unit, blackboard, breed, behavior)
@@ -47,7 +50,7 @@ AIBrain.init_utility_actions = function (self, blackboard, breed)
 				last_time = -math.huge,
 				time_since_last = math.huge,
 				last_done_time = -math.huge,
-				time_since_last_done = math.huge
+				time_since_last_done = math.huge,
 			}
 
 			if data.init_blackboard then
@@ -63,6 +66,7 @@ end
 
 AIBrain.load_brain = function (self, tree_name)
 	local ai_system = Managers.state.entity:system("ai_system")
+
 	self._bt = ai_system:behavior_tree(tree_name)
 
 	fassert(self._bt, "Cannot find behavior tree '%s' specified for unit '%s'", tree_name, self._unit)
@@ -74,7 +78,9 @@ end
 
 AIBrain.exit_last_action = function (self)
 	local blackboard = self._blackboard
+
 	blackboard.exit_last_action = true
+
 	local root = self._bt:root()
 	local t = Managers.time:time("game")
 

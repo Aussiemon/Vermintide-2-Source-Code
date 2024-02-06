@@ -1,6 +1,9 @@
+﻿-- chunkname: @scripts/ui/hud_ui/buff_presentation_ui.lua
+
 local definitions = local_require("scripts/ui/hud_ui/buff_presentation_ui_definitions")
 local animation_definitions = definitions.animation_definitions
 local scenegraph_definition = definitions.scenegraph_definition
+
 BuffPresentationUI = class(BuffPresentationUI)
 
 BuffPresentationUI.init = function (self, parent, ingame_ui_context)
@@ -8,7 +11,9 @@ BuffPresentationUI.init = function (self, parent, ingame_ui_context)
 	self.ui_renderer = ingame_ui_context.ui_renderer
 	self.ingame_ui = ingame_ui_context.ingame_ui
 	self.input_manager = ingame_ui_context.input_manager
+
 	local world = ingame_ui_context.world_manager:world("level_world")
+
 	self.wwise_world = Managers.world:wwise_world(world)
 
 	self:create_ui_elements()
@@ -31,10 +36,10 @@ BuffPresentationUI.destroy = function (self)
 end
 
 local customizer_data = {
-	root_scenegraph_id = "presentation_widget",
+	drag_scenegraph_id = "presentation_widget_dragger",
 	label = "Buff",
 	registry_key = "buff_present",
-	drag_scenegraph_id = "presentation_widget_dragger"
+	root_scenegraph_id = "presentation_widget",
 }
 
 BuffPresentationUI.update = function (self, dt)
@@ -86,9 +91,10 @@ end
 
 BuffPresentationUI._start_animation = function (self, key, animation_name)
 	local params = {
-		wwise_world = self.wwise_world
+		wwise_world = self.wwise_world,
 	}
 	local anim_id = self.ui_animator:start_animation(animation_name, self.presentation_widget, scenegraph_definition, params)
+
 	self._animations[key] = anim_id
 end
 
@@ -181,7 +187,7 @@ BuffPresentationUI._add_buff = function (self, buff)
 end
 
 BuffPresentationUI._remove_buff = function (self, buff_name)
-	local index = nil
+	local index
 
 	for idx, buff in ipairs(self._added_buff_presentations) do
 		if buff.name == buff_name then
@@ -213,6 +219,7 @@ BuffPresentationUI._next_buff = function (self, dt)
 
 		if #added_buff_presentations > 0 then
 			local current_buff = added_buff_presentations[1]
+
 			self._active_buff_name = current_buff.name
 
 			self:_set_buff_to_present(current_buff)
@@ -224,5 +231,6 @@ end
 BuffPresentationUI._set_buff_to_present = function (self, buff)
 	local widget = self.presentation_widget
 	local icon = buff.icon or "icons_placeholder"
+
 	widget.content.texture_icon = icon
 end

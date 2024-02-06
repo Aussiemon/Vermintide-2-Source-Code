@@ -1,114 +1,117 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/trees/skaven/skaven_plague_monk_behavior.lua
+
 local ACTIONS = BreedActions.skaven_plague_monk
+
 BreedBehaviors.plague_monk = {
 	"BTSelector",
 	{
 		"BTSpawningAction",
 		condition = "spawn",
-		name = "spawn"
+		name = "spawn",
 	},
 	{
 		"BTInVortexAction",
 		condition = "in_vortex",
-		name = "in_vortex"
+		name = "in_vortex",
 	},
 	{
 		"BTFallAction",
 		condition = "is_falling",
-		name = "falling"
+		name = "falling",
 	},
 	{
 		"BTStaggerAction",
-		name = "stagger",
 		condition = "stagger",
-		action_data = ACTIONS.stagger
+		name = "stagger",
+		action_data = ACTIONS.stagger,
 	},
 	{
 		"BTBlockedAction",
-		name = "blocked",
 		condition = "blocked",
-		action_data = ACTIONS.blocked
+		name = "blocked",
+		action_data = ACTIONS.blocked,
 	},
 	{
 		"BTSelector",
 		{
 			"BTTeleportAction",
 			condition = "at_teleport_smartobject",
-			name = "teleport"
+			name = "teleport",
 		},
 		{
 			"BTClimbAction",
 			condition = "at_climb_smartobject",
-			name = "climb"
+			name = "climb",
 		},
 		{
 			"BTJumpAcrossAction",
 			condition = "at_jump_smartobject",
-			name = "jump_across"
+			name = "jump_across",
 		},
 		{
 			"BTSmashDoorAction",
-			name = "smash_door",
 			condition = "at_door_smartobject",
-			action_data = ACTIONS.smash_door
+			name = "smash_door",
+			action_data = ACTIONS.smash_door,
 		},
 		condition = "at_smartobject",
-		name = "smartobject"
+		name = "smartobject",
 	},
 	{
 		"BTHesitateAction",
-		name = "hesitate",
 		condition = "is_alerted",
-		action_data = ACTIONS.alerted
+		name = "hesitate",
+		action_data = ACTIONS.alerted,
 	},
 	{
 		"BTUtilityNode",
+		action_data = ACTIONS.utility_action,
 		{
 			"BTClanRatFollowAction",
 			name = "follow",
-			action_data = ACTIONS.follow
+			action_data = ACTIONS.follow,
 		},
 		{
 			"BTComboAttackAction",
+			condition = "ask_target_before_attacking",
 			name = "frenzy_attack_ranged",
-			condition = "ask_target_before_attacking",
-			action_data = ACTIONS.frenzy_attack_ranged
+			action_data = ACTIONS.frenzy_attack_ranged,
 		},
 		{
 			"BTComboAttackAction",
-			name = "frenzy_attack",
 			condition = "ask_target_before_attacking",
-			action_data = ACTIONS.frenzy_attack
+			name = "frenzy_attack",
+			action_data = ACTIONS.frenzy_attack,
 		},
 		{
 			"BTAttackAction",
-			name = "normal_attack",
 			condition = "ask_target_before_attacking",
-			action_data = ACTIONS.normal_attack
+			name = "normal_attack",
+			action_data = ACTIONS.normal_attack,
 		},
-		name = "in_combat",
 		condition = "confirmed_player_sighting",
-		action_data = ACTIONS.utility_action
+		name = "in_combat",
 	},
 	{
 		"BTAlertedAction",
-		name = "alerted",
 		condition = "player_spotted",
-		action_data = ACTIONS.alerted
+		name = "alerted",
+		action_data = ACTIONS.alerted,
 	},
 	{
 		"BTMoveToGoalAction",
-		name = "move_to_goal",
 		condition = "has_goal_destination",
-		action_data = ACTIONS.follow
+		name = "move_to_goal",
+		action_data = ACTIONS.follow,
 	},
 	{
 		"BTIdleAction",
 		condition = "no_target",
-		name = "idle"
+		name = "idle",
 	},
 	{
 		"BTFallbackIdleAction",
-		name = "fallback_idle"
+		name = "fallback_idle",
 	},
-	name = "plague_monk"
+	name = "plague_monk",
 }

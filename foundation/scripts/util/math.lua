@@ -1,12 +1,10 @@
+﻿-- chunkname: @foundation/scripts/util/math.lua
+
 local math = math
-local math_sqrt = math.sqrt
-local math_cos = math.cos
-local math_sin = math.sin
-local math_random = math.random
-local math_max = math.max
-local math_abs = math.abs
-local math_acos = math.acos
+local math_sqrt, math_cos, math_sin, math_random = math.sqrt, math.cos, math.sin, math.random
+local math_max, math_abs, math_acos = math.max, math.abs, math.acos
 local pi = math.pi
+
 math.epsilon = 0.001
 math.tau = 2 * pi
 math.half_pi = 0.5 * pi
@@ -98,6 +96,7 @@ end
 
 math.round_to_closest_multiple = function (value, multiple)
 	multiple = multiple or 1
+
 	local modulo = value % multiple
 	local middle_point = multiple / 2
 
@@ -127,15 +126,15 @@ math.next_random_range = function (seed, min, max)
 end
 
 math.point_is_inside_2d_box = function (pos, lower_left_corner, size)
-	return lower_left_corner[1] < pos[1] and pos[1] < lower_left_corner[1] + size[1] and lower_left_corner[2] < pos[2] and pos[2] < lower_left_corner[2] + size[2]
+	return pos[1] > lower_left_corner[1] and pos[1] < lower_left_corner[1] + size[1] and pos[2] > lower_left_corner[2] and pos[2] < lower_left_corner[2] + size[2]
 end
 
 math.box_overlap_box = function (a_pos, a_size, b_pos, b_size)
-	return b_pos[1] <= a_pos[1] + a_size[1] and a_pos[1] <= b_pos[1] + b_size[1] and b_pos[2] <= a_pos[2] + a_size[2] and a_pos[2] <= b_pos[2] + b_size[2]
+	return a_pos[1] + a_size[1] >= b_pos[1] and b_pos[1] + b_size[1] >= a_pos[1] and a_pos[2] + a_size[2] >= b_pos[2] and b_pos[2] + b_size[2] >= a_pos[2]
 end
 
 math.point_is_inside_aabb = function (pos, aabb_pos, aabb_half_extents)
-	return pos[1] >= aabb_pos[1] - aabb_half_extents[1] and pos[1] <= aabb_pos[1] + aabb_half_extents[1] and pos[2] >= aabb_pos[2] - aabb_half_extents[2] and pos[2] <= aabb_pos[2] + aabb_half_extents[2] and pos[3] >= aabb_pos[3] - aabb_half_extents[3] and pos[3] <= aabb_pos[3] + aabb_half_extents[3]
+	return not (pos[1] < aabb_pos[1] - aabb_half_extents[1]) and not (pos[1] > aabb_pos[1] + aabb_half_extents[1]) and not (pos[2] < aabb_pos[2] - aabb_half_extents[2]) and not (pos[2] > aabb_pos[2] + aabb_half_extents[2]) and not (pos[3] < aabb_pos[3] - aabb_half_extents[3]) and not (pos[3] > aabb_pos[3] + aabb_half_extents[3])
 end
 
 math.point_is_inside_box = function (pos, box_pose, box_half_extents)
@@ -168,7 +167,7 @@ math.point_is_inside_2d_triangle = function (pos, p1, p2, p3)
 	end
 
 	local pca_n = Vector3.cross(pc, pa)
-	local best_normal = Vector3.dot(pbc_n, pbc_n) < Vector3.dot(pab_n, pab_n) and pab_n or pbc_n
+	local best_normal = Vector3.dot(pab_n, pab_n) > Vector3.dot(pbc_n, pbc_n) and pab_n or pbc_n
 	local dot_product = Vector3.dot(best_normal, pca_n)
 
 	if dot_product < 0 then
@@ -226,7 +225,7 @@ math.cartesian_to_polar = function (x, y)
 	fassert(x ~= 0 and y ~= 0, "Can't convert a zero vector to polar coordinates")
 
 	local radius = math_sqrt(x * x + y * y)
-	local theta = math.atan(y / x) * 180 / math.pi
+	local theta = math.atan(y / x) * (180 / math.pi)
 
 	if x < 0 then
 		theta = theta + 180
@@ -238,18 +237,16 @@ math.cartesian_to_polar = function (x, y)
 end
 
 math.circular_to_square_coordinates = function (pos)
-	local x = pos.x
-	local y = pos.y
+	local x, y = pos.x, pos.y
 	local w = x * x - y * y
 	local k = 4 * math.inverse_sqrt_2
-	local u = x * k
-	local v = y * k
+	local u, v = x * k, y * k
 
 	return Vector2(0.5 * (math_sqrt(math_max(2 + u + w, 0)) - math_sqrt(math_max(2 - u + w, 0))), 0.5 * (math_sqrt(math_max(2 + v - w, 0)) - math_sqrt(math_max(2 - v - w, 0))))
 end
 
 math.polar_to_cartesian = function (radius, theta_degrees)
-	local theta = theta_degrees * pi / 180
+	local theta = theta_degrees * (pi / 180)
 
 	return radius * math_cos(theta), radius * math_sin(theta)
 end
@@ -382,7 +379,7 @@ Geometry.concave_hull = function (points, hull)
 	for i = 1, num_points do
 		local pt = points[i]
 
-		while num >= 2 and not ccw(hull[num - 1], hull[num], pt) and dot2D(hull[num] - hull[num - 1], pt - hull[num]) <= 0.1 do
+		while num >= 2 and not ccw(hull[num - 1], hull[num], pt) and not (dot2D(hull[num] - hull[num - 1], pt - hull[num]) > 0.1) do
 			num = num - 1
 		end
 
@@ -396,7 +393,7 @@ Geometry.concave_hull = function (points, hull)
 	for i = num_points, 1, -1 do
 		local pt = points[i]
 
-		while t <= num and not ccw(hull[num - 1], hull[num], pt) and dot2D(hull[num] - hull[num - 1], pt - hull[num]) <= 0.1 do
+		while t <= num and not ccw(hull[num - 1], hull[num], pt) and not (dot2D(hull[num] - hull[num - 1], pt - hull[num]) > 0.1) do
 			num = num - 1
 		end
 
@@ -421,7 +418,7 @@ Geometry.is_point_inside_triangle = function (point_on_plane, tri_a, tri_b, tri_
 	end
 
 	local pca_n = Vector3.cross(pc, pa)
-	local best_normal = Vector3.dot(pbc_n, pbc_n) < Vector3.dot(pab_n, pab_n) and pab_n or pbc_n
+	local best_normal = Vector3.dot(pab_n, pab_n) > Vector3.dot(pbc_n, pbc_n) and pab_n or pbc_n
 	local dot_product = Vector3.dot(best_normal, pca_n)
 
 	if dot_product < 0 then
@@ -463,10 +460,12 @@ Geometry.closest_point_on_line = EngineOptimized.closest_point_on_line
 Geometry.closest_point_on_polyline = function (point, points, start_index, end_index)
 	local vector3_distance_squared = Vector3.distance_squared
 	local closest_point_on_line = Geometry.closest_point_on_line
+
 	start_index = start_index or 1
 	end_index = end_index or #points
+
 	local shortest_distance = math.huge
-	local result_position, result_index = nil
+	local result_position, result_index
 
 	for i = start_index, end_index - 1 do
 		local p1 = points[i]
@@ -706,7 +705,7 @@ math.ease_out_elastic = function (t)
 		p = 0.3
 	end
 
-	local s = nil
+	local s
 
 	if a < 1 then
 		a = 1
@@ -715,7 +714,7 @@ math.ease_out_elastic = function (t)
 		s = p / (2 * math.pi) * math.asin(1 / a)
 	end
 
-	return a * 2^(-10 * t) * math_sin((t * 1 - s) * 2 * math.pi / p) + 1
+	return a * 2^(-10 * t) * math_sin((t * 1 - s) * (2 * math.pi) / p) + 1
 end
 
 math.rand_utf8_string = function (string_length, ignore_chars)
@@ -725,12 +724,13 @@ math.rand_utf8_string = function (string_length, ignore_chars)
 		"\"",
 		"'",
 		"\\",
-		" "
+		" ",
 	}
+
 	local array = {}
 
 	for i = 1, string_length do
-		local char = nil
+		local char
 
 		while not char or table.contains(ignore_chars, char) do
 			char = string.char(math_random(32, 126))
@@ -745,7 +745,7 @@ end
 math.uuid = function ()
 	local random = math_random
 
-	return string.format("%08x-%04x-4%03x-%x%03x-%012x", random(0, 4294967295.0), random(0, 65535), random(0, 4095), random(0, 11), random(0, 4095), random(0, 281474976710655.0))
+	return string.format("%08x-%04x-4%03x-%x%03x-%012x", random(0, 4294967295), random(0, 65535), random(0, 4095), random(0, 11), random(0, 4095), random(0, 281474976710655))
 end
 
 math.get_uniformly_random_point_inside_sector = function (radius1, radius2, angle1, angle2)
@@ -760,9 +760,11 @@ end
 math.get_uniformly_random_point_inside_sector_seeded = function (seed, radius1, radius2, angle1, angle2)
 	local radius1_squared = radius1 * radius1
 	local radius2_squared = radius2 * radius2
-	local rnd1, rnd2 = nil
+	local rnd1, rnd2
+
 	seed, rnd1 = Math.next_random(seed)
 	seed, rnd2 = Math.next_random(seed)
+
 	local angle = angle1 + (angle2 - angle1) * rnd1
 	local r = math.sqrt(radius1_squared + (radius2_squared - radius1_squared) * rnd2)
 	local dx = r * math.sin(angle)
@@ -772,13 +774,15 @@ math.get_uniformly_random_point_inside_sector_seeded = function (seed, radius1, 
 end
 
 math.get_random_point_inside_box_seeded = function (seed, box_pose, bounds)
-	local rnd_x, rnd_y, rnd_z, x, y, z = nil
+	local rnd_x, rnd_y, rnd_z, x, y, z
+
 	seed, rnd_x = Math.next_random(seed)
 	seed, rnd_y = Math.next_random(seed)
 	seed, rnd_z = Math.next_random(seed)
 	x = math.lerp(-bounds[1], bounds[1], rnd_x)
 	y = math.lerp(-bounds[2], bounds[2], rnd_y)
 	z = math.lerp(-bounds[3], bounds[3], rnd_z)
+
 	local local_pos = Matrix4x4.transform(box_pose, Vector3(x, y, z))
 
 	return seed, local_pos
@@ -806,8 +810,7 @@ end
 
 math.wrap_index_between = function (index, from, to)
 	if to < from then
-		to = from
-		from = to
+		from, to = to, from
 	end
 
 	local d_max = to - from
@@ -870,7 +873,7 @@ local function _match_rank_counts(left_rank_array, left_rank_lookup, left_sort_l
 				local other_rank = rank_array[rank_lookup[remaining_i]]
 
 				table.sort(other_rank, function (a, b)
-					return sort_lookup[b] < sort_lookup[a]
+					return sort_lookup[a] > sort_lookup[b]
 				end)
 			end
 
@@ -879,9 +882,8 @@ local function _match_rank_counts(left_rank_array, left_rank_lookup, left_sort_l
 
 		local left_n = #left_rank
 		local right_n = #right_rank
-		local smaller_n = left_n
-		local larger_n = right_n
-		local smaller_rank, smaller_rank_array, smaller_rank_lookup, smaller_sort_lookup = nil
+		local smaller_n, larger_n = left_n, right_n
+		local smaller_rank, smaller_rank_array, smaller_rank_lookup, smaller_sort_lookup
 
 		if left_n <= right_n then
 			smaller_rank = left_rank
@@ -889,8 +891,7 @@ local function _match_rank_counts(left_rank_array, left_rank_lookup, left_sort_l
 			smaller_rank_lookup = left_rank_lookup
 			smaller_sort_lookup = left_sort_lookup
 		else
-			larger_n = smaller_n
-			smaller_n = larger_n
+			smaller_n, larger_n = larger_n, smaller_n
 			smaller_rank = right_rank
 			smaller_rank_array = right_rank_array
 			smaller_rank_lookup = right_rank_lookup
@@ -910,7 +911,7 @@ local function _match_rank_counts(left_rank_array, left_rank_lookup, left_sort_l
 				table.remove(smaller_rank_lookup, rank_i + 1)
 			else
 				table.sort(next_rank, function (a, b)
-					return smaller_sort_lookup[b] < smaller_sort_lookup[a]
+					return smaller_sort_lookup[a] > smaller_sort_lookup[b]
 				end)
 
 				for i = next_rank_n, next_rank_n - (larger_n - smaller_n) + 1, -1 do
@@ -922,10 +923,10 @@ local function _match_rank_counts(left_rank_array, left_rank_lookup, left_sort_l
 		end
 
 		table.sort(left_rank, function (a, b)
-			return left_sort_lookup[b] < left_sort_lookup[a]
+			return left_sort_lookup[a] > left_sort_lookup[b]
 		end)
 		table.sort(right_rank, function (a, b)
-			return right_sort_lookup[b] < right_sort_lookup[a]
+			return right_sort_lookup[a] > right_sort_lookup[b]
 		end)
 	end
 end
@@ -947,12 +948,12 @@ math.distributed_point_matching = function (source_positions, target_positions, 
 
 	source_center = source_center / num_points
 	target_center = target_center / num_points
+
 	local forward = Vector3.normalize(Vector3.flat(target_center - source_center))
 	local right = Vector3.cross(forward, Vector3.up())
 
 	if use_rows then
-		right = forward
-		forward = right
+		forward, right = right, forward
 	end
 
 	local out_source_ranks = FrameTable.alloc_table()
@@ -980,6 +981,7 @@ math.distributed_point_matching = function (source_positions, target_positions, 
 		for inline_i = 1, rank_n do
 			local source_index = source_rank[inline_i]
 			local target_index = target_rank[inline_i]
+
 			out_indices[source_index] = target_index
 		end
 	end

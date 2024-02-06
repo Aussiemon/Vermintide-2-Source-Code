@@ -1,16 +1,22 @@
+﻿-- chunkname: @scripts/unit_extensions/pickups/orb_pickup_unit_extension.lua
+
 local HIGHEST_Z_OFFSET = 1
 local ANIMATION_DURATION = 1
 local DEFAULT_PICKUP_ORB_SOUND = "boon_orb_pickup"
+
 OrbPickupUnitExtension = class(OrbPickupUnitExtension, PickupUnitExtension)
 
 OrbPickupUnitExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	OrbPickupUnitExtension.super.init(self, extension_init_context, unit, extension_init_data)
 
 	self._is_server = Managers.player.is_server
+
 	local side = Managers.state.side:get_side_from_name("heroes")
+
 	self._hero_side = side
 	self._pickup_settings = AllPickups[self.pickup_name]
 	self._orb_flight_target_position = extension_init_data.flight_enabled and extension_init_data.orb_flight_target_position or nil
+
 	local orb_offset = self._pickup_settings.orb_offset
 
 	if orb_offset then
@@ -25,7 +31,7 @@ OrbPickupUnitExtension.init = function (self, extension_init_context, unit, exte
 	self._hover_from = self._orb_flight_target_position or Vector3Box(POSITION_LOOKUP[unit])
 	self._magnetic = self._pickup_settings.magnetic_settings
 	self._buff_params = {
-		attacker_unit = unit
+		attacker_unit = unit,
 	}
 end
 
@@ -68,7 +74,7 @@ OrbPickupUnitExtension.update = function (self, unit, input, dt, context, t)
 
 				local distance = Vector3.length(delta_pos)
 				local status_extension = ScriptUnit.extension(player_unit, "status_system")
-				local can_pickup = not status_extension:is_disabled() and (not pickup_settings.can_pickup_orb or pickup_settings:can_pickup_orb(player_unit))
+				local can_pickup = not status_extension:is_disabled() and (not pickup_settings.can_pickup_orb or pickup_settings.can_pickup_orb(pickup_settings, player_unit))
 
 				if can_pickup then
 					local pickup_radius = pickup_settings.pickup_radius or 1
@@ -118,6 +124,7 @@ OrbPickupUnitExtension.update = function (self, unit, input, dt, context, t)
 		local game = Managers.state.network:game()
 		local go_id = Managers.state.unit_storage:go_id(unit)
 		local target_go_id = GameSession.game_object_field(game, go_id, "magnetic_target_id")
+
 		self._magnetic_target = Managers.state.unit_storage:unit(target_go_id)
 	end
 
@@ -138,6 +145,7 @@ OrbPickupUnitExtension.update = function (self, unit, input, dt, context, t)
 		local destination = self._orb_flight_target_position:unbox()
 		local next_position = Vector3.lerp(start, destination, ratio)
 		local z_offset = math.sin(math.pi * math.pow(ratio, 0.8)) * HIGHEST_Z_OFFSET
+
 		next_position.z = next_position.z + z_offset
 
 		Unit.set_local_position(unit, 0, next_position)
@@ -145,8 +153,10 @@ OrbPickupUnitExtension.update = function (self, unit, input, dt, context, t)
 		local magnetic_settings = self._magnetic
 		local max_speed = magnetic_settings.max_speed
 		local time_to_max_speed = magnetic_settings.time_to_max_speed
+
 		self._magnetic_start_t = self._magnetic_start_t or t
-		local speed = nil
+
+		local speed
 
 		if time_to_max_speed < math.epsilon then
 			speed = max_speed
@@ -163,7 +173,9 @@ OrbPickupUnitExtension.update = function (self, unit, input, dt, context, t)
 	elseif self._hover then
 		local hover_frequency = self._hover.frequency
 		local hover_amplitude = self._hover.amplitude
+
 		self._hover_t_start = self._hover_t_start or t
+
 		local hover_t = t - self._hover_t_start
 		local hover_from = self._hover_from:unbox()
 		local hover_to = hover_from + Vector3(0, 0, hover_amplitude)

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/hero_view/windows/hero_window_background_console.lua
+
 require("scripts/ui/views/menu_world_previewer")
 require("scripts/settings/hero_statistics_template")
 
@@ -11,83 +13,84 @@ local loading_overlay_widget_definitions = definitions.loading_overlay_widgets
 local DO_RELOAD = false
 local object_sets_per_layout = {
 	equipment = {
-		equipment_view = true
+		equipment_view = true,
 	},
 	talents = {
-		talents_view = true
+		talents_view = true,
 	},
 	forge = {
-		crafting_view = true
+		crafting_view = true,
 	},
 	cosmetics = {
-		cosmetics_view = true
+		cosmetics_view = true,
 	},
 	crafting_recipe = {
-		crafting_view = true
+		crafting_view = true,
 	},
 	equipment_selection = {
-		equipment_view = true
+		equipment_view = true,
 	},
 	cosmetics_selection = {
-		cosmetics_view = true
+		cosmetics_view = true,
 	},
 	system = {
-		main_menu = true
+		main_menu = true,
 	},
 	character_selection = {
-		keep_current_object_set = true
+		keep_current_object_set = true,
 	},
 	item_customization = {
-		keep_current_object_set = true
-	}
+		keep_current_object_set = true,
+	},
 }
 local level_events_per_layout = {
 	equipment = {
-		"equipment_view"
+		"equipment_view",
 	},
 	talents = {
-		"talents_view"
+		"talents_view",
 	},
 	forge = {
-		"crafting_view"
+		"crafting_view",
 	},
 	cosmetics = {
-		"cosmetics_view"
+		"cosmetics_view",
 	},
 	crafting_recipe = {
-		"crafting_view"
+		"crafting_view",
 	},
 	equipment_selection = {
-		"equipment_view"
+		"equipment_view",
 	},
 	cosmetics_selection = {
-		"cosmetics_view"
+		"cosmetics_view",
 	},
 	system = {
-		"main_menu"
+		"main_menu",
 	},
 	character_selection = {
 		"equipment_view",
 		"main_menu",
 		"cosmetics_view",
-		"crafting_view"
-	}
+		"crafting_view",
+	},
 }
 local character_visibility_per_layout = {
+	character_selection = true,
+	cosmetics = true,
 	cosmetics_selection = true,
+	crafting_recipe = false,
+	equipment = true,
 	equipment_selection = true,
 	forge = false,
-	cosmetics = true,
 	system = false,
-	equipment = true,
-	character_selection = true,
-	crafting_recipe = false,
-	talents = false
+	talents = false,
 }
 local camera_move_duration_per_layout = {
-	character_selection = UISettings.console_menu_camera_move_duration
+	character_selection = UISettings.console_menu_camera_move_duration,
 }
 local disable_camera_position_per_layout = {}
+
 HeroWindowBackgroundConsole = class(HeroWindowBackgroundConsole)
 HeroWindowBackgroundConsole.NAME = "HeroWindowBackgroundConsole"
 
@@ -96,17 +99,21 @@ HeroWindowBackgroundConsole.on_enter = function (self, params, offset)
 
 	self.params = params
 	self.parent = params.parent
+
 	local ingame_ui_context = params.ingame_ui_context
+
 	self.ingame_ui_context = ingame_ui_context
 	self.ui_renderer = ingame_ui_context.ui_renderer
 	self.ui_top_renderer = ingame_ui_context.ui_top_renderer
 	self.input_manager = ingame_ui_context.input_manager
 	self.statistics_db = ingame_ui_context.statistics_db
 	self.render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
+
 	local player_manager = Managers.player
 	local local_player = player_manager:local_player()
+
 	self._stats_id = local_player:stats_id()
 	self.player_manager = player_manager
 	self.peer_id = ingame_ui_context.peer_id
@@ -129,36 +136,36 @@ HeroWindowBackgroundConsole._create_viewport_definition = function (self)
 		element = UIElements.Viewport,
 		style = {
 			viewport = {
-				layer = 960,
-				viewport_name = "character_preview_viewport",
 				clear_screen_on_create = true,
-				level_name = "levels/ui_keep_menu/world",
 				enable_sub_gui = false,
 				fov = 50,
+				layer = 960,
+				level_name = "levels/ui_keep_menu/world",
+				viewport_name = "character_preview_viewport",
 				world_name = "character_preview",
 				world_flags = {
 					Application.DISABLE_SOUND,
 					Application.DISABLE_ESRAM,
-					Application.ENABLE_VOLUMETRICS
+					Application.ENABLE_VOLUMETRICS,
 				},
 				object_sets = LevelResource.object_set_names("levels/ui_keep_menu/world"),
 				camera_position = {
 					0,
 					0,
-					0
+					0,
 				},
 				camera_lookat = {
 					0,
 					0,
-					0
-				}
-			}
+					0,
+				},
+			},
 		},
 		content = {
 			button_hotspot = {
-				allow_multi_hover = true
-			}
-		}
+				allow_multi_hover = true,
+			},
+		},
 	}
 end
 
@@ -170,22 +177,26 @@ HeroWindowBackgroundConsole.create_ui_elements = function (self, params, offset)
 	end
 
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+
 	local widgets = {}
 	local widgets_by_name = {}
 
 	for name, widget_definition in pairs(widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		widgets[#widgets + 1] = widget
 		widgets_by_name[name] = widget
 	end
 
 	self._widgets = widgets
 	self._widgets_by_name = widgets_by_name
+
 	local loading_overlay_widgets = {}
 	local loading_overlay_widgets_by_name = {}
 
 	for name, widget_definition in pairs(loading_overlay_widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		loading_overlay_widgets[#loading_overlay_widgets + 1] = widget
 		loading_overlay_widgets_by_name[name] = widget
 	end
@@ -199,6 +210,7 @@ HeroWindowBackgroundConsole.create_ui_elements = function (self, params, offset)
 
 	if offset then
 		local window_position = self.ui_scenegraph.window.local_position
+
 		window_position[1] = window_position[1] + offset[1]
 		window_position[2] = window_position[2] + offset[2]
 		window_position[3] = window_position[3] + offset[3]
@@ -220,6 +232,7 @@ end
 HeroWindowBackgroundConsole._setup_object_sets = function (self)
 	local level_name = self._viewport_widget_definition.style.viewport.level_name
 	local object_set_names = LevelResource.object_set_names(level_name)
+
 	self._object_sets = {}
 
 	for _, object_set_name in ipairs(object_set_names) do
@@ -520,9 +533,7 @@ HeroWindowBackgroundConsole._populate_loadout = function (self)
 		local skin_item = BackendUtils.get_loadout_item(career_name, "slot_skin")
 		local skin_item_data = skin_item and skin_item.data
 
-		if skin_item_data then
-			preview_animation = skin_item_data.career_select_preview_animation or preview_animation
-		end
+		preview_animation = skin_item_data and skin_item_data.career_select_preview_animation or preview_animation
 
 		if preview_animation then
 			self.world_previewer:play_character_animation(preview_animation)
@@ -651,6 +662,7 @@ HeroWindowBackgroundConsole._update_loading_overlay_fadeout_animation = function
 	local loading_overlay = loading_overlay_widgets_by_name.loading_overlay
 	local loading_overlay_loading_glow = loading_overlay_widgets_by_name.loading_overlay_loading_glow
 	local loading_overlay_loading_frame = loading_overlay_widgets_by_name.loading_overlay_loading_frame
+
 	loading_overlay.style.rect.color[1] = alpha
 	loading_overlay_loading_glow.style.texture_id.color[1] = alpha
 	loading_overlay_loading_frame.style.texture_id.color[1] = alpha
@@ -665,6 +677,7 @@ end
 
 HeroWindowBackgroundConsole._handle_statistics_pressed = function (self)
 	local statistics_activate = self:_statistics_activate()
+
 	self.params.hero_statistics_active = not statistics_activate
 
 	if statistics_activate then
@@ -684,6 +697,7 @@ end
 HeroWindowBackgroundConsole._activate_statistics = function (self)
 	local widgets_by_name = self._widgets_by_name
 	local widget = widgets_by_name.detailed
+
 	widget.content.active = true
 	widget.content.list_content.active = true
 
@@ -694,6 +708,7 @@ HeroWindowBackgroundConsole._activate_statistics = function (self)
 	end
 
 	local drop_down_arrow = widget.style.drop_down_arrow
+
 	drop_down_arrow.angle = math.pi
 
 	self:_sync_statistics()
@@ -713,10 +728,13 @@ end
 HeroWindowBackgroundConsole._deactivate_statistics = function (self)
 	local widgets_by_name = self._widgets_by_name
 	local widget = widgets_by_name.detailed
+
 	widget.content.active = false
 	widget.content.list_content.active = false
 	widget.content.scrollbar.active = false
+
 	local drop_down_arrow = widget.style.drop_down_arrow
+
 	drop_down_arrow.angle = 0
 end
 
@@ -732,6 +750,7 @@ HeroWindowBackgroundConsole._update_statistics_widget = function (self, input_se
 
 	if gamepad_input_axis and Vector3.length(gamepad_input_axis) > 0.01 then
 		local current_scroll_value = widget.content.scrollbar.scroll_value
+
 		widget.content.scrollbar.scroll_value = math.clamp(current_scroll_value + gamepad_input_axis.y * dt * 5, 0, 1)
 	end
 
@@ -740,7 +759,7 @@ HeroWindowBackgroundConsole._update_statistics_widget = function (self, input_se
 	local list_style = widget.style.list_style
 	local list_member_offset_y = list_style.list_member_offset[2]
 	local num_draws = list_style.num_draws
-	local total_size = nil
+	local total_size
 
 	if num_draws == 0 then
 		total_size = math.abs(list_member_offset_y)
@@ -753,6 +772,7 @@ HeroWindowBackgroundConsole._update_statistics_widget = function (self, input_se
 	local scenegraph_node = self.ui_scenegraph[list_scenegraph_id]
 	local scenegraph_pos = scenegraph_node.local_position
 	local value = 1 - widget.content.scrollbar.scroll_value
+
 	scenegraph_pos[2] = -detailed_button_size[2] + scroll_height * value
 end
 
@@ -780,6 +800,7 @@ HeroWindowBackgroundConsole._populate_statistics = function (self, layout)
 		end
 
 		local content = list_content[i]
+
 		content.name = UIRenderer.crop_text_width(self.ui_renderer, name, 300, item_styles[i].name)
 		content.title = UIRenderer.crop_text_width(self.ui_renderer, title, 300, item_styles[i].title)
 		content.value = value
@@ -796,7 +817,7 @@ HeroWindowBackgroundConsole._setup_tab_scrollbar = function (self, widget)
 	local list_style = widget.style.list_style
 	local list_member_offset_y = list_style.list_member_offset[2]
 	local num_draws = list_style.num_draws
-	local total_size = nil
+	local total_size
 
 	if num_draws == 0 then
 		total_size = math.abs(list_member_offset_y)
@@ -810,7 +831,9 @@ HeroWindowBackgroundConsole._setup_tab_scrollbar = function (self, widget)
 	if percentage < 1 then
 		scrollbar_content.percentage = percentage
 		scrollbar_content.scroll_value = 1
+
 		local scroll_step_multiplier = 2
+
 		scrollbar_content.scroll_amount = list_member_offset_y / (total_size - detailed_list_size[2]) * scroll_step_multiplier
 	else
 		scrollbar_content.percentage = 1

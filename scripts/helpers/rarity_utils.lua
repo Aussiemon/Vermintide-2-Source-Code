@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/helpers/rarity_utils.lua
+
 require("scripts/settings/dlcs/morris/rarity_settings")
 
 RarityUtils = RarityUtils or {}
@@ -9,7 +11,7 @@ RarityUtils.get_previous_rarity = function (rarity)
 	local best_rarity_order = 0
 
 	for other_rarity, settings in pairs(rarity_settings) do
-		if settings.order < order and best_rarity_order < settings.order then
+		if order > settings.order and best_rarity_order < settings.order then
 			best_rarity = other_rarity
 			best_rarity_order = rarity_settings[best_rarity].order
 		end
@@ -26,7 +28,7 @@ RarityUtils.get_lower_rarities = function (rarity)
 	local rarities = {}
 
 	for other_rarity, settings in pairs(rarity_settings) do
-		if settings.order < order then
+		if order > settings.order then
 			table.insert(rarities, other_rarity)
 		end
 	end

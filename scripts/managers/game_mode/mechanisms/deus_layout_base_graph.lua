@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/game_mode/mechanisms/deus_layout_base_graph.lua
+
 require("scripts/settings/dlcs/morris/deus_default_graph_settings")
 require("scripts/settings/dlcs/morris/deus_map_layout_settings")
 
@@ -7,13 +9,14 @@ local function add_force(config, node, force_x, force_y)
 end
 
 local function attract(config, attractor, attracted)
-	local dx = attracted.pos_x - attractor.pos_x
-	local dy = attracted.pos_y - attractor.pos_y
+	local dx, dy = attracted.pos_x - attractor.pos_x, attracted.pos_y - attractor.pos_y
 
 	if dx ~= 0 or dy ~= 0 then
 		local distance = math.sqrt(dx * dx + dy * dy)
+
 		dx = dx / distance
 		dy = dy / distance
+
 		local strength = -1 * config.SPRING_CONSTANT * distance * 0.5
 
 		add_force(config, attracted, strength * dx, strength * dy)
@@ -21,14 +24,15 @@ local function attract(config, attractor, attracted)
 end
 
 local function repel(config, repeller, reppeled)
-	local dx = reppeled.pos_x - repeller.pos_x
-	local dy = reppeled.pos_y - repeller.pos_y
+	local dx, dy = reppeled.pos_x - repeller.pos_x, reppeled.pos_y - repeller.pos_y
 
 	if dx ~= 0 or dy ~= 0 then
 		local distance = math.sqrt(dx * dx + dy * dy)
+
 		dx = dx / distance
 		dy = dy / distance
-		local strength = config.REPEL_CONSTANT * repeller.mass * reppeled.mass / (distance * distance)
+
+		local strength = config.REPEL_CONSTANT * (repeller.mass * reppeled.mass / (distance * distance))
 
 		add_force(config, reppeled, strength * dx, strength * dy)
 	end
@@ -72,6 +76,7 @@ local function normalize(nodes)
 
 	for _, node in pairs(nodes) do
 		local layer_height = max_height_per_layer[node.layout_x]
+
 		max_height_per_layer[node.layout_x] = layer_height and math.max(layer_height, node.layout_y) or node.layout_y
 		max_layer = math.max(max_layer, node.layout_x)
 	end
@@ -81,7 +86,9 @@ local function normalize(nodes)
 	for key, node in pairs(nodes) do
 		node = table.clone(node)
 		new_nodes[key] = node
+
 		local layer = node.layout_x
+
 		node.layout_x = layer / max_layer
 		node.layout_y = node.layout_y / (max_height_per_layer[layer] + 1)
 	end
@@ -91,6 +98,7 @@ end
 
 local function setup(config, map)
 	map = normalize(map)
+
 	local nodes = {}
 	local edges = {}
 	local min_x = math.huge
@@ -99,7 +107,8 @@ local function setup(config, map)
 	for key, node in pairs(map) do
 		local pos_x = config.WIDTH * node.layout_x
 		local pos_y = config.HEIGHT * node.layout_y
-		local anchor, mass = nil
+		local anchor, mass
+
 		min_x = math.min(pos_x, min_x)
 		max_x = math.max(pos_x, max_x)
 
@@ -115,51 +124,51 @@ local function setup(config, map)
 		end
 
 		nodes[key] = {
-			acc_y = 0,
 			acc_x = 0,
+			acc_y = 0,
 			vel_x = 0,
 			vel_y = 0,
 			pos_x = pos_x,
 			pos_y = pos_y,
 			anchor = anchor,
-			mass = mass
+			mass = mass,
 		}
 
 		for _, next in ipairs(node.next) do
 			edges[#edges + 1] = {
 				from = key,
-				to = next
+				to = next,
 			}
 		end
 	end
 
 	nodes.start_anchor = {
-		acc_y = 0,
 		acc_x = 0,
-		vel_x = 0,
+		acc_y = 0,
 		anchor = true,
-		vel_y = 0,
 		pos_y = 0,
+		vel_x = 0,
+		vel_y = 0,
 		pos_x = min_x - config.WIDTH,
-		mass = config.START_MASS
+		mass = config.START_MASS,
 	}
 	edges[#edges + 1] = {
 		from = "start_anchor",
-		to = "start"
+		to = "start",
 	}
 	nodes.final_anchor = {
-		acc_y = 0,
 		acc_x = 0,
-		vel_x = 0,
+		acc_y = 0,
 		anchor = true,
-		vel_y = 0,
 		pos_y = 0,
+		vel_x = 0,
+		vel_y = 0,
 		pos_x = max_x + config.WIDTH,
-		mass = config.END_MASS
+		mass = config.END_MASS,
 	}
 	edges[#edges + 1] = {
 		from = "final",
-		to = "final_anchor"
+		to = "final_anchor",
 	}
 
 	return nodes, edges

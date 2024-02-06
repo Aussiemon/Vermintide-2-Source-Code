@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/utils/luajit.lua
+
 local has_ffi, ffi = pcall(require, "ffi")
 local has_jutil, jutil = pcall(require, "jit.util")
 
@@ -6,13 +8,9 @@ if not IS_WINDOWS or not has_ffi or not has_jutil then
 end
 
 local C = ffi.C
-local bit = bit
-local debug = debug
-local math = math
-local string = string
-local pairs = pairs
-local tonumber = tonumber
-local type = type
+local bit, debug, math, string = bit, debug, math, string
+local pairs, tonumber, type = pairs, tonumber, type
+
 LuaJIT = LuaJIT or {}
 
 ffi.cdef("int QueryPerformanceFrequency(long long*);\nint QueryPerformanceCounter(long long*);\n")
@@ -44,6 +42,7 @@ local _dummy = {}
 
 LuaJIT.tvalue = function (v)
 	_dummy[0] = v
+
 	local ptr = toptr("uint32_t*", _dummy)
 	local array = ffi.cast("int64_t*", ptr[2])
 
@@ -64,7 +63,7 @@ local itypename = {
 	"cdata",
 	"tab",
 	"udata",
-	"numx"
+	"numx",
 }
 
 LuaJIT.itype = function (o)
@@ -72,7 +71,7 @@ LuaJIT.itype = function (o)
 	local it = tonumber(bit.arshift(i64, 32))
 	local tag = bit.bnot(it)
 
-	if it % 4294967296.0 <= 4294901759.0 then
+	if it % 4294967296 <= 4294901759 then
 		tag = 13
 	elseif bit.arshift(it, 15) == -2 then
 		tag = 3
@@ -132,11 +131,13 @@ local function sizeof(lut, o, to)
 
 		if lut then
 			b = b + sizeof(lut, info.proto)
+
 			local ptr = toptr("uint32_t*", o)
 
 			for i = 1, uvs do
 				local gcref32 = ptr[5 + i]
 				local _, v = debug.getupvalue(o, i)
+
 				b = b + 24 + sizeof(lut, gcref32, "upval") + sizeof(lut, v)
 			end
 		end
@@ -151,6 +152,7 @@ local function sizeof(lut, o, to)
 
 			for i = -info.gcconsts, -1 do
 				local k = jutil.funck(o, i)
+
 				b = b + sizeof(lut, k)
 			end
 		end

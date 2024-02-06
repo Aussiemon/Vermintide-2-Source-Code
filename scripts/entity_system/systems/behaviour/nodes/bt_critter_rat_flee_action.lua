@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_critter_rat_flee_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTCritterRatFleeAction = class(BTCritterRatFleeAction, BTNode)
@@ -31,7 +33,7 @@ end
 BTCritterRatFleeAction.run = function (self, unit, blackboard, t)
 	local ai_navigation = blackboard.navigation_extension
 
-	if blackboard.dig_timer and blackboard.dig_timer < t then
+	if blackboard.dig_timer and t > blackboard.dig_timer then
 		return "done"
 	end
 
@@ -77,7 +79,7 @@ BTCritterRatFleeAction.run = function (self, unit, blackboard, t)
 end
 
 BTCritterRatFleeAction.select_move_pos = function (self, unit, blackboard)
-	local move_pos = nil
+	local move_pos
 
 	if blackboard.using_cover_points then
 		move_pos = self:_get_cover_point_flee_pos(unit, blackboard)
@@ -100,7 +102,7 @@ end
 
 BTCritterRatFleeAction._get_cover_point_flee_pos = function (self, unit, blackboard)
 	local target_unit = blackboard.target_unit
-	local move_pos = nil
+	local move_pos
 
 	if Unit.alive(target_unit) then
 		local current_position = POSITION_LOOKUP[unit]
@@ -115,6 +117,7 @@ BTCritterRatFleeAction._get_cover_point_flee_pos = function (self, unit, blackbo
 			local side = blackboard.side
 			local avoid_pos_list = side.ENEMY_PLAYER_AND_BOT_POSITIONS
 			local num_cover_units, cover_units = ConflictUtils.hidden_cover_points(current_position, avoid_pos_list, min_dist, max_dist)
+
 			blackboard.current_check_list = cover_units
 
 			for i = num_cover_units + 1, #cover_units do
@@ -152,7 +155,7 @@ BTCritterRatFleeAction._get_cover_point_flee_pos = function (self, unit, blackbo
 end
 
 BTCritterRatFleeAction._get_far_along_path_pos = function (self, unit, blackboard)
-	local move_pos = nil
+	local move_pos
 	local target_unit = blackboard.target_unit
 
 	if Unit.alive(target_unit) then
@@ -177,7 +180,7 @@ BTCritterRatFleeAction._get_far_along_path_pos = function (self, unit, blackboar
 end
 
 BTCritterRatFleeAction._get_random_flee_pos_in_front_of_target = function (self, unit, blackboard)
-	local move_pos = nil
+	local move_pos
 	local nav_world = blackboard.nav_world
 	local start_pos = POSITION_LOOKUP[unit]
 	local action = blackboard.action
@@ -199,6 +202,10 @@ BTCritterRatFleeAction._get_random_flee_pos_in_front_of_target = function (self,
 		-- Nothing
 	end
 
+	if false then
+		-- Nothing
+	end
+
 	blackboard.using_random_point_in_front_of_target = false
 	blackboard.using_random_point = true
 
@@ -216,6 +223,7 @@ BTCritterRatFleeAction._get_random_flee_pos = function (self, unit, blackboard)
 	local above = data.above
 	local below = data.below
 	local move_pos = LocomotionUtils.new_random_goal(nav_world, blackboard, start_pos, min_dist, max_dist, max_tries, nil, above, below)
+
 	move_pos = move_pos or POSITION_LOOKUP[unit]
 
 	return move_pos
@@ -244,6 +252,7 @@ BTCritterRatFleeAction.at_destination = function (self, unit, blackboard, t)
 		local min_time_before_dig = data.min_time_before_dig
 		local max_time_before_dig = data.max_time_before_dig
 		local time_before_dig = math.random(min_time_before_dig, max_time_before_dig)
+
 		blackboard.dig_timer = t + time_before_dig
 	end
 

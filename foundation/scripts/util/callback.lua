@@ -1,3 +1,5 @@
+﻿-- chunkname: @foundation/scripts/util/callback.lua
+
 local MAX_ARGS = 5
 
 function callback(...)
@@ -46,11 +48,7 @@ function callback(...)
 				return object[func_name](object, arg1, arg2, arg3, arg4, arg5, ...)
 			end
 		end
-
-		return
-	end
-
-	if type(arg1) == "function" then
+	elseif type(arg1) == "function" then
 		local func = arg1
 		local num_args = select("#", ...) - 1
 

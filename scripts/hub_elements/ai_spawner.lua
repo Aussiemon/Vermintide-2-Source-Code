@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/hub_elements/ai_spawner.lua
+
 require("scripts/settings/breeds")
 
 AISpawner = class(AISpawner)
@@ -19,11 +21,7 @@ AISpawner.init = function (self, world, unit)
 		if spawner_name ~= nil then
 			local terror_event_id = Unit.get_data(unit, "terror_event_id")
 
-			if terror_event_id then
-				if terror_event_id == "" then
-					terror_event_id = false
-				end
-			end
+			terror_event_id = (not terror_event_id or terror_event_id ~= "") and terror_event_id
 
 			local hidden = Unit.get_data(unit, "hidden")
 
@@ -41,17 +39,13 @@ AISpawner.init = function (self, world, unit)
 				name = spawner_name,
 				animation_events = animation_events,
 				node = Unit.get_data(unit, "spawner_settings", spawner_name, "node"),
-				spawn_rate = Unit.get_data(unit, "spawner_settings", spawner_name, "spawn_rate")
+				spawn_rate = Unit.get_data(unit, "spawner_settings", spawner_name, "spawn_rate"),
 			}
 		end
 	else
 		local terror_event_id = Unit.get_data(self._unit, "terror_event_id")
 
-		if terror_event_id then
-			if terror_event_id == "" then
-				terror_event_id = false
-			end
-		end
+		terror_event_id = (not terror_event_id or terror_event_id ~= "") and terror_event_id
 
 		self._spawner_system:register_raw_spawner(self._unit, terror_event_id)
 	end
@@ -80,11 +74,13 @@ AISpawner.on_activate = function (self, breed_list, side_id, group_template, opt
 	local spawn_data = {
 		side_id,
 		group_template,
-		optional_data
+		optional_data,
 	}
 	local list = self._breed_list
 	local size = #list
+
 	self._max_amount = self._max_amount + #breed_list
+
 	local j = size + 1
 
 	for i = 1, #breed_list do
@@ -104,7 +100,7 @@ AISpawner.on_deactivate = function (self)
 end
 
 AISpawner.update = function (self, unit, input, dt, context, t)
-	if self._next_spawn < t then
+	if t > self._next_spawn then
 		if self._spawned_units < self._max_amount then
 			self:spawn_unit()
 
@@ -123,10 +119,14 @@ AISpawner.spawn_unit = function (self)
 	local breed_list = self._breed_list
 	local last = #breed_list
 	local spawn_data = breed_list[last]
+
 	breed_list[last] = nil
 	last = last - 1
+
 	local breed_name = breed_list[last]
+
 	breed_list[last] = nil
+
 	local breed = Breeds[breed_name]
 	local unit = self._unit
 
@@ -150,7 +150,9 @@ AISpawner.spawn_unit = function (self)
 	local spawn_animation = spawn_type == "horde" and animation_events[math.random(#animation_events)]
 	local side_id = spawn_data[1]
 	local optional_data = spawn_data[3] or {}
+
 	optional_data.side_id = side_id
+
 	local group_template = spawn_data[2]
 
 	conflict_director:spawn_queued_unit(breed, Vector3Box(spawn_pos), QuaternionBox(spawn_rotation), spawn_category, spawn_animation, spawn_type, optional_data, group_template)

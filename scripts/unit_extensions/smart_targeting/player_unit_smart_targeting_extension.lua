@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/smart_targeting/player_unit_smart_targeting_extension.lua
+
 local POSITION_LOOKUP = POSITION_LOOKUP
 local TARGETING_DEBUG = false
 local USE_PREDICTION = false
@@ -5,6 +7,7 @@ local DISABLED = false
 local CLICK_TIME = 0.1
 local REACTION_FRAMES = 8
 local OPTIMIZED_AIM_ASSIST = true
+
 PlayerUnitSmartTargetingExtension = class(PlayerUnitSmartTargetingExtension)
 
 PlayerUnitSmartTargetingExtension.init = function (self, extension_init_context, unit, extension_init_data)
@@ -12,7 +15,9 @@ PlayerUnitSmartTargetingExtension.init = function (self, extension_init_context,
 	self.world = extension_init_context.world
 	self.conflict_manager = Managers.state.conflict
 	self.player = extension_init_data.player
+
 	local side = extension_init_data.side
+
 	self._target_broadphase_categories = side and side.enemy_broadphase_categories
 	self.targeting_data = {}
 	self.move_time = 0
@@ -26,6 +31,7 @@ end
 
 PlayerUnitSmartTargetingExtension.extensions_ready = function (self)
 	local unit = self.unit
+
 	self.first_person_extension = ScriptUnit.extension(unit, "first_person_system")
 	self.status_extension = ScriptUnit.extension(unit, "status_system")
 	self.inventory_extension = ScriptUnit.extension(unit, "inventory_system")
@@ -46,11 +52,9 @@ PlayerUnitSmartTargetingExtension.update_opt2 = function (self, unit, input, dt,
 	local get_data_func = Unit.get_data
 	local extension_func = ScriptUnit.has_extension
 	local math_min = math.min
-	local res_w = RESOLUTION_LOOKUP.res_w
-	local res_h = RESOLUTION_LOOKUP.res_h
-	local aim_screen_pos_x = res_w / 2
-	local aim_screen_pos_y = res_h / 2
-	local min_size = 8 * res_w / 1280
+	local res_w, res_h = RESOLUTION_LOOKUP.res_w, RESOLUTION_LOOKUP.res_h
+	local aim_screen_pos_x, aim_screen_pos_y = res_w / 2, res_h / 2
+	local min_size = 8 * (res_w / 1280)
 	local input_extension = self.input_extension
 	local first_person_extension = self.first_person_extension
 	local inventory_extension = self.inventory_extension
@@ -59,7 +63,7 @@ PlayerUnitSmartTargetingExtension.update_opt2 = function (self, unit, input, dt,
 	local look_rot = first_person_extension:current_rotation()
 	local look_dir = Quaternion.forward(look_rot)
 	local look_right = Quaternion.right(look_rot)
-	local action_settings = nil
+	local action_settings
 	local equipment = inventory_extension:equipment()
 	local weapon_unit = equipment.right_hand_wielded_unit or equipment.left_hand_wielded_unit
 
@@ -72,8 +76,14 @@ PlayerUnitSmartTargetingExtension.update_opt2 = function (self, unit, input, dt,
 	end
 
 	local weapon_template = inventory_extension:get_wielded_slot_item_template()
-	local aim_assist_settings = nil
-	aim_assist_settings = action_settings and action_settings.aim_assist_settings and action_settings.aim_assist_settings or weapon_template and weapon_template.aim_assist_settings
+	local aim_assist_settings
+
+	if action_settings and action_settings.aim_assist_settings then
+		aim_assist_settings = action_settings.aim_assist_settings
+	else
+		aim_assist_settings = weapon_template and weapon_template.aim_assist_settings
+	end
+
 	local loaded_projectile_settings = inventory_extension:get_loaded_projectile_settings()
 	local projectile_speed = loaded_projectile_settings and loaded_projectile_settings.speed or 0
 	local drop_multiplier = loaded_projectile_settings and loaded_projectile_settings.drop_multiplier or 0
@@ -96,9 +106,8 @@ PlayerUnitSmartTargetingExtension.update_opt2 = function (self, unit, input, dt,
 
 	local num_nearby_ai_units = EngineOptimized.smart_targeting_query(ai_broadphase, own_position, look_dir, 1.5, max_range, 0.1, 0.2, 0.8, 5, nearby_ai_units, nearby_ai_positions, nearby_ai_distances, self._target_broadphase_categories)
 	local highest_score = 0
-	local target_unit = nil
-	local aim_score = 0
-	local score_modifiers, previous_score_modifiers = nil
+	local target_unit, aim_score = nil, 0
+	local score_modifiers, previous_score_modifiers
 
 	if self.use_score_modifiers_1 then
 		score_modifiers = self.score_modifiers_1
@@ -127,6 +136,7 @@ PlayerUnitSmartTargetingExtension.update_opt2 = function (self, unit, input, dt,
 			end
 
 			targets_within_range = true
+
 			local breed_weapon_scalar = aim_assist_settings.breed_scalars[breed.name] or 1
 
 			if breed_weapon_scalar == 0 then
@@ -158,19 +168,23 @@ PlayerUnitSmartTargetingExtension.update_opt2 = function (self, unit, input, dt,
 	table.clear(previous_score_modifiers)
 
 	self.use_score_modifiers_1 = not self.use_score_modifiers_1
-	local target_position = nil
+
+	local target_position
 
 	if target_unit then
 		local visible_target, aim_position = self:get_target_visibility_and_aim_position(target_unit, own_position, aim_assist_settings)
+
 		target_position = aim_position
 
 		if not visible_target then
-			target_unit, aim_score = nil
+			target_unit = nil
+			aim_score = nil
 			target_position = nil
 		end
 	end
 
 	local targeting_data = self.targeting_data
+
 	targeting_data.unit = target_unit
 	targeting_data.aim_score = aim_score
 
@@ -205,10 +219,8 @@ PlayerUnitSmartTargetingExtension.update = function (self, unit, input, dt, cont
 	local flat_func = Vector3.flat
 	local dot_func = Vector3.dot
 	local normalize_func = Vector3.normalize
-	local res_w = RESOLUTION_LOOKUP.res_w
-	local res_h = RESOLUTION_LOOKUP.res_h
-	local aim_screen_pos_x = res_w / 2
-	local aim_screen_pos_y = res_h / 2
+	local res_w, res_h = RESOLUTION_LOOKUP.res_w, RESOLUTION_LOOKUP.res_h
+	local aim_screen_pos_x, aim_screen_pos_y = res_w / 2, res_h / 2
 	local input_extension = self.input_extension
 	local first_person_extension = self.first_person_extension
 	local inventory_extension = self.inventory_extension
@@ -216,7 +228,7 @@ PlayerUnitSmartTargetingExtension.update = function (self, unit, input, dt, cont
 	local own_position = first_person_extension:current_position()
 	local look_rot = first_person_extension:current_rotation()
 	local look_dir = forward_func(look_rot)
-	local action_settings = nil
+	local action_settings
 	local equipment = inventory_extension:equipment()
 	local weapon_unit = equipment.right_hand_wielded_unit or equipment.left_hand_wielded_unit
 
@@ -228,8 +240,14 @@ PlayerUnitSmartTargetingExtension.update = function (self, unit, input, dt, cont
 		end
 	end
 
-	local aim_assist_settings = nil
-	aim_assist_settings = action_settings and action_settings.aim_assist_settings and action_settings.aim_assist_settings or weapon_template and weapon_template.aim_assist_settings
+	local aim_assist_settings
+
+	if action_settings and action_settings.aim_assist_settings then
+		aim_assist_settings = action_settings.aim_assist_settings
+	else
+		aim_assist_settings = weapon_template and weapon_template.aim_assist_settings
+	end
+
 	local weapon_template = inventory_extension:get_wielded_slot_item_template()
 	local loaded_projectile_settings = inventory_extension:get_loaded_projectile_settings()
 	local gamepad_active = Managers.input:is_device_active("gamepad")
@@ -248,9 +266,8 @@ PlayerUnitSmartTargetingExtension.update = function (self, unit, input, dt, cont
 
 	local num_nearby_ai_units = Broadphase.query(ai_broadphase, own_position, max_range, nearby_ai_units, self._target_broadphase_categories)
 	local highest_score = 0
-	local target_unit = nil
-	local aim_score = 0
-	local score_modifiers, previous_score_modifiers = nil
+	local target_unit, aim_score = nil, 0
+	local score_modifiers, previous_score_modifiers
 
 	if self.use_score_modifiers_1 then
 		score_modifiers = self.score_modifiers_1
@@ -278,6 +295,7 @@ PlayerUnitSmartTargetingExtension.update = function (self, unit, input, dt, cont
 			end
 
 			targets_within_range = true
+
 			local breed_weapon_scalar = aim_assist_settings.breed_scalars[breed.name] or 1
 
 			if breed_weapon_scalar == 0 then
@@ -313,7 +331,8 @@ PlayerUnitSmartTargetingExtension.update = function (self, unit, input, dt, cont
 
 			if projectile_speed then
 				local current_velocity = locomotion and locomotion:current_velocity() or Vector3(0, 0, 0)
-				offset = flat_func(current_velocity) * distance / (projectile_speed * 0.01)
+
+				offset = flat_func(current_velocity) * (distance / (projectile_speed * 0.01))
 				offset.z = offset.z + distance * (loaded_projectile_settings.drop_multiplier or 0)
 			end
 
@@ -322,9 +341,9 @@ PlayerUnitSmartTargetingExtension.update = function (self, unit, input, dt, cont
 			local hips_screen_pos = world_to_screen_func(camera, target_pos + offset)
 			local right_screen_pos = world_to_screen_func(camera, right_pos)
 			local right_screen_outer_pos = world_to_screen_func(camera, right_pos_outer)
-			local min_size = 8 * res_w / 1280
+			local min_size = 8 * (res_w / 1280)
 			local half_width = math.max(length_func(right_screen_pos - hips_screen_pos), min_size)
-			local half_width_outer = math.max(length_func(right_screen_outer_pos - hips_screen_pos), min_size * smart_targeting_outer_width / smart_targeting_width)
+			local half_width_outer = math.max(length_func(right_screen_outer_pos - hips_screen_pos), min_size * (smart_targeting_outer_width / smart_targeting_width))
 			local half_height = half_width * smart_targeting_height_multiplier
 			local outer_boundary_increase = math.abs(half_width_outer - half_width)
 			local left_x = hips_screen_pos.x - half_width
@@ -377,19 +396,23 @@ PlayerUnitSmartTargetingExtension.update = function (self, unit, input, dt, cont
 	table.clear(previous_score_modifiers)
 
 	self.use_score_modifiers_1 = not self.use_score_modifiers_1
-	local target_position = nil
+
+	local target_position
 
 	if target_unit then
 		local visible_target, aim_position = self:get_target_visibility_and_aim_position(target_unit, own_position, aim_assist_settings)
+
 		target_position = aim_position
 
 		if not visible_target then
-			target_unit, aim_score = nil
+			target_unit = nil
+			aim_score = nil
 			target_position = nil
 		end
 	end
 
 	local targeting_data = self.targeting_data
+
 	targeting_data.unit = target_unit
 	targeting_data.aim_score = aim_score
 	targeting_data.target_position = target_position
@@ -422,6 +445,7 @@ PlayerUnitSmartTargetingExtension.get_target_visibility_and_aim_position = funct
 
 	if not visible_target then
 		local hit = PhysicsWorld.immediate_raycast(physics_world, own_position, hips_direction, hips_distance, "closest", "collision_filter", "filter_ray_aim_assist")
+
 		visible_target = not hit
 		target_position = hips_pos
 	end

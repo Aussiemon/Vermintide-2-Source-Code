@@ -1,6 +1,9 @@
+﻿-- chunkname: @scripts/entity_system/systems/locomotion/locomotion_templates_ai_husk.lua
+
 LocomotionTemplates = LocomotionTemplates or {}
+
 local LocomotionTemplates = LocomotionTemplates
-local detailed_profiler_start, detailed_profiler_stop = nil
+local detailed_profiler_start, detailed_profiler_stop
 local DETAILED_PROFILING = true
 
 if DETAILED_PROFILING then
@@ -16,16 +19,17 @@ else
 	end
 end
 
-LocomotionTemplates.AiHuskLocomotionExtension = {
-	init = function (data, nav_world)
-		data.nav_world = nav_world
-		data.destroy_units = {}
-		data.all_update_units = {}
-		data.affected_by_gravity_update_units = {}
-		data.pure_network_update_units = {}
-		data.other_update_units = {}
-	end
-}
+LocomotionTemplates.AiHuskLocomotionExtension = {}
+
+LocomotionTemplates.AiHuskLocomotionExtension.init = function (data, nav_world)
+	data.nav_world = nav_world
+	data.destroy_units = {}
+	data.all_update_units = {}
+	data.affected_by_gravity_update_units = {}
+	data.pure_network_update_units = {}
+	data.other_update_units = {}
+end
+
 local LOLUPDATE = false
 
 LocomotionTemplates.AiHuskLocomotionExtension.update = function (data, t, dt)
@@ -91,11 +95,11 @@ LocomotionTemplates.AiHuskLocomotionExtension.update_pure_network_update_units =
 		local network_yaw = GameSession_game_object_field(game, go_id, "yaw_rot")
 		local network_velocity = GameSession_game_object_field(game, go_id, "velocity")
 
-		if Vector3_length_squared(network_velocity) < VELOCITY_EPSILON_SQ then
+		if VELOCITY_EPSILON_SQ > Vector3_length_squared(network_velocity) then
 			network_velocity = Vector3(0, 0, 0)
 		end
 
-		local lerp_pos = nil
+		local lerp_pos
 
 		if extension.has_teleported ~= has_teleported then
 			extension.has_teleported = has_teleported
@@ -110,11 +114,16 @@ LocomotionTemplates.AiHuskLocomotionExtension.update_pure_network_update_units =
 			local last_pos = extension.last_lerp_position:unbox()
 			local last_pos_offset = extension.last_lerp_position_offset:unbox()
 			local accumulated_movement = extension.accumulated_movement:unbox()
+
 			extension._pos_lerp_time = extension._pos_lerp_time + dt
+
 			local lerp_t = extension._pos_lerp_time / POS_LERP_TIME
 			local move_delta = network_velocity * dt
+
 			accumulated_movement = accumulated_movement + move_delta
+
 			local lerp_pos_offset = Vector3.lerp(last_pos_offset, null_vector, math_min(lerp_t, 1))
+
 			lerp_pos = last_pos + accumulated_movement + lerp_pos_offset
 
 			if POS_EPSILON_SQ < Vector3_length_squared(network_pos - last_pos) then
@@ -155,13 +164,15 @@ local ALLOWED_MOVER_MOVE_DISTANCE = 0.5
 
 LocomotionTemplates.AiHuskLocomotionExtension.update_other_update_units_navmesh_check = function (data, t, dt)
 	local nav_world = data.nav_world
-	local physics_world, traverse_logic = nil
+	local physics_world, traverse_logic
 
 	for unit, extension in pairs(data.other_update_units) do
 		if not extension.is_network_driven and not extension.hit_wall and Unit.mover(unit) == nil then
 			local current_position = Unit.local_position(unit, 0)
+
 			traverse_logic = traverse_logic or extension:traverse_logic()
 			physics_world = physics_world or World.physics_world(extension._world)
+
 			local velocity = extension:current_velocity()
 			local result = LocomotionUtils.navmesh_movement_check(current_position, velocity, nav_world, physics_world, traverse_logic)
 
@@ -208,18 +219,21 @@ LocomotionTemplates.AiHuskLocomotionExtension.update_other_update_units = functi
 	local game = data.game
 	local unit_storage = Managers.state.unit_storage
 	local nav_world = data.nav_world
-	local traverse_logic = nil
+	local traverse_logic
 
 	for unit, extension in pairs(data.other_update_units) do
 		local go_id = unit_storage:go_id(unit)
 		local current_position = Unit.local_position(unit, 0)
+
 		traverse_logic = traverse_logic or extension:traverse_logic()
+
 		local wanted_pose = Unit.animation_wanted_root_pose(unit)
 		local wanted_position = Matrix4x4.translation(wanted_pose)
-		local wanted_rotation = nil
+		local wanted_rotation
 
 		if extension.has_network_driven_rotation then
 			local yaw = GameSession_game_object_field(game, go_id, "yaw_rot")
+
 			wanted_rotation = Quaternion(Vector3.up(), yaw)
 		else
 			local anim_rotation = Matrix4x4.rotation(wanted_pose)
@@ -228,22 +242,24 @@ LocomotionTemplates.AiHuskLocomotionExtension.update_other_update_units = functi
 			local current_rotation_inv = Quaternion.inverse(current_rotation)
 			local delta_rotation = Quaternion.multiply(current_rotation_inv, anim_rotation)
 			local yaw_rotation_radians = Quaternion.yaw(delta_rotation)
+
 			yaw_rotation_radians = yaw_rotation_radians * extension._animation_rotation_scale
 			wanted_rotation = Quaternion.multiply(current_rotation, Quaternion(up_vector, yaw_rotation_radians))
 		end
 
 		local network_velocity = GameSession_game_object_field(game, go_id, "velocity")
 
-		if Vector3_length_squared(network_velocity) < VELOCITY_EPSILON_SQ then
+		if VELOCITY_EPSILON_SQ > Vector3_length_squared(network_velocity) then
 			network_velocity = Vector3(0, 0, 0)
 		end
 
 		local wanted_velocity = network_velocity
-		local final_position, final_velocity = nil
+		local final_position, final_velocity
 		local mover = Unit.mover(unit)
 
 		if extension.is_affected_by_gravity and mover ~= nil then
 			local previous_velocity = extension._velocity:unbox()
+
 			wanted_velocity.z = previous_velocity.z - 9.82 * dt
 
 			Mover.move(mover, wanted_velocity * dt, dt)

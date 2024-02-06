@@ -1,7 +1,9 @@
+﻿-- chunkname: @scripts/managers/player/player_sync_data.lua
+
 PrivacyLevels = table.mirror_array_inplace({
 	"private",
 	"friends",
-	"public"
+	"public",
 })
 PlayerSyncData = class(PlayerSyncData)
 
@@ -26,10 +28,11 @@ PlayerSyncData.init = function (self, player, network_manager)
 			slot_melee_skin = NetworkLookup.weapon_skins["n/a"],
 			slot_ranged = NetworkLookup.item_names["n/a"],
 			slot_ranged_skin = NetworkLookup.weapon_skins["n/a"],
-			playerlist_build_privacy = Application.user_setting("playerlist_build_privacy")
+			playerlist_build_privacy = Application.user_setting("playerlist_build_privacy"),
 		}
 		local callback = callback(self, "cb_game_session_disconnect")
 		local game_object_id = network_manager:create_game_object("player_sync_data", game_object_data_table, callback)
+
 		self._game_object_id = game_object_id
 
 		Managers.state.event:register(self, "on_game_options_changed", "_on_game_options_changed")

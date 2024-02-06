@@ -1,5 +1,8 @@
+﻿-- chunkname: @scripts/ui/hud_ui/gamepad_ability_ui.lua
+
 local definitions = local_require("scripts/ui/hud_ui/gamepad_ability_ui_definitions")
 local scenegraph_definition = definitions.scenegraph_definition
+
 GamePadAbilityUI = class(GamePadAbilityUI)
 
 GamePadAbilityUI.init = function (self, parent, ingame_ui_context)
@@ -9,7 +12,7 @@ GamePadAbilityUI.init = function (self, parent, ingame_ui_context)
 	self._input_manager = ingame_ui_context.input_manager
 	self._player = ingame_ui_context.player
 	self._render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 
 	self:_create_ui_elements()
@@ -100,6 +103,7 @@ GamePadAbilityUI._update_thornsister_passive = function (self)
 
 		local ability_widget = widgets_by_name.ability
 		local ability_content = ability_widget.content
+
 		ability_content.hide_effect = has_thornsister_passive
 
 		self:_set_widget_dirty(ability_widget)
@@ -112,18 +116,21 @@ GamePadAbilityUI._set_ability_activated = function (self, activated)
 	local widget = self._widgets_by_name.ability
 	local content = widget.content
 	local style = widget.style
+
 	widget.content.activated = activated
 	self._ability_activated = activated
 end
 
 GamePadAbilityUI._set_ability_cooldown_state = function (self, cooldown_fraction, initialize)
 	self._current_cooldown_fraction = cooldown_fraction
+
 	local on_cooldown = cooldown_fraction ~= 0
 	local usable = self._ability_usable
 	local widget = self._widgets_by_name.ability
 
 	if widget.content.on_cooldown and not on_cooldown and not usable then
 		local style = widget.style
+
 		style.input_text.text_color[1] = 0
 		style.input_text_shadow.text_color[1] = 0
 	end
@@ -185,7 +192,7 @@ GamePadAbilityUI._handle_gamepad = function (self)
 	local active_career_skill = self:_handle_active_ability()
 	local gamepad_active = Managers.input:is_device_active("gamepad") or IS_XB1
 
-	if (not gamepad_active or UISettings.use_gamepad_hud_layout == "never") and UISettings.use_gamepad_hud_layout ~= "always" or active_career_skill then
+	if not (gamepad_active and UISettings.use_gamepad_hud_layout ~= "never") and UISettings.use_gamepad_hud_layout ~= "always" or active_career_skill then
 		if self._retained_elements_visible then
 			self:_set_elements_visible(false)
 		end
@@ -312,16 +319,21 @@ GamePadAbilityUI._set_input = function (self, widget, input_action)
 	local content = widget.content
 	local input_style = style.input_text
 	local ui_renderer = self._ui_renderer
+
 	content.input_action = input_action
+
 	local gamepad_active = Managers.input:is_device_active("gamepad")
 
 	if texture_data and gamepad_active then
 		local texture = texture_data.texture
+
 		content.activate_ability_id = texture
 		content.input_text = ""
+
 		local activate_ability_style = style.activate_ability
 		local texture_size = activate_ability_style.texture_size
 		local size = texture_data.size
+
 		texture_size[1] = size[1]
 		texture_size[2] = size[2]
 	elseif input_text then
@@ -346,7 +358,7 @@ GamePadAbilityUI._get_input_texture_data = function (self, input_action)
 	local device_type = keymap_binding[1]
 	local key_index = keymap_binding[2]
 	local key_action_type = keymap_binding[3]
-	local prefix_text = nil
+	local prefix_text
 
 	if key_action_type == "held" then
 		prefix_text = "matchmaking_prefix_hold"
@@ -382,6 +394,7 @@ GamePadAbilityUI._update_ability_animations = function (self, dt, t)
 	local widget = self._widgets_by_name.ability
 	local style = widget.style
 	local pulse_progress = 0.5 + 0.5 * math.sin(t * 5)
+
 	style.input_text.text_color[1] = 100 + pulse_progress * 155
 	style.input_text_shadow.text_color[1] = 100 + pulse_progress * 155
 
@@ -421,6 +434,7 @@ GamePadAbilityUI._update_muneric_ui_ability_cooldown = function (self)
 
 	local career_extension = ScriptUnit.extension(player_unit, "career_system")
 	local can_use_ability = career_extension:can_use_activated_ability(1)
+
 	widget.content.can_use_ability = can_use_ability
 
 	if can_use_ability then
@@ -428,6 +442,7 @@ GamePadAbilityUI._update_muneric_ui_ability_cooldown = function (self)
 	end
 
 	local ability_cooldown, max_cooldown = career_extension:current_ability_cooldown()
+
 	widget.content.ability_cooldown = UIUtils.format_time(ability_cooldown)
 
 	self:_set_widget_dirty(widget)

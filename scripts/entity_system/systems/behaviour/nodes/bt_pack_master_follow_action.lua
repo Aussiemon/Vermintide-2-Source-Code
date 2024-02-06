@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_pack_master_follow_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTPackMasterFollowAction = class(BTPackMasterFollowAction, BTNode)
@@ -12,8 +14,10 @@ BTPackMasterFollowAction.name = "BTPackMasterFollowAction"
 
 BTPackMasterFollowAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
+
 	blackboard.action = action
 	blackboard.time_to_next_evaluate = t + 0.1
+
 	local tutorial_message_template = action.tutorial_message_template
 
 	if tutorial_message_template then
@@ -85,9 +89,9 @@ BTPackMasterFollowAction.run = function (self, unit, blackboard, t, dt)
 		return "failed"
 	end
 
-	local should_evaluate = nil
+	local should_evaluate
 
-	if blackboard.time_to_next_evaluate < t then
+	if t > blackboard.time_to_next_evaluate then
 		should_evaluate = "evaluate"
 		blackboard.time_to_next_evaluate = t + 0.1
 	end
@@ -96,6 +100,7 @@ BTPackMasterFollowAction.run = function (self, unit, blackboard, t, dt)
 
 	if blackboard.move_state ~= "moving" and not is_computing_path then
 		local network_manager = Managers.state.network
+
 		blackboard.move_state = "moving"
 
 		network_manager:anim_event(unit, blackboard.action.move_animation or "move_fwd")

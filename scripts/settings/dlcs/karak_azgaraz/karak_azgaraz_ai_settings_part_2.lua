@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/settings/dlcs/karak_azgaraz/karak_azgaraz_ai_settings_part_2.lua
+
 local settings = DLCSettings.karak_azgaraz_part_2
+
 settings.breeds = {}
 settings.behaviour_trees_precompiled = {}
 settings.behaviour_trees = {}

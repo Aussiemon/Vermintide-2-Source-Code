@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/dlcs/shovel/action_career_bw_necromancer_wave.lua
+
 ActionCareerBWNecromancerWave = class(ActionCareerBWNecromancerWave, ActionBase)
 
 ActionCareerBWNecromancerWave.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)

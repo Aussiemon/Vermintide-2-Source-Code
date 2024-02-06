@@ -1,80 +1,82 @@
+﻿-- chunkname: @scripts/settings/grudge_mark_settings.lua
+
 BreedEnhancements = BreedEnhancements or {
 	base = {
 		"grudge_mark_health",
 		"grudge_mark_damage",
 		"grudge_mark_stagger_distance_resistance",
-		no_attribute = true
+		no_attribute = true,
 	},
 	elite_base = {
 		"grudge_mark_elite_health",
 		"grudge_mark_damage",
 		"grudge_mark_stagger_distance_resistance",
-		no_attribute = true
+		no_attribute = true,
 	},
 	warping = {
 		"grudge_mark_warping",
-		display_name = "display_name_warping"
+		display_name = "display_name_warping",
 	},
 	intangible = {
 		"grudge_mark_intangible",
-		display_name = "display_name_intangible"
+		display_name = "display_name_intangible",
 	},
 	unstaggerable = {
 		"grudge_mark_unstaggerable",
-		display_name = "display_name_unstaggerable"
+		display_name = "display_name_unstaggerable",
 	},
 	raging = {
 		"grudge_mark_raging",
-		display_name = "display_name_raging"
+		display_name = "display_name_raging",
 	},
 	vampiric = {
 		"grudge_mark_vampiric",
-		display_name = "display_name_vampiric"
+		display_name = "display_name_vampiric",
 	},
 	ranged_immune = {
 		"grudge_mark_ranged_immune",
-		display_name = "display_name_ranged_immune"
+		display_name = "display_name_ranged_immune",
 	},
 	periodic_shield = {
 		"grudge_mark_periodic_shield",
-		display_name = "display_name_periodic_shield"
+		display_name = "display_name_periodic_shield",
 	},
 	crippling = {
 		"grudge_mark_crippling_blow",
-		display_name = "display_name_crippling"
+		display_name = "display_name_crippling",
 	},
 	crushing = {
 		"grudge_mark_crushing_blow",
-		display_name = "display_name_crushing"
+		display_name = "display_name_crushing",
 	},
 	regenerating = {
 		"grudge_mark_regeneratig",
-		display_name = "display_name_regenerating"
+		display_name = "display_name_regenerating",
 	},
 	intangible_mirror = {
 		display_name = "display_name_intangible",
-		dummy_enhancement = true
+		dummy_enhancement = true,
 	},
 	periodic_curse = {
 		"grudge_mark_periodic_curse_aura",
-		display_name = "display_name_periodic_curse"
+		display_name = "display_name_periodic_curse",
 	},
 	commander = {
 		"grudge_mark_commander",
-		display_name = "display_name_commander"
+		display_name = "display_name_commander",
 	},
 	frenzy = {
 		"grudge_mark_frenzy",
-		display_name = "display_name_frenzy"
+		display_name = "display_name_frenzy",
 	},
 	shockwave = {
 		"grudge_mark_shockwave_attacks",
-		display_name = "display_name_knockback"
+		display_name = "display_name_knockback",
 	},
 	ignore_death_aura = {
 		"grudge_mark_ignore_death_aura",
-		display_name = "display_name_invincibility_aura"
-	}
+		display_name = "display_name_invincibility_aura",
+	},
 }
 
 for enhancement_name, buff_list in pairs(BreedEnhancements) do
@@ -82,73 +84,73 @@ for enhancement_name, buff_list in pairs(BreedEnhancements) do
 end
 
 BossGrudgeMarks = {
-	unstaggerable = true,
-	regenerating = true,
-	periodic_shield = true,
-	vampiric = true,
-	crushing = true,
-	periodic_curse = true,
-	frenzy = true,
-	crippling = true,
-	raging = true,
 	commander = true,
+	crippling = true,
+	crushing = true,
+	frenzy = true,
 	intangible = true,
+	periodic_curse = true,
+	periodic_shield = true,
+	raging = true,
+	ranged_immune = true,
+	regenerating = true,
+	unstaggerable = true,
+	vampiric = true,
 	warping = true,
-	ranged_immune = true
 }
 BREED_ENHANCEMENTS_PER_DIFFICULTY = {
 	normal = {
-		[10.0] = 1
+		[10] = 1,
 	},
 	hard = {
 		[0] = 1,
-		[10.0] = 2
+		[10] = 2,
 	},
 	harder = {
-		[-3.0] = 1,
-		[10.0] = 3,
-		[7.0] = 2
+		[-3] = 1,
+		[7] = 2,
+		[10] = 3,
 	},
 	hardest = {
-		[-3.0] = 2,
-		[10.0] = 3,
-		[-7.0] = 1
+		[-7] = 1,
+		[-3] = 2,
+		[10] = 3,
 	},
 	cataclysm = {
-		[-3.0] = 2,
-		[-10.0] = 1,
-		[6.0] = 3
+		[-10] = 1,
+		[-3] = 2,
+		[6] = 3,
 	},
 	cataclysm_2 = {
-		[6.0] = 3,
-		[-10.0] = 1,
-		[-7.0] = 2
+		[-10] = 1,
+		[-7] = 2,
+		[6] = 3,
 	},
 	cataclysm_3 = {
 		[0] = 3,
-		[-10.0] = 2
+		[-10] = 2,
 	},
-	default = {}
+	default = {},
 }
 BreedEnhancementExclusionList = {
 	periodic_shield = {
-		regenerating = true
+		regenerating = true,
 	},
 	crushing = {
-		crippling = true
+		crippling = true,
 	},
 	crippling = {
-		crushing = true
+		crushing = true,
 	},
 	intangible = {
 		periodic_shield = true,
-		warping = true
-	}
+		warping = true,
+	},
 }
 BreedEnhancementBannedBreeds = {
 	chaos_troll = {
-		periodic_shield = true
-	}
+		periodic_shield = true,
+	},
 }
 GrudgeMarkedNames = {
 	skaven_rat_ogre = {
@@ -171,7 +173,7 @@ GrudgeMarkedNames = {
 		"name_grudge_rat_ogre_017",
 		"name_grudge_rat_ogre_018",
 		"name_grudge_rat_ogre_019",
-		"name_grudge_rat_ogre_020"
+		"name_grudge_rat_ogre_020",
 	},
 	skaven_stormfiend = {
 		"name_grudge_stormfiend_001",
@@ -193,7 +195,7 @@ GrudgeMarkedNames = {
 		"name_grudge_stormfiend_017",
 		"name_grudge_stormfiend_018",
 		"name_grudge_stormfiend_019",
-		"name_grudge_stormfiend_020"
+		"name_grudge_stormfiend_020",
 	},
 	chaos_troll = {
 		"name_grudge_troll_001",
@@ -215,7 +217,7 @@ GrudgeMarkedNames = {
 		"name_grudge_troll_017",
 		"name_grudge_troll_018",
 		"name_grudge_troll_019",
-		"name_grudge_troll_020"
+		"name_grudge_troll_020",
 	},
 	chaos_spawn = {
 		"name_grudge_spawn_001",
@@ -237,7 +239,7 @@ GrudgeMarkedNames = {
 		"name_grudge_spawn_017",
 		"name_grudge_spawn_018",
 		"name_grudge_spawn_019",
-		"name_grudge_spawn_020"
+		"name_grudge_spawn_020",
 	},
 	beastmen_minotaur = {
 		"name_grudge_minotaur_001",
@@ -259,21 +261,21 @@ GrudgeMarkedNames = {
 		"name_grudge_minotaur_017",
 		"name_grudge_minotaur_018",
 		"name_grudge_minotaur_019",
-		"name_grudge_minotaur_020"
+		"name_grudge_minotaur_020",
 	},
 	chaos_warrior = {
-		"name_grudge_blosphors_01"
+		"name_grudge_blosphors_01",
 	},
 	shadow_lieutenant = {
-		"name_shadow_lieutenant"
+		"name_shadow_lieutenant",
 	},
 	skaven = {
-		"name_grudge_skaven_001"
+		"name_grudge_skaven_001",
 	},
 	chaos = {
-		"name_grudge_chaos_001"
+		"name_grudge_chaos_001",
 	},
 	beastmen = {
-		"name_grudge_beastmen_001"
-	}
+		"name_grudge_beastmen_001",
+	},
 }

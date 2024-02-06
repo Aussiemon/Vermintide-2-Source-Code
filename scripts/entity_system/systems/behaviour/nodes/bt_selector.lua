@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_selector.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTSelector = class(BTSelector, BTNode)

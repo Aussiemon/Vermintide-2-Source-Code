@@ -1,7 +1,10 @@
+﻿-- chunkname: @scripts/entity_system/systems/weaves/weave_objective_system.lua
+
 require("scripts/entity_system/systems/objective/objective_system")
 require("scripts/settings/weave_objective_settings")
 
 WeaveObjectiveSystem = class(WeaveObjectiveSystem, ObjectiveSystem)
+
 local extensions = {
 	"WeaveCapturePointExtension",
 	"WeaveTargetExtension",
@@ -10,7 +13,7 @@ local extensions = {
 	"WeaveDoomWheelExtension",
 	"WeaveInteractionExtension",
 	"WeaveKillEnemiesExtension",
-	"WeaveSocketExtension"
+	"WeaveSocketExtension",
 }
 
 WeaveObjectiveSystem.init = function (self, entity_system_creation_context, system_name)
@@ -21,11 +24,11 @@ WeaveObjectiveSystem.init = function (self, entity_system_creation_context, syst
 	self._weave_manager = Managers.weave
 	self._essence_unit_names = {
 		"units/fx/essence_unit",
-		"units/fx/essence_unit"
+		"units/fx/essence_unit",
 	}
 	self._essence_sound_events = {
 		"Play_hud_wind_collect_essence",
-		"Play_hud_wind_collect_essence_chunk"
+		"Play_hud_wind_collect_essence_chunk",
 	}
 	self._essence_unit_data = {}
 
@@ -154,7 +157,7 @@ end
 
 WeaveObjectiveSystem.spawn_essence_unit = function (self, position, size)
 	local essence_unit_data = self._essence_unit_data
-	local index = nil
+	local index
 
 	for i = 1, #essence_unit_data do
 		local data = essence_unit_data[i]
@@ -174,6 +177,7 @@ WeaveObjectiveSystem.spawn_essence_unit = function (self, position, size)
 	local essence_unit_name = self._essence_unit_names[size or 1]
 	local essence_unit = Managers.state.unit_spawner:spawn_local_unit(essence_unit_name, position, Quaternion.identity())
 	local data = self._essence_unit_data[index]
+
 	data.unit = essence_unit
 	data.life_time = self._essence_life_time
 	data.spawn_pos = Vector3Box(position)

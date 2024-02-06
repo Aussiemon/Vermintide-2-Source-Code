@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/account/presence/script_presence_win32.lua
+
 ScriptPresence = class(ScriptPresence)
 
 ScriptPresence.init = function (self)

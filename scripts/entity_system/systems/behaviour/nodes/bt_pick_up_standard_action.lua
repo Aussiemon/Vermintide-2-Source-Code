@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_pick_up_standard_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTPickupStandardAction = class(BTPickupStandardAction, BTNode)
@@ -18,8 +20,10 @@ end
 
 BTPickupStandardAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
+
 	blackboard.action = action
 	blackboard.active_node = BTPickupStandardAction
+
 	local ai_slot_system = Managers.state.entity:system("ai_slot_system")
 
 	ai_slot_system:do_slot_search(unit, false)
@@ -55,6 +59,7 @@ BTPickupStandardAction.leave = function (self, unit, blackboard, t, reason, dest
 	blackboard.standard_position_boxed = nil
 	blackboard.anim_cb_picked_up_standard = nil
 	blackboard.moving_to_pick_up_standard = nil
+
 	local ai_slot_system = Managers.state.entity:system("ai_slot_system")
 
 	ai_slot_system:do_slot_search(unit, true)
@@ -96,6 +101,7 @@ BTPickupStandardAction.anim_cb_pick_up_standard = function (self, unit, blackboa
 
 	blackboard.standard_unit = nil
 	blackboard.has_placed_standard = nil
+
 	local ai_inventory_ext = ScriptUnit.has_extension(unit, "ai_inventory_system")
 	local wanted_set = 1
 

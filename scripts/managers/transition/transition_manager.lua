@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/transition/transition_manager.lua
+
 require("scripts/ui/views/disconnect_indicator_view")
 require("scripts/ui/views/loading_icon_view")
 require("scripts/ui/views/twitch_icon_view")
@@ -230,8 +232,8 @@ TransitionManager._render = function (self, dt)
 end
 
 local FONT_STYLE = {
+	font_size = 56,
 	font_type = "hell_shark",
-	font_size = 56
 }
 
 TransitionManager._render_waiting_message = function (self, dt)
@@ -341,6 +343,7 @@ TransitionManager.update = function (self, dt)
 
 		if self._callback then
 			local callback = self._callback
+
 			self._callback = nil
 
 			callback()
@@ -351,6 +354,7 @@ TransitionManager.update = function (self, dt)
 
 		if self._callback then
 			local callback = self._callback
+
 			self._callback = nil
 
 			callback()

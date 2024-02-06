@@ -1,11 +1,12 @@
+﻿-- chunkname: @scripts/utils/function_call_profiler.lua
+
 local script_data = script_data
 
 if _G.FunctionCallProfiler == nil then
-	FunctionCallProfiler = {
-		current_frame = 1,
-		num_frames = 10,
-		frames = {}
-	}
+	FunctionCallProfiler = {}
+	FunctionCallProfiler.current_frame = 1
+	FunctionCallProfiler.num_frames = 10
+	FunctionCallProfiler.frames = {}
 
 	for i = 1, FunctionCallProfiler.num_frames do
 		FunctionCallProfiler.frames[i] = {}
@@ -44,6 +45,7 @@ FunctionCallProfiler.render = function ()
 
 	for i = 1, num_frames do
 		render_frame_index = render_frame_index % num_frames + 1
+
 		local frame = frames[render_frame_index]
 
 		for frame_name, count in pairs(frame) do

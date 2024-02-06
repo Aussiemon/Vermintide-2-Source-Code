@@ -1,9 +1,12 @@
+﻿-- chunkname: @scripts/ui/views/hero_view/windows/hero_window_loadout_inventory.lua
+
 local definitions = local_require("scripts/ui/views/hero_view/windows/definitions/hero_window_loadout_inventory_definitions")
 local widget_definitions = definitions.widgets
 local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
 local generic_input_actions = definitions.generic_input_actions
 local DO_RELOAD = false
+
 HeroWindowLoadoutInventory = class(HeroWindowLoadoutInventory)
 HeroWindowLoadoutInventory.NAME = "HeroWindowLoadoutInventory"
 
@@ -59,23 +62,27 @@ local display_titles_by_slot_type = {
 	ranged = Localize("inventory_screen_ranged_weapon_title"),
 	necklace = Localize("inventory_screen_necklace_title"),
 	trinket = Localize("inventory_screen_trinket_title"),
-	ring = Localize("inventory_screen_ring_title")
+	ring = Localize("inventory_screen_ring_title"),
 }
 
 HeroWindowLoadoutInventory.on_enter = function (self, params, offset)
 	print("[HeroViewWindow] Enter Substate HeroWindowLoadoutInventory")
 
 	self.parent = params.parent
+
 	local ingame_ui_context = params.ingame_ui_context
+
 	self.ui_renderer = ingame_ui_context.ui_renderer
 	self.ui_top_renderer = ingame_ui_context.ui_top_renderer
 	self.input_manager = ingame_ui_context.input_manager
 	self.statistics_db = ingame_ui_context.statistics_db
 	self.render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
+
 	local player_manager = Managers.player
 	local local_player = player_manager:local_player()
+
 	self._stats_id = local_player:stats_id()
 	self.player_manager = player_manager
 	self.peer_id = ingame_ui_context.peer_id
@@ -88,6 +95,7 @@ HeroWindowLoadoutInventory.on_enter = function (self, params, offset)
 	self:create_ui_elements(params, offset)
 
 	local item_grid = ItemGridUI:new(self._categories, self._widgets_by_name.item_grid, self.hero_name, self.career_index)
+
 	self._item_grid = item_grid
 
 	item_grid:mark_equipped_items(true)
@@ -124,11 +132,12 @@ HeroWindowLoadoutInventory._create_item_categories = function (self, profile_ind
 		if ui_slot_index then
 			local item_filter = "( "
 			local display_name = ""
-			local slot_icon = nil
+			local slot_icon
 			local potential_icons = {}
 
 			for index, slot_type in ipairs(slot_types) do
 				local slot_display_name = display_titles_by_slot_type[slot_type]
+
 				display_name = display_name .. slot_display_name
 				item_filter = item_filter .. "slot_type == " .. slot_type
 
@@ -172,8 +181,9 @@ HeroWindowLoadoutInventory._create_item_categories = function (self, profile_ind
 				item_types = slot_types,
 				slot_index = ui_slot_index,
 				slot_name = slot_name,
-				item_filter = item_filter
+				item_filter = item_filter,
 			}
+
 			categories[ui_slot_index] = category
 		end
 	end
@@ -183,11 +193,13 @@ end
 
 HeroWindowLoadoutInventory.create_ui_elements = function (self, params, offset)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+
 	local widgets = {}
 	local widgets_by_name = {}
 
 	for name, widget_definition in pairs(widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		widgets[#widgets + 1] = widget
 		widgets_by_name[name] = widget
 	end
@@ -201,6 +213,7 @@ HeroWindowLoadoutInventory.create_ui_elements = function (self, params, offset)
 
 	if offset then
 		local window_position = self.ui_scenegraph.window.local_position
+
 		window_position[1] = window_position[1] + offset[1]
 		window_position[2] = window_position[2] + offset[2]
 		window_position[3] = window_position[3] + offset[3]
@@ -216,28 +229,32 @@ HeroWindowLoadoutInventory._setup_tab_widget = function (self)
 	local widgets_by_name = self._widgets_by_name
 	local item_tabs_segments = UIWidget.init(UIWidgets.create_simple_centered_texture_amount("menu_frame_09_divider_vertical", {
 		5,
-		35
+		35,
 	}, "item_tabs_segments", num_tabs - 1))
 	local item_tabs_segments_top = UIWidget.init(UIWidgets.create_simple_centered_texture_amount("menu_frame_09_divider_top", {
 		17,
-		9
+		9,
 	}, "item_tabs_segments_top", num_tabs - 1))
 	local item_tabs_segments_bottom = UIWidget.init(UIWidgets.create_simple_centered_texture_amount("menu_frame_09_divider_bottom", {
 		17,
-		9
+		9,
 	}, "item_tabs_segments_bottom", num_tabs - 1))
+
 	widgets_by_name.item_tabs_segments = item_tabs_segments
 	widgets_by_name.item_tabs_segments_top = item_tabs_segments_top
 	widgets_by_name.item_tabs_segments_bottom = item_tabs_segments_bottom
 	widgets[#widgets + 1] = item_tabs_segments
 	widgets[#widgets + 1] = item_tabs_segments_top
 	widgets[#widgets + 1] = item_tabs_segments_bottom
+
 	local scenegraph_id = "item_tabs"
 	local size = scenegraph_definition.item_tabs.size
 	local widget_definition = UIWidgets.create_default_icon_tabs(scenegraph_id, size, num_tabs)
 	local widget = UIWidget.init(widget_definition)
+
 	widgets_by_name[scenegraph_id] = widget
 	widgets[#widgets + 1] = widget
+
 	local widget_content = widget.content
 
 	for index, category in ipairs(categories) do
@@ -247,6 +264,7 @@ HeroWindowLoadoutInventory._setup_tab_widget = function (self)
 		local hotspot_content = widget_content[hotspot_name]
 		local slot_index = category.slot_index
 		local icon = category.icon
+
 		hotspot_content[icon_name] = icon
 		hotspot_content.slot_index = slot_index
 	end
@@ -361,6 +379,7 @@ HeroWindowLoadoutInventory._select_tab_by_slot_index = function (self, index)
 		local hotspot_name = "hotspot" .. name_sufix
 		local hotspot_content = widget_content[hotspot_name]
 		local slot_index = hotspot_content.slot_index
+
 		hotspot_content.is_selected = index == slot_index
 	end
 end
@@ -448,7 +467,9 @@ HeroWindowLoadoutInventory._update_page_info = function (self)
 		self._current_page = current_page
 		current_page = current_page or 1
 		total_pages = total_pages or 1
+
 		local widgets_by_name = self._widgets_by_name
+
 		widgets_by_name.page_text_left.content.text = tostring(current_page)
 		widgets_by_name.page_text_right.content.text = tostring(total_pages)
 		widgets_by_name.page_button_next.content.button_hotspot.disable_button = current_page == total_pages
@@ -528,9 +549,12 @@ HeroWindowLoadoutInventory._change_category_by_index = function (self, index)
 	local categories = self._categories
 	local category = categories[index]
 	local category_slot_name = category.slot_name
+
 	self._strict_slot_name = category_slot_name
+
 	local category_name = category.name
 	local display_name = category.display_name
+
 	self._widgets_by_name.item_grid_header.content.text = display_name
 
 	self._item_grid:change_category(category_name)

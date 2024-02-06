@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/generic/generic_husk_interactor_extension.lua
+
 GenericHuskInteractorExtension = class(GenericHuskInteractorExtension)
 
 GenericHuskInteractorExtension.init = function (self, extension_init_context, unit, extension_init_data)
@@ -8,8 +10,8 @@ GenericHuskInteractorExtension.init = function (self, extension_init_context, un
 		data = {
 			is_husk = true,
 			dice_keeper = extension_init_context.dice_keeper,
-			statistics_db = extension_init_context.statistics_db
-		}
+			statistics_db = extension_init_context.statistics_db,
+		},
 	}
 	self.is_server = Managers.player.is_server
 
@@ -50,7 +52,9 @@ GenericHuskInteractorExtension.update = function (self, unit, input, dt, context
 	local interaction_context = self.interaction_context
 	local interactable_unit = interaction_context.interactable_unit
 	local interaction_data = interaction_context.data
+
 	interaction_data.is_server = self.is_server
+
 	local interaction_type = interaction_context.interaction_type
 	local interaction_template = InteractionDefinitions[interaction_type]
 	local interaction_config = interaction_template and interaction_template.config or nil
@@ -71,6 +75,7 @@ GenericHuskInteractorExtension.update = function (self, unit, input, dt, context
 
 		if self.is_server then
 			local interaction_result = interaction_template.server.update(world, unit, interactable_unit, interaction_data, interaction_config, dt, t)
+
 			interaction_context.result = interaction_result
 
 			if interaction_result ~= InteractionResult.ONGOING then
@@ -86,7 +91,9 @@ GenericHuskInteractorExtension._stop_interaction = function (self, interactable_
 	local unit = self.unit
 	local interaction_context = self.interaction_context
 	local interaction_data = interaction_context.data
+
 	interaction_data.is_server = self.is_server
+
 	local interaction_type = interaction_context.interaction_type
 	local interaction_template = InteractionDefinitions[interaction_type]
 	local interaction_config = interaction_template and interaction_template.config or nil
@@ -170,6 +177,7 @@ GenericHuskInteractorExtension.set_interaction_context = function (self, state, 
 	self.interaction_context.interactable_unit = interactable_unit
 	self.interaction_context.interaction_type = interaction_type
 	self.interaction_context.result = InteractionResult.ONGOING
+
 	local interactable_extension = ScriptUnit.extension(interactable_unit, "interactable_system")
 
 	interactable_extension:set_is_being_interacted_with(self.unit)
@@ -186,13 +194,17 @@ GenericHuskInteractorExtension.interaction_approved = function (self, interactio
 
 	self.interaction_context.previous_state = self.state
 	self.state = "starting_interaction"
+
 	local interaction_context = self.interaction_context
+
 	interaction_context.interaction_type = interaction_type
 	interaction_context.interactable_unit = interactable_unit
 	interaction_context.result = InteractionResult.ONGOING
+
 	local interaction_data = interaction_context.data
 	local interaction_template = InteractionDefinitions[interaction_type]
 	local interaction_config = interaction_template.config
+
 	interaction_data.duration = interaction_config.duration
 	interaction_data.start_time = Managers.time:time("game")
 
@@ -206,6 +218,7 @@ GenericHuskInteractorExtension.interaction_completed = function (self, interacti
 	assert(state ~= "waiting_to_interact", "Was in wrong state when getting interaction completed.")
 
 	self.interaction_context.result = interaction_result
+
 	local t = Managers.time:time("game")
 
 	self:stop_interaction(t)

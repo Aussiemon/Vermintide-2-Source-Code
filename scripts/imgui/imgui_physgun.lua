@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/imgui/imgui_physgun.lua
+
 local V3 = stingray.Vector3
 local QQ = stingray.Quaternion
 local M4 = stingray.Matrix4x4
@@ -26,6 +28,7 @@ ImguiPhysgun._delayed_initialization = function (self)
 	end
 
 	local world = ai_system.world
+
 	self._world = world
 	self._physics_world = World.physics_world(world)
 	self._line_object = World.create_line_object(world)
@@ -131,7 +134,7 @@ local function input_device(DEVICE)
 			self[key] = func
 
 			return func
-		end
+		end,
 	})
 end
 
@@ -154,7 +157,7 @@ local BINDING_DEFINITIONS = {
 	end,
 	spawn_seedpoint = key.f,
 	delete_unit = key.backspace,
-	spawn_cylinder = key.c
+	spawn_cylinder = key.c,
 }
 
 local function input_get(binding, method)
@@ -192,14 +195,18 @@ ImguiPhysgun.grab_begin = function (self, pos, rot, grab_actor, grab_pos)
 	local unit = Actor.unit(grab_actor)
 	local unit_pos = Unit.local_position(unit, 0)
 	local unit_rot = Unit.local_rotation(unit, 0)
+
 	self._physgun_unit = unit
 	self._physgun_actor = grab_actor
+
 	local inv_rot = QQ.inverse(rot)
+
 	self._physgun_pos = Vector3Box(QQ.rotate(inv_rot, unit_pos - pos))
 	self._physgun_rot = QuaternionBox(QQ.multiply(inv_rot, unit_rot))
 	self._physgun_pivot = Vector3Box(QQ.rotate(inv_rot, grab_pos - unit_pos))
 	self._wheel_speed = 0
 	self._physgun_dist = Vector3.distance(pos, grab_pos)
+
 	local world = self._world
 	local actor_poses = self._physgun_actor_poses
 
@@ -248,10 +255,12 @@ ImguiPhysgun.grab_update = function (self, dt, pos, rot)
 	local actor = self._physgun_actor
 	local physgun_pos = self._physgun_pos:unbox()
 	local physgun_rot = self._physgun_rot:unbox()
-	local target_pos, target_rot = nil
+	local target_pos, target_rot
 	local wheel_accel = 0.1 * input_get("wheel") / dt
 	local wheel_speed = self._wheel_speed * math.exp(-15 * dt) + wheel_accel
+
 	self._wheel_speed = wheel_speed
+
 	local wheel_delta = wheel_speed * dt
 	local is_rotating = input_get("rotate", "held")
 
@@ -267,7 +276,7 @@ ImguiPhysgun.grab_update = function (self, dt, pos, rot)
 	end
 
 	if is_rotating then
-		local mouse_rot_delta = nil
+		local mouse_rot_delta
 
 		if input_get("arcball", "pressed") then
 			Window.set_clip_cursor(true)
@@ -297,6 +306,7 @@ ImguiPhysgun.grab_update = function (self, dt, pos, rot)
 			local mouse = input_get("mouse")
 			local angular_speed = 2 * math.pi / math.min(Gui.resolution())
 			local key_yaw = input_get("move_right", "button") - input_get("move_left", "button")
+
 			mouse_rot_delta = QQ.from_yaw_pitch_roll((mouse.x + key_yaw) * angular_speed, mouse.y * angular_speed, 0)
 		end
 
@@ -310,7 +320,7 @@ ImguiPhysgun.grab_update = function (self, dt, pos, rot)
 
 			self._physgun_pivot:store(new_pivot)
 
-			physgun_pos = physgun_pos + pivot - new_pivot
+			physgun_pos = physgun_pos + (pivot - new_pivot)
 		end
 
 		wheel_delta = wheel_delta + 10 * dt * (input_get("move_forward", "button") - input_get("move_back", "button"))
@@ -322,6 +332,7 @@ ImguiPhysgun.grab_update = function (self, dt, pos, rot)
 
 	if input_get("snap_angles", "held") then
 		local x, y, z = QQ.to_euler_angles_xyz(physgun_rot)
+
 		x = math.round(x / 45) * 45
 		y = math.round(y / 45) * 45
 		z = math.round(z / 45) * 45

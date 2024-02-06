@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/boot.lua
+
 print("boot.lua start, os clock:", os.clock())
 dofile("scripts/boot_init")
 
@@ -17,7 +19,7 @@ if IS_XB1 then
 		[XboxOne.CONSOLE_TYPE_XBOX_ONE_X_DEVKIT] = "xb1x-devkit",
 		[XboxOne.CONSOLE_TYPE_XBOX_LOCKHART] = "xbs_lockhart",
 		[XboxOne.CONSOLE_TYPE_XBOX_ANACONDA] = "xbs_anaconda",
-		[XboxOne.CONSOLE_TYPE_XBOX_SERIES_X_DEVKIT] = "xbs_anaconda-devkit"
+		[XboxOne.CONSOLE_TYPE_XBOX_SERIES_X_DEVKIT] = "xbs_anaconda-devkit",
 	}
 
 	XboxOne.console_type_string = function ()
@@ -27,7 +29,7 @@ end
 
 local function base_require(path, ...)
 	for _, s in ipairs({
-		...
+		...,
 	}) do
 		require(string.format("foundation/scripts/%s/%s", path, s))
 	end
@@ -35,7 +37,7 @@ end
 
 local function core_require(path, ...)
 	for _, s in ipairs({
-		...
+		...,
 	}) do
 		require("core/" .. path .. "/" .. s)
 	end
@@ -43,7 +45,7 @@ end
 
 local function game_require(path, ...)
 	for _, s in ipairs({
-		...
+		...,
 	}) do
 		require("scripts/" .. path .. "/" .. s)
 	end
@@ -51,7 +53,7 @@ end
 
 local function foundation_require(path, ...)
 	for _, s in ipairs({
-		...
+		...,
 	}) do
 		require("foundation/scripts/" .. path .. "/" .. s)
 	end
@@ -70,7 +72,7 @@ Boot.is_controlled_exit = false
 local function profile_start(title)
 	local t = {
 		title = title,
-		start_time = os.clock()
+		start_time = os.clock(),
 	}
 
 	return t
@@ -84,7 +86,7 @@ local function profile(t, alias)
 		scope.end_time = os.clock()
 	else
 		scope = {
-			alias = alias
+			alias = alias,
 		}
 		t[num + 1] = scope
 		scope.start_time = os.clock()
@@ -139,8 +141,9 @@ Boot.setup = function (self)
 		"resource_packages/game_scripts",
 		"resource_packages/level_scripts",
 		"resource_packages/levels/benchmark_levels",
-		"resource_packages/levels/honduras_levels"
+		"resource_packages/levels/honduras_levels",
 	}
+
 	local handles = {}
 
 	for _, package_name in ipairs(Boot.startup_packages) do
@@ -159,53 +162,53 @@ end
 
 local function xb1_format_locale(language_id)
 	local supported_languages = {
-		["zh-hk"] = "zh",
-		["fr-ch"] = "fr",
-		["ru-ru"] = "ru",
-		["nb-no"] = "nb",
-		["en-us"] = "en",
-		["en-gb"] = "en",
-		["en-il"] = "en",
-		["es-mx"] = "es",
-		["en-nz"] = "en",
 		["da-dk"] = "da",
-		["en-sa"] = "en",
-		["pt-pt"] = "pt",
-		["es-co"] = "es",
-		["en-hu"] = "en",
-		["en-sg"] = "en",
-		["fr-ca"] = "fr",
-		["en-ae"] = "en",
-		["nl-be"] = "nl",
-		["en-in"] = "en",
-		["zh-tw"] = "zh",
-		["en-cz"] = "en",
+		["de-at"] = "de",
 		["de-ch"] = "de",
 		["de-de"] = "de",
-		["fr-be"] = "fr",
-		["en-gr"] = "en",
-		["ko-kr"] = "kr",
-		["tr-tr"] = "tr",
-		["sv-se"] = "sv",
-		["zh-sg"] = "zh",
-		["es-ar"] = "es",
-		["en-sk"] = "en",
-		["pl-pl"] = "pl",
-		["nl-nl"] = "nl",
-		["pt-br"] = "br-pt",
-		["it-it"] = "it",
-		["es-es"] = "es",
+		["en-ae"] = "en",
 		["en-au"] = "en",
-		["de-at"] = "de",
 		["en-ca"] = "en",
-		["zh-cn"] = "zh",
-		["fr-fr"] = "fr",
+		["en-cz"] = "en",
+		["en-gb"] = "en",
+		["en-gr"] = "en",
 		["en-hk"] = "en",
-		["ja-jp"] = "jp",
-		["es-cl"] = "es",
-		["fi-fi"] = "fi",
+		["en-hu"] = "en",
 		["en-ie"] = "en",
-		["en-za"] = "en"
+		["en-il"] = "en",
+		["en-in"] = "en",
+		["en-nz"] = "en",
+		["en-sa"] = "en",
+		["en-sg"] = "en",
+		["en-sk"] = "en",
+		["en-us"] = "en",
+		["en-za"] = "en",
+		["es-ar"] = "es",
+		["es-cl"] = "es",
+		["es-co"] = "es",
+		["es-es"] = "es",
+		["es-mx"] = "es",
+		["fi-fi"] = "fi",
+		["fr-be"] = "fr",
+		["fr-ca"] = "fr",
+		["fr-ch"] = "fr",
+		["fr-fr"] = "fr",
+		["it-it"] = "it",
+		["ja-jp"] = "jp",
+		["ko-kr"] = "kr",
+		["nb-no"] = "nb",
+		["nl-be"] = "nl",
+		["nl-nl"] = "nl",
+		["pl-pl"] = "pl",
+		["pt-br"] = "br-pt",
+		["pt-pt"] = "pt",
+		["ru-ru"] = "ru",
+		["sv-se"] = "sv",
+		["tr-tr"] = "tr",
+		["zh-cn"] = "zh",
+		["zh-hk"] = "zh",
+		["zh-sg"] = "zh",
+		["zh-tw"] = "zh",
 	}
 
 	return supported_languages[string.lower(language_id)] or "en"
@@ -213,7 +216,7 @@ end
 
 Boot._init_localizer = function (self)
 	local default_language = "en"
-	local language = nil
+	local language
 
 	if IS_WINDOWS then
 		language = Application.user_setting("language_id") or rawget(_G, "Steam") and Steam:language() or default_language
@@ -237,7 +240,7 @@ local function init_development_parameters()
 	Development.init_user_settings()
 	require("foundation/scripts/util/application_parameter")
 	Development.init_application_parameters({
-		Application.argv()
+		Application.argv(),
 	}, true)
 	require("foundation/scripts/util/development_parameter")
 	Development.init_parameters()
@@ -263,6 +266,7 @@ local function init_development_parameters()
 			sorted_params[#sorted_params + 1] = output
 		else
 			local formatted_string = string.format("script_data.%%-%ds = %%s", max_param_string_length)
+
 			sorted_params[#sorted_params + 1] = string.format(formatted_string, param, tostring(value))
 		end
 	end
@@ -289,7 +293,9 @@ end
 
 Boot.booting_update = function (self, dt)
 	local old_time = Boot.startup_timer
+
 	Boot.startup_timer = old_time + dt
+
 	local has_loaded_packages = true
 
 	for package_name, handle in pairs(Boot.startup_package_handles) do
@@ -453,7 +459,9 @@ Boot.booting_update = function (self, dt)
 		Game:setup()
 
 		local start_state, params = Game:select_starting_state()
+
 		params.notify_mod_manager = IS_WINDOWS and LAUNCH_MODE ~= "attract_benchmark"
+
 		local project_setup_end = os.clock()
 		local state_machine_start = os.clock()
 
@@ -566,6 +574,7 @@ function create_startup_world()
 	Boot.world = Application.new_world("boot_world", Application.DISABLE_PHYSICS, Application.DISABLE_SOUND, Application.DISABLE_APEX_CLOTH)
 	Boot.shading_env = World.create_shading_environment(Boot.world, "environment/blank")
 	Boot.viewport = Application.create_viewport(Boot.world, "overlay")
+
 	local camera_unit = World.spawn_unit(Boot.world, "core/units/camera")
 	local camera = Unit.camera(camera_unit, "camera")
 
@@ -593,12 +602,15 @@ function update_startup_world(dt)
 		end
 
 		Boot.bar_timer = (Boot.bar_timer + dt) % 2
+
 		local w, h = Gui.resolution()
 		local scale = w / 1920
 		local size = Vector2(120 * scale, 13 * scale)
 		local width = 1 * scale
 		local bar_value = clamp(Boot.bar_timer, 0, 1)
+
 		bar_value = bar_value * bar_value * bar_value
+
 		local alpha = clamp(2 - Boot.bar_timer, 0, 1)
 
 		Gui.rect(Boot.gui, Vector3(w - 200 * scale, 50 * scale, 900), size)
@@ -759,7 +771,7 @@ Boot.game_update = function (self, real_world_dt)
 
 	if LEVEL_EDITOR_TEST and Keyboard.pressed(Keyboard.button_index("f5")) then
 		Application.console_send({
-			type = "stop_testing"
+			type = "stop_testing",
 		})
 	end
 
@@ -909,7 +921,7 @@ Game.setup = function (self)
 		self:_demo_setup()
 	end
 
-	local user_settings_time = nil
+	local user_settings_time
 
 	if IS_WINDOWS then
 		local non_rendering_dedicated_server = Application.is_dedicated_server()
@@ -983,253 +995,253 @@ end
 Game._set_ps4_content_restrictions = function (self)
 	local restrictions = {
 		{
+			age = 18,
 			country = "at",
-			age = 18
 		},
 		{
+			age = 18,
 			country = "bh",
-			age = 18
 		},
 		{
+			age = 18,
 			country = "be",
-			age = 18
 		},
 		{
+			age = 18,
 			country = "bg",
-			age = 18
 		},
 		{
+			age = 18,
 			country = "hr",
-			age = 18
 		},
 		{
+			age = 18,
 			country = "cy",
-			age = 18
 		},
 		{
+			age = 18,
 			country = "cz",
-			age = 18
 		},
 		{
+			age = 18,
 			country = "dk",
-			age = 18
 		},
 		{
+			age = 18,
 			country = "fi",
-			age = 18
 		},
 		{
+			age = 18,
 			country = "fr",
-			age = 18
 		},
 		{
+			age = 18,
 			country = "gr",
-			age = 18
 		},
 		{
+			age = 18,
 			country = "hu",
-			age = 18
 		},
 		{
+			age = 18,
 			country = "is",
-			age = 18
 		},
 		{
+			age = 18,
 			country = "in",
-			age = 18
 		},
 		{
+			age = 18,
 			country = "ie",
-			age = 18
 		},
 		{
+			age = 18,
 			country = "il",
-			age = 18
 		},
 		{
+			age = 18,
 			country = "it",
-			age = 18
 		},
 		{
+			age = 18,
 			country = "kw",
-			age = 18
 		},
 		{
+			age = 18,
 			country = "lb",
-			age = 18
 		},
 		{
+			age = 18,
 			country = "lu",
-			age = 18
 		},
 		{
+			age = 18,
 			country = "mt",
-			age = 18
 		},
 		{
+			age = 18,
 			country = "nl",
-			age = 18
 		},
 		{
+			age = 18,
 			country = "no",
-			age = 18
 		},
 		{
+			age = 18,
 			country = "om",
-			age = 18
 		},
 		{
+			age = 18,
 			country = "pl",
-			age = 18
 		},
 		{
+			age = 18,
 			country = "pt",
-			age = 18
 		},
 		{
+			age = 18,
 			country = "qa",
-			age = 18
 		},
 		{
+			age = 18,
 			country = "ro",
-			age = 18
 		},
 		{
+			age = 18,
 			country = "sa",
-			age = 18
 		},
 		{
+			age = 18,
 			country = "sk",
-			age = 18
 		},
 		{
+			age = 18,
 			country = "si",
-			age = 18
 		},
 		{
+			age = 18,
 			country = "za",
-			age = 18
 		},
 		{
+			age = 18,
 			country = "es",
-			age = 18
 		},
 		{
+			age = 18,
 			country = "se",
-			age = 18
 		},
 		{
+			age = 18,
 			country = "ch",
-			age = 18
 		},
 		{
+			age = 18,
 			country = "tr",
-			age = 18
 		},
 		{
+			age = 18,
 			country = "ua",
-			age = 18
 		},
 		{
+			age = 18,
 			country = "ae",
-			age = 18
 		},
 		{
+			age = 18,
 			country = "gb",
-			age = 18
 		},
 		{
+			age = 18,
 			country = "de",
-			age = 18
 		},
 		{
+			age = 17,
 			country = "ar",
-			age = 17
 		},
 		{
+			age = 17,
 			country = "bo",
-			age = 17
 		},
 		{
+			age = 17,
 			country = "br",
-			age = 17
 		},
 		{
+			age = 17,
 			country = "ca",
-			age = 17
 		},
 		{
+			age = 17,
 			country = "cl",
-			age = 17
 		},
 		{
+			age = 17,
 			country = "co",
-			age = 17
 		},
 		{
+			age = 17,
 			country = "cr",
-			age = 17
 		},
 		{
+			age = 17,
 			country = "ec",
-			age = 17
 		},
 		{
+			age = 17,
 			country = "sv",
-			age = 17
 		},
 		{
+			age = 17,
 			country = "gt",
-			age = 17
 		},
 		{
+			age = 17,
 			country = "hn",
-			age = 17
 		},
 		{
+			age = 17,
 			country = "mx",
-			age = 17
 		},
 		{
+			age = 17,
 			country = "ni",
-			age = 17
 		},
 		{
+			age = 17,
 			country = "pa",
-			age = 17
 		},
 		{
+			age = 17,
 			country = "py",
-			age = 17
 		},
 		{
+			age = 17,
 			country = "pe",
-			age = 17
 		},
 		{
+			age = 17,
 			country = "us",
-			age = 17
 		},
 		{
+			age = 17,
 			country = "uy",
-			age = 17
 		},
 		{
+			age = 15,
 			country = "au",
-			age = 15
 		},
 		{
+			age = 16,
 			country = "nz",
-			age = 16
 		},
 		{
+			age = 15,
 			country = "tw",
-			age = 15
 		},
 		{
+			age = 18,
 			country = "ru",
-			age = 18
-		}
+		},
 	}
 
 	NpCheck.set_content_restriction(18, restrictions)
@@ -1370,6 +1382,7 @@ Game._handle_win32_graphics_quality = function (self)
 		else
 			value = setting
 			setting = category
+
 			local current = Application.user_setting(setting)
 
 			if not is_same(current, value) then
@@ -1572,7 +1585,7 @@ Game._init_managers = function (self)
 end
 
 Game._init_backend = function (self)
-	local backend, mirror = nil
+	local backend, mirror
 
 	if DEDICATED_SERVER then
 		backend = "ScriptBackendPlayFabDedicated"
@@ -1580,8 +1593,11 @@ Game._init_backend = function (self)
 	else
 		local mechanism_name = Development.parameter("mechanism") or SaveData.last_mechanism or "adventure"
 		local mechanism_settings = MechanismSettings[mechanism_name]
+
 		backend = "ScriptBackendPlayFab"
+
 		local playfab_mirror = mechanism_settings and mechanism_settings.playfab_mirror
+
 		mirror = playfab_mirror and playfab_mirror or "PlayFabMirrorAdventure"
 	end
 
@@ -1594,6 +1610,7 @@ Game._init_backend_xbox = function (self)
 	local mechanism_settings = MechanismSettings[mechanism_name]
 	local playfab_mirror = mechanism_settings and mechanism_settings.playfab_mirror
 	local mirror = playfab_mirror or "PlayFabMirrorAdventure"
+
 	Managers.backend = BackendManagerPlayFab:new(backend, mirror, "DataServerQueue")
 end
 
@@ -1603,6 +1620,7 @@ Game._init_backend_ps4 = function (self)
 	local mechanism_settings = MechanismSettings[mechanism_name]
 	local playfab_mirror = mechanism_settings and mechanism_settings.playfab_mirror
 	local mirror = playfab_mirror or "PlayFabMirrorAdventure"
+
 	Managers.backend = BackendManagerPlayFab:new(backend, mirror, "DataServerQueue")
 end
 
@@ -1652,7 +1670,7 @@ Game._init_localization_manager = function (self)
 
 		fassert(key, "[key_parser] There is no such key: %s in input service: %s", key_name, input_service_name)
 
-		local key_locale_name = nil
+		local key_locale_name
 
 		for j = 1, key.n, 3 do
 			local device_type = key[j]
@@ -1679,7 +1697,7 @@ end
 
 Game.select_starting_state = function (self)
 	local args = {
-		Application.argv()
+		Application.argv(),
 	}
 
 	for i = 1, #args do
@@ -1717,17 +1735,16 @@ Game.select_starting_state = function (self)
 		Managers.package:load("resource_packages/decals", "global")
 
 		local level_key = GameSettingsDevelopment.quicklaunch_params.level_key
-		Boot.loading_context = {
-			level_key = level_key
-		}
+
+		Boot.loading_context = {}
+		Boot.loading_context.level_key = level_key
 
 		require("scripts/game_state/state_splash_screen")
 
 		return StateSplashScreen, {}
 	elseif GameSettingsDevelopment.start_state == "menu" then
-		Boot.loading_context = {
-			show_splash_screens = true
-		}
+		Boot.loading_context = {}
+		Boot.loading_context.show_splash_screens = true
 
 		require("scripts/game_state/state_splash_screen")
 

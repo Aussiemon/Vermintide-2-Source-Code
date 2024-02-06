@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/ui_resolution.lua
+
 local math_round = math.round
 
 local function scale_vector3(vec, scale, do_round)

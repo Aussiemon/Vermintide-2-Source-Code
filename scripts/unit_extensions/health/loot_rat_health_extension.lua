@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/health/loot_rat_health_extension.lua
+
 LootRatHealthExtension = class(LootRatHealthExtension, GenericHealthExtension)
 
 LootRatHealthExtension.init = function (self, extension_init_context, unit, extension_init_data)
@@ -6,6 +8,7 @@ end
 
 LootRatHealthExtension.extensions_ready = function (self, world, unit, extension_name)
 	local blackboard = BLACKBOARDS[unit]
+
 	blackboard.dodge_damage_points = blackboard.breed.dodge_damage_points
 	blackboard.dodge_damage_success = false
 end
@@ -44,5 +47,6 @@ end
 
 LootRatHealthExtension.regen_dodge_damage_points = function (self)
 	local blackboard = BLACKBOARDS[self.unit]
+
 	blackboard.dodge_damage_points = blackboard.breed.dodge_damage_points
 end

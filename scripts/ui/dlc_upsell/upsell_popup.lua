@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/dlc_upsell/upsell_popup.lua
+
 require("scripts/ui/dlc_upsell/common_popup")
 
 UpsellPopup = class(UpsellPopup, CommonPopup)
@@ -6,6 +8,7 @@ UpsellPopup.create_ui_elements = function (self)
 	UpsellPopup.super.create_ui_elements(self)
 
 	local upsell_settings = self._common_settings
+
 	self._widgets_by_name.window_background.content.texture_id = upsell_settings.background_texture
 	self._widgets_by_name.title_text.content.text = Localize(upsell_settings.title_text)
 	self._widgets_by_name.body_text.content.text = Localize(upsell_settings.body_text)
@@ -52,7 +55,7 @@ end
 UpsellPopup._start_transition_animation = function (self, animation_name)
 	return self._ui_animator:start_animation(animation_name, nil, self._common_settings.definitions.scenegraph_definition, {
 		wwise_world = self._wwise_world,
-		render_settings = self._render_settings
+		render_settings = self._render_settings,
 	})
 end
 

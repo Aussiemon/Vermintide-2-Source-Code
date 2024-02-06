@@ -1,8 +1,11 @@
+﻿-- chunkname: @scripts/utils/visual_assert_log.lua
+
 script_data.visual_assert_log_enabled = script_data.visual_assert_log_enabled or Development.parameter("visual_assert_log_enabled")
 VisualAssertLog = VisualAssertLog or {}
 
 VisualAssertLog.setup = function (world)
 	local VAL = VisualAssertLog
+
 	VAL.world = world
 	VAL.console_page_up_key = Keyboard.button_index("page up")
 	VAL.console_page_down_key = Keyboard.button_index("page down")
@@ -40,8 +43,7 @@ VisualAssertLog.update = function ()
 
 	if VisualAssertLog.n_asserts > 0 then
 		local gui = VisualAssertLog.gui
-		local screen_width = RESOLUTION_LOOKUP.res_w
-		local screen_height = RESOLUTION_LOOKUP.res_h
+		local screen_width, screen_height = RESOLUTION_LOOKUP.res_w, RESOLUTION_LOOKUP.res_h
 		local text_color = Color(255, 204, 0)
 
 		if Keyboard.pressed(VisualAssertLog.console_end_key) then
@@ -75,21 +77,16 @@ VisualAssertLog.update = function ()
 
 				if Keyboard.pressed(VisualAssertLog.console_page_up_key) then
 					current_visualized_assert = current_visualized_assert + 1
-
-					if n_asserts < current_visualized_assert then
-						current_visualized_assert = 1
-					end
+					current_visualized_assert = n_asserts < current_visualized_assert and 1 or current_visualized_assert
 				end
 
 				if Keyboard.pressed(VisualAssertLog.console_page_down_key) then
 					current_visualized_assert = current_visualized_assert - 1
-
-					if current_visualized_assert <= 0 then
-						current_visualized_assert = n_asserts or current_visualized_assert
-					end
+					current_visualized_assert = current_visualized_assert <= 0 and n_asserts or current_visualized_assert
 				end
 
 				VisualAssertLog.current_visualized_assert = current_visualized_assert
+
 				local assert_data = VisualAssertLog.asserts[current_visualized_assert]
 				local y_pos = screen_height - 50 - font_size
 				local min, max = Gui.text_extents(gui, tostring(assert_data.message), font_mtrl, font_size)
@@ -115,7 +112,7 @@ local function fixup_callstack(callstack_table)
 	table.remove(callstack_table, 3)
 	table.remove(callstack_table, 2)
 
-	local found_traceback = nil
+	local found_traceback
 	local trace_index = 1
 
 	for i, line in ipairs(callstack_table) do
@@ -124,6 +121,7 @@ local function fixup_callstack(callstack_table)
 				trace_index = 1
 			else
 				local pre_str = string.gsub(line, "^[ ]*%[(%d+)%] ([a-zA-Z0-9 :=,./%[%]]+)", "%2")
+
 				callstack_table[i] = string.format("[%d] %s", trace_index, pre_str)
 				trace_index = trace_index + 1
 			end
@@ -141,10 +139,12 @@ function visual_assert(condition, message, ...)
 
 		if n_asserts <= 50 then
 			VisualAssertLog.n_asserts = n_asserts
+
 			local assert_data = {
 				message = string.format(message, ...),
-				traceback = fixup_callstack(string.split(Script.callstack(), "\n"))
+				traceback = fixup_callstack(string.split(Script.callstack(), "\n")),
 			}
+
 			VisualAssertLog.asserts[n_asserts] = assert_data
 
 			if DEDICATED_SERVER then

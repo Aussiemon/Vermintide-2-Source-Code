@@ -1,7 +1,10 @@
+﻿-- chunkname: @scripts/ui/hud_ui/floating_icon_ui.lua
+
 local definitions = local_require("scripts/ui/hud_ui/floating_icon_ui_definitions")
 local animation_definitions = definitions.animation_definitions
 local widget_definitions = definitions.widget_definitions
 local scenegraph_definition = definitions.scenegraph_definition
+
 FloatingIconUI = class(FloatingIconUI)
 
 FloatingIconUI.init = function (self, parent, ingame_ui_context)
@@ -13,11 +16,13 @@ FloatingIconUI.init = function (self, parent, ingame_ui_context)
 	self.camera_manager = ingame_ui_context.camera_manager
 	self.player_manager = ingame_ui_context.player_manager
 	self.peer_id = ingame_ui_context.peer_id
+
 	local world = self.world_manager:world("level_world")
+
 	self.wwise_world = Managers.world:wwise_world(world)
 	self._animations = {}
 	self.render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 
 	self:create_ui_elements()
@@ -29,12 +34,14 @@ local DO_RELOAD = true
 
 FloatingIconUI.create_ui_elements = function (self)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(definitions.scenegraph_definition)
+
 	local widgets = {}
 	local widgets_by_name = {}
 
 	for name, widget_definition in pairs(widget_definitions) do
 		if widget_definition then
 			local widget = UIWidget.init(widget_definition)
+
 			widgets[#widgets + 1] = widget
 			widgets_by_name[name] = widget
 		end
@@ -133,6 +140,7 @@ end
 
 FloatingIconUI._set_widget_position = function (self, widget, x, y)
 	local offset = widget.offset
+
 	offset[1] = x
 	offset[2] = y
 end
@@ -142,6 +150,7 @@ FloatingIconUI._set_bar_progress = function (self, widget, progress, dt)
 	local foreground_style = style.foreground
 	local default_foreground_size = foreground_style.default_size
 	local foreground_size = foreground_style.texture_size
+
 	foreground_size[1] = math.floor(default_foreground_size[1] * progress)
 end
 
@@ -173,8 +182,7 @@ FloatingIconUI.get_floating_icon_position = function (self, screen_pos_x, screen
 	local scaled_root_size_y = root_size[2] * scale
 	local scaled_root_size_x_half = scaled_root_size_x * 0.5
 	local scaled_root_size_y_half = scaled_root_size_y * 0.5
-	local screen_width = RESOLUTION_LOOKUP.res_w
-	local screen_height = RESOLUTION_LOOKUP.res_h
+	local screen_width, screen_height = RESOLUTION_LOOKUP.res_w, RESOLUTION_LOOKUP.res_h
 	local center_pos_x = screen_width / 2
 	local center_pos_y = screen_height / 2
 	local x_diff = screen_pos_x - center_pos_x
@@ -193,12 +201,15 @@ FloatingIconUI.get_floating_icon_position = function (self, screen_pos_x, screen
 	local clamped_x_pos = screen_pos_x
 	local clamped_y_pos = screen_pos_y
 	local is_behind = forward_dot < 0 and true or false
-	local is_clamped = (is_x_clamped or is_y_clamped) and true or false
+	local is_clamped = not (not is_x_clamped and not is_y_clamped) and true or false
 	local screen_pos_diff_x = screen_width - scaled_root_size_x
 	local screen_pos_diff_y = screen_height - scaled_root_size_y
+
 	clamped_x_pos = clamped_x_pos - screen_pos_diff_x / 2
 	clamped_y_pos = clamped_y_pos - screen_pos_diff_y / 2
+
 	local inverse_scale = RESOLUTION_LOOKUP.inv_scale
+
 	clamped_x_pos = clamped_x_pos * inverse_scale
 	clamped_y_pos = clamped_y_pos * inverse_scale
 
@@ -222,7 +233,9 @@ end
 
 FloatingIconUI.icon_scale_by_distance = function (self, current_distance, max_distance)
 	local distance = math.min(max_distance, current_distance)
+
 	distance = math.max(0, distance)
+
 	local min_scale = UISettings.tutorial.mission_tooltip.minimum_icon_scale
 	local scale = math.max(min_scale, 1 - distance / max_distance)
 
@@ -239,6 +252,7 @@ FloatingIconUI.get_player_first_person_extension = function (self)
 
 		if player_unit and ScriptUnit.has_extension(player_unit, "first_person_system") then
 			local first_person_extension = ScriptUnit.extension(player_unit, "first_person_system")
+
 			self._first_person_extension = first_person_extension
 
 			return first_person_extension

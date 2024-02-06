@@ -1,13 +1,19 @@
+﻿-- chunkname: @scripts/unit_extensions/generic/thrown_unit_husk_extension.lua
+
 ThrownUnitHuskExtension = class(ThrownUnitHuskExtension)
+
 local unit_alive = Unit.alive
 local position_lookup = POSITION_LOOKUP
 
 ThrownUnitHuskExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	local world = extension_init_context.world
+
 	self.world = world
 	self.game = Managers.state.network:game()
 	self.unit = unit
+
 	local unit_storage = Managers.state.unit_storage
+
 	self.go_id = unit_storage:go_id(unit)
 end
 

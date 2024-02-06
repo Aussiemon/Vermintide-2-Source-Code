@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/backend_playfab/backend_manager_playfab.lua
+
 require("scripts/managers/backend/backend_interface_common")
 require("scripts/managers/backend/data_server_queue")
 require("scripts/managers/backend_playfab/backend_interface_crafting_playfab")
@@ -32,13 +34,17 @@ elseif IS_PS4 then
 end
 
 cjson = cjson.stingray_init()
+
 local backend_manager_playfab_testify = script_data.testify and require("scripts/managers/backend_playfab/backend_manager_playfab_testify")
+
 BackendManagerPlayFab = class(BackendManagerPlayFab)
+
 local TIMEOUT_SIGNIN = 20
 
 BackendManagerPlayFab.init = function (self, signin_name, mirror_name, server_queue_name)
 	local settings = GameSettingsDevelopment.backend_settings
 	local implementation = settings.implementation
+
 	self._backend_implementation = implementation
 	self._signin = rawget(_G, signin_name)
 	self._mirror = rawget(_G, mirror_name)
@@ -59,7 +65,7 @@ BackendManagerPlayFab.init = function (self, signin_name, mirror_name, server_qu
 	self._total_power_level_interface_overrides = {}
 	self._metadata = {
 		client_version = VersionSettings.version,
-		realm = HAS_STEAM and script_data["eac-untrusted"] and "modded" or "official"
+		realm = HAS_STEAM and script_data["eac-untrusted"] and "modded" or "official",
 	}
 end
 
@@ -81,7 +87,7 @@ BackendManagerPlayFab.signin = function (self, authentication_token)
 		if allow_local then
 			if use_backend and not available then
 				local error_data = {
-					reason = BACKEND_LUA_ERRORS.ERR_PLATFORM_SPECIFIC_INTERFACE_MISSING
+					reason = BACKEND_LUA_ERRORS.ERR_PLATFORM_SPECIFIC_INTERFACE_MISSING,
 				}
 
 				self:_post_error(error_data)
@@ -90,7 +96,7 @@ BackendManagerPlayFab.signin = function (self, authentication_token)
 			end
 		elseif not backend_plugin_loaded then
 			local error_data = {
-				reason = BACKEND_LUA_ERRORS.ERR_LOADING_PLUGIN
+				reason = BACKEND_LUA_ERRORS.ERR_LOADING_PLUGIN,
 			}
 
 			self:_post_error(error_data)
@@ -98,7 +104,7 @@ BackendManagerPlayFab.signin = function (self, authentication_token)
 			return
 		elseif not use_backend then
 			local error_data = {
-				reason = BACKEND_LUA_ERRORS.ERR_USE_LOCAL_BACKEND_NOT_ALLOWED
+				reason = BACKEND_LUA_ERRORS.ERR_USE_LOCAL_BACKEND_NOT_ALLOWED,
 			}
 
 			self:_post_error(error_data)
@@ -398,22 +404,30 @@ BackendManagerPlayFab._update_state = function (self)
 
 			if backend_mirror and backend_mirror:ready() then
 				self._need_signin = false
+
 				local queue = self._server_queue:new()
+
 				self._data_server_queue = queue
 
 				self:_create_interfaces(false)
 			elseif not backend_mirror then
 				local signin_result = signin:get_signin_result()
+
 				self._backend_mirror = self._mirror:new(signin_result)
 			end
 		elseif self._signin_timeout < os.time() then
 			self._need_signin = false
+
 			local error_data = {
-				reason = BACKEND_LUA_ERRORS.ERR_SIGNIN_TIMEOUT
+				reason = BACKEND_LUA_ERRORS.ERR_SIGNIN_TIMEOUT,
 			}
 
 			self:_post_error(error_data)
 		end
+	end
+
+	if false then
+		-- Nothing
 	end
 end
 
@@ -484,7 +498,7 @@ BackendManagerPlayFab.update = function (self, dt, t)
 	local signin = self._backend_signin
 	local mirror = self._backend_mirror
 	local queue = self._data_server_queue
-	local error_data = nil
+	local error_data
 
 	if mirror then
 		error_data = mirror:update(dt, t)
@@ -533,7 +547,7 @@ BackendManagerPlayFab.playfab_api_error = function (self, result, error_code)
 
 	local error_data = {
 		reason = BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_ERROR,
-		details = error_code
+		details = error_code,
 	}
 
 	self:_post_error(error_data)
@@ -541,7 +555,7 @@ end
 
 BackendManagerPlayFab.request_timeout = function (self)
 	local error_data = {
-		reason = BACKEND_LUA_ERRORS.ERR_REQUEST_TIMEOUT
+		reason = BACKEND_LUA_ERRORS.ERR_REQUEST_TIMEOUT,
 	}
 
 	self:_post_error(error_data, "backend_err_request_timeout")
@@ -549,10 +563,10 @@ end
 
 BackendManagerPlayFab.commit_error = function (self)
 	local reason = BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_COMMIT_TIMEOUT
-	local details = nil
+	local details
 	local error_data = {
 		reason = reason,
-		details = details
+		details = details,
 	}
 
 	self:_post_error(error_data)
@@ -560,10 +574,10 @@ end
 
 BackendManagerPlayFab.playfab_eac_error = function (self)
 	local reason = BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_EAC_ERROR
-	local details = nil
+	local details
 	local error_data = {
 		reason = reason,
-		details = details
+		details = details,
 	}
 
 	self:_post_error(error_data)
@@ -572,7 +586,7 @@ end
 BackendManagerPlayFab.playfab_error = function (self, reason, details)
 	local error_data = {
 		reason = reason,
-		details = details
+		details = details,
 	}
 
 	self:_post_error(error_data)
@@ -584,7 +598,7 @@ BackendManagerPlayFab.missing_required_dlc_error = function (self, details, opti
 		reason = reason,
 		details = details,
 		optional_error_topic = optional_error_topic,
-		optional_url_button = optional_url_button
+		optional_url_button = optional_url_button,
 	}
 
 	self:_post_error(error_data, nil, true)
@@ -619,7 +633,7 @@ BackendManagerPlayFab.error_string = function (self)
 		local details = self._errors[1].details
 		local reason_key = self:_reason_localize_key(reason, details)
 
-		return Localize(reason_key)
+		return (Localize(reason_key))
 	end
 end
 
@@ -725,7 +739,7 @@ end
 BackendManagerPlayFab._format_error_message_console = function (self, reason, error_code)
 	local button = {
 		result = self._button_retry,
-		text = Localize("button_ok")
+		text = Localize("button_ok"),
 	}
 
 	return self:_reason_localize_key(reason, error_code), button
@@ -733,29 +747,29 @@ end
 
 BackendManagerPlayFab._format_error_message_windows = function (self, reason, error_code, optional_url_button)
 	local error_text = self:_reason_localize_key(reason, error_code)
-	local button_1, button_2, button_3 = nil
+	local button_1, button_2, button_3
 
 	if not self:profiles_loaded() then
 		button_1 = {
 			result = self._button_quit,
-			text = Localize("menu_quit")
+			text = Localize("menu_quit"),
 		}
 
 		print("backend error", reason, ERROR_CODES[reason])
 	elseif reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_ERROR or reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_EAC_ERROR or reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_COMMIT_TIMEOUT then
 		button_1 = {
 			result = self._button_quit,
-			text = Localize("menu_quit")
+			text = Localize("menu_quit"),
 		}
 	elseif reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_ACHIEVEMENT_REWARD_CLAIMED or reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_QUEST_REFRESH_UNAVAILABLE or reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_NON_FATAL_STORE_ERROR then
 		button_1 = {
 			result = self._button_ok,
-			text = Localize("button_ok")
+			text = Localize("button_ok"),
 		}
 	else
 		button_1 = {
 			result = self._button_disconnected,
-			text = Localize("button_ok")
+			text = Localize("button_ok"),
 		}
 	end
 
@@ -763,9 +777,9 @@ BackendManagerPlayFab._format_error_message_windows = function (self, reason, er
 		local url_button = {
 			result = {
 				application_quit = true,
-				open_url = optional_url_button.url
+				open_url = optional_url_button.url,
 			},
-			text = optional_url_button.text
+			text = optional_url_button.text,
 		}
 
 		if button_2 then
@@ -784,7 +798,7 @@ BackendManagerPlayFab._show_error_dialog = function (self, reason, details_messa
 	print(string.format("[BackendManagerPlayFab] Showing error dialog: %q, %q", reason or "nil", details_message or "nil"))
 
 	local error_topic = optional_error_topic or Localize("backend_error_topic")
-	local error_text, button_1, button_2, button_3 = nil
+	local error_text, button_1, button_2, button_3
 
 	if IS_CONSOLE then
 		error_text, button_1 = self:_format_error_message_console(reason, details_message)
@@ -1030,13 +1044,14 @@ BackendManagerPlayFab._create_dlc_interfaces = function (self, settings)
 				local skip_interface = DEDICATED_SERVER and interface_settings.ignore_on_dedicated_server
 
 				if not skip_interface then
-					local interface = nil
+					local interface
 					local file_name = interface_settings.playfab_file
 
 					require(file_name)
 
 					local class_name = interface_settings.playfab_class
 					local class = rawget(_G, class_name)
+
 					interface = class:new(backend_mirror)
 					interfaces[interface_name] = interface
 				end
@@ -1047,6 +1062,7 @@ end
 
 BackendManagerPlayFab._create_cdn_resources_interface = function (self, settings)
 	self._interfaces.cdn = BackendInterfaceCdnResourcesPlayFab:new(self._backend_mirror)
+
 	local localizer = Managers.localizer
 	local language_id = localizer:language_id()
 

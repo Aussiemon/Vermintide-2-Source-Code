@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_alerted_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTAlertedAction = class(BTAlertedAction, BTNode)
@@ -10,6 +12,7 @@ BTAlertedAction.name = "BTAlertedAction"
 
 BTAlertedAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
+
 	blackboard.action = action
 	blackboard.alerted_action = blackboard.alerted_action or {}
 	blackboard.move_animation_name = nil
@@ -22,6 +25,7 @@ BTAlertedAction.enter = function (self, unit, blackboard, t)
 	self:decide_deadline(unit, blackboard, t)
 
 	local should_be_alerted = self:init_alerted(unit, blackboard, t)
+
 	blackboard.no_alert = not should_be_alerted
 
 	blackboard.navigation_extension:set_enabled(false)
@@ -129,6 +133,7 @@ BTAlertedAction.should_hesitate = function (self, unit, blackboard, action)
 				local success_target, ray_pos_target = GwNavQueries.raycast(nav_world, to_pos, from_pos)
 				local diff = ray_pos_self - ray_pos_target
 				local height_diff = diff.z
+
 				blackboard.no_hesitation = height_diff > 2 and math.asin(height_diff / Vector3.length(diff)) > math.pi / 3
 			end
 		else
@@ -245,6 +250,7 @@ BTAlertedAction.check_if_should_start_moving = function (self, unit, blackboard)
 			locomotion_extension:set_wanted_rotation(rot)
 		elseif move_animation_name then
 			blackboard.anim_cb_rotation_start = false
+
 			local rot_scale = AiAnimUtils.get_animation_rotation_scale(unit, target_pos, move_animation_name, action.start_anims_data)
 
 			LocomotionUtils.set_animation_rotation_scale(unit, rot_scale)
@@ -256,7 +262,7 @@ BTAlertedAction.run = function (self, unit, blackboard, t, dt)
 	local action = blackboard.action
 	local target_unit = blackboard.target_unit
 
-	if blackboard.previous_attacker or blackboard.no_alert and blackboard.alerted_action.deadline < t then
+	if blackboard.previous_attacker or blackboard.no_alert and t > blackboard.alerted_action.deadline then
 		blackboard.is_alerted = true
 
 		return "done"
@@ -267,7 +273,7 @@ BTAlertedAction.run = function (self, unit, blackboard, t, dt)
 	local target_dist_sq = Vector3.distance_squared(target_pos, current_pos)
 	local in_range = target_dist_sq < 2500
 
-	if blackboard.alerted_action.deadline < t and not blackboard.alerted_deadline_reached_and_sighted_enemy then
+	if t > blackboard.alerted_action.deadline and not blackboard.alerted_deadline_reached_and_sighted_enemy then
 		blackboard.alerted_deadline_reached = true
 
 		if blackboard.breed.berzerker_alert then

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/imgui/imgui_ui_debug.lua
+
 ImguiUIDebug = class(ImguiUIDebug)
 
 ImguiUIDebug.init = function (self)

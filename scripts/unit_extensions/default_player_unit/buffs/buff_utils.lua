@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/unit_extensions/default_player_unit/buffs/buff_utils.lua
+
 local buff_perk_names = require("scripts/unit_extensions/default_player_unit/buffs/settings/buff_perk_names")
+
 BuffUtils = BuffUtils or {}
 
 if script_data then
@@ -22,6 +25,7 @@ BuffUtils.copy_talent_buff_names = function (buffs)
 		fassert(#buffs == 1, "talent buff has more than one sub buff, add multiple buffs from the talent instead")
 
 		local buff = buffs[1]
+
 		buff.name = name
 	end
 end
@@ -58,8 +62,9 @@ BuffUtils.buffs_from_rpc_params = function (num_buffs, buff_ids, buff_data_type_
 		local value = buff_values[i]
 		local name = lookup_templates[id]
 		local data_type = lookup_data_types[data_type_id]
+
 		buffs[name] = {
-			[data_type] = value
+			[data_type] = value,
 		}
 	end
 
@@ -76,9 +81,11 @@ BuffUtils.buffs_to_rpc_params = function (buffs)
 
 	for name, data in pairs(buffs) do
 		num_buffs = num_buffs + 1
+
 		local id = lookup_templates[name]
 		local data_type, value = next(data)
 		local data_type_id = lookup_data_types[data_type or "n/a"]
+
 		buff_ids[num_buffs] = id
 		buff_data_type_ids[num_buffs] = data_type_id
 		buff_values[num_buffs] = value or 1
@@ -88,7 +95,7 @@ BuffUtils.buffs_to_rpc_params = function (buffs)
 		num_buffs,
 		buff_ids,
 		buff_data_type_ids,
-		buff_values
+		buff_values,
 	}
 end
 
@@ -107,7 +114,7 @@ BuffUtils.create_attached_particles = function (world, particle_fx, unit, is_fir
 	local destroy_fx = {}
 	local fx_ids = {
 		stop_fx = stop_fx,
-		destroy_fx = destroy_fx
+		destroy_fx = destroy_fx,
 	}
 
 	for i = 1, #particle_fx do
@@ -119,14 +126,18 @@ BuffUtils.create_attached_particles = function (world, particle_fx, unit, is_fir
 			if link_target then
 				local node_id = _get_particle_link_node(fx, link_target)
 				local pose = fx.pose
+
 				pose = pose and Matrix4x4.from_quaternion_position_scale(Quaternion.from_euler_angles_xyz(pose.rotation[1], pose.rotation[2], pose.rotation[3]), Vector3Aux.unbox(pose.position), Vector3Aux.unbox(pose.scale)) or nil
+
 				local fx_id = ScriptWorld.create_particles_linked(world, fx.effect, link_target, node_id, fx.orphaned_policy, pose)
 
 				if fx.custom_variables then
 					for i = 1, #fx.custom_variables do
 						local data = fx.custom_variables[i]
 						local name = data.name
+
 						data.cached_id = data.cached_id or World.find_particles_variable(world, fx.effect, name)
+
 						local value = data.value or data.dynamic_value()
 						local unit_scale = Unit.local_scale(unit, 0)
 						local effect_variable = Vector3.divide_elements(Vector3Aux.unbox(value), unit_scale)
@@ -182,8 +193,8 @@ BuffUtils.create_liquid_forward = function (unit, buff)
 					area_damage_system = {
 						flow_dir = dir,
 						liquid_template = template.liquid_template,
-						source_unit = unit
-					}
+						source_unit = unit,
+					},
 				}
 				local aoe_unit_name = "units/hub_elements/empty"
 				local liquid_aoe_unit = Managers.state.unit_spawner:spawn_network_unit(aoe_unit_name, "liquid_aoe_unit", extension_init_data, position)
@@ -239,6 +250,7 @@ BuffUtils.generate_balefire_burn_variants = function (buff_templates)
 			end
 		else
 			local original_name = string.sub(template_name, 1, balefire_i - 1)
+
 			DotTypeLookup[template_name] = DotTypeLookup[original_name]
 			BalefireDots[template_name] = true
 		end

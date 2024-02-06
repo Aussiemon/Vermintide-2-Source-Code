@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/input/input_filters.lua
+
 InputFilters = InputFilters or {}
 
 local function input_threshold(input_axis, threshold)
@@ -33,39 +35,39 @@ InputFilters.virtual_axis = {
 			"up",
 			"keymap",
 			"soft_button",
-			"input_mappings"
+			"input_mappings",
 		},
 		{
 			"down",
 			"keymap",
 			"soft_button",
-			"input_mappings"
+			"input_mappings",
 		},
 		{
 			"left",
 			"keymap",
 			"soft_button",
-			"input_mappings"
+			"input_mappings",
 		},
 		{
 			"right",
 			"keymap",
 			"soft_button",
-			"input_mappings"
+			"input_mappings",
 		},
 		{
 			"forward",
 			"keymap",
 			"soft_button",
-			"input_mappings"
+			"input_mappings",
 		},
 		{
 			"back",
 			"keymap",
 			"soft_button",
-			"input_mappings"
-		}
-	}
+			"input_mappings",
+		},
+	},
 }
 InputFilters.scale_vector3 = {
 	init = function (filter_data)
@@ -81,9 +83,9 @@ InputFilters.scale_vector3 = {
 	edit_types = {
 		{
 			"multiplier",
-			"number"
-		}
-	}
+			"number",
+		},
+	},
 }
 InputFilters.scale_vector3_xy = {
 	init = function (filter_data)
@@ -103,17 +105,18 @@ InputFilters.scale_vector3_xy = {
 	edit_types = {
 		{
 			"multiplier_x",
-			"number"
+			"number",
 		},
 		{
 			"multiplier_y",
-			"number"
-		}
-	}
+			"number",
+		},
+	},
 }
 InputFilters.scale_vector3_xy_accelerated_x = {
 	init = function (filter_data)
 		local internal_filter_data = table.clone(filter_data)
+
 		internal_filter_data.input_x = 0
 		internal_filter_data.input_x_t = 0
 		internal_filter_data.input_x_turnaround_t = 0
@@ -128,10 +131,10 @@ InputFilters.scale_vector3_xy_accelerated_x = {
 
 		local time = Application.time_since_launch()
 
-		if filter_data.turnaround_threshold and filter_data.turnaround_threshold <= math.abs(val.x) and math.sign(val.x) ~= filter_data.input_x_turnaround then
+		if filter_data.turnaround_threshold and math.abs(val.x) >= filter_data.turnaround_threshold and math.sign(val.x) ~= filter_data.input_x_turnaround then
 			filter_data.input_x_turnaround = math.sign(val.x)
 			filter_data.input_x_turnaround_t = time
-		elseif filter_data.threshold <= math.abs(val.x) and math.sign(val.x) ~= filter_data.input_x then
+		elseif math.abs(val.x) >= filter_data.threshold and math.sign(val.x) ~= filter_data.input_x then
 			filter_data.input_x = math.sign(val.x)
 			filter_data.input_x_t = time
 		elseif math.abs(val.x) < filter_data.threshold and Vector3.length(val) < filter_data.threshold then
@@ -146,7 +149,7 @@ InputFilters.scale_vector3_xy_accelerated_x = {
 			filter_data.input_x_turnaround = 0
 		end
 
-		local x = nil
+		local x
 		local elapsed_time = time - filter_data.input_x_t
 		local turnaround_elapsed_time = time - filter_data.input_x_turnaround_t
 
@@ -156,11 +159,13 @@ InputFilters.scale_vector3_xy_accelerated_x = {
 
 		if not Application.user_setting("enable_gamepad_acceleration") then
 			x = val.x * filter_data.min_multiplier_x * Managers.time._mean_dt
-		elseif filter_data.turnaround_threshold and turnaround_elapsed_time >= filter_data.acceleration_delay + filter_data.turnaround_delay and filter_data.turnaround_threshold <= math.abs(val.x) then
+		elseif filter_data.turnaround_threshold and turnaround_elapsed_time >= filter_data.acceleration_delay + filter_data.turnaround_delay and math.abs(val.x) >= filter_data.turnaround_threshold then
 			local value = math.clamp(elapsed_time - (filter_data.acceleration_delay + filter_data.turnaround_delay) / filter_data.turnaround_time_ref, 0, 1)
+
 			x = val.x * math.lerp(filter_data.min_multiplier_x, filter_data.turnaround_multiplier_x, math.pow(value, filter_data.turnaround_power_of)) * Managers.time._mean_dt
-		elseif filter_data.acceleration_delay <= elapsed_time then
+		elseif elapsed_time >= filter_data.acceleration_delay then
 			local value = math.clamp((elapsed_time - filter_data.acceleration_delay) / filter_data.accelerate_time_ref, 0, 1)
+
 			x = val.x * math.lerp(filter_data.min_multiplier_x, filter_data.multiplier_x, math.pow(value, filter_data.power_of)) * Managers.time._mean_dt
 		else
 			x = val.x * filter_data.min_multiplier_x * Managers.time._mean_dt
@@ -187,6 +192,7 @@ InputFilters.scale_vector3_xy_accelerated_x = {
 			if moving_towards_horizont then
 				local slow_down_angle = filter_data.angle_to_slow_down_inside
 				local lerp_value = math.clamp(acos / slow_down_angle, 0, 1)
+
 				multiplier_y = math.lerp(filter_data.multiplier_y, filter_data.multiplier_return_y, lerp_value)
 			end
 		end
@@ -199,17 +205,18 @@ InputFilters.scale_vector3_xy_accelerated_x = {
 	edit_types = {
 		{
 			"multiplier_x",
-			"number"
+			"number",
 		},
 		{
 			"multiplier_y",
-			"number"
-		}
-	}
+			"number",
+		},
+	},
 }
 InputFilters.scale_vector3_xy_accelerated_x_inverted = {
 	init = function (filter_data)
 		local internal_filter_data = table.clone(filter_data)
+
 		internal_filter_data.input_x = 0
 		internal_filter_data.input_x_t = 0
 		internal_filter_data.min_multiplier_x = internal_filter_data.min_multiplier_x or internal_filter_data.multiplier_x * 0.25
@@ -224,10 +231,10 @@ InputFilters.scale_vector3_xy_accelerated_x_inverted = {
 
 		local time = Application.time_since_launch()
 
-		if filter_data.turnaround_threshold and filter_data.turnaround_threshold <= math.abs(val.x) and math.sign(val.x) ~= filter_data.input_x_turnaround then
+		if filter_data.turnaround_threshold and math.abs(val.x) >= filter_data.turnaround_threshold and math.sign(val.x) ~= filter_data.input_x_turnaround then
 			filter_data.input_x_turnaround = math.sign(val.x)
 			filter_data.input_x_turnaround_t = time
-		elseif filter_data.threshold <= math.abs(val.x) and math.sign(val.x) ~= filter_data.input_x then
+		elseif math.abs(val.x) >= filter_data.threshold and math.sign(val.x) ~= filter_data.input_x then
 			filter_data.input_x = math.sign(val.x)
 			filter_data.input_x_t = time
 		elseif math.abs(val.x) < filter_data.threshold and Vector3.length(val) < filter_data.threshold then
@@ -242,17 +249,19 @@ InputFilters.scale_vector3_xy_accelerated_x_inverted = {
 			filter_data.input_x_turnaround = 0
 		end
 
-		local x = nil
+		local x
 		local elapsed_time = time - filter_data.input_x_t
 		local turnaround_elapsed_time = time - filter_data.input_x_turnaround_t
 
 		if not Application.user_setting("enable_gamepad_acceleration") then
 			x = val.x * filter_data.min_multiplier_x * Managers.time._mean_dt
-		elseif filter_data.turnaround_threshold and turnaround_elapsed_time >= filter_data.acceleration_delay + filter_data.turnaround_delay and filter_data.turnaround_threshold <= math.abs(val.x) then
+		elseif filter_data.turnaround_threshold and turnaround_elapsed_time >= filter_data.acceleration_delay + filter_data.turnaround_delay and math.abs(val.x) >= filter_data.turnaround_threshold then
 			local value = math.clamp(elapsed_time - (filter_data.acceleration_delay + filter_data.turnaround_delay) / filter_data.turnaround_time_ref, 0, 1)
+
 			x = val.x * math.lerp(filter_data.min_multiplier_x, filter_data.turnaround_multiplier_x, math.pow(value, filter_data.turnaround_power_of)) * Managers.time._mean_dt
-		elseif filter_data.acceleration_delay <= elapsed_time then
+		elseif elapsed_time >= filter_data.acceleration_delay then
 			local value = math.clamp((elapsed_time - filter_data.acceleration_delay) / filter_data.accelerate_time_ref, 0, 1)
+
 			x = val.x * math.lerp(filter_data.min_multiplier_x, filter_data.multiplier_x, math.pow(value, filter_data.power_of)) * Managers.time._mean_dt
 		else
 			x = val.x * filter_data.min_multiplier_x * Managers.time._mean_dt
@@ -266,13 +275,13 @@ InputFilters.scale_vector3_xy_accelerated_x_inverted = {
 	edit_types = {
 		{
 			"multiplier_x",
-			"number"
+			"number",
 		},
 		{
 			"multiplier_y",
-			"number"
-		}
-	}
+			"number",
+		},
+	},
 }
 InputFilters.scale_vector3_invert_y = {
 	init = function (filter_data)
@@ -290,16 +299,16 @@ InputFilters.scale_vector3_invert_y = {
 	edit_types = {
 		{
 			"multiplier",
-			"number"
-		}
-	}
+			"number",
+		},
+	},
 }
 InputFilters.gamepad_cursor = {
 	init = function (filter_data)
 		local internal_filter_data = table.clone(filter_data)
-		local res_x = RESOLUTION_LOOKUP.res_w
-		local res_y = RESOLUTION_LOOKUP.res_h
+		local res_x, res_y = RESOLUTION_LOOKUP.res_w, RESOLUTION_LOOKUP.res_h
 		local inv_scale = RESOLUTION_LOOKUP.inv_scale
+
 		res_x = res_x * inv_scale
 		res_y = res_y * inv_scale
 		internal_filter_data.pos_x = res_x * 0.5
@@ -318,7 +327,7 @@ InputFilters.gamepad_cursor = {
 		return internal_filter_data
 	end,
 	update = function (filter_data, input_service)
-		if filter_data.frame_index < GLOBAL_FRAME_INDEX and not input_service:is_blocked() then
+		if GLOBAL_FRAME_INDEX > filter_data.frame_index and not input_service:is_blocked() then
 			local input_manager = Managers.input
 
 			if not input_manager:gamepad_cursor_active() then
@@ -331,7 +340,7 @@ InputFilters.gamepad_cursor = {
 
 			local mean_dt = Managers.time._mean_dt
 			local time = Application.time_since_launch()
-			local x, y = nil
+			local x, y
 			local is_hovering = input_manager:is_hovering()
 
 			if is_hovering then
@@ -352,22 +361,29 @@ InputFilters.gamepad_cursor = {
 
 				local speed_lerp_value = math.clamp((elapsed_time - filter_data.acceleration_delay) / filter_data.accelerate_time_ref, 0, 1)
 				local speed_x = math.lerp(filter_data.min_multiplier_x, filter_data.multiplier_x, speed_lerp_value)
+
 				x = val.x * speed_x * mean_dt
+
 				local speed_y = math.lerp(filter_data.min_multiplier_y, filter_data.multiplier_y, speed_lerp_value)
+
 				y = val.y * speed_y * mean_dt
 			end
 
 			local x_pos, y_pos = input_manager:get_gamepad_cursor_pos()
+
 			filter_data.pos_x = x_pos or filter_data.pos_x
 			filter_data.pos_y = y_pos or filter_data.pos_y
-			local res_x = RESOLUTION_LOOKUP.res_w
-			local res_y = RESOLUTION_LOOKUP.res_h
+
+			local res_x, res_y = RESOLUTION_LOOKUP.res_w, RESOLUTION_LOOKUP.res_h
 			local inv_scale = RESOLUTION_LOOKUP.inv_scale
+
 			res_x = res_x * inv_scale
 			res_y = res_y * inv_scale
+
 			local dt = 0.03333333333333333
 			local new_x = filter_data.pos_x + x * dt * filter_data.multiplier
 			local new_y = filter_data.pos_y + y * dt * filter_data.multiplier
+
 			filter_data.pos_x = res_x < new_x and res_x or new_x < 0 and 0 or new_x
 			filter_data.pos_y = res_y < new_y and res_y or new_y < 0 and 0 or new_y
 			filter_data.frame_index = GLOBAL_FRAME_INDEX
@@ -378,9 +394,9 @@ InputFilters.gamepad_cursor = {
 	edit_types = {
 		{
 			"multiplier",
-			"number"
-		}
-	}
+			"number",
+		},
+	},
 }
 InputFilters.threshhold = {
 	init = function (filter_data)
@@ -389,17 +405,18 @@ InputFilters.threshhold = {
 	update = function (filter_data, input_service)
 		local val = input_service:get(filter_data.input_mapping)
 
-		if filter_data.threshhold <= val then
+		if val >= filter_data.threshhold then
 			return false
 		else
 			return true
 		end
-	end
+	end,
 }
 InputFilters.move_filter = {
 	init = function (filter_data)
 		local new_filter_data = table.clone(filter_data)
 		local axis = Vector3(unpack(filter_data.axis))
+
 		axis = Vector3.normalize(axis)
 		new_filter_data.axis = Vector3Box(axis)
 
@@ -417,7 +434,7 @@ InputFilters.move_filter = {
 		for _, axis_mapping in pairs(filter_data.axis_mappings) do
 			local axis_state = input_service:get(axis_mapping)
 
-			if axis_state and filter_data.threshold <= Vector3.dot(axis_state, axis) then
+			if axis_state and Vector3.dot(axis_state, axis) >= filter_data.threshold then
 				if filter_data.axis_pressed then
 					return false
 				else
@@ -431,12 +448,13 @@ InputFilters.move_filter = {
 		end
 
 		return false
-	end
+	end,
 }
 InputFilters.move_filter_continuous = {
 	init = function (filter_data)
 		local new_filter_data = table.clone(filter_data)
 		local axis = Vector3(unpack(filter_data.axis))
+
 		axis = Vector3.normalize(axis)
 		new_filter_data.axis = Vector3Box(axis)
 		new_filter_data.cooldown = 0
@@ -446,7 +464,9 @@ InputFilters.move_filter_continuous = {
 	end,
 	update = function (filter_data, input_service)
 		local dt = Managers.time:mean_dt()
+
 		filter_data.cooldown = math.max(filter_data.cooldown - dt, 0)
+
 		local disabled = filter_data.cooldown > 0
 		local input_mapping_found = false
 
@@ -462,7 +482,7 @@ InputFilters.move_filter_continuous = {
 		for _, axis_mapping in pairs(filter_data.axis_mappings) do
 			local axis_state = input_service:get(axis_mapping)
 
-			if axis_state and filter_data.threshold <= Vector3.dot(axis_state, axis) then
+			if axis_state and Vector3.dot(axis_state, axis) >= filter_data.threshold then
 				axis_mapping_found = true
 			end
 		end
@@ -470,6 +490,7 @@ InputFilters.move_filter_continuous = {
 		if disabled and (input_mapping_found or axis_mapping_found) then
 			local min_multiplier = GamepadSettings.menu_min_speed_multiplier
 			local menu_speed_multiplier_decrease = GamepadSettings.menu_speed_multiplier_decrease
+
 			filter_data.cooldown_speed_multiplier = math.max(filter_data.cooldown_speed_multiplier - menu_speed_multiplier_decrease * dt, min_multiplier)
 		end
 
@@ -485,7 +506,7 @@ InputFilters.move_filter_continuous = {
 		end
 
 		return false
-	end
+	end,
 }
 InputFilters["or"] = {
 	init = function (filter_data)
@@ -497,14 +518,14 @@ InputFilters["or"] = {
 				return true
 			end
 		end
-	end
+	end,
 }
 InputFilters["and"] = {
 	init = function (filter_data)
 		return table.clone(filter_data)
 	end,
 	update = function (filter_data, input_service)
-		local value = nil
+		local value
 
 		for _, input_mapping in pairs(filter_data.input_mappings) do
 			if not input_service:get(input_mapping) then
@@ -515,7 +536,7 @@ InputFilters["and"] = {
 		end
 
 		return value
-	end
+	end,
 }
 InputFilters.multiple_and = {
 	init = function (filter_data)
@@ -523,7 +544,7 @@ InputFilters.multiple_and = {
 	end,
 	update = function (filter_data, input_service)
 		for _, input_mapping_table in ipairs(filter_data.input_mappings) do
-			local value = nil
+			local value
 
 			for _, input_mapping in pairs(input_mapping_table) do
 				if not input_service:get(input_mapping) then
@@ -539,7 +560,7 @@ InputFilters.multiple_and = {
 		end
 
 		return false
-	end
+	end,
 }
 InputFilters.sub = {
 	init = function (filter_data)
@@ -547,7 +568,7 @@ InputFilters.sub = {
 	end,
 	update = function (filter_data, input_service)
 		local value = 0
-		local prev_input_value = nil
+		local prev_input_value
 
 		for _, input_mapping in pairs(filter_data.input_mappings) do
 			local input_value = input_service:get(input_mapping)
@@ -561,18 +582,19 @@ InputFilters.sub = {
 		end
 
 		return value
-	end
+	end,
 }
 InputFilters.delayed_and = {
 	init = function (filter_data)
 		local internal_filter_data = table.clone(filter_data)
+
 		internal_filter_data.timer = 0
 		internal_filter_data.pressed = {}
 
 		return internal_filter_data
 	end,
 	update = function (filter_data, input_service)
-		local value, any_pressed = nil
+		local value, any_pressed
 
 		for _, input_mapping in pairs(filter_data.input_mappings) do
 			if not input_service:get(input_mapping) then
@@ -612,14 +634,14 @@ InputFilters.delayed_and = {
 		end
 
 		return value
-	end
+	end,
 }
 InputFilters.exclusive_and = {
 	init = function (filter_data)
 		return table.clone(filter_data)
 	end,
 	update = function (filter_data, input_service)
-		local value = nil
+		local value
 
 		for _, input_mapping in pairs(filter_data.input_mappings) do
 			if not input_service:get(input_mapping) then
@@ -638,12 +660,13 @@ InputFilters.exclusive_and = {
 		end
 
 		return value
-	end
+	end,
 }
 InputFilters.axis_check = {
 	init = function (filter_data)
 		local my_filter_data = table.clone(filter_data)
 		local axis = my_filter_data.axis
+
 		my_filter_data.axis = Vector3Box(Vector3(axis[1], axis[2], axis[3]))
 
 		return my_filter_data
@@ -657,7 +680,7 @@ InputFilters.axis_check = {
 		end
 
 		return axis_requirement <= Vector3.dot(filter_data.axis:unbox(), input)
-	end
+	end,
 }
 InputFilters["not"] = {
 	init = function (filter_data)
@@ -669,5 +692,5 @@ InputFilters["not"] = {
 				return true
 			end
 		end
-	end
+	end,
 }

@@ -1,3 +1,5 @@
+﻿-- chunkname: @foundation/scripts/util/state_machine.lua
+
 local profiler_names = {}
 
 local function profiler_scope(state_name, scope_type)
@@ -9,7 +11,7 @@ local function profiler_scope(state_name, scope_type)
 		scope = {
 			create = state_name .. ":new",
 			enter = state_name .. ":on_enter",
-			exit = state_name .. ":on_exit"
+			exit = state_name .. ":on_exit",
 		}
 		profiler_names[state_name] = scope
 	end
@@ -46,8 +48,13 @@ StateMachine._change_state = function (self, new_state, params)
 		end
 	end
 
+	if false then
+		-- Nothing
+	end
+
 	if self._profiling_debugging_enabled then
 		local scope_name = profiler_scope(new_state.NAME, "create")
+
 		self._state = new_state:new()
 	else
 		self._state = new_state:new()
@@ -61,6 +68,10 @@ StateMachine._change_state = function (self, new_state, params)
 		self._state:on_enter(params)
 	elseif self._state.on_enter then
 		self._state:on_enter(params)
+	end
+
+	if false then
+		-- Nothing
 	end
 end
 

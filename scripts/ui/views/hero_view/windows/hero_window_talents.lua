@@ -1,9 +1,12 @@
+﻿-- chunkname: @scripts/ui/views/hero_view/windows/hero_window_talents.lua
+
 local definitions = local_require("scripts/ui/views/hero_view/windows/definitions/hero_window_talents_definitions")
 local widget_definitions = definitions.widgets
 local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
 local generic_input_actions = definitions.generic_input_actions
 local DO_RELOAD = false
+
 HeroWindowTalents = class(HeroWindowTalents)
 HeroWindowTalents.NAME = "HeroWindowTalents"
 
@@ -11,16 +14,20 @@ HeroWindowTalents.on_enter = function (self, params, offset)
 	print("[HeroViewWindow] Enter Substate HeroWindowTalents")
 
 	self.parent = params.parent
+
 	local ingame_ui_context = params.ingame_ui_context
+
 	self.ui_renderer = ingame_ui_context.ui_renderer
 	self.ui_top_renderer = ingame_ui_context.ui_top_renderer
 	self.input_manager = ingame_ui_context.input_manager
 	self.statistics_db = ingame_ui_context.statistics_db
 	self.render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
+
 	local player_manager = Managers.player
 	local local_player = player_manager:local_player()
+
 	self._stats_id = local_player:stats_id()
 	self.player_manager = player_manager
 	self.player = local_player
@@ -31,9 +38,13 @@ HeroWindowTalents.on_enter = function (self, params, offset)
 
 	self.hero_name = params.hero_name
 	self.career_index = params.career_index
+
 	local profile_index = FindProfileIndex(self.hero_name)
+
 	self._career_name = SPProfiles[profile_index].careers[self.career_index].name
+
 	local experience = ExperienceSettings.get_experience(self.hero_name)
+
 	self.hero_level = ExperienceSettings.get_level(experience)
 
 	self:_initialize_talents()
@@ -43,6 +54,7 @@ HeroWindowTalents.on_exit = function (self, params)
 	print("[HeroViewWindow] Exit Substate HeroWindowTalents")
 
 	self.ui_animator = nil
+
 	local talent_interface = self._talent_interface
 	local career_name = self._career_name
 
@@ -64,11 +76,13 @@ end
 
 HeroWindowTalents.create_ui_elements = function (self, params, offset)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+
 	local widgets = {}
 	local widgets_by_name = {}
 
 	for name, widget_definition in pairs(widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		widgets[#widgets + 1] = widget
 		widgets_by_name[name] = widget
 	end
@@ -82,6 +96,7 @@ HeroWindowTalents.create_ui_elements = function (self, params, offset)
 
 	if offset then
 		local window_position = self.ui_scenegraph.window.local_position
+
 		window_position[1] = window_position[1] + offset[1]
 		window_position[2] = window_position[2] + offset[2]
 		window_position[3] = window_position[3] + offset[3]
@@ -92,6 +107,7 @@ HeroWindowTalents._initialize_talents = function (self)
 	local career_name = self._career_name
 	local talent_interface = Managers.backend:get_interface("talents")
 	local current_talents = talent_interface:get_talents(career_name)
+
 	self._selected_talents = table.clone(current_talents)
 	self._talent_interface = talent_interface
 
@@ -267,6 +283,7 @@ HeroWindowTalents._populate_talents_by_hero = function (self, initialize)
 			local talent_unlock_level = TalentUnlockLevels[unlock_name]
 			local row_unlocked = ProgressionUnlocks.is_unlocked(unlock_name, self.hero_level)
 			local level_text_color = row_unlocked and Colors.get_color_table_with_alpha("green", 255) or Colors.get_color_table_with_alpha("red", 255)
+
 			content.level_text = tostring(talent_unlock_level)
 			style.level_text.text_color = level_text_color
 
@@ -277,6 +294,7 @@ HeroWindowTalents._populate_talents_by_hero = function (self, initialize)
 			end
 
 			local glow_frame_style = style.glow_frame
+
 			glow_frame_style.color[1] = 0
 
 			if initialize and row_unlocked and no_talent_selected then
@@ -335,6 +353,7 @@ HeroWindowTalents._clear_talents = function (self)
 				local icon_name = "icon" .. name_suffix
 				local hotspot_name = "hotspot" .. name_suffix
 				local title_text_name = "title_text" .. name_suffix
+
 				content[icon_name] = "icons_placeholder"
 				content[title_text_name] = "Undefined"
 				content[hotspot_name].is_selected = false
@@ -427,26 +446,31 @@ HeroWindowTalents._populate_career_info = function (self, initialize)
 		255,
 		255,
 		255,
-		255
+		255,
 	}
+
 	widgets_by_name.career_background.style.background.color = career_color
+
 	local passive_ability_data = career_settings.passive_ability
 	local activated_ability_data = career_settings.activated_ability[1]
 	local passive_display_name = passive_ability_data.display_name
 	local passive_icon = passive_ability_data.icon
 	local activated_display_name = activated_ability_data.display_name
 	local activated_icon = activated_ability_data.icon
+
 	widgets_by_name.passive_title_text.content.text = Localize(passive_display_name)
 	widgets_by_name.passive_description_text.content.text = UIUtils.get_ability_description(passive_ability_data)
 	widgets_by_name.passive_icon.content.texture_id = passive_icon
 	widgets_by_name.active_title_text.content.text = Localize(activated_display_name)
 	widgets_by_name.active_description_text.content.text = UIUtils.get_ability_description(activated_ability_data)
 	widgets_by_name.active_icon.content.texture_id = activated_icon
+
 	local passive_perks = passive_ability_data.perks
 
 	for index, data in ipairs(passive_perks) do
 		local widget = widgets_by_name["career_perk_" .. index]
 		local display_name = data.display_name
+
 		widget.content.text = Localize(display_name)
 		widget.content.tooltip_data = data
 	end

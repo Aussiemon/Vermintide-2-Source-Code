@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/game_state/title_screen_substates/win32/state_title_screen_init_network.lua
+
 require("scripts/game_state/state_loading")
 
 StateTitleScreenInitNetwork = class(StateTitleScreenInitNetwork)
@@ -9,6 +11,7 @@ StateTitleScreenInitNetwork.on_enter = function (self, params)
 	self._params = params
 	self._title_start_ui = params.ui
 	self._save_data_loaded = false
+
 	local loading_context = self.parent.parent.loading_context
 	local loading_view = loading_context.loading_view
 
@@ -124,6 +127,7 @@ StateTitleScreenInitNetwork.create_popup = function (self, error)
 
 	local header = Localize("popup_steam_error_header")
 	local localized_error = Localize(error)
+
 	self._popup_id = Managers.popup:queue_popup(localized_error, header, "retry", Localize("button_retry"), "quit", Localize("menu_quit"))
 end
 
@@ -132,6 +136,7 @@ StateTitleScreenInitNetwork._create_eac_error_popup = function (self, localized_
 	assert(self._popup_id == nil, "Tried to show popup even though we already had one.")
 
 	local header = Localize("popup_eac_error_header")
+
 	self._popup_id = Managers.popup:queue_popup(localized_error, header, "quit", Localize("menu_quit"))
 end
 

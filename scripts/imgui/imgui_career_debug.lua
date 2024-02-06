@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/imgui/imgui_career_debug.lua
+
 ImguiCareerDebug = class(ImguiCareerDebug)
+
 local SHOULD_RELOAD = true
 local DEFAULT_WINDOW_X = 820
 local DEFAULT_WINDOW_Y = 500
@@ -31,6 +34,7 @@ ImguiCareerDebug._get_profile_requester = function (self)
 
 	if network_manager then
 		local network = network_manager.network_server or network_manager.network_client
+
 		self._profile_requester = network and network:profile_requester()
 	end
 
@@ -46,6 +50,7 @@ ImguiCareerDebug._get_profile_synchronizer = function (self)
 
 	if network_manager then
 		local network = network_manager.network_server or network_manager.network_client
+
 		self._profile_synchronizer = network and network.profile_synchronizer
 	end
 
@@ -112,6 +117,7 @@ ImguiCareerDebug.draw = function (self)
 	end
 
 	local do_close = Imgui.begin_window("Career Debug")
+
 	self._is_persistent = Imgui.checkbox("Keep Window Open", self._is_persistent)
 
 	Imgui.same_line()
@@ -133,7 +139,7 @@ local header = {
 	"Profile",
 	"Career",
 	"Is Bot",
-	"Is Server"
+	"Is Server",
 }
 
 ImguiCareerDebug._draw_players = function (self)

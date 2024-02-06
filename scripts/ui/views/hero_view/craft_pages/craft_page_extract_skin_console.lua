@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/hero_view/craft_pages/craft_page_extract_skin_console.lua
+
 require("scripts/ui/views/menu_world_previewer")
 
 local crafting_recipes, crafting_recipes_by_name, crafting_recipes_lookup = dofile("scripts/settings/crafting/crafting_recipes")
@@ -8,6 +10,7 @@ local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
 local DO_RELOAD = false
 local NUM_CRAFT_SLOTS = 1
+
 CraftPageExtractSkinConsole = class(CraftPageExtractSkinConsole)
 CraftPageExtractSkinConsole.NAME = "CraftPageExtractSkinConsole"
 
@@ -16,18 +19,22 @@ CraftPageExtractSkinConsole.on_enter = function (self, params, settings)
 
 	self.parent = params.parent
 	self.super_parent = self.parent.parent
+
 	local ingame_ui_context = params.ingame_ui_context
+
 	self.ingame_ui_context = ingame_ui_context
 	self.ui_renderer = ingame_ui_context.ui_renderer
 	self.ui_top_renderer = ingame_ui_context.ui_top_renderer
 	self.input_manager = ingame_ui_context.input_manager
 	self.statistics_db = ingame_ui_context.statistics_db
 	self.render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 	self.crafting_manager = Managers.state.crafting
+
 	local player_manager = Managers.player
 	local local_player = player_manager:local_player()
+
 	self._stats_id = local_player:stats_id()
 	self.player_manager = player_manager
 	self.peer_id = ingame_ui_context.peer_id
@@ -53,11 +60,13 @@ end
 
 CraftPageExtractSkinConsole.create_ui_elements = function (self, params)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+
 	local widgets = {}
 	local widgets_by_name = {}
 
 	for name, widget_definition in pairs(widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		widgets[#widgets + 1] = widget
 		widgets_by_name[name] = widget
 	end
@@ -176,6 +185,7 @@ CraftPageExtractSkinConsole._handle_input = function (self, dt, t)
 
 		local max_time = UISettings.crafting_progress_time
 		local progress = math.min(self._craft_input_time / max_time, 1)
+
 		craft_input_accepted = self:_handle_craft_input_progress(progress)
 
 		WwiseWorld.set_global_parameter(self.wwise_world, "craft_forge_button_progress", progress)
@@ -254,10 +264,11 @@ end
 
 CraftPageExtractSkinConsole.on_craft_completed = function (self)
 	local result = self._craft_result
-	local backend_id = nil
+	local backend_id
 
 	for index, data in pairs(result) do
 		backend_id = data[1]
+
 		local amount = data[3]
 	end
 
@@ -269,6 +280,7 @@ CraftPageExtractSkinConsole.on_craft_completed = function (self)
 	end
 
 	self._craft_result = nil
+
 	local item_grid = self._item_grid
 
 	self:_remove_craft_item(self._craft_items[1])
@@ -346,6 +358,7 @@ CraftPageExtractSkinConsole._add_craft_item = function (self, backend_id, slot_i
 
 	if slot_index then
 		craft_items[slot_index] = backend_id
+
 		local item_interface = Managers.backend:get_interface("items")
 		local item = backend_id and item_interface:get_item_from_id(backend_id)
 
@@ -423,5 +436,6 @@ end
 CraftPageExtractSkinConsole._set_craft_button_text = function (self, text, localize)
 	local widgets_by_name = self._widgets_by_name
 	local widget = widgets_by_name.craft_button
+
 	widget.content.button_text = localize and Localize(text) or text
 end

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/ai/ai_system.lua
+
 require("scripts/utils/ai_debugger")
 require("scripts/helpers/level_helper")
 require("scripts/helpers/network_utils")
@@ -7,6 +9,7 @@ UNIT_UNIQUE_IDS = UNIT_UNIQUE_IDS or 0
 VISUAL_DEBUGGING_ENABLED = VISUAL_DEBUGGING_ENABLED or false
 GLOBAL_AI_NAVWORLD = GLOBAL_AI_NAVWORLD or {}
 AISystem = class(AISystem, ExtensionSystemBase)
+
 local script_data = script_data
 local POSITION_LOOKUP = POSITION_LOOKUP
 local Vector3_distance = Vector3.distance
@@ -15,7 +18,9 @@ local Vector3_normalize = Vector3.normalize
 local sqrt = math.sqrt
 local unit_alive = Unit.alive
 local dummy_table = {}
+
 script_data.disable_ai_perception = script_data.disable_ai_perception or Development.parameter("disable_ai_perception")
+
 local ai_trees_created = false
 local NAV_COST_MAP_MAX_VOLUMES = 1024
 local NAV_COST_MAP_MAX_COST_MAPS = 128
@@ -31,13 +36,14 @@ local RPCS = {
 	"rpc_check_trigger_backstab_sfx",
 	"rpc_set_attribute_bool",
 	"rpc_set_attribute_int",
-	"rpc_remove_attribute"
+	"rpc_remove_attribute",
 }
 local extensions = {
 	"AISimpleExtension",
 	"AiHuskBaseExtension",
-	"PlayerBotBase"
+	"PlayerBotBase",
 }
+
 AttributeDefinition = {
 	grudge_marked = {
 		name_index = function (unit, value)
@@ -47,7 +53,7 @@ AttributeDefinition = {
 			else
 				Unit.flow_event(unit, "disable_grudge")
 			end
-		end
+		end,
 	},
 	breed_enhancements = {},
 	training_dummy = {
@@ -63,8 +69,8 @@ AttributeDefinition = {
 			local race_name = has_armor and "skaven" or "chaos"
 
 			Unit.set_data(unit, "race", race_name)
-		end
-	}
+		end,
+	},
 }
 
 for name, data in pairs(BreedEnhancements) do
@@ -81,6 +87,7 @@ AISystem.init = function (self, context, name)
 
 	for i = 1, #sides do
 		local side = sides[i]
+
 		all_categories[#all_categories + 1] = side:name()
 	end
 
@@ -92,12 +99,13 @@ AISystem.init = function (self, context, name)
 		disabled_by_special = {},
 		broadphase = self.broadphase,
 		slots = {},
-		slots_cleared = {}
+		slots_cleared = {},
 	}
 
 	self:create_all_trees()
 
 	local nav_world = GwNavWorld.create(Matrix4x4.identity())
+
 	self._nav_world = nav_world
 	GLOBAL_AI_NAVWORLD = nav_world
 
@@ -129,9 +137,9 @@ AISystem.init = function (self, context, name)
 
 	if not level_settings.no_nav_mesh then
 		local num_nested_levels = LevelResource.nested_level_count(level_name)
-		local nav_data = {
-			[#nav_data + 1] = GwNavWorld.add_navdata(nav_world, level_name)
-		}
+		local nav_data = {}
+
+		nav_data[#nav_data + 1] = GwNavWorld.add_navdata(nav_world, level_name)
 
 		for i = 0, num_nested_levels - 1 do
 			local nested_level_name = LevelResource.nested_level_resource_name(level_name, i)
@@ -149,16 +157,16 @@ AISystem.init = function (self, context, name)
 	end
 
 	self._nav_cost_map_id_data = {
-		size = 0,
 		current_id = 1,
+		size = 0,
 		ids = Script.new_array(NAV_COST_MAP_MAX_COST_MAPS),
-		max_size = NAV_COST_MAP_MAX_COST_MAPS
+		max_size = NAV_COST_MAP_MAX_COST_MAPS,
 	}
 	self._nav_cost_map_volume_id_data = {
-		size = 0,
 		current_id = 1,
+		size = 0,
 		ids = Script.new_array(NAV_COST_MAP_MAX_VOLUMES),
-		max_size = NAV_COST_MAP_MAX_VOLUMES
+		max_size = NAV_COST_MAP_MAX_VOLUMES,
 	}
 	self._nav_cost_maps_data = Script.new_array(NAV_COST_MAP_MAX_COST_MAPS)
 	self._should_recompute_nav_cost_maps = false
@@ -179,7 +187,9 @@ AISystem.init = function (self, context, name)
 	self.number_ordinary_aggroed_enemies = 0
 	self.number_special_aggored_enemies = 0
 	self.start_prio_index = 1
+
 	local network_event_delegate = context.network_event_delegate
+
 	self._network_event_delegate = network_event_delegate
 
 	network_event_delegate:register(self, unpack(RPCS))
@@ -192,11 +202,13 @@ AISystem.init = function (self, context, name)
 
 	for layer_name, _ in pairs(NAV_TAG_VOLUME_LAYER_COST_AI) do
 		local default_cost_ai = DEFAULT_NAV_TAG_VOLUME_LAYER_COST_AI[layer_name] or 1
+
 		NAV_TAG_VOLUME_LAYER_COST_AI[layer_name] = default_cost_ai
 	end
 
 	for layer_name, _ in pairs(NAV_TAG_VOLUME_LAYER_COST_BOTS) do
 		local default_cost_bots = DEFAULT_NAV_TAG_VOLUME_LAYER_COST_BOTS[layer_name] or 1
+
 		NAV_TAG_VOLUME_LAYER_COST_BOTS[layer_name] = default_cost_bots
 	end
 end
@@ -220,10 +232,11 @@ AISystem.create_nav_cost_map = function (self, cost_layer, num_volumes_guess)
 	end
 
 	local nav_world = self._nav_world
+
 	self._nav_cost_maps_data[cost_map_id] = {
 		recompute = false,
 		cost_map = GwNavCostMap.create(nav_world, cost_map_layer_id),
-		volumes = Script.new_map(num_volumes_guess)
+		volumes = Script.new_map(num_volumes_guess),
 	}
 	cost_map_id_data.size = cost_map_ids_size + 1
 	cost_map_id_data.current_id = cost_map_id
@@ -331,6 +344,7 @@ AISystem.set_nav_cost_map_volume_transform = function (self, volume_id, cost_map
 	GwNavCostMap.set_volume_transform(volume, transform)
 
 	local cost_map = cost_map_data.cost_map
+
 	cost_map_data.recompute = true
 	self._should_recompute_nav_cost_maps = true
 end
@@ -351,6 +365,7 @@ AISystem.set_nav_cost_map_volume_scale = function (self, volume_id, cost_map_id,
 	GwNavCostMap.set_volume_scale(volume, scale)
 
 	local cost_map = cost_map_data.cost_map
+
 	cost_map_data.recompute = true
 	self._should_recompute_nav_cost_maps = true
 end
@@ -400,17 +415,19 @@ AISystem._initialize_client_traverse_logic = function (self, nav_world)
 	local nav_tag_layer_costs = {
 		bot_poison_wind = 1,
 		bot_ratling_gun_fire = 1,
-		fire_grenade = 1
+		fire_grenade = 1,
 	}
 
 	table.merge(nav_tag_layer_costs, NAV_TAG_VOLUME_LAYER_COST_AI)
 
 	local navtag_layer_cost_table = GwNavTagLayerCostTable.create()
+
 	self._navtag_layer_cost_table = navtag_layer_cost_table
 
 	AiUtils.initialize_cost_table(navtag_layer_cost_table, nav_tag_layer_costs)
 
 	local nav_cost_map_cost_table = GwNavCostMap.create_tag_cost_table()
+
 	self._nav_cost_map_cost_table = nav_cost_map_cost_table
 
 	AiUtils.initialize_nav_cost_map_cost_table(nav_cost_map_cost_table, nil, 1)
@@ -469,6 +486,7 @@ end
 
 AISystem.on_add_extension = function (self, world, unit, extension_name, extension_init_data)
 	local extension = AISystem.super.on_add_extension(self, world, unit, extension_name, extension_init_data)
+
 	self.unit_extension_data[unit] = extension
 
 	if not extension.is_husk then
@@ -477,6 +495,7 @@ AISystem.on_add_extension = function (self, world, unit, extension_name, extensi
 		end
 
 		local blackboard = extension:blackboard()
+
 		self.blackboards[unit] = blackboard
 
 		self:set_default_blackboard_values(unit, blackboard)
@@ -484,6 +503,7 @@ AISystem.on_add_extension = function (self, world, unit, extension_name, extensi
 
 	if extension_name == "AISimpleExtension" then
 		self.ai_units_alive[unit] = extension
+
 		local breed = extension._breed
 
 		if breed.perception_continuous then
@@ -644,6 +664,7 @@ AISystem.freeze = function (self, unit, extension_name, reason)
 	end
 
 	local extension = self.unit_extension_data[unit]
+
 	frozen_extensions[unit] = extension
 
 	if extension.freeze then
@@ -672,6 +693,7 @@ AISystem.unfreeze = function (self, unit, extension_name, data)
 		self.ai_units_alive[unit] = extension
 		self.num_perception_units = self.num_perception_units + 1
 		self.ai_blackboard_updates[#self.ai_blackboard_updates + 1] = unit
+
 		local breed = extension._breed
 
 		if breed.perception_continuous then
@@ -699,6 +721,7 @@ AISystem.unfreeze = function (self, unit, extension_name, data)
 
 	if extension._health_extension then
 		local side = Managers.state.side.side_by_unit[unit]
+
 		extension.broadphase_id = Broadphase.add(self.broadphase, unit, POSITION_LOOKUP[unit], 1, side.broadphase_category)
 	end
 end
@@ -786,6 +809,7 @@ AISystem.update_perception = function (self, t, dt)
 		local perception_continuous_name = breed.perception_continuous
 		local perception_function = PerceptionUtils[perception_continuous_name]
 		local needs_perception = perception_function(unit, blackboard, breed, t, dt)
+
 		ai_units_perception[unit] = needs_perception and extension or nil
 
 		self:_update_taunt(t, blackboard)
@@ -808,7 +832,9 @@ AISystem.update_perception = function (self, t, dt)
 	end
 
 	local current_perception_unit = self.current_perception_unit
+
 	current_perception_unit = self.ai_units_perception[current_perception_unit] ~= nil and current_perception_unit or nil
+
 	local TIME_BETWEEN_UPDATE = 1
 	local num_perception_units = self.num_perception_units
 	local num_to_update = math.ceil(num_perception_units * dt / TIME_BETWEEN_UPDATE)
@@ -928,7 +954,9 @@ AISystem.update_debug_unit = function (self, t)
 	end
 
 	local btnode_name = leaf_node and leaf_node:id() or "unknown_node"
+
 	blackboard.btnode_name = btnode_name
+
 	local breed = extension._breed
 	local debug_flag = breed.debug_flag
 
@@ -963,7 +991,7 @@ AISystem.update_debug_draw = function (self, t)
 	end
 
 	if script_data.debug_ai_targets then
-		local debug_sphere_position = nil
+		local debug_sphere_position
 
 		for unit, extension in pairs(self.ai_units_alive) do
 			local blackboard = extension._blackboard
@@ -1013,52 +1041,55 @@ AISystem.update_debug_draw = function (self, t)
 					Managers.state.debug_text:output_unit_text("STAGGER_IMMUNE:HIGH_HEALTH", 0.2, unit, head_node, Vector3.up() * 0.2 * index, 0.1, "stagger_immunity", color_vector, viewport_name)
 
 					index = index + 1
-				else
-					local action = blackboard.action
-					local ignore_staggers = action and action.ignore_staggers
 
-					if ignore_staggers then
-						local ignore_stagger_info = action.name .. ": "
+					break
+				end
 
-						for i = 1, 7 do
-							local ignore_stagger_value = type(ignore_staggers[i]) == "table" and tostring(ignore_staggers[i].health.min < health_percent and health_percent <= ignore_staggers[i].health.max) or tostring(ignore_staggers[i])
-							ignore_stagger_info = ignore_stagger_info .. "[" .. ignore_stagger_value .. "]"
-						end
+				local action = blackboard.action
+				local ignore_staggers = action and action.ignore_staggers
 
-						Managers.state.debug_text:output_unit_text(ignore_stagger_info, 0.2, unit, head_node, Vector3.up() * 0.2 * index, 0.1, "stagger_immunity", color_vector, viewport_name)
+				if ignore_staggers then
+					local ignore_stagger_info = action.name .. ": "
+
+					for i = 1, 7 do
+						local ignore_stagger_value = type(ignore_staggers[i]) == "table" and tostring(health_percent > ignore_staggers[i].health.min and health_percent <= ignore_staggers[i].health.max) or tostring(ignore_staggers[i])
+
+						ignore_stagger_info = ignore_stagger_info .. "[" .. ignore_stagger_value .. "]"
+					end
+
+					Managers.state.debug_text:output_unit_text(ignore_stagger_info, 0.2, unit, head_node, Vector3.up() * 0.2 * index, 0.1, "stagger_immunity", color_vector, viewport_name)
+
+					index = index + 1
+				end
+
+				local stagger_immune = false
+
+				if stagger_immunity.stagger_immune_at then
+					stagger_immune = t < stagger_immunity.stagger_immune_at + stagger_immunity.time and stagger_immunity.debug_damage_left > 0
+
+					if stagger_immune then
+						local time_left = math.round_with_precision(stagger_immunity.stagger_immune_at + stagger_immunity.time - t, 2)
+
+						Managers.state.debug_text:output_unit_text("time left:" .. time_left, 0.2, unit, head_node, Vector3.up() * 0.2 * index, 0.1, "stagger_immunity", color_vector, viewport_name)
+
+						index = index + 1
+
+						Managers.state.debug_text:output_unit_text("damage left:" .. stagger_immunity.debug_damage_left, 0.2, unit, head_node, Vector3.up() * 0.2 * index, 0.1, "stagger_immunity", color_vector, viewport_name)
+
+						index = index + 1
+
+						Managers.state.debug_text:output_unit_text("STAGGER_IMMUNE:HITS", 0.2, unit, head_node, Vector3.up() * 0.2 * index, 0.1, "stagger_immunity", color_vector, viewport_name)
 
 						index = index + 1
 					end
+				end
 
-					local stagger_immune = false
+				if not stagger_immune then
+					local hits_until_stagger_immunity = "hits_until_stagger_immunity:" .. stagger_immunity.num_attacks - (stagger_immunity.num_hits or 0)
 
-					if stagger_immunity.stagger_immune_at then
-						stagger_immune = t < stagger_immunity.stagger_immune_at + stagger_immunity.time and stagger_immunity.debug_damage_left > 0
+					Managers.state.debug_text:output_unit_text(hits_until_stagger_immunity, 0.2, unit, head_node, Vector3.up() * 0.2 * index, 0.1, "stagger_immunity", color_vector, viewport_name)
 
-						if stagger_immune then
-							local time_left = math.round_with_precision(stagger_immunity.stagger_immune_at + stagger_immunity.time - t, 2)
-
-							Managers.state.debug_text:output_unit_text("time left:" .. time_left, 0.2, unit, head_node, Vector3.up() * 0.2 * index, 0.1, "stagger_immunity", color_vector, viewport_name)
-
-							index = index + 1
-
-							Managers.state.debug_text:output_unit_text("damage left:" .. stagger_immunity.debug_damage_left, 0.2, unit, head_node, Vector3.up() * 0.2 * index, 0.1, "stagger_immunity", color_vector, viewport_name)
-
-							index = index + 1
-
-							Managers.state.debug_text:output_unit_text("STAGGER_IMMUNE:HITS", 0.2, unit, head_node, Vector3.up() * 0.2 * index, 0.1, "stagger_immunity", color_vector, viewport_name)
-
-							index = index + 1
-						end
-					end
-
-					if not stagger_immune then
-						local hits_until_stagger_immunity = "hits_until_stagger_immunity:" .. stagger_immunity.num_attacks - (stagger_immunity.num_hits or 0)
-
-						Managers.state.debug_text:output_unit_text(hits_until_stagger_immunity, 0.2, unit, head_node, Vector3.up() * 0.2 * index, 0.1, "stagger_immunity", color_vector, viewport_name)
-
-						index = index + 1
-					end
+					index = index + 1
 				end
 			until true
 		end
@@ -1079,23 +1110,39 @@ AISystem.update_debug_draw = function (self, t)
 
 					if blackboard.stagger or blackboard.blocked then
 						QuickDrawer:sphere(position, 0.25, Colors.get("blue"))
-					elseif have_slot > 0 then
-						local attack_cooldown_at = blackboard.attack_cooldown_at
 
-						if blackboard.attack_token then
-							QuickDrawer:sphere(position, 0.35, Colors.get("red"))
+						break
+					end
 
-							local attack_type = blackboard.action.attack_intensity_type and blackboard.action.attack_intensity_type or "normal"
+					if have_slot > 0 then
+						do
+							local attack_cooldown_at = blackboard.attack_cooldown_at
 
-							debug_text_manager:output_unit_text(attack_type, 0.16, unit, spine_node, Vector3.zero(), nil, "attack_type", Vector3(255, 255, 255), "player_1")
-						elseif t < attack_cooldown_at then
-							QuickDrawer:sphere(position, 0.35, Colors.get("orange"))
-						else
+							if blackboard.attack_token then
+								QuickDrawer:sphere(position, 0.35, Colors.get("red"))
+
+								do
+									local attack_type = blackboard.action.attack_intensity_type and blackboard.action.attack_intensity_type or "normal"
+
+									debug_text_manager:output_unit_text(attack_type, 0.16, unit, spine_node, Vector3.zero(), nil, "attack_type", Vector3(255, 255, 255), "player_1")
+								end
+
+								break
+							end
+
+							if t < attack_cooldown_at then
+								QuickDrawer:sphere(position, 0.35, Colors.get("orange"))
+
+								break
+							end
+
 							QuickDrawer:sphere(position, 0.25, Colors.get("lime"))
 						end
-					else
-						QuickDrawer:sphere(position, 0.25, Colors.get("gray"))
+
+						break
 					end
+
+					QuickDrawer:sphere(position, 0.25, Colors.get("gray"))
 				end
 			until true
 		end
@@ -1148,9 +1195,11 @@ local function update_blackboard(unit, blackboard, t, dt)
 	end
 
 	local ai_slot_system = Managers.state.entity:system("ai_slot_system")
+
 	blackboard.have_slot = ai_slot_system:ai_unit_have_slot(unit) and 1 or 0
 	blackboard.wait_slot_distance = ai_slot_system:ai_unit_wait_slot_distance(unit)
 	blackboard.total_slots_count = ai_slot_system.num_total_enemies
+
 	local target_unit = blackboard.target_unit
 	local target_alive = unit_alive(target_unit)
 	local breed = blackboard.breed
@@ -1199,8 +1248,11 @@ local function update_blackboard(unit, blackboard, t, dt)
 
 		if target_unit_slot_extension and target_unit_slot_extension.has_slots_attached then
 			local num_occupied_slots = target_unit_slot_extension.num_occupied_slots
+
 			blackboard.total_occupied_slots = num_occupied_slots
+
 			local disabled_slots_count = ai_slot_system:disabled_slots_count(target_unit)
+
 			blackboard.target_num_disabled_slots = blackboard.have_slot > 0 and 0 or disabled_slots_count
 		else
 			blackboard.total_occupied_slots = 0
@@ -1213,8 +1265,11 @@ local function update_blackboard(unit, blackboard, t, dt)
 
 	local active_node = blackboard.active_node
 	local active_node_name = active_node and active_node.name
+
 	blackboard.is_following_target = active_node_name and active_node_name == "BTClanRatFollowAction"
+
 	local locomotion_extension = blackboard.locomotion_extension
+
 	blackboard.is_falling = locomotion_extension and locomotion_extension:is_falling()
 	blackboard.move_speed = locomotion_extension and locomotion_extension.move_speed
 
@@ -1224,7 +1279,7 @@ local function update_blackboard(unit, blackboard, t, dt)
 
 	local attacking_target = blackboard.attacking_target
 	local has_attacking_target = unit_alive(attacking_target)
-	local is_valid_attacking_target = nil
+	local is_valid_attacking_target
 
 	if has_attacking_target then
 		local target_breed = Unit.get_data(attacking_target, "breed")
@@ -1248,15 +1303,20 @@ local function update_blackboard(unit, blackboard, t, dt)
 		local x = offset.x
 		local y = offset.y
 		local flat_sq = x * x + y * y
+
 		blackboard.target_dist_z_abs = math.abs(z)
 		blackboard.target_dist_xy_sq = flat_sq
+
 		local target_dist = sqrt(flat_sq + z * z)
 		local inside_priority_distance = target_dist < PRIORITIZED_DISTANCE
+
 		blackboard.target_dist = target_dist
+
 		local target_slot_extension = ScriptUnit.has_extension(target_unit, "ai_slot_system")
 
 		if target_slot_extension then
 			local slots_n = target_slot_extension.num_occupied_slots
+
 			blackboard.target_num_occupied_slots = slots_n or 0
 		else
 			blackboard.target_num_occupied_slots = 0
@@ -1293,7 +1353,7 @@ AISystem.update_ai_blackboards_prioritized = function (self, t, dt)
 
 	local i = 1
 
-	while loops >= i do
+	while i <= loops do
 		if num_prio < index then
 			index = 1
 		end
@@ -1329,9 +1389,7 @@ AISystem.update_ai_blackboards = function (self, t, dt)
 	local ai_updates_this_frame = 0
 	local index = self.ai_update_index
 
-	if ai_blackboard_updates_n < index then
-		index = 1
-	end
+	index = ai_blackboard_updates_n < index and 1 or index
 
 	while index <= ai_blackboard_updates_n do
 		local unit = ai_blackboard_updates[index]
@@ -1350,7 +1408,7 @@ AISystem.update_ai_blackboards = function (self, t, dt)
 
 		ai_updates_this_frame = ai_updates_this_frame + 1
 
-		if AI_UPDATES_PER_FRAME <= ai_updates_this_frame then
+		if ai_updates_this_frame >= AI_UPDATES_PER_FRAME then
 			break
 		end
 	end
@@ -1376,8 +1434,10 @@ AISystem.set_allowed_layer = function (self, layer_name, allowed)
 		local nav_world = self._nav_world
 		local layer_id = LAYER_ID_MAPPING[layer_name]
 		local conflict_director = Managers.state.conflict
+
 		NAV_TAG_VOLUME_LAYER_COST_AI[layer_name] = allowed and 1 or 0
 		NAV_TAG_VOLUME_LAYER_COST_BOTS[layer_name] = allowed and 1 or 0
+
 		local ai_extensions = entity_manager:get_entities("AINavigationExtension")
 
 		for _, extension in pairs(ai_extensions) do
@@ -1485,6 +1545,7 @@ end
 
 AISystem.rpc_set_allowed_nav_layer = function (self, channel_id, layer_id, allowed)
 	local layer_name = LAYER_ID_MAPPING[layer_id]
+
 	NAV_TAG_VOLUME_LAYER_COST_AI[layer_name] = allowed and 1 or 0
 	NAV_TAG_VOLUME_LAYER_COST_BOTS[layer_name] = allowed and 1 or 0
 
@@ -1537,6 +1598,7 @@ function write_attribute(extension, unit, id, category_id, value)
 
 	attributes[category_id] = attributes[category_id] or {}
 	attributes[category_id][id] = value
+
 	local func = AttributeDefinition[category_id][id]
 
 	if func then
@@ -1650,11 +1712,13 @@ AISystem.create_all_trees = function (self)
 
 	for tree_name, root in pairs(BreedBehaviors) do
 		local tree = BehaviorTree:new(root, tree_name)
+
 		self._behavior_trees[tree_name] = tree
 	end
 
 	for tree_name, root in pairs(BotBehaviors) do
 		local tree = BehaviorTree:new(root, tree_name)
+
 		self._behavior_trees[tree_name] = tree
 	end
 end

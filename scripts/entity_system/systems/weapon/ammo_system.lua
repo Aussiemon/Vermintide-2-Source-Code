@@ -1,10 +1,13 @@
+﻿-- chunkname: @scripts/entity_system/systems/weapon/ammo_system.lua
+
 AmmoSystem = class(AmmoSystem, ExtensionSystemBase)
+
 local extensions = {
 	"ActiveReloadAmmoUserExtension",
-	"GenericAmmoUserExtension"
+	"GenericAmmoUserExtension",
 }
 local RPCS = {
-	"rpc_give_ammo_fraction_to_owner"
+	"rpc_give_ammo_fraction_to_owner",
 }
 
 AmmoSystem.init = function (self, entity_system_creation_context, system_name)
@@ -21,12 +24,14 @@ end
 
 AmmoSystem.on_add_extension = function (self, world, unit, extension_name, extension_init_data)
 	local extension = AmmoSystem.super.on_add_extension(self, world, unit, extension_name, extension_init_data)
+
 	self._unit_extensions[unit] = extension
+
 	local extension_owners = self._unit_extensions_by_owener[extension.owner_unit]
 
 	if not extension_owners then
 		self._unit_extensions_by_owener[extension.owner_unit] = {
-			extension
+			extension,
 		}
 	else
 		extension_owners[#extension_owners + 1] = extension
@@ -37,7 +42,9 @@ end
 
 AmmoSystem.on_remove_extension = function (self, unit, extension_name)
 	local extension = self._unit_extensions[unit]
+
 	self._unit_extensions[unit] = nil
+
 	local extension_owners = self._unit_extensions_by_owener[extension.owner_unit]
 
 	if extension_owners then

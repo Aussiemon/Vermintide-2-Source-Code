@@ -1,38 +1,42 @@
+﻿-- chunkname: @scripts/managers/backend/statistics_util.lua
+
 local Unit_alive = Unit.alive
 local Unit_get_data = Unit.get_data
+
 StatisticsUtil = {}
+
 local StatisticsUtil = StatisticsUtil
 local _tracked_weapon_kill_stats = {
 	we_1h_axe = {
-		"holly"
+		"holly",
 	},
 	bw_1h_crowbill = {
-		"holly"
+		"holly",
 	},
 	wh_dual_wield_axe_falchion = {
-		"holly"
+		"holly",
 	},
 	dr_dual_wield_hammers = {
-		"holly"
+		"holly",
 	},
 	es_dual_wield_hammer_sword = {
-		"holly"
+		"holly",
 	},
 	bw_1h_flail_flaming = {
-		"scorpion"
+		"scorpion",
 	},
 	dr_1h_throwing_axes = {
-		"scorpion"
+		"scorpion",
 	},
 	we_1h_spears_shield = {
-		"scorpion"
+		"scorpion",
 	},
 	es_2h_heavy_spear = {
-		"scorpion"
+		"scorpion",
 	},
 	wh_2h_billhook = {
-		"scorpion"
-	}
+		"scorpion",
+	},
 }
 
 DLCUtils.dofile_list("statistics_util")
@@ -42,6 +46,7 @@ StatisticsUtil.generate_weapon_kill_stats_dlc = function (stat_player, dlc_name,
 		if table.contains(dlcs, dlc_name) then
 			local entry = table.clone(template)
 			local stat_name = dlc_name .. "_kills_" .. weapon_name
+
 			entry.database_name = stat_name
 			stat_player[stat_name] = entry
 		end
@@ -55,6 +60,7 @@ local function _track_weapon_kill_stats(statistics_db, stats_id, weapon_item)
 
 	if rarity == "magic" then
 		local base_weapon_name = weapon_item.required_unlock_item
+
 		weapon_stats_dlcs = _tracked_weapon_kill_stats[base_weapon_name]
 		weapon_name = base_weapon_name
 	end
@@ -76,34 +82,34 @@ DLCUtils.merge("_tracked_weapon_kill_stats", _tracked_weapon_kill_stats)
 
 local _tracked_levels_complted_w_weapons_levels = {
 	warcamp = {
-		"scorpion"
+		"scorpion",
 	},
 	skaven_stronghold = {
-		"scorpion"
+		"scorpion",
 	},
 	ground_zero = {
-		"scorpion"
+		"scorpion",
 	},
 	skittergate = {
-		"scorpion"
-	}
+		"scorpion",
+	},
 }
 local _tracked_levels_complted_w_weapons_weapons = {
 	bw_1h_flail_flaming = {
-		"scorpion"
+		"scorpion",
 	},
 	dr_1h_throwing_axes = {
-		"scorpion"
+		"scorpion",
 	},
 	we_1h_spears_shield = {
-		"scorpion"
+		"scorpion",
 	},
 	es_2h_heavy_spear = {
-		"scorpion"
+		"scorpion",
 	},
 	wh_2h_billhook = {
-		"scorpion"
-	}
+		"scorpion",
+	},
 }
 
 StatisticsUtil.generate_level_complete_with_weapon_stats_dlc = function (stat_player, dlc_name, template)
@@ -113,6 +119,7 @@ StatisticsUtil.generate_level_complete_with_weapon_stats_dlc = function (stat_pl
 				if table.contains(weapon_dlcs, dlc_name) then
 					local entry = table.clone(template)
 					local stat_name = dlc_name .. "_" .. level_name .. "_" .. weapon_name
+
 					entry.database_name = stat_name
 					stat_player[stat_name] = entry
 				end
@@ -209,11 +216,7 @@ StatisticsUtil.register_kill = function (victim_unit, damage_data, statistics_db
 				local attack_type = damage_data[DamageDataIndex.ATTACK_TYPE]
 
 				if attack_type then
-					if attack_type == "heavy_attack" or attack_type == "light_attack" then
-						slot_type = "melee"
-					else
-						slot_type = "ranged"
-					end
+					slot_type = not (attack_type ~= "heavy_attack" and attack_type ~= "light_attack") and "melee" or "ranged"
 				end
 
 				if not slot_type then
@@ -342,7 +345,7 @@ StatisticsUtil.check_save = function (savior_unit, enemy_unit)
 		return
 	end
 
-	local saved_unit_dir = nil
+	local saved_unit_dir
 	local network_manager = Managers.state.network
 	local game = network_manager:game()
 	local game_object_id = game and network_manager:unit_game_object_id(saved_unit)
@@ -361,7 +364,7 @@ StatisticsUtil.check_save = function (savior_unit, enemy_unit)
 	local status_ext = ScriptUnit.extension(saved_unit, "status_system")
 	local grabber_unit = status_ext:get_pouncer_unit() or status_ext:get_pack_master_grabber()
 	local is_disabled = status_ext:is_disabled()
-	local predicate = nil
+	local predicate
 	local statistics_db = player_manager:statistics_db()
 	local savior_player_stats_id = savior_player:stats_id()
 
@@ -502,7 +505,9 @@ StatisticsUtil.register_damage = function (victim_unit, damage_data, statistics_
 
 	local attacker_unit = damage_data[DamageDataIndex.ATTACKER]
 	local source_attacker_unit = damage_data[DamageDataIndex.SOURCE_ATTACKER_UNIT]
+
 	attacker_unit = AiUtils.get_actual_attacker_unit(attacker_unit)
+
 	local attacker_player = player_manager:owner(attacker_unit) or player_manager:owner(source_attacker_unit)
 
 	if attacker_player then
@@ -645,7 +650,7 @@ StatisticsUtil.register_complete_level = function (statistics_db)
 	local game_mode_key = Managers.state.game_mode:game_mode_key()
 	local local_player = Managers.player:local_player()
 	local stats_id = local_player:stats_id()
-	local profile, display_name = nil
+	local profile, display_name
 
 	if game_mode_key == "versus" then
 		local local_player_status = Managers.party:get_status_from_unique_id(stats_id)
@@ -659,6 +664,7 @@ StatisticsUtil.register_complete_level = function (statistics_db)
 		display_name = profile.display_name
 	else
 		local profile_index = local_player:profile_index()
+
 		profile = SPProfiles[profile_index]
 		display_name = profile.display_name
 	end
@@ -717,9 +723,9 @@ StatisticsUtil.register_complete_level = function (statistics_db)
 				"bw_1h_crowbill",
 				"wh_dual_wield_axe_falchion",
 				"dr_dual_wield_hammers",
-				"es_dual_wield_hammer_sword"
+				"es_dual_wield_hammer_sword",
 			}
-			local weapon_name = nil
+			local weapon_name
 
 			if table.contains(weapon_names, melee_item_name) then
 				weapon_name = melee_item_name
@@ -893,7 +899,7 @@ StatisticsUtil.get_game_progress = function (statistics_db)
 	local stats_id = local_player:stats_id()
 	local max_value = #MainGameLevels * 5
 	local current_value = 0
-	local level_difficulty_name, level_completed_difficulty = nil
+	local level_difficulty_name, level_completed_difficulty
 
 	for _, level_id in pairs(MainGameLevels) do
 		level_difficulty_name = LevelDifficultyDBNames[level_id]
@@ -958,13 +964,7 @@ StatisticsUtil._register_completed_journey_difficulty = function (statistics_db,
 
 	if current_completed_difficulty < difficulty_index then
 		if difficulty_index > #DefaultDifficulties then
-			ferror([[
-This shouldn't happen. 
-difficulties: %s
-difficulty_name: %s
-difficulty_index: %s
-DefaultDifficulties: %s
-current_completed_difficulty: %s]], table.tostring(difficulties), difficulty_name, difficulty_index, table.tostring(DefaultDifficulties), current_completed_difficulty)
+			ferror("This shouldn't happen. \ndifficulties: %s\ndifficulty_name: %s\ndifficulty_index: %s\nDefaultDifficulties: %s\ncurrent_completed_difficulty: %s", table.tostring(difficulties), difficulty_name, difficulty_index, table.tostring(DefaultDifficulties), current_completed_difficulty)
 		end
 
 		statistics_db:set_stat(stats_id, "completed_journeys_difficulty", journey_db_name, difficulty_index)
@@ -972,13 +972,7 @@ current_completed_difficulty: %s]], table.tostring(difficulties), difficulty_nam
 
 	if current_completed_journey_dominant_god_difficulty < difficulty_index then
 		if difficulty_index > #DefaultDifficulties then
-			ferror([[
-This shouldn't happen. 
-difficulties: %s
-difficulty_name: %s
-difficulty_index: %s
-DefaultDifficulties: %s
-current_completed_journey_dominant_god_difficulty: %s]], table.tostring(difficulties), difficulty_name, difficulty_index, table.tostring(DefaultDifficulties), current_completed_journey_dominant_god_difficulty)
+			ferror("This shouldn't happen. \ndifficulties: %s\ndifficulty_name: %s\ndifficulty_index: %s\nDefaultDifficulties: %s\ncurrent_completed_journey_dominant_god_difficulty: %s", table.tostring(difficulties), difficulty_name, difficulty_index, table.tostring(DefaultDifficulties), current_completed_journey_dominant_god_difficulty)
 		end
 
 		statistics_db:set_stat(stats_id, "completed_journey_dominant_god_difficulty", journey_dominant_god_db_name, difficulty_index)
@@ -986,13 +980,7 @@ current_completed_journey_dominant_god_difficulty: %s]], table.tostring(difficul
 
 	if current_completed_hero_journey_difficulty < difficulty_index then
 		if difficulty_index > #DefaultDifficulties then
-			ferror([[
-This shouldn't happen. 
-difficulties: %s
-difficulty_name: %s
-difficulty_index: %s
-DefaultDifficulties: %s
-current_completed_hero_journey_difficulty: %s]], table.tostring(difficulties), difficulty_name, difficulty_index, table.tostring(DefaultDifficulties), current_completed_hero_journey_difficulty)
+			ferror("This shouldn't happen. \ndifficulties: %s\ndifficulty_name: %s\ndifficulty_index: %s\nDefaultDifficulties: %s\ncurrent_completed_hero_journey_difficulty: %s", table.tostring(difficulties), difficulty_name, difficulty_index, table.tostring(DefaultDifficulties), current_completed_hero_journey_difficulty)
 		end
 
 		statistics_db:set_stat(stats_id, "completed_hero_journey_difficulty", profile_abbreviation, journey_db_name, difficulty_index)
@@ -1026,7 +1014,9 @@ StatisticsUtil.get_survival_stat = function (statistics_db, level_id, difficulty
 	local stat = survival_stat_name(level_id, difficulty, stat_name)
 	local player_manager = Managers.player
 	local local_player = player_manager:local_player()
+
 	stats_id = stats_id or local_player:stats_id()
+
 	local value = statistics_db:get_persistent_stat(stats_id, stat)
 
 	return value
@@ -1121,7 +1111,7 @@ StatisticsUtil.register_complete_survival_level = function (statistics_db)
 			StatisticsUtil._set_survival_stat(statistics_db, level_id, start_difficulty, "time", completed_time)
 		end
 
-		local completed_difficulty = nil
+		local completed_difficulty
 		local difficulty_manager = Managers.state.difficulty
 		local level_difficulties = difficulty_manager:get_level_difficulties(level_id)
 		local start_difficulty_index = table.find(level_difficulties, start_difficulty)
@@ -1142,7 +1132,7 @@ StatisticsUtil.register_complete_survival_level = function (statistics_db)
 				Crashify.print_exception("StatisticsUtil", "Error in survival mode data. completed_difficulty_index = %s, completed_waves = %s, started_on_unlocked_difficulty = true", completed_difficulty_index, completed_waves)
 			end
 		else
-			local completed_difficulty_index = nil
+			local completed_difficulty_index
 
 			for i = #level_difficulties, 1, -1 do
 				local difficulty = level_difficulties[i]

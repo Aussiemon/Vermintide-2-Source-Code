@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/settings/dlcs/woods/action_career_we_thornsister_wall.lua
+
 ActionCareerWEThornsisterWall = class(ActionCareerWEThornsisterWall, ActionBase)
+
 local UNIT_TEMPLATE_NAME = "thornsister_thorn_wall_unit"
 local WALL_FORWARD_OFFSET_RANGE = 0.1
 local WALL_RIGHT_OFFSET_RANGE = 0.05
@@ -86,6 +89,7 @@ end
 
 ActionCareerWEThornsisterWall._get_next_wall_index = function (self)
 	local wall_index = self._wall_index % 16 + 1
+
 	self._wall_index = wall_index
 
 	return wall_index

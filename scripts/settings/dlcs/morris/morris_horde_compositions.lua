@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/dlcs/morris/morris_horde_compositions.lua
+
 local morris_compositions = {
 	morris_arena_ruin_specials = {
 		{
@@ -10,9 +12,9 @@ local morris_compositions = {
 					"skaven_poison_wind_globadier",
 					1,
 					"skaven_ratling_gunner",
-					1
-				}
-			}
+					1,
+				},
+			},
 		},
 		{
 			{
@@ -22,17 +24,17 @@ local morris_compositions = {
 					"skaven_warpfire_thrower",
 					{
 						1,
-						2
+						2,
 					},
 					"skaven_poison_wind_globadier",
 					1,
 					"skaven_ratling_gunner",
 					{
 						1,
-						2
-					}
-				}
-			}
+						2,
+					},
+				},
+			},
 		},
 		{
 			{
@@ -42,17 +44,17 @@ local morris_compositions = {
 					"skaven_warpfire_thrower",
 					{
 						1,
-						3
+						3,
 					},
 					"skaven_poison_wind_globadier",
 					1,
 					"skaven_ratling_gunner",
 					{
 						1,
-						3
-					}
-				}
-			}
+						3,
+					},
+				},
+			},
 		},
 		{
 			{
@@ -62,20 +64,20 @@ local morris_compositions = {
 					"skaven_warpfire_thrower",
 					{
 						1,
-						3
+						3,
 					},
 					"skaven_poison_wind_globadier",
 					{
 						1,
-						2
+						2,
 					},
 					"skaven_ratling_gunner",
 					{
 						1,
-						3
-					}
-				}
-			}
+						3,
+					},
+				},
+			},
 		},
 		{
 			{
@@ -85,20 +87,20 @@ local morris_compositions = {
 					"skaven_warpfire_thrower",
 					{
 						2,
-						3
+						3,
 					},
 					"skaven_poison_wind_globadier",
 					{
 						1,
-						2
+						2,
 					},
 					"skaven_ratling_gunner",
 					{
 						2,
-						3
-					}
-				}
-			}
+						3,
+					},
+				},
+			},
 		},
 		{
 			{
@@ -108,20 +110,20 @@ local morris_compositions = {
 					"skaven_warpfire_thrower",
 					{
 						2,
-						3
+						3,
 					},
 					"skaven_poison_wind_globadier",
 					{
 						1,
-						2
+						2,
 					},
 					"skaven_ratling_gunner",
 					{
 						2,
-						3
-					}
-				}
-			}
+						3,
+					},
+				},
+			},
 		},
 		{
 			{
@@ -131,21 +133,21 @@ local morris_compositions = {
 					"skaven_warpfire_thrower",
 					{
 						2,
-						3
+						3,
 					},
 					"skaven_poison_wind_globadier",
 					{
 						2,
-						3
+						3,
 					},
 					"skaven_ratling_gunner",
 					{
 						2,
-						3
-					}
-				}
-			}
-		}
+						3,
+					},
+				},
+			},
+		},
 	},
 	morris_storm_vermin_large = {
 		{
@@ -156,14 +158,14 @@ local morris_compositions = {
 					"skaven_storm_vermin_with_shield",
 					{
 						1,
-						2
+						2,
 					},
 					"skaven_storm_vermin_commander",
 					{
 						3,
-						4
-					}
-				}
+						4,
+					},
+				},
 			},
 			{
 				name = "somevermin",
@@ -172,15 +174,15 @@ local morris_compositions = {
 					"skaven_storm_vermin_with_shield",
 					{
 						3,
-						4
+						4,
 					},
 					"skaven_storm_vermin_commander",
 					{
 						2,
-						3
-					}
-				}
-			}
+						3,
+					},
+				},
+			},
 		},
 		{
 			{
@@ -190,14 +192,14 @@ local morris_compositions = {
 					"skaven_storm_vermin_with_shield",
 					{
 						2,
-						3
+						3,
 					},
 					"skaven_storm_vermin_commander",
 					{
 						4,
-						5
-					}
-				}
+						5,
+					},
+				},
 			},
 			{
 				name = "somevermin",
@@ -206,15 +208,15 @@ local morris_compositions = {
 					"skaven_storm_vermin_with_shield",
 					{
 						4,
-						5
+						5,
 					},
 					"skaven_storm_vermin_commander",
 					{
 						2,
-						3
-					}
-				}
-			}
+						3,
+					},
+				},
+			},
 		},
 		{
 			{
@@ -224,14 +226,14 @@ local morris_compositions = {
 					"skaven_storm_vermin_with_shield",
 					{
 						3,
-						4
+						4,
 					},
 					"skaven_storm_vermin_commander",
 					{
 						5,
-						6
-					}
-				}
+						6,
+					},
+				},
 			},
 			{
 				name = "somevermin",
@@ -240,15 +242,15 @@ local morris_compositions = {
 					"skaven_storm_vermin_with_shield",
 					{
 						5,
-						6
+						6,
 					},
 					"skaven_storm_vermin_commander",
 					{
 						3,
-						4
-					}
-				}
-			}
+						4,
+					},
+				},
+			},
 		},
 		{
 			{
@@ -258,14 +260,14 @@ local morris_compositions = {
 					"skaven_storm_vermin_with_shield",
 					{
 						5,
-						6
+						6,
 					},
 					"skaven_storm_vermin_commander",
 					{
 						8,
-						9
-					}
-				}
+						9,
+					},
+				},
 			},
 			{
 				name = "somevermin",
@@ -274,15 +276,15 @@ local morris_compositions = {
 					"skaven_storm_vermin_with_shield",
 					{
 						8,
-						9
+						9,
 					},
 					"skaven_storm_vermin_commander",
 					{
 						5,
-						6
-					}
-				}
-			}
+						6,
+					},
+				},
+			},
 		},
 		{
 			{
@@ -292,14 +294,14 @@ local morris_compositions = {
 					"skaven_storm_vermin_with_shield",
 					{
 						8,
-						9
+						9,
 					},
 					"skaven_storm_vermin_commander",
 					{
 						11,
-						12
-					}
-				}
+						12,
+					},
+				},
 			},
 			{
 				name = "somevermin",
@@ -308,15 +310,15 @@ local morris_compositions = {
 					"skaven_storm_vermin_with_shield",
 					{
 						11,
-						12
+						12,
 					},
 					"skaven_storm_vermin_commander",
 					{
 						8,
-						9
-					}
-				}
-			}
+						9,
+					},
+				},
+			},
 		},
 		{
 			{
@@ -326,14 +328,14 @@ local morris_compositions = {
 					"skaven_storm_vermin_with_shield",
 					{
 						8,
-						9
+						9,
 					},
 					"skaven_storm_vermin_commander",
 					{
 						11,
-						12
-					}
-				}
+						12,
+					},
+				},
 			},
 			{
 				name = "somevermin",
@@ -342,15 +344,15 @@ local morris_compositions = {
 					"skaven_storm_vermin_with_shield",
 					{
 						11,
-						12
+						12,
 					},
 					"skaven_storm_vermin_commander",
 					{
 						8,
-						9
-					}
-				}
-			}
+						9,
+					},
+				},
+			},
 		},
 		{
 			{
@@ -360,14 +362,14 @@ local morris_compositions = {
 					"skaven_storm_vermin_with_shield",
 					{
 						8,
-						9
+						9,
 					},
 					"skaven_storm_vermin_commander",
 					{
 						11,
-						12
-					}
-				}
+						12,
+					},
+				},
 			},
 			{
 				name = "somevermin",
@@ -376,16 +378,16 @@ local morris_compositions = {
 					"skaven_storm_vermin_with_shield",
 					{
 						11,
-						12
+						12,
 					},
 					"skaven_storm_vermin_commander",
 					{
 						8,
-						9
-					}
-				}
-			}
-		}
+						9,
+					},
+				},
+			},
+		},
 	},
 	morris_small_chaos = {
 		{
@@ -396,9 +398,9 @@ local morris_compositions = {
 					"chaos_fanatic",
 					{
 						10,
-						12
-					}
-				}
+						12,
+					},
+				},
 			},
 			{
 				name = "plain",
@@ -407,14 +409,14 @@ local morris_compositions = {
 					"chaos_marauder",
 					{
 						5,
-						6
+						6,
 					},
 					"chaos_fanatic",
 					{
 						5,
-						6
-					}
-				}
+						6,
+					},
+				},
 			},
 			{
 				name = "mixed",
@@ -423,20 +425,20 @@ local morris_compositions = {
 					"chaos_marauder_with_shield",
 					{
 						2,
-						3
+						3,
 					},
 					"chaos_marauder",
 					{
 						2,
-						3
+						3,
 					},
 					"chaos_fanatic",
 					{
 						5,
-						6
-					}
-				}
-			}
+						6,
+					},
+				},
+			},
 		},
 		{
 			{
@@ -446,9 +448,9 @@ local morris_compositions = {
 					"chaos_fanatic",
 					{
 						12,
-						14
-					}
-				}
+						14,
+					},
+				},
 			},
 			{
 				name = "plain",
@@ -457,14 +459,14 @@ local morris_compositions = {
 					"chaos_marauder",
 					{
 						6,
-						7
+						7,
 					},
 					"chaos_fanatic",
 					{
 						6,
-						7
-					}
-				}
+						7,
+					},
+				},
 			},
 			{
 				name = "mixed",
@@ -473,20 +475,20 @@ local morris_compositions = {
 					"chaos_marauder_with_shield",
 					{
 						2,
-						3
+						3,
 					},
 					"chaos_marauder",
 					{
 						3,
-						4
+						4,
 					},
 					"chaos_fanatic",
 					{
 						6,
-						7
-					}
-				}
-			}
+						7,
+					},
+				},
+			},
 		},
 		{
 			{
@@ -496,9 +498,9 @@ local morris_compositions = {
 					"chaos_fanatic",
 					{
 						14,
-						16
-					}
-				}
+						16,
+					},
+				},
 			},
 			{
 				name = "plain",
@@ -507,14 +509,14 @@ local morris_compositions = {
 					"chaos_marauder",
 					{
 						7,
-						8
+						8,
 					},
 					"chaos_fanatic",
 					{
 						7,
-						8
-					}
-				}
+						8,
+					},
+				},
 			},
 			{
 				name = "mixed",
@@ -523,20 +525,20 @@ local morris_compositions = {
 					"chaos_marauder_with_shield",
 					{
 						2,
-						3
+						3,
 					},
 					"chaos_marauder",
 					{
 						4,
-						5
+						5,
 					},
 					"chaos_fanatic",
 					{
 						7,
-						8
-					}
-				}
-			}
+						8,
+					},
+				},
+			},
 		},
 		{
 			{
@@ -546,9 +548,9 @@ local morris_compositions = {
 					"chaos_fanatic",
 					{
 						18,
-						20
-					}
-				}
+						20,
+					},
+				},
 			},
 			{
 				name = "plain",
@@ -557,14 +559,14 @@ local morris_compositions = {
 					"chaos_marauder",
 					{
 						10,
-						11
+						11,
 					},
 					"chaos_fanatic",
 					{
 						8,
-						9
-					}
-				}
+						9,
+					},
+				},
 			},
 			{
 				name = "mixed",
@@ -573,20 +575,20 @@ local morris_compositions = {
 					"chaos_marauder_with_shield",
 					{
 						3,
-						4
+						4,
 					},
 					"chaos_marauder",
 					{
 						5,
-						6
+						6,
 					},
 					"chaos_fanatic",
 					{
 						8,
-						9
-					}
-				}
-			}
+						9,
+					},
+				},
+			},
 		},
 		{
 			{
@@ -596,9 +598,9 @@ local morris_compositions = {
 					"chaos_fanatic",
 					{
 						18,
-						20
-					}
-				}
+						20,
+					},
+				},
 			},
 			{
 				name = "plain",
@@ -607,14 +609,14 @@ local morris_compositions = {
 					"chaos_marauder",
 					{
 						10,
-						11
+						11,
 					},
 					"chaos_fanatic",
 					{
 						8,
-						9
-					}
-				}
+						9,
+					},
+				},
 			},
 			{
 				name = "mixed",
@@ -623,20 +625,20 @@ local morris_compositions = {
 					"chaos_marauder_with_shield",
 					{
 						3,
-						4
+						4,
 					},
 					"chaos_marauder",
 					{
 						9,
-						10
+						10,
 					},
 					"chaos_fanatic",
 					{
 						9,
-						10
-					}
-				}
-			}
+						10,
+					},
+				},
+			},
 		},
 		{
 			{
@@ -646,9 +648,9 @@ local morris_compositions = {
 					"chaos_fanatic",
 					{
 						10,
-						20
-					}
-				}
+						20,
+					},
+				},
 			},
 			{
 				name = "plain",
@@ -657,14 +659,14 @@ local morris_compositions = {
 					"chaos_marauder",
 					{
 						10,
-						11
+						11,
 					},
 					"chaos_fanatic",
 					{
 						8,
-						9
-					}
-				}
+						9,
+					},
+				},
 			},
 			{
 				name = "mixed",
@@ -673,20 +675,20 @@ local morris_compositions = {
 					"chaos_marauder_with_shield",
 					{
 						3,
-						4
+						4,
 					},
 					"chaos_marauder",
 					{
 						9,
-						10
+						10,
 					},
 					"chaos_fanatic",
 					{
 						9,
-						10
-					}
-				}
-			}
+						10,
+					},
+				},
+			},
 		},
 		{
 			{
@@ -696,9 +698,9 @@ local morris_compositions = {
 					"chaos_fanatic",
 					{
 						18,
-						20
-					}
-				}
+						20,
+					},
+				},
 			},
 			{
 				name = "plain",
@@ -707,14 +709,14 @@ local morris_compositions = {
 					"chaos_marauder",
 					{
 						10,
-						11
+						11,
 					},
 					"chaos_fanatic",
 					{
 						8,
-						9
-					}
-				}
+						9,
+					},
+				},
 			},
 			{
 				name = "mixed",
@@ -723,21 +725,21 @@ local morris_compositions = {
 					"chaos_marauder_with_shield",
 					{
 						3,
-						4
+						4,
 					},
 					"chaos_marauder",
 					{
 						9,
-						10
+						10,
 					},
 					"chaos_fanatic",
 					{
 						9,
-						10
-					}
-				}
-			}
-		}
+						10,
+					},
+				},
+			},
+		},
 	},
 	morris_small_beastmen = {
 		{
@@ -748,9 +750,9 @@ local morris_compositions = {
 					"beastmen_gor",
 					{
 						5,
-						6
-					}
-				}
+						6,
+					},
+				},
 			},
 			{
 				name = "plain",
@@ -759,9 +761,9 @@ local morris_compositions = {
 					"beastmen_ungor",
 					{
 						10,
-						12
-					}
-				}
+						12,
+					},
+				},
 			},
 			{
 				name = "mixed",
@@ -770,15 +772,15 @@ local morris_compositions = {
 					"beastmen_gor",
 					{
 						2,
-						3
+						3,
 					},
 					"beastmen_ungor",
 					{
 						5,
-						6
-					}
-				}
-			}
+						6,
+					},
+				},
+			},
 		},
 		{
 			{
@@ -788,9 +790,9 @@ local morris_compositions = {
 					"beastmen_gor",
 					{
 						6,
-						7
-					}
-				}
+						7,
+					},
+				},
 			},
 			{
 				name = "plain",
@@ -799,9 +801,9 @@ local morris_compositions = {
 					"beastmen_ungor",
 					{
 						12,
-						14
-					}
-				}
+						14,
+					},
+				},
 			},
 			{
 				name = "mixed",
@@ -810,15 +812,15 @@ local morris_compositions = {
 					"beastmen_gor",
 					{
 						2,
-						3
+						3,
 					},
 					"beastmen_ungor",
 					{
 						6,
-						7
-					}
-				}
-			}
+						7,
+					},
+				},
+			},
 		},
 		{
 			{
@@ -828,9 +830,9 @@ local morris_compositions = {
 					"beastmen_gor",
 					{
 						7,
-						8
-					}
-				}
+						8,
+					},
+				},
 			},
 			{
 				name = "plain",
@@ -839,9 +841,9 @@ local morris_compositions = {
 					"beastmen_ungor",
 					{
 						14,
-						16
-					}
-				}
+						16,
+					},
+				},
 			},
 			{
 				name = "mixed",
@@ -850,15 +852,15 @@ local morris_compositions = {
 					"beastmen_gor",
 					{
 						2,
-						3
+						3,
 					},
 					"beastmen_ungor",
 					{
 						7,
-						8
-					}
-				}
-			}
+						8,
+					},
+				},
+			},
 		},
 		{
 			{
@@ -868,9 +870,9 @@ local morris_compositions = {
 					"beastmen_gor",
 					{
 						10,
-						11
-					}
-				}
+						11,
+					},
+				},
 			},
 			{
 				name = "plain",
@@ -879,9 +881,9 @@ local morris_compositions = {
 					"beastmen_ungor",
 					{
 						20,
-						22
-					}
-				}
+						22,
+					},
+				},
 			},
 			{
 				name = "mixed",
@@ -890,55 +892,15 @@ local morris_compositions = {
 					"beastmen_gor",
 					{
 						3,
-						4
+						4,
 					},
 					"beastmen_ungor",
 					{
 						10,
-						11
-					}
-				}
-			}
-		},
-		{
-			{
-				name = "plain",
-				weight = 3,
-				breeds = {
-					"beastmen_gor",
-					{
-						10,
-						12
-					}
-				}
-			},
-			{
-				name = "plain",
-				weight = 7,
-				breeds = {
-					"beastmen_ungor",
-					{
-						20,
-						22
-					}
-				}
-			},
-			{
-				name = "mixed",
-				weight = 3,
-				breeds = {
-					"beastmen_gor",
-					{
-						3,
-						4
+						11,
 					},
-					"beastmen_ungor",
-					{
-						13,
-						14
-					}
-				}
-			}
+				},
+			},
 		},
 		{
 			{
@@ -948,9 +910,9 @@ local morris_compositions = {
 					"beastmen_gor",
 					{
 						10,
-						12
-					}
-				}
+						12,
+					},
+				},
 			},
 			{
 				name = "plain",
@@ -959,9 +921,9 @@ local morris_compositions = {
 					"beastmen_ungor",
 					{
 						20,
-						24
-					}
-				}
+						22,
+					},
+				},
 			},
 			{
 				name = "mixed",
@@ -970,15 +932,15 @@ local morris_compositions = {
 					"beastmen_gor",
 					{
 						3,
-						4
+						4,
 					},
 					"beastmen_ungor",
 					{
 						13,
-						14
-					}
-				}
-			}
+						14,
+					},
+				},
+			},
 		},
 		{
 			{
@@ -988,9 +950,9 @@ local morris_compositions = {
 					"beastmen_gor",
 					{
 						10,
-						12
-					}
-				}
+						12,
+					},
+				},
 			},
 			{
 				name = "plain",
@@ -999,9 +961,9 @@ local morris_compositions = {
 					"beastmen_ungor",
 					{
 						20,
-						24
-					}
-				}
+						24,
+					},
+				},
 			},
 			{
 				name = "mixed",
@@ -1010,16 +972,56 @@ local morris_compositions = {
 					"beastmen_gor",
 					{
 						3,
-						4
+						4,
 					},
 					"beastmen_ungor",
 					{
 						13,
-						14
-					}
-				}
-			}
-		}
+						14,
+					},
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 3,
+				breeds = {
+					"beastmen_gor",
+					{
+						10,
+						12,
+					},
+				},
+			},
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"beastmen_ungor",
+					{
+						20,
+						24,
+					},
+				},
+			},
+			{
+				name = "mixed",
+				weight = 3,
+				breeds = {
+					"beastmen_gor",
+					{
+						3,
+						4,
+					},
+					"beastmen_ungor",
+					{
+						13,
+						14,
+					},
+				},
+			},
+		},
 	},
 	morris_plague_monk_medium = {
 		{
@@ -1030,15 +1032,15 @@ local morris_compositions = {
 					"skaven_plague_monk",
 					{
 						3,
-						3
+						3,
 					},
 					"skaven_clan_rat",
 					{
 						4,
-						6
-					}
-				}
-			}
+						6,
+					},
+				},
+			},
 		},
 		{
 			{
@@ -1048,15 +1050,15 @@ local morris_compositions = {
 					"skaven_plague_monk",
 					{
 						4,
-						5
+						5,
 					},
 					"skaven_clan_rat",
 					{
 						4,
-						6
-					}
-				}
-			}
+						6,
+					},
+				},
+			},
 		},
 		{
 			{
@@ -1066,15 +1068,15 @@ local morris_compositions = {
 					"skaven_plague_monk",
 					{
 						4,
-						5
+						5,
 					},
 					"skaven_clan_rat",
 					{
 						5,
-						7
-					}
-				}
-			}
+						7,
+					},
+				},
+			},
 		},
 		{
 			{
@@ -1084,15 +1086,15 @@ local morris_compositions = {
 					"skaven_plague_monk",
 					{
 						5,
-						6
+						6,
 					},
 					"skaven_clan_rat",
 					{
 						6,
-						7
-					}
-				}
-			}
+						7,
+					},
+				},
+			},
 		},
 		{
 			{
@@ -1102,15 +1104,15 @@ local morris_compositions = {
 					"skaven_plague_monk",
 					{
 						6,
-						7
+						7,
 					},
 					"skaven_clan_rat",
 					{
 						6,
-						7
-					}
-				}
-			}
+						7,
+					},
+				},
+			},
 		},
 		{
 			{
@@ -1120,15 +1122,15 @@ local morris_compositions = {
 					"skaven_plague_monk",
 					{
 						6,
-						7
+						7,
 					},
 					"skaven_clan_rat",
 					{
 						6,
-						7
-					}
-				}
-			}
+						7,
+					},
+				},
+			},
 		},
 		{
 			{
@@ -1138,16 +1140,16 @@ local morris_compositions = {
 					"skaven_plague_monk",
 					{
 						6,
-						7
+						7,
 					},
 					"skaven_clan_rat",
 					{
 						6,
-						7
-					}
-				}
-			}
-		}
+						7,
+					},
+				},
+			},
+		},
 	},
 	morris_chaos_shields_large = {
 		{
@@ -1158,20 +1160,20 @@ local morris_compositions = {
 					"chaos_marauder_with_shield",
 					{
 						6,
-						7
+						7,
 					},
 					"chaos_marauder",
 					{
 						5,
-						6
+						6,
 					},
 					"chaos_fanatic",
 					{
 						12,
-						14
-					}
-				}
-			}
+						14,
+					},
+				},
+			},
 		},
 		{
 			{
@@ -1181,20 +1183,20 @@ local morris_compositions = {
 					"chaos_marauder_with_shield",
 					{
 						6,
-						7
+						7,
 					},
 					"chaos_marauder",
 					{
 						7,
-						8
+						8,
 					},
 					"chaos_fanatic",
 					{
 						12,
-						14
-					}
-				}
-			}
+						14,
+					},
+				},
+			},
 		},
 		{
 			{
@@ -1204,20 +1206,20 @@ local morris_compositions = {
 					"chaos_marauder_with_shield",
 					{
 						6,
-						7
+						7,
 					},
 					"chaos_marauder",
 					{
 						9,
-						10
+						10,
 					},
 					"chaos_fanatic",
 					{
 						12,
-						14
-					}
-				}
-			}
+						14,
+					},
+				},
+			},
 		},
 		{
 			{
@@ -1227,20 +1229,20 @@ local morris_compositions = {
 					"chaos_marauder_with_shield",
 					{
 						7,
-						8
+						8,
 					},
 					"chaos_marauder",
 					{
 						11,
-						12
+						12,
 					},
 					"chaos_fanatic",
 					{
 						12,
-						14
-					}
-				}
-			}
+						14,
+					},
+				},
+			},
 		},
 		{
 			{
@@ -1250,19 +1252,19 @@ local morris_compositions = {
 					"chaos_marauder_with_shield",
 					{
 						10,
-						11
+						11,
 					},
 					"chaos_marauder",
 					{
 						13,
-						14
+						14,
 					},
 					"chaos_fanatic",
 					{
 						12,
-						14
-					}
-				}
+						14,
+					},
+				},
 			},
 			{
 				name = "mixed",
@@ -1271,24 +1273,24 @@ local morris_compositions = {
 					"chaos_marauder_with_shield",
 					{
 						6,
-						7
+						7,
 					},
 					"chaos_marauder",
 					{
 						13,
-						14
+						14,
 					},
 					"chaos_fanatic",
 					{
 						12,
-						14
+						14,
 					},
 					"chaos_berzerker",
 					{
 						3,
-						4
-					}
-				}
+						4,
+					},
+				},
 			},
 			{
 				name = "mixed",
@@ -1297,25 +1299,25 @@ local morris_compositions = {
 					"chaos_marauder_with_shield",
 					{
 						6,
-						7
+						7,
 					},
 					"chaos_marauder",
 					{
 						13,
-						14
+						14,
 					},
 					"chaos_fanatic",
 					{
 						12,
-						14
+						14,
 					},
 					"chaos_raider",
 					{
 						3,
-						4
-					}
-				}
-			}
+						4,
+					},
+				},
+			},
 		},
 		{
 			{
@@ -1325,19 +1327,19 @@ local morris_compositions = {
 					"chaos_marauder_with_shield",
 					{
 						10,
-						11
+						11,
 					},
 					"chaos_marauder",
 					{
 						13,
-						14
+						14,
 					},
 					"chaos_fanatic",
 					{
 						12,
-						14
-					}
-				}
+						14,
+					},
+				},
 			},
 			{
 				name = "mixed",
@@ -1346,24 +1348,24 @@ local morris_compositions = {
 					"chaos_marauder_with_shield",
 					{
 						6,
-						7
+						7,
 					},
 					"chaos_marauder",
 					{
 						13,
-						14
+						14,
 					},
 					"chaos_fanatic",
 					{
 						12,
-						14
+						14,
 					},
 					"chaos_berzerker",
 					{
 						3,
-						4
-					}
-				}
+						4,
+					},
+				},
 			},
 			{
 				name = "mixed",
@@ -1372,25 +1374,25 @@ local morris_compositions = {
 					"chaos_marauder_with_shield",
 					{
 						6,
-						7
+						7,
 					},
 					"chaos_marauder",
 					{
 						13,
-						14
+						14,
 					},
 					"chaos_fanatic",
 					{
 						12,
-						14
+						14,
 					},
 					"chaos_raider",
 					{
 						3,
-						4
-					}
-				}
-			}
+						4,
+					},
+				},
+			},
 		},
 		{
 			{
@@ -1400,19 +1402,19 @@ local morris_compositions = {
 					"chaos_marauder_with_shield",
 					{
 						10,
-						11
+						11,
 					},
 					"chaos_marauder",
 					{
 						13,
-						14
+						14,
 					},
 					"chaos_fanatic",
 					{
 						12,
-						14
-					}
-				}
+						14,
+					},
+				},
 			},
 			{
 				name = "mixed",
@@ -1421,24 +1423,24 @@ local morris_compositions = {
 					"chaos_marauder_with_shield",
 					{
 						6,
-						7
+						7,
 					},
 					"chaos_marauder",
 					{
 						13,
-						14
+						14,
 					},
 					"chaos_fanatic",
 					{
 						12,
-						14
+						14,
 					},
 					"chaos_berzerker",
 					{
 						3,
-						4
-					}
-				}
+						4,
+					},
+				},
 			},
 			{
 				name = "mixed",
@@ -1447,26 +1449,26 @@ local morris_compositions = {
 					"chaos_marauder_with_shield",
 					{
 						6,
-						7
+						7,
 					},
 					"chaos_marauder",
 					{
 						13,
-						14
+						14,
 					},
 					"chaos_fanatic",
 					{
 						12,
-						14
+						14,
 					},
 					"chaos_raider",
 					{
 						3,
-						4
-					}
-				}
-			}
-		}
+						4,
+					},
+				},
+			},
+		},
 	},
 	morris_elite_medium_skaven = {
 		{
@@ -1477,9 +1479,9 @@ local morris_compositions = {
 					"skaven_storm_vermin_commander",
 					{
 						3,
-						4
-					}
-				}
+						4,
+					},
+				},
 			},
 			{
 				name = "somevermin",
@@ -1488,14 +1490,14 @@ local morris_compositions = {
 					"skaven_storm_vermin_with_shield",
 					{
 						2,
-						3
+						3,
 					},
 					"skaven_clan_rat_with_shield",
 					{
 						2,
-						3
-					}
-				}
+						3,
+					},
+				},
 			},
 			{
 				name = "mixed",
@@ -1504,14 +1506,14 @@ local morris_compositions = {
 					"skaven_plague_monk",
 					{
 						3,
-						3
+						3,
 					},
 					"skaven_clan_rat",
 					{
 						4,
-						6
-					}
-				}
+						6,
+					},
+				},
 			},
 			{
 				name = "warpfire",
@@ -1522,15 +1524,15 @@ local morris_compositions = {
 					"skaven_clan_rat",
 					{
 						2,
-						3
+						3,
 					},
 					"skaven_clan_rat_with_shield",
 					{
 						2,
-						3
-					}
-				}
-			}
+						3,
+					},
+				},
+			},
 		},
 		{
 			{
@@ -1540,9 +1542,9 @@ local morris_compositions = {
 					"skaven_storm_vermin_commander",
 					{
 						4,
-						5
-					}
-				}
+						5,
+					},
+				},
 			},
 			{
 				name = "somevermin",
@@ -1551,14 +1553,14 @@ local morris_compositions = {
 					"skaven_storm_vermin_with_shield",
 					{
 						3,
-						4
+						4,
 					},
 					"skaven_clan_rat_with_shield",
 					{
 						2,
-						3
-					}
-				}
+						3,
+					},
+				},
 			},
 			{
 				name = "mixed",
@@ -1567,14 +1569,14 @@ local morris_compositions = {
 					"skaven_plague_monk",
 					{
 						4,
-						5
+						5,
 					},
 					"skaven_clan_rat",
 					{
 						4,
-						6
-					}
-				}
+						6,
+					},
+				},
 			},
 			{
 				name = "warpfire",
@@ -1585,15 +1587,15 @@ local morris_compositions = {
 					"skaven_clan_rat",
 					{
 						3,
-						4
+						4,
 					},
 					"skaven_clan_rat_with_shield",
 					{
 						2,
-						3
-					}
-				}
-			}
+						3,
+					},
+				},
+			},
 		},
 		{
 			{
@@ -1603,9 +1605,9 @@ local morris_compositions = {
 					"skaven_storm_vermin_commander",
 					{
 						5,
-						6
-					}
-				}
+						6,
+					},
+				},
 			},
 			{
 				name = "somevermin",
@@ -1614,14 +1616,14 @@ local morris_compositions = {
 					"skaven_storm_vermin_with_shield",
 					{
 						4,
-						5
+						5,
 					},
 					"skaven_clan_rat_with_shield",
 					{
 						3,
-						4
-					}
-				}
+						4,
+					},
+				},
 			},
 			{
 				name = "mixed",
@@ -1630,14 +1632,14 @@ local morris_compositions = {
 					"skaven_plague_monk",
 					{
 						5,
-						6
+						6,
 					},
 					"skaven_clan_rat",
 					{
 						6,
-						8
-					}
-				}
+						8,
+					},
+				},
 			},
 			{
 				name = "warpfire",
@@ -1648,15 +1650,15 @@ local morris_compositions = {
 					"skaven_clan_rat",
 					{
 						4,
-						5
+						5,
 					},
 					"skaven_clan_rat_with_shield",
 					{
 						3,
-						4
-					}
-				}
-			}
+						4,
+					},
+				},
+			},
 		},
 		{
 			{
@@ -1666,9 +1668,9 @@ local morris_compositions = {
 					"skaven_storm_vermin_commander",
 					{
 						8,
-						9
-					}
-				}
+						9,
+					},
+				},
 			},
 			{
 				name = "somevermin",
@@ -1677,14 +1679,14 @@ local morris_compositions = {
 					"skaven_storm_vermin_with_shield",
 					{
 						5,
-						6
+						6,
 					},
 					"skaven_clan_rat_with_shield",
 					{
 						5,
-						6
-					}
-				}
+						6,
+					},
+				},
 			},
 			{
 				name = "mixed",
@@ -1693,14 +1695,14 @@ local morris_compositions = {
 					"skaven_plague_monk",
 					{
 						7,
-						8
+						8,
 					},
 					"skaven_clan_rat",
 					{
 						9,
-						11
-					}
-				}
+						11,
+					},
+				},
 			},
 			{
 				name = "warpfire",
@@ -1713,15 +1715,15 @@ local morris_compositions = {
 					"skaven_clan_rat",
 					{
 						5,
-						6
+						6,
 					},
 					"skaven_clan_rat_with_shield",
 					{
 						5,
-						6
-					}
-				}
-			}
+						6,
+					},
+				},
+			},
 		},
 		{
 			{
@@ -1731,9 +1733,9 @@ local morris_compositions = {
 					"skaven_storm_vermin_commander",
 					{
 						11,
-						12
-					}
-				}
+						12,
+					},
+				},
 			},
 			{
 				name = "somevermin",
@@ -1742,14 +1744,14 @@ local morris_compositions = {
 					"skaven_storm_vermin_with_shield",
 					{
 						8,
-						9
+						9,
 					},
 					"skaven_clan_rat_with_shield",
 					{
 						8,
-						9
-					}
-				}
+						9,
+					},
+				},
 			},
 			{
 				name = "mixed",
@@ -1758,14 +1760,14 @@ local morris_compositions = {
 					"skaven_plague_monk",
 					{
 						9,
-						10
+						10,
 					},
 					"skaven_clan_rat",
 					{
 						11,
-						12
-					}
-				}
+						12,
+					},
+				},
 			},
 			{
 				name = "warpfire",
@@ -1778,15 +1780,15 @@ local morris_compositions = {
 					"skaven_clan_rat",
 					{
 						8,
-						9
+						9,
 					},
 					"skaven_clan_rat_with_shield",
 					{
 						8,
-						9
-					}
-				}
-			}
+						9,
+					},
+				},
+			},
 		},
 		{
 			{
@@ -1796,9 +1798,9 @@ local morris_compositions = {
 					"skaven_storm_vermin_commander",
 					{
 						11,
-						12
-					}
-				}
+						12,
+					},
+				},
 			},
 			{
 				name = "somevermin",
@@ -1807,14 +1809,14 @@ local morris_compositions = {
 					"skaven_storm_vermin_with_shield",
 					{
 						8,
-						9
+						9,
 					},
 					"skaven_clan_rat_with_shield",
 					{
 						8,
-						9
-					}
-				}
+						9,
+					},
+				},
 			},
 			{
 				name = "mixed",
@@ -1823,14 +1825,14 @@ local morris_compositions = {
 					"skaven_plague_monk",
 					{
 						9,
-						10
+						10,
 					},
 					"skaven_clan_rat",
 					{
 						11,
-						12
-					}
-				}
+						12,
+					},
+				},
 			},
 			{
 				name = "warpfire",
@@ -1843,15 +1845,15 @@ local morris_compositions = {
 					"skaven_clan_rat",
 					{
 						8,
-						9
+						9,
 					},
 					"skaven_clan_rat_with_shield",
 					{
 						8,
-						9
-					}
-				}
-			}
+						9,
+					},
+				},
+			},
 		},
 		{
 			{
@@ -1861,9 +1863,9 @@ local morris_compositions = {
 					"skaven_storm_vermin_commander",
 					{
 						11,
-						12
-					}
-				}
+						12,
+					},
+				},
 			},
 			{
 				name = "somevermin",
@@ -1872,14 +1874,14 @@ local morris_compositions = {
 					"skaven_storm_vermin_with_shield",
 					{
 						8,
-						9
+						9,
 					},
 					"skaven_clan_rat_with_shield",
 					{
 						8,
-						9
-					}
-				}
+						9,
+					},
+				},
 			},
 			{
 				name = "mixed",
@@ -1888,14 +1890,14 @@ local morris_compositions = {
 					"skaven_plague_monk",
 					{
 						9,
-						10
+						10,
 					},
 					"skaven_clan_rat",
 					{
 						11,
-						12
-					}
-				}
+						12,
+					},
+				},
 			},
 			{
 				name = "warpfire",
@@ -1908,16 +1910,16 @@ local morris_compositions = {
 					"skaven_clan_rat",
 					{
 						8,
-						9
+						9,
 					},
 					"skaven_clan_rat_with_shield",
 					{
 						8,
-						9
-					}
-				}
-			}
-		}
+						9,
+					},
+				},
+			},
+		},
 	},
 	morris_elite_medium_chaos = {
 		{
@@ -1928,19 +1930,19 @@ local morris_compositions = {
 					"chaos_marauder_with_shield",
 					{
 						3,
-						4
+						4,
 					},
 					"chaos_marauder",
 					{
 						5,
-						6
+						6,
 					},
 					"chaos_fanatic",
 					{
 						11,
-						13
-					}
-				}
+						13,
+					},
+				},
 			},
 			{
 				name = "raiders",
@@ -1949,14 +1951,14 @@ local morris_compositions = {
 					"chaos_marauder",
 					{
 						3,
-						5
+						5,
 					},
 					"chaos_raider",
 					{
 						2,
-						3
-					}
-				}
+						3,
+					},
+				},
 			},
 			{
 				name = "berzerkers",
@@ -1965,14 +1967,14 @@ local morris_compositions = {
 					"chaos_marauder",
 					{
 						3,
-						5
+						5,
 					},
 					"chaos_berzerker",
 					{
 						2,
-						3
-					}
-				}
+						3,
+					},
+				},
 			},
 			{
 				name = "warriors",
@@ -1983,15 +1985,15 @@ local morris_compositions = {
 					"chaos_marauder",
 					{
 						7,
-						8
+						8,
 					},
 					"chaos_fanatic",
 					{
 						11,
-						13
-					}
-				}
-			}
+						13,
+					},
+				},
+			},
 		},
 		{
 			{
@@ -2001,19 +2003,19 @@ local morris_compositions = {
 					"chaos_marauder_with_shield",
 					{
 						3,
-						4
+						4,
 					},
 					"chaos_marauder",
 					{
 						6,
-						7
+						7,
 					},
 					"chaos_fanatic",
 					{
 						11,
-						13
-					}
-				}
+						13,
+					},
+				},
 			},
 			{
 				name = "raiders",
@@ -2022,14 +2024,14 @@ local morris_compositions = {
 					"chaos_marauder",
 					{
 						4,
-						6
+						6,
 					},
 					"chaos_raider",
 					{
 						3,
-						4
-					}
-				}
+						4,
+					},
+				},
 			},
 			{
 				name = "berzerkers",
@@ -2038,14 +2040,14 @@ local morris_compositions = {
 					"chaos_marauder",
 					{
 						4,
-						6
+						6,
 					},
 					"chaos_berzerker",
 					{
 						3,
-						4
-					}
-				}
+						4,
+					},
+				},
 			},
 			{
 				name = "warriors",
@@ -2056,15 +2058,15 @@ local morris_compositions = {
 					"chaos_marauder",
 					{
 						7,
-						8
+						8,
 					},
 					"chaos_fanatic",
 					{
 						11,
-						13
-					}
-				}
-			}
+						13,
+					},
+				},
+			},
 		},
 		{
 			{
@@ -2074,19 +2076,19 @@ local morris_compositions = {
 					"chaos_marauder_with_shield",
 					{
 						3,
-						4
+						4,
 					},
 					"chaos_marauder",
 					{
 						7,
-						8
+						8,
 					},
 					"chaos_fanatic",
 					{
 						11,
-						13
-					}
-				}
+						13,
+					},
+				},
 			},
 			{
 				name = "raiders",
@@ -2095,14 +2097,14 @@ local morris_compositions = {
 					"chaos_marauder",
 					{
 						4,
-						6
+						6,
 					},
 					"chaos_raider",
 					{
 						4,
-						5
-					}
-				}
+						5,
+					},
+				},
 			},
 			{
 				name = "berzerkers",
@@ -2111,14 +2113,14 @@ local morris_compositions = {
 					"chaos_marauder",
 					{
 						4,
-						6
+						6,
 					},
 					"chaos_berzerker",
 					{
 						4,
-						5
-					}
-				}
+						5,
+					},
+				},
 			},
 			{
 				name = "warriors",
@@ -2127,20 +2129,20 @@ local morris_compositions = {
 					"chaos_warrior",
 					{
 						2,
-						3
+						3,
 					},
 					"chaos_marauder",
 					{
 						7,
-						8
+						8,
 					},
 					"chaos_fanatic",
 					{
 						11,
-						13
-					}
-				}
-			}
+						13,
+					},
+				},
+			},
 		},
 		{
 			{
@@ -2150,19 +2152,19 @@ local morris_compositions = {
 					"chaos_marauder_with_shield",
 					{
 						4,
-						5
+						5,
 					},
 					"chaos_marauder",
 					{
 						11,
-						12
+						12,
 					},
 					"chaos_fanatic",
 					{
 						11,
-						13
-					}
-				}
+						13,
+					},
+				},
 			},
 			{
 				name = "raiders",
@@ -2171,14 +2173,14 @@ local morris_compositions = {
 					"chaos_marauder",
 					{
 						7,
-						8
+						8,
 					},
 					"chaos_raider",
 					{
 						5,
-						6
-					}
-				}
+						6,
+					},
+				},
 			},
 			{
 				name = "berzerkers",
@@ -2187,14 +2189,14 @@ local morris_compositions = {
 					"chaos_marauder",
 					{
 						4,
-						6
+						6,
 					},
 					"chaos_berzerker",
 					{
 						5,
-						6
-					}
-				}
+						6,
+					},
+				},
 			},
 			{
 				name = "warriors",
@@ -2203,20 +2205,20 @@ local morris_compositions = {
 					"chaos_warrior",
 					{
 						3,
-						4
+						4,
 					},
 					"chaos_marauder",
 					{
 						11,
-						12
+						12,
 					},
 					"chaos_fanatic",
 					{
 						11,
-						13
-					}
-				}
-			}
+						13,
+					},
+				},
+			},
 		},
 		{
 			{
@@ -2226,24 +2228,24 @@ local morris_compositions = {
 					"chaos_marauder_with_shield",
 					{
 						3,
-						4
+						4,
 					},
 					"chaos_marauder",
 					{
 						14,
-						15
+						15,
 					},
 					"chaos_fanatic",
 					{
 						9,
-						10
+						10,
 					},
 					"chaos_berzerker",
 					{
 						2,
-						3
-					}
-				}
+						3,
+					},
+				},
 			},
 			{
 				name = "mixed",
@@ -2252,24 +2254,24 @@ local morris_compositions = {
 					"chaos_marauder_with_shield",
 					{
 						3,
-						4
+						4,
 					},
 					"chaos_marauder",
 					{
 						14,
-						15
+						15,
 					},
 					"chaos_fanatic",
 					{
 						9,
-						10
+						10,
 					},
 					"chaos_raider",
 					{
 						2,
-						3
-					}
-				}
+						3,
+					},
+				},
 			},
 			{
 				name = "raiders",
@@ -2278,14 +2280,14 @@ local morris_compositions = {
 					"chaos_marauder",
 					{
 						9,
-						11
+						11,
 					},
 					"chaos_raider",
 					{
 						6,
-						7
-					}
-				}
+						7,
+					},
+				},
 			},
 			{
 				name = "berzerkers",
@@ -2294,14 +2296,14 @@ local morris_compositions = {
 					"chaos_marauder",
 					{
 						4,
-						6
+						6,
 					},
 					"chaos_berzerker",
 					{
 						8,
-						9
-					}
-				}
+						9,
+					},
+				},
 			},
 			{
 				name = "warriors",
@@ -2310,20 +2312,20 @@ local morris_compositions = {
 					"chaos_warrior",
 					{
 						4,
-						5
+						5,
 					},
 					"chaos_marauder",
 					{
 						14,
-						15
+						15,
 					},
 					"chaos_fanatic",
 					{
 						9,
-						10
-					}
-				}
-			}
+						10,
+					},
+				},
+			},
 		},
 		{
 			{
@@ -2333,24 +2335,24 @@ local morris_compositions = {
 					"chaos_marauder_with_shield",
 					{
 						3,
-						4
+						4,
 					},
 					"chaos_marauder",
 					{
 						14,
-						15
+						15,
 					},
 					"chaos_fanatic",
 					{
 						9,
-						10
+						10,
 					},
 					"chaos_berzerker",
 					{
 						2,
-						3
-					}
-				}
+						3,
+					},
+				},
 			},
 			{
 				name = "mixed",
@@ -2359,24 +2361,24 @@ local morris_compositions = {
 					"chaos_marauder_with_shield",
 					{
 						3,
-						4
+						4,
 					},
 					"chaos_marauder",
 					{
 						14,
-						15
+						15,
 					},
 					"chaos_fanatic",
 					{
 						9,
-						10
+						10,
 					},
 					"chaos_raider",
 					{
 						2,
-						3
-					}
-				}
+						3,
+					},
+				},
 			},
 			{
 				name = "raiders",
@@ -2385,14 +2387,14 @@ local morris_compositions = {
 					"chaos_marauder",
 					{
 						9,
-						11
+						11,
 					},
 					"chaos_raider",
 					{
 						6,
-						7
-					}
-				}
+						7,
+					},
+				},
 			},
 			{
 				name = "berzerkers",
@@ -2401,14 +2403,14 @@ local morris_compositions = {
 					"chaos_marauder",
 					{
 						4,
-						6
+						6,
 					},
 					"chaos_berzerker",
 					{
 						8,
-						9
-					}
-				}
+						9,
+					},
+				},
 			},
 			{
 				name = "warriors",
@@ -2417,20 +2419,20 @@ local morris_compositions = {
 					"chaos_warrior",
 					{
 						4,
-						5
+						5,
 					},
 					"chaos_marauder",
 					{
 						14,
-						15
+						15,
 					},
 					"chaos_fanatic",
 					{
 						9,
-						10
-					}
-				}
-			}
+						10,
+					},
+				},
+			},
 		},
 		{
 			{
@@ -2440,24 +2442,24 @@ local morris_compositions = {
 					"chaos_marauder_with_shield",
 					{
 						3,
-						4
+						4,
 					},
 					"chaos_marauder",
 					{
 						14,
-						15
+						15,
 					},
 					"chaos_fanatic",
 					{
 						9,
-						10
+						10,
 					},
 					"chaos_berzerker",
 					{
 						2,
-						3
-					}
-				}
+						3,
+					},
+				},
 			},
 			{
 				name = "mixed",
@@ -2466,24 +2468,24 @@ local morris_compositions = {
 					"chaos_marauder_with_shield",
 					{
 						3,
-						4
+						4,
 					},
 					"chaos_marauder",
 					{
 						14,
-						15
+						15,
 					},
 					"chaos_fanatic",
 					{
 						9,
-						10
+						10,
 					},
 					"chaos_raider",
 					{
 						2,
-						3
-					}
-				}
+						3,
+					},
+				},
 			},
 			{
 				name = "raiders",
@@ -2492,14 +2494,14 @@ local morris_compositions = {
 					"chaos_marauder",
 					{
 						9,
-						11
+						11,
 					},
 					"chaos_raider",
 					{
 						6,
-						7
-					}
-				}
+						7,
+					},
+				},
 			},
 			{
 				name = "berzerkers",
@@ -2508,14 +2510,14 @@ local morris_compositions = {
 					"chaos_marauder",
 					{
 						4,
-						6
+						6,
 					},
 					"chaos_berzerker",
 					{
 						8,
-						9
-					}
-				}
+						9,
+					},
+				},
 			},
 			{
 				name = "warriors",
@@ -2524,21 +2526,21 @@ local morris_compositions = {
 					"chaos_warrior",
 					{
 						4,
-						5
+						5,
 					},
 					"chaos_marauder",
 					{
 						14,
-						15
+						15,
 					},
 					"chaos_fanatic",
 					{
 						9,
-						10
-					}
-				}
-			}
-		}
+						10,
+					},
+				},
+			},
+		},
 	},
 	morris_elite_medium_beastmen = {
 		{
@@ -2551,14 +2553,14 @@ local morris_compositions = {
 					"beastmen_gor",
 					{
 						4,
-						5
+						5,
 					},
 					"beastmen_ungor",
 					{
 						14,
-						15
-					}
-				}
+						15,
+					},
+				},
 			},
 			{
 				name = "archers",
@@ -2567,14 +2569,14 @@ local morris_compositions = {
 					"beastmen_ungor_archer",
 					{
 						4,
-						5
+						5,
 					},
 					"beastmen_ungor",
 					{
 						14,
-						15
-					}
-				}
+						15,
+					},
+				},
 			},
 			{
 				name = "bestigors",
@@ -2583,10 +2585,10 @@ local morris_compositions = {
 					"beastmen_bestigor",
 					{
 						2,
-						3
-					}
-				}
-			}
+						3,
+					},
+				},
+			},
 		},
 		{
 			{
@@ -2598,14 +2600,14 @@ local morris_compositions = {
 					"beastmen_gor",
 					{
 						5,
-						6
+						6,
 					},
 					"beastmen_ungor",
 					{
 						14,
-						15
-					}
-				}
+						15,
+					},
+				},
 			},
 			{
 				name = "archers",
@@ -2614,14 +2616,14 @@ local morris_compositions = {
 					"beastmen_ungor_archer",
 					{
 						6,
-						7
+						7,
 					},
 					"beastmen_ungor",
 					{
 						14,
-						15
-					}
-				}
+						15,
+					},
+				},
 			},
 			{
 				name = "bestigors",
@@ -2630,10 +2632,10 @@ local morris_compositions = {
 					"beastmen_bestigor",
 					{
 						3,
-						4
-					}
-				}
-			}
+						4,
+					},
+				},
+			},
 		},
 		{
 			{
@@ -2645,27 +2647,27 @@ local morris_compositions = {
 					"beastmen_gor",
 					{
 						7,
-						8
+						8,
 					},
 					"beastmen_ungor",
 					{
 						14,
-						15
-					}
-				}
+						15,
+					},
+				},
 			},
 			{
 				"beastmen_ungor",
+				breeds = {
+					"beastmen_ungor_archer",
+					8,
+				},
 				{
 					14,
-					15
+					15,
 				},
 				name = "archers",
 				weight = 7,
-				breeds = {
-					"beastmen_ungor_archer",
-					8
-				}
 			},
 			{
 				name = "bestigors",
@@ -2674,10 +2676,10 @@ local morris_compositions = {
 					"beastmen_bestigor",
 					{
 						5,
-						6
-					}
-				}
-			}
+						6,
+					},
+				},
+			},
 		},
 		{
 			{
@@ -2689,14 +2691,14 @@ local morris_compositions = {
 					"beastmen_gor",
 					{
 						7,
-						8
+						8,
 					},
 					"beastmen_ungor",
 					{
 						14,
-						15
-					}
-				}
+						15,
+					},
+				},
 			},
 			{
 				name = "archers",
@@ -2705,14 +2707,14 @@ local morris_compositions = {
 					"beastmen_ungor_archer",
 					{
 						9,
-						10
+						10,
 					},
 					"beastmen_ungor",
 					{
 						14,
-						15
-					}
-				}
+						15,
+					},
+				},
 			},
 			{
 				name = "bestigors",
@@ -2721,10 +2723,10 @@ local morris_compositions = {
 					"beastmen_bestigor",
 					{
 						5,
-						6
-					}
-				}
-			}
+						6,
+					},
+				},
+			},
 		},
 		{
 			{
@@ -2736,27 +2738,27 @@ local morris_compositions = {
 					"beastmen_gor",
 					{
 						7,
-						8
+						8,
 					},
 					"beastmen_ungor",
 					{
 						15,
-						16
-					}
-				}
+						16,
+					},
+				},
 			},
 			{
 				"beastmen_ungor",
+				breeds = {
+					"beastmen_ungor_archer",
+					10,
+				},
 				{
 					15,
-					16
+					16,
 				},
 				name = "archers",
 				weight = 7,
-				breeds = {
-					"beastmen_ungor_archer",
-					10
-				}
 			},
 			{
 				name = "bestigors",
@@ -2765,10 +2767,10 @@ local morris_compositions = {
 					"beastmen_bestigor",
 					{
 						6,
-						7
-					}
-				}
-			}
+						7,
+					},
+				},
+			},
 		},
 		{
 			{
@@ -2780,14 +2782,14 @@ local morris_compositions = {
 					"beastmen_gor",
 					{
 						7,
-						8
+						8,
 					},
 					"beastmen_ungor",
 					{
 						15,
-						16
-					}
-				}
+						16,
+					},
+				},
 			},
 			{
 				name = "archers",
@@ -2798,9 +2800,9 @@ local morris_compositions = {
 					"beastmen_ungor",
 					{
 						15,
-						16
-					}
-				}
+						16,
+					},
+				},
 			},
 			{
 				name = "bestigors",
@@ -2809,10 +2811,10 @@ local morris_compositions = {
 					"beastmen_bestigor",
 					{
 						6,
-						7
-					}
-				}
-			}
+						7,
+					},
+				},
+			},
 		},
 		{
 			{
@@ -2824,27 +2826,27 @@ local morris_compositions = {
 					"beastmen_gor",
 					{
 						7,
-						8
+						8,
 					},
 					"beastmen_ungor",
 					{
 						15,
-						16
-					}
-				}
+						16,
+					},
+				},
 			},
 			{
 				"beastmen_ungor",
+				breeds = {
+					"beastmen_ungor_archer",
+					10,
+				},
 				{
 					15,
-					16
+					16,
 				},
 				name = "archers",
 				weight = 7,
-				breeds = {
-					"beastmen_ungor_archer",
-					10
-				}
 			},
 			{
 				name = "bestigors",
@@ -2853,11 +2855,11 @@ local morris_compositions = {
 					"beastmen_bestigor",
 					{
 						6,
-						7
-					}
-				}
-			}
-		}
+						7,
+					},
+				},
+			},
+		},
 	},
 	cursed_chest_challenge_skaven = {
 		{
@@ -2868,9 +2870,9 @@ local morris_compositions = {
 					"skaven_rat_ogre",
 					{
 						1,
-						1
-					}
-				}
+						1,
+					},
+				},
 			},
 			{
 				name = "monster",
@@ -2879,9 +2881,9 @@ local morris_compositions = {
 					"skaven_stormfiend",
 					{
 						1,
-						1
-					}
-				}
+						1,
+					},
+				},
 			},
 			{
 				name = "special",
@@ -2890,9 +2892,9 @@ local morris_compositions = {
 					"skaven_ratling_gunner",
 					{
 						5,
-						6
-					}
-				}
+						6,
+					},
+				},
 			},
 			{
 				name = "special",
@@ -2901,9 +2903,9 @@ local morris_compositions = {
 					"skaven_warpfire_thrower",
 					{
 						5,
-						6
-					}
-				}
+						6,
+					},
+				},
 			},
 			{
 				name = "special",
@@ -2912,9 +2914,9 @@ local morris_compositions = {
 					"skaven_poison_wind_globadier",
 					{
 						5,
-						6
-					}
-				}
+						6,
+					},
+				},
 			},
 			{
 				name = "somevermin",
@@ -2923,9 +2925,9 @@ local morris_compositions = {
 					"skaven_storm_vermin_commander",
 					{
 						5,
-						6
-					}
-				}
+						6,
+					},
+				},
 			},
 			{
 				name = "somevermin",
@@ -2934,15 +2936,15 @@ local morris_compositions = {
 					"skaven_storm_vermin_with_shield",
 					{
 						4,
-						5
+						5,
 					},
 					"skaven_clan_rat_with_shield",
 					{
 						3,
-						4
-					}
-				}
-			}
+						4,
+					},
+				},
+			},
 		},
 		{
 			{
@@ -2952,9 +2954,9 @@ local morris_compositions = {
 					"skaven_rat_ogre",
 					{
 						1,
-						1
-					}
-				}
+						1,
+					},
+				},
 			},
 			{
 				name = "monster",
@@ -2963,9 +2965,9 @@ local morris_compositions = {
 					"skaven_stormfiend",
 					{
 						1,
-						1
-					}
-				}
+						1,
+					},
+				},
 			},
 			{
 				name = "special",
@@ -2974,9 +2976,9 @@ local morris_compositions = {
 					"skaven_ratling_gunner",
 					{
 						5,
-						6
-					}
-				}
+						6,
+					},
+				},
 			},
 			{
 				name = "special",
@@ -2985,9 +2987,9 @@ local morris_compositions = {
 					"skaven_warpfire_thrower",
 					{
 						5,
-						6
-					}
-				}
+						6,
+					},
+				},
 			},
 			{
 				name = "special",
@@ -2996,9 +2998,9 @@ local morris_compositions = {
 					"skaven_poison_wind_globadier",
 					{
 						5,
-						6
-					}
-				}
+						6,
+					},
+				},
 			},
 			{
 				name = "somevermin",
@@ -3007,9 +3009,9 @@ local morris_compositions = {
 					"skaven_storm_vermin_commander",
 					{
 						5,
-						6
-					}
-				}
+						6,
+					},
+				},
 			},
 			{
 				name = "somevermin",
@@ -3018,15 +3020,15 @@ local morris_compositions = {
 					"skaven_storm_vermin_with_shield",
 					{
 						4,
-						5
+						5,
 					},
 					"skaven_clan_rat_with_shield",
 					{
 						3,
-						4
-					}
-				}
-			}
+						4,
+					},
+				},
+			},
 		},
 		{
 			{
@@ -3036,9 +3038,9 @@ local morris_compositions = {
 					"skaven_rat_ogre",
 					{
 						1,
-						1
-					}
-				}
+						1,
+					},
+				},
 			},
 			{
 				name = "monster",
@@ -3047,9 +3049,9 @@ local morris_compositions = {
 					"skaven_stormfiend",
 					{
 						1,
-						1
-					}
-				}
+						1,
+					},
+				},
 			},
 			{
 				name = "special",
@@ -3058,9 +3060,9 @@ local morris_compositions = {
 					"skaven_ratling_gunner",
 					{
 						5,
-						6
-					}
-				}
+						6,
+					},
+				},
 			},
 			{
 				name = "special",
@@ -3069,9 +3071,9 @@ local morris_compositions = {
 					"skaven_warpfire_thrower",
 					{
 						5,
-						6
-					}
-				}
+						6,
+					},
+				},
 			},
 			{
 				name = "special",
@@ -3080,9 +3082,9 @@ local morris_compositions = {
 					"skaven_poison_wind_globadier",
 					{
 						5,
-						6
-					}
-				}
+						6,
+					},
+				},
 			},
 			{
 				name = "somevermin",
@@ -3091,9 +3093,9 @@ local morris_compositions = {
 					"skaven_storm_vermin_commander",
 					{
 						5,
-						6
-					}
-				}
+						6,
+					},
+				},
 			},
 			{
 				name = "somevermin",
@@ -3102,15 +3104,15 @@ local morris_compositions = {
 					"skaven_storm_vermin_with_shield",
 					{
 						4,
-						5
+						5,
 					},
 					"skaven_clan_rat_with_shield",
 					{
 						3,
-						4
-					}
-				}
-			}
+						4,
+					},
+				},
+			},
 		},
 		{
 			{
@@ -3120,9 +3122,9 @@ local morris_compositions = {
 					"skaven_rat_ogre",
 					{
 						1,
-						1
-					}
-				}
+						1,
+					},
+				},
 			},
 			{
 				name = "monster",
@@ -3131,9 +3133,9 @@ local morris_compositions = {
 					"skaven_stormfiend",
 					{
 						1,
-						1
-					}
-				}
+						1,
+					},
+				},
 			},
 			{
 				name = "special",
@@ -3142,9 +3144,9 @@ local morris_compositions = {
 					"skaven_ratling_gunner",
 					{
 						8,
-						9
-					}
-				}
+						9,
+					},
+				},
 			},
 			{
 				name = "special",
@@ -3153,9 +3155,9 @@ local morris_compositions = {
 					"skaven_warpfire_thrower",
 					{
 						8,
-						9
-					}
-				}
+						9,
+					},
+				},
 			},
 			{
 				name = "special",
@@ -3164,9 +3166,9 @@ local morris_compositions = {
 					"skaven_poison_wind_globadier",
 					{
 						8,
-						9
-					}
-				}
+						9,
+					},
+				},
 			},
 			{
 				name = "somevermin",
@@ -3175,9 +3177,9 @@ local morris_compositions = {
 					"skaven_storm_vermin_commander",
 					{
 						8,
-						9
-					}
-				}
+						9,
+					},
+				},
 			},
 			{
 				name = "somevermin",
@@ -3186,15 +3188,15 @@ local morris_compositions = {
 					"skaven_storm_vermin_with_shield",
 					{
 						5,
-						6
+						6,
 					},
 					"skaven_clan_rat_with_shield",
 					{
 						5,
-						6
-					}
-				}
-			}
+						6,
+					},
+				},
+			},
 		},
 		{
 			{
@@ -3204,9 +3206,9 @@ local morris_compositions = {
 					"skaven_rat_ogre",
 					{
 						1,
-						1
-					}
-				}
+						1,
+					},
+				},
 			},
 			{
 				name = "monster",
@@ -3215,9 +3217,9 @@ local morris_compositions = {
 					"skaven_stormfiend",
 					{
 						1,
-						1
-					}
-				}
+						1,
+					},
+				},
 			},
 			{
 				name = "special",
@@ -3226,9 +3228,9 @@ local morris_compositions = {
 					"skaven_ratling_gunner",
 					{
 						11,
-						12
-					}
-				}
+						12,
+					},
+				},
 			},
 			{
 				name = "special",
@@ -3237,9 +3239,9 @@ local morris_compositions = {
 					"skaven_warpfire_thrower",
 					{
 						11,
-						12
-					}
-				}
+						12,
+					},
+				},
 			},
 			{
 				name = "special",
@@ -3248,9 +3250,9 @@ local morris_compositions = {
 					"skaven_poison_wind_globadier",
 					{
 						11,
-						12
-					}
-				}
+						12,
+					},
+				},
 			},
 			{
 				name = "somevermin",
@@ -3259,9 +3261,9 @@ local morris_compositions = {
 					"skaven_storm_vermin_commander",
 					{
 						11,
-						12
-					}
-				}
+						12,
+					},
+				},
 			},
 			{
 				name = "somevermin",
@@ -3270,15 +3272,15 @@ local morris_compositions = {
 					"skaven_storm_vermin_with_shield",
 					{
 						8,
-						9
+						9,
 					},
 					"skaven_clan_rat_with_shield",
 					{
 						8,
-						9
-					}
-				}
-			}
+						9,
+					},
+				},
+			},
 		},
 		{
 			{
@@ -3288,9 +3290,9 @@ local morris_compositions = {
 					"skaven_rat_ogre",
 					{
 						1,
-						1
-					}
-				}
+						1,
+					},
+				},
 			},
 			{
 				name = "monster",
@@ -3299,9 +3301,9 @@ local morris_compositions = {
 					"skaven_stormfiend",
 					{
 						1,
-						1
-					}
-				}
+						1,
+					},
+				},
 			},
 			{
 				name = "special",
@@ -3310,9 +3312,9 @@ local morris_compositions = {
 					"skaven_ratling_gunner",
 					{
 						11,
-						12
-					}
-				}
+						12,
+					},
+				},
 			},
 			{
 				name = "special",
@@ -3321,9 +3323,9 @@ local morris_compositions = {
 					"skaven_warpfire_thrower",
 					{
 						11,
-						12
-					}
-				}
+						12,
+					},
+				},
 			},
 			{
 				name = "special",
@@ -3332,9 +3334,9 @@ local morris_compositions = {
 					"skaven_poison_wind_globadier",
 					{
 						11,
-						12
-					}
-				}
+						12,
+					},
+				},
 			},
 			{
 				name = "somevermin",
@@ -3343,9 +3345,9 @@ local morris_compositions = {
 					"skaven_storm_vermin_commander",
 					{
 						11,
-						12
-					}
-				}
+						12,
+					},
+				},
 			},
 			{
 				name = "somevermin",
@@ -3354,15 +3356,15 @@ local morris_compositions = {
 					"skaven_storm_vermin_with_shield",
 					{
 						8,
-						9
+						9,
 					},
 					"skaven_clan_rat_with_shield",
 					{
 						8,
-						9
-					}
-				}
-			}
+						9,
+					},
+				},
+			},
 		},
 		{
 			{
@@ -3372,9 +3374,9 @@ local morris_compositions = {
 					"skaven_rat_ogre",
 					{
 						1,
-						1
-					}
-				}
+						1,
+					},
+				},
 			},
 			{
 				name = "monster",
@@ -3383,9 +3385,9 @@ local morris_compositions = {
 					"skaven_stormfiend",
 					{
 						1,
-						1
-					}
-				}
+						1,
+					},
+				},
 			},
 			{
 				name = "special",
@@ -3394,9 +3396,9 @@ local morris_compositions = {
 					"skaven_ratling_gunner",
 					{
 						11,
-						12
-					}
-				}
+						12,
+					},
+				},
 			},
 			{
 				name = "special",
@@ -3405,9 +3407,9 @@ local morris_compositions = {
 					"skaven_warpfire_thrower",
 					{
 						11,
-						12
-					}
-				}
+						12,
+					},
+				},
 			},
 			{
 				name = "special",
@@ -3416,9 +3418,9 @@ local morris_compositions = {
 					"skaven_poison_wind_globadier",
 					{
 						11,
-						12
-					}
-				}
+						12,
+					},
+				},
 			},
 			{
 				name = "somevermin",
@@ -3427,9 +3429,9 @@ local morris_compositions = {
 					"skaven_storm_vermin_commander",
 					{
 						11,
-						12
-					}
-				}
+						12,
+					},
+				},
 			},
 			{
 				name = "somevermin",
@@ -3438,16 +3440,16 @@ local morris_compositions = {
 					"skaven_storm_vermin_with_shield",
 					{
 						8,
-						9
+						9,
 					},
 					"skaven_clan_rat_with_shield",
 					{
 						8,
-						9
-					}
-				}
-			}
-		}
+						9,
+					},
+				},
+			},
+		},
 	},
 	cursed_chest_challenge_chaos = {
 		{
@@ -3458,9 +3460,9 @@ local morris_compositions = {
 					"chaos_troll",
 					{
 						1,
-						1
-					}
-				}
+						1,
+					},
+				},
 			},
 			{
 				name = "monster",
@@ -3469,9 +3471,9 @@ local morris_compositions = {
 					"chaos_spawn",
 					{
 						1,
-						1
-					}
-				}
+						1,
+					},
+				},
 			},
 			{
 				name = "special",
@@ -3480,9 +3482,9 @@ local morris_compositions = {
 					"skaven_ratling_gunner",
 					{
 						5,
-						6
-					}
-				}
+						6,
+					},
+				},
 			},
 			{
 				name = "special",
@@ -3491,9 +3493,9 @@ local morris_compositions = {
 					"skaven_warpfire_thrower",
 					{
 						5,
-						6
-					}
-				}
+						6,
+					},
+				},
 			},
 			{
 				name = "special",
@@ -3502,9 +3504,9 @@ local morris_compositions = {
 					"skaven_poison_wind_globadier",
 					{
 						5,
-						6
-					}
-				}
+						6,
+					},
+				},
 			},
 			{
 				name = "raiders",
@@ -3513,14 +3515,14 @@ local morris_compositions = {
 					"chaos_marauder",
 					{
 						4,
-						6
+						6,
 					},
 					"chaos_raider",
 					{
 						4,
-						5
-					}
-				}
+						5,
+					},
+				},
 			},
 			{
 				name = "warriors",
@@ -3529,20 +3531,20 @@ local morris_compositions = {
 					"chaos_warrior",
 					{
 						2,
-						3
+						3,
 					},
 					"chaos_marauder",
 					{
 						7,
-						8
+						8,
 					},
 					"chaos_fanatic",
 					{
 						11,
-						13
-					}
-				}
-			}
+						13,
+					},
+				},
+			},
 		},
 		{
 			{
@@ -3552,9 +3554,9 @@ local morris_compositions = {
 					"chaos_troll",
 					{
 						1,
-						1
-					}
-				}
+						1,
+					},
+				},
 			},
 			{
 				name = "monster",
@@ -3563,9 +3565,9 @@ local morris_compositions = {
 					"chaos_spawn",
 					{
 						1,
-						1
-					}
-				}
+						1,
+					},
+				},
 			},
 			{
 				name = "special",
@@ -3574,9 +3576,9 @@ local morris_compositions = {
 					"skaven_ratling_gunner",
 					{
 						5,
-						6
-					}
-				}
+						6,
+					},
+				},
 			},
 			{
 				name = "special",
@@ -3585,9 +3587,9 @@ local morris_compositions = {
 					"skaven_warpfire_thrower",
 					{
 						5,
-						6
-					}
-				}
+						6,
+					},
+				},
 			},
 			{
 				name = "special",
@@ -3596,9 +3598,9 @@ local morris_compositions = {
 					"skaven_poison_wind_globadier",
 					{
 						5,
-						6
-					}
-				}
+						6,
+					},
+				},
 			},
 			{
 				name = "raiders",
@@ -3607,14 +3609,14 @@ local morris_compositions = {
 					"chaos_marauder",
 					{
 						4,
-						6
+						6,
 					},
 					"chaos_raider",
 					{
 						4,
-						5
-					}
-				}
+						5,
+					},
+				},
 			},
 			{
 				name = "warriors",
@@ -3623,20 +3625,20 @@ local morris_compositions = {
 					"chaos_warrior",
 					{
 						2,
-						3
+						3,
 					},
 					"chaos_marauder",
 					{
 						7,
-						8
+						8,
 					},
 					"chaos_fanatic",
 					{
 						11,
-						13
-					}
-				}
-			}
+						13,
+					},
+				},
+			},
 		},
 		{
 			{
@@ -3646,9 +3648,9 @@ local morris_compositions = {
 					"chaos_troll",
 					{
 						1,
-						1
-					}
-				}
+						1,
+					},
+				},
 			},
 			{
 				name = "monster",
@@ -3657,9 +3659,9 @@ local morris_compositions = {
 					"chaos_spawn",
 					{
 						1,
-						1
-					}
-				}
+						1,
+					},
+				},
 			},
 			{
 				name = "monster",
@@ -3668,9 +3670,9 @@ local morris_compositions = {
 					"beastmen_minotaur",
 					{
 						1,
-						1
-					}
-				}
+						1,
+					},
+				},
 			},
 			{
 				name = "special",
@@ -3679,9 +3681,9 @@ local morris_compositions = {
 					"skaven_ratling_gunner",
 					{
 						5,
-						6
-					}
-				}
+						6,
+					},
+				},
 			},
 			{
 				name = "special",
@@ -3690,9 +3692,9 @@ local morris_compositions = {
 					"skaven_warpfire_thrower",
 					{
 						5,
-						6
-					}
-				}
+						6,
+					},
+				},
 			},
 			{
 				name = "special",
@@ -3701,9 +3703,9 @@ local morris_compositions = {
 					"skaven_poison_wind_globadier",
 					{
 						5,
-						6
-					}
-				}
+						6,
+					},
+				},
 			},
 			{
 				name = "raiders",
@@ -3712,14 +3714,14 @@ local morris_compositions = {
 					"chaos_marauder",
 					{
 						4,
-						6
+						6,
 					},
 					"chaos_raider",
 					{
 						4,
-						5
-					}
-				}
+						5,
+					},
+				},
 			},
 			{
 				name = "warriors",
@@ -3728,20 +3730,20 @@ local morris_compositions = {
 					"chaos_warrior",
 					{
 						2,
-						3
+						3,
 					},
 					"chaos_marauder",
 					{
 						7,
-						8
+						8,
 					},
 					"chaos_fanatic",
 					{
 						11,
-						13
-					}
-				}
-			}
+						13,
+					},
+				},
+			},
 		},
 		{
 			{
@@ -3751,9 +3753,9 @@ local morris_compositions = {
 					"chaos_troll",
 					{
 						1,
-						1
-					}
-				}
+						1,
+					},
+				},
 			},
 			{
 				name = "monster",
@@ -3762,9 +3764,9 @@ local morris_compositions = {
 					"chaos_spawn",
 					{
 						1,
-						1
-					}
-				}
+						1,
+					},
+				},
 			},
 			{
 				name = "monster",
@@ -3773,9 +3775,9 @@ local morris_compositions = {
 					"beastmen_minotaur",
 					{
 						1,
-						1
-					}
-				}
+						1,
+					},
+				},
 			},
 			{
 				name = "special",
@@ -3784,9 +3786,9 @@ local morris_compositions = {
 					"skaven_ratling_gunner",
 					{
 						8,
-						9
-					}
-				}
+						9,
+					},
+				},
 			},
 			{
 				name = "special",
@@ -3795,9 +3797,9 @@ local morris_compositions = {
 					"skaven_warpfire_thrower",
 					{
 						8,
-						9
-					}
-				}
+						9,
+					},
+				},
 			},
 			{
 				name = "special",
@@ -3806,9 +3808,9 @@ local morris_compositions = {
 					"skaven_poison_wind_globadier",
 					{
 						8,
-						9
-					}
-				}
+						9,
+					},
+				},
 			},
 			{
 				name = "raiders",
@@ -3817,14 +3819,14 @@ local morris_compositions = {
 					"chaos_marauder",
 					{
 						7,
-						8
+						8,
 					},
 					"chaos_raider",
 					{
 						5,
-						6
-					}
-				}
+						6,
+					},
+				},
 			},
 			{
 				name = "warriors",
@@ -3833,20 +3835,20 @@ local morris_compositions = {
 					"chaos_warrior",
 					{
 						3,
-						4
+						4,
 					},
 					"chaos_marauder",
 					{
 						11,
-						12
+						12,
 					},
 					"chaos_fanatic",
 					{
 						11,
-						13
-					}
-				}
-			}
+						13,
+					},
+				},
+			},
 		},
 		{
 			{
@@ -3856,9 +3858,9 @@ local morris_compositions = {
 					"chaos_troll",
 					{
 						1,
-						1
-					}
-				}
+						1,
+					},
+				},
 			},
 			{
 				name = "monster",
@@ -3867,9 +3869,9 @@ local morris_compositions = {
 					"chaos_spawn",
 					{
 						1,
-						1
-					}
-				}
+						1,
+					},
+				},
 			},
 			{
 				name = "monster",
@@ -3878,9 +3880,9 @@ local morris_compositions = {
 					"beastmen_minotaur",
 					{
 						1,
-						1
-					}
-				}
+						1,
+					},
+				},
 			},
 			{
 				name = "special",
@@ -3889,9 +3891,9 @@ local morris_compositions = {
 					"skaven_ratling_gunner",
 					{
 						11,
-						12
-					}
-				}
+						12,
+					},
+				},
 			},
 			{
 				name = "special",
@@ -3900,9 +3902,9 @@ local morris_compositions = {
 					"skaven_warpfire_thrower",
 					{
 						11,
-						12
-					}
-				}
+						12,
+					},
+				},
 			},
 			{
 				name = "special",
@@ -3911,9 +3913,9 @@ local morris_compositions = {
 					"skaven_poison_wind_globadier",
 					{
 						11,
-						12
-					}
-				}
+						12,
+					},
+				},
 			},
 			{
 				name = "raiders",
@@ -3922,14 +3924,14 @@ local morris_compositions = {
 					"chaos_marauder",
 					{
 						9,
-						11
+						11,
 					},
 					"chaos_raider",
 					{
 						6,
-						7
-					}
-				}
+						7,
+					},
+				},
 			},
 			{
 				name = "warriors",
@@ -3938,20 +3940,20 @@ local morris_compositions = {
 					"chaos_warrior",
 					{
 						4,
-						5
+						5,
 					},
 					"chaos_marauder",
 					{
 						14,
-						15
+						15,
 					},
 					"chaos_fanatic",
 					{
 						9,
-						10
-					}
-				}
-			}
+						10,
+					},
+				},
+			},
 		},
 		{
 			{
@@ -3961,9 +3963,9 @@ local morris_compositions = {
 					"chaos_troll",
 					{
 						1,
-						1
-					}
-				}
+						1,
+					},
+				},
 			},
 			{
 				name = "monster",
@@ -3972,9 +3974,9 @@ local morris_compositions = {
 					"chaos_spawn",
 					{
 						1,
-						1
-					}
-				}
+						1,
+					},
+				},
 			},
 			{
 				name = "special",
@@ -3983,9 +3985,9 @@ local morris_compositions = {
 					"skaven_ratling_gunner",
 					{
 						11,
-						12
-					}
-				}
+						12,
+					},
+				},
 			},
 			{
 				name = "special",
@@ -3994,9 +3996,9 @@ local morris_compositions = {
 					"skaven_warpfire_thrower",
 					{
 						11,
-						12
-					}
-				}
+						12,
+					},
+				},
 			},
 			{
 				name = "special",
@@ -4005,9 +4007,9 @@ local morris_compositions = {
 					"skaven_poison_wind_globadier",
 					{
 						11,
-						12
-					}
-				}
+						12,
+					},
+				},
 			},
 			{
 				name = "raiders",
@@ -4016,14 +4018,14 @@ local morris_compositions = {
 					"chaos_marauder",
 					{
 						9,
-						11
+						11,
 					},
 					"chaos_raider",
 					{
 						6,
-						7
-					}
-				}
+						7,
+					},
+				},
 			},
 			{
 				name = "warriors",
@@ -4032,20 +4034,20 @@ local morris_compositions = {
 					"chaos_warrior",
 					{
 						4,
-						5
+						5,
 					},
 					"chaos_marauder",
 					{
 						14,
-						15
+						15,
 					},
 					"chaos_fanatic",
 					{
 						9,
-						10
-					}
-				}
-			}
+						10,
+					},
+				},
+			},
 		},
 		{
 			{
@@ -4055,9 +4057,9 @@ local morris_compositions = {
 					"chaos_troll",
 					{
 						1,
-						1
-					}
-				}
+						1,
+					},
+				},
 			},
 			{
 				name = "monster",
@@ -4066,9 +4068,9 @@ local morris_compositions = {
 					"chaos_spawn",
 					{
 						1,
-						1
-					}
-				}
+						1,
+					},
+				},
 			},
 			{
 				name = "special",
@@ -4077,9 +4079,9 @@ local morris_compositions = {
 					"skaven_ratling_gunner",
 					{
 						11,
-						12
-					}
-				}
+						12,
+					},
+				},
 			},
 			{
 				name = "special",
@@ -4088,9 +4090,9 @@ local morris_compositions = {
 					"skaven_warpfire_thrower",
 					{
 						11,
-						12
-					}
-				}
+						12,
+					},
+				},
 			},
 			{
 				name = "special",
@@ -4099,9 +4101,9 @@ local morris_compositions = {
 					"skaven_poison_wind_globadier",
 					{
 						11,
-						12
-					}
-				}
+						12,
+					},
+				},
 			},
 			{
 				name = "raiders",
@@ -4110,14 +4112,14 @@ local morris_compositions = {
 					"chaos_marauder",
 					{
 						9,
-						11
+						11,
 					},
 					"chaos_raider",
 					{
 						6,
-						7
-					}
-				}
+						7,
+					},
+				},
 			},
 			{
 				name = "warriors",
@@ -4126,21 +4128,21 @@ local morris_compositions = {
 					"chaos_warrior",
 					{
 						4,
-						5
+						5,
 					},
 					"chaos_marauder",
 					{
 						14,
-						15
+						15,
 					},
 					"chaos_fanatic",
 					{
 						9,
-						10
-					}
-				}
-			}
-		}
+						10,
+					},
+				},
+			},
+		},
 	},
 	cursed_chest_challenge_beastmen = {
 		{
@@ -4151,9 +4153,9 @@ local morris_compositions = {
 					"beastmen_minotaur",
 					{
 						1,
-						1
-					}
-				}
+						1,
+					},
+				},
 			},
 			{
 				name = "special",
@@ -4162,9 +4164,9 @@ local morris_compositions = {
 					"skaven_ratling_gunner",
 					{
 						5,
-						6
-					}
-				}
+						6,
+					},
+				},
 			},
 			{
 				name = "special",
@@ -4173,9 +4175,9 @@ local morris_compositions = {
 					"skaven_warpfire_thrower",
 					{
 						5,
-						6
-					}
-				}
+						6,
+					},
+				},
 			},
 			{
 				name = "special",
@@ -4184,9 +4186,9 @@ local morris_compositions = {
 					"skaven_poison_wind_globadier",
 					{
 						5,
-						6
-					}
-				}
+						6,
+					},
+				},
 			},
 			{
 				name = "bestigors",
@@ -4195,10 +4197,10 @@ local morris_compositions = {
 					"beastmen_bestigor",
 					{
 						5,
-						6
-					}
-				}
-			}
+						6,
+					},
+				},
+			},
 		},
 		{
 			{
@@ -4208,9 +4210,9 @@ local morris_compositions = {
 					"beastmen_minotaur",
 					{
 						1,
-						1
-					}
-				}
+						1,
+					},
+				},
 			},
 			{
 				name = "special",
@@ -4219,9 +4221,9 @@ local morris_compositions = {
 					"skaven_ratling_gunner",
 					{
 						5,
-						6
-					}
-				}
+						6,
+					},
+				},
 			},
 			{
 				name = "special",
@@ -4230,9 +4232,9 @@ local morris_compositions = {
 					"skaven_warpfire_thrower",
 					{
 						5,
-						6
-					}
-				}
+						6,
+					},
+				},
 			},
 			{
 				name = "special",
@@ -4241,9 +4243,9 @@ local morris_compositions = {
 					"skaven_poison_wind_globadier",
 					{
 						5,
-						6
-					}
-				}
+						6,
+					},
+				},
 			},
 			{
 				name = "bestigors",
@@ -4252,10 +4254,10 @@ local morris_compositions = {
 					"beastmen_bestigor",
 					{
 						5,
-						6
-					}
-				}
-			}
+						6,
+					},
+				},
+			},
 		},
 		{
 			{
@@ -4265,9 +4267,9 @@ local morris_compositions = {
 					"beastmen_minotaur",
 					{
 						1,
-						1
-					}
-				}
+						1,
+					},
+				},
 			},
 			{
 				name = "special",
@@ -4276,9 +4278,9 @@ local morris_compositions = {
 					"skaven_ratling_gunner",
 					{
 						5,
-						6
-					}
-				}
+						6,
+					},
+				},
 			},
 			{
 				name = "special",
@@ -4287,9 +4289,9 @@ local morris_compositions = {
 					"skaven_warpfire_thrower",
 					{
 						5,
-						6
-					}
-				}
+						6,
+					},
+				},
 			},
 			{
 				name = "special",
@@ -4298,9 +4300,9 @@ local morris_compositions = {
 					"skaven_poison_wind_globadier",
 					{
 						5,
-						6
-					}
-				}
+						6,
+					},
+				},
 			},
 			{
 				name = "bestigors",
@@ -4309,10 +4311,10 @@ local morris_compositions = {
 					"beastmen_bestigor",
 					{
 						5,
-						6
-					}
-				}
-			}
+						6,
+					},
+				},
+			},
 		},
 		{
 			{
@@ -4322,9 +4324,9 @@ local morris_compositions = {
 					"beastmen_minotaur",
 					{
 						1,
-						1
-					}
-				}
+						1,
+					},
+				},
 			},
 			{
 				name = "special",
@@ -4333,9 +4335,9 @@ local morris_compositions = {
 					"skaven_ratling_gunner",
 					{
 						8,
-						9
-					}
-				}
+						9,
+					},
+				},
 			},
 			{
 				name = "special",
@@ -4344,9 +4346,9 @@ local morris_compositions = {
 					"skaven_warpfire_thrower",
 					{
 						8,
-						9
-					}
-				}
+						9,
+					},
+				},
 			},
 			{
 				name = "special",
@@ -4355,9 +4357,9 @@ local morris_compositions = {
 					"skaven_poison_wind_globadier",
 					{
 						8,
-						9
-					}
-				}
+						9,
+					},
+				},
 			},
 			{
 				name = "bestigors",
@@ -4366,10 +4368,10 @@ local morris_compositions = {
 					"beastmen_bestigor",
 					{
 						5,
-						6
-					}
-				}
-			}
+						6,
+					},
+				},
+			},
 		},
 		{
 			{
@@ -4379,9 +4381,9 @@ local morris_compositions = {
 					"beastmen_minotaur",
 					{
 						1,
-						1
-					}
-				}
+						1,
+					},
+				},
 			},
 			{
 				name = "special",
@@ -4390,9 +4392,9 @@ local morris_compositions = {
 					"skaven_ratling_gunner",
 					{
 						11,
-						12
-					}
-				}
+						12,
+					},
+				},
 			},
 			{
 				name = "special",
@@ -4401,9 +4403,9 @@ local morris_compositions = {
 					"skaven_warpfire_thrower",
 					{
 						11,
-						12
-					}
-				}
+						12,
+					},
+				},
 			},
 			{
 				name = "special",
@@ -4412,9 +4414,9 @@ local morris_compositions = {
 					"skaven_poison_wind_globadier",
 					{
 						11,
-						12
-					}
-				}
+						12,
+					},
+				},
 			},
 			{
 				name = "bestigors",
@@ -4423,10 +4425,10 @@ local morris_compositions = {
 					"beastmen_bestigor",
 					{
 						6,
-						7
-					}
-				}
-			}
+						7,
+					},
+				},
+			},
 		},
 		{
 			{
@@ -4436,9 +4438,9 @@ local morris_compositions = {
 					"beastmen_minotaur",
 					{
 						1,
-						1
-					}
-				}
+						1,
+					},
+				},
 			},
 			{
 				name = "special",
@@ -4447,9 +4449,9 @@ local morris_compositions = {
 					"skaven_ratling_gunner",
 					{
 						11,
-						12
-					}
-				}
+						12,
+					},
+				},
 			},
 			{
 				name = "special",
@@ -4458,9 +4460,9 @@ local morris_compositions = {
 					"skaven_warpfire_thrower",
 					{
 						11,
-						12
-					}
-				}
+						12,
+					},
+				},
 			},
 			{
 				name = "special",
@@ -4469,9 +4471,9 @@ local morris_compositions = {
 					"skaven_poison_wind_globadier",
 					{
 						11,
-						12
-					}
-				}
+						12,
+					},
+				},
 			},
 			{
 				name = "bestigors",
@@ -4480,10 +4482,10 @@ local morris_compositions = {
 					"beastmen_bestigor",
 					{
 						6,
-						7
-					}
-				}
-			}
+						7,
+					},
+				},
+			},
 		},
 		{
 			{
@@ -4493,9 +4495,9 @@ local morris_compositions = {
 					"beastmen_minotaur",
 					{
 						1,
-						1
-					}
-				}
+						1,
+					},
+				},
 			},
 			{
 				name = "special",
@@ -4504,9 +4506,9 @@ local morris_compositions = {
 					"skaven_ratling_gunner",
 					{
 						11,
-						12
-					}
-				}
+						12,
+					},
+				},
 			},
 			{
 				name = "special",
@@ -4515,9 +4517,9 @@ local morris_compositions = {
 					"skaven_warpfire_thrower",
 					{
 						11,
-						12
-					}
-				}
+						12,
+					},
+				},
 			},
 			{
 				name = "special",
@@ -4526,9 +4528,9 @@ local morris_compositions = {
 					"skaven_poison_wind_globadier",
 					{
 						11,
-						12
-					}
-				}
+						12,
+					},
+				},
 			},
 			{
 				name = "bestigors",
@@ -4537,11 +4539,11 @@ local morris_compositions = {
 					"beastmen_bestigor",
 					{
 						6,
-						7
-					}
-				}
-			}
-		}
+						7,
+					},
+				},
+			},
+		},
 	},
 	cursed_chest_challenge_test = {
 		{
@@ -4552,10 +4554,10 @@ local morris_compositions = {
 					"skaven_ratling_gunner",
 					{
 						10,
-						10
-					}
-				}
-			}
+						10,
+					},
+				},
+			},
 		},
 		{
 			{
@@ -4565,10 +4567,10 @@ local morris_compositions = {
 					"skaven_ratling_gunner",
 					{
 						10,
-						10
-					}
-				}
-			}
+						10,
+					},
+				},
+			},
 		},
 		{
 			{
@@ -4578,10 +4580,10 @@ local morris_compositions = {
 					"skaven_ratling_gunner",
 					{
 						10,
-						10
-					}
-				}
-			}
+						10,
+					},
+				},
+			},
 		},
 		{
 			{
@@ -4591,10 +4593,10 @@ local morris_compositions = {
 					"skaven_ratling_gunner",
 					{
 						10,
-						10
-					}
-				}
-			}
+						10,
+					},
+				},
+			},
 		},
 		{
 			{
@@ -4604,10 +4606,10 @@ local morris_compositions = {
 					"skaven_ratling_gunner",
 					{
 						10,
-						10
-					}
-				}
-			}
+						10,
+					},
+				},
+			},
 		},
 		{
 			{
@@ -4617,10 +4619,10 @@ local morris_compositions = {
 					"skaven_ratling_gunner",
 					{
 						10,
-						10
-					}
-				}
-			}
+						10,
+					},
+				},
+			},
 		},
 		{
 			{
@@ -4630,11 +4632,11 @@ local morris_compositions = {
 					"skaven_ratling_gunner",
 					{
 						10,
-						10
-					}
-				}
-			}
-		}
+						10,
+					},
+				},
+			},
+		},
 	},
 	morris_TEST_small_skaven_encounter = {
 		{
@@ -4643,9 +4645,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"skaven_slave",
-					20
-				}
-			}
+					20,
+				},
+			},
 		},
 		{
 			{
@@ -4653,9 +4655,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"skaven_slave",
-					20
-				}
-			}
+					20,
+				},
+			},
 		},
 		{
 			{
@@ -4663,9 +4665,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"skaven_slave",
-					20
-				}
-			}
+					20,
+				},
+			},
 		},
 		{
 			{
@@ -4673,9 +4675,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"skaven_slave",
-					20
-				}
-			}
+					20,
+				},
+			},
 		},
 		{
 			{
@@ -4683,9 +4685,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"skaven_slave",
-					20
-				}
-			}
+					20,
+				},
+			},
 		},
 		{
 			{
@@ -4693,9 +4695,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"skaven_slave",
-					20
-				}
-			}
+					20,
+				},
+			},
 		},
 		{
 			{
@@ -4703,10 +4705,10 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"skaven_slave",
-					20
-				}
-			}
-		}
+					20,
+				},
+			},
+		},
 	},
 	morris_TEST_skaven_slave = {
 		{
@@ -4715,9 +4717,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"skaven_slave",
-					60
-				}
-			}
+					60,
+				},
+			},
 		},
 		{
 			{
@@ -4725,9 +4727,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"skaven_slave",
-					60
-				}
-			}
+					60,
+				},
+			},
 		},
 		{
 			{
@@ -4735,9 +4737,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"skaven_slave",
-					60
-				}
-			}
+					60,
+				},
+			},
 		},
 		{
 			{
@@ -4745,9 +4747,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"skaven_slave",
-					60
-				}
-			}
+					60,
+				},
+			},
 		},
 		{
 			{
@@ -4755,9 +4757,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"skaven_slave",
-					60
-				}
-			}
+					60,
+				},
+			},
 		},
 		{
 			{
@@ -4765,9 +4767,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"skaven_slave",
-					60
-				}
-			}
+					60,
+				},
+			},
 		},
 		{
 			{
@@ -4775,10 +4777,10 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"skaven_slave",
-					60
-				}
-			}
-		}
+					60,
+				},
+			},
+		},
 	},
 	morris_TEST_skaven_clan_rat = {
 		{
@@ -4787,9 +4789,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"skaven_clan_rat",
-					60
-				}
-			}
+					60,
+				},
+			},
 		},
 		{
 			{
@@ -4797,9 +4799,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"skaven_clan_rat",
-					60
-				}
-			}
+					60,
+				},
+			},
 		},
 		{
 			{
@@ -4807,9 +4809,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"skaven_clan_rat",
-					60
-				}
-			}
+					60,
+				},
+			},
 		},
 		{
 			{
@@ -4817,9 +4819,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"skaven_clan_rat",
-					60
-				}
-			}
+					60,
+				},
+			},
 		},
 		{
 			{
@@ -4827,9 +4829,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"skaven_clan_rat",
-					60
-				}
-			}
+					60,
+				},
+			},
 		},
 		{
 			{
@@ -4837,9 +4839,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"skaven_clan_rat",
-					60
-				}
-			}
+					60,
+				},
+			},
 		},
 		{
 			{
@@ -4847,10 +4849,10 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"skaven_clan_rat",
-					60
-				}
-			}
-		}
+					60,
+				},
+			},
+		},
 	},
 	morris_TEST_skaven_clan_rat_with_shield = {
 		{
@@ -4859,9 +4861,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"skaven_clan_rat_with_shield",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -4869,9 +4871,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"skaven_clan_rat_with_shield",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -4879,9 +4881,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"skaven_clan_rat_with_shield",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -4889,9 +4891,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"skaven_clan_rat_with_shield",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -4899,9 +4901,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"skaven_clan_rat_with_shield",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -4909,9 +4911,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"skaven_clan_rat_with_shield",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -4919,10 +4921,10 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"skaven_clan_rat_with_shield",
-					40
-				}
-			}
-		}
+					40,
+				},
+			},
+		},
 	},
 	morris_TEST_skaven_plague_monk = {
 		{
@@ -4931,9 +4933,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"skaven_plague_monk",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -4941,9 +4943,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"skaven_plague_monk",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -4951,9 +4953,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"skaven_plague_monk",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -4961,9 +4963,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"skaven_plague_monk",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -4971,9 +4973,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"skaven_plague_monk",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -4981,9 +4983,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"skaven_plague_monk",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -4991,10 +4993,10 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"skaven_plague_monk",
-					40
-				}
-			}
-		}
+					40,
+				},
+			},
+		},
 	},
 	morris_TEST_skaven_storm_vermin = {
 		{
@@ -5003,9 +5005,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"skaven_storm_vermin",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5013,9 +5015,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"skaven_storm_vermin",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5023,9 +5025,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"skaven_storm_vermin",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5033,9 +5035,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"skaven_storm_vermin",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5043,9 +5045,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"skaven_storm_vermin",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5053,9 +5055,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"skaven_storm_vermin",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5063,10 +5065,10 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"skaven_storm_vermin",
-					40
-				}
-			}
-		}
+					40,
+				},
+			},
+		},
 	},
 	morris_TEST_skaven_storm_vermin_commander = {
 		{
@@ -5075,9 +5077,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"skaven_storm_vermin_commander",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5085,9 +5087,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"skaven_storm_vermin_commander",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5095,9 +5097,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"skaven_storm_vermin_commander",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5105,9 +5107,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"skaven_storm_vermin_commander",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5115,9 +5117,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"skaven_storm_vermin_commander",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5125,9 +5127,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"skaven_storm_vermin_commander",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5135,10 +5137,10 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"skaven_storm_vermin_commander",
-					40
-				}
-			}
-		}
+					40,
+				},
+			},
+		},
 	},
 	morris_TEST_skaven_storm_vermin_with_shield = {
 		{
@@ -5147,9 +5149,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"skaven_storm_vermin_with_shield",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5157,9 +5159,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"skaven_storm_vermin_with_shield",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5167,9 +5169,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"skaven_storm_vermin_with_shield",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5177,9 +5179,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"skaven_storm_vermin_with_shield",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5187,9 +5189,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"skaven_storm_vermin_with_shield",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5197,9 +5199,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"skaven_storm_vermin_with_shield",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5207,10 +5209,10 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"skaven_storm_vermin_with_shield",
-					40
-				}
-			}
-		}
+					40,
+				},
+			},
+		},
 	},
 	morris_TEST_skaven_explosive_loot_rat = {
 		{
@@ -5219,9 +5221,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"skaven_explosive_loot_rat",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5229,9 +5231,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"skaven_explosive_loot_rat",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5239,9 +5241,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"skaven_explosive_loot_rat",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5249,9 +5251,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"skaven_explosive_loot_rat",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5259,9 +5261,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"skaven_explosive_loot_rat",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5269,9 +5271,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"skaven_explosive_loot_rat",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5279,10 +5281,10 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"skaven_explosive_loot_rat",
-					40
-				}
-			}
-		}
+					40,
+				},
+			},
+		},
 	},
 	morris_TEST_chaos_fanatic = {
 		{
@@ -5291,9 +5293,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"chaos_fanatic",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5301,9 +5303,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"chaos_fanatic",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5311,9 +5313,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"chaos_fanatic",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5321,9 +5323,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"chaos_fanatic",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5331,9 +5333,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"chaos_fanatic",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5341,9 +5343,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"chaos_fanatic",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5351,10 +5353,10 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"chaos_fanatic",
-					40
-				}
-			}
-		}
+					40,
+				},
+			},
+		},
 	},
 	morris_TEST_chaos_marauder = {
 		{
@@ -5363,9 +5365,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"chaos_marauder",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5373,9 +5375,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"chaos_marauder",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5383,9 +5385,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"chaos_marauder",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5393,9 +5395,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"chaos_marauder",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5403,9 +5405,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"chaos_marauder",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5413,9 +5415,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"chaos_marauder",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5423,10 +5425,10 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"chaos_marauder",
-					40
-				}
-			}
-		}
+					40,
+				},
+			},
+		},
 	},
 	morris_TEST_chaos_marauder_with_shield = {
 		{
@@ -5435,9 +5437,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"chaos_marauder_with_shield",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5445,9 +5447,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"chaos_marauder_with_shield",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5455,9 +5457,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"chaos_marauder_with_shield",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5465,9 +5467,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"chaos_marauder_with_shield",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5475,9 +5477,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"chaos_marauder_with_shield",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5485,9 +5487,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"chaos_marauder_with_shield",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5495,10 +5497,10 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"chaos_marauder_with_shield",
-					40
-				}
-			}
-		}
+					40,
+				},
+			},
+		},
 	},
 	morris_TEST_chaos_berzerker = {
 		{
@@ -5507,9 +5509,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"chaos_berzerker",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5517,9 +5519,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"chaos_berzerker",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5527,9 +5529,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"chaos_berzerker",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5537,9 +5539,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"chaos_berzerker",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5547,9 +5549,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"chaos_berzerker",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5557,9 +5559,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"chaos_berzerker",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5567,10 +5569,10 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"chaos_berzerker",
-					40
-				}
-			}
-		}
+					40,
+				},
+			},
+		},
 	},
 	morris_TEST_chaos_raider = {
 		{
@@ -5579,9 +5581,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"chaos_raider",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5589,9 +5591,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"chaos_raider",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5599,9 +5601,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"chaos_raider",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5609,9 +5611,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"chaos_raider",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5619,9 +5621,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"chaos_raider",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5629,9 +5631,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"chaos_raider",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5639,10 +5641,10 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"chaos_raider",
-					40
-				}
-			}
-		}
+					40,
+				},
+			},
+		},
 	},
 	morris_TEST_chaos_warrior = {
 		{
@@ -5651,9 +5653,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"chaos_warrior",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5661,9 +5663,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"chaos_warrior",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5671,9 +5673,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"chaos_warrior",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5681,9 +5683,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"chaos_warrior",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5691,9 +5693,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"chaos_warrior",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5701,9 +5703,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"chaos_warrior",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5711,10 +5713,10 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"chaos_warrior",
-					40
-				}
-			}
-		}
+					40,
+				},
+			},
+		},
 	},
 	morris_TEST_beastmen_ungor = {
 		{
@@ -5723,9 +5725,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"beastmen_ungor",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5733,9 +5735,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"beastmen_ungor",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5743,9 +5745,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"beastmen_ungor",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5753,9 +5755,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"beastmen_ungor",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5763,9 +5765,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"beastmen_ungor",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5773,9 +5775,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"beastmen_ungor",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5783,10 +5785,10 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"beastmen_ungor",
-					40
-				}
-			}
-		}
+					40,
+				},
+			},
+		},
 	},
 	morris_TEST_beastmen_ungor_archer = {
 		{
@@ -5795,9 +5797,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"beastmen_ungor_archer",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5805,9 +5807,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"beastmen_ungor_archer",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5815,9 +5817,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"beastmen_ungor_archer",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5825,9 +5827,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"beastmen_ungor_archer",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5835,9 +5837,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"beastmen_ungor_archer",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5845,9 +5847,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"beastmen_ungor_archer",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5855,10 +5857,10 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"beastmen_ungor_archer",
-					40
-				}
-			}
-		}
+					40,
+				},
+			},
+		},
 	},
 	morris_TEST_beastmen_gor = {
 		{
@@ -5867,9 +5869,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"beastmen_gor",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5877,9 +5879,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"beastmen_gor",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5887,9 +5889,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"beastmen_gor",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5897,9 +5899,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"beastmen_gor",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5907,9 +5909,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"beastmen_gor",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5917,9 +5919,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"beastmen_gor",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5927,10 +5929,10 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"beastmen_gor",
-					40
-				}
-			}
-		}
+					40,
+				},
+			},
+		},
 	},
 	morris_TEST_beastmen_bestigor = {
 		{
@@ -5939,9 +5941,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"beastmen_bestigor",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5949,9 +5951,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"beastmen_bestigor",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5959,9 +5961,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"beastmen_bestigor",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5969,9 +5971,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"beastmen_bestigor",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5979,9 +5981,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"beastmen_bestigor",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5989,9 +5991,9 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"beastmen_bestigor",
-					40
-				}
-			}
+					40,
+				},
+			},
 		},
 		{
 			{
@@ -5999,11 +6001,11 @@ local morris_compositions = {
 				weight = 3,
 				breeds = {
 					"beastmen_bestigor",
-					40
-				}
-			}
-		}
-	}
+					40,
+				},
+			},
+		},
+	},
 }
 
 return morris_compositions

@@ -1,38 +1,41 @@
+﻿-- chunkname: @levels/honduras_dlcs/morris/level_settings_morris.lua
+
 require("levels/honduras_dlcs/morris/deus_level_settings")
 require("scripts/settings/dlcs/morris/deus_journey_settings")
 
 local theme_packages_lookup = {
-	wastes = "resource_packages/levels/dlcs/morris/wastes_common",
-	tzeentch = "resource_packages/levels/dlcs/morris/tzeentch_common",
 	belakor = "resource_packages/levels/dlcs/morris/belakor_common",
+	khorne = "resource_packages/levels/dlcs/morris/khorne_common",
 	nurgle = "resource_packages/levels/dlcs/morris/nurgle_common",
 	slaanesh = "resource_packages/levels/dlcs/morris/slaanesh_common",
-	khorne = "resource_packages/levels/dlcs/morris/khorne_common"
+	tzeentch = "resource_packages/levels/dlcs/morris/tzeentch_common",
+	wastes = "resource_packages/levels/dlcs/morris/wastes_common",
 }
+
 LevelSettings.morris_hub = {
-	conflict_settings = "inn_level",
-	knocked_down_setting = "knocked_down",
-	display_name = "morris_hub_name",
-	player_aux_bus_name = "environment_reverb_outside",
-	mechanism = "deus",
-	environment_state = "exterior",
-	default_surface_material = "dirt",
-	level_image = "level_icon_inn_level",
-	loading_ui_package_name = "morris/deus_loading_screen_1",
-	skip_generate_spawns = true,
-	hub_level = true,
 	ambient_sound_event = "silent_default_world_sound",
-	load_no_enemies = false,
-	has_multiple_loading_images = true,
-	no_terror_events = true,
-	no_bots_allowed = true,
+	conflict_settings = "inn_level",
+	default_surface_material = "dirt",
+	display_name = "morris_hub_name",
+	environment_state = "exterior",
 	game_mode = "inn_deus",
+	has_multiple_loading_images = true,
+	hub_level = true,
+	knocked_down_setting = "knocked_down",
+	level_image = "level_icon_inn_level",
 	level_name = "levels/honduras_dlcs/morris/morris_hub/world",
+	load_no_enemies = false,
+	loading_ui_package_name = "morris/deus_loading_screen_1",
+	mechanism = "deus",
+	no_bots_allowed = true,
 	no_nav_mesh = false,
+	no_terror_events = true,
+	player_aux_bus_name = "environment_reverb_outside",
+	skip_generate_spawns = true,
 	source_aux_bus_name = "environment_reverb_outside_source",
 	packages = {
 		"resource_packages/levels/inn_dependencies",
-		"resource_packages/levels/dlcs/morris/morris_hub"
+		"resource_packages/levels/dlcs/morris/morris_hub",
 	},
 	level_particle_effects = {},
 	level_screen_effects = {},
@@ -41,40 +44,40 @@ LevelSettings.morris_hub = {
 	pickup_settings = {
 		{
 			primary = {
+				ammo = 5,
 				deus_potions = 3,
-				ammo = 5
-			}
-		}
-	}
+			},
+		},
+	},
 }
 LevelSettings.dlc_morris_map = {
+	ambient_sound_event = "silent_default_world_sound",
+	conflict_settings = "disabled",
 	disable_percentage_completed = true,
 	display_name = "deus_map",
 	environment_state = "exterior",
-	music_won_state = "explore",
-	player_aux_bus_name = "environment_reverb_outside",
-	mechanism = "deus",
-	ambient_sound_event = "silent_default_world_sound",
+	game_mode = "map_deus",
 	knocked_down_setting = "knocked_down",
+	level_image = "level_image_any",
+	level_name = "levels/honduras_dlcs/morris/map_scene/world",
+	load_no_enemies = true,
 	loading_bg_image = "loading_screen_1",
 	loading_ui_package_name = "morris/deus_loading_screen_2",
-	conflict_settings = "disabled",
-	level_image = "level_image_any",
-	load_no_enemies = true,
-	no_terror_events = true,
-	game_mode = "map_deus",
-	level_name = "levels/honduras_dlcs/morris/map_scene/world",
+	mechanism = "deus",
+	music_won_state = "explore",
 	no_nav_mesh = true,
+	no_terror_events = true,
+	player_aux_bus_name = "environment_reverb_outside",
 	source_aux_bus_name = "environment_reverb_outside_source",
 	packages = {
-		"resource_packages/levels/dlcs/morris/map"
+		"resource_packages/levels/dlcs/morris/map",
 	},
 	level_particle_effects = {},
 	level_screen_effects = {},
 	locations = {},
 	override_dialogue_settings = {
-		dialogue_level_start_delay = 0
-	}
+		dialogue_level_start_delay = 0,
+	},
 }
 
 for level_key, settings in pairs(DEUS_SHRINE_LEVEL_SETTINGS) do
@@ -92,7 +95,7 @@ for level_key, settings in pairs(DEUS_LEVEL_SETTINGS) do
 		for _, path in ipairs(settings.paths) do
 			local settings_clone = table.clone(settings)
 			local permutation_name = theme_name .. "_path" .. path
-			local permutation_key, level_name = nil
+			local permutation_key, level_name
 
 			if settings.overridden_level_name then
 				fassert(settings.overridden_level_key, "If a morris level settings has an overridden_level_name, it also must have a overriden_level_key")
@@ -123,9 +126,10 @@ for level_key, settings in pairs(DEUS_LEVEL_SETTINGS) do
 			settings_clone.level_id = permutation_key
 			settings_clone.ommit_from_lobby_browser = true
 			settings_clone.allowed_locked_director_functions = {
-				beastmen = true
+				beastmen = true,
 			}
 			settings_clone.disable_quickplay = true
+
 			local base_level_name = settings.base_level_name
 			local packages = settings_clone.packages
 
@@ -142,27 +146,27 @@ end
 
 for journey_name, settings in pairs(DeusJourneySettings) do
 	local default_settings = {
-		player_aux_bus_name = "environment_reverb_outside",
 		ambient_sound_event = "silent_default_world_sound",
-		knocked_down_setting = "knocked_down",
+		conflict_settings = "disabled",
 		disable_percentage_completed = true,
 		environment_state = "exterior",
 		game_mode = "deus",
-		unlockable = true,
-		loading_bg_image = "loading_screen_1",
-		load_no_enemies = true,
-		no_terror_events = true,
-		loading_ui_package_name = "morris/deus_loading_screen_1",
-		conflict_settings = "disabled",
+		knocked_down_setting = "knocked_down",
 		level_name = "levels/honduras_dlcs/morris/map_scene/world",
+		load_no_enemies = true,
+		loading_bg_image = "loading_screen_1",
+		loading_ui_package_name = "morris/deus_loading_screen_1",
 		no_nav_mesh = true,
+		no_terror_events = true,
+		player_aux_bus_name = "environment_reverb_outside",
 		source_aux_bus_name = "environment_reverb_outside_source",
+		unlockable = true,
 		packages = {
-			"resource_packages/levels/dlcs/morris/map"
+			"resource_packages/levels/dlcs/morris/map",
 		},
 		level_particle_effects = {},
 		level_screen_effects = {},
-		locations = {}
+		locations = {},
 	}
 
 	table.merge(default_settings, settings)

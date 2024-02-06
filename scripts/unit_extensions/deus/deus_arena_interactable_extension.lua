@@ -1,10 +1,13 @@
+﻿-- chunkname: @scripts/unit_extensions/deus/deus_arena_interactable_extension.lua
+
 DeusArenaInteractableExtension = class(DeusArenaInteractableExtension)
+
 local STATES = {
 	INTERACTED = 2,
-	WAITING = 1
+	WAITING = 1,
 }
 local RPCS = {
-	"rpc_deus_set_arena_interactable_state"
+	"rpc_deus_set_arena_interactable_state",
 }
 
 DeusArenaInteractableExtension.init = function (self, extension_init_context, unit, extension_init_data)
@@ -55,6 +58,7 @@ DeusArenaInteractableExtension.update = function (self, unit, input, dt, context
 
 	if timer and timer < t then
 		timer = nil
+
 		local end_game = Unit.get_data(self._unit, "arena_interactable_data", "end_game")
 
 		if end_game then
@@ -133,6 +137,7 @@ DeusArenaInteractableExtension.on_server_interact = function (self, world, inter
 		end
 
 		local delay = Unit.get_data(self._unit, "arena_interactable_data", "delay")
+
 		self._timer = t + delay
 
 		LevelHelper:flow_event(self._world, "on_arena_end_triggered")

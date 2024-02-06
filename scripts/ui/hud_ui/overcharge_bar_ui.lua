@@ -1,8 +1,12 @@
+﻿-- chunkname: @scripts/ui/hud_ui/overcharge_bar_ui.lua
+
 local definitions = local_require("scripts/ui/hud_ui/overcharge_bar_ui_definitions")
+
 OverchargeBarUI = class(OverchargeBarUI)
+
 local accepted_slots = {
+	slot_melee = true,
 	slot_ranged = true,
-	slot_melee = true
 }
 local DEFAULT_UI_DATA = {
 	material = "overcharge_bar",
@@ -10,20 +14,20 @@ local DEFAULT_UI_DATA = {
 		255,
 		255,
 		255,
-		255
+		255,
 	},
 	color_medium = {
 		255,
 		255,
 		165,
-		0
+		0,
 	},
 	color_high = {
 		255,
 		255,
 		0,
-		0
-	}
+		0,
+	},
 }
 local KEEP_AT_0_DURATION = 0.5
 
@@ -42,13 +46,14 @@ OverchargeBarUI.init = function (self, parent, ingame_ui_context)
 	self.player_manager = ingame_ui_context.player_manager
 	self.render_settings = {
 		alpha_multiplier = 1,
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 	self._previous_overcharge_fraction = 0
 	self._keep_at_0_t = 0
 	self._is_spectator = false
 	self._spectated_player = nil
 	self._spectated_player_unit = nil
+
 	local event_manager = Managers.state.event
 
 	event_manager:register(self, "on_spectator_target_changed", "on_spectator_target_changed")
@@ -138,15 +143,17 @@ OverchargeBarUI.create_ui_elements = function (self)
 	UIRenderer.clear_scenegraph_queue(self.ui_renderer)
 
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(definitions.scenegraph_definition)
+
 	local widget_definitions = definitions.inventory_entry_definitions
+
 	self.charge_bar = UIWidget.init(definitions.widget_definitions.charge_bar)
 end
 
 local customizer_data = {
-	root_scenegraph_id = "screen_bottom_pivot_parent",
+	drag_scenegraph_id = "charge_bar",
 	label = "Overcharge",
 	registry_key = "overcharge",
-	drag_scenegraph_id = "charge_bar"
+	root_scenegraph_id = "screen_bottom_pivot_parent",
 }
 
 OverchargeBarUI.update = function (self, dt, t, player)
@@ -185,8 +192,11 @@ OverchargeBarUI.update_bar_size = function (self, max_overcharge_value, min_thre
 	local new_width = math.remap(0, 40, 0, definitions.DEFAULT_BAR_SIZE[1], max_overcharge_value)
 	local widget = self.charge_bar
 	local content = widget.content
+
 	content.size[1] = new_width - 6
+
 	local style = widget.style
+
 	style.frame.size[1] = new_width
 	style.bar_1.size[1] = new_width - 6
 	style.icon.offset[1] = new_width
@@ -195,7 +205,9 @@ OverchargeBarUI.update_bar_size = function (self, max_overcharge_value, min_thre
 	style.bar_fg.size[1] = new_width
 	style.min_threshold.offset[1] = 3 + min_threshold_fraction * new_width
 	style.max_threshold.offset[1] = 3 + max_threshold_fraction * new_width
+
 	local scene_graph = self.ui_scenegraph
+
 	scene_graph.charge_bar.size[1] = new_width
 end
 
@@ -203,16 +215,19 @@ OverchargeBarUI.set_charge_bar_fraction = function (self, player, overcharge_fra
 	local widget = self.charge_bar
 	local style = widget.style
 	local content = widget.content
+
 	overcharge_fraction = math.lerp(content.internal_gradient_threshold or 0, math.min(overcharge_fraction, 1), 0.3)
 	content.internal_gradient_threshold = overcharge_fraction
 	style.bar_1.gradient_threshold = overcharge_fraction
+
 	local alpha_multiplier = 1
-	local color = nil
+	local color
 	local icon_color = style.icon.color
 	local bar_color = style.bar_1.color
 	local career_name = player:career_name()
 	local overcharge_data = OverchargeData[career_name]
 	local ui_data = overcharge_data and overcharge_data.overcharge_ui or DEFAULT_UI_DATA
+
 	content.bar_1 = ui_data.material
 
 	if overcharge_fraction <= min_threshold_fraction then
@@ -229,10 +244,12 @@ OverchargeBarUI.set_charge_bar_fraction = function (self, player, overcharge_fra
 	bar_color[2] = color[2]
 	bar_color[3] = color[3]
 	bar_color[4] = color[4]
+
 	local pulse_speed = 10
 	local pulse_global_fraction = math.min(math.max(overcharge_fraction - max_threshold_fraction, 0) / (1 - max_threshold_fraction) * 1.3, 1)
 	local pulse_fraction = 0.5 + math.sin(Managers.time:time("ui") * pulse_speed) * 0.5
 	local pulse_alpha = (100 + pulse_fraction * 155) * pulse_global_fraction
+
 	style.frame.color[1] = pulse_alpha
 	icon_color[1] = pulse_alpha
 	icon_color[2] = color[2]
@@ -251,6 +268,7 @@ end
 OverchargeBarUI._apply_crosshair_position = function (self, x, y)
 	local scenegraph_id = "screen_bottom_pivot"
 	local position = self.ui_scenegraph[scenegraph_id].local_position
+
 	position[1] = x
 	position[2] = y
 end

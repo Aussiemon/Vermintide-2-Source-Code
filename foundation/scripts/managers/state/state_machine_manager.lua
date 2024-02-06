@@ -1,3 +1,5 @@
+﻿-- chunkname: @foundation/scripts/managers/state/state_machine_manager.lua
+
 StateMachineManager = class(StateMachineManager)
 StateMachineManager.DEBUG = false
 StateMachineManager.FONT = "foundation/fonts/debug"
@@ -64,6 +66,7 @@ StateMachineManager._state_machines_column_width = function (self, state_machine
 	for _, state_machine in ipairs(state_machines) do
 		local min, max = Gui.text_extents(self._gui, state_machine._name, StateMachineManager.FONT, StateMachineManager.FONT_SIZE)
 		local text_width = max.x - min.x
+
 		width = math.max(text_width, width)
 	end
 
@@ -76,6 +79,7 @@ StateMachineManager._draw_panel = function (self)
 	local text_margin = 4
 	local root_state_machines = self:_root_state_machines()
 	local column1_width = self:_state_machines_column_width(root_state_machines) + 2 * text_margin
+
 	self._column1_width = math.max(column1_width, self._column1_width)
 
 	Gui.rect(self._gui, Vector2(column_margin, column_margin), Vector2(self._column1_width, height - 2 * column_margin), Color(64, 0, 0, 0))

@@ -1,291 +1,293 @@
+﻿-- chunkname: @scripts/unit_extensions/weapons/area_damage/liquid/damage_wave_templates.lua
+
 local stagger_types = require("scripts/utils/stagger_types")
-DamageWaveTemplates = {
-	templates = {
-		plague_wave_teleport = {
-			trigger_dialogue_on_impact = true,
-			stop_running_wave_sound = "Stop_magic_plague_wave_loop",
-			buff_wave_impact_name = "plague_wave_face_base",
-			create_bot_aoe_threat = true,
-			launch_wave_sound = "Play_magic_plague_wave",
-			fx_unit = "units/beings/enemies/chaos_sorcerer_fx/chr_chaos_sorcerer_fx",
-			start_speed = 5,
-			max_speed = 10,
-			fx_name_arrived = "fx/chaos_sorcerer_plague_wave_hit_01",
-			apply_buff_to_player = true,
-			fx_separation_dist = 1.5,
-			running_wave_sound = "Play_magic_plague_wave_loop",
-			max_height = 2.5,
-			fx_name_running = "fx/chaos_sorcerer_plauge_wave_01",
-			ai_query_distance = 0.8,
-			launch_animation = "wave_summon_release",
-			acceleration = 10,
-			overflow_dist = 5,
-			player_query_distance = 0.8,
-			particle_arrived_stop_mode = "stop",
-			apply_impact_buff_to_ai = false,
-			impact_wave_sound = "Play_magic_plague_wave_hit",
-			damage_friendly_ai = true,
-			apply_buff_to_ai = true,
-			time_of_life = 10,
-			use_nav_cost_map_volumes = false,
-			fx_name_impact = "fx/plague_wave_03",
-			nav_cost_map_cost_type = "plague_wave",
-			apply_impact_buff_to_player = true,
-			fx_name_init = "fx/chaos_sorcerer_plauge_wave_02",
-			immune_breeds = {
-				chaos_troll = true,
-				chaos_spawn = true,
-				skaven_grey_seer = true,
-				chaos_plague_sorcerer = true,
-				chaos_exalted_sorcerer = true,
-				skaven_rat_ogre = true,
-				skaven_stormfiend = true
-			},
-			ai_push_data = {
-				stagger_distance = 3,
-				push_along_wave_direction = true,
-				stagger_impact = {
-					stagger_types.explosion,
-					stagger_types.heavy,
-					stagger_types.none,
-					stagger_types.none,
-					stagger_types.explosion
-				},
-				stagger_duration = {
-					2.5,
-					1,
-					0,
-					0,
-					4
-				}
-			},
-			player_push_data = {
-				ahead_dist = 1.5,
-				push_forward_offset = 1.5,
-				push_width = 1.25,
-				player_pushed_speed = 20,
-				dodged_width = 0.5
-			}
+
+DamageWaveTemplates = {}
+DamageWaveTemplates.templates = {
+	plague_wave_teleport = {
+		acceleration = 10,
+		ai_query_distance = 0.8,
+		apply_buff_to_ai = true,
+		apply_buff_to_player = true,
+		apply_impact_buff_to_ai = false,
+		apply_impact_buff_to_player = true,
+		buff_wave_impact_name = "plague_wave_face_base",
+		create_bot_aoe_threat = true,
+		damage_friendly_ai = true,
+		fx_name_arrived = "fx/chaos_sorcerer_plague_wave_hit_01",
+		fx_name_impact = "fx/plague_wave_03",
+		fx_name_init = "fx/chaos_sorcerer_plauge_wave_02",
+		fx_name_running = "fx/chaos_sorcerer_plauge_wave_01",
+		fx_separation_dist = 1.5,
+		fx_unit = "units/beings/enemies/chaos_sorcerer_fx/chr_chaos_sorcerer_fx",
+		impact_wave_sound = "Play_magic_plague_wave_hit",
+		launch_animation = "wave_summon_release",
+		launch_wave_sound = "Play_magic_plague_wave",
+		max_height = 2.5,
+		max_speed = 10,
+		nav_cost_map_cost_type = "plague_wave",
+		overflow_dist = 5,
+		particle_arrived_stop_mode = "stop",
+		player_query_distance = 0.8,
+		running_wave_sound = "Play_magic_plague_wave_loop",
+		start_speed = 5,
+		stop_running_wave_sound = "Stop_magic_plague_wave_loop",
+		time_of_life = 10,
+		trigger_dialogue_on_impact = true,
+		use_nav_cost_map_volumes = false,
+		immune_breeds = {
+			chaos_exalted_sorcerer = true,
+			chaos_plague_sorcerer = true,
+			chaos_spawn = true,
+			chaos_troll = true,
+			skaven_grey_seer = true,
+			skaven_rat_ogre = true,
+			skaven_stormfiend = true,
 		},
-		plague_wave = {
-			trigger_dialogue_on_impact = true,
-			stop_running_wave_sound = "Stop_magic_plague_wave_loop",
-			buff_wave_impact_name = "plague_wave_face_base",
-			create_bot_aoe_threat = true,
-			launch_wave_sound = "Play_magic_plague_wave",
-			fx_unit = "units/beings/enemies/chaos_sorcerer_fx/chr_chaos_sorcerer_fx",
-			start_speed = 10,
-			max_speed = 20,
-			fx_name_arrived = "fx/chaos_sorcerer_plague_wave_hit_01",
-			apply_buff_to_player = true,
-			fx_separation_dist = 1.5,
-			running_wave_sound = "Play_magic_plague_wave_loop",
-			max_height = 2.5,
-			fx_name_running = "fx/chaos_sorcerer_plauge_wave_01",
-			ai_query_distance = 0.8,
-			launch_animation = "wave_summon_release",
-			acceleration = 15,
-			overflow_dist = 5,
-			player_query_distance = 0.8,
-			particle_arrived_stop_mode = "stop",
-			apply_impact_buff_to_ai = false,
-			impact_wave_sound = "Play_magic_plague_wave_hit",
-			damage_friendly_ai = true,
-			apply_buff_to_ai = true,
-			time_of_life = 10,
-			use_nav_cost_map_volumes = false,
-			fx_name_impact = "fx/plague_wave_03",
-			nav_cost_map_cost_type = "plague_wave",
-			apply_impact_buff_to_player = true,
-			fx_name_init = "fx/chaos_sorcerer_plauge_wave_02",
-			immune_breeds = {
-				chaos_troll = true,
-				chaos_spawn = true,
-				skaven_grey_seer = true,
-				chaos_plague_sorcerer = true,
-				chaos_exalted_sorcerer = true,
-				skaven_rat_ogre = true,
-				skaven_stormfiend = true
+		ai_push_data = {
+			push_along_wave_direction = true,
+			stagger_distance = 3,
+			stagger_impact = {
+				stagger_types.explosion,
+				stagger_types.heavy,
+				stagger_types.none,
+				stagger_types.none,
+				stagger_types.explosion,
 			},
-			ai_push_data = {
-				stagger_distance = 3,
-				push_along_wave_direction = true,
-				stagger_impact = {
-					stagger_types.explosion,
-					stagger_types.heavy,
-					stagger_types.none,
-					stagger_types.none,
-					stagger_types.explosion
-				},
-				stagger_duration = {
-					2.5,
-					1,
-					0,
-					0,
-					4
-				}
+			stagger_duration = {
+				2.5,
+				1,
+				0,
+				0,
+				4,
 			},
-			player_push_data = {
-				ahead_dist = 1.5,
-				push_forward_offset = 1.5,
-				push_width = 1.25,
-				player_pushed_speed = 20,
-				dodged_width = 0.5
-			}
 		},
-		pattern_plague_wave = {
-			fx_separation_dist = 1.5,
-			max_speed = 15,
-			fx_unit = "units/beings/enemies/chaos_sorcerer_fx/chr_chaos_sorcerer_fx",
-			launch_animation = "wave_summon_release",
-			buff_wave_impact_name = "plague_wave_face_base",
-			overflow_dist = 5,
-			fx_name_running = "fx/chaos_sorcerer_plauge_wave_01",
-			fx_name_arrived = "fx/chaos_sorcerer_plague_wave_hit_01",
-			start_speed = 10,
-			particle_arrived_stop_mode = "stop",
-			player_query_distance = 0.8,
-			apply_buff_to_player = false,
-			launch_wave_sound = "Play_magic_plague_wave",
-			running_wave_sound = "Play_magic_plague_wave_loop",
-			apply_impact_buff_to_ai = false,
-			max_height = 2.5,
-			impact_wave_sound = "Play_magic_plague_wave_hit",
-			damage_friendly_ai = true,
-			apply_buff_to_ai = false,
-			time_of_life = 3,
-			acceleration = 8,
-			stop_running_wave_sound = "Stop_magic_plague_wave_loop",
-			use_nav_cost_map_volumes = false,
-			ai_query_distance = 0.8,
-			fx_name_impact = "fx/plague_wave_03",
-			nav_cost_map_cost_type = "plague_wave",
-			apply_impact_buff_to_player = true,
-			fx_name_init = "fx/chaos_sorcerer_plauge_wave_02",
-			immune_breeds = {
-				chaos_troll = true,
-				chaos_spawn = true,
-				chaos_exalted_sorcerer = true,
-				chaos_plague_sorcerer = true,
-				skaven_rat_ogre = true,
-				skaven_stormfiend = true
-			},
-			ai_push_data = {
-				stagger_distance = 3,
-				push_along_wave_direction = true,
-				stagger_impact = {
-					stagger_types.explosion,
-					stagger_types.heavy,
-					stagger_types.none,
-					stagger_types.none,
-					stagger_types.explosion
-				},
-				stagger_duration = {
-					2.5,
-					1,
-					0,
-					0,
-					4
-				}
-			},
-			player_push_data = {
-				ahead_dist = 1.5,
-				push_forward_offset = 1.5,
-				push_width = 1.25,
-				player_pushed_speed = 17,
-				dodged_width = 0.5
-			}
+		player_push_data = {
+			ahead_dist = 1.5,
+			dodged_width = 0.5,
+			player_pushed_speed = 20,
+			push_forward_offset = 1.5,
+			push_width = 1.25,
 		},
-		vermintide = {
-			fx_separation_dist = 1.5,
-			max_speed = 25,
-			fx_unit = "units/hub_elements/empty",
-			acceleration = 25,
-			buff_wave_impact_name = "vermintide_face_base",
-			overflow_dist = 5,
-			fx_name_running = "fx/chr_grey_seer_lightning_wave_01",
-			fx_name_arrived = "fx/chr_grey_seer_lightning_hit_02",
-			start_speed = 12,
-			particle_arrived_stop_mode = "stop",
-			player_query_distance = 1,
-			apply_buff_to_player = true,
-			create_bot_aoe_threat = true,
-			running_wave_sound = "Play_emitter_grey_seer_electric_ground_wave",
-			apply_impact_buff_to_ai = false,
-			max_height = 2.5,
-			stop_running_wave_sound = "Stop_emitter_grey_seer_electric_ground_wave",
-			damage_friendly_ai = true,
-			apply_buff_to_ai = true,
-			time_of_life = 10,
-			trigger_dialogue_on_impact = true,
-			use_nav_cost_map_volumes = false,
-			ai_query_distance = 1,
-			fx_name_impact = "fx/chr_grey_seer_lightning_hit_01",
-			nav_cost_map_cost_type = "plague_wave",
-			apply_impact_buff_to_player = true,
-			fx_name_init = "fx/chr_grey_seer_lightning_init_01",
-			immune_breeds = {
-				chaos_troll = true,
-				chaos_spawn = true,
-				skaven_grey_seer = true,
-				chaos_plague_sorcerer = true,
-				chaos_exalted_sorcerer = true,
-				skaven_rat_ogre = true,
-				skaven_stormfiend = true
+	},
+	plague_wave = {
+		acceleration = 15,
+		ai_query_distance = 0.8,
+		apply_buff_to_ai = true,
+		apply_buff_to_player = true,
+		apply_impact_buff_to_ai = false,
+		apply_impact_buff_to_player = true,
+		buff_wave_impact_name = "plague_wave_face_base",
+		create_bot_aoe_threat = true,
+		damage_friendly_ai = true,
+		fx_name_arrived = "fx/chaos_sorcerer_plague_wave_hit_01",
+		fx_name_impact = "fx/plague_wave_03",
+		fx_name_init = "fx/chaos_sorcerer_plauge_wave_02",
+		fx_name_running = "fx/chaos_sorcerer_plauge_wave_01",
+		fx_separation_dist = 1.5,
+		fx_unit = "units/beings/enemies/chaos_sorcerer_fx/chr_chaos_sorcerer_fx",
+		impact_wave_sound = "Play_magic_plague_wave_hit",
+		launch_animation = "wave_summon_release",
+		launch_wave_sound = "Play_magic_plague_wave",
+		max_height = 2.5,
+		max_speed = 20,
+		nav_cost_map_cost_type = "plague_wave",
+		overflow_dist = 5,
+		particle_arrived_stop_mode = "stop",
+		player_query_distance = 0.8,
+		running_wave_sound = "Play_magic_plague_wave_loop",
+		start_speed = 10,
+		stop_running_wave_sound = "Stop_magic_plague_wave_loop",
+		time_of_life = 10,
+		trigger_dialogue_on_impact = true,
+		use_nav_cost_map_volumes = false,
+		immune_breeds = {
+			chaos_exalted_sorcerer = true,
+			chaos_plague_sorcerer = true,
+			chaos_spawn = true,
+			chaos_troll = true,
+			skaven_grey_seer = true,
+			skaven_rat_ogre = true,
+			skaven_stormfiend = true,
+		},
+		ai_push_data = {
+			push_along_wave_direction = true,
+			stagger_distance = 3,
+			stagger_impact = {
+				stagger_types.explosion,
+				stagger_types.heavy,
+				stagger_types.none,
+				stagger_types.none,
+				stagger_types.explosion,
 			},
-			ai_push_data = {
-				stagger_distance = 3,
-				push_along_wave_direction = true,
-				stagger_impact = {
-					stagger_types.explosion,
-					stagger_types.heavy,
-					stagger_types.none,
-					stagger_types.none,
-					stagger_types.explosion
-				},
-				stagger_duration = {
-					2.5,
-					1,
-					0,
-					0,
-					4
-				}
+			stagger_duration = {
+				2.5,
+				1,
+				0,
+				0,
+				4,
 			},
-			player_push_data = {
-				ahead_dist = 1.5,
-				push_forward_offset = 1.5,
-				push_width = 1.25,
-				player_pushed_speed = 17,
-				dodged_width = 0.5
-			}
-		}
-	}
+		},
+		player_push_data = {
+			ahead_dist = 1.5,
+			dodged_width = 0.5,
+			player_pushed_speed = 20,
+			push_forward_offset = 1.5,
+			push_width = 1.25,
+		},
+	},
+	pattern_plague_wave = {
+		acceleration = 8,
+		ai_query_distance = 0.8,
+		apply_buff_to_ai = false,
+		apply_buff_to_player = false,
+		apply_impact_buff_to_ai = false,
+		apply_impact_buff_to_player = true,
+		buff_wave_impact_name = "plague_wave_face_base",
+		damage_friendly_ai = true,
+		fx_name_arrived = "fx/chaos_sorcerer_plague_wave_hit_01",
+		fx_name_impact = "fx/plague_wave_03",
+		fx_name_init = "fx/chaos_sorcerer_plauge_wave_02",
+		fx_name_running = "fx/chaos_sorcerer_plauge_wave_01",
+		fx_separation_dist = 1.5,
+		fx_unit = "units/beings/enemies/chaos_sorcerer_fx/chr_chaos_sorcerer_fx",
+		impact_wave_sound = "Play_magic_plague_wave_hit",
+		launch_animation = "wave_summon_release",
+		launch_wave_sound = "Play_magic_plague_wave",
+		max_height = 2.5,
+		max_speed = 15,
+		nav_cost_map_cost_type = "plague_wave",
+		overflow_dist = 5,
+		particle_arrived_stop_mode = "stop",
+		player_query_distance = 0.8,
+		running_wave_sound = "Play_magic_plague_wave_loop",
+		start_speed = 10,
+		stop_running_wave_sound = "Stop_magic_plague_wave_loop",
+		time_of_life = 3,
+		use_nav_cost_map_volumes = false,
+		immune_breeds = {
+			chaos_exalted_sorcerer = true,
+			chaos_plague_sorcerer = true,
+			chaos_spawn = true,
+			chaos_troll = true,
+			skaven_rat_ogre = true,
+			skaven_stormfiend = true,
+		},
+		ai_push_data = {
+			push_along_wave_direction = true,
+			stagger_distance = 3,
+			stagger_impact = {
+				stagger_types.explosion,
+				stagger_types.heavy,
+				stagger_types.none,
+				stagger_types.none,
+				stagger_types.explosion,
+			},
+			stagger_duration = {
+				2.5,
+				1,
+				0,
+				0,
+				4,
+			},
+		},
+		player_push_data = {
+			ahead_dist = 1.5,
+			dodged_width = 0.5,
+			player_pushed_speed = 17,
+			push_forward_offset = 1.5,
+			push_width = 1.25,
+		},
+	},
+	vermintide = {
+		acceleration = 25,
+		ai_query_distance = 1,
+		apply_buff_to_ai = true,
+		apply_buff_to_player = true,
+		apply_impact_buff_to_ai = false,
+		apply_impact_buff_to_player = true,
+		buff_wave_impact_name = "vermintide_face_base",
+		create_bot_aoe_threat = true,
+		damage_friendly_ai = true,
+		fx_name_arrived = "fx/chr_grey_seer_lightning_hit_02",
+		fx_name_impact = "fx/chr_grey_seer_lightning_hit_01",
+		fx_name_init = "fx/chr_grey_seer_lightning_init_01",
+		fx_name_running = "fx/chr_grey_seer_lightning_wave_01",
+		fx_separation_dist = 1.5,
+		fx_unit = "units/hub_elements/empty",
+		max_height = 2.5,
+		max_speed = 25,
+		nav_cost_map_cost_type = "plague_wave",
+		overflow_dist = 5,
+		particle_arrived_stop_mode = "stop",
+		player_query_distance = 1,
+		running_wave_sound = "Play_emitter_grey_seer_electric_ground_wave",
+		start_speed = 12,
+		stop_running_wave_sound = "Stop_emitter_grey_seer_electric_ground_wave",
+		time_of_life = 10,
+		trigger_dialogue_on_impact = true,
+		use_nav_cost_map_volumes = false,
+		immune_breeds = {
+			chaos_exalted_sorcerer = true,
+			chaos_plague_sorcerer = true,
+			chaos_spawn = true,
+			chaos_troll = true,
+			skaven_grey_seer = true,
+			skaven_rat_ogre = true,
+			skaven_stormfiend = true,
+		},
+		ai_push_data = {
+			push_along_wave_direction = true,
+			stagger_distance = 3,
+			stagger_impact = {
+				stagger_types.explosion,
+				stagger_types.heavy,
+				stagger_types.none,
+				stagger_types.none,
+				stagger_types.explosion,
+			},
+			stagger_duration = {
+				2.5,
+				1,
+				0,
+				0,
+				4,
+			},
+		},
+		player_push_data = {
+			ahead_dist = 1.5,
+			dodged_width = 0.5,
+			player_pushed_speed = 17,
+			push_forward_offset = 1.5,
+			push_width = 1.25,
+		},
+	},
 }
 DamageWaveTemplates.templates.sienna_adept_ability_trail = {
-	fx_separation_dist = 0.45,
-	max_speed = 100,
-	ignore_obstacles = true,
 	acceleration = 100,
-	overflow_dist = 0,
-	buff_template_name = "sienna_adept_ability_trail",
-	start_speed = 15,
-	fx_name_running = "fx/brw_adept_skill_02",
-	player_query_distance = 1,
+	ai_query_distance = 2,
+	apply_buff_to_ai = true,
 	apply_buff_to_player = true,
-	blob_separation_dist = 1,
-	fx_name_impact = "fx/brw_adept_skill_02",
 	apply_impact_buff_to_ai = false,
-	max_height = 2.5,
+	apply_impact_buff_to_player = false,
+	blob_separation_dist = 1,
+	buff_template_name = "sienna_adept_ability_trail",
+	buff_template_type = "sienna_adept_ability_trail",
 	fx_name_arrived = "fx/brw_adept_skill_02",
 	fx_name_filled = "fx/brw_adept_skill_02",
-	apply_buff_to_ai = true,
-	time_of_life = 6,
-	particle_arrived_stop_mode = "stop",
-	launch_wave_sound = "Play_sienna_adept_blink_ability",
-	ai_query_distance = 2,
-	buff_template_type = "sienna_adept_ability_trail",
-	apply_impact_buff_to_player = false,
+	fx_name_impact = "fx/brw_adept_skill_02",
 	fx_name_init = "fx/brw_adept_skill_02",
+	fx_name_running = "fx/brw_adept_skill_02",
+	fx_separation_dist = 0.45,
+	ignore_obstacles = true,
+	launch_wave_sound = "Play_sienna_adept_blink_ability",
+	max_height = 2.5,
+	max_speed = 100,
+	overflow_dist = 0,
+	particle_arrived_stop_mode = "stop",
+	player_query_distance = 1,
+	start_speed = 15,
+	time_of_life = 6,
 	immune_breeds = {},
 	add_buff_func = function (damage_wave_ext, target_unit, buff_template_name, attacker_unit, source_unit)
 		if Unit.alive(target_unit) then
@@ -302,11 +304,12 @@ DamageWaveTemplates.templates.sienna_adept_ability_trail = {
 
 			if buff then
 				local t = Managers.time:time("game")
+
 				buff.start_time = t
 				buff.duration = buff.template.leave_linger_time
 			end
 		end
-	end
+	end,
 }
 DamageWaveTemplates.templates.sienna_adept_ability_trail_increased_duration = table.clone(DamageWaveTemplates.templates.sienna_adept_ability_trail)
 DamageWaveTemplates.templates.sienna_adept_ability_trail_increased_duration.time_of_life = 10
@@ -316,46 +319,46 @@ DamageWaveTemplates.templates.sienna_adept_ability_trail_increased_duration.fx_n
 DamageWaveTemplates.templates.sienna_adept_ability_trail_increased_duration.fx_name_filled = "fx/brw_adept_skill_02_upgraded"
 DamageWaveTemplates.templates.sienna_adept_ability_trail_increased_duration.fx_name_arrived = "fx/brw_adept_skill_02_upgraded"
 DamageWaveTemplates.templates.thornsister_thorn_wall_push = {
-	launch_wave_sound = "career_ability_kerilian_thorngrasp",
-	max_speed = 10,
-	ignore_obstacles = true,
-	time_of_life = 6,
 	acceleration = 100,
-	overflow_dist = 0.2,
-	fx_name_running = "fx/thorn_vines",
-	particle_arrived_stop_mode = "stop",
-	start_speed = 10,
-	fx_unit = "units/hub_elements/empty",
-	player_query_distance = 1.5,
+	ai_query_distance = 1.5,
+	apply_buff_to_ai = false,
 	apply_buff_to_player = false,
 	apply_impact_buff_to_ai = false,
-	max_height = 2.5,
-	damage_friendly_ai = true,
-	apply_buff_to_ai = false,
-	create_blobs = false,
-	is_transient = true,
-	transient_name_override = "units/beings/player/way_watcher_thornsister/abilities/ww_thornsister_thorn_wave_01",
-	ai_query_distance = 1.5,
 	apply_impact_buff_to_player = false,
+	create_blobs = false,
+	damage_friendly_ai = true,
+	fx_name_running = "fx/thorn_vines",
+	fx_unit = "units/hub_elements/empty",
+	ignore_obstacles = true,
+	is_transient = true,
+	launch_wave_sound = "career_ability_kerilian_thorngrasp",
+	max_height = 2.5,
+	max_speed = 10,
+	overflow_dist = 0.2,
+	particle_arrived_stop_mode = "stop",
+	player_query_distance = 1.5,
+	start_speed = 10,
+	time_of_life = 6,
+	transient_name_override = "units/beings/player/way_watcher_thornsister/abilities/ww_thornsister_thorn_wave_01",
 	immune_breeds = {
-		chaos_troll = true,
-		chaos_spawn = true,
-		skaven_grey_seer = true,
-		chaos_plague_sorcerer = true,
 		chaos_exalted_sorcerer = true,
+		chaos_plague_sorcerer = true,
+		chaos_spawn = true,
+		chaos_troll = true,
+		skaven_grey_seer = true,
 		skaven_rat_ogre = true,
-		skaven_stormfiend = true
+		skaven_stormfiend = true,
 	},
 	ai_push_data = {
-		push_along_wave_direction = true,
 		drag_along_wave = true,
+		push_along_wave_direction = true,
 		stagger_impact = {
 			stagger_types.heavy,
 			stagger_types.heavy,
 			stagger_types.heavy,
 			stagger_types.none,
 			stagger_types.heavy,
-			stagger_types.medium
+			stagger_types.medium,
 		},
 		stagger_duration = {
 			0.5,
@@ -363,7 +366,7 @@ DamageWaveTemplates.templates.thornsister_thorn_wall_push = {
 			0.5,
 			0,
 			0.5,
-			0.5
+			0.5,
 		},
 		stagger_refresh_time = {
 			0.5,
@@ -371,7 +374,7 @@ DamageWaveTemplates.templates.thornsister_thorn_wall_push = {
 			0.5,
 			math.huge,
 			0.5,
-			math.huge
+			math.huge,
 		},
 		stagger_distance_table = {
 			0.5,
@@ -379,7 +382,7 @@ DamageWaveTemplates.templates.thornsister_thorn_wall_push = {
 			0.5,
 			0.5,
 			0.5,
-			1
+			1,
 		},
 		wave_drag_multiplier_table = {
 			1,
@@ -387,20 +390,20 @@ DamageWaveTemplates.templates.thornsister_thorn_wall_push = {
 			1,
 			0,
 			1,
-			0
-		}
+			0,
+		},
 	},
 	update_func = function (damage_wave_ext, unit, position, t, dt)
 		local update_data = damage_wave_ext._update_data
 
 		if not update_data then
 			update_data = {
-				next_spawn_t = 0
+				next_spawn_t = 0,
 			}
 			damage_wave_ext._update_data = update_data
 		end
 
-		if update_data.next_spawn_t <= t and damage_wave_ext.wave_direction then
+		if t >= update_data.next_spawn_t and damage_wave_ext.wave_direction then
 			local unit_name = "units/beings/player/way_watcher_thornsister/abilities/ww_thornsister_thorn_wave_01"
 			local scale_min = 0.75
 			local scale_max = 1.25
@@ -422,8 +425,10 @@ DamageWaveTemplates.templates.thornsister_thorn_wall_push = {
 				local floor_normal = Vector3.normalize(Vector3.cross(p2 - p1, p3 - p1))
 				local forward = Quaternion.forward(spawn_rotation)
 				local right = Vector3.cross(forward, floor_normal)
+
 				forward = Vector3.cross(floor_normal, right)
 				spawn_rotation = Quaternion.look(forward, floor_normal)
+
 				local new_unit = Managers.state.unit_spawner:spawn_local_unit(unit_name, spawn_pos + depth_offset, spawn_rotation)
 				local random_scale = math.lerp(scale_min, scale_max, math.random())
 
@@ -454,7 +459,7 @@ DamageWaveTemplates.templates.thornsister_thorn_wall_push = {
 				Managers.state.unit_spawner:request_spawn_network_unit("thornsister_thorn_wall_unit", spawn_position, rotation, source_unit, wall_index, i)
 			end
 		end
-	end
+	end,
 }
 
 local function necro_wave_try_direction(nav_world, from, velocity, d_angle)
@@ -470,48 +475,48 @@ local function necro_wave_try_direction(nav_world, from, velocity, d_angle)
 end
 
 DamageWaveTemplates.templates.necromancer_curse_wave = {
-	stop_running_wave_sound = "Stop_career_necro_ability_withering_wave_loop",
-	max_speed = 4,
-	ignore_obstacles = true,
-	num_waves = 1,
 	acceleration = 0,
-	overflow_dist = 0.2,
+	apply_buff_to_ai = false,
+	apply_buff_to_player = false,
+	apply_impact_buff_to_ai = true,
+	apply_impact_buff_to_player = false,
 	buff_wave_impact_name = "sienna_necromancer_career_skill_on_hit_damage",
+	damage_friendly_ai = false,
 	fx_name_running = "fx/necromancer_wave",
-	start_speed = 4,
+	fx_unit = "units/hub_elements/empty",
+	ignore_obstacles = true,
+	max_height = 2.5,
+	max_speed = 4,
+	num_waves = 1,
+	overflow_dist = 0.2,
 	particle_arrived_stop_mode = "stop",
 	player_query_distance = 2.2,
-	apply_buff_to_player = false,
 	running_wave_sound = "Play_career_necro_ability_withering_wave_loop",
-	apply_impact_buff_to_ai = true,
-	max_height = 2.5,
-	fx_unit = "units/hub_elements/empty",
-	damage_friendly_ai = false,
-	apply_buff_to_ai = false,
-	time_of_life = 3.5,
 	spawn_separation_dist = 0.4,
+	start_speed = 4,
+	stop_running_wave_sound = "Stop_career_necro_ability_withering_wave_loop",
 	target_separation_dist = 1.5,
-	apply_impact_buff_to_player = false,
+	time_of_life = 3.5,
 	immune_breeds = {},
 	running_spawn_config = {
 		{
+			frequency = 1,
+			max_random_angle = 0,
 			separation_type = "box",
 			spawn_type = "unit",
 			start_delay = 0,
-			max_random_angle = 0,
-			frequency = 1,
 			names = {
-				"units/decals/necromancer_ability_decal"
+				"units/decals/necromancer_ability_decal",
 			},
 			bounds = {
 				0,
 				0,
-				0
+				0,
 			},
 			offset = {
 				0,
 				4,
-				0
+				0,
 			},
 			on_spawn = function (damage_wave_extension, config, name, unit, world)
 				local scale = Vector3(5, 6, 5)
@@ -527,31 +532,31 @@ DamageWaveTemplates.templates.necromancer_curse_wave = {
 				Unit.set_vector2_for_material(unit, "projector", "start_end_time", Vector2(start_time, end_time))
 				Unit.set_vector2_for_material(unit, "projector", "fade_direction", fade_direction)
 				Unit.set_scalar_for_material(unit, "projector", "trailing_fade_delay", 1.5)
-			end
+			end,
 		},
 		{
+			frequency = 0.5,
+			max_random_angle = 0,
 			separation_type = "box",
 			spawn_type = "unit",
 			start_delay = 0,
-			max_random_angle = 0,
-			frequency = 0.5,
 			names = {
 				"units/decals/necromancer_ability_decal_mark1",
 				"units/decals/necromancer_ability_decal_mark2",
 				"units/decals/necromancer_ability_decal_mark3",
 				"units/decals/necromancer_ability_decal_mark4",
 				"units/decals/necromancer_ability_decal_mark5",
-				"units/decals/necromancer_ability_decal_mark6"
+				"units/decals/necromancer_ability_decal_mark6",
 			},
 			bounds = {
 				0.4,
 				2,
-				0
+				0,
 			},
 			offset = {
 				-1.1,
 				4,
-				0
+				0,
 			},
 			on_spawn = function (damage_wave_extension, config, name, unit, world)
 				local scale = Vector3(1, 1, 1)
@@ -565,31 +570,31 @@ DamageWaveTemplates.templates.necromancer_curse_wave = {
 				Unit.set_vector2_for_material(unit, "projector", "start_end_time", Vector2(start_time, end_time))
 				Unit.set_scalar_for_material(unit, "projector", "fade_time", fade_time)
 				Unit.set_scalar_for_material(unit, "projector", "enable_fade", 1)
-			end
+			end,
 		},
 		{
+			frequency = 0.5,
+			max_random_angle = 0,
 			separation_type = "box",
 			spawn_type = "unit",
 			start_delay = 0.25,
-			max_random_angle = 0,
-			frequency = 0.5,
 			names = {
 				"units/decals/necromancer_ability_decal_mark1",
 				"units/decals/necromancer_ability_decal_mark2",
 				"units/decals/necromancer_ability_decal_mark3",
 				"units/decals/necromancer_ability_decal_mark4",
 				"units/decals/necromancer_ability_decal_mark5",
-				"units/decals/necromancer_ability_decal_mark6"
+				"units/decals/necromancer_ability_decal_mark6",
 			},
 			bounds = {
 				0.4,
 				2,
-				0
+				0,
 			},
 			offset = {
 				1.4,
 				4,
-				0
+				0,
 			},
 			on_spawn = function (damage_wave_extension, config, name, unit, world)
 				local scale = Vector3(1, 1, 1)
@@ -603,19 +608,19 @@ DamageWaveTemplates.templates.necromancer_curse_wave = {
 				Unit.set_vector2_for_material(unit, "projector", "start_end_time", Vector2(start_time, end_time))
 				Unit.set_scalar_for_material(unit, "projector", "fade_time", fade_time)
 				Unit.set_scalar_for_material(unit, "projector", "enable_fade", 1)
-			end
-		}
+			end,
+		},
 	},
 	ai_push_data = {
-		push_along_wave_direction = true,
 		drag_along_wave = false,
+		push_along_wave_direction = true,
 		stagger_impact = {
 			stagger_types.heavy,
 			stagger_types.heavy,
 			stagger_types.heavy,
 			stagger_types.none,
 			stagger_types.heavy,
-			stagger_types.heavy
+			stagger_types.heavy,
 		},
 		stagger_duration = {
 			0.7,
@@ -623,7 +628,7 @@ DamageWaveTemplates.templates.necromancer_curse_wave = {
 			0,
 			0,
 			0.7,
-			0.5
+			0.5,
 		},
 		stagger_refresh_time = {
 			math.huge,
@@ -631,7 +636,7 @@ DamageWaveTemplates.templates.necromancer_curse_wave = {
 			math.huge,
 			math.huge,
 			math.huge,
-			math.huge
+			math.huge,
 		},
 		stagger_distance_table = {
 			0.5,
@@ -639,7 +644,7 @@ DamageWaveTemplates.templates.necromancer_curse_wave = {
 			0.5,
 			0.5,
 			0.5,
-			1
+			1,
 		},
 		wave_drag_multiplier_table = {
 			1,
@@ -647,13 +652,13 @@ DamageWaveTemplates.templates.necromancer_curse_wave = {
 			0,
 			0,
 			1,
-			0
+			0,
 		},
 		hit_half_extends = {
 			2.5,
 			0.5,
-			1.5
-		}
+			1.5,
+		},
 	},
 	update_func = function (damage_wave_ext, unit, position, t, dt)
 		if not damage_wave_ext.wave_direction then
@@ -664,13 +669,14 @@ DamageWaveTemplates.templates.necromancer_curse_wave = {
 
 		if not update_data then
 			local wave_direction = damage_wave_ext.wave_direction:unbox()
+
 			update_data = {
-				next_spawn_t = 0,
 				failed_attempts = 0,
 				next_direction_update_t = 0,
+				next_spawn_t = 0,
 				hand_units_by_player = {},
 				original_direction = Vector3Box(wave_direction),
-				last_pos = Vector3Box(position - wave_direction)
+				last_pos = Vector3Box(position - wave_direction),
 			}
 			damage_wave_ext._update_data = update_data
 		end
@@ -683,7 +689,7 @@ DamageWaveTemplates.templates.necromancer_curse_wave = {
 			return
 		end
 
-		if update_data.next_direction_update_t <= t then
+		if t >= update_data.next_direction_update_t then
 			if update_data.next_direction then
 				damage_wave_ext.wave_direction = update_data.next_direction
 				update_data.next_direction = nil
@@ -700,7 +706,7 @@ DamageWaveTemplates.templates.necromancer_curse_wave = {
 			local to = position + update_data.original_direction:unbox() * speed * radius * 2
 			local nav_world = Managers.state.entity:system("ai_system"):nav_world()
 			local success, pos = GwNavQueries.raycast(nav_world, from, to)
-			local next_pos = nil
+			local next_pos
 
 			if success or Vector3.distance_squared(from, pos) > radius * radius then
 				update_data.next_direction = update_data.original_direction
@@ -714,30 +720,42 @@ DamageWaveTemplates.templates.necromancer_curse_wave = {
 				elseif update_data.failed_attempts < 4 then
 					local next_from = pos + Vector3.normalize(from - pos) * radius
 					local d_angle = math.pi * 0.25
-					local new_dir = nil
-					success, next_pos, new_dir = necro_wave_try_direction(nav_world, next_from, velocity, -d_angle)
 
-					if success then
-						update_data.next_direction = Vector3Box(new_dir)
-					else
+					repeat
+						local new_dir
+
+						success, next_pos, new_dir = necro_wave_try_direction(nav_world, next_from, velocity, -d_angle)
+
+						if success then
+							update_data.next_direction = Vector3Box(new_dir)
+
+							break
+						end
+
 						success, next_pos, new_dir = necro_wave_try_direction(nav_world, next_from, velocity, d_angle)
 
 						if success then
 							update_data.next_direction = Vector3Box(new_dir)
-						else
-							success, next_pos, new_dir = necro_wave_try_direction(nav_world, next_from, velocity, -2 * d_angle)
 
-							if success then
-								update_data.next_direction = Vector3Box(new_dir)
-							else
-								success, next_pos, new_dir = necro_wave_try_direction(nav_world, next_from, velocity, 2 * d_angle)
-
-								if success then
-									update_data.next_direction = Vector3Box(new_dir)
-								end
-							end
+							break
 						end
-					end
+
+						success, next_pos, new_dir = necro_wave_try_direction(nav_world, next_from, velocity, -2 * d_angle)
+
+						if success then
+							update_data.next_direction = Vector3Box(new_dir)
+
+							break
+						end
+
+						success, next_pos, new_dir = necro_wave_try_direction(nav_world, next_from, velocity, 2 * d_angle)
+
+						if success then
+							update_data.next_direction = Vector3Box(new_dir)
+						end
+
+						break
+					until true
 				end
 			end
 
@@ -746,6 +764,7 @@ DamageWaveTemplates.templates.necromancer_curse_wave = {
 				update_data.failed_attempts = 0
 			elseif next_pos then
 				local time_to_reach = (Vector3.distance(next_pos, from) - radius) / speed
+
 				update_data.next_direction_update_t = t + time_to_reach
 				update_data.failed_attempts = update_data.failed_attempts + 1
 			end
@@ -753,9 +772,11 @@ DamageWaveTemplates.templates.necromancer_curse_wave = {
 	end,
 	on_arrive_func = function (damage_wave_ext, position, rotation)
 		return
-	end
+	end,
 }
+
 local wave_linger = table.clone(DamageWaveTemplates.templates.necromancer_curse_wave)
+
 wave_linger.fx_name_filled = "fx/necromancer_wave_linger"
 wave_linger.fx_separation_dist = 1.5
 wave_linger.blob_separation_dist = 1
@@ -811,6 +832,7 @@ for wave_name, wave_template in pairs(DamageWaveTemplates.templates) do
 		fassert(not wave_template.ai_query_distance, "[DamageWaveTemplates] 'ai_query_distance' will be overridden by 'hit_half_extends'. (%s)", wave_name)
 
 		local extends = Vector3Aux.unbox(hit_half_extends)
+
 		wave_template.ai_query_distance = Vector3.length(extends)
 	end
 end

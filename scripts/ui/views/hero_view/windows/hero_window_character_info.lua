@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/hero_view/windows/hero_window_character_info.lua
+
 local definitions = local_require("scripts/ui/views/hero_view/windows/definitions/hero_window_character_info_definitions")
 local widget_definitions = definitions.widgets
 local category_settings = definitions.category_settings
@@ -5,6 +7,7 @@ local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
 local DO_RELOAD = false
 local HERO_POWER_EFFECT_DURATION = 1
+
 HeroWindowCharacterInfo = class(HeroWindowCharacterInfo)
 HeroWindowCharacterInfo.NAME = "HeroWindowCharacterInfo"
 
@@ -12,17 +15,21 @@ HeroWindowCharacterInfo.on_enter = function (self, params, offset)
 	print("[HeroViewWindow] Enter Substate HeroWindowCharacterInfo")
 
 	self.parent = params.parent
+
 	local ingame_ui_context = params.ingame_ui_context
+
 	self.ui_renderer = ingame_ui_context.ui_renderer
 	self.ui_top_renderer = ingame_ui_context.ui_top_renderer
 	self.input_manager = ingame_ui_context.input_manager
 	self.statistics_db = ingame_ui_context.statistics_db
 	self.render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 	self.ingame_ui = ingame_ui_context.ingame_ui
+
 	local player_manager = Managers.player
 	local local_player = player_manager:local_player()
+
 	self._stats_id = local_player:stats_id()
 	self.player_manager = player_manager
 	self.peer_id = ingame_ui_context.peer_id
@@ -37,11 +44,13 @@ end
 
 HeroWindowCharacterInfo.create_ui_elements = function (self, params, offset)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+
 	local widgets = {}
 	local widgets_by_name = {}
 
 	for name, widget_definition in pairs(widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		widgets[#widgets + 1] = widget
 		widgets_by_name[name] = widget
 	end
@@ -55,6 +64,7 @@ HeroWindowCharacterInfo.create_ui_elements = function (self, params, offset)
 
 	if offset then
 		local window_position = self.ui_scenegraph.window.local_position
+
 		window_position[1] = window_position[1] + offset[1]
 		window_position[2] = window_position[2] + offset[2]
 		window_position[3] = window_position[3] + offset[3]
@@ -167,11 +177,14 @@ HeroWindowCharacterInfo._update_hero_portrait_frame = function (self)
 	local career_display_name = career_settings.display_name
 	local hero_display_name = profile_settings.character_name
 	local widgets_by_name = self._widgets_by_name
+
 	widgets_by_name.hero_name.content.text = hero_display_name
 	widgets_by_name.career_name.content.text = career_display_name
+
 	local level_text = self._hero_level and tostring(self._hero_level) or "-"
 	local portrait_frame_name = self:_get_portrait_frame()
 	local portrait_widget = self:_create_portrait_frame_widget(portrait_frame_name, portrait_image, level_text)
+
 	self._portrait_widget = portrait_widget
 end
 
@@ -207,6 +220,7 @@ HeroWindowCharacterInfo._create_portrait_frame_widget = function (self, frame_se
 	local widget_definition = UIWidgets.create_portrait_frame("portrait_root", frame_settings_name, level_text, 1, nil, portrait_texture)
 	local widget = UIWidget.init(widget_definition)
 	local widget_content = widget.content
+
 	widget_content.frame_settings_name = frame_settings_name
 
 	return widget
@@ -225,6 +239,7 @@ HeroWindowCharacterInfo._get_portrait_frame = function (self)
 	if item then
 		local item_data = item.data
 		local frame_name = item_data.temporary_template
+
 		player_portrait_frame = frame_name or player_portrait_frame
 	end
 

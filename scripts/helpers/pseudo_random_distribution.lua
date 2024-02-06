@@ -1,5 +1,8 @@
+﻿-- chunkname: @scripts/helpers/pseudo_random_distribution.lua
+
 PseudoRandomDistribution = PseudoRandomDistribution or {}
-local p2c = nil
+
+local p2c
 
 PseudoRandomDistribution.flip_coin = function (state, proc_chance)
 	if proc_chance > 0.99 then
@@ -11,8 +14,8 @@ PseudoRandomDistribution.flip_coin = function (state, proc_chance)
 	local c = p2c[math.floor(proc_chance * 100)]
 	local math_random = math.random
 
-	if math_random() < c then
-		return math_random() < proc_chance, state
+	if c > math_random() then
+		return proc_chance > math_random(), state
 	end
 
 	local n = state or math.floor(proc_chance / c)
@@ -123,5 +126,5 @@ p2c = {
 	0.9583333333333331,
 	0.9690721649484535,
 	0.979591836734694,
-	0.98989898989899
+	0.98989898989899,
 }

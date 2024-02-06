@@ -1,10 +1,12 @@
+﻿-- chunkname: @scripts/settings/hero_statistics_template.lua
+
 HeroStatisticsTemplate = {
 	{
-		type = "empty"
+		type = "empty",
 	},
 	{
 		type = "title",
-		display_name = Localize("tooltip_hero_stats_base_stats")
+		display_name = Localize("tooltip_hero_stats_base_stats"),
 	},
 	{
 		type = "entry",
@@ -27,7 +29,7 @@ HeroStatisticsTemplate = {
 			local description_text = string.format(Localize(desc_key), math.round(modifier))
 
 			return description_text
-		end
+		end,
 	},
 	{
 		type = "entry",
@@ -50,7 +52,7 @@ HeroStatisticsTemplate = {
 			local description_text = string.format(Localize(desc_key), math.round(modifier))
 
 			return description_text
-		end
+		end,
 	},
 	{
 		type = "entry",
@@ -76,7 +78,7 @@ HeroStatisticsTemplate = {
 			local description_text = string.format(Localize(desc_key), math.round(modifier))
 
 			return description_text
-		end
+		end,
 	},
 	{
 		type = "entry",
@@ -102,7 +104,7 @@ HeroStatisticsTemplate = {
 			local description_text = string.format(Localize(desc_key), math.round(modifier))
 
 			return description_text
-		end
+		end,
 	},
 	{
 		type = "entry",
@@ -126,14 +128,14 @@ HeroStatisticsTemplate = {
 			local description_text = string.format(Localize(desc_key), math.round(modifier))
 
 			return description_text
-		end
+		end,
 	},
 	{
-		type = "empty"
+		type = "empty",
 	},
 	{
 		type = "title",
-		display_name = Localize("tooltip_hero_stats_offensive_stats")
+		display_name = Localize("tooltip_hero_stats_offensive_stats"),
 	},
 	{
 		type = "entry",
@@ -144,7 +146,9 @@ HeroStatisticsTemplate = {
 			local buff_extension = ScriptUnit.has_extension(player_unit, "buff_system")
 			local base_attack_speed = 1
 			local buffed_attack_speed = buff_extension:apply_buffs_to_value(base_attack_speed, "attack_speed")
+
 			buffed_attack_speed = (buffed_attack_speed / base_attack_speed - 1) * 100
+
 			local value = buffed_attack_speed
 
 			return math.round(value)
@@ -154,13 +158,15 @@ HeroStatisticsTemplate = {
 			local buff_extension = ScriptUnit.has_extension(player_unit, "buff_system")
 			local base_attack_speed = 1
 			local buffed_attack_speed = buff_extension:apply_buffs_to_value(base_attack_speed, "attack_speed")
+
 			buffed_attack_speed = (buffed_attack_speed / base_attack_speed - 1) * 100
+
 			local modifier = buffed_attack_speed
 			local desc_key = "tooltip_hero_stats_attack_speed_description"
 			local description_text = string.format(Localize(desc_key), math.round(modifier))
 
 			return description_text
-		end
+		end,
 	},
 	{
 		type = "entry",
@@ -194,7 +200,7 @@ HeroStatisticsTemplate = {
 			local description_text = string.format(Localize(desc_key), math.round(modifier))
 
 			return description_text
-		end
+		end,
 	},
 	{
 		type = "entry",
@@ -205,7 +211,9 @@ HeroStatisticsTemplate = {
 			local buff_extension = ScriptUnit.has_extension(player_unit, "buff_system")
 			local base_critical_strike_boost = 1
 			local critical_strike_boost = buff_extension:apply_buffs_to_value(base_critical_strike_boost, "critical_strike_effectiveness")
+
 			critical_strike_boost = (critical_strike_boost / base_critical_strike_boost - 1) * 100
+
 			local value = critical_strike_boost
 
 			return math.round(value)
@@ -215,12 +223,14 @@ HeroStatisticsTemplate = {
 			local buff_extension = ScriptUnit.has_extension(player_unit, "buff_system")
 			local base_critical_strike_boost = 1
 			local modifier = buff_extension:apply_buffs_to_value(base_critical_strike_boost, "critical_strike_effectiveness")
+
 			modifier = (modifier / base_critical_strike_boost - 1) * 100
+
 			local desc_key = "tooltip_hero_stats_critical_strike_boost_description"
 			local description_text = string.format(Localize(desc_key), math.round(modifier))
 
 			return description_text
-		end
+		end,
 	},
 	{
 		type = "entry",
@@ -231,7 +241,9 @@ HeroStatisticsTemplate = {
 			local buff_extension = ScriptUnit.has_extension(player_unit, "buff_system")
 			local base_headshot_damage = 1
 			local headshot_damage = buff_extension:apply_buffs_to_value(base_headshot_damage, "headshot_multiplier")
+
 			headshot_damage = (headshot_damage / base_headshot_damage - 1) * 100
+
 			local value = headshot_damage
 
 			return math.round(value)
@@ -241,12 +253,14 @@ HeroStatisticsTemplate = {
 			local buff_extension = ScriptUnit.has_extension(player_unit, "buff_system")
 			local base_headshot_damage = 1
 			local modifier = buff_extension:apply_buffs_to_value(base_headshot_damage, "headshot_multiplier")
+
 			modifier = (modifier / base_headshot_damage - 1) * 100
+
 			local desc_key = "tooltip_hero_stats_headshot_damage_description"
 			local description_text = string.format(Localize(desc_key), math.round(modifier))
 
 			return description_text
-		end
+		end,
 	},
 	{
 		type = "entry",
@@ -273,7 +287,7 @@ HeroStatisticsTemplate = {
 			local description_text = string.format(Localize(desc_key), math.round(modifier))
 
 			return description_text
-		end
+		end,
 	},
 	{
 		type = "entry",
@@ -300,7 +314,7 @@ HeroStatisticsTemplate = {
 			local description_text = string.format(Localize(desc_key), math.round(modifier))
 
 			return description_text
-		end
+		end,
 	},
 	{
 		type = "entry",
@@ -327,7 +341,7 @@ HeroStatisticsTemplate = {
 			local description_text = string.format(Localize(desc_key), math.round(modifier))
 
 			return description_text
-		end
+		end,
 	},
 	{
 		type = "entry",
@@ -354,7 +368,7 @@ HeroStatisticsTemplate = {
 			local description_text = string.format(Localize(desc_key), math.round(modifier))
 
 			return description_text
-		end
+		end,
 	},
 	{
 		type = "entry",
@@ -381,7 +395,7 @@ HeroStatisticsTemplate = {
 			local description_text = string.format(Localize(desc_key), math.round(modifier))
 
 			return description_text
-		end
+		end,
 	},
 	{
 		type = "entry",
@@ -408,7 +422,7 @@ HeroStatisticsTemplate = {
 			local description_text = string.format(Localize(desc_key), math.round(modifier))
 
 			return description_text
-		end
+		end,
 	},
 	{
 		type = "entry",
@@ -435,14 +449,14 @@ HeroStatisticsTemplate = {
 			local description_text = string.format(Localize(desc_key), math.round(modifier))
 
 			return description_text
-		end
+		end,
 	},
 	{
-		type = "empty"
+		type = "empty",
 	},
 	{
 		type = "title",
-		display_name = Localize("tooltip_hero_stats_defensive_stats")
+		display_name = Localize("tooltip_hero_stats_defensive_stats"),
 	},
 	{
 		type = "entry",
@@ -467,7 +481,7 @@ HeroStatisticsTemplate = {
 			local description_text = string.format(Localize(desc_key), math.round(modifier))
 
 			return description_text
-		end
+		end,
 	},
 	{
 		type = "entry",
@@ -495,7 +509,7 @@ HeroStatisticsTemplate = {
 			local description_text = string.format(Localize(desc_key), math.round(modifier))
 
 			return description_text
-		end
+		end,
 	},
 	{
 		type = "entry",
@@ -523,7 +537,7 @@ HeroStatisticsTemplate = {
 			local description_text = string.format(Localize(desc_key), math.round(modifier))
 
 			return description_text
-		end
+		end,
 	},
 	{
 		type = "entry",
@@ -534,7 +548,9 @@ HeroStatisticsTemplate = {
 			local buff_extension = ScriptUnit.has_extension(player_unit, "buff_system")
 			local base_arc = 1
 			local buffed_arc = buff_extension:apply_buffs_to_value(base_arc, "block_angle")
+
 			buffed_arc = (buffed_arc / base_arc - 1) * 100
+
 			local value = buffed_arc
 
 			return math.round(value)
@@ -544,13 +560,15 @@ HeroStatisticsTemplate = {
 			local buff_extension = ScriptUnit.has_extension(player_unit, "buff_system")
 			local base_arc = 1
 			local buffed_arc = buff_extension:apply_buffs_to_value(base_arc, "block_angle")
+
 			buffed_arc = (buffed_arc / base_arc - 1) * 100
+
 			local modifier = buffed_arc
 			local desc_key = "tooltip_hero_stats_block_push_arc_description"
 			local description_text = string.format(Localize(desc_key), math.round(modifier))
 
 			return description_text
-		end
+		end,
 	},
 	{
 		type = "entry",
@@ -577,7 +595,7 @@ HeroStatisticsTemplate = {
 			local description_text = string.format(Localize(desc_key), math.round(modifier))
 
 			return description_text
-		end
+		end,
 	},
 	{
 		type = "entry",
@@ -588,7 +606,9 @@ HeroStatisticsTemplate = {
 			local buff_extension = ScriptUnit.has_extension(player_unit, "buff_system")
 			local base_stun_duration = 1
 			local buffed_stun_duration = buff_extension:apply_buffs_to_value(base_stun_duration, "stun_duration")
+
 			buffed_stun_duration = (buffed_stun_duration / base_stun_duration - 1) * -100
+
 			local value = buffed_stun_duration
 
 			return math.round(value)
@@ -598,13 +618,15 @@ HeroStatisticsTemplate = {
 			local buff_extension = ScriptUnit.has_extension(player_unit, "buff_system")
 			local base_stun_duration = 1
 			local buffed_stun_duration = buff_extension:apply_buffs_to_value(base_stun_duration, "stun_duration")
+
 			buffed_stun_duration = (buffed_stun_duration / base_stun_duration - 1) * -100
+
 			local modifier = buffed_stun_duration
 			local desc_key = "tooltip_hero_stats_stun_duration_description"
 			local description_text = string.format(Localize(desc_key), math.round(modifier))
 
 			return description_text
-		end
+		end,
 	},
 	{
 		type = "entry",
@@ -631,7 +653,7 @@ HeroStatisticsTemplate = {
 			local description_text = string.format(Localize(desc_key), math.round(modifier))
 
 			return description_text
-		end
+		end,
 	},
 	{
 		type = "entry",
@@ -658,7 +680,7 @@ HeroStatisticsTemplate = {
 			local description_text = string.format(Localize(desc_key), math.round(modifier))
 
 			return description_text
-		end
+		end,
 	},
 	{
 		type = "entry",
@@ -685,7 +707,7 @@ HeroStatisticsTemplate = {
 			local description_text = string.format(Localize(desc_key), math.round(modifier))
 
 			return description_text
-		end
+		end,
 	},
 	{
 		type = "entry",
@@ -712,7 +734,7 @@ HeroStatisticsTemplate = {
 			local description_text = string.format(Localize(desc_key), math.round(modifier))
 
 			return description_text
-		end
+		end,
 	},
 	{
 		type = "entry",
@@ -739,14 +761,14 @@ HeroStatisticsTemplate = {
 			local description_text = string.format(Localize(desc_key), math.round(modifier))
 
 			return description_text
-		end
+		end,
 	},
 	{
-		type = "empty"
+		type = "empty",
 	},
 	{
 		type = "title",
-		display_name = Localize("tooltip_hero_stats_ranged_stats")
+		display_name = Localize("tooltip_hero_stats_ranged_stats"),
 	},
 	{
 		type = "entry",
@@ -771,7 +793,7 @@ HeroStatisticsTemplate = {
 			local description_text = string.format(Localize(desc_key), math.round(modifier))
 
 			return description_text
-		end
+		end,
 	},
 	{
 		type = "entry",
@@ -796,7 +818,7 @@ HeroStatisticsTemplate = {
 			local description_text = string.format(Localize(desc_key), math.round(modifier))
 
 			return description_text
-		end
+		end,
 	},
 	{
 		type = "entry",
@@ -817,7 +839,7 @@ HeroStatisticsTemplate = {
 			local description_text = string.format(Localize(desc_key), math.round(modifier))
 
 			return description_text
-		end
+		end,
 	},
 	{
 		type = "entry",
@@ -826,9 +848,10 @@ HeroStatisticsTemplate = {
 		generate_value = function (params)
 			local player_unit = Managers.player:local_player().player_unit
 			local buff_extension = ScriptUnit.has_extension(player_unit, "buff_system")
-			local value = nil
+			local value
 			local base_value = 1
 			local buffed_value = buff_extension:apply_buffs_to_value(base_value, "reduced_overcharge")
+
 			value = (buffed_value / base_value - 1) * -100
 
 			return math.round(value)
@@ -843,9 +866,9 @@ HeroStatisticsTemplate = {
 			local description_text = string.format(Localize(desc_key), math.round(modifier))
 
 			return description_text
-		end
+		end,
 	},
 	{
-		type = "empty"
-	}
+		type = "empty",
+	},
 }

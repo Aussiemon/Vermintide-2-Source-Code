@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/backend_playfab/script_backend_playfab.lua
+
 require("scripts/managers/backend_playfab/playfab_mirror_adventure")
 require("scripts/settings/version_settings")
 DLCUtils.require_list("playfab_mirror_files")
@@ -8,6 +10,7 @@ local playfab_https = require("scripts/managers/backend/playfab_https_curl")
 IPlayFabHttps.SetHttp(playfab_https)
 
 local PlayFabClientApi = require("PlayFab.PlayFabClientApi")
+
 PlayFabClientApi.settings.titleId = GameSettingsDevelopment.backend_settings.title_id
 ScriptBackendPlayFab = class(ScriptBackendPlayFab)
 
@@ -27,7 +30,7 @@ end
 
 ScriptBackendPlayFab.update_signin = function (self)
 	if self._steam_ticket_id then
-		local ticket = nil
+		local ticket
 
 		if HAS_STEAM then
 			ticket = Steam.poll_auth_session_ticket(self._steam_ticket_id)
@@ -37,15 +40,15 @@ ScriptBackendPlayFab.update_signin = function (self)
 
 		if ticket then
 			local login_request = {
-				TicketIsServiceSpecific = true,
 				CreateAccount = true,
+				TicketIsServiceSpecific = true,
 				TitleId = PlayFabClientApi.settings.titleId,
 				SteamTicket = ticket,
 				InfoRequestParameters = {
-					GetUserReadOnlyData = true,
 					GetTitleData = true,
-					GetUserData = true
-				}
+					GetUserData = true,
+					GetUserReadOnlyData = true,
+				},
 			}
 			local login_request_cb = callback(self, "login_request_cb")
 
@@ -63,7 +66,7 @@ ScriptBackendPlayFab.update_signin = function (self)
 
 		return {
 			reason = error_code,
-			details = error_message
+			details = error_message,
 		}
 	end
 
@@ -75,7 +78,7 @@ ScriptBackendPlayFab.update_signin = function (self)
 
 		return {
 			reason = error_code,
-			details = error_message
+			details = error_message,
 		}
 	end
 
@@ -87,7 +90,7 @@ ScriptBackendPlayFab.update_signin = function (self)
 
 		return {
 			reason = error_code,
-			details = error_message
+			details = error_message,
 		}
 	end
 
@@ -96,6 +99,7 @@ end
 
 ScriptBackendPlayFab.login_request_cb = function (self, result)
 	self._signin_result = result
+
 	local info_result_payload = result.InfoResultPayload
 	local read_only_data = info_result_payload.UserReadOnlyData
 	local playfab_id = result.PlayFabId
@@ -106,6 +110,7 @@ ScriptBackendPlayFab.login_request_cb = function (self, result)
 
 	local account_set_up = read_only_data.account_set_up
 	local initial_inventory_setup = read_only_data.initial_inventory_setup
+
 	self._setup_initial_account_needed = result.NewlyCreated or not account_set_up or account_set_up.Value == "false"
 	self._setup_initial_inventory_needed = not initial_inventory_setup or initial_inventory_setup.Value == "false"
 
@@ -128,8 +133,8 @@ ScriptBackendPlayFab._validate_version = function (self)
 		FunctionName = "validateVersion",
 		FunctionParameter = {
 			Version = VersionSettings.version,
-			metadata = self._metadata
-		}
+			metadata = self._metadata,
+		},
 	}
 	local callback = callback(self, "_validate_version_cb")
 
@@ -140,12 +145,13 @@ end
 
 ScriptBackendPlayFab._validate_version_cb = function (self, result)
 	local valid = result.FunctionResult and result.FunctionResult.valid_version
+
 	self._validating_version = nil
 
 	if valid ~= true then
 		self._signed_in = false
 		self._signin_result_error = {
-			errorCode = BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_UNSUPPORTED_VERSION_ERROR
+			errorCode = BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_UNSUPPORTED_VERSION_ERROR,
 		}
 	elseif self._setup_initial_account_needed then
 		self:_set_up_initial_account()
@@ -158,8 +164,8 @@ ScriptBackendPlayFab._set_up_initial_account = function (self)
 	local initial_account_set_up = {
 		FunctionName = "initialAccountSetUp",
 		FunctionParameter = {
-			metadata = self._metadata
-		}
+			metadata = self._metadata,
+		},
 	}
 	local initial_setup_request_cb = callback(self, "initial_setup_request_cb")
 
@@ -173,7 +179,7 @@ ScriptBackendPlayFab.initial_setup_request_cb = function (self, result)
 
 	if characters_data then
 		self._signin_result.InfoResultPayload.UserReadOnlyData.characters_data = {
-			Value = characters_data
+			Value = characters_data,
 		}
 	end
 
@@ -188,8 +194,8 @@ ScriptBackendPlayFab._set_up_initial_inventory = function (self, start_index)
 		FunctionName = "initialInventorySetup",
 		FunctionParameter = {
 			start_index = start_index or 0,
-			metadata = self._metadata
-		}
+			metadata = self._metadata,
+		},
 	}
 	local initial_inventory_setup_request_cb = callback(self, "initial_inventory_setup_request_cb")
 

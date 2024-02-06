@@ -1,51 +1,53 @@
+﻿-- chunkname: @scripts/settings/mutators/mutator_deus_difficulty_tweak.lua
+
 local density_multiplier_steps_per_difficulty_tweak = {
 	{
 		-10,
-		1
+		1,
 	},
 	{
 		0,
-		1.15
+		1.15,
 	},
 	{
 		10,
-		1.3
-	}
+		1.3,
+	},
 }
 local min_override_chance_per_difficulty_tweak = {
 	{
 		-10,
-		0.1
+		0.1,
 	},
 	{
 		0,
-		0.4
+		0.4,
 	},
 	{
 		10,
-		0.8
-	}
+		0.8,
+	},
 }
 local max_override_chance_per_difficulty_tweak = {
 	{
 		-10,
-		0.3
+		0.3,
 	},
 	{
 		0,
-		0.6
+		0.6,
 	},
 	{
 		10,
-		1
-	}
+		1,
+	},
 }
 local BOSS_BUFF = "deus_difficulty_tweak_boss_buff"
 
 local function get_lerped_value_for_difficulty(steps, current_difficulty_tweak)
 	fassert(#steps >= 1, "need at least one step for the difficulty lerp to work.")
 
-	local selected_pre_step, selected_post_step = nil
+	local selected_pre_step, selected_post_step
 
 	for i = 1, #density_multiplier_steps_per_difficulty_tweak do
 		local step = density_multiplier_steps_per_difficulty_tweak[i]
@@ -53,6 +55,7 @@ local function get_lerped_value_for_difficulty(steps, current_difficulty_tweak)
 		if current_difficulty_tweak <= step[1] then
 			local step_before = density_multiplier_steps_per_difficulty_tweak[i - 1]
 			local step_after = density_multiplier_steps_per_difficulty_tweak[i + 1]
+
 			selected_pre_step = step_before or step
 			selected_post_step = step_before and step or step_after
 
@@ -92,11 +95,11 @@ return {
 			local offset_difficulty_tweak_value = difficulty_tweak + range
 			local normalized_difficulty_value = offset_difficulty_tweak_value / (range * 2)
 			local params = {
-				variable_value = normalized_difficulty_value
+				variable_value = normalized_difficulty_value,
 			}
 			local buff_extension = ScriptUnit.extension(unit, "buff_system")
 
 			buff_extension:add_buff(BOSS_BUFF, params)
 		end
-	end
+	end,
 }

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/default_player_unit/boons/boon_extension.lua
+
 BoonExtension = class(BoonExtension)
 
 BoonExtension.init = function (self, extension_init_context, unit, extension_init_data)

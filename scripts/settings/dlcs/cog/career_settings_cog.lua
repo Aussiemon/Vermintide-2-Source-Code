@@ -1,19 +1,21 @@
+﻿-- chunkname: @scripts/settings/dlcs/cog/career_settings_cog.lua
+
 CareerActionNames.dwarf_ranger[#CareerActionNames.dwarf_ranger + 1] = "action_career_dr_4"
 PlayerBreeds.hero_dr_engineer = {
-	is_hero = true,
-	name = "hero_dr_engineer",
-	cannot_be_aggroed = true,
-	vortexable = true,
-	awards_positive_reinforcement_message = true,
-	is_player = true,
-	disable_local_hit_reactions = true,
-	poison_resistance = 0,
 	armor_category = 4,
+	awards_positive_reinforcement_message = true,
+	cannot_be_aggroed = true,
+	disable_local_hit_reactions = true,
+	is_hero = true,
+	is_player = true,
+	name = "hero_dr_engineer",
+	poison_resistance = 0,
 	threat_value = 8,
+	vortexable = true,
 	hit_zones = PlayerBreedHitZones.player_breed_hit_zones,
 	status_effect_settings = {
-		category = "small"
-	}
+		category = "small",
+	},
 }
 
 setmetatable(PlayerBreeds.hero_dr_engineer, {
@@ -23,51 +25,51 @@ setmetatable(PlayerBreeds.hero_dr_engineer, {
 		end
 
 		rawset(table, key, value)
-	end
+	end,
 })
 
 CareerSettings.dr_engineer = {
-	profile_name = "dwarf_ranger",
-	display_name = "dr_engineer",
-	sound_character = "dwarf_engineer",
-	package_name = "resource_packages/careers/dr_engineer",
-	name = "dr_engineer",
-	preview_idle_animation = "career_idle_04",
-	preview_animation = "career_select_04",
-	icon = "icons_placeholder",
 	base_skin = "skin_dr_engineer",
-	picking_image = "medium_unit_frame_portrait_bardin_engineer",
-	preview_wield_slot = "ranged",
-	playfab_name = "dr_4",
 	category_image = "icons_placeholder",
-	should_reload_career_weapon = true,
-	portrait_image_picking = "picking_portrait_bardin_engineer",
-	talent_tree_index = 4,
 	description = "bardin_4_desc",
+	display_name = "dr_engineer",
+	icon = "icons_placeholder",
+	name = "dr_engineer",
+	package_name = "resource_packages/careers/dr_engineer",
+	picking_image = "medium_unit_frame_portrait_bardin_engineer",
+	playfab_name = "dr_4",
 	portrait_image = "unit_frame_portrait_bardin_engineer",
+	portrait_image_picking = "picking_portrait_bardin_engineer",
 	portrait_thumbnail = "portrait_bardin_engineer_thumbnail",
-	sort_order = 1,
+	preview_animation = "career_select_04",
+	preview_idle_animation = "career_idle_04",
+	preview_wield_slot = "ranged",
+	profile_name = "dwarf_ranger",
 	required_dlc = "cog",
+	should_reload_career_weapon = true,
+	sort_order = 1,
+	sound_character = "dwarf_engineer",
+	talent_tree_index = 4,
 	breed = PlayerBreeds.hero_dr_engineer,
 	item_types = {},
 	activated_ability = ActivatedAbilitySettings.dr_4,
 	passive_ability = PassiveAbilitySettings.dr_4,
 	attributes = {
+		base_critical_strike_chance = 0.05,
 		max_hp = 125,
 		max_hp_kd = 300,
-		base_critical_strike_chance = 0.05
 	},
 	video = {
 		material_name = "dr_engineer",
-		resource = "video/career_videos/bardin/dr_engineer"
+		resource = "video/career_videos/bardin/dr_engineer",
 	},
 	preview_items = {
 		{
-			item_name = "bardin_engineer_career_skill_weapon_preview"
+			item_name = "bardin_engineer_career_skill_weapon_preview",
 		},
 		{
-			item_name = "engineer_hat_0000"
-		}
+			item_name = "engineer_hat_0000",
+		},
 	},
 	is_unlocked_function = function (career, hero_name, hero_level)
 		local unlocked, reason = career:override_available_for_mechanism()
@@ -76,7 +78,8 @@ CareerSettings.dr_engineer = {
 			return unlocked, reason
 		end
 
-		local dlc_name = nil
+		local dlc_name
+
 		unlocked, reason, dlc_name = career:is_dlc_unlocked()
 
 		if not unlocked then
@@ -103,7 +106,7 @@ CareerSettings.dr_engineer = {
 		return nil
 	end,
 	animation_variables = {
-		is_engineer = 1
+		is_engineer = 1,
 	},
 	talent_packages = function (talent_ids, packages_list, is_first_person)
 		local career_skill_index = 1
@@ -129,62 +132,63 @@ CareerSettings.dr_engineer = {
 
 		for j = 1, #weapon_packages do
 			local package_name = weapon_packages[j]
+
 			packages_list[package_name] = false
 		end
 	end,
 	item_slot_types_by_slot_name = {
 		slot_melee = {
-			"melee"
+			"melee",
 		},
 		slot_ranged = {
-			"ranged"
+			"ranged",
 		},
 		slot_necklace = {
-			"necklace"
+			"necklace",
 		},
 		slot_ring = {
-			"ring"
+			"ring",
 		},
 		slot_trinket_1 = {
-			"trinket"
+			"trinket",
 		},
 		slot_hat = {
-			"hat"
+			"hat",
 		},
 		slot_skin = {
-			"skin"
+			"skin",
 		},
 		slot_frame = {
-			"frame"
-		}
+			"frame",
+		},
 	},
 	loadout_equipment_slots = {
 		"melee",
 		"ranged",
 		"necklace",
 		"ring",
-		"trinket"
+		"trinket",
 	},
 	additional_item_slots = {
-		slot_grenade = 2
-	}
+		slot_grenade = 2,
+	},
 }
 OverchargeData = OverchargeData or {}
 OverchargeData.dr_engineer = {
-	overcharge_threshold = 10,
-	overcharge_warning_critical_sound_event = "drakegun_overcharge_warning_critical",
-	time_until_overcharge_decreases = 0.25,
-	overcharge_warning_low_sound_event = "drakegun_overcharge_warning_low",
-	overcharge_value_decrease_rate = 1.3,
-	overcharge_warning_high_sound_event = "drakegun_overcharge_warning_high",
 	explosion_template = "overcharge_explosion_dwarf",
+	hit_overcharge_threshold_sound = "ui_special_attack_ready",
+	overcharge_threshold = 10,
+	overcharge_value_decrease_rate = 1.3,
+	overcharge_warning_critical_sound_event = "drakegun_overcharge_warning_critical",
+	overcharge_warning_high_sound_event = "drakegun_overcharge_warning_high",
+	overcharge_warning_low_sound_event = "drakegun_overcharge_warning_low",
 	overcharge_warning_med_sound_event = "drakegun_overcharge_warning_med",
-	hit_overcharge_threshold_sound = "ui_special_attack_ready"
+	time_until_overcharge_decreases = 0.25,
 }
 PlayerUnitStatusSettings = PlayerUnitStatusSettings or {}
 PlayerUnitStatusSettings.overcharge_values = table.merge(PlayerUnitStatusSettings.overcharge_values or {}, {
 	cog_hammer_charge_light = 3,
 	cog_hammer_heavy_1_burn = 10,
-	cog_hammer_heavy_1_explosion = 40
+	cog_hammer_heavy_1_explosion = 40,
 })
 CareerNameAchievementMapping.dr_engineer = "engineer"

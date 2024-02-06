@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/dlcs/steak/steak_unit_extension_templates.lua
+
 local unit_extension_templates = {
 	ai_unit_beastmen_minotaur = {
 		base_template = "ai_unit_base",
@@ -7,24 +9,24 @@ local unit_extension_templates = {
 			"AIInventoryExtension",
 			"PingTargetExtension",
 			"GenericUnitAnimationMovementExtension",
-			"AIEnemySlotExtension"
+			"AIEnemySlotExtension",
 		},
 		husk_extensions = {
 			"AIInventoryExtension",
 			"PingTargetExtension",
-			"GenericUnitAnimationMovementExtension"
+			"GenericUnitAnimationMovementExtension",
 		},
 		remove_when_killed = {
 			self_owned_extensions = {
 				"AILineOfSightExtension",
 				"GenericUnitAnimationMovementExtension",
-				"AIEnemySlotExtension"
+				"AIEnemySlotExtension",
 			},
 			husk_extensions = {
-				"GenericUnitAnimationMovementExtension"
-			}
-		}
-	}
+				"GenericUnitAnimationMovementExtension",
+			},
+		},
+	},
 }
 
 return unit_extension_templates

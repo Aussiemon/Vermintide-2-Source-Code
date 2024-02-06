@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/game_state/server_join_state_machine.lua
+
 local FindServerState = class(FindServerState)
+
 FindServerState.NAME = "FindServerState"
 
 FindServerState.init = function (self, state_machine, search_type, network_options, ip_port)
@@ -18,9 +21,9 @@ FindServerState.enter = function (self)
 	local game_server_requirements = {
 		server_browser_filters = {
 			dedicated = "valuenotused",
-			gamedir = Managers.mechanism:server_universe()
+			gamedir = Managers.mechanism:server_universe(),
 		},
-		matchmaking_filters = {}
+		matchmaking_filters = {},
 	}
 	local skip_verify_lobby_data = true
 
@@ -63,6 +66,7 @@ FindServerState.update = function (self, dt)
 end
 
 local FindServerLANState = class(FindServerLANState, FindServerState)
+
 FindServerLANState.NAME = "FindServerLANState"
 
 FindServerLANState.init = function (self, state_machine, network_options, ip_port)
@@ -70,6 +74,7 @@ FindServerLANState.init = function (self, state_machine, network_options, ip_por
 end
 
 local FindServerInternetState = class(FindServerInternetState, FindServerState)
+
 FindServerInternetState.NAME = "FindServerInternetState"
 
 FindServerInternetState.init = function (self, state_machine, network_options, ip_port)
@@ -77,6 +82,7 @@ FindServerInternetState.init = function (self, state_machine, network_options, i
 end
 
 local PasswordDialogState = class(PasswordDialogState)
+
 PasswordDialogState.NAME = "PasswordDialogState"
 
 PasswordDialogState.init = function (self, state_machine)
@@ -104,6 +110,7 @@ PasswordDialogState.update = function (self)
 end
 
 local ServerJoinState = class(ServerJoinState)
+
 ServerJoinState.NAME = "ServerJoinState"
 
 ServerJoinState.init = function (self, state_machine)
@@ -116,6 +123,7 @@ ServerJoinState.enter = function (self, password)
 end
 
 local AbortState = class(AbortState)
+
 AbortState.NAME = "AbortState"
 
 AbortState.init = function (self, state_machine)
@@ -126,7 +134,7 @@ end
 ServerJoinStateMachine = class(ServerJoinStateMachine, VisualStateMachine)
 
 ServerJoinStateMachine.init = function (self, network_options, ip_port, user_data)
-	local parent = nil
+	local parent
 
 	self.super.init(self, "ServerJoinStateMachine", parent, network_options, ip_port)
 

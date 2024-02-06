@@ -1,6 +1,9 @@
+﻿-- chunkname: @scripts/unit_extensions/default_player_unit/player_hud.lua
+
 local font_size = 26
 local font = "arial"
 local font_mtrl = "materials/fonts/" .. font
+
 PlayerHud = class(PlayerHud)
 
 PlayerHud.init = function (self, extension_init_context, unit, extension_init_data)
@@ -8,7 +11,9 @@ PlayerHud.init = function (self, extension_init_context, unit, extension_init_da
 	self.gui = World.create_screen_gui(self.world, "material", "materials/fonts/gw_fonts", "immediate")
 	self.raycast_state = "waiting_to_raycast"
 	self.raycast_target = nil
+
 	local physics_world = World.get_data(extension_init_context.world, "physics_world")
+
 	self.physics_world = physics_world
 	self.current_location = nil
 	self.picked_up_ammo = false
@@ -41,11 +46,12 @@ PlayerHud.draw_player_names = function (self, unit)
 	local viewport_name = "player_1"
 	local viewport = ScriptWorld.viewport(self.world, viewport_name)
 	local camera = ScriptViewport.camera(viewport)
-	local res_x = RESOLUTION_LOOKUP.res_w
-	local res_y = RESOLUTION_LOOKUP.res_h
+	local res_x, res_y = RESOLUTION_LOOKUP.res_w, RESOLUTION_LOOKUP.res_h
 	local viewport_center = Vector3(res_x / 2, res_y / 2, 0)
 	local text_visibility_radius_sq = res_y / 3
+
 	text_visibility_radius_sq = text_visibility_radius_sq * text_visibility_radius_sq
+
 	local gui = self.gui
 	local offset_vector = Vector3(0, 0, 0.925)
 
@@ -60,7 +66,9 @@ PlayerHud.draw_player_names = function (self, unit)
 				local min, max = Gui.text_extents(gui, name, font_mtrl, font_size)
 				local text_length = max.x - min.x
 				local player_screen_pos_center = Camera.world_to_screen(camera, player_world_pos_center)
+
 				player_screen_pos_center = Vector3(player_screen_pos_center.x, player_screen_pos_center.z, 0)
+
 				local player_screen_pos_head = Camera.world_to_screen(camera, player_world_pos_head)
 				local text_pos = Vector3(player_screen_pos_head.x - text_length / 2, player_screen_pos_head.z, 0)
 				local distance_to_center_sq = Vector3.distance_squared(player_screen_pos_center, viewport_center)

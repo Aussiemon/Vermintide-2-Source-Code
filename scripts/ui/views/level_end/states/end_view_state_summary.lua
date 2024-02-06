@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/ui/views/level_end/states/end_view_state_summary.lua
+
 local DO_RELOAD = false
+
 EndViewStateSummary = class(EndViewStateSummary)
 EndViewStateSummary.NAME = "EndViewStateSummary"
 EndViewStateSummary.CAN_SPEED_UP = true
@@ -10,7 +13,9 @@ EndViewStateSummary.on_enter = function (self, params)
 	self.parent = params.parent
 	self.game_won = params.game_won
 	self.game_mode_key = params.game_mode_key
+
 	local context = params.context
+
 	self._context = context
 	self.ui_renderer = context.ui_renderer
 	self.ui_top_renderer = context.ui_top_renderer
@@ -20,7 +25,7 @@ EndViewStateSummary.on_enter = function (self, params)
 	self.rewards = context.rewards
 	self.render_settings = {
 		alpha_multiplier = 0,
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 	self.wwise_world = context.wwise_world
 	self.world_previewer = params.world_previewer
@@ -40,14 +45,14 @@ EndViewStateSummary.on_enter = function (self, params)
 	self:_start_transition_animation("on_enter", "transition_enter")
 
 	self._exit_timer = nil
+
 	local level_start = self._context.rewards.level_start
-	local _ = level_start[1]
-	local start_experience = level_start[2]
-	local start_experience_pool = level_start[3]
+	local _, start_experience, start_experience_pool = level_start[1], level_start[2], level_start[3]
 
 	self:_setup_essence_presentation()
 
 	self._progress_data = self:_get_total_experience_progress_data(start_experience, start_experience_pool)
+
 	local start_level = ExperienceSettings.get_level(start_experience)
 	local current_experience = start_experience + start_experience_pool
 
@@ -56,6 +61,7 @@ EndViewStateSummary.on_enter = function (self, params)
 	end
 
 	local current_level, extra_levels = self:_set_current_experience(current_experience)
+
 	self._current_level = current_level
 
 	if self._progress_data.bonus_experience > 0 then
@@ -94,25 +100,30 @@ EndViewStateSummary.create_ui_elements = function (self, params)
 	local summary_entry_widget_definitions = definitions.summary_entry_widgets
 	local scenegraph_definition = definitions.scenegraph_definition
 	local animation_definitions = definitions.animation_definitions
+
 	DO_RELOAD = false
 	self._scenegraph_definition = scenegraph_definition
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+
 	local widgets = {}
 	local widgets_by_name = {}
 
 	for name, widget_definition in pairs(widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		widgets[#widgets + 1] = widget
 		widgets_by_name[name] = widget
 	end
 
 	self._widgets = widgets
 	self._widgets_by_name = widgets_by_name
+
 	local entry_widgets = {}
 	local entry_widgets_by_name = {}
 
 	for name, widget_definition in pairs(summary_entry_widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		entry_widgets[#entry_widgets + 1] = widget
 		entry_widgets_by_name[name] = widget
 	end
@@ -225,10 +236,11 @@ EndViewStateSummary._update_animations = function (self, dt)
 		ui_animator:stop_animation(self.level_up_anim_id)
 
 		self.level_up_anim_id = nil
-		local max_level = ExperienceSettings.max_level
-		local level = nil
 
-		if self._current_level < max_level then
+		local max_level = ExperienceSettings.max_level
+		local level
+
+		if max_level > self._current_level then
 			level = self._current_level
 		else
 			level = self._current_level + (self._extra_levels or 0)
@@ -271,20 +283,22 @@ end
 EndViewStateSummary._start_transition_animation = function (self, key, animation_name)
 	local params = {
 		wwise_world = self.wwise_world,
-		render_settings = self.render_settings
+		render_settings = self.render_settings,
 	}
 	local widgets = {}
 	local anim_id = self.ui_animator:start_animation(animation_name, widgets, self._scenegraph_definition, params)
+
 	self._animations[key] = anim_id
 end
 
 EndViewStateSummary._start_animation = function (self, key, animation_name)
 	local params = {
 		wwise_world = self.wwise_world,
-		render_settings = self.render_settings
+		render_settings = self.render_settings,
 	}
 	local widgets = self._widgets_by_name
 	local anim_id = self.ui_animator:start_animation(animation_name, widgets, self._scenegraph_definition, params)
+
 	self._animations[key] = anim_id
 end
 
@@ -302,6 +316,7 @@ end
 
 EndViewStateSummary._initialize_entries = function (self)
 	local summary_entries, experience_gained = self:_get_summary_entries(self.game_won, self.game_mode_key)
+
 	self._summary_entries = summary_entries
 end
 
@@ -314,6 +329,7 @@ EndViewStateSummary._get_summary_entries = function (self, game_won, game_mode_k
 
 	for index, mission_reward in ipairs(mission_rewards) do
 		widget_index = widget_index % #entry_widgets + 1
+
 		local name = "entry_" .. index
 		local text = mission_reward.text
 		local experience = mission_reward.experience and math.round(mission_reward.experience)
@@ -334,8 +350,9 @@ EndViewStateSummary._get_summary_entries = function (self, game_won, game_mode_k
 			widget = widget,
 			icon = icon,
 			list_index = index,
-			wwise_world = self.wwise_world
+			wwise_world = self.wwise_world,
 		}
+
 		entries[index] = entry
 
 		if experience then
@@ -431,9 +448,12 @@ EndViewStateSummary._setup_essence_presentation = function (self)
 
 		if essence_gained then
 			local essence_total_text = widgets_by_name.essence_total_text
+
 			essence_total_text.content.text = essence_gained
+
 			local essence_gained_width = UIUtils.get_text_width(self.ui_renderer, essence_total_text.style.text, tostring(essence_gained))
 			local icon_essence = widgets_by_name.icon_essence
+
 			icon_essence.offset[1] = -essence_gained_width
 		end
 	end
@@ -466,8 +486,8 @@ EndViewStateSummary._get_total_experience_progress_data = function (self, start_
 		bonus_experience = ExperienceSettings.get_experience_required_for_level(ExperienceSettings.max_level) * start_extra_level_progress
 	end
 
-	local progress_length = total_end_level - total_start_level + end_progress - start_progress + end_extra_levels_progress - start_extra_level_progress
-	local experience_gained = end_experience - start_experience + end_experience_pool - start_experience_pool + bonus_experience
+	local progress_length = total_end_level - total_start_level + (end_progress - start_progress) + (end_extra_levels_progress - start_extra_level_progress)
+	local experience_gained = end_experience - start_experience + (end_experience_pool - start_experience_pool) + bonus_experience
 
 	if start_level == ExperienceSettings.max_level then
 		start_experience = start_experience + start_experience_pool
@@ -480,15 +500,15 @@ EndViewStateSummary._get_total_experience_progress_data = function (self, start_
 	local time = math.min(math.max(time_multiplier * experience_gained, min_time), max_time)
 
 	return {
-		time = 0,
 		complete = false,
+		time = 0,
 		current_experience = start_experience,
 		experience_to_add = experience_gained,
 		total_progress = progress_length,
 		start_progress = start_progress,
 		start_extra_level = start_extra_level,
 		bonus_experience = bonus_experience,
-		total_time = time
+		total_time = time,
 	}
 end
 
@@ -509,8 +529,10 @@ EndViewStateSummary._animate_experience_bar = function (self, dt, displaying_rew
 	local total_time = progress_data.total_time
 	local time_progress = current_time / total_time
 	local smoothstep_progress = math.smoothstep(time_progress, 0, 1)
+
 	current_time = math.min(current_time + dt, total_time)
 	progress_data.time = current_time
+
 	local current_experience = progress_data.current_experience
 	local experience_to_add = progress_data.experience_to_add
 	local current_experience_to_add = math.floor(experience_to_add * smoothstep_progress)
@@ -533,7 +555,7 @@ EndViewStateSummary._animate_experience_bar = function (self, dt, displaying_rew
 		self:_play_sound("play_gui_mission_summary_experience_bar_end")
 
 		self.level_up_anim_id = self.ui_animator:start_animation("level_up", self._widgets_by_name, self._scenegraph_definition, {
-			wwise_world = self.wwise_world
+			wwise_world = self.wwise_world,
 		})
 	end
 
@@ -552,12 +574,13 @@ EndViewStateSummary._set_current_experience = function (self, current_experience
 
 	if level == ExperienceSettings.max_level then
 		local overflow_pool = current_experience - ExperienceSettings.max_experience
+
 		extra_levels, progress = ExperienceSettings.get_extra_level(overflow_pool)
 	end
 
 	local next_level = math.clamp(level + 1, 0, ExperienceSettings.max_level)
 
-	if self._current_level and self._current_level < level or self._extra_levels and self._extra_levels < extra_levels then
+	if self._current_level and level > self._current_level or self._extra_levels and extra_levels > self._extra_levels then
 		progress = 1
 	end
 
@@ -566,6 +589,7 @@ EndViewStateSummary._set_current_experience = function (self, current_experience
 	local content = experience_bar.content
 	local style = experience_bar.style
 	local default_size = style.experience_bar.default_size
+
 	style.experience_bar.size[1] = default_size[1] * progress
 	style.experience_bar_end.offset[1] = default_size[1] * progress
 

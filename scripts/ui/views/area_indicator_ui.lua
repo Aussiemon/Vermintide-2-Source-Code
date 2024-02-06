@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/ui/views/area_indicator_ui.lua
+
 local definitions = local_require("scripts/ui/views/area_indicator_ui_definitions")
+
 AreaIndicatorUI = class(AreaIndicatorUI)
 
 AreaIndicatorUI.init = function (self, parent, ingame_ui_context)
@@ -6,7 +9,9 @@ AreaIndicatorUI.init = function (self, parent, ingame_ui_context)
 	self.ui_renderer = ingame_ui_context.ui_renderer
 	self.ingame_ui = ingame_ui_context.ingame_ui
 	self.input_manager = ingame_ui_context.input_manager
+
 	local world = ingame_ui_context.world_manager:world("level_world")
+
 	self.wwise_world = Managers.world:wwise_world(world)
 
 	self:create_ui_elements()
@@ -36,8 +41,10 @@ AreaIndicatorUI.update = function (self, dt)
 
 		if not location_ui_blocked and current_location ~= nil and current_location ~= saved_location then
 			self.saved_location = current_location
+
 			local ui_settings = UISettings.area_indicator
 			local widget = self.area_text_box
+
 			widget.content.text = current_location
 			self.area_text_box_animation = UIAnimation.init(UIAnimation.function_by_time, widget.style.text.text_color, 1, 0, 255, ui_settings.fade_time, math.easeInCubic, UIAnimation.wait, ui_settings.wait_time, UIAnimation.function_by_time, widget.style.text.text_color, 1, 255, 0, ui_settings.fade_time, math.easeInCubic)
 			self.area_text_box_shadow_animation = UIAnimation.init(UIAnimation.function_by_time, widget.style.text_shadow.text_color, 1, 0, 255, ui_settings.fade_time, math.easeInCubic, UIAnimation.wait, ui_settings.wait_time, UIAnimation.function_by_time, widget.style.text_shadow.text_color, 1, 255, 0, ui_settings.fade_time, math.easeInCubic)

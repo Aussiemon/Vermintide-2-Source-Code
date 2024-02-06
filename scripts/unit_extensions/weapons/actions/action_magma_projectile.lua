@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/weapons/actions/action_magma_projectile.lua
+
 ActionMagmaProjectile = class(ActionMagmaProjectile, ActionShotgun)
 
 ActionMagmaProjectile.client_owner_start_action = function (self, new_action, t, chain_action_data, power_level)
@@ -30,7 +32,7 @@ ActionMagmaProjectile._start_shooting = function (self)
 
 	if not Managers.player:owner(self.owner_unit).bot_player then
 		Managers.state.controller_features:add_effect("rumble", {
-			rumble_effect = "handgun_fire"
+			rumble_effect = "handgun_fire",
 		})
 	end
 

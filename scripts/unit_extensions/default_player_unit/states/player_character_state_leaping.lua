@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/default_player_unit/states/player_character_state_leaping.lua
+
 PlayerCharacterStateLeaping = class(PlayerCharacterStateLeaping, PlayerCharacterState)
 
 PlayerCharacterStateLeaping.init = function (self, character_state_init_context)
@@ -16,15 +18,20 @@ PlayerCharacterStateLeaping.on_enter = function (self, unit, input, dt, context,
 	local status_extension = self.status_extension
 	local inventory_extension = self.inventory_extension
 	local first_person_extension = self.first_person_extension
+
 	self._wwise_world = Managers.world:wwise_world(self.world)
 	self._physics_world = World.get_data(self.world, "physics_world")
+
 	local leap_data = self.status_extension.do_leap
+
 	leap_data.starting_pos = Vector3Box(POSITION_LOOKUP[unit])
 	leap_data.total_distance = Vector3.length(leap_data.projected_hit_pos:unbox() - POSITION_LOOKUP[unit])
 	self._leap_data = leap_data
 	status_extension.do_leap = false
+
 	local rotation = first_person_extension:current_rotation()
 	local look_direction_flat = Vector3.normalize(Vector3.flat(Quaternion.forward(rotation)))
+
 	self._move_function = self[leap_data.move_function]
 	self.jump_direction = Vector3Box(look_direction_flat)
 
@@ -163,7 +170,7 @@ PlayerCharacterStateLeaping.update = function (self, unit, input, dt, context, t
 		end
 	end
 
-	local look_sense_override, look_override = nil
+	local look_sense_override, look_override
 
 	CharacterStateHelper.look(input_extension, self.player.viewport_name, first_person_extension, status_extension, inventory_extension, look_sense_override, look_override)
 	CharacterStateHelper.update_weapon_actions(t, unit, input_extension, inventory_extension, health_extension)
@@ -179,6 +186,7 @@ PlayerCharacterStateLeaping._update_distance_travelled = function (self)
 	local total_vector = Vector3.flat(end_position - starting_pos)
 	local dot = Vector3.dot(travelled_vector, total_vector)
 	local total_distance = Vector3.length(total_vector)
+
 	self._total_distance = total_distance
 	self._distance_travelled = dot / total_distance
 end
@@ -200,9 +208,11 @@ PlayerCharacterStateLeaping.leap = function (self, unit, dt, t)
 	local starting_speed = self._leap_data.speed
 	local speed = starting_speed
 	local move_speed_multiplier = self.status_extension:current_move_speed_multiplier()
+
 	speed = speed * move_speed_multiplier
 	speed = speed * move_speed_multiplier
 	speed = speed * movement_settings_table.player_speed_scale
+
 	local zero_distance = total_distance * 0
 	local start_accel_distance = total_distance * 0.1
 	local end_accel_distance = total_distance * 0.2
@@ -212,72 +222,108 @@ PlayerCharacterStateLeaping.leap = function (self, unit, dt, t)
 
 	if distance_travelled <= start_accel_distance then
 		local interval_distance_percentage = scale_percentage(zero_distance, start_accel_distance, distance_travelled)
+
 		interval_distance_percentage = math.ease_out_exp(interval_distance_percentage)
+
 		local speed_multiplier = math.lerp(0, 1, interval_distance_percentage)
+
 		speed = speed * speed_multiplier
+
 		local gravity_multiplier = 0.25
+
 		movement_settings_table.gravity_acceleration = PlayerUnitMovementSettings.gravity_acceleration * gravity_multiplier
+
 		local move_cap = math.clamp(movement_settings_table.leap.move_speed, 0, PlayerUnitMovementSettings.leap.move_speed)
 		local prev_move_velocity = locomotion_extension:current_velocity()
 		local new_move_velocity = (Vector3.normalize(prev_move_velocity) + move_direction) * speed
 		local new_move_speed = Vector3.length(new_move_velocity)
+
 		new_move_speed = math.clamp(new_move_speed, 0, move_cap * movement_settings_table.player_speed_scale)
+
 		local new_move_direction = Vector3.normalize(new_move_velocity)
 
 		locomotion_extension:set_wanted_velocity(new_move_direction * new_move_speed)
 	elseif distance_travelled <= end_accel_distance then
 		local interval_distance_percentage = scale_percentage(start_accel_distance, end_accel_distance, distance_travelled)
+
 		interval_distance_percentage = math.easeOutCubic(interval_distance_percentage)
+
 		local speed_multiplier = math.lerp(1, 0.8, interval_distance_percentage)
+
 		speed = speed * speed_multiplier
+
 		local gravity_multiplier = 0.5
+
 		movement_settings_table.gravity_acceleration = PlayerUnitMovementSettings.gravity_acceleration * gravity_multiplier
+
 		local move_cap = math.clamp(movement_settings_table.leap.move_speed, 0, PlayerUnitMovementSettings.leap.move_speed)
 		local prev_move_velocity = locomotion_extension:current_velocity()
 		local new_move_velocity = (Vector3.normalize(prev_move_velocity) + move_direction) * speed
 		local new_move_speed = Vector3.length(new_move_velocity)
+
 		new_move_speed = math.clamp(new_move_speed, 0, move_cap * movement_settings_table.player_speed_scale)
+
 		local new_move_direction = Vector3.normalize(new_move_velocity)
 
 		locomotion_extension:set_wanted_velocity(new_move_direction * new_move_speed)
 	elseif distance_travelled <= glide_distance then
 		local interval_distance_percentage = scale_percentage(end_accel_distance, glide_distance, distance_travelled)
+
 		interval_distance_percentage = math.ease_in_exp(interval_distance_percentage)
+
 		local speed_multiplier = math.lerp(0.8, 0.7, interval_distance_percentage)
+
 		speed = speed * speed_multiplier
+
 		local gravity_multiplier = 1
+
 		movement_settings_table.gravity_acceleration = PlayerUnitMovementSettings.gravity_acceleration * gravity_multiplier
+
 		local move_cap = math.clamp(movement_settings_table.leap.move_speed, 0, PlayerUnitMovementSettings.leap.move_speed)
 		local prev_move_velocity = locomotion_extension:current_velocity()
 		local new_move_velocity = (Vector3.normalize(prev_move_velocity) + move_direction) * speed
 		local new_move_speed = Vector3.length(new_move_velocity)
+
 		new_move_speed = math.clamp(new_move_speed, 0, move_cap * movement_settings_table.player_speed_scale)
+
 		local new_move_direction = Vector3.normalize(new_move_velocity)
 
 		locomotion_extension:set_wanted_velocity(new_move_direction * new_move_speed)
 	elseif distance_travelled <= slow_distance then
 		local interval_distance_percentage = scale_percentage(glide_distance, slow_distance, distance_travelled)
+
 		interval_distance_percentage = math.ease_out_quad(interval_distance_percentage)
+
 		local speed_multiplier = math.lerp(0.7, 0.5, interval_distance_percentage)
+
 		speed = speed * speed_multiplier
 		movement_settings_table.gravity_acceleration = PlayerUnitMovementSettings.gravity_acceleration * interval_distance_percentage
+
 		local move_cap = math.clamp(movement_settings_table.leap.move_speed, 0, PlayerUnitMovementSettings.leap.move_speed)
 		local prev_move_velocity = locomotion_extension:current_velocity()
 		local new_move_velocity = (Vector3.normalize(prev_move_velocity) + move_direction) * speed
 		local new_move_speed = Vector3.length(new_move_velocity)
+
 		new_move_speed = math.clamp(new_move_speed, 0, move_cap * movement_settings_table.player_speed_scale)
+
 		local new_move_direction = Vector3.normalize(new_move_velocity)
 
 		locomotion_extension:set_wanted_velocity(new_move_direction * new_move_speed)
 	else
 		local interval_distance_percentage = scale_percentage(slow_distance, full_distance, distance_travelled)
+
 		interval_distance_percentage = math.ease_out_quad(interval_distance_percentage)
+
 		local speed_multiplier = math.lerp(0.5, 1.5, interval_distance_percentage)
+
 		speed = speed * speed_multiplier
+
 		local forward_vector_multiplier = math.lerp(0.25, 0, interval_distance_percentage)
 		local towards_end_vector_multiplier = math.lerp(0, 0.75, interval_distance_percentage)
 		local gravity_multiplier = 1.5
+
 		movement_settings_table.gravity_acceleration = PlayerUnitMovementSettings.gravity_acceleration * gravity_multiplier
+
 		local move_cap = math.clamp(movement_settings_table.leap.slam_speed, 0, PlayerUnitMovementSettings.leap.slam_speed)
 		local prev_move_velocity = locomotion_extension:current_velocity()
 		local forward = Vector3.normalize(Vector3.flat(move_direction)) * forward_vector_multiplier
@@ -285,7 +331,9 @@ PlayerCharacterStateLeaping.leap = function (self, unit, dt, t)
 		local move_direction = forward + towards_end
 		local new_move_velocity = (Vector3.normalize(prev_move_velocity) + move_direction) * speed
 		local new_move_speed = Vector3.length(new_move_velocity)
+
 		new_move_speed = math.clamp(new_move_speed, 0, move_cap * movement_settings_table.player_speed_scale)
+
 		local new_move_direction = Vector3.normalize(new_move_velocity)
 
 		locomotion_extension:set_forced_velocity(new_move_direction * new_move_speed)
@@ -321,9 +369,11 @@ PlayerCharacterStateLeaping.teleleap = function (self, unit, dt, t)
 	local starting_speed = self._leap_data.speed
 	local speed = starting_speed
 	local move_speed_multiplier = self.status_extension:current_move_speed_multiplier()
+
 	speed = speed * move_speed_multiplier
 	speed = speed * move_speed_multiplier
 	speed = speed * movement_settings_table.player_speed_scale
+
 	local zero_distance = total_distance * 0
 	local hover_distance = total_distance * 0.05
 	local acceleration_distance = total_distance * 0.2
@@ -333,28 +383,42 @@ PlayerCharacterStateLeaping.teleleap = function (self, unit, dt, t)
 
 	if distance_travelled <= hover_distance then
 		local interval_distance_percentage = scale_percentage(zero_distance, hover_distance, distance_travelled)
+
 		interval_distance_percentage = math.ease_out_exp(interval_distance_percentage)
+
 		local speed_multiplier = math.lerp(0, 0.25, interval_distance_percentage)
+
 		speed = speed * speed_multiplier
+
 		local gravity_multiplier = math.lerp(5.5, 3, interval_distance_percentage)
+
 		movement_settings_table.gravity_acceleration = PlayerUnitMovementSettings.gravity_acceleration * gravity_multiplier
+
 		local move_cap = math.clamp(movement_settings_table.teleleap.move_speed, 0, PlayerUnitMovementSettings.teleleap.move_speed)
 		local prev_move_velocity = locomotion_extension:current_velocity()
 		local new_move_velocity = (Vector3.normalize(prev_move_velocity) + move_direction) * speed
 		local new_move_speed = Vector3.length(new_move_velocity)
+
 		new_move_speed = math.clamp(new_move_speed, 0, move_cap * movement_settings_table.player_speed_scale)
+
 		local new_move_direction = Vector3.normalize(new_move_velocity)
 
 		locomotion_extension:set_wanted_velocity(new_move_direction * new_move_speed)
 	elseif distance_travelled <= acceleration_distance then
 		local interval_distance_percentage = scale_percentage(hover_distance, acceleration_distance, distance_travelled)
+
 		interval_distance_percentage = math.easeOutCubic(interval_distance_percentage)
+
 		local speed_multiplier = math.lerp(0.25, 3.5, interval_distance_percentage)
+
 		speed = speed * speed_multiplier
+
 		local forward_vector_multiplier = math.lerp(0.75, 0.25, total_distance_percentage)
 		local towards_end_vector_multiplier = math.lerp(0, 0.75, total_distance_percentage)
 		local gravity_multiplier = 0.5
+
 		movement_settings_table.gravity_acceleration = PlayerUnitMovementSettings.gravity_acceleration * gravity_multiplier
+
 		local move_cap = math.clamp(movement_settings_table.teleleap.move_speed, 0, PlayerUnitMovementSettings.teleleap.move_speed)
 		local prev_move_velocity = locomotion_extension:current_velocity()
 		local forward = Vector3.normalize(Vector3.flat(move_direction)) * forward_vector_multiplier
@@ -362,20 +426,28 @@ PlayerCharacterStateLeaping.teleleap = function (self, unit, dt, t)
 		local move_direction = forward + towards_end
 		local new_move_velocity = (Vector3.normalize(prev_move_velocity) + move_direction) * speed
 		local new_move_speed = Vector3.length(new_move_velocity)
+
 		new_move_speed = math.clamp(new_move_speed, 0, move_cap * movement_settings_table.player_speed_scale)
+
 		local new_move_direction = Vector3.normalize(new_move_velocity)
 
 		locomotion_extension:set_forced_velocity(new_move_direction * new_move_speed)
 		locomotion_extension:set_wanted_velocity(new_move_direction * new_move_speed)
 	elseif distance_travelled <= teleport_acceleration_distance then
 		local interval_distance_percentage = scale_percentage(acceleration_distance, teleport_acceleration_distance, distance_travelled)
+
 		interval_distance_percentage = math.ease_in_exp(interval_distance_percentage)
+
 		local speed_multiplier = math.lerp(3.5, 5.5, interval_distance_percentage)
+
 		speed = speed * speed_multiplier
+
 		local forward_vector_multiplier = math.lerp(0.25, 0.25, total_distance_percentage)
 		local towards_end_vector_multiplier = math.lerp(0.75, 1, total_distance_percentage)
 		local gravity_multiplier = 1
+
 		movement_settings_table.gravity_acceleration = PlayerUnitMovementSettings.gravity_acceleration * gravity_multiplier
+
 		local move_cap = math.clamp(movement_settings_table.teleleap.move_speed, 0, PlayerUnitMovementSettings.teleleap.move_speed)
 		local prev_move_velocity = locomotion_extension:current_velocity()
 		local forward = Vector3.normalize(Vector3.flat(move_direction)) * forward_vector_multiplier
@@ -383,7 +455,9 @@ PlayerCharacterStateLeaping.teleleap = function (self, unit, dt, t)
 		local move_direction = forward + towards_end
 		local new_move_velocity = (Vector3.normalize(prev_move_velocity) + move_direction) * speed
 		local new_move_speed = Vector3.length(new_move_velocity)
+
 		new_move_speed = math.clamp(new_move_speed, 0, move_cap * movement_settings_table.player_speed_scale)
+
 		local new_move_direction = Vector3.normalize(new_move_velocity)
 
 		locomotion_extension:set_forced_velocity(new_move_direction * new_move_speed)
@@ -403,7 +477,7 @@ PlayerCharacterStateLeaping._teleport_to_with_collision = function (self, start_
 	local radius = 1
 	local max_hits = 20
 	local result = PhysicsWorld.linear_sphere_sweep(physics_world, start_pos, end_pos, radius, max_hits, "collision_filter", collision_filter, "report_initial_overlap")
-	local teleport_pos = nil
+	local teleport_pos
 
 	if not result then
 		teleport_pos = end_pos
@@ -423,15 +497,17 @@ PlayerCharacterStateLeaping._update_movement = function (self, unit, dt, t)
 
 	local max_dt = 0.016666666666666666
 	local current_dt = 0
-	local leap_done, final_position = nil
+	local leap_done, final_position
 
 	while not leap_done and current_dt < dt do
 		local interpolated_dt = math.min(max_dt, dt - current_dt)
+
 		current_dt = math.min(current_dt + max_dt, dt)
 		leap_done, final_position = self:_move_function(unit, interpolated_dt, t)
 	end
 
 	local colliding_down = CharacterStateHelper.is_colliding_down(unit)
+
 	self._leap_done = leap_done or colliding_down
 	self._final_position = Vector3Box(leap_done and final_position or POSITION_LOOKUP[unit])
 
@@ -441,6 +517,7 @@ end
 PlayerCharacterStateLeaping._reset_speed_and_gravity = function (self, unit)
 	local locomotion_extension = self.locomotion_extension
 	local movement_settings_table = PlayerUnitMovementSettings.get_movement_settings_table(unit)
+
 	movement_settings_table.gravity_acceleration = PlayerUnitMovementSettings.gravity_acceleration
 
 	locomotion_extension:set_forced_velocity(Vector3.zero())
@@ -519,7 +596,9 @@ PlayerCharacterStateLeaping._start_leap = function (self, unit, t)
 	locomotion_extension:set_wanted_velocity(velocity)
 
 	local movement_settings_table = PlayerUnitMovementSettings.get_movement_settings_table(unit)
+
 	movement_settings_table.gravity_acceleration = PlayerUnitMovementSettings.gravity_acceleration * 0
+
 	local leap_events = leap_data.leap_events
 
 	if leap_events then

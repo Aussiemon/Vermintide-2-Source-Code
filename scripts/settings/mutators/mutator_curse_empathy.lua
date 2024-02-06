@@ -1,12 +1,14 @@
+﻿-- chunkname: @scripts/settings/mutators/mutator_curse_empathy.lua
+
 local DAMAGE_TYPE_BLACKLIST = {
-	temporary_health_degen = true,
-	sync_health = true,
-	knockdown_bleed = true,
 	death_zone = true,
-	volume_insta_kill = true,
+	forced = true,
 	heal = true,
 	inside_forbidden_tag_volume = true,
-	forced = true
+	knockdown_bleed = true,
+	sync_health = true,
+	temporary_health_degen = true,
+	volume_insta_kill = true,
 }
 local damage_sound_global_parameter = "leash_distance"
 local start_damage_sound_event = "Play_curse_empathy_loop"
@@ -24,15 +26,14 @@ local max_damage = 50
 local beam_max_blink_sound = 0
 local beam_blink_transition_speed = 3
 local CURSE_DAMAGE_TYPE = "curse_empathy"
+
 DAMAGE_TYPE_BLACKLIST[CURSE_DAMAGE_TYPE] = true
 
 local function add_damage(data, unit, damage, damaging_unit)
-	if not data.damage_buffer[unit] then
-		local damage_data = {
-			damage = 0,
-			damaging_unit = damaging_unit
-		}
-	end
+	local damage_data = data.damage_buffer[unit] or {
+		damage = 0,
+		damaging_unit = damaging_unit,
+	}
 
 	damage_data.damage = damage_data.damage + damage
 	data.damage_buffer[unit] = damage_data
@@ -77,10 +78,12 @@ local function get_effect_position(local_player_unit, player_unit)
 
 		if first_person_extension then
 			local first_person_unit = first_person_extension.first_person_unit
+
 			effect_position = Unit.local_position(first_person_unit, 0) - 0.5 * Vector3.up()
 		end
 	else
 		local effect_node = Unit.node(player_unit, "j_spine")
+
 		effect_position = Unit.world_position(player_unit, effect_node)
 	end
 
@@ -92,6 +95,7 @@ local function get_beam_intensity(start_position, end_position, max_radius, inte
 	local radius_squared = math.pow(max_radius, 2)
 	local distance_squared = Vector3.distance_squared(start_position, end_position)
 	local intensity = math.auto_lerp(drop_off_radius_squared, radius_squared, max_intensity, 0, distance_squared)
+
 	intensity = math.clamp(intensity, 0, max_intensity)
 
 	return intensity
@@ -132,6 +136,7 @@ local function update_sound(data)
 	end
 
 	local sound_value = math.auto_lerp(0, beam_max_softness, 0, beam_max_blink_sound, highest_beam_softness)
+
 	sound_value = math.clamp(sound_value, 0, beam_max_blink_sound)
 
 	audio_system:set_global_parameter(damage_sound_global_parameter, sound_value)
@@ -183,6 +188,7 @@ local function set_blinking_enabled(data, enabled, t, player_unit)
 
 	local wwise_world = data.wwise_world
 	local damage_sound_id = player_beam_effects.damage_sound_id
+
 	player_beam_effects.blinking_enabled = enabled
 
 	if enabled then
@@ -190,6 +196,7 @@ local function set_blinking_enabled(data, enabled, t, player_unit)
 
 		if not damage_sound_id then
 			local sound_id = WwiseWorld.trigger_event(wwise_world, start_damage_sound_event)
+
 			player_beam_effects.damage_sound_id = sound_id
 		end
 	else
@@ -216,6 +223,7 @@ local function process_blinking(data, dt, t)
 		local timer_enabled = beam_effect.blinking_enabled
 		local multiplier = timer_enabled and 1 or -1
 		local new_beam_softness = beam_effect.beam_softness + beam_blink_transition_speed * multiplier * dt
+
 		new_beam_softness = math.clamp(new_beam_softness, 0, beam_max_softness)
 		beam_effect.beam_softness = new_beam_softness
 	end
@@ -237,13 +245,14 @@ local function create_missing_beam_effects(world, beam_effects, player_unit)
 	if not beam_effects[player_unit] then
 		local beam_effect_id = World.create_particles(world, beam_effect_name, Vector3.zero(), Quaternion.identity())
 		local player_effect_id = World.create_particles(world, player_effect_name, Vector3.zero(), Quaternion.identity())
+
 		beam_effects[player_unit] = {
-			blinking_enabled = false,
 			beam_softness = 0,
+			blinking_enabled = false,
 			ids = {
 				beam_effect_id = beam_effect_id,
-				player_effect_id = player_effect_id
-			}
+				player_effect_id = player_effect_id,
+			},
 		}
 	end
 end
@@ -276,6 +285,7 @@ return {
 
 		local player_damage = damage * damage_ratio
 		local other_players_damage = damage - player_damage
+
 		other_players_damage = other_players_damage / table.size(units_in_range)
 		other_players_damage = math.min(other_players_damage, max_damage)
 
@@ -298,6 +308,7 @@ return {
 			for _, other_player_unit in ipairs(alive_units) do
 				if player_unit ~= other_player_unit then
 					data.player_units_in_range[player_unit] = data.player_units_in_range[player_unit] or {}
+
 					local player_position = POSITION_LOOKUP[player_unit]
 					local other_player_position = POSITION_LOOKUP[other_player_unit]
 					local distance_squared = Vector3.distance_squared(other_player_position, player_position)
@@ -363,6 +374,7 @@ return {
 		local player_manager = Managers.player
 		local wwise_world = Managers.world:wwise_world(world)
 		local hero_side = Managers.state.side:get_side_from_name("heroes")
+
 		data.wwise_world = wwise_world
 		data.local_player = player_manager:local_player()
 		data.beam_start_variable_id = World.find_particles_variable(world, beam_effect_name, "start")
@@ -420,5 +432,5 @@ return {
 		for player_unit, _ in pairs(beam_effects) do
 			destroy_effects(context, data, player_unit)
 		end
-	end
+	end,
 }

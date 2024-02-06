@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/managers/backend_playfab/tutorial_backend/backend_interface_item_tutorial.lua
+
 BackendInterfaceItemTutorial = class(BackendInterfaceItemTutorial)
+
 local PlayFabClientApi = require("PlayFab.PlayFabClientApi")
 
 BackendInterfaceItemTutorial.init = function (self, backend_mirror)
@@ -18,7 +21,7 @@ local loadout_slots = {
 	"slot_necklace",
 	"slot_ring",
 	"slot_trinket_1",
-	"slot_frame"
+	"slot_frame",
 }
 
 BackendInterfaceItemTutorial._refresh = function (self)
@@ -31,138 +34,138 @@ end
 BackendInterfaceItemTutorial._refresh_items = function (self)
 	self._items = {
 		{
-			key = "es_longbow_tutorial",
-			rarity = "default",
-			power_level = 10,
 			backend_id = 1,
-			data = ItemMasterList.es_longbow_tutorial
+			key = "es_longbow_tutorial",
+			power_level = 10,
+			rarity = "default",
+			data = ItemMasterList.es_longbow_tutorial,
 		},
 		{
-			key = "es_2h_hammer_tutorial",
-			rarity = "default",
-			power_level = 10,
 			backend_id = 2,
-			data = ItemMasterList.es_2h_hammer_tutorial
+			key = "es_2h_hammer_tutorial",
+			power_level = 10,
+			rarity = "default",
+			data = ItemMasterList.es_2h_hammer_tutorial,
 		},
 		{
-			key = "skin_es_knight",
 			backend_id = 3,
+			key = "skin_es_knight",
 			rarity = "default",
-			data = ItemMasterList.skin_es_knight
+			data = ItemMasterList.skin_es_knight,
 		},
 		{
-			key = "knight_hat_0000",
 			backend_id = 4,
+			key = "knight_hat_0000",
 			rarity = "default",
-			data = ItemMasterList.knight_hat_0000
+			data = ItemMasterList.knight_hat_0000,
 		},
 		{
-			key = "dr_crossbow",
-			rarity = "default",
-			power_level = 10,
 			backend_id = 5,
-			data = ItemMasterList.dr_crossbow
+			key = "dr_crossbow",
+			power_level = 10,
+			rarity = "default",
+			data = ItemMasterList.dr_crossbow,
 		},
 		{
-			key = "dr_1h_axe",
-			rarity = "default",
-			power_level = 10,
 			backend_id = 6,
-			data = ItemMasterList.dr_1h_axe
+			key = "dr_1h_axe",
+			power_level = 10,
+			rarity = "default",
+			data = ItemMasterList.dr_1h_axe,
 		},
 		{
-			key = "skin_dr_ranger",
 			backend_id = 7,
+			key = "skin_dr_ranger",
 			rarity = "default",
-			data = ItemMasterList.skin_dr_ranger
+			data = ItemMasterList.skin_dr_ranger,
 		},
 		{
-			key = "ranger_hat_0000",
 			backend_id = 8,
+			key = "ranger_hat_0000",
 			rarity = "default",
-			data = ItemMasterList.ranger_hat_0000
+			data = ItemMasterList.ranger_hat_0000,
 		},
 		{
-			key = "we_longbow",
-			rarity = "default",
-			power_level = 10,
 			backend_id = 9,
-			data = ItemMasterList.we_longbow
+			key = "we_longbow",
+			power_level = 10,
+			rarity = "default",
+			data = ItemMasterList.we_longbow,
 		},
 		{
-			key = "we_dual_wield_daggers",
-			rarity = "default",
-			power_level = 10,
 			backend_id = 10,
-			data = ItemMasterList.we_dual_wield_daggers
+			key = "we_dual_wield_daggers",
+			power_level = 10,
+			rarity = "default",
+			data = ItemMasterList.we_dual_wield_daggers,
 		},
 		{
-			key = "skin_ww_waywatcher",
 			backend_id = 11,
+			key = "skin_ww_waywatcher",
 			rarity = "default",
-			data = ItemMasterList.skin_ww_waywatcher
+			data = ItemMasterList.skin_ww_waywatcher,
 		},
 		{
-			key = "waywatcher_hat_0000",
 			backend_id = 12,
+			key = "waywatcher_hat_0000",
 			rarity = "default",
-			data = ItemMasterList.waywatcher_hat_0000
+			data = ItemMasterList.waywatcher_hat_0000,
 		},
 		{
-			key = "bw_skullstaff_fireball",
-			rarity = "default",
-			power_level = 10,
 			backend_id = 13,
-			data = ItemMasterList.bw_skullstaff_fireball
-		},
-		{
-			key = "bw_1h_mace",
-			rarity = "default",
+			key = "bw_skullstaff_fireball",
 			power_level = 10,
+			rarity = "default",
+			data = ItemMasterList.bw_skullstaff_fireball,
+		},
+		{
 			backend_id = 14,
-			data = ItemMasterList.bw_1h_mace
+			key = "bw_1h_mace",
+			power_level = 10,
+			rarity = "default",
+			data = ItemMasterList.bw_1h_mace,
 		},
 		{
-			key = "skin_bw_adept",
 			backend_id = 15,
+			key = "skin_bw_adept",
 			rarity = "default",
-			data = ItemMasterList.skin_bw_adept
+			data = ItemMasterList.skin_bw_adept,
 		},
 		{
-			key = "adept_hat_0000",
 			backend_id = 16,
+			key = "adept_hat_0000",
 			rarity = "default",
-			data = ItemMasterList.adept_hat_0000
-		}
+			data = ItemMasterList.adept_hat_0000,
+		},
 	}
 end
 
 BackendInterfaceItemTutorial._refresh_loadouts = function (self)
 	self._loadouts = {
 		empire_soldier_tutorial = {
-			slot_skin = 3,
-			slot_melee = 2,
 			slot_hat = 4,
-			slot_ranged = 1
+			slot_melee = 2,
+			slot_ranged = 1,
+			slot_skin = 3,
 		},
 		dr_ranger = {
-			slot_skin = 7,
-			slot_melee = 6,
 			slot_hat = 8,
-			slot_ranged = 5
+			slot_melee = 6,
+			slot_ranged = 5,
+			slot_skin = 7,
 		},
 		we_waywatcher = {
-			slot_skin = 11,
-			slot_melee = 10,
 			slot_hat = 12,
-			slot_ranged = 9
+			slot_melee = 10,
+			slot_ranged = 9,
+			slot_skin = 11,
 		},
 		bw_adept = {
-			slot_skin = 15,
-			slot_melee = 14,
 			slot_hat = 16,
-			slot_ranged = 13
-		}
+			slot_melee = 14,
+			slot_ranged = 13,
+			slot_skin = 15,
+		},
 	}
 end
 
@@ -404,7 +407,7 @@ BackendInterfaceItemTutorial.get_item_template = function (self, item_data, back
 	local template_name = item_data.temporary_template or item_data.template
 	local item_template = Weapons[template_name]
 	local modified_item_templates = self._modified_templates
-	local modified_item_template = nil
+	local modified_item_template
 
 	if item_template then
 		if backend_id then

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/game_mode/mechanisms/deus_weapon_generation.lua
+
 require("scripts/settings/dlcs/morris/deus_weapons")
 require("scripts/helpers/deus_gen_utils")
 
@@ -28,7 +30,7 @@ local function get_random_rarity(random_generator, difficulty, run_progress)
 	fassert(run_progress < 1 and run_progress >= 0, "Run progress should never be equal or higher than 1.0")
 
 	local config = deus_rarity_chance[difficulty] or deus_rarity_chance.default
-	local progress_index = nil
+	local progress_index
 	local total_weight_sum = 0
 
 	for _, weights in pairs(config) do
@@ -80,15 +82,14 @@ end
 
 local function get_random_slot(rarity, random_generator, weapon_pool, slot_chance_melee, slot_chance_ranged)
 	local chance_melee, chance_ranged = deus_get_combined_slot_chances(weapon_pool[rarity], slot_chance_melee, slot_chance_ranged)
-	local slot = nil
+	local slot
 
 	if chance_melee > 0 and chance_ranged > 0 then
 		local slot_random = random_generator(0, chance_melee + chance_ranged)
+
 		slot = slot_random < chance_melee and "melee" or "ranged"
-	elseif chance_melee > 0 then
-		slot = "melee"
 	else
-		slot = "ranged"
+		slot = chance_melee > 0 and "melee" or "ranged"
 	end
 
 	return slot
@@ -116,15 +117,16 @@ end
 local function get_possible_skins(item_key, rarity)
 	local deus_item_data = DeusWeapons[item_key]
 	local base_item_data = ItemMasterList[deus_item_data.base_item]
-	local skins = nil
+	local skins
 
 	if deus_item_data.fixed_skin then
 		skins = {
-			deus_item_data.fixed_skin
+			deus_item_data.fixed_skin,
 		}
 	elseif base_item_data.skin_combination_table then
 		local skin_combination_table = base_item_data.skin_combination_table
 		local skin_by_rarity = WeaponSkins.skin_combinations[skin_combination_table]
+
 		skins = skin_by_rarity and skin_by_rarity[rarity]
 	end
 
@@ -154,7 +156,8 @@ local function get_possible_trait_combinations(item_key, rarity)
 	end
 
 	local deus_item_data = DeusWeapons[item_key]
-	local combinations = nil
+	local combinations
+
 	combinations = deus_item_data.baked_trait_combinations
 
 	return combinations
@@ -175,11 +178,12 @@ local function create_item(item_key, properties, traits, skin, powerlevel, rarit
 		rarity = rarity,
 		key = deus_item_data.base_item,
 		deus_item_key = item_key,
-		properties = properties,
-		traits = traits,
-		skin = skin,
-		bypass_skin_ownership_check = true
 	}
+
+	item.properties = properties
+	item.traits = traits
+	item.skin = skin
+	item.bypass_skin_ownership_check = true
 
 	return item
 end
@@ -187,11 +191,12 @@ end
 local function generate_item_from_item_key(item_key, difficulty, run_progress, rarity, random_generator)
 	local powerlevel = get_power_level(rarity, difficulty, run_progress)
 	local archetypes = get_possible_archetypes(item_key)
-	local properties, traits = nil
+	local properties, traits
 
 	if archetypes then
 		local archetype_random = random_generator(1, #archetypes)
 		local archetype = DeusWeaponArchetypes[archetypes[archetype_random]]
+
 		properties = archetype.properties
 		traits = archetype.traits
 	else
@@ -200,17 +205,13 @@ local function generate_item_from_item_key(item_key, difficulty, run_progress, r
 		if property_combinations and #property_combinations > 0 then
 			local property_random = random_generator(1, #property_combinations)
 			local properties_to_apply = property_combinations[property_random]
+
 			properties = {}
 
 			for _, property_key in ipairs(properties_to_apply) do
-				local value = nil
+				local value
 
-				if rarity == "unique" then
-					value = 1
-				else
-					value = random_generator(1, 100) / 100
-				end
-
+				value = rarity == "unique" and 1 or random_generator(1, 100) / 100
 				properties[property_key] = value
 			end
 		end
@@ -220,6 +221,7 @@ local function generate_item_from_item_key(item_key, difficulty, run_progress, r
 		if trait_combinations and #trait_combinations > 0 then
 			local trait_random = random_generator(1, #trait_combinations)
 			local traits_to_apply = trait_combinations[trait_random]
+
 			traits = {}
 
 			for _, trait_key in ipairs(traits_to_apply) do
@@ -261,7 +263,7 @@ local function upgrade_item(item, difficulty, run_progress, target_rarity, rando
 		local properties_to_apply = filtered_property_combinations[property_random]
 
 		for _, property_key in ipairs(properties_to_apply) do
-			local value = nil
+			local value
 			local is_existing_property = table.contains(table.keys(existing_properties), property_key)
 
 			if target_rarity == "unique" then
@@ -350,7 +352,7 @@ DeusWeaponGeneration.serialize_weapon = function (item)
 end
 
 DeusWeaponGeneration.deserialize_weapon = function (item_string)
-	local item_key, properties, traits, skin, power_level, rarity = nil
+	local item_key, properties, traits, skin, power_level, rarity
 	local weapon_items = string.split(item_string, ",")
 
 	for _, weapon_item in ipairs(weapon_items) do
@@ -367,6 +369,7 @@ DeusWeaponGeneration.deserialize_weapon = function (item_string)
 			traits[#traits + 1] = value
 		elseif prefix == "property" then
 			local prop_name_and_value = string.split(value, ":")
+
 			properties = properties or {}
 			properties[prop_name_and_value[1]] = tonumber(prop_name_and_value[2]) / FLOAT_CONVERSION_EPSILON
 		elseif prefix == "powerlevel" then
@@ -387,7 +390,7 @@ DeusWeaponGeneration.get_possibilities_for_item_key = function (item_key, diffic
 	local archetypes = get_possible_archetypes(item_key)
 	local skins = get_possible_skins(item_key, rarity)
 	local powerlevel = get_power_level(rarity, difficulty, run_progress)
-	local property_combinations, trait_combinations = nil
+	local property_combinations, trait_combinations
 
 	if not archetypes then
 		property_combinations = get_possible_property_combinations(item_key, rarity)
@@ -476,8 +479,10 @@ DeusWeaponGeneration.get_weapon_pool_slot_amounts = function (base_weapon_pool, 
 	for rarity, weapon_groups in pairs(base_weapon_pool) do
 		for weapon_group_name, _ in pairs(weapon_groups) do
 			local slot_type = deus_weapon_groups[weapon_group_name].slot_type
+
 			slot_amounts[rarity] = slot_amounts[rarity] or {}
 			slot_amounts[rarity][slot_type] = slot_amounts[rarity][slot_type] or 0
+
 			local has_slot = weapon_pool[rarity][weapon_group_name] ~= nil
 
 			if has_slot then

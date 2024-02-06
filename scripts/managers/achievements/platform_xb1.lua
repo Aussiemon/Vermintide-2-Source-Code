@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/achievements/platform_xb1.lua
+
 local PROGRESS_TASK_IDLE = Achievements2017.PROGRESS_TASK_IDLE
 local PROGRESS_TASK_STARTED = Achievements2017.PROGRESS_TASK_STARTED
 local PROGRESS_TASK_COMPLETED = Achievements2017.PROGRESS_TASK_COMPLETED
@@ -29,7 +31,7 @@ local function try_set_progress(template, progress)
 	local is_online = not account_manager:offline_mode()
 	local template_id = template.id
 	local achievement_id = template.ID_XB1
-	local current_progress = nil
+	local current_progress
 
 	if is_online then
 		current_progress = Achievements2017.progress(XB1Achievements, achievement_id)
@@ -60,7 +62,7 @@ local function try_set_progress(template, progress)
 		return
 	end
 
-	local error_msg = nil
+	local error_msg
 
 	if is_online then
 		error_msg = Achievements2017.set_progress(XB1Achievements, achievement_id, progress)
@@ -153,7 +155,7 @@ local platform_functions = {
 
 		printf("[Achievements2017] Verifying - Name: %q. Template: %q. ID: %q", Localize(name), template_id, achievement_id)
 
-		local progress = nil
+		local progress
 
 		if is_online then
 			progress = Achievements2017.progress(XB1Achievements, achievement_id)
@@ -174,7 +176,7 @@ local platform_functions = {
 		if progress < completed_progress then
 			printf("[Achievements2017] [%s] - Unlocking Name: %q. Template: %q. ID: %q", is_online and "ONLINE" or "OFFLINE", Localize(name), template_id, achievement_id)
 
-			local error_msg = nil
+			local error_msg
 
 			if is_online then
 				error_msg = Achievements2017.set_progress(XB1Achievements, achievement_id, completed_progress)
@@ -229,7 +231,7 @@ local platform_functions = {
 	end,
 	reset = function ()
 		errorf("Tried to reset Achievements, not implemented!")
-	end
+	end,
 }
 
 return platform_functions

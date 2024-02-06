@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/mutators/mutator_realism.lua
+
 return {
 	description = "description_mutator_realism",
 	display_name = "display_name_mutator_realism",
@@ -13,5 +15,5 @@ return {
 
 			outline_system:set_disabled(false)
 		end
-	end
+	end,
 }

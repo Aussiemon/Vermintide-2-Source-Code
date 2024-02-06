@@ -1,6 +1,9 @@
+﻿-- chunkname: @scripts/ui/views/start_game_view/windows/start_game_window_twitch_login.lua
+
 local definitions = local_require("scripts/ui/views/start_game_view/windows/definitions/start_game_window_twitch_login_definitions")
 local widget_definitions = definitions.widgets
 local scenegraph_definition = definitions.scenegraph_definition
+
 StartGameWindowTwitchLogin = class(StartGameWindowTwitchLogin)
 StartGameWindowTwitchLogin.NAME = "StartGameWindowTwitchLogin"
 
@@ -8,15 +11,19 @@ StartGameWindowTwitchLogin.on_enter = function (self, params, offset)
 	print("[StartGameWindow] Enter Substate StartGameWindowTwitchLogin")
 
 	self.parent = params.parent
+
 	local ingame_ui_context = params.ingame_ui_context
+
 	self.ui_renderer = ingame_ui_context.ui_renderer
 	self.input_manager = ingame_ui_context.input_manager
 	self.statistics_db = ingame_ui_context.statistics_db
 	self.render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
+
 	local player_manager = Managers.player
 	local local_player = player_manager:local_player()
+
 	self._stats_id = local_player:stats_id()
 	self.player_manager = player_manager
 	self.peer_id = ingame_ui_context.peer_id
@@ -28,11 +35,13 @@ end
 
 StartGameWindowTwitchLogin.create_ui_elements = function (self, params, offset)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+
 	local widgets = {}
 	local widgets_by_name = {}
 
 	for name, widget_definition in pairs(widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		widgets[#widgets + 1] = widget
 		widgets_by_name[name] = widget
 	end
@@ -44,6 +53,7 @@ StartGameWindowTwitchLogin.create_ui_elements = function (self, params, offset)
 
 	if offset then
 		local window_position = self.ui_scenegraph.window.local_position
+
 		window_position[1] = window_position[1] + offset[1]
 		window_position[2] = window_position[2] + offset[2]
 		window_position[3] = window_position[3] + offset[3]
@@ -124,11 +134,14 @@ StartGameWindowTwitchLogin._handle_input = function (self, dt, t)
 				Managers.chat:block_chat_input_for_one_frame()
 
 				local keystrokes = Keyboard.keystrokes()
+
 				frame_widget_content.twitch_name, frame_widget_content.caret_index = KeystrokeHelper.parse_strokes(frame_widget_content.twitch_name, frame_widget_content.caret_index, "insert", keystrokes, 32)
+
 				local input_service = self.parent:window_input_service()
 
 				if input_service:get("execute_chat_input", true) then
 					frame_widget_content.text_field_active = false
+
 					local user_name = string.gsub(frame_widget_content.twitch_name, " ", "")
 
 					Managers.twitch:connect(user_name, callback(Managers.twitch, "cb_connection_error_callback"), callback(self, "cb_connection_success_callback"))
@@ -150,6 +163,7 @@ StartGameWindowTwitchLogin._handle_input = function (self, dt, t)
 
 				if frame_widget then
 					local frame_widget_content = frame_widget.content
+
 					user_name = string.gsub(frame_widget_content.twitch_name, " ", "")
 				end
 
@@ -171,6 +185,7 @@ StartGameWindowTwitchLogin._handle_input = function (self, dt, t)
 
 				local chat_output_widget = self._widgets_by_name.chat_output_widget
 				local chat_output_content = chat_output_widget.content
+
 				chat_output_content.message_tables = {}
 				chat_output_content.text_start_offset = 0
 			end
@@ -202,6 +217,7 @@ end
 StartGameWindowTwitchLogin._set_disconnect_button_text = function (self)
 	local user_name = Managers.twitch and Managers.twitch:user_name() or "N/A"
 	local disconnect_button_widget = self._widgets_by_name.button_2
+
 	disconnect_button_widget.content.button_hotspot.text = string.format(Localize("start_game_window_twitch_disconnect"), user_name)
 end
 
@@ -209,12 +225,12 @@ StartGameWindowTwitchLogin.cb_on_message_received = function (self, key, message
 	local chat_output_widget = self._widgets_by_name.chat_output_widget
 	local chat_output_content = chat_output_widget.content
 	local message_tables = chat_output_content.message_tables
-	local new_message_table = {
-		is_dev = false,
-		is_system = false,
-		sender = string.format("%s: ", user_name),
-		message = message
-	}
+	local new_message_table = {}
+
+	new_message_table.is_dev = false
+	new_message_table.is_system = false
+	new_message_table.sender = string.format("%s: ", user_name)
+	new_message_table.message = message
 	message_tables[#message_tables + 1] = new_message_table
 
 	if #message_tables > 20 then
@@ -298,10 +314,14 @@ StartGameWindowTwitchLogin._animate_button = function (self, widget, dt)
 	local combined_progress = math.max(hover_progress, selection_progress)
 	local style = widget.style
 	local clicked_rect_name = "clicked_rect"
+
 	style[clicked_rect_name].color[1] = 100 * input_progress
+
 	local hover_glow_name = "hover_glow"
 	local hover_alpha = 255 * combined_progress
+
 	style[hover_glow_name].color[1] = hover_alpha
+
 	local text_name = "text"
 	local text_style = style[text_name]
 	local text_color = text_style.text_color

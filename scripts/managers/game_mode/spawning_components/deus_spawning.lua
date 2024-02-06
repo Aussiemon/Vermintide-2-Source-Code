@@ -1,8 +1,11 @@
+﻿-- chunkname: @scripts/managers/game_mode/spawning_components/deus_spawning.lua
+
 require("scripts/managers/spawn/respawn_handler")
 require("scripts/managers/game_mode/spawning_components/spawning_helper")
 
 local MINIMUM_HEALTH = 0.5
 local REAL_PLAYER_LOCAL_ID = 1
+
 DeusSpawning = class(DeusSpawning)
 
 DeusSpawning.init = function (self, profile_synchronizer, side, is_server, network_server, deus_run_controller)
@@ -30,12 +33,14 @@ end
 
 DeusSpawning._restore_player_game_mode_data = function (self, peer_id, local_player_id, profile_index, career_index)
 	local game_mode_data = self._deus_run_controller:restore_game_mode_data(peer_id, local_player_id, profile_index, career_index)
+
 	game_mode_data.temporary_health_percentage = 0
 	game_mode_data.ability_cooldown_percentage = 1
 	game_mode_data.last_update = -math.huge
+
 	local ingame_time = Managers.time:time("client_ingame")
 	local is_initial_spawn = ingame_time == nil or ingame_time < 10
-	local box_pos, box_rot = nil
+	local box_pos, box_rot
 
 	if is_initial_spawn then
 		box_pos, box_rot = self:get_spawn_point()
@@ -44,6 +49,7 @@ DeusSpawning._restore_player_game_mode_data = function (self, peer_id, local_pla
 		local main_paths = conflict_director.level_analysis:get_main_paths()
 		local main_path_info = conflict_director.main_path_info
 		local main_path_player_info = conflict_director.main_path_player_info
+
 		box_pos, box_rot = MainPathUtils.get_main_path_point_between_players(main_paths, main_path_info, main_path_player_info)
 	end
 
@@ -65,6 +71,7 @@ DeusSpawning._restore_player_game_mode_data = function (self, peer_id, local_pla
 
 	if game_mode_data.health_state == "alive" then
 		local minimum_health_at_start = MINIMUM_HEALTH
+
 		game_mode_data.health_percentage = math.max(game_mode_data.health_percentage, minimum_health_at_start)
 	end
 
@@ -132,6 +139,7 @@ end
 
 DeusSpawning.profile_changed = function (self, peer_id, local_player_id, profile_index, career_index)
 	local status = Managers.party:get_player_status(peer_id, local_player_id)
+
 	status.game_mode_data = self:_restore_player_game_mode_data(peer_id, local_player_id, status.profile_index, status.career_index)
 end
 
@@ -189,6 +197,7 @@ DeusSpawning._update_player_status = function (self, t, dt, occupied_slots)
 							data.health_state = "disabled"
 						else
 							data.health_state = "alive"
+
 							local respawn_unit = data.respawn_unit
 
 							if respawn_unit then
@@ -306,10 +315,11 @@ DeusSpawning._update_spawning = function (self, dt, t, occupied_slots)
 			local status = occupied_slots[i]
 			local data = status.game_mode_data
 			local spawn_state = data.spawn_state
-			local ready_to_spawn = nil
+			local ready_to_spawn
 
 			if DEDICATED_SERVER then
 				local game_session = network_server.game_session ~= nil
+
 				ready_to_spawn = game_session
 			else
 				ready_to_spawn = network_server:is_peer_ingame(status.peer_id)
@@ -331,7 +341,7 @@ end
 DeusSpawning.add_delayed_client = function (self, peer_id, local_player_id)
 	self._delayed_clients[#self._delayed_clients + 1] = {
 		peer_id = peer_id,
-		local_player_id = local_player_id
+		local_player_id = local_player_id,
 	}
 end
 
@@ -425,7 +435,7 @@ DeusSpawning._spawn_bot = function (self, status)
 end
 
 DeusSpawning._find_spawn_point = function (self, status)
-	local position, rotation = nil
+	local position, rotation
 	local room_manager = Managers.state.room
 
 	if room_manager then
@@ -472,9 +482,10 @@ DeusSpawning.add_spawn_point = function (self, unit)
 	local rot = Unit.local_rotation(unit, 0)
 	local spawn_point = {
 		pos = Vector3Box(pos),
-		rot = QuaternionBox(rot)
+		rot = QuaternionBox(rot),
 	}
 	local prior_state = Unit.get_data(unit, "from_game_mode")
+
 	prior_state = prior_state ~= "" and prior_state or "default"
 	self._spawn_points[prior_state] = self._spawn_points[prior_state] or {}
 	self._spawn_points[prior_state][#self._spawn_points[prior_state] + 1] = spawn_point
@@ -484,6 +495,7 @@ DeusSpawning.get_spawn_point = function (self)
 	local default_state = "default"
 	local prior_state = Managers.mechanism:get_prior_state()
 	local spawn_points = self._spawn_points[prior_state] or self._spawn_points[default_state]
+
 	self._num_spawn_points_used = self._num_spawn_points_used + 1
 
 	if self._num_spawn_points_used > #spawn_points then
@@ -535,6 +547,7 @@ end
 DeusSpawning.force_respawn = function (self, peer_id, local_player_id)
 	local status = Managers.party:get_player_status(peer_id, local_player_id)
 	local data = status.game_mode_data
+
 	data.spawn_state = "force_respawn"
 end
 

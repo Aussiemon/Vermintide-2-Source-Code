@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/terror_event_blueprints.lua
+
 require("scripts/settings/terror_events/terror_event_utils")
 require("scripts/settings/terror_events/terror_events_generic")
 
@@ -11,7 +13,9 @@ local function fetch_terror_events(key, override_file_ending)
 	fassert(Application.can_get("lua", file_path), "Failed to load terror events for level %s with path %s NOTE: Make sure the terror events file is in scripts/settings/terror_events/ with the name terror_events_%s.", key, file_path, file_ending)
 
 	local terror_events, weighted_random_terror_events = dofile(file_path)
+
 	TerrorEventBlueprints[key] = {}
+
 	local level_terror_events = TerrorEventBlueprints[key]
 
 	for event_name, event in pairs(terror_events) do
@@ -20,6 +24,7 @@ local function fetch_terror_events(key, override_file_ending)
 
 	if weighted_random_terror_events then
 		WeightedRandomTerrorEvents[key] = {}
+
 		local weighted_level_terror_events = WeightedRandomTerrorEvents[key]
 
 		for event_name, event in pairs(weighted_random_terror_events) do
@@ -35,6 +40,10 @@ for level_key, level_data in pairs(LevelSettings) do
 		local override_file_ending = level_data.override_file_ending
 
 		fetch_terror_events(level_key, override_file_ending)
+	end
+
+	if false then
+		-- Nothing
 	end
 end
 

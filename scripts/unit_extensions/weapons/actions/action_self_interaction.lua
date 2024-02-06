@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/weapons/actions/action_self_interaction.lua
+
 ActionSelfInteraction = class(ActionSelfInteraction, ActionBase)
 
 ActionSelfInteraction.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
@@ -10,6 +12,7 @@ ActionSelfInteraction.client_owner_start_action = function (self, new_action, t)
 	ActionSelfInteraction.super.client_owner_start_action(self, new_action, t)
 
 	self.current_action = new_action
+
 	local interaction_type = new_action.interaction_type
 
 	self.interactor_extension:start_interaction(new_action.hold_input, self.owner_unit, interaction_type)

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/imgui/imgui_profiler.lua
+
 ImguiProfiler = class(ImguiProfiler)
 
 ImguiProfiler.init = function (self)
@@ -27,6 +29,7 @@ ImguiProfiler.draw = function (self)
 end
 
 local INDEX = 1
+
 FILTERED_SCOPES = {}
 FILTERED_SCOPES_INDEX = 1
 
@@ -54,6 +57,7 @@ ImguiProfiler.post_draw = function (self)
 
 	if update_filter or self._auto_update_filter then
 		FILTERED_SCOPES_INDEX = 1
+
 		local SCOPES = PROFILER_SCOPE_LOOKUP
 
 		if self._filter ~= "" then
@@ -103,7 +107,7 @@ ImguiProfiler._draw_lookup_table = function (self, in_scope, is_top_scope)
 	local is_root = false
 	local is_leaf = in_scope.is_leaf ~= false
 	local profiler_suffix = in_scope.average_profiler_scope and string.format("%.3f", in_scope.average_profiler_scope) or ""
-	local header = nil
+	local header
 
 	if is_leaf then
 		header = string.format("%s", in_scope.name, INDEX)
@@ -131,6 +135,7 @@ ImguiProfiler._draw_lookup_table = function (self, in_scope, is_top_scope)
 	end
 
 	INDEX = INDEX + 1
+
 	local is_open = Imgui.tree_node(header, is_root)
 
 	Imgui.same_line()
@@ -150,6 +155,7 @@ ImguiProfiler._draw_lookup_table = function (self, in_scope, is_top_scope)
 			if type(scope) == "table" then
 				if scope.parent == parent and scope.frame_index == CURRENT_FRAME_INDEX then
 					SORTED_SCOPES[#SORTED_SCOPES + 1] = scope
+
 					local value = scope.average_profiler_scope or 0
 
 					if top_value < value then
@@ -163,7 +169,9 @@ ImguiProfiler._draw_lookup_table = function (self, in_scope, is_top_scope)
 				if stack then
 					for i = 1, stack.stack_index do
 						local entry = stack[i]
+
 						SORTED_SCOPES[#SORTED_SCOPES + 1] = entry
+
 						local value = entry.average_profiler_scope or 0
 
 						if top_value < value then
@@ -221,6 +229,7 @@ ImguiProfiler._apply_filter = function (self, in_scope)
 			if stack then
 				for i = 1, stack.stack_index do
 					local entry = stack[i]
+
 					SORTED_SCOPES[#SORTED_SCOPES + 1] = entry
 				end
 			end

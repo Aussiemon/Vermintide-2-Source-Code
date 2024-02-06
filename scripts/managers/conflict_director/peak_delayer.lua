@@ -1,12 +1,15 @@
+﻿-- chunkname: @scripts/managers/conflict_director/peak_delayer.lua
+
 PeakDelayer = class(PeakDelayer)
+
 local DISTANCE_TO_START_DELAY = 100
 local TIME_TO_DELAY_PACING = 100
 local PEAK_LENGTH = 30
 local DELAY_STATES = {
-	IN_PEAK = "IN_PEAK",
 	DELAYING = "DELAYING",
+	DELAY_FINISHED = "DELAY_FINISHED",
+	IN_PEAK = "IN_PEAK",
 	WAITING_TO_REACH_DELAY = "WAITING_TO_REACH_DELAY",
-	DELAY_FINISHED = "DELAY_FINISHED"
 }
 
 local function is_in_peak(peaks, current_travel_dist)
@@ -24,7 +27,7 @@ end
 
 local function get_next_peak(peaks, current_travel_dist)
 	for i = #peaks, 1, -1 do
-		if peaks[i] < current_travel_dist then
+		if current_travel_dist > peaks[i] then
 			return peaks[i + 1]
 		end
 	end
@@ -64,7 +67,7 @@ PeakDelayer.update = function (self, current_travel_dist, current_time)
 
 			self._delay_for_peak = nil
 			self._state = DELAY_STATES.WAITING_TO_REACH_DELAY
-		elseif TIME_TO_DELAY_PACING < current_time - self._delaying_since then
+		elseif current_time - self._delaying_since > TIME_TO_DELAY_PACING then
 			Managers.state.event:trigger("event_delay_pacing", false)
 
 			self._state = DELAY_STATES.DELAY_FINISHED

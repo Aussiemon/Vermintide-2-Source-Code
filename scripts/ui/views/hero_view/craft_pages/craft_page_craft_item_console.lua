@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/hero_view/craft_pages/craft_page_craft_item_console.lua
+
 require("scripts/ui/views/menu_world_previewer")
 
 local crafting_recipes, crafting_recipes_by_name, crafting_recipes_lookup = dofile("scripts/settings/crafting/crafting_recipes")
@@ -8,6 +10,7 @@ local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
 local DO_RELOAD = false
 local NUM_CRAFT_SLOTS = 1
+
 CraftPageCraftItemConsole = class(CraftPageCraftItemConsole)
 CraftPageCraftItemConsole.NAME = "CraftPageCraftItemConsole"
 
@@ -16,18 +19,22 @@ CraftPageCraftItemConsole.on_enter = function (self, params, settings)
 
 	self.parent = params.parent
 	self.super_parent = self.parent.parent
+
 	local ingame_ui_context = params.ingame_ui_context
+
 	self.ingame_ui_context = ingame_ui_context
 	self.ui_renderer = ingame_ui_context.ui_renderer
 	self.ui_top_renderer = ingame_ui_context.ui_top_renderer
 	self.input_manager = ingame_ui_context.input_manager
 	self.statistics_db = ingame_ui_context.statistics_db
 	self.render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 	self.crafting_manager = Managers.state.crafting
+
 	local player_manager = Managers.player
 	local local_player = player_manager:local_player()
+
 	self._stats_id = local_player:stats_id()
 	self.player_manager = player_manager
 	self.peer_id = ingame_ui_context.peer_id
@@ -43,7 +50,7 @@ CraftPageCraftItemConsole.on_enter = function (self, params, settings)
 
 	self._params = {
 		profile_index = self.profile_index,
-		career_index = self.career_index
+		career_index = self.career_index,
 	}
 	self._craft_items = {}
 	self._material_items = {}
@@ -78,6 +85,7 @@ CraftPageCraftItemConsole.setup_recipe_requirements = function (self)
 	end
 
 	self._recipe_name = recipe_name
+
 	local recipe = crafting_recipes_by_name[recipe_name]
 	local ingredients = recipe.ingredients
 	local num_required_ingredients = 0
@@ -104,7 +112,7 @@ CraftPageCraftItemConsole.setup_recipe_requirements = function (self)
 			local item_key = data.name
 			local required_amount = data.amount
 			local amount_owned = 0
-			local required_backend_id = nil
+			local required_backend_id
 
 			for _, item in ipairs(crafting_material_items) do
 				local backend_id = item.backend_id
@@ -148,10 +156,12 @@ CraftPageCraftItemConsole.reset_requirements = function (self, num_required_ingr
 	for i = 1, num_crafting_materials do
 		local widget = widgets_by_name["material_text_" .. i]
 		local visible = i <= num_required_ingredients
+
 		widget.content.visible = visible
 
 		if visible then
 			local offset = widget.offset
+
 			offset[1] = start_position_x
 			start_position_x = start_position_x + widget_width + spacing
 		end
@@ -160,11 +170,13 @@ end
 
 CraftPageCraftItemConsole.create_ui_elements = function (self, params)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+
 	local widgets = {}
 	local widgets_by_name = {}
 
 	for name, widget_definition in pairs(widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		widgets[#widgets + 1] = widget
 		widgets_by_name[name] = widget
 	end
@@ -286,6 +298,7 @@ CraftPageCraftItemConsole._handle_input = function (self, dt, t)
 
 		local max_time = UISettings.crafting_progress_time
 		local progress = math.min(self._craft_input_time / max_time, 1)
+
 		craft_input_accepted = self:_handle_craft_input_progress(progress)
 
 		WwiseWorld.set_global_parameter(self.wwise_world, "craft_forge_button_progress", progress)
@@ -461,6 +474,7 @@ CraftPageCraftItemConsole._add_craft_item = function (self, backend_id, slot_ind
 
 	if slot_index then
 		craft_items[slot_index] = backend_id
+
 		local item_interface = Managers.backend:get_interface("items")
 		local item = backend_id and item_interface:get_item_from_id(backend_id)
 
@@ -538,6 +552,7 @@ end
 CraftPageCraftItemConsole._set_craft_button_text = function (self, text, localize)
 	local widgets_by_name = self._widgets_by_name
 	local widget = widgets_by_name.craft_button
+
 	widget.content.button_text = localize and Localize(text) or text
 end
 
@@ -547,10 +562,11 @@ CraftPageCraftItemConsole._add_crafting_material_requirement = function (self, i
 	local widget = widgets_by_name["material_text_" .. index]
 	local content = widget.content
 	local texture = material_textures[item_key]
+
 	content.text = amount_text
 	content.icon = texture
 	content.warning = not has_required_amount
 	content.item = {
-		data = table.clone(ItemMasterList[item_key])
+		data = table.clone(ItemMasterList[item_key]),
 	}
 end

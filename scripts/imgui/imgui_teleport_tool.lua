@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/imgui/imgui_teleport_tool.lua
+
 ImguiTeleportTool = class(ImguiTeleportTool)
+
 local SHOULD_RELOAD = true
 local EMPTY_LIST = {}
 
@@ -14,15 +17,15 @@ ImguiTeleportTool.init = function (self)
 	self._register_point_active = false
 	self._is_persistent = false
 	self._key_bindings = {
-		select_down = "down",
-		teleport = "home",
-		quick_teleport = "home",
-		teleport_from_clipboard = "numpad enter",
 		confirm = "enter",
-		register_new = "insert",
 		delete = "delete",
+		quick_teleport = "home",
+		register_new = "insert",
+		save_to_clipboatd = "numpad 0",
+		select_down = "down",
 		select_up = "up",
-		save_to_clipboatd = "numpad 0"
+		teleport = "home",
+		teleport_from_clipboard = "numpad enter",
 	}
 	self._custom_target_point = {
 		0,
@@ -31,7 +34,7 @@ ImguiTeleportTool.init = function (self)
 		0,
 		0,
 		0,
-		1
+		1,
 	}
 	self._key_states = {}
 	self._rebind_action = nil
@@ -87,6 +90,7 @@ ImguiTeleportTool.draw = function (self, is_open)
 	Imgui.text(tostring(self._current_level))
 
 	local old_filter = self._filter_text
+
 	self._filter_text = Imgui.input_text("Search", self._filter_text)
 
 	if self._filter_text ~= old_filter then
@@ -133,6 +137,7 @@ ImguiTeleportTool.draw = function (self, is_open)
 	Imgui.dummy(0, 5)
 
 	local ctp = self._custom_target_point
+
 	ctp[1], ctp[2], ctp[3] = Imgui.input_float_3("Point position", ctp[1], ctp[2], ctp[3])
 
 	if Imgui.button("Teleport to position") then
@@ -183,6 +188,7 @@ ImguiTeleportTool.draw = function (self, is_open)
 
 			if input then
 				local input_name = Keyboard.button_name(input)
+
 				self._key_bindings[self._rebind_action] = input_name == "esc" and "" or input_name
 				self._rebind_action = nil
 
@@ -210,6 +216,7 @@ end
 ImguiTeleportTool._update_input = function (self)
 	for name, val in pairs(self._key_bindings) do
 		local key_index = Keyboard.button_index(val)
+
 		self._key_states[name] = key_index and Keyboard.pressed(key_index)
 	end
 end
@@ -250,6 +257,7 @@ end
 
 ImguiTeleportTool._refresh_filter = function (self)
 	local teleport_names = self:_get_teleport_names(self._current_level)
+
 	self._filtered_teleport_names, self._filtered_teleport_ids = self:_apply_filter(self._filter_text, teleport_names)
 	self._selected_teleport = math.max(math.min(self._selected_teleport, #self._filtered_teleport_names) - 1, 0)
 end
@@ -312,7 +320,7 @@ ImguiTeleportTool._get_unit_location = function (self, unit)
 			rot_x,
 			rot_y,
 			rot_z,
-			rot_w
+			rot_w,
 		}
 
 		return data_point
@@ -347,9 +355,8 @@ ImguiTeleportTool._teleport_to_point = function (self, unit, point)
 		local rot = Quaternion.from_elements(point[4], point[5], point[6], point[7])
 		local locomotion = ScriptUnit.extension(unit, "locomotion_system")
 		local ctp = self._custom_target_point
-		ctp[3] = point[3]
-		ctp[2] = point[2]
-		ctp[1] = point[1]
+
+		ctp[1], ctp[2], ctp[3] = point[1], point[2], point[3]
 
 		if locomotion then
 			locomotion:teleport_to(pos, rot)
@@ -399,6 +406,7 @@ ImguiTeleportTool._get_point_from_clipboard = function (self)
 	local input = Clipboard.get()
 	local data = string.split(input, "##")
 	local is_valid = true
+
 	is_valid = is_valid and #data == 4
 	is_valid = is_valid and data[1] == "ITT"
 	is_valid = is_valid and data[2] == self._current_level

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/doors/door_system.lua
+
 require("scripts/unit_extensions/level/door_extension")
 require("scripts/unit_extensions/level/simple_door_extension")
 require("scripts/unit_extensions/level/boss_door_extension")
@@ -5,22 +7,24 @@ require("scripts/unit_extensions/level/big_boy_destructible_extension")
 require("scripts/unit_extensions/level/crawl_space_extension")
 
 DoorSystem = class(DoorSystem, ExtensionSystemBase)
+
 local RPCS = {
 	"rpc_sync_door_state",
-	"rpc_sync_boss_door_state"
+	"rpc_sync_boss_door_state",
 }
 local extensions = {
 	"DoorExtension",
 	"SimpleDoorExtension",
 	"BossDoorExtension",
 	"BigBoyDestructibleExtension",
-	"CrawlSpaceExtension"
+	"CrawlSpaceExtension",
 }
 
 DoorSystem.init = function (self, entity_system_creation_context, system_name)
 	DoorSystem.super.init(self, entity_system_creation_context, system_name, extensions)
 
 	local network_event_delegate = entity_system_creation_context.network_event_delegate
+
 	self.network_event_delegate = network_event_delegate
 
 	network_event_delegate:register(self, unpack(RPCS))
@@ -35,7 +39,9 @@ end
 
 DoorSystem.on_add_extension = function (self, world, unit, extension_name, ...)
 	local door_extension = DoorSystem.super.on_add_extension(self, world, unit, extension_name)
+
 	self.unit_extension_data[unit] = door_extension
+
 	local position = Unit.world_position(unit, 0)
 
 	if extension_name ~= "CrawlSpaceExtension" then
@@ -58,6 +64,7 @@ DoorSystem.on_add_extension = function (self, world, unit, extension_name, ...)
 				end
 
 				local boss_doors_in_section = boss_doors[map_section]
+
 				boss_doors_in_section[#boss_doors_in_section + 1] = unit
 			until true
 		end
@@ -174,6 +181,7 @@ DoorSystem.get_boss_door_units = function (self)
 	for map_section, map_section_door_units in pairs(boss_doors) do
 		for i = 1, #map_section_door_units do
 			local boss_door_unit = map_section_door_units[i]
+
 			boss_door_units[#boss_door_units + 1] = boss_door_unit
 		end
 	end
@@ -226,9 +234,10 @@ DoorSystem.close_boss_doors = function (self, map_section, group_id, breed_name)
 		end
 
 		local active_groups_in_section = self._active_groups[map_section]
+
 		active_groups_in_section[#active_groups_in_section + 1] = {
 			active = false,
-			group_id = group_id
+			group_id = group_id,
 		}
 	end
 end
@@ -259,6 +268,7 @@ DoorSystem.get_boss_door_units = function (self)
 	for map_section, boss_doors in pairs(self._boss_doors) do
 		for i = 1, #boss_doors do
 			local boss_door_unit = boss_doors[i]
+
 			boss_door_units[#boss_door_units + 1] = boss_door_unit
 		end
 	end

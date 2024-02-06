@@ -1,14 +1,18 @@
+﻿-- chunkname: @scripts/unit_extensions/generic/generic_unit_interactor_extension.lua
+
 require("scripts/helpers/interaction_helper")
 require("scripts/unit_extensions/generic/interactions")
 
 GenericUnitInteractorExtension = class(GenericUnitInteractorExtension)
 INTERACT_RAY_DISTANCE = 2.5
+
 local chest_interactables = {}
 
 GenericUnitInteractorExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	local world = extension_init_context.world
 	local dice_keeper = extension_init_context.dice_keeper
 	local statistics_db = extension_init_context.statistics_db
+
 	self.world = world
 	self.unit = unit
 	self.state = "waiting_to_interact"
@@ -17,12 +21,16 @@ GenericUnitInteractorExtension.init = function (self, extension_init_context, un
 			world = world,
 			dice_keeper = dice_keeper,
 			statistics_db = statistics_db,
-			interactor_data = {}
-		}
+			interactor_data = {},
+		},
 	}
+
 	local player = Managers.player:owner(unit)
+
 	self.is_bot = player and player.bot_player
+
 	local physics_world = World.get_data(world, "physics_world")
+
 	self.physics_world = physics_world
 	self.is_server = Managers.player.is_server
 	self._interactions_enabled = true
@@ -62,24 +70,24 @@ GenericUnitInteractorExtension.destroy = function (self)
 end
 
 local IGNORED_DAMAGE_TYPES = {
+	aoe_poison_dot = true,
+	arrow_poison_dot = true,
+	buff = true,
 	buff_shared_medpack = true,
 	buff_shared_medpack_temp_health = true,
-	buff = true,
-	arrow_poison_dot = true,
-	volume_generic_dot = true,
-	warpfire_ground = true,
-	damage_over_time = true,
-	life_tap = true,
-	aoe_poison_dot = true,
-	plague_ground = true,
-	temporary_health_degen = true,
-	health_degen = true,
-	poison = true,
-	vomit_ground = true,
-	wounded_dot = true,
-	heal = true,
 	burninating = true,
-	life_drain = true
+	damage_over_time = true,
+	heal = true,
+	health_degen = true,
+	life_drain = true,
+	life_tap = true,
+	plague_ground = true,
+	poison = true,
+	temporary_health_degen = true,
+	volume_generic_dot = true,
+	vomit_ground = true,
+	warpfire_ground = true,
+	wounded_dot = true,
 }
 
 GenericUnitInteractorExtension.update = function (self, unit, input, dt, context, t)
@@ -151,11 +159,11 @@ GenericUnitInteractorExtension.update = function (self, unit, input, dt, context
 				end
 			end
 		else
-			local res_w = RESOLUTION_LOOKUP.res_w
-			local res_h = RESOLUTION_LOOKUP.res_h
-			local center_x = res_w * 0.5
-			local center_y = res_h * 0.5
+			local res_w, res_h = RESOLUTION_LOOKUP.res_w, RESOLUTION_LOOKUP.res_h
+			local center_x, center_y = res_w * 0.5, res_h * 0.5
+
 			self.ray_casted = true
+
 			local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
 			local camera_position = first_person_extension:current_position()
 			local camera_rotation = first_person_extension:current_rotation()
@@ -164,7 +172,7 @@ GenericUnitInteractorExtension.update = function (self, unit, input, dt, context
 			local hit_non_interaction_unit = false
 			local camera = self:_get_player_camera()
 			local distance_score = math.huge
-			local selected_interaction_unit, selected_interaction_type = nil
+			local selected_interaction_unit, selected_interaction_type
 			local new_units_in_range = self.units_in_range_back_buffer
 
 			for i = 1, hits_n do
@@ -233,8 +241,7 @@ GenericUnitInteractorExtension.update = function (self, unit, input, dt, context
 				end
 			end
 
-			self.units_in_range_back_buffer = self.units_in_range
-			self.units_in_range = new_units_in_range
+			self.units_in_range, self.units_in_range_back_buffer = new_units_in_range, self.units_in_range
 
 			table.clear(self.units_in_range_back_buffer)
 
@@ -247,7 +254,7 @@ GenericUnitInteractorExtension.update = function (self, unit, input, dt, context
 
 			local self_pos = POSITION_LOOKUP[self.unit]
 			local hits, num_hits = PhysicsWorld.immediate_overlap(self.physics_world, "position", self_pos, "shape", "sphere", "size", 0.3, "collision_filter", "filter_overlap_interaction")
-			local best_unit = nil
+			local best_unit
 			local best_dist = math.huge
 
 			for i = 1, num_hits do
@@ -292,7 +299,9 @@ GenericUnitInteractorExtension.update = function (self, unit, input, dt, context
 	local interaction_context = self.interaction_context
 	local interactable_unit = interaction_context.interactable_unit
 	local interaction_data = interaction_context.data
+
 	interaction_data.is_server = self.is_server
+
 	local interaction_type = interaction_context.interaction_type
 	local interaction_template = InteractionDefinitions[interaction_type]
 	local interaction_config = interaction_template and (interaction_template.config or interaction_template.get_config()) or nil
@@ -312,6 +321,7 @@ GenericUnitInteractorExtension.update = function (self, unit, input, dt, context
 
 		if self.is_server then
 			local interaction_result = interaction_template.server.update(world, unit, interactable_unit, interaction_data, interaction_config, dt, t)
+
 			interaction_context.result = interaction_result
 
 			if interaction_result ~= InteractionResult.ONGOING then
@@ -376,7 +386,9 @@ GenericUnitInteractorExtension._stop_interaction = function (self, interactable_
 	local unit = self.unit
 	local interaction_context = self.interaction_context
 	local interaction_data = interaction_context.data
+
 	interaction_data.is_server = self.is_server
+
 	local interaction_type = interaction_context.interaction_type
 	local interaction_template = InteractionDefinitions[interaction_type]
 	local interaction_config = interaction_template and (interaction_template.config or interaction_template.get_config()) or nil
@@ -439,7 +451,9 @@ end
 GenericUnitInteractorExtension.in_range = function (self, interactable_unit, interaction_type, is_in_range)
 	local interaction_context = self.interaction_context
 	local unit_to_interact_with = interactable_unit or interaction_context.interactable_unit
+
 	interaction_type = interaction_type or interaction_context.interaction_type
+
 	local interaction_data = interaction_context.data
 	local interaction_template = InteractionDefinitions[interaction_type]
 	local in_range_func = interaction_template.client.in_range
@@ -484,6 +498,7 @@ GenericUnitInteractorExtension.can_interact = function (self, interactable_unit,
 	end
 
 	interaction_type = interaction_type or interaction_context.interaction_type
+
 	local game_mode = Managers.state.game_mode:game_mode()
 
 	if game_mode.allowed_interactions and not game_mode:allowed_interactions(self.unit, interaction_type) then
@@ -501,6 +516,7 @@ GenericUnitInteractorExtension.can_interact = function (self, interactable_unit,
 
 	if can_interact_func then
 		local can_interact, failure_reason, interact_type = can_interact_func(self.unit, unit_to_interact_with, interaction_data, interaction_template.config, self.world)
+
 		interact_type = interact_type or interaction_type
 
 		return can_interact, failure_reason, interact_type
@@ -559,6 +575,7 @@ GenericUnitInteractorExtension.start_interaction = function (self, hold_input, i
 	InteractionHelper.printf("[GenericUnitInteractorExtension] start_interaction(interactable_unit=%s, interaction_type=%s)", tostring(interactable_unit), tostring(interaction_type))
 
 	local interaction_context = self.interaction_context
+
 	interaction_context.hold_input = hold_input
 	interaction_context.interactable_unit = interactable_unit or interaction_context.interactable_unit
 	interaction_context.interaction_type = interaction_type or interaction_context.interaction_type
@@ -566,6 +583,7 @@ GenericUnitInteractorExtension.start_interaction = function (self, hold_input, i
 	fassert(forced or self:can_interact(interaction_context.interactable_unit, interaction_type), "Attempted to start interaction even though the interaction wasn't allowed.")
 
 	interaction_context.interaction_type = InteractionHelper.player_modify_interaction_type(self.unit, interaction_context.interactable_unit, interaction_context.interaction_type)
+
 	local unit = self.unit
 	local interaction_type = interaction_context.interaction_type
 	local network_manager = Managers.state.network
@@ -613,6 +631,7 @@ GenericUnitInteractorExtension.interaction_approved = function (self, interactio
 	local interaction_data = self.interaction_context.data
 	local interaction_template = InteractionDefinitions[interaction_type]
 	local interaction_config = interaction_template.config
+
 	interaction_data.duration = interaction_config.duration
 	interaction_data.start_time = Managers.time:time("game")
 	self.state = "starting_interaction"
@@ -635,6 +654,7 @@ GenericUnitInteractorExtension.interaction_completed = function (self, interacti
 	fassert(state ~= "waiting_to_interact", "Was in wrong state when getting interaction completed.")
 
 	self.interaction_context.result = interaction_result
+
 	local t = Managers.time:time("game")
 
 	self:stop_interaction(t)

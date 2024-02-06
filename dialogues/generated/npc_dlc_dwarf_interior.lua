@@ -1,27 +1,29 @@
+﻿-- chunkname: @dialogues/generated/npc_dlc_dwarf_interior.lua
+
 return function ()
 	define_rule({
-		response = "nde_dwarf_internal_barrel_drop",
 		name = "nde_dwarf_internal_barrel_drop",
+		response = "nde_dwarf_internal_barrel_drop",
 		criterias = {
 			{
 				"query_context",
 				"concept",
 				OP.EQ,
-				"seen_item"
+				"seen_item",
 			},
 			{
 				"query_context",
 				"item_tag",
 				OP.EQ,
-				"dwarf_internal_barrel_drop"
+				"dwarf_internal_barrel_drop",
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"dwarf_engineer"
-			}
-		}
+				"dwarf_engineer",
+			},
+		},
 	})
 	define_rule({
 		name = "nde_dwarf_internal_brewery_attention",
@@ -31,35 +33,35 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"seen_item"
+				"seen_item",
 			},
 			{
 				"query_context",
 				"item_tag",
 				OP.EQ,
-				"dwarf_internal_brewery_attention"
+				"dwarf_internal_brewery_attention",
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"dwarf_engineer_01"
+				"dwarf_engineer_01",
 			},
 			{
 				"user_memory",
 				"dwarf_internal_brewery_attention",
 				OP.LT,
-				4
-			}
+				4,
+			},
 		},
 		on_done = {
 			{
 				"user_memory",
 				"dwarf_internal_brewery_attention",
 				OP.ADD,
-				1
-			}
-		}
+				1,
+			},
+		},
 	})
 	define_rule({
 		name = "nde_dwarf_internal_brewery_b",
@@ -69,29 +71,29 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"dwarf_internal_brewery_a_done"
+				"dwarf_internal_brewery_a_done",
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"dwarf_engineer_01"
+				"dwarf_engineer_01",
 			},
 			{
 				"user_memory",
 				"dwarf_internal_brewery_b",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"user_memory",
 				"dwarf_internal_brewery_b",
 				OP.ADD,
-				1
-			}
-		}
+				1,
+			},
+		},
 	})
 	define_rule({
 		name = "nde_dwarf_internal_brewery_event_start",
@@ -101,35 +103,35 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"seen_item"
+				"seen_item",
 			},
 			{
 				"query_context",
 				"item_tag",
 				OP.EQ,
-				"dwarf_internal_brewery_event_start"
+				"dwarf_internal_brewery_event_start",
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"dwarf_engineer_01"
+				"dwarf_engineer_01",
 			},
 			{
 				"user_memory",
 				"dwarf_internal_brewery_event_start",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"user_memory",
 				"dwarf_internal_brewery_event_start",
 				OP.ADD,
-				1
-			}
-		}
+				1,
+			},
+		},
 	})
 	define_rule({
 		name = "nde_dwarf_internal_brewery_guidance",
@@ -139,47 +141,47 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"seen_item"
+				"seen_item",
 			},
 			{
 				"query_context",
 				"item_tag",
 				OP.EQ,
-				"dwarf_internal_brewery_guidance"
+				"dwarf_internal_brewery_guidance",
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"dwarf_engineer"
+				"dwarf_engineer",
 			},
 			{
 				"user_memory",
 				"dwarf_internal_brewery_guidance",
 				OP.LT,
-				4
+				4,
 			},
 			{
 				"user_memory",
 				"time_since_engineer_talk",
 				OP.TIMEDIFF,
 				OP.GT,
-				3
-			}
+				3,
+			},
 		},
 		on_done = {
 			{
 				"user_memory",
 				"time_since_engineer_talk",
-				OP.TIMESET
+				OP.TIMESET,
 			},
 			{
 				"user_memory",
 				"dwarf_internal_brewery_guidance",
 				OP.ADD,
-				1
-			}
-		}
+				1,
+			},
+		},
 	})
 	define_rule({
 		name = "nde_dwarf_internal_brewery_speaking_tube_complete",
@@ -189,35 +191,35 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"seen_item"
+				"seen_item",
 			},
 			{
 				"query_context",
 				"item_tag",
 				OP.EQ,
-				"dwarf_internal_brewery_speaking_tube_complete"
+				"dwarf_internal_brewery_speaking_tube_complete",
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"dwarf_engineer_01"
+				"dwarf_engineer_01",
 			},
 			{
 				"user_memory",
 				"dwarf_internal_brewery_speaking_tube_complete",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"user_memory",
 				"dwarf_internal_brewery_speaking_tube_complete",
 				OP.ADD,
-				1
-			}
-		}
+				1,
+			},
+		},
 	})
 	define_rule({
 		name = "nde_dwarf_internal_brewery_speaking_tube_interact_one_b",
@@ -227,35 +229,35 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"dialogue_name_nopre",
 				OP.EQ,
-				"dwarf_internal_brewery_speaking_tube_interact_one_a"
+				"dwarf_internal_brewery_speaking_tube_interact_one_a",
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"dwarf_engineer_01"
+				"dwarf_engineer_01",
 			},
 			{
 				"user_memory",
 				"dwarf_internal_brewery_speaking_tube_interact_one_b",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"user_memory",
 				"dwarf_internal_brewery_speaking_tube_interact_one_b",
 				OP.ADD,
-				1
-			}
-		}
+				1,
+			},
+		},
 	})
 	define_rule({
 		name = "nde_dwarf_internal_brewery_speaking_tube_interact_two_b",
@@ -265,35 +267,35 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"dialogue_name_nopre",
 				OP.EQ,
-				"dwarf_internal_brewery_speaking_tube_interact_two_a"
+				"dwarf_internal_brewery_speaking_tube_interact_two_a",
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"dwarf_engineer_01"
+				"dwarf_engineer_01",
 			},
 			{
 				"user_memory",
 				"dwarf_internal_brewery_speaking_tube_interact_two_b",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"user_memory",
 				"dwarf_internal_brewery_speaking_tube_interact_two_b",
 				OP.ADD,
-				1
-			}
-		}
+				1,
+			},
+		},
 	})
 	define_rule({
 		name = "nde_dwarf_internal_brewery_speaking_tube_progress_one",
@@ -303,47 +305,47 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"seen_item"
+				"seen_item",
 			},
 			{
 				"query_context",
 				"item_tag",
 				OP.EQ,
-				"dwarf_internal_brewery_speaking_tube_progress_one"
+				"dwarf_internal_brewery_speaking_tube_progress_one",
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"dwarf_engineer_01"
+				"dwarf_engineer_01",
 			},
 			{
 				"user_memory",
 				"dwarf_internal_brewery_speaking_tube_progress_one",
 				OP.EQ,
-				0
+				0,
 			},
 			{
 				"user_memory",
 				"time_since_engineer_talk",
 				OP.TIMEDIFF,
 				OP.GT,
-				5
-			}
+				5,
+			},
 		},
 		on_done = {
 			{
 				"user_memory",
 				"time_since_engineer_talk",
-				OP.TIMESET
+				OP.TIMESET,
 			},
 			{
 				"user_memory",
 				"dwarf_internal_brewery_speaking_tube_progress_one",
 				OP.ADD,
-				1
-			}
-		}
+				1,
+			},
+		},
 	})
 	define_rule({
 		name = "nde_dwarf_internal_brewery_speaking_tube_progress_two",
@@ -353,47 +355,47 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"seen_item"
+				"seen_item",
 			},
 			{
 				"query_context",
 				"item_tag",
 				OP.EQ,
-				"dwarf_internal_brewery_speaking_tube_progress_two"
+				"dwarf_internal_brewery_speaking_tube_progress_two",
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"dwarf_engineer_01"
+				"dwarf_engineer_01",
 			},
 			{
 				"user_memory",
 				"dwarf_internal_brewery_speaking_tube_progress_two",
 				OP.EQ,
-				0
+				0,
 			},
 			{
 				"user_memory",
 				"time_since_engineer_talk",
 				OP.TIMEDIFF,
 				OP.GT,
-				5
-			}
+				5,
+			},
 		},
 		on_done = {
 			{
 				"user_memory",
 				"time_since_engineer_talk",
-				OP.TIMESET
+				OP.TIMESET,
 			},
 			{
 				"user_memory",
 				"dwarf_internal_brewery_speaking_tube_progress_two",
 				OP.ADD,
-				1
-			}
-		}
+				1,
+			},
+		},
 	})
 	define_rule({
 		name = "nde_dwarf_internal_end_event_attention",
@@ -403,35 +405,35 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"seen_item"
+				"seen_item",
 			},
 			{
 				"query_context",
 				"item_tag",
 				OP.EQ,
-				"dwarf_internal_end_event_attention"
+				"dwarf_internal_end_event_attention",
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"dwarf_engineer"
+				"dwarf_engineer",
 			},
 			{
 				"user_memory",
 				"dwarf_internal_end_event_attention",
 				OP.LT,
-				4
-			}
+				4,
+			},
 		},
 		on_done = {
 			{
 				"user_memory",
 				"dwarf_internal_end_event_attention",
 				OP.ADD,
-				1
-			}
-		}
+				1,
+			},
+		},
 	})
 	define_rule({
 		name = "nde_dwarf_internal_end_event_interact_b",
@@ -441,35 +443,35 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"dialogue_name_nopre",
 				OP.EQ,
-				"dwarf_internal_end_event_interact_a"
+				"dwarf_internal_end_event_interact_a",
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"dwarf_engineer"
+				"dwarf_engineer",
 			},
 			{
 				"user_memory",
 				"dwarf_internal_end_event_interact_b",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"user_memory",
 				"dwarf_internal_end_event_interact_b",
 				OP.ADD,
-				1
-			}
-		}
+				1,
+			},
+		},
 	})
 	define_rule({
 		name = "nde_dwarf_internal_end_event_speaking_tube_PLAN_A_a",
@@ -479,35 +481,35 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"seen_item"
+				"seen_item",
 			},
 			{
 				"query_context",
 				"item_tag",
 				OP.EQ,
-				"dwarf_internal_end_event_speaking_tube_PLAN_A_a"
+				"dwarf_internal_end_event_speaking_tube_PLAN_A_a",
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"dwarf_engineer"
+				"dwarf_engineer",
 			},
 			{
 				"user_memory",
 				"dwarf_internal_end_event_speaking_tube_PLAN_A_a",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"user_memory",
 				"dwarf_internal_end_event_speaking_tube_PLAN_A_a",
 				OP.ADD,
-				1
-			}
-		}
+				1,
+			},
+		},
 	})
 	define_rule({
 		name = "nik_dwarf_internal_brewery_c",
@@ -517,35 +519,35 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"dialogue_name_nopre",
 				OP.EQ,
-				"dwarf_internal_brewery_b"
+				"dwarf_internal_brewery_b",
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"inn_keeper"
+				"inn_keeper",
 			},
 			{
 				"user_memory",
 				"dwarf_internal_brewery_c",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"user_memory",
 				"dwarf_internal_brewery_c",
 				OP.ADD,
-				1
-			}
-		}
+				1,
+			},
+		},
 	})
 	define_rule({
 		name = "nik_dwarf_internal_brewery_speaking_tube_complete",
@@ -555,35 +557,35 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"seen_item"
+				"seen_item",
 			},
 			{
 				"query_context",
 				"item_tag",
 				OP.EQ,
-				"dwarf_internal_brewery_speaking_tube_complete"
+				"dwarf_internal_brewery_speaking_tube_complete",
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"inn_keeper"
+				"inn_keeper",
 			},
 			{
 				"user_memory",
 				"dwarf_internal_brewery_speaking_tube_complete",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"user_memory",
 				"dwarf_internal_brewery_speaking_tube_complete",
 				OP.ADD,
-				1
-			}
-		}
+				1,
+			},
+		},
 	})
 	define_rule({
 		name = "nik_dwarf_internal_brewery_speaking_tube_interact_two_c",
@@ -593,35 +595,35 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"dialogue_name_nopre",
 				OP.EQ,
-				"dwarf_internal_brewery_speaking_tube_interact_two_b"
+				"dwarf_internal_brewery_speaking_tube_interact_two_b",
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"inn_keeper"
+				"inn_keeper",
 			},
 			{
 				"user_memory",
 				"dwarf_internal_brewery_speaking_tube_interact_two_c",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"user_memory",
 				"dwarf_internal_brewery_speaking_tube_interact_two_c",
 				OP.ADD,
-				1
-			}
-		}
+				1,
+			},
+		},
 	})
 	define_rule({
 		name = "nik_dwarf_internal_brewery_speaking_tube_progress_one_reminder",
@@ -631,35 +633,35 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"seen_item"
+				"seen_item",
 			},
 			{
 				"query_context",
 				"item_tag",
 				OP.EQ,
-				"dwarf_internal_brewery_speaking_tube_progress_one_reminder"
+				"dwarf_internal_brewery_speaking_tube_progress_one_reminder",
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"inn_keeper"
+				"inn_keeper",
 			},
 			{
 				"user_memory",
 				"dwarf_internal_brewery_speaking_tube_progress_one_reminder",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"user_memory",
 				"dwarf_internal_brewery_speaking_tube_progress_one_reminder",
 				OP.ADD,
-				1
-			}
-		}
+				1,
+			},
+		},
 	})
 	define_rule({
 		name = "nik_dwarf_internal_brewery_speaking_tube_progress_two_reminder",
@@ -669,35 +671,35 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"seen_item"
+				"seen_item",
 			},
 			{
 				"query_context",
 				"item_tag",
 				OP.EQ,
-				"dwarf_internal_brewery_speaking_tube_progress_two_reminder"
+				"dwarf_internal_brewery_speaking_tube_progress_two_reminder",
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"inn_keeper"
+				"inn_keeper",
 			},
 			{
 				"user_memory",
 				"dwarf_internal_brewery_speaking_tube_progress_two_reminder",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"user_memory",
 				"dwarf_internal_brewery_speaking_tube_progress_two_reminder",
 				OP.ADD,
-				1
-			}
-		}
+				1,
+			},
+		},
 	})
 	define_rule({
 		name = "nik_dwarf_internal_come_home",
@@ -707,35 +709,35 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"seen_item"
+				"seen_item",
 			},
 			{
 				"query_context",
 				"item_tag",
 				OP.EQ,
-				"dwarf_internal_come_home"
+				"dwarf_internal_come_home",
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"inn_keeper"
+				"inn_keeper",
 			},
 			{
 				"user_memory",
 				"dwarf_internal_come_home",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"user_memory",
 				"dwarf_internal_come_home",
 				OP.ADD,
-				1
-			}
-		}
+				1,
+			},
+		},
 	})
 	define_rule({
 		name = "nik_dwarf_internal_dead_dwarfs",
@@ -745,35 +747,35 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"seen_item"
+				"seen_item",
 			},
 			{
 				"query_context",
 				"item_tag",
 				OP.EQ,
-				"dwarf_internal_dead_dwarfs"
+				"dwarf_internal_dead_dwarfs",
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"inn_keeper"
+				"inn_keeper",
 			},
 			{
 				"user_memory",
 				"dwarf_internal_dead_dwarfs",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"user_memory",
 				"dwarf_internal_dead_dwarfs",
 				OP.ADD,
-				1
-			}
-		}
+				1,
+			},
+		},
 	})
 	define_rule({
 		name = "nik_dwarf_internal_dwarf_sign",
@@ -783,35 +785,35 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"seen_item"
+				"seen_item",
 			},
 			{
 				"query_context",
 				"item_tag",
 				OP.EQ,
-				"dwarf_internal_dwarf_sign"
+				"dwarf_internal_dwarf_sign",
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"inn_keeper"
+				"inn_keeper",
 			},
 			{
 				"user_memory",
 				"dwarf_internal_dwarf_sign",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"user_memory",
 				"dwarf_internal_dwarf_sign",
 				OP.ADD,
-				1
-			}
-		}
+				1,
+			},
+		},
 	})
 	define_rule({
 		name = "nik_dwarf_internal_end_conversation_b",
@@ -821,35 +823,35 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"dialogue_name_nopre",
 				OP.EQ,
-				"dwarf_internal_end_conversation_a"
+				"dwarf_internal_end_conversation_a",
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"inn_keeper"
+				"inn_keeper",
 			},
 			{
 				"user_memory",
 				"dwarf_internal_end_conversation_b",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"user_memory",
 				"dwarf_internal_end_conversation_b",
 				OP.ADD,
-				1
-			}
-		}
+				1,
+			},
+		},
 	})
 	define_rule({
 		name = "nik_dwarf_internal_end_event_reminder",
@@ -859,35 +861,35 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"seen_item"
+				"seen_item",
 			},
 			{
 				"query_context",
 				"item_tag",
 				OP.EQ,
-				"dwarf_internal_end_event_reminder"
+				"dwarf_internal_end_event_reminder",
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"inn_keeper"
+				"inn_keeper",
 			},
 			{
 				"user_memory",
 				"dwarf_internal_end_event_reminder",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"user_memory",
 				"dwarf_internal_end_event_reminder",
 				OP.ADD,
-				1
-			}
-		}
+				1,
+			},
+		},
 	})
 	define_rule({
 		name = "nik_dwarf_internal_engineer_reveal_no_bardin",
@@ -897,35 +899,35 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"speaking_tube_interact_one_b_done"
+				"speaking_tube_interact_one_b_done",
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"inn_keeper"
+				"inn_keeper",
 			},
 			{
 				"global_context",
 				"dwarf_ranger",
 				OP.EQ,
-				0
+				0,
 			},
 			{
 				"user_memory",
 				"dwarf_internal_engineer_reveal",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"user_memory",
 				"dwarf_internal_engineer_reveal",
 				OP.ADD,
-				1
-			}
-		}
+				1,
+			},
+		},
 	})
 	define_rule({
 		name = "nik_dwarf_internal_hasnt_improved",
@@ -935,35 +937,35 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"seen_item"
+				"seen_item",
 			},
 			{
 				"query_context",
 				"item_tag",
 				OP.EQ,
-				"dwarf_internal_hasnt_improved"
+				"dwarf_internal_hasnt_improved",
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"inn_keeper"
+				"inn_keeper",
 			},
 			{
 				"user_memory",
 				"dwarf_internal_hasnt_improved",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"user_memory",
 				"dwarf_internal_hasnt_improved",
 				OP.ADD,
-				1
-			}
-		}
+				1,
+			},
+		},
 	})
 	define_rule({
 		name = "nik_dwarf_internal_mid_conversation_bardin_b",
@@ -973,35 +975,35 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"dialogue_name_nopre",
 				OP.EQ,
-				"dwarf_internal_mid_conversation_bardin_a"
+				"dwarf_internal_mid_conversation_bardin_a",
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"inn_keeper"
+				"inn_keeper",
 			},
 			{
 				"user_memory",
 				"dwarf_internal_mid_conversation_bardin_b",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"user_memory",
 				"dwarf_internal_mid_conversation_bardin_b",
 				OP.ADD,
-				1
-			}
-		}
+				1,
+			},
+		},
 	})
 	define_rule({
 		name = "nik_dwarf_internal_mid_conversation_no_bardin_b",
@@ -1011,35 +1013,35 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"dialogue_name_nopre",
 				OP.EQ,
-				"dwarf_internal_mid_conversation_no_bardin_a"
+				"dwarf_internal_mid_conversation_no_bardin_a",
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"inn_keeper"
+				"inn_keeper",
 			},
 			{
 				"user_memory",
 				"dwarf_internal_mid_conversation_no_bardin_b",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"user_memory",
 				"dwarf_internal_mid_conversation_no_bardin_b",
 				OP.ADD,
-				1
-			}
-		}
+				1,
+			},
+		},
 	})
 	define_rule({
 		name = "nik_dwarf_internal_skaven_works",
@@ -1049,35 +1051,35 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"seen_item"
+				"seen_item",
 			},
 			{
 				"query_context",
 				"item_tag",
 				OP.EQ,
-				"dwarf_internal_skaven_works"
+				"dwarf_internal_skaven_works",
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"inn_keeper"
+				"inn_keeper",
 			},
 			{
 				"user_memory",
 				"dwarf_internal_skaven_works",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"user_memory",
 				"dwarf_internal_skaven_works",
 				OP.ADD,
-				1
-			}
-		}
+				1,
+			},
+		},
 	})
 	define_rule({
 		name = "nik_dwarf_internal_start_banter_a",
@@ -1087,77 +1089,77 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"dwarf_internal_start_banter_a"
+				"dwarf_internal_start_banter_a",
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"inn_keeper"
+				"inn_keeper",
 			},
 			{
 				"user_memory",
 				"dwarf_internal_start_banter_a",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"user_memory",
 				"dwarf_internal_start_banter_a",
 				OP.ADD,
-				1
-			}
-		}
+				1,
+			},
+		},
 	})
 	define_rule({
-		response = "nik_dwarf_internal_start_banter_b",
 		name = "nik_dwarf_internal_start_banter_b",
+		response = "nik_dwarf_internal_start_banter_b",
 		criterias = {
 			{
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"dialogue_name_nopre",
 				OP.EQ,
-				"dwarf_internal_start_banter_a"
+				"dwarf_internal_start_banter_a",
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"inn_keeper"
-			}
-		}
+				"inn_keeper",
+			},
+		},
 	})
 	define_rule({
-		response = "nik_dwarf_internal_start_banter_c",
 		name = "nik_dwarf_internal_start_banter_c",
+		response = "nik_dwarf_internal_start_banter_c",
 		criterias = {
 			{
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"dialogue_name_nopre",
 				OP.EQ,
-				"dwarf_internal_start_banter_b"
+				"dwarf_internal_start_banter_b",
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"inn_keeper"
-			}
-		}
+				"inn_keeper",
+			},
+		},
 	})
 	define_rule({
 		name = "nik_dwarf_internal_still_a_maze",
@@ -1167,35 +1169,35 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"seen_item"
+				"seen_item",
 			},
 			{
 				"query_context",
 				"item_tag",
 				OP.EQ,
-				"dwarf_internal_still_a_maze"
+				"dwarf_internal_still_a_maze",
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"inn_keeper"
+				"inn_keeper",
 			},
 			{
 				"user_memory",
 				"dwarf_internal_still_a_maze",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"user_memory",
 				"dwarf_internal_still_a_maze",
 				OP.ADD,
-				1
-			}
-		}
+				1,
+			},
+		},
 	})
 	define_rule({
 		name = "nik_dwarf_internal_valaya",
@@ -1205,44 +1207,44 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"seen_item"
+				"seen_item",
 			},
 			{
 				"query_context",
 				"item_tag",
 				OP.EQ,
-				"dwarf_internal_valaya"
+				"dwarf_internal_valaya",
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"inn_keeper"
+				"inn_keeper",
 			},
 			{
 				"user_memory",
 				"dwarf_internal_valaya",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"user_memory",
 				"dwarf_internal_valaya",
 				OP.ADD,
-				1
-			}
-		}
+				1,
+			},
+		},
 	})
 	add_dialogues({
 		nde_dwarf_internal_barrel_drop = {
-			randomize_indexes_n = 0,
-			face_animations_n = 10,
-			database = "npc_dlc_dwarf_interior",
-			sound_events_n = 10,
 			category = "npc_talk",
+			database = "npc_dlc_dwarf_interior",
 			dialogue_animations_n = 10,
+			face_animations_n = 10,
+			randomize_indexes_n = 0,
+			sound_events_n = 10,
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
@@ -1253,7 +1255,7 @@ return function ()
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
-				"dialogue_talk"
+				"dialogue_talk",
 			},
 			face_animations = {
 				"face_calm",
@@ -1265,7 +1267,7 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm",
-				"face_calm"
+				"face_calm",
 			},
 			localization_strings = {
 				"nde_dwarf_internal_barrel_drop_01",
@@ -1277,7 +1279,7 @@ return function ()
 				"nde_dwarf_internal_barrel_drop_07",
 				"nde_dwarf_internal_barrel_drop_08",
 				"nde_dwarf_internal_barrel_drop_09",
-				"nde_dwarf_internal_barrel_drop_10"
+				"nde_dwarf_internal_barrel_drop_10",
 			},
 			randomize_indexes = {},
 			sound_events = {
@@ -1290,7 +1292,7 @@ return function ()
 				"nde_dwarf_internal_barrel_drop_07",
 				"nde_dwarf_internal_barrel_drop_08",
 				"nde_dwarf_internal_barrel_drop_09",
-				"nde_dwarf_internal_barrel_drop_10"
+				"nde_dwarf_internal_barrel_drop_10",
 			},
 			sound_events_duration = {
 				1.7999999523163,
@@ -1302,72 +1304,72 @@ return function ()
 				1.6590000391007,
 				1.9079999923706,
 				1.2539999485016,
-				1.6130000352859
-			}
+				1.6130000352859,
+			},
 		},
 		nde_dwarf_internal_brewery_attention = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "npc_dlc_dwarf_interior",
-			sound_events_n = 4,
 			category = "story_talk",
+			database = "npc_dlc_dwarf_interior",
 			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
-				"dialogue_talk"
+				"dialogue_talk",
 			},
 			face_animations = {
 				"face_calm",
 				"face_calm",
 				"face_calm",
-				"face_calm"
+				"face_calm",
 			},
 			localization_strings = {
 				"nde_dwarf_internal_brewery_attention_01",
 				"nde_dwarf_internal_brewery_attention_02",
 				"nde_dwarf_internal_brewery_attention_03",
-				"nde_dwarf_internal_brewery_attention_04"
+				"nde_dwarf_internal_brewery_attention_04",
 			},
 			randomize_indexes = {},
 			sound_events = {
 				"nde_dwarf_internal_brewery_attention_01",
 				"nde_dwarf_internal_brewery_attention_02",
 				"nde_dwarf_internal_brewery_attention_03",
-				"nde_dwarf_internal_brewery_attention_04"
+				"nde_dwarf_internal_brewery_attention_04",
 			},
 			sound_events_duration = {
 				3.0039999485016,
 				3.460000038147,
 				3.2969999313355,
-				5.5029997825623
-			}
+				5.5029997825623,
+			},
 		},
 		nde_dwarf_internal_brewery_b = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "npc_dlc_dwarf_interior",
-			sound_events_n = 4,
 			category = "story_talk_must_reply",
+			database = "npc_dlc_dwarf_interior",
 			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
-				"dialogue_talk"
+				"dialogue_talk",
 			},
 			face_animations = {
 				"face_calm",
 				"face_calm",
 				"face_calm",
-				"face_calm"
+				"face_calm",
 			},
 			localization_strings = {
 				"nde_dwarf_internal_brewery_b_01",
 				"nde_dwarf_internal_brewery_b_02",
 				"nde_dwarf_internal_brewery_b_03",
-				"nde_dwarf_internal_brewery_b_04"
+				"nde_dwarf_internal_brewery_b_04",
 			},
 			randomize_indexes = {},
 			sound_distance = math.huge,
@@ -1375,68 +1377,68 @@ return function ()
 				"nde_dwarf_internal_brewery_b_01",
 				"nde_dwarf_internal_brewery_b_02",
 				"nde_dwarf_internal_brewery_b_03",
-				"nde_dwarf_internal_brewery_b_04"
+				"nde_dwarf_internal_brewery_b_04",
 			},
 			sound_events_duration = {
 				5.6680002212524,
 				6.7119998931885,
 				5.9019999504089,
-				5.1380000114441
-			}
+				5.1380000114441,
+			},
 		},
 		nde_dwarf_internal_brewery_event_start = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "npc_dlc_dwarf_interior",
-			sound_events_n = 4,
 			category = "npc_talk",
+			database = "npc_dlc_dwarf_interior",
 			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
-				"dialogue_talk"
+				"dialogue_talk",
 			},
 			face_animations = {
 				"face_calm",
 				"face_calm",
 				"face_calm",
-				"face_calm"
+				"face_calm",
 			},
 			localization_strings = {
 				"nde_dwarf_internal_brewery_event_start_01",
 				"nde_dwarf_internal_brewery_event_start_02",
 				"nde_dwarf_internal_brewery_event_start_03",
-				"nde_dwarf_internal_brewery_event_start_04"
+				"nde_dwarf_internal_brewery_event_start_04",
 			},
 			randomize_indexes = {},
 			sound_events = {
 				"nde_dwarf_internal_brewery_event_start_01",
 				"nde_dwarf_internal_brewery_event_start_02",
 				"nde_dwarf_internal_brewery_event_start_03",
-				"nde_dwarf_internal_brewery_event_start_04"
+				"nde_dwarf_internal_brewery_event_start_04",
 			},
 			sound_events_duration = {
 				3.3970000743866,
 				3.5190000534058,
 				3.3729999065399,
-				2.9960000514984
-			}
+				2.9960000514984,
+			},
 		},
 		nde_dwarf_internal_brewery_guidance = {
-			randomize_indexes_n = 0,
-			face_animations_n = 6,
-			database = "npc_dlc_dwarf_interior",
-			sound_events_n = 6,
 			category = "npc_talk",
+			database = "npc_dlc_dwarf_interior",
 			dialogue_animations_n = 6,
+			face_animations_n = 6,
+			randomize_indexes_n = 0,
+			sound_events_n = 6,
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
-				"dialogue_talk"
+				"dialogue_talk",
 			},
 			face_animations = {
 				"face_calm",
@@ -1444,7 +1446,7 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm",
-				"face_calm"
+				"face_calm",
 			},
 			localization_strings = {
 				"nde_dwarf_internal_brewery_guidance_01",
@@ -1452,7 +1454,7 @@ return function ()
 				"nde_dwarf_internal_brewery_guidance_03",
 				"nde_dwarf_internal_brewery_guidance_04",
 				"nde_dwarf_internal_brewery_guidance_05",
-				"nde_dwarf_internal_brewery_guidance_06"
+				"nde_dwarf_internal_brewery_guidance_06",
 			},
 			randomize_indexes = {},
 			sound_events = {
@@ -1461,7 +1463,7 @@ return function ()
 				"nde_dwarf_internal_brewery_guidance_03",
 				"nde_dwarf_internal_brewery_guidance_04",
 				"nde_dwarf_internal_brewery_guidance_05",
-				"nde_dwarf_internal_brewery_guidance_06"
+				"nde_dwarf_internal_brewery_guidance_06",
 			},
 			sound_events_duration = {
 				3.1860001087189,
@@ -1469,308 +1471,308 @@ return function ()
 				2.7920000553131,
 				1.9659999608993,
 				2.1900000572205,
-				2.7269999980927
-			}
+				2.7269999980927,
+			},
 		},
 		nde_dwarf_internal_brewery_speaking_tube_complete = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "npc_dlc_dwarf_interior",
-			sound_events_n = 4,
 			category = "story_talk_must_reply",
+			database = "npc_dlc_dwarf_interior",
 			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
-				"dialogue_talk"
+				"dialogue_talk",
 			},
 			face_animations = {
 				"face_calm",
 				"face_calm",
 				"face_calm",
-				"face_calm"
+				"face_calm",
 			},
 			localization_strings = {
 				"nde_dwarf_internal_brewery_speaking_tube_complete_01",
 				"nde_dwarf_internal_brewery_speaking_tube_complete_02",
 				"nde_dwarf_internal_brewery_speaking_tube_complete_03",
-				"nde_dwarf_internal_brewery_speaking_tube_complete_04"
+				"nde_dwarf_internal_brewery_speaking_tube_complete_04",
 			},
 			randomize_indexes = {},
 			sound_events = {
 				"nde_dwarf_internal_brewery_speaking_tube_complete_01",
 				"nde_dwarf_internal_brewery_speaking_tube_complete_02",
 				"nde_dwarf_internal_brewery_speaking_tube_complete_03",
-				"nde_dwarf_internal_brewery_speaking_tube_complete_04"
+				"nde_dwarf_internal_brewery_speaking_tube_complete_04",
 			},
 			sound_events_duration = {
 				4.5380001068115,
 				3.3570001125336,
 				6.1689791679382,
-				4.2309789657593
-			}
+				4.2309789657593,
+			},
 		},
 		nde_dwarf_internal_brewery_speaking_tube_interact_one_b = {
+			category = "level_talk_must_play",
+			database = "npc_dlc_dwarf_interior",
+			dialogue_animations_n = 4,
+			face_animations_n = 4,
 			override_awareness = "speaking_tube_interact_one_b_done",
 			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "npc_dlc_dwarf_interior",
 			sound_events_n = 4,
-			category = "level_talk_must_play",
-			dialogue_animations_n = 4,
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
-				"dialogue_talk"
+				"dialogue_talk",
 			},
 			face_animations = {
 				"face_calm",
 				"face_calm",
 				"face_calm",
-				"face_calm"
+				"face_calm",
 			},
 			localization_strings = {
 				"nde_dwarf_internal_brewery_speaking_tube_interact_one_b_01",
 				"nde_dwarf_internal_brewery_speaking_tube_interact_one_b_02",
 				"nde_dwarf_internal_brewery_speaking_tube_interact_one_b_03",
-				"nde_dwarf_internal_brewery_speaking_tube_interact_one_b_04"
+				"nde_dwarf_internal_brewery_speaking_tube_interact_one_b_04",
 			},
 			randomize_indexes = {},
 			sound_events = {
 				"nde_dwarf_internal_brewery_speaking_tube_interact_one_b_01",
 				"nde_dwarf_internal_brewery_speaking_tube_interact_one_b_02",
 				"nde_dwarf_internal_brewery_speaking_tube_interact_one_b_03",
-				"nde_dwarf_internal_brewery_speaking_tube_interact_one_b_04"
+				"nde_dwarf_internal_brewery_speaking_tube_interact_one_b_04",
 			},
 			sound_events_duration = {
 				13.742979049683,
 				13.814979553223,
 				15.915979385376,
-				14.471979141235
-			}
+				14.471979141235,
+			},
 		},
 		nde_dwarf_internal_brewery_speaking_tube_interact_two_b = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "npc_dlc_dwarf_interior",
-			sound_events_n = 4,
 			category = "level_talk_must_play",
+			database = "npc_dlc_dwarf_interior",
 			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
-				"dialogue_talk"
+				"dialogue_talk",
 			},
 			face_animations = {
 				"face_calm",
 				"face_calm",
 				"face_calm",
-				"face_calm"
+				"face_calm",
 			},
 			localization_strings = {
 				"nde_dwarf_internal_brewery_speaking_tube_interact_two_b_01",
 				"nde_dwarf_internal_brewery_speaking_tube_interact_two_b_02",
 				"nde_dwarf_internal_brewery_speaking_tube_interact_two_b_03",
-				"nde_dwarf_internal_brewery_speaking_tube_interact_two_b_04"
+				"nde_dwarf_internal_brewery_speaking_tube_interact_two_b_04",
 			},
 			randomize_indexes = {},
 			sound_events = {
 				"nde_dwarf_internal_brewery_speaking_tube_interact_two_b_01",
 				"nde_dwarf_internal_brewery_speaking_tube_interact_two_b_02",
 				"nde_dwarf_internal_brewery_speaking_tube_interact_two_b_03",
-				"nde_dwarf_internal_brewery_speaking_tube_interact_two_b_04"
+				"nde_dwarf_internal_brewery_speaking_tube_interact_two_b_04",
 			},
 			sound_events_duration = {
 				3.4939999580383,
 				3.3020000457764,
 				1.8250000476837,
-				3.8239998817444
-			}
+				3.8239998817444,
+			},
 		},
 		nde_dwarf_internal_brewery_speaking_tube_progress_one = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "npc_dlc_dwarf_interior",
-			sound_events_n = 4,
 			category = "npc_talk",
+			database = "npc_dlc_dwarf_interior",
 			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
-				"dialogue_talk"
+				"dialogue_talk",
 			},
 			face_animations = {
 				"face_calm",
 				"face_calm",
 				"face_calm",
-				"face_calm"
+				"face_calm",
 			},
 			localization_strings = {
 				"nde_dwarf_internal_brewery_speaking_tube_progress_one_01",
 				"nde_dwarf_internal_brewery_speaking_tube_progress_one_02",
 				"nde_dwarf_internal_brewery_speaking_tube_progress_one_03",
-				"nde_dwarf_internal_brewery_speaking_tube_progress_one_04"
+				"nde_dwarf_internal_brewery_speaking_tube_progress_one_04",
 			},
 			randomize_indexes = {},
 			sound_events = {
 				"nde_dwarf_internal_brewery_speaking_tube_progress_one_01",
 				"nde_dwarf_internal_brewery_speaking_tube_progress_one_02",
 				"nde_dwarf_internal_brewery_speaking_tube_progress_one_03",
-				"nde_dwarf_internal_brewery_speaking_tube_progress_one_04"
+				"nde_dwarf_internal_brewery_speaking_tube_progress_one_04",
 			},
 			sound_events_duration = {
 				2.9479999542236,
 				2.0810000896454,
 				2.6879999637604,
-				4.5549998283386
-			}
+				4.5549998283386,
+			},
 		},
 		nde_dwarf_internal_brewery_speaking_tube_progress_two = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "npc_dlc_dwarf_interior",
-			sound_events_n = 4,
 			category = "npc_talk",
+			database = "npc_dlc_dwarf_interior",
 			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
-				"dialogue_talk"
+				"dialogue_talk",
 			},
 			face_animations = {
 				"face_calm",
 				"face_calm",
 				"face_calm",
-				"face_calm"
+				"face_calm",
 			},
 			localization_strings = {
 				"nde_dwarf_internal_brewery_speaking_tube_progress_two_01",
 				"nde_dwarf_internal_brewery_speaking_tube_progress_two_02",
 				"nde_dwarf_internal_brewery_speaking_tube_progress_two_03",
-				"nde_dwarf_internal_brewery_speaking_tube_progress_two_04"
+				"nde_dwarf_internal_brewery_speaking_tube_progress_two_04",
 			},
 			randomize_indexes = {},
 			sound_events = {
 				"nde_dwarf_internal_brewery_speaking_tube_progress_two_01",
 				"nde_dwarf_internal_brewery_speaking_tube_progress_two_02",
 				"nde_dwarf_internal_brewery_speaking_tube_progress_two_03",
-				"nde_dwarf_internal_brewery_speaking_tube_progress_two_04"
+				"nde_dwarf_internal_brewery_speaking_tube_progress_two_04",
 			},
 			sound_events_duration = {
 				2.2620000839233,
 				1.8389999866486,
 				2.0729999542236,
-				2.1050000190735
-			}
+				2.1050000190735,
+			},
 		},
 		nde_dwarf_internal_end_event_attention = {
+			category = "story_talk_must_reply",
+			database = "npc_dlc_dwarf_interior",
+			dialogue_animations_n = 4,
+			face_animations_n = 4,
 			override_awareness = "dummy_memory_trigger_end_event",
 			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "npc_dlc_dwarf_interior",
 			sound_events_n = 4,
-			category = "story_talk_must_reply",
-			dialogue_animations_n = 4,
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
-				"dialogue_talk"
+				"dialogue_talk",
 			},
 			face_animations = {
 				"face_calm",
 				"face_calm",
 				"face_calm",
-				"face_calm"
+				"face_calm",
 			},
 			localization_strings = {
 				"nde_dwarf_internal_end_event_attention_01",
 				"nde_dwarf_internal_end_event_attention_02",
 				"nde_dwarf_internal_end_event_attention_03",
-				"nde_dwarf_internal_end_event_attention_04"
+				"nde_dwarf_internal_end_event_attention_04",
 			},
 			randomize_indexes = {},
 			sound_events = {
 				"nde_dwarf_internal_end_event_attention_01",
 				"nde_dwarf_internal_end_event_attention_02",
 				"nde_dwarf_internal_end_event_attention_03",
-				"nde_dwarf_internal_end_event_attention_04"
+				"nde_dwarf_internal_end_event_attention_04",
 			},
 			sound_events_duration = {
 				2.6960000991821,
 				1.9359999895096,
 				2.7369999885559,
-				1.8960000276566
-			}
+				1.8960000276566,
+			},
 		},
 		nde_dwarf_internal_end_event_interact_b = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "npc_dlc_dwarf_interior",
-			sound_events_n = 4,
 			category = "npc_talk",
+			database = "npc_dlc_dwarf_interior",
 			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
-				"dialogue_talk"
+				"dialogue_talk",
 			},
 			face_animations = {
 				"face_calm",
 				"face_calm",
 				"face_calm",
-				"face_calm"
+				"face_calm",
 			},
 			localization_strings = {
 				"nde_dwarf_internal_end_event_interact_b_01",
 				"nde_dwarf_internal_end_event_interact_b_02",
 				"nde_dwarf_internal_end_event_interact_b_03",
-				"nde_dwarf_internal_end_event_interact_b_04"
+				"nde_dwarf_internal_end_event_interact_b_04",
 			},
 			randomize_indexes = {},
 			sound_events = {
 				"nde_dwarf_internal_end_event_interact_b_01",
 				"nde_dwarf_internal_end_event_interact_b_02",
 				"nde_dwarf_internal_end_event_interact_b_03",
-				"nde_dwarf_internal_end_event_interact_b_04"
+				"nde_dwarf_internal_end_event_interact_b_04",
 			},
 			sound_events_duration = {
 				5.5649790763855,
 				5.9710001945496,
 				4.9840002059936,
-				6.1149792671204
-			}
+				6.1149792671204,
+			},
 		},
 		nde_dwarf_internal_end_event_speaking_tube_PLAN_A_a = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "npc_dlc_dwarf_interior",
-			sound_events_n = 4,
 			category = "npc_talk",
+			database = "npc_dlc_dwarf_interior",
 			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
-				"dialogue_talk"
+				"dialogue_talk",
 			},
 			face_animations = {
 				"face_calm",
 				"face_calm",
 				"face_calm",
-				"face_calm"
+				"face_calm",
 			},
 			localization_strings = {
 				"nde_dwarf_internal_end_event_speaking_tube_PLAN_A_a_01",
 				"nde_dwarf_internal_end_event_speaking_tube_PLAN_A_a_02",
 				"nde_dwarf_internal_end_event_speaking_tube_PLAN_A_a_03",
-				"nde_dwarf_internal_end_event_speaking_tube_PLAN_A_a_04"
+				"nde_dwarf_internal_end_event_speaking_tube_PLAN_A_a_04",
 			},
 			randomize_indexes = {},
 			sound_distance = math.huge,
@@ -1778,273 +1780,273 @@ return function ()
 				"nde_dwarf_internal_end_event_speaking_tube_PLAN_A_a_01",
 				"nde_dwarf_internal_end_event_speaking_tube_PLAN_A_a_02",
 				"nde_dwarf_internal_end_event_speaking_tube_PLAN_A_a_03",
-				"nde_dwarf_internal_end_event_speaking_tube_PLAN_A_a_04"
+				"nde_dwarf_internal_end_event_speaking_tube_PLAN_A_a_04",
 			},
 			sound_events_duration = {
 				6.4049792289734,
 				6.9869999885559,
 				6.3239998817444,
-				5.7389998435974
-			}
+				5.7389998435974,
+			},
 		},
 		nik_dwarf_internal_brewery_c = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "npc_dlc_dwarf_interior",
-			sound_events_n = 4,
 			category = "level_talk",
+			database = "npc_dlc_dwarf_interior",
 			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
-				"dialogue_talk"
+				"dialogue_talk",
 			},
 			face_animations = {
 				"face_calm",
 				"face_calm",
 				"face_calm",
-				"face_calm"
+				"face_calm",
 			},
 			localization_strings = {
 				"nik_dwarf_internal_brewery_c_01",
 				"nik_dwarf_internal_brewery_c_02",
 				"nik_dwarf_internal_brewery_c_03",
-				"nik_dwarf_internal_brewery_c_04"
+				"nik_dwarf_internal_brewery_c_04",
 			},
 			randomize_indexes = {},
 			sound_events = {
 				"nik_dwarf_internal_brewery_c_01",
 				"nik_dwarf_internal_brewery_c_02",
 				"nik_dwarf_internal_brewery_c_03",
-				"nik_dwarf_internal_brewery_c_04"
+				"nik_dwarf_internal_brewery_c_04",
 			},
 			sound_events_duration = {
 				4.7059998512268,
 				5.191999912262,
 				5.2839999198914,
-				4.8048257827759
-			}
+				4.8048257827759,
+			},
 		},
 		nik_dwarf_internal_brewery_speaking_tube_complete = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "npc_dlc_dwarf_interior",
-			sound_events_n = 4,
 			category = "level_talk_must_play",
+			database = "npc_dlc_dwarf_interior",
 			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
-				"dialogue_talk"
+				"dialogue_talk",
 			},
 			face_animations = {
 				"face_calm",
 				"face_calm",
 				"face_calm",
-				"face_calm"
+				"face_calm",
 			},
 			localization_strings = {
 				"nik_dwarf_internal_brewery_speaking_tube_complete_01",
 				"nik_dwarf_internal_brewery_speaking_tube_complete_02",
 				"nik_dwarf_internal_brewery_speaking_tube_complete_03",
-				"nik_dwarf_internal_brewery_speaking_tube_complete_04"
+				"nik_dwarf_internal_brewery_speaking_tube_complete_04",
 			},
 			randomize_indexes = {},
 			sound_events = {
 				"nik_dwarf_internal_brewery_speaking_tube_complete_01",
 				"nik_dwarf_internal_brewery_speaking_tube_complete_02",
 				"nik_dwarf_internal_brewery_speaking_tube_complete_03",
-				"nik_dwarf_internal_brewery_speaking_tube_complete_04"
+				"nik_dwarf_internal_brewery_speaking_tube_complete_04",
 			},
 			sound_events_duration = {
 				4.8189997673035,
 				4.1630001068115,
 				3.5510001182556,
-				4.7369999885559
-			}
+				4.7369999885559,
+			},
 		},
 		nik_dwarf_internal_brewery_speaking_tube_interact_two_c = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "npc_dlc_dwarf_interior",
-			sound_events_n = 4,
 			category = "level_talk_must_play",
+			database = "npc_dlc_dwarf_interior",
 			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
-				"dialogue_talk"
+				"dialogue_talk",
 			},
 			face_animations = {
 				"face_calm",
 				"face_calm",
 				"face_calm",
-				"face_calm"
+				"face_calm",
 			},
 			localization_strings = {
 				"nik_dwarf_internal_brewery_speaking_tube_interact_two_c_01",
 				"nik_dwarf_internal_brewery_speaking_tube_interact_two_c_02",
 				"nik_dwarf_internal_brewery_speaking_tube_interact_two_c_03",
-				"nik_dwarf_internal_brewery_speaking_tube_interact_two_c_04"
+				"nik_dwarf_internal_brewery_speaking_tube_interact_two_c_04",
 			},
 			randomize_indexes = {},
 			sound_events = {
 				"nik_dwarf_internal_brewery_speaking_tube_interact_two_c_01",
 				"nik_dwarf_internal_brewery_speaking_tube_interact_two_c_02",
 				"nik_dwarf_internal_brewery_speaking_tube_interact_two_c_03",
-				"nik_dwarf_internal_brewery_speaking_tube_interact_two_c_04"
+				"nik_dwarf_internal_brewery_speaking_tube_interact_two_c_04",
 			},
 			sound_events_duration = {
 				3.5509791374206,
 				1.8789999485016,
 				3.2109999656677,
-				3.8670001029968
-			}
+				3.8670001029968,
+			},
 		},
 		nik_dwarf_internal_brewery_speaking_tube_progress_one_reminder = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "npc_dlc_dwarf_interior",
-			sound_events_n = 4,
 			category = "npc_talk",
+			database = "npc_dlc_dwarf_interior",
 			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
-				"dialogue_talk"
+				"dialogue_talk",
 			},
 			face_animations = {
 				"face_calm",
 				"face_calm",
 				"face_calm",
-				"face_calm"
+				"face_calm",
 			},
 			localization_strings = {
 				"nik_dwarf_internal_brewery_speaking_tube_progress_one_reminder_01",
 				"nik_dwarf_internal_brewery_speaking_tube_progress_one_reminder_02",
 				"nik_dwarf_internal_brewery_speaking_tube_progress_one_reminder_03",
-				"nik_dwarf_internal_brewery_speaking_tube_progress_one_reminder_04"
+				"nik_dwarf_internal_brewery_speaking_tube_progress_one_reminder_04",
 			},
 			randomize_indexes = {},
 			sound_events = {
 				"nik_dwarf_internal_brewery_speaking_tube_progress_one_reminder_01",
 				"nik_dwarf_internal_brewery_speaking_tube_progress_one_reminder_02",
 				"nik_dwarf_internal_brewery_speaking_tube_progress_one_reminder_03",
-				"nik_dwarf_internal_brewery_speaking_tube_progress_one_reminder_04"
+				"nik_dwarf_internal_brewery_speaking_tube_progress_one_reminder_04",
 			},
 			sound_events_duration = {
 				2.4479999542236,
 				2.7639999389648,
 				3.6229999065399,
-				3.5420000553131
-			}
+				3.5420000553131,
+			},
 		},
 		nik_dwarf_internal_brewery_speaking_tube_progress_two_reminder = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "npc_dlc_dwarf_interior",
-			sound_events_n = 4,
 			category = "npc_talk",
+			database = "npc_dlc_dwarf_interior",
 			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
-				"dialogue_talk"
+				"dialogue_talk",
 			},
 			face_animations = {
 				"face_calm",
 				"face_calm",
 				"face_calm",
-				"face_calm"
+				"face_calm",
 			},
 			localization_strings = {
 				"nik_dwarf_internal_brewery_speaking_tube_progress_two_reminder_01",
 				"nik_dwarf_internal_brewery_speaking_tube_progress_two_reminder_02",
 				"nik_dwarf_internal_brewery_speaking_tube_progress_two_reminder_03",
-				"nik_dwarf_internal_brewery_speaking_tube_progress_two_reminder_04"
+				"nik_dwarf_internal_brewery_speaking_tube_progress_two_reminder_04",
 			},
 			randomize_indexes = {},
 			sound_events = {
 				"nik_dwarf_internal_brewery_speaking_tube_progress_two_reminder_01",
 				"nik_dwarf_internal_brewery_speaking_tube_progress_two_reminder_02",
 				"nik_dwarf_internal_brewery_speaking_tube_progress_two_reminder_03",
-				"nik_dwarf_internal_brewery_speaking_tube_progress_two_reminder_04"
+				"nik_dwarf_internal_brewery_speaking_tube_progress_two_reminder_04",
 			},
 			sound_events_duration = {
 				4.0679998397827,
 				3.6840000152588,
 				3.3680000305176,
-				3.7149791717529
-			}
+				3.7149791717529,
+			},
 		},
 		nik_dwarf_internal_come_home = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "npc_dlc_dwarf_interior",
-			sound_events_n = 4,
 			category = "level_talk_must_play",
+			database = "npc_dlc_dwarf_interior",
 			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
-				"dialogue_talk"
+				"dialogue_talk",
 			},
 			face_animations = {
 				"face_calm",
 				"face_calm",
 				"face_calm",
-				"face_calm"
+				"face_calm",
 			},
 			localization_strings = {
 				"nik_dwarf_internal_come_home_01",
 				"nik_dwarf_internal_come_home_02",
 				"nik_dwarf_internal_come_home_03",
-				"nik_dwarf_internal_come_home_04"
+				"nik_dwarf_internal_come_home_04",
 			},
 			randomize_indexes = {},
 			sound_events = {
 				"nik_dwarf_internal_come_home_01",
 				"nik_dwarf_internal_come_home_02",
 				"nik_dwarf_internal_come_home_03",
-				"nik_dwarf_internal_come_home_04"
+				"nik_dwarf_internal_come_home_04",
 			},
 			sound_events_duration = {
 				3.7779791355133,
 				3.4130001068115,
 				5.5069789886475,
-				5.3109998703003
-			}
+				5.3109998703003,
+			},
 		},
 		nik_dwarf_internal_dead_dwarfs = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "npc_dlc_dwarf_interior",
-			sound_events_n = 4,
 			category = "level_talk_must_play",
+			database = "npc_dlc_dwarf_interior",
 			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
-				"dialogue_talk"
+				"dialogue_talk",
 			},
 			face_animations = {
 				"face_calm",
 				"face_calm",
 				"face_calm",
-				"face_calm"
+				"face_calm",
 			},
 			localization_strings = {
 				"nik_dwarf_internal_dead_dwarfs_01",
 				"nik_dwarf_internal_dead_dwarfs_02",
 				"nik_dwarf_internal_dead_dwarfs_03",
-				"nik_dwarf_internal_dead_dwarfs_04"
+				"nik_dwarf_internal_dead_dwarfs_04",
 			},
 			randomize_indexes = {},
 			sound_distance = math.huge,
@@ -2052,234 +2054,234 @@ return function ()
 				"nik_dwarf_internal_dead_dwarfs_01",
 				"nik_dwarf_internal_dead_dwarfs_02",
 				"nik_dwarf_internal_dead_dwarfs_03",
-				"nik_dwarf_internal_dead_dwarfs_04"
+				"nik_dwarf_internal_dead_dwarfs_04",
 			},
 			sound_events_duration = {
 				7.7340002059936,
 				3.1219999790192,
 				5.9539999961853,
-				5.191999912262
-			}
+				5.191999912262,
+			},
 		},
 		nik_dwarf_internal_dwarf_sign = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "npc_dlc_dwarf_interior",
-			sound_events_n = 4,
 			category = "level_talk_must_play",
+			database = "npc_dlc_dwarf_interior",
 			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
-				"dialogue_talk"
+				"dialogue_talk",
 			},
 			face_animations = {
 				"face_calm",
 				"face_calm",
 				"face_calm",
-				"face_calm"
+				"face_calm",
 			},
 			localization_strings = {
 				"nik_dwarf_internal_dwarf_sign_01",
 				"nik_dwarf_internal_dwarf_sign_02",
 				"nik_dwarf_internal_dwarf_sign_03",
-				"nik_dwarf_internal_dwarf_sign_04"
+				"nik_dwarf_internal_dwarf_sign_04",
 			},
 			randomize_indexes = {},
 			sound_events = {
 				"nik_dwarf_internal_dwarf_sign_01",
 				"nik_dwarf_internal_dwarf_sign_02",
 				"nik_dwarf_internal_dwarf_sign_03",
-				"nik_dwarf_internal_dwarf_sign_04"
+				"nik_dwarf_internal_dwarf_sign_04",
 			},
 			sound_events_duration = {
 				4.7049999237061,
 				4.643000125885,
 				3.954999923706,
-				6.3649792671204
-			}
+				6.3649792671204,
+			},
 		},
 		nik_dwarf_internal_end_conversation_b = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "npc_dlc_dwarf_interior",
-			sound_events_n = 4,
 			category = "level_talk",
+			database = "npc_dlc_dwarf_interior",
 			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
-				"dialogue_talk"
+				"dialogue_talk",
 			},
 			face_animations = {
 				"face_calm",
 				"face_calm",
 				"face_calm",
-				"face_calm"
+				"face_calm",
 			},
 			localization_strings = {
 				"nik_dwarf_internal_end_conversation_b_01",
 				"nik_dwarf_internal_end_conversation_b_02",
 				"nik_dwarf_internal_end_conversation_b_03",
-				"nik_dwarf_internal_end_conversation_b_04"
+				"nik_dwarf_internal_end_conversation_b_04",
 			},
 			randomize_indexes = {},
 			sound_events = {
 				"nik_dwarf_internal_end_conversation_b_01",
 				"nik_dwarf_internal_end_conversation_b_02",
 				"nik_dwarf_internal_end_conversation_b_03",
-				"nik_dwarf_internal_end_conversation_b_04"
+				"nik_dwarf_internal_end_conversation_b_04",
 			},
 			sound_events_duration = {
 				8.290979385376,
 				8.1709995269775,
 				6.8059792518616,
-				4.5289793014526
-			}
+				4.5289793014526,
+			},
 		},
 		nik_dwarf_internal_end_event_reminder = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "npc_dlc_dwarf_interior",
-			sound_events_n = 4,
 			category = "level_talk",
+			database = "npc_dlc_dwarf_interior",
 			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
-				"dialogue_talk"
+				"dialogue_talk",
 			},
 			face_animations = {
 				"face_calm",
 				"face_calm",
 				"face_calm",
-				"face_calm"
+				"face_calm",
 			},
 			localization_strings = {
 				"nik_dwarf_internal_end_event_reminder_01",
 				"nik_dwarf_internal_end_event_reminder_02",
 				"nik_dwarf_internal_end_event_reminder_03",
-				"nik_dwarf_internal_end_event_reminder_04"
+				"nik_dwarf_internal_end_event_reminder_04",
 			},
 			randomize_indexes = {},
 			sound_events = {
 				"nik_dwarf_internal_end_event_reminder_01",
 				"nik_dwarf_internal_end_event_reminder_02",
 				"nik_dwarf_internal_end_event_reminder_03",
-				"nik_dwarf_internal_end_event_reminder_04"
+				"nik_dwarf_internal_end_event_reminder_04",
 			},
 			sound_events_duration = {
 				3.3939790725708,
 				3.904000043869,
 				3.430999994278,
-				4.6680002212524
-			}
+				4.6680002212524,
+			},
 		},
 		nik_dwarf_internal_engineer_reveal_no_bardin = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "npc_dlc_dwarf_interior",
-			sound_events_n = 4,
 			category = "level_talk_must_play",
+			database = "npc_dlc_dwarf_interior",
 			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
-				"dialogue_talk"
+				"dialogue_talk",
 			},
 			face_animations = {
 				"face_calm",
 				"face_calm",
 				"face_calm",
-				"face_calm"
+				"face_calm",
 			},
 			localization_strings = {
 				"nik_dwarf_internal_engineer_reveal_no_bardin_01",
 				"nik_dwarf_internal_engineer_reveal_no_bardin_02",
 				"nik_dwarf_internal_engineer_reveal_no_bardin_03",
-				"nik_dwarf_internal_engineer_reveal_no_bardin_04"
+				"nik_dwarf_internal_engineer_reveal_no_bardin_04",
 			},
 			randomize_indexes = {},
 			sound_events = {
 				"nik_dwarf_internal_engineer_reveal_no_bardin_01",
 				"nik_dwarf_internal_engineer_reveal_no_bardin_02",
 				"nik_dwarf_internal_engineer_reveal_no_bardin_03",
-				"nik_dwarf_internal_engineer_reveal_no_bardin_04"
+				"nik_dwarf_internal_engineer_reveal_no_bardin_04",
 			},
 			sound_events_duration = {
 				11.638999938965,
 				12.060978889465,
 				9.0829792022705,
-				11.647978782654
-			}
+				11.647978782654,
+			},
 		},
 		nik_dwarf_internal_hasnt_improved = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "npc_dlc_dwarf_interior",
-			sound_events_n = 4,
 			category = "level_talk_must_play",
+			database = "npc_dlc_dwarf_interior",
 			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
-				"dialogue_talk"
+				"dialogue_talk",
 			},
 			face_animations = {
 				"face_calm",
 				"face_calm",
 				"face_calm",
-				"face_calm"
+				"face_calm",
 			},
 			localization_strings = {
 				"nik_dwarf_internal_hasnt_improved_01",
 				"nik_dwarf_internal_hasnt_improved_02",
 				"nik_dwarf_internal_hasnt_improved_03",
-				"nik_dwarf_internal_hasnt_improved_04"
+				"nik_dwarf_internal_hasnt_improved_04",
 			},
 			randomize_indexes = {},
 			sound_events = {
 				"nik_dwarf_internal_hasnt_improved_01",
 				"nik_dwarf_internal_hasnt_improved_02",
 				"nik_dwarf_internal_hasnt_improved_03",
-				"nik_dwarf_internal_hasnt_improved_04"
+				"nik_dwarf_internal_hasnt_improved_04",
 			},
 			sound_events_duration = {
 				3.3429999351502,
 				4.8949999809265,
 				5.6019792556763,
-				6.3520002365112
-			}
+				6.3520002365112,
+			},
 		},
 		nik_dwarf_internal_mid_conversation_bardin_b = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "npc_dlc_dwarf_interior",
-			sound_events_n = 4,
 			category = "level_talk",
+			database = "npc_dlc_dwarf_interior",
 			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
-				"dialogue_talk"
+				"dialogue_talk",
 			},
 			face_animations = {
 				"face_calm",
 				"face_calm",
 				"face_calm",
-				"face_calm"
+				"face_calm",
 			},
 			localization_strings = {
 				"nik_dwarf_internal_mid_conversation_bardin_b_01",
 				"nik_dwarf_internal_mid_conversation_bardin_b_02",
 				"nik_dwarf_internal_mid_conversation_bardin_b_03",
-				"nik_dwarf_internal_mid_conversation_bardin_b_04"
+				"nik_dwarf_internal_mid_conversation_bardin_b_04",
 			},
 			randomize_indexes = {},
 			sound_distance = math.huge,
@@ -2287,259 +2289,259 @@ return function ()
 				"nik_dwarf_internal_mid_conversation_bardin_b_01",
 				"nik_dwarf_internal_mid_conversation_bardin_b_02",
 				"nik_dwarf_internal_mid_conversation_bardin_b_03",
-				"nik_dwarf_internal_mid_conversation_bardin_b_04"
+				"nik_dwarf_internal_mid_conversation_bardin_b_04",
 			},
 			sound_events_duration = {
 				4.7420001029968,
 				6.1859998703003,
 				2.6710000038147,
-				4.276978969574
-			}
+				4.276978969574,
+			},
 		},
 		nik_dwarf_internal_mid_conversation_no_bardin_b = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "npc_dlc_dwarf_interior",
-			sound_events_n = 4,
 			category = "level_talk",
+			database = "npc_dlc_dwarf_interior",
 			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
-				"dialogue_talk"
+				"dialogue_talk",
 			},
 			face_animations = {
 				"face_calm",
 				"face_calm",
 				"face_calm",
-				"face_calm"
+				"face_calm",
 			},
 			localization_strings = {
 				"nik_dwarf_internal_mid_conversation_no_bardin_b_01",
 				"nik_dwarf_internal_mid_conversation_no_bardin_b_02",
 				"nik_dwarf_internal_mid_conversation_no_bardin_b_03",
-				"nik_dwarf_internal_mid_conversation_no_bardin_b_04"
+				"nik_dwarf_internal_mid_conversation_no_bardin_b_04",
 			},
 			randomize_indexes = {},
 			sound_events = {
 				"nik_dwarf_internal_mid_conversation_no_bardin_b_01",
 				"nik_dwarf_internal_mid_conversation_no_bardin_b_02",
 				"nik_dwarf_internal_mid_conversation_no_bardin_b_03",
-				"nik_dwarf_internal_mid_conversation_no_bardin_b_04"
+				"nik_dwarf_internal_mid_conversation_no_bardin_b_04",
 			},
 			sound_events_duration = {
 				11.052000045776,
 				6.4530000686645,
 				6.7559790611267,
-				7.0529999732971
-			}
+				7.0529999732971,
+			},
 		},
 		nik_dwarf_internal_skaven_works = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "npc_dlc_dwarf_interior",
-			sound_events_n = 4,
 			category = "story_talk",
+			database = "npc_dlc_dwarf_interior",
 			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
-				"dialogue_talk"
+				"dialogue_talk",
 			},
 			face_animations = {
 				"face_calm",
 				"face_calm",
 				"face_calm",
-				"face_calm"
+				"face_calm",
 			},
 			localization_strings = {
 				"nik_dwarf_internal_skaven_works_01",
 				"nik_dwarf_internal_skaven_works_02",
 				"nik_dwarf_internal_skaven_works_03",
-				"nik_dwarf_internal_skaven_works_04"
+				"nik_dwarf_internal_skaven_works_04",
 			},
 			randomize_indexes = {},
 			sound_events = {
 				"nik_dwarf_internal_skaven_works_01",
 				"nik_dwarf_internal_skaven_works_02",
 				"nik_dwarf_internal_skaven_works_03",
-				"nik_dwarf_internal_skaven_works_04"
+				"nik_dwarf_internal_skaven_works_04",
 			},
 			sound_events_duration = {
 				3.154000043869,
 				6.3330001831055,
 				6.2259998321533,
-				7.1050000190735
-			}
+				7.1050000190735,
+			},
 		},
 		nik_dwarf_internal_start_banter_a = {
-			randomize_indexes_n = 0,
-			face_animations_n = 2,
-			database = "npc_dlc_dwarf_interior",
-			sound_events_n = 2,
 			category = "level_talk",
+			database = "npc_dlc_dwarf_interior",
 			dialogue_animations_n = 2,
+			face_animations_n = 2,
+			randomize_indexes_n = 0,
+			sound_events_n = 2,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
+				[2] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm",
-				[2.0] = "face_calm"
+				[1] = "face_calm",
+				[2] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "nik_dwarf_internal_start_banter_a_01",
-				[2.0] = "nik_dwarf_internal_start_banter_a_02"
+				[1] = "nik_dwarf_internal_start_banter_a_01",
+				[2] = "nik_dwarf_internal_start_banter_a_02",
 			},
 			randomize_indexes = {},
 			sound_distance = math.huge,
 			sound_events = {
-				[1.0] = "nik_dwarf_internal_start_banter_a_01",
-				[2.0] = "nik_dwarf_internal_start_banter_a_02"
+				[1] = "nik_dwarf_internal_start_banter_a_01",
+				[2] = "nik_dwarf_internal_start_banter_a_02",
 			},
 			sound_events_duration = {
-				[1.0] = 4.8260002136231,
-				[2.0] = 4.0560002326965
-			}
+				[1] = 4.8260002136231,
+				[2] = 4.0560002326965,
+			},
 		},
 		nik_dwarf_internal_start_banter_b = {
-			randomize_indexes_n = 0,
-			face_animations_n = 2,
-			database = "npc_dlc_dwarf_interior",
-			sound_events_n = 2,
 			category = "level_talk",
+			database = "npc_dlc_dwarf_interior",
 			dialogue_animations_n = 2,
+			face_animations_n = 2,
+			randomize_indexes_n = 0,
+			sound_events_n = 2,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
+				[2] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm",
-				[2.0] = "face_calm"
+				[1] = "face_calm",
+				[2] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "nik_dwarf_internal_start_banter_b_01",
-				[2.0] = "nik_dwarf_internal_start_banter_b_02"
+				[1] = "nik_dwarf_internal_start_banter_b_01",
+				[2] = "nik_dwarf_internal_start_banter_b_02",
 			},
 			randomize_indexes = {},
 			sound_distance = math.huge,
 			sound_events = {
-				[1.0] = "nik_dwarf_internal_start_banter_b_01",
-				[2.0] = "nik_dwarf_internal_start_banter_b_02"
+				[1] = "nik_dwarf_internal_start_banter_b_01",
+				[2] = "nik_dwarf_internal_start_banter_b_02",
 			},
 			sound_events_duration = {
-				[1.0] = 4.9889998435974,
-				[2.0] = 5.8920001983643
-			}
+				[1] = 4.9889998435974,
+				[2] = 5.8920001983643,
+			},
 		},
 		nik_dwarf_internal_start_banter_c = {
-			randomize_indexes_n = 0,
-			face_animations_n = 2,
-			database = "npc_dlc_dwarf_interior",
-			sound_events_n = 2,
 			category = "level_talk",
+			database = "npc_dlc_dwarf_interior",
 			dialogue_animations_n = 2,
+			face_animations_n = 2,
+			randomize_indexes_n = 0,
+			sound_events_n = 2,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
+				[2] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm",
-				[2.0] = "face_calm"
+				[1] = "face_calm",
+				[2] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "nik_dwarf_internal_start_banter_c_01",
-				[2.0] = "nik_dwarf_internal_start_banter_c_02"
+				[1] = "nik_dwarf_internal_start_banter_c_01",
+				[2] = "nik_dwarf_internal_start_banter_c_02",
 			},
 			randomize_indexes = {},
 			sound_events = {
-				[1.0] = "nik_dwarf_internal_start_banter_c_01",
-				[2.0] = "nik_dwarf_internal_start_banter_c_02"
+				[1] = "nik_dwarf_internal_start_banter_c_01",
+				[2] = "nik_dwarf_internal_start_banter_c_02",
 			},
 			sound_events_duration = {
-				[1.0] = 5.7420001029968,
-				[2.0] = 4.7690000534058
-			}
+				[1] = 5.7420001029968,
+				[2] = 4.7690000534058,
+			},
 		},
 		nik_dwarf_internal_still_a_maze = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "npc_dlc_dwarf_interior",
-			sound_events_n = 4,
 			category = "level_talk",
+			database = "npc_dlc_dwarf_interior",
 			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
-				"dialogue_talk"
+				"dialogue_talk",
 			},
 			face_animations = {
 				"face_calm",
 				"face_calm",
 				"face_calm",
-				"face_calm"
+				"face_calm",
 			},
 			localization_strings = {
 				"nik_dwarf_internal_still_a_maze_01",
 				"nik_dwarf_internal_still_a_maze_02",
 				"nik_dwarf_internal_still_a_maze_03",
-				"nik_dwarf_internal_still_a_maze_04"
+				"nik_dwarf_internal_still_a_maze_04",
 			},
 			randomize_indexes = {},
 			sound_events = {
 				"nik_dwarf_internal_still_a_maze_01",
 				"nik_dwarf_internal_still_a_maze_02",
 				"nik_dwarf_internal_still_a_maze_03",
-				"nik_dwarf_internal_still_a_maze_04"
+				"nik_dwarf_internal_still_a_maze_04",
 			},
 			sound_events_duration = {
 				4.7490000724792,
 				5.9229793548584,
 				9.133978843689,
-				3.885999917984
-			}
+				3.885999917984,
+			},
 		},
 		nik_dwarf_internal_valaya = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "npc_dlc_dwarf_interior",
-			sound_events_n = 4,
 			category = "level_talk_must_play",
+			database = "npc_dlc_dwarf_interior",
 			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
-				"dialogue_talk"
+				"dialogue_talk",
 			},
 			face_animations = {
 				"face_calm",
 				"face_calm",
 				"face_calm",
-				"face_calm"
+				"face_calm",
 			},
 			localization_strings = {
 				"nik_dwarf_internal_valaya_01",
 				"nik_dwarf_internal_valaya_02",
 				"nik_dwarf_internal_valaya_03",
-				"nik_dwarf_internal_valaya_04"
+				"nik_dwarf_internal_valaya_04",
 			},
 			randomize_indexes = {},
 			sound_events = {
 				"nik_dwarf_internal_valaya_01",
 				"nik_dwarf_internal_valaya_02",
 				"nik_dwarf_internal_valaya_03",
-				"nik_dwarf_internal_valaya_04"
+				"nik_dwarf_internal_valaya_04",
 			},
 			sound_events_duration = {
 				3.6710000038147,
 				3.8229999542236,
 				9.2220001220703,
-				6.2760000228882
-			}
-		}
+				6.2760000228882,
+			},
+		},
 	})
 end

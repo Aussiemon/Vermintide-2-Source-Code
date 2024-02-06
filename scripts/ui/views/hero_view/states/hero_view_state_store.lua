@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/hero_view/states/hero_view_state_store.lua
+
 require("scripts/ui/helpers/scrollbar_logic")
 
 local definitions = local_require("scripts/ui/views/hero_view/states/definitions/hero_view_state_store_definitions")
@@ -12,90 +14,91 @@ local generic_input_actions = definitions.generic_input_actions
 local DO_RELOAD = false
 local rarity_index = {
 	common = 2,
-	plentiful = 1,
 	exotic = 4,
+	plentiful = 1,
 	rare = 3,
-	unique = 5
+	unique = 5,
 }
 local item_widget_size_by_type = {
 	default = {
 		260,
-		220
+		220,
 	},
 	item = {
 		260,
-		220
+		220,
 	},
 	bundle = {
 		800,
-		220
+		220,
 	},
 	dlc = {
 		800,
-		220
+		220,
 	},
 	divider_horizontal = {
 		800,
-		30
+		30,
 	},
 	dlc_logo = {
 		800,
-		0
+		0,
 	},
 	dlc_feature_vertical = {
 		260,
-		440
+		440,
 	},
 	dlc_feature_vertical_long = {
 		800,
-		440
+		440,
 	},
 	dlc_feature_horizontal = {
 		800,
-		220
+		220,
 	},
 	dlc_feature_pullet_point = {
 		800,
-		40
+		40,
 	},
 	dlc_header_video = {
 		800,
-		450
+		450,
 	},
 	header_text = {
 		800,
-		450
+		450,
 	},
 	body_text = {
 		800,
-		450
+		450,
 	},
 	spacing = {
 		800,
-		40
+		40,
 	},
 	big_image = {
 		800,
-		592
-	}
+		592,
+	},
 }
 local item_widget_definition_functions = {
+	big_image = "create_store_dlc_feature_horizontal_definition",
+	body_text = "create_store_body_text_definition",
 	default = "create_store_item_definition",
+	divider_horizontal = "create_store_list_divider_definition",
+	dlc = "create_store_item_definition",
+	dlc_feature_horizontal = "create_store_dlc_feature_horizontal_definition",
+	dlc_feature_pullet_point = "create_store_dlc_feature_pullet_point_definition",
+	dlc_feature_vertical = "create_store_dlc_feature_vertical_definition",
+	dlc_feature_vertical_long = "create_store_dlc_feature_vertical_definition",
+	dlc_header_video = "create_store_header_video_definition",
+	dlc_logo = "create_store_dlc_logo_definition",
 	header_text = "create_store_header_text_definition",
 	item = "create_store_item_definition",
-	dlc = "create_store_item_definition",
-	dlc_feature_pullet_point = "create_store_dlc_feature_pullet_point_definition",
-	dlc_feature_horizontal = "create_store_dlc_feature_horizontal_definition",
-	dlc_feature_vertical_long = "create_store_dlc_feature_vertical_definition",
-	body_text = "create_store_body_text_definition",
-	divider_horizontal = "create_store_list_divider_definition",
 	spacing = "create_store_list_spacing_definition",
-	dlc_feature_vertical = "create_store_dlc_feature_vertical_definition",
-	big_image = "create_store_dlc_feature_horizontal_definition",
-	dlc_header_video = "create_store_header_video_definition",
-	dlc_logo = "create_store_dlc_logo_definition"
 }
 local PRODUCT_PLACEHOLDER_TEXTURE_PATH = "gui/1080p/single_textures/generic/transparent_placeholder_texture"
+
 HeroViewStateStore = class(HeroViewStateStore)
 HeroViewStateStore.NAME = "HeroViewStateStore"
 
@@ -104,9 +107,11 @@ HeroViewStateStore.on_enter = function (self, params)
 
 	self._parent = params.parent
 	self._gamepad_style_active = self:_setup_menu_layout()
+
 	local game_mode_key = Managers.state.game_mode:game_mode_key()
 	local is_tutorial = game_mode_key == "tutorial"
 	local ingame_ui_context = params.ingame_ui_context
+
 	self.is_in_inn = ingame_ui_context.is_in_inn
 	self._ingame_ui = ingame_ui_context.ingame_ui
 	self._world_name = "store_ui_world"
@@ -121,7 +126,7 @@ HeroViewStateStore.on_enter = function (self, params)
 	self._input_manager = ingame_ui_context.input_manager
 	self._voting_manager = ingame_ui_context.voting_manager
 	self._render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 	self._wwise_world = params.wwise_world
 	self._world = params.parent.world
@@ -149,6 +154,7 @@ HeroViewStateStore.on_enter = function (self, params)
 	end
 
 	local input_service = self:input_service()
+
 	self._menu_input_description = MenuInputDescriptionUI:new(ingame_ui_context, self._ui_top_renderer, input_service, 6, nil, generic_input_actions, true)
 
 	self._menu_input_description:set_input_description(nil)
@@ -160,7 +166,7 @@ HeroViewStateStore.on_enter = function (self, params)
 		windows_settings = self._windows_settings,
 		input_service = FAKE_INPUT_SERVICE,
 		start_state = params.start_state or params.state_params.start_state,
-		layout_settings = self._layout_settings
+		layout_settings = self._layout_settings,
 	}
 
 	self:_initial_windows_setups(window_params)
@@ -211,9 +217,10 @@ HeroViewStateStore._trigger_welcome_popup = function (self, unseen_currency_rewa
 
 	for i = 1, #unseen_currency_rewards do
 		local reward = unseen_currency_rewards[i]
+
 		reward_data[#reward_data + 1] = {
 			value = reward.currency_amount,
-			rewarded_from = reward.rewarded_from
+			rewarded_from = reward.rewarded_from,
 		}
 		includes_dlc_rewards = includes_dlc_rewards or reward.rewarded_from ~= "base_game"
 		includes_base_game_reward = includes_base_game_reward or reward.rewarded_from == "base_game"
@@ -223,54 +230,55 @@ HeroViewStateStore._trigger_welcome_popup = function (self, unseen_currency_rewa
 		{
 			type = "body",
 			settings = {
+				localize = true,
 				text = "welcome_currency_popup_intro_description_1",
-				localize = true
-			}
-		}
+			},
+		},
 	}
 
 	if includes_base_game_reward then
 		layout[#layout + 1] = {
 			type = "body",
 			settings = {
+				localize = true,
 				text = "welcome_currency_popup_intro_description_2_no_dlc",
-				localize = true
-			}
+			},
 		}
 
 		if includes_dlc_rewards then
 			layout[#layout + 1] = {
 				type = "body",
 				settings = {
+					localize = true,
 					text = "welcome_currency_popup_intro_description_2",
-					localize = true
-				}
+				},
 			}
 		end
 	elseif includes_dlc_rewards then
 		layout[#layout + 1] = {
 			type = "body",
 			settings = {
+				localize = true,
 				text = "welcome_currency_popup_intro_description_2",
-				localize = true
-			}
+			},
 		}
 		layout[#layout + 1] = {
 			type = "body",
 			settings = {
-				text = ""
-			}
+				text = "",
+			},
 		}
 	end
 
 	layout[#layout + 1] = {
 		type = "summary_title",
 		settings = {
-			text = "welcome_currency_popup_rewards_title",
 			localize = true,
-			text2 = "welcome_currency_popup_currency_name"
-		}
+			text = "welcome_currency_popup_rewards_title",
+			text2 = "welcome_currency_popup_currency_name",
+		},
 	}
+
 	local starting_line_count = #layout
 	local total_amount = 0
 
@@ -283,10 +291,10 @@ HeroViewStateStore._trigger_welcome_popup = function (self, unseen_currency_rewa
 			table.insert(layout, starting_line_count + 1, {
 				type = "summary_entry",
 				settings = {
-					text = "welcome_currency_popup_intro_welcome_gift",
 					localize = true,
-					value = value
-				}
+					text = "welcome_currency_popup_intro_welcome_gift",
+					value = value,
+				},
 			})
 		else
 			local text = rewarded_from
@@ -304,8 +312,8 @@ HeroViewStateStore._trigger_welcome_popup = function (self, unseen_currency_rewa
 				settings = {
 					localize = true,
 					text = text,
-					value = value
-				}
+					value = value,
+				},
 			}
 		end
 
@@ -341,10 +349,10 @@ HeroViewStateStore.change_generic_actions = function (self, wanted_input_actions
 	if self:_has_unseen_items_tab_cat() and not skip_mark_all_as_seen then
 		input_actions = {
 			{
+				description_text = "mark_all_as_seen",
 				input_action = "refresh",
 				priority = 20,
-				description_text = "mark_all_as_seen"
-			}
+			},
 		}
 
 		table.append(input_actions, wanted_input_actions)
@@ -377,12 +385,14 @@ end
 
 HeroViewStateStore._create_ui_elements = function (self, params)
 	self._ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+
 	local widgets = {}
 	local widgets_by_name = {}
 
 	for name, widget_definition in pairs(widget_definitions) do
 		if widget_definition then
 			local widget = UIWidget.init(widget_definition)
+
 			widgets[#widgets + 1] = widget
 			widgets_by_name[name] = widget
 		end
@@ -390,12 +400,14 @@ HeroViewStateStore._create_ui_elements = function (self, params)
 
 	self._widgets = widgets
 	self._widgets_by_name = widgets_by_name
+
 	local list_detail_widgets = {}
 	local list_detail_widgets_by_name = {}
 
 	for name, widget_definition in pairs(list_detail_widget_definitions) do
 		if widget_definition then
 			local widget = UIWidget.init(widget_definition)
+
 			list_detail_widgets[#list_detail_widgets + 1] = widget
 			list_detail_widgets_by_name[name] = widget
 		end
@@ -413,6 +425,7 @@ end
 HeroViewStateStore._disable_player_world = function (self)
 	if not self._player_world_disabled then
 		self._player_world_disabled = true
+
 		local viewport_name = "player_1"
 		local world = Managers.world:world("level_world")
 		local viewport = ScriptWorld.viewport(world, viewport_name)
@@ -424,6 +437,7 @@ end
 HeroViewStateStore._enable_player_world = function (self)
 	if self._player_world_disabled then
 		self._player_world_disabled = false
+
 		local viewport_name = "player_1"
 		local world = Managers.world:world("level_world")
 		local viewport = ScriptWorld.viewport(world, viewport_name)
@@ -435,6 +449,7 @@ end
 HeroViewStateStore._disable_store_ui_world = function (self)
 	if not self._store_ui_world_disabled then
 		self._store_ui_world_disabled = true
+
 		local world = self._store_ui_world
 		local viewport_name = self._store_ui_world_viewport_name
 		local viewport = ScriptWorld.viewport(world, viewport_name)
@@ -446,6 +461,7 @@ end
 HeroViewStateStore._enable_store_ui_world = function (self)
 	if self._store_ui_world_disabled then
 		self._store_ui_world_disabled = false
+
 		local world = self._store_ui_world
 		local viewport_name = self._store_ui_world_viewport_name
 		local viewport = ScriptWorld.viewport(world, viewport_name)
@@ -457,6 +473,7 @@ end
 HeroViewStateStore.enable_ingame_overlay = function (self)
 	if not self._ingame_overlay_enabled then
 		self._ingame_overlay_enabled = true
+
 		local world = Managers.world:world("level_world")
 
 		World.set_data(world, "fullscreen_blur", 0.5)
@@ -467,6 +484,7 @@ end
 HeroViewStateStore.disable_ingame_overlay = function (self)
 	if self._ingame_overlay_enabled then
 		self._ingame_overlay_enabled = false
+
 		local world = Managers.world:world("level_world")
 
 		World.set_data(world, "fullscreen_blur", nil)
@@ -476,17 +494,19 @@ end
 
 HeroViewStateStore._initial_windows_setups = function (self, params)
 	local active_windows = {}
+
 	self._active_windows = active_windows
 	self._window_params = params
+
 	local start_state = params.start_state
 
 	if start_state then
 		self:go_to_store_path({
-			start_state
+			start_state,
 		})
 	else
 		self:go_to_store_path({
-			"featured"
+			"featured",
 		})
 	end
 end
@@ -529,7 +549,7 @@ HeroViewStateStore._change_window = function (self, window_index, window_name)
 	local window_class = rawget(_G, window_class_name)
 	local window = window_class:new()
 	local ignore_alignment = new_window_settings.ignore_alignment
-	local window_offset = nil
+	local window_offset
 
 	if not ignore_alignment then
 		local alignment_index = new_window_settings.alignment_index or window_index
@@ -541,10 +561,11 @@ HeroViewStateStore._change_window = function (self, window_index, window_name)
 		local total_windows_width = 3 * window_width
 		local start_width_offset = -(total_windows_width / 2 + window_width / 2) - (total_spacing / 2 + window_spacing)
 		local window_width_offset = start_width_offset + alignment_index * window_width + alignment_index * window_spacing
+
 		window_offset = {
 			window_width_offset,
 			0,
-			3
+			3,
 		}
 	end
 
@@ -748,16 +769,18 @@ end
 
 HeroViewStateStore.go_to_product = function (self, product_id, optional_path, optional_product_settings, keep_global_shader_flags)
 	local new_path = optional_path
-	local dlc_settings = nil
+	local dlc_settings
+
 	dlc_settings = StoreDlcSettingsByName[product_id]
+
 	local current_store_path = self:get_store_path()
-	local product = nil
+	local product
 
 	if dlc_settings then
 		product = {
 			type = "dlc",
 			dlc_settings = dlc_settings,
-			product_id = product_id
+			product_id = product_id,
 		}
 
 		if not new_path then
@@ -780,7 +803,7 @@ HeroViewStateStore.go_to_product = function (self, product_id, optional_path, op
 				type = "item",
 				item = item,
 				product_id = product_id,
-				settings = optional_product_settings
+				settings = optional_product_settings,
 			}
 
 			if not new_path then
@@ -792,7 +815,7 @@ HeroViewStateStore.go_to_product = function (self, product_id, optional_path, op
 				type = "item",
 				item = item,
 				product_id = product_id,
-				settings = optional_product_settings
+				settings = optional_product_settings,
 			}
 
 			if not new_path then
@@ -803,6 +826,7 @@ HeroViewStateStore.go_to_product = function (self, product_id, optional_path, op
 	end
 
 	local params = self._window_params
+
 	params.selected_product = product
 
 	if new_path then
@@ -827,6 +851,7 @@ HeroViewStateStore._step_back_in_path = function (self)
 
 	if num_pages > 1 then
 		local new_path = table.clone(store_path_array)
+
 		new_path[#new_path] = nil
 
 		self:go_to_store_path(new_path)
@@ -887,6 +912,7 @@ HeroViewStateStore.on_exit = function (self, params)
 	print("[HeroViewState] Exit Substate HeroViewStateStore")
 
 	self._ui_animator = nil
+
 	local friends_component_ui = self._friends_component_ui
 
 	if friends_component_ui and self:is_friends_list_active() then
@@ -929,15 +955,9 @@ HeroViewStateStore.on_exit = function (self, params)
 	Managers.save:auto_save(SaveFileName, SaveData, nil)
 
 	local login_rewards_popup = self._login_rewards_popup
-	local flow_event = nil
+	local flow_event
 
-	if self._items_bought > 0 then
-		flow_event = "shop_closed_item_bought"
-	elseif self._login_rewards_popup and self._login_rewards_popup:has_claimed_rewards() then
-		flow_event = "shop_closed_login_reward_claimed"
-	else
-		flow_event = "shop_closed"
-	end
+	flow_event = self._items_bought > 0 and "shop_closed_item_bought" or self._login_rewards_popup and self._login_rewards_popup:has_claimed_rewards() and "shop_closed_login_reward_claimed" or "shop_closed"
 
 	if GameSettingsDevelopment.store_nags then
 		LevelHelper:flow_event(self._world, flow_event)
@@ -1010,6 +1030,7 @@ HeroViewStateStore._delayed_update = function (self, dt, t)
 		if welcome_popup:completed() then
 			welcome_popup:destroy()
 
+			welcome_popup = nil
 			self._welcome_popup = nil
 
 			self:unblock_input()
@@ -1090,16 +1111,17 @@ HeroViewStateStore._update_dlc_purchases = function (self)
 		for i = 1, #unseen_rewards do
 			local unseen_reward = unseen_rewards[i]
 			local backend_id = unseen_reward.backend_id
-			local item = nil
+			local item
 
 			if unseen_reward.item_type == "weapon_skin" then
 				local item_id = unseen_reward.item_id
 				local weapon_skin_data = WeaponSkins.skins[item_id]
 				local backend_id, _ = item_interface:get_weapon_skin_from_skin_key(item_id)
+
 				item = {
 					data = weapon_skin_data,
 					backend_id = backend_id,
-					key = item_id
+					key = item_id,
 				}
 			else
 				item = item_interface:get_item_from_id(unseen_reward.backend_id)
@@ -1113,8 +1135,9 @@ HeroViewStateStore._update_dlc_purchases = function (self)
 					local product = {
 						type = "item",
 						item = store_item,
-						product_id = item_key
+						product_id = item_key,
 					}
+
 					self._unseen_product_reward_queue[#self._unseen_product_reward_queue + 1] = product
 				end
 			end
@@ -1133,6 +1156,7 @@ HeroViewStateStore._update_dlc_purchases = function (self)
 
 	if update_popup_queue then
 		local product = table.remove(self._unseen_product_reward_queue, 1)
+
 		self._item_purchase_popup = StoreItemPurchasePopup:new(self._ingame_ui, product, "approved")
 
 		self:block_input()
@@ -1363,10 +1387,11 @@ end
 HeroViewStateStore._start_transition_animation = function (self, key, animation_name, optional_widgets)
 	local params = {
 		wwise_world = self._wwise_world,
-		render_settings = self._render_settings
+		render_settings = self._render_settings,
 	}
 	local widgets = optional_widgets or self._widgets_by_name
 	local anim_id = self._ui_animator:start_animation(animation_name, widgets, scenegraph_definition, params)
+
 	self._animations[key] = anim_id
 end
 
@@ -1421,9 +1446,9 @@ HeroViewStateStore.product_purchase_request = function (self, product)
 								local sub_product = {
 									type = "bundle_item",
 									item = {
-										data = sub_item
+										data = sub_item,
 									},
-									product_id = sub_product_id
+									product_id = sub_product_id,
 								}
 
 								self:enqueue_acquired_product(sub_product)
@@ -1464,7 +1489,7 @@ HeroViewStateStore.open_login_rewards_popup = function (self)
 		ui_top_renderer = self._ui_top_renderer,
 		world = self._store_ui_renderer.world,
 		wwise_world = self._wwise_world,
-		input_manager = self._input_manager
+		input_manager = self._input_manager,
 	})
 
 	self:block_input()
@@ -1477,6 +1502,7 @@ end
 
 HeroViewStateStore.enqueue_acquired_product = function (self, product)
 	local queue = self._unseen_product_reward_queue
+
 	queue[#queue + 1] = product
 end
 
@@ -1511,7 +1537,7 @@ HeroViewStateStore._show_storepage = function (self, url, dlc_name)
 
 			if product_label then
 				Managers.system_dialog:open_commerce_dialog(NpCommerceDialog.MODE_PRODUCT, user_id, {
-					product_label
+					product_label,
 				})
 			else
 				Application.error(string.format("[HeroViewStateStore:_show_storepage] No product_id for dlc: %s", dlc_name))
@@ -1544,7 +1570,7 @@ end
 HeroViewStateStore.create_item_widget = function (self, product, scenegraph_id, masked)
 	local product_type = product.type
 	local product_settings = product.settings
-	local size = nil
+	local size
 
 	if product_settings and product_settings.size then
 		size = product_settings.size
@@ -1552,6 +1578,7 @@ HeroViewStateStore.create_item_widget = function (self, product, scenegraph_id, 
 		local item = product.item
 		local item_data = item.data
 		local item_type = item_data.item_type or item.item_type
+
 		size = item_widget_size_by_type[item_type] or item_widget_size_by_type[product_type] or item_widget_size_by_type.default
 	else
 		size = item_widget_size_by_type[product_type] or item_widget_size_by_type.default
@@ -1563,6 +1590,7 @@ HeroViewStateStore.create_item_widget = function (self, product, scenegraph_id, 
 	if definition_function then
 		local definition = definition_function(scenegraph_id, size, masked, product)
 		local widget = UIWidget.init(definition)
+
 		widget.product_type = product_type
 
 		return widget
@@ -1651,7 +1679,7 @@ HeroViewStateStore._calculate_discount_textures = function (self, widget, discou
 	local length = string.len(discount_string) + 2
 
 	for i = 1, length do
-		local texture_name = nil
+		local texture_name
 
 		if i == 1 then
 			texture_name = "store_number_minus"
@@ -1659,22 +1687,26 @@ HeroViewStateStore._calculate_discount_textures = function (self, widget, discou
 			texture_name = "store_number_percent"
 		else
 			local char = string.sub(discount_string, i - 1, i - 1)
+
 			texture_name = "store_number_" .. char
 		end
 
 		local texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(texture_name)
 		local size = {
 			texture_settings.size[1],
-			texture_settings.size[2]
+			texture_settings.size[2],
 		}
+
 		icons_content[i] = texture_name
 		texture_sizes[i] = size
+
 		local x = -(total_width * 0.5 + height_spacing * 0.5 * i)
 		local y = height_spacing * i
+
 		texture_offsets[i] = {
 			x,
 			y,
-			0
+			0,
 		}
 		total_width = total_width + size[1]
 	end
@@ -1684,12 +1716,12 @@ end
 
 local item_backgrounds_by_rarirty = {
 	common = "store_thumbnail_bg_common",
-	promo = "store_thumbnail_bg_promo",
-	plentiful = "store_thumbnail_bg_plentiful",
-	rare = "store_thumbnail_bg_rare",
 	exotic = "store_thumbnail_bg_exotic",
 	magic = "store_thumbnail_bg_magic",
-	unique = "store_thumbnail_bg_unique"
+	plentiful = "store_thumbnail_bg_plentiful",
+	promo = "store_thumbnail_bg_promo",
+	rare = "store_thumbnail_bg_rare",
+	unique = "store_thumbnail_bg_unique",
 }
 
 HeroViewStateStore._populate_item_widget = function (self, widget, product, product_id)
@@ -1705,21 +1737,33 @@ HeroViewStateStore._populate_item_widget = function (self, widget, product, prod
 	local style = widget.style
 	local masked = style.icon.masked
 	local can_use_item, reason = self:can_use_item(item)
+
 	content.can_use_item = can_use_item
 	content.can_not_use_item_reason = reason
+
 	local rarity_background = item_backgrounds_by_rarirty[rarity]
+
 	content.background = rarity_background
+
 	local end_time = item.end_time
+
 	content.has_expire_date = end_time ~= nil
-	local price_text, price_text_original, real_currency, platform_price_data = nil
+
+	local price_text, price_text_original, real_currency, platform_price_data
 	local dlc_name = item.dlc_name
+
 	content.dlc_name = dlc_name
+
 	local steam_itemdefid = item.steam_itemdefid
+
 	content.steam_itemdefid = steam_itemdefid
+
 	local overlay_z = style.overlay.offset[3]
 	local icon_z = style.icon.offset[3]
+
 	style.icon.offset[3] = overlay_z
 	style.overlay.offset[3] = icon_z
+
 	local hide_price = settings and settings.hide_price
 
 	if hide_price then
@@ -1743,6 +1787,7 @@ HeroViewStateStore._populate_item_widget = function (self, widget, product, prod
 		if steam_itemdefid then
 			real_currency = true
 			price_text, price_text_original = self:get_steam_item_price_text(steam_itemdefid, content, item)
+
 			local steam_data = item.steam_data
 
 			if not steam_data then
@@ -1758,9 +1803,12 @@ HeroViewStateStore._populate_item_widget = function (self, widget, product, prod
 				self:_calculate_discount_textures(widget, math.round(100 * discount))
 
 				local o1 = style.optional_item_name.offset
+
 				o1[1] = o1[1] + 35
 				o1[2] = o1[2] - 10
+
 				local o2 = style.optional_subtitle.offset
+
 				o2[1] = o2[1] + 35
 				o2[2] = o2[2] - 10
 			end
@@ -1795,8 +1843,11 @@ HeroViewStateStore._populate_item_widget = function (self, widget, product, prod
 	local backend_items = Managers.backend:get_interface("items")
 	local item_key = item.key
 	local item_owned = backend_items:has_item(item_key) or backend_items:has_weapon_illusion(item_key) or backend_items:has_bundle_contents(item.data.bundle_contains)
+
 	content.owned = item_owned
+
 	local item_type_icon = item_type_store_icons[item_type] or item_type_store_icons.default
+
 	content.type_tag_icon = rarity and item_type_icon .. "_" .. rarity or item_type_icon
 
 	if item_data.item_type == "bundle" then
@@ -1806,7 +1857,9 @@ HeroViewStateStore._populate_item_widget = function (self, widget, product, prod
 
 	local ui_top_renderer = self._ui_top_renderer
 	local top_gui = ui_top_renderer.gui
+
 	self._reference_id = (self._reference_id or 0) + 1
+
 	local reference_name = product_id .. "_" .. self._reference_id
 	local texture_name = "store_item_icon_" .. product_id
 	local package_name = item_data.store_texture_package or "resource_packages/store/item_icons/" .. texture_name
@@ -1815,6 +1868,7 @@ HeroViewStateStore._populate_item_widget = function (self, widget, product, prod
 	if package_available then
 		content.reference_name = reference_name
 		content.icon = nil
+
 		local new_material_name = masked and texture_name .. "_masked" or texture_name
 		local template_material_name = masked and "template_store_diffuse_masked" or "template_store_diffuse"
 
@@ -1829,27 +1883,30 @@ HeroViewStateStore._populate_item_widget = function (self, widget, product, prod
 		end
 
 		self:_load_texture_package(package_name, reference_name, callback)
+	else
+		Application.warning("Icon package not accessable for product_id: (%s) and package_name: (%s)", product_id, package_name)
 
-		return
+		content.icon = "icons_placeholder"
 	end
-
-	Application.warning("Icon package not accessable for product_id: (%s) and package_name: (%s)", product_id, package_name)
-
-	content.icon = "icons_placeholder"
 end
 
 HeroViewStateStore._set_product_price_text_comparison = function (self, widget, price_text_now, price_text_before, real_currency, platform_price_data)
 	local content = widget.content
 	local style = widget.style
 	local text_style_now = style.price_text_now
+
 	text_style_now.offset[1] = 23
 	content.price_text_now = price_text_now
+
 	local text_length = UIUtils.get_text_width(self._ui_top_renderer, text_style_now, price_text_now)
 	local text_style_before = style.price_text_before
 	local before_text_pos_x = text_style_now.offset[1] + 20 + text_length
+
 	text_style_before.offset[1] = before_text_pos_x
 	content.price_text_before = price_text_before
+
 	local text_style_strike_through = style.price_strike_through
+
 	text_style_strike_through.texture_size[1] = text_length + 10
 	text_style_strike_through.offset[1] = before_text_pos_x - 10
 	content.draw_price_icon = false
@@ -1857,10 +1914,12 @@ end
 
 HeroViewStateStore._set_product_price_text = function (self, widget, price_text, real_currency, platform_price_data, price_text_var_name)
 	price_text_var_name = price_text_var_name or "price_text"
+
 	local content = widget.content
 	local style = widget.style
-	local text_style = nil
+	local text_style
 	local extra_spacing = 0
+
 	content.real_currency = real_currency
 
 	if real_currency then
@@ -1877,17 +1936,22 @@ HeroViewStateStore._set_product_price_text = function (self, widget, price_text,
 		extra_spacing = 5
 	end
 
-	local background_price_center, background_price_right = nil
+	local background_price_center, background_price_right
+
 	background_price_center = "background_price_center"
 	background_price_right = "background_price_right"
+
 	local text_length = UIUtils.get_text_width(self._ui_top_renderer, text_style, price_text)
 	local price_tag_style_right = style[background_price_right]
 	local tag_right_width = price_tag_style_right.default_size[1]
 	local center_width = math.max(math.ceil(text_length - tag_right_width) + extra_spacing, 0)
 	local price_tag_style_center = style[background_price_center]
+
 	price_tag_style_center.texture_size[1] = center_width
+
 	local tag_right_offset = price_tag_style_right.offset
 	local tag_right_default_offset = price_tag_style_right.default_offset
+
 	tag_right_offset[1] = tag_right_default_offset[1] + center_width
 
 	if real_currency and platform_price_data then
@@ -1973,6 +2037,7 @@ HeroViewStateStore._setup_ps4_price_data = function (self, widget, price_data)
 	local console_first_price_text_length = UIUtils.get_text_width(self._ui_top_renderer, console_first_price_style, content.console_first_price_text)
 	local console_secondary_price_text_length = UIUtils.get_text_width(self._ui_top_renderer, console_secondary_price_style, content.console_secondary_price_text)
 	local console_third_price_text_length = UIUtils.get_text_width(self._ui_top_renderer, console_third_price_style, content.console_third_price_text)
+
 	console_first_price_style.offset[1] = size[1] - console_first_price_text_length - spacing
 	console_secondary_price_style.offset[1] = size[1] - console_secondary_price_text_length - spacing
 	console_third_price_style.offset[1] = size[1] - console_secondary_price_text_length - spacing * 0.5 - console_third_price_text_length - spacing
@@ -1980,12 +2045,12 @@ HeroViewStateStore._setup_ps4_price_data = function (self, widget, price_data)
 	console_secondary_price_stroke_style.offset[1] = size[1] - console_secondary_price_text_length - spacing
 	console_secondary_price_stroke_style.texture_size = {
 		console_secondary_price_text_length,
-		1
+		1,
 	}
 	console_third_price_stroke_style.offset[1] = size[1] - console_secondary_price_text_length - spacing * 0.5 - console_third_price_text_length - spacing
 	console_third_price_stroke_style.texture_size = {
 		console_third_price_text_length,
-		1
+		1,
 	}
 end
 
@@ -2013,12 +2078,13 @@ HeroViewStateStore._setup_xb1_price_data = function (self, widget, price_data)
 	local console_secondary_price_stroke_style = style.console_secondary_price_stroke
 	local console_first_price_text_length = UIUtils.get_text_width(self._ui_top_renderer, console_first_price_style, content.console_first_price_text)
 	local console_secondary_price_text_length = UIUtils.get_text_width(self._ui_top_renderer, console_secondary_price_style, content.console_secondary_price_text)
+
 	console_first_price_style.offset[1] = size[1] - console_first_price_text_length - spacing
 	console_secondary_price_style.offset[1] = size[1] - console_secondary_price_text_length - spacing
 	console_secondary_price_stroke_style.offset[1] = size[1] - console_secondary_price_text_length - spacing - 5
 	console_secondary_price_stroke_style.texture_size = {
 		console_secondary_price_text_length + 10,
-		1
+		1,
 	}
 
 	if content.show_secondary_stroke then
@@ -2026,38 +2092,38 @@ HeroViewStateStore._setup_xb1_price_data = function (self, widget, price_data)
 			255,
 			255,
 			255,
-			0
+			0,
 		}
 		console_secondary_price_stroke_style.color = {
 			255,
 			90,
 			90,
-			90
+			90,
 		}
 		console_secondary_price_style.text_color = {
 			255,
 			90,
 			90,
-			90
+			90,
 		}
 	else
 		console_first_price_style.base_color = {
 			255,
 			255,
 			255,
-			255
+			255,
 		}
 		console_secondary_price_stroke_style.color = {
 			255,
 			255,
 			255,
-			255
+			255,
 		}
 		console_secondary_price_style.text_color = {
 			255,
 			255,
 			255,
-			255
+			255,
 		}
 	end
 end
@@ -2068,7 +2134,7 @@ HeroViewStateStore.get_steam_item_price_text = function (self, steam_itemdefid, 
 	local steam_data = item and item.steam_data
 	local backend_store = Managers.backend:get_interface("peddler")
 	local price, currency = backend_store:get_steam_item_price(steam_itemdefid)
-	local price_text, price_text_original = nil
+	local price_text, price_text_original
 
 	if not content.can_use_item then
 		price_text = Localize(content.can_not_use_item_reason or "dlc_price_unavailable")
@@ -2077,9 +2143,10 @@ HeroViewStateStore.get_steam_item_price_text = function (self, steam_itemdefid, 
 
 		if item_data and item_data.item_type == "bundle" then
 			local regular_price = steam_data and steam_data.regular_prices[currency] or item_data.bundle_price
+
 			price_text_original = tostring(currency) .. " " .. string.format("%.2f", regular_price * 0.01)
 		else
-			price_text_original = discount and tostring(currency) .. " " .. string.format("%.2f", price * 100 / (100 - discount) * 0.01)
+			price_text_original = discount and tostring(currency) .. " " .. string.format("%.2f", price * (100 / (100 - discount)) * 0.01)
 		end
 	else
 		price_text = Localize("dlc_price_unavailable")
@@ -2089,7 +2156,7 @@ HeroViewStateStore.get_steam_item_price_text = function (self, steam_itemdefid, 
 end
 
 HeroViewStateStore.can_use_item = function (self, item)
-	return true
+	do return true end
 
 	local unlock_manager = Managers.unlock
 	local data = item.data
@@ -2170,6 +2237,7 @@ end
 
 HeroViewStateStore._populate_video_widget = function (self, widget, settings, product_id)
 	self._reference_id = (self._reference_id or 0) + 1
+
 	local reference_name = product_id .. "_" .. self._reference_id
 	local set_loop = true
 	local material_name = settings.masked_material_name or settings.material_name
@@ -2188,6 +2256,7 @@ HeroViewStateStore._populate_video_widget = function (self, widget, settings, pr
 
 	local content = widget.content
 	local video_content = content.video_content
+
 	content.reference_name = reference_name
 	video_content.material_name = material_name
 	video_content.video_player_reference = reference_name
@@ -2223,12 +2292,15 @@ HeroViewStateStore._populate_text_widget = function (self, widget, settings, pro
 	end
 
 	local text_height = UIUtils.get_text_height(ui_top_renderer, text_size, text_style, text)
+
 	text_size[2] = text_height + 5
 	text_offset[2] = -text_size[2] + height_offset
 	content.size[2] = text_size[2]
 	text_shadow_style.size[2] = text_size[2]
 	text_shadow_style.offset[2] = -(text_size[2] + 2) + height_offset
+
 	local alignment = settings.alignment or "center"
+
 	text_style.horizontal_alignment = alignment
 	text_shadow_style.horizontal_alignment = alignment
 	content.text = text
@@ -2248,13 +2320,19 @@ HeroViewStateStore._populate_dlc_feature_horizontal_widget = function (self, wid
 	local text_offset = text_style.offset
 	local ui_top_renderer = self._ui_top_renderer
 	local text_height = UIUtils.get_text_height(ui_top_renderer, text_size, text_style, text)
+
 	text_size[2] = text_height
 	text_offset[2] = -text_size[2]
+
 	local widget_height = math.max(text_height, content.size[2])
+
 	content.size[2] = widget_height
+
 	local text_shadow_style = style.text_shadow
+
 	text_shadow_style.size[2] = text_size[2]
 	text_shadow_style.offset[2] = -(text_size[2] + 2)
+
 	local image_style = style.image
 	local image_size = image_style.texture_size
 	local image_offset = image_style.offset
@@ -2277,17 +2355,21 @@ HeroViewStateStore._populate_dlc_feature_horizontal_widget = function (self, wid
 
 	content.text = text
 	content.product_id = product_id
+
 	local masked = image_style.masked
 	local ui_top_renderer = self._ui_top_renderer
 	local top_gui = ui_top_renderer.gui
 	local package_name = settings.texture_package
 	local texture_path = settings.texture_path
+
 	self._reference_id = (self._reference_id or 0) + 1
+
 	local reference_name = "dlc_feature_reference_name_" .. self._reference_id
 	local package_available = Application.can_get("package", package_name)
 
 	if package_available then
 		content.reference_name = reference_name
+
 		local new_material_name = masked and "dlc_feature_masked_" .. product_id or "dlc_feature_" .. product_id
 		local template_material_name = masked and "template_store_diffuse_masked" or "template_store_diffuse"
 
@@ -2301,17 +2383,17 @@ HeroViewStateStore._populate_dlc_feature_horizontal_widget = function (self, wid
 		end
 
 		self:_load_texture_package(package_name, reference_name, callback)
-
-		return
+	else
+		Application.warning("DLC icon package not accessable for product_id: (%s) and package_name: (%s)", product_id, package_name)
 	end
-
-	Application.warning("DLC icon package not accessable for product_id: (%s) and package_name: (%s)", product_id, package_name)
 end
 
 HeroViewStateStore._populate_dlc_logo_widget = function (self, widget, settings, product_id)
 	local content = widget.content
 	local style = widget.style
+
 	content.product_id = product_id
+
 	local size = content.size
 	local image_style = style.image
 	local image_size = image_style.texture_size
@@ -2338,11 +2420,13 @@ HeroViewStateStore._populate_dlc_logo_widget = function (self, widget, settings,
 	end
 
 	self._reference_id = (self._reference_id or 0) + 1
+
 	local reference_name = "dlc_feature_reference_name_" .. self._reference_id
 	local package_available = Application.can_get("package", package_name)
 
 	if package_available then
 		content.reference_name = reference_name
+
 		local new_material_name = masked and "dlc_feature_masked_" .. product_id or "dlc_feature_" .. product_id
 		local template_material_name = masked and "template_store_diffuse_masked" or "template_store_diffuse"
 
@@ -2356,11 +2440,9 @@ HeroViewStateStore._populate_dlc_logo_widget = function (self, widget, settings,
 		end
 
 		self:_load_texture_package(package_name, reference_name, callback)
-
-		return
+	else
+		Application.warning("DLC icon package not accessable for product_id: (%s) and package_name: (%s)", product_id, package_name)
 	end
-
-	Application.warning("DLC icon package not accessable for product_id: (%s) and package_name: (%s)", product_id, package_name)
 end
 
 HeroViewStateStore._populate_dlc_feature_vertical_widget = function (self, widget, settings, product_id)
@@ -2382,29 +2464,40 @@ HeroViewStateStore._populate_dlc_feature_vertical_widget = function (self, widge
 	local text_offset = text_style.offset
 	local ui_top_renderer = self._ui_top_renderer
 	local text_height = UIUtils.get_text_height(ui_top_renderer, text_size, text_style, text)
+
 	text_size[2] = text_height
 	text_offset[2] = -(image_height + text_size[2] + text_defaul_height_spacing)
+
 	local widget_height = math.max(text_height + image_height + text_defaul_height_spacing, image_height)
+
 	content.size[2] = widget_height
+
 	local text_shadow_style = style.text_shadow
+
 	text_shadow_style.size[2] = text_size[2]
 	text_shadow_style.offset[2] = text_offset[2] - 2
+
 	local alignment = settings.alignment or "center"
+
 	text_style.horizontal_alignment = alignment
 	text_shadow_style.horizontal_alignment = alignment
 	content.text = text
 	content.product_id = product_id
+
 	local masked = image_style.masked
 	local ui_top_renderer = self._ui_top_renderer
 	local top_gui = ui_top_renderer.gui
 	local package_name = settings.texture_package
 	local texture_path = settings.texture_path
+
 	self._reference_id = (self._reference_id or 0) + 1
+
 	local reference_name = "dlc_feature_reference_name_" .. self._reference_id
 	local package_available = Application.can_get("package", package_name)
 
 	if package_available then
 		content.reference_name = reference_name
+
 		local new_material_name = masked and "dlc_feature_masked_" .. product_id or "dlc_feature_" .. product_id
 		local template_material_name = masked and "template_store_diffuse_masked" or "template_store_diffuse"
 
@@ -2418,11 +2511,9 @@ HeroViewStateStore._populate_dlc_feature_vertical_widget = function (self, widge
 		end
 
 		self:_load_texture_package(package_name, reference_name, callback)
-
-		return
+	else
+		Application.warning("DLC icon package not accessable for product_id: (%s) and package_name: (%s)", product_id, package_name)
 	end
-
-	Application.warning("DLC icon package not accessable for product_id: (%s) and package_name: (%s)", product_id, package_name)
 end
 
 HeroViewStateStore._populate_dlc_widget = function (self, widget, settings, product_id, show_old_price)
@@ -2437,8 +2528,10 @@ HeroViewStateStore._populate_dlc_widget = function (self, widget, settings, prod
 	local content = widget.content
 	local optional_name = settings.optional_dlc_display_name
 	local optional_subtitle = settings.optional_dlc_subtitle
+
 	content.optional_item_name = optional_name and Localize(optional_name) or ""
 	content.optional_subtitle = optional_subtitle and Localize(optional_subtitle) or ""
+
 	local price_text, platform_price_data = self:get_dlc_price_text(dlc_name)
 	local real_currency = true
 
@@ -2450,20 +2543,26 @@ HeroViewStateStore._populate_dlc_widget = function (self, widget, settings, prod
 
 	content.icon = texture
 	content.owned = Managers.unlock:is_dlc_unlocked(dlc_name)
+
 	local masked = style.icon.masked
 	local item_type_icon = item_type_store_icons[item_type] or item_type_store_icons.default
+
 	content.type_tag_icon = settings.is_bundle and item_type_icon .. "_promo" or item_type_icon
+
 	local ui_top_renderer = self._ui_top_renderer
 	local top_gui = ui_top_renderer.gui
 	local package_name = settings.store_texture_package
 	local banner_texture_path = settings.store_texture
+
 	self._reference_id = (self._reference_id or 0) + 1
+
 	local reference_name = product_id .. "_" .. self._reference_id
 	local package_available = Application.can_get("package", package_name)
 
 	if package_available then
 		content.reference_name = reference_name
 		content.icon = nil
+
 		local new_banner_material_name = masked and "store_dlc_banner_masked_" .. product_id or "store_dlc_banner_" .. product_id
 		local banner_template_material_name = masked and "template_store_diffuse_masked" or "template_store_diffuse"
 
@@ -2476,11 +2575,9 @@ HeroViewStateStore._populate_dlc_widget = function (self, widget, settings, prod
 		end
 
 		self:_load_texture_package(package_name, reference_name, callback)
-
-		return
+	else
+		Application.warning("DLC icon package not accessable for product_id: (%s) and package_name: (%s)", product_id, package_name)
 	end
-
-	Application.warning("DLC icon package not accessable for product_id: (%s) and package_name: (%s)", product_id, package_name)
 end
 
 HeroViewStateStore.set_list_details_visibility = function (self, visible)
@@ -2514,6 +2611,7 @@ HeroViewStateStore.set_list_details_length = function (self, length, animation_d
 	local list_detail_top_center = list_detail_widgets_by_name.list_detail_top_center
 	local start_length = ui_scenegraph[list_detail_top_center.scenegraph_id].size[1]
 	local list_detail_animation_data = self._list_detail_animation_data or {}
+
 	self._list_detail_animation_data = list_detail_animation_data
 	list_detail_animation_data.duration = animation_duration
 	list_detail_animation_data.total_duration = animation_duration
@@ -2535,6 +2633,7 @@ HeroViewStateStore._update_list_detail_animation = function (self, dt)
 	end
 
 	duration = math.max(duration - dt, 0)
+
 	local start_length = list_detail_animation_data.start_length
 	local target_length = list_detail_animation_data.target_length
 	local total_duration = list_detail_animation_data.total_duration
@@ -2547,6 +2646,7 @@ HeroViewStateStore._update_list_detail_animation = function (self, dt)
 	local list_detail_top_center = list_detail_widgets_by_name.list_detail_top_center
 	local list_detail_bottom_center = list_detail_widgets_by_name.list_detail_bottom_center
 	local ui_scenegraph = self._ui_scenegraph
+
 	ui_scenegraph[list_detail_top_center.scenegraph_id].size[1] = current_length
 	ui_scenegraph[list_detail_bottom_center.scenegraph_id].size[1] = current_length
 
@@ -2559,6 +2659,7 @@ end
 
 HeroViewStateStore._create_material_instance = function (self, gui, new_material_name, template_material_name, reference_name)
 	local cloned_materials_by_reference = self._cloned_materials_by_reference
+
 	cloned_materials_by_reference[reference_name] = new_material_name
 
 	return Gui.clone_material_from_template(gui, new_material_name, template_material_name)
@@ -2579,6 +2680,7 @@ HeroViewStateStore._load_texture_package = function (self, package_name, referen
 	Managers.package:load(package_name, reference_name, callback, asynchronous, prioritize)
 
 	local loaded_package_names = self._loaded_package_names
+
 	loaded_package_names[reference_name] = package_name
 end
 
@@ -2676,6 +2778,7 @@ HeroViewStateStore.start_fullscreen_video = function (self, material_name, resou
 	end
 
 	local scenegraph_id = "video_fullscreen"
+
 	self._video_widget.scenegraph_id = scenegraph_id
 	self._widgets_by_name.video_fullscreen_fade.content.visible = true
 	self._widgets_by_name.video_fullscreen_fade.content.progress = 0
@@ -2689,6 +2792,7 @@ HeroViewStateStore._stop_fullscreen_video = function (self)
 	self:play_sound("Play_hud_store_ambience")
 
 	local scenegraph_id = "video"
+
 	self._video_widget.scenegraph_id = scenegraph_id
 	self._widgets_by_name.video_fullscreen_fade.content.visible = false
 end
@@ -2708,6 +2812,7 @@ HeroViewStateStore._setup_fullscreen_video_player = function (self, material_nam
 	local scenegraph_id = "video"
 	local widget_definition = UIWidgets.create_video(scenegraph_id, material_name, "HeroViewStateStore")
 	local video_widget = UIWidget.init(widget_definition)
+
 	self._video_widget = video_widget
 	self._video_created = true
 	self._draw_video_next_frame = true
@@ -2769,6 +2874,7 @@ HeroViewStateStore._animate_dlc_video_button = function (self, widget, dt, optio
 	local combined_progress = math.max(hover_progress, selection_progress)
 	local icon_style = style.icon
 	local icon_color = icon_style.color
+
 	icon_color[1] = 255 * hover_progress
 	hotspot.hover_progress = hover_progress
 	hotspot.selection_progress = selection_progress
@@ -2798,7 +2904,7 @@ HeroViewStateStore._animate_item_product = function (self, widget, dt, optional_
 	local hover_progress = hotspot.hover_progress or 0
 	local pulse_progress = hotspot.pulse_progress or 1
 	local selection_progress = hotspot.selection_progress or 0
-	local speed = (is_hover or is_selected) and 14 or 3
+	local speed = not (not is_hover and not is_selected) and 14 or 3
 	local pulse_speed = 3
 	local input_speed = 20
 
@@ -2816,6 +2922,7 @@ HeroViewStateStore._animate_item_product = function (self, widget, dt, optional_
 	end
 
 	pulse_progress = math.min(pulse_progress + dt * pulse_speed, 1)
+
 	local pulse_easing_out_progress = math.easeOutCubic(pulse_progress)
 	local pulse_easing_in_progress = math.easeInCubic(pulse_progress)
 
@@ -2840,15 +2947,19 @@ HeroViewStateStore._animate_item_product = function (self, widget, dt, optional_
 	local combined_out_progress = math.max(select_easing_out_progress, hover_easing_out_progress)
 	local combined_in_progress = math.max(hover_easing_in_progress, select_easing_in_progress)
 	local hover_alpha = 255 * combined_progress
+
 	style.hover_frame.color[1] = hover_alpha
+
 	local overlay_style = style.overlay
 
 	if overlay_style then
 		local overlay_alpha = 80 - 80 * combined_progress
+
 		overlay_style.color[1] = overlay_alpha
 	end
 
 	local pulse_alpha = 255 - 255 * pulse_progress
+
 	style.pulse_frame.color[1] = pulse_alpha
 	hotspot.pulse_progress = pulse_progress
 	hotspot.hover_progress = hover_progress

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/ui_animator.lua
+
 UIAnimator = class(UIAnimator)
 
 UIAnimator.init = function (self, ui_scenegraph, animation_definitions)
@@ -10,20 +12,22 @@ end
 UIAnimator.start_animation = function (self, anim_name, widget, scenegraph_def, params, speed, initial_delay)
 	local ui_scenegraph = self._ui_scenegraph
 	local times = {}
+
 	initial_delay = initial_delay or 0
+
 	local anim_def = self._animation_definitions[anim_name]
 
 	for i = 1, #anim_def do
 		local anim = anim_def[i]
+
 		anim.is_completed = nil
 
 		anim.init(ui_scenegraph, scenegraph_def, widget, params)
 
-		local t0, t1 = nil
+		local t0, t1
 
 		if anim.start_progress then
-			t1 = anim.end_progress
-			t0 = anim.start_progress
+			t0, t1 = anim.start_progress, anim.end_progress
 		else
 			t0 = anim.delay or 0
 			t1 = t0 + anim.duration
@@ -34,6 +38,7 @@ UIAnimator.start_animation = function (self, anim_name, widget, scenegraph_def, 
 	end
 
 	local animation_id = self._animation_id + 1
+
 	self._animation_id = animation_id
 	self._active_animations[animation_id] = {
 		time = 0,
@@ -43,7 +48,7 @@ UIAnimator.start_animation = function (self, anim_name, widget, scenegraph_def, 
 		scenegraph_def = scenegraph_def,
 		completed_animations = {},
 		params = params or {},
-		times = times
+		times = times,
 	}
 
 	return animation_id
@@ -68,7 +73,9 @@ UIAnimator.update = function (self, dt)
 			local completed_animations = data.completed_animations
 			local times = data.times
 			local time = data.time + dt
+
 			data.time = time
+
 			local all_done = true
 			local anim_def = data.anim_def
 

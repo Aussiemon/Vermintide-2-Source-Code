@@ -1,30 +1,32 @@
+﻿-- chunkname: @scripts/ui/hud_ui/wait_for_rescue_ui.lua
+
 local scenegraph_definition = {
 	root = {
 		is_root = true,
 		position = {
 			0,
 			0,
-			UILayer.hud_inventory
+			UILayer.hud_inventory,
 		},
 		size = {
 			1920,
-			1080
-		}
+			1080,
+		},
 	},
 	waiting_for_rescue_text = {
-		vertical_alignment = "center",
-		parent = "root",
 		horizontal_alignment = "center",
+		parent = "root",
+		vertical_alignment = "center",
 		position = {
 			0,
 			0,
-			0
+			0,
 		},
 		size = {
 			800,
-			40
-		}
-	}
+			40,
+		},
+	},
 }
 local text_definition = {
 	scenegraph_id = "waiting_for_rescue_text",
@@ -32,26 +34,27 @@ local text_definition = {
 		passes = {
 			{
 				pass_type = "text",
-				text_id = "text"
-			}
-		}
+				text_id = "text",
+			},
+		},
 	},
 	content = {
-		text = "waiting_to_be_rescued"
+		text = "waiting_to_be_rescued",
 	},
 	style = {
-		font_size = 45,
-		localize = true,
-		word_wrap = true,
-		pixel_perfect = true,
-		horizontal_alignment = "center",
-		vertical_alignment = "center",
 		dynamic_font = true,
+		font_size = 45,
 		font_type = "hell_shark",
-		text_color = Colors.get_color_table_with_alpha("white", 255)
-	}
+		horizontal_alignment = "center",
+		localize = true,
+		pixel_perfect = true,
+		vertical_alignment = "center",
+		word_wrap = true,
+		text_color = Colors.get_color_table_with_alpha("white", 255),
+	},
 }
 local RELOAD_UI = true
+
 WaitForRescueUI = class(WaitForRescueUI)
 
 WaitForRescueUI.init = function (self, parent, ingame_ui_context)
@@ -92,7 +95,9 @@ WaitForRescueUI.update = function (self, dt, t)
 	end
 
 	local alpha = math.sirp(0, 255, t)
+
 	self.waiting_for_rescue_text.style.text_color[1] = alpha
+
 	local ui_renderer = self.ui_renderer
 	local ui_scenegraph = self.ui_scenegraph
 	local input_service = self.input_manager:get_service("Player")

@@ -1,24 +1,27 @@
+﻿-- chunkname: @scripts/settings/dlcs/steak/steak_ai_breed_snippets.lua
+
 AiBreedSnippets = AiBreedSnippets or {}
 
 AiBreedSnippets.on_beastmen_minotaur_spawn = function (unit, blackboard)
 	local t = Managers.time:time("game")
-	blackboard.charge_astar_data = {
-		astar_timer = t
-	}
+
+	blackboard.charge_astar_data = {}
+	blackboard.charge_astar_data.astar_timer = t
 	blackboard.num_charges_targeting_target = 0
 	blackboard.target_is_charged = false
 	blackboard.aggro_list = {}
+
 	local breed = blackboard.breed
 
 	if breed.use_charge_nav_layers then
 		local allowed_layers = {
-			planks = 1,
-			bot_ratling_gun_fire = 1,
-			doors = 1,
-			destructible_wall = 0,
 			bot_poison_wind = 1,
+			bot_ratling_gun_fire = 1,
+			destructible_wall = 0,
+			doors = 1,
+			fire_grenade = 1,
+			planks = 1,
 			temporary_wall = 0,
-			fire_grenade = 1
 		}
 		local navtag_layer_cost_table = GwNavTagLayerCostTable.create()
 
@@ -42,6 +45,7 @@ AiBreedSnippets.on_beastmen_minotaur_spawn = function (unit, blackboard)
 	blackboard.fling_skaven_timer = 0
 	blackboard.next_move_check = 0
 	blackboard.is_valid_target_func = GenericStatusExtension.is_ogre_target
+
 	local conflict_director = Managers.state.conflict
 	local ai_simple = ScriptUnit.extension(unit, "ai_system")
 
@@ -49,11 +53,12 @@ AiBreedSnippets.on_beastmen_minotaur_spawn = function (unit, blackboard)
 	conflict_director:add_angry_boss(1, blackboard)
 
 	blackboard.is_angry = true
+
 	local side = Managers.state.side.side_by_unit[unit]
 	local enemy_player_and_bot_units = side.ENEMY_PLAYER_AND_BOT_UNITS
 	local weights = breed.perception_weights
 	local best_score = 0
-	local best_enemy = nil
+	local best_enemy
 
 	for i = 1, #enemy_player_and_bot_units do
 		local enemy_unit = enemy_player_and_bot_units[i]
@@ -74,6 +79,7 @@ AiBreedSnippets.on_beastmen_minotaur_spawn = function (unit, blackboard)
 
 	if best_enemy then
 		local aggro_list = blackboard.aggro_list
+
 		aggro_list[best_enemy] = 50
 	end
 
@@ -105,7 +111,7 @@ AiBreedSnippets.on_beastmen_minotaur_update = function (unit, blackboard, t)
 				data.astar = nil
 				data.astar_timer = t + 1
 			end
-		elseif data.astar_timer < t then
+		elseif t > data.astar_timer then
 			local nav_world = blackboard.nav_world
 			local target_position = POSITION_LOOKUP[blackboard.target_unit]
 			local success, z = GwNavQueries.triangle_from_position(nav_world, target_position, 1, 1)

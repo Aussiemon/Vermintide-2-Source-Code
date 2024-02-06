@@ -1,9 +1,12 @@
+﻿-- chunkname: @scripts/unit_extensions/default_player_unit/states/player_character_state_leaving_ladder_top.lua
+
 PlayerCharacterStateLeavingLadderTop = class(PlayerCharacterStateLeavingLadderTop, PlayerCharacterState)
 
 PlayerCharacterStateLeavingLadderTop.init = function (self, character_state_init_context)
 	PlayerCharacterState.init(self, character_state_init_context, "leaving_ladder_top")
 
 	local context = character_state_init_context
+
 	self.is_server = Managers.player.is_server
 	self.wanted_forward_bonus_velocity = Vector3Box()
 end
@@ -19,10 +22,13 @@ PlayerCharacterStateLeavingLadderTop.on_enter = function (self, unit, input, dt,
 	local input_extension = self.input_extension
 	local first_person_extension = self.first_person_extension
 	local ladder_unit = params.ladder_unit
+
 	self.ladder_unit = ladder_unit
 	self.movement_speed = 1
+
 	local movement_settings_table = PlayerUnitMovementSettings.get_movement_settings_table(unit)
 	local duration = movement_settings_table.ladder.leaving_ladder_top_animation_time
+
 	self.finish_time = t + duration
 
 	self.wanted_forward_bonus_velocity:store(Quaternion.forward(Unit.local_rotation(ladder_unit, 0)))
@@ -88,7 +94,7 @@ PlayerCharacterStateLeavingLadderTop.update = function (self, unit, input, dt, c
 	if is_catapulted then
 		local params = {
 			sound_event = "Play_hit_by_ratogre",
-			direction = direction
+			direction = direction,
 		}
 
 		csm:change_state("catapulted", params)
@@ -96,7 +102,7 @@ PlayerCharacterStateLeavingLadderTop.update = function (self, unit, input, dt, c
 		return
 	end
 
-	if self.finish_time < t then
+	if t > self.finish_time then
 		csm:change_state("walking")
 	end
 

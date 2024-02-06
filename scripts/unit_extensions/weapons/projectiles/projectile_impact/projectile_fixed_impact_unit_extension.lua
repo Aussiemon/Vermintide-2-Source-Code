@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/weapons/projectiles/projectile_impact/projectile_fixed_impact_unit_extension.lua
+
 ProjectileFixedImpactUnitExtension = class(ProjectileFixedImpactUnitExtension, ProjectileBaseImpactUnitExtension)
 
 ProjectileFixedImpactUnitExtension.init = function (self, extension_init_context, unit, extension_init_data)
@@ -5,7 +7,9 @@ ProjectileFixedImpactUnitExtension.init = function (self, extension_init_context
 
 	self.is_server = Managers.player.is_server
 	self.owner_unit = extension_init_data.owner_unit
+
 	local owner_player = Managers.player:owner(self.owner_unit)
+
 	self.owner_is_local = owner_player and owner_player.local_player or owner_player and owner_player.bot_player or false
 	self.last_position = nil
 	self.impact_data = extension_init_data.impact_data
@@ -25,6 +29,7 @@ ProjectileFixedImpactUnitExtension.update = function (self, unit, input, dt, con
 
 	if not self.has_hit and self._time_to_impact <= 0 then
 		self.has_hit = true
+
 		local impact_data = self.impact_data
 		local hit_unit = impact_data.hit_unit
 		local hit_position = impact_data.position:unbox()

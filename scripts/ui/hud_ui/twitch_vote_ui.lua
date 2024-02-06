@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/hud_ui/twitch_vote_ui.lua
+
 local definitions = local_require("scripts/ui/hud_ui/twitch_vote_ui_definitions")
 local scenegraph_definition = definitions.scenegraph_definition
 local definition_settings = definitions.settings
@@ -5,6 +7,7 @@ local vote_texts_definition = definitions.vote_texts
 local DEBUG_VOTE_UI = false
 local RESULT_TIMER = 3
 local INIT_AUDIO_COUNTDOWN_AT = 5
+
 TwitchVoteUI = class(TwitchVoteUI)
 
 TwitchVoteUI.init = function (self, parent, ingame_ui_context)
@@ -20,10 +23,12 @@ TwitchVoteUI.init = function (self, parent, ingame_ui_context)
 	self._ui_animations = {}
 	self._animation_callbacks = {}
 	self._render_settings = {
-		alpha_multiplier = 1
+		alpha_multiplier = 1,
 	}
 	self._last_played_countdown_sfx = INIT_AUDIO_COUNTDOWN_AT + 1
+
 	local world = self._world_manager:world("level_world")
+
 	self.wwise_world = Managers.world:wwise_world(world)
 
 	self:_create_elements()
@@ -57,11 +62,12 @@ TwitchVoteUI.event_finish_vote_ui = function (self, vote_key, winning_index)
 	local vote_type = vote_data.vote_type
 	local active_vote = self._active_vote
 	local vote_template = TwitchVoteTemplates[winning_template_name]
+
 	self._vote_result = {
 		vote_key = vote_key,
 		winning_index = winning_index,
 		winning_template_name = winning_template_name,
-		vote_template = vote_template
+		vote_template = vote_template,
 	}
 
 	if vote_type == "standard_vote" then
@@ -115,11 +121,12 @@ TwitchVoteUI.start_standard_vote = function (self, vote_template_a_name, vote_te
 		vote_template_b = table.clone(vote_template_b),
 		inputs = vote_inputs or {
 			"#a",
-			"#b"
+			"#b",
 		},
 		vote_key = vote_key,
-		timer = vote_data.timer
+		timer = vote_data.timer,
 	}
+
 	self.active = true
 	self._active_vote = vote
 
@@ -141,11 +148,12 @@ TwitchVoteUI.start_multiple_choice_vote = function (self, vote_template_name, vo
 			"#b",
 			"#c",
 			"#d",
-			"#e"
+			"#e",
 		},
 		vote_key = vote_key,
-		timer = vote_data.timer
+		timer = vote_data.timer,
 	}
+
 	self.active = true
 	self._active_vote = vote
 
@@ -158,6 +166,7 @@ end
 
 TwitchVoteUI._create_elements = function (self)
 	local scenegraph_definition = definitions.scenegraph_definition
+
 	self._ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
 	self._widgets = {}
 	self._vote_count = {
@@ -165,7 +174,7 @@ TwitchVoteUI._create_elements = function (self)
 		0,
 		0,
 		0,
-		0
+		0,
 	}
 	self._vote_icon_count = 0
 	self._vote_widget = nil
@@ -174,10 +183,10 @@ TwitchVoteUI._create_elements = function (self)
 end
 
 local customizer_data = {
-	root_scenegraph_id = "pivot",
+	drag_scenegraph_id = "pivot_dragger",
 	label = "Twitch",
 	registry_key = "twitch",
-	drag_scenegraph_id = "pivot_dragger"
+	root_scenegraph_id = "pivot",
 }
 
 TwitchVoteUI.update = function (self, dt, t)
@@ -215,6 +224,7 @@ TwitchVoteUI._update_transition = function (self, dt)
 		local fade_out_speed = 1
 		local render_settings = self._render_settings
 		local alpha_multiplier = math.clamp(render_settings.alpha_multiplier - dt * fade_out_speed, 0, 1)
+
 		render_settings.alpha_multiplier = alpha_multiplier
 
 		if alpha_multiplier == 0 then
@@ -237,6 +247,7 @@ TwitchVoteUI._update_transition = function (self, dt)
 		local fade_in_speed = 5
 		local render_settings = self._render_settings
 		local alpha_multiplier = math.clamp(render_settings.alpha_multiplier + dt * fade_in_speed, 0, 1)
+
 		render_settings.alpha_multiplier = alpha_multiplier
 
 		if alpha_multiplier == 1 then
@@ -288,18 +299,21 @@ TwitchVoteUI._create_vote_icon = function (self, vote_index)
 	local base_name = "vote_icon_" .. self._vote_icon_count
 	local content = self._vote_widget.content
 	local style = self._vote_widget.style
-	local icon = content:icon_texture_func(style, vote_index)
-	local offset = content:icon_offset_func(style, vote_index)
+	local icon = content.icon_texture_func(content, style, vote_index)
+	local offset = content.icon_offset_func(content, style, vote_index)
+
 	scenegraph_definition[base_name] = {
 		parent = "vote_icon",
 		position = {
 			offset,
 			0,
-			0
-		}
+			0,
+		},
 	}
 	self._widgets[base_name] = UIWidget.init(UIWidgets.create_simple_texture(icon, base_name))
+
 	local widget = self._widgets[base_name]
+
 	self._ui_animations[base_name .. "_offset_y"] = UIAnimation.init(UIAnimation.function_by_time_with_offset, widget.style.texture_id.offset, 2, 0, Math.random(100, 200), 3, math.random(0, 10), math.easeOutCubic)
 	self._ui_animations[base_name .. "_offset_x"] = UIAnimation.init(UIAnimation.function_by_time_with_offset, widget.style.texture_id.offset, 1, 0, 1, 3, math.random(0, 10), altered_sin)
 	self._ui_animations[base_name .. "_color"] = UIAnimation.init(UIAnimation.function_by_time_with_offset, widget.style.texture_id.color, 1, 255, 0, 3.2, math.random(0, 10), math.ease_exp)
@@ -332,13 +346,15 @@ TwitchVoteUI._update_active_vote = function (self, dt, t)
 	end
 
 	local options = vote_data.options
+
 	self._vote_count = self._vote_count or {
 		0,
 		0,
 		0,
 		0,
-		0
+		0,
 	}
+
 	local a_diff = options[1] - self._vote_count[1]
 	local b_diff = options[2] - self._vote_count[2]
 	local c_diff = options[3] - self._vote_count[3]
@@ -393,7 +409,7 @@ TwitchVoteUI._update_active_vote = function (self, dt, t)
 		0,
 		0,
 		0,
-		0
+		0,
 	}
 
 	for i = 1, 5 do
@@ -446,6 +462,7 @@ TwitchVoteUI._show_multiple_choice_vote = function (self)
 	end
 
 	self._widgets = {}
+
 	local widgets = definitions.widgets.multiple_choice
 
 	for widget_name, widget_data in pairs(widgets) do
@@ -470,11 +487,14 @@ TwitchVoteUI._show_multiple_choice_vote = function (self)
 					local base_portrait = career_settings.portrait_image .. "_twitch"
 					local masked_portrait = career_settings.portrait_image .. "_masked"
 					local content = widget.content
+
 					content.portrait = base_portrait
 					content.masked_portrait = masked_portrait
 					content.profile_index = profile_index
+
 					local vote_widget_index = "hero_vote_" .. index
 					local vote_widget = self._widgets[vote_widget_index]
+
 					vote_widget.content.text = option_strings[profile_index]
 				end
 			end
@@ -484,9 +504,12 @@ TwitchVoteUI._show_multiple_choice_vote = function (self)
 	local vote_icon_widget = self._widgets.vote_icon
 	local vote_template = active_vote.vote_template
 	local texture_id = vote_template.texture_id
+
 	vote_icon_widget.content.texture_id = texture_id
+
 	local vote_text_widget = self._widgets.vote_text
 	local text = vote_template.text
+
 	vote_text_widget.content.text = text
 
 	self:_play_multiple_vote_start()
@@ -510,6 +533,7 @@ TwitchVoteUI._update_multiple_votes_ui = function (self, dt)
 		local percentage = active_vote.vote_percentages[profile_index] or 0
 		local style = widget.style
 		local height = style.mask.base_size[2] * percentage
+
 		style.mask.texture_size[2] = height
 
 		if highest_percentage < percentage then
@@ -523,12 +547,14 @@ TwitchVoteUI._update_multiple_votes_ui = function (self, dt)
 		local widget = self._widgets[widget_name]
 		local glow = index == glow_index
 		local content = widget.content
+
 		content.visible = glow
 	end
 
 	local timer = active_vote.timer
 	local time_left = math.abs(math.ceil(timer))
 	local timer_widget = self._widgets.timer
+
 	timer_widget.content.text = time_left
 
 	self:_play_timer_sfx(time_left)
@@ -536,12 +562,14 @@ end
 
 TwitchVoteUI._show_multiple_choice_result = function (self)
 	self._fade_out = false
+
 	local vote_result = self._vote_result
 
 	assert(vote_result)
 	WwiseWorld.trigger_event(self.wwise_world, "Play_twitch_vote_end")
 
 	self._widgets = {}
+
 	local widgets = definitions.widgets.multiple_choice_result
 
 	for widget_name, widget_data in pairs(widgets) do
@@ -562,11 +590,14 @@ TwitchVoteUI._show_multiple_choice_result = function (self)
 
 		if profile_index == winning_index then
 			local name = player:name()
+
 			winner_text_widget.content.text = name
+
 			local player_profile = SPProfiles[profile_index]
 			local career_index = player:career_index()
 			local career_settings = player_profile.careers[career_index]
 			local base_portrait = career_settings.portrait_image
+
 			winner_portrait_widget.content.portrait = base_portrait
 			winner_portrait_widget.content.visible = true
 		end
@@ -577,9 +608,12 @@ TwitchVoteUI._show_multiple_choice_result = function (self)
 	if vote_template then
 		local result_icon_widget = self._widgets.result_icon
 		local texture_id = vote_template.texture_id
+
 		result_icon_widget.content.texture_id = texture_id
+
 		local result_text_widget = self._widgets.result_text
 		local text = vote_template.text
+
 		result_text_widget.content.text = text
 	end
 
@@ -604,6 +638,7 @@ TwitchVoteUI._show_standard_vote = function (self)
 	end
 
 	self._widgets = {}
+
 	local widgets = definitions.widgets.standard_vote
 
 	for widget_name, widget_data in pairs(widgets) do
@@ -615,16 +650,23 @@ TwitchVoteUI._show_standard_vote = function (self)
 	local vote_icon_a_widget = self._widgets.vote_icon_a
 	local texture_a = vote_template_a.texture_id
 	local use_frame_texture_a = true
+
 	vote_icon_a_widget.content.texture_id = texture_a
+
 	local vote_icon_b_widget = self._widgets.vote_icon_b
 	local texture_b = vote_template_b.texture_id
 	local use_frame_texture_b = true
+
 	vote_icon_b_widget.content.texture_id = texture_b
 	self._widgets.vote_icon_rect_a.content.visible = use_frame_texture_a
 	self._widgets.vote_icon_rect_b.content.visible = use_frame_texture_b
+
 	local vote_text_a_widget = self._widgets.vote_text_a
+
 	vote_text_a_widget.content.text = vote_template_a.text
+
 	local vote_text_b_widget = self._widgets.vote_text_b
+
 	vote_text_b_widget.content.text = vote_template_b.text
 
 	self:_play_standard_vote_start()
@@ -656,9 +698,12 @@ TwitchVoteUI._update_standard_vote = function (self)
 	local vote_percentage_b = vote_percentages[2]
 	local result_a_bar_default_size = scenegraph_definition.result_a_bar.size
 	local result_a_bar_size = self._ui_scenegraph.result_a_bar.size
+
 	result_a_bar_size[1] = math.ceil(result_a_bar_default_size[1] * vote_percentage_a)
+
 	local result_b_bar_default_size = scenegraph_definition.result_b_bar.size
 	local result_b_bar_size = self._ui_scenegraph.result_b_bar.size
+
 	result_b_bar_size[1] = math.ceil(result_b_bar_default_size[1] * vote_percentage_b)
 	self._widgets.result_bar_a_eyes.content.visible = vote_percentage_b <= vote_percentage_a
 	self._widgets.result_bar_b_eyes.content.visible = vote_percentage_a <= vote_percentage_b
@@ -666,11 +711,13 @@ end
 
 TwitchVoteUI._show_standard_vote_result = function (self)
 	self._fade_out = false
+
 	local vote_result = self._vote_result
 
 	assert(vote_result)
 
 	self._widgets = {}
+
 	local widgets = definitions.widgets.standard_vote_result
 
 	for widget_name, widget_data in pairs(widgets) do
@@ -678,6 +725,7 @@ TwitchVoteUI._show_standard_vote_result = function (self)
 	end
 
 	self._result_timer = RESULT_TIMER
+
 	local winning_template_name = vote_result.winning_template_name
 
 	assert(winning_template_name)
@@ -685,23 +733,32 @@ TwitchVoteUI._show_standard_vote_result = function (self)
 	local winning_template = TwitchVoteTemplates[winning_template_name]
 	local texture_id = winning_template.texture_id
 	local result_icon_widget = self._widgets.result_icon
+
 	result_icon_widget.content.texture_id = texture_id
+
 	local cost = winning_template.cost
 
 	self:_play_winning_sfx(cost)
 
 	local result_icon_widget = self._widgets.result_icon
 	local texture = winning_template.texture_id
+
 	result_icon_widget.content.texture_id = texture
+
 	local use_frame_texture = true
+
 	self._widgets.result_icon_rect.content.visible = use_frame_texture
+
 	local result_text_widget = self._widgets.result_text
 	local text = winning_template.text
+
 	result_text_widget.content.text = text
+
 	local result_description_text_widget = self._widgets.result_description_text
 
 	if winning_template.description then
 		local description_text = winning_template.description
+
 		result_description_text_widget.content.text = description_text
 	else
 		result_description_text_widget.content.visible = false

@@ -1,12 +1,15 @@
+﻿-- chunkname: @scripts/unit_extensions/camera/states/camera_state_observer_spectator.lua
+
 CameraStateObserverSpectator = class(CameraStateObserverSpectator, CameraStateObserver)
+
 local spectator_views = {
 	"third_person",
-	"first_person"
+	"first_person",
 }
 local rotation_states = {
 	"free",
 	"follow",
-	"locked"
+	"locked",
 }
 
 CameraStateObserverSpectator.on_enter = function (self, unit, input, dt, context, t, previous_state, params)
@@ -20,6 +23,7 @@ CameraStateObserverSpectator.on_enter = function (self, unit, input, dt, context
 	self._rotation_state_index = 1
 	self._current_view = spectator_views[1]
 	self._pinged_units = {}
+
 	local dark_pact_side = Managers.state.side:get_side_from_name("dark_pact")
 	local dark_pact_units = dark_pact_side.PLAYER_AND_BOT_UNITS
 
@@ -61,7 +65,7 @@ CameraStateObserverSpectator.update = function (self, unit, input, dt, context, 
 	local find_next_observer_target = input_source:get("next_observer_target")
 	local find_previous_observer_target = input_source:get("previous_observer_target")
 	local follow_unit_alive = Unit.alive(self._follow_unit)
-	local new_spectator_target_found = nil
+	local new_spectator_target_found
 
 	if not follow_unit_alive or find_next_observer_target then
 		new_spectator_target_found = self:follow_next_unit()
@@ -94,6 +98,7 @@ CameraStateObserverSpectator.update = function (self, unit, input, dt, context, 
 
 	if look_input then
 		local look_sensitivity = camera_manager:has_viewport(viewport_name) and camera_manager:fov(viewport_name) / 0.785 or 1
+
 		look_delta = look_delta + look_input * look_sensitivity
 	end
 
@@ -111,14 +116,17 @@ CameraStateObserverSpectator.update = function (self, unit, input, dt, context, 
 	local rotation = Unit.local_rotation(unit, 0)
 	local pitch = math.clamp(Quaternion.pitch(rotation) + look_delta.y, -MAX_MIN_PITCH, MAX_MIN_PITCH)
 	local pitch_rotation = Quaternion(Vector3.right(), pitch)
-	local look_rotation = nil
+	local look_rotation
 
 	if self._rotation_state == "follow" then
 		look_rotation = Unit.local_rotation(self._follow_unit, 0)
 		look_rotation = Quaternion.multiply(look_rotation, pitch_rotation)
-	elseif self._rotation_state ~= "locked" then
+	elseif self._rotation_state == "locked" then
+		-- Nothing
+	else
 		local yaw = Quaternion.yaw(rotation) - look_delta.x
 		local yaw_rotation = Quaternion(Vector3.up(), yaw)
+
 		look_rotation = Quaternion.multiply(yaw_rotation, pitch_rotation)
 	end
 

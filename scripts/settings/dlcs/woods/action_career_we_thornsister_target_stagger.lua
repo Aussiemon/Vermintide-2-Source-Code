@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/settings/dlcs/woods/action_career_we_thornsister_target_stagger.lua
+
 ActionCareerWEThornsisterTargetStagger = class(ActionCareerWEThornsisterTargetStagger, ActionBase)
+
 local target_decal_unit_name = "units/decals/decal_arrow_kerillian"
 
 ActionCareerWEThornsisterTargetStagger.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
@@ -42,7 +45,7 @@ ActionCareerWEThornsisterTargetStagger.finish = function (self, reason)
 	if reason == "new_interupting_action" then
 		local final_target_direction = self:_get_direction()
 		local targeting_data = {
-			direction = Vector3Box(final_target_direction)
+			direction = Vector3Box(final_target_direction),
 		}
 
 		return targeting_data

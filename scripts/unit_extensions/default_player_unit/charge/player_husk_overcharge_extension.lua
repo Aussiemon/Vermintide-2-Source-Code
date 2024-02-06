@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/default_player_unit/charge/player_husk_overcharge_extension.lua
+
 require("scripts/unit_extensions/default_player_unit/charge/overcharge_data")
 
 PlayerHuskOverchargeExtension = class(PlayerHuskOverchargeExtension)
@@ -5,7 +7,9 @@ PlayerHuskOverchargeExtension = class(PlayerHuskOverchargeExtension)
 PlayerHuskOverchargeExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	self.network_manager = Managers.state.network
 	self.unit = unit
+
 	local overcharge_data = extension_init_data.overcharge_data
+
 	self.overcharge_value = 0
 	self.overcharge_threshold = 0
 	self.max_value = extension_init_data.overcharge_max_value
@@ -47,6 +51,7 @@ PlayerHuskOverchargeExtension._update_game_object = function (self)
 		local max_value = GameSession.game_object_field(game, go_id, "overcharge_max_value")
 		local value = current_value_percentage * max_value
 		local threshold = threshold_percentage * max_value
+
 		self.overcharge_value = value
 		self.overcharge_threshold = threshold
 		self.max_value = max_value
@@ -77,7 +82,7 @@ PlayerHuskOverchargeExtension.get_overcharge_value = function (self)
 end
 
 PlayerHuskOverchargeExtension.is_above_critical_limit = function (self)
-	return self.overcharge_critical_limit <= self.overcharge_value
+	return self.overcharge_value >= self.overcharge_critical_limit
 end
 
 PlayerHuskOverchargeExtension.get_max_value = function (self)
@@ -93,7 +98,7 @@ PlayerHuskOverchargeExtension.get_overcharge_threshold = function (self)
 end
 
 PlayerHuskOverchargeExtension.above_overcharge_threshold = function (self)
-	return self.overcharge_threshold <= self.overcharge_value
+	return self.overcharge_value >= self.overcharge_threshold
 end
 
 PlayerHuskOverchargeExtension.overcharge_fraction = function (self)
@@ -137,8 +142,7 @@ PlayerHuskOverchargeExtension._update_lerped_overcharge = function (self, dt)
 		return
 	end
 
-	local slow_breakpoint = 0.1
-	local fast_breakpoint = 0.2
+	local slow_breakpoint, fast_breakpoint = 0.1, 0.2
 	local fast_multiplier = 10
 	local lerp_speed = 0.3
 	local diff = math.abs(lerped_fraction - target_fraction)
@@ -151,6 +155,7 @@ PlayerHuskOverchargeExtension._update_lerped_overcharge = function (self, dt)
 
 	local min_fraction = math.min(lerped_fraction, target_fraction)
 	local max_fraction = math.max(lerped_fraction, target_fraction)
+
 	lerped_fraction = lerped_fraction + math.sign(target_fraction - lerped_fraction) * lerp_speed * dt
 	lerped_fraction = math.clamp(lerped_fraction, min_fraction, max_fraction)
 	self._lerped_overcharge_fraction = lerped_fraction

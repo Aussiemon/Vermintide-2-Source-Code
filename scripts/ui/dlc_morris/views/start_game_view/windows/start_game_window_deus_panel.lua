@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/ui/dlc_morris/views/start_game_view/windows/start_game_window_deus_panel.lua
+
 local definitions = local_require("scripts/ui/dlc_morris/views/start_game_view/windows/definitions/start_game_window_deus_panel_definitions")
+
 StartGameWindowDeusPanel = class(StartGameWindowDeusPanel, StartGameWindowPanelConsole)
 StartGameWindowDeusPanel.NAME = "StartGameWindowDeusPanel"
 

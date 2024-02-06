@@ -1,10 +1,13 @@
+﻿-- chunkname: @scripts/imgui/imgui_terror_event_debug.lua
+
 ImguiTerrorEventDebug = class(ImguiTerrorEventDebug)
+
 local difficulties = {
 	"normal",
 	"hard",
 	"harder",
 	"hardest",
-	"cataclysm"
+	"cataclysm",
 }
 local difficulty_tweaks = {}
 
@@ -51,6 +54,7 @@ ImguiTerrorEventDebug.draw = function (self, is_open)
 
 	if current_level ~= self._current_level then
 		self._level_specific_terror_events = {}
+
 		local blueprints = TerrorEventBlueprints[current_level]
 
 		if blueprints then
@@ -110,6 +114,7 @@ ImguiTerrorEventDebug.draw = function (self, is_open)
 	Imgui.spacing()
 
 	script_data.debug_terror = Imgui.checkbox("Terror Event Debugging On", script_data.debug_terror or false)
+
 	local conflict_director = Managers.state.conflict
 
 	if conflict_director then

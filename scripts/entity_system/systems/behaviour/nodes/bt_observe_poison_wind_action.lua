@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_observe_poison_wind_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTObservePoisonWind = class(BTObservePoisonWind, BTNode)
@@ -9,6 +11,7 @@ end
 
 BTObservePoisonWind.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
+
 	blackboard.action = action
 
 	blackboard.navigation_extension:set_enabled(false)
@@ -40,7 +43,7 @@ BTObservePoisonWind.run = function (self, unit, blackboard, t, dt)
 
 	local next_throw_at = throw_globe_data.next_throw_at or -math.huge
 
-	if t > next_throw_at then
+	if next_throw_at < t then
 		return "done"
 	end
 

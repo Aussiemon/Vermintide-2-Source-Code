@@ -1,3 +1,5 @@
+﻿-- chunkname: @dialogues/generated/hero_conversations_dlc_morris_level_banter_themed.lua
+
 return function ()
 	define_rule({
 		name = "pbw_morris_level_conversations_khorne_twentyfour_01",
@@ -7,34 +9,34 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pdr_morris_level_conversations_khorne_twentyfour_01"
+				"pdr_morris_level_conversations_khorne_twentyfour_01",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
-			}
+				"bright_wizard",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_morris_level_conversations_tzeentch_twentyseven_01",
@@ -44,34 +46,34 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pdr_morris_level_conversations_tzeentch_twentyseven_01"
+				"pdr_morris_level_conversations_tzeentch_twentyseven_01",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
-			}
+				"bright_wizard",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_morris_level_conversations_tzeentch_twentysix_01",
@@ -81,77 +83,77 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.EQ,
-				0
+				0,
 			},
 			{
 				"user_context",
 				"enemies_distant",
 				OP.LT,
-				15
+				15,
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				1
+				1,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"bright_wizard"
+				"bright_wizard",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
+				"bright_wizard",
 			},
 			{
 				"global_context",
 				"witch_hunter",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"global_context",
 				"current_theme",
 				OP.EQ,
-				"tzeentch"
+				"tzeentch",
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				240
+				240,
 			},
 			{
 				"faction_memory",
 				"pbw_morris_level_conversations_tzeentch_twentysix_01",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"pbw_morris_level_conversations_tzeentch_twentysix_01",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_morris_level_conversations_tzeentch_twentysix_02",
@@ -161,34 +163,34 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwh_morris_level_conversations_tzeentch_twentysix_01"
+				"pwh_morris_level_conversations_tzeentch_twentysix_01",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
-			}
+				"bright_wizard",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pdr_morris_level_conversations_khorne_twentyfour_01",
@@ -198,77 +200,77 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.EQ,
-				0
+				0,
 			},
 			{
 				"user_context",
 				"enemies_distant",
 				OP.LT,
-				15
+				15,
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				1
+				1,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"dwarf_ranger"
+				"dwarf_ranger",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"dwarf_ranger"
+				"dwarf_ranger",
 			},
 			{
 				"global_context",
 				"bright_wizard",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"global_context",
 				"current_theme",
 				OP.EQ,
-				"khorne"
+				"khorne",
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				240
+				240,
 			},
 			{
 				"faction_memory",
 				"pdr_morris_level_conversations_khorne_twentyfour_01",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"pdr_morris_level_conversations_khorne_twentyfour_01",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pdr_morris_level_conversations_khorne_twentyfour_02",
@@ -278,34 +280,34 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pbw_morris_level_conversations_khorne_twentyfour_01"
+				"pbw_morris_level_conversations_khorne_twentyfour_01",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"dwarf_ranger"
-			}
+				"dwarf_ranger",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pdr_morris_level_conversations_nurgle_twentynine_01",
@@ -315,77 +317,77 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.EQ,
-				0
+				0,
 			},
 			{
 				"user_context",
 				"enemies_distant",
 				OP.LT,
-				15
+				15,
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				1
+				1,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"dwarf_ranger"
+				"dwarf_ranger",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"dwarf_ranger"
+				"dwarf_ranger",
 			},
 			{
 				"global_context",
 				"empire_soldier",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"global_context",
 				"current_theme",
 				OP.EQ,
-				"nurgle"
+				"nurgle",
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				240
+				240,
 			},
 			{
 				"faction_memory",
 				"pdr_morris_level_conversations_nurgle_twentynine_01",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"pdr_morris_level_conversations_nurgle_twentynine_01",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pdr_morris_level_conversations_nurgle_twentynine_02",
@@ -395,34 +397,34 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pes_morris_level_conversations_nurgle_twentynine_01"
+				"pes_morris_level_conversations_nurgle_twentynine_01",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"dwarf_ranger"
-			}
+				"dwarf_ranger",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pdr_morris_level_conversations_slaanesh_thirtyone_01",
@@ -432,34 +434,34 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwh_morris_level_conversations_slaanesh_thirtyone_01"
+				"pwh_morris_level_conversations_slaanesh_thirtyone_01",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"dwarf_ranger"
-			}
+				"dwarf_ranger",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pdr_morris_level_conversations_tzeentch_twentyseven_01",
@@ -469,77 +471,77 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.EQ,
-				0
+				0,
 			},
 			{
 				"user_context",
 				"enemies_distant",
 				OP.LT,
-				15
+				15,
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				1
+				1,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"dwarf_ranger"
+				"dwarf_ranger",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"dwarf_ranger"
+				"dwarf_ranger",
 			},
 			{
 				"global_context",
 				"bright_wizard",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"global_context",
 				"current_theme",
 				OP.EQ,
-				"tzeentch"
+				"tzeentch",
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				240
+				240,
 			},
 			{
 				"faction_memory",
 				"pdr_morris_level_conversations_tzeentch_twentyseven_01",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"pdr_morris_level_conversations_tzeentch_twentyseven_01",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_morris_level_conversations_khorne_twentyfive_01",
@@ -549,34 +551,34 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwe_morris_level_conversations_khorne_twentyfive_01"
+				"pwe_morris_level_conversations_khorne_twentyfive_01",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
-			}
+				"empire_soldier",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_morris_level_conversations_khorne_twentyfive_02",
@@ -586,34 +588,34 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwe_morris_level_conversations_khorne_twentyfive_02"
+				"pwe_morris_level_conversations_khorne_twentyfive_02",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
-			}
+				"empire_soldier",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_morris_level_conversations_nurgle_twentyeight_01",
@@ -623,77 +625,77 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.EQ,
-				0
+				0,
 			},
 			{
 				"user_context",
 				"enemies_distant",
 				OP.LT,
-				15
+				15,
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				1
+				1,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"global_context",
 				"wood_elf",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"global_context",
 				"current_theme",
 				OP.EQ,
-				"nurgle"
+				"nurgle",
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				240
+				240,
 			},
 			{
 				"faction_memory",
 				"pes_morris_level_conversations_nurgle_twentyeight_01",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"pes_morris_level_conversations_nurgle_twentyeight_01",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_morris_level_conversations_nurgle_twentyeight_02",
@@ -703,34 +705,34 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwe_morris_level_conversations_nurgle_twentyeight_01"
+				"pwe_morris_level_conversations_nurgle_twentyeight_01",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
-			}
+				"empire_soldier",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_morris_level_conversations_nurgle_twentynine_01",
@@ -740,34 +742,34 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pdr_morris_level_conversations_nurgle_twentynine_01"
+				"pdr_morris_level_conversations_nurgle_twentynine_01",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
-			}
+				"empire_soldier",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_morris_level_conversations_nurgle_twentynine_02",
@@ -777,34 +779,34 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pdr_morris_level_conversations_nurgle_twentynine_02"
+				"pdr_morris_level_conversations_nurgle_twentynine_02",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
-			}
+				"empire_soldier",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_morris_level_conversations_slaanesh_thirty_01",
@@ -814,77 +816,77 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.EQ,
-				0
+				0,
 			},
 			{
 				"user_context",
 				"enemies_distant",
 				OP.LT,
-				15
+				15,
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				1
+				1,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"global_context",
 				"wood_elf",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"global_context",
 				"current_theme",
 				OP.EQ,
-				"slaanesh"
+				"slaanesh",
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				240
+				240,
 			},
 			{
 				"faction_memory",
 				"pes_morris_level_conversations_slaanesh_thirty_01",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"pes_morris_level_conversations_slaanesh_thirty_01",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_morris_level_conversations_slaanesh_thirty_02",
@@ -894,34 +896,34 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwe_morris_level_conversations_slaanesh_thirty_01"
+				"pwe_morris_level_conversations_slaanesh_thirty_01",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
-			}
+				"empire_soldier",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_morris_level_conversations_slaanesh_thirty_03",
@@ -931,34 +933,34 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwe_morris_level_conversations_slaanesh_thirty_02"
+				"pwe_morris_level_conversations_slaanesh_thirty_02",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_morris_level_conversations_khorne_twentyfive_01",
@@ -968,77 +970,77 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.EQ,
-				0
+				0,
 			},
 			{
 				"user_context",
 				"enemies_distant",
 				OP.LT,
-				15
+				15,
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				1
+				1,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"wood_elf"
+				"wood_elf",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
+				"wood_elf",
 			},
 			{
 				"global_context",
 				"empire_soldier",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"global_context",
 				"current_theme",
 				OP.EQ,
-				"khorne"
+				"khorne",
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				240
+				240,
 			},
 			{
 				"faction_memory",
 				"pwe_morris_level_conversations_khorne_twentyfive_01",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"pwe_morris_level_conversations_khorne_twentyfive_01",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_morris_level_conversations_khorne_twentyfive_02",
@@ -1048,34 +1050,34 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pes_morris_level_conversations_khorne_twentyfive_01"
+				"pes_morris_level_conversations_khorne_twentyfive_01",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_morris_level_conversations_nurgle_twentyeight_01",
@@ -1085,34 +1087,34 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pes_morris_level_conversations_nurgle_twentyeight_01"
+				"pes_morris_level_conversations_nurgle_twentyeight_01",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_morris_level_conversations_nurgle_twentyeight_02",
@@ -1122,34 +1124,34 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pes_morris_level_conversations_nurgle_twentyeight_02"
+				"pes_morris_level_conversations_nurgle_twentyeight_02",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_morris_level_conversations_slaanesh_thirty_01",
@@ -1159,34 +1161,34 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pes_morris_level_conversations_slaanesh_thirty_01"
+				"pes_morris_level_conversations_slaanesh_thirty_01",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_morris_level_conversations_slaanesh_thirty_02",
@@ -1196,34 +1198,34 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pes_morris_level_conversations_slaanesh_thirty_02"
+				"pes_morris_level_conversations_slaanesh_thirty_02",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwh_morris_level_conversations_slaanesh_thirtyone_01",
@@ -1233,77 +1235,77 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.EQ,
-				0
+				0,
 			},
 			{
 				"user_context",
 				"enemies_distant",
 				OP.LT,
-				15
+				15,
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				1
+				1,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"witch_hunter"
+				"witch_hunter",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"witch_hunter"
+				"witch_hunter",
 			},
 			{
 				"global_context",
 				"dwarf_ranger",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"global_context",
 				"current_theme",
 				OP.EQ,
-				"slaanesh"
+				"slaanesh",
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				240
+				240,
 			},
 			{
 				"faction_memory",
 				"pwh_morris_level_conversations_slaanesh_thirtyone_01",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"pwh_morris_level_conversations_slaanesh_thirtyone_01",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwh_morris_level_conversations_slaanesh_thirtyone_02",
@@ -1313,34 +1315,34 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pdr_morris_level_conversations_slaanesh_thirtyone_01"
+				"pdr_morris_level_conversations_slaanesh_thirtyone_01",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"witch_hunter"
-			}
+				"witch_hunter",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwh_morris_level_conversations_tzeentch_twentysix_01",
@@ -1350,34 +1352,34 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pbw_morris_level_conversations_tzeentch_twentysix_01"
+				"pbw_morris_level_conversations_tzeentch_twentysix_01",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"witch_hunter"
-			}
+				"witch_hunter",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwh_morris_level_conversations_tzeentch_twentysix_02",
@@ -1387,673 +1389,673 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pbw_morris_level_conversations_tzeentch_twentysix_02"
+				"pbw_morris_level_conversations_tzeentch_twentysix_02",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"witch_hunter"
-			}
+				"witch_hunter",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	add_dialogues({
 		pbw_morris_level_conversations_khorne_twentyfour_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_morris_level_banter_themed",
 			category = "story_talk",
+			database = "hero_conversations_dlc_morris_level_banter_themed",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pbw_morris_level_conversations_khorne_twentyfour_01"
+				[1] = "pbw_morris_level_conversations_khorne_twentyfour_01",
 			},
 			sound_events = {
-				[1.0] = "pbw_morris_level_conversations_khorne_twentyfour_01"
+				[1] = "pbw_morris_level_conversations_khorne_twentyfour_01",
 			},
 			sound_events_duration = {
-				[1.0] = 5.1674790382385
-			}
+				[1] = 5.1674790382385,
+			},
 		},
 		pbw_morris_level_conversations_tzeentch_twentyseven_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_morris_level_banter_themed",
 			category = "story_talk",
+			database = "hero_conversations_dlc_morris_level_banter_themed",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pbw_morris_level_conversations_tzeentch_twentyseven_01"
+				[1] = "pbw_morris_level_conversations_tzeentch_twentyseven_01",
 			},
 			sound_events = {
-				[1.0] = "pbw_morris_level_conversations_tzeentch_twentyseven_01"
+				[1] = "pbw_morris_level_conversations_tzeentch_twentyseven_01",
 			},
 			sound_events_duration = {
-				[1.0] = 4.2238335609436
-			}
+				[1] = 4.2238335609436,
+			},
 		},
 		pbw_morris_level_conversations_tzeentch_twentysix_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_morris_level_banter_themed",
 			category = "story_talk",
+			database = "hero_conversations_dlc_morris_level_banter_themed",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pbw_morris_level_conversations_tzeentch_twentysix_01"
+				[1] = "pbw_morris_level_conversations_tzeentch_twentysix_01",
 			},
 			sound_events = {
-				[1.0] = "pbw_morris_level_conversations_tzeentch_twentysix_01"
+				[1] = "pbw_morris_level_conversations_tzeentch_twentysix_01",
 			},
 			sound_events_duration = {
-				[1.0] = 7.106062412262
-			}
+				[1] = 7.106062412262,
+			},
 		},
 		pbw_morris_level_conversations_tzeentch_twentysix_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_morris_level_banter_themed",
 			category = "story_talk",
+			database = "hero_conversations_dlc_morris_level_banter_themed",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pbw_morris_level_conversations_tzeentch_twentysix_02"
+				[1] = "pbw_morris_level_conversations_tzeentch_twentysix_02",
 			},
 			sound_events = {
-				[1.0] = "pbw_morris_level_conversations_tzeentch_twentysix_02"
+				[1] = "pbw_morris_level_conversations_tzeentch_twentysix_02",
 			},
 			sound_events_duration = {
-				[1.0] = 7.9500832557678
-			}
+				[1] = 7.9500832557678,
+			},
 		},
 		pdr_morris_level_conversations_khorne_twentyfour_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_morris_level_banter_themed",
 			category = "story_talk",
+			database = "hero_conversations_dlc_morris_level_banter_themed",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pdr_morris_level_conversations_khorne_twentyfour_01"
+				[1] = "pdr_morris_level_conversations_khorne_twentyfour_01",
 			},
 			sound_events = {
-				[1.0] = "pdr_morris_level_conversations_khorne_twentyfour_01"
+				[1] = "pdr_morris_level_conversations_khorne_twentyfour_01",
 			},
 			sound_events_duration = {
-				[1.0] = 2.4539375305176
-			}
+				[1] = 2.4539375305176,
+			},
 		},
 		pdr_morris_level_conversations_khorne_twentyfour_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_morris_level_banter_themed",
 			category = "story_talk",
+			database = "hero_conversations_dlc_morris_level_banter_themed",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pdr_morris_level_conversations_khorne_twentyfour_02"
+				[1] = "pdr_morris_level_conversations_khorne_twentyfour_02",
 			},
 			sound_events = {
-				[1.0] = "pdr_morris_level_conversations_khorne_twentyfour_02"
+				[1] = "pdr_morris_level_conversations_khorne_twentyfour_02",
 			},
 			sound_events_duration = {
-				[1.0] = 3.3144373893738
-			}
+				[1] = 3.3144373893738,
+			},
 		},
 		pdr_morris_level_conversations_nurgle_twentynine_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_morris_level_banter_themed",
 			category = "story_talk",
+			database = "hero_conversations_dlc_morris_level_banter_themed",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pdr_morris_level_conversations_nurgle_twentynine_01"
+				[1] = "pdr_morris_level_conversations_nurgle_twentynine_01",
 			},
 			sound_events = {
-				[1.0] = "pdr_morris_level_conversations_nurgle_twentynine_01"
+				[1] = "pdr_morris_level_conversations_nurgle_twentynine_01",
 			},
 			sound_events_duration = {
-				[1.0] = 4.3611040115356
-			}
+				[1] = 4.3611040115356,
+			},
 		},
 		pdr_morris_level_conversations_nurgle_twentynine_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_morris_level_banter_themed",
 			category = "story_talk",
+			database = "hero_conversations_dlc_morris_level_banter_themed",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pdr_morris_level_conversations_nurgle_twentynine_02"
+				[1] = "pdr_morris_level_conversations_nurgle_twentynine_02",
 			},
 			sound_events = {
-				[1.0] = "pdr_morris_level_conversations_nurgle_twentynine_02"
+				[1] = "pdr_morris_level_conversations_nurgle_twentynine_02",
 			},
 			sound_events_duration = {
-				[1.0] = 3.0793957710266
-			}
+				[1] = 3.0793957710266,
+			},
 		},
 		pdr_morris_level_conversations_slaanesh_thirtyone_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_morris_level_banter_themed",
 			category = "story_talk",
+			database = "hero_conversations_dlc_morris_level_banter_themed",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pdr_morris_level_conversations_slaanesh_thirtyone_01"
+				[1] = "pdr_morris_level_conversations_slaanesh_thirtyone_01",
 			},
 			sound_events = {
-				[1.0] = "pdr_morris_level_conversations_slaanesh_thirtyone_01"
+				[1] = "pdr_morris_level_conversations_slaanesh_thirtyone_01",
 			},
 			sound_events_duration = {
-				[1.0] = 3.1492917537689
-			}
+				[1] = 3.1492917537689,
+			},
 		},
 		pdr_morris_level_conversations_tzeentch_twentyseven_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_morris_level_banter_themed",
 			category = "story_talk",
+			database = "hero_conversations_dlc_morris_level_banter_themed",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pdr_morris_level_conversations_tzeentch_twentyseven_01"
+				[1] = "pdr_morris_level_conversations_tzeentch_twentyseven_01",
 			},
 			sound_events = {
-				[1.0] = "pdr_morris_level_conversations_tzeentch_twentyseven_01"
+				[1] = "pdr_morris_level_conversations_tzeentch_twentyseven_01",
 			},
 			sound_events_duration = {
-				[1.0] = 8.3637294769287
-			}
+				[1] = 8.3637294769287,
+			},
 		},
 		pes_morris_level_conversations_khorne_twentyfive_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_morris_level_banter_themed",
 			category = "story_talk",
+			database = "hero_conversations_dlc_morris_level_banter_themed",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pes_morris_level_conversations_khorne_twentyfive_01"
+				[1] = "pes_morris_level_conversations_khorne_twentyfive_01",
 			},
 			sound_events = {
-				[1.0] = "pes_morris_level_conversations_khorne_twentyfive_01"
+				[1] = "pes_morris_level_conversations_khorne_twentyfive_01",
 			},
 			sound_events_duration = {
-				[1.0] = 1.2056875228882
-			}
+				[1] = 1.2056875228882,
+			},
 		},
 		pes_morris_level_conversations_khorne_twentyfive_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_morris_level_banter_themed",
 			category = "story_talk",
+			database = "hero_conversations_dlc_morris_level_banter_themed",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pes_morris_level_conversations_khorne_twentyfive_02"
+				[1] = "pes_morris_level_conversations_khorne_twentyfive_02",
 			},
 			sound_events = {
-				[1.0] = "pes_morris_level_conversations_khorne_twentyfive_02"
+				[1] = "pes_morris_level_conversations_khorne_twentyfive_02",
 			},
 			sound_events_duration = {
-				[1.0] = 2.1561458110809
-			}
+				[1] = 2.1561458110809,
+			},
 		},
 		pes_morris_level_conversations_nurgle_twentyeight_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_morris_level_banter_themed",
 			category = "story_talk",
+			database = "hero_conversations_dlc_morris_level_banter_themed",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pes_morris_level_conversations_nurgle_twentyeight_01"
+				[1] = "pes_morris_level_conversations_nurgle_twentyeight_01",
 			},
 			sound_events = {
-				[1.0] = "pes_morris_level_conversations_nurgle_twentyeight_01"
+				[1] = "pes_morris_level_conversations_nurgle_twentyeight_01",
 			},
 			sound_events_duration = {
-				[1.0] = 8.7251253128052
-			}
+				[1] = 8.7251253128052,
+			},
 		},
 		pes_morris_level_conversations_nurgle_twentyeight_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_morris_level_banter_themed",
 			category = "story_talk",
+			database = "hero_conversations_dlc_morris_level_banter_themed",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pes_morris_level_conversations_nurgle_twentyeight_02"
+				[1] = "pes_morris_level_conversations_nurgle_twentyeight_02",
 			},
 			sound_events = {
-				[1.0] = "pes_morris_level_conversations_nurgle_twentyeight_02"
+				[1] = "pes_morris_level_conversations_nurgle_twentyeight_02",
 			},
 			sound_events_duration = {
-				[1.0] = 2.2034375667572
-			}
+				[1] = 2.2034375667572,
+			},
 		},
 		pes_morris_level_conversations_nurgle_twentynine_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_morris_level_banter_themed",
 			category = "story_talk",
+			database = "hero_conversations_dlc_morris_level_banter_themed",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pes_morris_level_conversations_nurgle_twentynine_01"
+				[1] = "pes_morris_level_conversations_nurgle_twentynine_01",
 			},
 			sound_events = {
-				[1.0] = "pes_morris_level_conversations_nurgle_twentynine_01"
+				[1] = "pes_morris_level_conversations_nurgle_twentynine_01",
 			},
 			sound_events_duration = {
-				[1.0] = 1.6353332996368
-			}
+				[1] = 1.6353332996368,
+			},
 		},
 		pes_morris_level_conversations_nurgle_twentynine_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_morris_level_banter_themed",
 			category = "story_talk",
+			database = "hero_conversations_dlc_morris_level_banter_themed",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pes_morris_level_conversations_nurgle_twentynine_02"
+				[1] = "pes_morris_level_conversations_nurgle_twentynine_02",
 			},
 			sound_events = {
-				[1.0] = "pes_morris_level_conversations_nurgle_twentynine_02"
+				[1] = "pes_morris_level_conversations_nurgle_twentynine_02",
 			},
 			sound_events_duration = {
-				[1.0] = 2.6536667346954
-			}
+				[1] = 2.6536667346954,
+			},
 		},
 		pes_morris_level_conversations_slaanesh_thirty_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_morris_level_banter_themed",
 			category = "story_talk",
+			database = "hero_conversations_dlc_morris_level_banter_themed",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pes_morris_level_conversations_slaanesh_thirty_01"
+				[1] = "pes_morris_level_conversations_slaanesh_thirty_01",
 			},
 			sound_events = {
-				[1.0] = "pes_morris_level_conversations_slaanesh_thirty_01"
+				[1] = "pes_morris_level_conversations_slaanesh_thirty_01",
 			},
 			sound_events_duration = {
-				[1.0] = 6.2740001678467
-			}
+				[1] = 6.2740001678467,
+			},
 		},
 		pes_morris_level_conversations_slaanesh_thirty_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_morris_level_banter_themed",
 			category = "story_talk",
+			database = "hero_conversations_dlc_morris_level_banter_themed",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pes_morris_level_conversations_slaanesh_thirty_02"
+				[1] = "pes_morris_level_conversations_slaanesh_thirty_02",
 			},
 			sound_events = {
-				[1.0] = "pes_morris_level_conversations_slaanesh_thirty_02"
+				[1] = "pes_morris_level_conversations_slaanesh_thirty_02",
 			},
 			sound_events_duration = {
-				[1.0] = 2.5013542175293
-			}
+				[1] = 2.5013542175293,
+			},
 		},
 		pes_morris_level_conversations_slaanesh_thirty_03 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_morris_level_banter_themed",
 			category = "story_talk",
+			database = "hero_conversations_dlc_morris_level_banter_themed",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pes_morris_level_conversations_slaanesh_thirty_03"
+				[1] = "pes_morris_level_conversations_slaanesh_thirty_03",
 			},
 			sound_events = {
-				[1.0] = "pes_morris_level_conversations_slaanesh_thirty_03"
+				[1] = "pes_morris_level_conversations_slaanesh_thirty_03",
 			},
 			sound_events_duration = {
-				[1.0] = 2.2461874485016
-			}
+				[1] = 2.2461874485016,
+			},
 		},
 		pwe_morris_level_conversations_khorne_twentyfive_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_morris_level_banter_themed",
 			category = "story_talk",
+			database = "hero_conversations_dlc_morris_level_banter_themed",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pwe_morris_level_conversations_khorne_twentyfive_01"
+				[1] = "pwe_morris_level_conversations_khorne_twentyfive_01",
 			},
 			sound_events = {
-				[1.0] = "pwe_morris_level_conversations_khorne_twentyfive_01"
+				[1] = "pwe_morris_level_conversations_khorne_twentyfive_01",
 			},
 			sound_events_duration = {
-				[1.0] = 5.0829582214356
-			}
+				[1] = 5.0829582214356,
+			},
 		},
 		pwe_morris_level_conversations_khorne_twentyfive_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_morris_level_banter_themed",
 			category = "story_talk",
+			database = "hero_conversations_dlc_morris_level_banter_themed",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_morris_level_conversations_khorne_twentyfive_02"
+				[1] = "pwe_morris_level_conversations_khorne_twentyfive_02",
 			},
 			sound_events = {
-				[1.0] = "pwe_morris_level_conversations_khorne_twentyfive_02"
+				[1] = "pwe_morris_level_conversations_khorne_twentyfive_02",
 			},
 			sound_events_duration = {
-				[1.0] = 5.4178123474121
-			}
+				[1] = 5.4178123474121,
+			},
 		},
 		pwe_morris_level_conversations_nurgle_twentyeight_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_morris_level_banter_themed",
 			category = "story_talk",
+			database = "hero_conversations_dlc_morris_level_banter_themed",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_morris_level_conversations_nurgle_twentyeight_01"
+				[1] = "pwe_morris_level_conversations_nurgle_twentyeight_01",
 			},
 			sound_events = {
-				[1.0] = "pwe_morris_level_conversations_nurgle_twentyeight_01"
+				[1] = "pwe_morris_level_conversations_nurgle_twentyeight_01",
 			},
 			sound_events_duration = {
-				[1.0] = 2.722895860672
-			}
+				[1] = 2.722895860672,
+			},
 		},
 		pwe_morris_level_conversations_nurgle_twentyeight_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_morris_level_banter_themed",
 			category = "story_talk",
+			database = "hero_conversations_dlc_morris_level_banter_themed",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_morris_level_conversations_nurgle_twentyeight_02"
+				[1] = "pwe_morris_level_conversations_nurgle_twentyeight_02",
 			},
 			sound_events = {
-				[1.0] = "pwe_morris_level_conversations_nurgle_twentyeight_02"
+				[1] = "pwe_morris_level_conversations_nurgle_twentyeight_02",
 			},
 			sound_events_duration = {
-				[1.0] = 1.454958319664
-			}
+				[1] = 1.454958319664,
+			},
 		},
 		pwe_morris_level_conversations_slaanesh_thirty_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_morris_level_banter_themed",
 			category = "story_talk",
+			database = "hero_conversations_dlc_morris_level_banter_themed",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_morris_level_conversations_slaanesh_thirty_01"
+				[1] = "pwe_morris_level_conversations_slaanesh_thirty_01",
 			},
 			sound_events = {
-				[1.0] = "pwe_morris_level_conversations_slaanesh_thirty_01"
+				[1] = "pwe_morris_level_conversations_slaanesh_thirty_01",
 			},
 			sound_events_duration = {
-				[1.0] = 5.7202501296997
-			}
+				[1] = 5.7202501296997,
+			},
 		},
 		pwe_morris_level_conversations_slaanesh_thirty_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_morris_level_banter_themed",
 			category = "story_talk",
+			database = "hero_conversations_dlc_morris_level_banter_themed",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_morris_level_conversations_slaanesh_thirty_02"
+				[1] = "pwe_morris_level_conversations_slaanesh_thirty_02",
 			},
 			sound_events = {
-				[1.0] = "pwe_morris_level_conversations_slaanesh_thirty_02"
+				[1] = "pwe_morris_level_conversations_slaanesh_thirty_02",
 			},
 			sound_events_duration = {
-				[1.0] = 1.114041686058
-			}
+				[1] = 1.114041686058,
+			},
 		},
 		pwh_morris_level_conversations_slaanesh_thirtyone_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_morris_level_banter_themed",
 			category = "story_talk",
+			database = "hero_conversations_dlc_morris_level_banter_themed",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pwh_morris_level_conversations_slaanesh_thirtyone_01"
+				[1] = "pwh_morris_level_conversations_slaanesh_thirtyone_01",
 			},
 			sound_events = {
-				[1.0] = "pwh_morris_level_conversations_slaanesh_thirtyone_01"
+				[1] = "pwh_morris_level_conversations_slaanesh_thirtyone_01",
 			},
 			sound_events_duration = {
-				[1.0] = 7.0671458244324
-			}
+				[1] = 7.0671458244324,
+			},
 		},
 		pwh_morris_level_conversations_slaanesh_thirtyone_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_morris_level_banter_themed",
 			category = "story_talk",
+			database = "hero_conversations_dlc_morris_level_banter_themed",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwh_morris_level_conversations_slaanesh_thirtyone_02"
+				[1] = "pwh_morris_level_conversations_slaanesh_thirtyone_02",
 			},
 			sound_events = {
-				[1.0] = "pwh_morris_level_conversations_slaanesh_thirtyone_02"
+				[1] = "pwh_morris_level_conversations_slaanesh_thirtyone_02",
 			},
 			sound_events_duration = {
-				[1.0] = 2.6515207290649
-			}
+				[1] = 2.6515207290649,
+			},
 		},
 		pwh_morris_level_conversations_tzeentch_twentysix_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_morris_level_banter_themed",
 			category = "story_talk",
+			database = "hero_conversations_dlc_morris_level_banter_themed",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwh_morris_level_conversations_tzeentch_twentysix_01"
+				[1] = "pwh_morris_level_conversations_tzeentch_twentysix_01",
 			},
 			sound_events = {
-				[1.0] = "pwh_morris_level_conversations_tzeentch_twentysix_01"
+				[1] = "pwh_morris_level_conversations_tzeentch_twentysix_01",
 			},
 			sound_events_duration = {
-				[1.0] = 3.7522916793823
-			}
+				[1] = 3.7522916793823,
+			},
 		},
 		pwh_morris_level_conversations_tzeentch_twentysix_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_morris_level_banter_themed",
 			category = "story_talk",
+			database = "hero_conversations_dlc_morris_level_banter_themed",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwh_morris_level_conversations_tzeentch_twentysix_02"
+				[1] = "pwh_morris_level_conversations_tzeentch_twentysix_02",
 			},
 			sound_events = {
-				[1.0] = "pwh_morris_level_conversations_tzeentch_twentysix_02"
+				[1] = "pwh_morris_level_conversations_tzeentch_twentysix_02",
 			},
 			sound_events_duration = {
-				[1.0] = 3.2571249008179
-			}
-		}
+				[1] = 3.2571249008179,
+			},
+		},
 	})
 end

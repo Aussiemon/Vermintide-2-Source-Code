@@ -1,6 +1,9 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/chaos_sorcerer/bt_chaos_sorcerer_skulk_approach_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTChaosSorcererSkulkApproachAction = class(BTChaosSorcererSkulkApproachAction, BTNode)
+
 local BTChaosSorcererSkulkApproachAction = BTChaosSorcererSkulkApproachAction
 local Unit_alive = Unit.alive
 local POSITION_LOOKUP = POSITION_LOOKUP
@@ -18,6 +21,7 @@ BTChaosSorcererSkulkApproachAction.enter = function (self, unit, blackboard, t)
 	local breed = blackboard.breed
 	local target_dist = blackboard.target_dist
 	local skulk_data = blackboard.skulk_data or {}
+
 	blackboard.skulk_data = skulk_data
 	skulk_data.direction = skulk_data.direction or 1 - math.random(0, 1) * 2
 	skulk_data.radius = skulk_data.radius or blackboard.target_dist
@@ -45,13 +49,13 @@ BTChaosSorcererSkulkApproachAction.enter = function (self, unit, blackboard, t)
 		if not blackboard.portal_data then
 			blackboard.portal_data = {
 				chance_to_look_for_wall_spawn = 0.5,
-				search_counter = 0,
 				portal_spawn_type = "n/a",
+				search_counter = 0,
 				portal_search_timer = t + 3,
 				cover_units = {},
 				portal_spawn_pos = Vector3Box(),
 				portal_spawn_rot = QuaternionBox(),
-				physics_world = World.get_data(blackboard.world, "physics_world")
+				physics_world = World.get_data(blackboard.world, "physics_world"),
 			}
 			blackboard.spell = blackboard.portal_data
 		end
@@ -63,6 +67,7 @@ BTChaosSorcererSkulkApproachAction.enter = function (self, unit, blackboard, t)
 
 	if blackboard.teleport_health_percent == nil or blackboard.set_teleport_hp then
 		local health_extension = ScriptUnit.extension(unit, "health_system")
+
 		blackboard.health_extension = health_extension
 		blackboard.teleport_health_percent = health_extension:current_health_percent() - action.part_hp_lost_to_teleport
 		blackboard.set_teleport_hp = nil
@@ -82,6 +87,7 @@ BTChaosSorcererSkulkApproachAction.initialize_vortex_data = function (self, blac
 	for i = 1, 8 do
 		local current_rotation = Quaternion(Vector3.up(), VORTEX_CHECK_ANGLE_INCREMENT * (i - 1))
 		local direction = Quaternion.rotate(current_rotation, start_check_direction)
+
 		check_directions[i] = Vector3Box(direction)
 	end
 
@@ -92,7 +98,7 @@ BTChaosSorcererSkulkApproachAction.initialize_vortex_data = function (self, blac
 		vortex_units = {},
 		queued_vortex = {},
 		radius_check_directions = check_directions,
-		vortex_template = vortex_template
+		vortex_template = vortex_template,
 	}
 end
 
@@ -139,7 +145,7 @@ BTChaosSorcererSkulkApproachAction.run = function (self, unit, blackboard, t, dt
 		local center_pos = unit_pos
 		local target_dist_sq = Vector3.distance_squared(unit_pos, target_pos)
 
-		if action.far_away_from_target_sq < target_dist_sq then
+		if target_dist_sq > action.far_away_from_target_sq then
 			center_pos = target_pos
 		end
 
@@ -157,7 +163,7 @@ BTChaosSorcererSkulkApproachAction.run = function (self, unit, blackboard, t, dt
 
 			return "done"
 		end
-	elseif blackboard.travel_teleport_timer < t then
+	elseif t > blackboard.travel_teleport_timer then
 		local teleport_pos = self:get_skulk_target(unit, blackboard, true)
 
 		if teleport_pos then
@@ -287,6 +293,7 @@ BTChaosSorcererSkulkApproachAction.get_skulk_target = function (self, unit, blac
 		end
 
 		local pos = target_position + Quaternion.rotate(Quaternion(cross_dir, alpha * i), rot_vec)
+
 		pos = ConflictUtils.find_center_tri(nav_world, pos)
 
 		if pos then
@@ -316,12 +323,12 @@ BTChaosSorcererSkulkApproachAction.update_dummie = function (self, unit, blackbo
 end
 
 BTChaosSorcererSkulkApproachAction._update_vortex_search = function (self, unit, blackboard, t, vortex_data)
-	if vortex_data.spawn_timer < t then
+	if t > vortex_data.spawn_timer then
 		local vortex_units = vortex_data.vortex_units
 		local num_vortex_units = #vortex_units
 		local i = 1
 
-		while num_vortex_units >= i do
+		while i <= num_vortex_units do
 			local vortex_unit = vortex_units[i]
 
 			if not Unit_alive(vortex_unit) then
@@ -335,7 +342,7 @@ BTChaosSorcererSkulkApproachAction._update_vortex_search = function (self, unit,
 
 		local action = blackboard.action
 		local target_distance = blackboard.target_dist
-		local target_within_reach = target_distance and action.min_cast_vortex_distance < target_distance and target_distance < action.max_cast_vortex_distance
+		local target_within_reach = target_distance and target_distance > action.min_cast_vortex_distance and target_distance < action.max_cast_vortex_distance
 
 		if not blackboard.freeze_spell_casting and num_vortex_units < blackboard.max_vortex_units and target_within_reach then
 			local target_unit = blackboard.target_unit
@@ -381,6 +388,7 @@ BTChaosSorcererSkulkApproachAction._get_vortex_cast_position = function (unit, b
 	local target_distance = blackboard.target_dist
 	local navigation_extension = blackboard.navigation_extension
 	local traverse_logic = navigation_extension:traverse_logic()
+
 	params.nav_world = blackboard.nav_world
 	params.physics_world = physics_world
 	params.from_unit = unit
@@ -396,10 +404,13 @@ BTChaosSorcererSkulkApproachAction._get_vortex_cast_position = function (unit, b
 	params.min_angle_step = 4
 	params.max_angle_step = 8
 	params.traverse_logic = traverse_logic
+
 	local vortex_template = VortexTemplates[action.vortex_template_name]
 	local min_wanted_radius = vortex_template.min_inner_radius
+
 	params.min_wanted_radius = min_wanted_radius
 	params.radius_check_directions = vortex_data.radius_check_directions
+
 	local cast_position, min_radius = LocomotionUtils.pick_visible_outside_goal(params)
 
 	return cast_position, min_radius
@@ -427,9 +438,10 @@ BTChaosSorcererSkulkApproachAction.update_portal_search = function (self, unit, 
 				portal_data.portal_search_active = false
 				portal_data.portal_search_timer = t + 1
 			end
-		elseif portal_data.portal_search_timer < t and not blackboard.portal_unit then
+		elseif t > portal_data.portal_search_timer and not blackboard.portal_unit then
 			local target_position = POSITION_LOOKUP[blackboard.target_unit]
 			local success = BTChaosSorcererSkulkApproachAction.get_portal_location_list(portal_data, target_position)
+
 			portal_data.search_counter = success and 0 or portal_data.search_counter + 1
 			portal_data.portal_search_active = success
 			portal_data.portal_search_timer = t + 1
@@ -513,7 +525,7 @@ end
 
 BTChaosSorcererSkulkApproachAction.evaluate_floor = function (portal_data, nav_world, center_pos, num_tries)
 	local pos = get_random_pos_on_circle(center_pos, mean_spawn_distance, 10)
-	local result, hit_pos, disk_pos, spawn_pos_found, floor_normal = nil
+	local result, hit_pos, disk_pos, spawn_pos_found, floor_normal
 
 	if pos then
 		result, hit_pos = GwNavQueries.raycast(nav_world, center_pos, pos)
@@ -523,10 +535,12 @@ BTChaosSorcererSkulkApproachAction.evaluate_floor = function (portal_data, nav_w
 			local to_disk_pos = disk_pos - center_pos
 			local dist = Vector3.length(to_disk_pos)
 
-			if min_dist_to_target < dist then
+			if dist > min_dist_to_target then
 				local triangle = GwNavTraversal.get_seed_triangle(nav_world, disk_pos)
 				local p1, p2, p3 = GwNavTraversal.get_triangle_vertices(nav_world, triangle)
+
 				floor_normal = Vector3.normalize(Vector3.cross(p2 - p1, p3 - p1))
+
 				local floor_rot = Quaternion.look(floor_normal, Vector3.normalize(to_disk_pos))
 
 				if portal_data.portal_spawn_pos then
@@ -572,7 +586,7 @@ BTChaosSorcererSkulkApproachAction.evaluate_wall = function (portal_data, nav_wo
 	local cover_units = portal_data.cover_units
 	local unit_local_rotation = Unit.local_rotation
 	local unit_local_position = Unit.local_position
-	local traverse_logic = nil
+	local traverse_logic
 
 	while index < exit_index do
 		if num_cover_points < index then
@@ -584,7 +598,7 @@ BTChaosSorcererSkulkApproachAction.evaluate_wall = function (portal_data, nav_wo
 		local cover_unit = cover_units[index]
 		local pos = unit_local_position(cover_unit, 0)
 
-		if min_spawn_dist_sqr < Vector3.distance_squared(pos, center_pos) then
+		if Vector3.distance_squared(pos, center_pos) > min_spawn_dist_sqr then
 			local rot = unit_local_rotation(cover_unit, 0)
 			local wall_normal = Quaternion.forward(rot)
 			local result = true
@@ -629,7 +643,7 @@ BTChaosSorcererSkulkApproachAction.try_next_portal_location = function (portal_d
 		Vector3.set_z(center_pos, altitude)
 	end
 
-	local success = nil
+	local success
 
 	if placement == "floor" then
 		local num_tries = 3

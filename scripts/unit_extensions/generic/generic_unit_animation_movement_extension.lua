@@ -1,10 +1,14 @@
+﻿-- chunkname: @scripts/unit_extensions/generic/generic_unit_animation_movement_extension.lua
+
 require("scripts/unit_extensions/generic/animation_movement_templates")
 
 GenericUnitAnimationMovementExtension = class(GenericUnitAnimationMovementExtension)
 
 GenericUnitAnimationMovementExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	self.unit = unit
+
 	local init_data_template_name = extension_init_data.template
+
 	self.template = AnimationMovementTemplates[init_data_template_name]
 	self.network_type = extension_init_data.is_husk and "husk" or "owner"
 	self.data = {}

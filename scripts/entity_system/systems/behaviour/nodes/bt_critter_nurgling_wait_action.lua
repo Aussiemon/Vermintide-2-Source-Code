@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_critter_nurgling_wait_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTCritterNurglingWaitAction = class(BTCritterNurglingWaitAction, BTNode)
@@ -10,6 +12,7 @@ BTCritterNurglingWaitAction.name = "BTCritterNurglingWaitAction"
 
 BTCritterNurglingWaitAction.enter = function (self, unit, blackboard, t)
 	local wait_data = self._tree_node.action_data
+
 	blackboard.exit_wait_time = t + Math.random_range(wait_data.wait_time_min, wait_data.wait_time_max)
 
 	if blackboard.move_state ~= "idle" then
@@ -24,7 +27,7 @@ BTCritterNurglingWaitAction.leave = function (self, unit, blackboard, t, reason,
 end
 
 BTCritterNurglingWaitAction.run = function (self, unit, blackboard, t)
-	if blackboard.exit_wait_time < t then
+	if t > blackboard.exit_wait_time then
 		return "done"
 	end
 

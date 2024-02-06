@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/start_game_view/windows/definitions/start_game_window_adventure_definitions.lua
+
 local window_default_settings = UISettings.game_start_windows
 local window_frame = window_default_settings.frame
 local window_size = window_default_settings.size
@@ -8,138 +10,138 @@ local scenegraph_definition = {
 		is_root = true,
 		size = {
 			1920,
-			1080
+			1080,
 		},
 		position = {
 			0,
 			0,
-			UILayer.default
-		}
+			UILayer.default,
+		},
 	},
 	root_fit = {
 		scale = "fit",
 		size = {
 			1920,
-			1080
+			1080,
 		},
 		position = {
 			0,
 			0,
-			UILayer.default
-		}
+			UILayer.default,
+		},
 	},
 	menu_root = {
-		vertical_alignment = "center",
-		parent = "root",
 		horizontal_alignment = "center",
+		parent = "root",
+		vertical_alignment = "center",
 		size = {
 			1920,
-			1080
+			1080,
 		},
 		position = {
 			0,
 			0,
-			0
-		}
+			0,
+		},
 	},
 	window = {
-		vertical_alignment = "center",
-		parent = "menu_root",
 		horizontal_alignment = "center",
+		parent = "menu_root",
+		vertical_alignment = "center",
 		size = window_size,
 		position = {
 			0,
 			0,
-			1
-		}
+			1,
+		},
 	},
 	description_text = {
-		vertical_alignment = "bottom",
-		parent = "window",
 		horizontal_alignment = "center",
+		parent = "window",
+		vertical_alignment = "bottom",
 		size = {
 			window_text_width,
-			window_size[2] / 2
+			window_size[2] / 2,
 		},
 		position = {
 			0,
 			0,
-			1
-		}
+			1,
+		},
 	},
 	adventure_texture = {
-		vertical_alignment = "top",
-		parent = "window",
 		horizontal_alignment = "center",
+		parent = "window",
+		vertical_alignment = "top",
 		size = {
 			383,
-			383
+			383,
 		},
 		position = {
 			0,
 			0,
-			1
-		}
+			1,
+		},
 	},
 	adventure_title_divider = {
-		vertical_alignment = "bottom",
-		parent = "adventure_texture",
 		horizontal_alignment = "center",
+		parent = "adventure_texture",
+		vertical_alignment = "bottom",
 		size = {
 			264,
-			32
+			32,
 		},
 		position = {
 			0,
 			-20,
-			1
-		}
+			1,
+		},
 	},
 	adventure_title = {
-		vertical_alignment = "bottom",
-		parent = "adventure_title_divider",
 		horizontal_alignment = "center",
+		parent = "adventure_title_divider",
+		vertical_alignment = "bottom",
 		size = {
 			window_text_width,
-			50
+			50,
 		},
 		position = {
 			0,
 			20,
-			1
-		}
-	}
+			1,
+		},
+	},
 }
 local adventure_title_text_style = {
 	font_size = 36,
-	upper_case = true,
-	localize = false,
-	use_shadow = true,
-	word_wrap = true,
-	horizontal_alignment = "center",
-	vertical_alignment = "bottom",
 	font_type = "hell_shark_header",
+	horizontal_alignment = "center",
+	localize = false,
+	upper_case = true,
+	use_shadow = true,
+	vertical_alignment = "bottom",
+	word_wrap = true,
 	text_color = Colors.get_color_table_with_alpha("font_default", 255),
 	offset = {
 		0,
 		0,
-		2
-	}
+		2,
+	},
 }
 local description_text_style = {
-	word_wrap = true,
 	font_size = 22,
+	font_type = "hell_shark",
+	horizontal_alignment = "center",
 	localize = false,
 	use_shadow = true,
-	horizontal_alignment = "center",
 	vertical_alignment = "top",
-	font_type = "hell_shark",
+	word_wrap = true,
 	text_color = Colors.get_color_table_with_alpha("font_default", 255),
 	offset = {
 		0,
 		0,
-		2
-	}
+		2,
+	},
 }
 local widgets = {
 	background_fade = UIWidgets.create_simple_texture("options_window_fade_01", "window"),
@@ -148,10 +150,10 @@ local widgets = {
 	description_text = UIWidgets.create_simple_text(Localize("start_game_window_adventure_desc"), "description_text", nil, nil, description_text_style),
 	adventure_title = UIWidgets.create_simple_text(Localize("start_game_window_adventure_title"), "adventure_title", nil, nil, adventure_title_text_style),
 	adventure_texture = UIWidgets.create_simple_texture("adventure_icon", "adventure_texture"),
-	adventure_title_divider = UIWidgets.create_simple_texture("divider_01_top", "adventure_title_divider")
+	adventure_title_divider = UIWidgets.create_simple_texture("divider_01_top", "adventure_title_divider"),
 }
 
 return {
 	widgets = widgets,
-	scenegraph_definition = scenegraph_definition
+	scenegraph_definition = scenegraph_definition,
 }

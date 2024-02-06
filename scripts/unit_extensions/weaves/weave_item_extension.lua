@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/weaves/weave_item_extension.lua
+
 require("scripts/unit_extensions/weaves/weave_item_templates")
 
 WeaveItemExtension = class(WeaveItemExtension)
@@ -44,9 +46,10 @@ WeaveItemExtension.activate = function (self, game_object_id, objective_data)
 		local game_object_data_table = {
 			value = 100,
 			go_type = NetworkLookup.go_types.weave_objective,
-			objective_name = NetworkLookup.weave_objective_names[self._objective_name]
+			objective_name = NetworkLookup.weave_objective_names[self._objective_name],
 		}
 		local callback = callback(self, "cb_game_session_disconnect")
+
 		self._game_object_id = Managers.state.network:create_game_object("weave_objective", game_object_data_table, callback)
 	else
 		self._game_object_id = game_object_id

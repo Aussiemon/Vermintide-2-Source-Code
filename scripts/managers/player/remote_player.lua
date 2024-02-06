@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/player/remote_player.lua
+
 RemotePlayer = class(RemotePlayer)
 
 RemotePlayer.init = function (self, network_manager, peer, player_controlled, is_server, local_player_id, unique_id, clan_tag, ui_id, account_id)
@@ -54,7 +56,9 @@ end
 
 RemotePlayer.set_player_unit = function (self, unit)
 	self.player_unit = unit
+
 	local career_extension = ScriptUnit.extension(unit, "career_system")
+
 	self._career_index = career_extension:career_index()
 end
 
@@ -145,7 +149,7 @@ RemotePlayer.get_data = function (self, key)
 end
 
 RemotePlayer.name = function (self)
-	local name = nil
+	local name
 
 	if not self._player_controlled then
 		name = Localize(self:character_name())
@@ -225,9 +229,10 @@ RemotePlayer.create_game_object = function (self)
 		local_player_id = self:local_player_id(),
 		player_controlled = self._player_controlled,
 		clan_tag = self._clan_tag,
-		account_id = self._account_id
+		account_id = self._account_id,
 	}
 	local callback = callback(self, "cb_game_session_disconnect")
+
 	self.game_object_id = self.network_manager:create_player_game_object("player", game_object_data_table, callback)
 
 	self:create_sync_data()

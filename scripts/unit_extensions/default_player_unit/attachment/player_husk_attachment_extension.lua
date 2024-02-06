@@ -1,14 +1,18 @@
+﻿-- chunkname: @scripts/unit_extensions/default_player_unit/attachment/player_husk_attachment_extension.lua
+
 PlayerHuskAttachmentExtension = class(PlayerHuskAttachmentExtension)
 
 PlayerHuskAttachmentExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	self._world = extension_init_context.world
 	self._unit = unit
+
 	local profile = extension_init_data.profile
 	local slots = extension_init_data.slots
+
 	self._profile = profile
 	self._slots = slots
 	self._attachments = {
-		slots = {}
+		slots = {},
 	}
 	self._synced_slot_buffs = {}
 	self.current_item_buffs = {}

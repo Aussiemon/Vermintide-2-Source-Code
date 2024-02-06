@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/chaos_sorcerer/bt_corruptor_grab_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTCorruptorGrabAction = class(BTCorruptorGrabAction, BTNode)
@@ -10,6 +12,7 @@ BTCorruptorGrabAction.name = "BTCorruptorGrabAction"
 
 BTCorruptorGrabAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
+
 	blackboard.action = action
 	blackboard.active_node = BTCorruptorGrabAction
 	blackboard.attacks_done = 0
@@ -123,7 +126,7 @@ BTCorruptorGrabAction.run = function (self, unit, blackboard, t, dt)
 		StatusUtils.set_grabbed_by_corruptor_network("chaos_corruptor_dragging", corruptor_target, true, unit)
 	end
 
-	if blackboard.grabbed_unit and corruptor_target and blackboard.drain_life_at < t then
+	if blackboard.grabbed_unit and corruptor_target and t > blackboard.drain_life_at then
 		local distance_to_corruptor_target = Vector3.distance(POSITION_LOOKUP[corruptor_target], POSITION_LOOKUP[unit])
 
 		if distance_to_corruptor_target < 2.5 then
@@ -133,7 +136,7 @@ BTCorruptorGrabAction.run = function (self, unit, blackboard, t, dt)
 		end
 	end
 
-	if not success or blackboard.attack_finished and not blackboard.play_grabbed_loop or blackboard.disable_player_timer and blackboard.disable_player_timer < t then
+	if not success or blackboard.attack_finished and not blackboard.play_grabbed_loop or blackboard.disable_player_timer and t > blackboard.disable_player_timer then
 		return "done"
 	end
 
@@ -179,7 +182,9 @@ BTCorruptorGrabAction.drain_life = function (self, unit, blackboard)
 		local heal_type = "leech"
 		local difficulty_level = Managers.state.difficulty:get_difficulty()
 		local heal_amount = action.health_leech[difficulty_level]
+
 		heal_amount = DamageUtils.networkify_damage(heal_amount)
+
 		local health_extension = ScriptUnit.extension(unit, "health_system")
 
 		health_extension:add_heal(unit, heal_amount, nil, heal_type)
@@ -224,7 +229,7 @@ BTCorruptorGrabAction.grab_player = function (self, t, unit, blackboard)
 			blackboard.grab_at = t + action.grab_delay
 		end
 
-		if blackboard.grab_at and blackboard.grab_at <= t then
+		if blackboard.grab_at and t >= blackboard.grab_at then
 			blackboard.grab_at = nil
 		else
 			return
@@ -253,7 +258,7 @@ BTCorruptorGrabAction.grab_player = function (self, t, unit, blackboard)
 
 			blackboard.attack_success = false
 		end
-	elseif not not action.ignore_dodge and blackboard.action.max_distance_squared < Vector3.distance_squared(self_pos, target_unit_pos) or target_distance_squared > 25 then
+	elseif not not action.ignore_dodge and Vector3.distance_squared(self_pos, target_unit_pos) > blackboard.action.max_distance_squared or target_distance_squared > 25 then
 		blackboard.attack_success = false
 	else
 		blackboard.attack_success = PerceptionUtils.is_position_in_line_of_sight(unit, self_pos + Vector3.up(), target_unit_pos + Vector3.up(), physics_world)
@@ -267,6 +272,7 @@ BTCorruptorGrabAction.grab_player = function (self, t, unit, blackboard)
 		end
 
 		blackboard.grabbed_unit = blackboard.corruptor_target
+
 		local sound_event = blackboard.action.grabbed_sound_event_2d
 	else
 		blackboard.attack_aborted = true

@@ -1,7 +1,10 @@
+﻿-- chunkname: @scripts/managers/game_mode/game_modes/game_mode_survival.lua
+
 require("scripts/managers/game_mode/game_modes/game_mode_base")
 
 script_data.disable_gamemode_end = script_data.disable_gamemode_end or Development.parameter("disable_gamemode_end")
 GameModeSurvival = class(GameModeSurvival, GameModeBase)
+
 local COMPLETE_LEVEL_VAR = false
 local FAIL_LEVEL_VAR = false
 
@@ -24,7 +27,7 @@ GameModeSurvival.evaluate_end_conditions = function (self, round_started, dt, t)
 
 	if self.about_to_lose then
 		if lost then
-			if self.lost_condition_timer < t then
+			if t > self.lost_condition_timer then
 				local mission_system = Managers.state.entity:system("mission_system")
 				local active_missions, completed_missions = mission_system:get_missions()
 

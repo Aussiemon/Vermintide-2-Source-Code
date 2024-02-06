@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_melee_slam_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTMeleeSlamAction = class(BTMeleeSlamAction, BTNode)
@@ -18,6 +20,7 @@ end
 
 BTMeleeSlamAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
+
 	blackboard.action = action
 	blackboard.active_node = BTMeleeSlamAction
 
@@ -40,6 +43,7 @@ end
 
 BTMeleeSlamAction.init_attack = function (self, unit, blackboard, action, t)
 	local attack_anim, anim_driven = LocomotionUtils.get_attack_anim(unit, blackboard, action.attack_anims)
+
 	anim_driven = anim_driven or action.anim_driven or false
 	blackboard.attack_anim_driven = anim_driven
 
@@ -58,16 +62,21 @@ BTMeleeSlamAction.init_attack = function (self, unit, blackboard, action, t)
 	Managers.state.network:anim_event(unit, attack_animation)
 
 	local target_unit = blackboard.target_unit
+
 	blackboard.attacking_target = target_unit
 	blackboard.attack_started_at_t = t
+
 	local to_target_rotation = LocomotionUtils.rotation_towards_unit_flat(unit, target_unit)
+
 	blackboard.attack_rotation = QuaternionBox(to_target_rotation)
+
 	local bot_threats = action.bot_threats and (action.bot_threats[attack_animation] or action.bot_threats[1] and action.bot_threats)
 
 	if bot_threats then
 		local current_threat_index = 1
 		local bot_threat = bot_threats[current_threat_index]
 		local bot_threat_start_time = bot_threat.start_time
+
 		blackboard.create_bot_threat_at_t = t + bot_threat_start_time
 		blackboard.current_bot_threat_index = current_threat_index
 		blackboard.bot_threats_data = bot_threats
@@ -154,14 +163,14 @@ BTMeleeSlamAction.anim_cb_damage = function (self, unit, blackboard)
 		local hit_unit = Actor.unit(hit_actor)
 
 		if hit_unit ~= unit and not hit_units[hit_unit] then
-			local damage = nil
+			local damage
 			local target_status_extension = ScriptUnit.has_extension(hit_unit, "status_system")
 
 			if target_status_extension then
-				local dodge = nil
+				local dodge
 				local to_target = Vector3.flat(POSITION_LOOKUP[hit_unit] - pos)
 
-				if target_status_extension.is_dodging and action.dodge_mitigation_radius_squared < Vector3.length_squared(to_target) then
+				if target_status_extension.is_dodging and Vector3.length_squared(to_target) > action.dodge_mitigation_radius_squared then
 					dodge = true
 				end
 
@@ -192,7 +201,7 @@ BTMeleeSlamAction.anim_cb_damage = function (self, unit, blackboard)
 				end
 			elseif Unit.has_data(hit_unit, "breed") then
 				local offset = Vector3.flat(POSITION_LOOKUP[hit_unit] - self_pos)
-				local direction = nil
+				local direction
 
 				if Vector3.length_squared(offset) < 0.0001 then
 					direction = unit_forward
@@ -256,6 +265,7 @@ BTMeleeSlamAction.run = function (self, unit, blackboard, t, dt)
 
 			if next_bot_threat then
 				local attack_started_at_t = blackboard.attack_started_at_t
+
 				blackboard.create_bot_threat_at_t = attack_started_at_t + next_bot_threat.start_time
 				blackboard.current_bot_threat_index = next_bot_threat_index
 			else

@@ -1,13 +1,15 @@
+﻿-- chunkname: @scripts/settings/hit_effects/hit_effects_stormfiend.lua
+
 HitEffectsStormfiend = {
 	default = {
-		husk_hit_effect_name = "fx/impact_blood",
 		armour_type = "flesh",
+		husk_hit_effect_name = "fx/impact_blood",
 		extra_conditions = {
-			death = false
+			death = false,
 		},
 		animations = {
-			"hit_reaction"
-		}
+			"hit_reaction",
+		},
 	},
 	burn = {
 		inherits = "default",
@@ -24,109 +26,109 @@ HitEffectsStormfiend = {
 				"drakegun",
 				"drakegun_glance",
 				"fire_grenade",
-				"fire_grenade_glance"
-			}
+				"fire_grenade_glance",
+			},
 		},
 		animations = {
-			"hit_reaction"
-		}
+			"hit_reaction",
+		},
 	},
 	default_head = {
-		inherits = "default",
-		husk_hit_effect_name = "fx/impact_blood",
 		armour_type = "flesh",
+		husk_hit_effect_name = "fx/impact_blood",
+		inherits = "default",
 		extra_conditions = {
 			hit_zone = {
 				"neck",
-				"head"
-			}
+				"head",
+			},
 		},
 		animations = {
-			"hit_reaction"
-		}
+			"hit_reaction",
+		},
 	},
 	default_left_leg = {
-		inherits = "default",
-		husk_hit_effect_name = "fx/impact_blood",
 		armour_type = "flesh",
+		husk_hit_effect_name = "fx/impact_blood",
+		inherits = "default",
 		extra_conditions = {
 			hit_zone = {
-				"left_leg"
-			}
+				"left_leg",
+			},
 		},
 		animations = {
-			"hit_reaction"
-		}
+			"hit_reaction",
+		},
 	},
 	default_right_leg = {
-		inherits = "default",
-		husk_hit_effect_name = "fx/impact_blood",
 		armour_type = "flesh",
+		husk_hit_effect_name = "fx/impact_blood",
+		inherits = "default",
 		extra_conditions = {
 			hit_zone = {
-				"right_leg"
-			}
+				"right_leg",
+			},
 		},
 		animations = {
-			"hit_reaction"
-		}
+			"hit_reaction",
+		},
 	},
 	default_left_arm = {
-		inherits = "default",
-		husk_hit_effect_name = "fx/impact_blood",
 		armour_type = "flesh",
+		husk_hit_effect_name = "fx/impact_blood",
+		inherits = "default",
 		extra_conditions = {
 			hit_zone = {
-				"left_arm"
-			}
+				"left_arm",
+			},
 		},
 		animations = {
-			"hit_reaction"
-		}
+			"hit_reaction",
+		},
 	},
 	default_right_arm = {
-		inherits = "default",
-		husk_hit_effect_name = "fx/impact_blood",
 		armour_type = "flesh",
+		husk_hit_effect_name = "fx/impact_blood",
+		inherits = "default",
 		extra_conditions = {
 			hit_zone = {
-				"right_arm"
-			}
+				"right_arm",
+			},
 		},
 		animations = {
-			"hit_reaction"
-		}
+			"hit_reaction",
+		},
 	},
 	default_tail = {
-		inherits = "default",
-		husk_hit_effect_name = "fx/impact_blood",
 		armour_type = "flesh",
+		husk_hit_effect_name = "fx/impact_blood",
+		inherits = "default",
 		extra_conditions = {
 			hit_zone = {
-				"tail"
-			}
+				"tail",
+			},
 		},
 		animations = {
-			"hit_reaction"
-		}
+			"hit_reaction",
+		},
 	},
 	default_death = {
 		inherits = "default",
 		extra_conditions = {
-			death = true
+			death = true,
 		},
 		animations = {
 			"death",
 			"death_forward",
 			"death_left",
 			"death_right",
-			"death_backward"
+			"death_backward",
 		},
 		push = {
 			distal_force = 50,
+			lateral_force = 0,
 			vertical_force = 50,
-			lateral_force = 0
-		}
+		},
 	},
 	burn_death = {
 		inherits = "default_death",
@@ -134,10 +136,10 @@ HitEffectsStormfiend = {
 			damage_type = {
 				"drakegun_shot",
 				"drakegun",
-				"drakegun_glance"
-			}
+				"drakegun_glance",
+			},
 		},
-		timed_status = StatusEffectNames.burning
+		timed_status = StatusEffectNames.burning,
 	},
 	burn_death_conjured = {
 		inherits = "default_death",
@@ -149,34 +151,34 @@ HitEffectsStormfiend = {
 				"burn",
 				"burn_sniper",
 				"burn_carbine",
-				"burn_machinegun"
-			}
+				"burn_machinegun",
+			},
 		},
-		timed_status = StatusEffectNames.burning
+		timed_status = StatusEffectNames.burning,
 	},
 	push = {
 		extra_conditions = {
-			damage_type = "push"
-		}
+			damage_type = "push",
+		},
 	},
 	gib_killing_blow_death = {
 		inherits = "default",
 		extra_conditions = {
+			damage_type = "killing_blow",
 			death = true,
-			damage_type = "killing_blow"
 		},
 		animations = {
-			"ragdoll"
-		}
+			"ragdoll",
+		},
 	},
 	forced_kill = {
 		extra_conditions = {
+			damage_type = "forced",
 			death = true,
-			damage_type = "forced"
 		},
 		animations = {
-			"ragdoll"
-		}
-	}
+			"ragdoll",
+		},
+	},
 }
 HitEffectsStormfiend = table.create_copy(HitEffectsStormfiend, HitEffectsStormfiend)

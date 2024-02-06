@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/managers/conflict_director/enemy_recycler.lua
+
 EnemyRecycler = class(EnemyRecycler)
+
 local InterestPointUnits = InterestPointUnits
 local position_lookup = POSITION_LOOKUP
 local unit_alive = Unit.alive
@@ -22,6 +25,7 @@ local MP_EVENT_DATA = 4
 local function fast_array_remove(array, index)
 	local value = array[index]
 	local size = #array
+
 	array[index] = array[size]
 	array[size] = nil
 
@@ -53,6 +57,7 @@ end
 
 EnemyRecycler._random = function (self, ...)
 	local seed, value = Math.next_random(self._seed, ...)
+
 	self._seed = seed
 
 	return value
@@ -60,6 +65,7 @@ end
 
 EnemyRecycler._random_dice_roll = function (self, prob, alias)
 	local seed, value = LoadedDice.roll_seeded(prob, alias, self._seed)
+
 	self._seed = seed
 
 	return value
@@ -73,6 +79,7 @@ end
 
 EnemyRecycler.setup_forbidden_zones = function (self, pos)
 	self.forbidden_zones = {}
+
 	local forbidden_zones = self.forbidden_zones
 
 	for i = 1, 9 do
@@ -146,6 +153,7 @@ EnemyRecycler.boxify_waypoint_table = function (self, waypoint_table)
 
 	for i = 1, #waypoint_table do
 		local w = waypoint_table[i]
+
 		waypoints[i] = Vector3Box(w[1], w[2], w[3])
 	end
 
@@ -202,8 +210,7 @@ EnemyRecycler.inject_roaming_patrol = function (self, area_position, area_rot, p
 
 		local zone = self.group_manager:get_group_from_position(start_pos)
 		local pack_data = BreedPacksBySize[pack_type][amount]
-		local prob = pack_data.prob
-		local alias = pack_data.alias
+		local prob, alias = pack_data.prob, pack_data.alias
 		local pack_index = self:_random_dice_roll(prob, alias)
 		local pack = pack_data.packs[pack_index]
 		local spline_start_position = Vector3Box(start_pos)
@@ -221,7 +228,7 @@ EnemyRecycler.inject_roaming_patrol = function (self, area_position, area_rot, p
 			spline_name = spline_name,
 			pack = pack,
 			spline_way_points = spline_waypoints,
-			zone_data = zone_data
+			zone_data = zone_data,
 		}
 		local area = {
 			spline_start_position,
@@ -231,7 +238,7 @@ EnemyRecycler.inject_roaming_patrol = function (self, area_position, area_rot, p
 			"roaming_patrol",
 			zone,
 			"event",
-			event_data
+			event_data,
 		}
 
 		return area
@@ -294,7 +301,7 @@ EnemyRecycler.setup = function (self, pos_list, pack_sizes, pack_rotations, pack
 					"pack",
 					area_rot,
 					members,
-					zone_data
+					zone_data,
 				}
 				k = k + 1
 			end
@@ -349,14 +356,14 @@ EnemyRecycler.update_main_path_events = function (self, t)
 		return
 	end
 
-	if self.current_main_path_event_activation_dist <= self.main_path_info.ahead_travel_dist then
+	if self.main_path_info.ahead_travel_dist >= self.current_main_path_event_activation_dist then
 		local id = self.current_main_path_event_id
 		local events = self.main_path_events
 		local event = events[id]
 		local event_name = event[MP_TERROR_EVENT_NAME]
 		local pos = event[MP_BOXED_POS]
 		local event_data = event[MP_EVENT_DATA]
-		local map_section = nil
+		local map_section
 
 		if event_data then
 			local gizmo_unit = event_data.gizmo_unit
@@ -390,8 +397,8 @@ EnemyRecycler.spawn_interest_point = function (self, unit_name, position, do_spa
 			recycler = true,
 			do_spawn = do_spawn,
 			pack_members = pack_members,
-			zone_data = zone_data
-		}
+			zone_data = zone_data,
+		},
 	}
 	local rot = Quaternion(Vector3.up(), angle)
 	local unit = Managers.state.unit_spawner:spawn_network_unit(unit_name, "interest_point", extension_init_data, position:unbox(), rot)
@@ -403,16 +410,18 @@ end
 
 EnemyRecycler.add_breed = function (self, breed_name, boxed_pos, boxed_rot, optional_data)
 	self.unique_area_id = self.unique_area_id + 1
+
 	local unit_data = {
 		[2] = breed_name,
 		[3] = boxed_pos,
 		[4] = boxed_rot,
-		[5] = optional_data
+		[5] = optional_data,
 	}
 	local unit_list = {
-		unit_data
+		unit_data,
 	}
 	local zone = self.group_manager:get_group_from_position(boxed_pos:unbox())
+
 	self.areas[#self.areas + 1] = {
 		boxed_pos,
 		unit_list,
@@ -420,15 +429,16 @@ EnemyRecycler.add_breed = function (self, breed_name, boxed_pos, boxed_rot, opti
 		0,
 		false,
 		zone,
-		"breed"
+		"breed",
 	}
 end
 
 EnemyRecycler.breed_spawned_callback = function (ai_unit, breed, optional_data)
 	local unit_data = optional_data.dead_breed_data
+
 	BREED_DIE_LOOKUP[ai_unit] = {
 		EnemyRecycler.cleanup_dead_breed,
-		unit_data
+		unit_data,
 	}
 end
 
@@ -452,12 +462,12 @@ EnemyRecycler.activate_area = function (self, area, threat_population)
 				local position = area[1]
 				local do_spawn_yes = true
 				local interest_point_unit = self:spawn_interest_point(unit_name, position, do_spawn_yes, area[AREA_ROTATION_OR_EVENT_DATA], pack_members, zone_data)
-				local units_in_area = {
-					{
-						interest_point_unit,
-						unit_name,
-						position
-					}
+				local units_in_area = {}
+
+				units_in_area[1] = {
+					interest_point_unit,
+					unit_name,
+					position,
 				}
 				area[INDEX_UNITLIST] = units_in_area
 			end
@@ -465,12 +475,9 @@ EnemyRecycler.activate_area = function (self, area, threat_population)
 			local boxed_pos = area[1]
 			local event_name = area[AREA_PACK_SIZE_OR_EVENT_NAME]
 			local event_data = area[AREA_ROTATION_OR_EVENT_DATA]
-
-			if not event_data then
-				local data = {
-					optional_pos = boxed_pos
-				}
-			end
+			local data = event_data or {
+				optional_pos = boxed_pos,
+			}
 
 			TerrorEventMixer.start_event(event_name, data)
 
@@ -484,6 +491,7 @@ EnemyRecycler.activate_area = function (self, area, threat_population)
 		assert(interest_point_unit == nil, "lolwut")
 
 		local do_spawn_no = false
+
 		interest_point_unit = self:spawn_interest_point(interest_point_unit_name, interest_point_position, do_spawn_no, area[AREA_ROTATION_OR_EVENT_DATA])
 		units_in_area[1][1] = interest_point_unit
 
@@ -493,13 +501,16 @@ EnemyRecycler.activate_area = function (self, area, threat_population)
 			local spawn_pos = unit_data[U_POSITION]
 			local spawn_rot = unit_data[U_ROTATION]
 			local optional_data = unit_data[U_OPTIONAL_DATA] or {}
+
 			optional_data.ignore_event_counter = true
 			optional_data.spawned_func = EnemyRecycler.breed_spawned_callback
 			optional_data.dead_breed_data = unit_data
+
 			local breed = Breeds[breed_name]
 			local spawn_category = "enemy_recycler"
 			local spawn_type = "roam"
 			local id = self.conflict_director:spawn_queued_unit(breed, spawn_pos, spawn_rot, spawn_category, nil, spawn_type, optional_data, nil, unit_data)
+
 			unit_data[U_UNIT] = id
 			self._roaming_ai = self._roaming_ai + 1
 		end
@@ -509,13 +520,16 @@ EnemyRecycler.activate_area = function (self, area, threat_population)
 		local spawn_pos = unit_data[U_POSITION]
 		local spawn_rot = unit_data[U_ROTATION]
 		local optional_data = unit_data[U_OPTIONAL_DATA] or {}
+
 		optional_data.ignore_event_counter = true
 		optional_data.spawned_func = EnemyRecycler.breed_spawned_callback
 		optional_data.dead_breed_data = unit_data
+
 		local breed = Breeds[breed_name]
 		local spawn_category = "enemy_recycler"
 		local spawn_type = optional_data.spawn_type or "roam"
 		local id = self.conflict_director:spawn_queued_unit(breed, spawn_pos, spawn_rot, spawn_category, nil, spawn_type, optional_data, nil, unit_data)
+
 		unit_data[U_UNIT] = id
 		self._roaming_ai = self._roaming_ai + 1
 	end
@@ -537,7 +551,7 @@ EnemyRecycler.deactivate_area = function (self, area)
 			local points = extension.points
 			local points_n = extension.points_n
 			local units_in_area_n = 1
-			local sleepy = nil
+			local sleepy
 
 			for i = 2, #units_in_area do
 				local unit_data = units_in_area[i]
@@ -545,13 +559,14 @@ EnemyRecycler.deactivate_area = function (self, area)
 
 				if type(queue_id) == "number" then
 					local d = self.conflict_director:remove_queued_unit(queue_id)
+
 					self._roaming_ai = self._roaming_ai - 1
 					units_in_area_n = units_in_area_n + 1
 					units_in_area[units_in_area_n] = {
 						[2] = d[1].name,
 						[3] = d[2],
 						[4] = d[3],
-						[5] = d[7]
+						[5] = d[7],
 					}
 					sleepy = true
 				elseif HEALTH_ALIVE[queue_id] then
@@ -570,7 +585,7 @@ EnemyRecycler.deactivate_area = function (self, area)
 							[2] = Unit.get_data(unit, "breed").name,
 							[3] = Vector3Box(position),
 							[4] = QuaternionBox(Unit.local_rotation(unit, 0)),
-							[5] = blackboard.optional_spawn_data
+							[5] = blackboard.optional_spawn_data,
 						}
 
 						self.conflict_director:destroy_unit(unit, blackboard, "deactivate_area")
@@ -588,13 +603,14 @@ EnemyRecycler.deactivate_area = function (self, area)
 
 					if type(point[1]) == "number" then
 						local d = self.conflict_director:remove_queued_unit(point[1])
+
 						self._roaming_ai = self._roaming_ai - 1
 						units_in_area_n = units_in_area_n + 1
 						units_in_area[units_in_area_n] = {
 							[2] = d[1].name,
 							[3] = d[2],
 							[4] = d[3],
-							[5] = d[7]
+							[5] = d[7],
 						}
 					end
 
@@ -615,7 +631,7 @@ EnemyRecycler.deactivate_area = function (self, area)
 								[2] = Unit.get_data(claim_unit, "breed").name,
 								[3] = Vector3Box(position),
 								[4] = QuaternionBox(Unit.local_rotation(claim_unit, 0)),
-								[5] = blackboard.optional_spawn_data
+								[5] = blackboard.optional_spawn_data,
 							}
 
 							self.conflict_director:destroy_unit(claim_unit, blackboard, "deactivate_area")
@@ -654,7 +670,7 @@ EnemyRecycler.deactivate_area = function (self, area)
 
 		local alive = HEALTH_ALIVE[unit]
 		local sleep_unit = false
-		local blackboard = nil
+		local blackboard
 
 		if alive then
 			blackboard = BLACKBOARDS[unit]
@@ -715,14 +731,16 @@ EnemyRecycler._update_roaming_spawning = function (self, t, player_positions, th
 	local start_index = index
 	local i = 1
 
-	while checks >= i do
+	while i <= checks do
 		if size < index then
 			index = 1
 		end
 
 		local area = areas[index]
+
 		area[INDEX_SEEN_LAST_FRAME] = area[INDEX_SEEN]
 		area[INDEX_SEEN] = 0
+
 		local pos = area[1]:unbox()
 
 		for j = 1, players do
@@ -733,7 +751,7 @@ EnemyRecycler._update_roaming_spawning = function (self, t, player_positions, th
 
 			local dist = Vector3.length(to_dir)
 
-			if dist < wakeup_distance and math_abs(h) < wakeup_distance_z then
+			if dist < wakeup_distance and wakeup_distance_z > math_abs(h) then
 				local zone = player_zones[j]
 
 				if use_player_zones and zone and area[INDEX_ZONE] then
@@ -797,6 +815,7 @@ end
 
 EnemyRecycler.add_terror_event_in_area = function (self, boxed_pos, terror_event_name, event_data)
 	local nav_group = self.group_manager:get_group_from_position(boxed_pos:unbox())
+
 	self.areas[#self.areas + 1] = {
 		boxed_pos,
 		nil,
@@ -806,7 +825,7 @@ EnemyRecycler.add_terror_event_in_area = function (self, boxed_pos, terror_event
 		nav_group,
 		"event",
 		event_data or false,
-		[11] = self.unique_area_id
+		[11] = self.unique_area_id,
 	}
 end
 
@@ -815,14 +834,17 @@ EnemyRecycler.add_main_path_terror_event = function (self, boxed_pos, terror_eve
 
 	local main_path_events = self.main_path_events
 	local path_pos, travel_dist, move_percent, path_index, sub_index = MainPathUtils.closest_pos_at_main_path(nil, boxed_pos:unbox())
+
 	travel_dist = optional_spawn_distance or math.max(0, travel_dist - (activation_dist or 45))
+
 	local num_events = #main_path_events
+
 	num_events = num_events + 1
 	main_path_events[num_events] = {
 		travel_dist,
 		boxed_pos,
 		terror_event_name,
-		event_data
+		event_data,
 	}
 
 	if num_events == 1 then
@@ -834,6 +856,7 @@ EnemyRecycler.add_main_path_terror_event = function (self, boxed_pos, terror_eve
 		end)
 
 		local next_event = main_path_events[self.current_main_path_event_id]
+
 		self.current_main_path_event_activation_dist = math.min(next_event[MP_TRAVEL_DIST], self.current_main_path_event_activation_dist)
 	end
 end
@@ -852,7 +875,9 @@ EnemyRecycler.setup_main_path_events = function (self, t)
 	end)
 
 	self.current_main_path_event_id = 1
+
 	local travel_dist = main_path_events[1][1]
+
 	self.current_main_path_event_activation_dist = travel_dist
 end
 
@@ -874,7 +899,7 @@ EnemyRecycler.draw_debug = function (self, player_positions)
 	local shutdown = self.shutdown_areas
 	local drawer = Managers.state.debug:drawer({
 		mode = "immediate",
-		name = "ai_recycler"
+		name = "ai_recycler",
 	})
 	local inside_color = Color(255, 140, 255, 200)
 	local outside_color = Color(255, 255, 40, 100)
@@ -980,7 +1005,7 @@ EnemyRecycler.far_off_despawn = function (self, t, dt, player_positions, spawned
 	local Vector3_distance_squared = Vector3.distance_squared
 	local i = 1
 
-	while num >= i do
+	while i <= num do
 		if size < index then
 			index = 1
 		end
@@ -991,14 +1016,14 @@ EnemyRecycler.far_off_despawn = function (self, t, dt, player_positions, spawned
 		local pos = position_lookup[unit]
 		local blackboard = BLACKBOARDS[unit]
 
-		if blackboard.stuck_check_time < t then
+		if t > blackboard.stuck_check_time then
 			if not blackboard.far_off_despawn_immunity then
 				local navigation_extension = blackboard.navigation_extension
 
 				if navigation_extension._enabled and blackboard.no_path_found then
 					if not blackboard.stuck_time then
 						blackboard.stuck_time = t + 3
-					elseif blackboard.stuck_time < t then
+					elseif t > blackboard.stuck_time then
 						ai_stuck = true
 						destroy_distance_squared = RecycleSettings.destroy_stuck_distance_squared
 						blackboard.stuck_time = nil

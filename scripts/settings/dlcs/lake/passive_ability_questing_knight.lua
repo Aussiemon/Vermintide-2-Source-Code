@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/settings/dlcs/lake/passive_ability_questing_knight.lua
+
 PassiveAbilityQuestingKnight = class(PassiveAbilityQuestingKnight)
+
 local NUM_CHALLENGES = 2
 local CHALLENGE_CATEGORY = "questing_knight"
 
@@ -33,8 +36,8 @@ local challenge_settings = {
 					20,
 					30,
 					30,
-					30
-				}
+					30,
+				},
 			},
 			{
 				reward = "markus_questing_knight_passive_attack_speed",
@@ -47,8 +50,8 @@ local challenge_settings = {
 					15,
 					20,
 					20,
-					20
-				}
+					20,
+				},
 			},
 			{
 				reward = "markus_questing_knight_passive_cooldown_reduction",
@@ -61,8 +64,8 @@ local challenge_settings = {
 					1,
 					1,
 					1,
-					1
-				}
+					1,
+				},
 			},
 			{
 				reward = "markus_questing_knight_passive_health_regen",
@@ -75,9 +78,9 @@ local challenge_settings = {
 					1,
 					1,
 					1,
-					1
+					1,
 				},
-				condition = only_when_grims_allowed_and_there_from_the_start
+				condition = only_when_grims_allowed_and_there_from_the_start,
 			},
 			{
 				reward = "markus_questing_knight_passive_damage_taken",
@@ -90,10 +93,10 @@ local challenge_settings = {
 					1,
 					1,
 					1,
-					1
+					1,
 				},
-				condition = only_when_tomes_allowed_and_there_from_the_start
-			}
+				condition = only_when_tomes_allowed_and_there_from_the_start,
+			},
 		},
 		side_quest_challenge = {
 			reward = "markus_questing_knight_passive_strength_potion",
@@ -106,10 +109,10 @@ local challenge_settings = {
 				175,
 				200,
 				200,
-				200
-			}
-		}
-	}
+				200,
+			},
+		},
+	},
 }
 
 for _, dlc in pairs(DLCSettings) do
@@ -140,7 +143,9 @@ PassiveAbilityQuestingKnight.extensions_ready = function (self, world, unit)
 	end
 
 	self._is_hub_level = is_hub_level
+
 	local difficulty = Managers.state.difficulty:get_difficulty()
+
 	self._difficulty_rank = DifficultySettings[difficulty].rank
 	self._buff_extension = ScriptUnit.extension(unit, "buff_system")
 	self._talent_extension = ScriptUnit.extension(unit, "talent_system")

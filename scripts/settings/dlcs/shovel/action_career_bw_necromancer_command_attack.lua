@@ -1,6 +1,9 @@
+﻿-- chunkname: @scripts/settings/dlcs/shovel/action_career_bw_necromancer_command_attack.lua
+
 ActionCareerBWNecromancerCommandAttack = class(ActionCareerBWNecromancerCommandAttack, ActionBase)
+
 local IGNORED_BREEDS = {
-	critter_rat = true
+	critter_rat = true,
 }
 local CALCULATED_TARGET_BY_OWNER = {}
 
@@ -56,6 +59,7 @@ ActionCareerBWNecromancerCommandAttack.client_owner_start_action = function (sel
 	ActionCareerBWNecromancerCommandAttack.super.client_owner_start_action(self, new_action, t, chain_action_data, power_level)
 
 	local target_unit = CALCULATED_TARGET_BY_OWNER[self._owner_unit]
+
 	CALCULATED_TARGET_BY_OWNER[self._owner_unit] = nil
 
 	if ALIVE[target_unit] then

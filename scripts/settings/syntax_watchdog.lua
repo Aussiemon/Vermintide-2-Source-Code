@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/syntax_watchdog.lua
+
 for name, setting in pairs(BossSettings) do
 	local boss_events = setting.boss_events
 

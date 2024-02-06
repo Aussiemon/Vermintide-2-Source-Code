@@ -1,31 +1,34 @@
+﻿-- chunkname: @scripts/settings/dlcs/shovel/shovel_common_settings.lua
+
 local settings = DLCSettings.shovel
+
 settings.career_setting_files = {
-	"scripts/settings/dlcs/shovel/career_settings_shovel"
+	"scripts/settings/dlcs/shovel/career_settings_shovel",
 }
 settings.career_ability_settings = {
-	"scripts/settings/dlcs/shovel/career_ability_settings_shovel"
+	"scripts/settings/dlcs/shovel/career_ability_settings_shovel",
 }
 settings.action_template_files = {
-	"scripts/settings/dlcs/shovel/action_templates_shovel"
+	"scripts/settings/dlcs/shovel/action_templates_shovel",
 }
 settings.talent_settings = {
-	"scripts/settings/dlcs/shovel/talent_settings_shovel"
+	"scripts/settings/dlcs/shovel/talent_settings_shovel",
 }
 settings.profile_files = {
-	"scripts/settings/dlcs/shovel/shovel_profiles"
+	"scripts/settings/dlcs/shovel/shovel_profiles",
 }
 settings.material_effect_mappings_file_names = {
-	"scripts/settings/material_effect_mappings_shovel"
+	"scripts/settings/material_effect_mappings_shovel",
 }
 settings.statistics_definitions = {
-	"scripts/managers/backend/statistics_definitions_shovel"
+	"scripts/managers/backend/statistics_definitions_shovel",
 }
 settings.statistics_lookup = {
 	"shovel_skeleton_attack_big",
 	"shovel_skeleton_defend",
 	"shovel_staff_balefire",
 	"shovel_skeleton_balefire",
-	"shovel_fast_staff_attack"
+	"shovel_fast_staff_attack",
 }
 settings.anim_lookup = {
 	"to_ghost_scythe",
@@ -69,7 +72,7 @@ settings.anim_lookup = {
 	"pet_control_sacrifice",
 	"to_necro_command_item",
 	"career_select_spawn",
-	"career_select_spawn_02"
+	"career_select_spawn_02",
 }
 settings.husk_lookup = {
 	"units/beings/npcs/necromancer_skeleton/chr_npc_necromancer_skeleton",
@@ -79,7 +82,7 @@ settings.husk_lookup = {
 	"units/props/skulls/deus_skull/deus_skull_01",
 	"units/beings/player/bright_wizard_necromancer/talents/ripped_soul",
 	"units/beings/player/bright_wizard_necromancer/talents/trapped_soul_skull",
-	"units/weapons/player/wpn_bw_necromancy_staff_01/wpn_bw_necromancy_staff_projectile_03"
+	"units/weapons/player/wpn_bw_necromancy_staff_01/wpn_bw_necromancy_staff_projectile_03",
 }
 settings.effects = {
 	"fx/chr_chaos_warrior_cleave_impact_ground",
@@ -98,104 +101,104 @@ settings.effects = {
 	"fx/player_overcharge_explosion_necromancer",
 	"fx/necromancer_skeleton_sacrifice",
 	"fx/necromancer_cursed_explosion_blood",
-	"fx/necromancer_cursed_explosion_blue"
+	"fx/necromancer_cursed_explosion_blue",
 }
 settings._tracked_weapon_kill_stats = {}
 settings.unlock_settings = {
 	shovel = {
-		id = "2585630",
 		class = "UnlockDlc",
-		requires_restart = true
+		id = "2585630",
+		requires_restart = true,
 	},
 	shovel_upgrade = {
-		id = "2585640",
 		class = "UnlockDlc",
-		requires_restart = true
-	}
+		id = "2585640",
+		requires_restart = true,
+	},
 }
 settings.unlock_settings_xb1 = {
 	shovel = {
-		id = "35315039-4B53-3034-C05A-465731382100",
 		backend_reward_id = "shovel",
 		class = "UnlockDlc",
-		requires_restart = true
+		id = "35315039-4B53-3034-C05A-465731382100",
+		requires_restart = true,
 	},
 	shovel_upgrade = {
-		id = "35315039-4B53-3034-C05A-465731382100",
 		backend_reward_id = "shovel_upgrade",
-		class = "UnlockDlc"
-	}
+		class = "UnlockDlc",
+		id = "35315039-4B53-3034-C05A-465731382100",
+	},
 }
 settings.unlock_settings_ps4 = {
 	CUSA13595_00 = {
 		shovel = {
-			product_label = "V2USNECROMANCER0",
 			backend_reward_id = "shovel",
 			class = "UnlockDlc",
-			requires_restart = true,
-			id = "17308f2304a046debd6d22e8054b501a"
-		},
-		shovel_upgrade = {
 			id = "17308f2304a046debd6d22e8054b501a",
 			product_label = "V2USNECROMANCER0",
+			requires_restart = true,
+		},
+		shovel_upgrade = {
+			backend_reward_id = "shovel_upgrade",
 			class = "UnlockDlc",
-			backend_reward_id = "shovel_upgrade"
-		}
+			id = "17308f2304a046debd6d22e8054b501a",
+			product_label = "V2USNECROMANCER0",
+		},
 	},
 	CUSA13645_00 = {
 		shovel = {
-			product_label = "V2EUNECROMANCER0",
 			backend_reward_id = "shovel",
 			class = "UnlockDlc",
-			requires_restart = true,
-			id = "fee4879df76040f2adfca4629c58225f"
-		},
-		shovel_upgrade = {
 			id = "fee4879df76040f2adfca4629c58225f",
 			product_label = "V2EUNECROMANCER0",
+			requires_restart = true,
+		},
+		shovel_upgrade = {
+			backend_reward_id = "shovel_upgrade",
 			class = "UnlockDlc",
-			backend_reward_id = "shovel_upgrade"
-		}
-	}
+			id = "fee4879df76040f2adfca4629c58225f",
+			product_label = "V2EUNECROMANCER0",
+		},
+	},
 }
 settings.store_layout = {
 	structure = {
 		cosmetics = {
 			sienna = {
 				necromancer = {
-					necromancer_weapon_skins = "item_details"
-				}
-			}
-		}
+					necromancer_weapon_skins = "item_details",
+				},
+			},
+		},
 	},
 	pages = {
 		necromancer = {
-			sound_event_enter = "Play_hud_store_category_button",
-			layout = "category",
+			category_button_texture = "store_category_icon_sienna_necromancer",
 			display_name = "bw_necromancer",
 			item_filter = "can_wield_bw_necromancer",
+			layout = "category",
 			sort_order = 4,
-			category_button_texture = "store_category_icon_sienna_necromancer",
+			sound_event_enter = "Play_hud_store_category_button",
 			global_shader_flag_overrides = {
-				NECROMANCER_CAREER_REMAP = true
-			}
+				NECROMANCER_CAREER_REMAP = true,
+			},
 		},
 		necromancer_weapon_skins = {
-			sound_event_enter = "Play_hud_store_category_button",
-			layout = "item_list",
-			display_name = "menu_store_category_title_weapon_illusions",
-			type = "item",
-			item_filter = "item_type == weapon_skin",
-			sort_order = 3,
 			category_button_texture = "store_category_icon_weapons",
+			display_name = "menu_store_category_title_weapon_illusions",
+			item_filter = "item_type == weapon_skin",
+			layout = "item_list",
+			sort_order = 3,
+			sound_event_enter = "Play_hud_store_category_button",
+			type = "item",
 			global_shader_flag_overrides = {
-				NECROMANCER_CAREER_REMAP = true
-			}
-		}
-	}
+				NECROMANCER_CAREER_REMAP = true,
+			},
+		},
+	},
 }
 settings.network_damage_types = {
-	"cursed_blood_spread"
+	"cursed_blood_spread",
 }
 settings.bt_enter_hooks = {
 	disable_perception = function (unit, blackboard, t)
@@ -219,10 +222,10 @@ settings.bt_enter_hooks = {
 			blackboard.commander_extension:register_follow_node_update(unit)
 			blackboard.navigation_extension:set_enabled(true)
 		end
-	end
+	end,
 }
 settings.projectile_templates = {
-	"necromancer_trapped_soul"
+	"necromancer_trapped_soul",
 }
 settings.bt_leave_hooks = {
 	enable_perception = function (unit, blackboard, t)
@@ -245,21 +248,21 @@ settings.bt_leave_hooks = {
 		if blackboard.commander_extension then
 			blackboard.commander_extension:unregister_follow_node_update(unit)
 		end
-	end
+	end,
 }
 settings.progression_unlocks = {
 	bw_necromancer = {
 		description = "end_screen_career_unlocked",
-		profile = "bright_wizard",
-		value = "bw_necromancer",
-		title = "bw_necromancer",
 		level_requirement = 0,
-		unlock_type = "career"
-	}
+		profile = "bright_wizard",
+		title = "bw_necromancer",
+		unlock_type = "career",
+		value = "bw_necromancer",
+	},
 }
 settings.systems = {
-	"scripts/entity_system/systems/ai/ai_commander_system"
+	"scripts/entity_system/systems/ai/ai_commander_system",
 }
 settings.entity_extensions = {
-	"scripts/unit_extensions/ai_commander/ai_commander_extension"
+	"scripts/unit_extensions/ai_commander/ai_commander_extension",
 }

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/dlcs/shovel/action_soul_drain.lua
+
 ActionSoulDrain = class(ActionSoulDrain, ActionCareerTrueFlightAim)
 
 ActionSoulDrain.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
@@ -24,7 +26,9 @@ ActionSoulDrain.client_owner_start_action = function (self, new_action, t, chain
 	ActionSoulDrain.super.client_owner_start_action(self, new_action, t, chain_action_data, power_level)
 
 	self.current_action = new_action
+
 	local owner_unit = self.owner_unit
+
 	self.state = "waiting_to_shoot"
 	self.time_to_shoot = t + new_action.fire_time
 	self.current_target = nil
@@ -37,6 +41,7 @@ ActionSoulDrain.client_owner_start_action = function (self, new_action, t, chain
 	self.last_alive_target_hit = nil
 	self._is_critical_strike = false
 	self._num_hits = 0
+
 	local beam_effect = new_action.particle_effect_trail
 	local beam_effect_3p = new_action.particle_effect_trail_3p
 	local beam_end_effect = new_action.particle_effect_target
@@ -50,6 +55,7 @@ ActionSoulDrain.client_owner_start_action = function (self, new_action, t, chain
 	end
 
 	self.beam_end_effect_id = World.create_particles(world, beam_end_effect, Vector3.zero())
+
 	local go_id = self.unit_id
 
 	if self.is_server or LEVEL_EDITOR_TEST then
@@ -85,6 +91,7 @@ ActionSoulDrain._start_charge_sound = function (self)
 
 	if is_local and not is_bot then
 		local wwise_playing_id, wwise_source_id = ActionUtils.start_charge_sound(wwise_world, self.weapon_unit, owner_unit, current_action)
+
 		self.charging_sound_id = wwise_playing_id
 		self.wwise_source_id = wwise_source_id
 	end
@@ -123,13 +130,13 @@ ActionSoulDrain.client_owner_post_update = function (self, dt, t, world, can_dam
 	local buff_extension = self.owner_buff_extension
 	local status_extension = self.status_extension
 
-	if self.state == "waiting_to_shoot" and self.time_to_shoot <= t then
+	if self.state == "waiting_to_shoot" and t >= self.time_to_shoot then
 		self.state = "shooting"
 	end
 
 	self.overcharge_timer = self.overcharge_timer + dt
 
-	if current_action.overcharge_interval <= self.overcharge_timer then
+	if self.overcharge_timer >= current_action.overcharge_interval then
 		local overcharge_amount = PlayerUnitStatusSettings.overcharge_values.charging
 
 		self.overcharge_extension:add_charge(overcharge_amount)
@@ -142,11 +149,11 @@ ActionSoulDrain.client_owner_post_update = function (self, dt, t, world, can_dam
 	if self.state == "shooting" then
 		if not Managers.player:owner(self.owner_unit).bot_player and not self._rumble_effect_id then
 			self._rumble_effect_id = Managers.state.controller_features:add_effect("persistent_rumble", {
-				rumble_effect = "reload_start"
+				rumble_effect = "reload_start",
 			})
 		end
 
-		local beam_end_position, hit_unit = nil
+		local beam_end_position, hit_unit
 		local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
 		local current_position, current_rotation = first_person_extension:get_projectile_start_position_rotation()
 		local direction = Quaternion.forward(current_rotation)
@@ -158,8 +165,10 @@ ActionSoulDrain.client_owner_post_update = function (self, dt, t, world, can_dam
 		local physics_world = World.get_data(self.world, "physics_world")
 		local range = current_action.range or 30
 		local result = PhysicsWorld.immediate_raycast_actors(physics_world, current_position, direction, range, "static_collision_filter", "filter_player_ray_projectile_static_only", "dynamic_collision_filter", "filter_player_ray_projectile_ai_only", "dynamic_collision_filter", "filter_player_ray_projectile_hitbox_only")
+
 		beam_end_position = current_position + direction * range
-		local hit_position = nil
+
+		local hit_position
 
 		if result then
 			local difficulty_settings = Managers.state.difficulty:get_difficulty_settings()
@@ -170,17 +179,19 @@ ActionSoulDrain.client_owner_post_update = function (self, dt, t, world, can_dam
 				local potential_hit_position = hit_data[INDEX_POSITION]
 				local hit_actor = hit_data[INDEX_ACTOR]
 				local potential_hit_unit = Actor.unit(hit_actor)
+
 				potential_hit_unit, hit_actor = ActionUtils.redirect_shield_hit(potential_hit_unit, hit_actor)
 
 				if potential_hit_unit ~= owner_unit then
 					local breed = Unit.get_data(potential_hit_unit, "breed")
-					local hit_enemy = nil
+					local hit_enemy
 
 					if breed then
 						local is_enemy = DamageUtils.is_enemy(owner_unit, potential_hit_unit)
 						local node = Actor.node(hit_actor)
 						local hit_zone = breed.hit_zones_lookup[node]
 						local hit_zone_name = hit_zone.name
+
 						hit_enemy = (allow_friendly_fire or is_enemy) and hit_zone_name ~= "afro"
 					else
 						hit_enemy = true
@@ -225,8 +236,9 @@ ActionSoulDrain.client_owner_post_update = function (self, dt, t, world, can_dam
 
 						self:_handle_critical_strike(is_critical_strike, buff_extension, hud_extension, first_person_extension, "on_critical_shot", nil)
 
-						local override_damage_profile = nil
+						local override_damage_profile
 						local power_level = self.power_level
+
 						power_level = power_level * self.ramping_interval
 
 						if hit_unit ~= self.current_target then
@@ -251,7 +263,7 @@ ActionSoulDrain.client_owner_post_update = function (self, dt, t, world, can_dam
 
 						if not Managers.player:owner(self.owner_unit).bot_player then
 							Managers.state.controller_features:add_effect("rumble", {
-								rumble_effect = "hit_character_light"
+								rumble_effect = "hit_character_light",
 							})
 						end
 
@@ -357,7 +369,7 @@ ActionSoulDrain.finish = function (self, reason)
 	self:_proc_spell_used(self.owner_buff_extension)
 
 	return {
-		beam_consecutive_hits = math.max(self.consecutive_hits - 1, 0)
+		beam_consecutive_hits = math.max(self.consecutive_hits - 1, 0),
 	}
 end
 

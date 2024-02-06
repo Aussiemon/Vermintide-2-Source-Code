@@ -1,6 +1,9 @@
+﻿-- chunkname: @scripts/managers/voting/vote_manager.lua
+
 require("scripts/managers/voting/vote_templates")
 
 VoteManager = class(VoteManager)
+
 local VOTING_RPCS = {
 	"rpc_server_request_start_vote_peer_id",
 	"rpc_server_request_start_vote_lookup",
@@ -15,7 +18,7 @@ local VOTING_RPCS = {
 	"rpc_update_voters_list",
 	"rpc_client_check_dlc",
 	"rpc_server_check_dlc_reply",
-	"rpc_requirement_failed"
+	"rpc_requirement_failed",
 }
 
 VoteManager.init = function (self, ingame_context)
@@ -61,6 +64,7 @@ VoteManager.request_vote = function (self, name, vote_data, voter_peer_id, ignor
 	fassert(voter_peer_id ~= nil, "No voter peer id sent")
 
 	local vote_type_id = NetworkLookup.voting_types[name]
+
 	vote_data = vote_data or {}
 	vote_data.voter_peer_id = voter_peer_id
 
@@ -68,7 +72,7 @@ VoteManager.request_vote = function (self, name, vote_data, voter_peer_id, ignor
 		local start_new_voting = self:can_start_vote(name, vote_data)
 
 		if start_new_voting then
-			local dlc_dependencies = nil
+			local dlc_dependencies
 
 			if not ignore_dlc_check then
 				dlc_dependencies = self:_gather_dlc_dependencies(vote_data)
@@ -80,7 +84,7 @@ VoteManager.request_vote = function (self, name, vote_data, voter_peer_id, ignor
 					results = {},
 					voters = self:_active_peers(),
 					vote_data = vote_data,
-					voter_peer_id = voter_peer_id or Network.peer_id()
+					voter_peer_id = voter_peer_id or Network.peer_id(),
 				}
 
 				Managers.state.network.network_transmit:send_rpc_all("rpc_client_check_dlc", dlc_dependencies)
@@ -175,7 +179,7 @@ VoteManager.can_start_vote = function (self, name, vote_data)
 
 	local num_players = Managers.player:num_human_players()
 	local min_required_voters = vote_template.min_required_voters or 1
-	local enough_players = num_players >= min_required_voters
+	local enough_players = min_required_voters <= num_players
 
 	if not enough_players then
 		return false
@@ -360,7 +364,7 @@ end
 VoteManager._time_ended = function (self, t)
 	local active_voting = self.active_voting
 
-	if active_voting.end_time and active_voting.end_time <= t then
+	if active_voting.end_time and t >= active_voting.end_time then
 		return true
 	end
 
@@ -437,13 +441,14 @@ end
 VoteManager._server_start_vote = function (self, name, ignore_peer_list, data)
 	local vote_template = VoteTemplates[name]
 	local network_time = Managers.state.network:network_time()
+
 	self.active_voting = {
 		name = name,
 		template = vote_template,
 		end_time = vote_template.duration and network_time + vote_template.duration or nil,
 		votes = {},
 		voters = self:_get_voter_start_list(ignore_peer_list),
-		data = data
+		data = data,
 	}
 
 	if vote_template.on_start then
@@ -489,6 +494,7 @@ VoteManager._update_voter_list_by_active_peers = function (self, active_peers, v
 
 	for _, player in pairs(human_players) do
 		local peer_id = player.peer_id
+
 		active_peers[peer_id] = true
 	end
 
@@ -520,7 +526,7 @@ VoteManager.rpc_vote = function (self, channel_id, vote_cast)
 	local active_voting = self.active_voting
 
 	if active_voting then
-		local peer_id = nil
+		local peer_id
 
 		if channel_id == IS_LOCAL_CALL then
 			peer_id = Network.peer_id()
@@ -681,13 +687,14 @@ VoteManager._start_vote_base = function (self, peer_id, vote_type_id, sync_data,
 
 	local network_time = Managers.state.network:network_time()
 	local data = vote_template.extract_sync_data(sync_data)
+
 	self.active_voting = {
 		name = vote_type_name,
 		template = vote_template,
 		end_time = vote_template.duration and network_time + vote_template.duration or nil,
 		voters = voters,
 		votes = {},
-		data = data
+		data = data,
 	}
 
 	Managers.matchmaking:set_local_quick_game(false)
@@ -716,12 +723,13 @@ end
 VoteManager.rpc_client_complete_vote = function (self, channel_id, vote_result)
 	if self.active_voting then
 		local number_of_votes, vote_results = self:_number_of_votes()
+
 		self.previous_voting_info = {
 			text = self.active_voting.text,
 			number_of_votes = number_of_votes,
 			vote_results = vote_results,
 			vote_result = vote_result,
-			votes = self.active_voting.votes
+			votes = self.active_voting.votes,
 		}
 
 		if self:is_mission_vote() then
@@ -780,12 +788,14 @@ end
 VoteManager.rpc_server_check_dlc_reply = function (self, channel_id, success)
 	local requirement_check_data = self._requirement_check_data
 	local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
 	requirement_check_data.results[peer_id] = success
 end
 
 VoteManager.rpc_requirement_failed = function (self, channel_id, vote_id, message)
 	local header = Localize("required_power_level_not_met_in_party")
 	local vote_name = NetworkLookup.voting_types[vote_id]
+
 	self._popup_id = Managers.popup:queue_popup(message, header, "ok", Localize("button_ok"))
 end
 
@@ -847,6 +857,7 @@ VoteManager._active_peers = function (self)
 
 	for _, player in pairs(human_players) do
 		local peer_id = player.peer_id
+
 		peers_local[peer_id] = true
 	end
 

@@ -1,6 +1,9 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/chaos_sorcerer/bt_chaos_sorcerer_charge_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 local stagger_types = require("scripts/utils/stagger_types")
+
 BTChaosSorcererChargeAction = class(BTChaosSorcererChargeAction, BTNode)
 
 BTChaosSorcererChargeAction.init = function (self, ...)
@@ -19,6 +22,7 @@ end
 
 BTChaosSorcererChargeAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
+
 	blackboard.action = action
 	blackboard.active_node = BTChaosSorcererChargeAction
 	blackboard.attack_finished = false
@@ -30,12 +34,14 @@ BTChaosSorcererChargeAction.enter = function (self, unit, blackboard, t)
 	blackboard.charge_target_position = Vector3Box(0, 0, 0)
 	blackboard.charge_target_unit = blackboard.target_unit
 	blackboard.lunge_data = action.lunge
+
 	local start_animation = randomize(action.start_animation)
 
 	Managers.state.network:anim_event(unit, start_animation)
 
 	blackboard.spawn_to_running = nil
 	blackboard.charge_state = "starting"
+
 	local navigation_extension = blackboard.navigation_extension
 	local locomotion_extension = blackboard.locomotion_extension
 
@@ -47,18 +53,23 @@ BTChaosSorcererChargeAction.enter = function (self, unit, blackboard, t)
 	blackboard.stored_rotation = QuaternionBox(Quaternion.identity())
 	blackboard.hit_units = {}
 	blackboard.pushed_units = {}
+
 	local ai_slot_system = Managers.state.entity:system("ai_slot_system")
 
 	ai_slot_system:do_slot_search(unit, false)
 
 	local hit_reaction_extension = ScriptUnit.extension(unit, "hit_reaction_system")
+
 	hit_reaction_extension.force_ragdoll_on_death = true
 
 	AiUtils.add_attack_intensity(blackboard.charge_target_unit, action, blackboard)
 
 	blackboard.lean_target_position_boxed = Vector3Box()
+
 	local old_cost_table = blackboard.navigation_extension:get_navtag_layer_cost_table()
+
 	blackboard.old_navtag_layer_cost_table = old_cost_table
+
 	local charge_navtag_layer_cost_table = blackboard.charge_navtag_layer_cost_table
 
 	if charge_navtag_layer_cost_table then
@@ -94,7 +105,9 @@ BTChaosSorcererChargeAction.leave = function (self, unit, blackboard, t, reason,
 		GwNavTraverseLogic.set_navtag_layer_cost_table(traverse_logic, blackboard.old_navtag_layer_cost_table)
 
 		blackboard.old_navtag_layer_cost_table = nil
+
 		local hit_reaction_extension = ScriptUnit.extension(unit, "hit_reaction_system")
+
 		hit_reaction_extension.force_ragdoll_on_death = nil
 
 		blackboard.locomotion_extension:use_lerp_rotation(true)
@@ -105,6 +118,7 @@ BTChaosSorcererChargeAction.leave = function (self, unit, blackboard, t, reason,
 
 	if target_unit_status_extension then
 		local num_charges_targeting_player = target_unit_status_extension.num_charges_targeting_player or 0
+
 		num_charges_targeting_player = num_charges_targeting_player - 1
 		target_unit_status_extension.num_charges_targeting_player = num_charges_targeting_player
 
@@ -134,6 +148,7 @@ BTChaosSorcererChargeAction.leave = function (self, unit, blackboard, t, reason,
 	blackboard.triggered_dodge_sound = nil
 	blackboard.charge_target_position = nil
 	blackboard.lunge_data = nil
+
 	local ai_slot_system = Managers.state.entity:system("ai_slot_system")
 
 	ai_slot_system:do_slot_search(unit, true)
@@ -153,7 +168,7 @@ BTChaosSorcererChargeAction.run = function (self, unit, blackboard, t, dt)
 	local charge_state = blackboard.charge_state
 
 	if charge_state == "starting" then
-		if blackboard.test_start_time < t then
+		if t > blackboard.test_start_time then
 			self:anim_cb_start_finished(unit, blackboard)
 
 			blackboard.test_start_time = nil
@@ -161,21 +176,22 @@ BTChaosSorcererChargeAction.run = function (self, unit, blackboard, t, dt)
 	elseif charge_state == "impact" then
 		blackboard.test_start_time = blackboard.test_start_time or t + 1
 
-		if blackboard.test_start_time < t then
+		if t > blackboard.test_start_time then
 			self:anim_cb_charge_impact_finished(unit, blackboard)
 
 			blackboard.test_start_time = t + 1
 		end
 	end
 
-	if blackboard.ray_can_go_update_time < t and Unit.alive(target_unit) then
+	if t > blackboard.ray_can_go_update_time and Unit.alive(target_unit) then
 		local nav_world = blackboard.nav_world
 		local target_position = POSITION_LOOKUP[target_unit]
+
 		blackboard.ray_can_go_to_target = LocomotionUtils.ray_can_go_on_mesh(nav_world, POSITION_LOOKUP[unit], target_position, nil, 1, 1)
 		blackboard.ray_can_go_update_time = t + 0.25
 	end
 
-	local should_evaluate = nil
+	local should_evaluate
 
 	if charge_state == "starting" then
 		self:_run_starting(unit, blackboard)
@@ -197,6 +213,7 @@ end
 BTChaosSorcererChargeAction._start_charging = function (self, unit, blackboard)
 	local action = blackboard.action
 	local t = Managers.time:time("game")
+
 	blackboard.charge_state = "charging"
 
 	blackboard.locomotion_extension:set_rotation_speed(action.charge_rotation_speed)
@@ -211,9 +228,14 @@ end
 BTChaosSorcererChargeAction._start_lunge = function (self, unit, blackboard, lunge_data, distance_to_target, t)
 	blackboard.charge_state = "lunge"
 	blackboard.time_to_impact = t + 0.25
+
 	local distance_thresholds = lunge_data.enter_thresholds
 	local distance_identifier = self:_pick_distance_identifier(distance_thresholds, distance_to_target)
-	local lunge_animation = lunge_data.animations and lunge_data.animations[distance_identifier]
+
+	if lunge_data.animations then
+		local lunge_animation = lunge_data.animations[distance_identifier]
+	end
+
 	local locomotion_extension = blackboard.locomotion_extension
 	local current_velocity = locomotion_extension:current_velocity()
 	local lunge_velocity_scaling = lunge_data.velocity_scaling
@@ -256,12 +278,16 @@ BTChaosSorcererChargeAction._start_align_to_target = function (self, unit, black
 	end
 
 	local t = Managers.time:time("game")
+
 	blackboard.charge_state = "align_to_target"
+
 	local align_to_target_animation = action.align_to_target_animation
 	local start_align_t = t
 	local end_align_t = t + action.end_align_t
+
 	blackboard.start_align_t = start_align_t
 	blackboard.end_align_t = end_align_t
+
 	local locomotion_extension = blackboard.locomotion_extension
 
 	locomotion_extension:use_lerp_rotation(true)
@@ -271,7 +297,9 @@ BTChaosSorcererChargeAction._cancel_charge = function (self, unit, blackboard)
 	blackboard.navigation_extension:set_enabled(false)
 
 	local cancel_animation = blackboard.action.cancel_animation
+
 	blackboard.charge_state = "cancel"
+
 	local locomotion_extension = blackboard.locomotion_extension
 
 	locomotion_extension:set_rotation_speed(nil)
@@ -282,7 +310,7 @@ BTChaosSorcererChargeAction._check_lunge = function (self, unit, blackboard, t)
 
 	self:_check_overlap(unit, blackboard, action)
 
-	if blackboard.time_to_impact < t then
+	if t > blackboard.time_to_impact then
 		self:_start_impact(unit, blackboard, true, false, false)
 	end
 end
@@ -298,7 +326,7 @@ BTChaosSorcererChargeAction._check_overlap = function (self, unit, blackboard, a
 	local self_pos = Unit.local_position(unit, 0) - Vector3.down()
 	local head_pos = Unit.world_position(unit, Unit.node(unit, "j_head"))
 	local forward_dir = Quaternion.forward(Unit.local_rotation(unit, 0))
-	local succesfully_hit_target, blocked = nil
+	local succesfully_hit_target, blocked
 	local side = blackboard.side
 	local PLAYER_AND_BOT_UNITS = side.ENEMY_PLAYER_AND_BOT_UNITS
 
@@ -408,7 +436,7 @@ BTChaosSorcererChargeAction._hit_ai = function (self, unit, hit_unit, action, bl
 	if push_data then
 		local stagger_type, stagger_duration = DamageUtils.calculate_stagger(push_data.stagger_impact, push_data.stagger_duration, hit_unit, unit)
 
-		if stagger_types.none < stagger_type then
+		if stagger_type > stagger_types.none then
 			local self_pos = POSITION_LOOKUP[unit]
 			local hit_unit_pos = POSITION_LOOKUP[hit_unit]
 			local direction_to_ai = Vector3.normalize(hit_unit_pos - self_pos)
@@ -467,6 +495,7 @@ BTChaosSorcererChargeAction._run_charging = function (self, unit, blackboard, t,
 	locomotion_extension:set_wanted_velocity(new_velocity)
 
 	blackboard.current_charge_speed = wanted_charge_speed
+
 	local distance_to_target = Vector3.distance(self_position, target_position)
 	local lunge_data = blackboard.lunge_data
 
@@ -479,7 +508,7 @@ end
 
 BTChaosSorcererChargeAction._run_lunge = function (self, unit, blackboard, lunge_data, t, dt)
 	local locomotion_extension = blackboard.locomotion_extension
-	local slow_down_speed = nil
+	local slow_down_speed
 
 	locomotion_extension:use_lerp_rotation(false)
 	locomotion_extension:set_rotation_speed(nil)
@@ -520,7 +549,7 @@ BTChaosSorcererChargeAction._run_cancel = function (self, unit, blackboard, t, d
 end
 
 BTChaosSorcererChargeAction._pick_distance_identifier = function (self, distance_threshold_table, distance)
-	local wanted_distance_identifier, previous_distance_identifier = nil
+	local wanted_distance_identifier, previous_distance_identifier
 	local previous_threshold = 0
 
 	for distance_identifier, threshold in pairs(distance_threshold_table) do

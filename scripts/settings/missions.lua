@@ -1,1754 +1,1755 @@
-Missions = {
-	test_collect_01 = {
-		text = "test_collect_01_mission_text",
-		mission_template_name = "collect",
-		collect_amount = 1,
-		hidden = true
-	},
-	test_defend_01 = {
-		text = "test_defend_01_mission_text",
-		defend_amount = 1,
-		mission_template_name = "defend"
-	},
-	test_timed_01 = {
-		text = "test_timed_01_mission_text",
-		duration = 18,
-		mission_template_name = "timed"
-	},
-	escape_ferry = {
-		mission_template_name = "simple",
-		text = "generic_escape_ferry"
-	},
-	escape_wagon = {
-		mission_template_name = "simple",
-		text = "generic_escape_wagon"
-	},
-	escape_elevator = {
-		mission_template_name = "simple",
-		text = "generic_escape_elevator"
-	},
-	magnus_door_bombing_01 = {
-		text = "magnus_door_bombing_01_mission_text",
-		mission_template_name = "collect",
-		collect_amount = 3
-	},
-	magnus_alert_guards = {
-		mission_template_name = "goal",
-		text = "magnus_alert_guards_mission_text"
-	},
-	magnus_reach_tower = {
-		mission_template_name = "goal",
-		text = "magnus_reach_tower_mission_text"
-	},
-	magnus_sound_horn = {
-		mission_template_name = "goal",
-		text = "magnus_sound_horn_mission_text"
-	},
-	magnus_reach_top = {
-		mission_template_name = "goal",
-		text = "magnus_reach_top_mission_text"
-	},
-	mission_goal_magnus_survive_attack = {
-		mission_template_name = "goal",
-		text = "mission_goal_magnus_survive"
-	},
-	mission_goal_magnus_escape = {
-		mission_template_name = "goal",
-		text = "mission_goal_magnus_escape"
-	},
-	mission_goal_magnus_elevator = {
-		mission_template_name = "goal",
-		text = "mission_goal_magnus_elevator"
-	},
-	farm_gathering_event = {
-		text = "farm_gathering_event",
-		mission_template_name = "collect",
-		collect_amount = 6
-	},
-	courtyard_defend = {
-		mission_template_name = "goal",
-		text = "courtyard_defend_mission_text"
-	},
-	courtyard_defend_well_a = {
-		text = "courtyard_well_a_mission_text",
-		defend_amount = 1,
-		mission_template_name = "defend"
-	},
-	courtyard_defend_well_b = {
-		text = "courtyard_well_b_mission_text",
-		defend_amount = 1,
-		mission_template_name = "defend"
-	},
-	beer_collection = {
-		text = "collect_beer_mission_text",
-		mission_template_name = "collect",
-		collect_amount = 4
-	},
-	forest_ambush_doomwheel_bombing = {
-		text = "forest_ambush_doomwheel_bombing_mission_text",
-		mission_template_name = "collect",
-		collect_amount = 3
-	},
-	docks_destroy_pillars = {
-		text = "docks_destroy_pillars_mission_text",
-		mission_template_name = "collect",
-		collect_amount = 4
-	},
-	docks_bomb_event = {
-		text = "docks_bomb_event_mission_text",
-		mission_template_name = "collect",
-		collect_amount = 5
-	},
-	bridge_gathering_event = {
-		text = "mission_objective_bridge_gathering_event",
-		mission_template_name = "collect",
-		collect_amount = 8
-	},
-	mission_objective_city_walls_destroy_chains = {
-		text = "mission_objective_city_walls_destroy_chains",
-		mission_template_name = "collect",
-		collect_amount = 4
-	},
-	tunnels_bomb_pillar = {
-		text = "tunnels_bomb_pillar_mission_text",
-		mission_template_name = "collect",
-		collect_amount = 3
-	},
-	mission_objective_cemetery_cut_down_all = {
-		text = "mission_objective_cemetery_cut_chains",
-		mission_template_name = "collect",
-		collect_amount = 4
-	},
-	end_boss_destroy_supports = {
-		text = "mission_objective_end_boss_destroy_supports",
-		mission_template_name = "collect",
-		collect_amount = 3
-	},
-	end_boss_destroy_chains = {
-		text = "mission_objective_end_boss_destroy_chains",
-		mission_template_name = "collect",
-		collect_amount = 4
-	},
-	merchant_gathering_event = {
-		text = "merchant_gathering_event_mission_text",
-		mission_template_name = "collect",
-		collect_amount = 5
-	},
-	dlc_castle_enter_castle = {
-		mission_template_name = "goal",
-		text = "dlc1_4_castle_enter_castle_mission_text"
-	},
-	dlc_castle_find_chalice = {
-		mission_template_name = "goal",
-		text = "dlc1_4_castle_find_chalice_mission_text"
-	},
-	dlc_castle_get_chalice = {
-		mission_template_name = "goal",
-		text = "dlc1_4_castle_get_chalice_mission_text"
-	},
-	dlc_castle_escape = {
-		mission_template_name = "goal",
-		text = "dlc1_4_castle_escape_mission_text"
-	},
-	dlc_castle_statuettes = {
-		text = "dlc1_4_castle_statuettes_mission_text",
-		mission_template_name = "collect",
-		collect_amount = 3
-	},
-	whitebox_tutorial_sidemission_1 = {
-		is_side_mission = true,
-		collect_amount = 3,
-		mission_template_name = "collect",
-		text = "magnus_door_bombing_01_mission_text"
-	},
-	tome_bonus_mission = {
-		is_side_mission = true,
-		evaluation_type = "amount",
-		mission_template_name = "collect_uncompletable",
-		experience_per_amount = 20,
-		evaluate_at_level_end = true,
-		collect_amount = 3,
-		dice_type = "gold",
-		text = "tome_bonus_mission_text",
-		dice_per_amount = 1
-	},
-	grimoire_hidden_mission = {
-		is_side_mission = true,
-		evaluation_type = "amount",
-		mission_template_name = "collect_uncompletable",
-		experience_per_amount = 50,
-		evaluate_at_level_end = true,
-		collect_amount = 2,
-		dice_type = "warpstone",
-		hidden = true,
-		text = "grimoire_hidden_mission_text",
-		dice_per_amount = 1
-	},
-	bonus_dice_hidden_mission = {
-		is_side_mission = true,
-		evaluation_type = "amount",
-		mission_template_name = "collect_uncompletable",
-		experience_per_amount = 5,
-		evaluate_at_level_end = true,
-		collect_amount = 2,
-		dice_type = "metal",
-		hidden = true,
-		text = "bonus_dice_hidden_mission_text",
-		dice_per_amount = 1
-	},
-	painting_scrap_hidden_mission = {
-		text = "bonus_painting_scrap_hidden_mission_text",
-		collect_amount = 1,
-		mission_template_name = "collect_uncompletable",
-		experience_per_amount = 5,
-		evaluation_type = "amount",
-		evaluate_at_level_end = true,
-		is_side_mission = true,
-		hidden = true
-	},
-	players_alive_mission = {
-		text = "players_alive_mission_text",
-		is_side_mission = true,
-		mission_template_name = "players_alive",
-		experience_per_amount = 25,
-		evaluation_type = "amount",
-		evaluate_at_level_end = true,
-		hidden = true
-	},
-	whitebox_tutorial_goal_1 = {
-		mission_template_name = "goal",
-		text = "forest_ambush_call_boat_mission_text"
-	},
-	whitebox_tutorial_goal_2 = {
-		mission_template_name = "goal",
-		text = "forest_ambush_escape_boat_mission_text"
-	},
-	mission_sewers_short_open_door_1 = {
-		text = "mission_sewers_short_open_door_1",
-		mission_template_name = "goal",
-		collect_amount = 1
-	},
-	mission_sewers_short_open_door_2 = {
-		text = "mission_sewers_short_open_door_2",
-		mission_template_name = "goal",
-		collect_amount = 1
-	},
-	mission_sewers_short_clear_path = {
-		text = "mission_sewers_short_clear_path",
-		mission_template_name = "goal",
-		collect_amount = 1
-	},
-	mission_sewers_short_leave_sewer = {
-		text = "mission_sewers_short_leave_sewer",
-		mission_template_name = "goal",
-		collect_amount = 1
-	},
-	mission_sewers_short_escape = {
-		text = "mission_sewers_short_escape",
-		mission_template_name = "goal",
-		collect_amount = 1
-	},
-	bridge_reach_bridge = {
-		text = "mission_goal_bridge_reach_bridge",
-		mission_template_name = "goal",
-		collect_amount = 1
-	},
-	bridge_escape = {
-		text = "mission_goal_bridge_escape",
-		mission_template_name = "goal",
-		collect_amount = 1
-	},
-	merchant_find_district = {
-		text = "mission_goal_merchant_find_district",
-		mission_template_name = "goal",
-		collect_amount = 1
-	},
-	merchant_reach_square = {
-		text = "mission_goal_merchant_reach_square",
-		mission_template_name = "goal",
-		collect_amount = 1
-	},
-	merchant_escape = {
-		text = "mission_goal_merchant_escape",
-		mission_template_name = "goal",
-		collect_amount = 1
-	},
-	mission_city_walls_up = {
-		mission_template_name = "goal",
-		text = "mission_city_walls_up"
-	},
-	mission_city_walls_find_bell = {
-		mission_template_name = "goal",
-		text = "mission_city_walls_find_bell"
-	},
-	mission_city_walls_destroy_bell = {
-		mission_template_name = "goal",
-		text = "mission_city_walls_destroy_bell"
-	},
-	mission_city_walls_destroy_support = {
-		mission_template_name = "goal",
-		text = "mission_city_walls_destroy_support"
-	},
-	mission_city_walls_escape = {
-		mission_template_name = "goal",
-		text = "mission_city_walls_escape"
-	},
-	forest_ambush_find_camp = {
-		mission_template_name = "goal",
-		text = "forest_ambush_find_camp_mission_text"
-	},
-	forest_ambush_leave_camp = {
-		mission_template_name = "goal",
-		text = "forest_ambush_leave_camp_mission_text"
-	},
-	forest_ambush_get_to_the_river = {
-		mission_template_name = "goal",
-		text = "forest_ambush_get_to_the_river_mission_text"
-	},
-	forest_ambush_call_boat = {
-		mission_template_name = "goal",
-		text = "forest_ambush_call_boat_mission_text"
-	},
-	forest_ambush_wait_for_boat = {
-		mission_template_name = "goal",
-		text = "forest_ambush_wait_for_boat_mission_text"
-	},
-	forest_ambush_escape_boat = {
-		mission_template_name = "goal",
-		text = "forest_ambush_escape_boat_mission_text"
-	},
-	tunnels_start = {
-		mission_template_name = "goal",
-		text = "tunnels_start_mission_text"
-	},
-	tunnels_investigate_tunnels = {
-		mission_template_name = "goal",
-		text = "tunnels_investigate_tunnels_mission_text"
-	},
-	tunnels_escape = {
-		mission_template_name = "goal",
-		text = "tunnels_escape_mission_text"
-	},
-	tunnels_to_ferry_lady = {
-		mission_template_name = "goal",
-		text = "tunnels_to_ferry_lady_mission_text"
-	},
-	mission_goal_cemetery_wall = {
-		mission_template_name = "goal",
-		text = "mission_goal_cemetery_wall"
-	},
-	mission_goal_cemetery_source = {
-		mission_template_name = "goal",
-		text = "mission_goal_cemetery_source"
-	},
-	mission_goal_cemetery_entrance = {
-		mission_template_name = "goal",
-		text = "mission_goal_cemetery_entrance"
-	},
-	mission_goal_cemetery_cut_down = {
-		mission_template_name = "goal",
-		text = "mission_goal_cemetery_cut_down"
-	},
-	mission_goal_cemetery_get_back = {
-		mission_template_name = "goal",
-		text = "mission_goal_cemetery_get_back"
-	},
-	docks_start_goal = {
-		mission_template_name = "goal",
-		text = "docks_start_goal_mission_text"
-	},
-	docks_next_warehouse = {
-		mission_template_name = "goal",
-		text = "docks_next_warehouse_mission_text"
-	},
-	docks_back_to_boat = {
-		mission_template_name = "goal",
-		text = "docks_back_to_boat_mission_text"
-	},
-	docks_escape_house = {
-		mission_template_name = "goal",
-		text = "docks_escape_house_mission_text"
-	},
-	end_boss_find_lair = {
-		mission_template_name = "goal",
-		text = "mission_goal_end_boss_find_lair"
-	},
-	end_boss_enter_lair = {
-		mission_template_name = "goal",
-		text = "mission_goal_end_boss_enter_lair"
-	},
-	end_boss_open_door = {
-		mission_template_name = "goal",
-		text = "mission_objective_end_boss_open_door"
-	},
-	end_boss_proceed_upwards_1 = {
-		mission_template_name = "goal",
-		text = "mission_objective_end_boss_proceed_up"
-	},
-	end_boss_proceed_upwards_2 = {
-		mission_template_name = "goal",
-		text = "mission_objective_end_boss_proceed_up"
-	},
-	end_boss_destroy_bell = {
-		mission_template_name = "goal",
-		text = "mission_goal_end_boss_destroy_bell"
-	},
-	end_boss_stop_seer = {
-		mission_template_name = "goal",
-		text = "mission_goal_end_boss_stop_seer"
-	},
-	end_boss_escape = {
-		mission_template_name = "goal",
-		text = "mission_goal_end_boss_escape"
-	},
-	survival_wave = {
-		text = "dlc1_2_survival_mission_waves_completed",
-		wave_prepare_text = "dlc1_2_survival_mission_prepare",
-		mission_template_name = "survival",
-		evaluate_at_level_end = true,
-		wave_completed_text = "dlc1_2_survival_mission_wave_completed",
-		experience_per_percent = 0.7,
-		wave_text = "dlc1_2_survival_mission_wave"
-	},
-	dlc1_4_portals_find_camp = {
-		mission_template_name = "goal",
-		text = "dlc1_4_mission_goal_portals_find_camp"
-	},
-	dlc1_4_portals_portal_a = {
-		mission_template_name = "goal",
-		text = "dlc1_4_mission_goal_portals_portal_a"
-	},
-	dlc1_4_portals_portal_b = {
-		mission_template_name = "goal",
-		text = "dlc1_4_mission_goal_portals_portal_b"
-	},
-	dlc1_4_portals_portal_c = {
-		mission_template_name = "goal",
-		text = "dlc1_4_mission_goal_portals_portal_c"
-	},
-	dlc1_4_portals_escape = {
-		mission_template_name = "goal",
-		text = "dlc1_4_mission_goal_portals_escape"
-	},
-	dlc1_4_portals_overheat_a = {
-		mission_template_name = "goal",
-		text = "dlc1_4_mission_goal_portals_overheat_a"
-	},
-	dlc1_4_portals_overheat_b = {
-		mission_template_name = "goal",
-		text = "dlc1_4_mission_goal_portals_overheat_b"
-	},
-	dlc1_4_portals_overheat_c = {
-		mission_template_name = "goal",
-		text = "dlc1_4_mission_goal_portals_overheat_c"
-	},
-	mission_dlc_castle_dungeon_search_dungeon = {
-		mission_template_name = "goal",
-		text = "dlc1_4_mission_dungeon_search_dungeon"
-	},
-	mission_dlc_castle_dungeon_push_through = {
-		mission_template_name = "goal",
-		text = "dlc1_4_mission_dungeon_push_through"
-	},
-	mission_dlc_castle_dungeon_grab_artifact1 = {
-		mission_template_name = "goal",
-		text = "dlc1_4_mission_dungeon_grab_artifact1"
-	},
-	mission_dlc_castle_dungeon_continue_search = {
-		mission_template_name = "goal",
-		text = "dlc1_4_mission_dungeon_continue_search"
-	},
-	mission_dlc_castle_dungeon_descend_darkness_with_torch = {
-		mission_template_name = "goal",
-		text = "dlc1_4_mission_dungeon_descend_darkness_with_torch"
-	},
-	mission_dlc_castle_dungeon_grab_artifact2 = {
-		mission_template_name = "goal",
-		text = "dlc1_4_mission_dungeon_grab_artifact2"
-	},
-	mission_dlc_castle_dungeon_survive_until_way_out = {
-		mission_template_name = "goal",
-		text = "dlc1_4_mission_dungeon_survive_until_way_out"
-	},
-	mission_dlc_castle_dungeon_escape_up = {
-		mission_template_name = "goal",
-		text = "dlc1_4_mission_dungeon_escape_up"
-	},
-	tutorial_movement = {
-		text = "mission_objective_tutorial_movement",
-		mission_template_name = "simple",
-		dont_show_mission_end_tooltip = true,
-		tooltip_text = "tutorial_tooltip_move",
-		tooltip_inputs = {
-			{
-				suffix = "",
-				prefix = "",
-				action = "move_forward"
-			},
-			{
-				suffix = "",
-				prefix = "",
-				action = "move_left_pressed"
-			},
-			{
-				suffix = "",
-				prefix = "",
-				action = "move_back_pressed"
-			},
-			{
-				suffix = "",
-				prefix = "",
-				action = "move_right_pressed"
-			}
+﻿-- chunkname: @scripts/settings/missions.lua
+
+Missions = {}
+Missions.test_collect_01 = {
+	collect_amount = 1,
+	hidden = true,
+	mission_template_name = "collect",
+	text = "test_collect_01_mission_text",
+}
+Missions.test_defend_01 = {
+	defend_amount = 1,
+	mission_template_name = "defend",
+	text = "test_defend_01_mission_text",
+}
+Missions.test_timed_01 = {
+	duration = 18,
+	mission_template_name = "timed",
+	text = "test_timed_01_mission_text",
+}
+Missions.escape_ferry = {
+	mission_template_name = "simple",
+	text = "generic_escape_ferry",
+}
+Missions.escape_wagon = {
+	mission_template_name = "simple",
+	text = "generic_escape_wagon",
+}
+Missions.escape_elevator = {
+	mission_template_name = "simple",
+	text = "generic_escape_elevator",
+}
+Missions.magnus_door_bombing_01 = {
+	collect_amount = 3,
+	mission_template_name = "collect",
+	text = "magnus_door_bombing_01_mission_text",
+}
+Missions.magnus_alert_guards = {
+	mission_template_name = "goal",
+	text = "magnus_alert_guards_mission_text",
+}
+Missions.magnus_reach_tower = {
+	mission_template_name = "goal",
+	text = "magnus_reach_tower_mission_text",
+}
+Missions.magnus_sound_horn = {
+	mission_template_name = "goal",
+	text = "magnus_sound_horn_mission_text",
+}
+Missions.magnus_reach_top = {
+	mission_template_name = "goal",
+	text = "magnus_reach_top_mission_text",
+}
+Missions.mission_goal_magnus_survive_attack = {
+	mission_template_name = "goal",
+	text = "mission_goal_magnus_survive",
+}
+Missions.mission_goal_magnus_escape = {
+	mission_template_name = "goal",
+	text = "mission_goal_magnus_escape",
+}
+Missions.mission_goal_magnus_elevator = {
+	mission_template_name = "goal",
+	text = "mission_goal_magnus_elevator",
+}
+Missions.farm_gathering_event = {
+	collect_amount = 6,
+	mission_template_name = "collect",
+	text = "farm_gathering_event",
+}
+Missions.courtyard_defend = {
+	mission_template_name = "goal",
+	text = "courtyard_defend_mission_text",
+}
+Missions.courtyard_defend_well_a = {
+	defend_amount = 1,
+	mission_template_name = "defend",
+	text = "courtyard_well_a_mission_text",
+}
+Missions.courtyard_defend_well_b = {
+	defend_amount = 1,
+	mission_template_name = "defend",
+	text = "courtyard_well_b_mission_text",
+}
+Missions.beer_collection = {
+	collect_amount = 4,
+	mission_template_name = "collect",
+	text = "collect_beer_mission_text",
+}
+Missions.forest_ambush_doomwheel_bombing = {
+	collect_amount = 3,
+	mission_template_name = "collect",
+	text = "forest_ambush_doomwheel_bombing_mission_text",
+}
+Missions.docks_destroy_pillars = {
+	collect_amount = 4,
+	mission_template_name = "collect",
+	text = "docks_destroy_pillars_mission_text",
+}
+Missions.docks_bomb_event = {
+	collect_amount = 5,
+	mission_template_name = "collect",
+	text = "docks_bomb_event_mission_text",
+}
+Missions.bridge_gathering_event = {
+	collect_amount = 8,
+	mission_template_name = "collect",
+	text = "mission_objective_bridge_gathering_event",
+}
+Missions.mission_objective_city_walls_destroy_chains = {
+	collect_amount = 4,
+	mission_template_name = "collect",
+	text = "mission_objective_city_walls_destroy_chains",
+}
+Missions.tunnels_bomb_pillar = {
+	collect_amount = 3,
+	mission_template_name = "collect",
+	text = "tunnels_bomb_pillar_mission_text",
+}
+Missions.mission_objective_cemetery_cut_down_all = {
+	collect_amount = 4,
+	mission_template_name = "collect",
+	text = "mission_objective_cemetery_cut_chains",
+}
+Missions.end_boss_destroy_supports = {
+	collect_amount = 3,
+	mission_template_name = "collect",
+	text = "mission_objective_end_boss_destroy_supports",
+}
+Missions.end_boss_destroy_chains = {
+	collect_amount = 4,
+	mission_template_name = "collect",
+	text = "mission_objective_end_boss_destroy_chains",
+}
+Missions.merchant_gathering_event = {
+	collect_amount = 5,
+	mission_template_name = "collect",
+	text = "merchant_gathering_event_mission_text",
+}
+Missions.dlc_castle_enter_castle = {
+	mission_template_name = "goal",
+	text = "dlc1_4_castle_enter_castle_mission_text",
+}
+Missions.dlc_castle_find_chalice = {
+	mission_template_name = "goal",
+	text = "dlc1_4_castle_find_chalice_mission_text",
+}
+Missions.dlc_castle_get_chalice = {
+	mission_template_name = "goal",
+	text = "dlc1_4_castle_get_chalice_mission_text",
+}
+Missions.dlc_castle_escape = {
+	mission_template_name = "goal",
+	text = "dlc1_4_castle_escape_mission_text",
+}
+Missions.dlc_castle_statuettes = {
+	collect_amount = 3,
+	mission_template_name = "collect",
+	text = "dlc1_4_castle_statuettes_mission_text",
+}
+Missions.whitebox_tutorial_sidemission_1 = {
+	collect_amount = 3,
+	is_side_mission = true,
+	mission_template_name = "collect",
+	text = "magnus_door_bombing_01_mission_text",
+}
+Missions.tome_bonus_mission = {
+	collect_amount = 3,
+	dice_per_amount = 1,
+	dice_type = "gold",
+	evaluate_at_level_end = true,
+	evaluation_type = "amount",
+	experience_per_amount = 20,
+	is_side_mission = true,
+	mission_template_name = "collect_uncompletable",
+	text = "tome_bonus_mission_text",
+}
+Missions.grimoire_hidden_mission = {
+	collect_amount = 2,
+	dice_per_amount = 1,
+	dice_type = "warpstone",
+	evaluate_at_level_end = true,
+	evaluation_type = "amount",
+	experience_per_amount = 50,
+	hidden = true,
+	is_side_mission = true,
+	mission_template_name = "collect_uncompletable",
+	text = "grimoire_hidden_mission_text",
+}
+Missions.bonus_dice_hidden_mission = {
+	collect_amount = 2,
+	dice_per_amount = 1,
+	dice_type = "metal",
+	evaluate_at_level_end = true,
+	evaluation_type = "amount",
+	experience_per_amount = 5,
+	hidden = true,
+	is_side_mission = true,
+	mission_template_name = "collect_uncompletable",
+	text = "bonus_dice_hidden_mission_text",
+}
+Missions.painting_scrap_hidden_mission = {
+	collect_amount = 1,
+	evaluate_at_level_end = true,
+	evaluation_type = "amount",
+	experience_per_amount = 5,
+	hidden = true,
+	is_side_mission = true,
+	mission_template_name = "collect_uncompletable",
+	text = "bonus_painting_scrap_hidden_mission_text",
+}
+Missions.players_alive_mission = {
+	evaluate_at_level_end = true,
+	evaluation_type = "amount",
+	experience_per_amount = 25,
+	hidden = true,
+	is_side_mission = true,
+	mission_template_name = "players_alive",
+	text = "players_alive_mission_text",
+}
+Missions.whitebox_tutorial_goal_1 = {
+	mission_template_name = "goal",
+	text = "forest_ambush_call_boat_mission_text",
+}
+Missions.whitebox_tutorial_goal_2 = {
+	mission_template_name = "goal",
+	text = "forest_ambush_escape_boat_mission_text",
+}
+Missions.mission_sewers_short_open_door_1 = {
+	collect_amount = 1,
+	mission_template_name = "goal",
+	text = "mission_sewers_short_open_door_1",
+}
+Missions.mission_sewers_short_open_door_2 = {
+	collect_amount = 1,
+	mission_template_name = "goal",
+	text = "mission_sewers_short_open_door_2",
+}
+Missions.mission_sewers_short_clear_path = {
+	collect_amount = 1,
+	mission_template_name = "goal",
+	text = "mission_sewers_short_clear_path",
+}
+Missions.mission_sewers_short_leave_sewer = {
+	collect_amount = 1,
+	mission_template_name = "goal",
+	text = "mission_sewers_short_leave_sewer",
+}
+Missions.mission_sewers_short_escape = {
+	collect_amount = 1,
+	mission_template_name = "goal",
+	text = "mission_sewers_short_escape",
+}
+Missions.bridge_reach_bridge = {
+	collect_amount = 1,
+	mission_template_name = "goal",
+	text = "mission_goal_bridge_reach_bridge",
+}
+Missions.bridge_escape = {
+	collect_amount = 1,
+	mission_template_name = "goal",
+	text = "mission_goal_bridge_escape",
+}
+Missions.merchant_find_district = {
+	collect_amount = 1,
+	mission_template_name = "goal",
+	text = "mission_goal_merchant_find_district",
+}
+Missions.merchant_reach_square = {
+	collect_amount = 1,
+	mission_template_name = "goal",
+	text = "mission_goal_merchant_reach_square",
+}
+Missions.merchant_escape = {
+	collect_amount = 1,
+	mission_template_name = "goal",
+	text = "mission_goal_merchant_escape",
+}
+Missions.mission_city_walls_up = {
+	mission_template_name = "goal",
+	text = "mission_city_walls_up",
+}
+Missions.mission_city_walls_find_bell = {
+	mission_template_name = "goal",
+	text = "mission_city_walls_find_bell",
+}
+Missions.mission_city_walls_destroy_bell = {
+	mission_template_name = "goal",
+	text = "mission_city_walls_destroy_bell",
+}
+Missions.mission_city_walls_destroy_support = {
+	mission_template_name = "goal",
+	text = "mission_city_walls_destroy_support",
+}
+Missions.mission_city_walls_escape = {
+	mission_template_name = "goal",
+	text = "mission_city_walls_escape",
+}
+Missions.forest_ambush_find_camp = {
+	mission_template_name = "goal",
+	text = "forest_ambush_find_camp_mission_text",
+}
+Missions.forest_ambush_leave_camp = {
+	mission_template_name = "goal",
+	text = "forest_ambush_leave_camp_mission_text",
+}
+Missions.forest_ambush_get_to_the_river = {
+	mission_template_name = "goal",
+	text = "forest_ambush_get_to_the_river_mission_text",
+}
+Missions.forest_ambush_call_boat = {
+	mission_template_name = "goal",
+	text = "forest_ambush_call_boat_mission_text",
+}
+Missions.forest_ambush_wait_for_boat = {
+	mission_template_name = "goal",
+	text = "forest_ambush_wait_for_boat_mission_text",
+}
+Missions.forest_ambush_escape_boat = {
+	mission_template_name = "goal",
+	text = "forest_ambush_escape_boat_mission_text",
+}
+Missions.tunnels_start = {
+	mission_template_name = "goal",
+	text = "tunnels_start_mission_text",
+}
+Missions.tunnels_investigate_tunnels = {
+	mission_template_name = "goal",
+	text = "tunnels_investigate_tunnels_mission_text",
+}
+Missions.tunnels_escape = {
+	mission_template_name = "goal",
+	text = "tunnels_escape_mission_text",
+}
+Missions.tunnels_to_ferry_lady = {
+	mission_template_name = "goal",
+	text = "tunnels_to_ferry_lady_mission_text",
+}
+Missions.mission_goal_cemetery_wall = {
+	mission_template_name = "goal",
+	text = "mission_goal_cemetery_wall",
+}
+Missions.mission_goal_cemetery_source = {
+	mission_template_name = "goal",
+	text = "mission_goal_cemetery_source",
+}
+Missions.mission_goal_cemetery_entrance = {
+	mission_template_name = "goal",
+	text = "mission_goal_cemetery_entrance",
+}
+Missions.mission_goal_cemetery_cut_down = {
+	mission_template_name = "goal",
+	text = "mission_goal_cemetery_cut_down",
+}
+Missions.mission_goal_cemetery_get_back = {
+	mission_template_name = "goal",
+	text = "mission_goal_cemetery_get_back",
+}
+Missions.docks_start_goal = {
+	mission_template_name = "goal",
+	text = "docks_start_goal_mission_text",
+}
+Missions.docks_next_warehouse = {
+	mission_template_name = "goal",
+	text = "docks_next_warehouse_mission_text",
+}
+Missions.docks_back_to_boat = {
+	mission_template_name = "goal",
+	text = "docks_back_to_boat_mission_text",
+}
+Missions.docks_escape_house = {
+	mission_template_name = "goal",
+	text = "docks_escape_house_mission_text",
+}
+Missions.end_boss_find_lair = {
+	mission_template_name = "goal",
+	text = "mission_goal_end_boss_find_lair",
+}
+Missions.end_boss_enter_lair = {
+	mission_template_name = "goal",
+	text = "mission_goal_end_boss_enter_lair",
+}
+Missions.end_boss_open_door = {
+	mission_template_name = "goal",
+	text = "mission_objective_end_boss_open_door",
+}
+Missions.end_boss_proceed_upwards_1 = {
+	mission_template_name = "goal",
+	text = "mission_objective_end_boss_proceed_up",
+}
+Missions.end_boss_proceed_upwards_2 = {
+	mission_template_name = "goal",
+	text = "mission_objective_end_boss_proceed_up",
+}
+Missions.end_boss_destroy_bell = {
+	mission_template_name = "goal",
+	text = "mission_goal_end_boss_destroy_bell",
+}
+Missions.end_boss_stop_seer = {
+	mission_template_name = "goal",
+	text = "mission_goal_end_boss_stop_seer",
+}
+Missions.end_boss_escape = {
+	mission_template_name = "goal",
+	text = "mission_goal_end_boss_escape",
+}
+Missions.survival_wave = {
+	evaluate_at_level_end = true,
+	experience_per_percent = 0.7,
+	mission_template_name = "survival",
+	text = "dlc1_2_survival_mission_waves_completed",
+	wave_completed_text = "dlc1_2_survival_mission_wave_completed",
+	wave_prepare_text = "dlc1_2_survival_mission_prepare",
+	wave_text = "dlc1_2_survival_mission_wave",
+}
+Missions.dlc1_4_portals_find_camp = {
+	mission_template_name = "goal",
+	text = "dlc1_4_mission_goal_portals_find_camp",
+}
+Missions.dlc1_4_portals_portal_a = {
+	mission_template_name = "goal",
+	text = "dlc1_4_mission_goal_portals_portal_a",
+}
+Missions.dlc1_4_portals_portal_b = {
+	mission_template_name = "goal",
+	text = "dlc1_4_mission_goal_portals_portal_b",
+}
+Missions.dlc1_4_portals_portal_c = {
+	mission_template_name = "goal",
+	text = "dlc1_4_mission_goal_portals_portal_c",
+}
+Missions.dlc1_4_portals_escape = {
+	mission_template_name = "goal",
+	text = "dlc1_4_mission_goal_portals_escape",
+}
+Missions.dlc1_4_portals_overheat_a = {
+	mission_template_name = "goal",
+	text = "dlc1_4_mission_goal_portals_overheat_a",
+}
+Missions.dlc1_4_portals_overheat_b = {
+	mission_template_name = "goal",
+	text = "dlc1_4_mission_goal_portals_overheat_b",
+}
+Missions.dlc1_4_portals_overheat_c = {
+	mission_template_name = "goal",
+	text = "dlc1_4_mission_goal_portals_overheat_c",
+}
+Missions.mission_dlc_castle_dungeon_search_dungeon = {
+	mission_template_name = "goal",
+	text = "dlc1_4_mission_dungeon_search_dungeon",
+}
+Missions.mission_dlc_castle_dungeon_push_through = {
+	mission_template_name = "goal",
+	text = "dlc1_4_mission_dungeon_push_through",
+}
+Missions.mission_dlc_castle_dungeon_grab_artifact1 = {
+	mission_template_name = "goal",
+	text = "dlc1_4_mission_dungeon_grab_artifact1",
+}
+Missions.mission_dlc_castle_dungeon_continue_search = {
+	mission_template_name = "goal",
+	text = "dlc1_4_mission_dungeon_continue_search",
+}
+Missions.mission_dlc_castle_dungeon_descend_darkness_with_torch = {
+	mission_template_name = "goal",
+	text = "dlc1_4_mission_dungeon_descend_darkness_with_torch",
+}
+Missions.mission_dlc_castle_dungeon_grab_artifact2 = {
+	mission_template_name = "goal",
+	text = "dlc1_4_mission_dungeon_grab_artifact2",
+}
+Missions.mission_dlc_castle_dungeon_survive_until_way_out = {
+	mission_template_name = "goal",
+	text = "dlc1_4_mission_dungeon_survive_until_way_out",
+}
+Missions.mission_dlc_castle_dungeon_escape_up = {
+	mission_template_name = "goal",
+	text = "dlc1_4_mission_dungeon_escape_up",
+}
+Missions.tutorial_movement = {
+	dont_show_mission_end_tooltip = true,
+	mission_template_name = "simple",
+	text = "mission_objective_tutorial_movement",
+	tooltip_text = "tutorial_tooltip_move",
+	tooltip_inputs = {
+		{
+			action = "move_forward",
+			prefix = "",
+			suffix = "",
 		},
-		tooltip_gamepad_inputs = {
-			{
-				suffix = "",
-				prefix = "",
-				action = "move_forward"
-			}
-		}
-	},
-	tutorial_jumping = {
-		text = "mission_objective_tutorial_jumping",
-		mission_template_name = "simple",
-		dont_show_mission_end_tooltip = true,
-		tooltip_text = "tutorial_tooltip_jump",
-		tooltip_inputs = {
-			{
-				suffix = "",
-				prefix = "",
-				action = "dodge"
-			}
-		}
-	},
-	tutorial_dodge_left = {
-		text = "mission_objective_tutorial_dodge_left",
-		mission_template_name = "simple",
-		dont_show_mission_end_tooltip = true,
-		tooltip_text = "mission_objective_tutorial_dodge_left",
-		tooltip_inputs = {
-			{
-				suffix = "+",
-				prefix = "input_hold",
-				action = "move_left"
-			},
-			{
-				suffix = "",
-				prefix = "",
-				action = "dodge"
-			}
-		}
-	},
-	tutorial_dodge_back = {
-		text = "mission_objective_tutorial_dodge_back",
-		mission_template_name = "simple",
-		dont_show_mission_end_tooltip = true,
-		tooltip_text = "mission_objective_tutorial_dodge_back",
-		tooltip_inputs = {
-			{
-				suffix = "+",
-				prefix = "input_hold",
-				action = "move_back"
-			},
-			{
-				suffix = "",
-				prefix = "",
-				action = "dodge"
-			}
-		}
-	},
-	tutorial_dodge_right = {
-		text = "mission_objective_tutorial_dodge_right",
-		mission_template_name = "simple",
-		dont_show_mission_end_tooltip = true,
-		tooltip_text = "mission_objective_tutorial_dodge_right",
-		tooltip_inputs = {
-			{
-				suffix = "+",
-				prefix = "input_hold",
-				action = "move_right"
-			},
-			{
-				suffix = "",
-				prefix = "",
-				action = "dodge"
-			}
-		}
-	},
-	tutorial_light_attack = {
-		text = "mission_objective_tutorial_light_attack",
-		collect_amount = 3,
-		mission_template_name = "collect",
-		tooltip_text = "tutorial_tooltip_light_attack",
-		tooltip_inputs = {
-			{
-				suffix = "",
-				prefix = "",
-				action = "action_one"
-			}
-		}
-	},
-	tutorial_heavy_attack = {
-		text = "mission_objective_tutorial_heavy_attack",
-		mission_template_name = "simple",
-		dont_show_mission_end_tooltip = true,
-		tooltip_text = "tutorial_tooltip_heavy_attack",
-		tooltip_inputs = {
-			{
-				suffix = "",
-				prefix = "input_hold",
-				action = "action_one_hold"
-			}
-		}
-	},
-	tutorial_switch_weapon = {
-		text = "mission_objective_tutorial_switch_weapon",
-		mission_template_name = "simple",
-		dont_show_mission_end_tooltip = true,
-		tooltip_text = "tutorial_tooltip_switch_weapon",
-		tooltip_inputs = {
-			{
-				suffix = "",
-				prefix = "",
-				action = "wield_switch"
-			}
-		}
-	},
-	tutorial_no_damage = {
-		text = "mission_objective_tutorial_no_damage",
-		mission_template_name = "simple",
-		dont_show_mission_end_tooltip = true,
-		tooltip_text = "tutorial_tooltip_no_damage",
-		tooltip_inputs = {
-			{
-				suffix = "",
-				prefix = "",
-				action = "wield_switch"
-			}
-		}
-	},
-	tutorial_ranged_normal_attack = {
-		text = "mission_objective_tutorial_ranged_normal_attack",
-		collect_amount = 5,
-		mission_template_name = "collect",
-		tooltip_text = "tutorial_tooltip_normal_attack",
-		tooltip_inputs = {
-			{
-				suffix = "",
-				prefix = "",
-				action = "action_one"
-			}
-		}
-	},
-	tutorial_ranged_alternative_attack = {
-		text = "mission_objective_tutorial_ranged_alternative_attack",
-		collect_amount = 3,
-		mission_template_name = "collect",
-		tooltip_text = "tutorial_tooltip_alternative_attack",
-		tooltip_inputs = {
-			{
-				suffix = "+",
-				prefix = "input_hold",
-				action = "action_two_hold"
-			},
-			{
-				suffix = "",
-				prefix = "",
-				action = "action_one"
-			}
-		}
-	},
-	tutorial_blocking = {
-		text = "mission_objective_tutorial_blocking",
-		collect_amount = 3,
-		mission_template_name = "collect",
-		tooltip_text = "tutorial_tooltip_block",
-		tooltip_inputs = {
-			{
-				suffix = "",
-				prefix = "",
-				action = "action_two_hold"
-			}
-		}
-	},
-	tutorial_pushing = {
-		text = "mission_objective_tutorial_pushing",
-		collect_amount = 3,
-		mission_template_name = "collect",
-		tooltip_text = "tutorial_tooltip_push",
-		tooltip_inputs = {
-			{
-				suffix = "+",
-				prefix = "input_hold",
-				action = "action_two_hold"
-			},
-			{
-				suffix = "",
-				prefix = "",
-				action = "action_one"
-			}
-		}
-	},
-	tutorial_pickup_grenade = {
-		text = "mission_objective_tutorial_pickup_grenade",
-		dont_show_mission_end_tooltip = true,
-		mission_template_name = "simple"
-	},
-	tutorial_pickup_ammo = {
-		text = "mission_objective_tutorial_pickup_ammo",
-		dont_show_mission_end_tooltip = true,
-		mission_template_name = "simple"
-	},
-	tutorial_throw_grenade = {
-		text = "mission_objective_tutorial_throw_grenade",
-		mission_template_name = "simple",
-		dont_show_mission_end_tooltip = true,
-		tooltip_text = "tutorial_tooltip_throw_grenade",
-		tooltip_inputs = {
-			{
-				suffix = "->",
-				prefix = "",
-				action = "wield_5"
-			},
-			{
-				suffix = "",
-				prefix = "",
-				action = "action_one"
-			}
+		{
+			action = "move_left_pressed",
+			prefix = "",
+			suffix = "",
 		},
-		tooltip_gamepad_inputs = {
-			{
-				suffix = "->",
-				prefix = "",
-				action = "wield_5"
-			},
-			{
-				suffix = "",
-				prefix = "",
-				action = "action_one"
-			}
-		}
-	},
-	tutorial_pickup_potion = {
-		text = "mission_objective_tutorial_pickup_potion",
-		dont_show_mission_end_tooltip = true,
-		mission_template_name = "simple"
-	},
-	tutorial_use_potion = {
-		text = "mission_objective_tutorial_use_potion",
-		mission_template_name = "simple",
-		dont_show_mission_end_tooltip = true,
-		hidden = true,
-		tooltip_text = "tutorial_tooltip_use_potion",
-		tooltip_inputs = {
-			{
-				suffix = "->",
-				prefix = "",
-				action = "wield_4"
-			},
-			{
-				suffix = "",
-				prefix = "",
-				action = "action_one_hold"
-			}
+		{
+			action = "move_back_pressed",
+			prefix = "",
+			suffix = "",
 		},
-		tooltip_gamepad_inputs = {
-			{
-				suffix = "->",
-				prefix = "",
-				action = "wield_4"
-			},
-			{
-				suffix = "",
-				prefix = "",
-				action = "action_one_hold"
-			}
-		}
-	},
-	tutorial_pickup_barrel = {
-		text = "mission_objective_tutorial_pickup_barrel",
-		dont_show_mission_end_tooltip = true,
-		mission_template_name = "simple"
-	},
-	tutorial_place_barrel = {
-		text = "mission_objective_tutorial_place_barrel",
-		mission_template_name = "simple",
-		dont_show_mission_end_tooltip = true,
-		tooltip_text = "tutorial_tooltip_place_barrel",
-		tooltip_inputs = {
-			{
-				suffix = "",
-				prefix = "",
-				action = "action_one"
-			}
-		}
-	},
-	tutorial_pickup_draught = {
-		mission_template_name = "simple",
-		text = "mission_objective_tutorial_pickup_draught"
-	},
-	tutorial_use_draught = {
-		mission_template_name = "simple",
-		text = "mission_objective_tutorial_use_draught"
-	},
-	tutorial_pickup_healthkit = {
-		text = "mission_objective_tutorial_pickup_healthkit",
-		dont_show_mission_end_tooltip = true,
-		mission_template_name = "simple"
-	},
-	tutorial_heal_ally = {
-		text = "mission_objective_tutorial_heal_ally",
-		mission_template_name = "simple",
-		dont_show_mission_end_tooltip = true,
-		tooltip_text = "tutorial_tooltip_heal_ally",
-		tooltip_inputs = {
-			{
-				suffix = "",
-				prefix = "",
-				action = "wield_3"
-			}
+		{
+			action = "move_right_pressed",
+			prefix = "",
+			suffix = "",
 		},
-		tooltip_gamepad_inputs = {
-			{
-				suffix = "",
-				prefix = "",
-				action = "wield_3"
-			}
-		}
 	},
-	tutorial_continue = {
-		text = "mission_objective_tutorial_continue",
-		dont_show_mission_end_tooltip = true,
-		mission_template_name = "simple"
-	},
-	tutorial_survive_attack = {
-		text = "mission_objective_tutorial_survive_attack",
-		dont_show_mission_end_tooltip = true,
-		mission_template_name = "simple"
-	},
-	tutorial_go_to_end = {
-		text = "mission_objective_tutorial_go_to_end",
-		dont_show_mission_end_tooltip = true,
-		mission_template_name = "simple"
-	},
-	tutorial_kill_remaining = {
-		text = "mission_objective_tutorial_kill_remaining",
-		dont_show_mission_end_tooltip = true,
-		mission_template_name = "simple"
-	},
-	tutorial = {
-		mission_template_name = "tutorial",
-		hidden = true
-	},
-	escape_into_portal = {
-		mission_template_name = "goal",
-		text = "mission_escape_into_portal"
-	},
-	catacombs_search_building = {
-		mission_template_name = "goal",
-		text = "mission_catacombs_search_building"
-	},
-	catacombs_follow_trail = {
-		mission_template_name = "goal",
-		text = "mission_catacombs_follow_trail"
-	},
-	catacombs_open_door = {
-		text = "mission_catacombs_open_door",
-		mission_template_name = "collect",
-		collect_amount = 3
-	},
-	catacombs_find_ritual = {
-		mission_template_name = "goal",
-		text = "mission_catacombs_find_ritual"
-	},
-	catacombs_disrupt_ritual = {
-		mission_template_name = "goal",
-		text = "mission_catacombs_disrupt_ritual"
-	},
-	catacombs_stay_inside_circle = {
-		mission_template_name = "goal",
-		text = "mission_catacombs_stay_inside_circle"
-	},
-	catacombs_escape = {
-		mission_template_name = "goal",
-		text = "mission_catacombs_escape"
-	},
-	chamber_inn = {
-		mission_template_name = "goal",
-		text = "mission_chamber_defend"
-	},
-	chamber_cellar = {
-		mission_template_name = "goal",
-		text = "mission_chamber_cellar"
-	},
-	chamber_sewer = {
-		mission_template_name = "goal",
-		text = "mission_chamber_sewer_hunt"
-	},
-	chamber_machine = {
-		mission_template_name = "goal",
-		text = "mission_chamber_stop_machine"
-	},
-	elven_ruins_get_to_ruins = {
-		mission_template_name = "goal",
-		text = "mission_elven_ruins_get_to_ruins"
-	},
-	elven_ruins_proceed_through_woods = {
-		mission_template_name = "goal",
-		text = "mission_elven_ruins_proceed_through_woods"
-	},
-	elven_ruins_break_through_maze = {
-		mission_template_name = "goal",
-		text = "mission_elven_ruins_break_through_maze"
-	},
-	elven_ruins_make_way_to_puzzle = {
-		mission_template_name = "goal",
-		text = "mission_elven_ruins_make_way_to_puzzle"
-	},
-	elven_ruins_realign_leylines = {
-		text = "mission_elven_ruins_realign_leylines",
-		mission_template_name = "collect",
-		collect_amount = 3
-	},
-	elven_ruins_survive_until_alignment = {
-		mission_template_name = "goal",
-		text = "mission_elven_ruins_survive_until_alignment"
-	},
-	elven_ruins_escape_into_portal = {
-		mission_template_name = "goal",
-		text = "mission_elven_ruins_escape_into_portal"
-	},
-	fort_follow_road = {
-		mission_template_name = "goal",
-		text = "mission_fort_follow_road"
-	},
-	fort_reach_fort = {
-		mission_template_name = "goal",
-		text = "mission_fort_reach_fort"
-	},
-	fort_reach_inner_courtyard = {
-		mission_template_name = "goal",
-		text = "mission_fort_reach_inner_courtyard"
-	},
-	fort_reach_outer_courtyard = {
-		mission_template_name = "goal",
-		text = "mission_fort_reach_outer_courtyard"
-	},
-	fort_reach_gate = {
-		mission_template_name = "goal",
-		text = "mission_fort_reach_gate"
-	},
-	fort_talk_to_survivors = {
-		mission_template_name = "goal",
-		text = "mission_fort_talk_to_survivors"
-	},
-	fort_defend_the_gate = {
-		mission_template_name = "goal",
-		text = "mission_fort_defend_the_gate"
-	},
-	fort_use_cannon_01 = {
-		mission_template_name = "goal",
-		text = "mission_fort_use_cannon_01"
-	},
-	fort_use_cannon_02 = {
-		mission_template_name = "goal",
-		text = "mission_fort_use_cannon_02"
-	},
-	fort_use_cannon_03 = {
-		mission_template_name = "goal",
-		text = "mission_fort_use_cannon_03"
-	},
-	fort_use_cannon_04 = {
-		mission_template_name = "goal",
-		text = "mission_fort_use_cannon_04"
-	},
-	fort_load_cannon = {
-		mission_template_name = "goal",
-		text = "mission_fort_load_cannon"
-	},
-	fort_rescue_prisoners = {
-		mission_template_name = "goal",
-		text = "mission_fort_rescue_prisoners"
-	},
-	fort_break_siege = {
-		mission_template_name = "goal",
-		text = "mission_fort_break_siege"
-	},
-	fort_escape_into_portal = {
-		mission_template_name = "goal",
-		text = "mission_fort_escape_into_portal"
-	},
-	farmlands_reach_first_farm = {
-		mission_template_name = "goal",
-		text = "mission_farmlands_reach_first_farm"
-	},
-	farmlands_find_and_free_the_prisoners = {
-		text = "mission_farmlands_find_and_free_the_prisoners",
-		mission_template_name = "collect",
-		collect_amount = 4
-	},
-	farmlands_reach_second_farm = {
-		mission_template_name = "goal",
-		text = "mission_farmlands_reach_second_farm"
-	},
-	farmlands_get_key_for_barn = {
-		mission_template_name = "goal",
-		text = "mission_farmlands_get_the_key_for_the_barn"
-	},
-	farmlands_unlock_and_find_a_way_through_barn = {
-		mission_template_name = "goal",
-		text = "mission_farmlands_unlock_and_find_a_way_through_the_barn"
-	},
-	farmlands_reach_third_farm = {
-		mission_template_name = "goal",
-		text = "mission_farmlands_reach_third_farm"
-	},
-	farmlands_free_the_prisoners_and_clear_the_area = {
-		text = "mission_farmlands_free_the_prisoners_and_clear_the_area",
-		mission_template_name = "collect",
-		collect_amount = 3
-	},
-	farmlands_free_prisoners_01 = {
-		mission_template_name = "goal",
-		text = "mission_farmlands_free_prisoners_01"
-	},
-	farmlands_free_prisoners_02 = {
-		text = "mission_farmlands_free_prisoners_02",
-		mission_template_name = "collect",
-		collect_amount = 4
-	},
-	farmlands_free_prisoners_03 = {
-		text = "mission_farmlands_free_prisoners_03",
-		mission_template_name = "collect",
-		collect_amount = 2
-	},
-	farmlands_free_prisoners_04 = {
-		text = "mission_farmlands_free_prisoners_04",
-		mission_template_name = "collect",
-		collect_amount = 4
-	},
-	farmlands_escape = {
-		mission_template_name = "goal",
-		text = "mission_farmlands_escape"
-	},
-	ussingen_enter_ussingen = {
-		mission_template_name = "goal",
-		text = "mission_ussingen_enter_ussingen"
-	},
-	ussingen_reach_mansion = {
-		mission_template_name = "goal",
-		text = "mission_ussingen_reach_mansion"
-	},
-	ussingen_find_explosive = {
-		mission_template_name = "goal",
-		text = "mission_ussingen_find_explosive"
-	},
-	ussingen_event = {
-		text = "mission_ussingen_event",
-		mission_template_name = "collect",
-		collect_amount = 3
-	},
-	ussingen_deliver = {
-		mission_template_name = "goal",
-		text = "mission_ussingen_deliver"
-	},
-	ussingen_light_push = {
-		mission_template_name = "goal",
-		text = "mission_ussingen_light_push"
-	},
-	ussingen_escape = {
-		mission_template_name = "goal",
-		text = "mission_ussingen_escape"
-	},
-	ussingen_use_portal = {
-		mission_template_name = "goal",
-		text = "mission_ussingen_use_portal"
-	},
-	ground_zero_city_center = {
-		mission_template_name = "goal",
-		text = "mission_ground_zero_city_center"
-	},
-	ground_zero_down_terraces = {
-		mission_template_name = "goal",
-		text = "mission_ground_zero_down_terraces"
-	},
-	ground_zero_elevator = {
-		mission_template_name = "goal",
-		text = "mission_ground_zero_elevator"
-	},
-	ground_zero_locate_device = {
-		mission_template_name = "goal",
-		text = "mission_ground_zero_locate_device"
-	},
-	ground_zero_cross_hole = {
-		mission_template_name = "goal",
-		text = "mission_ground_zero_cross_hole"
-	},
-	ground_zero_kill_boss = {
-		mission_template_name = "goal",
-		text = "mission_ground_zero_kill_boss"
-	},
-	ground_zero_escape = {
-		mission_template_name = "goal",
-		text = "mission_ground_zero_escape"
-	},
-	mines_find_explosives = {
-		mission_template_name = "goal",
-		text = "mission_mines_find_explosives"
-	},
-	mines_push_cart = {
-		mission_template_name = "goal",
-		text = "mission_mines_push_cart"
-	},
-	mines_collect_explosives = {
-		text = "mission_mines_collect_explosives",
-		mission_template_name = "collect",
-		collect_amount = 3
-	},
-	mines_find_cart = {
-		mission_template_name = "goal",
-		text = "mission_mines_find_cart"
-	},
-	mines_transport_explosives = {
-		mission_template_name = "goal",
-		text = "mission_mines_transport_explosives"
-	},
-	mines_find_cart_again = {
-		mission_template_name = "goal",
-		text = "mission_mines_find_cart_again"
-	},
-	mines_destroy_altar = {
-		mission_template_name = "goal",
-		text = "mission_mines_destroy_altar"
-	},
-	mines_ring_bell = {
-		mission_template_name = "goal",
-		text = "mission_mines_ring_bell"
-	},
-	mines_over_the_bridge = {
-		mission_template_name = "goal",
-		text = "mission_mines_over_the_bridge"
-	},
-	mines_escape_portal = {
-		mission_template_name = "goal",
-		text = "mission_mines_escape_portal"
-	},
-	stronghold_find_the_rail_tracks = {
-		mission_template_name = "goal",
-		text = "mission_stronghold_find_the_rail_tracks"
-	},
-	stronghold_follow_the_tracks_to_the_foundry = {
-		mission_template_name = "goal",
-		text = "mission_stronghold_follow_the_tracks_to_the_foundry"
-	},
-	stronghold_find_another_way_to_the_foundry = {
-		mission_template_name = "goal",
-		text = "mission_stronghold_find_another_way_to_the_foundry"
-	},
-	stronghold_continue_to_the_city = {
-		mission_template_name = "goal",
-		text = "mission_stronghold_continue_to_the_city"
-	},
-	stronghold_reach_the_temple = {
-		mission_template_name = "goal",
-		text = "mission_stronghold_reach_the_temple"
-	},
-	stronghold_get_up_on_the_aqueduct = {
-		mission_template_name = "goal",
-		text = "mission_stronghold_get_up_on_the_aqueduct"
-	},
-	stronghold_enter_the_temple = {
-		mission_template_name = "goal",
-		text = "mission_stronghold_enter_the_temple"
-	},
-	stronghold_kill_the_warlord = {
-		mission_template_name = "goal",
-		text = "mission_stronghold_kill_the_warlord"
-	},
-	stronghold_escape_the_stronghold = {
-		mission_template_name = "goal",
-		text = "mission_stronghold_escape_the_stronghold"
-	},
-	skittergate_reach_skittergate = {
-		mission_template_name = "goal",
-		text = "mission_skittergate_reach_skittergate"
-	},
-	skittergate_open_gate = {
-		mission_template_name = "goal",
-		text = "mission_skittergate_open_gate"
-	},
-	skittergate_go_through_gate = {
-		mission_template_name = "goal",
-		text = "mission_skittergate_go_through_gate"
-	},
-	skittergate_find_camp_backdoor = {
-		mission_template_name = "goal",
-		text = "mission_skittergate_find_camp_backdoor"
-	},
-	skittergate_reach_docks = {
-		mission_template_name = "goal",
-		text = "mission_skittergate_reach_docks"
-	},
-	skittergate_enter_camp = {
-		mission_template_name = "goal",
-		text = "mission_skittergate_enter_camp"
-	},
-	skittergate_find_key = {
-		mission_template_name = "goal",
-		text = "mission_skittergate_find_key"
-	},
-	skittergate_kill_gatekeeper = {
-		mission_template_name = "goal",
-		text = "mission_skittergate_kill_gatekeeper"
-	},
-	skittergate_get_key = {
-		mission_template_name = "goal",
-		text = "mission_skittergate_get_key"
-	},
-	skittergate_get_back_to_gate = {
-		mission_template_name = "goal",
-		text = "mission_skittergate_get_back_to_gate"
-	},
-	skittergate_turn_on_gate = {
-		mission_template_name = "goal",
-		text = "mission_skittergate_turn_on_gate"
-	},
-	skittergate_destroy_generators = {
-		text = "mission_skittergate_destroy_generators",
-		mission_template_name = "collect",
-		collect_amount = 3
-	},
-	skittergate_hurry_through_gate = {
-		mission_template_name = "goal",
-		text = "mission_skittergate_hurry_through_gate"
-	},
-	skittergate_kill_rasknitt = {
-		mission_template_name = "goal",
-		text = "mission_skittergate_kill_rasknitt"
-	},
-	skittergate_hurry_to_the_elevator = {
-		mission_template_name = "goal",
-		text = "mission_skittergate_hurry_to_the_elevator"
-	},
-	military_enter_fort = {
-		mission_template_name = "goal",
-		text = "mission_military_enter_fort"
-	},
-	military_open_portcullis = {
-		mission_template_name = "goal",
-		text = "mission_military_open_portcullis"
-	},
-	military_arena_survive = {
-		mission_template_name = "goal",
-		text = "mission_military_arena_survive"
-	},
-	military_ride_elevator = {
-		mission_template_name = "goal",
-		text = "mission_military_ride_elevator"
-	},
-	military_ascend_wall = {
-		mission_template_name = "goal",
-		text = "mission_military_ascend_wall"
-	},
-	military_move_along_wall = {
-		mission_template_name = "goal",
-		text = "mission_military_move_along_wall"
-	},
-	military_open_gate = {
-		mission_template_name = "goal",
-		text = "mission_military_open_gate"
-	},
-	military_enter_temple = {
-		mission_template_name = "goal",
-		text = "mission_military_enter_temple"
-	},
-	military_ring_bell = {
-		mission_template_name = "goal",
-		text = "mission_military_ring_bell"
-	},
-	military_survive_temple = {
-		mission_template_name = "goal",
-		text = "mission_military_survive_temple"
-	},
-	military_escape_portal = {
-		mission_template_name = "goal",
-		text = "mission_military_escape_portal"
-	},
-	bell_reach_bell = {
-		mission_template_name = "goal",
-		text = "mission_bell_reach_bell"
-	},
-	bell_destroy_bell = {
-		mission_template_name = "goal",
-		text = "mission_bell_chop_down_bell"
-	},
-	bell_escape_to_portal = {
-		mission_template_name = "goal",
-		text = "mission_bell_escape_to_portal"
-	},
-	prologue_escape = {
-		text = "mission_objective_prologue_escape",
-		dont_show_mission_end_tooltip = true,
-		mission_template_name = "simple"
-	},
-	prologue_movement = {
-		text = "mission_objective_prologue_movement",
-		mission_template_name = "simple",
-		is_tutorial_input = true,
-		dont_show_mission_end_tooltip = true,
-		tooltip_text = "tutorial_tooltip_move",
-		tooltip_inputs = {
-			{
-				suffix = "",
-				prefix = "",
-				action = "move_forward"
-			},
-			{
-				suffix = "",
-				prefix = "",
-				action = "move_left_pressed"
-			},
-			{
-				suffix = "",
-				prefix = "",
-				action = "move_back_pressed"
-			},
-			{
-				suffix = "",
-				prefix = "",
-				action = "move_right_pressed"
-			}
+	tooltip_gamepad_inputs = {
+		{
+			action = "move_forward",
+			prefix = "",
+			suffix = "",
 		},
-		tooltip_gamepad_inputs = {
-			{
-				suffix = "",
-				prefix = "",
-				action = "move_controller"
-			}
-		}
 	},
-	prologue_jumping = {
-		text = "mission_objective_prologue_jumping",
-		mission_template_name = "simple",
-		is_tutorial_input = true,
-		dont_show_mission_end_tooltip = true,
-		tooltip_text = "tutorial_tooltip_jump",
-		tooltip_inputs = {
-			{
-				suffix = "",
-				prefix = "",
-				action = "jump_1"
-			}
-		}
-	},
-	prologue_light_attack = {
-		text = "mission_objective_prologue_light_attack",
-		mission_template_name = "simple",
-		is_tutorial_input = true,
-		tooltip_text = "tutorial_tooltip_light_attack",
-		tooltip_inputs = {
-			{
-				suffix = "",
-				prefix = "",
-				action = "action_one"
-			}
-		}
-	},
-	prologue_blocking = {
-		text = "mission_objective_prologue_blocking",
-		mission_template_name = "simple",
-		input_service_fallback = "Tutorial",
-		is_tutorial_input = true,
-		tooltip_text = "tutorial_tooltip_block",
-		tooltip_inputs = {
-			{
-				suffix = "",
-				prefix = "",
-				action = "action_two_hold"
-			}
-		}
-	},
-	prologue_dodge = {
-		text = "mission_objective_prologue_dodge",
-		mission_template_name = "simple",
-		input_service_fallback = "Tutorial",
-		dont_show_mission_end_tooltip = true,
-		is_tutorial_input = true,
-		tooltip_text = "mission_objective_tutorial_dodge_left",
-		tooltip_inputs = {
-			{
-				suffix = "/",
-				prefix = "",
-				action = "move_left_pressed"
-			},
-			{
-				suffix = "+",
-				prefix = "",
-				action = "move_right_pressed"
-			},
-			{
-				suffix = "",
-				prefix = "",
-				action = "dodge_hold"
-			}
+}
+Missions.tutorial_jumping = {
+	dont_show_mission_end_tooltip = true,
+	mission_template_name = "simple",
+	text = "mission_objective_tutorial_jumping",
+	tooltip_text = "tutorial_tooltip_jump",
+	tooltip_inputs = {
+		{
+			action = "dodge",
+			prefix = "",
+			suffix = "",
 		},
-		tooltip_gamepad_inputs = {
-			{
-				suffix = "+",
-				prefix = "input_hold",
-				action = "move_controller"
-			},
-			{
-				suffix = "",
-				prefix = "",
-				action = "dodge_1"
-			}
-		}
 	},
-	prologue_heavy_attack = {
-		text = "mission_objective_prologue_heavy_attack",
-		mission_template_name = "simple",
-		is_tutorial_input = true,
-		dont_show_mission_end_tooltip = true,
-		tooltip_text = "tutorial_tooltip_heavy_attack",
-		tooltip_inputs = {
-			{
-				suffix = "",
-				prefix = "input_hold",
-				action = "action_one_hold"
-			}
+}
+Missions.tutorial_dodge_left = {
+	dont_show_mission_end_tooltip = true,
+	mission_template_name = "simple",
+	text = "mission_objective_tutorial_dodge_left",
+	tooltip_text = "mission_objective_tutorial_dodge_left",
+	tooltip_inputs = {
+		{
+			action = "move_left",
+			prefix = "input_hold",
+			suffix = "+",
 		},
-		tooltip_gamepad_inputs = {
-			{
-				suffix = "",
-				prefix = "input_hold",
-				action = "action_one_hold"
-			}
-		}
-	},
-	prologue_find_allies = {
-		text = "mission_objective_prologue_find_allies",
-		dont_show_mission_end_tooltip = true,
-		mission_template_name = "simple"
-	},
-	prologue_use_special_ability = {
-		text = "mission_objective_prologue_special_ability",
-		mission_template_name = "simple",
-		input_service_fallback = "Tutorial",
-		is_tutorial_input = true,
-		tooltip_text = "tutorial_tooltip_special_ability",
-		tooltip_inputs = {
-			{
-				suffix = "",
-				prefix = "",
-				action = "action_career"
-			}
+		{
+			action = "dodge",
+			prefix = "",
+			suffix = "",
 		},
-		tooltip_gamepad_inputs = {
-			{
-				suffix = "",
-				prefix = "",
-				action = "ability"
-			}
-		}
 	},
-	prologue_ranged_normal_attack = {
-		text = "mission_objective_prologue_ranged_normal_attack",
-		mission_template_name = "simple",
-		is_tutorial_input = true,
-		tooltip_text = "tutorial_tooltip_normal_attack",
-		tooltip_inputs = {
-			{
-				suffix = "",
-				prefix = "",
-				action = "action_one"
-			}
+}
+Missions.tutorial_dodge_back = {
+	dont_show_mission_end_tooltip = true,
+	mission_template_name = "simple",
+	text = "mission_objective_tutorial_dodge_back",
+	tooltip_text = "mission_objective_tutorial_dodge_back",
+	tooltip_inputs = {
+		{
+			action = "move_back",
+			prefix = "input_hold",
+			suffix = "+",
 		},
-		tooltip_gamepad_inputs = {
-			{
-				suffix = "",
-				prefix = "",
-				action = "action_one"
-			}
-		}
-	},
-	prologue_ranged_alternative_attack = {
-		text = "mission_objective_prologue_ranged_alternative_attack",
-		mission_template_name = "simple",
-		is_tutorial_input = true,
-		tooltip_text = "tutorial_tooltip_alternative_attack",
-		tooltip_inputs = {
-			{
-				suffix = "",
-				prefix = "input_hold",
-				action = "action_two_hold"
-			},
-			{
-				suffix = "",
-				prefix = "",
-				action = "action_one"
-			}
+		{
+			action = "dodge",
+			prefix = "",
+			suffix = "",
 		},
-		tooltip_gamepad_inputs = {
-			{
-				suffix = "",
-				prefix = "input_hold",
-				action = "action_two_hold"
-			},
-			{
-				suffix = "",
-				prefix = "",
-				action = "action_one"
-			}
-		}
 	},
-	prologue_save_ally = {
-		text = "mission_objective_prologue_save_ally",
-		dont_show_mission_end_tooltip = true,
-		mission_template_name = "simple"
-	},
-	prologue_heal_ally = {
-		text = "mission_objective_prologue_heal_ally",
-		dont_show_mission_end_tooltip = true,
-		mission_template_name = "simple"
-	},
-	prologue_heal_equip_medical = {
-		text = "mission_objective_prologue_heal_equip_medical",
-		mission_template_name = "simple",
-		is_tutorial_input = true,
-		tooltip_text = "tutorial_tooltip_heal_ally",
-		tooltip_inputs = {
-			{
-				suffix = "",
-				prefix = "",
-				action = "wield_3"
-			}
+}
+Missions.tutorial_dodge_right = {
+	dont_show_mission_end_tooltip = true,
+	mission_template_name = "simple",
+	text = "mission_objective_tutorial_dodge_right",
+	tooltip_text = "mission_objective_tutorial_dodge_right",
+	tooltip_inputs = {
+		{
+			action = "move_right",
+			prefix = "input_hold",
+			suffix = "+",
 		},
-		tooltip_gamepad_inputs = {
-			{
-				suffix = "",
-				prefix = "",
-				action = "wield_3"
-			}
-		}
-	},
-	prologue_find_way_out = {
-		text = "mission_objective_prologue_find_way_out",
-		dont_show_mission_end_tooltip = true,
-		mission_template_name = "simple"
-	},
-	prologue_escape_in_portal = {
-		text = "mission_objective_prologue_escape_in_portal",
-		dont_show_mission_end_tooltip = true,
-		mission_template_name = "simple"
-	},
-	prologue_pushing = {
-		text = "mission_objective_prologue_pushing",
-		mission_template_name = "simple",
-		input_service_fallback = "Tutorial",
-		is_tutorial_input = true,
-		tooltip_text = "tutorial_tooltip_push",
-		tooltip_inputs = {
-			{
-				suffix = "+",
-				prefix = "input_hold",
-				action = "action_two_hold"
-			},
-			{
-				suffix = "",
-				prefix = "",
-				action = "action_one"
-			}
+		{
+			action = "dodge",
+			prefix = "",
+			suffix = "",
 		},
-		tooltip_gamepad_inputs = {
-			{
-				suffix = "+",
-				prefix = "input_hold",
-				action = "action_two_hold"
-			},
-			{
-				suffix = "",
-				prefix = "",
-				action = "action_one"
-			}
-		}
 	},
-	prologue_switch_weapon = {
-		text = "mission_objective_prologue_switch_weapon",
-		mission_template_name = "simple",
-		is_tutorial_input = true,
-		dont_show_mission_end_tooltip = true,
-		tooltip_text = "tutorial_tooltip_switch_weapon",
-		tooltip_inputs = {
-			{
-				suffix = "",
-				prefix = "",
-				action = "wield_switch"
-			}
+}
+Missions.tutorial_light_attack = {
+	collect_amount = 3,
+	mission_template_name = "collect",
+	text = "mission_objective_tutorial_light_attack",
+	tooltip_text = "tutorial_tooltip_light_attack",
+	tooltip_inputs = {
+		{
+			action = "action_one",
+			prefix = "",
+			suffix = "",
 		},
-		tooltip_gamepad_inputs = {
-			{
-				suffix = "",
-				prefix = "",
-				action = "wield_switch_1"
-			}
-		}
 	},
-	prologue_no_damage = {
-		text = "mission_objective_prologue_no_damage",
-		sub_text = "mission_objective_prologue_no_damage_subtext",
-		mission_template_name = "simple",
-		is_tutorial_input = true,
-		dont_show_mission_end_tooltip = true,
-		tooltip_text = "tutorial_tooltip_no_damage"
+}
+Missions.tutorial_heavy_attack = {
+	dont_show_mission_end_tooltip = true,
+	mission_template_name = "simple",
+	text = "mission_objective_tutorial_heavy_attack",
+	tooltip_text = "tutorial_tooltip_heavy_attack",
+	tooltip_inputs = {
+		{
+			action = "action_one_hold",
+			prefix = "input_hold",
+			suffix = "",
+		},
 	},
-	warcamp_progress_swamp = {
-		mission_template_name = "goal",
-		text = "mission_warcamp_swamp"
+}
+Missions.tutorial_switch_weapon = {
+	dont_show_mission_end_tooltip = true,
+	mission_template_name = "simple",
+	text = "mission_objective_tutorial_switch_weapon",
+	tooltip_text = "tutorial_tooltip_switch_weapon",
+	tooltip_inputs = {
+		{
+			action = "wield_switch",
+			prefix = "",
+			suffix = "",
+		},
 	},
-	warcamp_find_encampment = {
-		mission_template_name = "goal",
-		text = "mission_warcamp_find_encampment"
+}
+Missions.tutorial_no_damage = {
+	dont_show_mission_end_tooltip = true,
+	mission_template_name = "simple",
+	text = "mission_objective_tutorial_no_damage",
+	tooltip_text = "tutorial_tooltip_no_damage",
+	tooltip_inputs = {
+		{
+			action = "wield_switch",
+			prefix = "",
+			suffix = "",
+		},
 	},
-	warcamp_escort_payload = {
-		mission_template_name = "goal",
-		text = "mission_warcamp_escort_payload"
+}
+Missions.tutorial_ranged_normal_attack = {
+	collect_amount = 5,
+	mission_template_name = "collect",
+	text = "mission_objective_tutorial_ranged_normal_attack",
+	tooltip_text = "tutorial_tooltip_normal_attack",
+	tooltip_inputs = {
+		{
+			action = "action_one",
+			prefix = "",
+			suffix = "",
+		},
 	},
-	warcamp_reach_top_of_camp = {
-		mission_template_name = "goal",
-		text = "mission_warcamp_reach_top_of_camp"
+}
+Missions.tutorial_ranged_alternative_attack = {
+	collect_amount = 3,
+	mission_template_name = "collect",
+	text = "mission_objective_tutorial_ranged_alternative_attack",
+	tooltip_text = "tutorial_tooltip_alternative_attack",
+	tooltip_inputs = {
+		{
+			action = "action_two_hold",
+			prefix = "input_hold",
+			suffix = "+",
+		},
+		{
+			action = "action_one",
+			prefix = "",
+			suffix = "",
+		},
 	},
-	warcamp_elect_duelist = {
-		mission_template_name = "goal",
-		text = "mission_warcamp_elect_duelist"
+}
+Missions.tutorial_blocking = {
+	collect_amount = 3,
+	mission_template_name = "collect",
+	text = "mission_objective_tutorial_blocking",
+	tooltip_text = "tutorial_tooltip_block",
+	tooltip_inputs = {
+		{
+			action = "action_two_hold",
+			prefix = "",
+			suffix = "",
+		},
 	},
-	warcamp_kill_chieftain = {
-		mission_template_name = "goal",
-		text = "mission_warcamp_kill_chieftain"
+}
+Missions.tutorial_pushing = {
+	collect_amount = 3,
+	mission_template_name = "collect",
+	text = "mission_objective_tutorial_pushing",
+	tooltip_text = "tutorial_tooltip_push",
+	tooltip_inputs = {
+		{
+			action = "action_two_hold",
+			prefix = "input_hold",
+			suffix = "+",
+		},
+		{
+			action = "action_one",
+			prefix = "",
+			suffix = "",
+		},
 	},
-	warcamp_escape = {
-		mission_template_name = "goal",
-		text = "mission_warcamp_escape"
+}
+Missions.tutorial_pickup_grenade = {
+	dont_show_mission_end_tooltip = true,
+	mission_template_name = "simple",
+	text = "mission_objective_tutorial_pickup_grenade",
+}
+Missions.tutorial_pickup_ammo = {
+	dont_show_mission_end_tooltip = true,
+	mission_template_name = "simple",
+	text = "mission_objective_tutorial_pickup_ammo",
+}
+Missions.tutorial_throw_grenade = {
+	dont_show_mission_end_tooltip = true,
+	mission_template_name = "simple",
+	text = "mission_objective_tutorial_throw_grenade",
+	tooltip_text = "tutorial_tooltip_throw_grenade",
+	tooltip_inputs = {
+		{
+			action = "wield_5",
+			prefix = "",
+			suffix = "->",
+		},
+		{
+			action = "action_one",
+			prefix = "",
+			suffix = "",
+		},
 	},
-	nurgle_locate_excavation_site = {
-		mission_template_name = "goal",
-		text = "mission_nurgle_locate_excavation_site"
+	tooltip_gamepad_inputs = {
+		{
+			action = "wield_5",
+			prefix = "",
+			suffix = "->",
+		},
+		{
+			action = "action_one",
+			prefix = "",
+			suffix = "",
+		},
 	},
-	nurgle_traverse_bandit_hideout = {
-		mission_template_name = "goal",
-		text = "mission_nurgle_traverse_bandit_hideout"
+}
+Missions.tutorial_pickup_potion = {
+	dont_show_mission_end_tooltip = true,
+	mission_template_name = "simple",
+	text = "mission_objective_tutorial_pickup_potion",
+}
+Missions.tutorial_use_potion = {
+	dont_show_mission_end_tooltip = true,
+	hidden = true,
+	mission_template_name = "simple",
+	text = "mission_objective_tutorial_use_potion",
+	tooltip_text = "tutorial_tooltip_use_potion",
+	tooltip_inputs = {
+		{
+			action = "wield_4",
+			prefix = "",
+			suffix = "->",
+		},
+		{
+			action = "action_one_hold",
+			prefix = "",
+			suffix = "",
+		},
 	},
-	nurgle_traverse_cave_system = {
-		mission_template_name = "goal",
-		text = "mission_nurgle_traverse_cave_system"
+	tooltip_gamepad_inputs = {
+		{
+			action = "wield_4",
+			prefix = "",
+			suffix = "->",
+		},
+		{
+			action = "action_one_hold",
+			prefix = "",
+			suffix = "",
+		},
 	},
-	nurgle_cross_canyon = {
-		mission_template_name = "goal",
-		text = "mission_nurgle_cross_canyon"
+}
+Missions.tutorial_pickup_barrel = {
+	dont_show_mission_end_tooltip = true,
+	mission_template_name = "simple",
+	text = "mission_objective_tutorial_pickup_barrel",
+}
+Missions.tutorial_place_barrel = {
+	dont_show_mission_end_tooltip = true,
+	mission_template_name = "simple",
+	text = "mission_objective_tutorial_place_barrel",
+	tooltip_text = "tutorial_tooltip_place_barrel",
+	tooltip_inputs = {
+		{
+			action = "action_one",
+			prefix = "",
+			suffix = "",
+		},
 	},
-	nurgle_traverse_manifestation = {
-		mission_template_name = "goal",
-		text = "mission_nurgle_traverse_manifestation"
+}
+Missions.tutorial_pickup_draught = {
+	mission_template_name = "simple",
+	text = "mission_objective_tutorial_pickup_draught",
+}
+Missions.tutorial_use_draught = {
+	mission_template_name = "simple",
+	text = "mission_objective_tutorial_use_draught",
+}
+Missions.tutorial_pickup_healthkit = {
+	dont_show_mission_end_tooltip = true,
+	mission_template_name = "simple",
+	text = "mission_objective_tutorial_pickup_healthkit",
+}
+Missions.tutorial_heal_ally = {
+	dont_show_mission_end_tooltip = true,
+	mission_template_name = "simple",
+	text = "mission_objective_tutorial_heal_ally",
+	tooltip_text = "tutorial_tooltip_heal_ally",
+	tooltip_inputs = {
+		{
+			action = "wield_3",
+			prefix = "",
+			suffix = "",
+		},
 	},
-	nurgle_find_ruins = {
-		mission_template_name = "goal",
-		text = "mission_nurgle_find_ruins"
+	tooltip_gamepad_inputs = {
+		{
+			action = "wield_3",
+			prefix = "",
+			suffix = "",
+		},
 	},
-	nurgle_find_entrance = {
-		mission_template_name = "goal",
-		text = "mission_nurgle_find_the_entrance"
+}
+Missions.tutorial_continue = {
+	dont_show_mission_end_tooltip = true,
+	mission_template_name = "simple",
+	text = "mission_objective_tutorial_continue",
+}
+Missions.tutorial_survive_attack = {
+	dont_show_mission_end_tooltip = true,
+	mission_template_name = "simple",
+	text = "mission_objective_tutorial_survive_attack",
+}
+Missions.tutorial_go_to_end = {
+	dont_show_mission_end_tooltip = true,
+	mission_template_name = "simple",
+	text = "mission_objective_tutorial_go_to_end",
+}
+Missions.tutorial_kill_remaining = {
+	dont_show_mission_end_tooltip = true,
+	mission_template_name = "simple",
+	text = "mission_objective_tutorial_kill_remaining",
+}
+Missions.tutorial = {
+	hidden = true,
+	mission_template_name = "tutorial",
+}
+Missions.escape_into_portal = {
+	mission_template_name = "goal",
+	text = "mission_escape_into_portal",
+}
+Missions.catacombs_search_building = {
+	mission_template_name = "goal",
+	text = "mission_catacombs_search_building",
+}
+Missions.catacombs_follow_trail = {
+	mission_template_name = "goal",
+	text = "mission_catacombs_follow_trail",
+}
+Missions.catacombs_open_door = {
+	collect_amount = 3,
+	mission_template_name = "collect",
+	text = "mission_catacombs_open_door",
+}
+Missions.catacombs_find_ritual = {
+	mission_template_name = "goal",
+	text = "mission_catacombs_find_ritual",
+}
+Missions.catacombs_disrupt_ritual = {
+	mission_template_name = "goal",
+	text = "mission_catacombs_disrupt_ritual",
+}
+Missions.catacombs_stay_inside_circle = {
+	mission_template_name = "goal",
+	text = "mission_catacombs_stay_inside_circle",
+}
+Missions.catacombs_escape = {
+	mission_template_name = "goal",
+	text = "mission_catacombs_escape",
+}
+Missions.chamber_inn = {
+	mission_template_name = "goal",
+	text = "mission_chamber_defend",
+}
+Missions.chamber_cellar = {
+	mission_template_name = "goal",
+	text = "mission_chamber_cellar",
+}
+Missions.chamber_sewer = {
+	mission_template_name = "goal",
+	text = "mission_chamber_sewer_hunt",
+}
+Missions.chamber_machine = {
+	mission_template_name = "goal",
+	text = "mission_chamber_stop_machine",
+}
+Missions.elven_ruins_get_to_ruins = {
+	mission_template_name = "goal",
+	text = "mission_elven_ruins_get_to_ruins",
+}
+Missions.elven_ruins_proceed_through_woods = {
+	mission_template_name = "goal",
+	text = "mission_elven_ruins_proceed_through_woods",
+}
+Missions.elven_ruins_break_through_maze = {
+	mission_template_name = "goal",
+	text = "mission_elven_ruins_break_through_maze",
+}
+Missions.elven_ruins_make_way_to_puzzle = {
+	mission_template_name = "goal",
+	text = "mission_elven_ruins_make_way_to_puzzle",
+}
+Missions.elven_ruins_realign_leylines = {
+	collect_amount = 3,
+	mission_template_name = "collect",
+	text = "mission_elven_ruins_realign_leylines",
+}
+Missions.elven_ruins_survive_until_alignment = {
+	mission_template_name = "goal",
+	text = "mission_elven_ruins_survive_until_alignment",
+}
+Missions.elven_ruins_escape_into_portal = {
+	mission_template_name = "goal",
+	text = "mission_elven_ruins_escape_into_portal",
+}
+Missions.fort_follow_road = {
+	mission_template_name = "goal",
+	text = "mission_fort_follow_road",
+}
+Missions.fort_reach_fort = {
+	mission_template_name = "goal",
+	text = "mission_fort_reach_fort",
+}
+Missions.fort_reach_inner_courtyard = {
+	mission_template_name = "goal",
+	text = "mission_fort_reach_inner_courtyard",
+}
+Missions.fort_reach_outer_courtyard = {
+	mission_template_name = "goal",
+	text = "mission_fort_reach_outer_courtyard",
+}
+Missions.fort_reach_gate = {
+	mission_template_name = "goal",
+	text = "mission_fort_reach_gate",
+}
+Missions.fort_talk_to_survivors = {
+	mission_template_name = "goal",
+	text = "mission_fort_talk_to_survivors",
+}
+Missions.fort_defend_the_gate = {
+	mission_template_name = "goal",
+	text = "mission_fort_defend_the_gate",
+}
+Missions.fort_use_cannon_01 = {
+	mission_template_name = "goal",
+	text = "mission_fort_use_cannon_01",
+}
+Missions.fort_use_cannon_02 = {
+	mission_template_name = "goal",
+	text = "mission_fort_use_cannon_02",
+}
+Missions.fort_use_cannon_03 = {
+	mission_template_name = "goal",
+	text = "mission_fort_use_cannon_03",
+}
+Missions.fort_use_cannon_04 = {
+	mission_template_name = "goal",
+	text = "mission_fort_use_cannon_04",
+}
+Missions.fort_load_cannon = {
+	mission_template_name = "goal",
+	text = "mission_fort_load_cannon",
+}
+Missions.fort_rescue_prisoners = {
+	mission_template_name = "goal",
+	text = "mission_fort_rescue_prisoners",
+}
+Missions.fort_break_siege = {
+	mission_template_name = "goal",
+	text = "mission_fort_break_siege",
+}
+Missions.fort_escape_into_portal = {
+	mission_template_name = "goal",
+	text = "mission_fort_escape_into_portal",
+}
+Missions.farmlands_reach_first_farm = {
+	mission_template_name = "goal",
+	text = "mission_farmlands_reach_first_farm",
+}
+Missions.farmlands_find_and_free_the_prisoners = {
+	collect_amount = 4,
+	mission_template_name = "collect",
+	text = "mission_farmlands_find_and_free_the_prisoners",
+}
+Missions.farmlands_reach_second_farm = {
+	mission_template_name = "goal",
+	text = "mission_farmlands_reach_second_farm",
+}
+Missions.farmlands_get_key_for_barn = {
+	mission_template_name = "goal",
+	text = "mission_farmlands_get_the_key_for_the_barn",
+}
+Missions.farmlands_unlock_and_find_a_way_through_barn = {
+	mission_template_name = "goal",
+	text = "mission_farmlands_unlock_and_find_a_way_through_the_barn",
+}
+Missions.farmlands_reach_third_farm = {
+	mission_template_name = "goal",
+	text = "mission_farmlands_reach_third_farm",
+}
+Missions.farmlands_free_the_prisoners_and_clear_the_area = {
+	collect_amount = 3,
+	mission_template_name = "collect",
+	text = "mission_farmlands_free_the_prisoners_and_clear_the_area",
+}
+Missions.farmlands_free_prisoners_01 = {
+	mission_template_name = "goal",
+	text = "mission_farmlands_free_prisoners_01",
+}
+Missions.farmlands_free_prisoners_02 = {
+	collect_amount = 4,
+	mission_template_name = "collect",
+	text = "mission_farmlands_free_prisoners_02",
+}
+Missions.farmlands_free_prisoners_03 = {
+	collect_amount = 2,
+	mission_template_name = "collect",
+	text = "mission_farmlands_free_prisoners_03",
+}
+Missions.farmlands_free_prisoners_04 = {
+	collect_amount = 4,
+	mission_template_name = "collect",
+	text = "mission_farmlands_free_prisoners_04",
+}
+Missions.farmlands_escape = {
+	mission_template_name = "goal",
+	text = "mission_farmlands_escape",
+}
+Missions.ussingen_enter_ussingen = {
+	mission_template_name = "goal",
+	text = "mission_ussingen_enter_ussingen",
+}
+Missions.ussingen_reach_mansion = {
+	mission_template_name = "goal",
+	text = "mission_ussingen_reach_mansion",
+}
+Missions.ussingen_find_explosive = {
+	mission_template_name = "goal",
+	text = "mission_ussingen_find_explosive",
+}
+Missions.ussingen_event = {
+	collect_amount = 3,
+	mission_template_name = "collect",
+	text = "mission_ussingen_event",
+}
+Missions.ussingen_deliver = {
+	mission_template_name = "goal",
+	text = "mission_ussingen_deliver",
+}
+Missions.ussingen_light_push = {
+	mission_template_name = "goal",
+	text = "mission_ussingen_light_push",
+}
+Missions.ussingen_escape = {
+	mission_template_name = "goal",
+	text = "mission_ussingen_escape",
+}
+Missions.ussingen_use_portal = {
+	mission_template_name = "goal",
+	text = "mission_ussingen_use_portal",
+}
+Missions.ground_zero_city_center = {
+	mission_template_name = "goal",
+	text = "mission_ground_zero_city_center",
+}
+Missions.ground_zero_down_terraces = {
+	mission_template_name = "goal",
+	text = "mission_ground_zero_down_terraces",
+}
+Missions.ground_zero_elevator = {
+	mission_template_name = "goal",
+	text = "mission_ground_zero_elevator",
+}
+Missions.ground_zero_locate_device = {
+	mission_template_name = "goal",
+	text = "mission_ground_zero_locate_device",
+}
+Missions.ground_zero_cross_hole = {
+	mission_template_name = "goal",
+	text = "mission_ground_zero_cross_hole",
+}
+Missions.ground_zero_kill_boss = {
+	mission_template_name = "goal",
+	text = "mission_ground_zero_kill_boss",
+}
+Missions.ground_zero_escape = {
+	mission_template_name = "goal",
+	text = "mission_ground_zero_escape",
+}
+Missions.mines_find_explosives = {
+	mission_template_name = "goal",
+	text = "mission_mines_find_explosives",
+}
+Missions.mines_push_cart = {
+	mission_template_name = "goal",
+	text = "mission_mines_push_cart",
+}
+Missions.mines_collect_explosives = {
+	collect_amount = 3,
+	mission_template_name = "collect",
+	text = "mission_mines_collect_explosives",
+}
+Missions.mines_find_cart = {
+	mission_template_name = "goal",
+	text = "mission_mines_find_cart",
+}
+Missions.mines_transport_explosives = {
+	mission_template_name = "goal",
+	text = "mission_mines_transport_explosives",
+}
+Missions.mines_find_cart_again = {
+	mission_template_name = "goal",
+	text = "mission_mines_find_cart_again",
+}
+Missions.mines_destroy_altar = {
+	mission_template_name = "goal",
+	text = "mission_mines_destroy_altar",
+}
+Missions.mines_ring_bell = {
+	mission_template_name = "goal",
+	text = "mission_mines_ring_bell",
+}
+Missions.mines_over_the_bridge = {
+	mission_template_name = "goal",
+	text = "mission_mines_over_the_bridge",
+}
+Missions.mines_escape_portal = {
+	mission_template_name = "goal",
+	text = "mission_mines_escape_portal",
+}
+Missions.stronghold_find_the_rail_tracks = {
+	mission_template_name = "goal",
+	text = "mission_stronghold_find_the_rail_tracks",
+}
+Missions.stronghold_follow_the_tracks_to_the_foundry = {
+	mission_template_name = "goal",
+	text = "mission_stronghold_follow_the_tracks_to_the_foundry",
+}
+Missions.stronghold_find_another_way_to_the_foundry = {
+	mission_template_name = "goal",
+	text = "mission_stronghold_find_another_way_to_the_foundry",
+}
+Missions.stronghold_continue_to_the_city = {
+	mission_template_name = "goal",
+	text = "mission_stronghold_continue_to_the_city",
+}
+Missions.stronghold_reach_the_temple = {
+	mission_template_name = "goal",
+	text = "mission_stronghold_reach_the_temple",
+}
+Missions.stronghold_get_up_on_the_aqueduct = {
+	mission_template_name = "goal",
+	text = "mission_stronghold_get_up_on_the_aqueduct",
+}
+Missions.stronghold_enter_the_temple = {
+	mission_template_name = "goal",
+	text = "mission_stronghold_enter_the_temple",
+}
+Missions.stronghold_kill_the_warlord = {
+	mission_template_name = "goal",
+	text = "mission_stronghold_kill_the_warlord",
+}
+Missions.stronghold_escape_the_stronghold = {
+	mission_template_name = "goal",
+	text = "mission_stronghold_escape_the_stronghold",
+}
+Missions.skittergate_reach_skittergate = {
+	mission_template_name = "goal",
+	text = "mission_skittergate_reach_skittergate",
+}
+Missions.skittergate_open_gate = {
+	mission_template_name = "goal",
+	text = "mission_skittergate_open_gate",
+}
+Missions.skittergate_go_through_gate = {
+	mission_template_name = "goal",
+	text = "mission_skittergate_go_through_gate",
+}
+Missions.skittergate_find_camp_backdoor = {
+	mission_template_name = "goal",
+	text = "mission_skittergate_find_camp_backdoor",
+}
+Missions.skittergate_reach_docks = {
+	mission_template_name = "goal",
+	text = "mission_skittergate_reach_docks",
+}
+Missions.skittergate_enter_camp = {
+	mission_template_name = "goal",
+	text = "mission_skittergate_enter_camp",
+}
+Missions.skittergate_find_key = {
+	mission_template_name = "goal",
+	text = "mission_skittergate_find_key",
+}
+Missions.skittergate_kill_gatekeeper = {
+	mission_template_name = "goal",
+	text = "mission_skittergate_kill_gatekeeper",
+}
+Missions.skittergate_get_key = {
+	mission_template_name = "goal",
+	text = "mission_skittergate_get_key",
+}
+Missions.skittergate_get_back_to_gate = {
+	mission_template_name = "goal",
+	text = "mission_skittergate_get_back_to_gate",
+}
+Missions.skittergate_turn_on_gate = {
+	mission_template_name = "goal",
+	text = "mission_skittergate_turn_on_gate",
+}
+Missions.skittergate_destroy_generators = {
+	collect_amount = 3,
+	mission_template_name = "collect",
+	text = "mission_skittergate_destroy_generators",
+}
+Missions.skittergate_hurry_through_gate = {
+	mission_template_name = "goal",
+	text = "mission_skittergate_hurry_through_gate",
+}
+Missions.skittergate_kill_rasknitt = {
+	mission_template_name = "goal",
+	text = "mission_skittergate_kill_rasknitt",
+}
+Missions.skittergate_hurry_to_the_elevator = {
+	mission_template_name = "goal",
+	text = "mission_skittergate_hurry_to_the_elevator",
+}
+Missions.military_enter_fort = {
+	mission_template_name = "goal",
+	text = "mission_military_enter_fort",
+}
+Missions.military_open_portcullis = {
+	mission_template_name = "goal",
+	text = "mission_military_open_portcullis",
+}
+Missions.military_arena_survive = {
+	mission_template_name = "goal",
+	text = "mission_military_arena_survive",
+}
+Missions.military_ride_elevator = {
+	mission_template_name = "goal",
+	text = "mission_military_ride_elevator",
+}
+Missions.military_ascend_wall = {
+	mission_template_name = "goal",
+	text = "mission_military_ascend_wall",
+}
+Missions.military_move_along_wall = {
+	mission_template_name = "goal",
+	text = "mission_military_move_along_wall",
+}
+Missions.military_open_gate = {
+	mission_template_name = "goal",
+	text = "mission_military_open_gate",
+}
+Missions.military_enter_temple = {
+	mission_template_name = "goal",
+	text = "mission_military_enter_temple",
+}
+Missions.military_ring_bell = {
+	mission_template_name = "goal",
+	text = "mission_military_ring_bell",
+}
+Missions.military_survive_temple = {
+	mission_template_name = "goal",
+	text = "mission_military_survive_temple",
+}
+Missions.military_escape_portal = {
+	mission_template_name = "goal",
+	text = "mission_military_escape_portal",
+}
+Missions.bell_reach_bell = {
+	mission_template_name = "goal",
+	text = "mission_bell_reach_bell",
+}
+Missions.bell_destroy_bell = {
+	mission_template_name = "goal",
+	text = "mission_bell_chop_down_bell",
+}
+Missions.bell_escape_to_portal = {
+	mission_template_name = "goal",
+	text = "mission_bell_escape_to_portal",
+}
+Missions.prologue_escape = {
+	dont_show_mission_end_tooltip = true,
+	mission_template_name = "simple",
+	text = "mission_objective_prologue_escape",
+}
+Missions.prologue_movement = {
+	dont_show_mission_end_tooltip = true,
+	is_tutorial_input = true,
+	mission_template_name = "simple",
+	text = "mission_objective_prologue_movement",
+	tooltip_text = "tutorial_tooltip_move",
+	tooltip_inputs = {
+		{
+			action = "move_forward",
+			prefix = "",
+			suffix = "",
+		},
+		{
+			action = "move_left_pressed",
+			prefix = "",
+			suffix = "",
+		},
+		{
+			action = "move_back_pressed",
+			prefix = "",
+			suffix = "",
+		},
+		{
+			action = "move_right_pressed",
+			prefix = "",
+			suffix = "",
+		},
 	},
-	nurgle_destroy_excavation_site = {
-		mission_template_name = "goal",
-		text = "mission_nurgle_destroy_excavation_site"
+	tooltip_gamepad_inputs = {
+		{
+			action = "move_controller",
+			prefix = "",
+			suffix = "",
+		},
 	},
-	nurgle_destroy_nurgle_clusters = {
-		text = "mission_nurgle_destroy_nurgle_clusters",
-		mission_template_name = "collect",
-		collect_amount = 3
+}
+Missions.prologue_jumping = {
+	dont_show_mission_end_tooltip = true,
+	is_tutorial_input = true,
+	mission_template_name = "simple",
+	text = "mission_objective_prologue_jumping",
+	tooltip_text = "tutorial_tooltip_jump",
+	tooltip_inputs = {
+		{
+			action = "jump_1",
+			prefix = "",
+			suffix = "",
+		},
 	},
-	nurgle_destroy_cluster_01 = {
-		text = "mission_nurgle_destroy_cluster_01",
-		mission_template_name = "collect",
-		collect_amount = 9
+}
+Missions.prologue_light_attack = {
+	is_tutorial_input = true,
+	mission_template_name = "simple",
+	text = "mission_objective_prologue_light_attack",
+	tooltip_text = "tutorial_tooltip_light_attack",
+	tooltip_inputs = {
+		{
+			action = "action_one",
+			prefix = "",
+			suffix = "",
+		},
 	},
-	nurgle_destroy_cluster_02 = {
-		text = "mission_nurgle_destroy_cluster_02",
-		mission_template_name = "collect",
-		collect_amount = 13
+}
+Missions.prologue_blocking = {
+	input_service_fallback = "Tutorial",
+	is_tutorial_input = true,
+	mission_template_name = "simple",
+	text = "mission_objective_prologue_blocking",
+	tooltip_text = "tutorial_tooltip_block",
+	tooltip_inputs = {
+		{
+			action = "action_two_hold",
+			prefix = "",
+			suffix = "",
+		},
 	},
-	nurgle_destroy_cluster_03 = {
-		text = "mission_nurgle_destroy_cluster_03",
-		mission_template_name = "collect",
-		collect_amount = 7
+}
+Missions.prologue_dodge = {
+	dont_show_mission_end_tooltip = true,
+	input_service_fallback = "Tutorial",
+	is_tutorial_input = true,
+	mission_template_name = "simple",
+	text = "mission_objective_prologue_dodge",
+	tooltip_text = "mission_objective_tutorial_dodge_left",
+	tooltip_inputs = {
+		{
+			action = "move_left_pressed",
+			prefix = "",
+			suffix = "/",
+		},
+		{
+			action = "move_right_pressed",
+			prefix = "",
+			suffix = "+",
+		},
+		{
+			action = "dodge_hold",
+			prefix = "",
+			suffix = "",
+		},
 	},
-	nurgle_to_the_surface = {
-		mission_template_name = "goal",
-		text = "mission_nurgle_to_the_surface"
+	tooltip_gamepad_inputs = {
+		{
+			action = "move_controller",
+			prefix = "input_hold",
+			suffix = "+",
+		},
+		{
+			action = "dodge_1",
+			prefix = "",
+			suffix = "",
+		},
 	},
-	nurgle_escape_through_the_portal = {
-		mission_template_name = "goal",
-		text = "mission_nurgle_escape"
+}
+Missions.prologue_heavy_attack = {
+	dont_show_mission_end_tooltip = true,
+	is_tutorial_input = true,
+	mission_template_name = "simple",
+	text = "mission_objective_prologue_heavy_attack",
+	tooltip_text = "tutorial_tooltip_heavy_attack",
+	tooltip_inputs = {
+		{
+			action = "action_one_hold",
+			prefix = "input_hold",
+			suffix = "",
+		},
 	},
-	crawl_find_more_beer = {
-		mission_template_name = "goal",
-		text = "mission_crawl_find_more_beer"
+	tooltip_gamepad_inputs = {
+		{
+			action = "action_one_hold",
+			prefix = "input_hold",
+			suffix = "",
+		},
 	},
-	crawl_go_to_first_pub = {
-		mission_template_name = "goal",
-		text = "mission_crawl_go_to_first_pub"
+}
+Missions.prologue_find_allies = {
+	dont_show_mission_end_tooltip = true,
+	mission_template_name = "simple",
+	text = "mission_objective_prologue_find_allies",
+}
+Missions.prologue_use_special_ability = {
+	input_service_fallback = "Tutorial",
+	is_tutorial_input = true,
+	mission_template_name = "simple",
+	text = "mission_objective_prologue_special_ability",
+	tooltip_text = "tutorial_tooltip_special_ability",
+	tooltip_inputs = {
+		{
+			action = "action_career",
+			prefix = "",
+			suffix = "",
+		},
 	},
-	crawl_enter_first_pub = {
-		mission_template_name = "goal",
-		text = "mission_crawl_enter_first_pub"
+	tooltip_gamepad_inputs = {
+		{
+			action = "ability",
+			prefix = "",
+			suffix = "",
+		},
 	},
-	crawl_survive_the_attack = {
-		mission_template_name = "goal",
-		text = "mission_crawl_survive_the_attack"
+}
+Missions.prologue_ranged_normal_attack = {
+	is_tutorial_input = true,
+	mission_template_name = "simple",
+	text = "mission_objective_prologue_ranged_normal_attack",
+	tooltip_text = "tutorial_tooltip_normal_attack",
+	tooltip_inputs = {
+		{
+			action = "action_one",
+			prefix = "",
+			suffix = "",
+		},
 	},
-	crawl_go_to_second_pub = {
-		mission_template_name = "goal",
-		text = "mission_crawl_go_to_second_pub"
+	tooltip_gamepad_inputs = {
+		{
+			action = "action_one",
+			prefix = "",
+			suffix = "",
+		},
 	},
-	crawl_have_a_drink = {
-		mission_template_name = "goal",
-		text = "mission_crawl_have_a_drink"
+}
+Missions.prologue_ranged_alternative_attack = {
+	is_tutorial_input = true,
+	mission_template_name = "simple",
+	text = "mission_objective_prologue_ranged_alternative_attack",
+	tooltip_text = "tutorial_tooltip_alternative_attack",
+	tooltip_inputs = {
+		{
+			action = "action_two_hold",
+			prefix = "input_hold",
+			suffix = "",
+		},
+		{
+			action = "action_one",
+			prefix = "",
+			suffix = "",
+		},
 	},
-	crawl_go_to_third_pub = {
-		mission_template_name = "goal",
-		text = "mission_crawl_go_to_third_pub"
+	tooltip_gamepad_inputs = {
+		{
+			action = "action_two_hold",
+			prefix = "input_hold",
+			suffix = "",
+		},
+		{
+			action = "action_one",
+			prefix = "",
+			suffix = "",
+		},
 	},
-	crawl_find_way_in = {
-		mission_template_name = "goal",
-		text = "mission_crawl_find_way_in"
+}
+Missions.prologue_save_ally = {
+	dont_show_mission_end_tooltip = true,
+	mission_template_name = "simple",
+	text = "mission_objective_prologue_save_ally",
+}
+Missions.prologue_heal_ally = {
+	dont_show_mission_end_tooltip = true,
+	mission_template_name = "simple",
+	text = "mission_objective_prologue_heal_ally",
+}
+Missions.prologue_heal_equip_medical = {
+	is_tutorial_input = true,
+	mission_template_name = "simple",
+	text = "mission_objective_prologue_heal_equip_medical",
+	tooltip_text = "tutorial_tooltip_heal_ally",
+	tooltip_inputs = {
+		{
+			action = "wield_3",
+			prefix = "",
+			suffix = "",
+		},
 	},
-	crawl_find_good_beer = {
-		mission_template_name = "goal",
-		text = "mission_crawl_find_good_beer"
+	tooltip_gamepad_inputs = {
+		{
+			action = "wield_3",
+			prefix = "",
+			suffix = "",
+		},
 	},
-	crawl_survive_bar_fight = {
-		mission_template_name = "goal",
-		text = "mission_crawl_survive_bar_fight"
+}
+Missions.prologue_find_way_out = {
+	dont_show_mission_end_tooltip = true,
+	mission_template_name = "simple",
+	text = "mission_objective_prologue_find_way_out",
+}
+Missions.prologue_escape_in_portal = {
+	dont_show_mission_end_tooltip = true,
+	mission_template_name = "simple",
+	text = "mission_objective_prologue_escape_in_portal",
+}
+Missions.prologue_pushing = {
+	input_service_fallback = "Tutorial",
+	is_tutorial_input = true,
+	mission_template_name = "simple",
+	text = "mission_objective_prologue_pushing",
+	tooltip_text = "tutorial_tooltip_push",
+	tooltip_inputs = {
+		{
+			action = "action_two_hold",
+			prefix = "input_hold",
+			suffix = "+",
+		},
+		{
+			action = "action_one",
+			prefix = "",
+			suffix = "",
+		},
 	},
-	crawl_escape_bar_fight = {
-		mission_template_name = "goal",
-		text = "mission_crawl_escape_bar_fight"
+	tooltip_gamepad_inputs = {
+		{
+			action = "action_two_hold",
+			prefix = "input_hold",
+			suffix = "+",
+		},
+		{
+			action = "action_one",
+			prefix = "",
+			suffix = "",
+		},
 	},
-	crawl_into_the_portal = {
-		mission_template_name = "goal",
-		text = "mission_crawl_into_the_portal"
+}
+Missions.prologue_switch_weapon = {
+	dont_show_mission_end_tooltip = true,
+	is_tutorial_input = true,
+	mission_template_name = "simple",
+	text = "mission_objective_prologue_switch_weapon",
+	tooltip_text = "tutorial_tooltip_switch_weapon",
+	tooltip_inputs = {
+		{
+			action = "wield_switch",
+			prefix = "",
+			suffix = "",
+		},
 	},
-	keep_enter_portal = {
-		mission_template_name = "goal",
-		text = "mission_keep_enter_portal"
+	tooltip_gamepad_inputs = {
+		{
+			action = "wield_switch_1",
+			prefix = "",
+			suffix = "",
+		},
 	},
-	weave_collect_limited_item_objective = {
-		text = "",
-		mission_template_name = "collect",
-		collect_amount = 1,
-		hidden = true
-	}
+}
+Missions.prologue_no_damage = {
+	dont_show_mission_end_tooltip = true,
+	is_tutorial_input = true,
+	mission_template_name = "simple",
+	sub_text = "mission_objective_prologue_no_damage_subtext",
+	text = "mission_objective_prologue_no_damage",
+	tooltip_text = "tutorial_tooltip_no_damage",
+}
+Missions.warcamp_progress_swamp = {
+	mission_template_name = "goal",
+	text = "mission_warcamp_swamp",
+}
+Missions.warcamp_find_encampment = {
+	mission_template_name = "goal",
+	text = "mission_warcamp_find_encampment",
+}
+Missions.warcamp_escort_payload = {
+	mission_template_name = "goal",
+	text = "mission_warcamp_escort_payload",
+}
+Missions.warcamp_reach_top_of_camp = {
+	mission_template_name = "goal",
+	text = "mission_warcamp_reach_top_of_camp",
+}
+Missions.warcamp_elect_duelist = {
+	mission_template_name = "goal",
+	text = "mission_warcamp_elect_duelist",
+}
+Missions.warcamp_kill_chieftain = {
+	mission_template_name = "goal",
+	text = "mission_warcamp_kill_chieftain",
+}
+Missions.warcamp_escape = {
+	mission_template_name = "goal",
+	text = "mission_warcamp_escape",
+}
+Missions.nurgle_locate_excavation_site = {
+	mission_template_name = "goal",
+	text = "mission_nurgle_locate_excavation_site",
+}
+Missions.nurgle_traverse_bandit_hideout = {
+	mission_template_name = "goal",
+	text = "mission_nurgle_traverse_bandit_hideout",
+}
+Missions.nurgle_traverse_cave_system = {
+	mission_template_name = "goal",
+	text = "mission_nurgle_traverse_cave_system",
+}
+Missions.nurgle_cross_canyon = {
+	mission_template_name = "goal",
+	text = "mission_nurgle_cross_canyon",
+}
+Missions.nurgle_traverse_manifestation = {
+	mission_template_name = "goal",
+	text = "mission_nurgle_traverse_manifestation",
+}
+Missions.nurgle_find_ruins = {
+	mission_template_name = "goal",
+	text = "mission_nurgle_find_ruins",
+}
+Missions.nurgle_find_entrance = {
+	mission_template_name = "goal",
+	text = "mission_nurgle_find_the_entrance",
+}
+Missions.nurgle_destroy_excavation_site = {
+	mission_template_name = "goal",
+	text = "mission_nurgle_destroy_excavation_site",
+}
+Missions.nurgle_destroy_nurgle_clusters = {
+	collect_amount = 3,
+	mission_template_name = "collect",
+	text = "mission_nurgle_destroy_nurgle_clusters",
+}
+Missions.nurgle_destroy_cluster_01 = {
+	collect_amount = 9,
+	mission_template_name = "collect",
+	text = "mission_nurgle_destroy_cluster_01",
+}
+Missions.nurgle_destroy_cluster_02 = {
+	collect_amount = 13,
+	mission_template_name = "collect",
+	text = "mission_nurgle_destroy_cluster_02",
+}
+Missions.nurgle_destroy_cluster_03 = {
+	collect_amount = 7,
+	mission_template_name = "collect",
+	text = "mission_nurgle_destroy_cluster_03",
+}
+Missions.nurgle_to_the_surface = {
+	mission_template_name = "goal",
+	text = "mission_nurgle_to_the_surface",
+}
+Missions.nurgle_escape_through_the_portal = {
+	mission_template_name = "goal",
+	text = "mission_nurgle_escape",
+}
+Missions.crawl_find_more_beer = {
+	mission_template_name = "goal",
+	text = "mission_crawl_find_more_beer",
+}
+Missions.crawl_go_to_first_pub = {
+	mission_template_name = "goal",
+	text = "mission_crawl_go_to_first_pub",
+}
+Missions.crawl_enter_first_pub = {
+	mission_template_name = "goal",
+	text = "mission_crawl_enter_first_pub",
+}
+Missions.crawl_survive_the_attack = {
+	mission_template_name = "goal",
+	text = "mission_crawl_survive_the_attack",
+}
+Missions.crawl_go_to_second_pub = {
+	mission_template_name = "goal",
+	text = "mission_crawl_go_to_second_pub",
+}
+Missions.crawl_have_a_drink = {
+	mission_template_name = "goal",
+	text = "mission_crawl_have_a_drink",
+}
+Missions.crawl_go_to_third_pub = {
+	mission_template_name = "goal",
+	text = "mission_crawl_go_to_third_pub",
+}
+Missions.crawl_find_way_in = {
+	mission_template_name = "goal",
+	text = "mission_crawl_find_way_in",
+}
+Missions.crawl_find_good_beer = {
+	mission_template_name = "goal",
+	text = "mission_crawl_find_good_beer",
+}
+Missions.crawl_survive_bar_fight = {
+	mission_template_name = "goal",
+	text = "mission_crawl_survive_bar_fight",
+}
+Missions.crawl_escape_bar_fight = {
+	mission_template_name = "goal",
+	text = "mission_crawl_escape_bar_fight",
+}
+Missions.crawl_into_the_portal = {
+	mission_template_name = "goal",
+	text = "mission_crawl_into_the_portal",
+}
+Missions.keep_enter_portal = {
+	mission_template_name = "goal",
+	text = "mission_keep_enter_portal",
+}
+Missions.weave_collect_limited_item_objective = {
+	collect_amount = 1,
+	hidden = true,
+	mission_template_name = "collect",
+	text = "",
 }
 
 DLCUtils.merge("missions", Missions)

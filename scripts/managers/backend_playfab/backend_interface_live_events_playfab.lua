@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/managers/backend_playfab/backend_interface_live_events_playfab.lua
+
 local PlayFabClientApi = require("PlayFab.PlayFabClientApi")
+
 BackendInterfaceLiveEventsPlayfab = class(BackendInterfaceLiveEventsPlayfab)
 
 BackendInterfaceLiveEventsPlayfab.init = function (self, backend_mirror)
@@ -7,13 +10,14 @@ BackendInterfaceLiveEventsPlayfab.init = function (self, backend_mirror)
 	self._last_id = 0
 	self._live_events = {}
 	self._completed_live_event_requests = {}
+
 	local backend_manager = Managers.backend
 	local live_events_string = backend_manager:get_title_data("live_events_v2") or backend_manager:get_title_data("live_events")
 	local live_events = live_events_string and cjson.decode(live_events_string) or {}
 
 	if is_array(live_events) then
 		self._live_events = {
-			weekly_events = live_events
+			weekly_events = live_events,
 		}
 	else
 		self._live_events = live_events
@@ -39,8 +43,8 @@ BackendInterfaceLiveEventsPlayfab.request_live_events = function (self)
 	local request = {
 		FunctionName = "getLiveEvents",
 		FunctionParameter = {
-			id = id
-		}
+			id = id,
+		},
 	}
 	local success_callback = callback(self, "request_live_events_cb", id)
 	local request_queue = self._backend_mirror:request_queue()
@@ -61,7 +65,7 @@ BackendInterfaceLiveEventsPlayfab.request_live_events_cb = function (self, id, r
 
 	if is_array(live_events) then
 		self._live_events = {
-			weekly_events = live_events
+			weekly_events = live_events,
 		}
 	else
 		self._live_events = live_events
@@ -100,8 +104,8 @@ BackendInterfaceLiveEventsPlayfab.request_twitch_app_access_token = function (se
 	local request = {
 		FunctionName = "getTwitchAccessToken",
 		FunctionParameter = {
-			force = true
-		}
+			force = true,
+		},
 	}
 	local success_callback = callback(self, "_request_twitch_app_access_token_cb", cb)
 	local request_queue = self._backend_mirror:request_queue()

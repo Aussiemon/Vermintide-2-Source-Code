@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/equipment/item_master_list.lua
+
 require("foundation/scripts/util/table")
 require("scripts/settings/equipment/projectile_units")
 require("scripts/settings/equipment/pickups")
@@ -20,7 +22,7 @@ table.append(CanWieldAllItemTemplates, {
 	"es_huntsman",
 	"es_knight",
 	"es_mercenary",
-	"empire_soldier_tutorial"
+	"empire_soldier_tutorial",
 })
 
 ItemMasertListUpdateQueue = {}
@@ -32,7 +34,7 @@ function UpdateItemMasterList(item_names, career_name)
 
 	table.insert(ItemMasertListUpdateQueue, {
 		item_names,
-		career_name
+		career_name,
 	})
 end
 

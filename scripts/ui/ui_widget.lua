@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/ui_widget.lua
+
 local function error_prone_clone(value)
 	if not value then
 		return {}
@@ -20,6 +22,7 @@ UIWidget.init = function (widget_definition)
 		local pass = passes[i]
 		local pass_type = pass.pass_type
 		local ui_pass = UIPasses[pass_type]
+
 		pass_data[i] = ui_pass.init(pass, content, style)
 	end
 
@@ -28,11 +31,11 @@ UIWidget.init = function (widget_definition)
 		offset = offset or false,
 		element = {
 			passes = passes,
-			pass_data = pass_data
+			pass_data = pass_data,
 		},
 		content = content,
 		style = style,
-		animations = {}
+		animations = {},
 	}
 
 	return widget

@@ -1,8 +1,12 @@
+﻿-- chunkname: @scripts/unit_extensions/level/event_light_spawner_extension.lua
+
 EventLightSpawnerExtension = class(EventLightSpawnerExtension)
+
 local raycasts_per_frame = 1
 
 EventLightSpawnerExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	local world = extension_init_context.world
+
 	self.world = world
 	self.unit = unit
 	self.is_server = Managers.player.is_server
@@ -27,8 +31,9 @@ EventLightSpawnerExtension.init = function (self, extension_init_context, unit, 
 			local spawn_unit = {
 				speed = self._speed,
 				id = i,
-				respawn_time = self._respawn_timer - self._first_spawn_delay
+				respawn_time = self._respawn_timer - self._first_spawn_delay,
 			}
+
 			self._units[i] = spawn_unit
 		end
 	end
@@ -57,9 +62,10 @@ EventLightSpawnerExtension.update = function (self, unit, input, dt, context, t)
 
 			if not light_unit.unit then
 				light_unit.respawn_time = light_unit.respawn_time + dt
+
 				local player_unit = light_unit.chase_target
 
-				if self._respawn_timer <= light_unit.respawn_time and player_unit and Unit.alive(player_unit) then
+				if light_unit.respawn_time >= self._respawn_timer and player_unit and Unit.alive(player_unit) then
 					self:_add_to_spawn_pool(light_unit.id)
 
 					light_unit.respawn_time = 0
@@ -88,7 +94,9 @@ EventLightSpawnerExtension._update_units = function (self, context, dt)
 			local player_pos = player_unit and POSITION_LOOKUP[player_unit] + Vector3.up()
 			local physics_world = World.physics_world(context.world)
 			local direction = player_pos - unit_position
+
 			direction = Vector3.length(direction) == 0 and Vector3.down() or Vector3.normalize(direction)
+
 			local length = 1
 
 			PhysicsWorld.prepare_actors_for_raycast(physics_world, unit_position, direction, 0.1)
@@ -112,7 +120,9 @@ EventLightSpawnerExtension._update_units = function (self, context, dt)
 						local damage_profile = DamageProfileTemplates.warpfire_thrower_explosion
 						local power_level = 100
 						local hit_direction = unit_position - player_pos
+
 						hit_direction = Vector3.normalize(hit_direction)
+
 						local player = Managers.player:owner(player_unit)
 						local is_player = player and player:is_player_controlled()
 
@@ -144,8 +154,10 @@ EventLightSpawnerExtension._update_units = function (self, context, dt)
 				if player_pos and is_player then
 					local chase_target_position = player_pos + Vector3(0, 0, 1)
 					local direction_vector = chase_target_position - unit_position
+
 					direction_vector = Vector3.normalize(direction_vector)
-					local move_vector = direction_vector * dt * light_unit.speed
+
+					local move_vector = direction_vector * (dt * light_unit.speed)
 					local new_position = unit_position + move_vector
 
 					Unit.set_local_position(unit, 0, new_position)
@@ -154,8 +166,10 @@ EventLightSpawnerExtension._update_units = function (self, context, dt)
 					local direction_vector = chase_target_position - unit_position
 					local magnitude = Vector3.length(direction_vector)
 					local move_vector_modifier = magnitude < 3 and math.max(0, magnitude - 2) or 1
+
 					direction_vector = Vector3.normalize(direction_vector)
-					local move_vector = direction_vector * dt * light_unit.speed * move_vector_modifier
+
+					local move_vector = direction_vector * (dt * light_unit.speed) * move_vector_modifier
 					local new_position = unit_position + move_vector
 
 					Unit.set_local_position(unit, 0, new_position)
@@ -179,6 +193,7 @@ EventLightSpawnerExtension._update_spawn_pool = function (self, dt)
 
 		if self._spawn_pool_timer > 1 then
 			self._spawn_pool_timer = self._spawn_pool_timer - 1
+
 			local spawned_unit = self.unit_spawner:spawn_network_unit(self._unit_to_spawn, "position_synched_light_unit", nil, Unit.local_position(self.unit, 0))
 			local audio_system = Managers.state.entity:system("audio_system")
 
@@ -186,6 +201,7 @@ EventLightSpawnerExtension._update_spawn_pool = function (self, dt)
 
 			local light_unit_id = spawn_pool[self._spawn_pool_spawn_index]
 			local light_unit = self._units[light_unit_id]
+
 			light_unit.unit = spawned_unit
 			spawn_pool[self._spawn_pool_spawn_index] = nil
 			self._spawn_pool_spawn_index = self._spawn_pool_spawn_index + 1
@@ -195,12 +211,14 @@ end
 
 EventLightSpawnerExtension._add_to_spawn_pool = function (self, id)
 	local spawn_pool = self._spawn_pool
+
 	spawn_pool[self._spawn_pool_add_index] = id
 	self._spawn_pool_add_index = self._spawn_pool_add_index + 1
 end
 
 EventLightSpawnerExtension._activate = function (self)
 	self._active = true
+
 	local hero_side = Managers.state.side:get_side_from_name("heroes")
 	local players = hero_side.PLAYER_AND_BOT_UNITS
 
@@ -211,6 +229,7 @@ end
 
 EventLightSpawnerExtension._deactivate = function (self)
 	self._active = false
+
 	local units = self._units
 
 	for i = 1, #units do
@@ -254,7 +273,7 @@ EventLightSpawnerExtension._sync_light_units = function (self)
 	end
 
 	for _, player_unit in pairs(players) do
-		local available_unit, is_target = nil
+		local available_unit, is_target
 
 		for _, light_unit in ipairs(units) do
 			if light_unit.chase_target then

@@ -1,6 +1,9 @@
+﻿-- chunkname: @scripts/helpers/weapon_helper.lua
+
 require("scripts/helpers/effect_helper")
 
 WeaponHelper = WeaponHelper or {}
+
 local POSITION_LOOKUP = POSITION_LOOKUP
 
 WeaponHelper.wanted_projectile_angle = function (self, distance_vector, projectile_gravity, projectile_speed)
@@ -53,7 +56,9 @@ WeaponHelper.speed_to_hit_moving_target = function (p1, p2, projectile_angle, ta
 		local distance_vector = estimated_target_position - p1
 		local projectile_speed, flat_distance = WeaponHelper:wanted_projectile_speed(distance_vector, gravity, projectile_angle)
 		local tof = flat_distance / (projectile_speed * math_cos)
+
 		estimated_target_position = p2 + tof * target_velocity
+
 		local distance_error = Vector3.length(estimated_target_position - old_estimated_target_position)
 
 		if distance_error <= acceptable_accuracy then
@@ -66,7 +71,7 @@ end
 
 WeaponHelper.angle_to_hit_moving_target = function (p1, p2, projectile_speed, target_velocity, gravity, acceptable_accuracy, use_greatest_angle)
 	local t = 0
-	local angle = nil
+	local angle
 	local EPSILON = 0.01
 
 	assert(gravity > 0, "Can't solve for <=0 gravity, use different projectile template")
@@ -92,10 +97,12 @@ WeaponHelper.angle_to_hit_moving_target = function (p1, p2, projectile_speed, ta
 		local second_degree_component = math.sqrt(sqrt_val)
 		local angle1 = math.atan((speed_squared + second_degree_component) / (gravity * flat_distance))
 		local angle2 = math.atan((speed_squared - second_degree_component) / (gravity * flat_distance))
+
 		angle = use_greatest_angle and math.max(angle1, angle2) or math.min(angle1, angle2)
 		t = flat_distance / (projectile_speed * math.cos(angle))
 		estimated_target_position = p2 + t * target_velocity
 		flat_distance = Vector3.length(Vector3.flat(estimated_target_position - p1))
+
 		local distance_error = math.abs(old_flat_distance - flat_distance)
 
 		if distance_error <= acceptable_accuracy then
@@ -112,7 +119,7 @@ WeaponHelper.test_angled_trajectory = function (physics_world, p1, p2, gravity, 
 	table.clear(segment_list)
 
 	local distance_vector = p2 - p1
-	local flat_dist, a1, a2 = nil
+	local flat_dist, a1, a2
 
 	if angle then
 		projectile_speed, flat_dist = WeaponHelper:wanted_projectile_speed(distance_vector, -gravity, angle)
@@ -128,17 +135,22 @@ WeaponHelper.test_angled_trajectory = function (physics_world, p1, p2, gravity, 
 		local y_vel_0 = math.sin(angle) * projectile_speed
 		local flat_speed = Vector3.length(Vector3(velocity.x, velocity.y, 0))
 		local t_total = flat_dist / flat_speed
+
 		sections = sections or 4
+
 		local t = 0
 		local delta_time = t_total / sections
 		local segment_pos1 = Vector3(p1.x, p1.y, p1.z)
-		local segment_pos2 = nil
+		local segment_pos2
+
 		segment_list[1] = p1
 
 		for i = 1, sections do
-			t = t_total * i / sections
+			t = t_total * (i / sections)
+
 			local x = x_vel_0 * t
 			local z = y_vel_0 * t + 0.5 * gravity * t^2
+
 			segment_pos2 = p1 + vec_flat * x
 			segment_pos2.z = segment_pos2.z + z
 
@@ -252,6 +264,7 @@ WeaponHelper.draw_ball_at_time = function (physics_world, p1, vec_flat, gravity,
 	local length = t * x_vel_0
 	local height = t * y_vel_0 + 0.5 * gravity * t^2
 	local position = p1 + vec_flat * length
+
 	position.z = position.z + height
 
 	QuickDrawer:sphere(position, 0.3, color or Colors.get_indexed(66))
@@ -262,7 +275,7 @@ end
 WeaponHelper.calculate_trajectory = function (self, world, initial_position, target_position, gravity, max_speed)
 	local drawer = Managers.state.debug:drawer({
 		mode = "retained",
-		name = "trajectory_vectors"
+		name = "trajectory_vectors",
 	})
 
 	drawer:reset()
@@ -271,7 +284,7 @@ WeaponHelper.calculate_trajectory = function (self, world, initial_position, tar
 	local normalized_target_vector = Vector3.normalize(Vector3.flat(target_vector))
 	local angle = 30 + math.random(30)
 	local radians = math.degrees_to_radians(angle)
-	local trajectory_hits_target = nil
+	local trajectory_hits_target
 	local projectile_speed = math.round(WeaponHelper:wanted_projectile_speed(target_vector, gravity, radians) * 100, 0)
 
 	if projectile_speed <= max_speed then
@@ -339,6 +352,7 @@ WeaponHelper.position_on_trajectory = function (self, initial_position, normaliz
 	local length = projectile_speed * t * math.cos(radians)
 	local height = projectile_speed * t * math.sin(radians) + 0.5 * projectile_gravity * t^2
 	local position = initial_position + normalized_target_vector * length
+
 	position.z = position.z + height
 
 	return position
@@ -386,10 +400,10 @@ WeaponHelper.ground_target = function (self, physics_world, fitting_unit, origin
 				for j = 1, GROUND_TARGET_MAX_STEPS do
 					local step_back_distance = j == 1 and 0.5 or 1
 					local step_back_t = flat_velocity <= EPSILON and 0 or step_back_distance / flat_velocity
-					local step_back_position = nil
+					local step_back_position
 
 					if step_back_t > 0 then
-						step_back_position = hit_position - velocity * step_back_t - gravity * step_back_t * step_back_t * 0.5
+						step_back_position = hit_position - velocity * step_back_t - gravity * (step_back_t * step_back_t * 0.5)
 					else
 						step_back_position = origin
 					end
@@ -407,10 +421,18 @@ WeaponHelper.ground_target = function (self, physics_world, fitting_unit, origin
 							hit_position = step_back_position
 						end
 					end
+
+					if false then
+						-- Nothing
+					end
 				end
 			end
 
 			return true, hit_position
+		end
+
+		if false then
+			-- Nothing
 		end
 
 		velocity = velocity + gravity * time_step
@@ -449,11 +471,11 @@ WeaponHelper.look_at_enemy_or_static_position = function (self, physics_world, p
 
 	PhysicsWorld.prepare_actors_for_overlap(physics_world, halfway_position, prepare_radius * prepare_radius)
 
-	local results = PhysicsWorld.linear_sphere_sweep(physics_world, position + direction * hit_radius / 2, position + direction * max_length, hit_radius, 100, "types", "both", "collision_filter", "filter_player_ray_projectile", "report_initial_overlap")
+	local results = PhysicsWorld.linear_sphere_sweep(physics_world, position + direction * (hit_radius / 2), position + direction * max_length, hit_radius, 100, "types", "both", "collision_filter", "filter_player_ray_projectile", "report_initial_overlap")
 	local side_manager = Managers.state.side
 	local side_by_unit = side_manager.side_by_unit
 	local num_results = results and #results or 0
-	local best_position = nil
+	local best_position
 
 	for i = 1, num_results do
 		local result = results[i]

@@ -1,19 +1,23 @@
+﻿-- chunkname: @scripts/ui/hud_ui/loot_objective_ui.lua
+
 local definitions = local_require("scripts/ui/hud_ui/loot_objective_ui_definitions")
 local create_loot_widget = definitions.create_loot_widget
+
 LootObjectiveUI = class(LootObjectiveUI)
+
 local settings = {
 	tome = {
 		item_name = "wpn_side_objective_tome_01",
 		mission_name = "tome_bonus_mission",
+		texture = "loot_objective_icon_02",
 		total_amount = 3,
-		texture = "loot_objective_icon_02"
 	},
 	grimoire = {
 		item_name = "wpn_grimoire_01",
 		mission_name = "grimoire_hidden_mission",
+		texture = "loot_objective_icon_01",
 		total_amount = 2,
-		texture = "loot_objective_icon_01"
-	}
+	},
 }
 
 LootObjectiveUI.init = function (self, parent, ingame_ui_context)
@@ -21,13 +25,17 @@ LootObjectiveUI.init = function (self, parent, ingame_ui_context)
 	self.ui_renderer = ingame_ui_context.ui_renderer
 	self.ingame_ui = ingame_ui_context.ingame_ui
 	self.input_manager = ingame_ui_context.input_manager
+
 	local world = ingame_ui_context.world_manager:world("level_world")
+
 	self.wwise_world = Managers.world:wwise_world(world)
 	self.saved_mission_objectives = {}
 	self.completed_mission_objectives = {}
 	self.current_mission_objective = nil
 	self.index_count = 0
+
 	local mission_system = Managers.state.entity:system("mission_system")
+
 	self._mission_system = mission_system
 	self._animations = {}
 	self._event_queue = {}
@@ -39,6 +47,7 @@ local DO_RELOAD = true
 
 LootObjectiveUI.create_ui_elements = function (self)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(definitions.scenegraph_definition)
+
 	local widgets_by_name = {}
 	local settings_data = {}
 
@@ -48,13 +57,15 @@ LootObjectiveUI.create_ui_elements = function (self)
 		local total_amount = setting.total_amount
 		local definition = create_loot_widget(texture, total_amount)
 		local widget = UIWidget.init(definition)
+
 		widgets_by_name[key] = widget
-		local data = {
-			name = key,
-			total_amount = total_amount,
-			mission_name = mission_name,
-			widget = widget
-		}
+
+		local data = {}
+
+		data.name = key
+		data.total_amount = total_amount
+		data.mission_name = mission_name
+		data.widget = widget
 		settings_data[key] = data
 	end
 
@@ -73,10 +84,10 @@ LootObjectiveUI.destroy = function (self)
 end
 
 local customizer_data = {
-	root_scenegraph_id = "background",
+	drag_scenegraph_id = "background",
 	label = "Books",
 	registry_key = "books",
-	drag_scenegraph_id = "background"
+	root_scenegraph_id = "background",
 }
 
 LootObjectiveUI.update = function (self, dt, t)
@@ -109,6 +120,7 @@ LootObjectiveUI._sync_missions = function (self, initialize)
 		if current_amount ~= amount then
 			data.previous_amount = current_amount or 0
 			data.amount = amount
+
 			local widget = data.widget
 
 			if not initialize then
@@ -133,10 +145,11 @@ end
 LootObjectiveUI._add_presentation_event = function (self, widget, previous_amount, amount)
 	local event_queue = self._event_queue
 	local stack_count = #event_queue
+
 	event_queue[#event_queue + 1] = {
 		amount = amount,
 		previous_amount = previous_amount,
-		widget = widget
+		widget = widget,
 	}
 end
 
@@ -157,15 +170,19 @@ LootObjectiveUI._update_active_presentation = function (self, dt, t)
 		self:_assign_amount_to_widget(widget, amount)
 
 		presentation_data.started = true
+
 		local life_time = 2.5
 		local duration = self:_animate_in(widget, previous_amount)
+
 		presentation_data.end_time = t + duration + life_time
 	end
 
-	if presentation_data.end_time < t then
+	if t > presentation_data.end_time then
 		if not presentation_data.end_started then
 			presentation_data.end_started = true
+
 			local duration = self:_animate_out(widget)
+
 			presentation_data.end_time = t + duration
 		else
 			table.remove(event_queue, 1)
@@ -193,15 +210,18 @@ LootObjectiveUI._animate_in = function (self, widget, previous_draw_count)
 
 		if not amount_increased or i < largest_amount then
 			local anim = UIAnimation.init(func, color, target, from, 255, duration, easing)
+
 			animations["icon_textures_" .. i] = anim
 		end
 
 		if i == largest_amount then
 			if amount_increased then
 				local anim = UIAnimation.init(UIAnimation.wait, duration + 0.2, func, color, target, from, 255, duration, easing)
+
 				animations["icon_textures_" .. i] = anim
 			else
 				local anim = UIAnimation.init(UIAnimation.wait, duration + 0.5, func, color, target, 255, 0, duration, easing)
+
 				animations["icon_textures_last" .. i] = anim
 			end
 		end
@@ -209,12 +229,17 @@ LootObjectiveUI._animate_in = function (self, widget, previous_draw_count)
 
 	local background_icon_textures_color = widget.style.background_icon_textures.color
 	local background_icon_textures_default_color = widget.style.background_icon_textures.default_color
+
 	animations.background_icon_textures = UIAnimation.init(func, background_icon_textures_color, target, from, background_icon_textures_default_color[target], duration, easing)
+
 	local glow_icon_textures_color = widget.style.glow_icon_textures.color
 	local glow_icon_textures_default_color = widget.style.glow_icon_textures.default_color
+
 	animations.glow_icon_textures = UIAnimation.init(func, glow_icon_textures_color, target, from, glow_icon_textures_default_color[target], duration, easing)
+
 	local background_color = widget.style.background.color
 	local background_default_color = widget.style.background.default_color
+
 	animations.background = UIAnimation.init(func, background_color, target, from, background_default_color[target], duration, easing)
 
 	return duration
@@ -235,15 +260,21 @@ LootObjectiveUI._animate_out = function (self, widget)
 		if i <= draw_count then
 			local icon_duration = i == draw_count and duration + 1 or duration
 			local color = texture_colors[i]
+
 			animations["icon_textures_" .. i] = UIAnimation.init(func, color, target, 255, to, duration, easing)
 		end
 	end
 
 	local background_icon_textures_color = widget.style.background_icon_textures.color
+
 	animations.background_icon_textures = UIAnimation.init(func, background_icon_textures_color, target, background_icon_textures_color[1], to, duration, easing)
+
 	local glow_icon_textures_color = widget.style.glow_icon_textures.color
+
 	animations.glow_icon_textures = UIAnimation.init(func, glow_icon_textures_color, target, glow_icon_textures_color[1], to, duration, easing)
+
 	local background_color = widget.style.background.color
+
 	animations.background = UIAnimation.init(func, background_color, target, background_color[1], to, duration, easing)
 
 	return duration

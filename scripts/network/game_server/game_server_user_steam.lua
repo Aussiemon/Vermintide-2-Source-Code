@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/network/game_server/game_server_user_steam.lua
+
 require("scripts/network/game_server/game_server_aux")
 
 GameServerInternal = GameServerInternal or {}
@@ -96,25 +98,25 @@ SteamServerBrowserWrapper.compare_funcs = {
 		return lhv ~= tostring(rhv)
 	end,
 	less = function (lhv, rhv)
-		return tonumber(lhv) < rhv
+		return rhv > tonumber(lhv)
 	end,
 	less_or_equal = function (lhv, rhv)
-		return tonumber(lhv) <= rhv
+		return rhv >= tonumber(lhv)
 	end,
 	greater = function (lhv, rhv)
 		return rhv < tonumber(lhv)
 	end,
 	greater_or_equal = function (lhv, rhv)
 		return rhv <= tonumber(lhv)
-	end
+	end,
 }
 SteamServerBrowserWrapper.compare_func_names = {
-	greater_or_equal = ">=",
-	less_or_equal = "<=",
-	greater = ">",
-	less = "<",
 	equal = "==",
-	not_equal = "~="
+	greater = ">",
+	greater_or_equal = ">=",
+	less = "<",
+	less_or_equal = "<=",
+	not_equal = "~=",
 }
 
 SteamServerBrowserWrapper.init = function (self)
@@ -184,10 +186,11 @@ SteamServerBrowserWrapper.add_filters = function (self, filters)
 		fassert(compare_func, "Compare func does not exist for comparison(%s)", comparison)
 
 		local compare_name = SteamServerBrowserWrapper.compare_func_names[comparison]
+
 		self._filters[data_name] = {
 			value = value,
 			compare_name = compare_name,
-			compare_func = compare_func
+			compare_func = compare_func,
 		}
 
 		mm_printf("Server Filter: %s, comparison(%s), value=%s", tostring(data_name), tostring(comparison), tostring(value))
@@ -228,8 +231,11 @@ SteamServerBrowserWrapper.update = function (self, dt, t)
 
 			for i = 0, num_servers - 1 do
 				local server = SteamServerBrowser.server(self._engine_browser, i)
+
 				server.ip_port = server.ip_address .. ":" .. server.query_port
+
 				local lobby_data = SteamServerBrowser.data_all(self._engine_browser, i)
+
 				lobby_data.server_info = server
 
 				if self:_filter_server(lobby_data) then

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/generic/generic_character_state_machine_extension.lua
+
 require("scripts/unit_extensions/generic/generic_state_machine")
 require("scripts/unit_extensions/default_player_unit/states/player_character_state_helper")
 require("scripts/unit_extensions/default_player_unit/states/player_character_state")
@@ -57,7 +59,7 @@ GenericCharacterStateMachineExtension.extensions_ready = function (self)
 		csm = self.state_machine,
 		network_transmit = self.network_transmit,
 		unit_storage = self.unit_storage,
-		nav_world = self.nav_world
+		nav_world = self.nav_world,
 	}
 	local states = {}
 	local character_state_class_list = self.character_state_class_list

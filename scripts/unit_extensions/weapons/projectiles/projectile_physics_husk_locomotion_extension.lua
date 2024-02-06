@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/weapons/projectiles/projectile_physics_husk_locomotion_extension.lua
+
 ProjectilePhysicsHuskLocomotionExtension = class(ProjectilePhysicsHuskLocomotionExtension)
 script_data.debug_projectiles = script_data.debug_projectiles or Development.parameter("debug_projectiles")
 
@@ -7,6 +9,7 @@ ProjectilePhysicsHuskLocomotionExtension.init = function (self, extension_init_c
 	self.is_server = Managers.player.is_server
 	self.is_husk = not self.is_server
 	self.stopped = false
+
 	local position = AiAnimUtils.position_network_scale(extension_init_data.network_position)
 	local rotation = AiAnimUtils.rotation_network_scale(extension_init_data.network_rotation)
 	local velocity = AiAnimUtils.velocity_network_scale(extension_init_data.network_velocity)

@@ -1,3 +1,5 @@
+﻿-- chunkname: @foundation/scripts/util/error.lua
+
 local function format_error_message(message, ...)
 	local args = {}
 

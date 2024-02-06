@@ -1,31 +1,34 @@
+﻿-- chunkname: @scripts/imgui/imgui_deus_map_gen.lua
+
 ImguiDeusMapGen = class(ImguiDeusMapGen)
+
 local journey_names = AvailableJourneyOrder
 local gods = DEUS_GOD_INDEX
 local populate_editable_keys = {
 	{
+		key = "CURSES_HOT_SPOTS_MIN_COUNT",
 		type = "INT",
-		key = "CURSES_HOT_SPOTS_MIN_COUNT"
 	},
 	{
+		key = "CURSES_HOT_SPOTS_MAX_COUNT",
 		type = "INT",
-		key = "CURSES_HOT_SPOTS_MAX_COUNT"
 	},
 	{
+		key = "CURSES_HOT_SPOT_MIN_RANGE",
 		type = "FLOAT",
-		key = "CURSES_HOT_SPOT_MIN_RANGE"
 	},
 	{
+		key = "CURSES_HOT_SPOT_MAX_RANGE",
 		type = "FLOAT",
-		key = "CURSES_HOT_SPOT_MAX_RANGE"
 	},
 	{
+		key = "CURSES_MIN_PROGRESS",
 		type = "FLOAT",
-		key = "CURSES_MIN_PROGRESS"
 	},
 	{
+		key = "MINOR_MODIFIABLE_NODE_CHANCE",
 		type = "FLOAT",
-		key = "MINOR_MODIFIABLE_NODE_CHANCE"
-	}
+	},
 }
 
 local function are_very_different(val1, val2)
@@ -80,6 +83,7 @@ end
 
 ImguiDeusMapGen._reset_configs_for_journey = function (self)
 	local journey_name = journey_names[self._journey_index]
+
 	self._original_populate_config = DEUS_MAP_POPULATE_SETTINGS[journey_name] or DEUS_MAP_POPULATE_SETTINGS.default
 	self._populate_config = self._populate_configs[journey_name] or self._populate_configs.default
 end
@@ -87,6 +91,7 @@ end
 ImguiDeusMapGen.draw = function (self, is_open)
 	local do_close = Imgui.begin_window("DeusMapGen", "always_auto_resize")
 	local prev_journey_index = self._journey_index
+
 	self._journey_index = Imgui.combo("Journey to change", self._journey_index, journey_names)
 
 	if prev_journey_index ~= self._journey_index then
@@ -94,7 +99,9 @@ ImguiDeusMapGen.draw = function (self, is_open)
 	end
 
 	self._dominant_god_index = Imgui.combo("Dominant God", self._dominant_god_index, gods)
+
 	local with_belakor = self._with_belakor or false
+
 	with_belakor = Imgui.checkbox("With Be'lakor", with_belakor)
 	self._with_belakor = with_belakor
 
@@ -144,7 +151,9 @@ end
 
 ImguiDeusMapGen._trigger_graph_render = function (self)
 	script_data.deus_debug_draw_map = true
+
 	local graph = deus_generate_graph(self._seed, journey_names[self._journey_index], gods[self._dominant_god_index], self._populate_config, self._with_belakor)
+
 	DeusDebugDrawMapSettings.base_graph = nil
 	DeusDebugDrawMapSettings.final_graph = graph
 end

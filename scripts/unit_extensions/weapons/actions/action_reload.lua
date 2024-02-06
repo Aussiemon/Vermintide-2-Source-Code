@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/weapons/actions/action_reload.lua
+
 ActionReload = class(ActionReload, ActionBase)
 
 ActionReload.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
@@ -16,7 +18,7 @@ ActionReload.client_owner_start_action = function (self, new_action, t, chain_ac
 
 	local owner_unit = self.owner_unit
 	local inventory_extension = ScriptUnit.extension(owner_unit, "inventory_system")
-	local ammo_extension = nil
+	local ammo_extension
 	local equipment = inventory_extension:equipment()
 
 	if equipment.right_hand_wielded_unit ~= nil and ScriptUnit.has_extension(equipment.right_hand_wielded_unit, "ammo_system") then

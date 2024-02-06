@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/default_player_unit/states/player_character_state_overcharge_exploding.lua
+
 PlayerCharacterStateOverchargeExploding = class(PlayerCharacterStateOverchargeExploding, PlayerCharacterState)
 
 PlayerCharacterStateOverchargeExploding.init = function (self, character_state_init_context)
@@ -16,9 +18,12 @@ PlayerCharacterStateOverchargeExploding.on_enter = function (self, unit, input, 
 	local input_extension = self.input_extension
 	local first_person_extension = self.first_person_extension
 	local status_extension = self.status_extension
+
 	self.damage_timer = t + 0.5
 	self.movement_speed = 0.2
+
 	local move_anim_3p, _ = CharacterStateHelper.get_move_animation(self.locomotion_extension, input_extension, status_extension)
+
 	self.move_anim_3p = move_anim_3p
 
 	CharacterStateHelper.play_animation_event(unit, "explode_start")
@@ -26,7 +31,9 @@ PlayerCharacterStateOverchargeExploding.on_enter = function (self, unit, input, 
 	self.last_input_direction:store(Vector3.zero())
 
 	self.has_exploded = false
+
 	local overcharge_extension = ScriptUnit.extension(unit, "overcharge_system")
+
 	self.explosion_template = overcharge_extension.explosion_template
 	self.no_forced_movement = overcharge_extension.no_forced_movement
 	self.no_explosion = overcharge_extension.no_explosion
@@ -59,6 +66,7 @@ end
 
 PlayerCharacterStateOverchargeExploding.explode = function (self)
 	self.has_exploded = true
+
 	local unit = self.unit
 
 	StatusUtils.set_overcharge_exploding(unit, false)
@@ -74,7 +82,9 @@ PlayerCharacterStateOverchargeExploding.explode = function (self)
 	if not self.inside_inn and not self.status_extension:is_knocked_down() then
 		local health_extension = ScriptUnit.extension(unit, "health_system")
 		local self_damage = health_extension:get_max_health()
+
 		self_damage = self_damage * (self.percent_health_lost or 1)
+
 		local buff_extension = ScriptUnit.extension(unit, "buff_system")
 		local _, procced = buff_extension:apply_buffs_to_value(0, "overcharge_damage_immunity")
 
@@ -140,7 +150,7 @@ PlayerCharacterStateOverchargeExploding.update = function (self, unit, input, dt
 
 	local params = self.temp_params
 
-	if self.explosion_time <= t and not self.has_exploded or not status_extension:is_overcharge_exploding() then
+	if t >= self.explosion_time and not self.has_exploded or not status_extension:is_overcharge_exploding() then
 		if status_extension:is_overcharge_exploding() then
 			self:explode()
 		end
@@ -163,7 +173,7 @@ PlayerCharacterStateOverchargeExploding.update = function (self, unit, input, dt
 		return
 	end
 
-	if self.damage_timer < t then
+	if t > self.damage_timer then
 		self.damage_timer = t + 0.5
 
 		if not self.inside_inn then
@@ -171,7 +181,7 @@ PlayerCharacterStateOverchargeExploding.update = function (self, unit, input, dt
 		end
 
 		Managers.state.controller_features:add_effect("rumble", {
-			rumble_effect = "overcharge_rumble_crit"
+			rumble_effect = "overcharge_rumble_crit",
 		})
 
 		local player_locomotion = ScriptUnit.extension(unit, "locomotion_system")
@@ -211,6 +221,7 @@ PlayerCharacterStateOverchargeExploding.update = function (self, unit, input, dt
 	move_speed = move_speed * move_speed_multiplier
 	move_speed = move_speed * movement_settings_table.player_speed_scale
 	move_speed = move_speed * self.movement_speed
+
 	local movement = Vector3(0, 0.9, 0)
 	local move_input = input_extension:get("move")
 
@@ -230,7 +241,8 @@ PlayerCharacterStateOverchargeExploding.update = function (self, unit, input, dt
 		movement = movement + move_input_controller
 	end
 
-	local move_input_direction = nil
+	local move_input_direction
+
 	move_input_direction = Vector3.normalize(movement)
 
 	if Vector3.length(move_input_direction) == 0 then

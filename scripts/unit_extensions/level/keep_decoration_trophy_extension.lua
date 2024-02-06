@@ -1,8 +1,11 @@
+﻿-- chunkname: @scripts/unit_extensions/level/keep_decoration_trophy_extension.lua
+
 KeepDecorationTrophyExtension = class(KeepDecorationTrophyExtension)
 
 KeepDecorationTrophyExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	local world = extension_init_context.world
 	local level = LevelHelper:current_level(world)
+
 	self.keep_decoration_system = nil
 	self._decoration_settings_key = Unit.get_data(unit, "decoration_settings_key")
 	self._unit = unit
@@ -14,8 +17,10 @@ KeepDecorationTrophyExtension.init = function (self, extension_init_context, uni
 	self._currently_set_trophy = nil
 	self._is_hidden = nil
 	self._next_trophy = {}
+
 	local settings_key = Unit.get_data(unit, "decoration_settings_key")
 	local settings = KeepDecorationSettings[settings_key]
+
 	self._settings = settings
 	self._backend_key = settings.backend_key
 end
@@ -36,6 +41,7 @@ KeepDecorationTrophyExtension.extensions_ready = function (self)
 	end
 
 	local selected_trophy = self:get_selected_decoration()
+
 	self._current_preview_trophy = selected_trophy
 
 	self:_create_game_object(selected_trophy)
@@ -121,7 +127,9 @@ KeepDecorationTrophyExtension.distributed_update = function (self)
 
 			if trophy_index ~= self._go_trophy_index then
 				self._go_trophy_index = trophy_index
+
 				local trophy = self._trophies_lookup[trophy_index]
+
 				self._currently_set_trophy = trophy
 
 				self:_load_trophy(trophy)
@@ -135,6 +143,7 @@ KeepDecorationTrophyExtension.get_selected_decoration = function (self)
 		local backend_key = self._backend_key
 		local backend_interface = Managers.backend:get_interface("keep_decorations")
 		local selected_trophy = backend_interface:get_decoration(backend_key)
+
 		selected_trophy = selected_trophy or DefaultTrophies[1]
 
 		return selected_trophy
@@ -147,6 +156,7 @@ KeepDecorationTrophyExtension._set_selected_decoration = function (self, trophy)
 	local backend_key = self._backend_key
 	local backend_manager = Managers.backend
 	local backend_interface = backend_manager:get_interface("keep_decorations")
+
 	self._currently_set_trophy = trophy
 
 	Unit.set_data(self._current_preview_trophy_unit, "decoration_settings_key", self._decoration_settings_key)
@@ -174,6 +184,7 @@ KeepDecorationTrophyExtension._load_trophy = function (self, trophy, callback)
 		self._current_preview_trophy_unit = unit
 	else
 		local new_unit = World.spawn_unit(self._world, unit_name, position, rotation)
+
 		self._current_preview_trophy_unit = new_unit
 	end
 
@@ -184,9 +195,10 @@ KeepDecorationTrophyExtension._create_game_object = function (self, trophy)
 	local go_data_table = {
 		go_type = NetworkLookup.go_types.keep_decoration_trophy,
 		level_unit_index = self._level_unit_index,
-		trophy_index = self._trophies_lookup[trophy]
+		trophy_index = self._trophies_lookup[trophy],
 	}
 	local callback = callback(self, "cb_game_session_disconnect")
+
 	self._go_id = Managers.state.network:create_game_object("keep_decoration_trophy", go_data_table, callback)
 end
 

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/achievements/achievement_templates_shovel.lua
+
 local PLACEHOLDER_ICON = AchievementTemplateHelper.PLACEHOLDER_ICON
 local achievements = AchievementTemplates.achievements
 local achievement_settings = DLCSettings.shovel
@@ -34,34 +36,35 @@ local difficulties = {
 	"hard",
 	"harder",
 	"hardest",
-	"cataclysm"
+	"cataclysm",
 }
 
 add_career_mission_count_challenge(achievements, "shovel_complete_25_missions", "completed_career_levels", "bw_necromancer", difficulties, 25, nil, "creeping_death", "shovel", nil, nil)
 
 local SAC_VENT_TARGET = 2500
+
 achievements.shovel_sac_vent = {
 	display_completion_ui = true,
+	icon = "assistive_sacrifice",
 	name = "achv_sac_vent_name",
 	required_career = "bw_necromancer",
-	icon = "assistive_sacrifice",
 	required_dlc = "shovel",
 	desc = function ()
 		return string.format(Localize("achv_sac_vent_desc"), SAC_VENT_TARGET)
 	end,
 	events = {
-		"sacrifice_skeleton"
+		"sacrifice_skeleton",
 	},
 	progress = function (statistics_db, stats_id, template_data)
 		local completed = statistics_db:get_persistent_stat(stats_id, "shovel_sac_vent")
 
 		return {
 			completed,
-			SAC_VENT_TARGET
+			SAC_VENT_TARGET,
 		}
 	end,
 	completed = function (statistics_db, stats_id, template_data)
-		return SAC_VENT_TARGET <= statistics_db:get_persistent_stat(stats_id, "shovel_sac_vent")
+		return statistics_db:get_persistent_stat(stats_id, "shovel_sac_vent") >= SAC_VENT_TARGET
 	end,
 	on_event = function (statistics_db, stats_id, template_data, event_name, event_data)
 		if global_is_inside_inn then
@@ -88,21 +91,23 @@ achievements.shovel_sac_vent = {
 
 			statistics_db:modify_stat_by_amount(stats_id, "shovel_sac_vent", overcharge_percentage_lost)
 		end
-	end
+	end,
 }
+
 local SACRIFICE_SKELETON_COUNT = 10
 local SACRIFICE_SKELETON_THRESHOLD = 0.2
+
 achievements.shovel_sac_low = {
 	display_completion_ui = true,
+	icon = "easy_come_easy_go",
 	name = "achv_sac_low_name",
 	required_career = "bw_necromancer",
-	icon = "easy_come_easy_go",
 	required_dlc = "shovel",
 	desc = function ()
 		return string.format(Localize("achv_sac_low_desc"), SACRIFICE_SKELETON_COUNT, SACRIFICE_SKELETON_THRESHOLD * 100)
 	end,
 	events = {
-		"sacrifice_skeleton"
+		"sacrifice_skeleton",
 	},
 	completed = function (statistics_db, stats_id, template_data)
 		return statistics_db:get_persistent_stat(stats_id, "shovel_sac_low") >= 1
@@ -128,30 +133,32 @@ achievements.shovel_sac_low = {
 		local skeleton_unit = event_data[1]
 		local health_extension = ScriptUnit.has_extension(skeleton_unit, "health_system")
 
-		if not health_extension or SACRIFICE_SKELETON_THRESHOLD < health_extension:current_health_percent() then
+		if not health_extension or health_extension:current_health_percent() > SACRIFICE_SKELETON_THRESHOLD then
 			return
 		end
 
 		template_data.count = (template_data.count or 0) + 1
 
-		if SACRIFICE_SKELETON_COUNT <= template_data.count then
+		if template_data.count >= SACRIFICE_SKELETON_COUNT then
 			statistics_db:increment_stat(stats_id, "shovel_sac_low")
 		end
-	end
+	end,
 }
+
 local FAST_GENERATE_TARGET = 400
 local FAST_GENERATE_TIME = 18
+
 achievements.shovel_fast_generate = {
 	display_completion_ui = true,
+	icon = "unlimited_power",
 	name = "achv_fast_generate_name",
 	required_career = "bw_necromancer",
-	icon = "unlimited_power",
 	required_dlc = "shovel",
 	desc = function ()
 		return string.format(Localize("achv_fast_generate_desc"), FAST_GENERATE_TARGET, FAST_GENERATE_TIME)
 	end,
 	events = {
-		"overcharge_gained"
+		"overcharge_gained",
 	},
 	completed = function (statistics_db, stats_id, template_data)
 		return statistics_db:get_persistent_stat(stats_id, "shovel_fast_generate") >= 1
@@ -182,18 +189,22 @@ achievements.shovel_fast_generate = {
 		end
 
 		local percentage_gained = fraction_gained * 100
+
 		template_data.total_amount = (template_data.total_amount or 0) + percentage_gained
+
 		local instances = template_data.instances or {}
+
 		template_data.instances = instances
+
 		local t = Managers.time:time("game")
 		local instance = {
 			time = t,
-			overcharge = percentage_gained
+			overcharge = percentage_gained,
 		}
 
 		table.insert(instances, instance)
 
-		while true do
+		repeat
 			local oldest = instances[1]
 
 			if oldest.time > t - FAST_GENERATE_TIME then
@@ -201,37 +212,40 @@ achievements.shovel_fast_generate = {
 			end
 
 			local cut_instance = table.remove(instances, 1)
-			template_data.total_amount = template_data.total_amount - cut_instance.overcharge
-		end
 
-		if FAST_GENERATE_TARGET < template_data.total_amount then
+			template_data.total_amount = template_data.total_amount - cut_instance.overcharge
+		until false
+
+		if template_data.total_amount > FAST_GENERATE_TARGET then
 			statistics_db:increment_stat(stats_id, "shovel_fast_generate")
 		end
-	end
+	end,
 }
+
 local COMMAND_ELITE_TARGET = 30
+
 achievements.shovel_command_elite = {
 	display_completion_ui = true,
+	icon = "dead_reckoning",
 	name = "achv_command_elite_name",
 	required_career = "bw_necromancer",
-	icon = "dead_reckoning",
 	required_dlc = "shovel",
 	desc = function ()
 		return string.format(Localize("achv_command_elite_desc"), COMMAND_ELITE_TARGET)
 	end,
 	events = {
-		"command_attack_unit"
+		"command_attack_unit",
 	},
 	progress = function (statistics_db, stats_id, template_data)
 		local completed = statistics_db:get_persistent_stat(stats_id, "shovel_command_elite")
 
 		return {
 			completed,
-			COMMAND_ELITE_TARGET
+			COMMAND_ELITE_TARGET,
 		}
 	end,
 	completed = function (statistics_db, stats_id, template_data)
-		return COMMAND_ELITE_TARGET <= statistics_db:get_persistent_stat(stats_id, "shovel_command_elite")
+		return statistics_db:get_persistent_stat(stats_id, "shovel_command_elite") >= COMMAND_ELITE_TARGET
 	end,
 	on_event = function (statistics_db, stats_id, template_data, event_name, event_data)
 		local controlled_unit = event_data[1]
@@ -259,22 +273,24 @@ achievements.shovel_command_elite = {
 
 		buff_ext:add_buff("command_elite_challenge_tracker")
 		statistics_db:increment_stat(stats_id, "shovel_command_elite")
-	end
+	end,
 }
+
 local SKELETON_ATTACK_BIG_TARGET = 30
 local SKELETON_ATTACK_BIG_TIME = 2
+
 achievements.shovel_skeleton_attack_big = {
 	always_run = true,
-	name = "achv_skeleton_attack_big_name",
 	display_completion_ui = true,
-	required_career = "bw_necromancer",
 	icon = "sally_forth",
+	name = "achv_skeleton_attack_big_name",
+	required_career = "bw_necromancer",
 	required_dlc = "shovel",
 	desc = function ()
 		return string.format(Localize("achv_skeleton_attack_big_desc"), SKELETON_ATTACK_BIG_TIME)
 	end,
 	events = {
-		"on_damage_dealt"
+		"on_damage_dealt",
 	},
 	completed = function (statistics_db, stats_id, template_data)
 		return statistics_db:get_persistent_stat(stats_id, "shovel_skeleton_attack_big") >= 1
@@ -319,7 +335,7 @@ achievements.shovel_skeleton_attack_big = {
 		damaged_enemies[attacked_unit] = t
 		template_data.damaged_enemies = damaged_enemies
 
-		if SKELETON_ATTACK_BIG_TARGET <= template_data.count then
+		if template_data.count >= SKELETON_ATTACK_BIG_TARGET then
 			local cutoff_time = t - SKELETON_ATTACK_BIG_TIME
 
 			for damaged_enemy, time in pairs(damaged_enemies) do
@@ -329,28 +345,30 @@ achievements.shovel_skeleton_attack_big = {
 				end
 			end
 
-			if SKELETON_ATTACK_BIG_TARGET <= template_data.count then
+			if template_data.count >= SKELETON_ATTACK_BIG_TARGET then
 				template_data[player:stats_id()] = true
 
 				rpc_increment_stat(controlled_owner, "shovel_skeleton_attack_big")
 			end
 		end
-	end
+	end,
 }
+
 local SKELETON_DEFEND_TARGET = 400
 local SKELETON_DEFEND_TIME = 10
+
 achievements.shovel_skeleton_defend = {
 	always_run = true,
-	name = "achv_skeleton_defend_name",
 	display_completion_ui = true,
-	required_career = "bw_necromancer",
 	icon = "wall_of_bone",
+	name = "achv_skeleton_defend_name",
+	required_career = "bw_necromancer",
 	required_dlc = "shovel",
 	desc = function ()
 		return string.format(Localize("achv_skeleton_defend_desc"), SKELETON_DEFEND_TARGET, SKELETON_DEFEND_TIME)
 	end,
 	events = {
-		"on_damage_dealt"
+		"on_damage_dealt",
 	},
 	completed = function (statistics_db, stats_id, template_data)
 		return statistics_db:get_persistent_stat(stats_id, "shovel_skeleton_defend") >= 1
@@ -397,17 +415,20 @@ achievements.shovel_skeleton_defend = {
 		end
 
 		template_data.total_amount = (template_data.total_amount or 0) + damage_amount
+
 		local instances = template_data.instances or {}
+
 		template_data.instances = instances
+
 		local t = Managers.time:time("game")
 		local instance = {
 			time = t,
-			damage = damage_amount
+			damage = damage_amount,
 		}
 
 		table.insert(instances, instance)
 
-		while true do
+		repeat
 			local oldest = instances[1]
 
 			if oldest.time > t - SKELETON_DEFEND_TIME then
@@ -415,28 +436,31 @@ achievements.shovel_skeleton_defend = {
 			end
 
 			local cut_instance = table.remove(instances, 1)
-			template_data.total_amount = template_data.total_amount - cut_instance.damage
-		end
 
-		if SKELETON_DEFEND_TARGET < template_data.total_amount then
+			template_data.total_amount = template_data.total_amount - cut_instance.damage
+		until false
+
+		if template_data.total_amount > SKELETON_DEFEND_TARGET then
 			template_data[player:stats_id()] = true
 
 			rpc_increment_stat(controlled_owner, "shovel_skeleton_defend")
 		end
-	end
+	end,
 }
+
 local MANY_SKELETONS_TARGET = 24
+
 achievements.shovel_many_skeletons = {
 	display_completion_ui = true,
+	icon = "deaths_company",
 	name = "achv_many_skeletons_name",
 	required_career = "bw_necromancer",
-	icon = "deaths_company",
 	required_dlc = "shovel",
 	desc = function ()
 		return string.format(Localize("achv_many_skeletons_desc"), MANY_SKELETONS_TARGET)
 	end,
 	events = {
-		"on_controlled_unit_added"
+		"on_controlled_unit_added",
 	},
 	completed = function (statistics_db, stats_id, template_data)
 		return statistics_db:get_persistent_stat(stats_id, "shovel_many_skeletons") >= 1
@@ -452,34 +476,36 @@ achievements.shovel_many_skeletons = {
 
 		local commander_extension = event_data[3]
 
-		if MANY_SKELETONS_TARGET <= commander_extension:get_controlled_units_count() then
+		if commander_extension:get_controlled_units_count() >= MANY_SKELETONS_TARGET then
 			statistics_db:increment_stat(stats_id, "shovel_many_skeletons")
 		end
-	end
+	end,
 }
+
 local MELEE_BALEFIRE_TARGET = 150
+
 achievements.shovel_melee_balefire = {
 	display_completion_ui = true,
+	icon = "flames_forever",
 	name = "achv_melee_balefire_name",
 	required_career = "bw_necromancer",
-	icon = "flames_forever",
 	required_dlc = "shovel",
 	desc = function ()
 		return string.format(Localize("achv_melee_balefire_desc"), MELEE_BALEFIRE_TARGET)
 	end,
 	events = {
-		"register_kill"
+		"register_kill",
 	},
 	progress = function (statistics_db, stats_id, template_data)
 		local completed = statistics_db:get_persistent_stat(stats_id, "shovel_melee_balefire")
 
 		return {
 			completed,
-			MELEE_BALEFIRE_TARGET
+			MELEE_BALEFIRE_TARGET,
 		}
 	end,
 	completed = function (statistics_db, stats_id, template_data)
-		return MELEE_BALEFIRE_TARGET <= statistics_db:get_persistent_stat(stats_id, "shovel_melee_balefire")
+		return statistics_db:get_persistent_stat(stats_id, "shovel_melee_balefire") >= MELEE_BALEFIRE_TARGET
 	end,
 	on_event = function (statistics_db, stats_id, template_data, event_name, event_data)
 		local local_player = Managers.player:local_player()
@@ -511,21 +537,23 @@ achievements.shovel_melee_balefire = {
 		end
 
 		statistics_db:increment_stat(stats_id, "shovel_melee_balefire")
-	end
+	end,
 }
+
 local FAST_STAFF_ATTACK_TARGET = 8
+
 achievements.shovel_fast_staff_attack = {
 	always_run = true,
-	name = "achv_fast_staff_attack_name",
 	display_completion_ui = true,
-	required_career = "bw_necromancer",
 	icon = "mistress_of_the_stave",
+	name = "achv_fast_staff_attack_name",
+	required_career = "bw_necromancer",
 	required_dlc = "shovel",
 	desc = function ()
 		return string.format(Localize("achv_fast_staff_attack_desc"), FAST_STAFF_ATTACK_TARGET)
 	end,
 	events = {
-		"register_ai_stagger"
+		"register_ai_stagger",
 	},
 	completed = function (statistics_db, stats_id, template_data)
 		return statistics_db:get_persistent_stat(stats_id, "shovel_fast_staff_attack") >= 1
@@ -562,7 +590,9 @@ achievements.shovel_fast_staff_attack = {
 		end
 
 		local stagger_instances = template_data.stagger_instances or {}
+
 		template_data.stagger_instances = stagger_instances
+
 		local t = Managers.time:time("game")
 
 		if not stagger_instances[attacked_unit] then
@@ -570,9 +600,10 @@ achievements.shovel_fast_staff_attack = {
 		end
 
 		stagger_instances[attacked_unit] = t
+
 		local stagger_duration = 1.75
 
-		if FAST_STAFF_ATTACK_TARGET <= template_data.num_staggers then
+		if template_data.num_staggers >= FAST_STAFF_ATTACK_TARGET then
 			for unit, stagger_t in pairs(stagger_instances) do
 				local bb = BLACKBOARDS[unit]
 				local still_in_stagger = not bb or bb.stagger_time
@@ -584,29 +615,31 @@ achievements.shovel_fast_staff_attack = {
 			end
 		end
 
-		if FAST_STAFF_ATTACK_TARGET <= template_data.num_staggers then
+		if template_data.num_staggers >= FAST_STAFF_ATTACK_TARGET then
 			template_data[player:stats_id()] = true
 
 			rpc_increment_stat(instigator, "shovel_fast_staff_attack")
 		end
-	end
+	end,
 }
+
 local STAFF_BALEFIRE_TARGET = 250
+
 achievements.shovel_staff_balefire = {
 	always_run = true,
-	name = "achv_staff_balefire_name",
 	display_completion_ui = true,
-	required_career = "bw_necromancer",
 	icon = "still_fiery_darlings",
+	name = "achv_staff_balefire_name",
+	required_career = "bw_necromancer",
 	required_dlc = "shovel",
 	desc = function ()
 		return string.format(Localize("achv_staff_balefire_desc"), STAFF_BALEFIRE_TARGET)
 	end,
 	events = {
-		"on_dot_applied"
+		"on_dot_applied",
 	},
 	completed = function (statistics_db, stats_id, template_data)
-		return STAFF_BALEFIRE_TARGET <= statistics_db:get_persistent_stat(stats_id, "shovel_staff_balefire")
+		return statistics_db:get_persistent_stat(stats_id, "shovel_staff_balefire") >= STAFF_BALEFIRE_TARGET
 	end,
 	on_event = function (statistics_db, stats_id, template_data, event_name, event_data)
 		if not Managers.state.network.is_server then
@@ -639,37 +672,40 @@ achievements.shovel_staff_balefire = {
 		end
 
 		local counter = template_data.counter or {}
+
 		template_data.counter = counter
 		counter[attacker_unit] = (counter[attacker_unit] or 0) + 1
 
 		if counter[attacker_unit] <= STAFF_BALEFIRE_TARGET then
 			rpc_increment_stat(attacker_unit, "shovel_staff_balefire")
 		end
-	end
+	end,
 }
+
 local BIG_SUCK_TARGET = 25
+
 achievements.shovel_big_suck = {
 	display_completion_ui = true,
+	icon = "drained",
 	name = "achv_big_suck_name",
 	required_career = "bw_necromancer",
-	icon = "drained",
 	required_dlc = "shovel",
 	desc = function ()
 		return string.format(Localize("achv_big_suck_desc"), BIG_SUCK_TARGET)
 	end,
 	events = {
-		"register_kill"
+		"register_kill",
 	},
 	progress = function (statistics_db, stats_id, template_data)
 		local completed = statistics_db:get_persistent_stat(stats_id, "shovel_big_suck")
 
 		return {
 			completed,
-			BIG_SUCK_TARGET
+			BIG_SUCK_TARGET,
 		}
 	end,
 	completed = function (statistics_db, stats_id, template_data)
-		return BIG_SUCK_TARGET <= statistics_db:get_persistent_stat(stats_id, "shovel_big_suck")
+		return statistics_db:get_persistent_stat(stats_id, "shovel_big_suck") >= BIG_SUCK_TARGET
 	end,
 	on_event = function (statistics_db, stats_id, template_data, event_name, event_data)
 		local local_player = Managers.player:local_player()
@@ -706,24 +742,26 @@ achievements.shovel_big_suck = {
 		end
 
 		statistics_db:increment_stat(stats_id, "shovel_big_suck")
-	end
+	end,
 }
+
 local BIG_CLEAVE_NUM_ENEMIES = 15
 local BIG_CLEAVE_TARGET = 5
+
 achievements.shovel_big_cleave = {
 	display_completion_ui = true,
+	icon = "reaping_time",
 	name = "achv_big_cleave_name",
 	required_career = "bw_necromancer",
-	icon = "reaping_time",
 	required_dlc = "shovel",
 	desc = function ()
 		return string.format(Localize("achv_big_cleave_desc"), BIG_CLEAVE_NUM_ENEMIES, BIG_CLEAVE_TARGET)
 	end,
 	events = {
-		"on_hit"
+		"on_hit",
 	},
 	completed = function (statistics_db, stats_id, template_data)
-		return BIG_CLEAVE_TARGET <= statistics_db:get_persistent_stat(stats_id, "shovel_big_cleave")
+		return statistics_db:get_persistent_stat(stats_id, "shovel_big_cleave") >= BIG_CLEAVE_TARGET
 	end,
 	on_event = function (statistics_db, stats_id, template_data, event_name, event_data)
 		local damage_source = event_data[9]
@@ -751,31 +789,33 @@ achievements.shovel_big_cleave = {
 		if target_number == BIG_CLEAVE_NUM_ENEMIES + 1 then
 			statistics_db:increment_stat(stats_id, "shovel_big_cleave")
 		end
-	end
+	end,
 }
+
 local HEADSHOT_SCYTHE_TARGET = 100
+
 achievements.shovel_headshot_scythe = {
 	display_completion_ui = true,
+	icon = "ripe_harvest",
 	name = "achv_headshot_scythe_name",
 	required_career = "bw_necromancer",
-	icon = "ripe_harvest",
 	required_dlc = "shovel",
 	desc = function ()
 		return string.format(Localize("achv_headshot_scythe_desc"), HEADSHOT_SCYTHE_TARGET)
 	end,
 	events = {
-		"on_hit"
+		"on_hit",
 	},
 	progress = function (statistics_db, stats_id, template_data)
 		local completed = statistics_db:get_persistent_stat(stats_id, "shovel_headshot_scythe")
 
 		return {
 			completed,
-			HEADSHOT_SCYTHE_TARGET
+			HEADSHOT_SCYTHE_TARGET,
 		}
 	end,
 	completed = function (statistics_db, stats_id, template_data)
-		return HEADSHOT_SCYTHE_TARGET <= statistics_db:get_persistent_stat(stats_id, "shovel_headshot_scythe")
+		return statistics_db:get_persistent_stat(stats_id, "shovel_headshot_scythe") >= HEADSHOT_SCYTHE_TARGET
 	end,
 	on_event = function (statistics_db, stats_id, template_data, event_name, event_data)
 		local damage_source = event_data[9]
@@ -797,8 +837,9 @@ achievements.shovel_headshot_scythe = {
 		if hit_zone_name == "head" then
 			statistics_db:increment_stat(stats_id, "shovel_headshot_scythe")
 		end
-	end
+	end,
 }
+
 local STAFF_GANDALF_GRACE_PERIOD = 3
 local STAFF_GANDALF_MIN_Z_DIFFERENCE = 4
 
@@ -814,16 +855,16 @@ local function _staff_gandalf_check_tracked_unit(knockback_data, victim_unit)
 end
 
 achievements.shovel_staff_gandalf = {
-	display_completion_ui = true,
-	name = "achv_staff_gandalf_name",
 	desc = "achv_staff_gandalf_desc",
-	required_career = "bw_necromancer",
+	display_completion_ui = true,
 	icon = "whoosh_clang",
+	name = "achv_staff_gandalf_name",
+	required_career = "bw_necromancer",
 	required_dlc = "shovel",
 	events = {
 		"register_kill",
 		"on_hit",
-		"necromancer_staff_gandalf_delayed_check"
+		"necromancer_staff_gandalf_delayed_check",
 	},
 	completed = function (statistics_db, stats_id, template_data)
 		return statistics_db:get_persistent_stat(stats_id, "shovel_staff_gandalf") >= 1
@@ -841,7 +882,7 @@ achievements.shovel_staff_gandalf = {
 
 			local knockback_time = unit_data.knockback_time
 
-			if STAFF_GANDALF_GRACE_PERIOD < t - knockback_time then
+			if t - knockback_time > STAFF_GANDALF_GRACE_PERIOD then
 				return false
 			end
 
@@ -883,6 +924,7 @@ achievements.shovel_staff_gandalf = {
 			passive:achievement_staff_gandalf_trigger(victim_unit, t, math.max(STAFF_GANDALF_GRACE_PERIOD, 6))
 
 			template_data.tracked_units = template_data.tracked_units or {}
+
 			local existing_data = template_data.tracked_units[victim_unit]
 
 			if existing_data then
@@ -892,7 +934,7 @@ achievements.shovel_staff_gandalf = {
 			else
 				template_data.tracked_units[victim_unit] = {
 					knockback_time = t,
-					knockback_position = Vector3Box(POSITION_LOOKUP[victim_unit])
+					knockback_position = Vector3Box(POSITION_LOOKUP[victim_unit]),
 				}
 			end
 		else
@@ -905,32 +947,34 @@ achievements.shovel_staff_gandalf = {
 				return
 			end
 		end
-	end
+	end,
 }
+
 local SKELETON_BALEFIRE_TARGET = 500
+
 achievements.shovel_skeleton_balefire = {
 	always_run = true,
-	name = "achv_skeleton_balefire_name",
 	display_completion_ui = true,
-	required_career = "bw_necromancer",
 	icon = "unrestful_bonefire",
+	name = "achv_skeleton_balefire_name",
+	required_career = "bw_necromancer",
 	required_dlc = "shovel",
 	desc = function ()
 		return string.format(Localize("achv_skeleton_balefire_desc"), SKELETON_BALEFIRE_TARGET)
 	end,
 	events = {
-		"on_damage_dealt"
+		"on_damage_dealt",
 	},
 	progress = function (statistics_db, stats_id, template_data)
 		local completed = statistics_db:get_persistent_stat(stats_id, "shovel_skeleton_balefire")
 
 		return {
 			completed,
-			SKELETON_BALEFIRE_TARGET
+			SKELETON_BALEFIRE_TARGET,
 		}
 	end,
 	completed = function (statistics_db, stats_id, template_data)
-		return SKELETON_BALEFIRE_TARGET <= statistics_db:get_persistent_stat(stats_id, "shovel_skeleton_balefire")
+		return statistics_db:get_persistent_stat(stats_id, "shovel_skeleton_balefire") >= SKELETON_BALEFIRE_TARGET
 	end,
 	on_event = function (statistics_db, stats_id, template_data, event_name, event_data)
 		if not Managers.state.network.is_server then
@@ -970,12 +1014,13 @@ achievements.shovel_skeleton_balefire = {
 		else
 			template_data[player:stats_id()] = true
 		end
-	end
+	end,
 }
 
 local function _keep_skeletons_alive_stop_timer(template_data, t)
 	if template_data.timer_start_t then
 		local elapsed_time = t - template_data.timer_start_t
+
 		template_data.total_time = template_data.total_time + elapsed_time
 	end
 
@@ -991,11 +1036,12 @@ end
 local KEEP_SKELETONS_ALIVE_NUM = 4
 local KEEP_SKELETONS_ALIVE_TIME_FRACTION = 0.95
 local ALIVE_PERCENT_VISUAL = 95
+
 achievements.shovel_keep_skeletons_alive = {
 	display_completion_ui = true,
+	icon = "the_soul_of_the_party",
 	name = "achv_keep_skeletons_alive_name",
 	required_career = "bw_necromancer",
-	icon = "the_soul_of_the_party",
 	required_dlc = "shovel",
 	desc = function ()
 		return string.format(Localize("achv_keep_skeletons_alive_desc"), ALIVE_PERCENT_VISUAL)
@@ -1004,7 +1050,7 @@ achievements.shovel_keep_skeletons_alive = {
 		"on_controlled_unit_added",
 		"on_controlled_unit_removed",
 		"on_round_started",
-		"register_completed_level"
+		"register_completed_level",
 	},
 	completed = function (statistics_db, stats_id, template_data)
 		return statistics_db:get_persistent_stat(stats_id, "shovel_keep_skeletons_alive") >= 1
@@ -1040,7 +1086,7 @@ achievements.shovel_keep_skeletons_alive = {
 				local skeleton_uptime = template_data.total_time
 				local uptime_fraction = skeleton_uptime / gametime
 
-				if KEEP_SKELETONS_ALIVE_TIME_FRACTION <= uptime_fraction then
+				if uptime_fraction >= KEEP_SKELETONS_ALIVE_TIME_FRACTION then
 					statistics_db:increment_stat(stats_id, "shovel_keep_skeletons_alive")
 				end
 			end
@@ -1054,8 +1100,9 @@ achievements.shovel_keep_skeletons_alive = {
 		else
 			_keep_skeletons_alive_start_timer(template_data, t)
 		end
-	end
+	end,
 }
+
 local all_challenges = {
 	"shovel_complete_all_helmgart_levels_bw_necromancer",
 	"shovel_complete_25_missions_bw_necromancer",
@@ -1072,7 +1119,7 @@ local all_challenges = {
 	"shovel_big_cleave",
 	"shovel_headshot_scythe",
 	"shovel_skeleton_balefire",
-	"shovel_keep_skeletons_alive"
+	"shovel_keep_skeletons_alive",
 }
 
 add_meta_challenge(achievements, "necro_complete_all", all_challenges, "mistress_of_necromancy", "shovel", nil, nil)

@@ -1,8 +1,12 @@
+﻿-- chunkname: @core/gwnav/lua/runtime/navgraph.lua
+
 require("core/gwnav/lua/safe_require")
 
 local NavGraph = safe_require_guard()
 local NavClass = safe_require("core/gwnav/lua/runtime/navclass")
+
 NavGraph = NavClass(NavGraph)
+
 local GwNavGraph = stingray.GwNavGraph
 
 NavGraph.init = function (self, world, bidirectional_edges, point_table, color, layer_id, smartobject_id, user_data_id)

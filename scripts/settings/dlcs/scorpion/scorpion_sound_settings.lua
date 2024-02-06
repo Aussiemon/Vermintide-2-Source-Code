@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/settings/dlcs/scorpion/scorpion_sound_settings.lua
+
 local settings = DLCSettings.scorpion
+
 settings.dialogue_lookup = {
 	"dialogues/generated/lookup_winds_intro_metal",
 	"dialogues/generated/lookup_winds_intro_shadow",
@@ -7,7 +10,7 @@ settings.dialogue_lookup = {
 	"dialogues/generated/lookup_winds_intro_fire",
 	"dialogues/generated/lookup_winds_intro_heavens",
 	"dialogues/generated/lookup_winds_intro_life",
-	"dialogues/generated/lookup_winds_intro_light"
+	"dialogues/generated/lookup_winds_intro_light",
 }
 settings.network_sound_events = {
 	"Play_winds_heavens_gameplay_spawn",
@@ -43,8 +46,9 @@ settings.network_sound_events = {
 	"Play_winds_gameplay_capture_success",
 	"Play_hud_wind_objectives_complete",
 	"emitter_rune_activate",
-	"hud_text_reveal"
+	"hud_text_reveal",
 }
+
 local levels = {
 	"alleys",
 	"canyon",
@@ -57,7 +61,7 @@ local levels = {
 	"rubble",
 	"swamp",
 	"wall",
-	"woods"
+	"woods",
 }
 local winds = {
 	"beasts",
@@ -67,18 +71,20 @@ local winds = {
 	"life",
 	"light",
 	"metal",
-	"shadow"
+	"shadow",
 }
 local key_prefix = "dlc_scorpion_"
 local file_name_prefix = "dialogues/generated/winds_intro_"
+
 settings.dialogue_settings = {}
 
 for _, level_name in ipairs(levels) do
 	for _, wind_name in ipairs(winds) do
 		local key = string.format("%s%s_%s", key_prefix, level_name, wind_name)
 		local file_name = string.format("%s%s", file_name_prefix, wind_name)
+
 		settings.dialogue_settings[key] = {
-			file_name
+			file_name,
 		}
 	end
 end

@@ -1,7 +1,10 @@
+﻿-- chunkname: @scripts/managers/game_mode/spawning_components/adventure_spawning.lua
+
 require("scripts/managers/spawn/respawn_handler")
 require("scripts/managers/game_mode/spawning_components/spawning_helper")
 
 local REAL_PLAYER_LOCAL_ID = 1
+
 AdventureSpawning = class(AdventureSpawning)
 
 AdventureSpawning.init = function (self, profile_synchronizer, side, is_server, network_server, saved_game_mode_data)
@@ -43,10 +46,11 @@ end
 
 AdventureSpawning._assign_data_to_slot = function (self, slot, data)
 	if table.is_empty(data) then
-		local box_pos, box_rot = nil
+		local box_pos, box_rot
 
 		if self._spawn_groups then
 			local spawn_group = Managers.mechanism:game_mechanism():get_current_spawn_group()
+
 			box_pos, box_rot = self:get_spawn_point_from_spawn_group(spawn_group)
 		else
 			box_pos, box_rot = self:get_spawn_point()
@@ -61,9 +65,10 @@ AdventureSpawning._assign_data_to_slot = function (self, slot, data)
 		data.ability_cooldown_percentage = 1
 		data.last_update = -math.huge
 		data.ammo = {
+			slot_melee = 1,
 			slot_ranged = 1,
-			slot_melee = 1
 		}
+
 		local settings = Managers.state.difficulty:get_difficulty_settings()
 		local game_mode_settings = Managers.state.game_mode:settings()
 		local consumables = {}
@@ -75,14 +80,15 @@ AdventureSpawning._assign_data_to_slot = function (self, slot, data)
 
 	if not data.position or not data.rotation then
 		local box_pos, box_rot = self:get_spawn_point()
+
 		data.position = box_pos
 		data.rotation = box_rot
 	end
 
 	if not data.ammo then
 		data.ammo = {
+			slot_melee = 1,
 			slot_ranged = 1,
-			slot_melee = 1
 		}
 	end
 
@@ -107,6 +113,7 @@ AdventureSpawning._assign_data_to_slot = function (self, slot, data)
 	if spawn_state == nil or instant_spawn then
 		local ingame_time = Managers.time:time("client_ingame")
 		local is_initial_spawn = ingame_time == nil or ingame_time < 10
+
 		data.spawn_state = is_initial_spawn and "is_initial_spawn" or "spawn"
 	end
 
@@ -255,6 +262,7 @@ AdventureSpawning._update_player_status = function (self, t, dt, occupied_slots)
 							data.health_state = "disabled"
 						else
 							data.health_state = "alive"
+
 							local respawn_unit = data.respawn_unit
 
 							if respawn_unit then
@@ -303,6 +311,7 @@ AdventureSpawning._update_spawning = function (self, dt, t, occupied_slots, part
 		if not DEDICATED_SERVER then
 			local local_player = Managers.player:local_player()
 			local local_party = local_player:get_party()
+
 			ignore_local_player_for_party = party_id ~= local_party
 		end
 
@@ -330,10 +339,11 @@ AdventureSpawning._update_spawning = function (self, dt, t, occupied_slots, part
 			local status = occupied_slots[i]
 			local data = status.game_mode_data
 			local spawn_state = data.spawn_state
-			local ready_to_spawn = nil
+			local ready_to_spawn
 
 			if DEDICATED_SERVER then
 				local game_session = network_server.game_session ~= nil
+
 				ready_to_spawn = game_session
 			else
 				ready_to_spawn = network_server:is_peer_ingame(status.peer_id)
@@ -355,7 +365,7 @@ end
 AdventureSpawning.add_delayed_client = function (self, peer_id, local_player_id)
 	self._delayed_clients[#self._delayed_clients + 1] = {
 		peer_id = peer_id,
-		local_player_id = local_player_id
+		local_player_id = local_player_id,
 	}
 end
 
@@ -459,7 +469,7 @@ AdventureSpawning._spawn_bot = function (self, status)
 end
 
 AdventureSpawning._find_spawn_point = function (self, status)
-	local position, rotation = nil
+	local position, rotation
 	local room_manager = Managers.state.room
 
 	if room_manager then
@@ -504,10 +514,11 @@ AdventureSpawning.add_spawn_point = function (self, unit)
 	local rot = Unit.local_rotation(unit, 0)
 	local spawn_point = {
 		pos = Vector3Box(pos),
-		rot = QuaternionBox(rot)
+		rot = QuaternionBox(rot),
 	}
 	local prior_state = Unit.get_data(unit, "from_game_mode")
 	local prior_state = prior_state ~= "" and prior_state or "default"
+
 	self._spawn_points[prior_state] = self._spawn_points[prior_state] or {}
 	self._spawn_points[prior_state][#self._spawn_points[prior_state] + 1] = spawn_point
 end
@@ -517,6 +528,7 @@ AdventureSpawning.get_spawn_point = function (self)
 	local came_from_mechanism = Managers.mechanism:get_last_mechanism_switch()
 	local prior_state = Managers.mechanism:get_prior_state() or default_state
 	local spawn_points = self._spawn_points[prior_state] or self._spawn_points[came_from_mechanism] or self._spawn_points[default_state]
+
 	self._num_spawn_points_used = self._num_spawn_points_used + 1
 
 	if self._num_spawn_points_used > #spawn_points then
@@ -564,6 +576,7 @@ end
 AdventureSpawning.force_respawn = function (self, peer_id, local_player_id)
 	local status = Managers.party:get_player_status(peer_id, local_player_id)
 	local data = status.game_mode_data
+
 	data.spawn_state = "force_respawn"
 end
 
@@ -606,7 +619,7 @@ AdventureSpawning.add_spawn_point_to_spawn_group = function (self, unit)
 	local rot = Unit.local_rotation(unit, 0)
 	local spawn_point = {
 		pos = Vector3Box(pos),
-		rot = QuaternionBox(rot)
+		rot = QuaternionBox(rot),
 	}
 	local group_id = Unit.get_data(unit, "spawn_group")
 
@@ -617,6 +630,7 @@ AdventureSpawning.add_spawn_point_to_spawn_group = function (self, unit)
 	end
 
 	local num_points = #self._spawn_groups[group_id]
+
 	self._spawn_groups[group_id][num_points + 1] = spawn_point
 end
 

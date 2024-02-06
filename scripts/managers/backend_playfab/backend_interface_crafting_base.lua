@@ -1,6 +1,9 @@
+﻿-- chunkname: @scripts/managers/backend_playfab/backend_interface_crafting_base.lua
+
 require("scripts/settings/crafting/crafting_data")
 
 BackendInterfaceCraftingBase = class(BackendInterfaceCraftingBase)
+
 local crafting_recipes, crafting_recipes_by_name, crafting_recipes_lookup = dofile("scripts/settings/crafting/crafting_recipes")
 
 BackendInterfaceCraftingBase.init = function (self)
@@ -67,7 +70,7 @@ BackendInterfaceCraftingBase.salvage_validation_func = function (self, recipe, i
 		if masterlist_data then
 			valid_item_ids[#valid_item_ids + 1] = {
 				amount = 1,
-				backend_id = backend_id
+				backend_id = backend_id,
 			}
 		end
 	end
@@ -130,53 +133,49 @@ BackendInterfaceCraftingBase._validate_ingredient = function (self, ingredient, 
 			local masterlist_data = backend_items:get_item_masterlist_data(item_backend_id)
 			local item_name = masterlist_data and masterlist_data.name
 
-			if item_name then
-				if ingredient_name and ingredient_name ~= item_name then
+			if not item_name or ingredient_name and ingredient_name ~= item_name then
+				break
+			end
+
+			if ingredient_category then
+				local category_table = CraftingData[ingredient_category.category_table]
+				local item_value = masterlist_data[ingredient_category.item_value]
+
+				if not table.contains(category_table, item_value) then
 					break
 				end
+			end
 
-				if ingredient_category then
-					local category_table = CraftingData[ingredient_category.category_table]
-					local item_value = masterlist_data[ingredient_category.item_value]
+			if has_variable and not item_data[has_variable] then
+				break
+			end
 
-					if not table.contains(category_table, item_value) then
-						break
-					end
+			local can_stack = masterlist_data.can_stack
+			local amount_from_item
+			local item_amount = backend_items:get_item_amount(item_backend_id)
+
+			if can_stack and item_amount < amount then
+				break
+			else
+				amount_from_item = not can_stack and 1 or amount
+			end
+
+			total_found_ingredients = total_found_ingredients + amount_from_item
+			ingredient_ids[#ingredient_ids + 1] = {
+				backend_id = item_backend_id,
+				amount = amount_from_item,
+			}
+
+			if total_found_ingredients == amount then
+				for j = 1, #ingredient_ids do
+					local data = ingredient_ids[j]
+					local backend_id = data.backend_id
+					local index = table.find(item_backend_ids, backend_id)
+
+					table.remove(item_backend_ids, index)
 				end
 
-				if has_variable and not item_data[has_variable] then
-					break
-				end
-
-				local can_stack = masterlist_data.can_stack
-				local amount_from_item = nil
-				local item_amount = backend_items:get_item_amount(item_backend_id)
-
-				if can_stack and item_amount < amount then
-					break
-				elseif not can_stack then
-					amount_from_item = 1
-				else
-					amount_from_item = amount
-				end
-
-				total_found_ingredients = total_found_ingredients + amount_from_item
-				ingredient_ids[#ingredient_ids + 1] = {
-					backend_id = item_backend_id,
-					amount = amount_from_item
-				}
-
-				if total_found_ingredients == amount then
-					for j = 1, #ingredient_ids do
-						local data = ingredient_ids[j]
-						local backend_id = data.backend_id
-						local index = table.find(item_backend_ids, backend_id)
-
-						table.remove(item_backend_ids, index)
-					end
-
-					return true, ingredient_ids
-				end
+				return true, ingredient_ids
 			end
 		until true
 	end
@@ -191,7 +190,7 @@ BackendInterfaceCraftingBase.weapon_skin_application_validation_func = function 
 
 	table.clear(valid_item_ids)
 
-	local weapon_name, skin_name = nil
+	local weapon_name, skin_name
 
 	for i = 1, #cloned_backend_ids do
 		local backend_id = cloned_backend_ids[i]
@@ -203,14 +202,14 @@ BackendInterfaceCraftingBase.weapon_skin_application_validation_func = function 
 			weapon_name = item_data.name
 			valid_item_ids[#valid_item_ids + 1] = {
 				amount = 1,
-				backend_id = backend_id
+				backend_id = backend_id,
 			}
 		end
 
 		if table.find(CraftingData.weapon_skin_slot_types, item_slot_type) then
 			skin_name = item.skin
 			valid_item_ids[#valid_item_ids + 1] = {
-				skin_name = skin_name
+				skin_name = skin_name,
 			}
 		end
 
@@ -219,7 +218,7 @@ BackendInterfaceCraftingBase.weapon_skin_application_validation_func = function 
 				if ingredient.name and ingredient.amount and ingredient.name == item.ItemId then
 					valid_item_ids[#valid_item_ids + 1] = {
 						backend_id = backend_id,
-						amount = ingredient.amount
+						amount = ingredient.amount,
 					}
 				end
 			end
@@ -243,12 +242,13 @@ end
 
 BackendInterfaceCraftingBase.check_same_item_func = function (self, item_backend_ids)
 	local backend_items = Managers.backend:get_interface("items")
-	local name = nil
+	local name
 
 	for _, data in ipairs(item_backend_ids) do
 		local item_backend_id = data.backend_id
 		local masterlist_data = backend_items:get_item_masterlist_data(item_backend_id)
 		local item_name = masterlist_data.name
+
 		name = name or item_name
 
 		if name ~= item_name then

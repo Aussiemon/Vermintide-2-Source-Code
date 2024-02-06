@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/weapons/actions/action_thrown_projectile.lua
+
 ActionThrownProjectile = class(ActionThrownProjectile, ActionBase)
 
 ActionThrownProjectile.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
@@ -15,21 +17,27 @@ ActionThrownProjectile.client_owner_start_action = function (self, new_action, t
 
 	local owner_unit = self.owner_unit
 	local is_critical_strike = ActionUtils.is_critical_strike(owner_unit, new_action, t)
+
 	self._status_extension = ScriptUnit.extension(owner_unit, "status_system")
 	self._first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
+
 	local hud_extension = ScriptUnit.has_extension(owner_unit, "hud_system")
 	local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
+
 	self._hud_extension = hud_extension
 	self._owner_buff_extension = buff_extension
 	self._current_action = new_action
 	self._power_level = power_level
+
 	local input_extension = ScriptUnit.extension(owner_unit, "input_system")
 
 	input_extension:reset_input_buffer()
 
 	self.state = "waiting_to_shoot"
+
 	local buffed_anim_time_scale = ActionUtils.get_action_time_scale(owner_unit, new_action)
-	local fire_time = (new_action.fire_time or 0) * 1 / buffed_anim_time_scale
+	local fire_time = (new_action.fire_time or 0) * (1 / buffed_anim_time_scale)
+
 	self._time_to_shoot = t + fire_time
 	self._time_to_unzoom = new_action.unzoom_time and t + new_action.unzoom_time or nil
 	self._extra_buff_shot = false
@@ -64,13 +72,13 @@ end
 ActionThrownProjectile.client_owner_post_update = function (self, dt, t, world, can_damage)
 	local current_action = self._current_action
 
-	if self._time_to_unzoom and self._time_to_unzoom <= t then
+	if self._time_to_unzoom and t >= self._time_to_unzoom then
 		local status_extension = self._status_extension
 
 		status_extension:set_zooming(false)
 	end
 
-	if self.state == "waiting_to_shoot" and self._time_to_shoot <= t then
+	if self.state == "waiting_to_shoot" and t >= self._time_to_shoot then
 		self.state = "shooting"
 	end
 
@@ -80,7 +88,7 @@ ActionThrownProjectile.client_owner_post_update = function (self, dt, t, world, 
 
 		if not Managers.player:owner(self.owner_unit).bot_player then
 			Managers.state.controller_features:add_effect("rumble", {
-				rumble_effect = "bow_fire"
+				rumble_effect = "bow_fire",
 			})
 		end
 
@@ -117,7 +125,7 @@ ActionThrownProjectile.client_owner_post_update = function (self, dt, t, world, 
 		end
 	end
 
-	if self.time_to_reload and self.time_to_reload < t then
+	if self.time_to_reload and t > self.time_to_reload then
 		self:_reload()
 
 		self.time_to_reload = nil

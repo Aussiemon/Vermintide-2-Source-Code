@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_transform_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTTransformAction = class(BTTransformAction, BTNode)
@@ -11,6 +13,7 @@ BTTransformAction.name = "BTTransformAction"
 BTTransformAction.enter = function (self, unit, blackboard, t)
 	blackboard.action = self._tree_node.action_data
 	blackboard.active_node = BTTransformAction
+
 	local action = blackboard.action
 	local network_manager = Managers.state.network
 	local transform_animation = action.transform_animation
@@ -51,25 +54,27 @@ end
 BTTransformAction.transform = function (self, unit, blackboard)
 	local action = blackboard.action
 	local transfer_health_percentage = action.transfer_health_percentage
-	local optional_data = {
-		original_hp_percentage = ScriptUnit.extension(unit, "health_system"):current_health_percent(),
-		spawned_func = function (transformed_unit, breed, optional_data)
-			if transfer_health_percentage then
-				local original_hp_percentage = optional_data.original_hp_percentage
-				local health_extension = ScriptUnit.extension(transformed_unit, "health_system")
-				local max_health = health_extension:get_max_health()
-				local damage = max_health * (1 - math.max(original_hp_percentage, 0.1))
+	local optional_data = {}
 
-				health_extension:set_current_damage(damage)
+	optional_data.original_hp_percentage = ScriptUnit.extension(unit, "health_system"):current_health_percent()
 
-				local network_manager = Managers.state.network
-				local go_id, is_level_unit = network_manager:game_object_or_level_id(transformed_unit)
-				local state = NetworkLookup.health_statuses[health_extension.state]
+	optional_data.spawned_func = function (transformed_unit, breed, optional_data)
+		if transfer_health_percentage then
+			local original_hp_percentage = optional_data.original_hp_percentage
+			local health_extension = ScriptUnit.extension(transformed_unit, "health_system")
+			local max_health = health_extension:get_max_health()
+			local damage = max_health * (1 - math.max(original_hp_percentage, 0.1))
 
-				Managers.state.network.network_transmit:send_rpc_clients("rpc_sync_damage_taken", go_id, is_level_unit, false, damage, state)
-			end
+			health_extension:set_current_damage(damage)
+
+			local network_manager = Managers.state.network
+			local go_id, is_level_unit = network_manager:game_object_or_level_id(transformed_unit)
+			local state = NetworkLookup.health_statuses[health_extension.state]
+
+			Managers.state.network.network_transmit:send_rpc_clients("rpc_sync_damage_taken", go_id, is_level_unit, false, damage, state)
 		end
-	}
+	end
+
 	local breed = Breeds[action.wanted_breed_transform]
 	local spawn_category = "misc"
 	local conflict_director = Managers.state.conflict

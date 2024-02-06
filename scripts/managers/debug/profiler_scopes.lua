@@ -1,8 +1,10 @@
+﻿-- chunkname: @scripts/managers/debug/profiler_scopes.lua
+
 local depth = 0
 local dump = false
 local dump_light = false
 local has_started = false
-local last_started = nil
+local last_started
 local started_scopes = {}
 local started_scopes2 = {}
 local overloaded = overloaded or false
@@ -19,11 +21,7 @@ end
 
 local function get_line()
 	local tb = debug.traceback()
-	local result = string.match(tb, [[
-	.-
-	.-
-	(.-)
-]])
+	local result = string.match(tb, "\t.-\n\t.-\n\t(.-)\n")
 
 	return result
 end

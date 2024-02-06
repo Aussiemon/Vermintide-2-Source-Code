@@ -1,14 +1,16 @@
+﻿-- chunkname: @scripts/settings/mutators/mutator_no_sorcerers.lua
+
 local ai_tweak_update_rate = 1
 local conversion_table = {
+	chaos_corruptor_sorcerer = "chaos_warrior",
 	chaos_vortex_sorcerer = "chaos_warrior",
-	chaos_corruptor_sorcerer = "chaos_warrior"
 }
 local ai_tweak_spawn_table = {
 	chaos_warrior = function (unit, blackboard)
 		if blackboard.spawn_category == "specials_pacing" or blackboard.spawn_category == "spawn_one" or blackboard.spawn_category == "raw_spawner" then
 			return true
 		end
-	end
+	end,
 }
 local ai_tweak_update_table = {
 	chaos_warrior = function (unit, blackboard)
@@ -29,7 +31,7 @@ local ai_tweak_update_table = {
 		end
 
 		return false
-	end
+	end,
 }
 
 return {
@@ -64,7 +66,7 @@ return {
 	post_process_terror_event = function (context, data, elements)
 		for index, element in ipairs(elements) do
 			if element.breed_name then
-				local cloned_element = nil
+				local cloned_element
 
 				if type(element.breed_name) == "string" then
 					local different_breed = conversion_table[element.breed_name]
@@ -74,7 +76,7 @@ return {
 						cloned_element.breed_name = different_breed
 					end
 				else
-					local cloned_breed_name = nil
+					local cloned_breed_name
 
 					for breed_name_index, breed_name in ipairs(element.breed_name) do
 						local different_breed = conversion_table[breed_name]
@@ -112,7 +114,7 @@ return {
 	server_update_function = function (context, data)
 		local t = Managers.time:time("game")
 
-		if data.check_at < t then
+		if t > data.check_at then
 			for i = #data.processed_units, 1, -1 do
 				local unit = data.processed_units[i]
 				local blackboard = BLACKBOARDS[unit]
@@ -128,5 +130,5 @@ return {
 	end,
 	get_terror_event_tags = function (context, data, terror_event_tags)
 		terror_event_tags[#terror_event_tags + 1] = DeusTerrorEventTags.NO_SORCERERS
-	end
+	end,
 }

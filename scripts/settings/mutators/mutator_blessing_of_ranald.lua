@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/mutators/mutator_blessing_of_ranald.lua
+
 require("scripts/settings/dlcs/morris/deus_blessing_settings")
 
 return {
@@ -18,5 +20,5 @@ return {
 				buff_extension:add_buff("blessing_of_ranald_coins_greed")
 			end
 		end
-	end
+	end,
 }

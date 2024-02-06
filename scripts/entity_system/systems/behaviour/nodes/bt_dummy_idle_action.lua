@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_dummy_idle_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTDummyIdleAction = class(BTDummyIdleAction, BTNode)
@@ -20,6 +22,7 @@ BTDummyIdleAction.enter = function (self, unit, blackboard, t)
 	local network_manager = Managers.state.network
 	local animation = "idle"
 	local action = self._tree_node.action_data
+
 	blackboard.action = action
 
 	if action and action.idle_animation then

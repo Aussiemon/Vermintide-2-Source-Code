@@ -1,10 +1,13 @@
+﻿-- chunkname: @scripts/settings/dlcs/shovel/shovel_achievements_settings.lua
+
 local settings = DLCSettings.shovel
+
 settings.achievement_outline = {
 	heroes = {
 		categories = {
 			{
-				sorting = 5,
 				name = "inventory_name_bright_wizard",
+				sorting = 5,
 				entries = {
 					"shovel_complete_all_helmgart_levels_bw_necromancer",
 					"shovel_complete_25_missions_bw_necromancer",
@@ -22,13 +25,13 @@ settings.achievement_outline = {
 					"shovel_headshot_scythe",
 					"shovel_skeleton_balefire",
 					"shovel_keep_skeletons_alive",
-					"necro_complete_all"
-				}
-			}
-		}
-	}
+					"necro_complete_all",
+				},
+			},
+		},
+	},
 }
 settings.achievement_template_file_names = {
-	"scripts/managers/achievements/achievement_templates_shovel"
+	"scripts/managers/achievements/achievement_templates_shovel",
 }
 settings.achievement_events = {}

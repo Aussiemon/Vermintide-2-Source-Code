@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/dlcs/morris/morris_buff_settings.lua
+
 require("scripts/settings/dlcs/morris/deus_power_up_settings")
 require("scripts/settings/dlcs/morris/greed_pinata_settings")
 require("scripts/settings/dlcs/morris/tweak_data/buff_tweak_data")
@@ -83,30 +85,30 @@ local function spawn_barrel(item_name, position, rotation, velocity, explode_tim
 	local random_delay = Math.random_range(-random_explosion_delay, random_explosion_delay)
 	local explosion_data = {
 		explode_time = t + explode_time + random_delay,
-		fuse_time = fuse_time
+		fuse_time = fuse_time,
 	}
 	local extension_init_data = {
 		projectile_locomotion_system = {
 			network_position = network_position,
 			network_rotation = network_rotation,
 			network_velocity = network_velocity,
-			network_angular_velocity = network_velocity
+			network_angular_velocity = network_velocity,
 		},
 		death_system = {
 			in_hand = false,
 			death_data = explosion_data,
-			item_name = item_name
+			item_name = item_name,
 		},
 		health_system = {
 			damage = 1,
 			health_data = explosion_data,
-			item_name = item_name
+			item_name = item_name,
 		},
 		pickup_system = {
 			has_physics = true,
 			spawn_type = "loot",
-			pickup_name = item_name
-		}
+			pickup_name = item_name,
+		},
 	}
 	local pickup_settings = AllPickups[item_name]
 	local unit_name = pickup_settings.unit_name
@@ -136,11 +138,12 @@ dlc_settings.buff_function_templates = {
 	end,
 	start_armor_breaker = function (unit, buff, params, world)
 		buff.next_tick_t = params.t + 0.5
+
 		local local_player = Managers.player:local_player()
 		local local_player_unit = local_player and local_player.player_unit
 		local wwise_world = Managers.world:wwise_world(world)
 		local power_level = 0
-		local fx = nil
+		local fx
 
 		if unit == local_player_unit then
 			local career_extension = ScriptUnit.extension(local_player_unit, "career_system")
@@ -162,9 +165,12 @@ dlc_settings.buff_function_templates = {
 
 			local career_name = career_extension:career_name()
 			local armor_breaker_power_level = math.max(get_armor_breaker_power_level(career_name, "slot_melee"), get_armor_breaker_power_level(career_name, "slot_ranged"))
+
 			power_level = armor_breaker_power_level
+
 			local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
 			local first_person_unit = first_person_extension.first_person_unit
+
 			fx = World.create_particles(world, "fx/magic_wind_metal_blade_dance_01_1p", POSITION_LOOKUP[first_person_unit])
 
 			World.link_particles(world, fx, first_person_unit, Unit.node(first_person_unit, "root_point"), Matrix4x4.identity(), "stop")
@@ -181,8 +187,9 @@ dlc_settings.buff_function_templates = {
 		buff.linked_effect = fx
 	end,
 	update_armor_breaker = function (unit, buff, params)
-		if buff.next_tick_t <= params.t then
+		if params.t >= buff.next_tick_t then
 			buff.next_tick_t = params.t + 0.5
+
 			local area_damage_system = Managers.state.entity:system("area_damage_system")
 			local position = POSITION_LOOKUP[unit] + Vector3(0, 0, 1)
 			local rotation = Unit.local_rotation(unit, 0)
@@ -218,6 +225,7 @@ dlc_settings.buff_function_templates = {
 
 		local start_sound_event_name = template.start_sound_event_name
 		local sound_id, _, wwise_world = WwiseUtils.trigger_unit_event(world, start_sound_event_name, unit, 0)
+
 		buff.sound_id = sound_id
 		buff.wwise_world = wwise_world
 		buff.linked_effect = vfx
@@ -280,7 +288,9 @@ dlc_settings.buff_function_templates = {
 	apply_generic_decal = function (unit, buff, params, world)
 		local z_offset = buff.template.decal_z_offset or 0
 		local position = Vector3.copy(POSITION_LOOKUP[unit])
+
 		position.z = position.z + z_offset
+
 		local decal_unit_name = buff.template.decal
 		local decal_unit = Managers.state.unit_spawner:spawn_local_unit(decal_unit_name, position)
 		local scale = buff.template.decal_scale or 1
@@ -298,6 +308,7 @@ dlc_settings.buff_function_templates = {
 	end,
 	apply_curse_khorne_champions_aoe = function (unit, buff, params, world)
 		local fx = World.create_particles(world, buff.template.particle_fx, POSITION_LOOKUP[unit])
+
 		buff.fx_id = fx
 
 		World.link_particles(world, fx, unit, Unit.node(unit, "j_spine"), Matrix4x4.identity(), "stop")
@@ -338,6 +349,7 @@ dlc_settings.buff_function_templates = {
 		World.link_unit(Unit.world(unit), spawned_unit, 0, unit, Unit.node(unit, "root_point"))
 
 		buff.linked_unit = spawned_unit
+
 		local z_offset_config = template.z_offset
 		local breed = Unit.get_data(unit, "breed")
 		local breed_name = breed.name
@@ -358,8 +370,10 @@ dlc_settings.buff_function_templates = {
 
 		if health_extension then
 			buff.health_extension = health_extension
+
 			local drop_step = health_extension:get_max_health() / buff.template.total_drops
 			local current_damage = buff.health_extension:get_damage_taken()
+
 			buff.drop_step = drop_step
 			buff.drops_done = math.floor(current_damage / drop_step)
 		end
@@ -373,7 +387,7 @@ dlc_settings.buff_function_templates = {
 			if buff.prev_damage ~= current_damage then
 				local drop_count = math.floor(current_damage / buff.drop_step)
 
-				while buff.drops_done < drop_count do
+				while drop_count > buff.drops_done do
 					local last_attacker_id = health_extension.last_damage_data.attacker_unit_id
 
 					greed_pinata_drop_pickup(buff.template.drop_table, POSITION_LOOKUP[unit], last_attacker_id)
@@ -388,7 +402,9 @@ dlc_settings.buff_function_templates = {
 	apply_attach_particle = function (unit, buff, params, world)
 		if not buff.fx_id then
 			local fx = World.create_particles(world, buff.template.particle_fx, POSITION_LOOKUP[unit])
+
 			buff.fx_id = fx
+
 			local template = buff.template
 			local node = Unit.node(unit, "j_spine")
 			local node_rotation = Unit.local_rotation(unit, node)
@@ -412,6 +428,7 @@ dlc_settings.buff_function_templates = {
 
 		if not buff.fx_id then
 			local fx = World.create_particles(world, buff.template.screenspace_fx, Vector3(0, 0, 0))
+
 			buff.fx_id = fx
 		end
 	end,
@@ -430,7 +447,7 @@ dlc_settings.buff_function_templates = {
 		buff.stacked_buffs = {}
 	end,
 	update_bloodthirst = function (unit, buff, params, world)
-		if buff.reset_at <= params.t then
+		if params.t >= buff.reset_at then
 			buff.kill_count = 0
 
 			buff.reset_timer()
@@ -468,7 +485,9 @@ dlc_settings.buff_function_templates = {
 		buff.next_update_time = 0
 		buff.stacked_buff_ids = {}
 		buff.is_outside_safe_area = {}
+
 		local difficulty_index = Managers.state.difficulty:get_difficulty_index()
+
 		buff.radius = table.get_value_or_last(buff.template.safe_area_radius, difficulty_index)
 
 		Unit.set_data(unit, "radius", buff.radius)
@@ -481,12 +500,14 @@ dlc_settings.buff_function_templates = {
 
 		local safe_area_pos = Unit.local_position(unit, 0)
 
-		if params.t < buff.next_update_time then
+		if buff.next_update_time > params.t then
 			return
 		end
 
 		local template = buff.template
+
 		buff.next_update_time = params.t + template.buff_exposure_tick_rate
+
 		local buff_system = Managers.state.entity:system("buff_system")
 		local side = Managers.state.side:get_side_from_name("heroes")
 		local player_units = side.PLAYER_UNITS
@@ -508,11 +529,13 @@ dlc_settings.buff_function_templates = {
 			end
 
 			buff.stacked_buff_ids[player_unit] = buff.stacked_buff_ids[player_unit] or {}
+
 			local stacked_buff_ids = buff.stacked_buff_ids[player_unit]
 
 			if is_outside_safe_area and #stacked_buff_ids < template.miasma_stack_limit then
 				local is_server_sided_buff = true
 				local buff_id = buff_system:add_buff(player_unit, "curse_rotten_miasma_debuff", player_unit, is_server_sided_buff)
+
 				stacked_buff_ids[#stacked_buff_ids + 1] = buff_id
 			elseif is_inside_safe_area and #stacked_buff_ids > 0 then
 				local last_buff_id = stacked_buff_ids[#stacked_buff_ids]
@@ -764,8 +787,10 @@ dlc_settings.buff_function_templates = {
 		local career_ext = ScriptUnit.extension(unit, "career_system")
 		local current_cooldown = career_ext:current_ability_cooldown_percentage()
 		local multiplier = current_cooldown * template.value
+
 		buff.previous_multiplier = buff.multiplier or 0
 		buff.multiplier = multiplier
+
 		local buff_extension = ScriptUnit.extension(unit, "buff_system")
 		local difference = multiplier - previous_multiplier
 
@@ -809,7 +834,9 @@ dlc_settings.buff_function_templates = {
 			if health_extension then
 				local base_health = health_extension.unmodified_max_health
 				local health_increase = base_health * buff.multiplier
+
 				buff.added_health = health_increase
+
 				local max_health = health_extension:get_max_health()
 
 				health_extension:set_max_health(max_health + health_increase)
@@ -823,7 +850,7 @@ dlc_settings.buff_function_templates = {
 			if health_extension then
 				local max_health = health_extension:get_max_health()
 
-				if buff.added_health < max_health then
+				if max_health > buff.added_health then
 					health_extension:set_max_health(max_health - buff.added_health)
 				end
 			end
@@ -1008,7 +1035,9 @@ dlc_settings.buff_function_templates = {
 		end
 
 		buff.buffs = {}
+
 		local t = Managers.time:time("game")
+
 		buff.next_buff_t = t + buff.template.interval
 	end,
 	deus_cooldown_reg_not_hit_update = function (unit, buff, params)
@@ -1021,6 +1050,7 @@ dlc_settings.buff_function_templates = {
 
 		if buff.reset then
 			buff.next_buff_t = t + template.interval
+
 			local buff_system = Managers.state.entity:system("buff_system")
 
 			for i = 1, #buff.buffs do
@@ -1034,22 +1064,27 @@ dlc_settings.buff_function_templates = {
 			table.clear(buff.buffs)
 		end
 
-		if buff.next_buff_t < t and #buff.buffs < 5 then
+		if t > buff.next_buff_t and #buff.buffs < 5 then
 			buff.next_buff_t = t + template.interval
+
 			local buff_system = Managers.state.entity:system("buff_system")
 			local buff_to_add = template.buff_to_add
 			local id = buff_system:add_buff(unit, buff_to_add, unit, true)
+
 			buff.buffs[#buff.buffs + 1] = id
 		end
 	end,
 	update_ledge_rescue = function (unit, buff, params)
 		local time = Managers.time:time("main")
 
-		if buff.rescue_timer and buff.rescue_timer < time then
+		if buff.rescue_timer and time > buff.rescue_timer then
 			buff.rescue_timer = nil
+
 			local template = buff.template
 			local pull_up_duration = template.pull_up_duration
+
 			buff.finish_pull_up_timer = time + pull_up_duration
+
 			local revive_time_variable = Unit.animation_find_variable(unit, "revive_time")
 
 			Unit.animation_set_variable(unit, revive_time_variable, pull_up_duration)
@@ -1062,7 +1097,7 @@ dlc_settings.buff_function_templates = {
 			end
 		end
 
-		if buff.finish_pull_up_timer and buff.finish_pull_up_timer < time then
+		if buff.finish_pull_up_timer and time > buff.finish_pull_up_timer then
 			buff.finish_pull_up_timer = nil
 
 			StatusUtils.set_pulled_up_network(unit, true, unit)
@@ -1072,7 +1107,7 @@ dlc_settings.buff_function_templates = {
 	update_disable_rescue = function (unit, buff, params)
 		local time = Managers.time:time("main")
 
-		if buff.rescue_timer and buff.rescue_timer < time then
+		if buff.rescue_timer and time > buff.rescue_timer then
 			buff.rescue_timer = nil
 
 			if not is_server() then
@@ -1182,6 +1217,7 @@ dlc_settings.buff_function_templates = {
 
 		if update_every < t - last_t then
 			buff.last_t = t
+
 			local pickup_system = buff.pickup_system
 			local player_position = POSITION_LOOKUP[unit]
 			local magnet_distance = buff.template.magnet_distance
@@ -1231,6 +1267,7 @@ dlc_settings.buff_function_templates = {
 		if markable_enemies[breed_name] and is_cooldown_over then
 			local buff_extension = ScriptUnit.extension(unit, "buff_system")
 			local mark_buff = buff.template.mark_buff
+
 			buff.marked_enemy_buff_id = buff_extension:add_buff(mark_buff)
 			buff.marked_enemy = unit
 			buff.next_enemy_markable_at = time + buff.template.mark_cooldown
@@ -1309,6 +1346,7 @@ dlc_settings.buff_function_templates = {
 		buff_system:add_buff(unit, buff_name, unit, is_server_controlled)
 
 		local units_in_range = {}
+
 		buff.units_in_range = units_in_range
 
 		buff_area_helper.setup_range_check(unit, buff, params, world)
@@ -1330,6 +1368,7 @@ dlc_settings.buff_function_templates = {
 				if buff_id == -1 then
 					if has_buff then
 						local is_server_controlled = true
+
 						units_in_range[unit_in_range] = buff_system:add_buff(unit, buff_name, unit, is_server_controlled)
 					end
 				elseif not has_buff then
@@ -1403,6 +1442,7 @@ dlc_settings.buff_function_templates = {
 		buff_system:add_buff(unit, buff_name, unit, is_server_controlled)
 
 		local units_in_range = {}
+
 		buff.units_in_range = units_in_range
 
 		buff_area_helper.setup_range_check(unit, buff, params, world)
@@ -1443,6 +1483,7 @@ dlc_settings.buff_function_templates = {
 			local buff_name = buff.template.buff_to_add
 			local buff_system = Managers.state.entity:system("buff_system")
 			local is_server_controlled = true
+
 			units_in_range[unit] = buff_system:add_buff(buffer_unit, buff_name, buffer_unit, is_server_controlled)
 		end
 	end,
@@ -1487,7 +1528,7 @@ dlc_settings.buff_function_templates = {
 
 		local time = Managers.time:time("main")
 
-		if not buff.next_update or buff.next_update < time then
+		if not buff.next_update or time > buff.next_update then
 			local health_per_tick = template.health_per_tick
 
 			DamageUtils.heal_network(unit, unit, health_per_tick, "health_regen")
@@ -1522,7 +1563,7 @@ dlc_settings.buff_function_templates = {
 			local buff_extension = ScriptUnit.has_extension(unit, "buff_system")
 
 			buff_extension:add_buff(cooldown_buff, {
-				attacker_unit = unit
+				attacker_unit = unit,
 			})
 
 			if not is_bot(unit) then
@@ -1547,9 +1588,10 @@ dlc_settings.buff_function_templates = {
 
 		local time = Managers.time:time("main")
 
-		if buff.rescue_timer and buff.rescue_timer < time then
+		if buff.rescue_timer and time > buff.rescue_timer then
 			buff.rescue_timer = nil
-			local hit_position = nil
+
+			local hit_position
 			local disabler = buff.disabler
 
 			if disabler and ALIVE[disabler] then
@@ -1559,6 +1601,7 @@ dlc_settings.buff_function_templates = {
 			end
 
 			buff.disabler = nil
+
 			local template = buff.template
 			local rotation = Quaternion.identity()
 			local explosion_template = template.explosion_template
@@ -1578,10 +1621,13 @@ dlc_settings.buff_function_templates = {
 		local template = buff.template
 		local time = Managers.time:time("main")
 
-		if buff.rescue_timer and buff.rescue_timer < time then
+		if buff.rescue_timer and time > buff.rescue_timer then
 			buff.rescue_timer = nil
+
 			local pull_up_duration = template.pull_up_duration
+
 			buff.finish_pull_up_timer = time + pull_up_duration
+
 			local revive_time_variable = Unit.animation_find_variable(unit, "revive_time")
 
 			Unit.animation_set_variable(unit, revive_time_variable, pull_up_duration)
@@ -1594,7 +1640,7 @@ dlc_settings.buff_function_templates = {
 			end
 		end
 
-		if buff.finish_pull_up_timer and buff.finish_pull_up_timer < time then
+		if buff.finish_pull_up_timer and time > buff.finish_pull_up_timer then
 			buff.finish_pull_up_timer = nil
 
 			StatusUtils.set_pulled_up_network(unit, true, unit)
@@ -1624,6 +1670,7 @@ dlc_settings.buff_function_templates = {
 		local status_extension = ScriptUnit.extension(unit, "status_system")
 		local template = buff.template
 		local bonus = template.bonus
+
 		status_extension.wounds = status_extension.wounds + bonus
 	end,
 	detect_weakness_link_unit = function (unit, buff, params, world)
@@ -1635,6 +1682,7 @@ dlc_settings.buff_function_templates = {
 		World.link_unit(Unit.world(unit), spawned_unit, 0, unit, Unit.node(unit, "root_point"))
 
 		buff.linked_unit = spawned_unit
+
 		local z_offset_config = template.z_offset
 		local breed = Unit.get_data(unit, "breed")
 		local breed_name = breed.name
@@ -1654,15 +1702,17 @@ dlc_settings.buff_function_templates = {
 	end,
 	start_static_charge = function (unit, buff, params, world)
 		buff.next_tick_t = params.t + buff.template.tick_every_t
+
 		local local_player = Managers.player:local_player()
 		local local_player_unit = local_player and local_player.player_unit
 		local wwise_world = Managers.world:wwise_world(world)
 		local power_level = 0
-		local fx = nil
+		local fx
 
 		if unit == local_player_unit then
 			local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
 			local first_person_unit = first_person_extension.first_person_unit
+
 			fx = World.create_particles(world, "fx/magic_wind_metal_blade_dance_01_1p", POSITION_LOOKUP[first_person_unit])
 
 			World.link_particles(world, fx, first_person_unit, Unit.node(first_person_unit, "root_point"), Matrix4x4.identity(), "stop")
@@ -1679,8 +1729,9 @@ dlc_settings.buff_function_templates = {
 		buff.linked_effect = fx
 	end,
 	update_static_charge = function (unit, buff, params)
-		if buff.next_tick_t <= params.t then
+		if params.t >= buff.next_tick_t then
 			buff.next_tick_t = params.t + buff.template.tick_every_t
+
 			local area_damage_system = Managers.state.entity:system("area_damage_system")
 			local position = POSITION_LOOKUP[unit] + Vector3(0, 0, 1)
 			local rotation = Unit.local_rotation(unit, 0)
@@ -1746,7 +1797,7 @@ dlc_settings.buff_function_templates = {
 		if not buff_extension:get_buff_type(cooldown_buff) and not buff_extension:get_buff_type(full_heal_buff) then
 			buff.full_heal_perk_buff_id = buff_extension:add_buff(full_heal_buff)
 		end
-	end
+	end,
 }
 dlc_settings.proc_functions = {
 	stockpile_refresh_ammo_buffs = function (owner_unit, buff, params)
@@ -1851,7 +1902,7 @@ dlc_settings.proc_functions = {
 		if ALIVE[hit_unit] and damage_source ~= "dot_debuff" then
 			local buff_extension = ScriptUnit.extension(hit_unit, "buff_system")
 			local params = {
-				attacker_unit = attacker_unit
+				attacker_unit = attacker_unit,
 			}
 
 			buff_extension:add_buff("curse_mark_of_nurgle_dot", params)
@@ -1871,25 +1922,25 @@ dlc_settings.proc_functions = {
 			local aoe_dot_damage_table = table.get_value_or_last(template.aoe_dot_difficulty_damage, difficulty_index)
 			local extension_init_data = {
 				area_damage_system = {
-					area_damage_template = "globadier_area_dot_damage",
-					invisible_unit = true,
-					nav_tag_volume_layer = "bot_poison_wind",
-					create_nav_tag_volume = true,
-					damage_source = "poison_dot",
-					player_screen_effect_name = "fx/screenspace_poison_globe_impact",
 					area_ai_random_death_template = "area_poison_ai_random_death",
+					area_damage_template = "globadier_area_dot_damage",
+					create_nav_tag_volume = true,
+					damage_players = true,
+					damage_source = "poison_dot",
 					dot_effect_name = "fx/wpnfx_poison_wind_globe_impact",
 					explosion_template_name = "corrupted_flesh_explosion",
 					extra_dot_effect_name = "fx/chr_gutter_death",
-					damage_players = true,
+					invisible_unit = true,
+					nav_tag_volume_layer = "bot_poison_wind",
+					player_screen_effect_name = "fx/screenspace_poison_globe_impact",
 					aoe_dot_damage = DamageUtils.calculate_damage(aoe_dot_damage_table),
 					aoe_init_damage = DamageUtils.calculate_damage(aoe_init_damage_table),
 					aoe_dot_damage_interval = template.aoe_dot_damage_interval,
 					radius = template.radius,
 					initial_radius = template.initial_radius,
 					life_time = template.cloud_life_time,
-					source_attacker_unit = killed_unit
-				}
+					source_attacker_unit = killed_unit,
+				},
 			}
 			local aoe_unit_name = "units/weapons/projectile/poison_wind_globe/poison_wind_globe"
 			local aoe_unit = Managers.state.unit_spawner:spawn_network_unit(aoe_unit_name, "aoe_unit", extension_init_data, position)
@@ -1908,10 +1959,12 @@ dlc_settings.proc_functions = {
 		if ALIVE[owner_unit] then
 			local template = buff.template
 			local new_kill_count = buff.kill_count or 0
+
 			new_kill_count = new_kill_count + 1
 
-			if template.kills_needed <= new_kill_count then
+			if new_kill_count >= template.kills_needed then
 				new_kill_count = 0
+
 				local buff_name_to_add = template.buff_name_to_add
 				local max_stacks = BuffUtils.get_max_stacks(buff_name_to_add)
 				local can_stack = max_stacks > #buff.stacked_buffs
@@ -2008,7 +2061,7 @@ dlc_settings.proc_functions = {
 
 		local spawner_unit = params[1]
 		local spawn_pos = POSITION_LOOKUP[spawner_unit]
-		local optional_data = nil
+		local optional_data
 
 		Managers.state.conflict:spawn_queued_unit(Breeds.chaos_greed_pinata, Vector3Box(spawn_pos), QuaternionBox(Quaternion.identity()), "mutator", "spawn_idle", "terror_event", optional_data)
 
@@ -2131,7 +2184,7 @@ dlc_settings.proc_functions = {
 				for i = 1, #player_and_bot_units do
 					local ally_unit = player_and_bot_units[i]
 
-					if ALIVE[ally_unit] and ally_unit ~= owner_unit and Vector3.distance_squared(player_pos, POSITION_LOOKUP[ally_unit]) <= range_sq then
+					if ALIVE[ally_unit] and ally_unit ~= owner_unit and range_sq >= Vector3.distance_squared(player_pos, POSITION_LOOKUP[ally_unit]) then
 						ammo_system:give_ammo_fraction_to_owner(ally_unit, ammo_bonus_fraction, true)
 					end
 				end
@@ -2183,7 +2236,7 @@ dlc_settings.proc_functions = {
 
 			local beam_effect = NetworkLookup.effects["fx/cw_chain_lightning"]
 			local start_point = POSITION_LOOKUP[owner_unit] + 0.5 * Vector3.up()
-			local end_point = nil
+			local end_point
 			local spine_node = Unit.has_node(hit_unit, "j_spine") and Unit.node(hit_unit, "j_spine")
 
 			if spine_node then
@@ -2231,6 +2284,7 @@ dlc_settings.proc_functions = {
 						end
 
 						distance_flat = Vector3.distance(end_point, start_point)
+
 						local next_distance = Vector3(1, distance_flat, 0)
 						local next_rotation = Quaternion.look(end_point - start_point)
 
@@ -2258,7 +2312,7 @@ dlc_settings.proc_functions = {
 			local range = buff.template.range
 			local distance_limit_sq = range * range
 
-			if Vector3.distance_squared(local_unit_pos, triggering_unit_pos) <= distance_limit_sq then
+			if distance_limit_sq >= Vector3.distance_squared(local_unit_pos, triggering_unit_pos) then
 				local career_extension = ScriptUnit.has_extension(owner_unit, "career_system")
 
 				if career_extension then
@@ -2352,7 +2406,7 @@ dlc_settings.proc_functions = {
 			local item_slots = {
 				"slot_healthkit",
 				"slot_potion",
-				"slot_grenade"
+				"slot_grenade",
 			}
 
 			for _, slot_name in pairs(item_slots) do
@@ -2361,7 +2415,9 @@ dlc_settings.proc_functions = {
 				if item_data then
 					local item_template = BackendUtils.get_item_template(item_data)
 					local pickup_data = item_template.pickup_data
+
 					items[#items + 1] = pickup_data
+
 					local additional_items = inventory_extension:get_additional_items(slot_name)
 
 					if additional_items then
@@ -2369,6 +2425,7 @@ dlc_settings.proc_functions = {
 							local additional_item_template = BackendUtils.get_item_template(additional_item_data)
 							local additional_pickup_data = additional_item_template.pickup_data
 							local additional_item = additional_pickup_data
+
 							items[#items + 1] = additional_item
 						end
 					end
@@ -2390,7 +2447,7 @@ dlc_settings.proc_functions = {
 					local settings = AllPickups[pickup_name]
 					local slot_name = settings.slot_name
 					local audio_system = Managers.state.entity:system("audio_system")
-					local sound_event = nil
+					local sound_event
 
 					if slot_name == "slot_healtkit" then
 						sound_event = "morris_power_ups_clone_medkit"
@@ -2423,6 +2480,7 @@ dlc_settings.proc_functions = {
 					buff_system:add_buff(owner_unit, buff_to_add, owner_unit, false)
 
 					local buff = buff_extension:get_non_stacking_buff("drop_item_on_ability_use_cooldown")
+
 					buff.duration = cooldown_durations[pickup_name] or 60
 				end
 			end
@@ -2448,7 +2506,7 @@ dlc_settings.proc_functions = {
 
 		local item_template = BackendUtils.get_item_template(item_data)
 		local potion_buffs = {
-			item_template.actions.action_one.default.buff_template
+			item_template.actions.action_one.default.buff_template,
 		}
 		local additional_items = inventory_extension:get_additional_items(slot_name)
 
@@ -2456,6 +2514,7 @@ dlc_settings.proc_functions = {
 			for _, additional_item_data in pairs(additional_items) do
 				local additional_item_template = BackendUtils.get_item_template(additional_item_data)
 				local additional_potion_buff = additional_item_template.actions.action_one.default.buff_template
+
 				potion_buffs[#potion_buffs + 1] = additional_potion_buff
 			end
 		end
@@ -2616,8 +2675,10 @@ dlc_settings.proc_functions = {
 
 		if ALIVE[owner_unit] then
 			local killed_specials = buff.killed_specials
+
 			killed_specials = killed_specials or 0
 			killed_specials = killed_specials + 1
+
 			local template = buff.template
 			local specials_to_kill = template.specials_per_pop
 
@@ -2707,6 +2768,7 @@ dlc_settings.proc_functions = {
 
 					if health_extension then
 						local current_health = health_extension:current_health()
+
 						damage_to_deal = math.clamp(damage_to_deal, 0, math.max(current_health - 0.25, 0))
 						damage_to_deal = DamageUtils.networkify_damage(damage_to_deal)
 					else
@@ -2750,18 +2812,18 @@ dlc_settings.proc_functions = {
 			WwiseUtils.trigger_unit_event(world, sound_event, owner_unit, 0)
 
 			status_extension.do_lunge = {
-				animation_end_event = "dodge_bwd",
 				allow_rotation = false,
-				first_person_animation_end_event = "dodge_bwd",
-				first_person_hit_animation_event = "charge_react",
-				dodge = true,
-				first_person_animation_event = "dodge_bwd",
-				first_person_animation_end_event_hit = "dodge_bwd",
-				noclip = true,
+				animation_end_event = "dodge_bwd",
 				animation_event = "dodge_bwd",
+				dodge = true,
+				first_person_animation_end_event = "dodge_bwd",
+				first_person_animation_end_event_hit = "dodge_bwd",
+				first_person_animation_event = "dodge_bwd",
+				first_person_hit_animation_event = "charge_react",
+				noclip = true,
 				initial_speed = lunge_settings.initial_speed,
 				falloff_to_speed = lunge_settings.falloff_to_speed,
-				duration = lunge_settings.duration
+				duration = lunge_settings.duration,
 			}
 		end
 	end,
@@ -2793,6 +2855,7 @@ dlc_settings.proc_functions = {
 
 			if valid_damage_sources and valid_damage_sources[damage_source] then
 				local proc_mod_table = params[param_order.PROC_MODIFIABLE]
+
 				proc_mod_table.damage_amount = proc_mod_table.damage_amount * buff_tempalte.damage_mult
 			end
 		end
@@ -2808,7 +2871,7 @@ dlc_settings.proc_functions = {
 		if hit_zone == "head" then
 			buff.stacks = buff.stacks and buff.stacks + 1 or 1
 
-			if buff.template.hits <= buff.stacks then
+			if buff.stacks >= buff.template.hits then
 				local buff_system = Managers.state.entity:system("buff_system")
 				local buff_to_add = buff.template.buff_to_add
 
@@ -2840,10 +2903,11 @@ dlc_settings.proc_functions = {
 		end
 
 		local t = Managers.time:time("game")
+
 		buff.kills = buff.kills or {}
 		buff.kills[#buff.kills + 1] = t + buff.template.time
 
-		if buff.template.kills <= #buff.kills then
+		if #buff.kills >= buff.template.kills then
 			local buff_system = Managers.state.entity:system("buff_system")
 			local buff_to_add = buff.template.buff_to_add
 
@@ -2872,7 +2936,7 @@ dlc_settings.proc_functions = {
 				local heal_amount = params[2]
 				local hero_side = Managers.state.side:get_side_from_name("heroes")
 				local player_units = hero_side.PLAYER_UNITS
-				local chosen_target_unit = nil
+				local chosen_target_unit
 				local chosen_target_unit_range = math.huge
 				local local_player_position = POSITION_LOOKUP[owner_unit]
 				local range = buff.template.range
@@ -3047,6 +3111,7 @@ dlc_settings.proc_functions = {
 	start_ledge_rescue_timer = function (owner_unit, buff, params)
 		local template = buff.template
 		local time = Managers.time:time("main")
+
 		buff.rescue_timer = time + template.rescue_delay
 	end,
 	start_disable_rescue_timer = function (owner_unit, buff, params)
@@ -3056,6 +3121,7 @@ dlc_settings.proc_functions = {
 
 		if rescuable_disable_types[disable_type] then
 			local time = Managers.time:time("main")
+
 			buff.rescue_timer = time + template.rescue_delay
 		end
 	end,
@@ -3152,7 +3218,7 @@ dlc_settings.proc_functions = {
 
 					if not server_buff_ids then
 						parent_buff_shared_table.server_buff_ids = {
-							server_buff_id
+							server_buff_id,
 						}
 					else
 						server_buff_ids[#server_buff_ids + 1] = server_buff_id
@@ -3187,6 +3253,7 @@ dlc_settings.proc_functions = {
 
 		if ALIVE[owner_unit] and cooldown_over_at <= time then
 			buff.cooldown_over_at = time + template.cooldown
+
 			local world = Managers.world:world("level_world")
 			local sound_event = template.sound_event
 
@@ -3217,6 +3284,7 @@ dlc_settings.proc_functions = {
 	end,
 	pyrotechnical_echo_on_grenade_exploded = function (owner_unit, buff, params)
 		buff.queued_explosions = buff.queued_explosions or {}
+
 		local template = buff.template
 		local explosion_delay = template.explosion_delay
 		local time = Managers.time:time("main")
@@ -3228,6 +3296,7 @@ dlc_settings.proc_functions = {
 		local scale = params[6]
 		local power_level = params[7]
 		local new_explosion_time = time + explosion_delay
+
 		buff.queued_explosions[#buff.queued_explosions + 1] = {
 			impact_data = impact_data,
 			hit_position = hit_position,
@@ -3236,7 +3305,7 @@ dlc_settings.proc_functions = {
 			rotation = rotation,
 			scale = scale,
 			power_level = power_level,
-			new_explosion_time = new_explosion_time
+			new_explosion_time = new_explosion_time,
 		}
 
 		return true
@@ -3257,6 +3326,7 @@ dlc_settings.proc_functions = {
 		local explosion_template = ExplosionTemplates[explosion_template_name]
 		local radius = explosion_template.aoe.radius
 		local damage_source = "buff"
+
 		buff.parent_buff_shared_table.aoe_unit = DamageUtils.create_aoe(world, owner_unit, position, damage_source, explosion_template, radius)
 	end,
 	blazing_revenge_clear_aoe = function (owner_unit, buff, params)
@@ -3389,6 +3459,7 @@ dlc_settings.proc_functions = {
 		end
 
 		local parent_buff_shared_table = buff.parent_buff_shared_table
+
 		parent_buff_shared_table.ammo_used_extension = nil
 		parent_buff_shared_table.ammo_used = nil
 	end,
@@ -3398,6 +3469,7 @@ dlc_settings.proc_functions = {
 		end
 
 		local parent_buff_shared_table = buff.parent_buff_shared_table
+
 		parent_buff_shared_table.ammo_used_extension = params[1]
 		parent_buff_shared_table.ammo_used = params[2]
 	end,
@@ -3423,7 +3495,7 @@ dlc_settings.proc_functions = {
 			local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
 
 			buff_extension:add_buff(buff_name, {
-				attacker_unit = owner_unit
+				attacker_unit = owner_unit,
 			})
 		end
 	end,
@@ -3455,10 +3527,11 @@ dlc_settings.proc_functions = {
 		local buff_name = buff_template.buff_to_add
 		local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
 		local id = buff_extension:add_buff(buff_name, {
-			attacker_unit = owner_unit
+			attacker_unit = owner_unit,
 		})
 		local parent_buff_shared_table = buff.parent_buff_shared_table
 		local buff_ids = parent_buff_shared_table.buff_ids or {}
+
 		buff_ids[#buff_ids + 1] = id
 		parent_buff_shared_table.buff_ids = buff_ids
 	end,
@@ -3488,7 +3561,7 @@ dlc_settings.proc_functions = {
 			end
 
 			buff_extension:add_buff(buff_name, {
-				attacker_unit = owner_unit
+				attacker_unit = owner_unit,
 			})
 		end
 	end,
@@ -3542,7 +3615,7 @@ dlc_settings.proc_functions = {
 		end
 
 		buff_extension:add_buff(buff_name, {
-			attacker_unit = owner_unit
+			attacker_unit = owner_unit,
 		})
 
 		return true
@@ -3557,7 +3630,7 @@ dlc_settings.proc_functions = {
 		local buff_name = buff_template.buff_to_add
 
 		buff_extension:add_buff(buff_name, {
-			attacker_unit = owner_unit
+			attacker_unit = owner_unit,
 		})
 
 		return true
@@ -3581,6 +3654,7 @@ dlc_settings.proc_functions = {
 		if rescuable_disable_types[disable_type] then
 			local disabler = params[2]
 			local time = Managers.time:time("main")
+
 			buff.rescue_timer = time + template.rescue_delay
 			buff.disabler = disabler
 
@@ -3590,6 +3664,7 @@ dlc_settings.proc_functions = {
 	start_boulder_bro_timer = function (owner_unit, buff, params)
 		local template = buff.template
 		local time = Managers.time:time("main")
+
 		buff.rescue_timer = time + template.rescue_delay
 
 		return false
@@ -3613,9 +3688,9 @@ dlc_settings.proc_functions = {
 		local power_level = buff.power_level or DefaultPowerLevel
 		local damage_profile_name = template.damage_profile_name or "default"
 		local damage_profile = DamageProfileTemplates[damage_profile_name]
-		local target_index = nil
+		local target_index
 		local is_critical_strike = false
-		local backstab_multiplier, boost_damage_multiplier = nil
+		local backstab_multiplier, boost_damage_multiplier
 		local target_settings = damage_profile.targets and damage_profile.targets[target_index] or damage_profile.default_target
 		local damage_type = target_settings.damage_type
 		local boost_curve = BoostCurves[target_settings.boost_curve_type]
@@ -3633,7 +3708,7 @@ dlc_settings.proc_functions = {
 
 		local beam_effect = NetworkLookup.effects["fx/cw_chain_lightning"]
 		local start_point = POSITION_LOOKUP[owner_unit] + 0.5 * Vector3.up()
-		local end_point = nil
+		local end_point
 		local spine_node = Unit.has_node(attacking_unit, "j_spine") and Unit.node(attacking_unit, "j_spine")
 
 		if spine_node then
@@ -3657,7 +3732,7 @@ dlc_settings.proc_functions = {
 
 		audio_system:play_audio_unit_event(sound_event, attacking_unit)
 		buff_extension:add_buff(cooldown_buff, {
-			attacker_unit = owner_unit
+			attacker_unit = owner_unit,
 		})
 
 		return true
@@ -3699,7 +3774,9 @@ dlc_settings.proc_functions = {
 			local acummulated_amount = amount + (buff.leftover_health or 0)
 			local orb_count_float = acummulated_amount / template.health_per_orb
 			local orb_count = math.floor(orb_count_float)
+
 			buff.leftover_health = math.fmod(acummulated_amount, template.health_per_orb)
+
 			local orb_settings = buff.template.orb_settings
 			local orb_name = orb_settings.orb_name
 			local player = Managers.player:owner(owner_unit)
@@ -3729,8 +3806,9 @@ dlc_settings.proc_functions = {
 
 			buff.kill_count = (buff.kill_count or 0) + 1
 
-			if template.kills_per_orb <= buff.kill_count then
+			if buff.kill_count >= template.kills_per_orb then
 				buff.kill_count = 0
+
 				local orb_starting_position = POSITION_LOOKUP[owner_unit] + Vector3(0, 0, 1)
 				local orb_settings = buff.template.orb_settings
 				local orb_name = orb_settings.orb_name
@@ -3901,6 +3979,7 @@ dlc_settings.proc_functions = {
 			buff_extension:add_buff(cooldown_buff)
 
 			local t = Managers.time:time("game")
+
 			buff.after_revive_t = t + 3
 		end
 	end,
@@ -3924,7 +4003,7 @@ dlc_settings.proc_functions = {
 
 		local num_stacks = buff_extension:num_buff_stacks(build_up_buff)
 
-		if buff_template.stack_count_to_trigger_actual_buff <= num_stacks then
+		if num_stacks >= buff_template.stack_count_to_trigger_actual_buff then
 			while true do
 				local existing_buff = buff_extension:get_buff_type(build_up_buff)
 
@@ -3937,1536 +4016,1536 @@ dlc_settings.proc_functions = {
 
 			buff_system:add_buff(owner_unit, actual_buff, owner_unit)
 		end
-	end
+	end,
 }
 dlc_settings.explosion_templates = {
 	stagger_aoe_on_crit = {
 		name = "stagger_aoe_on_crit",
 		explosion = {
+			alert_enemies = true,
+			alert_enemies_radius = 15,
+			attack_template = "drakegun",
+			damage_profile = "ability_push",
+			max_damage_radius = 2,
+			no_friendly_fire = true,
 			no_prop_damage = true,
 			radius = 5,
 			use_attacker_power_level = true,
-			max_damage_radius = 2,
-			alert_enemies_radius = 15,
-			attack_template = "drakegun",
-			alert_enemies = true,
-			damage_profile = "ability_push",
-			no_friendly_fire = true
-		}
+		},
 	},
 	armor_breaker = {
 		name = "armor_breaker",
 		explosion = {
-			use_attacker_power_level = true,
-			radius = 4,
-			hit_sound_event = "Play_wind_metal_gameplay_mutator_wind_hit",
 			damage_profile = "armor_breaker",
-			no_friendly_fire = true
-		}
+			hit_sound_event = "Play_wind_metal_gameplay_mutator_wind_hit",
+			no_friendly_fire = true,
+			radius = 4,
+			use_attacker_power_level = true,
+		},
 	},
 	bolt_of_change = {
-		time_to_explode = 3,
 		follow_time = 6,
+		time_to_explode = 3,
 		explosion = {
-			trigger_on_server_only = true,
-			radius = 4,
-			alert_enemies_radius = 20,
-			attack_template = "grenade",
 			alert_enemies = true,
+			alert_enemies_radius = 20,
 			allow_friendly_fire_override = true,
-			different_power_levels_for_players = true,
-			buildup_effect_time = 1.5,
-			sound_event_name = "Play_mutator_enemy_split_large",
-			damage_profile = "bolt_of_change",
-			power_level = 250,
+			attack_template = "grenade",
 			buildup_effect_name = "fx/deus_lightning_strike_02",
+			buildup_effect_time = 1.5,
+			damage_profile = "bolt_of_change",
+			different_power_levels_for_players = true,
 			effect_name = "fx/deus_lightning_strike_01",
+			power_level = 250,
+			radius = 4,
+			sound_event_name = "Play_mutator_enemy_split_large",
+			trigger_on_server_only = true,
 			camera_effect = {
+				far_distance = 20,
+				far_scale = 0.15,
 				near_distance = 5,
 				near_scale = 1,
 				shake_name = "lightning_strike",
-				far_scale = 0.15,
-				far_distance = 20
-			}
-		}
+			},
+		},
 	},
 	magma = {
 		aoe = {
-			dot_template_name = "burning_magma_dot",
-			nav_tag_volume_layer = "fire_grenade",
-			dot_balefire_variant = true,
-			create_nav_tag_volume = true,
-			attack_template = "wizard_staff_geiser",
-			sound_event_name = "player_combat_weapon_fire_bw_deus_01_impact",
-			damage_interval = 0.5,
-			duration = 6,
 			area_damage_template = "explosion_template_aoe",
+			attack_template = "wizard_staff_geiser",
+			create_nav_tag_volume = true,
+			damage_interval = 0.5,
+			dot_balefire_variant = true,
+			dot_template_name = "burning_magma_dot",
+			duration = 6,
+			nav_tag_volume_layer = "fire_grenade",
+			sound_event_name = "player_combat_weapon_fire_bw_deus_01_impact",
 			nav_mesh_effect = {
-				particle_radius = 2,
 				particle_name = "fx/wpnfx_bw_deus_geyser_01_remap",
-				particle_spacing = 0.9
-			}
-		}
+				particle_radius = 2,
+				particle_spacing = 0.9,
+			},
+		},
 	},
 	bots_avoid_curse = {
 		aoe = {
-			duration = 5,
-			radius = 5,
 			create_nav_tag_volume = true,
-			nav_tag_volume_layer = "bot_poison_wind"
-		}
+			duration = 5,
+			nav_tag_volume_layer = "bot_poison_wind",
+			radius = 5,
+		},
 	},
 	corrupted_flesh_explosion = {
 		aoe = {
 			start_aoe_sound_event_name = "Play_curse_corrupted_flesh_explosion",
-			stop_aoe_sound_event_name = "Stop_curse_corrupted_flesh_explosion"
-		}
+			stop_aoe_sound_event_name = "Stop_curse_corrupted_flesh_explosion",
+		},
 	},
 	blessing_of_isha_stagger = {
 		name = "blessing_of_isha_stagger",
 		explosion = {
-			use_attacker_power_level = true,
+			attack_template = "markus_knight_charge",
+			damage_profile = "markus_knight_charge",
+			max_damage_radius = 0,
 			no_friendly_fire = true,
 			no_prop_damage = true,
-			max_damage_radius = 0,
-			damage_profile = "markus_knight_charge",
-			attack_template = "markus_knight_charge"
-		}
+			use_attacker_power_level = true,
+		},
 	},
 	holy_hand_grenade = {
 		is_grenade = true,
 		explosion = {
-			dont_rotate_fx = true,
-			radius = 10,
-			max_damage_radius = 6,
-			alert_enemies_radius = 20,
-			sound_event_name = "Play_blessing_morris_grenade_explosion",
-			attack_template = "grenade",
-			damage_profile_glance = "holy_hand_grenade",
 			alert_enemies = true,
+			alert_enemies_radius = 20,
+			attack_template = "grenade",
 			damage_profile = "holy_hand_grenade",
+			damage_profile_glance = "holy_hand_grenade",
+			dont_rotate_fx = true,
 			effect_name = "fx/wpnfx_holy_handgrenade_explosion_01",
+			max_damage_radius = 6,
+			radius = 10,
+			sound_event_name = "Play_blessing_morris_grenade_explosion",
 			difficulty_power_level = {
 				easy = {
+					power_level = 8000,
 					power_level_glance = 4000,
-					power_level = 8000
 				},
 				normal = {
+					power_level = 16000,
 					power_level_glance = 8000,
-					power_level = 16000
 				},
 				hard = {
+					power_level = 24000,
 					power_level_glance = 12000,
-					power_level = 24000
 				},
 				harder = {
+					power_level = 32000,
 					power_level_glance = 16000,
-					power_level = 32000
 				},
 				hardest = {
+					power_level = 40000,
 					power_level_glance = 20000,
-					power_level = 40000
 				},
 				cataclysm = {
+					power_level = 24000,
 					power_level_glance = 12000,
-					power_level = 24000
 				},
 				cataclysm_2 = {
+					power_level = 32000,
 					power_level_glance = 16000,
-					power_level = 32000
 				},
 				cataclysm_3 = {
+					power_level = 40000,
 					power_level_glance = 20000,
-					power_level = 40000
-				}
+				},
 			},
 			camera_effect = {
+				far_distance = 40,
+				far_scale = 0.5,
 				near_distance = 10,
 				near_scale = 1,
 				shake_name = "holy_hand_grenade_explosion",
-				far_scale = 0.5,
-				far_distance = 40
-			}
-		}
+			},
+		},
 	},
 	curse_skulls_of_fury_explosion = {
 		time_to_explode = 3,
 		explosion = {
-			trigger_on_server_only = true,
-			radius = 4,
 			alert_enemies = true,
+			alert_enemies_radius = 20,
+			allow_friendly_fire_override = true,
+			attack_template = "skulls_of_fury",
 			buildup_effect_name = "fx/deus_curse_skulls_of_fury_timer_01",
 			buildup_effect_time = 3,
-			deletion_timer = 0,
-			alert_enemies_radius = 20,
-			attack_template = "skulls_of_fury",
-			different_power_levels_for_players = true,
-			sound_event_name = "Play_curse_skulls_of_fury_explosion",
-			effect_name = "fx/magic_wind_fire_explosion_01",
-			allow_friendly_fire_override = true,
-			max_damage_radius = 4,
-			unit_scale = 1,
-			damage_profile_glance = "curse_skulls_of_fury_explosion_glance",
 			damage_profile = "curse_skulls_of_fury_explosion",
+			damage_profile_glance = "curse_skulls_of_fury_explosion_glance",
+			deletion_timer = 0,
+			different_power_levels_for_players = true,
+			effect_name = "fx/magic_wind_fire_explosion_01",
+			max_damage_radius = 4,
+			radius = 4,
+			sound_event_name = "Play_curse_skulls_of_fury_explosion",
+			trigger_on_server_only = true,
+			unit_scale = 1,
 			buildup_effect_offset = {
 				0,
 				0,
-				-2
+				-2,
 			},
 			difficulty_power_level = {
 				easy = {
+					power_level = 100,
 					power_level_glance = 50,
-					power_level = 100
 				},
 				normal = {
+					power_level = 200,
 					power_level_glance = 100,
-					power_level = 200
 				},
 				hard = {
+					power_level = 300,
 					power_level_glance = 150,
-					power_level = 300
 				},
 				harder = {
+					power_level = 400,
 					power_level_glance = 200,
-					power_level = 400
 				},
 				hardest = {
+					power_level = 500,
 					power_level_glance = 250,
-					power_level = 500
 				},
 				cataclysm = {
+					power_level = 600,
 					power_level_glance = 300,
-					power_level = 600
 				},
 				cataclysm_2 = {
+					power_level = 700,
 					power_level_glance = 350,
-					power_level = 700
 				},
 				cataclysm_3 = {
+					power_level = 800,
 					power_level_glance = 400,
-					power_level = 800
-				}
+				},
 			},
 			camera_effect = {
+				far_distance = 20,
+				far_scale = 0.15,
 				near_distance = 5,
 				near_scale = 1,
 				shake_name = "lightning_strike",
-				far_scale = 0.15,
-				far_distance = 20
-			}
-		}
+			},
+		},
 	},
 	we_deus_01_small = {
 		explosion = {
-			use_attacker_power_level = true,
-			radius_min = 0.5,
-			radius_max = 1,
 			attacker_power_level_offset = 0.25,
-			max_damage_radius_min = 0.1,
-			damage_profile_glance = "we_deus_01_small_explosion_glance",
-			max_damage_radius_max = 0.75,
-			sound_event_name = "we_deus_01_big_hit",
 			damage_profile = "we_deus_01_small_explosion",
-			effect_name = "fx/wpnfx_we_deus_01_impact"
-		}
+			damage_profile_glance = "we_deus_01_small_explosion_glance",
+			effect_name = "fx/wpnfx_we_deus_01_impact",
+			max_damage_radius_max = 0.75,
+			max_damage_radius_min = 0.1,
+			radius_max = 1,
+			radius_min = 0.5,
+			sound_event_name = "we_deus_01_big_hit",
+			use_attacker_power_level = true,
+		},
 	},
 	we_deus_01_large = {
 		explosion = {
-			use_attacker_power_level = true,
+			alert_enemies = true,
+			alert_enemies_radius = 10,
+			attacker_power_level_offset = 0.25,
+			damage_profile = "we_deus_01_large_explosion",
+			damage_profile_glance = "we_deus_01_large_explosion_glance",
+			effect_name = "fx/wpnfx_we_deus_01_explosion",
+			max_damage_radius_max = 2,
+			max_damage_radius_min = 0.5,
+			radius_max = 3,
 			radius_min = 1.25,
 			sound_event_name = "we_deus_01_big_hit",
-			radius_max = 3,
-			attacker_power_level_offset = 0.25,
-			max_damage_radius_min = 0.5,
-			alert_enemies_radius = 10,
-			damage_profile_glance = "we_deus_01_large_explosion_glance",
-			max_damage_radius_max = 2,
-			alert_enemies = true,
-			damage_profile = "we_deus_01_large_explosion",
-			effect_name = "fx/wpnfx_we_deus_01_explosion"
-		}
+			use_attacker_power_level = true,
+		},
 	},
 	deus_relic_small = {
 		explosion = {
-			use_attacker_power_level = true,
-			radius_min = 0.5,
+			attacker_power_level_offset = 0.25,
+			damage_profile = "deus_relic_small_explosion",
+			damage_profile_glance = "deus_relic_small_explosion_glance",
+			effect_name = "fx/wpnfx_we_deus_01_impact",
+			max_damage_radius_max = 0.75,
+			max_damage_radius_min = 0.1,
 			no_friendly_fire = true,
 			radius_max = 1,
-			attacker_power_level_offset = 0.25,
-			max_damage_radius_min = 0.1,
-			damage_profile_glance = "deus_relic_small_explosion_glance",
-			max_damage_radius_max = 0.75,
+			radius_min = 0.5,
 			sound_event_name = "we_deus_01_big_hit",
-			damage_profile = "deus_relic_small_explosion",
-			effect_name = "fx/wpnfx_we_deus_01_impact"
-		}
+			use_attacker_power_level = true,
+		},
 	},
 	deus_relic_large = {
 		explosion = {
-			use_attacker_power_level = true,
+			alert_enemies = true,
+			alert_enemies_radius = 10,
+			attacker_power_level_offset = 0.25,
+			damage_profile = "deus_relic_large_explosion",
+			damage_profile_glance = "deus_relic_large_explosion_glance",
+			effect_name = "fx/wpnfx_we_deus_01_explosion",
+			max_damage_radius_max = 2,
+			max_damage_radius_min = 0.5,
+			no_friendly_fire = true,
+			radius_max = 3,
 			radius_min = 1.25,
 			sound_event_name = "we_deus_01_big_hit",
-			radius_max = 3,
-			no_friendly_fire = true,
-			attacker_power_level_offset = 0.25,
-			max_damage_radius_min = 0.5,
-			alert_enemies_radius = 10,
-			damage_profile_glance = "deus_relic_large_explosion_glance",
-			max_damage_radius_max = 2,
-			alert_enemies = true,
-			damage_profile = "deus_relic_large_explosion",
-			effect_name = "fx/wpnfx_we_deus_01_explosion"
-		}
+			use_attacker_power_level = true,
+		},
 	},
 	dr_deus_01 = {
 		explosion = {
-			use_attacker_power_level = true,
-			dont_rotate_fx = true,
-			radius = 4,
-			max_damage_radius = 1,
-			alert_enemies_radius = 20,
-			attacker_power_level_offset = 2,
-			attack_type = "grenade",
-			attack_template = "grenade",
-			sound_event_name = "player_combat_weapon_dr_deus_01_explosion",
-			damage_profile_glance = "dr_deus_01_glance",
 			alert_enemies = true,
+			alert_enemies_radius = 20,
+			attack_template = "grenade",
+			attack_type = "grenade",
+			attacker_power_level_offset = 2,
 			damage_profile = "dr_deus_01_explosion",
+			damage_profile_glance = "dr_deus_01_glance",
+			dont_rotate_fx = true,
 			effect_name = "fx/wpnfx_frag_grenade_impact",
+			max_damage_radius = 1,
+			radius = 4,
+			sound_event_name = "player_combat_weapon_dr_deus_01_explosion",
+			use_attacker_power_level = true,
 			camera_effect = {
+				far_distance = 20,
+				far_scale = 0.15,
 				near_distance = 5,
 				near_scale = 1,
 				shake_name = "frag_grenade_explosion",
-				far_scale = 0.15,
-				far_distance = 20
-			}
-		}
+			},
+		},
 	},
 	buff_explosion = {
 		explosion = {
-			use_attacker_power_level = true,
-			radius = 3,
-			max_damage_radius = 1.5,
-			alert_enemies_radius = 10,
-			attacker_power_level_offset = 0.5,
-			effect_name = "fx/cw_enemy_explosion",
-			attack_template = "grenade",
-			sound_event_name = "fireball_big_hit",
-			damage_profile_glance = "frag_grenade_glance",
 			alert_enemies = true,
+			alert_enemies_radius = 10,
+			attack_template = "grenade",
+			attacker_power_level_offset = 0.5,
 			damage_profile = "frag_grenade",
+			damage_profile_glance = "frag_grenade_glance",
+			effect_name = "fx/cw_enemy_explosion",
+			max_damage_radius = 1.5,
 			no_friendly_fire = true,
+			radius = 3,
+			sound_event_name = "fireball_big_hit",
+			use_attacker_power_level = true,
 			camera_effect = {
+				far_distance = 20,
+				far_scale = 0.15,
 				near_distance = 5,
 				near_scale = 1,
 				shake_name = "frag_grenade_explosion",
-				far_scale = 0.15,
-				far_distance = 20
-			}
-		}
+			},
+		},
 	},
 	deus_ranged_crit_explosion = {
 		explosion = {
-			radius = 3,
 			alert_enemies = true,
-			max_damage_radius = 2.5,
-			no_friendly_fire = true,
 			alert_enemies_radius = 15,
-			sound_event_name = "Play_enemy_combat_warpfire_backpack_explode",
 			damage_profile = "frag_grenade",
 			effect_name = "fx/cw_enemy_explosion",
+			max_damage_radius = 2.5,
+			no_friendly_fire = true,
+			radius = 3,
+			sound_event_name = "Play_enemy_combat_warpfire_backpack_explode",
 			difficulty_power_level = {
 				easy = {
+					power_level = 200,
 					power_level_glance = 100,
-					power_level = 200
 				},
 				normal = {
+					power_level = 100,
 					power_level_glance = 100,
-					power_level = 100
 				},
 				hard = {
+					power_level = 200,
 					power_level_glance = 200,
-					power_level = 200
 				},
 				harder = {
+					power_level = 300,
 					power_level_glance = 300,
-					power_level = 300
 				},
 				hardest = {
+					power_level = 400,
 					power_level_glance = 400,
-					power_level = 400
 				},
 				cataclysm = {
+					power_level = 600,
 					power_level_glance = 300,
-					power_level = 600
 				},
 				cataclysm_2 = {
+					power_level = 800,
 					power_level_glance = 400,
-					power_level = 800
 				},
 				cataclysm_3 = {
+					power_level = 1000,
 					power_level_glance = 500,
-					power_level = 1000
-				}
-			}
-		}
+				},
+			},
+		},
 	},
 	player_disabled_stagger = {
 		name = "stagger_aoe_on_crit",
 		explosion = {
-			no_prop_damage = true,
-			radius = 5,
-			effect_name = "fx/cw_enemy_explosion",
-			max_damage_radius = 2,
-			use_attacker_power_level = true,
+			alert_enemies = true,
 			alert_enemies_radius = 15,
 			attack_template = "drakegun",
-			alert_enemies = true,
 			damage_profile = "ability_push",
-			no_friendly_fire = true
-		}
+			effect_name = "fx/cw_enemy_explosion",
+			max_damage_radius = 2,
+			no_friendly_fire = true,
+			no_prop_damage = true,
+			radius = 5,
+			use_attacker_power_level = true,
+		},
 	},
 	melee_wave = {
 		name = "melee_wave",
 		explosion = {
-			use_attacker_power_level = true,
-			radius = 5,
+			alert_enemies = true,
+			alert_enemies_radius = 15,
+			attack_template = "drakegun",
+			damage_profile = "ability_push",
 			effect_name = "fx/chr_kruber_shockwave",
 			hit_sound_event = "Play_wind_metal_gameplay_mutator_wind_hit",
 			max_damage_radius = 2,
+			no_friendly_fire = true,
 			no_prop_damage = true,
-			alert_enemies_radius = 15,
-			attack_template = "drakegun",
+			radius = 5,
 			sound_event_name = "boon_melee_wave",
-			alert_enemies = true,
-			damage_profile = "ability_push",
-			no_friendly_fire = true
-		}
+			use_attacker_power_level = true,
+		},
 	},
 	shield_splinters = {
 		name = "shield_splinters",
 		explosion = {
-			use_attacker_power_level = true,
-			radius = 4,
-			no_friendly_fire = true,
-			hit_sound_event = "Play_wind_metal_gameplay_mutator_wind_hit",
 			damage_profile = "armor_breaker",
+			effect_name = "fx/wpnfx_flaming_flail_hit_01",
+			hit_sound_event = "Play_wind_metal_gameplay_mutator_wind_hit",
+			no_friendly_fire = true,
+			radius = 4,
 			sound_event_name = "boon_shield_of_splinters",
-			effect_name = "fx/wpnfx_flaming_flail_hit_01"
-		}
+			use_attacker_power_level = true,
+		},
 	},
 	blazing_revenge = {
 		name = "blazing_revenge",
 		aoe = {
-			dot_template_name = "burning_dot_fire_grenade",
-			radius = 4,
-			nav_tag_volume_layer = "fire_grenade",
-			create_nav_tag_volume = true,
-			attack_template = "fire_grenade_dot",
-			friendly_fire = false,
-			damage_interval = 1,
 			area_damage_template = "explosion_template_aoe",
+			attack_template = "fire_grenade_dot",
+			create_nav_tag_volume = true,
+			damage_interval = 1,
+			dot_template_name = "burning_dot_fire_grenade",
+			friendly_fire = false,
+			nav_tag_volume_layer = "fire_grenade",
+			radius = 4,
 			duration = math.huge,
 			nav_mesh_effect = {
-				particle_radius = 2,
 				particle_name = "fx/wpnfx_fire_grenade_impact_remains",
-				particle_spacing = 0.9
-			}
-		}
+				particle_radius = 2,
+				particle_spacing = 0.9,
+			},
+		},
 	},
 	thorn_skin = {
 		name = "thorn_skin",
 		explosion = {
-			use_attacker_power_level = true,
-			radius = 2,
-			hit_sound_event = "Play_wind_metal_gameplay_mutator_wind_hit",
 			damage_profile = "thorn_skin",
-			no_friendly_fire = true
-		}
+			hit_sound_event = "Play_wind_metal_gameplay_mutator_wind_hit",
+			no_friendly_fire = true,
+			radius = 2,
+			use_attacker_power_level = true,
+		},
 	},
 	static_charge = {
 		name = "static_charge",
 		explosion = {
-			use_attacker_power_level = true,
-			radius = 3,
-			no_friendly_fire = true,
-			max_damage_radius = 2,
+			attack_template = "drakegun",
 			damage_profile = "static_charge",
+			max_damage_radius = 2,
+			no_friendly_fire = true,
 			no_prop_damage = true,
+			radius = 3,
 			sound_event_name = "boon_orb_static_charge",
-			attack_template = "drakegun"
-		}
+			use_attacker_power_level = true,
+		},
 	},
 	bad_breath = {
 		name = "stagger_aoe_on_crit",
 		explosion = {
-			no_prop_damage = true,
-			radius = 5,
+			alert_enemies = true,
+			alert_enemies_radius = 15,
+			attack_template = "drakegun",
+			damage_profile = "ability_push",
 			effect_name = "fx/belakor/blk_smite_01_fx",
 			max_damage_radius = 2,
-			use_attacker_power_level = true,
-			alert_enemies_radius = 15,
+			no_friendly_fire = true,
+			no_prop_damage = true,
+			radius = 5,
 			sound_event_name = "boon_bad_breath",
-			attack_template = "drakegun",
-			alert_enemies = true,
-			damage_profile = "ability_push",
-			no_friendly_fire = true
-		}
+			use_attacker_power_level = true,
+		},
 	},
 	static_blade = {
 		name = "static_blade",
 		explosion = {
-			use_attacker_power_level = true,
-			radius = 1,
-			no_friendly_fire = true,
-			max_damage_radius = 0,
+			attack_template = "markus_knight_charge",
 			damage_profile = "markus_knight_charge",
+			max_damage_radius = 0,
+			no_friendly_fire = true,
 			no_prop_damage = true,
-			attack_template = "markus_knight_charge"
-		}
-	}
+			radius = 1,
+			use_attacker_power_level = true,
+		},
+	},
 }
 dlc_settings.buff_templates = {
 	liquid_bravado_potion = {
 		buffs = {
 			{
-				name = "liquid_bravado_potion",
-				stat_buff = "power_level",
-				max_stacks = 1,
 				icon = "potion_liquid_bravado",
-				remove_buff_func = "remove_deus_potion_buff",
+				max_stacks = 1,
+				name = "liquid_bravado_potion",
 				refresh_durations = true,
+				remove_buff_func = "remove_deus_potion_buff",
+				stat_buff = "power_level",
 				multiplier = MorrisBuffTweakData.liquid_bravado_potion.multiplier,
-				duration = MorrisBuffTweakData.liquid_bravado_potion.duration
-			}
-		}
+				duration = MorrisBuffTweakData.liquid_bravado_potion.duration,
+			},
+		},
 	},
 	liquid_bravado_potion_increased = {
 		buffs = {
 			{
-				name = "liquid_bravado_potion_increased",
-				stat_buff = "power_level",
-				max_stacks = 1,
 				icon = "potion_liquid_bravado",
-				remove_buff_func = "remove_deus_potion_buff",
+				max_stacks = 1,
+				name = "liquid_bravado_potion_increased",
 				refresh_durations = true,
+				remove_buff_func = "remove_deus_potion_buff",
+				stat_buff = "power_level",
 				multiplier = MorrisBuffTweakData.liquid_bravado_potion_increased.multiplier,
-				duration = MorrisBuffTweakData.liquid_bravado_potion_increased.duration
-			}
-		}
+				duration = MorrisBuffTweakData.liquid_bravado_potion_increased.duration,
+			},
+		},
 	},
 	vampiric_draught_potion = {
 		buffs = {
 			{
-				name = "vampiric_draught_potion_heal",
-				remove_buff_func = "remove_deus_potion_buff",
 				buff_func = "vampiric_heal",
 				event = "on_damage_dealt",
-				refresh_durations = true,
-				max_stacks = 1,
 				icon = "potion_vampiric_draught",
+				max_stacks = 1,
+				name = "vampiric_draught_potion_heal",
+				refresh_durations = true,
+				remove_buff_func = "remove_deus_potion_buff",
 				duration = MorrisBuffTweakData.vampiric_draught_potion.duration,
-				difficulty_multiplier = MorrisBuffTweakData.vampiric_draught_potion.difficulty_multiplier
-			}
-		}
+				difficulty_multiplier = MorrisBuffTweakData.vampiric_draught_potion.difficulty_multiplier,
+			},
+		},
 	},
 	vampiric_draught_potion_increased = {
 		buffs = {
 			{
-				name = "vampiric_draught_potion_heal_increased",
-				remove_buff_func = "remove_deus_potion_buff",
 				buff_func = "vampiric_heal",
 				event = "on_damage_dealt",
-				refresh_durations = true,
-				max_stacks = 1,
 				icon = "potion_vampiric_draught",
+				max_stacks = 1,
+				name = "vampiric_draught_potion_heal_increased",
+				refresh_durations = true,
+				remove_buff_func = "remove_deus_potion_buff",
 				duration = MorrisBuffTweakData.vampiric_draught_potion_increased.duration,
-				difficulty_multiplier = MorrisBuffTweakData.vampiric_draught_potion_increased.difficulty_multiplier
-			}
-		}
+				difficulty_multiplier = MorrisBuffTweakData.vampiric_draught_potion_increased.difficulty_multiplier,
+			},
+		},
 	},
 	moot_milk_potion = {
 		activation_effect = MorrisBuffTweakData.moot_milk_potion.activation_effect,
 		buffs = {
 			{
 				buff_to_add = "moot_milk_strength",
-				name = "moot_milk_potion",
-				remove_buff_func = "add_buff",
-				refresh_durations = true,
 				max_stacks = 1,
-				duration = MorrisBuffTweakData.moot_milk_potion.effect_duration
-			}
-		}
+				name = "moot_milk_potion",
+				refresh_durations = true,
+				remove_buff_func = "add_buff",
+				duration = MorrisBuffTweakData.moot_milk_potion.effect_duration,
+			},
+		},
 	},
 	moot_milk_strength = {
 		buffs = {
 			{
 				apply_buff_func = "apply_movement_buff",
-				name = "moot_milk_increase_dodge_distance",
 				icon = "potion_moot_milk",
+				max_stacks = 1,
+				name = "moot_milk_increase_dodge_distance",
 				refresh_durations = true,
 				remove_buff_func = "remove_movement_buff",
-				max_stacks = 1,
 				multiplier = MorrisBuffTweakData.moot_milk_potion.dodge_distance_multiplier,
 				duration = MorrisBuffTweakData.moot_milk_potion.duration,
 				path_to_movement_setting_to_modify = {
 					"dodging",
-					"distance_modifier"
-				}
+					"distance_modifier",
+				},
 			},
 			{
-				name = "moot_milk_increase_dodge_speed",
-				max_stacks = 1,
-				remove_buff_func = "remove_movement_buff",
 				apply_buff_func = "apply_movement_buff",
+				max_stacks = 1,
+				name = "moot_milk_increase_dodge_speed",
 				refresh_durations = true,
+				remove_buff_func = "remove_movement_buff",
 				multiplier = MorrisBuffTweakData.moot_milk_potion.dodge_speed_multiplier,
 				duration = MorrisBuffTweakData.moot_milk_potion.duration,
 				path_to_movement_setting_to_modify = {
 					"dodging",
-					"speed_modifier"
-				}
+					"speed_modifier",
+				},
 			},
 			{
-				remove_buff_func = "remove_deus_potion_buff",
 				name = "moot_milk_sound",
 				refresh_durations = true,
-				duration = MorrisBuffTweakData.moot_milk_potion.duration
-			}
-		}
+				remove_buff_func = "remove_deus_potion_buff",
+				duration = MorrisBuffTweakData.moot_milk_potion.duration,
+			},
+		},
 	},
 	moot_milk_potion_increased = {
 		activation_effect = MorrisBuffTweakData.moot_milk_potion_increased.activation_effect,
 		buffs = {
 			{
 				buff_to_add = "moot_milk_strength_increased",
+				max_stacks = 1,
 				name = "moot_milk_strength_increased",
 				refresh_durations = true,
-				max_stacks = 1,
 				remove_buff_func = "add_buff",
-				duration = MorrisBuffTweakData.moot_milk_potion_increased.effect_duration
-			}
-		}
+				duration = MorrisBuffTweakData.moot_milk_potion_increased.effect_duration,
+			},
+		},
 	},
 	moot_milk_strength_increased = {
 		buffs = {
 			{
 				apply_buff_func = "apply_movement_buff",
-				name = "moot_milk_increase_dodge_distance_increased",
 				icon = "potion_moot_milk",
+				max_stacks = 1,
+				name = "moot_milk_increase_dodge_distance_increased",
 				refresh_durations = true,
 				remove_buff_func = "remove_movement_buff",
-				max_stacks = 1,
 				multiplier = MorrisBuffTweakData.moot_milk_potion_increased.dodge_distance_multiplier,
 				duration = MorrisBuffTweakData.moot_milk_potion_increased.duration,
 				path_to_movement_setting_to_modify = {
 					"dodging",
-					"distance_modifier"
-				}
+					"distance_modifier",
+				},
 			},
 			{
-				name = "moot_milk_increase_dodge_speed_increased",
-				max_stacks = 1,
-				remove_buff_func = "remove_movement_buff",
 				apply_buff_func = "apply_movement_buff",
+				max_stacks = 1,
+				name = "moot_milk_increase_dodge_speed_increased",
 				refresh_durations = true,
+				remove_buff_func = "remove_movement_buff",
 				multiplier = MorrisBuffTweakData.moot_milk_potion_increased.dodge_speed_multiplier,
 				duration = MorrisBuffTweakData.moot_milk_potion_increased.duration,
 				path_to_movement_setting_to_modify = {
 					"dodging",
-					"speed_modifier"
-				}
+					"speed_modifier",
+				},
 			},
 			{
-				remove_buff_func = "remove_deus_potion_buff",
 				name = "moot_milk_sound_increased",
 				refresh_durations = true,
-				duration = MorrisBuffTweakData.moot_milk_potion_increased.duration
-			}
-		}
+				remove_buff_func = "remove_deus_potion_buff",
+				duration = MorrisBuffTweakData.moot_milk_potion_increased.duration,
+			},
+		},
 	},
 	friendly_murderer_potion = {
 		buffs = {
 			{
-				name = "friendly_murderer_potion",
 				buff_func = "friendly_murder",
 				event = "on_damage_dealt",
-				remove_buff_func = "remove_deus_potion_buff",
-				refresh_durations = true,
-				max_stacks = 1,
 				icon = "potion_friendly_murderer",
+				max_stacks = 1,
+				name = "friendly_murderer_potion",
+				refresh_durations = true,
+				remove_buff_func = "remove_deus_potion_buff",
 				duration = MorrisBuffTweakData.friendly_murderer_potion.duration,
 				difficulty_multiplier = MorrisBuffTweakData.friendly_murderer_potion.difficulty_multiplier,
-				range = MorrisBuffTweakData.friendly_murderer_potion.range
-			}
-		}
+				range = MorrisBuffTweakData.friendly_murderer_potion.range,
+			},
+		},
 	},
 	friendly_murderer_potion_increased = {
 		buffs = {
 			{
-				name = "friendly_murderer_potion_increased",
 				buff_func = "friendly_murder",
 				event = "on_damage_dealt",
-				remove_buff_func = "remove_deus_potion_buff",
-				refresh_durations = true,
-				max_stacks = 1,
 				icon = "potion_friendly_murderer",
+				max_stacks = 1,
+				name = "friendly_murderer_potion_increased",
+				refresh_durations = true,
+				remove_buff_func = "remove_deus_potion_buff",
 				duration = MorrisBuffTweakData.friendly_murderer_potion_increased.duration,
 				difficulty_multiplier = MorrisBuffTweakData.friendly_murderer_potion_increased.difficulty_multiplier,
-				range = MorrisBuffTweakData.friendly_murderer_potion_increased.range
-			}
-		}
+				range = MorrisBuffTweakData.friendly_murderer_potion_increased.range,
+			},
+		},
 	},
 	killer_in_the_shadows_potion = {
 		buffs = {
 			{
-				remove_buff_func = "remove_killer_in_the_shadows_buff",
-				name = "killer_in_the_shadows_potion",
-				icon = "potion_killer_in_the_shadows",
-				refresh_durations = true,
-				max_stacks = 1,
 				apply_buff_func = "apply_killer_in_the_shadows_buff",
-				duration = MorrisBuffTweakData.killer_in_the_shadows_potion.duration
-			}
-		}
+				icon = "potion_killer_in_the_shadows",
+				max_stacks = 1,
+				name = "killer_in_the_shadows_potion",
+				refresh_durations = true,
+				remove_buff_func = "remove_killer_in_the_shadows_buff",
+				duration = MorrisBuffTweakData.killer_in_the_shadows_potion.duration,
+			},
+		},
 	},
 	killer_in_the_shadows_potion_increased = {
 		buffs = {
 			{
-				remove_buff_func = "remove_killer_in_the_shadows_buff",
-				name = "killer_in_the_shadows_potion_increased",
-				icon = "potion_killer_in_the_shadows",
-				refresh_durations = true,
-				max_stacks = 1,
 				apply_buff_func = "apply_killer_in_the_shadows_buff",
-				duration = MorrisBuffTweakData.killer_in_the_shadows_potion_increased.duration
-			}
-		}
+				icon = "potion_killer_in_the_shadows",
+				max_stacks = 1,
+				name = "killer_in_the_shadows_potion_increased",
+				refresh_durations = true,
+				remove_buff_func = "remove_killer_in_the_shadows_buff",
+				duration = MorrisBuffTweakData.killer_in_the_shadows_potion_increased.duration,
+			},
+		},
 	},
 	pockets_full_of_bombs_potion = {
 		buffs = {
 			{
-				update_func = "update_pockets_full_of_bombs_buff",
+				apply_buff_func = "apply_pockets_full_of_bombs_buff",
+				icon = "potion_pockets_full_of_bombs",
 				name = "pockets_full_of_bombs_potion",
 				remove_buff_func = "remove_deus_potion_buff",
-				icon = "potion_pockets_full_of_bombs",
-				apply_buff_func = "apply_pockets_full_of_bombs_buff",
+				update_func = "update_pockets_full_of_bombs_buff",
 				duration = MorrisBuffTweakData.pockets_full_of_bombs_potion.duration,
 				perks = {
 					buff_perks.disable_interactions,
 					buff_perks.free_grenade,
-					buff_perks.rewield_grenade_on_throw
-				}
+					buff_perks.rewield_grenade_on_throw,
+				},
 			},
 			{
-				remove_buff_func = "remove_movement_buff",
-				name = "pockets_full_of_bombs_potion_movement_speed",
 				apply_buff_func = "apply_movement_buff",
+				name = "pockets_full_of_bombs_potion_movement_speed",
+				remove_buff_func = "remove_movement_buff",
 				duration = MorrisBuffTweakData.pockets_full_of_bombs_potion.movespeed_duration,
 				multiplier = MorrisBuffTweakData.pockets_full_of_bombs_potion.movespeed_multiplier,
 				path_to_movement_setting_to_modify = {
-					"move_speed"
-				}
-			}
-		}
+					"move_speed",
+				},
+			},
+		},
 	},
 	pockets_full_of_bombs_potion_increased = {
 		buffs = {
 			{
-				update_func = "update_pockets_full_of_bombs_buff",
+				apply_buff_func = "apply_pockets_full_of_bombs_buff",
+				icon = "potion_pockets_full_of_bombs",
 				name = "pockets_full_of_bombs_potion_increased",
 				remove_buff_func = "remove_deus_potion_buff",
-				icon = "potion_pockets_full_of_bombs",
-				apply_buff_func = "apply_pockets_full_of_bombs_buff",
+				update_func = "update_pockets_full_of_bombs_buff",
 				duration = MorrisBuffTweakData.pockets_full_of_bombs_potion_increased.duration,
 				perks = {
 					buff_perks.disable_interactions,
 					buff_perks.free_grenade,
-					buff_perks.rewield_grenade_on_throw
-				}
+					buff_perks.rewield_grenade_on_throw,
+				},
 			},
 			{
+				apply_buff_func = "apply_movement_buff",
 				name = "pockets_full_of_bombs_potion_movement_speed_increased",
 				remove_buff_func = "remove_movement_buff",
-				apply_buff_func = "apply_movement_buff",
 				multiplier = MorrisBuffTweakData.pockets_full_of_bombs_potion_increased.movespeed_multiplier,
 				duration = MorrisBuffTweakData.pockets_full_of_bombs_potion_increased.movespeed_duration,
 				path_to_movement_setting_to_modify = {
-					"move_speed"
-				}
-			}
-		}
+					"move_speed",
+				},
+			},
+		},
 	},
 	hold_my_beer_potion = {
 		buffs = {
 			{
 				activation_effect = "fx/screenspace_drink_01",
-				name = "hold_my_beer_potion",
-				icon = "potion_hold_my_beer",
 				continuous_effect = "fx/screenspace_drink_looping",
+				icon = "potion_hold_my_beer",
 				max_stacks = 1,
-				remove_buff_func = "remove_deus_potion_buff",
+				name = "hold_my_beer_potion",
 				refresh_durations = true,
-				duration = MorrisBuffTweakData.hold_my_beer_potion.fx_duration
+				remove_buff_func = "remove_deus_potion_buff",
+				duration = MorrisBuffTweakData.hold_my_beer_potion.fx_duration,
 			},
 			{
-				remove_buff_func = "remove_movement_buff",
-				name = "hold_my_beer_potion_movement_speed",
-				max_stacks = 1,
 				apply_buff_func = "apply_movement_buff",
+				max_stacks = 1,
+				name = "hold_my_beer_potion_movement_speed",
 				refresh_durations = true,
+				remove_buff_func = "remove_movement_buff",
 				duration = MorrisBuffTweakData.hold_my_beer_potion.movespeed_duration,
 				multiplier = MorrisBuffTweakData.hold_my_beer_potion.movespeed_multiplier,
 				path_to_movement_setting_to_modify = {
-					"move_speed"
-				}
+					"move_speed",
+				},
 			},
 			{
-				name = "hold_my_beer_potion_damage_increase",
-				stat_buff = "increased_weapon_damage",
-				refresh_durations = true,
 				max_stacks = 1,
+				name = "hold_my_beer_potion_damage_increase",
+				refresh_durations = true,
+				stat_buff = "increased_weapon_damage",
 				duration = MorrisBuffTweakData.hold_my_beer_potion.duration,
-				multiplier = MorrisBuffTweakData.hold_my_beer_potion.multiplier
-			}
-		}
+				multiplier = MorrisBuffTweakData.hold_my_beer_potion.multiplier,
+			},
+		},
 	},
 	hold_my_beer_potion_increased = {
 		buffs = {
 			{
 				activation_effect = "fx/screenspace_drink_01",
-				name = "hold_my_beer_potion_increased",
-				icon = "potion_hold_my_beer",
 				continuous_effect = "fx/screenspace_drink_looping",
+				icon = "potion_hold_my_beer",
 				max_stacks = 1,
-				remove_buff_func = "remove_deus_potion_buff",
+				name = "hold_my_beer_potion_increased",
 				refresh_durations = true,
-				duration = MorrisBuffTweakData.hold_my_beer_potion_increased.fx_duration
+				remove_buff_func = "remove_deus_potion_buff",
+				duration = MorrisBuffTweakData.hold_my_beer_potion_increased.fx_duration,
 			},
 			{
-				remove_buff_func = "remove_movement_buff",
-				name = "hold_my_beer_potion_movement_speed_increased",
-				max_stacks = 1,
 				apply_buff_func = "apply_movement_buff",
+				max_stacks = 1,
+				name = "hold_my_beer_potion_movement_speed_increased",
 				refresh_durations = true,
+				remove_buff_func = "remove_movement_buff",
 				duration = MorrisBuffTweakData.hold_my_beer_potion_increased.movespeed_duration,
 				multiplier = MorrisBuffTweakData.hold_my_beer_potion_increased.movespeed_multiplier,
 				path_to_movement_setting_to_modify = {
-					"move_speed"
-				}
+					"move_speed",
+				},
 			},
 			{
-				name = "hold_my_beer_potion_damage_increase_increased",
-				stat_buff = "increased_weapon_damage",
-				refresh_durations = true,
 				max_stacks = 1,
+				name = "hold_my_beer_potion_damage_increase_increased",
+				refresh_durations = true,
+				stat_buff = "increased_weapon_damage",
 				duration = MorrisBuffTweakData.hold_my_beer_potion_increased.duration,
-				multiplier = MorrisBuffTweakData.hold_my_beer_potion_increased.multiplier
-			}
-		}
+				multiplier = MorrisBuffTweakData.hold_my_beer_potion_increased.multiplier,
+			},
+		},
 	},
 	poison_proof_potion = {
 		buffs = {
 			{
-				name = "poison_proof_potion",
-				remove_buff_func = "remove_deus_potion_buff",
-				max_stacks = 1,
 				icon = "potion_poison_proof",
+				max_stacks = 1,
+				name = "poison_proof_potion",
 				refresh_durations = true,
+				remove_buff_func = "remove_deus_potion_buff",
 				perks = {
-					buff_perks.poison_proof
+					buff_perks.poison_proof,
 				},
-				duration = MorrisBuffTweakData.poison_proof_potion.duration
-			}
-		}
+				duration = MorrisBuffTweakData.poison_proof_potion.duration,
+			},
+		},
 	},
 	poison_proof_potion_increased = {
 		buffs = {
 			{
-				name = "poison_proof_potion_increased ",
-				remove_buff_func = "remove_deus_potion_buff",
-				max_stacks = 1,
 				icon = "potion_poison_proof",
+				max_stacks = 1,
+				name = "poison_proof_potion_increased ",
 				refresh_durations = true,
+				remove_buff_func = "remove_deus_potion_buff",
 				perks = {
-					buff_perks.poison_proof
+					buff_perks.poison_proof,
 				},
-				duration = MorrisBuffTweakData.poison_proof_potion_increased.duration
-			}
-		}
+				duration = MorrisBuffTweakData.poison_proof_potion_increased.duration,
+			},
+		},
 	},
 	mark_of_nurgle = {
 		buffs = {
 			{
-				start_sound_event_name = "Play_curse_corrupted_flesh_loop",
-				name = "mark_of_nurgle",
-				mark_particle = "fx/deus_corrupted_flesh_01",
+				apply_buff_func = "apply_mark_of_nurgle",
 				buff_func = "remove_mark_of_nurgle",
 				event = "on_death",
+				mark_particle = "fx/deus_corrupted_flesh_01",
+				name = "mark_of_nurgle",
 				remove_buff_func = "remove_mark_of_nurgle",
-				apply_buff_func = "apply_mark_of_nurgle",
-				stop_sound_event_name = "Stop_curse_corrupted_flesh_loop"
+				start_sound_event_name = "Play_curse_corrupted_flesh_loop",
+				stop_sound_event_name = "Stop_curse_corrupted_flesh_loop",
 			},
 			{
+				buff_func = "apply_mark_of_nurgle_dot",
 				event = "on_damage_dealt",
 				name = "mark_of_nurgle_dot_attack",
-				buff_func = "apply_mark_of_nurgle_dot"
 			},
 			{
-				name = "mark_of_nurgle_death_explosion",
-				radius = 5,
-				cloud_life_time = 4,
+				aoe_dot_damage_interval = 1,
 				buff_func = "mark_of_nurgle_explosion",
+				cloud_life_time = 4,
 				event = "on_death",
 				initial_radius = 1,
-				aoe_dot_damage_interval = 1,
+				name = "mark_of_nurgle_death_explosion",
+				radius = 5,
 				aoe_init_difficulty_damage = {
 					5,
 					5,
 					5,
 					5,
-					5
+					5,
 				},
 				aoe_dot_difficulty_damage = {
 					10,
 					10,
 					10,
 					10,
-					10
-				}
+					10,
+				},
 			},
 			{
-				remove_on_proc = true,
-				name = "mark_of_nurgle_pingable",
+				apply_buff_func = "apply_make_pingable",
 				buff_func = "curse_khorne_champions_leader_death",
 				event = "on_death",
+				name = "mark_of_nurgle_pingable",
 				remove_buff_func = "remove_make_pingable",
-				apply_buff_func = "apply_make_pingable"
-			}
-		}
+				remove_on_proc = true,
+			},
+		},
 	},
 	curse_mark_of_nurgle_dot = {
 		buffs = {
 			{
-				duration = 3,
-				name = "curse_mark_of_nurgle_dot",
-				damage_profile = "curse_mark_of_nurgle_dot",
-				refresh_durations = true,
 				apply_buff_func = "start_dot_damage",
-				update_start_delay = 1,
-				time_between_dot_damages = 1,
+				damage_profile = "curse_mark_of_nurgle_dot",
+				duration = 3,
 				max_stacks = 1,
-				update_func = "apply_dot_damage"
-			}
-		}
+				name = "curse_mark_of_nurgle_dot",
+				refresh_durations = true,
+				time_between_dot_damages = 1,
+				update_func = "apply_dot_damage",
+				update_start_delay = 1,
+			},
+		},
 	},
 	curse_khorne_champions_aoe = {
 		buffs = {
 			{
-				particle_fx = "fx/deus_curse_khorne_champions_leader",
-				name = "curse_khorne_champions_leader",
+				apply_buff_func = "apply_curse_khorne_champions_aoe",
 				buff_func = "curse_khorne_champions_leader_death",
 				event = "on_death",
+				in_range_units_buff_name = "curse_khorne_champions_buff",
+				name = "curse_khorne_champions_leader",
+				particle_fx = "fx/deus_curse_khorne_champions_leader",
 				remove_buff_func = "remove_curse_khorne_champions_aoe",
-				apply_buff_func = "apply_curse_khorne_champions_aoe",
 				remove_on_proc = true,
 				update_func = "update_curse_khorne_champions_aoe",
-				in_range_units_buff_name = "curse_khorne_champions_buff",
 				range_check = {
-					unit_left_range_func = "unit_left_range_champions_aoe",
 					radius = 8,
+					unit_entered_range_func = "unit_entered_range_champions_aoe",
+					unit_left_range_func = "unit_left_range_champions_aoe",
 					update_rate = 1,
-					unit_entered_range_func = "unit_entered_range_champions_aoe"
-				}
+				},
 			},
 			{
-				remove_on_proc = true,
-				name = "curse_khorne_champions_aoe_pingable",
+				apply_buff_func = "apply_make_pingable",
 				buff_func = "curse_khorne_champions_leader_death",
 				event = "on_death",
+				name = "curse_khorne_champions_aoe_pingable",
 				remove_buff_func = "remove_make_pingable",
-				apply_buff_func = "apply_make_pingable"
+				remove_on_proc = true,
 			},
 			{
-				unit_name = "units/props/deus_bloodgod_curse/deus_bloodgod_curse_01",
-				name = "curse_khorne_champions_unit",
+				apply_buff_func = "curse_khorne_champions_unit_link_unit",
 				buff_func = "remove_linked_unit",
 				event = "on_death",
+				name = "curse_khorne_champions_unit",
 				remove_buff_func = "remove_linked_unit",
-				apply_buff_func = "curse_khorne_champions_unit_link_unit",
+				unit_name = "units/props/deus_bloodgod_curse/deus_bloodgod_curse_01",
 				z_offset = {
-					default = 2,
-					chaos_raider = 2,
 					beastmen_bestigor = 1.9,
+					chaos_raider = 2,
 					chaos_warrior = 2.4,
-					skaven_storm_vermin_commander = 1.9,
+					default = 2,
 					skaven_storm_vermin = 1.9,
+					skaven_storm_vermin_champion = 1.9,
+					skaven_storm_vermin_commander = 1.9,
 					skaven_storm_vermin_with_shield = 1.9,
-					skaven_storm_vermin_champion = 1.9
-				}
-			}
-		}
+				},
+			},
+		},
 	},
 	curse_khorne_champions_buff = {
 		buffs = {
 			{
-				remove_buff_func = "remove_max_health_buff_for_ai",
-				name = "curse_khorne_champions_max_health",
 				apply_buff_func = "apply_max_health_buff_for_ai",
-				multiplier = 1
+				multiplier = 1,
+				name = "curse_khorne_champions_max_health",
+				remove_buff_func = "remove_max_health_buff_for_ai",
 			},
 			{
-				remove_buff_func = "remove_attach_particle",
-				name = "curse_khorne_champions_particle",
 				apply_buff_func = "apply_attach_particle",
-				particle_fx = "fx/deus_curse_khorne_champions_buff"
-			}
-		}
+				name = "curse_khorne_champions_particle",
+				particle_fx = "fx/deus_curse_khorne_champions_buff",
+				remove_buff_func = "remove_attach_particle",
+			},
+		},
 	},
 	curse_skulls_of_fury = {
 		buffs = {
 			{
-				name = "curse_skulls_of_fury",
 				apply_buff_func = "trigger_skulls_of_fury_sound_event",
-				sound_event_name = "Play_curse_skulls_of_fury_activated"
+				name = "curse_skulls_of_fury",
+				sound_event_name = "Play_curse_skulls_of_fury_activated",
 			},
 			{
+				apply_buff_func = "apply_generic_decal",
 				decal = "units/decals/deus_decal_bloodstorm_outer",
-				name = "curse_skulls_of_fury_decal",
-				decal_z_offset = -2,
 				decal_scale = 5,
+				decal_z_offset = -2,
+				name = "curse_skulls_of_fury_decal",
 				remove_buff_func = "remove_generic_decal",
-				apply_buff_func = "apply_generic_decal"
-			}
-		}
+			},
+		},
 	},
 	curse_blood_storm_dot = {
 		buffs = {
 			{
-				duration = 1,
-				name = "curse_blood_storm_dot",
-				max_stacks = 1,
-				refresh_durations = true,
 				apply_buff_func = "start_dot_damage",
-				update_start_delay = 0.5,
-				time_between_dot_damages = 0.5,
 				damage_profile = "blood_storm",
-				update_func = "apply_dot_damage",
+				duration = 1,
+				max_stacks = 1,
+				name = "curse_blood_storm_dot",
 				reapply_buff_func = "reapply_dot_damage",
+				refresh_durations = true,
+				time_between_dot_damages = 0.5,
+				update_func = "apply_dot_damage",
+				update_start_delay = 0.5,
 				perks = {
-					buff_perks.bleeding
-				}
-			}
-		}
+					buff_perks.bleeding,
+				},
+			},
+		},
 	},
 	curse_blood_storm_dot_bots = {
 		buffs = {
 			{
-				duration = 1,
-				name = "curse_blood_storm_dot",
-				max_stacks = 1,
-				refresh_durations = true,
 				apply_buff_func = "start_dot_damage",
-				update_start_delay = 0.5,
-				time_between_dot_damages = 0.5,
 				damage_profile = "blood_storm_bots",
-				update_func = "apply_dot_damage",
+				duration = 1,
+				max_stacks = 1,
+				name = "curse_blood_storm_dot",
 				reapply_buff_func = "reapply_dot_damage",
+				refresh_durations = true,
+				time_between_dot_damages = 0.5,
+				update_func = "apply_dot_damage",
+				update_start_delay = 0.5,
 				perks = {
-					buff_perks.bleeding
-				}
-			}
-		}
+					buff_perks.bleeding,
+				},
+			},
+		},
 	},
 	curse_abundance_of_life = {
 		buffs = {
 			{
+				apply_buff_func = "start_dot_damage",
+				custom_dot_tick_func = "curse_abundance_of_life_custom_dot_tick",
 				damage_percentage = 0.01,
 				name = "curse_abundance_of_life_dot",
 				time_between_dot_damages = 2,
-				custom_dot_tick_func = "curse_abundance_of_life_custom_dot_tick",
 				update_func = "apply_dot_damage",
-				apply_buff_func = "start_dot_damage",
-				update_start_delay = 2
+				update_start_delay = 2,
 			},
 			{
+				bonus = 100,
+				buff_func = "all_potions_heal_func",
 				event = "on_potion_consumed",
 				name = "curse_abundance_of_life_heal_on_potions",
-				bonus = 100,
-				buff_func = "all_potions_heal_func"
 			},
 			{
+				buff_func = "trigger_dialogue_event",
+				dialogue_event = "curse_positive_effect_happened",
 				event = "on_potion_consumed",
 				name = "curse_abundance_of_life_vo",
-				dialogue_event = "curse_positive_effect_happened",
-				buff_func = "trigger_dialogue_event"
-			}
-		}
+			},
+		},
 	},
 	blessing_of_grimnir_boss_buff = {
 		buffs = {
 			{
+				apply_buff_func = "apply_max_health_buff_for_ai",
 				multiplier = 0.5,
 				name = "blessing_of_grimnir_boss_health_buff",
-				stat_buff = "max_health",
 				remove_buff_func = "remove_max_health_buff_for_ai",
-				apply_buff_func = "apply_max_health_buff_for_ai"
+				stat_buff = "max_health",
 			},
 			{
 				multiplier = 0.5,
 				name = "blessing_of_grimnir_boss_damage_buff",
-				stat_buff = "damage_dealt"
-			}
-		}
+				stat_buff = "damage_dealt",
+			},
+		},
 	},
 	blessing_of_grimnir_player_buff = {
 		buffs = {
 			{
-				name = "blessing_of_grimnir_player_buff",
-				multiplier = 0.2,
-				stat_buff = "max_health",
+				icon = "bardin_ironbreaker_regen_stamina_on_block_broken",
 				is_persistent = true,
-				icon = "bardin_ironbreaker_regen_stamina_on_block_broken"
-			}
-		}
+				multiplier = 0.2,
+				name = "blessing_of_grimnir_player_buff",
+				stat_buff = "max_health",
+			},
+		},
 	},
 	curse_rotten_miasma = {
 		buffs = {
 			{
-				update_func = "update_curse_rotten_miasma",
-				name = "curse_rotten_miasma",
-				buff_exposure_tick_rate = 1.3,
-				remove_buff_func = "remove_curse_rotten_miasma",
 				apply_buff_func = "apply_curse_rotten_miasma",
+				buff_exposure_tick_rate = 1.3,
 				miasma_stack_limit = 35,
+				name = "curse_rotten_miasma",
+				remove_buff_func = "remove_curse_rotten_miasma",
+				update_func = "update_curse_rotten_miasma",
 				safe_area_radius = {
 					8,
 					8,
 					8,
 					8,
-					8
-				}
-			}
-		}
+					8,
+				},
+			},
+		},
 	},
 	curse_rotten_miasma_debuff = {
 		buffs = {
 			{
+				debuff = true,
 				icon = "buff_icon_mutator_icon_slayer_curse",
 				name = "curse_rotten_miasma_debuff",
-				debuff = true,
 				perks = {
-					buff_perks.slayer_curse
-				}
+					buff_perks.slayer_curse,
+				},
 			},
 			{
 				activation_effect = "fx/screenspace_deus_miasma",
-				name = "curse_rotten_miasma_effect",
+				apply_buff_func = "apply_curse_rotten_miasma_debuff",
 				continuous_effect = "fx/screenspace_deus_miasma",
 				max_stacks = 1,
+				name = "curse_rotten_miasma_effect",
 				remove_buff_func = "remove_curse_rotten_miasma_debuff",
-				apply_buff_func = "apply_curse_rotten_miasma_debuff"
-			}
-		}
+			},
+		},
 	},
 	curse_greed_pinata_drops = {
 		buffs = {
 			{
-				name = "curse_greed_pinata_drops",
+				apply_buff_func = "apply_curse_greed_pinata_drops",
 				buff_func = "curse_greed_pinata_death",
 				event = "on_death",
+				name = "curse_greed_pinata_drops",
 				update_func = "update_curse_greed_pinata_drops",
-				apply_buff_func = "apply_curse_greed_pinata_drops",
 				total_drops = GreedPinataSettings.total_drops,
-				drop_table = GreedPinataSettings.possible_drops
-			}
-		}
+				drop_table = GreedPinataSettings.possible_drops,
+			},
+		},
 	},
 	curse_greed_pinata_spawner = {
 		buffs = {
 			{
-				particle_fx = "fx/deus_curse_khorne_champions_leader",
-				name = "curse_greed_pinata_spawner",
+				apply_buff_func = "apply_attach_particle",
 				buff_func = "spawn_greed_pinata",
 				event = "on_death",
+				name = "curse_greed_pinata_spawner",
+				particle_fx = "fx/deus_curse_khorne_champions_leader",
 				remove_buff_func = "remove_attach_particle",
-				apply_buff_func = "apply_attach_particle"
-			}
-		}
+			},
+		},
 	},
 	blessing_of_shallya_buff = {
 		buffs = {
 			{
 				name = "blessing_of_shallya_buff",
 				perks = {
-					buff_perks.temp_to_permanent_health
-				}
-			}
-		}
+					buff_perks.temp_to_permanent_health,
+				},
+			},
+		},
 	},
 	stockpile_refresh_ammo_buffs = {
 		buffs = {
 			{
+				buff_func = "stockpile_refresh_ammo_buffs",
 				event = "on_inventory_post_apply_buffs",
 				name = "stockpile_refresh_ammo_buffs",
-				buff_func = "stockpile_refresh_ammo_buffs"
-			}
-		}
+			},
+		},
 	},
 	deus_rally_flag_aoe_buff = {
 		buffs = {
 			{
-				remove_buff_func = "remove_deus_rally_flag",
+				duration = 120,
 				name = "deus_rally_flag_lifetime",
-				duration = 120
+				remove_buff_func = "remove_deus_rally_flag",
 			},
 			{
-				name = "deus_rally_flag_aoe_buff",
-				update_func = "update_generic_aoe",
-				remove_buff_func = "remove_generic_aoe",
 				apply_buff_func = "apply_generic_aoe",
 				in_range_units_buff_name = "deus_rally_flag_buff",
+				name = "deus_rally_flag_aoe_buff",
+				remove_buff_func = "remove_generic_aoe",
+				update_func = "update_generic_aoe",
 				range_check = {
-					radius = 5,
-					update_rate = 0.01,
 					only_players = true,
+					radius = 5,
+					unit_entered_range_func = "unit_entered_range_generic_buff",
 					unit_left_range_func = "unit_left_range_generic_buff",
-					unit_entered_range_func = "unit_entered_range_generic_buff"
-				}
+					update_rate = 0.01,
+				},
 			},
 			{
+				apply_buff_func = "apply_generic_decal",
 				decal = "units/decals/decal_deus_rally_flag_01",
-				name = "deus_rally_flag_aoe_decal",
 				decal_scale = 5,
+				name = "deus_rally_flag_aoe_decal",
 				remove_buff_func = "remove_generic_decal",
-				apply_buff_func = "apply_generic_decal"
-			}
-		}
+			},
+		},
 	},
 	deus_rally_flag_buff = {
 		buffs = {
 			{
 				icon = "markus_questing_knight_buff_health_regen",
+				multiplier = 0.2,
 				name = "deus_rally_flag_health_buff",
 				stat_buff = "max_health",
-				multiplier = 0.2
 			},
 			{
+				apply_buff_func = "health_regen_start",
 				heal = 5,
-				name = "deus_rally_flag_health_regen_buff",
 				heal_type = "health_regen",
+				name = "deus_rally_flag_health_regen_buff",
 				time_between_heal = 1,
 				update_func = "health_regen_update",
-				apply_buff_func = "health_regen_start"
-			}
-		}
+			},
+		},
 	},
 	blessing_of_isha_invincibility = {
 		buffs = {
 			{
 				name = "blessing_of_isha_invincibility",
 				perks = {
-					buff_perks.ignore_death
-				}
-			}
-		}
+					buff_perks.ignore_death,
+				},
+			},
+		},
 	},
 	blessing_of_ranald_damage_taken = {
 		buffs = {
 			{
 				multiplier = 0.2,
 				name = "blessing_of_ranald_damage_taken",
-				stat_buff = "damage_taken"
-			}
-		}
+				stat_buff = "damage_taken",
+			},
+		},
 	},
 	blessing_of_ranald_coins_greed = {
 		buffs = {
 			{
 				multiplier = 0.5,
 				name = "blessing_of_ranald_coins_greed",
-				stat_buff = "deus_coins_greed"
-			}
-		}
+				stat_buff = "deus_coins_greed",
+			},
+		},
 	},
 	objective_unit = {
 		buffs = {
 			{
-				name = "objective_unit",
+				apply_buff_func = "apply_objective_unit",
 				buff_func = "remove_objective_unit",
 				event = "on_death",
+				name = "objective_unit",
 				remove_buff_func = "remove_objective_unit",
-				apply_buff_func = "apply_objective_unit"
-			}
-		}
+			},
+		},
 	},
 	cursed_chest_objective_unit = {
 		buffs = {
 			{
 				apply_buff_func = "apply_cursed_chest_init",
-				name = "cursed_chest_init"
+				name = "cursed_chest_init",
 			},
 			{
-				name = "cursed_chest_objective_unit",
+				apply_buff_func = "apply_objective_unit",
 				buff_func = "remove_objective_unit",
 				event = "on_death",
+				name = "cursed_chest_objective_unit",
 				remove_buff_func = "remove_objective_unit",
-				apply_buff_func = "apply_objective_unit"
-			}
-		}
+			},
+		},
 	},
 	curse_empathy_shared_health_pool = {
 		buffs = {
 			{
 				name = "shared_health_pool",
 				perks = {
-					buff_perks.shared_health_pool_damage_only
-				}
-			}
-		}
+					buff_perks.shared_health_pool_damage_only,
+				},
+			},
+		},
 	},
 	we_deus_01_kerillian_critical_bleed_dot_disable = {
 		buffs = {
 			{
 				name = "we_deus_01_kerillian_critical_bleed_dot_disable",
 				perks = {
-					buff_perks.kerillian_critical_bleed_dot_disable
-				}
-			}
-		}
+					buff_perks.kerillian_critical_bleed_dot_disable,
+				},
+			},
+		},
 	},
 	wh_deus_01_victor_witchhunter_bleed_on_critical_hit_disable = {
 		buffs = {
 			{
 				name = "wh_deus_01_victor_witchhunter_bleed_on_critical_hit_disable",
 				perks = {
-					buff_perks.victor_witchhunter_bleed_on_critical_hit_disable
-				}
-			}
-		}
+					buff_perks.victor_witchhunter_bleed_on_critical_hit_disable,
+				},
+			},
+		},
 	},
 	we_deus_01_dot = {
 		buffs = {
 			{
+				apply_buff_func = "start_dot_damage",
+				damage_profile = "we_deus_01_dot",
+				damage_type = "burninating",
 				duration = 2,
 				name = "we_deus_01_dot",
-				apply_buff_func = "start_dot_damage",
-				update_start_delay = 0.75,
 				time_between_dot_damages = 0.75,
-				damage_type = "burninating",
-				damage_profile = "we_deus_01_dot",
 				update_func = "apply_dot_damage",
+				update_start_delay = 0.75,
 				perks = {
-					buff_perks.burning_elven_magic
-				}
-			}
-		}
+					buff_perks.burning_elven_magic,
+				},
+			},
+		},
 	},
 	we_deus_01_dot_fast = {
 		buffs = {
 			{
+				apply_buff_func = "start_dot_damage",
+				damage_profile = "we_deus_01_dot",
+				damage_type = "burninating",
 				name = "we_deus_01_dot_fast",
 				ticks = 2,
-				apply_buff_func = "start_dot_damage",
-				update_start_delay = 0.75,
 				time_between_dot_damages = 0.75,
-				damage_type = "burninating",
-				damage_profile = "we_deus_01_dot",
 				update_func = "apply_dot_damage",
+				update_start_delay = 0.75,
 				perks = {
-					buff_perks.burning_elven_magic
-				}
-			}
-		}
+					buff_perks.burning_elven_magic,
+				},
+			},
+		},
 	},
 	we_deus_01_dot_special_charged = {
 		buffs = {
 			{
+				apply_buff_func = "start_dot_damage",
+				damage_profile = "we_deus_01_dot",
+				damage_type = "burninating",
 				name = "we_deus_01_dot_special_charged",
 				ticks = 4,
-				apply_buff_func = "start_dot_damage",
-				update_start_delay = 0.75,
 				time_between_dot_damages = 0.75,
-				damage_type = "burninating",
-				damage_profile = "we_deus_01_dot",
 				update_func = "apply_dot_damage",
+				update_start_delay = 0.75,
 				perks = {
-					buff_perks.burning_elven_magic
-				}
-			}
-		}
+					buff_perks.burning_elven_magic,
+				},
+			},
+		},
 	},
 	we_deus_01_dot_charged = {
 		buffs = {
 			{
+				apply_buff_func = "start_dot_damage",
+				damage_profile = "we_deus_01_dot",
+				damage_type = "burninating",
 				name = "we_deus_01_dot_charged",
 				ticks = 6,
-				apply_buff_func = "start_dot_damage",
-				update_start_delay = 0.75,
 				time_between_dot_damages = 0.75,
-				damage_type = "burninating",
-				damage_profile = "we_deus_01_dot",
 				update_func = "apply_dot_damage",
+				update_start_delay = 0.75,
 				perks = {
-					buff_perks.burning_elven_magic
-				}
-			}
-		}
+					buff_perks.burning_elven_magic,
+				},
+			},
+		},
 	},
 	health_bar = {
 		buffs = {
 			{
-				name = "health_bar",
+				apply_buff_func = "apply_health_bar",
 				buff_func = "remove_health_bar",
 				event = "on_death",
+				name = "health_bar",
 				remove_buff_func = "remove_health_bar",
-				apply_buff_func = "apply_health_bar"
-			}
-		}
+			},
+		},
 	},
 	burning_magma_dot = {
 		buffs = {
 			{
-				duration = 2,
-				name = "burning_magma_dot",
-				max_stacks = 5,
-				refresh_durations = true,
 				apply_buff_func = "start_dot_damage",
-				update_start_delay = 0.5,
-				time_between_dot_damages = 0.5,
-				damage_type = "burninating",
 				damage_profile = "burning_dot",
-				update_func = "apply_dot_damage",
+				damage_type = "burninating",
+				duration = 2,
+				max_stacks = 5,
+				name = "burning_magma_dot",
 				reapply_buff_func = "reapply_dot_damage",
+				refresh_durations = true,
+				time_between_dot_damages = 0.5,
+				update_func = "apply_dot_damage",
+				update_start_delay = 0.5,
 				perks = {
-					buff_perks.burning
-				}
-			}
-		}
+					buff_perks.burning,
+				},
+			},
+		},
 	},
 	deus_difficulty_tweak_boss_buff = {
 		buffs = {
 			{
-				name = "deus_difficulty_tweak_boss_buff",
 				apply_buff_func = "apply_max_health_buff_for_ai",
+				name = "deus_difficulty_tweak_boss_buff",
 				remove_buff_func = "remove_max_health_buff_for_ai",
 				variable_multiplier = {
 					-0.25,
-					0.25
-				}
-			}
-		}
+					0.25,
+				},
+			},
+		},
 	},
 	ledge_rescue = {
 		buffs = {
 			{
-				rescue_delay = 0.5,
-				name = "ledge_rescue",
 				buff_func = "start_ledge_rescue_timer",
 				event = "on_ledge_hang_start",
-				update_func = "update_ledge_rescue",
+				name = "ledge_rescue",
 				pull_up_duration = 1,
+				rescue_delay = 0.5,
+				update_func = "update_ledge_rescue",
 				perks = {
-					buff_perks.ledge_self_rescue
-				}
-			}
-		}
+					buff_perks.ledge_self_rescue,
+				},
+			},
+		},
 	},
 	disable_rescue = {
 		buffs = {
 			{
-				name = "disable_rescue",
-				rescue_delay = 0.5,
 				buff_func = "start_disable_rescue_timer",
 				event = "on_player_disabled",
-				update_func = "update_disable_rescue",
 				explosion_template = "player_disabled_stagger",
+				name = "disable_rescue",
+				rescue_delay = 0.5,
+				update_func = "update_disable_rescue",
 				rescuable_disable_types = {
-					pack_master_grab = true,
 					assassin_pounced = true,
-					corruptor_grab = true
-				}
-			}
-		}
+					corruptor_grab = true,
+					pack_master_grab = true,
+				},
+			},
+		},
 	},
 	melee_wave_buff = {
 		buffs = {
 			{
+				icon = "deus_icon_melee_wave",
 				max_stacks = 3,
 				name = "melee_wave_buff",
-				icon = "deus_icon_melee_wave"
-			}
-		}
+			},
+		},
 	},
 	speed_over_stamina_buff = {
 		buffs = {
 			{
-				name = "speed_over_stamina",
-				stat_buff = "attack_speed",
-				refresh_durations = true,
-				max_stacks = 1,
 				icon = "deus_icon_speed_over_stamina",
+				max_stacks = 1,
+				name = "speed_over_stamina",
+				refresh_durations = true,
+				stat_buff = "attack_speed",
 				duration = MorrisBuffTweakData.speed_over_stamina_buff.duration,
-				multiplier = MorrisBuffTweakData.speed_over_stamina_buff.multiplier
-			}
-		}
+				multiplier = MorrisBuffTweakData.speed_over_stamina_buff.multiplier,
+			},
+		},
 	},
 	missing_health_power_up_buff = {
 		buffs = {
 			{
+				icon = "deus_icon_missing_health_power_up",
 				name = "missing_health_power_up_buff",
 				stat_buff = "damage_taken",
-				icon = "deus_icon_missing_health_power_up",
 				multiplier = MorrisBuffTweakData.missing_health_power_up_buff.multiplier,
-				max_stacks = MorrisBuffTweakData.missing_health_power_up_buff.max_stacks
-			}
-		}
+				max_stacks = MorrisBuffTweakData.missing_health_power_up_buff.max_stacks,
+			},
+		},
 	},
 	detect_weakness_marked_enemy = {
 		buffs = {
 			{
-				unit_name = "units/props/blk/blk_kill_the_marked",
-				name = "detect_weakness_marked_enemy",
+				apply_buff_func = "detect_weakness_link_unit",
 				buff_func = "remove_linked_unit",
 				event = "on_death",
+				name = "detect_weakness_marked_enemy",
 				remove_buff_func = "remove_linked_unit",
-				apply_buff_func = "detect_weakness_link_unit",
+				unit_name = "units/props/blk/blk_kill_the_marked",
 				z_offset = {
-					default = 2.2,
-					chaos_raider = 2.2,
-					skaven_storm_vermin_with_shield = 2.1,
 					beastmen_bestigor = 2.2,
-					chaos_berzerker = 2.2,
-					skaven_clan_rat_with_shield = 2,
-					chaos_marauder = 2.2,
-					skaven_plague_monk = 2.1,
-					chaos_marauder_with_shield = 2.2,
-					chaos_fanatic = 2.2,
-					skaven_slave = 1.9,
-					skaven_clan_rat = 2,
-					beastmen_ungor = 2.2,
-					chaos_warrior = 2.6,
-					skaven_storm_vermin_commander = 2.1,
-					skaven_storm_vermin = 2.1,
 					beastmen_gor = 2.2,
-					skaven_storm_vermin_champion = 2.1
-				}
-			}
-		}
+					beastmen_ungor = 2.2,
+					chaos_berzerker = 2.2,
+					chaos_fanatic = 2.2,
+					chaos_marauder = 2.2,
+					chaos_marauder_with_shield = 2.2,
+					chaos_raider = 2.2,
+					chaos_warrior = 2.6,
+					default = 2.2,
+					skaven_clan_rat = 2,
+					skaven_clan_rat_with_shield = 2,
+					skaven_plague_monk = 2.1,
+					skaven_slave = 1.9,
+					skaven_storm_vermin = 2.1,
+					skaven_storm_vermin_champion = 2.1,
+					skaven_storm_vermin_commander = 2.1,
+					skaven_storm_vermin_with_shield = 2.1,
+				},
+			},
+		},
 	},
 	detect_weakness_buff = {
 		buffs = {
 			{
-				name = "detect_weakness_buff",
-				stat_buff = "power_level",
-				refresh_durations = true,
-				max_stacks = 1,
-				priority_buff = true,
 				icon = "deus_icon_kill_the_marked",
+				max_stacks = 1,
+				name = "detect_weakness_buff",
+				priority_buff = true,
+				refresh_durations = true,
+				stat_buff = "power_level",
 				multiplier = MorrisBuffTweakData.detect_weakness_buff.multiplier,
-				duration = MorrisBuffTweakData.detect_weakness_buff.duration
-			}
-		}
+				duration = MorrisBuffTweakData.detect_weakness_buff.duration,
+			},
+		},
 	},
 	squats_build_up_buff = {
 		buffs = {
@@ -5474,196 +5553,196 @@ dlc_settings.buff_templates = {
 				name = "squats_build_up_buff",
 				refresh_durations = true,
 				duration = MorrisBuffTweakData.squats_build_up_buff.duration,
-				max_stacks = MorrisBuffTweakData.squats_build_up_buff.max_stacks
-			}
-		}
+				max_stacks = MorrisBuffTweakData.squats_build_up_buff.max_stacks,
+			},
+		},
 	},
 	squats_buff = {
 		buffs = {
 			{
-				name = "squats_buff",
-				stat_buff = "power_level",
 				icon = "deus_icon_squats",
 				max_stacks = 1,
+				name = "squats_buff",
 				priority_buff = true,
+				stat_buff = "power_level",
 				multiplier = MorrisBuffTweakData.squats_buff.multiplier,
-				duration = MorrisBuffTweakData.squats_buff.duration
-			}
-		}
+				duration = MorrisBuffTweakData.squats_buff.duration,
+			},
+		},
 	},
 	guaranteed_crit_buff = {
 		buffs = {
 			{
-				max_stacks = 1,
-				name = "guaranteed_crit_buff",
 				buff_func = "dummy_function",
 				event = "on_critical_action",
 				icon = "bardin_ranger_linesman_unbalance",
+				max_stacks = 1,
+				name = "guaranteed_crit_buff",
 				remove_on_proc = true,
 				perks = {
-					buff_perks.guaranteed_crit
-				}
-			}
-		}
+					buff_perks.guaranteed_crit,
+				},
+			},
+		},
 	},
 	follow_up_guaranteed_crit_buff = {
 		buffs = {
 			{
-				max_stacks = 1,
-				name = "follow_up_guaranteed_crit_buff",
 				buff_func = "dummy_function",
 				event = "on_critical_action",
 				icon = "deus_icon_buff_follow_up",
+				max_stacks = 1,
+				name = "follow_up_guaranteed_crit_buff",
 				priority_buff = true,
 				remove_on_proc = true,
 				perks = {
-					buff_perks.guaranteed_crit
-				}
-			}
-		}
+					buff_perks.guaranteed_crit,
+				},
+			},
+		},
 	},
 	wolfpack_buff = {
 		buffs = {
 			{
+				icon = "deus_icon_wolfpack",
+				max_stacks = 4,
 				name = "wolfpack_buff",
 				stat_buff = "power_level",
-				max_stacks = 4,
-				icon = "deus_icon_wolfpack",
-				multiplier = MorrisBuffTweakData.wolfpack_buff.multiplier
-			}
-		}
+				multiplier = MorrisBuffTweakData.wolfpack_buff.multiplier,
+			},
+		},
 	},
 	comradery_buff = {
 		buffs = {
 			{
+				icon = "deus_icon_comradery",
+				max_stacks = 4,
 				name = "comradery_buff",
 				stat_buff = "power_level_melee",
-				max_stacks = 4,
-				icon = "deus_icon_comradery",
-				multiplier = MorrisBuffTweakData.comradery_buff.multiplier
-			}
-		}
+				multiplier = MorrisBuffTweakData.comradery_buff.multiplier,
+			},
+		},
 	},
 	invigorating_strike_cooldown = {
 		buffs = {
 			{
 				icon = "deus_icon_invigorating_strike",
-				name = "invigorating_strike_cooldown",
-				max_stacks = 1,
 				is_cooldown = true,
-				duration = MorrisBuffTweakData.invigorating_strike_cooldown.duration
-			}
-		}
+				max_stacks = 1,
+				name = "invigorating_strike_cooldown",
+				duration = MorrisBuffTweakData.invigorating_strike_cooldown.duration,
+			},
+		},
 	},
 	staggering_force_buff = {
 		buffs = {
 			{
-				name = "staggering_force_buff",
-				stat_buff = "power_level",
-				refresh_durations = true,
-				max_stacks = 1,
 				icon = "deus_icon_staggering_force",
+				max_stacks = 1,
+				name = "staggering_force_buff",
+				refresh_durations = true,
+				stat_buff = "power_level",
 				duration = MorrisBuffTweakData.staggering_force_buff.duration,
-				multiplier = MorrisBuffTweakData.staggering_force_buff.multiplier
-			}
-		}
+				multiplier = MorrisBuffTweakData.staggering_force_buff.multiplier,
+			},
+		},
 	},
 	crescendo_strike_buff = {
 		buffs = {
 			{
-				refresh_durations = true,
-				name = "crescendo_strike_buff",
-				stat_buff = "critical_strike_chance",
 				icon = "deus_icon_buff_crescendo_strike",
+				name = "crescendo_strike_buff",
+				refresh_durations = true,
+				stat_buff = "critical_strike_chance",
 				duration = MorrisBuffTweakData.crescendo_strike_buff.duration,
 				max_stacks = MorrisBuffTweakData.crescendo_strike_buff.max_stacks,
-				bonus = MorrisBuffTweakData.crescendo_strike_buff.bonus
-			}
-		}
+				bonus = MorrisBuffTweakData.crescendo_strike_buff.bonus,
+			},
+		},
 	},
 	lucky_buff = {
 		buffs = {
 			{
+				icon = "deus_icon_lucky",
+				max_stacks = 20,
 				name = "lucky_buff",
 				stat_buff = "critical_strike_chance",
-				max_stacks = 20,
-				icon = "deus_icon_lucky",
-				bonus = MorrisBuffTweakData.lucky_buff.bonus
-			}
-		}
+				bonus = MorrisBuffTweakData.lucky_buff.bonus,
+			},
+		},
 	},
 	hidden_escape_buff = {
 		buffs = {
 			{
 				apply_buff_func = "hidden_escape_apply",
-				name = "hidden_escape_buff",
-				icon = "deus_icon_hidden_escape",
-				remove_buff_func = "hidden_escape_remove",
 				cooldown_buff = "hidden_escape_cooldown_buff",
-				duration = MorrisBuffTweakData.hidden_escape_buff.duration
+				icon = "deus_icon_hidden_escape",
+				name = "hidden_escape_buff",
+				remove_buff_func = "hidden_escape_remove",
+				duration = MorrisBuffTweakData.hidden_escape_buff.duration,
 			},
 			{
+				buff_func = "hidden_escape_on_hit",
 				event = "on_hit",
 				name = "hidden_escape_on_hit",
-				buff_func = "hidden_escape_on_hit"
-			}
-		}
+			},
+		},
 	},
 	hidden_escape_cooldown_buff = {
 		buffs = {
 			{
+				icon = "deus_icon_hidden_escape",
 				is_cooldown = true,
 				name = "hidden_escape_cooldown_buff",
-				icon = "deus_icon_hidden_escape",
-				duration = MorrisBuffTweakData.hidden_escape_cooldown_buff.duration
-			}
-		}
+				duration = MorrisBuffTweakData.hidden_escape_cooldown_buff.duration,
+			},
+		},
 	},
 	curative_empowerment_buff = {
 		buffs = {
 			{
-				name = "curative_empowerment_buff",
-				stat_buff = "power_level",
-				refresh_durations = true,
-				max_stacks = 5,
 				icon = "deus_icon_curative_empowerment",
+				max_stacks = 5,
+				name = "curative_empowerment_buff",
+				refresh_durations = true,
+				stat_buff = "power_level",
 				multiplier = MorrisBuffTweakData.curative_empowerment_buff.multiplier,
-				duration = MorrisBuffTweakData.curative_empowerment_buff.duration
-			}
-		}
+				duration = MorrisBuffTweakData.curative_empowerment_buff.duration,
+			},
+		},
 	},
 	pent_up_anger_buff = {
 		buffs = {
 			{
-				reset_on_max_stacks = true,
-				name = "pent_up_anger_buff",
-				on_max_stacks_overflow_func = "add_remove_buffs",
-				on_max_stacks_func = "add_remove_buffs",
 				icon = "deus_icon_pent_up_anger",
+				name = "pent_up_anger_buff",
+				on_max_stacks_func = "add_remove_buffs",
+				on_max_stacks_overflow_func = "add_remove_buffs",
+				reset_on_max_stacks = true,
 				max_stacks = MorrisBuffTweakData.pent_up_anger_buff.max_stacks,
 				max_stack_data = {
 					buffs_to_add = {
-						"pent_up_anger_guaranteed_crit_buff"
-					}
-				}
-			}
-		}
+						"pent_up_anger_guaranteed_crit_buff",
+					},
+				},
+			},
+		},
 	},
 	pent_up_anger_guaranteed_crit_buff = {
 		buffs = {
 			{
-				max_stacks = 1,
-				name = "pent_up_anger_guaranteed_crit_buff",
 				buff_func = "dummy_function",
 				event = "on_critical_action",
 				icon = "deus_icon_pent_up_anger",
+				max_stacks = 1,
+				name = "pent_up_anger_guaranteed_crit_buff",
 				priority_buff = true,
 				remove_on_proc = true,
 				perks = {
-					buff_perks.guaranteed_crit
-				}
-			}
-		}
+					buff_perks.guaranteed_crit,
+				},
+			},
+		},
 	},
 	surprise_strike_guaranteed_crit_buff = {
 		buffs = {
@@ -5671,407 +5750,407 @@ dlc_settings.buff_templates = {
 				icon = "deus_icon_surprise_strike",
 				name = "surprise_strike_guaranteed_crit_buff",
 				perks = {
-					buff_perks.guaranteed_crit
+					buff_perks.guaranteed_crit,
 				},
-				duration = MorrisBuffTweakData.surprise_strike_guaranteed_crit_buff.duration
-			}
-		}
+				duration = MorrisBuffTweakData.surprise_strike_guaranteed_crit_buff.duration,
+			},
+		},
 	},
 	bad_breath_cooldown_buff = {
 		buffs = {
 			{
+				icon = "deus_icon_bad_breath",
 				is_cooldown = true,
 				name = "bad_breath_cooldown_buff",
-				icon = "deus_icon_bad_breath",
-				duration = MorrisBuffTweakData.bad_breath_cooldown_buff.duration
-			}
-		}
+				duration = MorrisBuffTweakData.bad_breath_cooldown_buff.duration,
+			},
+		},
 	},
 	boulder_bro_buff = {
 		buffs = {
 			{
-				buff_to_add = "boulder_bro_cooldown_buff",
-				rescue_delay = 0.5,
-				name = "boulder_bro_perk",
 				buff_func = "start_boulder_bro_timer",
+				buff_to_add = "boulder_bro_cooldown_buff",
 				event = "on_ledge_hang_start",
-				remove_buff_func = "boulder_bro_add_buff",
-				update_func = "update_boulder_bro",
+				name = "boulder_bro_perk",
 				pull_up_duration = 1,
+				remove_buff_func = "boulder_bro_add_buff",
+				rescue_delay = 0.5,
+				update_func = "update_boulder_bro",
 				perks = {
-					buff_perks.ledge_self_rescue
-				}
-			}
-		}
+					buff_perks.ledge_self_rescue,
+				},
+			},
+		},
 	},
 	boulder_bro_cooldown_buff = {
 		buffs = {
 			{
 				buff_to_add = "boulder_bro_buff",
-				name = "boulder_bro_cooldown_buff",
 				icon = "deus_icon_boulder_bro",
 				is_cooldown = true,
+				name = "boulder_bro_cooldown_buff",
 				remove_buff_func = "boulder_bro_add_buff",
-				duration = MorrisBuffTweakData.boulder_bro_cooldown_buff.duration
-			}
-		}
+				duration = MorrisBuffTweakData.boulder_bro_cooldown_buff.duration,
+			},
+		},
 	},
 	static_blade_cooldown_buff = {
 		buffs = {
 			{
+				icon = "deus_icon_static_blade",
 				is_cooldown = true,
 				name = "static_blade_cooldown_buff",
-				icon = "deus_icon_static_blade",
-				duration = MorrisBuffTweakData.static_blade_cooldown_buff.duration
-			}
-		}
+				duration = MorrisBuffTweakData.static_blade_cooldown_buff.duration,
+			},
+		},
 	},
 	home_run = {
 		buffs = {
 			{
 				multiplier = 10,
 				name = "home_run",
-				stat_buff = "hit_force"
+				stat_buff = "hit_force",
 			},
 			{
 				multiplier = 0.5,
 				name = "home_run_hit_mass_reduction",
-				stat_buff = "applied_stagger_distance"
+				stat_buff = "applied_stagger_distance",
 			},
 			{
 				multiplier = 0.4,
 				name = "home_run_impact",
-				stat_buff = "power_level_impact"
+				stat_buff = "power_level_impact",
 			},
 			{
-				sound_event = "boon_homerun",
-				name = "home_run_sound",
-				cooldown = 0.25,
 				buff_func = "home_run_sound",
-				event = "on_body_pushed"
-			}
-		}
+				cooldown = 0.25,
+				event = "on_body_pushed",
+				name = "home_run_sound",
+				sound_event = "boon_homerun",
+			},
+		},
 	},
 	shield_splinters = {
 		buffs = {
 			{
+				buff_func = "shield_splinters_explosion",
 				event = "on_broke_shield",
-				name = "shield_splinters",
 				explosion_template = "shield_splinters",
-				buff_func = "shield_splinters_explosion"
-			}
-		}
+				name = "shield_splinters",
+			},
+		},
 	},
 	refilling_shot = {
 		create_parent_buff_shared_table = true,
 		buffs = {
 			{
+				buff_func = "refilling_shot_on_start_action",
 				event = "on_start_action",
 				name = "refilling_shot",
-				buff_func = "refilling_shot_on_start_action"
 			},
 			{
+				buff_func = "refilling_shot_on_ammo_used",
 				event = "on_ammo_used",
 				name = "refilling_shot_on_ammo_used",
-				buff_func = "refilling_shot_on_ammo_used"
 			},
 			{
+				buff_func = "refilling_shot_on_critical_hit",
 				event = "on_critical_hit",
 				name = "refilling_shot_critical_hit_ammo_reload",
-				buff_func = "refilling_shot_on_critical_hit"
-			}
-		}
+			},
+		},
 	},
 	piercing_projectiles = {
 		buffs = {
 			{
 				name = "piercing_projectiles",
 				stat_buff = "ranged_additional_penetrations",
-				bonus = MorrisBuffTweakData.piercing_projectiles.bonus
-			}
-		}
+				bonus = MorrisBuffTweakData.piercing_projectiles.bonus,
+			},
+		},
 	},
 	serrated_blade = {
 		buffs = {
 			{
 				name = "serrated_blade",
 				perks = {
-					buff_perks.generic_melee_bleed
-				}
-			}
-		}
+					buff_perks.generic_melee_bleed,
+				},
+			},
+		},
 	},
 	crescendo_strike = {
 		buffs = {
 			{
+				buff_func = "crescendo_strike_on_crit",
+				buff_to_add = "crescendo_strike_buff",
 				event = "on_critical_hit",
 				name = "crescendo_strike",
-				buff_to_add = "crescendo_strike_buff",
-				buff_func = "crescendo_strike_on_crit"
-			}
-		}
+			},
+		},
 	},
 	follow_up = {
 		buffs = {
 			{
-				name = "follow_up",
 				blocker_buff = "follow_up_cooldown",
 				buff_func = "add_buffs_on_melee_headshot",
 				event = "on_hit",
+				name = "follow_up",
 				buffs_to_add = {
 					"follow_up_guaranteed_crit_buff",
-					"follow_up_cooldown"
-				}
-			}
-		}
+					"follow_up_cooldown",
+				},
+			},
+		},
 	},
 	follow_up_cooldown = {
 		buffs = {
 			{
 				name = "follow_up_cooldown",
-				duration = MorrisBuffTweakData.follow_up_cooldown.duration
-			}
-		}
+				duration = MorrisBuffTweakData.follow_up_cooldown.duration,
+			},
+		},
 	},
 	deus_extra_shot = {
 		buffs = {
 			{
 				name = "deus_extra_shot",
 				stat_buff = "extra_shot",
-				bonus = MorrisBuffTweakData.deus_extra_shot.bonus
-			}
-		}
+				bonus = MorrisBuffTweakData.deus_extra_shot.bonus,
+			},
+		},
 	},
 	always_blocking = {
 		buffs = {
 			{
+				apply_buff_func = "always_blocking_init",
 				buff_to_add = "deus_always_blocking_buff",
 				name = "always_blocking",
-				update_func = "always_blocking_update",
 				remove_buff_func = "always_blocking_remove",
-				apply_buff_func = "always_blocking_init"
+				update_func = "always_blocking_update",
 			},
 			{
+				buff_func = "always_blocking_temporarily_remove",
 				event = "on_block_broken",
 				name = "block_broken_remove_buff",
-				buff_func = "always_blocking_temporarily_remove"
-			}
-		}
+			},
+		},
 	},
 	deus_big_swing_stagger = {
 		buffs = {
 			{
-				buff_to_add = "deus_big_swing_stagger_buff",
-				name = "deus_big_swing_stagger",
 				buff_func = "deus_big_swing_stagger_on_hit",
+				buff_to_add = "deus_big_swing_stagger_buff",
 				event = "on_hit",
-				targets_to_hit = MorrisBuffTweakData.deus_big_swing_stagger_buff.targets_to_hit
-			}
-		}
+				name = "deus_big_swing_stagger",
+				targets_to_hit = MorrisBuffTweakData.deus_big_swing_stagger_buff.targets_to_hit,
+			},
+		},
 	},
 	deus_always_blocking_buff = {
 		buffs = {
 			{
-				remove_buff_func = "remove_always_blocking",
+				apply_buff_func = "apply_always_blocking",
 				name = "deus_always_blocking_buff",
-				apply_buff_func = "apply_always_blocking"
-			}
-		}
+				remove_buff_func = "remove_always_blocking",
+			},
+		},
 	},
 	deus_always_blocking_lock_out = {
 		buffs = {
 			{
-				refresh_durations = true,
-				name = "deus_always_blocking_lock_out",
-				icon = "deus_icon_always_blocking_01",
 				debuff = true,
+				duration = 10,
+				icon = "deus_icon_always_blocking_01",
 				max_stacks = 1,
-				duration = 10
-			}
-		}
+				name = "deus_always_blocking_lock_out",
+				refresh_durations = true,
+			},
+		},
 	},
 	deus_big_swing_stagger_buff = {
 		buffs = {
 			{
-				refresh_durations = true,
-				name = "deus_big_swing_stagger_buff",
-				stat_buff = "power_level_impact",
 				icon = "deus_icon_big_swing_stagger",
 				max_stacks = 1,
+				name = "deus_big_swing_stagger_buff",
+				refresh_durations = true,
+				stat_buff = "power_level_impact",
 				duration = MorrisBuffTweakData.deus_big_swing_stagger_buff.duration,
-				multiplier = MorrisBuffTweakData.deus_big_swing_stagger_buff.multiplier
-			}
-		}
+				multiplier = MorrisBuffTweakData.deus_big_swing_stagger_buff.multiplier,
+			},
+		},
 	},
 	deus_ammo_pickup_reload_speed_buff = {
 		buffs = {
 			{
+				apply_buff_func = "apply_ammo_reload_speed_buff",
+				icon = "deus_icon_ammo_pickup_reload_speed",
+				max_stacks = 1,
 				name = "deus_ammo_pickup_reload_speed_buff",
-				stat_buff = "reload_speed",
 				refresh_durations = true,
 				remove_buff_func = "remove_ammo_reload_speed_buff",
-				apply_buff_func = "apply_ammo_reload_speed_buff",
-				max_stacks = 1,
-				icon = "deus_icon_ammo_pickup_reload_speed",
+				stat_buff = "reload_speed",
 				multiplier = MorrisBuffTweakData.deus_ammo_pickup_reload_speed_buff.multiplier,
-				duration = MorrisBuffTweakData.deus_ammo_pickup_reload_speed_buff.duration
-			}
-		}
+				duration = MorrisBuffTweakData.deus_ammo_pickup_reload_speed_buff.duration,
+			},
+		},
 	},
 	deus_ammo_pickup_reload_speed = {
 		buffs = {
 			{
-				name = "deus_ammo_pickup_reload_speed",
 				authority = "client",
 				buff_func = "add_buff_on_pickup",
 				event = "on_consumable_picked_up",
+				name = "deus_ammo_pickup_reload_speed",
 				pickup_types = {
 					ammo = {
-						"deus_ammo_pickup_reload_speed_buff"
-					}
-				}
-			}
-		}
+						"deus_ammo_pickup_reload_speed_buff",
+					},
+				},
+			},
+		},
 	},
 	deus_crit_chain_lightning = {
 		buffs = {
 			{
-				sound_event = "morris_power_ups_lightning_strike",
-				name = "deus_crit_chain_lightning",
 				authority = "server",
 				buff_func = "chain_lightning",
-				event = "on_player_damage_dealt",
 				damage_profile = "beam_shot",
-				particle_name = "",
 				damage_source = "buff",
+				event = "on_player_damage_dealt",
+				name = "deus_crit_chain_lightning",
+				particle_name = "",
+				sound_event = "morris_power_ups_lightning_strike",
 				max_targets = MorrisBuffTweakData.deus_crit_chain_lightning.max_targets,
-				max_chain_range = MorrisBuffTweakData.deus_crit_chain_lightning.max_chain_range
-			}
-		}
+				max_chain_range = MorrisBuffTweakData.deus_crit_chain_lightning.max_chain_range,
+			},
+		},
 	},
 	deus_ranged_crit_explosion = {
 		buffs = {
 			{
-				sound_event = "morris_power_ups_ammo_explosion",
-				name = "deus_ranged_crit_explosion",
 				authority = "server",
 				buff_func = "deus_ranged_crit_explosion_on_damage_dealt",
-				event = "on_hit",
 				cooldown_buff = "deus_ranged_crit_explosion_cooldown",
+				event = "on_hit",
 				explosion_template = "deus_ranged_crit_explosion",
+				name = "deus_ranged_crit_explosion",
+				sound_event = "morris_power_ups_ammo_explosion",
 				valid_attack_types = {
-					instant_projectile = true,
 					heavy_instant_projectile = true,
-					projectile = true
+					instant_projectile = true,
+					projectile = true,
 				},
-				power_scale = MorrisBuffTweakData.deus_ranged_crit_explosion.multiplier
-			}
-		}
+				power_scale = MorrisBuffTweakData.deus_ranged_crit_explosion.multiplier,
+			},
+		},
 	},
 	deus_ranged_crit_explosion_cooldown = {
 		buffs = {
 			{
-				name = "deus_ranged_crit_explosion_cooldown",
 				icon = "deus_ranged_crit_explosion",
-				duration = MorrisBuffTweakData.deus_ranged_crit_explosion.cooldown_duration
-			}
-		}
+				name = "deus_ranged_crit_explosion_cooldown",
+				duration = MorrisBuffTweakData.deus_ranged_crit_explosion.cooldown_duration,
+			},
+		},
 	},
 	deus_collateral_damage_on_melee_killing_blow = {
 		buffs = {
 			{
-				name = "deus_collateral_damage_on_melee_killing_blow",
 				authority = "server",
 				buff_func = "deus_collateral_damage_on_melee_killing_blow_func",
 				event = "on_kill",
+				name = "deus_collateral_damage_on_melee_killing_blow",
 				sound_event = "morris_power_ups_extra_damage",
 				max_range = MorrisBuffTweakData.deus_collateral_damage_on_melee_killing_blow.max_range,
-				proc_chance = MorrisBuffTweakData.deus_collateral_damage_on_melee_killing_blow.proc_chance
-			}
-		}
+				proc_chance = MorrisBuffTweakData.deus_collateral_damage_on_melee_killing_blow.proc_chance,
+			},
+		},
 	},
 	health_orb = {
 		buffs = {
 			{
-				name = "health_orb",
 				apply_buff_func = "health_orb_apply_func",
 				duration = 0,
-				granted_health = MorrisBuffTweakData.health_orbs.orb_health
-			}
-		}
+				name = "health_orb",
+				granted_health = MorrisBuffTweakData.health_orbs.orb_health,
+			},
+		},
 	},
 	static_charge = {
 		buffs = {
 			{
 				activation_effect = "fx/screenspace_potion_01",
-				name = "static_charge",
-				update_func = "update_static_charge",
-				refresh_durations = true,
-				remove_buff_func = "remove_static_charge",
 				apply_buff_func = "start_static_charge",
 				explosion_template = "static_charge",
 				icon = "twitch_icon_heavens_lightning",
+				name = "static_charge",
+				refresh_durations = true,
+				remove_buff_func = "remove_static_charge",
 				tick_every_t = 1,
-				duration = MorrisBuffTweakData.static_charge.orb_duration
-			}
-		}
+				update_func = "update_static_charge",
+				duration = MorrisBuffTweakData.static_charge.orb_duration,
+			},
+		},
 	},
 	protection_orb = {
 		buffs = {
 			{
-				name = "protection_orb",
-				stat_buff = "damage_taken",
 				icon = "deus_icon_protection",
 				max_stacks = 1,
+				name = "protection_orb",
+				stat_buff = "damage_taken",
 				multiplier = MorrisBuffTweakData.protection_orb.multiplier,
-				duration = MorrisBuffTweakData.protection_orb.duration
-			}
-		}
+				duration = MorrisBuffTweakData.protection_orb.duration,
+			},
+		},
 	},
 	focused_accuracy_cooldown = {
 		buffs = {
 			{
-				name = "focused_accuracy_cooldown",
 				debuff = true,
-				is_cooldown = true,
 				icon = "deus_icon_focussed_accuracy",
-				duration = MorrisBuffTweakData.focused_accuracy.cooldown_duration
-			}
-		}
+				is_cooldown = true,
+				name = "focused_accuracy_cooldown",
+				duration = MorrisBuffTweakData.focused_accuracy.cooldown_duration,
+			},
+		},
 	},
 	ability_cooldown_reduction_orb = {
 		buffs = {
 			{
-				name = "ability_cooldown_reduction_orb",
-				stat_buff = "cooldown_regen",
-				refresh_durations = true,
-				max_stacks = 1,
 				icon = "deus_icon_focussed_accuracy",
+				max_stacks = 1,
+				name = "ability_cooldown_reduction_orb",
+				refresh_durations = true,
+				stat_buff = "cooldown_regen",
 				multiplier = MorrisBuffTweakData.ability_cooldown_reduction_orb.multiplier,
-				duration = MorrisBuffTweakData.ability_cooldown_reduction_orb.duration
-			}
-		}
+				duration = MorrisBuffTweakData.ability_cooldown_reduction_orb.duration,
+			},
+		},
 	},
 	resolve_cooldown_buff = {
 		buffs = {
 			{
+				icon = "deus_icon_resolve",
 				is_cooldown = true,
 				name = "resolve_cooldown_buff",
-				icon = "deus_icon_resolve",
-				duration = MorrisBuffTweakData.resolve.cooldown
-			}
-		}
+				duration = MorrisBuffTweakData.resolve.cooldown,
+			},
+		},
 	},
 	resolve_buff = {
 		buffs = {
 			{
 				name = "resolve_buff",
 				perks = {
-					buff_perks.full_health_revive
-				}
-			}
-		}
-	}
+					buff_perks.full_health_revive,
+				},
+			},
+		},
+	},
 }
 
 table.merge_recursive(dlc_settings.buff_templates, DeusPowerUpBuffTemplates)

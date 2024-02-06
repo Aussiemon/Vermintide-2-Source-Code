@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/unit_extensions/weapons/projectiles/projectile_impact/projectile_linear_sphere_sweep_impact_unit_extension.lua
+
 local CHECK_DELTA = 0.01
+
 ProjectileLinearSphereSweepImpactUnitExtension = class(ProjectileLinearSphereSweepImpactUnitExtension, ProjectileBaseImpactUnitExtension)
 
 ProjectileLinearSphereSweepImpactUnitExtension.init = function (self, extension_init_context, unit, extension_init_data)
@@ -11,7 +14,9 @@ ProjectileLinearSphereSweepImpactUnitExtension.init = function (self, extension_
 	self._dont_target_friendly = extension_init_data.dont_target_friendly
 	self._dont_target_patrols = extension_init_data.dont_target_patrols
 	self._next_check_t = 0
+
 	local current_position = Unit.local_position(unit, 0)
+
 	self._last_position = Vector3Box(current_position)
 end
 
@@ -28,7 +33,7 @@ ProjectileLinearSphereSweepImpactUnitExtension.update = function (self, unit, in
 		return
 	end
 
-	if self._next_check_t < t then
+	if t > self._next_check_t then
 		local physics_world = self.physics_world
 		local collision_filter = self.collision_filter
 		local radius = self.sphere_radius
@@ -37,7 +42,9 @@ ProjectileLinearSphereSweepImpactUnitExtension.update = function (self, unit, in
 		local only_one_impact = self.only_one_impact
 		local direction = last_position - current_position
 		local length = Vector3.length(direction)
+
 		direction = Vector3.normalize(direction)
+
 		local halfway_position = last_position + direction * length * 0.5
 		local radius_for_preparation = length
 
@@ -61,7 +68,7 @@ ProjectileLinearSphereSweepImpactUnitExtension.update = function (self, unit, in
 
 					if not hit_self then
 						local num_actors = Unit.num_actors(hit_unit)
-						local actor_index = nil
+						local actor_index
 
 						for j = 0, num_actors - 1 do
 							local actor = Unit.actor(hit_unit, j)

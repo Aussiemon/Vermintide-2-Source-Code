@@ -1,20 +1,25 @@
+﻿-- chunkname: @scripts/managers/popup/popup_manager.lua
+
 require("scripts/ui/views/popup_handler")
 
 PopupManager = class(PopupManager)
 
 PopupManager.init = function (self)
 	local top_world = Managers.world:world("top_ingame_view")
+
 	self._ui_top_renderer = UIRenderer.create(top_world, "material", "materials/ui/ui_1080p_popup", "material", "materials/fonts/gw_fonts")
+
 	local popup_context = {
 		ui_renderer = self._ui_top_renderer,
-		world = top_world
+		world = top_world,
 	}
 
 	self:create_own_handler(popup_context)
 
 	local poll_data = {
-		num_updates = 0
+		num_updates = 0,
 	}
+
 	self._poll_data = poll_data
 end
 

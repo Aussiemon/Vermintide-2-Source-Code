@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/imgui/imgui_string_scanner.lua
+
 ImguiStringScanner = class(ImguiStringScanner)
 
 ImguiStringScanner.init = function (self)
@@ -20,7 +22,9 @@ ImguiStringScanner.draw = function (self)
 	end
 
 	local query = Imgui.input_text("Query", self._query)
+
 	self._query = query
+
 	local results = self._results
 
 	if Imgui.button("Run search") then

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_suicide_run_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTSuicideRunAction = class(BTSuicideRunAction, BTNode)
@@ -10,22 +12,27 @@ BTSuicideRunAction.init = function (self, ...)
 end
 
 BTSuicideRunAction.name = "BTSuicideRunAction"
+
 local position_lookup = POSITION_LOOKUP
 local UPDATE_MOVE_INTERVAL = 0.25
 
 BTSuicideRunAction.enter = function (self, unit, blackboard, t)
 	blackboard.suicide_run = blackboard.suicide_run or {}
+
 	local action = self._tree_node.action_data
 	local suicide_run = blackboard.suicide_run
+
 	suicide_run.action = action
 	suicide_run.update_move_timer = 0
 	suicide_run.target = suicide_run.target or blackboard.previous_attacker or blackboard.target_unit
 	blackboard.target_unit = suicide_run.target
+
 	local params = {
 		unit = unit,
 		blackboard = blackboard,
-		action = action
+		action = action,
 	}
+
 	blackboard.suicide_run.state_machine = StateMachine:new(self, BTSuicideRunAction.StateInit, params)
 	blackboard.action = action
 
@@ -41,6 +48,7 @@ BTSuicideRunAction.enter = function (self, unit, blackboard, t)
 
 	local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
 	local event_data = FrameTable.alloc_table()
+
 	event_data.attack_tag = "pwg_suicide_run"
 
 	dialogue_input:trigger_networked_dialogue_event("enemy_attack", event_data)
@@ -164,6 +172,7 @@ BTSuicideRunAction.StateMove.on_enter = function (self, params)
 	Managers.state.network:anim_event(unit, "move_fwd_run")
 
 	blackboard.move_state = "moving"
+
 	local breed = blackboard.breed
 	local run_speed = breed.run_speed
 	local ai_navigation_extension = blackboard.navigation_extension
@@ -181,6 +190,7 @@ BTSuicideRunAction.StateMove.update = function (self, dt, t)
 	local blackboard = self.blackboard
 	local suicide_run = blackboard.suicide_run
 	local ai_navigation = blackboard.navigation_extension
+
 	suicide_run.update_move_timer = suicide_run.update_move_timer - dt
 
 	if suicide_run.update_move_timer <= 0 then
@@ -190,6 +200,7 @@ BTSuicideRunAction.StateMove.update = function (self, dt, t)
 	end
 
 	self.explode_timer = self.explode_timer - dt
+
 	local move_done = ai_navigation:has_reached_destination(suicide_run.action.distance_to_explode) or self.explode_timer < 0
 	local proximity_target, proximity = PerceptionUtils.pick_closest_target(unit, blackboard, blackboard.breed)
 
@@ -202,7 +213,9 @@ BTSuicideRunAction.StateExplode.on_enter = function (self, params)
 	local unit = params.unit
 	local blackboard = params.blackboard
 	local suicide_run = blackboard.suicide_run
+
 	suicide_run.explosion_started = true
+
 	local ai_navigation_extension = blackboard.navigation_extension
 
 	self.parent:update_target_position(unit, blackboard, ai_navigation_extension, true)

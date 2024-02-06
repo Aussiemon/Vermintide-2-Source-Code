@@ -1,42 +1,44 @@
+﻿-- chunkname: @scripts/ui/views/twitch_icon_view_definitions.lua
+
 local scenegraph_definition = {
 	root = {
 		is_root = true,
 		position = {
 			0,
 			0,
-			UILayer.transition
+			UILayer.transition,
 		},
 		size = {
 			1920,
-			1080
-		}
+			1080,
+		},
 	},
 	screen = {
 		scale = "fit",
 		position = {
 			0,
 			0,
-			UILayer.transition
+			UILayer.transition,
 		},
 		size = {
 			1920,
-			1080
-		}
+			1080,
+		},
 	},
 	twitch_icon = {
-		vertical_alignment = "bottom",
-		parent = "screen",
 		horizontal_alignment = "right",
+		parent = "screen",
+		vertical_alignment = "bottom",
 		size = {
 			80,
-			27.200000000000003
+			27.200000000000003,
 		},
 		position = {
 			-10,
 			10,
-			1
-		}
-	}
+			1,
+		},
+	},
 }
 local twitch_icon = {
 	scenegraph_id = "twitch_icon",
@@ -45,7 +47,7 @@ local twitch_icon = {
 			{
 				pass_type = "texture",
 				style_id = "twitch_icon",
-				texture_id = "twitch_icon"
+				texture_id = "twitch_icon",
 			},
 			{
 				pass_type = "texture",
@@ -55,7 +57,7 @@ local twitch_icon = {
 					local connected = Managers.twitch:is_connected()
 
 					return connected
-				end
+				end,
 			},
 			{
 				pass_type = "texture",
@@ -65,65 +67,65 @@ local twitch_icon = {
 					local disconnected = not Managers.twitch:is_connected()
 
 					return disconnected
-				end
-			}
-		}
+				end,
+			},
+		},
 	},
 	content = {
-		twitch_icon = "twitch_small_logo",
 		twitch_connected = "twitch_connected",
-		twitch_disconnected = "twitch_disconnected"
+		twitch_disconnected = "twitch_disconnected",
+		twitch_icon = "twitch_small_logo",
 	},
 	style = {
 		twitch_icon = {
-			vertical_alignment = "top",
 			horizontal_alignment = "right",
+			vertical_alignment = "top",
 			offset = {
 				0,
 				0,
-				1
+				1,
 			},
 			color = Colors.get_table("white"),
 			texture_size = {
 				80,
-				27.200000000000003
-			}
+				27.200000000000003,
+			},
 		},
 		twitch_connected = {
-			vertical_alignment = "center",
-			scenegraph_id = "twitch_icon",
 			horizontal_alignment = "left",
+			scenegraph_id = "twitch_icon",
+			vertical_alignment = "center",
 			offset = {
 				-40,
 				2,
-				1
+				1,
 			},
 			color = Colors.get_table("white"),
 			texture_size = {
 				30,
-				30
-			}
+				30,
+			},
 		},
 		twitch_disconnected = {
-			vertical_alignment = "center",
-			scenegraph_id = "twitch_icon",
 			horizontal_alignment = "left",
+			scenegraph_id = "twitch_icon",
+			vertical_alignment = "center",
 			offset = {
 				-40,
 				2,
-				1
+				1,
 			},
 			color = Colors.get_table("white"),
 			texture_size = {
 				30,
-				30
-			}
-		}
-	}
+				30,
+			},
+		},
+	},
 }
 local definitions = {
 	scenegraph_definition = scenegraph_definition,
-	twitch_icon_widget = twitch_icon
+	twitch_icon_widget = twitch_icon,
 }
 
 return definitions

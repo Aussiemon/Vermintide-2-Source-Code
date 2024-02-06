@@ -1,3 +1,5 @@
+﻿-- chunkname: @foundation/scripts/util/patches.lua
+
 require("foundation/scripts/util/misc_util")
 
 local function auto_patch_missing_methods(library_name)
@@ -14,7 +16,7 @@ local function auto_patch_missing_methods(library_name)
 
 				return NOP
 			end
-		end
+		end,
 	}))
 end
 
@@ -28,7 +30,7 @@ local mt = {
 	__index = function (self, name)
 		return NOP
 	end,
-	update = NOP
+	update = NOP,
 }
 
 setmetatable(MockClass, mt)
@@ -160,6 +162,7 @@ if not Presence then
 end
 
 ColorBox = QuaternionBox
+
 local STRING_FORMAT = STRING_FORMAT or nil
 local VALIDATED_STRINGS = VALIDATED_STRINGS or {}
 local INVALID_STRINGS = INVALID_STRINGS or {}

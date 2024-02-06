@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/game_mode/game_modes/game_mode_base.lua
+
 GameModeBase = class(GameModeBase)
 
 GameModeBase.init = function (self, settings, world, network_server, is_server, profile_synchronizer, level_key, statistics_db, game_mode_settings)
@@ -22,6 +24,7 @@ GameModeBase.init = function (self, settings, world, network_server, is_server, 
 	self._player_spawners = {}
 	self._pending_bot_remove = {}
 	self._num_pending_bot_remove = 0
+
 	local new_state = "initial_state"
 
 	if DEDICATED_SERVER then
@@ -80,7 +83,7 @@ end
 GameModeBase._add_bot_to_party = function (self, party_id, profile_index, career_index)
 	local local_peer_id = Network.peer_id()
 	local local_player_id = Managers.player:next_available_local_player_id(local_peer_id, profile_index)
-	local slot_id = nil
+	local slot_id
 	local is_bot = true
 
 	Managers.party:assign_peer_to_party(local_peer_id, local_player_id, party_id, slot_id, is_bot)
@@ -208,6 +211,7 @@ GameModeBase._update_bot_remove = function (self)
 			self:_remove_bot_instant(bot_player)
 
 			local last = pending_bot_remove[num_pending_bot_remove]
+
 			pending_bot_remove[i] = last
 			pending_bot_remove[last] = nil
 			num_pending_bot_remove = num_pending_bot_remove - 1
@@ -340,7 +344,7 @@ GameModeBase.change_game_mode_state = function (self, state_name)
 
 		if self._lobby_host then
 			self._lobby_host:set_lobby_data({
-				game_state = state_name
+				game_state = state_name,
 			})
 		end
 	end
@@ -406,7 +410,7 @@ GameModeBase.get_initial_inventory = function (self, healthkit, potion, grenade,
 		slot_healthkit = healthkit,
 		slot_potion = potion,
 		slot_grenade = grenade,
-		additional_items = additional_items
+		additional_items = additional_items,
 	}
 
 	return initial_inventory
@@ -415,20 +419,22 @@ end
 GameModeBase.activate_end_level_area = function (self, unit, object, from, to)
 	local extents = (to - from) * 0.5
 	local offset = (from + to) * 0.5
+
 	self._end_level_areas[unit] = {
 		object = object,
 		extents = Vector3Box(extents),
-		offset = Vector3Box(offset)
+		offset = Vector3Box(offset),
 	}
 end
 
 GameModeBase.debug_end_level_area = function (self, unit, object, from, to)
 	local extents = (to - from) * 0.5
 	local offset = (from + to) * 0.5
+
 	self._debug_end_level_areas[unit] = {
 		object = object,
 		extents = Vector3Box(extents),
-		offset = Vector3Box(offset)
+		offset = Vector3Box(offset),
 	}
 end
 
@@ -475,6 +481,7 @@ GameModeBase.update_end_level_areas = function (self)
 
 			if non_disabled then
 				num_non_disabled_players = num_non_disabled_players + 1
+
 				local pos = POSITION_LOOKUP[player_unit]
 				local in_end_area = false
 
@@ -482,9 +489,7 @@ GameModeBase.update_end_level_areas = function (self)
 					local node = Unit.node(unit, data.object)
 					local object_pos = Unit.world_position(unit, node)
 					local object_rot = Unit.world_rotation(unit, node)
-					local right = Quaternion.right(object_rot)
-					local forward = Quaternion.forward(object_rot)
-					local up = Quaternion.up(object_rot)
+					local right, forward, up = Quaternion.right(object_rot), Quaternion.forward(object_rot), Quaternion.up(object_rot)
 					local offset = data.offset:unbox()
 					local center_pos = object_pos + right * offset.x + forward * offset.y + up * offset.z
 					local extents = data.extents:unbox()

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/network/lobby_psn.lua
+
 require("scripts/network/lobby_aux")
 require("scripts/network/lobby_host")
 require("scripts/network/lobby_client")
@@ -8,61 +10,63 @@ require("scripts/network_lookup/network_lookup")
 LobbyInternal = LobbyInternal or {}
 LobbyInternal.lobby_data_version = 2
 LobbyInternal.TYPE = "psn"
+
 local USE_C_SERIALIZATION = false
+
 LobbyInternal.comparison_lookup = {
-	less_than = 3,
-	greater_or_equal = 6,
-	less_or_equal = 4,
-	greater_than = 5,
 	equal = 1,
-	not_equal = 2
+	greater_or_equal = 6,
+	greater_than = 5,
+	less_or_equal = 4,
+	less_than = 3,
+	not_equal = 2,
 }
 LobbyInternal.matchmaking_lobby_data = {
 	matchmaking = {
 		data_type = "integer",
-		id = PsnRoom.SEARCHABLE_INTEGER_ID_1
+		id = PsnRoom.SEARCHABLE_INTEGER_ID_1,
 	},
 	difficulty = {
 		data_type = "integer",
-		id = PsnRoom.SEARCHABLE_INTEGER_ID_2
+		id = PsnRoom.SEARCHABLE_INTEGER_ID_2,
 	},
 	selected_mission_id = {
 		data_type = "integer",
-		id = PsnRoom.SEARCHABLE_INTEGER_ID_3
+		id = PsnRoom.SEARCHABLE_INTEGER_ID_3,
 	},
 	matchmaking_type = {
 		data_type = "integer",
-		id = PsnRoom.SEARCHABLE_INTEGER_ID_4
+		id = PsnRoom.SEARCHABLE_INTEGER_ID_4,
 	},
 	primary_region = {
 		data_type = "integer",
-		id = PsnRoom.SEARCHABLE_INTEGER_ID_5
+		id = PsnRoom.SEARCHABLE_INTEGER_ID_5,
 	},
 	secondary_region = {
 		data_type = "integer",
-		id = PsnRoom.SEARCHABLE_INTEGER_ID_6
+		id = PsnRoom.SEARCHABLE_INTEGER_ID_6,
 	},
 	network_hash_as_int = {
 		data_type = "integer",
-		id = PsnRoom.SEARCHABLE_INTEGER_ID_7
+		id = PsnRoom.SEARCHABLE_INTEGER_ID_7,
 	},
 	mechanism = {
 		data_type = "integer",
-		id = PsnRoom.SEARCHABLE_INTEGER_ID_8
-	}
+		id = PsnRoom.SEARCHABLE_INTEGER_ID_8,
+	},
 }
 LobbyInternal.lobby_data_network_lookups = {
-	matchmaking = "lobby_data_values",
-	secondary_region = "matchmaking_regions",
-	mechanism = "mechanism_keys",
+	difficulty = "difficulties",
 	is_private = "lobby_data_values",
+	matchmaking = "lobby_data_values",
 	matchmaking_type = "matchmaking_types",
+	mechanism = "mechanism_keys",
 	mission_id = "mission_ids",
 	primary_region = "matchmaking_regions",
 	quick_game = "lobby_data_values",
+	secondary_region = "matchmaking_regions",
 	selected_mission_id = "mission_ids",
-	difficulty = "difficulties",
-	twitch_enabled = "lobby_data_values"
+	twitch_enabled = "lobby_data_values",
 }
 LobbyInternal.key_order = {
 	"network_hash",
@@ -85,7 +89,7 @@ LobbyInternal.key_order = {
 	"country_code",
 	"twitch_enabled",
 	"power_level",
-	"mechanism"
+	"mechanism",
 }
 LobbyInternal.key_index = {}
 
@@ -94,15 +98,15 @@ for i, key in ipairs(LobbyInternal.key_order) do
 end
 
 LobbyInternal.default_lobby_data = {
+	difficulty = "normal",
 	is_private = "false",
+	matchmaking = "false",
 	matchmaking_type = "n/a",
 	mission_id = "n/a",
-	matchmaking = "false",
 	num_players = 1,
 	quick_game = "false",
 	selected_mission_id = "n/a",
-	difficulty = "normal",
-	twitch_enabled = "false"
+	twitch_enabled = "false",
 }
 
 LobbyInternal.init_client = function (network_options)
@@ -198,6 +202,7 @@ LobbyInternal.get_lobby = function (room_browser, index, verify_lobby_data)
 	local network_psn_room_info = room_browser:lobby(index)
 	local data_string = network_psn_room_info.data
 	local data_table, verified = LobbyInternal.unserialize_psn_data(data_string, verify_lobby_data)
+
 	data_table.id = network_psn_room_info.id
 	data_table.name = network_psn_room_info.name
 
@@ -293,7 +298,7 @@ LobbyInternal.serialize_psn_data = function (data_table)
 		end
 	end
 
-	local packed_data, packed_data_size = nil
+	local packed_data, packed_data_size
 
 	if USE_C_SERIALIZATION then
 		packed_data = PsnRoom.pack_room_data(conv_table)
@@ -325,12 +330,13 @@ LobbyInternal.verify_lobby_data = function (lobby_data_table)
 end
 
 LobbyInternal.unserialize_psn_data = function (data_string, verify_lobby_data)
-	local t = nil
+	local t
 
 	if USE_C_SERIALIZATION then
 		t = PsnRoom.unpack_room_data(data_string)
 	else
 		t = {}
+
 		local data_string_table = string.split(data_string, "/")
 
 		if #data_string_table > #LobbyInternal.key_order then
@@ -352,6 +358,7 @@ LobbyInternal.unserialize_psn_data = function (data_string, verify_lobby_data)
 		for i = 1, #data_string_table do
 			local key = LobbyInternal.key_order[i]
 			local value = data_string_table[i]
+
 			t[key] = value
 		end
 	end
@@ -389,8 +396,7 @@ LobbyInternal.add_filter_requirements = function (requirements)
 
 		if mm_lobby_data then
 			local id = mm_lobby_data.id
-			local value = filter.value
-			local comparison = filter.comparison
+			local value, comparison = filter.value, filter.comparison
 
 			if lobby_data_network_lookups[key] then
 				value = NetworkLookup[lobby_data_network_lookups[key]][value]
@@ -482,6 +488,7 @@ end
 
 PSNRoom.set_data = function (self, key, value)
 	local room_data = self._room_data
+
 	room_data[key] = tostring(value)
 
 	if LobbyInternal.matchmaking_lobby_data[key] then
@@ -529,6 +536,7 @@ PSNRoom.members = function (self)
 
 	for i = 0, num_members - 1 do
 		local member = PsnRoom.member(room_id, i)
+
 		t[i + 1] = member.peer_id
 	end
 
@@ -541,6 +549,7 @@ PSNRoom.members_np_id = function (self, t)
 
 	for i = 0, num_members - 1 do
 		local member = PsnRoom.member(room_id, i)
+
 		t[i + 1] = member.np_id
 	end
 end
@@ -580,12 +589,13 @@ PSNRoom.update_user_names = function (self)
 
 	for i = 0, num_members - 1 do
 		local member = PsnRoom.member(room_id, i)
+
 		self._user_names[member.peer_id] = member.online_id
 	end
 end
 
 PSNRoom.user_name = function (self, peer_id)
-	local user_name = nil
+	local user_name
 	local room_id = self.room_id
 	local num_members = PsnRoom.num_members(room_id)
 
@@ -605,7 +615,7 @@ PSNRoom.user_name = function (self, peer_id)
 end
 
 PSNRoom.user_id = function (self, peer_id)
-	local user_id = nil
+	local user_id
 	local room_id = self.room_id
 	local num_members = PsnRoom.num_members(room_id)
 

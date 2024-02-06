@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_stormfiend_shoot_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTStormfiendShootAction = class(BTStormfiendShootAction, BTNode)
@@ -22,8 +24,10 @@ local SPHERE_CAST_MAX_NUM_HITS = 10
 BTStormfiendShootAction.enter = function (self, unit, blackboard, t)
 	self.unit_ids[unit] = Managers.state.network.unit_storage:go_id(unit)
 	self.network_transmit = self.network_transmit or Managers.state.network.network_transmit
+
 	local action = self._tree_node.action_data
 	local world = blackboard.world
+
 	blackboard.action = action
 	blackboard.active_node = BTStormfiendShootAction
 	blackboard.attack_finished = false
@@ -33,6 +37,7 @@ BTStormfiendShootAction.enter = function (self, unit, blackboard, t)
 
 	if self:init_attack(unit, blackboard, action, t) then
 		local data = blackboard.shoot_data
+
 		blackboard.anim_locked = t + action.attack_anims_data[data.attack_animation].full_animation_t
 		blackboard.move_state = "attacking"
 		blackboard.attack_aborted = false
@@ -83,7 +88,7 @@ BTStormfiendShootAction._calculate_attack_animation = function (self, right_vect
 	local fwd_dot = Vector3.dot(forward_vector, dir)
 	local abs_right = math.abs(right_dot)
 	local abs_fwd = math.abs(fwd_dot)
-	local animation_driven_rotation, anim, arm = nil
+	local animation_driven_rotation, anim, arm
 	local is_left_or_right = abs_fwd < abs_right
 
 	if is_left_or_right and right_dot > 0.5 then
@@ -116,6 +121,7 @@ BTStormfiendShootAction._calculate_aim = function (self, unit, unit_position, at
 		local angle = Vector3.flat_angle(forward_vector, target_direction)
 		local rotation = Quaternion.axis_angle(Vector3.up(), angle)
 		local local_muzzle_pos = muzzle_pos - unit_position
+
 		muzzle_pos = unit_position + Quaternion.rotate(rotation, local_muzzle_pos)
 	end
 
@@ -136,14 +142,13 @@ BTStormfiendShootAction._calculate_aim = function (self, unit, unit_position, at
 	local attack_maximum_length = action.maximum_length
 	local start_position = unit_position + target_direction * attack_start_distance
 	local end_check_position = start_position + target_direction * attack_maximum_length
-	local above = 1
-	local below = 2
+	local above, below = 1, 2
 	local nav_world = blackboard.nav_world
 	local traverse_logic = blackboard.navigation_extension:traverse_logic()
 	local attack_minimum_length = action.minimum_length
 	local attack_minimum_length_sq = attack_minimum_length^2
 	local within_firewall_allowed_range = attack_minimum_length_sq < Vector3.distance_squared(start_position, target_position)
-	local ray_can_go_unit_to_start, ray_can_go_start_to_target = nil
+	local ray_can_go_unit_to_start, ray_can_go_start_to_target
 
 	if within_firewall_allowed_range then
 		ray_can_go_unit_to_start = LocomotionUtils.ray_can_go_on_mesh(nav_world, unit_position, start_position, traverse_logic, above, below)
@@ -151,7 +156,7 @@ BTStormfiendShootAction._calculate_aim = function (self, unit, unit_position, at
 	end
 
 	local can_hit_target = false
-	local aim_start_position, aim_end_position = nil
+	local aim_start_position, aim_end_position
 
 	if ray_can_go_start_to_target then
 		can_hit_target = true
@@ -181,17 +186,19 @@ BTStormfiendShootAction._calculate_aim = function (self, unit, unit_position, at
 		end
 	end
 
-	local firewall_start_position = nil
+	local firewall_start_position
 
 	if can_hit_target then
 		local _, projected_start_position, _, hit_position = LocomotionUtils.raycast_on_navmesh(nav_world, start_position, end_check_position, traverse_logic, above, below)
 		local end_position_distance_sq = projected_start_position and Vector3.distance_squared(projected_start_position, hit_position) or 0
+
 		firewall_start_position = attack_minimum_length_sq < end_position_distance_sq and projected_start_position or nil
 		aim_start_position = projected_start_position
 		aim_end_position = aim_end_position or hit_position
 	end
 
 	local aim_start_offset = action.aim_start_offset
+
 	aim_start_position = (aim_start_position or start_position) + target_direction * aim_start_offset
 
 	return firewall_start_position, aim_start_position, aim_end_position
@@ -246,12 +253,15 @@ BTStormfiendShootAction.init_attack = function (self, unit, blackboard, action, 
 
 		local data = blackboard.shoot_data
 		local anim_data = attack_anims_data[attack_animation]
+
 		data.start_firing_t = t + anim_data.start_firing_t
 		data.stop_firing_t = t + anim_data.stop_firing_t
 		data.aim_start_t = t + anim_data.aim_start_t
 		data.firing_duration = data.stop_firing_t - data.start_firing_t
 		data.firing_initiated = false
+
 		local aim_constraint_target_name = action.aim_constraint_target[attack_arm]
+
 		data.aim_start_position = Vector3Box(aim_start_position)
 		data.current_aim_position = Vector3Box(aim_start_position)
 		data.aim_end_position = Vector3Box(aim_end_position)
@@ -263,6 +273,7 @@ BTStormfiendShootAction.init_attack = function (self, unit, blackboard, action, 
 		data.attack_animation = attack_animation
 		data.aim_constraint_animations = action.aim_constraint_animations[attack_arm]
 		data.hit_enemies = {}
+
 		local game = network_manager:game()
 		local go_id = Managers.state.unit_storage:go_id(unit)
 
@@ -273,18 +284,23 @@ BTStormfiendShootAction.init_attack = function (self, unit, blackboard, action, 
 		end
 
 		local attack_rotation = LocomotionUtils.look_at_position_flat(unit, aim_start_position)
+
 		blackboard.attack_rotation = QuaternionBox(attack_rotation)
 		blackboard.attack_started_at_t = t
+
 		local bot_threats = action.bot_threats and (action.bot_threats[attack_animation] or action.bot_threats[1] and action.bot_threats)
 
 		if bot_threats then
 			local current_threat_index = 1
 			local bot_threat = bot_threats[current_threat_index]
 			local bot_threat_start_time = bot_threat.start_time
+
 			blackboard.create_bot_threat_at_t = t + bot_threat_start_time
 			blackboard.current_bot_threat_index = current_threat_index
 			blackboard.bot_threats_data = bot_threats
+
 			local to_aim_end_flat = Vector3.flat(aim_end_position - unit_position)
+
 			blackboard.bot_threat_range = Vector3.length(to_aim_end_flat) - bot_threat.offset_forward + 1.5 * SPHERE_CAST_RADIUS
 		end
 	end
@@ -443,6 +459,7 @@ BTStormfiendShootAction.run = function (self, unit, blackboard, t, dt)
 
 			if next_bot_threat then
 				local attack_started_at_t = blackboard.attack_started_at_t
+
 				blackboard.create_bot_threat_at_t = attack_started_at_t + next_bot_threat.start_time
 				blackboard.current_bot_threat_index = next_bot_threat_index
 			else
@@ -518,8 +535,8 @@ BTStormfiendShootAction.create_firewall = function (self, unit, blackboard, data
 		area_damage_system = {
 			liquid_template = "stormfiend_firewall",
 			flow_dir = direction,
-			source_unit = unit
-		}
+			source_unit = unit,
+		},
 	}
 	local aoe_unit_name = "units/hub_elements/empty"
 	local liquid_aoe_unit = Managers.state.unit_spawner:spawn_network_unit(aoe_unit_name, "liquid_aoe_unit", extension_init_data, start_pos)
@@ -677,7 +694,7 @@ BTStormfiendShootAction._shoot_ratling_gun = function (self, unit, blackboard, t
 		hit_effect = light_weight_projectile_template.hit_effect,
 		player_push_velocity = Vector3Box(normalized_direction * light_weight_projectile_template.impact_push_speed),
 		projectile_linker = light_weight_projectile_template.projectile_linker,
-		first_person_hit_flow_events = light_weight_projectile_template.first_person_hit_flow_events
+		first_person_hit_flow_events = light_weight_projectile_template.first_person_hit_flow_events,
 	}
 	local attack_arm = data.attack_arm
 	local node_name = action.muzzle_nodes[attack_arm]
@@ -696,6 +713,7 @@ end
 BTStormfiendShootAction.initiate_firing_ratling_gun = function (self, blackboard)
 	local action = blackboard.action
 	local data = blackboard.shoot_data
+
 	data.shots_fired = 0
 	data.time_between_shots_at_start = 1 / action.fire_rate_at_start
 	data.time_between_shots_at_end = 1 / action.fire_rate_at_end
@@ -709,11 +727,9 @@ BTStormfiendShootAction._debug_firewall = function (self, minimum_length, start_
 	if script_data.debug_stormfiend then
 		local drawer = Managers.state.debug:drawer({
 			mode = "retained",
-			name = "BTStormfiendShootAction"
+			name = "BTStormfiendShootAction",
 		})
-		local success_color = Colors.get("green")
-		local neutral_color = Colors.get("yellow")
-		local fail_color = Colors.get("red")
+		local success_color, neutral_color, fail_color = Colors.get("green"), Colors.get("yellow"), Colors.get("red")
 		local distance = projected_start_pos and Vector3.distance(projected_start_pos, projected_end_pos) or 0
 		local debug_start_pos = projected_start_pos or start_position
 		local debug_end_pos = projected_end_pos or wanted_end_pos
@@ -728,24 +744,18 @@ end
 
 BTStormfiendShootAction._debug_fire_beam = function (self, start_position, end_position, success, stop_hit_index, hits, draw_mode)
 	if script_data.debug_stormfiend then
-		local drawer, success_color, fail_color, normal_color, stop_color, disabled_color = nil
+		local drawer, success_color, fail_color, normal_color, stop_color, disabled_color
 
 		if draw_mode == "retained" then
-			fail_color = Colors.get("red")
-			success_color = Colors.get("green")
-			disabled_color = Colors.get("gray")
-			stop_color = Colors.get("dark_orange")
-			normal_color = Colors.get("gold")
+			success_color, fail_color = Colors.get("green"), Colors.get("red")
+			normal_color, stop_color, disabled_color = Colors.get("gold"), Colors.get("dark_orange"), Colors.get("gray")
 			drawer = Managers.state.debug:drawer({
 				mode = "retained",
-				name = "BTStormfiendShootAction"
+				name = "BTStormfiendShootAction",
 			})
 		else
-			fail_color = Colors.get("indian_red")
-			success_color = Colors.get("light_green")
-			disabled_color = Colors.get("light_gray")
-			stop_color = Colors.get("orange")
-			normal_color = Colors.get("yellow")
+			success_color, fail_color = Colors.get("light_green"), Colors.get("indian_red")
+			normal_color, stop_color, disabled_color = Colors.get("yellow"), Colors.get("orange"), Colors.get("light_gray")
 			drawer = QuickDrawer
 		end
 
@@ -762,7 +772,7 @@ BTStormfiendShootAction._debug_fire_beam = function (self, start_position, end_p
 				local distance = hit.distance
 				local hit_position_world = hit.position
 				local hit_position_along_ray = start_position + ray_direction * distance
-				local color = nil
+				local color
 
 				if stop_hit_index == nil or i < stop_hit_index then
 					color = normal_color
@@ -783,7 +793,7 @@ BTStormfiendShootAction._debug_colliding_arm = function (self, shoulder_position
 	if script_data.debug_stormfiend then
 		local drawer = Managers.state.debug:drawer({
 			mode = "retained",
-			name = "BTStormfiendShootAction"
+			name = "BTStormfiendShootAction",
 		})
 
 		drawer:sphere(shoulder_position, 0.1, Colors.get("black"))

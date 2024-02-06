@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/ping/ping_system.lua
+
 require("scripts/unit_extensions/default_player_unit/ping/context_aware_ping_extension")
 require("scripts/unit_extensions/default_player_unit/ping/ping_target_extension")
 require("scripts/settings/ping_templates")
@@ -10,22 +12,23 @@ local RPCS = {
 	"rpc_ping_unit",
 	"rpc_ping_world_position",
 	"rpc_remove_ping",
-	"rpc_social_message"
+	"rpc_social_message",
 }
 local extensions = {
 	"ContextAwarePingExtension",
-	"PingTargetExtension"
+	"PingTargetExtension",
 }
 local WORLD_MARKER_CONTENT_LOOKUP = {
 	"world_marker_response_1",
 	"world_marker_response_2",
-	"world_marker_response_3"
+	"world_marker_response_3",
 }
 local WORLD_MARKER_ICON_LOOKUP = {
 	"world_marker_icon_response_1",
 	"world_marker_icon_response_2",
-	"world_marker_icon_response_3"
+	"world_marker_icon_response_3",
 }
+
 PingSystem = class(PingSystem, ExtensionSystemBase)
 
 PingSystem.init = function (self, context, system_name)
@@ -41,6 +44,7 @@ PingSystem.init = function (self, context, system_name)
 	self._wwise_world = Managers.world:wwise_world(self._world)
 	self._pinged_units = {}
 	self._world_markers = {}
+
 	local settings = Managers.state.game_mode:settings()
 	local ping_mode = settings.ping_mode
 
@@ -50,7 +54,7 @@ PingSystem.init = function (self, context, system_name)
 	else
 		self._outlines_enabled = {
 			item = true,
-			unit = true
+			unit = true,
 		}
 		self._world_markers_enabled = false
 	end
@@ -144,7 +148,7 @@ PingSystem.hot_join_sync = function (self, sender)
 	for pinger_unit, data in pairs(pinged_units) do
 		local pinged_unit = data.pinged_unit
 		local pinger_unit_id = network_manager:unit_game_object_id(pinger_unit)
-		local pinged_unit_id, is_level_unit = nil
+		local pinged_unit_id, is_level_unit
 
 		if pinged_unit then
 			pinged_unit_id, is_level_unit = network_manager:game_object_or_level_id(pinged_unit)
@@ -189,15 +193,17 @@ PingSystem._handle_ping = function (self, ping_type, social_wheel_event_id, send
 		return
 	end
 
-	local world_marker_response_index = nil
+	local world_marker_response_index
 
 	if parent_pinger_unit then
 		local parent_data = self._pinged_units[parent_pinger_unit]
 
 		if parent_data then
 			local child_pings = parent_data.child_pings or {}
+
 			child_pings[#child_pings + 1] = pinger_unit
 			self._pinged_units[parent_pinger_unit].child_pings = child_pings
+
 			local profile_index = sender_player:profile_index()
 			local career_index = sender_player:career_index()
 			local career = SPProfiles[profile_index].careers[career_index]
@@ -220,12 +226,15 @@ PingSystem._handle_ping = function (self, ping_type, social_wheel_event_id, send
 
 				local icon_id = WORLD_MARKER_ICON_LOOKUP[world_marker_response_index]
 				local style = widget.style[icon_id]
+
 				style.color = table.clone(color)
 				style.default_color = widget.style.icon.color
+
 				local id = WORLD_MARKER_CONTENT_LOOKUP[world_marker_response_index]
+
 				content[id] = {
 					show = true,
-					timer = 0
+					timer = 0,
 				}
 			end
 		end
@@ -234,7 +243,7 @@ PingSystem._handle_ping = function (self, ping_type, social_wheel_event_id, send
 	local t = Managers.time:time("game")
 	local network_manager = Managers.state.network
 	local pinger_unit_id = network_manager:unit_game_object_id(pinger_unit)
-	local pinged_unit_id, is_level_unit = nil
+	local pinged_unit_id, is_level_unit
 
 	if pinged_unit then
 		pinged_unit_id, is_level_unit = network_manager:game_object_or_level_id(pinged_unit)
@@ -252,9 +261,9 @@ PingSystem._handle_ping = function (self, ping_type, social_wheel_event_id, send
 		parent_pinger_unit = parent_pinger_unit,
 		world_marker_response_index = world_marker_response_index,
 		position = position and {
-			Vector3.to_elements(position)
+			Vector3.to_elements(position),
 		},
-		social_wheel_event_id = social_wheel_event_id
+		social_wheel_event_id = social_wheel_event_id,
 	}
 
 	Managers.telemetry_events:ping_used(sender_player, parent_pinger_unit == nil, table.find(PingTypes, ping_type), pinged_unit, POSITION_LOOKUP[pinger_unit])
@@ -293,11 +302,12 @@ PingSystem._handle_chat = function (self, ping_type, social_wheel_event_id, send
 		return
 	end
 
-	local event_text, localization_parameters, social_wheel_event_settings = nil
+	local event_text, localization_parameters, social_wheel_event_settings
 	local valid_social_wheel_id = social_wheel_event_id and social_wheel_event_id ~= NetworkLookup.social_wheel_events["n/a"]
 
 	if valid_social_wheel_id then
 		local social_wheel_event_name = NetworkLookup.social_wheel_events[social_wheel_event_id]
+
 		social_wheel_event_settings = SocialWheelSettingsLookup[social_wheel_event_name]
 
 		if not IS_WINDOWS and ping_type ~= PingTypes.LOCAL_ONLY then
@@ -310,11 +320,12 @@ PingSystem._handle_chat = function (self, ping_type, social_wheel_event_id, send
 
 		local text_func = social_wheel_event_settings.event_text_func
 		local text = social_wheel_event_settings.event_text
-		localization_parameters = nil
-		event_text = text
+
+		event_text, localization_parameters = text
 
 		if text_func and pinged_unit then
 			local do_localize = false
+
 			event_text, localization_parameters = text_func(pinged_unit, social_wheel_event_settings, do_localize)
 		end
 
@@ -326,10 +337,8 @@ PingSystem._handle_chat = function (self, ping_type, social_wheel_event_id, send
 	end
 
 	if event_text then
-		local localize = true
-		local localize_parameters = true
-		local channel_id = 1
-		local message_target = nil
+		local localize, localize_parameters = true, true
+		local channel_id, message_target = 1
 		local mechanism = Managers.mechanism:game_mechanism()
 
 		if mechanism.get_chat_channel then
@@ -370,7 +379,7 @@ PingSystem.is_ping_response = function (self, pinged_unit, sender_unique_id, pos
 				if sender_unique_id == data.pinger_unique_id then
 					return sent_ping_is_context and PingTypes.CANCEL or sent_ping_type, nil, pinger_unit
 				elseif data.parent_pinger_unit == nil then
-					local return_ping_type = nil
+					local return_ping_type
 
 					if sent_ping_is_context then
 						return_ping_type = data.ping_type == PingTypes.PLAYER_PICK_UP and PingTypes.PLAYER_PICK_UP_ACKNOWLEDGE or PingTypes.ACKNOWLEDGE
@@ -385,10 +394,11 @@ PingSystem.is_ping_response = function (self, pinged_unit, sender_unique_id, pos
 	end
 
 	if position then
-		local return_ping_type, existing_position, return_pinger_unit = nil
+		local return_ping_type, existing_position, return_pinger_unit
 
 		for pinger_unit, data in pairs(self._pinged_units) do
 			existing_position = data.position and Vector3(unpack(data.position)) or POSITION_LOOKUP[data.pinged_unit]
+
 			local distance = Vector3.distance_squared(existing_position, position)
 
 			if distance <= MAX_PING_RESPONSE_DISTANCE then
@@ -469,7 +479,7 @@ PingSystem._add_unit_ping = function (self, pinger_unit, pinged_unit, flash, pin
 		return
 	end
 
-	local do_ping, chat_messages, ping_icon = nil
+	local do_ping, chat_messages, ping_icon
 
 	for _, data in pairs(PingTemplates) do
 		if data:check_func(pinger_unit, pinged_unit) then
@@ -507,7 +517,7 @@ PingSystem._add_world_marker = function (self, pinger_unit, pinged_unit, positio
 		return
 	end
 
-	local do_ping, chat_messages, chat_message, ping_icon = nil
+	local do_ping, chat_messages, chat_message, ping_icon
 
 	for _, data in pairs(PingTemplates) do
 		if data:check_func(pinger_unit, pinged_unit) then
@@ -524,10 +534,12 @@ PingSystem._add_world_marker = function (self, pinger_unit, pinged_unit, positio
 	if not ping_icon and social_wheel_event_id and social_wheel_event_id ~= NetworkLookup.social_wheel_events["n/a"] then
 		local social_wheel_event_name = NetworkLookup.social_wheel_events[social_wheel_event_id]
 		local social_wheel_event_settings = SocialWheelSettingsLookup[social_wheel_event_name]
+
 		ping_icon = social_wheel_event_settings.icon
 
 		if social_wheel_event_settings.event_text_func and pinged_unit then
 			local event_text, localization_parameters = social_wheel_event_settings.event_text_func(pinged_unit, social_wheel_event_settings)
+
 			localization_parameters = localization_parameters and LocalizeArray(localization_parameters)
 			chat_message = string.format(Localize(event_text), localization_parameters and unpack(localization_parameters))
 		else
@@ -545,17 +557,19 @@ PingSystem._add_world_marker = function (self, pinger_unit, pinged_unit, positio
 		widget.content.icon = ping_icon
 		widget.content.icon_pulse = ping_icon
 		widget.content.text = chat_message or chat_messages and chat_messages[1]
+
 		local player = Managers.player:owner(pinger_unit)
 		local profile_index = player:profile_index()
 		local career_index = player:career_index()
 		local career = SPProfiles[profile_index].careers[career_index]
 		local color = Colors.get_color_table_with_alpha(career.display_name, 255)
+
 		widget.style.icon.color = table.clone(color)
 		widget.style.icon_spawn_pulse.color = table.clone(color)
 		widget.style.icon_spawn_pulse.default_color = widget.style.icon.color
 		self._world_markers[pinger_unit] = {
 			id = id,
-			widget = widget
+			widget = widget,
 		}
 	end
 
@@ -584,6 +598,7 @@ PingSystem._remove_ping = function (self, pinger_unit)
 	local data = self._pinged_units[pinger_unit]
 	local world_marker = self._world_markers[pinger_unit]
 	local world_marker_id = world_marker and world_marker.id
+
 	self._pinged_units[pinger_unit] = nil
 	self._world_markers[pinger_unit] = nil
 
@@ -635,6 +650,7 @@ PingSystem._remove_ping = function (self, pinger_unit)
 			local widget = world_marker.widget
 			local world_marker_response_index = data.world_marker_response_index
 			local id = WORLD_MARKER_CONTENT_LOOKUP[world_marker_response_index]
+
 			widget.content[id].show = false
 		end
 	end
@@ -651,10 +667,11 @@ end
 PingSystem._play_ping_vo = function (self, pinger_unit, pinged_unit, ping_type, social_wheel_event_id)
 	local event_data = FrameTable.alloc_table()
 	local dialogue_input = ScriptUnit.extension_input(pinger_unit, "dialogue_system")
+
 	event_data.is_ping = true
 
 	if pinged_unit and Unit.alive(pinged_unit) then
-		local vo_event_name = nil
+		local vo_event_name
 		local is_enemy = Managers.state.side:is_enemy(pinger_unit, pinged_unit)
 
 		if is_enemy then
@@ -667,6 +684,7 @@ PingSystem._play_ping_vo = function (self, pinger_unit, pinged_unit, ping_type, 
 				local pinged_unit_pos_flat = Vector3.flat(pinged_unit_pos)
 				local pinger_unit_pos = POSITION_LOOKUP[pinger_unit]
 				local pinger_unit_pos_flat = Vector3.flat(pinger_unit_pos)
+
 				event_data.enemy_tag = breed_name
 				event_data.enemy_unit = pinged_unit
 				event_data.distance = Vector3.distance(pinged_unit_pos_flat, pinger_unit_pos_flat)
@@ -716,9 +734,11 @@ PingSystem.rpc_ping_unit = function (self, channel_id, pinger_unit_id, pinged_un
 	local sender_unique_id = sender_player:unique_id()
 
 	if self.is_server then
-		local parent_pinger_unit = nil
+		local parent_pinger_unit
+
 		ping_type, parent_pinger_unit = self:_get_unit_ping_type(pinged_unit, sender_unique_id, ping_type)
-		local do_ping, chat_messages, ping_icon = nil
+
+		local do_ping, chat_messages, ping_icon
 
 		for _, data in pairs(PingTemplates) do
 			if data:check_func(pinger_unit, pinged_unit) then
@@ -751,14 +771,12 @@ PingSystem.rpc_ping_world_position = function (self, channel_id, pinger_unit_id,
 	local sender_unique_id = sender_player:unique_id()
 
 	if self.is_server then
-		local parent_pinger_unit, new_position = nil
+		local parent_pinger_unit, new_position
+
 		ping_type, new_position, parent_pinger_unit = self:_get_world_position_ping_type(position, sender_unique_id, ping_type)
+		position = new_position and new_position or position
 
-		if new_position then
-			position = new_position or position
-		end
-
-		local chat_messages = nil
+		local chat_messages
 
 		for _, data in pairs(PingTemplates) do
 			if data:check_func(pinger_unit, nil) then

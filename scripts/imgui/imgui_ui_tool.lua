@@ -1,6 +1,8 @@
+﻿-- chunkname: @scripts/imgui/imgui_ui_tool.lua
+
 ImguiUITool = class(ImguiUITool)
-local Gui = Gui
-local Imgui = Imgui
+
+local Gui, Imgui = Gui, Imgui
 local format = string.format
 
 local function tab2vec2(t)
@@ -18,8 +20,7 @@ local function settab(t, x, y)
 	return t
 end
 
-local select = select
-local find = string.find
+local select, find = select, string.find
 
 local function do_search(needle, ...)
 	for i = 1, select("#", ...) do
@@ -41,32 +42,31 @@ ImguiUITool.init = function (self)
 		64,
 		255,
 		0,
-		0
+		0,
 	}
 	self._highlight_textures = true
 	self._drawing_rect = false
 	self._hide_ui = false
 	self._disable_localization = not not script_data.disable_localization
-	self._rect_y = 0
-	self._rect_x = 0
+	self._rect_x, self._rect_y = 0, 0
 	self._data_buffer = {}
 	self._data_back_buffer = {}
 	self._search = ""
 	self._cursor = {
 		0,
-		0
+		0,
 	}
 	self._scale = 1
 	self._offset = {
 		0,
-		0
+		0,
 	}
 	self._tabs = {
 		"Render objects",
 		"Scenegraph",
 		"Atlas browser",
 		"Settings",
-		"Help"
+		"Help",
 	}
 	self._selected_tab = self._tabs[1]
 end
@@ -81,20 +81,18 @@ ImguiUITool.update = function (self)
 	end
 
 	if self._active then
-		self._data_back_buffer = self._data_buffer
-		self._data_buffer = self._data_back_buffer
+		self._data_buffer, self._data_back_buffer = self._data_back_buffer, self._data_buffer
 
 		table.clear(self._data_back_buffer)
 	end
 
 	local cursor_vec3 = Mouse.axis(Mouse.axis_id("cursor"))
-	local canvas_w = 1920
-	local canvas_h = 1080
+	local canvas_w, canvas_h = 1920, 1080
 	local w, h = Gui.resolution()
 	local scale = math.min(w / canvas_w, h / canvas_h)
-	local offset_x = 0.5 * (w - canvas_w * scale)
-	local offset_y = 0.5 * (h - canvas_h * scale)
+	local offset_x, offset_y = 0.5 * (w - canvas_w * scale), 0.5 * (h - canvas_h * scale)
 	local cursor = settab(self._cursor, cursor_vec3[1], cursor_vec3[2])
+
 	self._scale = scale
 
 	settab(self._offset, offset_x, offset_y)
@@ -124,8 +122,7 @@ ImguiUITool.update = function (self)
 
 		if Mouse.pressed(mouse_button_idx) then
 			self._drawing_rect = true
-			self._rect_y = cursor[2]
-			self._rect_x = cursor[1]
+			self._rect_x, self._rect_y = cursor[1], cursor[2]
 		elseif Mouse.released(mouse_button_idx) then
 			self._drawing_rect = false
 		end
@@ -140,7 +137,7 @@ local WHITE = {
 	255,
 	255,
 	255,
-	255
+	255,
 }
 local BORDER = 2
 
@@ -189,8 +186,10 @@ ImguiUITool.texture = function (self, texture_type, texture, pos, size, color)
 
 	if is_hovered then
 		color = color or WHITE
+
 		local buffer = self._data_back_buffer
 		local settings = UIAtlasHelper._ui_atlas_settings[texture]
+
 		buffer[#buffer + 1] = texture_type
 		buffer[#buffer + 1] = tostring(texture)
 		buffer[#buffer + 1] = settings and settings.material_name or "n/a"
@@ -199,7 +198,7 @@ ImguiUITool.texture = function (self, texture_type, texture, pos, size, color)
 		buffer[#buffer + 1] = format("Color(%d, %d, %d, %d)", color[1], color[2], color[3], color[4])
 	end
 
-	local color = nil
+	local color
 	local alpha = is_hovered and 200 or 30
 
 	if texture_type == "rect" or texture_type == "rounded_rect" then
@@ -220,12 +219,16 @@ ImguiUITool.text = function (self, ui_renderer, text, font_material, font_size, 
 
 	local te_min, te_max, te_caret = Gui.text_extents(ui_renderer.gui, text, font_material, font_size)
 	local size = te_max - te_min
+
 	pos = pos + te_min
+
 	local is_hovered = inside_2d_box_lenient(self._cursor, pos, size)
 
 	if is_hovered then
 		color = color or WHITE
+
 		local buffer = self._data_back_buffer
+
 		buffer[#buffer + 1] = "text"
 		buffer[#buffer + 1] = format("%10q", text)
 		buffer[#buffer + 1] = font_material
@@ -251,6 +254,7 @@ ImguiUITool.node = function (self, node, file)
 
 	if is_hovered then
 		local buffer = self._data_back_buffer
+
 		buffer[#buffer + 1] = file or "n/a"
 		buffer[#buffer + 1] = node.name
 
@@ -515,7 +519,7 @@ local function sorters(data, get, id)
 
 	if Imgui.small_button("v##DESC_" .. id) then
 		table.sort(data, function (a, b)
-			return get(b) < get(a)
+			return get(a) > get(b)
 		end)
 		printf("[ImguiUITool] Sorted by %s in DESC order", id)
 	end
@@ -562,9 +566,11 @@ ImguiUITool.do_asset_browser = function (self)
 
 			if gui and cell_index > 0 then
 				cell_index = cell_index - 1
+
 				local cell_i = cols - 1 - cell_index % cols
 				local cell_j = math.floor(cell_index / cols)
 				local cell_pos = Vector3(cell_size[1] * cell_i, cell_size[2] * cell_j, 950)
+
 				is_hover = math.point_is_inside_2d_box(cursor, cell_pos, cell_size)
 
 				if Gui.material(gui, material_name) then
@@ -638,7 +644,7 @@ ImguiUITool._setting_color = function (self, key, label)
 			255,
 			255,
 			255,
-			255
+			255,
 		}
 
 		Colors.set(col, ImguiX.color_edit_4(label, unpack(col)))
@@ -660,72 +666,13 @@ ImguiUITool.do_settings = function (self)
 	script_data.disable_localization = self._disable_localization
 end
 
-local HELP_TEXT = [[
-UITOOL(1)                    General Tools Manual                    UITOOL(1)
- 
-NAME
-	UI Tool - a suite of utilities to make UI development a wee bit easier
- 
-INTRODUCTION
-	The UI tool is a collection of disjoint utilities that facilitate examining
-	various UI systems at run time. It is comprised of the following tools:
-		Some common elements.
-		A render object inspector.
-		A scenegraph inspector.
-		An atlas texture browser.
-
-COMMON ELEMENTS
-	These elements are shared between all tools.
- 
-	The current cursor position is shown both in screen and canvas coordinates.
-	Measurements can be taken by dragging with the RIGHT mouse button.
- 
-	The search bar can be used to apply filters on any tab, including this one
-	(try it!). All searches are CASE SENSITIVE and accept Lua string patterns.
- 
-RENDER OBJECT INSPECTOR
-	Render objects are pseudo-objects constructed when Lua code sends draw
-	requests to the engine. That is to say that there's a 1-to-1 correspondence
-	between render objects and calls to Gui.bitmap, Gui.rect, etc.
-	Render objects are disposed of once they have been processed by the Gui.
-	It is currently not possible to inspect render objects that exist inside a
-	Gui object that was created in retained mode.
- 
-	Render objects are color coded according to the following table:
-		red         Bitmaps
-		purple      Bitmap UV
-		green       Rect
-		blue        Text
-	
-	Other types of render objects are not supported at this time.
- 
-SCENEGRAPH INSPECTOR
-	The scenegraph is a structure to help layout UI elements on the screen.
-	Internally it is stored as a forest where every node is associated to a
-	quad region on the screen.
-	This tool can be useful to identify the internal name of a UI.
- 
-ATLAS TEXTURE BROWSER
-	Textures are packed into atlas to reduce the overhead of loading many
-	small textures from disk to the GPU. For example, it would not be cost
-	effective applying texture block compression methods on tiny textures, but
-	by packing them together a reduction in total size can be achieved.
- 
-	This tool provides a quick way of searching and visualizing all such
-	atlased textures that are available to the UI systems. Results can be
-	sorted by texture name, material name or area size with the little ^ and v
-	buttons on the header row.
-	Holding right-click over a texture preview will render it at native size
-	and scroll the listing results to that point.
- 
-	NOTE: The ruler is disabled while this mode is active.
-]]
+local HELP_TEXT = "UITOOL(1)                    General Tools Manual                    UITOOL(1)\n \nNAME\n\tUI Tool - a suite of utilities to make UI development a wee bit easier\n \nINTRODUCTION\n\tThe UI tool is a collection of disjoint utilities that facilitate examining\n\tvarious UI systems at run time. It is comprised of the following tools:\n\t\tSome common elements.\n\t\tA render object inspector.\n\t\tA scenegraph inspector.\n\t\tAn atlas texture browser.\n\nCOMMON ELEMENTS\n\tThese elements are shared between all tools.\n \n\tThe current cursor position is shown both in screen and canvas coordinates.\n\tMeasurements can be taken by dragging with the RIGHT mouse button.\n \n\tThe search bar can be used to apply filters on any tab, including this one\n\t(try it!). All searches are CASE SENSITIVE and accept Lua string patterns.\n \nRENDER OBJECT INSPECTOR\n\tRender objects are pseudo-objects constructed when Lua code sends draw\n\trequests to the engine. That is to say that there's a 1-to-1 correspondence\n\tbetween render objects and calls to Gui.bitmap, Gui.rect, etc.\n\tRender objects are disposed of once they have been processed by the Gui.\n\tIt is currently not possible to inspect render objects that exist inside a\n\tGui object that was created in retained mode.\n \n\tRender objects are color coded according to the following table:\n\t\tred         Bitmaps\n\t\tpurple      Bitmap UV\n\t\tgreen       Rect\n\t\tblue        Text\n\t\n\tOther types of render objects are not supported at this time.\n \nSCENEGRAPH INSPECTOR\n\tThe scenegraph is a structure to help layout UI elements on the screen.\n\tInternally it is stored as a forest where every node is associated to a\n\tquad region on the screen.\n\tThis tool can be useful to identify the internal name of a UI.\n \nATLAS TEXTURE BROWSER\n\tTextures are packed into atlas to reduce the overhead of loading many\n\tsmall textures from disk to the GPU. For example, it would not be cost\n\teffective applying texture block compression methods on tiny textures, but\n\tby packing them together a reduction in total size can be achieved.\n \n\tThis tool provides a quick way of searching and visualizing all such\n\tatlased textures that are available to the UI systems. Results can be\n\tsorted by texture name, material name or area size with the little ^ and v\n\tbuttons on the header row.\n\tHolding right-click over a texture preview will render it at native size\n\tand scroll the listing results to that point.\n \n\tNOTE: The ruler is disabled while this mode is active.\n"
 
 ImguiUITool.do_help = function (self)
 	local needle = self._search
-	local find = string.find
-	local sub = string.sub
+	local find, sub = string.find, string.sub
 	local do_scroll = self._search ~= self._help_cached_search
+
 	self._help_cached_search = self._search
 
 	for line in string.gmatch(HELP_TEXT, "[^\n]+") do

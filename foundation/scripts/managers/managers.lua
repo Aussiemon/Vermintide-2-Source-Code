@@ -1,3 +1,5 @@
+﻿-- chunkname: @foundation/scripts/managers/managers.lua
+
 local function debug_print(format, ...)
 	if script_data.network_debug then
 		printf("[Managers] " .. format, ...)
@@ -8,16 +10,17 @@ local PROFILE_MANAGERS = BUILD == "dev" or BUILD == "debug"
 local MANAGER_GROUP_ORDER = {
 	"global",
 	"venture",
-	"state"
+	"state",
 }
+
 Managers = Managers or {
 	state = {},
-	venture = {}
+	venture = {},
 }
 ManagersCreationOrder = ManagersCreationOrder or {
 	global = {},
 	state = {},
-	venture = {}
+	venture = {},
 }
 
 local function destroy_manager_group(manager_group_name)
@@ -128,7 +131,7 @@ local mt_global = {
 		end
 
 		return s
-	end
+	end,
 }
 local mt_venture = {
 	__newindex = function (managers, alias, manager)
@@ -156,7 +159,7 @@ local mt_venture = {
 		end
 
 		return s
-	end
+	end,
 }
 local mt_state = {
 	__newindex = function (managers, alias, manager)
@@ -184,7 +187,7 @@ local mt_state = {
 		end
 
 		return s
-	end
+	end,
 }
 
 setmetatable(Managers, mt_global)

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/weapons/actions/action_bow.lua
+
 ActionBow = class(ActionBow, ActionBase)
 
 ActionBow.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
@@ -16,9 +18,11 @@ ActionBow.client_owner_start_action = function (self, new_action, t, chain_actio
 	local owner_unit = self.owner_unit
 	local is_critical_strike = ActionUtils.is_critical_strike(owner_unit, new_action, t)
 	local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
+
 	self.owner_buff_extension = buff_extension
 	self.current_action = new_action
 	self.power_level = power_level
+
 	local input_extension = ScriptUnit.extension(owner_unit, "input_system")
 
 	input_extension:reset_input_buffer()
@@ -27,6 +31,7 @@ ActionBow.client_owner_start_action = function (self, new_action, t, chain_actio
 	self.time_to_shoot = t + (new_action.fire_time or 0)
 	self.time_to_unzoom = new_action.unzoom_time and t + new_action.unzoom_time or nil
 	self.extra_buff_shot = false
+
 	local hud_extension = ScriptUnit.has_extension(owner_unit, "hud_system")
 
 	self:_handle_critical_strike(is_critical_strike, buff_extension, hud_extension, nil, "on_critical_shot", nil)
@@ -47,14 +52,14 @@ end
 ActionBow.client_owner_post_update = function (self, dt, t, world, can_damage)
 	local current_action = self.current_action
 
-	if self.time_to_unzoom and self.time_to_unzoom <= t then
+	if self.time_to_unzoom and t >= self.time_to_unzoom then
 		local owner_unit = self.owner_unit
 		local status_extension = ScriptUnit.extension(owner_unit, "status_system")
 
 		status_extension:set_zooming(false)
 	end
 
-	if self.state == "waiting_to_shoot" and self.time_to_shoot <= t then
+	if self.state == "waiting_to_shoot" and t >= self.time_to_shoot then
 		self.state = "shooting"
 	end
 
@@ -63,7 +68,7 @@ ActionBow.client_owner_post_update = function (self, dt, t, world, can_damage)
 
 		if not Managers.player:owner(self.owner_unit).bot_player then
 			Managers.state.controller_features:add_effect("rumble", {
-				rumble_effect = "bow_fire"
+				rumble_effect = "bow_fire",
 			})
 		end
 
@@ -104,7 +109,7 @@ ActionBow.client_owner_post_update = function (self, dt, t, world, can_damage)
 		end
 	end
 
-	if self.time_to_reload and self.time_to_reload < t then
+	if self.time_to_reload and t > self.time_to_reload then
 		self:reload(current_action)
 
 		self.time_to_reload = nil

@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/unit_extensions/deus/deus_relic_extension.lua
+
 DeusRelicExtension = class(DeusRelicExtension)
+
 local LOST_DISTANCE_THRESHOLD = 30
 local LOST_TIME_THRESHOLD = 30
 local OUT_OF_BOUNDS_DISTANCE_THRESHOLD = 5
@@ -8,7 +11,7 @@ local AHEAD_DISTANCE_RESPAWN = 5
 local OUT_OF_BOUNDS_DISTANCE_TO_OBSTACLE = 0.5
 
 local function get_squared_distance_to_nav_mesh(nav_world, position, search_radius)
-	local nearest_nav_mesh_point = nil
+	local nearest_nav_mesh_point
 	local success, altitude = GwNavQueries.triangle_from_position(nav_world, position, search_radius, search_radius)
 
 	if success then
@@ -33,6 +36,7 @@ local function get_nearest_player_distance_squared(player_positions, position)
 
 	for _, player_position in ipairs(player_positions) do
 		local distance_squared = Vector3.length_squared(position - player_position)
+
 		lowest_distance_squared = math.min(distance_squared, lowest_distance_squared)
 	end
 
@@ -44,17 +48,20 @@ local function reset_relic_position(unit)
 	local main_paths = conflict_director.level_analysis:get_main_paths()
 	local main_path_info = conflict_director.main_path_info
 	local max_distance = MainPathUtils.total_path_dist()
-	local ahead_player_travel_dist = nil
+	local ahead_player_travel_dist
 
 	if not main_path_info.ahead_unit then
 		ahead_player_travel_dist = max_distance
 	else
 		local ahead_player_info = conflict_director.main_path_player_info[main_path_info.ahead_unit]
+
 		ahead_player_travel_dist = ahead_player_info.travel_dist
 	end
 
 	local dist = ahead_player_travel_dist + AHEAD_DISTANCE_RESPAWN
+
 	dist = math.clamp(dist, 0, MainPathUtils.total_path_dist() - 0.1)
+
 	local position = MainPathUtils.point_on_mainpath(main_paths, dist)
 	local locomotion_extension = ScriptUnit.extension(unit, "projectile_locomotion_system")
 
@@ -97,24 +104,25 @@ DeusRelicExtension._update_position_resetting = function (self, unit, t)
 			self._out_of_bounds_since = t
 		end
 
-		if OUT_OF_BOUNDS_TIME_THRESHOLD < t - self._out_of_bounds_since then
+		if t - self._out_of_bounds_since > OUT_OF_BOUNDS_TIME_THRESHOLD then
 			reset_relic_position(unit)
 
 			self._out_of_bounds_since = nil
 		end
 	else
 		self._out_of_bounds_since = nil
+
 		local side = Managers.state.side:get_side_from_name("heroes")
 		local other_player_positions = side.PLAYER_AND_BOT_POSITIONS
 		local squared_distance_to_nearest_player = get_nearest_player_distance_squared(other_player_positions, relic_position)
 		local lost_distance_threshold_squared = LOST_DISTANCE_THRESHOLD * LOST_DISTANCE_THRESHOLD
 
-		if squared_distance_to_nearest_player > lost_distance_threshold_squared then
+		if lost_distance_threshold_squared < squared_distance_to_nearest_player then
 			if not self._far_away_since then
 				self._far_away_since = t
 			end
 
-			if LOST_TIME_THRESHOLD < t - self._far_away_since then
+			if t - self._far_away_since > LOST_TIME_THRESHOLD then
 				reset_relic_position(unit)
 
 				self._far_away_since = nil
@@ -134,7 +142,7 @@ DeusRelicExtension._update_objective_marker = function (self, unit, t)
 		self._alive_since = t
 	end
 
-	if OBJECTIVE_MARKER_TIME < t - self._alive_since then
+	if t - self._alive_since > OBJECTIVE_MARKER_TIME then
 		local unit_name = "units/hub_elements/objective_unit"
 		local objective_unit = Managers.state.unit_spawner:spawn_network_unit(unit_name, "objective_unit", nil, POSITION_LOOKUP[unit])
 		local objective_unit_extension = ScriptUnit.extension(objective_unit, "tutorial_system")

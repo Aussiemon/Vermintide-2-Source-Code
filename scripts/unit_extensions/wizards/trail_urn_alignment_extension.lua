@@ -1,8 +1,11 @@
+﻿-- chunkname: @scripts/unit_extensions/wizards/trail_urn_alignment_extension.lua
+
 TrailUrnAlignmentExtension = class(TrailUrnAlignmentExtension)
+
 local STATE = {
+	IS_ALIGNED = 3,
 	MOVE_TO_NODE = 2,
 	WAITING_FOR_INTERACTION = 1,
-	IS_ALIGNED = 3
 }
 local lerp_duration = 0.3
 
@@ -39,7 +42,9 @@ TrailUrnAlignmentExtension.update_interaction_position = function (self, interac
 		for i = 1, steps do
 			local step = 2 * math.pi / steps * i
 			local pos = Vector3(math.sin(step) * self._interaction_distance * d, -math.cos(step) * self._interaction_distance * d, 0)
+
 			d = d * -1
+
 			local step_pos = urn_pos + pos
 			local success, z_pos = GwNavQueries.triangle_from_position(self._nav_world, step_pos, 1, 1)
 
@@ -64,6 +69,7 @@ TrailUrnAlignmentExtension.on_client_start_interaction = function (self, interac
 	self._elapsed_time = 0
 	self._start_time = t
 	self._start_position = Vector3Box(POSITION_LOOKUP[interactor_unit])
+
 	local interaction_position = self:update_interaction_position(interactor_unit)
 
 	self._interaction_position:store(interaction_position)
@@ -79,7 +85,7 @@ TrailUrnAlignmentExtension.is_unit_pushed_out_off_range = function (self, intera
 	local current_offset = interactor_position - self._position:unbox()
 	local pushed_distance_sqr = Vector3.distance_squared(start_offset, current_offset)
 
-	if movement_threshold_sq < pushed_distance_sqr then
+	if pushed_distance_sqr > movement_threshold_sq then
 		self._align_state = STATE.WAITING_FOR_INTERACTION
 
 		return true
@@ -112,7 +118,7 @@ TrailUrnAlignmentExtension.on_client_move_to_node = function (self, interactor_u
 	local sqr_interaction_distance = self._interaction_distance * self._interaction_distance
 	local sqr_distance = Vector3.distance_squared(interactor_position, self._position:unbox())
 
-	if sqr_distance <= sqr_interaction_distance or lerp_duration < self._elapsed_time then
+	if sqr_distance <= sqr_interaction_distance or self._elapsed_time > lerp_duration then
 		self._start_offset = Vector3Box(POSITION_LOOKUP[interactor_unit] - self._position:unbox())
 		self._align_state = STATE.IS_ALIGNED
 	end
@@ -120,9 +126,12 @@ end
 
 TrailUrnAlignmentExtension.lerp_to_node = function (self, interactor_unit, duration, t)
 	self._elapsed_time = t - self._start_time
+
 	local lerp_t = self._elapsed_time / duration
+
 	lerp_t = math.ease_out_quad(lerp_t)
 	lerp_t = math.clamp(lerp_t, 0, 1)
+
 	local new_position = Vector3.lerp(self._start_position:unbox(), self._interaction_position:unbox(), lerp_t)
 
 	return new_position

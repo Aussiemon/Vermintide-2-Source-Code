@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/boon/boon_manager.lua
+
 require("scripts/managers/challenges/in_game_challenge_rewards")
 
 BoonManager = class(BoonManager)
@@ -53,7 +55,9 @@ end
 
 BoonManager.add_boon = function (self, owner, reward_id, consume_type, consume_value, reactivation_rule)
 	local unique_id = self._unique_id
+
 	self._unique_id = unique_id + 1
+
 	local new_boon = {
 		active = true,
 		owner = owner,
@@ -62,7 +66,7 @@ BoonManager.add_boon = function (self, owner, reward_id, consume_type, consume_v
 		consume_value = consume_value,
 		unique_id = unique_id,
 		reward_data = {},
-		reactivation_rule = reactivation_rule
+		reactivation_rule = reactivation_rule,
 	}
 
 	if validate_boon(new_boon) and not self:_has_been_consumed(new_boon) then

@@ -1,3 +1,5 @@
+﻿-- chunkname: @foundation/scripts/managers/world/world_manager.lua
+
 require("foundation/scripts/util/script_world")
 
 WorldManager = class(WorldManager)
@@ -65,7 +67,7 @@ WorldManager.destroy_world = function (self, world_or_name)
 		return
 	end
 
-	local name = nil
+	local name
 
 	if type(world_or_name) == "string" then
 		name = world_or_name

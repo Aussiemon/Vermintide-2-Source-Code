@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/ui/hud_ui/ingame_news_ticker_ui.lua
+
 IngameNewsTickerUI = class(IngameNewsTickerUI)
+
 local REFRESH_TIMER_MESSAGE = 300
 local REFRESH_TIMER_NO_MESSAGE = 120
 local scenegraph_definition = {
@@ -6,108 +9,108 @@ local scenegraph_definition = {
 		scale = "fit",
 		size = {
 			1920,
-			1080
+			1080,
 		},
 		position = {
 			0,
 			0,
-			980
-		}
+			980,
+		},
 	},
 	screen = {
-		vertical_alignment = "center",
-		scale = "aspect_ratio",
 		horizontal_alignment = "center",
+		scale = "aspect_ratio",
+		vertical_alignment = "center",
 		size = {
 			1920,
-			1080
+			1080,
 		},
 		position = {
 			0,
 			0,
-			2
-		}
+			2,
+		},
 	},
 	news_ticker_text = {
-		vertical_alignment = "top",
-		parent = "screen",
 		horizontal_alignment = "center",
+		parent = "screen",
+		vertical_alignment = "top",
 		size = {
 			1920,
-			20
+			20,
 		},
 		position = {
 			1960,
 			-2,
-			2
-		}
+			2,
+		},
 	},
 	news_ticker_mask = {
-		vertical_alignment = "top",
-		parent = "screen",
 		horizontal_alignment = "center",
+		parent = "screen",
+		vertical_alignment = "top",
 		size = {
 			880,
-			40
+			40,
 		},
 		position = {
 			6,
 			0,
-			3
-		}
+			3,
+		},
 	},
 	news_ticker_bg = {
-		vertical_alignment = "top",
-		parent = "screen",
 		horizontal_alignment = "center",
+		parent = "screen",
+		vertical_alignment = "top",
 		size = {
 			1920,
-			40
+			40,
 		},
 		position = {
 			0,
 			20,
-			0
-		}
-	}
+			0,
+		},
+	},
 }
 local text_style = {
-	vertical_alignment = "bottom",
 	font_size = 18,
-	localize = false,
-	horizontal_alignment = "left",
-	word_wrap = false,
 	font_type = "hell_shark_masked",
+	horizontal_alignment = "left",
+	localize = false,
+	vertical_alignment = "bottom",
+	word_wrap = false,
 	text_color = Colors.get_color_table_with_alpha("cheeseburger", 255),
 	offset = {
 		0,
 		0,
-		2
-	}
+		2,
+	},
 }
 local text_style_shadow = {
-	vertical_alignment = "bottom",
 	font_size = 18,
-	localize = false,
-	horizontal_alignment = "left",
-	word_wrap = false,
 	font_type = "hell_shark_masked",
+	horizontal_alignment = "left",
+	localize = false,
+	vertical_alignment = "bottom",
+	word_wrap = false,
 	text_color = Colors.get_color_table_with_alpha("black", 255),
 	offset = {
 		1,
 		-1,
-		1
-	}
+		1,
+	},
 }
 local widget_definitions = {
 	simple_rect = UIWidgets.create_simple_rect("news_ticker_bg", Colors.get_color_table_with_alpha("black", 192), -1, {
 		0,
 		-5,
-		-1
+		-1,
 	}),
 	news_ticker_text_widget = UIWidgets.create_simple_text("", "news_ticker_text", nil, nil, text_style),
 	news_ticker_text_shadow_widget = UIWidgets.create_simple_text("", "news_ticker_text", nil, nil, text_style_shadow),
-	news_ticker_mask_widget = UIWidgets.create_simple_texture("mask_rect", "news_ticker_mask")
+	news_ticker_mask_widget = UIWidgets.create_simple_texture("mask_rect", "news_ticker_mask"),
 }
 
 IngameNewsTickerUI.init = function (self, parent, ingame_ui_context)
@@ -133,10 +136,14 @@ IngameNewsTickerUI.create_ui_elements = function (self)
 	self.news_ticker_text_shadow_widget = UIWidget.init(widget_definitions.news_ticker_text_shadow_widget)
 	self.news_ticker_mask_widget = UIWidget.init(widget_definitions.news_ticker_mask_widget)
 	self.simple_rect = UIWidget.init(widget_definitions.simple_rect)
+
 	local text_style = self.news_ticker_text_widget.style.text
+
 	text_style.localize = false
 	text_style.horizontal_alignment = "left"
+
 	local text_style = self.news_ticker_text_shadow_widget.style.text
+
 	text_style.localize = false
 	text_style.horizontal_alignment = "left"
 end
@@ -246,12 +253,15 @@ IngameNewsTickerUI.setup_news_ticker = function (self, text)
 	local widget_content = widget.content
 	local shadow_widget_content = shadow_widget.content
 	local widget_style = widget.style
+
 	widget_content.text = text
 	shadow_widget_content.text = text
+
 	local text_style = widget_style.text
 	local font_type = text_style.font_type
 	local font, scaled_font_size = UIFontByResolution(text_style)
 	local text_width, text_height, min = UIRenderer.text_size(self.ui_renderer, text, font[1], scaled_font_size)
+
 	self.news_ticker_text_width = text_width
 	self.news_ticker_started = true
 end

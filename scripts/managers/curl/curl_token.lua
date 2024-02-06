@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/curl/curl_token.lua
+
 CurlToken = class(CurlToken)
 
 CurlToken.init = function (self, token)

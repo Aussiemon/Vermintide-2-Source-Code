@@ -1,3 +1,5 @@
+﻿-- chunkname: @foundation/scripts/util/reportify.lua
+
 Reportify = Reportify or {}
 
 Reportify.setup = function (self)
@@ -20,7 +22,7 @@ Reportify.get_data = function (self)
 		project = self.project,
 		fields = {
 			customfield_10031 = self.content_revision,
-			customfield_10032 = self.engine_revision
+			customfield_10032 = self.engine_revision,
 		},
 		custom = {
 			level = self:_get_level(),
@@ -29,8 +31,8 @@ Reportify.get_data = function (self)
 			archetype = player_info.class_name,
 			wielded_slot = player_info.wielded_slot,
 			primary_slot = player_info.primary_name,
-			secondary_slot = player_info.secondary_name
-		}
+			secondary_slot = player_info.secondary_name,
+		},
 	})
 end
 
@@ -56,10 +58,10 @@ end
 
 Reportify._get_player_info = function (self)
 	local ret = {
-		wielded_slot = "",
-		primary_name = "",
 		class_name = "",
-		secondary_name = ""
+		primary_name = "",
+		secondary_name = "",
+		wielded_slot = "",
 	}
 	local local_player = self:_get_local_player()
 

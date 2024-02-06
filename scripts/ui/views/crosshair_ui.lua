@@ -1,16 +1,20 @@
+﻿-- chunkname: @scripts/ui/views/crosshair_ui.lua
+
 local definitions = local_require("scripts/ui/views/crosshair_ui_definitions")
 local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animations_definitions
 local MAX_SIZE = definitions.MAX_SIZE
+
 CrosshairUI = class(CrosshairUI)
+
 local CROSSHAIR_STYLE_FUNCTIONS = {
-	default = "draw_default_style_crosshair",
-	circle = "draw_circle_style_crosshair",
-	wh_priest = "draw_wh_priest_style_crosshair",
-	shotgun = "draw_shotgun_style_crosshair",
-	dot = "draw_dot_style_crosshair",
 	arrows = "draw_arrows_style_crosshair",
-	projectile = "draw_projectile_style_crosshair"
+	circle = "draw_circle_style_crosshair",
+	default = "draw_default_style_crosshair",
+	dot = "draw_dot_style_crosshair",
+	projectile = "draw_projectile_style_crosshair",
+	shotgun = "draw_shotgun_style_crosshair",
+	wh_priest = "draw_wh_priest_style_crosshair",
 }
 local MELEE_CROSSHAIR_STYLES = UISettings.crosshair_styles.melee
 local RANGED_CROSSHAIR_STYLES = UISettings.crosshair_styles.ranged
@@ -33,7 +37,7 @@ CrosshairUI.init = function (self, parent, ingame_ui_context)
 	self.ingame_ui = ingame_ui_context.ingame_ui
 	self.input_manager = ingame_ui_context.input_manager
 	self.render_settings = {
-		snap_pixel_positions = false
+		snap_pixel_positions = false,
 	}
 	self.local_player = Managers.player:local_player()
 	self._small_career_portrait = "small_unit_frame_portrait_default"
@@ -62,13 +66,15 @@ CrosshairUI.create_ui_elements = function (self)
 		damage = UIWidget.init(definitions.widget_definitions.crosshair_hit_armored_damage),
 		no_damage = UIWidget.init(definitions.widget_definitions.crosshair_hit_armored_no_damage),
 		armor_break = UIWidget.init(definitions.widget_definitions.crosshair_hit_armored_break),
-		armor_open = UIWidget.init(definitions.widget_definitions.crosshair_hit_armored_open)
+		armor_open = UIWidget.init(definitions.widget_definitions.crosshair_hit_armored_open),
 	}
+
 	local hit_markers = {}
 	local hit_markers_n = 4
 
 	for i = 1, hit_markers_n do
 		local widget_definition_name = "crosshair_hit_" .. i
+
 		hit_markers[i] = UIWidget.init(definitions.widget_definitions[widget_definition_name])
 	end
 
@@ -76,6 +82,7 @@ CrosshairUI.create_ui_elements = function (self)
 	self.hit_markers = hit_markers
 	self.hit_markers_n = hit_markers_n
 	self.hit_marker_animations = {}
+
 	local kill_confirm_widgets = {}
 
 	for name, texture in pairs(kill_confirm_styles) do
@@ -132,6 +139,10 @@ CrosshairUI.update_enabled_crosshair_styles = function (self)
 			for style, data in pairs(RANGED_CROSSHAIR_STYLES) do
 				crosshairs[style] = data.enabled
 			end
+		end
+
+		if false then
+			-- Nothing
 		end
 
 		self._enabled_style = enabled_style
@@ -191,6 +202,7 @@ end
 
 CrosshairUI._apply_crosshair_position = function (self, x, y)
 	local position = self.ui_scenegraph.pivot.local_position
+
 	position[1] = x
 	position[2] = y
 end
@@ -226,6 +238,7 @@ CrosshairUI.set_hit_marker_animation = function (self, hit_markers, hit_markers_
 	for i = 1, hit_markers_n do
 		local hit_marker = hit_markers[i]
 		local additional_hit_icon = self:configure_hit_marker_color_and_size(hit_marker, hit_marker_data)
+
 		hit_marker_animations[i] = UIAnimation.init(UIAnimation.function_by_time, hit_marker.style.rotating_texture.color, 1, 255, 0, UISettings.crosshair.hit_marker_fade, math.easeInCubic)
 
 		if i == hit_markers_n and additional_hit_icon then
@@ -250,7 +263,7 @@ CrosshairUI.configure_hit_marker_color_and_size = function (self, hit_marker, hi
 	local invulnerable = hit_marker_data.invulnerable
 	local is_critical = false
 	local is_armored = false
-	local additional_hit_icon = nil
+	local additional_hit_icon
 	local hit_armored_markers = self._hit_armored_markers
 	local hit_marker_config = definitions.hit_marker_configurations
 
@@ -260,7 +273,7 @@ CrosshairUI.configure_hit_marker_color_and_size = function (self, hit_marker, hi
 		is_critical = true
 	end
 
-	local target_color, target_size = nil
+	local target_color, target_size
 
 	if shield_break then
 		additional_hit_icon = hit_armored_markers.armor_break
@@ -287,6 +300,7 @@ CrosshairUI.configure_hit_marker_color_and_size = function (self, hit_marker, hi
 	if target_color then
 		local hit_marker_color = hit_marker.style.rotating_texture.color
 		local hit_marker_size = hit_marker.style.rotating_texture.size
+
 		hit_marker_color[2] = target_color[2]
 		hit_marker_color[3] = target_color[3]
 		hit_marker_color[4] = target_color[4]
@@ -320,14 +334,14 @@ end
 CrosshairUI.update_spread = function (self, dt, t, equipment)
 	local wielded_item_data = equipment.wielded
 	local item_template = BackendUtils.get_item_template(wielded_item_data)
-	local pitch = 0
-	local yaw = 0
+	local pitch, yaw = 0, 0
 
 	if item_template.default_spread_template then
 		local weapon_unit = equipment.right_hand_wielded_unit or equipment.left_hand_wielded_unit
 
 		if weapon_unit and ScriptUnit.has_extension(weapon_unit, "spread_system") then
 			local spread_extension = ScriptUnit.extension(weapon_unit, "spread_system")
+
 			pitch, yaw = spread_extension:get_current_pitch_and_yaw()
 		end
 	end
@@ -382,6 +396,7 @@ CrosshairUI.draw_default_style_crosshair = function (self, ui_renderer, pitch_pe
 	local start_degrees = 45
 	local pitch_offset = 5
 	local yaw_offset = 5
+
 	pitch_percentage = math.max(0.0001, pitch_percentage)
 	yaw_percentage = math.max(0.0001, yaw_percentage)
 
@@ -398,6 +413,7 @@ CrosshairUI.draw_arrows_style_crosshair = function (self, ui_renderer, pitch_per
 	local start_degrees = 45
 	local pitch_offset = 5
 	local yaw_offset = 5
+
 	pitch_percentage = math.max(0.0001, pitch_percentage)
 	yaw_percentage = math.max(0.0001, yaw_percentage)
 
@@ -414,6 +430,7 @@ CrosshairUI.draw_shotgun_style_crosshair = function (self, ui_renderer, pitch_pe
 	local start_degrees = 45
 	local pitch_offset = 0
 	local yaw_offset = 0
+
 	pitch_percentage = math.max(0.0001, pitch_percentage)
 	yaw_percentage = math.max(0.0001, yaw_percentage)
 
@@ -431,6 +448,7 @@ CrosshairUI.draw_projectile_style_crosshair = function (self, ui_renderer, pitch
 	local start_degrees = 0
 	local pitch_offset = 6
 	local yaw_offset = 0
+
 	pitch_percentage = math.max(0.0001, pitch_percentage)
 	yaw_percentage = math.max(0.0001, yaw_percentage)
 
@@ -457,6 +475,7 @@ CrosshairUI._set_widget_point_offset = function (self, widget, point_index, max_
 	local widget_style = widget.style
 	local offset = widget_style.offset
 	local pivot = widget_style.pivot
+
 	pitch_offset = pitch_offset or 0
 	yaw_offset = yaw_offset or 0
 	offset[1] = ptx + pitch_offset * math.sign(ptx)
@@ -466,8 +485,7 @@ end
 
 CrosshairUI._get_point_offset = function (self, point_index, max_points, pitch_percentage, yaw_percentage, start_degrees)
 	local max_radius = MAX_SIZE
-	local x = 0
-	local y = 0
+	local x, y = 0, 0
 	local pitch_radius = max_radius * pitch_percentage
 	local yaw_radius = max_radius * yaw_percentage
 	local start_progress = (start_degrees or 0) / 360 % 1
@@ -484,6 +502,7 @@ end
 
 CrosshairUI._set_crosshair_target_info = function (self, portrait, state)
 	local content = self.wh_priest.content
+
 	content.state = state
 	content.career_portrait = portrait and portrait or self._small_career_portrait
 	content.text_id = "$KEY;Player__action_one:"
@@ -495,6 +514,7 @@ CrosshairUI._update_self_to_ally_transition = function (self)
 
 	if content.state ~= self.state then
 		local animation_name = content.state == "wh_priest_self" and "ally_to_self" or "self_to_ally"
+
 		self.wh_crosshair_anim = self._ui_animator:start_animation(animation_name, self.wh_priest, scenegraph_definition)
 	end
 
@@ -515,6 +535,7 @@ end
 CrosshairUI.update_game_options = function (self)
 	local kill_confirm_setting_group = Application.user_setting("crosshair_kill_confirm")
 	local kill_confirm_enabled = kill_confirm_setting_group ~= CrosshairKillConfirmSettingsGroups.off
+
 	self._kill_confirm_enabled_groups = kill_confirm_group_settings[kill_confirm_setting_group]
 
 	if kill_confirm_enabled and not self._kill_confirm_enabled then
@@ -536,7 +557,7 @@ CrosshairUI._register_kill_confirm = function (self, killing_blow, breed_killed,
 	end
 
 	local player_unit = self.local_player.player_unit
-	local kill_confirm_type = nil
+	local kill_confirm_type
 
 	if killing_blow[DamageDataIndex.ATTACKER] == player_unit or killing_blow[DamageDataIndex.SOURCE_ATTACKER_UNIT] == player_unit then
 		if killing_blow[DamageDataIndex.DAMAGE_SOURCE_NAME] == "dot_debuff" then
@@ -581,7 +602,7 @@ CrosshairUI._draw_kill_confirm = function (self, dt, t, ui_renderer)
 
 	local last_kill_dt = t - self._last_kill_confirm_t
 
-	if kill_confirm_duration < last_kill_dt then
+	if last_kill_dt > kill_confirm_duration then
 		self._current_kill_confirm_widget = nil
 		self._current_kill_confirm_type = nil
 
@@ -590,6 +611,7 @@ CrosshairUI._draw_kill_confirm = function (self, dt, t, ui_renderer)
 
 	local alpha = (1 - math.easeInCubic(last_kill_dt / kill_confirm_duration)) * 255
 	local kill_confirm_widget = self._current_kill_confirm_widget
+
 	kill_confirm_widget.style.color[1] = alpha
 
 	UIRenderer.draw_widget(ui_renderer, kill_confirm_widget)

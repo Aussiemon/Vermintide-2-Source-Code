@@ -1,13 +1,16 @@
+﻿-- chunkname: @scripts/utils/profile_requester.lua
+
 local RPCS = {
 	"rpc_request_profile",
-	"rpc_request_profile_reply"
+	"rpc_request_profile_reply",
 }
+
 ProfileRequester = class(ProfileRequester)
 ProfileRequester.REQUEST_RESULTS = {
 	"success",
 	"failure",
+	failure = 2,
 	success = 1,
-	failure = 2
 }
 
 ProfileRequester.init = function (self, is_server, network_server, profile_synchronizer)
@@ -43,6 +46,7 @@ end
 ProfileRequester.request_profile = function (self, peer_id, local_player_id, profile_name, career_name, force_respawn)
 	self._request_id = self._request_id + 1
 	self._request_result = nil
+
 	local profile_index = FindProfileIndex(profile_name)
 	local career_index = career_index_from_name(profile_index, career_name)
 
@@ -55,7 +59,7 @@ end
 
 ProfileRequester._request_profile = function (self, peer_id, local_player_id, request_id, profile_index, career_index, force_respawn)
 	local profile_name, career_name = hero_and_career_name_from_index(profile_index, career_index)
-	local allowed_to_switch_to_profile = nil
+	local allowed_to_switch_to_profile
 	local mechanism = Managers.mechanism:game_mechanism()
 
 	if mechanism.name == "Versus" then
@@ -65,7 +69,7 @@ ProfileRequester._request_profile = function (self, peer_id, local_player_id, re
 		allowed_to_switch_to_profile = allowed_to_switch_to_profile and self._profile_synchronizer:try_reserve_profile_for_peer(peer_id, profile_index)
 	end
 
-	local result_id = nil
+	local result_id
 
 	if allowed_to_switch_to_profile then
 		result_id = ProfileRequester.REQUEST_RESULTS.success
@@ -94,6 +98,7 @@ end
 
 ProfileRequester._despawn_player_unit = function (self, player)
 	local player_unit = player.player_unit
+
 	self._despawning_player_unit = player_unit
 
 	Managers.state.spawn:delayed_despawn(player)
@@ -121,6 +126,7 @@ ProfileRequester.rpc_request_profile_reply = function (self, channel_id, local_p
 	end
 
 	local result = ProfileRequester.REQUEST_RESULTS[result_id]
+
 	self._request_result = result
 
 	if result == "success" and force_respawn then

@@ -1,5 +1,8 @@
+﻿-- chunkname: @scripts/ui/views/tutorial_input_ui.lua
+
 local definitions = local_require("scripts/ui/views/tutorial_input_ui_definitions")
 local DO_RELOAD = true
+
 TutorialInputUI = class(TutorialInputUI)
 
 TutorialInputUI.init = function (self, parent, ingame_ui_context)
@@ -12,7 +15,7 @@ TutorialInputUI.init = function (self, parent, ingame_ui_context)
 	self._tutorial_tooltip_input_widgets = {}
 	self._active_tutorial_tooltips = {}
 	self._prefixes = {
-		mouse = "mouse"
+		mouse = "mouse",
 	}
 
 	self:_create_ui_elements()
@@ -50,7 +53,7 @@ end
 TutorialInputUI.event_remove_tutorial_input = function (self, mission_name)
 	fassert(Missions[mission_name], "[TutorialInputUI:event_remove_tutorial_input] There is no mission called %q", mission_name)
 
-	local index = nil
+	local index
 
 	for idx, mission_data in pairs(self._active_tutorial_tooltips) do
 		if mission_data.name == mission_name then
@@ -100,7 +103,7 @@ TutorialInputUI._button_texture_data_by_input_action = function (self, input_act
 		return button_texture_data
 	else
 		local input_service = input_manager:get_service("Player")
-		local alternate_input_action = nil
+		local alternate_input_action
 
 		if active_template.input_service_fallback then
 			alternate_input_action = input_manager:get_service(active_template.input_service_fallback)
@@ -150,13 +153,16 @@ TutorialInputUI._update_tooltip = function (self, dt, t)
 	local text = active_template.text or "-no text assigned-"
 	local sub_text = active_template.sub_text and Localize(active_template.sub_text) or ""
 	local force_update = active_template.force_update
-	local texture_size_y = 0
-	local texture_size_x = 0
+	local texture_size_y, texture_size_x = 0, 0
 	local gamepad_active = self._input_manager:is_device_active("gamepad")
-	local inputs = (gamepad_active or IS_PS4) and active_template.tooltip_gamepad_inputs or active_template.tooltip_inputs
+	local inputs = not (not gamepad_active and not IS_PS4) and active_template.tooltip_gamepad_inputs or active_template.tooltip_inputs
 
 	if not active_tooltip_name then
 		self:fade_in()
+	end
+
+	if false then
+		-- Nothing
 	end
 
 	local input_widgets = self._tutorial_tooltip_input_widgets
@@ -177,9 +183,11 @@ TutorialInputUI._update_tooltip = function (self, dt, t)
 		end
 
 		local num_inputs = inputs and #inputs or 0
+
 		widget_content.show_bg = num_inputs > 0
 		widget_content.description = text
 		widget_content.sub_description = sub_text
+
 		local parent_widget_content = widget_content
 		local total_width = 0
 		local num_widgets = 0
@@ -197,6 +205,7 @@ TutorialInputUI._update_tooltip = function (self, dt, t)
 			end
 
 			parent_widget_content.unassigned = parent_widget_content.unassigned or unassigned
+
 			local texture_size_x = 0
 			local texture_size_y = 0
 
@@ -206,10 +215,10 @@ TutorialInputUI._update_tooltip = function (self, dt, t)
 				if button_texture_data.texture then
 					widget_content.button_text = ""
 					widget_content.icon = {
-						button_texture_data.texture
+						button_texture_data.texture,
 					}
 					widget_style.icon.texture_sizes = {
-						button_texture_data.size
+						button_texture_data.size,
 					}
 					texture_size_x = button_texture_data.size[1]
 					texture_size_y = button_texture_data.size[2]
@@ -242,7 +251,7 @@ TutorialInputUI._update_tooltip = function (self, dt, t)
 						if button_texture_data[i].tileable then
 							tile_sizes[i] = {
 								text_width,
-								sizes[i][2]
+								sizes[i][2],
 							}
 							texture_size_x = texture_size_x + text_width
 
@@ -251,10 +260,7 @@ TutorialInputUI._update_tooltip = function (self, dt, t)
 							end
 						else
 							texture_size_x = texture_size_x + sizes[i][1]
-
-							if texture_size_y < sizes[i][2] then
-								texture_size_y = sizes[i][2] or texture_size_y
-							end
+							texture_size_y = texture_size_y < sizes[i][2] and sizes[i][2] or texture_size_y
 						end
 					end
 
@@ -268,11 +274,13 @@ TutorialInputUI._update_tooltip = function (self, dt, t)
 				ui_scenegraph["input_description_icon_" .. i].size[2] = texture_size_y
 				widget_content.prefix_text = input.prefix and input.prefix ~= "" and Localize(input.prefix) or ""
 				widget_content.suffix_text = input.suffix
+
 				local prefix_font, prefix_scaled_font_size = UIFontByResolution(widget_style.prefix_text)
 				local suffix_font, suffix_scaled_font_size = UIFontByResolution(widget_style.suffix_text)
 				local prefix_text_width = UIRenderer.text_size(ui_renderer, widget_content.prefix_text, prefix_font[1], prefix_scaled_font_size)
 				local suffix_text_width = UIRenderer.text_size(ui_renderer, widget_content.suffix_text, suffix_font[1], suffix_scaled_font_size)
 				local widget_width = texture_size_x + prefix_text_width + suffix_text_width + 5
+
 				ui_scenegraph["input_description_icon_" .. i].local_position[1] = prefix_text_width
 				ui_scenegraph["input_description_" .. i].local_position[1] = total_width
 				total_width = total_width + widget_width
@@ -282,6 +290,7 @@ TutorialInputUI._update_tooltip = function (self, dt, t)
 
 		for i = num_widgets + 1, definitions.NUMBER_OF_TOOLTIP_INPUT_WIDGETS do
 			local widget = input_widgets[i]
+
 			widget.content.visible = false
 		end
 
@@ -337,10 +346,12 @@ TutorialInputUI._fade = function (self, from_alpha, to_alpha, duration, complete
 	local unassigned_background_style = widget_style.unassigned_background
 	local tutorial_tooltip_animations = self._tutorial_tooltip_animations
 	local wait_time = completed and 0.5 or 0
+
 	self._tutorial_tooltip_widget.content.completed = completed
 
 	if completed then
 		local complete_in_duration = 0.3
+
 		tutorial_tooltip_animations.completed_size_x = UIAnimation.init(UIAnimation.function_by_time, completed_texture_style.texture_size, 1, 1224, 408, complete_in_duration, math.easeInCubic)
 		tutorial_tooltip_animations.completed_size_y = UIAnimation.init(UIAnimation.function_by_time, completed_texture_style.texture_size, 2, 537, 179, complete_in_duration, math.easeInCubic)
 		tutorial_tooltip_animations.completed_fade_in = UIAnimation.init(UIAnimation.function_by_time, completed_texture_style.color, 1, 0, 255, duration, math.easeInCubic)
@@ -358,6 +369,7 @@ TutorialInputUI._fade = function (self, from_alpha, to_alpha, duration, complete
 	tutorial_tooltip_animations.tooltip_description_shadow_fade = UIAnimation.init(UIAnimation.wait, wait_time, UIAnimation.function_by_time, description_shadow_style.text_color, 1, from_alpha, to_alpha, duration, math.easeInCubic)
 	tutorial_tooltip_animations.tooltip_sub_description_fade = UIAnimation.init(UIAnimation.wait, wait_time, UIAnimation.function_by_time, sub_description_style.text_color, 1, from_alpha, to_alpha, duration, math.easeInCubic)
 	tutorial_tooltip_animations.tooltip_sub_description_shadow_fade = UIAnimation.init(UIAnimation.wait, wait_time, UIAnimation.function_by_time, sub_description_shadow_style.text_color, 1, from_alpha, to_alpha, duration, math.easeInCubic)
+
 	local input_widgets = self._tutorial_tooltip_input_widgets
 
 	for i = 1, definitions.NUMBER_OF_TOOLTIP_INPUT_WIDGETS do
@@ -370,6 +382,7 @@ TutorialInputUI._fade = function (self, from_alpha, to_alpha, duration, complete
 		local button_text_style = input_widget_style.button_text
 		local button_text_shadow_style = input_widget_style.button_text_shadow
 		local icon_style = input_widget_style.icon
+
 		tutorial_tooltip_animations["tooltip_input_prefix_" .. i] = UIAnimation.init(UIAnimation.wait, wait_time, UIAnimation.function_by_time, prefix_text_style.text_color, 1, from_alpha, to_alpha, duration, math.easeInCubic)
 		tutorial_tooltip_animations["tooltip_input_prefix_shadow_" .. i] = UIAnimation.init(UIAnimation.wait, wait_time, UIAnimation.function_by_time, prefix_text_shadow_style.text_color, 1, from_alpha, to_alpha, duration, math.easeInCubic)
 		tutorial_tooltip_animations["tooltip_input_suffix_" .. i] = UIAnimation.init(UIAnimation.wait, wait_time, UIAnimation.function_by_time, suffix_text_style.text_color, 1, from_alpha, to_alpha, duration, math.easeInCubic)
@@ -390,6 +403,7 @@ end
 
 TutorialInputUI.set_visible = function (self, visible)
 	self._is_visible = visible
+
 	local ui_renderer = self._ui_renderer
 
 	for _, widget in ipairs(self._tutorial_tooltip_input_widgets) do

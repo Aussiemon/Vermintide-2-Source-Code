@@ -1,9 +1,12 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_give_command_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 local unit_alive = Unit.alive
 local command_to_query_concept = {
-	clan_rat_attack = "commanding"
+	clan_rat_attack = "commanding",
 }
+
 BTGiveCommandAction = class(BTGiveCommandAction, BTNode)
 
 BTGiveCommandAction.init = function (self, ...)
@@ -14,6 +17,7 @@ BTGiveCommandAction.name = "BTGiveCommandAction"
 
 BTGiveCommandAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
+
 	blackboard.action = action
 
 	blackboard.navigation_extension:set_enabled(false)
@@ -66,6 +70,7 @@ BTGiveCommandAction.run = function (self, unit, blackboard, t, dt)
 
 	if blackboard.anim_cb_stormvermin_voice then
 		blackboard.anim_cb_stormvermin_voice = nil
+
 		local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
 		local event_data = FrameTable.alloc_table()
 		local order = blackboard.give_command

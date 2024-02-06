@@ -1,10 +1,13 @@
+﻿-- chunkname: @scripts/entity_system/systems/world_marker/world_marker_system.lua
+
 require("scripts/unit_extensions/world_markers/player_equipment_world_marker_extension")
 require("scripts/unit_extensions/world_markers/store_world_marker_extension")
 
 WorldMarkerSystem = class(WorldMarkerSystem, ExtensionSystemBase)
+
 local extensions = {
 	"PlayerEquipmentWorldMarkerExtension",
-	"StoreWorldMarkerExtension"
+	"StoreWorldMarkerExtension",
 }
 
 WorldMarkerSystem.init = function (self, entity_system_creation_context, system_name)

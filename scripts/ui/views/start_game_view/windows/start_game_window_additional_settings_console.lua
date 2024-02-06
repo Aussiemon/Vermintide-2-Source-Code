@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/ui/views/start_game_view/windows/start_game_window_additional_settings_console.lua
+
 local definitions = local_require("scripts/ui/views/start_game_view/windows/definitions/start_game_window_additional_settings_console_definitions")
+
 StartGameWindowAdditionalSettingsConsole = class(StartGameWindowAdditionalSettingsConsole)
 StartGameWindowAdditionalSettingsConsole.NAME = "StartGameWindowAdditionalSettingsConsole"
 
@@ -6,20 +9,24 @@ StartGameWindowAdditionalSettingsConsole.on_enter = function (self, params, offs
 	print("[StartGameWindow] Enter Substate StartGameWindowAdditionalSettingsConsole")
 
 	self.parent = params.parent
+
 	local ingame_ui_context = params.ingame_ui_context
+
 	self.ui_renderer = ingame_ui_context.ui_renderer
 	self._ui_top_renderer = ingame_ui_context.ui_top_renderer
 	self.input_manager = ingame_ui_context.input_manager
 	self.statistics_db = ingame_ui_context.statistics_db
 	self.render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 	self._network_lobby = ingame_ui_context.network_lobby
 	self._mechanism_name = params.mechanism_name
 	self._params = params
 	self._parent_window_name = parent_window_name
+
 	local player_manager = Managers.player
 	local local_player = player_manager:local_player()
+
 	self._stats_id = local_player:stats_id()
 	self.player_manager = player_manager
 	self.peer_id = ingame_ui_context.peer_id
@@ -37,10 +44,11 @@ end
 
 StartGameWindowAdditionalSettingsConsole._start_transition_animation = function (self, animation_name)
 	local params = {
-		render_settings = self.render_settings
+		render_settings = self.render_settings,
 	}
 	local widgets = {}
 	local anim_id = self.ui_animator:start_animation(animation_name, widgets, self._scenegraph_definition, params)
+
 	self._animations[animation_name] = anim_id
 end
 
@@ -49,7 +57,9 @@ StartGameWindowAdditionalSettingsConsole.create_ui_elements = function (self, de
 	self._scenegraph_definition = definitions.scenegraph_definition
 	self._animation_definitions = definitions.animation_definitions
 	self._gamepad_widget_navigation = definitions.gamepad_widget_navigation
+
 	local ui_scenegraph = UISceneGraph.init_scenegraph(self._scenegraph_definition)
+
 	self.ui_scenegraph = ui_scenegraph
 	self._widgets, self._widgets_by_name = UIUtils.create_widgets(self._widget_definitions)
 
@@ -59,6 +69,7 @@ StartGameWindowAdditionalSettingsConsole.create_ui_elements = function (self, de
 
 	if offset then
 		local window_position = ui_scenegraph.window.local_position
+
 		window_position[1] = window_position[1] + offset[1]
 		window_position[2] = window_position[2] + offset[2]
 		window_position[3] = window_position[3] + offset[3]
@@ -70,10 +81,15 @@ end
 StartGameWindowAdditionalSettingsConsole._set_additional_options_enabled_state = function (self, enabled)
 	local widgets_by_name = self._widgets_by_name
 	local private_button = widgets_by_name.private_button
+
 	private_button.content.button_hotspot.disable_button = not enabled
+
 	local host_button = widgets_by_name.host_button
+
 	host_button.content.button_hotspot.disable_button = not enabled
+
 	local strict_matchmaking_button = widgets_by_name.strict_matchmaking_button
+
 	strict_matchmaking_button.content.button_hotspot.disable_button = not enabled
 	self._additional_option_enabled = enabled
 end
@@ -183,6 +199,7 @@ StartGameWindowAdditionalSettingsConsole._handle_input_index = function (self, i
 
 	repeat
 		input_index = input_index + index_increment
+
 		local widget_name = self._gamepad_widget_navigation[input_index]
 
 		if not widget_name then
@@ -198,7 +215,7 @@ StartGameWindowAdditionalSettingsConsole._handle_input_index = function (self, i
 end
 
 StartGameWindowAdditionalSettingsConsole._handle_gamepad_input = function (self, dt, t, input_service)
-	local index_increment = nil
+	local index_increment
 
 	if input_service:get("move_down") then
 		index_increment = 1
@@ -227,6 +244,7 @@ StartGameWindowAdditionalSettingsConsole._handle_gamepad_input = function (self,
 		local widget = widgets_by_name[widget_name]
 		local hotspot = widget.content.button_hotspot
 		local is_selected = i == input_index
+
 		hotspot.is_hover = is_selected
 
 		if is_selected then
@@ -337,16 +355,21 @@ StartGameWindowAdditionalSettingsConsole._update_additional_options = function (
 		local private_is_selected = private_enabled
 		local private_is_disabled = twitch_active
 		local private_hotspot = widgets_by_name.private_button.content.button_hotspot
+
 		private_hotspot.disable_button = private_is_disabled
 		private_hotspot.is_selected = private_is_selected
+
 		local always_host_is_selected = private_enabled or not is_alone or always_host_enabled
 		local always_host_is_disabled = private_enabled or not is_alone or twitch_active
 		local host_hotspot = widgets_by_name.host_button.content.button_hotspot
+
 		host_hotspot.disable_button = always_host_is_disabled
 		host_hotspot.is_selected = always_host_is_selected
+
 		local strict_matchmaking_is_selected = not always_host_enabled and not private_enabled and is_alone and strict_matchmaking_enabled
 		local strict_matchmaking_is_disabled = private_enabled or always_host_enabled or not is_alone or twitch_active
 		local strict_matchmaking_hotspot = widgets_by_name.strict_matchmaking_button.content.button_hotspot
+
 		strict_matchmaking_hotspot.disable_button = strict_matchmaking_is_disabled
 		strict_matchmaking_hotspot.is_selected = strict_matchmaking_is_selected
 		self._private_enabled = private_enabled

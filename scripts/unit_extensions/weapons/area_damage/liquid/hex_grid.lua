@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/weapons/area_damage/liquid/hex_grid.lua
+
 require("scripts/managers/debug/debug_manager")
 
 HexGrid = class(HexGrid)
@@ -9,39 +11,42 @@ HexGrid.init = function (self, center, xy_extents, z_extents, x_cell_size, z_cel
 	local y_cell_size = math.tan(math.pi / 3) * 0.5 * x_cell_size
 	local pi_div_3 = math.pi / 3
 	local two_pi = math.pi * 2
+
 	self._directions = {
 		{
 			1,
 			0,
-			angle = 0
+			angle = 0,
 		},
 		{
 			1,
 			-1,
-			angle = two_pi - pi_div_3
+			angle = two_pi - pi_div_3,
 		},
 		{
 			0,
 			-1,
-			angle = two_pi - pi_div_3 * 2
+			angle = two_pi - pi_div_3 * 2,
 		},
 		{
 			-1,
 			0,
-			angle = two_pi - pi_div_3 * 3
+			angle = two_pi - pi_div_3 * 3,
 		},
 		{
 			-1,
 			1,
-			angle = two_pi - pi_div_3 * 4
+			angle = two_pi - pi_div_3 * 4,
 		},
 		{
 			0,
 			1,
-			angle = two_pi - pi_div_3 * 5
-		}
+			angle = two_pi - pi_div_3 * 5,
+		},
 	}
-	local root = center - x_vector * (xy_extents + 1 + xy_extents * 0.5) * x_cell_size - y_vector * (xy_extents + 1) * y_cell_size - z_vector * (z_extents + 1) * z_cell_size
+
+	local root = center - x_vector * ((xy_extents + 1 + xy_extents * 0.5) * x_cell_size) - y_vector * ((xy_extents + 1) * y_cell_size) - z_vector * (z_extents + 1) * z_cell_size
+
 	self._root_position = Vector3Box(root)
 	self._x_cell_size = x_cell_size
 	self._y_cell_size = y_cell_size
@@ -82,7 +87,9 @@ HexGrid.ijk = function (self, real_index)
 	local i = real_index % row_size
 	local left = (real_index - i) / row_size
 	local j = left % row_size
+
 	left = left - j
+
 	local k = left / row_size
 
 	return i, j + 1, k + 1
@@ -110,10 +117,7 @@ HexGrid.sample_grid = function (self, samples, z, multiplier)
 	drawer:reset()
 
 	local xy_extents = self._xy_extents
-	local min_i = 1
-	local min_j = 1
-	local max_i = xy_extents * 2 + 1
-	local max_j = xy_extents * 2 + 1
+	local min_i, min_j, max_i, max_j = 1, 1, xy_extents * 2 + 1, xy_extents * 2 + 1
 	local root = self._root_position:unbox()
 	local min_x = root.x + xy_extents * self._x_cell_size * (1 - multiplier)
 	local max_x = root.x + (xy_extents * (1 + 1 * multiplier) + 1) * self._x_cell_size
@@ -133,7 +137,7 @@ HexGrid.sample_grid = function (self, samples, z, multiplier)
 	for index = 1, samples do
 		local point = Vector3(rnd(min_x, max_x), rnd(min_y, max_y), z)
 		local i, j, k = self:find_index(point)
-		local color = nil
+		local color
 
 		if i < min_i or max_i < i or j < min_j or max_j < j then
 			color = render_outside and black
@@ -143,6 +147,7 @@ HexGrid.sample_grid = function (self, samples, z, multiplier)
 			local r = i_val % 2 == 0 and 125 * i_val / i_span or 125 + 125 * i_val / i_span
 			local g = j_val % 2 == 0 and 125 * j_val / j_span or 125 + 125 * j_val / j_span
 			local b = 0
+
 			color = Color(r, g, b)
 		end
 

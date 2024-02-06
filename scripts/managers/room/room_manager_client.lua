@@ -1,9 +1,12 @@
+﻿-- chunkname: @scripts/managers/room/room_manager_client.lua
+
 require("scripts/managers/room/room_handler")
 
 RoomManagerClient = class(RoomManagerClient)
+
 local RPCS = {
 	"rpc_inn_room_created",
-	"rpc_inn_room_destroyed"
+	"rpc_inn_room_destroyed",
 }
 
 RoomManagerClient.init = function (self, world, network_event_delegate)
@@ -32,7 +35,7 @@ RoomManagerClient.create_room = function (self, peer_id, room_id, profile_index)
 	self._room_handler:create_room(room_profile, room_id)
 
 	self._peer_rooms[peer_id] = {
-		room_id = room_id
+		room_id = room_id,
 	}
 	self._room_order[room_id] = peer_id
 end

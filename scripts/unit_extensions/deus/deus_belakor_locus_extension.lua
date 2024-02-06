@@ -1,12 +1,14 @@
+﻿-- chunkname: @scripts/unit_extensions/deus/deus_belakor_locus_extension.lua
+
 local TRAVEL_DISTANCE_TO_SPAWN_CULTISTS = 60
 local DISTANCE_TO_TRIGGER_DIALOGUE = 20
 local UNLOCK_MESSAGE_DURATION = 10
 local STATE = {
-	INITIAL = 0,
-	DONE = 4,
 	ACTIVATED = 3,
+	DONE = 4,
+	INITIAL = 0,
+	WAITING_FOR_ACTIVATION = 2,
 	WAITING_TO_SPAWN_CULTISTS = 1,
-	WAITING_FOR_ACTIVATION = 2
 }
 local NUM_LOCUS_TYPES = 3
 local AGGRO_ON_INTERACTION_RANGE = 5
@@ -18,23 +20,23 @@ local BEAM_LOCUS_Z_OFFSET = 2
 local SHOW_RUNE_FLOW_EVENTS = {
 	"SHOW_RUNE_01",
 	"SHOW_RUNE_02",
-	"SHOW_RUNE_03"
+	"SHOW_RUNE_03",
 }
 local LIEUTENANT_TERROR_EVENTS = {
 	"belakor_altar_shadow_lieutenant_spawn_01",
 	"belakor_altar_shadow_lieutenant_spawn_02",
-	"belakor_altar_shadow_lieutenant_spawn_03"
+	"belakor_altar_shadow_lieutenant_spawn_03",
 }
 local DECAL_PER_LOCUS_TYPE = {
 	"units/decals/decal_belakor_arena_01",
 	"units/decals/decal_belakor_arena_02",
-	"units/decals/decal_belakor_arena_03"
+	"units/decals/decal_belakor_arena_03",
 }
 
 local function check_if_should_spawn_cultists(conflict_director, altar_main_path_distance)
 	local main_path_info = conflict_director.main_path_info
 	local main_path_player_info = conflict_director.main_path_player_info
-	local ahead_player_travel_dist = nil
+	local ahead_player_travel_dist
 	local ahead_player_info = main_path_player_info[main_path_info.ahead_unit]
 
 	if not ahead_player_info then
@@ -47,7 +49,7 @@ local function check_if_should_spawn_cultists(conflict_director, altar_main_path
 end
 
 local function check_if_should_play_vo(world, locus_unit, locus_position, players_and_bots)
-	local closest_position, closest_player = nil
+	local closest_position, closest_player
 	local closest_distance = math.huge
 
 	for i = 1, #players_and_bots do
@@ -66,7 +68,7 @@ local function check_if_should_play_vo(world, locus_unit, locus_position, player
 		return false
 	end
 
-	if DISTANCE_TO_TRIGGER_DIALOGUE < closest_distance then
+	if closest_distance > DISTANCE_TO_TRIGGER_DIALOGUE then
 		return false
 	end
 
@@ -87,11 +89,15 @@ DeusBelakorLocusExtension.init = function (self, extension_init_context, unit, e
 	self._unit = unit
 	self._is_server = Managers.player.is_server
 	self._world = extension_init_context.world
+
 	local side = Managers.state.side:get_side_from_name("heroes")
+
 	self._hero_side = side
+
 	local mechanism = Managers.mechanism:game_mechanism()
 	local deus_run_controller = mechanism:get_deus_run_controller()
 	local current_node = deus_run_controller:get_current_node()
+
 	self._arena_mode = current_node.base_level == "arena_belakor"
 
 	if not self._is_server then
@@ -122,16 +128,21 @@ DeusBelakorLocusExtension.connect_to_statue = function (self, statue_unit, decal
 
 	if current_state ~= STATE.DONE then
 		self._statue_unit = statue_unit
+
 		local world = self._world
 		local beam_start_position = Unit.local_position(self._unit, 0) + Vector3(0, 0, BEAM_LOCUS_Z_OFFSET)
 		local beam_end_position = Matrix4x4.translation(decal_pose)
 		local beam_start_control_position = beam_start_position + Vector3(0, 0, 2)
 		local direction = beam_end_position - beam_start_position
+
 		direction.z = 0
 		direction = Vector3.normalize(direction)
+
 		local beam_end_control_position = beam_end_position + direction * 2
 		local statue_beam = World.create_particles(world, STATUE_BEAM_FX, Vector3.zero(), Quaternion.identity())
+
 		self._statue_beam = statue_beam
+
 		local beam_variable_id = World.find_particles_variable(world, STATUE_BEAM_FX, 1)
 
 		World.set_particles_variable(world, statue_beam, beam_variable_id, beam_start_position)
@@ -150,6 +161,7 @@ DeusBelakorLocusExtension.connect_to_statue = function (self, statue_unit, decal
 
 		local decal_pos = beam_end_position
 		local decal_rotation = Matrix4x4.rotation(decal_pose)
+
 		self._statue_decal = Managers.state.unit_spawner:spawn_local_unit(DECAL_PER_LOCUS_TYPE[self._locus_type], decal_pos, decal_rotation, "units/materials/d/decal/decal_belakor_arena_01")
 	end
 end
@@ -161,8 +173,10 @@ DeusBelakorLocusExtension.update = function (self, unit, input, dt, context, t)
 		if self._go_id then
 			local seed = HashUtils.fnv32_hash(self._go_id)
 			local random_generator = DeusGenUtils.create_random_generator(seed)
+
 			self._locus_type = random_generator(1, NUM_LOCUS_TYPES)
 			self._random_generator = random_generator
+
 			local flow_event = SHOW_RUNE_FLOW_EVENTS[self._locus_type]
 
 			if flow_event then
@@ -196,6 +210,7 @@ DeusBelakorLocusExtension.update = function (self, unit, input, dt, context, t)
 				end
 
 				possible_sources[#possible_sources + 1] = closest_player_dialogue_input
+
 				local random_index = self._random_generator(1, #possible_sources)
 				local dialogue_input = possible_sources[random_index]
 				local event_data = FrameTable.alloc_table()
@@ -215,11 +230,13 @@ DeusBelakorLocusExtension.update = function (self, unit, input, dt, context, t)
 				local level_analysis = conflict_director.level_analysis
 				local main_paths = level_analysis:get_main_paths()
 				local _, travel_dist = MainPathUtils.closest_pos_at_main_path(main_paths, altar_position)
+
 				self._altar_main_path_distance = travel_dist
 			end
 
 			if check_if_should_spawn_cultists(conflict_director, self._altar_main_path_distance) then
 				local seed = Managers.mechanism:get_level_seed()
+
 				self._cultist_terror_event_id = Managers.state.conflict:start_terror_event("belakor_altar_cultists_spawn", seed, unit)
 
 				self:_set_state(STATE.WAITING_FOR_ACTIVATION)
@@ -230,57 +247,55 @@ DeusBelakorLocusExtension.update = function (self, unit, input, dt, context, t)
 	local current_state = self:_get_state()
 	local prev_state = self._prev_state
 
-	if current_state ~= prev_state then
-		if current_state == STATE.WAITING_TO_SPAWN_CULTISTS then
-			-- Nothing
-		elseif current_state == STATE.WAITING_FOR_ACTIVATION then
-			self._interactable_extension:set_interactable_type(INTERACTABLE_TYPE_PRE_CRYSTAL)
-		elseif current_state == STATE.ACTIVATED then
-			Unit.flow_event(unit, "lieutenant_spawned")
-			Managers.state.achievement:trigger_event("register_lieutenant_spawned")
-			self._interactable_extension:set_interactable_type(INTERACTABLE_TYPE_WITH_CRYSTAL)
+	if current_state == prev_state or current_state == STATE.WAITING_TO_SPAWN_CULTISTS then
+		-- Nothing
+	elseif current_state == STATE.WAITING_FOR_ACTIVATION then
+		self._interactable_extension:set_interactable_type(INTERACTABLE_TYPE_PRE_CRYSTAL)
+	elseif current_state == STATE.ACTIVATED then
+		Unit.flow_event(unit, "lieutenant_spawned")
+		Managers.state.achievement:trigger_event("register_lieutenant_spawned")
+		self._interactable_extension:set_interactable_type(INTERACTABLE_TYPE_WITH_CRYSTAL)
 
-			if self._statue_beam then
-				World.destroy_particles(self._world, self._statue_beam)
+		if self._statue_beam then
+			World.destroy_particles(self._world, self._statue_beam)
 
-				self._statue_beam = nil
-			end
+			self._statue_beam = nil
+		end
 
-			if self._statue_decal then
-				Managers.state.unit_spawner:mark_for_deletion(self._statue_decal)
+		if self._statue_decal then
+			Managers.state.unit_spawner:mark_for_deletion(self._statue_decal)
 
-				self._statue_decal = nil
-			end
+			self._statue_decal = nil
+		end
+
+		if self._is_server then
+			local seed = Managers.mechanism:get_level_seed()
+			local terror_event = LIEUTENANT_TERROR_EVENTS[self._locus_type] or "belakor_shadow_lieutenant_spawn"
+
+			Managers.state.conflict:start_terror_event(terror_event, seed, unit)
+		end
+	elseif current_state == STATE.DONE then
+		Unit.flow_event(unit, "deactivated")
+
+		if self._arena_mode then
+			Managers.state.achievement:trigger_event("register_locus_destroyed")
+		end
+
+		if not self._arena_mode then
+			local deus_curse_ui = Managers.ui:get_hud_component("DeusCurseUI")
+
+			deus_curse_ui:show_special_message("belakor", "deus_belakor_locus_arena_unlock_title", "deus_belakor_locus_arena_unlock_description", UNLOCK_MESSAGE_DURATION)
+
+			local wwise_world = Managers.world:wwise_world(self._world)
+
+			WwiseWorld.trigger_event(wwise_world, "belakor_shadow_locus_arena_unlocked")
 
 			if self._is_server then
-				local seed = Managers.mechanism:get_level_seed()
-				local terror_event = LIEUTENANT_TERROR_EVENTS[self._locus_type] or "belakor_shadow_lieutenant_spawn"
+				local mechanism = Managers.mechanism:game_mechanism()
+				local deus_run_controller = mechanism.get_deus_run_controller and mechanism:get_deus_run_controller()
 
-				Managers.state.conflict:start_terror_event(terror_event, seed, unit)
-			end
-		elseif current_state == STATE.DONE then
-			Unit.flow_event(unit, "deactivated")
-
-			if self._arena_mode then
-				Managers.state.achievement:trigger_event("register_locus_destroyed")
-			end
-
-			if not self._arena_mode then
-				local deus_curse_ui = Managers.ui:get_hud_component("DeusCurseUI")
-
-				deus_curse_ui:show_special_message("belakor", "deus_belakor_locus_arena_unlock_title", "deus_belakor_locus_arena_unlock_description", UNLOCK_MESSAGE_DURATION)
-
-				local wwise_world = Managers.world:wwise_world(self._world)
-
-				WwiseWorld.trigger_event(wwise_world, "belakor_shadow_locus_arena_unlocked")
-
-				if self._is_server then
-					local mechanism = Managers.mechanism:game_mechanism()
-					local deus_run_controller = mechanism.get_deus_run_controller and mechanism:get_deus_run_controller()
-
-					if deus_run_controller then
-						deus_run_controller:unlock_arena_belakor()
-					end
+				if deus_run_controller then
+					deus_run_controller:unlock_arena_belakor()
 				end
 			end
 		end

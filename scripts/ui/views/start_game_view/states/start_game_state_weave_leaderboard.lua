@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/start_game_view/states/start_game_state_weave_leaderboard.lua
+
 require("scripts/helpers/weave_utils")
 
 local definitions = local_require("scripts/ui/views/start_game_view/states/definitions/start_game_state_weave_leaderboard_definitions")
@@ -16,17 +18,18 @@ local MIN_TIME_BETWEEN_LEADERBOARD_REQUESTS = 1.5
 local localized_reward_tier_strings = {
 	Localize("menu_weave_leaderboard_tier_3_title"),
 	Localize("menu_weave_leaderboard_tier_2_title"),
-	Localize("menu_weave_leaderboard_tier_1_title")
+	Localize("menu_weave_leaderboard_tier_1_title"),
 }
 local localized_reward_tier_tooltip_strings = {
 	Localize("menu_weave_leaderboard_tier_tooltip_bronze"),
 	Localize("menu_weave_leaderboard_tier_tooltip_silver"),
-	Localize("menu_weave_leaderboard_tier_tooltip_gold")
+	Localize("menu_weave_leaderboard_tier_tooltip_gold"),
 }
 local localized_time_strings = {
 	Localize("menu_weave_leaderboard_button_refresh_2"),
-	Localize("menu_weave_leaderboard_button_refresh_1")
+	Localize("menu_weave_leaderboard_button_refresh_1"),
 }
+
 StartGameStateWeaveLeaderboard = class(StartGameStateWeaveLeaderboard)
 StartGameStateWeaveLeaderboard.NAME = "StartGameStateWeaveLeaderboard"
 
@@ -34,11 +37,15 @@ StartGameStateWeaveLeaderboard.on_enter = function (self, params)
 	print("[StartGameState] Enter Substate StartGameStateWeaveLeaderboard")
 
 	self.parent = params.parent
+
 	local use_gamepad_layout = false
+
 	self._gamepad_style_active = use_gamepad_layout
 	self._wwise_world = params.wwise_world
 	self._hero_name = params.hero_name
+
 	local ingame_ui_context = params.ingame_ui_context
+
 	self._ingame_ui_context = ingame_ui_context
 	self._ui_renderer = ingame_ui_context.ui_renderer
 	self._ui_top_renderer = ingame_ui_context.ui_top_renderer
@@ -46,11 +53,13 @@ StartGameStateWeaveLeaderboard.on_enter = function (self, params)
 	self._statistics_db = ingame_ui_context.statistics_db
 	self._render_settings = {
 		alpha_multiplier = 1,
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 	self._network_lobby = ingame_ui_context.network_lobby
+
 	local player_manager = Managers.player
 	local local_player = player_manager:local_player()
+
 	self._stats_id = local_player:stats_id()
 	self._animations = {}
 	self._ui_animations = {}
@@ -72,45 +81,46 @@ StartGameStateWeaveLeaderboard.on_enter = function (self, params)
 	local leaderboard_tab_data = {
 		{
 			value = "global",
-			text = Localize("menu_weave_leaderboard_filter_option_global")
+			text = Localize("menu_weave_leaderboard_filter_option_global"),
 		},
 		{
 			value = "friends",
-			text = Localize("menu_weave_leaderboard_filter_option_friends")
-		}
+			text = Localize("menu_weave_leaderboard_filter_option_friends"),
+		},
 	}
 	local filter_data = {
 		{
 			value = "personal",
-			text = Localize("menu_weave_leaderboard_filter_option_you")
+			text = Localize("menu_weave_leaderboard_filter_option_you"),
 		},
 		{
 			value = "top",
-			text = Localize("menu_weave_leaderboard_filter_option_top")
-		}
+			text = Localize("menu_weave_leaderboard_filter_option_top"),
+		},
 	}
 	local team_size_data = {
 		{
 			value = 1,
-			text = Localize("menu_weave_leaderboard_filter_option_players_1")
+			text = Localize("menu_weave_leaderboard_filter_option_players_1"),
 		},
 		{
 			value = 2,
-			text = Localize("menu_weave_leaderboard_filter_option_players_2")
+			text = Localize("menu_weave_leaderboard_filter_option_players_2"),
 		},
 		{
 			value = 3,
-			text = Localize("menu_weave_leaderboard_filter_option_players_3")
+			text = Localize("menu_weave_leaderboard_filter_option_players_3"),
 		},
 		{
 			value = 4,
-			text = Localize("menu_weave_leaderboard_filter_option_players_4")
-		}
+			text = Localize("menu_weave_leaderboard_filter_option_players_4"),
+		},
 	}
 	local season_stat_data = {}
 	local season_data = {}
 	local season_text = ""
 	local season_name = Localize("menu_weave_leaderboard_filter_sesason")
+
 	self._current_season_id = ScorpionSeasonalSettings.current_season_id
 
 	for i = 1, self._current_season_id do
@@ -118,7 +128,7 @@ StartGameStateWeaveLeaderboard.on_enter = function (self, params)
 			ScorpionSeasonalSettings.get_leaderboard_stat_for_season(i, 1),
 			ScorpionSeasonalSettings.get_leaderboard_stat_for_season(i, 2),
 			ScorpionSeasonalSettings.get_leaderboard_stat_for_season(i, 3),
-			ScorpionSeasonalSettings.get_leaderboard_stat_for_season(i, 4)
+			ScorpionSeasonalSettings.get_leaderboard_stat_for_season(i, 4),
 		}
 
 		if i == self._current_season_id then
@@ -129,7 +139,7 @@ StartGameStateWeaveLeaderboard.on_enter = function (self, params)
 
 		season_data[i] = {
 			text = season_text,
-			value = i
+			value = i,
 		}
 	end
 
@@ -190,7 +200,7 @@ StartGameStateWeaveLeaderboard._add_poll_queue = function (self, filter_value, l
 	end
 
 	local leaderboard_tab_data = self._leaderboard_tab_data
-	local queue_index = nil
+	local queue_index
 
 	for i = 1, #leaderboard_tab_data do
 		if leaderboard_tab_data[i].value == leaderboard_type then
@@ -203,12 +213,13 @@ StartGameStateWeaveLeaderboard._add_poll_queue = function (self, filter_value, l
 	if queue_index then
 		local poll_queues = self._poll_queues
 		local poll_queue = poll_queues[queue_index] or {}
+
 		poll_queues[queue_index] = poll_queue
 		poll_queue[#poll_queue + 1] = {
 			filter_value = filter_value,
 			leaderboard_type = leaderboard_type,
 			stat_name = stat_name,
-			season_id = season_id
+			season_id = season_id,
 		}
 	end
 
@@ -222,11 +233,11 @@ StartGameStateWeaveLeaderboard._handle_next_poll_request = function (self, t)
 
 	local poll_queues = self._poll_queues
 	local priority_index = self._selected_option_tab_index or 1
-	local next_poll_request = nil
+	local next_poll_request
 
 	if priority_index and #poll_queues[priority_index] > 0 then
 		local poll_queue = poll_queues[priority_index]
-		local next_poll_queue_index = nil
+		local next_poll_queue_index
 
 		for i = 1, #poll_queue do
 			local poll_queue = poll_queue[i]
@@ -279,12 +290,14 @@ StartGameStateWeaveLeaderboard._handle_next_poll_request = function (self, t)
 	end
 
 	self._polling_callback = callback(self, "_cb_cashe_list_data", filter_value, leaderboard_type, stat_name, season_id)
+
 	local time = Managers.time:time("ui")
+
 	self._min_poll_time = time + MIN_TIME_BETWEEN_LEADERBOARD_REQUESTS
 end
 
 StartGameStateWeaveLeaderboard._update_leaderboard_presentation = function (self)
-	local stat_index, filter_value, season_index, leaderboard_type = nil
+	local stat_index, filter_value, season_index, leaderboard_type
 	local stepper_settings = self._stepper_settings
 
 	if stepper_settings then
@@ -312,14 +325,17 @@ StartGameStateWeaveLeaderboard._update_leaderboard_presentation = function (self
 
 	local selected_option_tab_index = self._selected_option_tab_index
 	local selected_option = self._leaderboard_tab_data[selected_option_tab_index]
+
 	leaderboard_type = selected_option.value
 	self._filter_value = filter_value
 	self._current_season_id = season_index or self._current_season_id
 	self._stat_name = self._season_stat_data[self._current_season_id][stat_index]
 	self._leaderboard_type = leaderboard_type
+
 	local cashed_list_data = self:_get_cashed_list_data(filter_value, leaderboard_type, self._stat_name, self._current_season_id)
 	local waiting_for_list = cashed_list_data == nil
 	local widgets_by_name = self._widgets_by_name
+
 	widgets_by_name.loading_icon.content.visible = waiting_for_list
 	widgets_by_name.refresh_button.content.button_hotspot.disable_button = waiting_for_list
 
@@ -399,11 +415,11 @@ StartGameStateWeaveLeaderboard._cb_cashe_list_data = function (self, filter_valu
 
 	cashed_list_data[filter_value][leaderboard_type][stat_name] = {
 		list_entries,
-		Managers.time:time("ui")
+		Managers.time:time("ui"),
 	}
 
 	if leaderboard_type == "global" and filter_value == "personal" then
-		local player_entry = nil
+		local player_entry
 
 		for i = 1, #list_entries do
 			local entry = list_entries[i]
@@ -464,16 +480,19 @@ StartGameStateWeaveLeaderboard._update_refresh_time = function (self, t)
 	local widgets_by_name = self._widgets_by_name
 	local widget = widgets_by_name.refresh_text
 	local content = widget.content
+
 	content.visible = refreshed_at_time ~= nil
 
 	if refreshed_at_time then
 		local time_diff = t - refreshed_at_time
+
 		time_diff = math.max(time_diff, 0)
+
 		local seconds = math.max(time_diff, 0)
 		local minutes = math.floor(seconds / 60)
 		local hours = math.floor(minutes / 60)
 		local days = math.floor(hours / 24)
-		local text = nil
+		local text
 
 		if minutes > 0 then
 			text = string.format(localized_time_strings[1], minutes)
@@ -487,17 +506,19 @@ end
 
 StartGameStateWeaveLeaderboard._initialize_stepper = function (self, stepper_index, title_text, content, start_index)
 	self._stepper_settings = self._stepper_settings or {}
+
 	local stepper_settings = self._stepper_settings
 	local stepper_name = "setting_stepper_" .. stepper_index
 	local widgets_by_name = self._widgets_by_name
 	local widget = widgets_by_name[stepper_name]
+
 	start_index = start_index or 1
 	stepper_settings[stepper_index] = {
 		stepper_name = stepper_name,
 		title_text = title_text,
 		content = content,
 		read_index = start_index,
-		widget = widget
+		widget = widget,
 	}
 	widget.content.title_text = title_text
 
@@ -508,9 +529,12 @@ StartGameStateWeaveLeaderboard._set_stepper_read_index = function (self, stepper
 	local stepper_settings = self._stepper_settings
 	local settings = stepper_settings[stepper_index]
 	local content = settings.content
+
 	settings.read_index = read_index
+
 	local read_data = content[read_index]
 	local widget = settings.widget
+
 	widget.content.setting_text = read_data.text
 end
 
@@ -529,12 +553,14 @@ end
 StartGameStateWeaveLeaderboard._create_ui_elements = function (self, params)
 	self._ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
 	self._console_cursor_widget = UIWidget.init(console_cursor_definition)
+
 	local widgets = {}
 	local widgets_by_name = {}
 
 	for name, widget_definition in pairs(widget_definitions) do
 		if widget_definition then
 			local widget = UIWidget.init(widget_definition)
+
 			widgets[#widgets + 1] = widget
 			widgets_by_name[name] = widget
 		end
@@ -548,17 +574,22 @@ StartGameStateWeaveLeaderboard._create_ui_elements = function (self, params)
 	UIRenderer.clear_scenegraph_queue(self._ui_renderer)
 
 	self.ui_animator = UIAnimator:new(self._ui_scenegraph, animation_definitions)
+
 	local scrollbar_widget = self._widgets_by_name.list_scrollbar
+
 	self._scrollbar_logic = ScrollBarLogic:new(scrollbar_widget)
+
 	local gui_layer = UILayer.default + 30
 	local input_service = self:input_service()
 	local use_fullscreen_layout = self._gamepad_style_active
+
 	self._menu_input_description = MenuInputDescriptionUI:new(nil, self._ui_top_renderer, input_service, 6, gui_layer, generic_input_actions.default, use_fullscreen_layout)
 
 	self._menu_input_description:set_input_description(nil)
 
 	local widget = self._widgets_by_name.no_placement_text
 	local widget_content = widget.content
+
 	widget_content.visible = false
 end
 
@@ -568,28 +599,32 @@ StartGameStateWeaveLeaderboard._setup_tab_widget = function (self, options)
 	local widgets_by_name = self._widgets_by_name
 	local option_tabs_segments = UIWidget.init(UIWidgets.create_simple_centered_texture_amount("menu_frame_09_divider_vertical", {
 		5,
-		35
+		35,
 	}, "option_tabs_segments", num_tabs - 1))
 	local option_tabs_segments_top = UIWidget.init(UIWidgets.create_simple_centered_texture_amount("menu_frame_09_divider_top", {
 		17,
-		9
+		9,
 	}, "option_tabs_segments_top", num_tabs - 1))
 	local option_tabs_segments_bottom = UIWidget.init(UIWidgets.create_simple_centered_texture_amount("menu_frame_09_divider_bottom", {
 		17,
-		9
+		9,
 	}, "option_tabs_segments_bottom", num_tabs - 1))
+
 	widgets_by_name.option_tabs_segments = option_tabs_segments
 	widgets_by_name.option_tabs_segments_top = option_tabs_segments_top
 	widgets_by_name.option_tabs_segments_bottom = option_tabs_segments_bottom
 	widgets[#widgets + 1] = option_tabs_segments
 	widgets[#widgets + 1] = option_tabs_segments_top
 	widgets[#widgets + 1] = option_tabs_segments_bottom
+
 	local scenegraph_id = "option_tabs"
 	local size = scenegraph_definition.option_tabs.size
 	local widget_definition = UIWidgets.create_default_text_tabs(scenegraph_id, size, num_tabs)
 	local widget = UIWidget.init(widget_definition)
+
 	widgets_by_name[scenegraph_id] = widget
 	widgets[#widgets + 1] = widget
+
 	local widget_content = widget.content
 
 	for index, option in ipairs(options) do
@@ -599,6 +634,7 @@ StartGameStateWeaveLeaderboard._setup_tab_widget = function (self, options)
 		local hotspot_content = widget_content[hotspot_name]
 		local text = option.text
 		local value = option.value
+
 		hotspot_content[text_name] = text
 		hotspot_content.index = index
 		hotspot_content.value = value
@@ -608,6 +644,7 @@ end
 StartGameStateWeaveLeaderboard.disable_player_world = function (self)
 	if not self._player_world_disabled then
 		self._player_world_disabled = true
+
 		local viewport_name = "player_1"
 		local world = Managers.world:world("level_world")
 		local viewport = ScriptWorld.viewport(world, viewport_name)
@@ -619,6 +656,7 @@ end
 StartGameStateWeaveLeaderboard.enable_player_world = function (self)
 	if self._player_world_disabled then
 		self._player_world_disabled = false
+
 		local viewport_name = "player_1"
 		local world = Managers.world:world("level_world")
 		local viewport = ScriptWorld.viewport(world, viewport_name)
@@ -794,6 +832,7 @@ StartGameStateWeaveLeaderboard._select_tab_by_index = function (self, index)
 		local name_sufix = "_" .. tostring(i)
 		local hotspot_name = "hotspot" .. name_sufix
 		local hotspot_content = widget_content[hotspot_name]
+
 		hotspot_content.is_selected = index == i
 	end
 
@@ -890,7 +929,7 @@ StartGameStateWeaveLeaderboard.draw = function (self, input_service, dt)
 	local input_manager = self._input_manager
 	local render_settings = self._render_settings
 	local gamepad_active = input_manager:is_device_active("gamepad")
-	local input_description = nil
+	local input_description
 
 	if not self._gamepad_style_active then
 		UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt, nil, render_settings)
@@ -911,13 +950,14 @@ StartGameStateWeaveLeaderboard.draw = function (self, input_service, dt)
 		end
 
 		render_settings.alpha_multiplier = alpha_multiplier
+
 		local list_entries = self._list_entries
 
 		if list_entries then
 			local list_widget = self._list_widget
 			local list_draw_index = self._list_draw_index
 			local list_fade_in_time = self._list_fade_in_time
-			local list_fade_in_progress = nil
+			local list_fade_in_progress
 
 			if list_fade_in_time then
 				list_fade_in_time = math.max(list_fade_in_time - dt, 0)
@@ -938,13 +978,16 @@ StartGameStateWeaveLeaderboard.draw = function (self, input_service, dt)
 
 				for i = start_index, end_index do
 					draw_count = draw_count + 1
+
 					local content = list_widget.content
 					local style = list_widget.style
 					local offset = list_widget.offset
 					local size = content.size
 					local height = size[2]
 					local y_offset = LIST_EDGE_SPACING + (height + LIST_SPACING) * (i - 1)
+
 					offset[2] = -y_offset
+
 					local entry = list_entries[i]
 					local name = entry.name
 					local weave = entry.weave
@@ -954,6 +997,7 @@ StartGameStateWeaveLeaderboard.draw = function (self, input_service, dt)
 					local real_ranking = entry.real_ranking
 					local local_player = entry.local_player
 					local platform_user_id = entry.platform_user_id
+
 					content.name = name
 					content.score = score
 					content.weave = weave
@@ -968,6 +1012,7 @@ StartGameStateWeaveLeaderboard.draw = function (self, input_service, dt)
 
 					if list_fade_in_progress then
 						local internal_progress = math.easeInCubic(math.min(list_fade_in_progress + (end_index - i) * 0.05, 1))
+
 						render_settings.alpha_multiplier = internal_progress
 						offset[1] = -30 * (1 - internal_progress)
 					end
@@ -1033,10 +1078,11 @@ end
 StartGameStateWeaveLeaderboard._start_transition_animation = function (self, key, animation_name)
 	local params = {
 		wwise_world = self._wwise_world,
-		render_settings = self._render_settings
+		render_settings = self._render_settings,
 	}
 	local widgets = {}
 	local anim_id = self.ui_animator:start_animation(animation_name, widgets, scenegraph_definition, params)
+
 	self._animations[key] = anim_id
 end
 
@@ -1059,6 +1105,7 @@ StartGameStateWeaveLeaderboard._setup_list_widget = function (self)
 	local size = scenegraph_definition[scenegraph_id].size
 	local widget_definition = UIWidgets.create_leaderboard_entry_definition(scenegraph_id, size, masked)
 	local widget = UIWidget.init(widget_definition)
+
 	self._list_widget = widget
 end
 
@@ -1071,6 +1118,7 @@ StartGameStateWeaveLeaderboard._create_list_entries = function (self, entries)
 		local career_name = entry.career_name
 		local career = CareerSettings[career_name]
 		local portrait_thumbnail = career and career.portrait_thumbnail or "icons_placeholder"
+
 		list_entries[i] = {
 			alpha_fade_in_delay = 0.4,
 			name = entry.name or "UNKNOWN",
@@ -1081,7 +1129,7 @@ StartGameStateWeaveLeaderboard._create_list_entries = function (self, entries)
 			career_icon = portrait_thumbnail,
 			local_player = entry.local_player,
 			real_ranking = entry.real_ranking,
-			platform_user_id = entry.platform_user_id
+			platform_user_id = entry.platform_user_id,
 		}
 	end
 
@@ -1090,6 +1138,7 @@ end
 
 StartGameStateWeaveLeaderboard._populate_list = function (self, list_entries, show_no_placement)
 	local num_entries = list_entries and #list_entries or 0
+
 	self._list_entries = list_entries
 
 	self:_calculate_list_height(num_entries)
@@ -1097,8 +1146,10 @@ StartGameStateWeaveLeaderboard._populate_list = function (self, list_entries, sh
 
 	self._list_draw_index = 1
 	self._list_fade_in_time = LIST_FADE_IN_DURATION
+
 	local widget = self._widgets_by_name.no_placement_text
 	local widget_content = widget.content
+
 	widget_content.visible = show_no_placement
 end
 
@@ -1110,6 +1161,7 @@ StartGameStateWeaveLeaderboard._calculate_list_height = function (self, amount)
 
 	for index = 1, amount do
 		local height = size[2]
+
 		total_height = total_height + height
 
 		if index ~= amount then
@@ -1215,9 +1267,11 @@ StartGameStateWeaveLeaderboard._get_scrollbar_percentage_by_index = function (se
 
 			if draw_end_height < start_position_bottom then
 				local height_missing = start_position_bottom - draw_end_height
+
 				percentage_difference = math.clamp(height_missing / scroll_length, 0, 1)
 			elseif start_position_top < draw_start_height then
 				local height_missing = draw_start_height - start_position_top
+
 				percentage_difference = -math.clamp(height_missing / scroll_length, 0, 1)
 			end
 

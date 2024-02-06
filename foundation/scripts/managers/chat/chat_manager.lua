@@ -1,3 +1,5 @@
+﻿-- chunkname: @foundation/scripts/managers/chat/chat_manager.lua
+
 require("scripts/managers/irc/irc_manager")
 require("scripts/ui/views/chat_gui")
 require("scripts/misc/script_retrieve_app_ticket_token")
@@ -16,47 +18,45 @@ end
 
 ChatManager = class(ChatManager)
 
-if not MESSAGE_TYPES then
-	local MESSAGE_TYPES = {
-		[Irc.PRIVATE_MSG] = "Private Message",
-		[Irc.CHANNEL_MSG] = "Channel Message",
-		[Irc.SYSTEM_MSG] = "System Message",
-		[Irc.PARTY_MSG] = "Party Message",
-		[Irc.TEAM_MSG] = "Team Message",
-		[Irc.ALL_MSG] = "All Message"
-	}
-end
-
+local MESSAGE_TYPES = MESSAGE_TYPES or {
+	[Irc.PRIVATE_MSG] = "Private Message",
+	[Irc.CHANNEL_MSG] = "Channel Message",
+	[Irc.SYSTEM_MSG] = "System Message",
+	[Irc.PARTY_MSG] = "Party Message",
+	[Irc.TEAM_MSG] = "Team Message",
+	[Irc.ALL_MSG] = "All Message",
+}
 local CHAT_VIEWS = {
 	"All",
 	"Channels",
 	"Party",
-	"Private"
+	"Private",
 }
 local CHAT_VIEW_LUT = {
 	All = {},
 	Channels = {
-		filter = Irc.CHANNEL_MSG
+		filter = Irc.CHANNEL_MSG,
 	},
 	Party = {
-		filter = Irc.PARTY_MSG
+		filter = Irc.PARTY_MSG,
 	},
 	Private = {
-		filter = Irc.PRIVATE_MSG
-	}
+		filter = Irc.PRIVATE_MSG,
+	},
 }
+
 CHAT_VIEW_TYPE_LUT = {
 	[Irc.PRIVATE_MSG] = "Private",
 	[Irc.CHANNEL_MSG] = "Channels",
 	[Irc.PARTY_MSG] = "Party",
 	[Irc.TEAM_MSG] = "Team Message",
-	[Irc.ALL_MSG] = "All Message"
+	[Irc.ALL_MSG] = "All Message",
 }
 CHAT_VIEW_COLOR = {
 	All = Colors.get_table("white"),
 	Channels = IRC_CHANNEL_COLORS[Irc.CHANNEL_MSG],
 	Party = IRC_CHANNEL_COLORS[Irc.PARTY_MSG],
-	Private = IRC_CHANNEL_COLORS[Irc.PRIVATE_MSG]
+	Private = IRC_CHANNEL_COLORS[Irc.PRIVATE_MSG],
 }
 
 ChatManager.init = function (self)
@@ -99,7 +99,7 @@ ChatManager.update_ignore_list = function (self)
 end
 
 ChatManager.cb_encrypted_app_ticket_recieved = function (self, info)
-	local password = nil
+	local password
 
 	print("ENCRYPTED APP TICKET RECIEVED")
 	print("begin")
@@ -118,10 +118,10 @@ ChatManager.cb_encrypted_app_ticket_recieved = function (self, info)
 	print("end")
 
 	local irc_settings = {
-		port = 6667,
+		address = "172.16.2.24",
 		allow_send = true,
 		channel_name = "#vermintide_se",
-		address = "172.16.2.24"
+		port = 6667,
 	}
 	local steam_user_name = Steam.user_name()
 	local start_idx, end_idx = string.find(steam_user_name, "[0-9]+")
@@ -132,6 +132,7 @@ ChatManager.cb_encrypted_app_ticket_recieved = function (self, info)
 
 	local suffix = "_" .. IrcUtils.convert_steam_user_id_to_base_64(Steam.user_id())
 	local suffix_length = string.len(suffix)
+
 	steam_user_name = string.gsub(steam_user_name, "%W+", "_")
 	steam_user_name = string.sub(steam_user_name, 1, 30 - suffix_length)
 
@@ -211,7 +212,7 @@ ChatManager.check_meta = function (self, message, username, parameter)
 
 			if lobby_data then
 				return new_message, {
-					lobby_id = lobby_id
+					lobby_id = lobby_id,
 				}
 			else
 				return new_message
@@ -229,7 +230,7 @@ ChatManager.add_message_target = function (self, message_target, message_target_
 		self.message_targets[#self.message_targets + 1] = {
 			message_target = message_target,
 			message_target_type = message_target_type,
-			message_target_key = message_target_key
+			message_target_key = message_target_key,
 		}
 		self.message_targets_lut[message_target] = #self.message_targets
 	end
@@ -284,6 +285,7 @@ end
 
 ChatManager.next_message_target = function (self)
 	self.current_message_target_index = 1 + self.current_message_target_index % #self.message_targets
+
 	local message_target_type = self.message_targets[self.current_message_target_index].message_target_type
 	local filter_name = CHAT_VIEWS[self.current_view_index]
 	local view_filter = CHAT_VIEW_LUT[filter_name].filter
@@ -315,6 +317,7 @@ end
 
 ChatManager.gui_should_clear = function (self)
 	local clear = self.clear_messages
+
 	self.clear_messages = nil
 
 	return clear
@@ -322,11 +325,13 @@ end
 
 ChatManager.create_chat_gui = function (self)
 	local top_world = Managers.world:world("top_ingame_view")
+
 	self._ui_top_renderer = UIRenderer.create(top_world, "material", "materials/ui/ui_1080p_chat", "material", "materials/fonts/gw_fonts")
+
 	local context = {
 		input_manager = Managers.input,
 		ui_top_renderer = self._ui_top_renderer,
-		chat_manager = self
+		chat_manager = self,
 	}
 
 	if script_data.honduras_demo then
@@ -336,7 +341,8 @@ ChatManager.create_chat_gui = function (self)
 	end
 
 	self.gui_enabled = true
-	local font_size = nil
+
+	local font_size
 
 	if LEVEL_EDITOR_TEST then
 		font_size = DefaultUserSettings.get("user_settings", "chat_font_size")
@@ -412,6 +418,7 @@ ChatManager.destroy = function (self)
 		self.chat_gui:destroy()
 
 		self.chat_gui = nil
+
 		local top_world = Managers.world:world("top_ingame_view")
 
 		UIRenderer.destroy(self._ui_top_renderer, top_world)
@@ -449,7 +456,7 @@ ChatManager.register_channel = function (self, channel_id, members_func)
 	end
 
 	channels[channel_id] = {
-		members_func = members_func
+		members_func = members_func,
 	}
 end
 
@@ -474,7 +481,7 @@ ChatManager.update = function (self, dt, t, menu_active, menu_input_service, no_
 end
 
 ChatManager._get_localized_message = function (self, message, localize, localization_parameters, localize_parameters)
-	local localized_parameters = nil
+	local localized_parameters
 
 	if localize_parameters then
 		localized_parameters = LocalizeArray(localization_parameters, FrameTable.alloc_table())
@@ -515,11 +522,12 @@ ChatManager.send_chat_message = function (self, channel_id, local_player_id, mes
 
 	if type(localization_parameters) ~= "table" then
 		local old_parameter = localization_parameters
+
 		localization_parameters = FrameTable.alloc_table()
 		localization_parameters[1] = old_parameter
 	end
 
-	local message_target_info = nil
+	local message_target_info
 
 	if optional_message_target then
 		message_target_info = self:_get_message_target(optional_message_target)
@@ -533,9 +541,7 @@ ChatManager.send_chat_message = function (self, channel_id, local_player_id, mes
 
 	if message_type == Irc.PARTY_MSG or message_type == Irc.TEAM_MSG or message_type == Irc.ALL_MSG then
 		if self.is_server then
-			if sender_peer_id then
-				peer_id = sender_peer_id or peer_id
-			end
+			peer_id = sender_peer_id and sender_peer_id or peer_id
 
 			local members = self:channel_members(channel_id)
 
@@ -603,12 +609,15 @@ ChatManager.send_system_chat_message = function (self, channel_id, message_id, l
 
 	if type(localization_parameters) ~= "table" then
 		local old_parameter = localization_parameters
+
 		localization_parameters = FrameTable.alloc_table()
 		localization_parameters[1] = old_parameter
 	end
 
 	local is_system_message = true
+
 	pop_chat = pop_chat or false
+
 	local is_dev = false
 	local my_peer_id = self.my_peer_id
 
@@ -655,7 +664,7 @@ ChatManager.add_irc_message = function (self, message_type, username, message, p
 	local data = {
 		username = username,
 		message = message,
-		parameter = parameter
+		parameter = parameter,
 	}
 
 	if message_type == Irc.PRIVATE_MSG then
@@ -795,6 +804,7 @@ ChatManager._add_message_to_list = function (self, channel_id, message_sender, l
 		local local_side = local_party and Managers.state.side.side_by_party[local_party]
 		local remote_party = local_side and sender_player:get_party()
 		local remote_side = remote_party and Managers.state.side.side_by_party[remote_party]
+
 		is_enemy = remote_side and Managers.state.side:is_enemy_by_side(local_side, remote_side)
 	end
 
@@ -807,6 +817,7 @@ ChatManager._add_message_to_list = function (self, channel_id, message_sender, l
 	end
 
 	local global_messages = self.global_messages
+
 	global_messages[#global_messages + 1] = {
 		channel_id = channel_id,
 		message_sender = message_sender,
@@ -819,7 +830,7 @@ ChatManager._add_message_to_list = function (self, channel_id, message_sender, l
 		is_enemy = is_enemy,
 		link = link,
 		data = data,
-		is_system_message = is_system_message
+		is_system_message = is_system_message,
 	}
 
 	if not IS_WINDOWS then
@@ -831,6 +842,7 @@ ChatManager._add_message_to_list = function (self, channel_id, message_sender, l
 	end
 
 	local chat_messages = self.chat_messages
+
 	chat_messages[#chat_messages + 1] = global_messages[#global_messages]
 
 	if is_system_message then
@@ -856,11 +868,12 @@ end
 
 ChatManager._switch_view_internally = function (self, view_index)
 	self.current_view_index = view_index
+
 	local chat_messages = self.chat_messages
 
 	table.clear(chat_messages)
 
-	local message_data = nil
+	local message_data
 	local filter_name = CHAT_VIEWS[self.current_view_index] or 1
 
 	print("Switching Chat View to: " .. string.upper(filter_name))
@@ -878,11 +891,12 @@ end
 
 ChatManager.switch_view = function (self, view_index)
 	self.current_view_index = 1 + self.current_view_index % #CHAT_VIEWS
+
 	local chat_messages = self.chat_messages
 
 	table.clear(chat_messages)
 
-	local message_data = nil
+	local message_data
 	local filter_name = CHAT_VIEWS[self.current_view_index] or 1
 
 	print("Switching Chat View to: " .. string.upper(filter_name))
@@ -899,28 +913,28 @@ ChatManager.switch_view = function (self, view_index)
 end
 
 COMMAND_LUT = {
-	["/w"] = "send_message",
-	["/t"] = "send_message",
 	["/away"] = "away",
-	["/cls"] = "clear_chat",
-	["/reply"] = "reply",
 	["/clear"] = "clear_chat",
-	["/j"] = "join_channel",
-	["/leave"] = "leave",
+	["/cls"] = "clear_chat",
 	["/invite"] = "game_invite",
-	["/msg"] = "send_message",
+	["/j"] = "join_channel",
 	["/join"] = "join_channel",
-	["/send"] = "send_message",
+	["/leave"] = "leave",
+	["/msg"] = "send_message",
+	["/part"] = "leave",
 	["/r"] = "reply",
+	["/reply"] = "reply",
+	["/send"] = "send_message",
+	["/t"] = "send_message",
+	["/w"] = "send_message",
 	["/who"] = "who",
-	["/part"] = "leave"
 }
 
 ChatManager._handle_command = function (self, message, recent_message_index, optional_message_target)
 	if string.find(message, "/") == 1 then
 		local parameters = string.split(message, " ")
 		local command = COMMAND_LUT[parameters[1]]
-		local context_data = nil
+		local context_data
 
 		if command then
 			context_data = self[command](self, parameters, message, recent_message_index, optional_message_target)
@@ -948,7 +962,7 @@ end
 
 ChatManager.game_invite = function (self, parameters, message, recent_message_index, optional_message_target)
 	if #parameters > 0 then
-		local message_target_data = nil
+		local message_target_data
 
 		if optional_message_target then
 			local message_target_index = self.message_targets_lut[optional_message_target]
@@ -980,7 +994,7 @@ ChatManager.game_invite = function (self, parameters, message, recent_message_in
 
 		local lobby_id = Managers.state.network:lobby():id()
 		local link_data = {
-			lobby_id = lobby_id
+			lobby_id = lobby_id,
 		}
 		local networked_message = message .. "$LINK;" .. lobby_id
 		local channel_or_username = message_target_data.message_target
@@ -1009,6 +1023,7 @@ ChatManager.send_message = function (self, parameters, message, recent_message_i
 			self:add_message_target(user_name, Irc.PRIVATE_MSG)
 
 			self.current_message_target_index = self.message_targets_lut[user_name] or self.current_message_target_index
+
 			local name = "To [" .. user_name .. "]"
 
 			if not recent_message_index then
@@ -1056,6 +1071,7 @@ ChatManager.reply = function (self, parameters, message)
 		Managers.irc:send_message(new_message, user_name)
 
 		self.current_message_target_index = self.message_targets_lut[user_name] or self.current_message_target_index
+
 		local name = "To [" .. user_name .. "]"
 
 		self:add_recent_chat_message(new_message)

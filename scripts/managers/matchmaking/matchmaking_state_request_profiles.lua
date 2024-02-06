@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/matchmaking/matchmaking_state_request_profiles.lua
+
 MatchmakingStateRequestProfiles = class(MatchmakingStateRequestProfiles)
 MatchmakingStateRequestProfiles.NAME = "MatchmakingStateRequestProfiles"
 
@@ -38,6 +40,7 @@ MatchmakingStateRequestProfiles.update = function (self, dt, t)
 				self._matchmaking_manager:cancel_matchmaking()
 			else
 				local matchmaking_type = self.search_config.matchmaking_type
+
 				self._next_state = MatchmakingStateSearchGame
 			end
 		end

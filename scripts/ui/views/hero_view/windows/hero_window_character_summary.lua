@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/hero_view/windows/hero_window_character_summary.lua
+
 local definitions = local_require("scripts/ui/views/hero_view/windows/definitions/hero_window_character_summary_definitions")
 local widget_definitions = definitions.widgets
 local career_info_widget_definitions = definitions.career_info_widgets
@@ -10,6 +12,7 @@ local create_hero_icon_widget = definitions.create_hero_icon_widget
 local LIST_SPACING = definitions.list_spacing
 local DO_RELOAD = false
 local TALENTS_POSITION_DURATION = 0.3
+
 HeroWindowCharacterSummary = class(HeroWindowCharacterSummary)
 HeroWindowCharacterSummary.NAME = "HeroWindowCharacterSummary"
 
@@ -18,11 +21,13 @@ HeroWindowCharacterSummary.on_enter = function (self, params, offset)
 
 	self._params = params
 	self._parent = params.parent
+
 	local ingame_ui_context = params.ingame_ui_context
+
 	self._ui_renderer = ingame_ui_context.ui_renderer
 	self._ui_top_renderer = ingame_ui_context.ui_top_renderer
 	self._render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 	self._profile_synchronizer = ingame_ui_context.profile_synchronizer
 	self._animations = {}
@@ -38,31 +43,36 @@ end
 HeroWindowCharacterSummary._start_transition_animation = function (self, animation_name)
 	local params = {
 		wwise_world = self.wwise_world,
-		render_settings = self._render_settings
+		render_settings = self._render_settings,
 	}
 	local widgets = {}
 	local anim_id = self.ui_animator:start_animation(animation_name, widgets, scenegraph_definition, params)
+
 	self._animations[animation_name] = anim_id
 end
 
 HeroWindowCharacterSummary._create_ui_elements = function (self, params)
 	self._ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+
 	local widgets = {}
 	local widgets_by_name = {}
 
 	for name, widget_definition in pairs(widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		widgets[#widgets + 1] = widget
 		widgets_by_name[name] = widget
 	end
 
 	self._widgets = widgets
 	self._widgets_by_name = widgets_by_name
+
 	local carrer_info_widgets = {}
 	local carrer_info_widgets_by_name = {}
 
 	for name, widget_definition in pairs(career_info_widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		carrer_info_widgets[#carrer_info_widgets + 1] = widget
 		carrer_info_widgets_by_name[name] = widget
 	end
@@ -73,7 +83,9 @@ HeroWindowCharacterSummary._create_ui_elements = function (self, params)
 	UIRenderer.clear_scenegraph_queue(self._ui_renderer)
 
 	self.ui_animator = UIAnimator:new(self._ui_scenegraph, animation_definitions)
+
 	local scrollbar_widget = self._widgets_by_name.list_scrollbar
+
 	self._scrollbar_logic = ScrollBarLogic:new(scrollbar_widget)
 
 	self._scrollbar_logic:set_gamepad_scroll_enabled(true)
@@ -283,10 +295,12 @@ end
 
 HeroWindowCharacterSummary._set_career_selection_state = function (self, enabled, career_applied)
 	self._draw_hero_selection = enabled
+
 	local career_name = self._parent:current_career()
 
 	if enabled then
 		self._previous_career_settings = CareerSettings[career_name]
+
 		local hero_widgets = self._hero_widgets
 
 		for index, widget in ipairs(hero_widgets) do
@@ -314,6 +328,7 @@ HeroWindowCharacterSummary._set_career_selection_state = function (self, enabled
 	end
 
 	local widgets_by_name = self._widgets_by_name
+
 	widgets_by_name.summary_title.content.visible = not enabled
 	widgets_by_name.hero_selection_title.content.visible = enabled
 	widgets_by_name.list_scrollbar.content.visible = not enabled and self._draw_statistics or false
@@ -339,6 +354,7 @@ HeroWindowCharacterSummary._change_carrer = function (self, career_settings)
 	local playing_profile_index = parent.playing_profile_index
 	local playing_current_hero = playing_career_index == career_index and playing_profile_index == profile_index
 	local widgets_by_name = self._widgets_by_name
+
 	widgets_by_name.hero_selection_warning.content.visible = not playing_current_hero
 end
 
@@ -365,6 +381,7 @@ HeroWindowCharacterSummary._set_selected_hero_index = function (self, index)
 		local content = widget.content
 		local hotspot = content.button_hotspot
 		local is_selected = i == index
+
 		hotspot.is_selected = is_selected
 
 		if is_selected then
@@ -402,6 +419,7 @@ HeroWindowCharacterSummary._on_talent_pressed = function (self, row, column)
 
 	self._talent_changes_done = true
 	selected_talents[row] = column
+
 	local talent_widgets = self._talent_widgets
 	local widget = talent_widgets[row][column]
 
@@ -419,6 +437,7 @@ HeroWindowCharacterSummary._set_talent_selected = function (self, row, column)
 		local content = widget.content
 		local style = widget.style
 		local is_selected = column_index == column
+
 		content.selected = is_selected
 		style.icon.saturated = not is_selected
 
@@ -426,6 +445,7 @@ HeroWindowCharacterSummary._set_talent_selected = function (self, row, column)
 			local slot_widget = talent_slot_widgets[row]
 			local slot_content = slot_widget.content
 			local slot_style = slot_widget.style
+
 			slot_content.icon = content.icon
 			slot_content.talent = content.talent
 			slot_content.talent_id = content.talent_id
@@ -434,7 +454,7 @@ HeroWindowCharacterSummary._set_talent_selected = function (self, row, column)
 end
 
 HeroWindowCharacterSummary._on_talent_slot_pressed = function (self, index)
-	local selected_talent_index = nil
+	local selected_talent_index
 	local talent_slot_widgets = self._talent_slot_widgets
 
 	for i, widget in ipairs(talent_slot_widgets) do
@@ -442,6 +462,7 @@ HeroWindowCharacterSummary._on_talent_slot_pressed = function (self, index)
 		local button_hotspot = content.button_hotspot
 		local was_selected = button_hotspot.is_selected
 		local is_selected = not was_selected and index == i
+
 		content.active = is_selected
 		button_hotspot.is_selected = is_selected
 
@@ -452,9 +473,11 @@ HeroWindowCharacterSummary._on_talent_slot_pressed = function (self, index)
 
 	self._selected_talent_index = selected_talent_index
 	self._talents_position_timer = 0
+
 	local widgets_by_name = self._widgets_by_name
 	local list_scrollbar = widgets_by_name.list_scrollbar
 	local list_content = list_scrollbar.content
+
 	list_content.scroll_bar_info.disable_button = selected_talent_index ~= nil
 
 	self:_enable_talent_row(nil)
@@ -472,9 +495,13 @@ end
 
 HeroWindowCharacterSummary._toggle_statistics = function (self, enabled)
 	self._draw_statistics = enabled
+
 	local widgets_by_name = self._widgets_by_name
+
 	widgets_by_name.list_scrollbar.content.visible = enabled
+
 	local title_widget = widgets_by_name.summary_title
+
 	title_widget.content.selected_option = enabled and 2 or 1
 end
 
@@ -521,6 +548,7 @@ HeroWindowCharacterSummary._commit_talent_changes = function (self)
 		talent_interface:set_talents(career_name, self._selected_talents)
 
 		self._talent_changes_done = nil
+
 		local parent = self._parent
 
 		parent:update_talent_sync()
@@ -560,7 +588,7 @@ HeroWindowCharacterSummary._update_animations = function (self, dt)
 		end
 	end
 
-	local hero_row_hovered = nil
+	local hero_row_hovered
 	local hero_widgets = self._hero_widgets
 
 	for index, widget in ipairs(hero_widgets) do
@@ -629,7 +657,7 @@ HeroWindowCharacterSummary._draw = function (self, dt)
 	local talent_slot_widgets = self._talent_slot_widgets
 
 	if talent_slot_widgets then
-		local active_index = nil
+		local active_index
 
 		for index, widget in ipairs(talent_slot_widgets) do
 			UIRenderer.draw_widget(ui_top_renderer, widget)
@@ -708,9 +736,11 @@ HeroWindowCharacterSummary._populate_talents = function (self, hero_name, career
 	local widget_definition = create_talent_widget(scenegraph_id)
 	local talent_interface = Managers.backend:get_interface("talents")
 	local current_talents = talent_interface:get_talents(career_name)
+
 	self._selected_talents = table.clone(current_talents)
 	self._talent_interface = talent_interface
 	self._selected_talents_career_name = career_name
+
 	local experience = ExperienceSettings.get_experience(hero_name)
 	local hero_level = ExperienceSettings.get_level(experience)
 	local slot_widgets = {}
@@ -728,26 +758,35 @@ HeroWindowCharacterSummary._populate_talents = function (self, hero_name, career
 		local talent_unlock_level = TalentUnlockLevels[unlock_name]
 		local level_text = tostring(talent_unlock_level)
 		local slot_widget = UIWidget.init(widget_definition)
+
 		slot_widgets[i] = slot_widget
+
 		local talent_size = slot_widget.content.size
 		local slot_widget_offset = slot_widget.offset
+
 		slot_widget_offset[1] = (i - 1) * (talent_size[1] + width_spacing)
 		slot_widget_offset[3] = NumTalentColumns * layer_offset
 		slot_widget.content.level_text = level_text
 		slot_widget.content.locked = not row_unlocked
+
 		local row_widgets = {}
 
 		for j = 1, NumTalentColumns do
 			local widget = UIWidget.init(widget_definition)
+
 			row_widgets[#row_widgets + 1] = widget
+
 			local talent_name = tree[i][j]
 			local id = TalentIDLookup[talent_name]
 			local talent_data = all_talents[id]
 			local content = widget.content
+
 			content.icon = talent_data and talent_data.icon or "icons_placeholder"
 			content.talent = talent_data
 			content.talent_id = id
+
 			local offset = widget.offset
+
 			offset[1] = (i - 1) * (talent_size[1] + width_spacing)
 			offset[2] = j * talent_size[2]
 			offset[3] = (NumTalentColumns - j) * layer_offset
@@ -784,7 +823,9 @@ HeroWindowCharacterSummary._populate_statistics = function (self, layout)
 	for i = 1, num_entries do
 		local entry = layout[i]
 		local widget = UIWidget.init(widget_definition)
+
 		widgets[i] = widget
+
 		local title = ""
 		local name = ""
 		local value = ""
@@ -801,6 +842,7 @@ HeroWindowCharacterSummary._populate_statistics = function (self, layout)
 
 		local content = widget.content
 		local style = widget.style
+
 		content.name = UIRenderer.crop_text_width(ui_renderer, name, 300, style.name)
 		content.title = UIRenderer.crop_text_width(ui_renderer, title, 300, style.title)
 		content.value = value
@@ -820,8 +862,11 @@ HeroWindowCharacterSummary._align_list_widgets = function (self, widgets, spacin
 		local offset = widget.offset
 		local content = widget.content
 		local size = content.size
+
 		widget.default_offset = table.clone(offset)
+
 		local height = size[2]
+
 		offset[2] = -total_height
 		total_height = total_height + height
 
@@ -919,9 +964,11 @@ HeroWindowCharacterSummary._get_scrollbar_percentage_by_index = function (self, 
 
 			if draw_end_height < start_position_bottom then
 				local height_missing = start_position_bottom - draw_end_height
+
 				percentage_difference = math.clamp(height_missing / scroll_length, 0, 1)
 			elseif start_position_top < draw_start_height then
 				local height_missing = draw_start_height - start_position_top
+
 				percentage_difference = -math.clamp(height_missing / scroll_length, 0, 1)
 			end
 
@@ -949,6 +996,7 @@ HeroWindowCharacterSummary._setup_title_texts = function (self)
 	local divider_width = UIUtils.get_text_width(ui_renderer, style.divider, content.divider)
 	local widget_width = size[1]
 	local start_offset = -widget_width / 2 + text_spacing
+
 	style.title_text1.offset[1] = -widget_width + title1_width + text_spacing
 	style.title_text1_shadow.offset[1] = style.title_text1.offset[1] + 2
 	style.divider.offset[1] = title1_width
@@ -980,13 +1028,18 @@ HeroWindowCharacterSummary._animate_title_button = function (self, dt)
 		end
 
 		text_style.selected_progress = selected_progress
+
 		local alpha = 255 * selected_progress
 		local font_size = text_style.default_font_size + 6 * selected_progress
+
 		text_style.font_size = font_size
 		shadow_text_style.font_size = font_size
+
 		local animated_offset = (1 - selected_progress) * 3
+
 		text_style.offset[2] = text_style.default_offset[2] + animated_offset
 		shadow_text_style.offset[2] = shadow_text_style.default_offset[2] + animated_offset
+
 		local text_color = text_style.text_color
 		local default_text_color = text_style.default_color
 		local selected_text_color = text_style.selected_color
@@ -1006,7 +1059,7 @@ HeroWindowCharacterSummary._populate_career_info = function (self, career_name)
 		255,
 		255,
 		255,
-		255
+		255,
 	}
 	local passive_ability_data = career_settings.passive_ability
 	local activated_ability_data = career_settings.activated_ability[1]
@@ -1014,12 +1067,14 @@ HeroWindowCharacterSummary._populate_career_info = function (self, career_name)
 	local passive_icon = passive_ability_data.icon
 	local activated_display_name = activated_ability_data.display_name
 	local activated_icon = activated_ability_data.icon
+
 	widgets_by_name.passive_title_text.content.text = Localize(passive_display_name)
 	widgets_by_name.passive_description_text.content.text = UIUtils.get_ability_description(passive_ability_data)
 	widgets_by_name.passive_icon.content.texture_id = passive_icon
 	widgets_by_name.active_title_text.content.text = Localize(activated_display_name)
 	widgets_by_name.active_description_text.content.text = UIUtils.get_ability_description(activated_ability_data)
 	widgets_by_name.active_icon.content.texture_id = activated_icon
+
 	local passive_perks = passive_ability_data.perks
 	local total_perks_height = 0
 	local perks_height_spacing = 0
@@ -1032,7 +1087,9 @@ HeroWindowCharacterSummary._populate_career_info = function (self, career_name)
 		local scenegraph = ui_scenegraph[scenegraph_id]
 		local size = scenegraph.size
 		local offset = widget.offset
+
 		offset[2] = -total_perks_height
+
 		local data = passive_perks[i]
 
 		if data then
@@ -1041,10 +1098,13 @@ HeroWindowCharacterSummary._populate_career_info = function (self, career_name)
 			local title_text_style = style.title_text
 			local description_text_style = style.description_text
 			local description_text_shadow_style = style.description_text_shadow
+
 			content.title_text = display_name
 			content.description_text = description
+
 			local title_height = UIUtils.get_text_height(ui_renderer, size, title_text_style, display_name)
 			local description_height = UIUtils.get_text_height(ui_renderer, size, description_text_style, description)
+
 			description_text_style.offset[2] = -description_height
 			description_text_shadow_style.offset[2] = -(description_height + 2)
 			total_perks_height = total_perks_height + title_height + description_height + perks_height_spacing
@@ -1085,9 +1145,12 @@ HeroWindowCharacterSummary._animate_talent_widget = function (self, widget, dt)
 	local combined_out_progress = math.max(select_easing_out_progress, hover_easing_out_progress)
 	local combined_in_progress = math.max(hover_easing_in_progress, select_easing_in_progress)
 	local hover_alpha = 255 * hover_progress
+
 	style.hover_frame.color[1] = hover_alpha
+
 	local icon_color = style.icon.color
 	local icon_color_value = 200 + 55 * combined_progress
+
 	icon_color[2] = icon_color_value
 	icon_color[3] = icon_color_value
 	icon_color[4] = icon_color_value
@@ -1140,15 +1203,20 @@ HeroWindowCharacterSummary._set_talent_list_animation_progress = function (self,
 		local size = widget.content.size
 		local offset = widget.offset
 		local height_offset = size[2] * index * progress
+
 		offset[2] = height_offset
 	end
 end
 
 HeroWindowCharacterSummary._setup_hero_selection_widgets = function (self)
 	local hero_widgets = {}
+
 	self._hero_widgets = hero_widgets
+
 	local hero_icon_widgets = {}
+
 	self._hero_icon_widgets = hero_icon_widgets
+
 	local hero_attributes = Managers.backend:get_interface("hero_attributes")
 	local num_max_rows = #SPProfilesAbbreviation
 	local num_max_columns = 0
@@ -1164,26 +1232,40 @@ HeroWindowCharacterSummary._setup_hero_selection_widgets = function (self)
 		local hero_experience = hero_attributes:get(hero_name, "experience") or 0
 		local hero_level = ExperienceSettings.get_level(hero_experience)
 		local careers = profile_settings.careers
+
 		num_max_columns = math.max(num_max_columns, #careers)
+
 		local icon_widget = UIWidget.init(hero_icon_definition)
+
 		hero_icon_widgets[#hero_icon_widgets + 1] = icon_widget
+
 		local hero_icon_offset = icon_widget.offset
+
 		hero_icon_offset[2] = -((i - 1) * hero_height_offset)
+
 		local hero_icon_texture = "hero_icon_large_" .. hero_name
+
 		icon_widget.content.icon = hero_icon_texture
 		icon_widget.content.icon_highlight = hero_icon_texture .. "_glow"
 
 		for j, career in ipairs(careers) do
 			local widget = UIWidget.init(hero_widget_definition)
+
 			hero_widgets[#hero_widgets + 1] = widget
+
 			local offset = widget.offset
 			local content = widget.content
+
 			content.career_settings = career
 			content.row = i
 			content.column = j
+
 			local portrait_image = career.portrait_image
+
 			content.portrait = "medium_" .. portrait_image
+
 			local is_career_unlocked = career.is_unlocked_function(hero_name, hero_level)
+
 			content.locked = not is_career_unlocked
 			content.button_hotspot.disable_button = content.locked
 			offset[1] = (j - 1) * hero_width_offset
@@ -1228,9 +1310,12 @@ HeroWindowCharacterSummary._animate_hero_widget = function (self, widget, dt)
 	local combined_out_progress = math.max(select_easing_out_progress, hover_easing_out_progress)
 	local combined_in_progress = math.max(hover_easing_in_progress, select_easing_in_progress)
 	local hover_alpha = 255 * hover_progress
+
 	style.hover_frame.color[1] = 255 * combined_progress
+
 	local portrait_color = style.portrait.color
 	local portrait_color_value = 170 + 85 * combined_progress
+
 	portrait_color[2] = portrait_color_value
 	portrait_color[3] = portrait_color_value
 	portrait_color[4] = portrait_color_value
@@ -1253,6 +1338,7 @@ HeroWindowCharacterSummary._animate_hero_icon_widget = function (self, widget, h
 	local hover_easing_out_progress = math.easeOutCubic(animation_progress)
 	local hover_easing_in_progress = math.easeInCubic(animation_progress)
 	local hover_alpha = 255 * animation_progress
+
 	style.icon_highlight.color[1] = hover_alpha
 	content.animation_progress = animation_progress
 end

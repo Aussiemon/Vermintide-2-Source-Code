@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_stormfiend_dual_shoot_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTStormfiendDualShootAction = class(BTStormfiendDualShootAction, BTNode)
@@ -7,6 +9,7 @@ BTStormfiendDualShootAction.init = function (self, ...)
 end
 
 BTStormfiendDualShootAction.name = "BTStormfiendDualShootAction"
+
 local SPHERE_CAST_RADIUS = 0.4
 local SPHERE_CAST_MAX_NUM_HITS = 10
 local unit_alive = Unit.alive
@@ -14,6 +17,7 @@ local unit_alive = Unit.alive
 BTStormfiendDualShootAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
 	local world = blackboard.world
+
 	blackboard.action = action
 	blackboard.active_node = BTStormfiendDualShootAction
 	blackboard.attack_finished = false
@@ -28,6 +32,7 @@ BTStormfiendDualShootAction.enter = function (self, unit, blackboard, t)
 	blackboard.right_muzzle_node = Unit.node(unit, "fx_right_muzzle")
 	blackboard.weapon_setup = action.weapon_setup
 	blackboard.shoot_data.start_firing_t = t + action.start_firing_t
+
 	local network_manager = Managers.state.network
 
 	network_manager:anim_event(unit, action.attack_animation)
@@ -109,6 +114,7 @@ BTStormfiendDualShootAction.run = function (self, unit, blackboard, t, dt)
 
 		if blackboard.attack_finished then
 			blackboard.attack_finished = nil
+
 			local action = blackboard.action
 
 			if action.stop_shoot_sfx then
@@ -130,8 +136,8 @@ BTStormfiendDualShootAction.create_firewall = function (self, unit, data)
 		area_damage_system = {
 			liquid_template = "stormfiend_firewall",
 			flow_dir = direction,
-			source_unit = unit
-		}
+			source_unit = unit,
+		},
 	}
 	local aoe_unit_name = "units/hub_elements/empty"
 	local liquid_aoe_unit = Managers.state.unit_spawner:spawn_network_unit(aoe_unit_name, "liquid_aoe_unit", extension_init_data, start_pos)
@@ -215,7 +221,7 @@ BTStormfiendDualShootAction._fire_from_position_direction = function (self, unit
 	local muzzle_node = Unit.node(unit, muzzle_node_name)
 	local muzzle_pos = Unit.world_position(unit, muzzle_node)
 	local muzzle_rot = Unit.world_rotation(unit, muzzle_node)
-	local offset_rotation = nil
+	local offset_rotation
 
 	if muzzle_node_name == "fx_right_muzzle" then
 		offset_rotation = Quaternion.look(Vector3.right())
@@ -277,7 +283,7 @@ BTStormfiendDualShootAction._shoot_ratling_gun = function (self, unit, blackboar
 		hit_effect = light_weight_projectile_template.hit_effect,
 		player_push_velocity = Vector3Box(normalized_direction * light_weight_projectile_template.impact_push_speed),
 		projectile_linker = light_weight_projectile_template.projectile_linker,
-		first_person_hit_flow_events = light_weight_projectile_template.first_person_hit_flow_events
+		first_person_hit_flow_events = light_weight_projectile_template.first_person_hit_flow_events,
 	}
 	local projectile_system = Managers.state.entity:system("projectile_system")
 	local owner_peer_id = Network.peer_id()
@@ -288,6 +294,7 @@ end
 BTStormfiendDualShootAction.initiate_firing = function (self, blackboard, t)
 	local action = blackboard.action
 	local data = blackboard.shoot_data
+
 	data.firing_duration = action.firing_duration
 	data.shots_fired = 0
 	data.time_between_shots_at_start = 1 / action.fire_rate_at_start

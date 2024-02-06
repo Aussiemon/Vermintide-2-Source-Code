@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/network/game_server/game_server_steam.lua
+
 GameServerInternal = GameServerInternal or {}
 GameServerInternal.lobby_data_version = 2
 
@@ -16,7 +18,7 @@ GameServerInternal.init_server = function (network_options, server_name)
 		max_players = network_options.max_members,
 		query_port = network_options.query_port,
 		server_name = server_name,
-		server_port = network_options.server_port
+		server_port = network_options.server_port,
 	}
 
 	table.dump(settings, "server settings")

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/level_end/level_end_view_base.lua
+
 require("scripts/ui/reward_popup/reward_popup_ui")
 DLCUtils.require_list("end_view_state")
 
@@ -17,8 +19,9 @@ local SPEED_UP_MULT_MAX = 3
 local SPEED_UP_LERP_SPEED = 4
 local RPCS = {
 	"rpc_signal_end_of_level_done",
-	"rpc_notify_lobby_joined"
+	"rpc_notify_lobby_joined",
 }
+
 LevelEndViewBase = class(LevelEndViewBase)
 
 LevelEndViewBase.init = function (self, context)
@@ -26,6 +29,7 @@ LevelEndViewBase.init = function (self, context)
 
 	local game_won = context.game_won
 	local rewards = context.rewards
+
 	self.context = context
 	self.game_won = game_won
 	self.game_mode_key = context.game_mode_key
@@ -38,7 +42,7 @@ LevelEndViewBase.init = function (self, context)
 	self.rewards = rewards
 	self.render_settings = {
 		alpha_multiplier = 0,
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 	self._lobby = context.lobby
 	self.is_server = context.is_server
@@ -46,10 +50,12 @@ LevelEndViewBase.init = function (self, context)
 
 	if not self.is_server then
 		local statistics_db = Managers.player:statistics_db()
+
 		self.context.players_session_score = Managers.mechanism:get_players_session_score(statistics_db, self.profile_synchronizer)
 	end
 
 	local is_untrusted = script_data["eac-untrusted"]
+
 	self._is_untrusted = is_untrusted
 
 	if not is_untrusted then
@@ -63,6 +69,7 @@ LevelEndViewBase.init = function (self, context)
 
 	self._reward_presentation_queue = {}
 	self.reward_popup = RewardPopupUI:new(context)
+
 	local index_by_state_name = self:setup_pages(game_won, rewards)
 	local state_name_by_index = {}
 
@@ -76,7 +83,7 @@ LevelEndViewBase.init = function (self, context)
 		parent = self,
 		context = context,
 		game_won = game_won,
-		game_mode_key = self.game_mode_key
+		game_mode_key = self.game_mode_key,
 	}
 
 	self:create_ui_elements()
@@ -233,6 +240,7 @@ LevelEndViewBase.update = function (self, dt, t)
 			end
 
 			local current_speed_mult = self._state_speed_mult
+
 			current_speed_mult = math.lerp(current_speed_mult, speed_up_target, SPEED_UP_LERP_SPEED * dt)
 			current_speed_mult = math.clamp(current_speed_mult, 1, SPEED_UP_MULT_MAX)
 			dt = dt * current_speed_mult
@@ -343,6 +351,7 @@ LevelEndViewBase._set_page_selector_selection = function (self, index)
 		local name_sufix = "_" .. tostring(i)
 		local hotspot_name = "hotspot" .. name_sufix
 		local hotspot = content[hotspot_name]
+
 		hotspot.is_selected = index == i
 	end
 end
@@ -385,13 +394,14 @@ LevelEndViewBase._get_win_track_rewards = function (self)
 	local end_of_level_rewards = self.context.rewards.end_of_level_rewards
 	local win_track_rewards = {
 		start_experience = self.context.rewards.win_track_start_experience,
-		item_rewards = {}
+		item_rewards = {},
 	}
 
 	for reward_name, item in pairs(end_of_level_rewards) do
 		if string.find(reward_name, "win_track_reward") == 1 then
 			local data = string.split(reward_name, ";")
 			local level = tonumber(data[2])
+
 			win_track_rewards.item_rewards[level] = item
 		end
 	end
@@ -456,6 +466,7 @@ LevelEndViewBase._present_reward = function (self, data)
 
 	if self:displaying_reward_presentation() then
 		local reward_presentation_queue = self._reward_presentation_queue
+
 		reward_presentation_queue[#reward_presentation_queue + 1] = data
 	else
 		reward_popup:display_presentation(data)
@@ -494,7 +505,7 @@ LevelEndViewBase.present_level_up = function (self, hero_name, hero_level)
 	local level_up_rewards = self.level_up_rewards[hero_level]
 	local has_level_up_unlocks = level_unlocks and #level_unlocks > 0
 	local has_level_up_rewards = level_up_rewards and #level_up_rewards > 0
-	local presentation_data = nil
+	local presentation_data
 
 	if has_level_up_rewards or has_level_up_unlocks then
 		presentation_data = {}
@@ -511,24 +522,24 @@ LevelEndViewBase.present_level_up = function (self, hero_name, hero_level)
 					widget_type = "description",
 					value = {
 						Localize(title),
-						Localize(description)
-					}
+						Localize(description),
+					},
 				}
 			elseif title then
 				entry[#entry + 1] = {
 					widget_type = "title",
-					value = Localize(title)
+					value = Localize(title),
 				}
 			elseif description then
 				entry[#entry + 1] = {
 					widget_type = "title",
-					value = Localize(description)
+					value = Localize(description),
 				}
 			end
 
 			entry[#entry + 1] = {
 				value = template.value,
-				widget_type = template.unlock_type
+				widget_type = template.unlock_type,
 			}
 			presentation_data[#presentation_data + 1] = entry
 		end
@@ -557,13 +568,13 @@ LevelEndViewBase.present_level_up = function (self, hero_name, hero_level)
 			if description then
 				entry[#entry + 1] = {
 					widget_type = "description",
-					value = description
+					value = description,
 				}
 			end
 
 			entry[#entry + 1] = {
 				widget_type = "item",
-				value = item
+				value = item,
 			}
 			presentation_data[#presentation_data + 1] = entry
 		end
@@ -587,19 +598,20 @@ LevelEndViewBase.present_win_track_reward = function (self, idx)
 	local item_type = item_data.item_type
 	local description = {}
 	local _, display_name, _ = UIUtils.get_ui_information_from_item(reward_item)
+
 	description[1] = Localize(item_type)
 	description[2] = Localize(display_name)
 
 	if description then
 		entry[#entry + 1] = {
 			widget_type = "description",
-			value = description
+			value = description,
 		}
 	end
 
 	entry[#entry + 1] = {
 		widget_type = "item",
-		value = win_track_reward_item
+		value = win_track_reward_item,
 	}
 	presentation_data[#presentation_data + 1] = entry
 
@@ -616,9 +628,9 @@ LevelEndViewBase.present_additional_rewards = function (self)
 			{
 				{
 					widget_type = "title",
-					value = Localize("deed_completed_title")
-				}
-			}
+					value = Localize("deed_completed_title"),
+				},
+			},
 		}
 
 		for _, item in ipairs(deed_rewards) do
@@ -641,13 +653,13 @@ LevelEndViewBase.present_additional_rewards = function (self)
 			if description then
 				entry[#entry + 1] = {
 					widget_type = "description",
-					value = description
+					value = description,
 				}
 			end
 
 			entry[#entry + 1] = {
 				widget_type = "item",
-				value = item
+				value = item,
 			}
 			presentation_data[#presentation_data + 1] = entry
 		end
@@ -678,13 +690,13 @@ LevelEndViewBase.present_additional_rewards = function (self)
 			if description then
 				entry[#entry + 1] = {
 					widget_type = "description",
-					value = description
+					value = description,
 				}
 			end
 
 			entry[#entry + 1] = {
 				widget_type = "item",
-				value = item
+				value = item,
 			}
 			presentation_data[#presentation_data + 1] = entry
 		end
@@ -704,19 +716,20 @@ LevelEndViewBase.present_additional_rewards = function (self)
 			local reward_item = item_interface:get_item_from_id(backend_id)
 			local description = {}
 			local _, display_name, _ = UIUtils.get_ui_information_from_item(reward_item)
+
 			description[1] = Localize(display_name)
 			description[2] = Localize("end_screen_you_received")
 
 			if description then
 				entry[#entry + 1] = {
 					widget_type = "description",
-					value = description
+					value = description,
 				}
 			end
 
 			entry[#entry + 1] = {
 				widget_type = "item",
-				value = item
+				value = item,
 			}
 			presentation_data[#presentation_data + 1] = entry
 		end
@@ -732,9 +745,9 @@ LevelEndViewBase.present_additional_rewards = function (self)
 			{
 				{
 					widget_type = "title",
-					value = Localize("deus_expedition_completed_title")
-				}
-			}
+					value = Localize("deus_expedition_completed_title"),
+				},
+			},
 		}
 
 		for _, item in ipairs(deus_rewards) do
@@ -743,19 +756,20 @@ LevelEndViewBase.present_additional_rewards = function (self)
 			local reward_item = item_interface:get_item_from_id(backend_id)
 			local description = {}
 			local _, display_name, _ = UIUtils.get_ui_information_from_item(reward_item)
+
 			description[1] = Localize(display_name)
 			description[2] = Localize("end_screen_you_received")
 
 			if description then
 				entry[#entry + 1] = {
 					widget_type = "description",
-					value = description
+					value = description,
 				}
 			end
 
 			entry[#entry + 1] = {
 				widget_type = "item",
-				value = item
+				value = item,
 			}
 			presentation_data[#presentation_data + 1] = entry
 		end
@@ -781,14 +795,14 @@ LevelEndViewBase.present_chest_rewards = function (self)
 					widget_type = "description",
 					value = {
 						Localize(display_name),
-						Localize("end_screen_chest_received")
-					}
+						Localize("end_screen_chest_received"),
+					},
 				},
 				{
 					widget_type = "loot_chest",
-					value = item_name
-				}
-			}
+					value = item_name,
+				},
+			},
 		}
 
 		self:_present_reward(presentation_data)
@@ -812,9 +826,10 @@ LevelEndViewBase._request_state_change = function (self, state_name)
 
 	local current_state = state_machine:state()
 	local current_state_name = current_state.NAME
-	local direction = nil
+	local direction
 	local new_state_index = self._index_by_state_name[state_name]
 	local current_state_index = self._index_by_state_name[current_state_name]
+
 	direction = current_state_index < new_state_index and "left" or "right"
 
 	current_state:exit(direction)
@@ -851,13 +866,16 @@ LevelEndViewBase._setup_state_machine = function (self, optional_start_state_nam
 	local start_state = rawget(_G, state_name)
 	local profiling_debugging_enabled = false
 	local state_machine_params = self._state_machine_params
+
 	state_machine_params.initial_state = initial
 	self._state_can_speed_up = start_state.CAN_SPEED_UP
-	local direction = nil
+
+	local direction
 
 	if not initial then
 		local previous_state_name = self._current_state_name
 		local previous_state_index = self._index_by_state_name[previous_state_name]
+
 		direction = previous_state_index < state_index and "left" or "right"
 	end
 
@@ -891,7 +909,7 @@ LevelEndViewBase._handle_state_auto_change = function (self)
 			end
 		end
 	else
-		local new_state_index = nil
+		local new_state_index
 		local displaying_reward_presentation = self:displaying_reward_presentation()
 
 		if not displaying_reward_presentation then
@@ -1056,17 +1074,17 @@ LevelEndViewBase.update_force_shutdown = function (self, dt)
 end
 
 local cam_shake_settings = {
-	persistance = 1,
-	fade_out = 0.5,
 	amplitude = 0.9,
-	seed = 0,
 	duration = 0.5,
 	fade_in = 0.1,
-	octaves = 7
+	fade_out = 0.5,
+	octaves = 7,
+	persistance = 1,
+	seed = 0,
 }
 
 LevelEndViewBase.setup_camera = function (self)
-	local camera_pose = nil
+	local camera_pose
 	local level_name = "levels/end_screen/world"
 	local unit_indices = LevelResource.unit_indices(level_name, "units/hub_elements/cutscene_camera/cutscene_camera")
 
@@ -1078,6 +1096,7 @@ LevelEndViewBase.setup_camera = function (self)
 			local position = LevelResource.unit_position(level_name, index)
 			local rotation = LevelResource.unit_rotation(level_name, index)
 			local pose = Matrix4x4.from_quaternion_position(rotation, position)
+
 			camera_pose = Matrix4x4Box(pose)
 
 			print("Found camera: " .. name)
@@ -1096,6 +1115,7 @@ LevelEndViewBase.add_camera_shake = function (self, settings, start_time, scale)
 	local duration = settings.duration
 	local fade_in = settings.fade_in
 	local fade_out = settings.fade_out
+
 	duration = (duration or 0) + (fade_in or 0) + (fade_out or 0)
 	data.shake_settings = settings
 	data.start_time = start_time
@@ -1106,7 +1126,7 @@ LevelEndViewBase.add_camera_shake = function (self, settings, start_time, scale)
 	data.scale = scale or 1
 	data.camera_rotation_boxed = QuaternionBox(current_rot)
 	self._active_camera_shakes = {
-		[data] = true
+		[data] = true,
 	}
 end
 
@@ -1134,7 +1154,7 @@ LevelEndViewBase._apply_shake_event = function (self, settings, t)
 
 	self:set_camera_rotation(rotation)
 
-	if settings.end_time and settings.end_time <= t then
+	if settings.end_time and t >= settings.end_time then
 		active_camera_shakes[settings] = nil
 	end
 end
@@ -1148,11 +1168,13 @@ LevelEndViewBase._calculate_perlin_value = function (self, x, settings)
 	for i = 0, number_of_octaves do
 		local frequency = 2^i
 		local amplitude = persistance^i
+
 		total = total + self:_interpolated_noise(x * frequency, settings) * amplitude
 	end
 
 	local amplitude_multiplier = shake_settings.amplitude or 1
 	local fade_multiplier = settings.fade_progress or 1
+
 	total = total * amplitude_multiplier * fade_multiplier
 
 	return total
@@ -1238,7 +1260,9 @@ LevelEndViewBase._setup_viewport_camera = function (self)
 	local level_camera_rot = Unit.world_rotation(level_camera_unit, 0)
 	local level_camera_pos = Unit.world_position(level_camera_unit, 0)
 	local level_camera_look = Quaternion.forward(level_camera_rot)
+
 	level_camera_pos = level_camera_pos - level_camera_look * 3
+
 	local viewport_camera = ScriptViewport.camera(viewport)
 
 	ScriptCamera.set_local_rotation(viewport_camera, level_camera_rot)
@@ -1295,6 +1319,7 @@ LevelEndViewBase.setup_world = function (self, context)
 	local viewport = self:create_viewport(context, world)
 	local ui_renderer, ui_top_renderer = self:create_ui_renderer(context, world, top_world)
 	local wwise_world = Managers.world:wwise_world(world)
+
 	self._world = world
 	self._top_world = top_world
 	self._world_viewport = viewport
@@ -1328,7 +1353,7 @@ LevelEndViewBase.get_world_flags = function (self)
 	local flags = {
 		Application.DISABLE_SOUND,
 		Application.DISABLE_ESRAM,
-		Application.ENABLE_VOLUMETRICS
+		Application.ENABLE_VOLUMETRICS,
 	}
 
 	if Application.user_setting("disable_apex_cloth") then
@@ -1367,7 +1392,7 @@ end
 LevelEndViewBase.spawn_level = function (self, context, world)
 	local level_name = "levels/end_screen/world"
 	local object_sets = {}
-	local position, rotation, shading_callback, mood_setting = nil
+	local position, rotation, shading_callback, mood_setting
 	local time_sliced_spawn = false
 	local level = ScriptWorld.spawn_level(world, level_name, object_sets, position, rotation, shading_callback, mood_setting, time_sliced_spawn)
 
@@ -1389,7 +1414,7 @@ LevelEndViewBase.create_ui_renderer = function (self, context, world, top_world)
 		"material",
 		"materials/ui/ui_1080p_common",
 		"material",
-		"materials/fonts/gw_fonts"
+		"materials/fonts/gw_fonts",
 	}
 	local extra_materials = self.get_extra_materials
 

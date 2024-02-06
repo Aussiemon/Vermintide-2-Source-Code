@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/ui/ui_unit_previewer.lua
+
 local DEFAULT_ANGLE = 0
+
 UIUnitPreviewer = class(UIUnitPreviewer)
 
 UIUnitPreviewer.init = function (self, unit_name, package_name, spawn_position, background_world, background_viewport, unique_id)
@@ -63,7 +66,9 @@ UIUnitPreviewer.update = function (self, dt, t, input_service)
 		end
 
 		local unit_xy_angle_new = math.lerp(self._camera_xy_angle_current, self._camera_xy_angle_target, 0.1)
+
 		self._camera_xy_angle_current = unit_xy_angle_new
+
 		local auto_tilt_angle, auto_turn_angle = self:_auto_spin_values(dt, t)
 		local rotation = Quaternion.axis_angle(Vector3(0, auto_tilt_angle, 1), -(unit_xy_angle_new + auto_turn_angle))
 		local unit = self._spawned_unit
@@ -73,6 +78,7 @@ UIUnitPreviewer.update = function (self, dt, t, input_service)
 		if self._zoom_dirty then
 			local zoom_fraction = self._zoom_fraction or 0
 			local unit_start_position = self._unit_start_position_boxed:unbox()
+
 			unit_start_position[1] = unit_start_position[1] * (1 - zoom_fraction)
 			unit_start_position[2] = unit_start_position[2] * (1 - zoom_fraction)
 
@@ -244,13 +250,16 @@ UIUnitPreviewer._spawn_unit = function (self, unit_name, visible)
 	local spawn_position = self._spawn_position
 	local camera_position = self:_get_camera_position()
 	local unit_spawn_position = camera_position + camera_forward_vector
+
 	unit_spawn_position = unit_spawn_position + Vector3(spawn_position[1], spawn_position[2], spawn_position[3])
+
 	local world = self._background_world
 	local unit = World.spawn_unit(world, unit_name, unit_spawn_position, unit_spawn_rotation)
 
 	Unit.set_unit_visibility(unit, visible)
 
 	local unit_start_position = Unit.world_position(unit, 0)
+
 	self._unit_start_position_boxed = Vector3Box(unit_start_position)
 
 	return unit

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/weaves/weave_loadout/weave_loadout_settings.lua
+
 require("scripts/settings/weaves/weave_loadout/weave_loadout_settings_bw_adept")
 require("scripts/settings/weaves/weave_loadout/weave_loadout_settings_bw_scholar")
 require("scripts/settings/weaves/weave_loadout/weave_loadout_settings_bw_unchained")
@@ -43,7 +45,7 @@ local default_properties = {
 	"weave_respawn_speed",
 	"weave_revive_speed",
 	"weave_fatigue_regen",
-	"weave_movespeed"
+	"weave_movespeed",
 }
 local default_traits = {
 	"weave_melee_attack_speed_on_crit",
@@ -71,7 +73,7 @@ local default_traits = {
 	"weave_necklace_damage_taken_reduction_on_heal",
 	"weave_trinket_not_consume_grenade",
 	"weave_trinket_increase_grenade_radius",
-	"weave_trinket_grenade_damage_taken"
+	"weave_trinket_grenade_damage_taken",
 }
 local talents_by_career = {}
 local properties_by_career = {}
@@ -91,12 +93,13 @@ for career_name, settings in pairs(WeaveLoadoutSettings) do
 			career_talents[talent_name] = {
 				talent = talent,
 				tree_row = tree_row,
-				tree_column = tree_column
+				tree_column = tree_column,
 			}
 		end
 	end
 
 	talents_by_career[career_name] = career_talents
+
 	local career_properties = {}
 	local properties = table.merge(table.clone(default_properties), settings.properties)
 
@@ -109,6 +112,7 @@ for career_name, settings in pairs(WeaveLoadoutSettings) do
 	end
 
 	properties_by_career[career_name] = career_properties
+
 	local career_traits = {}
 	local traits = table.merge(table.clone(default_traits), settings.traits)
 
@@ -129,209 +133,209 @@ WeaveTraitsByCareer = traits_by_career
 WeaveCareerProgression = {
 	properties = {
 		{
+			category = "offence_accessory",
 			unlock_level = 2,
-			category = "offence_accessory"
 		},
 		{
+			category = "offence_accessory",
 			unlock_level = 5,
-			category = "offence_accessory"
 		},
 		{
+			category = "offence_accessory",
 			unlock_level = 8,
-			category = "offence_accessory"
 		},
 		{
+			category = "offence_accessory",
 			unlock_level = 11,
-			category = "offence_accessory"
 		},
 		{
+			category = "offence_accessory",
 			unlock_level = 14,
-			category = "offence_accessory"
 		},
 		{
+			category = "offence_accessory",
 			unlock_level = 17,
-			category = "offence_accessory"
 		},
 		{
+			category = "offence_accessory",
 			unlock_level = 20,
-			category = "offence_accessory"
 		},
 		{
+			category = "offence_accessory",
 			unlock_level = 23,
-			category = "offence_accessory"
 		},
 		{
+			category = "offence_accessory",
 			unlock_level = 26,
-			category = "offence_accessory"
 		},
 		{
+			category = "offence_accessory",
 			unlock_level = 29,
-			category = "offence_accessory"
 		},
 		{
+			category = "defence_accessory",
 			unlock_level = 3,
-			category = "defence_accessory"
 		},
 		{
+			category = "defence_accessory",
 			unlock_level = 6,
-			category = "defence_accessory"
 		},
 		{
+			category = "defence_accessory",
 			unlock_level = 9,
-			category = "defence_accessory"
 		},
 		{
+			category = "defence_accessory",
 			unlock_level = 12,
-			category = "defence_accessory"
 		},
 		{
+			category = "defence_accessory",
 			unlock_level = 15,
-			category = "defence_accessory"
 		},
 		{
+			category = "defence_accessory",
 			unlock_level = 18,
-			category = "defence_accessory"
 		},
 		{
+			category = "defence_accessory",
 			unlock_level = 21,
-			category = "defence_accessory"
 		},
 		{
+			category = "defence_accessory",
 			unlock_level = 24,
-			category = "defence_accessory"
 		},
 		{
+			category = "defence_accessory",
 			unlock_level = 27,
-			category = "defence_accessory"
 		},
 		{
+			category = "defence_accessory",
 			unlock_level = 29,
-			category = "defence_accessory"
 		},
 		{
+			category = "utility_accessory",
 			unlock_level = 4,
-			category = "utility_accessory"
 		},
 		{
+			category = "utility_accessory",
 			unlock_level = 7,
-			category = "utility_accessory"
 		},
 		{
+			category = "utility_accessory",
 			unlock_level = 10,
-			category = "utility_accessory"
 		},
 		{
+			category = "utility_accessory",
 			unlock_level = 13,
-			category = "utility_accessory"
 		},
 		{
+			category = "utility_accessory",
 			unlock_level = 16,
-			category = "utility_accessory"
 		},
 		{
+			category = "utility_accessory",
 			unlock_level = 19,
-			category = "utility_accessory"
 		},
 		{
+			category = "utility_accessory",
 			unlock_level = 22,
-			category = "utility_accessory"
 		},
 		{
+			category = "utility_accessory",
 			unlock_level = 25,
-			category = "utility_accessory"
 		},
 		{
+			category = "utility_accessory",
 			unlock_level = 28,
-			category = "utility_accessory"
 		},
 		{
+			category = "utility_accessory",
 			unlock_level = 29,
-			category = "utility_accessory"
-		}
+		},
 	},
 	talents = {
 		{
+			category = 1,
 			unlock_level = 5,
-			category = 1
 		},
 		{
+			category = 2,
 			unlock_level = 10,
-			category = 2
 		},
 		{
+			category = 3,
 			unlock_level = 15,
-			category = 3
 		},
 		{
+			category = 4,
 			unlock_level = 20,
-			category = 4
 		},
 		{
+			category = 5,
 			unlock_level = 25,
-			category = 5
 		},
 		{
+			category = 6,
 			unlock_level = 30,
-			category = 6
-		}
+		},
 	},
 	traits = {
 		{
+			category = "offence_accessory",
 			unlock_level = 10,
-			category = "offence_accessory"
 		},
 		{
+			category = "defence_accessory",
 			unlock_level = 15,
-			category = "defence_accessory"
 		},
 		{
+			category = "utility_accessory",
 			unlock_level = 20,
-			category = "utility_accessory"
-		}
-	}
+		},
+	},
 }
 WeaveWeaponProgression = {
 	properties = {
 		{
-			unlock_level = 2
+			unlock_level = 2,
 		},
 		{
-			unlock_level = 3
+			unlock_level = 3,
 		},
 		{
-			unlock_level = 4
+			unlock_level = 4,
 		},
 		{
-			unlock_level = 5
+			unlock_level = 5,
 		},
 		{
-			unlock_level = 6
+			unlock_level = 6,
 		},
 		{
-			unlock_level = 7
+			unlock_level = 7,
 		},
 		{
-			unlock_level = 9
+			unlock_level = 9,
 		},
 		{
-			unlock_level = 10
+			unlock_level = 10,
 		},
 		{
-			unlock_level = 11
+			unlock_level = 11,
 		},
 		{
-			unlock_level = 12
-		}
+			unlock_level = 12,
+		},
 	},
 	traits = {
 		{
-			unlock_level = 8
-		}
-	}
+			unlock_level = 8,
+		},
+	},
 }
 WeaveMasterySettings = {
-	mastery_cap_weapon = 400,
 	career_mastery_per_magic_level = 50,
 	item_mastery_per_magic_level = 15,
-	mastery_cap_amulet = 1400
+	mastery_cap_amulet = 1400,
+	mastery_cap_weapon = 400,
 }

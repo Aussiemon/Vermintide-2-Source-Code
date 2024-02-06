@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/default_player_unit/weaves/player_unit_weave_loadout_extension.lua
+
 PlayerUnitWeaveLoadoutExtension = class(PlayerUnitWeaveLoadoutExtension)
 
 PlayerUnitWeaveLoadoutExtension.init = function (self, extension_init_context, unit, extension_init_data)
@@ -21,6 +23,7 @@ PlayerUnitWeaveLoadoutExtension.extensions_ready = function (self, world, unit)
 
 	if self:_is_in_weave() then
 		local buffs = self:_get_weave_buffs()
+
 		self._buffs = buffs
 
 		self:_apply_buffs(buffs)
@@ -60,7 +63,7 @@ PlayerUnitWeaveLoadoutExtension._get_weave_buffs = function (self)
 	local buffs = {
 		client = {},
 		server = {},
-		both = {}
+		both = {},
 	}
 	local weaves_interface = Managers.backend:get_interface("weaves")
 	local career_name = self._career_extension:career_name()
@@ -77,8 +80,9 @@ PlayerUnitWeaveLoadoutExtension._get_weave_buffs = function (self)
 		local max_num_upgrades = #costs
 		local varable_value = num_upgrades / max_num_upgrades
 		local buffer = property_data.buffer or "client"
+
 		buffs[buffer][buff_name] = {
-			variable_value = varable_value
+			variable_value = varable_value,
 		}
 	end
 
@@ -91,8 +95,9 @@ PlayerUnitWeaveLoadoutExtension._get_weave_buffs = function (self)
 		fassert(BuffTemplates[buff_name], "Weave buff %q does not exist", buff_name)
 
 		local buffer = trait_data.buffer or "client"
+
 		buffs[buffer][buff_name] = {
-			variable_value = 1
+			variable_value = 1,
 		}
 	end
 

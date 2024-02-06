@@ -1,3 +1,5 @@
+﻿-- chunkname: @foundation/scripts/util/script_extended_replay.lua
+
 ScriptExtendedReplay = class(ScriptExtendedReplay)
 
 ScriptExtendedReplay.reload = function ()
@@ -24,7 +26,7 @@ ScriptExtendedReplay.request_moving_units = function ()
 	local cmd = {
 		message = "moving_units",
 		type = "replay",
-		units = ExtendedReplay.moving_units()
+		units = ExtendedReplay.moving_units(),
 	}
 
 	Application.console_send(cmd)

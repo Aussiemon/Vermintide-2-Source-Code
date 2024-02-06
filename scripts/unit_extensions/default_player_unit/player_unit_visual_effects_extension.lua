@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/unit_extensions/default_player_unit/player_unit_visual_effects_extension.lua
+
 PlayerUnitVisualEffectsExtension = class(PlayerUnitVisualEffectsExtension)
+
 local unit_set_flow_variable = Unit.set_flow_variable
 local unit_flow_event = Unit.flow_event
 
@@ -12,13 +15,17 @@ end
 PlayerUnitVisualEffectsExtension.extensions_ready = function (self, world, unit)
 	self.inventory_extension = ScriptUnit.extension(unit, "inventory_system")
 	self.overcharge_extension = ScriptUnit.extension(unit, "overcharge_system")
+
 	local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
 	local first_person_unit = first_person_extension:get_first_person_unit()
 	local first_person_mesh_unit = first_person_extension:get_first_person_mesh_unit()
+
 	self.first_person_extension = first_person_extension
 	self.first_person_unit = first_person_unit
 	self.first_person_mesh_unit = first_person_mesh_unit
+
 	local cosmetic_extension = ScriptUnit.extension(unit, "cosmetic_system")
+
 	self.cosmetic_extension = cosmetic_extension
 	self.third_person_mesh_unit = cosmetic_extension:get_third_person_mesh_unit()
 end

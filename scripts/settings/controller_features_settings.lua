@@ -1,602 +1,606 @@
+﻿-- chunkname: @scripts/settings/controller_features_settings.lua
+
 RumbleTemplates = {
 	full_stop = {
 		motors = {
 			0,
-			1
+			1,
 		},
 		params = {
 			{
-				release = 0,
-				decay = 0,
-				offset = 0,
+				attack = 0,
 				attack_level = 0,
+				decay = 0,
+				frequency = 0,
+				offset = 0,
+				release = 0,
 				sustain = 0,
 				sustain_level = 0,
-				attack = 0,
-				frequency = 0,
-				period = math.huge
+				period = math.huge,
 			},
 			{
-				release = 0,
-				decay = 0,
-				offset = 0,
+				attack = 0,
 				attack_level = 0,
+				decay = 0,
+				frequency = 0,
+				offset = 0,
+				release = 0,
 				sustain = 0,
 				sustain_level = 0,
-				attack = 0,
-				frequency = 0,
-				period = math.huge
-			}
-		}
+				period = math.huge,
+			},
+		},
 	},
 	aim_start = {
 		motors = {
 			0,
-			1
+			1,
 		},
 		params = {
 			{
-				release = 0,
-				decay = 0,
-				offset = 0,
+				attack = 0.2,
 				attack_level = 0.01,
+				decay = 0,
+				frequency = 0,
+				offset = 0,
+				release = 0,
 				sustain = 0.15,
 				sustain_level = 0.15,
-				attack = 0.2,
-				frequency = 0,
-				period = math.huge
+				period = math.huge,
 			},
 			{
-				release = 0,
-				decay = 0,
-				offset = 0,
+				attack = 0.2,
 				attack_level = 0.01,
+				decay = 0,
+				frequency = 0,
+				offset = 0,
+				release = 0,
 				sustain = 0.15,
 				sustain_level = 0.15,
-				attack = 0.2,
-				frequency = 0,
-				period = math.huge
-			}
-		}
+				period = math.huge,
+			},
+		},
 	},
 	overcharge_rumble = {
 		motors = {
 			0,
-			1
+			1,
 		},
 		params = {
 			{
-				release = 0,
-				decay = 0,
-				offset = 0,
+				attack = 0.3,
 				attack_level = 0.15,
+				decay = 0,
+				frequency = 0,
+				offset = 0,
+				release = 0,
 				sustain = 1.5,
 				sustain_level = 0.1,
-				attack = 0.3,
-				frequency = 0,
-				period = math.huge
+				period = math.huge,
 			},
 			{
-				release = 0,
-				decay = 0,
-				offset = 0,
+				attack = 0.3,
 				attack_level = 0.1,
+				decay = 0,
+				frequency = 0,
+				offset = 0,
+				release = 0,
 				sustain = 1.3,
 				sustain_level = 0.1,
-				attack = 0.3,
-				frequency = 0,
-				period = math.huge
-			}
-		}
+				period = math.huge,
+			},
+		},
 	},
 	overcharge_rumble_overcharged = {
 		motors = {
 			0,
-			1
+			1,
 		},
 		params = {
 			{
-				release = 0,
-				decay = 0,
-				offset = 0,
+				attack = 0.3,
 				attack_level = 0.2,
+				decay = 0,
+				frequency = 0,
+				offset = 0,
+				release = 0,
 				sustain = 1.5,
 				sustain_level = 0.15,
-				attack = 0.3,
-				frequency = 0,
-				period = math.huge
+				period = math.huge,
 			},
 			{
-				release = 0,
-				decay = 0,
-				offset = 0,
+				attack = 0.3,
 				attack_level = 0.25,
+				decay = 0,
+				frequency = 0,
+				offset = 0,
+				release = 0,
 				sustain = 1.3,
 				sustain_level = 0.15,
-				attack = 0.3,
-				frequency = 0,
-				period = math.huge
-			}
-		}
+				period = math.huge,
+			},
+		},
 	},
 	overcharge_rumble_crit = {
 		motors = {
 			0,
-			1
+			1,
 		},
 		params = {
 			{
-				release = 0,
-				decay = 0,
-				offset = 0,
+				attack = 0.3,
 				attack_level = 0.3,
+				decay = 0,
+				frequency = 0,
+				offset = 0,
+				release = 0,
 				sustain = 1.5,
 				sustain_level = 0.2,
-				attack = 0.3,
-				frequency = 0,
-				period = math.huge
+				period = math.huge,
 			},
 			{
-				release = 0,
-				decay = 0,
-				offset = 0,
+				attack = 0.3,
 				attack_level = 0.3,
+				decay = 0,
+				frequency = 0,
+				offset = 0,
+				release = 0,
 				sustain = 1.5,
 				sustain_level = 0.2,
-				attack = 0.3,
-				frequency = 0,
-				period = math.huge
-			}
-		}
+				period = math.huge,
+			},
+		},
 	},
 	reload_start = {
 		motors = {
 			0,
-			1
+			1,
 		},
 		params = {
 			{
-				release = 0,
-				decay = 0,
-				offset = 0,
+				attack = 0.3,
 				attack_level = 0.2,
+				decay = 0,
+				frequency = 0,
+				offset = 0,
+				release = 0,
 				sustain = 0.5,
 				sustain_level = 0.1,
-				attack = 0.3,
-				frequency = 0,
-				period = math.huge
+				period = math.huge,
 			},
 			{
-				release = 0,
-				decay = 0,
-				offset = 0,
+				attack = 0.3,
 				attack_level = 0.1,
+				decay = 0,
+				frequency = 0,
+				offset = 0,
+				release = 0,
 				sustain = 0.3,
 				sustain_level = 0.2,
-				attack = 0.3,
-				frequency = 0,
-				period = math.huge
-			}
-		}
+				period = math.huge,
+			},
+		},
 	},
 	reload_over = {
 		motors = {
 			0,
-			1
+			1,
 		},
 		params = {
 			{
-				release = 0,
-				decay = 0,
-				offset = 0,
+				attack = 0.2,
 				attack_level = 0.3,
+				decay = 0,
+				frequency = 0,
+				offset = 0,
+				release = 0,
 				sustain = 0,
 				sustain_level = 0.5,
-				attack = 0.2,
-				frequency = 0,
-				period = math.huge
+				period = math.huge,
 			},
 			{
-				release = 0,
-				decay = 0,
-				offset = 0,
+				attack = 0.2,
 				attack_level = 0.3,
+				decay = 0,
+				frequency = 0,
+				offset = 0,
+				release = 0,
 				sustain = 0,
 				sustain_level = 0.5,
-				attack = 0.2,
-				frequency = 0,
-				period = math.huge
-			}
-		}
+				period = math.huge,
+			},
+		},
 	},
 	light_swing = {
 		motors = {
 			0,
-			1
+			1,
 		},
 		params = {
 			{
-				release = 0,
-				decay = 0,
-				offset = 0,
+				attack = 0.3,
 				attack_level = 0.2,
+				decay = 0,
+				frequency = 0,
+				offset = 0,
+				release = 0,
 				sustain = 0.1,
 				sustain_level = 0.1,
-				attack = 0.3,
-				frequency = 0,
-				period = math.huge
+				period = math.huge,
 			},
 			{
-				release = 0,
-				decay = 0,
-				offset = 0,
+				attack = 0.3,
 				attack_level = 0.2,
+				decay = 0,
+				frequency = 0,
+				offset = 0,
+				release = 0,
 				sustain = 0.1,
 				sustain_level = 0.1,
-				attack = 0.3,
-				frequency = 0,
-				period = math.huge
-			}
-		}
+				period = math.huge,
+			},
+		},
 	},
 	crossbow_fire = {
 		motors = {
 			0,
-			1
+			1,
 		},
 		params = {
 			{
-				release = 0,
-				decay = 0,
-				offset = 0,
+				attack = 0.2,
 				attack_level = 1,
+				decay = 0,
+				frequency = 0,
+				offset = 0,
+				release = 0,
 				sustain = 0,
 				sustain_level = 0.2,
-				attack = 0.2,
-				frequency = 0,
-				period = math.huge
+				period = math.huge,
 			},
 			{
-				release = 0,
-				decay = 0,
-				offset = 0,
+				attack = 0.2,
 				attack_level = 1,
+				decay = 0,
+				frequency = 0,
+				offset = 0,
+				release = 0,
 				sustain = 0,
 				sustain_level = 0.2,
-				attack = 0.2,
-				frequency = 0,
-				period = math.huge
-			}
-		}
+				period = math.huge,
+			},
+		},
 	},
 	bow_fire = {
 		motors = {
 			0,
-			1
+			1,
 		},
 		params = {
 			{
-				release = 0,
-				decay = 0,
-				offset = 0,
+				attack = 0.2,
 				attack_level = 0.35,
+				decay = 0,
+				frequency = 0,
+				offset = 0,
+				release = 0,
 				sustain = 0,
 				sustain_level = 0.2,
-				attack = 0.2,
-				frequency = 0,
-				period = math.huge
+				period = math.huge,
 			},
 			{
-				release = 0,
-				decay = 0,
-				offset = 0,
+				attack = 0.2,
 				attack_level = 0.35,
+				decay = 0,
+				frequency = 0,
+				offset = 0,
+				release = 0,
 				sustain = 0,
 				sustain_level = 0.2,
-				attack = 0.2,
-				frequency = 0,
-				period = math.huge
-			}
-		}
+				period = math.huge,
+			},
+		},
 	},
 	handgun_fire = {
 		motors = {
 			0,
-			1
+			1,
 		},
 		params = {
 			{
-				release = 0,
-				decay = 0,
-				offset = 0,
+				attack = 0.2,
 				attack_level = 1,
+				decay = 0,
+				frequency = 0,
+				offset = 0,
+				release = 0,
 				sustain = 0.25,
 				sustain_level = 0.5,
-				attack = 0.2,
-				frequency = 0,
-				period = math.huge
+				period = math.huge,
 			},
 			{
-				release = 0,
-				decay = 0,
-				offset = 0,
+				attack = 0.2,
 				attack_level = 1,
+				decay = 0,
+				frequency = 0,
+				offset = 0,
+				release = 0,
 				sustain = 0.25,
 				sustain_level = 0.5,
-				attack = 0.2,
-				frequency = 0,
-				period = math.huge
-			}
-		}
+				period = math.huge,
+			},
+		},
 	},
 	light_hit = {
 		motors = {
-			0
+			0,
 		},
 		params = {
-			release = 0,
-			decay = 0,
-			offset = 0,
+			attack = 0,
 			attack_level = 1,
+			decay = 0,
+			frequency = 0,
+			offset = 0,
+			release = 0,
 			sustain = 0.3,
 			sustain_level = 0.15,
-			attack = 0,
-			frequency = 0,
-			period = math.huge
-		}
+			period = math.huge,
+		},
 	},
 	medium_hit = {
 		motors = {
-			1
+			1,
 		},
 		params = {
-			release = 0,
-			decay = 0,
-			offset = 0,
+			attack = 0,
 			attack_level = 1,
+			decay = 0,
+			frequency = 0,
+			offset = 0,
+			release = 0,
 			sustain = 0.3,
 			sustain_level = 0.4,
-			attack = 0,
-			frequency = 0,
-			period = math.huge
-		}
+			period = math.huge,
+		},
 	},
 	heavy_hit = {
 		motors = {
 			0,
-			1
+			1,
 		},
 		params = {
-			release = 0,
-			decay = 0,
-			offset = 0,
+			attack = 0,
 			attack_level = 1,
+			decay = 0,
+			frequency = 0,
+			offset = 0,
+			release = 0,
 			sustain = 0.5,
 			sustain_level = 0.7,
-			attack = 0,
-			frequency = 0,
-			period = math.huge
-		}
+			period = math.huge,
+		},
 	},
 	push_hit = {
 		motors = {
 			0,
-			1
+			1,
 		},
 		params = {
-			release = 0,
-			decay = 0,
-			offset = 0,
+			attack = 0,
 			attack_level = 0.3,
+			decay = 0,
+			frequency = 0,
+			offset = 0,
+			release = 0,
 			sustain = 0.3,
 			sustain_level = 0.3,
-			attack = 0,
-			frequency = 0,
-			period = math.huge
-		}
+			period = math.huge,
+		},
 	},
 	block = {
 		motors = {
 			0,
-			1
+			1,
 		},
 		params = {
 			{
-				release = 0,
-				decay = 0,
-				offset = 0,
+				attack = 0.2,
 				attack_level = 0.65,
+				decay = 0,
+				frequency = 0,
+				offset = 0,
+				release = 0,
 				sustain = 0.2,
 				sustain_level = 0.5,
-				attack = 0.2,
-				frequency = 0,
-				period = math.huge
+				period = math.huge,
 			},
 			{
-				release = 0,
-				decay = 0,
-				offset = 0,
+				attack = 0.2,
 				attack_level = 0.65,
+				decay = 0,
+				frequency = 0,
+				offset = 0,
+				release = 0,
 				sustain = 0.1,
 				sustain_level = 0.5,
-				attack = 0.2,
-				frequency = 0,
-				period = math.huge
-			}
-		}
+				period = math.huge,
+			},
+		},
 	},
 	hit_environment = {
 		motors = {
 			0,
-			1
+			1,
 		},
 		params = {
 			{
-				release = 0,
-				decay = 0,
-				offset = 0,
+				attack = 0.2,
 				attack_level = 1,
+				decay = 0,
+				frequency = 0,
+				offset = 0,
+				release = 0,
 				sustain = 0.2,
 				sustain_level = 0.5,
-				attack = 0.2,
-				frequency = 0,
-				period = math.huge
+				period = math.huge,
 			},
 			{
-				release = 0,
-				decay = 0,
-				offset = 0,
+				attack = 0.2,
 				attack_level = 1,
+				decay = 0,
+				frequency = 0,
+				offset = 0,
+				release = 0,
 				sustain = 0.2,
 				sustain_level = 0.5,
-				attack = 0.2,
-				frequency = 0,
-				period = math.huge
-			}
-		}
+				period = math.huge,
+			},
+		},
 	},
 	hit_shield = {
 		motors = {
 			0,
-			1
+			1,
 		},
 		params = {
 			{
-				release = 0,
-				decay = 0,
-				offset = 0,
+				attack = 0.2,
 				attack_level = 1,
+				decay = 0,
+				frequency = 0,
+				offset = 0,
+				release = 0,
 				sustain = 0.3,
 				sustain_level = 0.5,
-				attack = 0.2,
-				frequency = 0,
-				period = math.huge
+				period = math.huge,
 			},
 			{
-				release = 0,
-				decay = 0,
-				offset = 0,
+				attack = 0.2,
 				attack_level = 1,
+				decay = 0,
+				frequency = 0,
+				offset = 0,
+				release = 0,
 				sustain = 0.3,
 				sustain_level = 0.5,
-				attack = 0.2,
-				frequency = 0,
-				period = math.huge
-			}
-		}
+				period = math.huge,
+			},
+		},
 	},
 	hit_character_light = {
 		motors = {
 			0,
-			1
+			1,
 		},
 		params = {
 			{
-				release = 0,
-				decay = 0,
-				offset = 0,
+				attack = 0.2,
 				attack_level = 0.5,
+				decay = 0,
+				frequency = 0,
+				offset = 0,
+				release = 0,
 				sustain = 0,
 				sustain_level = 0.35,
-				attack = 0.2,
-				frequency = 0,
-				period = math.huge
+				period = math.huge,
 			},
 			{
-				release = 0,
-				decay = 0,
-				offset = 0,
+				attack = 0.2,
 				attack_level = 0.5,
+				decay = 0,
+				frequency = 0,
+				offset = 0,
+				release = 0,
 				sustain = 0,
 				sustain_level = 0.35,
-				attack = 0.2,
-				frequency = 0,
-				period = math.huge
-			}
-		}
+				period = math.huge,
+			},
+		},
 	},
 	hit_character = {
 		motors = {
 			0,
-			1
+			1,
 		},
 		params = {
 			{
-				release = 0,
-				decay = 0,
-				offset = 0,
+				attack = 0.2,
 				attack_level = 1,
+				decay = 0,
+				frequency = 0,
+				offset = 0,
+				release = 0,
 				sustain = 0,
 				sustain_level = 0.75,
-				attack = 0.2,
-				frequency = 0,
-				period = math.huge
+				period = math.huge,
 			},
 			{
-				release = 0,
-				decay = 0,
-				offset = 0,
+				attack = 0.2,
 				attack_level = 1,
+				decay = 0,
+				frequency = 0,
+				offset = 0,
+				release = 0,
 				sustain = 0,
 				sustain_level = 0.75,
-				attack = 0.2,
-				frequency = 0,
-				period = math.huge
-			}
-		}
+				period = math.huge,
+			},
+		},
 	},
 	hit_armor = {
 		motors = {
 			0,
-			1
+			1,
 		},
 		params = {
 			{
-				release = 0,
-				decay = 0,
-				offset = 0,
+				attack = 0.2,
 				attack_level = 1,
+				decay = 0,
+				frequency = 0,
+				offset = 0,
+				release = 0,
 				sustain = 0.3,
 				sustain_level = 0.5,
-				attack = 0.2,
-				frequency = 0,
-				period = math.huge
+				period = math.huge,
 			},
 			{
-				release = 0,
-				decay = 0,
-				offset = 0,
+				attack = 0.2,
 				attack_level = 1,
+				decay = 0,
+				frequency = 0,
+				offset = 0,
+				release = 0,
 				sustain = 0.3,
 				sustain_level = 0.5,
-				attack = 0.2,
-				frequency = 0,
-				period = math.huge
-			}
-		}
+				period = math.huge,
+			},
+		},
 	},
 	camera_shake = {
 		motors = {
 			0,
-			1
+			1,
 		},
 		params = {
-			release = 0,
-			decay = 0,
-			offset = 0,
+			attack = 0,
 			attack_level = 1,
+			decay = 0,
+			frequency = 0,
+			offset = 0,
+			release = 0,
 			sustain = 0,
 			sustain_level = 1,
-			attack = 0,
-			frequency = 0,
-			period = math.huge
+			period = math.huge,
 		},
 		disabled_events = {
-			castle_escape = true
-		}
-	}
+			castle_escape = true,
+		},
+	},
 }
+
 local CHECK_TIMER = 0.5
+
 ControllerFeaturesSettings = {
 	rumble = {
 		init = function (self, params)
@@ -636,7 +640,7 @@ ControllerFeaturesSettings = {
 					self.controller.stop_rumble_effect(motor_id, rumble_id)
 				end
 			end
-		end
+		end,
 	},
 	hit_rumble = {
 		init = function (self, params)
@@ -690,12 +694,13 @@ ControllerFeaturesSettings = {
 					self.controller.stop_rumble_effect(motor_id, rumble_id)
 				end
 			end
-		end
+		end,
 	},
 	camera_shake = {
 		init = function (self, params)
 			local shake_settings = params.shake_settings
 			local effect_data = RumbleTemplates.camera_shake
+
 			self.ids = {}
 			self._check_timer = CHECK_TIMER
 
@@ -711,6 +716,7 @@ ControllerFeaturesSettings = {
 			local frequency = math.clamp(params.shake_settings.event.octaves or 0, 0, 6)
 			local strength = 1 - 1 / (shake_settings.event.octaves or 1)
 			local scale = strength * params.scale * shake_settings.event.amplitude * shake_settings.event.persistance * 0.5
+
 			effect_data.params.attack = attack
 			effect_data.params.attack_level = scale
 			effect_data.params.frequency = frequency
@@ -745,7 +751,7 @@ ControllerFeaturesSettings = {
 					self.controller.stop_rumble_effect(motor_id, rumble_id)
 				end
 			end
-		end
+		end,
 	},
 	persistent_rumble = {
 		init = function (self, params)
@@ -797,6 +803,6 @@ ControllerFeaturesSettings = {
 					self.controller.stop_rumble_effect(motor_id, rumble_id)
 				end
 			end
-		end
-	}
+		end,
+	},
 }

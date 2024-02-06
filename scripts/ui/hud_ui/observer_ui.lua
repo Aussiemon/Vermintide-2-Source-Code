@@ -1,7 +1,10 @@
+﻿-- chunkname: @scripts/ui/hud_ui/observer_ui.lua
+
 local definitions = local_require("scripts/ui/hud_ui/observer_ui_definitions")
 local RELOAD_UI = true
 local MIN_HEALTH_DIVIDERS = 0
 local MAX_HEALTH_DIVIDERS = 10
+
 ObserverUI = class(ObserverUI)
 
 ObserverUI.init = function (self, parent, ingame_ui_context)
@@ -73,6 +76,7 @@ ObserverUI.set_observer_player = function (self, player_id)
 	local profile_index = profile_synchronizer:profile_by_peer(follow_player.peer_id, local_player_id)
 	local hero_display_name = profiles[profile_index] and profiles[profile_index].display_name
 	local player_name = follow_player:name()
+
 	self.player_name_widget.content.text = is_player_controlled and player_name or player_name .. " (BOT)"
 	self.hero_name_widget.content.text = hero_display_name
 	self.observing_player_id = player_id
@@ -143,18 +147,21 @@ ObserverUI.set_visible = function (self, visible)
 
 		divider_widget.content.visible = visible
 		divider_widget.element.dirty = true
+
 		local player_name_widget = self.player_name_widget
 
 		UIRenderer.set_element_visible(self.ui_renderer, player_name_widget.element, visible)
 
 		divider_widget.content.visible = visible
 		player_name_widget.element.dirty = true
+
 		local hero_name_widget = self.hero_name_widget
 
 		UIRenderer.set_element_visible(self.ui_renderer, hero_name_widget.element, visible)
 
 		divider_widget.content.visible = visible
 		hero_name_widget.element.dirty = true
+
 		local hp_bar_widget = self.hp_bar_widget
 
 		UIRenderer.set_element_visible(self.ui_renderer, hp_bar_widget.element, visible)
@@ -182,7 +189,7 @@ ObserverUI.update_follow_player_health_bar = function (self, peer_id)
 
 	local local_player_id = player:local_player_id()
 	local player_unit = player.player_unit
-	local health_percent, is_knocked_down, is_dead, is_wounded, is_ready_for_assisted_respawn = nil
+	local health_percent, is_knocked_down, is_dead, is_wounded, is_ready_for_assisted_respawn
 	local shield_percent = 0
 	local active_percentage = 1
 	local modified_bar = false
@@ -193,7 +200,9 @@ ObserverUI.update_follow_player_health_bar = function (self, peer_id)
 	if player_unit then
 		local health_extension = ScriptUnit.extension(player_unit, "health_system")
 		local status_extension = ScriptUnit.extension(player_unit, "status_system")
+
 		health_percent = health_extension:current_health_percent()
+
 		local max_health = health_extension:get_max_health()
 		local has_shield, shield_amount = health_extension:has_assist_shield()
 
@@ -202,6 +211,7 @@ ObserverUI.update_follow_player_health_bar = function (self, peer_id)
 
 			if not self.player_shielded then
 				local hp_bar_highlight = bar_style.hp_bar_highlight
+
 				hp_bar_highlight.color[1] = 255
 				hp_bar_highlight.color[2] = 140
 				hp_bar_highlight.color[3] = 180
@@ -212,6 +222,7 @@ ObserverUI.update_follow_player_health_bar = function (self, peer_id)
 			end
 		elseif self.player_shielded then
 			local hp_bar_highlight = bar_style.hp_bar_highlight
+
 			hp_bar_highlight.color[1] = 0
 			hp_bar_highlight.color[2] = 0
 			hp_bar_highlight.color[3] = 0
@@ -224,6 +235,7 @@ ObserverUI.update_follow_player_health_bar = function (self, peer_id)
 		is_wounded = status_extension:is_wounded()
 		is_knocked_down = status_extension:is_knocked_down() and health_percent > 0
 		is_ready_for_assisted_respawn = status_extension:is_ready_for_assisted_respawn()
+
 		local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
 		local num_grimoires = buff_extension:num_buff_perk("skaven_grimoire")
 		local multiplier = buff_extension:apply_buffs_to_value(PlayerUnitDamageSettings.GRIMOIRE_HEALTH_DEBUFF, "curse_protection")
@@ -235,6 +247,7 @@ ObserverUI.update_follow_player_health_bar = function (self, peer_id)
 		local num_mutator_curses = buff_extension:num_buff_perk("mutator_curse")
 		local mutator_curse_multiplier = buff_extension:apply_buffs_to_value(WindSettings.light.curse_settings.value[difficulty_name], "curse_protection")
 		local cursed_health = buff_extension:apply_buffs_to_value(0, "health_curse")
+
 		cursed_health = buff_extension:apply_buffs_to_value(cursed_health, "curse_protection")
 		active_percentage = 1 + num_grimoires * multiplier + num_twitch_grimoires * twitch_multiplier + num_slayer_curses * slayer_curse_multiplier + num_mutator_curses * mutator_curse_multiplier + cursed_health
 	else
@@ -244,35 +257,48 @@ ObserverUI.update_follow_player_health_bar = function (self, peer_id)
 
 	bar_content.hp_bar.draw_health_bar = not is_ready_for_assisted_respawn
 	is_dead = health_percent <= 0
+
 	local num_of_health_dividers = MIN_HEALTH_DIVIDERS
 	local low_health = not is_dead and not is_knocked_down and health_percent < UISettings.unit_frames.low_health_threshold or nil
 	local health_changed = self:on_player_health_changed("my_player", hp_bar_widget, health_percent * active_percentage)
 	local grims_changed = self:on_num_grimoires_changed("my_player_grimoires", hp_bar_widget, 1 - active_percentage)
+
 	modified_bar = modified_bar or health_changed or grims_changed
+
 	local hp_bar_value = hp_bar_widget.content.hp_bar.bar_value
 	local grimoire_value = hp_bar_widget.content.hp_bar_grimoire_debuff.bar_value
+
 	bar_content.hp_bar_shield.bar_value_position = hp_bar_value
 	bar_content.hp_bar_shield.bar_value_offset = grimoire_value
 	bar_content.hp_bar_shield.bar_value_size = shield_percent
+
 	local max_health_divider_content = bar_content.hp_bar_max_health_divider
+
 	max_health_divider_content.active = false
+
 	local grimoire_icon_content = bar_content.hp_bar_grimoire_icon
+
 	grimoire_icon_content.active = false
 
 	if active_percentage < 1 then
 		max_health_divider_content.active = true
+
 		local default_bar_length = definitions.scenegraph_definition.hp_bar_grimoire_debuff_fill.size[1]
 		local bar_value = bar_content.hp_bar_grimoire_debuff.bar_value
 		local bar_offset = bar_value * default_bar_length
 		local grimoire_icon_style = hp_bar_widget.style.hp_bar_grimoire_icon
+
 		grimoire_icon_content.active = true
+
 		local current_offset = grimoire_icon_style.offset[1]
 		local new_offset = -bar_offset / 2
 
 		if current_offset ~= new_offset then
 			grimoire_icon_style.offset[1] = new_offset
 			modified_bar = true
+
 			local max_health_divider_style = hp_bar_widget.style.hp_bar_max_health_divider
+
 			max_health_divider_style.offset[1] = -bar_offset
 		end
 	end
@@ -306,22 +332,21 @@ ObserverUI.on_player_health_changed = function (self, name, widget, health_perce
 	end
 
 	local unit_frames_settings = UISettings.unit_frames
-
-	if not self.bar_animations_data[name] then
-		local widget_animation_data = {
-			low_health_animation = UIAnimation.init(UIAnimation.pulse_animation, widget.style.hp_bar.color, 1, unit_frames_settings.low_health_animation_alpha_from, unit_frames_settings.low_health_animation_alpha_to, unit_frames_settings.low_health_animation_time)
-		}
-	end
+	local widget_animation_data = self.bar_animations_data[name] or {
+		low_health_animation = UIAnimation.init(UIAnimation.pulse_animation, widget.style.hp_bar.color, 1, unit_frames_settings.low_health_animation_alpha_from, unit_frames_settings.low_health_animation_alpha_to, unit_frames_settings.low_health_animation_time),
+	}
 
 	self.bar_animations_data[name] = widget_animation_data
+
 	local health_percent_current = widget_animation_data.current_health
+
 	widget_animation_data.current_health = health_percent
 
 	if health_percent <= 1 and health_percent ~= health_percent_current then
 		local is_knocked_down = widget.content.hp_bar.is_knocked_down
 		local current_bar_health = widget.content.hp_bar.bar_value
 		local lerp_time = UISettings.unit_frames.health_bar_lerp_time
-		local anim_time = nil
+		local anim_time
 
 		if current_bar_health < health_percent then
 			anim_time = (health_percent - current_bar_health) * lerp_time
@@ -330,6 +355,7 @@ ObserverUI.on_player_health_changed = function (self, name, widget, health_perce
 		end
 
 		local animate_highlight = not is_knocked_down and health_percent < (health_percent_current or 1) or false
+
 		widget_animation_data.animate_highlight = animate_highlight and 0 or widget_animation_data.animate_highlight
 		widget_animation_data.animate = true
 		widget_animation_data.new_health = health_percent
@@ -354,7 +380,7 @@ ObserverUI.on_num_grimoires_changed = function (self, name, widget, health_debuf
 	if health_debuff_percent ~= widget_animation_data.current_health_debuff then
 		local current_bar_health_debuff = widget.content.hp_bar_grimoire_debuff.bar_value
 		local lerp_time = UISettings.unit_frames.health_bar_lerp_time
-		local anim_time = nil
+		local anim_time
 
 		if current_bar_health_debuff < health_debuff_percent then
 			anim_time = (health_debuff_percent - current_bar_health_debuff) * lerp_time
@@ -417,7 +443,7 @@ ObserverUI.update_player_bar_animation = function (self, widget, bar, time, tota
 		local catmullrom_value = math.catmullrom(progress, -14, 0, 0, 0)
 		local weight = 7
 		local weighted_average = (progress * (weight - 1) + 1) / weight
-		local bar_fraction = nil
+		local bar_fraction
 
 		if anim_start_health < anim_end_health then
 			bar_fraction = anim_start_health + (anim_end_health - anim_start_health) * weighted_average
@@ -439,6 +465,7 @@ end
 
 ObserverUI.update_damage_highlight = function (self, widget, time, dt)
 	local total_time = self._skip_bar_animation and 0 or 0.2
+
 	time = time + dt
 
 	if total_time > 0 then
@@ -446,6 +473,7 @@ ObserverUI.update_damage_highlight = function (self, widget, time, dt)
 		local progress = math.min(time / total_time, 1)
 		local catmullrom_value = math.catmullrom(progress, -8, 0, 0, -8)
 		local highlight_alpha = 255 * catmullrom_value
+
 		style.hp_bar_highlight.color[1] = highlight_alpha
 		widget.element.dirty = true
 		self._dirty = true

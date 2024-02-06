@@ -1,14 +1,16 @@
+﻿-- chunkname: @scripts/global_shader_flags.lua
+
 local BASE_VALUE = 8388608
 local SHADER_FLAGS = {
-	"NECROMANCER_CAREER_REMAP"
+	"NECROMANCER_CAREER_REMAP",
 }
 local PARTICLE_LIGHTING_REMAP_VALUES = {
 	NECROMANCER_CAREER_REMAP = {
 		39,
 		0,
 		182,
-		110
-	}
+		110,
+	},
 }
 
 local function find(t, element)
@@ -34,6 +36,7 @@ local function setup_particle_lighting_remapping()
 
 	for name, color in pairs(PARTICLE_LIGHTING_REMAP_VALUES) do
 		local index = find(SHADER_FLAGS, name)
+
 		array[(index - 1) * 4 + 1] = color[2] / 255
 		array[(index - 1) * 4 + 2] = color[3] / 255
 		array[(index - 1) * 4 + 3] = color[4] / 255
@@ -63,7 +66,7 @@ local function update_global_shader_flags(variable_name, enable)
 	assert(lshift_value, string.format("[GlobalShaderFlags] There is no flag called %q setup in global_shader_flags.lua", variable_name))
 
 	local global_shader_flags = Application.render_config("settings", "global_shader_flags")
-	local new_global_shader_flags = nil
+	local new_global_shader_flags
 
 	if enable then
 		new_global_shader_flags = bit.bor(global_shader_flags, bit.lshift(1, lshift_value - 1))
@@ -120,6 +123,7 @@ GlobalShaderFlags.print_debug = function ()
 			local mask = bit.lshift(1, i)
 			local value = bit.band(global_shader_flags, mask)
 			local spacing = i % 8 == 0 and " " or ""
+
 			flags = flags .. (value >= 1 and 1 or 0) .. spacing
 		end
 

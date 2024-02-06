@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/hud_ui/boss_health_ui.lua
+
 local definitions = local_require("scripts/ui/hud_ui/boss_health_ui_definitions")
 local bar_length = definitions.bar_length
 local portrait_scale = 1
@@ -6,12 +8,13 @@ local HEALING_EFFECT_LIFE_TIME = 2
 local breed_textures = UISettings.breed_textures
 local PRIORITY_TIMER_LENGTH = 5
 local PRIORITY_REASONS = {
-	proximity = 1,
+	damage_done = 4,
+	damage_taken = 3,
 	lord = 2,
 	ping = 4,
-	damage_taken = 3,
-	damage_done = 4
+	proximity = 1,
 }
+
 BossHealthUI = class(BossHealthUI)
 
 BossHealthUI.init = function (self, parent, ingame_ui_context)
@@ -23,7 +26,7 @@ BossHealthUI.init = function (self, parent, ingame_ui_context)
 	self.world = ingame_ui_context.world_manager:world("level_world")
 	self.render_settings = {
 		alpha_multiplier = 1,
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 
 	self:create_ui_elements()
@@ -34,6 +37,7 @@ BossHealthUI.init = function (self, parent, ingame_ui_context)
 	self._spectated_player_unit = nil
 	self._prioritized_unit = nil
 	self._prioritized_reason = nil
+
 	local event_manager = Managers.state.event
 
 	event_manager:register(self, "boss_health_bar_set_prioritized_unit", "event_set_prioritized_unit")
@@ -58,14 +62,17 @@ BossHealthUI.create_ui_elements = function (self)
 	UIRenderer.clear_scenegraph_queue(self.ui_renderer)
 
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(definitions.scenegraph_definition)
+
 	local widgets = {}
 	local widgets_by_name = {}
 	local bar_widget_def = definitions.widget_create_func()
 	local bar_widget = UIWidget.init(bar_widget_def)
+
 	widgets[#widgets + 1] = bar_widget
 	widgets_by_name.bar = bar_widget
 	self._widgets = widgets
 	self._widgets_by_name = widgets_by_name
+
 	local game_mode_manager = Managers.state.game_mode
 	local game_mode_key = game_mode_manager:game_mode_key()
 
@@ -93,20 +100,20 @@ local skull_dividers = {
 	false,
 	"skull_divider3",
 	"skull_divider4",
-	false
+	false,
 }
 local small_style = {
+	divider_icon_width = 22,
 	font_size = 16,
-	upper_case = true,
 	font_type = "hell_shark",
-	divider_icon_width = 22
+	upper_case = true,
 }
 local large_style = {
-	upper_case = true,
 	divider_icon_width = 22,
 	font_size = 20,
 	font_type = "hell_shark",
-	fallback_style = small_style
+	upper_case = true,
+	fallback_style = small_style,
 }
 
 BossHealthUI._generate_attributes = function (self, attributes, widget, current_style, max_row_width)
@@ -132,14 +139,17 @@ BossHealthUI._generate_attributes = function (self, attributes, widget, current_
 			local data = BreedEnhancements[id]
 			local text = "{#grad(true);color(242,226,187,255);color2(255,125,80,255)}" .. Utf8.upper(Localize(data.display_name))
 			local pixel_width = UIUtils.get_text_width(self.ui_renderer, current_style, text)
+
 			style.offset[1] = x
 			style.font_size = font_size
 			style.text_color = data.text_color
 			x = x + pixel_width
+
 			local skull_divider_id = skull_dividers[j]
 
 			if skull_divider_id then
 				local skull_divider_style = widget.style[skull_divider_id]
+
 				skull_divider_style.offset[1] = x + divider_move_x
 				skull_divider_style.offset[2] = y - 13
 				x = x + divider_spacing_in_pixels
@@ -203,10 +213,10 @@ BossHealthUI._update_enemy_portrait_name_and_attributes = function (self, unit, 
 end
 
 local customizer_data = {
-	root_scenegraph_id = "pivot",
+	drag_scenegraph_id = "pivot_dragger",
 	label = "Boss health",
 	registry_key = "boss_health",
-	drag_scenegraph_id = "pivot_dragger"
+	root_scenegraph_id = "pivot",
 }
 
 BossHealthUI.update = function (self, dt, t)
@@ -291,6 +301,7 @@ BossHealthUI._draw = function (self, dt, t)
 	local ui_scenegraph = self.ui_scenegraph
 	local input_service = self.input_manager:get_service("Player")
 	local render_settings = self.render_settings
+
 	render_settings.alpha_multiplier = math.min(render_settings.alpha_multiplier + dt * 5, 1)
 
 	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt, nil, render_settings)
@@ -324,11 +335,13 @@ BossHealthUI._show_boss_health_bar = function (self, unit)
 	else
 		local ai_system = Managers.state.entity:system("ai_system")
 		local attributes = ai_system:get_attributes(unit)
+
 		should_show_health_bar = breed and breed.boss or attributes.grudge_marked ~= nil
 	end
 
 	if should_show_health_bar then
 		local breed_name = breed.name
+
 		self._switch_healthbars = self._boss_unit and unit ~= self._boss_unit
 		self._breed_name = breed_name
 
@@ -410,13 +423,16 @@ BossHealthUI._sync_boss_health = function (self, dt, t)
 		return
 	end
 
-	local progress, max_health_fraction = nil
+	local progress, max_health_fraction
 
 	if unit and Unit.alive(unit) then
 		local health_extension = ScriptUnit.extension(unit, "health_system")
 		local health_percentage = health_extension:current_health_percent()
+
 		health_percentage = math.clamp(health_percentage, 0, 1)
+
 		local health_max_percentage = health_extension:current_max_health_percent()
+
 		progress = health_percentage * health_max_percentage
 		max_health_fraction = health_max_percentage
 		self._freeze_healing = self._breed_name == "chaos_troll" and health_extension.state == "down"
@@ -449,8 +465,9 @@ end
 
 BossHealthUI._set_bar_progress = function (self, progress, max_health_fraction, instant, dt, t)
 	progress = progress or 0
+
 	local current_health_percent = self._current_progress or 1
-	local health_anim_progress = current_health_percent + math.sign(progress - current_health_percent) * dt * 0.3
+	local health_anim_progress = current_health_percent + math.sign(progress - current_health_percent) * (dt * 0.3)
 	local instant = self._next_update_is_instant or instant
 
 	if instant then
@@ -471,11 +488,13 @@ BossHealthUI._set_bar_progress = function (self, progress, max_health_fraction, 
 	local bar_offset = bar_style.offset
 	local bar_default_size = bar_style.default_size
 	local bar_default_offset = bar_style.default_offset
+
 	bar_size[1] = bar_default_size[1] * (health_anim_progress or 1)
 	bar_uvs[2][1] = health_anim_progress
 	max_health_fraction = max_health_fraction or 1
+
 	local current_max_health_fraction = self._current_max_health_fraction or 1
-	local max_health_anim_fraction = current_max_health_fraction + math.sign(max_health_fraction - current_max_health_fraction) * dt * 0.3
+	local max_health_anim_fraction = current_max_health_fraction + math.sign(max_health_fraction - current_max_health_fraction) * (dt * 0.3)
 
 	if instant then
 		max_health_anim_fraction = max_health_fraction
@@ -492,12 +511,15 @@ BossHealthUI._set_bar_progress = function (self, progress, max_health_fraction, 
 	local dead_space_bar_offset = dead_space_bar_style.offset
 	local dead_space_bar_default_size = dead_space_bar_style.default_size
 	local dead_space_bar_default_offset = dead_space_bar_style.default_offset
+
 	dead_space_bar_size[1] = dead_space_bar_default_size[1] * (1 - (max_health_anim_fraction or 1))
 	dead_space_bar_uvs[1][1] = max_health_anim_fraction
 	dead_space_bar_offset[1] = dead_space_bar_default_size[1] - dead_space_bar_size[1]
+
 	local dead_space_bar_divider_style = style.dead_space_bar_divider
 	local dead_space_bar_divider_offset = dead_space_bar_divider_style.offset
 	local dead_space_bar_divider_default_width_offset = dead_space_bar_divider_style.default_width_offset
+
 	dead_space_bar_divider_offset[1] = dead_space_bar_default_size[1] - dead_space_bar_divider_default_width_offset - dead_space_bar_size[1]
 	content.max_health_fraction = max_health_anim_fraction
 	content.health_fraction = health_anim_progress
@@ -519,6 +541,7 @@ BossHealthUI._set_healing_amount = function (self, start_progress, end_progress,
 	local total_progress = end_progress - start_progress
 	local total_bar_length = bar_length * total_progress
 	local bar_offset_x = bar_length * start_progress
+
 	bar_uvs[1][1] = start_progress
 	bar_uvs[2][1] = end_progress
 	bar_size[1] = total_bar_length
@@ -542,7 +565,7 @@ BossHealthUI._update_healing_bar = function (self, dt, t, freeze_healing)
 
 	if healing_end_progress <= healing_start_progress then
 		new_healing_start_progress = healing_end_progress
-	elseif self._healing_life_time and self._healing_life_time <= t and not freeze_healing then
+	elseif self._healing_life_time and t >= self._healing_life_time and not freeze_healing then
 		new_healing_start_progress = math.min(healing_start_progress + dt * 0.5, healing_end_progress)
 	end
 
@@ -552,6 +575,7 @@ BossHealthUI._update_healing_bar = function (self, dt, t, freeze_healing)
 		local min_health_percent = action.respawn_hp_min_percent
 		local health_extension = ScriptUnit.extension(unit, "health_system")
 		local current_max_health = health_extension:current_max_health_percent()
+
 		new_healing_start_progress = min_health_percent * current_max_health
 	end
 
@@ -572,6 +596,7 @@ BossHealthUI._set_health_edge_texture_position_progress = function (self, progre
 	local bar_edge_style = style.bar_edge
 	local bar_edge_offset = bar_edge_style.offset
 	local bar_edge_default_width_offset = bar_edge_style.default_width_offset
+
 	bar_edge_offset[1] = bar_length * progress - bar_edge_default_width_offset
 	content.bar_edge_fraction = progress
 end
@@ -596,5 +621,6 @@ BossHealthUI._set_health_effect_alpha = function (self, alpha)
 	local style = widget.style
 	local portrait_healing_style = style.portrait_healing
 	local portrait_healing_color = portrait_healing_style.color
+
 	portrait_healing_color[1] = alpha
 end

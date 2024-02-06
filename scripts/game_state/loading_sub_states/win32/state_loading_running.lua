@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/game_state/loading_sub_states/win32/state_loading_running.lua
+
 require("scripts/ui/views/loading_view")
 
 StateLoadingRunning = class(StateLoadingRunning)
@@ -9,10 +11,11 @@ StateLoadingRunning.on_enter = function (self, params)
 
 	self._loading_view = params.loading_view
 	self._previous_session_error_headers_lookup = {
+		afk_kick = "popup_notice_topic",
 		host_left_game = "popup_notice_topic",
 		kicked_by_server = "popup_notice_topic",
-		afk_kick = "popup_notice_topic"
 	}
+
 	local level_key = Managers.level_transition_handler:get_current_level_key()
 
 	self.parent:set_lobby_host_data(level_key)
@@ -21,6 +24,7 @@ StateLoadingRunning.on_enter = function (self, params)
 
 	if loading_context.previous_session_error then
 		local previous_session_error = loading_context.previous_session_error
+
 		loading_context.previous_session_error = nil
 
 		self.parent:create_popup(previous_session_error, self._previous_session_error_headers_lookup[previous_session_error] or "popup_notice_topic", "continue")
@@ -29,6 +33,7 @@ end
 
 StateLoadingRunning._init_network = function (self)
 	local loading_context = self.parent.parent.loading_context
+
 	Managers.state.event = EventManager:new()
 
 	if not self.parent:has_registered_rpcs() then

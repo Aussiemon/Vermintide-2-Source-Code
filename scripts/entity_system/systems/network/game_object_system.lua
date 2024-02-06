@@ -1,6 +1,9 @@
+﻿-- chunkname: @scripts/entity_system/systems/network/game_object_system.lua
+
 local extensions = {
-	"GameObjectExtension"
+	"GameObjectExtension",
 }
+
 GameObjectSystem = class(GameObjectSystem, ExtensionSystemBase)
 
 GameObjectSystem.init = function (self, entity_system_creation_context, system_name)
@@ -30,6 +33,7 @@ GameObjectSystem.on_add_extension = function (self, world, unit, extension_name,
 		local level = LevelHelper:current_level(self.world)
 		local level_index = Level.unit_index(level, unit)
 		local ignored = level_index ~= nil
+
 		extension.ignored = ignored
 
 		if not ignored then
@@ -66,7 +70,7 @@ GameObjectSystem.extensions_ready = function (self, world, unit, extension_name)
 			NetworkUnit.add_unit(unit)
 			NetworkUnit.set_is_husk_unit(unit, false)
 
-			local unit_name, unit_template, gameobject_functor_context = nil
+			local unit_name, unit_template, gameobject_functor_context
 			local game_session = Managers.state.network:game()
 			local go_type = extension.go_type
 			local unit_spawner = Managers.state.unit_spawner
@@ -76,6 +80,7 @@ GameObjectSystem.extensions_ready = function (self, world, unit, extension_name)
 
 			local go_init_data = go_initializer_function(unit, unit_name, unit_template, gameobject_functor_context)
 			local game_object_id = GameSession.create_game_object(game_session, go_type, go_init_data)
+
 			extension.game_object_id = game_object_id
 
 			self.unit_storage:add_unit_info(unit, game_object_id, go_type, self.own_peer_id)
@@ -123,6 +128,7 @@ GameObjectSystem.game_object_created = function (self, game_object_id, owner_id,
 	self.unit_storage:add_unit_info(unit, game_object_id, go_type, owner_id)
 
 	local extension = self.unit_extension_data[unit]
+
 	extension.game_object_id = game_object_id
 
 	fassert(not extension.ignored, "Client got game_object_created for unit %s with sync_name %s that should be ignored...", unit, sync_name)

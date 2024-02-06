@@ -1,9 +1,12 @@
+﻿-- chunkname: @scripts/entity_system/systems/weapon/weapon_system.lua
+
 require("scripts/unit_extensions/weapons/weapon_unit_extension")
 require("scripts/unit_extensions/weapons/ai_weapon_unit_extension")
 require("scripts/unit_extensions/weapons/single_weapon_unit_extension")
 
 WeaponSystem = class(WeaponSystem, ExtensionSystemBase)
 global_is_inside_inn = false
+
 local RPCS = {
 	"rpc_attack_hit",
 	"rpc_alert_enemy",
@@ -23,23 +26,25 @@ local RPCS = {
 	"rpc_summon_vortex",
 	"rpc_start_soul_rip",
 	"rpc_stop_soul_rip",
-	"rpc_soul_rip_burst"
+	"rpc_soul_rip_burst",
 }
 local extensions = {
 	"WeaponUnitExtension",
 	"AiWeaponUnitExtension",
-	"SingleWeaponUnitExtension"
+	"SingleWeaponUnitExtension",
 }
 
 WeaponSystem.init = function (self, entity_system_creation_context, system_name)
 	WeaponSystem.super.init(self, entity_system_creation_context, system_name, extensions)
 
 	local network_event_delegate = entity_system_creation_context.network_event_delegate
+
 	self.network_event_delegate = network_event_delegate
 
 	network_event_delegate:register(self, unpack(RPCS))
 
 	local level_setting = LevelSettings[entity_system_creation_context.startup_data.level_key]
+
 	global_is_inside_inn = level_setting.hub_level or false
 	self._player_damage_forbidden = Managers.state.game_mode:setting("player_damage_forbidden")
 	self.game = Managers.state.network:game()
@@ -54,7 +59,9 @@ end
 
 WeaponSystem.on_add_extension = function (self, world, unit, extension_name, extension_init_data)
 	extension_init_data.weapon_system = self
+
 	local extension = WeaponSystem.super.on_add_extension(self, world, unit, extension_name, extension_init_data)
+
 	extension_init_data.weapon_system = nil
 
 	return extension
@@ -77,56 +84,56 @@ local ARGS = {
 		default = 0,
 		name = "power_level",
 		min = MIN_POWER_LEVEL,
-		max = MAX_POWER_LEVEL
+		max = MAX_POWER_LEVEL,
 	},
 	{
 		default = 0,
-		name = "hit_target_index"
+		name = "hit_target_index",
 	},
 	{
 		default = 0,
-		name = "boost_curve_multiplier"
+		name = "boost_curve_multiplier",
 	},
 	{
 		default = false,
-		name = "is_critical_strike"
+		name = "is_critical_strike",
 	},
 	{
 		default = true,
-		name = "can_damage"
+		name = "can_damage",
 	},
 	{
 		default = true,
-		name = "can_stagger"
+		name = "can_stagger",
 	},
 	{
 		default = 1,
-		name = "hit_ragdoll_actor"
+		name = "hit_ragdoll_actor",
 	},
 	{
 		default = false,
-		name = "blocking"
+		name = "blocking",
 	},
 	{
 		default = false,
-		name = "shield_break_procced"
+		name = "shield_break_procced",
 	},
 	{
 		default = 1,
-		name = "backstab_multiplier"
+		name = "backstab_multiplier",
 	},
 	{
 		default = false,
-		name = "attacker_is_level_unit"
+		name = "attacker_is_level_unit",
 	},
 	{
 		default = false,
-		name = "first_hit"
+		name = "first_hit",
 	},
 	{
 		default = 0,
-		name = "total_hits"
-	}
+		name = "total_hits",
+	},
 }
 
 for i = 1, #ARGS do
@@ -143,6 +150,7 @@ WeaponSystem.send_rpc_attack_hit = function (self, damage_source_id, attacker_un
 	for i = 1, num_args, 2 do
 		local arg = select(i, ...)
 		local val = select(i + 1, ...)
+
 		RPC_ATTACK_HIT_TEMP[ARGS[arg]] = val
 	end
 
@@ -241,6 +249,7 @@ WeaponSystem.rpc_attack_hit = function (self, channel_id, damage_source_id, atta
 		end
 
 		local unbreakable_shield = blackboard.breed.unbreakable_shield
+
 		shield_breaking_hit = not unbreakable_shield and (damage_profile.shield_break or shield_break_procced)
 	end
 
@@ -297,7 +306,7 @@ WeaponSystem.update_synced_beam_particle_effects = function (self)
 			local range = data.range
 			local result = PhysicsWorld.immediate_raycast_actors(physics_world, aim_position, aim_direction, range, "static_collision_filter", "filter_player_ray_projectile_static_only", "dynamic_collision_filter", "filter_player_ray_projectile_ai_only", "dynamic_collision_filter", "filter_player_ray_projectile_hitbox_only")
 			local beam_end_position = aim_position + aim_direction * range
-			local hit_position, hit_unit = nil
+			local hit_position, hit_unit
 
 			if result then
 				local difficulty_settings = Managers.state.difficulty:get_difficulty_settings()
@@ -311,13 +320,14 @@ WeaponSystem.update_synced_beam_particle_effects = function (self)
 
 					if potential_hit_unit ~= unit then
 						local breed = Unit.get_data(potential_hit_unit, "breed")
-						local valid_hit = nil
+						local valid_hit
 
 						if breed then
 							local is_enemy = DamageUtils.is_enemy(unit, potential_hit_unit)
 							local node = Actor.node(hit_actor)
 							local hit_zone = breed.hit_zones_lookup[node]
 							local hit_zone_name = hit_zone.name
+
 							valid_hit = (allow_friendly_fire and breed.is_player or is_enemy) and hit_zone_name ~= "afro"
 						else
 							valid_hit = true
@@ -518,6 +528,7 @@ WeaponSystem.rpc_start_beam = function (self, channel_id, unit_id, beam_effect_i
 		local equipment = inventory_extension:equipment()
 		local weapon_unit = equipment.right_hand_wielded_unit_3p or equipment.left_hand_wielded_unit_3p
 		local world = self.world
+
 		self._beam_particle_effects[unit] = {
 			beam_effect = World.create_particles(world, beam_effect, Vector3.zero()),
 			beam_end_effect = World.create_particles(world, beam_end_effect, Vector3.zero()),
@@ -525,7 +536,7 @@ WeaponSystem.rpc_start_beam = function (self, channel_id, unit_id, beam_effect_i
 			beam_effect_name = beam_effect,
 			beam_end_effect_name = beam_end_effect,
 			range = range,
-			weapon_unit = weapon_unit
+			weapon_unit = weapon_unit,
 		}
 
 		if self.is_server then
@@ -581,6 +592,7 @@ WeaponSystem.rpc_start_geiser = function (self, channel_id, unit_id, geiser_effe
 		local unit = self.unit_storage:unit(unit_id)
 		local geiser_effect_name = NetworkLookup.effects[geiser_effect_id]
 		local world = self.world
+
 		self._geiser_particle_effects[unit] = {
 			geiser_effect = World.create_particles(world, geiser_effect_name, Vector3.zero()),
 			geiser_effect_variable = World.find_particles_variable(world, geiser_effect_name, "charge_radius"),
@@ -590,7 +602,7 @@ WeaponSystem.rpc_start_geiser = function (self, channel_id, unit_id, geiser_effe
 			charge_time = charge_time,
 			angle = angle,
 			time_to_shoot = Managers.time:time("game"),
-			start_time = Managers.time:time("game")
+			start_time = Managers.time:time("game"),
 		}
 	end
 end
@@ -637,7 +649,7 @@ WeaponSystem.rpc_start_flamethrower = function (self, channel_id, unit_id, flame
 			self._flamethrower_particle_effects[unit] = {
 				flamethrower_effect = World.create_particles(world, flamethrower_effect, muzzle_position, muzzle_rotation),
 				flamethrower_effect_name = flamethrower_effect,
-				weapon_unit = weapon_unit
+				weapon_unit = weapon_unit,
 			}
 		end
 
@@ -790,29 +802,36 @@ WeaponSystem.start_soul_rip = function (self, owner_unit, target_unit, target_no
 
 	current_data = Script.new_map(7)
 	self._soul_rip_particle_effects[owner_unit] = current_data
+
 	local owner_unit_id = self.unit_storage:go_id(owner_unit)
+
 	current_data.owner_unit_id = owner_unit_id
 	current_data.target_unit = target_unit
 	current_data.target_node_id = target_node_id
 	current_data.seed = seed
+
 	local source_unit = owner_unit
 	local first_person = false
 	local fp_extension = ScriptUnit.has_extension(owner_unit, "first_person_system")
 
 	if fp_extension then
 		source_unit = fp_extension:get_first_person_unit()
+
 		local anticipation_fx_name = "fx/wpnfx_necromancer_skullstaff_anticipation"
 		local node = Unit.has_node(source_unit, "j_leftweaponattach") and Unit.node(source_unit, "j_leftweaponattach") or 0
+
 		current_data.anticipation_fx = ScriptWorld.create_particles_linked(world, anticipation_fx_name, source_unit, node, "destroy")
 		first_person = fp_extension:first_person_mode_active()
 	end
 
 	local hand_unit_name = first_person and "units/test_unit/cup_test" or "units/test_unit/cup_test_3p"
+
 	current_data.weapon_unit = source_unit
 	current_data.weapon_node_id = Unit.has_node(source_unit, "j_leftweaponattach") and Unit.node(source_unit, "j_leftweaponattach") or 0
 	current_data.weapon_fx_unit = World.spawn_unit(world, hand_unit_name)
 	current_data.target_node_id = Unit.has_node(target_unit, "j_spine") and Unit.node(target_unit, "j_spine") or 0
 	current_data.target_fx_unit = World.spawn_unit(world, "units/test_unit/cup_test_3p")
+
 	local anticipation_scale = Vector3(2, 2, 2)
 
 	Unit.set_local_scale(current_data.weapon_fx_unit, 0, anticipation_scale)
@@ -913,18 +932,22 @@ WeaponSystem.soul_rip_burst = function (self, owner_unit, target_unit, target_no
 			World.find_particles_variable(world, fx_name, "spline_1"),
 			World.find_particles_variable(world, fx_name, "spline_2"),
 			World.find_particles_variable(world, fx_name, "spline_3"),
-			World.find_particles_variable(world, fx_name, "spline_4")
+			World.find_particles_variable(world, fx_name, "spline_4"),
 		}
 	end
 
 	local spline_pos_1 = position
 	local spline_pos_2 = spline_pos_1 + up + right * 2
-	local next_seed, rand_x, rand_y = nil
+	local next_seed, rand_x, rand_y
+
 	next_seed, rand_x = Math.next_random(seed)
 	next_seed, rand_y = Math.next_random(next_seed)
+
 	local spline_pos_3 = spline_pos_1 + forward + Vector3(rand_x * 2 - 1, rand_y * 2 - 1, 2) + right * 0.5
+
 	next_seed, rand_x = Math.next_random(next_seed)
 	next_seed, rand_y = Math.next_random(next_seed)
+
 	local spline_pos_4 = spline_pos_1 + Vector3(rand_x * 2 - 1, rand_y * 2 - 1, 5) + right * 0.5
 	local spline_ids = spline_ids_lookup[fx_name]
 
@@ -1004,13 +1027,13 @@ WeaponSystem._update_chained_projectiles = function (self, t)
 	local ai_broadphase = Managers.state.entity:system("ai_system").broadphase
 
 	for projectile in pairs(chained_projectiles) do
-		if not projectile.next_target_unit and projectile.target_selection_t <= t then
+		if not projectile.next_target_unit and t >= projectile.target_selection_t then
 			local chain_next = self:_select_next_chained_projectile_target(projectile, ai_broadphase)
 
 			if not chain_next then
 				self._chained_projectiles[projectile] = nil
 			end
-		elseif projectile.next_chain_t <= t then
+		elseif t >= projectile.next_chain_t then
 			local chain_next = self:_apply_chained_projectile_damage(projectile)
 
 			if chain_next then
@@ -1039,7 +1062,7 @@ WeaponSystem._select_next_chained_projectile_target = function (self, chain_data
 	local fx_spline_ids = {
 		World.find_particles_variable(world, "fx/wpnfx_staff_death/curse_spirit", "spline_1"),
 		World.find_particles_variable(world, "fx/wpnfx_staff_death/curse_spirit", "spline_2"),
-		World.find_particles_variable(world, "fx/wpnfx_staff_death/curse_spirit", "spline_3")
+		World.find_particles_variable(world, "fx/wpnfx_staff_death/curse_spirit", "spline_3"),
 	}
 	local side_manager = Managers.state.side
 	local side_by_unit = side_manager.side_by_unit
@@ -1052,6 +1075,7 @@ WeaponSystem._select_next_chained_projectile_target = function (self, chain_data
 
 		if not hit_units[target_unit] and HEALTH_ALIVE[target_unit] then
 			hit_units[target_unit] = true
+
 			local node = Unit.has_node(target_unit, "j_spine") and Unit.node(target_unit, "j_spine") or 0
 			local next_chain_pos = Unit.world_position(target_unit, node)
 			local mid_offset = Vector3(math.lerp(-0.5, 0.5, math.random()), math.lerp(-0.5, 0.5, math.random()), math.lerp(-0.5, 0.5, math.random()))
@@ -1073,7 +1097,7 @@ WeaponSystem._play_chained_projectile_fx = function (self, fx_name, fx_spline_id
 	local spline_points = {
 		point_1,
 		point_2,
-		point_3
+		point_3,
 	}
 
 	if self._fire_sound_event and self.first_person_extension then
@@ -1095,12 +1119,12 @@ WeaponSystem.try_fire_chained_projectile = function (self, chain_hit_settings, d
 		power_level = power_level,
 		boost_curve_multiplier = boost_curve_multiplier,
 		damage_source = damage_source,
-		next_chain_t = t + chain_hit_settings.chain_delay - chain_hit_settings.target_selection_delay,
+		next_chain_t = t + (chain_hit_settings.chain_delay - chain_hit_settings.target_selection_delay),
 		target_selection_t = math.huge,
 		owner_unit = owner_unit,
 		hit_units = {},
 		last_chain_pos = Vector3Box(source_pos),
-		base_target_index = target_index
+		base_target_index = target_index,
 	}
 
 	if optional_ignore_unit then
@@ -1109,6 +1133,7 @@ WeaponSystem.try_fire_chained_projectile = function (self, chain_hit_settings, d
 
 	if not optional_target_unit then
 		local ai_broadphase = Managers.state.entity:system("ai_system").broadphase
+
 		optional_target_unit = self:_select_next_chained_projectile_target(chain_data, ai_broadphase)
 
 		if not optional_target_unit then
@@ -1174,10 +1199,11 @@ WeaponSystem._apply_chained_projectile_damage = function (self, chain_data)
 	end
 
 	if ALIVE[target_unit] and chain_count < settings.max_chain_count then
-		local next_chain_pos = nil
+		local next_chain_pos
 
 		if Unit.has_node(target_unit, "j_spine") then
 			local node = Unit.node(target_unit, "j_spine")
+
 			next_chain_pos = Unit.world_position(target_unit, node)
 		else
 			next_chain_pos = Unit.world_position(target_unit, 0) + Vector3.up() * 0.8

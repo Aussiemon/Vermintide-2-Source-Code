@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/game_state/state_title_screen_main.lua
+
 require("scripts/ui/views/title_main_ui")
 require("scripts/ui/views/weave_splash_ui")
 
@@ -7,6 +9,7 @@ end
 
 StateTitleScreenMain = class(StateTitleScreenMain)
 StateTitleScreenMain.NAME = "StateTitleScreenMain"
+
 local ATTRACT_MODE_TIMER = script_data.honduras_demo and DemoSettings.attract_timer or nil
 
 StateTitleScreenMain.on_enter = function (self, params)
@@ -62,13 +65,13 @@ StateTitleScreenMain.on_enter = function (self, params)
 		Managers.voice_chat:reset()
 	end
 
-	self._network_event_meta_table = {
-		__index = function (event_table, event_key)
-			return function ()
-				Application.warning("Got RPC %s during forced network update when exiting StateTitleScreenMain", event_key)
-			end
+	self._network_event_meta_table = {}
+
+	self._network_event_meta_table.__index = function (event_table, event_key)
+		return function ()
+			Application.warning("Got RPC %s during forced network update when exiting StateTitleScreenMain", event_key)
 		end
-	}
+	end
 
 	if IS_PS4 and self.parent.invite_handled then
 		Managers.invite:clear_invites()
@@ -109,6 +112,7 @@ StateTitleScreenMain.update = function (self, dt, t)
 
 		if loading_context.previous_session_error then
 			local previous_session_error = loading_context.previous_session_error
+
 			loading_context.previous_session_error = nil
 
 			self:_queue_popup(Localize(previous_session_error), Localize("popup_error_topic"), "ok", Localize("menu_ok"))
@@ -231,7 +235,7 @@ end
 
 StateTitleScreenMain._user_exists = function (self, user_id)
 	local users = {
-		XboxLive.users()
+		XboxLive.users(),
 	}
 
 	for _, user in pairs(users) do
@@ -332,7 +336,7 @@ StateTitleScreenMain._update_input = function (self, dt, t)
 				XboxLive.show_account_picker(index)
 
 				local error, device_id, user_id_old, user_id_new = XboxLive.show_account_picker_result()
-				local invalid_profile_id = 4294967295.0
+				local invalid_profile_id = 4294967295
 
 				if error or user_id_new == invalid_profile_id then
 					print("[StateTitleScreenMain] Invalid profile selected from account picker --> Resetting")

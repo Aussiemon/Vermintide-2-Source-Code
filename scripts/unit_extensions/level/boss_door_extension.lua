@@ -1,16 +1,20 @@
+﻿-- chunkname: @scripts/unit_extensions/level/boss_door_extension.lua
+
 BossDoorExtension = class(BossDoorExtension)
+
 local SIMPLE_ANIMATION_FPS = 30
 local NAVMESH_UPDATE_DELAY = 3
 local flow_event_by_breed = {
-	chaos_troll = "lua_closed_troll",
-	chaos_spawn = "lua_closed_stormfiend",
 	beastmen_minotaur = "lua_closed_stormfiend",
+	chaos_spawn = "lua_closed_stormfiend",
+	chaos_troll = "lua_closed_troll",
 	skaven_rat_ogre = "lua_closed_stormfiend",
-	skaven_stormfiend = "lua_closed_stormfiend"
+	skaven_stormfiend = "lua_closed_stormfiend",
 }
 
 BossDoorExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	local world = extension_init_context.world
+
 	self.unit = unit
 	self.world = world
 	self.is_server = Managers.player.is_server
@@ -56,6 +60,7 @@ BossDoorExtension.set_door_state = function (self, new_state, breed_name)
 	end
 
 	local closed = new_state == "closed"
+
 	self.current_state = new_state
 	self.breed_name = breed_name
 end
@@ -106,6 +111,7 @@ end
 BossDoorExtension.animation_played = function (self, frames, speed)
 	local animation_length = frames / SIMPLE_ANIMATION_FPS / speed
 	local t = Managers.time:time("game")
+
 	self.animation_stop_time = t + animation_length
 end
 

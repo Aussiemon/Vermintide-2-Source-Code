@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/network/lobby_host.lua
+
 require("scripts/network/lobby_aux")
 
 local DEBUG_LOBBY_HOST = true
@@ -13,6 +15,7 @@ LobbyHost = class(LobbyHost)
 LobbyHost.init = function (self, network_options, lobby)
 	local config_file_name = network_options.config_file_name
 	local project_hash = network_options.project_hash
+
 	self.network_hash = LobbyAux.create_network_hash(config_file_name, project_hash)
 
 	if IS_WINDOWS or IS_LINUX then
@@ -60,11 +63,13 @@ LobbyHost.update = function (self, dt)
 		if new_state == LobbyState.JOINED then
 			if IS_PS4 then
 				local lobby_data_table = self.lobby_data_table or {}
+
 				lobby_data_table.network_hash = self.network_hash
 
 				lobby:set_data_table(lobby_data_table)
 			else
 				local lobby_data_table = self.lobby_data_table
+
 				lobby_data_table.network_hash = self.network_hash
 
 				if lobby_data_table then
@@ -110,6 +115,7 @@ LobbyHost._update_debug = function (self)
 
 			if peer_id ~= my_peer_id then
 				self._min_remaining_buffer = self._min_remaining_buffer or {}
+
 				local remaining_buffer_size = Network.reliable_send_buffer_left(peer_id)
 				local min_buffer = self._min_remaining_buffer[peer_id]
 
@@ -219,6 +225,7 @@ LobbyHost.set_lobby = function (self, lobby)
 	self:_free_lobby()
 
 	self.lobby = lobby
+
 	local lobby_data_table = self.lobby_data_table or {}
 
 	self:set_lobby_data(lobby_data_table)
@@ -228,6 +235,7 @@ end
 
 LobbyHost.steal_lobby = function (self)
 	local lobby = self.lobby
+
 	self.lobby = nil
 
 	return lobby

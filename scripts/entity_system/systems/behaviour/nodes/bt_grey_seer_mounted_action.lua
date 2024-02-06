@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_grey_seer_mounted_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTGreySeerMountedAction = class(BTGreySeerMountedAction, BTNode)
@@ -15,7 +17,9 @@ BTGreySeerMountedAction.enter = function (self, unit, blackboard, t)
 	local game = Managers.state.network:game()
 	local unit_storage = Managers.state.unit_storage
 	local go_id = unit_storage:go_id(unit)
+
 	blackboard.move_state = "moving"
+
 	local network_manager = Managers.state.network
 	local health_extension = ScriptUnit.extension(unit, "health_system")
 	local hit_reaction_extension = blackboard.hit_reaction_extension

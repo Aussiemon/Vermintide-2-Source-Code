@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/dlcs/shovel/action_career_bw_necromancer_single_target.lua
+
 ActionCareerBWNecromancerSingleTarget = class(ActionCareerBWNecromancerSingleTarget, ActionBase)
 
 ActionCareerBWNecromancerSingleTarget.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
@@ -20,6 +22,7 @@ ActionCareerBWNecromancerSingleTarget.client_owner_start_action = function (self
 		self:_play_vo()
 
 		self.target = chain_action_data.target
+
 		local target = self.target
 		local owner_unit = self._owner_unit
 		local buff_system = Managers.state.entity:system("buff_system")

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/dlc_upsell/unlock_reminder_popup.lua
+
 require("scripts/ui/dlc_upsell/common_popup")
 
 UnlockReminderPopup = class(UnlockReminderPopup, CommonPopup)
@@ -6,6 +8,7 @@ UnlockReminderPopup.create_ui_elements = function (self)
 	UnlockReminderPopup.super.create_ui_elements(self)
 
 	local reminder_settings = self._common_settings
+
 	self._widgets_by_name.window_background.content.texture_id = reminder_settings.background_texture
 	self._widgets_by_name.body_text.content.text = reminder_settings.body_text
 	self._widgets_by_name.ok_button.content.title_text = Localize(reminder_settings.button_text)
@@ -52,7 +55,7 @@ end
 UnlockReminderPopup._start_transition_animation = function (self, animation_name)
 	return self._ui_animator:start_animation(animation_name, nil, self._common_settings.definitions.scenegraph_definition, {
 		wwise_world = self._wwise_world,
-		render_settings = self._render_settings
+		render_settings = self._render_settings,
 	})
 end
 

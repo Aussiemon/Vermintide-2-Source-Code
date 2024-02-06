@@ -1,270 +1,272 @@
-QuestSettings = {
-	rules = {
-		daily = {
-			num_criterias = 3,
-			max_quests = 3
-		},
-		weekly = {
-			num_criterias = 3,
-			max_quests = 7
-		},
-		event = {
-			num_criterias = 12,
-			max_quests = 10
-		}
+﻿-- chunkname: @scripts/settings/quest_settings.lua
+
+QuestSettings = {}
+QuestSettings.rules = {
+	daily = {
+		max_quests = 3,
+		num_criterias = 3,
 	},
-	elven_ruins_speed_event = 30,
-	farmlands_speed_event = 60,
-	bell_speed_event = 85,
-	mines_speed_event = 15,
-	skittergate_speed_event = 20,
-	elven_ruins_speed_event_cata = 30,
-	farmlands_speed_event_cata = 60,
-	bell_speed_event_cata = 85,
-	mines_speed_event_cata = 15,
-	skittergate_speed_event_cata = 20,
-	exalted_champion_charge_chaos_warrior = 5,
-	halescourge_tornado_enemies = 15,
-	storm_vermin_warlord_kills_enemies = 40,
-	nurgle_bathed_all = 27,
-	forest_fort_kill_cannonball = 25,
-	volume_corpse_pit_damage = 120,
-	exalted_champion_charge_chaos_warrior_cata = 5,
-	halescourge_tornado_enemies_cata = 15,
-	storm_vermin_warlord_kills_enemies_cata = 40,
-	nurgle_bathed_all_cata = 27,
-	forest_fort_kill_cannonball_cata = 25,
-	volume_corpse_pit_damage_cata = 120,
-	scrap_count_level = {
-		3,
-		30
+	weekly = {
+		max_quests = 7,
+		num_criterias = 3,
 	},
-	scrap_count_generic = {
-		150,
-		260,
-		370,
-		540
+	event = {
+		max_quests = 10,
+		num_criterias = 12,
 	},
-	num_enemies_killed_by_warpfire = 10,
-	num_enemies_killed_by_poison = 10,
-	corruptor_killed_at_teleport_time = 2,
-	standard_bearer_alive_seconds = 120,
-	num_gors_killed_by_warpfire = 3,
-	bladestorm_duration = 120,
-	daily_complete_quickplay_missions = 3,
-	daily_complete_weekly_event_missions = 3,
-	daily_collect_tomes = 4,
-	daily_collect_grimoires = 3,
-	daily_collect_loot_die = 5,
-	daily_collect_painting_scrap = 9,
-	daily_kill_bosses = 3,
-	daily_kill_elites = 25,
-	daily_kill_critters = 5,
-	daily_complete_levels_hero_wood_elf = 2,
-	daily_complete_levels_hero_witch_hunter = 2,
-	daily_complete_levels_hero_dwarf_ranger = 2,
-	daily_complete_levels_hero_empire_soldier = 2,
-	daily_complete_levels_hero_bright_wizard = 2,
-	daily_score_headshots = 50,
-	event_skulls_quickplay = 8,
-	event_skulls_collect_painting_scraps = 8,
-	event_skulls_kill_critters = 8,
-	event_sonnstill_quickplay_levels = 10,
-	event_sonnstill_difficulty_levels = 10,
-	event_geheimnisnacht_quickplay_levels = 10,
-	event_geheimnisnacht_difficulty_levels = 10,
-	event_mondstille_quickplay_legend_levels = 5,
-	event_crawl_drink_all_ale_amount = 99,
-	event_celebration_collect_painting_scraps = 9,
-	quest_event_rat_kill_skaven_2020 = 1000,
-	weekly_complete_quickplay_missions = {
-		10,
-		10,
-		10
-	},
-	weekly_complete_weekly_event_missions = {
-		1,
-		1,
-		1
-	},
-	weekly_collect_tomes = {
-		15,
-		15,
-		15
-	},
-	weekly_collect_grimoires = {
-		8,
-		8,
-		8
-	},
-	weekly_collect_dice = {
-		15,
-		15,
-		15
-	},
-	weekly_collect_painting_scrap = {
-		10,
-		10,
-		10
-	},
-	weekly_kill_bosses = {
-		6,
-		6,
-		6
-	},
-	weekly_kill_elites = {
-		55,
-		55,
-		55
-	},
-	weekly_complete_levels_hero_wood_elf = {
-		6,
-		6,
-		6
-	},
-	weekly_complete_levels_hero_witch_hunter = {
-		6,
-		6,
-		6
-	},
-	weekly_complete_levels_hero_dwarf_ranger = {
-		6,
-		6,
-		6
-	},
-	weekly_complete_levels_hero_empire_soldier = {
-		6,
-		6,
-		6
-	},
-	weekly_complete_levels_hero_bright_wizard = {
-		6,
-		6,
-		6
-	},
-	weekly_kill_critters = {
-		15,
-		15,
-		15
-	},
-	weekly_score_headshots = {
-		150,
-		150,
-		150
-	},
-	weekly_daily_quests = {
-		3,
-		3,
-		3
-	},
-	allowed_difficulties = {
-		elven_ruins_speed_event = {
-			hardest = true
-		},
-		elven_ruins_speed_event_cata = {
-			cataclysm = true
-		},
-		farmlands_speed_event = {
-			hardest = true
-		},
-		farmlands_speed_event_cata = {
-			cataclysm = true
-		},
-		bell_speed_event = {
-			hardest = true
-		},
-		bell_speed_event_cata = {
-			cataclysm = true
-		},
-		mines_speed_event = {
-			hardest = true
-		},
-		mines_speed_event_cata = {
-			cataclysm = true
-		},
-		skittergate_speed_event = {
-			hardest = true
-		},
-		skittergate_speed_event_cata = {
-			cataclysm = true
-		},
-		exalted_champion_charge_chaos_warrior = {
-			hardest = true
-		},
-		exalted_champion_charge_chaos_warrior_cata = {
-			cataclysm = true
-		},
-		halescourge_tornado_enemies = {
-			hardest = true
-		},
-		halescourge_tornado_enemies_cata = {
-			cataclysm = true
-		},
-		storm_vermin_warlord_kills_enemies = {
-			hardest = true
-		},
-		storm_vermin_warlord_kills_enemies_cata = {
-			cataclysm = true
-		},
-		forest_fort_kill_cannonball = {
-			hardest = true
-		},
-		forest_fort_kill_cannonball_cata = {
-			cataclysm = true
-		},
-		nurgle_bathed_all = {
-			hardest = true
-		},
-		nurgle_bathed_all_cata = {
-			cataclysm = true
-		},
-		volume_corpse_pit_damage = {
-			hardest = true
-		},
-		volume_corpse_pit_damage_cata = {
-			cataclysm = true
-		},
-		ussingen_used_no_barrels = {
-			hardest = true
-		},
-		ussingen_used_no_barrels_cata = {
-			cataclysm = true
-		},
-		military_statue_kill_chaos_warriors = {
-			hardest = true
-		},
-		military_statue_kill_chaos_warriors_cata = {
-			cataclysm = true
-		}
-	}
 }
+QuestSettings.elven_ruins_speed_event = 30
+QuestSettings.farmlands_speed_event = 60
+QuestSettings.bell_speed_event = 85
+QuestSettings.mines_speed_event = 15
+QuestSettings.skittergate_speed_event = 20
+QuestSettings.elven_ruins_speed_event_cata = 30
+QuestSettings.farmlands_speed_event_cata = 60
+QuestSettings.bell_speed_event_cata = 85
+QuestSettings.mines_speed_event_cata = 15
+QuestSettings.skittergate_speed_event_cata = 20
+QuestSettings.exalted_champion_charge_chaos_warrior = 5
+QuestSettings.halescourge_tornado_enemies = 15
+QuestSettings.storm_vermin_warlord_kills_enemies = 40
+QuestSettings.nurgle_bathed_all = 27
+QuestSettings.forest_fort_kill_cannonball = 25
+QuestSettings.volume_corpse_pit_damage = 120
+QuestSettings.exalted_champion_charge_chaos_warrior_cata = 5
+QuestSettings.halescourge_tornado_enemies_cata = 15
+QuestSettings.storm_vermin_warlord_kills_enemies_cata = 40
+QuestSettings.nurgle_bathed_all_cata = 27
+QuestSettings.forest_fort_kill_cannonball_cata = 25
+QuestSettings.volume_corpse_pit_damage_cata = 120
+QuestSettings.scrap_count_level = {
+	3,
+	30,
+}
+QuestSettings.scrap_count_generic = {
+	150,
+	260,
+	370,
+	540,
+}
+QuestSettings.num_enemies_killed_by_warpfire = 10
+QuestSettings.num_enemies_killed_by_poison = 10
+QuestSettings.corruptor_killed_at_teleport_time = 2
+QuestSettings.standard_bearer_alive_seconds = 120
+QuestSettings.num_gors_killed_by_warpfire = 3
+QuestSettings.bladestorm_duration = 120
+QuestSettings.daily_complete_quickplay_missions = 3
+QuestSettings.daily_complete_weekly_event_missions = 3
+QuestSettings.daily_collect_tomes = 4
+QuestSettings.daily_collect_grimoires = 3
+QuestSettings.daily_collect_loot_die = 5
+QuestSettings.daily_collect_painting_scrap = 9
+QuestSettings.daily_kill_bosses = 3
+QuestSettings.daily_kill_elites = 25
+QuestSettings.daily_kill_critters = 5
+QuestSettings.daily_complete_levels_hero_wood_elf = 2
+QuestSettings.daily_complete_levels_hero_witch_hunter = 2
+QuestSettings.daily_complete_levels_hero_dwarf_ranger = 2
+QuestSettings.daily_complete_levels_hero_empire_soldier = 2
+QuestSettings.daily_complete_levels_hero_bright_wizard = 2
+QuestSettings.daily_score_headshots = 50
+QuestSettings.event_skulls_quickplay = 8
+QuestSettings.event_skulls_collect_painting_scraps = 8
+QuestSettings.event_skulls_kill_critters = 8
+QuestSettings.event_sonnstill_quickplay_levels = 10
+QuestSettings.event_sonnstill_difficulty_levels = 10
+QuestSettings.event_geheimnisnacht_quickplay_levels = 10
+QuestSettings.event_geheimnisnacht_difficulty_levels = 10
+QuestSettings.event_mondstille_quickplay_legend_levels = 5
+QuestSettings.event_crawl_drink_all_ale_amount = 99
+QuestSettings.event_celebration_collect_painting_scraps = 9
+QuestSettings.quest_event_rat_kill_skaven_2020 = 1000
+QuestSettings.weekly_complete_quickplay_missions = {
+	10,
+	10,
+	10,
+}
+QuestSettings.weekly_complete_weekly_event_missions = {
+	1,
+	1,
+	1,
+}
+QuestSettings.weekly_collect_tomes = {
+	15,
+	15,
+	15,
+}
+QuestSettings.weekly_collect_grimoires = {
+	8,
+	8,
+	8,
+}
+QuestSettings.weekly_collect_dice = {
+	15,
+	15,
+	15,
+}
+QuestSettings.weekly_collect_painting_scrap = {
+	10,
+	10,
+	10,
+}
+QuestSettings.weekly_kill_bosses = {
+	6,
+	6,
+	6,
+}
+QuestSettings.weekly_kill_elites = {
+	55,
+	55,
+	55,
+}
+QuestSettings.weekly_complete_levels_hero_wood_elf = {
+	6,
+	6,
+	6,
+}
+QuestSettings.weekly_complete_levels_hero_witch_hunter = {
+	6,
+	6,
+	6,
+}
+QuestSettings.weekly_complete_levels_hero_dwarf_ranger = {
+	6,
+	6,
+	6,
+}
+QuestSettings.weekly_complete_levels_hero_empire_soldier = {
+	6,
+	6,
+	6,
+}
+QuestSettings.weekly_complete_levels_hero_bright_wizard = {
+	6,
+	6,
+	6,
+}
+QuestSettings.weekly_kill_critters = {
+	15,
+	15,
+	15,
+}
+QuestSettings.weekly_score_headshots = {
+	150,
+	150,
+	150,
+}
+QuestSettings.weekly_daily_quests = {
+	3,
+	3,
+	3,
+}
+QuestSettings.allowed_difficulties = {
+	elven_ruins_speed_event = {
+		hardest = true,
+	},
+	elven_ruins_speed_event_cata = {
+		cataclysm = true,
+	},
+	farmlands_speed_event = {
+		hardest = true,
+	},
+	farmlands_speed_event_cata = {
+		cataclysm = true,
+	},
+	bell_speed_event = {
+		hardest = true,
+	},
+	bell_speed_event_cata = {
+		cataclysm = true,
+	},
+	mines_speed_event = {
+		hardest = true,
+	},
+	mines_speed_event_cata = {
+		cataclysm = true,
+	},
+	skittergate_speed_event = {
+		hardest = true,
+	},
+	skittergate_speed_event_cata = {
+		cataclysm = true,
+	},
+	exalted_champion_charge_chaos_warrior = {
+		hardest = true,
+	},
+	exalted_champion_charge_chaos_warrior_cata = {
+		cataclysm = true,
+	},
+	halescourge_tornado_enemies = {
+		hardest = true,
+	},
+	halescourge_tornado_enemies_cata = {
+		cataclysm = true,
+	},
+	storm_vermin_warlord_kills_enemies = {
+		hardest = true,
+	},
+	storm_vermin_warlord_kills_enemies_cata = {
+		cataclysm = true,
+	},
+	forest_fort_kill_cannonball = {
+		hardest = true,
+	},
+	forest_fort_kill_cannonball_cata = {
+		cataclysm = true,
+	},
+	nurgle_bathed_all = {
+		hardest = true,
+	},
+	nurgle_bathed_all_cata = {
+		cataclysm = true,
+	},
+	volume_corpse_pit_damage = {
+		hardest = true,
+	},
+	volume_corpse_pit_damage_cata = {
+		cataclysm = true,
+	},
+	ussingen_used_no_barrels = {
+		hardest = true,
+	},
+	ussingen_used_no_barrels_cata = {
+		cataclysm = true,
+	},
+	military_statue_kill_chaos_warriors = {
+		hardest = true,
+	},
+	military_statue_kill_chaos_warriors_cata = {
+		cataclysm = true,
+	},
+}
+
 local level_challenge_name_lookup = {
-	catacombs_added_souls = "achv_catacombs_stay_inside_ritual_pool_name",
-	elven_ruins_speed_event_cata = "achv_elven_ruins_align_leylines_timed_cata_name",
-	elven_ruins_speed_event = "achv_elven_ruins_align_leylines_timed_name",
-	forest_fort_kill_cannonball_cata = "achv_fort_kill_enemies_cannonball_cata_name",
-	mines_speed_event_cata = "achv_mines_kill_final_troll_timed_cata_name",
-	halescourge_tornado_enemies_cata = "achv_ground_zero_burblespew_tornado_enemies_cata_name",
-	nurgle_bathed_all = "achv_nurgle_player_showered_in_pus_name",
-	skittergate_speed_event = "achv_skittergate_deathrattler_rasknitt_timed_name",
-	exalted_champion_charge_chaos_warrior_cata = "achv_warcamp_bodvarr_charge_warriors_cata_name",
-	halescourge_tornado_enemies = "achv_ground_zero_burblespew_tornado_enemies_name",
-	forest_fort_kill_cannonball = "achv_fort_kill_enemies_cannonball_name",
-	storm_vermin_warlord_kills_enemies_cata = "achv_skaven_stronghold_skarrik_kill_skaven_cata_name",
-	storm_vermin_warlord_kills_enemies = "achv_skaven_stronghold_skarrik_kill_skaven_name",
-	ussingen_used_no_barrels_cata = "achv_ussingen_no_event_barrels_cata_name",
-	skittergate_speed_event_cata = "achv_skittergate_deathrattler_rasknitt_timed_cata_name",
-	mines_speed_event = "achv_mines_kill_final_troll_timed_name",
-	military_statue_kill_chaos_warriors_cata = "achv_military_kill_chaos_warriors_in_event_cata_name",
-	exalted_champion_charge_chaos_warrior = "achv_warcamp_bodvarr_charge_warriors_name",
 	bell_speed_event = "achv_bell_destroy_bell_flee_timed_name",
-	military_statue_kill_chaos_warriors = "achv_military_kill_chaos_warriors_in_event_name",
-	farmlands_speed_event = "achv_farmlands_rescue_prisoners_timed_name",
-	ussingen_used_no_barrels = "achv_ussingen_no_event_barrels_name",
-	farmlands_speed_event_cata = "achv_farmlands_rescue_prisoners_timed_cata_name",
-	nurgle_bathed_all_cata = "achv_nurgle_player_showered_in_pus_cata_name",
+	bell_speed_event_cata = "achv_bell_destroy_bell_flee_timed_cata_name",
+	catacombs_added_souls = "achv_catacombs_stay_inside_ritual_pool_name",
 	catacombs_added_souls_cata = "achv_catacombs_stay_inside_ritual_pool_cata_name",
-	bell_speed_event_cata = "achv_bell_destroy_bell_flee_timed_cata_name"
+	elven_ruins_speed_event = "achv_elven_ruins_align_leylines_timed_name",
+	elven_ruins_speed_event_cata = "achv_elven_ruins_align_leylines_timed_cata_name",
+	exalted_champion_charge_chaos_warrior = "achv_warcamp_bodvarr_charge_warriors_name",
+	exalted_champion_charge_chaos_warrior_cata = "achv_warcamp_bodvarr_charge_warriors_cata_name",
+	farmlands_speed_event = "achv_farmlands_rescue_prisoners_timed_name",
+	farmlands_speed_event_cata = "achv_farmlands_rescue_prisoners_timed_cata_name",
+	forest_fort_kill_cannonball = "achv_fort_kill_enemies_cannonball_name",
+	forest_fort_kill_cannonball_cata = "achv_fort_kill_enemies_cannonball_cata_name",
+	halescourge_tornado_enemies = "achv_ground_zero_burblespew_tornado_enemies_name",
+	halescourge_tornado_enemies_cata = "achv_ground_zero_burblespew_tornado_enemies_cata_name",
+	military_statue_kill_chaos_warriors = "achv_military_kill_chaos_warriors_in_event_name",
+	military_statue_kill_chaos_warriors_cata = "achv_military_kill_chaos_warriors_in_event_cata_name",
+	mines_speed_event = "achv_mines_kill_final_troll_timed_name",
+	mines_speed_event_cata = "achv_mines_kill_final_troll_timed_cata_name",
+	nurgle_bathed_all = "achv_nurgle_player_showered_in_pus_name",
+	nurgle_bathed_all_cata = "achv_nurgle_player_showered_in_pus_cata_name",
+	skittergate_speed_event = "achv_skittergate_deathrattler_rasknitt_timed_name",
+	skittergate_speed_event_cata = "achv_skittergate_deathrattler_rasknitt_timed_cata_name",
+	storm_vermin_warlord_kills_enemies = "achv_skaven_stronghold_skarrik_kill_skaven_name",
+	storm_vermin_warlord_kills_enemies_cata = "achv_skaven_stronghold_skarrik_kill_skaven_cata_name",
+	ussingen_used_no_barrels = "achv_ussingen_no_event_barrels_name",
+	ussingen_used_no_barrels_cata = "achv_ussingen_no_event_barrels_cata_name",
 }
 local stat_mappings = {}
 
@@ -298,6 +300,10 @@ QuestSettings.send_completed_message = function (challenge_stat_id)
 
 			break
 		end
+
+		if false then
+			-- Nothing
+		end
 	end
 
 	if has_not_completed_challenge then
@@ -308,6 +314,10 @@ QuestSettings.send_completed_message = function (challenge_stat_id)
 			local localize_parameters = false
 
 			Managers.chat:send_system_chat_message(1, message, 1, localize_parameters, true)
+		end
+
+		if false then
+			-- Nothing
 		end
 	end
 end
@@ -355,7 +365,7 @@ QuestSettings.check_num_enemies_killed_by_poison = function (unit, extension_uni
 	if blackboard then
 		blackboard.num_killed_by_poison = (blackboard.num_killed_by_poison or 0) + 1
 
-		if QuestSettings.num_enemies_killed_by_poison <= blackboard.num_killed_by_poison then
+		if blackboard.num_killed_by_poison >= QuestSettings.num_enemies_killed_by_poison then
 			local stat_name = "globadier_enemies_killed_by_poison"
 
 			increment_stat_on_all(stat_name)
@@ -383,16 +393,19 @@ end
 
 QuestSettings.check_num_enemies_killed_by_warpfire = function (unit, attacker_unit)
 	local blackboard = BLACKBOARDS[attacker_unit]
+
 	blackboard.hit_units_warpfire_challenge = blackboard.hit_units_warpfire_challenge or {}
 
 	if not blackboard.hit_units_warpfire_challenge[unit] then
 		local num_ai_killed_by_warpfire = blackboard.num_ai_killed_by_warpfire or 0
+
 		blackboard.num_ai_killed_by_warpfire = num_ai_killed_by_warpfire + 1
 		blackboard.hit_units_warpfire_challenge[unit] = true
 
-		if QuestSettings.num_enemies_killed_by_warpfire <= blackboard.num_ai_killed_by_warpfire then
+		if blackboard.num_ai_killed_by_warpfire >= QuestSettings.num_enemies_killed_by_warpfire then
 			blackboard.num_ai_killed_by_warpfire = nil
 			blackboard.hit_units_warpfire_challenge = nil
+
 			local stat_name = "warpfire_enemies_killed_by_warpfire"
 
 			increment_stat_on_all(stat_name)
@@ -701,6 +714,7 @@ QuestSettings.handle_bastard_block = function (target_unit, attacker_unit, block
 
 	if charge_blocking then
 		local bastard_block_count = boss_bb.bastard_block or 0
+
 		boss_bb.bastard_block = bastard_block_count + 1
 	end
 end

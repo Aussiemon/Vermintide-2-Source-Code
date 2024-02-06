@@ -1,8 +1,11 @@
+﻿-- chunkname: @scripts/unit_extensions/generic/store_display_item_gizmo_extension.lua
+
 StoreDisplayItemGizmoExtension = class(StoreDisplayItemGizmoExtension)
 
 StoreDisplayItemGizmoExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	self._gizmo_unit = unit
 	self._world = extension_init_context.world
+
 	local store_display_key = Unit.get_data(unit, "store_display_key")
 	local backend_store = Managers.backend:get_interface("peddler")
 	local store_display_items = backend_store:store_display_items()
@@ -28,6 +31,7 @@ StoreDisplayItemGizmoExtension.cb_display_item_loaded = function (self)
 	local world = self._world
 	local pose = Unit.world_pose(unit, node_index)
 	local display_unit = World.spawn_unit(world, self._display_unit_name, pose)
+
 	self._display_unit = display_unit
 
 	World.link_unit(world, display_unit, unit, node_index)
@@ -48,6 +52,7 @@ StoreDisplayItemGizmoExtension.spawn_prop = function (self, item_master_list_id)
 
 		if unit_name then
 			self._display_unit_name = unit_name
+
 			local cb = callback(self, "cb_display_item_loaded", unit_name)
 
 			Managers.package:load(unit_name, "StoreDisplayItemGizmoExtension", cb, true, true)

@@ -1,66 +1,70 @@
+﻿-- chunkname: @scripts/ui/social_wheel/social_wheel_ui.lua
+
 require("scripts/ui/social_wheel/social_wheel_ui_settings")
 
 local definitions = local_require("scripts/ui/social_wheel/social_wheel_ui_definitions")
 local scenegraph_definition = definitions.scenegraph_definition
+
 SocialWheelUI = class(SocialWheelUI)
+
 local RPCS = {
-	"rpc_social_wheel_event"
+	"rpc_social_wheel_event",
 }
 local STOP_LERP_TIME = 0.125
 local STOP_LERP_TIME_CONTROLLER = 0.25
 local START_LERP_TIME = 0.01
 local START_LERP_TIME_CONTROLLER = 0.125
 local MAX_FREE_EVENTS = 5
-local ANIMATION_TIMES = nil
+local ANIMATION_TIMES
 
 if IS_WINDOWS then
 	ANIMATION_TIMES = {
 		OPEN = {
+			ALPHA = 0.45,
+			MOVE_X = 1.5,
 			MOVE_Y = 1.5,
 			SIZE = 1.5,
-			MOVE_X = 1.5,
-			ALPHA = 0.45
 		},
 		CLOSE = {
+			ALPHA = 0.1,
+			MOVE_X = 0.2,
 			MOVE_Y = 0.2,
 			SIZE = 0.25,
-			MOVE_X = 0.2,
-			ALPHA = 0.1
-		}
+		},
 	}
 else
 	ANIMATION_TIMES = {
 		OPEN = {
+			ALPHA = 0.45,
+			MOVE_X = 0.75,
 			MOVE_Y = 0.75,
 			SIZE = 0.75,
-			MOVE_X = 0.75,
-			ALPHA = 0.45
 		},
 		CLOSE = {
+			ALPHA = 0.1,
+			MOVE_X = 0.2,
 			MOVE_Y = 0.2,
 			SIZE = 0.25,
-			MOVE_X = 0.2,
-			ALPHA = 0.1
-		}
+		},
 	}
 end
 
 local mt = {
 	__index = function (t, key, value)
 		return t.default
-	end
+	end,
 }
 local SFX_EVENTS = {
 	default = {
-		OPEN = "Play_hud_socialwheel_open",
 		HOVER = "Play_hud_socialwheel_hover",
-		SELECT = "Play_hud_socialwheel_select"
+		OPEN = "Play_hud_socialwheel_open",
+		SELECT = "Play_hud_socialwheel_select",
 	},
 	heroes = {
-		OPEN = "Play_hud_socialwheel_open",
 		HOVER = "Play_hud_socialwheel_hover",
-		SELECT = "Play_hud_socialwheel_select"
-	}
+		OPEN = "Play_hud_socialwheel_open",
+		SELECT = "Play_hud_socialwheel_select",
+	},
 }
 
 for _, dlc in pairs(DLCSettings) do
@@ -77,13 +81,13 @@ SocialWheelUI.init = function (self, parent, ingame_ui_context)
 	self._parent = parent
 	self._ui_top_renderer = ingame_ui_context.ui_top_renderer
 	self._render_settings = {
-		alpha_multiplier = 0
+		alpha_multiplier = 0,
 	}
 	self._is_visible = true
 	self._state = "update_closed"
 	self._states = {
 		update_closed = true,
-		update_open = true
+		update_open = true,
 	}
 	self._ingame_ui_context = ingame_ui_context
 	self._peer_id = ingame_ui_context.peer_id
@@ -99,6 +103,7 @@ SocialWheelUI.init = function (self, parent, ingame_ui_context)
 	self._active_context = nil
 	self._num_free_events = MAX_FREE_EVENTS
 	self._valid_selection = true
+
 	local settings = Managers.state.game_mode:settings()
 	local ping_mode = settings.ping_mode
 
@@ -134,15 +139,18 @@ SocialWheelUI._create_ui_elements = function (self)
 		if not has_pages then
 			local num_category_settings = #category_settings
 			local category_widgets = Script.new_array(num_category_settings)
+
 			self._selection_widgets[category_name] = category_widgets
 
 			for i = 1, num_category_settings do
 				local widget = definitions.create_social_widget(category_settings[i], self:_widget_angle(category_settings.angle, num_category_settings, i), category_settings, get_active_context_func)
+
 				category_widgets[i] = UIWidget.init(widget)
 			end
 		else
 			local num_pages = #category_settings
 			local category_widget_pages = Script.new_table(num_pages, 2)
+
 			category_widget_pages.num_pages = num_pages
 			category_widget_pages.current_page = 1
 			self._selection_widgets[category_name] = category_widget_pages
@@ -151,10 +159,12 @@ SocialWheelUI._create_ui_elements = function (self)
 				local page = category_settings[page_idx]
 				local num_category_settings = #page
 				local category_widgets = Script.new_array(num_category_settings)
+
 				category_widget_pages[page_idx] = category_widgets
 
 				for i = 1, num_category_settings do
 					local widget = definitions.create_social_widget(page[i], self:_widget_angle(category_settings.angle, num_category_settings, i), category_settings, get_active_context_func, page_idx)
+
 					category_widgets[i] = UIWidget.init(widget)
 				end
 			end
@@ -216,15 +226,14 @@ end
 local GARBAGE = {
 	0,
 	0,
-	0
+	0,
 }
 
 SocialWheelUI._add_social_wheel_event = function (self, player, social_wheel_event, target_unit, play_notification_sound)
 	local social_wheel_event_settings = SocialWheelSettingsLookup[social_wheel_event]
 	local text = social_wheel_event_settings.event_text
 	local text_func = social_wheel_event_settings.event_text_func
-	local event_text = text
-	local localization_parameters = nil
+	local event_text, localization_parameters = text
 
 	if text_func then
 		event_text, localization_parameters = text_func(target_unit, social_wheel_event_settings)
@@ -233,8 +242,7 @@ SocialWheelUI._add_social_wheel_event = function (self, player, social_wheel_eve
 	if event_text then
 		if IS_WINDOWS then
 			if self._num_free_events >= 1 then
-				local localize = true
-				local localize_parameters = true
+				local localize, localize_parameters = true, true
 
 				Managers.chat:send_chat_message(1, player:local_player_id(), event_text, localize, localization_parameters, localize_parameters)
 			else
@@ -251,12 +259,13 @@ SocialWheelUI._add_social_wheel_event = function (self, player, social_wheel_eve
 				local career_name = career_ext:career_name()
 				local career_settings = CareerSettings[career_name]
 				local widget = UIWidget.init(definitions.create_social_text_event(social_wheel_event_settings, career_settings.portrait_image, event_text, is_local_player))
-				local icon_widget = nil
+				local icon_widget
 
 				if not is_local_player then
 					local world = Managers.world:world("level_world")
 					local viewport = ScriptWorld.viewport(world, "player_1")
 					local camera = ScriptViewport.camera(viewport)
+
 					icon_widget = UIWidget.init(definitions.create_social_icon(social_wheel_event_settings, player.peer_id, camera, world, Managers.time:time("game") + 5, 1))
 					self._icon_widgets[player.peer_id] = icon_widget
 				end
@@ -272,23 +281,23 @@ end
 SocialWheelUI._add_social_wheel_event_animation = function (self, widget, is_local_player)
 	local widget_content = widget.content
 	local is_local_player = widget_content.is_local_player
+
 	self._social_event_widgets[#self._social_event_widgets + 1] = widget
 	self._event_index = self._event_index + 1
-	local event_index = self._event_index
-	self._animations["social_event_" .. event_index] = UIAnimation.init(UIAnimation.function_by_time, widget.offset, 1, 500, -60, 0.25, math.easeOutCubic)
 
+	local event_index = self._event_index
+
+	self._animations["social_event_" .. event_index] = UIAnimation.init(UIAnimation.function_by_time, widget.offset, 1, 500, -60, 0.25, math.easeOutCubic)
 	self._animation_callbacks["social_event_" .. event_index] = function ()
 		local color = is_local_player and Colors.get_color_table_with_alpha("medium_purple", 255) or Colors.get_color_table_with_alpha("light_sky_blue", 255)
+
 		self._animations["social_event_color_" .. event_index] = UIAnimation.init(UIAnimation.linear_scale_color, widget.style.text.text_color, 255, 255, 255, color[2], color[3], color[4], 2)
 		self._animations["timer_" .. event_index] = UIAnimation.init(UIAnimation.function_by_time, GARBAGE, 1, 0, 0, 5, math.easeInCubic)
-
 		self._animation_callbacks["timer_" .. event_index] = function ()
 			self._animations["social_event_alpha_" .. event_index] = UIAnimation.init(UIAnimation.function_by_time, widget.style.text.text_color, 1, 255, 0, 1, math.easeInCubic)
 			self._animations["social_event_texture_alpha_" .. event_index] = UIAnimation.init(UIAnimation.function_by_time, widget.style.texture.color, 1, 255, 0, 1, math.easeInCubic)
-
 			self._animation_callbacks["social_event_alpha_" .. event_index] = function ()
 				self._animations["spacing_" .. event_index] = UIAnimation.init(UIAnimation.function_by_time, widget.content, "spacing", widget.content.spacing, 0, 0.5, math.easeOutCubic)
-
 				self._animation_callbacks["spacing_" .. event_index] = function ()
 					table.remove(self._social_event_widgets, 1)
 
@@ -339,7 +348,7 @@ SocialWheelUI._post_update_remove_icon = function (self, dt)
 	for key, widget in pairs(self._icon_widgets) do
 		local widget_content = widget.content
 
-		if widget_content.end_time < time then
+		if time > widget_content.end_time then
 			TO_REMOVE[#TO_REMOVE + 1] = key
 		end
 	end
@@ -452,11 +461,13 @@ SocialWheelUI._draw = function (self, dt, t)
 	for i = 1, num_social_event_widgets do
 		local widget = social_event_widgets[i]
 		local widget_offset = widget.offset
+
 		widget_offset[2] = offset
 
 		UIRenderer.draw_widget(ui_renderer, widget)
 
 		local widget_content = widget.content
+
 		offset = offset - widget_content.spacing
 	end
 
@@ -565,7 +576,7 @@ SocialWheelUI.update_closed = function (self, dt, t, input_service)
 
 		local game_t = Managers.time:time("game")
 
-		if current_context and current_context.min_t < game_t then
+		if current_context and game_t > current_context.min_t then
 			self:_open_menu(dt, t, input_service)
 			self:_set_pulsing(current_context, true)
 		elseif current_context then
@@ -614,10 +625,13 @@ end
 
 SocialWheelUI._open_menu = function (self, dt, t, input_service, increment_page)
 	self._block_next_input = false
+
 	local animation_times = ANIMATION_TIMES.OPEN
 	local animations = self._animations
+
 	self._animations.update_alpha = UIAnimation.init(UIAnimation.function_by_time, self._render_settings, "alpha_multiplier", 0, 1, animation_times.ALPHA, math.easeOutCubic)
 	self._active_context = self._current_context
+
 	local active_context = self._active_context
 	local social_wheel_unit = active_context.unit or active_context.ping_context_unit
 
@@ -629,7 +643,7 @@ SocialWheelUI._open_menu = function (self, dt, t, input_service, increment_page)
 	local side = Managers.state.side:get_side_from_player_unique_id(unique_id)
 	local side_name = side:name()
 	local side_settings = Managers.state.game_mode:setting("social_wheel_by_side")
-	local category = nil
+	local category
 
 	if side_settings then
 		category = side_settings[side_name] or "general"
@@ -662,22 +676,23 @@ SocialWheelUI._open_menu = function (self, dt, t, input_service, increment_page)
 	end
 
 	self._current_selection_widgets = self._selection_widgets[category]
+
 	local selected_category_widgets = self._selection_widgets[category]
 	local category_page = selected_category_widgets.current_page
+
 	self._page_input_widget.content.visible = true
 
 	if category_page then
 		if increment_page then
 			local num_pages = selected_category_widgets.num_pages
+
 			category_page = category_page % num_pages + 1
 
 			if active_context.show_emotes and category_page < 2 then
 				category_page = 2
 			end
-		elseif active_context.show_emotes then
-			category_page = 2
 		else
-			category_page = 1
+			category_page = active_context.show_emotes and 2 or 1
 		end
 
 		selected_category_widgets.current_page = category_page
@@ -692,11 +707,13 @@ SocialWheelUI._open_menu = function (self, dt, t, input_service, increment_page)
 	end
 
 	self._current_selection_category = category
+
 	local settings = SocialWheelSettings[category]
 
 	fassert(settings, "No settings for category %q.", category)
 
 	self._current_selection_widget_settings = settings
+
 	local selection_widgets = self._current_selection_widgets
 	local num_selection_widgets = #selection_widgets
 
@@ -706,6 +723,7 @@ SocialWheelUI._open_menu = function (self, dt, t, input_service, increment_page)
 		local final_offset = widget_content.final_offset
 		local dir = widget_content.dir:unbox()
 		local offset = widget.offset
+
 		animations["animation_x_" .. i] = UIAnimation.init(UIAnimation.function_by_time, offset, 1, dir[1] * final_offset[1] * 0.5, dir[1] * final_offset[1], animation_times.MOVE_X, math.ease_out_elastic)
 		animations["animation_y_" .. i] = UIAnimation.init(UIAnimation.function_by_time, offset, 2, dir[2] * final_offset[2] * 0.5, dir[2] * final_offset[2], animation_times.MOVE_Y, math.ease_out_elastic)
 		animations["animation_divider_size_" .. i] = UIAnimation.init(UIAnimation.function_by_time, widget_content, "size_multiplier", widget_content.final_size_multiplier * 0.5, widget_content.final_size_multiplier, animation_times.SIZE, math.ease_out_elastic)
@@ -713,9 +731,12 @@ SocialWheelUI._open_menu = function (self, dt, t, input_service, increment_page)
 
 	local bg_widget = self._bg_widget
 	local widget_content = bg_widget.content
+
 	animations.animation_bg_size = UIAnimation.init(UIAnimation.function_by_time, widget_content, "size_multiplier", widget_content.final_size_multiplier * 0.5, widget_content.final_size_multiplier, animation_times.SIZE, math.ease_out_elastic)
+
 	local gamepad_enabled = not IS_WINDOWS or Managers.input:is_device_active("gamepad")
 	local stop_lerp_time = gamepad_enabled and STOP_LERP_TIME_CONTROLLER or STOP_LERP_TIME
+
 	self._valid_selection = true
 	self._selected_widget = nil
 	self._open_start_t = t
@@ -807,7 +828,7 @@ SocialWheelUI._update_pointer = function (self, input_service, enabled, t)
 			arrow_style.offset = {
 				0,
 				0,
-				0
+				0,
 			}
 			arrow_content.visible = false
 
@@ -821,7 +842,7 @@ SocialWheelUI._update_pointer = function (self, input_service, enabled, t)
 			arrow_style.offset = {
 				90 * gamepad_axis[1],
 				90 * gamepad_axis[2],
-				0
+				0,
 			}
 			arrow_content.visible = enabled
 			can_select = enabled
@@ -836,7 +857,9 @@ SocialWheelUI._update_pointer = function (self, input_service, enabled, t)
 		local offset_length = Vector3.length(offset)
 		local new_length = math.min(offset_length, 200)
 		local direction = Vector3.normalize(offset)
+
 		new_position = screen_center + direction * new_length
+
 		local aspect_ratio = enabled and settings.size[1] / settings.size[2] or 1
 
 		if new_length < 100 then
@@ -845,13 +868,13 @@ SocialWheelUI._update_pointer = function (self, input_service, enabled, t)
 			arrow_style.offset = {
 				0,
 				0,
-				0
+				0,
 			}
 			arrow_style.color[1] = 0
 			cursor_style.color[1] = 255
 			cursor_style.offset = {
 				offset.x,
-				offset.y
+				offset.y,
 			}
 			arrow_content.visible = enabled
 
@@ -862,7 +885,7 @@ SocialWheelUI._update_pointer = function (self, input_service, enabled, t)
 			arrow_style.offset = {
 				100 * direction[1],
 				100 * direction[2],
-				0
+				0,
 			}
 			arrow_style.color[1] = 255
 			cursor_style.color[1] = 0
@@ -884,11 +907,14 @@ SocialWheelUI._update_selection = function (self, enabled, total_angle, angle)
 
 	local function reset_selection()
 		local widget = selection_widgets[self._current_index]
+
 		widget.content.selected = false
 		self._current_index = nil
 		self._valid_selection = true
+
 		local bg_widget = self._bg_widget
 		local bg_widget_content = bg_widget.content
+
 		bg_widget_content.text_id = Localize("tutorial_no_text")
 	end
 
@@ -927,6 +953,7 @@ SocialWheelUI._update_selection = function (self, enabled, total_angle, angle)
 
 	if old_index then
 		local old_widget = selection_widgets[old_index]
+
 		old_widget.content.selected = false
 		self._current_index = nil
 	end
@@ -950,6 +977,7 @@ SocialWheelUI._update_selection = function (self, enabled, total_angle, angle)
 				local event_text = event_text_func and event_text_func(target_unit, social_wheel_event_settings, true) or social_wheel_event_settings.event_text or Localize(social_wheel_event_settings.text)
 				local bg_widget = self._bg_widget
 				local bg_widget_content = bg_widget.content
+
 				bg_widget_content.text_id = event_text
 			end
 		end
@@ -965,11 +993,15 @@ end
 SocialWheelUI._close_menu = function (self, dt, t, input_service, page_only)
 	local animation_times = ANIMATION_TIMES.CLOSE
 	local animations = self._animations
+
 	self._animations.update_alpha = UIAnimation.init(UIAnimation.function_by_time, self._render_settings, "alpha_multiplier", self._render_settings.alpha_multiplier, 0, animation_times.ALPHA, math.easeOutCubic)
+
 	local bg_widget = self._bg_widget
 	local bg_widget_content = bg_widget.content
+
 	bg_widget_content.text_id = Localize("tutorial_no_text")
 	animations.animation_bg_size = UIAnimation.init(UIAnimation.function_by_time, bg_widget_content, "size_multiplier", bg_widget_content.size_multiplier, 0, animation_times.SIZE, math.easeOutCubic)
+
 	local active_context = self._active_context
 	local target_unit = active_context.unit or active_context.ping_context_unit
 	local selection_widgets = self._current_selection_widgets
@@ -979,12 +1011,14 @@ SocialWheelUI._close_menu = function (self, dt, t, input_service, page_only)
 		local widget = selection_widgets[i]
 		local widget_content = widget.content
 		local offset = widget.offset
+
 		animations["animation_x_" .. i] = UIAnimation.init(UIAnimation.function_by_time, offset, 1, offset[1], 0, animation_times.MOVE_X, math.easeOutCubic)
 		animations["animation_y_" .. i] = UIAnimation.init(UIAnimation.function_by_time, offset, 2, offset[2], 0, animation_times.MOVE_Y, math.easeOutCubic)
 		animations["animation_divider_size_" .. i] = UIAnimation.init(UIAnimation.function_by_time, widget_content, "size_multiplier", widget_content.size_multiplier, 0, animation_times.SIZE, math.easeOutCubic)
 
 		if i == self._current_index then
 			local social_wheel_event_settings = widget_content.settings
+
 			widget_content.selected = false
 
 			local function get_active_context_func()
@@ -996,10 +1030,14 @@ SocialWheelUI._close_menu = function (self, dt, t, input_service, page_only)
 			local selected_category_widgets = self._selection_widgets[category]
 			local page_idx = selected_category_widgets.current_page
 			local selected_widget = UIWidget.init(definitions.create_social_widget(social_wheel_event_settings, self:_widget_angle(category_settings.angle, num_selection_widgets, i), category_settings, get_active_context_func, page_idx))
+
 			self._selected_widget = selected_widget
+
 			local selected_widget_content = selected_widget.content
+
 			selected_widget_content.selected = true
 			selected_widget_content.activated = true
+
 			local selected_widget_style = selected_widget.style
 			local icon_color = selected_widget_style.icon.color
 			local icon_shadow_color = selected_widget_style.icon_shadow.color
@@ -1010,20 +1048,19 @@ SocialWheelUI._close_menu = function (self, dt, t, input_service, page_only)
 			local shadow_base_texture_size = selected_widget_style.icon_shadow.base_texture_size
 			local text_color = selected_widget_style.text.selected_color
 			local text_shadow_color = selected_widget_style.text_shadow.selected_color
+
 			animations["icon_color_a_" .. i] = UIAnimation.init(UIAnimation.pulse_animation3, icon_color, 1, icon_color[1], icon_color[1] * 0.5, 10, 0.5)
 			animations["icon_size_x_" .. i] = UIAnimation.init(UIAnimation.pulse_animation3, texture_size, 1, base_texture_size[1], base_texture_size[1] * 0.75, 10, 0.5)
 			animations["icon_size_y_" .. i] = UIAnimation.init(UIAnimation.pulse_animation3, texture_size, 2, base_texture_size[2], base_texture_size[2] * 0.75, 10, 0.5)
 			animations["icon_shadow_color_a_" .. i] = UIAnimation.init(UIAnimation.pulse_animation3, icon_shadow_color, 1, icon_shadow_color[1], icon_shadow_color[1] * 0.5, 10, 0.5)
 			animations["icon_shadow_size_x_" .. i] = UIAnimation.init(UIAnimation.pulse_animation3, shadow_texture_size, 1, shadow_base_texture_size[1], shadow_base_texture_size[1] * 0.75, 10, 0.5)
 			animations["icon_shadow_size_y_" .. i] = UIAnimation.init(UIAnimation.pulse_animation3, shadow_texture_size, 2, shadow_base_texture_size[2], shadow_base_texture_size[2] * 0.75, 10, 0.5)
-
 			self._animation_callbacks["icon_color_a_" .. i] = function ()
 				animations["fade_text_color_a_" .. i] = UIAnimation.init(UIAnimation.function_by_time, text_color, 1, text_color[1], 0, 0.25, math.easeOutCubic)
 				animations["fade_text_shadow_color_a_" .. i] = UIAnimation.init(UIAnimation.function_by_time, text_shadow_color, 1, text_shadow_color[1], 0, 0.25, math.easeOutCubic)
 				animations["fade_icon_color_a_" .. i] = UIAnimation.init(UIAnimation.function_by_time, icon_color, 1, icon_color[1], 0, 0.25, math.easeOutCubic)
 				animations["fade_icon_shadow_color_a_" .. i] = UIAnimation.init(UIAnimation.function_by_time, icon_shadow_color, 1, icon_shadow_color[1], 0, 0.25, math.easeOutCubic)
 				animations["fade_icon_bg_color_a_" .. i] = UIAnimation.init(UIAnimation.function_by_time, icon_bg_color, 1, icon_bg_color[1], 0, 0.25, math.easeOutCubic)
-
 				self._animation_callbacks["fade_icon_color_a_" .. i] = function ()
 					self._selected_widget = nil
 					selected_widget_content.activated = false
@@ -1045,7 +1082,7 @@ SocialWheelUI._close_menu = function (self, dt, t, input_service, page_only)
 
 	local gamepad_enabled = not IS_WINDOWS or Managers.input:is_device_active("gamepad")
 	local start_lerp_time = gamepad_enabled and START_LERP_TIME_CONTROLLER or START_LERP_TIME
-	local social_message_sent = nil
+	local social_message_sent
 
 	if self._world_marker_preview_id then
 		Managers.state.event:trigger("remove_world_marker", self._world_marker_preview_id)

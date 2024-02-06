@@ -1,7 +1,10 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_ninja_skulk_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTNinjaSkulkAction = class(BTNinjaSkulkAction, BTNode)
 BTNinjaSkulkAction.name = "BTNinjaSkulkAction"
+
 local position_lookup = POSITION_LOOKUP
 local script_data = script_data
 
@@ -17,6 +20,7 @@ end
 
 BTNinjaSkulkAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
+
 	blackboard.action = action
 
 	LocomotionUtils.set_animation_driven_movement(unit, false)
@@ -31,6 +35,7 @@ BTNinjaSkulkAction.enter = function (self, unit, blackboard, t)
 
 	blackboard.target_skulk_time = t + 0.5
 	blackboard.skulk_jump_tries = blackboard.skulk_jump_tries or 0
+
 	local locomotion = blackboard.locomotion_extension
 
 	locomotion:set_rotation_speed(5)
@@ -58,6 +63,7 @@ BTNinjaSkulkAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	blackboard.in_los = nil
 	blackboard.action = nil
 	blackboard.ninja_approach = false
+
 	local default_move_speed = AiUtils.get_default_breed_move_speed(unit, blackboard)
 	local navigation_extension = blackboard.navigation_extension
 
@@ -89,7 +95,7 @@ BTNinjaSkulkAction.run = function (self, unit, blackboard, t, dt)
 	end
 
 	if blackboard.dodging then
-		if blackboard.dodging < t then
+		if t > blackboard.dodging then
 			blackboard.dodging = nil
 		end
 	else
@@ -116,6 +122,7 @@ BTNinjaSkulkAction.run = function (self, unit, blackboard, t, dt)
 
 		if dot < 0 then
 			blackboard.dodge_pos = nil
+
 			local ai_navigation = blackboard.navigation_extension
 
 			ai_navigation:move_to(blackboard.skulk_pos:unbox())
@@ -134,9 +141,10 @@ BTNinjaSkulkAction.run = function (self, unit, blackboard, t, dt)
 		local dist = Vector3.distance(pos, enemy_pos)
 		local in_close_range = dist < close_range
 
-		if blackboard.target_skulk_time < t or in_close_range then
+		if t > blackboard.target_skulk_time or in_close_range then
 			if dist < breed.jump_range then
 				blackboard.skulk_jump_tries = blackboard.skulk_jump_tries + 1
+
 				local rand = math.random()
 				local growing_aggro = true
 
@@ -248,7 +256,7 @@ local relative_positions = {
 	-4,
 	0.5,
 	0,
-	1.5
+	1.5,
 }
 
 BTNinjaSkulkAction.check_free_los = function (self, unit, blackboard, data)
@@ -261,10 +269,11 @@ BTNinjaSkulkAction.check_free_los = function (self, unit, blackboard, data)
 
 	local p1 = position_lookup[unit] + Vector3(0, 0, 0.2)
 	local height_diff = p1.z - p2.z
-	local in_los = nil
+	local in_los
 
 	if math.abs(height_diff) < 2 then
 		local physics_world = World.get_data(blackboard.world, "physics_world")
+
 		in_los = WeaponHelper.multi_ray_test(physics_world, p1, p2, relative_positions)
 	else
 		in_los = BTPrepareForCrazyJumpAction.test_trajectory(blackboard, p1, p2, segment_list)
@@ -318,6 +327,7 @@ BTNinjaSkulkAction.dodge = function (self, unit, blackboard, dodge_vec, aim_vec)
 
 	if self:try_dodge_pos(unit, blackboard, pos, dodge_pos) then
 		local pass_check_pos = pos + dodge_dir * dodge_dist_check
+
 		blackboard.dodge_pos = Vector3Box(pass_check_pos)
 
 		return
@@ -327,6 +337,7 @@ BTNinjaSkulkAction.dodge = function (self, unit, blackboard, dodge_vec, aim_vec)
 
 	if self:try_dodge_pos(unit, blackboard, pos, dodge_pos) then
 		local pass_check_pos = pos - dodge_dir * dodge_dist_check
+
 		blackboard.dodge_pos = Vector3Box(pass_check_pos)
 	end
 end
@@ -337,14 +348,19 @@ BTNinjaSkulkAction.in_crosshairs = function (self, unit, blackboard, t, data)
 
 	for i = 1, #units do
 		local player_unit = units[i]
+
 		status_extension = ScriptUnit.extension(player_unit, "status_system")
 
 		if data.aiming_at_me then
 			if status_extension.aim_unit ~= data.aiming_at_me then
 				data.aim_at_me_timer = t + 0.5
-			elseif data.aim_at_me_timer < t then
+			elseif t > data.aim_at_me_timer then
 				return true
 			end
+		end
+
+		if false then
+			-- Nothing
 		end
 
 		if status_extension.aim_unit then
@@ -365,6 +381,7 @@ BTNinjaSkulkAction.get_fallback_goal = function (self, unit, blackboard)
 		aiprint("skulk around 2nd fallback -> success")
 
 		blackboard.skulk_pos = Vector3Box(pos)
+
 		local ai_navigation = blackboard.navigation_extension
 
 		ai_navigation:move_to(pos)
@@ -375,6 +392,7 @@ end
 
 BTNinjaSkulkAction.set_goal_at_target = function (self, unit, blackboard)
 	local pos = POSITION_LOOKUP[blackboard.target_unit] + Vector3(0, 0, 0)
+
 	pos = ConflictUtils.find_center_tri(blackboard.nav_world, pos)
 
 	if pos then
@@ -390,18 +408,22 @@ BTNinjaSkulkAction.get_new_goal = function (self, unit, blackboard)
 	local target_unit = blackboard.target_unit
 
 	if Unit.alive(target_unit) then
-		local pos = nil
+		local pos
 		local min_dist = 10
 		local max_dist = 15
 		local dir = blackboard.skulk_around_dir
+
 		dir = dir or 1 - math.random(0, 1) * 2
 		blackboard.skulk_around_dir = dir
+
 		local angle = math.random(10, 35) * dir
 		local max_tries = 5
+
 		pos = LocomotionUtils.outside_goal(blackboard.nav_world, POSITION_LOOKUP[unit], POSITION_LOOKUP[target_unit], min_dist, max_dist, angle, max_tries)
 
 		if pos then
 			blackboard.skulk_pos = Vector3Box(pos)
+
 			local ai_navigation = blackboard.navigation_extension
 
 			ai_navigation:move_to(pos)

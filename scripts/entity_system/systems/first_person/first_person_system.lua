@@ -1,23 +1,27 @@
+﻿-- chunkname: @scripts/entity_system/systems/first_person/first_person_system.lua
+
 require("scripts/unit_extensions/default_player_unit/player_unit_first_person")
 require("scripts/unit_extensions/human/player_bot_unit/player_bot_unit_first_person")
 
 FirstPersonSystem = class(FirstPersonSystem, ExtensionSystemBase)
+
 local RPCS = {
 	"rpc_play_hud_sound_event",
 	"rpc_play_first_person_sound",
 	"rpc_play_husk_sound_event",
 	"rpc_play_husk_unit_sound_event",
-	"rpc_first_person_flow_event"
+	"rpc_first_person_flow_event",
 }
 local EXTENSIONS = {
 	"PlayerUnitFirstPerson",
-	"PlayerBotUnitFirstPerson"
+	"PlayerBotUnitFirstPerson",
 }
 
 FirstPersonSystem.init = function (self, entity_system_creation_context, system_name)
 	FirstPersonSystem.super.init(self, entity_system_creation_context, system_name, EXTENSIONS)
 
 	local network_event_delegate = entity_system_creation_context.network_event_delegate
+
 	self.network_event_delegate = network_event_delegate
 
 	network_event_delegate:register(self, unpack(RPCS))

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/helpers/navigation_utils.lua
+
 NavigationUtils = NavigationUtils or {}
 
 NavigationUtils.create_exclusive_box_obstacle_from_unit_data = function (nav_world, unit)
@@ -82,9 +84,7 @@ end
 
 NavigationUtils.get_closest_index_on_spline = function (spline_curve, position)
 	local splines = spline_curve:splines()
-	local smallest_distance_sq = math.huge
-	local point = nil
-	local best_index = 1
+	local smallest_distance_sq, point, best_index = math.huge, nil, 1
 	local Vector3_distance_squared = Vector3.distance_squared
 	local num_splines = #splines
 
@@ -108,8 +108,7 @@ NavigationUtils.get_position_on_interpolated_spline = function (spline_curve, po
 	local Vector3_distance_squared = Vector3.distance_squared
 	local splines = spline_curve:splines()
 	local num_splines = #splines
-	local best_distance_sq = math.huge
-	local best_spline_index, best_subdivision_index = nil
+	local best_distance_sq, best_spline_index, best_subdivision_index = math.huge
 
 	for j = 1, num_splines do
 		local spline = splines[j]
@@ -132,7 +131,7 @@ NavigationUtils.get_position_on_interpolated_spline = function (spline_curve, po
 	local closest_subdivisions = splines[best_spline_index].subdivisions
 	local closest_subdivision = closest_subdivisions[best_subdivision_index]
 	local closest_subdivision_position = closest_subdivision.points[2]:unbox()
-	local previous_subdivision_index, previous_spline_index, previous_subdivision, previous_subdivision_position, next_subdivision_position, final_spline_index, final_subdivision_index, t = nil
+	local previous_subdivision_index, previous_spline_index, previous_subdivision, previous_subdivision_position, next_subdivision_position, final_spline_index, final_subdivision_index, t
 
 	if best_subdivision_index > 1 then
 		previous_subdivision_index = best_subdivision_index - 1
@@ -140,23 +139,32 @@ NavigationUtils.get_position_on_interpolated_spline = function (spline_curve, po
 		previous_subdivision_position = previous_subdivision.points[2]:unbox()
 	elseif best_spline_index > 1 then
 		previous_spline_index = best_spline_index - 1
+
 		local previous_spline = splines[previous_spline_index]
 		local previous_spline_subdivisions = previous_spline.subdivisions
+
 		previous_subdivision_index = #previous_spline_subdivisions
 		previous_subdivision = previous_spline_subdivisions[previous_subdivision_index]
 		previous_subdivision_position = previous_subdivision.points[2]:unbox()
 	end
 
+	if false then
+		-- Nothing
+	end
+
 	if best_subdivision_index < #closest_subdivisions then
 		local next_subdivision = closest_subdivisions[best_subdivision_index + 1]
+
 		next_subdivision_position = next_subdivision.points[2]:unbox()
 	elseif best_spline_index < num_splines then
 		local next_spline = splines[best_spline_index + 1]
 		local next_spline_subdivisions = next_spline.subdivisions
 		local next_subdivision = next_spline_subdivisions[1]
+
 		next_subdivision_position = next_subdivision.points[2]:unbox()
 	else
 		local spline_points = splines[num_splines].points
+
 		next_subdivision_position = spline_points[#spline_points]:unbox()
 	end
 

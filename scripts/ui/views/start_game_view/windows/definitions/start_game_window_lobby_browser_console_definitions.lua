@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/start_game_view/windows/definitions/start_game_window_lobby_browser_console_definitions.lua
+
 local function sort_level_list(a, b)
 	local level_settings = LevelSettings
 	local a_map_settings = level_settings[a].map_settings
@@ -26,12 +28,13 @@ local function setup_game_mode_data(statistics_db, player_stats_id)
 						local game_mode_difficulties = game_mode_settings.difficulties
 						local game_mode_display_name = game_mode_settings.display_name
 						local difficulties = table.clone(game_mode_difficulties)
+
 						difficulties[#difficulties + 1] = "any"
 						game_mode_data[#game_mode_data + 1] = {
 							levels = {},
 							difficulties = difficulties,
 							game_mode_key = game_mode,
-							game_mode_display_name = game_mode_display_name
+							game_mode_display_name = game_mode_display_name,
 						}
 						game_mode_index[game_mode] = #game_mode_data
 					end
@@ -39,6 +42,7 @@ local function setup_game_mode_data(statistics_db, player_stats_id)
 					if (not level_data.supported_game_modes or level_data.supported_game_modes[game_mode]) and not level_data.ommit_from_lobby_browser then
 						local data = game_mode_data[game_mode_index[game_mode]]
 						local levels = data.levels
+
 						levels[#levels + 1] = name
 					end
 				end
@@ -69,6 +73,7 @@ local function setup_game_mode_data(statistics_db, player_stats_id)
 	for i = 1, #game_mode_data do
 		local game_mode_key = game_mode_data[i].game_mode_key
 		local game_mode_index = #game_modes + 1
+
 		game_modes[game_mode_index] = game_mode_key
 		game_modes[game_mode_key] = game_mode_index
 	end
@@ -77,15 +82,16 @@ local function setup_game_mode_data(statistics_db, player_stats_id)
 	local game_mode_settings = GameModeSettings[game_mode]
 	local game_mode_display_name = game_mode_settings.display_name
 	local index = #game_mode_data + 1
+
 	game_mode_data[index] = {
 		levels = {
-			"any"
+			"any",
 		},
 		difficulties = {
-			"any"
+			"any",
 		},
 		game_mode_key = game_mode,
-		game_mode_display_name = game_mode_display_name
+		game_mode_display_name = game_mode_display_name,
 	}
 	game_modes[game_mode] = #game_modes + 1
 	game_modes[#game_modes + 1] = game_mode
@@ -96,7 +102,7 @@ end
 
 local show_lobbies_array = {
 	"lb_show_joinable",
-	"lb_show_all"
+	"lb_show_all",
 }
 
 if IS_PS4 then
@@ -106,15 +112,15 @@ end
 local distance_array = IS_PS4 and {
 	"map_zone_options_2",
 	"map_zone_options_3",
-	"map_zone_options_5"
+	"map_zone_options_5",
 } or {
 	"map_zone_options_2",
 	"map_zone_options_4",
-	"map_zone_options_5"
+	"map_zone_options_5",
 }
 
 return {
 	show_lobbies_table = show_lobbies_array,
 	distance_table = distance_array,
-	setup_game_mode_data = setup_game_mode_data
+	setup_game_mode_data = setup_game_mode_data,
 }

@@ -1,3 +1,5 @@
+﻿-- chunkname: @dialogues/generated/hero_conversations_dlc_drachenfels_castle.lua
+
 return function ()
 	define_rule({
 		name = "pbw_castle_conversation_four_01",
@@ -7,83 +9,83 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.EQ,
-				0
+				0,
 			},
 			{
 				"user_context",
 				"intensity",
 				OP.EQ,
-				0
+				0,
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				1
+				1,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"bright_wizard"
+				"bright_wizard",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
+				"bright_wizard",
 			},
 			{
 				"global_context",
 				"witch_hunter",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				120
+				120,
 			},
 			{
 				"faction_memory",
 				"castle_vo_find_a_way_up",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"castle_vo_approaching_throne_room",
 				OP.EQ,
-				0
+				0,
 			},
 			{
 				"faction_memory",
 				"once_per_level_pbw_castle_conversation_four_01",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"once_per_level_pbw_castle_conversation_four_01",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_castle_conversation_four_02",
@@ -93,34 +95,34 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwh_castle_conversation_four_01"
+				"pwh_castle_conversation_four_01",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
-			}
+				"bright_wizard",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_castle_conversation_nine_01",
@@ -130,83 +132,83 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.EQ,
-				0
+				0,
 			},
 			{
 				"user_context",
 				"intensity",
 				OP.EQ,
-				0
+				0,
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				1
+				1,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"bright_wizard"
+				"bright_wizard",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
+				"bright_wizard",
 			},
 			{
 				"global_context",
 				"dwarf_ranger",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				120
+				120,
 			},
 			{
 				"faction_memory",
 				"castle_vo_find_a_way_up",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"castle_vo_approaching_throne_room",
 				OP.EQ,
-				0
+				0,
 			},
 			{
 				"faction_memory",
 				"once_per_level_pbw_castle_conversation_nine_01",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"once_per_level_pbw_castle_conversation_nine_01",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_castle_conversation_nine_02",
@@ -216,34 +218,34 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pdr_castle_conversation_nine_01"
+				"pdr_castle_conversation_nine_01",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
-			}
+				"bright_wizard",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_castle_conversation_one_01",
@@ -253,34 +255,34 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pes_castle_conversation_one_01"
+				"pes_castle_conversation_one_01",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
-			}
+				"bright_wizard",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_castle_conversation_six_01",
@@ -290,34 +292,34 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pes_castle_conversation_six_01"
+				"pes_castle_conversation_six_01",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
-			}
+				"bright_wizard",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_castle_conversation_six_02",
@@ -327,34 +329,34 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pes_castle_conversation_six_02"
+				"pes_castle_conversation_six_02",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
-			}
+				"bright_wizard",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_castle_conversation_twelve_01",
@@ -364,34 +366,34 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pes_castle_conversation_twelve_01"
+				"pes_castle_conversation_twelve_01",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
-			}
+				"bright_wizard",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pdr_castle_conversation_eleven_01",
@@ -401,89 +403,89 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.EQ,
-				0
+				0,
 			},
 			{
 				"user_context",
 				"intensity",
 				OP.EQ,
-				0
+				0,
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				1
+				1,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"dwarf_ranger"
+				"dwarf_ranger",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"dwarf_ranger"
+				"dwarf_ranger",
 			},
 			{
 				"global_context",
 				"wood_elf",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"global_context",
 				"witch_hunter",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				120
+				120,
 			},
 			{
 				"faction_memory",
 				"castle_vo_find_a_way_up",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"castle_vo_approaching_throne_room",
 				OP.EQ,
-				0
+				0,
 			},
 			{
 				"faction_memory",
 				"once_per_level_pdr_castle_conversation_eleven_01",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"once_per_level_pdr_castle_conversation_eleven_01",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pdr_castle_conversation_nine_01",
@@ -493,34 +495,34 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pbw_castle_conversation_nine_01"
+				"pbw_castle_conversation_nine_01",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"dwarf_ranger"
-			}
+				"dwarf_ranger",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pdr_castle_conversation_seven_01",
@@ -530,83 +532,83 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.EQ,
-				0
+				0,
 			},
 			{
 				"user_context",
 				"intensity",
 				OP.EQ,
-				0
+				0,
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				1
+				1,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"dwarf_ranger"
+				"dwarf_ranger",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"dwarf_ranger"
+				"dwarf_ranger",
 			},
 			{
 				"global_context",
 				"witch_hunter",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				120
+				120,
 			},
 			{
 				"faction_memory",
 				"castle_vo_find_a_way_up",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"castle_vo_approaching_throne_room",
 				OP.EQ,
-				0
+				0,
 			},
 			{
 				"faction_memory",
 				"once_per_level_pdr_castle_conversation_seven_01",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"once_per_level_pdr_castle_conversation_seven_01",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pdr_castle_conversation_seven_02",
@@ -616,34 +618,34 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwh_castle_conversation_seven_01"
+				"pwh_castle_conversation_seven_01",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"dwarf_ranger"
-			}
+				"dwarf_ranger",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_castle_conversation_eight_01",
@@ -653,83 +655,83 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.EQ,
-				0
+				0,
 			},
 			{
 				"user_context",
 				"intensity",
 				OP.EQ,
-				0
+				0,
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				1
+				1,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"global_context",
 				"witch_hunter",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				120
+				120,
 			},
 			{
 				"faction_memory",
 				"castle_vo_find_a_way_up",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"castle_vo_approaching_throne_room",
 				OP.EQ,
-				0
+				0,
 			},
 			{
 				"faction_memory",
 				"once_per_level_pes_castle_conversation_eight_01",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"once_per_level_pes_castle_conversation_eight_01",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_castle_conversation_eight_02",
@@ -739,34 +741,34 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwh_castle_conversation_eight_01"
+				"pwh_castle_conversation_eight_01",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
-			}
+				"empire_soldier",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_castle_conversation_one_01",
@@ -776,83 +778,83 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.EQ,
-				0
+				0,
 			},
 			{
 				"user_context",
 				"intensity",
 				OP.EQ,
-				0
+				0,
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				1
+				1,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"global_context",
 				"bright_wizard",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				120
+				120,
 			},
 			{
 				"faction_memory",
 				"castle_vo_find_a_way_up",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"castle_vo_approaching_throne_room",
 				OP.EQ,
-				0
+				0,
 			},
 			{
 				"faction_memory",
 				"once_per_level_pes_castle_conversation_one_01",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"once_per_level_pes_castle_conversation_one_01",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_castle_conversation_six_01",
@@ -862,83 +864,83 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.EQ,
-				0
+				0,
 			},
 			{
 				"user_context",
 				"intensity",
 				OP.EQ,
-				0
+				0,
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				1
+				1,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"global_context",
 				"bright_wizard",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				120
+				120,
 			},
 			{
 				"faction_memory",
 				"castle_vo_find_a_way_up",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"castle_vo_approaching_throne_room",
 				OP.EQ,
-				0
+				0,
 			},
 			{
 				"faction_memory",
 				"once_per_level_pes_castle_conversation_six_01",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"once_per_level_pes_castle_conversation_six_01",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_castle_conversation_six_02",
@@ -948,34 +950,34 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pbw_castle_conversation_six_01"
+				"pbw_castle_conversation_six_01",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
-			}
+				"empire_soldier",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_castle_conversation_ten_01",
@@ -985,89 +987,89 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.EQ,
-				0
+				0,
 			},
 			{
 				"user_context",
 				"intensity",
 				OP.EQ,
-				0
+				0,
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				1
+				1,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"global_context",
 				"witch_hunter",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"global_context",
 				"wood_elf",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				120
+				120,
 			},
 			{
 				"faction_memory",
 				"castle_vo_find_a_way_up",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"castle_vo_approaching_throne_room",
 				OP.EQ,
-				0
+				0,
 			},
 			{
 				"faction_memory",
 				"once_per_level_pes_castle_conversation_ten_01",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"once_per_level_pes_castle_conversation_ten_01",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_castle_conversation_three_01",
@@ -1077,83 +1079,83 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.EQ,
-				0
+				0,
 			},
 			{
 				"user_context",
 				"intensity",
 				OP.EQ,
-				0
+				0,
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				1
+				1,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"global_context",
 				"wood_elf",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				120
+				120,
 			},
 			{
 				"faction_memory",
 				"castle_vo_find_a_way_up",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"castle_vo_approaching_throne_room",
 				OP.EQ,
-				0
+				0,
 			},
 			{
 				"faction_memory",
 				"once_per_level_pes_castle_conversation_three_01",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"once_per_level_pes_castle_conversation_three_01",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_castle_conversation_three_02",
@@ -1163,34 +1165,34 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwe_castle_conversation_three_01"
+				"pwe_castle_conversation_three_01",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
-			}
+				"empire_soldier",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_castle_conversation_twelve_01",
@@ -1200,89 +1202,89 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.EQ,
-				0
+				0,
 			},
 			{
 				"user_context",
 				"intensity",
 				OP.EQ,
-				0
+				0,
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				1
+				1,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"global_context",
 				"bright_wizard",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"global_context",
 				"witch_hunter",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				120
+				120,
 			},
 			{
 				"faction_memory",
 				"castle_vo_find_a_way_up",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"castle_vo_approaching_throne_room",
 				OP.EQ,
-				0
+				0,
 			},
 			{
 				"faction_memory",
 				"once_per_level_pes_castle_conversation_twelve_01",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"once_per_level_pes_castle_conversation_twelve_01",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_castle_conversation_twelve_02",
@@ -1292,34 +1294,34 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pbw_castle_conversation_twelve_01"
+				"pbw_castle_conversation_twelve_01",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
-			}
+				"empire_soldier",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_castle_conversation_two_01",
@@ -1329,83 +1331,83 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.EQ,
-				0
+				0,
 			},
 			{
 				"user_context",
 				"intensity",
 				OP.EQ,
-				0
+				0,
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				1
+				1,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"global_context",
 				"wood_elf",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				120
+				120,
 			},
 			{
 				"faction_memory",
 				"castle_vo_find_a_way_up",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"castle_vo_approaching_throne_room",
 				OP.EQ,
-				0
+				0,
 			},
 			{
 				"faction_memory",
 				"once_per_level_pes_castle_conversation_two_01",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"once_per_level_pes_castle_conversation_two_01",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_castle_conversation_two_02",
@@ -1415,34 +1417,34 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwe_castle_conversation_two_01"
+				"pwe_castle_conversation_two_01",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
-			}
+				"empire_soldier",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_castle_conversation_eleven_01",
@@ -1452,34 +1454,34 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pdr_castle_conversation_eleven_01"
+				"pdr_castle_conversation_eleven_01",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_castle_conversation_eleven_02",
@@ -1489,34 +1491,34 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwh_castle_conversation_eleven_01"
+				"pwh_castle_conversation_eleven_01",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_castle_conversation_five_01",
@@ -1526,83 +1528,83 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.EQ,
-				0
+				0,
 			},
 			{
 				"user_context",
 				"intensity",
 				OP.EQ,
-				0
+				0,
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				1
+				1,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"wood_elf"
+				"wood_elf",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
+				"wood_elf",
 			},
 			{
 				"global_context",
 				"witch_hunter",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				120
+				120,
 			},
 			{
 				"faction_memory",
 				"castle_vo_find_a_way_up",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"castle_vo_approaching_throne_room",
 				OP.EQ,
-				0
+				0,
 			},
 			{
 				"faction_memory",
 				"once_per_level_pwe_castle_conversation_five_01",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"once_per_level_pwe_castle_conversation_five_01",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_castle_conversation_five_02",
@@ -1612,34 +1614,34 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwh_castle_conversation_five_01"
+				"pwh_castle_conversation_five_01",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_castle_conversation_ten_01",
@@ -1649,34 +1651,34 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwh_castle_conversation_ten_01"
+				"pwh_castle_conversation_ten_01",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_castle_conversation_three_01",
@@ -1686,34 +1688,34 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pes_castle_conversation_three_01"
+				"pes_castle_conversation_three_01",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_castle_conversation_three_02",
@@ -1723,34 +1725,34 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pes_castle_conversation_three_02"
+				"pes_castle_conversation_three_02",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_castle_conversation_two_01",
@@ -1760,34 +1762,34 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pes_castle_conversation_two_01"
+				"pes_castle_conversation_two_01",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_castle_conversation_two_02",
@@ -1797,34 +1799,34 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pes_castle_conversation_two_02"
+				"pes_castle_conversation_two_02",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwh_castle_conversation_eight_01",
@@ -1834,34 +1836,34 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pes_castle_conversation_eight_01"
+				"pes_castle_conversation_eight_01",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"witch_hunter"
-			}
+				"witch_hunter",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwh_castle_conversation_eight_02",
@@ -1871,34 +1873,34 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pes_castle_conversation_eight_02"
+				"pes_castle_conversation_eight_02",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"witch_hunter"
-			}
+				"witch_hunter",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwh_castle_conversation_eleven_01",
@@ -1908,34 +1910,34 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwe_castle_conversation_eleven_01"
+				"pwe_castle_conversation_eleven_01",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"witch_hunter"
-			}
+				"witch_hunter",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwh_castle_conversation_five_01",
@@ -1945,34 +1947,34 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwe_castle_conversation_five_01"
+				"pwe_castle_conversation_five_01",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"witch_hunter"
-			}
+				"witch_hunter",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwh_castle_conversation_five_02",
@@ -1982,34 +1984,34 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwe_castle_conversation_five_02"
+				"pwe_castle_conversation_five_02",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"witch_hunter"
-			}
+				"witch_hunter",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwh_castle_conversation_four_01",
@@ -2019,34 +2021,34 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pbw_castle_conversation_four_01"
+				"pbw_castle_conversation_four_01",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"witch_hunter"
-			}
+				"witch_hunter",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwh_castle_conversation_four_02",
@@ -2056,34 +2058,34 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pbw_castle_conversation_four_02"
+				"pbw_castle_conversation_four_02",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"witch_hunter"
-			}
+				"witch_hunter",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwh_castle_conversation_seven_01",
@@ -2093,34 +2095,34 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pdr_castle_conversation_seven_01"
+				"pdr_castle_conversation_seven_01",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"witch_hunter"
-			}
+				"witch_hunter",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwh_castle_conversation_ten_01",
@@ -2130,34 +2132,34 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pes_castle_conversation_ten_01"
+				"pes_castle_conversation_ten_01",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"witch_hunter"
-			}
+				"witch_hunter",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwh_castle_conversation_ten_02",
@@ -2167,34 +2169,34 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwe_castle_conversation_ten_01"
+				"pwe_castle_conversation_ten_01",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"witch_hunter"
-			}
+				"witch_hunter",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwh_castle_conversation_twelve_01",
@@ -2204,1003 +2206,1003 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pes_castle_conversation_twelve_02"
+				"pes_castle_conversation_twelve_02",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"witch_hunter"
-			}
+				"witch_hunter",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	add_dialogues({
 		pbw_castle_conversation_four_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
 			category = "story_talk",
+			database = "hero_conversations_dlc_drachenfels_castle",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pbw_castle_conversation_four_01"
+				[1] = "pbw_castle_conversation_four_01",
 			},
 			sound_events = {
-				[1.0] = "pbw_castle_conversation_four_01"
+				[1] = "pbw_castle_conversation_four_01",
 			},
 			sound_events_duration = {
-				[1.0] = 9.0182085037231
-			}
+				[1] = 9.0182085037231,
+			},
 		},
 		pbw_castle_conversation_four_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
 			category = "story_talk",
+			database = "hero_conversations_dlc_drachenfels_castle",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pbw_castle_conversation_four_02"
+				[1] = "pbw_castle_conversation_four_02",
 			},
 			sound_events = {
-				[1.0] = "pbw_castle_conversation_four_02"
+				[1] = "pbw_castle_conversation_four_02",
 			},
 			sound_events_duration = {
-				[1.0] = 2.1587290763855
-			}
+				[1] = 2.1587290763855,
+			},
 		},
 		pbw_castle_conversation_nine_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
 			category = "story_talk",
+			database = "hero_conversations_dlc_drachenfels_castle",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pbw_castle_conversation_nine_01"
+				[1] = "pbw_castle_conversation_nine_01",
 			},
 			sound_events = {
-				[1.0] = "pbw_castle_conversation_nine_01"
+				[1] = "pbw_castle_conversation_nine_01",
 			},
 			sound_events_duration = {
-				[1.0] = 4.2841668128967
-			}
+				[1] = 4.2841668128967,
+			},
 		},
 		pbw_castle_conversation_nine_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
 			category = "story_talk",
+			database = "hero_conversations_dlc_drachenfels_castle",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pbw_castle_conversation_nine_02"
+				[1] = "pbw_castle_conversation_nine_02",
 			},
 			sound_events = {
-				[1.0] = "pbw_castle_conversation_nine_02"
+				[1] = "pbw_castle_conversation_nine_02",
 			},
 			sound_events_duration = {
-				[1.0] = 3.0107707977295
-			}
+				[1] = 3.0107707977295,
+			},
 		},
 		pbw_castle_conversation_one_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
 			category = "story_talk",
+			database = "hero_conversations_dlc_drachenfels_castle",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pbw_castle_conversation_one_01"
+				[1] = "pbw_castle_conversation_one_01",
 			},
 			sound_events = {
-				[1.0] = "pbw_castle_conversation_one_01"
+				[1] = "pbw_castle_conversation_one_01",
 			},
 			sound_events_duration = {
-				[1.0] = 2.4232499599457
-			}
+				[1] = 2.4232499599457,
+			},
 		},
 		pbw_castle_conversation_six_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
 			category = "story_talk",
+			database = "hero_conversations_dlc_drachenfels_castle",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pbw_castle_conversation_six_01"
+				[1] = "pbw_castle_conversation_six_01",
 			},
 			sound_events = {
-				[1.0] = "pbw_castle_conversation_six_01"
+				[1] = "pbw_castle_conversation_six_01",
 			},
 			sound_events_duration = {
-				[1.0] = 6.7494583129883
-			}
+				[1] = 6.7494583129883,
+			},
 		},
 		pbw_castle_conversation_six_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
 			category = "story_talk",
+			database = "hero_conversations_dlc_drachenfels_castle",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pbw_castle_conversation_six_02"
+				[1] = "pbw_castle_conversation_six_02",
 			},
 			sound_events = {
-				[1.0] = "pbw_castle_conversation_six_02"
+				[1] = "pbw_castle_conversation_six_02",
 			},
 			sound_events_duration = {
-				[1.0] = 3.9466874599457
-			}
+				[1] = 3.9466874599457,
+			},
 		},
 		pbw_castle_conversation_twelve_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
 			category = "story_talk",
+			database = "hero_conversations_dlc_drachenfels_castle",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pbw_castle_conversation_twelve_01"
+				[1] = "pbw_castle_conversation_twelve_01",
 			},
 			sound_events = {
-				[1.0] = "pbw_castle_conversation_twelve_01"
+				[1] = "pbw_castle_conversation_twelve_01",
 			},
 			sound_events_duration = {
-				[1.0] = 3.1307916641235
-			}
+				[1] = 3.1307916641235,
+			},
 		},
 		pdr_castle_conversation_eleven_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
 			category = "story_talk",
+			database = "hero_conversations_dlc_drachenfels_castle",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pdr_castle_conversation_eleven_01"
+				[1] = "pdr_castle_conversation_eleven_01",
 			},
 			sound_events = {
-				[1.0] = "pdr_castle_conversation_eleven_01"
+				[1] = "pdr_castle_conversation_eleven_01",
 			},
 			sound_events_duration = {
-				[1.0] = 4.2667293548584
-			}
+				[1] = 4.2667293548584,
+			},
 		},
 		pdr_castle_conversation_nine_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
 			category = "story_talk",
+			database = "hero_conversations_dlc_drachenfels_castle",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pdr_castle_conversation_nine_01"
+				[1] = "pdr_castle_conversation_nine_01",
 			},
 			sound_events = {
-				[1.0] = "pdr_castle_conversation_nine_01"
+				[1] = "pdr_castle_conversation_nine_01",
 			},
 			sound_events_duration = {
-				[1.0] = 6.011125087738
-			}
+				[1] = 6.011125087738,
+			},
 		},
 		pdr_castle_conversation_seven_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
 			category = "story_talk",
+			database = "hero_conversations_dlc_drachenfels_castle",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pdr_castle_conversation_seven_01"
+				[1] = "pdr_castle_conversation_seven_01",
 			},
 			sound_events = {
-				[1.0] = "pdr_castle_conversation_seven_01"
+				[1] = "pdr_castle_conversation_seven_01",
 			},
 			sound_events_duration = {
-				[1.0] = 4.176854133606
-			}
+				[1] = 4.176854133606,
+			},
 		},
 		pdr_castle_conversation_seven_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
 			category = "story_talk",
+			database = "hero_conversations_dlc_drachenfels_castle",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pdr_castle_conversation_seven_02"
+				[1] = "pdr_castle_conversation_seven_02",
 			},
 			sound_events = {
-				[1.0] = "pdr_castle_conversation_seven_02"
+				[1] = "pdr_castle_conversation_seven_02",
 			},
 			sound_events_duration = {
-				[1.0] = 5.9878749847412
-			}
+				[1] = 5.9878749847412,
+			},
 		},
 		pes_castle_conversation_eight_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
 			category = "story_talk",
+			database = "hero_conversations_dlc_drachenfels_castle",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pes_castle_conversation_eight_01"
+				[1] = "pes_castle_conversation_eight_01",
 			},
 			sound_events = {
-				[1.0] = "pes_castle_conversation_eight_01"
+				[1] = "pes_castle_conversation_eight_01",
 			},
 			sound_events_duration = {
-				[1.0] = 7.520124912262
-			}
+				[1] = 7.520124912262,
+			},
 		},
 		pes_castle_conversation_eight_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
 			category = "story_talk",
+			database = "hero_conversations_dlc_drachenfels_castle",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pes_castle_conversation_eight_02"
+				[1] = "pes_castle_conversation_eight_02",
 			},
 			sound_events = {
-				[1.0] = "pes_castle_conversation_eight_02"
+				[1] = "pes_castle_conversation_eight_02",
 			},
 			sound_events_duration = {
-				[1.0] = 5.7464165687561
-			}
+				[1] = 5.7464165687561,
+			},
 		},
 		pes_castle_conversation_one_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
 			category = "story_talk",
+			database = "hero_conversations_dlc_drachenfels_castle",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pes_castle_conversation_one_01"
+				[1] = "pes_castle_conversation_one_01",
 			},
 			sound_events = {
-				[1.0] = "pes_castle_conversation_one_01"
+				[1] = "pes_castle_conversation_one_01",
 			},
 			sound_events_duration = {
-				[1.0] = 2.3467707633972
-			}
+				[1] = 2.3467707633972,
+			},
 		},
 		pes_castle_conversation_six_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
 			category = "story_talk",
+			database = "hero_conversations_dlc_drachenfels_castle",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pes_castle_conversation_six_01"
+				[1] = "pes_castle_conversation_six_01",
 			},
 			sound_events = {
-				[1.0] = "pes_castle_conversation_six_01"
+				[1] = "pes_castle_conversation_six_01",
 			},
 			sound_events_duration = {
-				[1.0] = 4.5153751373291
-			}
+				[1] = 4.5153751373291,
+			},
 		},
 		pes_castle_conversation_six_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
 			category = "story_talk",
+			database = "hero_conversations_dlc_drachenfels_castle",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pes_castle_conversation_six_02"
+				[1] = "pes_castle_conversation_six_02",
 			},
 			sound_events = {
-				[1.0] = "pes_castle_conversation_six_02"
+				[1] = "pes_castle_conversation_six_02",
 			},
 			sound_events_duration = {
-				[1.0] = 0.91431248188019
-			}
+				[1] = 0.91431248188019,
+			},
 		},
 		pes_castle_conversation_ten_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
 			category = "story_talk",
+			database = "hero_conversations_dlc_drachenfels_castle",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pes_castle_conversation_ten_01"
+				[1] = "pes_castle_conversation_ten_01",
 			},
 			sound_events = {
-				[1.0] = "pes_castle_conversation_ten_01"
+				[1] = "pes_castle_conversation_ten_01",
 			},
 			sound_events_duration = {
-				[1.0] = 2.2825520634651
-			}
+				[1] = 2.2825520634651,
+			},
 		},
 		pes_castle_conversation_three_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
 			category = "story_talk",
+			database = "hero_conversations_dlc_drachenfels_castle",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pes_castle_conversation_three_01"
+				[1] = "pes_castle_conversation_three_01",
 			},
 			sound_events = {
-				[1.0] = "pes_castle_conversation_three_01"
+				[1] = "pes_castle_conversation_three_01",
 			},
 			sound_events_duration = {
-				[1.0] = 1.7854791879654
-			}
+				[1] = 1.7854791879654,
+			},
 		},
 		pes_castle_conversation_three_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
 			category = "story_talk",
+			database = "hero_conversations_dlc_drachenfels_castle",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pes_castle_conversation_three_02"
+				[1] = "pes_castle_conversation_three_02",
 			},
 			sound_events = {
-				[1.0] = "pes_castle_conversation_three_02"
+				[1] = "pes_castle_conversation_three_02",
 			},
 			sound_events_duration = {
-				[1.0] = 6.1702291965485
-			}
+				[1] = 6.1702291965485,
+			},
 		},
 		pes_castle_conversation_twelve_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
 			category = "story_talk",
+			database = "hero_conversations_dlc_drachenfels_castle",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pes_castle_conversation_twelve_01"
+				[1] = "pes_castle_conversation_twelve_01",
 			},
 			sound_events = {
-				[1.0] = "pes_castle_conversation_twelve_01"
+				[1] = "pes_castle_conversation_twelve_01",
 			},
 			sound_events_duration = {
-				[1.0] = 7.0163750648499
-			}
+				[1] = 7.0163750648499,
+			},
 		},
 		pes_castle_conversation_twelve_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
 			category = "story_talk",
+			database = "hero_conversations_dlc_drachenfels_castle",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pes_castle_conversation_twelve_02"
+				[1] = "pes_castle_conversation_twelve_02",
 			},
 			sound_events = {
-				[1.0] = "pes_castle_conversation_twelve_02"
+				[1] = "pes_castle_conversation_twelve_02",
 			},
 			sound_events_duration = {
-				[1.0] = 2.2791042327881
-			}
+				[1] = 2.2791042327881,
+			},
 		},
 		pes_castle_conversation_two_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
 			category = "story_talk",
+			database = "hero_conversations_dlc_drachenfels_castle",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pes_castle_conversation_two_01"
+				[1] = "pes_castle_conversation_two_01",
 			},
 			sound_events = {
-				[1.0] = "pes_castle_conversation_two_01"
+				[1] = "pes_castle_conversation_two_01",
 			},
 			sound_events_duration = {
-				[1.0] = 3.7310833930969
-			}
+				[1] = 3.7310833930969,
+			},
 		},
 		pes_castle_conversation_two_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
 			category = "story_talk",
+			database = "hero_conversations_dlc_drachenfels_castle",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pes_castle_conversation_two_02"
+				[1] = "pes_castle_conversation_two_02",
 			},
 			sound_events = {
-				[1.0] = "pes_castle_conversation_two_02"
+				[1] = "pes_castle_conversation_two_02",
 			},
 			sound_events_duration = {
-				[1.0] = 4.4886040687561
-			}
+				[1] = 4.4886040687561,
+			},
 		},
 		pwe_castle_conversation_eleven_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
 			category = "story_talk",
+			database = "hero_conversations_dlc_drachenfels_castle",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_castle_conversation_eleven_01"
+				[1] = "pwe_castle_conversation_eleven_01",
 			},
 			sound_events = {
-				[1.0] = "pwe_castle_conversation_eleven_01"
+				[1] = "pwe_castle_conversation_eleven_01",
 			},
 			sound_events_duration = {
-				[1.0] = 3.2543125152588
-			}
+				[1] = 3.2543125152588,
+			},
 		},
 		pwe_castle_conversation_eleven_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
 			category = "story_talk",
+			database = "hero_conversations_dlc_drachenfels_castle",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_castle_conversation_eleven_02"
+				[1] = "pwe_castle_conversation_eleven_02",
 			},
 			sound_events = {
-				[1.0] = "pwe_castle_conversation_eleven_02"
+				[1] = "pwe_castle_conversation_eleven_02",
 			},
 			sound_events_duration = {
-				[1.0] = 2.0758957862854
-			}
+				[1] = 2.0758957862854,
+			},
 		},
 		pwe_castle_conversation_five_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
 			category = "story_talk",
+			database = "hero_conversations_dlc_drachenfels_castle",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pwe_castle_conversation_five_01"
+				[1] = "pwe_castle_conversation_five_01",
 			},
 			sound_events = {
-				[1.0] = "pwe_castle_conversation_five_01"
+				[1] = "pwe_castle_conversation_five_01",
 			},
 			sound_events_duration = {
-				[1.0] = 7.0054998397827
-			}
+				[1] = 7.0054998397827,
+			},
 		},
 		pwe_castle_conversation_five_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
 			category = "story_talk",
+			database = "hero_conversations_dlc_drachenfels_castle",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_castle_conversation_five_02"
+				[1] = "pwe_castle_conversation_five_02",
 			},
 			sound_events = {
-				[1.0] = "pwe_castle_conversation_five_02"
+				[1] = "pwe_castle_conversation_five_02",
 			},
 			sound_events_duration = {
-				[1.0] = 8.2855834960938
-			}
+				[1] = 8.2855834960938,
+			},
 		},
 		pwe_castle_conversation_ten_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
 			category = "story_talk",
+			database = "hero_conversations_dlc_drachenfels_castle",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_castle_conversation_ten_01"
+				[1] = "pwe_castle_conversation_ten_01",
 			},
 			sound_events = {
-				[1.0] = "pwe_castle_conversation_ten_01"
+				[1] = "pwe_castle_conversation_ten_01",
 			},
 			sound_events_duration = {
-				[1.0] = 3.0736665725708
-			}
+				[1] = 3.0736665725708,
+			},
 		},
 		pwe_castle_conversation_three_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
 			category = "story_talk",
+			database = "hero_conversations_dlc_drachenfels_castle",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_castle_conversation_three_01"
+				[1] = "pwe_castle_conversation_three_01",
 			},
 			sound_events = {
-				[1.0] = "pwe_castle_conversation_three_01"
+				[1] = "pwe_castle_conversation_three_01",
 			},
 			sound_events_duration = {
-				[1.0] = 0.81195831298828
-			}
+				[1] = 0.81195831298828,
+			},
 		},
 		pwe_castle_conversation_three_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
 			category = "story_talk",
+			database = "hero_conversations_dlc_drachenfels_castle",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_castle_conversation_three_02"
+				[1] = "pwe_castle_conversation_three_02",
 			},
 			sound_events = {
-				[1.0] = "pwe_castle_conversation_three_02"
+				[1] = "pwe_castle_conversation_three_02",
 			},
 			sound_events_duration = {
-				[1.0] = 2.8888957500458
-			}
+				[1] = 2.8888957500458,
+			},
 		},
 		pwe_castle_conversation_two_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
 			category = "story_talk",
+			database = "hero_conversations_dlc_drachenfels_castle",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_castle_conversation_two_01"
+				[1] = "pwe_castle_conversation_two_01",
 			},
 			sound_events = {
-				[1.0] = "pwe_castle_conversation_two_01"
+				[1] = "pwe_castle_conversation_two_01",
 			},
 			sound_events_duration = {
-				[1.0] = 3.3880624771118
-			}
+				[1] = 3.3880624771118,
+			},
 		},
 		pwe_castle_conversation_two_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
 			category = "story_talk",
+			database = "hero_conversations_dlc_drachenfels_castle",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_castle_conversation_two_02"
+				[1] = "pwe_castle_conversation_two_02",
 			},
 			sound_events = {
-				[1.0] = "pwe_castle_conversation_two_02"
+				[1] = "pwe_castle_conversation_two_02",
 			},
 			sound_events_duration = {
-				[1.0] = 4.4278960227966
-			}
+				[1] = 4.4278960227966,
+			},
 		},
 		pwh_castle_conversation_eight_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
 			category = "story_talk",
+			database = "hero_conversations_dlc_drachenfels_castle",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwh_castle_conversation_eight_01"
+				[1] = "pwh_castle_conversation_eight_01",
 			},
 			sound_events = {
-				[1.0] = "pwh_castle_conversation_eight_01"
+				[1] = "pwh_castle_conversation_eight_01",
 			},
 			sound_events_duration = {
-				[1.0] = 3.7152500152588
-			}
+				[1] = 3.7152500152588,
+			},
 		},
 		pwh_castle_conversation_eight_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
 			category = "story_talk",
+			database = "hero_conversations_dlc_drachenfels_castle",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwh_castle_conversation_eight_02"
+				[1] = "pwh_castle_conversation_eight_02",
 			},
 			sound_events = {
-				[1.0] = "pwh_castle_conversation_eight_02"
+				[1] = "pwh_castle_conversation_eight_02",
 			},
 			sound_events_duration = {
-				[1.0] = 2.1067707538605
-			}
+				[1] = 2.1067707538605,
+			},
 		},
 		pwh_castle_conversation_eleven_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
 			category = "story_talk",
+			database = "hero_conversations_dlc_drachenfels_castle",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwh_castle_conversation_eleven_01"
+				[1] = "pwh_castle_conversation_eleven_01",
 			},
 			sound_events = {
-				[1.0] = "pwh_castle_conversation_eleven_01"
+				[1] = "pwh_castle_conversation_eleven_01",
 			},
 			sound_events_duration = {
-				[1.0] = 1.9296875
-			}
+				[1] = 1.9296875,
+			},
 		},
 		pwh_castle_conversation_five_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
 			category = "story_talk",
+			database = "hero_conversations_dlc_drachenfels_castle",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwh_castle_conversation_five_01"
+				[1] = "pwh_castle_conversation_five_01",
 			},
 			sound_events = {
-				[1.0] = "pwh_castle_conversation_five_01"
+				[1] = "pwh_castle_conversation_five_01",
 			},
 			sound_events_duration = {
-				[1.0] = 4.9850206375122
-			}
+				[1] = 4.9850206375122,
+			},
 		},
 		pwh_castle_conversation_five_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
 			category = "story_talk",
+			database = "hero_conversations_dlc_drachenfels_castle",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwh_castle_conversation_five_02"
+				[1] = "pwh_castle_conversation_five_02",
 			},
 			sound_events = {
-				[1.0] = "pwh_castle_conversation_five_02"
+				[1] = "pwh_castle_conversation_five_02",
 			},
 			sound_events_duration = {
-				[1.0] = 4.4943957328796
-			}
+				[1] = 4.4943957328796,
+			},
 		},
 		pwh_castle_conversation_four_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
 			category = "story_talk",
+			database = "hero_conversations_dlc_drachenfels_castle",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwh_castle_conversation_four_01"
+				[1] = "pwh_castle_conversation_four_01",
 			},
 			sound_events = {
-				[1.0] = "pwh_castle_conversation_four_01"
+				[1] = "pwh_castle_conversation_four_01",
 			},
 			sound_events_duration = {
-				[1.0] = 8.2908954620361
-			}
+				[1] = 8.2908954620361,
+			},
 		},
 		pwh_castle_conversation_four_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
 			category = "story_talk",
+			database = "hero_conversations_dlc_drachenfels_castle",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwh_castle_conversation_four_02"
+				[1] = "pwh_castle_conversation_four_02",
 			},
 			sound_events = {
-				[1.0] = "pwh_castle_conversation_four_02"
+				[1] = "pwh_castle_conversation_four_02",
 			},
 			sound_events_duration = {
-				[1.0] = 1.5106041431427
-			}
+				[1] = 1.5106041431427,
+			},
 		},
 		pwh_castle_conversation_seven_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
 			category = "story_talk",
+			database = "hero_conversations_dlc_drachenfels_castle",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwh_castle_conversation_seven_01"
+				[1] = "pwh_castle_conversation_seven_01",
 			},
 			sound_events = {
-				[1.0] = "pwh_castle_conversation_seven_01"
+				[1] = "pwh_castle_conversation_seven_01",
 			},
 			sound_events_duration = {
-				[1.0] = 9.3860626220703
-			}
+				[1] = 9.3860626220703,
+			},
 		},
 		pwh_castle_conversation_ten_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
 			category = "story_talk",
+			database = "hero_conversations_dlc_drachenfels_castle",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwh_castle_conversation_ten_01"
+				[1] = "pwh_castle_conversation_ten_01",
 			},
 			sound_events = {
-				[1.0] = "pwh_castle_conversation_ten_01"
+				[1] = "pwh_castle_conversation_ten_01",
 			},
 			sound_events_duration = {
-				[1.0] = 3.5076665878296
-			}
+				[1] = 3.5076665878296,
+			},
 		},
 		pwh_castle_conversation_ten_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
 			category = "story_talk",
+			database = "hero_conversations_dlc_drachenfels_castle",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwh_castle_conversation_ten_02"
+				[1] = "pwh_castle_conversation_ten_02",
 			},
 			sound_events = {
-				[1.0] = "pwh_castle_conversation_ten_02"
+				[1] = "pwh_castle_conversation_ten_02",
 			},
 			sound_events_duration = {
-				[1.0] = 2.1597917079926
-			}
+				[1] = 2.1597917079926,
+			},
 		},
 		pwh_castle_conversation_twelve_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
 			category = "story_talk",
+			database = "hero_conversations_dlc_drachenfels_castle",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwh_castle_conversation_twelve_01"
+				[1] = "pwh_castle_conversation_twelve_01",
 			},
 			sound_events = {
-				[1.0] = "pwh_castle_conversation_twelve_01"
+				[1] = "pwh_castle_conversation_twelve_01",
 			},
 			sound_events_duration = {
-				[1.0] = 2.8931040763855
-			}
-		}
+				[1] = 2.8931040763855,
+			},
+		},
 	})
 end

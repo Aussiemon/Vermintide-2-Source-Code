@@ -1,3 +1,5 @@
+﻿-- chunkname: @foundation/scripts/util/script_camera.lua
+
 ScriptCamera = ScriptCamera or {}
 
 ScriptCamera.position = function (camera)

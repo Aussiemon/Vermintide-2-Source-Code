@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/dlcs/geheimnisnacht_2021/geheimnisnacht_2021_death_reactions.lua
+
 local death_reactions = {
 	geheimnisnacht_2021_altar = {
 		unit = {
@@ -15,7 +17,7 @@ local death_reactions = {
 			end,
 			update = function (unit, dt, context, t, data)
 				return DeathReactions.IS_DONE
-			end
+			end,
 		},
 		husk = {
 			pre_start = function (unit, context, t, killing_blow)
@@ -32,9 +34,9 @@ local death_reactions = {
 			end,
 			update = function (unit, dt, context, t, data)
 				return DeathReactions.IS_DONE
-			end
-		}
-	}
+			end,
+		},
+	},
 }
 
 return death_reactions

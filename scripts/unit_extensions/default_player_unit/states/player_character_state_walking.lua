@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/default_player_unit/states/player_character_state_walking.lua
+
 PlayerCharacterStateWalking = class(PlayerCharacterStateWalking, PlayerCharacterState)
 
 PlayerCharacterStateWalking.init = function (self, character_state_init_context)
@@ -24,6 +26,7 @@ PlayerCharacterStateWalking.on_enter = function (self, unit, input, dt, context,
 	elseif not script_data.disable_nice_movement then
 		local current_speed = Vector3.length(current_velocity)
 		local movement_settings_table = PlayerUnitMovementSettings.get_movement_settings_table(unit)
+
 		self.current_movement_speed_scale = math.min(current_speed / movement_settings_table.move_speed, 1)
 	else
 		self.current_movement_speed_scale = 1
@@ -40,6 +43,7 @@ PlayerCharacterStateWalking.on_enter = function (self, unit, input, dt, context,
 	end
 
 	local move_anim_3p, move_anim_1p = CharacterStateHelper.get_move_animation(self.locomotion_extension, input_extension, status_extension)
+
 	self.move_anim_3p = move_anim_3p
 	self.move_anim_1p = move_anim_1p
 
@@ -81,7 +85,7 @@ PlayerCharacterStateWalking._handle_ladder_collision = function (self, t, moveme
 		local movement_in_ladder_direction = Vector3.dot(locomotion_extension.velocity_current:unbox(), ladder_forward)
 		local top_node = Unit.node(ladder_unit, "c_platform")
 
-		if Vector3.z(Unit.world_position(ladder_unit, top_node)) < POSITION_LOOKUP[unit].z then
+		if POSITION_LOOKUP[unit].z > Vector3.z(Unit.world_position(ladder_unit, top_node)) then
 			local looking_down = not looking_up
 
 			if looking_down and facing_ladder and movement_in_ladder_direction < 0 then
@@ -95,12 +99,14 @@ PlayerCharacterStateWalking._handle_ladder_collision = function (self, t, moveme
 			above_align_cube = true
 		else
 			local epsilon = 0.02
+
 			close_enough = distance < 0.7 + epsilon and distance > 0
 			facing_correctly = looking_up and not facing_ladder and movement_in_ladder_direction > 0
 		end
 
 		if facing_correctly and not recently_left_ladder and close_enough then
 			local params = self.temp_params
+
 			params.ladder_unit = ladder_unit
 
 			if above_align_cube then
@@ -158,6 +164,7 @@ PlayerCharacterStateWalking.update = function (self, unit, input, dt, context, t
 
 		local params = movement_settings_table.stun_settings.pushed
 		local hit_react_type = status_extension:hit_react_type()
+
 		params.hit_react_type = hit_react_type .. "_push"
 
 		csm:change_state("stunned", params)
@@ -167,6 +174,7 @@ PlayerCharacterStateWalking.update = function (self, unit, input, dt, context, t
 
 	if CharacterStateHelper.is_charged(status_extension) then
 		local params = movement_settings_table.charged_settings.charged
+
 		params.hit_react_type = "charged"
 
 		csm:change_state("charged", params)
@@ -178,6 +186,7 @@ PlayerCharacterStateWalking.update = function (self, unit, input, dt, context, t
 		status_extension:set_block_broken(false)
 
 		local params = movement_settings_table.stun_settings.parry_broken
+
 		params.hit_react_type = "medium_push"
 
 		csm:change_state("stunned", params)
@@ -201,6 +210,7 @@ PlayerCharacterStateWalking.update = function (self, unit, input, dt, context, t
 
 	if start_dodge then
 		local params = self.temp_params
+
 		params.dodge_direction = dodge_direction
 
 		csm:change_state("dodging", params)
@@ -277,13 +287,12 @@ PlayerCharacterStateWalking.update = function (self, unit, input, dt, context, t
 		else
 			current_movement_speed_scale = math.max(0, current_movement_speed_scale - move_acceleration_down_dt)
 		end
-	elseif is_moving then
-		current_movement_speed_scale = 1
 	else
-		current_movement_speed_scale = 0
+		current_movement_speed_scale = is_moving and 1 or 0
 	end
 
 	local is_walking = input_extension:get("walk")
+
 	is_crouching = status_extension:is_crouching()
 
 	if is_walking ~= self.walking then
@@ -309,10 +318,12 @@ PlayerCharacterStateWalking.update = function (self, unit, input, dt, context, t
 			self._intoxication_stagger_start = t
 			self._intoxication_stagger_duration = math.random() * 1.5 + math.random() * 0.5
 			self._intoxication_stagger_time = self._intoxication_stagger_start + self._intoxication_stagger_duration
+
 			local current_velocity = locomotion_extension:current_velocity()
 			local current_dir = Vector3.normalize(current_velocity)
 			local perpendicular_dir = Vector3.cross(current_dir, Vector3.up())
-			local stagger_dir = math.sin(t * math.pi * 0.5) * math.sign(math.random() * 2 - 1) * perpendicular_dir
+			local stagger_dir = math.sin(t * (math.pi * 0.5)) * math.sign(math.random() * 2 - 1) * perpendicular_dir
+
 			self._intoxication_stagger_dir = Vector3Box(stagger_dir)
 		end
 
@@ -321,6 +332,7 @@ PlayerCharacterStateWalking.update = function (self, unit, input, dt, context, t
 			local time_in_intoxication_stagger = self._intoxication_stagger_duration - time_left_in_intoxication_stagger
 			local percentage = time_in_intoxication_stagger / self._intoxication_stagger_duration
 			local modified_dir = Vector3.lerp(move_input, self._intoxication_stagger_dir:unbox(), percentage)
+
 			move_input = move_input + modified_dir
 
 			if percentage < 0.5 then
@@ -328,13 +340,13 @@ PlayerCharacterStateWalking.update = function (self, unit, input, dt, context, t
 			else
 				final_move_speed = math.lerp(final_move_speed * 0.75, final_move_speed, math.sin(percentage * 2 * math.pi * 0.5))
 			end
-		elseif self._is_intoxication_stagger and self._intoxication_stagger_time < t then
+		elseif self._is_intoxication_stagger and t > self._intoxication_stagger_time then
 			self._is_intoxication_stagger = nil
 			self._is_in_intoxication_stagger_cooldown = true
-			self._intoxication_stagger_cooldown_time = t + math.random() * 1 / math.abs(intoxication_level)
+			self._intoxication_stagger_cooldown_time = t + math.random() * (1 / math.abs(intoxication_level))
 		end
 
-		if self._is_in_intoxication_stagger_cooldown and self._intoxication_stagger_cooldown_time < t then
+		if self._is_in_intoxication_stagger_cooldown and t > self._intoxication_stagger_cooldown_time then
 			self._is_in_intoxication_stagger_cooldown = nil
 			self._intoxication_stagger_cooldown_time = nil
 		end
@@ -357,6 +369,7 @@ PlayerCharacterStateWalking.update = function (self, unit, input, dt, context, t
 
 		local config = interactor_extension:interaction_config()
 		local params = self.temp_params
+
 		params.swap_to_3p = config.swap_to_3p
 		params.show_weapons = config.show_weapons
 		params.activate_block = config.activate_block
@@ -389,6 +402,7 @@ PlayerCharacterStateWalking.update = function (self, unit, input, dt, context, t
 
 		local config = interactor_extension:interaction_config()
 		local params = self.temp_params
+
 		params.swap_to_3p = config.swap_to_3p
 		params.show_weapons = config.show_weapons
 		params.activate_block = config.activate_block

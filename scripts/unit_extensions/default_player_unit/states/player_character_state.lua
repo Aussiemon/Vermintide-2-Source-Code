@@ -1,7 +1,10 @@
+﻿-- chunkname: @scripts/unit_extensions/default_player_unit/states/player_character_state.lua
+
 PlayerCharacterState = class(PlayerCharacterState)
 
 PlayerCharacterState.init = function (self, character_state_init_context, name)
 	local unit = character_state_init_context.unit
+
 	self.name = name
 	self.world = character_state_init_context.world
 	self.physics_world = World.get_data(self.world, "physics_world")

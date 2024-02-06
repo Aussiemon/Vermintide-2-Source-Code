@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/matchmaking/matchmaking_state_friend_client.lua
+
 MatchmakingStateFriendClient = class(MatchmakingStateFriendClient)
 MatchmakingStateFriendClient.NAME = "MatchmakingStateFriendClient"
 
@@ -36,6 +38,7 @@ MatchmakingStateFriendClient.update = function (self, dt, t)
 
 	local gamepad_active_last_frame = self._gamepad_active_last_frame
 	local gamepad_active = Managers.input:is_device_active("gamepad")
+
 	self._gamepad_active_last_frame = gamepad_active
 end
 
@@ -48,7 +51,7 @@ end
 MatchmakingStateFriendClient.rpc_matchmaking_broadcast_game_server_ip_address = function (self, channel_id, ip_address)
 	self._game_server_data = {
 		server_info = {
-			ip_port = ip_address
-		}
+			ip_port = ip_address,
+		},
 	}
 end

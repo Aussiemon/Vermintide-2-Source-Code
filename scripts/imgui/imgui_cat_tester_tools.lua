@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/imgui/imgui_cat_tester_tools.lua
+
 ImguiCatTesterTools = class(ImguiCatTesterTools)
 ImguiCatTesterTools.curated_pickup_list = ImguiCatTesterTools.curated_pickup_list or {
 	"all_ammo_small",
@@ -15,7 +17,7 @@ ImguiCatTesterTools.curated_pickup_list = ImguiCatTesterTools.curated_pickup_lis
 	"lamp_oil",
 	"speed_boost_potion",
 	"tome",
-	"torch"
+	"torch",
 }
 ImguiCatTesterTools.curated_breed_list = ImguiCatTesterTools.curated_breed_list or {
 	"beastmen_bestigor",
@@ -47,18 +49,19 @@ ImguiCatTesterTools.curated_breed_list = ImguiCatTesterTools.curated_breed_list 
 	"skaven_storm_vermin_with_shield",
 	"skaven_storm_vermin",
 	"skaven_stormfiend",
-	"skaven_warpfire_thrower"
+	"skaven_warpfire_thrower",
 }
+
 local localization_placeholders = {
-	beastmen_ungor = "Ungor",
 	_UNKNOWN = "Unknown",
 	beastmen_bestigor = "Bestigor",
-	critter_pig = "xdd",
-	skaven_clan_rat_with_shield = "Clan Rat w/ Shield",
+	beastmen_gor = "Gor",
+	beastmen_ungor = "Ungor",
 	beastmen_ungor_archer = "Ungor Archer",
 	chaos_fanatic = "Fanatic",
-	beastmen_gor = "Gor",
-	skaven_storm_vermin_with_shield = "Stormvermin w/ Shield"
+	critter_pig = "xdd",
+	skaven_clan_rat_with_shield = "Clan Rat w/ Shield",
+	skaven_storm_vermin_with_shield = "Stormvermin w/ Shield",
 }
 
 local function custom_localize(key)
@@ -108,6 +111,7 @@ ImguiCatTesterTools.draw = function (self)
 	Imgui.begin_child_window("Pickups", 0, 150, false)
 
 	self._pickup_index, self._pickup_results, self._pickup_filter_text = ImguiX.combo_search(self._pickup_index, self._pickup_results, self._pickup_filter_text, self._pickup_names)
+
 	local pickup_name = ImguiCatTesterTools.curated_pickup_list[self._pickup_index]
 
 	if Imgui.button("Spawn Pickup", 100, 20) and pickup_name then
@@ -118,6 +122,7 @@ ImguiCatTesterTools.draw = function (self)
 	Imgui.begin_child_window("Breeds", 0, 150, false)
 
 	self._breed_index, self._breed_results, self._breed_filter_text = ImguiX.combo_search(self._breed_index, self._breed_results, self._breed_filter_text, self._breed_names)
+
 	local breed_name = ImguiCatTesterTools.curated_breed_list[self._breed_index]
 
 	if Imgui.button("Spawn Breed", 100, 20) and breed_name then

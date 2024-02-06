@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/network_lookup/anims_lookup_table.lua
+
 NetworkLookup.anims = {
 	"special_action",
 	"attack_charge",
@@ -852,7 +854,7 @@ NetworkLookup.anims = {
 	"float_start_bwd",
 	"float_start_left",
 	"float_start_right",
-	"float_fwd"
+	"float_fwd",
 }
 NetworkLookup.interest_point_anims = {
 	"idle_passive_sleep",
@@ -880,7 +882,7 @@ NetworkLookup.interest_point_anims = {
 	"idle_passive_sit_loot_2",
 	"idle_passive_bang_door",
 	"idle_passive_bang_door_2",
-	"idle_passive_guard"
+	"idle_passive_guard",
 }
 
 DLCUtils.append("anim_lookup", NetworkLookup.anims)

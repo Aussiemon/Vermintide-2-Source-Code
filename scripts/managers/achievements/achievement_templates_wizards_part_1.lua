@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/achievements/achievement_templates_wizards_part_1.lua
+
 local add_event_challenge = AchievementTemplateHelper.add_event_challenge
 local add_levels_complete_challenge = AchievementTemplateHelper.add_levels_complete_challenge
 local add_meta_challenge = AchievementTemplateHelper.add_meta_challenge
@@ -6,44 +8,45 @@ local achievements = AchievementTemplates.achievements
 local PLACEHOLDER_ICON = AchievementTemplateHelper.PLACEHOLDER_ICON
 local add_console_achievements = AchievementTemplateHelper.add_console_achievements
 local XB1_ACHIEVEMENT_ID = {
-	trail_sleigher = 104,
-	trail_shatterer = 102,
-	trail_beacons_are_lit = 105,
 	onions_complete_trail_legend = 106,
-	trail_cog_strike = 103
+	trail_beacons_are_lit = 105,
+	trail_cog_strike = 103,
+	trail_shatterer = 102,
+	trail_sleigher = 104,
 }
 local PS4_ACHIEVEMENT_ID = {
-	trail_beacons_are_lit = "087"
+	trail_beacons_are_lit = "087",
 }
 local all_difficulties = {}
 local portals = {
-	LevelSettings.dlc_wizards_trail
+	LevelSettings.dlc_wizards_trail,
 }
 local difficulties = {
 	"normal",
 	"hard",
 	"harder",
 	"hardest",
-	"cataclysm"
+	"cataclysm",
 }
 
 for i = 1, #difficulties do
 	local difficulty_key = difficulties[i]
 	local difficulty_name = DifficultyMapping[difficulty_key]
 	local name = "onions_complete_trail_" .. difficulty_name
+
 	all_difficulties[i] = name
 
 	add_levels_complete_challenge(achievements, name, portals, DifficultySettings[difficulty_key].rank, "achievement_wizards_trail_complete_" .. difficulty_name, nil, XB1_ACHIEVEMENT_ID[name], PS4_ACHIEVEMENT_ID[name])
 end
 
 achievements.trail_cog_strike = {
-	name = "achv_onions_cog_strike_name",
+	desc = "achv_onions_cog_strike_desc",
 	display_completion_ui = true,
 	icon = "achievement_wizards_trail_push_enemies_with_cog",
-	desc = "achv_onions_cog_strike_desc",
+	name = "achv_onions_cog_strike_name",
 	events = {
 		"on_trail_cog_strike",
-		"on_trail_cog_reset_stat"
+		"on_trail_cog_reset_stat",
 	},
 	completed = function (statistics_db, stats_id, template_data)
 		return statistics_db:get_persistent_stat(stats_id, "trail_cog_strike") >= 1
@@ -73,39 +76,39 @@ achievements.trail_cog_strike = {
 			template_data.current_hits = 0
 			template_data.units = {}
 		end
-	end
+	end,
 }
 achievements.trail_shatterer = {
-	name = "achv_onions_icicles_name",
+	desc = "achv_onions_icicles_desc",
 	display_completion_ui = true,
 	icon = "achievement_wizards_trail_break_icicles",
-	desc = "achv_onions_icicles_desc",
+	name = "achv_onions_icicles_name",
 	completed = function (statistics_db, stats_id, template_data)
 		return statistics_db:get_persistent_stat(stats_id, "trail_shatterer") >= 1
-	end
+	end,
 }
 achievements.trail_sleigher = {
-	name = "achv_onions_sleigh_kills_name",
+	desc = "achv_onions_sleigh_kills_desc",
 	display_completion_ui = true,
 	icon = "achievement_wizards_trail_kill_enemies_with_sleigh",
-	desc = "achv_onions_sleigh_kills_desc",
+	name = "achv_onions_sleigh_kills_name",
 	progress = function (statistics_db, stats_id, template_data)
 		local kills = statistics_db:get_persistent_stat(stats_id, "trail_sleigher") or 0
 
 		return {
 			kills,
-			50
+			50,
 		}
 	end,
 	completed = function (statistics_db, stats_id, template_data)
 		return statistics_db:get_persistent_stat(stats_id, "trail_sleigher") >= 50
-	end
+	end,
 }
 achievements.trail_beacons_are_lit = {
-	name = "achv_onions_light_beacons_name",
+	desc = "achv_onions_light_beacons_desc",
 	display_completion_ui = true,
 	icon = "achievement_wizards_trail_light_bonfires",
-	desc = "achv_onions_light_beacons_desc",
+	name = "achv_onions_light_beacons_name",
 	progress = function (statistics_db, stats_id, template_data)
 		local watch_tower_beacon = statistics_db:get_persistent_stat(stats_id, "trail_bonfire_watch_tower") or 0
 		local river_path_beacon = statistics_db:get_persistent_stat(stats_id, "trail_bonfire_river_path") or 0
@@ -124,11 +127,12 @@ achievements.trail_beacons_are_lit = {
 		end
 
 		local number_of_beacons = 0
+
 		number_of_beacons = watch_tower_beacon + river_path_beacon + look_out_beacon
 
 		return {
 			number_of_beacons,
-			3
+			3,
 		}
 	end,
 	completed = function (statistics_db, stats_id, template_data)
@@ -139,7 +143,7 @@ achievements.trail_beacons_are_lit = {
 		if watch_tower_beacon >= 1 and river_path_beacon >= 1 and look_out_beacon >= 1 then
 			return true
 		end
-	end
+	end,
 }
 all_trail_challenges = table.clone(all_difficulties)
 

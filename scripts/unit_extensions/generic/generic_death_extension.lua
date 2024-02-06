@@ -1,10 +1,14 @@
+﻿-- chunkname: @scripts/unit_extensions/generic/generic_death_extension.lua
+
 require("scripts/unit_extensions/generic/death_reactions")
 
 GenericDeathExtension = class(GenericDeathExtension)
 
 GenericDeathExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	self.network_type = extension_init_data.is_husk
+
 	local is_husk = extension_init_data.is_husk or not Managers.player.is_server
+
 	self.is_husk = is_husk
 	self.network_type = is_husk and "husk" or "unit"
 	self.is_alive = true
@@ -40,9 +44,10 @@ GenericDeathExtension.nailing_hit = function (self, hit_ragdoll_actor, attack_di
 	fassert(Vector3.is_valid(attack_direction), "Attack direction is not valid.")
 
 	local data = self.wall_nail_data
+
 	data[hit_ragdoll_actor] = data[hit_ragdoll_actor] or {
 		attack_direction = Vector3Box(attack_direction),
-		hit_speed = hit_speed
+		hit_speed = hit_speed,
 	}
 end
 

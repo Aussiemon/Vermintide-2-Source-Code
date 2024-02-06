@@ -1,20 +1,19 @@
+﻿-- chunkname: @scripts/entity_system/systems/leaderboard/leaderboard_system.lua
+
 LeaderboardSystem = class(LeaderboardSystem, ExtensionSystemBase)
+
 local RPCS = {
-	"rpc_client_leaderboard_register_score"
+	"rpc_client_leaderboard_register_score",
 }
-
-if Leaderboard then
-	local EXTRA_DATA_TEMPLATE = {
-		Leaderboard.UINT(32),
-		Leaderboard.UINT(32),
-		Leaderboard.UINT(32),
-		Leaderboard.UINT(4),
-		Leaderboard.UINT(4),
-		Leaderboard.UINT(4),
-		Leaderboard.UINT(4)
-	}
-end
-
+local EXTRA_DATA_TEMPLATE = Leaderboard and {
+	Leaderboard.UINT(32),
+	Leaderboard.UINT(32),
+	Leaderboard.UINT(32),
+	Leaderboard.UINT(4),
+	Leaderboard.UINT(4),
+	Leaderboard.UINT(4),
+	Leaderboard.UINT(4),
+}
 local NO_PLAYER_ID = 0
 local MY_PROFILE_INDEX = 4
 local STEAM_AVAILABLE = rawget(_G, "Steam") and GameSettingsDevelopment.network_mode == "steam"
@@ -73,6 +72,7 @@ local function debug_steam_wave_print_entries(status, total_scores, scores)
 				local steamid_64 = Steam.id_32bit_to_id(steamid_32)
 				local user_name = Steam.user_name(steamid_64)
 				local hero_name = Localize(profile.display_name)
+
 				accompanying_players_string = accompanying_players_string .. user_name .. " " .. hero_name .. " : "
 			else
 				break
@@ -107,6 +107,7 @@ LeaderboardSystem.init = function (self, entity_system_creation_context, system_
 	LeaderboardSystem.super.init(self, entity_system_creation_context, system_name, {})
 
 	local network_event_delegate = entity_system_creation_context.network_event_delegate
+
 	self.network_event_delegate = network_event_delegate
 
 	network_event_delegate:register(self, unpack(RPCS))
@@ -185,18 +186,19 @@ LeaderboardSystem.debug_simulate_wave_score_enty = function (self, wave, time, n
 		"1",
 		"2",
 		"3",
-		"4"
+		"4",
 	}
 	local hero_ids = {
 		1,
 		2,
 		3,
-		4
+		4,
 	}
 
 	for i = 1, nr_players do
 		local network_id_64_bit = net_ids[i]
 		local network_id_32_bit = Steam.id_to_id_32bit(network_id_64_bit)
+
 		human_players[#human_players + 1] = network_id_32_bit
 		human_players[#human_players + 1] = hero_ids[i]
 	end
@@ -222,7 +224,7 @@ LeaderboardSystem.round_completed = function (self)
 	local nr_waves_completed = 1
 	local data = {
 		completed_time = end_t,
-		nr_waves_completed = nr_waves_completed
+		nr_waves_completed = nr_waves_completed,
 	}
 	local completion_time = math.floor(data.completed_time - self.round_start_time)
 
@@ -232,7 +234,7 @@ LeaderboardSystem.round_completed = function (self)
 		return
 	end
 
-	local score = nil
+	local score
 	local level_key_id = NetworkLookup.level_keys[level_key]
 	local difficulty_name = Managers.state.difficulty:get_difficulty()
 	local difficulty_id = NetworkLookup.difficulties[difficulty_name]
@@ -244,7 +246,7 @@ LeaderboardSystem.round_completed = function (self)
 		0,
 		0,
 		0,
-		0
+		0,
 	}
 	local player_index = 1
 	local player_manager = Managers.player
@@ -256,6 +258,7 @@ LeaderboardSystem.round_completed = function (self)
 		local network_id_64_bit = player:network_id()
 		local profile_index = profile_synchronizer:profile_by_peer(network_id_64_bit, player:local_player_id())
 		local network_id_32_bit = Steam.id_to_id_32bit(network_id_64_bit)
+
 		player_data[player_index] = network_id_32_bit
 		player_data[player_index + 1] = profile_index
 		player_index = player_index + 2
@@ -265,6 +268,7 @@ LeaderboardSystem.round_completed = function (self)
 		score = completion_time
 	elseif score_type == "wave_and_time" then
 		local nr_waves_completed = data.nr_waves_completed
+
 		score = calculate_wave_score(nr_waves_completed, completion_time)
 	end
 
@@ -293,7 +297,7 @@ LeaderboardSystem.register_score = function (self, level_key, difficulty_name, s
 		0,
 		0,
 		0,
-		0
+		0,
 	}
 	local curr_extra_index = 1
 	local human_players_size = #human_players
@@ -312,8 +316,9 @@ LeaderboardSystem.register_score = function (self, level_key, difficulty_name, s
 	end
 
 	local token = Leaderboard.register_score(board_name, score, SCORE_UPDATE_METHOD, EXTRA_DATA_TEMPLATE, extra_data)
+
 	self.transaction_tokens[token] = {
-		name = "register_token"
+		name = "register_token",
 	}
 
 	if script_data.debug_leaderboard then
@@ -330,9 +335,10 @@ LeaderboardSystem.get_ranking_range = function (self, level_key, difficulty_name
 
 	local board_name = get_board_name(level_key, difficulty_name)
 	local token = Leaderboard.ranking_range(board_name, start_range, num_ranks, EXTRA_DATA_TEMPLATE)
+
 	self.transaction_tokens[token] = {
 		name = "ranking_range_token",
-		callback = callback
+		callback = callback,
 	}
 end
 
@@ -343,9 +349,10 @@ LeaderboardSystem.get_ranking_around_self = function (self, level_key, difficult
 
 	local board_name = get_board_name(level_key, difficulty_name)
 	local token = Leaderboard.ranking_around_self(board_name, ranks_before, ranks_after, EXTRA_DATA_TEMPLATE)
+
 	self.transaction_tokens[token] = {
 		name = "ranking_around_self_token",
-		callback = callback
+		callback = callback,
 	}
 end
 
@@ -356,9 +363,10 @@ LeaderboardSystem.get_ranking_for_friends = function (self, level_key, difficult
 
 	local board_name = get_board_name(level_key, difficulty_name)
 	local token = Leaderboard.ranking_for_friends(board_name, EXTRA_DATA_TEMPLATE)
+
 	self.transaction_tokens[token] = {
 		name = "ranking_for_friends",
-		callback = callback
+		callback = callback,
 	}
 end
 
@@ -366,7 +374,7 @@ LeaderboardSystem.rpc_client_leaderboard_register_score = function (self, channe
 	local level_key = NetworkLookup.level_keys[level_key_id]
 	local difficulty_name = NetworkLookup.difficulties[difficulty_id]
 	local human_players = {
-		...
+		...,
 	}
 
 	self:register_score(level_key, difficulty_name, score, human_players)

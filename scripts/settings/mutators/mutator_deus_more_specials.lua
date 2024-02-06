@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/mutators/mutator_deus_more_specials.lua
+
 require("scripts/settings/dlcs/morris/deus_terror_event_tags")
 
 local max_specials_multiplier = 2
@@ -13,5 +15,5 @@ return {
 	end,
 	get_terror_event_tags = function (context, data, terror_event_tags)
 		terror_event_tags[#terror_event_tags + 1] = DeusTerrorEventTags.MORE_SPECIALS
-	end
+	end,
 }

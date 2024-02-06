@@ -1,33 +1,41 @@
+﻿-- chunkname: @scripts/unit_extensions/level/door_extension.lua
+
 DoorExtension = class(DoorExtension)
+
 local SIMPLE_ANIMATION_FPS = 30
 local NAVMESH_UPDATE_DELAY = 3
 local unit_alive = Unit.alive
 
 DoorExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	local world = extension_init_context.world
+
 	self.unit = unit
 	self.world = world
 	self.is_server = Managers.player.is_server
 	self.ignore_umbra = not World.umbra_available(world)
 	self.is_umbra_gate = Unit.get_data(unit, "umbra_gate")
+
 	local move_to_exit_when_opened = Unit.get_data(unit, "move_to_exit_when_opened")
+
 	self.move_to_exit_when_opened = move_to_exit_when_opened == nil or move_to_exit_when_opened
 	self.ai_attack_re_eval_time = Unit.get_data(unit, "ai_attack_re_eval_time")
+
 	local door_state = Unit.get_data(unit, "door_state")
+
 	self.current_state = door_state == 0 and "open_forward" or door_state == 1 and "closed" or door_state == 2 and "open_backward"
 	self.animation_flow_events = {
 		closed = {
 			open_backward = "lua_open_backward",
-			open_forward = "lua_open_forward"
+			open_forward = "lua_open_forward",
 		},
 		open_forward = {
 			closed = "lua_close_forward",
-			open_backward = "lua_swing_forward"
+			open_backward = "lua_swing_forward",
 		},
 		open_backward = {
 			closed = "lua_close_backward",
-			open_forward = "lua_swing_backward"
-		}
+			open_forward = "lua_swing_backward",
+		},
 	}
 	self.state_to_nav_obstacle_map = {}
 	self.animation_stop_time = 0
@@ -55,6 +63,7 @@ end
 DoorExtension.animation_played = function (self, frames, speed)
 	local animation_length = frames / SIMPLE_ANIMATION_FPS / speed
 	local t = Managers.time:time("game")
+
 	self.animation_stop_time = t + animation_length
 end
 
@@ -98,7 +107,7 @@ end
 DoorExtension.interacted_with = function (self, interacting_unit)
 	local unit = self.unit
 	local current_state = self.current_state
-	local new_state = nil
+	local new_state
 
 	if current_state == "open_backward" or current_state == "open_forward" then
 		new_state = "closed"
@@ -112,6 +121,7 @@ DoorExtension.interacted_with = function (self, interacting_unit)
 		local door_direction = Vector3.normalize(Vector3.flat(door_forward))
 		local dot = Vector3.dot(direction, door_direction)
 		local infront = dot >= 0
+
 		new_state = infront and "open_backward" or "open_forward"
 	end
 
@@ -177,6 +187,7 @@ DoorExtension.update = function (self, unit, input, dt, context, t)
 		self:update_nav_obstacles()
 
 		self.animation_stop_time = nil
+
 		local closed = self.current_state == "closed"
 
 		if closed and not self.ignore_umbra and self.is_umbra_gate then

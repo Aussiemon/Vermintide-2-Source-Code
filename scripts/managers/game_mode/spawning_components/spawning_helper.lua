@@ -1,8 +1,11 @@
+﻿-- chunkname: @scripts/managers/game_mode/spawning_components/spawning_helper.lua
+
 SpawningHelper = class(SpawningHelper)
+
 local CONSUMABLE_SLOTS = {
 	"slot_healthkit",
 	"slot_potion",
-	"slot_grenade"
+	"slot_grenade",
 }
 
 SpawningHelper.netpack_consumables = function (consumables)
@@ -36,6 +39,7 @@ SpawningHelper.netpack_additional_items = function (additional_items)
 				local item_name = item.key
 				local slot_id = NetworkLookup.equipment_slots[slot_name]
 				local item_id = NetworkLookup.item_names[item_name]
+
 				return_table[#return_table + 1] = slot_id
 				return_table[#return_table + 1] = item_id
 			end
@@ -56,11 +60,12 @@ SpawningHelper.unnetpack_additional_items = function (encoded_additional_items)
 
 		if not decoded_table[slot_name] then
 			decoded_table[slot_name] = {
-				items = {}
+				items = {},
 			}
 		end
 
 		local items = decoded_table[slot_name].items
+
 		items[#items + 1] = ItemMasterList[item_name]
 	end
 
@@ -86,6 +91,7 @@ SpawningHelper.default_spawn_items = function (consumables, difficulty_settings,
 	if not game_mode_settings.disable_difficulty_spawning_items then
 		for i = 1, #CONSUMABLE_SLOTS do
 			local slot_name = CONSUMABLE_SLOTS[i]
+
 			consumables[slot_name] = difficulty_settings[slot_name]
 		end
 	end
@@ -116,9 +122,11 @@ SpawningHelper.fill_ammo_percentage = function (ammo, inventory_extension, playe
 					ammo_percentage = inventory_extension:ammo_percentage() or ammo_percentage
 				elseif ammo_unit_hand == "right" and Unit.alive(slot_data.right_unit_1p) then
 					local ammo_extension = ScriptUnit.extension(slot_data.right_unit_1p, "ammo_system")
+
 					ammo_percentage = ammo_extension:total_ammo_fraction()
 				elseif ammo_unit_hand == "left" and Unit.alive(slot_data.left_unit_1p) then
 					local ammo_extension = ScriptUnit.extension(slot_data.left_unit_1p, "ammo_system")
+
 					ammo_percentage = ammo_extension:total_ammo_fraction()
 				end
 			end

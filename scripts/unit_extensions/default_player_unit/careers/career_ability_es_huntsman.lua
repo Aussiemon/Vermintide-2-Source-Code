@@ -1,10 +1,14 @@
+﻿-- chunkname: @scripts/unit_extensions/default_player_unit/careers/career_ability_es_huntsman.lua
+
 CareerAbilityESHuntsman = class(CareerAbilityESHuntsman)
 
 CareerAbilityESHuntsman.init = function (self, extension_init_context, unit, extension_init_data)
 	self.owner_unit = unit
 	self.world = extension_init_context.world
 	self.wwise_world = Managers.world:wwise_world(self.world)
+
 	local player = extension_init_data.player
+
 	self.player = player
 	self.is_server = player.is_server
 	self.local_player = player.local_player
@@ -79,7 +83,7 @@ CareerAbilityESHuntsman._run_ability = function (self, skip_cooldown)
 	local talent_extension = ScriptUnit.extension(owner_unit, "talent_system")
 	local server_buff_names = {
 		"markus_huntsman_activated_ability",
-		"markus_huntsman_activated_ability_headshot_multiplier"
+		"markus_huntsman_activated_ability_headshot_multiplier",
 	}
 	local local_buff_names = {}
 
@@ -91,7 +95,7 @@ CareerAbilityESHuntsman._run_ability = function (self, skip_cooldown)
 			"markus_huntsman_activated_ability_decrease_crouch_move_speed",
 			"markus_huntsman_activated_ability_decrease_walk_move_speed",
 			"markus_huntsman_activated_ability_decrease_dodge_speed",
-			"markus_huntsman_activated_ability_decrease_dodge_distance"
+			"markus_huntsman_activated_ability_decrease_dodge_distance",
 		}
 	elseif talent_extension:has_talent("markus_huntsman_activated_ability_duration") then
 		local_buff_names = {
@@ -102,11 +106,11 @@ CareerAbilityESHuntsman._run_ability = function (self, skip_cooldown)
 			"markus_huntsman_activated_ability_decrease_walk_move_speed_duration",
 			"markus_huntsman_activated_ability_decrease_dodge_speed_duration",
 			"markus_huntsman_activated_ability_decrease_dodge_distance_duration",
-			"markus_huntsman_end_activated_on_hit_duration"
+			"markus_huntsman_end_activated_on_hit_duration",
 		}
 		server_buff_names = {
 			"markus_huntsman_activated_ability_duration",
-			"markus_huntsman_activated_ability_headshot_multiplier_duration"
+			"markus_huntsman_activated_ability_headshot_multiplier_duration",
 		}
 	else
 		local_buff_names = {
@@ -117,11 +121,11 @@ CareerAbilityESHuntsman._run_ability = function (self, skip_cooldown)
 			"markus_huntsman_activated_ability_decrease_walk_move_speed",
 			"markus_huntsman_activated_ability_decrease_dodge_speed",
 			"markus_huntsman_activated_ability_decrease_dodge_distance",
-			"markus_huntsman_end_activated_on_hit"
+			"markus_huntsman_end_activated_on_hit",
 		}
 		server_buff_names = {
 			"markus_huntsman_activated_ability",
-			"markus_huntsman_activated_ability_headshot_multiplier"
+			"markus_huntsman_activated_ability_headshot_multiplier",
 		}
 	end
 
@@ -132,7 +136,7 @@ CareerAbilityESHuntsman._run_ability = function (self, skip_cooldown)
 
 		if is_server then
 			buff_extension:add_buff(buff_name, {
-				attacker_unit = owner_unit
+				attacker_unit = owner_unit,
 			})
 			network_transmit:send_rpc_clients("rpc_add_buff", unit_object_id, buff_template_name_id, unit_object_id, 0, false)
 		else
@@ -142,7 +146,7 @@ CareerAbilityESHuntsman._run_ability = function (self, skip_cooldown)
 
 	for _, buff_name in ipairs(local_buff_names) do
 		buff_extension:add_buff(buff_name, {
-			attacker_unit = owner_unit
+			attacker_unit = owner_unit,
 		})
 	end
 
@@ -188,7 +192,7 @@ CareerAbilityESHuntsman._run_ability = function (self, skip_cooldown)
 		elseif reserve_ammo == 0 then
 			instant_ammo = clip_size - ammo_count + clip_size
 		elseif reserve_ammo < clip_size then
-			instant_ammo = clip_size - ammo_count + clip_size - reserve_ammo
+			instant_ammo = clip_size - ammo_count + (clip_size - reserve_ammo)
 		else
 			instant_ammo = clip_size - ammo_count
 		end

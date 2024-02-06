@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/weapons/projectiles/projectile_sticky_locomotion.lua
+
 require("scripts/helpers/network_utils")
 
 ProjectileStickyLocomotion = class(ProjectileStickyLocomotion)
@@ -21,6 +23,7 @@ ProjectileStickyLocomotion.init = function (self, extension_init_context, unit, 
 	self:_init_from_seed(extension_init_data.seed)
 
 	local initial_position = extension_init_data.initial_position
+
 	self._last_position = Vector3Box(POSITION_LOOKUP[unit])
 	self.position_boxed = Vector3Box(POSITION_LOOKUP[unit])
 	self._rotation = QuaternionBox(Unit.world_rotation(unit, 0))
@@ -56,9 +59,12 @@ end
 
 ProjectileStickyLocomotion.update = function (self, unit, input, dt, context, t)
 	self.moved = false
+
 	local time_lived = t - self.spawn_time
+
 	self.time_lived = time_lived
-	local new_position, new_rotation = nil
+
+	local new_position, new_rotation
 
 	if self.stopped and self.stop_time then
 		local time_stopped = t - self.stop_time
@@ -76,6 +82,7 @@ ProjectileStickyLocomotion.update = function (self, unit, input, dt, context, t)
 				local c0 = target_pos + forward
 				local c1 = p1 + forward
 				local lerp_t = time_stopped / stick_animation_time
+
 				new_position = Bezier.calc_point(lerp_t, p0, c0, c1, p1)
 			else
 				new_position = target_pos + Quaternion.rotate(Quaternion.axis_angle(Vector3.up(), time_lived), forward)
@@ -85,10 +92,11 @@ ProjectileStickyLocomotion.update = function (self, unit, input, dt, context, t)
 			local forward = self._impact_offset:unbox()
 			local right = Vector3.cross(forward, Vector3.up())
 			local p0 = self.initial_position_boxed:unbox()
-			local p1 = p0 + Vector3.up() * (0.1 + math.sin(time_lived) * 0.1) + forward * math.sin(time_lived * 1.4) * 0.1 + right * math.sin(time_lived * 1.8) * 0.1
+			local p1 = p0 + Vector3.up() * (0.1 + math.sin(time_lived) * 0.1) + forward * (math.sin(time_lived * 1.4) * 0.1) + right * (math.sin(time_lived * 1.8) * 0.1)
 
 			if time_stopped < stick_animation_time then
 				local lerp_t = math.easeOutCubic(time_stopped / stick_animation_time)
+
 				new_position = Vector3.lerp(p0, p1, lerp_t)
 				new_rotation = Quaternion.lerp(Quaternion.look(self.target_vector_boxed:unbox()), Quaternion.look(forward), lerp_t)
 			else
@@ -107,6 +115,7 @@ ProjectileStickyLocomotion.update = function (self, unit, input, dt, context, t)
 		local horizontal_wobble_amount = amount_mult * self._wobble_horizontal_mult
 		local wobble_speed = self._wobble_speed * self._spin_dir
 		local wobble_offset = Vector3(math.sin(time_lived * wobble_speed - math.rad(115)) * horizontal_wobble_amount, 0, math.cos(time_lived * wobble_speed - math.rad(115)) * vertical_wobble_amount)
+
 		wobble_offset = Quaternion.rotate(Quaternion.look(target_vector), wobble_offset)
 		new_position = self.initial_position_boxed:unbox() + move_delta + wobble_offset
 	end
@@ -208,11 +217,13 @@ ProjectileStickyLocomotion.stick_to_unit = function (self, unit)
 	self.initial_position_boxed:store(self:current_position())
 
 	self.target_unit = unit
+
 	local ai_extension = ScriptUnit.has_extension(unit, "ai_system")
 
 	if ai_extension then
 		local breed = ai_extension._breed
 		local breed_radius = breed.radius or 1
+
 		self._hit_unit_radius = breed_radius
 		self._hit_unit_height = breed.aoe_height and breed.aoe_height / 2 or 1
 		self._impact_offset = Vector3Box(Vector3.normalize(Vector3.flat(self.target_vector_boxed:unbox()) * breed_radius))
@@ -226,6 +237,7 @@ end
 ProjectileStickyLocomotion.stick_to_position = function (self, position, hit_normal)
 	self.stopped = true
 	self.stop_time = Managers.time:time("game")
+
 	local new_initial_pos = position
 
 	if hit_normal then
@@ -258,6 +270,7 @@ end
 
 ProjectileStickyLocomotion.hot_join_sync_projectile_sticky = function (self, time_lived, time_stopped)
 	local t = Managers.time:time("game")
+
 	self.spawn_time = t - time_lived
 	self.stop_time = t - time_stopped
 	self.time_lived = time_lived

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/game_mode/adventure_profile_rules.lua
+
 AdventureProfileRules = class(AdventureProfileRules)
 
 AdventureProfileRules.init = function (self, profile_synchronizer, network_server)
@@ -23,7 +25,7 @@ end
 
 AdventureProfileRules.handle_profile_delegation_for_joining_player = function (self, peer_id, local_player_id)
 	local profile_synchronizer = self._profile_synchronizer
-	local new_profile_index, new_career_index = nil
+	local new_profile_index, new_career_index
 	local current_profile_index, current_career_index = profile_synchronizer:profile_by_peer(peer_id, local_player_id)
 
 	if not current_profile_index then
@@ -31,8 +33,7 @@ AdventureProfileRules.handle_profile_delegation_for_joining_player = function (s
 		local current_reserver = profile_synchronizer:get_profile_index_reservation(wanted_profile_index)
 
 		if not current_reserver or current_reserver == peer_id then
-			new_career_index = wanted_career_index
-			new_profile_index = wanted_profile_index
+			new_profile_index, new_career_index = wanted_profile_index, wanted_career_index
 		else
 			new_profile_index, new_career_index = profile_synchronizer:get_first_free_profile()
 		end
@@ -65,6 +66,7 @@ AdventureProfileRules.handle_profile_delegation_for_joining_player = function (s
 			profile_synchronizer:assign_full_profile(peer_id, local_player_id, new_profile_index, new_career_index, is_bot)
 		else
 			local status = Managers.party:get_player_status(peer_id, local_player_id)
+
 			status.profile_index = current_profile_index
 			status.career_index = current_career_index
 		end

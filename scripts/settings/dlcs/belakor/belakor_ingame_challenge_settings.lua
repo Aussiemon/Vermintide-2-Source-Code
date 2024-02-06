@@ -1,21 +1,24 @@
+﻿-- chunkname: @scripts/settings/dlcs/belakor/belakor_ingame_challenge_settings.lua
+
 local dlc_settings = DLCSettings.belakor
 local REAL_PLAYER_LOCAL_ID = 1
+
 dlc_settings.ingame_challenge_templates = {}
 dlc_settings.challenge_categories = {
-	"deus_mutator"
+	"deus_mutator",
 }
 dlc_settings.ingame_challenge_rewards = {
 	deus_power_up_quest_test_reward_01 = {
-		reward_id = "deus_power_up_quest_test_reward_01",
-		sound = "Play_hud_grail_knight_stamina",
-		consume_value = 1,
-		type = "deus_power_up",
 		consume_type = "round",
-		target = "owner",
+		consume_value = 1,
 		granted_power_up_name = "deus_power_up_quest_granted_test_01",
 		granted_power_up_rarity = "exotic",
-		icon = "icon_objective_cdr"
-	}
+		icon = "icon_objective_cdr",
+		reward_id = "deus_power_up_quest_test_reward_01",
+		sound = "Play_hud_grail_knight_stamina",
+		target = "owner",
+		type = "deus_power_up",
+	},
 }
 dlc_settings.ingame_challenge_reward_types = {
 	deus_power_up = function (reward_data, target_units, reward_instigator)
@@ -42,13 +45,13 @@ dlc_settings.ingame_challenge_reward_types = {
 			DeusPowerUpUtils.activate_deus_power_up(new_power_up, buff_system, talent_interface, deus_backend, run_controller, player_unit, profile_index, career_index)
 		end
 
-		local return_data = nil
+		local return_data
 
 		return return_data
-	end
+	end,
 }
 dlc_settings.ingame_challenge_rewards_description = {
-	deus_power_up_quest_test_reward_01 = "deus_power_up_quest_test_reward_01"
+	deus_power_up_quest_test_reward_01 = "deus_power_up_quest_test_reward_01",
 }
 dlc_settings.ingame_challenge_validation_functions = {
 	deus_power_up = function (data)
@@ -58,5 +61,5 @@ dlc_settings.ingame_challenge_validation_functions = {
 		fassert(not DeusPowerUps[data.granted_power_up_rarity][data.granted_power_up_name].talent, "reward power_up %s not valid: can't grant talent power_ups at the moment", data.reward_id, data.quest_power_up_rarity)
 
 		return true
-	end
+	end,
 }

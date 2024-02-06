@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/mutators/mutator_deus_less_hordes.lua
+
 local horde_size_multiplier = 1
 local horde_frequency_modifier = -0.4
 local horde_startup_time_modifier = -0.4
@@ -12,5 +14,5 @@ return {
 	update_conflict_settings = function (context, data)
 		MutatorUtils.update_conflict_settings_horde_size_modifier(horde_size_multiplier)
 		MutatorUtils.update_conflict_settings_horde_frequency(horde_frequency_modifier, horde_startup_time_modifier, relax_duration_modifier, max_delay_modifier)
-	end
+	end,
 }

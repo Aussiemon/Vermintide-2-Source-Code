@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bot/bt_bot_interact_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTBotInteractAction = class(BTBotInteractAction, BTNode)
@@ -7,19 +9,23 @@ BTBotInteractAction.init = function (self, ...)
 end
 
 BTBotInteractAction.name = "BTBotInteractAction"
+
 local unit_alive = Unit.alive
 
 BTBotInteractAction.enter = function (self, unit, blackboard, t)
 	local interaction_unit = blackboard.interaction_unit
+
 	blackboard.current_interaction_unit = interaction_unit
+
 	local interaction_ext = blackboard.interaction_extension
 
 	interaction_ext:set_exclusive_interaction_unit(interaction_unit)
 
 	blackboard.interact = {
 		tried = false,
-		wait_on_previous_interaction = interaction_ext:is_interacting()
+		wait_on_previous_interaction = interaction_ext:is_interacting(),
 	}
+
 	local input_ext = blackboard.input_extension
 	local soft_aiming = true
 
@@ -28,6 +34,7 @@ end
 
 BTBotInteractAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	blackboard.interact = false
+
 	local interaction_ext = blackboard.interaction_extension
 
 	interaction_ext:set_exclusive_interaction_unit(nil)
@@ -76,7 +83,7 @@ BTBotInteractAction.run = function (self, unit, blackboard, t, dt)
 		end
 	end
 
-	local aim_position = nil
+	local aim_position
 
 	if action_data and Unit.has_node(interaction_unit, action_data.aim_node) then
 		aim_position = Unit.world_position(interaction_unit, Unit.node(interaction_unit, action_data.aim_node))

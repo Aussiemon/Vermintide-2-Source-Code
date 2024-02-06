@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bot/bt_bot_heal_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTBotHealAction = class(BTBotHealAction, BTNode)
@@ -11,6 +13,7 @@ BTBotHealAction.name = "BTBotHealAction"
 BTBotHealAction.enter = function (self, unit, blackboard, t)
 	local health_extension = blackboard.health_extension
 	local health_percent = health_extension:current_health_percent()
+
 	blackboard.starting_health_percent = health_percent
 	blackboard.is_healing_self = true
 end
@@ -26,7 +29,7 @@ BTBotHealAction.run = function (self, unit, blackboard, t, dt)
 		local health_extension = blackboard.health_extension
 		local health_percent = health_extension:current_health_percent()
 
-		if blackboard.starting_health_percent < health_percent then
+		if health_percent > blackboard.starting_health_percent then
 			return "done"
 		end
 	end

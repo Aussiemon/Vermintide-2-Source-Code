@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_skulk_approach_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTSkulkApproachAction = class(BTSkulkApproachAction, BTNode)
@@ -13,6 +15,7 @@ BTSkulkApproachAction.enter = function (self, unit, blackboard, t)
 	local skulk_start_radius = target_dist and math.min(action.skulk_init_distance, target_dist) or action.skulk_init_distance
 	local skulk_data = blackboard.skulk_data or {}
 	local direction = skulk_data.direction or 1 - math.random(0, 1) * 2
+
 	skulk_data.direction = direction
 	skulk_data.radius = skulk_data.radius or skulk_start_radius
 	skulk_data.skulk_around_time = skulk_data.skulk_around_time or 0
@@ -48,8 +51,10 @@ end
 
 BTSkulkApproachAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	local skulk_data = blackboard.skulk_data
+
 	skulk_data.animation_state = nil
 	blackboard.action = nil
+
 	local default_move_speed = AiUtils.get_default_breed_move_speed(unit, blackboard)
 	local navigation_extension = blackboard.navigation_extension
 
@@ -122,16 +127,18 @@ BTSkulkApproachAction.update_skulk_data = function (self, unit, blackboard, dt)
 	local action = blackboard.action
 	local start_radius = action.skulk_init_distance
 	local skulk_data = blackboard.skulk_data
-	local d_radius = nil
+	local d_radius
 
 	if blackboard.move_pos then
 		local decrease_radius_speed = action.decrease_radius_speed
+
 		d_radius = dt * decrease_radius_speed
 	else
 		d_radius = RADIUS_DECRESE_PER_TEST
 	end
 
 	local radius = skulk_data.radius - d_radius
+
 	radius = math.clamp(radius, 0, start_radius)
 	skulk_data.radius = radius
 	skulk_data.skulk_around_time = skulk_data.skulk_around_time + dt

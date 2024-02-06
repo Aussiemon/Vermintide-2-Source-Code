@@ -1,17 +1,19 @@
+﻿-- chunkname: @scripts/settings/inventory_settings_morris.lua
+
 local item_types = {
 	"dr_deus_01",
 	"es_deus_01",
 	"bw_deus_01",
 	"wh_deus_01",
-	"we_deus_01"
+	"we_deus_01",
 }
 local slots = {
 	slot_level_event = {
 		drop_reasons = {
 			deus_cursed_chest = true,
-			deus_weapon_chest = true
-		}
-	}
+			deus_weapon_chest = true,
+		},
+	},
 }
 
 for _, slot_settings in pairs(InventorySettings.slots) do

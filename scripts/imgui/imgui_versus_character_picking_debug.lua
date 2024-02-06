@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/imgui/imgui_versus_character_picking_debug.lua
+
 local SHOULD_RELOAD = true
+
 ImguiVersusCharacterPickingDebug = class(ImguiVersusCharacterPickingDebug)
 
 ImguiVersusCharacterPickingDebug.init = function (self)
@@ -20,6 +23,7 @@ ImguiVersusCharacterPickingDebug._initialize = function (self)
 	end
 
 	local settings = GameModeSettings.versus
+
 	self._timer = 0
 	self._timer_paused = false
 	self._startup_time = settings.character_picking_settings.startup_time
@@ -240,11 +244,12 @@ ImguiVersusCharacterPickingDebug._draw_player_data = function (self)
 
 					local profile_index = status.selected_profile_index
 					local career_index = status.selected_career_index
-					local profile_string, career_string = nil
+					local profile_string, career_string
 
 					if profile_index and profile_index > 0 then
 						local profile = SPProfiles[profile_index]
 						local career = profile.careers[career_index]
+
 						profile_string = string.format("%s (%d)", profile.display_name, profile_index)
 						career_string = string.format("%s (%d)", career.display_name, career_index)
 					else

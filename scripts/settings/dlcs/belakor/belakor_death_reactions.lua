@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/dlcs/belakor/belakor_death_reactions.lua
+
 local death_reactions = {
 	tiny_explosive_barrel = {
 		unit = {
@@ -10,7 +12,7 @@ local death_reactions = {
 				local attacker_unit = killing_blow[DamageDataIndex.ATTACKER]
 				local data = {
 					explode_time = explode_time,
-					killer_unit = attacker_unit
+					killer_unit = attacker_unit,
 				}
 				local health_extension = ScriptUnit.has_extension(unit, "health_system")
 				local damage_data = health_extension.last_damage_data
@@ -21,6 +23,7 @@ local death_reactions = {
 				Managers.state.achievement:trigger_event("explosive_barrel_destroyed", stats_id, unit, killing_blow)
 
 				local death_extension = ScriptUnit.extension(unit, "death_system")
+
 				death_extension.death_has_started = true
 
 				return data, DeathReactions.IS_NOT_DONE
@@ -77,7 +80,7 @@ local death_reactions = {
 
 					return DeathReactions.IS_DONE
 				end
-			end
+			end,
 		},
 		husk = {
 			pre_start = function (unit, context, t, killing_blow)
@@ -88,7 +91,7 @@ local death_reactions = {
 				local explode_time = network_time
 				local data = {
 					explode_time = explode_time,
-					killer_unit = killing_blow[DamageDataIndex.ATTACKER]
+					killer_unit = killing_blow[DamageDataIndex.ATTACKER],
 				}
 				local health_extension = ScriptUnit.has_extension(unit, "health_system")
 				local damage_data = health_extension.last_damage_data
@@ -99,6 +102,7 @@ local death_reactions = {
 				Managers.state.achievement:trigger_event("explosive_barrel_destroyed", stats_id, unit, killing_blow)
 
 				local death_extension = ScriptUnit.extension(unit, "death_system")
+
 				death_extension.death_has_started = true
 
 				return data, DeathReactions.IS_NOT_DONE
@@ -133,9 +137,9 @@ local death_reactions = {
 				elseif network_time >= data.explode_time + 0.5 then
 					return DeathReactions.IS_DONE
 				end
-			end
-		}
-	}
+			end,
+		},
+	},
 }
 
 return death_reactions

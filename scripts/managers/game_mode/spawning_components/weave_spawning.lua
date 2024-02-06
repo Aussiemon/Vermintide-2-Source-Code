@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/game_mode/spawning_components/weave_spawning.lua
+
 require("scripts/managers/game_mode/spawning_components/adventure_spawning")
 
 WeaveSpawning = class(WeaveSpawning, AdventureSpawning)
@@ -25,7 +27,9 @@ end
 WeaveSpawning._find_spawn_point = function (self, status)
 	local data = status.game_mode_data
 	local position = self:_get_spawn_position_close_to_server()
+
 	position = position or data.position:unbox()
+
 	local rotation = data.rotation:unbox()
 
 	return position, rotation

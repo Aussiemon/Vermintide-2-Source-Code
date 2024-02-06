@@ -1,17 +1,22 @@
+﻿-- chunkname: @scripts/ui/views/transition_video.lua
+
 local definitions = local_require("scripts/ui/views/transition_video_definitions")
 local scenegraph_definition = definitions.scenegraph_definition
 local background_widget_definitions = definitions.background_widget_definitions
 local widget_definitions = definitions.widget_definitions
 local demo_video = definitions.demo_video
 local VIDEO_REFERENCE_NAME = "TransitionVideo"
+
 TransitionVideo = class(TransitionVideo)
 
 TransitionVideo.init = function (self, world, video_data_table)
 	self._world = world
+
 	local platform = PLATFORM
+
 	self._platform = platform
 	self._render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 	self._video_data_table = video_data_table or demo_video
 	self._ui_renderer = UIRenderer.create(world, "material", self._video_data_table.video_name)

@@ -1,9 +1,13 @@
+﻿-- chunkname: @scripts/network/game_server/game_server_finder.lua
+
 GameServerFinder = class(GameServerFinder)
+
 local SECONDS_BETWEEN_REFRESHES = 10
 
 GameServerFinder.init = function (self, network_options, max_num_servers)
 	local config_file_name = network_options.config_file_name
 	local project_hash = network_options.project_hash
+
 	self._network_hash = GameServerAux.create_network_hash(config_file_name, project_hash)
 	self._cached_servers = {}
 	self._pending_refresh_request = false

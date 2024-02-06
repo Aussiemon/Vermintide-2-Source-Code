@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/achievements/achievement_templates_wizards_part_2.lua
+
 local add_event_challenge = AchievementTemplateHelper.add_event_challenge
 local add_levels_complete_challenge = AchievementTemplateHelper.add_levels_complete_challenge
 local add_meta_challenge = AchievementTemplateHelper.add_meta_challenge
@@ -5,51 +7,52 @@ local PLACEHOLDER_ICON = AchievementTemplateHelper.PLACEHOLDER_ICON
 local achievements = AchievementTemplates.achievements
 local add_console_achievements = AchievementTemplateHelper.add_console_achievements
 local XB1_ACHIEVEMENT_ID = {
+	tower_created_all_potions = 109,
 	tower_hardest = 111,
-	tower_wall_illusions = 108,
 	tower_note_puzzle = 110,
 	tower_skulls = 107,
-	tower_created_all_potions = 109
+	tower_wall_illusions = 108,
 }
 local PS4_ACHIEVEMENT_ID = {
 	tower_skulls = "088",
-	tower_wall_illusions = "089"
+	tower_wall_illusions = "089",
 }
 local all_difficulties = {}
 local bastion = {
-	LevelSettings.dlc_wizards_tower
+	LevelSettings.dlc_wizards_tower,
 }
 local difficulties = {
 	"normal",
 	"hard",
 	"harder",
 	"hardest",
-	"cataclysm"
+	"cataclysm",
 }
 local player_facing_diff_names = {
-	hardest = "legend",
+	cataclysm = "cataclysm",
 	hard = "veteran",
 	harder = "champion",
-	cataclysm = "cataclysm",
-	normal = "recruit"
+	hardest = "legend",
+	normal = "recruit",
 }
 
 for i = 1, #difficulties do
 	local difficulty_name = Difficulties[i]
 	local name = "tower_" .. difficulty_name
 	local icon = "achievement_wizards_tower_" .. player_facing_diff_names[difficulty_name]
+
 	all_difficulties[i] = name
 
 	add_levels_complete_challenge(achievements, name, bastion, DifficultySettings[difficulty_name].rank, icon, nil, XB1_ACHIEVEMENT_ID[name], PS4_ACHIEVEMENT_ID[name])
 end
 
 achievements.tower_skulls = {
-	name = "achv_tower_skulls_name",
+	desc = "achv_tower_skulls_desc",
 	display_completion_ui = true,
 	icon = "achievement_wizards_tower_skulls",
-	desc = "achv_tower_skulls_desc",
+	name = "achv_tower_skulls_name",
 	events = {
-		"on_tower_skull_found"
+		"on_tower_skull_found",
 	},
 	completed = function (statistics_db, stats_id, template_data)
 		return statistics_db:get_persistent_stat(stats_id, "tower_skulls") >= 1
@@ -64,15 +67,15 @@ achievements.tower_skulls = {
 		if template_data.num_skulls == 10 then
 			statistics_db:increment_stat(stats_id, "tower_skulls")
 		end
-	end
+	end,
 }
 achievements.tower_wall_illusions = {
-	name = "achv_tower_wall_illusions_name",
+	desc = "achv_tower_wall_illusions_desc",
 	display_completion_ui = true,
 	icon = "achievement_wizards_tower_wall_illusions",
-	desc = "achv_tower_wall_illusions_desc",
+	name = "achv_tower_wall_illusions_name",
 	events = {
-		"tower_wall_illusion_found"
+		"tower_wall_illusion_found",
 	},
 	completed = function (statistics_db, stats_id, template_data)
 		return statistics_db:get_persistent_stat(stats_id, "tower_wall_illusions") >= 1
@@ -97,15 +100,15 @@ achievements.tower_wall_illusions = {
 		end
 
 		print("wall illusion found " .. index)
-	end
+	end,
 }
 achievements.tower_invisible_bridge = {
-	name = "achv_tower_invisible_bridge_name",
+	desc = "achv_tower_invisible_bridge_desc",
 	display_completion_ui = true,
 	icon = "achievement_wizards_tower_invisible_bridge",
-	desc = "achv_tower_invisible_bridge_desc",
+	name = "achv_tower_invisible_bridge_name",
 	events = {
-		"update_tower_invisible_bridge_challenge"
+		"update_tower_invisible_bridge_challenge",
 	},
 	completed = function (statistics_db, stats_id, template_data)
 		return statistics_db:get_persistent_stat(stats_id, "tower_invisible_bridge") >= 1
@@ -122,45 +125,45 @@ achievements.tower_invisible_bridge = {
 		end
 
 		template_data.done = true
-	end
+	end,
 }
 achievements.tower_enable_guardian_of_lustria = {
-	name = "achv_tower_guardian_of_lustria_name",
+	desc = "achv_tower_guardian_of_lustria_desc",
 	display_completion_ui = true,
 	icon = "achievement_wizards_tower_guardian_of_lustria",
-	desc = "achv_tower_guardian_of_lustria_desc",
+	name = "achv_tower_guardian_of_lustria_name",
 	events = {
-		"tower_enable_guardian_of_lustria"
+		"tower_enable_guardian_of_lustria",
 	},
 	completed = function (statistics_db, stats_id, template_data)
 		return statistics_db:get_persistent_stat(stats_id, "tower_enable_guardian_of_lustria") >= 1
 	end,
 	on_event = function (statistics_db, stats_id, template_data, event_name, event_data)
 		statistics_db:increment_stat(stats_id, "tower_enable_guardian_of_lustria")
-	end
+	end,
 }
 achievements.tower_note_puzzle = {
-	name = "achv_tower_note_puzzle_name",
+	desc = "achv_tower_note_puzzle_desc",
 	display_completion_ui = true,
 	icon = "achievement_wizards_tower_note_puzzle",
-	desc = "achv_tower_note_puzzle_desc",
+	name = "achv_tower_note_puzzle_name",
 	events = {
-		"tower_note_puzzle"
+		"tower_note_puzzle",
 	},
 	completed = function (statistics_db, stats_id, template_data)
 		return statistics_db:get_persistent_stat(stats_id, "tower_note_puzzle") >= 1
 	end,
 	on_event = function (statistics_db, stats_id, template_data, event_name, event_data)
 		statistics_db:increment_stat(stats_id, "tower_note_puzzle")
-	end
+	end,
 }
 achievements.tower_created_all_potions = {
-	name = "achv_tower_created_all_potions_name",
+	desc = "achv_tower_created_all_potions_desc",
 	display_completion_ui = true,
 	icon = "achievement_wizards_tower_created_all_potions",
-	desc = "achv_tower_created_all_potions_desc",
+	name = "achv_tower_created_all_potions_name",
 	events = {
-		"tower_potion_created"
+		"tower_potion_created",
 	},
 	completed = function (statistics_db, stats_id, template_data)
 		return statistics_db:get_persistent_stat(stats_id, "tower_created_all_potions") >= 1
@@ -171,6 +174,7 @@ achievements.tower_created_all_potions = {
 		end
 
 		local potion_type = event_data[1]
+
 		template_data[potion_type] = true
 
 		if template_data.hp and template_data.sp and template_data.cr and template_data.db then
@@ -178,19 +182,21 @@ achievements.tower_created_all_potions = {
 
 			template_data.done = true
 		end
-	end
+	end,
 }
+
 local TOWER_TIME_CHALLENGE_LIMIT_IN_MINUTES = IS_WINDOWS and 12 or 13
+
 achievements.tower_time_challenge = {
-	name = "achv_tower_time_challenge_name",
 	display_completion_ui = true,
 	icon = "achievement_wizards_tower_time_challenge",
+	name = "achv_tower_time_challenge_name",
 	desc = function ()
 		return string.format(Localize("achv_tower_time_challenge_desc"), TOWER_TIME_CHALLENGE_LIMIT_IN_MINUTES)
 	end,
 	events = {
 		"gameplay_start",
-		"register_completed_level"
+		"register_completed_level",
 	},
 	completed = function (statistics_db, stats_id, template_data)
 		return statistics_db:get_persistent_stat(stats_id, "tower_time_challenge") >= 1
@@ -219,11 +225,11 @@ achievements.tower_time_challenge = {
 			local game_time = t
 			local elapsed_time = game_time - start_time
 
-			if time_limit > elapsed_time then
+			if elapsed_time < time_limit then
 				statistics_db:increment_stat(stats_id, "tower_time_challenge")
 			end
 		end
-	end
+	end,
 }
 all_wizards_challenges = table.clone(all_difficulties)
 

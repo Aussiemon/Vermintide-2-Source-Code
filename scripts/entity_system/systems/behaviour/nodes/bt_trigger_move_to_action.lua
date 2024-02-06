@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_trigger_move_to_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTTriggerMoveToAction = class(BTTriggerMoveToAction, BTNode)
@@ -23,6 +25,7 @@ end
 
 BTTriggerMoveToAction.run = function (self, unit, blackboard, t, dt)
 	blackboard.trigger_index = (blackboard.trigger_index + 1) % 8
+
 	local trigger_index = blackboard.trigger_index
 	local angle = math.degrees_to_radians(blackboard.trigger_index * 360 / 8)
 	local direction = Vector3(math.sin(angle), math.cos(angle), 0)

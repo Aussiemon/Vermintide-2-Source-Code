@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/dlcs/woods/action_career_we_thornsister_stagger.lua
+
 ActionCareerWEThornsisterStagger = class(ActionCareerWEThornsisterStagger, ActionBase)
 
 ActionCareerWEThornsisterStagger.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)

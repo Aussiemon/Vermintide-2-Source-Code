@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/ai/ai_inventory_extension.lua
+
 AIInventoryExtension = class(AIInventoryExtension)
 
 local function store_scene_graph_data(item_unit, attachment_node_linking)
@@ -9,10 +11,11 @@ local function store_scene_graph_data(item_unit, attachment_node_linking)
 
 		if target_node ~= 0 then
 			local target_node_index = type(target_node) == "string" and Unit.node(item_unit, target_node) or target_node
+
 			scene_graph_data[#scene_graph_data + 1] = {
 				i = target_node_index,
 				parent = Unit.scene_graph_parent(item_unit, target_node_index),
-				local_pose = Matrix4x4Box(Unit.local_pose(item_unit, target_node_index))
+				local_pose = Matrix4x4Box(Unit.local_pose(item_unit, target_node_index)),
 			}
 		end
 	end
@@ -43,8 +46,7 @@ local function unlink_unit(item_unit, world)
 end
 
 AIInventoryExtension._setup_configuration = function (self, unit, start_n, inventory_configuration, item_extension_init_data)
-	local items = inventory_configuration.items
-	local items_n = inventory_configuration.items_n
+	local items, items_n = inventory_configuration.items, inventory_configuration.items_n
 	local inventory_item_units = self.inventory_item_units
 	local inventory_item_units_by_category = self.inventory_item_units_by_category
 	local inventory_item_definitions = self.inventory_item_definitions
@@ -53,6 +55,7 @@ AIInventoryExtension._setup_configuration = function (self, unit, start_n, inven
 
 	for i = 1, items_n do
 		index = index + 1
+
 		local item_category = items[i]
 		local item_category_n = item_category.count
 		local item_category_name = item_category.name
@@ -74,12 +77,13 @@ AIInventoryExtension._setup_configuration = function (self, unit, start_n, inven
 
 		local attachment_node_linking = item.attachment_node_linking
 		local node_linking_data = attachment_node_linking.unwielded or attachment_node_linking
-		local item_position, item_rotation = nil
+		local item_position, item_rotation
 
 		for _, data in ipairs(node_linking_data) do
 			if data.target == 0 then
 				local source_node = data.source
 				local source_node_index = type(source_node) == "string" and Unit.node(unit, source_node) or source_node
+
 				item_position = Unit.world_position(unit, source_node_index)
 				item_rotation = Unit.world_rotation(unit, source_node_index)
 
@@ -140,18 +144,20 @@ AIInventoryExtension.init = function (self, unit, extension_init_data)
 	self.stump_items = {}
 	self.gibbed_nodes = {}
 	self.disabled_actors = {}
+
 	local inventory_configuration_name = extension_init_data.inventory_configuration_name
 
 	if extension_init_data.is_server and not inventory_configuration_name then
 		local template_name = extension_init_data.inventory_template or "default"
 		local template_function = AIInventoryTemplates[template_name]
+
 		inventory_configuration_name = template_function()
 	end
 
 	local item_extension_init_data = {
 		ai_inventory_item_system = {
-			wielding_unit = unit
-		}
+			wielding_unit = unit,
+		},
 	}
 	local inventory_configuration = InventoryConfigurations[inventory_configuration_name]
 	local items_n = 0
@@ -162,8 +168,9 @@ AIInventoryExtension.init = function (self, unit, extension_init_data)
 
 		for i = 1, #multiple_configurations do
 			local item_set = {
-				start_index = items_n + 1
+				start_index = items_n + 1,
 			}
+
 			self.item_sets[#self.item_sets + 1] = item_set
 			inventory_configuration = InventoryConfigurations[multiple_configurations[i]]
 			items_n = self:_setup_configuration(unit, items_n, inventory_configuration, item_extension_init_data)
@@ -179,6 +186,7 @@ AIInventoryExtension.init = function (self, unit, extension_init_data)
 
 	self.inventory_items_n = items_n
 	self.inventory_configuration_name = inventory_configuration_name
+
 	local anim_state_event = inventory_configuration.anim_state_event
 
 	if anim_state_event then
@@ -246,6 +254,7 @@ AIInventoryExtension.freeze = function (self)
 	self.inventory_item_units = {}
 	self.inventory_item_outfit_units = {}
 	self.inventory_item_helmet_units = {}
+
 	local one_scale = Vector3(1, 1, 1)
 
 	for i = 1, #self.gibbed_nodes do
@@ -279,12 +288,14 @@ end
 
 AIInventoryExtension.unfreeze = function (self)
 	local unit = self.unit
+
 	self.dropped = false
 	self.wielded = false
+
 	local item_extension_init_data = {
 		ai_inventory_item_system = {
-			wielding_unit = unit
-		}
+			wielding_unit = unit,
+		},
 	}
 	local inventory_configuration = InventoryConfigurations[self.inventory_configuration_name]
 	local items_n = 0
@@ -295,8 +306,9 @@ AIInventoryExtension.unfreeze = function (self)
 
 		for i = 1, #multiple_configurations do
 			local item_set = {
-				start_index = items_n + 1
+				start_index = items_n + 1,
 			}
+
 			self.item_sets[#self.item_sets + 1] = item_set
 			inventory_configuration = InventoryConfigurations[multiple_configurations[i]]
 			items_n = self:_setup_configuration(unit, items_n, inventory_configuration, item_extension_init_data)
@@ -311,6 +323,7 @@ AIInventoryExtension.unfreeze = function (self)
 	end
 
 	self.inventory_items_n = items_n
+
 	local anim_state_event = inventory_configuration.anim_state_event
 
 	if anim_state_event then
@@ -324,6 +337,7 @@ AIInventoryExtension.show_single_item = function (self, item_inventory_index, sh
 	end
 
 	local item_unit = self.inventory_item_units[item_inventory_index]
+
 	self.hidden_item_index = not show and item_inventory_index or nil
 
 	Unit.set_unit_visibility(item_unit, show)
@@ -437,7 +451,9 @@ AIInventoryExtension._drop_unit = function (self, drop_unit_name, item_unit, ite
 
 	if drop_multiple then
 		self.dropped_items[item_inventory_index] = self.dropped_items[item_inventory_index] or {}
+
 		local dropped_items = self.dropped_items[item_inventory_index]
+
 		self.dropped_items[item_inventory_index][#dropped_items + 1] = new_item_unit
 	else
 		self.dropped_items[item_inventory_index] = new_item_unit
@@ -546,18 +562,21 @@ AIInventoryExtension.add_additional_hit_sfx = function (self, additional_sfx_nam
 	end
 
 	local unique_id = self._unique_id or 1
+
 	self._unique_id = unique_id + 1
+
 	local override_ids = additional_hit_sounds_ids[additional_sfx_name]
 
 	if not override_ids then
 		additional_hit_sounds[#additional_hit_sounds + 1] = additional_sfx_name
 		additional_hit_sounds_ids[additional_sfx_name] = {
-			unique_id
+			unique_id,
 		}
 		additional_hit_sounds_ids[unique_id] = additional_sfx_name
 	else
 		local sfx_unique_ids = additional_hit_sounds_ids[additional_sfx_name]
 		local num_overrides = #sfx_unique_ids
+
 		sfx_unique_ids[num_overrides + 1] = unique_id
 		additional_hit_sounds_ids[unique_id] = additional_sfx_name
 	end
@@ -593,6 +612,7 @@ AIInventoryExtension.remove_additioanl_hit_sfx = function (self, override_id)
 
 		if #sfx_unique_ids == 0 then
 			additional_hit_sounds_ids[sfx_name] = nil
+
 			local additional_hit_sounds = self._additional_hit_sounds
 
 			if additional_hit_sounds then

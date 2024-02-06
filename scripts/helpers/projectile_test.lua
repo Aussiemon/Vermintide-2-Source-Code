@@ -1,9 +1,12 @@
+﻿-- chunkname: @scripts/helpers/projectile_test.lua
+
 ProjectileTest = ProjectileTest or {}
+
 local POSITION_LOOKUP = POSITION_LOOKUP
 local projectiles = {}
 
 ProjectileTest.add_simulated_projectile = function (p1, p2, projectile_speed, projectile_angle, target_velocity, gravity)
-	local angle, speed, new_p2 = nil
+	local angle, speed, new_p2
 
 	if projectile_speed then
 		angle, new_p2 = WeaponHelper.angle_to_hit_moving_target(p1, p2, projectile_speed, target_velocity, gravity, 0.1)
@@ -13,17 +16,18 @@ ProjectileTest.add_simulated_projectile = function (p1, p2, projectile_speed, pr
 			local vec_flat = Vector3.normalize(Vector3.flat(to_target))
 			local x_vel_0 = math.cos(angle) * projectile_speed
 			local y_vel_0 = math.sin(angle) * projectile_speed
+
 			projectiles[#projectiles + 1] = {
-				type = "known_speed",
 				last_dot = 0,
 				t = 0,
+				type = "known_speed",
 				last_pos = Vector3Box(p1),
 				p1 = Vector3Box(p1),
 				p2 = Vector3Box(new_p2),
 				x_vel_0 = x_vel_0,
 				y_vel_0 = y_vel_0,
 				vec_flat = Vector3Box(vec_flat),
-				gravity = gravity
+				gravity = gravity,
 			}
 		end
 	elseif projectile_angle then
@@ -34,17 +38,18 @@ ProjectileTest.add_simulated_projectile = function (p1, p2, projectile_speed, pr
 			local vec_flat = Vector3.normalize(Vector3.flat(to_target))
 			local x_vel_0 = math.cos(projectile_angle) * speed
 			local y_vel_0 = math.sin(projectile_angle) * speed
+
 			projectiles[#projectiles + 1] = {
-				type = "known_angle",
 				last_dot = 0,
 				t = 0,
+				type = "known_angle",
 				last_pos = Vector3Box(p1),
 				p1 = Vector3Box(p1),
 				p2 = Vector3Box(new_p2),
 				x_vel_0 = x_vel_0,
 				y_vel_0 = y_vel_0,
 				vec_flat = Vector3Box(vec_flat),
-				gravity = gravity
+				gravity = gravity,
 			}
 		end
 	end
@@ -120,7 +125,7 @@ ProjectileTest.run_projectile_test = function (world, t, dt)
 	QuickDrawer:sphere(p1, 0.5, Color(200, 30, 30))
 	ProjectileTest.simulate_projectiles(physics_world, dt)
 
-	if next_proj_test < t then
+	if t > next_proj_test then
 		local odd = math.floor(next_proj_test) % 2 == 0
 
 		if odd then
@@ -162,7 +167,7 @@ end
 ProjectileTest.draw_projectile_trajectory = function (p1, p2, gravity, projectile_speed)
 	local time_step = 0.016666666666666666
 	local distance_vector = p2 - p1
-	local above = p2.z < p1.z
+	local above = p1.z > p2.z
 	local a1, a2 = WeaponHelper:wanted_projectile_angle(distance_vector, gravity, projectile_speed)
 	local angle = a1 or a2
 
@@ -176,11 +181,13 @@ ProjectileTest.draw_projectile_trajectory = function (p1, p2, gravity, projectil
 		local pos = p1 + Vector3(0, 0, 0.15)
 		local color_table = GameSettingsDevelopment.debug_unit_colors
 		local i = 1
+
 		velocity = velocity * time_step
 
 		while i < 1000 do
 			velocity = velocity - Vector3(0, 0, gravity * time_step * time_step)
 			pos = pos + velocity
+
 			local color_index = (i - 1) % #color_table + 1
 			local col = color_table[color_index]
 

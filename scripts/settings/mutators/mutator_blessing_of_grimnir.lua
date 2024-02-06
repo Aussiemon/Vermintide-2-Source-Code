@@ -1,9 +1,11 @@
+﻿-- chunkname: @scripts/settings/mutators/mutator_blessing_of_grimnir.lua
+
 require("scripts/settings/dlcs/morris/deus_blessing_settings")
 
 local BOSS_BUFF = "blessing_of_grimnir_boss_buff"
 local PLAYER_BUFF = "blessing_of_grimnir_player_buff"
 local SOUND_EVENTS = {
-	monster_killed = "Play_blessing_challenge_of_grimnir_activate"
+	monster_killed = "Play_blessing_challenge_of_grimnir_activate",
 }
 
 local function buff_all_players(buff_name)
@@ -53,7 +55,7 @@ return {
 		local spawner_pos = Unit.local_position(spawner[1], 0)
 		local boxed_pos = Vector3Box(spawner_pos)
 		local event_data = {
-			event_kind = "event_boss"
+			event_kind = "event_boss",
 		}
 		local terror_events = CurrentBossSettings.boss_events.event_lookup.event_boss
 		local seed = Managers.mechanism:get_level_seed("mutator")
@@ -65,16 +67,20 @@ return {
 	server_update_function = function (context, data, dt, t)
 		if data.unit_to_mark and Managers.state.network:game_object_or_level_id(data.unit_to_mark) then
 			local unit = data.unit_to_mark
+
 			data.marked_unit = unit
 			data.unit_to_mark = nil
+
 			local buff_system = Managers.state.entity:system("buff_system")
 
 			buff_system:add_buff(unit, "objective_unit", unit)
 			buff_system:add_buff(unit, BOSS_BUFF, unit)
 
 			local blackboard = BLACKBOARDS[unit]
+
 			blackboard.optional_spawn_data = blackboard.optional_spawn_data or {}
 			blackboard.optional_spawn_data.prevent_killed_enemy_dialogue = true
+
 			local player_unit = DialogueSystem:get_random_player()
 
 			if player_unit then
@@ -102,6 +108,7 @@ return {
 			buff_all_players(PLAYER_BUFF)
 
 			data.marked_unit = nil
+
 			local unit = DialogueSystem:get_random_player()
 
 			if unit then
@@ -123,5 +130,5 @@ return {
 				Managers.state.event:trigger("add_coop_feedback", player:stats_id(), local_human, "collected_grimnir_reward", player, player)
 			end
 		end
-	end
+	end,
 }

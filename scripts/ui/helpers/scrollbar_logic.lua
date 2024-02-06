@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/helpers/scrollbar_logic.lua
+
 ScrollBarLogic = class(ScrollBarLogic)
 
 ScrollBarLogic.init = function (self, scrollbar_widget)
@@ -45,6 +47,7 @@ ScrollBarLogic.set_scrollbar_values = function (self, draw_length, content_lengt
 	self:_set_scroll_length(scroll_length)
 
 	scroll_step_multiplier = scroll_step_multiplier or 2
+
 	local scroll_amount = math.max(step_size / scroll_length, 0) * scroll_step_multiplier
 
 	self:_set_scroll_amount(scroll_amount)
@@ -116,22 +119,26 @@ end
 
 ScrollBarLogic._set_thumb_scale = function (self, scale)
 	local scroll_bar_info = self:_get_scrollbar_info()
+
 	scroll_bar_info.bar_height_percentage = scale
 end
 
 ScrollBarLogic._set_scroll_amount = function (self, amount)
 	local scroll_bar_info = self:_get_scrollbar_info()
+
 	scroll_bar_info.scroll_amount = amount
 end
 
 ScrollBarLogic._set_scroll_length = function (self, length)
 	local scroll_bar_info = self:_get_scrollbar_info()
+
 	scroll_bar_info.total_scroll_length = length
 end
 
 ScrollBarLogic._set_scrollbar_value = function (self, value)
 	if value then
 		local scroll_bar_info = self:_get_scrollbar_info()
+
 		scroll_bar_info.value = value
 		scroll_bar_info.scroll_value = value
 		self._scroll_value = value

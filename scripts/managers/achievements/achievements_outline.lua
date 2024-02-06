@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/achievements/achievements_outline.lua
+
 local heroes = {
 	name = "achv_menu_heroes_category_title",
 	present_progression = true,
@@ -9,12 +11,12 @@ local heroes = {
 		"complete_all_helmgart_levels_all_careers_recruit",
 		"complete_all_helmgart_levels_all_careers_veteran",
 		"complete_all_helmgart_levels_all_careers_champion",
-		"complete_all_helmgart_levels_all_careers_legend"
+		"complete_all_helmgart_levels_all_careers_legend",
 	},
 	categories = {
 		{
-			sorting = 1,
 			name = "inventory_name_empire_soldier",
+			sorting = 1,
 			entries = {
 				"achievement_markus_level_1",
 				"achievement_markus_level_2",
@@ -35,12 +37,12 @@ local heroes = {
 				"complete_all_helmgart_levels_veteran_es_knight",
 				"complete_all_helmgart_levels_champion_es_knight",
 				"complete_all_helmgart_levels_legend_es_knight",
-				"complete_100_missions_champion_es_knight"
-			}
+				"complete_100_missions_champion_es_knight",
+			},
 		},
 		{
-			sorting = 2,
 			name = "inventory_name_dwarf_ranger",
+			sorting = 2,
 			entries = {
 				"achievement_bardin_level_1",
 				"achievement_bardin_level_2",
@@ -61,12 +63,12 @@ local heroes = {
 				"complete_all_helmgart_levels_veteran_dr_slayer",
 				"complete_all_helmgart_levels_champion_dr_slayer",
 				"complete_all_helmgart_levels_legend_dr_slayer",
-				"complete_100_missions_champion_dr_slayer"
-			}
+				"complete_100_missions_champion_dr_slayer",
+			},
 		},
 		{
-			sorting = 3,
 			name = "inventory_name_wood_elf",
+			sorting = 3,
 			entries = {
 				"achievement_kerillian_level_1",
 				"achievement_kerillian_level_2",
@@ -87,12 +89,12 @@ local heroes = {
 				"complete_all_helmgart_levels_veteran_we_shade",
 				"complete_all_helmgart_levels_champion_we_shade",
 				"complete_all_helmgart_levels_legend_we_shade",
-				"complete_100_missions_champion_we_shade"
-			}
+				"complete_100_missions_champion_we_shade",
+			},
 		},
 		{
-			sorting = 4,
 			name = "inventory_name_witch_hunter",
+			sorting = 4,
 			entries = {
 				"achievement_victor_level_1",
 				"achievement_victor_level_2",
@@ -113,12 +115,12 @@ local heroes = {
 				"complete_all_helmgart_levels_veteran_wh_zealot",
 				"complete_all_helmgart_levels_champion_wh_zealot",
 				"complete_all_helmgart_levels_legend_wh_zealot",
-				"complete_100_missions_champion_wh_zealot"
-			}
+				"complete_100_missions_champion_wh_zealot",
+			},
 		},
 		{
-			sorting = 5,
 			name = "inventory_name_bright_wizard",
+			sorting = 5,
 			entries = {
 				"achievement_sienna_level_1",
 				"achievement_sienna_level_2",
@@ -139,10 +141,10 @@ local heroes = {
 				"complete_all_helmgart_levels_veteran_bw_unchained",
 				"complete_all_helmgart_levels_champion_bw_unchained",
 				"complete_all_helmgart_levels_legend_bw_unchained",
-				"complete_100_missions_champion_bw_unchained"
-			}
-		}
-	}
+				"complete_100_missions_champion_bw_unchained",
+			},
+		},
+	},
 }
 local levels = {
 	name = "achv_menu_levels_category_title",
@@ -157,12 +159,12 @@ local levels = {
 		"complete_bogenhafen_veteran",
 		"complete_bogenhafen_champion",
 		"complete_bogenhafen_legend",
-		"scorpion_complete_bogenhafen_cataclysm"
+		"scorpion_complete_bogenhafen_cataclysm",
 	},
 	categories = {
 		{
-			sorting = 1,
 			name = "achv_menu_levels_helmgart_category_title",
+			sorting = 1,
 			entries = {
 				"complete_tutorial",
 				"complete_act_one",
@@ -210,12 +212,12 @@ local levels = {
 				"warcamp_bodvarr_charge_warriors_cata",
 				"skaven_stronghold_skarrik_kill_skaven_cata",
 				"ussingen_no_event_barrels_cata",
-				"skittergate_deathrattler_rasknitt_timed_cata"
-			}
+				"skittergate_deathrattler_rasknitt_timed_cata",
+			},
 		},
 		{
-			sorting = 2,
 			name = "achv_menu_levels_bogenhafen_category_title",
+			sorting = 2,
 			entries = {
 				"complete_bogenhafen_slum_recruit",
 				"complete_bogenhafen_slum_veteran",
@@ -235,10 +237,10 @@ local levels = {
 				"bogenhafen_slum_no_ratling_damage",
 				"bogenhafen_slum_no_windows_broken",
 				"bogenhafen_slum_event_speedrun",
-				"bogenhafen_collect_all_cosmetics"
-			}
-		}
-	}
+				"bogenhafen_collect_all_cosmetics",
+			},
+		},
+	},
 }
 local crafting = {
 	name = "achv_menu_crafting_category_title",
@@ -247,8 +249,8 @@ local crafting = {
 		"craft_item",
 		"craft_fifty_items",
 		"salvage_item",
-		"salvage_hundred_items"
-	}
+		"salvage_hundred_items",
+	},
 }
 local items = {
 	name = "achv_menu_items_category_title",
@@ -259,8 +261,8 @@ local items = {
 		"equip_exotic_quality",
 		"equip_all_exotic_quality",
 		"equip_veteran_quality",
-		"equip_all_veteran_quality"
-	}
+		"equip_all_veteran_quality",
+	},
 }
 local deeds = {
 	name = "achv_menu_deeds_category_title",
@@ -273,8 +275,8 @@ local deeds = {
 		"complete_deeds_5",
 		"complete_deeds_6",
 		"complete_deeds_7",
-		"complete_deeds_8"
-	}
+		"complete_deeds_8",
+	},
 }
 local enemies = {
 	name = "achv_menu_enemies_category_title",
@@ -309,14 +311,14 @@ local enemies = {
 		"skaven_rat_ogre_2",
 		"skaven_stormfiend_1",
 		"skaven_stormfiend_2",
-		"helmgart_lord_1"
-	}
+		"helmgart_lord_1",
+	},
 }
 local weaves = {
 	name = "achv_menu_weaves_category_title",
 	present_progression = false,
 	entries = {},
-	categories = {}
+	categories = {},
 }
 
 for _, dlc in pairs(DLCSettings) do
@@ -324,7 +326,7 @@ for _, dlc in pairs(DLCSettings) do
 
 	if achievement_outline then
 		for category_name, data in pairs(achievement_outline) do
-			local category = nil
+			local category
 
 			if category_name == "levels" then
 				category = levels
@@ -390,8 +392,8 @@ local achievements = {
 		items,
 		crafting,
 		deeds,
-		weaves
-	}
+		weaves,
+	},
 }
 
 for _, category in ipairs(achievements.categories) do

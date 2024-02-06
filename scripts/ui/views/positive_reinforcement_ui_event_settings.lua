@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/positive_reinforcement_ui_event_settings.lua
+
 return {
 	save = {
 		text_function = function (amount, player_1_name, player_2_name)
@@ -12,7 +14,7 @@ return {
 		end,
 		icon_function = function (image_1, image_2)
 			return image_1, "reinforcement_saved", image_2
-		end
+		end,
 	},
 	revive = {
 		text_function = function (amount, player_1_name, player_2_name)
@@ -27,7 +29,7 @@ return {
 		end,
 		icon_function = function (image_1, image_2)
 			return image_1, "reinforcement_revive", image_2
-		end
+		end,
 	},
 	assisted_respawn = {
 		text_function = function (amount, player_1_name, player_2_name)
@@ -42,7 +44,7 @@ return {
 		end,
 		icon_function = function (image_1, image_2)
 			return image_1, "reinforcement_assisted_respawn", image_2
-		end
+		end,
 	},
 	killed_special = {
 		text_function = function (amount, player_name, breed_name)
@@ -57,7 +59,7 @@ return {
 		end,
 		icon_function = function (image_1, image_2)
 			return image_1, "reinforcement_kill", image_2
-		end
+		end,
 	},
 	player_killed = {
 		text_function = function (amount, player_name, breed_name)
@@ -72,7 +74,7 @@ return {
 		end,
 		icon_function = function (image_1, image_2)
 			return image_1, "reinforcement_kill", image_2
-		end
+		end,
 	},
 	player_knocked_down = {
 		text_function = function (amount, player_name, breed_name)
@@ -87,7 +89,7 @@ return {
 		end,
 		icon_function = function (image_1, image_2)
 			return image_1, "killfeed_icon_12", image_2
-		end
+		end,
 	},
 	dealing_damage = {
 		text_function = function (amount, player_name, breed_name)
@@ -102,7 +104,7 @@ return {
 		end,
 		icon_function = function (image_1, image_2)
 			return image_1, "reinforcement_kill", image_2
-		end
+		end,
 	},
 	collected_isha_reward = {
 		sound_function = function ()
@@ -110,7 +112,7 @@ return {
 		end,
 		icon_function = function (image_1, image_2)
 			return nil, "killfeed_icon_isha", image_2
-		end
+		end,
 	},
 	collected_grimnir_reward = {
 		sound_function = function ()
@@ -118,6 +120,6 @@ return {
 		end,
 		icon_function = function (image_1, image_2)
 			return nil, "killfeed_icon_grimnir", image_2
-		end
-	}
+		end,
+	},
 }

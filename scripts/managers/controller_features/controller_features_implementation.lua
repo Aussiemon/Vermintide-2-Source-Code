@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/controller_features/controller_features_implementation.lua
+
 ControllerFeaturesImplementation = class(ControllerFeaturesImplementation)
 
 ControllerFeaturesImplementation.init = function (self, is_in_inn)
@@ -62,6 +64,7 @@ ControllerFeaturesImplementation.add_effect = function (self, effect_name, param
 
 	if ControllerFeaturesSettings[effect_name] then
 		local effect = ControllerFeaturesSettings[effect_name]
+
 		state_data.controller = controller
 
 		effect.init(state_data, params)
@@ -70,7 +73,7 @@ ControllerFeaturesImplementation.add_effect = function (self, effect_name, param
 		self._effects[user_id] = self._effects[user_id] or {}
 		self._effects[user_id][self._current_effect_id] = {
 			state_data = state_data,
-			effect = effect
+			effect = effect,
 		}
 		self._current_effect_id = self._current_effect_id + 1
 

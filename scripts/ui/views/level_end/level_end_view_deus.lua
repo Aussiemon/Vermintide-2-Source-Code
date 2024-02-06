@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/level_end/level_end_view_deus.lua
+
 LevelEndViewDeus = class(LevelEndViewDeus, LevelEndView)
 
 LevelEndViewDeus.start = function (self)
@@ -10,18 +12,18 @@ end
 LevelEndViewDeus._setup_pages_victory = function (self, rewards)
 	local end_of_level_rewards = rewards.end_of_level_rewards
 	local chest = end_of_level_rewards.chest
-	local index_by_state_name = nil
+	local index_by_state_name
 
 	if chest then
 		index_by_state_name = {
 			EndViewStateChest = 2,
+			EndViewStateScore = 3,
 			EndViewStateSummaryDeus = 1,
-			EndViewStateScore = 3
 		}
 	else
 		index_by_state_name = {
 			EndViewStateScore = 2,
-			EndViewStateSummaryDeus = 1
+			EndViewStateSummaryDeus = 1,
 		}
 	end
 
@@ -31,18 +33,18 @@ end
 LevelEndViewDeus._setup_pages_defeat = function (self, rewards)
 	local end_of_level_rewards = rewards.end_of_level_rewards
 	local chest = end_of_level_rewards.chest
-	local index_by_state_name = nil
+	local index_by_state_name
 
 	if chest then
 		index_by_state_name = {
 			EndViewStateChest = 2,
+			EndViewStateScore = 3,
 			EndViewStateSummaryDeus = 1,
-			EndViewStateScore = 3
 		}
 	else
 		index_by_state_name = {
 			EndViewStateScore = 2,
-			EndViewStateSummaryDeus = 1
+			EndViewStateSummaryDeus = 1,
 		}
 	end
 

@@ -1,6 +1,9 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/chaos_sorcerer/bt_chaos_sorcerer_plague_skulk_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTChaosSorcererPlagueSkulkAction = class(BTChaosSorcererPlagueSkulkAction, BTNode)
+
 local BTChaosSorcererPlagueSkulkAction = BTChaosSorcererPlagueSkulkAction
 local POSITION_LOOKUP = POSITION_LOOKUP
 
@@ -18,6 +21,7 @@ BTChaosSorcererPlagueSkulkAction.enter = function (self, unit, blackboard, t)
 	Managers.state.entity:system("surrounding_aware_system"):add_system_event(unit, "heard_enemy", DialogueSettings.hear_chaos_corruptor_sorcerer, "enemy_tag", "chaos_corruptor_sorcerer")
 
 	local skulk_data = blackboard.skulk_data or {}
+
 	blackboard.skulk_data = skulk_data
 	skulk_data.direction = skulk_data.direction or 1 - math.random(0, 1) * 2
 	skulk_data.radius = skulk_data.radius or blackboard.target_dist
@@ -36,6 +40,7 @@ BTChaosSorcererPlagueSkulkAction.enter = function (self, unit, blackboard, t)
 	end
 
 	blackboard.ready_to_summon = false
+
 	local skulk_time = 6
 
 	if action.skulk_time then
@@ -51,7 +56,7 @@ BTChaosSorcererPlagueSkulkAction.enter = function (self, unit, blackboard, t)
 			plague_wave_timer = t + skulk_time,
 			physics_world = World.get_data(blackboard.world, "physics_world"),
 			target_starting_pos = Vector3Box(),
-			plague_wave_rot = QuaternionBox()
+			plague_wave_rot = QuaternionBox(),
 		}
 	end
 
@@ -146,7 +151,7 @@ BTChaosSorcererPlagueSkulkAction.run = function (self, unit, blackboard, t, dt)
 		return "running"
 	end
 
-	if blackboard.travel_teleport_timer < t then
+	if t > blackboard.travel_teleport_timer then
 		local teleport_pos = self:get_skulk_target(unit, blackboard, true)
 
 		if teleport_pos then
@@ -158,11 +163,11 @@ BTChaosSorcererPlagueSkulkAction.run = function (self, unit, blackboard, t, dt)
 		end
 	end
 
-	if blackboard.vanish_countdown and blackboard.vanish_countdown < t and self:vanish(unit, blackboard, t) then
+	if blackboard.vanish_countdown and t > blackboard.vanish_countdown and self:vanish(unit, blackboard, t) then
 		return "done"
 	end
 
-	if plague_wave_data.plague_wave_timer < t and not ScriptUnit.extension(target_unit, "status_system"):is_invisible() then
+	if t > plague_wave_data.plague_wave_timer and not ScriptUnit.extension(target_unit, "status_system"):is_invisible() then
 		local teleport_position = self:get_plague_wave_cast_position(unit, blackboard, blackboard.plague_wave_data)
 
 		if teleport_position then
@@ -262,6 +267,7 @@ BTChaosSorcererPlagueSkulkAction.vanish = function (self, unit, blackboard, t)
 		blackboard.move_pos = nil
 		blackboard.vanish_countdown = nil
 		blackboard.vanish_timer = t + action.vanish_timer
+
 		local ai_navigation = blackboard.navigation_extension
 
 		ai_navigation:move_to(escape_position)
@@ -317,7 +323,7 @@ BTChaosSorcererPlagueSkulkAction.get_plague_wave_cast_position = function (self,
 
 	local mid_dist = (max_dist + min_dist) / 2
 	local pi = math.pi
-	local plague_wave_cast_position = nil
+	local plague_wave_cast_position
 	local target_start_pos = projected_start_pos
 
 	if not target_start_pos then
@@ -353,6 +359,7 @@ BTChaosSorcererPlagueSkulkAction.get_plague_wave_cast_position = function (self,
 					if teleport_pos_on_mesh then
 						local dir_norm = Vector3.normalize(target_start_pos - teleport_pos_on_mesh)
 						local rotation = Quaternion.look(dir_norm)
+
 						plague_wave_cast_position = teleport_pos_on_mesh
 
 						plague_wave_data.plague_wave_rot:store(rotation)
@@ -408,6 +415,7 @@ BTChaosSorcererPlagueSkulkAction.get_skulk_target = function (self, unit, blackb
 	for i = 1, TRIES do
 		local rot_vec = to_target - to_target_dir * 0.5
 		local pos = target_position + Quaternion.rotate(Quaternion(cross_dir, alpha * i), rot_vec)
+
 		pos = ConflictUtils.find_center_tri(nav_world, pos)
 
 		if pos then

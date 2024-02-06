@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/settings/dlcs/woods/thorn_wall_health_extension.lua
+
 ThornWallHealthExtension = class(ThornWallHealthExtension, GenericHealthExtension)
+
 local unit_alive = Unit.alive
 local unit_flow_event = Unit.flow_event
 local unit_set_flow_variable = Unit.set_flow_variable
@@ -22,7 +25,7 @@ end
 local allowed_damage_sources = {
 	chaos_exalted_champion_norsca = true,
 	chaos_exalted_champion_warcamp = true,
-	skaven_storm_vermin_warlord = true
+	skaven_storm_vermin_warlord = true,
 }
 
 ThornWallHealthExtension.add_damage = function (self, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, damaging_unit, hit_react_type, is_critical_strike, added_dot, first_hit, total_hits, attack_type)

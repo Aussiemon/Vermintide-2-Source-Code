@@ -1,10 +1,12 @@
+﻿-- chunkname: @scripts/network/voice_chat_xb1.lua
+
 local debug_xbox_voice = true
 
 local function debug_print(...)
 	print("[VoiceChatXboxOneManager]", string.format(...))
 end
 
-local dprintf = nil
+local dprintf
 
 if debug_xbox_voice then
 	dprintf = debug_print
@@ -46,6 +48,7 @@ end
 VoiceChatXboxOneManager.add_local_user = function (self)
 	if not self._bandwidth_disabled and not self._has_local_user and Managers.account:has_privilege(UserPrivilege.COMMUNICATION_VOICE_INGAME) then
 		local user_id = Managers.account:user_id()
+
 		self._has_local_user = true
 
 		VoiceChat.add_local_user(user_id)
@@ -98,7 +101,7 @@ end
 VoiceChatXboxOneManager.set_enabled = function (self, enabled)
 	print("[VoiceChatXboxOneManager] Temporarily turned off ability to turn voice chat ON/OFF")
 
-	return
+	do return end
 
 	if enabled then
 		self:add_local_user()

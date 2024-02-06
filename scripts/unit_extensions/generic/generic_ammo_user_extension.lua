@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/generic/generic_ammo_user_extension.lua
+
 script_data.infinite_ammo = script_data.infinite_ammo or Development.parameter("infinite_ammo")
 GenericAmmoUserExtension = class(GenericAmmoUserExtension)
 
@@ -6,8 +8,10 @@ GenericAmmoUserExtension.init = function (self, extension_init_context, unit, ex
 	self.owner_unit = extension_init_data.owner_unit
 	self.item_name = extension_init_data.item_name
 	self._is_server = Managers.player.is_server
+
 	local ammo_percent = extension_init_data.ammo_percent or 1
 	local ammo_data = extension_init_data.ammo_data
+
 	self._reload_time = ammo_data.reload_time
 	self._override_reload_time = nil
 	self._override_reload_anim = nil
@@ -56,6 +60,7 @@ GenericAmmoUserExtension.init = function (self, extension_init_context, unit, ex
 	self._last_reload_event = extension_init_data.last_reload_event or self._reload_event
 	self._no_ammo_reload_event = extension_init_data.no_ammo_reload_event
 	self.slot_name = extension_init_data.slot_name
+
 	local first_person_extension = ScriptUnit.has_extension(self.owner_unit, "first_person_system")
 
 	if first_person_extension then
@@ -85,6 +90,7 @@ end
 
 GenericAmmoUserExtension._apply_buffs = function (self)
 	local buff_extension = ScriptUnit.extension(self.owner_unit, "buff_system")
+
 	self.owner_buff_extension = buff_extension
 	self._ammo_per_clip = math.ceil(buff_extension:apply_buffs_to_value(self._original_ammo_per_clip, "clip_size"))
 	self._max_ammo = math.ceil(buff_extension:apply_buffs_to_value(self._original_max_ammo, "total_ammo"))
@@ -98,6 +104,7 @@ GenericAmmoUserExtension.refresh_buffs = function (self)
 
 	local max_available_ammo = self._start_ammo - self._current_ammo
 	local available_ammo = self._available_ammo or math.huge
+
 	self._available_ammo = math.min(max_available_ammo, available_ammo)
 
 	if ammo_percent == 1 then
@@ -149,11 +156,12 @@ GenericAmmoUserExtension.update = function (self, unit, input, dt, context, t)
 
 	self:_check_ammo()
 
-	if self._next_reload_time and self._next_reload_time < t then
+	if self._next_reload_time and t > self._next_reload_time then
 		if not self._start_reloading then
 			local buff_extension = self.owner_buff_extension
 			local missing_in_clip = self._ammo_per_clip - self._current_ammo
-			local reload_amount = self._ammo_per_reload and self._ammo_per_reload <= missing_in_clip and self._ammo_per_reload or missing_in_clip
+			local reload_amount = self._ammo_per_reload and missing_in_clip >= self._ammo_per_reload and self._ammo_per_reload or missing_in_clip
+
 			reload_amount = math.min(reload_amount, self._available_ammo)
 			self._current_ammo = self._current_ammo + reload_amount
 
@@ -180,11 +188,14 @@ GenericAmmoUserExtension.update = function (self, unit, input, dt, context, t)
 		end
 
 		self._start_reloading = nil
+
 		local num_missing = self._ammo_per_clip - self._current_ammo
 
 		if num_missing > 0 and self._available_ammo > 0 then
 			local reload_time = self._override_reload_time or self._reload_time
+
 			self._override_reload_time = nil
+
 			local unmodded_reload_time = reload_time
 
 			if self.owner_buff_extension then
@@ -199,7 +210,7 @@ GenericAmmoUserExtension.update = function (self, unit, input, dt, context, t)
 
 				if not owner_player.bot_player then
 					Managers.state.controller_features:add_effect("rumble", {
-						rumble_effect = "reload_start"
+						rumble_effect = "reload_start",
 					})
 				end
 			end
@@ -208,7 +219,7 @@ GenericAmmoUserExtension.update = function (self, unit, input, dt, context, t)
 
 			if not owner_player.bot_player then
 				Managers.state.controller_features:add_effect("rumble", {
-					rumble_effect = "reload_over"
+					rumble_effect = "reload_over",
 				})
 			end
 		end
@@ -322,6 +333,7 @@ GenericAmmoUserExtension.remove_ammo = function (self, amount)
 	end
 
 	local floored_ammo = math.floor(math.clamp(self._available_ammo - amount, 0, self._max_ammo))
+
 	self._available_ammo = floored_ammo
 end
 
@@ -332,6 +344,7 @@ GenericAmmoUserExtension.add_ammo = function (self, amount)
 
 	if self._available_ammo == 0 and self._current_ammo == 0 then
 		self.reloaded_from_zero_ammo = true
+
 		local player = Managers.player:unit_owner(self.owner_unit)
 		local item_name = self.item_name
 		local position = POSITION_LOOKUP[self.owner_unit]
@@ -355,7 +368,7 @@ GenericAmmoUserExtension.add_ammo = function (self, amount)
 		end
 	end
 
-	local floored_ammo = nil
+	local floored_ammo
 
 	if amount and self._ammo_immediately_available then
 		floored_ammo = math.floor(math.clamp(self._current_ammo + amount, 0, self._max_ammo))
@@ -379,6 +392,7 @@ GenericAmmoUserExtension.add_ammo_to_reserve = function (self, amount)
 		self._current_ammo = math.min(self._max_ammo, self._current_ammo + amount)
 	else
 		local ammo_count = self:ammo_count()
+
 		self._available_ammo = math.min(self._max_ammo - ammo_count, self._available_ammo + amount)
 	end
 
@@ -462,9 +476,12 @@ GenericAmmoUserExtension.start_reload = function (self, play_reload_animation, o
 	self._next_reload_time = 0
 	self._play_reload_animation = play_reload_animation
 	self._override_reload_anim = override_reload_anim
+
 	local dialogue_input = ScriptUnit.extension_input(self.owner_unit, "dialogue_system")
 	local event_data = FrameTable.alloc_table()
+
 	event_data.item_name = self.item_name or "UNKNOWN ITEM"
+
 	local event_name = "reload_started"
 
 	dialogue_input:trigger_dialogue_event(event_name, event_data)
@@ -586,6 +603,7 @@ end
 GenericAmmoUserExtension.instant_reload = function (self, bonus_ammo, reload_anim_event)
 	if not bonus_ammo then
 		local reload_amount = self._ammo_per_clip - self._current_ammo
+
 		reload_amount = math.min(reload_amount, self._available_ammo)
 		self._current_ammo = self._current_ammo + reload_amount
 		self._available_ammo = self._available_ammo - reload_amount

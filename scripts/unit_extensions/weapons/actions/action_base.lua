@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/unit_extensions/weapons/actions/action_base.lua
+
 ActionBase = class(ActionBase)
+
 local unit_flow_event = Unit.flow_event
 
 ActionBase.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
@@ -12,7 +15,9 @@ ActionBase.init = function (self, world, item_name, is_server, owner_unit, damag
 	self.weapon_unit = weapon_unit
 	self.item_name = item_name
 	self.weapon_system = weapon_system
+
 	local network_manager = Managers.state.network
+
 	self.network_manager = network_manager
 	self.network_transmit = network_manager.network_transmit
 	self.is_server = is_server
@@ -25,6 +30,7 @@ end
 
 ActionBase.client_owner_start_action = function (self, new_action, t, chain_action_data, power_level, action_init_data)
 	self.current_action = new_action
+
 	local buff_extension = ScriptUnit.has_extension(self.owner_unit, "buff_system")
 
 	buff_extension:trigger_procs("on_start_action", new_action, t, chain_action_data, power_level, action_init_data)
@@ -74,6 +80,7 @@ ActionBase._update_extra_shots = function (self, buff_extension, shots_to_consum
 
 	if not self._extra_shots_procced or override then
 		local extra_shots = buff_extension:apply_buffs_to_value(0, "extra_shot")
+
 		self._extra_shots = math.floor(extra_shots)
 		self._extra_shots_procced = true
 	end
@@ -88,7 +95,7 @@ ActionBase._update_extra_shots = function (self, buff_extension, shots_to_consum
 end
 
 ActionBase._handle_fatigue = function (self, buff_extension, status_extension, new_action, check_buffs)
-	local procced = nil
+	local procced
 
 	if self._fatigue_reset then
 		if check_buffs then

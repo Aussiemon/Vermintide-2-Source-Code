@@ -1,11 +1,16 @@
+﻿-- chunkname: @scripts/unit_extensions/weapons/projectiles/projectile_homing_skull_locomotion_extension.lua
+
 ProjectileHomingSkullLocomotionExtension = class(ProjectileHomingSkullLocomotionExtension)
 
 ProjectileHomingSkullLocomotionExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	local t = Managers.time:time("game")
+
 	self._spawn_time = t
+
 	local max_speed_multiplier = BelakorBalancing.homing_skulls_min_speed_multiplier
 	local min_speed_multiplier = BelakorBalancing.homing_skulls_max_speed_multiplier
 	local delta = max_speed_multiplier - min_speed_multiplier
+
 	self._speed_multiplier = min_speed_multiplier + math.random() * delta
 	self._use_sin_for_vertical_trajectory = Math.random(1, 2) == 1
 	self._base_position = Vector3Box(Unit.local_position(unit, 0))
@@ -23,8 +28,7 @@ local function get_target_head_node_position(unit, node_name)
 end
 
 local function valid_position(position)
-	local pmin = NetworkConstants.position.min
-	local pmax = NetworkConstants.position.max
+	local pmin, pmax = NetworkConstants.position.min, NetworkConstants.position.max
 
 	for i = 1, 3 do
 		local coord = position[i]
@@ -66,7 +70,9 @@ ProjectileHomingSkullLocomotionExtension.update = function (self, unit, input, d
 	local speed = BelakorBalancing.homing_skulls_base_speed * speed_multiplier
 	local spawn_time = self._spawn_time
 	local lifetime = t - spawn_time
+
 	speed = speed * BelakorBalancing.homing_skulls_speed_multiplier_curve_func(lifetime)
+
 	local cross_vector = Vector3(target_direction.x, target_direction.y, math.abs(new_direction.z) + 1)
 	local u_vector = Vector3.cross(target_direction, cross_vector)
 	local v_vector = Vector3.cross(target_direction, u_vector)
@@ -107,6 +113,7 @@ ProjectileHomingSkullLocomotionExtension.update = function (self, unit, input, d
 		local vel_max = constant.max
 		local vel_min_v3 = Vector3(vel_min, vel_min, vel_min)
 		local vel_max_v3 = Vector3(vel_max, vel_max, vel_max)
+
 		velocity = Vector3.min(Vector3.max(velocity, vel_min_v3), vel_max_v3)
 
 		GameSession.set_game_object_field(game, id, "velocity", velocity)

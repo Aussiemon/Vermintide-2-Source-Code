@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/unit_extensions/default_player_unit/states/player_character_state_grabbed_by_pack_master.lua
+
 PlayerCharacterStateGrabbedByPackMaster = class(PlayerCharacterStateGrabbedByPackMaster, PlayerCharacterState)
+
 local position_lookup = POSITION_LOOKUP
 
 PlayerCharacterStateGrabbedByPackMaster.init = function (self, character_state_init_context)
@@ -32,10 +35,11 @@ PlayerCharacterStateGrabbedByPackMaster.on_enter = function (self, unit, input, 
 	local node = Unit.node(packmaster_unit, "j_rightweaponcomponent10")
 	local start_pos = Unit.world_position(packmaster_unit, node)
 	local target_pos = start_pos + Vector3(0, 2, 0)
+
 	self._pole = {
 		pole_length = 2,
 		apos = Vector3Box(start_pos),
-		bpos = Vector3Box(target_pos)
+		bpos = Vector3Box(target_pos),
 	}
 	self.move_target_index = 1
 
@@ -48,6 +52,7 @@ PlayerCharacterStateGrabbedByPackMaster.on_enter = function (self, unit, input, 
 	self.locomotion_extension:set_wanted_pos(position)
 
 	self.pack_master_status = CharacterStateHelper.pack_master_status(status_extension)
+
 	local states = PlayerCharacterStateGrabbedByPackMaster.states
 
 	if self.pack_master_status == "pack_master_pulling" then
@@ -140,7 +145,7 @@ PlayerCharacterStateGrabbedByPackMaster.states = {
 		end,
 		run = function (parent, unit)
 			parent.last_valid_position:store(position_lookup[unit])
-		end
+		end,
 	},
 	pack_master_dragging = {
 		enter = function (parent, unit)
@@ -180,7 +185,7 @@ PlayerCharacterStateGrabbedByPackMaster.states = {
 			if position then
 				parent.locomotion_extension:teleport_to(position)
 			end
-		end
+		end,
 	},
 	pack_master_unhooked = {
 		run = function (parent, unit)
@@ -195,6 +200,7 @@ PlayerCharacterStateGrabbedByPackMaster.states = {
 				CharacterStateHelper.play_animation_event(unit, "packmaster_release_death")
 			elseif CharacterStateHelper.is_knocked_down(status_extension) then
 				local params = parent.temp_params
+
 				params.already_in_ko_anim = true
 
 				CharacterStateHelper.play_animation_event(unit, "packmaster_release_ko")
@@ -214,7 +220,7 @@ PlayerCharacterStateGrabbedByPackMaster.states = {
 			end
 
 			parent.locomotion_extension:enable_animation_driven_movement()
-		end
+		end,
 	},
 	pack_master_hoisting = {
 		enter = function (parent, unit)
@@ -225,7 +231,7 @@ PlayerCharacterStateGrabbedByPackMaster.states = {
 		end,
 		run = function (parent, unit)
 			return
-		end
+		end,
 	},
 	pack_master_hanging = {
 		enter = function (parent, unit)
@@ -233,7 +239,7 @@ PlayerCharacterStateGrabbedByPackMaster.states = {
 		end,
 		run = function (parent, unit)
 			return
-		end
+		end,
 	},
 	pack_master_dropping = {
 		enter = function (parent, unit)
@@ -245,6 +251,7 @@ PlayerCharacterStateGrabbedByPackMaster.states = {
 				CharacterStateHelper.play_animation_event(unit, "packmaster_hang_release_death")
 			elseif CharacterStateHelper.is_knocked_down(status_extension) then
 				local params = parent.temp_params
+
 				params.already_in_ko_anim = true
 
 				CharacterStateHelper.play_animation_event(unit, "packmaster_hang_release_ko")
@@ -267,7 +274,7 @@ PlayerCharacterStateGrabbedByPackMaster.states = {
 		end,
 		run = function (parent, unit)
 			return
-		end
+		end,
 	},
 	pack_master_released = {
 		run = function (parent, unit)
@@ -295,8 +302,8 @@ PlayerCharacterStateGrabbedByPackMaster.states = {
 
 				csm:change_state("standing")
 			end
-		end
-	}
+		end,
+	},
 }
 
 PlayerCharacterStateGrabbedByPackMaster.update = function (self, unit, input, dt, context, t)
@@ -329,7 +336,7 @@ PlayerCharacterStateGrabbedByPackMaster.update = function (self, unit, input, dt
 
 	if not states[pack_master_status].run(self, unit) or not Unit.alive(packmaster_unit) then
 		if pack_master_status == "pack_master_pulling" then
-			if self._initial_pull_t < t and not self._pull_lerp then
+			if t > self._initial_pull_t and not self._pull_lerp then
 				self.locomotion_extension:enable_wanted_position_movement()
 
 				self._pull_lerp = true
@@ -371,7 +378,7 @@ PlayerCharacterStateGrabbedByPackMaster.update = function (self, unit, input, dt
 
 	local packmaster_unit_position = position_lookup[packmaster_unit]
 	local position = position_lookup[unit]
-	local wanted_position = nil
+	local wanted_position
 	local pole = self._pole
 	local neck_node = Unit.node(unit, "j_neck")
 	local neck_pos = Unit.world_position(unit, neck_node)
@@ -380,9 +387,12 @@ PlayerCharacterStateGrabbedByPackMaster.update = function (self, unit, input, dt
 	local hand_pos = Unit.world_position(packmaster_unit, hand_node)
 	local hand_to_neck_vec = Vector3.normalize(neck_pos - hand_pos) * pole.pole_length
 	local new_neck_pos = hand_pos + hand_to_neck_vec
+
 	wanted_position = new_neck_pos + neck_to_feet_vec
 	wanted_position = wanted_position or position
+
 	local wanted_change = wanted_position - position
+
 	wanted_change.z = 0
 
 	self._drag_delta_move:store(wanted_change)

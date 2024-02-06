@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/dlcs/woods/passive_ability_thornsister.lua
+
 PassiveAbilityThornsister = class(PassiveAbilityThornsister)
 
 PassiveAbilityThornsister.init = function (self, extension_init_context, unit, extension_init_data, ability_init_data)
@@ -11,6 +13,7 @@ end
 PassiveAbilityThornsister.extensions_ready = function (self, world, unit)
 	self._career_extension = ScriptUnit.has_extension(unit, "career_system")
 	self._buff_extension = ScriptUnit.has_extension(unit, "buff_system")
+
 	local ability_init_data = self._ability_init_data
 
 	self._career_extension:setup_extra_ability_uses(0, ability_init_data.cooldown, ability_init_data.starting_stack_count, ability_init_data.max_stacks)
@@ -60,6 +63,7 @@ PassiveAbilityThornsister.update = function (self, dt, t)
 		if extra_ability_uses < extra_ability_uses_max then
 			if not cooldown_buff then
 				local buff_id = buff_extension:add_buff("kerillian_thorn_sister_free_ability_cooldown")
+
 				cooldown_buff = buff_extension:get_buff_by_id(buff_id)
 				self._cooldown_buff = cooldown_buff
 			end
@@ -108,6 +112,7 @@ PassiveAbilityThornsister.on_talents_changed = function (self, unit, talent_exte
 		end
 
 		self._cooldown_buff = nil
+
 		local stack_buffs = self._stack_buffs
 		local num_stacks = self._num_stack_buffs
 

@@ -1,19 +1,23 @@
+﻿-- chunkname: @scripts/managers/backend/statistics_definitions_cog.lua
+
 local player = StatisticsDefinitions.player
+
 player.cog_kills_bardin_engineer_career_skill_weapon = {
-	value = 0,
 	database_name = "cog_kills_bardin_engineer_career_skill_weapon",
-	source = "player_data"
+	source = "player_data",
+	value = 0,
 }
 player.cog_kills_bardin_engineer_career_skill_weapon_heavy = {
-	value = 0,
 	database_name = "cog_kills_bardin_engineer_career_skill_weapon_heavy",
-	source = "player_data"
+	source = "player_data",
+	value = 0,
 }
 player.cog_kills_dr_2h_cog_hammer = {
-	value = 0,
 	database_name = "cog_kills_dr_2h_cog_hammer",
-	source = "player_data"
+	source = "player_data",
+	value = 0,
 }
+
 local database_names = {
 	"complete_all_helmgart_levels_recruit_dr_engineer",
 	"complete_all_helmgart_levels_veteran_dr_engineer",
@@ -48,15 +52,16 @@ local database_names = {
 	"cog_only_crank",
 	"cog_long_crank_fire",
 	"cog_missing_cog",
-	"complete_all_engineer_challenges"
+	"complete_all_engineer_challenges",
 }
 
 for i = 1, #database_names do
 	local name = database_names[i]
+
 	player[name] = {
-		value = 0,
 		source = "player_data",
-		database_name = name
+		value = 0,
+		database_name = name,
 	}
 end
 
@@ -67,33 +72,34 @@ player.weapon_kills_per_breed.bardin_engineer_career_skill_weapon_heavy = {}
 
 for breed_name, breed in pairs(Breeds) do
 	local database_name = "dr_2h_cog_hammer_" .. breed_name
+
 	player.weapon_kills_per_breed.dr_2h_cog_hammer[breed_name] = {
-		value = 0,
 		source = "player_data",
-		database_name = database_name
+		value = 0,
+		database_name = database_name,
 	}
 	database_name = "dr_steam_pistol_" .. breed_name
 	player.weapon_kills_per_breed.dr_steam_pistol[breed_name] = {
-		value = 0,
 		source = "player_data",
-		database_name = database_name
+		value = 0,
+		database_name = database_name,
 	}
 	database_name = "bardin_engineer_career_skill_weapon_" .. breed_name
 	player.weapon_kills_per_breed.bardin_engineer_career_skill_weapon[breed_name] = {
-		value = 0,
 		source = "player_data",
-		database_name = database_name
+		value = 0,
+		database_name = database_name,
 	}
 	database_name = "bardin_engineer_career_skill_weapon_heavy_" .. breed_name
 	player.weapon_kills_per_breed.bardin_engineer_career_skill_weapon_heavy[breed_name] = {
-		value = 0,
 		source = "player_data",
-		database_name = database_name
+		value = 0,
+		database_name = database_name,
 	}
 end
 
 local relevant_careers = {
-	dr_engineer = true
+	dr_engineer = true,
 }
 
 for career, _ in pairs(CareerSettings) do
@@ -103,10 +109,11 @@ for career, _ in pairs(CareerSettings) do
 		for level_key, _ in pairs(LevelSettings) do
 			if table.contains(UnlockableLevels, level_key) then
 				local database_name = "mission_streak_" .. career .. "_" .. level_key
+
 				player.mission_streak[career][level_key] = {
-					value = 0,
 					source = "player_data",
-					database_name = database_name
+					value = 0,
+					database_name = database_name,
 				}
 			end
 		end

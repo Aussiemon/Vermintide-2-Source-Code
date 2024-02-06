@@ -1,5 +1,7 @@
+﻿-- chunkname: @scripts/utils/serialize.lua
+
 local serialize = {}
-local save_item, save_item_simple = nil
+local save_item, save_item_simple
 
 local function save(what, v, saved)
 	saved = saved or {}
@@ -57,7 +59,7 @@ for _, v in ipairs({
 	"return",
 	"then",
 	"until",
-	"while"
+	"while",
 }) do
 	lua_reserved_words[v] = true
 end
@@ -77,7 +79,7 @@ function save_item(name, value, out, indent, saved)
 			table.insert(out, iname .. " = {}")
 
 			for k, v in pairs(value) do
-				local fieldname = nil
+				local fieldname
 
 				if type(k) == "string" and string.find(k, "^[_%a][_%a%d]*$") and not lua_reserved_words[k] then
 					fieldname = string.format("%s.%s", name, k)

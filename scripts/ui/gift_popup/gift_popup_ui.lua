@@ -1,18 +1,24 @@
+﻿-- chunkname: @scripts/ui/gift_popup/gift_popup_ui.lua
+
 require("scripts/ui/reward_popup/reward_popup_ui")
 
 local UNLOCK_MANAGER_POLL_INTERVAL = 1.5
+
 GiftPopupUI = class(GiftPopupUI)
 
 GiftPopupUI.init = function (self, parent, ingame_ui_context)
 	self._parent = parent
 	self._is_in_inn = ingame_ui_context.is_in_inn
+
 	local reward_popup = RewardPopupUI:new(ingame_ui_context)
+
 	self._reward_popup = reward_popup
 
 	reward_popup:set_input_manager(ingame_ui_context.input_manager)
 
 	self._next_poll_time = 0
 	self._presentation_queue = {}
+
 	local event_manager = Managers.state.event
 
 	event_manager:register(self, "level_start_local_player_spawned", "event_initialize_poll")
@@ -80,23 +86,23 @@ GiftPopupUI._can_present_reward = function (self)
 end
 
 GiftPopupUI._generate_presentation_data = function (self, reward_data)
-	local presentation_data = {
+	local presentation_data = {}
+
+	presentation_data.animation_data = {
+		claim_button = true,
+	}
+	presentation_data[1] = {
 		{
-			{
-				widget_type = "description",
-				value = {
-					Localize(reward_data.presentation_text),
-					Localize("gift_popup_sub_title_halloween")
-				}
+			widget_type = "description",
+			value = {
+				Localize(reward_data.presentation_text),
+				Localize("gift_popup_sub_title_halloween"),
 			},
-			{
-				widget_type = "item_list",
-				value = reward_data.items
-			}
 		},
-		animation_data = {
-			claim_button = true
-		}
+		{
+			widget_type = "item_list",
+			value = reward_data.items,
+		},
 	}
 
 	return presentation_data

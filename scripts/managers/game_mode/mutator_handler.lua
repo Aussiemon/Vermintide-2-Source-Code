@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/game_mode/mutator_handler.lua
+
 require("scripts/managers/game_mode/mutator_common_settings")
 require("scripts/managers/game_mode/mutator_templates")
 
@@ -16,9 +18,10 @@ function mutator_print(text, ...)
 end
 
 MutatorHandler = class(MutatorHandler)
+
 local RPCS = {
 	"rpc_activate_mutator_client",
-	"rpc_deactivate_mutator_client"
+	"rpc_deactivate_mutator_client",
 }
 
 MutatorHandler.init = function (self, mutators, is_server, has_local_client, world, network_event_delegate, network_transmit)
@@ -31,10 +34,13 @@ MutatorHandler.init = function (self, mutators, is_server, has_local_client, wor
 
 	local mutator_context = {
 		world = world,
-		is_server = is_server
 	}
+
+	mutator_context.is_server = is_server
 	self._mutator_context = mutator_context
+
 	local active_mutators = {}
+
 	self._active_mutators = active_mutators
 	self._mutators = {}
 
@@ -50,6 +56,7 @@ MutatorHandler.destroy = function (self)
 
 	local active_mutators = self._active_mutators
 	local mutator_context = self._mutator_context
+
 	mutator_context.is_destroy = true
 
 	for name, _ in pairs(active_mutators) do
@@ -89,6 +96,7 @@ end
 MutatorHandler.deactivate_mutators = function (self, is_destroy)
 	local active_mutators = self._active_mutators
 	local mutator_context = self._mutator_context
+
 	mutator_context.is_destroy = is_destroy
 
 	for name, _ in pairs(active_mutators) do
@@ -185,7 +193,7 @@ MutatorHandler.update = function (self, dt, t)
 			template.client.update(mutator_context, mutator_data, dt, t)
 		end
 
-		if mutator_data.deactivate_at_t and mutator_data.deactivate_at_t < t then
+		if mutator_data.deactivate_at_t and t > mutator_data.deactivate_at_t then
 			self:_deactivate_mutator(name, active_mutators, mutator_context)
 		end
 	end
@@ -427,8 +435,7 @@ MutatorHandler.evaluate_lose_conditions = function (self)
 
 	local mutator_context = self._mutator_context
 	local active_mutators = self._active_mutators
-	local lost = false
-	local lost_delay = nil
+	local lost, lost_delay = false
 
 	for _, mutator_data in pairs(active_mutators) do
 		local template = mutator_data.template
@@ -547,7 +554,7 @@ end
 MutatorHandler.get_terror_event_tags = function (self)
 	local mutator_context = self._mutator_context
 	local mutators = self._mutators
-	local terror_event_tags = nil
+	local terror_event_tags
 
 	for name, mutator_data in pairs(mutators) do
 		local template = mutator_data.template
@@ -595,7 +602,7 @@ MutatorHandler._server_initialize_mutator = function (self, name, active_mutator
 
 	local template = MutatorTemplates[name]
 	local mutator_data = {
-		template = template
+		template = template,
 	}
 
 	mutator_print("Initializing mutator '%s'", name)
@@ -621,12 +628,14 @@ MutatorHandler._activate_mutator = function (self, name, active_mutators, mutato
 	mutator_print("Activating mutator '%s'", name)
 
 	local template = MutatorTemplates[name]
+
 	mutator_data = mutator_data or {
-		template = template
+		template = template,
 	}
 
 	if optional_duration then
 		local t = Managers.time:time("game")
+
 		mutator_data.deactivate_at_t = t + optional_duration
 	end
 
@@ -698,7 +707,7 @@ MutatorHandler._deactivate_mutator = function (self, name, active_mutators, muta
 end
 
 MutatorHandler.tweak_pack_spawning_settings = function (zone_mutator_list, mutator_list, conflict_director_name, pack_spawning_settings)
-	local new_pack_spawning_settings = nil
+	local new_pack_spawning_settings
 
 	local function run_mutators(mutators)
 		for _, mutator_name in ipairs(mutators) do
@@ -728,7 +737,7 @@ MutatorHandler.rpc_activate_mutator_client = function (self, channel_id, mutator
 	local mutator_context = self._mutator_context
 	local mutator_data = {
 		template = MutatorTemplates[mutator_name],
-		activated_by_twitch = activated_by_twitch
+		activated_by_twitch = activated_by_twitch,
 	}
 
 	self:_activate_mutator(mutator_name, active_mutators, mutator_context, mutator_data)

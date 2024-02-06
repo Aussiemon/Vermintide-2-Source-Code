@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/skaven_ratling_gunner/bt_ratling_gunner_windup_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTRatlingGunnerWindUpAction = class(BTRatlingGunnerWindUpAction, BTNode)
@@ -17,6 +19,7 @@ BTRatlingGunnerWindUpAction.enter = function (self, unit, blackboard, t)
 		data.target_node_name = node_name
 		data.last_known_target_position = data.last_known_target_position or Vector3Box()
 		data.last_known_unit_position = data.last_known_unit_position or Vector3Box()
+
 		local unit_position = Unit.world_position(unit, Unit.node(unit, "c_spine"))
 		local target_position = Unit.world_position(target_unit, Unit.node(target_unit, node_name))
 
@@ -53,7 +56,9 @@ BTRatlingGunnerWindUpAction.enter = function (self, unit, blackboard, t)
 	local inventory_template = blackboard.breed.default_inventory_template
 	local inventory_extension = ScriptUnit.extension(unit, "ai_inventory_system")
 	local ratling_gun_unit = inventory_extension:get_unit(inventory_template)
+
 	data.ratling_gun_unit = ratling_gun_unit
+
 	local ai_navigation = blackboard.navigation_extension
 
 	ai_navigation:set_max_speed(blackboard.breed.walk_speed)
@@ -65,6 +70,7 @@ BTRatlingGunnerWindUpAction._update_target = function (self, unit, blackboard, d
 	if target_unit then
 		data.target_unit = target_unit
 		data.target_node_name = node_name
+
 		local unit_position = Unit.world_position(unit, Unit.node(unit, "c_spine"))
 		local target_position = Unit.world_position(target_unit, Unit.node(target_unit, node_name))
 
@@ -74,6 +80,7 @@ BTRatlingGunnerWindUpAction._update_target = function (self, unit, blackboard, d
 		data.target_obscured = false
 	elseif old_target_visible then
 		target_unit = data.target_unit
+
 		local unit_position = Unit.world_position(unit, Unit.node(unit, "c_spine"))
 		local target_position = Unit.world_position(target_unit, Unit.node(target_unit, node_name))
 
@@ -96,6 +103,7 @@ BTRatlingGunnerWindUpAction.leave = function (self, unit, blackboard, t, reason,
 	AiUtils.clear_temp_anim_event(unit)
 
 	blackboard.anim_cb_attack_windup_start_finished = nil
+
 	local default_move_speed = AiUtils.get_default_breed_move_speed(unit, blackboard)
 	local navigation_extension = blackboard.navigation_extension
 
@@ -124,7 +132,7 @@ BTRatlingGunnerWindUpAction.run = function (self, unit, blackboard, t, dt)
 
 	data.wind_up_timer = data.wind_up_timer - dt
 
-	if data.target_check < t then
+	if t > data.target_check then
 		self:_update_target(unit, blackboard, data, t)
 	end
 

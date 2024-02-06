@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/debug/debug_text_manager.lua
+
 DebugTextManager = class(DebugTextManager)
 
 DebugTextManager.init = function (self, world, gui, is_server, network_event_delegate)
@@ -40,20 +42,21 @@ DebugTextManager._update_unit_texts = function (self, viewport_name, dt)
 		if Unit.alive(unit) then
 			for category, gui_texts in pairs(categories) do
 				for i, gui_text in ipairs(gui_texts) do
-					if gui_text.time < self._time then
+					if self._time > gui_text.time then
 						Gui.destroy_text_3d(self._world_gui, gui_text.id)
 						table.remove(gui_texts, i)
 					else
 						local offset = Vector3(gui_text.offset.x, gui_text.offset.y, gui_text.offset.z)
 						local tm = Matrix4x4.from_quaternion_position(camera_rotation, Unit.world_position(unit, gui_text.node_index) + offset)
 						local text_offset = Vector3(gui_text.text_offset.x, gui_text.text_offset.y, gui_text.text_offset.z)
-						local color = nil
+						local color
 						local fade = gui_text.fade
 
 						if fade then
 							local time_left = gui_text.time - self._time
 							local total_time = gui_text.time - gui_text.starting_time
 							local alpha = time_left / total_time * 255
+
 							color = Color(alpha, gui_text.color.r, gui_text.color.g, gui_text.color.b)
 						else
 							color = Color(gui_text.color.r, gui_text.color.g, gui_text.color.b)
@@ -63,6 +66,7 @@ DebugTextManager._update_unit_texts = function (self, viewport_name, dt)
 
 						if floating_position_box then
 							local floating_position = floating_position_box:unbox()
+
 							floating_position = floating_position + Vector3.forward() * dt * 0.5
 							text_offset = text_offset + floating_position
 
@@ -88,7 +92,7 @@ DebugTextManager._update_world_texts = function (self, viewport_name)
 
 	for category, gui_texts in pairs(self._world_texts) do
 		for i, gui_text in ipairs(gui_texts) do
-			if gui_text.time < self._time then
+			if self._time > gui_text.time then
 				Gui.destroy_text_3d(self._world_gui, gui_text.id)
 				table.remove(gui_texts, i)
 			else
@@ -104,7 +108,7 @@ DebugTextManager._update_world_texts = function (self, viewport_name)
 end
 
 DebugTextManager._update_screen_text = function (self)
-	if self._screen_text and self._screen_text.time < self._time then
+	if self._screen_text and self._time > self._screen_text.time then
 		Gui.destroy_text(self._gui, self._screen_text.text_id)
 		Gui.destroy_rect(self._gui, self._screen_text.bgr_id)
 
@@ -119,13 +123,15 @@ DebugTextManager.output_unit_text = function (self, text, text_size, unit, node_
 
 	node_index = node_index or 0
 	text_size = text_size or self._unit_text_size
+
 	local gui = self._world_gui
 	local material = "arial"
 	local font = "materials/fonts/" .. material
-	local tm = nil
+	local tm
 
 	if viewport_name then
 		local camera_rotation = Managers.state.camera:camera_rotation(viewport_name)
+
 		tm = Matrix4x4.from_quaternion_position(camera_rotation, Unit.world_position(unit, node_index) + offset)
 	else
 		tm = Unit.world_pose(unit, node_index)
@@ -135,10 +141,12 @@ DebugTextManager.output_unit_text = function (self, text, text_size, unit, node_
 	local text_width = text_extent_max[1] - text_extent_min[1]
 	local text_height = text_extent_max[2] - text_extent_min[2]
 	local text_offset = Vector3(-text_width / 2, -text_height / 2, 0)
+
 	offset = offset or Vector3(0, 0, 0)
 	category = category or "none"
 	color = color or Vector3(255, 255, 255)
-	local floating_position_box = nil
+
+	local floating_position_box
 
 	if floating then
 		floating_position_box = Vector3Box(Vector3.zero())
@@ -153,23 +161,24 @@ DebugTextManager.output_unit_text = function (self, text, text_size, unit, node_
 		offset = {
 			x = offset.x,
 			y = offset.y,
-			z = offset.z
+			z = offset.z,
 		},
 		text_offset = {
 			x = text_offset.x,
 			y = text_offset.y,
-			z = text_offset.z
+			z = text_offset.z,
 		},
 		color = {
 			r = color.x,
 			g = color.y,
-			b = color.z
+			b = color.z,
 		},
 		time = self._time + (time or self._unit_text_time),
 		floating_position_box = floating_position_box,
 		fade = fade,
-		starting_time = self._time
+		starting_time = self._time,
 	}
+
 	self._unit_texts[unit] = self._unit_texts[unit] or {}
 	self._unit_texts[unit][category] = self._unit_texts[unit][category] or {}
 	self._unit_texts[unit][category][#self._unit_texts[unit][category] + 1] = new_text
@@ -200,13 +209,15 @@ DebugTextManager.output_world_text = function (self, text, text_size, position, 
 	end
 
 	text_size = text_size or self._world_text_size
+
 	local gui = self._world_gui
 	local material = "arial"
 	local font = "materials/fonts/" .. material
-	local tm = nil
+	local tm
 
 	if viewport_name then
 		local camera_rotation = Managers.state.camera:camera_rotation(viewport_name)
+
 		tm = Matrix4x4.from_quaternion_position(camera_rotation, position)
 	else
 		tm = Matrix4x4.from_quaternion_position(Quaternion.identity(), position)
@@ -216,8 +227,10 @@ DebugTextManager.output_world_text = function (self, text, text_size, position, 
 	local text_width = text_extent_max[1] - text_extent_min[1]
 	local text_height = text_extent_max[2] - text_extent_min[2]
 	local text_offset = Vector3(-text_width / 2, -text_height / 2, 0)
+
 	category = category or "none"
 	color = color or Vector3(255, 255, 255)
+
 	local new_text = {
 		id = Gui.text_3d(gui, text, font, text_size, material, tm, text_offset, 0, Color(color.x, color.y, color.z)),
 		text = text,
@@ -225,20 +238,21 @@ DebugTextManager.output_world_text = function (self, text, text_size, position, 
 		position = {
 			x = position.x,
 			y = position.y,
-			z = position.z
+			z = position.z,
 		},
 		text_offset = {
 			x = text_offset.x,
 			y = text_offset.y,
-			z = text_offset.z
+			z = text_offset.z,
 		},
 		color = {
 			r = color.x,
 			g = color.y,
-			b = color.z
+			b = color.z,
 		},
-		time = self._time + (time or self._world_text_time)
+		time = self._time + (time or self._world_text_time),
 	}
+
 	self._world_texts[category] = self._world_texts[category] or {}
 	self._world_texts[category][#self._world_texts[category] + 1] = new_text
 end
@@ -263,6 +277,7 @@ DebugTextManager.output_screen_text = function (self, text, text_size, time, col
 
 	text_size = text_size or self._screen_text_size
 	color = color or Vector3(255, 255, 255)
+
 	local gui = self._gui
 	local resolution = Vector2(RESOLUTION_LOOKUP.res_w, RESOLUTION_LOOKUP.res_h)
 	local material = "arial"
@@ -288,8 +303,9 @@ DebugTextManager.output_screen_text = function (self, text, text_size, time, col
 		local screen_text = {
 			text_id = Gui.text(gui, text, font, text_size, material, text_position, Color(color.x, color.y, color.z)),
 			bgr_id = Gui.rect(gui, bgr_position, bgr_size, Color(120, 0, 0, 0)),
-			time = self._time + (time or self._screen_text_time)
+			time = self._time + (time or self._screen_text_time),
 		}
+
 		self._screen_text = screen_text
 	end
 end

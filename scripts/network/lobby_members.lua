@@ -1,17 +1,23 @@
+﻿-- chunkname: @scripts/network/lobby_members.lua
+
 LobbyMembers = class(LobbyMembers)
 
 LobbyMembers.init = function (self, lobby)
 	self.lobby = lobby
 	self.members_joined = {}
 	self.members_left = {}
+
 	local current_members, member_count = lobby:members()
+
 	member_count = member_count or #current_members
 	self._member_buffer = current_members
 	self.member_count = member_count
+
 	local member_map = {}
 
 	for i = 1, member_count do
 		local peer_id = current_members[i]
+
 		member_map[peer_id] = true
 		self.members_joined[i] = peer_id
 	end
@@ -29,8 +35,7 @@ LobbyMembers.clear = function (self)
 end
 
 LobbyMembers.update = function (self)
-	local members_joined = self.members_joined
-	local members_left = self.members_left
+	local members_joined, members_left = self.members_joined, self.members_left
 
 	table.clear(members_joined)
 	table.clear(members_left)
@@ -47,6 +52,7 @@ LobbyMembers.update = function (self)
 	end
 
 	self.member_count = member_count
+
 	local members = self.members
 
 	for i = 1, member_count do
@@ -118,6 +124,7 @@ end
 if IS_XB1 then
 	LobbyMembers.check_members_changed = function (self)
 		local members_changed = self._members_changed
+
 		self._members_changed = nil
 
 		return members_changed

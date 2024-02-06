@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/weapons/actions/action_wield.lua
+
 ActionWield = class(ActionWield, ActionBase)
 
 ActionWield.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
@@ -13,6 +15,7 @@ ActionWield.client_owner_start_action = function (self, new_action, t, chain_att
 
 	local inventory_extension = self.inventory_extension
 	local input_extension = self.input_extension
+
 	self.current_action = new_action
 	self.action_time_started = t
 
@@ -23,6 +26,7 @@ ActionWield.client_owner_start_action = function (self, new_action, t, chain_att
 	end
 
 	local new_slot, scroll_value, swap_from_storage_type = CharacterStateHelper.wield_input(input_extension, inventory_extension, "action_wield", true)
+
 	self.new_slot = new_slot
 
 	assert(self.new_slot, "went into wield action without input")
@@ -42,6 +46,7 @@ ActionWield.client_owner_start_action = function (self, new_action, t, chain_att
 	local slot_data = equipment.slots[new_slot]
 	local item_data = slot_data.item_data
 	local item_template = BackendUtils.get_item_template(item_data)
+
 	item_template.next_action = item_template.action_on_wield
 
 	input_extension:add_wield_cooldown(t + new_action.wield_cooldown)

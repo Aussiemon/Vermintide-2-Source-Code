@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/helpers/item_tooltip_helper.lua
+
 ItemTooltipHelper = ItemTooltipHelper or {}
+
 local formatting_functions = {
 	damage = function (value)
 		return string.format("%.2f", value)
@@ -27,7 +30,7 @@ local formatting_functions = {
 	end,
 	push_strength = function (value)
 		return string.format("%.2f", math.round_with_precision(value, 2))
-	end
+	end,
 }
 
 ItemTooltipHelper.format_return_string = function (format_type, values)
@@ -65,7 +68,7 @@ ItemTooltipHelper.get_damage = function (unit, item, armor_type, primary_armor_t
 	local target_index = 1
 	local target_settings = damage_profile.targets and damage_profile.targets[target_index] or damage_profile.default_target
 	local boost_curve = BoostCurves[target_settings.boost_curve_type]
-	local boost_damage_multiplier = nil
+	local boost_damage_multiplier
 	local is_critical_strike = false
 	local backstab_multiplier = 1
 	local breed = Breeds.skaven_clan_rat
@@ -77,7 +80,7 @@ ItemTooltipHelper.get_damage = function (unit, item, armor_type, primary_armor_t
 end
 
 ItemTooltipHelper.get_stagger_strength = function (unit, item, damage_profile, power_level, difficulty_level)
-	local breed = nil
+	local breed
 	local hit_zone_name = "torso"
 	local is_critical_strike = false
 	local target_index = 1
@@ -102,7 +105,7 @@ ItemTooltipHelper.get_next_action_names = function (action, charge_type)
 		end
 	end
 
-	local next_action_name, next_sub_action_name, next_start_time = nil
+	local next_action_name, next_sub_action_name, next_start_time
 	local wanted_index = 1
 
 	for index, chain_action in ipairs(chain_actions) do
@@ -157,28 +160,31 @@ ItemTooltipHelper.get_chain_damages = function (values, action, unit, item, stat
 			local power_level_max = ActionUtils.scale_charged_projectile_power_level(power_level, action, 1)
 			local damage_min = ItemTooltipHelper.get_damage(unit, item, armor_type, primary_armor_type, damage_profile, power_level_min, difficulty_level)
 			local damage_max = ItemTooltipHelper.get_damage(unit, item, armor_type, primary_armor_type, damage_profile, power_level_max, difficulty_level)
+
 			values[#values + 1] = {
 				type = "charge",
 				value_min = damage_min,
-				value_max = damage_max
+				value_max = damage_max,
 			}
 		elseif action.kind == "geiser" then
 			local power_level_min = ActionUtils.scale_geiser_power_level(power_level, 0)
 			local power_level_max = ActionUtils.scale_geiser_power_level(power_level, 1)
 			local damage_min = ItemTooltipHelper.get_damage(unit, item, armor_type, primary_armor_type, damage_profile, power_level_min, difficulty_level)
 			local damage_max = ItemTooltipHelper.get_damage(unit, item, armor_type, primary_armor_type, damage_profile, power_level_max, difficulty_level)
+
 			values[#values + 1] = {
 				type = "charge",
 				value_min = damage_min,
-				value_max = damage_max
+				value_max = damage_max,
 			}
 		else
 			local damage = ItemTooltipHelper.get_damage(unit, item, armor_type, primary_armor_type, damage_profile, power_level, difficulty_level)
 			local shot_count = impact_data and (impact_data.shot_count or impact_data.num_projectiles) or action.shot_count or action.num_projectiles or 1
+
 			values[#values + 1] = {
 				type = shot_count > 1 and "multi" or "single",
 				shot_count = shot_count,
-				value = damage
+				value = damage,
 			}
 		end
 	elseif damage_profile_name_left and damage_profile_name_right then
@@ -186,10 +192,11 @@ ItemTooltipHelper.get_chain_damages = function (values, action, unit, item, stat
 		local damage_profile_right = DamageProfileTemplates[damage_profile_name_right]
 		local damage_left = ItemTooltipHelper.get_damage(unit, item, armor_type, primary_armor_type, damage_profile_left, power_level, difficulty_level)
 		local damage_right = ItemTooltipHelper.get_damage(unit, item, armor_type, primary_armor_type, damage_profile_right, power_level, difficulty_level)
+
 		values[#values + 1] = {
 			type = "dual",
 			value_left = damage_left,
-			value_right = damage_right
+			value_right = damage_right,
 		}
 	end
 end
@@ -216,25 +223,27 @@ ItemTooltipHelper.get_chain_max_targets = function (values, action, unit, item, 
 			local max_targets_attack_max, max_targets_impact_max = ActionUtils.get_max_targets(damage_profile, cleave_power_level_max)
 			local max_targets_min = max_targets_impact_min < max_targets_attack_min and max_targets_attack_min or max_targets_impact_min
 			local max_targets_max = max_targets_impact_max < max_targets_attack_max and max_targets_attack_max or max_targets_impact_max
+
 			values[#values + 1] = {
 				type = "charge",
 				value_min = max_targets_min,
-				value_max = max_targets_max
+				value_max = max_targets_max,
 			}
 		elseif action.kind == "geiser" or action.kind == "shield_slam" or action.kind == "push_stagger" then
 			values[#values + 1] = {
+				type = "single",
 				value = -1,
-				type = "single"
 			}
 		else
 			local cleave_power_level = ActionUtils.scale_power_levels(power_level, "cleave", unit, difficulty_level)
 			local max_targets_attack, max_targets_impact = ActionUtils.get_max_targets(damage_profile, cleave_power_level)
 			local max_targets = max_targets_impact < max_targets_attack and max_targets_attack or max_targets_impact
 			local shot_count = impact_data and (impact_data.shot_count or impact_data.num_projectiles) or action.shot_count or action.num_projectiles or 1
+
 			values[#values + 1] = {
 				type = shot_count > 1 and "multi" or "single",
 				shot_count = shot_count,
-				value = max_targets
+				value = max_targets,
 			}
 		end
 	elseif damage_profile_name_left and damage_profile_name_right then
@@ -245,10 +254,11 @@ ItemTooltipHelper.get_chain_max_targets = function (values, action, unit, item, 
 		local max_targets_attack_right, max_targets_impact_right = ActionUtils.get_max_targets(damage_profile_right, cleave_power_level)
 		local max_targets_left = max_targets_impact_left < max_targets_attack_left and max_targets_attack_left or max_targets_impact_left
 		local max_targets_right = max_targets_impact_right < max_targets_attack_right and max_targets_attack_right or max_targets_impact_right
+
 		values[#values + 1] = {
 			type = "dual",
 			value_left = max_targets_left,
-			value_right = max_targets_right
+			value_right = max_targets_right,
 		}
 	end
 end
@@ -271,28 +281,31 @@ ItemTooltipHelper.get_chain_stagger_strengths = function (values, action, unit, 
 			local power_level_max = ActionUtils.scale_charged_projectile_power_level(power_level, action, 1)
 			local type_min, duration_min, distance_min, value_min, strength_min = ItemTooltipHelper.get_stagger_strength(unit, item, damage_profile, power_level_min, difficulty_level)
 			local type_max, duration_max, distance_max, value_max, strength_max = ItemTooltipHelper.get_stagger_strength(unit, item, damage_profile, power_level_max, difficulty_level)
+
 			values[#values + 1] = {
 				type = "charge",
 				value_min = strength_min,
-				value_max = strength_max
+				value_max = strength_max,
 			}
 		elseif action.kind == "geiser" then
 			local power_level_min = ActionUtils.scale_geiser_power_level(power_level, 0)
 			local power_level_max = ActionUtils.scale_geiser_power_level(power_level, 1)
 			local type_min, duration_min, distance_min, value_min, strength_min = ItemTooltipHelper.get_stagger_strength(unit, item, damage_profile, power_level_min, difficulty_level)
 			local type_max, duration_max, distance_max, value_max, strength_max = ItemTooltipHelper.get_stagger_strength(unit, item, damage_profile, power_level_max, difficulty_level)
+
 			values[#values + 1] = {
 				type = "charge",
 				value_min = strength_min,
-				value_max = strength_max
+				value_max = strength_max,
 			}
 		else
 			local type, duration, distance, value, strength = ItemTooltipHelper.get_stagger_strength(unit, item, damage_profile, power_level, difficulty_level)
 			local shot_count = impact_data and (impact_data.shot_count or impact_data.num_projectiles) or action.shot_count or action.num_projectiles or 1
+
 			values[#values + 1] = {
 				type = shot_count > 1 and "multi" or "single",
 				shot_count = shot_count,
-				value = strength
+				value = strength,
 			}
 		end
 	elseif damage_profile_name_left and damage_profile_name_right then
@@ -300,10 +313,11 @@ ItemTooltipHelper.get_chain_stagger_strengths = function (values, action, unit, 
 		local damage_profile_right = DamageProfileTemplates[damage_profile_name_right]
 		local type_left, duration_left, distance_left, value_left, strength_left = ItemTooltipHelper.get_stagger_strength(unit, item, damage_profile_left, power_level, difficulty_level)
 		local type_right, duration_right, distance_right, value_right, strength_right = ItemTooltipHelper.get_stagger_strength(unit, item, damage_profile_right, power_level, difficulty_level)
+
 		values[#values + 1] = {
 			type = "dual",
 			value_left = strength_left,
-			value_right = strength_right
+			value_right = strength_right,
 		}
 	end
 end
@@ -316,22 +330,23 @@ ItemTooltipHelper.get_chain_critical_hit_chances = function (values, action, uni
 
 	if damage_profile_name or damage_profile_name_left and damage_profile_name_right then
 		local crit_chance = ActionUtils.get_critical_strike_chance(unit, action)
+
 		values[#values + 1] = {
 			type = "single",
-			value = crit_chance
+			value = crit_chance,
 		}
 	end
 end
 
 local ranged_actions = {
 	beam = true,
-	crossbow = true,
-	charged_projectile = true,
-	shotgun = true,
-	handgun = true,
 	bow = true,
 	bullet_spray = true,
-	flamethrower = true
+	charged_projectile = true,
+	crossbow = true,
+	flamethrower = true,
+	handgun = true,
+	shotgun = true,
 }
 
 ItemTooltipHelper.get_time_between_damage = function (values, action, unit, item, stat_descriptor)
@@ -345,18 +360,20 @@ ItemTooltipHelper.get_time_between_damage = function (values, action, unit, item
 			local chain_start_time = stat_descriptor.chain_start_time or 0
 			local start_time = action.damage_interval or action.fire_time or 0
 			local attack_time = chain_start_time + start_time
+
 			values[#values + 1] = {
 				type = "single",
-				value = attack_time
+				value = attack_time,
 			}
 		elseif action.kind == "sweep" or action.kind == "shield_slam" then
 			local chain_start_time = stat_descriptor.chain_start_time or 0
 			local damage_window_start = action.damage_window_start or 0
 			local damage_window_end = action.damage_window_end or 0
 			local attack_time = chain_start_time + damage_window_start
+
 			values[#values + 1] = {
 				type = "single",
-				value = attack_time
+				value = attack_time,
 			}
 
 			return true
@@ -376,10 +393,11 @@ ItemTooltipHelper.get_chain_boost_coefficients = function (values, action, unit,
 		local target_settings = damage_profile.targets and damage_profile.targets[target_index] or damage_profile.default_target
 		local boost_coefficient = target_settings.boost_curve_coefficient or DefaultBoostCurveCoefficient
 		local shot_count = impact_data and (impact_data.shot_count or impact_data.num_projectiles) or action.shot_count or action.num_projectiles or 1
+
 		values[#values + 1] = {
 			type = shot_count > 1 and "multi" or "single",
 			shot_count = shot_count,
-			value = boost_coefficient
+			value = boost_coefficient,
 		}
 	elseif damage_profile_name_left and damage_profile_name_right then
 		local damage_profile_left = DamageProfileTemplates[damage_profile_name_left]
@@ -389,10 +407,11 @@ ItemTooltipHelper.get_chain_boost_coefficients = function (values, action, unit,
 		local boost_coefficient_left = target_settings_left.boost_curve_coefficient or DefaultBoostCurveCoefficient
 		local target_settings_right = damage_profile_right.targets and damage_profile_right.targets[target_index] or damage_profile_right.default_target
 		local boost_coefficient_right = target_settings_right.boost_curve_coefficient or DefaultBoostCurveCoefficient
+
 		values[#values + 1] = {
 			type = "dual",
 			value_left = boost_coefficient_left,
-			value_right = boost_coefficient_right
+			value_right = boost_coefficient_right,
 		}
 	end
 end
@@ -409,10 +428,11 @@ ItemTooltipHelper.get_chain_headshot_boost_coefficients = function (values, acti
 		local target_settings = damage_profile.targets and damage_profile.targets[target_index] or damage_profile.default_target
 		local boost_coefficient_headshot = target_settings.boost_curve_coefficient_headshot or DefaultBoostCurveCoefficient
 		local shot_count = impact_data and (impact_data.shot_count or impact_data.num_projectiles) or action.shot_count or action.num_projectiles or 1
+
 		values[#values + 1] = {
 			type = shot_count > 1 and "multi" or "single",
 			shot_count = shot_count,
-			value = boost_coefficient_headshot
+			value = boost_coefficient_headshot,
 		}
 	elseif damage_profile_name_left and damage_profile_name_right then
 		local damage_profile_left = DamageProfileTemplates[damage_profile_name_left]
@@ -422,10 +442,11 @@ ItemTooltipHelper.get_chain_headshot_boost_coefficients = function (values, acti
 		local boost_coefficient_headshot_left = target_settings_left.boost_curve_coefficient_headshot or DefaultBoostCurveCoefficient
 		local target_settings_right = damage_profile_right.targets and damage_profile_right.targets[target_index] or damage_profile_right.default_target
 		local boost_coefficient_headshot_right = target_settings_right.boost_curve_coefficient_headshot or DefaultBoostCurveCoefficient
+
 		values[#values + 1] = {
 			type = "dual",
 			value_left = boost_coefficient_headshot_left,
-			value_right = boost_coefficient_headshot_right
+			value_right = boost_coefficient_headshot_right,
 		}
 	end
 end
@@ -435,7 +456,7 @@ ItemTooltipHelper.get_push_angles = function (values, action, unit, item, stat_d
 	local item_template = BackendUtils.get_item_template(item_data)
 	local actions = item_template.actions
 	local charge_type = stat_descriptor.charge_type
-	local action_name, sub_action_name = nil
+	local action_name, sub_action_name
 	local tooltip_detail = item_template.tooltip_detail
 
 	if tooltip_detail then
@@ -452,13 +473,14 @@ ItemTooltipHelper.get_push_angles = function (values, action, unit, item, stat_d
 	if damage_profile_inner_name and damage_profile_outer_name then
 		local inner_push_angle = action.push_angle
 		local outer_push_angle = action.outer_push_angle
+
 		values[#values + 1] = {
 			type = "single",
-			value = inner_push_angle
+			value = inner_push_angle,
 		}
 		values[#values + 1] = {
 			type = "single",
-			value = outer_push_angle
+			value = outer_push_angle,
 		}
 	end
 end
@@ -472,7 +494,7 @@ ItemTooltipHelper.get_push_strengths = function (values, action, unit, item, sta
 	local item_template = BackendUtils.get_item_template(item_data)
 	local actions = item_template.actions
 	local charge_type = stat_descriptor.charge_type
-	local action_name, sub_action_name = nil
+	local action_name, sub_action_name
 	local tooltip_detail = item_template.tooltip_detail
 
 	if tooltip_detail then
@@ -489,7 +511,7 @@ ItemTooltipHelper.get_push_strengths = function (values, action, unit, item, sta
 	if damage_profile_inner_name and damage_profile_outer_name then
 		local damage_profile_inner = DamageProfileTemplates[damage_profile_inner_name]
 		local damage_profile_outer = DamageProfileTemplates[damage_profile_outer_name]
-		local breed = nil
+		local breed
 		local hit_zone_name = "torso"
 		local is_critical_strike = false
 		local target_index = 1
@@ -499,13 +521,14 @@ ItemTooltipHelper.get_push_strengths = function (values, action, unit, item, sta
 		local range_scalar_multiplier = 0
 		local type_inner, duration_inner, distance_inner, value_inner, strength_inner = ItemTooltipHelper.get_stagger_strength(unit, item, damage_profile_inner, power_level, difficulty_level)
 		local type_outer, duration_outer, distance_outer, value_outer, strength_outer = ItemTooltipHelper.get_stagger_strength(unit, item, damage_profile_outer, power_level, difficulty_level)
+
 		values[#values + 1] = {
 			type = "single",
-			value = strength_inner
+			value = strength_inner,
 		}
 		values[#values + 1] = {
 			type = "single",
-			value = strength_outer
+			value = strength_outer,
 		}
 	end
 end
@@ -519,10 +542,10 @@ ItemTooltipHelper.parse_weapon_chain = function (values, unit, item, stat_descri
 	local charge_type = stat_descriptor.charge_type
 	local slot_type = item_data.slot_type
 	local uses_custom_chain = false
-	local current_action_name, current_sub_action_name, current_chain_start_time = nil
+	local current_action_name, current_sub_action_name, current_chain_start_time
 	local skip_chain_start_time = slot_type == "ranged"
 	local tooltip_detail = item_template.tooltip_detail
-	local tooltip_sub_detail = nil
+	local tooltip_sub_detail
 
 	if tooltip_detail then
 		tooltip_sub_detail = tooltip_detail[charge_type]
@@ -531,8 +554,10 @@ ItemTooltipHelper.parse_weapon_chain = function (values, unit, item, stat_descri
 		if not uses_custom_chain then
 			current_action_name = tooltip_sub_detail.action_name
 			current_sub_action_name = tooltip_sub_detail.sub_action_name
+
 			local action = actions[current_action_name][current_sub_action_name]
 			local _, _, next_chain_start_time = ItemTooltipHelper.get_next_action_names(action, charge_type)
+
 			current_chain_start_time = next_chain_start_time
 		end
 	else
@@ -543,7 +568,9 @@ ItemTooltipHelper.parse_weapon_chain = function (values, unit, item, stat_descri
 		for _, settings in ipairs(tooltip_sub_detail) do
 			current_action_name = settings.action_name
 			current_sub_action_name = settings.sub_action_name
+
 			local action = actions[current_action_name][current_sub_action_name]
+
 			stat_descriptor.chain_start_time = settings.chain_start_time
 
 			chain_value_function(values, action, unit, item, stat_descriptor)
@@ -556,11 +583,11 @@ ItemTooltipHelper.parse_weapon_chain = function (values, unit, item, stat_descri
 		if slot_type == "ranged" then
 			traversed_action_pairs[#traversed_action_pairs + 1] = {
 				tooltip_detail.light.action_name,
-				tooltip_detail.light.sub_action_name
+				tooltip_detail.light.sub_action_name,
 			}
 			traversed_action_pairs[#traversed_action_pairs + 1] = {
 				tooltip_detail.heavy.action_name,
-				tooltip_detail.heavy.sub_action_name
+				tooltip_detail.heavy.sub_action_name,
 			}
 		end
 
@@ -569,10 +596,12 @@ ItemTooltipHelper.parse_weapon_chain = function (values, unit, item, stat_descri
 		while not chain_complete do
 			traversed_action_pairs[#traversed_action_pairs + 1] = {
 				current_action_name,
-				current_sub_action_name
+				current_sub_action_name,
 			}
+
 			local action = actions[current_action_name][current_sub_action_name]
 			local next_action_name, next_sub_action_name, next_chain_start_time = ItemTooltipHelper.get_next_action_names(action, charge_type)
+
 			stat_descriptor.chain_start_time = not skip_chain_start_time and current_chain_start_time
 			skip_chain_start_time = chain_value_function(values, action, unit, item, stat_descriptor)
 

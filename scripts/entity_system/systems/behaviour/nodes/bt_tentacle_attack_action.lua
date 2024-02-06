@@ -1,7 +1,10 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_tentacle_attack_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTTentacleAttackAction = class(BTTentacleAttackAction, BTNode)
 BTTentacleAttackAction.name = "BTTentacleAttackAction"
+
 local swipe_attack = false
 
 BTTentacleAttackAction.init = function (self, ...)
@@ -10,7 +13,9 @@ end
 
 BTTentacleAttackAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
+
 	blackboard.action = action
+
 	local target_unit = blackboard.target_unit
 	local tentacle_extension = ScriptUnit.has_extension(unit, "ai_supplementary_system")
 
@@ -29,6 +34,7 @@ BTTentacleAttackAction.sync_state_to_clients = function (self, unit, blackboard,
 	local unit_id = network_manager:unit_game_object_id(unit)
 	local target_unit_id = network_manager:unit_game_object_id(blackboard.current_target)
 	local template_id = NetworkLookup.tentacle_template[template_name]
+
 	reach_dist = math.clamp(reach_dist, 0, 31)
 
 	network_manager.network_transmit:send_rpc_clients("rpc_change_tentacle_state", unit_id, target_unit_id, template_id, reach_dist, t)
@@ -75,6 +81,7 @@ BTTentacleAttackAction.update_tentacle = function (self, unit, blackboard, t, dt
 			if data.sub_state == "grabbed" then
 				current_length = current_length - breed.drag_speed * dt
 				data.current_length = current_length
+
 				local root_dist_sq = Vector3.length_squared(to_player_from_root)
 				local new_pos = POSITION_LOOKUP[target_unit]
 
@@ -91,7 +98,7 @@ BTTentacleAttackAction.update_tentacle = function (self, unit, blackboard, t, dt
 					data.sub_state = "portal_consume"
 				end
 			elseif data.sub_state == "portal_hanging" then
-				if data.wait_for_consume < t then
+				if t > data.wait_for_consume then
 					StatusUtils.set_grabbed_by_tentacle_status_network(target_unit, "portal_consume")
 
 					data.wait_for_player_death = t + breed.time_before_consume_kill_player
@@ -104,7 +111,7 @@ BTTentacleAttackAction.update_tentacle = function (self, unit, blackboard, t, dt
 
 				target_health_extension:die()
 
-				if data.wait_for_player_death and data.wait_for_player_death < t then
+				if data.wait_for_player_death and t > data.wait_for_player_death then
 					StatusUtils.set_grabbed_by_tentacle_network(target_unit, false, unit)
 
 					local portal_unit = data.portal_unit
@@ -115,7 +122,7 @@ BTTentacleAttackAction.update_tentacle = function (self, unit, blackboard, t, dt
 					data.wait_for_player_death = nil
 				end
 
-				if data.wait_for_consume_end < t then
+				if t > data.wait_for_consume_end then
 					data.sub_state = "attacking"
 
 					self:sync_state_to_clients(unit, blackboard, "attack", current_length, t)
@@ -132,7 +139,7 @@ BTTentacleAttackAction.update_tentacle = function (self, unit, blackboard, t, dt
 			elseif data.sub_state == "swipe_attack" then
 				Debug.text("Swipe Attack")
 
-				if blackboard.swipe_attack_timer < t then
+				if t > blackboard.swipe_attack_timer then
 					data.sub_state = nil
 					blackboard.next_attack_time = t + 2 + math.random()
 
@@ -142,6 +149,7 @@ BTTentacleAttackAction.update_tentacle = function (self, unit, blackboard, t, dt
 				local target_dist = Vector3.length(to_player_from_root)
 				local wanted_length = target_dist + evade_length
 				local full_length = data.max_length
+
 				current_length = current_length + dt * 25
 
 				if full_length <= current_length then
@@ -152,7 +160,7 @@ BTTentacleAttackAction.update_tentacle = function (self, unit, blackboard, t, dt
 
 				tentacle_extension:set_target("evaded", target_unit, current_length)
 
-				if blackboard.evaded_timer < t then
+				if t > blackboard.evaded_timer then
 					data.sub_state = nil
 					blackboard.next_attack_time = t + 2 + math.random()
 
@@ -172,6 +180,7 @@ BTTentacleAttackAction.update_tentacle = function (self, unit, blackboard, t, dt
 
 				data.current_length = current_length
 				blackboard.tentacle_satisfied = true
+
 				local new_pos = POSITION_LOOKUP[target_unit]
 
 				data.last_target_pos:store(new_pos)
@@ -179,8 +188,9 @@ BTTentacleAttackAction.update_tentacle = function (self, unit, blackboard, t, dt
 			else
 				local target_dist = Vector3.length(to_player_from_root)
 				local wanted_length = (lock_point_dist or target_dist) + data.spiral_length
-				local is_at_full_length = nil
+				local is_at_full_length
 				local full_length = data.max_length
+
 				current_length = current_length + dt * 35
 
 				if full_length <= current_length then
@@ -255,7 +265,7 @@ end
 BTTentacleAttackAction.target_evade_through_dodge_check = function (self, action, tentacle_data, target_unit, dist_to_tip_sqr)
 	local target_status_extension = ScriptUnit.has_extension(target_unit, "status_system")
 
-	if target_status_extension and target_status_extension.is_dodging and action.dodge_mitigation_radius_squared < dist_to_tip_sqr then
+	if target_status_extension and target_status_extension.is_dodging and dist_to_tip_sqr > action.dodge_mitigation_radius_squared then
 		return true
 	end
 end

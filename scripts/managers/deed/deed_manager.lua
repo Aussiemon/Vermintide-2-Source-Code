@@ -1,8 +1,11 @@
+﻿-- chunkname: @scripts/managers/deed/deed_manager.lua
+
 DeedManager = class(DeedManager)
+
 local RPCS = {
 	"rpc_select_deed",
 	"rpc_reset_deed",
-	"rpc_deed_consumed"
+	"rpc_deed_consumed",
 }
 
 DeedManager.init = function (self)
@@ -25,6 +28,7 @@ DeedManager.network_context_created = function (self, lobby, server_peer_id, own
 	self._peer_id = own_peer_id
 	self._network_server = is_server and network_handler or nil
 	self._is_server = is_server
+
 	local ignore_send = true
 
 	self:reset(ignore_send)
@@ -36,6 +40,7 @@ DeedManager.network_context_destroyed = function (self)
 	self._peer_id = nil
 	self._network_server = nil
 	self._is_server = false
+
 	local ignore_send = true
 
 	self:reset(ignore_send)
@@ -141,6 +146,7 @@ DeedManager.delete_marked_deeds = function (self, deed_list)
 	item_interface:delete_marked_deeds(deed_list)
 
 	local is_deleting_deeds = item_interface:is_deleting_deeds()
+
 	self._is_deleting_deeds = is_deleting_deeds
 
 	return is_deleting_deeds
@@ -166,7 +172,8 @@ end
 DeedManager.can_delete_deeds = function (self, current_deeds, marked_deeds)
 	local item_interface = Managers.backend:get_interface("items")
 	local can_delete, remaining_deeds, deletable_deeds = item_interface:can_delete_deeds(current_deeds, marked_deeds)
-	local num_marked_deeds, num_deletable_deeds = nil
+	local num_marked_deeds, num_deletable_deeds
+
 	num_marked_deeds = marked_deeds and #marked_deeds or 0
 	num_deletable_deeds = deletable_deeds and #deletable_deeds or 0
 
@@ -193,10 +200,12 @@ DeedManager.select_deed = function (self, backend_id, peer_id)
 	local item_interface = Managers.backend:get_interface("items")
 	local item = item_interface:get_item_from_id(backend_id)
 	local item_data = item.data
+
 	self._selected_deed_data = item_data
 	self._selected_deed_id = backend_id
 	self._owner_peer_id = peer_id
 	self._deed_session_faulty = false
+
 	local network_manager = Managers.state.network
 
 	if network_manager and network_manager:game() then
@@ -230,6 +239,7 @@ DeedManager._use_reward_callback = function (self)
 	fassert(self._reward_callback, "there is no reward callback")
 
 	local reward_callback = self._reward_callback
+
 	self._reward_callback = nil
 
 	reward_callback()
@@ -238,9 +248,11 @@ end
 DeedManager.rpc_select_deed = function (self, channel_id, item_name_id, owner_peer_id)
 	local item_name = NetworkLookup.item_names[item_name_id]
 	local item_data = ItemMasterList[item_name]
+
 	self._selected_deed_data = item_data
 	self._selected_deed_id = nil
 	self._owner_peer_id = owner_peer_id
+
 	local network_manager = Managers.state.network
 
 	if self._is_server and network_manager and network_manager:game() then

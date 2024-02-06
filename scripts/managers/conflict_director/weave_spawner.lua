@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/conflict_director/weave_spawner.lua
+
 require("scripts/settings/weave_spawning_settings")
 
 WeaveSpawner = class(WeaveSpawner)
@@ -62,17 +64,17 @@ WeaveSpawner._update_main_path_spawning = function (self, t, dt, main_path_spawn
 			local terror_event = main_path_spawning_setting.terror_event_name
 
 			if percentage_threshold <= travel_percentage then
-				local main_path_trigger_distance = total_travel_dist * percentage_threshold * 0.01
+				local main_path_trigger_distance = total_travel_dist * (percentage_threshold * 0.01)
 				local percentage_spawn_offset = main_path_spawning_setting.percentage_spawn_offset
 				local offset_distance = 0
 
 				if percentage_spawn_offset then
-					offset_distance = total_travel_dist * percentage_spawn_offset * 0.01
+					offset_distance = total_travel_dist * (percentage_spawn_offset * 0.01)
 				end
 
 				local data = {
 					main_path_trigger_distance = main_path_trigger_distance + offset_distance,
-					seed = self.original_seed
+					seed = self.original_seed,
 				}
 
 				TerrorEventMixer.start_event(terror_event, data)
@@ -94,6 +96,7 @@ WeaveSpawner._random = function (self, ...)
 	fassert(self.seed, "No seed set for weave spawning!")
 
 	local seed, value = Math.next_random(self.seed, ...)
+
 	self.seed = seed
 
 	return value
@@ -111,10 +114,10 @@ WeaveSpawner.get_hidden_spawn_pos_from_position_seeded = function (self, epicent
 	local radius_spread = 10
 	local max_tries = 10
 	local ignore_umbra = not World.umbra_available(world)
-	local hidden_spawn_pos = nil
+	local hidden_spawn_pos
 
 	for i = 1, max_tries do
-		local check_pos = nil
+		local check_pos
 
 		for j = 1, max_tries do
 			local add_vec = Vector3(radius + (self:_random() - 0.5) * radius_spread, 0, 1)

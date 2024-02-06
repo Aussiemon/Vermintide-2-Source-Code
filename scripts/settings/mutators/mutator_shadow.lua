@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/mutators/mutator_shadow.lua
+
 local enemies_per_frame = 5
 local buffed_current_index = 0
 local faded_current_index = 0
@@ -12,12 +14,13 @@ return {
 	linked_units_visibility = {},
 	buffed_units = {},
 	buff_params = {
-		external_optional_multiplier = -0.9
+		external_optional_multiplier = -0.9,
 	},
 	server_start_function = function (context, data)
 		local wind_strength = Managers.weave:get_wind_strength() or 1
 		local wind_settings = Managers.weave:get_active_wind_settings()
 		local difficulty_name = Managers.state.difficulty:get_difficulty()
+
 		data.buff_system = Managers.state.entity:system("buff_system")
 		data.hero_side = Managers.state.side:get_side_from_name("heroes")
 		data.lantern_spawned = false
@@ -68,6 +71,7 @@ return {
 
 		for i = 1, enemies_per_frame do
 			buffed_current_index = buffed_current_index + 1
+
 			local unit = spawned_enemies[buffed_current_index]
 			local remove_buff = false
 
@@ -116,6 +120,7 @@ return {
 
 						if not has_shadow_mutator_buff then
 							local server_buff_id = data.buff_system:add_buff(unit, "mutator_shadow_damage_reduction", unit, true)
+
 							buffed_units[unit] = server_buff_id
 						end
 					end
@@ -137,6 +142,7 @@ return {
 
 		for i = 1, #dead_units do
 			local dead_unit = dead_units[i]
+
 			buffed_units[dead_unit] = nil
 		end
 	end,
@@ -171,6 +177,7 @@ return {
 		local linked_units_visibility = template.linked_units_visibility
 		local player_manager = Managers.player
 		local player_unit = player_manager:local_player().player_unit
+
 		data.light_radius = wind_settings and wind_settings.light_radius[difficulty_name][wind_strength] or 6
 
 		if player_unit and not data.light_spawned then
@@ -192,10 +199,11 @@ return {
 
 		local camera_unit = player_manager:local_player().camera_follow_unit
 		local camera_extension = ScriptUnit.has_extension(camera_unit, "camera_system")
-		local observed_player = nil
+		local observed_player
 
 		if camera_extension then
 			local observed_player_id = camera_extension:get_observed_player_id()
+
 			observed_player = observed_player_id and player_manager:players()[observed_player_id]
 		end
 
@@ -205,6 +213,7 @@ return {
 
 		for i = 1, enemies_per_frame do
 			faded_current_index = faded_current_index + 1
+
 			local unit = spawned_enemies[faded_current_index]
 
 			if unit then
@@ -215,6 +224,7 @@ return {
 					fade_system:set_min_fade(unit, scalar)
 
 					faded_units[unit] = scalar
+
 					local projectile_linker_extension = ScriptUnit.has_extension(unit, "projectile_linker_system")
 
 					if projectile_linker_extension then
@@ -296,12 +306,14 @@ return {
 
 		for i = 1, #dead_units do
 			local dead_unit = dead_units[i]
+
 			faded_units[dead_unit] = nil
+
 			local linked_unit = linked_units[dead_unit]
 
 			if Unit.alive(linked_unit) then
 				World.destroy_unit(context.world, linked_unit)
 			end
 		end
-	end
+	end,
 }

@@ -1,18 +1,20 @@
+﻿-- chunkname: @scripts/settings/breeds/breed_chaos_dummy_troll.lua
+
 local breed_data = {
 	behavior = "dummy_troll",
-	no_autoaim = true,
-	target_selection = "pick_no_targets",
 	boss = "SET_TO_NIL",
-	passive_in_patrol = false,
-	race = "chaos",
-	not_bot_target = true,
-	perception = "perception_no_seeing",
 	combat_music_state = "no_boss",
 	debug_spawn_category = "Misc",
+	no_autoaim = true,
+	not_bot_target = true,
+	passive_in_patrol = false,
+	perception = "perception_no_seeing",
+	race = "chaos",
+	target_selection = "pick_no_targets",
 	run_on_spawn = AiBreedSnippets.on_chaos_dummy_troll_spawn,
 	run_on_death = AiBreedSnippets.on_chaos_dummy_troll_death,
 	run_on_update = AiBreedSnippets.on_chaos_dummy_troll_update,
-	run_on_despawn = AiBreedSnippets.on_chaos_dummy_troll_death
+	run_on_despawn = AiBreedSnippets.on_chaos_dummy_troll_death,
 }
 
 for key, value in pairs(Breeds.chaos_troll) do
@@ -29,6 +31,7 @@ end
 
 Breeds.chaos_dummy_troll = table.create_copy(Breeds.chaos_dummy_troll, breed_data)
 Breeds.chaos_dummy_troll.is_always_spawnable = nil
+
 local action_data = {}
 
 for key, value in pairs(BreedActions.chaos_troll) do

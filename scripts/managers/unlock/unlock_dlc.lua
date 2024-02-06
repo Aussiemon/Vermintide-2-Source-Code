@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/unlock/unlock_dlc.lua
+
 UnlockDlc = class(UnlockDlc)
 
 UnlockDlc.init = function (self, name, app_id, backend_reward_id, always_unlocked_game_app_ids, cosmetic, fallback_id, requires_restart)

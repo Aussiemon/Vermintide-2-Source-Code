@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/ui/hud_ui/hud_customizer.lua
+
 HudCustomizer = {}
+
 local COLOR_TEXT = Colors.get_color_table_with_alpha("white", 255)
 local COLOR_BACKGROUND = Colors.get_color_table_with_alpha("black", 100)
 local COLOR_DEFAULT = Colors.get_color_table_with_alpha("light_sky_blue", 200)
@@ -8,10 +11,12 @@ local drag_active = false
 local drag_hover = false
 local drag_base = {
 	0,
-	0
+	0,
 }
 local offset_registry = {}
+
 HudCustomizer.offset_registry = offset_registry
+
 local hud_customizer_enabled = Application.user_setting("hud_customizer_enabled")
 
 HudCustomizer.is_active = function ()
@@ -30,6 +35,7 @@ HudCustomizer.run = function (ui_renderer, ui_scenegraph, customizer_data)
 	end
 
 	drag_hover = false
+
 	local is_dirty = false
 	local key = customizer_data.registry_key or customizer_data
 	local offset = offset_registry[key]
@@ -37,7 +43,7 @@ HudCustomizer.run = function (ui_renderer, ui_scenegraph, customizer_data)
 	if not offset then
 		offset = {
 			0,
-			0
+			0,
 		}
 		offset_registry[key] = offset
 		is_dirty = true
@@ -107,6 +113,7 @@ HudCustomizer.run = function (ui_renderer, ui_scenegraph, customizer_data)
 	end
 
 	local root_node = ui_scenegraph[customizer_data.root_scenegraph_id]
+
 	is_dirty = is_dirty or root_node.local_position[1] ~= offset[1] or root_node.local_position[2] ~= offset[2]
 
 	if is_dirty then

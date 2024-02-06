@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/level/environment/environment_blender.lua
+
 require("scripts/level/environment/environment_handler")
 
 EnvironmentBlender = class(EnvironmentBlender)
@@ -12,12 +14,12 @@ EnvironmentBlender.init = function (self, world, viewport)
 	self.environment_handler:add_blend_group("volumes")
 
 	local blend_data = {
-		volume_name = "world",
-		environment = "default",
 		always_inside = true,
+		environment = "default",
 		override_sun_snap = false,
 		particle_light_intensity = 1,
-		viewport = self.viewport
+		volume_name = "world",
+		viewport = self.viewport,
 	}
 
 	self.environment_handler:add_blend("EnvironmentBlendVolume", "volumes", -1, blend_data)
@@ -40,7 +42,7 @@ EnvironmentBlender.event_register_environment_volume = function (self, volume_na
 		particle_light_intensity = particle_light_intensity,
 		is_sphere = sphere_pos and sphere_radius,
 		sphere_pos = sphere_pos and Vector3Box(sphere_pos),
-		sphere_radius = sphere_radius
+		sphere_radius = sphere_radius,
 	}
 
 	self.environment_handler:add_blend("EnvironmentBlendVolume", "volumes", priority, blend_data, specified_id)
@@ -67,6 +69,7 @@ EnvironmentBlender.update_shading_settings = function (self)
 	for _, volume in ipairs(volume_weights) do
 		if volume.weight > 0 then
 			local weight = volume.weight
+
 			shading_settings[#shading_settings + 1] = volume.environment
 			shading_settings[#shading_settings + 1] = weight
 			particle_light_intensity = particle_light_intensity + weight * volume.particle_light_intensity
@@ -98,26 +101,26 @@ local debug_colors = {
 		255,
 		100,
 		100,
-		200
+		200,
 	},
 	{
 		255,
 		100,
 		200,
-		100
+		100,
 	},
 	{
 		255,
 		200,
 		100,
-		100
+		100,
 	},
 	{
 		255,
 		200,
 		200,
-		100
-	}
+		100,
+	},
 }
 
 EnvironmentBlender.debug_color = function (self)

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/mutators/mutator_curse_grey_wings.lua
+
 local MIN_TIME_BETWEEN_SPAWNS = 20
 local MAX_TIME_BETWEEN_SPAWNS = 50
 local global_printf = printf
@@ -21,8 +23,8 @@ local MAX_DISTANCE = 20
 local DISTANCE_TO_FORBIDDEN_POSITION_LIST = 10
 
 return {
-	description = "curse_grey_wings_desc",
 	curse_package_name = "resource_packages/mutators/mutator_curse_grey_wings",
+	description = "curse_grey_wings_desc",
 	display_name = "curse_grey_wings_name",
 	icon = "deus_curse_belakor_01",
 	server_start_function = function (context, data)
@@ -58,6 +60,7 @@ return {
 		if not data.next_spawn_t then
 			local seed = data.seed
 			local new_seed, time_between_spawn = Math.next_random(seed, MIN_TIME_BETWEEN_SPAWNS, MAX_TIME_BETWEEN_SPAWNS)
+
 			data.seed = new_seed
 			data.next_spawn_t = t + time_between_spawn
 		end
@@ -76,6 +79,7 @@ return {
 
 			for player_index = 1, #players do
 				local unit = players[player_index]
+
 				forbidden_position_list[#forbidden_position_list + 1] = POSITION_LOOKUP[unit]
 			end
 
@@ -88,9 +92,12 @@ return {
 
 			if position_found then
 				local seed = data.seed
-				local unit = nil
+				local unit
+
 				data.active_terror_event_id = Managers.state.conflict:start_terror_event("grey_wings_spawns", seed, unit, position_found)
+
 				local new_seed = Math.next_random(seed)
+
 				data.seed = new_seed
 				data.next_spawn_t = nil
 			end
@@ -98,5 +105,5 @@ return {
 	end,
 	server_player_hit_function = function (context, data, hit_unit, attacker_unit, hit_data)
 		return
-	end
+	end,
 }

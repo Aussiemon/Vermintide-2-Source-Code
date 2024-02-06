@@ -1,9 +1,12 @@
+﻿-- chunkname: @scripts/settings/dlcs/scorpion/scorpion_equipment_settings.lua
+
 local settings = DLCSettings.scorpion
+
 settings.item_master_list_file_names = {
-	"scripts/settings/equipment/item_master_list_scorpion"
+	"scripts/settings/equipment/item_master_list_scorpion",
 }
 settings.weapon_skins_file_names = {
-	"scripts/settings/equipment/weapon_skins_scorpion"
+	"scripts/settings/equipment/weapon_skins_scorpion",
 }
 settings.inventory_package_list = {
 	"units/weapons/player/wpn_emp_sword_exe_03_t1/wpn_emp_sword_exe_03_t1_magic_01",
@@ -121,11 +124,11 @@ settings.inventory_package_list = {
 	"units/weapons/player/wpn_we_shield_02/wpn_we_shield_02_magic_01",
 	"units/weapons/player/wpn_we_shield_02/wpn_we_shield_02_magic_01_3p",
 	"units/weapons/player/wpn_wh_billhook_02/wpn_wh_billhook_02_magic_01",
-	"units/weapons/player/wpn_wh_billhook_02/wpn_wh_billhook_02_magic_01_3p"
+	"units/weapons/player/wpn_wh_billhook_02/wpn_wh_billhook_02_magic_01_3p",
 }
 settings.projectile_units = {
 	throwing_axe_01_t2_magic_01 = {
 		dummy_linker_unit_name = "units/weapons/player/wpn_dw_thrown_axe_01_t2/prj_dw_thrown_axe_01_t2_magic_01_3ps",
-		projectile_unit_name = "units/weapons/player/wpn_dw_thrown_axe_01_t2/prj_dw_thrown_axe_01_t2_magic_01_3ps"
-	}
+		projectile_unit_name = "units/weapons/player/wpn_dw_thrown_axe_01_t2/prj_dw_thrown_axe_01_t2_magic_01_3ps",
+	},
 }

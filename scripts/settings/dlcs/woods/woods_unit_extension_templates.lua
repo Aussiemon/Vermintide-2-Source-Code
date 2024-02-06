@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/dlcs/woods/woods_unit_extension_templates.lua
+
 local ai_locomotion_name = _G.GameSettingsDevelopment and GameSettingsDevelopment.use_engine_optimized_ai_locomotion and "AILocomotionExtensionC" or "AILocomotionExtension"
 local unit_extension_templates = {
 	thornsister_thorn_wall_unit = {
@@ -10,7 +12,7 @@ local unit_extension_templates = {
 			"DoorExtension",
 			"DynamicUnitSmartObjectExtension",
 			"ThornWallHealthExtension",
-			"GenericDeathExtension"
+			"GenericDeathExtension",
 		},
 		husk_extensions = {
 			"AreaDamageExtension",
@@ -18,18 +20,18 @@ local unit_extension_templates = {
 			"BuffExtension",
 			"AIUnitFadeExtension",
 			"ThornWallHealthExtension",
-			"GenericDeathExtension"
-		}
+			"GenericDeathExtension",
+		},
 	},
 	vortex_unit = {
 		go_type = "vortex_unit",
 		self_owned_extensions = {
-			"SummonedVortexExtension"
+			"SummonedVortexExtension",
 		},
 		husk_extensions = {
-			"SummonedVortexHuskExtension"
-		}
-	}
+			"SummonedVortexHuskExtension",
+		},
+	},
 }
 
 return unit_extension_templates

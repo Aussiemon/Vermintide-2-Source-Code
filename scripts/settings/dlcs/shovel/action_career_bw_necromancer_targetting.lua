@@ -1,7 +1,11 @@
+﻿-- chunkname: @scripts/settings/dlcs/shovel/action_career_bw_necromancer_targetting.lua
+
 require("scripts/unit_extensions/weapons/area_damage/liquid/damage_wave_templates")
 
 local wave_template = DamageWaveTemplates.templates.necromancer_curse_wave
+
 ActionCareerBWNecromancerTargetting = class(ActionCareerBWNecromancerTargetting, ActionBase)
+
 local FORWARD_OFFSET = 1
 local HALF_WIDTH = 2
 local HALF_HEIGHT = 0.5
@@ -17,7 +21,9 @@ ActionCareerBWNecromancerTargetting.init = function (self, world, item_name, is_
 	self._talent_extension = ScriptUnit.extension(owner_unit, "talent_system")
 	self._first_person_extension = ScriptUnit.has_extension(owner_unit, "first_person_system")
 	self._weapon_extension = ScriptUnit.extension(weapon_unit, "weapon_system")
+
 	local player = Managers.player:owner(owner_unit)
+
 	self._local_player = player.local_player
 	self._owner_unit = owner_unit
 	self._has_valid_position = false
@@ -46,6 +52,7 @@ ActionCareerBWNecromancerTargetting.client_owner_start_action = function (self, 
 	if self._local_player and not self._round_career_ability then
 		local decal_unit_name = self._decal_unit_name
 		local unit_spawner = Managers.state.unit_spawner
+
 		self._decal_unit = unit_spawner:spawn_local_unit(decal_unit_name)
 	end
 
@@ -74,8 +81,7 @@ ActionCareerBWNecromancerTargetting._get_first_person_position_direction = funct
 end
 
 ActionCareerBWNecromancerTargetting._update_targetting = function (self, t)
-	local above = 1
-	local below = 2
+	local above, below = 1, 2
 	local nav_world = self._nav_world
 	local _, fp_direction = self:_get_first_person_position_direction()
 	local cast_direction = Vector3.normalize(Vector3.flat(fp_direction))
@@ -114,6 +120,7 @@ ActionCareerBWNecromancerTargetting._update_targetting = function (self, t)
 
 		local length = (wave_template.max_speed + wave_template.start_speed * 0.5) * wave_template.time_of_life
 		local half_length = length * 0.5
+
 		self._has_valid_position = true
 
 		self._weapon_extension:set_mode(true)
@@ -136,7 +143,7 @@ ActionCareerBWNecromancerTargetting.finish = function (self, reason)
 
 		local targeting_data = {
 			position = self._last_valid_cast_position,
-			direction = self._last_valid_cast_direction
+			direction = self._last_valid_cast_direction,
 		}
 
 		return targeting_data

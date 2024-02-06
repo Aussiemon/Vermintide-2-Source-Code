@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/team_previewer.lua
+
 require("scripts/ui/views/world_hero_previewer")
 
 TeamPreviewer = class(TeamPreviewer)

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/dlcs/scorpion/scorpion_interactions.lua
+
 local function _get_unlocks(achievement_name, statistics_db, stats_id)
 	local achievement_data = AchievementTemplates.achievements[achievement_name]
 	local completed = achievement_data.completed(statistics_db, stats_id)
@@ -82,9 +84,9 @@ InteractionDefinitions.weave_level_select_access.client.stop = function (world, 
 
 		if fulfill_requirements_for_weave_levels then
 			Managers.ui:handle_transition("start_game_view_force", {
-				menu_sub_state_name = "weave_quickplay",
 				menu_state_name = "play",
-				use_fade = true
+				menu_sub_state_name = "weave_quickplay",
+				use_fade = true,
 			})
 			Unit.flow_event(interactable_unit, "lua_interaction_success")
 		else
@@ -121,8 +123,8 @@ InteractionDefinitions.weave_magic_forge_access.client.stop = function (world, i
 
 		if fulfill_requirements_for_weave_forge then
 			Managers.ui:handle_transition("hero_view_force", {
+				menu_state_name = "weave_forge",
 				use_fade = true,
-				menu_state_name = "weave_forge"
 			})
 			Unit.flow_event(interactable_unit, "lua_interaction_success")
 		else
@@ -159,8 +161,8 @@ InteractionDefinitions.weave_leaderboard_access.client.stop = function (world, i
 
 		if fulfill_requirements_for_leaderboard then
 			Managers.ui:handle_transition("start_game_view_force", {
+				menu_state_name = "leaderboard",
 				use_fade = true,
-				menu_state_name = "leaderboard"
 			})
 			Unit.flow_event(interactable_unit, "lua_interaction_success")
 		else

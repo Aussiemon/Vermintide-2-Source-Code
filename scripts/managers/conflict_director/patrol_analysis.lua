@@ -1,98 +1,102 @@
+﻿-- chunkname: @scripts/managers/conflict_director/patrol_analysis.lua
+
 PatrolAnalysis = class(PatrolAnalysis)
+
 local NAVTAG_LAYERS_STANDARD = {
-	jumps = 1.5,
-	ledges_with_fence = 1.5,
 	doors = 1.5,
+	jumps = 1.5,
+	ledges = 1.5,
+	ledges_with_fence = 1.5,
 	teleporters = 5,
-	ledges = 1.5
 }
 local NAVTAG_LAYERS_ROAMING = {
-	jumps = 20,
-	ledges_with_fence = 20,
 	doors = 20,
+	jumps = 20,
+	ledges = 20,
+	ledges_with_fence = 20,
 	teleporters = 5,
-	ledges = 20
 }
 
 local function make_colors(fill_table, f, g)
 	local s = #fill_table
+
 	fill_table[s + 1] = {
 		255,
 		0,
 		f,
-		0
+		0,
 	}
 	fill_table[s + 2] = {
 		255,
 		0,
 		0,
-		f
+		f,
 	}
 	fill_table[s + 3] = {
 		255,
 		f,
 		0,
-		0
+		0,
 	}
 	fill_table[s + 4] = {
 		255,
 		f,
 		f,
-		0
+		0,
 	}
 	fill_table[s + 5] = {
 		255,
 		0,
 		f,
-		f
+		f,
 	}
 	fill_table[s + 6] = {
 		255,
 		f,
 		0,
-		f
+		f,
 	}
 	fill_table[s + 7] = {
 		255,
 		g,
 		g,
-		f
+		f,
 	}
 	fill_table[s + 8] = {
 		255,
 		f,
 		g,
-		g
+		g,
 	}
 	fill_table[s + 9] = {
 		255,
 		g,
 		f,
-		g
+		g,
 	}
 	fill_table[s + 10] = {
 		255,
 		f,
 		g,
-		0
+		0,
 	}
 	fill_table[s + 11] = {
 		255,
 		f,
 		0,
-		g
+		g,
 	}
 	fill_table[s + 12] = {
 		255,
 		0,
 		g,
-		f
+		f,
 	}
 	fill_table[s + 1] = {
 		255,
 		g,
 		0,
-		f
+		f,
 	}
 end
 
@@ -107,6 +111,7 @@ PatrolAnalysis.init = function (self, nav_world, using_editor, drawer)
 	self.nav_world = nav_world
 	self.using_editor = using_editor
 	self.line_drawer = drawer
+
 	local cost_table_standard = GwNavTagLayerCostTable.create()
 
 	self:setup_nav(NAVTAG_LAYERS_STANDARD, cost_table_standard)
@@ -128,17 +133,17 @@ PatrolAnalysis.init = function (self, nav_world, using_editor, drawer)
 	self.ready_waypoints = {}
 	self.free_navbots_lists = {
 		standard = {},
-		roaming = {}
+		roaming = {},
 	}
 	self.navbot_setups = {
 		standard = {
 			nav_cost_map_cost_table = nav_cost_map_cost_table_standard,
-			nav_cost_table = cost_table_standard
+			nav_cost_table = cost_table_standard,
 		},
 		roaming = {
 			nav_cost_map_cost_table = nav_cost_map_cost_table_roaming,
-			nav_cost_table = cost_table_roaming
-		}
+			nav_cost_table = cost_table_roaming,
+		},
 	}
 end
 
@@ -188,6 +193,7 @@ PatrolAnalysis.generate_patrol_splines = function (self, level_name, main_paths,
 
 	if not level_name then
 		local level_key = Managers.state.game_mode:level_key()
+
 		level_name = LevelSettings[level_key].level_name
 	end
 
@@ -196,9 +202,10 @@ PatrolAnalysis.generate_patrol_splines = function (self, level_name, main_paths,
 	self.patrol_waypoints = {}
 	self.free_navbots_lists = {
 		standard = {},
-		roaming = {}
+		roaming = {},
 	}
 	self._spline_counter = 1
+
 	local result = self:_generate_patrol_spline(level_name, main_paths, "units/hub_elements/boss_waypoint", "boss_waypoint", drawer, "standard")
 
 	if result ~= "success" then
@@ -225,7 +232,7 @@ end
 PatrolAnalysis._finilize_splines = function (self, main_paths, drawer)
 	local result = "success"
 	local patrol_waypoints = self.patrol_waypoints
-	local done = nil
+	local done
 
 	for patrol_id, spline in pairs(patrol_waypoints) do
 		done = false
@@ -234,8 +241,9 @@ PatrolAnalysis._finilize_splines = function (self, main_paths, drawer)
 			done = true
 
 			for i = 1, #spline - 1 do
-				if spline[i + 1].order < spline[i].order then
+				if spline[i].order > spline[i + 1].order then
 					local temp = spline[i]
+
 					spline[i] = spline[i + 1]
 					spline[i + 1] = temp
 					done = false
@@ -261,13 +269,15 @@ PatrolAnalysis._finilize_splines = function (self, main_paths, drawer)
 		print("Found spline of type:", spline.patrol_type, " with id:", id, " ,points:", #spline)
 
 		local h = Vector3(0, 0, 1)
-		local p2 = nil
+		local p2
 
 		for i = 1, #spline do
 			local waypoint = spline[i]
 			local p2 = waypoint.pos:unbox()
 			local path_pos, travel_dist, total_path_dist, _ = MainPathUtils.closest_pos_at_main_path_lua(main_paths, p1)
+
 			waypoint.travel_dist = travel_dist
+
 			local color = spline.patrol_type == "boss_waypoint" and Color(255, 125, 0) or Color(255, 255, 0)
 
 			drawer:line(p1 + h, p2 + h, color)
@@ -307,7 +317,7 @@ PatrolAnalysis._generate_patrol_spline = function (self, level_name, main_paths,
 					map_section = map_section,
 					navbot_kind = navbot_kind,
 					index = self._spline_counter,
-					one_directional = one_directional
+					one_directional = one_directional,
 				}
 				patrol_waypoints[patrol_id] = spline
 				self._spline_counter = self._spline_counter + 1
@@ -341,7 +351,7 @@ PatrolAnalysis._generate_patrol_spline = function (self, level_name, main_paths,
 			table.insert(spline, index, {
 				travel_dist = 0,
 				pos = Vector3Box(pos),
-				order = order
+				order = order,
 			})
 		end
 	end
@@ -402,6 +412,7 @@ PatrolAnalysis.inject_spline_path = function (self, spline, line_drawer)
 
 		for i = 0, node_count - 1 do
 			local position = GwNavBot.get_path_node_pos(navbot, i)
+
 			spline_points[spline_points_index] = Vector3Box(position)
 			spline_points_index = spline_points_index + 1
 		end
@@ -433,13 +444,13 @@ PatrolAnalysis.compute_spline_path = function (self, spline_name, spline_way_poi
 		unique_navbot = true,
 		wp_index = 2,
 		id = spline_name,
-		navbot_kind = navbot_kind
+		navbot_kind = navbot_kind,
 	}
 
 	for i, spline_way_point in ipairs(spline_way_points) do
 		table.insert(spline, i, {
 			pos = spline_way_point,
-			order = i
+			order = i,
 		})
 	end
 
@@ -502,6 +513,7 @@ PatrolAnalysis.get_path_point = function (self, points, path_length, move_percen
 		local p2 = points[i + 1]:unbox()
 		local vec = p2 - p1
 		local p1p2_dist = Vector3_length(vec)
+
 		travel_dist = travel_dist + p1p2_dist
 
 		if goal_dist < travel_dist then
@@ -524,6 +536,7 @@ PatrolAnalysis.get_path_length = function (self, points)
 
 	for j = 2, #points do
 		local p2 = points[j]:unbox()
+
 		total_len = total_len + Vector3_distance(p1, p2)
 		p1 = p2
 	end
@@ -544,9 +557,10 @@ PatrolAnalysis.run = function (self)
 		if spline then
 			running_splines[#running_splines + 1] = spline
 			patrol_waypoints[id] = nil
+
 			local p1 = spline[1].pos:unbox()
 			local p2 = spline[2].pos:unbox()
-			local navbot = nil
+			local navbot
 			local navbot_kind = spline.navbot_kind or "standard"
 			local free_navbots = free_navbots_lists[navbot_kind]
 			local num_free_navbots = #free_navbots
@@ -575,7 +589,7 @@ PatrolAnalysis.run = function (self)
 	local size = #running_splines
 	local i = 1
 
-	while size >= i do
+	while i <= size do
 		local spline = running_splines[i]
 		local navbot = spline.navbot
 		local path_computing_done = not GwNavBot.is_computing_new_path(navbot)
@@ -603,6 +617,7 @@ PatrolAnalysis.run = function (self)
 				GwNavBot.update_position(navbot, p1)
 
 				wp_index = wp_index + 1
+
 				local p2 = spline[wp_index].pos:unbox()
 
 				GwNavBot.compute_new_path(navbot, p2)
@@ -616,9 +631,10 @@ PatrolAnalysis.run = function (self)
 					local p1 = spline[1].pos:unbox()
 					local p2 = spline[2].pos:unbox()
 					local direction = Vector3.normalize(p2 - p1)
+
 					spline.spline_points = {
 						Vector3Box(p1),
-						Vector3Box(p1 + direction)
+						Vector3Box(p1 + direction),
 					}
 					spline.spline_points_index = 2
 
@@ -631,6 +647,7 @@ PatrolAnalysis.run = function (self)
 					GwNavBot.destroy(navbot)
 				else
 					local free_navbots = free_navbots_lists[spline.navbot_kind or "standard"]
+
 					free_navbots[#free_navbots + 1] = navbot
 				end
 

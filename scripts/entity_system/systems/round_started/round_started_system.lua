@@ -1,10 +1,14 @@
+﻿-- chunkname: @scripts/entity_system/systems/round_started/round_started_system.lua
+
 RoundStartedSystem = class(RoundStartedSystem, ExtensionSystemBase)
+
 local extensions = {
-	"RoundStartedExtension"
+	"RoundStartedExtension",
 }
 local RPCS = {
-	"rpc_round_started"
+	"rpc_round_started",
 }
+
 RoundStartedExtension = class(RoundStartedExtension)
 
 RoundStartedExtension.init = function (self)
@@ -39,6 +43,7 @@ end
 RoundStartedSystem.set_start_area = function (self, volume_name)
 	local level = LevelHelper:current_level(self._world)
 	local level_name = LevelHelper:current_level_settings(self._world).level_name
+
 	self._start_area = volume_name
 end
 
@@ -46,6 +51,7 @@ RoundStartedSystem.on_add_extension = function (self, world, unit, extension_nam
 	ScriptUnit.add_extension(nil, unit, "RoundStartedExtension", self.NAME, extension_init_data)
 
 	self._units[unit] = true
+
 	local ext = ScriptUnit.extension(unit, self.NAME)
 
 	return ext
@@ -76,7 +82,7 @@ RoundStartedSystem.update = function (self, context, t)
 
 		if score_type then
 			local start_data = {
-				start_time = t
+				start_time = t,
 			}
 			local leaderboard_system = Managers.state.entity:system("leaderboard_system")
 

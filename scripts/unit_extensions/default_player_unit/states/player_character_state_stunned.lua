@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/default_player_unit/states/player_character_state_stunned.lua
+
 PlayerCharacterStateStunned = class(PlayerCharacterStateStunned, PlayerCharacterState)
 
 PlayerCharacterStateStunned.init = function (self, character_state_init_context)
@@ -13,7 +15,7 @@ PlayerCharacterStateStunned.init = function (self, character_state_init_context)
 		"wield_4",
 		"wield_4_alt",
 		"wield_5",
-		"action_one"
+		"action_one",
 	}
 	self.movement_speed = 0
 	self.movement_speed_limit = 1
@@ -37,6 +39,7 @@ PlayerCharacterStateStunned.on_enter = function (self, unit, input, dt, context,
 	self.movement_speed_modifier = hit_react_settings.movement_speed_modifier
 	self.end_look_sense_override = hit_react_settings.end_look_sense_override
 	self.start_look_sense_override = hit_react_settings.start_look_sense_override
+
 	local original_duration = hit_react_settings.duration_function()
 	local buff_extension = ScriptUnit.extension(unit, "buff_system")
 	local duration = buff_extension:apply_buffs_to_value(original_duration, "stun_duration")
@@ -50,6 +53,7 @@ PlayerCharacterStateStunned.on_enter = function (self, unit, input, dt, context,
 	local input_extension = self.input_extension
 	local status_extension = self.status_extension
 	local move_anim_3p, _ = CharacterStateHelper.get_move_animation(self.locomotion_extension, input_extension, status_extension)
+
 	self.move_anim_3p = move_anim_3p
 
 	self.last_input_direction:store(Vector3(0, 0, 0))
@@ -91,6 +95,7 @@ PlayerCharacterStateStunned.update = function (self, unit, input, dt, context, t
 	local world = self.world
 	local movement_settings_table = PlayerUnitMovementSettings.get_movement_settings_table(unit)
 	local first_person_extension = self.first_person_extension
+
 	self.time_in_state = self.time_in_state + dt
 
 	if CharacterStateHelper.do_common_state_transitions(status_extension, csm, "stunned") then
@@ -103,7 +108,7 @@ PlayerCharacterStateStunned.update = function (self, unit, input, dt, context, t
 		return
 	end
 
-	if self.end_time < t then
+	if t > self.end_time then
 		csm:change_state("standing")
 
 		return
@@ -139,6 +144,7 @@ PlayerCharacterStateStunned.update = function (self, unit, input, dt, context, t
 	move_speed = move_speed * move_speed_multiplier
 	move_speed = move_speed * movement_settings_table.player_speed_scale
 	move_speed = move_speed * self.movement_speed
+
 	local movement = Vector3(0, 0, 0)
 	local move_input = input_extension:get("move")
 
@@ -158,9 +164,9 @@ PlayerCharacterStateStunned.update = function (self, unit, input, dt, context, t
 		movement = movement + move_input_controller
 	end
 
-	local stagger = nil
+	local stagger
 
-	if self.next_pulse < t then
+	if t > self.next_pulse then
 		stagger = Vector3(2 * (math.random() - 0.5), 2 * (math.random() - 0.5), 0)
 		self.next_pulse = t + 0.2
 
@@ -172,7 +178,9 @@ PlayerCharacterStateStunned.update = function (self, unit, input, dt, context, t
 	movement = movement + self.last_stagger:unbox()
 	self.current_stagger_speed = math.max(0, self.current_stagger_speed - movement_settings_table.move_acceleration_down * dt)
 	move_speed = move_speed * self.current_stagger_speed * self.movement_speed_modifier
-	local move_input_direction = nil
+
+	local move_input_direction
+
 	move_input_direction = Vector3.normalize(movement)
 
 	if Vector3.length(move_input_direction) == 0 then
@@ -199,7 +207,7 @@ PlayerCharacterStateStunned.update = function (self, unit, input, dt, context, t
 		return
 	end
 
-	local look_override = nil
+	local look_override
 
 	if self.look_override then
 		look_override = self.look_override:unbox()

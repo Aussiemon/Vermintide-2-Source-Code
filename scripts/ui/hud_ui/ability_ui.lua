@@ -1,5 +1,8 @@
+﻿-- chunkname: @scripts/ui/hud_ui/ability_ui.lua
+
 local definitions = local_require("scripts/ui/hud_ui/ability_ui_definitions")
 local scenegraph_definition = definitions.scenegraph_definition
+
 AbilityUI = class(AbilityUI)
 
 AbilityUI.init = function (self, parent, ingame_ui_context)
@@ -7,7 +10,7 @@ AbilityUI.init = function (self, parent, ingame_ui_context)
 	self._input_manager = ingame_ui_context.input_manager
 	self._player = ingame_ui_context.player
 	self._render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 
 	self:_create_ui_elements()
@@ -16,6 +19,7 @@ AbilityUI.init = function (self, parent, ingame_ui_context)
 	self._spectated_player = nil
 	self._spectated_player_unit = nil
 	self._hide_effects = false
+
 	local event_manager = Managers.state.event
 
 	event_manager:register(self, "input_changed", "event_input_changed")
@@ -54,6 +58,7 @@ AbilityUI._update_ability_widget = function (self, dt, t)
 	if self._career_name ~= career_name then
 		local career_settings = CareerSettings[career_name]
 		local ability_1 = career_settings.activated_ability[1]
+
 		hide_effects = ability_1.hide_ability_ui_effects
 		self._hide_effects = hide_effects
 		self._career_name = career_name
@@ -63,9 +68,11 @@ AbilityUI._update_ability_widget = function (self, dt, t)
 	local ability_widget = self._widgets_by_name.ability
 	local content = ability_widget.content
 	local style = ability_widget.style
+
 	content.ability_effect.texture_id = career_data.ability_effect
 	content.ability_effect_top.texture_id = career_data.ability_effect_top
 	content.ability_bar_highlight = career_data.ability_bar_highlight
+
 	local can_use_ability = career_extension:can_use_activated_ability()
 	local current_extra_uses, max_extra_uses = career_extension:get_extra_ability_uses()
 	local has_thornsister_passive = current_extra_uses > 0
@@ -81,6 +88,7 @@ AbilityUI._update_ability_widget = function (self, dt, t)
 	if has_thornsister_passive then
 		local pulse_progress = 0.5 + 0.5 * math.sin(t * 5)
 		local effect_alpha = 220 + 35 * pulse_progress
+
 		style.ability_effect_right.color[1] = effect_alpha
 		style.ability_effect_top_right.color[1] = effect_alpha
 		style.ability_effect_left.color[1] = effect_alpha
@@ -90,6 +98,7 @@ AbilityUI._update_ability_widget = function (self, dt, t)
 	if can_use_ability then
 		content.can_use = true
 		content.on_cooldown = career_extension:current_ability_cooldown() > 0
+
 		local pulse_progress = 0.5 + 0.5 * math.sin(t * 5)
 		local effect_alpha = math.min(style.ability_effect_left.color[1] + dt * 200, 255)
 
@@ -99,6 +108,7 @@ AbilityUI._update_ability_widget = function (self, dt, t)
 		end
 
 		local input_alpha = 100 + pulse_progress * 155
+
 		style.ability_effect_right.color[1] = effect_alpha
 		style.ability_effect_top_right.color[1] = effect_alpha
 		style.ability_effect_left.color[1] = effect_alpha
@@ -165,9 +175,9 @@ AbilityUI._handle_gamepad = function (self)
 end
 
 local customizer_data = {
-	root_scenegraph_id = "ability_root",
 	is_child = true,
-	registry_key = "player_status"
+	registry_key = "player_status",
+	root_scenegraph_id = "ability_root",
 }
 
 AbilityUI.update = function (self, dt, t)
@@ -244,6 +254,7 @@ AbilityUI.event_input_changed = function (self)
 		local ui_renderer = self._ui_renderer
 		local max_length = 40
 		local input_style = widget.style.input_text
+
 		input_text = UIRenderer.crop_text_width(ui_renderer, input_text, max_length, input_style)
 	end
 
@@ -257,6 +268,7 @@ AbilityUI.on_spectator_target_changed = function (self, spectated_player_unit)
 	self._spectated_player_unit = spectated_player_unit
 	self._spectated_player = Managers.player:owner(spectated_player_unit)
 	self._is_spectator = true
+
 	local observed_side = Managers.state.side:get_side_from_player_unique_id(self._spectated_player:unique_id())
 	local is_hero = observed_side:name() == "heroes"
 
@@ -284,6 +296,7 @@ AbilityUI._update_numeric_ui_ability_cooldown = function (self)
 
 	local career_extension = ScriptUnit.extension(player_unit, "career_system")
 	local can_use_ability = career_extension:can_use_activated_ability(1)
+
 	widget.content.can_use_ability = can_use_ability
 
 	if can_use_ability then
@@ -291,6 +304,7 @@ AbilityUI._update_numeric_ui_ability_cooldown = function (self)
 	end
 
 	local ability_cooldown, max_cooldown = career_extension:current_ability_cooldown()
+
 	widget.content.ability_cooldown = UIUtils.format_time(ability_cooldown)
 
 	self:_smudge()

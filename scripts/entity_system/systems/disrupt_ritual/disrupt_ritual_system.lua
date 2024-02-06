@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/entity_system/systems/disrupt_ritual/disrupt_ritual_system.lua
+
 DisruptRitualSystem = class(DisruptRitualSystem, ExtensionSystemBase)
+
 local extension_name = "DisruptRitualExtension"
 
 DisruptRitualSystem.init = function (self, entity_system_creation_context, ...)
@@ -13,10 +16,13 @@ end
 
 DisruptRitualSystem.on_add_extension = function (self, world, unit, extension_name, extension_init_data)
 	local extension_alias = self.NAME
-	local extension_pool_table = nil
+	local extension_pool_table
 	local extension = ScriptUnit.add_extension(self.extension_init_context, unit, extension_name, extension_alias, extension_init_data, extension_pool_table)
+
 	self.extensions[extension_name] = (self.extensions[extension_name] or 0) + 1
+
 	local index = self.extensions[extension_name]
+
 	self._units[index] = unit
 	self._extension_list[#self._extension_list + 1] = extension
 

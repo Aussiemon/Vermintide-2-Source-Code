@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/weapons/projectiles/projectile_impact/player_projectile_impact_unit_extension.lua
+
 PlayerProjectileImpactUnitExtension = class(PlayerProjectileImpactUnitExtension, ProjectileBaseImpactUnitExtension)
 
 PlayerProjectileImpactUnitExtension.init = function (self, extension_init_context, unit, extension_init_data)
@@ -5,25 +7,34 @@ PlayerProjectileImpactUnitExtension.init = function (self, extension_init_contex
 
 	self.network_manager = Managers.state.network
 	self.is_server = Managers.player.is_server
+
 	local owner_unit = extension_init_data.owner_unit
+
 	self.owner_unit = owner_unit
+
 	local owner_player = Managers.player:owner(owner_unit)
+
 	self._dont_target_friendly = extension_init_data.dont_target_friendly
 	self._dont_target_patrols = extension_init_data.dont_target_patrols
+
 	local item_name = extension_init_data.item_name
 	local item_data = ItemMasterList[item_name]
 	local item_template = BackendUtils.get_item_template(item_data)
 	local item_template_name = extension_init_data.item_template_name
 	local action_name = extension_init_data.action_name
 	local sub_action_name = extension_init_data.sub_action_name
+
 	self.action_lookup_data = {
 		item_template_name = item_template_name,
 		action_name = action_name,
-		sub_action_name = sub_action_name
+		sub_action_name = sub_action_name,
 	}
+
 	local projectile_info = item_template.actions[action_name][sub_action_name].projectile_info
+
 	self.impact_type = projectile_info.impact_type
 	self.static_impact_type = projectile_info.static_impact_type
+
 	local enemy_collision_filter = "filter_player_ray_projectile_dynamic_only"
 	local collision_filter = "filter_player_ray_projectile_no_player"
 	local static_collision_filter = "filter_player_ray_projectile_static_only"
@@ -39,7 +50,9 @@ PlayerProjectileImpactUnitExtension.init = function (self, extension_init_contex
 	self.radius = extension_init_data.radius
 	self.scene_query_height_offset = projectile_info.scene_query_height_offset or 0
 	self.last_position = nil
+
 	local t = Managers.time:time("game")
+
 	self._friendly_fire_grace_period = t + (projectile_info.friendly_fire_grace_period or 0)
 end
 
@@ -106,6 +119,7 @@ end
 PlayerProjectileImpactUnitExtension._do_raycast = function (self, unit, from, to, physics_world, collision_filter, t)
 	local direction = to - from
 	local length = Vector3.length(direction)
+
 	direction = Vector3.normalize(direction)
 
 	PhysicsWorld.prepare_actors_for_raycast(physics_world, from, direction, 0, 1, length * length)
@@ -129,7 +143,7 @@ PlayerProjectileImpactUnitExtension._do_raycast = function (self, unit, from, to
 
 		if valid then
 			local num_actors = Unit.num_actors(hit_unit)
-			local actor_index = nil
+			local actor_index
 
 			for j = 0, num_actors - 1 do
 				local actor = Unit.actor(hit_unit, j)
@@ -177,7 +191,7 @@ PlayerProjectileImpactUnitExtension.update_sphere_sweep = function (self, unit, 
 
 			if valid then
 				local num_actors = Unit.num_actors(hit_unit)
-				local actor_index = nil
+				local actor_index
 
 				for j = 0, num_actors - 1 do
 					local actor = Unit.actor(hit_unit, j)

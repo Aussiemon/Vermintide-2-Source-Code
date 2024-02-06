@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/ai/ai_slot_system_2.lua
+
 require("scripts/unit_extensions/human/ai_player_unit/ai_utils")
 require("scripts/settings/slot_templates")
 require("scripts/settings/slot_settings")
@@ -10,11 +12,13 @@ local DEFAULT_SLOT_TYPE = "normal"
 local extensions = {
 	"AIEnemySlotExtension",
 	"AIPlayerSlotExtension",
-	"AIAggroableSlotExtension"
+	"AIAggroableSlotExtension",
 }
+
 AISlotSystem2 = class(AISlotSystem2, ExtensionSystemBase)
+
 local SlotTypeSettings = SlotTypeSettings
-local debug_draw_slots, debug_print_slots_count = nil
+local debug_draw_slots, debug_print_slots_count
 
 AISlotSystem2.init = function (self, context, system_name)
 	AISlotSystem2.super.init(self, context, system_name, extensions)
@@ -32,20 +36,23 @@ AISlotSystem2.init = function (self, context, system_name)
 	self.network_transmit = context.network_transmit
 	self.num_total_enemies = 0
 	self.num_occupied_slots = 0
+
 	local nav_tag_layer_costs = {
 		bot_poison_wind = 1,
 		bot_ratling_gun_fire = 1,
-		fire_grenade = 1
+		fire_grenade = 1,
 	}
 
 	table.merge(nav_tag_layer_costs, NAV_TAG_VOLUME_LAYER_COST_AI)
 
 	local navtag_layer_cost_table = GwNavTagLayerCostTable.create()
+
 	self._navtag_layer_cost_table = navtag_layer_cost_table
 
 	AiUtils.initialize_cost_table(navtag_layer_cost_table, nav_tag_layer_costs)
 
 	local nav_cost_map_cost_table = GwNavCostMap.create_tag_cost_table()
+
 	self._nav_cost_map_cost_table = nav_cost_map_cost_table
 
 	AiUtils.initialize_nav_cost_map_cost_table(nav_cost_map_cost_table, nil, 1)
@@ -186,7 +193,9 @@ end
 
 AISlotSystem2.slots_count = function (self, unit, slot_type)
 	local unit_extension = self.unit_extension_data[unit]
+
 	slot_type = slot_type or DEFAULT_SLOT_TYPE
+
 	local slot_data = unit_extension.all_slots[slot_type]
 
 	return slot_data.slots_count
@@ -194,7 +203,9 @@ end
 
 AISlotSystem2.total_slots_count = function (self, unit, slot_type)
 	local unit_extension = self.unit_extension_data[unit]
+
 	slot_type = slot_type or DEFAULT_SLOT_TYPE
+
 	local slot_data = unit_extension.all_slots[slot_type]
 
 	return slot_data.total_slots_count
@@ -202,7 +213,9 @@ end
 
 AISlotSystem2.disabled_slots_count = function (self, unit, slot_type)
 	local unit_extension = self.unit_extension_data[unit]
+
 	slot_type = slot_type or DEFAULT_SLOT_TYPE
+
 	local slot_data = unit_extension.all_slots[slot_type]
 
 	return slot_data.disabled_slots_count
@@ -273,19 +286,19 @@ AISlotSystem2.update_slot_providers = function (self, t)
 
 	self:update_target_slots(t)
 
-	if self.next_total_slot_count_update < t then
+	if t > self.next_total_slot_count_update then
 		self:update_total_slots_count(t)
 
 		self.next_total_slot_count_update = t + TOTAL_SLOTS_COUNT_UPDATE_INTERVAL
 	end
 
-	if self.next_disabled_slot_count_update < t then
+	if t > self.next_disabled_slot_count_update then
 		self:update_disabled_slots_count(t)
 
 		self.next_disabled_slot_count_update = t + DISABLED_SLOTS_COUNT_UPDATE_INTERVAL
 	end
 
-	if self.next_slot_sound_update < t then
+	if t > self.next_slot_sound_update then
 		self:update_slot_sound(t)
 
 		self.next_slot_sound_update = t + SLOT_SOUND_UPDATE_INTERVAL
@@ -308,7 +321,9 @@ AISlotSystem2.update_slot_consumers = function (self, t)
 
 	local start_index = self.current_ai_index
 	local end_index = math.min(start_index + AI_UPDATES_PER_FRAME - 1, update_slots_ai_units_n)
+
 	self.current_ai_index = end_index + 1
+
 	local update_slots_ai_units_prioritized = self.update_slots_ai_units_prioritized
 
 	for i = start_index, end_index do
@@ -333,6 +348,7 @@ end
 
 AISlotSystem2.physics_async_update = function (self, context, t)
 	self.t = t
+
 	local target_units = self.target_units
 	local target_units_n = #target_units
 
@@ -355,6 +371,7 @@ AISlotSystem2.update_total_slots_count = function (self, t)
 	for j = 1, #target_units do
 		local target_unit_extension = target_units[j]
 		local available, occupied = target_unit_extension:update_total_slots_count(t)
+
 		num_slots = num_slots + available
 		num_slots_occupied_total = num_slots_occupied_total + occupied
 	end
@@ -381,15 +398,18 @@ AISlotSystem2.prioritize_queued_units_on_slot = function (self, slot)
 end
 
 AISlotSystem2.on_add_extension = function (self, world, unit, extension_name, extension_init_data)
-	local extension = nil
+	local extension
 
 	if extension_name == "AIPlayerSlotExtension" or extension_name == "AIAggroableSlotExtension" then
 		extension = AISlotSystem2.super.on_add_extension(self, world, unit, extension_name, extension_init_data)
 		self.unit_extension_data[unit] = extension
+
 		local target_units = self.target_units
 		local target_index = #target_units + 1
+
 		extension.index = target_index
 		target_units[target_index] = extension
+
 		local nav_world = self.nav_world
 		local traverse_logic = self._traverse_logic
 
@@ -428,6 +448,7 @@ AISlotSystem2.on_freeze_extension = function (self, unit, extension_name)
 
 		if slot_template.prioritize_queued_units_on_death_time then
 			local t = Managers.time:time("game")
+
 			extension.delayed_prioritized_ai_unit_update_time = t + slot_template.prioritize_queued_units_on_death_time
 		else
 			self:prioritize_queued_units_on_slot(slot)
@@ -491,6 +512,7 @@ end
 
 AISlotSystem2.unfreeze = function (self, unit)
 	local extension = self.frozen_unit_extension_data[unit]
+
 	self.frozen_unit_extension_data[unit] = nil
 	self.unit_extension_data[unit] = extension
 
@@ -506,7 +528,7 @@ end
 function debug_draw_slots(unit_extension_data, nav_world, t)
 	local drawer = Managers.state.debug:drawer({
 		mode = "immediate",
-		name = "AISlotSystem2_immediate"
+		name = "AISlotSystem2_immediate",
 	})
 
 	for unit, extension in pairs(unit_extension_data) do
@@ -526,7 +548,7 @@ function debug_print_slots_count(target_units)
 		local target_unit = target_unit_extension.unit
 		local player_manager = Managers.player
 		local owner_player = player_manager:owner(target_unit)
-		local display_name = nil
+		local display_name
 
 		if owner_player then
 			display_name = owner_player:profile_display_name()
@@ -544,6 +566,7 @@ function debug_print_slots_count(target_units)
 			local occupied_slots = slot_data.slots_count
 			local total_slots_count = slot_data.total_slots_count
 			local enabled_slots_count = total_slots_count - disabled_slots_count
+
 			total_slots = total_slots + total_slots_count
 			total_enabled = total_enabled + enabled_slots_count
 			debug_text = debug_text .. string.format("%s: [%d|%d(%d)]. ", slot_type, occupied_slots, enabled_slots_count, total_slots_count)
@@ -551,6 +574,7 @@ function debug_print_slots_count(target_units)
 
 		local num_occupied_slots = target_unit_extension.num_occupied_slots
 		local delayed_occupied_slots = target_unit_extension.delayed_num_occupied_slots
+
 		debug_text = debug_text .. string.format("total: [%d(%d)|%d(%d)]. ", num_occupied_slots, delayed_occupied_slots, total_enabled, total_slots)
 
 		Debug.text(debug_text)

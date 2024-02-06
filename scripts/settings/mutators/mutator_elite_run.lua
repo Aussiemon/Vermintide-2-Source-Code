@@ -1,15 +1,17 @@
+﻿-- chunkname: @scripts/settings/mutators/mutator_elite_run.lua
+
 return {
 	description = "description_mutator_elite_run",
-	icon = "mutator_icon_elite_run",
 	display_name = "display_name_mutator_elite_run",
+	icon = "mutator_icon_elite_run",
 	roamer_override_lookup = {
-		chaos_marauder_with_shield = "chaos_berzerker",
 		beastmen_gor = "beastmen_bestigor",
-		chaos_fanatic = "chaos_marauder",
 		beastmen_ungor = "beastmen_gor",
-		skaven_clan_rat_with_shield = "skaven_storm_vermin",
+		chaos_fanatic = "chaos_marauder",
+		chaos_marauder = "chaos_raider",
+		chaos_marauder_with_shield = "chaos_berzerker",
 		skaven_clan_rat = "skaven_storm_vermin",
-		chaos_marauder = "chaos_raider"
+		skaven_clan_rat_with_shield = "skaven_storm_vermin",
 	},
 	server_start_function = function (context, data)
 		local roamer_override_lookup = data.template.roamer_override_lookup
@@ -31,5 +33,5 @@ return {
 
 			Managers.state.conflict:set_threat_value(override_breed, threat_value)
 		end
-	end
+	end,
 }

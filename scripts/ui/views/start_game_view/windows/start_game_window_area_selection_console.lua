@@ -1,8 +1,11 @@
+﻿-- chunkname: @scripts/ui/views/start_game_view/windows/start_game_window_area_selection_console.lua
+
 local definitions = local_require("scripts/ui/views/start_game_view/windows/definitions/start_game_window_area_selection_console_definitions")
 local widget_definitions = definitions.widgets
 local area_widget_definitions = definitions.area_widgets
 local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
+
 StartGameWindowAreaSelectionConsole = class(StartGameWindowAreaSelectionConsole)
 StartGameWindowAreaSelectionConsole.NAME = "StartGameWindowAreaSelectionConsole"
 
@@ -10,18 +13,22 @@ StartGameWindowAreaSelectionConsole.on_enter = function (self, params, offset)
 	print("[StartGameWindow] Enter Substate StartGameWindowAreaSelectionConsole")
 
 	self.parent = params.parent
+
 	local ingame_ui_context = params.ingame_ui_context
+
 	self.ui_renderer = ingame_ui_context.ui_renderer
 	self.ui_top_renderer = ingame_ui_context.ui_top_renderer
 	self.input_manager = ingame_ui_context.input_manager
 	self.statistics_db = ingame_ui_context.statistics_db
 	self.world_manager = ingame_ui_context.world_manager
 	self.render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 	self._has_exited = false
+
 	local player_manager = Managers.player
 	local local_player = player_manager:local_player()
+
 	self._stats_id = local_player:stats_id()
 	self.player_manager = player_manager
 	self.peer_id = ingame_ui_context.peer_id
@@ -41,23 +48,28 @@ end
 
 StartGameWindowAreaSelectionConsole.create_ui_elements = function (self, params, offset)
 	local ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+
 	self.ui_scenegraph = ui_scenegraph
+
 	local widgets = {}
 	local widgets_by_name = {}
 
 	for name, widget_definition in pairs(widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		widgets[#widgets + 1] = widget
 		widgets_by_name[name] = widget
 	end
 
 	self._widgets = widgets
 	self._widgets_by_name = widgets_by_name
+
 	local area_widgets = {}
 	local area_widgets_by_name = {}
 
 	for name, widget_definition in pairs(area_widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		area_widgets[#area_widgets + 1] = widget
 		area_widgets_by_name[name] = widget
 	end
@@ -71,6 +83,7 @@ StartGameWindowAreaSelectionConsole.create_ui_elements = function (self, params,
 
 	if offset then
 		local window_position = ui_scenegraph.window.local_position
+
 		window_position[1] = window_position[1] + offset[1]
 		window_position[2] = window_position[2] + offset[2]
 		window_position[3] = window_position[3] + offset[3]
@@ -105,10 +118,14 @@ StartGameWindowAreaSelectionConsole._setup_area_widgets = function (self)
 	for i = 1, num_areas do
 		local settings = sorted_area_settings[i]
 		local widget = self._area_widgets[i]
+
 		assigned_widgets[i] = widget
+
 		local level_image = settings.level_image
 		local content = widget.content
+
 		content.icon = level_image
+
 		local unlocked = true
 		local dlc_name = settings.dlc_name
 
@@ -117,8 +134,10 @@ StartGameWindowAreaSelectionConsole._setup_area_widgets = function (self)
 		end
 
 		local name = settings.name
+
 		content.locked = not unlocked
 		content.area_name = name
+
 		local highest_completed_difficulty_index = math.huge
 		local acts = settings.acts
 
@@ -132,8 +151,11 @@ StartGameWindowAreaSelectionConsole._setup_area_widgets = function (self)
 		end
 
 		local frame_texture = UIWidgetUtils.get_level_frame_by_difficulty_index(highest_completed_difficulty_index)
+
 		content.frame = frame_texture
+
 		local offset = widget.offset
+
 		offset[1] = width_offset
 		width_offset = width_offset + widget_width + spacing
 	end
@@ -151,11 +173,9 @@ StartGameWindowAreaSelectionConsole._select_area_by_name = function (self, area_
 			local content = widget.content
 			local is_selected = content.area_name == area_name
 			local button_hotspot = widget.content.button_hotspot
-			button_hotspot.is_selected = is_selected
 
-			if is_selected then
-				idx = i or idx
-			end
+			button_hotspot.is_selected = is_selected
+			idx = is_selected and i or idx
 		end
 	end
 
@@ -185,6 +205,7 @@ StartGameWindowAreaSelectionConsole._set_area_presentation_info = function (self
 	end
 
 	local widgets_by_name = self._widgets_by_name
+
 	widgets_by_name.area_title.content.text = title_text
 	widgets_by_name.description_text.content.text = description_text
 
@@ -200,6 +221,7 @@ StartGameWindowAreaSelectionConsole._set_area_presentation_info = function (self
 			local local_player = Managers.player:local_player()
 			local stats_id = local_player:stats_id()
 			local statistics_db = Managers.player:statistics_db()
+
 			requirements_fulfilled = settings.unlock_requirement_function(statistics_db, stats_id)
 		end
 
@@ -399,6 +421,7 @@ StartGameWindowAreaSelectionConsole._on_select_button_pressed = function (self)
 			local local_player = Managers.player:local_player()
 			local stats_id = local_player:stats_id()
 			local statistics_db = Managers.player:statistics_db()
+
 			requirements_fulfilled = settings.unlock_requirement_function(statistics_db, stats_id)
 		end
 
@@ -473,7 +496,9 @@ StartGameWindowAreaSelectionConsole._assign_video_player = function (self, mater
 	local scenegraph_id = "video"
 	local video_widget_definition = UIWidgets.create_fixed_aspect_video(scenegraph_id, material_name)
 	local video_widget = UIWidget.init(video_widget_definition)
+
 	video_widget.content.video_content.video_player = video_player
+
 	local ui_top_renderer = self.ui_top_renderer
 	local world = ui_top_renderer.world
 
@@ -482,9 +507,11 @@ StartGameWindowAreaSelectionConsole._assign_video_player = function (self, mater
 	self._video_widget = video_widget
 	self._video_created = true
 	self._draw_video_next_frame = true
+
 	local background_widget = self._widgets_by_name.background
 	local background_widget_style = background_widget.style
 	local color = background_widget_style.rect.color
+
 	self._ui_animations.fade_in = UIAnimation.init(UIAnimation.function_by_time, color, 1, 255, 0, 1, math.easeOutCubic)
 end
 
@@ -539,6 +566,7 @@ StartGameWindowAreaSelectionConsole._animate_area_widget = function (self, widge
 
 	local combined_progress = math.max(hover_progress, selection_progress)
 	local hover_alpha = 255 * combined_progress
+
 	style.icon_glow.color[1] = hover_alpha
 	hotspot.hover_progress = hover_progress
 	hotspot.input_progress = input_progress
@@ -574,7 +602,7 @@ StartGameWindowAreaSelectionConsole._show_storepage = function (self, url, dlc_n
 
 			if product_label then
 				Managers.system_dialog:open_commerce_dialog(NpCommerceDialog.MODE_PRODUCT, user_id, {
-					product_label
+					product_label,
 				})
 			else
 				Application.error(string.format("[StartGameWindowAreaSelection:_show_storepage] No product_id for dlc: %s", dlc_name))

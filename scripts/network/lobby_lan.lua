@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/network/lobby_lan.lua
+
 require("scripts/network/lobby_aux")
 require("scripts/network/lobby_host")
 require("scripts/network/lobby_client")
@@ -12,7 +14,7 @@ if IS_XB1 then
 		[LobbyState.WORKING] = LobbyState.WORKING,
 		[LobbyState.SHUTDOWN] = LobbyState.SHUTDOWN,
 		[LobbyState.JOINED] = LobbyState.JOINED,
-		[LobbyState.FAILED] = LobbyState.FAILED
+		[LobbyState.FAILED] = LobbyState.FAILED,
 	}
 end
 
@@ -68,6 +70,7 @@ LobbyInternal.init_client = function (network_options)
 		print("Forcing LAN peer_id ", peer_id)
 
 		local peer_id_number = tonumber(peer_id, 16)
+
 		LobbyInternal.client = Network.init_lan_client(network_options.config_file_name, game_port, peer_id_number)
 	else
 		LobbyInternal.client = Network.init_lan_client(network_options.config_file_name, game_port)
@@ -96,6 +99,7 @@ LobbyInternal.ping = function (peer_id)
 end
 
 LobbyInternal.get_lobby = LanLobbyBrowser.lobby
+
 local XBOX_MOCK_LOBBY_BROWSER = {
 	is_refreshing = function ()
 		return false
@@ -105,7 +109,7 @@ local XBOX_MOCK_LOBBY_BROWSER = {
 	end,
 	num_lobbies = function ()
 		return 0
-	end
+	end,
 }
 
 LobbyInternal.lobby_browser = function ()

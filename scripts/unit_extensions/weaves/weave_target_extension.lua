@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/weaves/weave_target_extension.lua
+
 WeaveTargetExtension = class(WeaveTargetExtension)
 WeaveTargetExtension.NAME = "WeaveTargetExtension"
 
@@ -18,13 +20,14 @@ WeaveTargetExtension.init = function (self, extension_init_context, unit, extens
 	self._audio_system = Managers.state.entity:system("audio_system")
 	self._weave_objective_system = Managers.state.entity:system("weave_objective_system")
 	self.keep_alive = true
+
 	local terror_event_spawner_id = extension_init_data.terror_event_spawner_id
 
 	Unit.set_data(unit, "terror_event_spawner_id", terror_event_spawner_id)
 
 	self._attacks_allowed = extension_init_data.attacks_allowed or {
 		melee = true,
-		ranged = true
+		ranged = true,
 	}
 
 	Unit.set_data(unit, "allow_melee_damage", self._attacks_allowed.melee)
@@ -50,9 +53,10 @@ WeaveTargetExtension.activate = function (self, game_object_id, objective_data)
 		local game_object_data_table = {
 			go_type = NetworkLookup.go_types.weave_objective,
 			objective_name = NetworkLookup.weave_objective_names[self._objective_name],
-			value = self:get_percentage_done() * 100
+			value = self:get_percentage_done() * 100,
 		}
 		local callback = callback(self, "cb_game_session_disconnect")
+
 		self._game_object_id = Managers.state.network:create_game_object("weave_objective", game_object_data_table, callback)
 	else
 		self._game_object_id = game_object_id
@@ -79,7 +83,9 @@ WeaveTargetExtension.deactivate = function (self)
 	Unit.flow_event(self._unit, "target_destroyed")
 
 	local tutorial_system = ScriptUnit.extension(self._unit, "tutorial_system")
+
 	tutorial_system.active = false
+
 	local position = Unit.local_position(self._unit, 0)
 
 	for i = 1, 3 do
@@ -130,6 +136,7 @@ WeaveTargetExtension._server_update = function (self, dt, t)
 		end
 
 		self._health = health
+
 		local game_session = Network.game_session()
 
 		if game_session and self._game_object_id then

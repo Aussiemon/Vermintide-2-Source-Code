@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/generic/generic_volume_templates.lua
+
 VolumeFilters = VolumeFilters or {}
 GenericVolumeTemplates = GenericVolumeTemplates or {}
 GenericVolumeTemplates.functions = {
@@ -9,10 +11,11 @@ GenericVolumeTemplates.functions = {
 					attacker_unit = unit,
 					external_optional_bonus = {
 						damage = data.settings.damage,
-						time_between_damage = data.settings.time_between_damage
-					}
+						time_between_damage = data.settings.time_between_damage,
+					},
 				}
 				local buff_extension = ScriptUnit.extension(unit, "buff_system")
+
 				data[unit] = buff_extension:add_buff("damage_volume_generic_dot", params)
 			end,
 			on_exit = function (unit, data)
@@ -21,14 +24,14 @@ GenericVolumeTemplates.functions = {
 				buff_extension:remove_buff(data[unit])
 
 				data[unit] = nil
-			end
+			end,
 		},
 		generic_insta_kill = {
 			on_enter = function (unit, dt, t, data)
 				local health_extension = ScriptUnit.extension(unit, "health_system")
 
 				health_extension:entered_kill_volume(t)
-			end
+			end,
 		},
 		heroes_insta_kill = {
 			on_enter = function (unit, dt, t, data)
@@ -37,7 +40,7 @@ GenericVolumeTemplates.functions = {
 
 					health_extension:entered_kill_volume(t)
 				end
-			end
+			end,
 		},
 		dark_pact_insta_kill = {
 			on_enter = function (unit, dt, t, data)
@@ -46,12 +49,13 @@ GenericVolumeTemplates.functions = {
 
 					health_extension:entered_kill_volume(t)
 				end
-			end
+			end,
 		},
 		catacombs_corpse_pit = {
 			on_enter = function (unit, dt, t, data)
 				local buff_system = Managers.state.entity:system("buff_system")
 				local is_server_controlled = true
+
 				data[unit] = buff_system:add_buff(unit, "catacombs_corpse_pit", unit, is_server_controlled)
 			end,
 			on_exit = function (unit, data)
@@ -66,12 +70,13 @@ GenericVolumeTemplates.functions = {
 				buff_system:remove_server_controlled_buff(unit, buff_id)
 
 				data[unit] = nil
-			end
+			end,
 		},
 		cemetery_plague_floor = {
 			on_enter = function (unit, dt, t, data)
 				local buff_system = Managers.state.entity:system("buff_system")
 				local is_server_controlled = true
+
 				data[unit] = buff_system:add_buff(unit, "cemetery_plague_floor", unit, is_server_controlled)
 			end,
 			on_exit = function (unit, data)
@@ -86,8 +91,8 @@ GenericVolumeTemplates.functions = {
 				buff_system:remove_server_controlled_buff(unit, buff_id)
 
 				data[unit] = nil
-			end
-		}
+			end,
+		},
 	},
 	movement_volume = {
 		generic_slowdown = {
@@ -101,8 +106,8 @@ GenericVolumeTemplates.functions = {
 				local buff_system = Managers.state.entity:system("buff_system")
 
 				buff_system:remove_volume_buff_multiplier(unit, "movement_volume_generic_slowdown")
-			end
-		}
+			end,
+		},
 	},
 	location_volume = {
 		area_indication = {
@@ -121,8 +126,8 @@ GenericVolumeTemplates.functions = {
 
 					RPC.rpc_set_current_location(channel_id, unit_id, location_id)
 				end
-			end
-		}
+			end,
+		},
 	},
 	trigger_volume = {
 		all_alive_humans_outside = {
@@ -142,7 +147,7 @@ GenericVolumeTemplates.functions = {
 						on_triggered()
 					end
 				end
-			end
+			end,
 		},
 		local_player_inside = {
 			on_enter = function (unit, dt, t, data)
@@ -166,7 +171,7 @@ GenericVolumeTemplates.functions = {
 
 					Level.trigger_event(data.level, event)
 				end
-			end
+			end,
 		},
 		all_alive_players_outside = {
 			on_exit = function (unit, data)
@@ -185,7 +190,7 @@ GenericVolumeTemplates.functions = {
 						on_triggered()
 					end
 				end
-			end
+			end,
 		},
 		all_alive_players_outside_no_alive_inside = {
 			on_exit = function (unit, data)
@@ -204,7 +209,7 @@ GenericVolumeTemplates.functions = {
 						on_triggered()
 					end
 				end
-			end
+			end,
 		},
 		all_alive_players_inside = {
 			on_enter = function (unit, dt, t, data)
@@ -238,7 +243,7 @@ GenericVolumeTemplates.functions = {
 				if should_trigger_exit_event and on_exit then
 					on_exit()
 				end
-			end
+			end,
 		},
 		all_non_disabled_players_inside = {
 			on_enter = function (unit, dt, t, data)
@@ -272,7 +277,7 @@ GenericVolumeTemplates.functions = {
 				if should_trigger_exit_event and on_exit then
 					on_exit()
 				end
-			end
+			end,
 		},
 		non_disabled_players_inside = {
 			on_enter = function (unit, dt, t, data)
@@ -309,7 +314,7 @@ GenericVolumeTemplates.functions = {
 
 					data.params.player_entered = false
 				end
-			end
+			end,
 		},
 		ai_inside = {
 			on_enter = function (unit, dt, t, data)
@@ -324,7 +329,7 @@ GenericVolumeTemplates.functions = {
 				if on_triggered then
 					on_triggered()
 				end
-			end
+			end,
 		},
 		players_inside = {
 			on_enter = function (unit, dt, t, data)
@@ -354,14 +359,15 @@ GenericVolumeTemplates.functions = {
 					end
 
 					data.params.player_entered = false
+
 					local on_exit = data.params.on_exit
 
 					if on_exit then
 						on_exit()
 					end
 				end
-			end
-		}
+			end,
+		},
 	},
 	despawn_volume = {
 		pickup_projectiles = {
@@ -379,9 +385,9 @@ GenericVolumeTemplates.functions = {
 				end
 
 				Managers.state.unit_spawner:mark_for_deletion(unit)
-			end
-		}
-	}
+			end,
+		},
+	},
 }
 GenericVolumeTemplates.functions.damage_volume.warpstone_meteor = GenericVolumeTemplates.functions.damage_volume.generic_dot
 GenericVolumeTemplates.functions.damage_volume.generic_fire = GenericVolumeTemplates.functions.damage_volume.generic_dot
@@ -422,5 +428,5 @@ GenericVolumeTemplates.filters = {
 		local volume_system = Managers.state.entity:system("volume_system")
 
 		return volume_system:all_alive_human_players_inside(data.volume_name)
-	end
+	end,
 }

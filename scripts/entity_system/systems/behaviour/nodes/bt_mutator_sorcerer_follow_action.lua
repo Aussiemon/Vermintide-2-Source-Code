@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_mutator_sorcerer_follow_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTMutatorSorcererFollowAction = class(BTMutatorSorcererFollowAction, BTNode)
@@ -10,7 +12,9 @@ BTMutatorSorcererFollowAction.name = "BTMutatorSorcererFollowAction"
 
 BTMutatorSorcererFollowAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
+
 	blackboard.action = action
+
 	local start_anims_table = action.start_anims_name
 	local target_position = POSITION_LOOKUP[blackboard.target_unit]
 	local start_animation = AiAnimUtils.get_start_move_animation(unit, target_position, start_anims_table)
@@ -21,12 +25,14 @@ BTMutatorSorcererFollowAction.enter = function (self, unit, blackboard, t)
 	navigation_extension:set_enabled(true)
 
 	local network_manager = Managers.state.network
+
 	blackboard.move_state = "moving"
 
 	network_manager:anim_event(unit, "float_into")
 	network_manager:anim_event(unit, start_animation)
 
 	blackboard.physics_world = blackboard.physics_world or World.get_data(blackboard.world, "physics_world")
+
 	local audio_system = Managers.state.entity:system("audio_system")
 	local skulking_sound_event = action.skulking_sound_event
 
@@ -152,13 +158,14 @@ BTMutatorSorcererFollowAction.check_infront = function (self, unit, target_unit,
 	local unit_pos = Unit.world_position(unit, 0)
 	local target_unit_to_unit_dir = Vector3.normalize(unit_pos - target_unit_pos)
 	local first_person_extension = ScriptUnit.has_extension(target_unit, "first_person_system")
-	local unit_direction = nil
+	local unit_direction
 
 	if first_person_extension then
 		unit_direction = Quaternion.forward(first_person_extension:current_rotation())
 	else
 		local network_manager = Managers.state.network
 		local unit_id = network_manager:unit_game_object_id(target_unit)
+
 		unit_direction = GameSession.game_object_field(network_manager:game(), unit_id, "aim_direction")
 	end
 
@@ -170,11 +177,11 @@ BTMutatorSorcererFollowAction.check_infront = function (self, unit, target_unit,
 end
 
 BTMutatorSorcererFollowAction.handle_movement_speed_bonus = function (self, unit, blackboard, action, current_position)
-	local is_infront, movement_value, has_line_of_sight = nil
+	local is_infront, movement_value, has_line_of_sight
 	local fast_move_speed_sound_event = action.fast_move_speed_sound_event
 	local stop_fast_move_speed_sound_event = action.stop_fast_move_speed_sound_event
 	local navigation_extension = blackboard.navigation_extension
-	local target_position = nil
+	local target_position
 	local blackboard_target_unit = blackboard.target_unit
 	local side = Managers.state.side.side_by_unit[blackboard_target_unit]
 	local PLAYER_AND_BOT_UNITS = side.PLAYER_AND_BOT_UNITS
@@ -205,7 +212,7 @@ BTMutatorSorcererFollowAction.handle_movement_speed_bonus = function (self, unit
 
 			blackboard.played_fast_movespeed_sound = true
 		end
-	elseif action.catchup_distance < distance or not has_line_of_sight then
+	elseif distance > action.catchup_distance or not has_line_of_sight then
 		local catchup_speed = action.catchup_speed
 
 		navigation_extension:set_max_speed(catchup_speed)

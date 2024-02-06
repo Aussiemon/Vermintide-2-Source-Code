@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/network/peer_state_machine.lua
+
 require("scripts/network/peer_states")
 
 PeerStateMachine = {}
@@ -9,13 +11,13 @@ end
 PeerStateMachine.create = function (server, peer_id, xb1_preconnect)
 	local state_data = {
 		server = server,
-		peer_id = peer_id
+		peer_id = peer_id,
 	}
 	local function_memoize = {}
 	local state_machine = {
 		state_data = state_data,
 		current_state = PeerStates.Connecting,
-		function_memoize = function_memoize
+		function_memoize = function_memoize,
 	}
 
 	state_data.change_state = function (_, new_state)
@@ -23,6 +25,7 @@ PeerStateMachine.create = function (server, peer_id, xb1_preconnect)
 		state_machine.current_state.on_exit(state_data, new_state)
 
 		local old_state = state_machine.current_state
+
 		state_machine.current_state = new_state
 
 		network_printf("%s :: on_enter %s", peer_id, tostring(new_state))
@@ -59,7 +62,7 @@ PeerStateMachine.create = function (server, peer_id, xb1_preconnect)
 			else
 				return state_machine_member
 			end
-		end
+		end,
 	}
 
 	setmetatable(state_machine, state_machine_meta_table)

@@ -1,3 +1,5 @@
+﻿-- chunkname: @dialogues/generated/hero_conversation_crater.lua
+
 return function ()
 	define_rule({
 		name = "pbw_crater_conversation_eight_01",
@@ -7,83 +9,83 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.EQ,
-				0
+				0,
 			},
 			{
 				"user_context",
 				"enemies_distant",
 				OP.LT,
-				15
+				15,
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				1
+				1,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"bright_wizard"
+				"bright_wizard",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
+				"bright_wizard",
 			},
 			{
 				"global_context",
 				"empire_soldier",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"crater_dummy",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"crater_plan_banter_a",
 				OP.NOT,
-				"crater_plan_banter_a"
+				"crater_plan_banter_a",
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				120
+				120,
 			},
 			{
 				"faction_memory",
 				"pbw_crater_conversation_eight_01",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"pbw_crater_conversation_eight_01",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_crater_conversation_five_01",
@@ -93,83 +95,83 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.EQ,
-				0
+				0,
 			},
 			{
 				"user_context",
 				"enemies_distant",
 				OP.LT,
-				15
+				15,
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				1
+				1,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"bright_wizard"
+				"bright_wizard",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
+				"bright_wizard",
 			},
 			{
 				"global_context",
 				"wood_elf",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"crater_dummy",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"crater_plan_banter_a",
 				OP.NOT,
-				"crater_plan_banter_a"
+				"crater_plan_banter_a",
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				120
+				120,
 			},
 			{
 				"faction_memory",
 				"pbw_crater_conversation_five_01",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"pbw_crater_conversation_five_01",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_crater_conversation_five_02",
@@ -179,34 +181,34 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwe_crater_conversation_five_01"
+				"pwe_crater_conversation_five_01",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
-			}
+				"bright_wizard",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_crater_conversation_nine_01",
@@ -216,89 +218,89 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.EQ,
-				0
+				0,
 			},
 			{
 				"user_context",
 				"enemies_distant",
 				OP.LT,
-				15
+				15,
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				1
+				1,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"bright_wizard"
+				"bright_wizard",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
+				"bright_wizard",
 			},
 			{
 				"global_context",
 				"dwarf_ranger",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"global_context",
 				"witch_hunter",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"crater_dummy",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"crater_plan_banter_a",
 				OP.NOT,
-				"crater_plan_banter_a"
+				"crater_plan_banter_a",
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				120
+				120,
 			},
 			{
 				"faction_memory",
 				"pbw_crater_conversation_nine_01",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"pbw_crater_conversation_nine_01",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_crater_conversation_nine_02",
@@ -308,34 +310,34 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pdr_crater_conversation_nine_01"
+				"pdr_crater_conversation_nine_01",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
-			}
+				"bright_wizard",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_crater_conversation_two_01",
@@ -345,34 +347,34 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwh_crater_conversation_two_01"
+				"pwh_crater_conversation_two_01",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
-			}
+				"bright_wizard",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pbw_crater_conversation_two_02",
@@ -382,34 +384,34 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwh_crater_conversation_two_02"
+				"pwh_crater_conversation_two_02",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
-			}
+				"bright_wizard",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pdr_crater_conversation_four_01",
@@ -419,34 +421,34 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pes_crater_conversation_four_01"
+				"pes_crater_conversation_four_01",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"dwarf_ranger"
-			}
+				"dwarf_ranger",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pdr_crater_conversation_nine_01",
@@ -456,34 +458,34 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwh_crater_conversation_nine_01"
+				"pwh_crater_conversation_nine_01",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"dwarf_ranger"
-			}
+				"dwarf_ranger",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pdr_crater_conversation_nine_02",
@@ -493,34 +495,34 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pbw_crater_conversation_nine_02"
+				"pbw_crater_conversation_nine_02",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"dwarf_ranger"
-			}
+				"dwarf_ranger",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pdr_crater_conversation_seven_01",
@@ -530,34 +532,34 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwe_crater_conversation_seven_01"
+				"pwe_crater_conversation_seven_01",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"dwarf_ranger"
-			}
+				"dwarf_ranger",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pdr_crater_conversation_seven_02",
@@ -567,34 +569,34 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwe_crater_conversation_seven_02"
+				"pwe_crater_conversation_seven_02",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"dwarf_ranger"
-			}
+				"dwarf_ranger",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pdr_crater_conversation_six_01",
@@ -604,34 +606,34 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwh_crater_conversation_six_01"
+				"pwh_crater_conversation_six_01",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"dwarf_ranger"
-			}
+				"dwarf_ranger",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_crater_conversation_eight_02",
@@ -641,34 +643,34 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pbw_crater_conversation_eight_01"
+				"pbw_crater_conversation_eight_01",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
-			}
+				"empire_soldier",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_crater_conversation_four_01",
@@ -678,89 +680,89 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.EQ,
-				0
+				0,
 			},
 			{
 				"user_context",
 				"enemies_distant",
 				OP.LT,
-				15
+				15,
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				1
+				1,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"global_context",
 				"dwarf_ranger",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"global_context",
 				"wood_elf",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"crater_dummy",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"crater_plan_banter_a",
 				OP.NOT,
-				"crater_plan_banter_a"
+				"crater_plan_banter_a",
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				120
+				120,
 			},
 			{
 				"faction_memory",
 				"pes_crater_conversation_four_01",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"pes_crater_conversation_four_01",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_crater_conversation_four_02",
@@ -770,34 +772,34 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwe_crater_conversation_four_01"
+				"pwe_crater_conversation_four_01",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
-			}
+				"empire_soldier",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_crater_conversation_one_01",
@@ -807,83 +809,83 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.EQ,
-				0
+				0,
 			},
 			{
 				"user_context",
 				"enemies_distant",
 				OP.LT,
-				15
+				15,
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				1
+				1,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
+				"empire_soldier",
 			},
 			{
 				"global_context",
 				"wood_elf",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"crater_dummy",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"crater_plan_banter_a",
 				OP.NOT,
-				"crater_plan_banter_a"
+				"crater_plan_banter_a",
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				120
+				120,
 			},
 			{
 				"faction_memory",
 				"pes_crater_conversation_one_01",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"pes_crater_conversation_one_01",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_crater_conversation_one_02",
@@ -893,34 +895,34 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwe_crater_conversation_one_01"
+				"pwe_crater_conversation_one_01",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
-			}
+				"empire_soldier",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_crater_conversation_one_03",
@@ -930,34 +932,34 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwe_crater_conversation_one_02"
+				"pwe_crater_conversation_one_02",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
-			}
+				"empire_soldier",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_crater_conversation_ten_01",
@@ -967,34 +969,34 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwh_crater_conversation_ten_01"
+				"pwh_crater_conversation_ten_01",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
-			}
+				"empire_soldier",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pes_crater_conversation_ten_02",
@@ -1004,34 +1006,34 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwh_crater_conversation_ten_02"
+				"pwh_crater_conversation_ten_02",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
-			}
+				"empire_soldier",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_crater_conversation_five_01",
@@ -1041,34 +1043,34 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pbw_crater_conversation_five_01"
+				"pbw_crater_conversation_five_01",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_crater_conversation_five_02",
@@ -1078,34 +1080,34 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pbw_crater_conversation_five_02"
+				"pbw_crater_conversation_five_02",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_crater_conversation_four_01",
@@ -1115,34 +1117,34 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pdr_crater_conversation_four_01"
+				"pdr_crater_conversation_four_01",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_crater_conversation_one_01",
@@ -1152,34 +1154,34 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pes_crater_conversation_one_01"
+				"pes_crater_conversation_one_01",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_crater_conversation_one_02",
@@ -1189,34 +1191,34 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pes_crater_conversation_one_02"
+				"pes_crater_conversation_one_02",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_crater_conversation_seven_01",
@@ -1226,83 +1228,83 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.EQ,
-				0
+				0,
 			},
 			{
 				"user_context",
 				"enemies_distant",
 				OP.LT,
-				15
+				15,
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				1
+				1,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"wood_elf"
+				"wood_elf",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
+				"wood_elf",
 			},
 			{
 				"global_context",
 				"dwarf_ranger",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"crater_dummy",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"crater_plan_banter_a",
 				OP.NOT,
-				"crater_plan_banter_a"
+				"crater_plan_banter_a",
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				120
+				120,
 			},
 			{
 				"faction_memory",
 				"pwe_crater_conversation_seven_01",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"pwe_crater_conversation_seven_01",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_crater_conversation_seven_02",
@@ -1312,34 +1314,34 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pdr_crater_conversation_seven_01"
+				"pdr_crater_conversation_seven_01",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_crater_conversation_three_01",
@@ -1349,34 +1351,34 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwh_crater_conversation_three_01"
+				"pwh_crater_conversation_three_01",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwe_crater_conversation_three_02",
@@ -1386,34 +1388,34 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwh_crater_conversation_three_02"
+				"pwh_crater_conversation_three_02",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
-			}
+				"wood_elf",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwh_crater_conversation_nine_01",
@@ -1423,34 +1425,34 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pbw_crater_conversation_nine_01"
+				"pbw_crater_conversation_nine_01",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"witch_hunter"
-			}
+				"witch_hunter",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwh_crater_conversation_six_01",
@@ -1460,83 +1462,83 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.EQ,
-				0
+				0,
 			},
 			{
 				"user_context",
 				"enemies_distant",
 				OP.LT,
-				15
+				15,
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				1
+				1,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"witch_hunter"
+				"witch_hunter",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"witch_hunter"
+				"witch_hunter",
 			},
 			{
 				"global_context",
 				"dwarf_ranger",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"crater_dummy",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"crater_plan_banter_a",
 				OP.NOT,
-				"crater_plan_banter_a"
+				"crater_plan_banter_a",
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				120
+				120,
 			},
 			{
 				"faction_memory",
 				"pwh_crater_conversation_six_01",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"pwh_crater_conversation_six_01",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwh_crater_conversation_six_02",
@@ -1546,34 +1548,34 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pdr_crater_conversation_six_01"
+				"pdr_crater_conversation_six_01",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"witch_hunter"
-			}
+				"witch_hunter",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwh_crater_conversation_ten_01",
@@ -1583,83 +1585,83 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.EQ,
-				0
+				0,
 			},
 			{
 				"user_context",
 				"enemies_distant",
 				OP.LT,
-				15
+				15,
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				1
+				1,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"witch_hunter"
+				"witch_hunter",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"witch_hunter"
+				"witch_hunter",
 			},
 			{
 				"global_context",
 				"empire_soldier",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"crater_dummy",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"crater_plan_banter_a",
 				OP.NOT,
-				"crater_plan_banter_a"
+				"crater_plan_banter_a",
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				120
+				120,
 			},
 			{
 				"faction_memory",
 				"pwh_crater_conversation_ten_01",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"pwh_crater_conversation_ten_01",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwh_crater_conversation_ten_02",
@@ -1669,34 +1671,34 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pes_crater_conversation_ten_01"
+				"pes_crater_conversation_ten_01",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"witch_hunter"
-			}
+				"witch_hunter",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwh_crater_conversation_three_01",
@@ -1706,83 +1708,83 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.EQ,
-				0
+				0,
 			},
 			{
 				"user_context",
 				"enemies_distant",
 				OP.LT,
-				15
+				15,
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				1
+				1,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"witch_hunter"
+				"witch_hunter",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"witch_hunter"
+				"witch_hunter",
 			},
 			{
 				"global_context",
 				"bright_wizard",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"crater_dummy",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"crater_plan_banter_a",
 				OP.NOT,
-				"crater_plan_banter_a"
+				"crater_plan_banter_a",
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				120
+				120,
 			},
 			{
 				"faction_memory",
 				"pwh_crater_conversation_three_01",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"pwh_crater_conversation_three_01",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwh_crater_conversation_three_02",
@@ -1792,34 +1794,34 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwe_crater_conversation_three_01"
+				"pwe_crater_conversation_three_01",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"witch_hunter"
-			}
+				"witch_hunter",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwh_crater_conversation_two_01",
@@ -1829,83 +1831,83 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"story_trigger",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.EQ,
-				0
+				0,
 			},
 			{
 				"user_context",
 				"enemies_distant",
 				OP.LT,
-				15
+				15,
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				1
+				1,
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"witch_hunter"
+				"witch_hunter",
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"witch_hunter"
+				"witch_hunter",
 			},
 			{
 				"global_context",
 				"bright_wizard",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"crater_dummy",
 				OP.EQ,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"crater_plan_banter_a",
 				OP.NOT,
-				"crater_plan_banter_a"
+				"crater_plan_banter_a",
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
 				OP.TIMEDIFF,
 				OP.GT,
-				120
+				120,
 			},
 			{
 				"faction_memory",
 				"pwh_crater_conversation_two_01",
 				OP.EQ,
-				0
-			}
+				0,
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"pwh_crater_conversation_two_01",
 				OP.ADD,
-				1
+				1,
 			},
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	define_rule({
 		name = "pwh_crater_conversation_two_02",
@@ -1915,893 +1917,893 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"heard_speak"
+				"heard_speak",
 			},
 			{
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pbw_crater_conversation_two_01"
+				"pbw_crater_conversation_two_01",
 			},
 			{
 				"user_context",
 				"enemies_close",
 				OP.LT,
-				6
+				6,
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"witch_hunter"
-			}
+				"witch_hunter",
+			},
 		},
 		on_done = {
 			{
 				"faction_memory",
 				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
+				OP.TIMESET,
+			},
+		},
 	})
 	add_dialogues({
 		pbw_crater_conversation_eight_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversation_crater",
 			category = "story_talk",
+			database = "hero_conversation_crater",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pbw_crater_conversation_eight_01"
+				[1] = "pbw_crater_conversation_eight_01",
 			},
 			sound_events = {
-				[1.0] = "pbw_crater_conversation_eight_01"
+				[1] = "pbw_crater_conversation_eight_01",
 			},
 			sound_events_duration = {
-				[1.0] = 6.6674165725708
-			}
+				[1] = 6.6674165725708,
+			},
 		},
 		pbw_crater_conversation_five_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversation_crater",
 			category = "story_talk",
+			database = "hero_conversation_crater",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pbw_crater_conversation_five_01"
+				[1] = "pbw_crater_conversation_five_01",
 			},
 			sound_events = {
-				[1.0] = "pbw_crater_conversation_five_01"
+				[1] = "pbw_crater_conversation_five_01",
 			},
 			sound_events_duration = {
-				[1.0] = 2.806104183197
-			}
+				[1] = 2.806104183197,
+			},
 		},
 		pbw_crater_conversation_five_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversation_crater",
 			category = "story_talk",
+			database = "hero_conversation_crater",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pbw_crater_conversation_five_02"
+				[1] = "pbw_crater_conversation_five_02",
 			},
 			sound_events = {
-				[1.0] = "pbw_crater_conversation_five_02"
+				[1] = "pbw_crater_conversation_five_02",
 			},
 			sound_events_duration = {
-				[1.0] = 3.3930208683014
-			}
+				[1] = 3.3930208683014,
+			},
 		},
 		pbw_crater_conversation_nine_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversation_crater",
 			category = "story_talk",
+			database = "hero_conversation_crater",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pbw_crater_conversation_nine_01"
+				[1] = "pbw_crater_conversation_nine_01",
 			},
 			sound_events = {
-				[1.0] = "pbw_crater_conversation_nine_01"
+				[1] = "pbw_crater_conversation_nine_01",
 			},
 			sound_events_duration = {
-				[1.0] = 7.653395652771
-			}
+				[1] = 7.653395652771,
+			},
 		},
 		pbw_crater_conversation_nine_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversation_crater",
 			category = "story_talk",
+			database = "hero_conversation_crater",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pbw_crater_conversation_nine_02"
+				[1] = "pbw_crater_conversation_nine_02",
 			},
 			sound_events = {
-				[1.0] = "pbw_crater_conversation_nine_02"
+				[1] = "pbw_crater_conversation_nine_02",
 			},
 			sound_events_duration = {
-				[1.0] = 5.8262500762939
-			}
+				[1] = 5.8262500762939,
+			},
 		},
 		pbw_crater_conversation_two_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversation_crater",
 			category = "story_talk",
+			database = "hero_conversation_crater",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pbw_crater_conversation_two_01"
+				[1] = "pbw_crater_conversation_two_01",
 			},
 			sound_events = {
-				[1.0] = "pbw_crater_conversation_two_01"
+				[1] = "pbw_crater_conversation_two_01",
 			},
 			sound_events_duration = {
-				[1.0] = 4.0991249084473
-			}
+				[1] = 4.0991249084473,
+			},
 		},
 		pbw_crater_conversation_two_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversation_crater",
 			category = "story_talk",
+			database = "hero_conversation_crater",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pbw_crater_conversation_two_02"
+				[1] = "pbw_crater_conversation_two_02",
 			},
 			sound_events = {
-				[1.0] = "pbw_crater_conversation_two_02"
+				[1] = "pbw_crater_conversation_two_02",
 			},
 			sound_events_duration = {
-				[1.0] = 5.648895740509
-			}
+				[1] = 5.648895740509,
+			},
 		},
 		pdr_crater_conversation_four_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversation_crater",
 			category = "story_talk",
+			database = "hero_conversation_crater",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pdr_crater_conversation_four_01"
+				[1] = "pdr_crater_conversation_four_01",
 			},
 			sound_events = {
-				[1.0] = "pdr_crater_conversation_four_01"
+				[1] = "pdr_crater_conversation_four_01",
 			},
 			sound_events_duration = {
-				[1.0] = 9.2842502593994
-			}
+				[1] = 9.2842502593994,
+			},
 		},
 		pdr_crater_conversation_nine_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversation_crater",
 			category = "story_talk",
+			database = "hero_conversation_crater",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pdr_crater_conversation_nine_01"
+				[1] = "pdr_crater_conversation_nine_01",
 			},
 			sound_events = {
-				[1.0] = "pdr_crater_conversation_nine_01"
+				[1] = "pdr_crater_conversation_nine_01",
 			},
 			sound_events_duration = {
-				[1.0] = 1.642416715622
-			}
+				[1] = 1.642416715622,
+			},
 		},
 		pdr_crater_conversation_nine_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversation_crater",
 			category = "story_talk",
+			database = "hero_conversation_crater",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pdr_crater_conversation_nine_02"
+				[1] = "pdr_crater_conversation_nine_02",
 			},
 			sound_events = {
-				[1.0] = "pdr_crater_conversation_nine_02"
+				[1] = "pdr_crater_conversation_nine_02",
 			},
 			sound_events_duration = {
-				[1.0] = 1.1065833568573
-			}
+				[1] = 1.1065833568573,
+			},
 		},
 		pdr_crater_conversation_seven_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversation_crater",
 			category = "story_talk",
+			database = "hero_conversation_crater",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pdr_crater_conversation_seven_01"
+				[1] = "pdr_crater_conversation_seven_01",
 			},
 			sound_events = {
-				[1.0] = "pdr_crater_conversation_seven_01"
+				[1] = "pdr_crater_conversation_seven_01",
 			},
 			sound_events_duration = {
-				[1.0] = 5.3349165916443
-			}
+				[1] = 5.3349165916443,
+			},
 		},
 		pdr_crater_conversation_seven_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversation_crater",
 			category = "story_talk",
+			database = "hero_conversation_crater",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pdr_crater_conversation_seven_02"
+				[1] = "pdr_crater_conversation_seven_02",
 			},
 			sound_events = {
-				[1.0] = "pdr_crater_conversation_seven_02"
+				[1] = "pdr_crater_conversation_seven_02",
 			},
 			sound_events_duration = {
-				[1.0] = 5.1369166374206
-			}
+				[1] = 5.1369166374206,
+			},
 		},
 		pdr_crater_conversation_six_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversation_crater",
 			category = "story_talk",
+			database = "hero_conversation_crater",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pdr_crater_conversation_six_01"
+				[1] = "pdr_crater_conversation_six_01",
 			},
 			sound_events = {
-				[1.0] = "pdr_crater_conversation_six_01"
+				[1] = "pdr_crater_conversation_six_01",
 			},
 			sound_events_duration = {
-				[1.0] = 6.2901043891907
-			}
+				[1] = 6.2901043891907,
+			},
 		},
 		pes_crater_conversation_eight_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversation_crater",
 			category = "story_talk",
+			database = "hero_conversation_crater",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pes_crater_conversation_eight_02"
+				[1] = "pes_crater_conversation_eight_02",
 			},
 			sound_events = {
-				[1.0] = "pes_crater_conversation_eight_02"
+				[1] = "pes_crater_conversation_eight_02",
 			},
 			sound_events_duration = {
-				[1.0] = 14.932708740234
-			}
+				[1] = 14.932708740234,
+			},
 		},
 		pes_crater_conversation_four_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversation_crater",
 			category = "story_talk",
+			database = "hero_conversation_crater",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pes_crater_conversation_four_01"
+				[1] = "pes_crater_conversation_four_01",
 			},
 			sound_events = {
-				[1.0] = "pes_crater_conversation_four_01"
+				[1] = "pes_crater_conversation_four_01",
 			},
 			sound_events_duration = {
-				[1.0] = 2.4878542423248
-			}
+				[1] = 2.4878542423248,
+			},
 		},
 		pes_crater_conversation_four_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversation_crater",
 			category = "story_talk",
+			database = "hero_conversation_crater",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pes_crater_conversation_four_02"
+				[1] = "pes_crater_conversation_four_02",
 			},
 			sound_events = {
-				[1.0] = "pes_crater_conversation_four_02"
+				[1] = "pes_crater_conversation_four_02",
 			},
 			sound_events_duration = {
-				[1.0] = 4.9756875038147
-			}
+				[1] = 4.9756875038147,
+			},
 		},
 		pes_crater_conversation_one_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversation_crater",
 			category = "story_talk",
+			database = "hero_conversation_crater",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pes_crater_conversation_one_01"
+				[1] = "pes_crater_conversation_one_01",
 			},
 			sound_events = {
-				[1.0] = "pes_crater_conversation_one_01"
+				[1] = "pes_crater_conversation_one_01",
 			},
 			sound_events_duration = {
-				[1.0] = 2.5605416297913
-			}
+				[1] = 2.5605416297913,
+			},
 		},
 		pes_crater_conversation_one_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversation_crater",
 			category = "story_talk",
+			database = "hero_conversation_crater",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pes_crater_conversation_one_02"
+				[1] = "pes_crater_conversation_one_02",
 			},
 			sound_events = {
-				[1.0] = "pes_crater_conversation_one_02"
+				[1] = "pes_crater_conversation_one_02",
 			},
 			sound_events_duration = {
-				[1.0] = 5.9530625343323
-			}
+				[1] = 5.9530625343323,
+			},
 		},
 		pes_crater_conversation_one_03 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversation_crater",
 			category = "story_talk",
+			database = "hero_conversation_crater",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pes_crater_conversation_one_03"
+				[1] = "pes_crater_conversation_one_03",
 			},
 			sound_events = {
-				[1.0] = "pes_crater_conversation_one_03"
+				[1] = "pes_crater_conversation_one_03",
 			},
 			sound_events_duration = {
-				[1.0] = 1.0258333683014
-			}
+				[1] = 1.0258333683014,
+			},
 		},
 		pes_crater_conversation_ten_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversation_crater",
 			category = "story_talk",
+			database = "hero_conversation_crater",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pes_crater_conversation_ten_01"
+				[1] = "pes_crater_conversation_ten_01",
 			},
 			sound_events = {
-				[1.0] = "pes_crater_conversation_ten_01"
+				[1] = "pes_crater_conversation_ten_01",
 			},
 			sound_events_duration = {
-				[1.0] = 2.0626459121704
-			}
+				[1] = 2.0626459121704,
+			},
 		},
 		pes_crater_conversation_ten_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversation_crater",
 			category = "story_talk",
+			database = "hero_conversation_crater",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pes_crater_conversation_ten_02"
+				[1] = "pes_crater_conversation_ten_02",
 			},
 			sound_events = {
-				[1.0] = "pes_crater_conversation_ten_02"
+				[1] = "pes_crater_conversation_ten_02",
 			},
 			sound_events_duration = {
-				[1.0] = 3.1555936336517
-			}
+				[1] = 3.1555936336517,
+			},
 		},
 		pwe_crater_conversation_five_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversation_crater",
 			category = "story_talk",
+			database = "hero_conversation_crater",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_crater_conversation_five_01"
+				[1] = "pwe_crater_conversation_five_01",
 			},
 			sound_events = {
-				[1.0] = "pwe_crater_conversation_five_01"
+				[1] = "pwe_crater_conversation_five_01",
 			},
 			sound_events_duration = {
-				[1.0] = 8.7399997711182
-			}
+				[1] = 8.7399997711182,
+			},
 		},
 		pwe_crater_conversation_five_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversation_crater",
 			category = "story_talk",
+			database = "hero_conversation_crater",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_crater_conversation_five_02"
+				[1] = "pwe_crater_conversation_five_02",
 			},
 			sound_events = {
-				[1.0] = "pwe_crater_conversation_five_02"
+				[1] = "pwe_crater_conversation_five_02",
 			},
 			sound_events_duration = {
-				[1.0] = 5.8620209693909
-			}
+				[1] = 5.8620209693909,
+			},
 		},
 		pwe_crater_conversation_four_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversation_crater",
 			category = "story_talk",
+			database = "hero_conversation_crater",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_crater_conversation_four_01"
+				[1] = "pwe_crater_conversation_four_01",
 			},
 			sound_events = {
-				[1.0] = "pwe_crater_conversation_four_01"
+				[1] = "pwe_crater_conversation_four_01",
 			},
 			sound_events_duration = {
-				[1.0] = 6.2974791526794
-			}
+				[1] = 6.2974791526794,
+			},
 		},
 		pwe_crater_conversation_one_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversation_crater",
 			category = "story_talk",
+			database = "hero_conversation_crater",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_crater_conversation_one_01"
+				[1] = "pwe_crater_conversation_one_01",
 			},
 			sound_events = {
-				[1.0] = "pwe_crater_conversation_one_01"
+				[1] = "pwe_crater_conversation_one_01",
 			},
 			sound_events_duration = {
-				[1.0] = 4.5388751029968
-			}
+				[1] = 4.5388751029968,
+			},
 		},
 		pwe_crater_conversation_one_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversation_crater",
 			category = "story_talk",
+			database = "hero_conversation_crater",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_crater_conversation_one_02"
+				[1] = "pwe_crater_conversation_one_02",
 			},
 			sound_events = {
-				[1.0] = "pwe_crater_conversation_one_02"
+				[1] = "pwe_crater_conversation_one_02",
 			},
 			sound_events_duration = {
-				[1.0] = 5.3679375648499
-			}
+				[1] = 5.3679375648499,
+			},
 		},
 		pwe_crater_conversation_seven_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversation_crater",
 			category = "story_talk",
+			database = "hero_conversation_crater",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pwe_crater_conversation_seven_01"
+				[1] = "pwe_crater_conversation_seven_01",
 			},
 			sound_events = {
-				[1.0] = "pwe_crater_conversation_seven_01"
+				[1] = "pwe_crater_conversation_seven_01",
 			},
 			sound_events_duration = {
-				[1.0] = 6.5570831298828
-			}
+				[1] = 6.5570831298828,
+			},
 		},
 		pwe_crater_conversation_seven_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversation_crater",
 			category = "story_talk",
+			database = "hero_conversation_crater",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_crater_conversation_seven_02"
+				[1] = "pwe_crater_conversation_seven_02",
 			},
 			sound_events = {
-				[1.0] = "pwe_crater_conversation_seven_02"
+				[1] = "pwe_crater_conversation_seven_02",
 			},
 			sound_events_duration = {
-				[1.0] = 12.084145545959
-			}
+				[1] = 12.084145545959,
+			},
 		},
 		pwe_crater_conversation_three_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversation_crater",
 			category = "story_talk",
+			database = "hero_conversation_crater",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_crater_conversation_three_01"
+				[1] = "pwe_crater_conversation_three_01",
 			},
 			sound_events = {
-				[1.0] = "pwe_crater_conversation_three_01"
+				[1] = "pwe_crater_conversation_three_01",
 			},
 			sound_events_duration = {
-				[1.0] = 3.7014582157135
-			}
+				[1] = 3.7014582157135,
+			},
 		},
 		pwe_crater_conversation_three_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversation_crater",
 			category = "story_talk",
+			database = "hero_conversation_crater",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwe_crater_conversation_three_02"
+				[1] = "pwe_crater_conversation_three_02",
 			},
 			sound_events = {
-				[1.0] = "pwe_crater_conversation_three_02"
+				[1] = "pwe_crater_conversation_three_02",
 			},
 			sound_events_duration = {
-				[1.0] = 5.2758331298828
-			}
+				[1] = 5.2758331298828,
+			},
 		},
 		pwh_crater_conversation_nine_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversation_crater",
 			category = "story_talk",
+			database = "hero_conversation_crater",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwh_crater_conversation_nine_01"
+				[1] = "pwh_crater_conversation_nine_01",
 			},
 			sound_events = {
-				[1.0] = "pwh_crater_conversation_nine_01"
+				[1] = "pwh_crater_conversation_nine_01",
 			},
 			sound_events_duration = {
-				[1.0] = 6.6173334121704
-			}
+				[1] = 6.6173334121704,
+			},
 		},
 		pwh_crater_conversation_six_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversation_crater",
 			category = "story_talk",
+			database = "hero_conversation_crater",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pwh_crater_conversation_six_01"
+				[1] = "pwh_crater_conversation_six_01",
 			},
 			sound_events = {
-				[1.0] = "pwh_crater_conversation_six_01"
+				[1] = "pwh_crater_conversation_six_01",
 			},
 			sound_events_duration = {
-				[1.0] = 11.765062332153
-			}
+				[1] = 11.765062332153,
+			},
 		},
 		pwh_crater_conversation_six_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversation_crater",
 			category = "story_talk",
+			database = "hero_conversation_crater",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwh_crater_conversation_six_02"
+				[1] = "pwh_crater_conversation_six_02",
 			},
 			sound_events = {
-				[1.0] = "pwh_crater_conversation_six_02"
+				[1] = "pwh_crater_conversation_six_02",
 			},
 			sound_events_duration = {
-				[1.0] = 10.934791564941
-			}
+				[1] = 10.934791564941,
+			},
 		},
 		pwh_crater_conversation_ten_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversation_crater",
 			category = "story_talk",
+			database = "hero_conversation_crater",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pwh_crater_conversation_ten_01"
+				[1] = "pwh_crater_conversation_ten_01",
 			},
 			sound_events = {
-				[1.0] = "pwh_crater_conversation_ten_01"
+				[1] = "pwh_crater_conversation_ten_01",
 			},
 			sound_events_duration = {
-				[1.0] = 5.8783750534058
-			}
+				[1] = 5.8783750534058,
+			},
 		},
 		pwh_crater_conversation_ten_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversation_crater",
 			category = "story_talk",
+			database = "hero_conversation_crater",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwh_crater_conversation_ten_02"
+				[1] = "pwh_crater_conversation_ten_02",
 			},
 			sound_events = {
-				[1.0] = "pwh_crater_conversation_ten_02"
+				[1] = "pwh_crater_conversation_ten_02",
 			},
 			sound_events_duration = {
-				[1.0] = 3.8666875362396
-			}
+				[1] = 3.8666875362396,
+			},
 		},
 		pwh_crater_conversation_three_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversation_crater",
 			category = "story_talk",
+			database = "hero_conversation_crater",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pwh_crater_conversation_three_01"
+				[1] = "pwh_crater_conversation_three_01",
 			},
 			sound_events = {
-				[1.0] = "pwh_crater_conversation_three_01"
+				[1] = "pwh_crater_conversation_three_01",
 			},
 			sound_events_duration = {
-				[1.0] = 3.7144167423248
-			}
+				[1] = 3.7144167423248,
+			},
 		},
 		pwh_crater_conversation_three_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversation_crater",
 			category = "story_talk",
+			database = "hero_conversation_crater",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwh_crater_conversation_three_02"
+				[1] = "pwh_crater_conversation_three_02",
 			},
 			sound_events = {
-				[1.0] = "pwh_crater_conversation_three_02"
+				[1] = "pwh_crater_conversation_three_02",
 			},
 			sound_events_duration = {
-				[1.0] = 2.9652917385101
-			}
+				[1] = 2.9652917385101,
+			},
 		},
 		pwh_crater_conversation_two_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversation_crater",
 			category = "story_talk",
+			database = "hero_conversation_crater",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1] = "face_neutral",
 			},
 			localization_strings = {
-				[1.0] = "pwh_crater_conversation_two_01"
+				[1] = "pwh_crater_conversation_two_01",
 			},
 			sound_events = {
-				[1.0] = "pwh_crater_conversation_two_01"
+				[1] = "pwh_crater_conversation_two_01",
 			},
 			sound_events_duration = {
-				[1.0] = 5.2149791717529
-			}
+				[1] = 5.2149791717529,
+			},
 		},
 		pwh_crater_conversation_two_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversation_crater",
 			category = "story_talk",
+			database = "hero_conversation_crater",
 			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1] = "dialogue_talk",
 			},
 			face_animations = {
-				[1.0] = "face_calm"
+				[1] = "face_calm",
 			},
 			localization_strings = {
-				[1.0] = "pwh_crater_conversation_two_02"
+				[1] = "pwh_crater_conversation_two_02",
 			},
 			sound_events = {
-				[1.0] = "pwh_crater_conversation_two_02"
+				[1] = "pwh_crater_conversation_two_02",
 			},
 			sound_events_duration = {
-				[1.0] = 7.9120001792908
-			}
-		}
+				[1] = 7.9120001792908,
+			},
+		},
 	})
 end

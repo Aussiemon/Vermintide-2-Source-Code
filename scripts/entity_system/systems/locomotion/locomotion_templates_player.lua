@@ -1,7 +1,10 @@
+﻿-- chunkname: @scripts/entity_system/systems/locomotion/locomotion_templates_player.lua
+
 LocomotionTemplates = LocomotionTemplates or {}
+
 local LocomotionTemplates = LocomotionTemplates
 local LEVEL_EDITOR_TEST = LEVEL_EDITOR_TEST
-local detailed_profiler_start, detailed_profiler_stop = nil
+local detailed_profiler_start, detailed_profiler_stop
 local DETAILED_PROFILING = true
 
 if DETAILED_PROFILING then
@@ -18,7 +21,9 @@ else
 end
 
 local UPDATE_STATISTICS = false
+
 LocomotionTemplates.PlayerUnitLocomotionExtension = {}
+
 local T = LocomotionTemplates.PlayerUnitLocomotionExtension
 
 T.init = function (data, nav_world)
@@ -29,13 +34,13 @@ T.init = function (data, nav_world)
 	if UPDATE_STATISTICS then
 		self.drawer = Managers.state.debug:drawer({
 			mode = "immediate",
-			name = "PlayerUnitLocomotionExtension"
+			name = "PlayerUnitLocomotionExtension",
 		})
 
 		GraphHelper.create("PlayerUnitLocomotionExtension", {
-			"move_speed"
+			"move_speed",
 		}, {
-			"move_velocity"
+			"move_velocity",
 		})
 		GraphHelper.set_range("PlayerUnitLocomotionExtension", -10, 10)
 		GraphHelper.hide("PlayerUnitLocomotionExtension")
@@ -64,7 +69,7 @@ T.update_average_velocity = function (data, t, dt)
 		local index = extension._sample_velocity_index
 		local velocities = extension._sample_velocities
 		local num_velocities = #velocities
-		local changed = nil
+		local changed
 
 		while SAMPLE_UPDATE_RATE < t - last_sample do
 			last_sample = last_sample + SAMPLE_UPDATE_RATE
@@ -78,6 +83,7 @@ T.update_average_velocity = function (data, t, dt)
 		if changed then
 			extension._sample_velocity_index = index
 			extension._sample_velocity_time = last_sample
+
 			local total_velocity = Vector3(0, 0, 0)
 
 			for k, velocity in ipairs(velocities) do
@@ -92,6 +98,7 @@ T.update_average_velocity = function (data, t, dt)
 
 			for k = 1, small_sample_size do
 				local velocity = velocities[i]
+
 				small_total_velocity = small_total_velocity + velocity:unbox()
 				i = i - 1
 
@@ -115,6 +122,7 @@ T.update_movement = function (data, t, dt)
 
 	for unit, extension in pairs(data.all_update_units) do
 		extension.IS_NEW_FRAME = false
+
 		local collide = Mover.collides_down(Unit.mover(unit))
 
 		if collide then
@@ -131,6 +139,7 @@ T.update_movement = function (data, t, dt)
 
 		if on_ground then
 			local hits, num_hits = PhysicsWorld.immediate_overlap(physics_world, "shape", "sphere", "position", POSITION_LOOKUP[unit], "rotation", rotation, "size", size, "collision_filter", extension._default_mover_filter)
+
 			extension.on_ground = num_hits > 0 or Mover.flying_frames(Unit.mover(unit)) == 0 and extension.velocity_wanted:unbox().z <= 0
 		else
 			extension.on_ground = Mover.flying_frames(Unit.mover(unit)) == 0 and extension.velocity_wanted:unbox().z <= 0
@@ -208,6 +217,7 @@ T.update_network = function (data, dt)
 
 		if extension._platform_unit then
 			local platform_pos = Unit.local_position(extension._platform_unit, 0)
+
 			position = position - platform_pos
 			velocity = velocity + extension._platform_extension:movement_delta() / dt
 		end
@@ -249,7 +259,9 @@ T.update_rotation = function (data, t, dt)
 				local current_rotation = first_person_extension:current_rotation()
 				local current_rotation_flat = Vector3_flat(Quaternion_forward(current_rotation))
 				local velocity_current = extension.velocity_current:unbox()
+
 				velocity_current.z = 0
+
 				local velocity_dot = Vector3_dot(velocity_current, current_rotation_flat)
 
 				if velocity_dot == 0 then

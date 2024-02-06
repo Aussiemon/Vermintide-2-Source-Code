@@ -1,72 +1,74 @@
+﻿-- chunkname: @scripts/managers/game_mode/game_mechanism_manager.lua
+
 require("scripts/managers/game_mode/mechanisms/adventure_mechanism")
 
 MechanismSettings = {
 	adventure = {
-		server_port = 27015,
-		display_name = "game_mode_adventure",
-		default_inventory = true,
-		server_universe = "carousel",
-		tobii_available = true,
-		max_members = 4,
-		vote_switch_mechanism_background = "vote_switch_mechanism_adventure_background",
-		vote_switch_mechanism_text = "vote_switch_mechanism_adventure_description",
 		check_matchmaking_hero_availability = true,
 		class_name = "AdventureMechanism",
+		default_inventory = true,
+		display_name = "game_mode_adventure",
+		max_members = 4,
+		server_port = 27015,
+		server_universe = "carousel",
+		tobii_available = true,
+		vote_switch_mechanism_background = "vote_switch_mechanism_adventure_background",
+		vote_switch_mechanism_text = "vote_switch_mechanism_adventure_description",
 		states = {
 			"inn",
 			"ingame",
 			"tutorial",
-			"weave"
+			"weave",
 		},
 		venture_end_states_in = {
-			"inn"
+			"inn",
 		},
 		venture_end_states_out = {
-			"inn"
+			"inn",
 		},
 		party_data = {
 			heroes = {
-				party_id = 1,
 				name = "heroes",
-				num_slots = 4
-			}
+				num_slots = 4,
+				party_id = 1,
+			},
 		},
 		gamemode_lookup = {
 			default = "adventure",
-			keep = "inn"
-		}
+			keep = "inn",
+		},
 	},
 	weave = {
-		disable_difficulty_check = true,
-		display_name = "game_mode_adventure",
-		default_inventory = true,
-		server_port = 27015,
-		tobii_available = true,
 		check_matchmaking_hero_availability = true,
 		class_name = "AdventureMechanism",
-		server_universe = "carousel",
-		vote_switch_mechanism_background = "vote_switch_mechanism_adventure_background",
-		vote_switch_mechanism_text = "vote_switch_mechanism_adventure_description",
+		default_inventory = true,
+		disable_difficulty_check = true,
+		display_name = "game_mode_adventure",
 		max_members = 4,
 		required_dlc = "scorpion",
+		server_port = 27015,
+		server_universe = "carousel",
+		tobii_available = true,
+		vote_switch_mechanism_background = "vote_switch_mechanism_adventure_background",
+		vote_switch_mechanism_text = "vote_switch_mechanism_adventure_description",
 		states = {
 			"inn",
 			"ingame",
 			"tutorial",
-			"weave"
+			"weave",
 		},
 		venture_end_states_in = {
-			"inn"
+			"inn",
 		},
 		venture_end_states_out = {
-			"inn"
+			"inn",
 		},
 		party_data = {
 			heroes = {
-				party_id = 1,
 				name = "heroes",
-				num_slots = 4
-			}
+				num_slots = 4,
+				party_id = 1,
+			},
 		},
 		extra_requirements_function = function (optional_statistics_db, optional_stats_id)
 			if script_data.unlock_all_levels then
@@ -115,9 +117,9 @@ MechanismSettings = {
 		end,
 		gamemode_lookup = {
 			default = "weave",
-			keep = "inn"
-		}
-	}
+			keep = "inn",
+		},
+	},
 }
 
 for _, dlc in pairs(DLCSettings) do
@@ -135,6 +137,7 @@ for _, dlc in pairs(DLCSettings) do
 end
 
 GameMechanismManager = class(GameMechanismManager)
+
 local rpcs = {
 	"rpc_set_current_mechanism_state",
 	"rpc_level_load_started",
@@ -146,7 +149,7 @@ local rpcs = {
 	"rpc_party_slots_status",
 	"rpc_force_start_dedicated_server",
 	"rpc_switch_level_dedicated_server",
-	"rpc_sync_players_session_score"
+	"rpc_sync_players_session_score",
 }
 
 local function check_bool_string(text)
@@ -246,6 +249,7 @@ GameMechanismManager.sync_players_session_score = function (self, statistics_db,
 	for _, player_data in pairs(players_session_score) do
 		peer_ids[#peer_ids + 1] = player_data.peer_id
 		local_player_ids[#local_player_ids + 1] = player_data.local_player_id
+
 		local stats = player_data.group_scores.offense
 
 		for i = 1, #stats do
@@ -440,6 +444,7 @@ GameMechanismManager._init_mechanism = function (self)
 
 	local settings = MechanismSettings[mechanism_key]
 	local switching_mechanism = self._mechanism_key and self._mechanism_key ~= mechanism_key
+
 	self._mechanism_key = mechanism_key
 
 	self:_unregister_mechanism_rpcs()
@@ -450,6 +455,7 @@ GameMechanismManager._init_mechanism = function (self)
 		end
 
 		local class = rawget(_G, settings.class_name)
+
 		self._game_mechanism = class:new(settings)
 
 		if switching_mechanism and self._game_mechanism.entered_mechanism_due_to_switch then
@@ -520,26 +526,23 @@ GameMechanismManager.create_host_migration_info = function (self, gm_event_end_c
 	end
 
 	local host_migration_info = {
-		host_to_migrate_to = self._network_client.host_to_migrate_to
+		host_to_migrate_to = self._network_client.host_to_migrate_to,
 	}
 	local difficulty = Managers.state.difficulty:get_difficulty()
 	local initial_level = Managers.mechanism:default_level_key()
+
 	host_migration_info.level_to_load = initial_level
+
 	local is_private = self._network_client.lobby_client:lobby_data("is_private")
-	local matchmaking_type = nil
+	local matchmaking_type
 
-	if IS_PS4 then
-		matchmaking_type = "n/a"
-	else
-		matchmaking_type = NetworkLookup.matchmaking_types["n/a"]
-	end
-
+	matchmaking_type = IS_PS4 and "n/a" or NetworkLookup.matchmaking_types["n/a"]
 	host_migration_info.lobby_data = {
 		matchmaking_type = matchmaking_type,
 		is_private = is_private,
 		difficulty = difficulty,
 		selected_mission_id = initial_level,
-		mission_id = initial_level
+		mission_id = initial_level,
 	}
 
 	return host_migration_info
@@ -662,13 +665,19 @@ GameMechanismManager.profile_synchronizer = function (self)
 end
 
 GameMechanismManager.get_players_session_score = function (self, statistics_db, profile_synchronizer, saved_scoreboard_stats)
-	local scoreboard = nil
+	local scoreboard
 
 	if not self._is_server then
 		scoreboard = self.synced_players_session_score
 	end
 
-	scoreboard = scoreboard or scoreboard or ScoreboardHelper.get_grouped_topic_statistics(statistics_db, profile_synchronizer, saved_scoreboard_stats)
+	if not scoreboard then
+		if self._game_mechanism.get_players_session_score then
+			scoreboard = self._game_mechanism:get_players_session_score(statistics_db, profile_synchronizer, saved_scoreboard_stats)
+		end
+
+		scoreboard = scoreboard or ScoreboardHelper.get_grouped_topic_statistics(statistics_db, profile_synchronizer, saved_scoreboard_stats)
+	end
 
 	return scoreboard
 end
@@ -771,8 +780,10 @@ end
 
 GameMechanismManager._on_venture_start = function (self)
 	self._venture_started = true
+
 	local is_server = self._is_server
 	local statistics_db = StatisticsDatabase:new()
+
 	Managers.venture.statistics = statistics_db
 	Managers.venture.challenge = ChallengeManager:new(statistics_db, is_server)
 
@@ -904,6 +915,7 @@ GameMechanismManager.rpc_party_slots_status = function (self, channel_id, server
 
 	if self._is_server then
 		local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
 		self._dedicated_server_peer_id = peer_id
 
 		self:send_rpc_clients("rpc_party_slots_status", server_name, party_id, party_members, member_states)
@@ -925,7 +937,7 @@ GameMechanismManager.rpc_switch_level_dedicated_server = function (self, channel
 		local dedicated_server_peer_id = Managers.mechanism:dedicated_server_peer_id()
 		local from_peer_id = CHANNEL_TO_PEER_ID[channel_id]
 		local from_dedicated_server = dedicated_server_peer_id == from_peer_id
-		local level_key = nil
+		local level_key
 
 		if level_id > 0 then
 			level_key = NetworkLookup.level_keys[level_id]
@@ -939,7 +951,7 @@ GameMechanismManager.rpc_sync_players_session_score = function (self, channel_id
 	local num_players = #peer_ids
 	local num_stats_per_player = #players_session_score / num_players
 	local statistics_db = Managers.player:statistics_db()
-	local unsynced_players_session_score = nil
+	local unsynced_players_session_score
 
 	if self._game_mechanism.get_players_session_score then
 		unsynced_players_session_score = self._game_mechanism:get_players_session_score(statistics_db, self._profile_synchronizer)
@@ -1023,7 +1035,7 @@ GameMechanismManager.set_vote_data = function (self, data)
 end
 
 GameMechanismManager._setup_party_data = function (self, sync_to_clients)
-	local members = nil
+	local members
 
 	if sync_to_clients then
 		members = Managers.party:gather_party_members()

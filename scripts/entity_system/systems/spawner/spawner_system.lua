@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/spawner/spawner_system.lua
+
 require("scripts/hub_elements/ai_spawner")
 
 local function D(...)
@@ -7,8 +9,9 @@ local function D(...)
 end
 
 SpawnerSystem = class(SpawnerSystem, ExtensionSystemBase)
+
 local extensions = {
-	"AISpawner"
+	"AISpawner",
 }
 local script_data = script_data
 
@@ -25,6 +28,7 @@ SpawnerSystem.init = function (self, context, system_name)
 	self._hidden_spawners = {}
 	self._disabled_hidden_spawners = {}
 	self._spawner_broadphase_id = {}
+
 	local event_manager = Managers.state.event
 
 	event_manager:register(self, "spawn_horde", "spawn_horde")
@@ -44,7 +48,7 @@ local spawn_list = {
 	"skaven_slave",
 	"skaven_clan_rat",
 	"skaven_slave",
-	"skaven_clan_rat"
+	"skaven_clan_rat",
 }
 
 SpawnerSystem.update_test_all_spawners = function (self, t)
@@ -56,13 +60,13 @@ SpawnerSystem.update_test_all_spawners = function (self, t)
 	while index <= #spawner_units and self.tests_running < 6 and j < 10 do
 		local spawner_unit = spawner_units[index]
 		local group_template = {
-			template = "spawn_test",
 			size = 10,
+			template = "spawn_test",
 			id = Managers.state.entity:system("ai_group_system"):generate_group_id(),
 			spawner_unit = spawner_unit,
 			group_data = {
-				spawner_unit = spawner_unit
-			}
+				spawner_unit = spawner_unit,
+			},
 		}
 		local pos = Unit.local_position(spawner_unit, 0)
 
@@ -92,7 +96,7 @@ SpawnerSystem.test_all_spawners = function (self)
 	print(string.format("Starting spawner test. Found %d spawners.", #self._enabled_spawners))
 
 	self._test_data = {
-		index = 1
+		index = 1,
 	}
 end
 
@@ -190,6 +194,7 @@ end
 SpawnerSystem._add_broadphase = function (self, spawner)
 	local pos = Unit.local_position(spawner, 0)
 	local broadphase_id = Broadphase.add(self.hidden_spawners_broadphase, spawner, pos, 1)
+
 	self._hidden_spawners[spawner] = true
 	self._spawner_broadphase_id[spawner] = broadphase_id
 	self._num_hidden_spawners = self._num_hidden_spawners + 1
@@ -223,6 +228,7 @@ local copy_list = {}
 
 SpawnerSystem.spawn_horde = function (self, spawner, breed_list, side_id, group_template, optional_data)
 	local extension = ScriptUnit.extension(spawner, "spawner_system")
+
 	self._active_spawners[spawner] = extension
 
 	extension:on_activate(breed_list, side_id, group_template, optional_data)
@@ -271,7 +277,9 @@ SpawnerSystem._try_spawn_breed = function (self, breed_name, spawn_list_per_bree
 
 			if ratio < overflow then
 				local exchanged_amount = math.floor(overflow / ratio)
+
 				amount = amount - exchanged_amount * ratio
+
 				local exchange_breed = limit.spawn_breed
 
 				if type(exchange_breed) == "table" then
@@ -280,6 +288,7 @@ SpawnerSystem._try_spawn_breed = function (self, breed_name, spawn_list_per_bree
 					for i = 1, exchanged_amount do
 						local breed_index = Math.random(1, num_breeds)
 						local exchange_breed_name = exchange_breed[breed_index]
+
 						spawn_list_per_breed[exchange_breed_name] = (spawn_list_per_breed[exchange_breed_name] or 0) + 1
 					end
 
@@ -294,6 +303,7 @@ SpawnerSystem._try_spawn_breed = function (self, breed_name, spawn_list_per_bree
 		end
 
 		local start = #spawn_list + 1
+
 		active_enemies = active_enemies + amount
 
 		if group_template then
@@ -353,9 +363,12 @@ SpawnerSystem._fill_spawners = function (self, spawn_list, spawners, limit_spawn
 
 	for i = 1, num_spawners_to_use do
 		local to_spawn = math.floor(total_amount / (num_spawners_to_use - i + 1))
+
 		total_amount = total_amount - to_spawn
+
 		local spawner = spawners[i]
 		local extension = ScriptUnit.extension(spawner, "spawner_system")
+
 		self._active_spawners[spawner] = extension
 
 		table.clear_array(copy_list, #copy_list)
@@ -370,13 +383,13 @@ end
 
 local ok_spawner_breeds = {
 	skaven_clan_rat = true,
-	skaven_slave = true
+	skaven_slave = true,
 }
 
 SpawnerSystem.spawn_horde_from_terror_event_ids = function (self, event_ids, variant, limit_spawners, group_template, strictly_not_close_to_players, side_id, use_closest_spawners, source_unit, optional_data)
 	local ConflictUtils = ConflictUtils
 	local must_use_hidden_spawners = variant.must_use_hidden_spawners
-	local spawners, hidden_spawners, event_spawn = nil
+	local spawners, hidden_spawners, event_spawn
 	local dont_remove_this = math.random()
 
 	if event_ids and #event_ids > 0 then
@@ -430,7 +443,7 @@ SpawnerSystem.spawn_horde_from_terror_event_ids = function (self, event_ids, var
 
 				if spawner then
 					hidden_spawners = {
-						spawner
+						spawner,
 					}
 				end
 			end
@@ -467,7 +480,7 @@ SpawnerSystem.spawn_horde_from_terror_event_ids = function (self, event_ids, var
 	for i = 1, #breed_list, 2 do
 		local breed_name = breed_list[i]
 		local amount = breed_list[i + 1]
-		local num_to_spawn = nil
+		local num_to_spawn
 
 		if type(amount) == "table" then
 			num_to_spawn = Math.random(amount[1], amount[2])
@@ -496,8 +509,8 @@ SpawnerSystem.spawn_horde_from_terror_event_ids = function (self, event_ids, var
 	table.clear(temp_spawn_list_per_breed)
 	table.shuffle(spawn_list)
 
-	local count = 0
-	local hidden_count = 0
+	local count, hidden_count = 0, 0
+
 	count = self:_fill_spawners(spawn_list, spawners, limit_spawners, side_id, group_template, use_closest_spawners, source_unit, optional_data)
 
 	if not event_spawn and must_use_hidden_spawners then
@@ -620,6 +633,7 @@ SpawnerSystem.pop_pawn_list = function (self)
 	end
 
 	local breed = spawn_list[size]
+
 	spawn_list[size] = nil
 
 	return breed
@@ -655,7 +669,9 @@ SpawnerSystem.show_hidden_spawners = function (self, t)
 
 	if center_pos then
 		local nav_world = Managers.state.entity:system("ai_system"):nav_world()
+
 		amount = Broadphase.query(self.hidden_spawners_broadphase, center_pos, radius, found_hidden_spawners)
+
 		local spinn = math.sin(t * 5) * 0.33
 		local spinn_vec = Vector3(spinn, spinn, 0)
 		local h_pos = Vector3(spinn, spinn, 30)

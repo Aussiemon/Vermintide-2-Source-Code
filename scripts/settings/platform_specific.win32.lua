@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/platform_specific.win32.lua
+
 require("scripts/game_state/title_screen_substates/win32/state_title_screen_load_save")
 require("scripts/game_state/title_screen_substates/win32/state_title_screen_init_network")
 require("scripts/game_state/title_screen_substates/win32/state_title_screen_main_menu")

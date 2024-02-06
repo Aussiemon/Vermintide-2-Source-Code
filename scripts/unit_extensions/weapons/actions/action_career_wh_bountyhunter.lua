@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/weapons/actions/action_career_wh_bountyhunter.lua
+
 ActionCareerWHBountyhunter = class(ActionCareerWHBountyhunter, ActionBountyHunterHandgun)
 
 ActionCareerWHBountyhunter.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
@@ -10,6 +12,7 @@ end
 
 ActionCareerWHBountyhunter.client_owner_start_action = function (self, new_action, t, chain_action_data, power_level, action_init_data)
 	action_init_data = action_init_data or {}
+
 	local talent_extension = self.talent_extension
 
 	if talent_extension:has_talent("victor_bountyhunter_activated_ability_railgun") then
@@ -28,6 +31,7 @@ ActionCareerWHBountyhunter.client_owner_start_action = function (self, new_actio
 	self:_play_vo()
 
 	self.start_activated_ability_cooldown_t = 0.1
+
 	local inventory_extension = ScriptUnit.extension(self.owner_unit, "inventory_system")
 
 	inventory_extension:check_and_drop_pickups("career_ability")

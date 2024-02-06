@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/start_game_view/windows/start_game_window_difficulty.lua
+
 local definitions = local_require("scripts/ui/views/start_game_view/windows/definitions/start_game_window_difficulty_definitions")
 local widget_definitions = definitions.widgets
 local scenegraph_definition = definitions.scenegraph_definition
@@ -5,6 +7,7 @@ local create_difficulty_button = definitions.create_difficulty_button
 local create_dlc_difficulty_divider = definitions.create_dlc_difficulty_divider
 local animation_definitions = definitions.animation_definitions
 local STARTING_DIFFICULTY_INDEX = 1
+
 StartGameWindowDifficulty = class(StartGameWindowDifficulty)
 StartGameWindowDifficulty.NAME = "StartGameWindowDifficulty"
 
@@ -12,16 +15,20 @@ StartGameWindowDifficulty.on_enter = function (self, params, offset)
 	print("[StartGameWindow] Enter Substate StartGameWindowDifficulty")
 
 	self.parent = params.parent
+
 	local ingame_ui_context = params.ingame_ui_context
+
 	self.ui_renderer = ingame_ui_context.ui_renderer
 	self.input_manager = ingame_ui_context.input_manager
 	self.statistics_db = ingame_ui_context.statistics_db
 	self.render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 	self._has_exited = false
+
 	local player_manager = Managers.player
 	local local_player = player_manager:local_player()
+
 	self._stats_id = local_player:stats_id()
 	self.player_manager = player_manager
 	self.peer_id = ingame_ui_context.peer_id
@@ -38,12 +45,15 @@ end
 
 StartGameWindowDifficulty.create_ui_elements = function (self, params, offset)
 	local ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+
 	self.ui_scenegraph = ui_scenegraph
+
 	local widgets = {}
 	local widgets_by_name = {}
 
 	for name, widget_definition in pairs(widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		widgets[#widgets + 1] = widget
 		widgets_by_name[name] = widget
 	end
@@ -57,6 +67,7 @@ StartGameWindowDifficulty.create_ui_elements = function (self, params, offset)
 
 	if offset then
 		local window_position = ui_scenegraph.window.local_position
+
 		window_position[1] = window_position[1] + offset[1]
 		window_position[2] = window_position[2] + offset[2]
 		window_position[3] = window_position[3] + offset[3]
@@ -89,11 +100,14 @@ StartGameWindowDifficulty._setup_difficulties = function (self)
 			local display_image = difficulty_settings.display_image
 			local widget = UIWidget.init(widget_definition)
 			local widget_name = widget_prefix .. widget_index_counter
+
 			widgets_by_name[widget_name] = widget
 			widgets[#widgets + 1] = widget
 			difficulty_widgets[#difficulty_widgets + 1] = widget
+
 			local offset = widget.offset
 			local content = widget.content
+
 			content.difficulty_key = difficulty_key
 			content.title_text = Localize(display_name)
 			content.icon = display_image
@@ -109,10 +123,12 @@ StartGameWindowDifficulty._setup_difficulties = function (self)
 	if #dlc_difficulties > 0 then
 		local scenegraph_id = "dlc_difficulty_divider"
 		local difficulty_divider_widget = UIWidget.init(create_dlc_difficulty_divider("divider_01_top", scenegraph_id))
+
 		widgets_by_name.dlc_difficulty_divider = difficulty_divider_widget
 		widgets[#widgets + 1] = difficulty_divider_widget
 		difficulty_divider_widget.style.texture_id.offset[2] = current_offset + size[2] * 0.5 + spacing * 1.5
 		current_offset = current_offset - size[2] + spacing * 2
+
 		local scenegraph_id = "difficulty_option"
 		local size = scenegraph_definition[scenegraph_id].size
 
@@ -126,11 +142,14 @@ StartGameWindowDifficulty._setup_difficulties = function (self)
 			local widget_definition = create_difficulty_button(scenegraph_id, size, difficulty_button_textures.lit_texture, difficulty_button_textures.unlit_texture, difficulty_button_textures.background, dlc_locked)
 			local widget = UIWidget.init(widget_definition)
 			local widget_name = widget_prefix .. widget_index_counter
+
 			widgets_by_name[widget_name] = widget
 			widgets[#widgets + 1] = widget
 			difficulty_widgets[#difficulty_widgets + 1] = widget
+
 			local offset = widget.offset
 			local content = widget.content
+
 			content.difficulty_key = difficulty_key
 			content.title_text = Localize(display_name)
 			content.icon = display_image
@@ -289,6 +308,7 @@ StartGameWindowDifficulty._set_selected_difficulty_option = function (self, new_
 		local content = widget.content
 		local difficulty_key = content.difficulty_key
 		local is_selected = difficulty_key == new_difficulty_key
+
 		content.button_hotspot.is_selected = is_selected
 	end
 end
@@ -301,6 +321,7 @@ StartGameWindowDifficulty._set_info_window = function (self, difficulty_key)
 	local xp_multiplier_number = difficulty_settings.xp_multiplier
 	local chest_max_powerlevel = difficulty_settings.max_chest_power_level
 	local widgets_by_name = self._widgets_by_name
+
 	widgets_by_name.difficulty_title.content.text = Localize(display_name)
 	widgets_by_name.difficulty_texture.content.texture_id = display_image
 	widgets_by_name.description_text.content.text = Localize(description)
@@ -343,6 +364,7 @@ StartGameWindowDifficulty._update_difficulty_lock = function (self)
 				if below_power_level then
 					local required_power_level = difficulty_settings.required_power_level
 					local difficulty_lock_text = Localize("required_power_level")
+
 					widgets_by_name.difficulty_lock_text.content.text = string.format("%s: %s", difficulty_lock_text, tostring(UIUtils.presentable_hero_power_level(required_power_level)))
 					widgets_by_name.difficulty_second_lock_text.content.text = extra_requirement_failed and Localize(extra_requirement_failed) or ""
 				else
@@ -464,18 +486,24 @@ StartGameWindowDifficulty._animate_difficulty_option_button = function (self, wi
 	local combined_out_progress = math.max(select_easing_out_progress, hover_easing_out_progress)
 	local combined_in_progress = math.max(hover_easing_in_progress, select_easing_in_progress)
 	local input_alpha = 255 * input_progress
+
 	style.button_clicked_rect.color[1] = 100 * input_progress
 	style.hover_glow.color[1] = 255 * combined_progress
+
 	local select_alpha = 255 * selection_progress
+
 	style.select_glow.color[1] = select_alpha
 	style.skull_select_glow.color[1] = select_alpha
 	style.icon_bg_glow.color[1] = select_alpha
+
 	local text_disabled_style = style.title_text_disabled
 	local disabled_default_text_color = text_disabled_style.default_text_color
 	local disabled_text_color = text_disabled_style.text_color
+
 	disabled_text_color[2] = disabled_default_text_color[2] * 0.4
 	disabled_text_color[3] = disabled_default_text_color[3] * 0.4
 	disabled_text_color[4] = disabled_default_text_color[4] * 0.4
+
 	local title_text_style = style.title_text
 	local title_text_color = title_text_style.text_color
 	local default_text_color = title_text_style.default_text_color
@@ -484,12 +512,15 @@ StartGameWindowDifficulty._animate_difficulty_option_button = function (self, wi
 	Colors.lerp_color_tables(default_text_color, select_text_color, combined_progress, title_text_color)
 
 	local icon_color = style.icon.color
+
 	icon_color[2] = title_text_color[2]
 	icon_color[3] = title_text_color[3]
 	icon_color[4] = title_text_color[4]
+
 	local background_icon_style = style.background_icon
 	local background_icon_color = background_icon_style.color
 	local background_icon_default_color = background_icon_style.default_color
+
 	background_icon_color[2] = background_icon_default_color[2] + combined_progress * (255 - background_icon_default_color[2])
 	background_icon_color[3] = background_icon_default_color[3] + combined_progress * (255 - background_icon_default_color[3])
 	background_icon_color[4] = background_icon_default_color[4] + combined_progress * (255 - background_icon_default_color[4])

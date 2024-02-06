@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/dlcs/morris/deus_power_up_testify.lua
+
 require("scripts/settings/dlcs/morris/deus_power_up_settings")
 
 local function deus_power_up_terror_event_test(nav_world, terror_event_name, main_path_point, bot_teleportation_data)
@@ -38,5 +40,5 @@ local function deus_power_up_terror_event_test(nav_world, terror_event_name, mai
 end
 
 DeusPowerUpTests = {
-	default = deus_power_up_terror_event_test
+	default = deus_power_up_terror_event_test,
 }

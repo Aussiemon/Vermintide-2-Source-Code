@@ -1,16 +1,23 @@
+﻿-- chunkname: @scripts/ui/views/cutscene_ui.lua
+
 local definitions = local_require("scripts/ui/views/cutscene_ui_definitions")
 local ui_settings = UISettings.cutscene_ui
 local math_ease_cubic = math.easeCubic
 local array = pdArray
+
 CutsceneUI = class(CutsceneUI)
 
 CutsceneUI.init = function (self, parent, ingame_ui_context)
 	self._parent = parent
 	self.ui_renderer = ingame_ui_context.ui_renderer
 	self.ingame_ui = ingame_ui_context.ingame_ui
+
 	local cutscene_system = Managers.state.entity:system("cutscene_system")
+
 	self.cutscene_system = cutscene_system
+
 	local input_manager = ingame_ui_context.input_manager
+
 	self.input_manager = input_manager
 
 	input_manager:create_input_service("cutscene", "CutsceneKeymaps", "CutsceneFilters")
@@ -35,7 +42,7 @@ CutsceneUI._create_ui_elements = function (self)
 		checkbox_1 = UIWidget.init(definitions.widgets.checkbox_1),
 		checkbox_2 = UIWidget.init(definitions.widgets.checkbox_2),
 		checkbox_3 = UIWidget.init(definitions.widgets.checkbox_3),
-		checkbox_4 = UIWidget.init(definitions.widgets.checkbox_4)
+		checkbox_4 = UIWidget.init(definitions.widgets.checkbox_4),
 	}
 end
 
@@ -120,6 +127,7 @@ CutsceneUI.draw = function (self, dt)
 	local ui_scenegraph = self.ui_scenegraph
 	local input_service = self.input_manager:get_service("cutscene")
 	local size = UISceneGraph.get_size_scaled(ui_scenegraph, "screen")
+
 	ui_scenegraph.letterbox_top_bar.size[1] = size[1]
 	ui_scenegraph.letterbox_bottom_bar.size[1] = size[1]
 
@@ -156,7 +164,7 @@ CutsceneUI.handle_event_queue = function (self, queue)
 	local at, an = array.data(queue)
 	local i = 1
 
-	while an >= i do
+	while i <= an do
 		local event_name = at[i]
 		local event_func = self[event_name]
 
@@ -185,14 +193,14 @@ CutsceneUI.set_player_input_enabled = function (self, enabled)
 		input_manager:release_input({
 			"keyboard",
 			"gamepad",
-			"mouse"
+			"mouse",
 		}, 1, "cutscene", "CutsceneUI")
 	else
 		self.ingame_ui:handle_transition("close_active")
 		input_manager:capture_input({
 			"keyboard",
 			"gamepad",
-			"mouse"
+			"mouse",
 		}, 1, "cutscene", "CutsceneUI")
 	end
 end
@@ -203,16 +211,19 @@ end
 
 CutsceneUI.fx_fade = function (self, fade_in_time, hold_time, fade_out_time, color)
 	local settings = ui_settings.fx_fade
+
 	fade_in_time = fade_in_time or settings.fade_in_time
 	hold_time = hold_time or settings.hold_time
 	fade_out_time = fade_out_time or settings.fade_out_time
 	color = color or settings.color
+
 	local widget = table.remove(self.fx_fade_widgets_pool) or UIWidget.init(definitions.widgets.fx_fade)
 	local target = widget.content
 	local target_index = "fx_fade_alpha"
 	local start_alpha = 0
 	local target_alpha = 1
 	local anim_time = fade_in_time + hold_time + fade_out_time
+
 	fade_in_time = fade_in_time / anim_time
 	fade_out_time = fade_out_time / anim_time
 	hold_time = 1 - fade_out_time
@@ -236,16 +247,19 @@ end
 
 CutsceneUI.fx_text_popup = function (self, fade_in_time, hold_time, fade_out_time, text)
 	local settings = ui_settings.fx_text_popup
+
 	fade_in_time = fade_in_time or settings.fade_in_time
 	hold_time = hold_time or settings.hold_time
 	fade_out_time = fade_out_time or settings.fade_out_time
 	text = text or "no text set"
+
 	local widget = table.remove(self.fx_text_popup_widgets_pool) or UIWidget.init(definitions.widgets.fx_text_popup)
 	local target = widget.content
 	local target_index = "fx_text_popup_alpha"
 	local start_alpha = 0
 	local target_alpha = 1
 	local anim_time = fade_in_time + hold_time + fade_out_time
+
 	fade_in_time = fade_in_time / anim_time
 	fade_out_time = fade_out_time / anim_time
 	hold_time = 1 - fade_out_time
@@ -274,12 +288,14 @@ CutsceneUI.check_for_fade = function (self)
 	if cutscene_system then
 		if cutscene_system.fade_in_game_logo then
 			local fade_time = cutscene_system.fade_in_game_logo_time
+
 			cutscene_system.fade_in_game_logo = nil
 			cutscene_system.fade_in_game_logo_time = nil
 
 			self:fade_in_logo(fade_time)
 		elseif cutscene_system.fade_out_game_logo_time then
 			local fade_time = cutscene_system.fade_out_game_logo_time
+
 			cutscene_system.fade_out_game_logo = nil
 			cutscene_system.fade_out_game_logo_time = nil
 

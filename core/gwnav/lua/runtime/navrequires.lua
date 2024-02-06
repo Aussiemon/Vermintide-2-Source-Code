@@ -1,3 +1,5 @@
+﻿-- chunkname: @core/gwnav/lua/runtime/navrequires.lua
+
 require("core/gwnav/lua/safe_require")
 safe_require("core/gwnav/lua/runtime/navflowcallbacks")
 

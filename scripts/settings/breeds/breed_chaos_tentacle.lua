@@ -1,46 +1,48 @@
+﻿-- chunkname: @scripts/settings/breeds/breed_chaos_tentacle.lua
+
 local breed_data = {
-	detection_radius = 30,
+	animation_sync_rpc = "rpc_sync_anim_state_1",
+	armor_category = 3,
+	base_unit = "units/beings/enemies/chaos_tentacle/chr_chaos_tentacle",
+	behavior = "chaos_tentacle",
+	bone_lod_level = 1,
 	bot_melee_aim_node = "c_bone_0075",
-	target_selection = "pick_closest_target_with_filter",
+	death_reaction = "chaos_tentacle",
+	debug_spawn_category = "Misc",
+	debug_spawn_func_name = "aim_spawning_surface",
+	detection_radius = 30,
+	disable_local_hit_reactions = true,
+	drag_speed = 1,
+	exchange_order = 1,
+	fail_retract_speed = 7,
+	far_off_despawn_immunity = true,
+	has_inventory = false,
+	hit_effect_template = "HitEffectsRatOgre",
+	hit_reaction = "ai_default",
+	ignore_death_watch_timer = true,
+	inside_wall_spawn_distance = 2,
+	is_bot_aid_threat = true,
+	is_of_interest_func = "is_of_interest_to_tentacle",
 	movement_sound_max_intensity = 30,
 	movement_sound_parameter = "tentacle_movement",
-	debug_spawn_func_name = "aim_spawning_surface",
-	has_inventory = false,
-	ignore_death_watch_timer = true,
-	bone_lod_level = 1,
-	override_bot_target_node = "c_bone_0075",
-	animation_sync_rpc = "rpc_sync_anim_state_1",
-	death_reaction = "chaos_tentacle",
-	poison_resistance = 100,
-	debug_spawn_category = "Misc",
-	target_head_node = "c_bone_0070",
 	movement_sound_scaling = 10,
-	hit_reaction = "ai_default",
+	override_bot_target_node = "c_bone_0075",
+	perception = "perception_all_seeing",
+	poison_resistance = 100,
+	portal_release_time = 3,
+	proximity_system_check = true,
+	race = "chaos",
+	sound_body_node = "c_bone_0035",
+	sound_head_node = "c_bone_0045",
+	special = true,
+	startup_time = 2,
+	target_head_node = "c_bone_0070",
+	target_selection = "pick_closest_target_with_filter",
+	threat_value = 12,
 	time_before_consume = 5,
 	time_before_consume_end = 2,
-	disable_local_hit_reactions = true,
-	special = true,
-	fail_retract_speed = 7,
-	portal_release_time = 3,
-	exchange_order = 1,
-	hit_effect_template = "HitEffectsRatOgre",
 	time_before_consume_kill_player = 2,
-	sound_head_node = "c_bone_0045",
-	armor_category = 3,
 	unit_template = "ai_unit_tentacle",
-	startup_time = 2,
-	sound_body_node = "c_bone_0035",
-	race = "chaos",
-	proximity_system_check = true,
-	perception = "perception_all_seeing",
-	drag_speed = 1,
-	inside_wall_spawn_distance = 2,
-	far_off_despawn_immunity = true,
-	is_of_interest_func = "is_of_interest_to_tentacle",
-	is_bot_aid_threat = true,
-	behavior = "chaos_tentacle",
-	base_unit = "units/beings/enemies/chaos_tentacle/chr_chaos_tentacle",
-	threat_value = 12,
 	weakspots = {},
 	hit_zones = {
 		torso = {
@@ -120,10 +122,10 @@ local breed_data = {
 				"c_bone_0072",
 				"c_bone_0073",
 				"c_bone_0074",
-				"c_bone_0075"
+				"c_bone_0075",
 			},
-			push_actors = {}
-		}
+			push_actors = {},
+		},
 	},
 	hitzone_multiplier_types = {},
 	infighting = InfightingSettings.small,
@@ -135,7 +137,7 @@ local breed_data = {
 		205,
 		205,
 		205,
-		205
+		205,
 	},
 	stagger_duration = {
 		1,
@@ -145,38 +147,41 @@ local breed_data = {
 		1,
 		1,
 		1,
-		1
+		1,
 	},
 	allowed_layers = {
-		planks = 1.5,
-		bot_ratling_gun_fire = 5,
-		doors = 1.5,
 		big_boy_destructible = 1.5,
 		bot_poison_wind = 5,
-		fire_grenade = 5
+		bot_ratling_gun_fire = 5,
+		doors = 1.5,
+		fire_grenade = 5,
+		planks = 1.5,
 	},
 	run_on_despawn = AiBreedSnippets.on_chaos_tentacle_despawn,
 	debug_color = {
 		255,
 		200,
 		200,
-		0
+		0,
 	},
 	debug_spawn_optional_data = {
 		prepare_func = function (breed, extension_init_data)
 			extension_init_data.ai_supplementary_system = {
-				tentacle_template_name = "blob"
+				tentacle_template_name = "blob",
 			}
-		end
-	}
+		end,
+	},
 }
+
 Breeds.chaos_tentacle = table.create_copy(Breeds.chaos_tentacle, breed_data)
+
 local action_data = {
 	attack = {
 		cooldown = -1,
 		distance_to_portal_hanging_sq = 9,
-		dodge_mitigation_radius_squared = 2.25
+		dodge_mitigation_radius_squared = 2.25,
 	},
-	idle = {}
+	idle = {},
 }
+
 BreedActions.chaos_tentacle = table.create_copy(BreedActions.chaos_tentacle, action_data)

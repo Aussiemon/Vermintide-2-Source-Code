@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/weapons/projectiles/generic_impact_projectile_unit_extension.lua
+
 GenericImpactProjectileUnitExtension = class(GenericImpactProjectileUnitExtension)
 
 GenericImpactProjectileUnitExtension.init = function (self, extension_init_context, unit, extension_init_data)
@@ -61,14 +63,12 @@ GenericImpactProjectileUnitExtension.update = function (self, unit, input, _, co
 		local normal = recent_impacts[j + NORMAL]:unbox()
 		local actor_index = recent_impacts[j + ACTOR_INDEX]
 		local unit_id, is_level_unit = network_manager:game_object_or_level_id(unit)
-		local game_object_id, level_unit_id = nil
+		local game_object_id, level_unit_id
 
 		if is_level_unit then
-			level_unit_id = unit_id
-			game_object_id = NetworkConstants.game_object_id_max
+			game_object_id, level_unit_id = NetworkConstants.game_object_id_max, unit_id
 		elseif unit_id then
-			level_unit_id = 0
-			game_object_id = unit_id
+			game_object_id, level_unit_id = unit_id, 0
 		end
 
 		if unit_id then
@@ -100,7 +100,7 @@ end
 local rpc_dummy_impact = {
 	[ProjectileImpactDataIndex.POSITION] = Vector3Box(),
 	[ProjectileImpactDataIndex.DIRECTION] = Vector3Box(),
-	[ProjectileImpactDataIndex.NORMAL] = Vector3Box()
+	[ProjectileImpactDataIndex.NORMAL] = Vector3Box(),
 }
 
 GenericImpactProjectileUnitExtension.impact = function (self, unit, position, direction, normal, actor_index)
@@ -119,7 +119,9 @@ local dummy_impact = {}
 
 GenericImpactProjectileUnitExtension.force_impact = function (self, unit, hit_position)
 	local locomotion_extension = self.locomotion_extension
+
 	dummy_impact[ProjectileImpactDataIndex.POSITION] = Vector3Box(hit_position)
+
 	local impact = ProjectileTemplates.impact_templates[self.impact_template_name]
 	local explosion_template = ExplosionTemplates[self.explosion_template_name]
 	local server_stop = false

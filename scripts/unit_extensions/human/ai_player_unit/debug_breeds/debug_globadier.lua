@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/human/ai_player_unit/debug_breeds/debug_globadier.lua
+
 DebugGlobadier = DebugGlobadier or {}
 
 DebugGlobadier.update = function (unit, blackboard, t)
@@ -28,7 +30,7 @@ DebugGlobadier.update = function (unit, blackboard, t)
 	local slot_count = blackboard.total_slots_count
 	local ai_node = blackboard.action and blackboard.action.name
 	local time_until_first_throw_string = "-"
-	local time_until_first_throw = nil
+	local time_until_first_throw
 	local distance_until_throw = "-"
 	local throw_at_distance = "-"
 	local advance_data = blackboard.advance_towards_players
@@ -37,6 +39,7 @@ DebugGlobadier.update = function (unit, blackboard, t)
 		local slot_count_time_modifier = advance_towards_players_action.slot_count_time_modifier
 		local slot_count_distance_modifier = advance_towards_players_action.slot_count_distance_modifier
 		local time_unit_first_throw_raw = math.round_with_precision(math.max(advance_data.time_until_first_throw - advance_data.timer, 0), 2)
+
 		time_until_first_throw = advance_data.time_until_first_throw + slot_count_time_modifier * slot_count
 		time_until_first_throw = math.max(time_until_first_throw - advance_data.timer, 0)
 		time_until_first_throw = math.round_with_precision(time_until_first_throw, 2)
@@ -50,11 +53,15 @@ DebugGlobadier.update = function (unit, blackboard, t)
 
 		if throw_at_distance then
 			local time_in_approach_distance_modifier = advance_towards_players_action.time_before_throw_distance_modifier * advance_data.time_before_throw_timer
+
 			throw_at_distance = throw_at_distance + advance_towards_players_action.slot_count_distance_modifier * slot_count + time_in_approach_distance_modifier
+
 			local target_dist = blackboard.target_dist
+
 			distance_until_throw = math.max(target_dist - throw_at_distance, 0)
 			distance_until_throw = math.round_with_precision(distance_until_throw, 2)
 			throw_at_distance = math.round_with_precision(throw_at_distance, 2)
+
 			local throw_at_distance_raw = math.round_with_precision(advance_data.throw_at_distance, 2)
 
 			if throw_at_distance_raw ~= throw_at_distance then
@@ -75,7 +82,7 @@ DebugGlobadier.update = function (unit, blackboard, t)
 		end
 	end
 
-	local state = nil
+	local state
 
 	if ai_node == "skulk_approach" then
 		state = "lurking"

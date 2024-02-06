@@ -1,14 +1,17 @@
+﻿-- chunkname: @scripts/settings/dlcs/bless/action_career_wh_priest.lua
+
 require("scripts/settings/profiles/career_constants")
 
 local spell_params = {}
 local spell_params_improved = {
-	external_optional_duration = CareerConstants.wh_priest.talent_6_1_improved_ability_duration
+	external_optional_duration = CareerConstants.wh_priest.talent_6_1_improved_ability_duration,
 }
 local spell_buffs = {
 	"victor_priest_activated_ability_invincibility",
 	"victor_priest_activated_ability_nuke",
-	"victor_priest_activated_noclip"
+	"victor_priest_activated_noclip",
 }
+
 ActionCareerWHPriestUtility = {}
 
 ActionCareerWHPriestUtility.cast_spell = function (target_unit, warrior_priest_unit)
@@ -36,7 +39,7 @@ ActionCareerWHPriestUtility.cast_spell = function (target_unit, warrior_priest_u
 			local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
 			local num_units = #player_and_bot_units
 			local current_min_dist = math.huge
-			local current_target = nil
+			local current_target
 			local owner_position = POSITION_LOOKUP[warrior_priest_unit]
 
 			for i = 1, num_units do

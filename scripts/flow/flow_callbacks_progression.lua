@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/flow/flow_callbacks_progression.lua
+
 local flow_return_table = Boot.flow_return_table
 
 function flow_callback_check_progression_unlocked(params)
@@ -10,6 +12,7 @@ end
 function flow_callback_get_last_level_played(params)
 	local last_played_level = SaveData.last_played_level or "N/A"
 	local last_played_level_won = SaveData.last_played_level_result == "won"
+
 	flow_return_table.level_key = last_played_level
 	flow_return_table.won = last_played_level_won
 
@@ -55,6 +58,7 @@ function flow_callback_ui_onboarding_tutorial_completed(params)
 
 			if tutorial then
 				local ui_onboarding_state = WeaveOnboardingUtils.get_ui_onboarding_state(statistics_db, local_player:stats_id())
+
 				completed = WeaveOnboardingUtils.tutorial_completed(ui_onboarding_state, tutorial)
 			end
 		end
@@ -75,12 +79,12 @@ function flow_callback_get_completed_game_difficulty(params)
 		local result = LevelUnlockUtils.completed_adventure_difficulty(statistics_db, stats_id)
 
 		return {
-			completed_difficulty = result
+			completed_difficulty = result,
 		}
 	end
 
 	return {
-		completed_difficulty = 0
+		completed_difficulty = 0,
 	}
 end
 
@@ -93,9 +97,9 @@ function flow_callback_get_completed_drachenfels_difficulty(params)
 		local levels = {
 			"dlc_portals",
 			"dlc_castle",
-			"dlc_castle_dungeon"
+			"dlc_castle_dungeon",
 		}
-		local result = nil
+		local result
 		local stats_id = server_player:stats_id()
 
 		for _, level_key in ipairs(levels) do
@@ -107,12 +111,12 @@ function flow_callback_get_completed_drachenfels_difficulty(params)
 		end
 
 		return {
-			completed_difficulty = result
+			completed_difficulty = result,
 		}
 	end
 
 	return {
-		completed_difficulty = 0
+		completed_difficulty = 0,
 	}
 end
 
@@ -125,9 +129,9 @@ function flow_callback_get_completed_dwarf_levels_difficulty(params)
 		local levels = {
 			"dlc_dwarf_exterior",
 			"dlc_dwarf_interior",
-			"dlc_dwarf_beacons"
+			"dlc_dwarf_beacons",
 		}
-		local result = nil
+		local result
 		local stats_id = server_player:stats_id()
 
 		for _, level_key in ipairs(levels) do
@@ -139,12 +143,12 @@ function flow_callback_get_completed_dwarf_levels_difficulty(params)
 		end
 
 		return {
-			completed_difficulty = result
+			completed_difficulty = result,
 		}
 	end
 
 	return {
-		completed_difficulty = 0
+		completed_difficulty = 0,
 	}
 end
 
@@ -152,8 +156,8 @@ function flow_callback_get_completed_survival_waves(params)
 	local player_manager = Managers.player
 	local server_player = player_manager:server_player()
 	local returns = {
+		dlc_survival_magnus = 0,
 		dlc_survival_ruins = 0,
-		dlc_survival_magnus = 0
 	}
 
 	if server_player then
@@ -206,6 +210,7 @@ function flow_query_leader_hero_level(params)
 	local hero_name = params.hero_name
 	local experience = ExperienceSettings.get_experience(hero_name)
 	local level = ExperienceSettings.get_level(experience)
+
 	flow_return_table.value = level
 
 	return flow_return_table
@@ -219,6 +224,7 @@ function flow_query_leader_hero_prestige(params)
 
 	local hero_name = params.hero_name
 	local prestige_level = ProgressionUnlocks.get_prestige_level(hero_name)
+
 	flow_return_table.value = prestige_level
 
 	return flow_return_table
@@ -235,6 +241,7 @@ function flow_query_leader_completed_difficulty(params)
 	local leader_player = player_manager:player(leader_peer_id, 1)
 	local stats_id = leader_player:stats_id()
 	local completed_difficulty = LevelUnlockUtils.completed_main_game_difficulty(statistics_db, stats_id)
+
 	flow_return_table.value = completed_difficulty
 
 	return flow_return_table
@@ -252,6 +259,7 @@ function flow_query_leader_completed_dlc_difficulty(params)
 	local leader_player = player_manager:player(leader_peer_id, 1)
 	local stats_id = leader_player:stats_id()
 	local completed_difficulty = LevelUnlockUtils.completed_dlc_difficulty(statistics_db, stats_id, dlc_name)
+
 	flow_return_table.value = completed_difficulty
 
 	return flow_return_table
@@ -261,10 +269,11 @@ local function get_presistent_stat_from_peer_id(peer_id, ...)
 	local player_manager = Managers.player
 	local statistics_db = player_manager:statistics_db()
 	local player = player_manager:player(peer_id, 1)
-	local stat_value = nil
+	local stat_value
 
 	if player then
 		local stats_id = player:stats_id()
+
 		stat_value = statistics_db:get_persistent_stat(stats_id, ...)
 	end
 
@@ -278,6 +287,7 @@ function flow_query_leader_completed_exalted_champion_difficulty(params)
 	fassert(leader_peer_id == local_peer_id, "Flow node \"Leader Completed Bodvarr Difficulty\" should only be called by the leader player")
 
 	local completed_difficulty = get_presistent_stat_from_peer_id(leader_peer_id, "kill_chaos_exalted_champion_difficulty_rank")
+
 	flow_return_table.value = completed_difficulty
 
 	return flow_return_table
@@ -290,6 +300,7 @@ function flow_query_leader_completed_exalted_sorcerer_difficulty(params)
 	fassert(leader_peer_id == local_peer_id, "Flow node \"Leader Completed Haleschmorg Burglederp Difficulty\" should only be called by the leader player")
 
 	local completed_difficulty = get_presistent_stat_from_peer_id(leader_peer_id, "kill_chaos_exalted_sorcerer_difficulty_rank")
+
 	flow_return_table.value = completed_difficulty
 
 	return flow_return_table
@@ -302,6 +313,7 @@ function flow_query_leader_completed_grey_seer_difficulty(params)
 	fassert(leader_peer_id == local_peer_id, "Flow node \"Leader Completed Rasknitt Difficulty\" should only be called by the leader player")
 
 	local completed_difficulty = get_presistent_stat_from_peer_id(leader_peer_id, "kill_skaven_grey_seer_difficulty_rank")
+
 	flow_return_table.value = completed_difficulty
 
 	return flow_return_table
@@ -314,6 +326,7 @@ function flow_query_leader_completed_storm_vermin_warlord_difficulty(params)
 	fassert(leader_peer_id == local_peer_id, "Flow node \"Leader Completed Skarrik Spinemanglr Difficulty\" should only be called by the leader player")
 
 	local completed_difficulty = get_presistent_stat_from_peer_id(leader_peer_id, "kill_skaven_storm_vermin_warlord_difficulty_rank")
+
 	flow_return_table.value = completed_difficulty
 
 	return flow_return_table
@@ -326,6 +339,7 @@ function flow_query_leader_completed_celebrate_event_2019(params)
 	fassert(leader_peer_id == local_peer_id, "Flow node \"Leader Completed Celebrate Event 2019\" should only be called by the leader player")
 
 	local completed = get_presistent_stat_from_peer_id(leader_peer_id, "completed_levels", "dlc_celebrate_crawl") > 0
+
 	flow_return_table.value = completed
 
 	return flow_return_table
@@ -359,6 +373,7 @@ function flow_query_leader_achievement_completed(params)
 	local player = player_manager:player(leader_peer_id, 1)
 	local stats_id = player:stats_id()
 	local completed = achievement_data.completed(statistics_db, stats_id)
+
 	flow_return_table.value = completed
 
 	return flow_return_table
@@ -389,6 +404,7 @@ function flow_query_local_player_achievement_completed(params)
 
 	if player then
 		local stats_id = player:stats_id()
+
 		completed = achievement_data.completed(statistics_db, stats_id)
 	end
 
@@ -438,6 +454,7 @@ function flow_query_leader_hero_xp(params)
 
 	local hero_name = params.hero_name
 	local experience = ExperienceSettings.get_experience(hero_name)
+
 	flow_return_table.value = experience
 
 	return flow_return_table
@@ -454,6 +471,7 @@ function flow_query_leader_num_acts_completed(params)
 	local leader_player = player_manager:player(leader_peer_id, 1)
 	local stats_id = leader_player:stats_id()
 	local num_completed = LevelUnlockUtils.num_acts_completed(statistics_db, stats_id)
+
 	flow_return_table.value = num_completed
 
 	return flow_return_table
@@ -470,6 +488,7 @@ function flow_query_leader_num_crafted_items(params)
 	local leader_player = player_manager:player(leader_peer_id, 1)
 	local stats_id = leader_player:stats_id()
 	local num_crafted = statistics_db:get_persistent_stat(stats_id, "crafted_items")
+
 	flow_return_table.value = num_crafted
 
 	return flow_return_table
@@ -477,6 +496,7 @@ end
 
 function flow_query_local_player_has_loot_chest(params)
 	local has_chest = BackendUtils.has_loot_chest()
+
 	flow_return_table.value = has_chest
 
 	return flow_return_table
@@ -518,6 +538,7 @@ function flow_query_leader_has_dlc(params)
 	end
 
 	local has_dlc = Managers.unlock:is_dlc_unlocked(dlc_name)
+
 	flow_return_table.value = has_dlc
 
 	return flow_return_table
@@ -533,6 +554,7 @@ function flow_query_local_player_has_dlc(params)
 	end
 
 	local has_dlc = Managers.unlock:is_dlc_unlocked(dlc_name)
+
 	flow_return_table.value = has_dlc
 
 	return flow_return_table
@@ -567,6 +589,7 @@ function flow_query_leader_completed_all_dlc_levels(params)
 	local leader_player = player_manager:player(leader_peer_id, 1)
 	local stats_id = leader_player:stats_id()
 	local all_completed = LevelUnlockUtils.all_dlc_levels_completed(statistics_db, stats_id, dlc_name)
+
 	flow_return_table.value = all_completed
 
 	return flow_return_table
@@ -580,6 +603,7 @@ function flow_query_leader_early_owner(params)
 
 	local backend_manager = Managers.backend
 	local eary_owner = backend_manager:get_read_only_data("early_owner")
+
 	flow_return_table.value = eary_owner
 
 	return flow_return_table
@@ -593,6 +617,7 @@ function flow_query_leader_get_persistant_stat(params)
 
 	local stat_name = params.stat_name
 	local stat_value = get_presistent_stat_from_peer_id(local_peer_id, stat_name)
+
 	flow_return_table.value = stat_value
 
 	return flow_return_table
@@ -601,6 +626,7 @@ end
 function flow_query_local_player_get_persistant_stat(params)
 	local stat_name = params.stat_name
 	local stat_value = get_presistent_stat_from_peer_id(Network.peer_id(), stat_name)
+
 	flow_return_table.value = stat_value
 
 	return flow_return_table

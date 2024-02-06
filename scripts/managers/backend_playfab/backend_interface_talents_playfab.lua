@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/backend_playfab/backend_interface_talents_playfab.lua
+
 BackendInterfaceTalentsPlayfab = class(BackendInterfaceTalentsPlayfab)
 
 BackendInterfaceTalentsPlayfab.init = function (self, backend_mirror)

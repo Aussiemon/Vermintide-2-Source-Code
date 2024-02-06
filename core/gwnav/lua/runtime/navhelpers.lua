@@ -1,3 +1,5 @@
+﻿-- chunkname: @core/gwnav/lua/runtime/navhelpers.lua
+
 require("core/gwnav/lua/safe_require")
 
 local NavHelpers = safe_require_guard()

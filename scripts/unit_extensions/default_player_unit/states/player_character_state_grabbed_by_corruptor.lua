@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/unit_extensions/default_player_unit/states/player_character_state_grabbed_by_corruptor.lua
+
 PlayerCharacterStateGrabbedByCorruptor = class(PlayerCharacterStateGrabbedByCorruptor, PlayerCharacterState)
+
 local position_lookup = POSITION_LOOKUP
 
 PlayerCharacterStateGrabbedByCorruptor.init = function (self, character_state_init_context)
@@ -24,6 +27,7 @@ PlayerCharacterStateGrabbedByCorruptor.on_enter = function (self, unit, input, d
 	if self.ai_extension == nil then
 		local wwise_world = Managers.world:wwise_world(self.world)
 		local wwise_playing_id, wwise_source_id = WwiseWorld.trigger_event(wwise_world, "start_strangled_state", first_person_extension:get_first_person_unit())
+
 		self.grabbed_by_corruptor_start_sound_event = "chaos_corruptor_corrupting"
 		self.grabbed_by_corruptor_stop_sound_event = "chaos_corruptor_corrupting_stop"
 
@@ -31,7 +35,9 @@ PlayerCharacterStateGrabbedByCorruptor.on_enter = function (self, unit, input, d
 	end
 
 	local status_extension = self.status_extension
+
 	self.corruptor_status = CharacterStateHelper.corruptor_status(status_extension)
+
 	local states = PlayerCharacterStateGrabbedByCorruptor.states
 
 	if states[self.corruptor_status].enter then
@@ -105,7 +111,7 @@ PlayerCharacterStateGrabbedByCorruptor.states = {
 				locomotion:set_maximum_upwards_velocity(velocity.z)
 				locomotion:set_forced_velocity(velocity)
 			end
-		end
+		end,
 	},
 	chaos_corruptor_dragging = {
 		enter = function (parent, unit)
@@ -132,7 +138,7 @@ PlayerCharacterStateGrabbedByCorruptor.states = {
 			end
 
 			return true
-		end
+		end,
 	},
 	chaos_corruptor_released = {
 		run = function (parent, unit)
@@ -170,8 +176,8 @@ PlayerCharacterStateGrabbedByCorruptor.states = {
 			end
 
 			CharacterStateHelper.show_inventory_3p(unit, true, true, Managers.player.is_server, parent.inventory_extension)
-		end
-	}
+		end,
+	},
 }
 
 PlayerCharacterStateGrabbedByCorruptor.update = function (self, unit, input, dt, context, t)

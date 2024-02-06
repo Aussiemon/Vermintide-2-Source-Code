@@ -1,212 +1,215 @@
+﻿-- chunkname: @scripts/settings/dlcs/woods/buff_settings_woods.lua
+
 local buff_perks = require("scripts/unit_extensions/default_player_unit/buffs/settings/buff_perk_names")
 local settings = DLCSettings.woods
 local buff_params = {}
 local wall_slow_duration = 0.2
 local wall_sleep_mult = 0.5
+
 settings.buff_templates = {
 	weapon_bleed_dot_javelin = {
 		buffs = {
 			{
-				duration = 4,
-				name = "weapon bleed dot javelin",
-				max_stacks = 1,
-				refresh_durations = true,
 				apply_buff_func = "start_dot_damage",
-				update_start_delay = 0.5,
-				time_between_dot_damages = 0.5,
-				hit_zone = "neck",
 				damage_profile = "bleed_maidenguard",
+				duration = 4,
+				hit_zone = "neck",
+				max_stacks = 1,
+				name = "weapon bleed dot javelin",
+				refresh_durations = true,
+				time_between_dot_damages = 0.5,
 				update_func = "apply_dot_damage",
+				update_start_delay = 0.5,
 				perks = {
-					buff_perks.bleeding
-				}
-			}
-		}
+					buff_perks.bleeding,
+				},
+			},
+		},
 	},
 	thorn_sister_big_bleed = {
 		buffs = {
 			{
-				duration = 5,
-				name = "thorn sister big bleed",
-				max_stacks = 3,
-				refresh_durations = true,
 				apply_buff_func = "start_dot_damage",
-				update_start_delay = 0.75,
-				time_between_dot_damages = 0.75,
-				hit_zone = "neck",
 				damage_profile = "bleed",
+				duration = 5,
+				hit_zone = "neck",
+				max_stacks = 3,
+				name = "thorn sister big bleed",
+				refresh_durations = true,
+				time_between_dot_damages = 0.75,
 				update_func = "apply_dot_damage",
+				update_start_delay = 0.75,
 				perks = {
-					buff_perks.bleeding
-				}
-			}
-		}
+					buff_perks.bleeding,
+				},
+			},
+		},
 	},
 	thorn_sister_passive_poison = {
 		buffs = {
 			{
-				duration = 10,
-				name = "thorn sister passive poison",
-				stat_buff = "damage_taken",
-				multiplier = 0.12,
-				max_stacks = 1,
-				remove_buff_func = "kerillian_thorn_sister_remove_buff_from_attacker",
 				apply_buff_func = "start_dot_damage_kerillian",
-				update_start_delay = 0.8,
-				refresh_durations = true,
-				time_between_dot_damages = 0.8,
-				hit_zone = "neck",
 				damage_profile = "thorn_sister_poison",
+				duration = 10,
+				hit_zone = "neck",
+				max_stacks = 1,
+				multiplier = 0.12,
+				name = "thorn sister passive poison",
+				refresh_durations = true,
+				remove_buff_func = "kerillian_thorn_sister_remove_buff_from_attacker",
+				stat_buff = "damage_taken",
+				time_between_dot_damages = 0.8,
 				update_func = "apply_dot_damage",
+				update_start_delay = 0.8,
 				perks = {
-					buff_perks.poisoned
-				}
-			}
-		}
+					buff_perks.poisoned,
+				},
+			},
+		},
 	},
 	thorn_sister_passive_poison_improved = {
 		buffs = {
 			{
-				duration = 10,
-				name = "thorn sister passive poison improved",
-				stat_buff = "damage_taken",
-				multiplier = 0.12,
-				max_stacks = 2,
-				remove_buff_func = "kerillian_thorn_sister_remove_buff_from_attacker",
 				apply_buff_func = "start_dot_damage_kerillian",
-				update_start_delay = 0.8,
-				refresh_durations = true,
-				time_between_dot_damages = 0.8,
-				hit_zone = "neck",
 				damage_profile = "thorn_sister_poison",
+				duration = 10,
+				hit_zone = "neck",
+				max_stacks = 2,
+				multiplier = 0.12,
+				name = "thorn sister passive poison improved",
+				refresh_durations = true,
+				remove_buff_func = "kerillian_thorn_sister_remove_buff_from_attacker",
+				stat_buff = "damage_taken",
+				time_between_dot_damages = 0.8,
 				update_func = "apply_dot_damage",
+				update_start_delay = 0.8,
 				perks = {
-					buff_perks.poisoned
-				}
-			}
-		}
+					buff_perks.poisoned,
+				},
+			},
+		},
 	},
 	thorn_sister_wall_bleed = {
 		buffs = {
 			{
-				duration = 10,
-				name = "thorn_sister_wall_bleed",
-				max_stacks = 1,
-				refresh_durations = true,
 				apply_buff_func = "start_dot_damage",
-				update_start_delay = 0.25,
-				time_between_dot_damages = 0.25,
-				hit_zone = "neck",
 				damage_profile = "bleed",
+				duration = 10,
+				hit_zone = "neck",
+				max_stacks = 1,
+				name = "thorn_sister_wall_bleed",
+				refresh_durations = true,
+				time_between_dot_damages = 0.25,
 				update_func = "apply_dot_damage",
+				update_start_delay = 0.25,
 				perks = {
-					buff_perks.bleeding
-				}
-			}
-		}
+					buff_perks.bleeding,
+				},
+			},
+		},
 	},
 	thorn_sister_wall_slow = {
 		buffs = {
 			{
-				remove_buff_func = "remove_movement_buff",
-				name = "decrease_speed_thorn_sister_wall",
-				refresh_durations = true,
 				apply_buff_func = "apply_movement_buff",
 				lerp_time = 0.1,
 				max_stacks = 1,
+				name = "decrease_speed_thorn_sister_wall",
+				refresh_durations = true,
+				remove_buff_func = "remove_movement_buff",
 				multiplier = wall_sleep_mult,
 				path_to_movement_setting_to_modify = {
-					"move_speed"
+					"move_speed",
 				},
-				duration = wall_slow_duration
+				duration = wall_slow_duration,
 			},
 			{
 				apply_buff_func = "apply_action_lerp_movement_buff",
+				lerp_time = 0.1,
+				max_stacks = 1,
 				name = "decrease_crouch_speed_thorn_sister_wall",
 				refresh_durations = true,
 				remove_buff_func = "remove_action_lerp_movement_buff",
 				remove_buff_name = "planted_return_to_normal_crouch_movement",
-				lerp_time = 0.1,
-				max_stacks = 1,
 				update_func = "update_charging_action_lerp_movement_buff",
 				multiplier = wall_sleep_mult,
 				path_to_movement_setting_to_modify = {
-					"crouch_move_speed"
+					"crouch_move_speed",
 				},
-				duration = wall_slow_duration
+				duration = wall_slow_duration,
 			},
 			{
 				apply_buff_func = "apply_action_lerp_movement_buff",
+				lerp_time = 0.1,
+				max_stacks = 1,
 				name = "decrease_walk_speed_thorn_sister_wall",
 				refresh_durations = true,
 				remove_buff_func = "remove_action_lerp_movement_buff",
 				remove_buff_name = "planted_return_to_normal_walk_movement",
-				lerp_time = 0.1,
-				max_stacks = 1,
 				update_func = "update_charging_action_lerp_movement_buff",
 				multiplier = wall_sleep_mult,
 				path_to_movement_setting_to_modify = {
-					"walk_move_speed"
+					"walk_move_speed",
 				},
-				duration = wall_slow_duration
+				duration = wall_slow_duration,
 			},
 			{
+				apply_buff_func = "apply_movement_buff",
+				max_stacks = 1,
 				name = "decrease_jump_speed_thorn_sister_wall",
 				refresh_durations = true,
-				max_stacks = 1,
 				remove_buff_func = "remove_movement_buff",
-				apply_buff_func = "apply_movement_buff",
 				multiplier = wall_sleep_mult,
 				path_to_movement_setting_to_modify = {
 					"jump",
-					"initial_vertical_speed"
+					"initial_vertical_speed",
 				},
-				duration = wall_slow_duration
-			}
-		}
+				duration = wall_slow_duration,
+			},
+		},
 	},
 	kerillian_thorn_passive_team_buff = {
 		buffs = {
 			{
-				name = "kerillian_thorn_passive_team_buff",
-				multiplier = 0.15,
-				stat_buff = "power_level",
+				icon = "kerillian_thornsister_avatar",
 				max_stacks = 1,
-				icon = "kerillian_thornsister_avatar"
+				multiplier = 0.15,
+				name = "kerillian_thorn_passive_team_buff",
+				stat_buff = "power_level",
 			},
 			{
+				bonus = 0.05,
 				max_stacks = 1,
 				name = "kerillian_thorn_passive_team_buff_2",
 				stat_buff = "critical_strike_chance",
-				bonus = 0.05
-			}
-		}
+			},
+		},
 	},
 	kerillian_thorn_sister_drain_poison_phasing_buff = {
 		buffs = {
 			{
-				refresh_durations = true,
-				name = "kerillian_thorn_sister_poison_phasing",
+				apply_buff_func = "kerillian_thorn_sister_noclip_on",
 				duration = 5,
-				remove_buff_func = "kerillian_thorn_sister_noclip_off",
-				max_stacks = 1,
 				icon = "kerillian_thornsister_big_push",
-				apply_buff_func = "kerillian_thorn_sister_noclip_on"
+				max_stacks = 1,
+				name = "kerillian_thorn_sister_poison_phasing",
+				refresh_durations = true,
+				remove_buff_func = "kerillian_thorn_sister_noclip_off",
 			},
 			{
-				refresh_durations = true,
-				name = "kerillian_thorn_sister_poison_movespeed",
-				remove_buff_func = "remove_movement_buff",
-				max_stacks = 1,
-				duration = 5,
 				apply_buff_func = "apply_movement_buff",
+				duration = 5,
+				max_stacks = 1,
 				multiplier = 1.2,
+				name = "kerillian_thorn_sister_poison_movespeed",
+				refresh_durations = true,
+				remove_buff_func = "remove_movement_buff",
 				path_to_movement_setting_to_modify = {
-					"move_speed"
-				}
-			}
-		}
-	}
+					"move_speed",
+				},
+			},
+		},
+	},
 }
 settings.proc_functions = {
 	kerillian_thorn_sister_health_conversion = function (owner_unit, buff, params, world)
@@ -286,7 +289,9 @@ settings.proc_functions = {
 				local heal_amount = params[2]
 				local template = buff.template
 				local multiplier = template.multiplier
+
 				heal_amount = heal_amount * multiplier
+
 				local thornsister_status_extension = ScriptUnit.has_extension(thornsister_unit, "status_system")
 
 				if not thornsister_status_extension:is_knocked_down() then
@@ -538,7 +543,7 @@ settings.proc_functions = {
 				end
 			end
 		end
-	end
+	end,
 }
 settings.buff_function_templates = {
 	kerillian_thorn_sister_healing_wall_buff_counter_remove = function (unit, buff, params)
@@ -612,7 +617,7 @@ settings.buff_function_templates = {
 						buff.buff_instances[unit] = server_buff_id
 					else
 						buff.buff_instances = {
-							[unit] = server_buff_id
+							[unit] = server_buff_id,
 						}
 					end
 				elseif buff_instance and range_squared < distance_squared then
@@ -711,7 +716,7 @@ settings.buff_function_templates = {
 				status_extension:set_noclip(false, "thorn_sister_phasing")
 			end
 		end
-	end
+	end,
 }
 settings.stacking_buff_functions = {
 	kerillian_thorn_sister_avatar = function (owner_unit, sub_buff_template)
@@ -729,5 +734,5 @@ settings.stacking_buff_functions = {
 				end
 			end
 		end
-	end
+	end,
 }

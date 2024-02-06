@@ -1,6 +1,9 @@
+﻿-- chunkname: @scripts/unit_extensions/generic/end_zone_extension.lua
+
 require("scripts/settings/end_zone_settings")
 
 local end_zone_extension_testify = script_data.testify and require("scripts/unit_extensions/generic/end_zone_extension_testify")
+
 EndZoneExtension = class(EndZoneExtension)
 
 EndZoneExtension.init = function (self, extension_init_context, unit)
@@ -35,6 +38,7 @@ EndZoneExtension.init = function (self, extension_init_context, unit)
 
 	self._disable_complete_level = Unit.get_data(self._unit, "disable_complete_level")
 	self._disable_check_joining_players = Unit.get_data(self._unit, "disable_check_joining_players")
+
 	local node = Unit.node(self._unit, "ap_dome_scaler")
 
 	Unit.set_local_scale(self._unit, node, Vector3(0, 0, 0))
@@ -50,6 +54,7 @@ EndZoneExtension.init = function (self, extension_init_context, unit)
 	network_event_delegate:register(self, "rpc_activate_end_zone")
 
 	local level_settings = LevelHelper:current_level_settings(self._world)
+
 	self._nav_world_available = not level_settings.no_bots_allowed
 
 	if not self._visible_from_start then
@@ -225,12 +230,13 @@ EndZoneExtension._activate = function (self, activate)
 end
 
 EndZoneExtension._get_wind_name = function (self)
-	local return_value = nil
+	local return_value
 	local next_weave = Managers.weave:get_next_weave()
 
 	if next_weave then
 		local template = WeaveSettings.templates[next_weave]
 		local wind = template.wind
+
 		return_value = wind
 	end
 
@@ -242,6 +248,7 @@ EndZoneExtension._activate_volume = function (self)
 
 	local shading_environment = Unit.get_data(self._unit, "shading_environment")
 	local volume_name = Unit.get_data(self._unit, "volume_name")
+
 	self._current_id_index = self._current_id_index + 1
 	self._current_volume_id = "end_zone_id_" .. self._current_id_index
 
@@ -254,6 +261,7 @@ EndZoneExtension._activate_volume = function (self)
 
 		local nav_tag_volume_layer = "end_zone"
 		local position = Unit.local_position(self._unit, 0)
+
 		self._nav_tag_volume_id = volume_system:create_nav_tag_volume_from_data(position, self.waystone_size, nav_tag_volume_layer)
 	end
 end
@@ -282,7 +290,7 @@ end
 
 EndZoneExtension._check_proximity = function (self)
 	local end_zone_pos = Unit.local_position(self._unit, 0)
-	local player_units, player_and_bot_units = nil
+	local player_units, player_and_bot_units
 	local side = self._side
 
 	if global_is_inside_inn then
@@ -298,6 +306,7 @@ EndZoneExtension._check_proximity = function (self)
 
 		if player_pos then
 			local distance_squared = Vector3.distance_squared(end_zone_pos, player_pos)
+
 			self._closest_player = distance_squared < self._closest_player and distance_squared or self._closest_player
 
 			if table.contains(player_units, player_unit) then
@@ -357,7 +366,7 @@ EndZoneExtension._idle = function (self, dt, t)
 
 	if self._always_activated or self._closest_player <= EndZoneSettings.activate_size^2 then
 		self._state_data = {
-			timer = 0
+			timer = 0,
 		}
 		self._state = "_open"
 
@@ -372,7 +381,9 @@ end
 EndZoneExtension._open = function (self, dt, t)
 	if self._activated and (self._always_activated or self._closest_player <= EndZoneSettings.activate_size^2) then
 		local animation_time = EndZoneSettings.animation_time or 0.5
+
 		self._state_data.timer = math.clamp(self._state_data.timer + dt, 0, animation_time)
+
 		local scale = math.smoothstep(self._state_data.timer / animation_time, 0, 1)
 		local node = Unit.node(self._unit, "ap_dome_scaler")
 
@@ -399,7 +410,9 @@ EndZoneExtension._close = function (self, dt, t)
 		Unit.flow_event(self._unit, "opening_end_zone")
 	else
 		local animation_time = EndZoneSettings.animation_time or 0.5
+
 		self._state_data.timer = math.clamp(self._state_data.timer - dt, 0, animation_time)
+
 		local scale = math.smoothstep(self._state_data.timer / animation_time, 0, 1)
 		local node = Unit.node(self._unit, "ap_dome_scaler")
 
@@ -455,6 +468,7 @@ EndZoneExtension._check_end_mission_any_inside = function (self, dt, all_inside,
 	end
 
 	self._end_zone_timer_started = true
+
 	local end_zone_hidden_long_timer = self._state_data.end_zone_hidden_long_timer
 	local end_zone_visible_long_timer = self._state_data.end_zone_visible_long_timer
 
@@ -464,15 +478,15 @@ EndZoneExtension._check_end_mission_any_inside = function (self, dt, all_inside,
 		self._end_zone_time_since_notify = self._end_zone_time_since_notify + dt
 		end_zone_visible_long_timer = end_zone_visible_long_timer - dt
 
-		if end_zone_long_timer_settings.notify_interval_threshold < end_zone_visible_long_timer then
-			if end_zone_long_timer_settings.notify_long_interval <= self._end_zone_time_since_notify then
+		if end_zone_visible_long_timer > end_zone_long_timer_settings.notify_interval_threshold then
+			if self._end_zone_time_since_notify >= end_zone_long_timer_settings.notify_long_interval then
 				local message_timer = math.round_to_closest_multiple(end_zone_visible_long_timer, 5)
 
 				Managers.chat:send_system_chat_message(1, "end_game_timer_system_message", message_timer, false, true)
 
 				self._end_zone_time_since_notify = 0
 			end
-		elseif end_zone_long_timer_settings.notify_short_interval <= self._end_zone_time_since_notify then
+		elseif self._end_zone_time_since_notify >= end_zone_long_timer_settings.notify_short_interval then
 			local message_timer = math.round_to_closest_multiple(end_zone_visible_long_timer, 1)
 
 			Managers.chat:send_system_chat_message(1, "end_game_timer_system_message", message_timer, false, true)
@@ -504,7 +518,7 @@ end
 
 EndZoneExtension._end_mission_check = function (self, dt, t)
 	if self._activated and (self._always_activated or self._closest_player <= EndZoneSettings.activate_size^2) then
-		local all_inside = nil
+		local all_inside
 		local any_inside = false
 		local players_outside_portal = {}
 

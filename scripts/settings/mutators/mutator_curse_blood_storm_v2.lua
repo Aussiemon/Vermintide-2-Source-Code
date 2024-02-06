@@ -1,19 +1,23 @@
+﻿-- chunkname: @scripts/settings/mutators/mutator_curse_blood_storm_v2.lua
+
 local DIFFICULTY_POWER_LEVEL = {
-	harder = 60,
-	hard = 45,
-	normal = 30,
-	hardest = 80,
 	cataclysm = 100,
-	cataclysm_3 = 130,
 	cataclysm_2 = 110,
-	easy = 20
+	cataclysm_3 = 130,
+	easy = 20,
+	hard = 45,
+	harder = 60,
+	hardest = 80,
+	normal = 30,
 }
 local STORM_STATES = {
-	COOLDOWN = "COOLDOWN",
 	ACTIVE = "ACTIVE",
-	READY = "READY"
+	COOLDOWN = "COOLDOWN",
+	READY = "READY",
 }
+
 script_data.blood_storm_debug = true
+
 local global_printf = printf
 
 local function printf(...)
@@ -57,7 +61,7 @@ end
 
 Storm.update = function (self, dt, t)
 	if self._state == STORM_STATES.COOLDOWN then
-		if self._cooldown_end_t < t then
+		if t > self._cooldown_end_t then
 			self._state = STORM_STATES.READY
 
 			dprintf("-%s- new state %s", self._logging_prefix, self._state)
@@ -71,6 +75,7 @@ Storm.update = function (self, dt, t)
 			if not Unit.alive(unit) then
 				local min_cooldown = self._min_cooldown
 				local max_cooldown = self._max_cooldown
+
 				self._cooldown_end_t = Math.random_range(min_cooldown, max_cooldown)
 				self._state = STORM_STATES.COOLDOWN
 
@@ -98,7 +103,7 @@ Storm.spawn = function (self, spawn_position)
 	local spawn_radius = 2
 	local inner_radius_p = math.min(spawn_radius / vortex_template.full_inner_radius, 1)
 	local inner_decal_unit_name = self._inner_decal_unit_name
-	local inner_decal_unit = nil
+	local inner_decal_unit
 
 	if inner_decal_unit_name then
 		local inner_spawn_pose = Matrix4x4.from_quaternion_position(Quaternion.identity(), spawn_position)
@@ -110,7 +115,7 @@ Storm.spawn = function (self, spawn_position)
 	end
 
 	local outer_decal_unit_name = self._outer_decal_unit_name
-	local outer_decal_unit = nil
+	local outer_decal_unit
 
 	if outer_decal_unit_name then
 		local outer_spawn_pose = Matrix4x4.from_quaternion_position(Quaternion.identity(), spawn_position)
@@ -127,22 +132,23 @@ Storm.spawn = function (self, spawn_position)
 			extension_init_data.ai_supplementary_system = {
 				vortex_template_name = vortex_template_name,
 				inner_decal_unit = inner_decal_unit,
-				outer_decal_unit = outer_decal_unit
+				outer_decal_unit = outer_decal_unit,
 			}
 		end,
 		spawned_func = function (vortex_unit, breed, optional_data)
 			storm_instance._active_storm_data.summoned_vortex_unit = vortex_unit
 			storm_instance._active_storm_data.vortex_extension = ScriptUnit.has_extension(vortex_unit, "ai_supplementary_system")
-		end
+		end,
 	}
 	local spawn_pos = spawn_position
 	local breed_name = vortex_template.breed_name
 	local breed = Breeds[breed_name]
 	local spawn_category = "vortex"
 	local queue_id = Managers.state.conflict:spawn_queued_unit(breed, Vector3Box(spawn_pos), QuaternionBox(Quaternion.identity()), spawn_category, nil, nil, optional_data)
+
 	self._active_storm_data = {
 		queue_id = queue_id,
-		starting_position = Vector3Box(spawn_position)
+		starting_position = Vector3Box(spawn_position),
 	}
 	self._state = STORM_STATES.ACTIVE
 
@@ -222,8 +228,8 @@ local MAX_DISTANCE = 30
 local DISTANCE_TO_FORBIDDEN_POSITION_LIST = 10
 
 return {
-	description = "curse_blood_storm_desc",
 	curse_package_name = "resource_packages/mutators/mutator_curse_blood_storm",
+	description = "curse_blood_storm_desc",
 	display_name = "curse_blood_storm_name",
 	icon = "deus_curse_khorne_01",
 	server_start_function = function (context, data)
@@ -243,7 +249,7 @@ return {
 
 		local should_bleed = false
 
-		if data.next_bleed_time < t then
+		if t > data.next_bleed_time then
 			should_bleed = true
 			data.next_bleed_time = t + BLEED_RATE
 		end
@@ -271,11 +277,13 @@ return {
 
 					for player_index = 1, #players do
 						local unit = players[player_index]
+
 						forbidden_position_list[#forbidden_position_list + 1] = POSITION_LOOKUP[unit]
 					end
 
 					for i = 1, #storms do
 						local other_storm = storms[i]
+
 						forbidden_position_list[#forbidden_position_list + 1] = other_storm:get_position()
 					end
 
@@ -327,5 +335,5 @@ return {
 
 			dialogue_input:trigger_dialogue_event("curse_damage_taken", event_data)
 		end
-	end
+	end,
 }

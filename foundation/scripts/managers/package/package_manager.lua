@@ -1,3 +1,5 @@
+﻿-- chunkname: @foundation/scripts/managers/package/package_manager.lua
+
 local function debug_print(format, ...)
 	if script_data.package_debug then
 		print(string.format("[PackageManager] " .. format, ...))
@@ -35,9 +37,11 @@ PackageManager.load = function (self, package_name, reference_name, callback, as
 			end
 		elseif self._asynch_packages[package_name] then
 			local callbacks = self._asynch_packages[package_name].callbacks
+
 			callbacks[#callbacks + 1] = callback
 		elseif self._queued_async_packages[package_name] then
 			local callbacks = self._queued_async_packages[package_name].callbacks
+
 			callbacks[#callbacks + 1] = callback
 
 			if prioritize then
@@ -55,14 +59,14 @@ PackageManager.load = function (self, package_name, reference_name, callback, as
 		assert(self._queued_async_packages[package_name] == nil, "Package '" .. tostring(package_name) .. "' is already queued")
 
 		self._references[package_name] = {
-			[reference_name] = 1
+			[reference_name] = 1,
 		}
 
 		if next(self._asynch_packages) and asynchronous then
 			self._queued_async_packages[package_name] = {
 				callbacks = {
-					callback
-				}
+					callback,
+				},
 			}
 
 			if prioritize then
@@ -85,8 +89,8 @@ PackageManager.load = function (self, package_name, reference_name, callback, as
 			self._asynch_packages[package_name] = {
 				handle = resource_handle,
 				callbacks = {
-					callback
-				}
+					callback,
+				},
 			}
 		end
 	end
@@ -145,7 +149,7 @@ PackageManager.force_load_queued_package = function (self, package_name)
 end
 
 PackageManager._pop_queue = function (self)
-	local queued_package_name = nil
+	local queued_package_name
 	local index = 1
 
 	while #self._queue_order > 0 and index <= #self._queue_order do
@@ -170,7 +174,7 @@ PackageManager._pop_queue = function (self)
 
 		self._asynch_packages[queued_package_name] = {
 			handle = resource_handle,
-			callbacks = data.callbacks
+			callbacks = data.callbacks,
 		}
 		self._queued_async_packages[queued_package_name] = nil
 		self._queue_order = table.crop(self._queue_order, index + 1)

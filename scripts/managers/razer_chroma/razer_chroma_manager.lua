@@ -1,10 +1,12 @@
+﻿-- chunkname: @scripts/managers/razer_chroma/razer_chroma_manager.lua
+
 require("scripts/settings/razer_chroma_settings")
 
 RazerChromaManager = class(RazerChromaManager)
 RAZER_ADD_ANIMATION_TYPE = {
-	REPLACE = 2,
+	DO_NOTHING = 1,
 	QUEUE = 3,
-	DO_NOTHING = 1
+	REPLACE = 2,
 }
 
 RazerChromaManager.init = function (self)
@@ -64,7 +66,7 @@ RazerChromaManager.update = function (self, dt)
 end
 
 RazerChromaManager._check_should_play_conditions = function (self)
-	local should_play, loop, action = nil
+	local should_play, loop, action
 
 	for name, chroma_setting in pairs(RazerChromaSettings) do
 		if chroma_setting.condition_play_func then
@@ -108,12 +110,14 @@ RazerChromaManager.lit_keybindings = function (self, should_update)
 			self._get_button_name("wield_2", keymap),
 			self._get_button_name("wield_3", keymap),
 			self._get_button_name("wield_4", keymap),
-			self._get_button_name("wield_5", keymap)
+			self._get_button_name("wield_5", keymap),
 		}
+
 		self._default_keys = {}
 
 		for _, key in pairs(basic_keys) do
 			local razer_key = self:_string_to_key_mapping(key)
+
 			self._default_keys[#self._default_keys + 1] = razer_key
 		end
 	end
@@ -132,7 +136,8 @@ RazerChromaManager._update_current_animations = function (self, dt)
 	end
 
 	self._progress = self._progress + dt
-	local animation_done = current_animation.length <= self._progress
+
+	local animation_done = self._progress >= current_animation.length
 	local should_stop = current_animation.condition_stop_func and current_animation.condition_stop_func(self)
 
 	if animation_done or should_stop then
@@ -189,6 +194,7 @@ RazerChromaManager.play_animation = function (self, chroma, loop, action)
 
 	loop = loop or false
 	action = action or RAZER_ADD_ANIMATION_TYPE.QUEUE
+
 	local is_playing = self._is_playing
 	local current_animations = self._current_animations
 	local data = {
@@ -197,7 +203,7 @@ RazerChromaManager.play_animation = function (self, chroma, loop, action)
 		length = chroma_settings.length,
 		loop = loop,
 		on_play_func = chroma_settings.on_play_func,
-		condition_stop_func = chroma_settings.condition_stop_func
+		condition_stop_func = chroma_settings.condition_stop_func,
 	}
 
 	if not is_playing then

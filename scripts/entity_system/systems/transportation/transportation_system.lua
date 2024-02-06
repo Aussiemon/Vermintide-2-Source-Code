@@ -1,20 +1,24 @@
+﻿-- chunkname: @scripts/entity_system/systems/transportation/transportation_system.lua
+
 require("scripts/unit_extensions/generic/linker_transportation_extension")
 
 TransportationSystem = class(TransportationSystem, ExtensionSystemBase)
+
 local extensions = {
-	"LinkerTransportationExtension"
+	"LinkerTransportationExtension",
 }
 local RPCS = {
 	"rpc_hot_join_sync_linker_transporting",
 	"rpc_hot_join_sync_linker_transport_state",
 	"rpc_add_transporting_ai_units",
-	"rpc_remove_transporting_ai_units"
+	"rpc_remove_transporting_ai_units",
 }
 
 TransportationSystem.init = function (self, context, system_name)
 	TransportationSystem.super.init(self, context, system_name, extensions)
 
 	local network_event_delegate = context.network_event_delegate
+
 	self.network_event_delegate = network_event_delegate
 
 	network_event_delegate:register(self, unpack(RPCS))

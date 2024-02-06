@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/helpers/mover_helper.lua
+
 MoverHelper = MoverHelper or {}
 Unit._set_mover = Unit._set_mover or Unit.set_mover
 
@@ -10,13 +12,13 @@ MoverHelper.create_collision_state = function (unit, actor_name)
 
 	return {
 		disable_reasons = {},
-		actor = actor
+		actor = actor,
 	}
 end
 
 MoverHelper.create_mover_state = function ()
 	return {
-		disable_reasons = {}
+		disable_reasons = {},
 	}
 end
 
@@ -34,6 +36,7 @@ MoverHelper.set_disable_reason = function (unit, mover_state, reason, new_state)
 	end
 
 	local disable_reasons = mover_state.disable_reasons
+
 	disable_reasons[reason] = new_state
 
 	if next(disable_reasons) == nil then
@@ -45,7 +48,9 @@ end
 
 MoverHelper.set_collision_disable_reason = function (unit, state_data, reason, new_state)
 	local disable_reasons = state_data.disable_reasons
+
 	disable_reasons[reason] = new_state
+
 	local actor = state_data.actor
 
 	for r, state in pairs(disable_reasons) do

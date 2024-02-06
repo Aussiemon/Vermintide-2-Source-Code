@@ -1,10 +1,12 @@
+﻿-- chunkname: @scripts/settings/dlcs/cog/action_templates_cog.lua
+
 ActionTemplates.action_career_dr_4 = {
 	default = {
-		total_time = 0,
-		slot_to_wield = "slot_career_skill_weapon",
 		input_override = "action_career",
-		weapon_action_hand = "either",
 		kind = "instant_wield",
+		slot_to_wield = "slot_career_skill_weapon",
+		total_time = 0,
+		weapon_action_hand = "either",
 		condition_func = function (action_user, input_extension)
 			local buff_extension = ScriptUnit.extension(action_user, "buff_system")
 			local is_disabled = buff_extension:has_buff_perk("disable_career_ability")
@@ -31,6 +33,6 @@ ActionTemplates.action_career_dr_4 = {
 				inventory_extension:check_and_drop_pickups("career_ability")
 			end
 		end,
-		allowed_chain_actions = {}
-	}
+		allowed_chain_actions = {},
+	},
 }

@@ -1,6 +1,9 @@
+﻿-- chunkname: @scripts/ui/views/start_game_view/windows/start_game_window_mutator_summary.lua
+
 local definitions = local_require("scripts/ui/views/start_game_view/windows/definitions/start_game_window_mutator_summary_definitions")
 local widget_definitions = definitions.widgets
 local scenegraph_definition = definitions.scenegraph_definition
+
 StartGameWindowMutatorSummary = class(StartGameWindowMutatorSummary)
 StartGameWindowMutatorSummary.NAME = "StartGameWindowMutatorSummary"
 
@@ -8,15 +11,19 @@ StartGameWindowMutatorSummary.on_enter = function (self, params, offset)
 	print("[StartGameWindow] Enter Substate StartGameWindowMutatorSummary")
 
 	self.parent = params.parent
+
 	local ingame_ui_context = params.ingame_ui_context
+
 	self.ui_renderer = ingame_ui_context.ui_renderer
 	self.input_manager = ingame_ui_context.input_manager
 	self.statistics_db = ingame_ui_context.statistics_db
 	self.render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
+
 	local player_manager = Managers.player
 	local local_player = player_manager:local_player()
+
 	self._stats_id = local_player:stats_id()
 	self.player_manager = player_manager
 	self.peer_id = ingame_ui_context.peer_id
@@ -28,11 +35,13 @@ end
 
 StartGameWindowMutatorSummary.create_ui_elements = function (self, params, offset)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+
 	local widgets = {}
 	local widgets_by_name = {}
 
 	for name, widget_definition in pairs(widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		widgets[#widgets + 1] = widget
 		widgets_by_name[name] = widget
 	end
@@ -44,6 +53,7 @@ StartGameWindowMutatorSummary.create_ui_elements = function (self, params, offse
 
 	if offset then
 		local window_position = self.ui_scenegraph.window.local_position
+
 		window_position[1] = window_position[1] + offset[1]
 		window_position[2] = window_position[2] + offset[2]
 		window_position[3] = window_position[3] + offset[3]
@@ -127,11 +137,14 @@ StartGameWindowMutatorSummary._present_item_by_backend_id = function (self, back
 	end
 
 	local widgets_by_name = self._widgets_by_name
+
 	widgets_by_name.item_presentation_frame.content.visible = true
 	widgets_by_name.item_presentation_bg.content.visible = true
 	widgets_by_name.game_option_placeholder.content.visible = false
+
 	local item_interface = Managers.backend:get_interface("items")
 	local item = item_interface:get_item_from_id(backend_id)
+
 	widgets_by_name.item_presentation.content.item = item
 	widgets_by_name.confirm_button.content.button_hotspot.disable_button = false
 end

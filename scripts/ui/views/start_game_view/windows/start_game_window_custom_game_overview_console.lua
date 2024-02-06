@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/start_game_view/windows/start_game_window_custom_game_overview_console.lua
+
 local definitions = local_require("scripts/ui/views/start_game_view/windows/definitions/start_game_window_custom_game_overview_console_definitions")
 local scenegraph_definition = definitions.scenegraph_definition
 local widget_definitions = definitions.widgets
@@ -5,6 +7,7 @@ local animation_definitions = definitions.animation_definitions
 local selector_input_definition = definitions.selector_input_definition
 local START_GAME_INPUT = "refresh_press"
 local SELECTION_INPUT = "confirm_press"
+
 StartGameWindowCustomGameOverviewConsole = class(StartGameWindowCustomGameOverviewConsole)
 StartGameWindowCustomGameOverviewConsole.NAME = "StartGameWindowCustomGameOverviewConsole"
 
@@ -12,17 +15,21 @@ StartGameWindowCustomGameOverviewConsole.on_enter = function (self, params, offs
 	print("[StartGameViewWindow] Enter Substate StartGameWindowCustomGameOverviewConsole")
 
 	self._parent = params.parent
+
 	local ingame_ui_context = params.ingame_ui_context
+
 	self._ingame_ui_context = ingame_ui_context
 	self._ui_renderer = ingame_ui_context.ui_renderer
 	self._ui_top_renderer = ingame_ui_context.ui_top_renderer
 	self._input_manager = ingame_ui_context.input_manager
 	self._statistics_db = ingame_ui_context.statistics_db
 	self._mechanism_name = Managers.mechanism:current_mechanism_name()
+
 	local local_player = Managers.player:local_player()
+
 	self._stats_id = local_player:stats_id()
 	self._render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 	self._animations = {}
 
@@ -37,7 +44,9 @@ StartGameWindowCustomGameOverviewConsole.on_enter = function (self, params, offs
 	self._is_focused = false
 	self._play_button_pressed = false
 	self._previous_can_play = nil
+
 	local is_online = not Managers.account:offline_mode()
+
 	self._is_online = is_online
 
 	if is_online then
@@ -51,21 +60,25 @@ end
 
 StartGameWindowCustomGameOverviewConsole._start_transition_animation = function (self, animation_name)
 	local params = {
-		render_settings = self._render_settings
+		render_settings = self._render_settings,
 	}
 	local widgets = {}
 	local anim_id = self._ui_animator:start_animation(animation_name, widgets, scenegraph_definition, params)
+
 	self._animations[animation_name] = anim_id
 end
 
 StartGameWindowCustomGameOverviewConsole._create_ui_elements = function (self, params, offset)
 	local ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+
 	self._ui_scenegraph = ui_scenegraph
+
 	local widgets = {}
 	local widgets_by_name = {}
 
 	for name, widget_definition in pairs(widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		widgets[#widgets + 1] = widget
 		widgets_by_name[name] = widget
 	end
@@ -79,6 +92,7 @@ StartGameWindowCustomGameOverviewConsole._create_ui_elements = function (self, p
 
 	if offset then
 		local window_position = self._ui_scenegraph.window.local_position
+
 		window_position[1] = window_position[1] + offset[1]
 		window_position[2] = window_position[2] + offset[2]
 		window_position[3] = window_position[3] + offset[3]
@@ -121,7 +135,9 @@ StartGameWindowCustomGameOverviewConsole._update_can_play = function (self)
 
 	if self._previous_can_play ~= can_play then
 		self._previous_can_play = can_play
+
 		local play_button = self._widgets_by_name.play_button
+
 		play_button.content.button_hotspot.disable_button = not can_play
 		play_button.content.disabled = not can_play
 
@@ -194,6 +210,7 @@ StartGameWindowCustomGameOverviewConsole._handle_input = function (self, dt, t)
 
 		if input_service:get(START_GAME_INPUT) or self:_is_button_pressed(widgets_by_name.play_button) then
 			self._play_button_pressed = true
+
 			local custom_game_settings = parent:get_custom_game_settings(self._mechanism_name) or parent:get_custom_game_settings("adventure")
 
 			parent:play(t, custom_game_settings.game_mode_type)
@@ -229,6 +246,7 @@ StartGameWindowCustomGameOverviewConsole._update_mission_option = function (self
 	local icon_texture = level_settings.level_image
 	local completed_difficulty_index = self._parent:get_completed_level_difficulty_index(self._statistics_db, self._stats_id, selected_level_id)
 	local mission_widget = self._widgets_by_name.mission_setting
+
 	mission_widget.content.input_text = Localize(display_name)
 	mission_widget.content.icon_texture = icon_texture
 	mission_widget.content.icon_frame_texture = UIWidgetUtils.get_level_frame_by_difficulty_index(completed_difficulty_index)
@@ -240,10 +258,15 @@ StartGameWindowCustomGameOverviewConsole._update_difficulty_option = function (s
 	if selected_difficulty_key then
 		local difficulty_settings = DifficultySettings[selected_difficulty_key]
 		local difficulty_widget = self._widgets_by_name.difficulty_setting
+
 		difficulty_widget.content.input_text = Localize(difficulty_settings.display_name)
+
 		local display_image = difficulty_settings.display_image
+
 		difficulty_widget.content.icon_texture = display_image
+
 		local completed_frame_texture = difficulty_settings.completed_frame_texture
+
 		difficulty_widget.content.icon_frame_texture = completed_frame_texture
 	end
 end
@@ -269,7 +292,9 @@ end
 StartGameWindowCustomGameOverviewConsole._handle_new_selection = function (self, input_index)
 	local widgets_by_name = self._widgets_by_name
 	local num_inputs = #selector_input_definition
+
 	input_index = math.clamp(input_index, 1, num_inputs)
+
 	local widget_name = selector_input_definition[input_index]
 	local widget = widgets_by_name[widget_name]
 	local widget_content = widget.content
@@ -282,6 +307,7 @@ StartGameWindowCustomGameOverviewConsole._handle_new_selection = function (self,
 		local widget_name = selector_input_definition[i]
 		local widget = widgets_by_name[widget_name]
 		local is_selected = i == input_index
+
 		widget.content.is_selected = is_selected
 	end
 
@@ -319,7 +345,7 @@ StartGameWindowCustomGameOverviewConsole._draw = function (self, dt)
 	local ui_scenegraph = self._ui_scenegraph
 	local input_service = self._parent:window_input_service()
 	local render_settings = self._render_settings
-	local parent_scenegraph_id = nil
+	local parent_scenegraph_id
 
 	UIRenderer.begin_pass(ui_top_renderer, ui_scenegraph, input_service, dt, parent_scenegraph_id, render_settings)
 

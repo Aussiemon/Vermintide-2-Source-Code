@@ -1,17 +1,21 @@
+﻿-- chunkname: @scripts/entity_system/systems/sound/sound_effect_system.lua
+
 require("scripts/unit_extensions/default_player_unit/player_sound_effect_extension")
 
 SoundEffectSystem = class(SoundEffectSystem, ExtensionSystemBase)
+
 local RPCS = {
-	"rpc_aggro_unit_changed"
+	"rpc_aggro_unit_changed",
 }
 local extensions = {
-	"PlayerSoundEffectExtension"
+	"PlayerSoundEffectExtension",
 }
 
 SoundEffectSystem.init = function (self, entity_system_creation_context, system_name)
 	SoundEffectSystem.super.init(self, entity_system_creation_context, system_name, extensions)
 
 	local network_event_delegate = entity_system_creation_context.network_event_delegate
+
 	self.network_event_delegate = network_event_delegate
 
 	network_event_delegate:register(self, unpack(RPCS))

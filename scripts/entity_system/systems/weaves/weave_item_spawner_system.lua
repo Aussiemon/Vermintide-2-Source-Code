@@ -1,7 +1,10 @@
+﻿-- chunkname: @scripts/entity_system/systems/weaves/weave_item_spawner_system.lua
+
 require("scripts/settings/weave_unit_templates")
 require("scripts/entity_system/systems/objective/objective_item_spawner_system")
 
 WeaveItemSpawnerSystem = class(WeaveItemSpawnerSystem, ObjectiveItemSpawnerSystem)
+
 local extensions = {}
 
 WeaveItemSpawnerSystem.init = function (self, entity_system_creation_context, system_name)
@@ -9,8 +12,8 @@ WeaveItemSpawnerSystem.init = function (self, entity_system_creation_context, sy
 
 	self._item_spawners = {
 		kill_enemies = {
-			unit_template = WeaveUnitTemplates.weave_kill_enemies
-		}
+			unit_template = WeaveUnitTemplates.weave_kill_enemies,
+		},
 	}
 	self._spawned_items = {}
 end

@@ -1,18 +1,25 @@
+﻿-- chunkname: @scripts/unit_extensions/ai_supplementary/stormfiend_beam_extension.lua
+
 StormfiendBeamExtension = class(StormfiendBeamExtension)
+
 local position_lookup = POSITION_LOOKUP
 local arm_to_nodename = {
+	attack_left = "fx_left_muzzle",
 	attack_right = "fx_right_muzzle",
-	attack_left = "fx_left_muzzle"
 }
+
 arm_to_nodename = table.mirror_array_inplace(arm_to_nodename)
 
 StormfiendBeamExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	local world = extension_init_context.world
+
 	self.world = world
 	self.unit = unit
 	self.is_server = Managers.player.is_server
 	self.state = "no_state"
+
 	local particle_name = "fx/chr_warp_fire_flamethrower_01"
+
 	self.particle_name = particle_name
 	self.beam_forward_offset = 8
 	self.beam_up_offset = 8
@@ -52,7 +59,9 @@ StormfiendBeamExtension._create_beam = function (self, node_name)
 
 	if ALIVE[unit] then
 		local muzzle_node = Unit.node(unit, node_name)
+
 		self.muzzle_nodes[node_name] = muzzle_node
+
 		local world = self.world
 		local particle_id = World.create_particles(world, self.particle_name, Vector3.zero(), Quaternion.identity())
 		local muzzle_rotation = Unit.local_rotation(unit, muzzle_node)
@@ -74,8 +83,11 @@ StormfiendBeamExtension.get_target_position = function (self, unit, muzzle_node)
 
 	if target_position then
 		local unit_position = Unit.world_position(unit, muzzle_node)
+
 		target_position[3] = unit_position[3]
+
 		local forward_offset = Vector3.normalize(target_position - unit_position)
+
 		target_position = target_position + forward_offset * self.beam_forward_offset
 
 		return target_position + Vector3.up() * self.beam_up_offset
@@ -112,8 +124,10 @@ StormfiendBeamExtension.update = function (self, unit, input, dt, context, t)
 				World.set_particles_variable(world, particle_id, effect_variable_id, target_unit_pos)
 
 				effect_variable_id = World.find_particles_variable(world, self.particle_name, "firelife_1")
+
 				local lifetime = length / 4
 				local particle_life_time_vector = self.particle_life_time:unbox()
+
 				particle_life_time_vector.x = lifetime
 
 				World.set_particles_variable(world, particle_id, effect_variable_id, particle_life_time_vector)

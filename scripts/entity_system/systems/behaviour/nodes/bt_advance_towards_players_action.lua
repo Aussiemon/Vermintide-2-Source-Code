@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_advance_towards_players_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTAdvanceTowardsPlayersAction = class(BTAdvanceTowardsPlayersAction, BTNode)
@@ -11,12 +13,14 @@ local EVALUATE_TIME = 1
 
 BTAdvanceTowardsPlayersAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
+
 	blackboard.action = action
 
 	LocomotionUtils.set_animation_driven_movement(unit, false)
 
 	local throw_at_distance = blackboard.has_thrown and action.throw_at_distance or action.throw_at_distance_first_time
 	local advance_towards_players = blackboard.advance_towards_players or {}
+
 	advance_towards_players.timer = advance_towards_players.timer or 0
 	advance_towards_players.time_before_throw_timer = 0
 	advance_towards_players.evaluate_timer = EVALUATE_TIME
@@ -52,6 +56,7 @@ end
 
 BTAdvanceTowardsPlayersAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	blackboard.action = nil
+
 	local navigation_extension = blackboard.navigation_extension
 
 	if reason == "aborted" then
@@ -74,9 +79,11 @@ BTAdvanceTowardsPlayersAction.run = function (self, unit, blackboard, t, dt)
 	local breed = blackboard.breed
 	local action = blackboard.action
 	local advance_towards_players = blackboard.advance_towards_players
+
 	advance_towards_players.evaluate_timer = blackboard.times_thrown ~= 0 and 0 or advance_towards_players.evaluate_timer - dt
 	advance_towards_players.timer = advance_towards_players.timer + dt
 	advance_towards_players.time_before_throw_timer = advance_towards_players.time_before_throw_timer + dt
+
 	local failed_attempts = ai_navigation:number_failed_move_attempts()
 	local path_found = ai_navigation:is_following_path()
 
@@ -114,7 +121,7 @@ BTAdvanceTowardsPlayersAction.run = function (self, unit, blackboard, t, dt)
 		return "running"
 	end
 
-	if action.exit_to_skulk_distance < blackboard.target_dist then
+	if blackboard.target_dist > action.exit_to_skulk_distance then
 		blackboard.skulk_data.radius = blackboard.target_dist
 
 		return "failed"
@@ -149,7 +156,9 @@ BTAdvanceTowardsPlayersAction._calculate_trajectory_to_target = function (self, 
 	local pos = Vector3(x, y, z)
 	local throw_offset = Quaternion.rotate(rot, pos)
 	local throw_pos = curr_pos + throw_offset
+
 	curr_pos.z = throw_pos.z
+
 	local root_to_throw = throw_pos - curr_pos
 	local direction = Vector3.normalize(root_to_throw)
 	local length = Vector3.length(root_to_throw)
@@ -169,7 +178,7 @@ BTAdvanceTowardsPlayersAction._calculate_trajectory_to_target = function (self, 
 	if hit then
 		blackboard.throw_globe_data = blackboard.throw_globe_data or {
 			throw_pos = Vector3Box(),
-			target_direction = Vector3Box()
+			target_direction = Vector3Box(),
 		}
 		blackboard.throw_globe_data.angle = angle
 		blackboard.throw_globe_data.speed = speed

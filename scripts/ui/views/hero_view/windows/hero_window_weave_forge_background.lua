@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/hero_view/windows/hero_window_weave_forge_background.lua
+
 require("scripts/ui/views/menu_world_previewer")
 
 local definitions = local_require("scripts/ui/views/hero_view/windows/definitions/hero_window_weave_forge_background_definitions")
@@ -5,6 +7,7 @@ local widget_definitions = definitions.widgets
 local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
 local DO_RELOAD = false
+
 HeroWindowWeaveForgeBackground = class(HeroWindowWeaveForgeBackground)
 HeroWindowWeaveForgeBackground.NAME = "HeroWindowWeaveForgeBackground"
 
@@ -13,11 +16,13 @@ HeroWindowWeaveForgeBackground.on_enter = function (self, params, offset)
 
 	self._params = params
 	self._parent = params.parent
+
 	local ingame_ui_context = params.ingame_ui_context
+
 	self._ui_renderer = ingame_ui_context.ui_renderer
 	self._ui_top_renderer = ingame_ui_context.ui_top_renderer
 	self._render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 	self._ingame_ui_context = ingame_ui_context
 	self._animations = {}
@@ -32,6 +37,7 @@ HeroWindowWeaveForgeBackground.on_enter = function (self, params, offset)
 	local careers = profile.careers
 	local career = careers[career_index]
 	local career_name = career.name
+
 	self._career_name = career_name
 	self._hero_name = hero_name
 end
@@ -52,11 +58,13 @@ HeroWindowWeaveForgeBackground.create_ui_elements = function (self, params, offs
 	self:_setup_definitions()
 
 	self._ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+
 	local widgets = {}
 	local widgets_by_name = {}
 
 	for name, widget_definition in pairs(widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		widgets[#widgets + 1] = widget
 		widgets_by_name[name] = widget
 	end
@@ -67,6 +75,7 @@ HeroWindowWeaveForgeBackground.create_ui_elements = function (self, params, offs
 
 	if offset then
 		local window_position = self._ui_scenegraph.window.local_position
+
 		window_position[1] = window_position[1] + offset[1]
 		window_position[2] = window_position[2] + offset[2]
 		window_position[3] = window_position[3] + offset[3]

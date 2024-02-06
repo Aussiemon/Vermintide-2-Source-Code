@@ -1,24 +1,26 @@
+﻿-- chunkname: @levels/honduras_dlcs/penny/level_settings_penny_part_3.lua
+
 LevelSettings.dlc_castle = {
+	act = "act_penny",
+	act_presentation_order = 3,
 	act_unlock_order = 2,
 	ambient_sound_event = "silent_default_world_sound",
-	environment_state = "exterior",
-	player_aux_bus_name = "environment_reverb_outside",
-	display_name = "level_name_dlc_castle",
-	act = "act_penny",
-	loading_ui_package_name = "loading_screen_26",
-	unlockable = true,
-	level_image = "level_image_castle",
-	use_mini_patrols = false,
-	act_presentation_order = 3,
-	description_text = "nik_castle_briefing_02",
 	boss_spawning_method = "hand_placed",
-	dlc_name = "penny",
 	default_surface_material = "stone",
+	description_text = "nik_castle_briefing_02",
+	display_name = "level_name_dlc_castle",
+	dlc_name = "penny",
+	environment_state = "exterior",
 	knocked_down_setting = "knocked_down",
+	level_image = "level_image_castle",
 	level_name = "levels/honduras_dlcs/penny/dlc_castle/world",
+	loading_ui_package_name = "loading_screen_26",
+	player_aux_bus_name = "environment_reverb_outside",
 	source_aux_bus_name = "environment_reverb_outside_source",
+	unlockable = true,
+	use_mini_patrols = false,
 	packages = {
-		"resource_packages/levels/dlcs/penny/dlc_castle"
+		"resource_packages/levels/dlcs/penny/dlc_castle",
 	},
 	level_particle_effects = {},
 	level_screen_effects = {},
@@ -26,70 +28,70 @@ LevelSettings.dlc_castle = {
 		default = {
 			primary = {
 				ammo = 8,
+				grenades = 5,
 				painting_scrap = 3,
 				potions = 5,
-				grenades = 5,
 				healing = {
 					first_aid_kit = 5,
-					healing_draught = 5
+					healing_draught = 5,
 				},
 				level_events = {
 					explosive_barrel = 5,
-					lamp_oil = 5
-				}
+					lamp_oil = 5,
+				},
 			},
 			secondary = {
 				ammo = 5,
 				grenades = 5,
 				healing = 8,
-				potions = 6
-			}
+				potions = 6,
+			},
 		},
 		normal = {
 			primary = {
 				ammo = 10,
+				grenades = 10,
 				painting_scrap = 3,
 				potions = 6,
-				grenades = 10,
 				healing = {
 					first_aid_kit = 8,
-					healing_draught = 8
+					healing_draught = 8,
 				},
 				level_events = {
 					explosive_barrel = 6,
-					lamp_oil = 6
-				}
+					lamp_oil = 6,
+				},
 			},
 			secondary = {
 				ammo = 5,
 				grenades = 5,
 				healing = 10,
-				potions = 8
-			}
-		}
+				potions = 8,
+			},
+		},
 	},
 	loading_screen_wwise_events = {
 		"nik_castle_briefing_02",
 		dr_engineer = {
 			"pdr_de_castle_briefing_01",
-			"pdr_de_castle_briefing_02"
+			"pdr_de_castle_briefing_02",
 		},
 		we_thornsister = {
 			"pwe_st_castle_briefing_01",
-			"pwe_st_castle_briefing_02"
+			"pwe_st_castle_briefing_02",
 		},
 		es_questingknight = {
 			"pes_gk_castle_briefing_01",
-			"pes_gk_castle_briefing_02"
+			"pes_gk_castle_briefing_02",
 		},
 		wh_priest = {
 			"pwh_wp_castle_briefing_01",
-			"pwh_wp_castle_briefing_02"
+			"pwh_wp_castle_briefing_02",
 		},
 		bw_necromancer = {
 			"pbw_nm_castle_briefing_01",
-			"pbw_nm_castle_briefing_02"
-		}
+			"pbw_nm_castle_briefing_02",
+		},
 	},
 	locations = {
 		"dlc1_4_location_castle_ballroom",
@@ -125,11 +127,11 @@ LevelSettings.dlc_castle = {
 		"penny_location_castle_throne_room_hallway",
 		"penny_location_castle_throne_room",
 		"penny_location_castle_escape_catacombs",
-		"penny_location_castle_sarcophagus"
+		"penny_location_castle_sarcophagus",
 	},
 	mission_selection_offset = {
 		254,
 		0,
-		0
-	}
+		0,
+	},
 }

@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/settings/dlcs/bogenhafen/bogenhafen_level_settings.lua
+
 local settings = DLCSettings.bogenhafen
+
 settings.level_settings = "levels/honduras_dlcs/bogenhafen/level_settings_bogenhafen"
 settings.level_unlock_settings = "levels/honduras_dlcs/bogenhafen/level_unlock_settings_bogenhafen"
 settings.terror_event_blueprints_filename = "levels/honduras_dlcs/bogenhafen/terror_events_bogenhafen"
@@ -7,142 +10,142 @@ settings.weighted_random_terror_events = {
 		"dlc_bogenhafen_slum_event_spice_left",
 		1,
 		"dlc_bogenhafen_slum_event_spice_right",
-		1
-	}
+		1,
+	},
 }
 settings.missions = {
 	bogenhafen_city_findsewer = {
 		mission_template_name = "goal",
-		text = "mission_bogenhafen_city_findsewer"
+		text = "mission_bogenhafen_city_findsewer",
 	},
 	bogenhafen_city_reachexit = {
 		mission_template_name = "goal",
-		text = "mission_bogenhafen_city_reachexit"
+		text = "mission_bogenhafen_city_reachexit",
 	},
 	bogenhafen_city_basement = {
 		mission_template_name = "goal",
-		text = "mission_bogenhafen_city_basement"
+		text = "mission_bogenhafen_city_basement",
 	},
 	bogenhafen_city_altroute = {
 		mission_template_name = "goal",
-		text = "mission_bogenhafen_city_altroute"
+		text = "mission_bogenhafen_city_altroute",
 	},
 	bogenhafen_city_opensewergates = {
 		mission_template_name = "goal",
-		text = "mission_bogenhafen_city_opensewergates"
+		text = "mission_bogenhafen_city_opensewergates",
 	},
 	bogenhafen_city_reachend = {
 		mission_template_name = "goal",
-		text = "mission_bogenhafen_city_reacheend"
+		text = "mission_bogenhafen_city_reacheend",
 	},
 	bogenhafen_city_pushforward = {
 		mission_template_name = "goal",
-		text = "mission_bogenhafen_city_pushforward"
+		text = "mission_bogenhafen_city_pushforward",
 	},
 	bogenhafen_city_pushforward2 = {
 		mission_template_name = "goal",
-		text = "mission_bogenhafen_city_pushforward2"
+		text = "mission_bogenhafen_city_pushforward2",
 	},
 	bogenhafen_city_pushforward3 = {
 		mission_template_name = "goal",
-		text = "mission_bogenhafen_city_pushforward3"
+		text = "mission_bogenhafen_city_pushforward3",
 	},
 	bogenhafen_city_reachmarket = {
 		mission_template_name = "goal",
-		text = "mission_bogenhafen_city_reachmarket"
+		text = "mission_bogenhafen_city_reachmarket",
 	},
 	bogenhafen_city_moveupstairs = {
 		mission_template_name = "goal",
-		text = "mission_bogenhafen_city_moveupstairs"
+		text = "mission_bogenhafen_city_moveupstairs",
 	},
 	bogenhafen_city_reachtemplegate = {
 		mission_template_name = "goal",
-		text = "mission_bogenhafen_city_reachtemplegate"
+		text = "mission_bogenhafen_city_reachtemplegate",
 	},
 	bogenhafen_city_escape_sewers = {
 		mission_template_name = "goal",
-		text = "mission_bogenhafen_city_escape_sewers"
+		text = "mission_bogenhafen_city_escape_sewers",
 	},
 	bogenhafen_city_find_priest = {
 		mission_template_name = "goal",
-		text = "mission_bogenhafen_city_find_priest"
+		text = "mission_bogenhafen_city_find_priest",
 	},
 	bogenhafen_city_getback_gate = {
 		mission_template_name = "goal",
-		text = "mission_bogenhafen_city_getback_gate"
+		text = "mission_bogenhafen_city_getback_gate",
 	},
 	bogenhafen_city_unlock_gate = {
 		mission_template_name = "goal",
-		text = "mission_bogenhafen_city_unlock_gate"
+		text = "mission_bogenhafen_city_unlock_gate",
 	},
 	bogenhafen_city_entertemple = {
 		mission_template_name = "goal",
-		text = "mission_bogenhafen_city_entertemple"
+		text = "mission_bogenhafen_city_entertemple",
 	},
 	bogenhafen_city_findsecret = {
 		mission_template_name = "goal",
-		text = "mission_bogenhafen_city_findsecret"
+		text = "mission_bogenhafen_city_findsecret",
 	},
 	bogenhafen_city_button = {
-		text = "mission_bogenhafen_city_button",
+		collect_amount = 5,
 		mission_template_name = "collect",
-		collect_amount = 5
+		text = "mission_bogenhafen_city_button",
 	},
 	bogenhafen_city_claimartifact = {
 		mission_template_name = "goal",
-		text = "mission_bogenhafen_city_claimartifact"
+		text = "mission_bogenhafen_city_claimartifact",
 	},
 	bogenhafen_city_escape_temple = {
 		mission_template_name = "goal",
-		text = "mission_bogenhafen_city_escape_temple"
+		text = "mission_bogenhafen_city_escape_temple",
 	},
 	bogenhafen_slum_enter_slum = {
 		mission_template_name = "goal",
-		text = "mission_bogenhafen_slum_enter_slum"
+		text = "mission_bogenhafen_slum_enter_slum",
 	},
 	bogenhafen_slum_move_through_slum = {
 		mission_template_name = "goal",
-		text = "mission_bogenhafen_slum_move_through_slum"
+		text = "mission_bogenhafen_slum_move_through_slum",
 	},
 	bogenhafen_get_past_wall = {
 		mission_template_name = "goal",
-		text = "mission_bogenhafen_get_past_wall"
+		text = "mission_bogenhafen_get_past_wall",
 	},
 	bogenhafen_slum_find_hideout = {
 		mission_template_name = "goal",
-		text = "mission_bogenhafen_slum_find_hideout"
+		text = "mission_bogenhafen_slum_find_hideout",
 	},
 	bogenhafen_slum_enter_hideout = {
 		mission_template_name = "goal",
-		text = "mission_bogenhafen_slum_enter_hideout"
+		text = "mission_bogenhafen_slum_enter_hideout",
 	},
 	bogenhafen_slum_burn_food = {
-		text = "mission_bogenhafen_slum_burn_food",
+		collect_amount = 3,
 		mission_template_name = "collect",
-		collect_amount = 3
+		text = "mission_bogenhafen_slum_burn_food",
 	},
 	bogenhafen_slum_survive_hideout = {
 		mission_template_name = "goal",
-		text = "mission_bogenhafen_slum_survive_hideout"
+		text = "mission_bogenhafen_slum_survive_hideout",
 	},
 	bogenhafen_slum_escape_hideout = {
 		mission_template_name = "goal",
-		text = "mission_bogenhafen_slum_escape_hideout"
+		text = "mission_bogenhafen_slum_escape_hideout",
 	},
 	bogenhafen_slum_to_the_docks = {
 		mission_template_name = "goal",
-		text = "mission_bogenhafen_slum_to_the_docks"
+		text = "mission_bogenhafen_slum_to_the_docks",
 	},
 	bogenhafen_start_gauntlet = {
 		mission_template_name = "goal",
-		text = "mission_bogenhafen_start_gauntlet"
+		text = "mission_bogenhafen_start_gauntlet",
 	},
 	bogenhafen_slum_run = {
 		mission_template_name = "goal",
-		text = "mission_bogenhafen_slum_run"
+		text = "mission_bogenhafen_slum_run",
 	},
 	bogenhafen_slum_escape_portal = {
 		mission_template_name = "goal",
-		text = "mission_bogenhafen_slum_escape_portal"
-	}
+		text = "mission_bogenhafen_slum_escape_portal",
+	},
 }

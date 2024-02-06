@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/backend_playfab/backend_interface_deus_playfab.lua
+
 require("scripts/managers/backend_playfab/backend_interface_deus_base")
 
 BackendInterfaceDeusPlayFab = class(BackendInterfaceDeusPlayFab, BackendInterfaceDeusBase)
@@ -14,12 +16,13 @@ BackendInterfaceDeusPlayFab.get_journey_cycle = function (self)
 	local deus_journey_cycle_data = self._backend_mirror:get_deus_journey_cycle_data()
 	local time_delta = current_time - deus_journey_cycle_data.time_of_update
 	local remaining_time = deus_journey_cycle_data.remaining_time - time_delta
-	local cycle = nil
+	local cycle
 
 	if remaining_time < 0 then
 		local time_past_cycle = -remaining_time
 		local span = deus_journey_cycle_data.span
 		local cycle_delta = math.ceil(time_past_cycle / span)
+
 		cycle = deus_journey_cycle_data.cycle_count + cycle_delta
 		remaining_time = span - time_past_cycle % span
 	else
@@ -56,12 +59,13 @@ BackendInterfaceDeusPlayFab.get_belakor_cycle = function (self)
 	local deus_belakor_cycle_data = self._backend_mirror:get_deus_belakor_curse_data()
 	local time_delta = current_time - deus_belakor_cycle_data.time_of_update
 	local remaining_time = deus_belakor_cycle_data.remaining_time - time_delta
-	local cycle = nil
+	local cycle
 
 	if remaining_time < 0 then
 		local time_past_cycle = -remaining_time
 		local span = deus_belakor_cycle_data.span
 		local cycle_delta = math.ceil(time_past_cycle / span)
+
 		cycle = deus_belakor_cycle_data.cycle_count + cycle_delta
 		remaining_time = span - time_past_cycle % span
 	else
@@ -77,8 +81,9 @@ BackendInterfaceDeusPlayFab._generate_belakor_curse_cycle = function (self, curr
 	local belakor_data = {
 		remaining_time = remaining_time,
 		time_of_update = current_time,
-		journey_name = journey_name
+		journey_name = journey_name,
 	}
+
 	self._belakor_data = belakor_data
 
 	return belakor_data
@@ -95,7 +100,7 @@ end
 BackendInterfaceDeusPlayFab.deus_run_started = function (self)
 	local request = {
 		FunctionName = "deusRunStarted",
-		FunctionParameter = {}
+		FunctionParameter = {},
 	}
 	local backend_mirror = self._backend_mirror
 
@@ -113,7 +118,7 @@ end
 BackendInterfaceDeusPlayFab.write_player_event = function (self, event_name, data)
 	local request = {
 		EventName = event_name,
-		Body = data
+		Body = data,
 	}
 	local backend_mirror = self._backend_mirror
 	local request_queue = backend_mirror:request_queue()

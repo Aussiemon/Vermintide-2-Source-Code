@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/start_game_view/start_game_view.lua
+
 require("scripts/ui/views/hero_view/item_grid_ui")
 require("scripts/ui/views/start_game_view/states/start_game_state_settings_overview")
 require("scripts/ui/views/start_game_view/states/start_game_state_weave_leaderboard")
@@ -42,9 +44,13 @@ StartGameView.init = function (self, ingame_ui_context)
 	self.is_server = ingame_ui_context.is_server
 	self.is_in_inn = ingame_ui_context.is_in_inn
 	self.world_manager = ingame_ui_context.world_manager
+
 	local world = self.world_manager:world("level_world")
+
 	self.wwise_world = Managers.world:wwise_world(world)
+
 	local input_manager = ingame_ui_context.input_manager
+
 	self.input_manager = input_manager
 
 	input_manager:create_input_service("start_game_view", "IngameMenuKeymaps", "IngameMenuFilters")
@@ -57,8 +63,9 @@ StartGameView.init = function (self, ingame_ui_context)
 		ingame_ui_context = ingame_ui_context,
 		parent = self,
 		settings_by_screen = settings_by_screen,
-		input_service = FAKE_INPUT_SERVICE
+		input_service = FAKE_INPUT_SERVICE,
 	}
+
 	self._state_machine_params = state_machine_params
 	self.units = {}
 	self.attachment_units = {}
@@ -70,8 +77,9 @@ end
 
 StartGameView._init_menu_views = function (self)
 	local ingame_ui_context = self.ingame_ui_context
+
 	self._views = {
-		console_friends_view = ingame_ui_context.ingame_ui.views.console_friends_view
+		console_friends_view = ingame_ui_context.ingame_ui.views.console_friends_view,
 	}
 
 	for name, view in pairs(self._views) do
@@ -83,6 +91,7 @@ end
 
 StartGameView._activate_view = function (self, new_view)
 	self._active_view = new_view
+
 	local views = self._views
 
 	assert(views[new_view])
@@ -107,6 +116,7 @@ StartGameView.exit_current_view = function (self)
 	end
 
 	self._active_view = nil
+
 	local input_service = Managers.input:get_service("start_game_view")
 	local input_service_name = input_service.name
 	local input_manager = Managers.input
@@ -130,6 +140,7 @@ StartGameView._setup_state_machine = function (self, state_machine_params, optio
 
 	local start_state = optional_start_state or StartGameStateSettingsOverview
 	local profiling_debugging_enabled = false
+
 	state_machine_params.start_state = optional_start_sub_state
 	state_machine_params.state_params = optional_params
 	self._machine = GameStateMachine:new(self, start_state, state_machine_params, profiling_debugging_enabled)
@@ -174,7 +185,7 @@ StartGameView.create_ui_elements = function (self)
 	self._static_widgets = {}
 	self._loading_widgets = {
 		background = UIWidget.init(widget_definitions.loading_bg),
-		text = UIWidget.init(widget_definitions.loading_text)
+		text = UIWidget.init(widget_definitions.loading_text),
 	}
 	self._console_cursor_widget = UIWidget.init(widget_definitions.console_cursor)
 
@@ -246,7 +257,9 @@ StartGameView.update = function (self, dt, t)
 	local gamepad_active = input_manager:is_device_active("gamepad")
 	local input_blocked = self:input_blocked()
 	local input_service = input_blocked and FAKE_INPUT_SERVICE or self:input_service()
+
 	self._state_machine_params.input_service = input_service
+
 	local transitioning = self:transitioning()
 
 	self.ui_animator:update(dt)
@@ -288,6 +301,7 @@ StartGameView.on_enter = function (self, params)
 	input_manager:block_device_except_service("start_game_view", "gamepad", 1)
 
 	local state_machine_params = self._state_machine_params
+
 	state_machine_params.initial_state = true
 
 	self:create_ui_elements()
@@ -313,17 +327,17 @@ StartGameView._handle_new_ui_disclaimer = function (self)
 	local mechanism_name = Managers.mechanism:current_mechanism_name()
 	local global_disclaimer_states = {
 		deus = {
+			default = false,
 			play = false,
-			default = false
 		},
 		adventure = {
 			default = true,
-			leaderboard = false
+			leaderboard = false,
 		},
 		default = {
 			default = true,
-			leaderboard = false
-		}
+			leaderboard = false,
+		},
 	}
 	local disclaimer_states = global_disclaimer_states[mechanism_name] or global_disclaimer_states.default
 	local on_enter_transition_params = self._on_enter_transition_params
@@ -340,8 +354,11 @@ StartGameView.set_current_hero = function (self, profile_index)
 	local profile_settings = SPProfiles[profile_index]
 	local display_name = profile_settings.display_name
 	local character_name = profile_settings.character_name
+
 	self._hero_name = display_name
+
 	local state_machine_params = self._state_machine_params
+
 	state_machine_params.hero_name = display_name
 end
 
@@ -445,12 +462,12 @@ end
 StartGameView.requested_screen_change_by_name = function (self, screen_name, sub_screen_name)
 	self._requested_screen_change_data = {
 		screen_name = screen_name,
-		sub_screen_name = sub_screen_name
+		sub_screen_name = sub_screen_name,
 	}
 end
 
 StartGameView._change_screen_by_name = function (self, screen_name, sub_screen_name, optional_params)
-	local settings, settings_index = nil
+	local settings, settings_index
 
 	for index, screen_settings in ipairs(settings_by_screen) do
 		if screen_settings.name == screen_name then
@@ -482,6 +499,7 @@ end
 
 StartGameView.post_update_on_enter = function (self)
 	self.waiting_for_post_update_enter = nil
+
 	local on_enter_transition_params = self._on_enter_transition_params
 
 	if on_enter_transition_params and on_enter_transition_params.menu_state_name then
@@ -608,6 +626,7 @@ StartGameView._set_loading_overlay_enabled = function (self, enabled, message)
 	local loading_text_widget = loading_widgets.text
 	local loading_bg_widget = loading_widgets.background
 	local alpha = enabled and 255 or 0
+
 	loading_bg_widget.style.color[1] = alpha
 	loading_text_widget.style.text.text_color[1] = alpha
 	loading_text_widget.content.text = message or ""

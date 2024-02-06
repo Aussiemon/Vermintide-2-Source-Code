@@ -1,32 +1,36 @@
+﻿-- chunkname: @scripts/ui/hud_ui/equipment_ui.lua
+
 local definitions = local_require("scripts/ui/hud_ui/equipment_ui_definitions")
 local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animations_definitions
+
 EquipmentUI = class(EquipmentUI)
+
 local AMMO_PRESENTATION_DURATION = 2
 local PERSISTENT_AMMO_COUNTER = Application.user_setting("persistent_ammo_counter")
 local slot_size = definitions.slot_size
 local NUM_SLOTS = definitions.NUM_SLOTS
 local input_actions_by_slot = {
-	slot_potion = "wield_4",
+	slot_career_skill_weapon = "weapon_reload",
 	slot_grenade = "wield_5",
 	slot_healthkit = "wield_3",
-	slot_career_skill_weapon = "weapon_reload",
 	slot_melee = "wield_1",
-	slot_ranged = "wield_2"
+	slot_potion = "wield_4",
+	slot_ranged = "wield_2",
 }
 local allowed_equipment_slots = {
+	slot_career_skill_weapon = true,
 	slot_grenade = true,
 	slot_healthkit = true,
-	slot_potion = true,
-	slot_career_skill_weapon = true,
 	slot_melee = true,
-	slot_ranged = true
+	slot_potion = true,
+	slot_ranged = true,
 }
 local ammo_colors = {
 	normal = Colors.get_color_table_with_alpha("white", 255),
 	empty = Colors.get_color_table_with_alpha("red", 255),
 	focus = Colors.get_color_table_with_alpha("font_default", 150),
-	unfocused = Colors.get_color_table_with_alpha("font_default", 150)
+	unfocused = Colors.get_color_table_with_alpha("font_default", 150),
 }
 
 local function sort_by_hud_index(a, b)
@@ -47,7 +51,7 @@ EquipmentUI.init = function (self, parent, ingame_ui_context)
 	self._animations = {}
 	self.render_settings = {
 		alpha_multiplier = 1,
-		snap_pixel_positions = false
+		snap_pixel_positions = false,
 	}
 	self.is_in_inn = ingame_ui_context.is_in_inn
 	self.cleanui = ingame_ui_context.cleanui
@@ -55,6 +59,7 @@ EquipmentUI.init = function (self, parent, ingame_ui_context)
 	self._spectated_player = nil
 	self._spectated_player_unit = nil
 	self._reload_attempts = 0
+
 	local event_manager = Managers.state.event
 
 	event_manager:register(self, "input_changed", "event_input_changed")
@@ -66,6 +71,7 @@ end
 
 EquipmentUI._create_ui_elements = function (self)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+
 	local widgets = {}
 	local widgets_by_name = {}
 	local ammo_widgets = {}
@@ -77,6 +83,7 @@ EquipmentUI._create_ui_elements = function (self)
 
 	for name, definition in pairs(definitions.widget_definitions) do
 		local widget = UIWidget.init(definition)
+
 		widgets_by_name[name] = widget
 		static_widgets[count] = widget
 		count = count + 1
@@ -84,6 +91,7 @@ EquipmentUI._create_ui_elements = function (self)
 
 	for i, definition in ipairs(definitions.slot_widget_definitions) do
 		local widget = UIWidget.init(definition)
+
 		widgets[i] = widget
 		unused_widgets[i] = widget
 		slot_widgets[i] = widget
@@ -91,6 +99,7 @@ EquipmentUI._create_ui_elements = function (self)
 
 	for name, definition in pairs(definitions.ammo_widget_definitions) do
 		local widget = UIWidget.init(definition)
+
 		ammo_widgets[#ammo_widgets + 1] = widget
 		ammo_widgets_by_name[name] = widget
 		widgets_by_name[name] = widget
@@ -115,7 +124,7 @@ EquipmentUI._create_ui_elements = function (self)
 		100,
 		150,
 		150,
-		150
+		150,
 	}
 	widgets_by_name.overcharge.style.texture_id.color = Colors.get_color_table_with_alpha("font_title", 255)
 	self._added_items = {}
@@ -153,6 +162,7 @@ EquipmentUI.on_spectator_target_changed = function (self, spectated_player_unit)
 	self._spectated_player_unit = spectated_player_unit
 	self._spectated_player = Managers.player:owner(spectated_player_unit)
 	self._is_spectator = true
+
 	local observed_side = Managers.state.side:get_side_from_player_unique_id(self._spectated_player:unique_id())
 
 	if observed_side:name() == "dark_pact" then
@@ -169,6 +179,7 @@ EquipmentUI.event_swap_equipment_from_storage = function (self, slot_name, addit
 
 	self._widgets_by_name.extra_storage_bg.style.texture.color[1] = 163
 	self._time_fade_storage_slots = Managers.time:time("ui") + 2
+
 	local widgets = self._extra_storage_icon_widgets
 
 	for i = 1, #widgets do
@@ -179,12 +190,15 @@ EquipmentUI.event_swap_equipment_from_storage = function (self, slot_name, addit
 			local hud_icon = item.gamepad_hud_icon
 			local style = widget.style
 			local content = widget.content
+
 			content.visible = true
 			content.texture_icon = hud_icon
 			content.texture_glow = hud_icon .. "_glow"
 			style.texture_icon.color[1] = 255
+
 			local color_src = Colors.color_definitions[item.key] or Colors.color_definitions.black
 			local color_dst = style.texture_glow.color
+
 			color_dst[1] = 255
 			color_dst[2] = color_src[2]
 			color_dst[3] = color_src[3]
@@ -202,6 +216,7 @@ EquipmentUI._set_slot_input = function (self, widget, slot_name)
 	local max_length = 40
 	local input_style = widget.style.input_text
 	local ui_renderer = self.ui_renderer
+
 	input_text = input_text and UIRenderer.crop_text_width(ui_renderer, input_text, max_length, input_style)
 	widget.content.input_text = input_text or ""
 	widget.content.input_action = input_action
@@ -221,7 +236,7 @@ EquipmentUI._get_input_texture_data = function (self, input_action)
 	local device_type = keymap_binding and keymap_binding[1]
 	local key_index = keymap_binding and keymap_binding[2] or UNASSIGNED_KEY
 	local key_action_type = keymap_binding and keymap_binding[3]
-	local prefix_text = nil
+	local prefix_text
 
 	if key_action_type == "held" then
 		prefix_text = "matchmaking_prefix_hold"
@@ -231,27 +246,15 @@ EquipmentUI._get_input_texture_data = function (self, input_action)
 	local button_name = ""
 
 	if device_type == "keyboard" then
-		if is_button_unassigned then
-			button_name = ""
-		else
-			button_name = Keyboard.button_locale_name(key_index)
-		end
+		button_name = is_button_unassigned and "" or Keyboard.button_locale_name(key_index)
 
 		return nil, button_name, prefix_text
 	elseif device_type == "mouse" then
-		if is_button_unassigned then
-			button_name = ""
-		else
-			button_name = Mouse.button_name(key_index)
-		end
+		button_name = is_button_unassigned and "" or Mouse.button_name(key_index)
 
 		return nil, button_name, prefix_text
 	elseif device_type == "gamepad" then
-		if is_button_unassigned then
-			button_name = ""
-		else
-			button_name = Pad1.button_name(key_index)
-		end
+		button_name = is_button_unassigned and "" or Pad1.button_name(key_index)
 
 		local button_texture_data = ButtonTextureByName(button_name, platform)
 
@@ -293,7 +296,9 @@ EquipmentUI._set_wielded_item = function (self, wielded_slot_name)
 		local was_wielded = data.slot_name == self._wielded_slot_name
 		local is_wielded = data.slot_name == wielded_slot_name
 		local widget = data.widget
+
 		widget.content.selected = is_wielded
+
 		local slot_name = data.slot_name
 
 		if is_wielded then
@@ -332,7 +337,7 @@ EquipmentUI._sync_player_equipment = function (self)
 	table.clear(verified_widgets)
 
 	local inventory_modified = false
-	local wielded_slot_name = nil
+	local wielded_slot_name
 	local equipment_slots = equipment.slots
 	local wielded = equipment.wielded_slot
 	local inventory_slots = InventorySettings.slots
@@ -340,9 +345,13 @@ EquipmentUI._sync_player_equipment = function (self)
 	local career_name = player:career_name()
 	local hud_inventory_widget_content = self._widgets_by_name.background_panel.content
 	local career_data = UISettings.hud_inventory_panel_data[career_name] or UISettings.hud_inventory_panel_data.default
+
 	hud_inventory_widget_content.texture_id = career_data.texture_id
+
 	local hud_inventory_widget_style = self._widgets_by_name.background_panel.style.texture_id
+
 	hud_inventory_widget_style.texture_size = career_data.texture_size
+
 	local is_cog = career_name == "dr_engineer"
 	local added_items = self._added_items
 
@@ -350,195 +359,199 @@ EquipmentUI._sync_player_equipment = function (self)
 		local slot = inventory_slots[i]
 		local slot_name = slot.name
 
-		if allowed_equipment_slots[slot_name] then
-			if slot_name ~= "slot_career_skill_weapon" or is_cog then
-				local slot_data = equipment_slots[slot_name]
-				local item_data = slot_data and slot_data.item_data
-				local item_name = item_data and item_data.name
-				local item_id = item_data and item_data.backend_id
-				local is_wielded = slot_name and wielded == slot_name or false
-				local verified = false
-				local widget_id = 0
+		if not allowed_equipment_slots[slot_name] or slot_name == "slot_career_skill_weapon" and not is_cog then
+			-- Nothing
+		else
+			local slot_data = equipment_slots[slot_name]
+			local item_data = slot_data and slot_data.item_data
+			local item_name = item_data and item_data.name
+			local item_id = item_data and item_data.backend_id
+			local is_wielded = slot_name and wielded == slot_name or false
+			local verified = false
+			local widget_id = 0
 
-				for j = 1, #added_items do
-					local data = added_items[j]
-					local same_item = nil
+			for j = 1, #added_items do
+				local data = added_items[j]
+				local same_item
 
-					if item_id then
-						same_item = data.item_id == item_id
-					else
-						same_item = data.item_name == item_name
-					end
+				if item_id then
+					same_item = data.item_id == item_id
+				else
+					same_item = data.item_name == item_name
+				end
 
-					local same_slot = data.slot_name == slot_name
+				local same_slot = data.slot_name == slot_name
 
-					if same_slot then
-						widget_id = j
-					end
+				if same_slot then
+					widget_id = j
+				end
 
-					if same_item then
-						if not verified_widgets[j] then
-							verified = true
-							verified_widgets[j] = true
-
-							break
-						end
-					elseif item_name and same_slot then
+				if same_item then
+					if not verified_widgets[j] then
 						verified = true
 						verified_widgets[j] = true
 
-						self:_add_item(slot_data, data)
-
-						inventory_modified = true
-
 						break
 					end
-				end
+				elseif item_name and same_slot then
+					verified = true
+					verified_widgets[j] = true
 
-				if not verified and slot_data ~= nil then
-					self:_add_item(slot_data)
+					self:_add_item(slot_data, data)
 
-					verified_widgets[#added_items] = true
 					inventory_modified = true
+
+					break
 				end
+			end
 
-				if is_wielded then
-					wielded_slot_name = slot_name
-				end
+			if not verified and slot_data ~= nil then
+				self:_add_item(slot_data)
 
-				if slot_name == "slot_ranged" and item_data and (slot_data.left_unit_1p or slot_data.right_unit_1p) then
-					self:_update_ammo_count(item_data, slot_data, player_unit)
-				end
+				verified_widgets[#added_items] = true
+				inventory_modified = true
+			end
 
-				if slot_name == "slot_grenade" and item_data and widget_id > 0 then
-					local has_additional_slots = inventory_extension:has_additional_item_slots(slot_name)
-					local item_count = inventory_extension:get_total_item_count(slot_name)
-					local hud_slot = added_items[widget_id]
-					local widget = hud_slot and hud_slot.widget
+			if is_wielded then
+				wielded_slot_name = slot_name
+			end
 
-					if widget then
-						local content = widget.content
+			if slot_name == "slot_ranged" and item_data and (slot_data.left_unit_1p or slot_data.right_unit_1p) then
+				self:_update_ammo_count(item_data, slot_data, player_unit)
+			end
 
-						if content.use_count ~= item_count then
-							content.use_count = item_count
-							content.use_count_text = "x" .. item_count
-							content.has_additional_slots = has_additional_slots
+			if slot_name == "slot_grenade" and item_data and widget_id > 0 then
+				local has_additional_slots = inventory_extension:has_additional_item_slots(slot_name)
+				local item_count = inventory_extension:get_total_item_count(slot_name)
+				local hud_slot = added_items[widget_id]
+				local widget = hud_slot and hud_slot.widget
 
-							self:_set_widget_dirty(widget)
-						end
+				if widget then
+					local content = widget.content
 
-						local can_swap = inventory_extension:can_swap_from_storage(slot_name, SwapFromStorageType.Unique)
+					if content.use_count ~= item_count then
+						content.use_count = item_count
+						content.use_count_text = "x" .. item_count
+						content.has_additional_slots = has_additional_slots
 
-						if content.can_swap ~= can_swap then
-							content.can_swap = can_swap
+						self:_set_widget_dirty(widget)
+					end
 
-							self:_set_widget_dirty(widget)
-						end
+					local can_swap = inventory_extension:can_swap_from_storage(slot_name, SwapFromStorageType.Unique)
+
+					if content.can_swap ~= can_swap then
+						content.can_swap = can_swap
+
+						self:_set_widget_dirty(widget)
 					end
 				end
+			end
 
-				if slot_name == "slot_potion" and item_data and widget_id > 0 then
-					local hud_slot = added_items[widget_id]
-					local widget = hud_slot and hud_slot.widget
+			if slot_name == "slot_potion" and item_data and widget_id > 0 then
+				local hud_slot = added_items[widget_id]
+				local widget = hud_slot and hud_slot.widget
 
-					if widget then
-						local content = widget.content
-						local style = widget.style
-						local has_additional_slots = inventory_extension:has_additional_item_slots(slot_name)
-						local additional_items = inventory_extension:get_additional_items(slot_name)
+				if widget then
+					local content = widget.content
+					local style = widget.style
+					local has_additional_slots = inventory_extension:has_additional_item_slots(slot_name)
+					local additional_items = inventory_extension:get_additional_items(slot_name)
 
-						if additional_items then
-							local next_additional_item = additional_items[1]
+					if additional_items then
+						local next_additional_item = additional_items[1]
 
-							if next_additional_item then
-								local hud_icon = next_additional_item.gamepad_hud_icon
-								content.secondary_texture_icon = hud_icon
-								content.secondary_texture_icon_glow = hud_icon .. "_glow"
-								content.has_additional_slots = has_additional_slots
-								local inventory_consumable_slot_colors = UISettings.inventory_consumable_slot_colors
-								local default_background_color = {
+						if next_additional_item then
+							local hud_icon = next_additional_item.gamepad_hud_icon
+
+							content.secondary_texture_icon = hud_icon
+							content.secondary_texture_icon_glow = hud_icon .. "_glow"
+							content.has_additional_slots = has_additional_slots
+
+							local inventory_consumable_slot_colors = UISettings.inventory_consumable_slot_colors
+							local default_background_color = {
+								255,
+								0,
+								0,
+								0,
+							}
+							local default_glow_color = {
+								255,
+								255,
+								255,
+								255,
+							}
+							local slot_background_color = inventory_consumable_slot_colors[next_additional_item.key]
+
+							if slot_background_color then
+								style.secondary_texture_icon.color = slot_background_color
+								style.secondary_texture_icon_glow.color = {
 									255,
 									0,
 									0,
-									0
+									0,
 								}
-								local default_glow_color = {
-									255,
-									255,
-									255,
-									255
-								}
-								local slot_background_color = inventory_consumable_slot_colors[next_additional_item.key]
-
-								if slot_background_color then
-									style.secondary_texture_icon.color = slot_background_color
-									style.secondary_texture_icon_glow.color = {
-										255,
-										0,
-										0,
-										0
-									}
-								else
-									style.secondary_texture_icon.color = default_background_color
-									style.secondary_texture_icon_glow.color = default_glow_color
-								end
-
-								local default_angle = UISettings.additional_inventory_slot_angles.default
-								local slot_rotation = UISettings.additional_inventory_slot_angles[next_additional_item.key] or default_angle
-								style.secondary_texture_icon.angle = slot_rotation
-								style.secondary_texture_icon_glow.angle = slot_rotation
-
-								self:_set_widget_dirty(widget)
 							else
-								content.secondary_texture_icon = nil
-								content.secondary_texture_icon_glow = nil
-								content.has_additional_slots = has_additional_slots
-
-								self:_set_widget_dirty(widget)
+								style.secondary_texture_icon.color = default_background_color
+								style.secondary_texture_icon_glow.color = default_glow_color
 							end
-						elseif content.has_additional_slots and not has_additional_slots then
+
+							local default_angle = UISettings.additional_inventory_slot_angles.default
+							local slot_rotation = UISettings.additional_inventory_slot_angles[next_additional_item.key] or default_angle
+
+							style.secondary_texture_icon.angle = slot_rotation
+							style.secondary_texture_icon_glow.angle = slot_rotation
+
+							self:_set_widget_dirty(widget)
+						else
 							content.secondary_texture_icon = nil
 							content.secondary_texture_icon_glow = nil
 							content.has_additional_slots = has_additional_slots
 
 							self:_set_widget_dirty(widget)
 						end
+					elseif content.has_additional_slots and not has_additional_slots then
+						content.secondary_texture_icon = nil
+						content.secondary_texture_icon_glow = nil
+						content.has_additional_slots = has_additional_slots
+
+						self:_set_widget_dirty(widget)
 					end
 				end
+			end
 
-				if slot_name == "slot_career_skill_weapon" and item_data and widget_id > 0 then
-					local hud_slot = added_items[widget_id]
-					local widget = hud_slot and hud_slot.widget
+			if slot_name == "slot_career_skill_weapon" and item_data and widget_id > 0 then
+				local hud_slot = added_items[widget_id]
+				local widget = hud_slot and hud_slot.widget
 
-					if widget then
-						local career_extension = ScriptUnit.has_extension(player_unit, "career_system")
-						local heat, max_heat = career_extension:current_ability_cooldown(1)
-						local buff_extension = ScriptUnit.has_extension(player_unit, "buff_system")
-						local is_exhausted = buff_extension:has_buff_type("bardin_engineer_pump_max_exhaustion_buff")
-						local can_reload = equipment.wielded_slot == "slot_career_skill_weapon" and heat > 0 and not is_exhausted
-						local reload_status_changed = widget.content.can_reload ~= can_reload or widget.content.is_exhausted ~= is_exhausted
+				if widget then
+					local career_extension = ScriptUnit.has_extension(player_unit, "career_system")
+					local heat, max_heat = career_extension:current_ability_cooldown(1)
+					local buff_extension = ScriptUnit.has_extension(player_unit, "buff_system")
+					local is_exhausted = buff_extension:has_buff_type("bardin_engineer_pump_max_exhaustion_buff")
+					local can_reload = equipment.wielded_slot == "slot_career_skill_weapon" and heat > 0 and not is_exhausted
+					local reload_status_changed = widget.content.can_reload ~= can_reload or widget.content.is_exhausted ~= is_exhausted
 
-						if reload_status_changed then
-							widget.content.can_reload = can_reload
-							widget.content.is_exhausted = is_exhausted
+					if reload_status_changed then
+						widget.content.can_reload = can_reload
+						widget.content.is_exhausted = is_exhausted
 
-							self:_set_widget_dirty(widget)
-						end
-
-						local can_shoot_func = Weapons[item_data.template].actions.action_one.default.condition_func
-
-						if can_reload and not can_shoot_func(player_unit, nil) then
-							local t = Managers.time:time("ui")
-							widget.style.reload_icon.color[1] = 255 - 155 * (0.5 + 0.5 * math.sin(5 * t))
-
-							self:_set_widget_dirty(widget)
-						else
-							widget.style.reload_icon.color[1] = 235
-						end
-
-						widget.style.reload_icon.color[3] = is_exhausted and 100 or 255
-						widget.style.reload_icon.color[4] = is_exhausted and 69 or 255
+						self:_set_widget_dirty(widget)
 					end
+
+					local can_shoot_func = Weapons[item_data.template].actions.action_one.default.condition_func
+
+					if can_reload and not can_shoot_func(player_unit, nil) then
+						local t = Managers.time:time("ui")
+
+						widget.style.reload_icon.color[1] = 255 - 155 * (0.5 + 0.5 * math.sin(5 * t))
+
+						self:_set_widget_dirty(widget)
+					else
+						widget.style.reload_icon.color[1] = 235
+					end
+
+					widget.style.reload_icon.color[3] = is_exhausted and 100 or 255
+					widget.style.reload_icon.color[4] = is_exhausted and 69 or 255
 				end
 			end
 		end
@@ -591,6 +604,7 @@ EquipmentUI._update_ammo_count = function (self, item_data, slot_data, player_un
 			self._draw_ammo = false
 		else
 			self._draw_ammo = true
+
 			local ammo_count, remaining_ammo, using_single_clip = self:_get_ammunition_count(slot_data.left_unit_1p, slot_data.right_unit_1p, item_template)
 			local ammo_text_clip_widget = ammo_widgets_by_name.ammo_text_clip
 			local content = ammo_text_clip_widget.content
@@ -599,8 +613,10 @@ EquipmentUI._update_ammo_count = function (self, item_data, slot_data, player_un
 
 			if self._ammo_count ~= ammo_count then
 				self._ammo_count = ammo_count
+
 				local widget = ammo_widgets_by_name.ammo_text_clip
 				local content = widget.content
+
 				content.text = tostring(ammo_count)
 
 				self:_set_widget_dirty(widget)
@@ -610,8 +626,10 @@ EquipmentUI._update_ammo_count = function (self, item_data, slot_data, player_un
 
 			if self._remaining_ammo ~= remaining_ammo then
 				self._remaining_ammo = remaining_ammo
+
 				local widget = ammo_widgets_by_name.ammo_text_remaining
 				local content = widget.content
+
 				content.text = tostring(remaining_ammo)
 
 				self:_set_widget_dirty(widget)
@@ -672,6 +690,7 @@ EquipmentUI._animate_ammo_counter = function (self, dt)
 	end
 
 	ammo_counter_fade_progress = math.max(ammo_counter_fade_progress - dt, 0)
+
 	local alpha = 100 + 155 * ammo_counter_fade_progress
 
 	self:_set_ammo_counter_alpha(alpha)
@@ -690,6 +709,7 @@ EquipmentUI._set_ammo_counter_alpha = function (self, alpha)
 	local ammo_clip_widget = ammo_widgets_by_name.ammo_text_clip
 	local ammo_clip_widget_style = ammo_clip_widget.style.text
 	local clip_text_color = ammo_clip_widget_style.text_color
+
 	clip_text_color[1] = alpha
 
 	self:_set_widget_dirty(ammo_clip_widget)
@@ -697,6 +717,7 @@ EquipmentUI._set_ammo_counter_alpha = function (self, alpha)
 	local ammo_remaining_widget = ammo_widgets_by_name.ammo_text_remaining
 	local ammo_remaining_widget_style = ammo_remaining_widget.style.text
 	local remaining_text_color = ammo_remaining_widget_style.text_color
+
 	remaining_text_color[1] = alpha
 
 	self:_set_widget_dirty(ammo_remaining_widget)
@@ -704,6 +725,7 @@ EquipmentUI._set_ammo_counter_alpha = function (self, alpha)
 	local ammo_center_widget = ammo_widgets_by_name.ammo_text_center
 	local ammo_center_widget_style = ammo_center_widget.style.text
 	local center_text_color = ammo_center_widget_style.text_color
+
 	center_text_color[1] = alpha
 
 	self:_set_widget_dirty(ammo_center_widget)
@@ -714,6 +736,7 @@ EquipmentUI._set_ammo_counter_color = function (self, color)
 	local ammo_clip_widget = self._ammo_widgets_by_name.ammo_text_clip
 	local ammo_clip_widget_style = ammo_clip_widget.style.text
 	local clip_text_color = ammo_clip_widget_style.text_color
+
 	clip_text_color[2] = color[2]
 	clip_text_color[3] = color[3]
 	clip_text_color[4] = color[4]
@@ -723,6 +746,7 @@ EquipmentUI._set_ammo_counter_color = function (self, color)
 	local ammo_remaining_widget = self._ammo_widgets_by_name.ammo_text_remaining
 	local ammo_remaining_widget_style = ammo_remaining_widget.style.text
 	local remaining_text_color = ammo_remaining_widget_style.text_color
+
 	remaining_text_color[2] = color[2]
 	remaining_text_color[3] = color[3]
 	remaining_text_color[4] = color[4]
@@ -732,6 +756,7 @@ EquipmentUI._set_ammo_counter_color = function (self, color)
 	local ammo_center_widget = self._ammo_widgets_by_name.ammo_text_center
 	local ammo_center_widget_style = ammo_center_widget.style.text
 	local center_text_color = ammo_center_widget_style.text_color
+
 	center_text_color[2] = color[2]
 	center_text_color[3] = color[3]
 	center_text_color[4] = color[4]
@@ -750,6 +775,7 @@ EquipmentUI._set_ammo_text_focus = function (self, focus)
 			local bg_widget = widgets_by_name.overcharge_background
 			local fg_color = fg_widget.style.texture_id.color
 			local bg_color = bg_widget.style.texture_id.color
+
 			fg_color[2] = color[2] * multiplier
 			fg_color[3] = color[3] * multiplier
 			fg_color[4] = color[4] * multiplier
@@ -772,21 +798,25 @@ EquipmentUI._set_ammo_text_focus = function (self, focus)
 			local multiplier = 1
 			local color = focus and ammo_colors.focus or ammo_colors.unfocused
 			local ammo_background_widget = self._widgets_by_name.ammo_background
+
 			ammo_background_widget.content.visible = focus
 
 			self:_set_widget_dirty(ammo_background_widget)
 
 			local ammo_clip_widget = ammo_widgets_by_name.ammo_text_clip
+
 			ammo_clip_widget.content.visible = focus
 
 			self:_set_widget_dirty(ammo_clip_widget)
 
 			local ammo_remaining_widget = ammo_widgets_by_name.ammo_text_remaining
+
 			ammo_remaining_widget.content.visible = focus
 
 			self:_set_widget_dirty(ammo_remaining_widget)
 
 			local ammo_center_widget = ammo_widgets_by_name.ammo_text_center
+
 			ammo_center_widget.content.visible = focus
 
 			self:_set_widget_dirty(ammo_center_widget)
@@ -822,7 +852,7 @@ EquipmentUI._set_ammo_text_focus = function (self, focus)
 end
 
 EquipmentUI._get_ammunition_count = function (self, left_hand_wielded_unit, right_hand_wielded_unit, item_template)
-	local ammo_extension = nil
+	local ammo_extension
 
 	if not item_template.ammo_data then
 		return
@@ -870,7 +900,7 @@ EquipmentUI._add_animation = function (self, name, widget, style, func_name)
 			total_time = total_time,
 			style = style,
 			widget = widget,
-			func = func_name
+			func = func_name,
 		}
 	end
 end
@@ -885,11 +915,13 @@ EquipmentUI._update_animations = function (self, dt, t)
 		for i = 1, #widgets do
 			local widget = widgets[i]
 			local style = widget.style
+
 			style.texture_icon.color[1] = 255 * progress
 			style.texture_glow.color[1] = 128 * progress
 		end
 
 		local bg_widget = self._widgets_by_name.extra_storage_bg
+
 		bg_widget.style.texture.color[1] = 189 * progress
 
 		self:_set_widget_dirty(bg_widget)
@@ -904,7 +936,9 @@ EquipmentUI._update_animations = function (self, dt, t)
 
 	for name, animation_data in pairs(animations) do
 		local anim_func_name = animation_data.func
+
 		animations[name] = self[anim_func_name](self, animation_data, dt)
+
 		local widget = animation_data.widget
 
 		self:_set_widget_dirty(widget)
@@ -919,10 +953,13 @@ EquipmentUI._animate_slot_wield = function (self, animation_data, dt)
 	local widget = animation_data.widget
 	local total_time = animation_data.total_time
 	local time = animation_data.time
+
 	time = time + dt
+
 	local progress = math.min(time / total_time, 1)
 	local anim_progress = math.easeOutCubic(progress)
 	local anim_progress_input = math.easeInCubic(1 - progress)
+
 	widget.style.texture_selected.color[1] = 255 * anim_progress
 	animation_data.time = time
 
@@ -933,10 +970,13 @@ EquipmentUI._animate_slot_unwield = function (self, animation_data, dt)
 	local widget = animation_data.widget
 	local total_time = animation_data.total_time
 	local time = animation_data.time
+
 	time = time + dt
+
 	local progress = math.min(time / total_time, 1)
 	local anim_progress = math.easeInCubic(1 - progress)
 	local anim_progress_input = math.easeOutCubic(progress)
+
 	widget.style.texture_selected.color[1] = 255 * anim_progress
 	animation_data.time = time
 
@@ -947,10 +987,13 @@ EquipmentUI._animate_slot_equip = function (self, animation_data, dt)
 	local style = animation_data.style
 	local total_time = animation_data.total_time
 	local time = animation_data.time
+
 	time = time + dt
+
 	local progress = math.min(time / total_time, 1)
 	local catmullrom_value = math.catmullrom(progress, -10, 0, 0, -4)
 	local anim_progress = math.easeOutCubic(progress)
+
 	style.color[1] = 255 * anim_progress
 	animation_data.time = time
 
@@ -961,7 +1004,7 @@ EquipmentUI._add_item = function (self, slot_data, data)
 	local num_added_items = self._num_added_items or 0
 	local use_existing_data = data ~= nil
 
-	if not use_existing_data and NUM_SLOTS <= num_added_items then
+	if not use_existing_data and num_added_items >= NUM_SLOTS then
 		return
 	end
 
@@ -971,7 +1014,7 @@ EquipmentUI._add_item = function (self, slot_data, data)
 	local slots_by_name = InventorySettings.slots_by_name
 	local slot_settings = slots_by_name[slot_name]
 	local hud_index = slot_settings.hud_index
-	local widget = nil
+	local widget
 
 	if use_existing_data then
 		widget = data.widget
@@ -1046,14 +1089,19 @@ EquipmentUI._remove_item = function (self, index)
 	local widget = data.widget
 	local widget_content = widget.content
 	local widget_style = widget.style
+
 	widget_style.texture_icon.color[1] = 0
+
 	local was_selected = widget_content.selected
+
 	widget_content.selected = false
+
 	local inventory_consumable_slot_colors = UISettings.inventory_consumable_slot_colors
 	local default_background_color = inventory_consumable_slot_colors.default
 
 	if widget_style.texture_background then
 		local background_color = widget_style.texture_background.color
+
 		background_color[2] = default_background_color[2]
 		background_color[3] = default_background_color[3]
 		background_color[4] = default_background_color[4]
@@ -1071,6 +1119,7 @@ end
 
 EquipmentUI.set_position = function (self, x, y)
 	local position = self.ui_scenegraph.pivot.local_position
+
 	position[1] = x
 	position[2] = y
 
@@ -1126,18 +1175,18 @@ EquipmentUI._set_elements_visible = function (self, visible)
 end
 
 local customizer_data_player_status = {
+	drag_scenegraph_id = "background_panel",
+	label = "Player status",
+	lock_x = false,
 	lock_y = true,
 	registry_key = "player_status",
-	drag_scenegraph_id = "background_panel",
 	root_scenegraph_id = "root",
-	label = "Player status",
-	lock_x = false
 }
 local customizer_data_ammo = {
-	root_scenegraph_id = "ammo_background",
+	drag_scenegraph_id = "ammo_background",
 	label = "Ammo",
 	registry_key = "ammo",
-	drag_scenegraph_id = "ammo_background"
+	root_scenegraph_id = "ammo_background",
 }
 
 EquipmentUI.update = function (self, dt, t)
@@ -1312,12 +1361,15 @@ EquipmentUI._set_overheat_fraction = function (self, fraction)
 	local widget = self._widgets_by_name.overcharge
 	local content = widget.content
 	local uvs = content.texture_id.uvs
+
 	uvs[2][1] = fraction
+
 	local scenegraph_id = widget.scenegraph_id
 	local scenegraph = self.ui_scenegraph[scenegraph_id]
 	local default_scenegraph = scenegraph_definition[scenegraph_id]
 	local default_size = default_scenegraph.size
 	local size = scenegraph.size
+
 	size[1] = default_size[1] * fraction
 
 	self:_set_widget_dirty(widget)
@@ -1431,7 +1483,7 @@ EquipmentUI._show_hold_to_reload = function (self, t)
 	local equipment = inventory_extension:equipment()
 	local wielded_slot = equipment.wielded_slot
 	local is_wielding_special_weapon = false
-	local slot_data, item_data, item_template = nil
+	local slot_data, item_data, item_template
 
 	for _, temp_slot_data in pairs(equipment.slots) do
 		local temp_item_data = temp_slot_data.item_data
@@ -1458,7 +1510,9 @@ EquipmentUI._show_hold_to_reload = function (self, t)
 	local texture_data, input_text, prefix_text = self:_get_input_texture_data("weapon_reload_hold")
 	local alpha = reload_tip_widget.style.text.text_color[1]
 	local format_color = string.format("{#color(193,91,36, %d)}", alpha)
+
 	reload_tip_widget.content.text = string.format(Localize("reload_tip"), format_color, input_text, "{#reset()}")
+
 	local full_clip = ammo_count + remaining_ammo == item_template.ammo_data.max_ammo
 
 	if is_wielding_special_weapon and not full_clip then

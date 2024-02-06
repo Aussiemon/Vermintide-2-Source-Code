@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/network_lookup/career_package_list.lua
+
 return {
 	"resource_packages/careers/dr_ironbreaker",
 	"resource_packages/careers/dr_slayer",
@@ -13,5 +15,5 @@ return {
 	"resource_packages/careers/wh_captain",
 	"resource_packages/careers/bw_scholar",
 	"resource_packages/careers/bw_adept",
-	"resource_packages/careers/bw_unchained"
+	"resource_packages/careers/bw_unchained",
 }

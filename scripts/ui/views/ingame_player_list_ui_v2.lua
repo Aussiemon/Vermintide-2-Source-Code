@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/ingame_player_list_ui_v2.lua
+
 require("scripts/ui/views/character_inspect_ui")
 
 local definitions = local_require("scripts/ui/views/ingame_player_list_ui_v2_definitions")
@@ -8,27 +10,28 @@ local KICK_VOTE_COOLDOWN = 60
 local temp_vote_data = {}
 local mission_settings = {
 	{
-		texture = "loot_objective_icon_02",
-		mission_name = "tome_bonus_mission",
 		key = "tome",
+		mission_name = "tome_bonus_mission",
+		texture = "loot_objective_icon_02",
+		title_text = "dlc1_3_1_tomes",
 		widget_name = "tome_counter",
-		title_text = "dlc1_3_1_tomes"
 	},
 	{
-		texture = "loot_objective_icon_01",
-		mission_name = "grimoire_hidden_mission",
 		key = "grimoire",
+		mission_name = "grimoire_hidden_mission",
+		texture = "loot_objective_icon_01",
+		title_text = "dlc1_3_1_grimoires",
 		widget_name = "grimoire_counter",
-		title_text = "dlc1_3_1_grimoires"
 	},
 	{
-		texture = "loot_mutator_icon_05",
-		mission_name = "bonus_dice_hidden_mission",
 		key = "loot_die",
+		mission_name = "bonus_dice_hidden_mission",
+		texture = "loot_mutator_icon_05",
+		title_text = "interaction_loot_dice",
 		widget_name = "loot_dice",
-		title_text = "interaction_loot_dice"
-	}
+	},
 }
+
 IngamePlayerListUI = class(IngamePlayerListUI)
 
 IngamePlayerListUI.init = function (self, parent, ingame_ui_context)
@@ -50,12 +53,15 @@ IngamePlayerListUI.init = function (self, parent, ingame_ui_context)
 	self._platform = PLATFORM
 	self._render_settings = {
 		alpha_multiplier = 0,
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 	self._active = false
 	self._client_duplicate_removed = false
+
 	local mission_system = Managers.state.entity:system("mission_system")
+
 	self._mission_system = mission_system
+
 	local input_manager = self._input_manager
 
 	input_manager:create_input_service("player_list_input", "IngamePlayerListKeymaps", "IngamePlayerListFilters")
@@ -66,10 +72,13 @@ IngamePlayerListUI.init = function (self, parent, ingame_ui_context)
 
 	local gamemode_settings = Managers.state.game_mode:settings()
 	local private_only = gamemode_settings.private_only
+
 	self._private_setting_enabled = not private_only and not self._is_in_inn and self._local_player.is_server and self._platform ~= "xb1"
+
 	local network_manager = Managers.state.network
 	local network_transmit = network_manager.network_transmit
 	local server_peer_id = network_transmit.server_peer_id
+
 	self._host_peer_id = server_peer_id or network_transmit.peer_id
 	self._show_difficulty = not gamemode_settings.hide_difficulty
 
@@ -91,45 +100,59 @@ IngamePlayerListUI._create_ui_elements = function (self)
 	self._players = {}
 	self._current_difficulty_name = nil
 	self._reward_widgets = {}
+
 	local scenegraph_definition = definitions.scenegraph_definition
+
 	self._ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+
 	local static_widget_definitions = definitions.static_widget_definitions
 	local static_widgets = {}
 	local static_widgets_by_name = {}
 
 	for name, defintion in pairs(static_widget_definitions) do
 		local widget = UIWidget.init(defintion)
+
 		static_widgets[#static_widgets + 1] = widget
 		static_widgets_by_name[name] = widget
 	end
 
 	self._static_widgets = static_widgets
 	self._static_widgets_by_name = static_widgets_by_name
+
 	local widget_definitions = definitions.widget_definitions
 	local widgets = {}
 	local widgets_by_name = {}
 
 	for name, defintion in pairs(widget_definitions) do
 		local widget = UIWidget.init(defintion)
+
 		widgets[#widgets + 1] = widget
 		widgets_by_name[name] = widget
 	end
 
 	self._widgets = widgets
 	self._widgets_by_name = widgets_by_name
+
 	local mutator_summary1_widget = widgets_by_name.mutator_summary1
+
 	mutator_summary1_widget.content.item = {
-		mutators = {}
+		mutators = {},
 	}
+
 	local mutator_summary2_widget = widgets_by_name.mutator_summary2
+
 	mutator_summary2_widget.content.item = {
-		mutators = {}
+		mutators = {},
 	}
+
 	local mutator_summary3_widget = widgets_by_name.mutator_summary3
+
 	mutator_summary3_widget.content.item = {
-		mutators = {}
+		mutators = {},
 	}
+
 	local specific_widget_definitions = definitions.specific_widget_definitions
+
 	self._input_description_text_widget = UIWidget.init(specific_widget_definitions.input_description_text)
 	self._reward_header_widget = UIWidget.init(specific_widget_definitions.reward_header)
 	self._reward_divider_widget = UIWidget.init(specific_widget_definitions.reward_divider)
@@ -138,10 +161,12 @@ IngamePlayerListUI._create_ui_elements = function (self)
 	self._level_description_widget = UIWidget.init(specific_widget_definitions.level_description)
 	self._private_checkbox_widget = UIWidget.init(specific_widget_definitions.private_checkbox)
 	self._node_info_widget = nil
+
 	local twitch_connection = Managers.twitch and (Managers.twitch:is_connected() or Managers.twitch:is_activated())
 
 	if Managers.state.game_mode:game_mode_key() == "weave" or twitch_connection then
 		local content = self._private_checkbox_widget.content
+
 		content.is_disabled = true
 	end
 
@@ -155,6 +180,7 @@ IngamePlayerListUI._create_ui_elements = function (self)
 	self._popup_list = UIWidget.init(definitions.popup_widget_definition)
 	self._console_cursor = UIWidget.init(console_cursor_definition)
 	self._item_tooltip = UIWidget.init(definitions.item_tooltip)
+
 	local level_key = Managers.level_transition_handler:get_current_level_keys()
 	local level_settings = LevelSettings[level_key]
 
@@ -172,7 +198,7 @@ local MAX_MUTATORS = MUTATORS_PER_COLUMN * MUTATOR_ROWS
 
 IngamePlayerListUI._setup_mutator_data = function (self)
 	local current_level_settings = LevelHelper:current_level_settings()
-	local mutators = nil
+	local mutators
 
 	if current_level_settings.hub_level then
 		mutators = Managers.deed:mutators()
@@ -200,7 +226,7 @@ IngamePlayerListUI._setup_mutator_data = function (self)
 	local mutator_storage = {
 		mutator_storage1,
 		mutator_storage2,
-		mutator_storage3
+		mutator_storage3,
 	}
 
 	if mutators then
@@ -213,11 +239,12 @@ IngamePlayerListUI._setup_mutator_data = function (self)
 			if not activated_by_twitch and not MutatorTemplates[name].hide_from_player_ui then
 				local row = 1 + math.floor((current_mutator_index - 1) / MUTATORS_PER_COLUMN) % MUTATOR_ROWS
 
-				if MAX_MUTATORS < current_mutator_index then
+				if current_mutator_index > MAX_MUTATORS then
 					break
 				end
 
 				local storage = mutator_storage[row]
+
 				storage[#storage + 1] = name
 				current_mutator_index = current_mutator_index + 1
 				num_mutators = num_mutators + 1
@@ -260,7 +287,9 @@ IngamePlayerListUI._setup_chaos_wastes_info = function (self)
 	local director_name = current_node.conflict_settings
 	local profile_index, career_index = self._profile_synchronizer:profile_by_peer(Network.peer_id(), 1)
 	local widget = UIWidget.init(definitions.create_node_info_widget())
+
 	widget.content.visible = true
+
 	local content_node_info = widget.content.node_info
 	local level_key = Managers.level_transition_handler:get_current_level_keys()
 	local level_settings = LevelSettings[level_key]
@@ -289,6 +318,7 @@ IngamePlayerListUI._setup_chaos_wastes_info = function (self)
 		local power_up_text_name = DeusPowerUpUtils.get_power_up_name_text(terror_event_power_up, power_up.talent_index, power_up.talent_tier, profile_index, career_index)
 		local suffix = Localize("terror_event_power_up_prefix_suffix")
 		local terror_event_power_up_text = string.format(suffix, power_up_text_name)
+
 		widget.content.node_info.terror_event_power_up_text = terror_event_power_up_text
 		widget.content.node_info.terror_event_power_up_icon = power_up.icon
 	else
@@ -311,6 +341,7 @@ IngamePlayerListUI._setup_deed_reward_data = function (self, deed_reward_data)
 	table.clear(self._reward_widgets)
 
 	self._num_rewards = 0
+
 	local deed_reward_data = Managers.deed:rewards()
 
 	if not deed_reward_data then
@@ -325,9 +356,10 @@ IngamePlayerListUI._setup_deed_reward_data = function (self, deed_reward_data)
 		local reward_name = deed_reward_data[i]
 		local reward_item = ItemMasterList[reward_name]
 		local item = {
-			data = reward_item
+			data = reward_item,
 		}
 		local widget = UIWidget.init(definitions.create_reward_item(offset, item))
+
 		self._reward_widgets[#self._reward_widgets + 1] = widget
 		offset = offset + item_width + spacing
 	end
@@ -335,6 +367,7 @@ IngamePlayerListUI._setup_deed_reward_data = function (self, deed_reward_data)
 	local num_rewards = #deed_reward_data
 	local offset = ((num_rewards - 1) * item_width + spacing * (num_rewards - 1)) * -0.5
 	local ui_scenegraph = self._ui_scenegraph
+
 	ui_scenegraph.reward_item.offset[1] = offset
 	self._num_rewards = num_rewards
 end
@@ -354,8 +387,7 @@ IngamePlayerListUI._setup_mission_data = function (self, level_settings)
 	local entries_per_row = 2
 	local longest_row_text = 0
 	local offset_x = 0
-	local row = 0
-	local column = 0
+	local row, column = 0, 0
 	local mission_count = 0
 
 	for _, setting in ipairs(mission_settings) do
@@ -368,20 +400,20 @@ IngamePlayerListUI._setup_mission_data = function (self, level_settings)
 			local texture = setting.texture
 			local texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(texture)
 			local texture_size = texture_settings.size
-			local size_w = texture_size[1]
-			local size_h = texture_size[2]
+			local size_w, size_h = texture_size[1], texture_size[2]
 			local size_scale = 1
 			local title_text = Localize(setting.title_text)
 			local widget_definition = create_loot_widget(texture, title_text, size_scale)
 			local widget = UIWidget.init(widget_definition)
-			local data = {
-				name = key,
-				total_amount = total_amount > 0 and total_amount,
-				mission_name = mission_name,
-				widget = widget
-			}
+			local data = {}
+
+			data.name = key
+			data.total_amount = total_amount > 0 and total_amount
+			data.mission_name = mission_name
+			data.widget = widget
 			size_w = size_w * size_scale
 			size_h = size_h * size_scale
+
 			local text_style = widget.style.text
 			local text_width = UIUtils.get_text_width(ui_renderer, text_style, title_text) + 20
 
@@ -390,16 +422,18 @@ IngamePlayerListUI._setup_mission_data = function (self, level_settings)
 			end
 
 			local row = math.floor(mission_count / entries_per_row)
+
 			column = mission_count % entries_per_row
 
 			if column > 0 then
-				offset_x = offset_x + size_w + longest_row_text
+				offset_x = offset_x + (size_w + longest_row_text)
 				longest_row_text = 0
 			else
 				offset_x = 0
 			end
 
 			local offset = widget.offset
+
 			offset[1] = offset_x
 			offset[2] = -(row - 1) * size_h
 			settings_data[key] = data
@@ -435,7 +469,9 @@ IngamePlayerListUI._sync_missions = function (self)
 		if current_amount ~= amount then
 			data.previous_amount = current_amount or 0
 			data.amount = amount
+
 			local content = widget.content
+
 			content.amount = amount
 
 			if total_amount then
@@ -458,6 +494,7 @@ end
 IngamePlayerListUI._create_player_portrait = function (self, portrait_frame, portrait_image, player_level_text)
 	local definition = UIWidgets.create_portrait_frame("player_portrait", portrait_frame, player_level_text, 1, nil, portrait_image)
 	local widget = UIWidget.init(definition)
+
 	self._player_portrait_widget = widget
 end
 
@@ -471,7 +508,7 @@ IngamePlayerListUI._setup_weave_display_info = function (self)
 			local weave_template = weave_manager:get_active_weave_template()
 
 			if weave_template then
-				local weave_display_name = nil
+				local weave_display_name
 
 				if quick_game == "true" then
 					weave_display_name = Localize(weave_template.display_name)
@@ -500,6 +537,7 @@ IngamePlayerListUI._setup_weave_objectives = function (self, weave_template)
 
 	for name, widget_definition in pairs(definitions.weave_objective_widgets) do
 		local widget = UIWidget.init(widget_definition)
+
 		self._weave_objective_widgets[#self._weave_objective_widgets + 1] = widget
 		self._weave_objective_widgets_by_name[name] = widget
 	end
@@ -514,8 +552,10 @@ IngamePlayerListUI._setup_weave_objectives = function (self, weave_template)
 	for i = 1, #objectives do
 		local widget_definition = definitions.create_weave_sub_objective_widget(scenegraph_id, objective_size)
 		local widget = UIWidget.init(widget_definition)
+
 		self._weave_objective_widgets[#self._weave_objective_widgets + 1] = widget
 		self._weave_objective_widgets_by_name["weave_sub_objective_" .. i] = widget
+
 		local objective = objectives[i]
 		local conflict_settings = objective.conflict_settings
 		local is_end_objective = conflict_settings == "weave_disabled"
@@ -524,6 +564,7 @@ IngamePlayerListUI._setup_weave_objectives = function (self, weave_template)
 		local objective_icon = is_end_objective and "objective_icon_boss" or "objective_icon_general"
 		local objective_height = self:_assign_objective(widget, title_text, objective_display_name, objective_icon, objective_spacing)
 		local offset = widget.offset
+
 		offset[2] = -total_objectives_height
 		total_objectives_height = total_objectives_height + objective_height + objective_spacing
 	end
@@ -535,24 +576,30 @@ IngamePlayerListUI._assign_objective = function (self, widget, title_text, text,
 	local style = widget.style
 	local scenegraph_definition = definitions.scenegraph_definition
 	local size = scenegraph_definition[scenegraph_id].size
+
 	content.icon = icon or "trial_gem"
 	content.title_text = title_text or "-"
 	content.text = text or "-"
+
 	local icon_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(content.icon)
 	local icon_texture_size = icon_texture_settings.size
 	local icon_style = style.icon
 	local icon_size = icon_style.texture_size
 	local icon_default_offset = icon_style.default_offset
 	local icon_offset = icon_style.offset
+
 	icon_size[1] = icon_texture_size[1]
 	icon_size[2] = icon_texture_size[2]
 	icon_offset[1] = icon_default_offset[1] - icon_size[1] / 2
 	icon_offset[2] = icon_default_offset[2]
+
 	local text_style = style.text
 	local ui_renderer = self._ui_renderer
 	local text_width = UIUtils.get_text_width(ui_renderer, text_style, content.text)
 	local text_height = UIUtils.get_text_height(ui_renderer, size, text_style, content.text)
+
 	spacing = spacing or 0
+
 	local total_height = math.max(text_height, 50) + spacing
 
 	return total_height
@@ -585,11 +632,13 @@ end
 
 IngamePlayerListUI._set_widget_text = function (self, widget_name, text)
 	local widget = self._widgets_by_name[widget_name]
+
 	widget.content.text = text
 end
 
 IngamePlayerListUI._set_simple_widget_texture = function (self, widget_name, texture)
 	local widget = self._widgets_by_name[widget_name]
+
 	widget.content.texture_id = texture
 end
 
@@ -612,11 +661,13 @@ IngamePlayerListUI._add_player = function (self, player)
 		level = player_level or "n/a",
 		resync_player_level = not player_level,
 		is_server = is_player_server,
-		unit_equipment = {}
+		unit_equipment = {},
 	}
+
 	self._num_players = self._num_players + 1
 	self._players[self._num_players] = player_data
-	local server_player_data = nil
+
+	local server_player_data
 	local remote_player_data = {}
 	local bot_player_data = {}
 	local sorted_player_data = {}
@@ -632,13 +683,13 @@ IngamePlayerListUI._add_player = function (self, player)
 	end
 
 	local function sort_remote_players(a, b)
-		return b.peer_id < a.peer_id
+		return a.peer_id > b.peer_id
 	end
 
 	table.sort(remote_player_data, sort_remote_players)
 
 	local function sort_bots(a, b)
-		return b.local_player_id < a.local_player_id
+		return a.local_player_id > b.local_player_id
 	end
 
 	table.sort(bot_player_data, sort_bots)
@@ -669,6 +720,7 @@ IngamePlayerListUI._update_widgets = function (self)
 		local can_kick_player = not is_leader and not is_server and (can_vote_kick or self:_can_host_solo_kick())
 		local widget = self._player_list_widgets[i]
 		local widget_content = widget.content
+
 		widget_content.show_host = is_leader
 		widget_content.is_local_player = is_local_player
 		widget_content.is_bot_player = is_bot_player
@@ -704,14 +756,15 @@ IngamePlayerListUI._update_widgets = function (self)
 		end
 
 		local name = player_data.player_name
-		player_data.player_name = PLAYER_NAME_MAX_LENGTH < UTF8Utils.string_length(name) and UIRenderer.crop_text_width(self._ui_top_renderer, name, 370, widget.style.name) or name
+
+		player_data.player_name = UTF8Utils.string_length(name) > PLAYER_NAME_MAX_LENGTH and UIRenderer.crop_text_width(self._ui_top_renderer, name, 370, widget.style.name) or name
 		player_data.widget = widget
 	end
 end
 
 local slot_to_block_by_wield_slot = {
+	slot_melee = "slot_ranged",
 	slot_ranged = "slot_melee",
-	slot_melee = "slot_ranged"
 }
 
 IngamePlayerListUI._update_player_information = function (self, dt, t)
@@ -730,14 +783,18 @@ IngamePlayerListUI._update_player_information = function (self, dt, t)
 		local player = player_data.player
 		local widget = player_data.widget
 		local offset = widget.offset
+
 		offset[2] = -(widget_height * (i - 1) + spacing * (i - 1))
+
 		local profile_index = player:profile_index()
 		local career_index = player:career_index()
 		local profile_settings = profiles[profile_index]
 		local display_name = profile_settings and profile_settings.display_name or "unspawned"
 		local ingame_display_name = profile_settings and profile_settings.ingame_display_name or "unspawned"
 		local style_name = widget.style.name
+
 		widget.content.name = UIRenderer.crop_text_width(self._ui_renderer, player_data.player_name, style_name.size[1], style_name)
+
 		local resync_player_level = player_data.resync_player_level
 
 		if resync_player_level then
@@ -755,7 +812,7 @@ IngamePlayerListUI._update_player_information = function (self, dt, t)
 			local career_name = career_settings.name
 			local portrait_image = career_settings.portrait_image
 			local player_level_text = player_data.is_bot_player and "BOT" or player_data.level and tostring(player_data.level) or "-"
-			local portrait_frame, portrait_frame_name = nil
+			local portrait_frame, portrait_frame_name
 			local player = player_data.player
 			local player_unit = player.player_unit
 
@@ -769,9 +826,11 @@ IngamePlayerListUI._update_player_information = function (self, dt, t)
 
 			if player_data.career_index ~= career_index or display_name ~= player_data.hero_name or player_level_text ~= player_data.player_level_text or portrait_frame ~= player_data.portrait_frame then
 				player_data.career_index = career_index
+
 				local portrait_widget = self:_create_portrait_frame_widget(portrait_frame_name, portrait_image, player_level_text)
 				local background_color = widget.style.background.color
 				local career_color = Colors.color_definitions[career_name]
+
 				background_color[2] = career_color[2]
 				background_color[3] = career_color[3]
 				background_color[4] = career_color[4]
@@ -788,14 +847,17 @@ IngamePlayerListUI._update_player_information = function (self, dt, t)
 
 			if portrait_widget then
 				local portrait_offset = portrait_widget.offset
+
 				portrait_offset[2] = offset[2]
 			end
 
 			local career_display_name = career_settings.display_name
+
 			widget.content.hero = career_display_name
 
 			if player_data.sync_local_player_info then
 				player_data.sync_local_player_info = nil
+
 				local passive_ability_data = career_settings.passive_ability
 				local activated_ability_data = career_settings.activated_ability[1]
 				local activated_display_name = activated_ability_data.display_name
@@ -825,6 +887,7 @@ IngamePlayerListUI._create_portrait_frame_widget = function (self, frame_setting
 	local widget_definition = UIWidgets.create_portrait_frame("player_list_portrait", frame_settings_name, player_level_text, 1, nil, portrait_texture)
 	local widget = UIWidget.init(widget_definition)
 	local widget_content = widget.content
+
 	widget_content.frame_settings_name = frame_settings_name
 
 	return widget
@@ -928,7 +991,7 @@ IngamePlayerListUI.update = function (self, dt, t)
 					input_manager:capture_input({
 						"keyboard",
 						"gamepad",
-						"mouse"
+						"mouse",
 					}, 1, "player_list_input", "IngamePlayerListUI")
 
 					self._cursor_active = true
@@ -949,7 +1012,7 @@ IngamePlayerListUI.update = function (self, dt, t)
 			input_manager:capture_input({
 				"keyboard",
 				"gamepad",
-				"mouse"
+				"mouse",
 			}, 1, "player_list_input", "IngamePlayerListUI")
 
 			self._cursor_active = true
@@ -973,6 +1036,7 @@ IngamePlayerListUI.update = function (self, dt, t)
 			if self._private_setting_enabled and private_checkbox_hotspot.on_release then
 				local is_private = Managers.matchmaking:is_game_private()
 				local map_save_data = self._map_save_data
+
 				map_save_data.private_enabled = not is_private
 
 				WwiseWorld.trigger_event(self._wwise_world, "Play_hud_select")
@@ -998,6 +1062,7 @@ IngamePlayerListUI._on_resolution_changed = function (self)
 	local banner_right_edge = self._static_widgets_by_name.banner_right_edge
 	local banner_left_edge = self._static_widgets_by_name.banner_left_edge
 	local inverse_scale = RESOLUTION_LOOKUP.inv_scale
+
 	banner_right_edge.style.edge.texture_size[2] = inverse_scale * RESOLUTION_LOOKUP.res_h
 	banner_left_edge.style.edge.texture_size[2] = inverse_scale * RESOLUTION_LOOKUP.res_h
 end
@@ -1005,6 +1070,7 @@ end
 IngamePlayerListUI._set_privacy_enabled = function (self, enabled, animate)
 	local text = "map_screen_private_button"
 	local widget = self._private_checkbox_widget
+
 	widget.content.checked = enabled
 	widget.content.setting_text = text
 
@@ -1050,12 +1116,12 @@ IngamePlayerListUI._set_active = function (self, active)
 		end
 
 		local matchmaking_type_lookup = {
-			deus = "area_selection_morris_name",
+			custom = "lb_game_type_custom",
 			deed = "start_game_window_mutator_title",
-			tutorial = "lb_game_type_prologue",
+			deus = "area_selection_morris_name",
 			event = "start_game_window_event_title",
 			["n/a"] = "lb_game_type_none",
-			custom = "lb_game_type_custom"
+			tutorial = "lb_game_type_prologue",
 		}
 		local mechanism_name = Managers.mechanism:current_mechanism_name()
 		local matchmaking_type = Managers.matchmaking:active_game_mode()
@@ -1064,16 +1130,12 @@ IngamePlayerListUI._set_active = function (self, active)
 		local mission_type_widget = self._static_widgets_by_name.mission_type_name
 
 		if mechanism_name == "weave" then
-			if quick_game == "true" then
-				matchmaking_type = "lb_game_type_weave_quick_play"
-			else
-				matchmaking_type = "lb_game_type_custom"
-			end
-
+			matchmaking_type = quick_game == "true" and "lb_game_type_weave_quick_play" or "lb_game_type_custom"
 			mechanism_type_widget.content.text = Utf8.upper(Localize("lb_game_type_weave"))
 			mission_type_widget.content.text = Localize(matchmaking_type)
 		else
 			local mechanism_settings = MechanismSettings[mechanism_name]
+
 			mechanism_type_widget.content.text = Utf8.upper(Localize(mechanism_settings.display_name))
 
 			if quick_game == "true" then
@@ -1106,7 +1168,7 @@ IngamePlayerListUI._set_active = function (self, active)
 		input_manager:release_input({
 			"keyboard",
 			"gamepad",
-			"mouse"
+			"mouse",
 		}, 1, "player_list_input", "IngamePlayerListUI", true)
 		input_manager:device_unblock_service("keyboard", 1, "player_list_input")
 		input_manager:device_unblock_service("gamepad", 1, "player_list_input")
@@ -1126,10 +1188,12 @@ IngamePlayerListUI._update_fade_in_duration = function (self, dt)
 	end
 
 	fade_in_duration = fade_in_duration + dt
+
 	local progress = math.min(fade_in_duration / 0.2, 1)
 	local anim_progress = math.easeOutCubic(progress)
 	local render_settings = self._render_settings
 	local ui_scenegraph = self._ui_scenegraph
+
 	render_settings.alpha_multiplier = progress
 	ui_scenegraph.player_list.local_position[1] = -800 * (1 - anim_progress)
 	ui_scenegraph.banner_left.local_position[1] = -800 * (1 - anim_progress)
@@ -1180,14 +1244,18 @@ IngamePlayerListUI._update_player_list = function (self, dt, t)
 			local is_server = data.is_server
 			local widget = data.widget
 			local game_object_id = player.game_object_id
+
 			temp_players[ui_id] = true
 
 			if not is_server and not is_bot_player and game_session and game_object_id then
 				local ping = GameSession.game_object_field(game_session, game_object_id, "ping")
 				local ping_texture, ping_color = self:_get_ping_texture_by_ping_value(ping)
+
 				widget.content.ping_texture = ping_texture
 				widget.content.ping_text = ping
+
 				local ping_style = widget.style.ping_text
+
 				ping_style.text_color = ping_style[ping_color]
 			end
 
@@ -1260,6 +1328,7 @@ IngamePlayerListUI._update_player_list = function (self, dt, t)
 
 					if not is_local_player and not is_server and not is_bot_player then
 						local kick_button_hotspot = widget.content.kick_button_hotspot
+
 						kick_button_hotspot.disable_button = not should_reset_cooldown
 						widget.content.show_kick_button = should_reset_cooldown
 					end
@@ -1273,6 +1342,7 @@ IngamePlayerListUI._update_player_list = function (self, dt, t)
 	end
 
 	self._num_players = num_players - removed_players
+
 	local game_mode_key = Managers.state.game_mode:game_mode_key()
 	local game_mode_settings = GameModeSettings[game_mode_key]
 	local human_and_bot_players = Managers.player:human_and_bot_players()
@@ -1300,7 +1370,9 @@ local EMPTY_TABLE = {}
 IngamePlayerListUI._update_dynamic_widget_information = function (self, dt, t)
 	local network_manager = Managers.state.network
 	local game = network_manager:game()
+
 	self._item_tooltip.content.item = nil
+
 	local players_data = self._players
 	local profile_synchronizer = self._profile_synchronizer
 	local profiles = SPProfiles
@@ -1336,7 +1408,9 @@ IngamePlayerListUI._update_dynamic_widget_information = function (self, dt, t)
 			local value = Managers.state.difficulty:get_difficulty_value_from_table(curse_settings_value)
 			local mutator_curse_multiplier = buff_extension:apply_buffs_to_value(value, "curse_protection")
 			local cursed_health = buff_extension:apply_buffs_to_value(0, "health_curse")
+
 			cursed_health = buff_extension:apply_buffs_to_value(cursed_health, "curse_protection")
+
 			local active_percentage = 1 + num_grimoires * multiplier + num_twitch_grimoires * twitch_multiplier + num_slayer_curses * slayer_curse_multiplier + num_mutator_curses * mutator_curse_multiplier + cursed_health
 			local widget = self._player_list_widgets[i]
 			local style = widget.style
@@ -1349,6 +1423,7 @@ IngamePlayerListUI._update_dynamic_widget_information = function (self, dt, t)
 
 			if game and go_id then
 				local ability_cooldown_percentage = GameSession.game_object_field(game, go_id, "ability_percentage") or 0
+
 				ability_bar_content.bar_value = 1 - ability_cooldown_percentage
 			end
 
@@ -1356,6 +1431,7 @@ IngamePlayerListUI._update_dynamic_widget_information = function (self, dt, t)
 			total_health_bar_style.gradient_threshold = total_health_percent * active_percentage
 			grimoire_bar_style.grimoire_debuff = 1 - active_percentage
 			grimoire_debuff_divider_style.grimoire_debuff = 1 - active_percentage
+
 			local unique_id = player:unique_id()
 			local profile_index, career_index = profile_synchronizer:profile_by_peer(player_data.peer_id, player_data.local_player_id)
 			local profile_settings = profiles[profile_index]
@@ -1370,6 +1446,7 @@ IngamePlayerListUI._update_dynamic_widget_information = function (self, dt, t)
 
 				if privacy_level == PrivacyLevels.friends then
 					local Friends = rawget(_G, "Friends")
+
 					is_build_visible = Friends and Friends.in_category(player_data.peer_id, Friends.FRIEND_FLAG)
 				elseif privacy_level == PrivacyLevels.private then
 					is_build_visible = false
@@ -1383,8 +1460,7 @@ IngamePlayerListUI._update_dynamic_widget_information = function (self, dt, t)
 				local inventory_icon = UIUtils.get_ui_information_from_item(item)
 
 				if not is_build_visible then
-					inventory_icon = nil
-					rarity = nil
+					rarity, inventory_icon = nil
 				end
 
 				content[slot_name] = inventory_icon
@@ -1425,7 +1501,7 @@ IngamePlayerListUI._update_dynamic_widget_information = function (self, dt, t)
 end
 
 local ITEM_TOOLTIP_RENDER_SETTINGS = {
-	alpha_multiplier = 0
+	alpha_multiplier = 0,
 }
 
 IngamePlayerListUI._update_item_tooltip_widget = function (self, item, offset)
@@ -1434,6 +1510,7 @@ IngamePlayerListUI._update_item_tooltip_widget = function (self, item, offset)
 	local widget = self._item_tooltip
 	local widget_style = widget.style
 	local widget_content = widget.content
+
 	widget_content.item = item
 
 	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, FAKE_INPUT_SERVICE, 0, nil, ITEM_TOOLTIP_RENDER_SETTINGS)
@@ -1442,6 +1519,7 @@ IngamePlayerListUI._update_item_tooltip_widget = function (self, item, offset)
 
 	local item_presentation_height = widget_style.item.item_presentation_height - 100
 	local max_height = 1080 - item_presentation_height
+
 	ui_scenegraph.item_tooltip.local_position[2] = math.min(offset[2] + item_presentation_height, max_height)
 end
 
@@ -1569,7 +1647,7 @@ IngamePlayerListUI.kick_player = function (self, player, t)
 		self._network_server:kick_peer(kick_peer_id)
 	else
 		local vote_data = {
-			kick_peer_id = kick_peer_id
+			kick_peer_id = kick_peer_id,
 		}
 
 		Managers.state.voting:request_vote("kick_player", vote_data, Network.peer_id())

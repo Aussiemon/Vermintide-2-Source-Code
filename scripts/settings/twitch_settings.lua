@@ -1,67 +1,69 @@
+﻿-- chunkname: @scripts/settings/twitch_settings.lua
+
 TwitchSettings = TwitchSettings or {
-	initial_downtime = 60,
 	cutoff_for_guaranteed_negative_vote = -300,
-	starting_funds = 0,
-	max_diff = 200,
-	max_a_b_vote_cost_diff = 100,
-	default_draw_vote = "twitch_vote_draw",
 	cutoff_for_guaranteed_positive_vote = 300,
+	default_draw_vote = "twitch_vote_draw",
+	initial_downtime = 60,
+	max_a_b_vote_cost_diff = 100,
+	max_diff = 200,
+	starting_funds = 0,
 	standard_vote = {
 		default_vote_a_str = "#a",
-		default_vote_b_str = "#b"
+		default_vote_b_str = "#b",
 	},
 	multiple_choice = {
+		default_vote_a_str = "#a",
 		default_vote_b_str = "#b",
 		default_vote_c_str = "#c",
 		default_vote_d_str = "#d",
-		default_vote_a_str = "#a",
-		default_vote_e_str = "#e"
+		default_vote_e_str = "#e",
 	},
 	supported_game_modes = {
 		ps4 = {
-			weave_quick_play = false,
-			deed = false,
-			deus_twitch = true,
+			adventure = true,
 			adventure_mode = false,
-			event = false,
+			custom = false,
+			deed = false,
 			deus_custom = false,
 			deus_quickplay = false,
-			custom = false,
-			weave = false,
-			adventure = true,
+			deus_twitch = true,
+			event = false,
 			twitch = true,
-			versus = false
+			versus = false,
+			weave = false,
+			weave_quick_play = false,
 		},
 		xb1 = {
-			weave_quick_play = false,
-			deed = false,
-			deus_twitch = true,
+			adventure = true,
 			adventure_mode = false,
-			event = false,
+			custom = false,
+			deed = false,
 			deus_custom = false,
 			deus_quickplay = false,
-			custom = false,
-			weave = false,
-			adventure = true,
+			deus_twitch = true,
+			event = false,
 			twitch = true,
-			versus = false
+			versus = false,
+			weave = false,
+			weave_quick_play = false,
 		},
 		win32 = {
-			weave_quick_play = true,
-			deed = true,
-			deus_twitch = true,
+			adventure = true,
 			adventure_mode = true,
-			event = true,
+			custom = true,
+			deed = true,
 			deus_custom = true,
 			deus_quickplay = true,
-			custom = true,
-			weave = true,
-			adventure = true,
+			deus_twitch = true,
+			event = true,
 			twitch = true,
-			versus = true
-		}
+			versus = true,
+			weave = true,
+			weave_quick_play = true,
+		},
 	},
-	positive_vote_options = table.enum("enable_positive_votes", "disable_giving_items", "disable_positive_votes")
+	positive_vote_options = table.enum("enable_positive_votes", "disable_giving_items", "disable_positive_votes"),
 }
 TwitchVoteTemplates = TwitchVoteTemplates or {}
 

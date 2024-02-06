@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/breeds/breed_shadow_lieutenant.lua
+
 Breeds.shadow_lieutenant = table.clone(Breeds.chaos_warrior)
 Breeds.shadow_lieutenant.boss = true
 Breeds.shadow_lieutenant.elite = false
@@ -19,7 +21,7 @@ Breeds.shadow_lieutenant.default_spawn_animation = {
 	"spawn_chaos_champion_04",
 	"spawn_chaos_champion_04",
 	"spawn_chaos_champion_04",
-	"spawn_chaos_champion_05"
+	"spawn_chaos_champion_05",
 }
 Breeds.shadow_lieutenant.dialogue_source_name = "npc_shadow_lieutenant"
 Breeds.shadow_lieutenant.death_sound_event = "Play_enemy_vce_shadow_champion_death"

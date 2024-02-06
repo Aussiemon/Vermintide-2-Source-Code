@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/start_game_view/windows/start_game_window_weave_info.lua
+
 local definitions = local_require("scripts/ui/views/start_game_view/windows/definitions/start_game_window_weave_info_definitions")
 local create_objective_widget = definitions.create_objective_widget
 local top_widget_definitions = definitions.top_widgets
@@ -7,6 +9,7 @@ local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
 local DO_RELOAD = false
 local WIND_ICON_ANIMATION_DURATION = 1.5
+
 StartGameWindowWeaveInfo = class(StartGameWindowWeaveInfo)
 StartGameWindowWeaveInfo.NAME = "StartGameWindowWeaveInfo"
 
@@ -15,20 +18,23 @@ StartGameWindowWeaveInfo.on_enter = function (self, params, offset)
 
 	self._params = params
 	self._parent = params.parent
+
 	local ingame_ui_context = params.ingame_ui_context
+
 	self._ingame_ui = ingame_ui_context.ingame_ui
 	self._ui_renderer = ingame_ui_context.ui_renderer
 	self._ui_top_renderer = ingame_ui_context.ui_top_renderer
 	self._input_manager = ingame_ui_context.input_manager
 	self._statistics_db = ingame_ui_context.statistics_db
 	self._render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 	self._network_lobby = ingame_ui_context.network_lobby
 	self._is_server = ingame_ui_context.is_server
 	self._is_in_inn = ingame_ui_context.is_in_inn
 	self._ui_hdr_renderer = self._parent:hdr_renderer()
 	self._my_player = ingame_ui_context.player
+
 	local player_manager = Managers.player
 	local local_player = player_manager:local_player()
 
@@ -46,20 +52,23 @@ end
 
 StartGameWindowWeaveInfo._start_transition_animation = function (self, animation_name)
 	local params = {
-		render_settings = self._render_settings
+		render_settings = self._render_settings,
 	}
 	local widgets = self._widgets_by_name
 	local anim_id = self._ui_animator:start_animation(animation_name, widgets, scenegraph_definition, params)
+
 	self._animations[animation_name] = anim_id
 end
 
 StartGameWindowWeaveInfo._create_ui_elements = function (self, params, offset)
 	self._ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+
 	local widgets_by_name = {}
 	local top_widgets = {}
 
 	for name, widget_definition in pairs(top_widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		top_widgets[#top_widgets + 1] = widget
 		widgets_by_name[name] = widget
 	end
@@ -68,6 +77,7 @@ StartGameWindowWeaveInfo._create_ui_elements = function (self, params, offset)
 
 	for name, widget_definition in pairs(bottom_widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		bottom_widgets[#bottom_widgets + 1] = widget
 		widgets_by_name[name] = widget
 	end
@@ -76,6 +86,7 @@ StartGameWindowWeaveInfo._create_ui_elements = function (self, params, offset)
 
 	for name, widget_definition in pairs(bottom_hdr_widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		bottom_hdr_widgets[#bottom_hdr_widgets + 1] = widget
 		widgets_by_name[name] = widget
 	end
@@ -88,7 +99,9 @@ StartGameWindowWeaveInfo._create_ui_elements = function (self, params, offset)
 	UIRenderer.clear_scenegraph_queue(self._ui_renderer)
 
 	self._ui_animator = UIAnimator:new(self._ui_scenegraph, animation_definitions)
+
 	local private_game = self._parent:is_private_option_enabled()
+
 	widgets_by_name.private_checkbox.content.button_hotspot.is_selected = private_game
 	widgets_by_name.play_button.content.button_hotspot.disable_button = true
 
@@ -102,11 +115,12 @@ StartGameWindowWeaveInfo._setup_input_buttons = function (self)
 	local widgets_by_name = self._widgets_by_name
 	local play_button_console = widgets_by_name.play_button_console
 	local input_texture_style = play_button_console.style.input_texture
+
 	input_texture_style.horizontal_alignment = "center"
 	input_texture_style.vertical_alignment = "center"
 	input_texture_style.texture_size = {
 		start_game_input_data.size[1],
-		start_game_input_data.size[2]
+		start_game_input_data.size[2],
 	}
 	play_button_console.content.input_texture = start_game_input_data.texture
 end
@@ -140,13 +154,17 @@ StartGameWindowWeaveInfo._handle_gamepad_activity = function (self)
 	if gamepad_active then
 		if not self.gamepad_active_last_frame or force_update then
 			self.gamepad_active_last_frame = true
+
 			local widgets_by_name = self._widgets_by_name
+
 			widgets_by_name.play_button.content.visible = false
 			widgets_by_name.play_button_console.content.visible = true
 		end
 	elseif self.gamepad_active_last_frame or force_update then
 		self.gamepad_active_last_frame = false
+
 		local widgets_by_name = self._widgets_by_name
+
 		widgets_by_name.play_button.content.visible = true
 		widgets_by_name.play_button_console.content.visible = false
 	end
@@ -156,6 +174,7 @@ StartGameWindowWeaveInfo._update_can_play = function (self)
 	local widgets_by_name = self._widgets_by_name
 	local is_matchmaking = Managers.matchmaking:is_game_matchmaking()
 	local was_matchmaking = self._is_matchmaking
+
 	self._is_matchmaking = is_matchmaking
 
 	if is_matchmaking ~= was_matchmaking then
@@ -294,6 +313,7 @@ StartGameWindowWeaveInfo._handle_input = function (self, dt, t)
 
 	if self:_is_button_released(private_checkbox) or lock_party_size_pressed then
 		local content = private_checkbox.content
+
 		content.button_hotspot.is_selected = not content.button_hotspot.is_selected
 
 		parent:set_private_option_enabled(content.button_hotspot.is_selected)
@@ -310,7 +330,7 @@ end
 
 local party_find_button_texts = {
 	Localize("menu_weave_play_find_party"),
-	Localize("menu_weave_play_find_party_cancel")
+	(Localize("menu_weave_play_find_party_cancel")),
 }
 
 StartGameWindowWeaveInfo._update_party_status = function (self, dt)
@@ -319,11 +339,14 @@ StartGameWindowWeaveInfo._update_party_status = function (self, dt)
 	local active_game_mode = matchmaking_manager:active_game_mode()
 	local is_searching_for_weave = active_game_mode and active_game_mode == "weave"
 	local is_searching = is_game_matchmaking and is_searching_for_weave
+
 	self._is_matchmaking_for_weave = is_searching
+
 	local widgets_by_name = self._widgets_by_name
 	local play_button_widget = widgets_by_name.play_button
 	local play_button_widget_content = play_button_widget.content
 	local play_button_hotspot = play_button_widget_content.button_hotspot
+
 	play_button_hotspot.disable_button = is_searching
 end
 
@@ -339,6 +362,7 @@ StartGameWindowWeaveInfo._update_selected_weave = function (self)
 		local parent = self._parent
 		local selected_weave_id = parent:get_selected_weave_id()
 		local weave_templates = WeaveSettings.templates_ordered
+
 		weave_template = weave_templates[selected_weave_id]
 	end
 
@@ -349,18 +373,24 @@ StartGameWindowWeaveInfo._update_selected_weave = function (self)
 
 		if name and name ~= self._selected_weave_name then
 			self._selected_weave_name = name
+
 			local objectives = weave_template.objectives
 			local display_name = weave_template.display_name
 			local title_widget = widgets_by_name.title
+
 			title_widget.content.text = display_name
+
 			local level_id = objectives[1].level_id
 			local level_settings = LevelSettings[level_id]
 			local level_display_name = level_settings.display_name
+
 			widgets_by_name.level_title.content.text = level_display_name
+
 			local wind = weave_template.wind
 			local wind_settings = WindSettings[wind]
 			local wind_title_widget = widgets_by_name.wind_title
 			local wind_icon_widget = widgets_by_name.wind_icon
+
 			wind_title_widget.content.text = wind_settings.lore_display_name
 
 			self:_set_wind_icon_by_name(wind)
@@ -371,9 +401,11 @@ StartGameWindowWeaveInfo._update_selected_weave = function (self)
 			local mutator_icon_widget = widgets_by_name.mutator_icon
 			local mutator_title_widget = widgets_by_name.mutator_title_text
 			local mutator_description_widget = widgets_by_name.mutator_description_text
+
 			mutator_icon_widget.content.texture_id = mutator_data.icon
 			mutator_title_widget.content.text = mutator_data.display_name
 			mutator_description_widget.content.text = mutator_data.description
+
 			local objective_spacing = 10
 			local total_objectives_height = 0
 			local scenegraph_id = "objective"
@@ -383,7 +415,9 @@ StartGameWindowWeaveInfo._update_selected_weave = function (self)
 
 			for i = 1, #objectives do
 				local widget = UIWidget.init(widget_definition)
+
 				objective_widgets[#objective_widgets + 1] = widget
+
 				local objective = objectives[i]
 				local conflict_settings = objective.conflict_settings
 				local is_end_objective = conflict_settings == "weave_disabled"
@@ -392,6 +426,7 @@ StartGameWindowWeaveInfo._update_selected_weave = function (self)
 				local objective_icon = is_end_objective and "objective_icon_boss" or "objective_icon_general"
 				local objective_height = self:_assign_objective(widget, title_text, objective_display_name, objective_icon, objective_spacing)
 				local offset = widget.offset
+
 				offset[2] = -total_objectives_height
 				total_objectives_height = total_objectives_height + objective_height + objective_spacing
 			end
@@ -411,6 +446,7 @@ StartGameWindowWeaveInfo._update_wind_icon_animation = function (self, dt)
 	end
 
 	wind_icon_animation_time = math.max(wind_icon_animation_time - dt, 0)
+
 	local progress = math.clamp(1 - wind_icon_animation_time / WIND_ICON_ANIMATION_DURATION, 0, 1)
 	local pulse_progress = math.lerp(0, 1, progress)
 	local widgets_by_name = self._widgets_by_name
@@ -423,6 +459,7 @@ StartGameWindowWeaveInfo._update_wind_icon_animation = function (self, dt)
 	Material.set_scalar(icon_glow_material, "progress", pulse_progress)
 
 	local icon_progress = math.easeInCubic(progress)
+
 	widget_icon.style.texture_id.color[1] = 255 * icon_progress
 
 	if progress == 1 then
@@ -433,14 +470,14 @@ StartGameWindowWeaveInfo._update_wind_icon_animation = function (self, dt)
 end
 
 local wind_texture_index_by_name = {
-	shadow = 2,
-	fire = 4,
 	beasts = 5,
-	life = 0,
 	death = 3,
-	light = 6,
+	fire = 4,
 	heavens = 1,
-	metal = 7
+	life = 0,
+	light = 6,
+	metal = 7,
+	shadow = 2,
 }
 
 StartGameWindowWeaveInfo._set_wind_icon_by_name = function (self, wind_name)
@@ -484,11 +521,14 @@ StartGameWindowWeaveInfo._align_private_checkbox = function (self)
 	local ui_renderer = self._ui_renderer
 	local text_width = UIUtils.get_text_width(ui_renderer, text_style, hotspot_content.text)
 	local total_width = text_width_offset + text_width
+
 	offset[1] = -total_width / 2
 	offset[2] = gamepad_active and 40 or 0
+
 	local tooltip_style = style.additional_option_info
 	local tooltip_width = tooltip_style.max_width
 	local tooltip_offset = tooltip_style.offset
+
 	tooltip_offset[1] = -(tooltip_width / 2 - total_width / 2)
 	hotspot_size[1] = total_width
 end
@@ -510,24 +550,30 @@ StartGameWindowWeaveInfo._assign_objective = function (self, widget, title_text,
 	local content = widget.content
 	local style = widget.style
 	local size = scenegraph_definition[scenegraph_id].size
+
 	content.icon = icon or "trial_gem"
 	content.title_text = title_text or "-"
 	content.text = text or "-"
+
 	local icon_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(content.icon)
 	local icon_texture_size = icon_texture_settings.size
 	local icon_style = style.icon
 	local icon_size = icon_style.texture_size
 	local icon_default_offset = icon_style.default_offset
 	local icon_offset = icon_style.offset
+
 	icon_size[1] = icon_texture_size[1]
 	icon_size[2] = icon_texture_size[2]
 	icon_offset[1] = icon_default_offset[1] - icon_size[1] / 2
 	icon_offset[2] = icon_default_offset[2]
+
 	local text_style = style.text
 	local ui_renderer = self._ui_renderer
 	local text_width = UIUtils.get_text_width(ui_renderer, text_style, content.text)
 	local text_height = UIUtils.get_text_height(ui_renderer, size, text_style, content.text)
+
 	spacing = spacing or 0
+
 	local total_height = math.max(text_height, 50) + spacing
 
 	return total_height
@@ -607,7 +653,7 @@ StartGameWindowWeaveInfo._format_time = function (self, time)
 end
 
 StartGameWindowWeaveInfo._get_save_data_by_weave_name = function (self, weave_name)
-	local saved_value = nil
+	local saved_value
 
 	return saved_value
 end

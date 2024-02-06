@@ -1,9 +1,11 @@
+﻿-- chunkname: @scripts/unit_extensions/pickups/deus_chest_extension.lua
+
 require("scripts/managers/game_mode/mechanisms/deus_weapon_generation")
 require("scripts/settings/dlcs/morris/rarity_settings")
 require("scripts/utils/hash_utils")
 
 local RPCS = {
-	"rpc_deus_chest_looted"
+	"rpc_deus_chest_looted",
 }
 local REAL_PLAYER_LOCAL_ID = 1
 local RELIQUARY_NEAR_DISTANCE = 10
@@ -11,37 +13,37 @@ local RELIQUARY_FAR_DISTANCE = 12
 local WEAPON_CHEST_TO_SLOTS = {
 	default = {
 		swap_melee = {
-			"melee"
+			"melee",
 		},
 		swap_ranged = {
-			"ranged"
-		}
+			"ranged",
+		},
 	},
 	dr_slayer = {
 		swap_melee = {
-			"melee"
+			"melee",
 		},
 		swap_ranged = {
 			"melee",
-			"ranged"
-		}
+			"ranged",
+		},
 	},
 	es_questingknight = {
 		swap_melee = {
-			"melee"
+			"melee",
 		},
 		swap_ranged = {
-			"melee"
-		}
+			"melee",
+		},
 	},
 	wh_priest = {
 		swap_melee = {
-			"melee"
+			"melee",
 		},
 		swap_ranged = {
-			"melee"
-		}
-	}
+			"melee",
+		},
+	},
 }
 local LUA_UPDATE_RARITY_EVENTS = {}
 local RaritySettings = RaritySettings
@@ -76,6 +78,7 @@ end
 
 DeusChestExtension.extensions_ready = function (self, world, unit)
 	local mechanism = Managers.mechanism:game_mechanism()
+
 	self._deus_run_controller = mechanism:get_deus_run_controller()
 
 	fassert(self._deus_run_controller, "deus pickup unit can only be used in a deus run")
@@ -141,7 +144,7 @@ DeusChestExtension.update = function (self, unit, input, dt, context, t)
 
 				self:_generate_stored_weapon(slots, rarity, go_id, profile_index, career_index)
 
-				local slot = nil
+				local slot
 
 				if server_chest_type == DEUS_CHEST_TYPES.swap_melee then
 					slot = "melee"
@@ -214,13 +217,9 @@ DeusChestExtension.update_upgrade_chest_color = function (self)
 
 	local weapon_rarity_order = RaritySettings[wielded_weapon.rarity].order
 	local chest_rarity_order = RaritySettings[rarity].order
-	local event = nil
+	local event
 
-	if chest_rarity_order <= weapon_rarity_order then
-		event = "lua_interact_disabled"
-	else
-		event = LUA_UPDATE_RARITY_EVENTS[rarity]
-	end
+	event = chest_rarity_order <= weapon_rarity_order and "lua_interact_disabled" or LUA_UPDATE_RARITY_EVENTS[rarity]
 
 	if not self._prev_update_upgrade_chest_color_event or self._prev_update_upgrade_chest_color_event ~= event then
 		Unit.flow_event(self.unit, event)
@@ -338,6 +337,7 @@ DeusChestExtension._setup_rarity = function (self, seed, chest_type)
 		local current_node = self._deus_run_controller:get_current_node()
 		local difficulty = self._deus_run_controller:get_run_difficulty()
 		local progress = current_node.run_progress
+
 		self._rarity = DeusWeaponGeneration.get_random_rarity(difficulty, progress, seed)
 
 		Unit.flow_event(self.unit, "lua_update_" .. self._rarity)
@@ -381,6 +381,7 @@ end
 
 DeusChestExtension._generate_stored_power_up = function (self, seed)
 	local power_ups = self._deus_run_controller:generate_random_power_ups(DeusPowerUpSettings.weapon_chest_choice_amount, DeusPowerUpAvailabilityTypes.weapon_chest, seed)
+
 	self._stored_purchase = power_ups[1]
 end
 
@@ -412,7 +413,9 @@ DeusChestExtension._generate_upgraded_weapon = function (self, weapon, slot_name
 	local difficulty = deus_run_controller:get_run_difficulty()
 	local weapon_seed = HashUtils.fnv32_hash(string.format("%s_%s_%s_%s_%s", profile_index, career_index, current_node.weapon_pickup_seed, go_id, 1))
 	local new_weapon = DeusWeaponGeneration.upgrade_item(weapon, difficulty, progress, rarity, weapon_seed)
+
 	new_weapon.preferred_slot_name = slot_name
+
 	local deus_backend = Managers.backend:get_interface("deus")
 
 	deus_backend:grant_deus_weapon(new_weapon)
@@ -449,19 +452,19 @@ DeusChestExtension._set_server_chest_type = function (self, server_chest_type)
 end
 
 local sound_events = {
-	unlock_chest = "hud_morris_weapon_chest_unlock",
-	unlock_power_up = "morris_reliquarys_get_boon",
-	close_chest_ui = "hud_morris_weapon_chest_close",
 	button_hover = "hud_morris_hover",
+	close_chest_ui = "hud_morris_weapon_chest_close",
 	exchange_weapon = "hud_morris_weapon_chest_change_weapon",
 	open_chest_ui = "hud_morris_weapon_chest_open",
+	unlock_chest = "hud_morris_weapon_chest_unlock",
+	unlock_power_up = "morris_reliquarys_get_boon",
 	unlock_chest_rarity_sounds = {
 		common = "play_hud_rewards_tier1",
-		plentiful = "play_hud_rewards_tier1",
 		exotic = "play_hud_rewards_tier3",
+		plentiful = "play_hud_rewards_tier1",
 		rare = "play_hud_rewards_tier2",
-		unique = "play_hud_rewards_tier4"
-	}
+		unique = "play_hud_rewards_tier4",
+	},
 }
 
 DeusChestExtension.can_be_unlocked = function (self)
@@ -501,6 +504,7 @@ DeusChestExtension.can_be_unlocked = function (self)
 	if chest_type ~= DEUS_CHEST_TYPES.power_up then
 		local network_manager = Managers.state.network
 		local profile_synchronizer = network_manager.profile_synchronizer
+
 		others_actually_ingame = profile_synchronizer:others_actually_ingame()
 	end
 
@@ -519,7 +523,7 @@ DeusChestExtension.open_chest = function (self)
 		local player_unit = self._player_unit
 
 		run_controller:add_power_ups({
-			power_up
+			power_up,
 		}, REAL_PLAYER_LOCAL_ID)
 
 		local buff_system = Managers.state.entity:system("buff_system")
@@ -562,16 +566,10 @@ DeusChestExtension._equip_weapon = function (self, deus_run_controller, new_weap
 	local career_index = self._career_index
 	local career_data = profile.careers[career_index]
 	local career_name = career_data.name
-	local slot_name = nil
+	local slot_name
 	local chest_type = self._chest_type
 
-	if chest_type == DEUS_CHEST_TYPES.swap_melee then
-		slot_name = "slot_melee"
-	elseif chest_type == DEUS_CHEST_TYPES.swap_ranged then
-		slot_name = "slot_ranged"
-	else
-		slot_name = self:_get_best_slot_name(new_weapon, chest_type, career_data, inventory_extension)
-	end
+	slot_name = chest_type == DEUS_CHEST_TYPES.swap_melee and "slot_melee" or chest_type == DEUS_CHEST_TYPES.swap_ranged and "slot_ranged" or self:_get_best_slot_name(new_weapon, chest_type, career_data, inventory_extension)
 
 	BackendUtils.set_loadout_item(backend_id, career_name, slot_name)
 	inventory_extension:create_equipment_in_slot(slot_name, backend_id, 1)
@@ -579,7 +577,7 @@ DeusChestExtension._equip_weapon = function (self, deus_run_controller, new_weap
 end
 
 DeusChestExtension._get_best_slot_name = function (self, stored_weapon, chest_type, career_data, inventory_extension)
-	local slot_name = nil
+	local slot_name
 	local stored_weapon_slot_type = stored_weapon.data.slot_type
 	local slots = InventorySettings.slots_by_slot_index
 
@@ -589,7 +587,7 @@ DeusChestExtension._get_best_slot_name = function (self, stored_weapon, chest_ty
 		end
 	end
 
-	local wielded_slot_name = nil
+	local wielded_slot_name
 	local equipment = inventory_extension:equipment()
 	local wielded_backend_id = equipment.wielded.backend_id
 
@@ -627,15 +625,15 @@ DeusChestExtension._post_chest_unlock = function (self, store_purchase)
 			Managers.state.event:trigger("present_rewards", {
 				{
 					type = "deus_power_up",
-					power_up = store_purchase
-				}
+					power_up = store_purchase,
+				},
 			})
 		else
 			Managers.state.event:trigger("present_rewards", {
 				{
 					type = "deus_item_tooltip",
-					backend_id = store_purchase.backend_id
-				}
+					backend_id = store_purchase.backend_id,
+				},
 			})
 		end
 	end

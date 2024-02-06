@@ -1,6 +1,9 @@
+﻿-- chunkname: @scripts/unit_extensions/default_player_unit/player_husk_locomotion_extension.lua
+
 require("scripts/unit_extensions/default_player_unit/third_person_idle_fullbody_animation_control")
 
 PlayerHuskLocomotionExtension = class(PlayerHuskLocomotionExtension)
+
 local POSITION_LOOKUP = POSITION_LOOKUP
 
 PlayerHuskLocomotionExtension.init = function (self, extension_init_context, unit, extension_init_data)
@@ -27,6 +30,7 @@ PlayerHuskLocomotionExtension.init = function (self, extension_init_context, uni
 
 	local animation_run_variable_id = Unit.animation_find_variable(unit, "anim_run_speed")
 	local animation_walk_variable_id = Unit.animation_find_variable(unit, "anim_walk_speed")
+
 	self.movement_scale_animation_id = Unit.animation_find_variable(unit, "movement_scale")
 	self.run_speed_treshold = Unit.animation_get_variable(unit, animation_run_variable_id)
 	self.walk_speed_treshold = Unit.animation_get_variable(unit, animation_walk_variable_id)
@@ -106,6 +110,7 @@ PlayerHuskLocomotionExtension.set_disabled = function (self, disabled, run_func,
 	if not disabled then
 		local unit = self.unit
 		local pos = POSITION_LOOKUP[unit] or Unit.local_position(unit, 0)
+
 		self._pos_lerp_time = 0
 
 		Unit.set_data(unit, "last_lerp_position", pos)
@@ -166,7 +171,7 @@ local DISCONNECT_GRACE_TIME = 1
 
 PlayerHuskLocomotionExtension.update_movement = function (self, dt, unit, movement_state)
 	local old_pos = Unit.local_position(unit, 0)
-	local new_pos = nil
+	local new_pos
 	local linked_movement = GameSession.game_object_field(self.game, self.id, "linked_movement")
 	local moving_platform = GameSession.game_object_field(self.game, self.id, "moving_platform")
 
@@ -186,6 +191,7 @@ PlayerHuskLocomotionExtension.update_movement = function (self, dt, unit, moveme
 		local moving_platform_unit = Managers.state.network:game_object_or_level_unit(moving_platform, true)
 		local moving_platform_pos = Unit.local_position(moving_platform_unit, 0)
 		local player_local_pos = GameSession.game_object_field(self.game, self.id, "position")
+
 		new_pos = moving_platform_pos + player_local_pos
 	else
 		new_pos = GameSession.game_object_field(self.game, self.id, "position")
@@ -223,12 +229,16 @@ PlayerHuskLocomotionExtension._extrapolation_movement = function (self, unit, dt
 	local last_pos = Unit.get_data(unit, "last_lerp_position") or old_pos
 	local last_pos_offset = Unit.get_data(unit, "last_lerp_position_offset") or Vector3(0, 0, 0)
 	local accumulated_movement = Unit.get_data(unit, "accumulated_movement") or Vector3(0, 0, 0)
+
 	self._pos_lerp_time = (self._pos_lerp_time or 0) + dt
 	self._velocity_lerp_time = (self._velocity_lerp_time or 0) + dt
+
 	local pos_lerp_time = linked_movement and POS_LERP_TIME_LINKED or POS_LERP_TIME
 	local lerp_t = self._pos_lerp_time / pos_lerp_time
 	local move_delta = velocity * dt
+
 	accumulated_movement = accumulated_movement + move_delta
+
 	local lerp_pos = Vector3.lerp(last_pos_offset, Vector3(0, 0, 0), math.min(lerp_t, 1))
 	local pos = last_pos + accumulated_movement + lerp_pos
 
@@ -237,7 +247,7 @@ PlayerHuskLocomotionExtension._extrapolation_movement = function (self, unit, dt
 	Profiler.record_statistics("dt", dt)
 	Unit.set_data(unit, "accumulated_movement", accumulated_movement)
 
-	if POS_EPSILON < Vector3.length(new_pos - last_pos) then
+	if Vector3.length(new_pos - last_pos) > POS_EPSILON then
 		self._pos_lerp_time = 0
 
 		Unit.set_data(unit, "last_lerp_position", new_pos)
@@ -247,11 +257,11 @@ PlayerHuskLocomotionExtension._extrapolation_movement = function (self, unit, dt
 
 	local previous_velocity = self.velocity_current:unbox()
 
-	if NetworkConstants.VELOCITY_EPSILON < Vector3.length(velocity - previous_velocity) then
+	if Vector3.length(velocity - previous_velocity) > NetworkConstants.VELOCITY_EPSILON then
 		self._velocity_lerp_time = 0
 	end
 
-	if DISCONNECT_GRACE_TIME < self._pos_lerp_time and DISCONNECT_GRACE_TIME < self._velocity_lerp_time then
+	if self._pos_lerp_time > DISCONNECT_GRACE_TIME and self._velocity_lerp_time > DISCONNECT_GRACE_TIME then
 		pos = new_pos
 
 		Unit.set_data(unit, "accumulated_movement", Vector3(0, 0, 0))
@@ -284,24 +294,27 @@ PlayerHuskLocomotionExtension._update_speed_variable = function (self, dt)
 
 	if move_speed_lerp_val < speed then
 		local delta = math.min(speed / MOVE_SPEED_ANIM_LERP_TIME * dt, speed_difference)
+
 		move_speed_lerp_val = math.clamp(move_speed_lerp_val + delta, 0, speed)
 		self._move_speed_top = move_speed_lerp_val
 	else
 		local ms = self._move_speed_top or speed
 		local delta = math.min(ms / MOVE_SPEED_ANIM_LERP_TIME * dt, speed_difference)
+
 		move_speed_lerp_val = math.clamp(move_speed_lerp_val - delta, 0, move_speed_lerp_val)
 	end
 
 	self.anim_move_speed = move_speed_lerp_val
+
 	local unit = self.unit
 
 	Unit.animation_set_variable(unit, self.move_speed_anim_var, math.min(move_speed_lerp_val, MOVE_SPEED_MAX))
 
-	local movement_anim_scale = nil
+	local movement_anim_scale
 
 	if speed < self.walk_speed_treshold then
 		movement_anim_scale = speed / self.walk_speed_treshold
-	elseif self.run_speed_treshold < speed then
+	elseif speed > self.run_speed_treshold then
 		movement_anim_scale = speed / self.run_speed_treshold
 	else
 		movement_anim_scale = 1
@@ -313,7 +326,7 @@ PlayerHuskLocomotionExtension._update_speed_variable = function (self, dt)
 end
 
 PlayerHuskLocomotionExtension._calculate_move_speed_var_from_mps = function (self, move_speed)
-	local speed_var = nil
+	local speed_var
 	local speed_multiplier = 1
 
 	if move_speed <= WALK_THRESHOLD then

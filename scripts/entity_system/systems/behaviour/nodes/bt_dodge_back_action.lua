@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_dodge_back_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTDodgeBackAction = class(BTDodgeBackAction, BTNode)
@@ -21,6 +23,7 @@ BTDodgeBackAction.enter = function (self, unit, blackboard, t)
 	blackboard.active_node = BTDodgeBackAction
 	blackboard.start_finished = nil
 	blackboard.start_started_since = t
+
 	local navigation_extension = blackboard.navigation_extension
 	local action = blackboard.action
 	local dodge_back_animation = action.dodge_back_animation
@@ -36,16 +39,16 @@ BTDodgeBackAction.enter = function (self, unit, blackboard, t)
 	network_manager:anim_event(unit, animation)
 
 	blackboard.move_state = "moving"
+
 	local position = POSITION_LOOKUP[unit]
 	local target_position = POSITION_LOOKUP[blackboard.target_unit]
 	local wanted_dodge_direction = Vector3.normalize(position - target_position)
 	local wanted_dodge_distance = action.dodge_distance
 	local wanted_dodge_position = position + wanted_dodge_direction * wanted_dodge_distance
-	local above = 2
-	local below = 2
+	local above, below = 2, 2
 	local nav_world = blackboard.nav_world
 	local is_on_navmesh, altitude = GwNavQueries.triangle_from_position(nav_world, wanted_dodge_position, above, below)
-	local position_on_navmesh = nil
+	local position_on_navmesh
 
 	if is_on_navmesh then
 		position_on_navmesh = Vector3.copy(wanted_dodge_position)
@@ -53,6 +56,7 @@ BTDodgeBackAction.enter = function (self, unit, blackboard, t)
 	else
 		local horizontal_limit = 1
 		local distance_from_nav_border = 0.05
+
 		position_on_navmesh = GwNavQueries.inside_position_from_outside_position(nav_world, wanted_dodge_position, above, below, horizontal_limit, distance_from_nav_border)
 	end
 
@@ -68,11 +72,13 @@ end
 BTDodgeBackAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	blackboard.start_finished = nil
 	blackboard.start_started_since = nil
+
 	local ai_slot_system = Managers.state.entity:system("ai_slot_system")
 
 	ai_slot_system:do_slot_search(unit, true)
 
 	blackboard.active_node = nil
+
 	local default_move_speed = AiUtils.get_default_breed_move_speed(unit, blackboard)
 	local navigation_extension = blackboard.navigation_extension
 

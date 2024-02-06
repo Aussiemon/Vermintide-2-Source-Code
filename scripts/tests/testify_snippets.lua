@@ -1,20 +1,22 @@
-local TestifySnippets = {
-	load_level = function (level_settings)
-		Testify:make_request("load_level", level_settings)
-		Testify:make_request("wait_for_level_to_be_loaded")
-	end
-}
+﻿-- chunkname: @scripts/tests/testify_snippets.lua
+
+local TestifySnippets = {}
+
+TestifySnippets.load_level = function (level_settings)
+	Testify:make_request("load_level", level_settings)
+	Testify:make_request("wait_for_level_to_be_loaded")
+end
 
 TestifySnippets.disable_level_intro_dialogue = function ()
 	TestifySnippets.set_script_data({
-		disable_level_intro_dialogue = true
+		disable_level_intro_dialogue = true,
 	})
 end
 
 TestifySnippets.set_player_profile = function (profile_name, career_name)
 	Testify:make_request("set_player_profile", {
 		profile_name = profile_name,
-		career_name = career_name
+		career_name = career_name,
 	})
 	Testify:make_request("wait_for_player_to_spawn")
 end
@@ -22,7 +24,7 @@ end
 TestifySnippets.set_bot_profile = function (profile_name, career_name)
 	Testify:make_request("set_bot_profile", {
 		profile_name = profile_name,
-		career_name = career_name
+		career_name = career_name,
 	})
 	Testify:make_request("disable_bots")
 	Testify:make_request("enable_bots")
@@ -49,25 +51,25 @@ end
 
 TestifySnippets.disable_ai = function ()
 	TestifySnippets.set_script_data({
-		ai_mini_patrol_disabled = true,
-		disable_plague_sorcerer = true,
-		ai_roaming_spawning_disabled = true,
-		disable_gutter_runner = true,
 		ai_boss_spawning_disabled = true,
 		ai_bots_disabled = true,
-		ai_roaming_patrols_disabled = true,
-		ai_terror_events_disabled = true,
+		ai_champion_spawn_debug = true,
 		ai_critter_spawning_disabled = true,
-		disable_globadier = true,
-		disable_warpfire_thrower = true,
+		ai_horde_spawning_disabled = true,
+		ai_mini_patrol_disabled = true,
 		ai_pacing_disabled = true,
-		disable_pack_master = true,
+		ai_roaming_patrols_disabled = true,
+		ai_roaming_spawning_disabled = true,
 		ai_rush_intervention_disabled = true,
+		ai_specials_spawning_disabled = true,
+		ai_terror_events_disabled = true,
+		disable_globadier = true,
+		disable_gutter_runner = true,
+		disable_pack_master = true,
+		disable_plague_sorcerer = true,
 		disable_ratling_gunner = true,
 		disable_vortex_sorcerer = true,
-		ai_horde_spawning_disabled = true,
-		ai_specials_spawning_disabled = true,
-		ai_champion_spawn_debug = true
+		disable_warpfire_thrower = true,
 	})
 end
 
@@ -75,8 +77,8 @@ TestifySnippets.open_hero_view = function ()
 	local params = {
 		transition = "hero_view_force",
 		transition_params = {
-			menu_state_name = "overview"
-		}
+			menu_state_name = "overview",
+		},
 	}
 
 	Testify:make_request("transition_with_fade", params)
@@ -105,7 +107,7 @@ TestifySnippets.equip_hats = function ()
 			if not reserved and not unwieldable then
 				local params = {
 					value = true,
-					hotspot_name = hotspot_name
+					hotspot_name = hotspot_name,
 				}
 
 				Testify:make_request("set_slot_hotspot_on_right_click", params)

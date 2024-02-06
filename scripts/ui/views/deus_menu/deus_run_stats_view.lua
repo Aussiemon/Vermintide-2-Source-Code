@@ -1,14 +1,19 @@
+﻿-- chunkname: @scripts/ui/views/deus_menu/deus_run_stats_view.lua
+
 require("scripts/ui/views/deus_menu/deus_run_stats_ui")
 
 DeusRunStatsView = class(DeusRunStatsView)
+
 local REAL_PLAYER_LOCAL_ID = 1
 
 DeusRunStatsView.init = function (self, parent, ingame_ui_context)
 	self._ingame_hud = parent
 	self._is_server = ingame_ui_context.is_server
 	self._deus_run_controller = Managers.mechanism:game_mechanism():get_deus_run_controller()
+
 	local input_service_name = "deus_run_stats_view"
 	local input_manager = ingame_ui_context.input_manager
+
 	self._input_manager = input_manager
 	self._input_service_name = input_service_name
 
@@ -24,7 +29,7 @@ DeusRunStatsView.on_enter = function (self)
 	self._input_manager:capture_input({
 		"keyboard",
 		"gamepad",
-		"mouse"
+		"mouse",
 	}, 1, self._input_service_name, "DeusRunStatsView")
 end
 
@@ -32,7 +37,7 @@ DeusRunStatsView.on_exit = function (self)
 	self._input_manager:release_input({
 		"keyboard",
 		"gamepad",
-		"mouse"
+		"mouse",
 	}, 1, self._input_service_name, "DeusRunStatsView")
 end
 
@@ -91,7 +96,7 @@ DeusRunStatsView._update_dynamic_values = function (self)
 		power_ups = power_ups,
 		party_power_ups = party_power_ups,
 		profile_index = profile_index,
-		career_index = career_index
+		career_index = career_index,
 	}
 
 	self._ui:update_dynamic_values(data)

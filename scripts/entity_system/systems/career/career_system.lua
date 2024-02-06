@@ -1,20 +1,25 @@
+﻿-- chunkname: @scripts/entity_system/systems/career/career_system.lua
+
 CareerSystem = class(CareerSystem, ExtensionSystemBase)
+
 local extension_list = {
-	"CareerExtension"
+	"CareerExtension",
 }
 local RPCS = {
 	"rpc_server_reduce_activated_ability_cooldown",
 	"rpc_server_reduce_activated_ability_cooldown_percent",
 	"rpc_reduce_activated_ability_cooldown",
 	"rpc_reduce_activated_ability_cooldown_percent",
-	"rpc_ability_activated"
+	"rpc_ability_activated",
 }
 
 CareerSystem.init = function (self, entity_system_creation_context, system_name)
 	CareerSystem.super.init(self, entity_system_creation_context, system_name, extension_list)
 
 	self.unit_extensions = {}
+
 	local network_event_delegate = entity_system_creation_context.network_event_delegate
+
 	self.network_event_delegate = network_event_delegate
 
 	network_event_delegate:register(self, unpack(RPCS))
@@ -32,6 +37,7 @@ end
 
 CareerSystem.on_add_extension = function (self, world, unit, extension_name, extension_init_data)
 	local career_extension = CareerSystem.super.on_add_extension(self, world, unit, extension_name, extension_init_data)
+
 	self.unit_extensions[unit] = career_extension
 
 	return career_extension
@@ -57,6 +63,7 @@ CareerSystem.server_reduce_activated_ability_cooldown = function (self, units, a
 
 		if ALIVE[unit] then
 			local unit_id = unit_storage:go_id(unit)
+
 			unit_count = unit_count + 1
 			unit_ids[unit_count] = unit_id
 		end

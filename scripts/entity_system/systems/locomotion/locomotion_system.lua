@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/locomotion/locomotion_system.lua
+
 LocomotionSystem = class(LocomotionSystem, ExtensionSystemBase)
 
 require("scripts/unit_extensions/default_player_unit/player_unit_locomotion_extension")
@@ -26,20 +28,21 @@ local RPCS = {
 	"rpc_hot_join_nail_to_wall_fix",
 	"rpc_set_forced_velocity",
 	"rpc_set_affected_by_gravity",
-	"rpc_set_linked_transport_driven"
+	"rpc_set_linked_transport_driven",
 }
 local extensions = {
 	"AiHuskLocomotionExtension",
 	"AILocomotionExtension",
 	"AILocomotionExtensionC",
 	"PlayerHuskLocomotionExtension",
-	"PlayerUnitLocomotionExtension"
+	"PlayerUnitLocomotionExtension",
 }
 
 LocomotionSystem.init = function (self, entity_system_creation_context, system_name)
 	LocomotionSystem.super.init(self, entity_system_creation_context, system_name, extensions)
 
 	local network_event_delegate = entity_system_creation_context.network_event_delegate
+
 	self.network_event_delegate = network_event_delegate
 
 	network_event_delegate:register(self, unpack(RPCS))
@@ -102,6 +105,7 @@ LocomotionSystem.on_add_extension = function (self, world, unit, extension_name,
 		EngineOptimized.ai_locomotion_register_extension(unit, game_object_id, wanted_destination_boxed, locomotion_gravity, breed_run_speed, breed.sync_full_rotation)
 	else
 		extension_init_data.system_data = self.template_data[extension_name]
+
 		local extension = LocomotionSystem.super.on_add_extension(self, world, unit, extension_name, extension_init_data)
 
 		return extension
@@ -237,7 +241,7 @@ LocomotionSystem.update_actor_proximity_shapes = function (self)
 			local inventory_extension = ScriptUnit.extension(unit, "inventory_system")
 			local position = first_persion_system:current_position()
 			local direction = Quaternion_forward(first_persion_system:current_rotation())
-			local angle = nil
+			local angle
 			local slot_name = inventory_extension:get_wielded_slot_name()
 
 			if slot_name == "slot_ranged" then
@@ -247,6 +251,7 @@ LocomotionSystem.update_actor_proximity_shapes = function (self)
 				if weapon_unit and ScriptUnit.has_extension(weapon_unit, "spread_system") then
 					local spread_extension = ScriptUnit.extension(weapon_unit, "spread_system")
 					local pitch, yaw = spread_extension:get_current_pitch_and_yaw()
+
 					angle = math.degrees_to_radians(math.max(pitch, yaw))
 				end
 			end
@@ -289,7 +294,7 @@ LocomotionSystem.rpc_set_animation_driven_movement = function (self, channel_id,
 		local source_position = Unit.local_position(unit, 0)
 		local distance_sq = Vector3.distance_squared(source_position, position)
 
-		if MAX_ALLOWABLE_RESYNC_TELEPORT_DISTANCE_SQ < distance_sq then
+		if distance_sq > MAX_ALLOWABLE_RESYNC_TELEPORT_DISTANCE_SQ then
 			local breed = AiUtils.unit_breed(unit)
 			local breed_name = breed and breed.name or "n/a"
 
@@ -481,8 +486,7 @@ LocomotionSystem.rpc_constrain_ai = function (self, channel_id, game_object_id, 
 		return
 	end
 
-	local min = position_array[1]
-	local max = position_array[2]
+	local min, max = position_array[1], position_array[2]
 	local locomotion_extension = ScriptUnit.extension(unit, "locomotion_system")
 
 	locomotion_extension:set_constrained(constrain, min, max)

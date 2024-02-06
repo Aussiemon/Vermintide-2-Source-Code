@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/room/room_handler.lua
+
 require("scripts/settings/profiles/room_profiles")
 
 RoomHandler = class(RoomHandler)
@@ -22,12 +24,13 @@ RoomHandler.setup_level_anchor_points = function (self, level)
 			local position = Unit.world_position(unit, 0)
 			local rotation = Unit.world_rotation(unit, 0)
 			local forward = Quaternion.forward(rotation)
+
 			self._level_anchor_points[room_id] = {
 				position = Vector3Box(position),
-				normal = Vector3Box(forward)
+				normal = Vector3Box(forward),
 			}
 			self._rooms[room_id] = {
-				available = true
+				available = true,
 			}
 		end
 	end
@@ -51,8 +54,9 @@ RoomHandler.create_room = function (self, room_info, room_id)
 
 	local room = {
 		available = false,
-		level = level
+		level = level,
 	}
+
 	self._rooms[room_id] = room
 
 	printf("[RoomHandler]: Created room with room_id: %s at position: %s, %s, %s", tostring(room_id), tostring(position.x), tostring(position.y), tostring(position.z))
@@ -73,7 +77,7 @@ RoomHandler.destroy_room = function (self, room_id)
 	ScriptWorld.destroy_level_from_reference(world, room.level)
 
 	self._rooms[room_id] = {
-		available = true
+		available = true,
 	}
 end
 

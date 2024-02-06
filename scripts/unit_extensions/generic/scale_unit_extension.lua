@@ -1,9 +1,14 @@
+﻿-- chunkname: @scripts/unit_extensions/generic/scale_unit_extension.lua
+
 ScaleUnitExtension = class(ScaleUnitExtension)
 
 ScaleUnitExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	local t = Managers.time:time("game")
+
 	self.start_size = extension_init_data.start_size
+
 	local end_size = extension_init_data.end_size
+
 	self.duration = extension_init_data.duration
 	self.full_scale = end_size - self.start_size
 	self.timer = 0
@@ -31,7 +36,7 @@ ScaleUnitExtension.update = function (self, unit, input, dt, context, t)
 end
 
 ScaleUnitExtension.scaling_complete = function (self)
-	return self.duration <= self.timer
+	return self.timer >= self.duration
 end
 
 ScaleUnitExtension.despawn = function (self)

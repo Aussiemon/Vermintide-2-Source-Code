@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/boot_init.lua
+
 jit.off()
 
 MODE = {}
@@ -17,10 +19,11 @@ if s3d then
 end
 
 GLOBAL_MUSIC_WORLD = true
+
 local dummy_wwise_world = {
 	stop_all = function ()
 		return
-	end
+	end,
 }
 
 if GLOBAL_MUSIC_WORLD then
@@ -43,8 +46,9 @@ IS_NOT_PS4 = not IS_PS4
 LAUNCH_MODE = "game"
 HAS_STEAM = HAS_STEAM ~= false and not not rawget(_G, "Steam")
 DEDICATED_SERVER = Application.is_dedicated_server()
+
 local args = {
-	Application.argv()
+	Application.argv(),
 }
 
 for _, arg in pairs(args) do
@@ -72,7 +76,7 @@ end
 GLOBAL_FRAME_INDEX = GLOBAL_FRAME_INDEX or 0
 script_data = script_data or {
 	settings = Application.settings(),
-	build_identifier = Application.build_identifier()
+	build_identifier = Application.build_identifier(),
 }
 
 if LEVEL_EDITOR_TEST then
@@ -88,7 +92,7 @@ if LEVEL_EDITOR_TEST then
 		"resource_packages/levels/ui_end_screen",
 		"resource_packages/levels/ui_end_screen_victory",
 		"resource_packages/breeds",
-		"resource_packages/breeds_common_resources"
+		"resource_packages/breeds_common_resources",
 	}
 elseif IS_PS4 then
 	GlobalResources = GlobalResources or {
@@ -112,7 +116,7 @@ elseif IS_PS4 then
 		"resource_packages/projection_decals",
 		"resource_packages/ingame_sounds_honduras",
 		"resource_packages/breeds",
-		"resource_packages/breeds_common_resources"
+		"resource_packages/breeds_common_resources",
 	}
 elseif IS_XB1 then
 	GlobalResources = GlobalResources or {
@@ -136,7 +140,7 @@ elseif IS_XB1 then
 		"resource_packages/projection_decals",
 		"resource_packages/ingame_sounds_honduras",
 		"resource_packages/breeds",
-		"resource_packages/breeds_common_resources"
+		"resource_packages/breeds_common_resources",
 	}
 else
 	GlobalResources = GlobalResources or {
@@ -161,7 +165,7 @@ else
 		"resource_packages/projection_decals",
 		"resource_packages/slug_core_materials",
 		"resource_packages/breeds",
-		"resource_packages/breeds_common_resources"
+		"resource_packages/breeds_common_resources",
 	}
 end
 
@@ -181,7 +185,7 @@ if IS_WINDOWS and BUILD ~= "dev" and BUILD ~= "debug" and LAUNCH_MODE ~= "attrac
 		date = os.date,
 		difftime = os.difftime,
 		time = os.time,
-		getenv = os.getenv
+		getenv = os.getenv,
 	}
 	package.loadlib = nil
 	package.loaders[3] = nil

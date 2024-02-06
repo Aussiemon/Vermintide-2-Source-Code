@@ -1,23 +1,26 @@
+﻿-- chunkname: @scripts/unit_extensions/default_player_unit/player_sound_effect_extension.lua
+
 PlayerSoundEffectExtension = class(PlayerSoundEffectExtension)
+
 local unit_get_data = Unit.get_data
 local HIT_COOLDOWN = 1.8
 local KILL_COOLDOWN = 3.5
 local MAX_HITS = 100
 local MAX_KILLS = 10
 local aggro_breed_ranges_sq = {
-	skaven_storm_vermin_champion = 100,
+	beastmen_minotaur = 100,
+	chaos_exalted_champion_norsca = 100,
 	chaos_exalted_champion_warcamp = 100,
 	chaos_exalted_sorcerer = 400,
-	chaos_warrior = 100,
-	skaven_storm_vermin_warlord = 100,
-	skaven_rat_ogre = 100,
-	chaos_exalted_champion_norsca = 100,
-	beastmen_minotaur = 100,
-	chaos_troll = 100,
 	chaos_spawn = 100,
-	skaven_stormfiend_boss = 100,
 	chaos_spawn_exalted_champion_norsca = 100,
-	skaven_stormfiend = 100
+	chaos_troll = 100,
+	chaos_warrior = 100,
+	skaven_rat_ogre = 100,
+	skaven_storm_vermin_champion = 100,
+	skaven_storm_vermin_warlord = 100,
+	skaven_stormfiend = 100,
+	skaven_stormfiend_boss = 100,
 }
 local BROADPHASE_NEAR_RANGE = 7
 local BROADPHASE_MEDIUM_RANGE = 14
@@ -37,7 +40,9 @@ PlayerSoundEffectExtension.init = function (self, extension_init_context, unit, 
 	self._aggro_unit = nil
 	self._aggro_breed = nil
 	self._current_aggro_value = 0
+
 	local ai_system = Managers.state.entity:system("ai_system")
+
 	self._ai_broadphase = ai_system.broadphase
 	self._broadphase_update_timer = 0
 	self._nearby_ai_units = {}
@@ -99,6 +104,7 @@ PlayerSoundEffectExtension._update_aggro_ranges = function (self, dt)
 		WwiseWorld.set_global_parameter(wwise_world, "combat_combo_has_aggro", 0)
 	elseif not HEALTH_ALIVE[self._aggro_unit] then
 		self._aggro_unit = nil
+
 		local wwise_world = self._wwise_world
 
 		WwiseWorld.set_global_parameter(wwise_world, "combat_combo_has_aggro", 0)
@@ -138,6 +144,7 @@ end
 
 PlayerSoundEffectExtension._set_hit_count = function (self, num_hits)
 	self._num_recent_hits = num_hits
+
 	local wwise_world = self._wwise_world
 
 	WwiseWorld.set_global_parameter(wwise_world, "combat_combo_hits", num_hits)
@@ -145,6 +152,7 @@ end
 
 PlayerSoundEffectExtension._set_kill_count = function (self, num_kills)
 	self._num_recent_kills = num_kills
+
 	local wwise_world = self._wwise_world
 
 	WwiseWorld.set_global_parameter(wwise_world, "combat_combo_kills", num_kills)
@@ -172,12 +180,13 @@ PlayerSoundEffectExtension._update_specials_proximity = function (self, dt)
 
 	if self._broadphase_update_timer <= 0 then
 		self._broadphase_update_timer = BROADPHASE_UPDATE_TIMER
+
 		local own_position = POSITION_LOOKUP[self._unit]
 
 		table.clear(NEARBY_AI_UNITS)
 
 		local num_nearby_ai_units = Broadphase.query(self._ai_broadphase, own_position, BROADPHASE_MEDIUM_RANGE, NEARBY_AI_UNITS)
-		local state = nil
+		local state
 
 		for i = 1, num_nearby_ai_units do
 			repeat
@@ -194,6 +203,7 @@ PlayerSoundEffectExtension._update_specials_proximity = function (self, dt)
 				end
 
 				local ai_position = POSITION_LOOKUP[ai_unit]
+
 				state = Vector3.distance_squared(own_position, ai_position) <= BROADPHASE_NEAR_RANGE^2 and "near" or state or "medium"
 			until true
 		end
@@ -206,6 +216,7 @@ end
 
 PlayerSoundEffectExtension.add_hit = function (self)
 	self._recent_hit_cooldown = HIT_COOLDOWN
+
 	local num_hits = math.min(self._num_recent_hits + 1, MAX_HITS)
 
 	self:_set_hit_count(num_hits)
@@ -213,6 +224,7 @@ end
 
 PlayerSoundEffectExtension.add_kill = function (self)
 	self._recent_kill_cooldown = KILL_COOLDOWN
+
 	local num_kills = math.min(self._num_recent_kills + 1, MAX_KILLS)
 
 	self:_set_kill_count(num_kills)
@@ -252,6 +264,7 @@ PlayerSoundEffectExtension.aggro_unit_changed = function (self, enemy_unit, has_
 
 	if has_aggro and self._aggro_unit ~= enemy_unit then
 		self._aggro_unit = enemy_unit
+
 		local unit_position = POSITION_LOOKUP[self._unit]
 		local enemy_position = POSITION_LOOKUP[enemy_unit]
 		local distance_sq = Vector3.distance_squared(unit_position, enemy_position)
@@ -268,6 +281,7 @@ PlayerSoundEffectExtension.aggro_unit_changed = function (self, enemy_unit, has_
 	elseif not has_aggro and self._aggro_unit == enemy_unit then
 		self._aggro_unit = nil
 		self._waiting_aggro_unit = nil
+
 		local wwise_world = self._wwise_world
 
 		WwiseWorld.set_global_parameter(wwise_world, "combat_combo_has_aggro", 0)

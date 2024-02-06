@@ -1,9 +1,12 @@
+﻿-- chunkname: @scripts/unit_extensions/default_player_unit/states/player_character_state_leave_ledge_hanging_falling.lua
+
 PlayerCharacterStateLeaveLedgeHangingFalling = class(PlayerCharacterStateLeaveLedgeHangingFalling, PlayerCharacterState)
 
 PlayerCharacterStateLeaveLedgeHangingFalling.init = function (self, character_state_init_context)
 	PlayerCharacterState.init(self, character_state_init_context, "leave_ledge_hanging_falling")
 
 	local context = character_state_init_context
+
 	self.is_server = Managers.player.is_server
 end
 
@@ -14,13 +17,18 @@ end
 PlayerCharacterStateLeaveLedgeHangingFalling.on_enter = function (self, unit, input, dt, context, t, previous_state, params)
 	local unit = self.unit
 	local ledge_unit = params.ledge_unit
+
 	self.ledge_unit = ledge_unit
+
 	local movement_settings_table = PlayerUnitMovementSettings.get_movement_settings_table(unit)
+
 	self.finish_time = t + movement_settings_table.ledge_hanging.falling_kill_timer
+
 	local node = Unit.node(ledge_unit, "g_gameplay_ledge_finger_box")
 	local ledge_rotation = Unit.world_rotation(ledge_unit, node)
 	local ledge_forward = Quaternion.forward(ledge_rotation)
 	local position = Unit.local_position(unit, 0)
+
 	position = position - ledge_forward * movement_settings_table.ledge_hanging.leaving_falling_forward_push_constant
 
 	self.locomotion_extension:enable_script_driven_movement()
@@ -60,7 +68,7 @@ PlayerCharacterStateLeaveLedgeHangingFalling.update = function (self, unit, inpu
 	if is_catapulted then
 		local params = {
 			sound_event = "Play_hit_by_ratogre",
-			direction = direction
+			direction = direction,
 		}
 
 		csm:change_state("catapulted", params)
@@ -68,7 +76,7 @@ PlayerCharacterStateLeaveLedgeHangingFalling.update = function (self, unit, inpu
 		return
 	end
 
-	if self.finish_time <= t then
+	if t >= self.finish_time then
 		if script_data.ledge_hanging_fall_and_die_turned_off then
 			csm:change_state("falling")
 		else

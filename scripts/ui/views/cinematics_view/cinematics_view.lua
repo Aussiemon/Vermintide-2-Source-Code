@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/cinematics_view/cinematics_view.lua
+
 local definitions = local_require("scripts/ui/views/cinematics_view/cinematics_view_definitions")
 
 require("scripts/ui/views/cinematics_view/cinematics_view_settings")
@@ -5,9 +7,11 @@ require("scripts/ui/views/cutscene_overlay_ui")
 require("scripts/ui/views/skip_input_ui")
 
 local EMPTY_TABLE = {}
+
 CinematicsView = class(CinematicsView)
+
 local VIDEO_PACKAGES = {
-	"resource_packages/menu_cinematics_videos"
+	"resource_packages/menu_cinematics_videos",
 }
 
 CinematicsView.init = function (self, ingame_ui_context)
@@ -18,8 +22,9 @@ CinematicsView.init = function (self, ingame_ui_context)
 	self._ingame_ui_context = ingame_ui_context
 	self._render_settings = {
 		alpha_multiplier = 0,
-		snap_pixel_positions = false
+		snap_pixel_positions = false,
 	}
+
 	local input_manager = self._input_manager
 
 	input_manager:create_input_service("cinematics_view", "IngameMenuKeymaps", "IngameMenuFilters")
@@ -70,11 +75,13 @@ end
 
 CinematicsView._create_ui_elements = function (self)
 	self._ui_scenegraph = UISceneGraph.init_scenegraph(definitions.scenegraph_definition)
+
 	local widgets = {}
 	local widgets_by_name = {}
 
 	for name, widget_definition in pairs(definitions.widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		widgets[#widgets + 1] = widget
 		widgets_by_name[name] = widget
 	end
@@ -100,12 +107,15 @@ CinematicsView._create_ui_elements = function (self)
 				local cinematic_data = cinematics[j]
 				local widget_definition = create_cinematic_entry_func(ui_top_renderer, cinematic_data, j, false, self)
 				local widget = UIWidget.init(widget_definition)
+
 				category_cinematics_widgets[#category_cinematics_widgets + 1] = widget
 			end
 
 			cinematics_widgets[#cinematics_widgets + 1] = category_cinematics_widgets
+
 			local category_index = #cinematics_widgets
 			local category_name = cinematics.category_name
+
 			cinematics_categories_lut[category_name] = category_index
 			cinematics_categories_lut[category_index] = category_name
 		end
@@ -113,17 +123,21 @@ CinematicsView._create_ui_elements = function (self)
 
 	self._cinematics_widgets = cinematics_widgets
 	self._cinematics_categories_lut = cinematics_categories_lut
+
 	local create_video_entry = definitions.create_video_entry
 	local widget_definition = create_video_entry(self)
 	local widget = UIWidget.init(widget_definition)
+
 	self._video_widget = widget
 	self._ui_animations = {}
 	self._animations = {}
 	self._animation_callbacks = {}
 	self._ui_animator = UIAnimator:new(self._ui_scenegraph, definitions.animation_definitions)
+
 	local ui_top_renderer = self._ui_top_renderer
 	local input_service = self:input_service()
 	local generic_input_actions = definitions.generic_input_actions
+
 	self._menu_input_description = MenuInputDescriptionUI:new(nil, ui_top_renderer, input_service, 5, 900, generic_input_actions.default)
 
 	self._menu_input_description:set_input_description(nil)
@@ -133,12 +147,15 @@ CinematicsView._create_scrollbar = function (self)
 	local current_cinematics_widgets = self._cinematics_widgets[self._current_category_index]
 	local num_elements = #current_cinematics_widgets
 	local widget_definition = definitions.create_scrollbar(num_elements)
+
 	self._scrollbar_widget = UIWidget.init(widget_definition)
+
 	local ui_scenegraph = self._ui_scenegraph
 	local list_length = num_elements * definitions.entry_size[2]
 	local video_area = ui_scenegraph.video_area
 	local video_area_length = video_area.size[2]
 	local scroll_area_size = math.max(list_length - video_area_length, 0)
+
 	self._scroll_area_size = scroll_area_size
 end
 
@@ -195,7 +212,7 @@ CinematicsView._create_video_renderer = function (self)
 		"material",
 		"materials/fonts/gw_fonts",
 		"material",
-		"materials/ui/ui_1080p_common"
+		"materials/ui/ui_1080p_common",
 	}
 
 	for i = 1, #CinematicsViewSettings do
@@ -204,12 +221,14 @@ CinematicsView._create_video_renderer = function (self)
 		for j = 1, #category_cinematics_view_settings do
 			local cinematics_settings = category_cinematics_view_settings[j]
 			local video_data = cinematics_settings.video_data
+
 			materials[#materials + 1] = "material"
 			materials[#materials + 1] = video_data.resource
 		end
 	end
 
 	local world = self._ui_top_renderer.world
+
 	self._ui_video_renderer = UIRenderer.create(world, unpack(materials))
 end
 
@@ -237,11 +256,13 @@ end
 CinematicsView._start_animation = function (self, animation_name, callback)
 	self._render_settings = self._render_settings or {
 		alpha_multiplier = 0,
-		snap_pixel_positions = false
+		snap_pixel_positions = false,
 	}
+
 	local params = {
-		render_settings = self._render_settings
+		render_settings = self._render_settings,
 	}
+
 	self._animations[animation_name] = self._ui_animator:start_animation(animation_name, nil, self._ui_scenegraph, params, 1, 0)
 	self._animation_callbacks[animation_name] = callback
 end
@@ -272,8 +293,9 @@ end
 
 CinematicsView._create_skip_widget = function (self)
 	local context = {
-		ui_renderer = self._ui_top_renderer
+		ui_renderer = self._ui_top_renderer,
 	}
+
 	self._skip_input_ui = SkipInputUI:new(self, context)
 end
 
@@ -422,6 +444,7 @@ CinematicsView._update_scrollbar = function (self, dt, t, input_service, gamepad
 			local cursor_pos = cursor_y
 			local diff = self._cursor_start_pos - cursor_pos
 			local diff_percentage = diff / (area_size - scroller_size)
+
 			anchor_point_local_position[2] = math.clamp(self._scrollbar_start_pos + diff_percentage * self._scroll_area_size, 0, self._scroll_area_size)
 		else
 			self._cursor_start_pos = nil
@@ -445,6 +468,7 @@ CinematicsView._update_scrollbar = function (self, dt, t, input_service, gamepad
 		local index = 2
 		local start_value = anchor_point_local_position[2]
 		local end_value = math.clamp(anchor_point_local_position[2] - scroll[2] * speed, 0, self._scroll_area_size)
+
 		self._ui_animations.scroll = UIAnimation.init(UIAnimation.function_by_time, data, index, start_value, end_value, 0.5, math.easeOutCubic)
 	else
 		local current_cinematics_widgets = self._cinematics_widgets[self._current_category_index]
@@ -463,6 +487,7 @@ CinematicsView._update_scrollbar = function (self, dt, t, input_service, gamepad
 			local index = 2
 			local start_value = anchor_point_local_position[2]
 			local end_value = math.clamp(step_size * (gamepad_selection_index - 1), 0, self._scroll_area_size)
+
 			self._ui_animations.scroll = UIAnimation.init(UIAnimation.function_by_time, data, index, start_value, end_value, 0.5, math.easeOutCubic)
 			self._current_gamepad_selection_index = gamepad_selection_index
 
@@ -472,6 +497,7 @@ CinematicsView._update_scrollbar = function (self, dt, t, input_service, gamepad
 
 	local scrollbar_size = ui_scenegraph.scrollbar.size[2]
 	local scroll_progress = anchor_point_local_position[2] / self._scroll_area_size
+
 	scroller_style.offset[2] = scroll_progress * (scrollbar_size - scroller_style.area_size[2]) * -1
 end
 
@@ -599,6 +625,7 @@ CinematicsView.activate_video = function (self, video_content, index)
 
 	local video_widget = self._video_widget
 	local video_widget_content = video_widget.content
+
 	video_widget_content.video_content = video_content
 	self._current_video_content = video_content
 	self._current_gamepad_selection_index = index
@@ -611,8 +638,9 @@ CinematicsView._setup_subtitles = function (self, subtitle_template_settings)
 
 	if subtitle_template_settings then
 		local context = {
-			ui_renderer = self._ui_top_renderer
+			ui_renderer = self._ui_top_renderer,
 		}
+
 		self._cutscene_overlay_ui = CutsceneOverlayUI:new(self, context)
 
 		self._cutscene_overlay_ui:start(subtitle_template_settings)

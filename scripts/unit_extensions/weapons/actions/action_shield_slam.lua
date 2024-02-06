@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/unit_extensions/weapons/actions/action_shield_slam.lua
+
 ActionShieldSlam = class(ActionShieldSlam, ActionBase)
+
 local POSITION_LOOKUP = POSITION_LOOKUP
 
 ActionShieldSlam.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
@@ -21,33 +24,43 @@ ActionShieldSlam.client_owner_start_action = function (self, new_action, t, chai
 
 	self.current_action = new_action
 	self.target_breed_unit = nil
+
 	local owner_unit = self.owner_unit
 	local first_person_unit = self.first_person_unit
 	local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
 	local career_extension = ScriptUnit.extension(owner_unit, "career_system")
+
 	self.owner_career_extension = career_extension
 	self.owner_buff_extension = buff_extension
+
 	local _, melee_boost_curve_multiplier = career_extension:has_melee_boost()
 	local is_critical_strike = ActionUtils.is_critical_strike(owner_unit, new_action, t)
+
 	self.melee_boost_curve_multiplier = melee_boost_curve_multiplier
 	self.power_level = power_level
 
 	if not Managers.player:owner(owner_unit).bot_player then
 		Managers.state.controller_features:add_effect("rumble", {
-			rumble_effect = "light_swing"
+			rumble_effect = "light_swing",
 		})
 	end
 
 	local action_hand = action_init_data and action_init_data.action_hand
 	local damage_profile_name = action_hand and new_action["damage_profile_" .. action_hand] or new_action.damage_profile or "default"
+
 	self.damage_profile_id = NetworkLookup.damage_profiles[damage_profile_name]
 	self.damage_profile = DamageProfileTemplates[damage_profile_name]
+
 	local damage_profile_name_aoe = action_hand and new_action["damage_profile_aoe_" .. action_hand] or new_action.damage_profile_aoe or "default"
+
 	self.damage_profile_aoe_id = NetworkLookup.damage_profiles[damage_profile_name_aoe]
 	self.damage_profile_aoe = DamageProfileTemplates[damage_profile_name_aoe]
+
 	local damage_profile_target_name = action_hand and new_action["damage_profile_target" .. action_hand] or new_action.damage_profile_target or "default"
+
 	self.damage_profile_target_id = NetworkLookup.damage_profiles[damage_profile_target_name]
 	self.damage_profile_target = DamageProfileTemplates[damage_profile_target_name]
+
 	local ammo_extension = self.ammo_extension
 
 	if ammo_extension and ammo_extension:is_reloading() then
@@ -121,7 +134,9 @@ ActionShieldSlam.client_owner_start_action = function (self, new_action, t, chai
 	end
 
 	self.state = "waiting_to_hit"
+
 	local anim_time_scale = ActionUtils.get_action_time_scale(owner_unit, new_action)
+
 	self.time_to_hit = t + (new_action.hit_time or 0) / anim_time_scale
 
 	table.clear(self.hit_units)
@@ -145,7 +160,7 @@ ActionShieldSlam.client_owner_post_update = function (self, dt, t, world, can_da
 	local current_action = self.current_action
 	local owner_unit = self.owner_unit
 
-	if self.state == "waiting_to_hit" and self.time_to_hit <= t then
+	if self.state == "waiting_to_hit" and t >= self.time_to_hit then
 		self.state = "hitting"
 	end
 
@@ -154,7 +169,7 @@ ActionShieldSlam.client_owner_post_update = function (self, dt, t, world, can_da
 
 		if not Managers.player:owner(self.owner_unit).bot_player then
 			Managers.state.controller_features:add_effect("rumble", {
-				rumble_effect = "hit_character_light"
+				rumble_effect = "hit_character_light",
 			})
 		end
 	end
@@ -206,6 +221,7 @@ ActionShieldSlam._hit = function (self, world, can_damage, owner_unit, current_a
 			end
 
 			hit_units[hit_unit] = true
+
 			local target_is_friendly = side_manager:is_ally(owner_unit, hit_unit)
 
 			if target_is_friendly then
@@ -220,24 +236,30 @@ ActionShieldSlam._hit = function (self, world, can_damage, owner_unit, current_a
 					break
 				end
 
-				local node = Actor.node(hit_actor)
-				local hit_zone = breed and breed.hit_zones_lookup[node]
-				local target_hit_zone_name = hit_zone and hit_zone.name or "torso"
-				local target_hit_position = Unit.has_node(hit_unit, "j_spine") and Unit.world_position(hit_unit, Unit.node(hit_unit, "j_spine"))
-				local target_world_position = POSITION_LOOKUP[hit_unit] or Unit.world_position(hit_unit, 0)
-				local hit_position = target_hit_position or target_world_position
-				self.target_hit_zones_names[hit_unit] = target_hit_zone_name
-				self.target_hit_unit_positions[hit_unit] = hit_position
-				local attack_direction = Vector3.normalize(hit_position - self_pos)
-				local hit_unit_id = network_manager:unit_game_object_id(hit_unit)
-				local hit_zone_id = NetworkLookup.hit_zones[target_hit_zone_name]
+				do
+					local node = Actor.node(hit_actor)
+					local hit_zone = breed and breed.hit_zones_lookup[node]
+					local target_hit_zone_name = hit_zone and hit_zone.name or "torso"
+					local target_hit_position = Unit.has_node(hit_unit, "j_spine") and Unit.world_position(hit_unit, Unit.node(hit_unit, "j_spine"))
+					local target_world_position = POSITION_LOOKUP[hit_unit] or Unit.world_position(hit_unit, 0)
+					local hit_position = target_hit_position or target_world_position
 
-				if self:_is_infront_player(self_pos, unit_forward, hit_position) then
-					local distance_to_inner_position_sq = math.min(Vector3.distance_squared(hit_position, inner_attack_pos), Vector3.distance_squared(hit_position, inner_attack_pos_near))
+					self.target_hit_zones_names[hit_unit] = target_hit_zone_name
+					self.target_hit_unit_positions[hit_unit] = hit_position
 
-					if distance_to_inner_position_sq <= inner_radius_sq then
-						inner_hit_units[hit_unit] = true
-					else
+					local attack_direction = Vector3.normalize(hit_position - self_pos)
+					local hit_unit_id = network_manager:unit_game_object_id(hit_unit)
+					local hit_zone_id = NetworkLookup.hit_zones[target_hit_zone_name]
+
+					if self:_is_infront_player(self_pos, unit_forward, hit_position) then
+						local distance_to_inner_position_sq = math.min(Vector3.distance_squared(hit_position, inner_attack_pos), Vector3.distance_squared(hit_position, inner_attack_pos_near))
+
+						if distance_to_inner_position_sq <= inner_radius_sq then
+							inner_hit_units[hit_unit] = true
+
+							break
+						end
+
 						local shield_blocked = AiUtils.attack_is_shield_blocked(hit_unit, owner_unit)
 						local damage_source = self.item_name
 						local damage_source_id = NetworkLookup.damage_sources[damage_source]
@@ -247,6 +269,7 @@ ActionShieldSlam._hit = function (self, world, can_damage, owner_unit, current_a
 						local damage_profile = self.damage_profile_aoe
 						local target_index = 1
 						local is_critical_strike = self._is_critical_strike
+
 						self._overridable_settings = current_action
 
 						ActionSweep._play_character_impact(self, is_server, owner_unit, hit_unit, breed, hit_position, target_hit_zone_name, current_action, damage_profile, target_index, power_level, attack_direction, shield_blocked, self.melee_boost_curve_multiplier, is_critical_strike)
@@ -256,19 +279,27 @@ ActionShieldSlam._hit = function (self, world, can_damage, owner_unit, current_a
 						weapon_system:send_rpc_attack_hit(damage_source_id, attacker_unit_id, hit_unit_id, hit_zone_id, hit_position, attack_direction, self.damage_profile_aoe_id, "power_level", power_level, "hit_target_index", target_index, "blocking", shield_blocked, "shield_break_procced", false, "boost_curve_multiplier", self.melee_boost_curve_multiplier, "is_critical_strike", self._is_critical_strike, "can_damage", true, "can_stagger", true, "first_hit", self._num_targets_hit == 1)
 					end
 				end
-			elseif not hit_self and ScriptUnit.has_extension(hit_unit, "health_system") then
+
+				break
+			end
+
+			if not hit_self and ScriptUnit.has_extension(hit_unit, "health_system") then
 				local hit_unit_id, is_level_unit = Managers.state.network:game_object_or_level_id(hit_unit)
 
 				if is_level_unit then
-					local no_player_damage = unit_get_data(hit_unit, "no_damage_from_players")
+					do
+						local no_player_damage = unit_get_data(hit_unit, "no_damage_from_players")
 
-					if not no_player_damage then
-						local target_hit_position = Unit.world_position(hit_unit, 0)
-						local distance_to_inner_position_sq = math.min(Vector3.distance_squared(target_hit_position, inner_attack_pos), Vector3.distance_squared(target_hit_position, inner_attack_pos_near))
+						if not no_player_damage then
+							local target_hit_position = Unit.world_position(hit_unit, 0)
+							local distance_to_inner_position_sq = math.min(Vector3.distance_squared(target_hit_position, inner_attack_pos), Vector3.distance_squared(target_hit_position, inner_attack_pos_near))
 
-						if distance_to_inner_position_sq <= inner_radius_sq then
-							inner_hit_units[hit_unit] = true
-						else
+							if distance_to_inner_position_sq <= inner_radius_sq then
+								inner_hit_units[hit_unit] = true
+
+								break
+							end
+
 							local hit_zone_name = "full"
 							local target_index = 1
 							local damage_profile = self.damage_profile_aoe
@@ -280,23 +311,25 @@ ActionShieldSlam._hit = function (self, world, can_damage, owner_unit, current_a
 							DamageUtils.damage_level_unit(hit_unit, owner_unit, hit_zone_name, power_level, self.melee_boost_curve_multiplier, is_critical_strike, damage_profile, target_index, attack_direction, damage_source)
 						end
 					end
-				else
-					local hit_position = POSITION_LOOKUP[hit_unit] or Unit.world_position(hit_unit, 0)
-					local distance_to_inner_position_sq = math.min(Vector3.distance_squared(hit_position, inner_attack_pos), Vector3.distance_squared(hit_position, inner_attack_pos_near))
 
-					if distance_to_inner_position_sq <= inner_radius_sq then
-						inner_hit_units[hit_unit] = true
-					end
-
-					local damage_source = self.item_name
-					local damage_source_id = NetworkLookup.damage_sources[damage_source]
-					local weapon_system = self.weapon_system
-					local power_level = self.power_level
-					local hit_zone_id = NetworkLookup.hit_zones.full
-					local attack_direction = Vector3.normalize(hit_position - self_pos)
-
-					weapon_system:send_rpc_attack_hit(damage_source_id, attacker_unit_id, hit_unit_id, hit_zone_id, hit_position, attack_direction, self.damage_profile_aoe_id, "power_level", power_level, "hit_target_index", nil, "boost_curve_multiplier", self.melee_boost_curve_multiplier, "is_critical_strike", self._is_critical_strike, "can_damage", true, "can_stagger", true)
+					break
 				end
+
+				local hit_position = POSITION_LOOKUP[hit_unit] or Unit.world_position(hit_unit, 0)
+				local distance_to_inner_position_sq = math.min(Vector3.distance_squared(hit_position, inner_attack_pos), Vector3.distance_squared(hit_position, inner_attack_pos_near))
+
+				if distance_to_inner_position_sq <= inner_radius_sq then
+					inner_hit_units[hit_unit] = true
+				end
+
+				local damage_source = self.item_name
+				local damage_source_id = NetworkLookup.damage_sources[damage_source]
+				local weapon_system = self.weapon_system
+				local power_level = self.power_level
+				local hit_zone_id = NetworkLookup.hit_zones.full
+				local attack_direction = Vector3.normalize(hit_position - self_pos)
+
+				weapon_system:send_rpc_attack_hit(damage_source_id, attacker_unit_id, hit_unit_id, hit_zone_id, hit_position, attack_direction, self.damage_profile_aoe_id, "power_level", power_level, "hit_target_index", nil, "boost_curve_multiplier", self.melee_boost_curve_multiplier, "is_critical_strike", self._is_critical_strike, "can_damage", true, "can_stagger", true)
 			end
 		until true
 	end
@@ -343,6 +376,7 @@ ActionShieldSlam._hit = function (self, world, can_damage, owner_unit, current_a
 
 			local damage_source_id = NetworkLookup.damage_sources[self.item_name]
 			local weapon_system = self.weapon_system
+
 			self._num_targets_hit = self._num_targets_hit + 1
 
 			weapon_system:send_rpc_attack_hit(damage_source_id, attacker_unit_id, hit_unit_id, hit_zone_id, hit_position, attack_direction, damage_profile_id, "power_level", power_level, "hit_target_index", target_index, "blocking", shield_blocked, "shield_break_procced", false, "boost_curve_multiplier", self.melee_boost_curve_multiplier, "is_critical_strike", is_critical_strike, "can_damage", true, "can_stagger", true, "first_hit", self._num_targets_hit == 1)
@@ -355,7 +389,7 @@ ActionShieldSlam._hit = function (self, world, can_damage, owner_unit, current_a
 
 			if not Managers.player:owner(self.owner_unit).bot_player then
 				Managers.state.controller_features:add_effect("rumble", {
-					rumble_effect = "handgun_fire"
+					rumble_effect = "handgun_fire",
 				})
 			end
 
@@ -367,11 +401,13 @@ ActionShieldSlam._hit = function (self, world, can_damage, owner_unit, current_a
 
 				if not no_player_damage then
 					hit_zone_name = "full"
+
 					local target_index = 1
 					local damage_profile = self.damage_profile
 					local damage_source = self.item_name
 					local power_level = self.power_level
 					local is_critical_strike = self._is_critical_strike
+
 					target_hit_position = Unit.world_position(hit_unit, 0)
 					attack_direction = Vector3.normalize(target_hit_position - self_pos)
 
@@ -382,6 +418,7 @@ ActionShieldSlam._hit = function (self, world, can_damage, owner_unit, current_a
 				local damage_source_id = NetworkLookup.damage_sources[damage_source]
 				local weapon_system = self.weapon_system
 				local power_level = self.power_level
+
 				hit_zone_id = NetworkLookup.hit_zones.full
 				target_hit_position = Unit.world_position(hit_unit, 0)
 				attack_direction = Vector3.normalize(target_hit_position - self_pos)
@@ -402,6 +439,7 @@ ActionShieldSlam.finish = function (self, reason)
 	end
 
 	self.hit_target_breed_unit = false
+
 	local owner_unit = self.owner_unit
 	local current_action = self.current_action
 

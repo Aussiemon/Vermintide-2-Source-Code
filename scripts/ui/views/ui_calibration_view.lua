@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/ui_calibration_view.lua
+
 local RETICULE_SIZE = 48
 local RETICULE_THICKNESS = 4
 local scenegraph_definition = {
@@ -6,67 +8,67 @@ local scenegraph_definition = {
 		position = {
 			0,
 			0,
-			900
+			900,
 		},
 		size = {
 			1920,
-			1080
-		}
+			1080,
+		},
 	},
 	screen = {
 		scale = "fit",
 		position = {
 			0,
 			0,
-			900
+			900,
 		},
 		size = {
 			1920,
-			1080
-		}
+			1080,
+		},
 	},
 	top_left_reticule = {
-		vertical_alignment = "top",
-		parent = "root",
 		horizontal_alignment = "left",
+		parent = "root",
+		vertical_alignment = "top",
 		position = {
 			-RETICULE_SIZE / 2,
 			RETICULE_SIZE / 2,
-			1
+			1,
 		},
 		size = {
 			RETICULE_SIZE,
-			RETICULE_SIZE
-		}
+			RETICULE_SIZE,
+		},
 	},
 	bottom_right_reticule = {
-		vertical_alignment = "bottom",
-		parent = "root",
 		horizontal_alignment = "right",
+		parent = "root",
+		vertical_alignment = "bottom",
 		position = {
 			RETICULE_SIZE / 2,
 			-RETICULE_SIZE / 2,
-			1
+			1,
 		},
 		size = {
 			RETICULE_SIZE,
-			RETICULE_SIZE
-		}
+			RETICULE_SIZE,
+		},
 	},
 	reset_button = {
-		vertical_alignment = "center",
-		parent = "root",
 		horizontal_alignment = "center",
+		parent = "root",
+		vertical_alignment = "center",
 		position = {
 			0,
 			0,
-			1
+			1,
 		},
 		size = {
 			220,
-			62
-		}
-	}
+			62,
+		},
+	},
 }
 local widget_definitions = {
 	top_left_reticule = {
@@ -74,17 +76,17 @@ local widget_definitions = {
 		element = {
 			passes = {
 				{
-					pass_type = "hotspot"
+					pass_type = "hotspot",
 				},
 				{
 					pass_type = "rect",
-					style_id = "horizontal"
+					style_id = "horizontal",
 				},
 				{
 					pass_type = "rect",
-					style_id = "vertical"
-				}
-			}
+					style_id = "vertical",
+				},
+			},
 		},
 		content = {},
 		style = {
@@ -93,51 +95,51 @@ local widget_definitions = {
 					255,
 					0,
 					255,
-					0
+					0,
 				},
 				size = {
 					RETICULE_SIZE,
-					RETICULE_THICKNESS
+					RETICULE_THICKNESS,
 				},
 				offset = {
 					0,
-					RETICULE_SIZE / 2 - RETICULE_THICKNESS / 2
-				}
+					RETICULE_SIZE / 2 - RETICULE_THICKNESS / 2,
+				},
 			},
 			vertical = {
 				color = {
 					255,
 					0,
 					255,
-					0
+					0,
 				},
 				size = {
 					RETICULE_THICKNESS,
-					RETICULE_SIZE
+					RETICULE_SIZE,
 				},
 				offset = {
 					RETICULE_SIZE / 2 - RETICULE_THICKNESS / 2,
-					0
-				}
-			}
-		}
+					0,
+				},
+			},
+		},
 	},
 	bottom_right_reticule = {
 		scenegraph_id = "bottom_right_reticule",
 		element = {
 			passes = {
 				{
-					pass_type = "hotspot"
+					pass_type = "hotspot",
 				},
 				{
 					pass_type = "rect",
-					style_id = "horizontal"
+					style_id = "horizontal",
 				},
 				{
 					pass_type = "rect",
-					style_id = "vertical"
-				}
-			}
+					style_id = "vertical",
+				},
+			},
 		},
 		content = {},
 		style = {
@@ -146,43 +148,43 @@ local widget_definitions = {
 					255,
 					255,
 					0,
-					0
+					0,
 				},
 				size = {
 					RETICULE_SIZE,
-					RETICULE_THICKNESS
+					RETICULE_THICKNESS,
 				},
 				offset = {
 					0,
-					RETICULE_SIZE / 2 - RETICULE_THICKNESS / 2
-				}
+					RETICULE_SIZE / 2 - RETICULE_THICKNESS / 2,
+				},
 			},
 			vertical = {
 				color = {
 					255,
 					255,
 					0,
-					0
+					0,
 				},
 				size = {
 					RETICULE_THICKNESS,
-					RETICULE_SIZE
+					RETICULE_SIZE,
 				},
 				offset = {
 					RETICULE_SIZE / 2 - RETICULE_THICKNESS / 2,
-					0
-				}
-			}
-		}
+					0,
+				},
+			},
+		},
 	},
 	background = {
 		scenegraph_id = "screen",
 		element = {
 			passes = {
 				{
-					pass_type = "rect"
-				}
-			}
+					pass_type = "rect",
+				},
+			},
 		},
 		content = {},
 		style = {
@@ -190,13 +192,13 @@ local widget_definitions = {
 				255,
 				0,
 				0,
-				0
-			}
-		}
-	}
+				0,
+			},
+		},
+	},
 }
 local button_navigation = {
-	"reset"
+	"reset",
 }
 local button_definitions = {
 	{
@@ -204,27 +206,28 @@ local button_definitions = {
 		element = UIElements.Button3States,
 		content = {
 			texture_click_id = "small_button_selected",
-			texture_id = "small_button_normal",
 			texture_hover_id = "small_button_hover",
+			texture_id = "small_button_normal",
 			text_field = Localize("menu_settings_reset_to_default"),
-			button_hotspot = {}
+			button_hotspot = {},
 		},
 		style = {
 			text = {
-				vertical_alignment = "center",
-				font_type = "hell_shark",
 				font_size = 24,
+				font_type = "hell_shark",
 				horizontal_alignment = "center",
+				vertical_alignment = "center",
 				text_color = Colors.get_color_table_with_alpha("cheeseburger", 255),
 				offset = {
 					0,
 					0,
-					2
-				}
-			}
-		}
-	}
+					2,
+				},
+			},
+		},
+	},
 }
+
 UICalibrationView = class(UICalibrationView)
 
 UICalibrationView.init = function (self)
@@ -232,6 +235,7 @@ UICalibrationView.init = function (self)
 	self.background = UIWidget.init(widget_definitions.background)
 	self.top_left_reticule = UIWidget.init(widget_definitions.top_left_reticule)
 	self.bottom_right_reticule = UIWidget.init(widget_definitions.bottom_right_reticule)
+
 	local buttons = {}
 
 	for i = 1, #button_definitions do
@@ -267,9 +271,10 @@ UICalibrationView.update = function (self, ui_renderer, input_service, dt)
 
 	if top_left_reticule_content.on_pressed then
 		local cursor = input_service:get("cursor")
+
 		self.cursor_start_pos = {
 			cursor.x,
-			cursor.y
+			cursor.y,
 		}
 		self.start_root = table.clone(UISettings.root_scale)
 		self.modifying_retucile = "top_left"
@@ -279,9 +284,10 @@ UICalibrationView.update = function (self, ui_renderer, input_service, dt)
 
 	if bottom_right_reticule_content.on_pressed then
 		local cursor = input_service:get("cursor")
+
 		self.cursor_start_pos = {
 			cursor.x,
-			cursor.y
+			cursor.y,
 		}
 		self.start_root = table.clone(UISettings.root_scale)
 		self.modifying_retucile = "bottom_right"
@@ -301,8 +307,7 @@ UICalibrationView.update = function (self, ui_renderer, input_service, dt)
 		local cursor = input_service:get("cursor")
 		local start_x = cursor_start[1]
 		local cursor_x = cursor[1]
-		local w = RESOLUTION_LOOKUP.res_w
-		local h = RESOLUTION_LOOKUP.res_h
+		local w, h = RESOLUTION_LOOKUP.res_w, RESOLUTION_LOOKUP.res_h
 		local diff_x = cursor_x - start_x
 		local norm_x = diff_x / 1920 * 2
 		local start_y = cursor_start[2]
@@ -317,6 +322,7 @@ UICalibrationView.update = function (self, ui_renderer, input_service, dt)
 
 		local new_scale_x = self.start_root[1] - norm_x
 		local new_scale_y = self.start_root[2] + norm_y
+
 		UISettings.root_scale[1] = self.start_root[1] - norm_x
 		UISettings.root_scale[2] = self.start_root[2] + norm_y
 	end
@@ -344,6 +350,7 @@ UICalibrationView.evaluate_new_root_scale = function (self, root_scale)
 
 		if w < new_root_screen_x then
 			local diff = (new_root_screen_x - w) / w
+
 			scale_x = scale_x - diff
 		end
 	elseif scale_x < 0.2 then

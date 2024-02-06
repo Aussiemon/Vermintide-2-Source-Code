@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/unit_extensions/weapons/actions/action_bullet_spray.lua
+
 ActionBulletSpray = class(ActionBulletSpray, ActionBase)
+
 local POSITION_TWEAK = -1
 local SPRAY_RANGE = math.abs(POSITION_TWEAK) + 5
 local SPRAY_RADIUS = 3.5
@@ -7,7 +10,7 @@ local MAX_TARGETS = 10
 local NODES = {
 	"j_leftshoulder",
 	"j_rightshoulder",
-	"j_spine1"
+	"j_spine1",
 }
 local NUM_NODES = #NODES
 
@@ -28,6 +31,7 @@ ActionBulletSpray.client_owner_start_action = function (self, new_action, t, cha
 
 	local owner_unit = self.owner_unit
 	local is_critical_strike = ActionUtils.is_critical_strike(owner_unit, new_action, t)
+
 	self.power_level = power_level
 	self.current_action = new_action
 	self._target_index = 1
@@ -40,7 +44,9 @@ ActionBulletSpray.client_owner_start_action = function (self, new_action, t, cha
 	end
 
 	local cone_hypotenuse = math.sqrt(SPRAY_RANGE * SPRAY_RANGE + SPRAY_RADIUS * SPRAY_RADIUS)
+
 	self.CONE_COS_ALPHA = SPRAY_RANGE / cone_hypotenuse
+
 	local overcharge_type = new_action.overcharge_type
 
 	if overcharge_type then
@@ -63,8 +69,9 @@ end
 ActionBulletSpray.client_owner_post_update = function (self, dt, t, world, can_damage)
 	local current_action = self.current_action
 
-	if self.use_ammo_time and not self.used_ammo and self.use_ammo_time <= t then
+	if self.use_ammo_time and not self.used_ammo and t >= self.use_ammo_time then
 		self.used_ammo = true
+
 		local ammo_extension = self.ammo_extension
 
 		if ammo_extension then
@@ -77,7 +84,7 @@ ActionBulletSpray.client_owner_post_update = function (self, dt, t, world, can_d
 
 		if not Managers.player:owner(self.owner_unit).bot_player then
 			Managers.state.controller_features:add_effect("rumble", {
-				rumble_effect = "handgun_fire"
+				rumble_effect = "handgun_fire",
 			})
 		end
 
@@ -122,7 +129,7 @@ ActionBulletSpray.client_owner_post_update = function (self, dt, t, world, can_d
 			local target_position = Unit.world_position(current_target, Unit.node(current_target, node))
 			local direction = Vector3.normalize(target_position - player_position)
 			local result = self:raycast_to_target(world, player_position, direction, current_target)
-			local target = nil
+			local target
 
 			if current_action.area_damage then
 				target = current_target
@@ -259,7 +266,7 @@ ActionBulletSpray._select_targets = function (self, world, show_outline)
 					end
 				end
 
-				if MAX_TARGETS <= num_hit then
+				if num_hit >= MAX_TARGETS then
 					break
 				end
 			end
@@ -274,6 +281,7 @@ ActionBulletSpray._check_within_cone = function (self, player_position, player_d
 
 	if player then
 		local cone_hypotenuse = math.sqrt(SPRAY_RANGE * SPRAY_RANGE + PLAYER_SPRAY_RADIUS * PLAYER_SPRAY_RADIUS)
+
 		CONE_COS_ALPHA = SPRAY_RANGE / cone_hypotenuse
 	end
 

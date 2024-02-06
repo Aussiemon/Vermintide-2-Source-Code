@@ -1,13 +1,16 @@
+﻿-- chunkname: @scripts/unit_extensions/generic/linker_transportation_extension.lua
+
 require("scripts/helpers/navigation_utils")
 
 LinkerTransportationExtension = class(LinkerTransportationExtension)
+
 local UPDATE_INTERVAL_OOBB_NO_HUMANS_INSIDE = 1
 local UPDATE_INTERVAL_OOBB_HUMANS_INSIDE = 0.05
 local STORY_STATES = {
 	"stopped_beginning",
 	"moving_forward",
 	"moving_backward",
-	"stopped_end"
+	"stopped_end",
 }
 
 for i, state in ipairs(STORY_STATES) do
@@ -20,17 +23,21 @@ LinkerTransportationExtension.init = function (self, extension_init_context, uni
 	self.unit = unit
 	self.world = extension_init_context.world
 	self.is_server = Managers.player.is_server
+
 	local story_name = Unit.get_data(unit, "transportation_data", "story_name")
 	local story_teller = World.storyteller(self.world)
 	local level = LevelHelper:current_level(self.world)
+
 	self._bot_slots_offset = {
 		0,
 		1,
-		-1
+		-1,
 	}
 	self._bot_slots = {}
 	self.story_teller = story_teller
+
 	local story_id = story_teller:play_level_story(level, story_name)
+
 	self.story_id = story_id
 
 	story_teller:set_speed(story_id, 0)
@@ -45,28 +52,30 @@ LinkerTransportationExtension.init = function (self, extension_init_context, uni
 	self.transported_units = {}
 	self.transported_ai_units = {}
 	self.has_nav_obstacles = false
+
 	local bounding_box_mesh_name = Unit.get_data(unit, "transportation_data", "bounding_box_mesh")
 
 	if bounding_box_mesh_name ~= "" then
 		local mesh = Unit.mesh(unit, bounding_box_mesh_name)
 		local _, size = Mesh.box(mesh)
 		local max_extent = math.max(size.x, size.y, size.z)
+
 		self.oobb_mesh_max_extent = max_extent
 		self.oobb_mesh = mesh
 		self.oobb_next_update = 0
 		self.units_inside_oobb = {
 			human = {
 				count = 0,
-				units = {}
+				units = {},
 			},
 			bot = {
 				count = 0,
-				units = {}
+				units = {},
 			},
 			ai = {
 				count = 0,
-				units = {}
-			}
+				units = {},
+			},
 		}
 	end
 
@@ -132,7 +141,7 @@ LinkerTransportationExtension.hot_join_sync = function (self, peer)
 	local channel_id = PEER_ID_TO_CHANNEL[peer]
 
 	if self._transporting then
-		local interactor_unit = nil
+		local interactor_unit
 
 		for i, unit in ipairs(self.transported_units) do
 			if Unit.alive(unit) then
@@ -178,6 +187,7 @@ LinkerTransportationExtension._link_all_transported_units = function (self, inte
 
 	local num_transported_units = 1
 	local transported_units = self.transported_units
+
 	transported_units[1] = interactor_unit
 
 	self:_link_transported_unit(interactor_unit)
@@ -294,8 +304,10 @@ LinkerTransportationExtension.update_units_inside_oobb = function (self)
 	end
 
 	local location = FrameTable.alloc_table()
+
 	location.human = {}
 	location.ai = {}
+
 	local players = Managers.player:players()
 
 	for _, player in pairs(players) do
@@ -305,6 +317,7 @@ LinkerTransportationExtension.update_units_inside_oobb = function (self)
 			if HEALTH_ALIVE[u] then
 				local u_pos = Unit.world_position(u, 0)
 				local is_inside = math.point_is_inside_oobb(u_pos, oobb_pose, oobb_size)
+
 				location.human[u] = is_inside
 			end
 		end
@@ -322,6 +335,7 @@ LinkerTransportationExtension.update_units_inside_oobb = function (self)
 		if HEALTH_ALIVE[u] then
 			local u_pos = Unit.world_position(u, 0)
 			local is_inside = math.point_is_inside_oobb(u_pos, oobb_pose, oobb_size)
+
 			location.ai[u] = is_inside
 		end
 	end
@@ -423,12 +437,14 @@ LinkerTransportationExtension.update = function (self, unit, input, dt, context,
 	story_teller:set_time(story_id, new_time)
 
 	self.current_story_time = new_time
+
 	local units_inside_oobb = self.units_inside_oobb
 
-	if units_inside_oobb and self.oobb_next_update <= t then
+	if units_inside_oobb and t >= self.oobb_next_update then
 		self:update_units_inside_oobb()
 
 		local update_interval = units_inside_oobb.human.count > 0 and UPDATE_INTERVAL_OOBB_HUMANS_INSIDE or UPDATE_INTERVAL_OOBB_NO_HUMANS_INSIDE
+
 		self.oobb_next_update = t + update_interval
 
 		if self._disable_spawning and units_inside_oobb.human.count == 0 and not self._transporting then
@@ -576,6 +592,7 @@ LinkerTransportationExtension._unlink_all_transported_units = function (self)
 
 	for i = 1, num_transported_units do
 		local transported_unit = transported_units[i]
+
 		transported_units[i] = nil
 
 		if unit_alive(transported_unit) then
@@ -621,10 +638,11 @@ end
 
 LinkerTransportationExtension._get_position_from_index = function (self, index)
 	local unit = self.unit
-	local position = nil
+	local position
 
 	if Unit.has_node(unit, "elevator_slot_0" .. index) then
 		local node = Unit.node(unit, "elevator_slot_0" .. index)
+
 		position = Unit.world_position(unit, node)
 	end
 
@@ -647,7 +665,9 @@ LinkerTransportationExtension._link_transported_unit = function (self, unit_to_l
 
 	if teleport_on_enter or self.teleport_on_enter then
 		local index = #self._bot_slots + 1
+
 		self._bot_slots[index] = unit_to_link
+
 		local position = self:_get_position_from_index(index)
 
 		if not player.remote then
@@ -672,7 +692,7 @@ LinkerTransportationExtension.get_ai_slot = function (self, slot_id)
 	local unit = self.unit
 
 	if not self._ai_slot_offsets then
-		local min, max = nil
+		local min, max
 
 		for i = 1, 3 do
 			if Unit.has_node(unit, "elevator_slot_0" .. i) then
@@ -692,15 +712,18 @@ LinkerTransportationExtension.get_ai_slot = function (self, slot_id)
 		local box_shrink = 0.7
 		local center = Vector3.lerp(min, max, 0.5)
 		local from_center = Vector3.normalize(max - center) * box_shrink
+
 		min = min + from_center
 		max = max - from_center
+
 		local size = max - min
 		local slots_x = math.ceil(size.x / AI_SLOT_SIZE)
 		local slots_y = math.ceil(size.y / AI_SLOT_SIZE)
+
 		self._ai_slot_offsets = {
 			offset_start = Vector3Box(min),
 			num_slots_x = slots_x,
-			num_slots_y = slots_y
+			num_slots_y = slots_y,
 		}
 	end
 

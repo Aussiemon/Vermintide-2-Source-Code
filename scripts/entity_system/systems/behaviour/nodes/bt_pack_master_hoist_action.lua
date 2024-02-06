@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_pack_master_hoist_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTPackMasterHoistAction = class(BTPackMasterHoistAction, BTNode)
@@ -10,6 +12,7 @@ BTPackMasterHoistAction.name = "BTPackMasterHoistAction"
 
 BTPackMasterHoistAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
+
 	blackboard.action = action
 	blackboard.hosting_end_time = t + action.hoist_anim_length
 
@@ -53,7 +56,7 @@ BTPackMasterHoistAction.run = function (self, unit, blackboard, t, dt)
 		end
 	end
 
-	if blackboard.hosting_end_time < t then
+	if t > blackboard.hosting_end_time then
 		StatusUtils.set_grabbed_by_pack_master_network("pack_master_hanging", drag_target_unit, true, unit)
 
 		return "done"

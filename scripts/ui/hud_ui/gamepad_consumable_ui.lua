@@ -1,32 +1,35 @@
+﻿-- chunkname: @scripts/ui/hud_ui/gamepad_consumable_ui.lua
+
 local definitions = local_require("scripts/ui/hud_ui/gamepad_consumable_ui_definitions")
 local animation_definitions = definitions.animations
 local scenegraph_definition = definitions.scenegraph_definition
 local SLOTS_LIST = InventorySettings.weapon_slots
 local widget_index_by_consumable_slots = {
-	slot_healthkit = 4,
 	slot_grenade = 1,
-	slot_potion = 2
+	slot_healthkit = 4,
+	slot_potion = 2,
 }
 local temp_slot_texture_mapping = {
-	slot_healthkit = "consumables_medpack",
 	slot_grenade = "consumables_frag",
-	slot_potion = "consumables_potion_01"
+	slot_healthkit = "consumables_medpack",
+	slot_potion = "consumables_potion_01",
 }
 local default_slot_textures = {
 	slot_grenade = {
 		"default_grenade_icon",
-		"default_grenade_icon_lit"
+		"default_grenade_icon_lit",
 	},
 	slot_potion = {
 		"default_potion_icon",
-		"default_potion_icon_lit"
+		"default_potion_icon_lit",
 	},
 	slot_healthkit = {
 		"default_heal_icon",
-		"default_heal_icon_lit"
-	}
+		"default_heal_icon_lit",
+	},
 }
 local SWITCH_ANIMATION_DURATION = 5
+
 hud_icon_texture_lit_lookup_table = {}
 GamepadConsumableUI = class(GamepadConsumableUI)
 
@@ -38,7 +41,7 @@ GamepadConsumableUI.init = function (self, ingame_ui_context)
 	self.peer_id = ingame_ui_context.peer_id
 	self.player_manager = ingame_ui_context.player_manager
 	self.render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 	self.ui_animations = {}
 
@@ -49,11 +52,13 @@ GamepadConsumableUI._create_ui_elements = function (self)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
 	self.selection_widget = UIWidget.init(definitions.widget_definitions.selection)
 	self.background_widget = UIWidget.init(definitions.widget_definitions.background)
+
 	local slot_widgets = {}
 	local slot_widgets_by_name = {}
 
 	for slot_name, slot_textures in pairs(default_slot_textures) do
 		local widget = UIWidget.init(definitions.widget_definitions[slot_name])
+
 		widget.content.texture_icon = slot_textures[1]
 		slot_widgets[#slot_widgets + 1] = widget
 		slot_widgets_by_name[slot_name] = widget
@@ -85,6 +90,7 @@ GamepadConsumableUI.set_visible = function (self, visible)
 	end
 
 	self._is_visible = visible
+
 	local ui_renderer = self.ui_renderer
 
 	for _, widget in ipairs(self.slot_widgets) do
@@ -142,7 +148,7 @@ GamepadConsumableUI.update = function (self, dt, t, inventory_extension)
 end
 
 local function get_ammunition_count(left_hand_wielded_unit, right_hand_wielded_unit, item_template)
-	local ammo_extension = nil
+	local ammo_extension
 
 	if not item_template.ammo_data then
 		return
@@ -267,6 +273,7 @@ GamepadConsumableUI._on_slot_selected = function (self, widget)
 	local widget_offset = widget.offset
 	local selection_widget = self.selection_widget
 	local selection_offset = selection_widget.offset
+
 	selection_offset[1] = widget_offset[1]
 	selection_offset[2] = widget_offset[2]
 
@@ -300,14 +307,17 @@ GamepadConsumableUI._update_slot_icon = function (self, widget, item_data, wield
 	if widget_content.texture_icon ~= hud_icon_texture then
 		dirty = true
 		widget_content.texture_icon = hud_icon_texture
+
 		local master_item_name = item_data and item_data.name or "no_master_item_found"
 
 		assert(widget_content.texture_icon, "No hud icon for weapon %s", master_item_name)
 
 		widget_content.texture_icon_lit = hud_icon_texture_lit_lookup_table[hud_icon_texture]
+
 		local texture_icon_color = widget_style.texture_icon.color
 		local texture_icon_lit_color = widget_style.texture_icon_lit.color
 		local texture_bg_color = widget_style.texture_bg.color
+
 		texture_bg_color[1] = 150
 		texture_icon_color[1] = 255
 		texture_icon_lit_color[1] = 255
@@ -328,6 +338,7 @@ GamepadConsumableUI._update_slot_ammo = function (self, widget, slot_data, item_
 
 		if total_ammo > 1 and widget_content.total_ammo ~= total_ammo then
 			local ammo_text = "x" .. tostring(ammo_count + remaining_ammo)
+
 			widget_content.text_ammo = ammo_text
 			widget_content.total_ammo = total_ammo
 			widget_content.show_ammo = true
@@ -364,12 +375,15 @@ GamepadConsumableUI._reset_slot_widget = function (self, widget, slot_name, inde
 		if widget_content.texture_icon ~= default_textures[1] then
 			local alpha = 50
 			local widget_style = widget.style
+
 			widget_content.texture_icon = default_textures[1]
 			widget_content.texture_icon_lit = default_textures[2]
 			widget_content.wielded = false
+
 			local texture_icon_color = widget_style.texture_icon.color
 			local texture_icon_lit_color = widget_style.texture_icon_lit.color
 			local texture_bg_color = widget_style.texture_bg.color
+
 			texture_bg_color[1] = 100
 			texture_icon_color[1] = alpha
 			texture_icon_lit_color[1] = alpha
@@ -421,9 +435,10 @@ end
 GamepadConsumableUI._animate_slot_fill = function (self, widget, widget_index)
 	local params = {}
 	local widgets = {
-		widget
+		widget,
 	}
 	local ui_animations = self.ui_animations
+
 	ui_animations[#ui_animations + 1] = self.ui_animator:start_animation("pickup", widgets, scenegraph_definition, params)
 end
 
@@ -436,6 +451,7 @@ GamepadConsumableUI._align_widgets = function (self)
 	for index, widget in ipairs(slot_widgets) do
 		local widget_style = widget.style
 		local offset = widget.offset
+
 		offset[1] = width_offset
 		width_offset = width_offset + default_size + spacing
 	end
@@ -457,6 +473,7 @@ GamepadConsumableUI._update_slot_positions = function (self)
 		local background_size = background_style.size
 		local offset = widget.offset
 		local widget_width = background_size[1] * size_multiplier
+
 		offset[1] = width_offset + widget_width * 0.5
 		width_offset = width_offset + widget_width + slot_spacing
 		widget.element.dirty = true

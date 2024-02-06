@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/game_state/state_dedicated_server.lua
+
 require("scripts/game_state/state_dedicated_server_init")
 require("scripts/game_state/state_dedicated_server_running")
 require("scripts/game_state/components/level_transition_handler")
@@ -43,7 +45,9 @@ end
 
 StateDedicatedServer._init_input = function (self)
 	self._input_manager = InputManager:new()
+
 	local input_manager = self._input_manager
+
 	Managers.input = input_manager
 
 	input_manager:initialize_device("keyboard", 1)
@@ -57,6 +61,7 @@ end
 
 StateDedicatedServer._setup_state_machine = function (self)
 	local params = {}
+
 	self._machine = GameStateMachine:new(self, StateDedicatedServerInit, params, true)
 end
 
@@ -149,7 +154,7 @@ StateDedicatedServer.update = function (self, dt, t)
 			local level_transition_handler = Managers.level_transition_handler
 			local locked_director_functions = Managers.mechanism:generate_locked_director_functions(level_key)
 			local level_seed = Managers.mechanism:generate_level_seed()
-			local mechanism = nil
+			local mechanism
 
 			level_transition_handler:set_next_level(level_key, environment_variation_id, level_seed, mechanism, game_mode, nil, locked_director_functions, difficulty)
 			level_transition_handler:promote_next_level_data()
@@ -169,6 +174,7 @@ end
 
 StateDedicatedServer.setup_network_server = function (self, game_server)
 	self._game_server = game_server
+
 	local initial_level = Managers.mechanism:default_level_key()
 	local loading_context = self.parent.loading_context
 
@@ -182,11 +188,12 @@ StateDedicatedServer.setup_network_server = function (self, game_server)
 	self._network_server:register_rpcs(self._network_event_delegate, self._network_transmit)
 
 	self._profile_synchronizer = self._network_server.profile_synchronizer
+
 	local network_context = {
 		network_server = self._network_server,
 		network_transmit = self._network_transmit,
 		game_server = game_server,
-		profile_synchronizer = self._profile_synchronizer
+		profile_synchronizer = self._profile_synchronizer,
 	}
 
 	Managers.game_server:setup_network_context(network_context)
@@ -198,8 +205,9 @@ StateDedicatedServer.setup_network_server = function (self, game_server)
 		lobby = game_server,
 		peer_id = Network.peer_id(),
 		profile_synchronizer = self._profile_synchronizer,
-		network_server = self._network_server
+		network_server = self._network_server,
 	}
+
 	Managers.matchmaking = MatchmakingManager:new(matchmaking_params)
 
 	Managers.matchmaking:register_rpcs(self._network_event_delegate)
@@ -221,7 +229,7 @@ StateDedicatedServer.setup_chat_manager = function (self, game_server)
 	local network_context = {
 		is_server = true,
 		host_peer_id = peer_id,
-		my_peer_id = peer_id
+		my_peer_id = peer_id,
 	}
 
 	Managers.chat:setup_network_context(network_context)
@@ -308,6 +316,7 @@ StateDedicatedServer.on_exit = function (self, application_shutdown)
 		self:_destroy_network()
 	else
 		local loading_context = self.parent.loading_context
+
 		loading_context.network_server = self._network_server
 		loading_context.network_transmit = self._network_transmit
 		loading_context.lobby_host = self._game_server

@@ -1,12 +1,15 @@
+﻿-- chunkname: @scripts/entity_system/systems/limited_item_track/limited_item_track_system.lua
+
 require("scripts/unit_extensions/limited_item_track/limited_item_track_spawner")
 
 LimitedItemTrackSystem = class(LimitedItemTrackSystem, ExtensionSystemBase)
+
 local RPCS = {}
 local extensions = {
 	"LimitedItemTrackSpawner",
 	"HeldLimitedItemExtension",
 	"LimitedItemExtension",
-	"WeaveLimitedItemTrackSpawner"
+	"WeaveLimitedItemTrackSpawner",
 }
 
 LimitedItemTrackSystem.init = function (self, entity_system_creation_context, system_name)
@@ -32,6 +35,7 @@ LimitedItemTrackSystem.init = function (self, entity_system_creation_context, sy
 
 	self.mark_item_for_transformation = function (extension)
 		local unit = extension.unit
+
 		self.marked_items[unit] = extension.id
 	end
 
@@ -65,11 +69,12 @@ LimitedItemTrackSystem.register_group = function (self, group_name, pool_size)
 
 	local spawners = self.queued_group_spawners[group_name] or {}
 	local spawners_n = #spawners
+
 	self.queued_group_spawners[group_name] = nil
 	self.groups[group_name] = {
 		spawners = spawners,
 		spawners_n = spawners_n,
-		pool_size = pool_size
+		pool_size = pool_size,
 	}
 end
 
@@ -78,17 +83,19 @@ LimitedItemTrackSystem.register_weave_group = function (self, group_name, pool_s
 
 	local spawners = self.queued_weave_group_spawners[group_name] or {}
 	local spawners_n = #spawners
+
 	self.queued_weave_group_spawners[group_name] = nil
 	self.groups[group_name] = {
 		spawners = spawners,
 		spawners_n = spawners_n,
-		pool_size = pool_size
+		pool_size = pool_size,
 	}
 end
 
 LimitedItemTrackSystem.decrease_group_pool_size = function (self, group_name)
 	local group = self.groups[group_name]
 	local pool_size = math.max(group.pool_size - 1, 0)
+
 	group.pool_size = pool_size
 
 	if pool_size == 0 then
@@ -182,21 +189,22 @@ local dummy_input = {}
 local temp_extension_init_data = {}
 
 LimitedItemTrackSystem.on_add_extension = function (self, world, unit, extension_name, extension_init_data)
-	if next(extension_init_data) == nil then
-		extension_init_data = temp_extension_init_data or extension_init_data
-	end
-
+	extension_init_data = next(extension_init_data) == nil and temp_extension_init_data or extension_init_data
 	extension_init_data.network_manager = self.network_manager
 
 	if extension_name == "LimitedItemTrackSpawner" then
 		local pool = Unit.get_data(unit, "pool")
 		local template_name = Unit.get_data(unit, "template_name")
+
 		extension_init_data.pool = 1
 		extension_init_data.template_name = template_name
+
 		local extension = LimitedItemTrackSystem.super.on_add_extension(self, world, unit, extension_name, extension_init_data)
+
 		extension.enable = self.enable_spawner
 		extension.disable = self.disable_spawner
 		self.spawners[unit] = extension
+
 		local group_name = Unit.get_data(unit, "group_name")
 
 		if group_name ~= "" then
@@ -204,11 +212,13 @@ LimitedItemTrackSystem.on_add_extension = function (self, world, unit, extension
 
 			if group == nil then
 				local queued_group_spawners = self.queued_group_spawners[group_name] or {}
+
 				queued_group_spawners[#queued_group_spawners + 1] = extension
 				self.queued_group_spawners[group_name] = queued_group_spawners
 			else
 				local spawners = group.spawners
 				local spawners_n = group.spawners_n + 1
+
 				spawners[spawners_n] = extension
 				group.spawners_n = spawners_n
 			end
@@ -223,14 +233,19 @@ LimitedItemTrackSystem.on_add_extension = function (self, world, unit, extension
 		return extension
 	elseif extension_name == "WeaveLimitedItemTrackSpawner" then
 		local template_name = Unit.get_data(unit, "template_name")
+
 		extension_init_data.pool = 1
 		extension_init_data.template_name = template_name
+
 		local extension = LimitedItemTrackSystem.super.on_add_extension(self, world, unit, "LimitedItemTrackSpawner", extension_init_data)
+
 		extension.enable = self.enable_spawner
 		extension.disable = self.disable_spawner
 		self.spawners[unit] = extension
+
 		local group_name = Unit.get_data(unit, "weave_objective_id")
 		local queued_weave_group_spawners = self.queued_weave_group_spawners[group_name] or {}
+
 		queued_weave_group_spawners[#queued_weave_group_spawners + 1] = extension
 		self.queued_weave_group_spawners[group_name] = queued_weave_group_spawners
 		extension_init_data.pool = nil
@@ -299,6 +314,7 @@ LimitedItemTrackSystem.on_remove_extension = function (self, unit, extension_nam
 		ScriptUnit.remove_extension(unit, self.NAME)
 	elseif extension_name == "HeldLimitedItemExtension" then
 		local extension = self.items[unit]
+
 		self.items[unit] = nil
 
 		ScriptUnit.remove_extension(unit, self.NAME)
@@ -329,6 +345,7 @@ LimitedItemTrackSystem.spawn_batch = function (self, group)
 		table.remove(spawner_ids, rnd)
 
 		spawner_ids_n = spawner_ids_n - 1
+
 		local spawner = spawners[spawner_id]
 		local num_items = spawner.num_items
 

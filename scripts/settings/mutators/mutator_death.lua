@@ -1,7 +1,9 @@
+﻿-- chunkname: @scripts/settings/mutators/mutator_death.lua
+
 return {
 	description = "weaves_death_mutator_desc",
-	icon = "mutator_icon_death_spirits",
 	display_name = "weaves_death_mutator_name",
+	icon = "mutator_icon_death_spirits",
 	spawn_spirit = function (data, spawn_unit, target_unit)
 		local spawn_position = Vector3.add(Unit.local_position(spawn_unit, 0), Vector3(0, 0, data.offset))
 		local spirit_unit = data.unit_spawner:spawn_network_unit(data.spirit_unit_name, "position_synched_dummy_unit", data.extension_init_data, spawn_position)
@@ -9,7 +11,7 @@ return {
 			follow_unit = target_unit,
 			unit = spirit_unit,
 			chase_time = data.chase_time,
-			delay_time = data.delay_time
+			delay_time = data.delay_time,
 		}
 		local spirit_id = data.network_manager:unit_game_object_id(spirit_unit)
 
@@ -33,8 +35,10 @@ return {
 
 					if player_pos then
 						player_pos = player_pos + Vector3.up()
+
 						local direction = player_pos - spirit_position
 						local distance_squared = Vector3.length_squared(direction)
+
 						direction = Vector3.normalize(direction)
 
 						if distance_squared <= hit_distance * hit_distance then
@@ -46,7 +50,7 @@ return {
 								if current_health > 0 then
 									local current_temporary_health = health_extension:current_temporary_health()
 									local spirit_damage = data.spirit_damage
-									local damage = nil
+									local damage
 
 									if spirit_damage < current_temporary_health + current_health then
 										damage = spirit_damage
@@ -88,7 +92,8 @@ return {
 							end
 						else
 							spirit.chase_time = math.max(spirit.chase_time - dt, 0)
-							local move_vector = direction * dt * data.chase_speed
+
+							local move_vector = direction * (dt * data.chase_speed)
 							local new_position = spirit_position + move_vector
 
 							Unit.set_local_position(unit, 0, new_position)
@@ -130,6 +135,7 @@ return {
 			if not has_buff then
 				if current_health_percent < 0.2 then
 					local buff_id = data.buff_system:add_buff(player.player_unit, "mutator_death_attack_speed_player_buff", player.player_unit, true)
+
 					data.player_buffs[unit_id] = buff_id
 				end
 			elseif current_health_percent >= 0.2 then
@@ -154,11 +160,11 @@ return {
 
 			if not data.boss_drop_timers[boss_id] then
 				data.boss_drop_timers[boss_id] = {
-					timer = data.boss_drop_cooldown
+					timer = data.boss_drop_cooldown,
 				}
 			end
 
-			if data.boss_drop_cooldown <= data.boss_drop_timers[boss_id].timer then
+			if data.boss_drop_timers[boss_id].timer >= data.boss_drop_cooldown then
 				data.template.spawn_spirit(data, hit_unit, attacker_unit)
 
 				data.boss_drop_timers[boss_id].timer = 0
@@ -197,6 +203,7 @@ return {
 		local wind_settings = weave_manager:get_active_wind_settings()
 		local wind_strength = weave_manager:get_wind_strength()
 		local difficulty_name = Managers.state.difficulty:get_difficulty()
+
 		data.spirit_damage = wind_settings.spirit_settings.damage[difficulty_name][wind_strength]
 		data.delay_time = wind_settings.spirit_settings.wait_time[difficulty_name][wind_strength]
 		data.chase_speed = wind_settings.spirit_settings.chase_speed[difficulty_name][wind_strength]
@@ -226,5 +233,5 @@ return {
 
 		data.template.update_spirits(context, data, dt, t)
 		data.template.update_player_buff(context, data)
-	end
+	end,
 }

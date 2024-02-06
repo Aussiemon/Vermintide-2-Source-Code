@@ -1,8 +1,11 @@
+﻿-- chunkname: @scripts/ui/views/hero_view/windows/store/store_window_path_title.lua
+
 local definitions = local_require("scripts/ui/views/hero_view/windows/store/definitions/store_window_path_title_definitions")
 local widget_definitions = definitions.widgets
 local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
 local create_breadcrumbs_definition = definitions.create_breadcrumbs_definition
+
 StoreWindowPathTitle = class(StoreWindowPathTitle)
 StoreWindowPathTitle.NAME = "StoreWindowPathTitle"
 
@@ -11,11 +14,13 @@ StoreWindowPathTitle.on_enter = function (self, params, offset)
 
 	self._params = params
 	self._parent = params.parent
+
 	local ui_renderer, ui_top_renderer = self._parent:get_renderers()
+
 	self._ui_renderer = ui_renderer
 	self._ui_top_renderer = ui_top_renderer
 	self._render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 	self._layout_settings = params.layout_settings
 	self._animations = {}
@@ -25,11 +30,13 @@ end
 
 StoreWindowPathTitle._create_ui_elements = function (self, params, offset)
 	self._ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+
 	local widgets = {}
 	local widgets_by_name = {}
 
 	for name, widget_definition in pairs(widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		widgets[#widgets + 1] = widget
 		widgets_by_name[name] = widget
 	end
@@ -43,6 +50,7 @@ StoreWindowPathTitle._create_ui_elements = function (self, params, offset)
 
 	if offset then
 		local window_position = self._ui_scenegraph.window.local_position
+
 		window_position[1] = window_position[1] + offset[1]
 		window_position[2] = window_position[2] + offset[2]
 		window_position[3] = window_position[3] + offset[3]
@@ -73,13 +81,14 @@ StoreWindowPathTitle._sync_layout_path = function (self)
 
 	if path_differs then
 		self._saved_path = table.clone(path)
+
 		local breadcrumb_widgets = {}
 
 		for i, page_name in ipairs(path) do
 			local display_selected_product = page_name == "item_details"
 			local page = pages[page_name]
 			local widget = self:_create_breadcrumb_widget()
-			local display_name = nil
+			local display_name
 
 			if display_selected_product then
 				display_name = self:_get_selected_product_display_name()
@@ -131,8 +140,10 @@ StoreWindowPathTitle._setup_breadcrumb_widgets = function (self)
 
 	for index, widget in ipairs(breadcrumb_widgets) do
 		widget.offset[1] = start_position_x
+
 		local text_width = self:_get_breadcrumb_text_width(widget)
 		local widget_width = icon_width + spacing + text_width
+
 		widget.style.button_hotspot.size[1] = widget_width
 		start_position_x = start_position_x + widget_width
 	end
@@ -329,6 +340,7 @@ StoreWindowPathTitle._animate_breadcrumb_widget = function (self, widget, dt)
 
 	hotspot.hover_progress = hover_progress
 	hotspot.selection_progress = selection_progress
+
 	local combined_progress = math.max(hover_progress, selection_progress)
 	local text_style = style.text
 	local text_color = text_style.text_color

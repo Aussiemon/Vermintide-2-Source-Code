@@ -1,41 +1,44 @@
+﻿-- chunkname: @scripts/imgui/imgui_level_debug.lua
+
 ImguiLevelDebug = class(ImguiLevelDebug)
+
 local RESPAWN_DISTANCE = 70
 local respawn_colors_by_score = {
 	{
 		255,
 		0,
-		0
+		0,
 	},
 	{
 		255,
 		128,
-		0
+		0,
 	},
 	{
 		255,
 		255,
-		0
+		0,
 	},
 	{
 		0,
 		255,
-		0
-	}
+		0,
+	},
 }
 local color_red = {
 	255,
 	0,
-	0
+	0,
 }
 local color_green = {
 	0,
 	255,
-	0
+	0,
 }
 local color_white = {
 	255,
 	255,
-	255
+	255,
 }
 local respawner_text_category = "imgui_respawn_point"
 
@@ -177,6 +180,7 @@ end
 
 ImguiLevelDebug.draw_unit_finder = function (self)
 	self._unit_level_index = Imgui.input_int("Level index", self._unit_level_index)
+
 	local ok, unit = pcall(get_unit_by_index, self._unit_level_index)
 
 	if ok and unit and Unit.alive(unit) then
@@ -203,6 +207,7 @@ end
 ImguiLevelDebug.draw_respawn_debug = function (self, respawn_handler)
 	self._draw_respawn_points = Imgui.checkbox("Draw Respawn Points", self._draw_respawn_points)
 	self._show_valid_points_only = Imgui.checkbox("Show Valid Points Only", self._show_valid_points_only)
+
 	local main_path_info = Managers.state.conflict.main_path_info
 	local current_path_index = main_path_info.current_path_index
 	local ahead_unit_travel_dist = main_path_info.ahead_travel_dist

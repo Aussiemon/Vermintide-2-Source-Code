@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/dlcs/shovel/action_chained_projectile.lua
+
 ActionChainedProjectile = class(ActionChainedProjectile, ActionBase)
 
 ActionChainedProjectile.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
@@ -25,7 +27,7 @@ ActionChainedProjectile.init = function (self, world, item_name, is_server, owne
 	self.fx_spline_ids = {
 		World.find_particles_variable(world, "fx/wpnfx_staff_death/curse_spirit", "spline_1"),
 		World.find_particles_variable(world, "fx/wpnfx_staff_death/curse_spirit", "spline_2"),
-		World.find_particles_variable(world, "fx/wpnfx_staff_death/curse_spirit", "spline_3")
+		World.find_particles_variable(world, "fx/wpnfx_staff_death/curse_spirit", "spline_3"),
 	}
 end
 
@@ -45,7 +47,7 @@ ActionChainedProjectile.client_owner_start_action = function (self, new_action, 
 end
 
 ActionChainedProjectile.client_owner_post_update = function (self, dt, t, world, can_damage)
-	if self.state == "waiting_to_shoot" and self._fire_t <= t then
+	if self.state == "waiting_to_shoot" and t >= self._fire_t then
 		self.state = "shooting"
 	end
 
@@ -78,9 +80,9 @@ ActionChainedProjectile._shoot = function (self, t)
 
 	PhysicsWorld.prepare_actors_for_overlap(physics_world, halfway_position, prepare_radius * prepare_radius)
 
-	local results = PhysicsWorld.linear_sphere_sweep(physics_world, player_position + direction * hit_radius / 2, player_position + direction * max_length, hit_radius, 100, "types", "both", "collision_filter", "filter_player_ray_projectile", "report_initial_overlap")
+	local results = PhysicsWorld.linear_sphere_sweep(physics_world, player_position + direction * (hit_radius / 2), player_position + direction * max_length, hit_radius, 100, "types", "both", "collision_filter", "filter_player_ray_projectile", "report_initial_overlap")
 	local num_results = results and #results or 0
-	local best_target_unit = nil
+	local best_target_unit
 
 	for i = 1, num_results do
 		local result = results[i]
@@ -108,17 +110,21 @@ ActionChainedProjectile._shoot = function (self, t)
 		end
 	end
 
-	local end_pos = nil
+	local end_pos
 	local attack_distance = max_length
+
 	end_pos = player_position + direction * attack_distance
-	local hit_unit = nil
+
+	local hit_unit
 
 	if best_target_unit then
 		hit_unit = best_target_unit
+
 		local _, is_level_unit = Managers.state.network:game_object_or_level_id(hit_unit)
 
 		if not is_level_unit then
 			local node = Unit.has_node(best_target_unit, "j_spine") and Unit.node(best_target_unit, "j_spine") or 0
+
 			end_pos = Unit.world_position(best_target_unit, node)
 		end
 	elseif static_hit then
@@ -155,6 +161,7 @@ ActionChainedProjectile._shoot = function (self, t)
 		local is_critical_strike = self._is_critical_strike
 		local active_projectiles = self._active_projectiles
 		local active_projectiles_n = self._active_projectiles_n + 1
+
 		self._active_projectiles_n = active_projectiles_n
 		active_projectiles[active_projectiles_n] = {
 			chain_count = 0,
@@ -162,13 +169,13 @@ ActionChainedProjectile._shoot = function (self, t)
 			is_critical_strike = is_critical_strike,
 			power_level = power_level,
 			boost_curve_multiplier = boost_curve_multiplier,
-			next_chain_t = t + chain_hit_settings.chain_delay - chain_hit_settings.target_selection_delay,
+			next_chain_t = t + (chain_hit_settings.chain_delay - chain_hit_settings.target_selection_delay),
 			target_selection_t = math.huge,
 			next_target_unit = hit_unit,
 			hit_units = {
-				[hit_unit] = true
+				[hit_unit] = true,
 			},
-			last_chain_pos = Vector3Box(end_pos)
+			last_chain_pos = Vector3Box(end_pos),
 		}
 	elseif hit_surface_normal then
 		local impact_normal = hit_surface_normal
@@ -271,7 +278,7 @@ ActionChainedProjectile.passive_update = function (self, dt, t)
 	for i = self._active_projectiles_n, 1, -1 do
 		local projectile = active_projectiles[i]
 
-		if not projectile.next_target_unit and projectile.target_selection_t <= t then
+		if not projectile.next_target_unit and t >= projectile.target_selection_t then
 			local chain_next = self:_select_next_target(projectile, ai_broadphase, enemy_categories)
 
 			if not chain_next then
@@ -279,7 +286,7 @@ ActionChainedProjectile.passive_update = function (self, dt, t)
 
 				self._active_projectiles_n = self._active_projectiles_n - 1
 			end
-		elseif projectile.next_chain_t <= t then
+		elseif t >= projectile.next_chain_t then
 			local chain_next = self:_apply_chain_damage(projectile, ai_broadphase, enemy_categories)
 
 			if chain_next then
@@ -312,6 +319,7 @@ ActionChainedProjectile._select_next_target = function (self, chain_data, ai_bro
 
 		if not hit_units[target_unit] and HEALTH_ALIVE[target_unit] then
 			hit_units[target_unit] = true
+
 			local node = Unit.has_node(target_unit, "j_spine") and Unit.node(target_unit, "j_spine") or 0
 			local next_chain_pos = Unit.world_position(target_unit, node)
 			local mid_offset = Vector3(math.lerp(-0.5, 0.5, math.random()), math.lerp(-0.5, 0.5, math.random()), math.lerp(-0.5, 0.5, math.random()))
@@ -333,7 +341,7 @@ ActionChainedProjectile._play_fx = function (self, fx_name, point_1, point_2, po
 	local spline_points = {
 		point_1,
 		point_2,
-		point_3
+		point_3,
 	}
 
 	if is_chain then
@@ -363,10 +371,11 @@ ActionChainedProjectile._apply_chain_damage = function (self, chain_data, ai_bro
 	end
 
 	if ALIVE[target_unit] and chain_count <= settings.max_chain_count then
-		local next_chain_pos = nil
+		local next_chain_pos
 
 		if Unit.has_node(target_unit, "j_spine") then
 			local node = Unit.node(target_unit, "j_spine")
+
 			next_chain_pos = Unit.world_position(target_unit, node)
 		else
 			next_chain_pos = Unit.world_position(target_unit, 0) + Vector3.up() * 0.8

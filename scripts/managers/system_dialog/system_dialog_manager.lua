@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/system_dialog/system_dialog_manager.lua
+
 SystemDialogManager = class(SystemDialogManager)
 
 local function dprint(...)
@@ -20,13 +22,13 @@ SystemDialogManager.update = function (self, dt)
 end
 
 SystemDialogManager.check_status = function (self, dialog_instance)
-	local data = nil
+	local data
 
 	if #self._dialogs > 0 then
 		data = self._dialogs[1]
 	end
 
-	local status = nil
+	local status
 
 	if data then
 		status = self:_get_status(dialog_instance)
@@ -66,7 +68,7 @@ SystemDialogManager._terminate = function (self, dialog_instance)
 end
 
 SystemDialogManager._handle_dialogs = function (self)
-	local data = nil
+	local data
 
 	if #self._dialogs > 0 then
 		data = self._dialogs[1]
@@ -81,7 +83,7 @@ SystemDialogManager._handle_dialogs = function (self)
 		if status == dialog_instance.NONE then
 			self:_initialize(dialog_instance)
 		elseif status == dialog_instance.INITIALIZED then
-			local result = data:open()
+			local result = data.open(data)
 
 			if result then
 				if result == PS4.SCE_OK then
@@ -165,12 +167,13 @@ SystemDialogManager.open_system_dialog = function (self, message, user_id)
 
 	local params = {
 		message,
-		user_id
+		user_id,
 	}
+
 	self._dialogs[#self._dialogs + 1] = {
 		dialog_instance = MsgDialog,
 		params = params,
-		open = open
+		open = open,
 	}
 end
 
@@ -186,7 +189,7 @@ SystemDialogManager.open_save_dialog = function (self, required_blocks)
 	self._dialogs[#self._dialogs + 1] = {
 		dialog_instance = SaveSystemDialog,
 		required_blocks = required_blocks,
-		open = open
+		open = open,
 	}
 end
 
@@ -205,7 +208,7 @@ SystemDialogManager.open_commerce_dialog = function (self, mode, user_id, target
 		mode = mode,
 		user_id = user_id,
 		targets = targets,
-		open = open
+		open = open,
 	}
 end
 
@@ -222,7 +225,7 @@ SystemDialogManager.open_error_dialog = function (self, error_code, callback)
 		dialog_instance = ErrorDialog,
 		error_code = error_code,
 		open = open,
-		callback = callback
+		callback = callback,
 	}
 end
 
@@ -238,12 +241,12 @@ SystemDialogManager.open_virtual_keyboard = function (self, user_id, optional_ti
 		x = optional_position and optional_position[1],
 		y = optional_position and optional_position[2],
 		max_length = optional_max_length,
-		index = self._virtual_keyboard_index
+		index = self._virtual_keyboard_index,
 	}
 	self._virtual_keyboard_results[self._virtual_keyboard_index] = {
-		success = false,
 		done = false,
-		text = optional_prefilled_text or ""
+		success = false,
+		text = optional_prefilled_text or "",
 	}
 
 	return self._virtual_keyboard_index

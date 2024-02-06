@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/level/payload_extension.lua
+
 require("scripts/settings/payload_speed_settings")
 require("foundation/scripts/util/spline_curve")
 
@@ -5,31 +7,37 @@ local FRAMES = 100
 local ERROR_RECOUP_TIME = 0.5
 local MOVING_THRESHOLD = 0.1
 local EPSILON = 0.01
+
 PayloadExtension = class(PayloadExtension)
 
 PayloadExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	local world = extension_init_context.world
 	local network_manager = Managers.state.network
+
 	self._unit = unit
 	self._world = world
 	self._is_server = Managers.player.is_server
 	self._game = network_manager:game()
 	self._network_manager = network_manager
 	self._extra_joint = nil
+
 	local level = LevelHelper:current_level(world)
+
 	self._level_unit_index = Level.unit_index(level, unit)
 	self._last_synched_spline_values = {
-		last_synch_time = 0,
 		error_compensation_speed = 0,
+		last_synch_time = 0,
 		spline_index = 1,
+		spline_t = 0,
 		subdivision_index = 1,
-		spline_t = 0
 	}
 	self._stop_command_given = false
 	self._activated = true
 	self._started = false
+
 	local wheel_diameter = Unit.get_data(unit, "wheel_diameter") / 10
 	local wheel_circumference = wheel_diameter * math.pi
+
 	self._anim_speed = 30 / FRAMES / wheel_circumference
 	self._anim_group = "wheels"
 
@@ -43,10 +51,8 @@ PayloadExtension.init = function (self, extension_init_context, unit, extension_
 		local statistics_db = Managers.player:statistics_db()
 		local stats_id = player:stats_id()
 
-		if unit_hazard_type == "sled" then
-			if statistics_db:get_persistent_stat(stats_id, "trail_sleigher") <= 50 then
-				Managers.state.event:register(self, "on_killed", "increment_kill_stat")
-			end
+		if unit_hazard_type == "sled" and (statistics_db:get_persistent_stat(stats_id, "trail_sleigher") <= 50 or false) then
+			Managers.state.event:register(self, "on_killed", "increment_kill_stat")
 		end
 	end
 
@@ -77,7 +83,9 @@ end
 
 PayloadExtension.init_payload = function (self, payload_gizmos)
 	local unit = self._unit
+
 	self._spline_curve = self:_init_movement_spline(self._world, unit, payload_gizmos)
+
 	local extra_joint = Unit.get_data(unit, "extra_spline_joint")
 
 	if extra_joint then
@@ -108,7 +116,7 @@ PayloadExtension.init_payload = function (self, payload_gizmos)
 
 		self._extra_joint = {
 			spline = spline_curve,
-			node = node
+			node = node,
 		}
 	end
 
@@ -122,6 +130,7 @@ PayloadExtension._push_player = function (self, player_unit, abs_speed)
 	local self_pos = POSITION_LOOKUP[unit]
 	local pose, half_extents = Unit.box(unit, true)
 	local player_pos = POSITION_LOOKUP[player_unit]
+
 	half_extents = half_extents * 1.2
 
 	if math.point_is_inside_oobb(player_pos, pose, half_extents) then
@@ -143,8 +152,10 @@ PayloadExtension._hit_enemies = function (self, abs_speed, t)
 	local payload_position_flat = Vector3.flat(payload_position)
 	local payload_pose, half_extents = Unit.box(payload_unit, true)
 	local payload_forward = Vector3.normalize(Matrix4x4.forward(payload_pose))
-	local largest_extent = half_extents.y < half_extents.x and half_extents.x or half_extents.y
-	largest_extent = half_extents.z < largest_extent and largest_extent or half_extents.z
+	local largest_extent = half_extents.x > half_extents.y and half_extents.x or half_extents.y
+
+	largest_extent = largest_extent > half_extents.z and largest_extent or half_extents.z
+
 	local radius = largest_extent * 2
 	local small_box_extents = half_extents * 1.2
 	local large_box_extents = half_extents * 2
@@ -152,13 +163,13 @@ PayloadExtension._hit_enemies = function (self, abs_speed, t)
 	local hazard_type = unit_hazard_type or "payload"
 	local hazard_settings = EnvironmentalHazards[hazard_type]
 	local hit_zone_name = "torso"
-	local hit_ragdoll_actor = nil
+	local hit_ragdoll_actor
 	local damage_source = hazard_type
 	local difficulty_rank = Managers.state.difficulty:get_difficulty_rank()
 	local power_level = hazard_settings.enemy.difficulty_power_level[difficulty_rank] or DefaultPowerLevel
 	local damage_profile_name = hazard_settings.enemy.damage_profile or "default"
 	local damage_profile = DamageProfileTemplates[damage_profile_name]
-	local target_index = nil
+	local target_index
 	local boost_curve_multiplier = 0
 	local is_critical_strike = false
 	local can_damage = hazard_settings.enemy.can_damage or false
@@ -175,6 +186,7 @@ PayloadExtension._hit_enemies = function (self, abs_speed, t)
 
 		if inside_small_box and not STAGGERED[hit_unit] then
 			STAGGERED[hit_unit] = true
+
 			local power_level_multiplier = 0.5
 			local dot = Vector3.dot(payload_forward, enemy_position - payload_position)
 			local enemy_in_front = dot > 0
@@ -266,6 +278,7 @@ PayloadExtension.update = function (self, unit, input, dt, context, t)
 				LevelHelper:flow_event(self._world, flow_event)
 
 				flow_event_data.event_thrown = true
+
 				local network_manager = self._network_manager
 				local network_transmit = network_manager.network_transmit
 				local payload_unit_id = network_manager:game_object_or_level_id(unit)
@@ -275,6 +288,7 @@ PayloadExtension.update = function (self, unit, input, dt, context, t)
 		else
 			local error_compensation_speed = self:_error_speed_calculation(dt, t, game, id, movement)
 			local network_speed = GameSession.game_object_field(game, id, "speed")
+
 			new_speed = network_speed + error_compensation_speed
 		end
 	end
@@ -287,7 +301,7 @@ PayloadExtension.update = function (self, unit, input, dt, context, t)
 		self._state = "stopped"
 
 		Unit.flow_event(unit, "lua_stopped")
-	elseif self._state ~= "moving" and EPSILON <= math.abs(new_speed) then
+	elseif self._state ~= "moving" and math.abs(new_speed) >= EPSILON then
 		if not self._started then
 			Unit.flow_event(unit, "lua_start")
 
@@ -375,12 +389,13 @@ PayloadExtension._error_speed_calculation = function (self, dt, t, game, id, mov
 		local curr_subdivision_index = movement:current_subdivision_index()
 		local curr_spline_t = movement:current_t()
 		local error_distance = movement:distance(curr_spline_index, curr_subdivision_index, curr_spline_t, spline_index, subdiv, spline_t)
+
 		old_vals.spline_index = spline_index
 		old_vals.subdivision_index = subdiv
 		old_vals.spline_t = spline_t
 		old_vals.error_compensation_speed = error_distance / ERROR_RECOUP_TIME
 		old_vals.last_synch_time = t
-	elseif ERROR_RECOUP_TIME <= t - old_vals.last_synch_time then
+	elseif t - old_vals.last_synch_time >= ERROR_RECOUP_TIME then
 		old_vals.error_compensation_speed = 0
 	end
 
@@ -420,8 +435,7 @@ PayloadExtension._init_movement_spline = function (self, world, unit, payload_gi
 		for i = 1, #payload_gizmos do
 			local gizmo_unit = payload_gizmos[i]
 			local gizmo_position = Unit.world_position(gizmo_unit, 0)
-			local smallest_distance = math.huge
-			local point = nil
+			local smallest_distance, point = math.huge
 
 			for index, spline in ipairs(splines) do
 				local points = spline.points
@@ -454,16 +468,13 @@ PayloadExtension._init_movement_spline = function (self, world, unit, payload_gi
 		local points = spline.points
 		local point = points[1]
 		local gizmo_unit = gizmo_point_map[point]
-		local flow_event = nil
+		local flow_event
 
 		if gizmo_unit then
 			local unit_speed_setting = Unit.get_data(gizmo_unit, "speed_setting")
 			local unit_flow_event = Unit.get_data(gizmo_unit, "flow_event")
 
-			if unit_speed_setting ~= "" then
-				speed_setting = unit_speed_setting or speed_setting
-			end
-
+			speed_setting = unit_speed_setting ~= "" and unit_speed_setting or speed_setting
 			flow_event = unit_flow_event ~= "" and unit_flow_event
 		end
 
@@ -472,9 +483,10 @@ PayloadExtension._init_movement_spline = function (self, world, unit, payload_gi
 			speed_settings = speed_settings,
 			flow_event_data = {
 				event_thrown = false,
-				flow_event = flow_event
-			}
+				flow_event = flow_event,
+			},
 		}
+
 		spline.metadata = metadata
 	end
 
@@ -494,10 +506,11 @@ PayloadExtension._create_game_object = function (self)
 		spline_index = spline_index,
 		subdivision_index = subdivision_index,
 		spline_t = spline_t,
-		speed = speed
+		speed = speed,
 	}
 	local callback = callback(self, "cb_game_session_disconnect")
 	local game_object_id = self._network_manager:create_game_object("payload", game_object_data_table, callback)
+
 	self._id = game_object_id
 end
 

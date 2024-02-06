@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/helpers/cosmetic_utils.lua
+
 CosmeticUtils = CosmeticUtils or {}
 
 CosmeticUtils.color_tint_unit = function (unit, hero_name, gradient_variation, gradient_value)
@@ -27,26 +29,26 @@ end
 local cosmetic_slots = {
 	slot_frame = true,
 	slot_hat = true,
-	slot_skin = true
+	slot_skin = true,
 }
 local cosmetic_items = {
 	frame = true,
+	hat = true,
 	skin = true,
-	hat = true
 }
 local cosmetic_and_weapon_slots = {
 	"slot_ranged",
 	"slot_melee",
 	"slot_skin",
 	"slot_hat",
-	"slot_frame"
+	"slot_frame",
 }
 local cosmetic_and_weapon_slots_lookup = {
-	slot_hat = true,
-	slot_skin = true,
 	slot_frame = true,
+	slot_hat = true,
 	slot_melee = true,
-	slot_ranged = true
+	slot_ranged = true,
+	slot_skin = true,
 }
 
 CosmeticUtils.is_cosmetic_slot = function (slot_name)
@@ -146,7 +148,7 @@ CosmeticUtils.get_default_cosmetic_slot = function (career_settings, slot_name)
 
 	if slot_name == "slot_skin" then
 		return {
-			item_name = career_settings.base_skin
+			item_name = career_settings.base_skin,
 		}
 	elseif CosmeticUtils.is_weapon_slot(slot_name) or slot_name == "slot_hat" then
 		local preview_items = career_settings.preview_items
@@ -161,14 +163,14 @@ CosmeticUtils.get_default_cosmetic_slot = function (career_settings, slot_name)
 
 				if slot_names[1] == slot_name then
 					return {
-						item_name = item_name
+						item_name = item_name,
 					}
 				end
 			end
 		end
 	elseif slot_name == "slot_frame" then
 		return {
-			item_name = "default"
+			item_name = "default",
 		}
 	end
 

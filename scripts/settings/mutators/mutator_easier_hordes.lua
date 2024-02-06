@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/mutators/mutator_easier_hordes.lua
+
 local VALUE_TWEAK = 0.5
 
 return {
@@ -6,5 +8,5 @@ return {
 		CurrentPacing.multiple_hordes = 2
 
 		MutatorUtils.update_conflict_settings_horde_size_modifier(VALUE_TWEAK)
-	end
+	end,
 }

@@ -1,3 +1,5 @@
+﻿-- chunkname: @backend/error_codes.lua
+
 ERROR_CODES = {}
 BACKEND_LUA_ERRORS = {}
 BACKEND_PLAYFAB_ERRORS = {}

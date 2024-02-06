@@ -1,8 +1,12 @@
+﻿-- chunkname: @core/gwnav/lua/runtime/navtagvolume.lua
+
 require("core/gwnav/lua/safe_require")
 
 local NavTagVolume = safe_require_guard()
 local NavClass = safe_require("core/gwnav/lua/runtime/navclass")
+
 NavTagVolume = NavClass(NavTagVolume)
+
 local GwNavTagVolume = stingray.GwNavTagVolume
 
 NavTagVolume.init = function (self, world, point_table, alt_min, alt_max, is_exclusive, color, layer_id, smartobject_id, user_data_id)

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/challenges/in_game_challenge.lua
+
 InGameChallenge = class(InGameChallenge)
 InGameChallengeStatus = InGameChallengeStatus or CreateStrictEnumTable("Uninitialized", "InProgress", "Paused", "Finished")
 InGameChallengeResult = InGameChallengeResult or CreateStrictEnumTable("Uninitialized", "Completed", "Canceled")
@@ -148,6 +150,7 @@ InGameChallenge._register_events = function (self)
 
 	if event_manager and not self._events_registered then
 		self._events_registered = true
+
 		local events_to_register = self._challenge_template.events
 
 		if events_to_register then
@@ -199,7 +202,7 @@ end
 InGameChallenge._on_progress_updated = function (self)
 	self._needs_sync = true
 
-	if self._required_progress <= self._progress then
+	if self._progress >= self._required_progress then
 		self:_complete(InGameChallengeResult.Completed)
 	end
 end

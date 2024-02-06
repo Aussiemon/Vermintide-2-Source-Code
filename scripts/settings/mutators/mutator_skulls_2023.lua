@@ -1,7 +1,9 @@
+﻿-- chunkname: @scripts/settings/mutators/mutator_skulls_2023.lua
+
 local PICKUP_NAME = "skulls_2023"
 local EXTRA_MUTATORS_PICKUP_COUNT = 5
 local EXTRA_MUTATORS = {
-	"hordes_galore"
+	"hordes_galore",
 }
 
 return {
@@ -20,6 +22,7 @@ return {
 			local spawner_extension = ScriptUnit.extension(spawner_unit, "pickup_system")
 			local position, rotation = spawner_extension:get_spawn_location_data()
 			local unit = pickup_system:spawn_pickup(PICKUP_NAME, position, rotation, with_physics, spawn_type)
+
 			pickup_units[unit] = true
 		end
 
@@ -30,6 +33,7 @@ return {
 			local spawner_extension = ScriptUnit.extension(spawner_unit, "pickup_system")
 			local position, rotation = spawner_extension:get_spawn_location_data()
 			local unit = pickup_system:spawn_pickup(PICKUP_NAME, position, rotation, with_physics, spawn_type)
+
 			pickup_units[unit] = true
 		end
 
@@ -37,14 +41,14 @@ return {
 		data.num_skulls_picked = 0
 		data.mission_giver_unit = Managers.state.unit_spawner:spawn_network_unit("units/hub_elements/empty", "dialogue_node", {
 			dialogue_system = {
-				dialogue_profile = "inn_keeper"
-			}
+				dialogue_profile = "inn_keeper",
+			},
 		})
 
 		local function register_skulls_pickup_cb()
 			data.num_skulls_picked = data.num_skulls_picked + 1
 
-			if EXTRA_MUTATORS_PICKUP_COUNT <= data.num_skulls_picked then
+			if data.num_skulls_picked >= EXTRA_MUTATORS_PICKUP_COUNT then
 				local mutator_handler = Managers.state.game_mode._mutator_handler
 
 				mutator_handler:initialize_mutators(EXTRA_MUTATORS)
@@ -80,5 +84,5 @@ return {
 		end
 
 		Managers.state.event:unregister("register_skulls_2023_pickup", data)
-	end
+	end,
 }

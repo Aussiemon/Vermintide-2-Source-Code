@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/default_player_unit/inventory/simple_husk_inventory_extension.lua
+
 SimpleHuskInventoryExtension = class(SimpleHuskInventoryExtension)
 
 SimpleHuskInventoryExtension.init = function (self, extension_init_context, unit, extension_init_data)
@@ -6,29 +8,31 @@ SimpleHuskInventoryExtension.init = function (self, extension_init_context, unit
 	self._game = extension_init_data.game
 	self._unit = unit
 	self._equipment = {
-		slots = {}
+		slots = {},
 	}
 	self._attached_units = {}
 	self._slot_buffs = {
 		wield = {
 			slot_ranged = {},
-			slot_melee = {}
+			slot_melee = {},
 		},
 		equip = {
 			slot_melee = {},
-			slot_ranged = {}
-		}
+			slot_ranged = {},
+		},
 	}
 	self._weapon_fx = {}
 	self.current_item_buffs = {
 		wield = {},
 		equip = {
 			slot_melee = {},
-			slot_ranged = {}
-		}
+			slot_ranged = {},
+		},
 	}
 	self._additional_items = {}
+
 	local player = extension_init_data.player
+
 	self._player = player
 
 	if player then
@@ -40,7 +44,7 @@ SimpleHuskInventoryExtension.init = function (self, extension_init_context, unit
 			for slot_name, slot_count in pairs(additional_item_slots) do
 				self._additional_items[slot_name] = {
 					max_slots = slot_count,
-					items = {}
+					items = {},
 				}
 			end
 		end
@@ -186,17 +190,19 @@ SimpleHuskInventoryExtension.add_equipment = function (self, slot_name, item_nam
 
 	if item_data.slot_to_use then
 		local other_slot_slot_data = self._equipment.slots[item_data.slot_to_use]
-		local override_item_data, override_skin = nil
+		local override_item_data, override_skin
 
 		if WeaponUtils.is_valid_weapon_override(other_slot_slot_data, item_data) then
 			override_item_data = other_slot_slot_data.item_data
 			override_skin = other_slot_slot_data.skin
 		else
 			local default_item_name = item_data.default_item_to_replace
+
 			override_item_data = ItemMasterList[default_item_name]
 		end
 
 		local other_slot_item_units = BackendUtils.get_item_units(override_item_data, nil, override_skin, self._career_name)
+
 		skin_name = nil
 
 		for key, _ in pairs(item_data.item_units_to_replace) do
@@ -205,23 +211,25 @@ SimpleHuskInventoryExtension.add_equipment = function (self, slot_name, item_nam
 	end
 
 	local item_template = BackendUtils.get_item_template(item_data)
+
 	self._equipment.slots[slot_name] = {
 		item_data = item_data,
 		id = slot_name,
 		skin = skin_name,
-		item_template = item_template
+		item_template = item_template,
 	}
 end
 
 SimpleHuskInventoryExtension.add_equipment_limited_item = function (self, slot_name, item_name, spawner_unit, limited_item_id)
 	local item_data = ItemMasterList[item_name]
+
 	self._equipment.slots[slot_name] = {
 		item_data = item_data,
 		id = slot_name,
 		limited_item_data = {
 			spawner_unit = spawner_unit,
-			id = limited_item_id
-		}
+			id = limited_item_id,
+		},
 	}
 end
 
@@ -263,7 +271,7 @@ end
 
 SimpleHuskInventoryExtension._setup_equipment = function (self, world, unit_3p, profile)
 	local equipment = {
-		slots = {}
+		slots = {},
 	}
 
 	return equipment
@@ -358,6 +366,7 @@ SimpleHuskInventoryExtension._spawn_attached_units = function (self, attached_un
 
 	for index, attached_unit in pairs(attached_units) do
 		local spawned_unit = AttachmentUtils.create_weapon_visual_attachment(world, unit, attached_unit.unit, attached_unit.attachment_node_linking)
+
 		own_attached_units[index] = spawned_unit
 	end
 end
@@ -439,6 +448,7 @@ end
 
 SimpleHuskInventoryExtension.show_third_person_inventory = function (self, show)
 	self._show_third_person = show
+
 	local right_hand_wielded_unit = self._equipment.right_hand_wielded_unit_3p
 
 	if right_hand_wielded_unit then
@@ -573,24 +583,26 @@ SimpleHuskInventoryExtension.set_loaded_projectile_override = function (self)
 end
 
 SimpleHuskInventoryExtension._override_career_skill_item_template = function (self, item_data)
-	local override_item_template = nil
+	local override_item_template
 	local slot_to_use = item_data.slot_to_use
 
 	if slot_to_use then
 		local equipment = self._equipment
 		local slots = equipment.slots
 		local override_slot_data = slots[slot_to_use]
-		local override_item_template = nil
+		local override_item_template
 
 		if WeaponUtils.is_valid_weapon_override(override_slot_data, item_data) then
 			override_item_template = self:get_item_template(override_slot_data)
 		else
 			local default_item_name = item_data.default_item_to_replace
 			local override_item_data = ItemMasterList[default_item_name]
+
 			override_item_template = Weapons[override_item_data.template]
 		end
 
 		local item_template = BackendUtils.get_item_template(item_data)
+
 		item_template.left_hand_attachment_node_linking = override_item_template.left_hand_attachment_node_linking
 		item_template.right_hand_attachment_node_linking = override_item_template.right_hand_attachment_node_linking
 		item_template.wield_anim = override_item_template.wield_anim
@@ -627,7 +639,7 @@ SimpleHuskInventoryExtension._wield_slot = function (self, world, equipment, slo
 	local override_item_template = self:_override_career_skill_item_template(item_data)
 	local item_template = override_item_template or BackendUtils.get_item_template(item_data)
 	local item_units = BackendUtils.get_item_units(item_data, nil, slot.skin, self._career_name)
-	local right_hand_weapon_unit_3p, right_hand_weapon_unit_1p, left_hand_weapon_unit_3p, left_hand_weapon_unit_1p, right_hand_ammo_unit_3p, right_hand_ammo_unit_1p, left_hand_ammo_unit_3p, left_hand_ammo_unit_1p = nil
+	local right_hand_weapon_unit_3p, right_hand_weapon_unit_1p, left_hand_weapon_unit_3p, left_hand_weapon_unit_1p, right_hand_ammo_unit_3p, right_hand_ammo_unit_1p, left_hand_ammo_unit_3p, left_hand_ammo_unit_1p
 
 	if item_units.right_hand_unit then
 		right_hand_weapon_unit_3p, right_hand_ammo_unit_3p, right_hand_weapon_unit_1p, right_hand_ammo_unit_1p = GearUtils.spawn_inventory_unit(world, "right", item_template, item_units, slot_name, item_data, unit_1p, unit_3p, nil, nil, nil, item_units.material_settings)
@@ -679,8 +691,11 @@ SimpleHuskInventoryExtension._wield_slot = function (self, world, equipment, slo
 	if right_hand_weapon_unit_3p or left_hand_weapon_unit_3p then
 		if self:ammo_percentage() == 0 and item_template.wield_anim_no_ammo_on_husk then
 			local wield_anim_no_ammo = get_wield_anim(item_template.wield_anim_no_ammo, item_template.wield_anim_no_ammo_career, self._career_name)
+
 			wield_anim = wield_anim_no_ammo or wield_anim
+
 			local wield_anim_no_ammo_3p = get_wield_anim(item_template.wield_anim_no_ammo_3p, item_template.wield_anim_no_ammo_career_3p, self._career_name) or wield_anim_no_ammo
+
 			wield_anim_3p = wield_anim_no_ammo_3p or wield_anim_3p
 		end
 
@@ -737,6 +752,7 @@ SimpleHuskInventoryExtension._wield_slot = function (self, world, equipment, slo
 	equipment.left_hand_ammo_unit_1p = left_hand_ammo_unit_1p
 	equipment.wielded = item_data
 	equipment.wielded_slot = slot_name
+
 	local blackboard = BLACKBOARDS[self._unit]
 
 	if not blackboard.weapon_unit then
@@ -830,6 +846,7 @@ SimpleHuskInventoryExtension.update_additional_items = function (self, slot_name
 
 		for i = 1, #items do
 			local item_name = items[i]
+
 			additional_items_slot.items[#additional_items_slot.items + 1] = ItemMasterList[item_name]
 		end
 	end

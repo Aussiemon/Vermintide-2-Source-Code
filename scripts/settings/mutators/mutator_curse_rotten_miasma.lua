@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/mutators/mutator_curse_rotten_miasma.lua
+
 local TARGET_RESPAWN_CHECK_DELAY = 5
 local TARGET_SPAWN_OFFSET_Z = 1
 
@@ -41,14 +43,14 @@ local function create_default_target(position, rotation)
 		pickup_system = {
 			has_physics = true,
 			pickup_name = "deus_relic_01",
-			spawn_type = "dropped"
+			spawn_type = "dropped",
 		},
 		projectile_locomotion_system = {
 			network_position = AiAnimUtils.position_network_scale(position, true),
 			network_rotation = AiAnimUtils.rotation_network_scale(rotation, true),
 			network_velocity = AiAnimUtils.velocity_network_scale(Vector3.zero(), true),
-			network_angular_velocity = AiAnimUtils.velocity_network_scale(Vector3.zero(), true)
-		}
+			network_angular_velocity = AiAnimUtils.velocity_network_scale(Vector3.zero(), true),
+		},
 	}
 
 	return Managers.state.unit_spawner:spawn_network_unit("units/weapons/player/pup_deus_relic_01/pup_deus_relic_01", "deus_relic", extension_init_data, position, rotation)
@@ -86,14 +88,16 @@ local function setup_rotten_miasma(buff_name)
 
 	local rotation = Quaternion.identity()
 	local target_to_follow = get_new_target_to_follow()
+
 	target_to_follow = target_to_follow or create_default_target(position, rotation)
+
 	local extension_init_data = {
 		buff_system = {
 			breed = "n/a",
 			initial_buff_names = {
-				buff_name
-			}
-		}
+				buff_name,
+			},
+		},
 	}
 	local rotten_miasma_safe_area = Managers.state.unit_spawner:spawn_network_unit("units/gameplay/rotten_miasma_safe_area/rotten_miasma_safe_area_01", "buff_objective_unit", extension_init_data, position, rotation)
 
@@ -103,13 +107,14 @@ end
 local ROTTEN_MIASMA_DEBUFF = "curse_rotten_miasma"
 
 return {
-	description = "curse_rotten_miasma_desc",
 	curse_package_name = "resource_packages/mutators/mutator_curse_rotten_miasma",
+	description = "curse_rotten_miasma_desc",
 	display_name = "curse_rotten_miasma_name",
 	icon = "deus_curse_nurgle_01",
 	server_update_function = function (context, data, dt, t)
 		if not data.rotten_miasma_safe_area then
 			local rotten_miasma_safe_area, target_to_follow = setup_rotten_miasma(ROTTEN_MIASMA_DEBUFF)
+
 			data.rotten_miasma_safe_area = rotten_miasma_safe_area
 			data.target_to_follow = target_to_follow
 		end
@@ -121,10 +126,12 @@ return {
 			data.target_respawn_at = nil
 		else
 			data.target_respawn_at = data.target_respawn_at or TARGET_RESPAWN_CHECK_DELAY + t
+
 			local position = get_path_position()
 
-			if data.target_respawn_at <= t and position then
+			if t >= data.target_respawn_at and position then
 				local rotation = Quaternion.identity()
+
 				data.target_to_follow = create_default_target(position, rotation)
 			end
 		end
@@ -137,5 +144,5 @@ return {
 		if ALIVE[rotten_miasma_safe_area] then
 			Managers.state.unit_spawner:mark_for_deletion(rotten_miasma_safe_area)
 		end
-	end
+	end,
 }

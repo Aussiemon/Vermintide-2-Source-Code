@@ -1,10 +1,14 @@
+﻿-- chunkname: @scripts/managers/backend_playfab/backend_interface_cdn_resources_playfab.lua
+
 local json = require("PlayFab.json")
+
 BackendInterfaceCdnResourcesPlayFab = class(BackendInterfaceCdnResourcesPlayFab)
+
 local RESOURCE_URL_SECONDS_TO_LIVE = 3000
 local RESOURCE_URL_REQUEST_LIMIT = 10
 local LOCALIZATION_STATUSES = {
 	failed = 2,
-	loaded = 1
+	loaded = 1,
 }
 
 BackendInterfaceCdnResourcesPlayFab.init = function (self, backend_mirror)
@@ -27,6 +31,7 @@ BackendInterfaceCdnResourcesPlayFab.load_backend_localizations = function (self,
 		if backend_localizations then
 			for key, localizations_by_language in pairs(backend_localizations) do
 				local resource_id = localizations_by_language[language_id] or localizations_by_language.en
+
 				backend_resource_ids[#backend_resource_ids + 1] = resource_id
 				localizations_to_load[resource_id] = key
 			end
@@ -58,6 +63,7 @@ BackendInterfaceCdnResourcesPlayFab._cb_localization_loaded = function (self, ke
 
 		if response and type(response) == "table" then
 			self._localization_status[key] = LOCALIZATION_STATUSES.loaded
+
 			local localizations = {}
 
 			for string_id, value in pairs(response) do
@@ -124,8 +130,8 @@ BackendInterfaceCdnResourcesPlayFab._request_resource_urls = function (self, res
 	local request = {
 		FunctionName = "getResourceURL",
 		FunctionParameter = {
-			identifiers = resource_ids
-		}
+			identifiers = resource_ids,
+		},
 	}
 	local mirror = self._backend_mirror
 	local request_queue = mirror:request_queue()
@@ -150,7 +156,7 @@ BackendInterfaceCdnResourcesPlayFab._request_resource_urls_cb = function (self, 
 end
 
 BackendInterfaceCdnResourcesPlayFab._add_url_to_cache = function (self, resource_id, url, seconds_to_live)
-	local expire_time = nil
+	local expire_time
 
 	if seconds_to_live then
 		expire_time = os.time() + seconds_to_live
@@ -158,7 +164,7 @@ BackendInterfaceCdnResourcesPlayFab._add_url_to_cache = function (self, resource
 
 	self._url_cache[resource_id] = {
 		url = url,
-		expire_time = expire_time
+		expire_time = expire_time,
 	}
 end
 

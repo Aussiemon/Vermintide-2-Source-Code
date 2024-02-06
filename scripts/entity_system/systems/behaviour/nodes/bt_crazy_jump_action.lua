@@ -1,6 +1,9 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_crazy_jump_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTCrazyJumpAction = class(BTCrazyJumpAction, BTNode)
+
 local position_lookup = POSITION_LOOKUP
 
 BTCrazyJumpAction.init = function (self, ...)
@@ -19,7 +22,9 @@ BTCrazyJumpAction.enter = function (self, unit, blackboard, t)
 	aiprint("ENTER CRAZY JUMP ACTION")
 
 	local action = self._tree_node.action_data
+
 	blackboard.action = action
+
 	local data = blackboard.jump_data
 	local network_manager = Managers.state.network
 	local ai_extension = ScriptUnit.extension(unit, "ai_system")
@@ -63,6 +68,7 @@ end
 BTCrazyJumpAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	blackboard.skulk_pos = nil
 	blackboard.comitted_to_target = false
+
 	local locomotion_extension = blackboard.locomotion_extension
 
 	if not locomotion_extension._engine_extension_id then
@@ -128,7 +134,7 @@ BTCrazyJumpAction.run = function (self, unit, blackboard, t, dt)
 		locomotion:set_wanted_rotation(nil)
 	end
 
-	if data.start_jump < t then
+	if t > data.start_jump then
 		if data.state == "align_for_push_off" then
 			local network_manager = Managers.state.network
 
@@ -142,7 +148,9 @@ BTCrazyJumpAction.run = function (self, unit, blackboard, t, dt)
 		elseif data.state == "push_off" then
 			if data.jump_velocity_boxed then
 				data.state = "in_air"
+
 				local callback_context = data.overlap_context
+
 				callback_context.has_gotten_callback = false
 				callback_context.num_hits = 0
 				blackboard.last_jump = t
@@ -154,6 +162,7 @@ BTCrazyJumpAction.run = function (self, unit, blackboard, t, dt)
 			end
 		elseif data.state == "in_air" then
 			blackboard.comitted_to_target = true
+
 			local callback_context = data.overlap_context
 			local pos = Unit.world_position(unit, callback_context.spine_node)
 			local target_pos = position_lookup[target_unit]
@@ -174,6 +183,7 @@ BTCrazyJumpAction.run = function (self, unit, blackboard, t, dt)
 					self:update_anim_variable_done(unit, data)
 
 					data.fail_time = t + 1
+
 					local network_manager = Managers.state.network
 
 					network_manager:anim_event(unit, "jump_fail")
@@ -198,7 +208,7 @@ BTCrazyJumpAction.run = function (self, unit, blackboard, t, dt)
 
 			local mover = Unit.mover(unit)
 
-			if data.start_check_obstacles < t then
+			if t > data.start_check_obstacles then
 				if Mover.collides_sides(mover) then
 					data.state = "hit_obstacle"
 
@@ -284,6 +294,7 @@ BTCrazyJumpAction.run = function (self, unit, blackboard, t, dt)
 			end
 
 			local to_impact_pos = Vector3.flat(data.jump_target_pos:unbox() - pos)
+
 			dot = Vector3.dot(normalized_velocity, Vector3.normalize(to_impact_pos))
 
 			if dot < 0 then
@@ -308,7 +319,7 @@ BTCrazyJumpAction.run = function (self, unit, blackboard, t, dt)
 			self:update_anim_variable_done(unit, data)
 
 			if data.land_time then
-				if data.land_time < t then
+				if t > data.land_time then
 					data.land_time = nil
 
 					return "failed"
@@ -331,7 +342,7 @@ BTCrazyJumpAction.run = function (self, unit, blackboard, t, dt)
 
 			blackboard.is_falling = true
 
-			return "failed"
+			do return "failed" end
 
 			local mover = Unit.mover(unit)
 			local standing_frames = Mover.standing_frames(mover)
@@ -423,7 +434,7 @@ BTCrazyJumpAction.check_colliding_players = function (self, unit, blackboard, po
 		local side = blackboard.side
 		local enemy_player_and_bot_units = side.ENEMY_PLAYER_AND_BOT_UNITS
 		local shortest_dist_squared = 4
-		local hit_unit = nil
+		local hit_unit
 
 		for i = 1, #enemy_player_and_bot_units do
 			local player_unit = enemy_player_and_bot_units[i]
@@ -458,8 +469,11 @@ BTCrazyJumpAction.setup_jump = function (self, unit, blackboard, data)
 
 	data.overlap_context.spine_node = Unit.node(unit, "j_neck")
 	data.overlap_context.enemy_spine_node = data.enemy_spine_node
+
 	local world = blackboard.world
+
 	self.physics_world = World.get_data(world, "physics_world")
+
 	local animation_system = Managers.state.entity:system("animation_system")
 
 	animation_system:start_anim_variable_update_by_distance(unit, data.anim_jump_rot_var, jump_target_pos, 2, true)

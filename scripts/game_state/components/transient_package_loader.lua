@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/game_state/components/transient_package_loader.lua
+
 TransientPackageLoader = class(TransientPackageLoader)
+
 local UNLOAD_GRACE_PERIOD = 60
 local Unit_get_data = Unit.get_data
 
@@ -17,6 +20,7 @@ local function remove_ref(unit, t)
 
 	if value then
 		t.units[unit] = nil
+
 		local t_refs = t.refs
 
 		if t_refs[value] <= 1 then
@@ -32,18 +36,18 @@ TransientPackageLoader.init = function (self)
 	self._load_package_queue = {}
 	self._tracked_projectiles = {
 		units = {},
-		refs = {}
+		refs = {},
 	}
 	self._tracked_units = {
 		units = {},
-		refs = {}
+		refs = {},
 	}
 end
 
 local rpcs = {
 	"rpc_sync_transient_projectile_packages",
 	"rpc_sync_transient_unit_packages",
-	"rpc_sync_transient_ready"
+	"rpc_sync_transient_ready",
 }
 
 TransientPackageLoader.register_rpcs = function (self, network_event_delegate)
@@ -83,6 +87,7 @@ TransientPackageLoader.update = function (self)
 		local unload_queue = self._unload_package_queue
 		local package_manager = Managers.package
 		local package_name = next(unload_queue, self._last_package_checked)
+
 		self._last_package_checked = package_name
 
 		if package_name and (package_manager:num_references(package_name) > 1 or package_manager:can_unload(package_name)) then
@@ -171,34 +176,39 @@ TransientPackageLoader.hot_join_sync = function (self, peer_id)
 	local channel_id = PEER_ID_TO_CHANNEL[peer_id]
 	local ids_to_sync = {}
 	local ids_to_sync_n = 0
-	local tracked_projectile_refs = self._tracked_projectiles.refs
 
-	table.clear(ids_to_sync)
+	do
+		local tracked_projectile_refs = self._tracked_projectiles.refs
 
-	ids_to_sync_n = 0
+		table.clear(ids_to_sync)
 
-	for name in pairs(tracked_projectile_refs) do
-		ids_to_sync_n = ids_to_sync_n + 1
-		ids_to_sync[ids_to_sync_n] = NetworkLookup.projectile_units[name]
+		ids_to_sync_n = 0
+
+		for name in pairs(tracked_projectile_refs) do
+			ids_to_sync_n = ids_to_sync_n + 1
+			ids_to_sync[ids_to_sync_n] = NetworkLookup.projectile_units[name]
+		end
+
+		if ids_to_sync_n > 0 then
+			RPC.rpc_sync_transient_projectile_packages(channel_id, ids_to_sync)
+		end
 	end
 
-	if ids_to_sync_n > 0 then
-		RPC.rpc_sync_transient_projectile_packages(channel_id, ids_to_sync)
-	end
+	do
+		local tracked_units_refs = self._tracked_units.refs
 
-	local tracked_units_refs = self._tracked_units.refs
+		table.clear(ids_to_sync)
 
-	table.clear(ids_to_sync)
+		ids_to_sync_n = 0
 
-	ids_to_sync_n = 0
+		for name in pairs(tracked_units_refs) do
+			ids_to_sync_n = ids_to_sync_n + 1
+			ids_to_sync[ids_to_sync_n] = NetworkLookup.husks[name]
+		end
 
-	for name in pairs(tracked_units_refs) do
-		ids_to_sync_n = ids_to_sync_n + 1
-		ids_to_sync[ids_to_sync_n] = NetworkLookup.husks[name]
-	end
-
-	if ids_to_sync_n > 0 then
-		RPC.rpc_sync_transient_unit_packages(channel_id, ids_to_sync)
+		if ids_to_sync_n > 0 then
+			RPC.rpc_sync_transient_unit_packages(channel_id, ids_to_sync)
+		end
 	end
 
 	RPC.rpc_sync_transient_ready(channel_id)
@@ -236,6 +246,7 @@ TransientPackageLoader.rpc_sync_transient_unit_packages = function (self, channe
 	for i = 1, #husk_unit_name_ids do
 		local husk_unit_name_id = husk_unit_name_ids[i]
 		local package_name = NetworkLookup.husks[husk_unit_name_id]
+
 		packages[package_name] = true
 	end
 end

@@ -1,14 +1,17 @@
+﻿-- chunkname: @scripts/managers/entity/entity_manager2.lua
+
 local function readonlytable(table)
 	return setmetatable({}, {
 		__metatable = false,
 		__index = table,
 		__newindex = function (table, key, value)
 			error("Coder trying to modify EntityManager's read-only empty table. Don't do it!")
-		end
+		end,
 	})
 end
 
 local EMPTY_TABLE = readonlytable({})
+
 EntityManager2 = class(EntityManager2)
 
 EntityManager2.init = function (self)
@@ -68,11 +71,10 @@ end
 
 EntityManager2.add_unit_extensions = function (self, world, unit, unit_template_name, all_extension_init_data)
 	all_extension_init_data = all_extension_init_data or EMPTY_TABLE
+
 	local ignore_extensions_list = self._ignore_extensions_list
 	local extension_to_system_map = self._extension_to_system_map
-	local self_units = self._units
-	local self_extensions = self._extensions
-	local self_systems = self._systems
+	local self_units, self_extensions, self_systems = self._units, self._extensions, self._systems
 	local extensions_list, num_extensions = self.extension_extractor_function(unit, unit_template_name)
 
 	if unit_template_name and self.system_to_extension_per_unit_type_map[extensions_list] == nil then
@@ -202,14 +204,14 @@ end
 local TEMP_TABLE = {}
 
 EntityManager2.register_unit = function (self, world, unit, maybe_init_data, ...)
-	local extension_init_data = nil
+	local extension_init_data
 
 	if type(maybe_init_data) == "table" then
 		extension_init_data = maybe_init_data
 	else
 		extension_init_data = {
 			maybe_init_data,
-			...
+			...,
 		}
 	end
 
@@ -222,6 +224,7 @@ end
 
 EntityManager2.add_and_register_units = function (self, world, unit_list, num_units)
 	num_units = num_units or #unit_list
+
 	local added_list = self.temp_table
 	local num_added = 0
 
@@ -307,8 +310,7 @@ end
 
 EntityManager2.unregister_units = function (self, units, num_units)
 	local networked_flow_state = self._networked_flow_state
-	local self_units = self._units
-	local self_extensions = self._extensions
+	local self_units, self_extensions = self._units, self._extensions
 	local extension_extractor_function = self.extension_extractor_function
 	local unit_extensions_list = self._unit_extensions_list
 	local ScriptUnit_destroy_extension = ScriptUnit.destroy_extension
@@ -318,7 +320,9 @@ EntityManager2.unregister_units = function (self, units, num_units)
 	for i = 1, num_units do
 		repeat
 			local unit = units[i]
+
 			POSITION_LOOKUP[unit] = nil
+
 			local unit_extensions = ScriptUnit.extensions(unit)
 
 			if not unit_extensions then
@@ -407,6 +411,7 @@ EntityManager2.add_ignore_extensions = function (self, ignore_extensions)
 
 	for i = 1, num_extensions do
 		local extension_name = ignore_extensions[i]
+
 		ignore_extensions_list[extension_name] = true
 	end
 end

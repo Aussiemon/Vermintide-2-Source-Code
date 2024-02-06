@@ -1,612 +1,615 @@
+﻿-- chunkname: @scripts/settings/equipment/weapon_templates/deus_relic.lua
+
 local push_radius = 2
 local time_mod = 0.8
 local weapon_template = {}
+
 weapon_template.actions = {
 	action_one = {
 		default = {
-			aim_assist_ramp_decay_delay = 0.1,
-			anim_end_event = "attack_finished",
-			kind = "melee_start",
-			attack_hold_input = "action_one_hold",
 			aim_assist_max_ramp_multiplier = 0.4,
+			aim_assist_ramp_decay_delay = 0.1,
 			aim_assist_ramp_multiplier = 0.2,
+			anim_end_event = "attack_finished",
 			anim_event = "attack_swing_charge_left_diagonal",
+			attack_hold_input = "action_one_hold",
+			kind = "melee_start",
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
 			total_time = math.huge,
 			buff_data = {
 				{
-					start_time = 0,
+					buff_name = "planted_charging_decrease_movement",
 					external_multiplier = 0.25,
-					buff_name = "planted_charging_decrease_movement"
-				}
+					start_time = 0,
+				},
 			},
 			allowed_chain_actions = {
 				{
-					sub_action = "light_attack_left",
-					start_time = 0,
 					action = "action_one",
 					end_time = 0.3,
-					input = "action_one_release"
+					input = "action_one_release",
+					start_time = 0,
+					sub_action = "light_attack_left",
 				},
 				{
-					sub_action = "heavy_attack_left",
-					start_time = 0.5,
 					action = "action_one",
-					input = "action_one_release"
+					input = "action_one_release",
+					start_time = 0.5,
+					sub_action = "heavy_attack_left",
 				},
 				{
-					sub_action = "default",
-					start_time = 0,
 					action = "action_two",
-					input = "action_two_hold"
-				},
-				{
-					sub_action = "default",
+					input = "action_two_hold",
 					start_time = 0,
-					action = "action_wield",
-					input = "action_wield"
+					sub_action = "default",
 				},
 				{
-					start_time = 0.7,
+					action = "action_wield",
+					input = "action_wield",
+					start_time = 0,
+					sub_action = "default",
+				},
+				{
 					blocker = true,
 					end_time = 1.2,
-					input = "action_one_hold"
+					input = "action_one_hold",
+					start_time = 0.7,
 				},
 				{
-					sub_action = "heavy_attack_left",
-					start_time = 0.8,
 					action = "action_one",
-					auto_chain = true
-				}
-			}
+					auto_chain = true,
+					start_time = 0.8,
+					sub_action = "heavy_attack_left",
+				},
+			},
 		},
 		default_right = {
-			aim_assist_ramp_decay_delay = 0.1,
-			anim_end_event = "attack_finished",
-			kind = "melee_start",
 			aim_assist_max_ramp_multiplier = 0.4,
+			aim_assist_ramp_decay_delay = 0.1,
 			aim_assist_ramp_multiplier = 0.2,
+			anim_end_event = "attack_finished",
 			anim_event = "attack_swing_charge_right_pose",
+			kind = "melee_start",
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
 			total_time = math.huge,
 			buff_data = {
 				{
-					start_time = 0,
+					buff_name = "planted_charging_decrease_movement",
 					external_multiplier = 0.25,
-					buff_name = "planted_charging_decrease_movement"
-				}
+					start_time = 0,
+				},
 			},
 			allowed_chain_actions = {
 				{
-					sub_action = "light_attack_right",
-					start_time = 0,
 					action = "action_one",
 					end_time = 0.3,
-					input = "action_one_release"
+					input = "action_one_release",
+					start_time = 0,
+					sub_action = "light_attack_right",
 				},
 				{
-					sub_action = "heavy_attack_right",
-					start_time = 0.5,
 					action = "action_one",
-					input = "action_one_release"
+					input = "action_one_release",
+					start_time = 0.5,
+					sub_action = "heavy_attack_right",
 				},
 				{
-					sub_action = "default",
-					start_time = 0,
 					action = "action_two",
-					input = "action_two_hold"
-				},
-				{
-					sub_action = "default",
+					input = "action_two_hold",
 					start_time = 0,
-					action = "action_wield",
-					input = "action_wield"
+					sub_action = "default",
 				},
 				{
-					start_time = 0.7,
+					action = "action_wield",
+					input = "action_wield",
+					start_time = 0,
+					sub_action = "default",
+				},
+				{
 					blocker = true,
 					end_time = 1.2,
-					input = "action_one_hold"
+					input = "action_one_hold",
+					start_time = 0.7,
 				},
 				{
-					sub_action = "heavy_attack_right",
-					start_time = 0.8,
 					action = "action_one",
-					auto_chain = true
-				}
-			}
+					auto_chain = true,
+					start_time = 0.8,
+					sub_action = "heavy_attack_right",
+				},
+			},
 		},
 		default_left = {
-			aim_assist_ramp_decay_delay = 0.1,
-			anim_end_event = "attack_finished",
-			kind = "melee_start",
 			aim_assist_max_ramp_multiplier = 0.4,
+			aim_assist_ramp_decay_delay = 0.1,
 			aim_assist_ramp_multiplier = 0.2,
+			anim_end_event = "attack_finished",
 			anim_event = "attack_swing_charge_left_diagonal_pose",
+			kind = "melee_start",
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
 			total_time = math.huge,
 			buff_data = {
 				{
-					start_time = 0,
+					buff_name = "planted_charging_decrease_movement",
 					external_multiplier = 0.25,
-					buff_name = "planted_charging_decrease_movement"
-				}
+					start_time = 0,
+				},
 			},
 			allowed_chain_actions = {
 				{
-					sub_action = "light_attack_left",
-					start_time = 0,
 					action = "action_one",
 					end_time = 0.3,
-					input = "action_one_release"
+					input = "action_one_release",
+					start_time = 0,
+					sub_action = "light_attack_left",
 				},
 				{
-					sub_action = "heavy_attack_left",
-					start_time = 0.5,
 					action = "action_one",
-					input = "action_one_release"
+					input = "action_one_release",
+					start_time = 0.5,
+					sub_action = "heavy_attack_left",
 				},
 				{
-					sub_action = "default",
-					start_time = 0,
 					action = "action_two",
-					input = "action_two_hold"
-				},
-				{
-					sub_action = "default",
+					input = "action_two_hold",
 					start_time = 0,
-					action = "action_wield",
-					input = "action_wield"
+					sub_action = "default",
 				},
 				{
-					start_time = 0.7,
+					action = "action_wield",
+					input = "action_wield",
+					start_time = 0,
+					sub_action = "default",
+				},
+				{
 					blocker = true,
 					end_time = 1.2,
-					input = "action_one_hold"
+					input = "action_one_hold",
+					start_time = 0.7,
 				},
 				{
-					sub_action = "heavy_attack_left",
-					start_time = 0.8,
 					action = "action_one",
-					auto_chain = true
-				}
-			}
+					auto_chain = true,
+					start_time = 0.8,
+					sub_action = "heavy_attack_left",
+				},
+			},
 		},
 		heavy_attack_left = {
-			damage_window_start = 0.12,
-			hit_armor_anim = "attack_hit",
-			additional_critical_strike_chance = 0,
-			kind = "sweep",
-			first_person_hit_anim = "shake_hit",
-			width_mod = 25,
 			action_aborted_flow_event = "vfx_torch_swing_stop",
-			hit_shield_stop_anim = "attack_hit",
-			no_damage_impact_sound_event = "Play_weapon_deus_relic_01_armour_hit",
-			hit_effect = "melee_hit_deus_relic_01",
-			impact_explosion_template = "deus_relic_small",
-			damage_profile = "medium_burning_tank",
-			damage_window_end = 0.3,
-			impact_sound_event = "Play_weapon_deus_relic_01_flesh_hit",
-			charge_value = "heavy_attack",
-			anim_end_event = "attack_finished",
-			aim_assist_ramp_multiplier = 0.4,
+			additional_critical_strike_chance = 0,
 			aim_assist_max_ramp_multiplier = 0.9,
 			aim_assist_ramp_decay_delay = 0.1,
-			dedicated_target_range = 3,
-			reset_aim_on_attack = true,
-			uninterruptible = true,
+			aim_assist_ramp_multiplier = 0.4,
+			anim_end_event = "attack_finished",
 			anim_event = "attack_swing_heavy_left_diagonal",
+			charge_value = "heavy_attack",
+			damage_profile = "medium_burning_tank",
+			damage_window_end = 0.3,
+			damage_window_start = 0.12,
+			dedicated_target_range = 3,
+			first_person_hit_anim = "shake_hit",
+			hit_armor_anim = "attack_hit",
+			hit_effect = "melee_hit_deus_relic_01",
+			hit_shield_stop_anim = "attack_hit",
+			impact_explosion_template = "deus_relic_small",
+			impact_sound_event = "Play_weapon_deus_relic_01_flesh_hit",
+			kind = "sweep",
+			no_damage_impact_sound_event = "Play_weapon_deus_relic_01_armour_hit",
+			reset_aim_on_attack = true,
 			total_time = 1.2,
+			uninterruptible = true,
+			width_mod = 25,
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
 			anim_time_scale = time_mod * 1,
 			buff_data = {
 				{
-					start_time = 0,
-					external_multiplier = 1,
+					buff_name = "planted_charging_decrease_movement",
 					end_time = 0.2,
-					buff_name = "planted_charging_decrease_movement"
-				}
+					external_multiplier = 1,
+					start_time = 0,
+				},
 			},
 			allowed_chain_actions = {
 				{
-					sub_action = "default_right",
-					start_time = 0.5,
 					action = "action_one",
+					input = "action_one",
 					release_required = "action_one_hold",
-					input = "action_one"
+					start_time = 0.5,
+					sub_action = "default_right",
 				},
 				{
-					sub_action = "default_right",
-					start_time = 0.5,
 					action = "action_one",
+					input = "action_one_hold",
 					release_required = "action_one_hold",
-					input = "action_one_hold"
+					start_time = 0.5,
+					sub_action = "default_right",
 				},
 				{
-					sub_action = "default",
-					start_time = 0.4,
 					action = "action_two",
-					input = "action_two_hold"
+					input = "action_two_hold",
+					start_time = 0.4,
+					sub_action = "default",
 				},
 				{
-					sub_action = "default",
-					start_time = 0.5,
 					action = "action_wield",
-					input = "action_wield"
-				}
+					input = "action_wield",
+					start_time = 0.5,
+					sub_action = "default",
+				},
 			},
 			enter_function = function (attacker_unit, input_extension)
 				return input_extension:reset_release_input()
 			end,
-			critical_strike = {}
+			critical_strike = {},
 		},
 		heavy_attack_right = {
-			damage_window_start = 0.18,
-			hit_armor_anim = "attack_hit",
-			additional_critical_strike_chance = 0,
-			kind = "sweep",
-			first_person_hit_anim = "shake_hit",
-			width_mod = 25,
 			action_aborted_flow_event = "vfx_torch_swing_stop",
-			hit_shield_stop_anim = "attack_hit",
-			no_damage_impact_sound_event = "Play_weapon_deus_relic_01_armour_hit",
-			hit_effect = "melee_hit_deus_relic_01",
-			impact_explosion_template = "deus_relic_small",
+			additional_critical_strike_chance = 0,
+			aim_assist_max_ramp_multiplier = 0.9,
+			aim_assist_ramp_decay_delay = 0.1,
+			aim_assist_ramp_multiplier = 0.4,
+			anim_end_event = "attack_finished",
+			anim_event = "attack_swing_heavy_right",
+			charge_value = "heavy_attack",
 			damage_profile = "medium_burning_tank",
 			damage_window_end = 0.3,
-			impact_sound_event = "Play_weapon_deus_relic_01_flesh_hit",
-			charge_value = "heavy_attack",
-			anim_end_event = "attack_finished",
-			use_precision_sweep = true,
-			aim_assist_ramp_multiplier = 0.4,
-			aim_assist_max_ramp_multiplier = 0.9,
+			damage_window_start = 0.18,
 			dedicated_target_range = 3,
-			aim_assist_ramp_decay_delay = 0.1,
-			uninterruptible = true,
-			anim_event = "attack_swing_heavy_right",
+			first_person_hit_anim = "shake_hit",
+			hit_armor_anim = "attack_hit",
+			hit_effect = "melee_hit_deus_relic_01",
+			hit_shield_stop_anim = "attack_hit",
+			impact_explosion_template = "deus_relic_small",
+			impact_sound_event = "Play_weapon_deus_relic_01_flesh_hit",
+			kind = "sweep",
+			no_damage_impact_sound_event = "Play_weapon_deus_relic_01_armour_hit",
 			reset_aim_on_attack = true,
 			total_time = 1.2,
+			uninterruptible = true,
+			use_precision_sweep = true,
+			width_mod = 25,
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
 			anim_time_scale = time_mod * 1,
 			buff_data = {
 				{
-					start_time = 0,
-					external_multiplier = 1,
+					buff_name = "planted_charging_decrease_movement",
 					end_time = 0.2,
-					buff_name = "planted_charging_decrease_movement"
-				}
+					external_multiplier = 1,
+					start_time = 0,
+				},
 			},
 			allowed_chain_actions = {
 				{
-					sub_action = "default_left",
-					start_time = 0.5,
 					action = "action_one",
+					input = "action_one",
 					release_required = "action_one_hold",
-					input = "action_one"
+					start_time = 0.5,
+					sub_action = "default_left",
 				},
 				{
-					sub_action = "default_left",
-					start_time = 0.5,
 					action = "action_one",
+					input = "action_one_hold",
 					release_required = "action_one_hold",
-					input = "action_one_hold"
+					start_time = 0.5,
+					sub_action = "default_left",
 				},
 				{
-					sub_action = "default",
-					start_time = 0.4,
 					action = "action_two",
-					input = "action_two_hold"
+					input = "action_two_hold",
+					start_time = 0.4,
+					sub_action = "default",
 				},
 				{
-					sub_action = "default",
-					start_time = 0.5,
 					action = "action_wield",
-					input = "action_wield"
-				}
+					input = "action_wield",
+					start_time = 0.5,
+					sub_action = "default",
+				},
 			},
 			enter_function = function (attacker_unit, input_extension)
 				return input_extension:reset_release_input()
 			end,
-			critical_strike = {}
+			critical_strike = {},
 		},
 		light_attack_left = {
-			damage_window_start = 0.12,
-			range_mod = 1.2,
-			kind = "sweep",
-			first_person_hit_anim = "shake_hit",
-			no_damage_impact_sound_event = "Play_weapon_deus_relic_01_armour_hit",
 			action_aborted_flow_event = "vfx_torch_swing_stop",
-			width_mod = 25,
-			use_precision_sweep = false,
-			damage_profile = "light_slashing_linesman",
-			hit_effect = "melee_hit_deus_relic_01",
-			damage_window_end = 0.25,
-			impact_sound_event = "Play_weapon_deus_relic_01_flesh_hit",
 			anim_end_event = "attack_finished",
-			dedicated_target_range = 2,
 			anim_event = "attack_swing_left",
+			damage_profile = "light_slashing_linesman",
+			damage_window_end = 0.25,
+			damage_window_start = 0.12,
+			dedicated_target_range = 2,
+			first_person_hit_anim = "shake_hit",
+			hit_effect = "melee_hit_deus_relic_01",
 			hit_stop_anim = "attack_hit",
+			impact_sound_event = "Play_weapon_deus_relic_01_flesh_hit",
+			kind = "sweep",
+			no_damage_impact_sound_event = "Play_weapon_deus_relic_01_armour_hit",
+			range_mod = 1.2,
 			total_time = 0.85,
+			use_precision_sweep = false,
+			width_mod = 25,
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
 			anim_time_scale = time_mod * 1,
 			buff_data = {
 				{
-					start_time = 0,
-					external_multiplier = 0.9,
+					buff_name = "planted_decrease_movement",
 					end_time = 0.5,
-					buff_name = "planted_decrease_movement"
-				}
+					external_multiplier = 0.9,
+					start_time = 0,
+				},
 			},
 			allowed_chain_actions = {
 				{
-					sub_action = "default",
+					action = "action_one",
+					input = "action_one",
 					start_time = 0.65,
-					action = "action_one",
-					input = "action_one"
+					sub_action = "default",
 				},
 				{
-					sub_action = "default_right",
+					action = "action_one",
+					end_time = 0.65,
+					input = "action_one",
 					start_time = 0.4,
-					action = "action_one",
-					end_time = 0.65,
-					input = "action_one"
-				},
-				{
 					sub_action = "default_right",
-					start_time = 0.45,
+				},
+				{
 					action = "action_one",
 					end_time = 0.65,
-					input = "action_one_hold"
+					input = "action_one_hold",
+					start_time = 0.45,
+					sub_action = "default_right",
 				},
 				{
-					sub_action = "default",
-					start_time = 0,
 					action = "action_two",
-					input = "action_two_hold"
+					input = "action_two_hold",
+					start_time = 0,
+					sub_action = "default",
 				},
 				{
-					sub_action = "default",
-					start_time = 0.5,
 					action = "action_wield",
-					input = "action_wield"
-				}
+					input = "action_wield",
+					start_time = 0.5,
+					sub_action = "default",
+				},
 			},
-			hit_mass_count = ENDLESS_HIT_MASS_COUNT
+			hit_mass_count = ENDLESS_HIT_MASS_COUNT,
 		},
 		light_attack_right = {
-			damage_window_start = 0.17,
-			range_mod = 1.2,
-			kind = "sweep",
-			first_person_hit_anim = "shake_hit",
-			no_damage_impact_sound_event = "Play_weapon_deus_relic_01_armour_hit",
 			action_aborted_flow_event = "vfx_torch_swing_stop",
-			width_mod = 25,
-			use_precision_sweep = false,
-			damage_profile = "light_slashing_linesman",
-			hit_effect = "melee_hit_deus_relic_01",
-			damage_window_end = 0.28,
-			impact_sound_event = "Play_weapon_deus_relic_01_flesh_hit",
 			anim_end_event = "attack_finished",
-			dedicated_target_range = 2,
 			anim_event = "attack_swing_right",
+			damage_profile = "light_slashing_linesman",
+			damage_window_end = 0.28,
+			damage_window_start = 0.17,
+			dedicated_target_range = 2,
+			first_person_hit_anim = "shake_hit",
+			hit_effect = "melee_hit_deus_relic_01",
 			hit_stop_anim = "attack_hit",
+			impact_sound_event = "Play_weapon_deus_relic_01_flesh_hit",
+			kind = "sweep",
+			no_damage_impact_sound_event = "Play_weapon_deus_relic_01_armour_hit",
+			range_mod = 1.2,
 			total_time = 1.5,
+			use_precision_sweep = false,
+			width_mod = 25,
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
 			anim_time_scale = time_mod * 1,
 			buff_data = {
 				{
-					start_time = 0,
-					external_multiplier = 0.9,
+					buff_name = "planted_decrease_movement",
 					end_time = 0.5,
-					buff_name = "planted_decrease_movement"
-				}
+					external_multiplier = 0.9,
+					start_time = 0,
+				},
 			},
 			allowed_chain_actions = {
 				{
-					sub_action = "default_left",
+					action = "action_one",
+					end_time = 0.65,
+					input = "action_one",
 					start_time = 0.45,
-					action = "action_one",
-					end_time = 0.65,
-					input = "action_one"
-				},
-				{
 					sub_action = "default_left",
-					start_time = 0.5,
+				},
+				{
 					action = "action_one",
 					end_time = 0.65,
-					input = "action_one_hold"
-				},
-				{
-					sub_action = "default",
-					start_time = 0.65,
-					action = "action_one",
-					input = "action_one"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_two",
-					input = "action_two_hold"
-				},
-				{
-					sub_action = "default",
+					input = "action_one_hold",
 					start_time = 0.5,
+					sub_action = "default_left",
+				},
+				{
+					action = "action_one",
+					input = "action_one",
+					start_time = 0.65,
+					sub_action = "default",
+				},
+				{
+					action = "action_two",
+					input = "action_two_hold",
+					start_time = 0,
+					sub_action = "default",
+				},
+				{
 					action = "action_wield",
-					input = "action_wield"
-				}
+					input = "action_wield",
+					start_time = 0.5,
+					sub_action = "default",
+				},
 			},
-			hit_mass_count = ENDLESS_HIT_MASS_COUNT
+			hit_mass_count = ENDLESS_HIT_MASS_COUNT,
 		},
 		light_attack_bopp = {
-			damage_window_start = 0.15,
-			range_mod = 1.2,
-			kind = "sweep",
-			first_person_hit_anim = "shake_hit",
 			action_aborted_flow_event = "vfx_torch_swing_stop",
-			width_mod = 25,
-			no_damage_impact_sound_event = "Play_weapon_deus_relic_01_armour_hit",
-			use_precision_sweep = false,
-			damage_profile = "light_blunt_tank_spiked",
-			hit_effect = "melee_hit_deus_relic_01",
-			impact_explosion_template = "deus_relic_large",
-			damage_window_end = 0.28,
-			impact_sound_event = "Play_weapon_deus_relic_01_flesh_hit",
 			anim_end_event = "attack_finished",
-			dedicated_target_range = 2,
 			anim_event = "attack_swing_stab_02",
+			damage_profile = "light_blunt_tank_spiked",
+			damage_window_end = 0.28,
+			damage_window_start = 0.15,
+			dedicated_target_range = 2,
+			first_person_hit_anim = "shake_hit",
+			hit_effect = "melee_hit_deus_relic_01",
 			hit_stop_anim = "attack_hit",
+			impact_explosion_template = "deus_relic_large",
+			impact_sound_event = "Play_weapon_deus_relic_01_flesh_hit",
+			kind = "sweep",
+			no_damage_impact_sound_event = "Play_weapon_deus_relic_01_armour_hit",
+			range_mod = 1.2,
 			total_time = 1.5,
+			use_precision_sweep = false,
+			width_mod = 25,
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
 			anim_time_scale = time_mod * 1,
 			buff_data = {
 				{
-					start_time = 0,
-					external_multiplier = 0.9,
+					buff_name = "planted_decrease_movement",
 					end_time = 0.5,
-					buff_name = "planted_decrease_movement"
-				}
+					external_multiplier = 0.9,
+					start_time = 0,
+				},
 			},
 			allowed_chain_actions = {
 				{
-					sub_action = "default",
-					start_time = 0.5,
 					action = "action_one",
 					end_time = 1.25,
-					input = "action_one"
+					input = "action_one",
+					start_time = 0.5,
+					sub_action = "default",
 				},
 				{
-					sub_action = "default",
-					start_time = 0.5,
 					action = "action_one",
 					end_time = 1.25,
-					input = "action_one_hold"
+					input = "action_one_hold",
+					start_time = 0.5,
+					sub_action = "default",
 				},
 				{
-					sub_action = "default",
+					action = "action_one",
+					input = "action_one",
 					start_time = 1.25,
-					action = "action_one",
-					input = "action_one"
+					sub_action = "default",
 				},
 				{
-					sub_action = "default",
-					start_time = 0.5,
 					action = "action_two",
-					input = "action_two_hold"
+					input = "action_two_hold",
+					start_time = 0.5,
+					sub_action = "default",
 				},
 				{
-					sub_action = "default",
-					start_time = 0.5,
 					action = "action_wield",
-					input = "action_wield"
-				}
+					input = "action_wield",
+					start_time = 0.5,
+					sub_action = "default",
+				},
 			},
 			enter_function = function (attacker_unit, input_extension)
 				return input_extension:reset_release_input()
-			end
+			end,
 		},
 		push = {
-			damage_window_start = 0.05,
 			anim_end_event = "attack_finished",
-			outer_push_angle = 180,
+			anim_event = "attack_push",
+			attack_template = "basic_sweep_push",
+			charge_value = "action_push",
+			damage_profile_inner = "medium_push",
+			damage_profile_outer = "light_push",
+			damage_window_end = 0.2,
+			damage_window_start = 0.05,
+			dedicated_target_range = 2,
+			hit_effect = "melee_hit_deus_relic_01",
+			impact_sound_event = "Play_weapon_deus_relic_01_flesh_hit",
 			kind = "push_stagger",
 			no_damage_impact_sound_event = "Play_weapon_deus_relic_01_armour_hit",
-			attack_template = "basic_sweep_push",
-			damage_profile_outer = "light_push",
-			weapon_action_hand = "right",
+			outer_push_angle = 180,
 			push_angle = 100,
-			hit_effect = "melee_hit_deus_relic_01",
-			damage_window_end = 0.2,
-			impact_sound_event = "Play_weapon_deus_relic_01_flesh_hit",
-			charge_value = "action_push",
-			dedicated_target_range = 2,
-			anim_event = "attack_push",
-			damage_profile_inner = "medium_push",
 			total_time = 0.8,
+			weapon_action_hand = "right",
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
 			buff_data = {
 				{
-					start_time = 0,
-					external_multiplier = 1.25,
+					buff_name = "planted_fast_decrease_movement",
 					end_time = 0.2,
-					buff_name = "planted_fast_decrease_movement"
-				}
+					external_multiplier = 1.25,
+					start_time = 0,
+				},
 			},
 			allowed_chain_actions = {
 				{
-					sub_action = "default",
-					start_time = 0.3,
 					action = "action_one",
+					input = "action_one",
 					release_required = "action_two_hold",
-					input = "action_one"
+					start_time = 0.3,
+					sub_action = "default",
 				},
 				{
-					sub_action = "default",
-					start_time = 0.3,
 					action = "action_one",
-					release_required = "action_two_hold",
 					doubleclick_window = 0,
-					input = "action_one_hold"
+					input = "action_one_hold",
+					release_required = "action_two_hold",
+					start_time = 0.3,
+					sub_action = "default",
 				},
 				{
-					sub_action = "light_attack_bopp",
-					start_time = 0.3,
 					action = "action_one",
 					doubleclick_window = 0,
 					end_time = 0.8,
 					input = "action_one_hold",
+					start_time = 0.3,
+					sub_action = "light_attack_bopp",
 					hold_required = {
 						"action_two_hold",
-						"action_one_hold"
-					}
+						"action_one_hold",
+					},
 				},
 				{
-					sub_action = "default",
-					start_time = 0.3,
 					action = "action_two",
+					input = "action_two_hold",
 					send_buffer = true,
-					input = "action_two_hold"
+					start_time = 0.3,
+					sub_action = "default",
 				},
 				{
-					sub_action = "default",
-					start_time = 0.4,
 					action = "action_wield",
-					input = "action_wield"
-				}
+					input = "action_wield",
+					start_time = 0.4,
+					sub_action = "default",
+				},
 			},
 			push_radius = push_radius,
 			chain_condition_func = function (attacker_unit, input_extension)
 				local status_extension = ScriptUnit.extension(attacker_unit, "status_system")
 
 				return not status_extension:fatigued()
-			end
-		}
+			end,
+		},
 	},
 	action_two = {
 		default = {
-			cooldown = 0.15,
-			minimum_hold_time = 0.3,
 			anim_end_event = "parry_finished",
-			kind = "block",
-			hold_input = "action_two_hold",
 			anim_event = "parry_pose",
+			cooldown = 0.15,
+			hold_input = "action_two_hold",
+			kind = "block",
+			minimum_hold_time = 0.3,
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action"
 			end,
@@ -616,143 +619,143 @@ weapon_template.actions = {
 			end,
 			buff_data = {
 				{
-					start_time = 0,
+					buff_name = "planted_decrease_movement",
 					external_multiplier = 0.85,
-					buff_name = "planted_decrease_movement"
-				}
+					start_time = 0,
+				},
 			},
 			allowed_chain_actions = {
 				{
-					sub_action = "push",
-					start_time = 0.2,
 					action = "action_one",
 					doubleclick_window = 0,
 					input = "action_one",
+					start_time = 0.2,
+					sub_action = "push",
 					hold_required = {
-						"action_two_hold"
-					}
+						"action_two_hold",
+					},
 				},
 				{
-					sub_action = "default",
-					start_time = 0.3,
 					action = "action_one",
-					release_required = "action_two_hold",
 					doubleclick_window = 0,
-					input = "action_one"
+					input = "action_one",
+					release_required = "action_two_hold",
+					start_time = 0.3,
+					sub_action = "default",
 				},
 				{
-					sub_action = "default",
-					start_time = 0.4,
 					action = "action_wield",
-					input = "action_wield"
-				}
-			}
-		}
+					input = "action_wield",
+					start_time = 0.4,
+					sub_action = "default",
+				},
+			},
+		},
 	},
 	action_three = {
 		default = {
-			throw_time = 0.36,
 			ammo_usage = 1,
-			kind = "deus_relic_throw",
-			block_pickup = true,
-			speed = 4,
-			uninterruptible = true,
 			anim_event = "attack_throw",
+			block_pickup = true,
+			kind = "deus_relic_throw",
+			speed = 4,
+			throw_time = 0.36,
 			total_time = 1.08,
+			uninterruptible = true,
 			allowed_chain_actions = {},
 			angular_velocity = {
 				0,
 				11,
-				0
+				0,
 			},
 			throw_offset = {
 				0.2,
 				0,
-				0
+				0,
 			},
 			projectile_info = {
-				use_dynamic_collision = false,
 				collision_filter = "n/a",
-				projectile_unit_template_name = "deus_relic",
-				pickup_name = "deus_relic_01",
 				drop_on_player_destroyed = true,
-				projectile_unit_name = "units/weapons/player/pup_deus_relic_01/pup_deus_relic_01"
-			}
-		}
+				pickup_name = "deus_relic_01",
+				projectile_unit_name = "units/weapons/player/pup_deus_relic_01/pup_deus_relic_01",
+				projectile_unit_template_name = "deus_relic",
+				use_dynamic_collision = false,
+			},
+		},
 	},
 	action_wield = {
 		default = {
-			throw_time = 0.36,
 			ammo_usage = 1,
-			kind = "deus_relic_throw",
-			block_pickup = true,
-			speed = 4,
-			uninterruptible = true,
 			anim_event = "attack_throw",
+			block_pickup = true,
+			kind = "deus_relic_throw",
+			speed = 4,
+			throw_time = 0.36,
 			total_time = 1.08,
+			uninterruptible = true,
 			allowed_chain_actions = {},
 			angular_velocity = {
 				0,
 				11,
-				0
+				0,
 			},
 			throw_offset = {
 				0.2,
 				0,
-				0
+				0,
 			},
 			projectile_info = {
-				use_dynamic_collision = false,
 				collision_filter = "n/a",
-				projectile_unit_template_name = "deus_relic",
-				pickup_name = "deus_relic_01",
 				drop_on_player_destroyed = true,
-				projectile_unit_name = "units/weapons/player/pup_deus_relic_01/pup_deus_relic_01"
-			}
-		}
+				pickup_name = "deus_relic_01",
+				projectile_unit_name = "units/weapons/player/pup_deus_relic_01/pup_deus_relic_01",
+				projectile_unit_template_name = "deus_relic",
+				use_dynamic_collision = false,
+			},
+		},
 	},
 	action_dropped = {
 		default = {
-			throw_time = 0.36,
 			ammo_usage = 1,
-			kind = "deus_relic_throw",
-			block_pickup = true,
-			speed = 4,
-			uninterruptible = true,
 			anim_event = "attack_throw",
+			block_pickup = true,
+			kind = "deus_relic_throw",
+			speed = 4,
+			throw_time = 0.36,
 			total_time = 1.08,
+			uninterruptible = true,
 			allowed_chain_actions = {},
 			angular_velocity = {
 				0,
 				11,
-				0
+				0,
 			},
 			throw_offset = {
 				0.2,
 				0,
-				0
+				0,
 			},
 			projectile_info = {
-				use_dynamic_collision = false,
 				collision_filter = "n/a",
-				projectile_unit_template_name = "deus_relic",
-				pickup_name = "deus_relic_01",
 				drop_on_player_destroyed = true,
-				projectile_unit_name = "units/weapons/player/pup_deus_relic_01/pup_deus_relic_01"
-			}
-		}
+				pickup_name = "deus_relic_01",
+				projectile_unit_name = "units/weapons/player/pup_deus_relic_01/pup_deus_relic_01",
+				projectile_unit_template_name = "deus_relic",
+				use_dynamic_collision = false,
+			},
+		},
 	},
-	action_inspect = ActionTemplates.action_inspect
+	action_inspect = ActionTemplates.action_inspect,
 }
 weapon_template.ammo_data = {
 	ammo_hand = "right",
+	ammo_per_clip = 1,
 	destroy_when_out_of_ammo = true,
 	max_ammo = 1,
-	ammo_per_clip = 1,
-	reload_time = 0
+	reload_time = 0,
 }
 weapon_template.pickup_data = {
-	pickup_name = "deus_relic_01"
+	pickup_name = "deus_relic_01",
 }
 weapon_template.right_hand_unit = "units/weapons/player/wpn_deus_relic_01/wpn_deus_relic_01"
 weapon_template.right_hand_attachment_node_linking = AttachmentNodeLinking.one_handed_melee_weapon.right
@@ -769,13 +772,13 @@ weapon_template.outer_block_fatigue_point_multiplier = 2
 weapon_template.third_person_extension_template = "torch_unit_3p"
 weapon_template.buffs = {
 	change_dodge_distance = {
-		external_optional_multiplier = 1
+		external_optional_multiplier = 1,
 	},
 	change_dodge_speed = {
-		external_optional_multiplier = 1
-	}
+		external_optional_multiplier = 1,
+	},
 }
 
 return {
-	deus_relic = table.clone(weapon_template)
+	deus_relic = table.clone(weapon_template),
 }

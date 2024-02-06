@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/default_player_unit/attachment/player_unit_attachment_extension.lua
+
 require("scripts/helpers/attachment_utils")
 require("scripts/managers/backend/backend_utils")
 
@@ -13,7 +15,7 @@ PlayerUnitAttachmentExtension.init = function (self, extension_init_context, uni
 	self._profile_index = FindProfileIndex(self._profile.display_name)
 	self.current_item_buffs = {}
 	self._attachments = {
-		slots = {}
+		slots = {},
 	}
 	self._synced_slot_buffs = {}
 end
@@ -23,6 +25,7 @@ PlayerUnitAttachmentExtension.extensions_ready = function (self, world, unit)
 	self.career_extension = ScriptUnit.extension(unit, "career_system")
 	self._cosmetic_extension = ScriptUnit.extension(unit, "cosmetic_system")
 	self._tp_unit_mesh = self._cosmetic_extension:get_third_person_mesh_unit()
+
 	local attachments = self._attachments
 	local profile = self._profile
 	local attachment_slots = InventorySettings.attachment_slots
@@ -37,6 +40,7 @@ PlayerUnitAttachmentExtension.extensions_ready = function (self, world, unit)
 
 			if item then
 				local item_data = table.clone(item.data)
+
 				item_data.backend_id = item.backend_id
 
 				self:create_attachment(slot_name, item_data)
@@ -66,6 +70,7 @@ PlayerUnitAttachmentExtension.game_object_initialized = function (self, unit, un
 		local backend_id = slot_data.item_data.backend_id
 		local buffs = self:_get_property_and_trait_buffs(backend_id)
 		local synced_buffs = {}
+
 		synced_buffs = table.merge(synced_buffs, buffs.server)
 		synced_buffs = table.merge(synced_buffs, buffs.both)
 
@@ -104,7 +109,9 @@ PlayerUnitAttachmentExtension.create_attachment = function (self, slot_name, ite
 	end
 
 	local slot_data = AttachmentUtils.create_attachment(self._world, parent_unit, attachments, slot_name, item_data, false)
+
 	attachments.slots[slot_name] = slot_data
+
 	local item_data = slot_data.item_data
 	local item_template = BackendUtils.get_item_template(item_data)
 	local first_player_mode = ScriptUnit.extension(unit, "first_person_system").first_person_mode
@@ -157,7 +164,9 @@ PlayerUnitAttachmentExtension.remove_attachment = function (self, slot_name)
 	self:_remove_buffs(slot_name)
 
 	local item_data = slot_data.item_data
+
 	self._attachments.slots[slot_name] = nil
+
 	local network_manager = Managers.state.network
 	local unit_go_id = network_manager:unit_game_object_id(self._unit)
 	local slot_id = NetworkLookup.equipment_slots[slot_name]
@@ -249,7 +258,7 @@ PlayerUnitAttachmentExtension.create_attachment_in_slot = function (self, slot_n
 
 	self._item_to_spawn = {
 		slot_id = slot_name,
-		item_data = item_data
+		item_data = item_data,
 	}
 	self.resync_loadout_needed = true
 end
@@ -297,6 +306,7 @@ PlayerUnitAttachmentExtension.spawn_resynced_loadout = function (self, item_to_s
 	local backend_id = item_data.backend_id
 	local buffs = self:_get_property_and_trait_buffs(backend_id)
 	local synced_buffs = {}
+
 	synced_buffs = table.merge(synced_buffs, buffs.server)
 	synced_buffs = table.merge(synced_buffs, buffs.both)
 
@@ -332,7 +342,7 @@ end
 local buffs = {
 	client = {},
 	server = {},
-	both = {}
+	both = {},
 }
 
 PlayerUnitAttachmentExtension._get_property_and_trait_buffs = function (self, backend_id)

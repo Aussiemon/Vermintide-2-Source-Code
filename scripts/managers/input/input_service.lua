@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/input/input_service.lua
+
 InputService = class(InputService)
 
 InputService.init = function (self, input_service_name, keymaps_name, filters_name, block_reasons)
@@ -8,7 +10,7 @@ InputService.init = function (self, input_service_name, keymaps_name, filters_na
 		mouse = {},
 		keyboard = {},
 		network = {},
-		recording = {}
+		recording = {},
 	}
 	self.input_devices_data = {}
 	self.name = input_service_name
@@ -22,6 +24,7 @@ end
 
 InputService.map_device = function (self, input_device_type, input_device, input_device_data)
 	local input_device_type_list = self.mapped_devices[input_device_type]
+
 	input_device_type_list[#input_device_type_list + 1] = input_device
 	input_device_type_list.n = #input_device_type_list
 	self.input_devices_data[input_device] = input_device_data
@@ -55,7 +58,7 @@ InputService.get = function (self, input_data_name, consume)
 		local input_devices_data = self.input_devices_data
 		local name = self.name
 		local disabled_input_group = self.disabled_input_group
-		local action_value = nil
+		local action_value
 		local n = keymap_binding.n
 
 		if disabled_input_group then
@@ -75,7 +78,13 @@ InputService.get = function (self, input_data_name, consume)
 							local input_device_data = input_devices_data[input_device]
 
 							if input_device:active() and not input_device_data.blocked_access[name] then
-								action_value = key_action_type == "soft_button" and math_max(action_value or 0, input_device_data[key_action_type][key_index]) or key_action_type == "axis" and (not action_value or action_value and Vector3.length_squared(action_value) < 0.01) and input_device_data[key_action_type][key_index] or action_value or input_device_data[key_action_type][key_index]
+								if key_action_type == "soft_button" then
+									action_value = math_max(action_value or 0, input_device_data[key_action_type][key_index])
+								elseif key_action_type == "axis" and (not action_value or action_value and Vector3.length_squared(action_value) < 0.01) then
+									action_value = input_device_data[key_action_type][key_index]
+								else
+									action_value = action_value or input_device_data[key_action_type][key_index]
+								end
 
 								if action_value == true then
 									if input_device_data.consumed_input[key_index] then
@@ -139,6 +148,7 @@ InputService.get_active_keymaps = function (self, optional_platform, optional_in
 		local active_controller = Managers.input:get_most_recent_device()
 		local controller_type = active_controller and active_controller.type()
 		local is_ps_pad = controller_type == "sce_pad"
+
 		platform = is_ps_pad and "ps_pad" or "xb1"
 	end
 
@@ -172,11 +182,10 @@ InputService.get_active_filters = function (self, optional_platform, optional_in
 
 	if not optional_platform and IS_WINDOWS and self.input_manager:is_device_active("gamepad") then
 		platform = "xb1"
+
 		local most_recent_device = Managers.input:get_most_recent_device()
 
-		if most_recent_device.type() == "sce_pad" then
-			platform = "ps_pad"
-		end
+		platform = most_recent_device.type() == "sce_pad" and "ps_pad" or platform
 	end
 
 	if not optional_platform and IS_XB1 and (self.input_manager:is_device_active("keyboard") or self.input_manager:is_device_active("mouse")) then
@@ -210,8 +219,8 @@ InputService.add_keymap = function (self, keymap_name)
 
 	keymaps[keymap_name] = {
 		input_mappings = {
-			n = 0
-		}
+			n = 0,
+		},
 	}
 end
 
@@ -230,21 +239,26 @@ InputService.generate_keybinding_setting = function (self)
 
 	for keymap_name, keymap_data in pairs(keymaps) do
 		local new_keymap_data = {}
+
 		new_keymaps[keymap_name] = {
 			input_mappings = new_keymap_data,
-			combination_type = keymap_data.combination_type
+			combination_type = keymap_data.combination_type,
 		}
 
 		for i = 1, keymap_data.input_mappings.n do
 			local new_binding = {}
+
 			new_keymap_data[i] = new_binding
+
 			local current_binding = keymap_data.input_mappings[i]
 
 			for j = 1, current_binding.n, 3 do
 				local device_type = current_binding[j]
+
 				new_binding[j] = device_type
+
 				local input_device = InputAux.input_device_mapping[device_type][1]
-				local key_name = nil
+				local key_name
 
 				if current_binding[j + 2] == "axis" then
 					key_name = input_device.axis_name(current_binding[j + 1])
@@ -270,6 +284,7 @@ InputService.generate_filters_setting = function (self)
 	if input_filters then
 		for filter_output, filter_data in pairs(input_filters) do
 			local new_filter_data = table.clone(filter_data.function_data)
+
 			new_filter_data.filter_type = filter_data.filter_type
 			new_filters[filter_output] = new_filter_data
 		end

@@ -1,11 +1,14 @@
+﻿-- chunkname: @scripts/settings/dlcs/bless/bless_bot_conditions.lua
+
 local buff_perks = require("scripts/unit_extensions/default_player_unit/buffs/settings/buff_perk_names")
+
 BTConditions.can_activate = BTConditions.can_activate or {}
 BTConditions.can_activate_non_combat = BTConditions.can_activate_non_combat or {}
 
 table.merge_recursive(BTConditions.ability_check_categories, {
 	activate_ability = {
-		wh_priest = true
-	}
+		wh_priest = true,
+	},
 })
 
 local WP_MAX_ASSIST_DIST = 15
@@ -45,13 +48,13 @@ BTConditions.can_activate.wh_priest = function (blackboard)
 	end
 
 	if not should_target_ally then
-		local ally_too_far = blackboard.ally_distance and WP_MAX_ASSIST_DIST < blackboard.ally_distance
+		local ally_too_far = blackboard.ally_distance and blackboard.ally_distance > WP_MAX_ASSIST_DIST
 		local target = blackboard.target_unit
 		local target_blackboard = BLACKBOARDS[target]
 		local target_breed = target_blackboard and target_blackboard.breed
 		local target_threat = target_breed and target_breed.threat_value or 0
 
-		if WP_MIN_THREAT <= target_threat then
+		if target_threat >= WP_MIN_THREAT then
 			local self_unit = blackboard.unit
 			local self_position = POSITION_LOOKUP[self_unit]
 			local proximite_enemies = blackboard.proximite_enemies
@@ -72,7 +75,7 @@ BTConditions.can_activate.wh_priest = function (blackboard)
 					if ally_too_far then
 						close_threat_value = close_threat_value + breed_threat_value
 
-						if WP_THREAT_THRESHOLD < close_threat_value then
+						if close_threat_value > WP_THREAT_THRESHOLD then
 							break
 						end
 					elseif Vector3.distance_squared(self_position, enemy_position) <= WP_CLOSE_DISTANCE_SQ then
@@ -80,7 +83,7 @@ BTConditions.can_activate.wh_priest = function (blackboard)
 					else
 						far_threat_value = far_threat_value + breed_threat_value
 
-						if WP_THREAT_THRESHOLD < far_threat_value then
+						if far_threat_value > WP_THREAT_THRESHOLD then
 							break
 						end
 					end
@@ -91,16 +94,16 @@ BTConditions.can_activate.wh_priest = function (blackboard)
 				far_threat_value = math.max(close_threat_value, far_threat_value)
 			end
 
-			if WP_THREAT_THRESHOLD < far_threat_value then
+			if far_threat_value > WP_THREAT_THRESHOLD then
 				should_target_ally = true
-			elseif WP_THREAT_THRESHOLD < close_threat_value then
+			elseif close_threat_value > WP_THREAT_THRESHOLD then
 				should_target_self = true
 			end
 		end
 	end
 
 	if should_target_ally or should_target_self then
-		local target_to_shield = nil
+		local target_to_shield
 
 		if should_target_ally and not is_target_already_shielded(target_ally_unit) then
 			target_to_shield = target_ally_unit

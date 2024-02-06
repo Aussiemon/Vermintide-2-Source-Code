@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/human/ai_player_unit/ai_shield_user_extension.lua
+
 AIShieldUserExtension = class(AIShieldUserExtension)
 
 AIShieldUserExtension.init = function (self, extension_init_context, unit, extension_init_data)
@@ -18,6 +20,7 @@ AIShieldUserExtension.extensions_ready = function (self, world, unit)
 	local blackboard = ai_base_extension:blackboard()
 	local spawn_type = blackboard.spawn_type
 	local is_blocking = spawn_type == "horde" or spawn_type == "horde_hidden"
+
 	self.is_blocking = is_blocking
 	self._blackboard = blackboard
 	self.blocked_previous_attack = false
@@ -64,10 +67,13 @@ AIShieldUserExtension.break_shield = function (self)
 	self:set_is_blocking(false)
 
 	self.shield_broken = true
+
 	local unit = self._unit
 	local blackboard = self._blackboard
+
 	blackboard.shield_breaking_hit = true
 	blackboard.shield_user = false
+
 	local ai_inventory_extension = ScriptUnit.extension(unit, "ai_inventory_system")
 	local inventory_item_definitions = ai_inventory_extension.inventory_item_definitions
 	local reason = "shield_break"
@@ -104,7 +110,7 @@ AIShieldUserExtension.can_block_attack = function (self, attacker_unit, trueflig
 	local hit_unit_pos = Unit.world_position(unit, 0)
 	local attacker_to_hit_dir = Vector3.normalize(hit_unit_pos - attacker_unit_pos)
 	local hit_unit_direction = Quaternion.forward(Unit.local_rotation(unit, 0))
-	local hit_angle, behind_target = nil
+	local hit_angle, behind_target
 
 	if trueflight_blocking then
 		hit_angle = Vector3.dot(hit_unit_direction, hit_direction)

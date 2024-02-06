@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/chaos_sorcerer/bt_quick_teleport_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTQuickTeleportAction = class(BTQuickTeleportAction, BTNode)
@@ -18,6 +20,7 @@ end
 
 BTQuickTeleportAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
+
 	blackboard.action = action
 	blackboard.active_node = BTQuickTeleportAction
 
@@ -56,6 +59,7 @@ BTQuickTeleportAction.leave = function (self, unit, blackboard, t, reason, destr
 	blackboard.quick_teleport_exit_pos = nil
 	blackboard.active_node = nil
 	blackboard.quick_teleport = false
+
 	local navigation_extension = blackboard.navigation_extension
 
 	navigation_extension:set_enabled(true)
@@ -126,7 +130,7 @@ end
 
 BTQuickTeleportAction.anim_cb_teleport_start_finished = function (self, unit, blackboard)
 	local entrance_position = POSITION_LOOKUP[unit]
-	local teleport_position = nil
+	local teleport_position
 	local teleport_pos_func = blackboard.action.teleport_pos_func
 
 	if teleport_pos_func then
@@ -181,6 +185,7 @@ BTQuickTeleportAction.anim_cb_teleport_start_finished = function (self, unit, bl
 	end
 
 	local t = Managers.time:time("game")
+
 	blackboard.teleport_at_t = t
 end
 

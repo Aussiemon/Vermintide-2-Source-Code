@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/default_player_unit/ping/ping_target_extension.lua
+
 PingTargetExtension = class(PingTargetExtension)
 
 PingTargetExtension.init = function (self, extension_init_context, unit, extension_init_data)
@@ -22,9 +24,7 @@ end
 PingTargetExtension.set_pinged = function (self, pinged, flash, pinger_unit, show_outline)
 	local owner_unit = self._unit
 
-	if show_outline == nil then
-		show_outline = true
-	end
+	show_outline = show_outline == nil and true or show_outline
 
 	if pinged then
 		self._pinged = self._pinged + 1
@@ -36,8 +36,11 @@ PingTargetExtension.set_pinged = function (self, pinged, flash, pinger_unit, sho
 		if show_outline then
 			if pinged then
 				local ping_outline_template = table.shallow_copy(OutlineSettings.templates.ping_unit, true)
+
 				ping_outline_template.method = self._outline_extension.pinged_method
+
 				local outline_id = self._outline_extension:add_outline(ping_outline_template)
+
 				self._outline_ids[pinger_unit] = outline_id
 			else
 				local outline_id = self._outline_ids[pinger_unit]

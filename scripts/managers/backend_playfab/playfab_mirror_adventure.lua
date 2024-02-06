@@ -1,6 +1,9 @@
+﻿-- chunkname: @scripts/managers/backend_playfab/playfab_mirror_adventure.lua
+
 require("scripts/managers/backend_playfab/playfab_mirror_base")
 
 local PlayFabClientApi = require("PlayFab.PlayFabClientApi")
+
 PlayFabMirrorAdventure = class(PlayFabMirrorAdventure, PlayFabMirrorBase)
 
 PlayFabMirrorAdventure.init = function (self, signin_result)
@@ -14,8 +17,8 @@ PlayFabMirrorAdventure.init = function (self, signin_result)
 			"slot_necklace",
 			"slot_trinket_1",
 			"slot_ring",
-			"slot_frame"
-		}
+			"slot_frame",
+		},
 	}
 
 	PlayFabMirrorBase.init(self, signin_result)
@@ -61,7 +64,7 @@ PlayFabMirrorAdventure._check_weaves_loadout = function (self)
 			local weave_loadout = cjson.decode(weave_loadout_string)
 			local broken_slots = self:_set_inital_career_data_weaves(career_name, weave_loadout, {
 				"slot_melee",
-				"slot_ranged"
+				"slot_ranged",
 			})
 
 			if broken_slots then
@@ -81,6 +84,7 @@ end
 PlayFabMirrorAdventure.fix_weaves_career_data_request_cb = function (self, result)
 	self.broken_slots_data = nil
 	self._num_items_to_load = self._num_items_to_load - 1
+
 	local function_result = result.FunctionResult
 
 	if function_result.num_items_granted > 0 then

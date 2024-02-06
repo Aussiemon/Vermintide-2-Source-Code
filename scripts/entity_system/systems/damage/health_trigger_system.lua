@@ -1,8 +1,11 @@
+﻿-- chunkname: @scripts/entity_system/systems/damage/health_trigger_system.lua
+
 require("scripts/settings/dialogue_settings")
 
 HealthTriggerSystem = class(HealthTriggerSystem, ExtensionSystemBase)
+
 local extensions = {
-	"HealthTriggerExtension"
+	"HealthTriggerExtension",
 }
 
 HealthTriggerSystem.init = function (self, entity_system_creation_context, system_name)
@@ -38,6 +41,7 @@ end
 
 HealthTriggerSystem.extensions_ready = function (self, world, unit, extension_name)
 	local extension = self.unit_extensions[unit]
+
 	extension.health_extension = ScriptUnit.extension(unit, "health_system")
 
 	assert(extension.health_extension)
@@ -63,6 +67,7 @@ HealthTriggerSystem.update = function (self, context, t)
 			for _, amount in ipairs(health_trigger_levels) do
 				if amount < last_health_percent and current_health_percent <= amount then
 					local event_data = FrameTable.alloc_table()
+
 					event_data.trigger_type = "decreasing"
 					event_data.current_amount = current_health_percent
 					event_data.last_amount = last_health_percent
@@ -74,6 +79,7 @@ HealthTriggerSystem.update = function (self, context, t)
 					SurroundingAwareSystem.add_event(unit, "enemy_health_trigger", DialogueSettings.default_view_distance, "trigger_type", "decreasing", "current_amount", event_data.current_amount, "last_amount", event_data.last_amount, "target_name", target_name)
 				elseif last_health_percent < amount and amount <= current_health_percent then
 					local event_data = FrameTable.alloc_table()
+
 					event_data.trigger_type = "increasing"
 					event_data.current_amount = current_health_percent
 					event_data.last_amount = last_health_percent
@@ -89,8 +95,11 @@ HealthTriggerSystem.update = function (self, context, t)
 
 		if t > extension.tick_time + rapid_health_loss.tick_time then
 			extension.tick_time = t
+
 			local last_health_tick_percent = extension.last_health_tick_percent
+
 			extension.last_health_tick_percent = current_health_percent
+
 			local health_loss = last_health_tick_percent - current_health_percent
 			local health_loss_threshold = rapid_health_loss.tick_loss_threshold
 			local status_extension = ScriptUnit.extension(unit, "status_system")
@@ -98,6 +107,7 @@ HealthTriggerSystem.update = function (self, context, t)
 			if health_loss_threshold < health_loss and not status_extension:is_wounded() and current_health_percent > 0 then
 				local target_name = ScriptUnit.extension(unit, "dialogue_system").context.player_profile
 				local event_data = FrameTable.alloc_table()
+
 				event_data.trigger_type = "losing_rapidly"
 				event_data.target_name = target_name
 

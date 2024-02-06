@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/hero_view/windows/definitions/hero_window_loadout_console_definitions.lua
+
 local window_default_settings = UISettings.game_start_windows
 local window_background = window_default_settings.background
 local window_frame = window_default_settings.frame
@@ -15,192 +17,194 @@ local scenegraph_definition = {
 	area_right = console_menu_scenegraphs.area_right,
 	area_divider = console_menu_scenegraphs.area_divider,
 	loadout_grid = {
-		vertical_alignment = "top",
-		parent = "area_left",
 		horizontal_alignment = "left",
+		parent = "area_left",
+		vertical_alignment = "top",
 		size = {
 			80,
-			window_size[1]
+			window_size[1],
 		},
 		position = {
 			90,
 			-250,
-			1
-		}
+			1,
+		},
 	},
 	disclaimer_text_background = {
-		vertical_alignment = "top",
-		parent = "screen",
 		horizontal_alignment = "right",
+		parent = "screen",
+		vertical_alignment = "top",
 		size = {
 			520,
-			60
+			60,
 		},
 		position = {
 			-20,
 			-80,
-			9
-		}
+			9,
+		},
 	},
 	disclaimer_text = {
-		vertical_alignment = "center",
-		parent = "disclaimer_text_background",
 		horizontal_alignment = "center",
+		parent = "disclaimer_text_background",
+		vertical_alignment = "center",
 		size = {
 			520,
-			50
+			50,
 		},
 		position = {
 			0,
 			0,
-			10
-		}
-	}
+			10,
+		},
+	},
 }
 local disclaimer_text_style = {
-	vertical_alignment = "bottom",
 	font_size = 20,
-	localize = false,
-	horizontal_alignment = "center",
-	word_wrap = true,
 	font_type = "hell_shark",
+	horizontal_alignment = "center",
+	localize = false,
+	vertical_alignment = "bottom",
+	word_wrap = true,
 	text_color = Colors.get_color_table_with_alpha("font_default", 255),
 	offset = {
 		0,
 		0,
-		2
-	}
+		2,
+	},
 }
 local num_equipment_slots = #InventorySettings.equipment_slots
 local widgets = {
 	loadout_grid = UIWidgets.create_loadout_grid_console("loadout_grid", scenegraph_definition.loadout_grid.size, num_equipment_slots, loadout_grid_spacing, nil, true),
 	disclaimer_text = UIWidgets.create_simple_text(Localize("inventory_morris_note"), "disclaimer_text", scenegraph_definition.disclaimer_text.size, nil, disclaimer_text_style),
-	disclaimer_text_background = UIWidgets.create_rect_with_outer_frame("disclaimer_text_background", scenegraph_definition.disclaimer_text_background.size, "frame_outer_fade_02", nil, Colors.get_color_table_with_alpha("black", 125))
+	disclaimer_text_background = UIWidgets.create_rect_with_outer_frame("disclaimer_text_background", scenegraph_definition.disclaimer_text_background.size, "frame_outer_fade_02", nil, Colors.get_color_table_with_alpha("black", 125)),
 }
 local generic_input_actions = {
 	default = {
 		{
+			description_text = "input_description_navigate",
+			ignore_keybinding = true,
 			input_action = "d_vertical",
 			priority = 1,
-			description_text = "input_description_navigate",
-			ignore_keybinding = true
 		},
 		{
+			description_text = "start_menu_swap_inventory",
 			input_action = "show_gamercard",
 			priority = 2,
-			description_text = "start_menu_swap_inventory"
 		},
 		{
+			description_text = "start_menu_customize_item",
 			input_action = "refresh",
 			priority = 3,
-			description_text = "start_menu_customize_item"
 		},
 		{
+			description_text = "input_description_select",
 			input_action = "confirm",
 			priority = 4,
-			description_text = "input_description_select"
 		},
 		{
+			description_text = "input_description_close",
 			input_action = "back",
 			priority = 5,
-			description_text = "input_description_close"
-		}
+		},
 	},
 	default_no_customization = {
 		{
+			description_text = "input_description_navigate",
+			ignore_keybinding = true,
 			input_action = "d_vertical",
 			priority = 1,
-			description_text = "input_description_navigate",
-			ignore_keybinding = true
 		},
 		{
+			description_text = "start_menu_swap_inventory",
 			input_action = "show_gamercard",
 			priority = 2,
-			description_text = "start_menu_swap_inventory"
 		},
 		{
+			description_text = "input_description_select",
 			input_action = "confirm",
 			priority = 4,
-			description_text = "input_description_select"
 		},
 		{
+			description_text = "input_description_close",
 			input_action = "back",
 			priority = 5,
-			description_text = "input_description_close"
-		}
+		},
 	},
 	details = {
 		{
+			description_text = "input_description_navigate",
+			ignore_keybinding = true,
 			input_action = "d_vertical",
 			priority = 1,
-			description_text = "input_description_navigate",
-			ignore_keybinding = true
 		},
 		{
+			description_text = "input_description_scroll_details",
+			ignore_keybinding = true,
 			input_action = "right_stick",
 			priority = 2,
-			description_text = "input_description_scroll_details",
-			ignore_keybinding = true
 		},
 		{
+			description_text = "input_description_toggle_hero_details",
+			ignore_keybinding = true,
 			input_action = "right_thumb",
 			priority = 3,
-			description_text = "input_description_toggle_hero_details",
-			ignore_keybinding = true
 		},
 		{
+			description_text = "input_description_select",
 			input_action = "confirm",
 			priority = 4,
-			description_text = "input_description_select"
 		},
 		{
+			description_text = "input_description_close",
 			input_action = "back",
 			priority = 5,
-			description_text = "input_description_close"
-		}
-	}
+		},
+	},
 }
 local animation_definitions = {
 	on_enter = {
 		{
+			end_progress = 0.3,
 			name = "fade_in",
 			start_progress = 0,
-			end_progress = 0.3,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				params.render_settings.alpha_multiplier = 0
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_progress = math.easeOutCubic(progress)
+
 				params.render_settings.alpha_multiplier = anim_progress
 				ui_scenegraph.area_left.local_position[1] = scenegraph_definition.area_left.position[1] + math.floor(-100 * (1 - anim_progress))
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				return
-			end
-		}
+			end,
+		},
 	},
 	on_exit = {
 		{
+			end_progress = 0.3,
 			name = "fade_out",
 			start_progress = 0,
-			end_progress = 0.3,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				params.render_settings.alpha_multiplier = 1
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_progress = math.easeOutCubic(progress)
+
 				params.render_settings.alpha_multiplier = 1 - anim_progress
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				return
-			end
-		}
-	}
+			end,
+		},
+	},
 }
 
 return {
 	widgets = widgets,
 	generic_input_actions = generic_input_actions,
 	scenegraph_definition = scenegraph_definition,
-	animation_definitions = animation_definitions
+	animation_definitions = animation_definitions,
 }

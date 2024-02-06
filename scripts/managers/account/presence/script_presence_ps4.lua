@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/account/presence/script_presence_ps4.lua
+
 ScriptPresence = class(ScriptPresence)
 
 ScriptPresence.init = function (self)

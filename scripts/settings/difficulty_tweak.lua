@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/difficulty_tweak.lua
+
 local tweak_range = 10
 
 local function get_value_for_difficulty(difficulty, value_table)
@@ -91,6 +93,6 @@ DifficultyTweak = DifficultyTweak or {
 		end,
 		closest_tweak_match = function (difficulty, tweak, table)
 			return nearest_table_value(difficulty, tweak, table)
-		end
-	}
+		end,
+	},
 }

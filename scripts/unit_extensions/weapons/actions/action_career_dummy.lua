@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/weapons/actions/action_career_dummy.lua
+
 ActionCareerDummy = class(ActionCareerDummy, ActionDummy)
 
 ActionCareerDummy.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
@@ -11,6 +13,7 @@ ActionCareerDummy.client_owner_start_action = function (self, new_action, t, cha
 	ActionCareerDummy.super.client_owner_start_action(self, new_action, t, chain_action_data, power_level)
 
 	self.current_action = new_action
+
 	local inventory_extension = ScriptUnit.extension(self.owner_unit, "inventory_system")
 
 	inventory_extension:check_and_drop_pickups("career_ability")

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_interest_point_approach_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTInterestPointApproachAction = class(BTInterestPointApproachAction, BTNode)
@@ -27,7 +29,9 @@ BTInterestPointApproachAction.enter = function (self, unit, blackboard, t)
 	blackboard.ip_state = "moving_to_target"
 	blackboard.ip_target_position = point.position
 	blackboard.ip_target_rotation = point.rotation
+
 	local group_blackboard = blackboard.group_blackboard
+
 	group_blackboard.rats_currently_moving_to_ip = group_blackboard.rats_currently_moving_to_ip + 1
 
 	Managers.state.network:anim_event(unit, "move_fwd")
@@ -39,6 +43,7 @@ BTInterestPointApproachAction.leave = function (self, unit, blackboard, t, reaso
 	blackboard.ip_state = nil
 	blackboard.ip_target_position = nil
 	blackboard.ip_target_rotation = nil
+
 	local breed = blackboard.breed
 	local allowed_layers = breed.allowed_layers
 	local default_move_speed = AiUtils.get_default_breed_move_speed(unit, blackboard)
@@ -64,6 +69,7 @@ BTInterestPointApproachAction.leave = function (self, unit, blackboard, t, reaso
 	end
 
 	local group_blackboard = blackboard.group_blackboard
+
 	group_blackboard.rats_currently_moving_to_ip = group_blackboard.rats_currently_moving_to_ip - 1
 end
 

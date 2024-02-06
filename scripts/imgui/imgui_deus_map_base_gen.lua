@@ -1,76 +1,79 @@
+﻿-- chunkname: @scripts/imgui/imgui_deus_map_base_gen.lua
+
 ImguiDeusMapBaseGen = class(ImguiDeusMapBaseGen)
+
 local journey_names = AvailableJourneyOrder
 local layout_editable_keys = {
 	{
+		key = "SPRING_CONSTANT",
 		type = "FLOAT",
-		key = "SPRING_CONSTANT"
 	},
 	{
+		key = "FORCE_MAX",
 		type = "FLOAT",
-		key = "FORCE_MAX"
 	},
 	{
+		key = "REPEL_CONSTANT",
 		type = "FLOAT",
-		key = "REPEL_CONSTANT"
 	},
 	{
+		key = "DEFAULT_MASS",
 		type = "FLOAT",
-		key = "DEFAULT_MASS"
 	},
 	{
+		key = "START_MASS",
 		type = "FLOAT",
-		key = "START_MASS"
 	},
 	{
+		key = "END_MASS",
 		type = "FLOAT",
-		key = "END_MASS"
 	},
 	{
+		key = "NODE_SPEED",
 		type = "FLOAT",
-		key = "NODE_SPEED"
 	},
 	{
+		key = "DAMPING_FACTOR",
 		type = "FLOAT",
-		key = "DAMPING_FACTOR"
 	},
 	{
+		key = "WIDTH",
 		type = "INT",
-		key = "WIDTH"
 	},
 	{
+		key = "HEIGHT",
 		type = "INT",
-		key = "HEIGHT"
 	},
 	{
+		key = "LAYOUT_TICKS",
 		type = "INT",
-		key = "LAYOUT_TICKS"
-	}
+	},
 }
 local base_gen_editable_keys = {
 	{
+		key = "MAX_STRAIGHT_LINE",
 		type = "INT",
-		key = "MAX_STRAIGHT_LINE"
 	},
 	{
+		key = "MAX_IDEAL_NODES",
 		type = "INT",
-		key = "MAX_IDEAL_NODES"
 	},
 	{
+		key = "MIN_NODES",
 		type = "INT",
-		key = "MIN_NODES"
 	},
 	{
+		key = "MAX_CONNECTIONS_PER_NODE",
 		type = "INT",
-		key = "MAX_CONNECTIONS_PER_NODE"
 	},
 	{
+		key = "MAX_INCOMING_CONNECTIONS_PER_NODE",
 		type = "INT",
-		key = "MAX_INCOMING_CONNECTIONS_PER_NODE"
 	},
 	{
+		key = "MAX_PATHS",
 		type = "INT",
-		key = "MAX_PATHS"
-	}
+	},
 }
 
 local function are_very_different(val1, val2)
@@ -119,6 +122,7 @@ local function serialize_table(string_array, indent, table)
 		end
 
 		string_array[#string_array + 1] = " = "
+
 		local value_type = type(value)
 
 		if value_type == "string" then
@@ -145,9 +149,9 @@ local function serialize_table(string_array, indent, table)
 end
 
 local function serialize_graphs(graphs)
-	local string_array = {
-		[#string_array + 1] = "return {\n"
-	}
+	local string_array = {}
+
+	string_array[#string_array + 1] = "return {\n"
 
 	serialize_table(string_array, 1, graphs)
 
@@ -170,8 +174,8 @@ ImguiDeusMapBaseGen.init = function (self)
 end
 
 local GEN_STATE = {
+	BASE_GEN = 1,
 	LAYOUT = 2,
-	BASE_GEN = 1
 }
 
 ImguiDeusMapBaseGen.update = function (self, t, dt)
@@ -204,7 +208,7 @@ ImguiDeusMapBaseGen.update = function (self, t, dt)
 			end
 		end
 
-		local generator_done, error_message, nodes = nil
+		local generator_done, error_message, nodes
 
 		if not self._paused or self._next_step then
 			if self._draw_realtime then
@@ -214,7 +218,7 @@ ImguiDeusMapBaseGen.update = function (self, t, dt)
 			else
 				local time_start = os.clock()
 
-				while not generator_done and os.clock() - time_start <= 0.01 do
+				while not generator_done and not (os.clock() - time_start > 0.01) do
 					generator_done, error_message, nodes = self._base_graph_generator()
 				end
 
@@ -234,7 +238,7 @@ ImguiDeusMapBaseGen.update = function (self, t, dt)
 			end
 		end
 	elseif self._generation_state == GEN_STATE.LAYOUT then
-		local layed_out_graph = nil
+		local layed_out_graph
 
 		if not self._paused or self._next_step then
 			if self._draw_realtime then
@@ -246,7 +250,8 @@ ImguiDeusMapBaseGen.update = function (self, t, dt)
 					end
 				end
 
-				local done = nil
+				local done
+
 				done, layed_out_graph = self._layout_updater()
 				self._nodes_being_generated = layed_out_graph
 
@@ -287,6 +292,7 @@ end
 
 ImguiDeusMapBaseGen._reset_configs_for_journey = function (self)
 	local journey_name = journey_names[self._journey_index]
+
 	self._original_layout_config = DEUS_MAP_LAYOUT_SETTINGS[journey_name] or DEUS_MAP_LAYOUT_SETTINGS.default
 	self._layout_config = self._layout_configs[journey_name] or self._layout_configs.default
 	self._original_base_config = DEUS_BASE_MAP_GEN_SETTINGS[journey_name] or DEUS_BASE_MAP_GEN_SETTINGS.default
@@ -300,6 +306,7 @@ ImguiDeusMapBaseGen.draw = function (self, is_open)
 		Imgui.text("Saving for " .. journey_names[self._journey_index])
 	else
 		local prev_journey_index = self._journey_index
+
 		self._journey_index = Imgui.combo("Journey to change", self._journey_index, journey_names)
 
 		if prev_journey_index ~= self._journey_index then
@@ -358,7 +365,7 @@ ImguiDeusMapBaseGen.draw = function (self, is_open)
 				if Imgui.button("Save seed") then
 					if not self._saved_graphs then
 						self._saved_graphs = {
-							[self._seed] = self._graph_to_save
+							[self._seed] = self._graph_to_save,
 						}
 					else
 						self._saved_graphs[self._seed] = self._graph_to_save

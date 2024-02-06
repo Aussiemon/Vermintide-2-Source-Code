@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/account/account_manager_xb1.lua
+
 require("scripts/managers/account/presence/script_presence_xb1")
 require("scripts/managers/account/leaderboards/script_leaderboards_xb1")
 require("scripts/managers/account/script_connected_storage_token")
@@ -9,7 +11,7 @@ require("scripts/managers/account/xbox_marketplace/script_xbox_marketplace")
 
 AccountManager = class(AccountManager)
 AccountManager.VERSION = "xb1"
-AccountManager.SIGNED_OUT = 4294967295.0
+AccountManager.SIGNED_OUT = 4294967295
 AccountManager.QUERY_BANDWIDTH_TIMER = 60
 AccountManager.QUERY_BANDWIDTH_FAIL_TIMER = 10
 AccountManager.QUERY_FAIL_AMOUNT = 5
@@ -22,43 +24,43 @@ local CONSOLE_TYPE_SETTINGS = {
 	[XboxOne.CONSOLE_TYPE_UNKNOWN] = {
 		allow_dismemberment = false,
 		console_type_name = "Unknown",
-		should_throttle = true
+		should_throttle = true,
 	},
 	[XboxOne.CONSOLE_TYPE_XBOX_ONE] = {
 		allow_dismemberment = false,
 		console_type_name = "Xbox One",
-		should_throttle = true
+		should_throttle = true,
 	},
 	[XboxOne.CONSOLE_TYPE_XBOX_ONE_S] = {
 		allow_dismemberment = false,
 		console_type_name = "Xbox One S",
-		should_throttle = true
+		should_throttle = true,
 	},
 	[XboxOne.CONSOLE_TYPE_XBOX_ONE_X] = {
 		allow_dismemberment = false,
 		console_type_name = "Xbox One X",
-		should_throttle = true
+		should_throttle = true,
 	},
 	[XboxOne.CONSOLE_TYPE_XBOX_ONE_X_DEVKIT] = {
 		allow_dismemberment = false,
 		console_type_name = "Xbox One X Devkit",
-		should_throttle = true
+		should_throttle = true,
 	},
 	[XboxOne.CONSOLE_TYPE_XBOX_LOCKHART] = {
 		allow_dismemberment = true,
 		console_type_name = "Xbox Series S",
-		should_throttle = false
+		should_throttle = false,
 	},
 	[XboxOne.CONSOLE_TYPE_XBOX_ANACONDA] = {
 		allow_dismemberment = true,
 		console_type_name = "Xbox Series X",
-		should_throttle = false
+		should_throttle = false,
 	},
 	[XboxOne.CONSOLE_TYPE_XBOX_SERIES_X_DEVKIT] = {
 		allow_dismemberment = true,
 		console_type_name = "Xbox Series X Devkit",
-		should_throttle = false
-	}
+		should_throttle = false,
+	},
 }
 
 AccountManager.init = function (self)
@@ -80,7 +82,9 @@ AccountManager.init = function (self)
 	self._unlocked_achievements = {}
 	self._offline_achievement_progress = {}
 	self._social_graph_callbacks = {}
+
 	local region_info = XboxLive.region_info()
+
 	self._country_code = string.lower(region_info.GEO_ISO2)
 end
 
@@ -286,6 +290,7 @@ AccountManager._check_trigger_popups = function (self)
 
 	if self._popup_id and not Managers.popup:has_popup_with_id(self._popup_id) then
 		self._popup_id = nil
+
 		local wanted_profile_id = self._user_info.xbox_user_id
 		local wanted_profile = self._gamertags[wanted_profile_id]
 		local cropped_profile = wanted_profile and Managers.popup:fit_text_width_to_popup(wanted_profile) or "?"
@@ -332,7 +337,7 @@ end
 AccountManager.setup_friendslist = function (self)
 	if rawget(_G, "LobbyInternal") and LobbyInternal.client then
 		local events = {
-			Social.last_social_events()
+			Social.last_social_events(),
 		}
 
 		table.dump(events, nil, 2)
@@ -355,7 +360,7 @@ end
 AccountManager._update_social_manager = function (self, dt, t)
 	if self._added_local_user_to_graph then
 		local events = {
-			Social.last_social_events()
+			Social.last_social_events(),
 		}
 
 		if table.contains(events, SocialEventType.GRAPH_LOADED) then
@@ -447,8 +452,8 @@ AccountManager._verify_user_integrity = function (self)
 end
 
 local KEYBOARD_DEVICES = {
+	xb1_keyboard = true,
 	xb1_mouse = true,
-	xb1_keyboard = true
 }
 
 AccountManager._verify_user_profile = function (self)
@@ -464,6 +469,7 @@ AccountManager._verify_user_profile = function (self)
 
 	if active_controller and not using_keyboard then
 		local controller_id = active_controller.controller_id()
+
 		controller_changed = controller_id ~= self._controller_id
 	end
 
@@ -499,7 +505,7 @@ end
 
 AccountManager._user_id_in_cache = function (self, user_id)
 	local users = {
-		XboxLive.users()
+		XboxLive.users(),
 	}
 
 	for _, user in pairs(users) do
@@ -513,7 +519,7 @@ end
 
 AccountManager._verify_user_in_cache = function (self)
 	local users = {
-		XboxLive.users()
+		XboxLive.users(),
 	}
 
 	for _, user in pairs(users) do
@@ -529,7 +535,7 @@ end
 
 AccountManager.user_exists = function (self, user_id)
 	local users = {
-		XboxLive.users()
+		XboxLive.users(),
 	}
 
 	for _, user in pairs(users) do
@@ -624,7 +630,7 @@ AccountManager._handle_popup_result = function (self, result)
 		XboxLive.show_account_picker(index)
 
 		local error, device_id, user_id_old, user_id_new = XboxLive.show_account_picker_result()
-		local invalid_profile_id = 4294967295.0
+		local invalid_profile_id = 4294967295
 
 		if error or user_id_new == invalid_profile_id then
 			show_wrong_profile_popup(self)
@@ -793,6 +799,7 @@ AccountManager.get_user_profiles = function (self, user_id, xbox_user_ids, cb)
 	else
 		local user_info = self._user_info
 		local xuid = user_info.xbox_user_id
+
 		self._gamertags[xuid] = user_info.gamertag
 
 		cb({})
@@ -829,6 +836,7 @@ end
 AccountManager.get_storage_space = function (self, done_callback)
 	if not self._storage_id then
 		local token = XboxConnectedStorage.get_storage_space(self._user_id)
+
 		self._storage_token = ScriptConnectedStorageToken:new(XboxConnectedStorage, token)
 		self._get_storage_done_callback = done_callback
 	else
@@ -957,21 +965,22 @@ AccountManager.get_friends = function (self, friends_list_limit, callback)
 
 	if self._added_local_user_to_graph and self._social_graph_loaded then
 		local title_online_friends = {
-			Social.social_group(self.title_online_friends_group_id)
+			Social.social_group(self.title_online_friends_group_id),
 		}
 		local num_title_online_friends = #title_online_friends
 		local online_friends = {
-			Social.social_group(self.online_friends_group_id)
+			Social.social_group(self.online_friends_group_id),
 		}
 		local num_online_friends = #online_friends
 		local offline_friends = {
-			Social.social_group(self.offline_friends_group_id)
+			Social.social_group(self.offline_friends_group_id),
 		}
 		local num_offline_friends = #offline_friends
 
 		for i = 1, num_title_online_friends do
 			local data = title_online_friends[i]
 			local id = data.xbox_user_id
+
 			data.name = data.display_name
 			data.status = "online"
 			data.playing_this_game = true
@@ -993,6 +1002,7 @@ AccountManager.get_friends = function (self, friends_list_limit, callback)
 		for i = 1, num_offline_friends do
 			local data = offline_friends[i]
 			local id = data.xbox_user_id
+
 			data.name = data.display_name
 			data.status = "offline"
 			data.playing_this_game = false
@@ -1007,7 +1017,7 @@ end
 
 AccountManager.send_session_invitation = function (self, id, lobby)
 	local friends_to_invite = {
-		id
+		id,
 	}
 
 	lobby:invite_friends_list(friends_to_invite)
@@ -1051,7 +1061,7 @@ AccountManager.cb_bandwidth_query = function (self, data)
 		self._bandwidth_query_fails = self._bandwidth_query_fails + 1
 		self._query_bandwidth_timer = AccountManager.QUERY_BANDWIDTH_FAIL_TIMER
 
-		if AccountManager.QUERY_FAIL_AMOUNT <= self._bandwidth_query_fails then
+		if self._bandwidth_query_fails >= AccountManager.QUERY_FAIL_AMOUNT then
 			if Managers.voice_chat and not Managers.voice_chat:bandwidth_disabled() then
 				Managers.voice_chat:bandwitdth_disable_voip()
 			end
@@ -1078,7 +1088,7 @@ end
 AccountManager.get_product_details = function (self, product_ids, response_callback)
 	if not self._user_id or self._offline_mode or self._user_detached then
 		response_callback({
-			error = "Can't fetch marketplace information while being offline"
+			error = "Can't fetch marketplace information while being offline",
 		})
 
 		return

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/utils/strict_table.lua
+
 local format = string.format
 
 local function sprintf(...)
@@ -6,7 +8,7 @@ end
 
 local debug_getinfo = debug.getinfo
 local USE_ERROR = true
-local error_func = nil
+local error_func
 
 if USE_ERROR then
 	function error_func(...)
@@ -25,7 +27,7 @@ else
 				system = "Lua",
 				type = "message",
 				level = level,
-				message = message
+				message = message,
 			})
 		else
 			print(message)
@@ -37,8 +39,7 @@ else
 	end
 end
 
-local rawget = rawget
-local rawset = rawset
+local rawget, rawset = rawget, rawset
 
 local function debug_info_string(info)
 	local short_src = info.short_src or ""
@@ -62,7 +63,7 @@ function MakeTableStrict(t)
 	end
 
 	local meta = {
-		__declared = declared_args
+		__declared = declared_args,
 	}
 
 	meta.__newindex = function (t, k, v)
@@ -108,7 +109,7 @@ function MakeTableFrozen(t)
 	end
 
 	local meta = {
-		__declared = declared_args
+		__declared = declared_args,
 	}
 
 	meta.__newindex = function (t, k, v)
@@ -134,6 +135,7 @@ end
 
 function ProtectMetaTable(t)
 	local meta = getmetatable(t)
+
 	meta.__metatable = true
 
 	return t
@@ -141,6 +143,7 @@ end
 
 function MakeTableWeakValues(t)
 	local meta = getmetatable(t) or {}
+
 	meta.__mode = "v"
 
 	setmetatable(t, meta)
@@ -150,6 +153,7 @@ end
 
 function MakeTableWeakKeys(t)
 	local meta = getmetatable(t) or {}
+
 	meta.__mode = "k"
 
 	setmetatable(t, meta)
@@ -168,7 +172,7 @@ if not rawget(_G, "STRICT_ENUM_INITIATED") then
 		end,
 		__tostring = function (val)
 			return val._enum_table[val]
-		end
+		end,
 	}
 
 	function CreateStrictEnumTable(...)
@@ -185,8 +189,9 @@ if not rawget(_G, "STRICT_ENUM_INITIATED") then
 				end,
 				__tostring = function ()
 					return current_value
-				end
+				end,
 			}, strict_cmp_metatable)
+
 			my_enum_table[current_value] = my_object
 			my_enum_table[my_object] = current_value
 			my_enum_table[i] = my_object

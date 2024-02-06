@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/mutators/mutator_curse_skulking_sorcerer.lua
+
 local base_skulking_sorcerer = require("scripts/settings/mutators/mutator_skulking_sorcerer")
 local curse_skulking_sorcerer = table.clone(base_skulking_sorcerer)
 local NORMAL = 2
@@ -12,7 +14,7 @@ local RESPAWN_TIME = {
 	[HARD] = 30,
 	[HARDER] = 30,
 	[HARDEST] = 30,
-	[CATACLYSM] = 30
+	[CATACLYSM] = 30,
 }
 local MAX_HEALTH = {
 	[NORMAL] = 20,
@@ -21,8 +23,9 @@ local MAX_HEALTH = {
 	[HARDEST] = 66,
 	[CATACLYSM] = 90,
 	[CATACLYSM_2] = 120,
-	[CATACLYSM_3] = 150
+	[CATACLYSM_3] = 150,
 }
+
 curse_skulking_sorcerer.display_name = "curse_skulking_sorcerer_name"
 curse_skulking_sorcerer.description = "curse_skulking_sorcerer_desc"
 curse_skulking_sorcerer.icon = "deus_curse_nurgle_01"
@@ -38,9 +41,10 @@ curse_skulking_sorcerer.server_start_function = function (context, data)
 
 	local difficulty_rank = Managers.state.difficulty:get_difficulty_rank()
 	local respawn_time = RESPAWN_TIME[difficulty_rank] or RESPAWN_TIME[NORMAL]
+
 	data.respawn_times = {
 		respawn_time,
-		respawn_time + 1
+		respawn_time + 1,
 	}
 	data.breed_name = "curse_mutator_sorcerer"
 end

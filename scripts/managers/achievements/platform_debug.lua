@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/achievements/platform_debug.lua
+
 local platform_functions = {
 	init = function (achievement_manager)
 		return
@@ -20,7 +22,7 @@ local platform_functions = {
 	end,
 	verify_platform_unlocked = function (template)
 		local verified = true
-		local token = nil
+		local token
 
 		return verified, token
 	end,
@@ -36,7 +38,7 @@ local platform_functions = {
 	end,
 	reset = function ()
 		return
-	end
+	end,
 }
 
 return platform_functions

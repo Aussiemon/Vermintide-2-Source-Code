@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/imgui/imgui_objectives_debug.lua
+
 local SHOULD_RELOAD = true
+
 ImguiObjectivesDebug = class(ImguiObjectivesDebug)
 
 ImguiObjectivesDebug.init = function (self)
@@ -122,7 +125,7 @@ ImguiObjectivesDebug._draw_versus = function (self, is_open)
 
 	local new_time = Imgui.slider_float(" ", self._timer, 0, 600)
 
-	if math.epsilon < math.abs(new_time - self._timer) then
+	if math.abs(new_time - self._timer) > math.epsilon then
 		Managers.mechanism:game_mechanism():win_conditions():set_time(new_time)
 
 		self._timer = new_time

@@ -1,6 +1,9 @@
+﻿-- chunkname: @scripts/settings/mutators/mutator_curse_shadow_homing_skulls.lua
+
 require("scripts/settings/dlcs/belakor/belakor_balancing")
 
 script_data.shadow_homing_skulls_debug = false
+
 local global_printf = printf
 
 local function printf(...)
@@ -24,6 +27,7 @@ local function find_positions(physics_world, random_player, shooter_count)
 
 	for player_index = 1, #players do
 		local unit = players[player_index]
+
 		forbidden_position_list[#forbidden_position_list + 1] = POSITION_LOOKUP[unit]
 	end
 
@@ -33,14 +37,14 @@ local function find_positions(physics_world, random_player, shooter_count)
 end
 
 local STATES = {
-	WAITING_TO_SPAWN = "WAITING_TO_SPAWN",
 	DISABLED = "DISABLED",
-	SPAWNING = "SPAWNING"
+	SPAWNING = "SPAWNING",
+	WAITING_TO_SPAWN = "WAITING_TO_SPAWN",
 }
 
 return {
-	description = "curse_shadow_homing_skulls_desc",
 	curse_package_name = "resource_packages/mutators/mutator_curse_shadow_homing_skulls",
+	description = "curse_shadow_homing_skulls_desc",
 	display_name = "curse_shadow_homing_skulls_name",
 	icon = "deus_curse_belakor_01",
 	server_start_function = function (context, data)
@@ -67,11 +71,12 @@ return {
 		if current_state == STATES.WAITING_TO_SPAWN then
 			if not data.next_spawn_t then
 				local next_delta = Math.random_range(BelakorBalancing.homing_skulls_min_time_between_spawns, BelakorBalancing.homing_skulls_max_time_between_spawns)
+
 				data.next_spawn_t = t + next_delta
 				data.state = STATES.WAITING_TO_SPAWN
 			end
 
-			if not data.next_spawn_t or data.next_spawn_t < t then
+			if not data.next_spawn_t or t > data.next_spawn_t then
 				data.state = STATES.SPAWNING
 			elseif pacing_disabled then
 				data.state = STATES.DISABLED
@@ -79,6 +84,7 @@ return {
 		elseif current_state == STATES.DISABLED then
 			if not pacing_disabled then
 				local next_delta = Math.random_range(BelakorBalancing.homing_skulls_min_time_between_spawns, BelakorBalancing.homing_skulls_max_time_between_spawns)
+
 				data.next_spawn_t = t + next_delta
 				data.state = STATES.WAITING_TO_SPAWN
 			end
@@ -93,7 +99,7 @@ return {
 				local shooter_count = BelakorBalancing.homing_skulls_maximum_count
 				local positions_found = find_positions(physics_world, random_player, shooter_count)
 
-				if positions_found and BelakorBalancing.homing_skulls_minimum_count <= #positions_found then
+				if positions_found and #positions_found >= BelakorBalancing.homing_skulls_minimum_count then
 					for i = 1, #positions_found do
 						local position = positions_found[i]
 						local with_physics = false
@@ -110,6 +116,7 @@ return {
 					audio_system:play_2d_audio_event("Play_curse_shadow_skulls_spawn")
 
 					local next_delta = Math.random_range(BelakorBalancing.homing_skulls_min_time_between_spawns, BelakorBalancing.homing_skulls_max_time_between_spawns)
+
 					data.next_spawn_t = t + next_delta
 					data.state = STATES.WAITING_TO_SPAWN
 				else
@@ -125,5 +132,5 @@ return {
 	end,
 	server_player_hit_function = function (context, data, hit_unit, attacker_unit, hit_data)
 		return
-	end
+	end,
 }

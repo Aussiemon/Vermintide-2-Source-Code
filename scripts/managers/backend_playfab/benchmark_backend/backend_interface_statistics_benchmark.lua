@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/backend_playfab/benchmark_backend/backend_interface_statistics_benchmark.lua
+
 BackendInterfaceStatisticsBenchmark = class(BackendInterfaceStatisticsBenchmark)
 
 BackendInterfaceStatisticsBenchmark.update = function (self, dt)

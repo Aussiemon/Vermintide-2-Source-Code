@@ -1,7 +1,10 @@
+﻿-- chunkname: @scripts/ui/views/hero_view/windows/hero_window_gotwf_panel.lua
+
 local definitions = local_require("scripts/ui/views/hero_view/windows/definitions/hero_window_gotwf_panel_definitions")
 local widget_definitions = definitions.widgets
 local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
+
 HeroWindowGotwfPanel = class(HeroWindowGotwfPanel)
 HeroWindowGotwfPanel.NAME = "HeroWindowGotwfPanel"
 
@@ -9,10 +12,11 @@ HeroWindowGotwfPanel.on_enter = function (self, params, offset)
 	print("[HeroViewWindow] Enter Substate HeroWindowGotwfPanel")
 
 	local ingame_ui_context = params.ingame_ui_context
+
 	self._parent = params.parent
 	self._ui_renderer = ingame_ui_context.ui_top_renderer
 	self._render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 	self._animations = {}
 	self._ui_animations = {}
@@ -22,11 +26,13 @@ end
 
 HeroWindowGotwfPanel._create_ui_elements = function (self, params, offset)
 	self._ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+
 	local widgets = {}
 	local widgets_by_name = {}
 
 	for name, widget_definition in pairs(widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		widgets[#widgets + 1] = widget
 		widgets_by_name[name] = widget
 	end
@@ -113,12 +119,16 @@ HeroWindowGotwfPanel._handle_gamepad_activity = function (self)
 	if gamepad_active then
 		if not self._gamepad_active_last_frame or force_update then
 			self._gamepad_active_last_frame = true
+
 			local widgets_by_name = self._widgets_by_name
+
 			widgets_by_name.close_button.content.visible = false
 		end
 	elseif self._gamepad_active_last_frame or force_update then
 		self._gamepad_active_last_frame = false
+
 		local widgets_by_name = self._widgets_by_name
+
 		widgets_by_name.close_button.content.visible = true
 	end
 end
@@ -166,6 +176,7 @@ HeroWindowGotwfPanel._animate_button = function (self, widget, dt)
 	local combined_out_progress = math.max(select_easing_out_progress, hover_easing_out_progress)
 	local combined_in_progress = math.max(hover_easing_in_progress, select_easing_in_progress)
 	local hover_alpha = 255 * combined_progress
+
 	style.texture_id.color[1] = 255 - hover_alpha
 	style.texture_hover_id.color[1] = hover_alpha
 	style.selected_texture.color[1] = hover_alpha

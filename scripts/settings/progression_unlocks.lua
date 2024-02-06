@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/progression_unlocks.lua
+
 local progression_unlocks = {}
 
 for key, level_requirement in pairs(TalentUnlockLevels) do
@@ -6,132 +8,132 @@ for key, level_requirement in pairs(TalentUnlockLevels) do
 	end
 
 	progression_unlocks[key] = {
-		value = "options_button_icon_talents_glow",
 		description = "reward_talent_point",
 		unlock_type = "icon",
-		level_requirement = level_requirement
+		value = "options_button_icon_talents_glow",
+		level_requirement = level_requirement,
 	}
 end
 
 progression_unlocks.es_mercenary = {
 	description = "end_screen_career_unlocked",
-	profile = "empire_soldier",
-	value = "es_mercenary",
-	title = "es_mercenary",
 	level_requirement = 0,
-	unlock_type = "career"
+	profile = "empire_soldier",
+	title = "es_mercenary",
+	unlock_type = "career",
+	value = "es_mercenary",
 }
 progression_unlocks.es_huntsman = {
 	description = "end_screen_career_unlocked",
-	profile = "empire_soldier",
-	value = "es_huntsman",
-	title = "es_huntsman",
 	level_requirement = 7,
-	unlock_type = "career"
+	profile = "empire_soldier",
+	title = "es_huntsman",
+	unlock_type = "career",
+	value = "es_huntsman",
 }
 progression_unlocks.es_knight = {
 	description = "end_screen_career_unlocked",
-	profile = "empire_soldier",
-	value = "es_knight",
-	title = "es_knight",
 	level_requirement = 12,
-	unlock_type = "career"
+	profile = "empire_soldier",
+	title = "es_knight",
+	unlock_type = "career",
+	value = "es_knight",
 }
 progression_unlocks.dr_ranger = {
 	description = "n/a",
-	profile = "dwarf_ranger",
-	value = "dr_ranger",
-	title = "dr_ranger",
 	level_requirement = 0,
-	unlock_type = "career"
+	profile = "dwarf_ranger",
+	title = "dr_ranger",
+	unlock_type = "career",
+	value = "dr_ranger",
 }
 progression_unlocks.dr_ironbreaker = {
 	description = "end_screen_career_unlocked",
-	profile = "dwarf_ranger",
-	value = "dr_ironbreaker",
-	title = "dr_ironbreaker",
 	level_requirement = 7,
-	unlock_type = "career"
+	profile = "dwarf_ranger",
+	title = "dr_ironbreaker",
+	unlock_type = "career",
+	value = "dr_ironbreaker",
 }
 progression_unlocks.dr_slayer = {
 	description = "end_screen_career_unlocked",
-	profile = "dwarf_ranger",
-	value = "dr_slayer",
-	title = "dr_slayer",
 	level_requirement = 12,
-	unlock_type = "career"
+	profile = "dwarf_ranger",
+	title = "dr_slayer",
+	unlock_type = "career",
+	value = "dr_slayer",
 }
 progression_unlocks.wh_captain = {
 	description = "end_screen_career_unlocked",
-	profile = "witch_hunter",
-	value = "wh_captain",
-	title = "wh_captain",
 	level_requirement = 0,
-	unlock_type = "career"
+	profile = "witch_hunter",
+	title = "wh_captain",
+	unlock_type = "career",
+	value = "wh_captain",
 }
 progression_unlocks.wh_bountyhunter = {
 	description = "end_screen_career_unlocked",
-	profile = "witch_hunter",
-	value = "wh_bountyhunter",
-	title = "wh_bountyhunter",
 	level_requirement = 7,
-	unlock_type = "career"
+	profile = "witch_hunter",
+	title = "wh_bountyhunter",
+	unlock_type = "career",
+	value = "wh_bountyhunter",
 }
 progression_unlocks.wh_zealot = {
 	description = "end_screen_career_unlocked",
-	profile = "witch_hunter",
-	value = "wh_zealot",
-	title = "wh_zealot",
 	level_requirement = 12,
-	unlock_type = "career"
+	profile = "witch_hunter",
+	title = "wh_zealot",
+	unlock_type = "career",
+	value = "wh_zealot",
 }
 progression_unlocks.we_waywatcher = {
 	description = "end_screen_career_unlocked",
-	profile = "wood_elf",
-	value = "we_waywatcher",
-	title = "we_waywatcher",
 	level_requirement = 0,
-	unlock_type = "career"
+	profile = "wood_elf",
+	title = "we_waywatcher",
+	unlock_type = "career",
+	value = "we_waywatcher",
 }
 progression_unlocks.we_maidenguard = {
 	description = "end_screen_career_unlocked",
-	profile = "wood_elf",
-	value = "we_maidenguard",
-	title = "we_maidenguard",
 	level_requirement = 7,
-	unlock_type = "career"
+	profile = "wood_elf",
+	title = "we_maidenguard",
+	unlock_type = "career",
+	value = "we_maidenguard",
 }
 progression_unlocks.we_shade = {
 	description = "end_screen_career_unlocked",
-	profile = "wood_elf",
-	value = "we_shade",
-	title = "we_shade",
 	level_requirement = 12,
-	unlock_type = "career"
+	profile = "wood_elf",
+	title = "we_shade",
+	unlock_type = "career",
+	value = "we_shade",
 }
 progression_unlocks.bw_adept = {
 	description = "end_screen_career_unlocked",
-	profile = "bright_wizard",
-	value = "bw_adept",
-	title = "bw_adept",
 	level_requirement = 0,
-	unlock_type = "career"
+	profile = "bright_wizard",
+	title = "bw_adept",
+	unlock_type = "career",
+	value = "bw_adept",
 }
 progression_unlocks.bw_scholar = {
 	description = "end_screen_career_unlocked",
-	profile = "bright_wizard",
-	value = "bw_scholar",
-	title = "bw_scholar",
 	level_requirement = 7,
-	unlock_type = "career"
+	profile = "bright_wizard",
+	title = "bw_scholar",
+	unlock_type = "career",
+	value = "bw_scholar",
 }
 progression_unlocks.bw_unchained = {
 	description = "end_screen_career_unlocked",
-	profile = "bright_wizard",
-	value = "bw_unchained",
-	title = "bw_unchained",
 	level_requirement = 12,
-	unlock_type = "career"
+	profile = "bright_wizard",
+	title = "bw_unchained",
+	unlock_type = "career",
+	value = "bw_unchained",
 }
 
 DLCUtils.merge("progression_unlocks", progression_unlocks)
@@ -154,98 +156,104 @@ for unlock_name, template in pairs(progression_unlocks) do
 	end
 end
 
-ProgressionUnlocks = {
-	all_unlocks_for_debug = progression_unlocks,
-	get_unlock = function (unlock_name, profile)
-		local template = progression_unlocks[unlock_name]
+ProgressionUnlocks = {}
+ProgressionUnlocks.all_unlocks_for_debug = progression_unlocks
 
-		return template
-	end,
-	get_profile_unlock = function (unlock_name, profile)
-		local template = profile_unlocks[profile][unlock_name]
+ProgressionUnlocks.get_unlock = function (unlock_name, profile)
+	local template = progression_unlocks[unlock_name]
 
-		return template
-	end,
-	is_unlocked = function (unlock_name, level)
-		local template = progression_unlocks[unlock_name]
+	return template
+end
 
-		fassert(template, "[ProgressionUnlocks] no template named %q", tostring(unlock_name))
+ProgressionUnlocks.get_profile_unlock = function (unlock_name, profile)
+	local template = profile_unlocks[profile][unlock_name]
 
-		if not template.disabled and template.level_requirement <= level then
-			return true
-		end
-	end,
-	get_level_unlocks = function (level, profile)
-		local templates = {}
+	return template
+end
 
-		for unlock_name, template in pairs(progression_unlocks) do
-			if (not template.profile or template.profile == profile) and template.level_requirement == level then
-				templates[#templates + 1] = template
-			end
-		end
+ProgressionUnlocks.is_unlocked = function (unlock_name, level)
+	local template = progression_unlocks[unlock_name]
 
-		return templates
-	end,
-	is_unlocked_for_profile = function (unlock_name, profile, level)
-		if Development.parameter("unlock_all_careers") then
-			return true
-		end
+	fassert(template, "[ProgressionUnlocks] no template named %q", tostring(unlock_name))
 
-		local profile_templates = profile_unlocks[profile]
-
-		fassert(profile_templates, "No unlocks found for profile %s", profile)
-
-		local template = profile_templates[unlock_name]
-
-		if template == nil then
-			return true
-		end
-
-		if level < template.level_requirement then
-			local localized = true
-			local dlc_name = nil
-
-			return false, Localize("career_locked_info") .. " " .. tostring(template.level_requirement), dlc_name, localized
-		end
-
+	if not template.disabled and level >= template.level_requirement then
 		return true
-	end,
-	get_quests_unlocked = function (level_key)
-		local level_settings = LevelSettings[level_key]
+	end
+end
 
-		if level_settings.dlc_name or not table.contains(MainGameLevels, level_key) then
-			return
+ProgressionUnlocks.get_level_unlocks = function (level, profile)
+	local templates = {}
+
+	for unlock_name, template in pairs(progression_unlocks) do
+		if (not template.profile or template.profile == profile) and template.level_requirement == level then
+			templates[#templates + 1] = template
 		end
+	end
 
-		local statistics_db = Managers.player:statistics_db()
-		local player = Managers.player:local_player()
-		local stats_id = player:stats_id()
-		local quests_unlocked = true
+	return templates
+end
 
-		for _, act_levels in pairs(GameActs) do
-			local num_act_levels = #act_levels
+ProgressionUnlocks.is_unlocked_for_profile = function (unlock_name, profile, level)
+	if Development.parameter("unlock_all_careers") then
+		return true
+	end
 
-			for i = 1, num_act_levels do
-				local act_level_key = act_levels[i]
-				local completed_times = statistics_db:get_persistent_stat(stats_id, "completed_levels", act_level_key)
+	local profile_templates = profile_unlocks[profile]
 
-				if completed_times == 0 or level_key == act_level_key and completed_times > 1 then
-					quests_unlocked = false
+	fassert(profile_templates, "No unlocks found for profile %s", profile)
 
-					break
-				end
-			end
+	local template = profile_templates[unlock_name]
 
-			if not quests_unlocked then
+	if template == nil then
+		return true
+	end
+
+	if level < template.level_requirement then
+		local localized = true
+		local dlc_name
+
+		return false, Localize("career_locked_info") .. " " .. tostring(template.level_requirement), dlc_name, localized
+	end
+
+	return true
+end
+
+ProgressionUnlocks.get_quests_unlocked = function (level_key)
+	local level_settings = LevelSettings[level_key]
+
+	if level_settings.dlc_name or not table.contains(MainGameLevels, level_key) then
+		return
+	end
+
+	local statistics_db = Managers.player:statistics_db()
+	local player = Managers.player:local_player()
+	local stats_id = player:stats_id()
+	local quests_unlocked = true
+
+	for _, act_levels in pairs(GameActs) do
+		local num_act_levels = #act_levels
+
+		for i = 1, num_act_levels do
+			local act_level_key = act_levels[i]
+			local completed_times = statistics_db:get_persistent_stat(stats_id, "completed_levels", act_level_key)
+
+			if completed_times == 0 or level_key == act_level_key and completed_times > 1 then
+				quests_unlocked = false
+
 				break
 			end
 		end
 
-		if quests_unlocked then
-			return progression_unlocks.quests
+		if not quests_unlocked then
+			break
 		end
 	end
-}
+
+	if quests_unlocked then
+		return progression_unlocks.quests
+	end
+end
+
 local prestige_unlocks = {
 	witch_hunter = {
 		"frame_0001",
@@ -253,7 +261,7 @@ local prestige_unlocks = {
 		"frame_0003",
 		"frame_0004",
 		"frame_0005",
-		"frame_0006"
+		"frame_0006",
 	},
 	bright_wizard = {
 		"frame_0001",
@@ -261,7 +269,7 @@ local prestige_unlocks = {
 		"frame_0003",
 		"frame_0004",
 		"frame_0005",
-		"frame_0006"
+		"frame_0006",
 	},
 	dwarf_ranger = {
 		"frame_0001",
@@ -269,7 +277,7 @@ local prestige_unlocks = {
 		"frame_0003",
 		"frame_0004",
 		"frame_0005",
-		"frame_0006"
+		"frame_0006",
 	},
 	wood_elf = {
 		"frame_0001",
@@ -277,7 +285,7 @@ local prestige_unlocks = {
 		"frame_0003",
 		"frame_0004",
 		"frame_0005",
-		"frame_0006"
+		"frame_0006",
 	},
 	empire_soldier = {
 		"frame_0001",
@@ -285,8 +293,8 @@ local prestige_unlocks = {
 		"frame_0003",
 		"frame_0004",
 		"frame_0005",
-		"frame_0006"
-	}
+		"frame_0006",
+	},
 }
 
 ProgressionUnlocks.prestige_reward_by_level = function (prestige_level, profile_name)
@@ -399,740 +407,740 @@ local level_up_rewards = {
 		{},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
-		}
+				item_name = "loot_chest_01_03",
+			},
+		},
 	},
 	witch_hunter = {
 		{},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
-		}
+				item_name = "loot_chest_01_03",
+			},
+		},
 	},
 	wood_elf = {
 		{},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
-		}
+				item_name = "loot_chest_01_03",
+			},
+		},
 	},
 	bright_wizard = {
 		{},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
-		}
+				item_name = "loot_chest_01_03",
+			},
+		},
 	},
 	empire_soldier = {
 		{},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
+				item_name = "loot_chest_01_03",
+			},
 		},
 		{
 			{
-				item_name = "loot_chest_01_03"
-			}
-		}
-	}
+				item_name = "loot_chest_01_03",
+			},
+		},
+	},
 }

@@ -1,11 +1,15 @@
+﻿-- chunkname: @scripts/entity_system/systems/ai/nav_graph_system.lua
+
 NavGraphSystem = class(NavGraphSystem, ExtensionSystemBase)
+
 local WANTED_LEDGELATOR_VERSION = "2017.MAY.05.05"
 local extensions = {
 	"NavGraphConnectorExtension",
 	"LevelUnitSmartObjectExtension",
 	"DynamicUnitSmartObjectExtension",
-	"DarkPactClimbingExtension"
+	"DarkPactClimbingExtension",
 }
+
 script_data.nav_mesh_debug = script_data.nav_mesh_debug or Development.parameter("nav_mesh_debug")
 use_simple_jump_units = true
 
@@ -30,8 +34,10 @@ NavGraphSystem.init = function (self, context, system_name)
 	end
 
 	local ai_system = Managers.state.entity:system("ai_system")
+
 	self.nav_world = ai_system:nav_world()
-	local version = nil
+
+	local version
 	local level_settings = LevelHelper:current_level_settings(self.world)
 	local level_path = level_settings.level_name
 
@@ -55,9 +61,8 @@ NavGraphSystem.init = function (self, context, system_name)
 
 		if Application.can_get("lua", smart_object_path) then
 			local smart_objects = require(smart_object_path)
-			version = smart_objects.version
-			self.smart_object_count = smart_objects.smart_object_count
-			self.smart_objects = smart_objects.smart_objects
+
+			self.smart_objects, self.smart_object_count, version = smart_objects.smart_objects, smart_objects.smart_object_count, smart_objects.version
 			self.ledgelator_version = smart_objects.ledgelator_version
 
 			if self.smart_objects == nil then
@@ -109,18 +114,23 @@ NavGraphSystem.init_nav_graphs = function (self, unit, smart_object_id, extensio
 		local smart_object_data = smart_object_unit_data[i]
 		local smart_object_type = smart_object_data.smart_object_type or "ledges"
 		local layer_id = LAYER_ID_MAPPING[smart_object_type]
+
 		control_points[1] = Vector3Aux.unbox(smart_object_data.pos1)
 		control_points[2] = Vector3Aux.unbox(smart_object_data.pos2)
+
 		local is_bidirectional = true
 
-		if smart_object_unit_data.is_one_way or smart_object_type ~= "teleporters" and SmartObjectSettings.jump_up_max_height < math.abs(control_points[1].z - control_points[2].z) then
+		if smart_object_unit_data.is_one_way or smart_object_type ~= "teleporters" and math.abs(control_points[1].z - control_points[2].z) > SmartObjectSettings.jump_up_max_height then
 			is_bidirectional = false
 		end
 
 		smart_object_data.data.is_bidirectional = is_bidirectional
+
 		local smart_object_index = smart_object_data.smart_object_index
+
 		self.smart_object_types[smart_object_index] = smart_object_type
 		self.smart_object_data[smart_object_index] = smart_object_data.data
+
 		local navgraph = GwNavGraph.create(nav_world, is_bidirectional, control_points, debug_color, layer_id, smart_object_index)
 
 		if not use_for_versus then
@@ -155,13 +165,15 @@ local jump_unit_offset_z = 1.1
 
 NavGraphSystem.spawn_versus_jump_unit = function (self, jump_object_data, swap)
 	local ledge_position = jump_object_data.data.ledge_position
+
 	ledge_position = ledge_position and Vector3Aux.unbox(ledge_position)
+
 	local position1 = Vector3Aux.unbox(jump_object_data.pos1) + Vector3(0, 0, jump_unit_offset_z)
 	local position2 = Vector3Aux.unbox(jump_object_data.pos2) + Vector3(0, 0, jump_unit_offset_z)
 	local unit_jump_data = {
-		jump_object_data = jump_object_data
+		jump_object_data = jump_object_data,
 	}
-	local center_position = nil
+	local center_position
 
 	if ledge_position then
 		center_position = ledge_position
@@ -169,7 +181,7 @@ NavGraphSystem.spawn_versus_jump_unit = function (self, jump_object_data, swap)
 		center_position = (position1 + position2) / 2
 	end
 
-	local direction, spawn_position = nil
+	local direction, spawn_position
 
 	if swap then
 		direction = Vector3.normalize(center_position - position1)
@@ -188,8 +200,8 @@ NavGraphSystem.spawn_versus_jump_unit = function (self, jump_object_data, swap)
 		local extension_init_data = {
 			nav_graph_system = {
 				smart_object_index = jump_object_data.smart_object_index,
-				swap = swap
-			}
+				swap = swap,
+			},
 		}
 		local jump_unit = Managers.state.unit_spawner:spawn_network_unit("units/test_unit/jump_marker_ground_pactsworn", "versus_dark_pact_climbing_interaction_unit", extension_init_data, spawn_position, rotation)
 		local node_id = Unit.node(jump_unit, "c_interaction")
@@ -206,6 +218,7 @@ NavGraphSystem.spawn_versus_jump_unit = function (self, jump_object_data, swap)
 		end
 
 		local index = not swap and 1 or 2
+
 		storage[index] = unit_jump_data
 	end
 end
@@ -229,7 +242,7 @@ end
 
 NavGraphSystem.on_add_extension = function (self, world, unit, extension_name, extension_init_data)
 	local extension = {
-		navgraphs = {}
+		navgraphs = {},
 	}
 	local input = {}
 
@@ -243,11 +256,16 @@ NavGraphSystem.on_add_extension = function (self, world, unit, extension_name, e
 		if smart_object_id and self.smart_objects[smart_object_id] and not self.no_nav_mesh and (not Unit.has_data(unit, "enabled_on_spawn") or Unit.get_data(unit, "enabled_on_spawn") == true) then
 			self:init_nav_graphs(unit, smart_object_id, extension)
 		end
+
+		if false then
+			-- Nothing
+		end
 	end
 
 	if extension_name == "LevelUnitSmartObjectExtension" then
 		local smart_object_id = self:_level_unit_smart_object_id(unit)
 		local smart_object = self:smart_object_from_unit_data(unit, smart_object_id)
+
 		self.smart_objects[smart_object_id] = smart_object
 		self.smart_object_ids[unit] = smart_object_id
 
@@ -259,6 +277,7 @@ NavGraphSystem.on_add_extension = function (self, world, unit, extension_name, e
 	if extension_name == "DynamicUnitSmartObjectExtension" then
 		local smart_object_id = self:_dynamic_unit_smart_object_id(unit)
 		local smart_object = self:smart_object_from_unit_data(unit, smart_object_id)
+
 		self.smart_objects[smart_object_id] = smart_object
 		self.smart_object_ids[unit] = smart_object_id
 
@@ -276,6 +295,7 @@ NavGraphSystem.on_add_extension = function (self, world, unit, extension_name, e
 	if extension_name == "DarkPactClimbingExtension" then
 		local smart_object_index = extension_init_data.smart_object_index
 		local swap = extension_init_data.swap
+
 		extension.smart_object_index = smart_object_index
 		extension.swap = swap
 
@@ -286,6 +306,7 @@ NavGraphSystem.on_add_extension = function (self, world, unit, extension_name, e
 		local storage = self._stored_jump_data[smart_object_index]
 		local index = not swap and 1 or 2
 		local jump_data = storage[index]
+
 		self.level_jumps[unit] = jump_data
 	end
 
@@ -297,6 +318,7 @@ NavGraphSystem.on_remove_extension = function (self, unit, extension_name)
 
 	if extension_name == "DynamicUnitSmartObjectExtension" then
 		local id = self.smart_object_ids[unit]
+
 		self.smart_objects[id] = nil
 		self.smart_object_ids[unit] = nil
 
@@ -408,7 +430,7 @@ NavGraphSystem.smart_object_from_unit_data = function (self, unit, smart_object_
 	local i = 0
 
 	while Unit.has_data(unit, "smart_objects", i) do
-		local entrance_position, exit_position = nil
+		local entrance_position, exit_position
 		local smart_object_type = Unit.get_data(unit, "smart_objects", i, "type")
 		local is_one_way = Unit.get_data(unit, "smart_objects", i, "is_one_way")
 
@@ -421,7 +443,9 @@ NavGraphSystem.smart_object_from_unit_data = function (self, unit, smart_object_
 			local horizontal = 0.5
 			local distance_from_border = 0.1
 			local entrance_node_index = Unit.node(unit, entrance_node)
+
 			entrance_position = Unit.world_position(unit, entrance_node_index)
+
 			local success, z = GwNavQueries.triangle_from_position(nav_world, entrance_position, above, below)
 
 			if success then
@@ -435,7 +459,9 @@ NavGraphSystem.smart_object_from_unit_data = function (self, unit, smart_object_
 			end
 
 			local exit_node_index = Unit.node(unit, exit_node)
+
 			exit_position = Unit.world_position(unit, exit_node_index)
+
 			local success, z = GwNavQueries.triangle_from_position(nav_world, exit_position, above, below)
 
 			if success then
@@ -461,6 +487,7 @@ NavGraphSystem.smart_object_from_unit_data = function (self, unit, smart_object_
 			local right = Quaternion.right(rotation)
 			local forward = Quaternion.forward(rotation)
 			local up = Quaternion.up(rotation)
+
 			entrance_position = position + right * entrance_offset_x + forward * entrance_offset_y + up * entrance_offset_z
 			exit_position = position + right * exit_offset_x + forward * exit_offset_y + up * exit_offset_z
 		end
@@ -468,13 +495,13 @@ NavGraphSystem.smart_object_from_unit_data = function (self, unit, smart_object_
 		i = i + 1
 		smart_object[i] = {
 			data = {
-				unit = unit
+				unit = unit,
 			},
 			smart_object_type = smart_object_type,
 			smart_object_index = smart_object_id,
 			pos1 = Vector3Aux.box(nil, entrance_position),
 			pos2 = Vector3Aux.box(nil, exit_position),
-			is_one_way = is_one_way
+			is_one_way = is_one_way,
 		}
 	end
 

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_fallback_idle_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTFallbackIdleAction = class(BTFallbackIdleAction, BTNode)
@@ -10,8 +12,10 @@ BTFallbackIdleAction.name = "BTFallbackIdleAction"
 
 BTFallbackIdleAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
+
 	blackboard.action = action
 	blackboard.spawn_to_running = nil
+
 	local animation = "idle"
 
 	if action and action.idle_animation then
@@ -19,6 +23,7 @@ BTFallbackIdleAction.enter = function (self, unit, blackboard, t)
 	elseif action and action.combat_animations then
 		local anims = action.combat_animations
 		local index = action.anim_cycle_index % #anims + 1
+
 		animation = anims[index]
 		action.anim_cycle_index = index
 	end

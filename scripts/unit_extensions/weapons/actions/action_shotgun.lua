@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/unit_extensions/weapons/actions/action_shotgun.lua
+
 ActionShotgun = class(ActionShotgun, ActionBase)
+
 local unit_set_flow_variable = Unit.set_flow_variable
 local unit_flow_event = Unit.flow_event
 local MAX_SHOTS_PER_FRAME = 3
@@ -24,18 +27,22 @@ ActionShotgun.client_owner_start_action = function (self, new_action, t, chain_a
 	self.state = "waiting_to_shoot"
 	self.time_to_shoot = t + new_action.fire_time
 	self.active_reload_time = new_action.active_reload_time and t + new_action.active_reload_time
+
 	local owner_unit = self.owner_unit
 	local is_critical_strike = ActionUtils.is_critical_strike(owner_unit, new_action, t)
 	local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
 	local infinite_ammo = buff_extension:has_buff_perk("infinite_ammo")
+
 	self.infinite_ammo = infinite_ammo
 	self.power_level = power_level
 	self.owner_buff_extension = buff_extension
+
 	local hud_extension = ScriptUnit.has_extension(owner_unit, "hud_system")
 
 	self:_handle_critical_strike(is_critical_strike, buff_extension, hud_extension, nil, "on_critical_shot", nil)
 
 	self._is_critical_strike = is_critical_strike
+
 	local spread_template_override = new_action.spread_template_override
 
 	if spread_template_override then
@@ -47,6 +54,7 @@ ActionShotgun.client_owner_start_action = function (self, new_action, t, chain_a
 	self._spread_done = false
 	self.extra_buff_shot = false
 	self.shield_users_blocking = {}
+
 	local HAS_TOBII = rawget(_G, "Tobii") and Application.user_setting("tobii_eyetracking")
 
 	if HAS_TOBII and new_action.fire_at_gaze_setting and Application.user_setting("tobii_fire_at_gaze") then
@@ -112,7 +120,7 @@ ActionShotgun._start_shooting = function (self)
 
 	if not Managers.player:owner(self.owner_unit).bot_player then
 		Managers.state.controller_features:add_effect("rumble", {
-			rumble_effect = "handgun_fire"
+			rumble_effect = "handgun_fire",
 		})
 	end
 
@@ -179,6 +187,7 @@ ActionShotgun._shoot = function (self, num_shots_total, num_shots_this_frame)
 
 	for i = 1, num_shots_this_frame do
 		self._shots_fired = self._shots_fired + 1
+
 		local rotation = self:_get_spread_rotation(num_shots_total, current_rotation, num_layers_spread, bullseye, spread_pitch)
 		local direction = Quaternion.forward(rotation)
 		local result = PhysicsWorld.immediate_raycast_actors(physics_world, current_position, direction, current_action.range, "static_collision_filter", "filter_player_ray_projectile_static_only", "dynamic_collision_filter", "filter_player_ray_projectile_ai_only", "dynamic_collision_filter", "filter_player_ray_projectile_hitbox_only")
@@ -209,7 +218,7 @@ end
 ActionShotgun.client_owner_post_update = function (self, dt, t, world, can_damage)
 	local owner_unit = self.owner_unit
 
-	if self.state == "waiting_to_shoot" and self.time_to_shoot <= t then
+	if self.state == "waiting_to_shoot" and t >= self.time_to_shoot then
 		self.state = "start_shooting"
 	end
 
@@ -232,7 +241,7 @@ ActionShotgun.client_owner_post_update = function (self, dt, t, world, can_damag
 
 		local input_extension = ScriptUnit.extension(owner_unit, "input_system")
 
-		if self.active_reload_time < t then
+		if t > self.active_reload_time then
 			local ammo_extension = self.ammo_extension
 
 			if (input_extension:get("weapon_reload") or input_extension:get_buffer("weapon_reload")) and ammo_extension:can_reload() then

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/human/ai_player_unit/debug_breeds/debug_gutter_runner.lua
+
 DebugGutterRunner = DebugGutterRunner or {}
 
 DebugGutterRunner.update = function (unit, blackboard, t)
@@ -6,18 +8,12 @@ DebugGutterRunner.update = function (unit, blackboard, t)
 	local jump_target = blackboard.jump_data and blackboard.jump_data.target_unit or "-"
 	local jump_range = string.format("%.1f / %.1f, close range: 8.0 ", blackboard.target_dist or 0, tostring(breed.jump_range))
 	local ai_node = blackboard.action and blackboard.action.name
-	local skulk = nil
+	local skulk
 	local skulk_time = blackboard.target_skulk_time and t - blackboard.target_skulk_time
 
-	if not skulk_time then
-		skulk = "not skulking"
-	elseif skulk_time > 0 then
-		skulk = "engage"
-	else
-		skulk = string.format("%.1f", skulk_time)
-	end
+	skulk = not skulk_time and "not skulking" or skulk_time > 0 and "engage" or string.format("%.1f", skulk_time)
 
-	local growing_aggro = nil
+	local growing_aggro
 
 	if blackboard.skulk_jump_tries then
 		growing_aggro = string.format("%.1f%% tries: %d", blackboard.skulk_jump_tries / 10 * 100, blackboard.skulk_jump_tries)

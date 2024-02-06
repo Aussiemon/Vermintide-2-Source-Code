@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/backend/backend_interface_profile_attribute.lua
+
 BackendInterfaceProfileAttribute = class(BackendInterfaceProfileAttribute)
 
 BackendInterfaceProfileAttribute.init = function (self)

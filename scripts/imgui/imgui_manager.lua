@@ -1,12 +1,14 @@
+﻿-- chunkname: @scripts/imgui/imgui_manager.lua
+
 ImguiManager = class(ImguiManager)
 ImguiKeymaps = {
 	win32 = {
 		toggle_imgui = {
 			"keyboard",
 			"f3",
-			"pressed"
-		}
-	}
+			"pressed",
+		},
+	},
 }
 
 require("scripts/imgui/imgui_configuration_settings")
@@ -69,7 +71,7 @@ ImguiManager.add_gui = function (self, gui_class, category_name, name, enabled)
 	if not has_category then
 		table.insert(self._guis_by_category, category_index, {
 			name = category_name,
-			list = {}
+			list = {},
 		})
 
 		self._key_bindings[category_name] = {}
@@ -81,7 +83,7 @@ ImguiManager.add_gui = function (self, gui_class, category_name, name, enabled)
 	table.insert(category_list, gui_index, {
 		gui = gui,
 		name = name,
-		enabled = enabled
+		enabled = enabled,
 	})
 
 	local keybind_settings = self._key_bindings[category_name][name]
@@ -89,7 +91,7 @@ ImguiManager.add_gui = function (self, gui_class, category_name, name, enabled)
 	if not keybind_settings then
 		self._key_bindings[category_name][name] = {
 			id = 0,
-			keybind = {}
+			keybind = {},
 		}
 	end
 
@@ -204,7 +206,9 @@ end
 
 ImguiManager.update_guis = function (self, t, dt)
 	local prev_persistant = self._persistant_windows
+
 	self._persistant_windows = 0
+
 	local is_open = self._open
 
 	for _, category in pairs(self._guis_by_category) do
@@ -360,6 +364,7 @@ ImguiManager._draw_keybind_settings = function (self)
 
 			if Imgui.button("+", 20, 20) then
 				local new_id = #keybind + 1
+
 				keybind[new_id] = ""
 				self._rebind_id = new_id
 				self._rebind_action = name
@@ -491,6 +496,7 @@ ImguiX.combo_search = function (index, search_results, search_text, data)
 
 	if new_search_text ~= search_text then
 		search_results = {}
+
 		local needle = string.gsub(string.lower(new_search_text), " ", ".-")
 
 		for i, datum in ipairs(data) do

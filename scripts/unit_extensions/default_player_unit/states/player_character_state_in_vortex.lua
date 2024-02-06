@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/default_player_unit/states/player_character_state_in_vortex.lua
+
 PlayerCharacterStateInVortex = class(PlayerCharacterStateInVortex, PlayerCharacterState)
 
 PlayerCharacterStateInVortex.init = function (self, character_state_init_context)
@@ -6,17 +8,22 @@ end
 
 PlayerCharacterStateInVortex.on_enter = function (self, unit, input, dt, context, t, previous_state)
 	local game = Managers.state.network:game()
+
 	self.game = game
+
 	local unit_storage = self.unit_storage
 	local status_extension = self.status_extension
 	local vortex_unit = status_extension.in_vortex_unit
 	local vortex_go_id = unit_storage:go_id(vortex_unit)
 	local vortex_extension = ScriptUnit.extension(vortex_unit, "ai_supplementary_system")
 	local vortex_template = vortex_extension.vortex_template
+
 	self.vortex_unit = vortex_unit
 	self.vortex_unit_go_id = vortex_go_id
 	self.vortex_owner_unit = vortex_extension._owner_unit
+
 	local player_actions_allowed = vortex_template.player_actions_allowed
+
 	self.vortex_full_inner_radius = vortex_template.full_inner_radius
 	self.ascend_speed = vortex_template.player_ascend_speed
 	self.rotation_speed = vortex_template.player_rotation_speed
@@ -24,6 +31,7 @@ PlayerCharacterStateInVortex.on_enter = function (self, unit, input, dt, context
 	self.force_player_look_dir_to_spinn_dir = vortex_template.force_player_look_dir_to_spinn_dir
 	self.player_actions_allowed = player_actions_allowed
 	self.vortex_max_height = vortex_template.max_height
+
 	local interactor_extension = self.interactor_extension
 
 	interactor_extension:abort_interaction()
@@ -34,11 +42,12 @@ PlayerCharacterStateInVortex.on_enter = function (self, unit, input, dt, context
 	locomotion_extension:enable_drag(false)
 
 	local first_person_extension = self.first_person_extension
+
 	self.screenspace_effect_particle_id = first_person_extension:create_screen_particles("fx/screenspace_inside_plague_vortex")
 
 	first_person_extension:play_hud_sound_event("sfx_player_in_vortex_true")
 
-	local animation_event = nil
+	local animation_event
 
 	if player_actions_allowed then
 		animation_event = "idle"
@@ -51,6 +60,7 @@ PlayerCharacterStateInVortex.on_enter = function (self, unit, input, dt, context
 
 		local direction = "backward"
 		local directions = PlayerUnitMovementSettings.catapulted.directions
+
 		animation_event = directions[direction].start_animation
 
 		first_person_extension:hide_weapons("in_vortex")
@@ -80,6 +90,7 @@ PlayerCharacterStateInVortex.on_exit = function (self, unit, input, dt, context,
 		first_person_extension:play_hud_sound_event("sfx_player_in_vortex_false")
 
 		self.screenspace_effect_particle_id = nil
+
 		local attacker_unit = Unit.alive(self.vortex_owner_unit) and self.vortex_owner_unit or unit
 		local buff_system = Managers.state.entity:system("buff_system")
 
@@ -113,7 +124,7 @@ PlayerCharacterStateInVortex.update_spin_velocity = function (self, unit, vortex
 	local height_percentage = GameSession.game_object_field(game, vortex_unit_go_id, "height_percentage")
 	local vortex_height = self.vortex_max_height * height_percentage
 
-	if new_height > vortex_height then
+	if vortex_height < new_height then
 		velocity.z = 0
 	end
 
@@ -134,7 +145,7 @@ PlayerCharacterStateInVortex.update = function (self, unit, input, dt, context, 
 	if is_catapulted then
 		local params = {
 			sound_event = "Play_enemy_sorcerer_vortex_throw_player",
-			direction = direction
+			direction = direction,
 		}
 
 		csm:change_state("catapulted", params)
@@ -166,7 +177,10 @@ PlayerCharacterStateInVortex.update = function (self, unit, input, dt, context, 
 		interactor_extension:start_interaction("interacting")
 	end
 
-	local spin_direction = Unit.alive(self.vortex_unit) and self:update_spin_velocity(unit, self.vortex_unit, self.vortex_unit_go_id, dt)
+	if Unit.alive(self.vortex_unit) then
+		local spin_direction = self:update_spin_velocity(unit, self.vortex_unit, self.vortex_unit_go_id, dt)
+	end
+
 	local player = self.player
 	local viewport_name = player.viewport_name
 	local inventory_extension = self.inventory_extension

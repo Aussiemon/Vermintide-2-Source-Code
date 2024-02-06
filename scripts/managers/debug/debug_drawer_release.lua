@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/debug/debug_drawer_release.lua
+
 DebugDrawerRelease = class(DebugDrawerRelease)
 
 DebugDrawerRelease.init = function (self, line_object, mode)

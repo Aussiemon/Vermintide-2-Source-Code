@@ -1,20 +1,22 @@
+﻿-- chunkname: @scripts/settings/mutators/mutator_escape.lua
+
 local ACTIVE_ENEMIES_TO_SPAWN_HORDE = 10
 local compositions = {
 	chaos = {
 		"event_large_chaos",
-		"event_large"
+		"event_large",
 	},
 	beastmen = {
 		"event_large_beastmen",
-		"event_large"
+		"event_large",
 	},
 	skaven = {
-		"event_large"
-	}
+		"event_large",
+	},
 }
 
 local function get_compatible_faction(factions)
-	local faction = nil
+	local faction
 
 	for _, possible_faction in ipairs(factions) do
 		if compositions[possible_faction] then
@@ -27,8 +29,10 @@ end
 
 local function get_random_composition_type(faction, seed)
 	local compositions_for_faction = compositions[faction]
-	local index = nil
+	local index
+
 	seed, index = Math.next_random(seed, 1, #compositions_for_faction)
+
 	local composition_name = compositions_for_faction[index]
 
 	return seed, composition_name
@@ -48,6 +52,7 @@ return {
 			conflict_director.pacing:disable_roamers()
 
 			data.seed = Managers.mechanism:get_level_seed("mutator")
+
 			local mission_system = Managers.state.entity:system("mission_system")
 
 			mission_system:request_mission("mutator_escape")
@@ -57,7 +62,7 @@ return {
 
 		local t = Managers.time:time("game")
 
-		if not data.check_at or data.check_at < t then
+		if not data.check_at or t > data.check_at then
 			local active_enemies = Managers.state.performance:num_active_enemies()
 
 			if active_enemies < ACTIVE_ENEMIES_TO_SPAWN_HORDE then
@@ -67,13 +72,15 @@ return {
 				if faction then
 					local side_manager = Managers.state.side
 					local enemy_side_id = side_manager:get_side_from_name("dark_pact").side_id
-					local composition_type = nil
+					local composition_type
+
 					data.seed, composition_type = get_random_composition_type(faction, data.seed)
+
 					local extra_data = {
-						start_delay = 0,
 						only_behind = true,
 						silent = true,
-						override_composition_type = composition_type
+						start_delay = 0,
+						override_composition_type = composition_type,
 					}
 					local horde_spawner = conflict_director.horde_spawner
 
@@ -83,5 +90,5 @@ return {
 
 			data.check_at = t + 5
 		end
-	end
+	end,
 }

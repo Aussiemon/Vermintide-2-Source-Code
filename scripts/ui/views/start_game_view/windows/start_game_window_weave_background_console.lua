@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/start_game_view/windows/start_game_window_weave_background_console.lua
+
 local definitions = local_require("scripts/ui/views/start_game_view/windows/definitions/start_game_window_weave_background_console_definitions")
 local top_widget_definitions = definitions.top_widgets
 local bottom_widget_definitions = definitions.bottom_widgets
@@ -5,6 +7,7 @@ local bottom_hdr_widget_definitions = definitions.bottom_hdr_widgets
 local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
 local DO_RELOAD = false
+
 StartGameWindowWeaveBackgroundConsole = class(StartGameWindowWeaveBackgroundConsole)
 StartGameWindowWeaveBackgroundConsole.NAME = "StartGameWindowWeaveBackgroundConsole"
 
@@ -13,14 +16,16 @@ StartGameWindowWeaveBackgroundConsole.on_enter = function (self, params, offset)
 
 	self._params = params
 	self._parent = params.parent
+
 	local ingame_ui_context = params.ingame_ui_context
+
 	self._ingame_ui = ingame_ui_context.ingame_ui
 	self._ui_renderer = ingame_ui_context.ui_renderer
 	self._ui_top_renderer = ingame_ui_context.ui_top_renderer
 	self._input_manager = ingame_ui_context.input_manager
 	self._statistics_db = ingame_ui_context.statistics_db
 	self._render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 	self._network_lobby = ingame_ui_context.network_lobby
 	self._is_server = ingame_ui_context.is_server
@@ -36,11 +41,13 @@ end
 
 StartGameWindowWeaveBackgroundConsole._create_ui_elements = function (self, params, offset)
 	self._ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+
 	local widgets_by_name = {}
 	local top_widgets = {}
 
 	for name, widget_definition in pairs(top_widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		top_widgets[#top_widgets + 1] = widget
 		widgets_by_name[name] = widget
 	end
@@ -49,6 +56,7 @@ StartGameWindowWeaveBackgroundConsole._create_ui_elements = function (self, para
 
 	for name, widget_definition in pairs(bottom_widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		bottom_widgets[#bottom_widgets + 1] = widget
 		widgets_by_name[name] = widget
 	end
@@ -57,6 +65,7 @@ StartGameWindowWeaveBackgroundConsole._create_ui_elements = function (self, para
 
 	for name, widget_definition in pairs(bottom_hdr_widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		bottom_hdr_widgets[#bottom_hdr_widgets + 1] = widget
 		widgets_by_name[name] = widget
 	end
@@ -130,6 +139,7 @@ StartGameWindowWeaveBackgroundConsole._set_background_wheel_visibility = functio
 	local widgets_by_name = self._widgets_by_name
 	local background_wheel_1 = widgets_by_name.background_wheel_1
 	local hdr_background_wheel_1 = widgets_by_name.hdr_background_wheel_1
+
 	background_wheel_1.content.visible = visible
 	hdr_background_wheel_1.content.visible = visible
 
@@ -140,6 +150,7 @@ StartGameWindowWeaveBackgroundConsole._set_background_wheel_visibility = functio
 		local hdr_wheel_ring_1 = widgets_by_name["hdr_wheel_ring_" .. i .. "_1"]
 		local hdr_wheel_ring_2 = widgets_by_name["hdr_wheel_ring_" .. i .. "_2"]
 		local hdr_wheel_ring_3 = widgets_by_name["hdr_wheel_ring_" .. i .. "_3"]
+
 		wheel_ring_1.content.visible = visible
 		wheel_ring_2.content.visible = visible
 		wheel_ring_3.content.visible = visible
@@ -166,6 +177,7 @@ StartGameWindowWeaveBackgroundConsole._update_background_animations = function (
 		local speed_1 = dt * 0.01
 		local speed_2 = dt * 0.008
 		local speed_3 = dt * 0.006
+
 		wheel_ring_1.style.texture_id.angle = (wheel_ring_1.style.texture_id.angle + radians * speed_1) % radians
 		wheel_ring_2.style.texture_id.angle = (wheel_ring_2.style.texture_id.angle - radians * speed_2) % -radians
 		wheel_ring_3.style.texture_id.angle = (wheel_ring_3.style.texture_id.angle + radians * speed_3) % radians
@@ -277,27 +289,28 @@ end
 StartGameWindowWeaveBackgroundConsole._animate_wheel_position = function (self, dt)
 	local parent = self._parent
 	local selected_layout_name = parent:get_selected_layout_name()
+
 	self._current_offset = self._current_offset or {
 		0,
-		0
+		0,
 	}
 	self._starting_point = self._starting_point or {
 		0,
-		0
+		0,
 	}
 	self._offset_destinations = self._offset_destinations or {
 		weave_ranked = {
 			300,
-			120
+			120,
 		},
 		weave_quickplay = {
 			0,
-			220
+			220,
 		},
 		default = {
 			0,
-			0
-		}
+			0,
+		},
 	}
 
 	if self._old_selection_layout_name ~= selected_layout_name then
@@ -309,11 +322,15 @@ StartGameWindowWeaveBackgroundConsole._animate_wheel_position = function (self, 
 
 	local speed = 2
 	local wheel_position_progress = self._wheel_position_progress or 0
+
 	wheel_position_progress = math.min(wheel_position_progress + speed * dt, 1)
+
 	local anim_progress = math.easeOutCubic(wheel_position_progress)
 	local destination = self._offset_destinations[selected_layout_name] or self._offset_destinations.default
+
 	self._current_offset[1] = math.lerp(self._starting_point[1], destination[1], anim_progress)
 	self._current_offset[2] = math.lerp(self._starting_point[2], destination[2], anim_progress)
+
 	local scenegraph_id = "background_wheel"
 	local target_index = 1
 	local ui_scenegraph = self._ui_scenegraph
@@ -321,6 +338,7 @@ StartGameWindowWeaveBackgroundConsole._animate_wheel_position = function (self, 
 	local definition = scenegraph_definition[scenegraph_id]
 	local position = scenegraph.position
 	local default_position = definition.position
+
 	position[target_index] = default_position[target_index] + self._current_offset[1]
 	position[2] = default_position[2] + self._current_offset[2]
 	self._wheel_position_progress = wheel_position_progress
@@ -329,11 +347,12 @@ end
 StartGameWindowWeaveBackgroundConsole._animate_background_color = function (self, dt, t)
 	local parent = self._parent
 	local selected_layout_name = parent:get_selected_layout_name()
+
 	self._current_alpha = self._current_alpha or 0
 	self._starting_alpha = self._starting_alpha or 0
 	self._alpha_destinations = {
+		default = 0.1,
 		lobby_browser_weave = 0.3,
-		default = 0.1
 	}
 
 	if self._old_color_selection_layout_name ~= selected_layout_name then
@@ -344,14 +363,19 @@ StartGameWindowWeaveBackgroundConsole._animate_background_color = function (self
 
 	local speed = 0.5
 	local alpha_progress = self._alpha_progress or 0
+
 	alpha_progress = math.min(alpha_progress + speed * dt, 1)
+
 	local anim_progress = math.easeOutCubic(alpha_progress)
 	local starting_alpha = self._starting_alpha
 	local destination_alpha = self._alpha_destinations[selected_layout_name] or self._alpha_destinations.default
+
 	self._current_alpha = math.lerp(starting_alpha, destination_alpha, anim_progress)
+
 	local window_background_widget = self._widgets_by_name.window_background
 	local window_background_widget_style = window_background_widget.style
 	local window_background_widget_content = window_background_widget.content
+
 	window_background_widget_style.rect.color[2] = definitions.window_background_color[2] * self._current_alpha
 	window_background_widget_style.rect.color[3] = definitions.window_background_color[3] * self._current_alpha
 	window_background_widget_style.rect.color[4] = definitions.window_background_color[4] * self._current_alpha

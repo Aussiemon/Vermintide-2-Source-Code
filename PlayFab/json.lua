@@ -1,18 +1,20 @@
+﻿-- chunkname: @PlayFab/json.lua
+
 local json = {
-	_version = "0.1.0"
+	_version = "0.1.0",
 }
-local encode = nil
+local encode
 local escape_char_map = {
-	[""] = "\\f",
-	[""] = "\\b",
-	["\n"] = "\\n",
+	["\b"] = "\\b",
 	["\t"] = "\\t",
-	["\\"] = "\\\\",
+	["\n"] = "\\n",
+	["\f"] = "\\f",
 	["\r"] = "\\r",
-	["\""] = "\\\""
+	["\""] = "\\\"",
+	["\\"] = "\\\\",
 }
 local escape_char_map_inv = {
-	["\\/"] = "/"
+	["\\/"] = "/",
 }
 
 for k, v in pairs(escape_char_map) do
@@ -29,6 +31,7 @@ end
 
 local function encode_table(val, stack)
 	local res = {}
+
 	stack = stack or {}
 
 	if stack[val] then
@@ -75,11 +78,11 @@ local function encode_table(val, stack)
 end
 
 local function encode_string(val)
-	return "\"" .. val:gsub("[%z-\\\"]", escape_char) .. "\""
+	return "\"" .. val:gsub("[%z\x01-\x1F\\\"]", escape_char) .. "\""
 end
 
 local function encode_number(val)
-	if val ~= val or val <= -math.huge or math.huge <= val then
+	if val ~= val or val <= -math.huge or val >= math.huge then
 		error("unexpected number value '" .. tostring(val) .. "'")
 	end
 
@@ -91,7 +94,7 @@ local type_func_map = {
 	table = encode_table,
 	string = encode_string,
 	number = encode_number,
-	boolean = tostring
+	boolean = tostring,
 }
 
 function encode(val, stack)
@@ -106,10 +109,10 @@ function encode(val, stack)
 end
 
 json.encode = function (val)
-	return encode(val)
+	return (encode(val))
 end
 
-local parse = nil
+local parse
 
 local function create_set(...)
 	local res = {}
@@ -127,7 +130,7 @@ local escape_chars = create_set("\\", "/", "\"", "b", "f", "n", "r", "t", "u")
 local literals = create_set("true", "false", "null")
 local literal_map = {
 	["false"] = false,
-	["true"] = true
+	["true"] = true,
 }
 
 local function next_char(str, idx, set, negate)
@@ -177,7 +180,7 @@ local function parse_unicode_escape(s)
 	local n2 = tonumber(s:sub(9, 12), 16)
 
 	if n2 then
-		return codepoint_to_utf8((n1 - 55296) * 1024 + n2 - 56320 + 65536)
+		return codepoint_to_utf8((n1 - 55296) * 1024 + (n2 - 56320) + 65536)
 	else
 		return codepoint_to_utf8(n1)
 	end
@@ -187,7 +190,7 @@ local function parse_string(str, i)
 	local has_unicode_escape = false
 	local has_surrogate_escape = false
 	local has_escape = false
-	local last = nil
+	local last
 
 	for j = i + 1, #str do
 		local x = str:byte(j)
@@ -270,10 +273,12 @@ end
 local function parse_array(str, i)
 	local res = {}
 	local n = 1
+
 	i = i + 1
 
 	while true do
-		local x = nil
+		local x
+
 		i = next_char(str, i, space_chars, true)
 
 		if str:sub(i, i) == "]" then
@@ -286,7 +291,9 @@ local function parse_array(str, i)
 		res[n] = x
 		n = n + 1
 		i = next_char(str, i, space_chars, true)
+
 		local chr = str:sub(i, i)
+
 		i = i + 1
 
 		if chr == "]" then
@@ -303,10 +310,12 @@ end
 
 local function parse_object(str, i)
 	local res = {}
+
 	i = i + 1
 
 	while true do
-		local key, val = nil
+		local key, val
+
 		i = next_char(str, i, space_chars, true)
 
 		if str:sub(i, i) == "}" then
@@ -330,7 +339,9 @@ local function parse_object(str, i)
 		val, i = parse(str, i)
 		res[key] = val
 		i = next_char(str, i, space_chars, true)
+
 		local chr = str:sub(i, i)
+
 		i = i + 1
 
 		if chr == "}" then
@@ -362,7 +373,7 @@ local char_func_map = {
 	f = parse_literal,
 	n = parse_literal,
 	["["] = parse_array,
-	["{"] = parse_object
+	["{"] = parse_object,
 }
 
 function parse(str, idx)
@@ -381,7 +392,7 @@ json.decode = function (str)
 		error("expected argument of type string, got " .. type(str))
 	end
 
-	return parse(str, next_char(str, 1, space_chars, true))
+	return (parse(str, next_char(str, 1, space_chars, true)))
 end
 
 return json

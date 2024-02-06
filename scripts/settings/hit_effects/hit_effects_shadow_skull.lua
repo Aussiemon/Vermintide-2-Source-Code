@@ -1,8 +1,10 @@
+﻿-- chunkname: @scripts/settings/hit_effects/hit_effects_shadow_skull.lua
+
 HitEffectsShadowSkull = {
 	shot_default = {
+		armour_type = "metal",
 		hit_effect_name = "fx/belakor/blk_totem_chipped_stone_fx",
 		husk_hit_effect_name = "fx/belakor/blk_totem_chipped_stone_fx",
-		armour_type = "metal",
 		extra_conditions = {
 			death = true,
 			damage_type = {
@@ -19,33 +21,33 @@ HitEffectsShadowSkull = {
 				"bolt_sniper",
 				"bolt_carbine",
 				"bolt_machinegun",
-				"bolt_shotgun"
-			}
+				"bolt_shotgun",
+			},
 		},
 		animations = {
-			"ragdoll"
+			"ragdoll",
 		},
 		push = {
 			distal_force = 100,
+			lateral_force = 10,
 			vertical_force = -10,
-			lateral_force = 10
-		}
+		},
 	},
 	default_death = {
+		armour_type = "metal",
 		hit_effect_name = "fx/belakor/blk_totem_chipped_stone_fx",
 		husk_hit_effect_name = "fx/belakor/blk_totem_chipped_stone_fx",
-		armour_type = "metal",
 		extra_conditions = {
-			death = true
+			death = true,
 		},
 		animations = {
-			"ragdoll"
+			"ragdoll",
 		},
 		push = {
 			distal_force = 40,
+			lateral_force = 40,
 			vertical_force = -10,
-			lateral_force = 40
-		}
-	}
+		},
+	},
 }
 HitEffectsShadowSkull = table.create_copy(HitEffectsShadowSkull, HitEffectsShadowSkull)

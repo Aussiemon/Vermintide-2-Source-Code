@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/default_player_unit/weaves/player_husk_weave_loadout_extension.lua
+
 PlayerHuskWeaveLoadoutExtension = class(PlayerHuskWeaveLoadoutExtension)
 
 PlayerHuskWeaveLoadoutExtension.init = function (self, extension_init_context, unit, extension_init_data)
@@ -15,8 +17,9 @@ PlayerHuskWeaveLoadoutExtension.add_buffs = function (self, num_buffs, buff_ids,
 		num_buffs,
 		buff_ids,
 		buff_data_type_ids,
-		buff_values
+		buff_values,
 	}
+
 	local buffs = BuffUtils.buffs_from_rpc_params(num_buffs, buff_ids, buff_data_type_ids, buff_values)
 
 	self:_apply_buffs(buffs)

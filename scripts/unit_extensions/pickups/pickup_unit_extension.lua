@@ -1,13 +1,17 @@
+﻿-- chunkname: @scripts/unit_extensions/pickups/pickup_unit_extension.lua
+
 PickupUnitExtension = class(PickupUnitExtension)
 
 PickupUnitExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	self.world = extension_init_context.world
 	self.unit = unit
+
 	local pickup_name = extension_init_data.pickup_name
 	local has_physics = extension_init_data.has_physics
 	local spawn_type = extension_init_data.spawn_type
 	local dropped_by_breed = extension_init_data.dropped_by_breed or "n/a"
 	local network_transmit = extension_init_context.network_transmit
+
 	self.pickup_name = pickup_name
 	self.has_physics = has_physics
 	self.spawn_type = spawn_type
@@ -16,7 +20,9 @@ PickupUnitExtension.init = function (self, extension_init_context, unit, extensi
 	self.spawn_index = extension_init_data.spawn_index
 	self.owner_peer_id = extension_init_data.owner_peer_id
 	self.spawn_limit = extension_init_data.spawn_limit
+
 	local pickup_settings = AllPickups[pickup_name]
+
 	self.hide_func = pickup_settings.hide_func
 	self.hidden = false
 
@@ -51,7 +57,7 @@ PickupUnitExtension.extensions_ready = function (self)
 
 		if outline_distance then
 			outline_extension:update_outline({
-				distance = outline_distance
+				distance = outline_distance,
 			}, 0)
 		end
 
@@ -61,7 +67,7 @@ PickupUnitExtension.extensions_ready = function (self)
 
 			if not available then
 				outline_extension:update_outline({
-					method = "never"
+					method = "never",
 				}, 0)
 			end
 		end
@@ -80,6 +86,7 @@ end
 
 PickupUnitExtension.hide = function (self)
 	local unit = self.unit
+
 	self.hidden = true
 
 	Unit.set_unit_visibility(unit, false)

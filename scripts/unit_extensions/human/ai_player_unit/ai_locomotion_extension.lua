@@ -1,9 +1,12 @@
+﻿-- chunkname: @scripts/unit_extensions/human/ai_player_unit/ai_locomotion_extension.lua
+
 require("scripts/helpers/mover_helper")
 
 local Unit_local_position = Unit.local_position
 local DEFAULT_ROTATION_SPEED = 10
 local LOCOMOTION_GRAVITY = 20
 local ALLOWED_MOVER_MOVE_DISTANCE = 0.5
+
 AILocomotionExtension = class(AILocomotionExtension)
 
 AILocomotionExtension.init = function (self, extension_init_context, unit, extension_init_data)
@@ -41,6 +44,7 @@ AILocomotionExtension.init = function (self, extension_init_context, unit, exten
 	self.is_server = Managers.player.is_server
 	self._last_fall_position = Vector3Box(10000, 10000, 10000)
 	self._mover_state = MoverHelper.create_mover_state()
+
 	local collision_actor_name = "c_mover_collision"
 	local has_collision_actor = Unit.actor(unit, collision_actor_name)
 
@@ -55,6 +59,7 @@ end
 AILocomotionExtension.destroy = function (self)
 	local system_data = self._system_data
 	local unit = self._unit
+
 	system_data.destroy_units[unit] = self
 end
 
@@ -114,6 +119,7 @@ AILocomotionExtension.teleport_to = function (self, position, rotation)
 	if game then
 		local game_object_id = network_manager:unit_game_object_id(unit)
 		local has_teleported_value = GameSession.game_object_field(game, game_object_id, "has_teleported")
+
 		has_teleported_value = has_teleported_value % NetworkConstants.teleports.max + 1
 
 		GameSession.set_game_object_field(game, game_object_id, "has_teleported", has_teleported_value)
@@ -127,6 +133,7 @@ local LINKED_TRANSPORT_FUNCTION_NAME = "update_linked_transport"
 
 AILocomotionExtension.set_animation_driven = function (self, is_animation_driven, is_affected_by_gravity, script_driven_rotation, is_on_transport)
 	is_affected_by_gravity = is_affected_by_gravity or false
+
 	local unit = self._unit
 
 	self:set_affected_by_gravity(is_affected_by_gravity)
@@ -278,6 +285,7 @@ AILocomotionExtension.set_movement_type = function (self, movement_type, overrid
 	end
 
 	self.movement_type = movement_type
+
 	local unit = self._unit
 
 	if movement_type == "script_driven" then
@@ -348,6 +356,7 @@ AILocomotionExtension.set_movement_type = function (self, movement_type, overrid
 		local rotation = Quaternion.look(Vector3(0, 0, 1))
 		local shape = half_height - radius > 0 and "capsule" or "sphere"
 		local hit_actors, num_hit_actors = PhysicsWorld.immediate_overlap(physics_world, "shape", shape, "position", mover_position, "rotation", rotation, "size", size, "collision_filter", "filter_environment_overlap")
+
 		self._is_falling = num_hit_actors == 0
 	end
 end

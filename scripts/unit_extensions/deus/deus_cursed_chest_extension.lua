@@ -1,18 +1,21 @@
+﻿-- chunkname: @scripts/unit_extensions/deus/deus_cursed_chest_extension.lua
+
 DeusCursedChestExtension = class(DeusCursedChestExtension)
+
 local RPCS = {
-	"rpc_deus_chest_looted"
+	"rpc_deus_chest_looted",
 }
 local STATES = {
-	OPEN = 3,
 	HOTJOIN_OPEN = 4,
-	WAITING = 1,
 	INITIALIZING = 0,
-	RUNNING = 2
+	OPEN = 3,
+	RUNNING = 2,
+	WAITING = 1,
 }
 local DIALOGUE_DELAY = 4
 local SOUND_EVENTS = {
+	finish_cursed_chest = "finish_cursed_chest",
 	trigger_cursed_chest = "trigger_cursed_chest",
-	finish_cursed_chest = "finish_cursed_chest"
 }
 local OBJECTIVE_MARKER_TIMEOUT = 60
 
@@ -121,7 +124,7 @@ DeusCursedChestExtension.update = function (self, unit, input, dt, context, t)
 	end
 
 	if self._objective_unit then
-		if self._objective_unit_timeout < t then
+		if t > self._objective_unit_timeout then
 			self:_clear_objective_unit()
 		elseif self._objective_unit_running_astar then
 			if GwNavAStar.processing_finished(self._objective_unit_astar) then
@@ -150,8 +153,9 @@ DeusCursedChestExtension.update = function (self, unit, input, dt, context, t)
 		end
 	end
 
-	if self._play_dialogue_at and self._play_dialogue_at <= t then
+	if self._play_dialogue_at and t >= self._play_dialogue_at then
 		self._play_dialogue_at = nil
+
 		local vo_unit = LevelHelper:find_dialogue_unit(context.world, "ferry_lady")
 
 		if vo_unit then
@@ -248,7 +252,7 @@ DeusCursedChestExtension.on_client_interact = function (self, world, interactor_
 
 	if state == STATES.OPEN then
 		Managers.ui:handle_transition("deus_cursed_chest", {
-			interactable_unit = interactable_unit
+			interactable_unit = interactable_unit,
 		})
 
 		local inventory_extension = ScriptUnit.extension(interactor_unit, "inventory_system")

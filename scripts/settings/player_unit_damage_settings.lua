@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/player_unit_damage_settings.lua
+
 PlayerUnitDamageSettings = PlayerUnitDamageSettings or {}
 PlayerUnitDamageSettings.chance_to_shield_on_damage_amount = 2
 PlayerUnitDamageSettings.chance_to_shield_on_killing_blow_amount = 4
@@ -27,16 +29,16 @@ PlayerUnitDamageSettings.stun.duration = 0.5
 PlayerUnitDamageSettings.stun.damage_threshold = 95
 PlayerUnitDamageSettings.stun.damage_threshold_with_stun_property = 1
 PlayerUnitDamageSettings.stun.damage_types_with_stun_property = {
-	slashing = false,
 	blunt = false,
 	cutting = false,
-	piercing = false
+	piercing = false,
+	slashing = false,
 }
 PlayerUnitDamageSettings.stun.damage_types_without_stun_property = {
-	slashing = false,
 	blunt = false,
 	cutting = false,
-	piercing = false
+	piercing = false,
+	slashing = false,
 }
 PlayerUnitDamageSettings.stun_dismount = PlayerUnitDamageSettings.stun_dismount or {}
 PlayerUnitDamageSettings.stun_dismount.duration = 1.6666666666666667
@@ -53,5 +55,5 @@ PlayerUnitDamageSettings.kd_bleeding.dps = 0
 PlayerUnitDamageSettings.dead_player_destroy_time = 5
 PlayerUnitDamageSettings.dot_types = {
 	bleeding = {},
-	burning = {}
+	burning = {},
 }

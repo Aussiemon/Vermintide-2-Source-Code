@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/game_mode/mechanisms/deus_base_graph_generator.lua
+
 require("scripts/settings/dlcs/morris/deus_map_base_gen_settings")
 require("scripts/settings/dlcs/morris/deus_map_seed_whitelist")
 require("scripts/helpers/deus_gen_utils")
@@ -8,12 +10,12 @@ local node_type_list = {
 	"TRAVEL",
 	"DUMMY",
 	"SHOP",
-	"START"
+	"START",
 }
 local CONNECTION_TYPES = {
+	EXISTING = "EXISTING",
 	FINAL = "FINAL",
 	NEW = "NEW",
-	EXISTING = "EXISTING"
 }
 
 local function create_indent_string(depth)
@@ -64,8 +66,8 @@ local function get_random_node_type_list(random_generator)
 
 	for ii = #node_type_list_copy, 2, -1 do
 		local swap = random_generator(1, ii)
-		node_type_list_copy[ii] = node_type_list_copy[swap]
-		node_type_list_copy[swap] = node_type_list_copy[ii]
+
+		node_type_list_copy[swap], node_type_list_copy[ii] = node_type_list_copy[ii], node_type_list_copy[swap]
 	end
 
 	return node_type_list_copy
@@ -82,8 +84,8 @@ local function get_random_key_list(table1, random_generator)
 
 	for ii = #keys, 2, -1 do
 		local swap = random_generator(1, ii)
-		keys[ii] = keys[swap]
-		keys[swap] = keys[ii]
+
+		keys[swap], keys[ii] = keys[ii], keys[swap]
 	end
 
 	return keys
@@ -92,8 +94,8 @@ end
 local function shuffle_array(table, random_generator)
 	for ii = #table, 2, -1 do
 		local swap = random_generator(1, ii)
-		table[ii] = table[swap]
-		table[swap] = table[ii]
+
+		table[swap], table[ii] = table[ii], table[swap]
 	end
 
 	return table
@@ -192,7 +194,7 @@ end
 local function count_ancestors_of_type(nodes, node_key, type)
 	if #nodes[node_key].prev == 0 then
 		return {
-			0
+			0,
 		}
 	end
 
@@ -221,8 +223,8 @@ local function node_type_sequences_to_node(nodes, node_key)
 	if #nodes[node_key].prev == 0 then
 		return {
 			{
-				type
-			}
+				type,
+			},
 		}
 	end
 
@@ -268,8 +270,8 @@ local function get_paths_from(nodes, node_key)
 	if #nodes[node_key].next == 0 then
 		return {
 			{
-				node_key
-			}
+				node_key,
+			},
 		}
 	end
 
@@ -292,10 +294,12 @@ local function get_visible_nodes(nodes, node_key, depth)
 
 	if depth > 1 then
 		depth = depth - 1
+
 		local all_visible_nodes = {}
 
 		for _, descendant in ipairs(descendants) do
 			all_visible_nodes[descendant] = nodes[descendant]
+
 			local visibles_from_descendant = get_visible_nodes(nodes, descendant, depth)
 
 			for visible_from_descendant_node_key, visible_from_descendant in pairs(visibles_from_descendant) do
@@ -371,7 +375,9 @@ local CONNECTION_VALIDATIONS = {
 				for visible_node_key, visible_node in pairs(visible_nodes) do
 					if visible_node.label and visible_node.label ~= 0 then
 						local type_lookup = lookup[visible_node.type] or {}
+
 						lookup[visible_node.type] = type_lookup
+
 						local label_lookup = type_lookup[visible_node.label] or {}
 
 						if #label_lookup > 0 and not table.contains(label_lookup, visible_node_key) then
@@ -387,7 +393,7 @@ local CONNECTION_VALIDATIONS = {
 		end
 
 		return true
-	end
+	end,
 }
 local CONNECTION_COUNT_VALIDATIONS = {
 	{
@@ -398,7 +404,7 @@ local CONNECTION_COUNT_VALIDATIONS = {
 		end,
 		check_if_not_start_node = function (config, nodes, node_key)
 			return config.MAX_CONNECTIONS_PER_NODE == 1 or node_key ~= "start"
-		end
+		end,
 	},
 	{
 		check_if_not_over_max_paths = function (config, nodes, node_key)
@@ -411,13 +417,13 @@ local CONNECTION_COUNT_VALIDATIONS = {
 		end,
 		check_if_not_start_node = function (config, nodes, node_key)
 			return config.MAX_CONNECTIONS_PER_NODE == 1 or node_key ~= "start"
-		end
+		end,
 	},
 	{
 		enforce_only_start_node = function (config, nodes, node_key)
 			return config.MAX_CONNECTIONS_PER_NODE == 1 or node_key == "start"
-		end
-	}
+		end,
+	},
 }
 local CONNECTION_TYPE_WEIGHT_TRANSFORMS = {
 	NEW = {
@@ -437,15 +443,15 @@ local CONNECTION_TYPE_WEIGHT_TRANSFORMS = {
 			local percentage_of_nodes_left = (node_count - half_max_nodes) / half_max_nodes
 
 			return math.clamp(weight_range - weight_range * percentage_of_nodes_left, 1, weight_range)
-		end
+		end,
 	},
 	EXISTING = {},
-	FINAL = {}
+	FINAL = {},
 }
 local START_NODE_VALIDATIONS = {
 	force_start_on_start_node = function (config, nodes, node_type)
 		return node_type == "START"
-	end
+	end,
 }
 local FINAL_NODE_VALIDATIONS = {
 	end_with_arena = function (config, nodes, node_type)
@@ -485,8 +491,8 @@ local FINAL_NODE_VALIDATIONS = {
 			count = count + 1
 		end
 
-		return config.MIN_NODES <= count
-	end
+		return count >= config.MIN_NODES
+	end,
 }
 local NODE_TYPE_VALIDATIONS = {
 	ANY = {
@@ -522,12 +528,12 @@ local NODE_TYPE_VALIDATIONS = {
 			end
 
 			return true
-		end
+		end,
 	},
 	ARENA = {
 		only_on_final = function (config, nodes, node_key)
 			return node_key == "final"
-		end
+		end,
 	},
 	SIGNATURE = {},
 	TRAVEL = {},
@@ -560,9 +566,9 @@ local NODE_TYPE_VALIDATIONS = {
 			end
 
 			return true
-		end
+		end,
 	},
-	START = {}
+	START = {},
 }
 local LABEL_VALIDATIONS = {
 	check_if_not_repeating_label = function (config, nodes, node_key)
@@ -572,7 +578,7 @@ local LABEL_VALIDATIONS = {
 		local type = node.type
 
 		for _, path in ipairs(all_paths) do
-			local found_node_key = nil
+			local found_node_key
 
 			for _, other_node_key in ipairs(path) do
 				local visible_nodes = get_visible_nodes(nodes, other_node_key, config.LABEL_LOOKAHEAD)
@@ -590,7 +596,7 @@ local LABEL_VALIDATIONS = {
 		end
 
 		return true
-	end
+	end,
 }
 local NODE_TYPE_SHUFFLERS = {
 	prefer_not_shop_if_already_having_a_shop_choice = function (context, nodes, node_key, node_types)
@@ -609,10 +615,11 @@ local NODE_TYPE_SHUFFLERS = {
 
 		if needs_reshuffle then
 			local index = table.index_of(node_types, "SHOP")
+
 			node_types[index] = node_types[#node_types]
 			node_types[#node_types] = "SHOP"
 		end
-	end
+	end,
 }
 
 local function validate_connection_to_existing_node(config, indent, nodes, from, to)
@@ -692,7 +699,7 @@ local function validate_until_the_end(config, indent, nodes, node_key)
 	return true
 end
 
-local create_process_node_action, create_assign_node_label_action, create_connect_action, create_connections_action, create_random_connection_action, create_connect_with_type_action, create_new_node_action, create_connection_to_existing_action = nil
+local create_process_node_action, create_assign_node_label_action, create_connect_action, create_connections_action, create_random_connection_action, create_connect_with_type_action, create_new_node_action, create_connection_to_existing_action
 
 function create_connection_to_existing_action(context, nodes, node_key, to_node_key)
 	local node = nodes[node_key]
@@ -734,19 +741,21 @@ function create_connection_to_existing_action(context, nodes, node_key, to_node_
 			revert_func()
 
 			return false
-		end
+		end,
 	}
 end
 
 function create_new_node_action(context, nodes, node_key, name_override)
 	local node = nodes[node_key]
-	local layer, new_node_key = nil
+	local layer, new_node_key
 
 	local function executor()
 		local prev_node_count = context.node_count
+
 		context.node_count = prev_node_count and prev_node_count + 1 or 1
 		new_node_key = name_override or "node_" .. context.node_count
 		layer = node.layout_x + 1
+
 		local nodes_for_layer = context.nodes_per_layer[layer]
 
 		if not nodes_for_layer then
@@ -755,21 +764,24 @@ function create_new_node_action(context, nodes, node_key, name_override)
 		end
 
 		nodes_for_layer[#nodes_for_layer + 1] = new_node_key
+
 		local y_position = #nodes_for_layer
+
 		nodes[new_node_key] = {
 			name = new_node_key,
 			prev = {
-				node_key
+				node_key,
 			},
 			next = {},
 			layout_x = layer,
-			layout_y = y_position
+			layout_y = y_position,
 		}
 		node.next[#node.next + 1] = new_node_key
+
 		local next_actions = {
 			function ()
 				return create_process_node_action(context, nodes, new_node_key)
-			end
+			end,
 		}
 
 		return true, next_actions
@@ -785,12 +797,14 @@ function create_new_node_action(context, nodes, node_key, name_override)
 				nodes[new_node_key] = nil
 				node.next[#node.next] = nil
 				context.node_count = context.node_count - 1
+
 				local nodes_for_layer = context.nodes_per_layer[layer]
+
 				nodes_for_layer[#nodes_for_layer] = nil
 			end
 
 			return false
-		end
+		end,
 	}
 end
 
@@ -799,14 +813,14 @@ function create_connect_with_type_action(context, nodes, node_key, connection_ty
 		return get_random_key_list(nodes, context.random_generator)
 	end
 
-	local possible_connections = nil
+	local possible_connections
 
 	local function executor()
 		if connection_type == CONNECTION_TYPES.NEW then
 			local next_actions = {
 				function ()
 					return create_new_node_action(context, nodes, node_key)
-				end
+				end,
 			}
 
 			return true, next_actions
@@ -815,10 +829,11 @@ function create_connect_with_type_action(context, nodes, node_key, connection_ty
 				possible_connections = create_shuffled_possible_connections()
 			end
 
-			local connection = nil
+			local connection
 
 			while #possible_connections > 0 do
 				local possible_connection = possible_connections[#possible_connections]
+
 				possible_connections[#possible_connections] = nil
 
 				if possible_connection ~= "final" and validate_connection_to_existing_node(context.config, context.indent, nodes, node_key, possible_connection) then
@@ -835,7 +850,7 @@ function create_connect_with_type_action(context, nodes, node_key, connection_ty
 			local next_actions = {
 				function ()
 					return create_connection_to_existing_action(context, nodes, node_key, connection)
-				end
+				end,
 			}
 
 			return true, next_actions
@@ -844,7 +859,7 @@ function create_connect_with_type_action(context, nodes, node_key, connection_ty
 				local next_actions = {
 					function ()
 						return create_new_node_action(context, nodes, node_key, "final")
-					end
+					end,
 				}
 
 				return true, next_actions
@@ -853,7 +868,7 @@ function create_connect_with_type_action(context, nodes, node_key, connection_ty
 					local next_actions = {
 						function ()
 							return create_connection_to_existing_action(context, nodes, node_key, "final")
-						end
+						end,
 					}
 
 					return true, next_actions
@@ -885,7 +900,7 @@ function create_connect_with_type_action(context, nodes, node_key, connection_ty
 			end
 
 			fassert(false, "shouldn't come here")
-		end
+		end,
 	}
 end
 
@@ -894,7 +909,7 @@ function create_random_connection_action(context, nodes, node_key)
 		local weights = {
 			[CONNECTION_TYPES.NEW] = 100,
 			[CONNECTION_TYPES.EXISTING] = 100,
-			[CONNECTION_TYPES.FINAL] = 100
+			[CONNECTION_TYPES.FINAL] = 100,
 		}
 
 		for connection_type, weight in pairs(weights) do
@@ -902,6 +917,7 @@ function create_random_connection_action(context, nodes, node_key)
 
 			for _, transformer_name in ipairs(transformer_names) do
 				local transformer = CONNECTION_TYPE_WEIGHT_TRANSFORMS[connection_type][transformer_name]
+
 				weights[connection_type] = transformer(context.config, nodes, node_key, weights[connection_type])
 			end
 		end
@@ -909,7 +925,7 @@ function create_random_connection_action(context, nodes, node_key)
 		return weights
 	end
 
-	local weights = nil
+	local weights
 
 	local function executor()
 		if not weights then
@@ -929,7 +945,7 @@ function create_random_connection_action(context, nodes, node_key)
 		local next_actions = {
 			function ()
 				return create_connect_with_type_action(context, nodes, node_key, connection_type)
-			end
+			end,
 		}
 
 		return true, next_actions
@@ -942,7 +958,7 @@ function create_random_connection_action(context, nodes, node_key)
 		end,
 		retry = function ()
 			return executor()
-		end
+		end,
 	}
 end
 
@@ -968,7 +984,7 @@ function create_connections_action(context, nodes, node_key)
 		end,
 		retry = function ()
 			return false
-		end
+		end,
 	}
 end
 
@@ -985,7 +1001,7 @@ function create_connect_action(context, nodes, node_key)
 		return shuffle_array(connection_count_array, context.random_generator)
 	end
 
-	local random_connection_count, last_attempt = nil
+	local random_connection_count, last_attempt
 
 	local function executor()
 		if not random_connection_count then
@@ -994,6 +1010,7 @@ function create_connect_action(context, nodes, node_key)
 
 		while #random_connection_count > 0 do
 			local new_connection_count = random_connection_count[#random_connection_count]
+
 			random_connection_count[#random_connection_count] = nil
 
 			if (not last_attempt or new_connection_count < last_attempt) and validate_connection_count(context.config, context.indent, nodes, node_key, new_connection_count) then
@@ -1008,10 +1025,11 @@ function create_connect_action(context, nodes, node_key)
 		end
 
 		last_attempt = node.connected_to
+
 		local next_actions = {
 			function ()
 				return create_connections_action(context, nodes, node_key)
-			end
+			end,
 		}
 
 		return true, next_actions
@@ -1026,22 +1044,23 @@ function create_connect_action(context, nodes, node_key)
 			node.connected_to = nil
 
 			return executor()
-		end
+		end,
 	}
 end
 
 function create_assign_node_label_action(context, nodes, node_key)
 	local node = nodes[node_key]
 	local node_type = node.type
-	local labels_left = nil
+	local labels_left
 	local should_label = context.config.LABELLED_NODE_TYPES[node_type]
 
 	local function executor()
 		if should_label then
 			if not labels_left then
 				labels_left = {}
+
 				local found_unused_label = false
-				local unused_label_index = nil
+				local unused_label_index
 
 				for i = 1, context.config.LABELS_AVAILABLE[node_type] do
 					local found = false
@@ -1064,6 +1083,7 @@ function create_assign_node_label_action(context, nodes, node_key)
 
 				if found_unused_label then
 					local val = labels_left[1]
+
 					labels_left[1] = labels_left[unused_label_index]
 					labels_left[unused_label_index] = val
 				end
@@ -1071,10 +1091,14 @@ function create_assign_node_label_action(context, nodes, node_key)
 
 			while #labels_left > 0 do
 				local label_to_try = labels_left[#labels_left]
+
 				labels_left[#labels_left] = nil
+
 				local validator_names = context.config.LABEL_VALIDATIONS
 				local validators = LABEL_VALIDATIONS
+
 				node.label = label_to_try
+
 				local failed = false
 
 				for _, validator_name in ipairs(validator_names) do
@@ -1103,7 +1127,7 @@ function create_assign_node_label_action(context, nodes, node_key)
 			local next_actions = {
 				function ()
 					return create_connect_action(context, nodes, node_key)
-				end
+				end,
 			}
 
 			return true, next_actions
@@ -1123,13 +1147,13 @@ function create_assign_node_label_action(context, nodes, node_key)
 			end
 
 			return false
-		end
+		end,
 	}
 end
 
 function create_process_node_action(context, nodes, node_key)
 	local node = nodes[node_key]
-	local shuffled_node_types = nil
+	local shuffled_node_types
 
 	local function executor()
 		if not shuffled_node_types then
@@ -1144,6 +1168,7 @@ function create_process_node_action(context, nodes, node_key)
 
 		while #shuffled_node_types > 0 do
 			local node_type_to_try = shuffled_node_types[#shuffled_node_types]
+
 			shuffled_node_types[#shuffled_node_types] = nil
 
 			if validate_node_type(context.config, context.indent, nodes, node_key, node_type_to_try) then
@@ -1160,7 +1185,7 @@ function create_process_node_action(context, nodes, node_key)
 		local next_actions = {
 			function ()
 				return create_assign_node_label_action(context, nodes, node_key)
-			end
+			end,
 		}
 
 		return true, next_actions
@@ -1175,7 +1200,7 @@ function create_process_node_action(context, nodes, node_key)
 			node.type = nil
 
 			return executor()
-		end
+		end,
 	}
 end
 
@@ -1233,11 +1258,11 @@ function deus_base_graph_generator(seed, config)
 	local nodes = {
 		start = {
 			layout_x = 1,
-			name = "start",
 			layout_y = 1,
+			name = "start",
 			prev = {},
-			next = {}
-		}
+			next = {},
+		},
 	}
 	local max_sequence_length = 0
 
@@ -1246,16 +1271,18 @@ function deus_base_graph_generator(seed, config)
 	end
 
 	config._max_sequence_length = max_sequence_length
-	local nodes_per_layer = {
-		{
-			"start"
-		}
+
+	local nodes_per_layer = {}
+
+	nodes_per_layer[1] = {
+		"start",
 	}
+
 	local context = {
 		indent = 0,
 		random_generator = random_generator,
 		config = config,
-		nodes_per_layer = nodes_per_layer
+		nodes_per_layer = nodes_per_layer,
 	}
 
 	local function per_action_callback(action_list, action)
@@ -1263,7 +1290,7 @@ function deus_base_graph_generator(seed, config)
 	end
 
 	local action_list = {
-		create_process_node_action(context, nodes, "start")
+		create_process_node_action(context, nodes, "start"),
 	}
 	local generator = DeusGenEngine.get_generator(action_list, per_action_callback)
 

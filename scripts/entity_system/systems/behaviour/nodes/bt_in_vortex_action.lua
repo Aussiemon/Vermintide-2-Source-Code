@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_in_vortex_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTInVortexAction = class(BTInVortexAction, BTNode)
@@ -21,8 +23,11 @@ BTInVortexAction.enter = function (self, unit, blackboard, t)
 	blackboard.in_vortex_state = "in_vortex_init"
 	blackboard.stagger_prohibited = true
 	blackboard.move_state = "idle"
+
 	local hit_reaction_extension = ScriptUnit.extension(unit, "hit_reaction_system")
+
 	hit_reaction_extension.force_ragdoll_on_death = true
+
 	local shield_extension = ScriptUnit.has_extension(unit, "ai_shield_system")
 
 	if shield_extension then
@@ -54,7 +59,9 @@ BTInVortexAction.leave = function (self, unit, blackboard, t, reason, destroy)
 
 	blackboard.in_vortex = false
 	blackboard.stagger_prohibited = nil
+
 	local hit_reaction_extension = ScriptUnit.extension(unit, "hit_reaction_system")
+
 	hit_reaction_extension.force_ragdoll_on_death = nil
 end
 
@@ -68,6 +75,7 @@ BTInVortexAction.run = function (self, unit, blackboard, t, dt)
 			network_manager:anim_event(unit, "umbral_leap")
 
 			blackboard.in_vortex_state = "in_umbral_leap"
+
 			local locomotion_extension = blackboard.locomotion_extension
 
 			locomotion_extension:set_wanted_velocity(Vector3.zero())
@@ -103,7 +111,9 @@ BTInVortexAction.run = function (self, unit, blackboard, t, dt)
 		end
 	elseif state == "ejected_from_vortex" then
 		local velocity = blackboard.ejected_from_vortex:unbox()
+
 		velocity = velocity - Vector3(0, 0, 9.82) * dt
+
 		local locomotion_extension = blackboard.locomotion_extension
 
 		locomotion_extension:set_wanted_velocity(velocity)
@@ -125,6 +135,7 @@ BTInVortexAction.run = function (self, unit, blackboard, t, dt)
 				local vertical_range = 0.5
 				local horizontal_tolerance = 0.5
 				local distance_from_obstacle = 0.5
+
 				nav_position = GwNavQueries.inside_position_from_outside_position(nav_world, position, vertical_range, vertical_range, horizontal_tolerance, distance_from_obstacle)
 
 				if nav_position == nil then
@@ -146,6 +157,7 @@ BTInVortexAction.run = function (self, unit, blackboard, t, dt)
 			end
 
 			blackboard.in_vortex_state = "waiting_to_land"
+
 			local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
 			local event_data = FrameTable.alloc_table()
 

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/input/script_input_source.lua
+
 require("scripts/settings/script_input_settings")
 
 ScriptInputSource = class(ScriptInputSource, InputSource)
@@ -50,7 +52,7 @@ ScriptInputSource._update_input = function (self, dt, t)
 	for i = #self._input_settings_copy, 1, -1 do
 		local config = self._input_settings_copy[i]
 
-		if config.start < self._active_time then
+		if self._active_time > config.start then
 			local input_desc = self.mapping_table[config.name]
 
 			if input_desc.func == "button" then

@@ -1,3 +1,5 @@
+﻿-- chunkname: @core/gwnav/lua/runtime/navmeshcamera.lua
+
 require("core/gwnav/lua/safe_require")
 
 local NavMeshCamera = safe_require_guard()
@@ -21,7 +23,7 @@ local Color = stingray.Color
 local LineObject = stingray.LineObject
 local PhysicsWorld = stingray.PhysicsWorld
 local Level = stingray.Level
-local Window = nil
+local Window
 
 if stingray.Window then
 	Window = stingray.Window
@@ -68,6 +70,7 @@ NavMeshCamera.update = function (self, dt)
 	end
 
 	local translation_change_speed = self.translation_speed * 0.1
+
 	self.translation_speed = self.translation_speed + input.accelerate * translation_change_speed
 
 	if self.translation_speed < 0.001 then
@@ -86,7 +89,9 @@ NavMeshCamera.update = function (self, dt)
 	local q1 = Quaternion(Vector3(0, 0, 1), -Vector3.x(input.pan) * self.rotation_speed)
 	local q2 = Quaternion(Matrix4x4.x(cm), -Vector3.y(input.pan) * self.rotation_speed)
 	local q = Quaternion.multiply(q1, q2)
+
 	cm = Matrix4x4.multiply(cm, Matrix4x4.from_quaternion(q))
+
 	local velocity = Matrix4x4.transform(cm, input.move * self.translation_speed)
 	local move_on_navmesh = GwNavQueries.move_on_navmesh(self.nav_world, pos, velocity, dt)
 

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/game_mode/mechanisms/deus_generate_graph.lua
+
 require("scripts/managers/game_mode/mechanisms/deus_base_graph_generator")
 require("scripts/managers/game_mode/mechanisms/deus_layout_base_graph")
 require("scripts/managers/game_mode/mechanisms/deus_populate_graph")
@@ -18,13 +20,14 @@ function deus_generate_graph(seed, journey_name, dominant_god, populate_config, 
 		local without_prefix = string.gsub(seed, "DEBUG_SPECIFIC_NODE", "")
 		local without_suffix = string.gsub(without_prefix, seed_pattern, "")
 		local seeds = deus_generate_seeds(level_seed)
+
 		start_node.level_seed = level_seed
 		start_node.weapon_pickup_seed = seeds.weapon_pickup_seed
 		start_node.system_seeds = {
 			pickups = seeds.pickups_seed,
 			mutator = seeds.mutator_seed,
 			blessings = seeds.blessings_seed,
-			power_ups = seeds.power_ups_seed
+			power_ups = seeds.power_ups_seed,
 		}
 
 		printf("seeds used for this node: \n%s", table.tostring(seeds))
@@ -32,6 +35,7 @@ function deus_generate_graph(seed, journey_name, dominant_god, populate_config, 
 		local level = string.gsub(without_suffix, "^%w*_", "")
 		local base_level = string.gsub(level, "(%w_+%w+).*", "%1")
 		local progress = string.gsub(without_suffix, "_.*$", "")
+
 		start_node.level = level
 		start_node.base_level = base_level
 		start_node.run_progress = progress ~= "" and tonumber(progress) / 1000 or 0
@@ -46,7 +50,7 @@ function deus_generate_graph(seed, journey_name, dominant_god, populate_config, 
 			start_node.level_type = "START"
 		end
 
-		local theme = nil
+		local theme
 
 		for capture in string.gmatch(level, ".*_(.*)_path.") do
 			theme = capture
@@ -73,7 +77,9 @@ function deus_generate_graph(seed, journey_name, dominant_god, populate_config, 
 	else
 		local seed_number = type(seed) == "string" and tonumber(seed) or type(seed) == "number" and seed or 0
 		local graphs = base_graphs[journey_name] or base_graphs.default
+
 		seed_number = Math.next_random(seed_number)
+
 		local keys = {}
 
 		for key, _ in pairs(graphs) do
@@ -82,8 +88,10 @@ function deus_generate_graph(seed, journey_name, dominant_god, populate_config, 
 
 		table.sort(keys)
 
-		local keys_index = nil
+		local keys_index
+
 		seed_number, keys_index = Math.next_random(seed_number, 1, #keys)
+
 		local chosen_graph = keys[keys_index]
 		local base_graph = graphs[chosen_graph]
 		local complete_graph = deus_populate_graph(base_graph, seed_number, populate_config, dominant_god, with_belakor)

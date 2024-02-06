@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_teleport_to_commander_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTTeleportToCommanderAction = class(BTTeleportToCommanderAction, BTNode)

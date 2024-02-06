@@ -1,7 +1,10 @@
+﻿-- chunkname: @scripts/entity_system/systems/mission/mission_system.lua
+
 require("scripts/entity_system/systems/mission/mission_templates")
 require("scripts/settings/missions")
 
 MissionSystem = class(MissionSystem, ExtensionSystemBase)
+
 local RPCS = {
 	"rpc_start_mission",
 	"rpc_start_mission_with_unit",
@@ -9,9 +12,10 @@ local RPCS = {
 	"rpc_request_mission",
 	"rpc_request_mission_with_unit",
 	"rpc_update_mission",
-	"rpc_request_mission_update"
+	"rpc_request_mission_update",
 }
 local extensions = {}
+
 script_data.debug_mission_system = script_data.debug_mission_system or Development.parameter("debug_mission_system")
 
 MissionSystem.init = function (self, entity_system_creation_context, system_name)
@@ -20,13 +24,17 @@ MissionSystem.init = function (self, entity_system_creation_context, system_name
 	self.active_missions = {}
 	self.level_end_missions = {}
 	self.completed_missions = {}
+
 	local network_event_delegate = entity_system_creation_context.network_event_delegate
+
 	self.network_event_delegate = network_event_delegate
 
 	network_event_delegate:register(self, unpack(RPCS))
 
 	self.statistics_db = entity_system_creation_context.statistics_db
+
 	local network_manager = Managers.state.network
+
 	self.network_manager = network_manager
 	self.network_transmit = network_manager.network_transmit
 	self.is_server = entity_system_creation_context.is_server
@@ -45,6 +53,7 @@ MissionSystem.create_checkpoint_data = function (self)
 
 		if unit then
 			local index = LevelHelper:unit_index(world, unit)
+
 			mission_data.unit_index = index
 		end
 
@@ -52,6 +61,7 @@ MissionSystem.create_checkpoint_data = function (self)
 	end
 
 	checkpoint_data.active_missions = active_missions
+
 	local completed_missions = {}
 
 	for name, data in pairs(self.completed_missions) do
@@ -60,6 +70,7 @@ MissionSystem.create_checkpoint_data = function (self)
 
 		if unit then
 			local index = LevelHelper:unit_index(world, unit)
+
 			mission_data.unit_index = index
 		end
 
@@ -119,7 +130,7 @@ end
 
 MissionSystem.request_mission = function (self, mission_name, unit)
 	local mission_name_id = NetworkLookup.mission_names[mission_name]
-	local level_unit_id = nil
+	local level_unit_id
 
 	if unit then
 		level_unit_id = Level.unit_index(LevelHelper:current_level(self.world), unit)
@@ -161,6 +172,7 @@ MissionSystem.start_mission = function (self, mission_name, unit, sync_data)
 	local mission_template_name = mission_data.mission_template_name
 	local template = MissionTemplates[mission_template_name]
 	local data = template.init(mission_data, unit)
+
 	data.mission_type = mission_template_name
 
 	if sync_data then
@@ -459,7 +471,7 @@ MissionSystem._update_level_progress = function (self, dt)
 			local unique_id = player:unique_id()
 			local saved_main_path_completion = percentage_completed[unique_id] or 0
 
-			if main_path_completion > saved_main_path_completion then
+			if saved_main_path_completion < main_path_completion then
 				percentage_completed[unique_id] = main_path_completion
 			end
 		end
@@ -475,6 +487,7 @@ end
 MissionSystem.percentages_completed = function (self)
 	for unique_id, main_path_completion in pairs(self._percentage_completed) do
 		local percentage_completed = self._percentage_completed_override or main_path_completion
+
 		self._percentage_completed[unique_id] = math.clamp(percentage_completed, 0, 1)
 	end
 

@@ -1,14 +1,16 @@
+﻿-- chunkname: @scripts/settings/breeds/breed_skaven_dummy_clan_rat.lua
+
 local breed_data = {
-	not_bot_target = true,
-	horde_behavior = "SET_TO_NIL",
-	target_selection = "pick_no_targets",
 	behavior = "dummy_clan_rat",
+	debug_spawn_category = "Misc",
+	horde_behavior = "SET_TO_NIL",
 	horde_target_selection = "SET_TO_NIL",
-	passive_in_patrol = false,
-	race = "skaven",
 	no_autoaim = true,
+	not_bot_target = true,
+	passive_in_patrol = false,
 	perception = "perception_no_seeing",
-	debug_spawn_category = "Misc"
+	race = "skaven",
+	target_selection = "pick_no_targets",
 }
 
 for key, value in pairs(Breeds.skaven_clan_rat) do
@@ -25,6 +27,7 @@ end
 
 Breeds.skaven_dummy_clan_rat = table.create_copy(Breeds.skaven_dummy_clan_rat, breed_data)
 Breeds.skaven_dummy_clan_rat.is_always_spawnable = nil
+
 local action_data = {}
 
 for key, value in pairs(BreedActions.skaven_clan_rat) do

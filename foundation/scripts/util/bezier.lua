@@ -1,3 +1,5 @@
+﻿-- chunkname: @foundation/scripts/util/bezier.lua
+
 Bezier = Bezier or {}
 
 Bezier.calc_point = function (t, p1, c1, c2, p2)
@@ -15,12 +17,14 @@ end
 
 Bezier.draw = function (segments, script_drawer, tangent_scale, color, p1, c1, c2, p2)
 	segments = segments or 20
+
 	local segment_increment = 1 / segments
 	local t = 0
 	local point_a = Bezier.calc_point(t, p1, c1, c2, p2)
 
 	for segment = 0, segments do
 		t = segment_increment * segment
+
 		local point_b = Bezier.calc_point(t, p1, c1, c2, p2)
 
 		script_drawer:line(point_a, point_b, color)
@@ -41,6 +45,7 @@ Bezier.length = function (segments, p1, c1, c2, p2)
 
 	for fraction = 1, segments - 1 do
 		local point = Bezier.calc_point(fraction / segments, p1, c1, c2, p2)
+
 		length = length + Vector3.length(point - last_point)
 		last_point = point
 	end

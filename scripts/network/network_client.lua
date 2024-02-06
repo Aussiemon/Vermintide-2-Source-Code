@@ -1,10 +1,14 @@
+﻿-- chunkname: @scripts/network/network_client.lua
+
 require("scripts/game_state/components/profile_synchronizer")
 require("scripts/game_state/components/network_state")
 require("scripts/utils/profile_requester")
 
 NetworkClient = class(NetworkClient)
+
 local NUM_PROFILES = #PROFILES_BY_AFFILIATION.heroes
 local CONNECTION_TIMEOUT = 15
+
 script_data.network_debug_connections = true
 
 local function network_printf(format, ...)
@@ -22,6 +26,7 @@ NetworkClient.init = function (self, server_peer_id, wanted_profile_index, wante
 	Managers.level_transition_handler:register_network_state(self._network_state)
 
 	local is_server = false
+
 	self.profile_synchronizer = ProfileSynchronizer:new(false, lobby_client, self._network_state)
 	self._profile_requester = ProfileRequester:new(false, nil, self.profile_synchronizer)
 	self.wanted_profile_index = FindProfileIndex(Development.parameter("wanted_profile")) or wanted_profile_index or SaveData.wanted_profile_index or 1
@@ -34,12 +39,14 @@ NetworkClient.init = function (self, server_peer_id, wanted_profile_index, wante
 	if profile then
 		local hero_name = profile.display_name
 		local hero_attributes = Managers.backend:get_interface("hero_attributes")
+
 		self.wanted_career_index = Development.parameter("wanted_career_index") or hero_attributes:get(hero_name, "career") or 1
 	else
 		self.wanted_career_index = 0
 	end
 
 	self.lobby_client = lobby_client
+
 	local display_name = profile and profile.display_name or "no profile wanted"
 
 	network_printf("init - wanted_profile_index, %s, %s", self.wanted_profile_index, display_name)
@@ -57,8 +64,9 @@ NetworkClient.init = function (self, server_peer_id, wanted_profile_index, wante
 	else
 		local voip_params = {
 			is_server = is_server,
-			lobby = lobby_client
+			lobby = lobby_client,
 		}
+
 		self.voip = Voip:new(voip_params)
 	end
 
@@ -163,6 +171,7 @@ end
 NetworkClient.rpc_notify_in_post_game = function (self, channel_id, in_post_game)
 	if self._is_in_post_game ~= in_post_game then
 		self._is_in_post_game = in_post_game
+
 		local channel_id = PEER_ID_TO_CHANNEL[self.server_peer_id]
 
 		RPC.rpc_post_game_notified(channel_id, in_post_game)
@@ -199,9 +208,10 @@ NetworkClient.rpc_set_migration_host = function (self, channel_id, peer_id, do_m
 	if do_migrate then
 		local player = Managers.player:player_from_peer_id(peer_id)
 		local name = player and player:name() or tostring(peer_id)
+
 		self.host_to_migrate_to = {
 			peer_id = peer_id,
-			name = name
+			name = name,
 		}
 	else
 		self.host_to_migrate_to = nil
@@ -212,11 +222,12 @@ NetworkClient.rpc_set_migration_host_xbox = function (self, channel_id, peer_id,
 	if do_migrate then
 		local player = Managers.player:player_from_peer_id(peer_id)
 		local name = player and player:name() or tostring(peer_id)
+
 		self.host_to_migrate_to = {
 			peer_id = peer_id,
 			name = name,
 			session_id = session_id,
-			session_template_name = session_template_name
+			session_template_name = session_template_name,
 		}
 	else
 		self.host_to_migrate_to = nil
@@ -330,7 +341,7 @@ NetworkClient.update = function (self, dt)
 	if self.state == "connecting" then
 		self.connecting_timeout = self.connecting_timeout + dt
 
-		if CONNECTION_TIMEOUT < self.connecting_timeout then
+		if self.connecting_timeout > CONNECTION_TIMEOUT then
 			self.connecting_timeout = 0
 			self.fail_reason = "broken_connection"
 
@@ -359,10 +370,13 @@ NetworkClient._update_eac_match = function (self, dt)
 	end
 
 	local state_determined, can_play = self:_eac_host_check()
+
 	self._eac_state_determined = state_determined
 	self._eac_can_play = can_play
 
-	if not can_play then
+	if can_play then
+		-- Nothing
+	else
 		printf("eac mismatch leading to eac_authorize_failed")
 
 		self.fail_reason = "eac_authorize_failed"
@@ -400,7 +414,8 @@ NetworkClient._eac_host_check = function (self)
 		return false, true
 	end
 
-	local match = nil
+	local match
+
 	match = (host_state ~= "banned" and own_state ~= "banned" or false) and host_state == own_state
 
 	if not match then

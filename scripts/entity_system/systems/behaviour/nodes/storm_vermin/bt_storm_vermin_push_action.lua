@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/storm_vermin/bt_storm_vermin_push_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTStormVerminPushAction = class(BTStormVerminPushAction, BTNode)
@@ -18,11 +20,13 @@ end
 
 BTStormVerminPushAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
+
 	blackboard.action = action
 	blackboard.active_node = BTStormVerminPushAction
 	blackboard.attack_finished = false
 	blackboard.attack_aborted = false
 	blackboard.attack_token = true
+
 	local network_manager = Managers.state.network
 	local navigation_extension = blackboard.navigation_extension
 
@@ -30,8 +34,10 @@ BTStormVerminPushAction.enter = function (self, unit, blackboard, t)
 	blackboard.locomotion_extension:set_wanted_velocity(Vector3.zero())
 
 	local target_unit = blackboard.target_unit
+
 	blackboard.attacking_target = target_unit
 	blackboard.move_state = "attacking"
+
 	local attack_anim = randomize(action.attack_anim)
 
 	network_manager:anim_event(unit, attack_anim)
@@ -70,7 +76,7 @@ BTStormVerminPushAction.run = function (self, unit, blackboard, t, dt)
 		network_manager:anim_event(unit, "idle")
 
 		return "done"
-	elseif blackboard.attack_finished_t and blackboard.attack_finished_t < t and blackboard.attack_finished or not blackboard.attack_finished_t and blackboard.attack_finished then
+	elseif blackboard.attack_finished_t and t > blackboard.attack_finished_t and blackboard.attack_finished or not blackboard.attack_finished_t and blackboard.attack_finished then
 		return "done"
 	else
 		self:attack(unit, t, dt, blackboard)

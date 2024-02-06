@@ -1,8 +1,12 @@
+﻿-- chunkname: @core/gwnav/lua/runtime/navbotconfiguration.lua
+
 require("core/gwnav/lua/safe_require")
 
 local NavBotConfiguration = safe_require_guard()
 local NavClass = safe_require("core/gwnav/lua/runtime/navclass")
+
 NavBotConfiguration = NavClass(NavBotConfiguration)
+
 local NavHelpers = safe_require("core/gwnav/lua/runtime/navhelpers")
 local Unit = stingray.Unit
 local GwNavTagLayerCostTable = stingray.GwNavTagLayerCostTable

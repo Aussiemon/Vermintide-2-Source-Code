@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/entity_system_bag.lua
+
 EntitySystemBag = class()
 
 EntitySystemBag.init = function (self)
@@ -47,10 +49,10 @@ EntitySystemBag.add_system = function (self, system, block_pre_update, block_pos
 end
 
 local list_name_by_function = {
+	physics_async_update = "systems_physics_async_update",
+	post_update = "systems_post_update",
 	pre_update = "systems_pre_update",
 	update = "systems_update",
-	physics_async_update = "systems_physics_async_update",
-	post_update = "systems_post_update"
 }
 
 EntitySystemBag.update = function (self, entity_system_update_context, update_function)

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/matchmaking/matchmaking_state_host_game.lua
+
 MatchmakingStateHostGame = class(MatchmakingStateHostGame)
 MatchmakingStateHostGame.NAME = "MatchmakingStateHostGame"
 
@@ -43,6 +45,7 @@ MatchmakingStateHostGame.set_debug_info = function (self)
 	local profile_index = player:profile_index()
 	local profile = profile_index and SPProfiles[profile_index]
 	local profile_name = profile and profile.display_name or "random"
+
 	Managers.matchmaking.debug.state = "hosting game"
 	Managers.matchmaking.debug.mission_id = mission_id
 	Managers.matchmaking.debug.difficulty = difficulty
@@ -81,6 +84,7 @@ MatchmakingStateHostGame._start_hosting_game = function (self)
 	if IS_WINDOWS or IS_LINUX then
 		if DEDICATED_SERVER then
 			local eac_server = Managers.matchmaking.network_server:eac_server()
+
 			eac_authorized = EACServer.state(eac_server, Network.peer_id()) == "trusted"
 		else
 			local eac_state = EAC.state()
@@ -128,6 +132,7 @@ MatchmakingStateHostGame._start_hosting_game = function (self)
 			waystone_type = 3
 		elseif not quick_game and matchmaking_type ~= "event" then
 			local level_settings = LevelSettings[mission_id]
+
 			waystone_type = level_settings.waystone_type or waystone_type
 		elseif quick_game and mechanism == "weave" then
 			waystone_type = 3

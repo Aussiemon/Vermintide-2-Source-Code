@@ -1,135 +1,138 @@
+﻿-- chunkname: @scripts/settings/dlcs/lake/buff_settings_lake.lua
+
 local settings = DLCSettings.lake
 local buff_params = {}
+
 settings.buff_templates = {
 	markus_questing_knight_passive_cooldown_reduction = {
 		buffs = {
 			{
-				name = "markus_questing_knight_passive_cooldown_reduction",
-				multiplier = 0.1,
-				stat_buff = "cooldown_regen",
-				refresh_durations = true,
-				max_stacks = 1,
 				icon = "markus_questing_knight_buff_cdr",
-				priority_buff = true
-			}
-		}
+				max_stacks = 1,
+				multiplier = 0.1,
+				name = "markus_questing_knight_passive_cooldown_reduction",
+				priority_buff = true,
+				refresh_durations = true,
+				stat_buff = "cooldown_regen",
+			},
+		},
 	},
 	markus_questing_knight_passive_cooldown_reduction_improved = {
 		buffs = {
 			{
-				name = "markus_questing_knight_passive_cooldown_reduction_improved",
-				multiplier = 0.15,
-				stat_buff = "cooldown_regen",
-				refresh_durations = true,
+				icon = "markus_questing_knight_buff_cdr",
 				max_stacks = 1,
-				icon = "markus_questing_knight_buff_cdr"
-			}
-		}
+				multiplier = 0.15,
+				name = "markus_questing_knight_passive_cooldown_reduction_improved",
+				refresh_durations = true,
+				stat_buff = "cooldown_regen",
+			},
+		},
 	},
 	markus_questing_knight_passive_attack_speed = {
 		buffs = {
 			{
-				name = "markus_questing_knight_passive_attack_speed",
-				multiplier = 0.05,
-				stat_buff = "attack_speed",
-				refresh_durations = true,
+				icon = "markus_questing_knight_buff_attackspeed",
 				max_stacks = 1,
-				icon = "markus_questing_knight_buff_attackspeed"
-			}
-		}
+				multiplier = 0.05,
+				name = "markus_questing_knight_passive_attack_speed",
+				refresh_durations = true,
+				stat_buff = "attack_speed",
+			},
+		},
 	},
 	markus_questing_knight_passive_attack_speed_improved = {
 		buffs = {
 			{
-				name = "markus_questing_knight_passive_attack_speed_improved",
-				multiplier = 0.075,
-				stat_buff = "attack_speed",
-				refresh_durations = true,
-				max_stacks = 1,
 				icon = "markus_questing_knight_buff_attackspeed",
-				priority_buff = true
-			}
-		}
+				max_stacks = 1,
+				multiplier = 0.075,
+				name = "markus_questing_knight_passive_attack_speed_improved",
+				priority_buff = true,
+				refresh_durations = true,
+				stat_buff = "attack_speed",
+			},
+		},
 	},
 	markus_questing_knight_passive_power_level = {
 		buffs = {
 			{
-				name = "markus_questing_knight_passive_power_level",
-				multiplier = 0.1,
-				stat_buff = "power_level",
-				refresh_durations = true,
-				max_stacks = 1,
 				icon = "markus_questing_knight_buff_powerlevel",
-				priority_buff = true
-			}
-		}
+				max_stacks = 1,
+				multiplier = 0.1,
+				name = "markus_questing_knight_passive_power_level",
+				priority_buff = true,
+				refresh_durations = true,
+				stat_buff = "power_level",
+			},
+		},
 	},
 	markus_questing_knight_passive_power_level_improved = {
 		buffs = {
 			{
-				name = "markus_questing_knight_passive_power_level_improved",
-				multiplier = 0.15,
-				stat_buff = "power_level",
-				refresh_durations = true,
+				icon = "markus_questing_knight_buff_powerlevel",
 				max_stacks = 1,
-				icon = "markus_questing_knight_buff_powerlevel"
-			}
-		}
+				multiplier = 0.15,
+				name = "markus_questing_knight_passive_power_level_improved",
+				refresh_durations = true,
+				stat_buff = "power_level",
+			},
+		},
 	},
 	markus_questing_knight_passive_damage_taken = {
 		buffs = {
 			{
-				name = "markus_questing_knight_passive_damage_taken",
-				multiplier = -0.1,
-				stat_buff = "damage_taken",
-				refresh_durations = true,
-				max_stacks = 1,
 				icon = "markus_questing_knight_buff_damage_taken",
-				priority_buff = true
-			}
-		}
+				max_stacks = 1,
+				multiplier = -0.1,
+				name = "markus_questing_knight_passive_damage_taken",
+				priority_buff = true,
+				refresh_durations = true,
+				stat_buff = "damage_taken",
+			},
+		},
 	},
 	markus_questing_knight_passive_damage_taken_improved = {
 		buffs = {
 			{
-				name = "markus_questing_knight_passive_damage_taken_improved",
-				multiplier = -0.15,
-				stat_buff = "damage_taken",
-				refresh_durations = true,
+				icon = "markus_questing_knight_buff_damage_taken",
 				max_stacks = 1,
-				icon = "markus_questing_knight_buff_damage_taken"
-			}
-		}
+				multiplier = -0.15,
+				name = "markus_questing_knight_passive_damage_taken_improved",
+				refresh_durations = true,
+				stat_buff = "damage_taken",
+			},
+		},
 	},
 	markus_questing_knight_passive_health_regen = {
 		buffs = {
 			{
+				apply_buff_func = "health_regen_start",
 				heal = 1,
 				heal_type = "career_passive",
-				name = "markus_questing_knight_passive_health_regen",
 				icon = "markus_questing_knight_buff_health_regen",
-				time_between_heal = 5,
-				priority_buff = true,
-				apply_buff_func = "health_regen_start",
 				max_stacks = 1,
-				update_func = "health_regen_update"
-			}
-		}
+				name = "markus_questing_knight_passive_health_regen",
+				priority_buff = true,
+				time_between_heal = 5,
+				update_func = "health_regen_update",
+			},
+		},
 	},
 	markus_questing_knight_passive_health_regen_improved = {
 		buffs = {
 			{
-				icon = "markus_questing_knight_buff_health_regen",
-				name = "markus_questing_knight_passive_health_regen_improved",
+				apply_buff_func = "health_regen_start",
 				heal = 1,
+				heal_type = "career_passive",
+				icon = "markus_questing_knight_buff_health_regen",
 				max_stacks = 1,
+				name = "markus_questing_knight_passive_health_regen_improved",
 				time_between_heal = 2.5,
 				update_func = "health_regen_update",
-				apply_buff_func = "health_regen_start",
-				heal_type = "career_passive"
-			}
-		}
-	}
+			},
+		},
+	},
 }
 settings.proc_functions = {
 	markus_questing_knight_spread_temp_health = function (owner_unit, buff, params)
@@ -145,8 +148,7 @@ settings.proc_functions = {
 			local healer_position = POSITION_LOOKUP[healer_unit]
 			local side = Managers.state.side.side_by_unit[owner_unit]
 			local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
-			local closest_ally = nil
-			local closest_distance = 500
+			local closest_ally, closest_distance = nil, 500
 
 			for i = 1, #player_and_bot_units do
 				local allied_unit = player_and_bot_units[i]
@@ -166,7 +168,9 @@ settings.proc_functions = {
 				local healed_unit = closest_ally
 				local heal_amount = params[2]
 				local multiplier = buff_template.multiplier
+
 				heal_amount = heal_amount * multiplier
+
 				local heal_type = "heal_from_proc"
 
 				DamageUtils.heal_network(healed_unit, owner_unit, heal_amount, heal_type)
@@ -240,13 +244,9 @@ settings.proc_functions = {
 		if ALIVE[owner_unit] then
 			local talent_extension = ScriptUnit.extension(owner_unit, "talent_system")
 			local increased_duration_talent = talent_extension:has_talent("markus_questing_knight_passive_longer_duration", "empire_soldier", true)
-			local buff_to_add = nil
+			local buff_to_add
 
-			if increased_duration_talent then
-				buff_to_add = "markus_questing_knight_passive_boss_kill_buff_increased_duration"
-			else
-				buff_to_add = "markus_questing_knight_passive_boss_kill_buff"
-			end
+			buff_to_add = increased_duration_talent and "markus_questing_knight_passive_boss_kill_buff_increased_duration" or "markus_questing_knight_passive_boss_kill_buff"
 
 			local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
 
@@ -274,7 +274,7 @@ settings.proc_functions = {
 				end
 			end
 		end
-	end
+	end,
 }
 settings.buff_function_templates = {
 	update_markus_questing_knight_passive_aura = function (owner_unit, buff, params)
@@ -295,35 +295,35 @@ settings.buff_function_templates = {
 		local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
 		local buff_list = {
 			{
+				apply_to_party = true,
+				apply_to_self = false,
 				buff_to_add = "markus_questing_knight_boss_aura_party",
-				apply_to_party = true,
-				apply_to_self = false,
-				apply = buff_extension:has_buff_perk("boss_aura")
+				apply = buff_extension:has_buff_perk("boss_aura"),
 			},
 			{
+				apply_to_party = true,
+				apply_to_self = false,
 				buff_to_add = "markus_questing_knight_specials_aura_party",
-				apply_to_party = true,
-				apply_to_self = false,
-				apply = buff_extension:has_buff_perk("specials_aura")
+				apply = buff_extension:has_buff_perk("specials_aura"),
 			},
 			{
+				apply_to_party = true,
+				apply_to_self = false,
 				buff_to_add = "markus_questing_knight_elites_aura_party",
-				apply_to_party = true,
-				apply_to_self = false,
-				apply = buff_extension:has_buff_perk("elites_aura")
+				apply = buff_extension:has_buff_perk("elites_aura"),
 			},
 			{
-				buff_to_add = "markus_questing_knight_super_aura_party",
 				apply_to_party = true,
 				apply_to_self = true,
-				apply = super_buff_talent and buff_extension:has_buff_perk("boss_aura") and buff_extension:has_buff_perk("specials_aura") and buff_extension:has_buff_perk("elites_aura")
+				buff_to_add = "markus_questing_knight_super_aura_party",
+				apply = super_buff_talent and buff_extension:has_buff_perk("boss_aura") and buff_extension:has_buff_perk("specials_aura") and buff_extension:has_buff_perk("elites_aura"),
 			},
 			{
-				buff_to_add = "markus_questing_knight_passive_tank_buff",
 				apply_to_party = false,
 				apply_to_self = true,
-				apply = tank_buff_talent and (buff_extension:has_buff_perk("boss_aura") or buff_extension:has_buff_perk("specials_aura") or buff_extension:has_buff_perk("elites_aura"))
-			}
+				buff_to_add = "markus_questing_knight_passive_tank_buff",
+				apply = tank_buff_talent and (buff_extension:has_buff_perk("boss_aura") or buff_extension:has_buff_perk("specials_aura") or buff_extension:has_buff_perk("elites_aura")),
+			},
 		}
 		local num_buffs = #buff_list
 
@@ -396,5 +396,5 @@ settings.buff_function_templates = {
 
 			DamageUtils.heal_network(unit, unit, heal_amount, "heal_from_proc")
 		end
-	end
+	end,
 }

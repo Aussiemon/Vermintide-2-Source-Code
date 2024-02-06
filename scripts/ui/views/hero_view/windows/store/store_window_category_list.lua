@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/hero_view/windows/store/store_window_category_list.lua
+
 local definitions = local_require("scripts/ui/views/hero_view/windows/store/definitions/store_window_category_list_definitions")
 local widget_definitions = definitions.widgets
 local scenegraph_definition = definitions.scenegraph_definition
@@ -12,6 +14,7 @@ end
 
 local LIST_SPACING = 10
 local LIST_MAX_WIDTH = 800
+
 StoreWindowCategoryList = class(StoreWindowCategoryList)
 StoreWindowCategoryList.NAME = "StoreWindowCategoryList"
 
@@ -21,11 +24,13 @@ StoreWindowCategoryList.on_enter = function (self, params, offset)
 	self._params = params
 	self._parent = params.parent
 	self._params.last_selected_product = nil
+
 	local ui_renderer, ui_top_renderer = self._parent:get_renderers()
+
 	self._ui_renderer = ui_renderer
 	self._ui_top_renderer = ui_top_renderer
 	self._render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 	self._layout_settings = params.layout_settings
 	self._animations = {}
@@ -40,23 +45,26 @@ end
 
 StoreWindowCategoryList._start_transition_animation = function (self, animation_name)
 	local params = {
-		render_settings = self._render_settings
+		render_settings = self._render_settings,
 	}
 	local widgets = {
 		widgets_by_name = self._widgets_by_name,
-		list_widgets = self._list_widgets
+		list_widgets = self._list_widgets,
 	}
 	local anim_id = self._ui_animator:start_animation(animation_name, widgets, scenegraph_definition, params)
+
 	self._animations[animation_name] = anim_id
 end
 
 StoreWindowCategoryList._create_ui_elements = function (self, params, offset)
 	self._ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+
 	local widgets = {}
 	local widgets_by_name = {}
 
 	for name, widget_definition in pairs(widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		widgets[#widgets + 1] = widget
 		widgets_by_name[name] = widget
 	end
@@ -67,7 +75,9 @@ StoreWindowCategoryList._create_ui_elements = function (self, params, offset)
 	UIRenderer.clear_scenegraph_queue(self._ui_top_renderer)
 
 	self._ui_animator = UIAnimator:new(self._ui_scenegraph, animation_definitions)
+
 	local scrollbar_widget = self._widgets_by_name.list_scrollbar
+
 	self._scrollbar_logic = ScrollBarLogic:new(scrollbar_widget)
 
 	self:_setup_list_elements()
@@ -253,7 +263,7 @@ StoreWindowCategoryList._get_items_by_path = function (self, path)
 		end
 	end
 
-	local items = nil
+	local items
 
 	if added_filters > 0 then
 		items = self:_get_items_by_filter(item_filter)
@@ -270,7 +280,7 @@ StoreWindowCategoryList._populate_list = function (self, layout)
 	local masked = true
 	local size = {
 		550,
-		80
+		80,
 	}
 	local definition = UIWidgets.create_store_category_entry_definition(scenegraph_id, size, masked)
 	local backend_items = Managers.backend:get_interface("items")
@@ -280,13 +290,18 @@ StoreWindowCategoryList._populate_list = function (self, layout)
 
 	for i, entry in ipairs(layout) do
 		local widget = UIWidget.init(definition)
+
 		widgets[i] = widget
+
 		local content = widget.content
 		local style = widget.style
 		local display_name = entry.display_name
 		local title = Localize(display_name)
+
 		content.title = title
+
 		local category_texture = entry.category_texture
+
 		content.category_texture = category_texture
 
 		if category_texture then
@@ -294,6 +309,7 @@ StoreWindowCategoryList._populate_list = function (self, layout)
 			local category_texture_default_size = category_texture_settings.size
 			local category_texture_style = style.category_texture
 			local category_texture_size = category_texture_style.texture_size
+
 			category_texture_size[1] = category_texture_default_size[1]
 			category_texture_size[2] = category_texture_default_size[2]
 		end
@@ -301,6 +317,7 @@ StoreWindowCategoryList._populate_list = function (self, layout)
 		local path = table.clone(current_store_path)
 		local num_path_entries = #path
 		local page_name = entry.page_name
+
 		path[num_path_entries + 1] = page_name
 	end
 
@@ -326,7 +343,7 @@ StoreWindowCategoryList._align_entry_widgets = function (self)
 		local size = content.size
 		local width = size[1]
 		local height = size[2]
-		local change_row = LIST_MAX_WIDTH < widget_position_x + width
+		local change_row = widget_position_x + width > LIST_MAX_WIDTH
 
 		if index == 1 then
 			widget_position_y = -height
@@ -344,7 +361,7 @@ StoreWindowCategoryList._align_entry_widgets = function (self)
 		widget.default_offset = table.clone(offset)
 		content.row = row
 		content.column = column
-		widget_position_x = widget_position_x + width + LIST_SPACING
+		widget_position_x = widget_position_x + (width + LIST_SPACING)
 
 		if index == num_widgets then
 			total_height = math.abs(widget_position_y)
@@ -413,7 +430,7 @@ StoreWindowCategoryList._animate_list_entry = function (self, content, style, dt
 	local hover_progress = hotspot.hover_progress or 0
 	local pulse_progress = hotspot.pulse_progress or 1
 	local selection_progress = hotspot.selection_progress or 0
-	local speed = (is_hover or is_selected) and 14 or 3
+	local speed = not (not is_hover and not is_selected) and 14 or 3
 	local pulse_speed = 3
 	local input_speed = 20
 
@@ -431,6 +448,7 @@ StoreWindowCategoryList._animate_list_entry = function (self, content, style, dt
 	end
 
 	pulse_progress = math.min(pulse_progress + dt * pulse_speed, 1)
+
 	local pulse_easing_out_progress = math.easeOutCubic(pulse_progress)
 	local pulse_easing_in_progress = math.easeInCubic(pulse_progress)
 
@@ -455,11 +473,17 @@ StoreWindowCategoryList._animate_list_entry = function (self, content, style, dt
 	local combined_out_progress = math.max(select_easing_out_progress, hover_easing_out_progress)
 	local combined_in_progress = math.max(hover_easing_in_progress, select_easing_in_progress)
 	local hover_alpha = 255 * combined_progress
+
 	style.hover_frame.color[1] = hover_alpha
+
 	local category_texture_alpha = 100 + 155 * combined_progress
+
 	style.category_texture.color[1] = category_texture_alpha
+
 	local pulse_alpha = 255 - 255 * pulse_progress
+
 	style.pulse_frame.color[1] = pulse_alpha
+
 	local title_text_style = style.title
 	local title_text_color = title_text_style.text_color
 	local title_default_text_color = title_text_style.default_text_color
@@ -491,8 +515,9 @@ StoreWindowCategoryList._setup_list_elements = function (self)
 			display_name = page.display_name,
 			page_name = page_name,
 			sort_order = page.sort_order,
-			category_texture = page.category_button_texture
+			category_texture = page.category_button_texture,
 		}
+
 		categories[#categories + 1] = entry
 	end
 
@@ -510,6 +535,7 @@ StoreWindowCategoryList._on_list_index_pressed = function (self, index)
 	local parent = self._parent
 	local path = parent:get_store_path()
 	local new_path = table.clone(path)
+
 	new_path[#new_path + 1] = page_name
 
 	parent:go_to_store_path(new_path)
@@ -518,8 +544,10 @@ end
 StoreWindowCategoryList._on_list_index_selected = function (self, index, scrollbar_animation_percentage)
 	local layout = self._layout
 	local entry = layout[index]
+
 	self._params.selected_product = entry
-	local row, column = nil
+
+	local row, column
 	local list_widgets = self._list_widgets
 
 	if list_widgets then
@@ -529,6 +557,7 @@ StoreWindowCategoryList._on_list_index_selected = function (self, index, scrollb
 
 			if hotspot then
 				local is_selected = i == index
+
 				hotspot.is_selected = is_selected
 
 				if is_selected then
@@ -557,6 +586,7 @@ StoreWindowCategoryList._on_list_index_selected = function (self, index, scrollb
 		local to = scrollbar_animation_percentage
 		local duration = 0.3
 		local easing = math.easeOutCubic
+
 		self._ui_animations.scrollbar = UIAnimation.init(func, target, target_index, from, to, duration, easing)
 	else
 		self._ui_animations.scrollbar = nil
@@ -577,7 +607,7 @@ StoreWindowCategoryList._handle_gamepad_grid_selection = function (self, input_s
 	local current_selected_column = self._selected_gamepad_grid_column
 	local columns_on_row = gamepad_navigation[current_selected_row]
 	local num_columns_on_row = #columns_on_row
-	local new_row, new_index = nil
+	local new_row, new_index
 
 	if input_service:get("move_left_hold_continuous") then
 		if current_selected_column > 1 then
@@ -593,6 +623,7 @@ StoreWindowCategoryList._handle_gamepad_grid_selection = function (self, input_s
 
 	if new_row and new_row ~= current_selected_row then
 		local columns = gamepad_navigation[new_row]
+
 		new_index = self:_find_closest_neighbour(columns, current_selected_grid_index, 1)
 	end
 
@@ -611,7 +642,7 @@ StoreWindowCategoryList._find_closest_neighbour = function (self, column_index_l
 	local current_widget_offset = current_widget.offset
 	local current_coordinate_x = current_widget_size[1] * 0.5 + current_widget_offset[1]
 	local shortest_distance = math.huge
-	local closest_index = nil
+	local closest_index
 
 	for _, layout_index in pairs(column_index_list) do
 		local widget = list_widgets[layout_index]
@@ -712,13 +743,15 @@ StoreWindowCategoryList._scroll_to_list_index = function (self, index)
 			local height = size[2]
 			local start_position_top = math.abs(offset[2])
 			local start_position_bottom = start_position_top + height
-			local percentage_difference = nil
+			local percentage_difference
 
 			if draw_end_height < start_position_bottom then
 				local height_missing = start_position_bottom - draw_end_height
+
 				percentage_difference = math.clamp(height_missing / scroll_length, 0, 1)
 			elseif start_position_top < draw_start_height then
 				local height_missing = draw_start_height - start_position_top
+
 				percentage_difference = -math.clamp(height_missing / scroll_length, 0, 1)
 			end
 
@@ -757,9 +790,11 @@ StoreWindowCategoryList._get_scrollbar_percentage_by_index = function (self, ind
 
 			if draw_end_height < start_position_bottom then
 				local height_missing = start_position_bottom - draw_end_height
+
 				percentage_difference = math.clamp(height_missing / scroll_length, 0, 1)
 			elseif start_position_top < draw_start_height then
 				local height_missing = draw_start_height - start_position_top
+
 				percentage_difference = -math.clamp(height_missing / scroll_length, 0, 1)
 			end
 

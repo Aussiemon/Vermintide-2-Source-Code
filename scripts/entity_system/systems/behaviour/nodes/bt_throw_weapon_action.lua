@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_throw_weapon_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTThrowWeaponAction = class(BTThrowWeaponAction, BTNode)
@@ -10,15 +12,18 @@ BTThrowWeaponAction.name = "BTThrowWeaponAction"
 
 BTThrowWeaponAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
+
 	blackboard.action = action
 	blackboard.active_node = BTThrowWeaponAction
 	blackboard.move_state = "attacking"
+
 	local throw_animation = action.throw_animation
 
 	Managers.state.network:anim_event(unit, throw_animation)
 	Unit.flow_event(unit, "throw_animation_started")
 
 	local ai_inventory_extension = ScriptUnit.extension(unit, "ai_inventory_system")
+
 	blackboard.inventory_extension = ai_inventory_extension
 
 	blackboard.navigation_extension:set_enabled(false)
@@ -50,6 +55,7 @@ BTThrowWeaponAction.leave = function (self, unit, blackboard, t, reason, destroy
 		Managers.state.unit_spawner:mark_for_deletion(blackboard.thrown_unit)
 
 		blackboard.thrown_unit = nil
+
 		local network_manager = Managers.state.network
 		local owner_go_id = network_manager:unit_game_object_id(unit)
 
@@ -85,14 +91,17 @@ BTThrowWeaponAction.anim_cb_throw_weapon = function (self, unit, blackboard)
 		network_manager.network_transmit:send_rpc_all("rpc_ai_show_single_item", owner_go_id, 1, false)
 
 		blackboard.throw_weapon_goal_position = Vector3Box(hit_position)
+
 		local unit_name = action.throw_unit_name
 		local thrown_unit = Managers.state.unit_spawner:spawn_network_unit(unit_name, "thrown_weapon_unit", nil, position)
+
 		blackboard.thrown_unit = thrown_unit
 		blackboard.thrown_state = "moving_towards_target"
 
 		Unit.flow_event(thrown_unit, "axe_thrown")
 
 		blackboard.initial_throw_direction = Vector3Box(direction)
+
 		local audio_system = Managers.state.entity:system("audio_system")
 
 		audio_system:play_audio_unit_event(action.running_sound_id, blackboard.thrown_unit)
@@ -150,7 +159,7 @@ BTThrowWeaponAction.run = function (self, unit, blackboard, t, dt)
 		local rot = LocomotionUtils.rotation_towards_unit_flat(unit, blackboard.close_attack_target)
 
 		blackboard.locomotion_extension:set_wanted_rotation(rot)
-	elseif blackboard.initial_throw_direction and (blackboard.catched_weapon or blackboard.rotation_timer < t) then
+	elseif blackboard.initial_throw_direction and (blackboard.catched_weapon or t > blackboard.rotation_timer) then
 		local rot = Quaternion.look(blackboard.initial_throw_direction:unbox())
 
 		blackboard.locomotion_extension:set_wanted_rotation(rot)
@@ -159,7 +168,7 @@ BTThrowWeaponAction.run = function (self, unit, blackboard, t, dt)
 	if blackboard.throw_finished then
 		return "done"
 	else
-		local has_catched_weapon = nil
+		local has_catched_weapon
 
 		if blackboard.throw_weapon_goal_position then
 			has_catched_weapon = self:update_thrown_weapon(unit, blackboard, dt, t)
@@ -195,8 +204,9 @@ BTThrowWeaponAction.update_thrown_weapon = function (self, unit, blackboard, dt,
 	end
 
 	if thrown_state == "lingering" then
-		if blackboard.thrown_linger_timer < t then
+		if t > blackboard.thrown_linger_timer then
 			blackboard.thrown_state = "returning_to_owner"
+
 			local audio_system = Managers.state.entity:system("audio_system")
 
 			audio_system:play_audio_unit_event(action.pull_sound_id, blackboard.thrown_unit)
@@ -217,6 +227,7 @@ BTThrowWeaponAction.update_thrown_weapon = function (self, unit, blackboard, dt,
 
 		blackboard.thrown_state = "lingering"
 		blackboard.thrown_linger_timer = t + action.arrival_linger_time
+
 		local audio_system = Managers.state.entity:system("audio_system")
 
 		audio_system:play_audio_unit_event(action.impact_sound_id, blackboard.thrown_unit)
@@ -228,6 +239,7 @@ BTThrowWeaponAction.update_thrown_weapon = function (self, unit, blackboard, dt,
 
 	if thrown_state == "moving_towards_target" then
 		blackboard.thrown_weapon_angle = blackboard.thrown_weapon_angle + dt * action.rotation_speed
+
 		local current_rotation = Unit.local_rotation(thrown_unit, 0)
 		local axis = Vector3.make_axes(direction)
 		local rotation_towards_target = Quaternion.look(direction)
@@ -263,7 +275,7 @@ BTThrowWeaponAction.update_thrown_weapon = function (self, unit, blackboard, dt,
 			self:check_overlap(action, blackboard.thrown_unit, unit, blackboard, target_unit)
 		end
 
-		if action.use_close_attack and blackboard.close_attack_timer < t then
+		if action.use_close_attack and t > blackboard.close_attack_timer then
 			self:attack_close_units(action, unit, blackboard, target_unit, t)
 		end
 	end
@@ -278,7 +290,9 @@ BTThrowWeaponAction.check_overlap = function (self, action, thrown_unit, unit, b
 	local hit_units = blackboard.hit_units
 	local pos = POSITION_LOOKUP[target_unit]
 	local self_pos = Vector3.flat(Unit.local_position(thrown_unit, 0))
+
 	self_pos = Vector3(self_pos[1], self_pos[2], pos[3])
+
 	local to_target = pos - self_pos
 	local dist = Vector3.length(Vector3.flat(to_target))
 	local hit_unit_id = hit_units[target_unit]
@@ -306,6 +320,7 @@ BTThrowWeaponAction.check_overlap = function (self, action, thrown_unit, unit, b
 			end
 
 			hit_units[target_unit] = true
+
 			local blocked = DamageUtils.check_block(unit, target_unit, action.fatigue_type)
 
 			if not blocked then

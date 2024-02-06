@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/imgui/imgui_package_debug.lua
+
 ImguiPackageDebug = class(ImguiPackageDebug)
+
 local SHOULD_RELOAD = true
 
 ImguiPackageDebug.init = function (self)
@@ -7,6 +10,7 @@ end
 
 ImguiPackageDebug._hijack_package_manager = function (self)
 	local package_manager = Managers.package
+
 	self._old_load_func = package_manager.load
 	self._old_unload_func = package_manager.unload
 
@@ -43,7 +47,9 @@ ImguiPackageDebug.update = function (self)
 
 	if self._refresh_references then
 		self._refresh_references = false
+
 		local package_manager = Managers.package
+
 		self._packages = self:_steal_and_sort(package_manager._packages)
 		self._asynch_packages = self:_steal_and_sort(package_manager._asynch_packages)
 		self._references = self:_steal_and_sort(package_manager._references)

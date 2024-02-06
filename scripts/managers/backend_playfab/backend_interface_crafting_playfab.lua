@@ -1,6 +1,9 @@
+﻿-- chunkname: @scripts/managers/backend_playfab/backend_interface_crafting_playfab.lua
+
 require("scripts/managers/backend_playfab/backend_interface_crafting_base")
 
 local PlayFabClientApi = require("PlayFab.PlayFabClientApi")
+
 BackendInterfaceCraftingPlayfab = class(BackendInterfaceCraftingPlayfab, BackendInterfaceCraftingBase)
 
 BackendInterfaceCraftingPlayfab.init = function (self, backend_mirror)
@@ -36,8 +39,8 @@ BackendInterfaceCraftingPlayfab.craft = function (self, career_name, item_backen
 			FunctionName = recipe.result_function_playfab,
 			FunctionParameter = {
 				item_backend_ids_and_amounts = item_backend_ids_and_amounts,
-				hero_name = hero_name
-			}
+				hero_name = hero_name,
+			},
 		}
 		local success_callback = callback(self, "craft_request_cb", id)
 		local request_queue = self._backend_mirror:request_queue()
@@ -71,7 +74,7 @@ BackendInterfaceCraftingPlayfab.craft_request_cb = function (self, id, result)
 
 			result[i] = {
 				backend_id,
-				[3] = amount
+				[3] = amount,
 			}
 		end
 	end

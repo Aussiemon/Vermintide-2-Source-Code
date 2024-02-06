@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/utils/debug_key_handler.lua
+
 script_data.debug_key_handler_visible = script_data.debug_key_handler_visible or Development.parameter("debug_key_handler_visible")
+
 local cache_fail = {}
 
 local function cached_fail(key)
@@ -9,13 +12,13 @@ local function cached_fail(key)
 	return cache_fail[key]
 end
 
-local mod_cache = {
-	["left shift"] = {},
-	["right shift"] = {},
-	["left ctrl"] = {},
-	["right ctrl"] = {},
-	["left alt"] = {}
-}
+local mod_cache = {}
+
+mod_cache["left shift"] = {}
+mod_cache["right shift"] = {}
+mod_cache["left ctrl"] = {}
+mod_cache["right ctrl"] = {}
+mod_cache["left alt"] = {}
 
 local function cached_key_mod(key, key_modifier, missing)
 	local cache = mod_cache[key_modifier]
@@ -23,7 +26,7 @@ local function cached_key_mod(key, key_modifier, missing)
 	if cache[key] == nil then
 		cache[key] = {
 			exist = key_modifier .. "+" .. key,
-			missing = key_modifier .. "(M)+" .. key
+			missing = key_modifier .. "(M)+" .. key,
 		}
 	end
 
@@ -32,8 +35,9 @@ end
 
 DebugKeyHandler = DebugKeyHandler or {
 	num_keys = 0,
-	keys = {}
+	keys = {},
 }
+
 local DebugKeyHandler = DebugKeyHandler
 
 DebugKeyHandler.setup = function (world, input_manager)
@@ -51,7 +55,7 @@ local blocking_modifiers = {
 	"left ctrl",
 	"left shift",
 	"right ctrl",
-	"left alt"
+	"left alt",
 }
 
 DebugKeyHandler.key_pressed = function (key, description, category, key_modifier, input_service_name)
@@ -68,6 +72,7 @@ DebugKeyHandler.key_pressed = function (key, description, category, key_modifier
 	if script_data.debug_key_handler_visible then
 		DebugKeyHandler.num_keys = DebugKeyHandler.num_keys + 1
 		category = category or "misc"
+
 		local category_keys = DebugKeyHandler.keys[category]
 
 		if category_keys == nil then
@@ -139,12 +144,15 @@ DebugKeyHandler.render = function ()
 	local res_x, res_y = Application.resolution()
 	local gui = DebugKeyHandler.gui
 	local start_y = DebugKeyHandler.current_y
+
 	DebugKeyHandler.current_y = math.lerp(start_y, res_y / 2 + DebugKeyHandler.num_keys * font_size / 2 + table.size(DebugKeyHandler.keys) * font_size / 2, 0.1)
+
 	local pos = Vector3(res_x - 230, start_y, 200)
 
 	Gui.text(gui, "Debug keys", font_mtrl, font_size, font, pos, header_color)
 
 	pos.y = pos.y - font_size * 1.5
+
 	local even = false
 
 	for category, category_keys in pairs(DebugKeyHandler.keys) do

@@ -1,11 +1,14 @@
+﻿-- chunkname: @scripts/managers/network/lobby_manager.lua
+
 local network_options = {
-	max_members = 4,
-	project_hash = "bulldozer",
 	config_file_name = "global",
 	map = "None",
+	max_members = 4,
+	project_hash = "bulldozer",
 	lobby_port = LEVEL_EDITOR_TEST and GameSettingsDevelopment.editor_lobby_port or GameSettingsDevelopment.network_port,
-	ip_address = Network.default_network_address()
+	ip_address = Network.default_network_address(),
 }
+
 LobbyManager = class(LobbyManager)
 
 LobbyManager.init = function (self)
@@ -51,7 +54,9 @@ LobbyManager.setup_network_options = function (self, increment_lobby_port)
 	network_options.query_port = query_port
 	network_options.steam_port = steam_port
 	network_options.rcon_port = rcon_port
+
 	local max_members = Managers.mechanism:max_members()
+
 	network_options.max_members = max_members
 
 	printf("All ports: server_port %s query_port: %s, steam_port: %s, rcon_port: %s ", network_options.server_port, query_port, steam_port, rcon_port)

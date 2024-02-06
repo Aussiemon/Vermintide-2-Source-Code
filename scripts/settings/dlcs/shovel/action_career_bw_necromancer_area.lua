@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/dlcs/shovel/action_career_bw_necromancer_area.lua
+
 ActionCareerBWNecromancerArea = class(ActionCareerBWNecromancerArea, ActionBase)
 
 ActionCareerBWNecromancerArea.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
@@ -38,7 +40,7 @@ ActionCareerBWNecromancerArea._add_buffs = function (self)
 	local owner_unit = self.owner_unit
 
 	self._buff_extension:add_buff(buff_name, {
-		attacker_unit = owner_unit
+		attacker_unit = owner_unit,
 	})
 end
 

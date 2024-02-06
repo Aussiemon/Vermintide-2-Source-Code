@@ -1,3 +1,5 @@
+﻿-- chunkname: @foundation/scripts/util/datacounter.lua
+
 DataCounter = {}
 
 local function count_table(t, seen_data, count)
@@ -6,6 +8,7 @@ local function count_table(t, seen_data, count)
 	end
 
 	seen_data[t] = true
+
 	local type = type
 	local table_count = 0
 	local value_count = 0
@@ -16,8 +19,10 @@ local function count_table(t, seen_data, count)
 
 		if k_type == "table" then
 			local recursed_table_count, recursed_value_count = count_table(k, seen_data, count + 1)
+
 			table_count = table_count + recursed_table_count + 1
 			value_count = value_count + recursed_value_count
+
 			local str = ""
 
 			for i = 1, count do
@@ -29,8 +34,10 @@ local function count_table(t, seen_data, count)
 
 		if v_type == "table" then
 			local recursed_table_count, recursed_value_count = count_table(v, seen_data, count + 1)
+
 			table_count = table_count + recursed_table_count + 1
 			value_count = value_count + recursed_value_count
+
 			local str = ""
 
 			for i = 1, count do

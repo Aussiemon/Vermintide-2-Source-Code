@@ -1,5 +1,9 @@
+﻿-- chunkname: @scripts/unit_extensions/default_player_unit/buffs/buff_function_templates.lua
+
 local buff_perk_names = require("scripts/unit_extensions/default_player_unit/buffs/settings/buff_perk_names")
+
 BuffFunctionTemplates = BuffFunctionTemplates or {}
+
 local unit_is_frozen = Unit.is_frozen
 local dot_tick_sound_events = {}
 
@@ -33,7 +37,7 @@ local function set_variable(path_to_movement_setting_to_modify, unit, value)
 	local movement_value = unit_movement_settings_table
 	local index = 1
 
-	while nr_of_settings >= index do
+	while index <= nr_of_settings do
 		if nr_of_settings < index + 1 then
 			movement_value[path_to_movement_setting_to_modify[index]] = value
 		else
@@ -87,11 +91,12 @@ BuffFunctionTemplates.functions = {
 		local bonus = params.bonus
 		local multiplier = params.multiplier
 		local time_into_buff = params.time_into_buff
-		local old_value_to_update_movement_setting, value_to_update_movement_setting, old_multiplier_to_update_movement_setting, multiplier_to_update_movement_setting = nil
+		local old_value_to_update_movement_setting, value_to_update_movement_setting, old_multiplier_to_update_movement_setting, multiplier_to_update_movement_setting
 		local percentage_in_lerp = math.min(1, time_into_buff / buff.template.lerp_time)
 
 		if bonus then
 			local new_value = math.lerp(0, bonus, percentage_in_lerp)
+
 			old_value_to_update_movement_setting = buff.current_lerped_value
 			buff.current_lerped_value = new_value
 			value_to_update_movement_setting = new_value
@@ -99,6 +104,7 @@ BuffFunctionTemplates.functions = {
 
 		if multiplier then
 			local new_multiplier = math.lerp(1, multiplier, percentage_in_lerp)
+
 			old_multiplier_to_update_movement_setting = buff.current_lerped_multiplier
 			buff.current_lerped_multiplier = new_multiplier
 			multiplier_to_update_movement_setting = new_multiplier
@@ -148,18 +154,20 @@ BuffFunctionTemplates.functions = {
 		local bonus = params.bonus
 		local multiplier = params.multiplier
 		local time_into_buff = params.time_into_buff
-		local value_to_update_movement_setting, old_value_to_update_movement_setting, old_multiplier_to_update_movement_setting, multiplier_to_update_movement_setting = nil
+		local value_to_update_movement_setting, old_value_to_update_movement_setting, old_multiplier_to_update_movement_setting, multiplier_to_update_movement_setting
 
 		if buff.last_frame_percentage == 0 then
 			return
 		end
 
 		local percentage_in_lerp = math.min(1, time_into_buff / buff.template.lerp_time)
+
 		percentage_in_lerp = 1 - percentage_in_lerp
 		buff.last_frame_percentage = percentage_in_lerp
 
 		if bonus then
 			local new_value = math.lerp(0, bonus, percentage_in_lerp)
+
 			old_value_to_update_movement_setting = buff.current_lerped_value
 			buff.current_lerped_value = new_value
 			value_to_update_movement_setting = new_value
@@ -167,6 +175,7 @@ BuffFunctionTemplates.functions = {
 
 		if multiplier then
 			local new_multiplier = math.lerp(1, multiplier, percentage_in_lerp)
+
 			old_multiplier_to_update_movement_setting = buff.current_lerped_multiplier
 			buff.current_lerped_multiplier = new_multiplier
 			multiplier_to_update_movement_setting = new_multiplier
@@ -192,6 +201,7 @@ BuffFunctionTemplates.functions = {
 
 		if buff.template.wind_mutator then
 			local wind_strength = Managers.weave:get_wind_strength()
+
 			multiplier = multiplier[wind_strength]
 		end
 
@@ -214,6 +224,7 @@ BuffFunctionTemplates.functions = {
 
 		if buff.template.wind_mutator then
 			local wind_strength = Managers.weave:get_wind_strength()
+
 			multiplier = multiplier[wind_strength]
 		end
 
@@ -236,10 +247,12 @@ BuffFunctionTemplates.functions = {
 
 		if buff.template.wind_mutator then
 			local wind_strength = Managers.weave:get_wind_strength()
+
 			multiplier = multiplier[wind_strength]
 		end
 
 		local navigation_extension = blackboard.navigation_extension
+
 		buff.id = navigation_extension:add_movement_modifier(multiplier)
 	end,
 	remove_ai_movement_buff = function (unit, buff, params)
@@ -262,7 +275,9 @@ BuffFunctionTemplates.functions = {
 	knock_down_bleed_update = function (unit, buff, params)
 		if buff.next_damage_time < params.t then
 			local buff_template = buff.template
+
 			buff.next_damage_time = buff.next_damage_time + buff_template.time_between_damage
+
 			local damage = buff_template.damage
 			local damage_type = buff_template.damage_type
 
@@ -275,7 +290,9 @@ BuffFunctionTemplates.functions = {
 	temporary_health_degen_update = function (unit, buff, params)
 		if buff.next_damage_time < params.t then
 			local buff_template = buff.template
+
 			buff.next_damage_time = buff.next_damage_time + buff_template.time_between_damage
+
 			local damage = buff_template.damage
 			local damage_type = buff_template.damage_type
 
@@ -288,7 +305,9 @@ BuffFunctionTemplates.functions = {
 	health_degen_update = function (unit, buff, params)
 		if buff.next_damage_time < params.t then
 			local buff_template = buff.template
+
 			buff.next_damage_time = buff.next_damage_time + buff_template.time_between_damage
+
 			local damage = buff_template.damage
 			local damage_type = buff_template.damage_type
 
@@ -307,8 +326,10 @@ BuffFunctionTemplates.functions = {
 	life_drain_update_no_kill = function (unit, buff, params)
 		if buff.next_damage_time < params.t then
 			local buff_template = buff.template
+
 			buff.next_damage_time = buff.next_damage_time + buff_template.time_between_damage
-			local damage = nil
+
+			local damage
 			local health_extension = ScriptUnit.extension(unit, "health_system")
 			local status_extension = ScriptUnit.extension(unit, "status_system")
 			local current_health = health_extension:current_health()
@@ -335,7 +356,9 @@ BuffFunctionTemplates.functions = {
 	health_regen_all_update = function (unit, buff, params)
 		if Managers.state.network.is_server and buff.next_heal_time < params.t then
 			local buff_template = buff.template
+
 			buff.next_heal_time = buff.next_heal_time + buff_template.time_between_heal
+
 			local heal_amount = buff_template.heal
 			local heal_type = buff_template.heal_type or "health_regen"
 			local side = Managers.state.side.side_by_unit[unit]
@@ -359,7 +382,9 @@ BuffFunctionTemplates.functions = {
 	health_regen_update = function (unit, buff, params)
 		if Managers.state.network.is_server and buff.next_heal_time < params.t then
 			local buff_template = buff.template
+
 			buff.next_heal_time = buff.next_heal_time + buff_template.time_between_heal
+
 			local heal_amount = buff_template.heal
 			local heal_type = buff_template.heal_type or "health_regen"
 
@@ -375,7 +400,9 @@ BuffFunctionTemplates.functions = {
 	mutator_life_health_regeneration_update = function (unit, buff, params)
 		if Managers.state.network.is_server and buff.next_buff_time < params.t then
 			local buff_template = buff.template
+
 			buff.next_buff_time = buff.next_buff_time + 5
+
 			local buff_extension = ScriptUnit.has_extension(unit, "buff_system")
 
 			if buff_extension then
@@ -383,6 +410,7 @@ BuffFunctionTemplates.functions = {
 
 				if num_stacks < 3 then
 					local id = buff_extension:add_buff("mutator_life_health_regeneration_stacks")
+
 					buff.health_regeneration_stack_ids[num_stacks + 1] = id
 				end
 			end
@@ -390,7 +418,7 @@ BuffFunctionTemplates.functions = {
 	end,
 	remove_metal_mutator_gromril_armour = function (unit, buff, params)
 		local buff_params = {
-			attacker_unit = unit
+			attacker_unit = unit,
 		}
 		local buff_ext = ScriptUnit.extension(unit, "buff_system")
 
@@ -398,14 +426,16 @@ BuffFunctionTemplates.functions = {
 	end,
 	start_blade_dance = function (unit, buff, params, world)
 		params.next_tick_t = params.t + 0.5
+
 		local local_player = Managers.player:local_player()
 		local local_player_unit = local_player and local_player.player_unit
 		local wwise_world = Managers.world:wwise_world(world)
-		local fx = nil
+		local fx
 
 		if unit == local_player_unit then
 			local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
 			local first_person_unit = first_person_extension.first_person_unit
+
 			fx = World.create_particles(world, "fx/magic_wind_metal_blade_dance_01_1p", POSITION_LOOKUP[first_person_unit])
 
 			World.link_particles(world, fx, first_person_unit, Unit.node(first_person_unit, "root_point"), Matrix4x4.identity(), "stop")
@@ -421,8 +451,9 @@ BuffFunctionTemplates.functions = {
 		buff.linked_effect = fx
 	end,
 	update_blade_dance = function (unit, buff, params)
-		if params.next_tick_t <= params.t then
+		if params.t >= params.next_tick_t then
 			params.next_tick_t = params.t + 0.5
+
 			local area_damage_system = Managers.state.entity:system("area_damage_system")
 			local position = POSITION_LOOKUP[unit] + Vector3(0, 0, 1)
 			local rotation = Unit.local_rotation(unit, 0)
@@ -451,6 +482,7 @@ BuffFunctionTemplates.functions = {
 	apply_beasts_totem_buff = function (unit, buff, params, world)
 		if not buff.fx_id then
 			local fx = World.create_particles(world, "fx/chr_beastmen_standard_bearer_buff_01", POSITION_LOOKUP[unit])
+
 			buff.fx_id = fx
 
 			World.link_particles(world, fx, unit, Unit.node(unit, "root_point"), Matrix4x4.identity(), "stop")
@@ -473,6 +505,7 @@ BuffFunctionTemplates.functions = {
 			end
 		else
 			local fx = World.create_particles(world, "fx/magic_wind_fire_timer_01", POSITION_LOOKUP[unit])
+
 			buff.linked_effect = fx
 
 			World.link_particles(world, fx, unit, Unit.node(unit, "root_point"), Matrix4x4.identity(), "stop")
@@ -551,11 +584,13 @@ BuffFunctionTemplates.functions = {
 
 				if source_buff_extension and not Managers.state.side:is_ally(unit, source) then
 					local duration_multiplier = source_buff_extension:apply_buffs_to_value(1, "increased_balefire_dot_duration")
+
 					tick_time = tick_time * duration_multiplier
 				end
 			end
 
 			local random_mod_next_dot_time = 0.75 * tick_time + math.random() * 0.5 * tick_time
+
 			next_poison_damage_time = next_poison_damage_time + random_mod_next_dot_time
 
 			if Managers.state.network.is_server then
@@ -570,19 +605,19 @@ BuffFunctionTemplates.functions = {
 						local target_unit = unit
 						local hit_zone_name = buff.template.hit_zone or "full"
 						local attack_direction = Vector3.down()
-						local hit_ragdoll_actor = nil
+						local hit_ragdoll_actor
 						local damage_source = "dot_debuff"
 						local power_level = buff.power_level or DefaultPowerLevel
 						local damage_profile_name = buff_template.damage_profile or "default"
 						local damage_profile = DamageProfileTemplates[damage_profile_name]
-						local target_index = nil
+						local target_index
 						local boost_curve_multiplier = 0
 						local is_critical_strike = false
 						local can_damage = true
 						local can_stagger = damage_profile.dot_stagger
 						local blocking = false
 						local shield_breaking_hit = false
-						local backstab_multiplier, first_hit, total_hits = nil
+						local backstab_multiplier, first_hit, total_hits
 
 						DamageUtils.server_apply_hit(t, used_attacker_unit, target_unit, hit_zone_name, nil, attack_direction, hit_ragdoll_actor, damage_source, power_level, damage_profile, target_index, boost_curve_multiplier, is_critical_strike, can_damage, can_stagger, blocking, shield_breaking_hit, backstab_multiplier, first_hit, total_hits, source_attacker_unit)
 					end
@@ -625,9 +660,13 @@ BuffFunctionTemplates.functions = {
 		local difficulty_name = Managers.state.difficulty:get_difficulty()
 		local buff_template = buff.template
 		local damage = buff_template.difficulty_damage[difficulty_name]
+
 		buff.damage = damage
+
 		local breed = Unit.get_data(unit, "breed")
+
 		buff.armor_type = breed.armor_category or 1
+
 		local first_person_extension = ScriptUnit.has_extension(unit, "first_person_system")
 
 		if first_person_extension then
@@ -642,6 +681,7 @@ BuffFunctionTemplates.functions = {
 			if liquid_extension then
 				local source_unit = liquid_extension:get_source_attacker_unit()
 				local source_breed = ALIVE[source_unit] and Unit.get_data(source_unit, "breed")
+
 				buff.damage_source = source_breed and source_breed.name or "dot_debuff"
 			end
 		end
@@ -735,9 +775,13 @@ BuffFunctionTemplates.functions = {
 		local difficulty_name = Managers.state.difficulty:get_difficulty()
 		local buff_template = buff.template
 		local damage = buff_template.difficulty_damage[difficulty_name]
+
 		buff.damage = damage
+
 		local breed = Unit.get_data(unit, "breed")
+
 		buff.armor_type = breed.armor_category or 1
+
 		local first_person_extension = ScriptUnit.has_extension(unit, "first_person_system")
 
 		if first_person_extension then
@@ -752,6 +796,7 @@ BuffFunctionTemplates.functions = {
 			if liquid_extension then
 				local source_unit = liquid_extension:get_source_attacker_unit()
 				local source_breed = ALIVE[source_unit] and Unit.get_data(source_unit, "breed")
+
 				buff.damage_source = source_breed and source_breed.name or "dot_debuff"
 			end
 		end
@@ -805,7 +850,9 @@ BuffFunctionTemplates.functions = {
 		local difficulty_name = Managers.state.difficulty:get_difficulty()
 		local buff_template = buff.template
 		local damage = buff_template.difficulty_damage[difficulty_name]
+
 		buff.damage = damage
+
 		local attacker_unit = params.attacker_unit
 
 		if Unit.alive(attacker_unit) then
@@ -814,6 +861,7 @@ BuffFunctionTemplates.functions = {
 			if liquid_extension then
 				local source_unit = liquid_extension._source_unit
 				local source_breed = ALIVE[source_unit] and Unit.get_data(source_unit, "breed")
+
 				buff.damage_source = source_breed and source_breed.name or "dot_debuff"
 			end
 		end
@@ -856,6 +904,7 @@ BuffFunctionTemplates.functions = {
 		local ext = ScriptUnit.extension(unit, "ai_navigation_system")
 		local modifier = buff.template.multiplier
 		local id = ext:add_movement_modifier(modifier)
+
 		buff.movement_modifier_id = id
 	end,
 	remove_ai_movement_debuff = function (unit, buff, params, world)
@@ -881,9 +930,13 @@ BuffFunctionTemplates.functions = {
 		local difficulty_name = Managers.state.difficulty:get_difficulty()
 		local buff_template = buff.template
 		local damage = buff_template.difficulty_damage[difficulty_name]
+
 		buff.damage = damage
+
 		local breed = Unit.get_data(unit, "breed")
+
 		buff.armor_type = breed.armor_category or 1
+
 		local owner = Managers.player:owner(unit)
 		local is_husk = owner.remote or owner.bot_player or false
 
@@ -900,15 +953,18 @@ BuffFunctionTemplates.functions = {
 			first_person_extension:play_hud_sound_event("Play_player_hit_puke")
 		end
 
-		local pushed_direction = nil
+		local pushed_direction
 		local attacker_unit = params.attacker_unit
 
 		if Unit.alive(attacker_unit) then
 			local source_breed = Unit.get_data(attacker_unit, "breed")
+
 			buff.damage_source = source_breed and source_breed.name or "dot_debuff"
+
 			local victim_position = POSITION_LOOKUP[unit]
 			local attacker_position = POSITION_LOOKUP[attacker_unit]
 			local to_victim = victim_position - attacker_position
+
 			pushed_direction = Vector3.normalize(to_victim)
 		else
 			pushed_direction = Vector3.backward()
@@ -934,18 +990,25 @@ BuffFunctionTemplates.functions = {
 		local difficulty_name = Managers.state.difficulty:get_difficulty()
 		local buff_template = buff.template
 		local damage = buff_template.difficulty_damage[difficulty_name]
+
 		buff.damage = damage
+
 		local breed = Unit.get_data(unit, "breed")
+
 		buff.armor_type = breed.armor_category or 1
-		local pushed_direction = nil
+
+		local pushed_direction
 		local attacker_unit = params.attacker_unit
 
 		if Unit.alive(attacker_unit) then
 			local source_breed = Unit.get_data(attacker_unit, "breed")
+
 			buff.damage_source = source_breed and source_breed.name or "dot_debuff"
+
 			local victim_position = POSITION_LOOKUP[unit]
 			local attacker_position = POSITION_LOOKUP[attacker_unit]
 			local to_victim = victim_position - attacker_position
+
 			pushed_direction = Vector3.normalize(to_victim)
 		else
 			pushed_direction = Vector3.backward()
@@ -963,7 +1026,9 @@ BuffFunctionTemplates.functions = {
 
 		if Managers.state.network.is_server and HEALTH_ALIVE[unit] then
 			local attacker_unit = params.attacker_unit
+
 			attacker_unit = Unit.alive(attacker_unit) and attacker_unit or unit
+
 			local armor_type = buff.armor_type
 			local damage_type = buff_template.damage_type
 			local damage = buff.damage[armor_type]
@@ -997,9 +1062,13 @@ BuffFunctionTemplates.functions = {
 		local difficulty_name = Managers.state.difficulty:get_difficulty()
 		local buff_template = buff.template
 		local damage = buff_template.difficulty_damage[difficulty_name]
+
 		buff.damage = damage
+
 		local breed = Unit.get_data(unit, "breed")
+
 		buff.armor_type = breed.armor_category or 1
+
 		local owner = Managers.player:owner(unit)
 		local is_husk = owner.remote or owner.bot_player or false
 
@@ -1016,16 +1085,20 @@ BuffFunctionTemplates.functions = {
 			first_person_extension:play_hud_sound_event("Play_player_hit_puke")
 		end
 
-		local pushed_direction = nil
+		local pushed_direction
 		local attacker_unit = params.attacker_unit
 
 		if Unit.alive(attacker_unit) then
 			local source_breed = Unit.get_data(attacker_unit, "breed")
+
 			buff.damage_source = source_breed and source_breed.name or "dot_debuff"
+
 			local victim_position = POSITION_LOOKUP[unit]
 			local attacker_position = POSITION_LOOKUP[attacker_unit]
 			local to_victim = victim_position - attacker_position
+
 			pushed_direction = Vector3.normalize(to_victim)
+
 			local attacker_buff_extension = ScriptUnit.has_extension(attacker_unit, "buff_system")
 
 			if attacker_buff_extension then
@@ -1096,9 +1169,13 @@ BuffFunctionTemplates.functions = {
 		local difficulty_name = Managers.state.difficulty:get_difficulty()
 		local buff_template = buff.template
 		local damage = buff_template.difficulty_damage[difficulty_name]
+
 		buff.damage = damage
+
 		local breed = Unit.get_data(unit, "breed")
+
 		buff.armor_type = breed.armor_category or 1
+
 		local first_person_extension = ScriptUnit.has_extension(unit, "first_person_system")
 
 		if first_person_extension then
@@ -1112,6 +1189,7 @@ BuffFunctionTemplates.functions = {
 			local attacker_breed = ALIVE[attacker_unit] and Unit.get_data(attacker_unit, "breed")
 			local attacker_breed_name = attacker_breed and attacker_breed.name
 			local damage_source = is_enemy and attacker_breed_name or "dot_debuff"
+
 			buff.damage_source = damage_source
 		end
 	end,
@@ -1165,9 +1243,13 @@ BuffFunctionTemplates.functions = {
 		local difficulty_name = Managers.state.difficulty:get_difficulty()
 		local buff_template = buff.template
 		local damage = buff_template.difficulty_damage[difficulty_name]
+
 		buff.damage = damage
+
 		local breed = Unit.get_data(unit, "breed")
+
 		buff.armor_type = breed.armor_category or 1
+
 		local first_person_extension = ScriptUnit.has_extension(unit, "first_person_system")
 
 		if first_person_extension then
@@ -1180,6 +1262,7 @@ BuffFunctionTemplates.functions = {
 			local liquid_extension = ScriptUnit.extension(attacker_unit, "area_damage_system")
 			local source_unit = liquid_extension:get_source_attacker_unit()
 			local source_breed = ALIVE[source_unit] and Unit.get_data(source_unit, "breed")
+
 			buff.damage_source = source_breed and source_breed.name or "dot_debuff"
 
 			if ALIVE[source_unit] then
@@ -1292,7 +1375,7 @@ BuffFunctionTemplates.functions = {
 				buff.delete_time = t + buff_template.deletion_delay
 			end
 
-			if buff.delete_time < t then
+			if t > buff.delete_time then
 				local buff_extension = ScriptUnit.extension(unit, "buff_system")
 				local reference_buff_name = buff_template.reference_buff
 				local reference_buff = buff_extension:get_non_stacking_buff(reference_buff_name)
@@ -1323,7 +1406,7 @@ BuffFunctionTemplates.functions = {
 				buff.add_time = t + buff_template.add_delay
 			end
 
-			if buff.add_time < t then
+			if t > buff.add_time then
 				local buff_extension = ScriptUnit.extension(unit, "buff_system")
 				local reference_buff_name = buff_template.reference_buff
 				local reference_buff = buff_extension:get_non_stacking_buff(reference_buff_name)
@@ -1359,7 +1442,7 @@ BuffFunctionTemplates.functions = {
 				buff.add_time = t + buff_template.add_delay
 			end
 
-			if buff.add_time < t then
+			if t > buff.add_time then
 				local buff_template = buff.template
 				local buff_name = buff_template.buff_to_add
 				local buff_extension = ScriptUnit.extension(unit, "buff_system")
@@ -1370,7 +1453,7 @@ BuffFunctionTemplates.functions = {
 
 				if is_server() then
 					buff_extension:add_buff(buff_name, {
-						attacker_unit = unit
+						attacker_unit = unit,
 					})
 					network_transmit:send_rpc_clients("rpc_add_buff", unit_object_id, buff_template_name_id, unit_object_id, 0, false)
 				else
@@ -1401,6 +1484,7 @@ BuffFunctionTemplates.functions = {
 			end
 
 			buff.distance_moved = buff.distance_moved + distance_moved
+
 			local talent_extension = ScriptUnit.has_extension(unit, "talent_system")
 			local has_short_passive = false
 			local distance_to_travel = math.huge
@@ -1514,12 +1598,12 @@ BuffFunctionTemplates.functions = {
 								local health_extension = ScriptUnit.extension(heal_unit, "health_system")
 								local status_extension = ScriptUnit.extension(heal_unit, "status_system")
 
-								if health_extension:current_permanent_health_percent() <= regen_cap and not status_extension:is_knocked_down() and not status_extension:is_assisted_respawning() then
+								if regen_cap >= health_extension:current_permanent_health_percent() and not status_extension:is_knocked_down() and not status_extension:is_assisted_respawning() then
 									DamageUtils.heal_network(heal_unit, unit, heal_amount, "career_passive")
 								end
 							end
 						end
-					elseif health_extension:current_permanent_health_percent() <= regen_cap then
+					elseif regen_cap >= health_extension:current_permanent_health_percent() then
 						DamageUtils.heal_network(unit, unit, heal_amount, "career_passive")
 					end
 				end
@@ -1539,9 +1623,13 @@ BuffFunctionTemplates.functions = {
 		local difficulty_name = Managers.state.difficulty:get_difficulty()
 		local buff_template = buff.template
 		local damage = buff_template.difficulty_damage[difficulty_name]
+
 		buff.damage = damage
+
 		local breed = Unit.get_data(unit, "breed")
+
 		buff.armor_type = breed.armor_category or 1
+
 		local first_person_extension = ScriptUnit.has_extension(unit, "first_person_system")
 
 		if first_person_extension then
@@ -1551,16 +1639,19 @@ BuffFunctionTemplates.functions = {
 			first_person_extension:play_hud_sound_event("Play_player_hit_warpfire_thrower")
 		end
 
-		local pushed_direction = nil
+		local pushed_direction
 		local attacker_unit = params.attacker_unit
 		local distance = 0
 
 		if ALIVE[attacker_unit] then
 			local source_breed = Unit.get_data(attacker_unit, "breed")
+
 			buff.damage_source = source_breed and source_breed.name or "dot_debuff"
+
 			local victim_position = POSITION_LOOKUP[unit]
 			local attacker_position = POSITION_LOOKUP[attacker_unit]
 			local to_victim = victim_position - attacker_position
+
 			pushed_direction = Vector3.normalize(to_victim)
 			distance = Vector3.length(to_victim)
 		else
@@ -1624,9 +1715,13 @@ BuffFunctionTemplates.functions = {
 		local difficulty_name = Managers.state.difficulty:get_difficulty()
 		local buff_template = buff.template
 		local damage = buff_template.difficulty_damage[difficulty_name]
+
 		buff.damage = damage
+
 		local breed = Unit.get_data(unit, "breed")
+
 		buff.armor_type = breed.armor_category or 1
+
 		local owner = Managers.player:owner(unit)
 		local is_husk = owner.remote or owner.bot_player or false
 
@@ -1642,15 +1737,18 @@ BuffFunctionTemplates.functions = {
 			first_person_extension:play_hud_sound_event("Play_player_hit_warpfire_thrower")
 		end
 
-		local pushed_direction = nil
+		local pushed_direction
 		local attacker_unit = params.attacker_unit
 
 		if ALIVE[attacker_unit] then
 			local source_breed = Unit.get_data(attacker_unit, "breed")
+
 			buff.damage_source = source_breed and source_breed.name or "dot_debuff"
+
 			local victim_position = POSITION_LOOKUP[unit]
 			local attacker_position = POSITION_LOOKUP[attacker_unit]
 			local to_victim = victim_position - attacker_position
+
 			pushed_direction = Vector3.normalize(to_victim)
 		else
 			pushed_direction = Vector3.backward()
@@ -1802,7 +1900,7 @@ BuffFunctionTemplates.functions = {
 		end
 
 		local sync_type = template.sync_type
-		local peer_id = nil
+		local peer_id
 
 		if sync_type == BuffSyncType.Client or sync_type == BuffSyncType.ClientAndServer then
 			local player = Managers.player:owner(unit)
@@ -1866,7 +1964,7 @@ BuffFunctionTemplates.functions = {
 
 				if not buff.server_buff_ids then
 					buff.server_buff_ids = {
-						server_buff_id
+						server_buff_id,
 					}
 				else
 					buff.server_buff_ids[#buff.server_buff_ids + 1] = server_buff_id
@@ -1910,11 +2008,11 @@ BuffFunctionTemplates.functions = {
 				if buffs_to_add then
 					local buff_system = Managers.state.entity:system("buff_system")
 					local link_buffs = add_buffs_data.link_buffs
-					local params = nil
+					local params
 
 					if link_buffs then
 						params = {
-							parent_id = buff.id
+							parent_id = buff.id,
 						}
 					end
 
@@ -1970,6 +2068,7 @@ BuffFunctionTemplates.functions = {
 
 						local buff_system = Managers.state.entity:system("buff_system")
 						local server_buff_ids = buff.server_buff_ids
+
 						num_stacks = server_buff_ids and math.min(#server_buff_ids, num_stacks) or 0
 
 						for i = 1, num_stacks do
@@ -1991,6 +2090,7 @@ BuffFunctionTemplates.functions = {
 
 					if remove_buff_stack_data.reset_update_timer then
 						local t = Managers.time:time("game")
+
 						buff._next_update_t = t + (template.update_frequency or 0)
 					end
 				end
@@ -2160,6 +2260,7 @@ BuffFunctionTemplates.functions = {
 			for i = 1, difference do
 				local buff_id = buff_system:add_buff(unit, buff_to_add, unit, true)
 				local stack_ids = buff.stack_ids
+
 				stack_ids[#stack_ids + 1] = buff_id
 			end
 		elseif num_chunks < num_buff_stacks then
@@ -2226,6 +2327,7 @@ BuffFunctionTemplates.functions = {
 			for i = 1, difference do
 				local buff_id = buff_system:add_buff(unit, buff_to_add, unit, true)
 				local stack_ids = buff.stack_ids
+
 				stack_ids[#stack_ids + 1] = buff_id
 			end
 		elseif num_chunks < num_buff_stacks then
@@ -2305,6 +2407,7 @@ BuffFunctionTemplates.functions = {
 				for i = 1, difference do
 					local buff_id = buff_extension:add_buff(buff_to_add)
 					local stack_ids = buff.stack_ids
+
 					stack_ids[#stack_ids + 1] = buff_id
 				end
 			elseif num_chunks < num_buff_stacks then
@@ -2340,11 +2443,12 @@ BuffFunctionTemplates.functions = {
 		local num_chunks = math.min(math.floor(overcharge / chunk_size), max_stacks)
 		local num_buff_stacks = #buff.stack_server_ids
 
-		if num_chunks > num_buff_stacks then
+		if num_buff_stacks < num_chunks then
 			local difference = num_chunks - num_buff_stacks
 
 			for i = 1, difference do
 				local server_buff_id = buff_system:add_buff(unit, buff_to_add, unit, true)
+
 				stack_server_ids[#stack_server_ids + 1] = server_buff_id
 			end
 		elseif num_chunks < num_buff_stacks then
@@ -2385,6 +2489,7 @@ BuffFunctionTemplates.functions = {
 			for i = 1, difference do
 				local buff_id = buff_system:add_buff(unit, buff_to_add, unit, true)
 				local stack_ids = buff.stack_ids
+
 				stack_ids[#stack_ids + 1] = buff_id
 			end
 		elseif num_chunks < num_buff_stacks then
@@ -2431,6 +2536,7 @@ BuffFunctionTemplates.functions = {
 
 				if num_buff_stacks < 1 or add_second_buff and num_buff_stacks == 1 then
 					local buff_id = buff_system:add_buff(unit, buff_to_add, unit, true)
+
 					buff.stack_ids[#buff.stack_ids + 1] = buff_id
 				end
 			end
@@ -2473,6 +2579,7 @@ BuffFunctionTemplates.functions = {
 					for i = 1, difference do
 						local buff_id = buff_system:add_buff(unit, buff_to_add, unit, true)
 						local stack_ids = buff.stack_ids
+
 						stack_ids[#stack_ids + 1] = buff_id
 					end
 				elseif max_stacks < num_buff_stacks then
@@ -2598,7 +2705,9 @@ BuffFunctionTemplates.functions = {
 		end
 
 		local buffed_units = buff.buffed_units or {}
+
 		buff.buffed_units = buffed_units
+
 		local buff_params = FrameTable.alloc_table()
 
 		if template.owner_as_source then
@@ -2617,7 +2726,7 @@ BuffFunctionTemplates.functions = {
 
 			for i = 1, #friendly_players do
 				local friendly_unit = friendly_players[i]
-				local inside = Vector3.distance_squared(owner_position, POSITION_LOOKUP[friendly_unit]) < range_squared
+				local inside = range_squared > Vector3.distance_squared(owner_position, POSITION_LOOKUP[friendly_unit])
 				local buff_id = buffed_units[friendly_unit]
 
 				if inside then
@@ -2780,6 +2889,7 @@ BuffFunctionTemplates.functions = {
 
 						for i = 1, difference do
 							local buff_id = buff_system:add_buff(unit, buff_to_add, unit, true)
+
 							stack_ids[#stack_ids + 1] = buff_id
 						end
 					elseif num_chunks < num_buff_stacks then
@@ -2971,7 +3081,9 @@ BuffFunctionTemplates.functions = {
 		end
 
 		local buff_template = buff.template
+
 		buff.next_update_t = buff.next_update_t + buff_template.tick_rate
+
 		local side_by_unit = Managers.state.side.side_by_unit
 		local owner_side = side_by_unit[owner_unit]
 		local buff_system = Managers.state.entity:system("buff_system")
@@ -2984,6 +3096,7 @@ BuffFunctionTemplates.functions = {
 
 		for i = 1, num_nearby_enemies do
 			local nearby_unit = nearby_enemies[i]
+
 			nearby_enemies[nearby_unit] = true
 
 			if not tracked_buffs[nearby_unit] then
@@ -3076,7 +3189,7 @@ BuffFunctionTemplates.functions = {
 
 		local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
 		local num_units = #player_and_bot_units
-		local closest_player = nil
+		local closest_player
 
 		for i = 1, num_units do
 			local unit = player_and_bot_units[i]
@@ -3086,7 +3199,7 @@ BuffFunctionTemplates.functions = {
 				local distance_squared = Vector3.distance_squared(owner_position, unit_position)
 				local buff_extension = ScriptUnit.extension(unit, "buff_system")
 
-				if closest_player_distance < distance_squared then
+				if distance_squared > closest_player_distance then
 					local buff = buff_extension:get_non_stacking_buff(buff_to_add)
 
 					if buff then
@@ -3179,7 +3292,7 @@ BuffFunctionTemplates.functions = {
 		local buff_system = Managers.state.entity:system("buff_system")
 		local template = buff.template
 		local buff_to_add = template.buff_to_add
-		local disabled_allies = nil
+		local disabled_allies
 
 		for i = 1, num_units do
 			local unit = player_and_bot_units[i]
@@ -3299,8 +3412,9 @@ BuffFunctionTemplates.functions = {
 			buff.timer = t + update_frequency
 		end
 
-		if buff.timer < t then
+		if t > buff.timer then
 			buff.timer = t + update_frequency
+
 			local buff_list = {}
 
 			if CurrentConflictSettings.factions then
@@ -3354,6 +3468,7 @@ BuffFunctionTemplates.functions = {
 
 		if completed_contract and buff.can_reward then
 			local reward = template.reward_to_add
+
 			buff.can_reward = false
 
 			buff_extension:add_buff(reward)
@@ -3389,6 +3504,7 @@ BuffFunctionTemplates.functions = {
 		local activate_on_missing = template.activate_on_missing
 		local only_local = template.only_local
 		local has_buff = buff_extension:get_non_stacking_buff(activation_buff)
+		local apply_buff = (has_buff and not activate_on_missing or not has_buff and activate_on_missing) and (not only_local or only_local and is_local(unit))
 		local applied_buff = buff_extension:get_non_stacking_buff(buff_to_add)
 
 		if apply_buff then
@@ -3411,11 +3527,12 @@ BuffFunctionTemplates.functions = {
 
 		local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
 		local num_units = #player_and_bot_units
-		local owner_unit = nil
+		local owner_unit
 		local targets = {}
 
 		for i = 1, num_units do
 			local unit = player_and_bot_units[i]
+
 			targets[#targets + 1] = unit
 		end
 
@@ -3463,11 +3580,12 @@ BuffFunctionTemplates.functions = {
 
 		local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
 		local num_units = #player_and_bot_units
-		local owner_unit = nil
+		local owner_unit
 		local targets = {}
 
 		for i = 1, num_units do
 			local unit = player_and_bot_units[i]
+
 			targets[#targets + 1] = unit
 		end
 
@@ -3523,6 +3641,7 @@ BuffFunctionTemplates.functions = {
 
 		for i = 1, num_units do
 			local unit = player_and_bot_units[i]
+
 			targets[#targets + 1] = unit
 		end
 
@@ -3543,7 +3662,7 @@ BuffFunctionTemplates.functions = {
 			end
 		end
 
-		local adding_buff = nil
+		local adding_buff
 
 		if #disabled_allies == num_units - 1 then
 			adding_buff = true
@@ -3588,7 +3707,7 @@ BuffFunctionTemplates.functions = {
 		local activate_below = template.activate_below
 		local health_extension = ScriptUnit.extension(unit, "health_system")
 		local health_percent = health_extension:current_health_percent()
-		local adding_buff = nil
+		local adding_buff
 
 		if health_percent < activation_health and activate_below or activation_health < health_percent and not activate_below then
 			adding_buff = true
@@ -3626,7 +3745,7 @@ BuffFunctionTemplates.functions = {
 		local local_player = is_local(owner_unit)
 		local status_extension = ScriptUnit.extension(unit, "status_system")
 		local is_disabled = status_extension:is_disabled() or status_extension:is_in_vortex()
-		local adding_buff = nil
+		local adding_buff
 
 		if is_disabled then
 			adding_buff = true
@@ -3673,7 +3792,7 @@ BuffFunctionTemplates.functions = {
 			local right_hand_ammo_extension = ScriptUnit.has_extension(right_unit_1p, "ammo_system")
 			local left_hand_ammo_extension = ScriptUnit.has_extension(left_unit_1p, "ammo_system")
 			local ammo_extension = right_hand_ammo_extension or left_hand_ammo_extension
-			local adding_buff = nil
+			local adding_buff
 
 			if ammo_extension then
 				adding_buff = ammo_extension:total_ammo_fraction() == 0
@@ -3714,7 +3833,7 @@ BuffFunctionTemplates.functions = {
 		local local_player = is_local(owner_unit)
 		local status_extension = ScriptUnit.extension(unit, "status_system")
 		local is_disabled = status_extension:is_disabled() or status_extension:is_in_vortex()
-		local adding_buff = nil
+		local adding_buff
 
 		if buff_extension:has_buff_perk("skaven_grimoire") then
 			adding_buff = true
@@ -3887,9 +4006,7 @@ BuffFunctionTemplates.functions = {
 				local buff_to_add = template.buff_to_add
 				local has_buff = buff_extension:has_buff_type(buff_to_add)
 
-				if ranged_slot_buff_type == "RANGED" then
-					ranged_slot_buff_type = "MELEE_1H"
-				end
+				ranged_slot_buff_type = ranged_slot_buff_type == "RANGED" and "MELEE_1H" or ranged_slot_buff_type
 
 				local add_buff = melee_slot_buff_type == buff_type and ranged_slot_buff_type == buff_type
 
@@ -3931,13 +4048,14 @@ BuffFunctionTemplates.functions = {
 			local lh_weapon_unit, rh_weapon_unit = inventory_extension:get_all_weapon_unit()
 			local lh_weapon_extension = lh_weapon_unit and ScriptUnit.has_extension(lh_weapon_unit, "weapon_system")
 			local rh_weapon_extension = rh_weapon_unit and ScriptUnit.has_extension(rh_weapon_unit, "weapon_system")
-			local add_buff_on_action_type = nil
+			local add_buff_on_action_type
 
 			if lh_weapon_extension then
 				local has_action = lh_weapon_extension:has_current_action()
 
 				if has_action then
 					local current_action_settings = lh_weapon_extension:get_current_action_settings()
+
 					add_buff_on_action_type = ActionUtils.is_melee_start_sub_action(current_action_settings)
 				end
 			end
@@ -3947,6 +4065,7 @@ BuffFunctionTemplates.functions = {
 
 				if has_action then
 					local current_action_settings = rh_weapon_extension:get_current_action_settings()
+
 					add_buff_on_action_type = ActionUtils.is_melee_start_sub_action(current_action_settings)
 				end
 			end
@@ -3965,7 +4084,7 @@ BuffFunctionTemplates.functions = {
 
 					if is_server() then
 						buff_extension:add_buff(buff_name, {
-							attacker_unit = unit
+							attacker_unit = unit,
 						})
 						network_transmit:send_rpc_clients("rpc_add_buff", unit_object_id, buff_template_name_id, unit_object_id, 0, false)
 					else
@@ -4185,6 +4304,7 @@ BuffFunctionTemplates.functions = {
 		local stat_buff_index = template.stat_buff
 		local previous_multiplier = buff.previous_multiplier or 0
 		local multiplier = damage_taken * base_multiplier
+
 		buff.multiplier = multiplier
 
 		if stat_buff_index and previous_multiplier ~= multiplier then
@@ -4226,6 +4346,7 @@ BuffFunctionTemplates.functions = {
 			local world = Managers.world:world("level_world")
 			local first_person_effect_name = "fx/unchained_aura_talent_1p"
 			local third_person_effect_name = "fx/unchained_aura_talent_3p"
+
 			buff.targeting_effect_id = World.create_particles(world, third_person_effect_name, Vector3.zero())
 			buff.targeting_variable_id = World.find_particles_variable(world, third_person_effect_name, "charge_radius")
 
@@ -4245,7 +4366,7 @@ BuffFunctionTemplates.functions = {
 			World.move_particles(world, buff.targeting_effect_id, position)
 		end
 
-		if not buff.timer or buff.timer < t then
+		if not buff.timer or t > buff.timer then
 			if not Managers.state.network.is_server then
 				return
 			end
@@ -4280,8 +4401,9 @@ BuffFunctionTemplates.functions = {
 		local t = params.t
 		local frequency = 0.25
 
-		if not buff.timer or buff.timer <= t then
+		if not buff.timer or t >= buff.timer then
 			buff.timer = t + frequency
+
 			local career_extension = ScriptUnit.has_extension(unit, "career_system")
 
 			if career_extension and career_extension:current_ability_cooldown_percentage() > 0 then
@@ -4316,6 +4438,7 @@ BuffFunctionTemplates.functions = {
 		local above = 2
 		local below = 30
 		local projected_start_pos = LocomotionUtils.pos_on_mesh(nav_world, unit_pos, above, below)
+
 		projected_start_pos = projected_start_pos or GwNavQueries.inside_position_from_outside_position(nav_world, unit_pos, above, below, 2, 0.5)
 
 		if projected_start_pos then
@@ -4494,6 +4617,7 @@ BuffFunctionTemplates.functions = {
 			if weapon_unit_extension:has_current_action() then
 				local current_action = weapon_unit_extension:get_current_action()
 				local action_start_t = current_action.action_start_t
+
 				restealth_buff.triggering_action_start_t = action_start_t
 			end
 		end
@@ -4619,11 +4743,13 @@ BuffFunctionTemplates.functions = {
 
 		if has_buff then
 			buff.buff_ids = buff.buff_ids or {}
+
 			local num_stacks = #buff.buff_ids
 
 			if num_stacks < template.max_sub_buff_stacks then
 				local buff_to_add = template.buff_to_add
 				local stack_buff_id = buff_extension:add_buff(buff_to_add)
+
 				buff.buff_ids[num_stacks + 1] = stack_buff_id
 			end
 		end
@@ -4634,8 +4760,9 @@ BuffFunctionTemplates.functions = {
 		if is_local(unit) then
 			if not params.next_vo_time then
 				params.next_vo_time = params.t + time_between_vo
-			elseif params.next_vo_time <= params.t then
+			elseif params.t >= params.next_vo_time then
 				params.next_vo_time = params.t + time_between_vo
+
 				local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
 				local event_data = FrameTable.alloc_table()
 
@@ -4646,6 +4773,7 @@ BuffFunctionTemplates.functions = {
 	end_bardin_ironbreaker_activated_ability = function (unit, buff, params)
 		if is_local(unit) then
 			params.next_vo_time = nil
+
 			local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
 
 			first_person_extension:play_hud_sound_event("Play_career_ability_bardin_ironbreaker_exit")
@@ -4727,7 +4855,7 @@ BuffFunctionTemplates.functions = {
 		local buff_template = buff.template
 		local next_heal_tick = buff.next_heal_tick or 0
 
-		if t > next_heal_tick and HEALTH_ALIVE[unit] then
+		if next_heal_tick < t and HEALTH_ALIVE[unit] then
 			local talent_extension = ScriptUnit.has_extension(unit, "talent_system")
 
 			if talent_extension then
@@ -4763,6 +4891,7 @@ BuffFunctionTemplates.functions = {
 
 				if current_health >= max_health * buff.template.health_threshold and not buff.has_buff then
 					local buff_system = Managers.state.entity:system("buff_system")
+
 					buff.has_buff = buff_system:add_buff(owner_unit, buff_to_add, owner_unit, true)
 				elseif current_health < max_health * buff.template.health_threshold and buff.has_buff then
 					local buff_system = Managers.state.entity:system("buff_system")
@@ -4928,6 +5057,7 @@ BuffFunctionTemplates.functions = {
 		if Managers.state.network.is_server then
 			local ext = ScriptUnit.extension(unit, "ai_navigation_system")
 			local id = ext:add_movement_modifier(0.2)
+
 			buff.movement_modifier_id = id
 		end
 	end,
@@ -4977,6 +5107,7 @@ BuffFunctionTemplates.functions = {
 	update_volume_dot_damage = function (unit, buff, params)
 		if buff.next_damage_time < params.t and HEALTH_ALIVE[unit] then
 			buff.next_damage_time = buff.next_damage_time + params.bonus.time_between_damage
+
 			local damage = DamageUtils.calculate_damage(params.bonus.damage, unit, params.attacker_unit, "full", 1)
 
 			DamageUtils.add_damage_network(unit, params.attacker_unit, damage, "full", buff.template.damage_type, nil, Vector3(1, 0, 0))
@@ -4984,10 +5115,12 @@ BuffFunctionTemplates.functions = {
 	end,
 	apply_volume_movement_buff = function (unit, buff, params)
 		local movement_settings = PlayerUnitMovementSettings.get_movement_settings_table(unit)
+
 		movement_settings.move_speed = movement_settings.move_speed * params.multiplier
 	end,
 	remove_volume_movement_buff = function (unit, buff, params)
 		local movement_settings = PlayerUnitMovementSettings.get_movement_settings_table(unit)
+
 		movement_settings.move_speed = movement_settings.move_speed / params.multiplier
 	end,
 	apply_speed_scaled_dot_buff = function (unit, buff, params)
@@ -5076,7 +5209,7 @@ BuffFunctionTemplates.functions = {
 				end
 			end
 
-			local additional_item_granted = nil
+			local additional_item_granted
 
 			repeat
 				additional_item_granted = inventory_extension:store_additional_item(slot_name, item_data)
@@ -5110,12 +5243,14 @@ BuffFunctionTemplates.functions = {
 	apply_twitch_invincibility = function (unit, buff, params)
 		if is_server() and Unit.alive(unit) then
 			local health_extension = ScriptUnit.extension(unit, "health_system")
+
 			health_extension.is_invincible = true
 		end
 	end,
 	remove_twitch_invincibility = function (unit, buff, params)
 		if is_server() and Unit.alive(unit) then
 			local health_extension = ScriptUnit.extension(unit, "health_system")
+
 			health_extension.is_invincible = false
 		end
 	end,
@@ -5126,7 +5261,7 @@ BuffFunctionTemplates.functions = {
 		if is_server() and Unit.alive(unit) then
 			local t = params.t
 
-			if buff.next_pulse_t < t then
+			if t > buff.next_pulse_t then
 				local damage_source = "grenade_frag_01"
 				local explosion_template = ExplosionTemplates.twitch_pulse_explosion
 				local explosion_position = POSITION_LOOKUP[unit]
@@ -5216,15 +5351,17 @@ BuffFunctionTemplates.functions = {
 				buff_extension:remove_buff(last_buff.id)
 			end
 		end
-	end
+	end,
 }
 
 BuffFunctionTemplates.functions.update_charging_action_lerp_movement_buff = function (unit, buff, params)
 	local multiplier = params.multiplier
 	local time_into_buff = params.time_into_buff
-	local old_value_to_update_movement_setting, old_multiplier_to_update_movement_setting, multiplier_to_update_movement_setting = nil
+	local old_value_to_update_movement_setting, old_multiplier_to_update_movement_setting, multiplier_to_update_movement_setting
 	local buff_extension = ScriptUnit.extension(unit, "buff_system")
+
 	multiplier = multiplier and 1 - buff_extension:apply_buffs_to_value(1 - multiplier, "increased_move_speed_while_aiming")
+
 	local percentage_in_lerp = math.min(1, time_into_buff / buff.template.lerp_time)
 
 	if multiplier then
@@ -5253,8 +5390,6 @@ BuffFunctionTemplates.functions.update_charging_action_lerp_movement_buff = func
 	end
 end
 
-DLCUtils.merge("buff_function_templates", BuffFunctionTemplates.functions)
-
 BuffFunctionTemplates.functions.ai_update_max_health = function (unit, buff, params)
 	if is_server() then
 		local buff_extension = ScriptUnit.extension(unit, "buff_system")
@@ -5267,4 +5402,4 @@ BuffFunctionTemplates.functions.ai_update_max_health = function (unit, buff, par
 			health_extension:set_max_health(max_health)
 		end
 	end
-end
+end, DLCUtils.merge("buff_function_templates", BuffFunctionTemplates.functions)

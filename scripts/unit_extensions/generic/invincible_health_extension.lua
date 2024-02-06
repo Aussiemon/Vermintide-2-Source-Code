@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/generic/invincible_health_extension.lua
+
 InvincibleHealthExtension = class(InvincibleHealthExtension, GenericHealthExtension)
 
 InvincibleHealthExtension.init = function (self, extension_init_context, unit, extension_init_data)
@@ -7,7 +9,7 @@ InvincibleHealthExtension.init = function (self, extension_init_context, unit, e
 	self.statistics_db = extension_init_context.statistics_db
 	self.damage_buffers = {
 		pdArray.new(),
-		pdArray.new()
+		pdArray.new(),
 	}
 	self.network_transmit = extension_init_context.network_transmit
 	self.is_invincible = true

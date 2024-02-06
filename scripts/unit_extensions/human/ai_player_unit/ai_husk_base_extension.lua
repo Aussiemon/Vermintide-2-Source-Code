@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/human/ai_player_unit/ai_husk_base_extension.lua
+
 AiHuskBaseExtension = class(AiHuskBaseExtension)
 
 AiHuskBaseExtension.init = function (self, extension_init_context, unit, extension_init_data)
@@ -5,7 +7,9 @@ AiHuskBaseExtension.init = function (self, extension_init_context, unit, extensi
 	self.unit = unit
 	self.game = extension_init_data.game
 	self.go_id = extension_init_data.go_id
+
 	local breed = Unit.get_data(unit, "breed")
+
 	self._breed = breed
 
 	if not breed.hit_zones_lookup then
@@ -31,6 +35,7 @@ AiHuskBaseExtension.init = function (self, extension_init_context, unit, extensi
 	end
 
 	local side_id = extension_init_data.side_id
+
 	self._side_id = side_id
 	self.attributes = nil
 end
@@ -47,6 +52,7 @@ AiHuskBaseExtension.extensions_ready = function (self, world, unit)
 		local ai_system = Managers.state.entity:system("ai_system")
 		local broadphase = ai_system.broadphase
 		local side = side_manager:get_side(side_id)
+
 		self.broadphase_id = Broadphase.add(broadphase, unit, Unit.local_position(unit, 0), 1, side.broadphase_category)
 		self.broadphase = broadphase
 		self._health_extension = health_extension
@@ -62,6 +68,7 @@ end
 AiHuskBaseExtension.unfreeze = function (self, unit, data)
 	local optional_data = data[7]
 	local side_id = optional_data.side_id
+
 	self._side_id = side_id
 
 	Managers.state.side:add_unit_to_side(unit, side_id)

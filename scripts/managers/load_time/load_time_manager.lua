@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/load_time/load_time_manager.lua
+
 LoadTimeManager = class(LoadTimeManager)
 
 LoadTimeManager.init = function (self)
@@ -28,6 +30,7 @@ end
 
 LoadTimeManager.set_lobby = function (self, lobby)
 	self._current_lobby = lobby
+
 	local lobby_members = self._current_lobby:members()
 	local current_members = lobby_members:get_members()
 
@@ -130,7 +133,7 @@ LoadTimeManager.end_timer = function (self)
 		members_joined = #self._members_joined,
 		members_left = #self._members_left,
 		lobby_failed = self._lobby_failed,
-		is_server = is_server
+		is_server = is_server,
 	}
 
 	BackendUtils.commit_load_time_data(LOAD_TIME_DATA)

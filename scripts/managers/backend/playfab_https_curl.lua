@@ -1,8 +1,12 @@
+﻿-- chunkname: @scripts/managers/backend/playfab_https_curl.lua
+
 local json = require("PlayFab.json")
 local PlayFabSettings = require("PlayFab.PlayFabSettings")
+
 PlayFabHttpsCurlData = PlayFabHttpsCurlData or {}
 PlayFabHttpsCurlData.request_id = PlayFabHttpsCurlData.request_id or 0
 PlayFabHttpsCurlData.active_requests = PlayFabHttpsCurlData.active_requests or {}
+
 local MAX_RETRIES = 2
 local retry_codes = {
 	1199,
@@ -13,11 +17,11 @@ local retry_codes = {
 	1131,
 	1214,
 	1123,
-	1101
+	1101,
 }
 
 local function on_error(request_data, result, id, error_override)
-	local error_code = nil
+	local error_code
 
 	if result.data and result.data.Error then
 		local logs = result.data.Logs
@@ -79,14 +83,13 @@ local function on_error(request_data, result, id, error_override)
 		Managers.curl:post(url, body, headers, request_cb, id, options)
 
 		request_data.retries = request_data.retries + 1
+
 		local override = error_override and string.format(" | Error Override: %s", error_override) or ""
 
 		printf("[PLAYFAB HTTPS CURL] RESENDING REQUEST. Id: %s | Error Code: %s%s", id, error_code, override)
 		Crashify.print_exception("Backend_Error", "RESENDING REQUEST: %s", request_data)
 	else
-		if error_override then
-			error_code = error_override or error_code
-		end
+		error_code = error_override and error_override or error_code
 
 		Managers.backend:playfab_api_error(result, error_code)
 
@@ -117,7 +120,7 @@ function curl_callback(success, code, headers, data, id)
 				error = "ServiceUnavailable",
 				errorCode = 1123,
 				status = "",
-				code = code
+				code = code,
 			}
 
 			if data then
@@ -133,7 +136,7 @@ function curl_callback(success, code, headers, data, id)
 			error = "ServiceUnavailable",
 			errorCode = 1123,
 			status = "",
-			code = code
+			code = code,
 		}
 
 		if data then
@@ -146,44 +149,45 @@ function curl_callback(success, code, headers, data, id)
 	end
 end
 
-local PlayFabHttpsCurl = {
-	MakePlayFabApiCall = function (url_path, request, auth_key, auth_value, on_success_callback, optional_on_fail_callback)
-		local json_request = json.encode(request)
-		local headers = {
-			"X-ReportErrorAsSuccess: true",
-			"X-PlayFabSDK: " .. PlayFabSettings._internalSettings.sdkVersionString,
-			"Content-Type: application/json",
-			"content-length: " .. string.len(json_request)
-		}
+local PlayFabHttpsCurl = {}
 
-		if auth_key then
-			headers[#headers + 1] = auth_key .. ": " .. auth_value
-		end
+PlayFabHttpsCurl.MakePlayFabApiCall = function (url_path, request, auth_key, auth_value, on_success_callback, optional_on_fail_callback)
+	local json_request = json.encode(request)
+	local headers = {
+		"X-ReportErrorAsSuccess: true",
+		"X-PlayFabSDK: " .. PlayFabSettings._internalSettings.sdkVersionString,
+		"Content-Type: application/json",
+		"content-length: " .. string.len(json_request),
+	}
 
-		local base_url = "https://" .. PlayFabSettings.settings.titleId .. ".playfabapi.com"
-		local id = PlayFabHttpsCurlData.request_id + 1
-		local curl_manager = Managers.curl
-		local full_url = base_url .. url_path
-		local options = {
-			[curl_manager._curl.OPT_SSL_OPTIONS] = curl_manager._curl.SSLOPT_NO_REVOKE
-		}
-		local request_data = {
-			retries = 0,
-			onSuccess = on_success_callback,
-			onFail = optional_on_fail_callback,
-			url = full_url,
-			body = json_request,
-			headers = headers,
-			request_cb = curl_callback,
-			id = id,
-			options = options
-		}
-		PlayFabHttpsCurlData.active_requests[id] = request_data
-
-		curl_manager:post(full_url, json_request, headers, curl_callback, id, options)
-
-		PlayFabHttpsCurlData.request_id = id
+	if auth_key then
+		headers[#headers + 1] = auth_key .. ": " .. auth_value
 	end
-}
+
+	local base_url = "https://" .. PlayFabSettings.settings.titleId .. ".playfabapi.com"
+	local id = PlayFabHttpsCurlData.request_id + 1
+	local curl_manager = Managers.curl
+	local full_url = base_url .. url_path
+	local options = {
+		[curl_manager._curl.OPT_SSL_OPTIONS] = curl_manager._curl.SSLOPT_NO_REVOKE,
+	}
+	local request_data = {
+		retries = 0,
+		onSuccess = on_success_callback,
+		onFail = optional_on_fail_callback,
+		url = full_url,
+		body = json_request,
+		headers = headers,
+		request_cb = curl_callback,
+		id = id,
+		options = options,
+	}
+
+	PlayFabHttpsCurlData.active_requests[id] = request_data
+
+	curl_manager:post(full_url, json_request, headers, curl_callback, id, options)
+
+	PlayFabHttpsCurlData.request_id = id
+end
 
 return PlayFabHttpsCurl

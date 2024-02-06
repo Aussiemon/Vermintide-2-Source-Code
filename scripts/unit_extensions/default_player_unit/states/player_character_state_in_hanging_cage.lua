@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/default_player_unit/states/player_character_state_in_hanging_cage.lua
+
 PlayerCharacterStateInHangingCage = class(PlayerCharacterStateInHangingCage, PlayerCharacterState)
 
 PlayerCharacterStateInHangingCage.init = function (self, character_state_init_context)
@@ -9,6 +11,7 @@ PlayerCharacterStateInHangingCage.on_enter = function (self, unit, input, dt, co
 	CharacterStateHelper.stop_career_abilities(self.career_extension, "in_hanging_cage")
 
 	local cage_unit = params.cage_unit
+
 	self.cage_unit = cage_unit
 
 	LocomotionUtils.enable_linked_movement(self.world, unit, cage_unit, 0, Vector3.zero())
@@ -63,7 +66,7 @@ PlayerCharacterStateInHangingCage.update = function (self, unit, input, dt, cont
 			locomotion_extension:enable_script_driven_movement()
 			self.health_extension:knock_down(unit)
 			csm:change_state("knocked_down", {
-				already_in_ko_anim = true
+				already_in_ko_anim = true,
 			})
 		end
 

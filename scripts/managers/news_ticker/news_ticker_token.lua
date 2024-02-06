@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/news_ticker/news_ticker_token.lua
+
 NewsTickerToken = NewsTickerToken or class()
 
 NewsTickerToken.init = function (self, loader, job)

@@ -1,180 +1,182 @@
+﻿-- chunkname: @scripts/helpers/scoreboard_helper.lua
+
 ScoreboardHelper = ScoreboardHelper or {}
 ScoreboardHelper.scoreboard_topic_stats = {
 	{
-		name = "kills_elites",
 		display_text = "scoreboard_topic_kills_elites",
+		name = "kills_elites",
 		stat_types = {
 			{
 				"kills_per_breed",
-				"skaven_storm_vermin"
+				"skaven_storm_vermin",
 			},
 			{
 				"kills_per_breed",
-				"skaven_storm_vermin_commander"
+				"skaven_storm_vermin_commander",
 			},
 			{
 				"kills_per_breed",
-				"skaven_storm_vermin_with_shield"
+				"skaven_storm_vermin_with_shield",
 			},
 			{
 				"kills_per_breed",
-				"skaven_plague_monk"
+				"skaven_plague_monk",
 			},
 			{
 				"kills_per_breed",
-				"chaos_warrior"
+				"chaos_warrior",
 			},
 			{
 				"kills_per_breed",
-				"chaos_berzerker"
+				"chaos_berzerker",
 			},
 			{
 				"kills_per_breed",
-				"chaos_raider"
+				"chaos_raider",
 			},
 			{
 				"kills_per_breed",
-				"beastmen_bestigor"
-			}
+				"beastmen_bestigor",
+			},
 		},
 		sort_function = function (a, b)
-			return b.score < a.score
-		end
+			return a.score > b.score
+		end,
 	},
 	{
-		name = "kills_specials",
 		display_text = "scoreboard_topic_kills_specials",
+		name = "kills_specials",
 		stat_types = {
 			{
 				"kills_per_breed",
-				"skaven_gutter_runner"
+				"skaven_gutter_runner",
 			},
 			{
 				"kills_per_breed",
-				"skaven_poison_wind_globadier"
+				"skaven_poison_wind_globadier",
 			},
 			{
 				"kills_per_breed",
-				"skaven_pack_master"
+				"skaven_pack_master",
 			},
 			{
 				"kills_per_breed",
-				"skaven_ratling_gunner"
+				"skaven_ratling_gunner",
 			},
 			{
 				"kills_per_breed",
-				"skaven_warpfire_thrower"
+				"skaven_warpfire_thrower",
 			},
 			{
 				"kills_per_breed",
-				"chaos_corruptor_sorcerer"
+				"chaos_corruptor_sorcerer",
 			},
 			{
 				"kills_per_breed",
-				"chaos_vortex_sorcerer"
+				"chaos_vortex_sorcerer",
 			},
 			{
 				"kills_per_breed",
-				"beastmen_standard_bearer"
-			}
+				"beastmen_standard_bearer",
+			},
 		},
 		sort_function = function (a, b)
-			return b.score < a.score
-		end
+			return a.score > b.score
+		end,
 	},
 	{
+		display_text = "scoreboard_topic_kills_total",
 		name = "kills_total",
 		stat_type = "kills_total",
-		display_text = "scoreboard_topic_kills_total",
 		sort_function = function (a, b)
-			return b.score < a.score
-		end
+			return a.score > b.score
+		end,
 	},
 	{
+		display_text = "scoreboard_topic_kills_melee",
 		name = "kills_melee",
 		stat_type = "kills_melee",
-		display_text = "scoreboard_topic_kills_melee",
 		sort_function = function (a, b)
-			return b.score < a.score
-		end
+			return a.score > b.score
+		end,
 	},
 	{
+		display_text = "scoreboard_topic_kills_ranged",
 		name = "kills_ranged",
 		stat_type = "kills_ranged",
-		display_text = "scoreboard_topic_kills_ranged",
 		sort_function = function (a, b)
-			return b.score < a.score
-		end
+			return a.score > b.score
+		end,
 	},
 	{
+		display_text = "scoreboard_topic_damage_taken",
 		name = "damage_taken",
 		stat_type = "damage_taken",
-		display_text = "scoreboard_topic_damage_taken",
 		sort_function = function (a, b)
 			return a.score < b.score
-		end
+		end,
 	},
 	{
+		display_text = "scoreboard_topic_damage_dealt",
 		name = "damage_dealt",
 		stat_type = "damage_dealt",
-		display_text = "scoreboard_topic_damage_dealt",
 		sort_function = function (a, b)
-			return b.score < a.score
-		end
+			return a.score > b.score
+		end,
 	},
 	{
-		name = "damage_dealt_bosses",
 		display_text = "scoreboard_topic_damage_dealt_bosses",
+		name = "damage_dealt_bosses",
 		stat_types = {
 			{
 				"damage_dealt_per_breed",
-				"skaven_rat_ogre"
+				"skaven_rat_ogre",
 			},
 			{
 				"damage_dealt_per_breed",
-				"skaven_stormfiend"
+				"skaven_stormfiend",
 			},
 			{
 				"damage_dealt_per_breed",
-				"chaos_spawn"
+				"chaos_spawn",
 			},
 			{
 				"damage_dealt_per_breed",
-				"chaos_troll"
+				"chaos_troll",
 			},
 			{
 				"damage_dealt_per_breed",
-				"beastmen_minotaur"
-			}
+				"beastmen_minotaur",
+			},
 		},
 		sort_function = function (a, b)
-			return b.score < a.score
-		end
+			return a.score > b.score
+		end,
 	},
 	{
+		display_text = "scoreboard_topic_headshots",
 		name = "headshots",
 		stat_type = "headshots",
-		display_text = "scoreboard_topic_headshots",
 		sort_function = function (a, b)
-			return b.score < a.score
-		end
+			return a.score > b.score
+		end,
 	},
 	{
+		display_text = "scoreboard_topic_saves",
 		name = "saves",
 		stat_type = "saves",
-		display_text = "scoreboard_topic_saves",
 		sort_function = function (a, b)
-			return b.score < a.score
-		end
+			return a.score > b.score
+		end,
 	},
 	{
+		display_text = "scoreboard_topic_revives",
 		name = "revives",
 		stat_type = "revives",
-		display_text = "scoreboard_topic_revives",
 		sort_function = function (a, b)
-			return b.score < a.score
-		end
-	}
+			return a.score > b.score
+		end,
+	},
 }
 ScoreboardHelper.scoreboard_grouped_topic_stats = {
 	{
@@ -190,14 +192,15 @@ ScoreboardHelper.scoreboard_grouped_topic_stats = {
 			"damage_taken",
 			"headshots",
 			"saves",
-			"revives"
-		}
+			"revives",
+		},
 	},
 	{
 		group_name = "defense",
-		stats = {}
-	}
+		stats = {},
+	},
 }
+
 local score_count_per_player = 0
 
 for _, group_settings in ipairs(ScoreboardHelper.scoreboard_grouped_topic_stats) do
@@ -205,6 +208,7 @@ for _, group_settings in ipairs(ScoreboardHelper.scoreboard_grouped_topic_stats)
 end
 
 ScoreboardHelper.num_stats_per_player = score_count_per_player
+
 local TEMP_TABLE = {}
 
 local function get_score(statistics_db, stats_id, stat_type)
@@ -216,7 +220,7 @@ local function get_score(statistics_db, stats_id, stat_type)
 end
 
 local function get_score_by_name(statistics_db, stats_id, stat_name, saved_scoreboard_data)
-	local topic = nil
+	local topic
 
 	for _, topic_data in ipairs(ScoreboardHelper.scoreboard_topic_stats) do
 		if topic_data.name == stat_name then
@@ -228,7 +232,7 @@ local function get_score_by_name(statistics_db, stats_id, stat_name, saved_score
 
 	assert(topic, "Could not find stats topic with name: %s", stat_name)
 
-	local score_amount = nil
+	local score_amount
 	local stat_types = topic.stat_types
 
 	if stat_types ~= nil then
@@ -237,6 +241,7 @@ local function get_score_by_name(statistics_db, stats_id, stat_name, saved_score
 
 		for i = 1, stat_types_n do
 			local stat_type = stat_types[i]
+
 			score = score + get_score(statistics_db, stats_id, stat_type)
 		end
 
@@ -244,6 +249,7 @@ local function get_score_by_name(statistics_db, stats_id, stat_name, saved_score
 	else
 		local stat_type = topic.stat_type
 		local score = get_score(statistics_db, stats_id, stat_type)
+
 		score_amount = score
 	end
 
@@ -266,7 +272,7 @@ local function get_score_by_name(statistics_db, stats_id, stat_name, saved_score
 	return {
 		score = score_amount,
 		stat_name = stat_name,
-		display_text = topic.display_text
+		display_text = topic.display_text,
 	}
 end
 
@@ -283,6 +289,7 @@ ScoreboardHelper.get_weave_stats = function (statistics_db, profile_synchronizer
 		local stats_id = player:stats_id()
 		local profile_index = profile_synchronizer:profile_by_peer(player_peer_id, player:local_player_id())
 		local is_player_controlled = player:is_player_controlled()
+
 		player_list[stats_id] = {
 			name = player_name,
 			peer_id = player_peer_id,
@@ -290,7 +297,7 @@ ScoreboardHelper.get_weave_stats = function (statistics_db, profile_synchronizer
 			stats_id = stats_id,
 			profile_index = profile_index,
 			is_player_controlled = is_player_controlled,
-			scores = {}
+			scores = {},
 		}
 	end
 
@@ -306,15 +313,18 @@ ScoreboardHelper.get_weave_stats = function (statistics_db, profile_synchronizer
 
 				for i = 1, stat_types_n do
 					local stat_type = stat_types[i]
+
 					score = score + get_score(statistics_db, player_data.stats_id, stat_type)
 				end
 
 				local data = player_list[stats_id]
+
 				data.scores[topic.name] = score
 			else
 				local stat_type = topic.stat_type
 				local score = get_score(statistics_db, player_data.stats_id, stat_type)
 				local data = player_list[stats_id]
+
 				data.scores[topic.name] = score
 			end
 		end
@@ -376,7 +386,7 @@ ScoreboardHelper.get_grouped_topic_statistics = function (statistics_db, profile
 			portrait_frame = portrait_frame and portrait_frame.item_name,
 			hero_skin = hero_skin and hero_skin.item_name,
 			weapon = weapon,
-			hat = hat
+			hat = hat,
 		}
 	end
 
@@ -386,11 +396,14 @@ ScoreboardHelper.get_grouped_topic_statistics = function (statistics_db, profile
 		for _, grouped_stat_data in ipairs(ScoreboardHelper.scoreboard_grouped_topic_stats) do
 			local group_name = grouped_stat_data.group_name
 			local stats = grouped_stat_data.stats
+
 			scores[group_name] = {}
+
 			local group_scores = scores[group_name]
 
 			for _, stat_name in pairs(stats) do
 				local score_data = get_score_by_name(statistics_db, stats_id, stat_name, saved_scoreboard_data)
+
 				group_scores[#group_scores + 1] = score_data
 			end
 		end
@@ -410,7 +423,7 @@ ScoreboardHelper.get_current_players = function ()
 	local max_members = mechanism_settings.max_members
 	local human_and_bot_players = Managers.player:human_and_bot_players()
 
-	if table.size(human_and_bot_players) <= max_members then
+	if max_members >= table.size(human_and_bot_players) then
 		return human_and_bot_players
 	else
 		table.clear(PLAYERS)
@@ -455,14 +468,14 @@ ScoreboardHelper.debug_get_grouped_topic_statistics = function ()
 	for i = 1, 4 do
 		player_list[i] = {
 			career_index = 1,
-			portrait_frame = "default",
 			player_level = 1,
+			portrait_frame = "default",
 			name = "player_name_" .. tostring(i),
 			peer_id = "fake_peer_id_" .. tostring(i),
 			local_player_id = i,
 			stats_id = i,
 			profile_index = i,
-			is_player_controlled = i == 1 and true or false
+			is_player_controlled = i == 1 and true or false,
 		}
 	end
 
@@ -472,15 +485,18 @@ ScoreboardHelper.debug_get_grouped_topic_statistics = function ()
 		for _, grouped_stat_data in ipairs(ScoreboardHelper.scoreboard_grouped_topic_stats) do
 			local group_name = grouped_stat_data.group_name
 			local stats = grouped_stat_data.stats
+
 			scores[group_name] = {}
+
 			local group_scores = scores[group_name]
 
 			for _, stat_name in pairs(stats) do
 				local score_data = {
-					score = 10,
 					display_text = "display_text!",
-					stat_name = "stat_name_" .. tostring(_)
+					score = 10,
+					stat_name = "stat_name_" .. tostring(_),
 				}
+
 				group_scores[#group_scores + 1] = score_data
 			end
 		end

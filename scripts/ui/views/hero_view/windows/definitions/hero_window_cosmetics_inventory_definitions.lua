@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/hero_view/windows/definitions/hero_window_cosmetics_inventory_definitions.lua
+
 local window_default_settings = UISettings.game_start_windows
 local window_background = window_default_settings.background
 local window_frame = window_default_settings.frame
@@ -11,336 +13,336 @@ local scenegraph_definition = {
 		is_root = true,
 		size = {
 			1920,
-			1080
+			1080,
 		},
 		position = {
 			0,
 			0,
-			UILayer.default
-		}
+			UILayer.default,
+		},
 	},
 	root_fit = {
 		scale = "fit",
 		size = {
 			1920,
-			1080
+			1080,
 		},
 		position = {
 			0,
 			0,
-			UILayer.default
-		}
+			UILayer.default,
+		},
 	},
 	menu_root = {
-		vertical_alignment = "center",
-		parent = "root",
 		horizontal_alignment = "center",
+		parent = "root",
+		vertical_alignment = "center",
 		size = {
 			1920,
-			1080
+			1080,
 		},
 		position = {
 			0,
 			0,
-			0
-		}
+			0,
+		},
 	},
 	window = {
-		vertical_alignment = "center",
-		parent = "menu_root",
 		horizontal_alignment = "center",
+		parent = "menu_root",
+		vertical_alignment = "center",
 		size = window_size,
 		position = {
 			0,
 			0,
-			1
-		}
+			1,
+		},
 	},
 	item_grid = {
-		vertical_alignment = "bottom",
-		parent = "page_button_divider",
 		horizontal_alignment = "center",
+		parent = "page_button_divider",
+		vertical_alignment = "bottom",
 		size = {
 			window_size[1],
-			window_size[2] - 130
+			window_size[2] - 130,
 		},
 		position = {
 			0,
 			-5,
-			-10
-		}
+			-10,
+		},
 	},
 	item_grid_divider = {
-		vertical_alignment = "top",
-		parent = "item_grid",
 		horizontal_alignment = "center",
+		parent = "item_grid",
+		vertical_alignment = "top",
 		size = {
 			window_size[1],
-			0
+			0,
 		},
 		position = {
 			0,
 			15,
-			7
-		}
+			7,
+		},
 	},
 	item_grid_header_fade = {
-		vertical_alignment = "top",
-		parent = "item_tabs_divider",
 		horizontal_alignment = "center",
+		parent = "item_tabs_divider",
+		vertical_alignment = "top",
 		size = {
 			window_size[1],
-			60
+			60,
 		},
 		position = {
 			0,
 			0,
-			-1
-		}
+			-1,
+		},
 	},
 	item_grid_header = {
-		vertical_alignment = "center",
-		parent = "item_grid_divider",
 		horizontal_alignment = "center",
+		parent = "item_grid_divider",
+		vertical_alignment = "center",
 		size = {
 			window_size[1] - 20,
-			40
+			40,
 		},
 		position = {
 			0,
 			8,
-			1
-		}
+			1,
+		},
 	},
 	item_grid_header_detail = {
-		vertical_alignment = "bottom",
-		parent = "item_grid_header",
 		horizontal_alignment = "center",
+		parent = "item_grid_header",
+		vertical_alignment = "bottom",
 		size = {
 			264,
-			32
+			32,
 		},
 		position = {
 			0,
 			-30,
-			0
-		}
+			0,
+		},
 	},
 	item_tabs = {
-		vertical_alignment = "top",
-		parent = "window",
 		horizontal_alignment = "center",
+		parent = "window",
+		vertical_alignment = "top",
 		size = {
 			window_size[1],
-			40
+			40,
 		},
 		position = {
 			0,
 			-5,
-			1
-		}
+			1,
+		},
 	},
 	item_tabs_segments = {
-		vertical_alignment = "bottom",
-		parent = "item_tabs",
 		horizontal_alignment = "center",
+		parent = "item_tabs",
+		vertical_alignment = "bottom",
 		size = {
 			window_size[1],
-			0
+			0,
 		},
 		position = {
 			0,
 			5,
-			10
-		}
+			10,
+		},
 	},
 	item_tabs_segments_top = {
-		vertical_alignment = "top",
-		parent = "item_tabs",
 		horizontal_alignment = "center",
+		parent = "item_tabs",
+		vertical_alignment = "top",
 		size = {
 			window_size[1],
-			0
+			0,
 		},
 		position = {
 			0,
 			-7,
-			20
-		}
+			20,
+		},
 	},
 	item_tabs_segments_bottom = {
-		vertical_alignment = "bottom",
-		parent = "item_tabs",
 		horizontal_alignment = "center",
+		parent = "item_tabs",
+		vertical_alignment = "bottom",
 		size = {
 			window_size[1],
-			0
+			0,
 		},
 		position = {
 			0,
 			3,
-			20
-		}
+			20,
+		},
 	},
 	item_tabs_divider = {
-		vertical_alignment = "bottom",
-		parent = "item_tabs",
 		horizontal_alignment = "center",
+		parent = "item_tabs",
+		vertical_alignment = "bottom",
 		size = {
 			window_size[1],
-			0
+			0,
 		},
 		position = {
 			0,
 			0,
-			7
-		}
+			7,
+		},
 	},
 	page_button_next = {
-		vertical_alignment = "bottom",
-		parent = "window",
 		horizontal_alignment = "right",
+		parent = "window",
+		vertical_alignment = "bottom",
 		size = {
 			window_size[1] * 0.4,
-			42
+			42,
 		},
 		position = {
 			0,
 			0,
-			1
-		}
+			1,
+		},
 	},
 	page_button_edge_right = {
-		vertical_alignment = "center",
-		parent = "page_button_next",
 		horizontal_alignment = "left",
+		parent = "page_button_next",
+		vertical_alignment = "center",
 		size = {
 			0,
-			42
+			42,
 		},
 		position = {
 			0,
 			0,
-			10
-		}
+			10,
+		},
 	},
 	page_button_previous = {
-		vertical_alignment = "bottom",
-		parent = "window",
 		horizontal_alignment = "left",
+		parent = "window",
+		vertical_alignment = "bottom",
 		size = {
 			window_size[1] * 0.4,
-			42
+			42,
 		},
 		position = {
 			0,
 			0,
-			1
-		}
+			1,
+		},
 	},
 	page_button_edge_left = {
-		vertical_alignment = "center",
-		parent = "page_button_previous",
 		horizontal_alignment = "right",
+		parent = "page_button_previous",
+		vertical_alignment = "center",
 		size = {
 			0,
-			42
+			42,
 		},
 		position = {
 			0,
 			0,
-			10
-		}
+			10,
+		},
 	},
 	page_button_divider = {
-		vertical_alignment = "bottom",
-		parent = "window",
 		horizontal_alignment = "center",
+		parent = "window",
+		vertical_alignment = "bottom",
 		size = {
 			window_size[1],
-			0
+			0,
 		},
 		position = {
 			0,
 			42,
-			14
-		}
+			14,
+		},
 	},
 	page_text_area = {
-		vertical_alignment = "bottom",
-		parent = "window",
 		horizontal_alignment = "center",
+		parent = "window",
+		vertical_alignment = "bottom",
 		size = {
 			window_size[1] * 0.2,
-			42
+			42,
 		},
 		position = {
 			0,
 			0,
-			3
-		}
-	}
+			3,
+		},
+	},
 }
 local item_grid_header_style = {
-	use_shadow = true,
-	upper_case = true,
-	localize = false,
-	font_size = 28,
-	horizontal_alignment = "center",
-	vertical_alignment = "center",
 	dynamic_font_size = true,
+	font_size = 28,
 	font_type = "hell_shark_header",
+	horizontal_alignment = "center",
+	localize = false,
+	upper_case = true,
+	use_shadow = true,
+	vertical_alignment = "center",
 	text_color = Colors.get_color_table_with_alpha("font_title", 255),
 	offset = {
 		0,
 		0,
-		2
-	}
+		2,
+	},
 }
 local page_number_left_text_style = {
-	word_wrap = true,
 	font_size = 20,
+	font_type = "hell_shark",
+	horizontal_alignment = "right",
 	localize = false,
 	use_shadow = true,
-	horizontal_alignment = "right",
 	vertical_alignment = "center",
-	font_type = "hell_shark",
+	word_wrap = true,
 	text_color = Colors.get_color_table_with_alpha("font_default", 255),
 	offset = {
 		-(window_size[1] * 0.1 + 5),
 		4,
-		2
-	}
+		2,
+	},
 }
 local page_number_right_text_style = {
-	word_wrap = true,
 	font_size = 20,
+	font_type = "hell_shark",
+	horizontal_alignment = "left",
 	localize = false,
 	use_shadow = true,
-	horizontal_alignment = "left",
 	vertical_alignment = "center",
-	font_type = "hell_shark",
+	word_wrap = true,
 	text_color = Colors.get_color_table_with_alpha("font_default", 255),
 	offset = {
 		window_size[1] * 0.1 + 4,
 		4,
-		2
-	}
+		2,
+	},
 }
 local page_number_center_text_style = {
-	word_wrap = true,
 	font_size = 20,
+	font_type = "hell_shark",
+	horizontal_alignment = "center",
 	localize = false,
 	use_shadow = true,
-	horizontal_alignment = "center",
 	vertical_alignment = "center",
-	font_type = "hell_shark",
+	word_wrap = true,
 	text_color = Colors.get_color_table_with_alpha("font_default", 255),
 	offset = {
 		0,
 		4,
-		2
-	}
+		2,
+	},
 }
 
 local function create_window_divider(scenegraph_id, size)
@@ -348,26 +350,26 @@ local function create_window_divider(scenegraph_id, size)
 		element = {
 			passes = {
 				{
-					texture_id = "bottom_edge",
+					pass_type = "tiled_texture",
 					style_id = "bottom_edge",
-					pass_type = "tiled_texture"
+					texture_id = "bottom_edge",
 				},
 				{
-					texture_id = "edge_holder_left",
+					pass_type = "texture",
 					style_id = "edge_holder_left",
-					pass_type = "texture"
+					texture_id = "edge_holder_left",
 				},
 				{
-					texture_id = "edge_holder_right",
+					pass_type = "texture",
 					style_id = "edge_holder_right",
-					pass_type = "texture"
-				}
-			}
+					texture_id = "edge_holder_right",
+				},
+			},
 		},
 		content = {
-			edge_holder_right = "menu_frame_09_divider_right",
+			bottom_edge = "menu_frame_09_divider",
 			edge_holder_left = "menu_frame_09_divider_left",
-			bottom_edge = "menu_frame_09_divider"
+			edge_holder_right = "menu_frame_09_divider_right",
 		},
 		style = {
 			bottom_edge = {
@@ -375,63 +377,63 @@ local function create_window_divider(scenegraph_id, size)
 					255,
 					255,
 					255,
-					255
+					255,
 				},
 				offset = {
 					5,
 					0,
-					6
+					6,
 				},
 				size = {
 					size[1] - 10,
-					5
+					5,
 				},
 				texture_tiling_size = {
 					size[1] - 10,
-					5
-				}
+					5,
+				},
 			},
 			edge_holder_left = {
 				color = {
 					255,
 					255,
 					255,
-					255
+					255,
 				},
 				offset = {
 					3,
 					-6,
-					10
+					10,
 				},
 				size = {
 					9,
-					17
-				}
+					17,
+				},
 			},
 			edge_holder_right = {
 				color = {
 					255,
 					255,
 					255,
-					255
+					255,
 				},
 				offset = {
 					size[1] - 12,
 					-6,
-					10
+					10,
 				},
 				size = {
 					9,
-					17
-				}
-			}
+					17,
+				},
+			},
 		},
 		scenegraph_id = scenegraph_id,
 		offset = {
 			0,
 			0,
-			0
-		}
+			0,
+		},
 	}
 
 	return widget
@@ -442,26 +444,26 @@ local function create_vertical_window_divider(scenegraph_id, size)
 		element = {
 			passes = {
 				{
-					texture_id = "edge",
+					pass_type = "tiled_texture",
 					style_id = "edge",
-					pass_type = "tiled_texture"
+					texture_id = "edge",
 				},
 				{
-					texture_id = "edge_holder_top",
+					pass_type = "texture",
 					style_id = "edge_holder_top",
-					pass_type = "texture"
+					texture_id = "edge_holder_top",
 				},
 				{
-					texture_id = "edge_holder_bottom",
+					pass_type = "texture",
 					style_id = "edge_holder_bottom",
-					pass_type = "texture"
-				}
-			}
+					texture_id = "edge_holder_bottom",
+				},
+			},
 		},
 		content = {
 			edge = "menu_frame_09_divider_vertical",
+			edge_holder_bottom = "menu_frame_09_divider_bottom",
 			edge_holder_top = "menu_frame_09_divider_top",
-			edge_holder_bottom = "menu_frame_09_divider_bottom"
 		},
 		style = {
 			edge = {
@@ -469,70 +471,70 @@ local function create_vertical_window_divider(scenegraph_id, size)
 					255,
 					255,
 					255,
-					255
+					255,
 				},
 				offset = {
 					0,
 					6,
-					6
+					6,
 				},
 				size = {
 					5,
-					size[2] - 9
+					size[2] - 9,
 				},
 				texture_tiling_size = {
 					5,
-					size[2] - 9
-				}
+					size[2] - 9,
+				},
 			},
 			edge_holder_top = {
 				color = {
 					255,
 					255,
 					255,
-					255
+					255,
 				},
 				offset = {
 					-6,
 					size[2] - 7,
-					10
+					10,
 				},
 				size = {
 					17,
-					9
-				}
+					9,
+				},
 			},
 			edge_holder_bottom = {
 				color = {
 					255,
 					255,
 					255,
-					255
+					255,
 				},
 				offset = {
 					-6,
 					3,
-					10
+					10,
 				},
 				size = {
 					17,
-					9
-				}
-			}
+					9,
+				},
+			},
 		},
 		scenegraph_id = scenegraph_id,
 		offset = {
 			0,
 			0,
-			0
-		}
+			0,
+		},
 	}
 
 	return widget
 end
 
 local function create_window_button(scenegraph_id, size, button_text, font_size, use_bottom_edge, optional_color_name)
-	local button_color_name = nil
+	local button_color_name
 
 	if optional_color_name then
 		button_color_name = "button_" .. optional_color_name
@@ -547,115 +549,115 @@ local function create_window_button(scenegraph_id, size, button_text, font_size,
 		element = {
 			passes = {
 				{
-					style_id = "button_background",
+					content_id = "button_hotspot",
 					pass_type = "hotspot",
-					content_id = "button_hotspot"
-				},
-				{
 					style_id = "button_background",
+				},
+				{
+					content_id = "button_background",
 					pass_type = "texture_uv",
-					content_id = "button_background"
+					style_id = "button_background",
 				},
 				{
-					texture_id = "bottom_edge",
+					pass_type = "tiled_texture",
 					style_id = "button_edge",
-					pass_type = "tiled_texture"
+					texture_id = "bottom_edge",
 				},
 				{
-					texture_id = "glass_top",
-					style_id = "glass_top",
-					pass_type = "texture"
-				},
-				{
-					texture_id = "glow",
-					style_id = "glow",
-					pass_type = "texture"
-				},
-				{
-					texture_id = "hover_glow",
-					style_id = "hover_glow",
 					pass_type = "texture",
+					style_id = "glass_top",
+					texture_id = "glass_top",
+				},
+				{
+					pass_type = "texture",
+					style_id = "glow",
+					texture_id = "glow",
+				},
+				{
+					pass_type = "texture",
+					style_id = "hover_glow",
+					texture_id = "hover_glow",
 					content_check_function = function (content)
 						local button_hotspot = content.button_hotspot
 
 						return not button_hotspot.disable_button and (button_hotspot.is_selected or button_hotspot.is_hover)
-					end
+					end,
 				},
 				{
-					style_id = "button_text",
 					pass_type = "text",
+					style_id = "button_text",
 					text_id = "button_text",
 					content_check_function = function (content)
 						local button_hotspot = content.button_hotspot
 
 						return not button_hotspot.disable_button
-					end
+					end,
 				},
 				{
-					style_id = "button_text_disabled",
 					pass_type = "text",
+					style_id = "button_text_disabled",
 					text_id = "button_text",
 					content_check_function = function (content)
 						local button_hotspot = content.button_hotspot
 
 						return button_hotspot.disable_button
-					end
+					end,
 				},
 				{
-					style_id = "button_text_shadow",
 					pass_type = "text",
-					text_id = "button_text"
+					style_id = "button_text_shadow",
+					text_id = "button_text",
 				},
 				{
-					style_id = "button_clicked_rect",
 					pass_type = "rect",
+					style_id = "button_clicked_rect",
 					content_check_function = function (content)
 						local button_hotspot = content.button_hotspot
 						local is_clicked = button_hotspot.is_clicked
 
 						return not is_clicked or is_clicked == 0
-					end
+					end,
 				},
 				{
-					style_id = "button_disabled_rect",
 					pass_type = "rect",
+					style_id = "button_disabled_rect",
 					content_check_function = function (content)
 						local button_hotspot = content.button_hotspot
 
 						return button_hotspot.disable_button
-					end
+					end,
 				},
 				{
-					texture_id = "bottom_edge",
-					style_id = "bottom_edge",
 					pass_type = "tiled_texture",
+					style_id = "bottom_edge",
+					texture_id = "bottom_edge",
 					content_check_function = function (content)
 						return content.use_bottom_edge
-					end
+					end,
 				},
 				{
-					texture_id = "edge_holder_left",
+					pass_type = "texture",
 					style_id = "edge_holder_left",
-					pass_type = "texture",
+					texture_id = "edge_holder_left",
 					content_check_function = function (content)
 						return content.use_bottom_edge
-					end
+					end,
 				},
 				{
-					texture_id = "edge_holder_right",
-					style_id = "edge_holder_right",
 					pass_type = "texture",
+					style_id = "edge_holder_right",
+					texture_id = "edge_holder_right",
 					content_check_function = function (content)
 						return content.use_bottom_edge
-					end
-				}
-			}
+					end,
+				},
+			},
 		},
 		content = {
+			bottom_edge = "menu_frame_09_divider",
 			edge_holder_left = "menu_frame_09_divider_left",
 			edge_holder_right = "menu_frame_09_divider_right",
 			glass_top = "button_glass_01",
-			bottom_edge = "menu_frame_09_divider",
 			use_bottom_edge = use_bottom_edge,
 			button_hotspot = {},
 			button_text = button_text or "n/a",
@@ -665,15 +667,15 @@ local function create_window_button(scenegraph_id, size, button_text, font_size,
 				uvs = {
 					{
 						0,
-						1 - math.min(size[2] / button_background_texture_settings.size[2], 1)
+						1 - math.min(size[2] / button_background_texture_settings.size[2], 1),
 					},
 					{
 						math.min(size[1] / button_background_texture_settings.size[1], 1),
-						1
-					}
+						1,
+					},
 				},
-				texture_id = button_background_texture
-			}
+				texture_id = button_background_texture,
+			},
 		},
 		style = {
 			button_background = {
@@ -681,217 +683,217 @@ local function create_window_button(scenegraph_id, size, button_text, font_size,
 				offset = {
 					0,
 					0,
-					2
+					2,
 				},
-				size = size
+				size = size,
 			},
 			button_edge = {
 				color = {
 					255,
 					255,
 					255,
-					255
+					255,
 				},
 				offset = {
 					0,
 					size[2],
-					3
+					3,
 				},
 				size = {
 					size[1],
-					5
+					5,
 				},
 				texture_tiling_size = {
 					size[1],
-					5
-				}
+					5,
+				},
 			},
 			glass_top = {
 				color = {
 					255,
 					255,
 					255,
-					255
+					255,
 				},
 				offset = {
 					0,
 					size[2] - 4,
-					3
+					3,
 				},
 				size = {
 					size[1],
-					5
-				}
+					5,
+				},
 			},
 			glow = {
 				color = {
 					255,
 					255,
 					255,
-					255
+					255,
 				},
 				offset = {
 					0,
 					5,
-					3
+					3,
 				},
 				size = {
 					size[1],
-					size[2] - 5
-				}
+					size[2] - 5,
+				},
 			},
 			hover_glow = {
 				color = {
 					255,
 					255,
 					255,
-					255
+					255,
 				},
 				offset = {
 					0,
 					5,
-					2
+					2,
 				},
 				size = {
 					size[1],
-					size[2] - 5
-				}
+					size[2] - 5,
+				},
 			},
 			bottom_edge = {
 				color = {
 					255,
 					255,
 					255,
-					255
+					255,
 				},
 				offset = {
 					5,
 					0,
-					6
+					6,
 				},
 				size = {
 					size[1] - 10,
-					5
+					5,
 				},
 				texture_tiling_size = {
 					size[1] - 10,
-					5
-				}
+					5,
+				},
 			},
 			edge_holder_left = {
 				color = {
 					255,
 					255,
 					255,
-					255
+					255,
 				},
 				offset = {
 					3,
 					-6,
-					10
+					10,
 				},
 				size = {
 					9,
-					17
-				}
+					17,
+				},
 			},
 			edge_holder_right = {
 				color = {
 					255,
 					255,
 					255,
-					255
+					255,
 				},
 				offset = {
 					size[1] - 12,
 					-6,
-					10
+					10,
 				},
 				size = {
 					9,
-					17
-				}
+					17,
+				},
 			},
 			button_text = {
-				upper_case = true,
-				word_wrap = true,
-				horizontal_alignment = "center",
-				vertical_alignment = "center",
 				font_type = "hell_shark",
+				horizontal_alignment = "center",
+				upper_case = true,
+				vertical_alignment = "center",
+				word_wrap = true,
 				font_size = font_size or 24,
 				text_color = Colors.get_color_table_with_alpha("font_button_normal", 255),
 				offset = {
 					0,
 					5,
-					4
+					4,
 				},
-				size = size
+				size = size,
 			},
 			button_text_disabled = {
-				upper_case = true,
-				word_wrap = true,
-				horizontal_alignment = "center",
-				vertical_alignment = "center",
 				font_type = "hell_shark",
+				horizontal_alignment = "center",
+				upper_case = true,
+				vertical_alignment = "center",
+				word_wrap = true,
 				font_size = font_size or 24,
 				text_color = Colors.get_color_table_with_alpha("gray", 255),
 				offset = {
 					0,
 					5,
-					4
+					4,
 				},
-				size = size
+				size = size,
 			},
 			button_text_shadow = {
-				upper_case = true,
-				word_wrap = true,
-				horizontal_alignment = "center",
-				vertical_alignment = "center",
 				font_type = "hell_shark",
+				horizontal_alignment = "center",
+				upper_case = true,
+				vertical_alignment = "center",
+				word_wrap = true,
 				font_size = font_size or 24,
 				text_color = Colors.get_color_table_with_alpha("black", 255),
 				offset = {
 					2,
 					3,
-					3
+					3,
 				},
-				size = size
+				size = size,
 			},
 			button_clicked_rect = {
 				color = {
 					100,
 					0,
 					0,
-					0
+					0,
 				},
 				offset = {
 					0,
 					0,
-					5
+					5,
 				},
-				size = size
+				size = size,
 			},
 			button_disabled_rect = {
 				color = {
 					150,
 					5,
 					5,
-					5
+					5,
 				},
 				offset = {
 					0,
 					0,
-					5
+					5,
 				},
-				size = size
-			}
+				size = size,
+			},
 		},
 		scenegraph_id = scenegraph_id,
 		offset = {
 			0,
 			0,
-			0
-		}
+			0,
+		},
 	}
 
 	return widget
@@ -899,37 +901,37 @@ end
 
 local category_settings = {
 	{
-		wield = true,
-		name = "hats",
-		item_filter = "slot_type == hat",
 		hero_specific_filter = true,
+		item_filter = "slot_type == hat",
+		name = "hats",
+		wield = true,
 		display_name = Localize("inventory_screen_hats_title"),
 		item_types = {
-			"hat"
+			"hat",
 		},
-		icon = UISettings.slot_icons.hat
+		icon = UISettings.slot_icons.hat,
 	},
 	{
-		wield = true,
-		name = "skin",
-		item_filter = "slot_type == skin",
 		hero_specific_filter = true,
+		item_filter = "slot_type == skin",
+		name = "skin",
+		wield = true,
 		display_name = Localize("inventory_screen_skins_title"),
 		item_types = {
-			"skin"
+			"skin",
 		},
-		icon = UISettings.slot_icons.skins
+		icon = UISettings.slot_icons.skins,
 	},
 	{
-		name = "frames",
-		item_filter = "slot_type == frame",
 		hero_specific_filter = true,
+		item_filter = "slot_type == frame",
+		name = "frames",
 		display_name = Localize("inventory_screen_frames_title"),
 		item_types = {
-			"frame"
+			"frame",
 		},
-		icon = UISettings.slot_icons.portrait_frame
-	}
+		icon = UISettings.slot_icons.portrait_frame,
+	},
 }
 local num_tabs = #category_settings
 local widgets = {
@@ -939,12 +941,12 @@ local widgets = {
 	item_grid_header_fade = UIWidgets.create_simple_uv_texture("edge_fade_small", {
 		{
 			0,
-			1
+			1,
 		},
 		{
 			1,
-			0
-		}
+			0,
+		},
 	}, "item_grid_header_fade"),
 	item_grid_header_detail = UIWidgets.create_simple_texture("divider_01_top", "item_grid_header_detail"),
 	window_frame = UIWidgets.create_frame("window", scenegraph_definition.window.size, window_frame, 10),
@@ -953,15 +955,15 @@ local widgets = {
 	item_tabs = UIWidgets.create_default_icon_tabs("item_tabs", scenegraph_definition.item_tabs.size, num_tabs),
 	item_tabs_segments = UIWidgets.create_simple_centered_texture_amount("menu_frame_09_divider_vertical", {
 		5,
-		35
+		35,
 	}, "item_tabs_segments", num_tabs - 1),
 	item_tabs_segments_top = UIWidgets.create_simple_centered_texture_amount("menu_frame_09_divider_top", {
 		17,
-		9
+		9,
 	}, "item_tabs_segments_top", num_tabs - 1),
 	item_tabs_segments_bottom = UIWidgets.create_simple_centered_texture_amount("menu_frame_09_divider_bottom", {
 		17,
-		9
+		9,
 	}, "item_tabs_segments_bottom", num_tabs - 1),
 	page_button_next = UIWidgets.create_simple_window_button("page_button_next", scenegraph_definition.page_button_next.size, Localize("menu_next"), 16),
 	page_button_previous = UIWidgets.create_simple_window_button("page_button_previous", scenegraph_definition.page_button_previous.size, Localize("menu_previous"), 16),
@@ -975,70 +977,72 @@ local widgets = {
 		255,
 		0,
 		0,
-		0
-	})
+		0,
+	}),
 }
 local generic_input_actions = {
 	default = {
 		{
+			description_text = "input_description_navigate",
+			ignore_keybinding = true,
 			input_action = "d_vertical",
 			priority = 1,
-			description_text = "input_description_navigate",
-			ignore_keybinding = true
 		},
 		{
+			description_text = "input_description_change_tab",
+			ignore_keybinding = true,
 			input_action = "l1_r1",
 			priority = 2,
-			description_text = "input_description_change_tab",
-			ignore_keybinding = true
 		},
 		{
+			description_text = "input_description_select",
 			input_action = "confirm",
 			priority = 3,
-			description_text = "input_description_select"
 		},
 		{
+			description_text = "input_description_close",
 			input_action = "back",
 			priority = 4,
-			description_text = "input_description_close"
-		}
-	}
+		},
+	},
 }
 local animation_definitions = {
 	on_enter = {
 		{
+			end_progress = 0.3,
 			name = "fade_in",
 			start_progress = 0,
-			end_progress = 0.3,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				params.render_settings.alpha_multiplier = 0
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_progress = math.easeOutCubic(progress)
+
 				params.render_settings.alpha_multiplier = anim_progress
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				return
-			end
-		}
+			end,
+		},
 	},
 	on_exit = {
 		{
+			end_progress = 0.3,
 			name = "fade_out",
 			start_progress = 0,
-			end_progress = 0.3,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				params.render_settings.alpha_multiplier = 1
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_progress = math.easeOutCubic(progress)
+
 				params.render_settings.alpha_multiplier = 1 - anim_progress
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				return
-			end
-		}
-	}
+			end,
+		},
+	},
 }
 
 return {
@@ -1046,5 +1050,5 @@ return {
 	category_settings = category_settings,
 	scenegraph_definition = scenegraph_definition,
 	animation_definitions = animation_definitions,
-	generic_input_actions = generic_input_actions
+	generic_input_actions = generic_input_actions,
 }

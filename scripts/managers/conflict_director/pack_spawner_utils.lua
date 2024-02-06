@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/conflict_director/pack_spawner_utils.lua
+
 PackSpawnerUtils = {}
 
 local function euler_to_quaternion(pitch, roll, yaw)
@@ -5,6 +7,7 @@ local function euler_to_quaternion(pitch, roll, yaw)
 	local roll_rot = Quaternion(Vector3.forward(), roll)
 	local yaw_rot = Quaternion(Vector3.up(), yaw)
 	local final_rot = Quaternion.multiply(pitch_rot, roll_rot)
+
 	final_rot = Quaternion.multiply(final_rot, yaw_rot)
 
 	return final_rot
@@ -23,16 +26,21 @@ PackSpawnerUtils.spawn_predefined_pack = function (breed_pack, pos, mesh)
 				if unit_position then
 					local breed = unit_data.breed
 					local rot = unit_data.rot
+
 					rot = euler_to_quaternion(math.degrees_to_radians(rot[1]), math.degrees_to_radians(rot[2]), math.degrees_to_radians(rot[3]))
+
 					local animation = unit_data.animation[math.random(1, #unit_data.animation)]
+
 					size = size + 1
+
 					local inventory_template = unit_data.inventory_template or "default"
+
 					spawn_pack[size] = {
 						breed,
 						unit_position,
 						rot,
 						animation,
-						inventory_template
+						inventory_template,
 					}
 				else
 					print("Pack outside mesh, try fallback...")
@@ -64,6 +72,7 @@ PackSpawnerUtils.spawn_in_circle = function (breed_pack, pack_size, pos)
 		end
 
 		angle = start_angle
+
 		local radius = i / 2
 		local start_point = Vector3(radius, 0, 5)
 		local points_left = total_points - points_found
@@ -77,7 +86,9 @@ PackSpawnerUtils.spawn_in_circle = function (breed_pack, pack_size, pos)
 
 			local offset_x = math.random(-1, 1) / 10
 			local offset_y = math.random(-radius, radius) / 10
+
 			start_point = start_point + Vector3(offset_x, offset_y, 0)
+
 			local pos_offset = Quaternion.rotate(Quaternion(Vector3.up(), math.degrees_to_radians(angle)), start_point)
 			local unit_position = PackSpawnerUtils.modify_spawn_position(pos_offset, pos)
 
@@ -86,16 +97,19 @@ PackSpawnerUtils.spawn_in_circle = function (breed_pack, pack_size, pos)
 				local breed = unit_data.breed
 				local animation = unit_data.animation[math.random(1, #unit_data.animation)]
 				local rot = pos - unit_position
+
 				rot.z = 0
 				rot = Quaternion.look(rot)
 				points_found = points_found + 1
+
 				local inventory_template = unit_data.inventory_template or "default"
+
 				spawn_pack[points_found] = {
 					breed,
 					unit_position,
 					rot,
 					animation,
-					inventory_template
+					inventory_template,
 				}
 			end
 
@@ -129,11 +143,12 @@ PackSpawnerUtils.spawn_random_pack = function (breed_pack, pos, mesh)
 
 			if not PackSpawnerUtils.check_unit_overlap(unit_position, spawn_pack, i) then
 				local idle_animation = unit.animation[math.random(1, #unit.animation)]
+
 				spawn_pack[i] = {
 					breed,
 					unit_position,
 					rot,
-					idle_animation
+					idle_animation,
 				}
 
 				break

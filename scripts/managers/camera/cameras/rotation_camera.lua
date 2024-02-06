@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/camera/cameras/rotation_camera.lua
+
 require("scripts/managers/camera/cameras/base_camera")
 
 RotationCamera = class(RotationCamera, BaseCamera)

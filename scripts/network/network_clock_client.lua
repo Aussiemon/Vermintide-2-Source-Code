@@ -1,15 +1,19 @@
+﻿-- chunkname: @scripts/network/network_clock_client.lua
+
 local function get_median(list)
 	local n = #list
-	local median = nil
+	local median
 
 	if n % 2 == 0 then
 		local i1 = n / 2
 		local i2 = i1 + 1
 		local d1 = list[i1]
 		local d2 = list[i2]
+
 		median = (d1 + d2) / 2
 	else
 		local i = math.ceil(n / 2)
+
 		median = list[i]
 	end
 
@@ -36,6 +40,7 @@ local function get_sd(list, median)
 	for i = 1, n do
 		local val = list[i]
 		local difference_squared = (val - median)^2
+
 		differences = differences + difference_squared
 	end
 
@@ -46,9 +51,10 @@ local function get_sd(list, median)
 end
 
 NetworkClockClient = class(NetworkClockClient)
+
 local RPCS = {
 	"rpc_network_time_sync_response",
-	"rpc_network_current_server_time_response"
+	"rpc_network_current_server_time_response",
 }
 
 NetworkClockClient.init = function (self)
@@ -96,7 +102,7 @@ NetworkClockClient.update = function (self, dt)
 
 		local request_timer = self._request_timer + dt
 
-		if INIT_SYNC_TIME_STEP <= request_timer and self._times_synced < INIT_SYNC_TIMES then
+		if request_timer >= INIT_SYNC_TIME_STEP and self._times_synced < INIT_SYNC_TIMES then
 			request_timer = 0
 			self._times_synced = self._times_synced + 1
 
@@ -115,7 +121,7 @@ NetworkClockClient.update = function (self, dt)
 
 		local request_timer = self._request_timer + dt
 
-		if SYNC_TIME_STEP <= request_timer then
+		if request_timer >= SYNC_TIME_STEP then
 			request_timer = 0
 
 			network_manager.network_transmit:send_rpc_server("rpc_network_current_server_time_request", self._clock)
@@ -149,6 +155,7 @@ end
 
 NetworkClockClient._update_delta_history = function (self, delta)
 	local delta_history = self._delta_history
+
 	delta_history[#delta_history + 1] = delta
 
 	table.sort(delta_history, sort_function)
@@ -163,7 +170,7 @@ NetworkClockClient._calculate_mean_dt = function (self)
 	local n = #delta_history
 	local i = 1
 
-	while n >= i do
+	while i <= n do
 		local dt = delta_history[i]
 
 		if dt > median + sd or dt < median - sd then
@@ -213,7 +220,7 @@ NetworkClockClient.rpc_network_time_sync_response = function (self, channel_id, 
 
 	self:_update_delta_history(delta)
 
-	if INIT_SYNC_TIMES <= self._times_synced then
+	if self._times_synced >= INIT_SYNC_TIMES then
 		self:_calculate_mean_dt()
 		self:_update_clock(self._mean_dt)
 

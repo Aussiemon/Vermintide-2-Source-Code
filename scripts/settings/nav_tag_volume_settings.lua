@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/nav_tag_volume_settings.lua
+
 require("scripts/settings/volume_settings")
 
 NavTagVolumeStartLayer = 20
@@ -36,17 +38,18 @@ NavTagVolumeLayers = {
 	"nav_tag_volume_dummy_layer5",
 	"nav_tag_volume_dummy_layer6",
 	"nav_tag_volume_dummy_layer7",
-	"nav_tag_volume_dummy_layer8"
+	"nav_tag_volume_dummy_layer8",
 }
 LevelVolumesOnly = {
 	HIGH_SPAWN = true,
-	ROOF = true,
-	NO_BOTS = true,
-	NO_SPAWN = true,
 	LOW_SPAWN = true,
 	NO_BOSS = true,
-	NO_BOTS_NO_SPAWN = true
+	NO_BOTS = true,
+	NO_BOTS_NO_SPAWN = true,
+	NO_SPAWN = true,
+	ROOF = true,
 }
+
 local added_layers = {}
 
 for volume_type, volume_sub_types in pairs(VolumeSystemSettings.nav_tag_layer_costs) do

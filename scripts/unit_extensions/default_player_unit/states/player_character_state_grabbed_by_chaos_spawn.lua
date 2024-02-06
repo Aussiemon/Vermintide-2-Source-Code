@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/unit_extensions/default_player_unit/states/player_character_state_grabbed_by_chaos_spawn.lua
+
 PlayerCharacterStateGrabbedByChaosSpawn = class(PlayerCharacterStateGrabbedByChaosSpawn, PlayerCharacterState)
+
 local position_lookup = POSITION_LOOKUP
 local anim_event = CharacterStateHelper.play_animation_event
 
@@ -20,8 +23,11 @@ PlayerCharacterStateGrabbedByChaosSpawn.on_enter = function (self, unit, input, 
 
 	local status_extension = self.status_extension
 	local chaos_spawn_unit = status_extension.grabbed_by_chaos_spawn_unit
+
 	self.chaos_spawn_unit = chaos_spawn_unit
+
 	local breed = Unit.get_data(chaos_spawn_unit, "breed")
+
 	self.breed = breed
 	self.is_bot = self.player and self.player.bot_player
 
@@ -29,6 +35,7 @@ PlayerCharacterStateGrabbedByChaosSpawn.on_enter = function (self, unit, input, 
 	self.inventory_extension:show_third_person_inventory(false)
 
 	self.camera_state = "third_person"
+
 	local locomotion_extension = self.locomotion_extension
 
 	locomotion_extension:enable_script_driven_no_mover_movement()
@@ -60,13 +67,14 @@ end
 PlayerCharacterStateGrabbedByChaosSpawn.on_exit = function (self, unit, input, dt, context, t, next_state)
 	local status_extension = self.status_extension
 	local chaos_spawn_alive = ALIVE[self.chaos_spawn_unit]
-	local pos = nil
+	local pos
 
 	if chaos_spawn_alive and status_extension:is_catapulted() then
 		local node1 = Unit.node(unit, "j_leftfoot")
 		local node2 = Unit.node(unit, "j_rightfoot")
 		local pos1 = Unit.world_position(unit, node1)
 		local pos2 = Unit.world_position(unit, node2)
+
 		pos = (pos1 + pos2) / 2
 	else
 		pos = Unit.world_position(unit, Unit.node(unit, "root_point"))
@@ -100,6 +108,7 @@ PlayerCharacterStateGrabbedByChaosSpawn.on_exit = function (self, unit, input, d
 	self.camera_state = nil
 	self.grabbed_by_chaos_spawn_status = nil
 	self.status_count = nil
+
 	local inventory_extension = self.inventory_extension
 
 	if inventory_extension and inventory_extension:get_wielded_slot_name() == "slot_career_skill_weapon" then
@@ -127,7 +136,7 @@ PlayerCharacterStateGrabbedByChaosSpawn.states = {
 		end,
 		leave = function (parent, unit)
 			return
-		end
+		end,
 	},
 	beating_with = {
 		enter = function (parent, unit, t)
@@ -138,7 +147,7 @@ PlayerCharacterStateGrabbedByChaosSpawn.states = {
 		end,
 		leave = function (parent, unit)
 			return
-		end
+		end,
 	},
 	thrown_away = {
 		enter = function (parent, unit, t)
@@ -149,7 +158,7 @@ PlayerCharacterStateGrabbedByChaosSpawn.states = {
 		end,
 		leave = function (parent, unit)
 			return
-		end
+		end,
 	},
 	chewed_on = {
 		enter = function (parent, unit, t)
@@ -158,7 +167,7 @@ PlayerCharacterStateGrabbedByChaosSpawn.states = {
 			parent.roar_screen_space_particle_timer = t + 1.1
 		end,
 		run = function (parent, unit, t, dt)
-			if not parent.roar_screen_space_particle_1 and parent.roar_screen_space_particle_timer < t then
+			if not parent.roar_screen_space_particle_1 and t > parent.roar_screen_space_particle_timer then
 				parent.roar_screen_space_particle_1 = parent.first_person_extension:create_screen_particles("fx/screenspace_chaos_spawn_tentacles_01")
 			end
 		end,
@@ -168,7 +177,7 @@ PlayerCharacterStateGrabbedByChaosSpawn.states = {
 
 				parent.roar_screen_space_particle_1 = nil
 			end
-		end
+		end,
 	},
 	idle = {
 		enter = function (parent, unit, t)
@@ -179,8 +188,8 @@ PlayerCharacterStateGrabbedByChaosSpawn.states = {
 		end,
 		leave = function (parent, unit)
 			return
-		end
-	}
+		end,
+	},
 }
 
 PlayerCharacterStateGrabbedByChaosSpawn.update = function (self, unit, input, dt, context, t)
@@ -193,7 +202,7 @@ PlayerCharacterStateGrabbedByChaosSpawn.update = function (self, unit, input, dt
 	if is_catapulted then
 		local params = {
 			sound_event = "Play_enemy_sorcerer_vortex_throw_player",
-			direction = direction
+			direction = direction,
 		}
 
 		csm:change_state("catapulted", params)

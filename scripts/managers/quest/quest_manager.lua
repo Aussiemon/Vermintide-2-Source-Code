@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/quest/quest_manager.lua
+
 local quest_templates = require("scripts/managers/quest/quest_templates")
 local outline = require("scripts/managers/quest/quest_outline")
 local quest_keys = {}
@@ -9,6 +11,7 @@ for quest_type, data in pairs(quest_rules) do
 
 	for i = 1, data.max_quests do
 		local quest_name = string.format("%s_%d", stat_prefix, i)
+
 		quests[#quests + 1] = quest_name
 	end
 
@@ -19,7 +22,9 @@ QuestManager = class(QuestManager)
 
 QuestManager.init = function (self, statistics_db)
 	self._statistics_db = statistics_db
+
 	local backend_interface_quests = Managers.backend:get_interface("quests")
+
 	self._backend_interface_quests = backend_interface_quests
 
 	Managers.state.event:register(self, "event_stat_incremented", "event_stat_incremented")
@@ -90,6 +95,7 @@ QuestManager._increment_quest_stats = function (self, quests, stats_id, ...)
 
 					for j = 1, arg_n do
 						local arg_value = select(j, ...)
+
 						map = map[arg_value]
 
 						if not map then
@@ -192,7 +198,7 @@ QuestManager.get_quest_outline = function (self)
 	local quest_categories = outline.categories
 
 	for quest_list_name, quest_list in pairs(quests) do
-		local category_table = nil
+		local category_table
 
 		for _, categories in ipairs(quest_categories) do
 			if categories.quest_type == quest_list_name then
@@ -220,7 +226,7 @@ QuestManager.get_quest_outline = function (self)
 					end
 
 					local categories = category_table.categories
-					local quest_type_category = nil
+					local quest_type_category
 
 					for index, category in ipairs(categories) do
 						if category.name == category_name then
@@ -234,15 +240,17 @@ QuestManager.get_quest_outline = function (self)
 						quest_type_category = {
 							type = "quest",
 							entries = {},
-							name = category_name
+							name = category_name,
 						}
 						categories[#categories + 1] = quest_type_category
 					end
 
 					local category_entries = quest_type_category.entries
+
 					category_entries[#category_entries + 1] = quest_key
 				else
 					local entries = category_table.entries
+
 					entries[#entries + 1] = quest_key
 				end
 			end
@@ -262,7 +270,7 @@ QuestManager.get_data_by_id = function (self, quest_id)
 	fassert(quest_key, "Trying to fetch data for quest %q not found in user's quest list.", quest_id)
 	fassert(quest_data, "Quest %q does not exist in quest_templates.", quest_id)
 
-	local name, desc, completed, progress, requirements, claimed = nil
+	local name, desc, completed, progress, requirements, claimed
 	local player_manager = Managers.player
 	local player = player_manager:local_player()
 
@@ -338,7 +346,7 @@ QuestManager.get_data_by_id = function (self, quest_id)
 
 	local icon = quest_data.icon
 	local reward = quest_data.reward
-	local required_dlc = nil
+	local required_dlc
 	local backend_quest_data = backend_interface_quests:get_quest_by_key(quest_key)
 
 	if backend_quest_data and backend_quest_data.reward then
@@ -356,7 +364,7 @@ QuestManager.get_data_by_id = function (self, quest_id)
 		completed = completed,
 		progress = progress,
 		requirements = requirements,
-		reward = reward
+		reward = reward,
 	}
 
 	return evaluated_quest
@@ -401,6 +409,7 @@ QuestManager.refresh_daily_quest = function (self, quest_id)
 	local backend_interface_quests = self._backend_interface_quests
 	local quest_key = backend_interface_quests:get_quest_key(quest_id)
 	local refresh_poll_id = backend_interface_quests:refresh_daily_quest(quest_key)
+
 	self._refresh_poll_id = refresh_poll_id
 
 	return refresh_poll_id
@@ -423,6 +432,7 @@ QuestManager.claim_reward = function (self, quest_id)
 	end
 
 	local reward_poll_id = backend_interface_quests:claim_quest_rewards(quest_key)
+
 	self._reward_poll_id = reward_poll_id
 
 	return reward_poll_id
@@ -450,6 +460,7 @@ QuestManager.claim_multiple_quest_rewards = function (self, quest_ids)
 	end
 
 	local reward_poll_id = backend_interface_quests:claim_multiple_quest_rewards(claimable_quest_keys)
+
 	self._reward_poll_id = reward_poll_id
 
 	return reward_poll_id
@@ -571,6 +582,7 @@ QuestManager.on_quests_updated = function (self)
 		if events then
 			for i = 1, #events do
 				local event_name = events[i]
+
 				quest_event_mapping[event_name] = quest_event_mapping[event_name] or {}
 				quest_event_mapping[event_name][#quest_event_mapping[event_name] + 1] = quest_key
 			end

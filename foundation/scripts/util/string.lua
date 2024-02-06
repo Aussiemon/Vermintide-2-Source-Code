@@ -1,3 +1,5 @@
+﻿-- chunkname: @foundation/scripts/util/string.lua
+
 local format = string.format
 local gsub = string.gsub
 local sub = string.sub
@@ -7,14 +9,14 @@ string.starts_with = function (str, start)
 end
 
 string.ends_with = function (str, ending)
-	return ending == "" or sub(str, -(#ending)) == ending
+	return ending == "" or sub(str, -#ending) == ending
 end
 
 string.insert = function (str1, str2, pos)
 	return sub(str1, 1, pos) .. str2 .. sub(str1, pos + 1)
 end
 
-local _fields = nil
+local _fields
 
 local function _split_helper(part)
 	_fields[#_fields + 1] = part
@@ -22,6 +24,7 @@ end
 
 string.split = function (str, sep, dest)
 	_fields = dest or {}
+
 	local pattern = format("([^%s]+)", sep or " ")
 
 	gsub(str, pattern, _split_helper)

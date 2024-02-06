@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/weapons/projectiles/projectile_true_flight_locomotion_extension.lua
+
 require("scripts/unit_extensions/weapons/projectiles/true_flight_utility")
 
 ProjectileTrueFlightLocomotionExtension = class(ProjectileTrueFlightLocomotionExtension)
@@ -11,9 +13,13 @@ ProjectileTrueFlightLocomotionExtension.init = function (self, extension_init_co
 	assert(true_flight_template_name, "no true_flight_template")
 
 	self.true_flight_template_name = true_flight_template_name
+
 	local template = TrueFlightTemplates[true_flight_template_name]
+
 	self.true_flight_template = template
+
 	local t = Managers.time:time("game")
+
 	self.t = t - (extension_init_data.fast_forward_time or 0)
 	self.target_unit = extension_init_data.target_unit
 	self.target_node = template.initial_target_node or "c_head"
@@ -24,7 +30,9 @@ ProjectileTrueFlightLocomotionExtension.init = function (self, extension_init_co
 	self.velocity = Vector3Box()
 	self.speed = extension_init_data.speed
 	self.initial_position_boxed = Vector3Box(initial_position)
+
 	local side_by_unit = Managers.state.side.side_by_unit
+
 	self.side = side_by_unit[unit] or side_by_unit[extension_init_data.owner_unit]
 	self.target_broadphase_categories = template.dont_target_friendly and self.side and self.side.enemy_broadphase_categories or nil
 	self.trajectory_template_name = extension_init_data.trajectory_template_name
@@ -39,7 +47,9 @@ ProjectileTrueFlightLocomotionExtension.init = function (self, extension_init_co
 	self.target_vector_boxed = Vector3Box(self.target_vector)
 	self.owner_unit = extension_init_data.owner_unit
 	self.is_husk = not not extension_init_data.is_husk
+
 	local network_manager = Managers.state.network
+
 	self.network_manager = network_manager
 	self.radians = math.degrees_to_radians(extension_init_data.angle)
 	self.stopped = false
@@ -77,6 +87,7 @@ ProjectileTrueFlightLocomotionExtension.init = function (self, extension_init_co
 
 	if template.init_func then
 		local seed = math.random_seed()
+
 		self._custom_data = {}
 
 		template.init_func(unit, template, seed, self._custom_data)
@@ -102,8 +113,7 @@ local function get_target_head_node_position(unit, node_name)
 end
 
 local function valid_position(position)
-	local pmin = NetworkConstants.position.min
-	local pmax = NetworkConstants.position.max
+	local pmin, pmax = NetworkConstants.position.min, NetworkConstants.position.max
 
 	for i = 1, 3 do
 		local coord = position[i]
@@ -133,6 +143,7 @@ ProjectileTrueFlightLocomotionExtension.bounce = function (self, hit_position, h
 	local bounce_dir = Vector3.normalize(Vector3.reflect(hit_direction, hit_normal))
 	local bounce_pos = hit_position - hit_direction * 0.25 + hit_normal * 0.1
 	local rotation = Quaternion.look(bounce_dir)
+
 	self.t = Managers.time:time("game")
 
 	self.target_vector_boxed:store(bounce_dir)
@@ -168,32 +179,35 @@ ProjectileTrueFlightLocomotionExtension.update = function (self, unit, input, dt
 	end
 
 	self.on_target_time = self.on_target_time + dt
+
 	local current_position = self._current_position:unbox()
 
-	if self.death_time < self.on_target_time then
+	if self.on_target_time > self.death_time then
 		self:_do_forced_impact(unit, current_position)
 	end
 
 	local template = TrueFlightTemplates[self.true_flight_template_name]
 	local target = self.target_unit
 	local has_good_target, can_see_target = self:_check_target_valid(target, current_position, template)
-	local new_position = nil
+	local new_position
 
 	if not has_good_target then
 		local max_on_target_time = template.max_on_target_time or 0.75
-		local seek = self.on_target_time < max_on_target_time
+		local seek = max_on_target_time > self.on_target_time
 		local position, new_target = self:update_seeking_target(current_position, dt, t, seek)
+
 		new_position = position
 		self.target_unit = new_target
 		has_good_target, can_see_target = self:_check_target_valid(new_target, current_position, template)
 	end
 
-	local new_rotation = nil
+	local new_rotation
 
 	if can_see_target then
-		new_position, new_rotation = self:_update_towards_target_func(current_position, t, dt)
+		new_position, new_rotation = self._update_towards_target_func(self, current_position, t, dt)
 	elseif has_good_target then
 		local position, _ = self:update_seeking_target(current_position, dt, t, false)
+
 		new_position = position
 	end
 
@@ -255,10 +269,10 @@ ProjectileTrueFlightLocomotionExtension._check_target_valid = function (self, ta
 
 		has_good_target = true
 
-		if self:_legitimate_target_func(target, current_position) then
+		if self._legitimate_target_func(self, target, current_position) then
 			can_see_target = true
 		elseif template.retarget_on_miss then
-			has_good_target = self:_keep_target_on_miss_check_func(target, current_position)
+			has_good_target = self._keep_target_on_miss_check_func(self, target, current_position)
 		end
 	end
 
@@ -318,7 +332,9 @@ ProjectileTrueFlightLocomotionExtension.update_towards_slow_bomb_target = functi
 	local speed_mod = math.clamp(distance < 10 and 1 or distance / 10, 0, 3)
 	local speed = self.speed * speed_multiplier * speed_mod
 	local lerp_modifier = self._lerp_modifier_func(distance)
-	lerp_modifier = lerp_modifier * lerp_modifier * math.min(self.on_target_time, 0.25) / 0.25
+
+	lerp_modifier = lerp_modifier * lerp_modifier * (math.min(self.on_target_time, 0.25) / 0.25)
+
 	local lerp_value = math.min(dt * lerp_modifier * 100, 0.75)
 	local new_rotation = Quaternion.lerp(current_rotation, wanted_rotation, lerp_value)
 	local new_direction = Quaternion.forward(new_rotation)
@@ -345,8 +361,9 @@ ProjectileTrueFlightLocomotionExtension.update_towards_strike_missile_target = f
 
 			return new_position
 		else
-			if self._missile_lingering < t then
+			if t > self._missile_lingering then
 				self._missile_striking = true
+
 				local create_bot_threat = template.create_bot_threat
 
 				if create_bot_threat then
@@ -385,10 +402,14 @@ ProjectileTrueFlightLocomotionExtension.update_towards_strike_missile_target = f
 
 	local current_rotation = Quaternion.look(current_direction)
 	local wanted_rotation = Quaternion.look(wanted_direction)
+
 	self.speed = self.speed - 5 * dt
+
 	local speed = self.speed * speed_multiplier
 	local lerp_modifier = self._lerp_modifier_func(dist_to_target)
-	lerp_modifier = lerp_modifier * lerp_modifier * math.min(self.on_target_time, 0.5) / 0.5
+
+	lerp_modifier = lerp_modifier * lerp_modifier * (math.min(self.on_target_time, 0.5) / 0.5)
+
 	local lerp_value = math.min(dt * lerp_modifier * 100, 0.75)
 	local new_rotation = Quaternion.lerp(current_rotation, wanted_rotation, lerp_value)
 	local new_direction = Quaternion.forward(new_rotation)
@@ -409,7 +430,9 @@ ProjectileTrueFlightLocomotionExtension.update_towards_position_target = functio
 	local wanted_rotation = Quaternion.look(wanted_direction)
 	local height_over_target = self.height_offset + math.max(position.z - target_position.z, 0)
 	local lerp_modifier = self._lerp_modifier_func(distance, height_over_target, t)
-	lerp_modifier = lerp_modifier * lerp_modifier * math.min(self.on_target_time, 0.25) / 0.25
+
+	lerp_modifier = lerp_modifier * lerp_modifier * (math.min(self.on_target_time, 0.25) / 0.25)
+
 	local lerp_value = math.min(dt * lerp_modifier * 100, 0.75)
 	local new_rotation = Quaternion.lerp(current_rotation, wanted_rotation, lerp_value)
 	local new_direction = Quaternion.forward(new_rotation)
@@ -438,7 +461,9 @@ ProjectileTrueFlightLocomotionExtension.update_towards_target = function (self, 
 	local wanted_rotation = Quaternion.look(wanted_direction)
 	local height_over_target = self.height_offset + math.max(position.z - target_position.z, 0)
 	local lerp_modifier = self._lerp_modifier_func(distance, height_over_target, t)
-	lerp_modifier = lerp_modifier * lerp_modifier * math.min(self.on_target_time, 0.25) / 0.25
+
+	lerp_modifier = lerp_modifier * lerp_modifier * (math.min(self.on_target_time, 0.25) / 0.25)
+
 	local lerp_value = math.min(dt * lerp_modifier * 100, 0.75)
 	local new_rotation = Quaternion.lerp(current_rotation, wanted_rotation, lerp_value)
 	local new_direction = Quaternion.forward(new_rotation)
@@ -455,10 +480,7 @@ end
 ProjectileTrueFlightLocomotionExtension.update_seeking_target = function (self, position, dt, t, seeking)
 	local true_flight_template = TrueFlightTemplates[self.true_flight_template_name]
 	local speed_multiplier = true_flight_template.speed_multiplier
-	local self_dt = self.dt
-	local speed = self.speed * speed_multiplier
-	local angle = self.radians
-	local gravity = self.gravity
+	local self_dt, speed, angle, gravity = self.dt, self.speed * speed_multiplier, self.radians, self.gravity
 	local target_vector = Vector3Box.unbox(self.target_vector_boxed)
 	local initial_position = Vector3Box.unbox(self.initial_position_boxed)
 	local trajectory_template_name = self.trajectory_template_name
@@ -471,17 +493,19 @@ ProjectileTrueFlightLocomotionExtension.update_seeking_target = function (self, 
 end
 
 ProjectileTrueFlightLocomotionExtension.find_new_target = function (self, position, true_flight_template, t, dt)
-	if self.raycast_timer < t then
+	if t > self.raycast_timer then
 		local time_between_raycasts = true_flight_template.time_between_raycasts
+
 		self.raycast_timer = t + time_between_raycasts
-		local target = self:_find_target_func(position)
+
+		local target = self._find_target_func(self, position)
 
 		return target
 	end
 end
 
 ProjectileTrueFlightLocomotionExtension.find_player_target = function (self, position)
-	local player_units = nil
+	local player_units
 	local side = self.side
 
 	if side then
@@ -500,7 +524,7 @@ ProjectileTrueFlightLocomotionExtension.find_player_target = function (self, pos
 			local index = (i - 1) % players_n + 1
 			local unit = player_units[index]
 
-			if HEALTH_ALIVE[unit] and not self.hit_units[unit] and self:_legitimate_target_func(unit, position) then
+			if HEALTH_ALIVE[unit] and not self.hit_units[unit] and self._legitimate_target_func(self, unit, position) then
 				return unit
 			end
 		end
@@ -515,12 +539,13 @@ ProjectileTrueFlightLocomotionExtension.find_broadphase_target = function (self,
 
 	table.clear(ai_units)
 
-	local ai_units_n = nil
+	local ai_units_n
 
 	if self.target_position then
 		ai_units_n = AiUtils.broadphase_query(self.target_position:unbox(), broadphase_radius, ai_units, broadphase_categories)
 	else
 		local current_direction = self.current_direction:unbox()
+
 		ai_units_n = AiUtils.broadphase_query(position + current_direction * self._retarget_broadphase_offset, broadphase_radius, ai_units, broadphase_categories)
 
 		if ai_units_n <= 0 then
@@ -534,7 +559,7 @@ ProjectileTrueFlightLocomotionExtension.find_broadphase_target = function (self,
 		for i = 1, ai_units_n do
 			local unit = ai_units[i]
 
-			if ScriptUnit.has_extension(unit, "health_system") and HEALTH_ALIVE[unit] and not self.hit_units[unit] and self:_legitimate_target_func(unit, position) then
+			if ScriptUnit.has_extension(unit, "health_system") and HEALTH_ALIVE[unit] and not self.hit_units[unit] and self._legitimate_target_func(self, unit, position) then
 				return unit
 			end
 		end
@@ -551,12 +576,13 @@ ProjectileTrueFlightLocomotionExtension.find_closest_highest_value_target = func
 
 	table.clear(ai_units)
 
-	local ai_units_n = nil
+	local ai_units_n
 
 	if self.target_position then
 		ai_units_n = AiUtils.broadphase_query(self.target_position:unbox(), broadphase_radius, ai_units, broadphase_categories)
 	else
 		local current_direction = self.current_direction:unbox()
+
 		ai_units_n = AiUtils.broadphase_query(position + current_direction * forward_search_distance_to_find_target, broadphase_radius, ai_units, broadphase_categories)
 
 		if ai_units_n <= 0 then
@@ -567,11 +593,11 @@ ProjectileTrueFlightLocomotionExtension.find_closest_highest_value_target = func
 	if ai_units_n > 0 then
 		local i = 1
 
-		while ai_units_n >= i do
+		while i <= ai_units_n do
 			local unit = ai_units[i]
 			local breed = Unit.get_data(unit, "breed")
 
-			if not breed or breed.no_autoaim or not ScriptUnit.has_extension(unit, "health_system") or not HEALTH_ALIVE[unit] or self.hit_units[unit] or not self:_legitimate_target_func(unit, position) then
+			if not breed or breed.no_autoaim or not ScriptUnit.has_extension(unit, "health_system") or not HEALTH_ALIVE[unit] or self.hit_units[unit] or not self._legitimate_target_func(self, unit, position) then
 				table.swap_delete(ai_units, i)
 
 				ai_units_n = ai_units_n - 1

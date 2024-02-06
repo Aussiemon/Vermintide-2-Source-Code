@@ -1,7 +1,10 @@
+﻿-- chunkname: @scripts/unit_extensions/default_player_unit/ping/context_aware_ping_extension.lua
+
 local MAX_FREE_EVENTS = 5
 local EVENT_REFRESH_RATE = 4
 local PING_COOLDOWN = 2
 local PING_RANGE = 50
+
 ContextAwarePingExtension = class(ContextAwarePingExtension)
 
 ContextAwarePingExtension.init = function (self, extension_init_context, unit, extension_init_data)
@@ -15,6 +18,7 @@ ContextAwarePingExtension.init = function (self, extension_init_context, unit, e
 	self._ping_timer = 0
 	self._num_free_events = MAX_FREE_EVENTS
 	self._last_update_t = 0
+
 	local settings = Managers.state.game_mode:settings()
 	local ping_mode = settings.ping_mode
 
@@ -46,6 +50,7 @@ end
 ContextAwarePingExtension.update = function (self, unit, input, dt, context, t)
 	if self._num_free_events < MAX_FREE_EVENTS then
 		local free_events_to_add = (t - self._last_update_t) / EVENT_REFRESH_RATE
+
 		self._num_free_events = math.min(self._num_free_events + free_events_to_add, MAX_FREE_EVENTS)
 	end
 
@@ -90,7 +95,7 @@ ContextAwarePingExtension.update = function (self, unit, input, dt, context, t)
 
 		if ping or is_ping_only or social_wheel_only or photomode_only then
 			local ping_unit, social_wheel_unit, ping_unit_distance, social_wheel_unit_distance, position = self:_check_raycast(unit)
-			local stored_ping_position = nil
+			local stored_ping_position
 
 			if position then
 				self._ping_position:store(position)
@@ -98,7 +103,7 @@ ContextAwarePingExtension.update = function (self, unit, input, dt, context, t)
 				stored_ping_position = self._ping_position
 			end
 
-			local ping_type = nil
+			local ping_type
 
 			if not ping_only and is_ping_only then
 				if ping_only_enemy then
@@ -133,23 +138,24 @@ ContextAwarePingExtension.update = function (self, unit, input, dt, context, t)
 					min_t = 0,
 					unit = social_wheel_unit,
 					distance = social_wheel_unit_distance,
-					position = stored_ping_position
+					position = stored_ping_position,
 				}
 			elseif ping then
 				local social_wheel_delay = Application.user_setting("social_wheel_delay") or DefaultUserSettings.get("user_settings", "social_wheel_delay")
+
 				self._ping_context = {
 					unit = ping_unit,
 					max_t = t + social_wheel_delay,
 					distance = ping_unit_distance,
 					position = stored_ping_position,
-					ping_type = ping_type
+					ping_type = ping_type,
 				}
 				self._social_wheel_context = {
 					unit = social_wheel_unit,
 					ping_context_unit = ping_unit,
 					min_t = t + social_wheel_delay,
 					distance = social_wheel_unit_distance,
-					position = stored_ping_position
+					position = stored_ping_position,
 				}
 			elseif photomode_only then
 				self._social_wheel_context = {
@@ -157,7 +163,7 @@ ContextAwarePingExtension.update = function (self, unit, input, dt, context, t)
 					show_emotes = true,
 					unit = social_wheel_unit,
 					distance = social_wheel_unit_distance,
-					position = stored_ping_position
+					position = stored_ping_position,
 				}
 			end
 		end
@@ -194,9 +200,11 @@ ContextAwarePingExtension.ping_attempt = function (self, unit, unit_to_ping, t, 
 	end
 
 	social_wheel_event_id = social_wheel_event_id or NetworkLookup.social_wheel_events["n/a"]
+
 	local network_manager = Managers.state.network
 	local pinger_unit_id = network_manager:unit_game_object_id(unit)
 	local pinged_unit_id, is_level_unit = network_manager:game_object_or_level_id(unit_to_ping)
+
 	ping_type = ping_type or self._world_markers_enabled and PingTypes.CONTEXT or PingTypes.PING_ONLY
 
 	network_manager.network_transmit:send_rpc_server("rpc_ping_unit", pinger_unit_id, pinged_unit_id, is_level_unit, false, ping_type, social_wheel_event_id)
@@ -232,8 +240,10 @@ ContextAwarePingExtension.ping_world_position_attempt = function (self, unit, po
 	end
 
 	social_wheel_event_id = social_wheel_event_id or NetworkLookup.social_wheel_events["n/a"]
+
 	local network_manager = Managers.state.network
 	local pinger_unit_id = network_manager:unit_game_object_id(unit)
+
 	ping_type = ping_type or PingTypes.CONTEXT
 
 	network_manager.network_transmit:send_rpc_server("rpc_ping_world_position", pinger_unit_id, position, ping_type, social_wheel_event_id)
@@ -259,6 +269,7 @@ ContextAwarePingExtension.social_message_attempt = function (self, unit, social_
 	end
 
 	social_wheel_event_id = social_wheel_event_id or NetworkLookup.social_wheel_events["n/a"]
+
 	local network_manager = Managers.state.network
 	local pinger_unit_id = network_manager:unit_game_object_id(unit)
 	local pinged_unit_id = target_unit and Unit.alive(target_unit) and network_manager:unit_game_object_id(target_unit) or 0
@@ -274,7 +285,7 @@ local INDEX_DISTANCE = 2
 local INDEX_ACTOR = 4
 
 ContextAwarePingExtension._check_raycast = function (self, unit)
-	local ping_unit, social_wheel_unit, ping_unit_distance, social_wheel_unit_distance, position = nil
+	local ping_unit, social_wheel_unit, ping_unit_distance, social_wheel_unit_distance, position
 
 	if self._status_extension:is_disabled() and Managers.mechanism:current_mechanism_name() == "versus" then
 		ping_unit = unit
@@ -311,10 +322,11 @@ ContextAwarePingExtension._check_raycast = function (self, unit)
 							local breed = Unit.get_data(hit_unit, "breed")
 							local has_breed = breed ~= nil
 							local is_alive = HEALTH_ALIVE[hit_unit]
-							local half_width, half_height = nil
+							local half_width, half_height
 
 							if is_pickup then
 								local _, half_extents = Unit.box(hit_unit, true)
+
 								half_width = half_extents.x * 0.75
 								half_height = half_extents.z * 0.75
 							elseif has_breed then
@@ -322,6 +334,7 @@ ContextAwarePingExtension._check_raycast = function (self, unit)
 								half_width = breed.aoe_radius or DEFAULT_BREED_AOE_RADIUS
 							elseif status_ext then
 								local _, half_extents = Unit.box(hit_unit, true)
+
 								half_width = half_extents.x * 0.75
 								half_height = half_extents.z
 							else
@@ -335,7 +348,7 @@ ContextAwarePingExtension._check_raycast = function (self, unit)
 							local y_diff = math.abs(Vector3.dot(hit_offset, camera_up))
 							local epsilon = 0.01
 							local direct_hit = x_diff <= half_width + epsilon and y_diff <= half_height + epsilon
-							local utility = nil
+							local utility
 
 							if direct_hit then
 								utility = math.huge
@@ -346,6 +359,7 @@ ContextAwarePingExtension._check_raycast = function (self, unit)
 								local angle_y_diff = math.atan(y_diff / distance)
 								local x_offset = math.max(angle_x_diff - angle_width, epsilon) / math.log(angle_width)
 								local y_offset = math.max(angle_y_diff - angle_height, epsilon) / math.log(angle_width)
+
 								utility = 1 / (x_offset * y_offset)
 							end
 
@@ -363,6 +377,7 @@ ContextAwarePingExtension._check_raycast = function (self, unit)
 
 							if is_pickup then
 								local pickup_settings = is_pickup:get_pickup_settings()
+
 								is_valid_social_wheel_pickup = pickup_settings.slot_name or pickup_settings.type == "ammo"
 							end
 
@@ -372,7 +387,9 @@ ContextAwarePingExtension._check_raycast = function (self, unit)
 								best_social_utility = utility
 							end
 						end
-					elseif not Unit.get_data(hit_unit, "breed") then
+					elseif Unit.get_data(hit_unit, "breed") then
+						-- Nothing
+					else
 						position = hit_position
 
 						break

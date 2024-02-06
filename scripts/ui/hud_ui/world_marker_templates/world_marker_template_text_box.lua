@@ -1,6 +1,10 @@
+﻿-- chunkname: @scripts/ui/hud_ui/world_marker_templates/world_marker_template_text_box.lua
+
 WorldMarkerTemplates = WorldMarkerTemplates or {}
+
 local NAME = "text_box"
 local template = WorldMarkerTemplates[NAME] or {}
+
 WorldMarkerTemplates[NAME] = template
 template.max_distance = 20
 template.screen_clamp = false
@@ -17,7 +21,7 @@ template.create_widget_definition = function (scenegraph_id)
 				{
 					pass_type = "texture_frame",
 					style_id = "frame",
-					texture_id = "frame"
+					texture_id = "frame",
 				},
 				{
 					pass_type = "texture",
@@ -27,114 +31,114 @@ template.create_widget_definition = function (scenegraph_id)
 						local scale_progress = content.scale_progress
 
 						return scale_progress and scale_progress < 1
-					end
+					end,
 				},
 				{
 					pass_type = "rect",
-					style_id = "background"
+					style_id = "background",
 				},
 				{
-					style_id = "text",
 					pass_type = "text",
+					style_id = "text",
 					text_id = "text",
 					content_check_function = function (content)
 						local text_progress = content.text_progress
 
 						return text_progress and text_progress > 0
-					end
-				}
-			}
+					end,
+				},
+			},
 		},
 		content = {
 			icon = "icon_property_stamina",
-			text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
 			icon_pulse = "icon_property_stamina",
-			frame = frame_settings.texture
+			text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+			frame = frame_settings.texture,
 		},
 		style = {
 			text = {
-				word_wrap = true,
 				font_size = 20,
-				localize = false,
-				horizontal_alignment = "center",
-				vertical_alignment = "center",
 				font_type = "hell_shark",
+				horizontal_alignment = "center",
+				localize = false,
+				vertical_alignment = "center",
+				word_wrap = true,
 				size = {
 					200,
-					200
+					200,
 				},
 				text_color = {
 					255,
 					255,
 					255,
-					255
+					255,
 				},
 				offset = {
 					0,
 					0,
-					2
-				}
+					2,
+				},
 			},
 			icon = {
-				vertical_alignment = "center",
 				horizontal_alignment = "center",
+				vertical_alignment = "center",
 				texture_size = {
 					50,
-					50
+					50,
 				},
 				default_size = {
 					50,
-					50
+					50,
 				},
 				color = {
 					255,
 					255,
 					255,
-					255
+					255,
 				},
 				offset = {
 					0,
 					0,
-					1
-				}
+					1,
+				},
 			},
 			background = {
-				vertical_alignment = "center",
 				horizontal_alignment = "center",
+				vertical_alignment = "center",
 				texture_size = {
 					50,
-					50
+					50,
 				},
 				default_size = {
 					50,
-					50
+					50,
 				},
 				color = {
 					150,
 					10,
 					10,
-					10
+					10,
 				},
 				offset = {
 					0,
 					0,
-					0
-				}
+					0,
+				},
 			},
 			frame = {
 				horizontal_alignment = "center",
 				vertical_alignment = "center",
 				area_size = {
 					50,
-					50
+					50,
 				},
 				default_size = {
 					50,
-					50
+					50,
 				},
 				frame_margins = {
 					-frame_height,
-					-frame_height
+					-frame_height,
 				},
 				texture_size = frame_settings.texture_size,
 				texture_sizes = frame_settings.texture_sizes,
@@ -142,21 +146,21 @@ template.create_widget_definition = function (scenegraph_id)
 					255,
 					255,
 					255,
-					255
+					255,
 				},
 				offset = {
 					0,
 					0,
-					1
-				}
-			}
+					1,
+				},
+			},
 		},
 		offset = {
 			0,
 			0,
-			0
+			0,
 		},
-		scenegraph_id = scenegraph_id
+		scenegraph_id = scenegraph_id,
 	}
 end
 
@@ -178,6 +182,7 @@ end
 
 template.on_enter = function (widget)
 	local content = widget.content
+
 	content.spawn_progress_timer = 0
 end
 
@@ -224,19 +229,25 @@ template.update_function = function (ui_renderer, widget, marker, settings, dt, 
 	end
 
 	text_color[1] = 255 * text_anim_progress
+
 	local icon_style = style.icon
 	local icon_color = icon_style.color
+
 	icon_color[1] = 255 - 255 * scale_progress
+
 	local background_style = style.background
 	local background_color = background_style.color
 	local background_size = background_style.texture_size
 	local background_default_size = background_style.default_size
 	local new_width = text_width * anim_progress
 	local new_height = text_height * anim_progress
+
 	background_size[1] = background_default_size[1] + new_width
 	background_size[2] = background_default_size[2] + new_height
+
 	local frame_style = style.frame
 	local frame_size = frame_style.area_size
+
 	frame_size[1] = background_size[1]
 	frame_size[2] = background_size[2]
 	text_size[1] = text_width

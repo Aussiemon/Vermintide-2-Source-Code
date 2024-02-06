@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/network/lobby_finder.lua
+
 require("scripts/network/lobby_aux")
 
 LobbyFinder = class(LobbyFinder)
@@ -5,6 +7,7 @@ LobbyFinder = class(LobbyFinder)
 LobbyFinder.init = function (self, network_options, max_num_lobbies)
 	local config_file_name = network_options.config_file_name
 	local project_hash = network_options.project_hash
+
 	self._network_hash = LobbyAux.create_network_hash(config_file_name, project_hash)
 	self._server_port = network_options.server_port
 

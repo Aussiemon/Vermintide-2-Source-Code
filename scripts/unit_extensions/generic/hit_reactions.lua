@@ -1,18 +1,21 @@
+﻿-- chunkname: @scripts/unit_extensions/generic/hit_reactions.lua
+
 HitReactions = {}
+
 local DamageDataIndex = DamageDataIndex
 local ignored_damage_types = {
-	temporary_health_degen = true,
-	kinetic = true,
-	buff_shared_medpack = true,
 	buff = true,
+	buff_shared_medpack = true,
 	buff_shared_medpack_temp_health = true,
-	push = true,
-	health_degen = true,
-	life_tap = true,
-	wounded_dot = true,
 	heal = true,
+	health_degen = true,
+	kinetic = true,
 	knockdown_bleed = true,
-	life_drain = true
+	life_drain = true,
+	life_tap = true,
+	push = true,
+	temporary_health_degen = true,
+	wounded_dot = true,
 }
 
 local function trigger_player_friendly_fire_dialogue(player_unit, attacker_unit)
@@ -23,6 +26,7 @@ local function trigger_player_friendly_fire_dialogue(player_unit, attacker_unit)
 		local profile_name_attacker = ScriptUnit.extension(attacker_unit, "dialogue_system").context.player_profile
 		local dialogue_input = ScriptUnit.extension_input(player_unit, "dialogue_system")
 		local event_data = FrameTable.alloc_table()
+
 		event_data.target = profile_name_victim
 		event_data.player_profile = profile_name_attacker
 
@@ -48,10 +52,11 @@ local function trigger_enemy_armor_hit_dialogue(enemy_unit, player_unit, damage_
 end
 
 local dot_hit_types = {
+	arrow_poison_dot = true,
 	bleed = true,
 	burninating = true,
-	arrow_poison_dot = true
 }
+
 HitReactions.templates = {
 	ai_default = {
 		unit = function (unit, dt, context, t, hit)
@@ -71,7 +76,7 @@ HitReactions.templates = {
 			local attacker_unit = hit[DamageDataIndex.ATTACKER]
 
 			Managers.state.game_mode:ai_hit_by_player(unit, attacker_unit, hit)
-		end
+		end,
 	},
 	player = {
 		unit = function (unit, dt, context, t, hit)
@@ -93,7 +98,7 @@ HitReactions.templates = {
 			local attacker = hit[DamageDataIndex.ATTACKER]
 
 			trigger_player_friendly_fire_dialogue(unit, attacker)
-		end
+		end,
 	},
 	level_object = {
 		unit = function (unit, dt, context, t, hit)
@@ -109,7 +114,7 @@ HitReactions.templates = {
 
 			Unit.set_flow_variable(unit, "current_health", current_health)
 			Unit.flow_event(unit, "lua_on_damage_taken")
-		end
+		end,
 	},
 	dummy = {
 		unit = function (unit, dt, context, t, hit)
@@ -143,7 +148,7 @@ HitReactions.templates = {
 				Unit.set_flow_variable(unit, "current_health", current_health)
 				Unit.flow_event(unit, "lua_on_damage_taken")
 			end
-		end
+		end,
 	},
 	ai_ethereal_skull_knock_back = {
 		unit = function (unit, dt, context, t, hit)
@@ -182,8 +187,8 @@ HitReactions.templates = {
 			end
 
 			Managers.state.game_mode:ai_hit_by_player(unit, attacker_unit, hit)
-		end
-	}
+		end,
+	},
 }
 
 HitReactions.get_reaction = function (hit_reaction_template, is_husk)

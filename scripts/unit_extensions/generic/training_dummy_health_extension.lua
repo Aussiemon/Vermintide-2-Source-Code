@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/generic/training_dummy_health_extension.lua
+
 TrainingDummyHealthExtension = class(TrainingDummyHealthExtension, GenericHealthExtension)
 
 TrainingDummyHealthExtension.init = function (self, extension_init_context, unit, extension_init_data)
@@ -7,7 +9,7 @@ TrainingDummyHealthExtension.init = function (self, extension_init_context, unit
 	self.statistics_db = extension_init_context.statistics_db
 	self.damage_buffers = {
 		pdArray.new(),
-		pdArray.new()
+		pdArray.new(),
 	}
 	self.network_transmit = extension_init_context.network_transmit
 	self.is_invincible = false
@@ -60,9 +62,9 @@ TrainingDummyHealthExtension.get_max_health = function (self)
 end
 
 local dot_hit_types = {
+	arrow_poison_dot = true,
 	bleed = true,
 	burninating = true,
-	arrow_poison_dot = true
 }
 
 TrainingDummyHealthExtension.apply_client_predicted_damage = function (self, predicted_damage)
@@ -79,12 +81,13 @@ TrainingDummyHealthExtension.add_damage = function (self, attacker_unit, damage_
 
 	self._recent_damage_type = damage_type
 	self._recent_hit_react_type = hit_react_type
+
 	local is_dot_damage = dot_hit_types[damage_type]
 
 	if not DEDICATED_SERVER then
 		local color_modifier_red = math.min(120 + damage_amount * 4, 255)
 		local color_modifier_green = math.max(200 - damage_amount * 4, 0)
-		local color = nil
+		local color
 
 		if is_dot_damage then
 			color = Vector3(192, 192, 192)
@@ -120,6 +123,7 @@ TrainingDummyHealthExtension.add_damage = function (self, attacker_unit, damage_
 		local source_attacker_unit_id = NetworkConstants.invalid_game_object_id
 		local network_transmit = self.network_transmit
 		local is_dead = self.dead or false
+
 		is_critical_strike = is_critical_strike or false
 		added_dot = added_dot or false
 		first_hit = first_hit or false

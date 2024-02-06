@@ -1,12 +1,15 @@
+﻿-- chunkname: @scripts/unit_extensions/default_player_unit/careers/career_ability_bw_necromancer_command.lua
+
 local RPCS = {
 	"rpc_necromancer_command_sacrifice",
-	"rpc_necromancer_command_charge"
+	"rpc_necromancer_command_charge",
 }
 local CommandSyncTypes = table.mirror_array({
 	"pet",
 	"player",
-	"enemy"
+	"enemy",
 })
+
 CareerAbilityBWNecromancerCommand = class(CareerAbilityBWNecromancerCommand)
 
 CareerAbilityBWNecromancerCommand.init = function (self, extension_init_context, unit, extension_init_data)
@@ -15,7 +18,7 @@ CareerAbilityBWNecromancerCommand.init = function (self, extension_init_context,
 	self._is_local = extension_init_data.player.local_player
 	self._is_server = extension_init_context.is_server
 	self._command_explosion_params = {
-		source_attacker_unit = unit
+		source_attacker_unit = unit,
 	}
 	self._network_transmit = extension_init_context.network_transmit
 	self._network_event_delegate = self._network_transmit.network_event_delegate
@@ -107,6 +110,7 @@ CareerAbilityBWNecromancerCommand._command_sacrifice_pet = function (self, pet_u
 
 	local bb = BLACKBOARDS[pet_unit]
 	local locomotion_extension = bb.locomotion_extension
+
 	locomotion_extension.death_velocity_boxed = Vector3Box(locomotion_extension:current_velocity())
 
 	AiUtils.kill_unit(pet_unit)
@@ -129,6 +133,7 @@ end
 CareerAbilityBWNecromancerCommand._start_charge_cooldown = function (self)
 	local buff_extension = self._buff_extension
 	local buff = buff_extension:get_buff_type("sienna_necromancer_6_3_available_charge")
+
 	self._charge_cooldown_id = buff_extension:add_buff("sienna_necromancer_6_3_cooldown_charge")
 
 	buff_extension:remove_buff(buff.id)
@@ -167,11 +172,12 @@ CareerAbilityBWNecromancerCommand._add_outline = function (self, target_unit, co
 		end
 
 		local id = outline_extension:add_outline(OutlineSettings.templates.necromancer_command)
+
 		self._outline_data = {
 			id = id,
 			unit = target_unit,
 			extension = outline_extension,
-			command_type = command_sync_type
+			command_type = command_sync_type,
 		}
 	end
 end
@@ -187,7 +193,7 @@ CareerAbilityBWNecromancerCommand.command_attack_enemy = function (self, target_
 
 	local commander_pos = POSITION_LOOKUP[self._owner_unit]
 	local smallest_dist_sq = math.huge
-	local best_unit = nil
+	local best_unit
 	local commander_extension = self._commander_extension
 	local units = commander_extension:get_controlled_units()
 
@@ -281,10 +287,11 @@ CareerAbilityBWNecromancerCommand._update_vent_command_target = function (self, 
 	local last_target = self._vent_command_target
 	local wielded_item_template = self._inventory_extension:get_wielded_slot_item_template()
 	local in_command_mode = wielded_item_template and wielded_item_template.is_command_utility_weapon
-	local new_target, using_fallback = nil
+	local new_target, using_fallback
 
 	if in_command_mode then
 		local hovered_unit, fallback_unit = self._commander_extension:hovered_friendly_unit()
+
 		using_fallback = not hovered_unit and not not fallback_unit
 
 		if not hovered_unit then
@@ -297,7 +304,7 @@ CareerAbilityBWNecromancerCommand._update_vent_command_target = function (self, 
 				if duration then
 					local time_left = (controlled_unit_data.start_t or math.huge) + duration - t
 
-					if least_t_left > time_left then
+					if time_left < least_t_left then
 						least_t_left = time_left
 						hovered_unit = unit
 					end
@@ -329,6 +336,7 @@ CareerAbilityBWNecromancerCommand._update_vent_command_target = function (self, 
 
 				if bt_action_name ~= "spawn" then
 					local outline_extension = ScriptUnit.extension(new_target, "outline_system")
+
 					self._vent_outline_id = outline_extension:add_outline(OutlineSettings.templates.necromancer_command)
 				end
 			end

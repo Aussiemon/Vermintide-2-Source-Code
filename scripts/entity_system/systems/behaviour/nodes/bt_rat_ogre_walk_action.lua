@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_rat_ogre_walk_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTRatOgreWalkAction = class(BTRatOgreWalkAction, BTNode)
@@ -7,14 +9,17 @@ BTRatOgreWalkAction.init = function (self, ...)
 end
 
 BTRatOgreWalkAction.name = "BTRatOgreWalkAction"
+
 local walk_distance = 5
 
 BTRatOgreWalkAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
+
 	blackboard.action = action
 	blackboard.wait_for_ogre = false
+
 	local navigation_extension = blackboard.navigation_extension
-	local patrol_goal_pos = nil
+	local patrol_goal_pos
 
 	if blackboard.patroling then
 		patrol_goal_pos = blackboard.patrol_goal_pos:unbox()
@@ -72,7 +77,9 @@ BTRatOgreWalkAction.follow = function (self, unit, t, dt, blackboard, locomotion
 
 	if distance < 1 then
 		local patrol_goal_pos = self:find_patrol_goal(unit, blackboard, walk_distance)
+
 		blackboard.patrol_goal_pos = Vector3Box(patrol_goal_pos)
+
 		local navigation_extension = blackboard.navigation_extension
 
 		navigation_extension:move_to(patrol_goal_pos)
@@ -83,8 +90,9 @@ BTRatOgreWalkAction.follow = function (self, unit, t, dt, blackboard, locomotion
 
 	if blackboard.move_state ~= "moving" and distance > 0.5 then
 		blackboard.move_state = "moving"
+
 		local action = self._tree_node.action_data
-		local start_anim = nil
+		local start_anim
 
 		Managers.state.network:anim_event(unit, start_anim or action.move_anim)
 	elseif blackboard.move_state ~= "idle" and distance < 0.2 then
@@ -99,7 +107,7 @@ BTRatOgreWalkAction.find_patrol_goal = function (self, unit, blackboard, distanc
 	local info = conflict_director.main_path_info
 	local player_info = conflict_director.main_path_player_info
 	local main_paths = info.main_paths
-	local goal_pos = nil
+	local goal_pos
 	local pos_at_path, travel_dist = MainPathUtils.closest_pos_at_main_path(main_paths, POSITION_LOOKUP[unit])
 
 	QuickDrawerStay:sphere(pos_at_path, 1.5, Color(0, 100, 255))

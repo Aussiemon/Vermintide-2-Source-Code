@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_pack_master_escort_rat_ogre_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTPackMasterEscortRatOgreAction = class(BTPackMasterEscortRatOgreAction, BTNode)
@@ -45,6 +47,7 @@ BTPackMasterEscortRatOgreAction.run = function (self, unit, blackboard, t, dt)
 			return "running"
 		else
 			blackboard.escorting_wait_for_rat_ogre = false
+
 			local network_manager = Managers.state.network
 
 			network_manager:anim_event(unit, "combat_walk")
@@ -82,6 +85,7 @@ BTPackMasterEscortRatOgreAction.run = function (self, unit, blackboard, t, dt)
 		end
 	elseif ogre_blackboard.wait_for_ogre then
 		blackboard.escorting_wait_for_rat_ogre = true
+
 		local network_manager = Managers.state.network
 
 		network_manager:anim_event(unit, "idle")

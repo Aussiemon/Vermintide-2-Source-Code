@@ -1,12 +1,14 @@
+﻿-- chunkname: @scripts/settings/mutators/mutator_escort.lua
+
 return {
-	screenspace_effect_name = "fx/screenspace_statue_veins/screenspace_statue_veins",
+	buildup_sound_global_parameter = "mutator_escort_buildup",
+	description = "description_mutator_escort",
 	display_name = "display_name_mutator_escort",
-	pickup_name = "mutator_statue_01",
 	end_effect_required_duration = 4.5,
 	icon = "mutator_icon_escort",
-	description = "description_mutator_escort",
+	pickup_name = "mutator_statue_01",
+	screenspace_effect_name = "fx/screenspace_statue_veins/screenspace_statue_veins",
 	screenspace_end_effect_name = "fx/screenspace_statue_veins/screenspace_statue_veins_fade_out",
-	buildup_sound_global_parameter = "mutator_escort_buildup",
 	time_until_explosion = 10,
 	is_player_carrying_pickup = function (pickup_name, side)
 		local pickup_settings = AllPickups[pickup_name]
@@ -37,6 +39,7 @@ return {
 		if ALIVE[player_unit] then
 			local screenspace_effect_name = template.screenspace_effect_name
 			local first_person_extension = ScriptUnit.extension(player_unit, "first_person_system")
+
 			client_data.screen_effect_id = first_person_extension:create_screen_particles(screenspace_effect_name)
 			client_data.screen_effect_t = Managers.time:time("game")
 		end
@@ -67,7 +70,7 @@ return {
 	end,
 	server_start_function = function (context, data)
 		data.server = {
-			escort_unit_spawned = false
+			escort_unit_spawned = false,
 		}
 		data.hero_side = Managers.state.side:get_side_from_name("heroes")
 	end,
@@ -113,7 +116,7 @@ return {
 					server_data.explosion_t = t + template.time_until_explosion
 				end
 
-				if server_data.explosion_t < t and not server_data.players_killed then
+				if t > server_data.explosion_t and not server_data.players_killed then
 					local hero_side = data.hero_side
 					local PLAYER_AND_BOT_UNITS = hero_side.PLAYER_AND_BOT_UNITS
 
@@ -137,7 +140,7 @@ return {
 		local t = Managers.time:time("game")
 		local delay = 2
 
-		return server_data.explosion_t and server_data.explosion_t < t, delay
+		return server_data.explosion_t and t > server_data.explosion_t, delay
 	end,
 	end_zone_activation_condition_function = function (context, data)
 		local server_data = data.server
@@ -147,9 +150,10 @@ return {
 	client_start_function = function (context, data)
 		local player_manager = Managers.player
 		local local_player = player_manager:local_player()
+
 		data.client = {
 			escort_unit_spawned = false,
-			local_player = local_player
+			local_player = local_player,
 		}
 		data.hero_side = Managers.state.side:get_side_from_name("heroes")
 	end,
@@ -164,7 +168,7 @@ return {
 				client_data.pickup_dropped_at_t = nil
 				client_data.explosion_t = nil
 
-				template:remove_screen_space_effect(client_data)
+				template.remove_screen_space_effect(template, client_data)
 			elseif not player_is_carrying_pickup then
 				local t = Managers.time:time("game")
 
@@ -172,7 +176,7 @@ return {
 					client_data.pickup_dropped_at_t = t
 					client_data.explosion_t = t + template.time_until_explosion
 
-					template:create_screen_space_effect(client_data)
+					template.create_screen_space_effect(template, client_data)
 				end
 
 				local sound_value = math.auto_lerp(client_data.pickup_dropped_at_t, client_data.explosion_t, 0, 1, t)
@@ -189,7 +193,7 @@ return {
 		local client_data = data.client
 
 		if client_data.screen_effect_id then
-			template:remove_screen_space_effect(client_data)
+			template.remove_screen_space_effect(template, client_data)
 		end
-	end
+	end,
 }

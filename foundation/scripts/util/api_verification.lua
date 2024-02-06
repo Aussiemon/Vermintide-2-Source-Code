@@ -1,3 +1,5 @@
+﻿-- chunkname: @foundation/scripts/util/api_verification.lua
+
 require("foundation/scripts/util/error")
 
 ApiVerification = ApiVerification or {}

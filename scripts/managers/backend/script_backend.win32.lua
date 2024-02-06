@@ -1,5 +1,8 @@
+﻿-- chunkname: @scripts/managers/backend/script_backend.win32.lua
+
 ScriptBackend = class(ScriptBackend)
 BackendSaveDataVersion = 30
+
 local CONNECTION_STATE_NAMES = {}
 local STATE_CHANGES = {}
 local RESULT_NAMES = {}
@@ -17,29 +20,29 @@ if rawget(_G, "Backend") then
 	CONNECTION_STATE_NAMES[Backend.CONNECTION_ENTITIES_LOADED] = "connection_entities_loaded"
 	CONNECTION_STATE_NAMES[Backend.CONNECTION_ERROR] = "connection_error"
 	STATE_CHANGES[Backend.CONNECTION_UNINITIALIZED] = {
-		[Backend.CONNECTION_INITIALIZED] = true
+		[Backend.CONNECTION_INITIALIZED] = true,
 	}
 	STATE_CHANGES[Backend.CONNECTION_INITIALIZED] = {
 		[Backend.CONNECTION_CONNECTING] = true,
-		[Backend.CONNECTION_CONNECTED] = true
+		[Backend.CONNECTION_CONNECTED] = true,
 	}
 	STATE_CHANGES[Backend.CONNECTION_CONNECTING] = {
-		[Backend.CONNECTION_CONNECTED] = true
+		[Backend.CONNECTION_CONNECTED] = true,
 	}
 	STATE_CHANGES[Backend.CONNECTION_CONNECTED] = {
 		[Backend.CONNECTION_AUTHENTICATING] = true,
 		[Backend.CONNECTION_AUTHENTICATED] = true,
-		[Backend.CONNECTION_WAITING_AUTH_TICKET] = true
+		[Backend.CONNECTION_WAITING_AUTH_TICKET] = true,
 	}
 	STATE_CHANGES[Backend.CONNECTION_WAITING_AUTH_TICKET] = {
 		[Backend.CONNECTION_AUTHENTICATING] = true,
-		[Backend.CONNECTION_AUTHENTICATED] = true
+		[Backend.CONNECTION_AUTHENTICATED] = true,
 	}
 	STATE_CHANGES[Backend.CONNECTION_AUTHENTICATING] = {
-		[Backend.CONNECTION_AUTHENTICATED] = true
+		[Backend.CONNECTION_AUTHENTICATED] = true,
 	}
 	STATE_CHANGES[Backend.CONNECTION_AUTHENTICATED] = {
-		[Backend.CONNECTION_ENTITIES_LOADED] = true
+		[Backend.CONNECTION_ENTITIES_LOADED] = true,
 	}
 	STATE_CHANGES[Backend.CONNECTION_ENTITIES_LOADED] = {}
 	RESULT_NAMES[Backend.RES_OK] = "backend_res_ok"
@@ -69,9 +72,9 @@ if rawget(_G, "Backend") then
 end
 
 local LOG_LEVELS = {
+	normal = 1,
 	off = 0,
 	verbose = 2,
-	normal = 1
 }
 
 ScriptBackend.init = function (self)
@@ -102,7 +105,7 @@ local function print_result(result, action)
 
 		return {
 			reason = result.reason,
-			details = result.details
+			details = result.details,
 		}
 	end
 end
@@ -125,7 +128,7 @@ ScriptBackend._update_state = function (self)
 		print("[Backend] Changed state from", CONNECTION_STATE_NAMES[self._state], "to", CONNECTION_STATE_NAMES[state])
 	end
 
-	local result = nil
+	local result
 
 	if state ~= self._state and not allowed_changes[state] then
 		local error_data = self:check_for_errors()
@@ -136,7 +139,7 @@ ScriptBackend._update_state = function (self)
 
 		local current_state = CONNECTION_STATE_NAMES[self._state]
 		local new_state = CONNECTION_STATE_NAMES[state]
-		local error_message, reason = nil
+		local error_message, reason
 
 		if self._state == Backend.CONNECTION_ENTITIES_LOADED then
 			Crashify.print_exception("Backend", "Disconnected")
@@ -151,7 +154,7 @@ ScriptBackend._update_state = function (self)
 
 		result = {
 			reason = reason,
-			details = error_message
+			details = error_message,
 		}
 	end
 
@@ -172,7 +175,7 @@ ScriptBackend.update_signin = function (self)
 	end
 
 	local state = self._state
-	local result = nil
+	local result
 
 	if state == Backend.CONNECTION_INITIALIZED then
 		result = print_result(Backend.connect(), "Connect")
@@ -247,11 +250,11 @@ end
 ScriptBackend.check_for_errors = function (self)
 	local backend_error = Backend.get_error()
 	local session_error = BackendSession.get_error()
-	local commit_error = nil
+	local commit_error
 
 	if self._commit_error then
 		commit_error = {
-			reason = Backend.ERR_COMMIT
+			reason = Backend.ERR_COMMIT,
 		}
 		self._commit_error = nil
 	end
@@ -292,8 +295,9 @@ ScriptBackend._commit_internal = function (self, queued_id)
 	local commit_data = {
 		id = commit_id,
 		timeout = os.time() + 15,
-		result = result
+		result = result,
 	}
+
 	self._commits[new_id] = commit_data
 	self._commit_current_id = new_id
 
@@ -319,6 +323,7 @@ ScriptBackend.commit = function (self, internal)
 		return self:_queue_commit()
 	else
 		local new_id = self:_commit_internal(self._commit_queue_id)
+
 		self._commit_queue_id = nil
 
 		return new_id
@@ -403,7 +408,8 @@ ScriptBackend.wait_for_shutdown = function (self, timeout)
 	print("disconnecting backend")
 	Backend.disconnect()
 
-	while not self:update() and Backend.active_requests() > 0 and os.time() < timeout_at do
+	while not self:update() and Backend.active_requests() > 0 and timeout_at > os.time() do
+		-- Nothing
 	end
 
 	if timeout_at < os.time() then

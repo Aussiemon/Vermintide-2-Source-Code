@@ -1,14 +1,16 @@
+﻿-- chunkname: @scripts/settings/dlcs/lake/career_ability_settings_lake.lua
+
 require("scripts/settings/dlcs/lake/passive_ability_questing_knight")
 
 ActivatedAbilitySettings.es_4 = {
 	{
-		description = "career_active_desc_markus_questingknight",
 		action_name = "action_career_es_4",
-		display_name = "career_active_name_markus_questingknight",
 		cooldown = 60,
+		description = "career_active_desc_markus_questingknight",
+		display_name = "career_active_name_markus_questingknight",
 		icon = "markus_questing_knight_activated_ability",
-		weapon_name = "markus_questingknight_career_skill_weapon"
-	}
+		weapon_name = "markus_questingknight_career_skill_weapon",
+	},
 }
 PassiveAbilitySettings.es_4 = {
 	description = "career_passive_desc_es_4a",
@@ -19,27 +21,27 @@ PassiveAbilitySettings.es_4 = {
 		"markus_questing_knight_ability_cooldown_on_damage_taken",
 		"markus_questing_knight_perk_movement_speed",
 		"markus_questing_knight_perk_first_target_damage",
-		"markus_questing_knight_perk_power_block"
+		"markus_questing_knight_perk_power_block",
 	},
 	perks = {
 		{
+			description = "career_passive_desc_es_4b",
 			display_name = "career_passive_name_es_4b",
-			description = "career_passive_desc_es_4b"
 		},
 		{
+			description = "career_passive_desc_es_4c",
 			display_name = "career_passive_name_es_4c",
-			description = "career_passive_desc_es_4c"
 		},
 		{
+			description = "career_passive_desc_es_4d",
 			display_name = "career_passive_name_es_4d",
-			description = "career_passive_desc_es_4d"
-		}
+		},
 	},
 	passive_ability_classes = {
 		{
 			name = "es_4",
 			ability_class = PassiveAbilityQuestingKnight,
-			init_data = {}
-		}
-	}
+			init_data = {},
+		},
+	},
 }

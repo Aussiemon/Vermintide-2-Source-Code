@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/entity_system/systems/area_damage/area_damage_system.lua
+
 AreaDamageSystem = class(AreaDamageSystem, ExtensionSystemBase)
+
 local unit_alive = Unit.alive
 local RPCS = {
 	"rpc_add_liquid_damage_blob",
@@ -14,7 +17,7 @@ local RPCS = {
 	"rpc_create_damage_wave",
 	"rpc_create_thornsister_push_wave",
 	"rpc_necromancer_create_curse_weave",
-	"rpc_necromancer_create_curse_area"
+	"rpc_necromancer_create_curse_area",
 }
 local extensions = {
 	"AreaDamageExtension",
@@ -25,7 +28,7 @@ local extensions = {
 	"DamageWaveHuskExtension",
 	"DamageBlobExtension",
 	"DamageBlobHuskExtension",
-	"ProximityMineExtension"
+	"ProximityMineExtension",
 }
 local AOE_DAMAGE_RING_BUFFER_SIZE = 128
 local NUM_UNITS_TO_DAMAGE_PER_FRAME = 15
@@ -36,6 +39,7 @@ AreaDamageSystem.init = function (self, entity_system_creation_context, system_n
 	AreaDamageSystem.super.init(self, entity_system_creation_context, system_name, extensions)
 
 	local network_event_delegate = entity_system_creation_context.network_event_delegate
+
 	self.network_event_delegate = network_event_delegate
 
 	network_event_delegate:register(self, unpack(RPCS))
@@ -50,7 +54,7 @@ end
 local LIQUID_EXTENSIONS = {
 	"DamageBlobExtension",
 	"DamageWaveExtension",
-	"LiquidAreaDamageExtension"
+	"LiquidAreaDamageExtension",
 }
 
 AreaDamageSystem.on_add_extension = function (self, world, unit, extension_name, extension_init_data)
@@ -59,6 +63,7 @@ AreaDamageSystem.on_add_extension = function (self, world, unit, extension_name,
 	if table.contains(LIQUID_EXTENSIONS, extension_name) then
 		local num_liquid_extensions = self.num_liquid_extensions
 		local new_index = num_liquid_extensions + 1
+
 		self.liquid_extensions[new_index] = extension
 		self.liquid_extension_indexes[extension] = new_index
 		self.num_liquid_extensions = new_index
@@ -80,6 +85,7 @@ AreaDamageSystem.on_remove_extension = function (self, unit, extension_name)
 		local liquid_extensions = self.liquid_extensions
 		local num_liquid_extensions = self.num_liquid_extensions
 		local last_extension = liquid_extensions[num_liquid_extensions]
+
 		liquid_extensions[extension_index] = last_extension
 		liquid_extensions[num_liquid_extensions] = nil
 		liquid_extension_indexes[last_extension] = extension_index
@@ -162,6 +168,7 @@ AreaDamageSystem.is_position_in_liquid = function (self, position, nav_cost_map_
 
 	for i = 1, num_liquid_extensions do
 		local extension = liquid_extensions[i]
+
 		result = extension:is_position_inside(position, nav_cost_map_table)
 
 		if result then
@@ -174,31 +181,32 @@ end
 
 AreaDamageSystem._create_aoe_damage_buffer = function (self)
 	local buffer_size = AOE_DAMAGE_RING_BUFFER_SIZE
+
 	self._aoe_damage_ring_buffer = {
-		write_index = 1,
 		read_index = 1,
 		size = 0,
+		write_index = 1,
 		buffer = Script.new_array(buffer_size),
-		max_size = buffer_size
+		max_size = buffer_size,
 	}
 
 	for index = 1, buffer_size do
 		self._aoe_damage_ring_buffer.buffer[index] = {
-			radius = 0,
-			radius_max = 0,
-			max_damage_radius = 0,
-			shield_blocked = false,
+			actual_power_level = 0,
+			damage_source = "n/a",
 			do_damage = false,
-			radius_min = 0,
+			explosion_template_name = "n/a",
 			full_power_level = 0,
 			hit_distance = 0,
 			hit_zone_name = "n/a",
-			actual_power_level = 0,
-			damage_source = "n/a",
-			explosion_template_name = "n/a",
+			max_damage_radius = 0,
 			push_speed = 0,
+			radius = 0,
+			radius_max = 0,
+			radius_min = 0,
+			shield_blocked = false,
 			impact_position = Vector3Box(),
-			hit_direction = Vector3Box()
+			hit_direction = Vector3Box(),
 		}
 	end
 end
@@ -221,6 +229,7 @@ AreaDamageSystem.add_aoe_damage_target = function (self, hit_unit, attacker_unit
 	end
 
 	local aoe_damage_data = buffer[write_index]
+
 	aoe_damage_data.hit_unit = hit_unit
 	aoe_damage_data.attacker_unit = attacker_unit
 	aoe_damage_data.source_attacker_unit = source_attacker_unit
@@ -366,10 +375,11 @@ AreaDamageSystem._damage_unit = function (self, aoe_damage_data)
 
 		if blackboard and radius < hit_distance and blackboard.shield_user then
 			local stagger = blackboard.stagger
+
 			blocking = not stagger or stagger < 1
 		end
 
-		local hit_ragdoll_actor = nil
+		local hit_ragdoll_actor
 
 		if not blocking and breed and breed.hitbox_ragdoll_translation then
 			hit_ragdoll_actor = breed.hitbox_ragdoll_translation.j_spine or breed.hitbox_ragdoll_translation.j_spine1
@@ -387,8 +397,10 @@ AreaDamageSystem._damage_unit = function (self, aoe_damage_data)
 		local target_index = target_number
 		local boost_curve_multiplier = 0
 		local backstab_multiplier = 1
+
 		is_critical_strike = false
-		local added_dot = nil
+
+		local added_dot
 		local first_hit = false
 		local total_hits = 0
 
@@ -432,7 +444,7 @@ AreaDamageSystem.rpc_create_explosion = function (self, channel_id, attacker_uni
 		self.network_transmit:send_rpc_clients_except("rpc_create_explosion", peer_id, attacker_unit_id, attacker_is_level_unit, position, rotation, explosion_template_name_id, scale, damage_source_id, attacker_power_level or 0, is_critical_strike, source_attacker_unit_id)
 	end
 
-	local attacker_unit = nil
+	local attacker_unit
 
 	if attacker_is_level_unit then
 		attacker_unit = LevelHelper:unit_by_index(self.world, attacker_unit_id)
@@ -465,8 +477,8 @@ AreaDamageSystem.rpc_create_liquid_damage_area = function (self, channel_id, sou
 		area_damage_system = {
 			flow_dir = flow_direction,
 			liquid_template = liquid_template,
-			source_unit = source_unit
-		}
+			source_unit = source_unit,
+		},
 	}
 	local aoe_unit_name = "units/hub_elements/empty"
 	local liquid_aoe_unit = Managers.state.unit_spawner:spawn_network_unit(aoe_unit_name, "liquid_aoe_unit", extension_init_data, position)
@@ -493,6 +505,7 @@ AreaDamageSystem.rpc_update_liquid_damage_blob = function (self, channel_id, liq
 	end
 
 	local liquid_area_damage_extension = ScriptUnit.extension(unit, "area_damage_system")
+
 	state = NetworkLookup.liquid_damage_blob_states[state]
 
 	if state == "filled" then
@@ -512,6 +525,7 @@ AreaDamageSystem.rpc_damage_wave_set_state = function (self, channel_id, unit_id
 	end
 
 	local damage_wave_extension = ScriptUnit.extension(unit, "area_damage_system")
+
 	state = NetworkLookup.damage_wave_states[state]
 
 	if state == "impact" then
@@ -529,11 +543,14 @@ AreaDamageSystem._create_damage_wave = function (self, source_unit, position, da
 	fassert(self.is_server, "Error! Only the server should create Damage Waves!")
 
 	unit_name = unit_name or "units/hub_elements/empty"
+
 	local extension_init_data = optional_extension_init_data or {}
 	local area_system_data = extension_init_data.area_damage_system or {}
+
 	area_system_data.damage_wave_template_name = damage_wave_template
 	area_system_data.source_unit = source_unit
 	extension_init_data.area_damage_system = area_system_data
+
 	local damage_wave_unit = Managers.state.unit_spawner:spawn_network_unit(unit_name, "damage_wave_unit", extension_init_data, position)
 	local damage_wave_extension = ScriptUnit.extension(damage_wave_unit, "area_damage_system")
 
@@ -567,7 +584,7 @@ AreaDamageSystem.rpc_create_thornsister_push_wave = function (self, channel_id, 
 	local optional_data = {
 		power_level = power_level,
 		boxed_wall_segments = segment_positions,
-		wall_index = wall_index
+		wall_index = wall_index,
 	}
 
 	damage_wave_extension:launch_wave(nil, optional_target_position, optional_data)
@@ -592,8 +609,8 @@ AreaDamageSystem.rpc_necromancer_create_curse_weave = function (self, channel_id
 	local extension_init_data = {
 		area_damage_system = {
 			player_units_inside = {},
-			ai_hit_by_wavefront = {}
-		}
+			ai_hit_by_wavefront = {},
+		},
 	}
 	local num_waves = wave_template.num_waves
 	local spawn_separation_dist = wave_template.spawn_separation_dist

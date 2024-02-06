@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/music/music.lua
+
 local function dprint(...)
 	if script_data.debug_music then
 		print("[Music]", ...)

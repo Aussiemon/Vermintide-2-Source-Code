@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/splitscreen/splitscreen_tester.lua
+
 SPLITSCREEN_ENABLED = false
 
 require("scripts/managers/input/input_manager")
@@ -11,10 +13,10 @@ if IS_WINDOWS then
 				{
 					"keyboard",
 					"j",
-					"pressed"
-				}
-			}
-		}
+					"pressed",
+				},
+			},
+		},
 	}
 elseif IS_XB1 then
 	SplitScreenTesterKeymaps = {
@@ -24,15 +26,15 @@ elseif IS_XB1 then
 				{
 					"gamepad",
 					"left_thumb",
-					"held"
+					"held",
 				},
 				{
 					"gamepad",
 					"right_thumb",
-					"pressed"
-				}
-			}
-		}
+					"pressed",
+				},
+			},
+		},
 	}
 elseif IS_PS4 then
 	SplitScreenTesterKeymaps = {
@@ -42,15 +44,15 @@ elseif IS_PS4 then
 				{
 					"gamepad",
 					"l3",
-					"held"
+					"held",
 				},
 				{
 					"gamepad",
 					"r3",
-					"pressed"
-				}
-			}
-		}
+					"pressed",
+				},
+			},
+		},
 	}
 end
 
@@ -230,7 +232,7 @@ Viewport.set_rect = function (viewport, offset_x, offset_y, size_x, size_y, extr
 		offset_x,
 		offset_y,
 		size_x,
-		size_y
+		size_y,
 	})
 	viewport_set_rect(viewport, offset_x + extra_offset_x, offset_y + extra_offset_y, size_x, size_y)
 end

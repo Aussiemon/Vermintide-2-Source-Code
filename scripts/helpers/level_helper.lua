@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/helpers/level_helper.lua
+
 LevelHelper = LevelHelper or {}
 LevelHelper.INGAME_WORLD_NAME = "level_world"
 
@@ -23,6 +25,7 @@ LevelHelper.get_environment_variation_id = function (self, level_key)
 	end
 
 	environment_variations = cjson.decode(environment_variations)
+
 	local level_environment_variations = environment_variations[level_key]
 
 	if not level_environment_variations then
@@ -42,7 +45,7 @@ LevelHelper.get_environment_variation_id = function (self, level_key)
 		end
 
 		local variations = level_environment_variations.variations
-		local selected_variation_string, i, id = nil
+		local selected_variation_string, i, id
 
 		while #variations > 0 do
 			i = math.random(1, #variations)
@@ -103,7 +106,7 @@ end
 LevelHelper.find_dialogue_unit = function (self, world, dialogue_profile)
 	local level = LevelHelper:current_level(world)
 	local units = Level.units(level)
-	local intro_vo_unit = nil
+	local intro_vo_unit
 
 	for _, unit in ipairs(units) do
 		if Unit.has_data(unit, "dialogue_profile") then

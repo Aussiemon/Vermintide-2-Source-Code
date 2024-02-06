@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/health/beastmen_standard_health_extension.lua
+
 BeastmenStandardHealthExtension = class(BeastmenStandardHealthExtension, GenericHealthExtension)
 
 BeastmenStandardHealthExtension.init = function (self, extension_init_context, unit, extension_init_data)
@@ -21,16 +23,16 @@ BeastmenStandardHealthExtension.apply_client_predicted_damage = function (self, 
 end
 
 local white_listed_damage_sources = {
-	grenade_frag_02 = true,
-	torch = true,
+	dr_deus_01 = true,
+	explosive_barrel = true,
 	grenade_fire_01 = true,
 	grenade_fire_02 = true,
-	wpn_deus_relic_01 = true,
 	grenade_frag_01 = true,
-	explosive_barrel = true,
+	grenade_frag_02 = true,
 	markus_questingknight_career_skill_weapon = true,
-	dr_deus_01 = true,
-	shadow_torch = true
+	shadow_torch = true,
+	torch = true,
+	wpn_deus_relic_01 = true,
 }
 
 BeastmenStandardHealthExtension.add_damage = function (self, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, damaging_unit, hit_react_type, is_critical_strike, added_dot, first_hit, total_hits, attack_type)
@@ -38,6 +40,7 @@ BeastmenStandardHealthExtension.add_damage = function (self, attacker_unit, dama
 		BeastmenStandardHealthExtension.super.add_damage(self, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, damaging_unit, hit_react_type, is_critical_strike, added_dot, first_hit, total_hits, attack_type)
 	else
 		local can_damage_banner = false
+
 		can_damage_banner = attack_type and (attack_type == "heavy_attack" or attack_type == "light_attack") or white_listed_damage_sources[damage_source_name]
 
 		if can_damage_banner then

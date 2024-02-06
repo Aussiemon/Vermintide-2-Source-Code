@@ -1,94 +1,100 @@
+﻿-- chunkname: @scripts/settings/mutators/mutator_arena_belakor_script.lua
+
 local DECAL_TARGET_POSITION_COUNT = 7
-local BaseStates = {}
-BaseStates.tower = {
-	mission_name = "arena_belakor_overload_statue",
-	setup = function (state_template, data)
-		if data.is_server then
-			data.active_locus = {}
+local BaseStates = {
+	tower = {
+		mission_name = "arena_belakor_overload_statue",
+		setup = function (state_template, data)
+			if data.is_server then
+				data.active_locus = {}
+
+				local locus_entities = Managers.state.entity:get_entities("DeusBelakorLocusExtension")
+
+				for locus_unit, extension in pairs(locus_entities) do
+					data.active_locus[#data.active_locus + 1] = {
+						locus_unit,
+						extension,
+					}
+				end
+			end
+		end,
+		on_server_enter = function (state_template, data)
+			return
+		end,
+		on_server_exit = function (state_template, data)
+			return
+		end,
+		on_client_enter = function (state_template, data)
+			local mission_system = Managers.state.entity:system("mission_system")
+
+			mission_system:start_mission(state_template.base_state.mission_name)
+
 			local locus_entities = Managers.state.entity:get_entities("DeusBelakorLocusExtension")
 
 			for locus_unit, extension in pairs(locus_entities) do
-				data.active_locus[#data.active_locus + 1] = {
-					locus_unit,
-					extension
-				}
-			end
-		end
-	end,
-	on_server_enter = function (state_template, data)
-		return
-	end,
-	on_server_exit = function (state_template, data)
-		return
-	end,
-	on_client_enter = function (state_template, data)
-		local mission_system = Managers.state.entity:system("mission_system")
+				local locus_position = Unit.local_position(locus_unit, 0)
+				local min_distance = math.huge
+				local index
+				local closest_decal_pose = Unit.local_position(data.big_statue, 0)
 
-		mission_system:start_mission(state_template.base_state.mission_name)
+				for i = 1, #data.decal_poses do
+					local decal_pose = data.decal_poses[i]:unbox()
+					local decal_position = Matrix4x4.translation(decal_pose)
+					local distance = Vector3.distance_squared(locus_position, decal_position)
 
-		local locus_entities = Managers.state.entity:get_entities("DeusBelakorLocusExtension")
+					if distance < min_distance then
+						closest_decal_pose = decal_pose
+						min_distance = distance
+						index = i
+					end
+				end
 
-		for locus_unit, extension in pairs(locus_entities) do
-			local locus_position = Unit.local_position(locus_unit, 0)
-			local min_distance = math.huge
-			local index = nil
-			local closest_decal_pose = Unit.local_position(data.big_statue, 0)
+				extension:connect_to_statue(data.big_statue, closest_decal_pose)
 
-			for i = 1, #data.decal_poses do
-				local decal_pose = data.decal_poses[i]:unbox()
-				local decal_position = Matrix4x4.translation(decal_pose)
-				local distance = Vector3.distance_squared(locus_position, decal_position)
-
-				if distance < min_distance then
-					closest_decal_pose = decal_pose
-					min_distance = distance
-					index = i
+				if index then
+					table.swap_delete(data.decal_poses, index)
 				end
 			end
+		end,
+		on_client_exit = function (state_template, data)
+			local mission_system = Managers.state.entity:system("mission_system")
 
-			extension:connect_to_statue(data.big_statue, closest_decal_pose)
+			mission_system:end_mission(state_template.base_state.mission_name)
+		end,
+		server_update = function (current_state, data, dt, t)
+			local done_locus = 0
 
-			if index then
-				table.swap_delete(data.decal_poses, index)
+			for _, unit_and_extension in ipairs(data.active_locus) do
+				local extension = unit_and_extension[2]
+
+				done_locus = done_locus + (extension:is_complete() and 1 or 0)
 			end
-		end
-	end,
-	on_client_exit = function (state_template, data)
-		local mission_system = Managers.state.entity:system("mission_system")
 
-		mission_system:end_mission(state_template.base_state.mission_name)
-	end,
-	server_update = function (current_state, data, dt, t)
-		local done_locus = 0
+			if data.shared_state:get_server(data.shared_state:get_key("socketed_count")) ~= done_locus then
+				data.shared_state:set_server(data.shared_state:get_key("socketed_count"), done_locus)
+			end
+		end,
+		client_update = function (current_state, data, dt, t)
+			local current_value = Level.flow_variable(data.level, "socketed_count")
+			local new_value = data.shared_state:get_server(data.shared_state:get_key("socketed_count"))
 
-		for _, unit_and_extension in ipairs(data.active_locus) do
-			local extension = unit_and_extension[2]
-			done_locus = done_locus + (extension:is_complete() and 1 or 0)
-		end
-
-		if data.shared_state:get_server(data.shared_state:get_key("socketed_count")) ~= done_locus then
-			data.shared_state:set_server(data.shared_state:get_key("socketed_count"), done_locus)
-		end
-	end,
-	client_update = function (current_state, data, dt, t)
-		local current_value = Level.flow_variable(data.level, "socketed_count")
-		local new_value = data.shared_state:get_server(data.shared_state:get_key("socketed_count"))
-
-		if current_value ~= new_value then
-			Level.set_flow_variable(data.level, "socketed_count", new_value)
-			Level.trigger_event(data.level, "update_socketed_count")
-		end
-	end
+			if current_value ~= new_value then
+				Level.set_flow_variable(data.level, "socketed_count", new_value)
+				Level.trigger_event(data.level, "update_socketed_count")
+			end
+		end,
+	},
 }
-local ArenaStates = nil
+local ArenaStates
+
 ArenaStates = {
 	none = {
-		id = 0
+		id = 0,
 	},
 	approaching_the_tower = {
-		mission_name = "arena_belakor_go_tower",
 		exit_volume_id = "trigger_approach_tower_done",
 		id = 1,
+		mission_name = "arena_belakor_go_tower",
 		on_server_enter = function (state_template, data)
 			local volume_system = Managers.state.entity:system("volume_system")
 			local exit_volume_id = state_template.exit_volume_id
@@ -97,7 +103,7 @@ ArenaStates = {
 				sub_type = "players_inside",
 				on_triggered = function ()
 					data.shared_state:set_server(data.shared_state:get_key("state"), ArenaStates.tower_phase_1.id)
-				end
+				end,
 			})
 		end,
 		on_server_exit = function (state_template, data)
@@ -115,7 +121,7 @@ ArenaStates = {
 			local mission_system = Managers.state.entity:system("mission_system")
 
 			mission_system:end_mission(state_template.mission_name)
-		end
+		end,
 	},
 	tower_phase_1 = {
 		id = 2,
@@ -125,13 +131,14 @@ ArenaStates = {
 
 			for _, unit_and_extension in ipairs(data.active_locus) do
 				local extension = unit_and_extension[2]
+
 				done_locus = done_locus + (extension:is_complete() and 1 or 0)
 			end
 
 			if done_locus > 0 and done_locus / #data.active_locus >= 0.5 then
 				data.shared_state:set_server(data.shared_state:get_key("state"), ArenaStates.tower_phase_2.id)
 			end
-		end
+		end,
 	},
 	tower_phase_2 = {
 		id = 3,
@@ -141,18 +148,19 @@ ArenaStates = {
 
 			for _, unit_and_extension in ipairs(data.active_locus) do
 				local extension = unit_and_extension[2]
+
 				done_locus = done_locus + (extension:is_complete() and 1 or 0)
 			end
 
 			if done_locus > 0 and done_locus / #data.active_locus >= 1 then
 				data.shared_state:set_server(data.shared_state:get_key("state"), ArenaStates.escape.id)
 			end
-		end
+		end,
 	},
 	escape = {
-		mission_name = "arena_belakor_escape",
 		exit_volume_id = "trigger_escape_done",
 		id = 4,
+		mission_name = "arena_belakor_escape",
 		setup = function (state_template, data)
 			return
 		end,
@@ -161,9 +169,10 @@ ArenaStates = {
 		end,
 		on_client_enter = function (state_template, data)
 			return
-		end
-	}
+		end,
+	},
 }
+
 local id_to_state = {}
 local id_to_state_name = {}
 
@@ -177,15 +186,15 @@ local shared_state_spec = {
 		state = {
 			type = "number",
 			default_value = ArenaStates.none.id,
-			composite_keys = {}
+			composite_keys = {},
 		},
 		socketed_count = {
 			default_value = 0,
 			type = "number",
-			composite_keys = {}
-		}
+			composite_keys = {},
+		},
 	},
-	peer = {}
+	peer = {},
 }
 
 SharedState.validate_spec(shared_state_spec)
@@ -194,7 +203,7 @@ return {
 	hide_from_player_ui = true,
 	client_start_function = function (context, data)
 		local is_server = context.is_server
-		local network_server, server_peer_id = nil
+		local network_server, server_peer_id
 		local own_peer_id = Network.peer_id()
 
 		if is_server then
@@ -202,6 +211,7 @@ return {
 			server_peer_id = own_peer_id
 		else
 			local network_client = Managers.mechanism:network_handler()
+
 			server_peer_id = network_client.server_peer_id
 		end
 
@@ -216,7 +226,7 @@ return {
 		end
 
 		local big_statues = Managers.state.entity:get_entities("DeusArenaBelakorBigStatueExtension")
-		local big_statue = nil
+		local big_statue
 
 		for unit, _ in pairs(big_statues) do
 			fassert(data.big_statue == nil, "There can only be one unit with DeusArenaBelakorBigStatueExtension", #big_statues)
@@ -227,6 +237,7 @@ return {
 		fassert(big_statue, "There has to be one unit with DeusArenaBelakorBigStatueExtension")
 
 		data.big_statue = big_statue
+
 		local decal_poses = {}
 
 		for i = 1, DECAL_TARGET_POSITION_COUNT do
@@ -236,6 +247,7 @@ return {
 
 			local node = Unit.node(big_statue, node_name)
 			local decal_pose = Unit.world_pose(data.big_statue, node)
+
 			decal_poses[#decal_poses + 1] = Matrix4x4Box(decal_pose)
 		end
 
@@ -286,7 +298,7 @@ return {
 				end
 
 				if current_state.server_update then
-					current_state:server_update(data, dt, t)
+					current_state.server_update(current_state, data, dt, t)
 				end
 			end
 
@@ -295,7 +307,7 @@ return {
 			end
 
 			if current_state.client_update then
-				current_state:client_update(data, dt, t)
+				current_state.client_update(current_state, data, dt, t)
 			end
 		end
 
@@ -308,7 +320,7 @@ return {
 
 			if is_server then
 				if current_state.on_server_exit then
-					current_state:on_server_exit(data)
+					current_state.on_server_exit(current_state, data)
 				end
 
 				if current_base_state_left and current_state.base_state.on_server_exit then
@@ -317,7 +329,7 @@ return {
 			end
 
 			if current_state.on_client_exit then
-				current_state:on_client_exit(data)
+				current_state.on_client_exit(current_state, data)
 			end
 
 			if current_base_state_left and current_state.base_state.on_client_exit then
@@ -337,7 +349,7 @@ return {
 				end
 
 				if new_state.on_server_enter then
-					new_state:on_server_enter(data)
+					new_state.on_server_enter(new_state, data)
 				end
 			end
 
@@ -346,8 +358,8 @@ return {
 			end
 
 			if new_state.on_client_enter then
-				new_state:on_client_enter(data)
+				new_state.on_client_enter(new_state, data)
 			end
 		end
-	end
+	end,
 }

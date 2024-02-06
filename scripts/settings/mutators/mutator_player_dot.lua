@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/mutators/mutator_player_dot.lua
+
 return {
 	description = "description_mutator_player_dot",
 	display_name = "display_name_mutator_player_dot",
@@ -7,5 +9,5 @@ return {
 	end,
 	server_update_function = function (context, data, dt, t)
 		MutatorUtils.apply_buff_to_alive_player_units(context, data, "mutator_player_dot")
-	end
+	end,
 }

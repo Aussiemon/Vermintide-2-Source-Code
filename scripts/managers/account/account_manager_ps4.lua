@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/account/account_manager_ps4.lua
+
 require("scripts/managers/account/script_web_api_psn")
 require("scripts/utils/base64")
 require("scripts/network/ps_restrictions")
@@ -5,8 +7,10 @@ require("scripts/network/script_tss_token")
 require("scripts/managers/matchmaking/matchmaking_regions")
 
 local PresenceSet = require("scripts/settings/presence_set")
+
 AccountManager = class(AccountManager)
 AccountManager.VERSION = "ps4"
+
 local FRIEND_LIST_REQUEST_DELAY = 10
 local FRIEND_LIST_REQUEST_LIMIT = 500
 
@@ -16,17 +20,17 @@ end
 
 local CONSOLE_TYPE_SETTINGS = {
 	ps4 = {
-		allow_dismemberment = false
+		allow_dismemberment = false,
 	},
 	ps4_pro = {
-		allow_dismemberment = false
+		allow_dismemberment = false,
 	},
 	ps5 = {
-		allow_dismemberment = true
+		allow_dismemberment = true,
 	},
 	default = {
-		allow_dismemberment = false
-	}
+		allow_dismemberment = false,
+	},
 }
 
 AccountManager.init = function (self)
@@ -259,7 +263,7 @@ AccountManager._queue_popup = function (self, header, text, action1, buttontext1
 		header = header,
 		text = text,
 		action1 = action1,
-		buttontext1 = buttontext1
+		buttontext1 = buttontext1,
 	}
 	self._popup_id = Managers.popup:queue_popup(header, text, action1, buttontext1)
 end
@@ -303,7 +307,7 @@ AccountManager._update_psn_client = function (self, dt)
 		else
 			self._psn_client_timeout_timer = (self._psn_client_timeout_timer or 0) + dt
 
-			if PSN_CLIENT_READY_TIMEOUT < self._psn_client_timeout_timer then
+			if self._psn_client_timeout_timer > PSN_CLIENT_READY_TIMEOUT then
 				self._psn_client_error = "ready_timeout"
 				self._psn_client_timeout_timer = 0
 			end
@@ -322,8 +326,7 @@ AccountManager._update_psn = function (self)
 	local previous_room = self._previous_room
 	local room_state_current = current_room and current_room:state()
 	local room_state_previous = self._room_state
-	local room_joined = false
-	local room_left = false
+	local room_joined, room_left = false, false
 
 	if current_room ~= previous_room then
 		room_joined = room_state_current == LobbyState.JOINED
@@ -411,7 +414,7 @@ AccountManager._notify_plus = function (self)
 
 	local time_since_receive = Network.time_since_receive(current_host)
 
-	if GameSettingsDevelopment.network_silence_warning_delay < time_since_receive then
+	if time_since_receive > GameSettingsDevelopment.network_silence_warning_delay then
 		return
 	end
 
@@ -433,7 +436,7 @@ end
 AccountManager._update_matchmaking_data = function (self, dt)
 	local t = Managers.time:time("main")
 
-	if not self._matchmaking_data and not self._fetching_matchmaking_data and self._next_matchmaking_data_fetch <= t then
+	if not self._matchmaking_data and not self._fetching_matchmaking_data and t >= self._next_matchmaking_data_fetch then
 		self:_fetch_matchmaking_data(t)
 	end
 end
@@ -470,6 +473,7 @@ AccountManager.set_realtime_multiplay = function (self, active)
 	if active then
 		local room = self._current_room
 		local host = room and room:lobby_host()
+
 		self._realtime_multiplay_host = host
 	else
 		self._realtime_multiplay_host = nil
@@ -532,6 +536,7 @@ AccountManager.show_player_profile = function (self, user_id)
 	end
 
 	local own_user_id = self:user_id()
+
 	user_id = user_id or self:user_id()
 
 	NpProfileDialog.initialize()
@@ -550,6 +555,7 @@ AccountManager.show_player_profile_with_account_id = function (self, account_id)
 	end
 
 	local own_user_id = self:user_id()
+
 	account_id = account_id or self:account_id()
 
 	NpProfileDialog.initialize()
@@ -581,7 +587,7 @@ AccountManager._fetch_friends = function (self, num_to_fetch, offset, external_c
 	local api_group = "sdk:userProfile"
 	local path = string.format("/v1/users/%s/friendList?friendStatus=friend&presenceType=primary&presenceDetail=true&limit=%s&offset=%s", account_id, tostring(limit), tostring(offset))
 	local method = WebApi.GET
-	local content = nil
+	local content
 	local response_callback = callback(self, "cb_fetch_friends", num_to_fetch, offset, external_callback)
 
 	self._web_api:send_request(user_id, api_group, path, method, content, response_callback)
@@ -611,10 +617,11 @@ AccountManager.cb_fetch_friends = function (self, num_to_fetch, offset, external
 		local primary_info = presence.primaryInfo
 		local online_status = primary_info.onlineStatus
 		local room_id = primary_info.gameData and from_base64(primary_info.gameData)
-		local status, playing_this_game = nil
+		local status, playing_this_game
 
 		if online_status and online_status == "online" then
 			status = "online"
+
 			local game_title_info = primary_info.gameTitleInfo
 
 			if game_title_info and game_title_info.npTitleId == self._np_title_id then
@@ -631,13 +638,13 @@ AccountManager.cb_fetch_friends = function (self, num_to_fetch, offset, external
 			name = online_id,
 			status = status,
 			playing_this_game = playing_this_game,
-			room_id = room_id
+			room_id = room_id,
 		}
 	end
 
 	local limit = FRIEND_LIST_REQUEST_LIMIT
 
-	if #result_list == limit and table.size(friend_data) < num_to_fetch then
+	if #result_list == limit and num_to_fetch > table.size(friend_data) then
 		offset = offset + limit
 
 		self:_fetch_friends(num_to_fetch, offset, external_callback)
@@ -653,7 +660,7 @@ AccountManager.get_user_presence = function (self, account_id, response_callback
 	local api_group = "sdk:userProfile"
 	local path = string.format("/v1/users/%s/presence?type=platform&platform=PS4", Application.hex64_to_dec(account_id))
 	local method = WebApi.GET
-	local content = nil
+	local content
 
 	self._web_api:send_request(user_id, api_group, path, method, content, response_callback)
 end
@@ -681,7 +688,7 @@ AccountManager.set_presence_game_data = function (self, room_id)
 	local method = WebApi.PUT
 	local game_data = to_base64(room_id)
 	local content = {
-		gameData = game_data
+		gameData = game_data,
 	}
 
 	self._web_api:send_request(user_id, api_group, path, method, content)
@@ -714,15 +721,15 @@ AccountManager.create_session = function (self, room_id)
 	local user_id = self:user_id()
 	local session_parameters_table = {
 		max_user = 4,
-		type = "owner-bind",
-		privacy = "public",
 		platforms = "[\"PS4\"]",
-		lock_flag = lock_flag
+		privacy = "public",
+		type = "owner-bind",
+		lock_flag = lock_flag,
 	}
 	local session_parameters = self:_format_session_parameters(session_parameters_table)
 	local session_image = "/app0/content/session_images/session_image_default.jpg"
 	local session_data = room_id
-	local changable_session_data = nil
+	local changable_session_data
 
 	self._web_api:send_request_create_session(user_id, session_parameters, session_image, session_data, changable_session_data, callback(self, "_cb_session_created"))
 end
@@ -730,10 +737,12 @@ end
 AccountManager._cb_session_created = function (self, result)
 	if result then
 		local session_id = result.sessionId
+
 		self._session = {
 			is_owner = true,
-			id = session_id
+			id = session_id,
 		}
+
 		local room = self._current_room
 
 		if room then
@@ -766,7 +775,7 @@ AccountManager.join_session = function (self, session_id)
 
 	self._session = {
 		is_owner = false,
-		id = session_id
+		id = session_id,
 	}
 end
 
@@ -787,7 +796,7 @@ AccountManager.get_session_data = function (self, session_id, response_callback)
 	local api_group = "sessionInvitation"
 	local path = string.format("/v1/sessions/%s/sessionData", tostring(session_id))
 	local method = WebApi.GET
-	local content = nil
+	local content
 	local response_format = WebApi.STRING
 
 	self._web_api:send_request(user_id, api_group, path, method, content, response_callback, response_format)
@@ -798,6 +807,7 @@ AccountManager.send_session_invitation = function (self, to_account_id)
 	local session_id = self._session.id
 	local message = Localize("ps4_session_invitation")
 	local params = ""
+
 	params = params .. "{\r\n"
 	params = params .. "  \"to\":[\r\n"
 	params = params .. string.format("    \"%s\"\r\n", Application.hex64_to_dec(to_account_id))
@@ -817,6 +827,7 @@ AccountManager.send_session_invitation_multiple = function (self, to_account_ids
 	local session_id = self._session.id
 	local message = Localize("ps4_session_invitation")
 	local params = ""
+
 	params = params .. "{\r\n"
 	params = params .. "  \"to\":[\r\n"
 
@@ -849,6 +860,7 @@ AccountManager.activity_feed_post_mission_completed = function (self, level_disp
 	local languages = {}
 	local captions = {}
 	local condensed = {}
+
 	captions.default = string.format(Localize("activity_feed_finished_level_en"), Localize(level_display_name), Localize(difficulty_display_name))
 	condensed.default = string.format(Localize("activity_feed_finished_level_condensed_en"), Localize(level_display_name))
 
@@ -858,16 +870,16 @@ AccountManager.activity_feed_post_mission_completed = function (self, level_disp
 	end
 
 	local content = {
-		subType = 1,
 		storyType = "IN_GAME_POST",
+		subType = 1,
 		captions = captions,
 		condensedCaptions = condensed,
 		targets = {
 			{
 				type = "TITLE_ID",
-				meta = title_id
-			}
-		}
+				meta = title_id,
+			},
+		},
 	}
 	local content_json = cjson.encode(content)
 
@@ -880,7 +892,7 @@ AccountManager.get_entitlement = function (self, entitlement_label, optional_ser
 	local service_label = optional_service_label or 0
 	local path = string.format("/v1/users/me/entitlements/%s?service_label=%s&fields=active_flag", entitlement_label, service_label)
 	local method = WebApi.GET
-	local content = nil
+	local content
 
 	self._web_api:send_request(user_id, api_group, path, method, content, response_callback)
 end
@@ -891,7 +903,7 @@ AccountManager.get_product_details = function (self, product_label, optional_ser
 	local service_label = optional_service_label or 0
 	local path = string.format("/v1/users/me/container/%s?flag=discounts&useCurrencySymbol=true&serviceLabel=%s", product_label, service_label)
 	local method = WebApi.GET
-	local content = nil
+	local content
 	local response_format = WebApi.STRING
 
 	self._web_api:send_request(user_id, api_group, path, method, content, response_callback, response_format)
@@ -899,6 +911,7 @@ end
 
 AccountManager._format_session_parameters = function (self, params)
 	local str = ""
+
 	str = str .. "{\r\n"
 	str = str .. string.format("  \"sessionType\":%q,\r\n", params.type)
 	str = str .. string.format("  \"sessionPrivacy\":%q,\r\n", params.privacy)
@@ -922,7 +935,7 @@ end
 AccountManager._set_presence_status_content = function (self, presence, append)
 	local append = append
 	local presence_data = PresenceSet[presence] or {
-		"en"
+		"en",
 	}
 
 	if not PresenceSet[presence] then
@@ -930,6 +943,7 @@ AccountManager._set_presence_status_content = function (self, presence, append)
 	end
 
 	local str = ""
+
 	str = str .. "{\r\n"
 	str = str .. string.format("  \"gameStatus\":%q,\r\n", Localize(presence .. "_en") .. (append and " " .. Localize(append) or ""))
 	str = str .. "  \"localizedGameStatus\":[\r\n"

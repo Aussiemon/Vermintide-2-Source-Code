@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/console_friends_view.lua
+
 local definitions = local_require("scripts/ui/views/console_friends_view_definitions")
 local scenegraph_definition = definitions.scenegraph_definition
 local widget_definitions = definitions.widget_definitions
@@ -6,6 +8,7 @@ local entry_definitions = definitions.entry_definitions
 local DO_RELOAD = true
 local INVITE_COOLDOWN = 5
 local REFRESH_COOLDOWN = 12
+
 ConsoleFriendsView = class(ConsoleFriendsView)
 
 ConsoleFriendsView.init = function (self, ingame_ui_context)
@@ -14,7 +17,7 @@ ConsoleFriendsView.init = function (self, ingame_ui_context)
 	self._ui_top_renderer = ingame_ui_context.ui_top_renderer
 	self._ui_renderer = ingame_ui_context.ui_renderer
 	self._render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 	self._network_lobby = ingame_ui_context.network_lobby
 	self._invite_cooldown = {}
@@ -28,6 +31,7 @@ ConsoleFriendsView.init = function (self, ingame_ui_context)
 		self._wwise_world = MUSIC_WWISE_WORLD
 	else
 		local world = ingame_ui_context.world_manager:world("music_world")
+
 		self._wwise_world = Managers.world:wwise_world(world)
 	end
 
@@ -88,7 +92,7 @@ ConsoleFriendsView._join_game = function (self)
 
 			if room_id then
 				local lobby_data = {
-					id = room_id
+					id = room_id,
 				}
 				local current_lobby = self._ingame_ui_context.network_lobby
 				local current_room_id = current_lobby:id()
@@ -103,7 +107,7 @@ ConsoleFriendsView._join_game = function (self)
 					self._ingame_ui:handle_transition("join_lobby", lobby_data)
 				else
 					Managers.matchmaking:request_join_lobby(lobby_data, {
-						friend_join = true
+						friend_join = true,
 					})
 				end
 			end
@@ -121,6 +125,7 @@ ConsoleFriendsView._refresh_friends = function (self)
 	end
 
 	local loading_icon = self._widgets_by_name.loading_icon
+
 	loading_icon.style.loading_icon.color[1] = 255
 end
 
@@ -128,6 +133,7 @@ local empty_friend_list = {}
 
 ConsoleFriendsView.cb_friends_collected = function (self, friend_data)
 	friend_data = friend_data or empty_friend_list
+
 	local friend_list_widgets = self._friend_list_widgets
 
 	table.clear(friend_list_widgets)
@@ -177,6 +183,7 @@ ConsoleFriendsView.cb_friends_collected = function (self, friend_data)
 	print(string.format("Added %s friends", #friend_list_widgets))
 
 	local widget = self._widgets_by_name.loading_icon
+
 	self._ui_animations.loading_icon_fade = UIAnimation.init(UIAnimation.function_by_time, widget.style.loading_icon.color, 1, 255, 0, 0.5, math.easeOutCubic)
 	self._is_refreshing = false
 end
@@ -238,23 +245,27 @@ ConsoleFriendsView._create_ui_elements = function (self)
 	self._ui_animations = {}
 	self._ui_animations = {}
 	self._cursor_position = 1
+
 	local widgets = {}
 	local widgets_by_name = {}
 
 	for name, widget_definition in pairs(widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		widgets[#widgets + 1] = widget
 		widgets_by_name[name] = widget
 	end
 
 	self._widgets = widgets
 	self._widgets_by_name = widgets_by_name
+
 	local friends_bg = self._widgets_by_name.friends_bg
+
 	friends_bg.style.background.color = {
 		255,
 		128,
 		128,
-		128
+		128,
 	}
 
 	self:_setup_party_entries()
@@ -293,15 +304,17 @@ end
 
 ConsoleFriendsView._setup_party_entries = function (self)
 	self._party_entries = {}
+
 	local sorted_players = self:_sorted_players()
 	local offset = -40
 
 	for idx, player in ipairs(sorted_players) do
 		local name = player:name()
-		local career = nil
+		local career
 
 		if player.local_player then
 			local career_name = player:career_name()
+
 			career = CareerSettings[career_name]
 		else
 			local player_unit = player.player_unit
@@ -309,6 +322,7 @@ ConsoleFriendsView._setup_party_entries = function (self)
 			if Unit.alive(player_unit) then
 				local career_ext = ScriptUnit.extension(player_unit, "career_system")
 				local career_name = career_ext:career_name()
+
 				career = CareerSettings[career_name]
 			end
 		end
@@ -342,15 +356,14 @@ end
 
 ConsoleFriendsView._update_input_descriptions = function (self, dt, t)
 	local friends_widget = self._friend_list_widgets[self._current_friend_index]
-	local enable_profile_button = false
-	local enable_invite_button = false
+	local enable_profile_button, enable_invite_button = false, false
 
 	if friends_widget then
 		local friend_widget_content = friends_widget.content
 		local friend = friend_widget_content.friend
 		local friend_id = friend.xbox_user_id
 		local friend_online = friend.status == "online"
-		local invite = (not self._invite_cooldown[friend_id] or self._invite_cooldown[friend_id] < t) and friend_online and Managers.account:has_session() and "invite" or nil
+		local invite = not (self._invite_cooldown[friend_id] and not (t > self._invite_cooldown[friend_id])) and friend_online and Managers.account:has_session() and "invite" or nil
 		local refresh = not self._is_refreshing and "refresh"
 
 		if IS_PS4 and refresh and not friend_online then
@@ -399,6 +412,7 @@ ConsoleFriendsView._update_input_descriptions = function (self, dt, t)
 	if open_profile_button then
 		local open_profile_button_content = open_profile_button.content
 		local button_hotspot = open_profile_button_content.button_hotspot
+
 		button_hotspot.disable_button = not enable_profile_button
 	end
 
@@ -407,6 +421,7 @@ ConsoleFriendsView._update_input_descriptions = function (self, dt, t)
 	if invite_button then
 		local invite_button_content = invite_button.content
 		local button_hotspot = invite_button_content.button_hotspot
+
 		button_hotspot.disable_button = not enable_invite_button
 	end
 end
@@ -415,7 +430,7 @@ ConsoleFriendsView._handle_refresh = function (self, dt, t)
 	if IS_PS4 then
 		self._refresh_friends_timer = self._refresh_friends_timer or t + REFRESH_COOLDOWN
 
-		if self._refresh_friends_timer < t then
+		if t > self._refresh_friends_timer then
 			self:_refresh_friends()
 
 			self._refresh_friends_timer = t + REFRESH_COOLDOWN
@@ -439,11 +454,15 @@ ConsoleFriendsView._handle_input = function (self, dt, t)
 	end
 
 	local input_service = self:input_service()
+
 	self._ui_animations = self._ui_animations or {}
+
 	local entry_size_y = entry_definitions.friend_entry_size[2]
 	local base_pos_y = scenegraph_definition.friends_base.position[2]
+
 	self._wanted_pos = self._wanted_pos or base_pos_y
 	self._current_friend_index = self._current_friend_index or 1
+
 	local old_index = self._current_friend_index
 	local hold_down_timer = 0
 	local hold_up_timer = 0
@@ -467,6 +486,7 @@ ConsoleFriendsView._handle_input = function (self, dt, t)
 
 	self._hold_down_timer = hold_down_timer
 	self._hold_up_timer = hold_up_timer
+
 	local num_friends = #self._friend_list_widgets
 	local num_visible_friends = definitions.num_visible_friends
 	local scroll_value = input_service:get("scroll_axis")
@@ -507,6 +527,7 @@ ConsoleFriendsView._handle_input = function (self, dt, t)
 
 		if self._cursor_position == num_visible_friends then
 			local old_wanted_pos = self._wanted_pos
+
 			self._wanted_pos = math.clamp(self._wanted_pos + entry_size_y, base_pos_y, num_friends * entry_size_y + entry_size_y)
 			self._ui_animations.move = UIAnimation.init(UIAnimation.function_by_time, self._ui_scenegraph.friends_base.position, 2, self._ui_scenegraph.friends_base.position[2], self._wanted_pos, 0.3, math.easeOutCubic)
 
@@ -524,6 +545,7 @@ ConsoleFriendsView._handle_input = function (self, dt, t)
 
 		if self._cursor_position <= 2 and num_visible_friends < num_friends then
 			local old_wanted_pos = self._wanted_pos
+
 			self._wanted_pos = math.clamp(self._wanted_pos - entry_size_y, base_pos_y, num_friends * entry_size_y + entry_size_y)
 			self._ui_animations.move = UIAnimation.init(UIAnimation.function_by_time, self._ui_scenegraph.friends_base.position, 2, self._ui_scenegraph.friends_base.position[2], self._wanted_pos, 0.3, math.easeOutCubic)
 
@@ -598,7 +620,7 @@ ConsoleFriendsView._draw = function (self, dt, t)
 		for _, widget in ipairs(self._friend_list_widgets) do
 			local widget_position = ui_scenegraph.friends_base.position[2] + widget.offset[2]
 
-			if mask_start >= widget_position and mask_end <= widget_position then
+			if widget_position <= mask_start and mask_end <= widget_position then
 				UIRenderer.draw_widget(ui_top_renderer, widget)
 			end
 		end
@@ -652,6 +674,7 @@ ConsoleFriendsView._send_invite = function (self, widget, t)
 	end
 
 	self._network_lobby = self._ingame_ui_context.network_lobby
+
 	local invite_target = self._network_lobby:invite_target()
 
 	Managers.account:send_session_invitation(friend_id, invite_target)

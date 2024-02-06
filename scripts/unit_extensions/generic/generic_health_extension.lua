@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/generic/generic_health_extension.lua
+
 local data_fields = {
 	"DAMAGE_AMOUNT",
 	"DAMAGE_TYPE",
@@ -13,9 +15,11 @@ local data_fields = {
 	"FIRST_HIT",
 	"TOTAL_HITS",
 	"ATTACK_TYPE",
-	"BACKSTAB_MULTIPLIER"
+	"BACKSTAB_MULTIPLIER",
 }
+
 DamageDataIndex = {}
+
 local DamageDataIndex = DamageDataIndex
 
 for index, field_name in ipairs(data_fields) do
@@ -33,9 +37,10 @@ GenericHealthExtension.init = function (self, extension_init_context, unit, exte
 	self.statistics_db = extension_init_context.statistics_db
 	self.damage_buffers = {
 		pdArray.new(),
-		pdArray.new()
+		pdArray.new(),
 	}
 	self.network_transmit = extension_init_context.network_transmit
+
 	local health = extension_init_data.health or Unit.get_data(unit, "health")
 
 	if health == -1 then
@@ -191,14 +196,12 @@ GenericHealthExtension.set_max_health = function (self, health)
 	local network_health = math.clamp(health, health_constant.min, health_constant.max)
 	local decimal = network_health % 1
 	local rounded_decimal = math.round(decimal * 4) * 0.25
+
 	network_health = math.floor(network_health) + rounded_decimal
-
-	if network_health <= 0 then
-		network_health = 1
-	end
-
+	network_health = network_health <= 0 and 1 or network_health
 	self.health = network_health
 	self._damage_cap_per_hit = self._damage_cap or self.health
+
 	local network_manager = Managers.state.network
 	local go_id, is_level_unit = network_manager:game_object_or_level_id(self.unit)
 
@@ -213,18 +216,19 @@ GenericHealthExtension._add_to_damage_history_buffer = function (self, unit, att
 	local hit_position_table = hit_position and {
 		hit_position.x,
 		hit_position.y,
-		hit_position.z
+		hit_position.z,
 	} or nil
 	local damage_direction_table = damage_direction and {
 		damage_direction.x,
 		damage_direction.y,
-		damage_direction.z
+		damage_direction.z,
 	} or nil
 	local damage_buffers = self.damage_buffers
 	local system_data = self.system_data
 	local active_damage_buffer_index = system_data.active_damage_buffer_index
 	local damage_queue = damage_buffers[active_damage_buffer_index]
 	local temp_table = FrameTable.alloc_table()
+
 	temp_table[DamageDataIndex.DAMAGE_AMOUNT] = damage_amount
 	temp_table[DamageDataIndex.DAMAGE_TYPE] = damage_type
 	temp_table[DamageDataIndex.ATTACKER] = attacker_unit
@@ -247,7 +251,7 @@ GenericHealthExtension._add_to_damage_history_buffer = function (self, unit, att
 end
 
 GenericHealthExtension._should_die = function (self)
-	return self.health <= self.damage
+	return self.damage >= self.health
 end
 
 GenericHealthExtension.apply_client_predicted_damage = function (self, predicted_damage)
@@ -255,8 +259,9 @@ GenericHealthExtension.apply_client_predicted_damage = function (self, predicted
 
 	if not self:get_is_invincible() then
 		local damage_mod = math.min(predicted_damage, self._damage_cap_per_hit)
+
 		self.predicted_damage = self.predicted_damage + damage_mod
-		self.predicted_dead = self.health <= self.damage + self.predicted_damage
+		self.predicted_dead = self.damage + self.predicted_damage >= self.health
 	else
 		self.predicted_dead = false
 	end
@@ -273,11 +278,13 @@ GenericHealthExtension.add_damage = function (self, attacker_unit, damage_amount
 		local predicted_health = health - damage_amount
 		local clamped_health = math.max(predicted_health, min_health)
 		local raw_damage = math.max(health - clamped_health, 0)
+
 		damage_amount = DamageUtils.networkify_damage(raw_damage)
 	end
 
 	if not source_attacker_unit then
 		local last_attacker_id = self.last_damage_data.attacker_unit_id
+
 		source_attacker_unit = last_attacker_id and Managers.state.unit_storage:unit(last_attacker_id)
 	end
 
@@ -288,7 +295,9 @@ GenericHealthExtension.add_damage = function (self, attacker_unit, damage_amount
 	self._recent_damage_type = damage_type
 	self._recent_hit_react_type = hit_react_type
 	self._recent_damage_source_name = damage_source_name
+
 	local damage_t = Managers.time:time("game")
+
 	self._last_damage_t = damage_t
 
 	if damage_amount > 0 then
@@ -303,11 +312,7 @@ GenericHealthExtension.add_damage = function (self, attacker_unit, damage_amount
 	local buff_extension = ScriptUnit.has_extension(unit, "buff_system")
 
 	if buff_extension then
-		if buff_extension:has_buff_perk("ignore_death") then
-			min_health = 1
-		else
-			min_health = 0
-		end
+		min_health = buff_extension:has_buff_perk("ignore_death") and 1 or 0
 	end
 
 	if not self:get_is_invincible() and not self.dead then
@@ -316,9 +321,7 @@ GenericHealthExtension.add_damage = function (self, attacker_unit, damage_amount
 		if min_health > 0 then
 			local current_health = self:current_health()
 
-			if current_health <= damage_mod then
-				damage_mod = current_health - min_health
-			end
+			damage_mod = current_health <= damage_mod and current_health - min_health or damage_mod
 		end
 
 		self.damage = self.damage + damage_mod
@@ -363,6 +366,7 @@ GenericHealthExtension._sync_out_damage = function (self, attacker_unit, unit_id
 		local attack_type_id = NetworkLookup.buff_attack_types[attack_type or "n/a"]
 		local network_transmit = self.network_transmit
 		local is_dead = self.dead or false
+
 		is_critical_strike = is_critical_strike or false
 		added_dot = added_dot or false
 		first_hit = first_hit or false
@@ -380,6 +384,7 @@ GenericHealthExtension.add_heal = function (self, healer_unit, heal_amount, heal
 
 	if not self.dead then
 		self.damage = math.max(0, self.damage - heal_amount)
+
 		local unit_id, is_level_unit = Managers.state.network:game_object_or_level_id(unit)
 
 		if unit_id and self.is_server then
@@ -473,9 +478,12 @@ GenericHealthExtension.save_kill_feed_data = function (self, attacker_unit, dama
 			if not ai_suicide and (attacker_unit ~= unit or damage_type ~= "cutting") and breed then
 				last_damage_data.breed = breed
 				last_damage_data.damage_type = damage_type
+
 				local network_manager = Managers.state.network
+
 				last_damage_data.attacker_unit_id = network_manager:unit_game_object_id(attacker_unit)
 				registered_damage = true
+
 				local player = Managers.player:owner(attacker_unit)
 
 				if player then

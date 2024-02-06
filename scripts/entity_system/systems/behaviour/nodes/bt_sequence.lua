@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_sequence.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTSequence = class(BTSequence, BTNode)

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/hero_view/windows/hero_window_talents_console.lua
+
 require("scripts/ui/hud_ui/scrollbar_ui")
 
 local definitions = local_require("scripts/ui/views/hero_view/windows/definitions/hero_window_talents_console_definitions")
@@ -6,6 +8,7 @@ local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
 local generic_input_actions = definitions.generic_input_actions
 local DO_RELOAD = false
+
 HeroWindowTalentsConsole = class(HeroWindowTalentsConsole)
 HeroWindowTalentsConsole.NAME = "HeroWindowTalentsConsole"
 
@@ -13,16 +16,20 @@ HeroWindowTalentsConsole.on_enter = function (self, params, offset)
 	print("[HeroViewWindow] Enter Substate HeroWindowTalentsConsole")
 
 	self.parent = params.parent
+
 	local ingame_ui_context = params.ingame_ui_context
+
 	self.ui_renderer = ingame_ui_context.ui_renderer
 	self.ui_top_renderer = ingame_ui_context.ui_top_renderer
 	self.input_manager = ingame_ui_context.input_manager
 	self.statistics_db = ingame_ui_context.statistics_db
 	self.render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
+
 	local player_manager = Managers.player
 	local local_player = player_manager:local_player()
+
 	self._stats_id = local_player:stats_id()
 	self.player_manager = player_manager
 	self.player = local_player
@@ -33,9 +40,13 @@ HeroWindowTalentsConsole.on_enter = function (self, params, offset)
 
 	self.hero_name = params.hero_name
 	self.career_index = params.career_index
+
 	local profile_index = FindProfileIndex(self.hero_name)
+
 	self._career_name = SPProfiles[profile_index].careers[self.career_index].name
+
 	local experience = ExperienceSettings.get_experience(self.hero_name)
+
 	self.hero_level = ExperienceSettings.get_level(experience)
 
 	self:_initialize_talents()
@@ -45,10 +56,11 @@ end
 HeroWindowTalentsConsole._start_transition_animation = function (self, animation_name)
 	local params = {
 		wwise_world = self.wwise_world,
-		render_settings = self.render_settings
+		render_settings = self.render_settings,
 	}
 	local widgets = {}
 	local anim_id = self.ui_animator:start_animation(animation_name, widgets, scenegraph_definition, params)
+
 	self._animations[animation_name] = anim_id
 end
 
@@ -56,6 +68,7 @@ HeroWindowTalentsConsole.on_exit = function (self, params)
 	print("[HeroViewWindow] Exit Substate HeroWindowTalentsConsole")
 
 	self.ui_animator = nil
+
 	local talent_interface = self._talent_interface
 	local career_name = self._career_name
 
@@ -91,11 +104,13 @@ HeroWindowTalentsConsole.create_ui_elements = function (self, params, offset)
 	self:_inject_additional_scenegraph_definitions(scenegraph_definition)
 
 	self._ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+
 	local widgets = {}
 	local widgets_by_name = {}
 
 	for name, widget_definition in pairs(widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		widgets[#widgets + 1] = widget
 		widgets_by_name[name] = widget
 	end
@@ -104,8 +119,10 @@ HeroWindowTalentsConsole.create_ui_elements = function (self, params, offset)
 	self._widgets_by_name = widgets_by_name
 	self._additional_widgets = {}
 	self._additional_widgets_by_name = {}
+
 	local input_service = Managers.input:get_service("hero_view")
 	local gui_layer = UILayer.default + 30
+
 	self._menu_input_description = MenuInputDescriptionUI:new(nil, self.ui_top_renderer, input_service, 5, gui_layer, generic_input_actions.default, true)
 
 	self._menu_input_description:set_input_description(nil)
@@ -115,6 +132,7 @@ HeroWindowTalentsConsole.create_ui_elements = function (self, params, offset)
 
 	if offset then
 		local window_position = self._ui_scenegraph.window.local_position
+
 		window_position[1] = window_position[1] + offset[1]
 		window_position[2] = window_position[2] + offset[2]
 		window_position[3] = window_position[3] + offset[3]
@@ -125,6 +143,7 @@ HeroWindowTalentsConsole._initialize_talents = function (self)
 	local career_name = self._career_name
 	local talent_interface = Managers.backend:get_interface("talents")
 	local current_talents = talent_interface:get_talents(career_name)
+
 	self._selected_talents = table.clone(current_talents)
 	self._talent_interface = talent_interface
 
@@ -368,6 +387,7 @@ HeroWindowTalentsConsole._populate_talents_by_hero = function (self, initialize)
 			local talent_unlock_level = TalentUnlockLevels[unlock_name]
 			local row_unlocked = ProgressionUnlocks.is_unlocked(unlock_name, self.hero_level)
 			local level_text_color = row_unlocked and Colors.get_color_table_with_alpha("green", 255) or Colors.get_color_table_with_alpha("red", 255)
+
 			content.level_text = tostring(talent_unlock_level)
 			style.level_text.text_color = level_text_color
 
@@ -378,6 +398,7 @@ HeroWindowTalentsConsole._populate_talents_by_hero = function (self, initialize)
 			end
 
 			local glow_frame_style = style.glow_frame
+
 			glow_frame_style.color[1] = 0
 
 			if initialize and row_unlocked and no_talent_selected then
@@ -438,6 +459,7 @@ HeroWindowTalentsConsole._clear_talents = function (self)
 				local icon_name = "icon" .. name_suffix
 				local hotspot_name = "hotspot" .. name_suffix
 				local title_text_name = "title_text" .. name_suffix
+
 				content[icon_name] = "icons_placeholder"
 				content[title_text_name] = "Undefined"
 				content[hotspot_name].is_selected = false
@@ -461,6 +483,7 @@ HeroWindowTalentsConsole._set_talent_focused = function (self, row, column)
 				local hotspot_name = "hotspot" .. name_suffix
 				local hotspot = content[hotspot_name]
 				local focused = i == row and j == column
+
 				hotspot.focused = focused
 
 				if focused then
@@ -573,7 +596,7 @@ HeroWindowTalentsConsole._populate_career_info = function (self, initialize)
 		255,
 		255,
 		255,
-		255
+		255,
 	}
 	local passive_ability_data = career_settings.passive_ability
 	local activated_ability_data = career_settings.activated_ability[1]
@@ -581,12 +604,14 @@ HeroWindowTalentsConsole._populate_career_info = function (self, initialize)
 	local passive_icon = passive_ability_data.icon
 	local activated_display_name = activated_ability_data.display_name
 	local activated_icon = activated_ability_data.icon
+
 	widgets_by_name.passive_title_text.content.text = Localize(passive_display_name)
 	widgets_by_name.passive_description_text.content.text = UIUtils.get_ability_description(passive_ability_data)
 	widgets_by_name.passive_icon.content.texture_id = passive_icon
 	widgets_by_name.active_title_text.content.text = Localize(activated_display_name)
 	widgets_by_name.active_description_text.content.text = UIUtils.get_ability_description(activated_ability_data)
 	widgets_by_name.active_icon.content.texture_id = activated_icon
+
 	local passive_perks = passive_ability_data.perks
 	local total_perks_height = 0
 	local perks_height_spacing = 0
@@ -599,7 +624,9 @@ HeroWindowTalentsConsole._populate_career_info = function (self, initialize)
 		local scenegraph = ui_scenegraph[scenegraph_id]
 		local size = scenegraph.size
 		local offset = widget.offset
+
 		offset[2] = -total_perks_height
+
 		local data = passive_perks[i]
 
 		if data then
@@ -608,10 +635,13 @@ HeroWindowTalentsConsole._populate_career_info = function (self, initialize)
 			local title_text_style = style.title_text
 			local description_text_style = style.description_text
 			local description_text_shadow_style = style.description_text_shadow
+
 			content.title_text = display_name
 			content.description_text = description
+
 			local title_height = UIUtils.get_text_height(ui_renderer, size, title_text_style, display_name)
 			local description_height = UIUtils.get_text_height(ui_renderer, size, description_text_style, description)
+
 			description_text_style.offset[2] = -description_height
 			description_text_shadow_style.offset[2] = -(description_height + 2)
 			total_perks_height = total_perks_height + title_height + description_height + perks_height_spacing
@@ -632,12 +662,15 @@ HeroWindowTalentsConsole._setup_additional_career_info = function (self, career_
 		local base_offset = {
 			0,
 			-height,
-			0
+			0,
 		}
 		local scroll_height = 0
+
 		self._additional_widgets, self._additional_widgets_by_name, scroll_height = additional_info_definitions.setup(scroll_area_scenegraph_id, base_offset)
-		local optional_scroll_area_hotspot_widget = nil
+
+		local optional_scroll_area_hotspot_widget
 		local enable_auto_scroll = true
+
 		self._scrollbar = ScrollbarUI:new(self._ui_scenegraph, scroll_area_scenegraph_id, scroll_area_anchor_scenegraph_id, scroll_height, enable_auto_scroll, optional_scroll_area_hotspot_widget)
 	else
 		table.clear(self._additional_widgets)
@@ -664,7 +697,7 @@ HeroWindowTalentsConsole._set_talent_tooltip = function (self, talent, selected,
 	local info_widget = widgets_by_name.tooltip_info
 	local display_name = Localize(talent.name)
 	local description = UIUtils.get_talent_description(talent)
-	local requirement_text, information_text = nil
+	local requirement_text, information_text
 
 	if locked then
 		requirement_text = Localize("talent_locked_desc")

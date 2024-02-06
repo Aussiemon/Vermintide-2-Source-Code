@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/skaven_ratling_gunner/bt_ratling_gunner_approach_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTRatlingGunnerApproachAction = class(BTRatlingGunnerApproachAction, BTNode)
@@ -11,9 +13,11 @@ BTRatlingGunnerApproachAction.name = "BTRatlingGunnerApproachAction"
 BTRatlingGunnerApproachAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
 	local attack_pattern_data = blackboard.attack_pattern_data or {}
+
 	blackboard.attack_pattern_data = attack_pattern_data
 	blackboard.action = action
 	blackboard.lurk_start = blackboard.lurk_start or t
+
 	local move_speed = action.move_speed
 	local navigation_extension = blackboard.navigation_extension
 

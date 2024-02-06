@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/game_state/state_context.lua
+
 StateContext = StateContext or {}
 
 StateContext.set_context = function (c)

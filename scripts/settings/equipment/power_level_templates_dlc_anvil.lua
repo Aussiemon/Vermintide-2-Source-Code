@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/equipment/power_level_templates_dlc_anvil.lua
+
 PowerLevelTemplates = PowerLevelTemplates or {}
 PowerLevelTemplates.critical_strike_pull_smiter_L = {
 	attack_armor_power_modifer = {
@@ -6,7 +8,7 @@ PowerLevelTemplates.critical_strike_pull_smiter_L = {
 		1.5,
 		1,
 		0.5,
-		0.25
+		0.25,
 	},
 	impact_armor_power_modifer = {
 		2,
@@ -14,8 +16,8 @@ PowerLevelTemplates.critical_strike_pull_smiter_L = {
 		2,
 		2,
 		1,
-		1
-	}
+		1,
+	},
 }
 PowerLevelTemplates.armor_modifier_pull_smiter_L = {
 	attack = {
@@ -24,7 +26,7 @@ PowerLevelTemplates.armor_modifier_pull_smiter_L = {
 		1.2,
 		0.5,
 		0.25,
-		0
+		0,
 	},
 	impact = {
 		2,
@@ -32,17 +34,17 @@ PowerLevelTemplates.armor_modifier_pull_smiter_L = {
 		2,
 		2,
 		1,
-		1
-	}
+		1,
+	},
 }
 PowerLevelTemplates.default_target_pull_smiter_L = {
+	attack_template = "pull_smiter",
+	boost_curve_coefficient = 0.75,
 	boost_curve_coefficient_headshot = 1,
 	boost_curve_type = "smiter_curve",
-	boost_curve_coefficient = 0.75,
-	attack_template = "pull_smiter",
 	power_distribution = {
 		attack = 0.05,
-		impact = 0.5
-	}
+		impact = 0.5,
+	},
 }
 PowerLevelTemplates.targets_pull_smiter_L = {}

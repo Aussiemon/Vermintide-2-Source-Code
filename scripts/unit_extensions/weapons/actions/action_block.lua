@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/weapons/actions/action_block.lua
+
 ActionBlock = class(ActionBlock, ActionBase)
 
 ActionBlock.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
@@ -18,6 +20,7 @@ ActionBlock.client_owner_start_action = function (self, new_action, t)
 
 	self.current_action = new_action
 	self.action_time_started = t
+
 	local input_extension = ScriptUnit.extension(self.owner_unit, "input_system")
 
 	input_extension:reset_input_buffer()
@@ -108,7 +111,7 @@ ActionBlock.streak_available = function (self, t, streak_action)
 	local start_time = relative_start + blocked_time
 	local end_time = relative_end + blocked_time
 
-	if t > end_time then
+	if end_time < t then
 		self._blocked_flag = false
 		self._blocked_time = 0
 	elseif start_time <= t then

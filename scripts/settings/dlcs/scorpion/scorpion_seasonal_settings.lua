@@ -1,13 +1,16 @@
-ScorpionSeasonalSettings = {
-	current_season_id = 4,
-	get_season_name = function (id)
-		if id == 1 then
-			return "season_" .. id
-		end
+﻿-- chunkname: @scripts/settings/dlcs/scorpion/scorpion_seasonal_settings.lua
 
-		return "s" .. id
+ScorpionSeasonalSettings = {}
+ScorpionSeasonalSettings.current_season_id = 4
+
+ScorpionSeasonalSettings.get_season_name = function (id)
+	if id == 1 then
+		return "season_" .. id
 	end
-}
+
+	return "s" .. id
+end
+
 ScorpionSeasonalSettings.current_season_name = ScorpionSeasonalSettings.get_season_name(ScorpionSeasonalSettings.current_season_id)
 
 ScorpionSeasonalSettings.get_leaderboard_stat_for_season = function (season_id, player_num)

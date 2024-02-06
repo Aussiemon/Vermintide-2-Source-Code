@@ -1,22 +1,26 @@
+﻿-- chunkname: @scripts/entity_system/systems/ai/ai_interest_point_system.lua
+
 local broadphase_radius = 20
 local broadphase_num_objects = 128
 local script_data = script_data
+
 AIInterestPointSystem = class(AIInterestPointSystem, ExtensionSystemBase)
+
 local extensions = {
 	"AIInterestPointExtension",
-	"AIInterestPointHuskExtension"
+	"AIInterestPointHuskExtension",
 }
 local broadphase_race_filters = {
 	skaven = {
-		"skaven"
+		"skaven",
 	},
 	human = {
-		"human"
+		"human",
 	},
 	all = {
 		"skaven",
-		"human"
-	}
+		"human",
+	},
 }
 
 local function ipprintf(...)
@@ -42,7 +46,7 @@ AIInterestPointSystem.init = function (self, context, name)
 		end,
 		release_claim = function (request_id)
 			return self:api_release_claim(request_id)
-		end
+		end,
 	}
 	self.requests = {}
 	self.current_request_index = 0
@@ -50,17 +54,20 @@ AIInterestPointSystem.init = function (self, context, name)
 	self.interest_points = {}
 	self.interest_points_to_spawn = {}
 	self.reachable_interest_points = {}
+
 	local ai_system = Managers.state.entity:system("ai_system")
 	local nav_world = ai_system:nav_world()
+
 	self.nav_world = nav_world
 	self.astar = GwNavAStar.create(nav_world)
 	self.processing_astar = false
+
 	local navtag_layer_cost_table = GwNavTagLayerCostTable.create()
 	local nav_cost_map_cost_table = GwNavCostMap.create_tag_cost_table()
 	local layer_costs = {
+		jumps = 1,
 		ledges = 1,
 		ledges_with_fence = 1,
-		jumps = 1
 	}
 
 	table.merge(layer_costs, NAV_TAG_VOLUME_LAYER_COST_AI)
@@ -71,6 +78,7 @@ AIInterestPointSystem.init = function (self, context, name)
 	AiUtils.initialize_nav_cost_map_cost_table(nav_cost_map_cost_table)
 
 	self.nav_cost_map_cost_table = nav_cost_map_cost_table
+
 	local traverse_logic = GwNavTraverseLogic.create(nav_world, nav_cost_map_cost_table)
 
 	GwNavTraverseLogic.set_navtag_layer_cost_table(traverse_logic, navtag_layer_cost_table)
@@ -78,12 +86,15 @@ AIInterestPointSystem.init = function (self, context, name)
 	self.traverse_logic = traverse_logic
 	self.broadphase_radius = broadphase_radius
 	self.broadphase = Broadphase(self.broadphase_radius, broadphase_num_objects, broadphase_race_filters.all)
+
 	local network_event_delegate = context.network_event_delegate
+
 	self.network_event_delegate = network_event_delegate
 
 	network_event_delegate:register(self, "rpc_interest_point_chatter_update")
 
 	local level_seed = Managers.mechanism:get_level_seed()
+
 	self._seed = level_seed
 
 	print("[AIInterestPointSystem] Level Seed: ", level_seed)
@@ -93,6 +104,7 @@ end
 
 AIInterestPointSystem._random = function (self, ...)
 	local seed, value = Math.next_random(self._seed, ...)
+
 	self._seed = seed
 
 	return value
@@ -106,6 +118,7 @@ end
 
 AIInterestPointSystem.destroy = function (self)
 	local clear_table = table.clear
+
 	self.system_api[self.name] = nil
 	self.system_api = nil
 
@@ -167,6 +180,7 @@ AIInterestPointSystem.on_add_extension = function (self, world, unit, extension_
 			local anim_lookup_n = #anim_lookup
 			local nav_world = self.nav_world
 			local unit_position = Unit.local_position(unit, 0)
+
 			self.interest_points[unit] = extension
 
 			if script_data.ai_interest_point_debug then
@@ -175,6 +189,7 @@ AIInterestPointSystem.on_add_extension = function (self, world, unit, extension_
 
 			extension.wwise_event = Unit.get_data(unit, "interest_point", "wwise_event") or "enemy_skaven_idle_chatter"
 			extension.wwise_minimum_needed = Unit.get_data(unit, "interest_point", "wwise_minimum_needed") or 2
+
 			local filter_string = Unit.get_data(unit, "interest_point", "race_filter")
 
 			if filter_string then
@@ -184,10 +199,13 @@ AIInterestPointSystem.on_add_extension = function (self, world, unit, extension_
 			end
 
 			extension.race_filter = broadphase_race_filters[filter_string]
+
 			local num_valid_to_spawn = 0
+
 			extension.num_claimed_points = 0
 			extension.points = {}
 			extension.duration = Unit.get_data(unit, "interest_point", "duration")
+
 			local point_i = 0
 
 			while Unit.has_data(unit, "interest_point", "points", point_i) do
@@ -197,9 +215,7 @@ AIInterestPointSystem.on_add_extension = function (self, world, unit, extension_
 				local point_rotation = Unit.world_rotation(unit, node)
 				local animations = {}
 				local anim_i = 0
-				local x = point_position.x
-				local y = point_position.y
-				local z = point_position.z
+				local x, y, z = point_position.x, point_position.y, point_position.z
 				local is_position_on_navmesh, altitude = GwNavQueries.triangle_from_position(nav_world, point_position, 0.3, 0.3)
 
 				if is_position_on_navmesh then
@@ -224,12 +240,12 @@ AIInterestPointSystem.on_add_extension = function (self, world, unit, extension_
 					position = {
 						x,
 						y,
-						z
+						z,
 					},
 					animations = animations,
 					animations_n = anim_i,
 					is_position_on_navmesh = is_position_on_navmesh,
-					rotation = QuaternionBox(point_rotation)
+					rotation = QuaternionBox(point_rotation),
 				}
 
 				fassert(not is_position_on_navmesh or point.animations_n > 0, "There is an interest point %q (point index=%d, node name=%s) on the level with no valid animations at position=%s", tostring(unit), point_i + 1, node_name, tostring(point_position))
@@ -239,6 +255,7 @@ AIInterestPointSystem.on_add_extension = function (self, world, unit, extension_
 			end
 
 			local radius = 4
+
 			extension.broadphase_id = Broadphase.add(self.broadphase, unit, unit_position, radius, extension.race_filter)
 			extension.num_valid_to_spawn = num_valid_to_spawn
 
@@ -286,6 +303,7 @@ AIInterestPointSystem.on_remove_extension = function (self, unit, extension_name
 		self.processing_best_point = nil
 		self.processing_best_ip_unit = nil
 		self.processing_best_point_extension = nil
+
 		local astar = self.astar
 
 		if not GwNavAStar.processing_finished(astar) then
@@ -326,9 +344,10 @@ end
 
 AIInterestPointSystem.breed_spawned_callback = function (ai_unit, breed, optional_data)
 	local point = optional_data.dead_breed_data
+
 	BREED_DIE_LOOKUP[ai_unit] = {
 		AIInterestPointSystem.cleanup_dead_breed,
-		point
+		point,
 	}
 end
 
@@ -357,12 +376,12 @@ AIInterestPointSystem.spawn_interest_points = function (self)
 			if point.is_position_on_navmesh then
 				local breed = members[i]
 				local optional_data = {
-					ignore_event_counter = true
+					ignore_event_counter = true,
 				}
 				local spawn_category = "enemy_recycler"
-				local spawn_animation = nil
+				local spawn_animation
 				local spawn_type = "roam"
-				local group_data = nil
+				local group_data
 				local spawn_position = Vector3Aux.unbox(point.position)
 
 				if breed_override_lookup and breed_override_lookup[breed.name] then
@@ -370,6 +389,7 @@ AIInterestPointSystem.spawn_interest_points = function (self)
 				end
 
 				local id = conflict:spawn_queued_unit(breed, Vector3Box(spawn_position), point.rotation, spawn_category, spawn_animation, spawn_type, optional_data, group_data, point)
+
 				point[1] = id
 			else
 				print("FAIL INTEREST POINT SPAWN UNIT")
@@ -384,6 +404,7 @@ AIInterestPointSystem.spawn_interest_points = function (self)
 
 	for i = 1, spawned_interest_points_n do
 		local unit = spawned_interest_points[i]
+
 		interest_points_to_spawn[unit] = nil
 	end
 
@@ -407,6 +428,7 @@ AIInterestPointSystem.release_obsolete_requests = function (self, t)
 	local request = self.requests[request_id]
 	local claim_unit = request.claim_unit
 	local blackboard = BLACKBOARDS[claim_unit]
+
 	release_claim = not HEALTH_ALIVE[claim_unit] and true or blackboard.confirmed_player_sighting
 
 	if release_claim then
@@ -423,7 +445,7 @@ AIInterestPointSystem.release_obsolete_requests = function (self, t)
 end
 
 local function _get_next_request(requests, start_i, end_i)
-	local request, request_index = nil
+	local request, request_index
 
 	for r_i = start_i, end_i do
 		request = requests[r_i]
@@ -443,6 +465,7 @@ AIInterestPointSystem._update_astar_result = function (self, current_request_poi
 	self.processing_best_point = nil
 	self.processing_best_ip_unit = nil
 	self.processing_best_point_extension = nil
+
 	local path_found = GwNavAStar.path_found(astar)
 
 	if not path_found then
@@ -464,7 +487,7 @@ local interest_points_result = {}
 
 local function _get_best_interest_point(broadphase, request, claim_unit_position, current_request_point_unit, reachable_interest_points)
 	local ScriptUnit_Extension = ScriptUnit.extension
-	local path_found, perform_astar, best_unit, best_point, best_point_extension = nil
+	local path_found, perform_astar, best_unit, best_point, best_point_extension
 	local min_range_sq = request.min_range * request.min_range
 	local max_range_sq = request.max_range * request.max_range
 	local request_position = Vector3Aux.unbox(request.position)
@@ -483,10 +506,11 @@ local function _get_best_interest_point(broadphase, request, claim_unit_position
 			stored_reachable_result = reachable_interest_points[point_unit] and reachable_interest_points[point_unit][current_request_point_unit]
 		end
 
-		local point_unit_is_reachable = nil
+		local point_unit_is_reachable
 
 		if stored_reachable_result == nil then
 			local is_failed_interest_point = request.failed_interest_points[point_unit]
+
 			point_unit_is_reachable = is_failed_interest_point and not is_failed_interest_point
 		else
 			point_unit_is_reachable = stored_reachable_result
@@ -542,9 +566,10 @@ local function _check_and_update_request_result(request, best_unit, best_point, 
 		request.point_extension = best_point_extension
 		request.result = "success"
 		request.current_request = nil
+
 		local chatter_number = best_point_extension.num_claimed_points / best_point_extension.points_n
 
-		if best_point_extension.num_claimed_points < best_point_extension.wwise_minimum_needed then
+		if best_point_extension.wwise_minimum_needed > best_point_extension.num_claimed_points then
 			chatter_number = 0
 		end
 
@@ -567,11 +592,11 @@ AIInterestPointSystem.resolve_requests = function (self)
 
 	if request ~= nil then
 		self.current_request_index = request_index
+
 		local astar = self.astar
 		local processing_astar = self.processing_astar
-		local path_check_done = false
-		local path_found = false
-		local best_unit, best_point, best_point_extension = nil
+		local path_check_done, path_found = false, false
+		local best_unit, best_point, best_point_extension
 		local current_request_point_unit = request.current_request and request.current_request.interest_point_unit
 
 		if not processing_astar then
@@ -619,6 +644,7 @@ AIInterestPointSystem.debug_draw = function (self, t, dt)
 	end
 
 	local QuickDrawer = QuickDrawer
+
 	self.debug_anim_t = (self.debug_anim_t or 0) + dt
 
 	if self.debug_anim_t > 1 then
@@ -636,7 +662,7 @@ AIInterestPointSystem.debug_draw = function (self, t, dt)
 				QuickDrawer:cylinder(position, position + Vector3.up(), 0.25, Colors.get("dark_red"), 5)
 				QuickDrawer:cone(position + Vector3.up() * 1.3 + forward * 0.25, position + Vector3.up() * 1.3 - forward * 0.25, 0.1, Colors.get("dark_red"), 8, 8)
 			elseif point.claimed then
-				local offset = Vector3.up() * self.debug_anim_t * 0.2
+				local offset = Vector3.up() * (self.debug_anim_t * 0.2)
 
 				QuickDrawer:circle(position + Vector3.up() * 0.8, 0.25, Vector3.up(), Colors.get("lime_green"))
 				QuickDrawer:cylinder(position - offset, position + Vector3.up() * 1 - offset, 0.25, Colors.get("lime_green"), 5)
@@ -667,17 +693,19 @@ end
 
 AIInterestPointSystem.api_start_async_claim_request = function (self, claim_unit, position, min_range, max_range, current_request_id)
 	self.last_request_index = self.last_request_index + 1
+
 	local request_id = self.last_request_index
-	local request = {
-		claim_unit = claim_unit,
-		position = Vector3Aux.box(nil, position),
-		min_range = min_range,
-		max_range = max_range,
-		failed_interest_points = {}
-	}
+	local request = {}
+
+	request.claim_unit = claim_unit
+	request.position = Vector3Aux.box(nil, position)
+	request.min_range = min_range
+	request.max_range = max_range
+	request.failed_interest_points = {}
 
 	if current_request_id ~= nil then
 		local current_request = self.requests[current_request_id]
+
 		request.current_request = current_request
 	end
 
@@ -699,12 +727,14 @@ AIInterestPointSystem.api_release_claim = function (self, request_id)
 
 	if request.result == "success" and Unit.alive(request.interest_point_unit) then
 		local extension = request.point_extension
+
 		extension.num_claimed_points = extension.num_claimed_points - 1
 		request.point.claimed = nil
 		request.point.claim_unit = nil
+
 		local chatter_number = extension.num_claimed_points / extension.points_n
 
-		if extension.num_claimed_points < extension.wwise_minimum_needed then
+		if extension.wwise_minimum_needed > extension.num_claimed_points then
 			chatter_number = 0
 		end
 
@@ -782,6 +812,7 @@ AIInterestPointSystem.rpc_interest_point_chatter_update = function (self, channe
 		local use_occlusion = true
 		local wwise_source_id = WwiseWorld.make_manual_source(wwise_world, unit)
 		local wwise_playing_id = WwiseWorld.trigger_event(wwise_world, wwise_event, use_occlusion, wwise_source_id)
+
 		extension.wwise_source_id = wwise_source_id
 		extension.wwise_playing_id = wwise_playing_id
 

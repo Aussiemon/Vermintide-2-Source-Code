@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/flow/flow_callbacks_ai.lua
+
 local flow_return_table = Boot.flow_return_table
 
 function flow_callback_activate_ai_spawner(params)
@@ -102,9 +104,9 @@ function flow_callback_spawn_ai_and_move_to_unit(params)
 	local move_to_unit_1 = params.move_to_unit1
 	local move_to_unit_2 = params.move_to_unit2
 	local move_to_unit_3 = params.move_to_unit3
-	local move_to_table = {
-		[#move_to_table + 1] = move_to_unit_1
-	}
+	local move_to_table = {}
+
+	move_to_table[#move_to_table + 1] = move_to_unit_1
 
 	if move_to_unit_2 then
 		move_to_table[#move_to_table + 1] = move_to_unit_2
@@ -122,10 +124,11 @@ function flow_callback_spawn_ai_and_move_to_unit(params)
 		move_to_position = move_to_position,
 		spawned_func = function (unit, breed, optional_data)
 			local blackboard = BLACKBOARDS[unit]
+
 			blackboard.goal_destination = optional_data.move_to_position
 			blackboard.move_and_place_standard = true
 			blackboard.ignore_standard_pickup = true
-		end
+		end,
 	}
 
 	Managers.state.conflict:spawn_queued_unit(breed, spawn_position, QuaternionBox(Quaternion.identity()), "terror_event", nil, "terror_event", optional_data)
@@ -155,16 +158,18 @@ function flow_callback_ai_follow_path(params)
 
 		for ai_unit, _ in pairs(spawner:spawned_enemies()) do
 			local ai_base = ScriptUnit.extension(ai_unit, "ai_system")
+
 			ai_base:blackboard().move_orders[spline_name] = {
 				name = "follow",
-				finish_event = finish_event
+				finish_event = finish_event,
 			}
 		end
 	else
 		local ai_base = ScriptUnit.extension(ai_entity, "ai_system")
+
 		ai_base:blackboard().move_orders[spline_name] = {
 			name = "follow",
-			finish_event = finish_event
+			finish_event = finish_event,
 		}
 	end
 end
@@ -178,14 +183,16 @@ function flow_callback_ai_patrol_path(params)
 
 		for ai_unit, _ in pairs(spawner:spawned_enemies()) do
 			local ai_base = ScriptUnit.extension(ai_unit, "ai_system")
+
 			ai_base:blackboard().move_orders[spline_name] = {
-				name = "patrol"
+				name = "patrol",
 			}
 		end
 	else
 		local ai_base = ScriptUnit.extension(ai_entity, "ai_system")
+
 		ai_base:blackboard().move_orders[spline_name] = {
-			name = "patrol"
+			name = "patrol",
 		}
 	end
 end
@@ -200,16 +207,18 @@ function flow_callback_ai_move_to_command(params)
 
 		for ai_unit, _ in pairs(spawner:spawned_enemies()) do
 			local ai_base = ScriptUnit.extension(ai_unit, "ai_system")
+
 			ai_base:blackboard().move_orders[waypoint_unit] = {
 				name = "move",
-				finish_event = finish_event
+				finish_event = finish_event,
 			}
 		end
 	else
 		local ai_base = ScriptUnit.extension(ai_entity, "ai_system")
+
 		ai_base:blackboard().move_orders[waypoint_unit] = {
 			name = "move",
-			finish_event = finish_event
+			finish_event = finish_event,
 		}
 	end
 end
@@ -223,10 +232,12 @@ function flow_callback_ai_detect_player(params)
 
 		for ai_unit, _ in pairs(spawner:spawned_enemies()) do
 			local ai_base = ScriptUnit.extension(ai_unit, "ai_system")
+
 			ai_base:blackboard().players[player_unit] = true
 		end
 	else
 		local ai_base = ScriptUnit.extension(ai_entity, "ai_system")
+
 		ai_base:blackboard().players[player_unit] = true
 	end
 end
@@ -261,6 +272,7 @@ end
 
 function flow_callback_set_ai_properties(params)
 	local ai_entity = params.ai_entity
+
 	params.ai_entity = nil
 
 	if ScriptUnit.has_extension(ai_entity, "spawner_system") then
@@ -319,6 +331,7 @@ function flow_callback_force_terror_event(params)
 	end
 
 	local new_seed = Math.next_random(params.seed or 0)
+
 	flow_return_table.new_seed = new_seed
 
 	return flow_return_table
@@ -405,12 +418,12 @@ function flow_callback_player_bot_hold_position(params)
 			local ai_system = Managers.state.entity:system("ai_system")
 			local nav_world = ai_system:nav_world()
 			local hold_position = params.position or Unit.local_position(player_unit, 0)
-			local above = 0.5
-			local below = 2
+			local above, below = 0.5, 2
 			local success, altitude = GwNavQueries.triangle_from_position(nav_world, hold_position, above, below)
 
 			if success then
 				local max_distance = params.max_allowed_distance_from_position or 0
+
 				hold_position = Vector3(hold_position.x, hold_position.y, altitude)
 
 				ai_bot_group_extension:set_hold_position(hold_position, max_distance)
@@ -450,7 +463,7 @@ function flow_callback_broadphase_ai_set_goal_destination(params)
 
 	local goal_unit = params.goal_unit
 	local goal_position = Unit.local_position(goal_unit, 0)
-	local goal_destination = nil
+	local goal_destination
 	local above = 1
 	local below = 5
 	local ai_system = Managers.state.entity:system("ai_system")
@@ -462,6 +475,7 @@ function flow_callback_broadphase_ai_set_goal_destination(params)
 	else
 		local horizontal = 5
 		local distance_from_obstacle = 0.1
+
 		goal_destination = GwNavQueries.inside_position_from_outside_position(nav_world, goal_position, above, below, horizontal, distance_from_obstacle)
 	end
 
@@ -497,6 +511,7 @@ function flow_callback_get_crossroad_path_id(params)
 	local level_analysis = Managers.state.conflict.level_analysis
 	local chosen_crossroads = level_analysis.chosen_crossroads
 	local chosen_road_id = chosen_crossroads[crossroad_id]
+
 	flow_return_table.path_id = chosen_road_id
 
 	return flow_return_table

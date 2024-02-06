@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/wizards/shockwave_spell_extension.lua
+
 ShockwaveSpellExtension = class(ShockwaveSpellExtension)
 
 ShockwaveSpellExtension.init = function (self, extension_init_context, unit, extension_init_data)
@@ -30,14 +32,17 @@ ShockwaveSpellExtension.update = function (self, unit, input, dt, context, t)
 	end
 
 	broadphase_timer = broadphase_timer + dt
-	local do_broadphase = self._time_to_broadphase <= broadphase_timer
+
+	local do_broadphase = broadphase_timer >= self._time_to_broadphase
 	local elapsed_time = t - self._start_time
 	local lerp_t = elapsed_time / lerp_time
+
 	lerp_t = math.clamp(lerp_t, 0, 1)
+
 	local radius = math.lerp(self._shockwave_radius_min, self._shockwave_radius_max, lerp_t)
 	local position = self._position:unbox()
 
-	if lerp_t < 1 and do_broadphase then
+	if not (lerp_t >= 1) and do_broadphase then
 		num_hits = AiUtils.broadphase_query(position, radius, RESULT_TABLE)
 		broadphase_timer = 0
 	end
@@ -61,9 +66,11 @@ ShockwaveSpellExtension.damage_enemies = function (self, position, t)
 				local hit_unit_position = POSITION_LOOKUP[unit]
 				local damage_direction = Vector3.normalize(hit_unit_position - position)
 				local health_extension = ScriptUnit.extension(unit, "health_system")
+
 				HIT_ENEMIES[unit] = true
+
 				local hit_zone_name = "torso"
-				local damage_source = nil
+				local damage_source
 				local attacker_unit = self._unit
 				local damage_type = "grenade"
 
@@ -89,7 +96,7 @@ ShockwaveSpellExtension.damage_player = function (self, position, radius)
 		if ALIVE[player_unit] and not HIT_ENEMIES[player_unit] then
 			local player_position = POSITION_LOOKUP[player_unit]
 
-			if Vector3.distance_squared(position, player_position) < radius_squared then
+			if radius_squared > Vector3.distance_squared(position, player_position) then
 				local hit_zone_name = "torso"
 				local damage_type = "forced"
 				local damage_direction = Vector3.normalize(player_position - position)
@@ -100,6 +107,7 @@ ShockwaveSpellExtension.damage_player = function (self, position, radius)
 				health_extension:add_damage(player_unit, damage, hit_zone_name, damage_type, player_position, damage_direction)
 
 				HIT_ENEMIES[player_unit] = true
+
 				local push_multiplier = 10
 				local pushed_velocity = (damage_direction + Vector3.up() * 3) * push_multiplier
 				local locomotion_extension = ScriptUnit.extension(player_unit, "locomotion_system")
@@ -112,7 +120,9 @@ end
 
 ShockwaveSpellExtension.setup_shockwave = function (self, damage_data)
 	self._enemy_damage = damage_data.enemy_damage
+
 	local t = Managers.time:time("game")
+
 	self._start_time = t
 	self._spell_triggerd = true
 

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/player/player_manager.lua
+
 require("scripts/helpers/player_utils")
 require("scripts/settings/player_unit_damage_settings")
 require("scripts/managers/player/bulldozer_player")
@@ -8,10 +10,12 @@ require("scripts/helpers/loadout_utils")
 
 PlayerManager = class(PlayerManager)
 PlayerManager.MAX_PLAYERS = 4
+
 local BOT_LOCAL_ID_TABLE = {}
 
 for i = 1, #SPProfiles do
 	local profile = SPProfiles[i]
+
 	BOT_LOCAL_ID_TABLE[profile.index] = i + 1
 end
 
@@ -30,7 +34,7 @@ end
 local RPCS = {
 	"rpc_to_client_spawn_player",
 	"rpc_set_observed_player_id",
-	"rpc_sync_loadout_slot"
+	"rpc_sync_loadout_slot",
 }
 
 PlayerManager.set_is_server = function (self, is_server, network_event_delegate, network_manager)
@@ -69,6 +73,7 @@ PlayerManager.rpc_sync_loadout_slot = function (self, channel_id, peer_id, local
 
 	local slot_name, item = LoadoutUtils.create_loadout_item_from_rpc_data(slot_id, item_id, rarity_id, power_level, buff_ids, buff_value_type_ids, buff_values)
 	local unique_id = PlayerUtils.unique_player_id(peer_id, local_player_id)
+
 	self._player_loadouts[unique_id] = self._player_loadouts[unique_id] or {}
 	self._player_loadouts[unique_id][slot_name] = item
 
@@ -115,8 +120,7 @@ PlayerManager.rpc_to_client_spawn_player = function (self, channel_id, local_pla
 			Managers.state.spawn:delayed_despawn(player)
 		end
 
-		local position = Vector3Box(position)
-		local rotation = QuaternionBox(rotation)
+		local position, rotation = Vector3Box(position), QuaternionBox(rotation)
 
 		local function respawn_func()
 			if not player._destroyed and not player.player_unit then
@@ -227,13 +231,17 @@ PlayerManager.add_player = function (self, input_source, viewport_name, viewport
 	local ui_id = self:_create_ui_id()
 	local backend_id = Managers.backend:player_id()
 	local player = BulldozerPlayer:new(self.network_manager, input_source, viewport_name, viewport_world_name, self.is_server, local_player_id, unique_id, ui_id, backend_id)
+
 	self._players[unique_id] = player
 	self._num_human_players = self._num_human_players + 1
 	self._human_players[unique_id] = player
 	self._local_human_player = player
+
 	local player_table = self._players_by_peer
+
 	player_table[peer_id] = player_table[peer_id] or {}
 	player_table[peer_id][local_player_id] = player
+
 	local stats = Managers.backend:get_interface("statistics"):get_stats()
 
 	self._statistics_db:register(player:stats_id(), "player", stats)
@@ -260,6 +268,7 @@ PlayerManager.add_remote_player = function (self, peer_id, player_controlled, lo
 	local player = RemotePlayer:new(self.network_manager, peer_id, player_controlled, self.is_server, local_player_id, unique_id, clan_tag, ui_id, account_id)
 	local network_manager = Managers.state.network
 	local network_transmit = network_manager.network_transmit
+
 	self._players[unique_id] = player
 
 	if player_controlled then
@@ -276,6 +285,7 @@ PlayerManager.add_remote_player = function (self, peer_id, player_controlled, lo
 	end
 
 	local player_table = self._players_by_peer
+
 	player_table[peer_id] = player_table[peer_id] or {}
 	player_table[peer_id][local_player_id] = player
 
@@ -317,10 +327,14 @@ PlayerManager.add_bot_player = function (self, player_name, bot_player_peer_id, 
 	local unique_id = PlayerUtils.unique_player_id(peer_id, local_player_id)
 	local ui_id = self:_create_ui_id()
 	local player = PlayerBot:new(self.network_manager, player_name, bot_profile_index, self.is_server, profile_index, career_index, local_player_id, unique_id, ui_id)
+
 	self._players[unique_id] = player
+
 	local player_table = self._players_by_peer
+
 	player_table[peer_id] = player_table[peer_id] or {}
 	player_table[peer_id][local_player_id] = player
+
 	local stats_id = player:stats_id()
 
 	self._statistics_db:register(stats_id, "player")
@@ -360,7 +374,9 @@ PlayerManager.remove_player = function (self, peer_id, local_player_id)
 	end
 
 	local unique_id = PlayerUtils.unique_player_id(peer_id, local_player_id)
+
 	self._player_loadouts[unique_id] = nil
+
 	local player = self._players[unique_id]
 
 	if player then
@@ -376,7 +392,9 @@ PlayerManager.remove_player = function (self, peer_id, local_player_id)
 
 		self._players[unique_id] = nil
 		self._human_players[unique_id] = nil
+
 		local peer_table = self._players_by_peer[peer_id]
+
 		peer_table[local_player_id] = nil
 
 		if table.is_empty(peer_table) then

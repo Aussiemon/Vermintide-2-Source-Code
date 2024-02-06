@@ -1,4 +1,7 @@
+﻿-- chunkname: @scripts/imgui/imgui_buffs_debug.lua
+
 ImguiBuffsDebug = class(ImguiBuffsDebug)
+
 local SHOULD_RELOAD = true
 
 ImguiBuffsDebug.init = function (self)
@@ -216,18 +219,15 @@ ImguiBuffsDebug._update_controls = function (self)
 
 	if Imgui.button("Add", 100, 20) then
 		local buff_to_add = self._filtered_buff_list[self._selected_buff_id]
-
-		if self._buff_advanced_params_enabled then
-			local params = {
-				external_optional_bonus = self._buff_bonus_enabled and self._buff_bonus,
-				external_optional_multiplier = self._buff_multiplier_enabled and self._buff_multiplier,
-				external_optional_value = self._buff_value_enabled and self._buff_value,
-				external_optional_proc_chance = self._buff_proc_chance_enabled and self._buff_proc_chance,
-				external_optional_duration = self._buff_duration_enabled and self._buff_duration,
-				external_optional_range = self._buff_range_enabled and self._buff_range,
-				power_level = self._buff_power_level
-			}
-		end
+		local params = self._buff_advanced_params_enabled and {
+			external_optional_bonus = self._buff_bonus_enabled and self._buff_bonus,
+			external_optional_multiplier = self._buff_multiplier_enabled and self._buff_multiplier,
+			external_optional_value = self._buff_value_enabled and self._buff_value,
+			external_optional_proc_chance = self._buff_proc_chance_enabled and self._buff_proc_chance,
+			external_optional_duration = self._buff_duration_enabled and self._buff_duration,
+			external_optional_range = self._buff_range_enabled and self._buff_range,
+			power_level = self._buff_power_level,
+		}
 
 		self:_add_buff(self._buff_extension, buff_to_add, params)
 	end
@@ -257,8 +257,10 @@ ImguiBuffsDebug._update_controls = function (self)
 
 			if not found_peer_ids[peer_id] then
 				found_peer_ids[peer_id] = true
+
 				local player_name = Managers.player:player_from_unique_id(unique_id):name()
 				local display_name = string.format("%s (%s)", player_name, peer_id)
+
 				actual_peer_ids[#actual_peer_ids + 1] = peer_id
 
 				return display_name
@@ -266,6 +268,7 @@ ImguiBuffsDebug._update_controls = function (self)
 
 			return nil
 		end)
+
 		self._target_peer_id_idx = Imgui.combo("Peer ID", math.min(self._target_peer_id_idx or 1, #peer_ids), peer_ids)
 		self._target_peer_id = actual_peer_ids[self._target_peer_id_idx]
 	end
@@ -286,7 +289,7 @@ end
 ImguiBuffsDebug._display_buffs = function (self, buffs)
 	if Imgui.tree_node("Buffs") then
 		if buffs then
-			local buffs_to_remove = nil
+			local buffs_to_remove
 
 			for i = 1, #buffs do
 				local buff = buffs[i]
@@ -368,6 +371,7 @@ ImguiBuffsDebug._display_stat_buffs = function (self, stat_buffs)
 						local proc_chance = buff.proc_chance or 0
 						local value = buff.value
 						local display_value = value or 0
+
 						final_value = value or final_value * (1 + multiplier) + bonus
 
 						Imgui.text(string.format("%-36s%8.2f%12.2f%13.2f%14.2f%15.2f", name, bonus, multiplier, display_value, proc_chance, final_value))
@@ -419,7 +423,8 @@ end
 ImguiBuffsDebug._refresh_unit_list = function (self)
 	self._unit_names = {}
 	self._units = {}
-	local local_player_index = nil
+
+	local local_player_index
 
 	table.insert(self._unit_names, "none")
 	table.insert(self._units, false)

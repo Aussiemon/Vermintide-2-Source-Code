@@ -1,3 +1,5 @@
+﻿-- chunkname: @foundation/scripts/util/spline.lua
+
 Spline = class(Spline)
 
 Spline.calc_point = function (self, t)
@@ -11,6 +13,7 @@ Spline.calc_point = function (self, t)
 	local h3 = t3 - two_t2 + t
 	local h4 = t3 - t2
 	local res = Vector3.from_table(self._P1) * h1
+
 	res = res + Vector3.from_table(self._P2) * h2
 	res = res + Vector3.from_table(self._T1) * h3
 	res = res + Vector3.from_table(self._T2) * h4
@@ -36,6 +39,7 @@ Spline.set_points = function (self, points)
 	local p4 = Vector3.from_table(points[4])
 	local length = Vector3.length(p2 - p3)
 	local temp = Vector3.normalize(p3 - p1)
+
 	temp = temp * length
 	self._T1 = Vector3.as_table(temp)
 	temp = Vector3.normalize(p4 - p2)
@@ -47,12 +51,14 @@ end
 
 Spline.draw = function (self, drawer, segments)
 	segments = segments or 20
+
 	local segment_increment = 1 / segments
 	local t = 0
 	local point_a = self:calc_point(t)
 
 	while t < 1 do
 		t = t + segment_increment
+
 		local point_b = self:calc_point(t)
 
 		drawer:line(point_a, point_b)
@@ -67,6 +73,7 @@ Spline.length = function (self, segments)
 
 	for fraction = 1, segments do
 		local point = self:calc_point(fraction / segments)
+
 		length = length + Vector3.length(point - last_point)
 		last_point = point
 	end
@@ -76,6 +83,7 @@ end
 
 Spline.tangent = function (self, t, segment_size)
 	segment_size = segment_size or 0.01
+
 	local min_t = math.max(t - segment_size, 0)
 	local max_t = math.min(t + segment_size, 1)
 	local min_v = self:calc_point(min_t)
@@ -94,13 +102,16 @@ end
 Spline.set_points_with_rotation_tangents = function (self, points, rotation_t1, rotation_t2)
 	self._P1 = table.clone(Vector3.as_table(points[1]))
 	self._P2 = table.clone(Vector3.as_table(points[2]))
+
 	local length = Vector3.length(Vector3.from_table(points[1]) - Vector3.from_table(points[2]))
+
 	self._T1 = Vector3.as_table(Vector3.from_table(rotation_t1) * length)
 	self._T2 = Vector3.as_table(Vector3.from_table(rotation_t2) * length)
 end
 
 Spline.set_points_manual_start_tangent = function (self, t1, p2, p3, p4)
 	local length = Vector3.length(p2 - p3)
+
 	self._T1 = Vector3.as_table(t1 * length)
 	self._T2 = Vector3.as_table(Vector3.normalize(p4 - p2) * length)
 	self._P1 = Vector3.as_table(p2)
@@ -109,6 +120,7 @@ end
 
 Spline.set_points_manual_end_tangent = function (self, p1, p2, p3, t2)
 	local length = Vector3.length(p2 - p3)
+
 	self._T1 = Vector3.as_table(Vector3.normalize(p3 - p1) * length)
 	self._T2 = Vector3.as_table(t2 * length)
 	self._P1 = Vector3.as_table(p2)

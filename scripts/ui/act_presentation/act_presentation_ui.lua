@@ -1,8 +1,12 @@
+﻿-- chunkname: @scripts/ui/act_presentation/act_presentation_ui.lua
+
 local definitions = local_require("scripts/ui/act_presentation/act_presentation_ui_definitions")
 local scenegraph_definition = definitions.scenegraph_definition
 local widget_definitions = definitions.widgets
 local animation_definitions = definitions.animations
+
 ActPresentationUI = class(ActPresentationUI)
+
 local RELOAD_UI = false
 
 ActPresentationUI.init = function (self, ingame_ui_context)
@@ -14,7 +18,7 @@ ActPresentationUI.init = function (self, ingame_ui_context)
 	self.input_manager = ingame_ui_context.input_manager
 	self.render_settings = {
 		alpha_multiplier = 1,
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 	self.platform = PLATFORM
 	self.world = ingame_ui_context.world_manager:world("level_world")
@@ -37,6 +41,7 @@ ActPresentationUI.create_ui_elements = function (self)
 	for name, widget_definition in pairs(widget_definitions) do
 		if widget_definition then
 			local widget = UIWidget.init(widget_definition)
+
 			widgets[#widgets + 1] = widget
 			widgets_by_name[name] = widget
 		end
@@ -72,9 +77,11 @@ ActPresentationUI.start = function (self, level_key, previous_completed_difficul
 		first_time = first_time_completed,
 		previous_difficulty_index = previous_completed_difficulty_index,
 		difficulty_index = difficulty_index_completed,
-		render_settings = self.render_settings
+		render_settings = self.render_settings,
 	}
+
 	self.animation_params = animation_params
+
 	local animation_name = first_time_completed and "enter_first_time" or "enter"
 
 	self:start_presentation_animation(animation_name, animation_params)
@@ -91,6 +98,7 @@ ActPresentationUI._set_presentation_info = function (self, act_key, level_key)
 	local act_settings = ActSettings[act_key]
 	local act_display_name = act_settings.display_name
 	local widgets_by_name = self._widgets_by_name
+
 	widgets_by_name.level.content.icon = level_image
 	widgets_by_name.act_title.content.text = act_display_name and Localize(act_display_name) or ""
 	widgets_by_name.level_title.content.text = Localize(level_display_name)
@@ -108,6 +116,7 @@ ActPresentationUI._setup_level = function (self, act_key, played_level_key, prev
 	local widget = widgets_by_name[widget_name]
 	local content = widget.content
 	local style = widget.style
+
 	content.locked = first_time_completed or not level_completed
 
 	return first_time_completed, difficulty_complete_index
@@ -128,6 +137,7 @@ ActPresentationUI._update_animations = function (self, dt)
 			ui_animator:stop_animation(animation_id)
 
 			animations[animation_key] = nil
+
 			local animation_params = self.animation_params
 
 			if animation_params then
@@ -178,14 +188,12 @@ ActPresentationUI.draw = function (self, dt)
 end
 
 ActPresentationUI.start_presentation_animation = function (self, animation_name, optional_params)
-	if not optional_params then
-		local params = {
-			wwise_world = self.wwise_world
-		}
-	end
-
+	local params = optional_params or {
+		wwise_world = self.wwise_world,
+	}
 	local animation_id = self._ui_animator:start_animation(animation_name, self._widgets_by_name, scenegraph_definition, params)
 	local animation_key = animation_name
+
 	self._animations[animation_key] = animation_id
 
 	return animation_key

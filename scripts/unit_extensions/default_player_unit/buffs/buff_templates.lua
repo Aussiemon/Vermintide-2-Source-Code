@@ -1,160 +1,161 @@
+﻿-- chunkname: @scripts/unit_extensions/default_player_unit/buffs/buff_templates.lua
+
 require("scripts/utils/strict_table")
 require("scripts/settings/player_unit_damage_settings")
 require("scripts/settings/equipment/weapons")
 
 local buff_perks = require("scripts/unit_extensions/default_player_unit/buffs/settings/buff_perk_names")
-MeleeBuffTypes = {
-	MELEE_1H = true,
-	MELEE_2H = true
-}
-RangedBuffTypes = {
-	RANGED = true,
-	RANGED_ABILITY = true
-}
+
+MeleeBuffTypes = {}
+MeleeBuffTypes.MELEE_1H = true
+MeleeBuffTypes.MELEE_2H = true
+RangedBuffTypes = {}
+RangedBuffTypes.RANGED = true
+RangedBuffTypes.RANGED_ABILITY = true
 AttackTypes = table.enum("light_attack", "heavy_attack", "action_push", "projectile", "instant_projectile", "heavy_instant_projectile", "grenade")
 MeleeAttackTypes = {
 	[AttackTypes.light_attack] = true,
-	[AttackTypes.heavy_attack] = true
+	[AttackTypes.heavy_attack] = true,
 }
 RangedAttackTypes = {
 	[AttackTypes.projectile] = true,
 	[AttackTypes.instant_projectile] = true,
 	[AttackTypes.heavy_instant_projectile] = true,
-	[AttackTypes.grenade] = true
+	[AttackTypes.grenade] = true,
 }
 StatBuffApplicationMethods = {
-	deus_coins_greed = "stacking_multiplier",
-	dummy_stagger = "stacking_bonus",
-	gromril_cooldown = "stacking_bonus",
-	headshot_multiplier = "stacking_multiplier",
-	protection_chaos = "stacking_multiplier",
-	max_damage_taken_from_boss_or_elite = "min",
+	activated_cooldown = "stacking_multiplier",
+	applied_stagger_distance = "stacking_multiplier",
+	attack_intensity_decay = "stacking_multiplier",
+	attack_intensity_reset = "stacking_multiplier",
+	attack_intensity_threshold = "stacking_multiplier",
+	attack_speed = "stacking_multiplier",
 	attack_speed_drakefire = "stacking_multiplier",
-	increased_damage_to_balefire = "stacking_multiplier",
-	debuff_armoured = "stacking_bonus",
-	power_level_large = "stacking_multiplier",
-	increased_balefire_dot_duration = "stacking_multiplier",
-	critical_strike_effectiveness = "stacking_multiplier",
+	backstab_multiplier = "stacking_bonus",
+	block_angle = "stacking_multiplier",
+	block_cost = "stacking_multiplier",
+	clip_size = "stacking_multiplier",
+	cooldown_regen = "stacking_multiplier",
+	coop_stamina = "proc",
+	counter_push_power = "stacking_multiplier",
+	critical_strike_chance = "stacking_bonus",
 	critical_strike_chance_melee = "stacking_bonus",
 	critical_strike_chance_ranged = "stacking_bonus",
-	protection_gutter_runner = "stacking_multiplier",
-	vent_speed = "stacking_multiplier",
-	power_level_melee_cleave = "stacking_multiplier",
-	faster_respawn = "stacking_multiplier",
-	damage_taken_elites = "stacking_multiplier",
-	coop_stamina = "proc",
-	damage_taken_kd = "stacking_multiplier",
-	power_level_armoured = "stacking_multiplier",
-	not_consume_potion = "proc",
-	reduced_overcharge = "stacking_multiplier",
-	increased_weapon_damage_ranged_to_wounded = "stacking_multiplier",
-	not_consume_grenade = "proc",
-	increased_max_targets = "stacking_bonus",
-	faster_revive = "stacking_multiplier",
-	increased_weapon_damage_melee_1h = "stacking_multiplier",
-	grenade_extra_shot = "stacking_bonus",
-	block_cost = "stacking_multiplier",
-	applied_stagger_distance = "stacking_multiplier",
-	timed_block_cost = "stacking_multiplier",
-	push_range = "stacking_bonus",
-	reduced_overcharge_from_passive = "stacking_multiplier",
-	clip_size = "stacking_multiplier",
-	first_melee_hit_damage = "stacking_multiplier",
-	attack_intensity_reset = "stacking_multiplier",
+	critical_strike_effectiveness = "stacking_multiplier",
+	curse_protection = "stacking_multiplier",
+	damage_dealt = "stacking_multiplier",
 	damage_taken = "stacking_multiplier_multiplicative",
+	damage_taken_burning_enemy = "stacking_multiplier",
+	damage_taken_elites = "stacking_multiplier",
+	damage_taken_kd = "stacking_multiplier",
+	damage_taken_ranged = "stacking_multiplier",
+	damage_taken_to_overcharge = "stacking_multiplier",
+	debuff_armoured = "stacking_bonus",
+	deus_coins_greed = "stacking_multiplier",
+	dummy_stagger = "stacking_bonus",
+	explosion_radius = "stacking_multiplier",
+	extra_shot = "stacking_bonus",
 	extra_wounds = "stacking_bonus",
+	faster_respawn = "stacking_multiplier",
+	faster_revive = "stacking_multiplier",
+	fatigue_regen = "stacking_multiplier",
+	first_melee_hit_damage = "stacking_multiplier",
+	flat_power_level = "stacking_bonus",
+	full_charge_boost = "stacking_multiplier",
+	grenade_extra_shot = "stacking_bonus",
+	grenade_radius = "stacking_multiplier",
+	grimoire_max_health = "stacking_multiplier",
+	gromril_cooldown = "stacking_bonus",
+	headshot_damage = "stacking_multiplier",
+	headshot_multiplier = "stacking_multiplier",
+	headshot_vulnerability = "stacking_multiplier",
+	heal_self_on_heal_other = "proc",
+	healing_received = "stacking_multiplier",
+	health_curse = "stacking_bonus",
+	hit_force = "stacking_multiplier",
+	hit_mass_amount = "stacking_multiplier",
+	hit_mass_reduction = "stacking_multiplier",
+	impact_vulnerability = "stacking_multiplier",
+	increase_luck = "stacking_multiplier",
+	increased_balefire_dot_duration = "stacking_multiplier",
+	increased_burn_dot_damage = "stacking_multiplier",
+	increased_damage_to_balefire = "stacking_multiplier",
+	increased_max_targets = "stacking_bonus",
+	increased_move_speed_while_aiming = "stacking_multiplier",
+	increased_weapon_damage = "stacking_multiplier",
+	increased_weapon_damage_heavy_attack = "stacking_multiplier",
+	increased_weapon_damage_melee = "stacking_multiplier",
+	increased_weapon_damage_melee_1h = "stacking_multiplier",
+	increased_weapon_damage_melee_2h = "stacking_multiplier",
+	increased_weapon_damage_poisoned_or_bleeding = "stacking_multiplier",
+	increased_weapon_damage_ranged = "stacking_multiplier",
+	increased_weapon_damage_ranged_to_wounded = "stacking_multiplier",
 	life_essence = "stacking_multiplier",
 	max_controlled_pets = "stacking_bonus_and_multiplier",
-	attack_intensity_decay = "stacking_multiplier",
-	reload_speed = "stacking_multiplier",
-	stun_duration = "stacking_multiplier",
-	cooldown_regen = "stacking_multiplier",
-	power_level_chaos = "stacking_multiplier",
-	health_curse = "stacking_bonus",
-	power_level_critical_strike = "stacking_multiplier",
-	increased_weapon_damage_melee = "stacking_multiplier",
-	power_level = "stacking_multiplier",
-	hit_force = "stacking_multiplier",
-	push_power = "stacking_multiplier",
-	power_level_ranged = "stacking_multiplier",
-	unbalanced_damage_taken = "stacking_bonus",
-	increased_weapon_damage_ranged = "stacking_multiplier",
-	protection_aoe = "stacking_multiplier",
-	max_health_kd = "stacking_multiplier",
-	grenade_radius = "stacking_multiplier",
-	overcharge_regen = "stacking_multiplier",
-	grimoire_max_health = "stacking_multiplier",
-	overcharge_damage_immunity = "proc",
-	power_level_impact = "stacking_multiplier",
-	curse_protection = "stacking_multiplier",
-	increased_weapon_damage = "stacking_multiplier",
-	outer_block_angle = "stacking_multiplier",
-	damage_dealt = "stacking_multiplier",
-	increased_weapon_damage_poisoned_or_bleeding = "stacking_multiplier",
-	reduced_spread_hit = "stacking_multiplier",
-	power_level_super_armour = "stacking_multiplier",
-	protection_ratling_gunner = "stacking_multiplier",
 	max_damage_taken = "min",
-	movement_speed = "stacking_multiplier",
-	shield_break_proc = "proc",
-	full_charge_boost = "stacking_multiplier",
-	pet_life_time = "stacking_multiplier",
-	attack_intensity_threshold = "stacking_multiplier",
-	power_level_frenzy = "stacking_multiplier",
-	stagger_distance = "stacking_multiplier",
-	max_health_alive = "stacking_multiplier",
-	headshot_damage = "stacking_multiplier",
-	vent_damage = "stacking_multiplier",
-	counter_push_power = "stacking_multiplier",
-	damage_taken_to_overcharge = "stacking_multiplier",
-	fatigue_regen = "stacking_multiplier",
-	block_angle = "stacking_multiplier",
-	increase_luck = "stacking_multiplier",
-	hit_mass_amount = "stacking_multiplier",
-	max_health = "stacking_multiplier",
-	projectile_bounces = "stacking_bonus",
-	extra_shot = "stacking_bonus",
-	heal_self_on_heal_other = "proc",
-	stagger_resistance = "stacking_multiplier",
-	damage_taken_ranged = "stacking_multiplier",
-	unbalanced_damage_dealt = "stacking_multiplier",
-	hit_mass_reduction = "stacking_multiplier",
-	critical_strike_chance = "stacking_bonus",
-	max_overcharge = "stacking_multiplier",
-	reduced_non_burn_damage = "stacking_multiplier",
-	activated_cooldown = "stacking_multiplier",
-	increased_weapon_damage_heavy_attack = "stacking_multiplier",
-	no_push_fatigue_cost = "proc",
-	reduced_spread = "stacking_multiplier",
-	reduced_spread_moving = "stacking_multiplier",
-	increased_burn_dot_damage = "stacking_multiplier",
-	non_headshot_damage = "stacking_multiplier",
-	flat_power_level = "stacking_bonus",
-	reduced_spread_shot = "stacking_multiplier",
-	explosion_radius = "stacking_multiplier",
-	healing_received = "stacking_multiplier",
-	protection_skaven = "stacking_multiplier",
-	power_level_melee = "stacking_multiplier",
-	potion_duration = "stacking_multiplier",
-	total_ammo = "stacking_multiplier",
-	reduced_ranged_charge_time = "stacking_multiplier",
-	impact_vulnerability = "stacking_multiplier",
+	max_damage_taken_from_boss_or_elite = "min",
 	max_fatigue = "stacking_bonus",
-	power_level_unarmoured = "stacking_multiplier",
-	attack_speed = "stacking_multiplier",
-	increased_move_speed_while_aiming = "stacking_multiplier",
-	protection_pack_master = "stacking_multiplier",
-	headshot_vulnerability = "stacking_multiplier",
+	max_health = "stacking_multiplier",
+	max_health_alive = "stacking_multiplier",
+	max_health_kd = "stacking_multiplier",
+	max_overcharge = "stacking_multiplier",
+	movement_speed = "stacking_multiplier",
+	no_push_fatigue_cost = "proc",
+	non_headshot_damage = "stacking_multiplier",
+	not_consume_grenade = "proc",
 	not_consume_medpack = "proc",
-	increased_weapon_damage_melee_2h = "stacking_multiplier",
-	backstab_multiplier = "stacking_bonus",
-	protection_poison_wind = "stacking_multiplier",
-	throw_speed_increase = "stacking_multiplier",
-	ranged_additional_penetrations = "stacking_bonus",
+	not_consume_potion = "proc",
+	outer_block_angle = "stacking_multiplier",
+	overcharge_damage_immunity = "proc",
+	overcharge_regen = "stacking_multiplier",
+	pet_life_time = "stacking_multiplier",
+	potion_duration = "stacking_multiplier",
+	power_level = "stacking_multiplier",
+	power_level_armoured = "stacking_multiplier",
+	power_level_chaos = "stacking_multiplier",
+	power_level_critical_strike = "stacking_multiplier",
+	power_level_frenzy = "stacking_multiplier",
+	power_level_impact = "stacking_multiplier",
+	power_level_large = "stacking_multiplier",
+	power_level_melee = "stacking_multiplier",
+	power_level_melee_cleave = "stacking_multiplier",
+	power_level_ranged = "stacking_multiplier",
+	power_level_ranged_drakefire = "stacking_multiplier",
 	power_level_skaven = "stacking_multiplier",
-	damage_taken_burning_enemy = "stacking_multiplier",
+	power_level_super_armour = "stacking_multiplier",
+	power_level_unarmoured = "stacking_multiplier",
+	projectile_bounces = "stacking_bonus",
+	protection_aoe = "stacking_multiplier",
+	protection_chaos = "stacking_multiplier",
+	protection_gutter_runner = "stacking_multiplier",
+	protection_pack_master = "stacking_multiplier",
+	protection_poison_wind = "stacking_multiplier",
+	protection_ratling_gunner = "stacking_multiplier",
+	protection_skaven = "stacking_multiplier",
+	push_power = "stacking_multiplier",
+	push_range = "stacking_bonus",
+	ranged_additional_penetrations = "stacking_bonus",
+	reduced_non_burn_damage = "stacking_multiplier",
+	reduced_overcharge = "stacking_multiplier",
+	reduced_overcharge_from_passive = "stacking_multiplier",
+	reduced_ranged_charge_time = "stacking_multiplier",
+	reduced_spread = "stacking_multiplier",
+	reduced_spread_hit = "stacking_multiplier",
+	reduced_spread_moving = "stacking_multiplier",
+	reduced_spread_shot = "stacking_multiplier",
+	reload_speed = "stacking_multiplier",
+	shield_break_proc = "proc",
 	shielding_player_by_assist = "proc",
-	power_level_ranged_drakefire = "stacking_multiplier"
+	stagger_distance = "stacking_multiplier",
+	stagger_resistance = "stacking_multiplier",
+	stun_duration = "stacking_multiplier",
+	throw_speed_increase = "stacking_multiplier",
+	timed_block_cost = "stacking_multiplier",
+	total_ammo = "stacking_multiplier",
+	unbalanced_damage_dealt = "stacking_multiplier",
+	unbalanced_damage_taken = "stacking_bonus",
+	vent_damage = "stacking_multiplier",
+	vent_speed = "stacking_multiplier",
 }
 WeaponSpecificStatBuffs = {}
 
@@ -257,7 +258,7 @@ ProcEvents = {
 	"on_gromril_armour_removed",
 	"on_broke_shield",
 	"on_pet_spawned",
-	"minion_attack_used"
+	"minion_attack_used",
 }
 
 local function make_proc_param_lookup(...)
@@ -266,6 +267,7 @@ local function make_proc_param_lookup(...)
 
 	for i = 1, num_args do
 		local arg = select(i, ...)
+
 		t[arg] = i
 	end
 
@@ -276,8 +278,9 @@ ProcEventParams = {
 	on_player_damage_dealt = make_proc_param_lookup("attacked_unit", "damage_amount", "hit_zone_name", "no_crit_headshot_damage", "is_critical_strike", "buff_attack_type", "target_index", "damage_source", "first_hit", "PROC_MODIFIABLE"),
 	on_damage_dealt = make_proc_param_lookup("attacked_unit", "attacker_unit", "damage_amount", "hit_zone_name", "no_crit_headshot_damage", "is_critical_strike", "buff_attack_type", "target_index", "damage_source", "damage_type", "first_hit", "PROC_MODIFIABLE"),
 	on_critical_hit = make_proc_param_lookup("hit_unit", "attack_type", "hit_zone_name", "target_number", "buff_type"),
-	on_ranged_hit = make_proc_param_lookup("hit_unit", "attack_type", "hit_zone_name", "target_number", "buff_type", "is_critical", "unmodified")
+	on_ranged_hit = make_proc_param_lookup("hit_unit", "attack_type", "hit_zone_name", "target_number", "buff_type", "is_critical", "unmodified"),
 }
+
 local buff_params = {}
 
 local function is_local(unit)
@@ -338,6 +341,7 @@ ProcFunctions = {
 	metal_mutator_stacks_on_hit = function (owner_unit, buff, params)
 		if ALIVE[owner_unit] and Managers.player.is_server then
 			local current_stacks = buff.current_stacks or 0
+
 			current_stacks = current_stacks + 1
 
 			if current_stacks == buff.template.num_stacks then
@@ -679,7 +683,7 @@ ProcFunctions = {
 
 				if is_server() then
 					buff_extension:add_buff(buff_name, {
-						attacker_unit = owner_unit
+						attacker_unit = owner_unit,
 					})
 					network_transmit:send_rpc_clients("rpc_add_buff", unit_object_id, buff_template_name_id, unit_object_id, 0, false)
 				else
@@ -796,6 +800,7 @@ ProcFunctions = {
 	bardin_ironbreaker_gromril_trigger_rising_anger = function (owner_unit, buff, params)
 		if ALIVE[owner_unit] then
 			buff.buff_ids = buff.buff_ids or {}
+
 			local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
 			local buff_amount = #buff.buff_ids
 
@@ -814,6 +819,7 @@ ProcFunctions = {
 			end
 
 			local t = Managers.time:time("game")
+
 			buff._next_update_t = t + 0.5
 		end
 	end,
@@ -844,7 +850,7 @@ ProcFunctions = {
 	bardin_ironbreaker_regen_stamina_on_block_broken = function (owner_unit, buff, params)
 		if Unit.alive(owner_unit) then
 			local template = buff.template
-			local procced = math.random() <= template.proc_chance
+			local procced = template.proc_chance >= math.random()
 
 			if procced then
 				local status_extension = ScriptUnit.has_extension(owner_unit, "status_system")
@@ -1129,7 +1135,7 @@ ProcFunctions = {
 	ranged_crits_increase_dmg_vs_armour_type = function (owner_unit, buff, params)
 		local target_unit = params[1]
 		local attack_type = params[2]
-		local hit_zone_name = nil
+		local hit_zone_name
 		local breed = AiUtils.unit_breed(target_unit)
 		local armor_override = Unit.get_data(target_unit, "armor")
 		local armor_type = ActionUtils.get_target_armor(hit_zone_name, breed, armor_override)
@@ -1202,7 +1208,7 @@ ProcFunctions = {
 				return
 			end
 
-			local buff_to_add = nil
+			local buff_to_add
 
 			if required_targets <= target_number and buff.can_trigger then
 				buff_to_add = template.long_buff
@@ -1323,7 +1329,7 @@ ProcFunctions = {
 
 			local buffs_to_add = {
 				"kerillian_shade_activated_ability_short",
-				"kerillian_shade_activated_ability_short_blocker"
+				"kerillian_shade_activated_ability_short_blocker",
 			}
 
 			if local_player or is_server and bot_player then
@@ -1337,7 +1343,7 @@ ProcFunctions = {
 
 					if is_server() then
 						buff_extension:add_buff(buff_name, {
-							attacker_unit = player_unit
+							attacker_unit = player_unit,
 						})
 						network_transmit:send_rpc_clients("rpc_add_buff", unit_object_id, buff_template_name_id, unit_object_id, 0, false)
 					else
@@ -1404,7 +1410,7 @@ ProcFunctions = {
 		local killer_unit = killing_blow_table[DamageDataIndex.ATTACKER]
 		local damage_source = killing_blow_table[DamageDataIndex.DAMAGE_SOURCE_NAME]
 		local breed_data = params[2]
-		local can_trigger = nil
+		local can_trigger
 
 		if breed_data then
 			can_trigger = breed_data.elite or breed_data.special
@@ -1604,6 +1610,7 @@ ProcFunctions = {
 		if not active_buff then
 			local server_buff_id = buff_system:add_buff(owner_unit, buff_to_add, owner_unit, server_controlled)
 			local added_buff = buff_extension:get_non_stacking_buff(buff_to_add)
+
 			added_buff.server_buff_id = server_buff_id
 		end
 	end,
@@ -1781,7 +1788,7 @@ ProcFunctions = {
 
 			if is_server() then
 				buff_extension:add_buff(buff_name, {
-					attacker_unit = unit
+					attacker_unit = unit,
 				})
 				network_transmit:send_rpc_clients("rpc_add_buff", unit_object_id, buff_template_name_id, unit_object_id, 0, false)
 			else
@@ -1812,6 +1819,7 @@ ProcFunctions = {
 		table.clear(buff_params)
 
 		buff_params.attacker_unit = owner_unit
+
 		local player = Managers.player:owner(owner_unit)
 
 		Managers.state.entity:system("buff_system"):add_buff_synced(owner_unit, buff_name, BuffSyncType.Client, buff_params, player.peer_id)
@@ -1847,11 +1855,11 @@ ProcFunctions = {
 
 			if client_side then
 				buff_extension:add_buff(buff_name, {
-					attacker_unit = owner_unit
+					attacker_unit = owner_unit,
 				})
 			elseif is_server() then
 				buff_extension:add_buff(buff_name, {
-					attacker_unit = owner_unit
+					attacker_unit = owner_unit,
 				})
 				network_transmit:send_rpc_clients("rpc_add_buff", unit_object_id, buff_template_name_id, unit_object_id, 0, false)
 			else
@@ -1886,7 +1894,7 @@ ProcFunctions = {
 
 				if is_server() then
 					buff_extension:add_buff(buff_name, {
-						attacker_unit = owner_unit
+						attacker_unit = owner_unit,
 					})
 					network_transmit:send_rpc_clients("rpc_add_buff", unit_object_id, buff_template_name_id, unit_object_id, 0, false)
 				else
@@ -1973,7 +1981,7 @@ ProcFunctions = {
 
 				if is_server() then
 					buff_extension:add_buff(buff_name, {
-						attacker_unit = owner_unit
+						attacker_unit = owner_unit,
 					})
 					network_transmit:send_rpc_clients("rpc_add_buff", unit_object_id, buff_template_name_id, unit_object_id, 0, false)
 				else
@@ -1997,6 +2005,7 @@ ProcFunctions = {
 				if template.reference_buff then
 					local reference_buff_name = template.reference_buff
 					local reference_buff = buff_extension:get_non_stacking_buff(reference_buff_name)
+
 					max_sub_buff_stacks = reference_buff.template.max_sub_buff_stacks
 
 					if not reference_buff.buff_list then
@@ -2043,7 +2052,7 @@ ProcFunctions = {
 
 				if is_server() then
 					buff_extension:add_buff(buff_name, {
-						attacker_unit = owner_unit
+						attacker_unit = owner_unit,
 					})
 					network_transmit:send_rpc_clients("rpc_add_buff", unit_object_id, buff_template_name_id, unit_object_id, 0, false)
 				else
@@ -2067,7 +2076,7 @@ ProcFunctions = {
 
 				if is_server() then
 					buff_extension:add_buff(buff_name, {
-						attacker_unit = owner_unit
+						attacker_unit = owner_unit,
 					})
 					network_transmit:send_rpc_clients("rpc_add_buff", unit_object_id, buff_template_name_id, unit_object_id, 0, false)
 				else
@@ -2092,7 +2101,7 @@ ProcFunctions = {
 
 				if max_sub_buff_stacks > #buff.buff_list then
 					buff.buff_list[#buff.buff_list + 1] = buff_extension:add_buff(buff_name, {
-						attacker_unit = owner_unit
+						attacker_unit = owner_unit,
 					})
 				end
 			end
@@ -2141,7 +2150,7 @@ ProcFunctions = {
 
 				if is_server() then
 					buff_extension:add_buff(buff_name, {
-						attacker_unit = owner_unit
+						attacker_unit = owner_unit,
 					})
 					network_transmit:send_rpc_clients("rpc_add_buff", unit_object_id, buff_template_name_id, unit_object_id, 0, false)
 				else
@@ -2168,7 +2177,7 @@ ProcFunctions = {
 
 					if is_server() then
 						buff_extension:add_buff(buff_name, {
-							attacker_unit = owner_unit
+							attacker_unit = owner_unit,
 						})
 						network_transmit:send_rpc_clients("rpc_add_buff", unit_object_id, buff_template_name_id, unit_object_id, 0, false)
 					else
@@ -2190,7 +2199,7 @@ ProcFunctions = {
 			local buff_template = buff.template
 			local proc_chance = buff_template.proc_chance
 
-			if math.random() <= proc_chance and (ai_buff_extension and ai_buff_extension:has_buff_perk(buff_perks.burning) or ai_buff_extension:has_buff_perk(buff_perks.burning_balefire) or ai_buff_extension:has_buff_perk(buff_perks.burning_elven_magic)) then
+			if proc_chance >= math.random() and (ai_buff_extension and ai_buff_extension:has_buff_perk(buff_perks.burning) or ai_buff_extension:has_buff_perk(buff_perks.burning_balefire) or ai_buff_extension:has_buff_perk(buff_perks.burning_elven_magic)) then
 				local career_extension = ScriptUnit.has_extension(owner_unit, "career_system")
 				local area_damage_system = Managers.state.entity:system("area_damage_system")
 				local position = POSITION_LOOKUP[killed_unit]
@@ -2247,7 +2256,7 @@ ProcFunctions = {
 
 				if is_server() then
 					buff_extension:add_buff(buff_name, {
-						attacker_unit = owner_unit
+						attacker_unit = owner_unit,
 					})
 					network_transmit:send_rpc_clients("rpc_add_buff", unit_object_id, buff_template_name_id, unit_object_id, 0, false)
 				else
@@ -2326,6 +2335,7 @@ ProcFunctions = {
 			end
 
 			buff_template.kill_count = buff_template.kill_count + 1
+
 			local kill_requirement = buff_template.kill_requirement
 
 			if kill_requirement <= buff_template.kill_count then
@@ -2461,6 +2471,7 @@ ProcFunctions = {
 				local extend_time = buff.template.extend_time
 				local t = Managers.time:time("game")
 				local new_duration = extend_time + has_buff.start_time - t + has_buff.duration
+
 				has_buff.start_time = t
 				has_buff.duration = new_duration
 				buff.killed_target = true
@@ -2545,6 +2556,7 @@ ProcFunctions = {
 		local buff_name = template.buff_area_buff
 		local sync_type = template.buff_sync_type or BuffSyncType.Local
 		local params = FrameTable.alloc_table()
+
 		params.attacker_unit = source_unit
 		params.source_attacker_unit = source_unit
 
@@ -2645,7 +2657,7 @@ ProcFunctions = {
 
 				if is_server() then
 					buff_extension:add_buff(buff_name, {
-						attacker_unit = owner_unit
+						attacker_unit = owner_unit,
 					})
 					network_transmit:send_rpc_clients("rpc_add_buff", unit_object_id, buff_template_name_id, unit_object_id, 0, false)
 				else
@@ -2662,18 +2674,21 @@ ProcFunctions = {
 		if ALIVE[owner_unit] then
 			local killing_blow = params[1]
 			local damage_source_name = killing_blow[DamageDataIndex.DAMAGE_SOURCE_NAME]
-			local weapon_slot = "slot_melee"
-			local inventory_extension = ScriptUnit.extension(owner_unit, "inventory_system")
-			local slot_data = inventory_extension:get_slot_data(weapon_slot)
 
-			if not slot_data then
-				return
-			end
+			do
+				local weapon_slot = "slot_melee"
+				local inventory_extension = ScriptUnit.extension(owner_unit, "inventory_system")
+				local slot_data = inventory_extension:get_slot_data(weapon_slot)
 
-			local item_data = slot_data.item_data
+				if not slot_data then
+					return
+				end
 
-			if damage_source_name ~= item_data.name then
-				return
+				local item_data = slot_data.item_data
+
+				if damage_source_name ~= item_data.name then
+					return
+				end
 			end
 
 			local weapon_slot = "slot_ranged"
@@ -2746,7 +2761,7 @@ ProcFunctions = {
 
 			if is_server() then
 				buff_extension:add_buff(buff_name, {
-					attacker_unit = owner_unit
+					attacker_unit = owner_unit,
 				})
 				network_transmit:send_rpc_clients("rpc_add_buff", unit_object_id, buff_template_name_id, unit_object_id, 0, false)
 			else
@@ -3060,7 +3075,7 @@ ProcFunctions = {
 
 				if is_server() then
 					buff_extension:add_buff(buff_name, {
-						attacker_unit = owner_unit
+						attacker_unit = owner_unit,
 					})
 					network_transmit:send_rpc_clients("rpc_add_buff", unit_object_id, buff_template_name_id, unit_object_id, 0, false)
 				else
@@ -3106,10 +3121,11 @@ ProcFunctions = {
 		local num_stacks = buff_extension:num_buff_type(buff_to_add)
 		local max_sub_buff_stacks = template.max_sub_buff_stacks - 1
 
-		if num_stacks >= max_sub_buff_stacks then
+		if max_sub_buff_stacks <= num_stacks then
 			if template.reference_buff then
 				local reference_buff_name = template.reference_buff
 				local reference_buff = buff_extension:get_non_stacking_buff(reference_buff_name)
+
 				max_sub_buff_stacks = reference_buff.template.max_sub_buff_stacks
 
 				if not reference_buff.buff_list then
@@ -3150,6 +3166,7 @@ ProcFunctions = {
 
 						local buff_system = Managers.state.entity:system("buff_system")
 						local server_buff_ids = buff.server_buff_ids
+
 						num_stacks = server_buff_ids and math.min(#server_buff_ids, num_stacks) or 0
 
 						for i = 1, num_stacks do
@@ -3171,6 +3188,7 @@ ProcFunctions = {
 
 					if remove_buff_stack_data.reset_update_timer then
 						local t = Managers.time:time("game")
+
 						buff._next_update_t = t + (template.update_frequency or 0)
 					end
 				end
@@ -3286,7 +3304,7 @@ ProcFunctions = {
 				if unit_object_id then
 					if is_server() then
 						buff_extension:add_buff(buff_to_add, {
-							attacker_unit = owner_unit
+							attacker_unit = owner_unit,
 						})
 					else
 						network_transmit:send_rpc_server("rpc_add_buff", unit_object_id, buff_template_name_id, unit_object_id, 0, true)
@@ -3323,7 +3341,7 @@ ProcFunctions = {
 
 			if is_server() then
 				buff_extension:add_buff(buff_name, {
-					attacker_unit = owner_unit
+					attacker_unit = owner_unit,
 				})
 			else
 				network_transmit:send_rpc_server("rpc_add_buff", unit_object_id, buff_template_name_id, unit_object_id, 0, true)
@@ -3361,7 +3379,7 @@ ProcFunctions = {
 
 			if is_server() then
 				buff_extension:add_buff(buff_name, {
-					attacker_unit = owner_unit
+					attacker_unit = owner_unit,
 				})
 				network_transmit:send_rpc_clients("rpc_add_buff", unit_object_id, buff_template_name_id, unit_object_id, 0, false)
 			else
@@ -3388,7 +3406,7 @@ ProcFunctions = {
 		local buff_system = Managers.state.entity:system("buff_system")
 		local buff_applied = true
 
-		if ALIVE[owner_unit] and target_number and buff_template.targets <= target_number and (attack_type == "light_attack" or attack_type == "heavy_attack") then
+		if ALIVE[owner_unit] and target_number and target_number >= buff_template.targets and (attack_type == "light_attack" or attack_type == "heavy_attack") then
 			local talent_extension = ScriptUnit.extension(owner_unit, "talent_system")
 
 			if talent_extension:has_talent("markus_mercenary_passive_improved", "empire_soldier", true) then
@@ -3451,7 +3469,7 @@ ProcFunctions = {
 		if ALIVE[owner_unit] then
 			local t = Managers.time:time("game")
 
-			if not buff.cooldown or buff.cooldown < t then
+			if not buff.cooldown or t > buff.cooldown then
 				local attack_type = params[2]
 
 				if attack_type ~= "light_attack" and attack_type ~= "heavy_attack" then
@@ -3530,7 +3548,7 @@ ProcFunctions = {
 		local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
 
 		buff_extension:add_buff(buff_name, {
-			attacker_unit = owner_unit
+			attacker_unit = owner_unit,
 		})
 	end,
 	kerillian_waywatcher_consume_extra_shot_buff = function (owner_unit, buff, params, worlds, params_lookup)
@@ -3559,7 +3577,7 @@ ProcFunctions = {
 	reduce_activated_ability_cooldown_with_internal_cooldown_on_crit = function (owner_unit, buff, params)
 		local attack_type = params[2]
 		local buff_type = params[5]
-		local valid_attack = nil
+		local valid_attack
 
 		if RangedBuffTypes[buff_type] then
 			valid_attack = attack_type == "projectile" or attack_type == "instant_projectile" or attack_type == "aoe" or attack_type == "heavy_instant_projectile"
@@ -3712,14 +3730,14 @@ ProcFunctions = {
 			local knight_unit = buff.attacker_unit
 			local breed = AiUtils.unit_breed(knight_unit)
 			local fatigue_type = {
-				harder = "blocked_attack",
-				hard = "blocked_attack",
-				normal = "blocked_attack",
-				hardest = "blocked_attack",
 				cataclysm = "blocked_attack",
-				cataclysm_3 = "blocked_attack",
 				cataclysm_2 = "blocked_attack",
-				easy = "blocked_attack"
+				cataclysm_3 = "blocked_attack",
+				easy = "blocked_attack",
+				hard = "blocked_attack",
+				harder = "blocked_attack",
+				hardest = "blocked_attack",
+				normal = "blocked_attack",
 			}
 
 			if breed and breed.name == "hero_es_knight" and not DamageUtils.check_block(owner_unit, knight_unit, fatigue_type, "front") then
@@ -3969,6 +3987,7 @@ ProcFunctions = {
 	remove_controlled_unit_on_death = function (owner_unit, buff, params)
 		if not buff.removed_controlled_unit then
 			buff.removed_controlled_unit = true
+
 			local commander_unit = buff.source_attacker_unit
 			local commander_extension = ScriptUnit.extension(commander_unit, "ai_commander_system")
 			local skip_sync = true
@@ -3982,17 +4001,18 @@ ProcFunctions = {
 			return
 		end
 
-		local damage_profile, target_index = nil
+		local damage_profile, target_index
 		local career_extension = ScriptUnit.has_extension(owner_unit, "career_system")
 		local full_power_level = career_extension and career_extension:get_career_power_level() or DefaultPowerLevel
 		local hit_unit = params[1]
-		local hit_zone_name = nil
+		local hit_zone_name
 		local damage_source = "buff"
-		local boost_curve_multiplier = nil
+		local boost_curve_multiplier
 		local is_critical_strike = false
-		local explosion_data = nil
+		local explosion_data
 		local source_attacker_unit = buff.source_attacker_unit or owner_unit
 		local custom_dot = FrameTable.alloc_table()
+
 		custom_dot.dot_template_name = buff.template.dot_template_name
 
 		DamageUtils.apply_dot(damage_profile, target_index, full_power_level, hit_unit, owner_unit, hit_zone_name, damage_source, boost_curve_multiplier, is_critical_strike, explosion_data, source_attacker_unit, custom_dot)
@@ -4005,7 +4025,7 @@ ProcFunctions = {
 	end,
 	remove_buff_synced = function (owner_unit, buff, params)
 		BuffFunctionTemplates.functions.remove_buff_synced(owner_unit, buff, params)
-	end
+	end,
 }
 StackingBuffFunctions = {
 	add_remove_buffs = function (unit, sub_buff_template, new_buff_params, is_overflow)
@@ -4014,11 +4034,14 @@ StackingBuffFunctions = {
 
 			if max_stack_data then
 				local buff_extension = ScriptUnit.extension(unit, "buff_system")
-				local buffs_to_add = max_stack_data.buffs_to_add
 
-				if buffs_to_add then
-					for i = 1, #buffs_to_add do
-						buff_extension:add_buff(buffs_to_add[i])
+				do
+					local buffs_to_add = max_stack_data.buffs_to_add
+
+					if buffs_to_add then
+						for i = 1, #buffs_to_add do
+							buff_extension:add_buff(buffs_to_add[i])
+						end
 					end
 				end
 
@@ -4103,7 +4126,7 @@ StackingBuffFunctions = {
 
 			if buff_stacks then
 				local oldest_buff_t = -math.huge
-				local oldest_buff = nil
+				local oldest_buff
 				local t = Managers.time:time("game")
 
 				for i = 1, #buff_stacks do
@@ -4126,7 +4149,7 @@ StackingBuffFunctions = {
 		if ALIVE[unit] then
 			local buff_extension = ScriptUnit.extension(unit, "buff_system")
 			local burn_buffs = buff_extension:get_stacking_buff(sub_buff_template.name)
-			local oldest_buff = nil
+			local oldest_buff
 
 			if burn_buffs then
 				local oldest_buff_t = -math.huge
@@ -4176,39 +4199,42 @@ StackingBuffFunctions = {
 	end,
 	add_buff_synced = function (unit, sub_buff_template, new_buff_params, is_overflow)
 		local dummy_buff = FrameTable.alloc_table()
+
 		dummy_buff.template = sub_buff_template
 
 		BuffFunctionTemplates.functions.add_buff_synced(unit, dummy_buff, new_buff_params)
 	end,
 	remove_buff_synced = function (unit, sub_buff_template, new_buff_params, is_overflow)
 		local dummy_buff = FrameTable.alloc_table()
+
 		dummy_buff.template = sub_buff_template
 
 		BuffFunctionTemplates.functions.remove_buff_synced(unit, dummy_buff, new_buff_params)
 	end,
 	reduce_cooldown_percent = function (unit, sub_buff_template, new_buff_params, is_overflow)
 		local dummy_buff = FrameTable.alloc_table()
+
 		dummy_buff.template = sub_buff_template
 
 		BuffFunctionTemplates.functions.reduce_cooldown_percent(unit, dummy_buff, new_buff_params)
-	end
+	end,
 }
 PotionSpreadTrinketTemplates = {
 	damage_boost_potion = {
 		tier1 = "damage_boost_potion_weak",
+		tier2 = "damage_boost_potion_medium",
 		tier3 = "damage_boost_potion",
-		tier2 = "damage_boost_potion_medium"
 	},
 	speed_boost_potion = {
 		tier1 = "speed_boost_potion_weak",
+		tier2 = "speed_boost_potion_medium",
 		tier3 = "speed_boost_potion",
-		tier2 = "speed_boost_potion_medium"
 	},
 	invulnerability_potion = {
 		tier1 = "invulnerability_potion_weak",
+		tier2 = "invulnerability_potion_medium",
 		tier3 = "invulnerability_potion",
-		tier2 = "invulnerability_potion_medium"
-	}
+	},
 }
 TrinketSpreadDistance = 10
 BuffTemplates = {
@@ -4216,1675 +4242,1675 @@ BuffTemplates = {
 		buffs = {
 			{
 				duration = 1,
-				name = "end_zone_invincibility",
 				max_stacks = 1,
+				name = "end_zone_invincibility",
 				refresh_durations = true,
 				perks = {
-					buff_perks.invulnerable
-				}
-			}
-		}
+					buff_perks.invulnerable,
+				},
+			},
+		},
 	},
 	twitch_damage_boost = {
 		buffs = {
 			{
 				duration = 60,
+				icon = "potion_buff_01",
+				max_stacks = 1,
 				name = "twitch_armor_penetration_buff",
 				refresh_durations = true,
-				max_stacks = 1,
-				icon = "potion_buff_01",
 				perks = {
-					buff_perks.potion_armor_penetration
-				}
-			}
-		}
+					buff_perks.potion_armor_penetration,
+				},
+			},
+		},
 	},
 	twitch_speed_boost = {
 		buffs = {
 			{
 				apply_buff_func = "apply_movement_buff",
+				duration = 60,
+				icon = "potion_buff_02",
+				max_stacks = 1,
 				multiplier = 1.5,
 				name = "twitch_movement_buff",
-				icon = "potion_buff_02",
 				refresh_durations = true,
 				remove_buff_func = "remove_movement_buff",
-				max_stacks = 1,
-				duration = 60,
 				path_to_movement_setting_to_modify = {
-					"move_speed"
-				}
+					"move_speed",
+				},
 			},
 			{
+				duration = 60,
+				max_stacks = 1,
 				multiplier = 0.5,
 				name = "twitch_attack_speed_buff",
-				stat_buff = "attack_speed",
 				refresh_durations = true,
-				max_stacks = 1,
-				duration = 60
-			}
-		}
+				stat_buff = "attack_speed",
+			},
+		},
 	},
 	twitch_cooldown_reduction_boost = {
 		buffs = {
 			{
-				name = "twitch_cooldown_reduction_buff",
-				multiplier = 5,
-				stat_buff = "cooldown_regen",
 				duration = 60,
-				max_stacks = 1,
 				icon = "potion_buff_03",
-				refresh_durations = true
-			}
-		}
+				max_stacks = 1,
+				multiplier = 5,
+				name = "twitch_cooldown_reduction_buff",
+				refresh_durations = true,
+				stat_buff = "cooldown_regen",
+			},
+		},
 	},
 	twitch_no_overcharge_no_ammo_reloads = {
 		buffs = {
 			{
-				max_stacks = 1,
-				icon = "victor_bountyhunter_passive_infinite_ammo",
 				duration = 60,
-				name = "twitch_no_overcharge_no_ammo_reloads"
-			}
-		}
+				icon = "victor_bountyhunter_passive_infinite_ammo",
+				max_stacks = 1,
+				name = "twitch_no_overcharge_no_ammo_reloads",
+			},
+		},
 	},
 	twitch_health_regen = {
 		buffs = {
 			{
-				update_func = "health_regen_all_update",
-				heal_type = "health_regen",
-				name = "twitch_health_regen",
-				icon = "bardin_ranger_activated_ability_heal",
-				time_between_heal = 2,
-				max_stacks = 1,
 				apply_buff_func = "health_regen_all_start",
+				duration = 60,
 				heal = 1,
-				duration = 60
-			}
-		}
+				heal_type = "health_regen",
+				icon = "bardin_ranger_activated_ability_heal",
+				max_stacks = 1,
+				name = "twitch_health_regen",
+				time_between_heal = 2,
+				update_func = "health_regen_all_update",
+			},
+		},
 	},
 	twitch_health_degen = {
 		buffs = {
 			{
-				duration = 60,
-				name = "twitch_health_degen",
-				damage = 1,
-				icon = "bardin_slayer_crit_chance",
 				apply_buff_func = "health_degen_start",
-				time_between_damage = 3,
+				damage = 1,
 				damage_type = "health_degen",
+				duration = 60,
+				icon = "bardin_slayer_crit_chance",
 				max_stacks = 1,
-				update_func = "health_degen_update"
-			}
-		}
+				name = "twitch_health_degen",
+				time_between_damage = 3,
+				update_func = "health_degen_update",
+			},
+		},
 	},
 	twitch_grimoire_health_debuff = {
 		buffs = {
 			{
-				duration = 60,
-				name = "twitch_grimoire_health_debuff",
 				debuff = true,
-				max_stacks = 1,
+				duration = 60,
 				icon = "buff_icon_grimoire_health_debuff",
+				max_stacks = 1,
+				name = "twitch_grimoire_health_debuff",
 				perks = {
-					buff_perks.twitch_grimoire
-				}
-			}
-		}
+					buff_perks.twitch_grimoire,
+				},
+			},
+		},
 	},
 	twitch_power_boost_dismember = {
 		buffs = {
 			{
-				name = "twitch_power_boost_dismember",
-				multiplier = 0.25,
-				stat_buff = "power_level",
 				duration = 60,
-				max_stacks = 1,
 				icon = "markus_huntsman_activated_ability",
+				max_stacks = 1,
+				multiplier = 0.25,
+				name = "twitch_power_boost_dismember",
+				stat_buff = "power_level",
 				perks = {
-					buff_perks.bloody_mess
-				}
-			}
-		}
+					buff_perks.bloody_mess,
+				},
+			},
+		},
 	},
 	heavy_attack_shield_break = {
 		buffs = {
 			{
 				name = "heavy_attack_shield_break",
 				perks = {
-					buff_perks.shield_break
-				}
-			}
-		}
+					buff_perks.shield_break,
+				},
+			},
+		},
 	},
 	temporary_health_degen = {
 		buffs = {
 			{
-				name = "temporary health degen",
+				apply_buff_func = "temporary_health_degen_start",
 				damage = 10,
 				damage_type = "temporary_health_degen",
 				max_stacks = 1,
+				name = "temporary health degen",
+				time_between_damage = 3,
 				update_func = "temporary_health_degen_update",
-				apply_buff_func = "temporary_health_degen_start",
-				time_between_damage = 3
-			}
-		}
+			},
+		},
 	},
 	knockdown_bleed = {
 		buffs = {
 			{
-				name = "knockdown bleed",
+				apply_buff_func = "knock_down_bleed_start",
 				damage = 10,
 				damage_type = "knockdown_bleed",
 				max_stacks = 1,
+				name = "knockdown bleed",
+				time_between_damage = 3,
 				update_func = "knock_down_bleed_update",
-				apply_buff_func = "knock_down_bleed_start",
-				time_between_damage = 3
-			}
-		}
+			},
+		},
 	},
 	blightreaper_curse = {
 		buffs = {
 			{
+				apply_buff_func = "convert_permanent_to_temporary_health",
 				max_stacks = 1,
 				name = "blightreaper_curse",
-				apply_buff_func = "convert_permanent_to_temporary_health",
 				perks = {
-					buff_perks.disable_permanent_heal
-				}
-			}
-		}
+					buff_perks.disable_permanent_heal,
+				},
+			},
+		},
 	},
 	damage_boost_potion = {
 		activation_effect = "fx/screenspace_potion_01",
-		deactivation_sound = "hud_gameplay_stance_deactivate",
 		activation_sound = "hud_gameplay_stance_smiter_activate",
+		deactivation_sound = "hud_gameplay_stance_deactivate",
 		buffs = {
 			{
 				duration = 10,
+				icon = "potion_buff_01",
+				max_stacks = 1,
 				name = "potion_armor_penetration_buff",
 				refresh_durations = true,
-				max_stacks = 1,
-				icon = "potion_buff_01",
 				perks = {
-					buff_perks.potion_armor_penetration
-				}
-			}
-		}
+					buff_perks.potion_armor_penetration,
+				},
+			},
+		},
 	},
 	speed_boost_potion = {
 		activation_effect = "fx/screenspace_potion_02",
-		deactivation_sound = "hud_gameplay_stance_deactivate",
 		activation_sound = "hud_gameplay_stance_ninjafencer_activate",
+		deactivation_sound = "hud_gameplay_stance_deactivate",
 		buffs = {
 			{
 				apply_buff_func = "apply_movement_buff",
+				duration = 10,
+				icon = "potion_buff_02",
+				max_stacks = 1,
 				multiplier = 1.5,
 				name = "potion_movement_buff",
-				icon = "potion_buff_02",
 				refresh_durations = true,
 				remove_buff_func = "remove_movement_buff",
-				max_stacks = 1,
-				duration = 10,
 				path_to_movement_setting_to_modify = {
-					"move_speed"
-				}
+					"move_speed",
+				},
 			},
 			{
+				duration = 10,
+				max_stacks = 1,
 				multiplier = 0.5,
 				name = "potion_attack_speed_buff",
-				stat_buff = "attack_speed",
 				refresh_durations = true,
-				max_stacks = 1,
-				duration = 10
-			}
-		}
+				stat_buff = "attack_speed",
+			},
+		},
 	},
 	cooldown_reduction_potion = {
 		activation_effect = "fx/screenspace_potion_02",
-		deactivation_sound = "hud_gameplay_stance_deactivate",
 		activation_sound = "hud_gameplay_stance_ninjafencer_activate",
+		deactivation_sound = "hud_gameplay_stance_deactivate",
 		buffs = {
 			{
-				name = "potion_cooldown_reduction_buff",
-				multiplier = 10,
-				stat_buff = "cooldown_regen",
 				duration = 10,
-				max_stacks = 1,
 				icon = "potion_buff_03",
-				refresh_durations = true
-			}
-		}
+				max_stacks = 1,
+				multiplier = 10,
+				name = "potion_cooldown_reduction_buff",
+				refresh_durations = true,
+				stat_buff = "cooldown_regen",
+			},
+		},
 	},
 	invulnerability_potion = {
 		activation_effect = "fx/screenspace_potion_03",
-		deactivation_sound = "hud_gameplay_stance_deactivate",
 		activation_sound = "hud_gameplay_stance_tank_activate",
+		deactivation_sound = "hud_gameplay_stance_deactivate",
 		buffs = {
 			{
 				duration = 10,
-				name = "invulnerability_potion",
 				max_stacks = 1,
+				name = "invulnerability_potion",
 				refresh_durations = true,
 				perks = {
-					buff_perks.invulnerable
-				}
-			}
-		}
+					buff_perks.invulnerable,
+				},
+			},
+		},
 	},
 	damage_boost_potion_increased = {
 		activation_effect = "fx/screenspace_potion_01",
-		deactivation_sound = "hud_gameplay_stance_deactivate",
 		activation_sound = "hud_gameplay_stance_smiter_activate",
+		deactivation_sound = "hud_gameplay_stance_deactivate",
 		buffs = {
 			{
 				duration = 15,
+				icon = "potion_buff_01",
+				max_stacks = 1,
 				name = "potion_armor_penetration_buff",
 				refresh_durations = true,
-				max_stacks = 1,
-				icon = "potion_buff_01",
 				perks = {
-					buff_perks.potion_armor_penetration
-				}
-			}
-		}
+					buff_perks.potion_armor_penetration,
+				},
+			},
+		},
 	},
 	speed_boost_potion_increased = {
 		activation_effect = "fx/screenspace_potion_02",
-		deactivation_sound = "hud_gameplay_stance_deactivate",
 		activation_sound = "hud_gameplay_stance_ninjafencer_activate",
+		deactivation_sound = "hud_gameplay_stance_deactivate",
 		buffs = {
 			{
 				apply_buff_func = "apply_movement_buff",
+				duration = 15,
+				icon = "potion_buff_02",
+				max_stacks = 1,
 				multiplier = 1.5,
 				name = "potion_movement_buff",
-				icon = "potion_buff_02",
 				refresh_durations = true,
 				remove_buff_func = "remove_movement_buff",
-				max_stacks = 1,
-				duration = 15,
 				path_to_movement_setting_to_modify = {
-					"move_speed"
-				}
+					"move_speed",
+				},
 			},
 			{
+				duration = 15,
+				max_stacks = 1,
 				multiplier = 0.5,
 				name = "potion_attack_speed_buff",
-				stat_buff = "attack_speed",
 				refresh_durations = true,
-				max_stacks = 1,
-				duration = 15
-			}
-		}
+				stat_buff = "attack_speed",
+			},
+		},
 	},
 	cooldown_reduction_potion_increased = {
 		activation_effect = "fx/screenspace_potion_02",
-		deactivation_sound = "hud_gameplay_stance_deactivate",
 		activation_sound = "hud_gameplay_stance_ninjafencer_activate",
+		deactivation_sound = "hud_gameplay_stance_deactivate",
 		buffs = {
 			{
-				name = "potion_cooldown_reduction_buff",
-				multiplier = 15,
-				stat_buff = "cooldown_regen",
 				duration = 15,
-				max_stacks = 1,
 				icon = "potion_buff_03",
-				refresh_durations = true
-			}
-		}
+				max_stacks = 1,
+				multiplier = 15,
+				name = "potion_cooldown_reduction_buff",
+				refresh_durations = true,
+				stat_buff = "cooldown_regen",
+			},
+		},
 	},
 	invulnerability_potion_increased = {
 		activation_effect = "fx/screenspace_potion_03",
-		deactivation_sound = "hud_gameplay_stance_deactivate",
 		activation_sound = "hud_gameplay_stance_tank_activate",
+		deactivation_sound = "hud_gameplay_stance_deactivate",
 		buffs = {
 			{
 				duration = 15,
-				name = "invulnerability_potion_increased",
 				max_stacks = 1,
+				name = "invulnerability_potion_increased",
 				refresh_durations = true,
 				perks = {
-					buff_perks.invulnerable
-				}
-			}
-		}
+					buff_perks.invulnerable,
+				},
+			},
+		},
 	},
 	damage_boost_potion_reduced = {
 		activation_effect = "fx/screenspace_potion_01",
-		deactivation_sound = "hud_gameplay_stance_deactivate",
 		activation_sound = "hud_gameplay_stance_smiter_activate",
+		deactivation_sound = "hud_gameplay_stance_deactivate",
 		buffs = {
 			{
 				duration = 5,
+				icon = "potion_buff_01",
+				max_stacks = 1,
 				name = "potion_armor_penetration_buff",
 				refresh_durations = true,
-				max_stacks = 1,
-				icon = "potion_buff_01",
 				perks = {
-					buff_perks.potion_armor_penetration
-				}
-			}
-		}
+					buff_perks.potion_armor_penetration,
+				},
+			},
+		},
 	},
 	speed_boost_potion_reduced = {
 		activation_effect = "fx/screenspace_potion_02",
-		deactivation_sound = "hud_gameplay_stance_deactivate",
 		activation_sound = "hud_gameplay_stance_ninjafencer_activate",
+		deactivation_sound = "hud_gameplay_stance_deactivate",
 		buffs = {
 			{
 				apply_buff_func = "apply_movement_buff",
+				duration = 5,
+				icon = "potion_buff_02",
+				max_stacks = 1,
 				multiplier = 1.5,
 				name = "potion_movement_buff",
-				icon = "potion_buff_02",
 				refresh_durations = true,
 				remove_buff_func = "remove_movement_buff",
-				max_stacks = 1,
-				duration = 5,
 				path_to_movement_setting_to_modify = {
-					"move_speed"
-				}
+					"move_speed",
+				},
 			},
 			{
+				duration = 5,
+				max_stacks = 1,
 				multiplier = 0.5,
 				name = "potion_attack_speed_buff",
-				stat_buff = "attack_speed",
 				refresh_durations = true,
-				max_stacks = 1,
-				duration = 5
-			}
-		}
+				stat_buff = "attack_speed",
+			},
+		},
 	},
 	cooldown_reduction_potion_reduced = {
 		activation_effect = "fx/screenspace_potion_02",
-		deactivation_sound = "hud_gameplay_stance_deactivate",
 		activation_sound = "hud_gameplay_stance_ninjafencer_activate",
+		deactivation_sound = "hud_gameplay_stance_deactivate",
 		buffs = {
 			{
-				name = "potion_cooldown_reduction_buff",
-				multiplier = 10,
-				stat_buff = "cooldown_regen",
 				duration = 5,
-				max_stacks = 1,
 				icon = "potion_buff_03",
-				refresh_durations = true
-			}
-		}
+				max_stacks = 1,
+				multiplier = 10,
+				name = "potion_cooldown_reduction_buff",
+				refresh_durations = true,
+				stat_buff = "cooldown_regen",
+			},
+		},
 	},
 	invulnerability_potion_reduced = {
 		activation_effect = "fx/screenspace_potion_03",
-		deactivation_sound = "hud_gameplay_stance_deactivate",
 		activation_sound = "hud_gameplay_stance_tank_activate",
+		deactivation_sound = "hud_gameplay_stance_deactivate",
 		buffs = {
 			{
 				duration = 5,
-				name = "invulnerability_potion_reduced",
 				max_stacks = 1,
+				name = "invulnerability_potion_reduced",
 				refresh_durations = true,
 				perks = {
-					buff_perks.invulnerable
-				}
-			}
-		}
+					buff_perks.invulnerable,
+				},
+			},
+		},
 	},
 	grimoire_health_debuff = {
 		activation_sound = "hud_info_state_grimoire_pickup",
 		buffs = {
 			{
-				name = "grimoire_health_debuff",
-				icon = "buff_icon_grimoire_health_debuff",
 				debuff = true,
+				icon = "buff_icon_grimoire_health_debuff",
+				name = "grimoire_health_debuff",
 				perks = {
-					buff_perks.skaven_grimoire
-				}
-			}
-		}
+					buff_perks.skaven_grimoire,
+				},
+			},
+		},
 	},
 	overcharged = {
 		buffs = {
 			{
 				multiplier = -0.15,
 				name = "attack speed buff",
-				stat_buff = "attack_speed"
-			}
-		}
+				stat_buff = "attack_speed",
+			},
+		},
 	},
 	overcharged_no_attack_penalty = {
-		buffs = {}
+		buffs = {},
 	},
 	overcharged_critical = {
 		buffs = {
 			{
-				remove_buff_name = "planted_return_to_normal_movement",
-				name = "increase speed",
+				apply_buff_func = "apply_action_lerp_movement_buff",
 				lerp_time = 0.2,
 				multiplier = 0.85,
-				update_func = "update_action_lerp_movement_buff",
+				name = "increase speed",
 				remove_buff_func = "remove_action_lerp_movement_buff",
-				apply_buff_func = "apply_action_lerp_movement_buff",
+				remove_buff_name = "planted_return_to_normal_movement",
+				update_func = "update_action_lerp_movement_buff",
 				path_to_movement_setting_to_modify = {
-					"move_speed"
-				}
+					"move_speed",
+				},
 			},
 			{
-				name = "change dodge speed",
-				multiplier = 0.85,
-				remove_buff_func = "remove_movement_buff",
 				apply_buff_func = "apply_movement_buff",
+				multiplier = 0.85,
+				name = "change dodge speed",
+				remove_buff_func = "remove_movement_buff",
 				path_to_movement_setting_to_modify = {
 					"dodging",
-					"speed_modifier"
-				}
+					"speed_modifier",
+				},
 			},
 			{
 				multiplier = -0.25,
 				name = "attack speed buff",
-				stat_buff = "attack_speed"
-			}
-		}
+				stat_buff = "attack_speed",
+			},
+		},
 	},
 	overcharged_critical_no_attack_penalty = {
-		buffs = {}
+		buffs = {},
 	},
 	change_dodge_speed = {
 		buffs = {
 			{
-				name = "change dodge speed",
-				multiplier = 1,
-				remove_buff_func = "remove_movement_buff",
 				apply_buff_func = "apply_movement_buff",
+				multiplier = 1,
+				name = "change dodge speed",
+				remove_buff_func = "remove_movement_buff",
 				path_to_movement_setting_to_modify = {
 					"dodging",
-					"speed_modifier"
-				}
-			}
-		}
+					"speed_modifier",
+				},
+			},
+		},
 	},
 	change_dodge_distance = {
 		buffs = {
 			{
-				name = "change dodge distance",
-				multiplier = 1,
-				remove_buff_func = "remove_movement_buff",
 				apply_buff_func = "apply_movement_buff",
+				multiplier = 1,
+				name = "change dodge distance",
+				remove_buff_func = "remove_movement_buff",
 				path_to_movement_setting_to_modify = {
 					"dodging",
-					"distance_modifier"
-				}
-			}
-		}
+					"distance_modifier",
+				},
+			},
+		},
 	},
 	statue_decrease_movement = {
-		description = "description_melee_weapon_ammo_on_killing_blow_tier1",
 		apply_on = "wield",
+		description = "description_melee_weapon_ammo_on_killing_blow_tier1",
 		display_name = "melee_weapon_ammo_on_killing_blow_tier1",
 		icon = "trait_icons_scavenger",
 		description_values = {
-			"multiplier"
+			"multiplier",
 		},
 		buffs = {
 			{
-				remove_buff_name = "planted_return_to_normal_movement",
+				apply_buff_func = "apply_action_lerp_movement_buff",
+				lerp_time = 0.2,
+				multiplier = 0.75,
 				name = "decrease_speed",
-				lerp_time = 0.2,
-				multiplier = 0.75,
+				remove_buff_func = "remove_action_lerp_movement_buff",
+				remove_buff_name = "planted_return_to_normal_movement",
 				update_func = "update_action_lerp_movement_buff",
-				remove_buff_func = "remove_action_lerp_movement_buff",
-				apply_buff_func = "apply_action_lerp_movement_buff",
 				path_to_movement_setting_to_modify = {
-					"move_speed"
-				}
+					"move_speed",
+				},
 			},
 			{
-				remove_buff_name = "planted_return_to_normal_crouch_movement",
+				apply_buff_func = "apply_action_lerp_movement_buff",
+				lerp_time = 0.2,
+				multiplier = 0.75,
 				name = "decrease_crouch_speed",
-				lerp_time = 0.2,
-				multiplier = 0.75,
-				update_func = "update_charging_action_lerp_movement_buff",
 				remove_buff_func = "remove_action_lerp_movement_buff",
-				apply_buff_func = "apply_action_lerp_movement_buff",
+				remove_buff_name = "planted_return_to_normal_crouch_movement",
+				update_func = "update_charging_action_lerp_movement_buff",
 				path_to_movement_setting_to_modify = {
-					"crouch_move_speed"
-				}
+					"crouch_move_speed",
+				},
 			},
 			{
-				remove_buff_name = "planted_return_to_normal_walk_movement",
-				name = "decrease_walk_speed",
+				apply_buff_func = "apply_action_lerp_movement_buff",
 				lerp_time = 0.2,
 				multiplier = 0.75,
-				update_func = "update_charging_action_lerp_movement_buff",
+				name = "decrease_walk_speed",
 				remove_buff_func = "remove_action_lerp_movement_buff",
-				apply_buff_func = "apply_action_lerp_movement_buff",
+				remove_buff_name = "planted_return_to_normal_walk_movement",
+				update_func = "update_charging_action_lerp_movement_buff",
 				path_to_movement_setting_to_modify = {
-					"walk_move_speed"
-				}
-			}
-		}
+					"walk_move_speed",
+				},
+			},
+		},
 	},
 	sack_decrease_movement = {
-		description = "description_melee_weapon_ammo_on_killing_blow_tier1",
 		apply_on = "wield",
+		description = "description_melee_weapon_ammo_on_killing_blow_tier1",
 		display_name = "melee_weapon_ammo_on_killing_blow_tier1",
 		icon = "trait_icons_scavenger",
 		description_values = {
-			"multiplier"
+			"multiplier",
 		},
 		buffs = {
 			{
-				remove_buff_name = "planted_return_to_normal_movement",
+				apply_buff_func = "apply_action_lerp_movement_buff",
+				lerp_time = 0.2,
+				multiplier = 0.7,
 				name = "decrease_speed",
-				lerp_time = 0.2,
-				multiplier = 0.7,
+				remove_buff_func = "remove_action_lerp_movement_buff",
+				remove_buff_name = "planted_return_to_normal_movement",
 				update_func = "update_action_lerp_movement_buff",
-				remove_buff_func = "remove_action_lerp_movement_buff",
-				apply_buff_func = "apply_action_lerp_movement_buff",
 				path_to_movement_setting_to_modify = {
-					"move_speed"
-				}
+					"move_speed",
+				},
 			},
 			{
-				remove_buff_name = "planted_return_to_normal_crouch_movement",
+				apply_buff_func = "apply_action_lerp_movement_buff",
+				lerp_time = 0.2,
+				multiplier = 0.7,
 				name = "decrease_crouch_speed",
-				lerp_time = 0.2,
-				multiplier = 0.7,
-				update_func = "update_charging_action_lerp_movement_buff",
 				remove_buff_func = "remove_action_lerp_movement_buff",
-				apply_buff_func = "apply_action_lerp_movement_buff",
+				remove_buff_name = "planted_return_to_normal_crouch_movement",
+				update_func = "update_charging_action_lerp_movement_buff",
 				path_to_movement_setting_to_modify = {
-					"crouch_move_speed"
-				}
+					"crouch_move_speed",
+				},
 			},
 			{
-				remove_buff_name = "planted_return_to_normal_walk_movement",
-				name = "decrease_walk_speed",
+				apply_buff_func = "apply_action_lerp_movement_buff",
 				lerp_time = 0.2,
 				multiplier = 0.7,
-				update_func = "update_charging_action_lerp_movement_buff",
+				name = "decrease_walk_speed",
 				remove_buff_func = "remove_action_lerp_movement_buff",
-				apply_buff_func = "apply_action_lerp_movement_buff",
+				remove_buff_name = "planted_return_to_normal_walk_movement",
+				update_func = "update_charging_action_lerp_movement_buff",
 				path_to_movement_setting_to_modify = {
-					"walk_move_speed"
-				}
-			}
-		}
+					"walk_move_speed",
+				},
+			},
+		},
 	},
 	planted_decrease_movement = {
 		buffs = {
 			{
-				remove_buff_name = "planted_return_to_normal_movement",
-				name = "decrease_speed",
+				apply_buff_func = "apply_action_lerp_movement_buff",
 				lerp_time = 0.2,
 				multiplier = 0.75,
+				name = "decrease_speed",
+				remove_buff_func = "remove_action_lerp_movement_buff",
+				remove_buff_name = "planted_return_to_normal_movement",
 				update_func = "update_action_lerp_movement_buff",
-				remove_buff_func = "remove_action_lerp_movement_buff",
-				apply_buff_func = "apply_action_lerp_movement_buff",
 				path_to_movement_setting_to_modify = {
-					"move_speed"
-				}
+					"move_speed",
+				},
 			},
 			{
-				remove_buff_name = "planted_return_to_normal_crouch_movement",
+				apply_buff_func = "apply_action_lerp_movement_buff",
+				lerp_time = 1,
+				multiplier = 0.75,
 				name = "decrease_crouch_speed",
-				lerp_time = 1,
-				multiplier = 0.75,
-				update_func = "update_charging_action_lerp_movement_buff",
 				remove_buff_func = "remove_action_lerp_movement_buff",
-				apply_buff_func = "apply_action_lerp_movement_buff",
+				remove_buff_name = "planted_return_to_normal_crouch_movement",
+				update_func = "update_charging_action_lerp_movement_buff",
 				path_to_movement_setting_to_modify = {
-					"crouch_move_speed"
-				}
+					"crouch_move_speed",
+				},
 			},
 			{
-				remove_buff_name = "planted_return_to_normal_walk_movement",
-				name = "decrease_walk_speed",
+				apply_buff_func = "apply_action_lerp_movement_buff",
 				lerp_time = 1,
 				multiplier = 0.75,
-				update_func = "update_charging_action_lerp_movement_buff",
+				name = "decrease_walk_speed",
 				remove_buff_func = "remove_action_lerp_movement_buff",
-				apply_buff_func = "apply_action_lerp_movement_buff",
+				remove_buff_name = "planted_return_to_normal_walk_movement",
+				update_func = "update_charging_action_lerp_movement_buff",
 				path_to_movement_setting_to_modify = {
-					"walk_move_speed"
-				}
-			}
-		}
+					"walk_move_speed",
+				},
+			},
+		},
 	},
 	planted_charging_decrease_movement = {
 		buffs = {
 			{
-				remove_buff_name = "planted_return_to_normal_movement",
+				apply_buff_func = "apply_action_lerp_movement_buff",
+				lerp_time = 1,
+				multiplier = 0.75,
 				name = "decrease_speed",
-				lerp_time = 1,
-				multiplier = 0.75,
-				update_func = "update_charging_action_lerp_movement_buff",
 				remove_buff_func = "remove_action_lerp_movement_buff",
-				apply_buff_func = "apply_action_lerp_movement_buff",
+				remove_buff_name = "planted_return_to_normal_movement",
+				update_func = "update_charging_action_lerp_movement_buff",
 				path_to_movement_setting_to_modify = {
-					"move_speed"
-				}
+					"move_speed",
+				},
 			},
 			{
-				remove_buff_name = "planted_return_to_normal_crouch_movement",
+				apply_buff_func = "apply_action_lerp_movement_buff",
+				lerp_time = 1,
+				multiplier = 0.75,
 				name = "decrease_crouch_speed",
-				lerp_time = 1,
-				multiplier = 0.75,
-				update_func = "update_charging_action_lerp_movement_buff",
 				remove_buff_func = "remove_action_lerp_movement_buff",
-				apply_buff_func = "apply_action_lerp_movement_buff",
+				remove_buff_name = "planted_return_to_normal_crouch_movement",
+				update_func = "update_charging_action_lerp_movement_buff",
 				path_to_movement_setting_to_modify = {
-					"crouch_move_speed"
-				}
+					"crouch_move_speed",
+				},
 			},
 			{
-				remove_buff_name = "planted_return_to_normal_walk_movement",
-				name = "decrease_walk_speed",
+				apply_buff_func = "apply_action_lerp_movement_buff",
 				lerp_time = 1,
 				multiplier = 0.75,
-				update_func = "update_charging_action_lerp_movement_buff",
+				name = "decrease_walk_speed",
 				remove_buff_func = "remove_action_lerp_movement_buff",
-				apply_buff_func = "apply_action_lerp_movement_buff",
+				remove_buff_name = "planted_return_to_normal_walk_movement",
+				update_func = "update_charging_action_lerp_movement_buff",
 				path_to_movement_setting_to_modify = {
-					"walk_move_speed"
-				}
-			}
-		}
+					"walk_move_speed",
+				},
+			},
+		},
 	},
 	planted_casting_long_decrease_movement = {
 		buffs = {
 			{
-				remove_buff_name = "planted_return_to_normal_movement",
+				apply_buff_func = "apply_action_lerp_movement_buff",
+				lerp_time = 2,
+				multiplier = 0.75,
 				name = "decrease_speed",
-				lerp_time = 2,
-				multiplier = 0.75,
-				update_func = "update_action_lerp_movement_buff",
 				remove_buff_func = "remove_action_lerp_movement_buff",
-				apply_buff_func = "apply_action_lerp_movement_buff",
+				remove_buff_name = "planted_return_to_normal_movement",
+				update_func = "update_action_lerp_movement_buff",
 				path_to_movement_setting_to_modify = {
-					"move_speed"
-				}
+					"move_speed",
+				},
 			},
 			{
-				remove_buff_name = "planted_return_to_normal_crouch_movement",
+				apply_buff_func = "apply_action_lerp_movement_buff",
+				lerp_time = 2,
+				multiplier = 0.75,
 				name = "decrease_crouch_speed",
-				lerp_time = 2,
-				multiplier = 0.75,
-				update_func = "update_action_lerp_movement_buff",
 				remove_buff_func = "remove_action_lerp_movement_buff",
-				apply_buff_func = "apply_action_lerp_movement_buff",
+				remove_buff_name = "planted_return_to_normal_crouch_movement",
+				update_func = "update_action_lerp_movement_buff",
 				path_to_movement_setting_to_modify = {
-					"crouch_move_speed"
-				}
+					"crouch_move_speed",
+				},
 			},
 			{
-				remove_buff_name = "planted_return_to_normal_walk_movement",
-				name = "decrease_walk_speed",
+				apply_buff_func = "apply_action_lerp_movement_buff",
 				lerp_time = 2,
 				multiplier = 0.75,
-				update_func = "update_action_lerp_movement_buff",
+				name = "decrease_walk_speed",
 				remove_buff_func = "remove_action_lerp_movement_buff",
-				apply_buff_func = "apply_action_lerp_movement_buff",
+				remove_buff_name = "planted_return_to_normal_walk_movement",
+				update_func = "update_action_lerp_movement_buff",
 				path_to_movement_setting_to_modify = {
-					"walk_move_speed"
-				}
-			}
-		}
+					"walk_move_speed",
+				},
+			},
+		},
 	},
 	planted_fast_decrease_movement = {
 		buffs = {
 			{
-				remove_buff_name = "planted_return_to_normal_movement",
+				apply_buff_func = "apply_action_lerp_movement_buff",
+				lerp_time = 0.01,
+				multiplier = 1,
 				name = "decrease_speed",
-				lerp_time = 0.01,
-				multiplier = 1,
-				update_func = "update_action_lerp_movement_buff",
 				remove_buff_func = "remove_action_lerp_movement_buff",
-				apply_buff_func = "apply_action_lerp_movement_buff",
+				remove_buff_name = "planted_return_to_normal_movement",
+				update_func = "update_action_lerp_movement_buff",
 				path_to_movement_setting_to_modify = {
-					"move_speed"
-				}
+					"move_speed",
+				},
 			},
 			{
-				remove_buff_name = "planted_return_to_normal_crouch_movement",
+				apply_buff_func = "apply_action_lerp_movement_buff",
+				lerp_time = 0.01,
+				multiplier = 1,
 				name = "decrease_crouch_speed",
-				lerp_time = 0.01,
-				multiplier = 1,
-				update_func = "update_action_lerp_movement_buff",
 				remove_buff_func = "remove_action_lerp_movement_buff",
-				apply_buff_func = "apply_action_lerp_movement_buff",
+				remove_buff_name = "planted_return_to_normal_crouch_movement",
+				update_func = "update_action_lerp_movement_buff",
 				path_to_movement_setting_to_modify = {
-					"crouch_move_speed"
-				}
+					"crouch_move_speed",
+				},
 			},
 			{
-				remove_buff_name = "planted_return_to_normal_walk_movement",
-				name = "decrease_walk_speed",
+				apply_buff_func = "apply_action_lerp_movement_buff",
 				lerp_time = 0.01,
 				multiplier = 1,
-				update_func = "update_action_lerp_movement_buff",
+				name = "decrease_walk_speed",
 				remove_buff_func = "remove_action_lerp_movement_buff",
-				apply_buff_func = "apply_action_lerp_movement_buff",
+				remove_buff_name = "planted_return_to_normal_walk_movement",
+				update_func = "update_action_lerp_movement_buff",
 				path_to_movement_setting_to_modify = {
-					"walk_move_speed"
-				}
-			}
-		}
+					"walk_move_speed",
+				},
+			},
+		},
 	},
 	planted_return_to_normal_movement = {
 		buffs = {
 			{
-				update_func = "update_action_lerp_remove_movement_buff",
-				name = "increase speed return",
-				lerp_time = 0.2,
-				duration = 1,
 				apply_buff_func = "apply_action_lerp_remove_movement_buff",
+				duration = 1,
+				lerp_time = 0.2,
+				name = "increase speed return",
+				update_func = "update_action_lerp_remove_movement_buff",
 				path_to_movement_setting_to_modify = {
-					"move_speed"
-				}
-			}
-		}
+					"move_speed",
+				},
+			},
+		},
 	},
 	planted_return_to_normal_crouch_movement = {
 		buffs = {
 			{
-				update_func = "update_action_lerp_remove_movement_buff",
-				name = "increase speed return",
-				lerp_time = 0.2,
-				duration = 1,
 				apply_buff_func = "apply_action_lerp_remove_movement_buff",
+				duration = 1,
+				lerp_time = 0.2,
+				name = "increase speed return",
+				update_func = "update_action_lerp_remove_movement_buff",
 				path_to_movement_setting_to_modify = {
-					"crouch_move_speed"
-				}
-			}
-		}
+					"crouch_move_speed",
+				},
+			},
+		},
 	},
 	planted_return_to_normal_walk_movement = {
 		buffs = {
 			{
-				update_func = "update_action_lerp_remove_movement_buff",
-				name = "increase speed return",
-				lerp_time = 0.2,
-				duration = 1,
 				apply_buff_func = "apply_action_lerp_remove_movement_buff",
+				duration = 1,
+				lerp_time = 0.2,
+				name = "increase speed return",
+				update_func = "update_action_lerp_remove_movement_buff",
 				path_to_movement_setting_to_modify = {
-					"walk_move_speed"
-				}
-			}
-		}
+					"walk_move_speed",
+				},
+			},
+		},
 	},
 	arrow_poison_dot = {
 		buffs = {
 			{
+				apply_buff_func = "start_dot_damage",
+				damage_profile = "poison_direct",
 				duration = 3,
 				name = "arrow poison dot",
 				time_between_dot_damages = 0.6,
-				damage_profile = "poison_direct",
 				update_func = "apply_dot_damage",
-				apply_buff_func = "start_dot_damage",
 				update_start_delay = 0.6,
 				perks = {
-					buff_perks.poisoned
-				}
-			}
-		}
+					buff_perks.poisoned,
+				},
+			},
+		},
 	},
 	aoe_poison_dot = {
 		buffs = {
 			{
+				apply_buff_func = "start_dot_damage",
+				damage_profile = "poison",
 				duration = 3,
 				name = "aoe poison dot",
 				time_between_dot_damages = 0.75,
-				damage_profile = "poison",
 				update_func = "apply_dot_damage",
-				apply_buff_func = "start_dot_damage",
 				update_start_delay = 0.75,
 				perks = {
-					buff_perks.poisoned
-				}
-			}
-		}
+					buff_perks.poisoned,
+				},
+			},
+		},
 	},
 	weapon_bleed_dot_dagger = {
 		buffs = {
 			{
-				duration = 2,
-				name = "weapon bleed dot dagger",
-				max_stacks = 1,
-				refresh_durations = true,
 				apply_buff_func = "start_dot_damage",
-				update_start_delay = 0.75,
-				time_between_dot_damages = 0.75,
-				hit_zone = "neck",
 				damage_profile = "bleed",
+				duration = 2,
+				hit_zone = "neck",
+				max_stacks = 1,
+				name = "weapon bleed dot dagger",
+				refresh_durations = true,
+				time_between_dot_damages = 0.75,
 				update_func = "apply_dot_damage",
+				update_start_delay = 0.75,
 				perks = {
-					buff_perks.bleeding
-				}
-			}
-		}
+					buff_perks.bleeding,
+				},
+			},
+		},
 	},
 	weapon_bleed_dot_whc = {
 		buffs = {
 			{
-				duration = 2,
-				name = "weapon bleed dot whc",
-				max_stacks = 3,
-				refresh_durations = true,
 				apply_buff_func = "start_dot_damage",
-				update_start_delay = 0.75,
-				time_between_dot_damages = 0.75,
-				hit_zone = "neck",
 				damage_profile = "bleed",
+				duration = 2,
+				hit_zone = "neck",
+				max_stacks = 3,
+				name = "weapon bleed dot whc",
+				refresh_durations = true,
+				time_between_dot_damages = 0.75,
 				update_func = "apply_dot_damage",
+				update_start_delay = 0.75,
 				perks = {
-					buff_perks.bleeding
-				}
-			}
-		}
+					buff_perks.bleeding,
+				},
+			},
+		},
 	},
 	weapon_bleed_dot_maidenguard = {
 		buffs = {
 			{
-				duration = 4,
-				name = "weapon bleed dot maidenguard",
-				max_stacks = 1,
-				refresh_durations = true,
 				apply_buff_func = "start_dot_damage",
-				update_start_delay = 0.25,
-				time_between_dot_damages = 0.25,
-				hit_zone = "neck",
 				damage_profile = "bleed_maidenguard",
+				duration = 4,
+				hit_zone = "neck",
+				max_stacks = 1,
+				name = "weapon bleed dot maidenguard",
+				refresh_durations = true,
+				time_between_dot_damages = 0.25,
 				update_func = "apply_dot_damage",
+				update_start_delay = 0.25,
 				perks = {
-					buff_perks.bleeding
-				}
-			}
-		}
+					buff_perks.bleeding,
+				},
+			},
+		},
 	},
 	bardin_survival_ale_buff = {
 		buffs = {
 			{
-				name = "ale_defence",
-				multiplier = -0.04,
-				stat_buff = "damage_taken",
 				duration = 300,
-				max_stacks = 3,
 				icon = "buff_icon_mutator_icon_drunk",
-				refresh_durations = true
+				max_stacks = 3,
+				multiplier = -0.04,
+				name = "ale_defence",
+				refresh_durations = true,
+				stat_buff = "damage_taken",
 			},
 			{
+				duration = 300,
+				max_stacks = 3,
 				multiplier = 0.03,
 				name = "ale_attack_speed",
-				stat_buff = "attack_speed",
 				refresh_durations = true,
-				max_stacks = 3,
-				duration = 300
-			}
-		}
+				stat_buff = "attack_speed",
+			},
+		},
 	},
 	kerillian_shade_ability_dot = {
 		buffs = {
 			{
+				apply_buff_func = "start_dot_damage",
+				damage_profile = "poison",
 				duration = 10,
 				name = "kerillian_shade_ability_dot",
 				time_between_dot_damages = 1,
-				damage_profile = "poison",
 				update_func = "apply_dot_damage",
-				apply_buff_func = "start_dot_damage",
 				update_start_delay = 1,
 				perks = {
-					buff_perks.poisoned
-				}
+					buff_perks.poisoned,
+				},
 			},
 			{
+				duration = 10,
+				max_stacks = 1,
 				multiplier = 0.5,
 				name = "kerillian_shade_ability_debuff",
-				stat_buff = "damage_taken",
 				refresh_durations = true,
-				max_stacks = 1,
-				duration = 10
-			}
-		}
+				stat_buff = "damage_taken",
+			},
+		},
 	},
 	burning_dot = {
 		buffs = {
 			{
+				apply_buff_func = "start_dot_damage",
+				damage_profile = "burning_dot",
+				damage_type = "burninating",
 				duration = 3,
 				name = "burning_dot",
-				apply_buff_func = "start_dot_damage",
-				update_start_delay = 0.75,
 				time_between_dot_damages = 0.75,
-				damage_type = "burninating",
-				damage_profile = "burning_dot",
 				update_func = "apply_dot_damage",
+				update_start_delay = 0.75,
 				perks = {
-					buff_perks.burning
-				}
-			}
-		}
+					buff_perks.burning,
+				},
+			},
+		},
 	},
 	beam_burning_dot = {
 		buffs = {
 			{
+				apply_buff_func = "start_dot_damage",
+				damage_profile = "beam_burning_dot",
+				damage_type = "burninating",
 				duration = 3,
 				name = "beam_burning_dot",
-				apply_buff_func = "start_dot_damage",
-				update_start_delay = 1,
 				time_between_dot_damages = 1,
-				damage_type = "burninating",
-				damage_profile = "beam_burning_dot",
 				update_func = "apply_dot_damage",
+				update_start_delay = 1,
 				perks = {
-					buff_perks.burning
-				}
-			}
-		}
+					buff_perks.burning,
+				},
+			},
+		},
 	},
 	burning_flamethrower_dot = {
 		buffs = {
 			{
-				duration = 1.5,
-				name = "burning_flamethrower_dot",
-				max_stacks = 1,
-				refresh_durations = true,
 				apply_buff_func = "start_dot_damage",
-				update_start_delay = 0.65,
-				time_between_dot_damages = 0.65,
-				damage_type = "burninating",
 				damage_profile = "flamethrower_burning_dot",
+				damage_type = "burninating",
+				duration = 1.5,
+				max_stacks = 1,
+				name = "burning_flamethrower_dot",
+				refresh_durations = true,
+				time_between_dot_damages = 0.65,
 				update_func = "apply_dot_damage",
+				update_start_delay = 0.65,
 				perks = {
-					buff_perks.burning
-				}
-			}
-		}
+					buff_perks.burning,
+				},
+			},
+		},
 	},
 	sienna_adept_ability_trail = {
 		buffs = {
 			{
-				leave_linger_time = 0.25,
-				name = "sienna_adept_ability_trail",
-				max_stacks = 1,
-				on_max_stacks_overflow_func = "reapply_buff",
 				apply_buff_func = "start_dot_damage",
-				update_start_delay = 0.25,
-				time_between_dot_damages = 0.25,
-				damage_type = "burninating",
 				damage_profile = "burning_dot",
+				damage_type = "burninating",
+				leave_linger_time = 0.25,
+				max_stacks = 1,
+				name = "sienna_adept_ability_trail",
+				on_max_stacks_overflow_func = "reapply_buff",
+				time_between_dot_damages = 0.25,
 				update_func = "apply_dot_damage",
+				update_start_delay = 0.25,
 				perks = {
-					buff_perks.burning
-				}
-			}
-		}
+					buff_perks.burning,
+				},
+			},
+		},
 	},
 	burning_dot_fire_grenade = {
 		buffs = {
 			{
+				apply_buff_func = "start_dot_damage",
+				damage_profile = "burning_dot_firegrenade",
+				damage_type = "burninating",
 				duration = 6,
 				name = "burning_dot_fire_grenade",
-				apply_buff_func = "start_dot_damage",
-				update_start_delay = 1,
 				time_between_dot_damages = 1,
-				damage_type = "burninating",
-				damage_profile = "burning_dot_firegrenade",
 				update_func = "apply_dot_damage",
+				update_start_delay = 1,
 				perks = {
-					buff_perks.burning
-				}
-			}
-		}
+					buff_perks.burning,
+				},
+			},
+		},
 	},
 	burning_dot_1tick = {
 		buffs = {
 			{
+				apply_buff_func = "start_dot_damage",
+				damage_profile = "burning_dot",
+				damage_type = "burninating",
 				duration = 2,
 				name = "burning_dot_1tick",
-				apply_buff_func = "start_dot_damage",
-				update_start_delay = 1.5,
 				time_between_dot_damages = 1.5,
-				damage_type = "burninating",
-				damage_profile = "burning_dot",
 				update_func = "apply_dot_damage",
+				update_start_delay = 1.5,
 				perks = {
-					buff_perks.burning
-				}
-			}
-		}
+					buff_perks.burning,
+				},
+			},
+		},
 	},
 	burning_dot_unchained_push = {
 		buffs = {
 			{
-				duration = 6,
-				name = "burning_dot_unchained_push",
-				max_stacks = 1,
-				refresh_durations = true,
 				apply_buff_func = "start_dot_damage",
-				update_start_delay = 2,
-				time_between_dot_damages = 2,
-				damage_type = "burninating",
 				damage_profile = "burning_dot",
+				damage_type = "burninating",
+				duration = 6,
+				max_stacks = 1,
+				name = "burning_dot_unchained_push",
+				refresh_durations = true,
+				time_between_dot_damages = 2,
 				update_func = "apply_dot_damage",
+				update_start_delay = 2,
 				perks = {
-					buff_perks.burning
-				}
-			}
-		}
+					buff_perks.burning,
+				},
+			},
+		},
 	},
 	burning_dot_unchained_pulse = {
 		buffs = {
 			{
-				duration = 2,
-				name = "burning_dot_unchained_pulse",
-				max_stacks = 1,
-				refresh_durations = true,
 				apply_buff_func = "start_dot_damage",
-				update_start_delay = 2,
-				time_between_dot_damages = 2,
-				damage_type = "burninating",
 				damage_profile = "burning_dot",
+				damage_type = "burninating",
+				duration = 2,
+				max_stacks = 1,
+				name = "burning_dot_unchained_pulse",
+				refresh_durations = true,
+				time_between_dot_damages = 2,
 				update_func = "apply_dot_damage",
+				update_start_delay = 2,
 				perks = {
-					buff_perks.burning
-				}
-			}
-		}
+					buff_perks.burning,
+				},
+			},
+		},
 	},
 	burning_dot_3tick = {
 		buffs = {
 			{
+				apply_buff_func = "start_dot_damage",
+				damage_profile = "burning_dot",
+				damage_type = "burninating",
 				duration = 3,
 				name = "burning_dot_3tick",
-				apply_buff_func = "start_dot_damage",
-				update_start_delay = 1,
 				time_between_dot_damages = 1,
-				damage_type = "burninating",
-				damage_profile = "burning_dot",
 				update_func = "apply_dot_damage",
+				update_start_delay = 1,
 				perks = {
-					buff_perks.burning
-				}
-			}
-		}
+					buff_perks.burning,
+				},
+			},
+		},
 	},
 	super_jump = {
 		buffs = {
 			{
-				duration = 20,
-				name = "speed buff",
-				multiplier = 1.7,
-				remove_buff_func = "remove_movement_buff",
 				apply_buff_func = "apply_movement_buff",
+				duration = 20,
+				multiplier = 1.7,
+				name = "speed buff",
+				remove_buff_func = "remove_movement_buff",
 				path_to_movement_setting_to_modify = {
-					"move_speed"
-				}
+					"move_speed",
+				},
 			},
 			{
-				duration = 10,
-				name = "jump buff",
-				multiplier = 1.2,
-				remove_buff_func = "remove_movement_buff",
 				apply_buff_func = "apply_movement_buff",
 				bonus = 5,
+				duration = 10,
+				multiplier = 1.2,
+				name = "jump buff",
+				remove_buff_func = "remove_movement_buff",
 				path_to_movement_setting_to_modify = {
 					"jump",
-					"initial_vertical_speed"
-				}
-			}
-		}
+					"initial_vertical_speed",
+				},
+			},
+		},
 	},
 	damage_volume_generic_dot = {
 		buffs = {
 			{
-				update_func = "update_volume_dot_damage",
-				name = "damage_volume_generic_dot",
 				apply_buff_func = "apply_volume_dot_damage",
-				damage_type = "volume_generic_dot"
-			}
-		}
+				damage_type = "volume_generic_dot",
+				name = "damage_volume_generic_dot",
+				update_func = "update_volume_dot_damage",
+			},
+		},
 	},
 	catacombs_corpse_pit = {
 		buffs = {
 			{
-				slowdown_buff_name = "corpse_pit_slowdown",
-				name = "catacombs_corpse_pit",
-				update_func = "update_catacombs_corpse_pit",
 				apply_buff_func = "apply_catacombs_corpse_pit",
+				debuff = true,
+				fatigue_type = "vomit_ground",
+				icon = "convocation_debuff",
+				max_stacks = 1,
+				name = "catacombs_corpse_pit",
 				refresh_durations = true,
 				remove_buff_func = "remove_catacombs_corpse_pit",
-				fatigue_type = "vomit_ground",
+				slowdown_buff_name = "corpse_pit_slowdown",
 				time_between_ticks = 2,
-				debuff = true,
-				max_stacks = 1,
-				icon = "convocation_debuff"
-			}
-		}
+				update_func = "update_catacombs_corpse_pit",
+			},
+		},
 	},
 	cemetery_plague_floor = {
 		buffs = {
 			{
-				slowdown_buff_name = "cemetery_floor_plague_slowdown",
-				name = "plague_floor",
-				debuff = true,
-				update_func = "update_moving_through_plague",
-				fatigue_type = "plague_ground",
-				remove_buff_func = "remove_moving_through_plague",
 				apply_buff_func = "apply_moving_through_plague",
-				refresh_durations = true,
-				time_between_dot_damages = 0.75,
 				damage_type = "plague_ground",
-				max_stacks = 1,
+				debuff = true,
+				fatigue_type = "plague_ground",
 				icon = "troll_vomit_debuff",
+				max_stacks = 1,
+				name = "plague_floor",
+				refresh_durations = true,
+				remove_buff_func = "remove_moving_through_plague",
+				slowdown_buff_name = "cemetery_floor_plague_slowdown",
+				time_between_dot_damages = 0.75,
+				update_func = "update_moving_through_plague",
 				difficulty_damage = {
 					easy = {
 						1,
 						1,
 						0,
 						0.5,
-						1
+						1,
 					},
 					normal = {
 						1,
 						1,
 						0,
 						1,
-						1
+						1,
 					},
 					hard = {
 						1,
 						1,
 						0,
 						1,
-						1
+						1,
 					},
 					harder = {
 						1,
 						1,
 						0,
 						2,
-						1
+						1,
 					},
 					hardest = {
 						1,
 						1,
 						0,
 						4,
-						1
+						1,
 					},
 					cataclysm = {
 						1,
 						1,
 						0,
 						1,
-						1
+						1,
 					},
 					cataclysm_2 = {
 						1,
 						1,
 						0,
 						2,
-						1
+						1,
 					},
 					cataclysm_3 = {
 						1,
 						1,
 						0,
 						4,
-						1
-					}
-				}
-			}
-		}
+						1,
+					},
+				},
+			},
+		},
 	},
 	movement_volume_generic_slowdown = {
 		buffs = {
 			{
-				remove_buff_func = "remove_volume_movement_buff",
+				apply_buff_func = "apply_volume_movement_buff",
 				name = "movement_volume_generic_slowdown",
-				apply_buff_func = "apply_volume_movement_buff"
-			}
-		}
+				remove_buff_func = "remove_volume_movement_buff",
+			},
+		},
 	},
 	regrowth = {
 		buffs = {
 			{
-				name = "regrowth",
+				bonus = 2,
 				buff_func = "heal_finesse_damage_on_melee",
 				event = "on_hit",
-				bonus = 2,
+				name = "regrowth",
 				perks = {
-					buff_perks.ninja_healing
-				}
-			}
-		}
+					buff_perks.ninja_healing,
+				},
+			},
+		},
 	},
 	bloodlust = {
 		buffs = {
 			{
-				name = "bloodlust",
-				multiplier = 0.2,
 				buff_func = "heal_percentage_of_enemy_hp_on_melee_kill",
 				event = "on_kill",
+				multiplier = 0.2,
+				name = "bloodlust",
 				perks = {
-					buff_perks.smiter_healing
-				}
-			}
-		}
+					buff_perks.smiter_healing,
+				},
+			},
+		},
 	},
 	vanguard = {
 		buffs = {
 			{
-				name = "vanguard",
-				multiplier = 0.25,
 				buff_func = "heal_stagger_targets_on_melee",
 				event = "on_stagger",
+				multiplier = 0.25,
+				name = "vanguard",
 				perks = {
-					buff_perks.tank_healing
-				}
-			}
-		}
+					buff_perks.tank_healing,
+				},
+			},
+		},
 	},
 	reaper = {
 		buffs = {
 			{
-				max_targets = 5,
-				name = "reaper",
+				bonus = 0.75,
 				buff_func = "heal_damage_targets_on_melee",
 				event = "on_player_damage_dealt",
-				bonus = 0.75,
+				max_targets = 5,
+				name = "reaper",
 				perks = {
-					buff_perks.linesman_healing
-				}
-			}
-		}
+					buff_perks.linesman_healing,
+				},
+			},
+		},
 	},
 	conqueror = {
 		buffs = {
 			{
-				name = "conqueror",
-				multiplier = 0.2,
-				range = 10,
 				buff_func = "heal_other_players_percent_at_range",
-				event = "on_healed_consumeable"
-			}
-		}
+				event = "on_healed_consumeable",
+				multiplier = 0.2,
+				name = "conqueror",
+				range = 10,
+			},
+		},
 	},
 	dummy_stagger = {
 		buffs = {
 			{
-				refresh_durations = true,
-				name = "dummy_stagger",
-				stat_buff = "dummy_stagger",
-				max_stacks = 2,
+				bonus = 1,
 				duration = 1,
-				bonus = 1
-			}
-		}
+				max_stacks = 2,
+				name = "dummy_stagger",
+				refresh_durations = true,
+				stat_buff = "dummy_stagger",
+			},
+		},
 	},
 	linesman_unbalance = {
 		buffs = {
 			{
-				max_display_multiplier = 0.6,
-				name = "linesman_unbalance",
-				max_stacks = 1,
 				display_multiplier = 0.4,
+				max_display_multiplier = 0.6,
+				max_stacks = 1,
+				name = "linesman_unbalance",
 				perks = {
-					buff_perks.linesman_stagger_damage
-				}
-			}
-		}
+					buff_perks.linesman_stagger_damage,
+				},
+			},
+		},
 	},
 	smiter_unbalance = {
 		buffs = {
 			{
+				display_multiplier = 0.2,
 				max_display_multiplier = 0.4,
 				name = "smiter_unbalance",
-				display_multiplier = 0.2,
 				perks = {
-					buff_perks.smiter_stagger_damage
-				}
-			}
-		}
+					buff_perks.smiter_stagger_damage,
+				},
+			},
+		},
 	},
 	finesse_unbalance = {
 		buffs = {
 			{
+				display_multiplier = 0.2,
 				max_display_multiplier = 0.4,
 				name = "finesse_unbalance",
-				display_multiplier = 0.2,
 				perks = {
-					buff_perks.finesse_stagger_damage
-				}
-			}
-		}
+					buff_perks.finesse_stagger_damage,
+				},
+			},
+		},
 	},
 	tank_unbalance = {
 		buffs = {
 			{
+				buff_func = "unbalance_debuff_on_stagger",
+				display_multiplier = 0.2,
+				event = "on_stagger",
 				max_display_multiplier = 0.4,
 				name = "tank_unbalance",
-				buff_func = "unbalance_debuff_on_stagger",
-				event = "on_stagger",
-				display_multiplier = 0.2
-			}
-		}
+			},
+		},
 	},
 	tank_unbalance_buff = {
 		buffs = {
 			{
-				refresh_durations = true,
-				name = "tank_unbalance_buff",
-				stat_buff = "unbalanced_damage_taken",
-				max_stacks = 1,
+				bonus = 0.1,
 				duration = 2,
-				bonus = 0.1
-			}
-		}
+				max_stacks = 1,
+				name = "tank_unbalance_buff",
+				refresh_durations = true,
+				stat_buff = "unbalanced_damage_taken",
+			},
+		},
 	},
 	power_level_unbalance = {
 		buffs = {
 			{
 				max_stacks = 1,
+				multiplier = 0.075,
 				name = "power_level_unbalance",
 				stat_buff = "power_level",
-				multiplier = 0.075
-			}
-		}
+			},
+		},
 	},
 	defence_debuff_enemies = {
 		buffs = {
 			{
-				name = "defence_debuff_enemies",
-				multiplier = 0.2,
-				stat_buff = "damage_taken",
-				refresh_durations = true,
+				duration = 15,
 				max_stacks = 1,
-				duration = 15
-			}
-		}
+				multiplier = 0.2,
+				name = "defence_debuff_enemies",
+				refresh_durations = true,
+				stat_buff = "damage_taken",
+			},
+		},
 	},
 	attack_speed_from_proc = {
 		buffs = {
 			{
 				max_stacks = 1,
 				name = "attack_speed_from_proc",
+				refresh_durations = true,
 				stat_buff = "attack_speed",
-				refresh_durations = true
-			}
-		}
+			},
+		},
 	},
 	fatigue_regen_from_proc = {
 		buffs = {
 			{
 				max_stacks = 1,
 				name = "fatigue_regen_from_proc",
+				refresh_durations = true,
 				stat_buff = "fatigue_regen",
-				refresh_durations = true
-			}
-		}
+			},
+		},
 	},
 	increased_melee_damage_from_proc = {
 		buffs = {
 			{
 				max_stacks = 1,
 				name = "increased_melee_damage_from_proc",
+				refresh_durations = true,
 				stat_buff = "increased_weapon_damage_melee",
-				refresh_durations = true
-			}
-		}
+			},
+		},
 	},
 	damage_taken_from_proc = {
 		buffs = {
 			{
 				max_stacks = 1,
 				name = "damage_taken_from_proc",
+				refresh_durations = true,
 				stat_buff = "damage_taken",
-				refresh_durations = true
-			}
-		}
+			},
+		},
 	},
 	mutator_player_dot = {
 		buffs = {
 			{
+				apply_buff_func = "start_dot_damage",
+				damage_profile = "mutator_player_dot",
 				name = "mutator player dot",
 				time_between_dot_damages = 10,
-				damage_profile = "mutator_player_dot",
 				update_func = "apply_dot_damage",
-				apply_buff_func = "start_dot_damage",
-				update_start_delay = 10
-			}
-		}
+				update_start_delay = 10,
+			},
+		},
 	},
 	damage_taken_powerful_elites = {
 		buffs = {
 			{
 				multiplier = 1,
 				name = "damage_taken_from_powerful_elites",
-				stat_buff = "damage_taken_elites"
-			}
-		}
+				stat_buff = "damage_taken_elites",
+			},
+		},
 	},
 	mutator_life_damage_on_hit = {
 		buffs = {
 			{
+				bonus = 1,
+				buff_func = "damage_attacker",
 				event = "on_hit",
 				name = "mutator_life_damage_on_hit",
-				bonus = 1,
-				buff_func = "damage_attacker"
-			}
-		}
+			},
+		},
 	},
 	mutator_life_health_regeneration = {
 		buffs = {
 			{
-				name = "mutator_life_health_regeneration",
+				apply_buff_func = "mutator_life_health_regeneration_start",
 				buff_func = "life_mutator_remove_regen",
 				event = "on_damage_taken",
+				name = "mutator_life_health_regeneration",
 				update_func = "mutator_life_health_regeneration_update",
-				apply_buff_func = "mutator_life_health_regeneration_start"
-			}
-		}
+			},
+		},
 	},
 	mutator_life_health_regeneration_stacks = {
 		buffs = {
 			{
+				apply_buff_func = "health_regen_start",
 				heal = 1,
-				name = "mutator_life_health_regeneration_stacks",
 				heal_type = "health_regen",
+				name = "mutator_life_health_regeneration_stacks",
 				time_between_heal = 1,
 				update_func = "health_regen_update",
-				apply_buff_func = "health_regen_start"
-			}
-		}
+			},
+		},
 	},
 	mutator_life_thorns_poison = {
 		buffs = {
 			{
-				slowdown_buff_name = "cemetery_floor_plague_slowdown",
+				apply_buff_func = "apply_mutator_life_thorns_poison",
+				debuff = true,
+				max_stacks = 1,
 				name = "mutator_life_thorns_poison",
 				refresh_durations = true,
 				remove_buff_func = "remove_mutator_life_thorns_poison",
-				apply_buff_func = "apply_mutator_life_thorns_poison",
+				slowdown_buff_name = "cemetery_floor_plague_slowdown",
 				time_between_dot_damages = 0.01,
-				debuff = true,
-				max_stacks = 1,
 				update_func = "update_mutator_life_thorns_poison",
 				difficulty_damage = {
-					harder = 6,
-					hard = 4,
-					normal = 2,
-					hardest = 8,
 					cataclysm = 12,
-					cataclysm_3 = 20,
 					cataclysm_2 = 16,
-					easy = 2
-				}
-			}
-		}
+					cataclysm_3 = 20,
+					easy = 2,
+					hard = 4,
+					harder = 6,
+					hardest = 8,
+					normal = 2,
+				},
+			},
+		},
 	},
 	mutator_fire_mutator_bomb = {
 		buffs = {
 			{
-				update_func = "update_fire_mutator_bomb",
-				name = "mutator_fire_mutator_bomb",
+				apply_buff_func = "apply_fire_mutator_bomb",
 				icon = "buff_icon_mutator_ticking_bomb",
 				max_stacks = 1,
+				name = "mutator_fire_mutator_bomb",
 				remove_buff_func = "remove_fire_mutator_bomb",
-				apply_buff_func = "apply_fire_mutator_bomb"
-			}
-		}
+				update_func = "update_fire_mutator_bomb",
+			},
+		},
 	},
 	mutator_fire_player_dot = {
 		buffs = {
 			{
-				sound_event = "Play_winds_fire_gameplay_fire_damage_player",
-				name = "mutator_fire_player_dot",
-				time_between_dot_damages = 1,
-				update_func = "apply_dot_damage",
+				apply_buff_func = "start_dot_damage",
 				damage_profile = "mutator_player_dot",
 				icon = "buff_icon_mutator_ticking_bomb",
-				apply_buff_func = "start_dot_damage",
-				update_start_delay = 1
-			}
-		}
+				name = "mutator_fire_player_dot",
+				sound_event = "Play_winds_fire_gameplay_fire_damage_player",
+				time_between_dot_damages = 1,
+				update_func = "apply_dot_damage",
+				update_start_delay = 1,
+			},
+		},
 	},
 	mutator_fire_enemy_dot = {
 		activation_sound = "Play_enemy_on_fire_loop",
 		buffs = {
 			{
+				apply_buff_func = "start_dot_damage",
+				damage_profile = "mutator_player_dot",
 				name = "mutator_fire_enemy_dot",
 				time_between_dot_damages = 1,
-				damage_profile = "mutator_player_dot",
 				update_func = "apply_dot_damage",
-				apply_buff_func = "start_dot_damage",
-				update_start_delay = 1
-			}
-		}
+				update_start_delay = 1,
+			},
+		},
 	},
 	mutator_metal_blade_dance = {
 		buffs = {
 			{
 				activation_effect = "fx/screenspace_potion_01",
-				name = "mutator_metal_blade_dance",
-				remove_buff_func = "remove_blade_dance",
+				apply_buff_func = "start_blade_dance",
 				duration = 16,
 				icon = "teammate_consumable_icon_defence",
-				refresh_durations = true,
-				apply_buff_func = "start_blade_dance",
 				max_stacks = 1,
-				update_func = "update_blade_dance"
-			}
-		}
+				name = "mutator_metal_blade_dance",
+				refresh_durations = true,
+				remove_buff_func = "remove_blade_dance",
+				update_func = "update_blade_dance",
+			},
+		},
 	},
 	mutator_light_debuff = {
 		buffs = {
 			{
-				name = "mutator_light_debuff",
-				icon = "buff_icon_mutator_icon_slayer_curse",
 				debuff = true,
+				icon = "buff_icon_mutator_icon_slayer_curse",
+				name = "mutator_light_debuff",
 				perks = {
-					buff_perks.mutator_curse
-				}
+					buff_perks.mutator_curse,
+				},
 			},
 			{
 				multiplier = 0.015,
 				name = "death_attack_speed_buff",
-				stat_buff = "attack_speed"
-			}
-		}
+				stat_buff = "attack_speed",
+			},
+		},
 	},
 	mutator_light_cleansing_curse_buff = {
 		buffs = {
 			{
-				screenspace_effect_name = "fx/screenspace_light_beacon_01",
+				apply_buff_func = "apply_screenspace_effect",
+				duration = 1,
 				name = "mutator_light_cleansing_curse_buff",
 				refresh_durations = true,
-				duration = 1,
-				apply_buff_func = "apply_screenspace_effect"
-			}
-		}
+				screenspace_effect_name = "fx/screenspace_light_beacon_01",
+			},
+		},
 	},
 	mutator_beasts_totem_buff = {
 		buffs = {
 			{
-				wind_mutator = true,
+				apply_buff_func = "apply_beasts_totem_buff",
+				icon = "buff_icon_mutator_ticking_bomb",
+				max_stacks = 1,
 				name = "mutator_beasts_totem_buff",
-				stat_buff = "damage_taken",
+				reapply_buff_func = "apply_beasts_totem_buff",
 				refresh_durations = true,
 				remove_buff_func = "remove_beasts_totem_buff",
-				apply_buff_func = "apply_beasts_totem_buff",
-				max_stacks = 1,
-				icon = "buff_icon_mutator_ticking_bomb",
-				reapply_buff_func = "apply_beasts_totem_buff"
-			}
-		}
+				stat_buff = "damage_taken",
+				wind_mutator = true,
+			},
+		},
 	},
 	metal_mutator_gromril_armour = {
 		buffs = {
 			{
+				icon = "teammate_consumable_icon_defence",
 				max_stacks = 10,
 				name = "metal_mutator_gromril_armour",
 				remove_buff_func = "remove_metal_mutator_gromril_armour",
-				icon = "teammate_consumable_icon_defence"
-			}
-		}
+			},
+		},
 	},
 	metal_mutator_damage_boost = {
 		activation_effect = "fx/screenspace_potion_01",
-		deactivation_sound = "hud_gameplay_stance_deactivate",
 		activation_sound = "hud_gameplay_stance_smiter_activate",
+		deactivation_sound = "hud_gameplay_stance_deactivate",
 		buffs = {
 			{
-				icon = "icon_wpn_emp_mace_04_t3",
-				name = "armor penetration",
-				stat_buff = "increased_weapon_damage",
-				refresh_durations = true,
-				max_stacks = 1,
 				duration = 8,
+				icon = "icon_wpn_emp_mace_04_t3",
+				max_stacks = 1,
+				name = "armor penetration",
+				refresh_durations = true,
+				stat_buff = "increased_weapon_damage",
 				perks = {
-					buff_perks.potion_armor_penetration
-				}
+					buff_perks.potion_armor_penetration,
+				},
 			},
 			{
+				duration = 8,
+				max_stacks = 1,
 				multiplier = 0.5,
 				name = "metal_mutator_unbalanced_damage_dealt",
 				stat_buff = "unbalanced_damage_dealt",
-				max_stacks = 1,
-				duration = 8
-			}
-		}
+			},
+		},
 	},
 	mutator_death_attack_speed_player_buff = {
 		buffs = {
 			{
 				activation_effect = "fx/screenspace_potion_03",
+				icon = "buff_icon_mutator_icon_slayer_curse",
 				multiplier = 0.25,
-				stat_buff = "attack_speed",
 				name = "death_attack_speed_buff",
-				icon = "buff_icon_mutator_icon_slayer_curse"
+				stat_buff = "attack_speed",
 			},
 			{
-				name = "increased_damage",
-				multiplier = 0.25,
-				stat_buff = "increased_weapon_damage",
+				icon = "mutator_death_attack_speed_player_buff",
 				max_stacks = 1,
-				icon = "mutator_death_attack_speed_player_buff"
-			}
-		}
+				multiplier = 0.25,
+				name = "increased_damage",
+				stat_buff = "increased_weapon_damage",
+			},
+		},
 	},
 	mutator_shadow_damage_reduction = {
 		buffs = {
 			{
-				wind_mutator = true,
 				name = "mutator_shadow_damage_reduction",
-				stat_buff = "damage_taken"
-			}
-		}
+				stat_buff = "damage_taken",
+				wind_mutator = true,
+			},
+		},
 	},
 	mutator_metal_killing_blow = {
 		buffs = {
 			{
-				num_stacks = 15,
-				name = "mutator_metal_killing_blow",
+				bonus = 100,
 				buff_func = "metal_mutator_stacks_on_hit",
 				event = "on_hit",
-				bonus = 100,
+				name = "mutator_metal_killing_blow",
+				num_stacks = 15,
 				breeds = {
 					"skaven_slave",
 					"skaven_clan_rat",
@@ -5901,839 +5927,839 @@ BuffTemplates = {
 					"chaos_raider",
 					"chaos_berzerker",
 					"chaos_corruptor_sorcerer",
-					"chaos_vortex_sorcerer"
-				}
-			}
-		}
+					"chaos_vortex_sorcerer",
+				},
+			},
+		},
 	},
 	trinket_reduce_activated_ability_cooldown = {
 		description = "trinket_reduce_activated_ability_cooldown_description",
 		display_name = "trinket_reduce_activated_ability_cooldown",
-		unique_id = "trinket_ability_cooldown",
 		icon = "trait_icon_mastercrafted",
+		unique_id = "trinket_ability_cooldown",
 		description_values = {
-			"multiplier"
+			"multiplier",
 		},
 		buffs = {
 			{
 				multiplier = -0.5,
 				name = "trinket_reduce_activated_ability_cooldown",
-				stat_buff = "activated_cooldown"
-			}
-		}
+				stat_buff = "activated_cooldown",
+			},
+		},
 	},
 	trinket_not_consume_medpack_tier1 = {
 		description = "trinket_not_consume_medpack_tier1_description",
 		display_name = "trinket_not_consume_medpack_tier1",
-		unique_id = "trinket_not_consume_medpack",
 		icon = "trinket_not_consume_medpack_tier1",
+		unique_id = "trinket_not_consume_medpack",
 		description_values = {
-			"proc_chance"
+			"proc_chance",
 		},
 		buffs = {
 			{
-				proc_chance = 0.1,
 				name = "not_consume_medpack",
-				stat_buff = "not_consume_medpack"
-			}
-		}
+				proc_chance = 0.1,
+				stat_buff = "not_consume_medpack",
+			},
+		},
 	},
 	trinket_not_consume_medpack_tier2 = {
 		description = "trinket_not_consume_medpack_tier2_description",
 		display_name = "trinket_not_consume_medpack_tier2",
-		unique_id = "trinket_not_consume_medpack",
 		icon = "trinket_not_consume_medpack_tier2",
+		unique_id = "trinket_not_consume_medpack",
 		description_values = {
-			"proc_chance"
+			"proc_chance",
 		},
 		buffs = {
 			{
-				proc_chance = 0.15,
 				name = "not_consume_medpack",
-				stat_buff = "not_consume_medpack"
-			}
-		}
+				proc_chance = 0.15,
+				stat_buff = "not_consume_medpack",
+			},
+		},
 	},
 	trinket_not_consume_medpack_tier3 = {
 		description = "trinket_not_consume_medpack_tier3_description",
 		display_name = "trinket_not_consume_medpack_tier3",
-		unique_id = "trinket_not_consume_medpack",
 		icon = "trinket_not_consume_medpack_tier3",
+		unique_id = "trinket_not_consume_medpack",
 		description_values = {
-			"proc_chance"
+			"proc_chance",
 		},
 		buffs = {
 			{
-				proc_chance = 0.2,
 				name = "not_consume_medpack",
-				stat_buff = "not_consume_medpack"
-			}
-		}
+				proc_chance = 0.2,
+				stat_buff = "not_consume_medpack",
+			},
+		},
 	},
 	trinket_not_consume_potion_tier1 = {
 		description = "trinket_not_consume_potion_tier1_description",
 		display_name = "trinket_not_consume_potion_tier1",
-		unique_id = "trinket_not_consume_potion",
 		icon = "trinket_not_consume_potion_tier1",
+		unique_id = "trinket_not_consume_potion",
 		description_values = {
-			"proc_chance"
+			"proc_chance",
 		},
 		buffs = {
 			{
-				proc_chance = 0.15,
 				name = "not_consume_potion",
-				stat_buff = "not_consume_potion"
-			}
-		}
+				proc_chance = 0.15,
+				stat_buff = "not_consume_potion",
+			},
+		},
 	},
 	trinket_not_consume_potion_tier2 = {
 		description = "trinket_not_consume_potion_tier2_description",
 		display_name = "trinket_not_consume_potion_tier2",
-		unique_id = "trinket_not_consume_potion",
 		icon = "trinket_not_consume_potion_tier2",
+		unique_id = "trinket_not_consume_potion",
 		description_values = {
-			"proc_chance"
+			"proc_chance",
 		},
 		buffs = {
 			{
-				proc_chance = 0.2,
 				name = "not_consume_potion",
-				stat_buff = "not_consume_potion"
-			}
-		}
+				proc_chance = 0.2,
+				stat_buff = "not_consume_potion",
+			},
+		},
 	},
 	trinket_not_consume_potion_tier3 = {
 		description = "trinket_not_consume_potion_tier3_description",
 		display_name = "trinket_not_consume_potion_tier3",
-		unique_id = "trinket_not_consume_potion",
 		icon = "trinket_not_consume_potion_tier3",
+		unique_id = "trinket_not_consume_potion",
 		description_values = {
-			"proc_chance"
+			"proc_chance",
 		},
 		buffs = {
 			{
-				proc_chance = 0.25,
 				name = "not_consume_potion",
-				stat_buff = "not_consume_potion"
-			}
-		}
+				proc_chance = 0.25,
+				stat_buff = "not_consume_potion",
+			},
+		},
 	},
 	trinket_not_consume_grenade_tier1 = {
 		description = "trinket_not_consume_grenade_tier1_description",
 		display_name = "trinket_not_consume_grenade_tier1",
-		unique_id = "trinket_not_consume_grenade",
 		icon = "trinket_not_consume_grenade_tier1",
+		unique_id = "trinket_not_consume_grenade",
 		description_values = {
-			"proc_chance"
+			"proc_chance",
 		},
 		buffs = {
 			{
-				proc_chance = 0.15,
 				name = "not_consume_grenade",
-				stat_buff = "not_consume_grenade"
-			}
-		}
+				proc_chance = 0.15,
+				stat_buff = "not_consume_grenade",
+			},
+		},
 	},
 	trinket_not_consume_grenade_tier2 = {
 		description = "trinket_not_consume_grenade_tier2_description",
 		display_name = "trinket_not_consume_grenade_tier2",
-		unique_id = "trinket_not_consume_grenade",
 		icon = "trinket_not_consume_grenade_tier2",
+		unique_id = "trinket_not_consume_grenade",
 		description_values = {
-			"proc_chance"
+			"proc_chance",
 		},
 		buffs = {
 			{
-				proc_chance = 0.2,
 				name = "not_consume_grenade",
-				stat_buff = "not_consume_grenade"
-			}
-		}
+				proc_chance = 0.2,
+				stat_buff = "not_consume_grenade",
+			},
+		},
 	},
 	trinket_not_consume_grenade_tier3 = {
 		description = "trinket_not_consume_grenade_tier3_description",
 		display_name = "trinket_not_consume_grenade_tier3",
-		unique_id = "trinket_not_consume_grenade",
 		icon = "trinket_not_consume_grenade_tier3",
+		unique_id = "trinket_not_consume_grenade",
 		description_values = {
-			"proc_chance"
+			"proc_chance",
 		},
 		buffs = {
 			{
-				proc_chance = 0.25,
 				name = "not_consume_grenade",
-				stat_buff = "not_consume_grenade"
-			}
-		}
+				proc_chance = 0.25,
+				stat_buff = "not_consume_grenade",
+			},
+		},
 	},
 	trinket_no_interruption_revive = {
 		description = "trinket_no_interruption_revive_description",
 		display_name = "trinket_no_interruption_revive",
-		unique_id = "trinket_no_interruption_revive",
 		icon = "trinket_no_interruption_revive_tier1",
+		unique_id = "trinket_no_interruption_revive",
 		buffs = {
 			{
-				name = "no_interruption_revive"
-			}
-		}
+				name = "no_interruption_revive",
+			},
+		},
 	},
 	trinket_no_interruption_bandage = {
 		description = "trinket_no_interruption_bandage_description",
 		display_name = "trinket_no_interruption_bandage",
-		unique_id = "trinket_no_interruption_bandage",
 		icon = "trinket_no_interruption_bandage_tier1",
+		unique_id = "trinket_no_interruption_bandage",
 		buffs = {
 			{
-				name = "no_interruption_bandage"
-			}
-		}
+				name = "no_interruption_bandage",
+			},
+		},
 	},
 	trinket_protection_poison_wind_tier1 = {
 		description = "trinket_protection_poison_wind_tier1_description",
 		display_name = "trinket_protection_poison_wind_tier1",
-		unique_id = "trinket_protection_poison_wind",
 		icon = "trinket_protection_poison_wind_tier1",
+		unique_id = "trinket_protection_poison_wind",
 		description_values = {
-			"multiplier"
+			"multiplier",
 		},
 		buffs = {
 			{
 				multiplier = -0.2,
 				name = "protection_poison_wind",
-				stat_buff = "protection_poison_wind"
-			}
-		}
+				stat_buff = "protection_poison_wind",
+			},
+		},
 	},
 	trinket_protection_poison_wind_tier2 = {
 		description = "trinket_protection_poison_wind_tier2_description",
 		display_name = "trinket_protection_poison_wind_tier2",
-		unique_id = "trinket_protection_poison_wind",
 		icon = "trinket_protection_poison_wind_tier2",
+		unique_id = "trinket_protection_poison_wind",
 		description_values = {
-			"multiplier"
+			"multiplier",
 		},
 		buffs = {
 			{
 				multiplier = -0.4,
 				name = "protection_poison_wind",
-				stat_buff = "protection_poison_wind"
-			}
-		}
+				stat_buff = "protection_poison_wind",
+			},
+		},
 	},
 	trinket_protection_poison_wind_tier3 = {
 		description = "trinket_protection_poison_wind_tier3_description",
 		display_name = "trinket_protection_poison_wind_tier3",
-		unique_id = "trinket_protection_poison_wind",
 		icon = "trinket_protection_poison_wind_tier3",
+		unique_id = "trinket_protection_poison_wind",
 		description_values = {
-			"multiplier"
+			"multiplier",
 		},
 		buffs = {
 			{
 				multiplier = -0.6,
 				name = "protection_poison_wind",
-				stat_buff = "protection_poison_wind"
-			}
-		}
+				stat_buff = "protection_poison_wind",
+			},
+		},
 	},
 	trinket_protection_gutter_runner_tier1 = {
 		description = "trinket_protection_gutter_runner_tier1_description",
 		display_name = "trinket_protection_gutter_runner_tier1",
-		unique_id = "trinket_protection_gutter_runner",
 		icon = "trinket_protection_gutter_runner_tier1",
+		unique_id = "trinket_protection_gutter_runner",
 		description_values = {
-			"multiplier"
+			"multiplier",
 		},
 		buffs = {
 			{
 				multiplier = -0.2,
 				name = "protection_gutter_runner",
-				stat_buff = "protection_gutter_runner"
-			}
-		}
+				stat_buff = "protection_gutter_runner",
+			},
+		},
 	},
 	trinket_protection_gutter_runner_tier2 = {
 		description = "trinket_protection_gutter_runner_tier2_description",
 		display_name = "trinket_protection_gutter_runner_tier2",
-		unique_id = "trinket_protection_gutter_runner",
 		icon = "trinket_protection_gutter_runner_tier2",
+		unique_id = "trinket_protection_gutter_runner",
 		description_values = {
-			"multiplier"
+			"multiplier",
 		},
 		buffs = {
 			{
 				multiplier = -0.4,
 				name = "protection_gutter_runner",
-				stat_buff = "protection_gutter_runner"
-			}
-		}
+				stat_buff = "protection_gutter_runner",
+			},
+		},
 	},
 	trinket_protection_gutter_runner_tier3 = {
 		description = "trinket_protection_gutter_runner_tier3_description",
 		display_name = "trinket_protection_gutter_runner_tier3",
-		unique_id = "trinket_protection_gutter_runner",
 		icon = "trinket_protection_gutter_runner_tier3",
+		unique_id = "trinket_protection_gutter_runner",
 		description_values = {
-			"multiplier"
+			"multiplier",
 		},
 		buffs = {
 			{
 				multiplier = -0.6,
 				name = "protection_gutter_runner",
-				stat_buff = "protection_gutter_runner"
-			}
-		}
+				stat_buff = "protection_gutter_runner",
+			},
+		},
 	},
 	trinket_protection_ratling_gunner_tier1 = {
 		description = "trinket_protection_ratling_gunner_tier1_description",
 		display_name = "trinket_protection_ratling_gunner_tier1",
-		unique_id = "trinket_protection_ratling_gunner",
 		icon = "trinket_protection_ratling_gunner_tier1",
+		unique_id = "trinket_protection_ratling_gunner",
 		description_values = {
-			"multiplier"
+			"multiplier",
 		},
 		buffs = {
 			{
 				multiplier = -0.2,
 				name = "protection_ratling_gunner",
-				stat_buff = "protection_ratling_gunner"
-			}
-		}
+				stat_buff = "protection_ratling_gunner",
+			},
+		},
 	},
 	trinket_protection_ratling_gunner_tier2 = {
 		description = "trinket_protection_ratling_gunner_tier2_description",
 		display_name = "trinket_protection_ratling_gunner_tier2",
-		unique_id = "trinket_protection_ratling_gunner",
 		icon = "trinket_protection_ratling_gunner_tier2",
+		unique_id = "trinket_protection_ratling_gunner",
 		description_values = {
-			"multiplier"
+			"multiplier",
 		},
 		buffs = {
 			{
 				multiplier = -0.4,
 				name = "protection_ratling_gunner",
-				stat_buff = "protection_ratling_gunner"
-			}
-		}
+				stat_buff = "protection_ratling_gunner",
+			},
+		},
 	},
 	trinket_protection_ratling_gunner_tier3 = {
 		description = "trinket_protection_ratling_gunner_tier3_description",
 		display_name = "trinket_protection_ratling_gunner_tier3",
-		unique_id = "trinket_protection_ratling_gunner",
 		icon = "trinket_protection_ratling_gunner_tier3",
+		unique_id = "trinket_protection_ratling_gunner",
 		description_values = {
-			"multiplier"
+			"multiplier",
 		},
 		buffs = {
 			{
 				multiplier = -0.6,
 				name = "protection_ratling_gunner",
-				stat_buff = "protection_ratling_gunner"
-			}
-		}
+				stat_buff = "protection_ratling_gunner",
+			},
+		},
 	},
 	trinket_protection_pack_master_tier1 = {
 		description = "trinket_protection_pack_master_tier1_description",
 		display_name = "trinket_protection_pack_master_tier1",
-		unique_id = "trinket_protection_pack_master",
 		icon = "trinket_protection_pack_master_tier1",
+		unique_id = "trinket_protection_pack_master",
 		description_values = {
-			"multiplier"
+			"multiplier",
 		},
 		buffs = {
 			{
 				multiplier = -0.2,
 				name = "protection_pack_master",
-				stat_buff = "protection_pack_master"
-			}
-		}
+				stat_buff = "protection_pack_master",
+			},
+		},
 	},
 	trinket_protection_pack_master_tier2 = {
 		description = "trinket_protection_pack_master_tier2_description",
 		display_name = "trinket_protection_pack_master_tier2",
-		unique_id = "trinket_protection_pack_master",
 		icon = "trinket_protection_pack_master_tier2",
+		unique_id = "trinket_protection_pack_master",
 		description_values = {
-			"multiplier"
+			"multiplier",
 		},
 		buffs = {
 			{
 				multiplier = -0.4,
 				name = "protection_pack_master",
-				stat_buff = "protection_pack_master"
-			}
-		}
+				stat_buff = "protection_pack_master",
+			},
+		},
 	},
 	trinket_protection_pack_master_tier3 = {
 		description = "trinket_protection_pack_master_tier3_description",
 		display_name = "trinket_protection_pack_master_tier3",
-		unique_id = "trinket_protection_pack_master",
 		icon = "trinket_protection_pack_master_tier3",
+		unique_id = "trinket_protection_pack_master",
 		description_values = {
-			"multiplier"
+			"multiplier",
 		},
 		buffs = {
 			{
 				multiplier = -0.6,
 				name = "protection_pack_master",
-				stat_buff = "protection_pack_master"
-			}
-		}
+				stat_buff = "protection_pack_master",
+			},
+		},
 	},
 	trinket_potion_spread_area_tier1 = {
 		description = "trinket_potion_spread_area_tier1_description",
 		display_name = "trinket_potion_spread_area_tier1",
-		unique_id = "trinket_potion_spread_area",
 		icon = "trinket_potion_spread_area_tier1",
+		unique_id = "trinket_potion_spread_area",
 		description_values = {
-			"distance"
+			"distance",
 		},
 		buffs = {
 			{
 				name = "potion_spread_area_tier1",
-				distance = TrinketSpreadDistance
-			}
-		}
+				distance = TrinketSpreadDistance,
+			},
+		},
 	},
 	trinket_potion_spread_area_tier2 = {
 		description = "trinket_potion_spread_area_tier2_description",
 		display_name = "trinket_potion_spread_area_tier2",
-		unique_id = "trinket_potion_spread_area",
 		icon = "trinket_potion_spread_area_tier2",
+		unique_id = "trinket_potion_spread_area",
 		description_values = {
-			"distance"
+			"distance",
 		},
 		buffs = {
 			{
 				name = "potion_spread_area_tier2",
-				distance = TrinketSpreadDistance
-			}
-		}
+				distance = TrinketSpreadDistance,
+			},
+		},
 	},
 	trinket_potion_spread_area_tier3 = {
 		description = "trinket_potion_spread_area_tier3_description",
 		display_name = "trinket_potion_spread_area_tier3",
-		unique_id = "trinket_potion_spread_area",
 		icon = "trinket_potion_spread_area_tier3",
+		unique_id = "trinket_potion_spread_area",
 		description_values = {
-			"distance"
+			"distance",
 		},
 		buffs = {
 			{
 				name = "potion_spread_area_tier3",
-				distance = TrinketSpreadDistance
-			}
-		}
+				distance = TrinketSpreadDistance,
+			},
+		},
 	},
 	trinket_faster_revive_promo = {
 		description = "trinket_faster_revive_tier1_description",
 		display_name = "trinket_faster_revive_tier1",
-		unique_id = "trinket_faster_revive",
 		icon = "trinket_faster_revive_tier1",
+		unique_id = "trinket_faster_revive",
 		description_values = {
-			"multiplier"
+			"multiplier",
 		},
 		buffs = {
 			{
 				multiplier = -0.15,
 				name = "faster_revive",
-				stat_buff = "faster_revive"
-			}
-		}
+				stat_buff = "faster_revive",
+			},
+		},
 	},
 	trinket_faster_revive_tier1 = {
 		description = "trinket_faster_revive_tier1_description",
 		display_name = "trinket_faster_revive_tier1",
-		unique_id = "trinket_faster_revive",
 		icon = "trinket_faster_revive_tier1",
+		unique_id = "trinket_faster_revive",
 		description_values = {
-			"multiplier"
+			"multiplier",
 		},
 		buffs = {
 			{
 				multiplier = -0.3,
 				name = "faster_revive",
-				stat_buff = "faster_revive"
-			}
-		}
+				stat_buff = "faster_revive",
+			},
+		},
 	},
 	trinket_faster_revive_tier2 = {
 		description = "trinket_faster_revive_tier2_description",
 		display_name = "trinket_faster_revive_tier2",
-		unique_id = "trinket_faster_revive",
 		icon = "trinket_faster_revive_tier2",
+		unique_id = "trinket_faster_revive",
 		description_values = {
-			"multiplier"
+			"multiplier",
 		},
 		buffs = {
 			{
 				multiplier = -0.4,
 				name = "faster_revive",
-				stat_buff = "faster_revive"
-			}
-		}
+				stat_buff = "faster_revive",
+			},
+		},
 	},
 	trinket_faster_revive_tier3 = {
 		description = "trinket_faster_revive_tier3_description",
 		display_name = "trinket_faster_revive_tier3",
-		unique_id = "trinket_faster_revive",
 		icon = "trinket_faster_revive_tier3",
+		unique_id = "trinket_faster_revive",
 		description_values = {
-			"multiplier"
+			"multiplier",
 		},
 		buffs = {
 			{
 				multiplier = -0.5,
 				name = "faster_revive",
-				stat_buff = "faster_revive"
-			}
-		}
+				stat_buff = "faster_revive",
+			},
+		},
 	},
 	trinket_increase_luck_promo = {
 		description = "trinket_increase_luck_tier1_description",
 		display_name = "trinket_increase_luck_tier1",
-		unique_id = "trinket_increase_luck",
 		icon = "trinket_increase_luck_tier1",
+		unique_id = "trinket_increase_luck",
 		description_values = {
-			"multiplier"
+			"multiplier",
 		},
 		buffs = {
 			{
 				multiplier = 0.1,
 				name = "increase_luck",
-				stat_buff = "increase_luck"
-			}
-		}
+				stat_buff = "increase_luck",
+			},
+		},
 	},
 	trinket_increase_luck_tier1 = {
 		description = "trinket_increase_luck_tier1_description",
 		display_name = "trinket_increase_luck_tier1",
-		unique_id = "trinket_increase_luck",
 		icon = "trinket_increase_luck_tier1",
+		unique_id = "trinket_increase_luck",
 		description_values = {
-			"multiplier"
+			"multiplier",
 		},
 		buffs = {
 			{
 				multiplier = 0.25,
 				name = "increase_luck",
-				stat_buff = "increase_luck"
-			}
-		}
+				stat_buff = "increase_luck",
+			},
+		},
 	},
 	trinket_increase_luck_tier2 = {
 		description = "trinket_increase_luck_tier2_description",
 		display_name = "trinket_increase_luck_tier2",
-		unique_id = "trinket_increase_luck",
 		icon = "trinket_increase_luck_tier2",
+		unique_id = "trinket_increase_luck",
 		description_values = {
-			"multiplier"
+			"multiplier",
 		},
 		buffs = {
 			{
 				multiplier = 0.5,
 				name = "increase_luck",
-				stat_buff = "increase_luck"
-			}
-		}
+				stat_buff = "increase_luck",
+			},
+		},
 	},
 	trinket_increase_luck_tier3 = {
 		description = "trinket_increase_luck_tier3_description",
 		display_name = "trinket_increase_luck_tier3",
-		unique_id = "trinket_increase_luck",
 		icon = "trinket_increase_luck_tier3",
+		unique_id = "trinket_increase_luck",
 		description_values = {
-			"multiplier"
+			"multiplier",
 		},
 		buffs = {
 			{
 				multiplier = 1,
 				name = "increase_luck",
-				stat_buff = "increase_luck"
-			}
-		}
+				stat_buff = "increase_luck",
+			},
+		},
 	},
 	trinket_hp_increase_kd_tier1 = {
 		description = "trinket_hp_increase_kd_tier1_description",
 		display_name = "trinket_hp_increase_kd_tier1",
-		unique_id = "trinket_hp_increase_kd",
 		icon = "trinket_hp_increase_kd_tier1",
+		unique_id = "trinket_hp_increase_kd",
 		description_values = {
-			"multiplier"
+			"multiplier",
 		},
 		buffs = {
 			{
 				multiplier = -0.2,
 				name = "hp_increase_kd",
-				stat_buff = "damage_taken_kd"
-			}
-		}
+				stat_buff = "damage_taken_kd",
+			},
+		},
 	},
 	trinket_hp_increase_kd_tier2 = {
 		description = "trinket_hp_increase_kd_tier2_description",
 		display_name = "trinket_hp_increase_kd_tier2",
-		unique_id = "trinket_hp_increase_kd",
 		icon = "trinket_hp_increase_kd_tier2",
+		unique_id = "trinket_hp_increase_kd",
 		description_values = {
-			"multiplier"
+			"multiplier",
 		},
 		buffs = {
 			{
 				multiplier = -0.3,
 				name = "hp_increase_kd",
-				stat_buff = "damage_taken_kd"
-			}
-		}
+				stat_buff = "damage_taken_kd",
+			},
+		},
 	},
 	trinket_hp_increase_kd_tier3 = {
 		description = "trinket_hp_increase_kd_tier3_description",
 		display_name = "trinket_hp_increase_kd_tier3",
-		unique_id = "trinket_hp_increase_kd",
 		icon = "trinket_hp_increase_kd_tier3",
+		unique_id = "trinket_hp_increase_kd",
 		description_values = {
-			"multiplier"
+			"multiplier",
 		},
 		buffs = {
 			{
 				multiplier = -0.4,
 				name = "hp_increase_kd",
-				stat_buff = "damage_taken_kd"
-			}
-		}
+				stat_buff = "damage_taken_kd",
+			},
+		},
 	},
 	trinket_increased_movement_speed_tier1 = {
 		description = "trinket_increased_movement_speed_tier1_description",
 		display_name = "trinket_increased_movement_speed_tier1",
-		unique_id = "trinket_increased_movement_speed",
 		icon = "trinket_increased_movement_speed_tier1",
+		unique_id = "trinket_increased_movement_speed",
 		description_values = {
-			"multiplier"
+			"multiplier",
 		},
 		buffs = {
 			{
-				name = "movement_speed",
-				multiplier = 1.02,
-				remove_buff_func = "remove_movement_buff",
 				apply_buff_func = "apply_movement_buff",
+				multiplier = 1.02,
+				name = "movement_speed",
+				remove_buff_func = "remove_movement_buff",
 				path_to_movement_setting_to_modify = {
-					"move_speed"
-				}
-			}
-		}
+					"move_speed",
+				},
+			},
+		},
 	},
 	trinket_increased_movement_speed_tier2 = {
 		description = "trinket_increased_movement_speed_tier2_description",
 		display_name = "trinket_increased_movement_speed_tier2",
-		unique_id = "trinket_increased_movement_speed",
 		icon = "trinket_increased_movement_speed_tier2",
+		unique_id = "trinket_increased_movement_speed",
 		description_values = {
-			"multiplier"
+			"multiplier",
 		},
 		buffs = {
 			{
-				name = "movement_speed",
-				multiplier = 1.04,
-				remove_buff_func = "remove_movement_buff",
 				apply_buff_func = "apply_movement_buff",
+				multiplier = 1.04,
+				name = "movement_speed",
+				remove_buff_func = "remove_movement_buff",
 				path_to_movement_setting_to_modify = {
-					"move_speed"
-				}
-			}
-		}
+					"move_speed",
+				},
+			},
+		},
 	},
 	trinket_increased_movement_speed_tier3 = {
 		description = "trinket_increased_movement_speed_tier3_description",
 		display_name = "trinket_increased_movement_speed_tier3",
-		unique_id = "trinket_increased_movement_speed",
 		icon = "trinket_increased_movement_speed_tier3",
+		unique_id = "trinket_increased_movement_speed",
 		description_values = {
-			"multiplier"
+			"multiplier",
 		},
 		buffs = {
 			{
-				name = "movement_speed",
-				multiplier = 1.06,
-				remove_buff_func = "remove_movement_buff",
 				apply_buff_func = "apply_movement_buff",
+				multiplier = 1.06,
+				name = "movement_speed",
+				remove_buff_func = "remove_movement_buff",
 				path_to_movement_setting_to_modify = {
-					"move_speed"
-				}
-			}
-		}
+					"move_speed",
+				},
+			},
+		},
 	},
 	trinket_reduce_grimoire_penalty = {
 		description = "trinket_reduce_grimoire_penalty_description",
 		display_name = "trinket_reduce_grimoire_penalty",
-		unique_id = "trinket_reduce_grimoire_penalty",
 		icon = "trinket_reduce_grimoire_penalty_tier1",
+		unique_id = "trinket_reduce_grimoire_penalty",
 		description_values = {
-			"multiplier"
+			"multiplier",
 		},
 		buffs = {
 			{
 				multiplier = -0.33,
 				name = "curse_protection",
-				stat_buff = "curse_protection"
-			}
-		}
+				stat_buff = "curse_protection",
+			},
+		},
 	},
 	trinket_grenade_radius_tier1 = {
 		description = "trinket_grenade_radius_tier1_description",
 		display_name = "trinket_grenade_radius_tier1",
-		unique_id = "trinket_grenade_radius",
 		icon = "trinket_grenade_radius_tier1",
+		unique_id = "trinket_grenade_radius",
 		description_values = {
-			"multiplier"
+			"multiplier",
 		},
 		buffs = {
 			{
 				multiplier = 0.4,
 				name = "grenade_radius",
-				stat_buff = "grenade_radius"
-			}
-		}
+				stat_buff = "grenade_radius",
+			},
+		},
 	},
 	trinket_grenade_radius_tier2 = {
 		description = "trinket_grenade_radius_tier2_description",
 		display_name = "trinket_grenade_radius_tier2",
-		unique_id = "trinket_grenade_radius",
 		icon = "trinket_grenade_radius_tier2",
+		unique_id = "trinket_grenade_radius",
 		description_values = {
-			"multiplier"
+			"multiplier",
 		},
 		buffs = {
 			{
 				multiplier = 0.5,
 				name = "grenade_radius",
-				stat_buff = "grenade_radius"
-			}
-		}
+				stat_buff = "grenade_radius",
+			},
+		},
 	},
 	trinket_grenade_radius_tier3 = {
 		description = "trinket_grenade_radius_tier3_description",
 		display_name = "trinket_grenade_radius_tier3",
-		unique_id = "trinket_grenade_radius",
 		icon = "trinket_grenade_radius_tier3",
+		unique_id = "trinket_grenade_radius",
 		description_values = {
-			"multiplier"
+			"multiplier",
 		},
 		buffs = {
 			{
 				multiplier = 0.6,
 				name = "grenade_radius",
-				stat_buff = "grenade_radius"
-			}
-		}
+				stat_buff = "grenade_radius",
+			},
+		},
 	},
 	trinket_faster_respawn_tier1 = {
 		description = "trinket_faster_respawn_tier1_description",
 		display_name = "trinket_faster_respawn_tier1",
-		unique_id = "trinket_faster_respawn",
 		icon = "trinket_faster_respawn_tier1",
+		unique_id = "trinket_faster_respawn",
 		description_values = {
-			"multiplier"
+			"multiplier",
 		},
 		buffs = {
 			{
 				multiplier = -0.25,
 				name = "faster_respawn",
-				stat_buff = "faster_respawn"
-			}
-		}
+				stat_buff = "faster_respawn",
+			},
+		},
 	},
 	trinket_faster_respawn_tier2 = {
 		description = "trinket_faster_respawn_tier2_description",
 		display_name = "trinket_faster_respawn_tier2",
-		unique_id = "trinket_faster_respawn",
 		icon = "trinket_faster_respawn_tier2",
+		unique_id = "trinket_faster_respawn",
 		description_values = {
-			"multiplier"
+			"multiplier",
 		},
 		buffs = {
 			{
 				multiplier = -0.5,
 				name = "faster_respawn",
-				stat_buff = "faster_respawn"
-			}
-		}
+				stat_buff = "faster_respawn",
+			},
+		},
 	},
 	trinket_shared_damage = {
 		description = "trinket_shared_damage_description",
 		display_name = "trinket_shared_damage",
-		unique_id = "trinket_shared_damage",
 		icon = "trinket_shared_damage_tier3",
+		unique_id = "trinket_shared_damage",
 		buffs = {
 			{
-				name = "shared_health_pool"
-			}
-		}
+				name = "shared_health_pool",
+			},
+		},
 	},
 	trinket_roll_dice_as_witch_hunter = {
 		description = "dlc1_1_trinket_roll_dice_as_witch_hunter_description",
 		display_name = "dlc1_1_trinket_roll_dice_as_witch_hunter",
-		unique_id = "trinket_roll_dice_as_hero",
 		icon = "trait_icon_loot_trinket_witch_hunter",
 		roll_dice_as_hero = "witch_hunter",
-		buffs = {}
+		unique_id = "trinket_roll_dice_as_hero",
+		buffs = {},
 	},
 	trinket_roll_dice_as_bright_wizard = {
 		description = "dlc1_1_trinket_roll_dice_as_bright_wizard_description",
 		display_name = "dlc1_1_trinket_roll_dice_as_bright_wizard",
-		unique_id = "trinket_roll_dice_as_hero",
 		icon = "trait_icon_loot_trinket_bright_wizard",
 		roll_dice_as_hero = "bright_wizard",
-		buffs = {}
+		unique_id = "trinket_roll_dice_as_hero",
+		buffs = {},
 	},
 	trinket_roll_dice_as_dwarf_ranger = {
 		description = "dlc1_1_trinket_roll_dice_as_dwarf_ranger_description",
 		display_name = "dlc1_1_trinket_roll_dice_as_dwarf_ranger",
-		unique_id = "trinket_roll_dice_as_hero",
 		icon = "trait_icon_loot_trinket_dwarf_ranger",
 		roll_dice_as_hero = "dwarf_ranger",
-		buffs = {}
+		unique_id = "trinket_roll_dice_as_hero",
+		buffs = {},
 	},
 	trinket_roll_dice_as_wood_elf = {
 		description = "dlc1_1_trinket_roll_dice_as_wood_elf_description",
 		display_name = "dlc1_1_trinket_roll_dice_as_wood_elf",
-		unique_id = "trinket_roll_dice_as_hero",
 		icon = "trait_icon_loot_trinket_waywatcher",
 		roll_dice_as_hero = "wood_elf",
-		buffs = {}
+		unique_id = "trinket_roll_dice_as_hero",
+		buffs = {},
 	},
 	trinket_roll_dice_as_empire_soldier = {
 		description = "dlc1_1_trinket_roll_dice_as_empire_soldier_description",
 		display_name = "dlc1_1_trinket_roll_dice_as_empire_soldier",
-		unique_id = "trinket_roll_dice_as_hero",
 		icon = "trait_icon_loot_trinket_empire_soldier",
 		roll_dice_as_hero = "empire_soldier",
-		buffs = {}
+		unique_id = "trinket_roll_dice_as_hero",
+		buffs = {},
 	},
 	trinket_increase_luck_halloween = {
 		description = "trinket_increase_luck_tier1_description",
 		display_name = "trinket_increase_luck_tier1",
-		unique_id = "trinket_increase_luck",
 		icon = "trinket_increase_luck_halloween",
+		unique_id = "trinket_increase_luck",
 		description_values = {
-			"multiplier"
+			"multiplier",
 		},
 		buffs = {
 			{
 				multiplier = 0.91,
 				name = "increase_luck",
-				stat_buff = "increase_luck"
-			}
-		}
+				stat_buff = "increase_luck",
+			},
+		},
 	},
 	warpfire_thrower_ground_base = {
 		buffs = {
 			{
-				refresh_durations = true,
-				name = "stormfiend_warpfire_ground",
-				remove_buff_func = "remove_moving_through_warpfire",
 				apply_buff_func = "apply_moving_through_warpfire",
-				time_between_dot_damages = 0.75,
 				damage_type = "warpfire_ground",
 				max_stacks = 1,
+				name = "stormfiend_warpfire_ground",
+				refresh_durations = true,
+				remove_buff_func = "remove_moving_through_warpfire",
+				time_between_dot_damages = 0.75,
 				update_func = "update_moving_through_warpfire",
 				difficulty_damage = {
 					easy = {
@@ -6741,324 +6767,324 @@ BuffTemplates = {
 						1,
 						0,
 						5.5,
-						1
+						1,
 					},
 					normal = {
 						1,
 						1,
 						0,
 						6.5,
-						1
+						1,
 					},
 					hard = {
 						1,
 						1,
 						0,
 						7.5,
-						1
+						1,
 					},
 					harder = {
 						1,
 						1,
 						0,
 						8.5,
-						1
+						1,
 					},
 					hardest = {
 						1,
 						1,
 						0,
 						9.5,
-						1
+						1,
 					},
 					cataclysm = {
 						1,
 						1,
 						0,
 						7,
-						1
+						1,
 					},
 					cataclysm_2 = {
 						1,
 						1,
 						0,
 						8,
-						1
+						1,
 					},
 					cataclysm_3 = {
 						1,
 						1,
 						0,
 						9,
-						1
-					}
+						1,
+					},
 				},
 				perks = {
-					buff_perks.burning_warpfire
-				}
-			}
-		}
+					buff_perks.burning_warpfire,
+				},
+			},
+		},
 	},
 	warpfire_thrower_face_base = {
 		buffs = {
 			{
-				slowdown_buff_name = "warpfire_thrower_fire_slowdown",
-				name = "warpfire_thrower_base",
-				debuff = true,
-				update_func = "update_warpfirethrower_in_face",
-				fatigue_type = "warpfire_ground",
-				remove_buff_func = "remove_warpfirethrower_in_face",
 				apply_buff_func = "apply_warpfirethrower_in_face",
-				push_speed = 15,
-				duration = 0.3,
-				time_between_dot_damages = 0.75,
 				damage_type = "warpfire_ground",
-				max_stacks = 1,
+				debuff = true,
+				duration = 0.3,
+				fatigue_type = "warpfire_ground",
 				icon = "troll_vomit_debuff",
+				max_stacks = 1,
+				name = "warpfire_thrower_base",
+				push_speed = 15,
+				remove_buff_func = "remove_warpfirethrower_in_face",
+				slowdown_buff_name = "warpfire_thrower_fire_slowdown",
+				time_between_dot_damages = 0.75,
+				update_func = "update_warpfirethrower_in_face",
 				difficulty_damage = {
 					easy = {
 						3,
 						1,
 						0,
 						6.5,
-						1
+						1,
 					},
 					normal = {
 						3,
 						1,
 						0,
 						6.5,
-						2
+						2,
 					},
 					hard = {
 						4,
 						2,
 						0,
 						7.5,
-						2
+						2,
 					},
 					harder = {
 						5,
 						3,
 						0,
 						8.5,
-						4
+						4,
 					},
 					hardest = {
 						7.5,
 						4,
 						0,
 						9.5,
-						5
+						5,
 					},
 					cataclysm = {
 						4,
 						2,
 						0,
 						7,
-						3
+						3,
 					},
 					cataclysm_2 = {
 						5,
 						3,
 						0,
 						8,
-						3
+						3,
 					},
 					cataclysm_3 = {
 						7.5,
 						4,
 						0,
 						9,
-						4
-					}
+						4,
+					},
 				},
 				perks = {
-					buff_perks.burning_warpfire
-				}
-			}
-		}
+					buff_perks.burning_warpfire,
+				},
+			},
+		},
 	},
 	warpfire_thrower_face_base_mutator = {
 		buffs = {
 			{
-				slowdown_buff_name = "warpfire_thrower_fire_slowdown",
-				name = "warpfire_thrower_base",
-				debuff = true,
-				update_func = "update_warpfirethrower_in_face",
-				fatigue_type = "warpfire_ground",
-				remove_buff_func = "remove_warpfirethrower_in_face",
 				apply_buff_func = "apply_warpfirethrower_in_face",
-				push_speed = 30,
-				duration = 0.3,
-				time_between_dot_damages = 0.75,
 				damage_type = "warpfire_ground",
-				max_stacks = 1,
+				debuff = true,
+				duration = 0.3,
+				fatigue_type = "warpfire_ground",
 				icon = "troll_vomit_debuff",
+				max_stacks = 1,
+				name = "warpfire_thrower_base",
+				push_speed = 30,
+				remove_buff_func = "remove_warpfirethrower_in_face",
+				slowdown_buff_name = "warpfire_thrower_fire_slowdown",
+				time_between_dot_damages = 0.75,
+				update_func = "update_warpfirethrower_in_face",
 				difficulty_damage = {
 					easy = {
 						2,
 						1,
 						0,
 						5.5,
-						1
+						1,
 					},
 					normal = {
 						10,
 						1,
 						0,
 						6.5,
-						1
+						1,
 					},
 					hard = {
 						12,
 						2,
 						0,
 						7.5,
-						2
+						2,
 					},
 					harder = {
 						15,
 						3,
 						0,
 						8.5,
-						3
+						3,
 					},
 					hardest = {
 						20,
 						4,
 						0,
 						9.5,
-						4
+						4,
 					},
 					cataclysm = {
 						12,
 						2,
 						0,
 						7,
-						2
+						2,
 					},
 					cataclysm_2 = {
 						15,
 						3,
 						0,
 						8,
-						3
+						3,
 					},
 					cataclysm_3 = {
 						20,
 						4,
 						0,
 						9,
-						4
-					}
+						4,
+					},
 				},
 				perks = {
-					buff_perks.burning_warpfire
-				}
-			}
-		}
+					buff_perks.burning_warpfire,
+				},
+			},
+		},
 	},
 	warpfire_thrower_fire_slowdown = {
 		buffs = {
 			{
-				update_func = "update_action_lerp_movement_buff",
+				apply_buff_func = "apply_action_lerp_movement_buff",
+				duration = 1,
+				lerp_time = 0.1,
+				max_stacks = 1,
 				multiplier = 0.5,
 				name = "decrease_speed_bile_troll",
 				refresh_durations = true,
 				remove_buff_func = "remove_action_lerp_movement_buff",
-				apply_buff_func = "apply_action_lerp_movement_buff",
 				remove_buff_name = "planted_return_to_normal_movement",
-				lerp_time = 0.1,
-				max_stacks = 1,
-				duration = 1,
+				update_func = "update_action_lerp_movement_buff",
 				path_to_movement_setting_to_modify = {
-					"move_speed"
-				}
+					"move_speed",
+				},
 			},
 			{
-				update_func = "update_charging_action_lerp_movement_buff",
+				apply_buff_func = "apply_action_lerp_movement_buff",
+				duration = 1,
+				lerp_time = 0.1,
+				max_stacks = 1,
 				multiplier = 0.5,
 				name = "decrease_crouch_speed_bile_troll",
 				refresh_durations = true,
 				remove_buff_func = "remove_action_lerp_movement_buff",
-				apply_buff_func = "apply_action_lerp_movement_buff",
 				remove_buff_name = "planted_return_to_normal_crouch_movement",
-				lerp_time = 0.1,
-				max_stacks = 1,
-				duration = 1,
+				update_func = "update_charging_action_lerp_movement_buff",
 				path_to_movement_setting_to_modify = {
-					"crouch_move_speed"
-				}
+					"crouch_move_speed",
+				},
 			},
 			{
-				update_func = "update_charging_action_lerp_movement_buff",
+				apply_buff_func = "apply_action_lerp_movement_buff",
+				duration = 1,
+				lerp_time = 0.1,
+				max_stacks = 1,
 				multiplier = 0.5,
 				name = "decrease_walk_speed_bile_troll",
 				refresh_durations = true,
 				remove_buff_func = "remove_action_lerp_movement_buff",
-				apply_buff_func = "apply_action_lerp_movement_buff",
 				remove_buff_name = "planted_return_to_normal_walk_movement",
-				lerp_time = 0.1,
-				max_stacks = 1,
-				duration = 1,
+				update_func = "update_charging_action_lerp_movement_buff",
 				path_to_movement_setting_to_modify = {
-					"walk_move_speed"
-				}
+					"walk_move_speed",
+				},
 			},
 			{
-				name = "decrease_jump_speed_bile_troll",
-				multiplier = 0.6,
+				apply_buff_func = "apply_movement_buff",
 				duration = 1,
 				max_stacks = 1,
-				remove_buff_func = "remove_movement_buff",
-				apply_buff_func = "apply_movement_buff",
+				multiplier = 0.6,
+				name = "decrease_jump_speed_bile_troll",
 				refresh_durations = true,
+				remove_buff_func = "remove_movement_buff",
 				path_to_movement_setting_to_modify = {
 					"jump",
-					"initial_vertical_speed"
-				}
+					"initial_vertical_speed",
+				},
 			},
 			{
+				apply_buff_func = "apply_movement_buff",
+				duration = 1,
+				max_stacks = 1,
+				multiplier = 0.8,
 				name = "decrease_dodge_speed_bile_troll",
-				multiplier = 0.8,
-				duration = 1,
-				max_stacks = 1,
-				remove_buff_func = "remove_movement_buff",
-				apply_buff_func = "apply_movement_buff",
 				refresh_durations = true,
+				remove_buff_func = "remove_movement_buff",
 				path_to_movement_setting_to_modify = {
 					"dodging",
-					"speed_modifier"
-				}
+					"speed_modifier",
+				},
 			},
 			{
-				name = "decrease_dodge_distance_bile_troll",
-				multiplier = 0.8,
+				apply_buff_func = "apply_movement_buff",
 				duration = 1,
 				max_stacks = 1,
-				remove_buff_func = "remove_movement_buff",
-				apply_buff_func = "apply_movement_buff",
+				multiplier = 0.8,
+				name = "decrease_dodge_distance_bile_troll",
 				refresh_durations = true,
+				remove_buff_func = "remove_movement_buff",
 				path_to_movement_setting_to_modify = {
 					"dodging",
-					"distance_modifier"
-				}
-			}
-		}
+					"distance_modifier",
+				},
+			},
+		},
 	},
 	plague_wave_ground_base = {
 		buffs = {
 			{
+				apply_buff_func = "apply_moving_through_vomit",
+				damage_type = "vomit_ground",
 				fatigue_type = "vomit_ground",
-				name = "troll_bile_ground",
 				icon = "troll_vomit_debuff",
+				max_stacks = 1,
+				name = "troll_bile_ground",
 				refresh_durations = true,
 				remove_buff_func = "remove_moving_through_vomit",
-				apply_buff_func = "apply_moving_through_vomit",
 				time_between_dot_damages = 0.75,
-				damage_type = "vomit_ground",
-				max_stacks = 1,
 				update_func = "update_moving_through_vomit",
 				difficulty_damage = {
 					easy = {
@@ -7066,1017 +7092,1017 @@ BuffTemplates = {
 						1,
 						0,
 						0.5,
-						1
+						1,
 					},
 					normal = {
 						1,
 						1,
 						0,
 						1,
-						1
+						1,
 					},
 					hard = {
 						1,
 						1,
 						0,
 						1,
-						1
+						1,
 					},
 					harder = {
 						1,
 						1,
 						0,
 						2,
-						1
+						1,
 					},
 					hardest = {
 						1,
 						1,
 						0,
 						4,
-						1
+						1,
 					},
 					cataclysm = {
 						1,
 						1,
 						0,
 						1,
-						1
+						1,
 					},
 					cataclysm_2 = {
 						1,
 						1,
 						0,
 						2,
-						1
+						1,
 					},
 					cataclysm_3 = {
 						1,
 						1,
 						0,
 						4,
-						1
-					}
-				}
-			}
-		}
+						1,
+					},
+				},
+			},
+		},
 	},
 	plague_wave_ground_slowdown = {
 		buffs = {
 			{
-				update_func = "update_action_lerp_movement_buff",
+				apply_buff_func = "apply_action_lerp_movement_buff",
+				duration = 1,
+				lerp_time = 0.1,
+				max_stacks = 1,
 				multiplier = 0.5,
 				name = "decrease_speed_plague_wave",
 				refresh_durations = true,
 				remove_buff_func = "remove_action_lerp_movement_buff",
-				apply_buff_func = "apply_action_lerp_movement_buff",
 				remove_buff_name = "planted_return_to_normal_movement",
-				lerp_time = 0.1,
-				max_stacks = 1,
-				duration = 1,
+				update_func = "update_action_lerp_movement_buff",
 				path_to_movement_setting_to_modify = {
-					"move_speed"
-				}
+					"move_speed",
+				},
 			},
 			{
-				update_func = "update_charging_action_lerp_movement_buff",
+				apply_buff_func = "apply_action_lerp_movement_buff",
+				duration = 1,
+				lerp_time = 0.1,
+				max_stacks = 1,
 				multiplier = 0.5,
 				name = "decrease_crouch_speed_plague_wavel",
 				refresh_durations = true,
 				remove_buff_func = "remove_action_lerp_movement_buff",
-				apply_buff_func = "apply_action_lerp_movement_buff",
 				remove_buff_name = "planted_return_to_normal_crouch_movement",
-				lerp_time = 0.1,
-				max_stacks = 1,
-				duration = 1,
+				update_func = "update_charging_action_lerp_movement_buff",
 				path_to_movement_setting_to_modify = {
-					"crouch_move_speed"
-				}
+					"crouch_move_speed",
+				},
 			},
 			{
-				update_func = "update_charging_action_lerp_movement_buff",
+				apply_buff_func = "apply_action_lerp_movement_buff",
+				duration = 1,
+				lerp_time = 0.1,
+				max_stacks = 1,
 				multiplier = 0.5,
 				name = "decrease_walk_speed_plague_wave",
 				refresh_durations = true,
 				remove_buff_func = "remove_action_lerp_movement_buff",
-				apply_buff_func = "apply_action_lerp_movement_buff",
 				remove_buff_name = "planted_return_to_normal_walk_movement",
-				lerp_time = 0.1,
-				max_stacks = 1,
-				duration = 1,
+				update_func = "update_charging_action_lerp_movement_buff",
 				path_to_movement_setting_to_modify = {
-					"walk_move_speed"
-				}
+					"walk_move_speed",
+				},
 			},
 			{
-				name = "decrease_jump_speed_plague_wave",
-				multiplier = 0.6,
+				apply_buff_func = "apply_movement_buff",
 				duration = 1,
 				max_stacks = 1,
-				remove_buff_func = "remove_movement_buff",
-				apply_buff_func = "apply_movement_buff",
+				multiplier = 0.6,
+				name = "decrease_jump_speed_plague_wave",
 				refresh_durations = true,
+				remove_buff_func = "remove_movement_buff",
 				path_to_movement_setting_to_modify = {
 					"jump",
-					"initial_vertical_speed"
-				}
+					"initial_vertical_speed",
+				},
 			},
 			{
+				apply_buff_func = "apply_movement_buff",
+				duration = 1,
+				max_stacks = 1,
+				multiplier = 0.8,
 				name = "decrease_dodge_speed_plague_wave",
-				multiplier = 0.8,
-				duration = 1,
-				max_stacks = 1,
-				remove_buff_func = "remove_movement_buff",
-				apply_buff_func = "apply_movement_buff",
 				refresh_durations = true,
+				remove_buff_func = "remove_movement_buff",
 				path_to_movement_setting_to_modify = {
 					"dodging",
-					"speed_modifier"
-				}
+					"speed_modifier",
+				},
 			},
 			{
-				name = "decrease_dodge_distance_plague_wave",
-				multiplier = 0.8,
+				apply_buff_func = "apply_movement_buff",
 				duration = 1,
 				max_stacks = 1,
-				remove_buff_func = "remove_movement_buff",
-				apply_buff_func = "apply_movement_buff",
+				multiplier = 0.8,
+				name = "decrease_dodge_distance_plague_wave",
 				refresh_durations = true,
+				remove_buff_func = "remove_movement_buff",
 				path_to_movement_setting_to_modify = {
 					"dodging",
-					"distance_modifier"
-				}
-			}
-		}
+					"distance_modifier",
+				},
+			},
+		},
 	},
 	bile_troll_vomit_ground_base = {
 		buffs = {
 			{
-				slowdown_buff_name = "bile_troll_vomit_ground_slowdown",
-				name = "troll_bile_ground",
-				debuff = true,
-				update_func = "update_moving_through_vomit",
-				fatigue_type = "vomit_ground",
-				remove_buff_func = "remove_moving_through_vomit",
 				apply_buff_func = "apply_moving_through_vomit",
-				refresh_durations = true,
-				time_between_dot_damages = 0.75,
 				damage_type = "vomit_ground",
-				max_stacks = 1,
+				debuff = true,
+				fatigue_type = "vomit_ground",
 				icon = "troll_vomit_debuff",
+				max_stacks = 1,
+				name = "troll_bile_ground",
+				refresh_durations = true,
+				remove_buff_func = "remove_moving_through_vomit",
+				slowdown_buff_name = "bile_troll_vomit_ground_slowdown",
+				time_between_dot_damages = 0.75,
+				update_func = "update_moving_through_vomit",
 				difficulty_damage = {
 					easy = {
 						1,
 						1,
 						0,
 						0.5,
-						1
+						1,
 					},
 					normal = {
 						1,
 						1,
 						0,
 						1,
-						1
+						1,
 					},
 					hard = {
 						1,
 						1,
 						0,
 						1,
-						1
+						1,
 					},
 					harder = {
 						1,
 						1,
 						0,
 						2,
-						1
+						1,
 					},
 					hardest = {
 						1,
 						1,
 						0,
 						4,
-						1
+						1,
 					},
 					cataclysm = {
 						1,
 						1,
 						0,
 						4,
-						1
+						1,
 					},
 					cataclysm_2 = {
 						1,
 						1,
 						0,
 						4,
-						1
+						1,
 					},
 					cataclysm_3 = {
 						1,
 						1,
 						0,
 						4,
-						1
-					}
-				}
-			}
-		}
+						1,
+					},
+				},
+			},
+		},
 	},
 	corpse_pit_slowdown = {
 		buffs = {
 			{
-				update_func = "update_action_lerp_movement_buff",
+				apply_buff_func = "apply_action_lerp_movement_buff",
+				duration = 2,
+				lerp_time = 0.1,
+				max_stacks = 1,
 				multiplier = 0.5,
 				name = "decrease_speed_corpse_pit",
 				refresh_durations = true,
 				remove_buff_func = "remove_action_lerp_movement_buff",
-				apply_buff_func = "apply_action_lerp_movement_buff",
 				remove_buff_name = "planted_return_to_normal_movement",
-				lerp_time = 0.1,
-				max_stacks = 1,
-				duration = 2,
+				update_func = "update_action_lerp_movement_buff",
 				path_to_movement_setting_to_modify = {
-					"move_speed"
-				}
+					"move_speed",
+				},
 			},
 			{
-				update_func = "update_charging_action_lerp_movement_buff",
+				apply_buff_func = "apply_action_lerp_movement_buff",
+				duration = 2,
+				lerp_time = 0.1,
+				max_stacks = 1,
 				multiplier = 0.5,
 				name = "decrease_crouch_speed_corpse_pit",
 				refresh_durations = true,
 				remove_buff_func = "remove_action_lerp_movement_buff",
-				apply_buff_func = "apply_action_lerp_movement_buff",
 				remove_buff_name = "planted_return_to_normal_crouch_movement",
-				lerp_time = 0.1,
-				max_stacks = 1,
-				duration = 2,
+				update_func = "update_charging_action_lerp_movement_buff",
 				path_to_movement_setting_to_modify = {
-					"crouch_move_speed"
-				}
+					"crouch_move_speed",
+				},
 			},
 			{
-				update_func = "update_charging_action_lerp_movement_buff",
+				apply_buff_func = "apply_action_lerp_movement_buff",
+				duration = 2,
+				lerp_time = 0.1,
+				max_stacks = 1,
 				multiplier = 0.5,
 				name = "decrease_walk_speed_corpse_pit",
 				refresh_durations = true,
 				remove_buff_func = "remove_action_lerp_movement_buff",
-				apply_buff_func = "apply_action_lerp_movement_buff",
 				remove_buff_name = "planted_return_to_normal_walk_movement",
-				lerp_time = 0.1,
-				max_stacks = 1,
-				duration = 2,
+				update_func = "update_charging_action_lerp_movement_buff",
 				path_to_movement_setting_to_modify = {
-					"walk_move_speed"
-				}
+					"walk_move_speed",
+				},
 			},
 			{
-				name = "decrease_jump_speed_corpse_pit",
-				multiplier = 0.5,
+				apply_buff_func = "apply_movement_buff",
 				duration = 2,
 				max_stacks = 1,
-				remove_buff_func = "remove_movement_buff",
-				apply_buff_func = "apply_movement_buff",
+				multiplier = 0.5,
+				name = "decrease_jump_speed_corpse_pit",
 				refresh_durations = true,
+				remove_buff_func = "remove_movement_buff",
 				path_to_movement_setting_to_modify = {
 					"jump",
-					"initial_vertical_speed"
-				}
+					"initial_vertical_speed",
+				},
 			},
 			{
+				apply_buff_func = "apply_movement_buff",
+				duration = 2,
+				max_stacks = 1,
+				multiplier = 0.6,
 				name = "decrease_dodge_speed_corpse_pit",
-				multiplier = 0.6,
-				duration = 2,
-				max_stacks = 1,
-				remove_buff_func = "remove_movement_buff",
-				apply_buff_func = "apply_movement_buff",
 				refresh_durations = true,
+				remove_buff_func = "remove_movement_buff",
 				path_to_movement_setting_to_modify = {
 					"dodging",
-					"speed_modifier"
-				}
+					"speed_modifier",
+				},
 			},
 			{
-				name = "decrease_dodge_distance_corpse_pit",
-				multiplier = 0.6,
+				apply_buff_func = "apply_movement_buff",
 				duration = 2,
 				max_stacks = 1,
-				remove_buff_func = "remove_movement_buff",
-				apply_buff_func = "apply_movement_buff",
+				multiplier = 0.6,
+				name = "decrease_dodge_distance_corpse_pit",
 				refresh_durations = true,
+				remove_buff_func = "remove_movement_buff",
 				path_to_movement_setting_to_modify = {
 					"dodging",
-					"distance_modifier"
-				}
-			}
-		}
+					"distance_modifier",
+				},
+			},
+		},
 	},
 	mutator_life_poison = {
 		buffs = {
 			{
+				apply_buff_func = "apply_mutator_life_poison_buff",
 				max_stacks = 1,
 				name = "mutator_life_poison",
-				apply_buff_func = "apply_mutator_life_poison_buff",
-				refresh_durations = true
+				refresh_durations = true,
 			},
 			{
-				name = "decrease_speed_mutator_life_poison",
-				multiplier = 0.5,
+				apply_buff_func = "apply_movement_buff",
 				lerp_time = 0.1,
 				max_stacks = 1,
-				remove_buff_func = "remove_movement_buff",
-				apply_buff_func = "apply_movement_buff",
+				multiplier = 0.5,
+				name = "decrease_speed_mutator_life_poison",
 				refresh_durations = true,
+				remove_buff_func = "remove_movement_buff",
 				path_to_movement_setting_to_modify = {
-					"move_speed"
-				}
+					"move_speed",
+				},
 			},
 			{
 				apply_buff_func = "apply_action_lerp_movement_buff",
+				lerp_time = 0.1,
+				max_stacks = 1,
 				multiplier = 0.5,
 				name = "decrease_crouch_speed_mutator_life_poison",
 				refresh_durations = true,
 				remove_buff_func = "remove_action_lerp_movement_buff",
 				remove_buff_name = "planted_return_to_normal_crouch_movement",
-				lerp_time = 0.1,
-				max_stacks = 1,
 				update_func = "update_charging_action_lerp_movement_buff",
 				path_to_movement_setting_to_modify = {
-					"crouch_move_speed"
-				}
+					"crouch_move_speed",
+				},
 			},
 			{
 				apply_buff_func = "apply_action_lerp_movement_buff",
+				lerp_time = 0.1,
+				max_stacks = 1,
 				multiplier = 0.5,
 				name = "decrease_walk_speed_mutator_life_poison",
 				refresh_durations = true,
 				remove_buff_func = "remove_action_lerp_movement_buff",
 				remove_buff_name = "planted_return_to_normal_walk_movement",
-				lerp_time = 0.1,
-				max_stacks = 1,
 				update_func = "update_charging_action_lerp_movement_buff",
 				path_to_movement_setting_to_modify = {
-					"walk_move_speed"
-				}
+					"walk_move_speed",
+				},
 			},
 			{
-				name = "decrease_jump_speed_mutator_life_poison",
-				multiplier = 0.5,
-				refresh_durations = true,
-				max_stacks = 1,
-				remove_buff_func = "remove_movement_buff",
 				apply_buff_func = "apply_movement_buff",
+				max_stacks = 1,
+				multiplier = 0.5,
+				name = "decrease_jump_speed_mutator_life_poison",
+				refresh_durations = true,
+				remove_buff_func = "remove_movement_buff",
 				path_to_movement_setting_to_modify = {
 					"jump",
-					"initial_vertical_speed"
-				}
+					"initial_vertical_speed",
+				},
 			},
 			{
+				apply_buff_func = "apply_movement_buff",
+				max_stacks = 1,
+				multiplier = 0.6,
 				name = "decrease_dodge_speed_mutator_life_poison",
-				multiplier = 0.6,
 				refresh_durations = true,
-				max_stacks = 1,
 				remove_buff_func = "remove_movement_buff",
-				apply_buff_func = "apply_movement_buff",
 				path_to_movement_setting_to_modify = {
 					"dodging",
-					"speed_modifier"
-				}
+					"speed_modifier",
+				},
 			},
 			{
-				name = "decrease_dodge_distance_mutator_life_poison",
-				multiplier = 0.6,
-				refresh_durations = true,
-				max_stacks = 1,
-				remove_buff_func = "remove_movement_buff",
 				apply_buff_func = "apply_movement_buff",
+				max_stacks = 1,
+				multiplier = 0.6,
+				name = "decrease_dodge_distance_mutator_life_poison",
+				refresh_durations = true,
+				remove_buff_func = "remove_movement_buff",
 				path_to_movement_setting_to_modify = {
 					"dodging",
-					"distance_modifier"
-				}
-			}
-		}
+					"distance_modifier",
+				},
+			},
+		},
 	},
 	cemetery_floor_plague_slowdown = {
 		buffs = {
 			{
-				update_func = "update_action_lerp_movement_buff",
+				apply_buff_func = "apply_action_lerp_movement_buff",
+				duration = 2,
+				lerp_time = 0.1,
+				max_stacks = 1,
 				multiplier = 0.75,
 				name = "decrease_speed_cemetery_floor",
 				refresh_durations = true,
 				remove_buff_func = "remove_action_lerp_movement_buff",
-				apply_buff_func = "apply_action_lerp_movement_buff",
 				remove_buff_name = "planted_return_to_normal_movement",
-				lerp_time = 0.1,
-				max_stacks = 1,
-				duration = 2,
+				update_func = "update_action_lerp_movement_buff",
 				path_to_movement_setting_to_modify = {
-					"move_speed"
-				}
+					"move_speed",
+				},
 			},
 			{
-				update_func = "update_charging_action_lerp_movement_buff",
+				apply_buff_func = "apply_action_lerp_movement_buff",
+				duration = 2,
+				lerp_time = 0.1,
+				max_stacks = 1,
 				multiplier = 0.75,
 				name = "decrease_crouch_speed_cemetery_floor",
 				refresh_durations = true,
 				remove_buff_func = "remove_action_lerp_movement_buff",
-				apply_buff_func = "apply_action_lerp_movement_buff",
 				remove_buff_name = "planted_return_to_normal_crouch_movement",
-				lerp_time = 0.1,
-				max_stacks = 1,
-				duration = 2,
+				update_func = "update_charging_action_lerp_movement_buff",
 				path_to_movement_setting_to_modify = {
-					"crouch_move_speed"
-				}
+					"crouch_move_speed",
+				},
 			},
 			{
-				update_func = "update_charging_action_lerp_movement_buff",
+				apply_buff_func = "apply_action_lerp_movement_buff",
+				duration = 2,
+				lerp_time = 0.1,
+				max_stacks = 1,
 				multiplier = 0.75,
 				name = "decrease_walk_speed_cemetery_floor",
 				refresh_durations = true,
 				remove_buff_func = "remove_action_lerp_movement_buff",
-				apply_buff_func = "apply_action_lerp_movement_buff",
 				remove_buff_name = "planted_return_to_normal_walk_movement",
-				lerp_time = 0.1,
-				max_stacks = 1,
-				duration = 2,
+				update_func = "update_charging_action_lerp_movement_buff",
 				path_to_movement_setting_to_modify = {
-					"walk_move_speed"
-				}
+					"walk_move_speed",
+				},
 			},
 			{
-				name = "decrease_jump_speed_cemetery_floor",
-				multiplier = 0.75,
+				apply_buff_func = "apply_movement_buff",
 				duration = 2,
 				max_stacks = 1,
-				remove_buff_func = "remove_movement_buff",
-				apply_buff_func = "apply_movement_buff",
+				multiplier = 0.75,
+				name = "decrease_jump_speed_cemetery_floor",
 				refresh_durations = true,
+				remove_buff_func = "remove_movement_buff",
 				path_to_movement_setting_to_modify = {
 					"jump",
-					"initial_vertical_speed"
-				}
+					"initial_vertical_speed",
+				},
 			},
 			{
+				apply_buff_func = "apply_movement_buff",
+				duration = 2,
+				max_stacks = 1,
+				multiplier = 0.8,
 				name = "decrease_dodge_speed_cemetery_floor",
-				multiplier = 0.8,
-				duration = 2,
-				max_stacks = 1,
-				remove_buff_func = "remove_movement_buff",
-				apply_buff_func = "apply_movement_buff",
 				refresh_durations = true,
+				remove_buff_func = "remove_movement_buff",
 				path_to_movement_setting_to_modify = {
 					"dodging",
-					"speed_modifier"
-				}
+					"speed_modifier",
+				},
 			},
 			{
-				name = "decrease_dodge_distance_cemetery_floor",
-				multiplier = 0.8,
+				apply_buff_func = "apply_movement_buff",
 				duration = 2,
 				max_stacks = 1,
-				remove_buff_func = "remove_movement_buff",
-				apply_buff_func = "apply_movement_buff",
+				multiplier = 0.8,
+				name = "decrease_dodge_distance_cemetery_floor",
 				refresh_durations = true,
+				remove_buff_func = "remove_movement_buff",
 				path_to_movement_setting_to_modify = {
 					"dodging",
-					"distance_modifier"
-				}
-			}
-		}
+					"distance_modifier",
+				},
+			},
+		},
 	},
 	bile_troll_vomit_ground_slowdown = {
 		buffs = {
 			{
-				update_func = "update_action_lerp_movement_buff",
+				apply_buff_func = "apply_action_lerp_movement_buff",
+				duration = 1,
+				lerp_time = 0.1,
+				max_stacks = 1,
 				multiplier = 0.75,
 				name = "decrease_speed_bile_troll",
 				refresh_durations = true,
 				remove_buff_func = "remove_action_lerp_movement_buff",
-				apply_buff_func = "apply_action_lerp_movement_buff",
 				remove_buff_name = "planted_return_to_normal_movement",
-				lerp_time = 0.1,
-				max_stacks = 1,
-				duration = 1,
+				update_func = "update_action_lerp_movement_buff",
 				path_to_movement_setting_to_modify = {
-					"move_speed"
-				}
+					"move_speed",
+				},
 			},
 			{
-				update_func = "update_charging_action_lerp_movement_buff",
+				apply_buff_func = "apply_action_lerp_movement_buff",
+				duration = 1,
+				lerp_time = 0.1,
+				max_stacks = 1,
 				multiplier = 0.75,
 				name = "decrease_crouch_speed_bile_troll",
 				refresh_durations = true,
 				remove_buff_func = "remove_action_lerp_movement_buff",
-				apply_buff_func = "apply_action_lerp_movement_buff",
 				remove_buff_name = "planted_return_to_normal_crouch_movement",
-				lerp_time = 0.1,
-				max_stacks = 1,
-				duration = 1,
+				update_func = "update_charging_action_lerp_movement_buff",
 				path_to_movement_setting_to_modify = {
-					"crouch_move_speed"
-				}
+					"crouch_move_speed",
+				},
 			},
 			{
-				update_func = "update_charging_action_lerp_movement_buff",
+				apply_buff_func = "apply_action_lerp_movement_buff",
+				duration = 1,
+				lerp_time = 0.1,
+				max_stacks = 1,
 				multiplier = 0.75,
 				name = "decrease_walk_speed_bile_troll",
 				refresh_durations = true,
 				remove_buff_func = "remove_action_lerp_movement_buff",
-				apply_buff_func = "apply_action_lerp_movement_buff",
 				remove_buff_name = "planted_return_to_normal_walk_movement",
-				lerp_time = 0.1,
-				max_stacks = 1,
-				duration = 1,
+				update_func = "update_charging_action_lerp_movement_buff",
 				path_to_movement_setting_to_modify = {
-					"walk_move_speed"
-				}
+					"walk_move_speed",
+				},
 			},
 			{
-				name = "decrease_jump_speed_bile_troll",
-				multiplier = 0.75,
+				apply_buff_func = "apply_movement_buff",
 				duration = 1,
 				max_stacks = 1,
-				remove_buff_func = "remove_movement_buff",
-				apply_buff_func = "apply_movement_buff",
+				multiplier = 0.75,
+				name = "decrease_jump_speed_bile_troll",
 				refresh_durations = true,
+				remove_buff_func = "remove_movement_buff",
 				path_to_movement_setting_to_modify = {
 					"jump",
-					"initial_vertical_speed"
-				}
+					"initial_vertical_speed",
+				},
 			},
 			{
+				apply_buff_func = "apply_movement_buff",
+				duration = 1,
+				max_stacks = 1,
+				multiplier = 0.8,
 				name = "decrease_dodge_speed_bile_troll",
-				multiplier = 0.8,
-				duration = 1,
-				max_stacks = 1,
-				remove_buff_func = "remove_movement_buff",
-				apply_buff_func = "apply_movement_buff",
 				refresh_durations = true,
+				remove_buff_func = "remove_movement_buff",
 				path_to_movement_setting_to_modify = {
 					"dodging",
-					"speed_modifier"
-				}
+					"speed_modifier",
+				},
 			},
 			{
-				name = "decrease_dodge_distance_bile_troll",
-				multiplier = 0.8,
+				apply_buff_func = "apply_movement_buff",
 				duration = 1,
 				max_stacks = 1,
-				remove_buff_func = "remove_movement_buff",
-				apply_buff_func = "apply_movement_buff",
+				multiplier = 0.8,
+				name = "decrease_dodge_distance_bile_troll",
 				refresh_durations = true,
+				remove_buff_func = "remove_movement_buff",
 				path_to_movement_setting_to_modify = {
 					"dodging",
-					"distance_modifier"
-				}
-			}
-		}
+					"distance_modifier",
+				},
+			},
+		},
 	},
 	plague_wave_face_base = {
 		buffs = {
 			{
-				slowdown_buff_name = "plague_wave_face_slowdown",
-				name = "plague_wave_face",
-				icon = "troll_vomit_debuff",
 				apply_buff_func = "apply_plague_wave_in_face",
-				remove_buff_func = "remove_plague_wave_in_face",
-				fatigue_type = "vomit_face",
-				duration = 2,
-				refresh_durations = true,
-				time_between_dot_damages = 0.65,
 				damage_type = "plague_face",
+				duration = 2,
+				fatigue_type = "vomit_face",
+				icon = "troll_vomit_debuff",
 				max_stacks = 1,
-				update_func = "update_vomit_in_face",
+				name = "plague_wave_face",
 				push_speed = 6,
+				refresh_durations = true,
+				remove_buff_func = "remove_plague_wave_in_face",
+				slowdown_buff_name = "plague_wave_face_slowdown",
+				time_between_dot_damages = 0.65,
+				update_func = "update_vomit_in_face",
 				difficulty_damage = {
 					easy = {
 						1,
 						1,
 						0,
 						0.5,
-						1
+						1,
 					},
 					normal = {
 						1,
 						1,
 						0,
 						2,
-						1
+						1,
 					},
 					hard = {
 						1,
 						1,
 						0,
 						3,
-						1
+						1,
 					},
 					harder = {
 						1,
 						1,
 						0,
 						4,
-						1
+						1,
 					},
 					hardest = {
 						1,
 						1,
 						0,
 						6,
-						1
+						1,
 					},
 					cataclysm = {
 						1,
 						1,
 						0,
 						6,
-						1
+						1,
 					},
 					cataclysm_2 = {
 						1,
 						1,
 						0,
 						8,
-						1
+						1,
 					},
 					cataclysm_3 = {
 						1,
 						1,
 						0,
 						10,
-						1
-					}
-				}
+						1,
+					},
+				},
 			},
 			{
-				name = "decrease_jump_speed",
-				multiplier = 0.7,
-				duration = 2,
-				remove_buff_func = "remove_movement_buff",
 				apply_buff_func = "apply_movement_buff",
+				duration = 2,
+				multiplier = 0.7,
+				name = "decrease_jump_speed",
+				remove_buff_func = "remove_movement_buff",
 				path_to_movement_setting_to_modify = {
 					"jump",
-					"initial_vertical_speed"
-				}
+					"initial_vertical_speed",
+				},
 			},
 			{
+				apply_buff_func = "apply_movement_buff",
+				duration = 2,
+				multiplier = 0.7,
 				name = "decrease_dodge_speed",
-				multiplier = 0.7,
-				duration = 2,
 				remove_buff_func = "remove_movement_buff",
-				apply_buff_func = "apply_movement_buff",
 				path_to_movement_setting_to_modify = {
 					"dodging",
-					"speed_modifier"
-				}
+					"speed_modifier",
+				},
 			},
 			{
-				name = "decrease_dodge_distance",
-				multiplier = 0.7,
-				duration = 2,
-				remove_buff_func = "remove_movement_buff",
 				apply_buff_func = "apply_movement_buff",
+				duration = 2,
+				multiplier = 0.7,
+				name = "decrease_dodge_distance",
+				remove_buff_func = "remove_movement_buff",
 				path_to_movement_setting_to_modify = {
 					"dodging",
-					"distance_modifier"
-				}
-			}
-		}
+					"distance_modifier",
+				},
+			},
+		},
 	},
 	vermintide_face_base = {
 		buffs = {
 			{
-				fatigue_type = "vomit_face",
-				name = "plague_wave_face",
-				icon = "troll_vomit_debuff",
-				duration = 3.5,
-				remove_buff_func = "remove_vermintide_in_face",
 				apply_buff_func = "apply_vermintide_in_face",
-				refresh_durations = true,
-				time_between_dot_damages = 0.65,
 				damage_type = "plague_face",
+				duration = 3.5,
+				fatigue_type = "vomit_face",
+				icon = "troll_vomit_debuff",
 				max_stacks = 1,
-				update_func = "update_vermintide_in_face",
+				name = "plague_wave_face",
 				push_speed = 15,
+				refresh_durations = true,
+				remove_buff_func = "remove_vermintide_in_face",
+				time_between_dot_damages = 0.65,
+				update_func = "update_vermintide_in_face",
 				difficulty_damage = {
 					easy = {
 						1,
 						1,
 						0,
 						0.5,
-						1
+						1,
 					},
 					normal = {
 						1,
 						1,
 						0,
 						1,
-						1
+						1,
 					},
 					hard = {
 						1,
 						1,
 						0,
 						1,
-						1
+						1,
 					},
 					harder = {
 						1,
 						1,
 						0,
 						2,
-						1
+						1,
 					},
 					hardest = {
 						1,
 						1,
 						0,
 						4,
-						1
+						1,
 					},
 					cataclysm = {
 						1,
 						1,
 						0,
 						1,
-						1
+						1,
 					},
 					cataclysm_2 = {
 						1,
 						1,
 						0,
 						2,
-						1
+						1,
 					},
 					cataclysm_3 = {
 						1,
 						1,
 						0,
 						4,
-						1
-					}
-				}
+						1,
+					},
+				},
 			},
 			{
-				name = "decrease_jump_speed",
-				multiplier = 0.7,
-				duration = 3.5,
-				remove_buff_func = "remove_movement_buff",
 				apply_buff_func = "apply_movement_buff",
+				duration = 3.5,
+				multiplier = 0.7,
+				name = "decrease_jump_speed",
+				remove_buff_func = "remove_movement_buff",
 				path_to_movement_setting_to_modify = {
 					"jump",
-					"initial_vertical_speed"
-				}
+					"initial_vertical_speed",
+				},
 			},
 			{
+				apply_buff_func = "apply_movement_buff",
+				duration = 3.5,
+				multiplier = 0.7,
 				name = "decrease_dodge_speed",
-				multiplier = 0.7,
-				duration = 3.5,
 				remove_buff_func = "remove_movement_buff",
-				apply_buff_func = "apply_movement_buff",
 				path_to_movement_setting_to_modify = {
 					"dodging",
-					"speed_modifier"
-				}
+					"speed_modifier",
+				},
 			},
 			{
-				name = "decrease_dodge_distance",
-				multiplier = 0.7,
-				duration = 3.5,
-				remove_buff_func = "remove_movement_buff",
 				apply_buff_func = "apply_movement_buff",
+				duration = 3.5,
+				multiplier = 0.7,
+				name = "decrease_dodge_distance",
+				remove_buff_func = "remove_movement_buff",
 				path_to_movement_setting_to_modify = {
 					"dodging",
-					"distance_modifier"
-				}
-			}
-		}
+					"distance_modifier",
+				},
+			},
+		},
 	},
 	bile_troll_vomit_face_base = {
 		buffs = {
 			{
-				slowdown_buff_name = "bile_troll_vomit_face_slowdown",
-				name = "troll_bile_face",
-				debuff = true,
-				update_func = "update_vomit_in_face",
-				fatigue_type = "vomit_face",
-				remove_buff_func = "remove_vomit_in_face",
 				apply_buff_func = "apply_vomit_in_face",
-				duration = 5,
-				time_between_dot_damages = 0.65,
-				refresh_durations = true,
 				damage_type = "vomit_face",
-				max_stacks = 1,
+				debuff = true,
+				duration = 5,
+				fatigue_type = "vomit_face",
 				icon = "troll_vomit_debuff",
+				max_stacks = 1,
+				name = "troll_bile_face",
 				push_speed = 6,
+				refresh_durations = true,
+				remove_buff_func = "remove_vomit_in_face",
+				slowdown_buff_name = "bile_troll_vomit_face_slowdown",
+				time_between_dot_damages = 0.65,
+				update_func = "update_vomit_in_face",
 				difficulty_damage = {
 					easy = {
 						1,
 						1,
 						0,
 						0.5,
-						1
+						1,
 					},
 					normal = {
 						1,
 						1,
 						0,
 						1,
-						1
+						1,
 					},
 					hard = {
 						1,
 						1,
 						0,
 						1,
-						1
+						1,
 					},
 					harder = {
 						1,
 						1,
 						0,
 						2,
-						1
+						1,
 					},
 					hardest = {
 						1,
 						1,
 						0,
 						4,
-						1
+						1,
 					},
 					cataclysm = {
 						1,
 						1,
 						0,
 						4,
-						1
+						1,
 					},
 					cataclysm_2 = {
 						1,
 						1,
 						0,
 						4,
-						1
+						1,
 					},
 					cataclysm_3 = {
 						1,
 						1,
 						0,
 						4,
-						1
-					}
-				}
+						1,
+					},
+				},
 			},
 			{
-				name = "decrease_jump_speed",
-				multiplier = 0.3,
-				duration = 7,
-				remove_buff_func = "remove_movement_buff",
 				apply_buff_func = "apply_movement_buff",
+				duration = 7,
+				multiplier = 0.3,
+				name = "decrease_jump_speed",
+				remove_buff_func = "remove_movement_buff",
 				path_to_movement_setting_to_modify = {
 					"jump",
-					"initial_vertical_speed"
-				}
+					"initial_vertical_speed",
+				},
 			},
 			{
+				apply_buff_func = "apply_movement_buff",
+				duration = 7,
+				multiplier = 0.3,
 				name = "decrease_dodge_speed",
-				multiplier = 0.3,
-				duration = 7,
 				remove_buff_func = "remove_movement_buff",
-				apply_buff_func = "apply_movement_buff",
 				path_to_movement_setting_to_modify = {
 					"dodging",
-					"speed_modifier"
-				}
+					"speed_modifier",
+				},
 			},
 			{
-				name = "decrease_dodge_distance",
-				multiplier = 0.3,
-				duration = 7,
-				remove_buff_func = "remove_movement_buff",
 				apply_buff_func = "apply_movement_buff",
+				duration = 7,
+				multiplier = 0.3,
+				name = "decrease_dodge_distance",
+				remove_buff_func = "remove_movement_buff",
 				path_to_movement_setting_to_modify = {
 					"dodging",
-					"distance_modifier"
-				}
-			}
-		}
+					"distance_modifier",
+				},
+			},
+		},
 	},
 	bile_troll_vomit_face_slowdown = {
 		buffs = {
 			{
-				update_func = "update_action_lerp_movement_buff",
+				apply_buff_func = "apply_action_lerp_movement_buff",
+				duration = 0.5,
+				lerp_time = 0.1,
+				max_stacks = 1,
 				multiplier = 0.3,
 				name = "decrease_speed",
 				refresh_durations = true,
 				remove_buff_func = "remove_action_lerp_movement_buff",
-				apply_buff_func = "apply_action_lerp_movement_buff",
 				remove_buff_name = "planted_return_to_normal_movement",
-				lerp_time = 0.1,
-				max_stacks = 1,
-				duration = 0.5,
+				update_func = "update_action_lerp_movement_buff",
 				path_to_movement_setting_to_modify = {
-					"move_speed"
-				}
+					"move_speed",
+				},
 			},
 			{
-				update_func = "update_charging_action_lerp_movement_buff",
+				apply_buff_func = "apply_action_lerp_movement_buff",
+				duration = 0.5,
+				lerp_time = 0.1,
+				max_stacks = 1,
 				multiplier = 0.3,
 				name = "decrease_crouch_speed",
 				refresh_durations = true,
 				remove_buff_func = "remove_action_lerp_movement_buff",
-				apply_buff_func = "apply_action_lerp_movement_buff",
 				remove_buff_name = "planted_return_to_normal_crouch_movement",
-				lerp_time = 0.1,
-				max_stacks = 1,
-				duration = 0.5,
+				update_func = "update_charging_action_lerp_movement_buff",
 				path_to_movement_setting_to_modify = {
-					"crouch_move_speed"
-				}
+					"crouch_move_speed",
+				},
 			},
 			{
-				update_func = "update_charging_action_lerp_movement_buff",
+				apply_buff_func = "apply_action_lerp_movement_buff",
+				duration = 0.5,
+				lerp_time = 0.1,
+				max_stacks = 1,
 				multiplier = 0.3,
 				name = "decrease_walk_speed",
 				refresh_durations = true,
 				remove_buff_func = "remove_action_lerp_movement_buff",
-				apply_buff_func = "apply_action_lerp_movement_buff",
 				remove_buff_name = "planted_return_to_normal_walk_movement",
-				lerp_time = 0.1,
-				max_stacks = 1,
-				duration = 0.5,
+				update_func = "update_charging_action_lerp_movement_buff",
 				path_to_movement_setting_to_modify = {
-					"walk_move_speed"
-				}
-			}
-		}
+					"walk_move_speed",
+				},
+			},
+		},
 	},
 	plague_wave_face_slowdown = {
 		buffs = {
 			{
-				update_func = "update_action_lerp_movement_buff",
+				apply_buff_func = "apply_action_lerp_movement_buff",
+				duration = 0.5,
+				lerp_time = 0.1,
+				max_stacks = 1,
 				multiplier = 0.8,
 				name = "decrease_speed",
 				refresh_durations = true,
 				remove_buff_func = "remove_action_lerp_movement_buff",
-				apply_buff_func = "apply_action_lerp_movement_buff",
 				remove_buff_name = "planted_return_to_normal_movement",
-				lerp_time = 0.1,
-				max_stacks = 1,
-				duration = 0.5,
+				update_func = "update_action_lerp_movement_buff",
 				path_to_movement_setting_to_modify = {
-					"move_speed"
-				}
+					"move_speed",
+				},
 			},
 			{
-				update_func = "update_charging_action_lerp_movement_buff",
+				apply_buff_func = "apply_action_lerp_movement_buff",
+				duration = 0.5,
+				lerp_time = 0.1,
+				max_stacks = 1,
 				multiplier = 0.8,
 				name = "decrease_crouch_speed",
 				refresh_durations = true,
 				remove_buff_func = "remove_action_lerp_movement_buff",
-				apply_buff_func = "apply_action_lerp_movement_buff",
 				remove_buff_name = "planted_return_to_normal_crouch_movement",
-				lerp_time = 0.1,
-				max_stacks = 1,
-				duration = 0.5,
+				update_func = "update_charging_action_lerp_movement_buff",
 				path_to_movement_setting_to_modify = {
-					"crouch_move_speed"
-				}
+					"crouch_move_speed",
+				},
 			},
 			{
-				update_func = "update_charging_action_lerp_movement_buff",
+				apply_buff_func = "apply_action_lerp_movement_buff",
+				duration = 0.5,
+				lerp_time = 0.1,
+				max_stacks = 1,
 				multiplier = 0.8,
 				name = "decrease_walk_speed",
 				refresh_durations = true,
 				remove_buff_func = "remove_action_lerp_movement_buff",
-				apply_buff_func = "apply_action_lerp_movement_buff",
 				remove_buff_name = "planted_return_to_normal_walk_movement",
-				lerp_time = 0.1,
-				max_stacks = 1,
-				duration = 0.5,
+				update_func = "update_charging_action_lerp_movement_buff",
 				path_to_movement_setting_to_modify = {
-					"walk_move_speed"
-				}
-			}
-		}
+					"walk_move_speed",
+				},
+			},
+		},
 	},
 	vortex_base = {
 		buffs = {
 			{
-				slowdown_buff_name = "vortex_slowdown",
-				name = "vortex",
-				icon = "troll_vomit_debuff",
 				apply_buff_func = "apply_vortex",
-				duration = 2,
-				remove_buff_func = "remove_vortex",
-				fatigue_type = "vomit_face",
-				refresh_durations = true,
-				time_between_dot_damages = 0.65,
 				damage_type = "vomit_face",
+				duration = 2,
+				fatigue_type = "vomit_face",
+				icon = "troll_vomit_debuff",
 				max_stacks = 1,
+				name = "vortex",
+				refresh_durations = true,
+				remove_buff_func = "remove_vortex",
+				slowdown_buff_name = "vortex_slowdown",
+				time_between_dot_damages = 0.65,
 				update_func = "update_vortex",
 				difficulty_damage = {
 					easy = {
@@ -8084,154 +8110,154 @@ BuffTemplates = {
 						1,
 						0,
 						2,
-						1
+						1,
 					},
 					normal = {
 						1,
 						1,
 						0,
 						3,
-						1
+						1,
 					},
 					hard = {
 						1,
 						1,
 						0,
 						5,
-						1
+						1,
 					},
 					harder = {
 						1,
 						1,
 						0,
 						8,
-						1
+						1,
 					},
 					hardest = {
 						1,
 						1,
 						0,
 						16,
-						1
+						1,
 					},
 					cataclysm = {
 						1,
 						1,
 						0,
 						16,
-						1
+						1,
 					},
 					cataclysm_2 = {
 						1,
 						1,
 						0,
 						16,
-						1
+						1,
 					},
 					cataclysm_3 = {
 						1,
 						1,
 						0,
 						16,
-						1
-					}
-				}
+						1,
+					},
+				},
 			},
 			{
-				name = "decrease_jump_speed",
-				multiplier = 0.8,
-				duration = 1,
-				remove_buff_func = "remove_movement_buff",
 				apply_buff_func = "apply_movement_buff",
+				duration = 1,
+				multiplier = 0.8,
+				name = "decrease_jump_speed",
+				remove_buff_func = "remove_movement_buff",
 				path_to_movement_setting_to_modify = {
 					"jump",
-					"initial_vertical_speed"
-				}
+					"initial_vertical_speed",
+				},
 			},
 			{
+				apply_buff_func = "apply_movement_buff",
+				duration = 1,
+				multiplier = 0.8,
 				name = "decrease_dodge_speed",
-				multiplier = 0.8,
-				duration = 1,
 				remove_buff_func = "remove_movement_buff",
-				apply_buff_func = "apply_movement_buff",
 				path_to_movement_setting_to_modify = {
 					"dodging",
-					"speed_modifier"
-				}
+					"speed_modifier",
+				},
 			},
 			{
-				name = "decrease_dodge_distance",
-				multiplier = 0.8,
-				duration = 1,
-				remove_buff_func = "remove_movement_buff",
 				apply_buff_func = "apply_movement_buff",
+				duration = 1,
+				multiplier = 0.8,
+				name = "decrease_dodge_distance",
+				remove_buff_func = "remove_movement_buff",
 				path_to_movement_setting_to_modify = {
 					"dodging",
-					"distance_modifier"
-				}
-			}
-		}
+					"distance_modifier",
+				},
+			},
+		},
 	},
 	vortex_slowdown = {
 		buffs = {
 			{
-				update_func = "update_action_lerp_movement_buff",
+				apply_buff_func = "apply_action_lerp_movement_buff",
+				duration = 0.5,
+				lerp_time = 0.1,
+				max_stacks = 1,
 				multiplier = 0.9,
 				name = "decrease_speed",
 				refresh_durations = true,
 				remove_buff_func = "remove_action_lerp_movement_buff",
-				apply_buff_func = "apply_action_lerp_movement_buff",
 				remove_buff_name = "planted_return_to_normal_movement",
-				lerp_time = 0.1,
-				max_stacks = 1,
-				duration = 0.5,
+				update_func = "update_action_lerp_movement_buff",
 				path_to_movement_setting_to_modify = {
-					"move_speed"
-				}
+					"move_speed",
+				},
 			},
 			{
-				update_func = "update_charging_action_lerp_movement_buff",
+				apply_buff_func = "apply_action_lerp_movement_buff",
+				duration = 0.5,
+				lerp_time = 0.1,
+				max_stacks = 1,
 				multiplier = 0.9,
 				name = "decrease_crouch_speed",
 				refresh_durations = true,
 				remove_buff_func = "remove_action_lerp_movement_buff",
-				apply_buff_func = "apply_action_lerp_movement_buff",
 				remove_buff_name = "planted_return_to_normal_crouch_movement",
-				lerp_time = 0.1,
-				max_stacks = 1,
-				duration = 0.5,
+				update_func = "update_charging_action_lerp_movement_buff",
 				path_to_movement_setting_to_modify = {
-					"crouch_move_speed"
-				}
+					"crouch_move_speed",
+				},
 			},
 			{
-				update_func = "update_charging_action_lerp_movement_buff",
+				apply_buff_func = "apply_action_lerp_movement_buff",
+				duration = 0.5,
+				lerp_time = 0.1,
+				max_stacks = 1,
 				multiplier = 0.9,
 				name = "decrease_walk_speed",
 				refresh_durations = true,
 				remove_buff_func = "remove_action_lerp_movement_buff",
-				apply_buff_func = "apply_action_lerp_movement_buff",
 				remove_buff_name = "planted_return_to_normal_walk_movement",
-				lerp_time = 0.1,
-				max_stacks = 1,
-				duration = 0.5,
+				update_func = "update_charging_action_lerp_movement_buff",
 				path_to_movement_setting_to_modify = {
-					"walk_move_speed"
-				}
-			}
-		}
+					"walk_move_speed",
+				},
+			},
+		},
 	},
 	stormfiend_warpfire_ground_base = {
 		buffs = {
 			{
-				slowdown_buff_name = "bile_troll_vomit_ground_slowdown",
+				apply_buff_func = "apply_moving_through_warpfire",
+				damage_type = "warpfire_ground",
+				max_stacks = 1,
 				name = "stormfiend_warpfire_ground",
 				refresh_durations = true,
 				remove_buff_func = "remove_moving_through_warpfire",
-				apply_buff_func = "apply_moving_through_warpfire",
+				slowdown_buff_name = "bile_troll_vomit_ground_slowdown",
 				time_between_dot_damages = 0.5,
-				damage_type = "warpfire_ground",
-				max_stacks = 1,
 				update_func = "update_moving_through_warpfire",
 				difficulty_damage = {
 					easy = {
@@ -8239,709 +8265,709 @@ BuffTemplates = {
 						1,
 						0,
 						1.5,
-						1
+						1,
 					},
 					normal = {
 						2,
 						2,
 						0,
 						2.5,
-						3
+						3,
 					},
 					hard = {
 						4,
 						3,
 						0,
 						2.5,
-						4
+						4,
 					},
 					harder = {
 						6,
 						5,
 						0,
 						4.5,
-						5
+						5,
 					},
 					hardest = {
 						8,
 						8,
 						0,
 						8.5,
-						6
+						6,
 					},
 					cataclysm = {
 						4,
 						3,
 						0,
 						8.5,
-						4
+						4,
 					},
 					cataclysm_2 = {
 						6,
 						5,
 						0,
 						8.5,
-						5
+						5,
 					},
 					cataclysm_3 = {
 						8,
 						8,
 						0,
 						8.5,
-						6
-					}
+						6,
+					},
 				},
 				perks = {
-					buff_perks.burning_warpfire
-				}
-			}
-		}
+					buff_perks.burning_warpfire,
+				},
+			},
+		},
 	},
 	stormfiend_warpfire_face_base = {
 		buffs = {
 			{
+				apply_buff_func = "apply_warpfire_in_face",
+				damage_type = "warpfire_face",
+				duration = 3,
+				max_stacks = 1,
 				name = "stormfiend_warpfire_face",
-				update_func = "update_warpfire_in_face",
+				push_speed = 10,
 				refresh_durations = true,
 				remove_buff_func = "remove_warpfire_in_face",
-				apply_buff_func = "apply_warpfire_in_face",
 				time_between_dot_damages = 0.65,
-				damage_type = "warpfire_face",
-				max_stacks = 1,
-				duration = 3,
-				push_speed = 10,
+				update_func = "update_warpfire_in_face",
 				difficulty_damage = {
 					easy = {
 						1,
 						1,
 						0,
 						2,
-						1
+						1,
 					},
 					normal = {
 						3,
 						2,
 						0,
 						1.5,
-						2
+						2,
 					},
 					hard = {
 						4,
 						2,
 						0,
 						2,
-						2
+						2,
 					},
 					harder = {
 						5,
 						3,
 						0,
 						3,
-						3
+						3,
 					},
 					hardest = {
 						6,
 						4,
 						0,
 						5,
-						4
+						4,
 					},
 					cataclysm = {
 						4,
 						2,
 						0,
 						5,
-						2
+						2,
 					},
 					cataclysm_2 = {
 						5,
 						3,
 						0,
 						5,
-						3
+						3,
 					},
 					cataclysm_3 = {
 						6,
 						4,
 						0,
 						5,
-						1
-					}
+						1,
+					},
 				},
 				perks = {
-					buff_perks.burning_warpfire
-				}
-			}
-		}
+					buff_perks.burning_warpfire,
+				},
+			},
+		},
 	},
 	increase_damage_recieved_while_burning = {
 		buffs = {
 			{
+				max_stacks = 1,
 				multiplier = 0.5,
 				name = "increase_damage_recieved_while_burning",
+				refresh_durations = true,
 				stat_buff = "damage_taken",
-				max_stacks = 1,
-				refresh_durations = true
-			}
-		}
+			},
+		},
 	},
 	chaos_zombie_explosion = {
 		buffs = {
 			{
-				refresh_durations = false,
+				apply_buff_func = "apply_chaos_zombie_explosion_in_face",
+				damage_type = "vomit_face",
+				duration = 5,
+				fatigue_type = "vomit_face",
+				max_stacks = 5,
+				multiplier = 0.1,
 				name = "chaos_zombie_explosion",
+				refresh_durations = false,
+				remove_buff_func = "remove_chaos_zombie_explosion_in_face",
 				stat_buff = "damage_taken",
 				update_func = "update_chaos_zombie_explosion_in_face",
-				multiplier = 0.1,
-				remove_buff_func = "remove_chaos_zombie_explosion_in_face",
-				apply_buff_func = "apply_chaos_zombie_explosion_in_face",
-				fatigue_type = "vomit_face",
-				damage_type = "vomit_face",
-				max_stacks = 5,
-				duration = 5
-			}
-		}
+			},
+		},
 	},
 	corpse_explosion_default = {
 		buffs = {
 			{
-				slowdown_buff_name = "bile_troll_vomit_face_slowdown",
-				name = "corpse_explosion_default",
-				debuff = true,
-				update_func = "update_vomit_in_face",
-				fatigue_type = "vomit_face",
-				remove_buff_func = "remove_vomit_in_face",
 				apply_buff_func = "apply_vomit_in_face",
-				duration = 2,
-				time_between_dot_damages = 0.65,
-				refresh_durations = true,
 				damage_type = "vomit_face",
-				max_stacks = 1,
+				debuff = true,
+				duration = 2,
+				fatigue_type = "vomit_face",
 				icon = "troll_vomit_debuff",
+				max_stacks = 1,
+				name = "corpse_explosion_default",
 				push_speed = 6,
+				refresh_durations = true,
+				remove_buff_func = "remove_vomit_in_face",
+				slowdown_buff_name = "bile_troll_vomit_face_slowdown",
+				time_between_dot_damages = 0.65,
+				update_func = "update_vomit_in_face",
 				difficulty_damage = {
 					easy = {
 						1,
 						1,
 						0,
 						0.5,
-						1
+						1,
 					},
 					normal = {
 						1,
 						1,
 						0,
 						1,
-						1
+						1,
 					},
 					hard = {
 						1,
 						1,
 						0,
 						1,
-						1
+						1,
 					},
 					harder = {
 						1,
 						1,
 						0,
 						2,
-						1
+						1,
 					},
 					hardest = {
 						1,
 						1,
 						0,
 						4,
-						1
+						1,
 					},
 					cataclysm = {
 						1,
 						1,
 						0,
 						1,
-						1
+						1,
 					},
 					cataclysm_2 = {
 						1,
 						1,
 						0,
 						2,
-						1
+						1,
 					},
 					cataclysm_3 = {
 						1,
 						1,
 						0,
 						4,
-						1
-					}
-				}
+						1,
+					},
+				},
 			},
 			{
-				name = "decrease_jump_speed",
-				multiplier = 0.3,
-				duration = 2,
-				remove_buff_func = "remove_movement_buff",
 				apply_buff_func = "apply_movement_buff",
+				duration = 2,
+				multiplier = 0.3,
+				name = "decrease_jump_speed",
+				remove_buff_func = "remove_movement_buff",
 				path_to_movement_setting_to_modify = {
 					"jump",
-					"initial_vertical_speed"
-				}
+					"initial_vertical_speed",
+				},
 			},
 			{
+				apply_buff_func = "apply_movement_buff",
+				duration = 2,
+				multiplier = 0.3,
 				name = "decrease_dodge_speed",
-				multiplier = 0.3,
-				duration = 2,
 				remove_buff_func = "remove_movement_buff",
-				apply_buff_func = "apply_movement_buff",
 				path_to_movement_setting_to_modify = {
 					"dodging",
-					"speed_modifier"
-				}
+					"speed_modifier",
+				},
 			},
 			{
-				name = "decrease_dodge_distance",
-				multiplier = 0.3,
-				duration = 2,
-				remove_buff_func = "remove_movement_buff",
 				apply_buff_func = "apply_movement_buff",
+				duration = 2,
+				multiplier = 0.3,
+				name = "decrease_dodge_distance",
+				remove_buff_func = "remove_movement_buff",
 				path_to_movement_setting_to_modify = {
 					"dodging",
-					"distance_modifier"
-				}
-			}
-		}
+					"distance_modifier",
+				},
+			},
+		},
 	},
 	ring_attackspeed_0001_buff = {
 		buffs = {
 			{
+				apply_on = "equip",
 				description = "Attack Speed",
 				multiplier = 0.03,
+				name = "ring_attackspeed_0001_buff",
 				stat_buff = "attack_speed",
-				apply_on = "equip",
-				name = "ring_attackspeed_0001_buff"
-			}
-		}
+			},
+		},
 	},
 	ring_attackspeed_0002_buff = {
 		buffs = {
 			{
+				apply_on = "equip",
 				description = "Attack Speed",
 				multiplier = 0.05,
+				name = "ring_attackspeed_0002_buff",
 				stat_buff = "attack_speed",
-				apply_on = "equip",
-				name = "ring_attackspeed_0002_buff"
-			}
-		}
+			},
+		},
 	},
 	ring_attackspeed_0003_buff = {
 		buffs = {
 			{
+				apply_on = "equip",
 				description = "Attack Speed",
 				multiplier = 0.07,
+				name = "ring_attackspeed_0003_buff",
 				stat_buff = "attack_speed",
-				apply_on = "equip",
-				name = "ring_attackspeed_0003_buff"
-			}
-		}
+			},
+		},
 	},
 	necklace_stamina_0001_buff = {
 		buffs = {
 			{
+				apply_on = "equip",
+				bonus = 1,
 				description = "Stamina",
 				name = "necklace_stamina_0001_buff",
 				stat_buff = "max_fatigue",
-				apply_on = "equip",
-				bonus = 1
-			}
-		}
+			},
+		},
 	},
 	necklace_stamina_0002_buff = {
 		buffs = {
 			{
+				apply_on = "equip",
+				bonus = 2,
 				description = "Stamina",
 				name = "necklace_stamina_0002_buff",
 				stat_buff = "max_fatigue",
-				apply_on = "equip",
-				bonus = 2
-			}
-		}
+			},
+		},
 	},
 	necklace_stamina_0003_buff = {
 		buffs = {
 			{
+				apply_on = "equip",
+				bonus = 4,
 				description = "Stamina",
 				name = "necklace_stamina_0003_buff",
 				stat_buff = "max_fatigue",
-				apply_on = "equip",
-				bonus = 4
-			}
-		}
+			},
+		},
 	},
 	necklace_health_0001_buff = {
 		buffs = {
 			{
+				apply_on = "equip",
 				description = "Health",
 				multiplier = 0.1,
+				name = "necklace_health_0001_buff",
 				stat_buff = "max_health",
-				apply_on = "equip",
-				name = "necklace_health_0001_buff"
-			}
-		}
+			},
+		},
 	},
 	necklace_health_0002_buff = {
 		buffs = {
 			{
+				apply_on = "equip",
 				description = "Health",
 				multiplier = 0.15,
+				name = "necklace_health_0002_buff",
 				stat_buff = "max_health",
-				apply_on = "equip",
-				name = "necklace_health_0002_buff"
-			}
-		}
+			},
+		},
 	},
 	necklace_health_0003_buff = {
 		buffs = {
 			{
+				apply_on = "equip",
 				description = "Health",
 				multiplier = 0.25,
+				name = "necklace_health_0003_buff",
 				stat_buff = "max_health",
-				apply_on = "equip",
-				name = "necklace_health_0003_buff"
-			}
-		}
+			},
+		},
 	},
 	weapon_trait_uninterruptible = {
 		buffs = {
 			{
 				name = "weapon_trait_uninterruptible",
 				perks = {
-					buff_perks.uninterruptible
-				}
-			}
-		}
+					buff_perks.uninterruptible,
+				},
+			},
+		},
 	},
 	weapon_trait_riposte = {
 		buffs = {
 			{
 				name = "weapon_trait_riposte",
 				perks = {
-					buff_perks.uninterruptible
-				}
-			}
-		}
+					buff_perks.uninterruptible,
+				},
+			},
+		},
 	},
 	weapon_trait_backstab = {
 		buffs = {
 			{
 				multiplier = 0.5,
 				name = "weapon_trait_backstab",
-				stat_buff = "backstab_multiplier"
-			}
-		}
+				stat_buff = "backstab_multiplier",
+			},
+		},
 	},
 	weapon_trait_bloodlust = {
 		buffs = {
 			{
+				bonus = 1,
+				buff_func = "heal",
 				event = "on_kill",
 				name = "weapon_trait_bloodlust",
-				bonus = 1,
-				buff_func = "heal"
-			}
-		}
+			},
+		},
 	},
 	weapon_trait_improved_push = {
 		buffs = {
 			{
-				name = "push_increase"
-			}
-		}
+				name = "push_increase",
+			},
+		},
 	},
 	weapon_trait_scavenge = {
 		buffs = {
 			{
+				bonus = 1,
+				buff_func = "replenish_ammo_on_headshot_ranged",
 				event = "on_hit",
 				name = "weapon_trait_scavenge_trigger",
-				bonus = 1,
-				buff_func = "replenish_ammo_on_headshot_ranged"
 			},
 			{
 				multiplier = -0.5,
 				name = "weapon_trait_scavenge_buff",
-				stat_buff = "total_ammo"
-			}
-		}
+				stat_buff = "total_ammo",
+			},
+		},
 	},
 	twitch_mutator_buff_splitting_enemies = {
 		buffs = {
 			{
-				icon = "mutator_icon_splitting_enemies",
 				duration = 30,
+				icon = "mutator_icon_splitting_enemies",
 				name = "twitch_mutator_buff_splitting_enemies",
 				duration_modifier_func = function (owner_unit, buff_template, duration)
 					return duration * TwitchSettings.mutator_duration_multiplier
-				end
-			}
-		}
+				end,
+			},
+		},
 	},
 	twitch_mutator_buff_leash = {
 		buffs = {
 			{
-				icon = "mutator_icon_leash",
 				duration = 30,
+				icon = "mutator_icon_leash",
 				name = "twitch_mutator_buff_leash",
 				duration_modifier_func = function (owner_unit, buff_template, duration)
 					return duration * TwitchSettings.mutator_duration_multiplier
-				end
-			}
-		}
+				end,
+			},
+		},
 	},
 	twitch_mutator_buff_slayers_curse = {
 		buffs = {
 			{
-				icon = "mutator_icon_slayer_curse",
 				duration = 30,
+				icon = "mutator_icon_slayer_curse",
 				name = "twitch_mutator_buff_slayers_curse",
 				duration_modifier_func = function (owner_unit, buff_template, duration)
 					return duration * TwitchSettings.mutator_duration_multiplier
-				end
-			}
-		}
+				end,
+			},
+		},
 	},
 	twitch_mutator_buff_shared_health_pool = {
 		buffs = {
 			{
-				icon = "icon_deed_normal_01",
 				duration = 30,
+				icon = "icon_deed_normal_01",
 				name = "twitch_mutator_buff_shared_health_pool",
 				duration_modifier_func = function (owner_unit, buff_template, duration)
 					return duration * TwitchSettings.mutator_duration_multiplier
-				end
-			}
-		}
+				end,
+			},
+		},
 	},
 	twitch_mutator_buff_bloodlust = {
 		buffs = {
 			{
-				icon = "bardin_slayer_activated_ability",
 				duration = 30,
+				icon = "bardin_slayer_activated_ability",
 				name = "twitch_mutator_buff_bloodlust",
 				duration_modifier_func = function (owner_unit, buff_template, duration)
 					return duration * TwitchSettings.mutator_duration_multiplier
-				end
-			}
-		}
+				end,
+			},
+		},
 	},
 	twitch_mutator_buff_ticking_bomb = {
 		buffs = {
 			{
-				icon = "mutator_icon_ticking_bomb",
 				duration = 30,
+				icon = "mutator_icon_ticking_bomb",
 				name = "twitch_mutator_buff_ticking_bomb",
 				duration_modifier_func = function (owner_unit, buff_template, duration)
 					return duration * TwitchSettings.mutator_duration_multiplier
-				end
-			}
-		}
+				end,
+			},
+		},
 	},
 	twitch_mutator_buff_lightning_strike = {
 		buffs = {
 			{
-				icon = "mutator_icon_heavens_lightning",
 				duration = 33,
+				icon = "mutator_icon_heavens_lightning",
 				name = "twitch_mutator_buff_lightning_strike",
 				duration_modifier_func = function (owner_unit, buff_template, duration)
 					return duration * TwitchSettings.mutator_duration_multiplier
-				end
-			}
-		}
+				end,
+			},
+		},
 	},
 	twitch_mutator_buff_chasing_spirits = {
 		buffs = {
 			{
-				icon = "mutator_icon_death_spirits",
 				duration = 25,
+				icon = "mutator_icon_death_spirits",
 				name = "twitch_mutator_buff_chasing_spirits",
 				duration_modifier_func = function (owner_unit, buff_template, duration)
 					return duration * TwitchSettings.mutator_duration_multiplier
-				end
-			}
-		}
+				end,
+			},
+		},
 	},
 	twitch_mutator_buff_flames = {
 		buffs = {
 			{
-				icon = "mutator_icon_fire_burn",
 				duration = 30,
+				icon = "mutator_icon_fire_burn",
 				name = "twitch_mutator_buff_flames",
 				duration_modifier_func = function (owner_unit, buff_template, duration)
 					return duration * TwitchSettings.mutator_duration_multiplier
-				end
-			}
-		}
+				end,
+			},
+		},
 	},
 	bloodlust = {
 		buffs = {
 			{
-				icon = "bardin_slayer_activated_ability",
-				name = "bardin_slayer_frenzy",
-				stat_buff = "attack_speed",
-				multiplier = 0.15,
-				max_stacks = 3,
 				duration = 6,
-				refresh_durations = true
+				icon = "bardin_slayer_activated_ability",
+				max_stacks = 3,
+				multiplier = 0.15,
+				name = "bardin_slayer_frenzy",
+				refresh_durations = true,
+				stat_buff = "attack_speed",
 			},
 			{
-				remove_buff_func = "remove_movement_buff",
-				name = "bardin_slayer_frenzy_movement",
-				multiplier = 1.2,
-				max_stacks = 3,
-				duration = 6,
 				apply_buff_func = "apply_movement_buff",
+				duration = 6,
+				max_stacks = 3,
+				multiplier = 1.2,
+				name = "bardin_slayer_frenzy_movement",
 				refresh_durations = true,
+				remove_buff_func = "remove_movement_buff",
 				path_to_movement_setting_to_modify = {
-					"move_speed"
-				}
-			}
-		}
+					"move_speed",
+				},
+			},
+		},
 	},
 	bloodlust_debuff = {
 		buffs = {
 			{
+				apply_buff_func = "start_dot_damage",
+				damage_profile = "bloodlust_debuff",
+				icon = "troll_vomit_debuff",
 				name = "bloodlust_debuff",
 				time_between_dot_damages = 1,
-				icon = "troll_vomit_debuff",
-				damage_profile = "bloodlust_debuff",
 				update_func = "apply_dot_damage",
-				apply_buff_func = "start_dot_damage",
-				update_start_delay = 1
-			}
-		}
+				update_start_delay = 1,
+			},
+		},
 	},
 	twitch_vote_buff_root = {
 		buffs = {
 			{
+				apply_buff_func = "apply_action_lerp_movement_buff",
+				duration = 10,
 				icon = "troll_vomit_debuff",
+				lerp_time = 0.1,
 				multiplier = 0.001,
-				update_func = "update_action_lerp_movement_buff",
 				name = "twitch_vote_buff_root",
 				remove_buff_func = "remove_action_lerp_movement_buff",
-				apply_buff_func = "apply_action_lerp_movement_buff",
 				remove_buff_name = "planted_return_to_normal_movement",
-				lerp_time = 0.1,
-				duration = 10,
+				update_func = "update_action_lerp_movement_buff",
 				path_to_movement_setting_to_modify = {
-					"move_speed"
+					"move_speed",
 				},
 				perks = {
-					buff_perks.root
-				}
-			}
-		}
+					buff_perks.root,
+				},
+			},
+		},
 	},
 	twitch_vote_buff_fatigue_loss = {
 		buffs = {
 			{
+				duration = 15,
+				icon = "troll_vomit_debuff",
+				max_stacks = 1,
 				multiplier = -1,
 				name = "twitch_vote_buff_fatigue_loss",
-				stat_buff = "fatigue_regen",
-				duration = 15,
-				max_stacks = 1,
 				refresh_durations = true,
-				icon = "troll_vomit_debuff"
-			}
-		}
+				stat_buff = "fatigue_regen",
+			},
+		},
 	},
 	twitch_vote_buff_hemmoraghe = {
 		buffs = {
 			{
-				update_func = "update_speed_scaled_dot_buff",
-				name = "twitch_vote_buff_hemmoraghe",
-				damage = 3,
-				icon = "troll_vomit_debuff",
-				remove_buff_func = "remove_speed_scaled_dot_buff",
 				apply_buff_func = "apply_speed_scaled_dot_buff",
+				damage = 3,
 				damage_frequency = 0.25,
 				damage_type = "bleed",
-				duration = 15
-			}
-		}
+				duration = 15,
+				icon = "troll_vomit_debuff",
+				name = "twitch_vote_buff_hemmoraghe",
+				remove_buff_func = "remove_speed_scaled_dot_buff",
+				update_func = "update_speed_scaled_dot_buff",
+			},
+		},
 	},
 	twitch_vote_buff_invisibility = {
 		buffs = {
 			{
-				update_func = "update_twitch_invisibility_buff",
-				name = "twitch_vote_buff_invisibility",
+				apply_buff_func = "apply_twitch_invisibility_buff",
 				duration = 20,
 				icon = "kerillian_shade_passive_improved",
+				name = "twitch_vote_buff_invisibility",
 				remove_buff_func = "remove_twitch_invisibility_buff",
-				apply_buff_func = "apply_twitch_invisibility_buff"
-			}
-		}
+				update_func = "update_twitch_invisibility_buff",
+			},
+		},
 	},
 	twitch_vote_buff_critical_strikes = {
 		buffs = {
 			{
-				refresh_durations = true,
-				name = "twitch_vote_buff_critical_strikes",
+				duration = 20,
 				icon = "victor_bountyhunter_passive",
 				max_stacks = 1,
-				duration = 20,
+				name = "twitch_vote_buff_critical_strikes",
+				refresh_durations = true,
 				perks = {
-					buff_perks.guaranteed_crit
-				}
-			}
-		}
+					buff_perks.guaranteed_crit,
+				},
+			},
+		},
 	},
 	twitch_vote_buff_infinite_bombs = {
 		buffs = {
 			{
-				update_func = "update_twitch_infinite_bombs",
-				name = "twitch_vote_buff_invisibility",
+				apply_buff_func = "apply_twitch_infinite_bombs",
 				duration = 10,
 				icon = "bardin_ranger_increased_melee_damage_on_no_ammo",
+				name = "twitch_vote_buff_invisibility",
 				remove_buff_func = "remove_twitch_infinite_bombs",
-				apply_buff_func = "apply_twitch_infinite_bombs"
-			}
-		}
+				update_func = "update_twitch_infinite_bombs",
+			},
+		},
 	},
 	twitch_vote_buff_invincibility = {
 		activation_effect = "fx/screenspace_potion_03",
-		deactivation_sound = "hud_gameplay_stance_deactivate",
 		activation_sound = "hud_gameplay_stance_tank_activate",
+		deactivation_sound = "hud_gameplay_stance_deactivate",
 		buffs = {
 			{
-				icon = "victor_zealot_passive_invulnerability",
-				name = "twitch_vote_buff_invincibility",
+				apply_buff_func = "apply_twitch_invincibility",
 				duration = 10,
+				icon = "victor_zealot_passive_invulnerability",
 				max_stacks = 1,
+				name = "twitch_vote_buff_invincibility",
 				remove_buff_func = "remove_twitch_invincibility",
-				apply_buff_func = "apply_twitch_invincibility"
-			}
-		}
+			},
+		},
 	},
 	twitch_vote_buff_pulsating_waves = {
 		buffs = {
 			{
-				update_func = "update_twitch_pulsating_waves",
-				name = "twitch_vote_buff_pulsating_waves",
-				icon = "markus_mercenary_increased_damage_on_enemy_proximity",
+				apply_buff_func = "apply_twitch_pulsating_waves",
 				duration = 15,
-				apply_buff_func = "apply_twitch_pulsating_waves"
-			}
-		}
+				icon = "markus_mercenary_increased_damage_on_enemy_proximity",
+				name = "twitch_vote_buff_pulsating_waves",
+				update_func = "update_twitch_pulsating_waves",
+			},
+		},
 	},
 	commandeered_unit_tracker = {
 		buffs = {
 			{
+				buff_func = "remove_controlled_unit_on_death",
 				event = "on_death",
 				name = "commandeered_unit_tracker",
 				remove_buff_func = "remove_controlled_unit",
-				buff_func = "remove_controlled_unit_on_death"
-			}
-		}
-	}
+			},
+		},
+	},
 }
 
 require("scripts/unit_extensions/default_player_unit/buffs/talent_buff_templates")
@@ -8966,13 +8992,14 @@ DLCUtils.merge("proc_functions", ProcFunctions)
 DLCUtils.merge("stacking_buff_functions", StackingBuffFunctions)
 DLCUtils.map_list("add_sub_buffs_to_core_buffs", function (data)
 	local buffs = BuffTemplates[data.buff_name].buffs
+
 	buffs[#buffs + 1] = data.sub_buff_to_add
 end)
 BuffUtils.generate_balefire_burn_variants(BuffTemplates)
 BuffUtils.generate_infinite_burn_variants(BuffTemplates)
 
 local override_descriptions = {
-	proc_chance = true
+	proc_chance = true,
 }
 
 for buff_name, buff_template in pairs(BuffTemplates) do

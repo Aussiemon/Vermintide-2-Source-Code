@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_circle_prey_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTCirclePreyAction = class(BTCirclePreyAction, BTNode)

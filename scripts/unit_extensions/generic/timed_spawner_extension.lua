@@ -1,11 +1,15 @@
+﻿-- chunkname: @scripts/unit_extensions/generic/timed_spawner_extension.lua
+
 TimedSpawnerExtension = class(TimedSpawnerExtension)
+
 local DESTROY_ON_LIMIT_REACHED = true
 local RPCS = {
-	"rpc_on_timed_spawn"
+	"rpc_on_timed_spawn",
 }
 
 local function get_position_on_nav_mesh(nav_world, position)
 	local nav_position = LocomotionUtils.pos_on_mesh(nav_world, position, 1, 1)
+
 	nav_position = nav_position or GwNavQueries.inside_position_from_outside_position(nav_world, position, 6, 6, 8, 0.5)
 
 	return nav_position
@@ -23,7 +27,9 @@ TimedSpawnerExtension.init = function (self, extension_init_context, unit, exten
 	self._unit = unit
 	self._network_manager = Managers.state.network
 	self._conflict_director = Managers.state.conflict
+
 	local ai_system = Managers.state.entity:system("ai_system")
+
 	self._nav_world = ai_system:nav_world()
 	self._unit_storage = extension_init_context.unit_storage
 	self.network_transmit = extension_init_context.network_transmit
@@ -36,7 +42,9 @@ TimedSpawnerExtension.init = function (self, extension_init_context, unit, exten
 	self._max_spawn_amount = extension_init_data.max_spawn_amount
 	self._cb_unit_spawned_function = extension_init_data.cb_unit_spawned_function
 	self._seed = Managers.mechanism:get_level_seed()
+
 	local network_time = self._network_manager:network_time()
+
 	self._timer = network_time + self._spawn_rate
 	self._spawn_amount = 0
 end
@@ -54,8 +62,8 @@ TimedSpawnerExtension.destroy = function (self)
 end
 
 TimedSpawnerExtension._can_spawn = function (self, network_time)
-	local reached_limit = self._max_spawn_amount <= self._spawn_amount
-	local timer_ended = self._timer <= network_time
+	local reached_limit = self._spawn_amount >= self._max_spawn_amount
+	local timer_ended = network_time >= self._timer
 
 	return not reached_limit and timer_ended
 end
@@ -79,7 +87,7 @@ TimedSpawnerExtension.update = function (self, unit, input, dt, context, t)
 		self._timer = network_time + self._spawn_rate
 	end
 
-	local reached_limit = self._max_spawn_amount <= self._spawn_amount
+	local reached_limit = self._spawn_amount >= self._max_spawn_amount
 
 	if DESTROY_ON_LIMIT_REACHED and reached_limit then
 		Managers.state.unit_spawner:mark_for_deletion(unit)
@@ -96,15 +104,17 @@ TimedSpawnerExtension._spawn_breed = function (self)
 	end
 
 	local rotation = Unit.local_rotation(spawner_unit, 0)
-	local breed_name = nil
+	local breed_name
+
 	self._seed, breed_name = get_next_random_value(self._seed, self._spawnable_breeds)
+
 	local breed = Breeds[breed_name]
 	local position_box = Vector3Box(nav_position)
 	local rotation_box = QuaternionBox(rotation)
 	local spawn_category = "misc"
 	local spawn_type = "terror_event"
 	local optional_data = {
-		spawned_func = self._cb_unit_spawned_function
+		spawned_func = self._cb_unit_spawned_function,
 	}
 
 	self._conflict_director:spawn_queued_unit(breed, position_box, rotation_box, spawn_category, nil, spawn_type, optional_data)

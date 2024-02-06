@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/dlcs/morris/morris_death_reactions.lua
+
 local death_reactions = {
 	destructible_buff_objective_unit = {
 		unit = {
@@ -13,7 +15,7 @@ local death_reactions = {
 				Managers.state.unit_spawner:mark_for_deletion(unit)
 
 				return DeathReactions.IS_DONE
-			end
+			end,
 		},
 		husk = {
 			pre_start = function (unit, context, t, killing_blow)
@@ -25,10 +27,10 @@ local death_reactions = {
 			end,
 			update = function (unit, dt, context, t, data)
 				return DeathReactions.IS_DONE
-			end
-		}
+			end,
+		},
 	},
-	chaos_greed_pinata = table.clone(DeathReactions.templates.ai_default)
+	chaos_greed_pinata = table.clone(DeathReactions.templates.ai_default),
 }
 
 death_reactions.chaos_greed_pinata.unit.start = function (unit, context, t, killing_blow, is_server)

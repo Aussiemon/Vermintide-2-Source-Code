@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/settings/mutators/mutator_light.lua
+
 return {
 	description = "weaves_light_mutator_desc",
 	display_name = "weaves_light_mutator_name",
@@ -8,6 +10,7 @@ return {
 		if num_buffs < data.max_stacks then
 			local is_server_controlled = true
 			local server_buff_id = buff_system:add_buff(player_unit, data.curse_buff_name, player_unit, is_server_controlled)
+
 			buffs[num_buffs + 1] = server_buff_id
 		end
 	end,
@@ -18,7 +21,7 @@ return {
 		if buffs and has_buff then
 			local num_buffs = #buffs
 			local server_buff_id = buffs[num_buffs]
-			local parameter = (num_buffs - 1) * data.curse_value * -100
+			local parameter = (num_buffs - 1) * (data.curse_value * -100)
 
 			Managers.state.network.network_transmit:send_rpc("rpc_client_audio_set_global_parameter", player.peer_id, 6, parameter)
 			buff_system:remove_server_controlled_buff(player.player_unit, server_buff_id)
@@ -53,6 +56,7 @@ return {
 
 		if last_curse_time and t > last_curse_time + curse_rate then
 			data.last_curse_time = t
+
 			local human_players = Managers.player:players()
 
 			for key, player in pairs(human_players) do
@@ -70,7 +74,7 @@ return {
 
 					template.add_buff(data, buffs, data.buff_system, player.player_unit)
 
-					local parameter = #data.buffs[key] * data.curse_value * -100
+					local parameter = #data.buffs[key] * (data.curse_value * -100)
 
 					if parameter > 10 then
 						data.template.update_challenge_statistics(player)
@@ -119,13 +123,15 @@ return {
 
 		if last_cleanse_time and t > last_cleanse_time + cleanse_rate then
 			data.last_cleanse_time = t
+
 			local human_players = {}
 
 			for key, player in pairs(Managers.player:players()) do
 				local new_player = {
 					player_unit = player.player_unit,
-					peer_id = player.peer_id
+					peer_id = player.peer_id,
 				}
+
 				human_players[key] = new_player
 			end
 
@@ -171,6 +177,7 @@ return {
 		local wind_strength = weave_manager:get_wind_strength()
 		local objective = weave_manager:get_active_objective_template()
 		local difficulty_name = Managers.state.difficulty:get_difficulty()
+
 		data.audio_system = Managers.state.entity:system("audio_system")
 		data.radius = wind_settings.radius[difficulty_name][wind_strength]
 		data.buff_system = Managers.state.entity:system("buff_system")
@@ -182,9 +189,12 @@ return {
 		data.curse_buff_name = "mutator_light_debuff"
 		data.max_stacks = math.ceil(math.abs(1.5 / data.curse_value))
 		data.players_in_proximity = {}
+
 		local mutator_item_config = objective.mutator_item_config
 		local mutator_item_system = Managers.state.entity:system("mutator_item_system")
+
 		data.beacons = mutator_item_system:spawn_mutator_items(mutator_item_config)
+
 		local human_players = Managers.player:players()
 
 		for k, _ in pairs(human_players) do
@@ -203,5 +213,5 @@ return {
 
 		data.template.update_curse(data, t)
 		data.template.update_beacons(context, data, dt, t)
-	end
+	end,
 }

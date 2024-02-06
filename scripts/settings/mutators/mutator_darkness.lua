@@ -1,7 +1,9 @@
+﻿-- chunkname: @scripts/settings/mutators/mutator_darkness.lua
+
 return {
 	description = "description_mutator_darkness",
-	display_name = "display_name_mutator_darkness",
 	disable_environment_variations = true,
+	display_name = "display_name_mutator_darkness",
 	icon = "mutator_icon_darkness",
 	server_start_function = function (context, data)
 		data.tick_interval = 0.1
@@ -52,10 +54,11 @@ return {
 		end
 
 		local init_idx = math.random(num_player_units)
-		local player_idx, player_unit, status_extension = nil
+		local player_idx, player_unit, status_extension
 
 		for i = 1, num_player_units do
 			local player_idx = math.index_wrapper(init_idx + 47 * i, num_player_units)
+
 			player_unit = player_units[player_idx]
 			status_extension = ScriptUnit.extension(player_unit, "status_system")
 
@@ -74,14 +77,14 @@ return {
 			pickup_system = {
 				has_physics = true,
 				pickup_name = "mutator_torch",
-				spawn_type = "guaranteed"
+				spawn_type = "guaranteed",
 			},
 			projectile_locomotion_system = {
 				network_position = network_position,
 				network_rotation = network_rotation,
 				network_velocity = network_velocity,
-				network_angular_velocity = network_angular_velocity
-			}
+				network_angular_velocity = network_angular_velocity,
+			},
 		}
 		local unit_name = "units/weapons/player/pup_torch/pup_torch"
 		local unit_template_name = "pickup_torch_unit"
@@ -110,10 +113,10 @@ return {
 
 			if light then
 				local backlight_settings = {
+					end_falloff = 5,
 					intensity = 0.015,
 					start_falloff = 0,
-					end_falloff = 5,
-					color = Vector3(0.9, 0.7, 0.6)
+					color = Vector3(0.9, 0.7, 0.6),
 				}
 
 				Light.set_color(light, backlight_settings.color)
@@ -133,5 +136,5 @@ return {
 
 			darkness_system:set_global_darkness(false)
 		end
-	end
+	end,
 }

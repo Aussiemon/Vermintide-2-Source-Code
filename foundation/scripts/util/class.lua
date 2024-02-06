@@ -1,13 +1,16 @@
-local destroyed_mt = {
-	__index = function ()
-		error("This object has been destroyed")
-	end
-}
+﻿-- chunkname: @foundation/scripts/util/class.lua
+
+local destroyed_mt = {}
+
+destroyed_mt.__index = function ()
+	error("This object has been destroyed")
+end
+
 local special_functions = {
-	new = true,
 	__index = true,
+	delete = true,
+	new = true,
 	super = true,
-	delete = true
 }
 
 function class(class_table, ...)
@@ -21,8 +24,8 @@ function class(class_table, ...)
 		class_table = {
 			___is_class_metatable___ = true,
 			super = super,
-			__index = class_table
 		}
+		class_table.__index = class_table
 
 		class_table.new = function (self, ...)
 			local object = {}

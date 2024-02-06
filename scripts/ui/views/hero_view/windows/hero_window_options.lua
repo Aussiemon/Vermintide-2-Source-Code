@@ -1,9 +1,12 @@
+﻿-- chunkname: @scripts/ui/views/hero_view/windows/hero_window_options.lua
+
 local definitions = local_require("scripts/ui/views/hero_view/windows/definitions/hero_window_options_definitions")
 local widget_definitions = definitions.widgets
 local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
 local DO_RELOAD = false
 local HERO_POWER_EFFECT_DURATION = 1
+
 HeroWindowOptions = class(HeroWindowOptions)
 HeroWindowOptions.NAME = "HeroWindowOptions"
 
@@ -11,27 +14,33 @@ HeroWindowOptions.on_enter = function (self, params, offset)
 	print("[HeroViewWindow] Enter Substate HeroWindowOptions")
 
 	self.parent = params.parent
+
 	local ingame_ui_context = params.ingame_ui_context
+
 	self.ui_renderer = ingame_ui_context.ui_top_renderer
 	self.input_manager = ingame_ui_context.input_manager
 	self.statistics_db = ingame_ui_context.statistics_db
 	self.render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
+
 	local player_manager = Managers.player
 	local local_player = player_manager:local_player()
+
 	self._stats_id = local_player:stats_id()
 	self.player_manager = player_manager
 	self.peer_id = ingame_ui_context.peer_id
 	self.hero_name = params.hero_name
 	self.career_index = params.career_index
 	self.profile_index = params.profile_index
+
 	local hero_name = self.hero_name
 	local career_index = self.career_index
 	local profile_index = FindProfileIndex(hero_name)
 	local profile = SPProfiles[profile_index]
 	local career_data = profile.careers[career_index]
 	local career_name = career_data.name
+
 	self._animations = {}
 	self._ui_animations = {}
 
@@ -40,24 +49,28 @@ HeroWindowOptions.on_enter = function (self, params, offset)
 	self.conditions_params = {
 		hero_name = self.hero_name,
 		career_name = career_name,
-		rarities_to_ignore = table.enum_safe("magic")
+		rarities_to_ignore = table.enum_safe("magic"),
 	}
+
 	local widgets_by_name = self._widgets_by_name
+
 	self.button_widgets_by_news_template = {
 		equipment = widgets_by_name.game_option_1,
 		talent = widgets_by_name.game_option_2,
 		cosmetics = widgets_by_name.game_option_4,
-		loot_chest = widgets_by_name.game_option_5
+		loot_chest = widgets_by_name.game_option_5,
 	}
 end
 
 HeroWindowOptions.create_ui_elements = function (self, params, offset)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+
 	local widgets = {}
 	local widgets_by_name = {}
 
 	for name, widget_definition in pairs(widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		widgets[#widgets + 1] = widget
 		widgets_by_name[name] = widget
 	end
@@ -71,6 +84,7 @@ HeroWindowOptions.create_ui_elements = function (self, params, offset)
 
 	if offset then
 		local window_position = self.ui_scenegraph.window.local_position
+
 		window_position[1] = window_position[1] + offset[1]
 		window_position[2] = window_position[2] + offset[2]
 		window_position[3] = window_position[3] + offset[3]
@@ -239,6 +253,7 @@ HeroWindowOptions._set_selected_option = function (self, index)
 	for i = 1, 4 do
 		local widget_name = widget_prefix .. i
 		local widget = widgets_by_name[widget_name]
+
 		widget.content.button_hotspot.is_selected = index == i
 	end
 end
@@ -284,6 +299,7 @@ HeroWindowOptions._update_experience_presentation = function (self)
 	local extra_levels, extra_levels_progress = ExperienceSettings.get_extra_level(experience_pool)
 	local experience_bar_default_size = scenegraph_definition.experience_bar.size
 	local experience_bar_size = self.ui_scenegraph.experience_bar.size
+
 	experience_bar_size[1] = math.ceil(experience_bar_default_size[1])
 
 	if progress > 0 then
@@ -313,7 +329,7 @@ HeroWindowOptions._calculate_power_level = function (self)
 	local presentable_hero_power_level = UIUtils.presentable_hero_power_level(total_power_level)
 	local widgets_by_name = self._widgets_by_name
 	local content = widgets_by_name.power_text.content
-	local play_effect = content.power and content.power < presentable_hero_power_level
+	local play_effect = content.power and presentable_hero_power_level > content.power
 
 	if play_effect then
 		self._hero_power_effect_time = HERO_POWER_EFFECT_DURATION
@@ -333,13 +349,16 @@ HeroWindowOptions._update_hero_power_effect = function (self, dt)
 
 	if hero_power_effect_time then
 		hero_power_effect_time = math.max(hero_power_effect_time - dt, 0)
+
 		local progress = 1 - hero_power_effect_time / HERO_POWER_EFFECT_DURATION
 		local anim_progress = math.easeOutCubic(progress)
 		local pulse_progress = math.ease_pulse(anim_progress)
 		local widgets_by_name = self._widgets_by_name
 		local effect_style = widgets_by_name.hero_power_tooltip.style.effect
+
 		effect_style.angle = math.degrees_to_radians(120 * anim_progress)
 		effect_style.color[1] = 255 * pulse_progress
+
 		local text_style = widgets_by_name.power_text.style.text
 
 		Colors.lerp_color_tables(power_default_color, power_increase_color, pulse_progress, text_style.text_color)
@@ -362,11 +381,14 @@ HeroWindowOptions._update_hero_portrait_frame = function (self)
 	local career_display_name = career_settings.display_name
 	local hero_display_name = profile_settings.character_name
 	local widgets_by_name = self._widgets_by_name
+
 	widgets_by_name.hero_name.content.text = hero_display_name
 	widgets_by_name.career_name.content.text = career_display_name
+
 	local level_text = self._hero_level and tostring(self._hero_level) or "-"
 	local portrait_frame_name = self:_get_portrait_frame()
 	local portrait_widget = self:_create_portrait_frame_widget(portrait_frame_name, portrait_image, level_text)
+
 	self._portrait_widget = portrait_widget
 end
 
@@ -404,6 +426,7 @@ HeroWindowOptions._create_portrait_frame_widget = function (self, frame_settings
 	local widget_definition = UIWidgets.create_portrait_frame("portrait_root", frame_settings_name, level_text, 1, nil, portrait_texture)
 	local widget = UIWidget.init(widget_definition)
 	local widget_content = widget.content
+
 	widget_content.frame_settings_name = frame_settings_name
 
 	return widget
@@ -422,6 +445,7 @@ HeroWindowOptions._get_portrait_frame = function (self)
 	if item then
 		local item_data = item.data
 		local frame_name = item_data.temporary_template
+
 		player_portrait_frame = frame_name or player_portrait_frame
 	end
 
@@ -503,6 +527,7 @@ HeroWindowOptions._sync_news = function (self, dt, t)
 				local template_index = FindNewsTemplateIndex(template_name)
 				local template = news_templates[template_index]
 				local condition_func = template.condition_func
+
 				widget.content.new = condition_func(conditions_params)
 			end
 		end

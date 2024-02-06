@@ -1,11 +1,14 @@
+﻿-- chunkname: @scripts/managers/backend/backend_utils.lua
+
 require("scripts/managers/backend_playfab/backend_manager_playfab")
 
 BackendUtils = {}
+
 local placeholder_icon_textures = {
+	hat = "icons_placeholder_hat_01",
 	melee = "icons_placeholder_melee_01",
 	ranged = "icons_placeholder_ranged_01",
-	hat = "icons_placeholder_hat_01",
-	trinket = "icons_placeholder_trinket_01"
+	trinket = "icons_placeholder_trinket_01",
 }
 
 BackendUtils.get_loadout_item_id = function (career_name, slot_name)
@@ -63,6 +66,7 @@ BackendUtils.get_item_from_masterlist = function (backend_id)
 
 	if item_master_list_data then
 		local item_data = table.clone(item_master_list_data)
+
 		item_data.backend_id = backend_id
 
 		return item_data
@@ -150,26 +154,23 @@ BackendUtils.get_item_units = function (item_data, backend_id, skin, career_name
 	local material = item_data.material
 	local icon = item_data.hud_icon
 	local backend_id = item_data.backend_id or backend_id
-	local skin_name, material_settings = nil
+	local skin_name, material_settings
 
 	if career_name then
-		if item_data.left_hand_unit_override then
-			left_hand_unit = item_data.left_hand_unit_override[career_name] or left_hand_unit
-		end
-
-		if item_data.right_hand_unit_override then
-			right_hand_unit = item_data.right_hand_unit_override[career_name] or right_hand_unit
-		end
+		left_hand_unit = item_data.left_hand_unit_override and item_data.left_hand_unit_override[career_name] or left_hand_unit
+		right_hand_unit = item_data.right_hand_unit_override and item_data.right_hand_unit_override[career_name] or right_hand_unit
 	end
 
 	if backend_id or skin then
 		if not skin then
 			local backend_items = Managers.backend:get_interface("items")
+
 			skin = backend_items:get_skin(backend_id)
 		end
 
 		if skin then
 			local skin_template = WeaponSkins.skins[skin]
+
 			left_hand_unit = skin_template.left_hand_unit
 			right_hand_unit = skin_template.right_hand_unit
 			ammo_unit = skin_template.ammo_unit
@@ -182,13 +183,8 @@ BackendUtils.get_item_units = function (item_data, backend_id, skin, career_name
 			material_settings = skin_template.material_settings
 
 			if career_name then
-				if skin_template.left_hand_unit_override then
-					left_hand_unit = skin_template.left_hand_unit_override[career_name] or left_hand_unit
-				end
-
-				if skin_template.right_hand_unit_override then
-					right_hand_unit = skin_template.right_hand_unit_override[career_name] or right_hand_unit
-				end
+				left_hand_unit = skin_template.left_hand_unit_override and skin_template.left_hand_unit_override[career_name] or left_hand_unit
+				right_hand_unit = skin_template.right_hand_unit_override and skin_template.right_hand_unit_override[career_name] or right_hand_unit
 			end
 		end
 	end
@@ -207,7 +203,7 @@ BackendUtils.get_item_units = function (item_data, backend_id, skin, career_name
 			material = material,
 			icon = icon,
 			skin = skin_name,
-			material_settings = material_settings
+			material_settings = material_settings,
 		}
 
 		return units
@@ -265,23 +261,27 @@ local CAREER_ID_LOOKUP = {
 	"wh_zealot",
 	"we_thornsister",
 	"wh_priest",
-	"bw_necromancer"
+	"bw_necromancer",
 }
 
 BackendUtils.calculate_weave_score = function (tier, score, career_name)
 	local career_index = table.find(CAREER_ID_LOOKUP, career_name)
-	local weave_score = math.floor((tier * 100000 + score) * 100 + career_index - 2147483648.0)
+	local weave_score = math.floor((tier * 100000 + score) * 100 + career_index - 2147483648)
 
 	return weave_score
 end
 
 BackendUtils.convert_weave_score = function (weave_score)
-	local value = weave_score + 2147483648.0
+	local value = weave_score + 2147483648
 	local career_index = math.round((value / 100 - math.floor(value / 100)) * 100)
 	local career_name = CAREER_ID_LOOKUP[career_index]
+
 	value = math.floor(value / 100)
+
 	local score = math.round((value / 100000 - math.floor(value / 100000)) * 100000)
+
 	value = math.floor(value / 100000)
+
 	local tier = value
 
 	return tier, score, career_name
@@ -296,12 +296,12 @@ end
 local CURRENCY_LOOKUP = {
 	SM = {
 		"shillings_01",
-		[5.0] = "shillings_02",
-		[25.0] = "shillings_04",
-		[10.0] = "shillings_03",
-		[100.0] = "shillings_06",
-		[50.0] = "shillings_05"
-	}
+		[5] = "shillings_02",
+		[10] = "shillings_03",
+		[25] = "shillings_04",
+		[50] = "shillings_05",
+		[100] = "shillings_06",
+	},
 }
 
 BackendUtils.get_fake_currency_item = function (currency_code, amount)
@@ -310,7 +310,9 @@ BackendUtils.get_fake_currency_item = function (currency_code, amount)
 	fassert(lookup, "Unsupported currency code '%s'", currency_code)
 
 	local item_key = lookup[amount]
+
 	item_key = item_key or amount >= 1 and amount < 50 and "shillings_small" or amount >= 50 and amount < 100 and "shillings_medium" or "shillings_large"
+
 	local data = Currencies[item_key]
 
 	return table.clone(data), item_key

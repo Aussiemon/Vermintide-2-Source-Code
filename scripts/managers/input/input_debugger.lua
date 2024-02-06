@@ -1,7 +1,10 @@
+﻿-- chunkname: @scripts/managers/input/input_debugger.lua
+
 local font_size = 16
 local font = "arial"
 local font_mtrl = "materials/fonts/" .. font
 local serialize = require("scripts/utils/serialize")
+
 script_data.input_debug_device_state = script_data.input_debug_device_state or Development.parameter("input_debug_device_state")
 script_data.input_debug_filters = script_data.input_debug_filters or Development.parameter("input_debug_filters")
 InputDebugger = InputDebugger or {}
@@ -47,12 +50,12 @@ InputDebugger.post_update_device = function (self, input_device, device_data, dt
 		local blue_color = Color(128, 128, 255)
 		local green_color = Color(128, 255, 128)
 		local device_name = input_device:name()
-		local s_w = RESOLUTION_LOOKUP.res_w
-		local s_h = RESOLUTION_LOOKUP.res_h
+		local s_w, s_h = RESOLUTION_LOOKUP.res_w, RESOLUTION_LOOKUP.res_h
 
 		Gui.text(gui, device_name, font_mtrl, font_size, font, Vector3(100 + self.num_updated_devices * x_spacing, s_h - font_size, 900), white_color)
 
 		local debug_device_data = self.input_device_data[device_name] or {}
+
 		self.input_device_data[device_name] = debug_device_data
 
 		for key, value in pairs(device_data) do
@@ -60,6 +63,7 @@ InputDebugger.post_update_device = function (self, input_device, device_data, dt
 
 			if value_type == "table" then
 				local subtable = debug_device_data[key] or {}
+
 				debug_device_data[key] = subtable
 
 				for k, v in pairs(value) do
@@ -104,6 +108,7 @@ InputDebugger.post_update_device = function (self, input_device, device_data, dt
 							local color = Color(255 * key_debug_data, 128, 255, 128)
 							local button_name = name == "axis" and input_device.axis_name(key) or input_device.button_name(key)
 							local text = string.format("    [%s]:%s", button_name, tostring(value))
+
 							i = i + 1
 
 							Gui.text(gui, text, font_mtrl, font_size, font, Vector3(100 + self.num_updated_devices * x_spacing, s_h - font_size * i, 900), color)
@@ -125,8 +130,7 @@ InputDebugger.debug_input_filters = function (self)
 	local blue_color = Color(128, 128, 255)
 	local green_color = Color(128, 255, 128)
 	local i = 0
-	local s_w = RESOLUTION_LOOKUP.res_w
-	local s_h = RESOLUTION_LOOKUP.res_h
+	local s_w, s_h = RESOLUTION_LOOKUP.res_w, RESOLUTION_LOOKUP.res_h
 
 	for input_service_name, input_service in pairs(self.input_manager.input_services) do
 		if input_service.input_filters then
@@ -147,10 +151,7 @@ InputDebugger.debug_input_filters = function (self)
 end
 
 InputDebugger.update_input_service_data = function (self, input_service, t)
-	local selected_color = Color(128, 128, 192)
-	local normal_color = Color(255, 255, 255)
-	local current_color = Color(192, 192, 64)
-	local title_color = Color(64, 192, 64)
+	local selected_color, normal_color, current_color, title_color = Color(128, 128, 192), Color(255, 255, 255), Color(192, 192, 64), Color(64, 192, 64)
 
 	if input_service:get("esc") then
 		if not self.selected_input_service then
@@ -173,12 +174,10 @@ InputDebugger.update_input_service_data = function (self, input_service, t)
 
 	local selected_input_service = self.selected_input_service
 	local current_selection = self.current_selection
-	local s_w = RESOLUTION_LOOKUP.res_w
-	local s_h = RESOLUTION_LOOKUP.res_h
-	local top = s_h - 20 - font_size
-	local x_pos = s_w / 2
+	local s_w, s_h = RESOLUTION_LOOKUP.res_w, RESOLUTION_LOOKUP.res_h
+	local top, x_pos = s_h - 20 - font_size, s_w / 2
 	local i = 0
-	local current_input_service_data = nil
+	local current_input_service_data
 
 	if not selected_input_service then
 		render_text("Select input service (press 's' to print it to console):", Vector3(x_pos, top, 900), title_color)
@@ -200,6 +199,7 @@ InputDebugger.update_input_service_data = function (self, input_service, t)
 
 	for input_service_name, input_service_data in pairs(self.input_manager.input_services) do
 		i = i + 1
+
 		local color = normal_color
 
 		if selected_input_service then
@@ -225,7 +225,9 @@ InputDebugger.update_input_service_data = function (self, input_service, t)
 				print("---------------> SNIP SNIP <-----------------")
 
 				PlayerData.controls = PlayerData.controls or {}
+
 				local control_table = PlayerData.controls[input_service_name] or {}
+
 				PlayerData.controls[input_service_name] = control_table
 				control_table.keymap = new_keybinding
 				control_table.filters = new_filters
@@ -243,22 +245,20 @@ InputDebugger.update_input_service_data = function (self, input_service, t)
 end
 
 InputDebugger.update_selected_device = function (self, input_service, x_pos, top, t)
-	local selected_color = Color(128, 128, 192)
-	local normal_color = Color(255, 255, 255)
-	local current_color = Color(192, 192, 64)
-	local title_color = Color(64, 192, 64)
-	local s_w = RESOLUTION_LOOKUP.res_w
-	local s_h = RESOLUTION_LOOKUP.res_h
+	local selected_color, normal_color, current_color, title_color = Color(128, 128, 192), Color(255, 255, 255), Color(192, 192, 64), Color(64, 192, 64)
+	local s_w, s_h = RESOLUTION_LOOKUP.res_w, RESOLUTION_LOOKUP.res_h
 	local current_selection = self.current_selection
 
 	render_text("Select button press type", Vector3(x_pos, top, 900), title_color)
 
 	top = top - font_size
+
 	local i = 0
 	local selected_map_type = self.selected_map_type
 
 	for map_type, _ in pairs(InputAux.input_map_types) do
 		i = i + 1
+
 		local color = normal_color
 
 		if selected_map_type then
@@ -283,18 +283,23 @@ InputDebugger.update_selected_device = function (self, input_service, x_pos, top
 		local input_device = InputAux.input_device_mapping[device_type][1]
 		local pressed_button = input_device.any_pressed()
 		local last_pressed = self.last_pressed or pressed_button
+
 		self.last_pressed = last_pressed
 
 		if last_pressed then
 			render_text(string.format("You pressed: %s (%d)", input_device.button_name(last_pressed), last_pressed), Vector3(s_w / 2, s_h / 2 - font_size * i, 900), normal_color)
 
 			local time_for_complete = self.key_selected_wait or t + 1
+
 			self.key_selected_wait = time_for_complete
 
 			if time_for_complete < t then
 				local current_keybinds = self.current_keybinds or {}
+
 				self.current_keybinds = current_keybinds
+
 				local n = #current_keybinds
+
 				current_keybinds[n + 1] = device_type
 				current_keybinds[n + 2] = last_pressed
 				current_keybinds[n + 3] = selected_map_type
@@ -310,14 +315,12 @@ InputDebugger.update_selected_device = function (self, input_service, x_pos, top
 end
 
 InputDebugger.update_input_modify_type = function (self, input_service, t, x_pos)
-	local selected_color = Color(128, 128, 192)
-	local normal_color = Color(255, 255, 255)
-	local current_color = Color(192, 192, 64)
-	local title_color = Color(64, 192, 64)
-	local s_w = RESOLUTION_LOOKUP.res_w
-	local s_h = RESOLUTION_LOOKUP.res_h
+	local selected_color, normal_color, current_color, title_color = Color(128, 128, 192), Color(255, 255, 255), Color(192, 192, 64), Color(64, 192, 64)
+	local s_w, s_h = RESOLUTION_LOOKUP.res_w, RESOLUTION_LOOKUP.res_h
 	local top = s_h - 20 - font_size
+
 	x_pos = x_pos + 120
+
 	local current_selection = self.current_selection
 
 	if not self.selected_input_type then
@@ -339,10 +342,10 @@ InputDebugger.update_input_modify_type = function (self, input_service, t, x_pos
 		if input_service:get("enter_key") then
 			self.selected_input_type = current_selection == 1 and "filters" or "keymap"
 			self.current_selection = 1
-		elseif input_service:get("up_key") and self.hold_timer < t then
+		elseif input_service:get("up_key") and t > self.hold_timer then
 			self.current_selection = 3 - current_selection
 			self.hold_timer = t + 0.1
-		elseif input_service:get("down_key") and self.hold_timer < t then
+		elseif input_service:get("down_key") and t > self.hold_timer then
 			self.current_selection = 3 - current_selection
 			self.hold_timer = t + 0.1
 		elseif input_service:get("backspace") then
@@ -357,15 +360,13 @@ InputDebugger.update_input_modify_type = function (self, input_service, t, x_pos
 end
 
 InputDebugger.update_selected_keymap_edit = function (self, input_service, dt, t, x_pos, current_input_service_data)
-	local selected_color = Color(128, 128, 192)
-	local normal_color = Color(255, 255, 255)
-	local current_color = Color(192, 192, 64)
-	local title_color = Color(64, 192, 64)
-	local s_w = RESOLUTION_LOOKUP.res_w
-	local s_h = RESOLUTION_LOOKUP.res_h
+	local selected_color, normal_color, current_color, title_color = Color(128, 128, 192), Color(255, 255, 255), Color(192, 192, 64), Color(64, 192, 64)
+	local s_w, s_h = RESOLUTION_LOOKUP.res_w, RESOLUTION_LOOKUP.res_h
 	local current_selection = self.current_selection
 	local top = s_h - 20 - font_size
+
 	x_pos = x_pos + 120
+
 	local selected_keymap = self.selected_keymap
 
 	if not selected_keymap and not self.added_keymap then
@@ -375,6 +376,7 @@ InputDebugger.update_selected_keymap_edit = function (self, input_service, dt, t
 	end
 
 	top = top - font_size
+
 	local i = 0
 	local added_keymap = self.added_keymap
 
@@ -398,6 +400,7 @@ InputDebugger.update_selected_keymap_edit = function (self, input_service, dt, t
 			render_text("Current buttons:", Vector3(x_pos, top, 900), title_color)
 
 			top = top - font_size
+
 			local current_keybinds = self.current_keybinds
 
 			for i = 1, #current_keybinds / 3 do
@@ -431,10 +434,10 @@ InputDebugger.update_selected_keymap_edit = function (self, input_service, dt, t
 		local edit_mode = added_keymap.edit_mode
 
 		if not edit_mode then
-			local index = self.edit_index or 1
-			local mode = self.edit_mode
+			local index, mode = self.edit_index or 1, self.edit_mode
 			local keystrokes = Keyboard.keystrokes()
 			local new_text, new_index, new_mode = KeystrokeHelper.parse_strokes(added_keymap.name, index, mode, keystrokes)
+
 			self.edit_index = new_index
 			self.edit_mode = new_mode
 			added_keymap.name = new_text
@@ -451,6 +454,7 @@ InputDebugger.update_selected_keymap_edit = function (self, input_service, dt, t
 			render_text("Select device-type:", Vector3(x_pos, top, 900), title_color)
 
 			top = top - font_size
+
 			local num_device_types = 0
 
 			for device_type, device_list in pairs(current_input_service_data.mapped_devices) do
@@ -462,6 +466,7 @@ InputDebugger.update_selected_keymap_edit = function (self, input_service, dt, t
 			for device_type, device_list in pairs(current_input_service_data.mapped_devices) do
 				if #device_list > 0 then
 					local color = normal_color
+
 					i = i + 1
 
 					if current_selected_device then
@@ -492,11 +497,14 @@ InputDebugger.update_selected_keymap_edit = function (self, input_service, dt, t
 	local num_keymaps = table.size(current_input_service_data.keymaps)
 	local last_render = math.min(num_keymaps, current_selection + 20)
 	local first_render = math.max(1, last_render - 40)
+
 	last_render = math.min(num_keymaps, first_render + 40)
-	local current_keymap_data = nil
+
+	local current_keymap_data
 
 	for keymap_name, keymap_data in pairs(current_input_service_data.keymaps) do
 		i = i + 1
+
 		local color = normal_color
 
 		if selected_keymap then
@@ -509,7 +517,7 @@ InputDebugger.update_selected_keymap_edit = function (self, input_service, dt, t
 
 			if DebugKeyHandler.key_pressed("a", "Add Keymap", "Input") then
 				self.added_keymap = {
-					name = ""
+					name = "",
 				}
 			elseif DebugKeyHandler.key_pressed("d", "Delete Keymap", "Input") then
 				self.input_manager:get_service(self.selected_input_service):remove_keymap(keymap_name)
@@ -546,9 +554,12 @@ InputDebugger.update_selected_keymap_edit = function (self, input_service, dt, t
 	render_text("   'del' to delete.", Vector3(x_pos, top, 900), title_color)
 
 	top = top - font_size
+
 	local selected_binding = self.selected_binding
-	local binding_index, subkey_index, current_keymap = nil
+	local binding_index, subkey_index, current_keymap
+
 	i = 0
+
 	local num_choices = 0
 
 	for _, keymap in ipairs(current_keymap_data.input_mappings) do
@@ -558,6 +569,7 @@ InputDebugger.update_selected_keymap_edit = function (self, input_service, dt, t
 	for j, keymap in ipairs(current_keymap_data.input_mappings) do
 		for k = 1, keymap.n, 3 do
 			i = i + 1
+
 			local device_type = keymap[k]
 			local input_device_list = InputAux.input_device_mapping[device_type]
 			local input_device = input_device_list[1]
@@ -594,12 +606,14 @@ InputDebugger.update_selected_keymap_edit = function (self, input_service, dt, t
 	local device_type = current_keymap[subkey_index * 3 - 2]
 	local input_device = InputAux.input_device_mapping[device_type][1]
 	local pressed_button = input_device.any_pressed()
+
 	self.last_pressed = self.last_pressed or pressed_button
 
 	if self.last_pressed then
 		render_text(string.format("You pressed: %s (%d)", input_device.button_name(self.last_pressed), self.last_pressed), Vector3(s_w / 2, s_h / 2 - font_size, 900), normal_color)
 
 		local time_for_complete = self.key_selected_wait or t + 1
+
 		self.key_selected_wait = time_for_complete
 
 		if time_for_complete < t then
@@ -615,15 +629,13 @@ InputDebugger.update_selected_keymap_edit = function (self, input_service, dt, t
 end
 
 InputDebugger.update_selected_filter_edit = function (self, input_service, dt, t, x_pos, current_input_service_data)
-	local selected_color = Color(128, 128, 192)
-	local normal_color = Color(255, 255, 255)
-	local current_color = Color(192, 192, 64)
-	local title_color = Color(64, 192, 64)
-	local s_w = RESOLUTION_LOOKUP.res_w
-	local s_h = RESOLUTION_LOOKUP.res_h
+	local selected_color, normal_color, current_color, title_color = Color(128, 128, 192), Color(255, 255, 255), Color(192, 192, 64), Color(64, 192, 64)
+	local s_w, s_h = RESOLUTION_LOOKUP.res_w, RESOLUTION_LOOKUP.res_h
 	local current_selection = self.current_selection
 	local top = s_h - 20 - font_size
+
 	x_pos = x_pos + 120
+
 	local selected_input_filter_name = self.selected_input_filter_name
 
 	if not selected_input_filter_name then
@@ -633,8 +645,9 @@ InputDebugger.update_selected_filter_edit = function (self, input_service, dt, t
 	end
 
 	top = top - font_size
+
 	local input_filters = current_input_service_data.input_filters
-	local selected_input_filter = nil
+	local selected_input_filter
 	local i = 0
 
 	for name, input_filter in pairs(input_filters) do
@@ -666,6 +679,7 @@ InputDebugger.update_selected_filter_edit = function (self, input_service, dt, t
 	render_text("Select filter-data to edit:", Vector3(x_pos, top, 900), title_color)
 
 	top = top - font_size
+
 	local selected_edit_type_index = self.selected_edit_type_index
 	local filter_color = selected_edit_type_index == 1 and selected_color or not selected_edit_type_index and current_selection == 1 and current_color or normal_color
 
@@ -678,7 +692,8 @@ InputDebugger.update_selected_filter_edit = function (self, input_service, dt, t
 	end
 
 	top = top - font_size
-	local selected_edit_type = nil
+
+	local selected_edit_type
 
 	for j, edit_type in ipairs(edit_types) do
 		local color = normal_color
@@ -717,6 +732,7 @@ InputDebugger.update_selected_filter_edit = function (self, input_service, dt, t
 
 		for name, filter_data in pairs(InputFilters) do
 			i = i + 1
+
 			local color = normal_color
 
 			if current_selection == i then
@@ -736,15 +752,17 @@ InputDebugger.update_selected_filter_edit = function (self, input_service, dt, t
 			self.current_selected_filter_data_name = nil
 			self.selected_edit_type_index = nil
 			selected_input_filter.filter_type = current_selected_filter_data_name
+
 			local new_filter_data = {}
 			local new_filter_edit_types = InputFilters[current_selected_filter_data_name].edit_types
-			local last_keymap_name = nil
+			local last_keymap_name
 
 			for i, edit_type in ipairs(new_filter_edit_types) do
 				if edit_type[2] == "number" then
 					new_filter_data[edit_type[1]] = 1
 				elseif edit_type[2] == "keymap" then
 					local keymap_name, keymap_data = next(current_input_service_data.keymaps, last_keymap_name)
+
 					last_keymap_name = keymap_name
 					new_filter_data[edit_type[1]] = keymap_name
 				end
@@ -766,13 +784,17 @@ InputDebugger.update_selected_filter_edit = function (self, input_service, dt, t
 
 		local last_render = math.min(num_keymaps, current_selection + 20)
 		local first_render = math.max(1, last_render - 40)
+
 		last_render = math.min(num_keymaps, first_render + 40)
-		local current_keymap_data = nil
+
+		local current_keymap_data
+
 		i = 0
 
 		for keymap_name, keymap_data in pairs(current_input_service_data.keymaps) do
 			if keymap_data.input_mappings.n > 0 and keymap_data.input_mappings[1].n > 0 and keymap_data.input_mappings[1][3] == keymap_type then
 				i = i + 1
+
 				local color = normal_color
 
 				if current_selection == i then
@@ -805,7 +827,7 @@ InputDebugger.update_selected_filter_edit = function (self, input_service, dt, t
 		render_text("Enter new number: " .. current_number_text, Vector3(x_pos, top, 900), normal_color)
 
 		local index = self.number_edit_index or 1
-		local mode = self.number_edit_mode or ""
+		local index, mode = index, self.number_edit_mode or ""
 		local keystrokes = Keyboard.keystrokes()
 
 		for i = #keystrokes, 1, -1 do
@@ -817,6 +839,7 @@ InputDebugger.update_selected_filter_edit = function (self, input_service, dt, t
 		end
 
 		local new_text, new_index, new_mode = KeystrokeHelper.parse_strokes(current_number_text, index, mode, keystrokes)
+
 		self.number_edit_index = new_index
 		self.number_edit_mode = new_mode
 		self.current_number_text = new_text
@@ -824,7 +847,9 @@ InputDebugger.update_selected_filter_edit = function (self, input_service, dt, t
 		if input_service:get("enter_key") then
 			self.current_selection = 1
 			self.selected_edit_type_index = nil
+
 			local number = tonumber(new_text)
+
 			self.current_number_text = nil
 			self.number_edit_mode = nil
 			self.number_edit_index = nil
@@ -846,6 +871,7 @@ InputDebugger.finalize_update = function (self, input_services, dt, t)
 	end
 
 	self.num_updated_devices = 0
+
 	local gui = self.gui
 
 	if script_data.input_debug_filters then
@@ -854,12 +880,8 @@ InputDebugger.finalize_update = function (self, input_services, dt, t)
 
 	if self.debug_edit_keymap then
 		local input_service = self.input_manager:get_service("Debug")
-		local selected_color = Color(128, 128, 192)
-		local normal_color = Color(255, 255, 255)
-		local current_color = Color(192, 192, 64)
-		local title_color = Color(64, 192, 64)
-		local s_w = RESOLUTION_LOOKUP.res_w
-		local s_h = RESOLUTION_LOOKUP.res_h
+		local selected_color, normal_color, current_color, title_color = Color(128, 128, 192), Color(255, 255, 255), Color(192, 192, 64), Color(64, 192, 64)
+		local s_w, s_h = RESOLUTION_LOOKUP.res_w, RESOLUTION_LOOKUP.res_h
 		local current_selection = self.current_selection
 		local current_input_service_data, x_pos = self:update_input_service_data(input_service, t)
 
@@ -868,6 +890,7 @@ InputDebugger.finalize_update = function (self, input_services, dt, t)
 		end
 
 		local selected_input_type = self.selected_input_type
+
 		x_pos = self:update_input_modify_type(input_service, t, x_pos)
 
 		if not selected_input_type then
@@ -893,10 +916,10 @@ InputDebugger.handle_edit_debug_keys = function (self, input_service, current_ch
 	if input_service:get("enter_key") then
 		self[choice_store] = current_choice_name
 		self.current_selection = 1
-	elseif input_service:get("up_key") and self.hold_timer < t then
+	elseif input_service:get("up_key") and t > self.hold_timer then
 		self.current_selection = current_selection - 1 > 0 and current_selection - 1 or max_nr_choices
 		self.hold_timer = t + 0.1
-	elseif input_service:get("down_key") and self.hold_timer < t then
+	elseif input_service:get("down_key") and t > self.hold_timer then
 		self.current_selection = max_nr_choices < current_selection + 1 and 1 or current_selection + 1
 		self.hold_timer = t + 0.1
 	elseif input_service:get("backspace") and back_clear then

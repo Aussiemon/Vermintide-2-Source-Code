@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/camera/states/camera_state_helper.lua
+
 CameraStateHelper = CameraStateHelper or {}
 
 CameraStateHelper.set_local_pose = function (camera_unit, unit, node)
@@ -32,6 +34,7 @@ CameraStateHelper.set_camera_rotation = function (camera_unit, camera_extension)
 	if look_input then
 		local viewport_name = camera_extension.viewport_name
 		local look_sensitivity = camera_manager:has_viewport(viewport_name) and camera_manager:fov(viewport_name) / 0.785 or 1
+
 		look_delta = look_delta + look_input * look_sensitivity
 	end
 
@@ -52,7 +55,7 @@ CameraStateHelper.set_follow_camera_position = function (camera_unit, follow_uni
 		position = position + position_offset
 	end
 
-	local new_position = nil
+	local new_position
 
 	if snap_camera then
 		new_position = position
@@ -61,6 +64,7 @@ CameraStateHelper.set_follow_camera_position = function (camera_unit, follow_uni
 	else
 		local previous_position = Unit.world_position(camera_unit, 0)
 		local lerp_t = math.min(dt * 10, 1)
+
 		new_position = Vector3.lerp(previous_position, position, lerp_t)
 	end
 

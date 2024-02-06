@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_jump_across_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 local function debug_graph()
@@ -6,7 +8,7 @@ local function debug_graph()
 	if graph == nil then
 		graph = Managers.state.debug.graph_drawer:create_graph("BTJumpAcrossAction", {
 			"time",
-			"unit altitude"
+			"unit altitude",
 		})
 	end
 
@@ -32,7 +34,7 @@ BTJumpAcrossAction.name = "BTJumpAcrossAction"
 BTJumpAcrossAction.enter = function (self, unit, blackboard, t)
 	local drawer = Managers.state.debug:drawer({
 		mode = "retained",
-		name = "BTJumpAcrossAction"
+		name = "BTJumpAcrossAction",
 	})
 
 	drawer:reset()
@@ -40,9 +42,11 @@ BTJumpAcrossAction.enter = function (self, unit, blackboard, t)
 	local next_smart_object_data = blackboard.next_smart_object_data
 	local entrance_pos = next_smart_object_data.entrance_pos:unbox()
 	local exit_pos = next_smart_object_data.exit_pos:unbox()
+
 	blackboard.jump_entrance_pos = Vector3Box(entrance_pos)
 	blackboard.jump_exit_pos = Vector3Box(exit_pos)
 	blackboard.jump_ledge_lookat_direction = Vector3Box(Vector3.normalize(Vector3.flat(exit_pos - entrance_pos)))
+
 	local locomotion_extension = blackboard.locomotion_extension
 
 	locomotion_extension:set_affected_by_gravity(false)
@@ -62,7 +66,7 @@ BTJumpAcrossAction.enter = function (self, unit, blackboard, t)
 			color = "green",
 			x = t,
 			y = unit_position.z,
-			text = "starting BTJumpAcrossAction" .. tostring(unit_position)
+			text = "starting BTJumpAcrossAction" .. tostring(unit_position),
 		})
 	else
 		debug_graph():set_active(false)
@@ -95,8 +99,12 @@ BTJumpAcrossAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	navigation_extension:set_enabled(true)
 
 	local hit_reaction_extension = ScriptUnit.extension(unit, "hit_reaction_system")
+
 	hit_reaction_extension.force_ragdoll_on_death = nil
-	local success = navigation_extension:is_using_smart_object() and navigation_extension:use_smart_object(false)
+
+	if navigation_extension:is_using_smart_object() then
+		local success = navigation_extension:use_smart_object(false)
+	end
 end
 
 BTJumpAcrossAction.run = function (self, unit, blackboard, t, dt)
@@ -150,7 +158,7 @@ BTJumpAcrossAction.run = function (self, unit, blackboard, t, dt)
 			if script_data.ai_debug_smartobject then
 				local drawer = Managers.state.debug:drawer({
 					mode = "immediate",
-					name = "BTJumpAcrossAction2"
+					name = "BTJumpAcrossAction2",
 				})
 
 				drawer:vector(unit_position + Vector3.up() * 0.3, vector_to_target)
@@ -184,6 +192,7 @@ BTJumpAcrossAction.run = function (self, unit, blackboard, t, dt)
 			end
 
 			local hit_reaction_extension = ScriptUnit.extension(unit, "hit_reaction_system")
+
 			hit_reaction_extension.force_ragdoll_on_death = true
 			blackboard.jump_state = "waiting_to_reach_end"
 		end
@@ -212,7 +221,7 @@ end
 BTJumpAcrossAction._debug_draw_update = function (self, unit, blackboard, t)
 	local drawer = Managers.state.debug:drawer({
 		mode = "immediate",
-		name = "BTJumpAcrossAction2"
+		name = "BTJumpAcrossAction2",
 	})
 	local unit_position = POSITION_LOOKUP[unit]
 	local jump_entrance_pos = blackboard.jump_entrance_pos:unbox()

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/achievements/achievement_templates_morris.lua
+
 local function check_journey_completed_difficulty(statistics_db, stats_id, journey_name, difficulty_rank)
 	local difficulty_manager = Managers.state.difficulty
 
@@ -83,8 +85,9 @@ local function add_journey_complete_challenge(achievements, id, journey_name, di
 		ID_PS4 = id_ps4,
 		completed = function (statistics_db, stats_id)
 			return check_journey_completed_difficulty(statistics_db, stats_id, journey_name, difficulty_rank)
-		end
+		end,
 	}
+
 	achievements[id] = template
 end
 
@@ -101,12 +104,13 @@ local function add_opened_shrine_challenge(achievements, id, shrine_types, num_s
 
 			for i = 1, #shrine_types do
 				local shrine_type = shrine_types[i]
+
 				count = count + statistics_db:get_persistent_stat(stats_id, "opened_shrines", shrine_type)
 			end
 
 			return {
 				count,
-				num_shrines_required
+				num_shrines_required,
 			}
 		end,
 		completed = function (statistics_db, stats_id)
@@ -114,12 +118,14 @@ local function add_opened_shrine_challenge(achievements, id, shrine_types, num_s
 
 			for i = 1, #shrine_types do
 				local shrine_type = shrine_types[i]
+
 				count = count + statistics_db:get_persistent_stat(stats_id, "opened_shrines", shrine_type)
 			end
 
-			return num_shrines_required <= count
-		end
+			return count >= num_shrines_required
+		end,
 	}
+
 	achievements[id] = template
 end
 
@@ -133,8 +139,9 @@ local function add_journey_dominant_god_complete_challenge(achievements, id, dom
 		ID_PS4 = id_ps4,
 		completed = function (statistics_db, stats_id)
 			return check_journey_dominant_god_completed_difficulty(statistics_db, stats_id, dominant_god, difficulty_rank)
-		end
+		end,
 	}
+
 	achievements[id] = template
 end
 
@@ -148,8 +155,9 @@ local function add_hero_journey_complete_challenge(achievements, id, hero, journ
 		ID_PS4 = id_ps4,
 		completed = function (statistics_db, stats_id)
 			return check_hero_journey_completed_difficulty(statistics_db, stats_id, hero, journey_name, difficulty_rank)
-		end
+		end,
 	}
+
 	achievements[id] = template
 end
 
@@ -162,13 +170,13 @@ if IS_CONSOLE then
 	add_journey_complete_challenge(achievements, "morris_complete_journey_citadel_legend", "journey_citadel", DifficultySettings.hardest.rank, "achievement_morris_citadel", "morris", 94, "086")
 	add_opened_shrine_challenge(achievements, "morris_opened_shrines_swap_weapon", {
 		DEUS_CHEST_TYPES.swap_melee,
-		DEUS_CHEST_TYPES.swap_ranged
+		DEUS_CHEST_TYPES.swap_ranged,
 	}, 30, nil, nil, 99, nil)
 	add_opened_shrine_challenge(achievements, "morris_opened_shrines_upgrade", {
-		DEUS_CHEST_TYPES.upgrade
+		DEUS_CHEST_TYPES.upgrade,
 	}, 20, nil, nil, 100, nil)
 	add_opened_shrine_challenge(achievements, "morris_opened_shrines_power_up", {
-		DEUS_CHEST_TYPES.power_up
+		DEUS_CHEST_TYPES.power_up,
 	}, 30, nil, nil, 101, nil)
 end
 
@@ -181,14 +189,14 @@ add_journey_dominant_god_complete_challenge(achievements, "morris_complete_journ
 local difficulties = {
 	"harder",
 	"hardest",
-	"cataclysm"
+	"cataclysm",
 }
 local icon_by_hero = {
-	we = "achievement_morris_kerillian_",
 	bw = "achievement_morris_sienna_",
-	wh = "achievement_morris_victor_",
 	dr = "achievement_morris_bardin_",
-	es = "achievement_morris_markus_"
+	es = "achievement_morris_markus_",
+	we = "achievement_morris_kerillian_",
+	wh = "achievement_morris_victor_",
 }
 
 for _, hero in ipairs(SPProfilesAbbreviation) do

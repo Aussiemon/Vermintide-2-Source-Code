@@ -1,39 +1,42 @@
+﻿-- chunkname: @scripts/settings/dlcs/lake/lake_equipment_settings.lua
+
 local settings = DLCSettings.lake
+
 settings.item_master_list_file_names = {
-	"scripts/settings/dlcs/lake/item_master_list_lake"
+	"scripts/settings/dlcs/lake/item_master_list_lake",
 }
 settings.weapon_skins_file_names = {
-	"scripts/settings/equipment/weapon_skins_lake"
+	"scripts/settings/equipment/weapon_skins_lake",
 }
 settings.cosmetics_files = {
-	"scripts/settings/dlcs/lake/cosmetics_lake"
+	"scripts/settings/dlcs/lake/cosmetics_lake",
 }
 settings.weapon_template_file_names = {
 	"scripts/settings/equipment/weapon_templates/markus_questingknight_career_skill",
 	"scripts/settings/equipment/weapon_templates/bastard_swords",
-	"scripts/settings/equipment/weapon_templates/1h_swords_shield_breton"
+	"scripts/settings/equipment/weapon_templates/1h_swords_shield_breton",
 }
 settings.default_items = {
 	es_bastard_sword = {
-		inventory_icon = "icon_wpn_emp_gk_sword_01_t1",
 		description = "description_default_witch_hunter_wh_1h_falchions",
-		display_name = "es_bastard_sword_blacksmith_name"
+		display_name = "es_bastard_sword_blacksmith_name",
+		inventory_icon = "icon_wpn_emp_gk_sword_01_t1",
 	},
 	es_sword_shield_breton = {
-		inventory_icon = "icon_wpn_emp_gk_sword_01_t1_wpn_emp_gk_shield_03",
 		description = "description_default_witch_hunter_wh_1h_falchions",
-		display_name = "es_1h_sword_shield_breton_blacksmith_name"
-	}
+		display_name = "es_1h_sword_shield_breton_blacksmith_name",
+		inventory_icon = "icon_wpn_emp_gk_sword_01_t1_wpn_emp_gk_shield_03",
+	},
 }
 settings.damage_profile_template_files_names = {
-	"scripts/settings/equipment/damage_profile_templates_dlc_lake"
+	"scripts/settings/equipment/damage_profile_templates_dlc_lake",
 }
 settings.attack_template_files_names = {}
 settings.action_template_file_names = {
-	"scripts/settings/dlcs/lake/action_career_es_questingknight"
+	"scripts/settings/dlcs/lake/action_career_es_questingknight",
 }
 settings.action_classes_lookup = {
-	career_es_four = "ActionCareerESQuestingKnight"
+	career_es_four = "ActionCareerESQuestingKnight",
 }
 settings.inventory_package_list = {
 	"resource_packages/careers/es_questingknight",
@@ -76,5 +79,5 @@ settings.inventory_package_list = {
 	"units/weapons/player/wpn_emp_gk_shield_05/wpn_emp_gk_shield_05_3p",
 	"units/beings/player/empire_soldier_breton/headpiece/es_gk_hat_01",
 	"units/beings/player/empire_soldier_breton/headpiece/es_gk_hat_02",
-	"units/beings/player/empire_soldier_breton/headpiece/es_gk_hat_03"
+	"units/beings/player/empire_soldier_breton/headpiece/es_gk_hat_03",
 }

@@ -1,8 +1,12 @@
+﻿-- chunkname: @core/gwnav/lua/runtime/navbot.lua
+
 require("core/gwnav/lua/safe_require")
 
 local NavBot = safe_require_guard()
 local NavClass = safe_require("core/gwnav/lua/runtime/navclass")
+
 NavBot = NavClass(NavBot)
+
 local NavDefaultSmartObjectFollower = safe_require("core/gwnav/lua/runtime/navdefaultsmartobjectfollower")
 local Math = stingray.Math
 local Vector3 = stingray.Vector3
@@ -41,7 +45,9 @@ NavBot.init = function (self, navworld, unit, config)
 	self.unit = unit
 	self.config = config
 	_navbots[self.unit] = self
+
 	local p = Unit.local_position(self.unit, 1)
+
 	self.route = {}
 	self.arrival_distance = 1
 	self.smartobjects = navworld.smartobjects
@@ -281,7 +287,7 @@ NavBot.verbose_smartobject_management = function (self, botpos, next_smartobject
 		if exit_is_at_the_end_of_path == true then
 			print("End of path is inside this smartobject")
 		end
-	elseif Vector3.distance(entrance_pos, botpos) < approachingDistance then
+	elseif approachingDistance > Vector3.distance(entrance_pos, botpos) then
 		local smartobject_type = self.follower:get_smartobject_type(next_smartobject_interval)
 
 		print("Approaching smartobject", smartobject_type)
@@ -381,6 +387,7 @@ NavBot.move_unit_with_mover = function (self, dt, gravity)
 
 		local output_velocity = GwNavBot.output_velocity(self.gwnavbot)
 		local v = output_velocity * dt
+
 		v.z = v.z - dt * gravity
 
 		Mover.move(mover, v, dt)

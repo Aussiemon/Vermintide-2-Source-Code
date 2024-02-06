@@ -1,6 +1,9 @@
+﻿-- chunkname: @scripts/game_state/components/network_state.lua
+
 require("scripts/network/shared_state")
 
 local shared_state_spec = require("scripts/game_state/components/network_state_spec")
+
 NetworkState = class(NetworkState)
 
 NetworkState.init = function (self, is_server, network_handler, server_peer_id, own_peer_id)
@@ -9,16 +12,17 @@ NetworkState.init = function (self, is_server, network_handler, server_peer_id, 
 	self._is_server = is_server
 	self._server_peer_id = server_peer_id
 	self._own_peer_id = own_peer_id
+
 	local key = self._shared_state:get_key("peers")
 
 	if is_server then
 		self._shared_state:set_server(key, {
-			server_peer_id
+			server_peer_id,
 		})
 	else
 		self._shared_state:set_server(key, {
 			server_peer_id,
-			own_peer_id
+			own_peer_id,
 		})
 	end
 end
@@ -73,6 +77,7 @@ NetworkState.add_peer = function (self, peer_id)
 
 	if not table.contains(peers, peer_id) then
 		local skip_metatable = true
+
 		peers = table.clone(peers, skip_metatable)
 		peers[#peers + 1] = peer_id
 
@@ -87,6 +92,7 @@ NetworkState.remove_peer = function (self, peer_id)
 
 	if index ~= -1 then
 		local skip_metatable = true
+
 		peers = table.clone(peers, skip_metatable)
 
 		table.swap_delete(peers, index)
@@ -273,7 +279,7 @@ NetworkState.set_profile = function (self, peer_id, local_player_id, profile_ind
 			local_player_id = local_player_id,
 			profile_index = profile_index,
 			career_index = career_index,
-			is_bot = is_bot
+			is_bot = is_bot,
 		}
 	end
 

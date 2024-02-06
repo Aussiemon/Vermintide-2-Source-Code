@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/matchmaking_ui.lua
+
 require("scripts/settings/difficulty_settings")
 
 local definitions = local_require("scripts/ui/views/matchmaking_ui_definitions")
@@ -27,8 +29,9 @@ local WIND_COLORS = {
 	light = Colors.get_table("light"),
 	beasts = Colors.get_table("beasts"),
 	fire = Colors.get_table("fire"),
-	shadow = Colors.get_table("shadow")
+	shadow = Colors.get_table("shadow"),
 }
+
 MatchmakingUI = class(MatchmakingUI)
 
 MatchmakingUI.init = function (self, parent, ingame_ui_context)
@@ -41,13 +44,15 @@ MatchmakingUI.init = function (self, parent, ingame_ui_context)
 	self.ingame_ui = ingame_ui_context.ingame_ui
 	self.lobby = ingame_ui_context.network_lobby
 	self.render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 	self.voting_manager = ingame_ui_context.voting_manager
 	self._cached_matchmaking_info = {}
 	self._is_in_inn = ingame_ui_context.is_in_inn
 	self.matchmaking_manager = Managers.matchmaking
+
 	local input_manager = ingame_ui_context.input_manager
+
 	self.input_manager = input_manager
 
 	self:create_ui_elements()
@@ -78,15 +83,17 @@ MatchmakingUI.create_ui_elements = function (self)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
 	self.scenegraph_definition = scenegraph_definition
 	self._input_to_widget_mapping = {}
+
 	local cancel_input_widgets_by_name = self._cancel_input_widgets_by_name
+
 	self._input_to_widget_mapping[#self._input_to_widget_mapping + 1] = {
 		input_action = "cancel_matchmaking",
 		widgets = {
 			text_widget = cancel_input_widgets_by_name.cancel_text_input,
 			text_widget_prefix = cancel_input_widgets_by_name.cancel_text_prefix,
 			text_widget_suffix = cancel_input_widgets_by_name.cancel_text_suffix,
-			input_icon_widget = cancel_input_widgets_by_name.cancel_icon
-		}
+			input_icon_widget = cancel_input_widgets_by_name.cancel_icon,
+		},
 	}
 
 	UIRenderer.clear_scenegraph_queue(self.ui_renderer)
@@ -202,6 +209,7 @@ MatchmakingUI.update = function (self, dt, t)
 
 		if Managers.party:is_leader(self._my_peer_id) then
 			local allow_cancel_matchmaking = self.matchmaking_manager:allow_cancel_matchmaking()
+
 			self._allow_cancel_matchmaking = allow_cancel_matchmaking and not has_mission_vote
 		end
 
@@ -234,10 +242,12 @@ MatchmakingUI._draw = function (self, ui_renderer, input_service, is_matchmaking
 
 	if detailed_info_visibility_progress then
 		detailed_info_visibility_progress = math.min(detailed_info_visibility_progress + dt * 1.2, 1)
+
 		local anim_progress = math.easeOutCubic(detailed_info_visibility_progress)
 		local definition = scenegraph_definition.detailed_info_box
 		local default_size = definition.size
 		local default_position = definition.position
+
 		self.ui_scenegraph.detailed_info_box.local_position[2] = default_size[2] * (1 - anim_progress) + default_position[2]
 
 		if detailed_info_visibility_progress == 1 then
@@ -264,7 +274,7 @@ MatchmakingUI._draw = function (self, ui_renderer, input_service, is_matchmaking
 end
 
 MatchmakingUI._update_background = function (self, is_matchmaking, has_mission_vote)
-	local background_texture = nil
+	local background_texture
 
 	if is_matchmaking then
 		background_texture = "matchmaking_window_01"
@@ -290,6 +300,7 @@ MatchmakingUI._update_matchmaking_info = function (self, t)
 
 	if IS_XB1 and matchmaking_info.no_lobby_data then
 		local widget = self:_get_widget("status_text")
+
 		widget.content.text = Localize("loading_fetching_matchmaking_data")
 		widget = self:_get_detail_widget("title_text")
 		widget.content.text = string.rep(".", 1 + math.floor((t * 5 + 0.5) % 4))
@@ -301,6 +312,7 @@ MatchmakingUI._update_matchmaking_info = function (self, t)
 
 	local matchmaking_type = matchmaking_info.matchmaking_type
 	local mechanism = matchmaking_info.mechanism
+
 	self._active_mechanism = mechanism
 
 	if mechanism == "weave" then
@@ -337,6 +349,7 @@ MatchmakingUI._update_matchmaking_info = function (self, t)
 		if not matchmaking_info.quick_game then
 			local journey_name = matchmaking_info.mission_id
 			local journey_settings = journey_name and DeusJourneySettings[journey_name]
+
 			detail_text = journey_settings and journey_settings.display_name or "deus_matching"
 		end
 
@@ -346,6 +359,7 @@ MatchmakingUI._update_matchmaking_info = function (self, t)
 
 		if difficulty ~= cached_matchmaking_info.difficulty then
 			cached_matchmaking_info.difficulty = difficulty
+
 			local difficulty_setting = difficulty and DifficultySettings[difficulty]
 			local difficulty_display_name = difficulty_setting and difficulty_setting.display_name or "dlc1_2_difficulty_unavailable"
 
@@ -356,6 +370,7 @@ MatchmakingUI._update_matchmaking_info = function (self, t)
 
 		if difficulty ~= cached_matchmaking_info.difficulty then
 			cached_matchmaking_info.difficulty = difficulty
+
 			local difficulty_setting = difficulty and DifficultySettings[difficulty]
 			local difficulty_display_name = difficulty_setting and difficulty_setting.display_name or "dlc1_2_difficulty_unavailable"
 
@@ -370,18 +385,21 @@ MatchmakingUI._update_matchmaking_info = function (self, t)
 		if quick_game_changed or mission_id_changed then
 			cached_matchmaking_info.quick_game = quick_game
 			cached_matchmaking_info.mission_id = mission_id
+
 			local is_event_game = matchmaking_manager:game_mode_event_data()
-			local text = nil
+			local text
 
 			if quick_game then
 				text = "mission_vote_quick_play"
 			elseif is_event_game then
 				local level_settings = mission_id and mission_id ~= "n/a" and LevelSettings[mission_id]
 				local level_display_name = level_settings and level_settings.display_name or "random_level"
+
 				text = level_display_name
 			else
 				local level_settings = mission_id and mission_id ~= "n/a" and LevelSettings[mission_id]
 				local level_display_name = level_settings and level_settings.display_name or "level_display_name_unavailable"
+
 				text = level_display_name
 			end
 
@@ -431,18 +449,24 @@ MatchmakingUI._update_status = function (self, dt)
 				end
 
 				party_id = party_id + 1
+
 				local party_style_name = "ready_light_party_" .. party_id
+
 				style = slot_reservations_widget_style[party_style_name]
 			end
 		end
 	else
 		local rotation_progresss = ((self._rotation_progresss or 0) + dt * 0.2) % 1
+
 		self._rotation_progresss = rotation_progresss
+
 		local anim_progress = math.easeCubic(rotation_progresss)
 		local rotation_angle = anim_progress * 360
 		local radians = math.degrees_to_radians(rotation_angle)
 		local loading_icon = self:_get_widget("loading_status_frame")
+
 		loading_icon.style.texture_id.angle = radians
+
 		local connecting_rotation_speed = 200
 		local connecting_rotation_angle = dt * connecting_rotation_speed % 360
 		local connecting_radians = math.degrees_to_radians(connecting_rotation_angle)
@@ -454,6 +478,7 @@ MatchmakingUI._update_status = function (self, dt)
 			local style = widget.style
 			local is_connecting = content.is_connecting
 			local connecting_icon_style = style.connecting_icon
+
 			connecting_icon_style.angle = is_connecting and connecting_icon_style.angle + connecting_radians or 0
 		end
 	end
@@ -469,6 +494,7 @@ MatchmakingUI._update_mission_vote_status = function (self)
 	local event_data = active_vote_data.event_data
 	local mechanism = active_vote_data.mechanism
 	local switch_mechanism = active_vote_data.switch_mechanism
+
 	self._active_mechanism = mechanism
 
 	if switch_mechanism then
@@ -513,7 +539,7 @@ MatchmakingUI._update_mission_vote_status = function (self)
 	else
 		local difficulty_settings = DifficultySettings[difficulty]
 		local difficulty_display_name = difficulty_settings and difficulty_settings.display_name
-		local level_display_name = nil
+		local level_display_name
 
 		if quick_game then
 			level_display_name = "mission_vote_quick_play"
@@ -521,6 +547,7 @@ MatchmakingUI._update_mission_vote_status = function (self)
 			level_display_name = "random_level"
 		else
 			local level_settings = LevelSettings[mission_id]
+
 			level_display_name = level_settings.display_name
 		end
 
@@ -561,17 +588,14 @@ MatchmakingUI._update_mission_timer = function (self)
 end
 
 MatchmakingUI._update_show_timer = function (self, has_mission_vote)
-	local alpha = nil
+	local alpha
 
-	if has_mission_vote then
-		alpha = 255
-	else
-		alpha = 0
-	end
+	alpha = has_mission_vote and 255 or 0
 
 	local bg = self:_get_detail_widget("timer_bg")
 	local fg = self:_get_detail_widget("timer_fg")
 	local glow = self:_get_detail_widget("timer_glow")
+
 	bg.style.texture_id.color[1] = alpha
 	fg.style.texture_id.color[1] = alpha
 	glow.style.texture_id.color[1] = alpha
@@ -585,6 +609,7 @@ MatchmakingUI.update_debug = function (self)
 	end
 
 	local debug_text = ""
+
 	debug_text = debug_text .. "\nStatename: " .. (Managers.matchmaking.debug.statename or "-")
 	debug_text = debug_text .. "\nState: " .. Managers.matchmaking.debug.state
 	debug_text = debug_text .. "\nInfo: " .. Managers.matchmaking.debug.text or "matchmaking debug"
@@ -595,7 +620,8 @@ MatchmakingUI.update_debug = function (self)
 	debug_text = debug_text .. "\nHero: " .. Managers.matchmaking.debug.hero
 	debug_text = debug_text .. "\nProgression: " .. Managers.matchmaking.debug.progression
 	debug_text = debug_text .. "\n"
-	local witch_hunter_player, wood_elf_player, dwarf_ranger_player, bright_wizard_player, empire_soldier_player = nil
+
+	local witch_hunter_player, wood_elf_player, dwarf_ranger_player, bright_wizard_player, empire_soldier_player
 	local profiles_data = self.matchmaking_manager.debug.profiles_data
 
 	if profiles_data then
@@ -643,17 +669,14 @@ MatchmakingUI.get_input_texture_data = function (self, input_action)
 		platform = "win32"
 	elseif IS_WINDOWS and gamepad_active then
 		platform = "xb1"
-
-		if most_recent_device.type() == "sce_pad" then
-			platform = "ps_pad"
-		end
+		platform = most_recent_device.type() == "sce_pad" and "ps_pad" or platform
 	end
 
 	local keymap_binding = input_service:get_keymapping(input_action, platform)
 	local device_type = keymap_binding[1]
 	local key_index = keymap_binding[2]
 	local key_action_type = keymap_binding[3]
-	local prefix_text = nil
+	local prefix_text
 
 	if key_action_type == "held" then
 		prefix_text = "matchmaking_prefix_hold"
@@ -685,6 +708,7 @@ MatchmakingUI._update_button_prompts = function (self)
 		local input_icon_widget = widgets.input_icon_widget
 		local input_action = mapping.input_action
 		local texture_data, input_text, prefix_text = self:get_input_texture_data(input_action)
+
 		text_widget_prefix.content.text = prefix_text and Localize(prefix_text) or ""
 
 		if not texture_data then
@@ -711,6 +735,7 @@ MatchmakingUI._update_button_prompts = function (self)
 			local icon_size = texture_data.size
 			local input_icon_scenegraph_id = input_icon_widget.scenegraph_id
 			local input_icon_scenegraph = ui_scenegraph[input_icon_scenegraph_id]
+
 			text_width_input = icon_size[1]
 			input_icon_scenegraph.size[1] = text_width_input
 			input_icon_scenegraph.size[2] = icon_size[2]
@@ -724,14 +749,14 @@ MatchmakingUI._update_button_prompts = function (self)
 			text_widget_prefix.style.text_shadow.offset[1] = offset + 2
 			text_widget.style.text.offset[1] = offset + text_width_prefix
 			text_widget.style.text_shadow.offset[1] = offset + text_width_prefix + 2
-			text_widget_suffix.style.text.offset[1] = offset + text_width_prefix + text_width_input
-			text_widget_suffix.style.text_shadow.offset[1] = offset + text_width_prefix + text_width_input + 2
+			text_widget_suffix.style.text.offset[1] = offset + (text_width_prefix + text_width_input)
+			text_widget_suffix.style.text_shadow.offset[1] = offset + (text_width_prefix + text_width_input) + 2
 		else
 			input_icon_widget.style.texture_id.offset[1] = offset
 			text_widget_prefix.style.text.offset[1] = offset
 			text_widget_prefix.style.text_shadow.offset[1] = offset + 2
-			text_widget_suffix.style.text.offset[1] = offset + text_width_prefix + text_width_input
-			text_widget_suffix.style.text_shadow.offset[1] = offset + text_width_prefix + text_width_input + 2
+			text_widget_suffix.style.text.offset[1] = offset + (text_width_prefix + text_width_input)
+			text_widget_suffix.style.text_shadow.offset[1] = offset + (text_width_prefix + text_width_input) + 2
 		end
 	end
 end
@@ -818,6 +843,7 @@ end
 
 MatchmakingUI.large_window_set_title = function (self, title)
 	local widget = self:_get_detail_widget("title_text")
+
 	widget.content.text = Localize(title)
 end
 
@@ -825,6 +851,7 @@ MatchmakingUI.large_window_set_status_message = function (self, message)
 	fassert(message ~= " ", "tried to pass empty status message to matchmaking ui")
 
 	local widget = self:_get_widget("status_text")
+
 	widget.content.text = Localize(message)
 end
 
@@ -832,6 +859,7 @@ MatchmakingUI.large_window_set_difficulty = function (self, difficulty)
 	local difficulty_setting = difficulty and DifficultySettings[difficulty]
 	local difficulty_display_name = difficulty_setting and difficulty_setting.display_name or "dlc1_2_difficulty_unavailable"
 	local widget = self:_get_detail_widget("difficulty_text")
+
 	widget.content.text = Localize(difficulty_display_name)
 end
 
@@ -839,7 +867,7 @@ MatchmakingUI.large_window_set_player_portrait = function (self, index, peer_id)
 	local widget = self:_get_detail_widget("party_slot_" .. index)
 	local status_widget = self:_get_widget("player_status_" .. index)
 	local content = widget.content
-	local portrait_texture = nil
+	local portrait_texture
 
 	if peer_id then
 		local player_manager = Managers.player
@@ -902,6 +930,7 @@ end
 MatchmakingUI._set_player_ready_state = function (self, index, is_ready)
 	local widget = self:_get_detail_widget("party_slot_" .. index)
 	local status_widget = self:_get_widget("player_status_" .. index)
+
 	widget.content.is_ready = is_ready
 	status_widget.content.is_ready = is_ready
 	status_widget.content.texture_id = is_ready and "matchmaking_light_01" or "matchmaking_light_02"
@@ -910,12 +939,14 @@ end
 MatchmakingUI.large_window_set_player_connecting = function (self, index, is_connecting)
 	local widget = self:_get_detail_widget("party_slot_" .. index)
 	local status_widget = self:_get_widget("player_status_" .. index)
+
 	widget.content.is_connecting = is_connecting
 	status_widget.content.is_connecting = is_connecting
 end
 
 MatchmakingUI._set_player_is_voting = function (self, index, is_voting)
 	local widget = self:_get_detail_widget("party_slot_" .. index)
+
 	widget.content.is_voting = is_voting
 end
 
@@ -931,17 +962,20 @@ end
 
 MatchmakingUI._set_detail_difficulty_text = function (self, text, optional_color, disable_localization)
 	local widget = self:_get_detail_widget("difficulty_text")
+
 	widget.content.text = disable_localization and text or Localize(text)
 	widget.style.text.text_color = optional_color or widget.style.text.default_color or WIND_COLORS.default
 end
 
 MatchmakingUI._set_detail_level_text = function (self, text, localize)
 	local widget = self:_get_detail_widget("title_text")
+
 	widget.content.text = localize and Localize(text) or text
 end
 
 MatchmakingUI._set_status_text = function (self, text)
 	local widget = self:_get_widget("status_text")
+
 	widget.content.text = Localize(text)
 end
 
@@ -952,6 +986,7 @@ MatchmakingUI._set_vote_time_progress = function (self, progress)
 	local scenegraph_id = widget.scenegraph_id
 	local default_size = self.scenegraph_definition[scenegraph_id].size
 	local current_size = self.ui_scenegraph[scenegraph_id].size
+
 	current_size[1] = default_size[1] * progress
 	uvs[2][1] = progress
 end

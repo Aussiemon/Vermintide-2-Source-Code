@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_loot_rat_alerted_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTLootRatAlertedAction = class(BTLootRatAlertedAction, BTNode)
@@ -10,6 +12,7 @@ BTLootRatAlertedAction.name = "BTLootRatAlertedAction"
 
 BTLootRatAlertedAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
+
 	blackboard.action = action
 	blackboard.move_animation_name = nil
 	blackboard.anim_cb_rotation_start = false

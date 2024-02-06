@@ -1,19 +1,21 @@
+﻿-- chunkname: @scripts/managers/mod/mod_shim.lua
+
 ModShim = ModShim or {}
 ModShim.patches = {
 	{
 		name = "_G.UIResolution",
 		mods = {
-			"HideBuffs"
+			"HideBuffs",
 		},
 		func = function ()
 			return RESOLUTION_LOOKUP.res_w, RESOLUTION_LOOKUP.res_h
-		end
+		end,
 	},
 	{
 		name = "_G.UIResolutionScale_pow2",
 		mods = {
 			"item_filter",
-			"VMF"
+			"VMF",
 		},
 		func = function ()
 			local x = RESOLUTION_LOOKUP.res_w / 1920
@@ -25,53 +27,54 @@ ModShim.patches = {
 			end
 
 			return math.ldexp(1, e)
-		end
+		end,
 	},
 	{
 		name = "_G.UIResolutionWidthFragments",
 		mods = {
-			"loadout_manager_vt2"
+			"loadout_manager_vt2",
 		},
 		func = function ()
 			return 1920
-		end
+		end,
 	},
 	{
 		name = "_G.UIResolutionHeightFragments",
 		mods = {
-			"loadout_manager_vt2"
+			"loadout_manager_vt2",
 		},
 		func = function ()
 			return 1080
-		end
+		end,
 	},
 	{
 		name = "_G.AccomodateViewport",
 		mods = {
-			"HiDefUIScaling"
+			"HiDefUIScaling",
 		},
-		func = NOP
+		func = NOP,
 	},
 	{
 		name = "IngameUI:unavailable_hero_popup_active",
 		mods = {
-			"VMF"
+			"VMF",
 		},
 		func = function (self)
 			return self:get_active_popup("profile_picker")
-		end
+		end,
 	},
 	{
 		name = "HeroViewStateAchievements:_is_button_hover_enter",
 		mods = {
-			"ui_improvements"
+			"ui_improvements",
 		},
 		func = function (self, widget, hotspot_name)
 			return UIUtils.is_button_hover_enter(widget, hotspot_name)
-		end
-	}
+		end,
+	},
 }
 ModShim.warnings = ModShim.warnings or {}
+
 local has_printed_warning = ModShim.warnings
 
 local function print_deprecated_function_warning(name)

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/light_fx/light_fx_manager.lua
+
 if script_data.debug_lightfx then
 	LightFX = LightFX or {}
 
@@ -7,7 +9,7 @@ if script_data.debug_lightfx then
 			green,
 			blue,
 			intensity,
-			blendtime
+			blendtime,
 		}
 
 		print(red, green, blue, intensity, blendtime)

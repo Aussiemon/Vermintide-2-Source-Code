@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bt_in_gravity_well_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTInGravityWellAction = class(BTInGravityWellAction, BTNode)
@@ -7,6 +9,7 @@ BTInGravityWellAction.init = function (self, ...)
 end
 
 BTInGravityWellAction.name = "BTInGravityWellAction"
+
 local DEFAULT_IN_AIR_MOVER_CHECK_RADIUS = 0.35
 
 BTInGravityWellAction.enter = function (self, unit, blackboard, t)
@@ -34,7 +37,9 @@ BTInGravityWellAction.enter = function (self, unit, blackboard, t)
 
 	blackboard.attack_aborted = true
 	blackboard.move_state = "stagger"
+
 	local action_data = self._tree_node.action_data
+
 	blackboard.action = action_data
 	blackboard.spawn_to_running = nil
 end
@@ -48,14 +53,17 @@ BTInGravityWellAction._set_wanted_velocity = function (self, dt, blackboard, sel
 	local dist_sq = Vector3.length_squared(offset)
 	local old_velocity = locomotion_extension:current_velocity()
 	local broke_free = false
-	local new_velocity = nil
+	local new_velocity
 
 	if dist_sq < 1 then
 		new_velocity = (old_velocity - dir * Vector3.dot(old_velocity, dir)) * (1 - 5 * dt)
 	else
 		local force_magnitude = gravity_well_strength / dist_sq
+
 		broke_free = force_magnitude < 0.1
+
 		local force = dir * force_magnitude
+
 		new_velocity = old_velocity + dt * force
 		new_velocity.z = math.min(new_velocity.z, 2)
 	end
@@ -69,6 +77,7 @@ end
 BTInGravityWellAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	blackboard.action = nil
 	blackboard.stagger_hit_wall = nil
+
 	local locomotion_extension = blackboard.locomotion_extension
 
 	locomotion_extension:set_movement_type("snap_to_navmesh")
@@ -112,5 +121,5 @@ BTInGravityWellAction.run = function (self, unit, blackboard, t, dt)
 		end
 	end
 
-	return (broke_free or blackboard.gravity_well_time < t) and "done" or "running"
+	return not (not broke_free and not (t > blackboard.gravity_well_time)) and "done" or "running"
 end

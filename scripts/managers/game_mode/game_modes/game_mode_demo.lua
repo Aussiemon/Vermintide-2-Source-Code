@@ -1,7 +1,10 @@
+﻿-- chunkname: @scripts/managers/game_mode/game_modes/game_mode_demo.lua
+
 require("scripts/managers/game_mode/game_modes/game_mode_base")
 
 script_data.disable_gamemode_end = script_data.disable_gamemode_end or Development.parameter("disable_gamemode_end")
 GameModeDemo = class(GameModeDemo, GameModeBase)
+
 local COMPLETE_LEVEL_VAR = false
 local FAIL_LEVEL_VAR = false
 

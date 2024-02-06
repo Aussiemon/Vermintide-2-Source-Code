@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/hud_ui/rewards_popup_ui.lua
+
 RewardsPopupUI = class(RewardsPopupUI)
 
 RewardsPopupUI.init = function (self, parent, in_game_ui_context)
@@ -10,12 +12,14 @@ RewardsPopupUI.init = function (self, parent, in_game_ui_context)
 	self._ui_top_renderer = in_game_ui_context.ui_top_renderer
 	self._reward_presentation_queue = {}
 	self._reward_presentation_active = false
+
 	local reward_params = {
 		wwise_world = self._wwise_world,
 		ui_renderer = self._ui_renderer,
 		ui_top_renderer = self._ui_top_renderer,
-		input_manager = self._input_manager
+		input_manager = self._input_manager,
 	}
+
 	self._reward_popup = RewardPopupUI:new(reward_params)
 
 	Managers.state.event:register(self, "present_rewards", "present_rewards")
@@ -50,50 +54,53 @@ RewardsPopupUI.present_rewards = function (self, rewards)
 				local reward_item = item_interface:get_item_from_id(backend_id)
 				local description = {}
 				local _, display_name, _ = UIUtils.get_ui_information_from_item(reward_item)
+
 				description[1] = Localize(display_name)
 				description[2] = Localize("gift_popup_sub_title_halloween")
 				entry[#entry + 1] = {
 					widget_type = "description",
-					value = description
+					value = description,
 				}
 				entry[#entry + 1] = {
 					widget_type = "item",
-					value = reward_item
+					value = reward_item,
 				}
 				presentation_data[#presentation_data + 1] = entry
 				presentation_data.sounds = sounds
 			elseif reward_type == "item_tooltip" then
 				local backend_id = data.backend_id
 				local reward_item = item_interface:get_item_from_id(backend_id)
-				local entry = {
-					[#entry + 1] = {
-						widget_type = "item_tooltip",
-						value = reward_item
-					},
-					[#entry + 1] = {
-						widget_type = "item",
-						value = reward_item
-					}
+				local entry = {}
+
+				entry[#entry + 1] = {
+					widget_type = "item_tooltip",
+					value = reward_item,
+				}
+				entry[#entry + 1] = {
+					widget_type = "item",
+					value = reward_item,
 				}
 				presentation_data[#presentation_data + 1] = entry
 				presentation_data.sounds = sounds
 			elseif reward_type == "deus_item_tooltip" then
 				local backend_id = data.backend_id
 				local reward_item = item_interface:get_item_from_id(backend_id)
-				local entry = {
-					[#entry + 1] = {
-						widget_type = "deus_item_tooltip",
-						value = reward_item
-					},
-					[#entry + 1] = {
-						widget_type = "deus_item",
-						value = reward_item
-					}
+				local entry = {}
+
+				entry[#entry + 1] = {
+					widget_type = "deus_item_tooltip",
+					value = reward_item,
 				}
+				entry[#entry + 1] = {
+					widget_type = "deus_item",
+					value = reward_item,
+				}
+
 				local animation_data = {
 					end_animation = "deus_close",
-					start_animation = "deus_open"
+					start_animation = "deus_open",
 				}
+
 				presentation_data[#presentation_data + 1] = entry
 				presentation_data.animation_data = animation_data
 				presentation_data.keep_input = true
@@ -101,20 +108,22 @@ RewardsPopupUI.present_rewards = function (self, rewards)
 				presentation_data.sounds = sounds
 			elseif reward_type == "deus_power_up" then
 				local deus_power_up = data.power_up
-				local entry = {
-					[#entry + 1] = {
-						widget_type = "deus_power_up",
-						value = deus_power_up
-					},
-					[#entry + 1] = {
-						widget_type = "deus_icon",
-						value = deus_power_up
-					}
+				local entry = {}
+
+				entry[#entry + 1] = {
+					widget_type = "deus_power_up",
+					value = deus_power_up,
 				}
+				entry[#entry + 1] = {
+					widget_type = "deus_icon",
+					value = deus_power_up,
+				}
+
 				local animation_data = {
 					end_animation = "deus_close",
-					start_animation = "deus_open"
+					start_animation = "deus_open",
 				}
+
 				presentation_data[#presentation_data + 1] = entry
 				presentation_data.animation_data = animation_data
 				presentation_data.keep_input = true
@@ -122,21 +131,23 @@ RewardsPopupUI.present_rewards = function (self, rewards)
 				presentation_data.sounds = sounds
 			elseif reward_type == "deus_power_up_end_of_level" then
 				local deus_power_up = data.power_up
-				local entry = {
-					[#entry + 1] = {
-						widget_type = "deus_power_up",
-						value = deus_power_up
-					},
-					[#entry + 1] = {
-						widget_type = "deus_icon",
-						value = deus_power_up
-					}
+				local entry = {}
+
+				entry[#entry + 1] = {
+					widget_type = "deus_power_up",
+					value = deus_power_up,
 				}
+				entry[#entry + 1] = {
+					widget_type = "deus_icon",
+					value = deus_power_up,
+				}
+
 				local animation_data = {
+					animation_wait_time = 6,
 					end_animation = "deus_close",
 					start_animation = "deus_open",
-					animation_wait_time = 6
 				}
+
 				presentation_data[#presentation_data + 1] = entry
 				presentation_data.animation_data = animation_data
 				presentation_data.keep_input = true
@@ -149,15 +160,16 @@ RewardsPopupUI.present_rewards = function (self, rewards)
 				local icon = painting_data.icon
 				local description = {}
 				local entry = {}
+
 				description[1] = Localize(display_name)
 				description[2] = Localize("gift_popup_sub_title_halloween")
 				entry[#entry + 1] = {
 					widget_type = "description",
-					value = description
+					value = description,
 				}
 				entry[#entry + 1] = {
 					widget_type = "icon",
-					value = icon
+					value = icon,
 				}
 				presentation_data[#presentation_data + 1] = entry
 				presentation_data.sounds = sounds
@@ -168,15 +180,16 @@ RewardsPopupUI.present_rewards = function (self, rewards)
 				local icon = weapon_skin_data.inventory_icon
 				local description = {}
 				local entry = {}
+
 				description[1] = Localize(display_name)
 				description[2] = Localize("gift_popup_sub_title_halloween")
 				entry[#entry + 1] = {
 					widget_type = "description",
-					value = description
+					value = description,
 				}
 				entry[#entry + 1] = {
 					widget_type = "icon",
-					value = icon
+					value = icon,
 				}
 				presentation_data[#presentation_data + 1] = entry
 				presentation_data.sounds = sounds
@@ -234,6 +247,7 @@ RewardsPopupUI._present_reward = function (self, data)
 
 	if self:_displaying_reward_presentation() then
 		local reward_presentation_queue = self._reward_presentation_queue
+
 		reward_presentation_queue[#reward_presentation_queue + 1] = data
 	else
 		self:_play_sounds(data.sounds)

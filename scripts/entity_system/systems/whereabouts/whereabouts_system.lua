@@ -1,7 +1,10 @@
+﻿-- chunkname: @scripts/entity_system/systems/whereabouts/whereabouts_system.lua
+
 WhereaboutsSystem = class(WhereaboutsSystem, ExtensionSystemBase)
+
 local extensions = {
 	"PlayerWhereaboutsExtension",
-	"LureWhereaboutsExtension"
+	"LureWhereaboutsExtension",
 }
 
 WhereaboutsSystem.init = function (self, context, system_name)

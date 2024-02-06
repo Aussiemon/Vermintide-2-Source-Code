@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/behaviour/nodes/bot/bt_bot_inventory_switch_action.lua
+
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTBotInventorySwitchAction = class(BTBotInventorySwitchAction, BTNode)
@@ -10,6 +12,7 @@ BTBotInventorySwitchAction.name = "BTBotInventorySwitchAction"
 
 BTBotInventorySwitchAction.enter = function (self, unit, blackboard, t)
 	blackboard.node_timer = t
+
 	local action_data = self._tree_node.action_data
 
 	if action_data.wanted_slot_key then

@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/ui/views/hero_view/windows/store/store_window_item_preview.lua
+
 require("scripts/ui/views/menu_world_previewer")
 
 local definitions = local_require("scripts/ui/views/hero_view/windows/store/definitions/store_window_item_preview_definitions")
@@ -16,6 +18,7 @@ local LIST_MAX_WIDTH = 800
 local CONSOLE_PRICE_WIDTH = 140
 local PRODUCT_PLACEHOLDER_TEXTURE_PATH = "gui/1080p/single_textures/generic/transparent_placeholder_texture"
 local DO_RELOAD = false
+
 StoreWindowItemPreview = class(StoreWindowItemPreview)
 StoreWindowItemPreview.NAME = "StoreWindowItemPreview"
 
@@ -24,13 +27,17 @@ StoreWindowItemPreview.on_enter = function (self, params, offset)
 
 	self._params = params
 	self._parent = params.parent
+
 	local ingame_ui_context = params.ingame_ui_context
+
 	self._ingame_ui_context = ingame_ui_context
+
 	local ui_renderer, ui_top_renderer = self._parent:get_renderers()
+
 	self._ui_renderer = ui_renderer
 	self._ui_top_renderer = ui_top_renderer
 	self._render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = true,
 	}
 	self.hero_name = params.hero_name
 	self.career_index = params.career_index
@@ -61,16 +68,18 @@ StoreWindowItemPreview._set_window_expanded = function (self, expand)
 	end
 
 	local details_button = self._item_widgets_by_name.details_button
+
 	details_button.content.button_hotspot.is_selected = not details_button.content.button_hotspot.is_selected
 	self._expanded = expand
 end
 
 StoreWindowItemPreview._start_transition_animation = function (self, animation_name)
 	local params = {
-		render_settings = self._render_settings
+		render_settings = self._render_settings,
 	}
 	local widgets = self._top_widgets_by_name
 	local anim_id = self._ui_animator:start_animation(animation_name, widgets, scenegraph_definition, params)
+
 	self._animations[animation_name] = anim_id
 end
 
@@ -82,32 +91,32 @@ StoreWindowItemPreview._create_viewport_definition = function (self)
 		element = UIElements.Viewport,
 		style = {
 			viewport = {
-				viewport_type = "default_forward",
-				layer = 990,
-				viewport_name = "item_preview_viewport",
-				world_name = "item_preview",
-				level_name = "levels/ui_store_preview/world",
 				enable_sub_gui = false,
 				fov = 65,
+				layer = 990,
+				level_name = "levels/ui_store_preview/world",
+				viewport_name = "item_preview_viewport",
+				viewport_type = "default_forward",
+				world_name = "item_preview",
 				shading_environment = shading_environment,
 				object_sets = LevelResource.object_set_names("levels/ui_store_preview/world"),
 				camera_position = {
 					0,
 					0,
-					0
+					0,
 				},
 				camera_lookat = {
 					0,
 					0,
-					0
-				}
-			}
+					0,
+				},
+			},
 		},
 		content = {
 			button_hotspot = {
-				allow_multi_hover = true
-			}
-		}
+				allow_multi_hover = true,
+			},
+		},
 	}
 end
 
@@ -119,66 +128,78 @@ StoreWindowItemPreview._create_ui_elements = function (self, params, offset)
 	end
 
 	self._ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+
 	local dlc_top_widgets = {}
 	local dlc_top_widgets_by_name = {}
 
 	for name, widget_definition in pairs(dlc_top_widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		dlc_top_widgets[#dlc_top_widgets + 1] = widget
 		dlc_top_widgets_by_name[name] = widget
 	end
 
 	self._dlc_top_widgets = dlc_top_widgets
 	self._dlc_top_widgets_by_name = dlc_top_widgets_by_name
+
 	local dlc_bottom_widgets = {}
 	local dlc_bottom_widgets_by_name = {}
 
 	for name, widget_definition in pairs(dlc_bottom_widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		dlc_bottom_widgets[#dlc_bottom_widgets + 1] = widget
 		dlc_bottom_widgets_by_name[name] = widget
 	end
 
 	self._dlc_bottom_widgets = dlc_bottom_widgets
 	self._dlc_bottom_widgets_by_name = dlc_bottom_widgets_by_name
+
 	local item_widgets = {}
 	local item_widgets_by_name = {}
 
 	for name, widget_definition in pairs(item_widgets_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		item_widgets[#item_widgets + 1] = widget
 		item_widgets_by_name[name] = widget
 	end
 
 	self._item_widgets = item_widgets
 	self._item_widgets_by_name = item_widgets_by_name
+
 	local bottom_widgets = {}
 	local bottom_widgets_by_name = {}
 
 	for name, widget_definition in pairs(bottom_widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		bottom_widgets[#bottom_widgets + 1] = widget
 		bottom_widgets_by_name[name] = widget
 	end
 
 	self._bottom_widgets = bottom_widgets
 	self._bottom_widgets_by_name = bottom_widgets_by_name
+
 	local top_widgets = {}
 	local top_widgets_by_name = {}
 
 	for name, widget_definition in pairs(top_widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		top_widgets[#top_widgets + 1] = widget
 		top_widgets_by_name[name] = widget
 	end
 
 	self._top_widgets = top_widgets
 	self._top_widgets_by_name = top_widgets_by_name
+
 	local loading_widgets = {}
 	local loading_widgets_by_name = {}
 
 	for name, widget_definition in pairs(loading_widget_definitions) do
 		local widget = UIWidget.init(widget_definition)
+
 		loading_widgets[#loading_widgets + 1] = widget
 		loading_widgets_by_name[name] = widget
 	end
@@ -192,6 +213,7 @@ StoreWindowItemPreview._create_ui_elements = function (self, params, offset)
 
 	if offset then
 		local window_position = self._ui_scenegraph.window.local_position
+
 		window_position[1] = window_position[1] + offset[1]
 		window_position[2] = window_position[2] + offset[2]
 		window_position[3] = window_position[3] + offset[3]
@@ -289,7 +311,7 @@ StoreWindowItemPreview._register_object_sets = function (self, viewport_widget, 
 	for _, set_name in ipairs(available_level_sets) do
 		object_sets[set_name] = {
 			set_enabled = true,
-			units = LevelResource.unit_indices_in_object_set(level_name, set_name)
+			units = LevelResource.unit_indices_in_object_set(level_name, set_name),
 		}
 	end
 
@@ -297,7 +319,7 @@ StoreWindowItemPreview._register_object_sets = function (self, viewport_widget, 
 		world = pass_data.world,
 		level = pass_data.level,
 		object_sets = object_sets,
-		level_name = level_name
+		level_name = level_name,
 	}
 
 	self:_show_object_set(nil, true)
@@ -371,6 +393,7 @@ StoreWindowItemPreview._update_environment = function (self, item_preview_enviro
 	local object_set_data = viewport_widget_content.object_set_data
 	local world = object_set_data.world
 	local shading_settings = World.get_data(world, "shading_settings")
+
 	shading_settings[1] = force_default and "default" or item_preview_environment
 end
 
@@ -596,12 +619,13 @@ StoreWindowItemPreview._handle_input = function (self, input_service, dt, t)
 						local item_widgets = self._item_widgets
 						local widget = self._dlc_list_widgets[list_index]
 						local parent = self._parent
+
 						self._params.last_selected_product = self._selected_product
 
 						parent:go_to_product(product_id, nil, {
+							acquire_disabled = true,
 							acquire_hidden = true,
 							part_of_bundle = true,
-							acquire_disabled = true
 						})
 					end
 				end
@@ -625,6 +649,7 @@ StoreWindowItemPreview._handle_input = function (self, input_service, dt, t)
 			for i = 1, #self._required_dlcs do
 				local settings = StoreDlcSettingsByName[self._required_dlcs[i]]
 				local dlc_name = settings and Localize(settings.name) or Localize("lb_unknown")
+
 				missing_dlcs_text = missing_dlcs_text .. dlc_name .. "\n"
 			end
 
@@ -780,8 +805,10 @@ StoreWindowItemPreview._start_loading_overlay = function (self)
 	self._show_loading_overlay = true
 	self._fadeout_loading_overlay = nil
 	self._fadeout_progress = nil
+
 	local loading_widgets_by_name = self._loading_widgets_by_name
 	local loading_icon = loading_widgets_by_name.loading_icon
+
 	loading_icon.style.texture_id.color[1] = 255
 end
 
@@ -797,6 +824,7 @@ StoreWindowItemPreview._update_loading_overlay_fadeout_animation = function (sel
 	local progress = math.min(1, (self._fadeout_progress or 0) + speed * dt)
 	local alpha = math.lerp(start, target, math.easeInCubic(progress))
 	local loading_icon = loading_widgets_by_name.loading_icon
+
 	loading_icon.style.texture_id.color[1] = alpha
 	self._fadeout_progress = progress
 
@@ -837,15 +865,17 @@ StoreWindowItemPreview._sync_presentation_item = function (self, force_update)
 		table.clear(self._required_dlcs)
 
 		local reset_presentation = not self._selected_product or not selected_product or self._selected_product.product_id ~= selected_product.product_id
+
 		self._selected_product = selected_product
+
 		local already_owned = false
 		local can_afford = true
-		local dlc_name = nil
+		local dlc_name
 		local show_dupe_warning = false
 		local owns_required_dlc = true
 		local show_required_dlc_warning = false
 		local required_dlcs = {}
-		local product_id, product_type, is_item_useable = nil
+		local product_id, product_type, is_item_useable
 
 		if selected_product then
 			product_id = selected_product.product_id
@@ -856,12 +886,14 @@ StoreWindowItemPreview._sync_presentation_item = function (self, force_update)
 				local item = selected_product.item
 				local backend_items = Managers.backend:get_interface("items")
 				local item_key = item.key
+
 				dlc_name = item.dlc_name
 
 				if item_key and (backend_items:has_item(item_key) or backend_items:has_weapon_illusion(item_key)) then
 					already_owned = true
 				else
 					local all_owned, any_owned, missing_dlcs = backend_items:has_bundle_contents(item.data.bundle_contains)
+
 					already_owned = all_owned
 					show_dupe_warning = any_owned
 
@@ -873,6 +905,7 @@ StoreWindowItemPreview._sync_presentation_item = function (self, force_update)
 
 				can_afford = self._parent:can_afford_item(item)
 				is_item_useable = self._parent:can_use_item(item)
+
 				local required_dlc = item.data.required_dlc
 
 				if required_dlc then
@@ -880,6 +913,7 @@ StoreWindowItemPreview._sync_presentation_item = function (self, force_update)
 				end
 			elseif product_type == "dlc" then
 				local dlc_settings = selected_product.dlc_settings
+
 				dlc_name = dlc_settings.dlc_name
 				already_owned = Managers.unlock:is_dlc_unlocked(dlc_name)
 			end
@@ -887,6 +921,7 @@ StoreWindowItemPreview._sync_presentation_item = function (self, force_update)
 			self._show_dupe_warning = show_dupe_warning
 			self._should_show_required_dlcs_popup = show_required_dlc_warning
 			self._required_dlcs = required_dlcs
+
 			local selected_product_settings = selected_product.settings
 			local acquire_disabled = selected_product_settings and selected_product_settings.acquire_disabled
 			local acquire_hidden = selected_product_settings and selected_product_settings.acquire_hidden
@@ -934,35 +969,36 @@ StoreWindowItemPreview._create_dlc_bundle_layout = function (self, settings, pro
 			id = "dlc_feature_1",
 			type = "big_image",
 			settings = {
-				text = "",
 				localize = false,
 				show_frame = true,
+				text = "",
 				texture_path = settings.store_bundle_big_image,
 				texture_package = settings.store_texture_package,
 				image_size = {
 					800,
-					592
-				}
-			}
+					592,
+				},
+			},
 		}
 	end
 
 	layout[#layout + 1] = {
-		type = "spacing"
+		type = "spacing",
 	}
 	layout[#layout + 1] = {
-		type = "divider_horizontal"
+		type = "divider_horizontal",
 	}
 	layout[#layout + 1] = {
-		type = "spacing"
+		type = "spacing",
 	}
 	layout[#layout + 1] = {
 		type = "header_text",
 		settings = {
+			localize = true,
 			text = "menu_store_dlc_title_including",
-			localize = true
-		}
+		},
 	}
+
 	local item_row = #layout + 1
 	local num_items = #bundle_contains
 
@@ -972,22 +1008,23 @@ StoreWindowItemPreview._create_dlc_bundle_layout = function (self, settings, pro
 			settings = {
 				size = {
 					130,
-					0
-				}
-			}
+					0,
+				},
+			},
 		}
 		item_row = item_row + 1
 	end
 
 	for i = 1, #bundle_contains do
 		local item_key = bundle_contains[i]
+
 		layout[item_row + i - 1] = {
 			type = "bundle_item",
 			id = item_key,
 			settings = {
+				hide_new = true,
 				hide_price = true,
-				hide_new = true
-			}
+			},
 		}
 	end
 
@@ -995,17 +1032,17 @@ StoreWindowItemPreview._create_dlc_bundle_layout = function (self, settings, pro
 		type = "body_text",
 		settings = {
 			localize = true,
-			text = bundle_desc
-		}
+			text = bundle_desc,
+		},
 	}
 	layout[#layout + 1] = {
-		type = "spacing"
+		type = "spacing",
 	}
 	layout[#layout + 1] = {
-		type = "divider_horizontal"
+		type = "divider_horizontal",
 	}
 	layout[#layout + 1] = {
-		type = "spacing"
+		type = "spacing",
 	}
 
 	return layout
@@ -1029,9 +1066,9 @@ StoreWindowItemPreview._create_item_bundle_layout_with_items = function (self, i
 					settings = {
 						size = {
 							130,
-							0
-						}
-					}
+							0,
+						},
+					},
 				}
 				item_row = item_row + 1
 			end
@@ -1039,13 +1076,14 @@ StoreWindowItemPreview._create_item_bundle_layout_with_items = function (self, i
 			for i = 1, #bundle_contains do
 				local steam_itemdefid = bundle_contains[i]
 				local item_key = SteamitemdefidToMasterList[steam_itemdefid]
+
 				layout[item_row + i - 1] = {
 					type = "item",
 					id = item_key,
 					settings = {
+						hide_new = true,
 						hide_price = true,
-						hide_new = true
-					}
+					},
 				}
 			end
 		else
@@ -1074,35 +1112,36 @@ StoreWindowItemPreview._create_item_bundle_layout = function (self, steam_itemde
 			id = "dlc_feature_1",
 			type = "big_image",
 			settings = {
-				text = "",
 				localize = false,
 				show_frame = true,
+				text = "",
 				texture_path = item_data.store_bundle_big_image,
 				texture_package = item_data.store_texture_package,
 				image_size = {
 					800,
-					592
-				}
-			}
+					592,
+				},
+			},
 		}
 	end
 
 	layout[#layout + 1] = {
-		type = "spacing"
+		type = "spacing",
 	}
 	layout[#layout + 1] = {
-		type = "divider_horizontal"
+		type = "divider_horizontal",
 	}
 	layout[#layout + 1] = {
-		type = "spacing"
+		type = "spacing",
 	}
 	layout[#layout + 1] = {
 		type = "header_text",
 		settings = {
+			localize = true,
 			text = "menu_store_dlc_title_including",
-			localize = true
-		}
+		},
 	}
+
 	local item_row = #layout + 1
 	local num_items = #bundle_contains
 
@@ -1112,9 +1151,9 @@ StoreWindowItemPreview._create_item_bundle_layout = function (self, steam_itemde
 			settings = {
 				size = {
 					130,
-					0
-				}
-			}
+					0,
+				},
+			},
 		}
 		item_row = item_row + 1
 	end
@@ -1122,13 +1161,14 @@ StoreWindowItemPreview._create_item_bundle_layout = function (self, steam_itemde
 	for i = 1, #bundle_contains do
 		local steam_itemdefid = bundle_contains[i]
 		local item_key = SteamitemdefidToMasterList[steam_itemdefid]
+
 		layout[item_row + i - 1] = {
 			type = "item",
 			id = item_key,
 			settings = {
+				hide_new = true,
 				hide_price = false,
-				hide_new = true
-			}
+			},
 		}
 	end
 
@@ -1136,17 +1176,17 @@ StoreWindowItemPreview._create_item_bundle_layout = function (self, steam_itemde
 		type = "body_text",
 		settings = {
 			localize = true,
-			text = bundle_desc
-		}
+			text = bundle_desc,
+		},
 	}
 	layout[#layout + 1] = {
-		type = "spacing"
+		type = "spacing",
 	}
 	layout[#layout + 1] = {
-		type = "divider_horizontal"
+		type = "divider_horizontal",
 	}
 	layout[#layout + 1] = {
-		type = "spacing"
+		type = "spacing",
 	}
 
 	return layout
@@ -1198,6 +1238,7 @@ StoreWindowItemPreview._present_item = function (self, item, product)
 	end
 
 	self._dlc_presentation_active = false
+
 	local item_data = item.data
 	local item_type = item_data.item_type
 	local slot_type = item_data.slot_type
@@ -1205,7 +1246,7 @@ StoreWindowItemPreview._present_item = function (self, item, product)
 	local steam_itemdefid = item.steam_itemdefid
 	local end_time = item.end_time
 	local dlc_name = item.dlc_name
-	local price, currency = nil
+	local price, currency
 
 	if steam_itemdefid then
 		self:_set_price(nil, nil, steam_itemdefid)
@@ -1242,6 +1283,7 @@ StoreWindowItemPreview._present_item = function (self, item, product)
 
 		if missing_required_dlc then
 			local settings = StoreDlcSettingsByName[item_data.required_dlc]
+
 			disclaimer_text = settings and string.format(Localize("menu_store_disclaimer_missing_required_dlc"), Localize(settings.name)) or Localize("dlc_required")
 		end
 
@@ -1261,12 +1303,14 @@ StoreWindowItemPreview._present_item = function (self, item, product)
 
 		if slot_type == "melee" or slot_type == "ranged" or slot_type == "weapon_skin" then
 			local matching_item_type = ItemMasterList[item_data.matching_item_key].item_type
+
 			type_title_text = Localize(matching_item_type)
 			item_preview_environment = item_preview_environment or "weapons_default_01"
 			item_preview_object_set_name = item_preview_object_set_name or "flow_weapon_lights"
 
 			if missing_required_dlc then
 				local settings = StoreDlcSettingsByName[item_data.required_dlc]
+
 				disclaimer_text = settings and string.format(Localize("menu_store_disclaimer_missing_required_dlc"), Localize(settings.name)) or Localize("dlc_required")
 			else
 				disclaimer_text = Localize(item_type)
@@ -1278,6 +1322,7 @@ StoreWindowItemPreview._present_item = function (self, item, product)
 
 			if missing_required_dlc then
 				local settings = StoreDlcSettingsByName[item_data.required_dlc]
+
 				disclaimer_text = settings and string.format(Localize("menu_store_disclaimer_missing_required_dlc"), Localize(settings.name)) or Localize("dlc_required")
 			end
 		elseif slot_type == "skin" then
@@ -1286,6 +1331,7 @@ StoreWindowItemPreview._present_item = function (self, item, product)
 
 			if missing_required_dlc then
 				local settings = StoreDlcSettingsByName[item_data.required_dlc]
+
 				disclaimer_text = settings and string.format(Localize("menu_store_disclaimer_missing_required_dlc"), Localize(settings.name)) or Localize("dlc_required")
 			else
 				disclaimer_text = Localize("menu_store_product_hero_skin_disclaimer_desc")
@@ -1301,6 +1347,7 @@ StoreWindowItemPreview._present_item = function (self, item, product)
 
 			if product_settings.part_of_bundle then
 				local content = self._item_widgets_by_name.details_button.content
+
 				content.normal = "store_info_back_off"
 				content.normal_glow = "store_info_back_on"
 			end
@@ -1350,11 +1397,9 @@ StoreWindowItemPreview._delayed_item_unit_presentation = function (self, item)
 		local preview_position = {
 			0,
 			0,
-			0
+			0,
 		}
-		local unique_id = nil
-		local invert_start_rotation = true
-		local display_unit_key = nil
+		local unique_id, invert_start_rotation, display_unit_key = nil, true
 		local use_highest_mip_levels = true
 		local camera = ScriptViewport.camera(viewport)
 
@@ -1373,6 +1418,7 @@ StoreWindowItemPreview._delayed_item_unit_presentation = function (self, item)
 		world_previewer:on_enter(viewport_widget)
 
 		self._world_previewer = world_previewer
+
 		local profile_name, profile_index, career_name, career_index = self:_get_hero_wield_info_by_item(item)
 		local career_settings = CareerSettings[career_name]
 		local skin = product_settings.part_of_bundle and item_data.store_optional_skin or career_settings.base_skin
@@ -1385,6 +1431,7 @@ StoreWindowItemPreview._delayed_item_unit_presentation = function (self, item)
 		world_previewer:on_enter(viewport_widget)
 
 		self._world_previewer = world_previewer
+
 		local optional_skin = item_data.name
 		local profile_name, profile_index, career_name, career_index = self:_get_hero_wield_info_by_item(item)
 		local optional_hat = product_settings.part_of_bundle and item_data.store_optional_hat or nil
@@ -1404,6 +1451,7 @@ StoreWindowItemPreview._update_delayed_item_unit_presentation = function (self, 
 
 	if delay == 0 then
 		self._delayed_item_unit_presentation_delay = nil
+
 		local selected_product = self._selected_product
 		local item = selected_product.item
 
@@ -1533,12 +1581,12 @@ StoreWindowItemPreview._setup_ps4_price_data = function (self, widget, price_dat
 	console_third_price_style.offset[1] = -starting_point - console_secondary_price_text_length - spacing * 0.5
 	console_secondary_price_stroke_style.texture_size = {
 		console_secondary_price_text_length,
-		1
+		1,
 	}
 	console_third_price_stroke_style.offset[1] = -starting_point - console_secondary_price_text_length - spacing * 0.5
 	console_third_price_stroke_style.texture_size = {
 		console_third_price_text_length,
-		1
+		1,
 	}
 	console_first_price_style.offset[1] = -starting_point
 	console_secondary_price_style.offset[1] = -starting_point
@@ -1590,7 +1638,7 @@ StoreWindowItemPreview._setup_xb1_price_data = function (self, widget, price_dat
 	console_secondary_price_stroke_style.offset[1] = -starting_point
 	console_secondary_price_stroke_style.texture_size = {
 		console_secondary_price_text_length,
-		2
+		2,
 	}
 	console_secondary_price_stroke_style.vertical_alignment = "bottom"
 	console_secondary_price_style.offset[1] = -starting_point
@@ -1603,19 +1651,19 @@ StoreWindowItemPreview._setup_xb1_price_data = function (self, widget, price_dat
 			255,
 			255,
 			255,
-			0
+			0,
 		}
 		console_secondary_price_stroke_style.color = {
 			255,
 			90,
 			90,
-			90
+			90,
 		}
 		console_secondary_price_style.text_color = {
 			255,
 			90,
 			90,
-			90
+			90,
 		}
 	else
 		console_first_price_style.vertical_alignment = "center"
@@ -1623,19 +1671,19 @@ StoreWindowItemPreview._setup_xb1_price_data = function (self, widget, price_dat
 			255,
 			255,
 			255,
-			255
+			255,
 		}
 		console_secondary_price_stroke_style.color = {
 			255,
 			255,
 			255,
-			255
+			255,
 		}
 		console_secondary_price_style.text_color = {
 			255,
 			255,
 			255,
-			255
+			255,
 		}
 	end
 
@@ -1645,6 +1693,7 @@ end
 StoreWindowItemPreview._set_unlock_button_states = function (self, already_owned, can_afford, dlc_unlocked, acquire_disabled, acquire_hidden, owns_required_dlc)
 	local enabled = not already_owned and can_afford and dlc_unlocked and not acquire_disabled and owns_required_dlc
 	local widget = self._top_widgets_by_name.unlock_button
+
 	widget.content.button_hotspot.disable_button = not enabled
 	widget.content.owned = already_owned
 	widget.content.dlc_unlocked = dlc_unlocked
@@ -1667,32 +1716,39 @@ end
 
 StoreWindowItemPreview._set_title_name = function (self, text)
 	local widget = self._top_widgets_by_name.title_text
+
 	widget.content.text = text
 end
 
 StoreWindowItemPreview._set_sub_title_name = function (self, text)
 	local widget = self._top_widgets_by_name.sub_title_text
+
 	widget.content.text = text
 end
 
 StoreWindowItemPreview._set_sub_title_alpha_multiplier = function (self, alpha_multiplier)
 	local widget = self._top_widgets_by_name.sub_title_text
+
 	widget.alpha_multiplier = alpha_multiplier
 end
 
 StoreWindowItemPreview._set_type_title_name = function (self, text)
 	local widget = self._top_widgets_by_name.type_title_text
+
 	widget.content.text = text
 end
 
 StoreWindowItemPreview._set_career_title_name = function (self, text)
 	local widget = self._top_widgets_by_name.career_title_text
+
 	widget.content.text = text
 end
 
 StoreWindowItemPreview._set_disclaimer_text = function (self, text)
 	self._disclaimer_text = text
+
 	local widget = self._top_widgets_by_name.disclaimer_text
+
 	widget.content.text = text
 
 	self:_update_info_text_alignment()
@@ -1700,7 +1756,9 @@ end
 
 StoreWindowItemPreview._set_expire_timer_text = function (self, text)
 	self._expire_text = text
+
 	local widget = self._top_widgets_by_name.expire_timer_text
+
 	widget.content.text = text
 
 	self:_update_info_text_alignment()
@@ -1712,7 +1770,7 @@ StoreWindowItemPreview._update_info_text_alignment = function (self)
 	local divider_widget = self._top_widgets_by_name.disclaimer_divider
 	local has_expire_text = self._expire_text and self._expire_text ~= ""
 	local has_disclaimer_text = self._disclaimer_text and self._disclaimer_text ~= ""
-	local text_widget_1, text_widget_2 = nil
+	local text_widget_1, text_widget_2
 
 	if has_expire_text then
 		if has_disclaimer_text then
@@ -1760,7 +1818,7 @@ local month_lookup = {
 	"datetime_september",
 	"datetime_october",
 	"datetime_november",
-	"datetime_december"
+	"datetime_december",
 }
 
 StoreWindowItemPreview._calculate_expire_timer_text = function (self, end_time)
@@ -1775,6 +1833,7 @@ StoreWindowItemPreview._calculate_expire_timer_text = function (self, end_time)
 		local end_date = os.date("*t", end_time / 1000)
 		local month = end_date.month
 		local day = end_date.day
+
 		timer_text = timer_text .. string.format(Localize(month_lookup[month]), day)
 
 		return timer_text
@@ -1784,6 +1843,7 @@ StoreWindowItemPreview._calculate_expire_timer_text = function (self, end_time)
 
 	if days > 0 then
 		local day_string = days == 1 and "datetime_day" or "datetime_days"
+
 		timer_text = timer_text .. string.format(Localize(day_string), days)
 
 		return timer_text
@@ -1791,6 +1851,7 @@ StoreWindowItemPreview._calculate_expire_timer_text = function (self, end_time)
 
 	if hours > 0 then
 		local hour_string = hours == 1 and "datetime_hour" or "datetime_hours"
+
 		timer_text = timer_text .. string.format(Localize(hour_string), hours)
 
 		return timer_text
@@ -1798,6 +1859,7 @@ StoreWindowItemPreview._calculate_expire_timer_text = function (self, end_time)
 
 	if minutes > 0 then
 		local minute_string = minutes == 1 and "datetime_minute" or "datetime_minutes"
+
 		timer_text = timer_text .. string.format(Localize(minute_string), minutes)
 
 		return timer_text
@@ -1805,6 +1867,7 @@ StoreWindowItemPreview._calculate_expire_timer_text = function (self, end_time)
 
 	local seconds_left = math.max(time_left / 1000, 0)
 	local second_string = seconds == 1 and "datetime_second" or "datetime_seconds"
+
 	timer_text = timer_text .. string.format(Localize(second_string), seconds)
 
 	return timer_text
@@ -1881,8 +1944,11 @@ StoreWindowItemPreview._get_can_wield_display_text = function (self, can_wield)
 			end
 
 			added_careers = added_careers + 1
+
 			local career_display_name = career_settings.display_name
+
 			career_text = career_text .. Localize(career_display_name)
+
 			local hero_display_name_localized = Localize(hero_display_name)
 
 			if not string.find(hero_text, hero_display_name_localized) then
@@ -1967,6 +2033,7 @@ end
 
 StoreWindowItemPreview._hide_detail_button_assets = function (self)
 	local item_widgets_by_name = self._item_widgets_by_name
+
 	item_widgets_by_name.details_button.content.visible = false
 	item_widgets_by_name.details_button_bg.content.visible = false
 	item_widgets_by_name.title_edge_detail.content.visible = false
@@ -2008,6 +2075,7 @@ StoreWindowItemPreview._animate_detail_button = function (self, dt)
 	end
 
 	local combined_progress = math.max(hover_progress, selection_progress)
+
 	style.normal_glow.color[1] = 255 * hover_progress
 	style.expanded_glow.color[1] = 255 * hover_progress
 	hotspot.hover_progress = hover_progress
@@ -2023,6 +2091,7 @@ StoreWindowItemPreview._set_title_edge_length = function (self, length, animatio
 	local title_edge = item_widgets_by_name.title_edge
 	local start_length = ui_scenegraph[title_edge.scenegraph_id].size[1]
 	local title_edge_animation_data = self._title_edge_animation_data or {}
+
 	self._title_edge_animation_data = title_edge_animation_data
 	title_edge_animation_data.duration = animation_duration
 	title_edge_animation_data.total_duration = animation_duration
@@ -2044,6 +2113,7 @@ StoreWindowItemPreview._update_title_edge_animation = function (self, dt)
 	end
 
 	duration = math.max(duration - dt, 0)
+
 	local start_length = title_edge_animation_data.start_length
 	local target_length = title_edge_animation_data.target_length
 	local total_duration = title_edge_animation_data.total_duration
@@ -2055,6 +2125,7 @@ StoreWindowItemPreview._update_title_edge_animation = function (self, dt)
 	local item_widgets_by_name = self._item_widgets_by_name
 	local title_edge = item_widgets_by_name.title_edge
 	local ui_scenegraph = self._ui_scenegraph
+
 	ui_scenegraph[title_edge.scenegraph_id].size[1] = current_length
 
 	if duration == 0 then
@@ -2084,20 +2155,26 @@ StoreWindowItemPreview._update_unlock_button_width = function (self, width_offse
 	style.title_text_disabled.offset[1] = side_padding
 	style.title_text_write_mask.offset[1] = side_padding
 	style.title_text_shadow.offset[1] = side_padding + 2
+
 	local currency_icon_style = style.currency_icon
 	local currency_icon_disabled_style = style.currency_icon_disabled
 	local currency_icon_width = present_currency and not already_owned and currency_icon_style.texture_size[1] or 0
+
 	currency_icon_style.offset[1] = side_padding + title_text_width
 	currency_icon_disabled_style.offset[1] = currency_icon_style.offset[1]
+
 	local currency_text = present_currency and not already_owned and "9999" or ""
 	local currency_text_style = style.currency_text
 	local currency_text_disabled_style = style.currency_text_disabled
 	local currency_text_width = self:_get_text_width(currency_text_style, currency_text)
+
 	currency_text_style.offset[1] = side_padding + title_text_width + currency_icon_width
 	currency_text_disabled_style.offset[1] = currency_text_style.offset[1]
 	style.currency_text_shadow.offset[1] = currency_text_style.offset[1] + 2
+
 	local total_width = currency_icon_width + title_text_width + currency_text_width + side_padding * 2
 	local ui_scenegraph = self._ui_scenegraph
+
 	ui_scenegraph.unlock_button.size[1] = total_width
 	content.size[1] = total_width - 20
 	content.size[2] = 50
@@ -2107,14 +2184,18 @@ StoreWindowItemPreview._update_unlock_button_width = function (self, width_offse
 	style.title_text_gradient.texture_size[1] = total_width
 	style.owned_overlay.texture_size[1] = total_width
 	style.owned_text_gradient.texture_size[1] = total_width
+
 	local owned_overlay_content = content.owned_overlay
 	local owned_overlay_uvs = owned_overlay_content.uvs
 	local owned_overlay_fraction = math.clamp(total_width / 684, 0, 1) * 0.5
+
 	owned_overlay_uvs[1][1] = 0.5 - owned_overlay_fraction
 	owned_overlay_uvs[2][1] = 0.5 + owned_overlay_fraction
+
 	local owned_text = content.owned_text
 	local owned_text_style = style.owned_text_write_mask
 	local owned_text_length = self:_get_text_width(owned_text_style, owned_text)
+
 	owned_text_style.offset[1] = style.owned_icon.texture_size[1] * 0.5
 	style.owned_icon.offset[1] = -(owned_text_length * 0.5)
 	style.owned_icon_bg.offset[1] = -(owned_text_length * 0.5)
@@ -2158,6 +2239,7 @@ StoreWindowItemPreview._update_dlc_scroll_position = function (self)
 	if length ~= self._scrolled_length then
 		self._ui_scenegraph.list.local_position[2] = length
 		self._scrolled_length = length
+
 		local sub_title_alpha_multiplier = 1 - math.min(length / 100, 1)
 
 		self:_set_sub_title_alpha_multiplier(sub_title_alpha_multiplier)
@@ -2220,13 +2302,15 @@ StoreWindowItemPreview._scroll_to_list_index = function (self, index)
 			local height = size[2]
 			local start_position_top = math.abs(offset[2])
 			local start_position_bottom = start_position_top + height
-			local percentage_difference = nil
+			local percentage_difference
 
 			if draw_end_height < start_position_bottom then
 				local height_missing = start_position_bottom - draw_end_height
+
 				percentage_difference = math.clamp(height_missing / scroll_length, 0, 1)
 			elseif start_position_top < draw_start_height then
 				local height_missing = draw_start_height - start_position_top
+
 				percentage_difference = -math.clamp(height_missing / scroll_length, 0, 1)
 			end
 
@@ -2265,9 +2349,11 @@ StoreWindowItemPreview._get_scrollbar_percentage_by_index = function (self, inde
 
 			if draw_end_height < start_position_bottom then
 				local height_missing = start_position_bottom - draw_end_height
+
 				percentage_difference = math.clamp(height_missing / scroll_length, 0, 1)
 			elseif start_position_top < draw_start_height then
 				local height_missing = draw_start_height - start_position_top
+
 				percentage_difference = -math.clamp(height_missing / scroll_length, 0, 1)
 			end
 
@@ -2284,6 +2370,7 @@ end
 
 StoreWindowItemPreview._dlc_component_layout = function (self, layout)
 	local scrollbar_widget = self._dlc_top_widgets_by_name.list_scrollbar
+
 	self._dlc_scrollbar_logic = ScrollBarLogic:new(scrollbar_widget)
 
 	self:_destroy_dlc_product_widgets()
@@ -2295,7 +2382,7 @@ StoreWindowItemPreview._dlc_component_layout = function (self, layout)
 		local product_data = layout[i]
 		local product_id = product_data.id
 		local product_type = product_data.type
-		local product = nil
+		local product
 
 		if product_type == "dlc" then
 			local dlc_settings = self:_get_dlc_settings(product_id)
@@ -2304,7 +2391,7 @@ StoreWindowItemPreview._dlc_component_layout = function (self, layout)
 				product = {
 					dlc_settings = dlc_settings,
 					type = product_type,
-					product_id = product_id
+					product_id = product_id,
 				}
 			end
 		elseif product_type == "item" then
@@ -2315,7 +2402,7 @@ StoreWindowItemPreview._dlc_component_layout = function (self, layout)
 					item = item,
 					type = product_type,
 					product_id = product_id,
-					settings = product_data.settings
+					settings = product_data.settings,
 				}
 			end
 		elseif product_type == "bundle_item" then
@@ -2324,18 +2411,18 @@ StoreWindowItemPreview._dlc_component_layout = function (self, layout)
 			if item then
 				product = {
 					item = {
-						data = item
+						data = item,
 					},
 					type = product_type,
 					product_id = product_id,
-					settings = product_data.settings
+					settings = product_data.settings,
 				}
 			end
 		else
 			product = {
 				type = product_type,
 				settings = product_data.settings,
-				product_id = product_id
+				product_id = product_id,
 			}
 		end
 
@@ -2402,7 +2489,7 @@ StoreWindowItemPreview._align_dlc_widgets = function (self)
 		local size = content.size
 		local width = size[1]
 		local height = size[2]
-		local change_row = LIST_MAX_WIDTH < widget_position_x + width
+		local change_row = widget_position_x + width > LIST_MAX_WIDTH
 
 		if change_row then
 			column = 1
@@ -2417,7 +2504,7 @@ StoreWindowItemPreview._align_dlc_widgets = function (self)
 		widget.default_offset = table.clone(offset)
 		content.row = row
 		content.column = column
-		widget_position_x = widget_position_x + width + LIST_SPACING
+		widget_position_x = widget_position_x + (width + LIST_SPACING)
 
 		if index == num_widgets then
 			total_height = math.abs(widget_position_y - height)

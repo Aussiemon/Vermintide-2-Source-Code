@@ -1,22 +1,25 @@
-local OP = nil
+﻿-- chunkname: @scripts/entity_system/systems/dialogues/tag_query_loader.lua
+
+local OP
 
 if rawget(_G, "RuleDatabase") then
 	RuleDatabase.initialize_static_values()
 
 	local operator_string_lookup = {
-		GT = "GT",
-		LT = "LT",
-		NEQ = "NEQ",
-		LTEQ = "LTEQ",
-		GTEQ = "GTEQ",
-		TIMEDIFF = "TIMEDIFF",
 		EQ = "EQ",
+		GT = "GT",
+		GTEQ = "GTEQ",
+		LT = "LT",
+		LTEQ = "LTEQ",
+		NEQ = "NEQ",
 		NOT = "NOT",
+		TIMEDIFF = "TIMEDIFF",
 		TIMESET = TagQuery.OP.TIMESET,
 		ADD = TagQuery.OP.ADD,
 		SUB = TagQuery.OP.SUB,
-		NUMSET = TagQuery.OP.NUMSET
+		NUMSET = TagQuery.OP.NUMSET,
 	}
+
 	OP = operator_string_lookup
 else
 	OP = TagQuery.OP
@@ -43,7 +46,7 @@ TagQueryLoader.init = function (self, tagquery_database, dialogues_destination_t
 				dialogue.category = dialogue.category or "default"
 				dialogues_destination_table[name] = dialogue
 			end
-		end
+		end,
 	}
 	self.tagquery_database = tagquery_database
 end
@@ -71,7 +74,7 @@ TagQueryLoader.unload_files = function (self)
 		if package.loaded[filename] then
 			local load_order = package.load_order
 			local n_load_order = #load_order
-			local found_file = nil
+			local found_file
 
 			for i = n_load_order, 1, -1 do
 				if load_order[i] == filename then

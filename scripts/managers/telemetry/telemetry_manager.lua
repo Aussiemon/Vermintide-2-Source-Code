@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/managers/telemetry/telemetry_manager.lua
+
 require("scripts/managers/telemetry/telemetry_manager_dummy")
 require("scripts/managers/telemetry/telemetry_events")
 require("scripts/managers/telemetry/telemetry_settings")
@@ -99,7 +101,7 @@ TelemetryManager._convert_userdata = function (self, data)
 				new_data[key] = {
 					x = value.x,
 					y = value.y,
-					z = value.z
+					z = value.z,
 				}
 			elseif type(value) == "function" then
 				new_data[key] = nil
@@ -121,9 +123,9 @@ TelemetryManager._ready_to_post_batch = function (self, t)
 		return false
 	end
 
-	if POST_INTERVAL < t - self._batch_post_time then
+	if t - self._batch_post_time > POST_INTERVAL then
 		return true
-	elseif FULL_POST_INTERVAL < t - self._batch_post_time and BATCH_SIZE <= #self._events then
+	elseif t - self._batch_post_time > FULL_POST_INTERVAL and #self._events >= BATCH_SIZE then
 		return true
 	end
 end
@@ -137,12 +139,13 @@ TelemetryManager.post_batch = function (self)
 
 	self._batch_in_flight = true
 	self._batch_post_time = math.floor(self._t)
+
 	local payload = self:_encode(self._events)
 
 	if IS_WINDOWS then
 		local headers = {
 			"Content-Type: application/json",
-			string.format("x-reference-time: %s", self._t)
+			string.format("x-reference-time: %s", self._t),
 		}
 
 		Managers.curl:post(ENDPOINT, payload, headers, callback(self, "cb_post_batch"))
@@ -151,7 +154,7 @@ TelemetryManager.post_batch = function (self)
 			"Content-Type",
 			"application/json",
 			"x-reference-time",
-			tostring(self._t)
+			tostring(self._t),
 		}
 
 		Managers.rest_transport:post(ENDPOINT, payload, headers, callback(self, "cb_post_batch"))

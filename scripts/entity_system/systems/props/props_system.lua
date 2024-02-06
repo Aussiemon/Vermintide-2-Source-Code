@@ -1,12 +1,15 @@
+﻿-- chunkname: @scripts/entity_system/systems/props/props_system.lua
+
 require("scripts/settings/level_settings")
 require("scripts/settings/perlin_light_configurations")
 require("scripts/unit_extensions/level/rotating_hazard_extension")
 
 PropsSystem = class(PropsSystem, ExtensionSystemBase)
+
 local RPCS = {
 	"rpc_thorn_bush_trigger_area_damage",
 	"rpc_thorn_bush_trigger_despawn",
-	"rpc_sync_rotating_hazard"
+	"rpc_sync_rotating_hazard",
 }
 local extensions = {
 	"PerlinLightExtension",
@@ -15,7 +18,7 @@ local extensions = {
 	"ThornMutatorExtension",
 	"ScaleUnitExtension",
 	"StoreDisplayItemGizmoExtension",
-	"RotatingHazardExtension"
+	"RotatingHazardExtension",
 }
 
 DLCUtils.append("prop_extension", extensions)
@@ -35,11 +38,11 @@ PropsSystem.init = function (self, entity_system_creation_context, system_name)
 end
 
 PropsSystem.on_add_extension = function (self, world, unit, extension_name, extension_init_data)
-	local extension = nil
+	local extension
 
 	if extension_name == "PerlinLightExtension" then
 		local flicker_config_name = Unit.get_data(unit, "flicker_config")
-		local light = nil
+		local light
 
 		if Unit.has_data(unit, "perlin_light_node_name") then
 			local flicker_node = Unit.get_data(unit, "perlin_light_node_name")

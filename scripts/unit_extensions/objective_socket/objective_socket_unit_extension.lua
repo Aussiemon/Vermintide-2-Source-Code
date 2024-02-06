@@ -1,10 +1,13 @@
+﻿-- chunkname: @scripts/unit_extensions/objective_socket/objective_socket_unit_extension.lua
+
 ObjectiveSocketUnitExtension = class(ObjectiveSocketUnitExtension)
+
 local ObjectiveSocketUnitExtensionSettings = {
 	optional_color = {
 		0.02,
 		0.02,
-		0.1
-	}
+		0.1,
+	},
 }
 
 ObjectiveSocketUnitExtension.init = function (self, extension_init_context, unit, extension_init_data, is_server)
@@ -29,6 +32,7 @@ end
 ObjectiveSocketUnitExtension._handle_optional_slots = function (self, unit)
 	if Unit.get_data(unit, "optional") then
 		script_data.socket_unit = unit
+
 		local color_table = ObjectiveSocketUnitExtensionSettings.optional_color
 		local color = Vector3(color_table[1], color_table[2], color_table[3])
 		local i = 0
@@ -61,10 +65,11 @@ ObjectiveSocketUnitExtension.setup_sockets = function (self, unit)
 
 	while Unit.has_node(unit, socket_name) do
 		local node_index = Unit.node(unit, socket_name)
+
 		sockets[i] = {
 			open = true,
 			socket_name = socket_name,
-			node_index = node_index
+			node_index = node_index,
 		}
 		i = i + 1
 		socket_name = base .. i
@@ -94,7 +99,7 @@ ObjectiveSocketUnitExtension.pick_socket_closest = function (self, sockets, unit
 	local socket_unit = self.unit
 	local num_sockets = self.num_sockets
 	local closest_dsq = math.huge
-	local closest_socket, closest_id = nil
+	local closest_socket, closest_id
 
 	for i = 1, num_sockets do
 		local socket = sockets[i]
@@ -119,7 +124,7 @@ ObjectiveSocketUnitExtension.pick_socket_closest = function (self, sockets, unit
 end
 
 ObjectiveSocketUnitExtension.pick_socket = function (self, unit)
-	local socket, i = nil
+	local socket, i
 	local pick_config = self.pick_config
 
 	if pick_config == "ordered" then

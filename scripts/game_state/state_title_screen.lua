@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/game_state/state_title_screen.lua
+
 require("scripts/game_state/state_title_screen_main")
 require("scripts/settings/platform_specific")
 require("scripts/game_state/state_loading")
@@ -47,7 +49,7 @@ StateTitleScreen.on_enter = function (self, params)
 
 	local loading_context = self.parent.loading_context
 	local args = {
-		Application.argv()
+		Application.argv(),
 	}
 
 	for _, parameter in pairs(args) do
@@ -119,7 +121,7 @@ StateTitleScreen._demo_hack_state_managers = function (self)
 	local mt = {
 		__index = function ()
 			return SYSTEM_TABLE
-		end
+		end,
 	}
 
 	setmetatable(STATE_TABLE, mt)
@@ -127,7 +129,7 @@ StateTitleScreen._demo_hack_state_managers = function (self)
 	local mt = {
 		__index = function ()
 			return FUNCTION_TABLE
-		end
+		end,
 	}
 
 	setmetatable(SYSTEM_TABLE, mt)
@@ -138,7 +140,7 @@ StateTitleScreen._demo_hack_state_managers = function (self)
 		end,
 		__call = function ()
 			return nil
-		end
+		end,
 	}
 
 	setmetatable(FUNCTION_TABLE, mt)
@@ -189,6 +191,7 @@ StateTitleScreen._setup_world = function (self)
 	else
 		self._viewport = ScriptWorld.create_viewport(self._world, self._viewport_name, "overlay", 1)
 		self._gui = World.create_screen_gui(self._world)
+
 		local w, h = Application.resolution()
 
 		Gui.rect(self._gui, Vector3(0, 0, 0), Vector2(w, h), Color(255, 0, 0, 0))
@@ -202,7 +205,9 @@ end
 
 StateTitleScreen._init_input = function (self)
 	self._input_manager = InputManager:new()
+
 	local input_manager = self._input_manager
+
 	Managers.input = input_manager
 
 	input_manager:initialize_device("keyboard", 1)
@@ -234,7 +239,7 @@ StateTitleScreen._setup_state_machine = function (self)
 			ui = self._title_start_ui,
 			viewport = self._viewport,
 			auto_start = self._auto_start,
-			auto_sign_in = self._auto_sign_in
+			auto_sign_in = self._auto_sign_in,
 		}, true)
 	else
 		self._machine = GameStateMachine:new(self, StateTitleScreenMain, {
@@ -242,7 +247,7 @@ StateTitleScreen._setup_state_machine = function (self)
 			ui = self._title_start_ui,
 			viewport = self._viewport,
 			auto_start = self._auto_start,
-			auto_sign_in = self._auto_sign_in
+			auto_sign_in = self._auto_sign_in,
 		}, true)
 	end
 end

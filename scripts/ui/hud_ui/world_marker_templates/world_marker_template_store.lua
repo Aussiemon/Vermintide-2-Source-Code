@@ -1,23 +1,28 @@
+﻿-- chunkname: @scripts/ui/hud_ui/world_marker_templates/world_marker_template_store.lua
+
 local NAME = "store"
+
 WorldMarkerTemplates = WorldMarkerTemplates or {}
+
 local template = WorldMarkerTemplates[NAME] or {}
+
 WorldMarkerTemplates[NAME] = template
 template.check_line_of_sight = false
 template.position_offset = {
 	0.25,
 	0.25,
-	0.9
+	0.9,
 }
 template.screen_clamp = true
 template.screen_clamp_method = "tutorial"
 template.distance_from_center = {
+	height = 200,
 	width = 400,
-	height = 200
 }
 template.scale_settings = {
 	end_scale_distance = 100,
+	min_scale = 0.5,
 	start_scale_distance = 10,
-	min_scale = 0.5
 }
 
 template.create_widget_definition = function (scenegraph_id)
@@ -28,14 +33,14 @@ template.create_widget_definition = function (scenegraph_id)
 		offset = {
 			0,
 			0,
-			0
+			0,
 		},
 		element = {
 			passes = {
 				{
 					pass_type = "texture",
 					style_id = "icon",
-					texture_id = "icon"
+					texture_id = "icon",
 				},
 				{
 					pass_type = "texture",
@@ -43,105 +48,104 @@ template.create_widget_definition = function (scenegraph_id)
 					texture_id = "star",
 					content_check_function = function (content)
 						return content.show_star
-					end
+					end,
 				},
 				{
-					texture_id = "arrow",
-					style_id = "arrow",
 					pass_type = "rotated_texture",
+					style_id = "arrow",
+					texture_id = "arrow",
 					content_check_function = function (content, style)
 						return style.color[1] > 0
-					end
-				}
-			}
+					end,
+				},
+			},
 		},
 		content = {
 			arrow = "indicator",
 			icon = "hud_store_icon",
+			show_star = true,
 			star = "list_item_tag_new",
-			show_star = true
 		},
 		style = {
 			icon = {
-				vertical_alignment = "center",
 				horizontal_alignment = "center",
+				vertical_alignment = "center",
 				texture_size = {
 					0,
-					0
+					0,
 				},
 				offset = {
 					0,
 					0,
-					0
+					0,
 				},
 				default_size = {
 					size_scale * 64,
-					size_scale * 64
+					size_scale * 64,
 				},
 				color = {
 					255,
 					255,
 					255,
-					255
-				}
+					255,
+				},
 			},
 			star = {
-				vertical_alignment = "center",
 				horizontal_alignment = "center",
+				vertical_alignment = "center",
 				texture_size = {
 					126,
-					51
+					51,
 				},
 				offset = {
 					0,
 					25,
-					1
+					1,
 				},
 				color = {
 					255,
 					255,
 					255,
-					255
-				}
+					255,
+				},
 			},
 			arrow = {
-				vertical_alignment = "center",
 				angle = 0,
 				horizontal_alignment = "center",
+				vertical_alignment = "center",
 				texture_size = {
 					38,
-					18
+					18,
 				},
 				pivot = {
 					19,
-					9
+					9,
 				},
 				offset = {
 					0,
 					0,
-					0
+					0,
 				},
 				color = {
 					0,
 					255,
 					255,
-					255
-				}
-			}
-		}
+					255,
+				},
+			},
+		},
 	}
 end
 
 template.on_enter = function (widget)
 	local content = widget.content
+
 	content.progress = 1
 end
 
 local function get_arrow_angle_and_offset(forward_dot, right_dot, arrow_size, icon_size, height_from_center)
 	local static_angle_value = 1.57079633
-	local offset_x = 0
-	local offset_y = 0
-	local offset_z = 0
+	local offset_x, offset_y, offset_z = 0, 0, 0
 	local angle = math.atan2(right_dot, forward_dot)
 
 	if height_from_center < -400 and forward_dot > 0.6 then
@@ -168,11 +172,14 @@ template.update_function = function (ui_renderer, widget, marker, settings, dt, 
 	local arrow_style = style.arrow
 	local is_clamped = content.is_clamped
 	local clamped_alpha = 100
+
 	icon_style.color[1] = is_clamped and 100 or 255
 	star_style.color[1] = is_clamped and 100 or 200
 	arrow_style.color[1] = is_clamped and 100 or 0
 	arrow_style.angle = content.angle
+
 	local angle, ox, oy, oz = get_arrow_angle_and_offset(content.forward_dot_flat, content.right_dot_flat, arrow_style.texture_size, icon_style.texture_size, widget.offset[2] - 540)
+
 	arrow_style.angle = angle
 	arrow_style.offset[1] = ox
 	arrow_style.offset[2] = oy

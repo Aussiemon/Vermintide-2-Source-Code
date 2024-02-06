@@ -1,14 +1,19 @@
+﻿-- chunkname: @scripts/ui/views/cutscene_overlay_ui.lua
+
 local definitions = local_require("scripts/ui/views/cutscene_overlay_ui_definitions")
+
 CutsceneOverlayUI = class(CutsceneOverlayUI)
 
 CutsceneOverlayUI.init = function (self, parent, context)
 	self._parent = parent
 	self._ui_renderer = context.ui_renderer
+
 	local world_manager = Managers.world
 	local has_world = world_manager and world_manager:has_world("level_world")
 
 	if has_world then
 		local world = world_manager:world("level_world")
+
 		self._wwise_world = world_manager:wwise_world(world)
 	end
 
@@ -21,7 +26,7 @@ CutsceneOverlayUI.init = function (self, parent, context)
 	end
 
 	self._render_settings = {
-		alpha_multiplier = 1
+		alpha_multiplier = 1,
 	}
 end
 
@@ -37,14 +42,16 @@ end
 
 CutsceneOverlayUI._create_ui_elements = function (self)
 	self._ui_scenegraph = UISceneGraph.init_scenegraph(definitions.scenegraph_definition)
+
 	local active_template_lists = {}
 	local widgets_by_template = {}
 
 	for template_list_name, _ in pairs(self._templates) do
 		local widgets = {
 			text_widget = UIWidget.init(definitions.widget_definitions.text),
-			image_widget = UIWidget.init(definitions.widget_definitions.image)
+			image_widget = UIWidget.init(definitions.widget_definitions.image),
 		}
+
 		widgets_by_template[template_list_name] = widgets
 		active_template_lists[template_list_name] = {}
 	end
@@ -67,6 +74,7 @@ end
 
 CutsceneOverlayUI.start = function (self, template_settings)
 	local templates = template_settings.templates
+
 	self._templates = table.clone(templates)
 	self._start_time = Managers.time:time("ui")
 	self._complete = false
@@ -84,13 +92,16 @@ CutsceneOverlayUI._present_template_entry = function (self, template_list_name, 
 	local fade_in_duration = entry.fade_in_duration
 	local fade_out_duration = entry.fade_out_duration
 	local widgets = self._widgets_by_template[template_list_name]
-	local widget = nil
+	local widget
 
 	if text then
 		widget = widgets.text_widget
+
 		local content = widget.content
 		local localize = entry.localize
+
 		content.text = localize and Localize(text) or text
+
 		local font_size = entry.font_size
 		local font_type = entry.font_type
 		local word_wrap = entry.word_wrap
@@ -105,6 +116,7 @@ CutsceneOverlayUI._present_template_entry = function (self, template_list_name, 
 		local text_style = style.text
 		local text_shadow_style = style.text_shadow
 		local text_color = text_style.text_color
+
 		max_alpha = color[1]
 		text_color[2] = color[2]
 		text_color[3] = color[3]
@@ -127,6 +139,7 @@ CutsceneOverlayUI._present_template_entry = function (self, template_list_name, 
 
 		local text_offset = text_style.offset
 		local text_shadow_offset = text_shadow_style.offset
+
 		text_offset[1] = offset[1]
 		text_offset[2] = offset[2]
 		text_offset[3] = offset[3]
@@ -136,14 +149,18 @@ CutsceneOverlayUI._present_template_entry = function (self, template_list_name, 
 	elseif image then
 		widget = widgets.image_widget
 		widget.content.texture_id = image
+
 		local texture_style = widget.style.texture_id
 		local texture_offset = texture_style.offset
 		local offset = entry.offset
+
 		texture_offset[1] = offset[1]
 		texture_offset[2] = offset[2]
 		texture_offset[3] = offset[3]
+
 		local image_size = entry.image_size
 		local texture_size = texture_style.texture_size
+
 		texture_size[1] = image_size[1]
 		texture_size[2] = image_size[2]
 	end
@@ -158,7 +175,7 @@ CutsceneOverlayUI._present_template_entry = function (self, template_list_name, 
 		start_time = start_time,
 		end_time = end_time,
 		fade_in_duration = fade_in_duration and fade_in_duration > 0 and fade_in_duration,
-		fade_out_duration = fade_out_duration and fade_out_duration > 0 and fade_out_duration
+		fade_out_duration = fade_out_duration and fade_out_duration > 0 and fade_out_duration,
 	}
 end
 
@@ -239,10 +256,12 @@ CutsceneOverlayUI.update = function (self, dt)
 		else
 			local current_entry = self:_get_entry_by_time(name, current_time)
 			local entry_data = current_entry and self:_present_template_entry(name, current_entry)
+
 			template_list_data.active_entry_data = entry_data
 
 			if entry_data and not entry_data.initialized then
 				entry_data.initialized = true
+
 				local sound_event = entry_data.sound_event
 
 				if sound_event and self._wwise_world then
@@ -266,10 +285,12 @@ CutsceneOverlayUI._fade = function (self, widget, max_alpha, progress)
 	if style.text then
 		local color = style.text.text_color
 		local shadow_color = style.text_shadow.text_color
+
 		color[1] = alpha
 		shadow_color[1] = alpha
 	else
 		local color = style.texture_id.color
+
 		color[1] = alpha
 	end
 end

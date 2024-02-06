@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/default_player_unit/states/player_character_state_standing.lua
+
 PlayerCharacterStateStanding = class(PlayerCharacterStateStanding, PlayerCharacterState)
 
 PlayerCharacterStateStanding.init = function (self, character_state_init_context)
@@ -13,6 +15,7 @@ PlayerCharacterStateStanding.on_enter = function (self, unit, input, dt, context
 	self.locomotion_extension:set_wanted_velocity(Vector3.zero())
 
 	self.wherabouts_extension = ScriptUnit.extension(unit, "whereabouts_system")
+
 	local inventory_extension = self.inventory_extension
 	local first_person_extension = self.first_person_extension
 	local status_extension = self.status_extension
@@ -23,6 +26,7 @@ PlayerCharacterStateStanding.on_enter = function (self, unit, input, dt, context
 	CharacterStateHelper.update_weapon_actions(t, unit, input_extension, inventory_extension, self.health_extension)
 
 	local movement_settings_table = PlayerUnitMovementSettings.get_movement_settings_table(unit)
+
 	self.time_when_can_be_pushed = t + movement_settings_table.soft_collision.grace_time_pushed_entering_standing
 
 	if CharacterStateHelper.is_interacting(self.interactor_extension) or CharacterStateHelper.is_starting_interaction(self.input_extension, self.interactor_extension) then
@@ -109,6 +113,7 @@ PlayerCharacterStateStanding.update = function (self, unit, input, dt, context, 
 
 		local params = movement_settings_table.stun_settings.pushed
 		local hit_react_type = status_extension:hit_react_type()
+
 		params.hit_react_type = hit_react_type .. "_push"
 
 		csm:change_state("stunned", params)
@@ -118,6 +123,7 @@ PlayerCharacterStateStanding.update = function (self, unit, input, dt, context, 
 
 	if CharacterStateHelper.is_charged(status_extension) then
 		local params = movement_settings_table.charged_settings.charged
+
 		params.hit_react_type = "charged"
 
 		csm:change_state("charged", params)
@@ -129,6 +135,7 @@ PlayerCharacterStateStanding.update = function (self, unit, input, dt, context, 
 		status_extension:set_block_broken(false)
 
 		local params = movement_settings_table.stun_settings.parry_broken
+
 		params.hit_react_type = "medium_push"
 
 		csm:change_state("stunned", params)
@@ -140,6 +147,7 @@ PlayerCharacterStateStanding.update = function (self, unit, input, dt, context, 
 
 	if start_dodge then
 		local params = self.temp_params
+
 		params.dodge_direction = dodge_direction
 
 		csm:change_state("dodging", params)
@@ -164,6 +172,7 @@ PlayerCharacterStateStanding.update = function (self, unit, input, dt, context, 
 
 		local config = interactor_extension:interaction_config()
 		local params = self.temp_params
+
 		params.swap_to_3p = config.swap_to_3p
 		params.show_weapons = config.show_weapons
 		params.activate_block = config.activate_block
@@ -181,6 +190,7 @@ PlayerCharacterStateStanding.update = function (self, unit, input, dt, context, 
 
 		local config = interactor_extension:interaction_config()
 		local params = self.temp_params
+
 		params.swap_to_3p = config.swap_to_3p
 		params.show_weapons = config.show_weapons
 		params.activate_block = config.activate_block
@@ -248,7 +258,7 @@ PlayerCharacterStateStanding.update = function (self, unit, input, dt, context, 
 	local first_person_extension = self.first_person_extension
 	local toggle_crouch = input_extension.toggle_crouch
 
-	if self.time_when_can_be_pushed < t and self.player:is_player_controlled() then
+	if t > self.time_when_can_be_pushed and self.player:is_player_controlled() then
 		self.current_animation = CharacterStateHelper.update_soft_collision_movement(first_person_extension, status_extension, locomotion_extension, unit, self.world, self.current_animation, self.side)
 	end
 

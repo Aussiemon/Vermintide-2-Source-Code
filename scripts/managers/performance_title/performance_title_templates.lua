@@ -1,46 +1,47 @@
-PerformanceTitles = {
-	titles = {
-		headhunter = {
-			evaluation_template = "equal_higher",
-			display_name = "performance_title_headhunter",
-			amount = 1,
-			stat_types = {
-				{
-					"headshots"
-				}
-			}
+﻿-- chunkname: @scripts/managers/performance_title/performance_title_templates.lua
+
+PerformanceTitles = {}
+PerformanceTitles.titles = {
+	headhunter = {
+		amount = 1,
+		display_name = "performance_title_headhunter",
+		evaluation_template = "equal_higher",
+		stat_types = {
+			{
+				"headshots",
+			},
 		},
-		doctor = {
-			evaluation_template = "equal_higher",
-			display_name = "performance_title_doctor",
-			amount = 1,
-			stat_types = {
-				{
-					"times_friend_healed"
-				}
-			}
+	},
+	doctor = {
+		amount = 1,
+		display_name = "performance_title_doctor",
+		evaluation_template = "equal_higher",
+		stat_types = {
+			{
+				"times_friend_healed",
+			},
 		},
-		savior = {
-			evaluation_template = "equal_higher",
-			display_name = "performance_title_savior",
-			amount = 1,
-			stat_types = {
-				{
-					"saves"
-				}
-			}
+	},
+	savior = {
+		amount = 1,
+		display_name = "performance_title_savior",
+		evaluation_template = "equal_higher",
+		stat_types = {
+			{
+				"saves",
+			},
 		},
-		reviver = {
-			evaluation_template = "equal_higher",
-			display_name = "performance_title_reviver",
-			amount = 1,
-			stat_types = {
-				{
-					"revives"
-				}
-			}
-		}
-	}
+	},
+	reviver = {
+		amount = 1,
+		display_name = "performance_title_reviver",
+		evaluation_template = "equal_higher",
+		stat_types = {
+			{
+				"revives",
+			},
+		},
+	},
 }
 
 local function get_stats(statistics_db, stats_id, stat_types)
@@ -58,12 +59,12 @@ PerformanceTitles.templates = {
 		evaluate = function (statistics_db, stats_id, data)
 			local stat = get_stats(statistics_db, stats_id, data.stat_types)
 
-			return data.amount <= stat, stat
+			return stat >= data.amount, stat
 		end,
 		compare = function (amount_1, amount_2)
 			return amount_2 <= amount_1
-		end
-	}
+		end,
+	},
 }
 
 for title_name, settings in pairs(PerformanceTitles.titles) do

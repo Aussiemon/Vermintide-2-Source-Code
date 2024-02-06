@@ -1,44 +1,47 @@
-FormationUtils = {
-	make_formation = function (formation_template, spacing)
-		local formation = {
-			arrangement = {},
-			formation_template = formation_template,
-			x = formation_template.x,
-			y = formation_template.y
-		}
-		local num_units_x = formation_template.size[1]
-		local num_units_y = formation_template.size[2]
-		local half_spacing = spacing / 2
-		local half_width = num_units_x / 2 - half_spacing
-		local half_height = num_units_y / 2 - half_spacing
-		local arrangement = formation.arrangement
-		local k = 0
+﻿-- chunkname: @scripts/managers/conflict_director/formation_utils.lua
 
-		for j = 0, num_units_y - 1 do
-			for i = 0, num_units_x - 1 do
-				k = k + 1
-				arrangement[k] = {
-					i * spacing - half_width,
-					j * spacing - half_height
-				}
-			end
+FormationUtils = {}
+
+FormationUtils.make_formation = function (formation_template, spacing)
+	local formation = {
+		arrangement = {},
+		formation_template = formation_template,
+		x = formation_template.x,
+		y = formation_template.y,
+	}
+	local num_units_x = formation_template.size[1]
+	local num_units_y = formation_template.size[2]
+	local half_spacing = spacing / 2
+	local half_width = num_units_x / 2 - half_spacing
+	local half_height = num_units_y / 2 - half_spacing
+	local arrangement = formation.arrangement
+	local k = 0
+
+	for j = 0, num_units_y - 1 do
+		for i = 0, num_units_x - 1 do
+			k = k + 1
+			arrangement[k] = {
+				i * spacing - half_width,
+				j * spacing - half_height,
+			}
 		end
-
-		return formation, k
 	end
-}
+
+	return formation, k
+end
 
 FormationUtils.make_encampment = function (encampment_template)
 	local encampment = {
 		army_size = 0,
-		encampment_template = encampment_template
+		encampment_template = encampment_template,
 	}
 	local army_size = 0
-	local size = nil
+	local size
 
 	for i = 1, #encampment_template do
 		local formation_template = encampment_template[i]
 		local spacing = 1
+
 		encampment[i], size = FormationUtils.make_formation(formation_template, spacing)
 		army_size = army_size + size
 	end
@@ -52,23 +55,23 @@ local FORMATION_COLORS = {
 	light = {
 		222,
 		88,
-		0
+		0,
 	},
 	heavy = {
 		0,
 		128,
-		240
+		240,
 	},
 	special = {
 		240,
 		240,
-		0
+		0,
 	},
 	boss = {
 		40,
 		200,
-		40
-	}
+		40,
+	},
 }
 
 FormationUtils.draw_encampment = function (encampment, pos, rot, drawer)
@@ -92,7 +95,9 @@ FormationUtils.draw_formation = function (formation, pos, rot, color, drawer)
 
 	local dir = formation.formation_template.dir
 	local formation_rot = dir and Quaternion.look(Vector3(dir[1], dir[2], 0)) or Quaternion.look(Vector3(0, 1, 0))
+
 	formation_rot = Quaternion.multiply(rot, formation_rot)
+
 	local arrangement = formation.arrangement
 
 	for i = 1, #arrangement do
@@ -109,6 +114,7 @@ FormationUtils.spawn_formation = function (formation, pos, rot, breed_name, grou
 	local arrangement = formation.arrangement
 	local dir = formation.formation_template.dir
 	local formation_rot = dir and Quaternion.look(Vector3(dir[1], dir[2], 0)) or Quaternion.look(Vector3(0, 1, 0))
+
 	formation_rot = Quaternion.multiply(rot, formation_rot)
 
 	for i = 1, #arrangement do
@@ -122,9 +128,10 @@ FormationUtils.spawn_formation = function (formation, pos, rot, breed_name, grou
 			local spawn_type = "roam"
 			local spawn_category = "encampment"
 			local breed = Breeds[breed_name]
-			local optional_data = nil
+			local optional_data
+
 			optional_data = {
-				side_id = side_id
+				side_id = side_id,
 			}
 
 			conflict_director:spawn_queued_unit(breed, Vector3Box(spawn_pos), QuaternionBox(formation_rot), spawn_category, nil, spawn_type, optional_data, group_template)
@@ -138,14 +145,15 @@ FormationUtils.spawn_encampment = function (encampment, pos, rot, unit_compositi
 		id = Managers.state.entity:system("ai_group_system"):generate_group_id(),
 		size = encampment.army_size,
 		group_data = {
-			sneaky = true,
 			idle = true,
+			sneaky = true,
 			encampment = encampment,
 			spawn_time = Managers.time:time("game"),
-			side_id = side_id
+			side_id = side_id,
 		},
-		side_id = side_id
+		side_id = side_id,
 	}
+
 	encampment.pos = Vector3Box(pos)
 
 	for i = 1, #encampment do

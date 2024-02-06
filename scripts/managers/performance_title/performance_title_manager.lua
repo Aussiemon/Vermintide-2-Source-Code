@@ -1,15 +1,17 @@
+﻿-- chunkname: @scripts/managers/performance_title/performance_title_manager.lua
+
 require("scripts/managers/performance_title/performance_title_templates")
 
 PerformanceTitleManager = class(PerformanceTitleManager)
+
 local RPCS = {
-	"rpc_sync_performance_titles"
+	"rpc_sync_performance_titles",
 }
 local INVALID_PEER = "0"
 
 local function networkify_number(number)
 	local uint_16 = NetworkConstants.uint_16
-	local min = uint_16.min
-	local max = uint_16.max
+	local min, max = uint_16.min, uint_16.max
 
 	return math.clamp(number, min, max)
 end
@@ -77,7 +79,7 @@ PerformanceTitleManager._get_title_list_from_player_titles = function (self, pla
 end
 
 PerformanceTitleManager._find_individually_achieved_title = function (self, player_titles, title_name)
-	local found_player = nil
+	local found_player
 	local player_amount = 0
 
 	for player, titles in pairs(player_titles) do
@@ -99,11 +101,12 @@ PerformanceTitleManager._assign_title = function (self, assigned_titles, player_
 	local amount = achieved_titles[title_name]
 	local peer_id = player:network_id()
 	local local_player_id = player:local_player_id()
+
 	assigned_titles[#assigned_titles + 1] = {
 		peer_id = peer_id,
 		local_player_id = local_player_id,
 		title = title_name,
-		amount = amount
+		amount = amount,
 	}
 end
 
@@ -141,8 +144,7 @@ PerformanceTitleManager._assign_compared_titles = function (self, player_titles,
 	local title_templates = PerformanceTitles.templates
 
 	for _, title_name in ipairs(title_list) do
-		local best_amount = 0
-		local winner_player = nil
+		local best_amount, winner_player = 0
 		local settings = title_settings[title_name]
 		local template = title_templates[settings.evaluation_template]
 
@@ -224,7 +226,7 @@ PerformanceTitleManager._translate_title_assignment = function (self, peer_id, l
 		peer_id = peer_id,
 		local_player_id = local_player_id,
 		title = NetworkLookup.performance_titles[title_id],
-		amount = amount
+		amount = amount,
 	}
 
 	return title_assignment
@@ -240,11 +242,12 @@ PerformanceTitleManager.rpc_sync_performance_titles = function (self, channel_id
 			local local_player_id = local_player_ids[i]
 			local title = NetworkLookup.performance_titles[title_ids[i]]
 			local amount = amounts[i]
+
 			assigned_titles[#assigned_titles + 1] = {
 				peer_id = peer_id,
 				local_player_id = local_player_id,
 				title = title,
-				amount = amount
+				amount = amount,
 			}
 		end
 	end

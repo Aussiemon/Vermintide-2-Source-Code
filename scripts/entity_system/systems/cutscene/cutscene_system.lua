@@ -1,7 +1,11 @@
+﻿-- chunkname: @scripts/entity_system/systems/cutscene/cutscene_system.lua
+
 local cut_scene_system_testify = script_data.testify and require("scripts/entity_system/systems/cutscene/cutscene_system_testify")
+
 CutsceneSystem = class(CutsceneSystem, ExtensionSystemBase)
+
 local extensions = {
-	"CutsceneCamera"
+	"CutsceneCamera",
 }
 
 CutsceneSystem.init = function (self, context, name)
@@ -34,6 +38,7 @@ end
 
 CutsceneSystem.on_add_extension = function (self, world, unit, extension_name, extension_init_data)
 	local extension = CutsceneSystem.super.on_add_extension(self, world, unit, extension_name, extension_init_data)
+
 	self.cameras[unit] = extension
 
 	return extension
@@ -191,7 +196,7 @@ CutsceneSystem.flow_cb_cutscene_effect = function (self, name, flow_params)
 			flow_params.fade_in_time,
 			flow_params.hold_time,
 			flow_params.fade_out_time,
-			flow_params.color
+			flow_params.color,
 		}
 
 		pdArray.push_back2(self.ui_event_queue, name, args)
@@ -202,7 +207,7 @@ CutsceneSystem.flow_cb_cutscene_effect = function (self, name, flow_params)
 			flow_params.fade_in_time,
 			flow_params.hold_time,
 			flow_params.fade_out_time,
-			flow_params.text
+			flow_params.text,
 		}
 
 		pdArray.push_back2(self.ui_event_queue, name, args)

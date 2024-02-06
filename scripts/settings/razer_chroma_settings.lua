@@ -1,43 +1,45 @@
+﻿-- chunkname: @scripts/settings/razer_chroma_settings.lua
+
 RazerChromaSettings = {
 	health_potion = {
+		file_path = "razer_chromas/healthpotion",
 		length = 2,
-		file_path = "razer_chromas/healthpotion"
 	},
 	cooldown_reduction_potion = {
+		file_path = "razer_chromas/concentrationpotion",
 		length = 2,
-		file_path = "razer_chromas/concentrationpotion"
 	},
 	cooldown_reduction_potion_increased = {
+		file_path = "razer_chromas/concentrationpotion",
 		length = 2,
-		file_path = "razer_chromas/concentrationpotion"
 	},
 	cooldown_reduction_potion_reduced = {
+		file_path = "razer_chromas/concentrationpotion",
 		length = 2,
-		file_path = "razer_chromas/concentrationpotion"
 	},
 	speed_boost_potion = {
+		file_path = "razer_chromas/speedpotion",
 		length = 2,
-		file_path = "razer_chromas/speedpotion"
 	},
 	speed_boost_potion_increased = {
+		file_path = "razer_chromas/speedpotion",
 		length = 2,
-		file_path = "razer_chromas/speedpotion"
 	},
 	speed_boost_potion_reduced = {
+		file_path = "razer_chromas/speedpotion",
 		length = 2,
-		file_path = "razer_chromas/speedpotion"
 	},
 	damage_boost_potion = {
+		file_path = "razer_chromas/damagepotion",
 		length = 2,
-		file_path = "razer_chromas/damagepotion"
 	},
 	damage_boost_potion_increased = {
+		file_path = "razer_chromas/damagepotion",
 		length = 2,
-		file_path = "razer_chromas/damagepotion"
 	},
 	damage_boost_potion_reduced = {
+		file_path = "razer_chromas/damagepotion",
 		length = 2,
-		file_path = "razer_chromas/damagepotion"
 	},
 	hit = {
 		file_path = "razer_chromas/hit",
@@ -71,7 +73,7 @@ RazerChromaSettings = {
 			local took_hit = damage_type and not table.contains(NetworkLookup.damage_sources, damage_type)
 
 			return took_hit, false, RAZER_ADD_ANIMATION_TYPE.REPLACE
-		end
+		end,
 	},
 	knocked_down = {
 		file_path = "razer_chromas/knockeddown",
@@ -145,6 +147,6 @@ RazerChromaSettings = {
 			end
 
 			return true
-		end
-	}
+		end,
+	},
 }

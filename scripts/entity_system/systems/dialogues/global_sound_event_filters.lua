@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/entity_system/systems/dialogues/global_sound_event_filters.lua
+
 local OP = table.map(TagQuery.OP, function (v)
 	return tostring(v)
 end)
@@ -7,25 +9,25 @@ local global_filters = {
 			"global_context",
 			"bw_necromancer",
 			OP.EQ,
-			true
-		}
+			true,
+		},
 	},
 	pbw_curse_23 = {
 		{
 			"global_context",
 			"bw_necromancer",
 			OP.EQ,
-			true
-		}
+			true,
+		},
 	},
 	pbw_level_nurgle_coming_down_04 = {
 		{
 			"global_context",
 			"bw_necromancer",
 			OP.EQ,
-			true
-		}
-	}
+			true,
+		},
+	},
 }
 
 return global_filters

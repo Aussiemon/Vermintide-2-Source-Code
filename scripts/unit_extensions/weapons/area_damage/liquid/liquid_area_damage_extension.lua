@@ -1,3 +1,5 @@
+﻿-- chunkname: @scripts/unit_extensions/weapons/area_damage/liquid/liquid_area_damage_extension.lua
+
 require("scripts/unit_extensions/weapons/area_damage/liquid/hex_grid")
 require("scripts/managers/debug/debug_manager")
 
@@ -13,15 +15,19 @@ LiquidAreaDamageExtension.init = function (self, extension_init_context, unit, e
 	local entity_manager = extension_init_context.entity_manager
 	local ai_system = entity_manager:system("ai_system")
 	local world = extension_init_context.world
+
 	self._world = world
 	self._unit = unit
 	self._network_transmit = extension_init_context.network_transmit
 	self._ai_system = ai_system
 	self._nav_world = ai_system:nav_world()
 	self._audio_system = entity_manager:system("audio_system")
+
 	local template_name = extension_init_data.liquid_template
 	local template = LiquidAreaDamageTemplates.templates[template_name]
+
 	self._liquid_area_damage_template = template_name
+
 	local unit_position = Unit.world_position(unit, 0)
 	local above = template.above
 	local below = template.below
@@ -29,14 +35,19 @@ LiquidAreaDamageExtension.init = function (self, extension_init_context, unit, e
 	local cell_size = template.cell_size
 	local max_liquid = extension_init_data.max_liquid or template.max_liquid or 50
 	local xy_extents = math.min(max_liquid + 10, 50)
+
 	self._grid = HexGrid:new(position, xy_extents, 10, cell_size, 1)
+
 	local t = Managers.time:time("game")
 	local delay = template.delay or 0
+
 	self._next_pulse = t + delay
 	self._time_to_start = t + delay
 	self._time_to_remove = t + template.time_of_life + delay
 	self._spread_function = LiquidAreaDamageTemplates[template.liquid_spread_function]
+
 	local buff_system = entity_manager:system("buff_system")
+
 	self._buff_system = buff_system
 	self._flow = {}
 	self._active_flow = {}
@@ -50,17 +61,23 @@ LiquidAreaDamageExtension.init = function (self, extension_init_context, unit, e
 	self._do_direct_damage_ai = template.do_direct_damage_ai
 	self._do_direct_damage_player = template.do_direct_damage_player
 	self._hit_player_function = template.hit_player_function
+
 	local difficulty_name = Managers.state.difficulty:get_difficulty()
+
 	self._damage_table = extension_init_data.damage_table or template.difficulty_direct_damage[difficulty_name]
 	self._damage_type = template.damage_type
+
 	local use_nav_cost_map_volumes = template.use_nav_cost_map_volumes
+
 	self._use_nav_cost_map_volumes = use_nav_cost_map_volumes
 	self._apply_buff_to_ai = template.apply_buff_to_ai
 	self._apply_buff_to_player = template.apply_buff_to_player
 	self._buff_name = template.buff_template_name
 	self._buff_type = template.buff_template_type
 	self._damage_buff_name = template.damage_buff_template_name
+
 	local fx_name_rim = template.fx_name_rim
+
 	self._fx_name_rim = fx_name_rim
 	self._fx_name_filled = template.fx_name_filled
 	self._fx_name_start_delayed = template.fx_name_start_delayed
@@ -69,11 +86,14 @@ LiquidAreaDamageExtension.init = function (self, extension_init_context, unit, e
 	Unit.set_unit_visibility(unit, false)
 
 	local sfx_name_start = template.sfx_name_start
+
 	self._sfx_name_start = sfx_name_start
 	self._sfx_name_start_delayed = template.sfx_name_start_delayed
 	self._sfx_name_stop = template.sfx_name_stop
+
 	local flat_flow_dir = Vector3.flat(extension_init_data.flow_dir)
 	local starting_angle = math.atan2(flat_flow_dir.y, flat_flow_dir.x)
+
 	self._flow_dir = Vector3Box(flat_flow_dir)
 	self._starting_flow_angle = starting_angle
 	self._linearized_flow = template.linearized_flow
@@ -85,9 +105,12 @@ LiquidAreaDamageExtension.init = function (self, extension_init_context, unit, e
 	self._done = false
 	self._started = delay <= 0
 	self.source_attacker_unit_data = {}
+
 	local source_attacker_unit_data = self.source_attacker_unit_data
 	local source_attacker_unit = self._source_attacker_unit
+
 	source_attacker_unit_data.breed = Unit.get_data(source_attacker_unit, "breed")
+
 	local player = Managers.player:owner(source_attacker_unit)
 
 	if player then
@@ -96,6 +119,7 @@ LiquidAreaDamageExtension.init = function (self, extension_init_context, unit, e
 	else
 		source_attacker_unit_data.attacker_unique_id = nil
 		source_attacker_unit_data.attacker_side = nil
+
 		local attacker_buff_extension = ScriptUnit.has_extension(source_attacker_unit, "buff_system")
 
 		if attacker_buff_extension then
@@ -106,6 +130,7 @@ LiquidAreaDamageExtension.init = function (self, extension_init_context, unit, e
 	if use_nav_cost_map_volumes then
 		local nav_cost_map_cost_type = template.nav_cost_map_cost_type
 		local num_volumes_guess = self._max_liquid
+
 		self._nav_cost_map_cost_type = nav_cost_map_cost_type
 		self._nav_cost_map_id = ai_system:create_nav_cost_map(nav_cost_map_cost_type, num_volumes_guess)
 	end
@@ -135,7 +160,9 @@ end
 
 LiquidAreaDamageExtension.ready = function (self)
 	local unit = self._unit
+
 	self._unit_id = Managers.state.unit_storage:go_id(unit)
+
 	local position = Unit.local_position(unit, 0)
 	local grid = self._grid
 	local i, j, k = grid:find_index(position)
@@ -158,6 +185,7 @@ LiquidAreaDamageExtension.ready = function (self)
 	self:_set_active(real_index)
 
 	local flow_dir = self._flow_dir
+
 	self._damage_direction = flow_dir
 end
 
@@ -165,6 +193,7 @@ LiquidAreaDamageExtension._set_active = function (self, real_index)
 	local flow = self._flow
 	local liquid = flow[real_index]
 	local position = liquid.position:unbox()
+
 	liquid.full = true
 	liquid.amount = 1
 
@@ -176,7 +205,9 @@ LiquidAreaDamageExtension._set_active = function (self, real_index)
 
 	if not script_data.debug_liquid_system and fx_name_filled then
 		local rotation = liquid.rotation:unbox()
+
 		liquid.fx_id = World.create_particles(self._world, fx_name_filled, position, rotation)
+
 		local override_life_time = self._override_fx_life_time
 
 		if override_life_time then
@@ -198,6 +229,7 @@ LiquidAreaDamageExtension._set_active = function (self, real_index)
 		local ai_system = self._ai_system
 		local cost_map_id = self._nav_cost_map_id
 		local nav_cost_map_volume_id = ai_system:add_nav_cost_map_sphere_volume(position, self._cell_radius, cost_map_id)
+
 		liquid.nav_cost_map_volume_id = nav_cost_map_volume_id
 	end
 
@@ -229,12 +261,13 @@ LiquidAreaDamageExtension._create_liquid = function (self, real_index, angle)
 	local nav_world = self._nav_world
 	local dirs = grid:directions()
 	local success, z, vertex_1, vertex_2, vertex_3 = GwNavQueries.triangle_from_position(nav_world, position, 2, 2)
-	local from, rotation = nil
+	local from, rotation
 
 	if success then
 		local v1_to_v2 = Vector3.normalize(vertex_2 - vertex_1)
 		local v1_to_v3 = Vector3.normalize(vertex_3 - vertex_1)
 		local normal = Vector3.normalize(Vector3.cross(v1_to_v2, v1_to_v3))
+
 		rotation = Quaternion.look(v1_to_v2, normal)
 		from = Vector3(position.x, position.y, z)
 	else
@@ -246,23 +279,23 @@ LiquidAreaDamageExtension._create_liquid = function (self, real_index, angle)
 
 	for index = 1, #dirs do
 		local dir = dirs[index]
-		local new_i = i + dir[1]
-		local new_j = j + dir[2]
-		local new_k = k
+		local new_i, new_j, new_k = i + dir[1], j + dir[2], k
 		local point = grid:find_position(new_i, new_j, new_k)
 		local to = self:_find_point(point)
 
 		if to and GwNavQueries.raycango(nav_world, from, to) then
 			local neighbour_real_index = grid:real_index(grid:find_index(to))
+
 			neighbours[index] = neighbour_real_index
 		end
 	end
 
-	local fx_id = nil
+	local fx_id
 	local fx_name_rim = self._fx_name_rim
 
 	if not script_data.debug_liquid_system and fx_name_rim then
 		fx_id = World.create_particles(self._world, fx_name_rim, from, rotation)
+
 		local override_life_time = self._override_fx_life_time
 
 		if override_life_time then
@@ -276,14 +309,15 @@ LiquidAreaDamageExtension._create_liquid = function (self, real_index, angle)
 	network_transmit:send_rpc_clients("rpc_add_liquid_damage_blob", self._unit_id, real_index, from, is_filled)
 
 	local liquid = {
-		full = false,
 		amount = 0,
+		full = false,
 		neighbours = neighbours,
 		position = Vector3Box(from),
 		rotation = QuaternionBox(rotation),
 		fx_id = fx_id,
-		angle = angle or 0
+		angle = angle or 0,
 	}
+
 	self._flow[real_index] = liquid
 	self._inactive_flow[real_index] = liquid
 end
@@ -371,35 +405,35 @@ local remove_list = {}
 local add_list = {}
 local fill_list = {
 	{
+		angle = 0,
 		index = 0,
 		weight = 0,
-		angle = 0
 	},
 	{
+		angle = 0,
 		index = 0,
 		weight = 0,
-		angle = 0
 	},
 	{
+		angle = 0,
 		index = 0,
 		weight = 0,
-		angle = 0
 	},
 	{
+		angle = 0,
 		index = 0,
 		weight = 0,
-		angle = 0
 	},
 	{
+		angle = 0,
 		index = 0,
 		weight = 0,
-		angle = 0
 	},
 	{
+		angle = 0,
 		index = 0,
 		weight = 0,
-		angle = 0
-	}
+	},
 }
 
 LiquidAreaDamageExtension.update = function (self, unit, input, dt, context, t)
@@ -431,7 +465,7 @@ LiquidAreaDamageExtension.update = function (self, unit, input, dt, context, t)
 		end
 	end
 
-	if self._time_to_remove < t then
+	if t > self._time_to_remove then
 		Managers.state.unit_spawner:mark_for_deletion(self._unit)
 
 		return
@@ -452,7 +486,7 @@ LiquidAreaDamageExtension.update = function (self, unit, input, dt, context, t)
 			for dir, neighbour_index in pairs(liquid.neighbours) do
 				local neighbour = flow[neighbour_index]
 				local neighbour_angle = directions[dir].angle
-				local forward_angle, backward_angle = nil
+				local forward_angle, backward_angle
 
 				if flow_angle < neighbour_angle then
 					forward_angle = neighbour_angle - flow_angle
@@ -462,7 +496,7 @@ LiquidAreaDamageExtension.update = function (self, unit, input, dt, context, t)
 					backward_angle = flow_angle - neighbour_angle
 				end
 
-				local angle = nil
+				local angle
 
 				if forward_angle < backward_angle then
 					angle = forward_angle
@@ -471,11 +505,14 @@ LiquidAreaDamageExtension.update = function (self, unit, input, dt, context, t)
 				end
 
 				local weight = spread_function(math.abs(angle))
+
 				total_weight = total_weight + weight
 
 				if not active_flow[neighbour_index] and not neighbour.full and weight > 0 then
 					fill_list_index = fill_list_index + 1
+
 					local fill_list_entry = fill_list[fill_list_index]
+
 					fill_list_entry.index = neighbour_index
 					fill_list_entry.weight = weight
 					fill_list_entry.angle = neighbour_angle
@@ -503,6 +540,7 @@ LiquidAreaDamageExtension.update = function (self, unit, input, dt, context, t)
 				if use_linearized_flow then
 					local relative_angle = entry.relative_angle
 					local new_angle = starting_angle - relative_angle
+
 					neighbour.angle = new_angle
 					neighbour.amount = total_amount
 				else
@@ -538,7 +576,7 @@ LiquidAreaDamageExtension.update = function (self, unit, input, dt, context, t)
 
 	self:_update_collision_detection(dt, t)
 
-	while self._next_pulse < t do
+	while t > self._next_pulse do
 		self._next_pulse = self._next_pulse + 0.75
 
 		self:_pulse_damage()
@@ -547,7 +585,7 @@ LiquidAreaDamageExtension.update = function (self, unit, input, dt, context, t)
 	local liquid_update_function = self._liquid_update_function
 
 	if liquid_update_function then
-		local result = self:_liquid_update_function(t, dt)
+		local result = self._liquid_update_function(self, t, dt)
 
 		if not result then
 			self._liquid_update_function = nil
@@ -556,7 +594,7 @@ LiquidAreaDamageExtension.update = function (self, unit, input, dt, context, t)
 end
 
 LiquidAreaDamageExtension._add_buff_helper_function = function (self, unit, liquid_unit, buff_name, buff_condition, buff_system)
-	local is_condition_fulfilled = nil
+	local is_condition_fulfilled
 
 	if buff_condition then
 		is_condition_fulfilled = buff_condition(unit)
@@ -585,7 +623,9 @@ LiquidAreaDamageExtension._update_collision_detection = function (self, dt, t)
 	local liquid_unit = self._unit
 	local apply_buff_to_player = self._apply_buff_to_player
 	local do_direct_damage_player = self._do_direct_damage_player
+
 	self._check_player_units = (apply_buff_to_player or do_direct_damage_player) and self._check_player_units
+
 	local buff_system = self._buff_system
 	local buff_name = self._buff_name
 	local buff_template_type = self._buff_type
@@ -658,6 +698,7 @@ LiquidAreaDamageExtension._update_collision_detection = function (self, dt, t)
 		if breed and not immune_breeds[breed.name] then
 			if self:_is_unit_colliding(grid, unit) then
 				self._colliding_units[unit] = breed.armor_category or 1
+
 				local buff_extension = ScriptUnit.has_extension(unit, "buff_system")
 
 				if buff_name and apply_buff_to_ai and buff_extension and not buff_extension:has_buff_type(buff_template_type) then
@@ -754,6 +795,7 @@ LiquidAreaDamageExtension._pulse_damage = function (self)
 		else
 			remove_i = remove_i + 1
 			remove_list[remove_i] = unit
+
 			local status_extension = is_player and ScriptUnit.extension(unit, "status_system")
 
 			if is_player and status_extension.in_liquid_unit == liquid_unit then
@@ -764,6 +806,7 @@ LiquidAreaDamageExtension._pulse_damage = function (self)
 
 	for i = 1, remove_i do
 		local unit = remove_list[i]
+
 		self._colliding_units[unit] = nil
 	end
 end
