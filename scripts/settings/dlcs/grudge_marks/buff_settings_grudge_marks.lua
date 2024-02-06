@@ -39,7 +39,7 @@ settings.buff_templates = {
 	grudge_mark_health = {
 		buffs = {
 			{
-				multiplier = 0.5,
+				multiplier = 0.42,
 				name = "grudge_mark_health",
 				stat_buff = "max_health",
 			},

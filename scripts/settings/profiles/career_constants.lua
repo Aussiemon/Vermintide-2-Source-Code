@@ -12,7 +12,7 @@ CareerConstants = {
 	dr_engineer = {
 		num_starting_bombs = 3,
 		talent_4_2_cooldown = 0.25,
-		talent_4_2_crit = 0.15,
+		talent_4_2_crit = 0.08,
 		talent_4_2_damage_taken = 0.2,
 		talent_4_3_stack_duration = 1.5,
 	},

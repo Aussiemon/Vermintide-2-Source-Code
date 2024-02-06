@@ -551,8 +551,12 @@ new_template("light_slashing_smiter_stab", nil, "light_slashing_smiter_stab_dual
 
 DamageProfileTemplates.light_slashing_smiter_stab_dual.armor_modifier = "armor_modifier_stab_smiter_M_1h"
 DamageProfileTemplates.light_slashing_smiter_stab_dual.targets = "targets_stab_dual_smiter_L"
-DamageProfileTemplates.light_slashing_smiter_stab_dual.critical_strike = "critical_strike_stab_dual_smiter_L"
+DamageProfileTemplates.light_slashing_smiter_stab_dual.critical_strike = "critical_strike_stab_smiter_M_1h"
 DamageProfileTemplates.light_slashing_smiter_stab_dual.melee_boost_override = 4
+
+new_template("light_slashing_smiter_stab_dual", nil, "light_slashing_smiter_stab_dual_dagger", "heavy_attack")
+
+DamageProfileTemplates.light_slashing_smiter_stab_dual_dagger.critical_strike = "critical_strike_stab_dual_smiter_L_dagger"
 DamageProfileTemplates.heavy_slashing_smiter_stab = {
 	armor_modifier = "armor_modifier_stab_smiter_H",
 	charge_value = "heavy_attack",

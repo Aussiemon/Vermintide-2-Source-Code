@@ -517,7 +517,7 @@ weapon_template.actions = {
 			},
 		},
 		heavy_attack_2 = {
-			additional_critical_strike_chance = 0.1,
+			additional_critical_strike_chance = 0,
 			anim_end_event = "attack_finished",
 			anim_event = "attack_swing_heavy",
 			attack_direction = "up",

@@ -175,7 +175,7 @@ local damage_templates = {
 			attack_armor_power_modifer = {
 				1,
 				1.4,
-				1.5,
+				1.17,
 				1,
 				0.75,
 				0.5,
@@ -193,7 +193,7 @@ local damage_templates = {
 			attack = {
 				1,
 				1.2,
-				1.5,
+				1.17,
 				1,
 				0.75,
 				0,

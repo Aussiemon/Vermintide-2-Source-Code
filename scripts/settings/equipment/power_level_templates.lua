@@ -2524,7 +2524,7 @@ PowerLevelTemplates = {
 				attack = {
 					1,
 					0.8,
-					2.1,
+					2.5,
 					1,
 					0.75,
 				},
@@ -2574,11 +2574,11 @@ PowerLevelTemplates = {
 			1,
 		},
 	},
-	critical_strike_stab_dual_smiter_L = {
+	critical_strike_stab_dual_smiter_L_dagger = {
 		attack_armor_power_modifer = {
 			1,
 			1,
-			2.1,
+			2.5,
 			1,
 			1,
 		},
