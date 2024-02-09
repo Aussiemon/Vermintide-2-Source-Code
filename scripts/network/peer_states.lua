@@ -430,6 +430,7 @@ PeerStates.Disconnecting = {
 		local server = self.server
 		local game_session = server.game_session
 		local peer_id = self.peer_id
+		local local_player_id = 1
 		local game_network_manager = server.game_network_manager
 		local party = Managers.party
 
@@ -447,7 +448,7 @@ PeerStates.Disconnecting = {
 			end
 		end
 
-		if game_session and server.peers_added_to_gamesession[peer_id] then
+		if game_session and (server.peers_added_to_gamesession[peer_id] or DEDICATED_SERVER) then
 			printf("[PSM] Disconnected peer %s is being removed from session.", peer_id)
 
 			local in_session = server.game_network_manager:in_game_session()
@@ -464,6 +465,16 @@ PeerStates.Disconnecting = {
 		if game_network_manager then
 			game_network_manager:remove_peer(peer_id)
 		end
+
+		if Managers.state.game_mode then
+			Managers.state.game_mode:player_left_game_session(peer_id, local_player_id)
+		end
+
+		if Managers.venture.challenge then
+			Managers.venture.challenge:player_left_game_session(peer_id, local_player_id)
+		end
+
+		Managers.party:server_peer_left_session(peer_id, previous_state.approved_for_joining, previous_state.state_name)
 
 		server.peers_completed_game_object_sync[peer_id] = nil
 	end,
@@ -483,23 +494,9 @@ PeerStates.Disconnected = {
 
 		local peer_id = self.peer_id
 		local server = self.server
-		local local_player_id = 1
-
-		if Managers.state.game_mode then
-			Managers.state.game_mode:player_left_game_session(peer_id, local_player_id)
-		end
-
-		if Managers.venture.challenge then
-			Managers.venture.challenge:player_left_game_session(peer_id, local_player_id)
-		end
-
-		Managers.party:server_peer_left_session(peer_id)
-
 		local is_client = peer_id ~= Network.peer_id()
 
 		if is_client then
-			Managers.mechanism:client_left(peer_id)
-
 			local enemy_package_loader = Managers.level_transition_handler.enemy_package_loader
 
 			enemy_package_loader:client_disconnected(peer_id)

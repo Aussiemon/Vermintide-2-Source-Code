@@ -1694,7 +1694,6 @@ TalentTrees.empire_soldier = {
 		},
 	},
 }
-Talents = Talents or {}
 Talents.empire_soldier = {
 	{
 		buffer = "server",

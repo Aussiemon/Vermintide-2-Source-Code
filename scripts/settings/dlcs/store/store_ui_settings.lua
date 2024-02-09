@@ -38,6 +38,7 @@ settings.controller_settings = {
 }
 settings.hotkey_mapping = {
 	hotkey_store = {
+		cat_disabled = true,
 		disable_when_matchmaking_ready = true,
 		error_message = "matchmaking_ready_interaction_message_store",
 		in_transition = "hero_view_force",

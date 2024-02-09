@@ -800,6 +800,10 @@ AISystem._update_taunt = function (self, t, blackboard)
 end
 
 AISystem.update_perception = function (self, t, dt)
+	if script_data.disable_ai_perception then
+		return
+	end
+
 	local PerceptionUtils = PerceptionUtils
 	local ai_units_perception = self.ai_units_perception
 

@@ -1,22 +1,6 @@
 ﻿-- chunkname: @scripts/settings/dlcs/bless/career_settings_bless.lua
 
 CareerActionNames.witch_hunter[#CareerActionNames.witch_hunter + 1] = "action_career_wh_priest"
-PlayerBreeds.hero_wh_priest = {
-	armor_category = 4,
-	awards_positive_reinforcement_message = true,
-	cannot_be_aggroed = true,
-	disable_local_hit_reactions = true,
-	is_hero = true,
-	is_player = true,
-	name = "hero_wh_priest",
-	poison_resistance = 0,
-	threat_value = 8,
-	vortexable = true,
-	hit_zones = PlayerBreedHitZones.player_breed_hit_zones,
-	status_effect_settings = {
-		category = "small",
-	},
-}
 CareerSettings.wh_priest = {
 	base_skin = "skin_wh_priest",
 	category_image = "store_category_icon_priest",
@@ -89,7 +73,7 @@ CareerSettings.wh_priest = {
 		end
 	end,
 	override_available_for_mechanism = function (career)
-		local settings = Managers.mechanism:mechanism_setting("override_career_availability")
+		local settings = Managers.mechanism:mechanism_setting_for_title("override_career_availability")
 		local career_name = career.display_name
 
 		if settings and settings[career_name] ~= nil then

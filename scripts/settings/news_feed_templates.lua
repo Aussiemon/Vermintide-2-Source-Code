@@ -215,7 +215,7 @@ NewsFeedTemplates = {
 		infinite = false,
 		name = "sign_in_rewards",
 		condition_func = function (params)
-			if ItemHelper.has_new_sign_in_reward() then
+			if ItemHelper.has_new_sign_in_reward() and not script_data.dont_show_unseen_rewards then
 				return true
 			end
 		end,

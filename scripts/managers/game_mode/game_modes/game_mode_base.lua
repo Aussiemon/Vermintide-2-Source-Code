@@ -10,7 +10,7 @@ GameModeBase.init = function (self, settings, world, network_server, is_server, 
 	self._profile_synchronizer = profile_synchronizer
 	self._level_completed = false
 	self._level_failed = false
-	self._lose_condition_disabled = false
+	self._lose_condition_disabled = script_data.lose_condition_disabled or false
 	self._end_level_areas = {}
 	self._debug_end_level_areas = {}
 	self._initial_peers_ready = false
@@ -80,10 +80,10 @@ GameModeBase._is_time_up = function (self)
 	return time_up
 end
 
-GameModeBase._add_bot_to_party = function (self, party_id, profile_index, career_index)
+GameModeBase._add_bot_to_party = function (self, party_id, profile_index, career_index, optional_slot_id)
 	local local_peer_id = Network.peer_id()
 	local local_player_id = Managers.player:next_available_local_player_id(local_peer_id, profile_index)
-	local slot_id
+	local slot_id = optional_slot_id
 	local is_bot = true
 
 	Managers.party:assign_peer_to_party(local_peer_id, local_player_id, party_id, slot_id, is_bot)
@@ -316,11 +316,11 @@ GameModeBase.player_joined_party = function (self, peer_id, local_player_id, new
 	end
 end
 
-GameModeBase.player_left_party = function (self, peer_id, local_player_id, party_id, slot_id)
+GameModeBase.player_left_party = function (self, peer_id, local_player_id, party_id, slot_id, old_slot_data)
 	local player_spawners = self._player_spawners
 
 	for i = 1, #player_spawners do
-		player_spawners[i]:player_left_party(peer_id, local_player_id, party_id, slot_id)
+		player_spawners[i]:player_left_party(peer_id, local_player_id, party_id, slot_id, old_slot_data)
 	end
 end
 
@@ -335,10 +335,6 @@ GameModeBase.change_game_mode_state = function (self, state_name)
 		cprintf("[GameMode] State Changed from '%s' to '%s'", tostring(self._game_mode_state), state_name)
 	end
 
-	self._game_mode_state = state_name
-
-	self:_game_mode_state_changed(state_name)
-
 	if self._is_server then
 		Managers.state.game_mode:change_game_mode_state(state_name)
 
@@ -348,6 +344,12 @@ GameModeBase.change_game_mode_state = function (self, state_name)
 			})
 		end
 	end
+
+	local old_state = self._game_mode_state
+
+	self._game_mode_state = state_name
+
+	self:_game_mode_state_changed(state_name, old_state)
 end
 
 GameModeBase._game_mode_state_changed = function (self, state_name)
@@ -542,4 +544,8 @@ end
 
 GameModeBase.set_photomode_enabled = function (self, enabled)
 	self._photomode_enabled = enabled
+end
+
+GameModeBase.is_joinable = function (self)
+	return true
 end

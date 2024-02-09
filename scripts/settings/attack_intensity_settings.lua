@@ -190,6 +190,7 @@ AttackIntensitySettings.difficulty.hardest = {
 AttackIntensitySettings.difficulty.cataclysm = table.clone(AttackIntensitySettings.difficulty.hardest)
 AttackIntensitySettings.difficulty.cataclysm_2 = table.clone(AttackIntensitySettings.difficulty.hardest)
 AttackIntensitySettings.difficulty.cataclysm_3 = table.clone(AttackIntensitySettings.difficulty.hardest)
+AttackIntensitySettings.difficulty.versus_base = table.clone(AttackIntensitySettings.difficulty.hard)
 
 for attack_type, _ in pairs(AttackIntensitySettings.attack_type_intesities) do
 	for difficulty, data in pairs(AttackIntensitySettings.difficulty) do

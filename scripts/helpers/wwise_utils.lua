@@ -11,6 +11,10 @@ WwiseUtils.trigger_position_event = function (world, event, position)
 end
 
 WwiseUtils.trigger_unit_event = function (world, event, unit, node_id)
+	if DEDICATED_SERVER then
+		return nil, nil, nil
+	end
+
 	local source, wwise_world = WwiseUtils.make_unit_auto_source(world, unit, node_id)
 	local id = WwiseWorld.trigger_event(wwise_world, event, source)
 

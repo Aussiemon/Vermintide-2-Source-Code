@@ -367,7 +367,7 @@ GenericStatusExtension.update = function (self, unit, input, dt, context, t)
 				if t > self.next_hanging_damage_time then
 					local h = PlayerUnitStatusSettings.hanging_by_pack_master
 
-					DamageUtils.add_damage_network(unit, unit, h.damage_amount, h.hit_zone_name, h.damage_type, nil, Vector3.up(), "skaven_pack_master")
+					DamageUtils.add_damage_network(unit, unit, h.damage_amount, h.hit_zone_name, h.damage_type, nil, Vector3.up(), "skaven_pack_master", nil, unit)
 
 					self.next_hanging_damage_time = t + 1
 				end
@@ -1025,6 +1025,15 @@ GenericStatusExtension.set_pounced_down = function (self, pounced_down, pouncer_
 		Managers.state.event:trigger("on_player_disabled", "assassin_pounced", unit, pouncer_unit)
 		Managers.state.achievement:trigger_event("register_player_disabled", unit)
 	end
+
+	if self.is_server and pouncer_unit then
+		local pouncer_player = Managers.player:unit_owner(pouncer_unit)
+		local breed = Unit.get_data(pouncer_unit, "breed")
+
+		if pounced_down and pouncer_player then
+			StatisticsUtil.register_disable(pouncer_player, Managers.player:statistics_db(), breed.name)
+		end
+	end
 end
 
 GenericStatusExtension.set_crouching = function (self, crouching)
@@ -1065,8 +1074,6 @@ GenericStatusExtension.set_knocked_down = function (self, knocked_down)
 	self:set_outline_incapacitated(not self:is_dead() and self:is_disabled())
 
 	if knocked_down then
-		StatisticsUtil.register_knockdown(unit, health_extension, nil, is_server)
-
 		local dialogue_event = "knocked_down"
 		local num_times_knocked_down = self._num_times_knocked_down
 
@@ -1126,6 +1133,29 @@ GenericStatusExtension.set_knocked_down = function (self, knocked_down)
 
 		if self._intoxication_level < 0 then
 			self._intoxication_level = -1
+		end
+
+		StatisticsUtil.register_knockdown(unit, health_extension, nil, is_server)
+
+		local is_versus = Managers.mechanism:current_mechanism_name() == "versus"
+		local recent_damages = health_extension:recent_damages()
+		local attacker_unit = recent_damages[3]
+		local side_manager = Managers.state.side
+
+		if is_versus and side_manager:versus_is_dark_pact(local_player_unit) then
+			local attacker_player = Managers.player:owner(attacker_unit)
+			local is_local_player = attacker_player and attacker_player.peer_id == Network.peer_id()
+
+			if is_local_player then
+				local wwise_world = Managers.world:wwise_world(self.world)
+
+				WwiseWorld.trigger_event(wwise_world, "versus_hud_skaven_down_hero_stinger_1p")
+				WwiseWorld.trigger_event(wwise_world, "versus_hud_skaven_down_hero_stinger_3p")
+			else
+				local wwise_world = Managers.world:wwise_world(self.world)
+
+				WwiseWorld.trigger_event(wwise_world, "versus_hud_skaven_down_hero_stinger_3p")
+			end
 		end
 	else
 		health_extension:reset()
@@ -1595,31 +1625,34 @@ GenericStatusExtension.set_outline_incapacitated = function (self, incapacitated
 	end
 
 	if incapacitated then
-		if not player.local_player then
-			if not self._incapacitated_outline_ids.target_id then
-				self._incapacitated_outline_ids.target_id = outline_extension:add_outline(OutlineSettings.templates.incapacitated)
-			end
-
-			if disabler_unit and not self._incapacitated_outline_ids.disabler_id then
-				outline_extension = ScriptUnit.extension(disabler_unit, "outline_system")
-
-				local outline_id = outline_extension:add_outline(OutlineSettings.templates.incapacitated)
-
-				self._incapacitated_outline_ids.disabler_id = outline_id
-			end
+		if not player.local_player and not self._incapacitated_outline_ids.target_id then
+			self._incapacitated_outline_ids.target_id = outline_extension:add_outline(OutlineSettings.templates.incapacitated)
 		end
 	else
 		local incapacitated_outline_ids = self._incapacitated_outline_ids
 
 		outline_extension:remove_outline(incapacitated_outline_ids.target_id)
 
-		if incapacitated_outline_ids.disabler_id and disabler_unit then
-			outline_extension = ScriptUnit.extension(disabler_unit, "outline_system")
+		incapacitated_outline_ids.target_id = nil
+	end
 
-			outline_extension:remove_outline(incapacitated_outline_ids.disabler_id)
+	local disabler_outline_extension = ScriptUnit.has_extension(disabler_unit, "outline_system")
+
+	if disabler_outline_extension then
+		outline_disabler_unit = disabler_outline_extension and outline_disabler_unit
+
+		local incapacitated_outline_ids = self._incapacitated_outline_ids
+		local disabler_id = incapacitated_outline_ids.disabler_id
+
+		if outline_disabler_unit then
+			if not disabler_id then
+				incapacitated_outline_ids.disabler_id = disabler_outline_extension:add_outline(OutlineSettings.templates.incapacitated)
+			end
+		elseif disabler_id then
+			disabler_outline_extension:remove_outline(disabler_id)
+
+			incapacitated_outline_ids.disabler_id = nil
 		end
-
-		table.clear(self._incapacitated_outline_ids)
 	end
 end
 
@@ -1666,7 +1699,7 @@ GenericStatusExtension.set_pack_master = function (self, grabbed_status, is_grab
 	end
 
 	local locomotion = ScriptUnit.extension(unit, "locomotion_system")
-	local outline_grabbed_unit = grabbed_status ~= "pack_master_hanging"
+	local outline_grabbed_unit = is_grabbed and grabbed_status ~= "pack_master_hanging"
 	local player_manager = Managers.player
 	local grabber_player = player_manager:unit_owner(grabber_unit)
 	local local_player = player_manager:local_player()
@@ -1740,6 +1773,10 @@ GenericStatusExtension.set_pack_master = function (self, grabbed_status, is_grab
 			locomotion:set_wanted_velocity(Vector3.zero())
 		end
 
+		if not previous_status and grabber_player and self.is_server then
+			StatisticsUtil.register_disable(grabber_player, Managers.player:statistics_db(), breed.name)
+		end
+
 		local breed = Unit.get_data(grabber_unit, "breed")
 
 		if breed and breed.is_player then
@@ -1752,19 +1789,7 @@ GenericStatusExtension.set_pack_master = function (self, grabbed_status, is_grab
 
 		Vector3.set_z(dir, 0)
 		Unit.set_local_rotation(unit, 0, Quaternion.look(dir, Vector3.up()))
-		Unit.animation_event(unit, "packmaster_hang_start")
 		locomotion:set_disabled(true, LocomotionUtils.update_local_animation_driven_movement_plus_mover)
-
-		local target_unit_name = SPProfiles[self.profile_id].unit_name
-		local inventory_extension = self.inventory_extension
-		local equipment = inventory_extension:equipment()
-		local weapon_unit = equipment.right_hand_wielded_unit_3p
-		local slot_name = inventory_extension:get_wielded_slot_name()
-
-		if slot_name == "slot_packmaster_claw" then
-			Unit.animation_event(weapon_unit, "attack_grab_hang_" .. target_unit_name)
-			Unit.animation_event(grabber_unit, "attack_grab_hang_" .. target_unit_name)
-		end
 
 		self.pack_master_hoisted = true
 	elseif grabbed_status == "pack_master_hanging" then
@@ -2118,8 +2143,6 @@ GenericStatusExtension.set_invisible = function (self, invisible, force_third_pe
 	local local_player_side = local_player_party and side_manager.side_by_party[local_player_party]
 	local is_enemies = side_manager:is_enemy_by_side(local_player_side, unit_side)
 	local fade_value = is_enemies and 1 or 0.65
-	local side = Managers.state.side.side_by_unit[unit]
-	local unit_is_hero = side and side:name() == "heroes"
 
 	if invisible then
 		flow_event_name = "lua_enabled_invisibility"
@@ -2128,7 +2151,7 @@ GenericStatusExtension.set_invisible = function (self, invisible, force_third_pe
 			Managers.state.entity:system("fade_system"):set_min_fade(unit, fade_value)
 		end
 
-		if unit_is_hero and is_enemies then
+		if is_enemies then
 			local outline_extension = ScriptUnit.extension(self.unit, "outline_system")
 
 			self._invisible_outline_id = outline_extension:add_outline(OutlineSettings.templates.invisible)
@@ -2140,7 +2163,7 @@ GenericStatusExtension.set_invisible = function (self, invisible, force_third_pe
 			Managers.state.entity:system("fade_system"):set_min_fade(unit, 0)
 		end
 
-		if unit_is_hero and is_enemies then
+		if is_enemies then
 			local outline_extension = ScriptUnit.extension(self.unit, "outline_system")
 
 			outline_extension:remove_outline(self._invisible_outline_id)

@@ -1355,7 +1355,6 @@ weapon_template.actions = {
 			damage_window_end = 0.2,
 			damage_window_start = 0.05,
 			dedicated_target_range = 2,
-			fatigue_cost = "action_stun_push",
 			hit_effect = "melee_hit_sword_1h",
 			hit_time = 0.1,
 			impact_sound_event = "slashing_hit",

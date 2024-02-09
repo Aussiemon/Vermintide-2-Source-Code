@@ -1,5 +1,7 @@
 ﻿-- chunkname: @scripts/settings/breeds/breed_players.lua
 
+require("scripts/helpers/breed_utils")
+
 PlayerBreeds = PlayerBreeds or {}
 PlayerBreedHitZones = PlayerBreedHitZones or {}
 PlayerBreedHitZones.player_breed_hit_zones = {
@@ -82,7 +84,6 @@ PlayerBreeds.hero_we_waywatcher = {
 	cannot_be_aggroed = true,
 	disable_local_hit_reactions = true,
 	is_hero = true,
-	is_player = true,
 	name = "hero_we_waywatcher",
 	poison_resistance = 0,
 	threat_value = 8,
@@ -98,7 +99,6 @@ PlayerBreeds.hero_we_maidenguard = {
 	cannot_be_aggroed = true,
 	disable_local_hit_reactions = true,
 	is_hero = true,
-	is_player = true,
 	name = "hero_we_maidenguard",
 	poison_resistance = 0,
 	threat_value = 8,
@@ -114,7 +114,6 @@ PlayerBreeds.hero_we_shade = {
 	cannot_be_aggroed = true,
 	disable_local_hit_reactions = true,
 	is_hero = true,
-	is_player = true,
 	name = "hero_we_shade",
 	poison_resistance = 0,
 	threat_value = 8,
@@ -130,7 +129,6 @@ PlayerBreeds.hero_bw_scholar = {
 	cannot_be_aggroed = true,
 	disable_local_hit_reactions = true,
 	is_hero = true,
-	is_player = true,
 	name = "hero_bw_scholar",
 	poison_resistance = 0,
 	threat_value = 8,
@@ -146,7 +144,6 @@ PlayerBreeds.hero_bw_adept = {
 	cannot_be_aggroed = true,
 	disable_local_hit_reactions = true,
 	is_hero = true,
-	is_player = true,
 	name = "hero_bw_adept",
 	poison_resistance = 0,
 	threat_value = 8,
@@ -162,7 +159,6 @@ PlayerBreeds.hero_bw_unchained = {
 	cannot_be_aggroed = true,
 	disable_local_hit_reactions = true,
 	is_hero = true,
-	is_player = true,
 	name = "hero_bw_unchained",
 	poison_resistance = 0,
 	threat_value = 8,
@@ -178,7 +174,6 @@ PlayerBreeds.hero_dr_ranger = {
 	cannot_be_aggroed = true,
 	disable_local_hit_reactions = true,
 	is_hero = true,
-	is_player = true,
 	name = "hero_dr_ranger",
 	poison_resistance = 0,
 	threat_value = 8,
@@ -194,7 +189,6 @@ PlayerBreeds.hero_dr_ironbreaker = {
 	cannot_be_aggroed = true,
 	disable_local_hit_reactions = true,
 	is_hero = true,
-	is_player = true,
 	name = "hero_dr_ironbreaker",
 	poison_resistance = 0,
 	threat_value = 8,
@@ -210,7 +204,6 @@ PlayerBreeds.hero_dr_slayer = {
 	cannot_be_aggroed = true,
 	disable_local_hit_reactions = true,
 	is_hero = true,
-	is_player = true,
 	name = "hero_dr_slayer",
 	poison_resistance = 0,
 	threat_value = 8,
@@ -226,7 +219,6 @@ PlayerBreeds.hero_es_mercenary = {
 	cannot_be_aggroed = true,
 	disable_local_hit_reactions = true,
 	is_hero = true,
-	is_player = true,
 	name = "hero_es_mercenary",
 	poison_resistance = 0,
 	threat_value = 8,
@@ -242,7 +234,6 @@ PlayerBreeds.hero_es_huntsman = {
 	cannot_be_aggroed = true,
 	disable_local_hit_reactions = true,
 	is_hero = true,
-	is_player = true,
 	name = "hero_es_huntsman",
 	poison_resistance = 0,
 	threat_value = 8,
@@ -258,7 +249,6 @@ PlayerBreeds.hero_es_knight = {
 	cannot_be_aggroed = true,
 	disable_local_hit_reactions = true,
 	is_hero = true,
-	is_player = true,
 	name = "hero_es_knight",
 	poison_resistance = 0,
 	threat_value = 8,
@@ -274,7 +264,6 @@ PlayerBreeds.hero_wh_zealot = {
 	cannot_be_aggroed = true,
 	disable_local_hit_reactions = true,
 	is_hero = true,
-	is_player = true,
 	name = "hero_wh_zealot",
 	poison_resistance = 0,
 	threat_value = 8,
@@ -290,7 +279,6 @@ PlayerBreeds.hero_wh_bountyhunter = {
 	cannot_be_aggroed = true,
 	disable_local_hit_reactions = true,
 	is_hero = true,
-	is_player = true,
 	name = "hero_wh_bountyhunter",
 	poison_resistance = 0,
 	threat_value = 8,
@@ -306,7 +294,6 @@ PlayerBreeds.hero_wh_captain = {
 	cannot_be_aggroed = true,
 	disable_local_hit_reactions = true,
 	is_hero = true,
-	is_player = true,
 	name = "hero_wh_captain",
 	poison_resistance = 0,
 	threat_value = 8,
@@ -316,3 +303,12 @@ PlayerBreeds.hero_wh_captain = {
 		category = "small",
 	},
 }
+
+DLCUtils.dofile_list("player_breeds")
+
+for breed_name, breed_data in pairs(PlayerBreeds) do
+	breed_data.is_ai = false
+	breed_data.is_player = true
+
+	BreedUtils.inject_breed_category_mask(breed_data)
+end

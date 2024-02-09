@@ -130,6 +130,7 @@ local breed_data = {
 		84.375,
 		84.375,
 		84.375,
+		20.8125,
 	},
 	bloodlust_health = BreedTweaks.bloodlust_health.chaos_roamer,
 	hit_mass_counts = {
@@ -445,6 +446,9 @@ local AttackIntensityPerDifficulty = {
 		cataclysm_3 = {
 			normal = 2,
 		},
+		versus_base = {
+			normal = 2,
+		},
 	},
 	running = {
 		easy = {
@@ -471,6 +475,9 @@ local AttackIntensityPerDifficulty = {
 		cataclysm_3 = {
 			running = 2.5,
 		},
+		versus_base = {
+			running = 2.5,
+		},
 	},
 	push = {
 		easy = {
@@ -495,6 +502,9 @@ local AttackIntensityPerDifficulty = {
 			push = 1.5,
 		},
 		cataclysm_3 = {
+			push = 1.5,
+		},
+		versus_base = {
 			push = 1.5,
 		},
 	},

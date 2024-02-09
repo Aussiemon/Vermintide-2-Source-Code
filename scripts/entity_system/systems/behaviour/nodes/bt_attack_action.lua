@@ -340,7 +340,9 @@ BTAttackAction.attack_success = function (self, unit, blackboard)
 	local breed = blackboard.breed
 
 	if breed.use_backstab_vo and blackboard.backstab_attack_trigger then
-		DialogueSystem:trigger_backstab_hit(blackboard.target_unit, unit)
+		local dialogue_system = Managers.state.entity:system("dialogue_system")
+
+		dialogue_system:trigger_backstab_hit(blackboard.target_unit, unit)
 
 		blackboard.backstab_attack_trigger = false
 	end
@@ -474,7 +476,9 @@ BTAttackAction.anim_cb_attack_vce = function (self, unit, blackboard)
 	local game = network_manager:game()
 
 	if game and blackboard.target_unit_status_extension then
-		DialogueSystem:trigger_attack(blackboard, blackboard.target_unit, unit, false, false)
+		local dialogue_system = Managers.state.entity:system("dialogue_system")
+
+		dialogue_system:trigger_attack(blackboard, blackboard.target_unit, unit, false, false)
 	end
 end
 
@@ -483,7 +487,9 @@ BTAttackAction.anim_cb_attack_vce_long = function (self, unit, blackboard)
 	local game = network_manager:game()
 
 	if game and blackboard.target_unit_status_extension then
-		DialogueSystem:trigger_attack(blackboard, blackboard.target_unit, unit, false, true)
+		local dialogue_system = Managers.state.entity:system("dialogue_system")
+
+		dialogue_system:trigger_attack(blackboard, blackboard.target_unit, unit, false, true)
 	end
 end
 

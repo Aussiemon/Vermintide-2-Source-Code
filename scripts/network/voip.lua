@@ -16,7 +16,7 @@ local TALKING_THRESHOLD = -65
 local has_steam = rawget(_G, "Steam") and rawget(_G, "Steam").connected() and not Development.parameter("use_lan_backend")
 local disable_voip = Development.parameter("disable_voip")
 
-if has_steam and not disable_voip then
+if has_steam and not disable_voip or DEDICATED_SERVER then
 	require("scripts/ui/views/voice_chat_ui")
 
 	Voip.init = function (self, params)
@@ -55,13 +55,17 @@ if has_steam and not disable_voip then
 			voip_info_print("[VOIP] Is server. Creating room / joining my own room.")
 
 			self.is_server = is_server
-			self.room_id = SteamVoip.create_room()
+			self.server_check = is_server
 
-			if self.enabled and not DEDICATED_SERVER then
-				self.voip_client = SteamVoip.join_room(my_peer_id, self.room_id)
+			if not DEDICATED_SERVER then
+				self.room_id = SteamVoip.create_room()
+
+				if self.enabled then
+					self.voip_client = SteamVoip.join_room(my_peer_id, self.room_id)
+				end
+
+				self.room_host = my_peer_id
 			end
-
-			self.room_host = my_peer_id
 		end
 
 		self:_create_gui()
@@ -145,8 +149,80 @@ if has_steam and not disable_voip then
 		return playing_id
 	end
 
+	Voip.vs_add_client_to_voip_room = function (self, peer_id, local_peer_id)
+		local mechanism = Managers.mechanism:game_mechanism()
+
+		assert(mechanism.name == "Versus", "trying to add voip client into vs team room")
+
+		if mechanism.name == "Versus" then
+			local party = Managers.party:get_party_from_player_id(peer_id, local_peer_id)
+
+			if not party then
+				print("not assigned any party yet")
+				cprintf("cant add %s to VOIP room, beacuse they dont have a party", peer_id)
+
+				return
+			end
+
+			local voip_rooms = mechanism:get_voip_rooms()
+			local party_id = party.party_id
+
+			if party_id == 0 then
+				cprintf("no voip room for party 0, player: %s", peer_id)
+
+				return
+			end
+
+			local room_id = voip_rooms[party_id]
+			local room_members = SteamVoipRoom.members(room_id)
+			local member_is_in_room = table.find(room_members, peer_id)
+
+			if not member_is_in_room then
+				cprintf("no voip room for party 0, player: %s", peer_id)
+				self:add_voip_member_to_team_room(peer_id, room_id)
+
+				return
+			end
+
+			voip_warning_print("[VOIP] did not join or get removed from any room")
+		end
+	end
+
+	Voip.vs_remove_client_from_voip_room = function (self, peer_id, local_peer_id, party_id)
+		assert(party_id, "We need the party id the player left")
+
+		if party_id == 0 then
+			cprintf("no voip room for party 0", peer_id)
+
+			return
+		end
+
+		local mechanism = Managers.mechanism:game_mechanism()
+
+		assert(mechanism.name == "Versus", "trying to remove voip client from Versus team room")
+
+		if mechanism.name == "Versus" then
+			local voip_rooms = mechanism:get_voip_rooms()
+			local room_id = voip_rooms[party_id]
+
+			if not room_id then
+				voip_warning_print("Trying to remove a player from voip room but room_id is NIL")
+
+				return
+			end
+
+			local room_members = SteamVoipRoom.members(room_id)
+			local member_is_in_room = table.find(room_members, peer_id)
+
+			self:remove_member_from_team_room(peer_id, room_id)
+			print("[VOIP] remove_member_from_team_room")
+		end
+	end
+
 	Voip.rpc_notify_connected = function (self, channel_id)
-		if self.enabled and not self.is_server then
+		local mechanism = Managers.mechanism:game_mechanism()
+
+		if self.enabled and not self.is_server and mechanism.name ~= "Versus" then
 			self.requesting_room = true
 
 			self.network_transmit:send_rpc_server("rpc_voip_room_request", true)
@@ -159,6 +235,15 @@ if has_steam and not disable_voip then
 
 		if not self.is_server then
 			voip_warning_print("[VOIP] Got request from %s to %s but is not server", peer_id, enter and "enter" or "leave")
+
+			return
+		end
+
+		local mechanism = Managers.mechanism:game_mechanism()
+
+		if mechanism.name == "Versus" then
+			print("not assigned any party yet")
+			cprintf("cant add %s to VOIP room, beacuse they dont have a party", peer_id)
 
 			return
 		end
@@ -197,19 +282,34 @@ if has_steam and not disable_voip then
 	Voip.destroy = function (self)
 		voip_info_print("[VOIP] Destroying VOIP.")
 
-		if self.room_id then
+		local mechanism = Managers.mechanism:game_mechanism()
+		local voip_rooms = mechanism and mechanism.get_voip_rooms and mechanism:get_voip_rooms()
+
+		if self.room_id or voip_rooms and #voip_rooms > 0 then
 			if self.voip_client then
 				self:leave_voip_room()
 			end
 
 			if self.is_server then
-				SteamVoip.destroy_room(self.room_id)
+				if mechanism.name == "Versus" and #voip_rooms > 0 then
+					for i = 1, #voip_rooms do
+						local room_id = voip_rooms[i]
+
+						SteamVoip.destroy_room(room_id)
+
+						voip_rooms[i] = nil
+					end
+				else
+					SteamVoip.destroy_room(self.room_id)
+				end
 			end
 
 			self.room_id = nil
 		end
 
-		Managers.world:destroy_world(self.world)
+		if self.world then
+			Managers.world:destroy_world(self.world)
+		end
 
 		self.room_member_removed = nil
 		self.room_member_added = nil
@@ -301,7 +401,7 @@ if has_steam and not disable_voip then
 			end
 		end
 
-		if script_data.debug_voip then
+		if script_data.debug_voip and not DEDICATED_SERVER then
 			if self.voip_client then
 				Debug.text("VoIP")
 				Debug.text("VoIP - PushToTalk %s (%s)", self.push_to_talk and "on" or "off", self.push_to_talk_active and "pushing" or "-")
@@ -328,7 +428,9 @@ if has_steam and not disable_voip then
 			end
 		end
 
-		self._voice_chat_ui:update(dt)
+		if not DEDICATED_SERVER then
+			self._voice_chat_ui:update(dt)
+		end
 	end
 
 	Voip.add_voip_member = function (self, member)
@@ -339,6 +441,30 @@ if has_steam and not disable_voip then
 		assert(voip_room, "Trying to add a member to a none existing voip room.")
 		SteamVoipRoom.add_member(voip_room, member)
 		self.network_transmit:send_rpc("rpc_voip_room_to_join", member, tostring(self.room_id))
+	end
+
+	Voip.add_voip_member_to_team_room = function (self, member, room_id)
+		voip_info_print("[VOIP] Adding voip member: %q", tostring(member))
+
+		local voip_room = room_id
+
+		assert(voip_room, "Trying to add a member to a none existing voip room.")
+		SteamVoipRoom.add_member(voip_room, member)
+
+		if not self.network_transmit then
+			self.network_transmit = Managers.state.network.network_transmit
+		end
+
+		self.network_transmit:send_rpc("rpc_voip_room_to_join", member, tostring(room_id))
+	end
+
+	Voip.remove_member_from_team_room = function (self, member, room_id)
+		voip_info_print("[VOIP] Removing voip member: %q", tostring(member))
+
+		local voip_room = room_id
+
+		assert(voip_room, "Trying to remove a member from a none existing voip room.")
+		SteamVoipRoom.remove_member(voip_room, member)
 	end
 
 	Voip.remove_member = function (self, member)
@@ -375,7 +501,7 @@ if has_steam and not disable_voip then
 
 		self.muted_peers[member] = nil
 
-		if self.member_list[member] == nil then
+		if self.member_list[member] == nil and member ~= Network.peer_id() then
 			voip_info_print("[VOIP] Unmuting voip member: %q even though it's not in the room (yet).", tostring(member))
 
 			return
@@ -416,6 +542,14 @@ if has_steam and not disable_voip then
 	end
 
 	Voip.set_enabled = function (self, enabled)
+		local mechanism = Managers.mechanism._mechanism_key
+
+		if mechanism == "versus" then
+			print("[VOIP] We want to wait for the players to have a team")
+
+			return
+		end
+
 		self.enabled = enabled
 
 		if self.is_server then
@@ -425,6 +559,8 @@ if has_steam and not disable_voip then
 				self.voip_client = SteamVoip.join_room(self.room_host, self.room_id)
 
 				SteamVoipRoom.add_member(self.room_id, self.room_host)
+				SteamVoipClient.select_out(self.voip_client, true)
+				SteamVoipClient.select_in(self.voip_client, true)
 			elseif not enabled and self.voip_client and self.room_host then
 				voip_info_print("[VOIP] Disabling")
 				SteamVoipRoom.remove_member(self.room_id, self.room_host)
@@ -457,15 +593,29 @@ if has_steam and not disable_voip then
 			return false
 		end
 
-		local level = SteamVoipClient.audio_level(self.voip_client, peer_id)
+		if peer_id == Network.peer_id() then
+			local audio_recording = SteamVoipClient.audio_recording(self.voip_client)
 
-		return level > TALKING_THRESHOLD
+			return audio_recording
+		else
+			local audio_level = SteamVoipClient.audio_level(self.voip_client, peer_id)
+
+			return audio_level > TALKING_THRESHOLD
+		end
+	end
+
+	Voip.is_push_to_talk_active = function (self)
+		return self.push_to_talk and self.push_to_talk_active
+	end
+
+	Voip.push_to_talk_enabled = function (self)
+		return self.push_to_talk
 	end
 
 	Voip.audio_level = function (self, peer_id)
-		local level = SteamVoipClient.audio_level(self.voip_client, peer_id)
+		local audio_level = SteamVoipClient.audio_level(self.voip_client, peer_id)
 
-		return level
+		return audio_level
 	end
 else
 	Voip.init = function (self)
@@ -530,5 +680,29 @@ else
 
 	Voip.audio_level = function (self)
 		return -96
+	end
+
+	Voip.add_voip_member_to_team_room = function (self)
+		return
+	end
+
+	Voip.remove_member_from_team_room = function (self)
+		return
+	end
+
+	Voip.vs_add_client_to_voip_room = function (self)
+		return
+	end
+
+	Voip.vs_remove_client_from_voip_room = function (self)
+		return
+	end
+
+	Voip.push_to_talk_enabled = function (self)
+		return
+	end
+
+	Voip.is_push_to_talk_active = function (self)
+		return
 	end
 end

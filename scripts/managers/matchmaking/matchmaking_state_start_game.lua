@@ -185,6 +185,10 @@ MatchmakingStateStartGame._setup_lobby_data = function (self)
 		if not quick_game then
 			private_game = true
 		end
+	elseif mechanism == "versus" and mission_id == "any" then
+		local map_pool = script_data.versus_map_pool or Managers.mechanism:mechanism_setting_for_title("map_pool")
+
+		mission_id = map_pool[Math.random(#map_pool)]
 	end
 
 	local eac_authorized = false

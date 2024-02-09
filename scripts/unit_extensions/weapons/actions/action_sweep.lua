@@ -464,7 +464,7 @@ ActionSweep._is_within_damage_window = function (self, current_time_in_action, a
 end
 
 ActionSweep._get_target_hit_mass = function (self, difficulty_rank, shield_blocked, current_action, breed, hit_unit_id, hit_unit)
-	local hit_mass_total = shield_blocked and (breed.hit_mass_counts_block and breed.hit_mass_counts_block[difficulty_rank] or breed.hit_mass_count_block) or breed.hit_mass_counts and breed.hit_mass_counts[difficulty_rank] or breed.hit_mass_count or 1
+	local hit_mass_total = shield_blocked and (breed.hit_mass_counts_block and (breed.hit_mass_counts_block[difficulty_rank] or breed.hit_mass_counts_block[2]) or breed.hit_mass_count_block) or breed.hit_mass_counts and (breed.hit_mass_counts[difficulty_rank] or breed.hit_mass_counts[2]) or breed.hit_mass_count or 1
 	local action_mass_override = self._overridable_settings.hit_mass_count
 
 	if self._unlimited_cleave then
@@ -1332,28 +1332,7 @@ ActionSweep._play_character_impact = function (self, is_server, attacker_unit, h
 		return false
 	end
 
-	if not husk and not target_presumed_dead and breed and not breed.disable_local_hit_reactions and unit_has_animation_state_machine(hit_unit) then
-		local hit_anim
-
-		if unit_has_animation_event(hit_unit, "hit_reaction_climb") then
-			local network_manager = Managers.state.network
-			local hit_unit_id = network_manager:unit_game_object_id(hit_unit)
-			local action_name = NetworkLookup.bt_action_names[GameSession.game_object_field(network_manager:game(), hit_unit_id, "bt_action_name")]
-
-			if action_name and action_name == "climb" then
-				hit_anim = "hit_reaction_climb"
-			end
-		end
-
-		if not hit_anim then
-			local hit_unit_dir = Quaternion.forward(unit_local_rotation(hit_unit, 0))
-			local angle_difference = Vector3.flat_angle(hit_unit_dir, attack_direction)
-
-			hit_anim = not (not (angle_difference < -math.pi * 0.75) and not (angle_difference > math.pi * 0.75)) and "hit_reaction_backward" or angle_difference < -math.pi * 0.25 and "hit_reaction_left" or angle_difference < math.pi * 0.25 and "hit_reaction_forward" or "hit_reaction_right"
-		end
-
-		unit_animation_event(hit_unit, hit_anim)
-	end
+	DamageUtils.add_hit_reaction(hit_unit, breed, husk, attack_direction, target_presumed_dead)
 
 	return target_presumed_dead
 end

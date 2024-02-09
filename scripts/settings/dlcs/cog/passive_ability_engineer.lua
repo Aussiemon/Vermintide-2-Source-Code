@@ -53,7 +53,6 @@ PassiveAbilityEngineer._register_events = function (self)
 	Managers.state.event:register(self, "on_engineer_weapon_fire", "on_engineer_weapon_fire")
 	Managers.state.event:register(self, "on_engineer_weapon_spin_up", "on_engineer_weapon_spin_up")
 	Managers.state.event:register(self, "level_start_local_player_spawned", "on_level_start_local_player_spawned")
-	Managers.state.event:register(self, "on_talents_changed", "on_talents_changed")
 end
 
 PassiveAbilityEngineer.game_object_initialized = function (self, unit, go_id)
@@ -67,7 +66,6 @@ PassiveAbilityEngineer._unregister_events = function (self)
 		Managers.state.event:unregister("on_engineer_weapon_fire", self)
 		Managers.state.event:unregister("on_engineer_weapon_spin_up", self)
 		Managers.state.event:unregister("level_start_local_player_spawned", self)
-		Managers.state.event:unregister("on_talents_changed", self)
 	end
 end
 
@@ -192,48 +190,6 @@ PassiveAbilityEngineer.create_game_object = function (self)
 	local callback = callback(self, "cb_game_session_disconnect")
 
 	self._game_object_id = network_manager:create_game_object("engineer_career_data", game_object_data_table, callback)
-end
-
-PassiveAbilityEngineer.on_talents_changed = function (self, unit, talent_extension)
-	if unit ~= self._owner_unit then
-		return
-	end
-
-	self:_add_5_2_bombs()
-end
-
-PassiveAbilityEngineer._add_5_2_bombs = function (self)
-	if not self._is_server then
-		return
-	end
-
-	if not self._talent_extension:has_talent("bardin_engineer_upgraded_grenades") then
-		return
-	end
-
-	local unique_id = self._player:unique_id()
-	local status = Managers.party:get_status_from_unique_id(unique_id)
-	local already_given = not global_is_inside_inn and status.game_mode_data._engineer_upgraded_grenades_added
-
-	if already_given then
-		return
-	end
-
-	status.game_mode_data._engineer_upgraded_grenades_added = true
-
-	local item_name = "grenade_frag_01"
-	local slot_name = "slot_grenade"
-	local inventory_extension = self._inventory_extension
-	local num_already_have = inventory_extension:get_total_item_count(slot_name)
-
-	for i = num_already_have + 1, CareerConstants.dr_engineer.num_starting_bombs do
-		local interactor_game_object_id = NetworkConstants.invalid_game_object_id
-		local engineer_unit_id = Managers.state.unit_storage:go_id(self._owner_unit)
-		local slot_id = NetworkLookup.equipment_slots[slot_name]
-		local item_name_id = NetworkLookup.item_names[item_name]
-
-		Managers.state.network.network_transmit:send_rpc_server("rpc_give_equipment", interactor_game_object_id, engineer_unit_id, slot_id, item_name_id, Vector3.zero())
-	end
 end
 
 PassiveAbilityEngineer.set_career_game_object_id = function (self, go_id)

@@ -1475,7 +1475,7 @@ local function create_engineer_background(scenegraph_id, layer, retained)
 
 						local buff_ext = ScriptUnit.extension(player_unit, "buff_system")
 
-						content.is_reloading = buff_ext and buff_ext:has_buff_type("bardin_engineer_pump_buff")
+						content.is_reloading = buff_ext and (buff_ext:has_buff_type("bardin_engineer_pump_buff") or buff_ext:has_buff_type("bardin_engineer_pump_buff_long"))
 
 						local _, dt = Managers.time:time_and_delta("game")
 						local time = content.time + dt

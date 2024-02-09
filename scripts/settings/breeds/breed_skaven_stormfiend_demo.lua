@@ -311,6 +311,13 @@ local action_data = {
 				0,
 				10,
 			},
+			versus_base = {
+				10,
+				10,
+				0,
+				0,
+				10,
+			},
 		},
 		immune_breeds = {
 			chaos_dummy_troll = true,

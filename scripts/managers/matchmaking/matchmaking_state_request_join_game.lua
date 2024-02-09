@@ -255,12 +255,7 @@ MatchmakingStateRequestJoinGame.update = function (self, dt, t)
 
 			mm_printf("Connected, requesting to join game...")
 
-			local friend_join = false
-
-			if IS_PS4 then
-				friend_join = not not self.state_context.friend_join
-			end
-
+			local friend_join = not not self.state_context.friend_join
 			local unlocked_dlcs_array = self:_gather_dlc_ids()
 
 			self._network_transmit:send_rpc("rpc_matchmaking_request_join_lobby", host, lobby_id, friend_join, unlocked_dlcs_array)

@@ -541,7 +541,10 @@ AIPlayerSlotExtension.update_slot_sound = function (self, t)
 			local event_data = FrameTable.alloc_table()
 
 			event_data.current_amount = taken_slots
-			event_data.has_shield = DialogueSystem:player_shield_check(unit)
+
+			local dialogue_system = Managers.state.entity:system("dialogue_system")
+
+			event_data.has_shield = dialogue_system:player_shield_check(unit)
 
 			dialogue_input:trigger_networked_dialogue_event("surrounded", event_data)
 		end

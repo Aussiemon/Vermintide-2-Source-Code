@@ -102,6 +102,7 @@ local breed_data = {
 		120,
 		150,
 		175,
+		30,
 	},
 	bloodlust_health = BreedTweaks.bloodlust_health.chaos_roamer,
 	hit_mass_counts = {

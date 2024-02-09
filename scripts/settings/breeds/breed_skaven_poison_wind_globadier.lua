@@ -288,6 +288,7 @@ local action_data = {
 			10,
 			10,
 			10,
+			0,
 		},
 		aoe_dot_damage = {
 			2,
@@ -298,6 +299,7 @@ local action_data = {
 			15,
 			15,
 			15,
+			0,
 		},
 		radius = GLOBE_RADIUS,
 		time_between_throws = {
@@ -331,6 +333,7 @@ local action_data = {
 			40,
 			40,
 			40,
+			10,
 		},
 		aoe_dot_damage = {
 			2,
@@ -341,6 +344,7 @@ local action_data = {
 			10,
 			10,
 			10,
+			2,
 		},
 		ignore_staggers = {
 			true,

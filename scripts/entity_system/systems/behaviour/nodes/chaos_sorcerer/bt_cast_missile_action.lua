@@ -141,9 +141,9 @@ end
 
 BTCastMissileAction.launch_projectile = function (self, blackboard, action, initial_position, target_dir, angle, speed, owner_unit, target_unit)
 	local difficulty_rank = Managers.state.difficulty:get_difficulty_rank()
-	local aoe_dot_damage_table = action.aoe_dot_damage[difficulty_rank]
+	local aoe_dot_damage_table = action.aoe_dot_damage[difficulty_rank] or action.aoe_dot_damage[2]
 	local aoe_dot_damage = DamageUtils.calculate_damage(aoe_dot_damage_table)
-	local aoe_init_damage_table = action.aoe_init_damage[difficulty_rank]
+	local aoe_init_damage_table = action.aoe_init_damage[difficulty_rank] or action.aoe_init_damage[2]
 	local aoe_init_damage = DamageUtils.calculate_damage(aoe_init_damage_table)
 	local aoe_dot_damage_interval = action.aoe_dot_damage_interval
 	local radius = action.radius
@@ -206,7 +206,7 @@ BTCastMissileAction.launch_magic_missile = function (self, blackboard, action, p
 		if type(missile_health) == "table" then
 			local difficulty_rank = Managers.state.difficulty:get_difficulty_rank()
 
-			missile_health = missile_health[difficulty_rank]
+			missile_health = missile_health[difficulty_rank] or missile_health[2]
 		end
 
 		unit_template_name = "ai_true_flight_killable_projectile_unit"

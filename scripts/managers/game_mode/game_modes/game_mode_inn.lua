@@ -103,6 +103,10 @@ end
 GameModeInn.event_local_player_spawned = function (self, is_initial_spawn)
 	self._local_player_spawned = true
 	self._is_initial_spawn = is_initial_spawn
+
+	if self._is_server then
+		Managers.state.unit_spawner:spawn_network_unit("units/architecture/keep/keep_gamemode_door_03", "carousel_inn_door", {}, Vector3(-12.382, -0.294, 6.212), Quaternion.from_euler_angles_xyz(90, 0, 0))
+	end
 end
 
 GameModeInn.COMPLETE_LEVEL = function (self)

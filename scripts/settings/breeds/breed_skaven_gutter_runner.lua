@@ -255,6 +255,7 @@ local action_data = {
 			harder = 2.5,
 			hardest = 5,
 			normal = 1,
+			versus_base = 2,
 		},
 		ignore_staggers = {
 			true,
@@ -276,10 +277,12 @@ local action_data = {
 			0.3,
 			0.3,
 			0.3,
+			0.3,
 		},
 	},
 	prepare_crazy_jump = {
 		difficulty_prepare_jump_time = {
+			0.5,
 			0.5,
 			0.5,
 			0.5,

@@ -102,7 +102,7 @@ ThornMutatorExtension.trigger_area_damage = function (self)
 
 	local extension = ScriptUnit.extension(self._unit, "area_damage_system")
 
-	extension:enable(true)
+	extension:enable_area_damage(true)
 end
 
 ThornMutatorExtension.despawn = function (self)
@@ -112,7 +112,7 @@ ThornMutatorExtension.despawn = function (self)
 
 	local extension = ScriptUnit.extension(self._unit, "area_damage_system")
 
-	extension:enable(false)
+	extension:enable_area_damage(false)
 end
 
 ThornMutatorExtension._check_for_deletion = function (self, t)

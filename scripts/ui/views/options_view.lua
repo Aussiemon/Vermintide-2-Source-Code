@@ -4369,6 +4369,38 @@ OptionsView.cb_hud_clamp_ui_scaling = function (self, content)
 	UPDATE_RESOLUTION_LOOKUP(force_update)
 end
 
+OptionsView.cb_vs_hud_damage_feedback_on_yourself_setup = function (self)
+	local options = {
+		{
+			value = false,
+			text = Localize("menu_settings_off"),
+		},
+		{
+			value = true,
+			text = Localize("menu_settings_on"),
+		},
+	}
+	local hud_damage_feedback_on_yourself = Application.user_setting("hud_damage_feedback_on_yourself") or false
+	local selection = hud_damage_feedback_on_yourself and 2 or 1
+	local default_value = DefaultUserSettings.get("user_settings", "hud_damage_feedback_on_yourself") and 2 or 1
+
+	return selection, options, "settings_menu_hud_damage_feedback_on_yourself", default_value
+end
+
+OptionsView.cb_vs_hud_damage_feedback_on_yourself_saved_value = function (self, widget)
+	local hud_damage_feedback_on_yourself = assigned(self.changed_user_settings.hud_damage_feedback_on_yourself, Application.user_setting("hud_damage_feedback_on_yourself"))
+
+	widget.content.current_selection = hud_damage_feedback_on_yourself and 2 or 1
+end
+
+OptionsView.cb_vs_hud_damage_feedback_on_yourself = function (self, content)
+	local options_values = content.options_values
+	local current_selection = content.current_selection
+	local value = options_values[current_selection]
+
+	self.changed_user_settings.hud_damage_feedback_on_yourself = value
+end
+
 OptionsView.cb_hud_custom_scale_setup = function (self)
 	local options = {
 		{

@@ -43,7 +43,7 @@ local function local_is_dlc_unlocked(career)
 end
 
 local function local_override_available_for_mechanism(career)
-	local settings = Managers.mechanism:mechanism_setting("override_career_availability")
+	local settings = Managers.mechanism:mechanism_setting_for_title("override_career_availability")
 	local career_name = career.display_name
 
 	if settings and settings[career_name] ~= nil then

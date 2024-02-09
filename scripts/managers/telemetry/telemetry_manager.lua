@@ -21,20 +21,16 @@ TelemetryManager = class(TelemetryManager)
 TelemetryManager.NAME = "TelemetryManager"
 
 TelemetryManager.create = function ()
-	if IS_WINDOWS and rawget(_G, "lcurl") == nil then
+	if (IS_WINDOWS or IS_LINUX) and rawget(_G, "lcurl") == nil then
 		print("[TelemetryManager] No lcurl interface found! Fallback to dummy...")
 
 		return TelemetryManagerDummy:new()
-	elseif not IS_WINDOWS and rawget(_G, "REST") == nil then
+	elseif not IS_WINDOWS and not IS_LINUX and rawget(_G, "REST") == nil then
 		print("[TelemetryManager] No REST interface found! Fallback to dummy...")
 
 		return TelemetryManagerDummy:new()
 	elseif rawget(_G, "cjson") == nil then
 		print("[TelemetryManager] No cjson interface found! Fallback to dummy...")
-
-		return TelemetryManagerDummy:new()
-	elseif DEDICATED_SERVER then
-		print("[TelemetryManager] No telemetry on the dedicated server! Fallback to dummy...")
 
 		return TelemetryManagerDummy:new()
 	elseif TelemetrySettings.enabled == false then
@@ -142,7 +138,7 @@ TelemetryManager.post_batch = function (self)
 
 	local payload = self:_encode(self._events)
 
-	if IS_WINDOWS then
+	if IS_WINDOWS or IS_LINUX then
 		local headers = {
 			"Content-Type: application/json",
 			string.format("x-reference-time: %s", self._t),

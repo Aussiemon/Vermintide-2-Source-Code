@@ -423,6 +423,10 @@ AISimpleExtension.die = function (self, killer_unit, killing_blow)
 end
 
 AISimpleExtension.attacked = function (self, attacker_unit, t, damage_hit)
+	if script_data.disable_ai_perception then
+		return
+	end
+
 	local unit = self._unit
 	local blackboard = self._blackboard
 	local side = blackboard.side
@@ -448,6 +452,10 @@ AISimpleExtension.attacked = function (self, attacker_unit, t, damage_hit)
 end
 
 AISimpleExtension.enemy_aggro = function (self, alerting_unit, enemy_unit)
+	if script_data.disable_ai_perception then
+		return
+	end
+
 	local blackboard = self._blackboard
 
 	if blackboard.confirmed_player_sighting or blackboard.only_trust_your_own_eyes then
@@ -482,6 +490,10 @@ AISimpleExtension.enemy_aggro = function (self, alerting_unit, enemy_unit)
 end
 
 AISimpleExtension.enemy_alert = function (self, alerting_unit, enemy_unit)
+	if script_data.disable_ai_perception then
+		return
+	end
+
 	local blackboard = self._blackboard
 	local run_on_alerted = self._breed.run_on_alerted
 

@@ -758,6 +758,7 @@ local widget_name_by_feature = {
 		status_icon = "default_dynamic",
 	},
 }
+local damage_widget_definitions = UnitFramesUiUtils.create_damage_widget("player", 4)
 
 return {
 	weapon_slot_widget_settings = weapon_slot_widget_settings,
@@ -767,4 +768,5 @@ return {
 	widget_name_by_feature = widget_name_by_feature,
 	scenegraph_definition = scenegraph_definition,
 	widget_definitions = widget_definitions,
+	damage_widget_definitions = damage_widget_definitions,
 }

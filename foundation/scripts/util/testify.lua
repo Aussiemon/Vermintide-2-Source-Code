@@ -1,6 +1,7 @@
 ﻿-- chunkname: @foundation/scripts/util/testify.lua
 
 require("foundation/scripts/util/table")
+require("scripts/tests/testify_expect")
 
 local SIGNALS = {
 	current_request = "current_request",
@@ -14,6 +15,7 @@ Testify = {
 	_requests = {},
 	_responses = {},
 	RETRY = newproxy(false),
+	expect = TestifyExpect:new(),
 }
 
 local __raw_print = print
@@ -64,6 +66,8 @@ Testify.update = function (self, dt, t)
 	end
 
 	if self._test_case then
+		self.expect:update()
+
 		local success, result, end_suite = coroutine_resume(self._test_case, dt, t)
 
 		if not success then

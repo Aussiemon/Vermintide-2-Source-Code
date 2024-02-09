@@ -1476,11 +1476,10 @@ IngamePlayerListUI._update_dynamic_widget_information = function (self, dt, t)
 			if talent_extension then
 				local talent_ids = talent_extension:get_talent_ids()
 				local profile_name = player:profile_display_name()
-				local profile_talents = Talents[profile_name]
 
 				for i = 1, 6 do
 					local id = talent_ids[i]
-					local talent = profile_talents and profile_talents[id]
+					local talent = TalentUtils.get_talent_by_id(profile_name, id)
 					local talent_icon = talent and talent.icon
 					local talent_content = content["talent_" .. i]
 

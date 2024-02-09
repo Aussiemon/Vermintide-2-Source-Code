@@ -7,6 +7,7 @@ require("scripts/game_state/loading_sub_states/win32/state_loading_migrate_host"
 require("scripts/helpers/level_helper")
 require("scripts/settings/level_settings")
 require("scripts/utils/async_level_spawner")
+require("scripts/game_state/loading_sub_states/win32/state_loading_versus_migration")
 
 StateLoading = class(StateLoading)
 StateLoading.NAME = "StateLoading"
@@ -627,6 +628,8 @@ StateLoading._setup_state_machine = function (self)
 		self._machine = GameStateMachine:new(self, StateLoadingRestartNetwork, params, true)
 	elseif self.parent.loading_context.host_migration_info then
 		self._machine = GameStateMachine:new(self, StateLoadingMigrateHost, params, true)
+	elseif self.parent.loading_context.versus_migration then
+		self._machine = GameStateMachine:new(self, StateLoadingVersusMigration, params, true)
 	else
 		self._machine = GameStateMachine:new(self, StateLoadingRunning, params, true)
 	end
@@ -2298,7 +2301,10 @@ StateLoading.setup_lobby_finder = function (self, lobby_joined_callback, lobby_t
 	self._lobby_finder_timeout = main_time + StateLoading.join_lobby_timeout
 	self._lobby_finder_refresh_timer = main_time + StateLoading.join_lobby_refresh_interval
 
-	if host_to_join then
+	local loading_context = self.parent.loading_context
+	local versus_migration = loading_context and loading_context.versus_migration
+
+	if host_to_join and not versus_migration then
 		self:create_join_popup(self._host_to_join_name)
 	end
 

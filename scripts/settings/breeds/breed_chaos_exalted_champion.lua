@@ -418,6 +418,7 @@ local action_data = {
 			harder = 25,
 			hardest = 30,
 			normal = 8,
+			versus_base = 8,
 		},
 	},
 	intro_idle = {
@@ -480,6 +481,7 @@ local action_data = {
 			harder = "warcamp_boss_event_defensive",
 			hardest = "warcamp_boss_event_defensive",
 			normal = "warcamp_boss_event_defensive",
+			versus_base = "warcamp_boss_event_defensive",
 		},
 		start_anims = {
 			bwd = "move_start_bwd",
@@ -554,6 +556,7 @@ local action_data = {
 			harder = 30,
 			hardest = 50,
 			normal = 15,
+			versus_base = 15,
 		},
 		ignore_staggers = {
 			{
@@ -627,6 +630,7 @@ local action_data = {
 			harder = 25,
 			hardest = 40,
 			normal = 10,
+			versus_base = 10,
 		},
 		ignore_staggers = {
 			false,
@@ -670,6 +674,7 @@ local action_data = {
 			harder = 25,
 			hardest = 30,
 			normal = 10,
+			versus_base = 10,
 		},
 		ignore_staggers = {
 			true,
@@ -709,6 +714,7 @@ local action_data = {
 			harder = 25,
 			hardest = 30,
 			normal = 10,
+			versus_base = 10,
 		},
 		ignore_staggers = {
 			true,
@@ -749,6 +755,7 @@ local action_data = {
 			harder = 25,
 			hardest = 30,
 			normal = 10,
+			versus_base = 10,
 		},
 		ignore_staggers = {
 			true,
@@ -794,6 +801,7 @@ local action_data = {
 			harder = 15,
 			hardest = 20,
 			normal = 7,
+			versus_base = 7,
 		},
 		ignore_staggers = {
 			true,
@@ -838,6 +846,7 @@ local action_data = {
 			harder = 15,
 			hardest = 20,
 			normal = 7,
+			versus_base = 7,
 		},
 		ignore_staggers = {
 			true,
@@ -882,6 +891,7 @@ local action_data = {
 			harder = 15,
 			hardest = 20,
 			normal = 7,
+			versus_base = 7,
 		},
 		ignore_staggers = {
 			true,
@@ -1015,6 +1025,7 @@ local action_data = {
 			harder = 25,
 			hardest = 30,
 			normal = 10,
+			versus_base = 10,
 		},
 		ignore_staggers = {
 			true,

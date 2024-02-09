@@ -119,11 +119,11 @@ AreaDamageExtension.destroy = function (self)
 	end
 end
 
-AreaDamageExtension.enable = function (self, enable)
+AreaDamageExtension.enable_area_damage = function (self, enable)
 	if enable then
 		self.enabled = true
 
-		self:start()
+		self:start_area_damage()
 	else
 		self.enabled = false
 		self.area_damage_started = false
@@ -160,7 +160,7 @@ AreaDamageExtension.enable = function (self, enable)
 	end
 end
 
-AreaDamageExtension.start = function (self)
+AreaDamageExtension.start_area_damage = function (self)
 	self.area_damage_started = true
 
 	local area_damage = AreaDamageTemplates.get_template(self.area_damage_template)

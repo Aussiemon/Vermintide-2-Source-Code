@@ -142,6 +142,7 @@ Boot.setup = function (self)
 		"resource_packages/level_scripts",
 		"resource_packages/levels/benchmark_levels",
 		"resource_packages/levels/honduras_levels",
+		"resource_packages/imgui/imgui",
 	}
 
 	local handles = {}
@@ -355,7 +356,7 @@ Boot.booting_update = function (self, dt)
 	elseif Boot.startup_state == "loading_dlcs" then
 		foundation_require("util", "local_require")
 
-		local done = Managers.package:update()
+		local done = Managers.package:update(dt)
 
 		if done then
 			Boot.startup_state = "done_loading_dlcs"
@@ -394,6 +395,7 @@ Boot.booting_update = function (self, dt)
 		local crashify_settings = require("scripts/settings/crashify_settings")
 
 		Crashify.print_property("project", crashify_settings.project)
+		Crashify.print_property("project_branch", crashify_settings.branch)
 		Crashify.print_property("build", BUILD)
 		Crashify.print_property("platform", PLATFORM)
 		Crashify.print_property("dedicated_server", DEDICATED_SERVER)
@@ -769,6 +771,20 @@ Boot.game_update = function (self, real_world_dt)
 	Managers.world:update(dt, t)
 	Managers.url_loader:update(dt)
 
+	if script_data.cat_tester_tools == nil and Managers.backend:get_backend_mirror() then
+		local title_settings = Managers.backend:get_title_settings()
+
+		script_data.cat_tester_tools = title_settings and not not title_settings.cat_tester_tools
+
+		if script_data.cat_tester_tools then
+			Managers.imgui = ImguiManager:new()
+		end
+	end
+
+	if IS_WINDOWS and Managers.imgui and not DEDICATED_SERVER then
+		Managers.imgui:update(t, dt)
+	end
+
 	if LEVEL_EDITOR_TEST and Keyboard.pressed(Keyboard.button_index("f5")) then
 		Application.console_send({
 			type = "stop_testing",
@@ -866,6 +882,10 @@ Boot.game_update = function (self, real_world_dt)
 
 	self._machine:post_update(dt)
 	FrameTable.swap_and_clear()
+
+	if IS_WINDOWS and Managers.imgui and not DEDICATED_SERVER then
+		Managers.imgui:post_update(t, dt)
+	end
 
 	if self.quit_game then
 		local function save_cb(info)
@@ -1250,6 +1270,7 @@ end
 Game.require_game_scripts = function (self)
 	game_require("utils", "patches", "colors", "framerate", "global_utils", "function_call_stats", "loaded_dice", "deadlock_stack", "benchmark/benchmark_handler")
 	game_require("settings", "version_settings")
+	game_require("imgui", "imgui_manager")
 	game_require("ui", "views/show_cursor_stack", "ui_fonts")
 	game_require("settings", "demo_settings", "motion_control_settings", "game_settings_development", "controller_settings", "default_user_settings")
 	game_require("entity_system", "entity_system")

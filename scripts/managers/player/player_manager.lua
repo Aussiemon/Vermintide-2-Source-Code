@@ -33,7 +33,7 @@ end
 
 local RPCS = {
 	"rpc_to_client_spawn_player",
-	"rpc_set_observed_player_id",
+	"rpc_set_observed_unit",
 	"rpc_sync_loadout_slot",
 }
 
@@ -583,16 +583,14 @@ function DEBUG_PLAYERS()
 	print(" ")
 end
 
-PlayerManager.rpc_set_observed_player_id = function (self, sender, observer_player_go_id, player_to_observe_go_id)
+PlayerManager.rpc_set_observed_unit = function (self, sender, observer_player_go_id, unit_to_observe_id, is_level_unit)
 	fassert(self.is_server, "Only server should get this")
 
 	local player_manager = Managers.player
 	local observer_player = player_manager:player_from_game_object_id(observer_player_go_id)
-	local player_to_observe = player_manager:player_from_game_object_id(player_to_observe_go_id)
+	local unit_to_observe = Managers.state.network:game_object_or_level_unit(unit_to_observe_id, is_level_unit)
 
-	if observer_player then
-		local player_to_observe_id = player_to_observe and player_to_observe:unique_id()
-
-		observer_player:set_observed_player_id(player_to_observe_id)
+	if unit_to_observe then
+		observer_player:set_observed_unit(unit_to_observe)
 	end
 end

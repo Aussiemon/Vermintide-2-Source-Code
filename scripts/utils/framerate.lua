@@ -12,7 +12,9 @@ Framerate.set_playing = function ()
 	Application.set_time_step_policy("external_step_range", 0, 100, "system_step_range", 0, 100, "debt_payback", 0)
 
 	if DEDICATED_SERVER then
-		Application.set_time_step_policy("no_smoothing", "throttle", 30)
+		local tickrate = 30
+
+		Application.set_time_step_policy("no_smoothing", "throttle", tickrate)
 	elseif IS_WINDOWS then
 		Application.set_time_step_policy("smoothing", 11, 2, 0.1)
 

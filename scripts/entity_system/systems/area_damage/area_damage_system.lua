@@ -154,7 +154,7 @@ AreaDamageSystem.enable_area_damage = function (self, unit, enable)
 
 	local area_damage_extension = ScriptUnit.extension(unit, "area_damage_system")
 
-	area_damage_extension:enable(enable)
+	area_damage_extension:enable_area_damage(enable)
 
 	local level_index = Managers.state.network:level_object_id(unit)
 
@@ -430,10 +430,13 @@ end
 
 AreaDamageSystem.rpc_area_damage = function (self, channel_id, go_id, position)
 	local unit = self.unit_storage:unit(go_id)
-	local area_damage_system = ScriptUnit.extension(unit, "area_damage_system")
 
-	if area_damage_system then
-		area_damage_system:start()
+	if unit then
+		Unit.set_local_position(unit, 0, position)
+
+		local area_damage_extension = ScriptUnit.extension(unit, "area_damage_system")
+
+		area_damage_extension:start_area_damage()
 	end
 end
 

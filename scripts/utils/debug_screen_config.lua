@@ -103,6 +103,12 @@ local settings = {
 	},
 	{
 		category = "Allround useful stuff!",
+		description = "Takes you in the game as fast as possible, skipping delays and picking etc",
+		is_boolean = true,
+		setting_name = "dev_quick_start",
+	},
+	{
+		category = "Allround useful stuff!",
 		description = "Teleports the player to a portal hub element",
 		setting_name = "teleport player",
 		item_source = {},
@@ -253,12 +259,6 @@ local settings = {
 		description = "Do not show unseen rewards at login",
 		is_boolean = true,
 		setting_name = "dont_show_unseen_rewards",
-	},
-	{
-		category = "Allround useful stuff!",
-		description = "Use LAN instead of Steam",
-		is_boolean = true,
-		setting_name = "use_lan_backend",
 	},
 	{
 		category = "Allround useful stuff!",
@@ -806,11 +806,12 @@ local settings = {
 			for k, party in ipairs(parties) do
 				local index = #options + 1
 				local num_used_slots = party.num_used_slots - party.num_bots
+				local num_slots = party.num_slots
 
-				if num_used_slots < party.num_slots then
-					options[index] = string.format("%s (%d/%d)", party.party_id, num_used_slots, party.num_slots)
+				if num_used_slots < num_slots then
+					options[index] = string.format("%s (%d/%d)", party.party_id, num_used_slots, num_slots)
 				else
-					options[index] = string.format("%s (%d/%d) FULL!", party.party_id, num_used_slots, party.num_slots)
+					options[index] = string.format("%s (%d/%d) FULL!", party.party_id, num_used_slots, num_slots)
 				end
 
 				data[index] = party.party_id
@@ -849,7 +850,7 @@ local settings = {
 								local career_name = SPProfiles[profile_index].careers[career_index].display_name
 
 								if Managers.mechanism:profile_available(profile_name, career_name) then
-									local force_respawn = true
+									local force_respawn = side:name() ~= "dark_pact"
 
 									Managers.state.network:request_profile(1, profile_name, career_name, force_respawn)
 
@@ -1014,6 +1015,12 @@ local settings = {
 		description = "Can always reload.",
 		is_boolean = true,
 		setting_name = "infinite_ammo",
+	},
+	{
+		category = "states",
+		description = "Exits ghost mode automatically",
+		is_boolean = true,
+		setting_name = "disable_ghost_mode",
 	},
 	{
 		category = "Player mechanics",
@@ -1376,6 +1383,62 @@ local settings = {
 		description = "Disables triggering weapon animations for third person. Useful for testing new weapons. öddfg (to spite Seb)",
 		is_boolean = true,
 		setting_name = "disable_third_person_weapon_animation_events",
+	},
+	{
+		category = "Player mechanics",
+		description = "Enables players to leave ghost mode while in los",
+		is_boolean = true,
+		setting_name = "allow_ghost_mode_los",
+	},
+	{
+		category = "Player mechanics",
+		description = "Enables players to leave ghost mode while in within range",
+		is_boolean = true,
+		setting_name = "allow_ghost_mode_range",
+	},
+	{
+		category = "Player mechanics",
+		description = "Enables players to leave ghost mode always",
+		is_boolean = true,
+		setting_name = "always_allow_leave_ghost_mode",
+	},
+	{
+		category = "VERSUS",
+		description = "Disable blacklisting servers in search / matchmaking",
+		is_boolean = true,
+		setting_name = "blacklisting_disabled_vs",
+	},
+	{
+		category = "VERSUS",
+		description = "Skips to a set in VS. Will mess up UI paramaters",
+		setting_name = "vs_skip_to_set",
+		item_source = {},
+		load_items_source_func = function (options)
+			table.clear(options)
+
+			if Managers.level_transition_handler:in_hub_level() or Managers.mechanism:current_mechanism_name() ~= "versus" then
+				return
+			end
+
+			local mechanism = Managers.mechanism:game_mechanism()
+			local num_sets = mechanism:get_level_settings().num_sets
+			local current_set = mechanism:get_current_set()
+
+			for set = 1, num_sets do
+				if current_set < set then
+					options[#options + 1] = set
+				end
+			end
+		end,
+		func = function (options, index)
+			local key = options[index]
+
+			if not key then
+				return
+			end
+
+			Managers.mechanism:game_mechanism():debug_skip_to_set(key)
+		end,
 	},
 	{
 		category = "Player mechanics",
@@ -2275,6 +2338,24 @@ local settings = {
 		description = "Find it annoying that the game ends every time you die? Well enable this setting then!",
 		is_boolean = true,
 		setting_name = "disable_gamemode_end",
+	},
+	{
+		category = "Gamemode/level",
+		description = "Find it annoying that the game ends every time you die? Well enable this setting then!",
+		is_boolean = true,
+		setting_name = "disable_gamemode_end_hero_check",
+	},
+	{
+		category = "Gamemode/level",
+		description = "Game will not end even though if all players die",
+		is_boolean = true,
+		setting_name = "lose_condition_disabled",
+	},
+	{
+		category = "Gamemode/level",
+		description = "Game will not end until bots have died. (Only for Versus now)",
+		is_boolean = true,
+		setting_name = "lose_condition_also_count_bots",
 	},
 	{
 		category = "Gamemode/level",
@@ -5564,6 +5645,28 @@ local settings = {
 				},
 			},
 			{
+				description = "15 seconds",
+				commands = {
+					{
+						"network",
+						"latency",
+						"15",
+						"15",
+					},
+				},
+			},
+			{
+				description = "30 seconds",
+				commands = {
+					{
+						"network",
+						"latency",
+						"30",
+						"30",
+					},
+				},
+			},
+			{
 				description = "low latency",
 				commands = {
 					{
@@ -5859,7 +5962,7 @@ local settings = {
 	},
 	{
 		category = "Dialogue",
-		description = "Used to debug dialog files, facial expressions and missing vo/subtitles. To skip use: DebugVo_jump_to('line_number/line_id')",
+		description = "Used to debug dialog files, facial expressions and missing vo/subtitles. To skip use: DebugVo.jump_to(('line_number/line_id')",
 		setting_name = "debug_dialogue_files",
 		item_source = {},
 		load_items_source_func = function (options)
@@ -5868,7 +5971,7 @@ local settings = {
 			local dialogue_system = Managers.state.entity:system("dialogue_system")
 
 			if dialogue_system then
-				local loaded_files = dialogue_system.tagquery_loader.debug_loaded_files
+				local loaded_files = dialogue_system:tagquery_loader().debug_loaded_files
 
 				if loaded_files then
 					for file_name in pairs(loaded_files) do
@@ -5880,7 +5983,9 @@ local settings = {
 			end
 		end,
 		func = function (options, index)
-			DebugVoByFile(options[index], false)
+			local dialogue_system = Managers.state.entity:system("dialogue_system")
+
+			dialogue_system:debug_vo_by_file(options[index], false)
 		end,
 	},
 	{
@@ -6127,6 +6232,70 @@ local settings = {
 		description = "Enables logging for the package manager",
 		is_boolean = true,
 		setting_name = "package_debug",
+	},
+	{
+		category = "Network",
+		description = "Adds a delay to package loading requests",
+		setting_name = "package_loading_latency",
+		item_source = {
+			"off",
+			{
+				0.05,
+				0.2,
+			},
+			{
+				0.2,
+				0.5,
+			},
+			1,
+			{
+				1,
+				2,
+			},
+			5,
+			15,
+			30,
+		},
+		custom_item_source_order = function (item_source, options)
+			for i, v in ipairs(item_source) do
+				local option = v
+
+				if type(option) == "string" then
+					options[i] = option
+				elseif type(option) == "table" then
+					options[i] = {
+						option[1],
+						option[2] or option[1],
+					}
+				else
+					options[i] = {
+						option,
+						option,
+					}
+				end
+			end
+		end,
+		item_display_func = function (option, idx, options)
+			if type(option) == "string" then
+				return option
+			elseif type(option) == "table" then
+				return string.format("%s - %s seconds", option[1], option[2] or option[1])
+			else
+				return string.format("%s second%s", option, option == 1 and "s" or "")
+			end
+		end,
+		func = function (options, index)
+			local val = options[index]
+
+			if val == "off" then
+				script_data.package_loading_latency = nil
+			else
+				script_data.package_loading_latency = type(val) == "table" and val or {
+					val,
+					val,
+				}
+			end
+		end,
 	},
 	{
 		category = "Misc",
@@ -6830,12 +6999,6 @@ local settings = {
 		description = "Performance Manager Debug",
 		is_boolean = true,
 		setting_name = "performance_debug",
-	},
-	{
-		category = "Backend",
-		description = "Requires restart. Disables the backend and emulates it with a local save.",
-		is_boolean = true,
-		setting_name = "use_local_backend",
 	},
 	{
 		category = "Backend",
@@ -7822,6 +7985,12 @@ local settings = {
 		setting_name = "show_weave_objectives",
 	},
 	{
+		category = "Player mechanics",
+		description = "Pause the objective timer for versus",
+		is_boolean = true,
+		setting_name = "versus_objective_timer_paused",
+	},
+	{
 		category = "Gamemode/level",
 		description = "Activates all objectives for the current weave",
 		setting_name = "activate_all_weave_objectives",
@@ -8632,6 +8801,49 @@ local settings = {
 		description = "Debug crafting crafting recipes",
 		is_boolean = true,
 		setting_name = "craft_recipe_debug",
+	},
+	{
+		category = "VERSUS",
+		description = "Allows the player to force start a versus game with only one player",
+		is_boolean = true,
+		setting_name = "allow_versus_force_start_single_player",
+	},
+	{
+		category = "VERSUS",
+		description = "starts the round",
+		setting_name = "start_player_hosted_round",
+		func = function (options, index)
+			local game_mode_manager = Managers.state.game_mode
+
+			game_mode_manager:round_started()
+			printf("Round started!")
+		end,
+	},
+	{
+		category = "VERSUS",
+		description = "starts the round",
+		setting_name = "end_player_hosted_round",
+		func = function (options, index)
+			if Managers.level_transition_handler:in_hub_level() then
+				printf("Failed to end round - Match not started")
+
+				return false
+			end
+
+			local game_mode_manager = Managers.state.game_mode
+
+			game_mode_manager:round_started()
+
+			local win_conditions = Managers.mechanism:game_mechanism():win_conditions()
+
+			win_conditions:set_time(0)
+
+			DebugScreen.active = false
+
+			printf("Round ended!")
+
+			return true
+		end,
 	},
 }
 

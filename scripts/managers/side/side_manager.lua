@@ -185,6 +185,10 @@ SideManager.add_player_unit_to_side = function (self, player_unit, side_id)
 	end
 
 	self._player_units_lookup[player_unit] = true
+
+	local player = Managers.player:owner(player_unit)
+
+	Managers.state.event:trigger("on_player_joined_side", player:unique_id(), player:local_player_id(), side_id)
 end
 
 SideManager.remove_player_unit_from_side = function (self, player_unit)
@@ -202,6 +206,10 @@ SideManager.remove_player_unit_from_side = function (self, player_unit)
 	side:remove_player_unit(player_unit)
 	self:remove_unit_from_side(player_unit)
 	self:_remove_player_unit_from_lists(player_unit)
+
+	local player = Managers.player:owner(player_unit)
+
+	Managers.state.event:trigger("on_player_left_side", player:unique_id(), player:local_player_id(), side.side_id)
 end
 
 SideManager.is_enemy = function (self, unit1, unit2)
@@ -228,6 +236,18 @@ SideManager.is_ally = function (self, unit1, unit2)
 	local is_ally = side and side.allied_units_lookup[unit2]
 
 	return is_ally, side
+end
+
+SideManager.is_ally_by_side = function (self, side1, side2)
+	if side1 == nil then
+		return false
+	end
+
+	if side1.allied_sides_lookup[side2] == nil then
+		return false
+	end
+
+	return true
 end
 
 SideManager.is_player_friendly_fire = function (self, unit1, unit2)

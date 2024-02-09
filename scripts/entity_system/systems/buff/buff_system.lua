@@ -768,6 +768,12 @@ BuffSystem._prepare_sync = function (self, target_unit, template_name, sync_type
 	return target_unit_id, template_name_id, sync_type_id, rpc_name, param_ids, param_vals
 end
 
+local function debug_sync_print(...)
+	if script_data.debug_synced_buffs then
+		print(...)
+	end
+end
+
 local sync_by_sync_type = {
 	[BuffSyncType.Local] = function (buff_system, target_unit, template_name, sync_type, local_sync_id, params, optional_peer_id)
 		return true
@@ -891,7 +897,7 @@ BuffSystem.rpc_add_buff_synced = function (self, channel_id, target_unit_id, tem
 		end
 
 		if remote_sync_id == invalid_buff_sync_id then
-			print("[BuffSystem] rpc_add_buff_synced, response consumed due to blind fire sync", owner_peer_id, target_unit_id, template_name)
+			debug_sync_print("[BuffSystem] rpc_add_buff_synced, response consumed due to blind fire sync", owner_peer_id, target_unit_id, template_name)
 
 			return
 		end
@@ -946,7 +952,7 @@ BuffSystem.rpc_add_buff_synced_params = function (self, channel_id, target_unit_
 		end
 
 		if remote_sync_id == invalid_buff_sync_id then
-			print("[BuffSystem] rpc_add_buff_synced_params, response consumed due to blind fire sync", owner_peer_id, target_unit_id, template_name)
+			debug_sync_print("[BuffSystem] rpc_add_buff_synced_params, response consumed due to blind fire sync", owner_peer_id, target_unit_id, template_name)
 
 			return
 		end

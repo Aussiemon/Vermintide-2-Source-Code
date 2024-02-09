@@ -984,6 +984,10 @@ HeroViewStateOverview._set_loadout_item = function (self, item, strict_slot_name
 		return
 	end
 
+	if LoadoutUtils.is_item_disabled(item.ItemId) then
+		return
+	end
+
 	local backend_id = item.backend_id
 	local item_data = item.data
 	local slot, slot_type

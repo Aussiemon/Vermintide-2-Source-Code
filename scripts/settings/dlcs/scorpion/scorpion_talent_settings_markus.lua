@@ -10,7 +10,6 @@ TalentTrees.empire_soldier = {
 	{},
 	{},
 }
-Talents = Talents or {}
 Talents.empire_soldier = {}
 
 for name, data in pairs(TalentBuffTemplates.empire_soldier) do

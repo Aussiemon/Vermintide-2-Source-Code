@@ -402,8 +402,15 @@ IngameUI.handle_menu_hotkeys = function (self, dt, input_service, hotkeys_enable
 		else
 			local disable_when_matchmaking = mapping_data.disable_when_matchmaking
 			local disable_when_matchmaking_ready = mapping_data.disable_when_matchmaking_ready
+			local cat_disabled = mapping_data.cat_disabled
+			local is_matchmaking_versus = Managers.matchmaking:is_matchmaking_versus()
 			local vote_blocked = table.contains(hotkeys_blocked_during_vote, input)
 			local transition_not_allowed = player_ready_for_game and disable_when_matchmaking_ready or is_game_matchmaking and disable_when_matchmaking or vote_blocked and currently_voting
+			local disable_when_matchmaking_in_versus = mapping_data.disable_when_matchmaking_in_versus
+
+			transition_not_allowed = transition_not_allowed or disable_when_matchmaking_in_versus and is_matchmaking_versus
+			transition_not_allowed = transition_not_allowed or cat_disabled
+
 			local new_view = views[mapping_data.view]
 			local can_interact_flag = mapping_data.can_interact_flag
 			local can_interact_func = mapping_data.can_interact_func
@@ -549,6 +556,19 @@ IngameUI.update = function (self, dt, t, disable_ingame_ui, end_of_level_ui)
 		local allowed_to_access_menu = true
 		local ingame_player_list_ui = ingame_hud:component("IngamePlayerListUI")
 		local player_list_active = ingame_player_list_ui and ingame_player_list_ui:is_active()
+		local versus_tab_ui = ingame_hud:component("VersusTabUI")
+		local versus_slot_status_ui = ingame_hud:component("VersusSlotStatusUI")
+
+		player_list_active = versus_tab_ui and versus_tab_ui:is_active() or versus_slot_status_ui and versus_slot_status_ui:is_active() or player_list_active
+		allowed_to_access_menu = not gamepad_active or not Managers.matchmaking:is_matchmaking_versus()
+
+		local game_mode = Managers.state.game_mode:game_mode()
+		local game_mode_name = game_mode and game_mode:settings().key or "none"
+
+		if game_mode_name == "versus" and not game_mode:menu_access_allowed_in_state() then
+			allowed_to_access_menu = false
+		end
+
 		local fade_active = Managers.transition:in_fade_active()
 
 		if allowed_to_access_menu and not player_list_active and not disable_toggle_menu and not self:pending_transition() and not fade_active and not self:end_screen_active() and not self.menu_active and not self.leave_game and not self.return_to_title_screen and not self:get_active_popup("profile_picker") and input_service:get("toggle_menu", true) then

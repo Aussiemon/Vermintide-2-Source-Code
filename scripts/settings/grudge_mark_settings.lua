@@ -130,6 +130,7 @@ BREED_ENHANCEMENTS_PER_DIFFICULTY = {
 		[0] = 3,
 		[-10] = 2,
 	},
+	versus_base = {},
 	default = {},
 }
 BreedEnhancementExclusionList = {

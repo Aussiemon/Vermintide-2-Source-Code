@@ -95,9 +95,6 @@ ActionCareerDREngineer._waiting_to_shoot = function (self, dt, t)
 		local fire_rounds_per_second = self._current_rps * self._attack_speed_mod
 		local max_shots = ability_charge / self._shot_cost
 		local rounds_to_fire = math.min(fire_rounds_per_second * (t - self._time_to_shoot), max_shots)
-
-		self:_handle_infinite_stacks(dt, t)
-
 		local num_projectiles = math.floor(rounds_to_fire)
 
 		if num_projectiles > 0 then
@@ -286,50 +283,6 @@ ActionCareerDREngineer._fake_activate_ability = function (self, t)
 			buff_extension:trigger_procs("on_ability_cooldown_started")
 
 			self._ammo_expended = 0
-		end
-	end
-end
-
-ActionCareerDREngineer._handle_infinite_stacks = function (self, dt, t)
-	if not self.talent_extension:has_talent("bardin_engineer_pump_buff_long") then
-		return
-	end
-
-	local buff_extension = self.buff_extension
-	local buffs = buff_extension:get_stacking_buff("bardin_engineer_pump_buff")
-
-	if buffs then
-		if self._first_shot then
-			for i = 1, #buffs do
-				if buffs[i].duration then
-					return
-				end
-			end
-
-			local first_buff = buffs[1]
-
-			first_buff.duration = CareerConstants.dr_engineer.talent_4_3_stack_duration
-			first_buff.start_time = t
-		else
-			local duration_buff
-
-			for i = 1, #buffs do
-				local buff = buffs[i]
-
-				if buff.duration then
-					duration_buff = buff
-
-					break
-				end
-			end
-
-			if not duration_buff then
-				duration_buff = buffs[1]
-				duration_buff.duration = CareerConstants.dr_engineer.talent_4_3_stack_duration
-				duration_buff.start_time = t
-
-				return
-			end
 		end
 	end
 end

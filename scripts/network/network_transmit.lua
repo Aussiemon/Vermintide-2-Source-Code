@@ -240,8 +240,7 @@ NetworkTransmit.send_rpc_party = function (self, rpc_name, party, include_specta
 
 	local rpc = RPC[rpc_name]
 
-	fassert(rpc, "[NetworkTransmit:send_rpc_clients()] rpc does not exist: %q", rpc_name)
-	self:queue_local_rpc(rpc_name, ...)
+	fassert(rpc, "[NetworkTransmit:send_rpc_party()] rpc does not exist: %q", rpc_name)
 
 	local session = self.game_session
 
@@ -274,6 +273,12 @@ NetworkTransmit.send_rpc_party = function (self, rpc_name, party, include_specta
 		end
 	end
 
+	if peer_ids[self.peer_id] then
+		self:queue_local_rpc(rpc_name, ...)
+
+		peer_ids[self.peer_id] = nil
+	end
+
 	local peer_ignore_list = self.peer_ignore_list
 
 	for _, peer_id in ipairs(GameSession.other_peers(session)) do
@@ -285,28 +290,34 @@ NetworkTransmit.send_rpc_party = function (self, rpc_name, party, include_specta
 	end
 end
 
-NetworkTransmit.send_rpc_side_clients = function (self, rpc_name, side, include_spectators, ...)
-	fassert(self.is_server, "Trying to send rpc %q on client to clients which is wrong. Only servers should use this function.", rpc_name)
-
-	local rpc = RPC[rpc_name]
-
-	fassert(rpc, "[NetworkTransmit:send_rpc_clients()] rpc does not exist: %q", rpc_name)
-
-	local session = self.game_session
-
-	if not session then
-		return
-	end
-
-	local player_units = side.PLAYER_UNITS
+local function get_side_peers(side, include_allies, include_spectators)
 	local peer_ids = shared_scratchpad_table
 
 	table.clear(peer_ids)
 
-	for _, unit in ipairs(player_units) do
-		local player = Managers.player:owner(unit)
+	do
+		local player_units = side.PLAYER_UNITS
 
-		peer_ids[player:network_id()] = true
+		for _, unit in ipairs(player_units) do
+			local player = Managers.player:owner(unit)
+
+			peer_ids[player:network_id()] = true
+		end
+	end
+
+	if include_allies then
+		local allies = side:get_allied_sides()
+
+		for i = 1, #allies do
+			local allied_side = allies[i]
+			local player_units = allied_side.PLAYER_UNITS
+
+			for _, unit in ipairs(player_units) do
+				local player = Managers.player:owner(unit)
+
+				peer_ids[player:network_id()] = true
+			end
+		end
 	end
 
 	if include_spectators then
@@ -322,6 +333,58 @@ NetworkTransmit.send_rpc_side_clients = function (self, rpc_name, side, include_
 			end
 		end
 	end
+
+	return peer_ids
+end
+
+NetworkTransmit.send_rpc_side = function (self, rpc_name, side, include_allies, include_spectators, always_include_server, ...)
+	fassert(self.is_server, "Trying to send rpc %q on client to clients which is wrong. Only servers should use this function.", rpc_name)
+
+	local rpc = RPC[rpc_name]
+
+	fassert(rpc, "[NetworkTransmit:send_rpc_side()] rpc does not exist: %q", rpc_name)
+
+	local session = self.game_session
+
+	if not session then
+		return
+	end
+
+	local peer_ids = get_side_peers(side, include_allies, include_spectators)
+
+	if peer_ids[self.peer_id] or always_include_server then
+		self:queue_local_rpc(rpc_name, ...)
+
+		peer_ids[self.peer_id] = nil
+	end
+
+	local peer_ignore_list = self.peer_ignore_list
+
+	for _, peer_id in ipairs(GameSession.other_peers(session)) do
+		if not peer_ignore_list[peer_id] and peer_ids[peer_id] then
+			local channel_id = PEER_ID_TO_CHANNEL[peer_id]
+
+			rpc(channel_id, ...)
+		end
+	end
+end
+
+NetworkTransmit.send_rpc_side_clients = function (self, rpc_name, side, include_allies, include_spectators, ...)
+	fassert(self.is_server, "Trying to send rpc %q on client to clients which is wrong. Only servers should use this function.", rpc_name)
+
+	local rpc = RPC[rpc_name]
+
+	fassert(rpc, "[NetworkTransmit:send_rpc_side_clients()] rpc does not exist: %q", rpc_name)
+
+	local session = self.game_session
+
+	if not session then
+		return
+	end
+
+	local peer_ids = get_side_peers(side, include_allies, include_spectators)
+
+	peer_ids[self.peer_id] = nil
 
 	local peer_ignore_list = self.peer_ignore_list
 
@@ -382,12 +445,12 @@ NetworkTransmit.send_rpc_clients_except = function (self, rpc_name, except, ...)
 	end
 end
 
-NetworkTransmit.send_rpc_side_clients_except = function (self, rpc_name, side, include_spectators, except, ...)
+NetworkTransmit.send_rpc_side_clients_except = function (self, rpc_name, side, include_allies, include_spectators, except, ...)
 	fassert(self.is_server, "Trying to send rpc %q on client to clients which is wrong. Only servers should use this function.", rpc_name)
 
 	local rpc = RPC[rpc_name]
 
-	fassert(rpc, "[NetworkTransmit:send_rpc_clients()] rpc does not exist: %q", rpc_name)
+	fassert(rpc, "[NetworkTransmit:send_rpc_side_clients_except()] rpc does not exist: %q", rpc_name)
 
 	local session = self.game_session
 
@@ -395,35 +458,15 @@ NetworkTransmit.send_rpc_side_clients_except = function (self, rpc_name, side, i
 		return
 	end
 
-	local player_units = side.PLAYER_UNITS
-	local peer_ids = shared_scratchpad_table
+	local peer_ids = get_side_peers(side, include_allies, include_spectators)
 
-	table.clear(peer_ids)
-
-	for _, unit in ipairs(player_units) do
-		local player = Managers.player:owner(unit)
-
-		peer_ids[player:network_id()] = true
-	end
-
-	if include_spectators then
-		local spectator_side = Managers.state.side:get_side_from_name("spectators")
-
-		if spectator_side then
-			local player_units = side.PLAYER_UNITS
-
-			for _, unit in ipairs(player_units) do
-				local player = Managers.player:owner(unit)
-
-				peer_ids[player:network_id()] = true
-			end
-		end
-	end
+	peer_ids[self.peer_id] = nil
+	peer_ids[except] = nil
 
 	local peer_ignore_list = self.peer_ignore_list
 
 	for _, peer_id in ipairs(GameSession.other_peers(session)) do
-		if not peer_ignore_list[peer_id] and peer_ids[peer_id] and peer_id ~= except then
+		if not peer_ignore_list[peer_id] and peer_ids[peer_id] then
 			local channel_id = PEER_ID_TO_CHANNEL[peer_id]
 
 			rpc(channel_id, ...)

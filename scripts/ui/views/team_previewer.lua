@@ -11,7 +11,7 @@ TeamPreviewer.init = function (self, ingame_ui_context, world, viewport)
 	self.camera = ScriptViewport.camera(viewport)
 end
 
-TeamPreviewer.setup_team = function (self, hero_data, hero_arrangement)
+TeamPreviewer.setup_team = function (self, hero_data, hero_arrangement, spawn_on_setup)
 	self:destroy_previewers()
 
 	local previewers = self.hero_previewers
@@ -19,7 +19,9 @@ TeamPreviewer.setup_team = function (self, hero_data, hero_arrangement)
 	for i = 1, #hero_data do
 		local hero_previewer = HeroPreviewer:new(self._context)
 
-		self:_spawn_hero(hero_previewer, hero_data[i])
+		if hero_data[i] ~= true and spawn_on_setup ~= false then
+			self:_spawn_hero(hero_previewer, hero_data[i])
+		end
 
 		previewers[#previewers + 1] = hero_previewer
 	end

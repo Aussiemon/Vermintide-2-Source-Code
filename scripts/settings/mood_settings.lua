@@ -225,7 +225,7 @@ MoodSettings = {
 MoodSettings.ghost_mode = {
 	blend_in_time = 0.5,
 	blend_out_time = 0.1,
-	environment_setting = "skill_shade",
+	environment_setting = "ghost_mode",
 	particle_effects_on_enter = {},
 	particle_effects_on_exit = {},
 }

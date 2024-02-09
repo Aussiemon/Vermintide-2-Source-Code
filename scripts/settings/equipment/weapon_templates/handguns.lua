@@ -319,8 +319,30 @@ local handgun_dr = table.clone(weapon_template)
 
 handgun_dr.wield_anim = "to_handgun_dr"
 handgun_dr.wield_anim_no_ammo = "to_handgun_dr_noammo"
+handgun_dr.state_machine = "units/beings/player/first_person_base/state_machines/ranged/handgun_dr"
+
+local handgun_vs = table.clone(weapon_template)
+
+handgun_vs.ammo_data = {
+	ammo_hand = "right",
+	ammo_per_clip = 1,
+	ammo_per_reload = 1,
+	max_ammo = 13,
+	play_reload_anim_on_wield_reload = true,
+	reload_on_ammo_pickup = true,
+	reload_time = 1.5,
+	should_update_anim_ammo = true,
+}
+
+local handgun_vs_dr = table.clone(handgun_vs)
+
+handgun_vs_dr.wield_anim = "to_handgun_dr"
+handgun_vs_dr.wield_anim_no_ammo = "to_handgun_dr_noammo"
+handgun_vs_dr.state_machine = "units/beings/player/first_person_base/state_machines/ranged/handgun_dr"
 
 return {
 	handgun_template_1 = table.clone(handgun_es),
 	handgun_template_2 = table.clone(handgun_dr),
+	handgun_template_1_vs = table.clone(handgun_vs),
+	handgun_template_2_vs = table.clone(handgun_vs_dr),
 }

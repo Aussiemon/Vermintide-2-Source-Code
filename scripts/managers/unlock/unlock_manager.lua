@@ -503,6 +503,10 @@ UnlockManager.is_dlc_unlocked = function (self, name)
 
 	fassert(unlock, "No such unlock %q", name or "nil")
 
+	if DEDICATED_SERVER then
+		return true
+	end
+
 	return unlock and unlock:unlocked()
 end
 
@@ -650,17 +654,19 @@ end
 
 UnlockManager._update_backend_unlocks = function (self, t)
 	if self._state == "handle_reminder_popup" then
-		if SaveData.new_dlcs_unlocks and not self._handled_reminders_popups then
-			for dlc_name, first_time in pairs(SaveData.new_dlcs_unlocks) do
-				local popup_settings = CommonPopupSettings[dlc_name]
+		if not self._handled_reminders_popups then
+			local new_dlcs_unlocks = SaveData.new_dlcs_unlocks or {}
 
-				if first_time then
-					if popup_settings and popup_settings.popup_type == "reminder" then
+			for dlc_name, popup_settings in pairs(CommonPopupSettings) do
+				local first_time = new_dlcs_unlocks[dlc_name]
+
+				if first_time or popup_settings.display_on_every_boot then
+					if popup_settings.popup_type == "reminder" then
 						Managers.state.event:trigger("ui_show_popup", dlc_name, "reminder")
 
 						self._handled_reminders_popups = true
 					else
-						SaveData.new_dlcs_unlocks[dlc_name] = false
+						new_dlcs_unlocks[dlc_name] = false
 					end
 				end
 			end

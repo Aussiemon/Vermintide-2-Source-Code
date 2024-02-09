@@ -40,8 +40,8 @@ CameraStateObserverSpectator.on_enter = function (self, unit, input, dt, context
 
 	CameraStateObserver.on_enter(self, unit, input, dt, context, t, previous_state, params)
 
-	if self._follow_unit then
-		Managers.state.event:trigger("on_spectator_target_changed", self._follow_unit)
+	if self._observed_unit then
+		Managers.state.event:trigger("on_spectator_target_changed", self._observed_unit)
 	end
 end
 
@@ -64,23 +64,21 @@ CameraStateObserverSpectator.update = function (self, unit, input, dt, context, 
 	local input_source = input_manager:get_service("Player")
 	local find_next_observer_target = input_source:get("next_observer_target")
 	local find_previous_observer_target = input_source:get("previous_observer_target")
-	local follow_unit_alive = Unit.alive(self._follow_unit)
-	local new_spectator_target_found
+	local observed_unit_alive = Unit.alive(self._observed_unit)
+	local observed_unit, new_spectator_target_found = self._observed_unit, false
 
-	if not follow_unit_alive or find_next_observer_target then
-		new_spectator_target_found = self:follow_next_unit()
-
-		if not new_spectator_target_found then
-			csm:change_state("idle")
-
-			return
-		end
+	if not observed_unit_alive or find_next_observer_target then
+		observed_unit, new_spectator_target_found = self:follow_next_unit(false)
 	elseif find_previous_observer_target then
-		new_spectator_target_found = self:follow_previous_unit()
+		observed_unit, new_spectator_target_found = self:follow_next_unit(true)
 	end
 
 	if new_spectator_target_found then
-		Managers.state.event:trigger("on_spectator_target_changed", self._follow_unit)
+		Managers.state.event:trigger("on_spectator_target_changed", self._observed_unit)
+	elseif not Unit.alive(observed_unit) then
+		csm:change_state("idle")
+
+		return
 	end
 
 	local offset_change = input_source:get("observer_change_offset")
@@ -119,7 +117,7 @@ CameraStateObserverSpectator.update = function (self, unit, input, dt, context, 
 	local look_rotation
 
 	if self._rotation_state == "follow" then
-		look_rotation = Unit.local_rotation(self._follow_unit, 0)
+		look_rotation = Unit.local_rotation(observed_unit, 0)
 		look_rotation = Quaternion.multiply(look_rotation, pitch_rotation)
 	elseif self._rotation_state == "locked" then
 		-- Nothing
@@ -134,9 +132,8 @@ CameraStateObserverSpectator.update = function (self, unit, input, dt, context, 
 		Unit.set_local_rotation(unit, 0, look_rotation)
 	end
 
-	local follow_unit = self._follow_unit
-	local follow_node = Unit.node(follow_unit, self._follow_node_name)
-	local position = Unit.world_position(follow_unit, follow_node) + Vector3(0, 0, self._camera_offset)
+	local observed_node = Unit.node(observed_unit, self._observed_node_name)
+	local position = Unit.world_position(observed_unit, observed_node) + Vector3(0, 0, self._camera_offset)
 	local previous_position = Unit.world_position(unit, 0)
 	local lerp_t = math.min(dt * 10, 1)
 	local new_position = Vector3.lerp(previous_position, position, lerp_t)

@@ -677,7 +677,7 @@ else
 					transition = "exit_menu",
 				},
 				{
-					disable_when_matchmaking_in_versus = true,
+					disable_when_matchmaking_in_versus = false,
 					disable_when_matchmaking_ready = true,
 					display_name = "profile_menu_button_name",
 					fade = true,
@@ -686,7 +686,7 @@ else
 					transition_state = "character",
 				},
 				{
-					disable_when_matchmaking_in_versus = true,
+					disable_when_matchmaking_in_versus = false,
 					disable_when_matchmaking_ready = true,
 					display_name = "inventory_menu_button_name",
 					fade = true,
@@ -708,7 +708,7 @@ else
 					can_add_function = can_add_ingame_menu,
 				},
 				{
-					disable_when_matchmaking_in_versus = true,
+					disable_when_matchmaking_in_versus = false,
 					disable_when_matchmaking_ready = true,
 					display_name = "options_menu_button_name",
 					fade = true,
@@ -732,7 +732,7 @@ else
 					transition = "exit_menu",
 				},
 				{
-					disable_when_matchmaking_in_versus = true,
+					disable_when_matchmaking_in_versus = false,
 					disable_when_matchmaking_ready = true,
 					display_name = "profile_menu_button_name",
 					fade = true,
@@ -741,7 +741,7 @@ else
 					transition_state = "character",
 				},
 				{
-					disable_when_matchmaking_in_versus = true,
+					disable_when_matchmaking_in_versus = false,
 					disable_when_matchmaking_ready = true,
 					display_name = "inventory_menu_button_name",
 					fade = true,
@@ -763,7 +763,7 @@ else
 					can_add_function = can_add_ingame_menu,
 				},
 				{
-					disable_when_matchmaking_in_versus = true,
+					disable_when_matchmaking_in_versus = false,
 					disable_when_matchmaking_ready = true,
 					display_name = "options_menu_button_name",
 					fade = true,
@@ -792,7 +792,7 @@ else
 					transition = "exit_menu",
 				},
 				{
-					disable_when_matchmaking_in_versus = true,
+					disable_when_matchmaking_in_versus = false,
 					disable_when_matchmaking_ready = true,
 					display_name = "profile_menu_button_name",
 					fade = true,
@@ -801,7 +801,7 @@ else
 					transition_state = "character",
 				},
 				{
-					disable_when_matchmaking_in_versus = true,
+					disable_when_matchmaking_in_versus = false,
 					disable_when_matchmaking_ready = true,
 					display_name = "inventory_menu_button_name",
 					fade = true,
@@ -823,7 +823,7 @@ else
 					can_add_function = can_add_ingame_menu,
 				},
 				{
-					disable_when_matchmaking_in_versus = true,
+					disable_when_matchmaking_in_versus = false,
 					disable_when_matchmaking_ready = true,
 					display_name = "options_menu_button_name",
 					fade = true,
@@ -1012,7 +1012,7 @@ end
 local full_access_layout = {
 	{
 		disable_when_matchmaking = false,
-		disable_when_matchmaking_in_versus = true,
+		disable_when_matchmaking_in_versus = false,
 		display_name = "profile_menu_button_name",
 		fade = true,
 		requires_player_unit = true,
@@ -1020,7 +1020,7 @@ local full_access_layout = {
 		transition_state = "character",
 	},
 	{
-		disable_when_matchmaking_in_versus = true,
+		disable_when_matchmaking_in_versus = false,
 		disable_when_matchmaking_ready = true,
 		display_name = "inventory_menu_button_name",
 		fade = true,
@@ -1031,7 +1031,7 @@ local full_access_layout = {
 		can_add_function = can_add_ingame_menu,
 	},
 	{
-		disable_when_matchmaking_in_versus = true,
+		disable_when_matchmaking_in_versus = false,
 		disable_when_matchmaking_ready = true,
 		display_name = "hero_window_talents",
 		fade = true,
@@ -1043,7 +1043,7 @@ local full_access_layout = {
 		can_add_function = can_add_ingame_menu,
 	},
 	{
-		disable_when_matchmaking_in_versus = true,
+		disable_when_matchmaking_in_versus = false,
 		disable_when_matchmaking_ready = true,
 		display_name = "hero_window_cosmetics",
 		fade = true,
@@ -1062,21 +1062,21 @@ local full_access_layout = {
 		transition_state = "achievements",
 	},
 	{
-		disable_when_matchmaking_in_versus = true,
+		disable_when_matchmaking_in_versus = false,
 		display_name = "start_menu_view",
 		fade = false,
 		requires_player_unit = true,
 		transition = "start_menu_view",
 	},
 	{
-		disable_when_matchmaking_in_versus = true,
+		disable_when_matchmaking_in_versus = false,
 		disable_when_matchmaking_ready = true,
 		display_name = "options_menu_button_name",
 		fade = true,
 		transition = "options_menu",
 	},
 	{
-		disable_when_matchmaking_in_versus = true,
+		disable_when_matchmaking_in_versus = false,
 		disable_when_matchmaking_ready = true,
 		display_name = "console_friends_menu_button_name",
 		fade = true,

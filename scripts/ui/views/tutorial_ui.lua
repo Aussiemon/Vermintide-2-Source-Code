@@ -211,6 +211,12 @@ TutorialUI.update = function (self, dt, t)
 		return
 	end
 
+	local side_manager = Managers.state.side
+
+	if side_manager:versus_is_dark_pact(player_unit) then
+		return
+	end
+
 	local render_tooltip_ui = false
 	local tutorial_extension = ScriptUnit.extension(player_unit, "tutorial_system")
 

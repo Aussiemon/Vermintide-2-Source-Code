@@ -119,6 +119,13 @@ local window_layouts = {
 			crafting_list = 3,
 			panel = 1,
 		},
+		can_add_function = function (mechanism_name)
+			if mechanism_name == "versus" or mechanism_name == "inn_vs" then
+				return false
+			else
+				return true
+			end
+		end,
 	},
 	{
 		close_on_exit = true,

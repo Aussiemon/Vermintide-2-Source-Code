@@ -336,6 +336,13 @@ UIUtils.get_text_width = function (ui_renderer, text_style, text)
 	return text_width
 end
 
+UIUtils.enable_button = function (widget, enable, hotspot_name)
+	local content = widget.content
+	local hotspot = content[hotspot_name] or content.button_hotspot or content.hotspot
+
+	hotspot.disable_button = enable
+end
+
 UIUtils.is_button_pressed = function (widget, hotspot_name, keyboard_input)
 	if widget then
 		local content = widget.content
@@ -567,4 +574,24 @@ UIUtils.sort_items_rarity_descending = function (item_1, item_2)
 	local item_2_rarity_order = item_rarity_order[item_2_rarity]
 
 	return item_1_rarity_order < item_2_rarity_order
+end
+
+UIUtils.set_widget_alpha = function (widget, alpha, optional_style_element)
+	local style = widget.style
+
+	if optional_style_element then
+		if style[optional_style_element].color then
+			style[optional_style_element].color[1] = alpha
+		else
+			style[optional_style_element].text_color[1] = alpha
+		end
+	else
+		for _, stlye_data in pairs(style) do
+			if stlye_data.color then
+				stlye_data.color[1] = alpha
+			else
+				stlye_data.text_color[1] = alpha
+			end
+		end
+	end
 end

@@ -42,7 +42,7 @@ local breed_data = {
 	base_unit = "units/beings/enemies/skaven_stormvermin_champion/chr_skaven_stormvermin_warlord",
 	behavior = "storm_vermin_warlord",
 	bone_lod_level = 1,
-	boost_curve_multiplier_override = 1.8,
+	boost_curve_multiplier_override = 2,
 	boss = true,
 	boss_staggers = false,
 	bot_hitbox_radius_approximation = 1,
@@ -495,6 +495,7 @@ local action_data = {
 			harder = 5,
 			hardest = 10,
 			normal = 0,
+			versus_base = 0,
 		},
 		difficulty_damage = {
 			cataclysm = 100,
@@ -505,6 +506,7 @@ local action_data = {
 			harder = 50,
 			hardest = 100,
 			normal = 30,
+			versus_base = 30,
 		},
 		ignore_staggers = {
 			true,
@@ -542,6 +544,7 @@ local action_data = {
 			harder = 30,
 			hardest = 50,
 			normal = 20,
+			versus_base = 20,
 		},
 		ignore_staggers = {
 			true,
@@ -592,6 +595,7 @@ local action_data = {
 			harder = 5,
 			hardest = 10,
 			normal = 0,
+			versus_base = 0,
 		},
 		difficulty_damage = {
 			cataclysm = 60,
@@ -602,6 +606,7 @@ local action_data = {
 			harder = 30,
 			hardest = 50,
 			normal = 20,
+			versus_base = 20,
 		},
 		ignore_staggers = {
 			true,
@@ -686,6 +691,7 @@ local action_data = {
 			harder = 5,
 			hardest = 10,
 			normal = 0,
+			versus_base = 0,
 		},
 		difficulty_damage = {
 			cataclysm = 50,
@@ -696,6 +702,7 @@ local action_data = {
 			harder = 30,
 			hardest = 50,
 			normal = 20,
+			versus_base = 20,
 		},
 		ignore_staggers = {
 			true,
@@ -766,6 +773,7 @@ local action_data = {
 			harder = 30,
 			hardest = 50,
 			normal = 20,
+			versus_base = 20,
 		},
 		fatigue_type = BreedTweaks.fatigue_types.elite_sweep.normal_attack,
 		overlap_start_angle_offset = -math.pi,
@@ -809,6 +817,7 @@ local action_data = {
 			harder = 30,
 			hardest = 50,
 			normal = 20,
+			versus_base = 20,
 		},
 		fatigue_type = BreedTweaks.fatigue_types.elite_sweep.normal_attack,
 		overlap_start_angle_offset = -0.5 * math.pi,
@@ -856,6 +865,7 @@ local action_data = {
 			harder = 30,
 			hardest = 40,
 			normal = 20,
+			versus_base = 20,
 		},
 		ignore_staggers = {
 			true,
@@ -904,6 +914,7 @@ local action_data = {
 			harder = 30,
 			hardest = 40,
 			normal = 20,
+			versus_base = 20,
 		},
 		ignore_staggers = {
 			true,
@@ -957,6 +968,7 @@ local action_data = {
 			harder = 30,
 			hardest = 50,
 			normal = 20,
+			versus_base = 20,
 		},
 		ignore_staggers = {
 			true,
@@ -1713,6 +1725,14 @@ local action_data = {
 				"skaven_storm_vermin",
 				"skaven_storm_vermin",
 			},
+			versus_base = {
+				"skaven_storm_vermin",
+				"skaven_storm_vermin",
+				"skaven_storm_vermin",
+				"skaven_storm_vermin",
+				"skaven_storm_vermin",
+				"skaven_storm_vermin",
+			},
 		},
 		difficulty_spawn = {
 			cataclysm = "stronghold_boss_event_defensive",
@@ -1723,6 +1743,7 @@ local action_data = {
 			harder = "stronghold_boss_event_defensive",
 			hardest = "stronghold_boss_event_defensive",
 			normal = "stronghold_boss_event_defensive",
+			versus_base = "stronghold_boss_event_defensive",
 		},
 		start_anims = {
 			bwd = "move_start_bwd",
@@ -1863,6 +1884,7 @@ local action_data = {
 			harder = 30,
 			hardest = 50,
 			normal = 20,
+			versus_base = 20,
 		},
 		stagger_impact = {
 			stagger_types.weak,

@@ -104,7 +104,11 @@ StatusUtils.set_grabbed_by_pack_master_network = function (status_name, grabbed_
 		return
 	end
 
-	local status_extension = ScriptUnit.extension(grabbed_unit, "status_system")
+	local status_extension = ScriptUnit.has_extension(grabbed_unit, "status_system")
+
+	if not status_extension then
+		return
+	end
 
 	status_extension:set_pack_master(status_name, is_grabbed, grabber_unit)
 

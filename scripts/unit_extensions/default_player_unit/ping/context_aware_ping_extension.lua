@@ -246,13 +246,17 @@ ContextAwarePingExtension.ping_world_position_attempt = function (self, unit, po
 
 	ping_type = ping_type or PingTypes.CONTEXT
 
-	network_manager.network_transmit:send_rpc_server("rpc_ping_world_position", pinger_unit_id, position, ping_type, social_wheel_event_id)
+	if pinger_unit_id then
+		network_manager.network_transmit:send_rpc_server("rpc_ping_world_position", pinger_unit_id, position, ping_type, social_wheel_event_id)
 
-	self._ping_timer = t + PING_COOLDOWN
+		self._ping_timer = t + PING_COOLDOWN
 
-	self:_consume_ping_event()
+		self:_consume_ping_event()
 
-	return true
+		return true
+	end
+
+	return false
 end
 
 ContextAwarePingExtension.social_message_attempt = function (self, unit, social_wheel_event_id, target_unit)

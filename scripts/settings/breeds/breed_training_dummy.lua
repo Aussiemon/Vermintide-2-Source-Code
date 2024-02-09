@@ -27,6 +27,7 @@ local breed_data = {
 	ignore_breed_limits = true,
 	no_blood = true,
 	no_blood_splatter_on_damage = true,
+	no_debug_spawn = true,
 	no_stagger_duration = true,
 	not_bot_target = true,
 	override_bot_target_node = "j_neck",
@@ -59,6 +60,7 @@ local breed_data = {
 		75 * HEALTH_MULTIPLIER,
 		75 * HEALTH_MULTIPLIER,
 		75 * HEALTH_MULTIPLIER,
+		25 * HEALTH_MULTIPLIER,
 	},
 	hit_mass_counts = BreedTweaks.hit_mass_counts.marauder,
 	stagger_duration = {

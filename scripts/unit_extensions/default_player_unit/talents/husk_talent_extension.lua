@@ -71,7 +71,7 @@ HuskTalentExtension.apply_buffs_from_talents = function (self)
 
 	for i = 1, #talent_ids do
 		local talent_id = talent_ids[i]
-		local talent_data = Talents[hero_name][talent_id]
+		local talent_data = TalentUtils.get_talent_by_id(hero_name, talent_id)
 
 		if talent_data then
 			local buffs = talent_data.buffs
@@ -179,7 +179,7 @@ HuskTalentExtension.get_talent_names = function (self, talent_names)
 
 	for i = 1, #talent_ids do
 		local talent_id = talent_ids[i]
-		local talent_data = Talents[hero_name][talent_id]
+		local talent_data = TalentUtils.get_talent_by_id(hero_name, talent_id)
 
 		talent_names[#talent_names + 1] = talent_data.name
 	end

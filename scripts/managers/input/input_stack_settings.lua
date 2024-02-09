@@ -3,6 +3,12 @@
 DEFAULT_INPUT_GROUP = "GLOBAL"
 InputStackSettings = {
 	{
+		group_name = "imgui",
+		services = {
+			"imgui",
+		},
+	},
+	{
 		group_name = "input",
 		services = {
 			"text_input",

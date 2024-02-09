@@ -1499,7 +1499,6 @@ TalentTrees.wood_elf = {
 		},
 	},
 }
-Talents = Talents or {}
 Talents.wood_elf = {
 	{
 		buffer = "both",

@@ -84,6 +84,8 @@ Development.init_user_settings = function ()
 		return Application.user_setting("development_settings", ...)
 	end
 
+	Development._patch_deprecated_development_settings()
+
 	local development_settings = Application.user_setting("development_settings")
 
 	if not development_settings then
@@ -120,4 +122,9 @@ Application.test_user_setting = function (...)
 	end
 
 	return t[select(num_args, ...)]
+end
+
+Development._patch_deprecated_development_settings = function ()
+	Development.set_setting("use_lan_backend", nil)
+	Development.set_setting("use_local_backend", nil)
 end

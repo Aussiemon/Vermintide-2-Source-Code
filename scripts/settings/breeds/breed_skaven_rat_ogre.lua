@@ -15,7 +15,7 @@ local breed_data = {
 	big_boy_turning_dot = 0.4,
 	blood_effect_name = "fx/impact_blood_ogre",
 	bone_lod_level = 0,
-	boost_curve_multiplier_override = 1.8,
+	boost_curve_multiplier_override = 2,
 	boss = true,
 	boss_damage_reduction = true,
 	boss_staggers = true,
@@ -400,6 +400,10 @@ local AttackIntensityPerDifficulty = {
 			normal = 5,
 			running = 2,
 		},
+		versus_base = {
+			normal = 5,
+			running = 2,
+		},
 	},
 	combo = {
 		easy = {
@@ -434,6 +438,10 @@ local AttackIntensityPerDifficulty = {
 			normal = 3,
 			running = 0.5,
 		},
+		versus_base = {
+			normal = 3,
+			running = 0.5,
+		},
 	},
 	shove = {
 		easy = {
@@ -458,6 +466,9 @@ local AttackIntensityPerDifficulty = {
 			normal = 1,
 		},
 		cataclysm_3 = {
+			normal = 1,
+		},
+		versus_base = {
 			normal = 1,
 		},
 	},
@@ -491,6 +502,10 @@ local AttackIntensityPerDifficulty = {
 			running = 2,
 		},
 		cataclysm_3 = {
+			normal = 5,
+			running = 2,
+		},
+		versus_base = {
 			normal = 5,
 			running = 2,
 		},

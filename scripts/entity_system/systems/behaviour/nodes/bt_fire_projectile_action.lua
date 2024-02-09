@@ -283,13 +283,13 @@ BTFireProjectileAction._fire_projectile = function (self, unit, blackboard, dt)
 	local collision_filter = "filter_enemy_player_afro_ray_projectile"
 	local difficulty_hit_chance = action.difficulty_hit_chance
 	local difficulty_rank = Managers.state.difficulty:get_difficulty_rank()
-	local power_level = light_weight_projectile_template.attack_power_level[difficulty_rank]
+	local power_level = light_weight_projectile_template.attack_power_level[difficulty_rank] or light_weight_projectile_template.attack_power_level[2]
 	local target_is_dodging = blackboard.target_is_dodging
 	local first_shot_spread = not blackboard.fired_first_shot and light_weight_projectile_template.first_shot_spread
 	local hit = true
 
 	if difficulty_rank and difficulty_hit_chance then
-		local hit_chance = difficulty_hit_chance[difficulty_rank]
+		local hit_chance = difficulty_hit_chance[difficulty_rank] or difficulty_hit_chance[2]
 
 		hit = hit_chance >= math.random()
 

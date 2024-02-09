@@ -291,6 +291,12 @@ weapon_template.tooltip_detail = {
 	},
 }
 
+local repeating_pistol_template_1_vs = table.clone(weapon_template)
+
+repeating_pistol_template_1_vs.actions.action_one.default.damage_profile = "shot_machinegun_vs"
+repeating_pistol_template_1_vs.actions.action_one.bullet_spray.damage_profile = "shot_machinegun_shotgun_vs"
+
 return {
 	repeating_pistol_template_1 = table.clone(weapon_template),
+	repeating_pistol_template_1_vs = table.clone(repeating_pistol_template_1_vs),
 }

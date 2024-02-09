@@ -658,4 +658,12 @@ UpdateItemMasterList({
 	"es_sword_shield_magic_01",
 	"es_mace_shield_magic_01",
 	"es_dual_wield_hammer_sword_magic_01",
+	"vs_es_1h_sword",
+	"vs_es_1h_mace",
+	"vs_es_2h_sword_executioner",
+	"vs_es_2h_sword",
+	"vs_es_2h_hammer",
+	"vs_es_sword_shield",
+	"vs_es_mace_shield",
+	"vs_es_dual_wield_hammer_sword",
 }, "es_questingknight")

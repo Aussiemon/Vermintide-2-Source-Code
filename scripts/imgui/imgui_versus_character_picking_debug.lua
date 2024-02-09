@@ -16,7 +16,10 @@ ImguiVersusCharacterPickingDebug._initialize = function (self)
 	end
 
 	self._mechanism = mechanism
-	self._party_selection_logic = mechanism._party_selection_logic
+
+	local game_mode = Managers.state.game_mode:game_mode()
+
+	self._party_selection_logic = game_mode.party_selection_logic and game_mode:party_selection_logic()
 
 	if not self._party_selection_logic then
 		return

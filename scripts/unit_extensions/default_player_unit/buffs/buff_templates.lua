@@ -48,12 +48,12 @@ StatBuffApplicationMethods = {
 	damage_taken_burning_enemy = "stacking_multiplier",
 	damage_taken_elites = "stacking_multiplier",
 	damage_taken_kd = "stacking_multiplier",
+	damage_taken_melee = "stacking_multiplier",
 	damage_taken_ranged = "stacking_multiplier",
 	damage_taken_to_overcharge = "stacking_multiplier",
 	debuff_armoured = "stacking_bonus",
 	deus_coins_greed = "stacking_multiplier",
 	dummy_stagger = "stacking_bonus",
-	explosion_radius = "stacking_multiplier",
 	extra_shot = "stacking_bonus",
 	extra_wounds = "stacking_bonus",
 	faster_respawn = "stacking_multiplier",
@@ -785,7 +785,7 @@ ProcFunctions = {
 		if Unit.alive(owner_unit) then
 			local template = buff.template
 			local explosion_template = template.explosion_template
-			local world = Application.main_world()
+			local world = Managers.world:world(LevelHelper.INGAME_WORLD_NAME)
 			local player_position = POSITION_LOOKUP[owner_unit]
 			local rotation = Quaternion.identity()
 			local player = Managers.player:owner(owner_unit)
@@ -3738,6 +3738,7 @@ ProcFunctions = {
 				harder = "blocked_attack",
 				hardest = "blocked_attack",
 				normal = "blocked_attack",
+				versus_base = "blocked_attack",
 			}
 
 			if breed and breed.name == "hero_es_knight" and not DamageUtils.check_block(owner_unit, knight_unit, fatigue_type, "front") then
@@ -5454,6 +5455,13 @@ BuffTemplates = {
 						4,
 						1,
 					},
+					versus_base = {
+						1,
+						1,
+						0,
+						4,
+						1,
+					},
 				},
 			},
 		},
@@ -6818,6 +6826,13 @@ BuffTemplates = {
 						9,
 						1,
 					},
+					versus_base = {
+						1,
+						1,
+						0,
+						6.5,
+						1,
+					},
 				},
 				perks = {
 					buff_perks.burning_warpfire,
@@ -6898,6 +6913,13 @@ BuffTemplates = {
 						9,
 						4,
 					},
+					versus_base = {
+						3,
+						1,
+						0,
+						6.5,
+						2,
+					},
 				},
 				perks = {
 					buff_perks.burning_warpfire,
@@ -6977,6 +6999,13 @@ BuffTemplates = {
 						0,
 						9,
 						4,
+					},
+					versus_base = {
+						10,
+						1,
+						0,
+						6.5,
+						1,
 					},
 				},
 				perks = {
@@ -7143,6 +7172,13 @@ BuffTemplates = {
 						4,
 						1,
 					},
+					versus_base = {
+						1,
+						1,
+						0,
+						1,
+						1,
+					},
 				},
 			},
 		},
@@ -7305,6 +7341,13 @@ BuffTemplates = {
 						1,
 						0,
 						4,
+						1,
+					},
+					versus_base = {
+						1,
+						1,
+						0,
+						1,
 						1,
 					},
 				},
@@ -7734,6 +7777,13 @@ BuffTemplates = {
 						10,
 						1,
 					},
+					versus_base = {
+						1,
+						1,
+						0,
+						2,
+						1,
+					},
 				},
 			},
 			{
@@ -7841,6 +7891,13 @@ BuffTemplates = {
 						1,
 						0,
 						4,
+						1,
+					},
+					versus_base = {
+						1,
+						1,
+						0,
+						1,
 						1,
 					},
 				},
@@ -7952,6 +8009,13 @@ BuffTemplates = {
 						1,
 						0,
 						4,
+						1,
+					},
+					versus_base = {
+						1,
+						1,
+						0,
+						1,
 						1,
 					},
 				},
@@ -8161,6 +8225,13 @@ BuffTemplates = {
 						16,
 						1,
 					},
+					versus_base = {
+						1,
+						1,
+						0,
+						3,
+						1,
+					},
 				},
 			},
 			{
@@ -8316,6 +8387,13 @@ BuffTemplates = {
 						8.5,
 						6,
 					},
+					versus_base = {
+						2,
+						2,
+						0,
+						2.5,
+						3,
+					},
 				},
 				perks = {
 					buff_perks.burning_warpfire,
@@ -8392,6 +8470,13 @@ BuffTemplates = {
 						0,
 						5,
 						1,
+					},
+					versus_base = {
+						3,
+						2,
+						0,
+						1.5,
+						2,
 					},
 				},
 				perks = {
@@ -8500,6 +8585,13 @@ BuffTemplates = {
 						1,
 						0,
 						4,
+						1,
+					},
+					versus_base = {
+						1,
+						1,
+						0,
+						1,
 						1,
 					},
 				},

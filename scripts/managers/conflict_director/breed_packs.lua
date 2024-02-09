@@ -130,6 +130,18 @@ BreedPacks = {
 						Breeds.chaos_marauder,
 					},
 				},
+				versus_base = {
+					{
+						2,
+						"skaven_storm_vermin_commander",
+						Breeds.skaven_clan_rat,
+					},
+					{
+						1,
+						"chaos_raider",
+						Breeds.chaos_marauder,
+					},
+				},
 			},
 			clamp_breeds_low = {
 				normal = {
@@ -212,6 +224,18 @@ BreedPacks = {
 					},
 					{
 						5,
+						"chaos_raider",
+						Breeds.chaos_marauder,
+					},
+				},
+				versus_base = {
+					{
+						1,
+						"skaven_storm_vermin_commander",
+						Breeds.skaven_clan_rat,
+					},
+					{
+						1,
 						"chaos_raider",
 						Breeds.chaos_marauder,
 					},
@@ -568,6 +592,23 @@ BreedPacks = {
 						Breeds.beastmen_ungor,
 					},
 				},
+				versus_base = {
+					{
+						2,
+						"skaven_storm_vermin_commander",
+						Breeds.skaven_clan_rat,
+					},
+					{
+						1,
+						"beastmen_bestigor",
+						Breeds.beastmen_gor,
+					},
+					{
+						12,
+						"beastmen_ungor_archer",
+						Breeds.beastmen_ungor,
+					},
+				},
 			},
 			clamp_breeds_low = {
 				normal = {
@@ -685,6 +726,23 @@ BreedPacks = {
 					},
 					{
 						15,
+						"beastmen_ungor_archer",
+						Breeds.beastmen_ungor,
+					},
+				},
+				versus_base = {
+					{
+						1,
+						"skaven_storm_vermin_commander",
+						Breeds.skaven_clan_rat,
+					},
+					{
+						1,
+						"beastmen_bestigor",
+						Breeds.beastmen_gor,
+					},
+					{
+						10,
 						"beastmen_ungor_archer",
 						Breeds.beastmen_ungor,
 					},
@@ -1076,6 +1134,28 @@ BreedPacks = {
 						Breeds.beastmen_ungor,
 					},
 				},
+				versus_base = {
+					{
+						2,
+						"chaos_raider",
+						Breeds.chaos_marauder,
+					},
+					{
+						1,
+						"chaos_warrior",
+						Breeds.chaos_marauder,
+					},
+					{
+						1,
+						"beastmen_bestigor",
+						Breeds.beastmen_gor,
+					},
+					{
+						12,
+						"beastmen_ungor_archer",
+						Breeds.beastmen_ungor,
+					},
+				},
 			},
 			clamp_breeds_low = {
 				normal = {
@@ -1228,6 +1308,28 @@ BreedPacks = {
 					},
 					{
 						15,
+						"beastmen_ungor_archer",
+						Breeds.beastmen_ungor,
+					},
+				},
+				versus_base = {
+					{
+						1,
+						"chaos_raider",
+						Breeds.chaos_marauder,
+					},
+					{
+						1,
+						"chaos_warrior",
+						Breeds.chaos_marauder,
+					},
+					{
+						1,
+						"beastmen_bestigor",
+						Breeds.beastmen_gor,
+					},
+					{
+						10,
 						"beastmen_ungor_archer",
 						Breeds.beastmen_ungor,
 					},
@@ -1564,6 +1666,18 @@ BreedPacks = {
 						Breeds.chaos_marauder,
 					},
 				},
+				versus_base = {
+					{
+						2,
+						"skaven_storm_vermin_commander",
+						Breeds.skaven_clan_rat,
+					},
+					{
+						1,
+						"chaos_raider",
+						Breeds.chaos_marauder,
+					},
+				},
 			},
 			clamp_breeds_low = {
 				normal = {
@@ -1646,6 +1760,18 @@ BreedPacks = {
 					},
 					{
 						5,
+						"chaos_raider",
+						Breeds.chaos_marauder,
+					},
+				},
+				versus_base = {
+					{
+						1,
+						"skaven_storm_vermin_commander",
+						Breeds.skaven_clan_rat,
+					},
+					{
+						1,
 						"chaos_raider",
 						Breeds.chaos_marauder,
 					},
@@ -1898,6 +2024,18 @@ BreedPacks = {
 						Breeds.chaos_marauder,
 					},
 				},
+				versus_base = {
+					{
+						2,
+						"skaven_storm_vermin_commander",
+						Breeds.skaven_clan_rat,
+					},
+					{
+						1,
+						"chaos_raider",
+						Breeds.chaos_marauder,
+					},
+				},
 			},
 			clamp_breeds_low = {
 				normal = {
@@ -1980,6 +2118,18 @@ BreedPacks = {
 					},
 					{
 						5,
+						"chaos_raider",
+						Breeds.chaos_marauder,
+					},
+				},
+				versus_base = {
+					{
+						1,
+						"skaven_storm_vermin_commander",
+						Breeds.skaven_clan_rat,
+					},
+					{
+						1,
 						"chaos_raider",
 						Breeds.chaos_marauder,
 					},
@@ -2325,6 +2475,18 @@ BreedPacks = {
 						Breeds.chaos_marauder,
 					},
 				},
+				versus_base = {
+					{
+						2,
+						"skaven_storm_vermin_commander",
+						Breeds.skaven_clan_rat,
+					},
+					{
+						1,
+						"chaos_raider",
+						Breeds.chaos_marauder,
+					},
+				},
 			},
 			clamp_breeds_low = {
 				normal = {
@@ -2431,6 +2593,18 @@ BreedPacks = {
 							4,
 							5,
 						},
+						"chaos_raider",
+						Breeds.chaos_marauder,
+					},
+				},
+				versus_base = {
+					{
+						1,
+						"skaven_storm_vermin_commander",
+						Breeds.skaven_clan_rat,
+					},
+					{
+						1,
 						"chaos_raider",
 						Breeds.chaos_marauder,
 					},
@@ -2669,6 +2843,16 @@ BreedPacks = {
 						Breeds.skaven_clan_rat,
 					},
 				},
+				versus_base = {
+					{
+						{
+							2,
+							3,
+						},
+						"skaven_storm_vermin_commander",
+						Breeds.skaven_clan_rat,
+					},
+				},
 			},
 			clamp_breeds_low = {
 				normal = {
@@ -2733,6 +2917,16 @@ BreedPacks = {
 						{
 							4,
 							6,
+						},
+						"skaven_storm_vermin_commander",
+						Breeds.skaven_clan_rat,
+					},
+				},
+				versus_base = {
+					{
+						{
+							0,
+							1,
 						},
 						"skaven_storm_vermin_commander",
 						Breeds.skaven_clan_rat,
@@ -3023,6 +3217,23 @@ BreedPacks = {
 						Breeds.skaven_clan_rat,
 					},
 				},
+				versus_base = {
+					{
+						10,
+						"skaven_clan_rat_with_shield",
+						Breeds.skaven_clan_rat,
+					},
+					{
+						0,
+						"skaven_storm_vermin_with_shield",
+						Breeds.skaven_clan_rat,
+					},
+					{
+						0,
+						"skaven_storm_vermin_commander",
+						Breeds.skaven_clan_rat,
+					},
+				},
 			},
 			clamp_breeds_low = {
 				normal = {
@@ -3130,6 +3341,23 @@ BreedPacks = {
 				cataclysm_3 = {
 					{
 						10,
+						"skaven_clan_rat_with_shield",
+						Breeds.skaven_clan_rat,
+					},
+					{
+						0,
+						"skaven_storm_vermin_with_shield",
+						Breeds.skaven_clan_rat,
+					},
+					{
+						0,
+						"skaven_storm_vermin_commander",
+						Breeds.skaven_clan_rat,
+					},
+				},
+				versus_base = {
+					{
+						4,
 						"skaven_clan_rat_with_shield",
 						Breeds.skaven_clan_rat,
 					},
@@ -3413,6 +3641,29 @@ BreedPacks = {
 						Breeds.skaven_clan_rat,
 					},
 				},
+				versus_base = {
+					{
+						{
+							6,
+							8,
+						},
+						"skaven_clan_rat_with_shield",
+						Breeds.skaven_clan_rat,
+					},
+					{
+						{
+							1,
+							2,
+						},
+						"skaven_storm_vermin_with_shield",
+						Breeds.skaven_clan_rat,
+					},
+					{
+						1,
+						"skaven_storm_vermin_commander",
+						Breeds.skaven_clan_rat,
+					},
+				},
 			},
 			clamp_breeds_low = {
 				normal = {
@@ -3571,6 +3822,29 @@ BreedPacks = {
 						{
 							1,
 							2,
+						},
+						"skaven_storm_vermin_commander",
+						Breeds.skaven_clan_rat,
+					},
+				},
+				versus_base = {
+					{
+						{
+							0,
+							4,
+						},
+						"skaven_clan_rat_with_shield",
+						Breeds.skaven_clan_rat,
+					},
+					{
+						0,
+						"skaven_storm_vermin_with_shield",
+						Breeds.skaven_clan_rat,
+					},
+					{
+						{
+							0,
+							1,
 						},
 						"skaven_storm_vermin_commander",
 						Breeds.skaven_clan_rat,
@@ -4051,6 +4325,24 @@ BreedPacks = {
 						Breeds.chaos_marauder,
 					},
 				},
+				versus_base = {
+					{
+						{
+							1,
+							2,
+						},
+						"chaos_warrior",
+						Breeds.chaos_marauder,
+					},
+					{
+						{
+							3,
+							5,
+						},
+						"chaos_marauder_with_shield",
+						Breeds.chaos_marauder,
+					},
+				},
 			},
 			clamp_breeds_low = {
 				normal = {
@@ -4165,6 +4457,21 @@ BreedPacks = {
 						{
 							8,
 							10,
+						},
+						"chaos_marauder_with_shield",
+						Breeds.chaos_marauder,
+					},
+				},
+				versus_base = {
+					{
+						0,
+						"chaos_warrior",
+						Breeds.chaos_marauder,
+					},
+					{
+						{
+							0,
+							5,
 						},
 						"chaos_marauder_with_shield",
 						Breeds.chaos_marauder,
@@ -4414,6 +4721,24 @@ BreedPacks = {
 						Breeds.chaos_marauder,
 					},
 				},
+				versus_base = {
+					{
+						{
+							0,
+							1,
+						},
+						"chaos_warrior",
+						Breeds.chaos_marauder,
+					},
+					{
+						{
+							2,
+							3,
+						},
+						"chaos_raider",
+						Breeds.chaos_marauder,
+					},
+				},
 			},
 			clamp_breeds_low = {
 				normal = {
@@ -4510,6 +4835,21 @@ BreedPacks = {
 						{
 							4,
 							5,
+						},
+						"chaos_raider",
+						Breeds.chaos_marauder,
+					},
+				},
+				versus_base = {
+					{
+						0,
+						"chaos_warrior",
+						Breeds.chaos_marauder,
+					},
+					{
+						{
+							1,
+							2,
 						},
 						"chaos_raider",
 						Breeds.chaos_marauder,
@@ -4746,6 +5086,24 @@ BreedPacks = {
 						Breeds.chaos_marauder,
 					},
 				},
+				versus_base = {
+					{
+						{
+							6,
+							8,
+						},
+						"chaos_marauder_with_shield",
+						Breeds.chaos_marauder,
+					},
+					{
+						{
+							2,
+							3,
+						},
+						"chaos_raider",
+						Breeds.chaos_marauder,
+					},
+				},
 			},
 			clamp_breeds_low = {
 				normal = {
@@ -4866,6 +5224,24 @@ BreedPacks = {
 						{
 							3,
 							4,
+						},
+						"chaos_raider",
+						Breeds.chaos_marauder,
+					},
+				},
+				versus_base = {
+					{
+						{
+							3,
+							5,
+						},
+						"chaos_marauder_with_shield",
+						Breeds.chaos_marauder,
+					},
+					{
+						{
+							0,
+							1,
 						},
 						"chaos_raider",
 						Breeds.chaos_marauder,
@@ -5106,6 +5482,24 @@ BreedPacks = {
 						Breeds.chaos_marauder,
 					},
 				},
+				versus_base = {
+					{
+						{
+							4,
+							5,
+						},
+						"chaos_berzerker",
+						Breeds.chaos_marauder,
+					},
+					{
+						{
+							1,
+							2,
+						},
+						"chaos_raider",
+						Breeds.chaos_marauder,
+					},
+				},
 			},
 			clamp_breeds_low = {
 				normal = {
@@ -5229,6 +5623,24 @@ BreedPacks = {
 						{
 							3,
 							4,
+						},
+						"chaos_raider",
+						Breeds.chaos_marauder,
+					},
+				},
+				versus_base = {
+					{
+						{
+							3,
+							4,
+						},
+						"chaos_berzerker",
+						Breeds.chaos_marauder,
+					},
+					{
+						{
+							1,
+							2,
 						},
 						"chaos_raider",
 						Breeds.chaos_marauder,
@@ -5505,6 +5917,32 @@ BreedPacks = {
 						Breeds.chaos_fanatic,
 					},
 				},
+				versus_base = {
+					{
+						{
+							3,
+							4,
+						},
+						"chaos_berzerker",
+						Breeds.chaos_fanatic,
+					},
+					{
+						{
+							0,
+							2,
+						},
+						"chaos_raider",
+						Breeds.chaos_marauder,
+					},
+					{
+						{
+							2,
+							5,
+						},
+						"chaos_marauder_with_shield",
+						Breeds.chaos_fanatic,
+					},
+				},
 			},
 			clamp_breeds_low = {
 				normal = {
@@ -5684,6 +6122,32 @@ BreedPacks = {
 						{
 							6,
 							8,
+						},
+						"chaos_marauder_with_shield",
+						Breeds.chaos_fanatic,
+					},
+				},
+				versus_base = {
+					{
+						{
+							2,
+							3,
+						},
+						"chaos_berzerker",
+						Breeds.chaos_fanatic,
+					},
+					{
+						{
+							0,
+							2,
+						},
+						"chaos_raider",
+						Breeds.chaos_marauder,
+					},
+					{
+						{
+							2,
+							3,
 						},
 						"chaos_marauder_with_shield",
 						Breeds.chaos_fanatic,
@@ -5886,6 +6350,24 @@ BreedPacks = {
 						Breeds.beastmen_gor,
 					},
 				},
+				versus_base = {
+					{
+						{
+							1,
+							2,
+						},
+						"beastmen_bestigor",
+						Breeds.beastmen_gor,
+					},
+					{
+						{
+							8,
+							10,
+						},
+						"beastmen_ungor_archer",
+						Breeds.beastmen_ungor,
+					},
+				},
 			},
 			clamp_breeds_low = {
 				normal = {
@@ -6035,6 +6517,32 @@ BreedPacks = {
 							8,
 						},
 						"beastmen_gor",
+						Breeds.beastmen_ungor,
+					},
+				},
+				versus_base = {
+					{
+						{
+							0,
+							2,
+						},
+						"beastmen_bestigor",
+						Breeds.beastmen_gor,
+					},
+					{
+						{
+							2,
+							3,
+						},
+						"beastmen_gor",
+						Breeds.beastmen_ungor,
+					},
+					{
+						{
+							3,
+							5,
+						},
+						"beastmen_ungor_archer",
 						Breeds.beastmen_ungor,
 					},
 				},
@@ -6252,6 +6760,24 @@ BreedPacks = {
 						Breeds.beastmen_gor,
 					},
 				},
+				versus_base = {
+					{
+						{
+							2,
+							3,
+						},
+						"beastmen_bestigor",
+						Breeds.beastmen_gor,
+					},
+					{
+						{
+							8,
+							10,
+						},
+						"beastmen_ungor_archer",
+						Breeds.beastmen_ungor,
+					},
+				},
 			},
 			clamp_breeds_low = {
 				normal = {
@@ -6401,6 +6927,32 @@ BreedPacks = {
 							8,
 						},
 						"beastmen_gor",
+						Breeds.beastmen_ungor,
+					},
+				},
+				versus_base = {
+					{
+						{
+							0,
+							2,
+						},
+						"beastmen_bestigor",
+						Breeds.beastmen_gor,
+					},
+					{
+						{
+							2,
+							3,
+						},
+						"beastmen_gor",
+						Breeds.beastmen_ungor,
+					},
+					{
+						{
+							3,
+							5,
+						},
+						"beastmen_ungor_archer",
 						Breeds.beastmen_ungor,
 					},
 				},
@@ -6685,6 +7237,32 @@ BreedPacks = {
 						Breeds.beastmen_ungor,
 					},
 				},
+				versus_base = {
+					{
+						{
+							3,
+							4,
+						},
+						"beastmen_gor",
+						Breeds.beastmen_ungor,
+					},
+					{
+						{
+							0,
+							2,
+						},
+						"beastmen_bestigor",
+						Breeds.beastmen_gor,
+					},
+					{
+						{
+							2,
+							5,
+						},
+						"beastmen_gor",
+						Breeds.beastmen_ungor,
+					},
+				},
 			},
 			clamp_breeds_low = {
 				normal = {
@@ -6864,6 +7442,32 @@ BreedPacks = {
 						{
 							6,
 							8,
+						},
+						"beastmen_gor",
+						Breeds.beastmen_ungor,
+					},
+				},
+				versus_base = {
+					{
+						{
+							2,
+							3,
+						},
+						"beastmen_gor",
+						Breeds.beastmen_ungor,
+					},
+					{
+						{
+							0,
+							2,
+						},
+						"beastmen_bestigor",
+						Breeds.beastmen_gor,
+					},
+					{
+						{
+							2,
+							3,
 						},
 						"beastmen_gor",
 						Breeds.beastmen_ungor,

@@ -7,8 +7,8 @@ local definitions = local_require("scripts/ui/views/end_screens/victory_end_scre
 
 VictoryEndScreenUI = class(VictoryEndScreenUI, BaseEndScreenUI)
 
-VictoryEndScreenUI.init = function (self, ingame_ui_context, input_service, screen_context)
-	VictoryEndScreenUI.super.init(self, ingame_ui_context, input_service, definitions)
+VictoryEndScreenUI.init = function (self, ingame_ui_context, input_service, screen_context, params)
+	VictoryEndScreenUI.super.init(self, ingame_ui_context, input_service, definitions, params)
 	fassert(screen_context.show_act_presentation ~= nil, "show_act_presentation not set.")
 
 	if screen_context.show_act_presentation then
@@ -65,6 +65,12 @@ VictoryEndScreenUI._update = function (self, dt)
 	local act_presentation_done = not act_presentation_ui or act_presentation_ui:presentation_completed()
 
 	if self._victory_anim_id == nil and act_presentation_done then
-		self:_on_completed()
+		if Managers.state.game_mode:setting("display_end_of_match_score_view") then
+			local screen_name, screen_config, params = Managers.state.game_mode:get_end_of_round_screen_settings()
+
+			Managers.ui:activate_end_screen_ui(screen_name, screen_config, params)
+		else
+			self:_on_completed()
+		end
 	end
 end

@@ -477,6 +477,7 @@ WeaponUnitExtension.start_action = function (self, action_name, sub_action_name,
 		status_extension._current_action = new_action
 
 		action:client_owner_start_action(current_action_settings, t, chain_action_data, power_level, action_init_data)
+		Managers.state.event:trigger("combat_log_action", self.owner_unit, self.item_name, action_kind, action_name, sub_action_name, power_level, true)
 
 		local aim_assist_ramp_multiplier = current_action_settings.aim_assist_ramp_multiplier
 
@@ -547,12 +548,6 @@ WeaponUnitExtension.start_action = function (self, action_name, sub_action_name,
 
 			first_person_extension:animation_set_variable("attack_speed", anim_time_scale)
 
-			if CharacterStateHelper.is_enemy_character(owner_unit) then
-				local first_person_variable_id = 1
-
-				Unit.animation_set_variable(first_person_unit, first_person_variable_id, anim_time_scale)
-			end
-
 			if not looping_event or looping_event and not self._looping_anim_event_started then
 				Unit.animation_event(first_person_unit, event)
 
@@ -563,16 +558,8 @@ WeaponUnitExtension.start_action = function (self, action_name, sub_action_name,
 
 			if not script_data.disable_third_person_weapon_animation_events then
 				local third_person_variable_id
-				local hero_player = true
 
-				if CharacterStateHelper.is_enemy_character(owner_unit) then
-					third_person_variable_id = 1
-					hero_player = false
-				end
-
-				if hero_player then
-					third_person_variable_id = Unit.animation_find_variable(owner_unit, "attack_speed")
-				end
+				third_person_variable_id = Unit.animation_find_variable(owner_unit, "attack_speed")
 
 				Unit.animation_set_variable(owner_unit, third_person_variable_id, anim_time_scale)
 
@@ -634,7 +621,9 @@ WeaponUnitExtension._finish_action = function (self, reason, data)
 	end
 
 	local chain_action_data = action:finish(reason, data)
+	local lookup_data = current_action_settings.lookup_data
 
+	Managers.state.event:trigger("combat_log_action", self.owner_unit, self.item_name, action_kind, lookup_data.action_name, lookup_data.sub_action_name, action.power_level, false, reason)
 	self:anim_end_event(reason, current_action_settings)
 
 	local next_action_settings = data and data.new_action_settings

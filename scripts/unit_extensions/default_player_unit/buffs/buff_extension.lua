@@ -430,6 +430,11 @@ BuffExtension.add_buff = function (self, template_name, params)
 						self:_play_buff_sound(activation_sound, sfx.activation_sound_3p)
 					end
 				end
+
+				local current_buff_stacks = self._stacking_buffs[sub_buff_template.name]
+				local num_stacks = current_buff_stacks and #current_buff_stacks or 0
+
+				Managers.state.event:trigger("combat_log_buff", unit, buff, true, num_stacks + 1, max_stacks)
 			end
 		end
 	end
@@ -1050,6 +1055,11 @@ BuffExtension._remove_sub_buff = function (self, buff, index, buff_extension_fun
 			self._vfx[id] = nil
 		end
 	end
+
+	local stacks = self:num_buff_type(buff.buff_type)
+	local max_stacks = buff.template.max_stacks
+
+	Managers.state.event:trigger("combat_log_buff", self._unit, buff, false, stacks, max_stacks)
 end
 
 BuffExtension._remove_stat_buff = function (self, buff)
@@ -1266,6 +1276,10 @@ BuffExtension.trigger_procs = function (self, event, ...)
 		local proc_chance = buff.proc_chance or 1
 
 		if has_authority(buff, is_server, is_local) and current_time > (buff._next_proc_t or 0) and self:has_procced(proc_chance, buff) then
+			local player = Managers.player:owner(self._unit)
+
+			Managers.state.event:trigger("combat_log_proc", player, event, buff, params)
+
 			buff._next_proc_t = buff.template.proc_cooldown and buff.template.proc_cooldown + current_time
 
 			local proc_weight = buff.template.proc_weight or 0
@@ -1584,12 +1598,6 @@ BuffExtension._remove_buff_synced = function (self, id)
 	local unit_id = network_manager:unit_game_object_id(self._unit)
 
 	if not unit_id then
-		return
-	end
-
-	local game = network_manager:game()
-
-	if not game then
 		return
 	end
 

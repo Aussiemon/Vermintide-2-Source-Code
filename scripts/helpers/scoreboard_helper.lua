@@ -417,10 +417,8 @@ end
 local PLAYERS = {}
 local OCCUPIED_SLOTS = {}
 
-ScoreboardHelper.get_current_players = function ()
-	local mechanism_name = Managers.mechanism:current_mechanism_name()
-	local mechanism_settings = MechanismSettings[mechanism_name]
-	local max_members = mechanism_settings.max_members
+ScoreboardHelper.get_current_players = function (optional_profile_synchronizer)
+	local max_members = Managers.mechanism:max_instance_members()
 	local human_and_bot_players = Managers.player:human_and_bot_players()
 
 	if max_members >= table.size(human_and_bot_players) then
@@ -434,7 +432,16 @@ ScoreboardHelper.get_current_players = function ()
 		local bot_players = Managers.player:bots()
 
 		for _, player in pairs(human_players) do
-			local player_profile_index = player:profile_index()
+			local player_profile_index
+
+			if optional_profile_synchronizer then
+				local player_peer_id = player:network_id()
+				local local_player_id = player:local_player_id()
+
+				player_profile_index = optional_profile_synchronizer:profile_by_peer(player_peer_id, local_player_id)
+			else
+				player_profile_index = player:profile_index()
+			end
 
 			if not OCCUPIED_SLOTS[player_profile_index] then
 				gathered_players[#gathered_players + 1] = player
@@ -505,4 +512,332 @@ ScoreboardHelper.debug_get_grouped_topic_statistics = function ()
 	end
 
 	return player_list
+end
+
+ScoreboardHelper.scoreboard_topic_stats_versus = {
+	{
+		display_text = "scoreboard_topic_kills_specials",
+		name = "kills_specials",
+		stat_types = {
+			{
+				"kills_per_breed",
+				"vs_gutter_runner",
+			},
+			{
+				"kills_per_breed",
+				"vs_packmaster",
+			},
+			{
+				"kills_per_breed",
+				"vs_poison_wind_globadier",
+			},
+			{
+				"kills_per_breed",
+				"vs_ratling_gunner",
+			},
+			{
+				"kills_per_breed",
+				"vs_warpfire_thrower",
+			},
+		},
+		sort_function = function (a, b)
+			return a.score > b.score
+		end,
+	},
+	{
+		display_text = "scoreboard_topic_kills_heroes",
+		name = "kills_heroes",
+		stat_types = {
+			{
+				"kills_per_breed",
+				"hero_wh_captain",
+			},
+			{
+				"kills_per_breed",
+				"hero_dr_slayer",
+			},
+			{
+				"kills_per_breed",
+				"hero_wh_priest",
+			},
+			{
+				"kills_per_breed",
+				"hero_dr_ironbreaker",
+			},
+			{
+				"kills_per_breed",
+				"hero_we_maidenguard",
+			},
+			{
+				"kills_per_breed",
+				"hero_bw_necromancer",
+			},
+			{
+				"kills_per_breed",
+				"hero_es_questingknight",
+			},
+			{
+				"kills_per_breed",
+				"hero_we_thornsister",
+			},
+			{
+				"kills_per_breed",
+				"hero_es_knight",
+			},
+			{
+				"kills_per_breed",
+				"hero_es_huntsman",
+			},
+			{
+				"kills_per_breed",
+				"hero_wh_bountyhunter",
+			},
+			{
+				"kills_per_breed",
+				"hero_dr_ranger",
+			},
+			{
+				"kills_per_breed",
+				"hero_dr_engineer",
+			},
+			{
+				"kills_per_breed",
+				"hero_es_mercenary",
+			},
+			{
+				"kills_per_breed",
+				"hero_bw_scholar",
+			},
+			{
+				"kills_per_breed",
+				"hero_bw_unchained",
+			},
+			{
+				"kills_per_breed",
+				"hero_bw_adept",
+			},
+			{
+				"kills_per_breed",
+				"hero_wh_zealot",
+			},
+			{
+				"kills_per_breed",
+				"hero_we_shade",
+			},
+			{
+				"kills_per_breed",
+				"hero_we_waywatcher",
+			},
+		},
+		sort_function = function (a, b)
+			return a.score > b.score
+		end,
+	},
+	{
+		display_text = "scoreboard_topic_damage_dealt_heroes",
+		name = "damage_dealt_heroes",
+		stat_types = {
+			{
+				"damage_dealt_per_breed",
+				"hero_wh_captain",
+			},
+			{
+				"damage_dealt_per_breed",
+				"hero_dr_slayer",
+			},
+			{
+				"damage_dealt_per_breed",
+				"hero_wh_priest",
+			},
+			{
+				"damage_dealt_per_breed",
+				"hero_dr_ironbreaker",
+			},
+			{
+				"damage_dealt_per_breed",
+				"hero_we_maidenguard",
+			},
+			{
+				"damage_dealt_per_breed",
+				"hero_bw_necromancer",
+			},
+			{
+				"damage_dealt_per_breed",
+				"hero_es_questingknight",
+			},
+			{
+				"damage_dealt_per_breed",
+				"hero_we_thornsister",
+			},
+			{
+				"damage_dealt_per_breed",
+				"hero_es_knight",
+			},
+			{
+				"damage_dealt_per_breed",
+				"hero_es_huntsman",
+			},
+			{
+				"damage_dealt_per_breed",
+				"hero_wh_bountyhunter",
+			},
+			{
+				"damage_dealt_per_breed",
+				"hero_dr_ranger",
+			},
+			{
+				"damage_dealt_per_breed",
+				"hero_dr_engineer",
+			},
+			{
+				"damage_dealt_per_breed",
+				"hero_es_mercenary",
+			},
+			{
+				"damage_dealt_per_breed",
+				"hero_bw_scholar",
+			},
+			{
+				"damage_dealt_per_breed",
+				"hero_bw_unchained",
+			},
+			{
+				"damage_dealt_per_breed",
+				"hero_bw_adept",
+			},
+			{
+				"damage_dealt_per_breed",
+				"hero_wh_zealot",
+			},
+			{
+				"damage_dealt_per_breed",
+				"hero_we_shade",
+			},
+			{
+				"damage_dealt_per_breed",
+				"hero_we_waywatcher",
+			},
+		},
+		sort_function = function (a, b)
+			return a.score > b.score
+		end,
+	},
+	{
+		display_text = "scoreboard_topic_damage_dealt_pactsworn",
+		name = "damage_dealt_pactsworn",
+		stat_type = "damage_dealt_pactsworn",
+		sort_function = function (a, b)
+			return a.score > b.score
+		end,
+	},
+	{
+		display_text = "scoreboard_topic_saves",
+		name = "saves",
+		stat_type = "saves",
+		sort_function = function (a, b)
+			return a.score > b.score
+		end,
+	},
+	{
+		display_text = "scoreboard_topic_revives",
+		name = "revives",
+		stat_type = "revives",
+		sort_function = function (a, b)
+			return a.score > b.score
+		end,
+	},
+	{
+		display_text = "scoreboard_topic_disables",
+		name = "disables",
+		stat_type = "disables_per_breed",
+		stat_types = {
+			{
+				"disables_per_breed",
+				"vs_gutter_runner",
+			},
+			{
+				"disables_per_breed",
+				"vs_packmaster",
+			},
+		},
+		sort_function = function (a, b)
+			return a.score > b.score
+		end,
+	},
+}
+ScoreboardHelper.scoreboard_grouped_topic_stats_versus = {
+	{
+		group_name = "heroes",
+		stats = {
+			"kills_specials",
+			"damage_dealt_pactsworn",
+			"saves",
+			"revives",
+		},
+	},
+	{
+		group_name = "pactsworn",
+		stats = {
+			"kills_heroes",
+			"damage_dealt_heroes",
+			"disables",
+		},
+	},
+}
+
+ScoreboardHelper.get_versus_stats = function (statistics_db, profile_synchronizer, saved_scoreboard_stats)
+	assert(statistics_db, "Missing statistics_database reference.")
+	assert(profile_synchronizer, "Missing profile_synchronizer reference.")
+
+	local human_players = Managers.player:human_players()
+	local player_list = {}
+
+	for _, player in pairs(human_players) do
+		local player_peer_id = player:network_id()
+		local player_name = player:name()
+		local stats_id = player:stats_id()
+		local profile_index = profile_synchronizer:profile_by_peer(player_peer_id, player:local_player_id())
+
+		player_list[stats_id] = {
+			name = player_name,
+			peer_id = player_peer_id,
+			local_player_id = player:local_player_id(),
+			stats_id = stats_id,
+			profile_index = profile_index,
+			scores = {},
+		}
+	end
+
+	local scoreboard_topic_stats = ScoreboardHelper.scoreboard_topic_stats_versus
+
+	for i, topic in ipairs(scoreboard_topic_stats) do
+		local stat_types = topic.stat_types
+
+		for stats_id, player_data in pairs(player_list) do
+			if stat_types ~= nil then
+				local stat_types_n = #stat_types
+				local score = 0
+
+				for i = 1, stat_types_n do
+					local stat_type = stat_types[i]
+
+					score = score + get_score(statistics_db, player_data.stats_id, stat_type)
+				end
+
+				local data = player_list[stats_id]
+				local saved_data = saved_scoreboard_stats and saved_scoreboard_stats[stats_id]
+
+				data.scores[topic.name] = score + (saved_data and saved_data.scores and saved_data.scores[topic.name] or 0)
+			else
+				local stat_type = topic.stat_type
+				local score = get_score(statistics_db, player_data.stats_id, stat_type)
+				local data = player_list[stats_id]
+				local saved_data = saved_scoreboard_stats and saved_scoreboard_stats[stats_id]
+
+				data.scores[topic.name] = score + (saved_data and saved_data.scores and saved_data.scores[topic.name] or 0)
+			end
+		end
+	end
+
+	return player_list, #scoreboard_topic_stats
 end

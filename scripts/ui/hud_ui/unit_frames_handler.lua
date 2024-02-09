@@ -1,5 +1,6 @@
 ﻿-- chunkname: @scripts/ui/hud_ui/unit_frames_handler.lua
 
+require("scripts/ui/hud_ui/unit_frames_ui_utils")
 require("scripts/settings/ui_player_portrait_frame_settings")
 require("scripts/ui/hud_ui/unit_frame_ui")
 
@@ -42,6 +43,7 @@ UnitFramesHandler.init = function (self, parent, ingame_ui_context)
 	local side = Managers.state.side.side_by_party[party]
 
 	self._party_id = party_id
+	self._is_dark_pact = side and side:name() == "dark_pact"
 	self.platform = PLATFORM
 	self._unit_frames = {}
 	self._unit_frame_index_by_ui_id = {}
@@ -57,6 +59,10 @@ UnitFramesHandler.init = function (self, parent, ingame_ui_context)
 	event_manager:register(self, "add_respawn_counter_event", "add_respawn_counter_event")
 	event_manager:register(self, "on_spectator_target_changed", "on_spectator_target_changed")
 
+	if self._is_dark_pact then
+		event_manager:register(self, "add_damage_feedback_event", "add_damage_feedback_event")
+	end
+
 	self._current_frame_index = 1
 
 	self:_create_player_unit_frame()
@@ -68,10 +74,28 @@ UnitFramesHandler.init = function (self, parent, ingame_ui_context)
 	end
 end
 
-UnitFramesHandler.add_respawn_counter_event = function (self, player, is_local_player, spawn_timer)
-	local unit_frame = self.unit_frame_by_player[player]
+UnitFramesHandler.add_damage_feedback_event = function (self, hash, is_local_player, event_type, attacker_player, target_player, damage_amount)
+	if is_local_player then
+		local show_local_player_damage_feedback = Application.user_setting("hud_damage_feedback_on_yourself")
+
+		if not show_local_player_damage_feedback then
+			return
+		end
+	end
+
+	local unit_frame = self.unit_frame_by_player[attacker_player]
 
 	if unit_frame then
+		local widget = unit_frame.widget
+
+		widget:add_damage_feedback(hash, is_local_player, event_type, attacker_player, target_player, damage_amount)
+	end
+end
+
+UnitFramesHandler.add_respawn_counter_event = function (self, player, is_local_player, spawn_timer, show_selection_ui)
+	local unit_frame = self.unit_frame_by_player[player]
+
+	if unit_frame and spawn_timer > 0 then
 		local widget = unit_frame.widget
 
 		widget:show_respawn_countdown(player, is_local_player, spawn_timer)
@@ -187,6 +211,7 @@ UnitFramesHandler._create_unit_frame_by_type = function (self, frame_type, frame
 	local unit_frame = {}
 	local state_data = {}
 	local player_data = {}
+	local is_dark_pact = self._is_dark_pact
 	local definitions
 
 	if frame_type == "team" then
@@ -211,6 +236,7 @@ UnitFramesHandler._create_unit_frame_by_type = function (self, frame_type, frame
 
 			if is_dark_pact then
 				definitions = local_require("scripts/ui/hud_ui/dark_pact_player_unit_frame_ui_definitions")
+				player_data.is_player_darkpact = true
 			end
 		end
 	else
@@ -1074,6 +1100,10 @@ UnitFramesHandler.destroy = function (self)
 
 	event_manager:unregister("add_respawn_counter_event", self)
 	event_manager:unregister("on_spectator_target_changed", self)
+
+	if self._is_dark_pact then
+		event_manager:unregister("add_damage_feedback_event", self)
+	end
 end
 
 UnitFramesHandler.set_visible = function (self, visible)
@@ -1146,6 +1176,8 @@ UnitFramesHandler.update = function (self, dt, t)
 	local ignore_own_player = parent:is_own_player_dead() and not self._is_spectator
 	local gamepad_active = self.input_manager:is_device_active("gamepad") or not IS_WINDOWS
 	local use_game_pad = (gamepad_active or UISettings.use_gamepad_hud_layout == "always") and UISettings.use_gamepad_hud_layout ~= "never"
+
+	use_game_pad = use_game_pad and not self._is_dark_pact
 
 	if use_game_pad then
 		if not self.gamepad_active_last_frame then

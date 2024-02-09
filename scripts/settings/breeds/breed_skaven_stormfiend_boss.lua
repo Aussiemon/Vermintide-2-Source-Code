@@ -15,7 +15,7 @@ local breed_data = {
 	base_unit = "units/beings/enemies/skaven_stormfiend/chr_skaven_stormfiend_boss",
 	behavior = "stormfiend_boss",
 	bone_lod_level = 0,
-	boost_curve_multiplier_override = 1.8,
+	boost_curve_multiplier_override = 2,
 	boss = true,
 	boss_staggers = true,
 	bot_hitbox_radius_approximation = 1,
@@ -316,6 +316,10 @@ local AttackIntensityPerDifficulty = {
 			normal = 5,
 			running = 2,
 		},
+		versus_base = {
+			normal = 5,
+			running = 2,
+		},
 	},
 	charge = {
 		easy = {
@@ -350,6 +354,10 @@ local AttackIntensityPerDifficulty = {
 			normal = 3,
 			running = 0.5,
 		},
+		versus_base = {
+			normal = 3,
+			running = 0.5,
+		},
 	},
 	shove = {
 		easy = {
@@ -374,6 +382,9 @@ local AttackIntensityPerDifficulty = {
 			normal = 1,
 		},
 		cataclysm_3 = {
+			normal = 1,
+		},
+		versus_base = {
 			normal = 1,
 		},
 	},
@@ -469,6 +480,7 @@ local action_data = {
 			harder = 9,
 			hardest = 10,
 			normal = 5,
+			versus_base = 5,
 		},
 		difficulty_damage = {
 			cataclysm = 25,
@@ -479,6 +491,7 @@ local action_data = {
 			harder = 30,
 			hardest = 50,
 			normal = 20,
+			versus_base = 20,
 		},
 		ignore_staggers = {
 			true,
@@ -592,6 +605,7 @@ local action_data = {
 			harder = 50,
 			hardest = 75,
 			normal = 30,
+			versus_base = 30,
 		},
 	},
 	follow = {
@@ -835,6 +849,7 @@ local action_data = {
 			harder = 40,
 			hardest = 60,
 			normal = 20,
+			versus_base = 20,
 		},
 	},
 	special_attack_aoe = {
@@ -868,6 +883,7 @@ local action_data = {
 			harder = 25,
 			hardest = 30,
 			normal = 10,
+			versus_base = 10,
 		},
 		ignore_staggers = {
 			true,
@@ -1045,6 +1061,13 @@ local action_data = {
 				0,
 				10,
 			},
+			versus_base = {
+				10,
+				10,
+				0,
+				0,
+				10,
+			},
 		},
 		immune_breeds = {
 			chaos_dummy_troll = true,
@@ -1194,6 +1217,13 @@ local action_data = {
 				0,
 				10,
 			},
+			versus_base = {
+				10,
+				10,
+				0,
+				0,
+				10,
+			},
 		},
 		immune_breeds = {
 			chaos_dummy_troll = true,
@@ -1284,6 +1314,13 @@ local action_data = {
 				10,
 			},
 			cataclysm_3 = {
+				10,
+				10,
+				0,
+				0,
+				10,
+			},
+			versus_base = {
 				10,
 				10,
 				0,

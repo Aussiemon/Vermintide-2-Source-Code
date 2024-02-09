@@ -704,6 +704,7 @@ NetworkLookup.anims = {
 	"packmaster_hang_release_death",
 	"packmaster_hang_release_ko",
 	"packmaster_hooked_idle",
+	"packmaster_hang_start",
 	"hanging",
 	"hanging_loop",
 	"hanging_exit",

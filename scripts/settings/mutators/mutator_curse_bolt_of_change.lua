@@ -310,7 +310,7 @@ end
 
 bolt_of_change.populate_available_breeds = function (context, data)
 	local difficulty = Managers.state.difficulty:get_difficulty()
-	local contained_breeds = CurrentConflictSettings.contained_breeds[difficulty]
+	local contained_breeds = CurrentConflictSettings.contained_breeds[difficulty] or CurrentConflictSettings.contained_breeds[2]
 	local available_breeds = data.available_breeds
 
 	for breed_name, _ in pairs(contained_breeds) do

@@ -5,7 +5,7 @@ require("scripts/settings/dlcs/lake/passive_ability_questing_knight")
 ActivatedAbilitySettings.es_4 = {
 	{
 		action_name = "action_career_es_4",
-		cooldown = 60,
+		cooldown = 40,
 		description = "career_active_desc_markus_questingknight",
 		display_name = "career_active_name_markus_questingknight",
 		icon = "markus_questing_knight_activated_ability",

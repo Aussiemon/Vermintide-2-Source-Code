@@ -982,14 +982,13 @@ EnemyPackageLoader.setup_startup_enemies = function (self, level_key, level_seed
 		self:_reset_dynamic_breed_lookups()
 		print("[EnemyPackageLoader] setup_startup_enemies - level_key:", level_key, "- level_seed:", level_seed, "- use_random_directors:", use_random_directors, "- conflict_director_name:", conflict_director_name)
 
-		local level_settings = LevelSettings[level_key]
-
-		if level_settings.load_no_enemies then
+		if not LevelHelper:should_load_enemies(level_key) then
 			print("[EnemyPackageLoader] Load no enemies on this level")
 		else
 			local startup_breeds = self:_get_startup_breeds(level_key, level_seed, failed_locked_functions, use_random_directors, conflict_director_name, difficulty, difficulty_tweak)
 			local breed_category_lookup = self._breed_category_lookup
 			local breeds_to_load_lookup = {}
+			local level_settings = LevelSettings[level_key]
 			local breed_categories = level_settings.breed_categories or EnemyPackageLoaderSettings.categories
 			local num_breed_categories = #breed_categories
 

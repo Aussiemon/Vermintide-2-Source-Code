@@ -143,10 +143,6 @@ PassiveAbilityWarriorPriest.on_hit = function (self, hit_unit, attack_type, hit_
 	end
 end
 
-PassiveAbilityWarriorPriest.buff_on_damage_taken = function (self, attacker_unit, damage_amount, damage_type)
-	self:modify_resource(damage_amount)
-end
-
 PassiveAbilityWarriorPriest.modify_resource = function (self, amount, ignore_difficulty)
 	local has_changed = self._current_resource ~= self._max_resource
 
@@ -167,6 +163,7 @@ PassiveAbilityWarriorPriest.modify_resource = function (self, amount, ignore_dif
 				1,
 				1,
 				0.7,
+				1.5,
 			}
 
 			amount = amount * difficulty_tweak[self._difficulty_rank]
@@ -236,10 +233,6 @@ PassiveAbilityWarriorPriest.activate_buff = function (self)
 
 		Unit.flow_event(owner_unit, "lua_enable_eye_glow")
 		self:_set_fury_glow_enabled(true)
-
-		if self._ability_on_4_1 then
-			ActionCareerWHPriestUtility.cast_spell(owner_unit, owner_unit)
-		end
 
 		if self._is_local_human then
 			self:_play_vo()
@@ -335,8 +328,6 @@ PassiveAbilityWarriorPriest.on_talents_changed = function (self, unit, talent_ex
 			talent_selection = 2
 		end
 	end
-
-	self._ability_on_4_1 = talent_extension:has_talent("victor_priest_4_1_new")
 
 	local fp_unit = self._fp_unit
 

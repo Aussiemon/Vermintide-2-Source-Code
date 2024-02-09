@@ -139,3 +139,9 @@ LevelHelper.get_small_level_image = function (self, level_key)
 
 	return level_image
 end
+
+LevelHelper.should_load_enemies = function (self, level_key)
+	local level_settings = LevelSettings[level_key]
+
+	return not level_settings.load_no_enemies
+end

@@ -456,7 +456,7 @@ PlayerCharacterStateLunging._calculate_hit_mass = function (self, shield_blocked
 
 	if breed and is_enemy and HEALTH_ALIVE[hit_unit] then
 		local difficulty_rank = Managers.state.difficulty:get_difficulty_rank()
-		local hit_mass_total = shield_blocked and (breed.hit_mass_counts_block and breed.hit_mass_counts_block[difficulty_rank] or breed.hit_mass_count_block) or breed.hit_mass_counts and breed.hit_mass_counts[difficulty_rank] or breed.hit_mass_count or 1
+		local hit_mass_total = shield_blocked and (breed.hit_mass_counts_block and (breed.hit_mass_counts_block[difficulty_rank] or breed.hit_mass_counts_block[2]) or breed.hit_mass_count_block) or breed.hit_mass_counts and (breed.hit_mass_counts[difficulty_rank] or breed.hit_mass_counts[2]) or breed.hit_mass_count or 1
 		local action_mass_override = current_action.hit_mass_count
 
 		if action_mass_override and action_mass_override[breed.name] then

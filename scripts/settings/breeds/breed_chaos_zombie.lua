@@ -66,6 +66,7 @@ local breed_data = {
 		15,
 		15,
 		15,
+		5,
 	},
 	diff_stagger_resist = {
 		1.75,

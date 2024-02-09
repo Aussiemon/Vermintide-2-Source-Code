@@ -321,6 +321,12 @@ weapon_template.tooltip_detail = {
 	},
 }
 
+local crossbow_bolt_vs = table.clone(weapon_template)
+
+crossbow_bolt_vs.actions.action_one.default.impact_data.damage_profile = "crossbow_bolt_vs"
+crossbow_bolt_vs.actions.action_one.zoomed_shot.impact_data.damage_profile = "crossbow_bolt_vs"
+
 return {
 	crossbow_template_1 = table.clone(weapon_template),
+	crossbow_template_1_vs = table.clone(crossbow_bolt_vs),
 }

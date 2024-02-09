@@ -27,8 +27,24 @@ PingTypes = {
 }
 IgnoreCooldownPingTypes = {
 	[PingTypes.PLAYER_PICK_UP] = true,
+	[PingTypes.MOVEMENT_GENERIC] = true,
 }
 IgnoreFreeEvents = {}
+IgnoreChatPings = {
+	[PingTypes.ENEMY_GENERIC] = true,
+	[PingTypes.MOVEMENT_GENERIC] = true,
+	[PingTypes.PING_ONLY] = true,
+}
+PingMessagesByPingType = {
+	[PingTypes.PLAYER_PICK_UP] = {
+		ammo = "versus_pickup_lookup_ammo",
+		bomb = "versus_pickup_lookup_bomb",
+		default = "versus_pickup_lookup_deafult",
+		health = "versus_pickup_lookup_health",
+		health_flask = "versus_pickup_lookup_health_flask",
+		potion = "versus_pickup_lookup_potion",
+	},
+}
 PingTemplates = {
 	generic_item = {
 		check_func = function (self, pinger_unit, pinged_unit)
@@ -52,9 +68,8 @@ PingTemplates = {
 			[PingTypes.PLAYER_PICK_UP] = {
 				true,
 				{
-					"PLAYER_PICK_UP",
+					PingMessagesByPingType[PingTypes.PLAYER_PICK_UP].default,
 				},
-				"twitch_icon_guns_blazing",
 			},
 			[PingTypes.CANCEL] = {
 				false,
@@ -79,7 +94,18 @@ PingTemplates = {
 			local response = self.responses[ping_type]
 
 			if response then
-				return unpack(response)
+				local messages = PingMessagesByPingType[ping_type]
+				local lookat_tag = pinged_unit and Unit.get_data(pinged_unit, "lookat_tag")
+
+				if lookat_tag and messages then
+					local do_ping, chat_messages, ping_icon = unpack(response)
+
+					chat_messages[1] = messages[lookat_tag] or messages.default
+
+					return do_ping, chat_messages, ping_icon
+				else
+					return unpack(response)
+				end
 			end
 
 			return true, nil, nil
@@ -109,7 +135,6 @@ PingTemplates = {
 				{
 					"PLAYER_PICK_UP",
 				},
-				"twitch_icon_guns_blazing",
 			},
 			[PingTypes.CANCEL] = {
 				false,
@@ -164,7 +189,6 @@ PingTemplates = {
 				{
 					"PLAYER_PICK_UP",
 				},
-				"twitch_icon_guns_blazing",
 			},
 			[PingTypes.CANCEL] = {
 				false,
@@ -225,7 +249,6 @@ PingTemplates = {
 				{
 					"PLAYER_PICK_UP",
 				},
-				"twitch_icon_guns_blazing",
 			},
 			[PingTypes.CANCEL] = {
 				false,

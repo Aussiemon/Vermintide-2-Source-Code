@@ -380,6 +380,9 @@ ProjectileTemplates.impact_templates = {
 		server = {
 			execute = function (world, damage_source, unit, recent_impacts, num_impacts, owner_unit)
 				local first_hit_position = Vector3Box.unbox(recent_impacts[ProjectileImpactDataIndex.POSITION])
+
+				Unit.set_local_position(unit, 0, first_hit_position)
+
 				local unit_id = Managers.state.unit_storage:go_id(unit)
 
 				Managers.state.network.network_transmit:send_rpc_all("rpc_area_damage", unit_id, first_hit_position)
@@ -387,8 +390,6 @@ ProjectileTemplates.impact_templates = {
 				if not Unit.alive(owner_unit) then
 					return true
 				end
-
-				Unit.set_local_position(unit, 0, first_hit_position)
 
 				local ai_base_extension = ScriptUnit.has_extension(owner_unit, "ai_system")
 
@@ -433,6 +434,10 @@ ProjectileTemplates.impact_templates = {
 		},
 		client = {
 			execute = function (world, damage_source, unit, recent_impacts, num_impacts, owner_unit)
+				local first_hit_position = Vector3Box.unbox(recent_impacts[ProjectileImpactDataIndex.POSITION])
+
+				Unit.set_local_position(unit, 0, first_hit_position)
+
 				local is_player_unit = DamageUtils.is_player_unit(owner_unit)
 
 				if is_player_unit then

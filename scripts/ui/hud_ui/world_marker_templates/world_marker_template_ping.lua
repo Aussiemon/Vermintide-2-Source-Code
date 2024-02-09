@@ -89,6 +89,9 @@ template.create_widget_definition = function (scenegraph_id)
 					pass_type = "text",
 					style_id = "text",
 					text_id = "text",
+					content_check_function = function (content)
+						return Managers.mechanism:current_mechanism_name() ~= "versus"
+					end,
 				},
 				{
 					pass_type = "text",
@@ -355,7 +358,7 @@ template.create_widget_definition = function (scenegraph_id)
 				},
 				offset = {
 					-75,
-					-90,
+					-110,
 					2,
 				},
 			},

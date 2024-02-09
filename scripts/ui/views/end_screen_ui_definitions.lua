@@ -45,7 +45,10 @@ local animations = {
 			name = "fade_in",
 			start_progress = 0,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				params.draw_background = true
+				local mechanism_manager = Managers.mechanism
+				local mechanism_name = mechanism_manager:current_mechanism_name()
+
+				params.draw_background = mechanism_name ~= "versus" and not mechanism_manager:is_final_round()
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, local_progress, params)
 				local anim_fraction = math.easeOutCubic(local_progress)

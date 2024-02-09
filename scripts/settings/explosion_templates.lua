@@ -160,6 +160,10 @@ ExplosionTemplates.grenade = {
 				power_level = 1200,
 				power_level_glance = 600,
 			},
+			versus_base = {
+				power_level = 400,
+				power_level_glance = 200,
+			},
 		},
 		camera_effect = {
 			far_distance = 20,
@@ -215,6 +219,10 @@ ExplosionTemplates.explosive_barrel = {
 				power_level = 1200,
 				power_level_glance = 600,
 			},
+			versus_base = {
+				power_level = 400,
+				power_level_glance = 200,
+			},
 		},
 	},
 }
@@ -262,6 +270,10 @@ ExplosionTemplates.lamp_oil = {
 			cataclysm_3 = {
 				power_level = 650,
 				power_level_glance = 325,
+			},
+			versus_base = {
+				power_level = 200,
+				power_level_glance = 100,
 			},
 		},
 	},
@@ -325,6 +337,10 @@ ExplosionTemplates.warpfire_explosion = {
 				power_level = 1000,
 				power_level_glance = 500,
 			},
+			versus_base = {
+				power_level = 100,
+				power_level_glance = 100,
+			},
 		},
 	},
 }
@@ -368,6 +384,10 @@ ExplosionTemplates.huge_boss_explosion = {
 				power_level_glance = 1000,
 			},
 			cataclysm_3 = {
+				power_level = 1000,
+				power_level_glance = 1000,
+			},
+			versus_base = {
 				power_level = 1000,
 				power_level_glance = 1000,
 			},
@@ -484,6 +504,10 @@ ExplosionTemplates.fire_grenade = {
 				power_level = 500,
 				power_level_glance = 250,
 			},
+			versus_base = {
+				power_level = 50,
+				power_level_glance = 50,
+			},
 		},
 	},
 	aoe = {
@@ -548,6 +572,10 @@ ExplosionTemplates.frag_fire_grenade = {
 			cataclysm_3 = {
 				power_level = 1200,
 				power_level_glance = 600,
+			},
+			versus_base = {
+				power_level = 400,
+				power_level_glance = 200,
 			},
 		},
 		camera_effect = {

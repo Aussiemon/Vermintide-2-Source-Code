@@ -5,6 +5,9 @@ local settings = DLCSettings.shovel
 settings.career_setting_files = {
 	"scripts/settings/dlcs/shovel/career_settings_shovel",
 }
+settings.player_breeds = {
+	"scripts/settings/dlcs/shovel/player_breeds_shovel",
+}
 settings.career_ability_settings = {
 	"scripts/settings/dlcs/shovel/career_ability_settings_shovel",
 }

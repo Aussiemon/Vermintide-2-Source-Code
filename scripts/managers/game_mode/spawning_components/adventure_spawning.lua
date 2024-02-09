@@ -179,7 +179,7 @@ AdventureSpawning.player_joined_party = function (self, peer_id, local_player_id
 	self:_assign_data_to_slot(slot, saved_game_mode_data)
 end
 
-AdventureSpawning.player_left_party = function (self, peer_id, local_player_id, party_id, slot_id)
+AdventureSpawning.player_left_party = function (self, peer_id, local_player_id, party_id, slot_id, old_slot_data)
 	local party = self._side.party
 	local side_party_id = party.party_id
 
@@ -187,10 +187,9 @@ AdventureSpawning.player_left_party = function (self, peer_id, local_player_id, 
 		return
 	end
 
-	local slot = party.slots[slot_id]
 	local saved_game_mode_data = self._saved_game_mode_data[slot_id]
 
-	self:_unassign_data_from_slot(slot, saved_game_mode_data)
+	self:_unassign_data_from_slot(old_slot_data, saved_game_mode_data)
 end
 
 AdventureSpawning.update = function (self, t, dt)
@@ -306,26 +305,24 @@ AdventureSpawning._update_spawning = function (self, dt, t, occupied_slots, part
 	if self._spawning then
 		local own_peer_id = Network.peer_id()
 		local local_player_is_ready = false
-		local ignore_local_player_for_party = false
+		local parties = Managers.party:parties()
 
-		if not DEDICATED_SERVER then
-			local local_player = Managers.player:local_player()
-			local local_party = local_player:get_party()
+		for i = 1, #parties do
+			local party = parties[i]
+			local other_occupied_slots = party.occupied_slots
 
-			ignore_local_player_for_party = party_id ~= local_party
-		end
+			for i = 1, #other_occupied_slots do
+				local status = other_occupied_slots[i]
+				local other_peer_id = status.peer_id
+				local other_local_player_id = status.local_player_id
 
-		for i = 1, #occupied_slots do
-			local status = occupied_slots[i]
-			local other_peer_id = status.peer_id
-			local other_local_player_id = status.local_player_id
+				if not self._profile_synchronizer:all_synced_for_peer(other_peer_id, other_local_player_id) then
+					return
+				end
 
-			if not self._profile_synchronizer:all_synced_for_peer(other_peer_id, other_local_player_id) then
-				return
-			end
-
-			if DEDICATED_SERVER or ignore_local_player_for_party or other_peer_id == own_peer_id and other_local_player_id == REAL_PLAYER_LOCAL_ID then
-				local_player_is_ready = true
+				if DEDICATED_SERVER or other_peer_id == own_peer_id and other_local_player_id == REAL_PLAYER_LOCAL_ID then
+					local_player_is_ready = true
+				end
 			end
 		end
 

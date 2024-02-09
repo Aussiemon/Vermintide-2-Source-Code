@@ -347,6 +347,10 @@ local AttackIntensityPerDifficulty = {
 			normal = 1,
 			sweep = 2,
 		},
+		versus_base = {
+			normal = 1,
+			sweep = 2,
+		},
 	},
 	cleave = {
 		easy = {
@@ -381,6 +385,10 @@ local AttackIntensityPerDifficulty = {
 			cleave = 2,
 			normal = 1,
 		},
+		versus_base = {
+			cleave = 2,
+			normal = 1,
+		},
 	},
 	push = {
 		easy = {
@@ -407,6 +415,9 @@ local AttackIntensityPerDifficulty = {
 		cataclysm_3 = {
 			push = 1.5,
 		},
+		versus_base = {
+			push = 1.5,
+		},
 	},
 	running = {
 		easy = {
@@ -431,6 +442,9 @@ local AttackIntensityPerDifficulty = {
 			running = 2.5,
 		},
 		cataclysm_3 = {
+			running = 2.5,
+		},
+		versus_base = {
 			running = 2.5,
 		},
 	},
@@ -464,6 +478,10 @@ local AttackIntensityPerDifficulty = {
 			normal = 1.5,
 		},
 		cataclysm_3 = {
+			frenzy = 3.5,
+			normal = 1.5,
+		},
+		versus_base = {
 			frenzy = 3.5,
 			normal = 1.5,
 		},

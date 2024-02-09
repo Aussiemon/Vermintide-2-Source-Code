@@ -6,8 +6,8 @@ local definitions = local_require("scripts/ui/views/end_screens/defeat_end_scree
 
 DefeatEndScreenUI = class(DefeatEndScreenUI, BaseEndScreenUI)
 
-DefeatEndScreenUI.init = function (self, ingame_ui_context, input_service, screen_context)
-	DefeatEndScreenUI.super.init(self, ingame_ui_context, input_service, definitions)
+DefeatEndScreenUI.init = function (self, ingame_ui_context, input_service, screen_context, params)
+	DefeatEndScreenUI.super.init(self, ingame_ui_context, input_service, definitions, params)
 	self:_play_sound("play_gui_splash_defeat")
 end
 
@@ -31,6 +31,12 @@ DefeatEndScreenUI._update = function (self, dt)
 	end
 
 	if self._defeat_anim_id == nil then
-		self:_on_completed()
+		if Managers.state.game_mode:setting("display_end_of_match_score_view") then
+			local screen_name, screen_config, params = Managers.state.game_mode:get_end_of_round_screen_settings()
+
+			Managers.ui:activate_end_screen_ui(screen_name, screen_config, params)
+		else
+			self:_on_completed()
+		end
 	end
 end

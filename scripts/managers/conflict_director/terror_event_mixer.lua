@@ -384,12 +384,18 @@ TerrorEventMixer.init_functions = {
 
 		if optional_pos then
 			local pos = Vector3(optional_pos[1], optional_pos[2], optional_pos[3])
-			local wwise_playing_id, wwise_source_id = optional_pos and WwiseUtils.trigger_position_event(world, stinger_name, optional_pos) or WwiseWorld.trigger_event(wwise_world, stinger_name)
+
+			if not DEDICATED_SERVER then
+				WwiseUtils.trigger_position_event(world, stinger_name, pos)
+			end
+
 			local rpc = optional_pos and "rpc_server_audio_position_event" or "rpc_server_audio_event"
 
 			Managers.state.network.network_transmit:send_rpc_clients(rpc, NetworkLookup.sound_events[stinger_name], pos)
 		else
-			local wwise_playing_id, wwise_source_id = WwiseWorld.trigger_event(wwise_world, stinger_name)
+			if not DEDICATED_SERVER then
+				WwiseWorld.trigger_event(wwise_world, stinger_name)
+			end
 
 			Managers.state.network.network_transmit:send_rpc_clients("rpc_server_audio_event", NetworkLookup.sound_events[stinger_name])
 		end

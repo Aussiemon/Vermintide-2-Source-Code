@@ -27,6 +27,10 @@ StateMachine = class(StateMachine)
 
 local function debug_print(format, ...)
 	printf("[StateMachine] " .. format, ...)
+
+	if DEDICATED_SERVER then
+		cprintf("[StateMachine] " .. format, ...)
+	end
 end
 
 StateMachine.init = function (self, parent, start_state, params, profiling_debugging_enabled)

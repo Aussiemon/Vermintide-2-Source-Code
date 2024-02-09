@@ -27,35 +27,6 @@ settings.buff_templates = {
 					buff_perks.invulnerable,
 				},
 			},
-			{
-				buff_func = "victor_priest_6_1_pulse_attack",
-				duration = 5,
-				event = "on_melee_hit",
-				name = "victor_priest_6_1_pulse_attack",
-				push_radius = 3.5,
-				stagger_distance = 1,
-				apply_condition = function (unit, template, params)
-					if not Managers.state.network.is_server then
-						return false
-					end
-
-					local warrior_priest_unit = params.attacker_unit
-					local talent_extension = ScriptUnit.extension(warrior_priest_unit, "talent_system")
-
-					if not talent_extension:has_talent("victor_priest_6_1") then
-						return false
-					end
-
-					return true
-				end,
-				stagger_impact = {
-					stagger_types.medium,
-					stagger_types.none,
-					stagger_types.none,
-					stagger_types.none,
-					stagger_types.none,
-				},
-			},
 		},
 	},
 	victor_priest_activated_ability_nuke = {
@@ -205,11 +176,11 @@ settings.buff_templates = {
 	victor_priest_passive_smite_upgraded = {
 		buffs = {
 			{
-				damage_profile = "light_push",
-				duration = 0.3,
+				damage_multiplier = 0.4,
+				damage_profile = "medium_push",
+				duration = 0.8,
 				name = "victor_priest_passive_smite",
 				remove_buff_func = "victor_priest_activated_ability_aftershock_update",
-				damage_multiplier = CareerConstants.wh_priest.talent_4_2_smite_improved_damage,
 			},
 		},
 	},
@@ -222,7 +193,7 @@ settings.proc_functions = {
 		if ALIVE[owner_unit] and ALIVE[hit_unit] and attack_type and (attack_type == "light_attack" or attack_type == "heavy_attack") then
 			local buff_to_add = buff.template.buff_to_add
 			local talent_extension = ScriptUnit.has_extension(owner_unit, "talent_system")
-			local has_talent = talent_extension and talent_extension:has_talent("victor_priest_4_2_new")
+			local has_talent = talent_extension and talent_extension:has_talent("victor_priest_4_2")
 
 			if has_talent then
 				buff_to_add = buff.template.buff_to_add_upgraded
@@ -240,27 +211,33 @@ settings.proc_functions = {
 			end
 		end
 	end,
-	victor_priest_4_1_on_damage_taken = function (owner_unit, buff, params)
-		local career_extension = ScriptUnit.extension(owner_unit, "career_system")
-		local passive = career_extension:get_passive_ability_by_name("wh_priest")
-		local attacker_unit = params[1]
-		local side_manager = Managers.state.side
+	victor_priest_4_1_on_push = function (owner_unit, buff, params)
+		if ALIVE[owner_unit] then
+			local new_action = params[1]
+			local kind = new_action.kind
 
-		if side_manager:is_ally(owner_unit, attacker_unit) then
-			return
+			if kind == "push_stagger" then
+				local career_extension = ScriptUnit.has_extension(owner_unit, "career_system")
+
+				if not career_extension then
+					return
+				end
+
+				local passive_ability = career_extension:get_passive_ability()
+
+				if passive_ability and passive_ability:is_active() then
+					local area_damage_system = Managers.state.entity:system("area_damage_system")
+					local position = POSITION_LOOKUP[owner_unit]
+					local career_power_level = career_extension:get_career_power_level()
+
+					area_damage_system:create_explosion(owner_unit, position, Quaternion.identity(), "victor_priest_melee_explosion", 1, "career_ability", career_power_level, false)
+
+					local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
+
+					first_person_extension:play_hud_sound_event("career_talent_priest_unbreakable_push")
+				end
+			end
 		end
-
-		local status_extension = ScriptUnit.extension(owner_unit, "status_system")
-
-		if status_extension:is_knocked_down() then
-			return
-		end
-
-		local damage_taken = params[2]
-
-		damage_taken = damage_taken * CareerConstants.wh_priest.talent_4_1_fury_gain_mult
-
-		passive:modify_resource(damage_taken)
 	end,
 	add_buff_to_first_hit_enemy = function (owner_unit, buff, params)
 		local hit_unit = params[1]
@@ -574,22 +551,6 @@ settings.proc_functions = {
 	end,
 	victor_priest_4_3_heal_on_kill = function (owner_unit, buff, params)
 		local is_server = Managers.state.network.is_server
-		local player_manager = Managers.player
-		local local_player = player_manager:local_player()
-		local owner_player = player_manager:owner(owner_unit)
-		local is_local = owner_unit == local_player.player_unit or is_server and owner_player.bot_player
-
-		if is_local then
-			local talent_extension = ScriptUnit.extension(owner_unit, "talent_system")
-
-			if talent_extension:has_talent("victor_priest_4_3") then
-				local career_extension = ScriptUnit.extension(owner_unit, "career_system")
-				local career_passive = career_extension:get_passive_ability_by_name("wh_priest")
-				local fury_to_gain = buff.template.percent_fury_to_gain
-
-				career_passive:modify_resource_percent(fury_to_gain)
-			end
-		end
 
 		if not is_server then
 			return
@@ -629,27 +590,6 @@ settings.proc_functions = {
 					DamageUtils.heal_network(unit, owner_unit, heal_amount, "career_passive")
 				end
 			end
-		end
-	end,
-	victor_priest_6_1_pulse_attack = function (owner_unit, buff, params)
-		local template = buff.template
-		local push_radius = template.push_radius
-		local stagger_impact = template.stagger_impact
-		local stagger_distance = template.stagger_distance
-		local t = Managers.time:time("game")
-		local position = POSITION_LOOKUP[owner_unit]
-		local broadphase_results = FrameTable.alloc_table()
-
-		buff.broadphase_categories = buff.broadphase_categories or Managers.state.side.side_by_unit[owner_unit].enemy_broadphase_categories
-
-		local num_results = AiUtils.broadphase_query(position, push_radius, broadphase_results, buff.broadphase_categories)
-
-		for i = 1, num_results do
-			local hit_unit = broadphase_results[i]
-			local hit_unit_pos = POSITION_LOOKUP[hit_unit]
-			local push_direction = Vector3.normalize(hit_unit_pos - position)
-
-			AiUtils.stagger_target(owner_unit, hit_unit, stagger_distance, stagger_impact, push_direction, t)
 		end
 	end,
 }

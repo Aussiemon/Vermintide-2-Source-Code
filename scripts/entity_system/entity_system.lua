@@ -241,8 +241,6 @@ EntitySystem._init_systems = function (self, entity_system_creation_context)
 	self:_add_system("ai_inventory_system", AIInventorySystem, entity_system_creation_context)
 	self:_add_system("ai_inventory_item_system", AIInventoryItemSystem, entity_system_creation_context)
 	self:_add_system("objective_socket_system", ObjectiveSocketSystem, entity_system_creation_context)
-	self:_add_system("weave_item_spawner_system", WeaveItemSpawnerSystem, entity_system_creation_context)
-	self:_add_system("weave_objective_system", WeaveObjectiveSystem, entity_system_creation_context)
 	self:_add_system("limited_item_track_system", LimitedItemTrackSystem, entity_system_creation_context)
 	self:_add_system("aggro_system", AggroSystem, entity_system_creation_context)
 	self:_add_system("ping_system", PingSystem, entity_system_creation_context)
@@ -256,14 +254,24 @@ EntitySystem._init_systems = function (self, entity_system_creation_context)
 	self:_add_system("projectile_system", ProjectileSystem, entity_system_creation_context)
 	self:_add_system("mutator_item_system", MutatorItemSystem, entity_system_creation_context)
 	self:_add_system("weave_loadout_system", WeaveLoadoutSystem, entity_system_creation_context)
-	self.entity_manager:add_ignore_extensions({
-		"VersusVolumeObjectiveExtension",
-		"VersusInteractObjectiveExtension",
-		"VersusPayloadObjectiveExtension",
-		"VersusSocketObjectiveExtension",
-		"VersusTargetObjectiveExtension",
-		"VersusMissionObjectiveExtension",
-	})
+
+	if Managers.mechanism:current_mechanism_name() == "versus" then
+		self:_add_system("ghost_mode_system", GhostModeSystem, entity_system_creation_context)
+		self:_add_system("versus_item_spawner_system", VersusItemSpawnerSystem, entity_system_creation_context)
+		self:_add_system("versus_objective_system", VersusObjectiveSystem, entity_system_creation_context)
+	else
+		self:_add_system("weave_item_spawner_system", WeaveItemSpawnerSystem, entity_system_creation_context)
+		self:_add_system("weave_objective_system", WeaveObjectiveSystem, entity_system_creation_context)
+		self.entity_manager:add_ignore_extensions({
+			"VersusVolumeObjectiveExtension",
+			"VersusInteractObjectiveExtension",
+			"VersusPayloadObjectiveExtension",
+			"VersusSocketObjectiveExtension",
+			"VersusTargetObjectiveExtension",
+			"VersusMissionObjectiveExtension",
+		})
+	end
+
 	self:_add_system("world_marker_system", WorldMarkerSystem, entity_system_creation_context)
 
 	if DEDICATED_SERVER then

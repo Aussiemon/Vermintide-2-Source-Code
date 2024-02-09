@@ -61,12 +61,6 @@ TrainingDummyHealthExtension.get_max_health = function (self)
 	return self.fake_max_health
 end
 
-local dot_hit_types = {
-	arrow_poison_dot = true,
-	bleed = true,
-	burninating = true,
-}
-
 TrainingDummyHealthExtension.apply_client_predicted_damage = function (self, predicted_damage)
 	return
 end
@@ -82,34 +76,8 @@ TrainingDummyHealthExtension.add_damage = function (self, attacker_unit, damage_
 	self._recent_damage_type = damage_type
 	self._recent_hit_react_type = hit_react_type
 
-	local is_dot_damage = dot_hit_types[damage_type]
-
 	if not DEDICATED_SERVER then
-		local color_modifier_red = math.min(120 + damage_amount * 4, 255)
-		local color_modifier_green = math.max(200 - damage_amount * 4, 0)
-		local color
-
-		if is_dot_damage then
-			color = Vector3(192, 192, 192)
-		else
-			color = Vector3(color_modifier_red, color_modifier_green, 0)
-		end
-
-		local text_size = 40 + damage_amount * 0.75
-		local duration = 2.2
-
-		if is_critical_strike then
-			color[1] = 255
-			duration = 3.2
-			text_size = text_size + 0.05
-		end
-
-		if is_dot_damage then
-			duration = 1.5
-			text_size = text_size - 0.05
-		end
-
-		Managers.state.event:trigger("add_damage_number", damage_amount * 0.01, text_size, unit, duration, color, is_critical_strike)
+		DamageUtils.add_unit_floating_damage_numbers(unit, damage_type, damage_amount, is_critical_strike)
 	end
 
 	if self.is_server and unit_id then

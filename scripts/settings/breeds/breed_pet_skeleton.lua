@@ -141,6 +141,7 @@ local breed_data = {
 		67.5,
 		67.5,
 		67.5,
+		16.650000000000002,
 	},
 	bloodlust_health = BreedTweaks.bloodlust_health.chaos_roamer,
 	hit_mass_counts = {
@@ -456,6 +457,9 @@ local AttackIntensityPerDifficulty = {
 		cataclysm_3 = {
 			normal = 2,
 		},
+		versus_base = {
+			normal = 2,
+		},
 	},
 	running = {
 		easy = {
@@ -480,6 +484,9 @@ local AttackIntensityPerDifficulty = {
 			running = 2.5,
 		},
 		cataclysm_3 = {
+			running = 2.5,
+		},
+		versus_base = {
 			running = 2.5,
 		},
 	},
@@ -875,6 +882,14 @@ local action_data = {
 				10,
 				5,
 			},
+			versus_base = {
+				11,
+				7,
+				14,
+				0,
+				10,
+				5,
+			},
 		},
 		fatigue_type = BreedTweaks.fatigue_types.roamer.running_attack,
 		hit_ai_func = hit_ai_func,
@@ -1018,6 +1033,14 @@ local action_data = {
 				5,
 			},
 			cataclysm_3 = {
+				11,
+				7,
+				14,
+				0,
+				10,
+				5,
+			},
+			versus_base = {
 				11,
 				7,
 				14,

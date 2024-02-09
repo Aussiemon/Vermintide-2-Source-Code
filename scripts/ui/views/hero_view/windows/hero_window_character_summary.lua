@@ -748,7 +748,6 @@ HeroWindowCharacterSummary._populate_talents = function (self, hero_name, career
 	local career_settings = CareerSettings[career_name]
 	local tree = TalentTrees[hero_name][career_settings.talent_tree_index]
 	local talents = self._selected_talents
-	local all_talents = Talents[hero_name]
 	local width_spacing = 12
 	local layer_offset = 5
 
@@ -778,7 +777,7 @@ HeroWindowCharacterSummary._populate_talents = function (self, hero_name, career
 
 			local talent_name = tree[i][j]
 			local id = TalentIDLookup[talent_name]
-			local talent_data = all_talents[id]
+			local talent_data = TalentUtils.get_talent_by_id(hero_name, id)
 			local content = widget.content
 
 			content.icon = talent_data and talent_data.icon or "icons_placeholder"

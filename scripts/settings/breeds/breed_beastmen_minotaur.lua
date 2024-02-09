@@ -324,6 +324,10 @@ local AttackIntensityPerDifficulty = {
 			normal = 5,
 			running = 2,
 		},
+		versus_base = {
+			normal = 5,
+			running = 2,
+		},
 	},
 	combo = {
 		easy = {
@@ -358,6 +362,10 @@ local AttackIntensityPerDifficulty = {
 			normal = 3,
 			running = 0.5,
 		},
+		versus_base = {
+			normal = 3,
+			running = 0.5,
+		},
 	},
 	shove = {
 		easy = {
@@ -382,6 +390,9 @@ local AttackIntensityPerDifficulty = {
 			normal = 1,
 		},
 		cataclysm_3 = {
+			normal = 1,
+		},
+		versus_base = {
 			normal = 1,
 		},
 	},
@@ -418,6 +429,10 @@ local AttackIntensityPerDifficulty = {
 			normal = 5,
 			running = 2,
 		},
+		versus_base = {
+			normal = 5,
+			running = 2,
+		},
 	},
 	charge = {
 		easy = {
@@ -442,6 +457,9 @@ local AttackIntensityPerDifficulty = {
 			charge = 10,
 		},
 		cataclysm_3 = {
+			charge = 10,
+		},
+		versus_base = {
 			charge = 10,
 		},
 	},
@@ -611,6 +629,7 @@ local action_data = {
 			harder = 20,
 			hardest = 30,
 			normal = 10,
+			versus_base = 10,
 		},
 		ignore_staggers = {
 			true,

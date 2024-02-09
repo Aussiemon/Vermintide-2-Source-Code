@@ -51,6 +51,10 @@ MatchmakingStateJoinGame.on_enter = function (self, state_context)
 		self:_set_state_to_start_lobby()
 	end
 
+	if Managers.mechanism:mechanism_setting("sync_backend_id") then
+		self:_sync_backend_id()
+	end
+
 	self._update_lobby_data_timer = 0
 end
 
@@ -361,6 +365,16 @@ end
 MatchmakingStateJoinGame.rpc_matchmaking_join_game = function (self, channel_id)
 	mm_printf_force("Transition from join due to rpc_matchmaking_join_game")
 	self:_set_state_to_start_lobby()
+end
+
+MatchmakingStateJoinGame._sync_backend_id = function (self)
+	local lobby_client = self.lobby_client
+	local peer_id = lobby_client:lobby_host()
+	local backend_id = Managers.backend:player_id()
+
+	if backend_id and self._network_transmit then
+		self._network_transmit:send_rpc("rpc_set_peer_backend_id", peer_id, backend_id)
+	end
 end
 
 MatchmakingStateJoinGame.active_lobby = function (self)

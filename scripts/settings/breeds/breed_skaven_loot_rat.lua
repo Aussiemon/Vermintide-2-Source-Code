@@ -57,6 +57,7 @@ local breed_data = {
 		75,
 		75,
 		75,
+		25,
 	},
 	bloodlust_health = BreedTweaks.bloodlust_health.skaven_special,
 	stagger_duration = {

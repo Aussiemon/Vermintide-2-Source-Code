@@ -32,34 +32,47 @@ end
 
 LobbyManager.setup_network_options = function (self, increment_lobby_port)
 	printf("[LobbyManager] Setting up network options")
-	printf("server_port -> cmd-line: %s, settings.ini: %s, mechanism-settings: %s ", script_data.server_port, script_data.settings.server_port, Managers.mechanism:mechanism_setting("server_port"))
-	printf("query_port -> cmd-line: %s, settings.ini: %s, mechanism-settings: %s ", script_data.query_port, script_data.settings.query_port, Managers.mechanism:mechanism_setting("query_port"))
-	printf("steam_port -> cmd-line: %s, settings.ini: %s, mechanism-settings: %s ", script_data.steam_port, script_data.settings.steam_port, Managers.mechanism:mechanism_setting("steam_port"))
-	printf("rcon_port -> cmd-line: %s, settings.ini: %s, mechanism-settings: %s ", script_data.rcon_port, script_data.settings.rcon_port, Managers.mechanism:mechanism_setting("rcon_port"))
 
-	local server_port = script_data.server_port or script_data.settings.server_port or Managers.mechanism:mechanism_setting("server_port")
-	local query_port = script_data.query_port or script_data.settings.query_port or Managers.mechanism:mechanism_setting("query_port")
-	local steam_port = script_data.steam_port or script_data.settings.steam_port or Managers.mechanism:mechanism_setting("steam_port")
-	local rcon_port = script_data.rcon_port or script_data.settings.rcon_port or Managers.mechanism:mechanism_setting("rcon_port")
+	local start_port_range = script_data.start_port_range
 
-	if increment_lobby_port and BUILD ~= "release" then
-		self._lobby_port_increment = self._lobby_port_increment + 1
+	printf("[start_port_range]: %s", start_port_range)
+
+	if start_port_range then
+		start_port_range = tonumber(start_port_range)
+		network_options.server_port = start_port_range
+		network_options.query_port = start_port_range + 1
+		network_options.steam_port = start_port_range + 2
+		network_options.rcon_port = start_port_range + 3
+	else
+		printf("server_port -> cmd-line: %s, settings.ini: %s, mechanism-settings: %s ", script_data.server_port, script_data.settings.server_port, Managers.mechanism:mechanism_setting("server_port"))
+		printf("query_port -> cmd-line: %s, settings.ini: %s, mechanism-settings: %s ", script_data.query_port, script_data.settings.query_port, Managers.mechanism:mechanism_setting("query_port"))
+		printf("steam_port -> cmd-line: %s, settings.ini: %s, mechanism-settings: %s ", script_data.steam_port, script_data.settings.steam_port, Managers.mechanism:mechanism_setting("steam_port"))
+		printf("rcon_port -> cmd-line: %s, settings.ini: %s, mechanism-settings: %s ", script_data.rcon_port, script_data.settings.rcon_port, Managers.mechanism:mechanism_setting("rcon_port"))
+
+		local server_port = script_data.server_port or script_data.settings.server_port or Managers.mechanism:mechanism_setting("server_port")
+		local query_port = script_data.query_port or script_data.settings.query_port or Managers.mechanism:mechanism_setting("query_port")
+		local steam_port = script_data.steam_port or script_data.settings.steam_port or Managers.mechanism:mechanism_setting("steam_port")
+		local rcon_port = script_data.rcon_port or script_data.settings.rcon_port or Managers.mechanism:mechanism_setting("rcon_port")
+
+		if increment_lobby_port and BUILD ~= "release" then
+			self._lobby_port_increment = self._lobby_port_increment + 1
+		end
+
+		if not IS_WINDOWS and not IS_LINUX then
+			server_port = network_options.lobby_port
+		end
+
+		network_options.server_port = server_port + self._lobby_port_increment
+		network_options.query_port = query_port
+		network_options.steam_port = steam_port
+		network_options.rcon_port = rcon_port
 	end
 
-	if not IS_WINDOWS and not IS_LINUX then
-		server_port = network_options.lobby_port
-	end
-
-	network_options.server_port = server_port + self._lobby_port_increment
-	network_options.query_port = query_port
-	network_options.steam_port = steam_port
-	network_options.rcon_port = rcon_port
-
-	local max_members = Managers.mechanism:max_members()
+	local max_members = Managers.mechanism:max_instance_members()
 
 	network_options.max_members = max_members
 
-	printf("All ports: server_port %s query_port: %s, steam_port: %s, rcon_port: %s ", network_options.server_port, query_port, steam_port, rcon_port)
+	printf("All ports: server_port %s query_port: %s, steam_port: %s, rcon_port: %s ", network_options.server_port, network_options.query_port, network_options.steam_port, network_options.rcon_port)
 
 	self._network_options = network_options
 

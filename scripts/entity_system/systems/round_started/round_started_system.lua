@@ -34,6 +34,7 @@ RoundStartedSystem.init = function (self, context, system_name)
 	self._round_started = false
 	self._player_spawned = false
 	self._units = {}
+	self._player_moved_positions = {}
 end
 
 RoundStartedSystem.destroy = function (self)
@@ -50,9 +51,9 @@ end
 RoundStartedSystem.on_add_extension = function (self, world, unit, extension_name, extension_init_data)
 	ScriptUnit.add_extension(nil, unit, "RoundStartedExtension", self.NAME, extension_init_data)
 
-	self._units[unit] = true
-
 	local ext = ScriptUnit.extension(unit, self.NAME)
+
+	self._units[unit] = ext
 
 	return ext
 end
@@ -68,13 +69,19 @@ RoundStartedSystem.hot_join_sync = function (self, sender, player)
 end
 
 RoundStartedSystem.update = function (self, context, t)
-	if not self._is_server or self._round_started then
+	if self._round_started then
+		return
+	end
+
+	self:_update_player_moved()
+
+	if not self._is_server then
 		return
 	end
 
 	local started = self:_players_left_start_area()
 
-	if started then
+	if started or self._force_start_round then
 		Managers.state.game_mode:round_started()
 
 		local level_settings = LevelHelper:current_level_settings()
@@ -121,8 +128,42 @@ RoundStartedSystem.player_spawned = function (self)
 	self._player_spawned = true
 end
 
+RoundStartedSystem.player_has_moved = function (self)
+	return self._player_moved
+end
+
+RoundStartedSystem.round_has_started = function (self)
+	return self._round_started
+end
+
+RoundStartedSystem._update_player_moved = function (self)
+	if self._player_moved then
+		return true
+	end
+
+	local player_start_positions = self._player_moved_positions
+	local move_dist = 2
+	local players = Managers.player:human_players()
+
+	for unique_id, player in pairs(players) do
+		local player_unit = player.player_unit
+		local player_pos = POSITION_LOOKUP[player_unit]
+
+		if player_pos then
+			player_start_positions[player_unit] = player_start_positions[player_unit] or Vector3Box(player_pos)
+
+			if Vector3.distance_squared(player_pos, player_start_positions[player_unit]:unbox()) > move_dist^2 then
+				self._player_moved = true
+
+				return true
+			end
+		end
+	end
+end
+
 RoundStartedSystem._on_round_started = function (self)
 	self._round_started = true
+	self._player_moved = true
 
 	Managers.state.achievement:trigger_event("on_round_started")
 
@@ -133,4 +174,8 @@ end
 
 RoundStartedSystem.rpc_round_started = function (self)
 	self:_on_round_started()
+end
+
+RoundStartedSystem.force_start_round = function (self)
+	self._force_start_round = true
 end

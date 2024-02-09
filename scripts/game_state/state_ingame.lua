@@ -57,7 +57,6 @@ require("scripts/managers/decal/decal_manager")
 require("scripts/managers/performance_title/performance_title_manager")
 require("scripts/managers/achievements/achievement_manager")
 require("scripts/managers/quest/quest_manager")
-require("scripts/managers/badge/badge_manager")
 require("scripts/managers/challenges/challenge_manager")
 require("scripts/managers/status_effect/status_effect_manager")
 require("scripts/utils/fps_reporter")
@@ -397,6 +396,15 @@ StateIngame.on_enter = function (self)
 		self.machines[i] = GameStateMachine:new(self, StateInGameRunning, params, true)
 	end
 
+	if self.is_server and DEDICATED_SERVER then
+		local game_mode_key = Managers.state.game_mode:game_mode_key()
+
+		if game_mode_key == "versus" then
+			self._saved_scoreboard_stats = self.parent.loading_context.saved_scoreboard_stats
+			self.parent.loading_context.saved_scoreboard_stats = nil
+		end
+	end
+
 	if checkpoint_data then
 		Managers.state.entity:system("mission_system"):load_checkpoint_data(checkpoint_data.mission)
 	end
@@ -464,6 +472,10 @@ StateIngame.on_enter = function (self)
 		else
 			Managers.state.entity:system("pickup_system"):populate_pickups()
 		end
+	end
+
+	if self.is_server then
+		Managers.state.entity:system("surrounding_aware_system"):populate_global_observers()
 	end
 
 	Managers.state.entity:system("payload_system"):init_payloads()
@@ -874,7 +886,6 @@ StateIngame.update = function (self, dt, main_t)
 	Managers.state.network:update(dt)
 	Managers.backend:update(dt, main_t)
 	self.input_manager:update(dt, main_t)
-	Managers.state.badge:update(dt, main_t)
 	Managers.level_transition_handler:update()
 
 	local t = Managers.time:time("game")
@@ -1290,6 +1301,8 @@ StateIngame._check_exit = function (self, t)
 			Managers.transition:fade_in(GameSettings.transition_fade_in_speed, nil)
 			Managers.transition:show_loading_icon()
 		elseif transition == "leave_game" or transition == "quit_game" or self._quit_game then
+			Managers.matchmaking:on_leave_game()
+
 			if transition == "leave_game" then
 				self.exit_type = "left_game"
 			else
@@ -1410,6 +1423,17 @@ StateIngame._check_exit = function (self, t)
 			Managers.transition:show_loading_icon()
 		elseif transition == "rejoin_party" then
 			self.exit_type = "rejoin_party"
+
+			if network_manager:in_game_session() then
+				local force_disconnect = true
+
+				network_manager:leave_game(force_disconnect)
+			end
+
+			Managers.transition:fade_in(GameSettings.transition_fade_in_speed, nil)
+			Managers.transition:show_loading_icon()
+		elseif transition == "versus_migration" then
+			self.exit_type = "versus_migration"
 
 			if network_manager:in_game_session() then
 				local force_disconnect = true
@@ -1607,6 +1631,19 @@ StateIngame._check_exit = function (self, t)
 			self.parent.loading_context.wanted_party_index = self:wanted_party_index()
 			self.parent.loading_context.time_spent_in_level = math.floor(Managers.time and Managers.time:time("game") or -1)
 			self.parent.loading_context.end_reason = "host_migration"
+			self.leave_lobby = true
+
+			return StateLoading
+		elseif exit_type == "versus_migration" then
+			local versus_migration_info = Managers.mechanism:game_mechanism():create_versus_migration_info(self._gm_event_end_conditions_met, self._gm_event_end_reason)
+
+			self.parent.loading_context.versus_migration_info = versus_migration_info
+
+			local loading_context = self.parent.loading_context
+
+			loading_context.versus_migration = true
+			self.parent.loading_context.time_spent_in_level = math.floor(Managers.time and Managers.time:time("game") or -1)
+			self.parent.loading_context.end_reason = "versus_migration"
 			self.leave_lobby = true
 
 			return StateLoading
@@ -1945,8 +1982,8 @@ StateIngame.on_exit = function (self, application_shutdown)
 		local party_join = join_data ~= nil and join_data.join_method == "party"
 
 		if self._lobby_host then
-			if party_join then
-				Managers.party:store_lobby(self._lobby_host:steal_lobby())
+			if not DEDICATED_SERVER then
+				Managers.mechanism:clear_player_reservation_handler()
 			end
 
 			if self.network_server then
@@ -2347,7 +2384,6 @@ StateIngame._setup_state_context = function (self, world, is_server, network_eve
 		Managers.state.quest = QuestManager:new(self.statistics_db)
 	end
 
-	Managers.state.badge = BadgeManager:new(self.statistics_db, network_event_delegate, is_server)
 	Managers.state.achievement = AchievementManager:new(self.world, self.statistics_db)
 
 	if DEDICATED_SERVER then
@@ -2461,6 +2497,17 @@ StateIngame.gm_event_end_conditions_met = function (self, reason, checkpoint_ava
 
 	for _, machine in pairs(self.machines) do
 		machine:state():gm_event_end_conditions_met(reason, checkpoint_available, percentages_completed)
+	end
+
+	if self.is_server and DEDICATED_SERVER then
+		local is_final_objective = Managers.mechanism:is_final_round()
+		local players_session_score = Managers.mechanism:get_players_session_score(self.statistics_db, self.profile_synchronizer, self._saved_scoreboard_stats)
+
+		if is_final_objective then
+			Managers.mechanism:sync_players_session_score(self.statistics_db, self.profile_synchronizer, players_session_score)
+		else
+			self.parent.loading_context.saved_scoreboard_stats = players_session_score
+		end
 	end
 end
 

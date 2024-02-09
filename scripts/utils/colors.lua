@@ -1252,6 +1252,18 @@ Colors.color_definitions = {
 		128,
 		128,
 	},
+	vs_undecided = {
+		255,
+		255,
+		255,
+		255,
+	},
+	spectator = {
+		255,
+		128,
+		128,
+		128,
+	},
 	console_menu_rect = {
 		255,
 		0,
@@ -1419,6 +1431,66 @@ Colors.color_definitions = {
 		155,
 		17,
 		30,
+	},
+	local_player_team_lighter = {
+		255,
+		80,
+		141,
+		214,
+	},
+	local_player_team = {
+		255,
+		12,
+		85,
+		173,
+	},
+	local_player_team_darker = {
+		255,
+		5,
+		43,
+		94,
+	},
+	opponent_team_lighter = {
+		255,
+		204,
+		71,
+		38,
+	},
+	opponent_team = {
+		255,
+		154,
+		45,
+		19,
+	},
+	opponent_team_darkened = {
+		255,
+		63,
+		12,
+		0,
+	},
+	local_player_picking = {
+		255,
+		177,
+		144,
+		31,
+	},
+	other_player_picking = {
+		255,
+		113,
+		160,
+		219,
+	},
+	heroes_color = {
+		255,
+		141,
+		69,
+		0,
+	},
+	pactsworn_color = {
+		255,
+		33,
+		106,
+		34,
 	},
 }
 Colors.indexed_colors, Colors.num_colors = table.values(Colors.color_definitions)

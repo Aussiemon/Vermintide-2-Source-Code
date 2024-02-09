@@ -142,6 +142,7 @@ local breed_data = {
 		84.375,
 		84.375,
 		84.375,
+		20.8125,
 	},
 	bloodlust_health = BreedTweaks.bloodlust_health.chaos_roamer,
 	hit_mass_counts = BreedTweaks.hit_mass_counts.raider,
@@ -438,6 +439,10 @@ local AttackIntensityPerDifficulty = {
 			normal = 1.5,
 			sweep = 3,
 		},
+		normal = {
+			normal = 1.5,
+			sweep = 3,
+		},
 	},
 	cleave = {
 		easy = {
@@ -472,6 +477,10 @@ local AttackIntensityPerDifficulty = {
 			cleave = 3,
 			normal = 1.5,
 		},
+		versus_base = {
+			cleave = 3,
+			normal = 1.5,
+		},
 	},
 	push = {
 		easy = {
@@ -498,6 +507,9 @@ local AttackIntensityPerDifficulty = {
 		cataclysm_3 = {
 			push = 1.5,
 		},
+		versus_base = {
+			push = 1.5,
+		},
 	},
 	running = {
 		easy = {
@@ -522,6 +534,9 @@ local AttackIntensityPerDifficulty = {
 			running = 3.5,
 		},
 		cataclysm_3 = {
+			running = 3.5,
+		},
+		versus_base = {
 			running = 3.5,
 		},
 	},
@@ -811,6 +826,14 @@ local action_data = {
 				10,
 				5,
 			},
+			versus_base = {
+				6,
+				3,
+				9,
+				0,
+				5,
+				2,
+			},
 		},
 		fatigue_type = BreedTweaks.fatigue_types.elite_sweep.running_attack,
 		hit_ai_func = hit_ai_func,
@@ -930,6 +953,14 @@ local action_data = {
 				0,
 				10,
 				5,
+			},
+			versus_base = {
+				6,
+				3,
+				9,
+				0,
+				5,
+				2,
 			},
 		},
 		fatigue_type = BreedTweaks.fatigue_types.elite_cleave.normal_attack,
@@ -1092,6 +1123,14 @@ local action_data = {
 				10,
 				5,
 			},
+			versus_base = {
+				6,
+				3,
+				9,
+				0,
+				5,
+				2,
+			},
 		},
 		fatigue_type = BreedTweaks.fatigue_types.elite_sweep.normal_attack,
 		ignore_staggers = {
@@ -1227,6 +1266,7 @@ local action_data = {
 			harder = 5,
 			hardest = 6,
 			normal = 3,
+			versus_base = 3,
 		},
 		push_ai = {
 			stagger_distance = 1.5,
@@ -1335,6 +1375,14 @@ local action_data = {
 				0,
 				10,
 				5,
+			},
+			versus_base = {
+				6,
+				3,
+				9,
+				0,
+				5,
+				2,
 			},
 		},
 		ignore_staggers = {

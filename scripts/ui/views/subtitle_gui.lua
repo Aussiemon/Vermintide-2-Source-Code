@@ -179,7 +179,7 @@ SubtitleGui.update = function (self, dt)
 		end
 	end
 
-	for unit, extension in pairs(dialogue_system.unit_extension_data) do
+	for unit, extension in pairs(dialogue_system:dialogue_units()) do
 		local currently_playing_dialogue = extension.currently_playing_dialogue
 		local dialogue_changed = playing_dialogues[unit] ~= currently_playing_dialogue
 

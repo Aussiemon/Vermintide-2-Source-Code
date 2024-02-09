@@ -166,7 +166,7 @@ PayloadExtension._hit_enemies = function (self, abs_speed, t)
 	local hit_ragdoll_actor
 	local damage_source = hazard_type
 	local difficulty_rank = Managers.state.difficulty:get_difficulty_rank()
-	local power_level = hazard_settings.enemy.difficulty_power_level[difficulty_rank] or DefaultPowerLevel
+	local power_level = hazard_settings.enemy.difficulty_power_level[difficulty_rank] or hazard_settings.enemy.difficulty_power_level[2] or DefaultPowerLevel
 	local damage_profile_name = hazard_settings.enemy.damage_profile or "default"
 	local damage_profile = DamageProfileTemplates[damage_profile_name]
 	local target_index

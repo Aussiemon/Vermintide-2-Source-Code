@@ -44,8 +44,8 @@ table.clone = function (t, skip_metatable)
 	return clone
 end
 
-table.shallow_copy = function (t, skip_metatable)
-	local copy = {}
+table.shallow_copy = function (t, skip_metatable, out_t)
+	local copy = out_t or {}
 
 	assert(skip_metatable or getmetatable(t) == nil, "Metatables will be sliced off")
 
@@ -466,6 +466,18 @@ table.max = function (t)
 	end
 
 	return max_key, max_value
+end
+
+table.min = function (t)
+	local min_key, min_value = next(t)
+
+	for key, value in pairs(t) do
+		if value < min_value then
+			min_key, min_value = key, value
+		end
+	end
+
+	return min_key, min_value
 end
 
 table.for_each = function (t, f)
@@ -1059,4 +1071,16 @@ table.fill = function (t, n, value)
 	end
 
 	return t
+end
+
+table.count_if = function (t, f)
+	local count = 0
+
+	for k, v in pairs(t) do
+		if f(k, v) then
+			count = count + 1
+		end
+	end
+
+	return count
 end

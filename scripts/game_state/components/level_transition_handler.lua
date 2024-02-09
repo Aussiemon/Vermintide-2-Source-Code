@@ -33,6 +33,10 @@ LevelTransitionHandler.init = function (self)
 
 	local level_key, environment_variation_id, level_seed, mechanism, game_mode, conflict_director, locked_director_functions, difficulty, difficulty_tweak, extra_packages
 
+	if DEDICATED_SERVER then
+		mechanism = "versus"
+	end
+
 	level_key, environment_variation_id, level_seed, mechanism, game_mode, conflict_director, locked_director_functions, difficulty, difficulty_tweak, extra_packages = LevelTransitionHandler.apply_defaults_to_level_data(level_key, level_seed, environment_variation_id, mechanism, game_mode, conflict_director, locked_director_functions, difficulty, difficulty_tweak, extra_packages)
 
 	local default_level_data = {
@@ -551,6 +555,16 @@ LevelTransitionHandler.apply_defaults_to_level_data = function (level_key, envir
 			mechanism = SaveData.last_mechanism or "adventure"
 		end
 	end
+
+	if not DEDICATED_SERVER and rawget(_G, "Steam") then
+		local app_id = Steam.app_id()
+
+		mechanism = app_id == 1026050 and "versus" or mechanism
+	end
+
+	mechanism = Development.parameter("mechanism") or mechanism
+
+	fassert(mechanism == nil or MechanismSettings[mechanism] ~= nil, "Tried to start unknown mechanism '%s'. Are you missing a feature flag?", mechanism)
 
 	if not level_key then
 		local mechanism_settings = MechanismSettings[mechanism]

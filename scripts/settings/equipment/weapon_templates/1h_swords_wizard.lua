@@ -406,7 +406,6 @@ weapon_template.actions = {
 			damage_window_end = 0.25,
 			damage_window_start = 0.2,
 			dedicated_target_range = 3.5,
-			fatigue_cost = "action_stun_push",
 			forward_offset = 0.75,
 			hit_effect = "fireball_impact",
 			hit_time = 0.35,

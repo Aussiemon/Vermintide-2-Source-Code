@@ -599,6 +599,29 @@ local function trigger_unit_dialogue_death_event(killed_unit, killer_unit, hit_z
 	end
 end
 
+local function vs_trigger_player_killing_blow_player(killed_unit, killing_blow, world)
+	local source_attacker = killing_blow[DamageDataIndex.SOURCE_ATTACKER_UNIT] or killing_blow[DamageDataIndex.ATTACKER]
+	local breed_attacker = ALIVE[source_attacker] and Unit.get_data(source_attacker, "breed")
+	local breed_killed = ALIVE[killed_unit] and Unit.get_data(killed_unit, "breed")
+
+	if not breed_attacker or not breed_attacker.is_player or not breed_killed or not breed_killed.is_player then
+		return
+	end
+
+	local side_manager = Managers.state.side
+	local attacker_player = Managers.player:owner(source_attacker)
+
+	if side_manager:is_enemy(killed_unit, source_attacker) and not attacker_player.remote then
+		local wwise_world = Managers.world:wwise_world(world)
+
+		if side_manager:versus_is_hero(source_attacker) then
+			WwiseWorld.trigger_event(wwise_world, "versus_hud_hero_player_special_kill")
+		elseif side_manager:versus_is_dark_pact(source_attacker) then
+			WwiseWorld.trigger_event(wwise_world, "generic_pactsworn_death")
+		end
+	end
+end
+
 local function trigger_player_killing_blow_ai_buffs(ai_unit, killing_blow)
 	local attacker_unit = killing_blow[DamageDataIndex.SOURCE_ATTACKER_UNIT] or killing_blow[DamageDataIndex.ATTACKER]
 
@@ -1481,6 +1504,7 @@ DeathReactions.templates = {
 			end,
 			start = function (unit, context, t, killing_blow, is_server)
 				if not is_hot_join_sync(killing_blow) then
+					vs_trigger_player_killing_blow_player(unit, killing_blow, context.world)
 					trigger_player_killing_blow_ai_buffs(unit, killing_blow, true)
 					StatisticsUtil.register_kill(unit, killing_blow, context.statistics_db)
 					Unit.flow_event(unit, "lua_on_death")

@@ -1640,7 +1640,7 @@ local widget_definitions = {
 local features_list = {
 	ability = true,
 	ammo = true,
-	damage = true,
+	damage = false,
 	equipment = true,
 }
 local widget_name_by_feature = {

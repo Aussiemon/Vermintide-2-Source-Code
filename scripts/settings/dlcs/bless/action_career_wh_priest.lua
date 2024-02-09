@@ -9,6 +9,10 @@ local spell_params_improved = {
 local spell_buffs = {
 	"victor_priest_activated_ability_invincibility",
 	"victor_priest_activated_ability_nuke",
+}
+local spell_buffs_improved = {
+	"victor_priest_activated_ability_invincibility",
+	"victor_priest_activated_ability_nuke",
 	"victor_priest_activated_noclip",
 }
 
@@ -18,13 +22,6 @@ ActionCareerWHPriestUtility.cast_spell = function (target_unit, warrior_priest_u
 	ActionCareerWHPriestUtility._add_buffs_to_target(target_unit, warrior_priest_unit)
 
 	local talent_extension = ScriptUnit.extension(warrior_priest_unit, "talent_system")
-
-	if talent_extension:has_talent("victor_priest_4_2_new") then
-		local career_extension = ScriptUnit.extension(warrior_priest_unit, "career_system")
-		local career_passive = career_extension:get_passive_ability_by_name("wh_priest")
-
-		career_passive:modify_resource_percent(CareerConstants.wh_priest.talent_4_2_fury_to_gain_percent)
-	end
 
 	if talent_extension:has_talent("victor_priest_6_2") then
 		if target_unit ~= warrior_priest_unit then
@@ -68,6 +65,7 @@ ActionCareerWHPriestUtility._add_buffs_to_target = function (target_unit, warrio
 
 	if talent_extension:has_talent("victor_priest_6_1") then
 		params = spell_params_improved
+		spell_buffs = spell_buffs_improved
 	end
 
 	params.attacker_unit = warrior_priest_unit

@@ -10,7 +10,6 @@ GenericCameraExtension.init = function (self, extension_init_context, unit, exte
 	self.idle_rotation = QuaternionBox(Quaternion.identity())
 	self.external_state_change = nil
 	self.external_state_change_params = nil
-	self.observed_player_id = nil
 end
 
 GenericCameraExtension.extensions_ready = function (self)
@@ -18,20 +17,29 @@ GenericCameraExtension.extensions_ready = function (self)
 end
 
 GenericCameraExtension.update = function (self, unit, input, dt, context, t)
-	return
-end
+	if self._delayed_state_change and t > self._delayed_state_change_t then
+		self:set_external_state_change(self._delayed_state_change, self._delayed_state_change_params)
+	end
 
-GenericCameraExtension.get_observed_player_id = function (self)
-	return self.observed_player_id
-end
+	local override_follow_unit = self.override_follow_unit
 
-GenericCameraExtension.set_observed_player_id = function (self, observed_player_id)
-	self.observed_player_id = observed_player_id
+	if override_follow_unit and not Unit.alive(override_follow_unit) then
+		self:set_follow_unit(nil, nil)
+	end
 end
 
 GenericCameraExtension.set_external_state_change = function (self, state, params)
 	self.external_state_change = state
 	self.external_state_change_params = params
+	self._delayed_state_change = nil
+	self._delayed_state_change_t = nil
+	self._delayed_state_change_params = nil
+end
+
+GenericCameraExtension.set_delayed_external_state_change = function (self, state, params, t)
+	self._delayed_state_change = state
+	self._delayed_state_change_t = t
+	self._delayed_state_change_params = params
 end
 
 GenericCameraExtension.set_idle_position = function (self, position)

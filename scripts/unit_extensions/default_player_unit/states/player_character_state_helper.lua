@@ -1175,7 +1175,7 @@ local interupting_action_data = {}
 CharacterStateHelper.update_weapon_actions = function (t, unit, input_extension, inventory_extension, health_extension)
 	local breed = Unit.get_data(unit, "breed")
 
-	if not breed.boss and not breed.is_hero then
+	if not breed.name == "vs_warpfire_thrower" and not breed.boss and not breed.is_hero and not breed.is_player then
 		return
 	end
 
@@ -1869,7 +1869,7 @@ CharacterStateHelper.ghost_mode = function (ghost_mode_extension, input_extensio
 			ghost_mode_extension:request_enter_ghost_mode()
 		end
 	elseif ghost_mode_extension:is_in_ghost_mode() then
-		if input_extension:get("action_one") and ghost_mode_extension:allowed_to_leave() then
+		if input_extension:get("ghost_mode_exit") and ghost_mode_extension:allowed_to_leave() then
 			local force_leave = false
 
 			ghost_mode_extension:request_leave_ghost_mode(force_leave)

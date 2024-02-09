@@ -193,13 +193,15 @@ DamageBlobHuskExtension.add_damage_blob_fx = function (self, position, life_time
 		time = blob_death_time,
 	}
 
-	local id, source = WwiseUtils.trigger_position_event(world, self._sfx_name_start_remains, position)
-	local sfx_list = self.sfx_list
+	if not DEDICATED_SERVER then
+		local id, source = WwiseUtils.trigger_position_event(world, self._sfx_name_start_remains, position)
+		local sfx_list = self.sfx_list
 
-	sfx_list[#sfx_list + 1] = {
-		source = source,
-		time = blob_death_time,
-	}
+		sfx_list[#sfx_list + 1] = {
+			source = source,
+			time = blob_death_time,
+		}
+	end
 end
 
 DamageBlobHuskExtension.abort = function (self)

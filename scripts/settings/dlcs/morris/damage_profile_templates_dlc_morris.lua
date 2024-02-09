@@ -379,12 +379,12 @@ local damage_templates = {
 			boost_curve_coefficient_headshot = 0.75,
 			boost_curve_type = "linesman_curve",
 			power_distribution_near = {
-				attack = 0.16,
-				impact = 0.2,
+				attack = 0.2,
+				impact = 0.25,
 			},
 			power_distribution_far = {
-				attack = 0.07,
-				impact = 0.07,
+				attack = 0.1,
+				impact = 0.1,
 			},
 			range_modifier_settings = {
 				dropoff_end = 15,
@@ -396,6 +396,7 @@ local damage_templates = {
 		attack_template = "wizard_staff_geiser_magma",
 		charge_value = "aoe",
 		dot_balefire_variant = true,
+		dot_template_name = "burning_magma_dot",
 		no_stagger = true,
 		no_stagger_damage_reduction_ranged = true,
 		critical_strike = {

@@ -19,6 +19,7 @@ local RPCS = {
 	"rpc_start_weapon_fx",
 	"rpc_stop_weapon_fx",
 	"rpc_update_additional_slot",
+	"rpc_weapon_anim_event",
 }
 local extensions = {
 	"SimpleHuskInventoryExtension",
@@ -458,4 +459,51 @@ InventorySystem.rpc_update_additional_slot = function (self, channel_id, go_id, 
 	local slot_name = NetworkLookup.equipment_slots[slot_id]
 
 	inventory:update_additional_items(slot_name, looked_up_items)
+end
+
+InventorySystem.weapon_anim_event = function (self, owner_unit, event_name, skip_sync)
+	local inventory_extension = ScriptUnit.extension(owner_unit, "inventory_system")
+	local left_weapon_unit, right_weapon_unit = inventory_extension:get_all_weapon_unit()
+
+	if left_weapon_unit then
+		Unit.animation_event(left_weapon_unit, event_name)
+	end
+
+	if right_weapon_unit then
+		Unit.animation_event(right_weapon_unit, event_name)
+	end
+
+	if not skip_sync and Managers.state.network:game() then
+		local owner_unit_id = self.unit_storage:go_id(owner_unit)
+		local event_id = NetworkLookup.anims[event_name]
+		local current_slot_name = inventory_extension:get_wielded_slot_name()
+		local slot_id = NetworkLookup.equipment_slots[current_slot_name]
+
+		if self.is_server then
+			self.network_transmit:send_rpc_clients("rpc_weapon_anim_event", owner_unit_id, slot_id, event_id)
+		else
+			self.network_transmit:send_rpc_server("rpc_weapon_anim_event", owner_unit_id, slot_id, event_id)
+		end
+	end
+end
+
+InventorySystem.rpc_weapon_anim_event = function (self, channel_id, owner_unit_id, slot_id, anim_event_id)
+	local owner_unit = self.unit_storage:unit(owner_unit_id)
+	local inventory_extension = ScriptUnit.has_extension(owner_unit, "inventory_system")
+
+	if not inventory_extension then
+		return
+	end
+
+	local wielded_slot_name = inventory_extension:get_wielded_slot_name()
+	local slot_name = NetworkLookup.equipment_slots[slot_id]
+
+	if slot_name ~= wielded_slot_name then
+		return
+	end
+
+	local skip_sync = true
+	local event_name = NetworkLookup.anims[anim_event_id]
+
+	self:weapon_anim_event(owner_unit, event_name, skip_sync)
 end

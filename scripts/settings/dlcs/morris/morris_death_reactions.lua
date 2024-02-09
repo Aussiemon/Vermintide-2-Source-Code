@@ -37,7 +37,8 @@ death_reactions.chaos_greed_pinata.unit.start = function (unit, context, t, kill
 	local data, result = DeathReactions.templates.ai_default.unit.start(unit, context, t, killing_blow, is_server)
 
 	if is_server then
-		local player_unit = DialogueSystem:get_random_player()
+		local dialogue_system = Managers.state.entity:system("dialogue_system")
+		local player_unit = dialogue_system:get_random_player()
 
 		if player_unit then
 			local dialogue_input = ScriptUnit.extension_input(player_unit, "dialogue_system")

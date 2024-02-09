@@ -965,6 +965,13 @@ local gameplay_settings_definition = {
 		widget_type = "stepper",
 	},
 	{
+		callback = "cb_vs_hud_damage_feedback_on_yourself",
+		saved_value = "cb_vs_hud_damage_feedback_on_yourself_saved_value",
+		setup = "cb_vs_hud_damage_feedback_on_yourself_setup",
+		tooltip_text = "tooltip_vs_hud_damage_feedback_on_yourself",
+		widget_type = "stepper",
+	},
+	{
 		callback = "cb_enabled_crosshairs",
 		saved_value = "cb_enabled_crosshairs_saved_value",
 		setup = "cb_enabled_crosshairs_setup",
@@ -1502,6 +1509,30 @@ local keybind_settings_definition = {
 		},
 	},
 	{
+		keybind_description = "ping_only_enemy",
+		keymappings_key = "PlayerControllerKeymaps",
+		widget_type = "keybind",
+		actions = {
+			"ping_only_enemy",
+		},
+	},
+	{
+		keybind_description = "ping_only_movement",
+		keymappings_key = "PlayerControllerKeymaps",
+		widget_type = "keybind",
+		actions = {
+			"ping_only_movement",
+		},
+	},
+	{
+		keybind_description = "ping_only_item",
+		keymappings_key = "PlayerControllerKeymaps",
+		widget_type = "keybind",
+		actions = {
+			"ping_only_item",
+		},
+	},
+	{
 		keybind_description = "social_wheel_only",
 		keymappings_key = "PlayerControllerKeymaps",
 		widget_type = "keybind",
@@ -1620,6 +1651,14 @@ local keybind_settings_definition = {
 			"action_inspect",
 			"action_inspect_hold",
 			"action_inspect_release",
+		},
+	},
+	{
+		keybind_description = "vs_ghost_catch_up",
+		keymappings_key = "PlayerControllerKeymaps",
+		widget_type = "keybind",
+		actions = {
+			"ghost_mode_enter",
 		},
 	},
 	{
@@ -1969,6 +2008,24 @@ local network_settings_definition = {
 			{
 				value = false,
 				text = Localize("menu_settings_off"),
+			},
+		},
+	},
+	{
+		setting_name = "friend_join_mode",
+		widget_type = "stepper",
+		options = {
+			{
+				value = "lobby_friends",
+				text = Localize("menu_settings_friend_join_setting_lobby_friends"),
+			},
+			{
+				value = "host_friends_only",
+				text = Localize("menu_settings_friend_join_setting_host_friends_only"),
+			},
+			{
+				value = "disabled",
+				text = Localize("menu_settings_friend_join_setting_disabled"),
 			},
 		},
 	},

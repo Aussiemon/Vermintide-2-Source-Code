@@ -29,10 +29,9 @@ ObjectiveSystem.init = function (self, entity_system_creation_context, system_na
 	self._total_num_main_objectives = 0
 	self._num_completed_main_objectives = 0
 	self._num_completed_sub_objectives = 0
-	self._current_num_completed_main_objectives = 0
-	self._current_num_completed_sub_objectives = 0
-	self._current_num_sub_objectives = 0
-	self._current_num_optional_sub_objectives = 0
+
+	self:_reset_current_statistics()
+
 	self._current_objective_index = 1
 	self._item_spawner = nil
 	self._initial_activation_done = false
@@ -67,11 +66,13 @@ ObjectiveSystem.deactivate = function (self)
 	for i = #objects_to_remove, 1, -1 do
 		local index = objects_to_remove[i]
 
-		table.remove(main_objectives)
+		table.remove(main_objectives, index)
+
+		objects_to_remove[i] = nil
 	end
 
-	for _, data in pairs(sub_objectives) do
-		local extensions = data.extensions
+	for _, objective_context in pairs(sub_objectives) do
+		local extensions = objective_context.extensions
 
 		for idx, extension in ipairs(extensions) do
 			if extension.should_disable and extension:should_disable() then
@@ -85,24 +86,22 @@ ObjectiveSystem.deactivate = function (self)
 					self._item_spawner:destroy_objective(objective_name)
 				end
 
-				sub_objects_to_remove[#sub_objects_to_remove + 1] = idx
+				objects_to_remove[#objects_to_remove + 1] = idx
 			end
 		end
 
 		for i = #objects_to_remove, 1, -1 do
-			local index = sub_objects_to_remove[i]
+			local index = objects_to_remove[i]
 
 			table.remove(extensions, index)
 		end
 	end
-
-	sub_objectives = {}
 end
 
 ObjectiveSystem.activate_objectives = function (self, objective_sets)
 	if self._is_server then
 		self:_server_activate_objectives(objective_sets)
-	else
+	elseif not self._activated then
 		self:_client_activate_objectives(objective_sets)
 	end
 end
@@ -136,11 +135,17 @@ ObjectiveSystem._server_activate_objectives = function (self, objective_sets)
 
 	local current_objectives = self._objective_lists[self._current_objective_index]
 
-	if num_main_objectives > 0 then
+	if current_objectives then
 		self:_activate_objectives(current_objectives)
 
 		self._activated = true
 		self._all_objectives_completed = false
+
+		if self.objective_started_telemetry then
+			self:objective_started_telemetry(self._current_objective_index)
+		end
+	else
+		self._all_objectives_completed = true
 	end
 end
 
@@ -168,16 +173,39 @@ ObjectiveSystem._client_activate_objectives = function (self, objective_sets)
 		num_main_objectives = num_main_objectives + num_required_objectives
 	end
 
+	local parent_container_lookup = {}
+
+	for i = 1, #objective_sets do
+		local objective_set = objective_sets[i]
+
+		for name, data in pairs(objective_set) do
+			if data.sub_objectives then
+				for sub_name, sub_data in pairs(data.sub_objectives) do
+					parent_container_lookup[sub_name] = name
+
+					if sub_data.sub_objectives then
+						for sub_sub_name, sub_sub_data in pairs(sub_data.sub_objectives) do
+							parent_container_lookup[sub_sub_name] = sub_name
+						end
+					end
+				end
+			end
+		end
+	end
+
+	self._parent_container_lookup = parent_container_lookup
 	self._total_num_main_objectives = num_main_objectives
 	self._initial_activation_done = true
 
 	local current_objectives = self._objective_lists[self._current_objective_index]
 
-	if num_main_objectives > 0 then
+	if current_objectives then
 		self:_activate_objectives(current_objectives)
 
 		self._activated = true
 		self._all_objectives_completed = false
+	else
+		self._all_objectives_completed = true
 	end
 end
 
@@ -206,6 +234,7 @@ ObjectiveSystem._activate_objectives = function (self, objectives, parent_object
 			self._sub_objectives[objective_name] = {
 				data = objective_data,
 				extensions = {},
+				parent_data = objective_data,
 			}
 
 			self:_activate_objectives(objective_data.sub_objectives, objective_name, true)
@@ -230,8 +259,8 @@ ObjectiveSystem._activate_objectives = function (self, objectives, parent_object
 					if parent_objective then
 						self._current_num_sub_objectives = self._current_num_sub_objectives + 1
 
-						local parent_sub_objetives = self._sub_objectives[parent_objective]
-						local extensions = parent_sub_objetives.extensions
+						local parent_sub_objectives = self._sub_objectives[parent_objective]
+						local extensions = parent_sub_objectives.extensions
 
 						extensions[#extensions + 1] = objective_extension
 					else
@@ -308,9 +337,9 @@ ObjectiveSystem.game_object_destroyed = function (self, game_object_id)
 	end
 
 	if not self._server then
-		extension:complete()
 		LevelHelper:flow_event(self._world, event_name)
 		Managers.state.event:trigger("obj_" .. event_name, self._num_completed_main_objectives, self._current_num_completed_main_objectives, extension)
+		extension:complete()
 	end
 
 	if table.size(self._main_objectives) < 1 and table.size(self._sub_objectives) < 1 then
@@ -334,10 +363,10 @@ ObjectiveSystem._update_server = function (self, dt, t)
 		end
 	end
 
-	for parent_objective_name, data in pairs(sub_objectives) do
+	for parent_objective_name, objective_context in pairs(sub_objectives) do
 		local num_completed = 0
 		local sub_objects_to_remove = {}
-		local extensions = data.extensions
+		local extensions = objective_context.extensions
 
 		for idx, extension in ipairs(extensions) do
 			extension:update(dt, t)
@@ -356,7 +385,7 @@ ObjectiveSystem._update_server = function (self, dt, t)
 		end
 
 		if #extensions < 1 then
-			self:_complete_parent_objective(data.data)
+			self:_complete_parent_objective(objective_context)
 
 			parent_objectives_to_remove[#parent_objectives_to_remove + 1] = parent_objective_name
 		end
@@ -399,7 +428,6 @@ ObjectiveSystem._update_activate_objectives = function (self)
 	local main_objectives = self._main_objectives
 	local sub_objectives = self._sub_objectives
 	local only_optional_objectives_left = false
-	local any_current_objective_done = false
 
 	for _, extension in ipairs(main_objectives) do
 		only_optional_objectives_left = extension.is_optional and extension:is_optional()
@@ -410,8 +438,8 @@ ObjectiveSystem._update_activate_objectives = function (self)
 	end
 
 	if only_optional_objectives_left then
-		for _, data in pairs(sub_objectives) do
-			local extensions = data.extensions
+		for _, objective_context in pairs(sub_objectives) do
+			local extensions = objective_context.extensions
 
 			for _, extension in ipairs(extensions) do
 				only_optional_objectives_left = extension.is_optional and extension:is_optional()
@@ -460,43 +488,55 @@ ObjectiveSystem._update_activate_objectives = function (self)
 		self:_activate_objectives(next_objectives)
 
 		self._current_objective_index = next_objective_index
+		self._main_objective_scratch = {}
+
+		if self.objective_started_telemetry then
+			self:objective_started_telemetry(self._current_objective_index)
+		end
 	else
 		self._all_objectives_completed = true
 	end
 end
 
 ObjectiveSystem._complete_objective = function (self, id, extension, objects_to_remove, is_sub_objective)
-	extension:complete()
-
 	objects_to_remove[#objects_to_remove + 1] = id
 
-	local objective_name = extension:objective_name()
-
 	if not is_sub_objective then
-		self._num_completed_main_objectives = self._num_completed_main_objectives + 1
-		self._current_num_completed_main_objectives = self._current_num_completed_main_objectives + 1
-		self._last_main_objective_completed = extension
-
-		LevelHelper:flow_event(self._world, "main_objective_completed")
-		Managers.state.event:trigger("obj_main_objective_completed", self._num_completed_main_objectives, self._current_num_completed_main_objectives, extension)
+		self:_complete_main_objective(extension)
 	else
 		self._num_completed_sub_objectives = self._num_completed_sub_objectives + 1
 		self._current_num_completed_sub_objectives = self._current_num_completed_sub_objectives + 1
 
 		LevelHelper:flow_event(self._world, "sub_objective_completed")
 		Managers.state.event:trigger("obj_sub_objective_completed", self._num_completed_main_objectives, self._current_num_completed_main_objectives, extension)
+
+		local num_left = self._current_num_completed_sub_objectives - self._current_num_sub_objectives
+
+		if num_left == 0 then
+			self:_complete_main_objective(extension)
+		end
 	end
 
+	extension:complete()
+
 	if not extension.keep_alive then
+		local objective_name = extension:objective_name()
+
 		self._item_spawner:destroy_objective(objective_name)
 	end
 end
 
-ObjectiveSystem._complete_parent_objective = function (self, data)
+ObjectiveSystem._complete_main_objective = function (self, extension)
 	self._num_completed_main_objectives = self._num_completed_main_objectives + 1
 	self._current_num_completed_main_objectives = self._current_num_completed_main_objectives + 1
+	self._last_main_objective_completed = extension
 
-	Managers.state.event:trigger("obj_parent_objective_completed", self._num_completed_main_objectives, self._current_num_completed_main_objectives, data)
+	LevelHelper:flow_event(self._world, "main_objective_completed")
+	Managers.state.event:trigger("obj_main_objective_completed", self._num_completed_main_objectives, self._current_num_completed_main_objectives, extension)
+end
+
+ObjectiveSystem._complete_parent_objective = function (self, objective_context)
+	Managers.state.event:trigger("obj_parent_objective_completed", self._num_completed_main_objectives, self._current_num_completed_main_objectives, objective_context.data)
 end
 
 ObjectiveSystem.is_active = function (self)
@@ -556,6 +596,7 @@ ObjectiveSystem.rpc_sync_objectives = function (self, sender, total_num_main_obj
 	self._current_num_completed_sub_objectives = current_num_completed_sub_objectives
 	self._current_num_sub_objectives = current_num_sub_objectives
 	self._current_objective_index = self._num_completed_main_objectives + 1
+	self._main_objective_scratch = {}
 end
 
 ObjectiveSystem.complete_objective = function (self, objective_name)

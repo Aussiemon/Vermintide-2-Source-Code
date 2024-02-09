@@ -33,6 +33,7 @@ StartGameWindowDeusLobbyBrowser.on_enter = function (self, params, offset)
 	local lobby_finder = LobbyFinder:new(network_options, MatchmakingSettings.MAX_NUM_LOBBIES, IS_WINDOWS and true)
 
 	self._lobby_finder = lobby_finder
+	self._game_server_finder = GameServerFinder:new(network_options)
 
 	local ignore_dlc_check = false
 

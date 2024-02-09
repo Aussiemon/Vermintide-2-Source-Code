@@ -293,6 +293,14 @@ BackendInterfaceItemPlayfab.get_loadout = function (self)
 	return self._loadouts
 end
 
+BackendInterfaceItemPlayfab.get_loadout_by_career_name = function (self, career_name)
+	if self._dirty then
+		self:_refresh()
+	end
+
+	return self._loadouts[career_name]
+end
+
 BackendInterfaceItemPlayfab.get_loadout_item_id = function (self, career_name, slot_name)
 	local loadouts = self:get_loadout()
 	local loadout = loadouts[career_name]
@@ -371,7 +379,7 @@ end
 BackendInterfaceItemPlayfab.get_unseen_item_rewards = function (self)
 	local unseen_rewards_json = self._backend_mirror:get_user_data("unseen_rewards")
 
-	if not unseen_rewards_json then
+	if not unseen_rewards_json or script_data.dont_show_unseen_rewards then
 		return nil
 	end
 
@@ -406,6 +414,54 @@ end
 
 BackendInterfaceItemPlayfab.award_item = function (self, item_key)
 	return
+end
+
+BackendInterfaceItemPlayfab.award_custom_item = function (self, item_key, power_level, skin_name, rarity, magic_level, properties, traits)
+	local traits_array = {}
+
+	for trait_name, _ in pairs(traits) do
+		traits_array[#traits_array + 1] = trait_name
+	end
+
+	local data = {
+		item_key = item_key,
+		power_level = power_level,
+		skin_name = skin_name or nil,
+		rarity = rarity or nil,
+		magic_level = magic_level or nil,
+		properties = table.size(properties) > 0 and cjson.encode(properties) or nil,
+		traits = #traits_array > 0 and cjson.encode(traits_array) or nil,
+	}
+	local debug_award_custom_item_request = {
+		FunctionName = "devGenerateItem",
+		FunctionParameter = data,
+	}
+	local success_callback = callback(self, "debug_award_custom_item_request_cb")
+	local request_queue = self._backend_mirror:request_queue()
+
+	request_queue:enqueue(debug_award_custom_item_request, success_callback, false)
+end
+
+BackendInterfaceItemPlayfab.debug_award_custom_item_request_cb = function (self, result)
+	local backend_manager = Managers.backend
+	local backend_mirror = self._backend_mirror
+	local function_result = result.FunctionResult
+	local items = function_result.grant_items_result
+
+	if items then
+		for i = 1, #items do
+			local item = items[i]
+			local backend_id = item.ItemInstanceId
+
+			backend_mirror:add_item(backend_id, item)
+
+			if item.CustomData.skin then
+				backend_mirror:add_unlocked_weapon_skin(item.CustomData.skin)
+			end
+		end
+	end
+
+	backend_manager:dirtify_interfaces()
 end
 
 BackendInterfaceItemPlayfab.data_server_script = function (self, script_name, ...)

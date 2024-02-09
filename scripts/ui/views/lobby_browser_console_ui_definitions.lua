@@ -3508,6 +3508,16 @@ local function create_lobby_entry_func(offset_y, lobby_data, flag_index, joinabl
 		local level_settings = LevelSettings[selected_mission_id]
 
 		selected_level_name = Localize(level_settings.display_name or "UNKNOWN")
+	elseif mechanism == "versus" then
+		if selected_mission_id ~= "any" then
+			local level_settings = LevelSettings[selected_mission_id]
+
+			selected_level_name = Localize(level_settings.display_name or "UNKNOWN")
+			level_image = LevelHelper:get_small_level_image(selected_mission_id)
+		else
+			level_image = "any_small_image"
+			selected_level_name = Localize("random_level")
+		end
 	elseif selected_mission_id then
 		local level_settings = LevelSettings[selected_mission_id]
 

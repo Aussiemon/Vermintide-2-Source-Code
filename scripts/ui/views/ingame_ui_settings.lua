@@ -585,8 +585,10 @@ local view_settings = {
 		for _, settings in pairs(CareerSettings) do
 			local video = settings.video
 
-			materials[#materials + 1] = "material"
-			materials[#materials + 1] = video.resource
+			if video then
+				materials[#materials + 1] = "material"
+				materials[#materials + 1] = video.resource
+			end
 		end
 
 		if IS_WINDOWS then
@@ -712,6 +714,7 @@ local view_settings = {
 	hotkey_mapping = {
 		hotkey_hero = {
 			disable_when_matchmaking = false,
+			disable_when_matchmaking_in_versus = true,
 			disable_when_matchmaking_ready = true,
 			error_message = "matchmaking_ready_interaction_message_profile_view",
 			in_transition = "character_selection_force",
@@ -729,6 +732,7 @@ local view_settings = {
 			view = "start_game_view",
 		},
 		hotkey_inventory = {
+			disable_when_matchmaking_in_versus = true,
 			disable_when_matchmaking_ready = true,
 			error_message = "matchmaking_ready_interaction_message_inventory",
 			in_transition = "hero_view_force",
@@ -746,6 +750,7 @@ local view_settings = {
 			view = "hero_view",
 		},
 		hotkey_achievements = {
+			cat_disabled = true,
 			disable_when_matchmaking_ready = true,
 			error_message = "matchmaking_ready_interaction_message_achievements",
 			in_transition = "hero_view_force",
@@ -756,6 +761,7 @@ local view_settings = {
 		hotkey_weave_forge = {
 			can_interact_func = "weaves_requirements_fulfilled",
 			disable_when_matchmaking = false,
+			disable_when_matchmaking_in_versus = true,
 			disable_when_matchmaking_ready = true,
 			error_message = "matchmaking_ready_interaction_message_weave_forge",
 			in_transition = "hero_view_force",
@@ -766,6 +772,7 @@ local view_settings = {
 		},
 		hotkey_weave_play = {
 			can_interact_func = "weaves_requirements_fulfilled",
+			disable_when_matchmaking_in_versus = true,
 			disable_when_matchmaking_ready = true,
 			error_message = "matchmaking_ready_interaction_message_weave_play",
 			in_transition = "start_game_view_force",

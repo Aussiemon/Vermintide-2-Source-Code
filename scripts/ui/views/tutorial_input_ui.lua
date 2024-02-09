@@ -14,6 +14,8 @@ TutorialInputUI.init = function (self, parent, ingame_ui_context)
 	self._tutorial_tooltip_animations = {}
 	self._tutorial_tooltip_input_widgets = {}
 	self._active_tutorial_tooltips = {}
+	self._current_profile_index = nil
+	self._current_career_index = nil
 	self._prefixes = {
 		mouse = "mouse",
 	}
@@ -40,6 +42,7 @@ TutorialInputUI.event_add_tutorial_input = function (self, mission_name, unit)
 	fassert(mission_data, "[TutorialInputUI:event_add_tutorial_input] There is no mission called %q", mission_name)
 
 	self._active_tutorial_tooltips[#self._active_tutorial_tooltips + 1] = mission_data
+	self._current_profile_index, self._current_career_index = self:_get_profile_and_career_index()
 
 	if unit then
 		Unit.flow_event(unit, "lua_mission_started")
@@ -142,6 +145,21 @@ TutorialInputUI._update_tooltip = function (self, dt, t)
 		end
 
 		return
+	end
+
+	local is_in_inn = self:_is_in_inn()
+
+	if is_in_inn then
+		local current_profile_index, current_career_index = self:_get_profile_and_career_index()
+
+		if current_profile_index ~= self._current_profile_index or current_career_index ~= self._current_career_index then
+			self._current_profile_index = current_profile_index
+			self._current_career_index = current_career_index
+
+			table.clear(self._active_tutorial_tooltips)
+
+			return
+		end
 	end
 
 	local ui_renderer = self._ui_renderer
@@ -411,4 +429,22 @@ TutorialInputUI.set_visible = function (self, visible)
 	end
 
 	UIRenderer.set_element_visible(ui_renderer, self._tutorial_tooltip_widget.element, visible)
+end
+
+TutorialInputUI._get_profile_and_career_index = function (self)
+	local player_manager = Managers.player
+	local player = player_manager:local_player(1)
+	local career_index = player and player:career_index() or 1
+	local profile_index = player and player:profile_index() or 1
+
+	return profile_index, career_index
+end
+
+TutorialInputUI._is_in_inn = function (self)
+	local level_transition_handler = Managers.level_transition_handler
+	local level_key = level_transition_handler:get_current_level_keys()
+	local level_settings = LevelSettings[level_key]
+	local is_in_inn = level_settings.hub_level
+
+	return is_in_inn
 end

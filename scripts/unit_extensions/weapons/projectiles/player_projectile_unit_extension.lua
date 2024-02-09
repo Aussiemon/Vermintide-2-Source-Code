@@ -653,6 +653,12 @@ PlayerProjectileUnitExtension.hit_enemy = function (self, impact_data, hit_unit,
 		end
 	end
 
+	if breed.is_player then
+		local husk = not self._owner_player.local_player
+
+		DamageUtils.add_hit_reaction(hit_unit, breed, husk, hit_direction, false)
+	end
+
 	if self.locomotion_extension.notify_hit_enemy then
 		self.locomotion_extension:notify_hit_enemy(hit_unit)
 	end
@@ -717,7 +723,7 @@ PlayerProjectileUnitExtension.hit_enemy_damage = function (self, damage_profile,
 	if was_alive then
 		local action_mass_override = action.hit_mass_count
 		local difficulty_rank = Managers.state.difficulty:get_difficulty_rank()
-		local hit_mass_total = shield_blocked and (breed.hit_mass_counts_block and breed.hit_mass_counts_block[difficulty_rank] or breed.hit_mass_count_block) or breed.hit_mass_counts and breed.hit_mass_counts[difficulty_rank] or breed.hit_mass_count or 1
+		local hit_mass_total = shield_blocked and (breed.hit_mass_counts_block and (breed.hit_mass_counts_block[difficulty_rank] or breed.hit_mass_counts_block[2]) or breed.hit_mass_count_block) or breed.hit_mass_counts and (breed.hit_mass_counts[difficulty_rank] or breed.hit_mass_counts[2]) or breed.hit_mass_count or 1
 
 		if action_mass_override and action_mass_override[breed.name] then
 			local mass_cost_multiplier = action_mass_override[breed.name]

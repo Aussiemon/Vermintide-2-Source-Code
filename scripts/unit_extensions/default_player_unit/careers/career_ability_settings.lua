@@ -145,7 +145,7 @@ ActivatedAbilitySettings = {
 	bw_1 = {
 		{
 			action_name = "action_career_bw_1",
-			cooldown = 50,
+			cooldown = 60,
 			description = "career_active_desc_bw_1",
 			display_name = "career_active_name_bw_1",
 			icon = "sienna_scholar_activated_ability",
@@ -154,7 +154,7 @@ ActivatedAbilitySettings = {
 	},
 	bw_2 = {
 		{
-			cooldown = 50,
+			cooldown = 40,
 			description = "career_active_desc_bw_2_2",
 			display_name = "career_active_name_bw_2",
 			icon = "sienna_adept_activated_ability",
@@ -478,29 +478,13 @@ PassiveAbilitySettings = {
 		buffs = {
 			"sienna_scholar_passive",
 			"sienna_scholar_passive_ranged_damage",
-			"sienna_scholar_passive_max_overcharge",
 			"sienna_scholar_ability_cooldown_on_hit",
 			"sienna_scholar_ability_cooldown_on_damage_taken",
-			"sienna_scholar_overcharge_no_slow",
 		},
 		perks = {
 			{
 				description = "career_passive_desc_bw_1b_2",
 				display_name = "career_passive_name_bw_1b",
-			},
-			{
-				description = "sienna_scholar_overcharge_no_slow_desc",
-				display_name = "sienna_scholar_overcharge_no_slow",
-			},
-			{
-				description = "sienna_scholar_increased_max_desc",
-				display_name = "sienna_scholar_increased_max",
-				description_values = {
-					{
-						value_type = "percent",
-						value = CareerConstants.bw_scholar.perk_3_max_overcharge,
-					},
-				},
 			},
 		},
 	},

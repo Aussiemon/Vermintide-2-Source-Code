@@ -486,7 +486,7 @@ function flow_callback_attach_player_item(params)
 				return
 			end
 
-			if item.slot_type == "melee" or item.slot_type == "ranged" or item.slot_type == "weapon_skin" then
+			if item.slot_type == "melee" or item.slot_type == "ranged" or item.slot_type == "weapon_skin" or item.slot_type == "potion" then
 				if Weapons ~= nil then
 					local weapon_template = Weapons[item.template]
 

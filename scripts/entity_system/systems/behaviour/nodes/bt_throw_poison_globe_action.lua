@@ -165,9 +165,9 @@ end
 
 BTThrowPoisonGlobeAction.launch_projectile = function (self, blackboard, action, initial_position, target_vector, angle, speed, owner_unit)
 	local difficulty_rank = Managers.state.difficulty:get_difficulty_rank()
-	local aoe_dot_damage_table = action.aoe_dot_damage[difficulty_rank]
+	local aoe_dot_damage_table = action.aoe_dot_damage[difficulty_rank] or action.aoe_dot_damage[2]
 	local aoe_dot_damage = DamageUtils.calculate_damage(aoe_dot_damage_table)
-	local aoe_init_damage_table = action.aoe_init_damage[difficulty_rank]
+	local aoe_init_damage_table = action.aoe_init_damage[difficulty_rank] or action.aoe_init_damage[2]
 	local aoe_init_damage = DamageUtils.calculate_damage(aoe_init_damage_table)
 	local aoe_dot_damage_interval = action.aoe_dot_damage_interval
 	local radius = action.radius

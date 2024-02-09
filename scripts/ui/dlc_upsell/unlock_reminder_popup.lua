@@ -10,7 +10,7 @@ UnlockReminderPopup.create_ui_elements = function (self)
 	local reminder_settings = self._common_settings
 
 	self._widgets_by_name.window_background.content.texture_id = reminder_settings.background_texture
-	self._widgets_by_name.body_text.content.text = reminder_settings.body_text
+	self._widgets_by_name.body_text.content.text = reminder_settings.body_text and Localize(reminder_settings.body_text) or ""
 	self._widgets_by_name.ok_button.content.title_text = Localize(reminder_settings.button_text)
 
 	if reminder_settings.top_detail_texture then
@@ -32,11 +32,12 @@ UnlockReminderPopup._handle_input = function (self, dt)
 	local input_service = self:_get_input_service()
 	local widgets_by_name = self._widgets_by_name
 
-	if UIUtils.is_button_pressed(widgets_by_name.ok_button) or input_service:get("back", true) or input_service:get("confirm_press", true) then
+	if not self._has_widget_been_closed and (UIUtils.is_button_pressed(widgets_by_name.ok_button) or input_service:get("back", true) or input_service:get("confirm_press", true)) then
 		self._has_widget_been_closed = true
 		SaveData.new_dlcs_unlocks[self._dlc_name] = false
 
 		Managers.save:auto_save(SaveFileName, SaveData)
+		self:release_input()
 		self:hide()
 
 		return
@@ -64,8 +65,6 @@ UnlockReminderPopup._update_animations = function (self, dt)
 
 	if self._exit_anim_id and self._ui_animator:is_animation_completed(self._exit_anim_id) then
 		self._is_visible = false
-
-		self:release_input()
 	end
 
 	local widgets_by_name = self._widgets_by_name

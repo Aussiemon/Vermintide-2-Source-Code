@@ -388,13 +388,34 @@ HeroWindowPanelConsole._handle_input = function (self, dt, t)
 		if not input_made and not self.parent.parent:input_blocked() then
 			local current_index = self._selected_index or 1
 			local max_index = 5
+			local next_index
 
 			if input_service:get(INPUT_ACTION_PREVIOUS) then
-				local next_index = current_index > 1 and current_index - 1 or max_index
+				for i = #layout_name_by_index, 1, -1 do
+					if i == current_index then
+						next_index = current_index > 1 and current_index - 1 or max_index
+
+						if self.parent:can_add(layout_name_by_index[next_index]) then
+							break
+						else
+							current_index = next_index
+						end
+					end
+				end
 
 				self:_on_panel_button_selected(next_index)
 			elseif input_service:get(INPUT_ACTION_NEXT) then
-				local next_index = 1 + current_index % max_index
+				for i = 1, #layout_name_by_index do
+					if i == current_index then
+						next_index = 1 + current_index % max_index
+
+						if self.parent:can_add(layout_name_by_index[next_index]) then
+							break
+						else
+							current_index = next_index
+						end
+					end
+				end
 
 				self:_on_panel_button_selected(next_index)
 			end

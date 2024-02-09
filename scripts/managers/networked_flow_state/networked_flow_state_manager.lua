@@ -364,7 +364,7 @@ NetworkedFlowStateManager._sync_states = function (self, peer)
 				local state_network_id = unit_states.lookup[state_name]
 				local type_data = FLOW_STATE_TYPES[type(value)]
 
-				value = self:_clamp_state(state_name, type_data, value)
+				value = self:_clamp_state(state_name, type_data, value, unit)
 
 				RPC[type_data.rpcs.change](channel_id, unit_id, state_network_id, value, true, not is_level_id)
 			end
@@ -441,7 +441,7 @@ NetworkedFlowStateManager.flow_cb_change_state = function (self, unit, state_nam
 	if changed then
 		local type_data = FLOW_STATE_TYPES[type(new_state)]
 
-		new_state = self:_clamp_state(state_name, type_data, new_state)
+		new_state = self:_clamp_state(state_name, type_data, new_state, unit)
 
 		Managers.state.network.network_transmit:send_rpc_clients(type_data.rpcs.change, unit_id, state_network_id, new_state, false, current_state.is_game_object or false)
 	end
@@ -449,13 +449,13 @@ NetworkedFlowStateManager.flow_cb_change_state = function (self, unit, state_nam
 	return changed, new_state
 end
 
-NetworkedFlowStateManager._clamp_state = function (self, state_name, type_data, new_state)
+NetworkedFlowStateManager._clamp_state = function (self, state_name, type_data, new_state, unit)
 	local network_constant = type_data.network_constant and NetworkConstants[type_data.network_constant]
 
 	if network_constant and (new_state < network_constant.min or new_state > network_constant.max) then
 		new_state = math.max(network_constant.min, math.min(network_constant.max, new_state))
 
-		Application.warning("[NetworkedFlowStateManager] Networked Flow State %q value %f out of bounds [%f..%f]", state_name, new_state, network_constant.min, network_constant.max)
+		Application.warning("[NetworkedFlowStateManager] Networked Flow State %q value %f out of bounds [%f..%f] (%s)", state_name, new_state, network_constant.min, network_constant.max, Unit.debug_name(unit))
 	end
 
 	return new_state

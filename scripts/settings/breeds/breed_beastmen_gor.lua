@@ -324,6 +324,10 @@ local AttackIntensityPerDifficulty = {
 			normal = 2,
 			running = 2.5,
 		},
+		versus_base = {
+			normal = 2,
+			running = 2.5,
+		},
 	},
 	running = {
 		easy = {
@@ -355,6 +359,10 @@ local AttackIntensityPerDifficulty = {
 			running = 2.5,
 		},
 		cataclysm_3 = {
+			normal = 1,
+			running = 2.5,
+		},
+		versus_base = {
 			normal = 1,
 			running = 2.5,
 		},

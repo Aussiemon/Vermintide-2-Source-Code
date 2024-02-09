@@ -1,5 +1,7 @@
 ﻿-- chunkname: @scripts/managers/talents/talent_settings.lua
 
+Talents = Talents or {}
+
 require("scripts/managers/talents/talent_settings_bardin")
 require("scripts/managers/talents/talent_settings_sienna")
 require("scripts/managers/talents/talent_settings_kerillian")

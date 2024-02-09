@@ -77,6 +77,7 @@ local pig_data = {
 		3,
 		3,
 		3,
+		3,
 	},
 	num_push_anims = {
 		push_backward = 4,
@@ -161,6 +162,7 @@ local rat_data = {
 	},
 	infighting = InfightingSettings.small,
 	max_health = {
+		1,
 		1,
 		1,
 		1,
@@ -278,6 +280,7 @@ local nurgling_data = {
 	},
 	infighting = InfightingSettings.small,
 	max_health = {
+		1,
 		1,
 		1,
 		1,

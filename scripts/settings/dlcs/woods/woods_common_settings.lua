@@ -5,6 +5,9 @@ local settings = DLCSettings.woods
 settings.career_setting_files = {
 	"scripts/settings/dlcs/woods/career_settings_woods",
 }
+settings.player_breeds = {
+	"scripts/settings/dlcs/woods/player_breeds_woods",
+}
 settings.career_ability_settings = {
 	"scripts/settings/dlcs/woods/career_ability_settings_woods",
 }

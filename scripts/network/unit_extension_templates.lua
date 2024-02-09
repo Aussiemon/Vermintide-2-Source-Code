@@ -84,6 +84,7 @@ local unit_templates = {
 			"PingTargetExtension",
 			"PlayerUnitFadeExtension",
 			"PlayerUnitDarknessExtension",
+			"PlayerEquipmentWorldMarkerExtension",
 		},
 		husk_extensions_server = {
 			"SimpleHuskInventoryExtension",
@@ -107,6 +108,7 @@ local unit_templates = {
 			"PlayerUnitFadeExtension",
 			"PlayerUnitDarknessExtension",
 			"PlayerUnitAttackIntensityExtension",
+			"PlayerEquipmentWorldMarkerExtension",
 			"AICommanderExtension",
 		},
 	},
@@ -366,6 +368,7 @@ local unit_templates = {
 			"PlayerUnitEnergyExtension",
 			"PlayerUnitVisualEffectsExtension",
 			"PlayerUnitAttackIntensityExtension",
+			"PlayerEquipmentWorldMarkerExtension",
 			"AICommanderExtension",
 		},
 		husk_extensions = {
@@ -397,6 +400,7 @@ local unit_templates = {
 			"PlayerHuskEnergyExtension",
 			"PlayerHuskVisualEffectsExtension",
 			"HuskTalentExtension",
+			"PlayerEquipmentWorldMarkerExtension",
 		},
 	},
 	ai_unit_base = {
@@ -1858,6 +1862,19 @@ local unit_templates = {
 		},
 		husk_extensions = {
 			"LiquidAreaDamageHuskExtension",
+		},
+	},
+	carousel_inn_door = {
+		go_type = "carousel_inn_door",
+		self_owned_extensions = {
+			"DoorOutlineExtension",
+			"GenericUnitInteractableExtension",
+			"UnitSynchronizationExtension",
+		},
+		husk_extensions = {
+			"DoorOutlineExtension",
+			"GenericUnitInteractableExtension",
+			"UnitSynchronizationExtension",
 		},
 	},
 	player_projectile_unit = {

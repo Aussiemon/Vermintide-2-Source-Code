@@ -52,7 +52,7 @@ SHOVEL_BUFF_TWEAK_DATA = {
 		multiplier = -0.8,
 	},
 	sienna_necromancer_5_3 = {
-		overcharge_threshold = 0.12,
+		overcharge_threshold = 0.2,
 	},
 	sienna_necromancer_6_1 = {
 		breed_to_spawn = "pet_skeleton",

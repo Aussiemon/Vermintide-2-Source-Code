@@ -475,6 +475,13 @@ local game_object_templates = {
 		syncs_position = true,
 		syncs_rotation = true,
 	},
+	carousel_inn_door = {
+		game_object_created_func_name = "game_object_created_network_unit",
+		game_object_destroyed_func_name = "game_object_destroyed_network_unit",
+		is_level_unit = false,
+		syncs_position = true,
+		syncs_rotation = true,
+	},
 	buff_aoe_unit = {
 		game_object_created_func_name = "game_object_created_network_unit",
 		game_object_destroyed_func_name = "game_object_destroyed_network_unit",

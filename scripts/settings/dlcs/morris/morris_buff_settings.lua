@@ -217,6 +217,10 @@ dlc_settings.buff_function_templates = {
 		end
 	end,
 	apply_mark_of_nurgle = function (unit, buff, params, world)
+		if DEDICATED_SERVER then
+			return
+		end
+
 		local template = buff.template
 		local mark_particle = template.mark_particle
 		local vfx = World.create_particles(world, mark_particle, POSITION_LOOKUP[unit])
@@ -4077,7 +4081,7 @@ dlc_settings.explosion_templates = {
 			damage_interval = 0.5,
 			dot_balefire_variant = true,
 			dot_template_name = "burning_magma_dot",
-			duration = 6,
+			duration = 10,
 			nav_tag_volume_layer = "fire_grenade",
 			sound_event_name = "player_combat_weapon_fire_bw_deus_01_impact",
 			nav_mesh_effect = {
@@ -5409,14 +5413,14 @@ dlc_settings.buff_templates = {
 				apply_buff_func = "start_dot_damage",
 				damage_profile = "burning_dot",
 				damage_type = "burninating",
-				duration = 2,
-				max_stacks = 5,
+				duration = 3,
+				max_stacks = 6,
 				name = "burning_magma_dot",
 				reapply_buff_func = "reapply_dot_damage",
 				refresh_durations = true,
-				time_between_dot_damages = 0.5,
+				time_between_dot_damages = 0.75,
 				update_func = "apply_dot_damage",
-				update_start_delay = 0.5,
+				update_start_delay = 0.75,
 				perks = {
 					buff_perks.burning,
 				},

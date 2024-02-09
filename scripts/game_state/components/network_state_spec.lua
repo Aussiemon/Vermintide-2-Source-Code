@@ -297,6 +297,11 @@ local spec = {
 			encode = encode_level_transition_type,
 			decode = decode_level_transition_type,
 		},
+		side_order_state = {
+			default_value = 1,
+			type = "number",
+			composite_keys = {},
+		},
 	},
 	peer = {
 		inventory_list = {

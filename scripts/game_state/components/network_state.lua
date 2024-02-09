@@ -337,3 +337,15 @@ NetworkState.set_own_actually_ingame = function (self, actually_ingame)
 
 	self._shared_state:set_peer(self._own_peer_id, key, actually_ingame)
 end
+
+NetworkState.set_side_order_state = function (self, side_order_state)
+	local key = self._shared_state:get_key("side_order_state")
+
+	self._shared_state:set_server(key, side_order_state)
+end
+
+NetworkState.get_side_order_state = function (self)
+	local key = self._shared_state:get_key("side_order_state")
+
+	return self._shared_state:get_server(key)
+end

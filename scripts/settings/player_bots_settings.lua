@@ -269,6 +269,9 @@ BotConstants.default = {
 		cataclysm_3 = {
 			max_start_delay = 0,
 		},
+		versus_base = {
+			max_start_delay = 0,
+		},
 	},
 	OPPORTUNITY_TARGET_REACTION_TIMES = {
 		normal = {
@@ -296,6 +299,10 @@ BotConstants.default = {
 			min = 0.2,
 		},
 		cataclysm_3 = {
+			max = 0.65,
+			min = 0.2,
+		},
+		versus_base = {
 			max = 0.65,
 			min = 0.2,
 		},

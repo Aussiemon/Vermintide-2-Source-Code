@@ -2,6 +2,7 @@
 
 CareerExtension = class(CareerExtension)
 
+local SHORT_COOLDOWN_TIME = 1
 local ABILITY_READY_ANTI_SPAM_DELAY = 1
 
 CareerExtension.init = function (self, extension_init_context, unit, extension_init_data)
@@ -63,6 +64,10 @@ CareerExtension.init = function (self, extension_init_context, unit, extension_i
 			cooldown_anim_time = ability_data.cooldown_anim_time,
 			cost = ability_data.cost or 1,
 		}
+
+		if script_data.short_ability_cooldowns then
+			self._abilities[ability_id].cooldown = SHORT_COOLDOWN_TIME
+		end
 	end
 
 	local passive_ability_classes = career_data.passive_ability.passive_ability_classes
@@ -373,11 +378,14 @@ CareerExtension.start_activated_ability_cooldown = function (self, ability_id, r
 
 	local network_manager = Managers.state.network
 	local unit_id = network_manager:unit_game_object_id(unit)
+	local game = network_manager:game()
 
-	if self.is_server then
-		network_manager.network_transmit:send_rpc_clients("rpc_ability_activated", unit_id, ability_id)
-	else
-		network_manager.network_transmit:send_rpc_server("rpc_ability_activated", unit_id, ability_id)
+	if game then
+		if self.is_server then
+			network_manager.network_transmit:send_rpc_clients("rpc_ability_activated", unit_id, ability_id)
+		else
+			network_manager.network_transmit:send_rpc_server("rpc_ability_activated", unit_id, ability_id)
+		end
 	end
 
 	local min_cooldown = ability.max_cooldown * (1 - ability.cost)
@@ -394,6 +402,10 @@ CareerExtension.start_activated_ability_cooldown = function (self, ability_id, r
 	end
 
 	buff_extension:trigger_procs("on_ability_cooldown_started")
+
+	if script_data.short_ability_cooldowns then
+		ability.cooldown = math.min(SHORT_COOLDOWN_TIME, ability.cooldown)
+	end
 
 	ability.cooldown_paused = false
 	ability.is_ready = false
@@ -660,19 +672,29 @@ CareerExtension.get_career_power_level = function (self)
 	local career_name = self._career_name
 	local profile_name = self._profile_name
 	local power_level = MIN_POWER_LEVEL
+	local game_mode_manager = Managers.state.game_mode
+	local game_mode_key = game_mode_manager and game_mode_manager:game_mode_key()
 
-	if player.bot_player then
-		local leader_player = Managers.player:party_leader_player()
+	if game_mode_key == "versus" and player.bot_player then
+		local game_mode_setting = GameModeSettings[game_mode_key]
 
-		if leader_player then
-			player = leader_player
+		if game_mode_setting and game_mode_setting.power_level_override then
+			power_level = game_mode_setting.power_level_override
 		end
-	end
-
-	if player.remote then
-		power_level = player:get_data("power_level")
 	else
-		power_level = BackendUtils.get_total_power_level(profile_name, career_name)
+		if player.bot_player then
+			local leader_player = Managers.player:party_leader_player()
+
+			if leader_player then
+				player = leader_player
+			end
+		end
+
+		if player.remote then
+			power_level = player:get_data("power_level")
+		else
+			power_level = BackendUtils.get_total_power_level(profile_name, career_name)
+		end
 	end
 
 	local buff_extension = self._buff_extension

@@ -11,7 +11,12 @@ ActionCareerDREngineerCharge.init = function (self, world, item_name, is_server,
 	self.talent_extension = ScriptUnit.extension(owner_unit, "talent_system")
 	self.owner_unit = owner_unit
 	self.audio_loop_id = "engineer_weapon_charge"
-	self._buff_to_add = "bardin_engineer_pump_buff"
+
+	if self.talent_extension:has_talent("bardin_engineer_pump_buff_long") then
+		self._buff_to_add = "bardin_engineer_pump_buff_long"
+	else
+		self._buff_to_add = "bardin_engineer_pump_buff"
+	end
 end
 
 ActionCareerDREngineerCharge.client_owner_start_action = function (self, new_action, t)
@@ -60,6 +65,12 @@ ActionCareerDREngineerCharge.client_owner_post_update = function (self, dt, t, w
 	end
 
 	self.ability_charge_timer = charge_timer
+
+	local current_cooldown = self.career_extension:current_ability_cooldown()
+
+	if current_cooldown <= 0 then
+		self.weapon_extension:stop_action("action_complete")
+	end
 end
 
 ActionCareerDREngineerCharge.finish = function (self, reason)

@@ -7,7 +7,7 @@ ActivatedAbilitySettings.dr_4 = {
 		action_name = "action_career_dr_4",
 		activatable_on_wield_chain_only = true,
 		cooldown = 60,
-		description = "career_active_desc_dr_4_b",
+		description = "career_active_desc_dr_4",
 		display_name = "career_active_name_dr_4",
 		hide_ability_ui_effects = true,
 		icon = "bardin_engineer_activated_ability",
@@ -20,7 +20,7 @@ ActivatedAbilitySettings.dr_4 = {
 	},
 }
 PassiveAbilitySettings.dr_4 = {
-	description = "career_passive_desc_dr_4a_b",
+	description = "career_passive_desc_dr_4a",
 	display_name = "career_passive_name_dr_4a",
 	icon = "bardin_engineer_passive",
 	description_values = {
@@ -35,6 +35,8 @@ PassiveAbilitySettings.dr_4 = {
 		"bardin_engineer_passive_no_ability_regen",
 		"bardin_engineer_passive_ranged_power_aura",
 		"bardin_engineer_passive_max_ammo",
+		"bardin_engineer_remove_pump_stacks",
+		"bardin_engineer_remove_pump_stacks_fire",
 	},
 	perks = {
 		{

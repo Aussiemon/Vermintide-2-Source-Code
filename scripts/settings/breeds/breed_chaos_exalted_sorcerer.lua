@@ -13,7 +13,7 @@ local breed_data = {
 	base_unit = "units/beings/enemies/chaos_sorcerer_boss/chr_chaos_sorcerer_boss",
 	behavior = "chaos_exalted_sorcerer",
 	bone_lod_level = 1,
-	boost_curve_multiplier_override = 1.8,
+	boost_curve_multiplier_override = 2,
 	boss = true,
 	bot_hitbox_radius_approximation = 0.8,
 	combat_music_state = "champion_chaos_exalted_sorcerer",
@@ -267,6 +267,7 @@ local action_data = {
 			harder = 0.5,
 			hardest = 0,
 			normal = 3,
+			versus_base = 3,
 		},
 	},
 	spawn_boss_vortex = {
@@ -594,6 +595,7 @@ local action_data = {
 			harder = "sorcerer_boss_event_defensive",
 			hardest = "sorcerer_boss_event_defensive",
 			normal = "sorcerer_boss_event_defensive",
+			versus_base = "sorcerer_boss_event_defensive",
 		},
 		ignore_staggers = {
 			true,
@@ -622,6 +624,7 @@ local action_data = {
 			harder = "sorcerer_extra_spawn",
 			hardest = "sorcerer_extra_spawn",
 			normal = "sorcerer_extra_spawn",
+			versus_base = "sorcerer_extra_spawn",
 		},
 		ignore_staggers = {
 			true,

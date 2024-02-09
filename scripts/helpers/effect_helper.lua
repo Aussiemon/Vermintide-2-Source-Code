@@ -348,6 +348,43 @@ EffectHelper.play_melee_hit_effects = function (sound_event, world, hit_position
 	WwiseWorld.trigger_event(wwise_world, sound_event, source_id)
 end
 
+EffectHelper.vs_play_hit_sound = function (world, victim_unit, attack_type, damage_type)
+	local owner = Managers.player:owner(victim_unit)
+	local is_husk = owner.remote or owner.bot_player or false
+	local enemy_hit_sound = "sword"
+
+	if attack_type == "projectile" then
+		enemy_hit_sound = "bullet"
+	end
+
+	if enemy_hit_sound then
+		local source_id, wwise_world = WwiseUtils.make_unit_auto_source(world, victim_unit)
+
+		WwiseWorld.set_switch(wwise_world, "husk", tostring(is_husk or false), source_id)
+		WwiseWorld.set_switch(wwise_world, "enemy_hit_sound", enemy_hit_sound, source_id)
+		WwiseWorld.trigger_event(wwise_world, "enemy_hit_versus", source_id)
+	end
+end
+
+local local_damage_taken_events = {
+	skaven_poison_wind_globadier = "Play_player_hit_globadier_gas",
+	vs_poison_wind_globadier = "Play_player_hit_globadier_gas",
+}
+
+EffectHelper.play_local_damage_taken_sound = function (world, unit, damage_source_name)
+	local sound_event = local_damage_taken_events[damage_source_name]
+
+	if not sound_event then
+		return
+	end
+
+	local fp_extension = ScriptUnit.has_extension(unit, "first_person_system")
+
+	if fp_extension then
+		fp_extension:play_hud_sound_event(sound_event)
+	end
+end
+
 EffectHelper.play_melee_hit_effects_enemy = function (sound_event, enemy_hit_sound, world, victim_unit, damage_type, is_husk)
 	local source_id, wwise_world = WwiseUtils.make_unit_auto_source(world, victim_unit)
 

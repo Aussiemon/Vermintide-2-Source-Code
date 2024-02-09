@@ -1,22 +1,6 @@
 ﻿-- chunkname: @scripts/settings/dlcs/cog/career_settings_cog.lua
 
 CareerActionNames.dwarf_ranger[#CareerActionNames.dwarf_ranger + 1] = "action_career_dr_4"
-PlayerBreeds.hero_dr_engineer = {
-	armor_category = 4,
-	awards_positive_reinforcement_message = true,
-	cannot_be_aggroed = true,
-	disable_local_hit_reactions = true,
-	is_hero = true,
-	is_player = true,
-	name = "hero_dr_engineer",
-	poison_resistance = 0,
-	threat_value = 8,
-	vortexable = true,
-	hit_zones = PlayerBreedHitZones.player_breed_hit_zones,
-	status_effect_settings = {
-		category = "small",
-	},
-}
 
 setmetatable(PlayerBreeds.hero_dr_engineer, {
 	__newindex = function (table, key, value)
@@ -56,7 +40,7 @@ CareerSettings.dr_engineer = {
 	passive_ability = PassiveAbilitySettings.dr_4,
 	attributes = {
 		base_critical_strike_chance = 0.05,
-		max_hp = 125,
+		max_hp = 100,
 		max_hp_kd = 300,
 	},
 	video = {
@@ -96,7 +80,7 @@ CareerSettings.dr_engineer = {
 		end
 	end,
 	override_available_for_mechanism = function (career)
-		local settings = Managers.mechanism:mechanism_setting("override_career_availability")
+		local settings = Managers.mechanism:mechanism_setting_for_title("override_career_availability")
 		local career_name = career.display_name
 
 		if settings and settings[career_name] ~= nil then
@@ -113,7 +97,7 @@ CareerSettings.dr_engineer = {
 		local career_weapon_index = 1
 
 		for _, talent_id in ipairs(talent_ids) do
-			local talent = Talents.dwarf_ranger[talent_id]
+			local talent = TalentUtils.get_talent_by_id("dwarf_ranger", talent_id)
 
 			if talent and talent.talent_career_skill_index then
 				career_skill_index = talent.talent_career_skill_index

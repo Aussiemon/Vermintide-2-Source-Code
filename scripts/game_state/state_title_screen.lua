@@ -5,6 +5,7 @@ require("scripts/settings/platform_specific")
 require("scripts/game_state/state_loading")
 require("scripts/managers/eac/eac_manager")
 require("scripts/settings/game_settings")
+require("scripts/ui/views/beta_overlay")
 require("foundation/scripts/managers/chat/chat_manager")
 
 if IS_XB1 then
@@ -89,6 +90,8 @@ StateTitleScreen.on_enter = function (self, params)
 	if IS_WINDOWS or IS_LINUX then
 		Managers.eac = Managers.eac or EacManager:new()
 	end
+
+	self:_init_beta_overlay()
 
 	if IS_PS4 then
 		local account_manager = Managers.account
@@ -262,6 +265,10 @@ end
 
 StateTitleScreen._init_chat_manager = function (self)
 	Managers.chat = Managers.chat or ChatManager:new()
+end
+
+StateTitleScreen._init_beta_overlay = function (self)
+	Managers.beta_overlay = BetaOverlay:new(Managers.world:world("top_ingame_view"))
 end
 
 StateTitleScreen.update = function (self, dt, t)

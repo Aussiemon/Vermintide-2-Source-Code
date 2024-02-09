@@ -1,22 +1,6 @@
 ﻿-- chunkname: @scripts/settings/dlcs/shovel/career_settings_shovel.lua
 
 CareerActionNames.bright_wizard[#CareerActionNames.bright_wizard + 1] = "action_career_bw_necromancer"
-PlayerBreeds.hero_bw_necromancer = {
-	armor_category = 4,
-	awards_positive_reinforcement_message = true,
-	cannot_be_aggroed = true,
-	disable_local_hit_reactions = true,
-	is_hero = true,
-	is_player = true,
-	name = "hero_bw_necromancer",
-	poison_resistance = 0,
-	threat_value = 8,
-	vortexable = true,
-	hit_zones = PlayerBreedHitZones.player_breed_hit_zones,
-	status_effect_settings = {
-		category = "small",
-	},
-}
 CareerSettings.bw_necromancer = {
 	additional_ui_info_file = "scripts/settings/dlcs/shovel/additional_career_info_ui",
 	base_skin = "skin_bw_necromancer",
@@ -115,7 +99,7 @@ CareerSettings.bw_necromancer = {
 		end
 	end,
 	override_available_for_mechanism = function (career)
-		local settings = Managers.mechanism:mechanism_setting("override_career_availability")
+		local settings = Managers.mechanism:mechanism_setting_for_title("override_career_availability")
 		local career_name = career.display_name
 
 		if settings and settings[career_name] ~= nil then

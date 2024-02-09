@@ -153,7 +153,12 @@ Rewards._mission_results = function (self, game_won, extra_mission_results)
 
 		table.insert(mission_results, 1, mission_failed_reward)
 	elseif game_mode_key == "versus" then
-		-- Nothing
+		local mission_failed_reward = {
+			text = "mission_failed",
+			experience = 10 * self:experience_multiplier(),
+		}
+
+		table.insert(mission_results, 1, mission_failed_reward)
 	elseif game_mode_key == "deus" then
 		local mission_system = Managers.state.entity:system("mission_system")
 		local percentages_completed = mission_system:percentages_completed()
@@ -198,6 +203,31 @@ Rewards._mission_results = function (self, game_won, extra_mission_results)
 		}
 
 		table.insert(mission_results, 1, mission_failed_reward)
+	end
+
+	if game_mode_key == "versus" then
+		local settings = Managers.state.game_mode:settings()
+		local experience_settings = settings.experience
+		local win_conditions = Managers.mechanism:game_mechanism():win_conditions()
+		local party_one_score = win_conditions:get_total_score(1)
+		local party_two_score = win_conditions:get_total_score(2)
+		local total_score_per_round = 1
+		local exp_for_all_objectives_completed = experience_settings.complete_all_objectives or 0
+		local party_one_exp = math.clamp(party_one_score / total_score_per_round, 0, 1) * exp_for_all_objectives_completed
+		local party_two_exp = math.clamp(party_two_score / total_score_per_round, 0, 1) * exp_for_all_objectives_completed
+		local total_objective_xp = math.ceil((party_one_exp + party_two_exp) / 2)
+
+		mission_results[#mission_results + 1] = {
+			text = "versus_mission_completed",
+			experience = experience_settings.complete_match,
+		}
+
+		if total_objective_xp > 0 then
+			mission_results[#mission_results + 1] = {
+				text = "versus_mission_objectives_completed",
+				experience = total_objective_xp,
+			}
+		end
 	end
 
 	if extra_mission_results then

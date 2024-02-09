@@ -517,6 +517,10 @@ local filter_macros = {
 			return true
 		end
 
+		if LoadoutUtils.is_item_disabled(item.ItemId) then
+			return false
+		end
+
 		local is_item_for_mechanism = mechanisms and table.contains(mechanisms, current_mechanism)
 		local default_mechanism = not mechanisms and Managers.mechanism:mechanism_setting("default_inventory")
 

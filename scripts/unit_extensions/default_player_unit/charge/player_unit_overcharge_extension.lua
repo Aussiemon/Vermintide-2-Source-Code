@@ -3,6 +3,7 @@
 require("scripts/unit_extensions/default_player_unit/charge/overcharge_data")
 
 PlayerUnitOverchargeExtension = class(PlayerUnitOverchargeExtension)
+script_data.disable_overcharge = script_data.disable_overcharge or Development.parameter("disable_overcharge")
 
 local OVERCHARGE_LEVELS = table.enum("none", "low", "medium", "high", "critical", "exploding")
 
@@ -256,7 +257,7 @@ PlayerUnitOverchargeExtension.update = function (self, unit, input, dt, context,
 	local buff_extension = self._buff_extension
 	local owner_player = Managers.player:owner(self.unit)
 
-	if self.overcharge_value > 0 or buff_extension:has_buff_type("sienna_unchained_activated_ability") then
+	if self.overcharge_value > 0 or buff_extension:has_buff_type("sienna_unchained_activated_ability") or buff_extension:has_buff_type("vs_warpfire_thrower_no_charge_explotion") then
 		self._had_overcharge = true
 
 		if not self.is_exploding and t > self.time_when_overcharge_start_decreasing or self.lockout == true then
@@ -313,6 +314,10 @@ PlayerUnitOverchargeExtension.update = function (self, unit, input, dt, context,
 end
 
 PlayerUnitOverchargeExtension.add_charge = function (self, overcharge_amount, charge_level, overcharge_type)
+	if script_data.disable_overcharge then
+		return
+	end
+
 	local buff_extension = self._buff_extension
 	local max_value = self.max_value
 	local current_overcharge_value = self.overcharge_value

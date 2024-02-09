@@ -224,6 +224,7 @@ local action_data = {
 			harder = 15,
 			hardest = 25,
 			normal = 5,
+			versus_base = 5,
 		},
 		health_leech = {
 			cataclysm = 30,
@@ -234,6 +235,7 @@ local action_data = {
 			harder = 10,
 			hardest = 20,
 			normal = 2,
+			versus_base = 2,
 		},
 	},
 	quick_teleport = {

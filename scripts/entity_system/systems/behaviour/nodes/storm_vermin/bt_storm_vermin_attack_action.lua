@@ -300,7 +300,9 @@ BTStormVerminAttackAction.anim_cb_attack_vce = function (self, unit, blackboard)
 	local game = network_manager:game()
 
 	if game and blackboard.target_unit_status_extension then
-		DialogueSystem:trigger_attack(blackboard, blackboard.target_unit, unit, false, false)
+		local dialogue_system = Managers.state.entity:system("dialogue_system")
+
+		dialogue_system:trigger_attack(blackboard, blackboard.target_unit, unit, false, false)
 	end
 end
 
@@ -309,7 +311,9 @@ BTStormVerminAttackAction.anim_cb_attack_vce_long = function (self, unit, blackb
 	local game = network_manager:game()
 
 	if game and blackboard.target_unit_status_extension then
-		DialogueSystem:trigger_attack(blackboard, blackboard.target_unit, unit, false, true)
+		local dialogue_system = Managers.state.entity:system("dialogue_system")
+
+		dialogue_system:trigger_attack(blackboard, blackboard.target_unit, unit, false, true)
 	end
 end
 

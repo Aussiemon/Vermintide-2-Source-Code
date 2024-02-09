@@ -51,6 +51,7 @@ PlayerCharacterStateGrabbedByPackMaster.on_enter = function (self, unit, input, 
 	self.last_valid_position:store(position)
 	self.locomotion_extension:set_wanted_pos(position)
 
+	self.packmaster_grab_state_initialized = false
 	self.pack_master_status = CharacterStateHelper.pack_master_status(status_extension)
 
 	local states = PlayerCharacterStateGrabbedByPackMaster.states
@@ -128,19 +129,31 @@ function update_mover(parent, unit)
 	Mover.move(mover, Vector3(0, 0, -1.5), 0.03333333333333333)
 end
 
+local function _init_packmaster_grab_state(parent, unit, state_name)
+	if parent.packmaster_grab_state_initialized then
+		return false
+	end
+
+	parent.packmaster_grab_state_initialized = true
+
+	if state_name == "pack_master_hoisting" then
+		parent.locomotion_extension:enable_wanted_position_movement()
+	end
+
+	local inventory_extension = parent.inventory_extension
+
+	if inventory_extension:get_wielded_slot_name() ~= "slot_packmaster_claw" then
+		inventory_extension:wield("slot_packmaster_claw", true)
+	else
+		CharacterStateHelper.show_inventory_3p(unit, true, true, Managers.player.is_server, parent.inventory_extension)
+	end
+end
+
 PlayerCharacterStateGrabbedByPackMaster.states = {
 	pack_master_pulling = {
 		enter = function (parent, unit)
 			parent.locomotion_extension:enable_animation_driven_movement()
-
-			local inventory_extension = parent.inventory_extension
-
-			if inventory_extension:get_wielded_slot_name() ~= "slot_packmaster_claw" then
-				inventory_extension:wield("slot_packmaster_claw", true)
-			else
-				CharacterStateHelper.show_inventory_3p(unit, true, true, Managers.player.is_server, parent.inventory_extension)
-			end
-
+			_init_packmaster_grab_state(parent, unit, "pack_master_pulling")
 			Managers.state.network:anim_event(unit, "packmaster_hooked")
 		end,
 		run = function (parent, unit)
@@ -150,14 +163,7 @@ PlayerCharacterStateGrabbedByPackMaster.states = {
 	pack_master_dragging = {
 		enter = function (parent, unit)
 			parent.locomotion_extension:enable_wanted_position_movement()
-
-			local inventory_extension = parent.inventory_extension
-
-			if inventory_extension:get_wielded_slot_name() ~= "slot_packmaster_claw" then
-				inventory_extension:wield("slot_packmaster_claw", true)
-			else
-				CharacterStateHelper.show_inventory_3p(unit, true, true, Managers.player.is_server, parent.inventory_extension)
-			end
+			_init_packmaster_grab_state(parent, unit, "pack_master_dragging")
 
 			parent.dragged_move_anim = "move_bwd"
 
@@ -224,7 +230,21 @@ PlayerCharacterStateGrabbedByPackMaster.states = {
 	},
 	pack_master_hoisting = {
 		enter = function (parent, unit)
+			_init_packmaster_grab_state(parent, unit, "pack_master_hoisting")
+
+			local dragged_unit_profile_id = Managers.player:owner(unit):profile_index()
+			local target_unit_name = SPProfiles[dragged_unit_profile_id].unit_name
+			local grab_hang_name = "attack_grab_hang_" .. target_unit_name
+
+			Managers.state.entity:system("inventory_system"):weapon_anim_event(unit, grab_hang_name)
+			Managers.state.network:anim_event(unit, "packmaster_hang_start")
+
 			local packmaster_unit = parent.status_extension:get_pack_master_grabber()
+
+			if ALIVE[packmaster_unit] then
+				Managers.state.network:anim_event(packmaster_unit, grab_hang_name)
+			end
+
 			local new_pos = PactswornUtils.get_hoist_position(unit, packmaster_unit)
 
 			parent.locomotion_extension:teleport_to(new_pos, nil)

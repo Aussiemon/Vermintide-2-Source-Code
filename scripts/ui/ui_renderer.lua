@@ -231,7 +231,9 @@ UIRenderer.script_draw_bitmap_3d = function (gui, render_settings, material, tm,
 	end
 end
 
-UIRenderer._injected_material_sets = {}
+UIRenderer._injected_material_sets = {
+	"materials/ui/ui_1080p_development",
+}
 
 local function inject_materials(i, ...)
 	local material = UIRenderer._injected_material_sets[i]

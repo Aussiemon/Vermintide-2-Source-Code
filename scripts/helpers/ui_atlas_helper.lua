@@ -18,6 +18,7 @@ require("scripts/ui/atlas_settings/gui_frames_atlas")
 require("scripts/ui/atlas_settings/gui_menus_atlas")
 require("scripts/ui/atlas_settings/gui_country_flags_atlas")
 require("scripts/ui/atlas_settings/gui_mission_selection_atlas")
+require("scripts/ui/atlas_settings/gui_development_atlas")
 require("scripts/ui/atlas_settings/gui_lock_test_atlas")
 
 UIAtlasHelper = UIAtlasHelper or {}
@@ -318,6 +319,7 @@ local standalone_texture = {
 	vermintide_2_logo_demo = true,
 	vermintide_2_logo_tutorial = true,
 	vermintide_logo_title = true,
+	versus_objective_progress_bar = true,
 	vote_a = true,
 	vote_b = true,
 	weave_button_passive_glow = true,
@@ -343,12 +345,14 @@ local ui_atlas_setting_tables = {
 	gui_frames_atlas = frames_atlas,
 	gui_level_images_atlas = level_images_atlas,
 	gui_country_flags_atlas = country_flags_atlas,
+	gui_development_atlas = development_atlas,
 	gui_lock_test_atlas = lock_test_atlas,
 }
 local masked_materials = {
 	gui_achievement_icons_atlas = "gui_achievement_icons_atlas_masked",
 	gui_chat_atlas = "gui_chat_atlas_masked",
 	gui_country_flags_atlas = "gui_country_flags_atlas_masked",
+	gui_development_atlas = "gui_development_atlas_masked",
 	gui_frames_atlas = "gui_frames_atlas_masked",
 	gui_hud_atlas = "gui_hud_atlas_masked",
 	gui_icons_atlas = "gui_icons_atlas_masked",
@@ -363,6 +367,7 @@ local masked_materials = {
 }
 local saturated_materials = {
 	gui_achievement_icons_atlas = "gui_achievement_icons_atlas_saturated",
+	gui_development_atlas = "gui_development_atlas_saturated",
 	gui_frames_atlas = "gui_frames_atlas_saturated",
 	gui_hud_atlas = "gui_hud_atlas_saturated",
 	gui_icons_atlas = "gui_icons_atlas_saturated",
@@ -375,6 +380,7 @@ local saturated_materials = {
 }
 local masked_saturated_materials = {
 	gui_achievement_icons_atlas = "gui_achievement_icons_atlas_masked_saturated",
+	gui_development_atlas = "gui_development_atlas_masked_saturated",
 	gui_hud_atlas = "gui_hud_atlas_point_sample_masked_saturated",
 	gui_icons_atlas = "gui_icons_atlas_masked_saturated",
 	gui_items_atlas = "gui_items_atlas_masked_saturated",
@@ -389,6 +395,7 @@ end
 local masked_point_sample_materials = {
 	gui_achievement_icons_atlas = "gui_achievement_icons_atlas_point_sample_masked",
 	gui_chat_atlas = "gui_chat_atlas_point_sample_masked",
+	gui_development_atlas = "gui_development_atlas_point_sample_masked",
 	gui_frames_atlas = "gui_frames_atlas_point_sample_masked",
 	gui_hud_atlas = "gui_hud_atlas_point_sample_masked",
 	gui_icons_atlas = "gui_icons_atlas_point_sample_masked",
@@ -400,6 +407,7 @@ local masked_point_sample_materials = {
 	gui_start_screen_atlas = "gui_start_screen_atlas_point_sample_masked",
 }
 local masked_saturated_point_sample_materials = {
+	gui_development_atlas = "gui_development_atlas_point_sample_masked_saturated",
 	gui_hud_atlas = "gui_hud_atlas_point_sample_masked_saturated",
 	gui_icons_atlas = "gui_icons_atlas_point_sample_masked_saturated",
 	gui_lock_test_atlas = "gui_lock_test_atlas_point_sample_masked_saturated",
@@ -414,6 +422,7 @@ local point_sample_materials = {
 	end_screen_effect_victory_2 = "end_screen_effect_victory_2_point_sample",
 	gui_achievement_icons_atlas = "gui_achievement_icons_atlas_point_sample",
 	gui_chat_atlas = "gui_chat_atlas_point_sample",
+	gui_development_atlas = "gui_development_atlas_point_sample",
 	gui_frames_atlas = "gui_frames_atlas_point_sample",
 	gui_hud_atlas = "gui_hud_atlas_point_sample",
 	gui_icons_atlas = "gui_icons_atlas_point_sample",
@@ -437,30 +446,35 @@ local point_sample_materials = {
 	vermintide_2_logo_tutorial = "vermintide_2_logo_tutorial_point_sample",
 }
 local offscreen_materials = {
+	gui_development_atlas = "gui_development_atlas_offscreen",
 	gui_frames_atlas = "gui_frames_atlas_offscreen",
 	gui_icons_atlas = "gui_icons_atlas_offscreen",
 	gui_items_atlas = "gui_items_atlas_offscreen",
 	gui_menus_atlas = "gui_menus_atlas_offscreen",
 }
 local masked_offscreen_materials = {
+	gui_development_atlas = "gui_development_atlas_masked_offscreen",
 	gui_frames_atlas = "gui_frames_atlas_masked_offscreen",
 	gui_icons_atlas = "gui_icons_atlas_masked_offscreen",
 	gui_items_atlas = "gui_items_atlas_masked_offscreen",
 	gui_menus_atlas = "gui_menus_atlas_masked_offscreen",
 }
 local masked_point_sample_offscreen_materials = {
+	gui_development_atlas = "gui_development_atlas_point_sample_masked_offscreen",
 	gui_frames_atlas = "gui_frames_atlas_point_sample_masked_offscreen",
 	gui_icons_atlas = "gui_icons_atlas_point_sample_masked_offscreen",
 	gui_items_atlas = "gui_items_atlas_point_sample_masked_offscreen",
 	gui_menus_atlas = "gui_menus_atlas_point_sample_masked_offscreen",
 }
 local point_sample_offscreen_materials = {
+	gui_development_atlas = "gui_development_atlas_point_sample_offscreen",
 	gui_frames_atlas = "gui_frames_atlas_point_sample_offscreen",
 	gui_icons_atlas = "gui_icons_atlas_point_sample_offscreen",
 	gui_items_atlas = "gui_items_atlas_point_sample_offscreen",
 	gui_menus_atlas = "gui_menus_atlas_point_sample_offscreen",
 }
 local saturated_offscreen_materials = {
+	gui_development_atlas = "gui_development_atlas_saturated_offscreen",
 	gui_icons_atlas = "gui_icons_atlas_saturated",
 	gui_items_atlas = "gui_items_atlas_saturated",
 }

@@ -5,6 +5,9 @@ local settings = DLCSettings.lake
 settings.career_setting_files = {
 	"scripts/settings/dlcs/lake/career_settings_lake",
 }
+settings.player_breeds = {
+	"scripts/settings/dlcs/lake/player_breeds_lake",
+}
 settings.career_ability_settings = {
 	"scripts/settings/dlcs/lake/passive_ability_questing_knight",
 	"scripts/settings/dlcs/lake/career_ability_settings_lake",

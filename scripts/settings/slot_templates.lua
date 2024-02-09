@@ -438,6 +438,63 @@ SlotTemplates = {
 		},
 		boss = dummy_data,
 	},
+	versus_base = {
+		skaven_horde = {
+			abandon_slot_when_blocked = false,
+			abandon_slot_when_blocked_time = 0.3,
+			abandon_slot_when_staggered = false,
+			abandon_slot_when_staggered_time = 0.3,
+			avoid_slots_behind_overwhelmed_target = true,
+			min_wait_queue_distance = 2,
+			prioritize_queued_units_on_death = true,
+			restricted_queue_distance = true,
+			slot_type = "normal",
+		},
+		skaven_roamer = {
+			abandon_slot_when_blocked = false,
+			min_wait_queue_distance = 2,
+			prioritize_queued_units_on_death = true,
+			restricted_queue_distance = true,
+			slot_type = "normal",
+		},
+		skaven_elite = {
+			avoid_slots_behind_overwhelmed_target = false,
+			min_wait_queue_distance = 3,
+			restricted_queue_distance = true,
+			slot_type = "normal",
+		},
+		chaos_horde = {
+			abandon_slot_when_blocked = false,
+			abandon_slot_when_blocked_time = 0.3,
+			abandon_slot_when_staggered = true,
+			abandon_slot_when_staggered_time = 0.3,
+			avoid_slots_behind_overwhelmed_target = true,
+			min_wait_queue_distance = 3.5,
+			prioritize_queued_units_on_death = true,
+			restricted_queue_distance = true,
+			slot_type = "normal",
+		},
+		chaos_roamer = {
+			avoid_slots_behind_overwhelmed_target = false,
+			min_wait_queue_distance = 3,
+			prioritize_queued_units_on_death = true,
+			restricted_queue_distance = true,
+			slot_type = "medium",
+		},
+		chaos_elite = {
+			avoid_slots_behind_overwhelmed_target = false,
+			min_wait_queue_distance = 3,
+			restricted_queue_distance = true,
+			slot_type = "medium",
+		},
+		chaos_large_elite = {
+			avoid_slots_behind_overwhelmed_target = false,
+			min_wait_queue_distance = 3,
+			restricted_queue_distance = true,
+			slot_type = "large",
+		},
+		boss = dummy_data,
+	},
 }
 
 DLCUtils.map_list("slot_templates_file_names", function (file_name)

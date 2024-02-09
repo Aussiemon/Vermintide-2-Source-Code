@@ -445,9 +445,9 @@ end
 AiUtils.poison_explode_unit = function (unit, action, blackboard)
 	local position = Unit.local_position(unit, 0)
 	local difficulty_rank = Managers.state.difficulty:get_difficulty_rank()
-	local aoe_dot_damage_table = action.aoe_dot_damage[difficulty_rank]
+	local aoe_dot_damage_table = action.aoe_dot_damage[difficulty_rank] or action.aoe_dot_damage[2]
 	local aoe_dot_damage = DamageUtils.calculate_damage(aoe_dot_damage_table)
-	local aoe_init_damage_table = action.aoe_init_damage[difficulty_rank]
+	local aoe_init_damage_table = action.aoe_init_damage[difficulty_rank] or action.aoe_init_damage[2]
 	local aoe_init_damage = DamageUtils.calculate_damage(aoe_init_damage_table)
 	local aoe_dot_damage_interval = action.aoe_dot_damage_interval
 	local radius = action.radius

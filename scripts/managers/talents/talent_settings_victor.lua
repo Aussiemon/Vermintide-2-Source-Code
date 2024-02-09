@@ -140,7 +140,7 @@ local buff_tweak_data = {
 		required_target_number = 4,
 	},
 	victor_bountyhunter_activated_ability_railgun = {
-		multiplier = 0.6,
+		multiplier = 0.4,
 	},
 	victor_bountyhunter_activated_ability_reset_cooldown_on_stacks = {
 		multiplier = 0.02,
@@ -947,9 +947,9 @@ TalentBuffTemplates.witch_hunter = {
 	victor_bountyhunter_activated_ability_railgun_delayed_add = {
 		buffs = {
 			{
-				duration = 0.25,
-				max_stacks = 1,
-				multiplier = 0.6,
+				duration = 0.15,
+				max_stacks = 2,
+				multiplier = 0.4,
 				remove_buff_func = "victor_bountyhunter_activated_ability_railgun_delayed",
 			},
 		},
@@ -1336,7 +1336,6 @@ TalentTrees.witch_hunter = {
 		},
 	},
 }
-Talents = Talents or {}
 Talents.witch_hunter = {
 	{
 		buffer = "server",

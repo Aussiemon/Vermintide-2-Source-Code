@@ -205,8 +205,36 @@ NetworkServer.rpc_game_started = function (self, channel_id)
 	end
 end
 
+NetworkServer.rpc_set_network_log_level = function (self, channel_id, network_log_level_id)
+	local network_log_level = NetworkLookup.network_log_levels[network_log_level_id]
+
+	if DEDICATED_SERVER then
+		Network.log(network_log_level)
+	else
+		local dedicated_server_peer_id = Managers.mechanism:dedicated_server_peer_id()
+
+		if dedicated_server_peer_id then
+			local channel_id = PEER_ID_TO_CHANNEL[dedicated_server_peer_id]
+
+			RPC.rpc_set_network_log_level(channel_id, network_log_level_id)
+		end
+	end
+end
+
 NetworkServer.is_network_state_fully_synced_for_peer = function (self, peer_id)
 	return self._network_state:is_peer_fully_synced(peer_id)
+end
+
+NetworkServer.peers_waiting_for_players = function (self)
+	local peers_waiting_for_players = {}
+
+	for peer_id, peer_state_machine in pairs(self.peer_state_machines) do
+		if peer_state_machine.current_state == PeerStates.WaitingForPlayers then
+			peers_waiting_for_players[peer_id] = true
+		end
+	end
+
+	return peers_waiting_for_players
 end
 
 NetworkServer.can_enter_game = function (self)
@@ -365,7 +393,7 @@ NetworkServer.destroy = function (self)
 end
 
 NetworkServer.register_rpcs = function (self, network_event_delegate, network_transmit)
-	network_event_delegate:register(self, "rpc_notify_lobby_joined", "rpc_to_client_spawn_player", "rpc_post_game_notified", "rpc_want_to_spawn_player", "rpc_level_load_started", "rpc_level_loaded", "rpc_game_started", "rpc_is_ingame", "game_object_sync_done", "rpc_notify_connected", "rpc_loading_synced", "rpc_clear_peer_state", "rpc_notify_in_post_game", "rpc_client_respawn_player")
+	network_event_delegate:register(self, "rpc_notify_lobby_joined", "rpc_to_client_spawn_player", "rpc_post_game_notified", "rpc_want_to_spawn_player", "rpc_level_load_started", "rpc_level_loaded", "rpc_game_started", "rpc_is_ingame", "game_object_sync_done", "rpc_notify_connected", "rpc_loading_synced", "rpc_clear_peer_state", "rpc_notify_in_post_game", "rpc_client_respawn_player", "rpc_set_network_log_level")
 	network_event_delegate:register_with_return(self, "approve_channel")
 
 	self.network_event_delegate = network_event_delegate
@@ -792,6 +820,10 @@ NetworkServer.update = function (self, dt)
 			end
 		end
 
+		if not GameModeSettings.versus.allow_host_migration then
+			host_to_migrate_to = nil
+		end
+
 		if Managers.weave:get_active_weave() ~= nil then
 			host_to_migrate_to = nil
 		end
@@ -945,13 +977,8 @@ NetworkServer.eac_check_peer = function (self, peer_id)
 	local server_state, peer_state
 
 	if DEDICATED_SERVER then
-		if BUILD == "release" then
-			server_state = "trusted"
-			peer_state = "trusted"
-		else
-			server_state = EACServer.state(self._eac_server, self.my_peer_id)
-			peer_state = EACServer.state(self._eac_server, peer_id)
-		end
+		server_state = "trusted"
+		peer_state = "trusted"
 	else
 		local host = self.lobby_host
 
@@ -1179,14 +1206,18 @@ NetworkServer.all_approved_peers_are_connected = function (self, ignore_map)
 	return true
 end
 
-NetworkServer.disconnect_joining_peers = function (self)
+NetworkServer.disconnect_joining_peers = function (self, reason)
 	local peer_state_machines = self.peer_state_machines
 
 	for peer_id, peer_state_machine in pairs(peer_state_machines) do
 		local state_name = peer_state_machine.current_state.state_name
 
 		if state_name ~= "InGame" and state_name ~= "InPostGame" and state_name ~= "Disconnected" and state_name ~= "Disconnecting" then
-			self:disconnect_peer(peer_id, "host_left_game")
+			if reason then
+				self:disconnect_peer(peer_id, reason)
+			else
+				self:disconnect_peer(peer_id, "host_left_game")
+			end
 		end
 	end
 end
@@ -1295,4 +1326,14 @@ NetworkServer.hot_join_sync_party_and_profiles = function (self, peer_id)
 	local profile_synchronizer = self.profile_synchronizer
 
 	profile_synchronizer:hot_join_sync(peer_id)
+end
+
+NetworkServer.set_side_order_state = function (self, side_order_state)
+	if self._network_state then
+		self._network_state:set_side_order_state(side_order_state)
+	end
+end
+
+NetworkServer.get_side_order_state = function (self, side_order_state)
+	return self._network_state and self._network_state:get_side_order_state()
 end

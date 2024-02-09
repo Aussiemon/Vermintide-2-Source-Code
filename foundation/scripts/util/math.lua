@@ -819,6 +819,12 @@ math.wrap_index_between = function (index, from, to)
 	return from + d_idx % (d_max + 1)
 end
 
+math.stride_index = function (index, stride, optional_in_stride_offset)
+	optional_in_stride_offset = optional_in_stride_offset or 1
+
+	return (index - 1) * stride + 1 + (optional_in_stride_offset - 1)
+end
+
 math.value_inside_range = function (value, min, max)
 	return min <= value and value <= max
 end

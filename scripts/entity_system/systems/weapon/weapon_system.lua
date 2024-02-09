@@ -387,14 +387,24 @@ WeaponSystem.update_synced_geiser_particle_effects = function (self, context, t)
 	local world = self.world
 	local physics_world = World.get_data(world, "physics_world")
 
-	for unit, data in pairs(self._geiser_particle_effects) do
-		local unit_id = network_manager:unit_game_object_id(unit)
+	for unit_id, data in pairs(self._geiser_particle_effects) do
+		repeat
+			local unit = network_manager:game_object_or_level_unit(unit_id)
 
-		if not unit_id then
-			World.destroy_particles(world, data.geiser_effect)
+			if not ALIVE[unit] then
+				if data.geiser_effect then
+					World.destroy_particles(world, data.geiser_effect)
+				end
 
-			self._geiser_particle_effects[unit] = nil
-		else
+				self._geiser_particle_effects[unit] = nil
+
+				break
+			end
+
+			if not data.geiser_effect then
+				break
+			end
+
 			local charge_value = (t - data.time_to_shoot) / data.charge_time
 			local radius = math.min(data.max_radius, data.max_radius * charge_value + data.min_radius)
 			local player_position = GameSession.game_object_field(game, unit_id, "aim_position")
@@ -412,7 +422,7 @@ WeaponSystem.update_synced_geiser_particle_effects = function (self, context, t)
 
 			World.move_particles(world, data.geiser_effect, position)
 			World.set_particles_variable(world, data.geiser_effect, data.geiser_effect_variable, Vector3(radius * 2, radius * 2, 1))
-		end
+		until true
 	end
 end
 
@@ -570,12 +580,30 @@ end
 
 WeaponSystem.rpc_start_geiser = function (self, channel_id, unit_id, geiser_effect_id, min_radius, max_radius, charge_time, angle)
 	if not LEVEL_EDITOR_TEST then
-		if self.is_server then
-			local side_manager = Managers.state.side
-			local peer_id = CHANNEL_TO_PEER_ID[channel_id]
-			local side = side_manager:get_side_from_player_unique_id(peer_id .. ":1")
+		local peer_id = CHANNEL_TO_PEER_ID[channel_id]
 
-			self.network_transmit:send_rpc_side_clients_except("rpc_start_geiser", side, true, peer_id, unit_id, geiser_effect_id, min_radius, max_radius, charge_time, angle)
+		if not peer_id then
+			return
+		end
+
+		local side_manager = Managers.state.side
+		local side = side_manager:get_side_from_player_unique_id(peer_id .. ":1")
+		local geiser_effect_name = NetworkLookup.effects[geiser_effect_id]
+		local geiser_data = {
+			side = side,
+			min_radius = min_radius,
+			max_radius = max_radius,
+			charge_time = charge_time,
+			angle = angle,
+			time_to_shoot = Managers.time:time("game"),
+			start_time = Managers.time:time("game"),
+			geiser_effect_name = geiser_effect_name,
+		}
+
+		self._geiser_particle_effects[unit_id] = geiser_data
+
+		if self.is_server then
+			self.network_transmit:send_rpc_side_clients_except("rpc_start_geiser", side, true, true, peer_id, unit_id, geiser_effect_id, min_radius, max_radius, charge_time, angle)
 
 			if DEDICATED_SERVER then
 				return
@@ -589,40 +617,28 @@ WeaponSystem.rpc_start_geiser = function (self, channel_id, unit_id, geiser_effe
 			end
 		end
 
-		local unit = self.unit_storage:unit(unit_id)
-		local geiser_effect_name = NetworkLookup.effects[geiser_effect_id]
 		local world = self.world
 
-		self._geiser_particle_effects[unit] = {
-			geiser_effect = World.create_particles(world, geiser_effect_name, Vector3.zero()),
-			geiser_effect_variable = World.find_particles_variable(world, geiser_effect_name, "charge_radius"),
-			geiser_effect_name = geiser_effect_name,
-			min_radius = min_radius,
-			max_radius = max_radius,
-			charge_time = charge_time,
-			angle = angle,
-			time_to_shoot = Managers.time:time("game"),
-			start_time = Managers.time:time("game"),
-		}
+		geiser_data.geiser_effect = World.create_particles(world, geiser_effect_name, Vector3.zero())
+		geiser_data.geiser_effect_variable = World.find_particles_variable(world, geiser_effect_name, "charge_radius")
 	end
 end
 
 WeaponSystem.rpc_end_geiser = function (self, channel_id, unit_id)
 	if not LEVEL_EDITOR_TEST then
 		local world = self.world
-		local unit = self.unit_storage:unit(unit_id)
-		local data = self._geiser_particle_effects[unit]
+		local data = self._geiser_particle_effects[unit_id]
 
-		if data then
+		if data and data.geiser_effect then
 			World.destroy_particles(world, data.geiser_effect)
+		end
 
-			self._geiser_particle_effects[unit] = nil
+		self._geiser_particle_effects[unit_id] = nil
 
-			if self.is_server then
-				local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+		if self.is_server then
+			local peer_id = CHANNEL_TO_PEER_ID[channel_id]
 
-				self.network_transmit:send_rpc_clients_except("rpc_end_geiser", peer_id, unit_id)
-			end
+			self.network_transmit:send_rpc_clients_except("rpc_end_geiser", peer_id, unit_id)
 		end
 	end
 end
@@ -779,8 +795,7 @@ WeaponSystem.hot_join_sync = function (self, peer_id)
 		RPC.rpc_start_beam(channel_id, unit_id, beam_effect_id, beam_end_effect_id, data.range)
 	end
 
-	for unit, data in pairs(self._geiser_particle_effects) do
-		local unit_id = Managers.state.network:unit_game_object_id(unit)
+	for unit_id, data in pairs(self._geiser_particle_effects) do
 		local geiser_effect_id = NetworkLookup.effects[data.geiser_effect_name]
 		local min_radius = data.min_radius
 		local max_radius = data.max_radius

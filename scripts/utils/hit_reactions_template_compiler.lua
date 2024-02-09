@@ -176,6 +176,10 @@ local function setup_hit_reactions()
 		compile_effects_templates(breed_settings.hit_effect_template)
 	end
 
+	for breed_name, breed_settings in pairs(PlayerBreeds) do
+		setup_dismemberment_table(breed_name, breed_settings.hit_zones)
+	end
+
 	for _, hit_effect_template in pairs(AdditionalHitReactions) do
 		compile_effects_templates(hit_effect_template)
 	end

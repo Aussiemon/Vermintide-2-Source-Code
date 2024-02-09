@@ -26,6 +26,7 @@ local default_user_settings = {
 	dynamic_range_sound = "high",
 	enable_gamepad_acceleration = true,
 	enabled_crosshairs = "all",
+	friend_join_mode = "lobby_friends",
 	friendly_fire_crosshair = true,
 	friendly_fire_hit_marker = true,
 	fsr2_enabled = false,
@@ -44,6 +45,7 @@ local default_user_settings = {
 	give_on_defend = true,
 	head_bob = true,
 	hud_clamp_ui_scaling = false,
+	hud_damage_feedback_on_yourself = false,
 	hud_scale = 100,
 	input_buffer = 0.5,
 	language_id = "en",
@@ -260,7 +262,10 @@ DefaultUserSettings.set_default_user_settings = function ()
 
 	if reload then
 		Application.apply_user_settings()
-		GlobalShaderFlags.apply_settings()
+
+		if rawget(_G, "GlobalShaderFlags") then
+			GlobalShaderFlags.apply_settings()
+		end
 	end
 
 	if set_default then

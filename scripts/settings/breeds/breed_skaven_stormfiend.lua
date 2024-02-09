@@ -15,7 +15,7 @@ local breed_data = {
 	base_unit = "units/beings/enemies/skaven_stormfiend/chr_skaven_stormfiend",
 	behavior = "stormfiend",
 	bone_lod_level = 0,
-	boost_curve_multiplier_override = 1.8,
+	boost_curve_multiplier_override = 2,
 	boss = true,
 	boss_damage_reduction = true,
 	boss_staggers = true,
@@ -325,6 +325,9 @@ local AttackIntensityPerDifficulty = {
 		cataclysm_3 = {
 			normal = 1,
 		},
+		versus_base = {
+			normal = 1,
+		},
 	},
 	charge = {
 		easy = {
@@ -356,6 +359,10 @@ local AttackIntensityPerDifficulty = {
 			running = 0.5,
 		},
 		cataclysm_3 = {
+			normal = 3,
+			running = 0.5,
+		},
+		versus_base = {
 			normal = 3,
 			running = 0.5,
 		},
@@ -522,6 +529,13 @@ local action_data = {
 			},
 			cataclysm_3 = {
 				40,
+				10,
+				0,
+				0,
+				10,
+			},
+			verus_base = {
+				5,
 				10,
 				0,
 				0,

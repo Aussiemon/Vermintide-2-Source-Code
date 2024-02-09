@@ -903,6 +903,8 @@ DebugManager._update_unit_spawning = function (self, dt, t)
 		if Breeds[debug_breed_name] then
 			self._last_debug_breed_name = debug_breed_name
 			self._last_current_item = self.debug_breed_picker:current_item()
+		elseif current_item[2] ~= "pick_enhancement" then
+			current_item = self.debug_breed_picker:current_item()
 		elseif self._last_debug_breed_name then
 			debug_breed_name = self._last_debug_breed_name
 			current_item = self._last_current_item

@@ -15,7 +15,7 @@ local breed_data = {
 	base_unit = "units/beings/enemies/chaos_sorcerer_boss_drachenfels/chr_chaos_sorcerer_boss_drachenfels",
 	behavior = "chaos_exalted_sorcerer_drachenfels",
 	bone_lod_level = 1,
-	boost_curve_multiplier_override = 1.8,
+	boost_curve_multiplier_override = 2,
 	boss = true,
 	bot_hitbox_radius_approximation = 0.8,
 	combat_music_state = "no_boss",
@@ -2306,6 +2306,7 @@ local action_data = {
 			harder = "chaos_event_defensive",
 			hardest = "chaos_event_defensive",
 			normal = "chaos_event_defensive",
+			versus_base = "chaos_event_defensive",
 		},
 		ignore_staggers = {
 			true,
@@ -2332,6 +2333,7 @@ local action_data = {
 			harder = "chaos_event_defensive_intense",
 			hardest = "chaos_event_defensive_intense",
 			normal = "chaos_event_defensive_intense",
+			versus_base = "chaos_event_defensive_intense",
 		},
 		ignore_staggers = {
 			true,
@@ -2360,6 +2362,7 @@ local action_data = {
 			harder = "chaos_event_offensive",
 			hardest = "chaos_event_offensive",
 			normal = "chaos_event_offensive",
+			versus_base = "chaos_event_offensive",
 		},
 		ignore_staggers = {
 			true,
@@ -2387,6 +2390,7 @@ local action_data = {
 			harder = "chaos_event_offensive_small",
 			hardest = "chaos_event_offensive_small",
 			normal = "chaos_event_offensive_small",
+			versus_base = "chaos_event_offensive_small",
 		},
 		ignore_staggers = {
 			true,
@@ -2415,6 +2419,7 @@ local action_data = {
 			harder = "chaos_event_offensive_intense",
 			hardest = "chaos_event_offensive_intense",
 			normal = "chaos_event_offensive_intense",
+			versus_base = "chaos_event_offensive_intense",
 		},
 		ignore_staggers = {
 			true,

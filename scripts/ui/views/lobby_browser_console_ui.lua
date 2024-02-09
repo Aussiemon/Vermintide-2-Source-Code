@@ -1724,6 +1724,8 @@ LobbyBrowserConsoleUI._update_lobby_details = function (self, valid_lobbies_by_i
 			self:_fill_weave_details(lobby_data)
 		elseif mechanism == "deus" and DeusJourneySettings[mission_id] then
 			self:_fill_deus_details(lobby_data)
+		elseif mechanism == "versus" then
+			self:_fill_versus_details(lobby_data)
 		else
 			self:_fill_details(lobby_data)
 		end
@@ -1766,6 +1768,152 @@ LobbyBrowserConsoleUI._update_lobby_entry = function (self, index, offset_y, sel
 		lobby_entry_content.selected = selected
 		self._lobby_entry_widgets[index] = lobby_entry_widget
 	end
+end
+
+LobbyBrowserConsoleUI._fill_versus_details = function (self, lobby_data)
+	local details_widgets = self._details_widgets.adventure
+	local level_image = "level_image_any"
+	local level_name
+	local selected_mission_id = lobby_data and (lobby_data.selected_mission_id or lobby_data.mission_id)
+	local matchmaking_type_id = lobby_data and lobby_data.matchmaking_type
+	local matchmaking_type = matchmaking_type_id and (IS_PS4 and matchmaking_type_id or NetworkLookup.matchmaking_types[tonumber(matchmaking_type_id)])
+	local mechanism = lobby_data and lobby_data.mechanism
+
+	if selected_mission_id and selected_mission_id ~= "any" then
+		if selected_mission_id == "default_start_level" then
+			selected_mission_id = LevelSettingsDefaultStartLevel
+		end
+
+		local level_key = selected_mission_id
+
+		if mechanism == "weave" then
+			local weave_template = WeaveSettings.templates[selected_mission_id]
+
+			if weave_template then
+				level_key = weave_template.objectives[1].level_id
+			end
+		end
+
+		local level_settings = LevelSettings[level_key]
+
+		level_name = level_settings.display_name
+		level_image = level_settings.level_image or level_image
+	end
+
+	local level_image_widget = details_widgets.level_image
+
+	level_image_widget.content.texture_id = level_image
+
+	local level_name_widget = details_widgets.level_name
+
+	level_name_widget.content.text = level_name and Localize(level_name) or " "
+
+	local occupied_profiles = {}
+
+	if lobby_data then
+		local num_profiles = #SPProfiles
+
+		for i = 1, num_profiles do
+			if not ProfileSynchronizer.is_free_in_lobby(i, lobby_data) then
+				occupied_profiles[i] = true
+			end
+		end
+	end
+
+	local content = details_widgets.hero_tabs.content
+
+	for i = 1, #ProfilePriority do
+		local profile_index = ProfilePriority[i]
+		local name_sufix = "_" .. tostring(i)
+		local hotspot_name = "hotspot" .. name_sufix
+		local hotspot_content = content[hotspot_name]
+
+		if occupied_profiles[profile_index] then
+			hotspot_content.disable_button = true
+		else
+			hotspot_content.disable_button = false
+		end
+	end
+
+	local level_image_frame_widget = details_widgets.level_image_frame
+	local level_image_frame_widget_content = level_image_frame_widget.content
+	local level_frame = "map_frame_00"
+
+	if lobby_data then
+		local completed_difficulty_index = self._parent:completed_level_difficulty_index(lobby_data)
+
+		if completed_difficulty_index > 0 then
+			local difficulty_key = DefaultDifficulties[completed_difficulty_index]
+			local settings = DifficultySettings[difficulty_key]
+
+			level_frame = settings.completed_frame_texture
+		end
+	end
+
+	level_image_frame_widget_content.texture_id = level_frame
+
+	local join_button_widget = self._widgets.join_button
+	local join_button_widget_content = join_button_widget.content
+	local button_hotspot = join_button_widget_content.button_hotspot
+	local locked_reason_widget = details_widgets.locked_reason
+	local locked_reason_widget_content = locked_reason_widget.content
+
+	if lobby_data then
+		local joinable, locked_reason = self._parent:is_lobby_joinable(lobby_data)
+
+		locked_reason_widget_content.text = locked_reason or "tutorial_no_text"
+		button_hotspot.disable_button = not joinable
+	else
+		locked_reason_widget_content.text = "tutorial_no_text"
+		button_hotspot.disable_button = true
+	end
+
+	local details_information_widget = details_widgets.details_information
+	local details_information_widget_content = details_information_widget.content
+
+	if lobby_data then
+		local matchmaking_type_lookup = {
+			custom = "lb_game_type_custom",
+			deed = "lb_game_type_deed",
+			deus = "area_selection_morris_name",
+			event = "lb_game_type_event",
+			["n/a"] = "lb_game_type_none",
+			standard = "lb_game_type_quick_play",
+			tutorial = "lb_game_type_prologue",
+			weave = "lb_game_type_weave",
+			weave_quick_play = "lb_game_type_weave_quick_play",
+		}
+		local mission_id = lobby_data.mission_id
+		local level_key = mission_id
+
+		if mechanism == "weave" then
+			local weave_template = WeaveSettings.templates[mission_id]
+
+			if weave_template then
+				level_key = weave_template.objectives[1].level_id
+			end
+
+			if lobby_data.quick_game == "true" then
+				matchmaking_type = "weave_quick_play"
+			else
+				matchmaking_type = "weave"
+			end
+		elseif mechanism == "deus" then
+			matchmaking_type = "deus"
+		end
+
+		local level_setting = LevelSettings[level_key]
+
+		details_information_widget_content.game_type_id = matchmaking_type and (matchmaking_type_lookup[matchmaking_type] or "lb_unknown") or "lb_game_type_none"
+		details_information_widget_content.status_id = level_setting.hub_level and "lb_in_inn" or "lb_playing"
+	else
+		details_information_widget_content.game_type_id = "lb_unknown"
+		details_information_widget_content.status_id = "lb_unknown"
+	end
+
+	details_widgets.twitch_logo.content.visible = to_boolean(lobby_data and lobby_data.twitch_enabled)
+	self._details_type = "adventure"
+	self._details_filled = true
 end
 
 LobbyBrowserConsoleUI._fill_details = function (self, lobby_data)

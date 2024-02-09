@@ -712,6 +712,14 @@ ConflictDirector.has_horde = function (self)
 	end
 end
 
+ConflictDirector.is_horde_alive = function (self)
+	local horde_type, sound_settings = self:has_horde()
+	local horde_size = self:horde_size()
+	local is_horde_alive = horde_size >= 1 or horde_type
+
+	return is_horde_alive, horde_type, sound_settings
+end
+
 ConflictDirector.mini_patrol = function (self, t, terror_event_id, side_id, composition_type, group_template, optional_data)
 	local strictly_not_close_to_players = true
 	local limit_spawners = 1
@@ -1622,7 +1630,10 @@ ConflictDirector.update = function (self, dt, t)
 		self.enemy_recycler:update(t, dt, recycler_positions, threat_population, self._player_areas, use_player_areas)
 	end
 
-	self.enemy_recycler:update_main_path_events(t)
+	if not self.in_safe_zone then
+		self.enemy_recycler:update_main_path_events(t)
+	end
+
 	self:update_spawn_queue(t)
 
 	if self.enemy_recycler and not script_data.ai_far_off_despawn_disabled then
@@ -3571,9 +3582,7 @@ ConflictDirector.ai_ready = function (self, level_seed)
 		self:ai_nav_groups_ready(level_seed)
 	end
 
-	local level_settings = LevelSettings[self._level_key]
-
-	if not level_settings.load_no_enemies then
+	if LevelHelper:should_load_enemies(self._level_key) then
 		self.breed_freezer = BreedFreezer:new(self._world, Managers.state.entity, self._network_event_delegate, self.enemy_package_loader)
 	end
 end
@@ -3951,9 +3960,7 @@ ConflictDirector.update_server_debug = function (self, t, dt)
 end
 
 ConflictDirector.client_ready = function (self)
-	local level_settings = LevelSettings[self._level_key]
-
-	if not level_settings.load_no_enemies then
+	if LevelHelper:should_load_enemies(self._level_key) then
 		local enemy_package_loader = Managers.level_transition_handler.enemy_package_loader
 
 		self.breed_freezer = BreedFreezer:new(self._world, Managers.state.entity, self._network_event_delegate, enemy_package_loader)
@@ -4012,6 +4019,37 @@ ConflictDirector.debug_spawn_variant = function (self, breed_name, enhancement_s
 	end
 
 	return breed
+end
+
+ConflictDirector.debug_spawn_encampment = function (self, encampment_id)
+	local debug_breed_picker = Managers.state.debug.debug_breed_picker
+	local mirror_spawning = debug_breed_picker.mirrored_encampment_spawning
+	local position, distance, normal, actor, raycast_dir = self:player_aim_raycast(self._world, false, "filter_ray_horde_spawn")
+
+	if not position then
+		print("No spawn pos found")
+
+		return
+	end
+
+	local encampment_template = EncampmentTemplates[encampment_id]
+	local dir = Vector3(raycast_dir[1], raycast_dir[2], 0)
+	local rotation = Quaternion.look(dir)
+	local unit_compositions_id = math.random(1, #encampment_template.unit_compositions)
+	local unit_composition = encampment_template.unit_compositions[unit_compositions_id]
+	local encampment = FormationUtils.make_encampment(encampment_template)
+	local side_id = mirror_spawning and 1 or self.debug_spawn_side_id
+
+	FormationUtils.spawn_encampment(encampment, position, rotation, unit_composition, side_id)
+
+	if mirror_spawning then
+		local rotation2 = Quaternion.look(-dir)
+		local unit_compositions_id = math.random(1, #encampment_template.unit_compositions)
+		local unit_composition2 = encampment_template.unit_compositions[unit_compositions_id]
+		local encampment2 = FormationUtils.make_encampment(encampment_template)
+
+		FormationUtils.spawn_encampment(encampment2, position + Quaternion.rotate(rotation2, Vector3(0, -8, 0)), rotation2, unit_composition2, 2)
+	end
 end
 
 ConflictDirector.spawn_encampment = function (self, encampment_id)

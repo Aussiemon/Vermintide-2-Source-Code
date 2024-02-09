@@ -3223,7 +3223,7 @@ return function ()
 				[1] = "ecr_gameplay_land",
 			},
 			sound_events_duration = {
-				[1] = 1.0269469022751,
+				[1] = 0.66479074954987,
 			},
 		},
 		ecr_gameplay_player_knocked_down = {
@@ -5570,7 +5570,7 @@ return function ()
 				[1] = "esr_gameplay_land",
 			},
 			sound_events_duration = {
-				[1] = 1.0269469022751,
+				[1] = 0.66479074954987,
 			},
 		},
 		esr_gameplay_player_knocked_down = {

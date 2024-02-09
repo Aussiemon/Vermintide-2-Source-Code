@@ -1,22 +1,6 @@
 ﻿-- chunkname: @scripts/settings/dlcs/woods/career_settings_woods.lua
 
 CareerActionNames.wood_elf[#CareerActionNames.wood_elf + 1] = "action_career_we_thornsister"
-PlayerBreeds.hero_we_thornsister = {
-	armor_category = 4,
-	awards_positive_reinforcement_message = true,
-	cannot_be_aggroed = true,
-	disable_local_hit_reactions = true,
-	is_hero = true,
-	is_player = true,
-	name = "hero_we_thornsister",
-	poison_resistance = 0,
-	threat_value = 8,
-	vortexable = true,
-	hit_zones = PlayerBreedHitZones.player_breed_hit_zones,
-	status_effect_settings = {
-		category = "small",
-	},
-}
 CareerSettings.we_thornsister = {
 	base_skin = "skin_ww_thornsister",
 	category_image = "icons_placeholder",
@@ -88,7 +72,7 @@ CareerSettings.we_thornsister = {
 		end
 	end,
 	override_available_for_mechanism = function (career)
-		local settings = Managers.mechanism:mechanism_setting("override_career_availability")
+		local settings = Managers.mechanism:mechanism_setting_for_title("override_career_availability")
 		local career_name = career.display_name
 
 		if settings and settings[career_name] ~= nil then

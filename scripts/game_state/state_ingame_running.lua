@@ -278,6 +278,7 @@ StateInGameRunning._setup_end_of_level_UI = function (self)
 		level_end_view_context.weave_personal_best_achieved = self._weave_personal_best_achieved
 		level_end_view_context.completed_weave = self._completed_weave
 		level_end_view_context.profile_synchronizer = self.profile_synchronizer
+		level_end_view_context.party_composition = Managers.party:get_party_composition()
 
 		if self.is_server then
 			local players_session_score = Managers.mechanism:get_players_session_score(self.statistics_db, self.profile_synchronizer, self._saved_scoreboard_stats)
@@ -297,16 +298,21 @@ StateInGameRunning._setup_end_of_level_UI = function (self)
 			local rewards, end_of_level_rewards_arguments = self.rewards:get_rewards()
 
 			level_end_view_context.rewards = {
-				end_of_level_rewards = table.clone(rewards),
-				level_start = {
+				end_of_level_rewards = mechanism_name == "versus" and {} or table.clone(rewards),
+				level_start = mechanism_name == "versus" and {} or {
 					level,
 					start_experience,
 					start_experience_pool,
 				},
-				mission_results = table.clone(self.rewards:get_mission_results()),
-				win_track_start_experience = win_track_start_experience,
+				mission_results = mechanism_name == "versus" and {} or table.clone(self.rewards:get_mission_results()),
+				win_track_start_experience = mechanism_name == "versus" and {} or win_track_start_experience,
 			}
-			level_end_view_context.end_of_level_rewards_arguments = table.clone(end_of_level_rewards_arguments)
+
+			if end_of_level_rewards_arguments then
+				level_end_view_context.end_of_level_rewards_arguments = table.clone(end_of_level_rewards_arguments)
+			else
+				level_end_view_context.end_of_level_rewards_arguments = {}
+			end
 		end
 
 		level_end_view_context.level_end_view = Managers.mechanism:get_level_end_view()
@@ -404,6 +410,17 @@ StateInGameRunning.check_invites = function (self)
 
 			self.popup_id = Managers.popup:queue_popup(Localize("popup_join_blocked_by_joining_player"), Localize("popup_invite_not_installed_header"), "not_installed", Localize("menu_ok"))
 		elseif self._lobby_client or not self.is_in_inn then
+			local mechanism = invite_data.mechanism
+			local is_matchmaking = invite_data.matchmaking
+
+			if mechanism == "versus" and is_matchmaking then
+				local status_message = "matchmaking_status_join_game_failed_" .. "match_in_progress"
+
+				Managers.matchmaking:send_system_chat_message(status_message)
+
+				return
+			end
+
 			self._invite_lobby_data = invite_data
 		elseif not self.popup_id then
 			Managers.matchmaking:request_join_lobby(invite_data, {
@@ -630,7 +647,7 @@ StateInGameRunning.gm_event_end_conditions_met = function (self, reason, checkpo
 		stats_interface:save()
 	end
 
-	local screen_name, screen_config, screen_params = Managers.state.game_mode:get_end_screen_config(game_won, game_lost, player)
+	local screen_name, screen_config, screen_params = Managers.state.game_mode:get_end_screen_config(game_won, game_lost, player, reason)
 	local is_booted_unstrusted = self._booted_eac_untrusted
 	local is_game_mode_weave = game_mode_key == "weave"
 	local weave_tier, score, num_players, weave_progress
@@ -669,7 +686,7 @@ StateInGameRunning.gm_event_end_conditions_met = function (self, reason, checkpo
 				self:_award_end_of_level_rewards(statistics_db, stats_id, game_won, difficulty_key)
 			end
 
-			print(screen_name, screen_config, screen_params)
+			print("end screen_name:", screen_name, screen_config, screen_params)
 			ingame_ui:activate_end_screen_ui(screen_name, screen_config, screen_params)
 		end
 
@@ -816,8 +833,13 @@ StateInGameRunning.update = function (self, dt, t)
 		local ui_ready = not ingame_ui.survey_active and not self.has_setup_end_of_level and ingame_ui:end_screen_active() and ingame_ui:end_screen_fade_in_complete()
 		local rewards_ready = self._booted_eac_untrusted or self.rewards:rewards_generated() and not self.rewards:consuming_deed() and self.chests_package_name and Managers.package:has_loaded(self.chests_package_name, "global")
 
-		if ui_ready and rewards_ready then
-			self:_setup_end_of_level_UI()
+		if ui_ready then
+			local mechanism_manager = Managers.mechanism
+			local is_final_round = mechanism_manager:is_final_round()
+
+			if is_final_round and rewards_ready then
+				self:_setup_end_of_level_UI()
+			end
 		end
 	end
 

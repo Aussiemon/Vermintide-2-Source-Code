@@ -70,13 +70,64 @@ TelemetryEvents.game_started = function (self, data)
 	self._manager:register_event(event)
 end
 
-TelemetryEvents.versus_round_started = function (self, player_id, game_round, win_condition)
+TelemetryEvents.versus_round_started = function (self, player_id, game_round, match_id, slot_melee, slot_ranged, talents)
 	local event = self:_create_event("versus_round_started")
 
 	event:set_data({
 		player_id = player_id,
 		game_round = game_round,
-		win_condition = win_condition,
+		match_id = match_id,
+		slot_melee = slot_melee,
+		slot_ranged = slot_ranged,
+		talents = talents,
+	})
+	self._manager:register_event(event)
+end
+
+TelemetryEvents.versus_round_ended = function (self, score, game_round, match_id)
+	local event = self:_create_event("versus_round_end")
+
+	event:set_data({
+		score = score,
+		game_round = game_round,
+		match_id = match_id,
+	})
+	self._manager:register_event(event)
+end
+
+TelemetryEvents.versus_match_ended = function (self, match_id, is_draw, winning_team)
+	local event = self:_create_event("versus_match_ended")
+
+	event:set_data({
+		match_id = match_id,
+		is_draw = is_draw,
+		winning_team = winning_team,
+	})
+	self._manager:register_event(event)
+end
+
+TelemetryEvents.versus_objective_started = function (self, match_id, objective_id, round_id, objective_name)
+	local event = self:_create_event("versus_objective_started")
+
+	event:set_data({
+		match_id = match_id,
+		objective_id = objective_id,
+		round_id = round_id,
+		objective_name = objective_name,
+	})
+	self._manager:register_event(event)
+end
+
+TelemetryEvents.versus_objective_section_completed = function (self, match_id, objective_id, round_id, objective_name, num_sections_completed, total_num_sections)
+	local event = self:_create_event("versus_objective_section_completed")
+
+	event:set_data({
+		match_id = match_id,
+		objective_id = objective_id,
+		round_id = round_id,
+		objective_name = objective_name,
+		num_sections_completed = num_sections_completed,
+		total_num_sections = total_num_sections,
 	})
 	self._manager:register_event(event)
 end

@@ -350,6 +350,9 @@ local AttackIntensityPerDifficulty = {
 		cataclysm_3 = {
 			normal = 3,
 		},
+		versus_base = {
+			normal = 3,
+		},
 	},
 	sweep = {
 		easy = {
@@ -381,6 +384,10 @@ local AttackIntensityPerDifficulty = {
 			sweep = 4,
 		},
 		cataclysm_3 = {
+			normal = 2,
+			sweep = 4,
+		},
+		versus_base = {
 			normal = 2,
 			sweep = 4,
 		},
@@ -418,6 +425,10 @@ local AttackIntensityPerDifficulty = {
 			normal = 2,
 			sweep = 4,
 		},
+		versus_base = {
+			normal = 2,
+			sweep = 4,
+		},
 	},
 	push = {
 		easy = {
@@ -444,6 +455,9 @@ local AttackIntensityPerDifficulty = {
 		cataclysm_3 = {
 			push = 1.5,
 		},
+		versus_base = {
+			push = 1.5,
+		},
 	},
 	running = {
 		easy = {
@@ -468,6 +482,9 @@ local AttackIntensityPerDifficulty = {
 			running = 4.5,
 		},
 		cataclysm_3 = {
+			running = 4.5,
+		},
+		versus_base = {
 			running = 4.5,
 		},
 	},

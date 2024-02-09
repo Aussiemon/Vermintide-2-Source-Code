@@ -4,10 +4,10 @@ local ammo_ability_cost = 0.75
 local min_shots_activate = 1
 local spinup_time = 0.5
 local base_chain_time = 0.15
-local initial_rounds_per_second = 4
+local initial_rounds_per_second = 6
 local max_rps = 12
 local rps_loss_per_second = 1.5
-local rps_gain_per_shot = 0.2
+local rps_gain_per_shot = 0.3
 local armor_pierce_ammo_ability_cost = 2
 local armor_pierce_damage_profile = "engineer_ability_shot_armor_pierce"
 local armor_pierce_initial_rounds_per_second = 2
@@ -382,15 +382,17 @@ weapon_template.actions = {
 				local career_extension = ScriptUnit.has_extension(action_user, "career_system")
 				local buff_extension = ScriptUnit.has_extension(action_user, "buff_system")
 				local can_reload = not buff_extension:has_buff_type("bardin_engineer_pump_max_exhaustion_buff")
+				local needs_reload = career_extension:current_ability_cooldown(1) > 0
 
-				return can_reload
+				return can_reload and needs_reload
 			end,
 			chain_condition_func = function (action_user, input_extension)
 				local career_extension = ScriptUnit.has_extension(action_user, "career_system")
 				local buff_extension = ScriptUnit.has_extension(action_user, "buff_system")
 				local can_reload = not buff_extension:has_buff_type("bardin_engineer_pump_max_exhaustion_buff")
+				local needs_reload = career_extension:current_ability_cooldown(1) > 0
 
-				return can_reload
+				return can_reload and needs_reload
 			end,
 			initial_charge_delay = base_initial_charge_delay,
 			ability_charge_interval = base_ability_charge_interval,

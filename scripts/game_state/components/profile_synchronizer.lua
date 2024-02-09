@@ -113,10 +113,8 @@ local function profile_packages(profile_index, career_index, is_first_person)
 			table.merge(_combined_requires_packages, career_requires_packages)
 		end
 
-		local talent_table = Talents[profile.display_name]
-
 		for talent_idx = 1, #talent_ids do
-			local talent = talent_table[talent_ids[talent_idx]]
+			local talent = TalentUtils.get_talent_by_id(profile.display_name, talent_ids[talent_idx])
 
 			if talent and talent.requires_packages then
 				table.merge(_combined_requires_packages, talent.requires_packages)
@@ -149,8 +147,6 @@ local function profile_packages(profile_index, career_index, is_first_person)
 			end
 		end
 	end
-
-	packages_list[career.package_name] = false
 
 	return packages_list
 end
@@ -198,6 +194,16 @@ local function are_all_synced_for_peer(state, peer_id, local_player_id, ignore_l
 			if inventory_id ~= loaded_inventory_id then
 				return false
 			end
+		end
+	end
+
+	local server_peer_id = state._server_peer_id
+
+	if not peers_with_full_profiles[server_peer_id] then
+		local loaded_inventory_id = state:get_loaded_inventory_id(server_peer_id, peer_id, local_player_id)
+
+		if inventory_id ~= loaded_inventory_id then
+			return false
 		end
 	end
 
@@ -457,7 +463,11 @@ ProfileSynchronizer.get_first_free_profile = function (self)
 		local profile_reserver_peer_id = self._state:get_profile_index_reservation(profile_index)
 
 		if not profile_reserver_peer_id then
-			return profile_index, career_index
+			career_index = PlayerUtils.get_enabled_career_index_by_profile(profile_index)
+
+			if career_index then
+				return profile_index, career_index
+			end
 		end
 	end
 
@@ -604,7 +614,11 @@ ProfileSynchronizer._assign_peer_to_profile = function (self, peer_id, local_pla
 	end
 
 	if peer_id == self._state:get_own_peer_id() then
-		if profile_index ~= FindProfileIndex("spectator") then
+		local valid_backend_profile = profile_index ~= FindProfileIndex("spectator")
+
+		valid_backend_profile = valid_backend_profile and profile_index ~= FindProfileIndex("vs_undecided")
+
+		if valid_backend_profile then
 			local profile_settings = SPProfiles[profile_index]
 			local hero_attributes = Managers.backend:get_interface("hero_attributes")
 			local hero_name = profile_settings.display_name
