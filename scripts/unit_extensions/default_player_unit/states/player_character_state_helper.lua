@@ -1217,7 +1217,7 @@ CharacterStateHelper.update_weapon_actions = function (t, unit, input_extension,
 			end
 		end
 
-		can_interrupt = (not (current_action_settings and current_action_settings.uninterruptible) and not script_data.uninterruptible and not reloading and not is_bot_player and not buff_extension:has_buff_perk("uninterruptible") and not uninterruptible_heavy or false) and (recent_damage_type == "cutting_berserker" and true or status_extension:hitreact_interrupt())
+		can_interrupt = ((not current_action_settings or not current_action_settings.uninterruptible) and not script_data.uninterruptible and not reloading and not is_bot_player and not buff_extension:has_buff_perk("uninterruptible") and not uninterruptible_heavy or false) and (recent_damage_type == "cutting_berserker" and true or status_extension:hitreact_interrupt())
 
 		if can_interrupt and not status_extension:is_disabled() then
 			local has_reduced_hit_react_buff = buff_extension:has_buff_perk("reduced_hit_react")

@@ -129,7 +129,7 @@ local function do_damage_calculation(attacker_unit, damage_source, original_powe
 	if is_finesse_hit or is_critical_strike or has_power_boost or boost_damage_multiplier and boost_damage_multiplier > 0 then
 		local power_boost_armor
 
-		power_boost_armor = not (target_unit_armor ~= 2 and target_unit_armor ~= 5 and target_unit_armor ~= 6) and 1 or target_unit_armor
+		power_boost_armor = (target_unit_armor == 2 or target_unit_armor == 5 or target_unit_armor == 6) and 1 or target_unit_armor
 
 		local power_boost_target_damages = damage_output[power_boost_armor] or power_boost_armor == 0 and 0 or damage_output[1]
 		local preliminary_boost_damage

@@ -363,7 +363,7 @@ ConsoleFriendsView._update_input_descriptions = function (self, dt, t)
 		local friend = friend_widget_content.friend
 		local friend_id = friend.xbox_user_id
 		local friend_online = friend.status == "online"
-		local invite = not (self._invite_cooldown[friend_id] and not (t > self._invite_cooldown[friend_id])) and friend_online and Managers.account:has_session() and "invite" or nil
+		local invite = (not self._invite_cooldown[friend_id] or t > self._invite_cooldown[friend_id]) and friend_online and Managers.account:has_session() and "invite" or nil
 		local refresh = not self._is_refreshing and "refresh"
 
 		if IS_PS4 and refresh and not friend_online then

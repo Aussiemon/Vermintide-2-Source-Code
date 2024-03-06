@@ -216,7 +216,7 @@ StatisticsUtil.register_kill = function (victim_unit, damage_data, statistics_db
 				local attack_type = damage_data[DamageDataIndex.ATTACK_TYPE]
 
 				if attack_type then
-					slot_type = not (attack_type ~= "heavy_attack" and attack_type ~= "light_attack") and "melee" or "ranged"
+					slot_type = (attack_type == "heavy_attack" or attack_type == "light_attack") and "melee" or "ranged"
 				end
 
 				if not slot_type then

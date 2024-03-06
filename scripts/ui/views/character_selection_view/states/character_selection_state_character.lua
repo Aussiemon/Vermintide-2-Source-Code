@@ -1695,5 +1695,5 @@ CharacterSelectionStateCharacter._animate_element_by_catmullrom = function (self
 end
 
 CharacterSelectionStateCharacter.input_service = function (self)
-	return not (not self._pending_profile_request and not self._resyncing_loadout and not self.parent:input_blocked()) and FAKE_INPUT_SERVICE or self.parent:input_service(true)
+	return (self._pending_profile_request or self._resyncing_loadout or self.parent:input_blocked()) and FAKE_INPUT_SERVICE or self.parent:input_service(true)
 end

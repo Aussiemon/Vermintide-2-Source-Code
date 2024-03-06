@@ -2276,7 +2276,7 @@ function flow_callback_get_health_player_bot_ai(params)
 		local health_extension = ScriptUnit.extension(unit, "health_system")
 		local status_extension = ScriptUnit.has_extension(unit, "status_system")
 
-		current_health = status_extension and not (not status_extension:is_knocked_down() and not status_extension:is_ready_for_assisted_respawn()) and 0 or health_extension:current_health()
+		current_health = status_extension and (status_extension:is_knocked_down() or status_extension:is_ready_for_assisted_respawn()) and 0 or health_extension:current_health()
 	end
 
 	flow_return_table.currenthealth = current_health

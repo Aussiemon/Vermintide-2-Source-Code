@@ -192,7 +192,7 @@ GamePadAbilityUI._handle_gamepad = function (self)
 	local active_career_skill = self:_handle_active_ability()
 	local gamepad_active = Managers.input:is_device_active("gamepad") or IS_XB1
 
-	if not (gamepad_active and UISettings.use_gamepad_hud_layout ~= "never") and UISettings.use_gamepad_hud_layout ~= "always" or active_career_skill then
+	if (not gamepad_active or UISettings.use_gamepad_hud_layout == "never") and UISettings.use_gamepad_hud_layout ~= "always" or active_career_skill then
 		if self._retained_elements_visible then
 			self:_set_elements_visible(false)
 		end

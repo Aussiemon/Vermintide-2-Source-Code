@@ -899,7 +899,7 @@ BTConditions.bot_should_heal = function (blackboard)
 	local low_on_perma_health = perma_health_percent <= template.bot_heal_threshold
 	local heavy_curse = blackboard.health_extension:get_max_health() <= 75
 	local target_unit = blackboard.target_unit
-	local is_safe = not target_unit or not (not template.fast_heal and not blackboard.is_healing_self) and #blackboard.proximite_enemies == 0 or target_unit ~= blackboard.priority_target_enemy and target_unit ~= blackboard.urgent_target_enemy and target_unit ~= blackboard.proximity_target_enemy and target_unit ~= blackboard.slot_target_enemy
+	local is_safe = not target_unit or (template.fast_heal or blackboard.is_healing_self) and #blackboard.proximite_enemies == 0 or target_unit ~= blackboard.priority_target_enemy and target_unit ~= blackboard.urgent_target_enemy and target_unit ~= blackboard.proximity_target_enemy and target_unit ~= blackboard.slot_target_enemy
 
 	return is_safe and (force_use_health_pickup or not has_no_permanent_health_from_item_buff and (hurt or wounded and (low_on_perma_health or heavy_curse)) or has_no_permanent_health_from_item_buff and hurt and wounded)
 end
@@ -1200,7 +1200,7 @@ BTConditions.cant_reach_ally = function (blackboard)
 	local navigation_extension = blackboard.navigation_extension
 	local fails, last_success = navigation_extension:successive_failed_paths()
 
-	return blackboard.moving_toward_follow_position and fails > (not (not disable_bot_main_path_teleport_check and not is_forwards) and 1 or 5) and t - last_success > 5
+	return blackboard.moving_toward_follow_position and fails > ((disable_bot_main_path_teleport_check or is_forwards) and 1 or 5) and t - last_success > 5
 end
 
 local FOLLOW_TELEPORT_DISTANCE_SQ = 1600

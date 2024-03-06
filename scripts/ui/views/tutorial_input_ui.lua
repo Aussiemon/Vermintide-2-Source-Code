@@ -155,7 +155,7 @@ TutorialInputUI._update_tooltip = function (self, dt, t)
 	local force_update = active_template.force_update
 	local texture_size_y, texture_size_x = 0, 0
 	local gamepad_active = self._input_manager:is_device_active("gamepad")
-	local inputs = not (not gamepad_active and not IS_PS4) and active_template.tooltip_gamepad_inputs or active_template.tooltip_inputs
+	local inputs = (gamepad_active or IS_PS4) and active_template.tooltip_gamepad_inputs or active_template.tooltip_inputs
 
 	if not active_tooltip_name then
 		self:fade_in()

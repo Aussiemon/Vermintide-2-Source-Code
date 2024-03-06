@@ -521,7 +521,7 @@ local function create_search_input_widget(parent)
 						local filter_selected = parent:filter_selected()
 						local filter_active = parent:filter_active()
 
-						style.parent.search_filters_glow.color[1] = not (not filter_selected and not filter_active) and 255 or 0
+						style.parent.search_filters_glow.color[1] = (filter_selected or filter_active) and 255 or 0
 					end,
 				},
 				{
@@ -1296,9 +1296,9 @@ local function create_search_filters_widget(scenegraph_id, ui_renderer, search_d
 				local is_hover = hotspot.is_hover or gamepad_selected
 
 				style.text_color[1] = is_hover and 255 or 128
-				style.text_color[2] = not (not content.query.sort[name] and not is_hover) and 255 or 128
-				style.text_color[3] = not (not content.query.sort[name] and not is_hover) and 255 or 128
-				style.text_color[4] = not (not content.query.sort[name] and not is_hover) and 255 or 128
+				style.text_color[2] = (content.query.sort[name] or is_hover) and 255 or 128
+				style.text_color[3] = (content.query.sort[name] or is_hover) and 255 or 128
+				style.text_color[4] = (content.query.sort[name] or is_hover) and 255 or 128
 			end,
 		}
 		passes[#passes + 1] = {
@@ -1704,7 +1704,7 @@ local function create_search_filters_widget(scenegraph_id, ui_renderer, search_d
 			local hotspot_name = "checkbox_hotspot"
 			local gamepad_selected = gamepad_active and hotspot_name == current_gamepad_hotspot
 
-			style.text_color = not (not content.checkbox_hotspot.is_hover and not gamepad_selected) and style.selected_color or style.base_color
+			style.text_color = (content.checkbox_hotspot.is_hover or gamepad_selected) and style.selected_color or style.base_color
 		end,
 	}
 	passes[#passes + 1] = {
@@ -1732,7 +1732,7 @@ local function create_search_filters_widget(scenegraph_id, ui_renderer, search_d
 			local hotspot_name = "checkbox_hotspot"
 			local gamepad_selected = gamepad_active and hotspot_name == current_gamepad_hotspot
 
-			style.text_color = not (not content.checkbox_hotspot.is_hover and not gamepad_selected) and style.selected_color or style.base_color
+			style.text_color = (content.checkbox_hotspot.is_hover or gamepad_selected) and style.selected_color or style.base_color
 		end,
 	}
 	passes[#passes + 1] = {

@@ -121,5 +121,5 @@ BTInGravityWellAction.run = function (self, unit, blackboard, t, dt)
 		end
 	end
 
-	return not (not broke_free and not (t > blackboard.gravity_well_time)) and "done" or "running"
+	return (broke_free or t > blackboard.gravity_well_time) and "done" or "running"
 end

@@ -1797,7 +1797,7 @@ local drop_reasons_other = {
 }
 
 for category_name, category in pairs(item_categories) do
-	local drop_reasons = not (category_name ~= "stormvermin_shield" and category_name ~= "shield" and category_name ~= "marauder_shield") and drop_reasons_shield or drop_reasons_other
+	local drop_reasons = (category_name == "stormvermin_shield" or category_name == "shield" or category_name == "marauder_shield") and drop_reasons_shield or drop_reasons_other
 
 	for i, item in ipairs(category) do
 		if not item.drop_reasons then

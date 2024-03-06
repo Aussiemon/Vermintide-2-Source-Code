@@ -77,7 +77,7 @@ HuskTalentExtension.apply_buffs_from_talents = function (self)
 			local buffs = talent_data.buffs
 			local buffer = talent_data.buffer
 
-			if player.local_player and (not buffer or buffer == "client") or self.is_server and buffer == "server" or not (not self.is_server and not player.local_player) and buffer == "both" or buffer == "all" then
+			if player.local_player and (not buffer or buffer == "client") or self.is_server and buffer == "server" or (self.is_server or player.local_player) and buffer == "both" or buffer == "all" then
 				local num_buffs = buffs and #buffs or 0
 
 				if num_buffs > 0 then

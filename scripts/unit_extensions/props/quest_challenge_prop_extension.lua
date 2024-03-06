@@ -39,7 +39,7 @@ end
 QuestChallengePropExtension._evaluate_highlight_status = function (self)
 	local should_be_highlighted
 
-	should_be_highlighted = not (not self._has_unclaimed_achievements and not self._has_unclaimed_quests) and true or false
+	should_be_highlighted = (self._has_unclaimed_achievements or self._has_unclaimed_quests) and true or false
 
 	local state_differs = should_be_highlighted ~= self._highlighted
 

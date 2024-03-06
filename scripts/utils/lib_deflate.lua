@@ -205,7 +205,7 @@ for i = 1, 9 do
 		local value = j
 
 		for _ = 1, i do
-			reverse = reverse - reverse % 2 + (not (reverse % 2 ~= 1 and value % 2 ~= 1) and 1 or 0)
+			reverse = reverse - reverse % 2 + ((reverse % 2 == 1 or value % 2 == 1) and 1 or 0)
 			value = (value - value % 2) / 2
 			reverse = reverse * 2
 		end
@@ -714,7 +714,7 @@ local function GetHuffmanCodeFromBitlen(bitlen_counts, symbol_bitlens, max_symbo
 				local reverse = 0
 
 				for _ = 1, bitlen do
-					reverse = reverse - reverse % 2 + (not (reverse % 2 ~= 1 and huffman_code % 2 ~= 1) and 1 or 0)
+					reverse = reverse - reverse % 2 + ((reverse % 2 == 1 or huffman_code % 2 == 1) and 1 or 0)
 					huffman_code = (huffman_code - huffman_code % 2) / 2
 					reverse = reverse * 2
 				end

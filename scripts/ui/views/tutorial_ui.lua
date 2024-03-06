@@ -845,7 +845,7 @@ TutorialUI.get_floating_icon_position = function (self, screen_pos_x, screen_pos
 	local clamped_x_pos = screen_pos_x
 	local clamped_y_pos = screen_pos_y
 	local is_behind = forward_dot < 0 and true or false
-	local is_clamped = not (not is_x_clamped and not is_y_clamped) and true or false
+	local is_clamped = (is_x_clamped or is_y_clamped) and true or false
 
 	if is_clamped or is_behind then
 		local distance_from_center = tooltip_settings.distance_from_center

@@ -334,7 +334,7 @@ end
 StartGameWindowLobbyBrowserConsole.reset_filters = function (self, selected_game_mode, selected_level, selected_difficulty, selected_filter, selected_distance)
 	self:set_level(selected_level or "any")
 	self:set_difficulty(selected_difficulty or "any")
-	self:set_lobby_filter(selected_filter or not (BUILD ~= "dev" and BUILD ~= "debug") and "lb_show_all" or "lb_show_joinable")
+	self:set_lobby_filter(selected_filter or (BUILD == "dev" or BUILD == "debug") and "lb_show_all" or "lb_show_joinable")
 	self:set_distance_filter(selected_distance or "map_zone_options_5")
 	self:set_game_mode(selected_game_mode or "any")
 	self:_search()

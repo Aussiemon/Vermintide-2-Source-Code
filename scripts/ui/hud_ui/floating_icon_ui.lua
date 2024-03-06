@@ -201,7 +201,7 @@ FloatingIconUI.get_floating_icon_position = function (self, screen_pos_x, screen
 	local clamped_x_pos = screen_pos_x
 	local clamped_y_pos = screen_pos_y
 	local is_behind = forward_dot < 0 and true or false
-	local is_clamped = not (not is_x_clamped and not is_y_clamped) and true or false
+	local is_clamped = (is_x_clamped or is_y_clamped) and true or false
 	local screen_pos_diff_x = screen_width - scaled_root_size_x
 	local screen_pos_diff_y = screen_height - scaled_root_size_y
 

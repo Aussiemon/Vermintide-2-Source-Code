@@ -695,7 +695,7 @@ WorldMarkerUI._is_clamped = function (self, x, y)
 		is_y_clamped = true
 	end
 
-	return not (not is_x_clamped and not is_y_clamped) and true or false
+	return (is_x_clamped or is_y_clamped) and true or false
 end
 
 WorldMarkerUI._tutorial_clamp_to_screen = function (self, x, y, forward_dot, right_dot, settings)

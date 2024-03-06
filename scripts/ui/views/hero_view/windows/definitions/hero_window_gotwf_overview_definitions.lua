@@ -933,7 +933,7 @@ local function create_item_definition_func(scenegraph_id, size, masked, index, c
 	local painting_frame_name = "menu_frame_08"
 	local painting_frame_settings = UIFrameSettings[painting_frame_name]
 	local painting_frame_spacing = painting_frame_settings.texture_sizes.horizontal[2]
-	local icon_intensity = not (not current_reward and not (hidden and not expired) and not owned) and 255 or 60
+	local icon_intensity = (current_reward or hidden and not expired or owned) and 255 or 60
 	local current_reward_offset = 75
 	local num_rewards = hidden and 1 or rewards and #rewards or 1
 	local size_multiplier = 1 - (num_rewards - 1) * 0.25
@@ -1046,7 +1046,7 @@ local function create_item_definition_func(scenegraph_id, size, masked, index, c
 			text_color = current_reward and Colors.get_color_table_with_alpha("font_title", 255) or Colors.get_color_table_with_alpha("gray", 255),
 			offset = {
 				0,
-				-20 - (not (not current_reward and not claimable) and not owned and current_reward_offset or 0),
+				-20 - ((current_reward or claimable) and not owned and current_reward_offset or 0),
 				10,
 			},
 		},
@@ -1061,7 +1061,7 @@ local function create_item_definition_func(scenegraph_id, size, masked, index, c
 			text_color = Colors.get_color_table_with_alpha("black", 255),
 			offset = {
 				2,
-				-22 - (not (not current_reward and not claimable) and not owned and current_reward_offset or 0),
+				-22 - ((current_reward or claimable) and not owned and current_reward_offset or 0),
 				9,
 			},
 		},
@@ -1538,7 +1538,7 @@ local function create_item_definition_func(scenegraph_id, size, masked, index, c
 	widget.style = style
 	widget.offset = {
 		10 + (index - 1) * (size[1] + gotwf_item_spacing),
-		not (not current_reward and not claimable) and not owned and current_reward_offset or 0,
+		(current_reward or claimable) and not owned and current_reward_offset or 0,
 		5,
 	}
 	widget.scenegraph_id = scenegraph_id

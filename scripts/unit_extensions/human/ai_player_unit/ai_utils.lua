@@ -352,7 +352,7 @@ AiUtils.damage_target = function (target_unit, attacker_unit, action, damage, da
 						local angle_difference = Vector3.flat_angle(hit_unit_dir, damage_direction)
 						local hit_anim
 
-						hit_anim = not (not (angle_difference < -math.pi * 0.75) and not (angle_difference > math.pi * 0.75)) and "hit_reaction_backward" or angle_difference < -math.pi * 0.25 and "hit_reaction_left" or angle_difference < math.pi * 0.25 and "hit_reaction_forward" or "hit_reaction_right"
+						hit_anim = (angle_difference < -math.pi * 0.75 or angle_difference > math.pi * 0.75) and "hit_reaction_backward" or angle_difference < -math.pi * 0.25 and "hit_reaction_left" or angle_difference < math.pi * 0.25 and "hit_reaction_forward" or "hit_reaction_right"
 
 						if hit_anim then
 							unit_animation_event(target_unit, hit_anim)

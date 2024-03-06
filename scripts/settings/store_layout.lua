@@ -471,7 +471,7 @@ StoreLayoutConfig.make_sort_key = function (item)
 	local prio = item.prio or 0
 	local price = 0
 	local rarity = item.rarity or "plentiful"
-	local owned = not (not backend_items:has_item(key) and not backend_items:has_weapon_illusion(key)) and 2 or 0
+	local owned = (backend_items:has_item(key) or backend_items:has_weapon_illusion(key)) and 2 or 0
 
 	if data then
 		item_type = data.item_type

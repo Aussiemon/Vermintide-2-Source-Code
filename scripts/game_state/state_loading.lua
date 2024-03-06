@@ -851,7 +851,7 @@ end
 StateLoading._get_lost_connection_text_id = function (self)
 	local text_id
 
-	text_id = not (not IS_WINDOWS and not IS_LINUX) and (rawget(_G, "Steam") and "failure_start_no_steam" or "broken_connection") or IS_XB1 and (not Network.xboxlive_client_exists() and "failure_start_xbox_live_client" or "failure_start_xbox_lobby_create") or IS_PS4 and "failure_psn_client_error" or "failure_start"
+	text_id = (IS_WINDOWS or IS_LINUX) and (rawget(_G, "Steam") and "failure_start_no_steam" or "broken_connection") or IS_XB1 and (not Network.xboxlive_client_exists() and "failure_start_xbox_live_client" or "failure_start_xbox_lobby_create") or IS_PS4 and "failure_psn_client_error" or "failure_start"
 
 	return text_id
 end
@@ -911,7 +911,7 @@ StateLoading._update_lobbies = function (self, dt, t)
 		elseif self._lobby_host.state == LobbyState.FAILED and not self._popup_id then
 			local text_id
 
-			text_id = not (not IS_WINDOWS and not IS_LINUX) and (rawget(_G, "Steam") and (Steam.connected() and "failure_start_steam_lobby_create" or "failure_start_no_steam") or "failure_start_no_lan") or IS_XB1 and (not Network.xboxlive_client_exists() and "failure_start_xbox_live_client" or "failure_start_xbox_lobby_create") or IS_PS4 and "failure_start_psn_lobby_create" or "failure_start"
+			text_id = (IS_WINDOWS or IS_LINUX) and (rawget(_G, "Steam") and (Steam.connected() and "failure_start_steam_lobby_create" or "failure_start_no_steam") or "failure_start_no_lan") or IS_XB1 and (not Network.xboxlive_client_exists() and "failure_start_xbox_live_client" or "failure_start_xbox_lobby_create") or IS_PS4 and "failure_start_psn_lobby_create" or "failure_start"
 
 			if self._network_server then
 				self._network_server:disconnect_all_peers("unknown_error")

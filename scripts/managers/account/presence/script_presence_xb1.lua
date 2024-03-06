@@ -80,7 +80,7 @@ ScriptPresence.update_playing = function (self, user_id)
 		local prefix = ""
 
 		if self:_has_new_data(current_level, current_difficulty, current_num_players, is_private) then
-			prefix = not (current_num_players ~= 4 and not is_private) and "playing" or "needs_assistance"
+			prefix = (current_num_players == 4 or is_private) and "playing" or "needs_assistance"
 
 			self:_setup_stat_data(current_level, current_difficulty, current_num_players)
 
