@@ -350,7 +350,6 @@ return function ()
 				"player_career",
 				OP.EQ,
 				"bw_necromancer",
-				1,
 			},
 			{
 				"global_context",
@@ -1020,7 +1019,6 @@ return function ()
 				"player_career",
 				OP.EQ,
 				"bw_necromancer",
-				1,
 			},
 			{
 				"global_context",
@@ -1374,7 +1372,6 @@ return function ()
 				"player_career",
 				OP.EQ,
 				"bw_necromancer",
-				1,
 			},
 			{
 				"global_context",
@@ -1598,7 +1595,6 @@ return function ()
 				"player_career",
 				OP.EQ,
 				"bw_necromancer",
-				1,
 			},
 			{
 				"global_context",
@@ -3095,7 +3091,7 @@ return function ()
 			},
 			{
 				"faction_memory",
-				"shovel_conversation_twenty_twentyone_twentyfour",
+				"shovel_conversation_twenty_twentyone",
 				OP.EQ,
 				0,
 			},
@@ -3103,7 +3099,7 @@ return function ()
 		on_done = {
 			{
 				"faction_memory",
-				"shovel_conversation_twenty_twentyone_twentyfour",
+				"shovel_conversation_twenty_twentyone",
 				OP.ADD,
 				1,
 			},
@@ -3219,7 +3215,7 @@ return function ()
 			},
 			{
 				"faction_memory",
-				"shovel_conversation_twenty_twentyone_twentyfour",
+				"shovel_conversation_twentyfour",
 				OP.EQ,
 				0,
 			},
@@ -3227,7 +3223,7 @@ return function ()
 		on_done = {
 			{
 				"faction_memory",
-				"shovel_conversation_twenty_twentyone_twentyfour",
+				"shovel_conversation_twentyfour",
 				OP.ADD,
 				1,
 			},
@@ -3343,7 +3339,7 @@ return function ()
 			},
 			{
 				"faction_memory",
-				"shovel_conversation_twenty_twentyone_twentyfour",
+				"shovel_conversation_twenty_twentyone",
 				OP.EQ,
 				0,
 			},
@@ -3351,7 +3347,7 @@ return function ()
 		on_done = {
 			{
 				"faction_memory",
-				"shovel_conversation_twenty_twentyone_twentyfour",
+				"shovel_conversation_twenty_twentyone",
 				OP.ADD,
 				1,
 			},
@@ -5981,7 +5977,7 @@ return function ()
 				[1] = "pbw_nm_shovel_conversation_sixteen_02",
 			},
 			sound_events_duration = {
-				[1] = 1.699979186058,
+				[1] = 1.9999792575836,
 			},
 		},
 		pbw_nm_shovel_conversation_ten_01 = {
@@ -8313,7 +8309,7 @@ return function ()
 				[1] = "pwh_shovel_conversation_sixteen_02",
 			},
 			sound_events_duration = {
-				[1] = 0.57697916030884,
+				[1] = 0.77697914838791,
 			},
 		},
 		pwh_shovel_conversation_thirteen_01 = {

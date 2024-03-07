@@ -65,7 +65,7 @@ settings.buff_function_templates = {
 		if Managers.state.network.is_server then
 			local explosion_position = POSITION_LOOKUP[unit]
 			local damage_source = "grenade_frag_01"
-			local explosion_template = ExplosionTemplates.ticking_bomb_explosion
+			local explosion_template = ExplosionUtils.get_template("ticking_bomb_explosion")
 
 			if explosion_position then
 				DamageUtils.create_explosion(world, unit, explosion_position, Quaternion.identity(), explosion_template, 1, damage_source, true, false, unit, false)

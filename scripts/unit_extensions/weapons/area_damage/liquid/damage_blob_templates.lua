@@ -162,13 +162,19 @@ DamageBlobTemplates.warpfire_thrower_fire_init_vs = function (self, t)
 		self._attack_range = breed.shoot_warpfire_attack_range
 
 		if source_unit_is_alive then
+			local particle_name = "fx/chr_warp_fire_flamethrower_01"
+			local fp_extension = ScriptUnit.has_extension(warpfire_thrower_unit, "first_person_system")
+
+			if fp_extension and fp_extension:first_person_mode_active() then
+				particle_name = "fx/chr_warp_fire_flamethrower_01_1p"
+			end
+
 			local node_name = "p_fx"
 			local muzzle_node = Unit.node(warpfire_gun_unit, node_name)
 
 			self._muzzle_node = muzzle_node
 
 			local world = self.world
-			local particle_name = "fx/chr_warp_fire_flamethrower_01"
 			local particle_id = World.create_particles(world, particle_name, Vector3.zero(), Quaternion.identity())
 
 			World.link_particles(world, particle_id, warpfire_gun_unit, muzzle_node, Matrix4x4.identity(), "stop")

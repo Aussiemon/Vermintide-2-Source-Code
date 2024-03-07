@@ -53,23 +53,6 @@ local function _can_sacrifice(action_user, input_extension)
 	return true
 end
 
-local function _can_cancel_command(action_user, input_extension)
-	local commander_extension = ScriptUnit.extension(action_user, "ai_commander_system")
-	local any_alive = false
-
-	for pet_unit in pairs(commander_extension:get_controlled_units()) do
-		if HEALTH_ALIVE[pet_unit] then
-			local command_state = commander_extension:command_state(pet_unit)
-
-			if command_state ~= CommandStates.Following then
-				return true
-			end
-		end
-	end
-
-	return false
-end
-
 local weapon_template = {}
 
 weapon_template.actions = {
@@ -327,7 +310,6 @@ weapon_template.buffs = {
 		external_optional_multiplier = 1,
 	},
 }
-weapon_template.is_utility_weapon = true
 weapon_template.is_command_utility_weapon = true
 weapon_template.wwise_dep_left_hand = {
 	"wwise/two_handed_swords",

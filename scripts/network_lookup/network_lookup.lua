@@ -68,12 +68,14 @@ local dialogue_lookup_tables = {
 	"dialogues/generated/lookup_dwarf_ranger_military",
 	"dialogues/generated/lookup_empire_soldier_military",
 	"dialogues/generated/lookup_wood_elf_military",
+	"dialogues/generated/lookup_hero_conversations_military",
 	"dialogues/generated/lookup_conversations_prologue",
 	"dialogues/generated/lookup_bright_wizard_mines",
 	"dialogues/generated/lookup_witch_hunter_mines",
 	"dialogues/generated/lookup_dwarf_ranger_mines",
 	"dialogues/generated/lookup_empire_soldier_mines",
 	"dialogues/generated/lookup_wood_elf_mines",
+	"dialogues/generated/lookup_hero_conversations_mines",
 	"dialogues/generated/lookup_wood_elf_ussingen",
 	"dialogues/generated/lookup_empire_soldier_ussingen",
 	"dialogues/generated/lookup_bright_wizard_ussingen",
@@ -92,12 +94,14 @@ local dialogue_lookup_tables = {
 	"dialogues/generated/lookup_witch_hunter_skaven_stronghold",
 	"dialogues/generated/lookup_wood_elf_skaven_stronghold",
 	"dialogues/generated/lookup_empire_soldier_skaven_stronghold",
+	"dialogues/generated/lookup_hero_conversations_skaven_stronghold",
 	"dialogues/generated/lookup_skaven_warlord_skaven_stronghold_level",
 	"dialogues/generated/lookup_bright_wizard_nurgle",
 	"dialogues/generated/lookup_dwarf_ranger_nurgle",
 	"dialogues/generated/lookup_witch_hunter_nurgle",
 	"dialogues/generated/lookup_wood_elf_nurgle",
 	"dialogues/generated/lookup_empire_soldier_nurgle",
+	"dialogues/generated/lookup_hero_conversations_nurgle",
 	"dialogues/generated/lookup_bright_wizard_warcamp",
 	"dialogues/generated/lookup_dwarf_ranger_warcamp",
 	"dialogues/generated/lookup_witch_hunter_warcamp",
@@ -121,6 +125,7 @@ local dialogue_lookup_tables = {
 	"dialogues/generated/lookup_witch_hunter_bell",
 	"dialogues/generated/lookup_wood_elf_bell",
 	"dialogues/generated/lookup_empire_soldier_bell",
+	"dialogues/generated/lookup_hero_conversations_bell",
 	"dialogues/generated/lookup_bright_wizard_ground_zero",
 	"dialogues/generated/lookup_dwarf_ranger_ground_zero",
 	"dialogues/generated/lookup_witch_hunter_ground_zero",
@@ -295,6 +300,10 @@ local damage_sources = {
 
 for hazard, _ in pairs(EnvironmentalHazards) do
 	damage_sources[#damage_sources + 1] = hazard
+end
+
+for liquid_area_template, _ in pairs(LiquidAreaDamageTemplates.templates) do
+	damage_sources[#damage_sources + 1] = liquid_area_template
 end
 
 table.append(damage_sources, NetworkLookup.item_names)
@@ -506,6 +515,7 @@ NetworkLookup.husks = {
 	"units/weapons/player/wpn_we_quiver_t1/wpn_we_broken_arrow_01_3ps",
 	"units/weapons/player/wpn_we_quiver_t1/wpn_we_broken_arrow_02_3ps",
 	"units/weapons/player/wpn_we_quiver_t1/wpn_we_broken_arrow_03_3ps",
+	"units/architecture/keep/keep_gamemode_door_03",
 }
 
 DLCUtils.append("husk_lookup", NetworkLookup.husks)
@@ -597,7 +607,6 @@ NetworkLookup.go_types = {
 	"weave_interaction_unit",
 	"weave_doom_wheel_unit",
 	"weave_kill_enemies_unit",
-	"versus_character_selection_unit",
 	"horde_surge",
 	"engineer_career_data",
 	"priest_career_data",
@@ -770,6 +779,7 @@ NetworkLookup.buff_attack_types = {
 	"grenade",
 	"ability",
 	"action_push",
+	"gas",
 }
 NetworkLookup.keep_decoration_trophies = {
 	"hub_trophy_empty",
@@ -917,6 +927,14 @@ for _, variation_table in pairs(BTHesitationVariations) do
 	end
 end
 
+for _, profile in pairs(SPProfiles) do
+	if profile.unit_name then
+		local anim_name = "attack_grab_hang_" .. profile.unit_name
+
+		anims_temp[anim_name] = anim_name
+	end
+end
+
 NetworkLookup.anims = create_lookup(NetworkLookup.anims, anims_temp)
 
 table.clear(anims_temp)
@@ -1053,6 +1071,7 @@ NetworkLookup.damage_types = {
 	"inside_forbidden_tag_volume",
 	"undefined",
 	"charge_death",
+	"gas",
 }
 
 for _, dlc in pairs(DLCSettings) do
@@ -1073,6 +1092,8 @@ if GameModeSettings.versus then
 	NetworkLookup.versus_objective_names = create_lookup({
 		"n/a",
 	}, GameModeSettings.versus.objective_names)
+	NetworkLookup.versus_dark_pact_profile_order = table.shallow_copy(GameModeSettings.versus.dark_pact_profile_order)
+	NetworkLookup.versus_dark_pact_profile_rules = table.keys(GameModeSettings.versus.dark_pact_profile_rules)
 end
 
 NetworkLookup.hit_react_types = {
@@ -1237,11 +1258,12 @@ NetworkLookup.effects = {
 	"fx/wpnfx_grenade_impact",
 	"fx/wpnfx_frag_grenade_impact",
 	"fx/wpnfx_smoke_grenade_impact",
-	"fx/wpnfx_smoke_grenade_impact_Upgraded",
+	"fx/wpnfx_smoke_grenade_impact_versus",
 	"fx/wpnfx_fire_grenade_impact",
 	"fx/wpnfx_warplock_pistol_impact_flesh",
 	"fx/chr_player_fak_healed",
 	"fx/wpnfx_poison_wind_globe_impact",
+	"fx/wpnfx_poison_wind_globe_impact_vs",
 	"fx/chr_gutter_death",
 	"fx/screenspace_poison_globe_impact",
 	"fx/wpnfx_fire_grenade_impact_remains",
@@ -1272,7 +1294,9 @@ NetworkLookup.effects = {
 	"fx/wpnfx_flamethrower_1p_01",
 	"fx/wpnfx_flamethrower_01",
 	"fx/wpnfx_flamethrower_hit_01",
+	"fx/chr_warp_fire_flamethrower_remains_01",
 	"fx/chr_warp_fire_flamethrower_01",
+	"fx/chr_warpfire_flamethrower_1p",
 	"fx/chr_warp_fire_explosion_01",
 	"fx/wpnfx_range_crit_01",
 	"fx/chaos_sorcerer_plague_wave_hit_01",
@@ -1563,6 +1587,9 @@ NetworkLookup.sound_events = {
 	"Play_mutator_enemy_split_large",
 	"enemy_grudge_cursed_enter",
 	"Play_skulls_event_mutator_extra_hordes",
+	"Play_hud_versus_score_points",
+	"Play_versus_hud_last_hero_down_riser",
+	"Stop_versus_hud_last_hero_down_riser",
 }
 
 do
@@ -1627,6 +1654,7 @@ NetworkLookup.global_parameter_names = {
 }
 
 local weapon_sound_events = {}
+local weapon_synced_states = {}
 
 for _, weapon_table in pairs(Weapons) do
 	for _, action_table in pairs(weapon_table.actions) do
@@ -1640,9 +1668,18 @@ for _, weapon_table in pairs(Weapons) do
 			end
 		end
 	end
+
+	if weapon_table.synced_states then
+		for state_name, state in pairs(weapon_table.synced_states) do
+			weapon_synced_states[state_name] = true
+		end
+	end
 end
 
 NetworkLookup.sound_events = create_lookup(NetworkLookup.sound_events, weapon_sound_events)
+NetworkLookup.weapon_synced_states = create_lookup({
+	"n/a",
+}, weapon_synced_states)
 
 local attack_template_sound_types = {}
 
@@ -1733,6 +1770,16 @@ NetworkLookup.dialogue_events = {
 	"overcharge_critical",
 	"overcharge_explode",
 	"overcharge_lockout_end",
+	"vs_mg_round_start",
+	"vs_mg_heroes_left_safe_room",
+	"vs_mg_heroes_objective_reached",
+	"vs_mg_heroes_objective_almost_completed",
+	"vs_mg_heroes_objective_completed",
+	"vs_mg_new_spawn_monster",
+	"vs_mg_pactsworn_wipe",
+	"vs_mg_heroes_reached_safe_room",
+	"vs_mg_heroes_reached_waystone",
+	"vs_mg_heroes_team_wipe",
 }
 NetworkLookup.dialogue_event_data_names = {
 	"num_units",
@@ -2012,6 +2059,8 @@ NetworkLookup.game_ping_reply = {
 	"cannot_join_weave",
 	"dlc_required",
 	"user_blocked",
+	"is_searching_for_dedicated_server",
+	"server_full",
 }
 NetworkLookup.sync_names = {
 	"ferry_lady",
@@ -2120,6 +2169,18 @@ NetworkLookup.boon_consume_types = {
 	"time",
 	"venture",
 	"charges",
+}
+NetworkLookup.network_log_levels = {
+	"silent",
+	"warnings",
+	"info",
+	"messages",
+	"spew",
+}
+NetworkLookup.request_profile_replies = {
+	"profile_declined",
+	"profile_accepted",
+	"profile_locked",
 }
 
 local function is_sync_statistics(stat)
@@ -2240,18 +2301,4 @@ NetworkLookup.markers = MarkerLookup or {}
 
 for key, lookup_table in pairs(NetworkLookup) do
 	init(lookup_table, key)
-end
-
-temp_aws_test_dumped = false
-
-if not temp_aws_test_dumped and Development.parameter("mechanism") == "versus" then
-	print("AWS_TEST LEVEL_KEYS:")
-
-	local level_keys = NetworkLookup.level_keys
-
-	for i = 1, #level_keys do
-		print(i, level_keys[i])
-	end
-
-	temp_aws_test_dumped = true
 end

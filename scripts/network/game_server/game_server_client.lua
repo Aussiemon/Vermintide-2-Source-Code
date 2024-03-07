@@ -29,6 +29,7 @@ GameServerLobbyClient.init = function (self, network_options, game_server_data, 
 	self._network_hash = GameServerAux.create_network_hash(config_file_name, project_hash)
 	self.lobby = self._game_server_lobby
 	self.network_hash = self._network_hash
+	self._is_party_host = not Managers.state.network or Managers.state.network.is_server
 end
 
 GameServerLobbyClient.destroy = function (self)
@@ -49,6 +50,10 @@ GameServerLobbyClient.destroy = function (self)
 	Presence.stop_advertise_playing()
 	GameServerInternal.leave_server(self._game_server_lobby)
 
+	if self._eac_communication_initated then
+		EAC.after_leave()
+	end
+
 	self._members = nil
 	self._game_server_lobby = nil
 	self._game_server_lobby_data = nil
@@ -66,14 +71,48 @@ GameServerLobbyClient.update = function (self, dt)
 
 		self._state = new_state
 
-		if new_state == "joined" then
+		if new_state == "failed" then
+			if self._eac_communication_initated then
+				EAC.after_leave()
+
+				self._eac_communication_initated = false
+			end
+		elseif new_state == "reserved" then
+			local game_server_peer_id = GameServerInternal.lobby_host(engine_lobby)
+			local channel_id = GameServerInternal.open_channel(engine_lobby, game_server_peer_id)
+
+			print("[GameServerLobbyClient] Party host open channel to server", game_server_peer_id)
+
+			PEER_ID_TO_CHANNEL[game_server_peer_id] = channel_id
+			CHANNEL_TO_PEER_ID[channel_id] = game_server_peer_id
+
+			EAC.before_join()
+			EAC.set_host(channel_id)
+			EAC.validate_host()
+
+			self._eac_communication_initated = true
+		elseif new_state == "joined" then
 			local game_server_peer_id = GameServerInternal.lobby_host(engine_lobby)
 
 			if not PEER_ID_TO_CHANNEL[game_server_peer_id] then
+				if self._is_party_host then
+					print("[GameServerLobbyClient] Party host open channel to server without reserving", game_server_peer_id)
+				else
+					print("[GameServerLobbyClient] Party client open channel to server", game_server_peer_id)
+				end
+
 				local channel_id = GameServerInternal.open_channel(engine_lobby, game_server_peer_id)
 
 				PEER_ID_TO_CHANNEL[game_server_peer_id] = channel_id
 				CHANNEL_TO_PEER_ID[channel_id] = game_server_peer_id
+
+				if self._is_party_host then
+					EAC.before_join()
+					EAC.set_host(channel_id)
+					EAC.validate_host()
+
+					self._eac_communication_initated = true
+				end
 			end
 
 			Presence.advertise_playing(self._game_server_info.ip_port)

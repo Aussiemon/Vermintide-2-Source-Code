@@ -31,7 +31,11 @@ end
 table.clone = function (t, skip_metatable)
 	local clone = {}
 
-	assert(skip_metatable or getmetatable(t) == nil, "Metatables will be sliced off")
+	if not skip_metatable then
+		local mt = getmetatable(t)
+
+		assert(mt == nil or mt.__mt_cloneable, "Metatables will be sliced off")
+	end
 
 	for key, value in pairs(t) do
 		if type(value) ~= "table" or is_class_instance(value) then
@@ -44,13 +48,33 @@ table.clone = function (t, skip_metatable)
 	return clone
 end
 
-table.shallow_copy = function (t, skip_metatable)
-	local copy = {}
+table.shallow_copy = function (t, skip_metatable, out_t)
+	local copy = out_t or {}
 
-	assert(skip_metatable or getmetatable(t) == nil, "Metatables will be sliced off")
+	if not skip_metatable then
+		local mt = getmetatable(t)
+
+		assert(mt == nil or mt.__mt_cloneable, "Metatables will be sliced off")
+	end
 
 	for key, value in pairs(t) do
 		copy[key] = value
+	end
+
+	return copy
+end
+
+table.copy_array = function (t, skip_metatable, out_t)
+	local copy = out_t or {}
+
+	if not skip_metatable then
+		local mt = getmetatable(t)
+
+		assert(mt == nil or mt.__mt_cloneable, "Metatables will be sliced off")
+	end
+
+	for i = 1, #t do
+		copy[i] = t[i]
 	end
 
 	return copy
@@ -88,7 +112,9 @@ table.create_copy = function (copy, original)
 	if not copy then
 		return table.clone(original)
 	else
-		assert(getmetatable(original) == nil, "Metatables will be sliced off")
+		local mt = getmetatable(original)
+
+		assert(mt == nil or mt.__mt_cloneable, "Metatables will be sliced off")
 
 		for key, value in pairs(original) do
 			if type(value) ~= "table" or is_class_instance(value) then
@@ -180,6 +206,8 @@ table.append = function (dest, source)
 		dest_size = dest_size + 1
 		dest[dest_size] = source[i]
 	end
+
+	return dest
 end
 
 table.append_non_indexed = function (dest, source)
@@ -189,6 +217,8 @@ table.append_non_indexed = function (dest, source)
 		dest_size = dest_size + 1
 		dest[dest_size] = value
 	end
+
+	return dest
 end
 
 table.contains = function (t, element)
@@ -466,6 +496,18 @@ table.max = function (t)
 	end
 
 	return max_key, max_value
+end
+
+table.min = function (t)
+	local min_key, min_value = next(t)
+
+	for key, value in pairs(t) do
+		if value < min_value then
+			min_key, min_value = key, value
+		end
+	end
+
+	return min_key, min_value
 end
 
 table.for_each = function (t, f)
@@ -1059,4 +1101,16 @@ table.fill = function (t, n, value)
 	end
 
 	return t
+end
+
+table.count_if = function (t, f)
+	local count = 0
+
+	for k, v in pairs(t) do
+		if f(k, v) then
+			count = count + 1
+		end
+	end
+
+	return count
 end

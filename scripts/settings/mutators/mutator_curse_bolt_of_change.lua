@@ -136,7 +136,7 @@ bolt_of_change.server_start_function = function (context, data)
 	base_lighting_strike.server_start_function(context, data)
 
 	data.lighting_strike_callback = callback(data.template, "cb_on_explode", data)
-	data.explosion_template = ExplosionTemplates.bolt_of_change
+	data.explosion_template = ExplosionUtils.get_template("bolt_of_change")
 	data.decal_unit_name = "units/decals/deus_decal_aoe_bluefire_02"
 	data.follow_time = data.explosion_template.follow_time
 	data.time_to_explode = data.explosion_template.time_to_explode
@@ -310,7 +310,7 @@ end
 
 bolt_of_change.populate_available_breeds = function (context, data)
 	local difficulty = Managers.state.difficulty:get_difficulty()
-	local contained_breeds = CurrentConflictSettings.contained_breeds[difficulty]
+	local contained_breeds = CurrentConflictSettings.contained_breeds[difficulty] or CurrentConflictSettings.contained_breeds[2]
 	local available_breeds = data.available_breeds
 
 	for breed_name, _ in pairs(contained_breeds) do
@@ -337,7 +337,7 @@ bolt_of_change.populate_available_breeds = function (context, data)
 end
 
 bolt_of_change.cb_on_explode = function (template, data, explosion_template_name, position)
-	local explosion_template = ExplosionTemplates[explosion_template_name]
+	local explosion_template = ExplosionUtils.get_template(explosion_template_name)
 	local radius = explosion_template.explosion.radius
 	local ai_in_range = {}
 

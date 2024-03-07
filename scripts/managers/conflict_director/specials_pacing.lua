@@ -568,6 +568,22 @@ SpecialsPacing.update = function (self, t, alive_specials, specials_population, 
 	end
 end
 
+SpecialsPacing.spawn_versus_darkpact_bot = function (self, breed_name, cb_spawned_func, bot_data)
+	local breed = Breeds[breed_name]
+	local spawn_pos = self:get_special_spawn_pos(breed.spawning_rule)
+
+	if spawn_pos then
+		local optional_data = {
+			spawned_func = cb_spawned_func,
+			bot_data = bot_data,
+		}
+
+		Managers.state.conflict:spawn_queued_unit(breed, Vector3Box(spawn_pos), QuaternionBox(Vector3.up(), 0), "specials_pacing", nil, nil, optional_data)
+
+		return true
+	end
+end
+
 SpecialsPacing._play_stinger = function (self, stinger_name, slot)
 	local audio_system = Managers.state.entity:system("audio_system")
 

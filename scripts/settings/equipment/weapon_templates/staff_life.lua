@@ -246,6 +246,7 @@ weapon_template.actions = {
 			is_spell = true,
 			kind = "spirit_storm",
 			overcharge_amount = 10,
+			overcharge_amount_player_target = 35,
 			total_time = 1,
 			weapon_action_hand = "left",
 			buff_data = {
@@ -541,6 +542,12 @@ weapon_template.wwise_dep_right_hand = {
 	"wwise/staff",
 }
 
+local staff_life_vs = table.clone(weapon_template)
+
+staff_life_vs.actions.action_one.default.impact_data.damage_profile = "burst_thorn_vs"
+staff_life_vs.actions.action_one.default_chain.impact_data.damage_profile = "burst_thorn_vs"
+
 return {
 	staff_life = table.clone(weapon_template),
+	staff_life_vs = table.clone(staff_life_vs),
 }

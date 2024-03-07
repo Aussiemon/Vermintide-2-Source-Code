@@ -72,7 +72,6 @@ end
 
 BTTrollDownedAction.trigger_dialogue_event = function (self, unit, dialogue_event)
 	local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
-	local event_data = FrameTable.alloc_table()
 
-	dialogue_input:trigger_networked_dialogue_event(dialogue_event, event_data)
+	dialogue_input:trigger_networked_dialogue_event(dialogue_event)
 end

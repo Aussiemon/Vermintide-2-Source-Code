@@ -217,8 +217,8 @@ DemoTitleUI._populate_career_page = function (self, profile_name, career_index)
 	local display_name = career_settings.display_name
 	local description = career_settings.description
 	local icon = career_settings.icon
-	local passive_ability_data = career_settings.passive_ability
-	local activated_ability_data = career_settings.activated_ability[1]
+	local passive_ability_data = CareerUtils.get_passive_ability_by_career(career_settings)
+	local activated_ability_data = CareerUtils.get_ability_data_by_career(career_settings, 1)
 	local passive_display_name = passive_ability_data.display_name
 	local passive_icon = passive_ability_data.icon
 	local activated_display_name = activated_ability_data.display_name
@@ -242,7 +242,7 @@ DemoTitleUI._populate_career_page = function (self, profile_name, career_index)
 	local portrait_image = career_settings.portrait_image
 	local frame_settings_name = "default"
 	local definition = UIWidgets.create_portrait_frame("player_portrait", frame_settings_name, "-", 1, nil, portrait_image)
-	local widget = UIWidget.init(definition)
+	local widget = UIWidget.init(definition, self._ui_renderer)
 
 	self._career_widgets.player_portrait = widget
 

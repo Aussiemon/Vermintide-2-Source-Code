@@ -149,12 +149,6 @@ SPProfiles = {
 			100,
 			50,
 		},
-		equipment_slots = {
-			slot_melee = ItemMasterList.wh_1h_axe,
-			slot_ranged = ItemMasterList.wh_brace_of_pistols,
-			slot_hat = ItemMasterList.wh_hat_0001,
-			slot_healthkit = ItemMasterList.healthkit_first_aid_kit_01,
-		},
 		room_profile = RoomProfiles.witch_hunter,
 		base_units = BaseUnits.witch_hunter,
 		default_state_machine = default_state_machine,
@@ -166,7 +160,6 @@ SPProfiles = {
 			knocked_down = 1,
 			stand = 1.7,
 		},
-		mood_settings = {},
 		careers = {
 			CareerSettings.wh_captain,
 			CareerSettings.wh_bountyhunter,
@@ -194,12 +187,6 @@ SPProfiles = {
 			100,
 			50,
 		},
-		equipment_slots = {
-			slot_melee = ItemMasterList.bw_sword,
-			slot_ranged = ItemMasterList.bw_skullstaff_fireball,
-			slot_hat = ItemMasterList.bw_gate_0001,
-			slot_healthkit = ItemMasterList.healthkit_first_aid_kit_01,
-		},
 		room_profile = RoomProfiles.bright_wizard,
 		base_units = BaseUnits.bright_wizard,
 		default_state_machine = default_state_machine,
@@ -211,7 +198,6 @@ SPProfiles = {
 			knocked_down = 0.95,
 			stand = 1.55,
 		},
-		mood_settings = {},
 		careers = {
 			CareerSettings.bw_adept,
 			CareerSettings.bw_scholar,
@@ -239,12 +225,6 @@ SPProfiles = {
 			100,
 			50,
 		},
-		equipment_slots = {
-			slot_melee = ItemMasterList.dr_2h_hammer,
-			slot_ranged = ItemMasterList.dr_crossbow,
-			slot_hat = ItemMasterList.dr_helmet_0001,
-			slot_healthkit = ItemMasterList.healthkit_first_aid_kit_01,
-		},
 		room_profile = RoomProfiles.dwarf_ranger,
 		base_units = BaseUnits.dwarf_ranger,
 		default_state_machine = default_state_machine,
@@ -256,7 +236,6 @@ SPProfiles = {
 			knocked_down = 0.7,
 			stand = 1.3,
 		},
-		mood_settings = {},
 		careers = {
 			CareerSettings.dr_ranger,
 			CareerSettings.dr_ironbreaker,
@@ -284,12 +263,6 @@ SPProfiles = {
 			100,
 			50,
 		},
-		equipment_slots = {
-			slot_melee = ItemMasterList.we_dual_wield_daggers,
-			slot_ranged = ItemMasterList.we_shortbow,
-			slot_hat = ItemMasterList.ww_hood_0001,
-			slot_healthkit = ItemMasterList.healthkit_first_aid_kit_01,
-		},
 		room_profile = RoomProfiles.wood_elf,
 		base_units = BaseUnits.wood_elf,
 		default_state_machine = default_state_machine,
@@ -301,7 +274,6 @@ SPProfiles = {
 			knocked_down = 1,
 			stand = 1.5,
 		},
-		mood_settings = {},
 		careers = {
 			CareerSettings.we_waywatcher,
 			CareerSettings.we_maidenguard,
@@ -329,12 +301,6 @@ SPProfiles = {
 			100,
 			50,
 		},
-		equipment_slots = {
-			slot_melee = ItemMasterList.es_sword_shield,
-			slot_ranged = ItemMasterList.es_blunderbuss,
-			slot_hat = ItemMasterList.es_hat_0001,
-			slot_healthkit = ItemMasterList.healthkit_first_aid_kit_01,
-		},
 		room_profile = RoomProfiles.empire_soldier,
 		base_units = BaseUnits.empire_soldier,
 		default_state_machine = default_state_machine,
@@ -346,7 +312,6 @@ SPProfiles = {
 			knocked_down = 1,
 			stand = 1.65,
 		},
-		mood_settings = {},
 		careers = {
 			CareerSettings.es_mercenary,
 			CareerSettings.es_huntsman,
@@ -376,11 +341,6 @@ SPProfiles = {
 			100,
 			50,
 		},
-		equipment_slots = {
-			slot_melee = ItemMasterList.es_sword_shield,
-			slot_hat = ItemMasterList.es_hat_0001,
-			slot_healthkit = ItemMasterList.healthkit_first_aid_kit_01,
-		},
 		room_profile = RoomProfiles.empire_soldier,
 		base_units = BaseUnits.empire_soldier,
 		default_state_machine = default_state_machine,
@@ -391,7 +351,6 @@ SPProfiles = {
 			knocked_down = 1,
 			stand = 1.65,
 		},
-		mood_settings = {},
 		careers = {
 			CareerSettings.empire_soldier_tutorial,
 			CareerSettings.empire_soldier_tutorial,
@@ -540,16 +499,6 @@ local character_state_names = {}
 local camera_state_names = {}
 
 for index, profile in ipairs(SPProfiles) do
-	local display_name = profile.display_name
-
-	for slot_id, slot_data in pairs(profile.equipment_slots) do
-		for other_slot_id, other_slot_data in pairs(profile.equipment_slots) do
-			if other_slot_id ~= slot_id then
-				assert(slot_data ~= other_slot_data, "Equipped the same item in two slots for profile %q (%s and %s)", class_name, slot_id, other_slot_id)
-			end
-		end
-	end
-
 	for i, career_settings in ipairs(profile.careers) do
 		local character_state_list = table.clone(profile.base_character_states)
 		local camera_state_list = table.clone(profile.base_camera_states)

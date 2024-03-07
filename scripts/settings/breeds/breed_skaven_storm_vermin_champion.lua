@@ -30,6 +30,7 @@ local breed_data = {
 	has_inventory = true,
 	has_running_attack = true,
 	headshot_coop_stamina_fatigue_type = "headshot_special",
+	height = 1.6,
 	hit_effect_template = "HitEffectsStormVerminChampion",
 	hit_reaction = "ai_default",
 	initial_is_passive = false,
@@ -45,6 +46,7 @@ local breed_data = {
 	race = "skaven",
 	radius = 1,
 	run_speed = 6.109090909090908,
+	show_health_bar = true,
 	slot_template = "skaven_elite",
 	smart_object_template = "special",
 	smart_targeting_height_multiplier = 2.5,
@@ -367,6 +369,7 @@ local action_data = {
 			harder = 5,
 			hardest = 10,
 			normal = 0,
+			versus_base = 0,
 		},
 		difficulty_damage = {
 			cataclysm = 100,
@@ -377,6 +380,7 @@ local action_data = {
 			harder = 50,
 			hardest = 100,
 			normal = 30,
+			versus_base = 30,
 		},
 		ignore_staggers = {
 			true,
@@ -426,6 +430,7 @@ local action_data = {
 			harder = 5,
 			hardest = 10,
 			normal = 0,
+			versus_base = 0,
 		},
 		difficulty_damage = {
 			cataclysm = 60,
@@ -436,6 +441,7 @@ local action_data = {
 			harder = 30,
 			hardest = 50,
 			normal = 20,
+			versus_base = 20,
 		},
 		ignore_staggers = {
 			true,
@@ -491,6 +497,7 @@ local action_data = {
 			harder = 5,
 			hardest = 10,
 			normal = 0,
+			versus_base = 0,
 		},
 		difficulty_damage = {
 			cataclysm = 50,
@@ -501,6 +508,7 @@ local action_data = {
 			harder = 30,
 			hardest = 50,
 			normal = 20,
+			versus_base = 20,
 		},
 		ignore_staggers = {
 			true,
@@ -544,6 +552,7 @@ local action_data = {
 			harder = 30,
 			hardest = 50,
 			normal = 20,
+			versus_base = 20,
 		},
 		overlap_start_angle_offset = -math.pi,
 		overlap_end_angle_offset = 0.5 * math.pi,
@@ -588,6 +597,7 @@ local action_data = {
 			harder = 30,
 			hardest = 50,
 			normal = 20,
+			versus_base = 20,
 		},
 		overlap_start_angle_offset = -0.5 * math.pi,
 		overlap_end_angle_offset = math.pi,
@@ -645,6 +655,7 @@ local action_data = {
 			harder = 9,
 			hardest = 15,
 			normal = 5,
+			versus_base = 5,
 		},
 		difficulty_damage = {
 			cataclysm = 69,
@@ -655,6 +666,7 @@ local action_data = {
 			harder = 30,
 			hardest = 50,
 			normal = 20,
+			versus_base = 20,
 		},
 		ignore_staggers = {
 			true,
@@ -704,6 +716,7 @@ local action_data = {
 			harder = 5,
 			hardest = 10,
 			normal = 0,
+			versus_base = 0,
 		},
 		difficulty_damage = {
 			cataclysm = 25,
@@ -714,6 +727,7 @@ local action_data = {
 			harder = 30,
 			hardest = 50,
 			normal = 20,
+			versus_base = 20,
 		},
 		ignore_staggers = {
 			true,
@@ -774,6 +788,7 @@ local action_data = {
 			harder = 9,
 			hardest = 12,
 			normal = 5,
+			versus_base = 5,
 		},
 		difficulty_damage = {
 			cataclysm = 60,
@@ -784,6 +799,7 @@ local action_data = {
 			harder = 30,
 			hardest = 50,
 			normal = 20,
+			versus_base = 20,
 		},
 		ignore_staggers = {
 			true,
@@ -835,6 +851,7 @@ local action_data = {
 			harder = 9,
 			hardest = 12,
 			normal = 5,
+			versus_base = 5,
 		},
 		difficulty_damage = {
 			cataclysm = 60,
@@ -845,6 +862,7 @@ local action_data = {
 			harder = 30,
 			hardest = 50,
 			normal = 20,
+			versus_base = 20,
 		},
 		ignore_staggers = {
 			true,
@@ -1078,6 +1096,14 @@ local action_data = {
 				"skaven_storm_vermin",
 				"skaven_storm_vermin",
 			},
+			versus_base = {
+				"skaven_storm_vermin",
+				"skaven_storm_vermin",
+				"skaven_storm_vermin",
+				"skaven_storm_vermin",
+				"skaven_storm_vermin",
+				"skaven_storm_vermin",
+			},
 		},
 		difficulty_spawn = {
 			cataclysm = "stormdorf_boss_event_defensive_hard",
@@ -1088,6 +1114,7 @@ local action_data = {
 			harder = "stormdorf_boss_event_defensive_harder",
 			hardest = "stormdorf_boss_event_defensive_hardest",
 			normal = "stormdorf_boss_event_defensive_normal",
+			versus_base = "stormdorf_boss_event_defensive_hard",
 		},
 		start_anims = {
 			bwd = "move_start_bwd",

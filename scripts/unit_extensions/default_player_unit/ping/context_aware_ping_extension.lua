@@ -27,6 +27,13 @@ ContextAwarePingExtension.init = function (self, extension_init_context, unit, e
 	else
 		self._world_markers_enabled = false
 	end
+
+	self._double_press_start_time = nil
+	self._double_press_end_time = nil
+	self._double_press_listen_duration = 0.25
+	self._double_press_counter = 0
+	self._can_ping = false
+	self._listen_for_double_press = false
 end
 
 ContextAwarePingExtension.extensions_ready = function (self, world, unit)
@@ -54,120 +61,7 @@ ContextAwarePingExtension.update = function (self, unit, input, dt, context, t)
 		self._num_free_events = math.min(self._num_free_events + free_events_to_add, MAX_FREE_EVENTS)
 	end
 
-	if self._ping_context then
-		local ping_context = self._ping_context
-		local ping_released = self._input_extension:get("ping_release")
-		local ping_held = self._input_extension:get("ping_hold")
-		local unit_to_ping = ping_context.unit
-		local ping_type = ping_context.ping_type
-
-		if ping_released or not ping_held then
-			if t <= ping_context.max_t then
-				if Unit.alive(unit_to_ping) then
-					self:ping_attempt(unit, unit_to_ping, t, ping_type)
-				elseif ping_context.position then
-					self:ping_world_position_attempt(unit, ping_context.position:unbox(), t)
-				end
-			end
-
-			self._ping_context = nil
-			self._social_wheel_context = nil
-		end
-	elseif self._social_wheel_context then
-		local social_wheel_only_released = self._input_extension:get("social_wheel_only_release")
-		local social_wheel_only_held = self._input_extension:get("social_wheel_only_hold")
-		local photomode_only_released = self._input_extension:get("photomode_only_released")
-		local photomode_only_held = self._input_extension:get("photomode_only_hold")
-
-		if (social_wheel_only_released or not social_wheel_only_held) and (photomode_only_released or not photomode_only_held) then
-			self._social_wheel_context = nil
-		end
-	else
-		local input_extension = self._input_extension
-		local ping = input_extension:get("ping")
-		local ping_only = input_extension:get("ping_only")
-		local ping_only_enemy = input_extension:get("ping_only_enemy")
-		local ping_only_movement = input_extension:get("ping_only_movement")
-		local ping_only_item = input_extension:get("ping_only_item")
-		local social_wheel_only = input_extension:get("social_wheel_only")
-		local photomode_only = input_extension:get("photomode_only")
-		local is_ping_only = ping_only or ping_only_enemy or ping_only_movement or ping_only_item
-
-		if ping or is_ping_only or social_wheel_only or photomode_only then
-			local ping_unit, social_wheel_unit, ping_unit_distance, social_wheel_unit_distance, position = self:_check_raycast(unit)
-			local stored_ping_position
-
-			if position then
-				self._ping_position:store(position)
-
-				stored_ping_position = self._ping_position
-			end
-
-			local ping_type
-
-			if not ping_only and is_ping_only then
-				if ping_only_enemy then
-					ping_type = PingTypes.ENEMY_GENERIC
-				elseif ping_only_movement then
-					ping_type = PingTypes.MOVEMENT_GENERIC
-				elseif ping_only_item then
-					ping_type = PingTypes.PLAYER_PICK_UP
-				end
-			elseif not ping and self._status_extension:is_ready_for_assisted_respawn() then
-				local input_service = Managers.input:get_service("Player")
-
-				if input_service then
-					social_wheel_only = input_service:get("ping")
-				end
-			elseif ping_unit then
-				local status_ext = ScriptUnit.has_extension(ping_unit, "status_system")
-
-				if status_ext and status_ext:is_knocked_down() then
-					ping_type = PingTypes.UNIT_DOWNED
-				end
-			end
-
-			if is_ping_only then
-				if ping_unit then
-					self:ping_attempt(unit, ping_unit, t, ping_type)
-				elseif position then
-					self:ping_world_position_attempt(unit, position, t, ping_type)
-				end
-			elseif social_wheel_only then
-				self._social_wheel_context = {
-					min_t = 0,
-					unit = social_wheel_unit,
-					distance = social_wheel_unit_distance,
-					position = stored_ping_position,
-				}
-			elseif ping then
-				local social_wheel_delay = Application.user_setting("social_wheel_delay") or DefaultUserSettings.get("user_settings", "social_wheel_delay")
-
-				self._ping_context = {
-					unit = ping_unit,
-					max_t = t + social_wheel_delay,
-					distance = ping_unit_distance,
-					position = stored_ping_position,
-					ping_type = ping_type,
-				}
-				self._social_wheel_context = {
-					unit = social_wheel_unit,
-					ping_context_unit = ping_unit,
-					min_t = t + social_wheel_delay,
-					distance = social_wheel_unit_distance,
-					position = stored_ping_position,
-				}
-			elseif photomode_only then
-				self._social_wheel_context = {
-					min_t = 0,
-					show_emotes = true,
-					unit = social_wheel_unit,
-					distance = social_wheel_unit_distance,
-					position = stored_ping_position,
-				}
-			end
-		end
-	end
+	self:_handle_ping_input(t, dt, input, unit, context)
 
 	self._last_update_t = t
 end
@@ -219,40 +113,60 @@ ContextAwarePingExtension.ping_attempt = function (self, unit, unit_to_ping, t, 
 end
 
 ContextAwarePingExtension.ping_world_position_attempt = function (self, unit, position, t, ping_type, social_wheel_event_id)
-	if t < self._ping_timer and not IgnoreCooldownPingTypes[ping_type] then
+	if not self._world_markers_enabled then
 		return
 	end
-
-	if not ping_type and not self._world_markers_enabled then
-		return
-	end
-
-	if not self:_have_free_events() then
-		local error_message = Localize("social_wheel_too_many_messages_warning")
-
-		Managers.chat:add_local_system_message(1, error_message, true)
-
-		return false
-	end
-
-	if LEVEL_EDITOR_TEST then
-		return false
-	end
-
-	social_wheel_event_id = social_wheel_event_id or NetworkLookup.social_wheel_events["n/a"]
-
-	local network_manager = Managers.state.network
-	local pinger_unit_id = network_manager:unit_game_object_id(unit)
 
 	ping_type = ping_type or PingTypes.CONTEXT
 
-	network_manager.network_transmit:send_rpc_server("rpc_ping_world_position", pinger_unit_id, position, ping_type, social_wheel_event_id)
+	if IgnoreCooldownPingTypes[ping_type] then
+		social_wheel_event_id = social_wheel_event_id or NetworkLookup.social_wheel_events["n/a"]
 
-	self._ping_timer = t + PING_COOLDOWN
+		local network_manager = Managers.state.network
+		local pinger_unit_id = network_manager:unit_game_object_id(unit)
 
-	self:_consume_ping_event()
+		network_manager.network_transmit:send_rpc_server("rpc_ping_world_position", pinger_unit_id, position, ping_type, social_wheel_event_id)
 
-	return true
+		if not IgnoreFreeEvents[ping_type] then
+			self:_consume_ping_event()
+		end
+
+		return
+	else
+		if not self._world_markers_enabled then
+			return
+		end
+
+		if not self:_have_free_events() then
+			local error_message = Localize("social_wheel_too_many_messages_warning")
+
+			Managers.chat:add_local_system_message(1, error_message, true)
+
+			return false
+		end
+
+		if LEVEL_EDITOR_TEST then
+			return false
+		end
+
+		if t < self._ping_timer then
+			return false
+		end
+
+		self._ping_timer = t + PING_COOLDOWN
+		social_wheel_event_id = social_wheel_event_id or NetworkLookup.social_wheel_events["n/a"]
+
+		local network_manager = Managers.state.network
+		local pinger_unit_id = network_manager:unit_game_object_id(unit)
+
+		network_manager.network_transmit:send_rpc_server("rpc_ping_world_position", pinger_unit_id, position, ping_type, social_wheel_event_id)
+
+		if not IgnoreFreeEvents[ping_type] then
+			self:_consume_ping_event()
+		end
+
+		return true
+	end
 end
 
 ContextAwarePingExtension.social_message_attempt = function (self, unit, social_wheel_event_id, target_unit)
@@ -400,4 +314,171 @@ ContextAwarePingExtension._check_raycast = function (self, unit)
 	end
 
 	return ping_unit, social_wheel_unit, ping_unit_distance, social_wheel_unit_distance, position
+end
+
+ContextAwarePingExtension._handle_ping_input = function (self, t, dt, input, unit, context)
+	if not self._listen_for_double_press and self._ping_context and self._can_ping then
+		local ping_context = self._ping_context
+		local ping_released = self._input_extension:get("ping_release")
+		local ping_held = self._input_extension:get("ping_hold")
+
+		if not self._listen_for_double_press and self._can_ping and ping_held and t >= ping_context.max_t then
+			self._can_ping = false
+			self._ping_context = nil
+		elseif ping_released or not ping_held then
+			local unit_to_ping = ping_context.unit
+			local ping_type = ping_context.ping_type
+
+			if t <= ping_context.max_t then
+				if Unit.alive(unit_to_ping) then
+					self:ping_attempt(unit, unit_to_ping, t, ping_type)
+				elseif ping_context.position then
+					self:ping_world_position_attempt(unit, ping_context.position:unbox(), t, ping_type)
+				end
+			end
+
+			self._ping_context = nil
+			self._social_wheel_context = nil
+			self._can_ping = false
+		end
+	elseif self._social_wheel_context and not self._listen_for_double_press then
+		local social_wheel_only_released = self._input_extension:get("social_wheel_only_release")
+		local social_wheel_only_held = self._input_extension:get("social_wheel_only_hold")
+		local photomode_only_released = self._input_extension:get("photomode_only_released")
+		local photomode_only_held = self._input_extension:get("photomode_only_hold")
+		local ping_released = self._input_extension:get("ping_release")
+		local ping_held = self._input_extension:get("ping_hold")
+
+		if not ping_held or (social_wheel_only_released or not social_wheel_only_held) and (photomode_only_released or not photomode_only_held) then
+			self._social_wheel_context = nil
+			self._can_ping = false
+		end
+	elseif not self._can_ping or not self._listen_for_double_press then
+		local input_extension = self._input_extension
+		local ping = input_extension:get("ping")
+		local ping_only = input_extension:get("ping_only")
+		local ping_only_enemy = input_extension:get("ping_only_enemy")
+		local ping_only_movement = input_extension:get("ping_only_movement")
+		local ping_only_item = input_extension:get("ping_only_item")
+		local social_wheel_only = input_extension:get("social_wheel_only")
+		local photomode_only = input_extension:get("photomode_only")
+		local is_ping_only = ping_only or ping_only_enemy or ping_only_movement or ping_only_item
+
+		if ping or is_ping_only or social_wheel_only or photomode_only then
+			local ping_unit, social_wheel_unit, ping_unit_distance, social_wheel_unit_distance, position = self:_check_raycast(unit)
+			local stored_ping_position
+
+			if position then
+				self._ping_position:store(position)
+
+				stored_ping_position = self._ping_position
+			end
+
+			local ping_type
+
+			if not ping_only and is_ping_only then
+				if ping_only_enemy then
+					ping_type = PingTypes.ENEMY_GENERIC
+				elseif ping_only_movement then
+					ping_type = PingTypes.MOVEMENT_GENERIC
+				elseif ping_only_item then
+					ping_type = PingTypes.PLAYER_PICK_UP
+				end
+			elseif not ping and self._status_extension:is_ready_for_assisted_respawn() then
+				local input_service = Managers.input:get_service("Player")
+
+				if input_service then
+					social_wheel_only = input_service:get("ping")
+				end
+			elseif ping_unit then
+				local status_ext = ScriptUnit.has_extension(ping_unit, "status_system")
+
+				if status_ext and status_ext:is_knocked_down() then
+					ping_type = PingTypes.UNIT_DOWNED
+				end
+			end
+
+			if is_ping_only then
+				if ping_unit then
+					self:ping_attempt(unit, ping_unit, t, ping_type)
+				elseif position then
+					ping_type = ping_type or ping_only and PingTypes.MOVEMENT_GENERIC or PingTypes.CONTEXT
+
+					self:ping_world_position_attempt(unit, position, t, ping_type)
+				end
+			elseif social_wheel_only then
+				self._social_wheel_context = {
+					min_t = 0,
+					unit = social_wheel_unit,
+					distance = social_wheel_unit_distance,
+					position = stored_ping_position,
+				}
+			elseif ping and not self._listen_for_double_press then
+				local social_wheel_delay = Application.user_setting("social_wheel_delay") or DefaultUserSettings.get("user_settings", "social_wheel_delay")
+
+				self._ping_context = {
+					unit = ping_unit,
+					max_t = self:_get_ping_context_lifetime_t(t, social_wheel_delay),
+					distance = ping_unit_distance,
+					position = stored_ping_position,
+					ping_type = ping_type,
+				}
+				self._social_wheel_context = {
+					unit = social_wheel_unit,
+					ping_context_unit = ping_unit,
+					min_t = self:_get_ping_context_lifetime_t(t, social_wheel_delay),
+					distance = social_wheel_unit_distance,
+					position = stored_ping_position,
+				}
+
+				if Managers.state.game_mode:setting("allow_double_ping") then
+					self._listen_for_double_press = true
+					self._double_press_start_time = t
+					self._double_press_end_time = t + self._double_press_listen_duration
+				else
+					self._can_ping = true
+				end
+			elseif photomode_only then
+				self._social_wheel_context = {
+					min_t = 0,
+					show_emotes = true,
+					unit = social_wheel_unit,
+					distance = social_wheel_unit_distance,
+					position = stored_ping_position,
+				}
+			end
+		end
+	end
+
+	if not self._can_ping then
+		if self._listen_for_double_press and self._double_press_end_time and t >= self._double_press_end_time then
+			if self._double_press_counter == 2 and self._ping_context then
+				self._ping_context.ping_type = PingTypes.ENEMY_POSITION
+				self._ping_context.position = self._ping_position
+			end
+
+			self:_reset_listen_for_double_press()
+
+			self._can_ping = true
+		end
+
+		if self._listen_for_double_press and self._double_press_start_time and t < self._double_press_end_time and (self._input_extension:get("ping") or self._input_extension:get("ping_only")) then
+			self._double_press_counter = self._double_press_counter + 1
+		end
+	end
+end
+
+ContextAwarePingExtension._reset_listen_for_double_press = function (self)
+	self._double_press_start_time = nil
+	self._double_press_end_time = nil
+	self._double_press_counter = 0
+	self._listen_for_double_press = false
+end
+
+ContextAwarePingExtension._get_ping_context_lifetime_t = function (self, t, social_wheel_delay)
+	if Managers.state.game_mode:setting("extended_social_wheel_time") then
+		return t + social_wheel_delay + self._double_press_listen_duration
+	else
+		return t + social_wheel_delay
+	end
 end

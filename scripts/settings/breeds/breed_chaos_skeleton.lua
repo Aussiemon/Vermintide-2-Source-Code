@@ -24,6 +24,7 @@ local breed_data = {
 	follow_reach = 1,
 	has_inventory = true,
 	has_running_attack = true,
+	height = 1.5,
 	hesitation_timer = 5,
 	hit_effect_template = "HitEffectsChaosMarauder",
 	hit_mass_count = 3,
@@ -102,6 +103,7 @@ local breed_data = {
 		120,
 		150,
 		175,
+		30,
 	},
 	bloodlust_health = BreedTweaks.bloodlust_health.chaos_roamer,
 	hit_mass_counts = {
@@ -121,7 +123,7 @@ local breed_data = {
 		40,
 		40,
 	},
-	stagger_modifier_function = function (stagger, duration, length, hit_zone_name, blackboard, breed, direction)
+	stagger_modifier_function = function (stagger, duration, length, hit_zone_name, blackboard, breed)
 		if blackboard.stagger_type == 3 then
 			if stagger == 3 and blackboard.heavy_stagger_immune_time then
 				stagger = 0

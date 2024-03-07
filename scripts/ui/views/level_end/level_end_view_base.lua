@@ -86,8 +86,8 @@ LevelEndViewBase.init = function (self, context)
 		game_mode_key = self.game_mode_key,
 	}
 
-	self:create_ui_elements()
 	self:setup_camera()
+	self:create_ui_elements()
 
 	self._done_peers = {}
 	self._wants_reload = {}
@@ -303,6 +303,7 @@ LevelEndViewBase.destroy = function (self)
 	self:play_sound("play_gui_chestroom_stop")
 	self:play_sound("unmute_all_world_sounds")
 	self:destroy_world()
+	Managers.mechanism:unload_end_screen_resources()
 end
 
 LevelEndViewBase.play_sound = function (self, event)
@@ -1321,6 +1322,7 @@ LevelEndViewBase.setup_world = function (self, context)
 	local wwise_world = Managers.world:wwise_world(world)
 
 	self._world = world
+	self._level = level
 	self._top_world = top_world
 	self._world_viewport = viewport
 	self.ui_renderer = ui_renderer

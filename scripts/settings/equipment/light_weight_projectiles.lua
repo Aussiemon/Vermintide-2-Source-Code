@@ -18,16 +18,17 @@ LightWeightProjectiles.ratling_gunner = {
 		250,
 		250,
 		250,
+		40,
 	},
 }
 LightWeightProjectiles.ratling_gunner_vs = {
-	damage_profile = "ratling_gunner",
+	damage_profile = "ratling_gunner_vs",
 	hit_effect = "ratling_gunner",
-	impact_push_speed = 2.5,
+	impact_push_speed = 1.3,
 	light_weight_projectile_effect = "ratling_gun_bullet_vs",
 	projectile_max_range = 50,
 	projectile_speed = 80,
-	spread = math.degrees_to_radians(5),
+	spread = math.degrees_to_radians(1.2),
 	attack_power_level = {
 		13,
 		26,
@@ -37,6 +38,7 @@ LightWeightProjectiles.ratling_gunner_vs = {
 		160,
 		160,
 		160,
+		40,
 	},
 }
 LightWeightProjectiles.stormfiend_boss = {
@@ -56,6 +58,7 @@ LightWeightProjectiles.stormfiend_boss = {
 		120,
 		120,
 		120,
+		40,
 	},
 }
 LightWeightProjectiles.stormfiend_boss_narrow = {

@@ -355,7 +355,7 @@ Boot.booting_update = function (self, dt)
 	elseif Boot.startup_state == "loading_dlcs" then
 		foundation_require("util", "local_require")
 
-		local done = Managers.package:update()
+		local done = Managers.package:update(dt)
 
 		if done then
 			Boot.startup_state = "done_loading_dlcs"
@@ -394,6 +394,7 @@ Boot.booting_update = function (self, dt)
 		local crashify_settings = require("scripts/settings/crashify_settings")
 
 		Crashify.print_property("project", crashify_settings.project)
+		Crashify.print_property("project_branch", crashify_settings.branch)
 		Crashify.print_property("build", BUILD)
 		Crashify.print_property("platform", PLATFORM)
 		Crashify.print_property("dedicated_server", DEDICATED_SERVER)
@@ -847,6 +848,14 @@ Boot.game_update = function (self, real_world_dt)
 
 		if Managers.xbox_stats ~= nil then
 			Managers.xbox_stats:update()
+		end
+	end
+
+	if script_data.testify then
+		Managers.mechanism:update_testify(dt, t)
+
+		if Managers.state.side then
+			Managers.state.side:update_testify(dt, t)
 		end
 	end
 

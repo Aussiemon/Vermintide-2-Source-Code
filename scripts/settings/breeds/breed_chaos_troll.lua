@@ -80,6 +80,7 @@ local breed_data = {
 	has_inventory = true,
 	has_running_attack = true,
 	headshot_coop_stamina_fatigue_type = "headshot_special",
+	height = 3,
 	hit_effect_template = "HitEffectsChaosTroll",
 	hit_mass_count = 50,
 	hit_reaction = "ai_default",
@@ -113,6 +114,7 @@ local breed_data = {
 	regen_taken_damage_pause_time = 2,
 	run_speed = 5.25,
 	scale_death_push = 1,
+	show_health_bar = true,
 	slot_template = "boss",
 	smart_object_template = "chaos_troll",
 	stagger_resistance = 100,
@@ -371,6 +373,10 @@ local AttackIntensityPerDifficulty = {
 			normal = 5,
 			running = 2,
 		},
+		versus_base = {
+			normal = 5,
+			running = 2,
+		},
 	},
 	sweep = {
 		easy = {
@@ -405,6 +411,10 @@ local AttackIntensityPerDifficulty = {
 			normal = 5,
 			running = 2,
 		},
+		versus_base = {
+			normal = 5,
+			running = 2,
+		},
 	},
 	shove = {
 		easy = {
@@ -429,6 +439,9 @@ local AttackIntensityPerDifficulty = {
 			normal = 1,
 		},
 		cataclysm_3 = {
+			normal = 1,
+		},
+		versus_base = {
 			normal = 1,
 		},
 	},
@@ -462,6 +475,10 @@ local AttackIntensityPerDifficulty = {
 			running = 0.5,
 		},
 		cataclysm_3 = {
+			normal = 3,
+			running = 0.5,
+		},
+		versus_base = {
 			normal = 3,
 			running = 0.5,
 		},

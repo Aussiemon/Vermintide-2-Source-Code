@@ -61,3 +61,15 @@ ItemMasterList.frame_celebration_05 = {
 	temporary_template = "frame_celebration_05",
 	can_wield = CanWieldAllItemTemplates,
 }
+ItemMasterList.frame_celebration_06 = {
+	description = "frame_celebration_06_description",
+	display_name = "frame_celebration_06_name",
+	hud_icon = "unit_frame_02",
+	information_text = "information_text_frame",
+	inventory_icon = "icon_portrait_frame_celebration_06",
+	item_type = "frame",
+	rarity = "promo",
+	slot_type = "frame",
+	temporary_template = "frame_celebration_06",
+	can_wield = CanWieldAllItemTemplates,
+}

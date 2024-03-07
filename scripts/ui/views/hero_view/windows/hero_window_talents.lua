@@ -269,7 +269,7 @@ HeroWindowTalents._populate_talents_by_hero = function (self, initialize)
 	local start_index = (career_index - 1) * NumTalentRows
 	local tree = TalentTrees[hero_name][career_settings.talent_tree_index]
 	local talents = self._selected_talents
-	local all_talents = Talents[hero_name]
+	local override_talents = PlayerUtils.get_talent_overrides_by_career(career_settings.display_name)
 
 	for i = 1, NumTalentRows do
 		local widget = widgets_by_name["talent_row_" .. i]
@@ -280,11 +280,11 @@ HeroWindowTalents._populate_talents_by_hero = function (self, initialize)
 			local selected_column = talents[i]
 			local no_talent_selected = not selected_column or selected_column == 0
 			local unlock_name = "talent_point_" .. i
-			local talent_unlock_level = TalentUnlockLevels[unlock_name]
 			local row_unlocked = ProgressionUnlocks.is_unlocked(unlock_name, self.hero_level)
 			local level_text_color = row_unlocked and Colors.get_color_table_with_alpha("green", 255) or Colors.get_color_table_with_alpha("red", 255)
+			local talent_template = ProgressionUnlocks.get_unlock(unlock_name)
 
-			content.level_text = tostring(talent_unlock_level)
+			content.level_text = tostring(talent_template.level_requirement)
 			style.level_text.text_color = level_text_color
 
 			if row_unlocked and not no_talent_selected then
@@ -307,15 +307,18 @@ HeroWindowTalents._populate_talents_by_hero = function (self, initialize)
 				local is_selected = selected_column == j
 				local talent_name = tree[i][j]
 				local id = TalentIDLookup[talent_name].talent_id
-				local talent_data = all_talents[id]
+				local talent_data = TalentUtils.get_talent_by_id(hero_name, id)
 				local name_suffix = "_" .. tostring(j)
 				local icon_name = "icon" .. name_suffix
 				local hotspot_name = "hotspot" .. name_suffix
 				local title_text_name = "title_text" .. name_suffix
 				local background_glow_name = "background_glow" .. name_suffix
 				local hotspot = content[hotspot_name]
+				local talent_locked = not row_unlocked
 
-				if is_selected or no_talent_selected and row_unlocked then
+				talent_locked = talent_locked or override_talents and override_talents[talent_name] == false
+
+				if is_selected or no_talent_selected and not talent_locked then
 					style[icon_name].saturated = false
 				else
 					style[icon_name].saturated = true
@@ -326,9 +329,9 @@ HeroWindowTalents._populate_talents_by_hero = function (self, initialize)
 				hotspot.is_selected = is_selected
 				hotspot.talent = talent_data
 				hotspot.talent_id = id
-				hotspot.disabled = not row_unlocked
+				hotspot.disabled = talent_locked
 
-				if row_unlocked then
+				if not talent_locked then
 					style[background_glow_name].saturated = false
 				else
 					style[background_glow_name].saturated = true
@@ -451,8 +454,8 @@ HeroWindowTalents._populate_career_info = function (self, initialize)
 
 	widgets_by_name.career_background.style.background.color = career_color
 
-	local passive_ability_data = career_settings.passive_ability
-	local activated_ability_data = career_settings.activated_ability[1]
+	local passive_ability_data = CareerUtils.get_passive_ability_by_career(career_settings)
+	local activated_ability_data = CareerUtils.get_ability_data_by_career(career_settings, 1)
 	local passive_display_name = passive_ability_data.display_name
 	local passive_icon = passive_ability_data.icon
 	local activated_display_name = activated_ability_data.display_name

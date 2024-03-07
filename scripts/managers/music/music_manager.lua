@@ -320,6 +320,7 @@ MusicManager._register_events = function (self)
 	end
 
 	event_manager:register(self, "player_party_changed", "on_player_party_changed")
+	event_manager:register(self, "versus_pre_start_initialized", "versus_update_sides")
 end
 
 MusicManager._unregister_events = function (self)
@@ -330,6 +331,7 @@ MusicManager._unregister_events = function (self)
 	end
 
 	event_manager:unregister("player_party_changed", self)
+	event_manager:unregister("versus_pre_start_initialized", self)
 end
 
 MusicManager.client_game_session_disconnect_music_states = function (self, game_object_id)
@@ -614,9 +616,9 @@ MusicManager._update_game_state = function (self, dt, t, conflict_director)
 
 	for _, party in pairs(parties) do
 		local slot_data = party.occupied_slots[1]
+		local party_id = party.party_id
 
-		if slot_data then
-			local party_id = party.party_id
+		if slot_data and party.name ~= "undecided" then
 			local player = slot_data.player
 			local old_state_id = self._game_states[party_id]
 			local old_state = NetworkLookup.music_group_states[old_state_id]
@@ -683,9 +685,7 @@ MusicManager._get_game_state_for_player = function (self, dt, t, conflict_direct
 	end
 
 	local is_pre_horde = old_state == "pre_horde" or old_state == "pre_ambush" or old_state == "pre_ambush_beastmen" or old_state == "pre_ambush_chaos"
-	local horde_type, sound_settings = conflict_director:has_horde()
-	local horde_size, horde_ends_at = conflict_director:horde_size()
-	local is_horde_alive = horde_size >= 1 or horde_size >= 7 and t < horde_ends_at or horde_type
+	local is_horde_alive, horde_type, sound_settings = conflict_director:is_horde_alive()
 
 	if is_pre_horde and self._scream_delays[party_id] and t > self._scream_delays[party_id] then
 		self._scream_delays[party_id] = nil
@@ -770,9 +770,9 @@ MusicManager._update_player_state = function (self, dt, t)
 
 			music_player:set_group_state("player_state", state)
 		else
-			local side = self:_get_side()
+			local side_name = self:_get_side_name()
 
-			state = side:name() == "dark_pact" and "dead" or "normal"
+			state = side_name == "dark_pact" and "dead" or "normal"
 
 			music_player:set_group_state("player_state", state)
 		end
@@ -857,9 +857,11 @@ MusicManager._update_side_state = function (self, dt, t)
 		return
 	end
 
-	local side = self:_get_side()
+	local side_name = self:_get_side_name()
 
-	music_player:set_group_state("game_faction", side:name())
+	if side_name then
+		music_player:set_group_state("game_faction", side_name)
+	end
 end
 
 MusicManager._update_versus_game_state = function (self, music_player, dt, t)
@@ -875,8 +877,8 @@ MusicManager._update_versus_game_state = function (self, music_player, dt, t)
 		return
 	end
 
-	local side = self:_get_side()
-	local is_dark_pact = side:name() == "dark_pact"
+	local side_name = self:_get_side_name()
+	local is_dark_pact = side_name == "dark_pact"
 
 	if is_dark_pact then
 		local status = self._party_manager:get_status_from_unique_id(player:unique_id())
@@ -992,7 +994,8 @@ MusicManager.delay_trigger_horde_dialogue = function (self, t, delay, horde_name
 end
 
 MusicManager.trigger_horde_dialogue = function (self, horde_name)
-	local dummy_unit = DialogueSystem:get_random_player()
+	local dialogue_system = Managers.state.entity:system("dialogue_system")
+	local dummy_unit = dialogue_system:get_random_player()
 
 	if dummy_unit then
 		SurroundingAwareSystem.add_event(dummy_unit, "horde", DialogueSettings.discover_enemy_attack_distance, "horde_type", horde_name)
@@ -1029,16 +1032,16 @@ MusicManager._get_party = function (self)
 	return self._party
 end
 
-MusicManager._get_side = function (self)
+MusicManager._get_side_name = function (self)
 	if self._side then
-		return self._side
+		return self._side:name()
 	end
 
 	local party = self:_get_party()
 
 	self._side = self._side_manager.side_by_party[party]
 
-	return self._side
+	return self._side and self._side:name()
 end
 
 MusicManager.on_player_party_changed = function (self, player, is_local_player, old_party_id, new_party_id)
@@ -1047,5 +1050,14 @@ MusicManager.on_player_party_changed = function (self, player, is_local_player, 
 	end
 
 	self._party = self._party_manager:get_party(new_party_id)
+	self._side = self._side_manager.side_by_party[self._party]
+end
+
+MusicManager.versus_update_sides = function (self)
+	if DEDICATED_SERVER then
+		return
+	end
+
+	self._side_manager = Managers.state.side
 	self._side = self._side_manager.side_by_party[self._party]
 end

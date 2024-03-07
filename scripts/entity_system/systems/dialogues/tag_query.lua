@@ -96,6 +96,18 @@ TagQuery.OP = TagQuery.OP or {
 		end,
 	}),
 }
+TagQuery.CombiningOP = TagQuery.CombiningOP or {
+	AND_NEXT = setmetatable({}, {
+		__tostring = function ()
+			return "AND_NEXT"
+		end,
+	}),
+	OR_NEXT = setmetatable({}, {
+		__tostring = function ()
+			return "OR_NEXT"
+		end,
+	}),
+}
 TagQuery.FilterOP = TagQuery.FilterOP or {
 	EQ = function (a, b)
 		return a == b

@@ -17,6 +17,7 @@ local breed_data = {
 	exchange_order = 1,
 	flingable = false,
 	has_inventory = false,
+	height = 1,
 	hit_effect_template = "HitEffectsChaosGreedPinata",
 	hit_reaction = "ai_default",
 	no_stagger_duration = true,

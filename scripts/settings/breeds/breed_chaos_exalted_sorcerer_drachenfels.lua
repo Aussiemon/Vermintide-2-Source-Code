@@ -29,6 +29,7 @@ local breed_data = {
 	flingable = true,
 	has_inventory = true,
 	headshot_coop_stamina_fatigue_type = "headshot_special",
+	height = 1,
 	hit_effect_template = "HitEffectsChaosExaltedSorcererDrachenfels",
 	hit_mass_count = 100,
 	hit_reaction = "ai_default",
@@ -49,6 +50,7 @@ local breed_data = {
 	radius = 1.5,
 	run_speed = 6.5,
 	server_controlled_health_bar = true,
+	show_health_bar = true,
 	smart_object_template = "special",
 	smart_targeting_height_multiplier = 2.2,
 	smart_targeting_outer_width = 0.7,
@@ -2306,6 +2308,7 @@ local action_data = {
 			harder = "chaos_event_defensive",
 			hardest = "chaos_event_defensive",
 			normal = "chaos_event_defensive",
+			versus_base = "chaos_event_defensive",
 		},
 		ignore_staggers = {
 			true,
@@ -2332,6 +2335,7 @@ local action_data = {
 			harder = "chaos_event_defensive_intense",
 			hardest = "chaos_event_defensive_intense",
 			normal = "chaos_event_defensive_intense",
+			versus_base = "chaos_event_defensive_intense",
 		},
 		ignore_staggers = {
 			true,
@@ -2360,6 +2364,7 @@ local action_data = {
 			harder = "chaos_event_offensive",
 			hardest = "chaos_event_offensive",
 			normal = "chaos_event_offensive",
+			versus_base = "chaos_event_offensive",
 		},
 		ignore_staggers = {
 			true,
@@ -2387,6 +2392,7 @@ local action_data = {
 			harder = "chaos_event_offensive_small",
 			hardest = "chaos_event_offensive_small",
 			normal = "chaos_event_offensive_small",
+			versus_base = "chaos_event_offensive_small",
 		},
 		ignore_staggers = {
 			true,
@@ -2415,6 +2421,7 @@ local action_data = {
 			harder = "chaos_event_offensive_intense",
 			hardest = "chaos_event_offensive_intense",
 			normal = "chaos_event_offensive_intense",
+			versus_base = "chaos_event_offensive_intense",
 		},
 		ignore_staggers = {
 			true,

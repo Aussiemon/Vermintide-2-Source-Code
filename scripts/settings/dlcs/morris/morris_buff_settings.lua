@@ -217,6 +217,10 @@ dlc_settings.buff_function_templates = {
 		end
 	end,
 	apply_mark_of_nurgle = function (unit, buff, params, world)
+		if DEDICATED_SERVER then
+			return
+		end
+
 		local template = buff.template
 		local mark_particle = template.mark_particle
 		local vfx = World.create_particles(world, mark_particle, POSITION_LOOKUP[unit])
@@ -1122,7 +1126,7 @@ dlc_settings.buff_function_templates = {
 			local world = Application.main_world()
 			local hit_position = POSITION_LOOKUP[unit]
 			local rotation = Quaternion.identity()
-			local explosion_template = ExplosionTemplates[template.explosion_template]
+			local explosion_template = ExplosionUtils.get_template(template.explosion_template)
 			local career_extension = ScriptUnit.has_extension(unit, "career_system")
 			local career_power_level = career_extension:get_career_power_level()
 
@@ -1835,7 +1839,7 @@ dlc_settings.proc_functions = {
 
 		local unit_hit = params[1]
 		local template = buff.template
-		local explosion_template = ExplosionTemplates[template.explosion_template]
+		local explosion_template = ExplosionUtils.get_template(template.explosion_template)
 		local world = Application.main_world()
 		local hit_position = POSITION_LOOKUP[unit_hit]
 		local rotation = Quaternion.identity()
@@ -2721,7 +2725,7 @@ dlc_settings.proc_functions = {
 						local attacker = owner_unit
 						local damage_source = "buff"
 						local explosion_template_name = "generic_mutator_explosion"
-						local explosion_template = ExplosionTemplates[explosion_template_name]
+						local explosion_template = ExplosionUtils.get_template(explosion_template_name)
 
 						DamageUtils.create_explosion(world, attacker, position, Quaternion.identity(), explosion_template, 1, damage_source, is_server(), false, hit_unit, 0, false)
 
@@ -3171,7 +3175,7 @@ dlc_settings.proc_functions = {
 		if buff_id_to_remove then
 			local unit_hit = params[1]
 			local template = buff.template
-			local explosion_template = ExplosionTemplates[template.explosion_template]
+			local explosion_template = ExplosionUtils.get_template(template.explosion_template)
 			local world = Managers.world:world("level_world")
 			local hit_position = POSITION_LOOKUP[unit_hit]
 			local rotation = Quaternion.identity()
@@ -3209,7 +3213,7 @@ dlc_settings.proc_functions = {
 
 			for i = 1, stacks do
 				local current_stacks = buff_extension:num_buff_type(buff_name)
-				local max_stacks = BuffTemplates[buff_name].buffs[1].max_stacks
+				local max_stacks = BuffUtils.get_buff_template(buff_name).buffs[1].max_stacks
 
 				if current_stacks < max_stacks then
 					local server_buff_id = buff_system:add_buff(owner_unit, buff_name, owner_unit, true)
@@ -3323,7 +3327,7 @@ dlc_settings.proc_functions = {
 
 		local position = POSITION_LOOKUP[owner_unit]
 		local explosion_template_name = template.explosion_template
-		local explosion_template = ExplosionTemplates[explosion_template_name]
+		local explosion_template = ExplosionUtils.get_template(explosion_template_name)
 		local radius = explosion_template.aoe.radius
 		local damage_source = "buff"
 
@@ -3476,7 +3480,7 @@ dlc_settings.proc_functions = {
 	thorn_skin_effect = function (owner_unit, buff, params)
 		if ALIVE[owner_unit] then
 			local template = buff.template
-			local explosion_template = ExplosionTemplates[template.explosion_template]
+			local explosion_template = ExplosionUtils.get_template(template.explosion_template)
 			local world = Application.main_world()
 			local hit_position = POSITION_LOOKUP[owner_unit]
 			local rotation = Quaternion.identity()

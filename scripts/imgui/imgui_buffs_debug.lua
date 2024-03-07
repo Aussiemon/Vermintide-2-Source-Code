@@ -45,6 +45,8 @@ ImguiBuffsDebug._get_buff_templates = function (self)
 	table.clear(self._buff_list)
 
 	for name, template in pairs(BuffTemplates) do
+		template = BuffUtils.get_buff_template(name)
+
 		table.insert(self._buff_list, name)
 	end
 

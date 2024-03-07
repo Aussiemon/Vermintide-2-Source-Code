@@ -17,6 +17,20 @@ local scenegraph_definition = {
 		horizontal_alignment = "center",
 		parent = "root",
 	},
+	back_button = {
+		horizontal_alignment = "left",
+		parent = "root",
+		vertical_alignment = "top",
+		size = {
+			0,
+			0,
+		},
+		position = {
+			40,
+			-50,
+			3,
+		},
+	},
 }
 local credits_widget_definition = {
 	scenegraph_id = "text_position",
@@ -49,6 +63,7 @@ local credits_widget_definition = {
 }
 local widget_definitions = {
 	credits = credits_widget_definition,
+	back_button = UIWidgets.create_layout_button("back_button", "layout_button_back", "layout_button_back_glow"),
 }
 
 return {

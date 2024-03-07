@@ -855,6 +855,42 @@ function flow_callback_enemy_gib(params)
 	return {}
 end
 
+function flow_callback_enemy_set_base_variation(params)
+	local unit = params.unit
+	local variation_result = {}
+
+	variation_result.groups = {}
+	variation_result.materials = {}
+	variation_result.scaling = {}
+
+	Unit.set_data(unit, "variation_data", variation_result)
+end
+
+function flow_callback_enemy_gib_prop_cleanup(params)
+	local unit = params.unit
+	local gib_items = Unit.get_data(unit, "gib_items") or {}
+	local stump_items = Unit.get_data(unit, "stump_items") or {}
+	local remove_gibs = params.remove_gibs
+
+	if ScriptUnit ~= nil then
+		if remove_gibs == true then
+			for i = 1, #gib_items do
+				Managers.state.unit_spawner:mark_for_deletion(gib_items[i])
+			end
+
+			Unit.set_data(unit, "gib_items", {})
+		end
+
+		for i = 1, #stump_items do
+			Managers.state.unit_spawner:mark_for_deletion(stump_items[i])
+		end
+
+		Unit.set_data(unit, "stump_items", {})
+	end
+
+	return {}
+end
+
 function flow_callback_enemy_pulp(params)
 	if BloodSettings == nil or BloodSettings.dismemberment.enabled then
 		enemy_dismember(params, false)

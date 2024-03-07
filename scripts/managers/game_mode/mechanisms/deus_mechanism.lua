@@ -929,10 +929,6 @@ DeusMechanism.sync_mechanism_data = function (self, peer_id, mechanism_newly_ini
 	end
 end
 
-DeusMechanism.client_left = function (self, peer_id)
-	return
-end
-
 DeusMechanism._send_level_started_tracking_data = function (self)
 	local statistics_db = Managers.player:statistics_db()
 	local bots = Managers.player:bots()

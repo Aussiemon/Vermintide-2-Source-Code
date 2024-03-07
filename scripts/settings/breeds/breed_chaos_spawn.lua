@@ -52,6 +52,7 @@ local breed_data = {
 	far_off_despawn_immunity = true,
 	has_inventory = false,
 	headshot_coop_stamina_fatigue_type = "headshot_special",
+	height = 2.85,
 	hit_effect_template = "HitEffectsChaosSpawn",
 	hit_mass_count = 50,
 	hit_reaction = "ai_default",
@@ -74,6 +75,7 @@ local breed_data = {
 	reach_distance = 3,
 	run_speed = 7,
 	scale_death_push = 1,
+	show_health_bar = true,
 	slot_template = "boss",
 	smart_object_template = "chaos_spawn",
 	smart_targeting_height_multiplier = 1.5,
@@ -421,6 +423,10 @@ local AttackIntensityPerDifficulty = {
 			normal = 5,
 			running = 2,
 		},
+		versus_base = {
+			normal = 5,
+			running = 2,
+		},
 	},
 	combo = {
 		easy = {
@@ -455,6 +461,10 @@ local AttackIntensityPerDifficulty = {
 			normal = 3,
 			running = 0.5,
 		},
+		versus_base = {
+			normal = 3,
+			running = 0.5,
+		},
 	},
 	shove = {
 		easy = {
@@ -479,6 +489,9 @@ local AttackIntensityPerDifficulty = {
 			normal = 1,
 		},
 		cataclysm_3 = {
+			normal = 1,
+		},
+		versus_base = {
 			normal = 1,
 		},
 	},
@@ -777,6 +790,7 @@ local action_data = {
 			harder = 15,
 			hardest = 25,
 			normal = 5,
+			versus_base = 5,
 		},
 	},
 	attack_grabbed_throw = {
@@ -798,6 +812,7 @@ local action_data = {
 			harder = 15,
 			hardest = 25,
 			normal = 5,
+			versus_base = 5,
 		},
 		health_leech_multiplier = {
 			cataclysm = 12.5,
@@ -808,6 +823,7 @@ local action_data = {
 			harder = 13.33,
 			hardest = 12,
 			normal = 2,
+			versus_base = 2,
 		},
 	},
 	tentacle_grab = {
@@ -886,6 +902,7 @@ local action_data = {
 			harder = 7,
 			hardest = 8,
 			normal = 5,
+			versus_base = 5,
 		},
 	},
 	erratic_follow = {

@@ -2257,6 +2257,12 @@ AchievementTemplates.achievements.unlock_first_talent_point = {
 	icon = "achievement_trophy_15",
 	name = "achv_unlock_first_talent_point_name",
 	completed = function (statistics_db, stats_id)
+		local is_versus = Managers.mechanism:current_mechanism_name() == "versus"
+
+		if is_versus then
+			return false
+		end
+
 		local heroes = {
 			"wood_elf",
 			"witch_hunter",
@@ -2282,6 +2288,12 @@ AchievementTemplates.achievements.unlock_all_talent_points = {
 	icon = "achievement_trophy_16",
 	name = "achv_unlock_all_talent_points_name",
 	completed = function (statistics_db, stats_id)
+		local is_versus = Managers.mechanism:current_mechanism_name() == "versus"
+
+		if is_versus then
+			return false
+		end
+
 		local heroes = {
 			"wood_elf",
 			"witch_hunter",

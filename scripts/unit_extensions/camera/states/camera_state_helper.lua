@@ -48,9 +48,7 @@ CameraStateHelper.set_camera_rotation = function (camera_unit, camera_extension)
 	Unit.set_local_rotation(camera_unit, 0, look_rotation)
 end
 
-CameraStateHelper.set_follow_camera_position = function (camera_unit, follow_unit, follow_node, position_offset, snap_camera, dt)
-	local position = Unit.world_position(follow_unit, follow_node)
-
+CameraStateHelper.set_follow_camera_position = function (camera_unit, position, position_offset, snap_camera, dt)
 	if position_offset then
 		position = position + position_offset
 	end
@@ -70,4 +68,95 @@ CameraStateHelper.set_follow_camera_position = function (camera_unit, follow_uni
 
 	fassert(Vector3.is_valid(new_position), "Camera position invalid.")
 	Unit.set_local_position(camera_unit, 0, new_position)
+end
+
+CameraStateHelper.get_valid_unit_to_observe = function (reverse, optional_side, optional_current_unit, optional_observer_player)
+	local units_to_spectate = FrameTable.alloc_table()
+	local players = table.values(Managers.player:human_and_bot_players())
+
+	table.sort(players, function (a, b)
+		return (a.game_object_id or 0) <= (b.game_object_id or 0)
+	end)
+
+	for i = 1, #players do
+		units_to_spectate[#units_to_spectate + 1] = players[i].player_unit
+	end
+
+	local game_mode = Managers.state.game_mode:game_mode()
+
+	if game_mode.get_extra_observer_units then
+		local optional_slot_id
+
+		if optional_observer_player then
+			local player_status = Managers.party:get_status_from_unique_id(optional_observer_player:unique_id())
+
+			optional_slot_id = player_status.slot_id
+		end
+
+		local game_mode_units = game_mode:get_extra_observer_units(optional_slot_id)
+
+		if game_mode_units then
+			table.append(units_to_spectate, game_mode_units)
+		end
+	end
+
+	local side_manager = Managers.state.side
+	local side_name = optional_side and optional_side:name()
+	local observe_sides
+
+	if side_name then
+		local game_settings = Managers.state.game_mode:settings()
+		local side_settings = game_settings.side_settings and game_settings.side_settings[side_name]
+
+		observe_sides = side_settings and side_settings.observe_sides
+	end
+
+	local num_units = #units_to_spectate
+
+	if num_units <= 0 then
+		return
+	end
+
+	local index = optional_current_unit and table.index_of(units_to_spectate, optional_current_unit)
+
+	if not index or index < 1 then
+		index = 1
+	end
+
+	index = math.index_wrapper(index, num_units)
+
+	local first_index = index
+	local last_valid_unit = units_to_spectate[index]
+	local diff = reverse and -1 or 1
+
+	repeat
+		index = math.index_wrapper(index + diff, num_units)
+
+		local next_unit = units_to_spectate[index]
+		local valid_unit = Unit.alive(next_unit)
+
+		if observe_sides then
+			local as_player = Managers.player:owner(next_unit)
+			local valid_player = as_player and as_player.player_unit
+
+			if valid_player then
+				local player_side = as_player and side_manager:get_side_from_player_unique_id(as_player:unique_id())
+				local valid_func = player_side and observe_sides[player_side:name()]
+
+				valid_unit = not valid_func or valid_func()
+			end
+		end
+
+		if valid_unit then
+			last_valid_unit = next_unit
+
+			break
+		end
+
+		if index == first_index then
+			break
+		end
+	until false
+
+	return last_valid_unit
 end

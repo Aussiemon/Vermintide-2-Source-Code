@@ -190,6 +190,12 @@ StatisticsUtil.register_kill = function (victim_unit, damage_data, statistics_db
 
 			if Breeds[breed_killed_name] or PlayerBreeds[breed_killed_name] and Managers.state.side:is_enemy_by_side(attacker_side, victim_side) then
 				statistics_db:increment_stat(stats_id, "kills_per_breed", breed_killed_name)
+
+				local local_player = Managers.player:local_player()
+
+				if victim_player and attacker_player == local_player then
+					Managers.state.event:trigger("add_player_kill_confirmation", attacker_side:name(), victim_player)
+				end
 			end
 
 			if killed_race_name then
@@ -318,6 +324,12 @@ StatisticsUtil.register_knockdown = function (victim_unit, damage_data, statisti
 			end
 
 			Managers.state.event:trigger("add_coop_feedback_kill", stats_id .. breed_killed_name, local_human, predicate, breed_attacker_name, breed_killed_name)
+
+			local local_player = Managers.player:local_player()
+
+			if victim_player and attacker_player == local_player then
+				Managers.state.event:trigger("add_player_knock_confirmation", victim_player)
+			end
 		end
 	end
 end
@@ -537,18 +549,20 @@ StatisticsUtil.register_damage = function (victim_unit, damage_data, statistics_
 					statistics_db:increment_stat(stats_id, "headshots")
 				end
 
-				if target_breed.is_player then
-					local is_enemy, attacker_side = Managers.state.side:is_enemy(attacker_unit, victim_unit)
+				local is_enemy, attacker_side = Managers.state.side:is_enemy(attacker_unit, victim_unit)
 
-					if is_enemy and attacker_side.show_damage_feedback and HEALTH_ALIVE[victim_unit] then
-						local target_player = player_manager:owner(victim_unit)
-						local local_human = not attacker_player.remote and not attacker_player.bot_player
-						local event_type = local_human and "dealing_damage" or "other_dealing_damage"
-						local profile_index = target_player:profile_index()
-						local damage_type = damage_data[DamageDataIndex.DAMAGE_TYPE]
+				if is_enemy and attacker_side:name() == "heroes" and Managers.mechanism:current_mechanism_name() == "versus" then
+					statistics_db:modify_stat_by_amount(stats_id, "vs_damage_dealt_to_pactsworn", damage_amount)
+				end
 
-						Managers.state.event:trigger("add_damage_feedback_event", stats_id .. breed_name, local_human, event_type, attacker_player, target_player, damage_amount, damage_type)
-					end
+				if target_breed.is_player and is_enemy and attacker_side.show_damage_feedback and HEALTH_ALIVE[victim_unit] then
+					local target_player = player_manager:owner(victim_unit)
+					local local_human = not attacker_player.remote and not attacker_player.bot_player
+					local event_type = local_human and "dealing_damage" or "other_dealing_damage"
+					local profile_index = target_player:profile_index()
+					local damage_type = damage_data[DamageDataIndex.DAMAGE_TYPE]
+
+					Managers.state.event:trigger("add_damage_feedback_event", stats_id .. breed_name, local_human, event_type, attacker_player, target_player, damage_amount, damage_type)
 				end
 			end
 		end
@@ -1154,5 +1168,13 @@ StatisticsUtil.register_complete_survival_level = function (statistics_db)
 		if completed_difficulty then
 			StatisticsUtil._register_completed_level_difficulty(statistics_db, level_id, completed_difficulty)
 		end
+	end
+end
+
+StatisticsUtil.register_disable = function (disabler_player, statistics_db, disabler_breed_name)
+	if Managers.mechanism:current_mechanism_name() == "versus" then
+		local stats_id = disabler_player:stats_id()
+
+		statistics_db:increment_stat(stats_id, "vs_disables_per_breed", disabler_breed_name)
 	end
 end

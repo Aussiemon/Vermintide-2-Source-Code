@@ -39,6 +39,7 @@ BTMeleeOverlapAttackAction.enter = function (self, unit, blackboard, t)
 
 	blackboard.action = action
 	blackboard.active_node = BTMeleeOverlapAttackAction
+	blackboard.attack_token = true
 
 	local target_unit = blackboard.override_target_unit or blackboard.target_unit
 
@@ -327,6 +328,7 @@ BTMeleeOverlapAttackAction.leave = function (self, unit, blackboard, t, reason, 
 
 	blackboard.action = nil
 	blackboard.active_node = nil
+	blackboard.attack_token = nil
 	blackboard.anim_locked = nil
 	blackboard.attack = nil
 	blackboard.attack_anim_driven = nil

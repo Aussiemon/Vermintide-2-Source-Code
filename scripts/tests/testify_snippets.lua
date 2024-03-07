@@ -116,4 +116,88 @@ TestifySnippets.equip_hats = function ()
 	end
 end
 
+TestifySnippets.versus_server_wait_for_full_server = function ()
+	Testify:make_request("wait_for_game_mode_state", {
+		game_mode = "inn_vs",
+		state = "dedicated_server_waiting_for_fully_reserved",
+	})
+	Testify:make_request("wait_for_game_mode_state", {
+		game_mode = "inn_vs",
+		state = "dedicated_server_starting_game",
+	})
+end
+
+TestifySnippets.versus_client_wait_for_full_server = function ()
+	Testify:make_request("wait_for_matchmaking_substate", {
+		state = "MatchmakingStateReserveLobby",
+		substate = "waiting_for_join_message",
+	})
+	Testify:make_request("wait_for_matchmaking_state", "MatchmakingStateRequestJoinGame")
+	Testify:make_request("wait_for_matchmaking_state", "MatchmakingStateJoinGame")
+end
+
+TestifySnippets.versus_complete_all_objectives = function ()
+	local early_end = false
+
+	Testify:make_request("wait_for_objectives_to_activate")
+
+	local current_main_objective = tonumber(Testify:make_request("get_current_main_objective"))
+	local num_main_objectives = tonumber(Testify:make_request("get_num_main_objectives"))
+
+	while current_main_objective and current_main_objective <= num_main_objectives do
+		TestifySnippets.versus_complete_next_objective()
+		TestifySnippets.wait(1)
+
+		local party_won_early = Testify:make_request("versus_party_won_early")
+
+		if party_won_early then
+			return true
+		end
+
+		current_main_objective = Testify:make_request("get_current_main_objective")
+	end
+
+	return false
+end
+
+TestifySnippets.versus_complete_next_objective = function ()
+	local objective_type = Testify:make_request("versus_objective_type")
+	local num_human_players_in_hero_party = tonumber(Testify:make_request("num_human_players_on_side", "heroes"))
+
+	if num_human_players_in_hero_party == 0 or objective_type == "objective_not_supported" then
+		TestifySnippets.wait(1)
+		Testify:make_request("versus_complete_objectives")
+		TestifySnippets.wait(1)
+	elseif objective_type == "objective_volume" or objective_type == "objective_capture_point" then
+		local num_players_inside
+
+		if objective_type == "objective_volume" then
+			num_players_inside = Testify:make_request("versus_volume_objective_get_num_players_inside")
+		else
+			num_players_inside = Testify:make_request("versus_capture_point_objective_get_num_players_inside")
+		end
+
+		if num_players_inside < 1 then
+			local objective_data = Testify:make_request("versus_current_objective_position")
+			local boxed_position
+			local main_path_pos = objective_data.main_path_position
+			local random_pos = objective_data.random_position
+
+			if Vector3.distance(main_path_pos, random_pos) > 10 then
+				boxed_position = Vector3Box(random_pos)
+			else
+				boxed_position = Vector3Box(main_path_pos)
+			end
+
+			Testify:make_request("teleport_all_players_to_position", boxed_position)
+		end
+	elseif objective_type == "objective_interact" then
+		local objective_data = Testify:make_request("versus_current_objective_position")
+		local boxed_position = Vector3Box(objective_data.position)
+
+		Testify:make_request("teleport_all_players_to_position", boxed_position)
+		Testify:make_request("versus_objective_simulate_interaction")
+	end
+end
+
 return TestifySnippets

@@ -38,6 +38,11 @@ ActionRangedBase.client_owner_start_action = function (self, new_action, t, chai
 	self._time_to_shoot = t + (new_action.fire_time or 0)
 	self._active_reload_time = new_action.active_reload_time and t + new_action.active_reload_time
 	self._power_level = power_level
+
+	if new_action.power_level then
+		self._power_level = new_action.power_level
+	end
+
 	self._num_shots_total, self._num_projectiles_per_shot = self:gen_num_shots()
 	self._extra_shot_delay = new_action.extra_shot_delay or 0.2
 	self._burst_shot_delay = new_action.burst_shot_delay or 0.1
@@ -131,7 +136,14 @@ ActionRangedBase._start_shooting = function (self, t)
 	local owner_unit = self.owner_unit
 	local current_action = self.current_action
 	local first_person_extension = self.first_person_extension
-	local current_position, current_rotation = first_person_extension:get_projectile_start_position_rotation()
+	local current_position, current_rotation
+
+	if self.get_projectile_start_position_rotation then
+		current_position, current_rotation = self:get_projectile_start_position_rotation()
+	else
+		current_position, current_rotation = first_person_extension:get_projectile_start_position_rotation()
+	end
+
 	local eyetracking_extension = self.eyetracking_extension
 
 	if current_action.fire_at_gaze_setting and eyetracking_extension and eyetracking_extension:get_is_feature_enabled("tobii_fire_at_gaze") then
@@ -291,6 +303,8 @@ ActionRangedBase.spawn_projectile = function (self, position, rotation)
 
 	if current_action.projectile_info then
 		self:fire_projectile(position, rotation)
+	elseif current_action.lightweight_projectile_info then
+		self:fire_lightweight_projectile(position, rotation)
 	else
 		local direction = Quaternion.forward(rotation)
 		local result = self:fire_hitscan(position, direction, current_action.range or 30)
@@ -324,6 +338,35 @@ ActionRangedBase.fire_projectile = function (self, position, rotation)
 	local lookup_data = current_action.lookup_data
 
 	ActionUtils.spawn_player_projectile(owner_unit, position, rotation, 0, angle, target_vector, speed, self.item_name, lookup_data.item_template_name, lookup_data.action_name, lookup_data.sub_action_name, self._is_critical_strike, self._power_level)
+end
+
+ActionRangedBase.fire_lightweight_projectile = function (self, position, rotation)
+	local owner_unit = self.owner_unit
+	local current_action = self.current_action
+	local projectile_info = current_action.lightweight_projectile_info
+	local owner_peer_id = Network.peer_id()
+	local projectile_template_name = projectile_info.template_name
+	local projectile_template = LightWeightProjectiles[projectile_template_name]
+	local collision_filter = projectile_info.collision_filter
+	local direction = Quaternion.forward(rotation)
+	local normalized_direction = Vector3.normalize(direction)
+	local spread_angle = math.random() * projectile_template.spread
+	local dir_rot = Quaternion.look(normalized_direction, Vector3.up())
+	local pitch = Quaternion(Vector3.right(), spread_angle)
+	local roll = Quaternion(Vector3.forward(), math.random() * math.tau)
+	local spread_rot = Quaternion.multiply(Quaternion.multiply(dir_rot, roll), pitch)
+	local spread_direction = Quaternion.forward(spread_rot)
+	local action_data = {
+		power_level = self._power_level,
+		damage_profile = projectile_template.damage_profile,
+		hit_effect = projectile_template.hit_effect,
+		player_push_velocity = Vector3Box(normalized_direction * projectile_template.impact_push_speed),
+		projectile_linker = projectile_template.projectile_linker,
+		first_person_hit_flow_events = projectile_template.first_person_hit_flow_events,
+	}
+	local projectile_system = Managers.state.entity:system("projectile_system")
+
+	projectile_system:create_light_weight_projectile(self.item_name, owner_unit, position, spread_direction, projectile_template.projectile_speed, nil, nil, projectile_template.projectile_max_range, collision_filter, action_data, projectile_template.light_weight_projectile_effect, owner_peer_id)
 end
 
 ActionRangedBase.fire_hitscan = function (self, position, direction, range)

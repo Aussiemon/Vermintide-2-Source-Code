@@ -606,7 +606,7 @@ StartMenuView.close_menu = function (self, return_to_main_screen)
 		local current_state = state_machine:state()
 		local current_state_name = current_state.NAME
 
-		if current_state_name ~= "StartMenuStateOverview" then
+		if (GameSettingsDevelopment.skip_start_screen or Development.parameter("skip_start_screen")) and current_state_name ~= "StartMenuStateOverview" then
 			self:_change_screen_by_name("overview")
 
 			return

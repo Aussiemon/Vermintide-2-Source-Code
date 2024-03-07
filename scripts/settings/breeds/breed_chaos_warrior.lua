@@ -54,6 +54,7 @@ local breed_data = {
 	has_inventory = true,
 	has_running_attack = true,
 	headshot_coop_stamina_fatigue_type = "headshot_special",
+	height = 2.25,
 	hit_effect_template = "HitEffectsChaosWarrior",
 	hit_mass_count = 20,
 	hit_reaction = "ai_default",
@@ -153,7 +154,7 @@ local breed_data = {
 	},
 	run_on_spawn = AiBreedSnippets.on_chaos_warrior_spawn,
 	run_on_update = AiBreedSnippets.on_chaos_warrior_update,
-	stagger_modifier_function = function (stagger_type, duration, length, hit_zone_name, blackboard, breed, direction)
+	stagger_modifier_function = function (stagger_type, duration, length, hit_zone_name, blackboard, breed)
 		if blackboard.stagger_type == stagger_types.heavy or blackboard.stagger_type == stagger_types.explosion then
 			if stagger_type == stagger_types.heavy and blackboard.heavy_stagger_immune_time then
 				stagger_type = stagger_types.none
@@ -350,6 +351,9 @@ local AttackIntensityPerDifficulty = {
 		cataclysm_3 = {
 			normal = 3,
 		},
+		versus_base = {
+			normal = 3,
+		},
 	},
 	sweep = {
 		easy = {
@@ -381,6 +385,10 @@ local AttackIntensityPerDifficulty = {
 			sweep = 4,
 		},
 		cataclysm_3 = {
+			normal = 2,
+			sweep = 4,
+		},
+		versus_base = {
 			normal = 2,
 			sweep = 4,
 		},
@@ -418,6 +426,10 @@ local AttackIntensityPerDifficulty = {
 			normal = 2,
 			sweep = 4,
 		},
+		versus_base = {
+			normal = 2,
+			sweep = 4,
+		},
 	},
 	push = {
 		easy = {
@@ -444,6 +456,9 @@ local AttackIntensityPerDifficulty = {
 		cataclysm_3 = {
 			push = 1.5,
 		},
+		versus_base = {
+			push = 1.5,
+		},
 	},
 	running = {
 		easy = {
@@ -468,6 +483,9 @@ local AttackIntensityPerDifficulty = {
 			running = 4.5,
 		},
 		cataclysm_3 = {
+			running = 4.5,
+		},
+		versus_base = {
 			running = 4.5,
 		},
 	},

@@ -146,6 +146,8 @@ DebugScreen.setup = function (world, settings, callbacks)
 			cs.preset = setting.preset
 		end
 
+		cs.item_display_func = setting.item_display_func
+
 		if setting.bitmap then
 			cs.bitmap = setting.bitmap
 			cs.bitmap_size = setting.bitmap_size
@@ -284,7 +286,7 @@ DebugScreen.update = function (dt, t, input_service, input_manager)
 	local console_width = DebugScreen.console_width
 	local mod_key_down = input_service:get("console_mod_key")
 
-	if input_service:get("console_open_key") then
+	if input_service:get("console_open_key") or DebugScreen.active and input_service:is_blocked() then
 		DebugScreen.active = not DebugScreen.active
 
 		if DebugScreen.active then
@@ -652,7 +654,14 @@ DebugScreen.update = function (dt, t, input_service, input_manager)
 		local option_text
 
 		if cs.selected_id ~= nil then
-			option_text = string.format("< %s >", tostring(cs.options[cs.selected_id]))
+			local options, idx = cs.options, cs.selected_id
+			local val = options[idx]
+
+			if cs.item_display_func then
+				option_text = string.format("< %s >", cs.item_display_func(val, idx, options))
+			else
+				option_text = string.format("< %s >", tostring(val))
+			end
 
 			if is_hot then
 				Gui.text(gui, option_text, font_mtrl, font_size, font, current_selected_option_position, text_color_option_hot)
@@ -691,10 +700,12 @@ DebugScreen.update = function (dt, t, input_service, input_manager)
 				local option = cs.options[current_option_index]
 				local is_hot_sub = current_option_index == cs.hot_id
 				local is_selected_sub = current_option_index == cs.selected_id
-				local text_sub = tostring(option)
+				local text_sub
 
-				if is_hot_sub then
-					-- Nothing
+				if cs.item_display_func then
+					text_sub = tostring(cs.item_display_func(option, current_option_index, cs.options))
+				else
+					text_sub = tostring(option)
 				end
 
 				if is_selected_sub then

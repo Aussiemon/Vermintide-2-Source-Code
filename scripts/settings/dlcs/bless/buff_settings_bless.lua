@@ -575,11 +575,9 @@ settings.proc_functions = {
 	victor_priest_4_3_heal_on_kill = function (owner_unit, buff, params)
 		local is_server = Managers.state.network.is_server
 		local player_manager = Managers.player
-		local local_player = player_manager:local_player()
 		local owner_player = player_manager:owner(owner_unit)
-		local is_local = owner_unit == local_player.player_unit or is_server and owner_player.bot_player
 
-		if is_local then
+		if not owner_player.remote then
 			local talent_extension = ScriptUnit.extension(owner_unit, "talent_system")
 
 			if talent_extension:has_talent("victor_priest_4_3") then
@@ -883,7 +881,7 @@ settings.buff_function_templates = {
 					StatisticsUtil.register_revive(attacker_unit, owner_unit, Managers.player:statistics_db())
 				end
 
-				local heal_window = BuffTemplates.victor_priest_6_3_buff.buffs[1].heal_window or 3
+				local heal_window = BuffUtils.get_buff_template("victor_priest_6_3_buff").buffs[1].heal_window or 3
 				local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
 				local damage_store_buff = buff_extension:get_buff_type("victor_priest_6_3_buff")
 
@@ -1074,7 +1072,7 @@ settings.buff_function_templates = {
 		end
 
 		local explosion_template_name = "victor_priest_activated_ability_nuke"
-		local explosion_template = ExplosionTemplates[explosion_template_name]
+		local explosion_template = ExplosionUtils.get_template(explosion_template_name)
 		local rotation = Unit.local_rotation(owner_unit, 0)
 		local scale = 1
 		local damage_source = "career_ability"

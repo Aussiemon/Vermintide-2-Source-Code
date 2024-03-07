@@ -162,19 +162,8 @@ return {
 			return
 		end
 
-		local camera_unit = player_manager:local_player().camera_follow_unit
-		local camera_extension = ScriptUnit.has_extension(camera_unit, "camera_system")
-		local observed_player
-
-		if camera_extension then
-			local observed_player_id = camera_extension:get_observed_player_id()
-
-			observed_player = observed_player_id and player_manager:players()[observed_player_id]
-		end
-
-		if observed_player and Unit.alive(observed_player.player_unit) then
-			player_unit = observed_player.player_unit
-		end
+		local local_player = player_manager:local_player()
+		local observed_unit = local_player:observed_unit()
 
 		for i = 1, enemies_per_frame do
 			faded_current_index = faded_current_index + 1
@@ -210,8 +199,8 @@ return {
 				end
 
 				local radius = data.light_radius
-				local pos = POSITION_LOOKUP[player_unit]
-				local dist_sq = player_unit and Vector3.distance_squared(pos, unit_pos) or radius * radius
+				local pos = POSITION_LOOKUP[observed_unit]
+				local dist_sq = pos and Vector3.distance_squared(pos, unit_pos) or radius * radius
 				local effect_unit = linked_units[unit]
 				local effect_unit_visible = linked_units_visibility[unit]
 

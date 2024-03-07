@@ -452,7 +452,7 @@ SplineMovementHermiteInterpolatedMetered.move = function (self, delta)
 	local current_subdivision_length = current_subdivision.length
 	local new_t = self._t + delta / current_subdivision_length
 
-	if new_t > 1 and self._current_spline_index == #self._splines and self._current_subdivision_index == #current_spline.subdivisions then
+	if new_t >= 1 and self._current_spline_index == #self._splines and self._current_subdivision_index == #current_spline.subdivisions then
 		self._t = 1
 
 		local remainder = (new_t - 1) * current_subdivision_length

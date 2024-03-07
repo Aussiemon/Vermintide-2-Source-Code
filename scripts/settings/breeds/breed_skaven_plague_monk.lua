@@ -39,6 +39,7 @@ local breed_data = {
 	flingable = true,
 	has_inventory = true,
 	has_running_attack = true,
+	height = 1.7,
 	hit_effect_template = "HitEffectsSkavenPlagueMonk",
 	hit_mass_count = 2.5,
 	hit_reaction = "ai_default",
@@ -329,6 +330,9 @@ local AttackIntensityPerDifficulty = {
 		cataclysm_3 = {
 			normal = 2,
 		},
+		versus_base = {
+			normal = 2,
+		},
 	},
 	frenzy = {
 		easy = {
@@ -363,6 +367,10 @@ local AttackIntensityPerDifficulty = {
 			frenzy = 5,
 			normal = 2.5,
 		},
+		versus_base = {
+			frenzy = 5,
+			normal = 2.5,
+		},
 	},
 	running = {
 		easy = {
@@ -387,6 +395,9 @@ local AttackIntensityPerDifficulty = {
 			running = 2.5,
 		},
 		cataclysm_3 = {
+			running = 2.5,
+		},
+		versus_base = {
 			running = 2.5,
 		},
 	},

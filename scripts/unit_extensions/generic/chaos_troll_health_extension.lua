@@ -37,7 +37,7 @@ ChaosTrollHealthExtension.set_max_health = function (self, value)
 	local go_id = self._game_object_id or Managers.state.unit_storage:go_id(self.unit)
 
 	if go_id then
-		local max_health = DamageUtils.networkify_health(self.current_max_health)
+		local max_health = self.current_max_health
 
 		self.network_transmit:send_rpc_clients("rpc_sync_current_max_health", go_id, max_health)
 	end
@@ -56,7 +56,7 @@ ChaosTrollHealthExtension._setup_initial_health_variables = function (self, new_
 	self.regen_pulse_intensity = self.breed.regen_pulse_intensity
 	self.downed_pulse_intensity = self.breed.downed_pulse_intensity
 	self.regen_taken_damage_pause_time = self.breed.regen_taken_damage_pause_time
-	self.current_max_health = new_max_health
+	self.current_max_health = DamageUtils.networkify_health(new_max_health)
 	self._initial_sync = false
 end
 

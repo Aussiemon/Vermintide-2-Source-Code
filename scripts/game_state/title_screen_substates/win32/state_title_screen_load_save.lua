@@ -27,6 +27,11 @@ StateTitleScreenLoadSave.on_enter = function (self, params)
 end
 
 StateTitleScreenLoadSave._handle_tutorial_auto_start = function (self)
+	local loading_context = self.parent.parent.loading_context
+	local force_run_tutorial = loading_context.force_run_tutorial
+
+	loading_context.force_run_tutorial = nil
+
 	if IS_WINDOWS and rawget(_G, "Steam") then
 		local app_id = Steam.app_id()
 
@@ -38,7 +43,7 @@ StateTitleScreenLoadSave._handle_tutorial_auto_start = function (self)
 	local has_completed_tutorial = Managers.backend:get_user_data("has_completed_tutorial") or SaveData.has_completed_tutorial or false
 	local run_tutorial, tutorial_state = Managers.mechanism:should_run_tutorial()
 
-	if has_completed_tutorial or script_data.disable_tutorial_at_start or not run_tutorial then
+	if not force_run_tutorial and (has_completed_tutorial or script_data.disable_tutorial_at_start or not run_tutorial) then
 		return
 	end
 

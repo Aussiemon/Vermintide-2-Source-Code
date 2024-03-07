@@ -90,6 +90,13 @@ local camera_move_duration_per_layout = {
 	character_selection = UISettings.console_menu_camera_move_duration,
 }
 local disable_camera_position_per_layout = {}
+local character_camera_location = {
+	default = {
+		0,
+		0,
+		0,
+	},
+}
 
 HeroWindowBackgroundConsole = class(HeroWindowBackgroundConsole)
 HeroWindowBackgroundConsole.NAME = "HeroWindowBackgroundConsole"
@@ -299,6 +306,12 @@ HeroWindowBackgroundConsole._update_character_visibility = function (self, layou
 
 	if not draw_character and self.params.hero_statistics_active then
 		self:_handle_statistics_pressed()
+	end
+
+	if draw_character then
+		local character_location = character_camera_location[layout_name] or character_camera_location.default
+
+		self.world_previewer:set_hero_location_lerped(character_location, 0.5)
 	end
 end
 
@@ -543,6 +556,7 @@ HeroWindowBackgroundConsole._populate_loadout = function (self)
 
 		for _, slot in pairs(slots) do
 			local slot_name = slot.name
+			local slot_type = slot.type
 			local item = BackendUtils.get_loadout_item(career_name, slot_name)
 
 			if item then

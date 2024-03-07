@@ -50,6 +50,14 @@ PassiveAbilitySettings.wh_priest = {
 					on_elite = 6,
 					on_normal = 2,
 					on_special = 8,
+					mechanism_overrides = {
+						versus = {
+							on_boss = 200,
+							on_elite = 16,
+							on_normal = 4,
+							on_special = 32,
+						},
+					},
 				},
 			},
 		},

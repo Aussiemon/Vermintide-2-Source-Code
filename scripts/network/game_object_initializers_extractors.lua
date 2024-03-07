@@ -2022,10 +2022,13 @@ go_type_table = {
 		dialogue_node = function (unit, unit_name, unit_template, gameobject_functor_context)
 			local dialogue_extension = ScriptUnit.extension(unit, "dialogue_system")
 			local dialogue_profile = dialogue_extension.dialogue_profile
+			local side = Managers.state.side.side_by_unit[unit]
+			local side_id = side.side_id
 			local data_table = {
 				go_type = NetworkLookup.go_types.dialogue_node,
 				husk_unit = NetworkLookup.husks[unit_name],
 				dialogue_profile = NetworkLookup.dialogue_profiles[dialogue_profile],
+				side_id = side_id or 0,
 			}
 
 			return data_table
@@ -2090,6 +2093,7 @@ go_type_table = {
 
 			setup_blackboard(player, profile, career, unit)
 
+			local breed = career.breed
 			local extension_init_data = {
 				locomotion_system = {
 					id = go_id,
@@ -2106,6 +2110,7 @@ go_type_table = {
 				hit_reaction_system = {
 					hit_reaction_template = "player",
 					is_husk = true,
+					hit_effect_template = breed.hit_effect_template,
 				},
 				death_system = {
 					death_reaction_template = "player",
@@ -2245,6 +2250,7 @@ go_type_table = {
 
 			setup_blackboard(player, profile, career, unit)
 
+			local breed = career.breed
 			local extension_init_data = {
 				locomotion_system = {
 					id = go_id,
@@ -2270,6 +2276,7 @@ go_type_table = {
 				hit_reaction_system = {
 					hit_reaction_template = "player",
 					is_husk = true,
+					hit_effect_template = breed.hit_effect_template,
 				},
 				dialogue_context_system = {
 					profile = profile,
@@ -4160,7 +4167,7 @@ go_type_table = {
 			local nav_mesh_effect
 
 			if explosion_template_name then
-				local template = ExplosionTemplates[explosion_template_name]
+				local template = ExplosionUtils.get_template(explosion_template_name)
 
 				if template then
 					local aoe_data = template.aoe
@@ -4247,7 +4254,7 @@ go_type_table = {
 			local nav_mesh_effect
 
 			if explosion_template_name then
-				local template = ExplosionTemplates[explosion_template_name]
+				local template = ExplosionUtils.get_template(explosion_template_name)
 
 				if template then
 					local aoe_data = template.aoe
@@ -4579,9 +4586,16 @@ go_type_table = {
 		end,
 		dialogue_node = function (game_session, go_id, owner_id, unit, gameobject_functor_context)
 			local dialogue_profile_id = GameSession.game_object_field(game_session, go_id, "dialogue_profile")
+			local side_id = GameSession.game_object_field(game_session, go_id, "side_id")
+
+			side_id = side_id > 0 and side_id or nil
+
 			local extension_init_data = {
 				dialogue_system = {
 					dialogue_profile = NetworkLookup.dialogue_profiles[dialogue_profile_id],
+				},
+				surrounding_aware_system = {
+					side_id = side_id,
 				},
 			}
 			local unit_template_name = "dialogue_node"

@@ -15,7 +15,7 @@ require("scripts/settings/dlc_settings")
 require("scripts/settings/infighting_settings")
 require("scripts/settings/player_bots_settings")
 require("scripts/managers/status_effect/status_effect_templates")
-require("scripts/settings/breeds/breed_players")
+require("scripts/helpers/breed_utils")
 
 DEFAULT_BREED_AOE_HEIGHT = 1.5
 DEFAULT_BREED_AOE_RADIUS = 0.3
@@ -106,37 +106,6 @@ local DEFAULT_NAV_COST_MAP_LAYERS = {
 }
 local available_nav_tag_layers = table.clone(DEFAULT_NAVTAG_LAYERS)
 local available_nav_cost_map_layers = table.clone(DEFAULT_NAV_COST_MAP_LAYERS)
-local armor_category_mapping = {
-	BreedCategory.Infantry,
-	BreedCategory.Armored,
-	[5] = BreedCategory.Berserker,
-	[6] = BreedCategory.SuperArmor,
-}
-
-local function inject_breed_category_mask(breed_data)
-	local category_mask = 0
-
-	if breed_data.special then
-		breed_data.immediate_threat = true
-		category_mask = bit.bor(category_mask, BreedCategory.Special)
-	end
-
-	if breed_data.boss then
-		category_mask = bit.bor(category_mask, BreedCategory.Boss)
-	end
-
-	if breed_data.shield_user then
-		category_mask = bit.bor(category_mask, BreedCategory.Shielded)
-	end
-
-	local armor_bit = armor_category_mapping[breed_data.armor_category]
-
-	if armor_bit and (not breed_data.special and not breed_data.boss or breed_data.armor_category == 2) then
-		category_mask = bit.bor(category_mask, armor_bit)
-	end
-
-	breed_data.category_mask = category_mask
-end
 
 for breed_name, breed_data in pairs(Breeds) do
 	local lookup = BreedHitZonesLookup[breed_name]
@@ -159,15 +128,11 @@ for breed_name, breed_data in pairs(Breeds) do
 		table.merge(available_nav_cost_map_layers, nav_cost_map_allowed_layers)
 	end
 
-	inject_breed_category_mask(breed_data)
+	BreedUtils.inject_breed_category_mask(breed_data)
 
 	if not breed_data.aoe_height then
 		breed_data.aoe_height = DEFAULT_BREED_AOE_HEIGHT
 	end
-end
-
-for breed_name, breed_data in pairs(PlayerBreeds) do
-	inject_breed_category_mask(breed_data)
 end
 
 for _, breed_actions in pairs(BreedActions) do

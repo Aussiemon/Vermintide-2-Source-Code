@@ -1,6 +1,7 @@
 ﻿-- chunkname: @scripts/managers/backend_playfab/playfab_mirror_base.lua
 
 require("scripts/managers/backend_playfab/playfab_request_queue")
+require("scripts/helpers/weave_utils")
 
 local PlayFabClientApi = require("PlayFab.PlayFabClientApi")
 local CAREER_ID_LOOKUP = {
@@ -184,9 +185,10 @@ PlayFabMirrorBase._parse_unlocked_weapon_skins = function (self)
 	return unlocked_weapon_skins
 end
 
-PlayFabMirrorBase._parse_unlocked_cosmetics = function (self)
+PlayFabMirrorBase._parse_unlocked_cosmetics = function (self, unlocked_cosmetics_string)
+	unlocked_cosmetics_string = unlocked_cosmetics_string or self:get_read_only_data("unlocked_cosmetics")
+
 	local unlocked_cosmetics = {}
-	local unlocked_cosmetics_string = self:get_read_only_data("unlocked_cosmetics")
 	local unlock_manager = Managers.unlock
 	local existing_cosmetics = self._unlocked_cosmetics or {}
 
@@ -1466,6 +1468,7 @@ PlayFabMirrorBase._update_data = function (self, item, backend_id)
 
 		if magic_level then
 			item.magic_level = tonumber(magic_level)
+			item.power_level = WeaveUtils.magic_level_to_power_level(item.magic_level)
 		end
 	end
 
@@ -1483,6 +1486,14 @@ end
 
 PlayFabMirrorBase.ready = function (self)
 	return self._inventory_items and self._num_items_to_load == 0
+end
+
+PlayFabMirrorBase.current_api_call = function (self)
+	if not self._request_queue then
+		return
+	end
+
+	return self._request_queue:current_api_call()
 end
 
 PlayFabMirrorBase.update = function (self, dt, t)
@@ -1858,7 +1869,7 @@ PlayFabMirrorBase._create_fake_inventory_items = function (self, fake_inventory_
 					override_id = override_id,
 				}
 			else
-				lookup_table[lookup_table] = nil
+				lookup_table[cosmetic_name] = nil
 			end
 		end
 	else
@@ -2279,29 +2290,6 @@ PlayFabMirrorBase._commit_internal = function (self, queue_id, commit_complete_c
 		end
 	end
 
-	local win_tracks_interface = Managers.backend:get_interface("win_tracks")
-
-	if win_tracks_interface then
-		local current_win_track_id = win_tracks_interface:get_current_win_track_id()
-
-		if current_win_track_id ~= self._current_win_track_id then
-			self._current_win_track_id = current_win_track_id
-
-			local update_win_tracks_request = {
-				FunctionName = "updateCurrentWinTrack",
-				FunctionParameter = {
-					current_win_track_id = current_win_track_id,
-				},
-			}
-			local success_callback = callback(self, "update_current_win_track_cb", commit_id)
-			local id = self._request_queue:enqueue(update_win_tracks_request, success_callback, false)
-
-			commit.status = "waiting"
-			commit.wait_for_win_tracks_data = true
-			commit.request_queue_ids[#commit.request_queue_ids + 1] = id
-		end
-	end
-
 	table.clear(new_data)
 
 	local read_only_data_mirror = self._read_only_data_mirror
@@ -2495,6 +2483,10 @@ PlayFabMirrorBase._setup_careers = function (self)
 
 	local broken_slots_data = {}
 	local slots_to_verify
+	local ignore_keys = {
+		talents = true,
+	}
+	local slot_keys_lookup = {}
 
 	for character_name, character_data in pairs(characters_data) do
 		local profile_index = FindProfileIndex(character_name)
@@ -2502,20 +2494,39 @@ PlayFabMirrorBase._setup_careers = function (self)
 		if profile_index then
 			local profile = SPProfiles[profile_index]
 
-			slots_to_verify = self._verify_slot_keys_per_affiliation[profile.affiliation]
+			slots_to_verify = slot_keys_lookup[profile.affiliation]
 
-			for career_name, career_data in pairs(character_data.careers) do
-				if CareerSettings[career_name] then
-					self._career_data[career_name] = {}
-					self._career_data_mirror[career_name] = {}
+			if not slots_to_verify then
+				local slot_keys_per_affiliation = self._verify_slot_keys_per_affiliation[profile.affiliation]
 
-					local broken_slots = self:_set_inital_career_data(career_name, career_data, slots_to_verify)
+				if slot_keys_per_affiliation then
+					local tbl = table.clone(self._verify_slot_keys_per_affiliation[profile.affiliation])
 
-					if broken_slots then
-						broken_slots_data[career_name] = broken_slots
+					for i = #tbl, 1, -1 do
+						if ignore_keys[tbl[i]] then
+							table.remove(tbl, i)
+						end
+					end
 
-						debug_printf("Broken item slots for career: %q", career_name)
-						table.dump(broken_slots)
+					slot_keys_lookup[profile.affiliation] = tbl
+					slots_to_verify = tbl
+				end
+			end
+
+			if slots_to_verify then
+				for career_name, career_data in pairs(character_data.careers) do
+					if CareerSettings[career_name] then
+						self._career_data[career_name] = {}
+						self._career_data_mirror[career_name] = {}
+
+						local broken_slots = self:_set_inital_career_data(career_name, career_data, slots_to_verify)
+
+						if broken_slots then
+							broken_slots_data[career_name] = broken_slots
+
+							debug_printf("Broken item slots for career: %q", career_name)
+							table.dump(broken_slots)
+						end
 					end
 				end
 			end
@@ -2528,6 +2539,8 @@ PlayFabMirrorBase._setup_careers = function (self)
 
 		if Managers.mechanism:current_mechanism_name() == "adventure" then
 			self:_check_weaves_loadout()
+		else
+			self:unequip_disabled_items()
 		end
 	else
 		self:_fix_career_data(broken_slots_data)
@@ -2573,23 +2586,84 @@ PlayFabMirrorBase.fix_career_data_request_cb = function (self, result)
 	self:set_read_only_data(self._characters_data_key, cjson.encode(character_starting_gear), true)
 
 	if function_result.num_items_granted > 0 then
+		local unlocked_weapon_skins = function_result.unlocked_weapon_skins
+
+		if unlocked_weapon_skins then
+			self:set_read_only_data("unlocked_weapon_skins", unlocked_weapon_skins, true)
+
+			self._unlocked_weapon_skins = self:_parse_unlocked_weapon_skins()
+		end
+
+		local unlocked_cosmetics = function_result.unlocked_cosmetics
+
+		if unlocked_cosmetics then
+			self:set_read_only_data("unlocked_cosmetics", unlocked_cosmetics, true)
+
+			self._unlocked_cosmetics = self:_parse_unlocked_cosmetics()
+		end
+
 		self:_request_user_inventory()
 	elseif Managers.mechanism:current_mechanism_name() == "adventure" then
 		self:_check_weaves_loadout()
+	else
+		self:unequip_disabled_items()
 	end
 end
 
-local keys = {
-	"slot_ranged",
-	"slot_melee",
-	"slot_skin",
-	"slot_hat",
-	"slot_necklace",
-	"slot_ring",
-	"slot_trinket_1",
-	"slot_frame",
-	"talents",
-}
+PlayFabMirrorBase.unequip_disabled_items = function (self)
+	local item_availability = Managers.mechanism:mechanism_setting_for_title("override_item_availability")
+
+	if not item_availability or table.is_empty(item_availability) then
+		return
+	end
+
+	local profiles_by_career_names = PROFILES_BY_CAREER_NAMES
+	local inventory_items = self._inventory_items
+	local table_contains = table.contains
+
+	for career_name, slot_data in pairs(self._career_data) do
+		local character = profiles_by_career_names[career_name]
+
+		if character then
+			local slots_to_verify = self._verify_slot_keys_per_affiliation[character.affiliation]
+
+			if slots_to_verify then
+				local career_settings = CareerSettings[career_name]
+
+				for slot_name, slot_value in pairs(slot_data) do
+					if table_contains(slots_to_verify, slot_name) then
+						local item = inventory_items[slot_value]
+
+						if item and item_availability[item.ItemId] == false then
+							local valid_item_id = self:_find_valid_item_for_slot(item_availability, career_settings, slot_name, career_name)
+
+							if valid_item_id then
+								self:set_character_data(career_name, slot_name, valid_item_id, true)
+							end
+						end
+					end
+				end
+			end
+		end
+	end
+end
+
+PlayFabMirrorBase._find_valid_item_for_slot = function (self, override_item_availability, career_settings, slot_name, career_name)
+	local item_master_list = ItemMasterList
+	local table_contains = table.contains
+
+	for inventory_id, inventory_item in pairs(self._inventory_items) do
+		if override_item_availability[inventory_item.ItemId] ~= false then
+			local master_list_item = item_master_list[inventory_item.ItemId]
+			local correct_slot = table_contains(career_settings.item_slot_types_by_slot_name[slot_name], master_list_item.slot_type)
+			local can_wield = master_list_item.can_wield
+
+			if correct_slot and can_wield and table_contains(can_wield, career_name) then
+				return inventory_id, inventory_item
+			end
+		end
+	end
+end
 
 PlayFabMirrorBase._check_career_data = function (self, careers_data, career_data_mirror)
 	local characters_data = self._characters_data
@@ -2615,26 +2689,31 @@ PlayFabMirrorBase._check_career_data = function (self, careers_data, career_data
 
 	for career_name, career_data in pairs(careers_data) do
 		local mirror_data = career_data_mirror[career_name]
+		local profile = PROFILES_BY_CAREER_NAMES[career_name]
 
-		if mirror_data then
-			for _, loadout_key in pairs(keys) do
-				local loadout_value = career_data[loadout_key]
-				local mirror_loadout_value = mirror_data[loadout_key]
+		if profile then
+			local slots_to_verify = self._verify_slot_keys_per_affiliation[profile.affiliation]
 
-				if loadout_value ~= mirror_loadout_value then
-					for _, data in pairs(characters_data) do
-						if data.careers[career_name] then
-							data.careers[career_name][loadout_key] = loadout_value
+			if slots_to_verify then
+				for _, loadout_key in pairs(slots_to_verify) do
+					local loadout_value = career_data[loadout_key]
+					local mirror_loadout_value = mirror_data[loadout_key]
 
-							break
+					if loadout_value ~= mirror_loadout_value then
+						for _, data in pairs(characters_data) do
+							if data.careers[career_name] then
+								data.careers[career_name][loadout_key] = loadout_value
+
+								break
+							end
 						end
-					end
 
-					dirty = true
+						dirty = true
+					end
 				end
+			else
+				Application.warning(string.format("Missing slots to verify for %q", career_name))
 			end
-		else
-			debug_printf("Cannot find mirrored data for '%q'. Is it a revoked dlc?", career_name)
 		end
 	end
 
@@ -2682,6 +2761,12 @@ PlayFabMirrorBase.update_owned_dlcs = function (self, set_status_changed)
 			local is_owned = table.contains(self._owned_dlcs, dlc_name)
 
 			unlock:set_owned(is_owned, set_status_changed)
+		end
+	end
+
+	for dlc_name, unlock in pairs(dlcs) do
+		if unlock.check_all_children_dlc_owned then
+			unlock:check_all_children_dlc_owned()
 		end
 	end
 end

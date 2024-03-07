@@ -354,6 +354,12 @@ StatusSystem.rpc_player_blocked_attack = function (self, sender, game_object_id,
 	local status_extension = ScriptUnit.extension(unit, "status_system")
 
 	status_extension:blocked_attack(fatigue_type, attacking_unit, fatigue_point_costs_multiplier, improved_block, attack_direction)
+
+	if self.is_server then
+		local peer_id = CHANNEL_TO_PEER_ID[sender]
+
+		self.network_transmit:send_rpc_clients_except("rpc_player_blocked_attack", peer_id, game_object_id, fatigue_type_id, attacking_unit_id, fatigue_point_costs_multiplier, improved_block, attack_direction, attacker_is_level_unit)
+	end
 end
 
 StatusSystem.rpc_hot_join_sync_health_status = function (self, channel_id, game_object_id, wounds, ready_for_assisted_respawn, respawn_unit_game_object_id)

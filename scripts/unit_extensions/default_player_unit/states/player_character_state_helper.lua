@@ -517,7 +517,8 @@ CharacterStateHelper.move_in_air_pactsworn = function (first_person_extension, i
 	local unit_rotation = first_person_extension:current_rotation()
 	local move_velocity = Vector3.normalize(Vector3.flat(Quaternion.rotate(unit_rotation, move_direction)))
 	local movement_settings_table = PlayerUnitMovementSettings.get_movement_settings_table(unit)
-	local move_cap = breed.movement_speed
+	local breed_multiplier = breed.movement_speed_multiplier
+	local move_cap = movement_settings_table.move_speed
 	local ghost_mode_extension = ScriptUnit.extension(unit, "ghost_mode_system")
 	local in_ghost_mode = ghost_mode_extension:is_in_ghost_mode()
 
@@ -525,7 +526,7 @@ CharacterStateHelper.move_in_air_pactsworn = function (first_person_extension, i
 		move_cap = movement_settings_table.ghost_move_speed
 	end
 
-	move_cap = move_cap * 0.7
+	move_cap = move_cap * breed_multiplier * 0.7
 
 	if movement.y < 0 then
 		speed = speed * movement_settings_table.backward_move_scale
@@ -1175,7 +1176,7 @@ local interupting_action_data = {}
 CharacterStateHelper.update_weapon_actions = function (t, unit, input_extension, inventory_extension, health_extension)
 	local breed = Unit.get_data(unit, "breed")
 
-	if not breed.boss and not breed.is_hero then
+	if not breed.name == "vs_warpfire_thrower" and not breed.boss and not breed.is_hero and not breed.is_player then
 		return
 	end
 
@@ -1869,7 +1870,7 @@ CharacterStateHelper.ghost_mode = function (ghost_mode_extension, input_extensio
 			ghost_mode_extension:request_enter_ghost_mode()
 		end
 	elseif ghost_mode_extension:is_in_ghost_mode() then
-		if input_extension:get("action_one") and ghost_mode_extension:allowed_to_leave() then
+		if input_extension:get("ghost_mode_exit") and ghost_mode_extension:allowed_to_leave() then
 			local force_leave = false
 
 			ghost_mode_extension:request_leave_ghost_mode(force_leave)

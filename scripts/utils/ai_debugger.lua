@@ -820,31 +820,33 @@ AIDebugger.debug_pacing = function (self, t, dt)
 
 	row = row + 0.03
 
-	local s1
+	local s1 = "Horde debugging is disabled on clients"
 
-	if script_data.ai_horde_spawning_disabled then
-		s1 = string.format("Horde spawning is disabled")
-	else
-		local next_horde_time, hordes, multiple_horde_count = cm:get_horde_data()
-
-		if #hordes > 0 then
-			s1 = string.format("Number of hordes active: %d  horde size:%d", #hordes, cm:horde_size())
-		elseif horde_population > 0 then
-			if next_horde_time then
-				s1 = string.format("Next horde in: %.1fs horde size:%d", next_horde_time - t, cm:horde_size())
-			else
-				s1 = "Next horde in: N/A"
-			end
+	if Managers.state.network.is_server then
+		if script_data.ai_horde_spawning_disabled then
+			s1 = string.format("Horde spawning is disabled")
 		else
-			s1 = string.format("No horde will spawn during this state")
-		end
+			local next_horde_time, hordes, multiple_horde_count = cm:get_horde_data()
 
-		if multiple_horde_count then
-			local textmc = string.format("Horde waves left: %d", multiple_horde_count)
+			if #hordes > 0 then
+				s1 = string.format("Number of hordes active: %d  horde size:%d", #hordes, cm:horde_size())
+			elseif horde_population > 0 then
+				if next_horde_time then
+					s1 = string.format("Next horde in: %.1fs horde size:%d", next_horde_time - t, cm:horde_size())
+				else
+					s1 = "Next horde in: N/A"
+				end
+			else
+				s1 = string.format("No horde will spawn during this state")
+			end
 
-			ScriptGUI.itext(gui, res_x, res_y, textmc, font_mtrl, font_size_medium, font, win_x + wedge, row + text_height, 3, Color(255, 237, 237, 152))
+			if multiple_horde_count then
+				local textmc = string.format("Horde waves left: %d", multiple_horde_count)
 
-			row = row + 0.03
+				ScriptGUI.itext(gui, res_x, res_y, textmc, font_mtrl, font_size_medium, font, win_x + wedge, row + text_height, 3, Color(255, 237, 237, 152))
+
+				row = row + 0.03
+			end
 		end
 	end
 

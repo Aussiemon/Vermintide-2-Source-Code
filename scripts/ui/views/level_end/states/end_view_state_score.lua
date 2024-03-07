@@ -513,7 +513,7 @@ EndViewStateScore._setup_player_scores = function (self, players_session_scores)
 		local level_text = is_player_controlled and (player_level and tostring(player_level) or "-") or "BOT"
 		local widget_definition = UIWidgets.create_portrait_frame("player_frame_" .. widget_index, portrait_frame, level_text, 1, nil, portrait_image)
 
-		hero_widgets[widget_index] = UIWidget.init(widget_definition)
+		hero_widgets[widget_index] = UIWidget.init(widget_definition, self.ui_renderer)
 		widget_index = widget_index + 1
 	end
 

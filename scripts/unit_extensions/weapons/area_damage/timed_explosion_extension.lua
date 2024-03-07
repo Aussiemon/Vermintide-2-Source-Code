@@ -8,7 +8,7 @@ TimedExplosionExtension.init = function (self, extension_init_context, unit, ext
 	self._area_damage_system = extension_init_context.entity_manager:system("area_damage_system")
 	self.explosion_template_name = extension_init_data.explosion_template_name
 
-	local explosion_template = ExplosionTemplates[extension_init_data.explosion_template_name]
+	local explosion_template = ExplosionUtils.get_template(extension_init_data.explosion_template_name)
 	local difficulty_name = Managers.state.difficulty:get_difficulty()
 	local active_wind = Managers.weave:get_active_wind()
 
@@ -116,7 +116,7 @@ TimedExplosionExtension.update = function (self, unit, input, dt, context, t)
 end
 
 TimedExplosionExtension._explode = function (self)
-	local explosion_template = ExplosionTemplates[self.explosion_template_name]
+	local explosion_template = ExplosionUtils.get_template(self.explosion_template_name)
 	local attacker_unit = self._unit
 	local position = Unit.world_position(attacker_unit, 0)
 	local rotation = Unit.world_rotation(attacker_unit, 0)

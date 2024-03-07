@@ -7,6 +7,7 @@ require("scripts/game_state/loading_sub_states/win32/state_loading_migrate_host"
 require("scripts/helpers/level_helper")
 require("scripts/settings/level_settings")
 require("scripts/utils/async_level_spawner")
+require("scripts/game_state/loading_sub_states/win32/state_loading_versus_migration")
 
 StateLoading = class(StateLoading)
 StateLoading.NAME = "StateLoading"
@@ -260,7 +261,7 @@ StateLoading._setup_first_time_ui = function (self)
 		local params = {}
 		local next_level_key = Managers.level_transition_handler:get_current_level_key()
 
-		params.is_prologue = next_level_key == "prologue"
+		params.is_prologue = self._switch_to_tutorial_backend == true
 
 		local platform = PLATFORM
 
@@ -270,7 +271,7 @@ StateLoading._setup_first_time_ui = function (self)
 
 			local level_settings = LevelSettings[level_name]
 
-			auto_skip = not level_settings.hub_level
+			auto_skip = not level_settings.hub_level and not params.is_prologue
 			auto_skip = loading_context.join_lobby_data or Development.parameter("auto_join") or auto_skip or Development.parameter("skip_splash")
 
 			if not auto_skip and Development.parameter("weave_name") then
@@ -627,6 +628,8 @@ StateLoading._setup_state_machine = function (self)
 		self._machine = GameStateMachine:new(self, StateLoadingRestartNetwork, params, true)
 	elseif self.parent.loading_context.host_migration_info then
 		self._machine = GameStateMachine:new(self, StateLoadingMigrateHost, params, true)
+	elseif self.parent.loading_context.versus_migration then
+		self._machine = GameStateMachine:new(self, StateLoadingVersusMigration, params, true)
 	else
 		self._machine = GameStateMachine:new(self, StateLoadingRunning, params, true)
 	end
@@ -1268,7 +1271,7 @@ StateLoading._update_loading_screen = function (self, dt, t)
 		if lobby_host and lobby_host:is_joined() and self._network_server:waiting_to_enter_game() then
 			permission_to_go_to_next_state = true
 		end
-	elseif self._network_client and self._network_client.state == "waiting_enter_game" then
+	elseif self._network_client and self._network_client.state == NetworkClientStates.waiting_enter_game then
 		permission_to_go_to_next_state = true
 	end
 
@@ -1915,7 +1918,7 @@ StateLoading.load_current_level = function (self)
 	self._already_loaded_once = true
 
 	if self._network_client then
-		self._network_client:set_state("loading")
+		self._network_client:set_state(NetworkClientStates.loading)
 	end
 
 	local level_transition_handler = Managers.level_transition_handler
@@ -2074,7 +2077,7 @@ StateLoading._destroy_network = function (self, application_shutdown)
 		Managers.account:set_current_lobby(nil)
 	end
 
-	if rawget(_G, "LobbyInternal") then
+	if rawget(_G, "LobbyInternal") and LobbyInternal.client then
 		if Managers.party:has_party_lobby() then
 			local lobby = Managers.party:steal_lobby()
 
@@ -2298,7 +2301,10 @@ StateLoading.setup_lobby_finder = function (self, lobby_joined_callback, lobby_t
 	self._lobby_finder_timeout = main_time + StateLoading.join_lobby_timeout
 	self._lobby_finder_refresh_timer = main_time + StateLoading.join_lobby_refresh_interval
 
-	if host_to_join then
+	local loading_context = self.parent.loading_context
+	local versus_migration = loading_context and loading_context.versus_migration
+
+	if host_to_join and not versus_migration then
 		self:create_join_popup(self._host_to_join_name)
 	end
 

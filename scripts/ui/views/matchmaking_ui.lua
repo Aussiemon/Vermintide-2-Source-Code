@@ -4,6 +4,7 @@ require("scripts/settings/difficulty_settings")
 
 local definitions = local_require("scripts/ui/views/matchmaking_ui_definitions")
 local cancel_input_widget_definitions = definitions.cancel_input_widgets
+local versus_input_widgets_definitions = definitions.versus_input_widgets
 local scenegraph_definition = definitions.scenegraph_definition
 local debug_widget_definitions = definitions.debug_widget_definitions
 
@@ -58,7 +59,7 @@ MatchmakingUI.init = function (self, parent, ingame_ui_context)
 	self:create_ui_elements()
 
 	self.num_players_text = Localize("number_of_players")
-	self._max_number_of_players = Managers.mechanism:max_members()
+	self._max_number_of_players = Managers.mechanism:max_instance_members()
 	self.portrait_index_table = {}
 	self._my_peer_id = Network.peer_id()
 
@@ -77,6 +78,9 @@ MatchmakingUI.create_ui_elements = function (self)
 	self._detail_widgets, self._detail_widgets_by_name = UIUtils.create_widgets(definitions.widget_detail_definitions)
 	self._widgets_deus, self._widgets_deus_by_name = UIUtils.create_widgets(definitions.deus_widget_definitions)
 	self._detail_widgets_deus, self._detail_widgets_deus_by_name = UIUtils.create_widgets(definitions.deus_widget_detail_definitions)
+	self._widgets_versus, self._widgets_versus_by_name = UIUtils.create_widgets(definitions.versus_widget_definitions)
+	self._detail_widgets_versus, self._detail_widgets_versus_by_name = UIUtils.create_widgets(definitions.versus_widget_detail_definitions)
+	self._versus_input_widgets, self._versus_input_widgets_by_name = UIUtils.create_widgets(versus_input_widgets_definitions)
 	self._cancel_input_widgets, self._cancel_input_widgets_by_name = UIUtils.create_widgets(cancel_input_widget_definitions)
 	self.debug_box_widget = UIWidget.init(debug_widget_definitions.debug_box)
 	self.debug_lobbies_widget = UIWidget.init(debug_widget_definitions.debug_lobbies)
@@ -96,12 +100,26 @@ MatchmakingUI.create_ui_elements = function (self)
 		},
 	}
 
+	local versus_input_widgets_by_name = self._versus_input_widgets_by_name
+
+	self._input_to_widget_mapping[#self._input_to_widget_mapping + 1] = {
+		input_action = "cancel_matchmaking",
+		widgets = {
+			text_widget = versus_input_widgets_by_name.versus_cancel_text_input,
+			text_widget_prefix = versus_input_widgets_by_name.versus_cancel_text_prefix,
+			text_widget_suffix = versus_input_widgets_by_name.versus_cancel_text_suffix,
+			input_icon_widget = versus_input_widgets_by_name.versus_cancel_icon,
+		},
+	}
+
 	UIRenderer.clear_scenegraph_queue(self.ui_renderer)
 end
 
 MatchmakingUI._get_widget = function (self, name)
 	if self._active_mechanism == "deus" then
 		return self._widgets_deus_by_name[name]
+	elseif self._active_mechanism == "versus" then
+		return self._widgets_versus_by_name[name]
 	else
 		return self._widgets_by_name[name]
 	end
@@ -110,6 +128,8 @@ end
 MatchmakingUI._get_detail_widget = function (self, name)
 	if self._active_mechanism == "deus" then
 		return self._detail_widgets_deus_by_name[name]
+	elseif self._active_mechanism == "versus" then
+		return self._detail_widgets_versus_by_name[name]
 	else
 		return self._detail_widgets_by_name[name]
 	end
@@ -118,6 +138,8 @@ end
 MatchmakingUI._get_widgets = function (self)
 	if self._active_mechanism == "deus" then
 		return self._widgets_deus, self._detail_widgets_deus
+	elseif self._active_mechanism == "versus" then
+		return self._widgets_versus, self._detail_widgets_versus
 	else
 		return self._widgets, self._detail_widgets
 	end
@@ -139,6 +161,11 @@ MatchmakingUI.update = function (self, dt, t)
 	local ingame_player_list_ui = parent:component("IngamePlayerListUI")
 	local player_list_active = ingame_player_list_ui and ingame_player_list_ui:is_active()
 	local show_detailed_matchmaking_info = not menu_active and not player_list_active and not in_menu_current_view
+	local versus_slot_status_ui = parent:component("VersusSlotStatusUI")
+	local versus_slot_status_ui_active = versus_slot_status_ui and versus_slot_status_ui:is_active()
+
+	show_detailed_matchmaking_info = show_detailed_matchmaking_info and not versus_slot_status_ui_active
+
 	local ui_top_renderer = self.ui_top_renderer
 	local input_manager = self.input_manager
 	local input_service = input_manager:get_service("ingame_menu")
@@ -263,7 +290,9 @@ MatchmakingUI._draw = function (self, ui_renderer, input_service, is_matchmaking
 	UIRenderer.draw_all_widgets(ui_renderer, widgets)
 
 	if self._show_detailed_matchmaking_info then
-		if self._allow_cancel_matchmaking then
+		if self._active_mechanism == "versus" then
+			UIRenderer.draw_all_widgets(ui_renderer, self._versus_input_widgets)
+		elseif self._allow_cancel_matchmaking then
 			UIRenderer.draw_all_widgets(ui_renderer, self._cancel_input_widgets)
 		end
 
@@ -365,6 +394,24 @@ MatchmakingUI._update_matchmaking_info = function (self, t)
 
 			self:_set_detail_difficulty_text(difficulty_display_name)
 		end
+	elseif mechanism == "versus" then
+		local detail_text = "mission_vote_quick_play"
+
+		if not matchmaking_info.quick_game then
+			local mission_id = matchmaking_info.mission_id
+
+			if mission_id == "any" then
+				detail_text = "map_screen_quickplay_button"
+			else
+				local level_settings = mission_id and LevelSettings[mission_id]
+				local display_name = level_settings and level_settings.display_name
+
+				detail_text = display_name and display_name or detail_text
+			end
+		end
+
+		self:_set_detail_level_text(detail_text, true)
+		self:_set_detail_difficulty_text("vs_ui_versus_tag")
 	else
 		local difficulty = matchmaking_info.difficulty
 
@@ -419,42 +466,6 @@ end
 MatchmakingUI._update_status = function (self, dt)
 	if self._active_mechanism == "versus" then
 		local slot_reservations = Managers.matchmaking:get_reserved_slots()
-
-		if slot_reservations then
-			local slot_reservations_widget = self._detail_widgets_versus_by_name.slot_reservations
-			local slot_reservations_widget_style = slot_reservations_widget.style
-
-			for party_id, reservations in pairs(slot_reservations) do
-				local party_style_name = "ready_light_party_" .. party_id
-				local style = slot_reservations_widget_style[party_style_name]
-
-				if style then
-					local party_reservations = slot_reservations[party_id]
-
-					for idx, texture_color in ipairs(style.texture_colors) do
-						texture_color[1] = idx <= party_reservations and 255 or 0
-					end
-				end
-			end
-		else
-			local slot_reservations_widget = self._detail_widgets_versus_by_name.slot_reservations
-			local slot_reservations_widget_style = slot_reservations_widget.style
-			local party_id = 1
-			local party_style_name = "ready_light_party_" .. party_id
-			local style = slot_reservations_widget_style[party_style_name]
-
-			while style do
-				for idx, texture_color in ipairs(style.texture_colors) do
-					texture_color[1] = 0
-				end
-
-				party_id = party_id + 1
-
-				local party_style_name = "ready_light_party_" .. party_id
-
-				style = slot_reservations_widget_style[party_style_name]
-			end
-		end
 	else
 		local rotation_progresss = ((self._rotation_progresss or 0) + dt * 0.2) % 1
 
@@ -536,6 +547,8 @@ MatchmakingUI._update_mission_vote_status = function (self)
 		local difficulty_display_name = difficulty_settings and difficulty_settings.display_name
 
 		self:_set_detail_difficulty_text(difficulty_display_name or "")
+	elseif mechanism == "versus" then
+		-- Nothing
 	else
 		local difficulty_settings = DifficultySettings[difficulty]
 		local difficulty_display_name = difficulty_settings and difficulty_settings.display_name
@@ -989,4 +1002,20 @@ MatchmakingUI._set_vote_time_progress = function (self, progress)
 
 	current_size[1] = default_size[1] * progress
 	uvs[2][1] = progress
+end
+
+MatchmakingUI.on_matchmaking_num_players_in_matchmaking = function (self, mechanism, num_players)
+	local is_matchmaking = self.matchmaking_manager:is_game_matchmaking() and self._is_in_inn
+
+	if not is_matchmaking then
+		return
+	end
+
+	local num_players_matchmaking_widget = self:_get_detail_widget("num_players_matchmaking")
+
+	if not num_players_matchmaking_widget then
+		return
+	end
+
+	num_players_matchmaking_widget.content.text = string.format("%d Players in Queue", num_players)
 end

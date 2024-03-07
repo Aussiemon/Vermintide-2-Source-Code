@@ -31,6 +31,7 @@ local breed_data = {
 	has_inventory = true,
 	has_running_attack = true,
 	headshot_coop_stamina_fatigue_type = "headshot_special",
+	height = 1.75,
 	hit_effect_template = "HitEffectsBeastmenGor",
 	hit_mass_count = 5,
 	hit_reaction = "ai_default",
@@ -144,7 +145,7 @@ local breed_data = {
 		walk_animation_merge_options = {},
 		move_animation_merge_options = {},
 	},
-	stagger_modifier_function = function (stagger_type, duration, length, hit_zone_name, blackboard, breed, direction)
+	stagger_modifier_function = function (stagger_type, duration, length, hit_zone_name, blackboard, breed)
 		if blackboard.stagger_type == stagger_types.heavy then
 			if stagger_type == stagger_types.heavy and blackboard.heavy_stagger_immune_time then
 				stagger_type = stagger_types.none
@@ -354,6 +355,10 @@ local AttackIntensityPerDifficulty = {
 			normal = 1.5,
 			sweep = 3,
 		},
+		versus_base = {
+			normal = 1.5,
+			sweep = 3,
+		},
 	},
 	cleave = {
 		easy = {
@@ -388,6 +393,10 @@ local AttackIntensityPerDifficulty = {
 			cleave = 3,
 			normal = 1.5,
 		},
+		versus_base = {
+			cleave = 3,
+			normal = 1.5,
+		},
 	},
 	push = {
 		easy = {
@@ -412,6 +421,9 @@ local AttackIntensityPerDifficulty = {
 			push = 1.5,
 		},
 		cataclysm_3 = {
+			push = 1.5,
+		},
+		versus_base = {
 			push = 1.5,
 		},
 	},
@@ -440,6 +452,9 @@ local AttackIntensityPerDifficulty = {
 		cataclysm_3 = {
 			running = 3.5,
 		},
+		versus_base = {
+			running = 3.5,
+		},
 	},
 	charge = {
 		easy = {
@@ -464,6 +479,9 @@ local AttackIntensityPerDifficulty = {
 			charge = 10,
 		},
 		cataclysm_3 = {
+			charge = 10,
+		},
+		versus_base = {
 			charge = 10,
 		},
 	},
@@ -760,6 +778,7 @@ local action_data = {
 			harder = 10,
 			hardest = 20,
 			normal = 5,
+			versus_base = 5,
 		},
 		ignore_staggers = {
 			true,

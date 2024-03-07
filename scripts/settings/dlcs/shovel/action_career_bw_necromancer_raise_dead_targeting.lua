@@ -164,7 +164,7 @@ ActionCareerBWNecromancerRaiseDeadTargeting.finish = function (self, reason, dat
 		dialogue_input:trigger_networked_dialogue_event("activate_ability", event_data)
 
 		local network_transmit = Managers.state.network.network_transmit
-		local sound_to_play = "Play_career_necro_ability_raise_dead_spawn"
+		local sound_to_play = "career_necro_skeleton_spawn"
 		local audio_system = Managers.state.entity:system("audio_system")
 
 		audio_system:play_audio_position_event(sound_to_play, target_center)
@@ -180,7 +180,7 @@ ActionCareerBWNecromancerRaiseDeadTargeting.finish = function (self, reason, dat
 		end
 
 		local world = self._world
-		local explosion_template = ExplosionTemplates[explosion_template_name]
+		local explosion_template = ExplosionUtils.get_template(explosion_template_name)
 		local scale = 1
 		local damage_source = "career_ability"
 		local is_husk = false

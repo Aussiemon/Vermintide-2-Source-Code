@@ -13,6 +13,9 @@ CameraStateFollowThirdPerson.on_enter = function (self, unit, input, dt, context
 	local camera_extension = self.camera_extension
 	local follow_unit, follow_node = camera_extension:get_follow_data()
 	local viewport_name = camera_extension.viewport_name
+
+	self._min_leave_t = params.min_leave_t or 0
+
 	local override_follow_unit = params.override_follow_unit
 
 	if override_follow_unit and Unit.alive(override_follow_unit) then
@@ -42,6 +45,7 @@ CameraStateFollowThirdPerson.on_enter = function (self, unit, input, dt, context
 	self._follow_unit_rotation = params.follow_unit_rotation == nil and true or params.follow_unit_rotation
 	self._follow_unit = follow_unit
 	self._follow_node = follow_node
+	self._fallback_pose = Matrix4x4Box(Unit.alive(follow_unit) and Unit.world_pose(follow_unit, 0) or Matrix4x4.identity())
 
 	local camera_manager = Managers.state.camera
 	local root_look_dir = Vector3.normalize(Vector3.flat(Quaternion.forward(Unit.local_rotation(follow_unit, 0))))
@@ -66,13 +70,6 @@ CameraStateFollowThirdPerson.update = function (self, unit, input, dt, context, 
 	local camera_extension = self.camera_extension
 	local follow_unit = self._follow_unit
 	local follow_node = self._follow_node or 0
-
-	if not follow_unit or not Unit.alive(follow_unit) then
-		csm:change_state("observer")
-
-		return
-	end
-
 	local external_state_change = camera_extension.external_state_change
 	local external_state_change_params = camera_extension.external_state_change_params
 	local force_state_change = external_state_change_params and external_state_change_params.force_state_change
@@ -84,6 +81,12 @@ CameraStateFollowThirdPerson.update = function (self, unit, input, dt, context, 
 		return
 	end
 
+	if not follow_unit or not Unit.alive(follow_unit) and t > self._min_leave_t then
+		csm:change_state("observer")
+
+		return
+	end
+
 	if self.calculate_lerp then
 		local total_lerp_time = self.total_lerp_time
 		local lerp_time = self.lerp_time
@@ -91,7 +94,12 @@ CameraStateFollowThirdPerson.update = function (self, unit, input, dt, context, 
 		local current_lerp_time = math.min(lerp_time + dt, total_lerp_time)
 		local current_progress = current_lerp_time / total_lerp_time
 		local smoothstep = math.smoothstep(current_progress, 0, 1)
-		local camera_target_pose = Unit.world_pose(follow_unit, 0)
+
+		if Unit.alive(follow_unit) then
+			self._fallback_pose:store(Unit.world_pose(follow_unit, 0))
+		end
+
+		local camera_target_pose = self._fallback_pose:unbox()
 		local camera_pose = self.camera_start_pose:unbox()
 		local lerp_pose = Matrix4x4.lerp(camera_pose, camera_target_pose, smoothstep)
 
@@ -108,7 +116,7 @@ CameraStateFollowThirdPerson.update = function (self, unit, input, dt, context, 
 			self.progress = current_progress
 			self.lerp_time = current_lerp_time
 		end
-	elseif self._follow_unit_rotation and not self._allow_camera_movement then
+	elseif self._follow_unit_rotation and not self._allow_camera_movement and Unit.alive(follow_unit) then
 		CameraStateHelper.set_local_pose(unit, follow_unit, follow_node)
 	else
 		if self._allow_camera_movement then
@@ -116,7 +124,14 @@ CameraStateFollowThirdPerson.update = function (self, unit, input, dt, context, 
 		end
 
 		local camera_offset = self._camera_offset and Vector3Box.unbox(self._camera_offset)
+		local position
 
-		CameraStateHelper.set_follow_camera_position(unit, follow_unit, follow_node, camera_offset, nil, dt)
+		if Unit.alive(follow_unit) then
+			position = Unit.world_position(follow_unit, follow_node)
+		else
+			position = Matrix4x4.translation(self._fallback_pose:unbox())
+		end
+
+		CameraStateHelper.set_follow_camera_position(unit, position, camera_offset, nil, dt)
 	end
 end

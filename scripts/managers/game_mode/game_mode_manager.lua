@@ -20,6 +20,7 @@ local RPCS = {
 	"rpc_trigger_round_over",
 	"rpc_trigger_level_event",
 }
+local game_mode_manager_testify = script_data.testify and require("scripts/managers/game_mode/game_mode_manager_testify")
 local GAME_MODE_STATE_NETWORK_IDS = {}
 
 for game_mode_key, settings in pairs(GameModeSettings) do
@@ -105,6 +106,7 @@ GameModeManager.init = function (self, world, lobby_host, lobby_client, network_
 	end
 
 	self._has_created_game_mode_data = false
+	self._locked_profile_index = nil
 end
 
 GameModeManager.destroy = function (self)
@@ -180,12 +182,12 @@ GameModeManager.player_left_game_session = function (self, peer_id, local_player
 	self._game_mode:player_left_game_session(peer_id, local_player_id)
 end
 
-GameModeManager.player_joined_party = function (self, peer_id, local_player_id, new_party_id, slot_id)
-	self._game_mode:player_joined_party(peer_id, local_player_id, new_party_id, slot_id)
+GameModeManager.player_joined_party = function (self, peer_id, local_player_id, new_party_id, slot_id, old_party_id)
+	self._game_mode:player_joined_party(peer_id, local_player_id, new_party_id, slot_id, old_party_id)
 end
 
-GameModeManager.player_left_party = function (self, peer_id, local_player_id, party_id, slot_id)
-	self._game_mode:player_left_party(peer_id, local_player_id, party_id, slot_id)
+GameModeManager.player_left_party = function (self, peer_id, local_player_id, party_id, slot_id, old_slot_data)
+	self._game_mode:player_left_party(peer_id, local_player_id, party_id, slot_id, old_slot_data)
 end
 
 GameModeManager.ai_killed = function (self, killed_unit, killer_unit, death_data, killing_blow)
@@ -514,13 +516,21 @@ GameModeManager._set_flow_object_set_unit_enabled = function (self, level, index
 	end
 end
 
-GameModeManager.get_end_screen_config = function (self, game_won, game_lost, player)
-	local screen_name, screen_config, screen_params = self._game_mode:get_end_screen_config(game_won, game_lost, player)
+GameModeManager.get_end_screen_config = function (self, game_won, game_lost, player, reason)
+	local screen_name, screen_config, screen_params = self._game_mode:get_end_screen_config(game_won, game_lost, player, reason)
 
 	fassert(screen_name ~= nil, "No screen name returned")
 	fassert(screen_config ~= nil, "No screen config returned")
 
 	return screen_name, screen_config, screen_params
+end
+
+GameModeManager.get_end_of_round_screen_settings = function (self)
+	if self._game_mode.get_end_of_round_screen_settings then
+		return self._game_mode:get_end_of_round_screen_settings()
+	end
+
+	return "none", {}, {}
 end
 
 GameModeManager.get_player_wounds = function (self, profile)
@@ -566,6 +576,10 @@ GameModeManager._init_game_mode = function (self, game_mode_key, game_mode_setti
 	local settings = GameModeSettings[game_mode_key]
 	local class = rawget(_G, settings.class_name)
 
+	if DEDICATED_SERVER then
+		cprintf("[GameModeManager] Changing game mode to: %s", game_mode_key)
+	end
+
 	self._game_mode = class:new(settings, self._world, self.network_server, self.is_server, self._profile_synchronizer, self._level_key, self.statistics_db, game_mode_settings)
 end
 
@@ -598,6 +612,10 @@ GameModeManager.gm_event_round_started = function (self)
 	end
 
 	Level.trigger_event(level, "coop_round_started")
+
+	if self._game_mode.round_started then
+		self._game_mode:round_started()
+	end
 end
 
 GameModeManager.is_round_started = function (self)
@@ -729,6 +747,10 @@ GameModeManager.update = function (self, dt, t)
 			timer.next_trigger_time = timer.next_trigger_time + timer.delay
 		end
 	end
+
+	if script_data.testify then
+		Testify:poll_requests_through_handler(game_mode_manager_testify, self)
+	end
 end
 
 GameModeManager._update_initial_join = function (self, t, dt)
@@ -750,6 +772,12 @@ GameModeManager.evaluate_end_condition_outcome = function (self, reason, player)
 	return game_won, game_lost
 end
 
+local skip_progress_state = {
+	party_one_won_early = true,
+	party_two_won_early = true,
+	reload = true,
+}
+
 GameModeManager.server_update = function (self, dt, t)
 	if not self._initial_peers_ready then
 		self:_update_initial_join(t, dt)
@@ -769,7 +797,7 @@ GameModeManager.server_update = function (self, dt, t)
 				game_mode:ended(reason)
 				Managers.mechanism:game_round_ended(t, dt, reason, reason_data)
 
-				if reason ~= "reload" then
+				if not skip_progress_state[reason] then
 					Managers.mechanism:progress_state()
 				end
 
@@ -984,8 +1012,8 @@ GameModeManager.respawn_gate_unit_spawned = function (self, unit)
 	self._game_mode:respawn_gate_unit_spawned(unit)
 end
 
-GameModeManager.profile_changed = function (self, peer_id, local_player_id, profile_index, career_index)
-	self._game_mode:profile_changed(peer_id, local_player_id, profile_index, career_index)
+GameModeManager.profile_changed = function (self, peer_id, local_player_id, profile_index, career_index, is_bot)
+	self._game_mode:profile_changed(peer_id, local_player_id, profile_index, career_index, is_bot)
 end
 
 GameModeManager.force_respawn = function (self, peer_id, local_player_id)
@@ -1128,6 +1156,32 @@ GameModeManager.get_environment_variation_name = function (self)
 	return nil
 end
 
+GameModeManager.lock_available_hero = function (self)
+	local players = Managers.player:human_and_bot_players()
+	local occupied_profiles = {}
+	local available_profiles = PROFILES_BY_AFFILIATION.heroes
+
+	for _, player in pairs(players) do
+		local profile_index = player:profile_index()
+
+		occupied_profiles[profile_index] = true
+	end
+
+	for profile_index, profile_name in ipairs(available_profiles) do
+		if not occupied_profiles[profile_index] then
+			self._locked_profile_index = profile_index
+
+			return self._locked_profile_index
+		end
+	end
+
+	assert(self._locked_profile_index, "[GameModeManager:lock_available_hero] Couldn't find unoccupied hero")
+end
+
+GameModeManager.hero_is_locked = function (self, profile_index)
+	return self._locked_profile_index == profile_index
+end
+
 GameModeManager.apply_environment_variation = function (self)
 	local environment_variation_name = self:get_environment_variation_name()
 
@@ -1153,8 +1207,8 @@ GameModeManager.rpc_change_game_mode_state = function (self, channel_id, state_n
 	self._game_mode:change_game_mode_state(state_name)
 end
 
-GameModeManager.rpc_trigger_round_over = function (self, channel_id)
-	self._game_mode.trigger_round_over = true
+GameModeManager.rpc_trigger_round_over = function (self, channel_id, heroes_win)
+	Managers.state.event:trigger("round_over", heroes_win)
 end
 
 GameModeManager.rpc_trigger_level_event = function (self, channel_id, event)
@@ -1163,4 +1217,8 @@ GameModeManager.rpc_trigger_level_event = function (self, channel_id, event)
 	if level then
 		Level.trigger_event(level, event)
 	end
+end
+
+GameModeManager.is_joinable = function (self)
+	return self._game_mode:is_joinable()
 end

@@ -23,6 +23,7 @@ local breed_data = {
 	exchange_order = 1,
 	flingable = true,
 	has_inventory = true,
+	height = 1.4,
 	hit_effect_template = "HitEffectsSkavenLootRat",
 	hit_reaction = "ai_default",
 	is_always_spawnable = true,
@@ -57,6 +58,7 @@ local breed_data = {
 		75,
 		75,
 		75,
+		25,
 	},
 	bloodlust_health = BreedTweaks.bloodlust_health.skaven_special,
 	stagger_duration = {

@@ -231,6 +231,11 @@ weapon_template.tooltip_detail = {
 	},
 }
 
+local grudgeraker_vs = table.clone(weapon_template)
+
+grudgeraker_vs.actions.action_one.default.damage_profile = "shot_shotgun_vs"
+
 return {
 	grudge_raker_template_1 = table.clone(weapon_template),
+	grudge_raker_template_1_vs = table.clone(grudgeraker_vs),
 }

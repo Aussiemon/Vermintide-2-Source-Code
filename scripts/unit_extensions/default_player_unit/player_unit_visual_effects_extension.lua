@@ -212,7 +212,7 @@ end
 
 PlayerUnitVisualEffectsExtension._set_weapons_overcharge_threshold = function (self)
 	local inventory_extension = self.inventory_extension
-	local wielded_slot_data = inventory_extension:get_wielded_slot_data()
+	local wielded_slot_data = inventory_extension:get_slot_data("slot_ranged")
 
 	if wielded_slot_data then
 		local event_name = "below_overcharge_threshold"

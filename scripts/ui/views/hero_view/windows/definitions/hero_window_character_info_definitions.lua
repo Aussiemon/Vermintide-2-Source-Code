@@ -20,7 +20,7 @@ local scenegraph_definition = {
 		position = {
 			-100,
 			70,
-			5,
+			200,
 		},
 	},
 	divider_1 = {
@@ -34,7 +34,7 @@ local scenegraph_definition = {
 		position = {
 			-180,
 			0,
-			1,
+			201,
 		},
 	},
 	divider_2 = {

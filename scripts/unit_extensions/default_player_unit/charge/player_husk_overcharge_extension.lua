@@ -105,6 +105,10 @@ PlayerHuskOverchargeExtension.overcharge_fraction = function (self)
 	return self.overcharge_value / self.max_value
 end
 
+PlayerHuskOverchargeExtension.lerped_overcharge_fraction = function (self)
+	return self._lerped_overcharge_fraction
+end
+
 PlayerHuskOverchargeExtension.threshold_fraction = function (self)
 	return self.overcharge_threshold / self.max_value
 end

@@ -28,7 +28,6 @@ PlayerCharacterStateInVortex.on_enter = function (self, unit, input, dt, context
 	self.ascend_speed = vortex_template.player_ascend_speed
 	self.rotation_speed = vortex_template.player_rotation_speed
 	self.radius_change_speed = vortex_template.player_radius_change_speed
-	self.force_player_look_dir_to_spinn_dir = vortex_template.force_player_look_dir_to_spinn_dir
 	self.player_actions_allowed = player_actions_allowed
 	self.vortex_max_height = vortex_template.max_height
 
@@ -120,7 +119,7 @@ PlayerCharacterStateInVortex.update_spin_velocity = function (self, unit, vortex
 	local radius_change_speed = self.radius_change_speed
 	local unit_position = POSITION_LOOKUP[unit]
 	local vortex_position = POSITION_LOOKUP[vortex_unit]
-	local velocity, new_radius, new_height, spinn_dir = LocomotionUtils.get_vortex_spin_velocity(unit_position, vortex_position, wanted_inner_radius, Vector3.up(), rotation_speed, radius_change_speed, ascend_speed, dt)
+	local velocity, _, new_height = LocomotionUtils.get_vortex_spin_velocity(unit_position, vortex_position, wanted_inner_radius, Vector3.up(), rotation_speed, radius_change_speed, ascend_speed, dt)
 	local height_percentage = GameSession.game_object_field(game, vortex_unit_go_id, "height_percentage")
 	local vortex_height = self.vortex_max_height * height_percentage
 
@@ -132,8 +131,6 @@ PlayerCharacterStateInVortex.update_spin_velocity = function (self, unit, vortex
 
 	locomotion_extension:set_forced_velocity(velocity)
 	locomotion_extension:set_wanted_velocity(velocity)
-
-	return spinn_dir
 end
 
 PlayerCharacterStateInVortex.update = function (self, unit, input, dt, context, t)
@@ -178,7 +175,7 @@ PlayerCharacterStateInVortex.update = function (self, unit, input, dt, context, 
 	end
 
 	if Unit.alive(self.vortex_unit) then
-		local spin_direction = self:update_spin_velocity(unit, self.vortex_unit, self.vortex_unit_go_id, dt)
+		self:update_spin_velocity(unit, self.vortex_unit, self.vortex_unit_go_id, dt)
 	end
 
 	local player = self.player
@@ -191,11 +188,5 @@ PlayerCharacterStateInVortex.update = function (self, unit, input, dt, context, 
 		local health_extension = self.health_extension
 
 		CharacterStateHelper.update_weapon_actions(t, unit, input_extension, inventory_extension, health_extension)
-	end
-
-	if self.force_player_look_dir_to_spinn_dir and rot then
-		local rot = Quaternion.look(-spin_direction, Vector3.up())
-
-		first_person_extension:force_look_rotation(rot)
 	end
 end

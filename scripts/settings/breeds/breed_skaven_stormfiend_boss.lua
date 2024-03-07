@@ -33,6 +33,7 @@ local breed_data = {
 	far_off_despawn_immunity = true,
 	has_inventory = true,
 	headshot_coop_stamina_fatigue_type = "headshot_special",
+	height = 2.5,
 	hit_effect_template = "HitEffectsStormfiend",
 	hit_mass_count = 20,
 	hit_reaction = "ai_default",
@@ -54,6 +55,7 @@ local breed_data = {
 	reach_distance = 3,
 	run_speed = 5,
 	server_controlled_health_bar = true,
+	show_health_bar = true,
 	slot_template = "boss",
 	smart_object_template = "stormfiend",
 	smart_targeting_height_multiplier = 1.5,
@@ -316,6 +318,10 @@ local AttackIntensityPerDifficulty = {
 			normal = 5,
 			running = 2,
 		},
+		versus_base = {
+			normal = 5,
+			running = 2,
+		},
 	},
 	charge = {
 		easy = {
@@ -350,6 +356,10 @@ local AttackIntensityPerDifficulty = {
 			normal = 3,
 			running = 0.5,
 		},
+		versus_base = {
+			normal = 3,
+			running = 0.5,
+		},
 	},
 	shove = {
 		easy = {
@@ -374,6 +384,9 @@ local AttackIntensityPerDifficulty = {
 			normal = 1,
 		},
 		cataclysm_3 = {
+			normal = 1,
+		},
+		versus_base = {
 			normal = 1,
 		},
 	},
@@ -469,6 +482,7 @@ local action_data = {
 			harder = 9,
 			hardest = 10,
 			normal = 5,
+			versus_base = 5,
 		},
 		difficulty_damage = {
 			cataclysm = 25,
@@ -479,6 +493,7 @@ local action_data = {
 			harder = 30,
 			hardest = 50,
 			normal = 20,
+			versus_base = 20,
 		},
 		ignore_staggers = {
 			true,
@@ -592,6 +607,7 @@ local action_data = {
 			harder = 50,
 			hardest = 75,
 			normal = 30,
+			versus_base = 30,
 		},
 	},
 	follow = {
@@ -835,6 +851,7 @@ local action_data = {
 			harder = 40,
 			hardest = 60,
 			normal = 20,
+			versus_base = 20,
 		},
 	},
 	special_attack_aoe = {
@@ -868,6 +885,7 @@ local action_data = {
 			harder = 25,
 			hardest = 30,
 			normal = 10,
+			versus_base = 10,
 		},
 		ignore_staggers = {
 			true,
@@ -1045,6 +1063,13 @@ local action_data = {
 				0,
 				10,
 			},
+			versus_base = {
+				10,
+				10,
+				0,
+				0,
+				10,
+			},
 		},
 		immune_breeds = {
 			chaos_dummy_troll = true,
@@ -1194,6 +1219,13 @@ local action_data = {
 				0,
 				10,
 			},
+			versus_base = {
+				10,
+				10,
+				0,
+				0,
+				10,
+			},
 		},
 		immune_breeds = {
 			chaos_dummy_troll = true,
@@ -1284,6 +1316,13 @@ local action_data = {
 				10,
 			},
 			cataclysm_3 = {
+				10,
+				10,
+				0,
+				0,
+				10,
+			},
+			versus_base = {
 				10,
 				10,
 				0,

@@ -18,6 +18,7 @@ CreditsView.init = function (self, ingame_ui_context)
 	self._ui_renderer = ingame_ui_context.ui_renderer
 	self._ui_top_renderer = ingame_ui_context.ui_top_renderer
 	self._ingame_ui = ingame_ui_context.ingame_ui
+	self._in_title_screen = ingame_ui_context.in_title_screen
 
 	local input_manager = ingame_ui_context.input_manager
 
@@ -35,6 +36,7 @@ CreditsView._create_ui_elements = function (self)
 	self._current_offset = 0
 	self._ui_scenegraph = UISceneGraph.init_scenegraph(definitions.scenegraph_definition)
 	self._credits_widget = UIWidget.init(definitions.widget_definitions.credits)
+	self._back_button_widget = UIWidget.init(definitions.widget_definitions.back_button)
 end
 
 CreditsView.input_service = function (self)
@@ -46,6 +48,8 @@ CreditsView.on_enter = function (self)
 
 	self._current_offset = 0
 	self._active = true
+
+	UIWidgetUtils.reset_layout_button(self._back_button_widget)
 end
 
 CreditsView.on_exit = function (self)
@@ -134,9 +138,28 @@ CreditsView.update = function (self, dt)
 		end
 	end
 
+	if self._in_title_screen then
+		self:_handle_back_button(ui_top_renderer, dt)
+	end
+
 	if current_offset > 1200 then
 		self._current_offset = 0
 	end
 
 	UIRenderer.end_pass(ui_top_renderer)
+end
+
+CreditsView._handle_back_button = function (self, ui_top_renderer, dt)
+	if not Managers.input:is_device_active("mouse") then
+		return
+	end
+
+	local widget = self._back_button_widget
+
+	UIWidgetUtils.animate_layout_button(widget, dt)
+	UIRenderer.draw_widget(ui_top_renderer, widget)
+
+	if UIUtils.is_button_pressed(widget, "button_hotspot") then
+		self:exit()
+	end
 end

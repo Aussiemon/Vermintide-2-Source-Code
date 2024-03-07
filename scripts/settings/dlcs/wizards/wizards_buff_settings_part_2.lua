@@ -195,7 +195,7 @@ settings.explosion_templates = {
 			local explosion_position = Unit.local_position(projectile_unit, 0)
 			local world = Managers.world:world("level_world")
 
-			explosion_template = ExplosionTemplates.ethereal_skull_explosion
+			explosion_template = ExplosionUtils.get_template("ethereal_skull_explosion")
 
 			DamageUtils.create_explosion(world, projectile_unit, explosion_position, Quaternion.identity(), explosion_template, 1, damage_source, true, false, owner_unit, false)
 

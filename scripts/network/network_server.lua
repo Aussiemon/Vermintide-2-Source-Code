@@ -29,6 +29,22 @@ NetworkServer.init = function (self, player_manager, lobby_host, wanted_profile_
 	CHANNEL_TO_PEER_ID[0] = my_peer_id
 	self.my_peer_id = my_peer_id
 	self.server_peer_id = my_peer_id
+	self.wanted_party_index = tonumber(Development.parameter("wanted_party_index"))
+
+	local override_profile_name = Development.parameter("wanted_profile")
+
+	if override_profile_name then
+		local profile_index = FindProfileIndex(override_profile_name)
+
+		wanted_profile_index = profile_index
+
+		local profile = SPProfiles[profile_index]
+
+		if profile.affiliation == "dark_pact" then
+			self.wanted_party_index = 2
+		end
+	end
+
 	self.peers_added_to_gamesession = {}
 	self.peers_completed_game_object_sync = {}
 	self.player_manager = player_manager
@@ -181,7 +197,7 @@ NetworkServer.rpc_notify_connected = function (self, channel_id)
 			career_index = hero_attributes:get(hero_name, "career") or 1
 		end
 
-		self.peer_state_machines[peer_id].rpc_notify_lobby_joined(profile_index, career_index)
+		self.peer_state_machines[peer_id].rpc_notify_lobby_joined(profile_index, career_index, self.wanted_party_index)
 	end
 end
 
@@ -206,7 +222,25 @@ NetworkServer.rpc_game_started = function (self, channel_id)
 end
 
 NetworkServer.is_network_state_fully_synced_for_peer = function (self, peer_id)
+	local mechanism_synced = Managers.mechanism:is_peer_fully_synced(peer_id)
+
+	if not mechanism_synced then
+		return false
+	end
+
 	return self._network_state:is_peer_fully_synced(peer_id)
+end
+
+NetworkServer.peers_waiting_for_players = function (self)
+	local peers_waiting_for_players = {}
+
+	for peer_id, peer_state_machine in pairs(self.peer_state_machines) do
+		if peer_state_machine.current_state == PeerStates.WaitingForPlayers then
+			peers_waiting_for_players[peer_id] = true
+		end
+	end
+
+	return peers_waiting_for_players
 end
 
 NetworkServer.can_enter_game = function (self)
@@ -396,7 +430,6 @@ NetworkServer.on_level_exit = function (self)
 	table.clear(self.peers_added_to_gamesession)
 	self:unregister_rpcs()
 
-	self.game_network_manager = nil
 	self.game_session = nil
 end
 
@@ -792,6 +825,12 @@ NetworkServer.update = function (self, dt)
 			end
 		end
 
+		local game_mode_settings = Managers.state.game_mode:settings()
+
+		if game_mode_settings and game_mode_settings.disable_host_migration then
+			host_to_migrate_to = nil
+		end
+
 		if Managers.weave:get_active_weave() ~= nil then
 			host_to_migrate_to = nil
 		end
@@ -946,8 +985,8 @@ NetworkServer.eac_check_peer = function (self, peer_id)
 
 	if DEDICATED_SERVER then
 		if BUILD == "release" then
-			server_state = "trusted"
-			peer_state = "trusted"
+			server_state = EACServer.state(self._eac_server, self.my_peer_id)
+			peer_state = EACServer.state(self._eac_server, peer_id)
 		else
 			server_state = EACServer.state(self._eac_server, self.my_peer_id)
 			peer_state = EACServer.state(self._eac_server, peer_id)
@@ -1179,14 +1218,18 @@ NetworkServer.all_approved_peers_are_connected = function (self, ignore_map)
 	return true
 end
 
-NetworkServer.disconnect_joining_peers = function (self)
+NetworkServer.disconnect_joining_peers = function (self, reason)
 	local peer_state_machines = self.peer_state_machines
 
 	for peer_id, peer_state_machine in pairs(peer_state_machines) do
 		local state_name = peer_state_machine.current_state.state_name
 
 		if state_name ~= "InGame" and state_name ~= "InPostGame" and state_name ~= "Disconnected" and state_name ~= "Disconnecting" then
-			self:disconnect_peer(peer_id, "host_left_game")
+			if reason then
+				self:disconnect_peer(peer_id, reason)
+			else
+				self:disconnect_peer(peer_id, "host_left_game")
+			end
 		end
 	end
 end
@@ -1198,12 +1241,27 @@ end
 NetworkServer.are_all_peers_ready = function (self)
 	local peer_state_machines = self.peer_state_machines
 
-	for peer_id, peer_state_machine in pairs(peer_state_machines) do
-		local state_name = peer_state_machine.current_state.state_name
-
-		if state_name ~= "WaitingForPlayers" and state_name ~= "InGame" and state_name ~= "Disconnected" then
+	for peer_id in pairs(peer_state_machines) do
+		if not self:is_peer_ready(peer_id) then
 			return false
 		end
+	end
+
+	return true
+end
+
+NetworkServer.is_peer_ready = function (self, peer_id)
+	local peer_state_machines = self.peer_state_machines
+	local peer_state_machine = peer_state_machines[peer_id]
+
+	if not peer_state_machine then
+		return true
+	end
+
+	local state_name = peer_state_machine.current_state.state_name
+
+	if state_name ~= "WaitingForPlayers" and state_name ~= "InGame" and state_name ~= "Disconnected" then
+		return false
 	end
 
 	return true
@@ -1295,4 +1353,14 @@ NetworkServer.hot_join_sync_party_and_profiles = function (self, peer_id)
 	local profile_synchronizer = self.profile_synchronizer
 
 	profile_synchronizer:hot_join_sync(peer_id)
+end
+
+NetworkServer.set_side_order_state = function (self, side_order_state)
+	if self._network_state then
+		self._network_state:set_side_order_state(side_order_state)
+	end
+end
+
+NetworkServer.get_side_order_state = function (self, side_order_state)
+	return self._network_state and self._network_state:get_side_order_state()
 end

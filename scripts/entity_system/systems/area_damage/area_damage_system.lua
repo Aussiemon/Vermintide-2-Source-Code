@@ -118,7 +118,8 @@ AreaDamageSystem.create_explosion = function (self, attacker_unit, position, rot
 	local game = network_manager:game()
 
 	if game then
-		local explosion_template = table.clone(ExplosionTemplates[explosion_template_name])
+		local original_template = ExplosionUtils.get_template(explosion_template_name)
+		local explosion_template = table.clone(original_template)
 		local difficulty_name = Managers.state.difficulty:get_difficulty()
 
 		if explosion_template.scaling then
@@ -154,7 +155,7 @@ AreaDamageSystem.enable_area_damage = function (self, unit, enable)
 
 	local area_damage_extension = ScriptUnit.extension(unit, "area_damage_system")
 
-	area_damage_extension:enable(enable)
+	area_damage_extension:enable_area_damage(enable)
 
 	local level_index = Managers.state.network:level_object_id(unit)
 
@@ -318,7 +319,7 @@ AreaDamageSystem._damage_unit = function (self, aoe_damage_data)
 		return
 	end
 
-	local explosion_template = ExplosionTemplates[explosion_template_name]
+	local explosion_template = ExplosionUtils.get_template(explosion_template_name)
 	local explosion_data = explosion_template.explosion
 	local breed = AiUtils.unit_breed(hit_unit)
 	local is_immune = breed and explosion_data.immune_breeds and (explosion_data.immune_breeds[breed.name] or explosion_data.immune_breeds.all)
@@ -430,10 +431,13 @@ end
 
 AreaDamageSystem.rpc_area_damage = function (self, channel_id, go_id, position)
 	local unit = self.unit_storage:unit(go_id)
-	local area_damage_system = ScriptUnit.extension(unit, "area_damage_system")
 
-	if area_damage_system then
-		area_damage_system:start()
+	if unit then
+		Unit.set_local_position(unit, 0, position)
+
+		local area_damage_extension = ScriptUnit.extension(unit, "area_damage_system")
+
+		area_damage_extension:start_area_damage()
 	end
 end
 
@@ -454,7 +458,7 @@ AreaDamageSystem.rpc_create_explosion = function (self, channel_id, attacker_uni
 
 	local source_attacker_unit = self.unit_storage:unit(source_attacker_unit_id)
 	local explosion_template_name = NetworkLookup.explosion_templates[explosion_template_name_id]
-	local explosion_template = ExplosionTemplates[explosion_template_name]
+	local explosion_template = ExplosionUtils.get_template(explosion_template_name)
 	local damage_source = NetworkLookup.damage_sources[damage_source_id]
 	local is_husk = true
 
@@ -660,7 +664,7 @@ AreaDamageSystem.rpc_necromancer_create_curse_area = function (self, channel_id,
 
 	local world = self.world
 	local owner_unit = self.unit_storage:unit(source_unit_id)
-	local explosion_template = ExplosionTemplates.sienna_necromancer_curse_area
+	local explosion_template = ExplosionUtils.get_template("sienna_necromancer_curse_area")
 
 	if explosion_template.explosion then
 		local is_husk = true

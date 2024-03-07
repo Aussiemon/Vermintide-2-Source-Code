@@ -1,5 +1,7 @@
 ﻿-- chunkname: @scripts/entity_system/systems/talents/talent_system.lua
 
+require("scripts/helpers/talent_utils")
+
 TalentSystem = class(TalentSystem, ExtensionSystemBase)
 
 local RPCS = {

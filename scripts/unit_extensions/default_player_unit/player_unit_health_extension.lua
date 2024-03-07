@@ -23,6 +23,11 @@ PlayerUnitHealthExtension.init = function (self, extension_init_context, unit, e
 	self._shield_duration_left = 0
 	self._end_reason = ""
 	self.wounded_degen_timer = 0
+	self._is_husk = player.remote or player.bot_player
+
+	local game_mode_settings = Managers.state.game_mode:settings()
+
+	self._floating_damage_numbers = game_mode_settings.use_floating_damage_numbers and not DEDICATED_SERVER
 
 	if self.is_server and not is_local_player and not is_bot then
 		self:create_health_game_object()
@@ -47,7 +52,7 @@ PlayerUnitHealthExtension.create_health_game_object = function (self)
 	local unit = self.unit
 	local difficulty_manager = Managers.state.difficulty
 	local difficulty_settings = difficulty_manager:get_difficulty_settings()
-	local max_health_alive, _ = self:_get_base_max_health()
+	local max_health_alive = self:_get_base_max_health()
 	local game_object_id = self.network_manager:unit_game_object_id(unit)
 	local game_object_data_table = {
 		current_temporary_health = 0,
@@ -100,19 +105,24 @@ PlayerUnitHealthExtension._get_base_max_health = function (self)
 	local current_hero = SPProfiles[profile_index]
 	local career_data = current_hero.careers[career_index]
 	local attributes = career_data.attributes
+	local max_hp = attributes.max_hp
 
-	return attributes.max_hp, attributes.max_hp_kd
+	return max_hp
 end
 
 PlayerUnitHealthExtension._calculate_buffed_max_health = function (self)
 	local buff_extension = self.buff_extension
 	local health_state = self.state
-	local max_health_alive, max_health_kd = self:_get_base_max_health()
 	local max_health
 
 	if health_state == "alive" then
+		local max_health_alive = self:_get_base_max_health()
+
 		max_health = buff_extension:apply_buffs_to_value(max_health_alive, "max_health_alive")
 	else
+		local game_mode_settings = Managers.state.game_mode:settings()
+		local max_health_kd = game_mode_settings.max_health_kd
+
 		max_health = buff_extension:apply_buffs_to_value(max_health_kd, "max_health_kd")
 	end
 
@@ -161,6 +171,7 @@ PlayerUnitHealthExtension._calculate_max_health = function (self)
 end
 
 PlayerUnitHealthExtension.extensions_ready = function (self, world, unit)
+	self._world = world
 	self.status_extension = ScriptUnit.extension(unit, "status_system")
 	self.buff_extension = ScriptUnit.extension(unit, "buff_system")
 
@@ -419,32 +430,55 @@ PlayerUnitHealthExtension.add_damage = function (self, attacker_unit, damage_amo
 		return
 	end
 
-	local breed = Unit.get_data(attacker_unit, "breed")
-	local ai_system = Managers.state.entity:system("ai_system")
-	local attributes = ai_system:get_attributes(attacker_unit)
+	local unit = self.unit
+	local bb = BLACKBOARDS[source_attacker_unit]
+	local attacker_breed = Unit.get_data(attacker_unit, "breed") or bb and bb.breed
 
-	if breed and breed.boss or attributes.grudge_marked then
-		local owner_player = Managers.player:owner(self.unit)
+	if attacker_breed then
+		if self._floating_damage_numbers then
+			local show_hud_damage_feedback_in_world = Application.user_setting("hud_damage_feedback_in_world")
+			local attacker_player = Managers.player:owner(attacker_unit)
 
-		if owner_player and owner_player.local_player and not owner_player.bot_player then
-			Managers.state.event:trigger("boss_health_bar_set_prioritized_unit", attacker_unit, "damage_taken")
+			if attacker_player and attacker_player.local_player and attacker_breed.is_player and not attacker_breed.is_hero and show_hud_damage_feedback_in_world then
+				local streak_damage = self._streak_damage or 0
+				local last_dmg_time = self._streak_damage_time or 0
+				local t = Managers.time:time("game")
+				local time_since_last_dmg = t - last_dmg_time
+
+				if time_since_last_dmg > 2 then
+					streak_damage = damage_amount
+				else
+					streak_damage = streak_damage + damage_amount
+				end
+
+				self._streak_damage_time = t
+				self._streak_damage = streak_damage
+
+				DamageUtils.add_unit_floating_damage_numbers(unit, damage_type, damage_amount, is_critical_strike, streak_damage, attacker_breed.z_onscreen_damage_offset, attacker_breed.damage_numbers_font_override)
+			end
 		end
 
-		QuestSettings.handle_bastard_block(self.unit, attacker_unit, false)
+		local ai_system = Managers.state.entity:system("ai_system")
+		local attributes = ai_system:get_attributes(attacker_unit)
+
+		if attacker_breed.boss or attributes.grudge_marked then
+			local owner_player = Managers.player:owner(self.unit)
+
+			if owner_player and owner_player.local_player and not owner_player.bot_player then
+				Managers.state.event:trigger("boss_health_bar_set_prioritized_unit", attacker_unit, "damage_taken")
+			end
+
+			QuestSettings.handle_bastard_block(self.unit, attacker_unit, false)
+		end
 	end
 
-	if damage_source_name == "ground_impact" and not breed.is_hero then
+	if damage_source_name == "ground_impact" and not attacker_breed.is_hero then
 		return
 	end
 
 	fassert(damage_type, "No damage_type!")
 
-	local unit = self.unit
 	local damage_table = self:_add_to_damage_history_buffer(unit, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, source_attacker_unit, hit_react_type, is_critical_strike, first_hit, total_hits, attack_type)
-
-	if damage_amount == nil then
-		Crashify.print_exception("HealthSystem", "damage_amount is nil in PlayerUnitHealthExtension:add_damage()")
-	end
 
 	if damage_type ~= "temporary_health_degen" and damage_type ~= "knockdown_bleed" then
 		StatisticsUtil.register_damage(unit, damage_table, self.statistics_db)
@@ -501,12 +535,46 @@ PlayerUnitHealthExtension.add_damage = function (self, attacker_unit, damage_amo
 
 		if ai_inventory_extension then
 			ai_inventory_extension:play_hit_sound(unit, damage_type)
+		elseif not self._is_husk then
+			local is_enemy = Managers.state.side:is_enemy(source_attacker_unit, unit)
+			local is_player_enemy = is_enemy and DamageUtils.is_player_unit(source_attacker_unit)
+
+			if is_player_enemy then
+				EffectHelper.vs_play_hit_sound(self._world, unit, attack_type, damage_type, damage_source_name)
+
+				local camera_manager = Managers.state.camera
+
+				if HEALTH_ALIVE[unit] then
+					camera_manager:camera_effect_shake_event("damaged", Managers.time:time("game"), 2)
+				end
+			end
+
+			if is_enemy then
+				EffectHelper.play_local_damage_taken_sound(self._world, unit, damage_source_name)
+			end
 		end
 
 		if self.player.local_player and (buff_extension:has_buff_type("bardin_ironbreaker_activated_ability") or buff_extension:has_buff_type("bardin_ironbreaker_activated_ability_taunt_range_and_duration")) then
 			local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
 
 			first_person_extension:play_hud_sound_event("Play_career_ability_bardin_ironbreaker_hit")
+		end
+	elseif damage_source_name == "dot_debuff" and not self._is_husk then
+		local is_enemy = Managers.state.side:is_enemy(source_attacker_unit, unit)
+		local is_player_enemy = is_enemy and DamageUtils.is_player_unit(source_attacker_unit)
+
+		if is_player_enemy then
+			EffectHelper.vs_play_hit_sound(self._world, unit, attack_type, damage_type, damage_source_name)
+
+			local camera_manager = Managers.state.camera
+
+			if HEALTH_ALIVE[unit] then
+				camera_manager:camera_effect_shake_event("damaged", Managers.time:time("game"), 2)
+			end
+		end
+
+		if is_enemy then
+			EffectHelper.play_local_damage_taken_sound(self._world, unit, damage_source_name)
 		end
 	end
 

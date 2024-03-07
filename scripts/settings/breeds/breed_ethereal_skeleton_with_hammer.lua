@@ -27,6 +27,7 @@ local breed_data = {
 	follow_reach = 1,
 	has_inventory = true,
 	has_running_attack = true,
+	height = 1.5,
 	hesitation_timer = 5,
 	hit_effect = "fx/tower_skeletons_hit",
 	hit_effect_template = "HitEffectsUndeadEtherealSkeleton",
@@ -131,7 +132,7 @@ local breed_data = {
 		40,
 		40,
 	},
-	stagger_modifier_function = function (stagger_type, duration, length, hit_zone_name, blackboard, breed, direction)
+	stagger_modifier_function = function (stagger_type, duration, length, hit_zone_name, blackboard, breed)
 		if blackboard.stagger_type == stagger_types.heavy or blackboard.stagger_type == stagger_types.explosion then
 			if stagger_type == stagger_types.heavy and blackboard.heavy_stagger_immune_time then
 				stagger_type = stagger_types.none

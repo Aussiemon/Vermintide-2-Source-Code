@@ -56,8 +56,9 @@ AbilityUI._update_ability_widget = function (self, dt, t)
 	local career_name = career_extension:career_name()
 
 	if self._career_name ~= career_name then
-		local career_settings = CareerSettings[career_name]
-		local ability_1 = career_settings.activated_ability[1]
+		local profile_index = career_extension:profile_index()
+		local career_index = career_extension:career_index()
+		local ability_1 = CareerUtils.get_ability_data(profile_index, career_index, 1)
 
 		hide_effects = ability_1.hide_ability_ui_effects
 		self._hide_effects = hide_effects

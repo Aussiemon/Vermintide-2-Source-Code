@@ -267,7 +267,7 @@ AreaDamageTemplates.templates = {
 				end
 
 				local area_damage_position = Unit.world_position(unit, 0)
-				local explosion_template = ExplosionTemplates[explosion_template_name]
+				local explosion_template = ExplosionUtils.get_template(explosion_template_name)
 				local aoe_data = explosion_template.aoe
 
 				if explosion_template.friendly_fire ~= nil then

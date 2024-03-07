@@ -829,3 +829,71 @@ UIWidgetUtils.animate_game_option_button = function (widget, dt)
 		end
 	end
 end
+
+UIWidgetUtils.animate_layout_button = function (widget, dt)
+	local content = widget.content
+	local style = widget.style
+	local hotspot = content.button_hotspot
+	local is_hover = hotspot.is_hover
+	local is_selected = hotspot.is_selected
+	local input_pressed = not is_selected and hotspot.is_clicked and hotspot.is_clicked == 0
+	local input_progress = hotspot.input_progress or 0
+	local hover_progress = hotspot.hover_progress or 0
+	local selection_progress = hotspot.selection_progress or 0
+	local speed = 8
+	local input_speed = 20
+
+	if input_pressed then
+		input_progress = math.min(input_progress + dt * input_speed, 1)
+	else
+		input_progress = math.max(input_progress - dt * input_speed, 0)
+	end
+
+	local input_easing_out_progress = math.easeOutCubic(input_progress)
+	local input_easing_in_progress = math.easeInCubic(input_progress)
+
+	if is_hover then
+		hover_progress = math.min(hover_progress + dt * speed, 1)
+	else
+		hover_progress = math.max(hover_progress - dt * speed, 0)
+	end
+
+	local hover_easing_out_progress = math.easeOutCubic(hover_progress)
+	local hover_easing_in_progress = math.easeInCubic(hover_progress)
+
+	if is_selected then
+		selection_progress = math.min(selection_progress + dt * speed, 1)
+	else
+		selection_progress = math.max(selection_progress - dt * speed, 0)
+	end
+
+	local select_easing_out_progress = math.easeOutCubic(selection_progress)
+	local select_easing_in_progress = math.easeInCubic(selection_progress)
+	local combined_progress = math.max(hover_progress, selection_progress)
+	local combined_out_progress = math.max(select_easing_out_progress, hover_easing_out_progress)
+	local combined_in_progress = math.max(hover_easing_in_progress, select_easing_in_progress)
+	local hover_alpha = 255 * combined_progress
+
+	style.texture_id.color[1] = 255 - hover_alpha
+	style.texture_hover_id.color[1] = hover_alpha
+	style.selected_texture.color[1] = hover_alpha
+	hotspot.hover_progress = hover_progress
+	hotspot.input_progress = input_progress
+	hotspot.selection_progress = selection_progress
+end
+
+UIWidgetUtils.reset_layout_button = function (widget)
+	local content = widget.content
+	local style = widget.style
+	local hotspot = content.button_hotspot
+
+	hotspot.hover_progress = 0
+	hotspot.input_progress = 0
+	hotspot.selection_progress = 0
+
+	local hover_alpha = 0
+
+	style.texture_id.color[1] = 255 - hover_alpha
+	style.texture_hover_id.color[1] = hover_alpha
+	style.selected_texture.color[1] = hover_alpha
+end

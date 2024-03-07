@@ -804,6 +804,14 @@ weapon_template.wwise_dep_left_hand = {
 	"wwise/two_handed_swords",
 }
 
+local career_skill_vs = table.clone(weapon_template)
+
+career_skill_vs.actions.action_career_release.default_smiter.damage_profile = "questing_knight_career_sword_vs"
+career_skill_vs.actions.action_career_release.smiter_combo_1.damage_profile = "questing_knight_career_sword_vs"
+career_skill_vs.actions.action_career_release.smiter_combo_2.damage_profile = "questing_knight_career_sword_stab_vs"
+career_skill_vs.actions.action_career_release.default_tank.damage_profile = "questing_knight_career_sword_tank_vs"
+
 return {
 	markus_questingknight_career_skill_weapon = table.clone(weapon_template),
+	markus_questingknight_career_skill_weapon_vs = table.clone(career_skill_vs),
 }

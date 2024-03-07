@@ -222,6 +222,13 @@ weapon_template.wwise_dep_right_hand = {
 	"wwise/blunderbuss",
 }
 
+local blunderbuss_vs = table.clone(weapon_template)
+
+blunderbuss_vs.actions.action_one.default.damage_profile = "shot_shotgun_vs"
+blunderbuss_vs.actions.action_one.default.bullseye = true
+blunderbuss_vs.actions.action_one.default.shot_count = 14
+
 return {
 	blunderbuss_template_1 = table.clone(weapon_template),
+	blunderbuss_template_1_vs = table.clone(blunderbuss_vs),
 }

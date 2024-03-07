@@ -70,7 +70,9 @@ Gathering.write_dogpiled_attackers = function (self, dogpiled_attackers_on_unit)
 end
 
 Gathering.draw = function (self)
-	Debug.text("balls=%d, bchecks=%d, uchecks=%d", self.num_balls, self.num_boid_checks or 0, self.num_unit_checks or 0)
+	if script_data.debug_gathering then
+		Debug.text("balls=%d, bchecks=%d, uchecks=%d", self.num_balls, self.num_boid_checks or 0, self.num_unit_checks or 0)
+	end
 
 	local dogpiled_attackers_on_unit = self.dogpiled_attackers_on_unit
 	local balls = self.balls
@@ -99,9 +101,11 @@ Gathering.draw = function (self)
 		s = s .. " | " .. ball.id .. "(" .. num_dogpiled .. ")"
 	end
 
-	Debug.text("Balls: %s", s)
+	if script_data.debug_gathering then
+		Debug.text("Balls: %s", s)
+	end
 
-	if self.version == "fast" then
+	if self.version == "fast" and script_data.debug_gathering then
 		self:write_dogpiled_attackers(dogpiled_attackers_on_unit)
 	end
 end

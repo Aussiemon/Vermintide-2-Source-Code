@@ -44,6 +44,9 @@ local default_user_settings = {
 	give_on_defend = true,
 	head_bob = true,
 	hud_clamp_ui_scaling = false,
+	hud_damage_feedback_in_world = true,
+	hud_damage_feedback_on_teammates = true,
+	hud_damage_feedback_on_yourself = false,
 	hud_scale = 100,
 	input_buffer = 0.5,
 	language_id = "en",
@@ -112,6 +115,7 @@ local default_user_settings = {
 	voip_bus_volume = 100,
 	voip_is_enabled = true,
 	voip_push_to_talk = true,
+	vs_floating_damage = "both",
 	vsync = true,
 	weapon_scroll_type = "scroll_wrap",
 	weapon_trails = "normal",
@@ -260,7 +264,10 @@ DefaultUserSettings.set_default_user_settings = function ()
 
 	if reload then
 		Application.apply_user_settings()
-		GlobalShaderFlags.apply_settings()
+
+		if rawget(_G, "GlobalShaderFlags") then
+			GlobalShaderFlags.apply_settings()
+		end
 	end
 
 	if set_default then

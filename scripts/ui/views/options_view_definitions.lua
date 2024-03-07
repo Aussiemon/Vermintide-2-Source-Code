@@ -89,6 +89,34 @@ local scenegraph_definition = {
 			2,
 		},
 	},
+	window = {
+		horizontal_alignment = "center",
+		parent = "root",
+		vertical_alignment = "center",
+		size = {
+			1920,
+			1080,
+		},
+		position = {
+			0,
+			0,
+			3,
+		},
+	},
+	back_button = {
+		horizontal_alignment = "left",
+		parent = "window",
+		vertical_alignment = "top",
+		size = {
+			0,
+			0,
+		},
+		position = {
+			40,
+			-50,
+			3,
+		},
+	},
 	background_frame = {
 		horizontal_alignment = "center",
 		parent = "background",
@@ -468,6 +496,20 @@ local scenegraph_definition = {
 		},
 	},
 	settings_button_9 = {
+		horizontal_alignment = "left",
+		parent = "button_pivot",
+		vertical_alignment = "bottom",
+		position = {
+			0,
+			0,
+			1,
+		},
+		size = {
+			220,
+			30,
+		},
+	},
+	settings_button_10 = {
 		horizontal_alignment = "left",
 		parent = "button_pivot",
 		vertical_alignment = "bottom",
@@ -1246,6 +1288,7 @@ end
 
 local button_definitions = {
 	exit_button = create_exit_button("exit_button", "friends_icon_close"),
+	back_button = UIWidgets.create_layout_button("back_button", "layout_button_back", "layout_button_back_glow"),
 	apply_button = UIWidgets.create_text_button("apply_button", "menu_settings_apply", 22, nil, "center"),
 	reset_to_default = UIWidgets.create_text_button("reset_to_default", "menu_settings_reset_to_default", 22, nil, "center"),
 }
@@ -5603,6 +5646,27 @@ SettingsWidgetTypeTemplate = {
 	},
 }
 
+local animation_definitions = {
+	on_enter = {
+		{
+			end_progress = 0.25,
+			name = "fade_in",
+			start_progress = 0,
+			init = function (ui_scenegraph, scenegraph_definition_data, widgets, params)
+				params.render_settings.alpha_multiplier = 0
+			end,
+			update = function (ui_scenegraph, scenegraph_definition_data, widgets, progress, params)
+				local anim_progress = math.easeOutCubic(progress)
+
+				params.render_settings.alpha_multiplier = anim_progress
+			end,
+			on_complete = function (ui_scenegraph, scenegraph_definition_data, widgets, params)
+				params.render_settings.alpha_multiplier = 1
+			end,
+		},
+	},
+}
+
 return {
 	scenegraph_definition = scenegraph_definition,
 	background_widget_definitions = background_widget_definitions,
@@ -5610,6 +5674,7 @@ return {
 	widget_definitions = widget_definitions,
 	button_definitions = button_definitions,
 	scrollbar_definition = scrollbar_definition,
+	animation_definitions = animation_definitions,
 	create_title_widget = create_title_widget,
 	create_checkbox_widget = create_checkbox_widget,
 	create_slider_widget = create_slider_widget,

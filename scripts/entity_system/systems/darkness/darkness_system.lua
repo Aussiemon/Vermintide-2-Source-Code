@@ -173,19 +173,9 @@ DarknessSystem._update_darkness_fx = function (self, dt, t)
 
 	if player then
 		local world = self.world
-		local camera_unit = player.camera_follow_unit
-		local camera_extension = ScriptUnit.has_extension(camera_unit, "camera_system")
-		local observed_player, unit
+		local unit = player:observed_unit()
 
-		if camera_extension then
-			local observed_player_id = camera_extension:get_observed_player_id()
-
-			observed_player = observed_player_id and player_manager:players()[observed_player_id]
-		end
-
-		if observed_player and Unit.alive(observed_player.player_unit) then
-			unit = observed_player.player_unit
-		else
+		if not ALIVE[unit] then
 			unit = player.player_unit
 		end
 

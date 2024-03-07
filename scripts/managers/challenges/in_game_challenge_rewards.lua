@@ -33,6 +33,14 @@ InGameChallengeRewards.markus_questing_knight_passive_cooldown_reduction_buff_im
 		"markus_questing_knight_passive_cooldown_reduction_improved",
 	},
 }
+InGameChallengeRewards.markus_questing_knight_passive_cooldown_reduction_buff_vs = {
+	server_controlled = true,
+	target = "party",
+	type = "buff",
+	buffs = {
+		"markus_questing_knight_passive_cooldown_reduction_vs",
+	},
+}
 InGameChallengeRewards.markus_questing_knight_passive_attack_speed_buff = {
 	server_controlled = true,
 	target = "party",
@@ -47,6 +55,14 @@ InGameChallengeRewards.markus_questing_knight_passive_attack_speed_buff_improved
 	type = "buff",
 	buffs = {
 		"markus_questing_knight_passive_attack_speed_improved",
+	},
+}
+InGameChallengeRewards.markus_questing_knight_passive_attack_speed_buff_vs = {
+	server_controlled = true,
+	target = "party",
+	type = "buff",
+	buffs = {
+		"markus_questing_knight_passive_attack_speed_vs",
 	},
 }
 InGameChallengeRewards.markus_questing_knight_passive_power_level_buff = {
@@ -65,6 +81,14 @@ InGameChallengeRewards.markus_questing_knight_passive_power_level_buff_improved 
 		"markus_questing_knight_passive_power_level_improved",
 	},
 }
+InGameChallengeRewards.markus_questing_knight_passive_power_level_buff_vs = {
+	server_controlled = true,
+	target = "party",
+	type = "buff",
+	buffs = {
+		"markus_questing_knight_passive_power_level_vs",
+	},
+}
 InGameChallengeRewards.markus_questing_knight_passive_damage_taken_buff = {
 	server_controlled = true,
 	target = "party",
@@ -81,6 +105,14 @@ InGameChallengeRewards.markus_questing_knight_passive_damage_taken_buff_improved
 		"markus_questing_knight_passive_damage_taken_improved",
 	},
 }
+InGameChallengeRewards.markus_questing_knight_passive_damage_taken_buff_vs = {
+	server_controlled = true,
+	target = "party",
+	type = "buff",
+	buffs = {
+		"markus_questing_knight_passive_damage_taken_vs",
+	},
+}
 InGameChallengeRewards.markus_questing_knight_passive_health_regen_buff = {
 	server_controlled = true,
 	target = "party",
@@ -95,6 +127,14 @@ InGameChallengeRewards.markus_questing_knight_passive_health_regen_buff_improved
 	type = "buff",
 	buffs = {
 		"markus_questing_knight_passive_health_regen_improved",
+	},
+}
+InGameChallengeRewards.markus_questing_knight_passive_health_regen_buff_vs = {
+	server_controlled = true,
+	target = "party",
+	type = "buff",
+	buffs = {
+		"markus_questing_knight_passive_health_regen_vs",
 	},
 }
 InGameChallengeRewards.markus_questing_knight_passive_speed_potion = {
@@ -138,12 +178,32 @@ InGameChallengeRewards.markus_questing_knight_passive_cooldown_reduction = {
 	target = "party",
 	type = "boon",
 	reactivation_rule = BoonReactivationRules.questing_knight,
+	mechanism_overrides = {
+		versus = {
+			consume_type = "round",
+		},
+	},
 }
 InGameChallengeRewards.markus_questing_knight_passive_cooldown_reduction_improved = {
 	consume_type = "venture",
 	consume_value = 1,
 	icon = "icon_objective_cdr",
 	reward_id = "markus_questing_knight_passive_cooldown_reduction_buff_improved",
+	sound = "Play_hud_grail_knight_stamina",
+	target = "party",
+	type = "boon",
+	reactivation_rule = BoonReactivationRules.questing_knight,
+	mechanism_overrides = {
+		versus = {
+			consume_type = "round",
+		},
+	},
+}
+InGameChallengeRewards.markus_questing_knight_passive_cooldown_reduction_vs = {
+	consume_type = "round",
+	consume_value = 1,
+	icon = "icon_objective_cdr",
+	reward_id = "markus_questing_knight_passive_cooldown_reduction_buff_vs",
 	sound = "Play_hud_grail_knight_stamina",
 	target = "party",
 	type = "boon",
@@ -158,12 +218,32 @@ InGameChallengeRewards.markus_questing_knight_passive_attack_speed = {
 	target = "party",
 	type = "boon",
 	reactivation_rule = BoonReactivationRules.questing_knight,
+	mechanism_overrides = {
+		versus = {
+			consume_type = "round",
+		},
+	},
 }
 InGameChallengeRewards.markus_questing_knight_passive_attack_speed_improved = {
 	consume_type = "venture",
 	consume_value = 1,
 	icon = "icon_objective_attack_speed",
 	reward_id = "markus_questing_knight_passive_attack_speed_buff_improved",
+	sound = "Play_hud_grail_knight_attack",
+	target = "party",
+	type = "boon",
+	reactivation_rule = BoonReactivationRules.questing_knight,
+	mechanism_overrides = {
+		versus = {
+			consume_type = "round",
+		},
+	},
+}
+InGameChallengeRewards.markus_questing_knight_passive_attack_speed_vs = {
+	consume_type = "round",
+	consume_value = 1,
+	icon = "icon_objective_attack_speed",
+	reward_id = "markus_questing_knight_passive_attack_speed_buff_vs",
 	sound = "Play_hud_grail_knight_attack",
 	target = "party",
 	type = "boon",
@@ -178,12 +258,32 @@ InGameChallengeRewards.markus_questing_knight_passive_power_level = {
 	target = "party",
 	type = "boon",
 	reactivation_rule = BoonReactivationRules.questing_knight,
+	mechanism_overrides = {
+		versus = {
+			consume_type = "round",
+		},
+	},
 }
 InGameChallengeRewards.markus_questing_knight_passive_power_level_improved = {
 	consume_type = "venture",
 	consume_value = 1,
 	icon = "icon_objective_power_level",
 	reward_id = "markus_questing_knight_passive_power_level_buff_improved",
+	sound = "Play_hud_grail_knight_power",
+	target = "party",
+	type = "boon",
+	reactivation_rule = BoonReactivationRules.questing_knight,
+	mechanism_overrides = {
+		versus = {
+			consume_type = "round",
+		},
+	},
+}
+InGameChallengeRewards.markus_questing_knight_passive_power_level_vs = {
+	consume_type = "round",
+	consume_value = 1,
+	icon = "icon_objective_power_level",
+	reward_id = "markus_questing_knight_passive_power_level_buff_vs",
 	sound = "Play_hud_grail_knight_power",
 	target = "party",
 	type = "boon",
@@ -198,12 +298,32 @@ InGameChallengeRewards.markus_questing_knight_passive_damage_taken = {
 	target = "party",
 	type = "boon",
 	reactivation_rule = BoonReactivationRules.questing_knight,
+	mechanism_overrides = {
+		versus = {
+			consume_type = "round",
+		},
+	},
 }
 InGameChallengeRewards.markus_questing_knight_passive_damage_taken_improved = {
 	consume_type = "venture",
 	consume_value = 1,
 	icon = "icon_objective_damage_taken",
 	reward_id = "markus_questing_knight_passive_damage_taken_buff_improved",
+	sound = "Play_hud_grail_knight_tank",
+	target = "party",
+	type = "boon",
+	reactivation_rule = BoonReactivationRules.questing_knight,
+	mechanism_overrides = {
+		versus = {
+			consume_type = "round",
+		},
+	},
+}
+InGameChallengeRewards.markus_questing_knight_passive_damage_taken_vs = {
+	consume_type = "round",
+	consume_value = 1,
+	icon = "icon_objective_damage_taken",
+	reward_id = "markus_questing_knight_passive_damage_taken_buff_vs",
 	sound = "Play_hud_grail_knight_tank",
 	target = "party",
 	type = "boon",
@@ -218,6 +338,11 @@ InGameChallengeRewards.markus_questing_knight_passive_health_regen = {
 	target = "party",
 	type = "boon",
 	reactivation_rule = BoonReactivationRules.questing_knight,
+	mechanism_overrides = {
+		versus = {
+			consume_type = "round",
+		},
+	},
 }
 InGameChallengeRewards.markus_questing_knight_passive_health_regen_improved = {
 	consume_type = "venture",
@@ -228,18 +353,33 @@ InGameChallengeRewards.markus_questing_knight_passive_health_regen_improved = {
 	target = "party",
 	type = "boon",
 	reactivation_rule = BoonReactivationRules.questing_knight,
+	mechanism_overrides = {
+		versus = {
+			consume_type = "round",
+		},
+	},
+}
+InGameChallengeRewards.markus_questing_knight_passive_health_regen_vs = {
+	consume_type = "round",
+	consume_value = 1,
+	icon = "icon_objective_health_regen",
+	reward_id = "markus_questing_knight_passive_health_regen_buff_vs",
+	sound = "Play_hud_grail_knight_heal",
+	target = "party",
+	type = "boon",
+	reactivation_rule = BoonReactivationRules.questing_knight,
 }
 
 DLCUtils.merge("ingame_challenge_rewards", InGameChallengeRewards)
 
 do
 	local function copy_buff_values(reward_name, buff_name, value_type)
-		if BuffTemplates[buff_name] then
+		if BuffUtils.get_buff_template(buff_name, "adventure") then
 			InGameChallengeRewards[reward_name].description_values = {
 				{
 					value_fmt = "%+d%%",
 					value_type = "percent",
-					value = BuffTemplates[buff_name].buffs[1].multiplier,
+					value = BuffUtils.get_buff_template(buff_name, "adventure").buffs[1].multiplier,
 				},
 			}
 		else
@@ -250,12 +390,12 @@ do
 		local buff_name_improved = buff_name .. "_improved"
 
 		if InGameChallengeRewards[reward_name_improved] then
-			if BuffTemplates[buff_name_improved] then
+			if BuffUtils.get_buff_template(buff_name_improved, "adventure") then
 				InGameChallengeRewards[reward_name_improved].description_values = {
 					{
 						value_fmt = "%+d%%",
 						value_type = "percent",
-						value = BuffTemplates[buff_name_improved].buffs[1].multiplier,
+						value = BuffUtils.get_buff_template(buff_name_improved, "adventure").buffs[1].multiplier,
 					},
 				}
 			else

@@ -110,6 +110,7 @@ local function make_filter_macro_can_wield_career(career_name)
 	end
 end
 
+local EMPTY_TABLE = {}
 local filter_macros = {
 	item_key = function (item, backend_id)
 		local item_data = item.data
@@ -159,7 +160,7 @@ local filter_macros = {
 
 		if item_data.traits then
 			for _, trait_name in ipairs(item_data.traits) do
-				local trait_config = BuffTemplates[trait_name]
+				local trait_config = BuffUtils.get_buff_template(trait_name)
 				local roll_dice_as_hero = trait_config.roll_dice_as_hero
 
 				if roll_dice_as_hero then
@@ -515,6 +516,10 @@ local filter_macros = {
 
 		if is_cosmetic then
 			return true
+		end
+
+		if LoadoutUtils.is_item_disabled(item.ItemId) then
+			return false
 		end
 
 		local is_item_for_mechanism = mechanisms and table.contains(mechanisms, current_mechanism)

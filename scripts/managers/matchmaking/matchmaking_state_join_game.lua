@@ -51,6 +51,10 @@ MatchmakingStateJoinGame.on_enter = function (self, state_context)
 		self:_set_state_to_start_lobby()
 	end
 
+	if Managers.mechanism:mechanism_setting("sync_backend_id") then
+		self:_sync_backend_id()
+	end
+
 	self._update_lobby_data_timer = 0
 end
 
@@ -264,8 +268,13 @@ MatchmakingStateJoinGame._spawn_join_popup = function (self, dt, t)
 	local auto_cancel_time = MatchmakingSettings.JOIN_LOBBY_TIME_UNTIL_AUTO_CANCEL
 	local join_by_lobby_browser = self.state_context.join_by_lobby_browser
 	local difficulty = self.lobby_client:lobby_data("difficulty")
+	local optional_locked_profile_index
 
-	Managers.ui:open_popup("profile_picker", profile_index, career_index, auto_cancel_time, join_by_lobby_browser, difficulty, self._lobby_data)
+	if self._denied_reason == "profile_locked" then
+		optional_locked_profile_index = profile_index
+	end
+
+	Managers.ui:open_popup("profile_picker", profile_index, career_index, auto_cancel_time, join_by_lobby_browser, difficulty, self._lobby_data, optional_locked_profile_index)
 
 	self._profile_picker_shown = true
 
@@ -306,16 +315,18 @@ MatchmakingStateJoinGame._request_profile_from_host = function (self, hero_index
 	self._matchmaking_manager.debug.level = lobby_client:lobby_data("selected_mission_id")
 end
 
-MatchmakingStateJoinGame.rpc_matchmaking_request_profile_reply = function (self, channel_id, profile, reply)
+MatchmakingStateJoinGame.rpc_matchmaking_request_profile_reply = function (self, channel_id, profile, reply_id)
+	local reply = NetworkLookup.request_profile_replies[reply_id]
 	local selected_hero_name = self._selected_hero_name
 	local selected_hero_index = FindProfileIndex(selected_hero_name)
-	local reason
+
+	self._denied_reason = nil
 
 	fassert(profile == selected_hero_index, "wrong profile in rpc_matchmaking_request_profile_reply")
 
-	if reply == true then
-		self._matchmaking_manager.debug.text = "profile_accepted"
-		reason = "profile_accepted"
+	if reply == "profile_accepted" then
+		self._matchmaking_manager.debug.text = reply
+		self._denied_reason = reply
 
 		if self._selected_career_name then
 			local hero_attributes = Managers.backend:get_interface("hero_attributes")
@@ -325,9 +336,13 @@ MatchmakingStateJoinGame.rpc_matchmaking_request_profile_reply = function (self,
 		end
 
 		self:_set_state_to_start_lobby()
-	else
-		reason = "profile_declined"
-		self._matchmaking_manager.debug.text = "profile_declined"
+	elseif reply == "profile_declined" then
+		self._denied_reason = reply
+		self._matchmaking_manager.debug.text = reply
+		self._show_popup = true
+	elseif reply == "profile_locked" then
+		self._denied_reason = reply
+		self._matchmaking_manager.debug.text = reply
 		self._show_popup = true
 	end
 
@@ -361,6 +376,16 @@ end
 MatchmakingStateJoinGame.rpc_matchmaking_join_game = function (self, channel_id)
 	mm_printf_force("Transition from join due to rpc_matchmaking_join_game")
 	self:_set_state_to_start_lobby()
+end
+
+MatchmakingStateJoinGame._sync_backend_id = function (self)
+	local lobby_client = self.lobby_client
+	local peer_id = lobby_client:lobby_host()
+	local backend_id = Managers.backend:player_id()
+
+	if backend_id and self._network_transmit then
+		self._network_transmit:send_rpc("rpc_set_peer_backend_id", peer_id, backend_id)
+	end
 end
 
 MatchmakingStateJoinGame.active_lobby = function (self)

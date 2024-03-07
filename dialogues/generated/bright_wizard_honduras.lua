@@ -5186,8 +5186,8 @@ return function ()
 			{
 				"faction_memory",
 				"last_heard_gutter_runner",
-				OP.EQ,
 				OP.TIMEDIFF,
+				OP.GT,
 				20,
 			},
 			{
@@ -12734,8 +12734,8 @@ return function ()
 				"pbw_gameplay_overcharge_14",
 			},
 			sound_events_duration = {
-				3.4356665611267,
-				3.5413959026337,
+				3.5079686641693,
+				3.5413854122162,
 				4.3920727968216,
 				4.4796147346497,
 				4.3748123645782,

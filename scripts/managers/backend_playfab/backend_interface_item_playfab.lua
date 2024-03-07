@@ -293,6 +293,14 @@ BackendInterfaceItemPlayfab.get_loadout = function (self)
 	return self._loadouts
 end
 
+BackendInterfaceItemPlayfab.get_loadout_by_career_name = function (self, career_name)
+	if self._dirty then
+		self:_refresh()
+	end
+
+	return self._loadouts[career_name]
+end
+
 BackendInterfaceItemPlayfab.get_loadout_item_id = function (self, career_name, slot_name)
 	local loadouts = self:get_loadout()
 	local loadout = loadouts[career_name]

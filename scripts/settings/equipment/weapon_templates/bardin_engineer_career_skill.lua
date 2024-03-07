@@ -71,10 +71,12 @@ weapon_template.actions = {
 		spin = {
 			anim_end_event = "attack_finished",
 			anim_event = "attack_charge",
+			audio_loop_id = "engineer_weapon_spin",
 			charge_sound_husk_name = "Play_player_engineer_engine_charge_husk",
 			charge_sound_husk_stop_event = "Stop_player_engineer_engine_loop_husk",
 			charge_sound_name = "Play_player_engineer_engine_charge",
 			charge_sound_stop_event = "Stop_player_engineer_engine_loop",
+			fp_speed_anim_variable = "barrel_spin_speed",
 			hold_input = "action_one_hold",
 			initial_windup = 0,
 			kind = "career_dr_four_spin",
@@ -175,6 +177,7 @@ weapon_template.actions = {
 			reload_when_out_of_ammo = true,
 			shot_count = 1,
 			total_time_secondary = 1.75,
+			use_ability_as_ammo = true,
 			on_chain_keep_audio_loops = {
 				"engineer_weapon_spin",
 			},

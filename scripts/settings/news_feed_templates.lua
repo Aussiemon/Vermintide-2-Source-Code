@@ -158,8 +158,8 @@ NewsFeedTemplates = {
 			local unlocked_talents_points = 0
 			local debug_unlock_talents = Development.parameter("debug_unlock_talents")
 
-			for _, unlock_level in pairs(TalentUnlockLevels) do
-				if unlock_level <= player_level or debug_unlock_talents then
+			for template_name, _ in pairs(TalentUnlockLevels) do
+				if ProgressionUnlocks.is_unlocked(template_name, player_level) or debug_unlock_talents then
 					unlocked_talents_points = unlocked_talents_points + 1
 				end
 			end

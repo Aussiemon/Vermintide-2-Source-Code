@@ -24,6 +24,7 @@ CinematicsView.init = function (self, ingame_ui_context)
 		alpha_multiplier = 0,
 		snap_pixel_positions = false,
 	}
+	self._in_title_screen = ingame_ui_context.in_title_screen
 
 	local input_manager = self._input_manager
 
@@ -129,6 +130,19 @@ CinematicsView._create_ui_elements = function (self)
 	local widget = UIWidget.init(widget_definition)
 
 	self._video_widget = widget
+
+	local button_widgets = {}
+	local button_widgets_by_name = {}
+
+	for name, widget_definition in pairs(definitions.button_widget_definitions) do
+		local widget = UIWidget.init(widget_definition)
+
+		button_widgets[#button_widgets + 1] = widget
+		button_widgets_by_name[name] = widget
+	end
+
+	self._button_widgets = button_widgets
+	self._button_widgets_by_name = button_widgets_by_name
 	self._ui_animations = {}
 	self._animations = {}
 	self._animation_callbacks = {}
@@ -193,6 +207,12 @@ CinematicsView.on_enter = function (self)
 	self:_show_loading_icon()
 end
 
+CinematicsView._reset_button_states = function (self)
+	for _, widget in ipairs(self._button_widgets) do
+		UIWidgetUtils.reset_layout_button(widget)
+	end
+end
+
 CinematicsView._show_loading_icon = function (self)
 	Managers.transition:show_loading_icon(false)
 end
@@ -248,6 +268,7 @@ CinematicsView._init_view = function (self)
 	self:_create_scrollbar()
 	self:_reset()
 	self:_hide_loading_icon()
+	self:_reset_button_states()
 	self:_start_animation("on_enter")
 
 	self._initialized = true
@@ -268,7 +289,7 @@ CinematicsView._start_animation = function (self, animation_name, callback)
 end
 
 CinematicsView._enable_viewport = function (self, enable)
-	if IS_WINDOWS then
+	if IS_WINDOWS and (GameSettingsDevelopment.skip_start_screen or Development.parameter("skip_start_screen")) then
 		local world_name = "inventory_preview"
 		local viewport_name = "inventory_preview_viewport"
 		local world = Managers.world:world(world_name)
@@ -341,19 +362,20 @@ CinematicsView._update_input = function (self, dt, t)
 		return
 	end
 
+	local on_enter_animation_id = self._animations.on_enter
 	local input_service = self:input_service()
 	local gamepad_active = Managers.input:is_device_active("gamepad")
 	local current_video_content = self._current_video_content
 	local toggle_menu_input = input_service:get("toggle_menu", true)
 	local back_input = input_service:get("back_menu", true)
+	local left_press_input = IS_WINDOWS and self._ui_animator:is_animation_completed(on_enter_animation_id) and input_service:get("left_press")
 	local input_device = Managers.input:get_most_recent_device()
 	local any_input_pressed = input_device.any_pressed()
-	local fade_edge_hotspot = self._widgets_by_name.fade_edge_hotspot
-	local fade_edge_hotspot_content = fade_edge_hotspot.content
-	local on_enter_animation_id = self._animations.on_enter
-	local fade_edge_hotspot = self._ui_animator:is_animation_completed(on_enter_animation_id) and fade_edge_hotspot_content.hotspot or EMPTY_TABLE
+	local canvas_hotspot_widget = self._widgets_by_name.canvas_hotspot
+	local canvas_hotspot_widget_content = canvas_hotspot_widget.content
+	local canvas_hotspot = canvas_hotspot_widget_content.hotspot
 
-	if not current_video_content and (toggle_menu_input or back_input or fade_edge_hotspot.on_pressed) then
+	if not current_video_content and (toggle_menu_input or back_input or not canvas_hotspot.is_hover and left_press_input) then
 		self:do_exit()
 
 		return
@@ -405,6 +427,12 @@ CinematicsView._update_animations = function (self, dt, t)
 
 				animation_callbacks[animation_name] = nil
 			end
+		end
+	end
+
+	if Managers.input:is_device_active("mouse") then
+		for _, widget in ipairs(self._button_widgets) do
+			UIWidgetUtils.animate_layout_button(widget, dt)
 		end
 	end
 end
@@ -549,7 +577,7 @@ CinematicsView.deactivate_video = function (self)
 end
 
 CinematicsView._play_sound = function (self, sound_event)
-	if IS_WINDOWS then
+	if IS_WINDOWS and (GameSettingsDevelopment.skip_start_screen or Development.parameter("skip_start_screen")) then
 		local world_name = IS_CONSOLE and "title_screen_world" or "level_world"
 		local world = Managers.world:world(world_name)
 		local wwise_world = Managers.world:wwise_world(world)
@@ -561,7 +589,7 @@ CinematicsView._play_sound = function (self, sound_event)
 end
 
 CinematicsView._start_video_sound = function (self, sound_start, sound_stop)
-	if IS_WINDOWS then
+	if IS_WINDOWS and (GameSettingsDevelopment.skip_start_screen or Development.parameter("skip_start_screen")) then
 		self:_play_sound("play_gui_amb_hero_screen_loop_end")
 		self:_play_sound("Play_hud_start_cinematic")
 
@@ -588,7 +616,7 @@ CinematicsView._reset_sound = function (self)
 
 	self:_play_sound(IS_CONSOLE and "Play_console_menu_music" or "Play_menu_screen_music")
 
-	if IS_WINDOWS then
+	if IS_WINDOWS and (GameSettingsDevelopment.skip_start_screen or Development.parameter("skip_start_screen")) then
 		self:_play_sound("play_gui_amb_hero_screen_loop_begin")
 	end
 end
@@ -662,6 +690,7 @@ CinematicsView._draw = function (self, dt, t)
 	local ui_scenegraph = self._ui_scenegraph
 	local render_settings = self._render_settings
 	local gamepad_active = Managers.input:is_device_active("gamepad")
+	local current_video_content = self._current_video_content
 
 	UIRenderer.begin_pass(ui_top_renderer, ui_scenegraph, input_service, dt, nil, render_settings)
 
@@ -690,9 +719,14 @@ CinematicsView._draw = function (self, dt, t)
 	end
 
 	UIRenderer.draw_widget(ui_top_renderer, self._scrollbar_widget)
-	UIRenderer.end_pass(ui_top_renderer)
 
-	local current_video_content = self._current_video_content
+	if self._in_title_screen and not current_video_content and Managers.input:is_device_active("mouse") then
+		for _, widget in ipairs(self._button_widgets) do
+			UIRenderer.draw_widget(ui_top_renderer, widget)
+		end
+	end
+
+	UIRenderer.end_pass(ui_top_renderer)
 
 	if current_video_content then
 		if self._cutscene_overlay_ui then

@@ -23,9 +23,11 @@ StateTitleScreenMain.on_enter = function (self, params)
 	self._auto_start = params.auto_start
 	self._auto_sign_in = params.auto_sign_in
 	self.input_manager = Managers.input
+	self._windows_auto_sign_in = self.parent.parent.loading_context.windows_auto_sign_in
+	self.parent.parent.loading_context.windows_auto_sign_in = nil
 	self._title_start_ui = params.ui
 
-	if self._title_start_ui then
+	if self._title_start_ui and IS_CONSOLE then
 		self._title_start_ui:clear_user_name()
 	end
 
@@ -83,7 +85,7 @@ StateTitleScreenMain.on_enter = function (self, params)
 		Wwise.set_state("menu_mute_ingame_sounds", "true")
 	end
 
-	if not self._params.menu_screen_music_playing and not GameSettingsDevelopment.skip_start_screen and not self._auto_start then
+	if not self._params.menu_screen_music_playing and not GameSettingsDevelopment.skip_start_screen and not Development.parameter("skip_start_screen") and not self._auto_start then
 		Managers.music:trigger_event("Play_console_menu_music")
 
 		self._params.menu_screen_music_playing = true
@@ -107,7 +109,7 @@ StateTitleScreenMain.update = function (self, dt, t)
 		Managers.voice_chat:update(dt, t)
 	end
 
-	if not GameSettingsDevelopment.skip_start_screen then
+	if not GameSettingsDevelopment.skip_start_screen and not Development.parameter("skip_start_screen") then
 		local loading_context = self.parent.parent.loading_context
 
 		if loading_context.previous_session_error then
@@ -155,6 +157,10 @@ StateTitleScreenMain._update_network = function (self, dt, t)
 end
 
 StateTitleScreenMain._update_attract_mode = function (self, dt, t)
+	if IS_WINDOWS then
+		return
+	end
+
 	if self._title_start_ui:attract_mode() then
 		if self._title_start_ui:video_completed() then
 			self:_exit_attract_mode()
@@ -199,7 +205,7 @@ StateTitleScreenMain._handle_continue_input = function (self, dt, t)
 	end
 
 	if start_allowed then
-		if input_service:get("start", true) then
+		if input_service:get("start", true) or self._windows_auto_sign_in then
 			local current_device = Managers.input:get_most_recent_device()
 
 			if IS_XB1 and (current_device._name == "Keyboard" or current_device._name == "Mouse") then
@@ -220,7 +226,7 @@ StateTitleScreenMain._handle_continue_input = function (self, dt, t)
 		end
 	end
 
-	if self._title_start_ui:attract_mode() then
+	if IS_CONSOLE and self._title_start_ui:attract_mode() then
 		local current_device = Managers.input:get_most_recent_device()
 
 		if current_device:any_pressed() then
@@ -281,19 +287,20 @@ StateTitleScreenMain._update_input = function (self, dt, t)
 		else
 			self:_queue_popup(Localize("popup_invite_not_installed"), Localize("popup_invite_not_installed_header"), "not_installed", Localize("menu_ok"))
 		end
-	elseif (self._start_pressed or LEVEL_EDITOR_TEST or self._auto_start or GameSettingsDevelopment.skip_start_screen or self._params.switch_user_auto_sign_in or self._has_engaged) and not self._state then
-		if self._title_start_ui:attract_mode() then
+	elseif (self._start_pressed or LEVEL_EDITOR_TEST or self._auto_start or GameSettingsDevelopment.skip_start_screen or Development.parameter("skip_start_screen") or self._params.switch_user_auto_sign_in or self._has_engaged) and not self._state then
+		if IS_CONSOLE and self._title_start_ui:attract_mode() then
 			self:_exit_attract_mode()
 
 			self._start_pressed = false
 		elseif IS_WINDOWS then
-			if not GameSettingsDevelopment.skip_start_screen then
+			if not GameSettingsDevelopment.skip_start_screen and not Development.parameter("skip_start_screen") then
 				Managers.music:trigger_event("hud_menu_press_start")
 			end
 
-			self._title_start_ui:set_start_pressed(true)
-
 			self._state = StateTitleScreenInitNetwork
+
+			self._title_start_ui:set_start_pressed(true)
+			self._title_start_ui:set_information_text(Localize("loading_signing_in"))
 		elseif IS_XB1 then
 			if not controller or controller.type() ~= "xbox_controller" then
 				self._start_pressed = false

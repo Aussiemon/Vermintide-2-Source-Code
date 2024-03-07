@@ -139,3 +139,19 @@ LoadoutUtils.properties_from_rpc_params = function (properties_array, properties
 
 	return num_properties, properties, traits
 end
+
+LoadoutUtils.is_item_disabled = function (item_id)
+	local mechanism_manager = Managers.mechanism
+
+	if not mechanism_manager then
+		return false
+	end
+
+	local override_item_availability = mechanism_manager:mechanism_setting_for_title("override_item_availability")
+
+	if not override_item_availability then
+		return false
+	end
+
+	return override_item_availability[item_id] == false
+end

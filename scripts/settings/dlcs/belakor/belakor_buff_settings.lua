@@ -369,7 +369,7 @@ settings.explosion_templates = {
 			local explosion_position = Unit.local_position(projectile_unit, 0)
 			local world = Managers.world:world("level_world")
 
-			explosion_template = ExplosionTemplates.homing_skull_explosion
+			explosion_template = ExplosionUtils.get_template("homing_skull_explosion")
 
 			DamageUtils.create_explosion(world, projectile_unit, explosion_position, Quaternion.identity(), explosion_template, 1, damage_source, true, false, owner_unit, false)
 
@@ -426,6 +426,10 @@ settings.explosion_templates = {
 				cataclysm_3 = {
 					power_level = 1200,
 					power_level_glance = 600,
+				},
+				versus_base = {
+					power_level = 600,
+					power_level_glance = 300,
 				},
 			},
 		},

@@ -391,62 +391,6 @@ local scenegraph_definition = {
 			2,
 		},
 	},
-	versus_menu_text_input = {
-		horizontal_alignment = "center",
-		parent = "cancel_text_field",
-		vertical_alignment = "center",
-		size = {
-			400,
-			50,
-		},
-		position = {
-			300,
-			0,
-			2,
-		},
-	},
-	versus_menu_text_prefix = {
-		horizontal_alignment = "center",
-		parent = "cancel_text_field",
-		vertical_alignment = "center",
-		size = {
-			400,
-			50,
-		},
-		position = {
-			300,
-			0,
-			2,
-		},
-	},
-	versus_menu_text_suffix = {
-		horizontal_alignment = "center",
-		parent = "cancel_text_field",
-		vertical_alignment = "center",
-		size = {
-			400,
-			50,
-		},
-		position = {
-			300,
-			0,
-			2,
-		},
-	},
-	versus_menu_icon = {
-		horizontal_alignment = "center",
-		parent = "cancel_text_field",
-		vertical_alignment = "center",
-		size = {
-			36,
-			26,
-		},
-		position = {
-			100,
-			0,
-			2,
-		},
-	},
 }
 local window_corner_radius = 5
 local window_background_color = {
@@ -522,6 +466,365 @@ cancel_input_text_style.text_color = Colors.get_color_table_with_alpha("font_tit
 local cancel_text_style = table.clone(cancel_input_text_style)
 
 cancel_text_style.text_color = Colors.get_color_table_with_alpha("white", 255)
+
+local versus_difficulty_text_style = table.clone(difficulty_text_style)
+
+versus_difficulty_text_style.default_color = {
+	255,
+	200,
+	200,
+	200,
+}
+
+local versus_matchmaking_status_text_style = table.clone(matchmaking_status_text_style)
+
+versus_matchmaking_status_text_style.text_color = Colors.get_table("font_title")
+
+local function create_slot_reservation_widget(scenegraph_id, size)
+	local speed = 0.6
+	local size_modifier = 0.7
+	local num_players = 4
+	local lamp_texture_colors = {}
+
+	for i = 1, num_players do
+		lamp_texture_colors[i] = {
+			255,
+			255,
+			255,
+			255,
+		}
+	end
+
+	local widget = {
+		element = {},
+	}
+	local passes = {
+		{
+			content_id = "orb",
+			pass_type = "texture_uv",
+			style_id = "orb",
+			content_change_function = function (content, style, animations, dt)
+				local parent_content = content.parent
+				local size = parent_content.size
+				local progress = parent_content.progress
+				local default_size = style.default_size
+				local texture_size = style.texture_size
+				local offset = style.offset
+				local speed = parent_content.speed
+				local max_progress = (size[1] + default_size[1]) / size[1]
+				local distance = size[1]
+
+				parent_content.progress = (progress + dt * speed) % max_progress
+
+				local size_fraction = default_size[1] / size[1]
+				local size_in_progress = math.min(progress / size_fraction, 1)
+				local size_out_progress = math.min((max_progress - progress) / size_fraction, 1)
+				local acutal_max_progress = max_progress - size_fraction
+				local test = math.min((max_progress - progress) / size_fraction, 1)
+				local uvs = content.uvs
+
+				uvs[1][1] = 1 - size_in_progress
+				uvs[2][1] = size_out_progress
+				texture_size[1] = math.floor(default_size[1] * math.min(size_in_progress, size_out_progress))
+				offset[1] = math.floor(-texture_size[1] + distance * progress - (1 - size_out_progress) * default_size[1])
+			end,
+		},
+		{
+			pass_type = "rect",
+			style_id = "timeline",
+			content_change_function = function (content, style, animations, dt)
+				local size = content.size
+				local progress = content.progress
+				local offset = style.offset
+				local color = style.color
+				local speed = content.speed
+				local distance = size[1]
+
+				offset[1] = -40 + distance * progress
+			end,
+		},
+		{
+			pass_type = "texture",
+			style_id = "trail",
+			texture_id = "trail",
+			content_change_function = function (content, style, animations, dt)
+				local size = content.size
+				local progress = content.progress
+				local texture_size = style.texture_size
+				local offset = style.offset
+				local style_parent = style.parent
+				local style_orb = style_parent.orb
+				local orb_default_size = style_orb.default_size
+				local distance = size[1]
+
+				offset[1] = -(orb_default_size[1] + 20) + distance * progress
+			end,
+		},
+		{
+			pass_type = "texture",
+			style_id = "background",
+			texture_id = "background",
+		},
+		{
+			pass_type = "texture",
+			style_id = "globe_bg",
+			texture_id = "globe_bg",
+		},
+		{
+			pass_type = "texture",
+			style_id = "globe",
+			texture_id = "globe",
+			content_change_function = function (content, style, animations, dt)
+				local progress = content.progress
+				local ease_value = math.min(progress, 1)
+
+				if ease_value < 0.5 then
+					ease_value = math.easeInCubic(2 * ease_value)
+				else
+					ease_value = math.easeOutCubic(2 - 2 * ease_value)
+				end
+
+				local default_color = style.default_color
+				local color = style.color
+				local speed = 5
+				local pulse_value = 0.5 + math.sin(Managers.time:time("ui") * speed) * 0.5
+				local anim_value = math.max(ease_value, pulse_value)
+				local multiplier = 0.2
+
+				color[2] = math.min(default_color[2] + default_color[2] * multiplier * pulse_value, 255)
+				color[3] = math.min(default_color[3] + default_color[3] * multiplier * pulse_value, 255)
+				color[4] = math.min(default_color[4] + default_color[4] * multiplier * pulse_value, 255)
+			end,
+		},
+		{
+			pass_type = "tiled_texture",
+			style_id = "pattern",
+			texture_id = "pattern",
+		},
+		{
+			pass_type = "tiled_texture",
+			style_id = "spark_pattern",
+			texture_id = "spark_pattern_1",
+		},
+		{
+			pass_type = "tiled_texture",
+			style_id = "spark_pattern",
+			texture_id = "spark_pattern_2",
+		},
+	}
+	local content = {
+		background = "versus_loading_trail_bg_front_quickplay",
+		globe = "versus_loading_trail_center_effect",
+		globe_bg = "versus_loading_trail_bg_back",
+		pattern = "versus_loading_trail_lines_bg_masked",
+		progress = 0,
+		spark_pattern_1 = "versus_loading_trail_stars_bg_masked_1",
+		spark_pattern_2 = "versus_loading_trail_stars_bg_masked_2",
+		spark_texture_1 = "versus_loading_trail_stars_write_mask_1",
+		spark_texture_2 = "versus_loading_trail_stars_write_mask_2",
+		timeline = "timer_detail",
+		trail = "versus_loading_trail_lines_write_mask",
+		size = size,
+		orb = {
+			texture_id = "versus_loading_trail_dot",
+			uvs = {
+				{
+					0,
+					0,
+				},
+				{
+					1,
+					1,
+				},
+			},
+		},
+		speed = speed,
+	}
+	local style = {
+		background = {
+			horizontal_alignment = "center",
+			vertical_alignment = "center",
+			texture_size = {
+				556 * size_modifier,
+				108 * size_modifier,
+			},
+			color = {
+				255,
+				255,
+				255,
+				255,
+			},
+			offset = {
+				0,
+				15,
+				2,
+			},
+		},
+		globe_bg = {
+			horizontal_alignment = "center",
+			vertical_alignment = "center",
+			texture_size = {
+				68 * size_modifier,
+				68 * size_modifier,
+			},
+			color = {
+				255,
+				255,
+				255,
+				255,
+			},
+			offset = {
+				0,
+				15,
+				0,
+			},
+		},
+		globe = {
+			horizontal_alignment = "center",
+			vertical_alignment = "center",
+			texture_size = {
+				68 * size_modifier,
+				68 * size_modifier,
+			},
+			color = {
+				255,
+				230,
+				80,
+				26,
+			},
+			default_color = {
+				255,
+				200,
+				50,
+				16,
+			},
+			offset = {
+				0,
+				15,
+				1,
+			},
+		},
+		orb = {
+			horizontal_alignment = "left",
+			vertical_alignment = "center",
+			texture_size = {
+				482 * size_modifier,
+				62 * size_modifier,
+			},
+			default_size = {
+				482 * size_modifier,
+				62 * size_modifier,
+			},
+			color = {
+				0,
+				255,
+				255,
+				255,
+			},
+			offset = {
+				0,
+				9,
+				3,
+			},
+		},
+		trail = {
+			horizontal_alignment = "left",
+			vertical_alignment = "center",
+			texture_size = {
+				416 * size_modifier,
+				size[2] * size_modifier,
+			},
+			color = {
+				255,
+				255,
+				255,
+				255,
+			},
+			offset = {
+				0,
+				9,
+				4,
+			},
+		},
+		timeline = {
+			horizontal_alignment = "left",
+			vertical_alignment = "center",
+			texture_size = {
+				2 * size_modifier,
+				size[2] * size_modifier,
+			},
+			color = {
+				0,
+				255,
+				0,
+				0,
+			},
+			offset = {
+				0,
+				9,
+				5,
+			},
+		},
+		pattern = {
+			horizontal_alignment = "center",
+			vertical_alignment = "center",
+			texture_size = {
+				556 * size_modifier,
+				160 * size_modifier,
+			},
+			offset = {
+				0,
+				9,
+				4,
+			},
+			texture_tiling_size = {
+				size[1] * size_modifier,
+				size[2] * size_modifier,
+			},
+			color = {
+				255,
+				255,
+				255,
+				255,
+			},
+		},
+		spark_pattern = {
+			horizontal_alignment = "center",
+			vertical_alignment = "center",
+			texture_size = {
+				556 * size_modifier,
+				160 * size_modifier,
+			},
+			offset = {
+				0,
+				9,
+				4,
+			},
+			texture_tiling_size = {
+				size[1] * size_modifier,
+				size[2] * size_modifier,
+			},
+			color = {
+				255,
+				255,
+				255,
+				255,
+			},
+		},
+	}
+
+	widget.element.passes = passes
+	widget.content = content
+	widget.style = style
+	widget.offset = {
+		0,
+		0,
+		0,
+	}
+	widget.scenegraph_id = scenegraph_id
+
+	return widget
+end
 
 local function create_status_widget(texture, offset)
 	return {
@@ -712,6 +1015,67 @@ local deus_widget_detail_definitions = {
 
 deus_widget_detail_definitions.detailed_info_box.content.no_background_changes = true
 
+local versus_widget_definitions = {
+	window = UIWidgets.create_simple_texture("matchmaking_top_vs", "window", false, false, nil, {
+		-10,
+		15,
+		2,
+	}, "native"),
+	loading_status_frame = UIWidgets.create_simple_rotated_texture("matchmaking_icon_effect_morris", 0, {
+		71,
+		71,
+	}, "loading_status_frame", false, false, nil, nil, {
+		0,
+		3,
+		0,
+	}),
+	window_hotspot = UIWidgets.create_simple_hotspot("window"),
+	status_text = UIWidgets.create_simple_text("n/a", "status_text", nil, nil, versus_matchmaking_status_text_style),
+}
+local versus_widget_detail_definitions = {
+	detailed_info_box = UIWidgets.create_simple_texture("matchmaking_animated_panel", "detailed_info_box", false, false, nil, {
+		-5,
+		-7,
+		0,
+	}, "native"),
+	title_text = UIWidgets.create_simple_text("n/a", "level_key_info_box", nil, nil, title_text_style),
+	difficulty_text = UIWidgets.create_simple_text("n/a", "detailed_info_box", nil, nil, versus_difficulty_text_style),
+	timer_bg = UIWidgets.create_simple_texture("matchmaking_progressbar_border", "timer_bg", false, false, nil, {
+		5,
+		-15,
+		0,
+	}, "native"),
+	timer_fg = UIWidgets.create_simple_uv_texture("timer_fg", {
+		{
+			0,
+			0,
+		},
+		{
+			1,
+			1,
+		},
+	}, "timer_fg", false, false, nil, {
+		19,
+		-1,
+		2,
+	}),
+	timer_glow = UIWidgets.create_simple_texture("timer_detail", "timer_glow", false, false, nil, {
+		19,
+		-1,
+		2,
+	}),
+	slot_reservations = create_slot_reservation_widget("slot_reservations", scenegraph_definition.slot_reservations.size),
+}
+
+versus_widget_detail_definitions.detailed_info_box.content.no_background_changes = true
+
+local versus_input_widgets = {
+	versus_cancel_text_input = UIWidgets.create_simple_text(Localize("matchmaking_suffix_cancel"), "versus_cancel_text_input", nil, nil, cancel_input_text_style),
+	versus_cancel_text_suffix = UIWidgets.create_simple_text(Localize("matchmaking_suffix_cancel"), "versus_cancel_text_suffix", nil, nil, cancel_text_style),
+	versus_cancel_text_prefix = UIWidgets.create_simple_text(Localize("matchmaking_suffix_cancel"), "versus_cancel_text_prefix", nil, nil, cancel_text_style),
+	versus_cancel_icon = UIWidgets.create_simple_texture("xbone_button_icon_a", "versus_cancel_icon"),
+	cancel_input_backround = UIWidgets.create_simple_texture("tab_menu_bg_02", "cancel_input_backround"),
+}
 local cancel_input_widgets = {
 	cancel_text_input = UIWidgets.create_simple_text(Localize("matchmaking_suffix_cancel"), "cancel_text_input", nil, nil, cancel_input_text_style),
 	cancel_text_suffix = UIWidgets.create_simple_text(Localize("matchmaking_suffix_cancel"), "cancel_text_suffix", nil, nil, cancel_text_style),
@@ -1101,6 +1465,8 @@ return {
 	widget_detail_definitions = widget_detail_definitions,
 	deus_widget_definitions = deus_widget_definitions,
 	deus_widget_detail_definitions = deus_widget_detail_definitions,
+	versus_widget_definitions = versus_widget_definitions,
+	versus_widget_detail_definitions = versus_widget_detail_definitions,
 	cancel_input_widgets = cancel_input_widgets,
 	versus_input_widgets = versus_input_widgets,
 	debug_widget_definitions = debug_widget_definitions,

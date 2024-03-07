@@ -544,7 +544,7 @@ local talents = {
 		num_ranks = 1,
 		description_values = {
 			{
-				value = BuffTemplates.reaper.buffs[1].max_targets,
+				value = BuffUtils.get_buff_template("reaper", "adventure").buffs[1].max_targets,
 			},
 		},
 		buffs = {
@@ -560,7 +560,7 @@ local talents = {
 		description_values = {
 			{
 				value_type = "percent",
-				value = BuffTemplates.conqueror.buffs[1].multiplier,
+				value = BuffUtils.get_buff_template("conqueror", "adventure").buffs[1].multiplier,
 			},
 		},
 		buffs = {
@@ -634,18 +634,18 @@ local talents = {
 		description_values = {
 			{
 				value_type = "percent",
-				value = BuffTemplates.tank_unbalance_buff.buffs[1].bonus,
+				value = BuffUtils.get_buff_template("tank_unbalance_buff", "adventure").buffs[1].bonus,
 			},
 			{
-				value = BuffTemplates.tank_unbalance_buff.buffs[1].duration,
-			},
-			{
-				value_type = "percent",
-				value = BuffTemplates.tank_unbalance.buffs[1].display_multiplier,
+				value = BuffUtils.get_buff_template("tank_unbalance_buff", "adventure").buffs[1].duration,
 			},
 			{
 				value_type = "percent",
-				value = BuffTemplates.tank_unbalance.buffs[1].max_display_multiplier,
+				value = BuffUtils.get_buff_template("tank_unbalance", "adventure").buffs[1].display_multiplier,
+			},
+			{
+				value_type = "percent",
+				value = BuffUtils.get_buff_template("tank_unbalance", "adventure").buffs[1].max_display_multiplier,
 			},
 		},
 		buffs = {
@@ -661,11 +661,11 @@ local talents = {
 		description_values = {
 			{
 				value_type = "percent",
-				value = BuffTemplates.linesman_unbalance.buffs[1].display_multiplier,
+				value = BuffUtils.get_buff_template("linesman_unbalance", "adventure").buffs[1].display_multiplier,
 			},
 			{
 				value_type = "percent",
-				value = BuffTemplates.linesman_unbalance.buffs[1].max_display_multiplier,
+				value = BuffUtils.get_buff_template("linesman_unbalance", "adventure").buffs[1].max_display_multiplier,
 			},
 		},
 		buffs = {
@@ -681,7 +681,7 @@ local talents = {
 		description_values = {
 			{
 				value_type = "percent",
-				value = BuffTemplates.power_level_unbalance.buffs[1].multiplier,
+				value = BuffUtils.get_buff_template("power_level_unbalance", "adventure").buffs[1].multiplier,
 			},
 		},
 		buffs = {

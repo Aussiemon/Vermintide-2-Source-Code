@@ -266,7 +266,7 @@ DamageBlobExtension.place_blobs = function (self, unit, t)
 
 		self:insert_blob(position, blob_radius, rotation, t, nav_world)
 
-		if success then
+		if success and not DEDICATED_SERVER then
 			local _, source = WwiseUtils.trigger_position_event(self.world, self._sfx_name_start_remains, position)
 			local sfx_list = self.sfx_list
 

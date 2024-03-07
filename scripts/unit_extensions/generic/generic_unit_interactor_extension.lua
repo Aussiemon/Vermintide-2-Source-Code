@@ -77,6 +77,7 @@ local IGNORED_DAMAGE_TYPES = {
 	buff_shared_medpack_temp_health = true,
 	burninating = true,
 	damage_over_time = true,
+	gas = true,
 	heal = true,
 	health_degen = true,
 	life_drain = true,

@@ -13871,6 +13871,9 @@ UIWidgets.create_portrait_frame = function (scenegraph_id, frame_settings_name, 
 		frame_settings_name = frame_settings_name,
 	}
 	local style = {}
+	local context = {
+		level = level_text,
+	}
 
 	for index, data in ipairs(frame_settings) do
 		local name = "texture_" .. index
@@ -13902,6 +13905,9 @@ UIWidgets.create_portrait_frame = function (scenegraph_id, frame_settings_name, 
 			texture_id = name,
 			style_id = name,
 			retained_mode = retained_mode,
+			context = context,
+			clone = data.clone,
+			material_func = data.material_func,
 		}
 		content[name] = texture_name
 		style[name] = {

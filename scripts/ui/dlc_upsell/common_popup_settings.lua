@@ -1,23 +1,6 @@
 ﻿-- chunkname: @scripts/ui/dlc_upsell/common_popup_settings.lua
 
 CommonPopupSettings = CommonPopupSettings or {}
-CommonPopupSettings.morris = {
-	background_texture = "deus_popup_background",
-	body_text = "first_time_popup_morris",
-	button_text = "menu_accept",
-	class_name = "UnlockReminderPopup",
-	popup_type = "reminder",
-	definitions = local_require("scripts/ui/dlc_upsell/unlock_reminder_popup_definitions"),
-	input_desc = {
-		actions = {
-			{
-				description_text = "menu_accept",
-				input_action = "confirm",
-				priority = 1,
-			},
-		},
-	},
-}
 CommonPopupSettings.scorpion = {
 	background_texture = "wom_upsell_popup_bg",
 	body_text = "menu_weave_area_no_wom_body",
@@ -126,34 +109,6 @@ CommonPopupSettings.shovel = {
 		actions = {
 			{
 				description_text = "upsell_popup_shovel_button",
-				input_action = "confirm",
-				priority = 1,
-			},
-		},
-	},
-}
-CommonPopupSettings.belakor = {
-	background_texture = "upsell_image_keyart",
-	body_text = "belakor_upsell_popup",
-	button_text = "menu_accept",
-	class_name = "UnlockReminderPopup",
-	popup_type = "reminder",
-	definitions = local_require("scripts/ui/dlc_upsell/alterantive_reminder_popup_definitions"),
-	top_detail_texture = {
-		texture = "upsell_image_logo",
-		size = {
-			431,
-			247,
-		},
-		offset = {
-			-190.5,
-			-123.5,
-		},
-	},
-	input_desc = {
-		actions = {
-			{
-				description_text = "menu_accept",
 				input_action = "confirm",
 				priority = 1,
 			},

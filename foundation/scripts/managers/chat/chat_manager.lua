@@ -354,18 +354,42 @@ ChatManager.create_chat_gui = function (self)
 end
 
 ChatManager.set_profile_synchronizer = function (self, profile_synchronizer)
+	if DEDICATED_SERVER then
+		Application.warning("Tried to use chat_gui on dedicated server")
+
+		return
+	end
+
 	self.chat_gui:set_profile_synchronizer(profile_synchronizer)
 end
 
 ChatManager.set_wwise_world = function (self, wwise_world)
+	if DEDICATED_SERVER then
+		Application.warning("Tried to use chat_gui on dedicated server")
+
+		return
+	end
+
 	self.chat_gui:set_wwise_world(wwise_world)
 end
 
 ChatManager.set_input_manager = function (self, input_manager)
+	if DEDICATED_SERVER then
+		Application.warning("Tried to use chat_gui on dedicated server")
+
+		return
+	end
+
 	self.chat_gui:set_input_manager(input_manager)
 end
 
 ChatManager.block_chat_input_for_one_frame = function (self)
+	if DEDICATED_SERVER then
+		Application.warning("Tried to use chat_gui on dedicated server")
+
+		return
+	end
+
 	self.chat_gui:block_chat_input_for_one_frame()
 end
 

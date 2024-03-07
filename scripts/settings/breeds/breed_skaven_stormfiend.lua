@@ -35,6 +35,7 @@ local breed_data = {
 	far_off_despawn_immunity = true,
 	has_inventory = true,
 	headshot_coop_stamina_fatigue_type = "headshot_special",
+	height = 2.5,
 	hit_effect_template = "HitEffectsStormfiend",
 	hit_mass_count = 50,
 	hit_reaction = "ai_default",
@@ -54,6 +55,7 @@ local breed_data = {
 	radius = 2,
 	reach_distance = 3,
 	run_speed = 5,
+	show_health_bar = true,
 	slot_template = "boss",
 	smart_object_template = "stormfiend",
 	smart_targeting_height_multiplier = 1.5,
@@ -325,6 +327,9 @@ local AttackIntensityPerDifficulty = {
 		cataclysm_3 = {
 			normal = 1,
 		},
+		versus_base = {
+			normal = 1,
+		},
 	},
 	charge = {
 		easy = {
@@ -356,6 +361,10 @@ local AttackIntensityPerDifficulty = {
 			running = 0.5,
 		},
 		cataclysm_3 = {
+			normal = 3,
+			running = 0.5,
+		},
+		versus_base = {
 			normal = 3,
 			running = 0.5,
 		},
@@ -522,6 +531,13 @@ local action_data = {
 			},
 			cataclysm_3 = {
 				40,
+				10,
+				0,
+				0,
+				10,
+			},
+			verus_base = {
+				5,
 				10,
 				0,
 				0,

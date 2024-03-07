@@ -486,7 +486,7 @@ function flow_callback_attach_player_item(params)
 				return
 			end
 
-			if item.slot_type == "melee" or item.slot_type == "ranged" or item.slot_type == "weapon_skin" then
+			if item.slot_type == "melee" or item.slot_type == "ranged" or item.slot_type == "weapon_skin" or item.slot_type == "potion" then
 				if Weapons ~= nil then
 					local weapon_template = Weapons[item.template]
 
@@ -701,6 +701,10 @@ function flow_callback_trigger_event_on_attachments(params)
 	return {
 		triggered = true,
 	}
+end
+
+function flow_callback_unit_spawner_spawn_local_unit(params)
+	return
 end
 
 function flow_callback_unit_spawner_mark_for_deletion(params)

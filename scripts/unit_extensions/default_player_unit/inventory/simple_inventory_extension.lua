@@ -158,7 +158,12 @@ SimpleInventoryExtension.extensions_ready = function (self, world, unit)
 
 		if not slot_data then
 			table.dump(self._equipment.slots, "self._equipment.slots", 1)
-			ferror("Tried to wield default slot %s for %s that contained no weapon.", default_wielded_slot, career_extension:career_name())
+
+			local career_name = career_extension:career_name()
+			local career_loadout = Managers.backend:get_interface("items"):get_loadout_by_career_name(career_name)
+
+			table.dump(career_loadout, "career_loadout", 1)
+			ferror("Tried to wield default slot %s for %s that contained no weapon.", default_wielded_slot, career_name)
 		end
 
 		self:_wield_slot(equipment, slot_data, unit_1p, unit_3p)
@@ -383,10 +388,10 @@ SimpleInventoryExtension.add_equipment_by_category = function (self, category)
 				if not item_data then
 					local backend_id = BackendUtils.get_loadout_item_id(career_name, slot_name)
 					local backend_id_string = backend_id and tostring(backend_id) or "No backend ID"
+					local backend_items = Managers.backend:get_interface("items")
 					local item_string = "No item"
 
 					if backend_id then
-						local backend_items = Managers.backend:get_interface("items")
 						local item = backend_items:get_item_from_id(backend_id)
 
 						item_string = item and item.name or "Item exists"
@@ -394,9 +399,11 @@ SimpleInventoryExtension.add_equipment_by_category = function (self, category)
 
 					local loadout_interface_override = Managers.backend._current_loadout_interface_override
 					local loadout_interface_override_string = loadout_interface_override or "No override"
+					local career_loadout = backend_items:get_loadout_by_career_name(career_name)
 
 					printf("self.initial_inventory: \n%s", table.tostring(self.initial_inventory))
 					printf("Tried add_equipment_by_category for category <%s> for career <%s> at slot <%s>.\n BackendUtils.get_loadout_item didnt return a item.\n backend_id_string: %s\n item_string: %s\n loadout_interface_override_string: %s\n", category, career_name, slot_name, backend_id_string, item_string, loadout_interface_override_string)
+					table.dump(career_loadout, "career_loadout", 1)
 
 					break
 				end
@@ -687,7 +694,7 @@ SimpleInventoryExtension.wield = function (self, slot_name)
 
 	self:_spawn_attached_units(item_template.first_person_attached_units)
 
-	if slot_name == "slot_melee" or slot_name == "slot_ranged" or item_template.is_utility_weapon then
+	if slot_name == "slot_melee" or slot_name == "slot_ranged" then
 		self._previously_wielded_weapon_slot = slot_name
 	end
 
@@ -775,7 +782,7 @@ SimpleInventoryExtension.apply_buffs = function (self, buffs_by_buffer, reason, 
 	for buffer, buffs in pairs(buffs_by_buffer) do
 		if self.is_server or buffer == "client" or buffer == "both" then
 			for buff_name, variable_data in pairs(buffs) do
-				local buff_data = BuffTemplates[buff_name]
+				local buff_data = BuffUtils.get_buff_template(buff_name)
 
 				fassert(buff_data, "buff name %s does not exist on item %s, typo?", buff_name, item_name)
 				table.clear(params)

@@ -2982,6 +2982,9 @@ Cosmetics.frame_skulls_2021 = {
 Cosmetics.frame_skulls_2022 = {
 	icon = "unit_frame_02",
 }
+Cosmetics.frame_celebration_06 = {
+	icon = "unit_frame_02",
+}
 Cosmetics.frame_skulls_2023 = {
 	icon = "unit_frame_02",
 }

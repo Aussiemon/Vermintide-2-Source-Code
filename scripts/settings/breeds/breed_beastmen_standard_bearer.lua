@@ -31,6 +31,7 @@ local breed_data = {
 	has_inventory = true,
 	has_running_attack = true,
 	headshot_coop_stamina_fatigue_type = "headshot_special",
+	height = 1.8,
 	hit_effect_template = "HitEffectsStormVermin",
 	hit_mass_count = 5,
 	hit_reaction = "ai_default",
@@ -369,6 +370,10 @@ local AttackIntensityPerDifficulty = {
 			normal = 1.5,
 			sweep = 3,
 		},
+		versus_base = {
+			normal = 1.5,
+			sweep = 3,
+		},
 	},
 	cleave = {
 		easy = {
@@ -403,6 +408,10 @@ local AttackIntensityPerDifficulty = {
 			cleave = 3,
 			normal = 1.5,
 		},
+		versus_base = {
+			cleave = 3,
+			normal = 1.5,
+		},
 	},
 	push = {
 		easy = {
@@ -429,6 +438,9 @@ local AttackIntensityPerDifficulty = {
 		cataclysm_3 = {
 			push = 1.5,
 		},
+		versus_base = {
+			push = 1.5,
+		},
 	},
 	running = {
 		easy = {
@@ -453,6 +465,9 @@ local AttackIntensityPerDifficulty = {
 			running = 3.5,
 		},
 		cataclysm_3 = {
+			running = 3.5,
+		},
+		versus_base = {
 			running = 3.5,
 		},
 	},

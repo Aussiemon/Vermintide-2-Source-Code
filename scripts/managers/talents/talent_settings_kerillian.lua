@@ -1499,7 +1499,6 @@ TalentTrees.wood_elf = {
 		},
 	},
 }
-Talents = Talents or {}
 Talents.wood_elf = {
 	{
 		buffer = "both",
@@ -1509,7 +1508,7 @@ Talents.wood_elf = {
 		num_ranks = 1,
 		description_values = {
 			{
-				value = BuffTemplates.regrowth.buffs[1].bonus,
+				value = BuffUtils.get_buff_template("regrowth", "adventure").buffs[1].bonus,
 			},
 		},
 		buffs = {
@@ -1525,7 +1524,7 @@ Talents.wood_elf = {
 		description_values = {
 			{
 				value_type = "percent",
-				value = BuffTemplates.bloodlust.buffs[1].multiplier,
+				value = BuffUtils.get_buff_template("bloodlust", "adventure").buffs[1].multiplier,
 			},
 		},
 		buffs = {
@@ -1541,7 +1540,7 @@ Talents.wood_elf = {
 		description_values = {
 			{
 				value_type = "percent",
-				value = BuffTemplates.conqueror.buffs[1].multiplier,
+				value = BuffUtils.get_buff_template("conqueror", "adventure").buffs[1].multiplier,
 			},
 		},
 		buffs = {
@@ -1760,11 +1759,11 @@ Talents.wood_elf = {
 		description_values = {
 			{
 				value_type = "percent",
-				value = BuffTemplates.smiter_unbalance.buffs[1].display_multiplier,
+				value = BuffUtils.get_buff_template("smiter_unbalance", "adventure").buffs[1].display_multiplier,
 			},
 			{
 				value_type = "percent",
-				value = BuffTemplates.smiter_unbalance.buffs[1].max_display_multiplier,
+				value = BuffUtils.get_buff_template("smiter_unbalance", "adventure").buffs[1].max_display_multiplier,
 			},
 		},
 		buffs = {
@@ -1780,11 +1779,11 @@ Talents.wood_elf = {
 		description_values = {
 			{
 				value_type = "percent",
-				value = BuffTemplates.finesse_unbalance.buffs[1].display_multiplier,
+				value = BuffUtils.get_buff_template("finesse_unbalance", "adventure").buffs[1].display_multiplier,
 			},
 			{
 				value_type = "percent",
-				value = BuffTemplates.finesse_unbalance.buffs[1].max_display_multiplier,
+				value = BuffUtils.get_buff_template("finesse_unbalance", "adventure").buffs[1].max_display_multiplier,
 			},
 		},
 		buffs = {
@@ -1800,7 +1799,7 @@ Talents.wood_elf = {
 		description_values = {
 			{
 				value_type = "percent",
-				value = BuffTemplates.power_level_unbalance.buffs[1].multiplier,
+				value = BuffUtils.get_buff_template("power_level_unbalance", "adventure").buffs[1].multiplier,
 			},
 		},
 		buffs = {
@@ -1815,7 +1814,7 @@ Talents.wood_elf = {
 		num_ranks = 1,
 		description_values = {
 			{
-				value = BuffTemplates.reaper.buffs[1].max_targets,
+				value = BuffUtils.get_buff_template("reaper", "adventure").buffs[1].max_targets,
 			},
 		},
 		buffs = {
@@ -1831,7 +1830,7 @@ Talents.wood_elf = {
 		description_values = {
 			{
 				value_type = "percent",
-				value = BuffTemplates.bloodlust.buffs[1].multiplier,
+				value = BuffUtils.get_buff_template("bloodlust", "adventure").buffs[1].multiplier,
 			},
 		},
 		buffs = {
@@ -1847,7 +1846,7 @@ Talents.wood_elf = {
 		description_values = {
 			{
 				value_type = "percent",
-				value = BuffTemplates.conqueror.buffs[1].multiplier,
+				value = BuffUtils.get_buff_template("conqueror", "adventure").buffs[1].multiplier,
 			},
 		},
 		buffs = {
@@ -2061,11 +2060,11 @@ Talents.wood_elf = {
 		description_values = {
 			{
 				value_type = "percent",
-				value = BuffTemplates.smiter_unbalance.buffs[1].display_multiplier,
+				value = BuffUtils.get_buff_template("smiter_unbalance", "adventure").buffs[1].display_multiplier,
 			},
 			{
 				value_type = "percent",
-				value = BuffTemplates.smiter_unbalance.buffs[1].max_display_multiplier,
+				value = BuffUtils.get_buff_template("smiter_unbalance", "adventure").buffs[1].max_display_multiplier,
 			},
 		},
 		buffs = {
@@ -2081,11 +2080,11 @@ Talents.wood_elf = {
 		description_values = {
 			{
 				value_type = "percent",
-				value = BuffTemplates.linesman_unbalance.buffs[1].display_multiplier,
+				value = BuffUtils.get_buff_template("linesman_unbalance", "adventure").buffs[1].display_multiplier,
 			},
 			{
 				value_type = "percent",
-				value = BuffTemplates.linesman_unbalance.buffs[1].max_display_multiplier,
+				value = BuffUtils.get_buff_template("linesman_unbalance", "adventure").buffs[1].max_display_multiplier,
 			},
 		},
 		buffs = {
@@ -2101,7 +2100,7 @@ Talents.wood_elf = {
 		description_values = {
 			{
 				value_type = "percent",
-				value = BuffTemplates.power_level_unbalance.buffs[1].multiplier,
+				value = BuffUtils.get_buff_template("power_level_unbalance", "adventure").buffs[1].multiplier,
 			},
 		},
 		buffs = {
@@ -2116,7 +2115,7 @@ Talents.wood_elf = {
 		num_ranks = 1,
 		description_values = {
 			{
-				value = BuffTemplates.regrowth.buffs[1].bonus,
+				value = BuffUtils.get_buff_template("regrowth", "adventure").buffs[1].bonus,
 			},
 		},
 		buffs = {
@@ -2131,7 +2130,7 @@ Talents.wood_elf = {
 		num_ranks = 1,
 		description_values = {
 			{
-				value = BuffTemplates.reaper.buffs[1].max_targets,
+				value = BuffUtils.get_buff_template("reaper", "adventure").buffs[1].max_targets,
 			},
 		},
 		buffs = {
@@ -2147,7 +2146,7 @@ Talents.wood_elf = {
 		description_values = {
 			{
 				value_type = "percent",
-				value = BuffTemplates.conqueror.buffs[1].multiplier,
+				value = BuffUtils.get_buff_template("conqueror", "adventure").buffs[1].multiplier,
 			},
 		},
 		buffs = {
@@ -2326,11 +2325,11 @@ Talents.wood_elf = {
 		description_values = {
 			{
 				value_type = "percent",
-				value = BuffTemplates.linesman_unbalance.buffs[1].display_multiplier,
+				value = BuffUtils.get_buff_template("linesman_unbalance", "adventure").buffs[1].display_multiplier,
 			},
 			{
 				value_type = "percent",
-				value = BuffTemplates.linesman_unbalance.buffs[1].max_display_multiplier,
+				value = BuffUtils.get_buff_template("linesman_unbalance", "adventure").buffs[1].max_display_multiplier,
 			},
 		},
 		buffs = {
@@ -2346,11 +2345,11 @@ Talents.wood_elf = {
 		description_values = {
 			{
 				value_type = "percent",
-				value = BuffTemplates.finesse_unbalance.buffs[1].display_multiplier,
+				value = BuffUtils.get_buff_template("finesse_unbalance", "adventure").buffs[1].display_multiplier,
 			},
 			{
 				value_type = "percent",
-				value = BuffTemplates.finesse_unbalance.buffs[1].max_display_multiplier,
+				value = BuffUtils.get_buff_template("finesse_unbalance", "adventure").buffs[1].max_display_multiplier,
 			},
 		},
 		buffs = {
@@ -2366,7 +2365,7 @@ Talents.wood_elf = {
 		description_values = {
 			{
 				value_type = "percent",
-				value = BuffTemplates.power_level_unbalance.buffs[1].multiplier,
+				value = BuffUtils.get_buff_template("power_level_unbalance", "adventure").buffs[1].multiplier,
 			},
 		},
 		buffs = {

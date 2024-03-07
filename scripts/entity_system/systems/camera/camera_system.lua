@@ -29,6 +29,7 @@ CameraSystem.init = function (self, context, system_name)
 	CameraSystem.super.init(self, context, system_name, extensions)
 
 	self.camera_units = {}
+	self.unit_extension_data = {}
 	self.input_manager = context.input_manager
 
 	local network_event_delegate = context.network_event_delegate
@@ -47,7 +48,7 @@ CameraSystem.idle_camera_dummy_spawned = function (self, camera_dummy_unit)
 	local rotation = Unit.local_rotation(camera_dummy_unit, 0)
 
 	for player, camera_unit in pairs(self.camera_units) do
-		local camera_ext = ScriptUnit.extension(camera_unit, "camera_system")
+		local camera_ext = self.unit_extension_data[camera_unit]
 
 		camera_ext:set_idle_position(position)
 		camera_ext:set_idle_rotation(rotation)
@@ -56,19 +57,27 @@ end
 
 CameraSystem.external_state_change = function (self, player, state, params)
 	local camera_unit = self.camera_units[player]
+	local camera_ext = self.unit_extension_data[camera_unit]
 
-	if ScriptUnit.has_extension(camera_unit, "camera_system") then
-		local camera_ext = ScriptUnit.extension(camera_unit, "camera_system")
-
+	if camera_ext then
 		camera_ext:set_external_state_change(state, params)
+	end
+end
+
+CameraSystem.external_state_change_delayed = function (self, player, state, params, t)
+	local camera_unit = self.camera_units[player]
+	local camera_ext = self.unit_extension_data[camera_unit]
+
+	if camera_ext then
+		camera_ext:set_delayed_external_state_change(state, params, t)
 	end
 end
 
 CameraSystem.set_follow_unit = function (self, player, follow_unit, follow_node_name)
 	local camera_unit = self.camera_units[player]
+	local camera_ext = self.unit_extension_data[camera_unit]
 
-	if ScriptUnit.has_extension(camera_unit, "camera_system") then
-		local camera_ext = ScriptUnit.extension(camera_unit, "camera_system")
+	if camera_ext then
 		local camera_state_ext = ScriptUnit.extension(camera_unit, "camera_state_machine_system")
 
 		camera_ext:set_follow_unit(follow_unit, follow_node_name)
@@ -83,11 +92,22 @@ CameraSystem.set_follow_unit = function (self, player, follow_unit, follow_node_
 	end
 end
 
+CameraSystem.get_follow_data = function (self, player)
+	local camera_unit = self.camera_units[player]
+	local camera_ext = self.unit_extension_data[camera_unit]
+
+	if camera_ext then
+		local follow_unit, follow_unit_node = camera_ext:get_follow_data()
+
+		return follow_unit, follow_unit_node
+	end
+end
+
 CameraSystem.update_tunnel_camera_position = function (self, player, position)
 	local camera_unit = self.camera_units[player]
+	local camera_state_ext = ScriptUnit.has_extension(camera_unit, "camera_state_machine_system")
 
-	if ScriptUnit.has_extension(camera_unit, "camera_system") then
-		local camera_state_ext = ScriptUnit.extension(camera_unit, "camera_state_machine_system")
+	if camera_state_ext then
 		local camera_state = camera_state_ext.state_machine.state_current
 
 		if camera_state.update_tunnel_camera_position then
@@ -154,15 +174,17 @@ CameraSystem._setup_camera_unit = function (self, player, viewport_name)
 		},
 	}
 	local camera_unit = Managers.state.unit_spawner:spawn_local_unit_with_extensions(unit_name, unit_template_name, extension_init_data, position, rotation)
+
+	self.camera_units[player] = camera_unit
+
 	local camera_ext = ScriptUnit.extension(camera_unit, "camera_system")
+
+	self.unit_extension_data[camera_unit] = camera_ext
 
 	camera_ext:set_idle_position(position)
 	camera_ext:set_idle_rotation(rotation)
 	Unit.set_data(camera_unit, "camera", "settings_tree", "first_person")
 	Unit.set_data(camera_unit, "camera", "settings_node", "first_person_node")
-
-	self.camera_units[player] = camera_unit
-
 	Managers.state.camera:set_node_tree_root_unit(viewport_name, "first_person", camera_unit, "rp_root", true)
 	Managers.state.camera:set_node_tree_root_unit(viewport_name, "player_dead", camera_unit, "rp_root", true)
 	Managers.state.camera:set_node_tree_root_unit(viewport_name, "default", camera_unit, "rp_root", true)
@@ -202,6 +224,8 @@ CameraSystem.set_backlight_falloff = function (self, start_falloff, end_falloff,
 	end
 end
 
+local dummy_input = {}
+
 CameraSystem.update = function (self, context)
 	local dt = context.dt
 	local t = context.t
@@ -218,6 +242,10 @@ CameraSystem.update = function (self, context)
 		end
 
 		camera_manager:update(dt, t, viewport_name)
+
+		local camera_ext = self.unit_extension_data[camera_unit]
+
+		camera_ext:update(camera_unit, dummy_input, dt, context, t)
 	end
 end
 

@@ -1459,6 +1459,20 @@ function flow_callback_trigger_dialogue_event(params)
 	end
 end
 
+function flow_callback_trigger_dialogue_event_on_players(params)
+	local players = Managers.player:players()
+
+	for _, player in pairs(players) do
+		local unit = player.player_unit
+
+		if ALIVE[unit] then
+			params.source = unit
+
+			flow_callback_trigger_dialogue_event(params)
+		end
+	end
+end
+
 function flow_callback_change_outline_params(params)
 	if DEDICATED_SERVER then
 		return
@@ -2454,7 +2468,7 @@ function flow_callback_fire_light_weight_projectile(params)
 		local spread_direction = Quaternion.forward(spread_rot)
 		local collision_filter = "filter_enemy_player_afro_ray_projectile"
 		local difficulty_rank = Managers.state.difficulty:get_difficulty_rank()
-		local power_level = light_weight_projectile_template.attack_power_level[difficulty_rank]
+		local power_level = light_weight_projectile_template.attack_power_level[difficulty_rank] or light_weight_projectile_template.attack_power_level[2]
 		local action_data = {
 			power_level = power_level,
 			damage_profile = light_weight_projectile_template.damage_profile,
@@ -2480,7 +2494,7 @@ function flow_callback_trigger_explosion(params)
 
 	fassert(explosion_template_name, "Trigger Explosion unit flow node is missing explosion_template_name")
 
-	local explosion_template = ExplosionTemplates[explosion_template_name]
+	local explosion_template = ExplosionUtils.get_template(explosion_template_name)
 
 	fassert(explosion_template.explosion.level_unit_damage, "The explosion_template must have level_unit_damage set to true when using this flow node")
 
@@ -2949,24 +2963,27 @@ end
 
 function flow_callback_trigger_dialogue_story(params)
 	local unit = params.unit
+	local dialogue_system = Managers.state.entity:system("dialogue_system")
 
-	DialogueSystem:trigger_story_dialogue(unit)
+	dialogue_system:trigger_story_dialogue(unit)
 end
 
 function flow_callback_trigger_cutscene_subtitles(params)
 	local event_name = params.subtitle_event
 	local speaker = params.speaker
 	local hangtime = params.end_delay
+	local dialogue_system = Managers.state.entity:system("dialogue_system")
 
-	DialogueSystem:trigger_cutscene_subtitles(event_name, speaker, hangtime)
+	dialogue_system:trigger_cutscene_subtitles(event_name, speaker, hangtime)
 end
 
 function flow_callback_trigger_event_with_subtitles(params)
 	local sound_event = params.sound_event
 	local subtitle_event = params.subtitle_event
 	local speaker = params.speaker
+	local dialogue_system = Managers.state.entity:system("dialogue_system")
 
-	DialogueSystem:trigger_sound_event_with_subtitles(sound_event, subtitle_event, speaker)
+	dialogue_system:trigger_sound_event_with_subtitles(sound_event, subtitle_event, speaker)
 end
 
 function flow_callback_trigger_event_with_unit_and_subtitles(params)
@@ -2975,8 +2992,9 @@ function flow_callback_trigger_event_with_unit_and_subtitles(params)
 	local speaker = params.speaker
 	local source_unit = params.source_unit
 	local unit_node = params.unit_node
+	local dialogue_system = Managers.state.entity:system("dialogue_system")
 
-	DialogueSystem:trigger_sound_event_with_subtitles(sound_event, subtitle_event, speaker, source_unit, unit_node)
+	dialogue_system:trigger_sound_event_with_subtitles(sound_event, subtitle_event, speaker, source_unit, unit_node)
 end
 
 function flow_callback_trigger_random_event_with_unit_and_subtitles(params)
@@ -3007,24 +3025,21 @@ function flow_callback_trigger_random_event_with_unit_and_subtitles(params)
 	local speaker = params.speaker
 	local source_unit = params.source_unit
 	local unit_node = params.unit_node
+	local dialogue_system = Managers.state.entity:system("dialogue_system")
 
-	DialogueSystem:trigger_sound_event_with_subtitles(sound_event, subtitle_event, speaker, source_unit, unit_node)
+	dialogue_system:trigger_sound_event_with_subtitles(sound_event, subtitle_event, speaker, source_unit, unit_node)
 end
 
 function flow_callback_override_start_dialogue_system()
-	local local_player = Managers.player:local_player()
-	local player_unit = local_player.player_unit
-	local dialogue_extension = ScriptUnit.extension(player_unit, "dialogue_system")
+	local dialogue_system = Managers.state.entity:system("dialogue_system")
 
-	dialogue_extension.local_player_has_moved = true
+	dialogue_system.players_ready = true
 end
 
 function flow_callback_override_stop_dialogue_system()
-	local local_player = Managers.player:local_player()
-	local player_unit = local_player.player_unit
-	local dialogue_extension = ScriptUnit.extension(player_unit, "dialogue_system")
+	local dialogue_system = Managers.state.entity:system("dialogue_system")
 
-	dialogue_extension.local_player_has_moved = false
+	dialogue_system.players_ready = false
 end
 
 function flow_callback_override_start_delay()
@@ -3521,6 +3536,23 @@ function flow_callback_chr_enemy_inventory_send_event(params)
 	end
 end
 
+function flow_callback_unit_spawner_spawn_local_unit(params)
+	local unit = params.unit
+	local position = params.position or Vector3(0, 0, 0)
+	local rotation = params.rotation or Quaternion.identity()
+	local scale = params.scale or Vector3(1, 1, 1)
+	local spawn_pose = Matrix4x4.from_quaternion_position(rotation, position)
+
+	Matrix4x4.set_scale(spawn_pose, scale)
+
+	local spawned_unit = Managers.state.unit_spawner:spawn_local_unit(unit, spawn_pose)
+
+	return {
+		spawned = true,
+		spawned_unit = spawned_unit,
+	}
+end
+
 function flow_callback_unit_spawner_mark_for_deletion(params)
 	if not unit_alive(params.unit) then
 		return
@@ -3902,7 +3934,7 @@ function flow_callback_broadphase_deal_damage(params)
 		local t = Managers.time:time("game")
 		local damage_source = hazard_type
 		local difficulty_rank = Managers.state.difficulty:get_difficulty_rank()
-		local power_level = hazard_settings.enemy.difficulty_power_level[difficulty_rank] or DefaultPowerLevel
+		local power_level = hazard_settings.enemy.difficulty_power_level[difficulty_rank] or hazard_settings.enemy.difficulty_power_level[2] or DefaultPowerLevel
 		local damage_profile_name = hazard_settings.enemy.damage_profile or "default"
 		local damage_profile = DamageProfileTemplates[damage_profile_name]
 		local target_index
@@ -4975,7 +5007,7 @@ function flow_callback_cog_collision(params)
 		local blocking = false
 		local shield_breaking_hit = false
 		local difficulty_rank = Managers.state.difficulty:get_difficulty_rank()
-		local power_level = hazard_settings.enemy.difficulty_power_level[difficulty_rank] or DefaultPowerLevel
+		local power_level = hazard_settings.enemy.difficulty_power_level[difficulty_rank] or hazard_settings.enemy.difficulty_power_level[2] or DefaultPowerLevel
 		local t = Managers.time:time("game")
 
 		DamageUtils.server_apply_hit(t, cog_unit, hit_unit, hit_zone_name, nil, push_direction, hit_ragdoll_actor, damage_source, power_level, damage_profile, target_index, boost_curve_multiplier, is_critical_strike, can_damage, can_stagger, blocking, shield_breaking_hit)
@@ -5012,10 +5044,10 @@ function flow_callback_environment_hazard_damage_collision(params)
 		local blocking = false
 		local shield_breaking_hit = params.shield_breaking_hit or true
 		local difficulty_rank = Managers.state.difficulty:get_difficulty_rank()
-		local power_level = hazard_settings.enemy.difficulty_power_level[difficulty_rank] or DefaultPowerLevel
+		local power_level = hazard_settings.enemy.difficulty_power_level[difficulty_rank] or hazard_settings.enemy.difficulty_power_level[2] or DefaultPowerLevel
 		local t = Managers.time:time("game")
 		local health_extension = ScriptUnit.extension(hit_unit, "health_system")
-		local damage = hazard_settings.enemy.difficulty_damage[difficulty_rank]
+		local damage = hazard_settings.enemy.difficulty_damage[difficulty_rank] or hazard_settings.enemy.difficulty_damage[2]
 
 		health_extension:add_damage(hit_unit, damage, hit_zone_name, "cutting", hit_unit_position, push_direction, "wounded_degen")
 
@@ -5473,4 +5505,74 @@ end
 
 function flow_callback_start_dwarf_speedrun_challenge(params)
 	Managers.state.achievement:trigger_event("dwarf_speedrun_start")
+end
+
+function flow_callback_carousel_set_time(params)
+	if not Managers.player.is_server then
+		return
+	end
+
+	local win_conditions = Managers.mechanism:game_mechanism():win_conditions()
+
+	win_conditions:set_time(params.time)
+end
+
+function flow_callback_carousel_get_current_set(params)
+	assert(Managers.mechanism:current_mechanism_name() == "versus", "[flow_callback_carousel_get_current_set]: current mechanism has to be 'versus' ")
+
+	return {
+		set = Managers.mechanism:game_mechanism():get_current_set(),
+	}
+end
+
+function flow_callback_carousel_force_start_round(params)
+	assert(Managers.mechanism:current_mechanism_name() == "versus", "[flow_callback_carousel_force_start_round]: current mechanism has to be 'versus' ")
+
+	local entity_manager = Managers.state.entity
+
+	if entity_manager and entity_manager:system("round_started_system") then
+		entity_manager:system("round_started_system"):force_start_round()
+	end
+end
+
+function flow_set_numeric_flow_variable(params)
+	local unit = params.unit
+	local name = params.name
+	local value = params.value
+
+	Unit.set_flow_variable(unit, name, value)
+end
+
+function flow_callback_set_faction_memory(params)
+	local dialogue_system = Managers.state.entity:system("dialogue_system")
+
+	dialogue_system:set_faction_memory(params.faction, params.key, params.value)
+end
+
+function flow_callback_set_user_memory(params)
+	local dialogue_system = Managers.state.entity:system("dialogue_system")
+
+	dialogue_system:set_user_memory(params.unit, params.key, params.value)
+end
+
+function flow_callback_set_user_context(params)
+	local dialogue_system = Managers.state.entity:system("dialogue_system")
+
+	dialogue_system:set_user_context(params.unit, params.key, params.value)
+end
+
+function flow_callback_set_global_context(params)
+	local dialogue_system = Managers.state.entity:system("dialogue_system")
+
+	dialogue_system:set_global_context(params.key, params.value)
+end
+
+function flow_callback_lock_available_hero(params)
+	local locked_profile_index = Managers.state.game_mode:lock_available_hero()
+
+	assert(locked_profile_index, "[flow_callback_lock_available_hero] Couldn't find any available hero")
+
+	flow_return_table.locked_profile_index = locked_profile_index
+
+	return flow_return_table
 end

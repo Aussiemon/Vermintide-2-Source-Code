@@ -28,6 +28,7 @@ SurroundingAwareSystem.init = function (self, entity_system_creation_context, sy
 	self.unit_extension_data = {}
 	self.observers = {}
 	self.global_observers = {}
+	self._global_observer_by_profile = {}
 	self.broadphase = Broadphase(math.max(DialogueSettings.max_view_distance, DialogueSettings.max_hear_distance, DialogueSettings.discover_enemy_attack_distance), 256)
 	self.event_array = pdArray.new()
 	self.seen_recently = {}
@@ -40,6 +41,43 @@ SurroundingAwareSystem.init = function (self, entity_system_creation_context, sy
 
 	network_event_delegate:register(self, unpack(RPCS))
 	GarbageLeakDetector.register_object(self, "surrounding_aware_system")
+end
+
+SurroundingAwareSystem.populate_global_observers = function (self)
+	if self.is_server then
+		local mission_givers = FrameTable.alloc_table()
+		local current_level_key = Managers.level_transition_handler:get_current_level_keys()
+		local level_settings = LevelSettings[current_level_key]
+		local level_mission_givers = level_settings and level_settings.mission_givers
+
+		if level_mission_givers then
+			table.merge(mission_givers, level_mission_givers)
+		end
+
+		local game_mode_settings = Managers.state.game_mode:settings()
+		local game_mode_mission_givers = game_mode_settings.mission_givers
+
+		if game_mode_mission_givers then
+			table.merge(mission_givers, game_mode_mission_givers)
+		end
+
+		for i = 1, #mission_givers do
+			local mission_giver = mission_givers[i]
+			local dialogue_profile = mission_giver.dialogue_profile
+			local side_name = mission_giver.side_name
+			local side = Managers.state.side:get_side_from_name(side_name)
+			local extension_init_data = {
+				dialogue_system = {
+					dialogue_profile = dialogue_profile,
+				},
+				surrounding_aware_system = {
+					side_id = side and side.side_id,
+				},
+			}
+
+			Managers.state.unit_spawner:spawn_network_unit("units/hub_elements/empty", "dialogue_node", extension_init_data)
+		end
+	end
 end
 
 SurroundingAwareSystem.destroy = function (self)
@@ -88,7 +126,7 @@ end
 
 local dummy_input = {}
 
-SurroundingAwareSystem.on_add_extension = function (self, world, unit, extension_name)
+SurroundingAwareSystem.on_add_extension = function (self, world, unit, extension_name, extension_init_data)
 	local extension = {
 		input = MakeTableStrict({
 			event_array = self.event_array,
@@ -117,21 +155,45 @@ SurroundingAwareSystem.on_add_extension = function (self, world, unit, extension
 		extension.view_distance_sq = extension.view_distance^2
 	end
 
+	if extension_init_data.side_id then
+		Managers.state.side:add_unit_to_side(unit, extension_init_data.side_id)
+	end
+
 	return extension
 end
 
+SurroundingAwareSystem.get_global_observer_unit = function (self, observer_profile)
+	return self._global_observer_by_profile[observer_profile]
+end
+
+SurroundingAwareSystem.get_global_observers = function (self)
+	return self.global_observers
+end
+
 SurroundingAwareSystem.extensions_ready = function (self, world, unit, extension_name)
+	local extension = ScriptUnit.extension(unit, "surrounding_aware_system")
+
 	if extension_name == "SurroundingObserverExtension" or extension_name == "SurroundingObserverHuskExtension" then
 		-- Nothing
-	elseif ScriptUnit.has_extension(unit, "pickup_system") then
-		local extension = ScriptUnit.extension(unit, "surrounding_aware_system")
+	elseif extension_name == "GlobalObserverExtension" then
+		local dialogue_extension = ScriptUnit.has_extension(unit, "dialogue_system")
 
+		if dialogue_extension then
+			extension.dialogue_profile = dialogue_extension.dialogue_profile or Unit.get_data(unit, "dialogue_profile")
+
+			assert(extension.dialogue_profile, "[SurroundingAwareSystem] Global Observer is missing a dialogue profile", unit)
+
+			self._global_observer_by_profile[extension.dialogue_profile] = unit
+		end
+	elseif ScriptUnit.has_extension(unit, "pickup_system") then
 		extension.collision_filter = "filter_lookat_pickup_object_ray"
 	end
 end
 
 SurroundingAwareSystem.on_remove_extension = function (self, unit, extension_name)
 	Broadphase.remove(self.broadphase, self.unit_extension_data[unit].broadphase_id)
+
+	local extension = self.unit_extension_data[unit]
 
 	self.unit_input_data[unit] = nil
 	self.unit_extension_data[unit] = nil
@@ -156,6 +218,7 @@ SurroundingAwareSystem.on_remove_extension = function (self, unit, extension_nam
 		end
 	elseif extension_name == "GlobalObserverExtension" then
 		self.global_observers[unit] = nil
+		self._global_observer_by_profile[extension.dialogue_profile] = nil
 	end
 
 	ScriptUnit.remove_extension(unit, "surrounding_aware_system")
@@ -472,6 +535,10 @@ SurroundingAwareSystem.update_debug = function (self, context, t)
 	end
 end
 
+local TRIGGER_ON_SELF = {
+	heard_speak = "heard_speak_self",
+}
+
 SurroundingAwareSystem.update_events = function (self, context, t)
 	local unit_input_data = self.unit_input_data
 	local broadphase = self.broadphase
@@ -507,7 +574,9 @@ SurroundingAwareSystem.update_events = function (self, context, t)
 
 				found_units[j] = nil
 
-				if target ~= unit and ScriptUnit.has_extension(target, "dialogue_system") then
+				local is_source = target == unit
+
+				if ScriptUnit.has_extension(target, "dialogue_system") and (not is_source or TRIGGER_ON_SELF[event_name]) then
 					local dialogue_input = ScriptUnit.extension_input(target, "dialogue_system")
 					local event_data = FrameTable.alloc_table()
 					local distance = 0
@@ -526,7 +595,11 @@ SurroundingAwareSystem.update_events = function (self, context, t)
 						event_data[array_data[array_data_index]] = array_data[array_data_index + 1]
 					end
 
-					dialogue_input:trigger_dialogue_event(event_name, event_data)
+					if is_source then
+						dialogue_input:trigger_dialogue_event(TRIGGER_ON_SELF[event_name], event_data)
+					else
+						dialogue_input:trigger_dialogue_event(event_name, event_data)
+					end
 				end
 			end
 
@@ -542,8 +615,13 @@ SurroundingAwareSystem.update_events = function (self, context, t)
 				for observer_unit, _ in pairs(self.global_observers) do
 					local dialogue_extension = ScriptUnit.extension(observer_unit, "dialogue_system")
 					local dialogue_input = dialogue_extension.input
+					local is_source = unit ~= observer_unit
 
-					dialogue_input:trigger_dialogue_event(event_name, event_data)
+					if not is_source then
+						dialogue_input:trigger_dialogue_event(event_name, event_data)
+					elseif TRIGGER_ON_SELF[event_name] then
+						dialogue_input:trigger_dialogue_event(TRIGGER_ON_SELF[event_name], event_data)
+					end
 				end
 			end
 		end

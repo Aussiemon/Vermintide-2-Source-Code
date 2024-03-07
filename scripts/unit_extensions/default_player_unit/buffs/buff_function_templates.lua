@@ -1687,7 +1687,7 @@ BuffFunctionTemplates.functions = {
 				local damage = buff.damage[armor_type]
 				local damage_source = buff.damage_source
 
-				DamageUtils.add_damage_network(unit, attacker_unit, damage, "torso", damage_type, nil, Vector3(1, 0, 0), damage_source)
+				DamageUtils.add_damage_network(unit, attacker_unit, damage, "torso", damage_type, nil, Vector3(1, 0, 0), damage_source, nil, attacker_unit)
 			end
 
 			local is_friendly_target = not DamageUtils.is_enemy(attacker_unit, unit)
@@ -1956,7 +1956,7 @@ BuffFunctionTemplates.functions = {
 			local buff_name = template.buff_to_add
 			local buff_extension = ScriptUnit.has_extension(unit, "buff_system")
 			local current_stacks = buff_extension:num_buff_type(buff_name)
-			local max_stacks = BuffTemplates[buff_name].buffs[1].max_stacks
+			local max_stacks = BuffUtils.get_buff_template(buff_name).buffs[1].max_stacks
 
 			if current_stacks < max_stacks then
 				local buff_system = Managers.state.entity:system("buff_system")
@@ -2744,28 +2744,27 @@ BuffFunctionTemplates.functions = {
 		end
 
 		if template.ai_buff_name then
+			local broadphase_categories = side.ally_broadphase_categories
 			local nearby_units = FrameTable.alloc_table()
-			local num_units = AiUtils.broadphase_query(owner_position, range, nearby_units)
+			local num_units = AiUtils.broadphase_query(owner_position, range, nearby_units, broadphase_categories)
 
 			for i = 1, num_units do
 				local other_unit = nearby_units[i]
-				local other_side = side_by_unit[other_unit]
+				local buff_id = buffed_units[other_unit]
 
-				if not side_manager:is_enemy_by_side(side, other_side) then
-					local buff_id = buffed_units[other_unit]
-
-					if not buff_id then
-						buffed_units[other_unit] = buff_system:add_buff_synced(other_unit, template.ai_buff_name, buff_sync_type, buff_params)
-					end
-
-					inside_this_frame[other_unit] = true
+				if not buff_id then
+					buffed_units[other_unit] = buff_system:add_buff_synced(other_unit, template.ai_buff_name, buff_sync_type, buff_params)
 				end
+
+				inside_this_frame[other_unit] = true
 			end
 		end
 
 		for unit, buff_id in pairs(buffed_units) do
 			if not inside_this_frame[unit] then
 				buff_system:remove_buff_synced(unit, buff_id)
+
+				buffed_units[unit] = nil
 			end
 		end
 	end,
@@ -5263,7 +5262,7 @@ BuffFunctionTemplates.functions = {
 
 			if t > buff.next_pulse_t then
 				local damage_source = "grenade_frag_01"
-				local explosion_template = ExplosionTemplates.twitch_pulse_explosion
+				local explosion_template = ExplosionUtils.get_template("twitch_pulse_explosion")
 				local explosion_position = POSITION_LOOKUP[unit]
 
 				DamageUtils.create_explosion(world, unit, explosion_position, Quaternion.identity(), explosion_template, 1, damage_source, true, false, unit, false)

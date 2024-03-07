@@ -83,8 +83,9 @@ CareerAbilityBarUI._update_career_ability = function (self, player, dt)
 
 	local career_extension = ScriptUnit.extension(player_unit, "career_system")
 	local career_name = career_extension:career_name()
-	local career_settings = CareerSettings[career_name]
-	local activated_ability = career_settings.activated_ability[1]
+	local profile_index = career_extension:profile_index()
+	local career_index = career_extension:career_index()
+	local activated_ability = CareerUtils.get_ability_data(profile_index, career_index, 1)
 
 	if activated_ability.show_gamepad_ability_bar then
 		local ability_fraction, min_threshold_fraction, max_threshold_fraction, icon_pulse_fraction = self:_get_ability_amount(player_unit)

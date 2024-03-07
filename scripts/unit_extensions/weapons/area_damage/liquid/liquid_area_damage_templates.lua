@@ -89,6 +89,13 @@ LiquidAreaDamageTemplates.templates = {
 				0,
 				1,
 			},
+			versus_base = {
+				1,
+				1,
+				0,
+				0,
+				1,
+			},
 		},
 	},
 	bile_troll_vomit = {
@@ -172,6 +179,13 @@ LiquidAreaDamageTemplates.templates = {
 				1,
 			},
 			cataclysm_3 = {
+				1,
+				1,
+				0,
+				0,
+				1,
+			},
+			versus_base = {
 				1,
 				1,
 				0,
@@ -270,6 +284,13 @@ LiquidAreaDamageTemplates.templates = {
 				1,
 			},
 			cataclysm_3 = {
+				1,
+				1,
+				0,
+				0,
+				1,
+			},
+			versus_base = {
 				1,
 				1,
 				0,
@@ -419,6 +440,13 @@ LiquidAreaDamageTemplates.templates = {
 				0,
 				1,
 			},
+			versus_base = {
+				1,
+				1,
+				0,
+				0,
+				1,
+			},
 		},
 		hit_player_function = function (player_unit, player_and_bot_units, source_unit)
 			if Unit.alive(source_unit) then
@@ -503,6 +531,13 @@ LiquidAreaDamageTemplates.templates = {
 				8,
 				10,
 			},
+			versus_base = {
+				10,
+				10,
+				10,
+				5,
+				10,
+			},
 		},
 	},
 	warpfire_death_fire = {
@@ -578,6 +613,13 @@ LiquidAreaDamageTemplates.templates = {
 				10,
 				10,
 				8,
+				10,
+			},
+			versus_base = {
+				10,
+				10,
+				10,
+				5,
 				10,
 			},
 		},
@@ -658,6 +700,13 @@ LiquidAreaDamageTemplates.templates = {
 				0,
 				0,
 			},
+			versus_base = {
+				0,
+				0,
+				0,
+				0,
+				0,
+			},
 		},
 	},
 	sienna_unchained_ability_patch_increased_damage = {
@@ -730,6 +779,13 @@ LiquidAreaDamageTemplates.templates = {
 				10,
 			},
 			cataclysm_3 = {
+				10,
+				10,
+				10,
+				0,
+				10,
+			},
+			versus_base = {
 				10,
 				10,
 				10,

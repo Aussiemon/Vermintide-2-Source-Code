@@ -2,6 +2,8 @@
 
 require("scripts/unit_extensions/weapons/actions/action_base")
 require("scripts/unit_extensions/weapons/actions/action_ranged_base")
+require("scripts/unit_extensions/weapons/actions/action_minigun")
+require("scripts/unit_extensions/weapons/actions/action_minigun_spin")
 require("scripts/unit_extensions/weapons/actions/action_charge")
 require("scripts/unit_extensions/weapons/actions/action_dummy")
 require("scripts/unit_extensions/weapons/actions/action_inspect")
@@ -85,6 +87,8 @@ local action_classes = {
 	throw_grimoire = ActionThrowGrimoire,
 	healing_draught = ActionHealingDraught,
 	flamethrower = ActionFlamethrower,
+	minigun = ActionMinigun,
+	minigun_spin = ActionMinigunSpin,
 	career_dr_three = ActionCareerDRRanger,
 	career_bw_one = ActionCareerBWScholar,
 	career_we_three = ActionCareerWEWaywatcher,
@@ -206,6 +210,8 @@ WeaponUnitExtension.init = function (self, extension_init_context, unit, extensi
 	local weapon_template_name = item_data and item_data.template
 
 	if weapon_template_name then
+		self._weapon_template_name = weapon_template_name
+
 		local template = Weapons[weapon_template_name]
 		local custom_data = template.custom_data
 
@@ -222,7 +228,12 @@ WeaponUnitExtension.init = function (self, extension_init_context, unit, extensi
 		self._weapon_update = template and template.update
 		self._weapon_wield = template and template.on_wield
 		self._weapon_unwield = template and template.on_unwield
-		self._weapon_template = template
+		self._synced_weapon_state = nil
+		self._synced_weapon_states = template and template.synced_states
+
+		if self._synced_weapon_states then
+			self._synced_weapon_state_data = {}
+		end
 	end
 
 	Managers.state.event:register(self, "on_game_options_changed", "update_game_options")
@@ -459,6 +470,7 @@ WeaponUnitExtension.start_action = function (self, action_name, sub_action_name,
 
 		local skin_data = get_skin_action_override_data(self.weapon_skin_anim_overrides, current_action_settings)
 		local event = get_action_anim_event(previous_action_settings, current_action_settings, skin_data, "anim_event")
+		local event_1p = get_action_anim_event(previous_action_settings, current_action_settings, skin_data, "anim_event_1p") or event
 		local event_3p = get_action_anim_event(previous_action_settings, current_action_settings, skin_data, "anim_event_3p") or event
 		local looping_event = get_action_anim_event(previous_action_settings, current_action_settings, skin_data, "looping_anim")
 
@@ -490,9 +502,11 @@ WeaponUnitExtension.start_action = function (self, action_name, sub_action_name,
 		if self.ammo_extension then
 			if self.ammo_extension:total_remaining_ammo() == 0 then
 				event = get_action_anim_event(previous_action_settings, current_action_settings, skin_data, "anim_event_no_ammo_left") or event
-				event_3p = get_action_anim_event(previous_action_settings, current_action_settings, skin_data, "anim_event_no_ammo_left_3p") or event_3p
+				event_1p = get_action_anim_event(previous_action_settings, current_action_settings, skin_data, "anim_event_no_ammo_left_1p") or event_1p or event
+				event_3p = get_action_anim_event(previous_action_settings, current_action_settings, skin_data, "anim_event_no_ammo_left_3p") or event_3p or event
 			elseif self.ammo_extension:total_remaining_ammo() == 1 then
 				event = get_action_anim_event(previous_action_settings, current_action_settings, skin_data, "anim_event_last_ammo") or event
+				event_1p = get_action_anim_event(previous_action_settings, current_action_settings, skin_data, "anim_event_last_ammo_1p") or event_1p
 				event_3p = get_action_anim_event(previous_action_settings, current_action_settings, skin_data, "anim_event_last_ammo_3p") or event_3p
 			end
 		end
@@ -502,7 +516,8 @@ WeaponUnitExtension.start_action = function (self, action_name, sub_action_name,
 
 			if infinite_ammo then
 				event = get_action_anim_event(previous_action_settings, current_action_settings, skin_data, "anim_event_infinite_ammo") or event
-				event_3p = get_action_anim_event(previous_action_settings, current_action_settings, skin_data, "anim_event_infinite_ammo_3p") or event_3p
+				event_1p = get_action_anim_event(previous_action_settings, current_action_settings, skin_data, "anim_event_infinite_ammo_1p") or event_1p or event
+				event_3p = get_action_anim_event(previous_action_settings, current_action_settings, skin_data, "anim_event_infinite_ammo_3p") or event_3p or event
 			end
 		end
 
@@ -524,70 +539,82 @@ WeaponUnitExtension.start_action = function (self, action_name, sub_action_name,
 			current_action_settings.enter_function(owner_unit, input_extension, remaining_time, self)
 		end
 
-		if event then
-			local anim_time_scale = ActionUtils.get_action_time_scale(owner_unit, current_action_settings, true)
+		local anim_time_scale = ActionUtils.get_action_time_scale(owner_unit, current_action_settings, true)
 
-			anim_time_scale = math.clamp(anim_time_scale, NetworkConstants.animation_variable_float.min, NetworkConstants.animation_variable_float.max)
+		anim_time_scale = math.clamp(anim_time_scale, NetworkConstants.animation_variable_float.min, NetworkConstants.animation_variable_float.max)
 
-			local go_id = Managers.state.unit_storage:go_id(owner_unit)
-			local event_id = NetworkLookup.anims[event_3p]
-			local variable_id = NetworkLookup.anims.attack_speed
-
-			if not LEVEL_EDITOR_TEST then
-				if self.is_server then
-					Managers.state.network.network_transmit:send_rpc_clients("rpc_anim_event_variable_float", event_id, go_id, variable_id, anim_time_scale)
-				else
-					Managers.state.network.network_transmit:send_rpc_server("rpc_anim_event_variable_float", event_id, go_id, variable_id, anim_time_scale)
+		if event_3p then
+			if type(event_3p) == "table" then
+				for i = 1, #event_3p do
+					self:_play_3p_anim(event_3p[i], (event or event_3p)[i], owner_unit, looping_event, anim_time_scale)
 				end
+			else
+				self:_play_3p_anim(event_3p, event or event_3p, owner_unit, looping_event, anim_time_scale)
 			end
+		end
 
-			if not IS_WINDOWS and not IS_LINUX and event == "attack_shoot" then
-				anim_time_scale = anim_time_scale * 1.2
-			end
-
-			first_person_extension:animation_set_variable("attack_speed", anim_time_scale)
-
-			if CharacterStateHelper.is_enemy_character(owner_unit) then
-				local first_person_variable_id = 1
-
-				Unit.animation_set_variable(first_person_unit, first_person_variable_id, anim_time_scale)
-			end
-
-			if not looping_event or looping_event and not self._looping_anim_event_started then
-				Unit.animation_event(first_person_unit, event)
-
-				if looping_event then
-					self._looping_anim_event_started = true
+		if event_1p then
+			if type(event_1p) == "table" then
+				for i = 1, #event_1p do
+					self:_play_1p_anim(event_1p[i], (event or event_1p)[i], first_person_unit, looping_event, anim_time_scale)
 				end
+			else
+				self:_play_1p_anim(event_1p, event or event_1p, first_person_unit, looping_event, anim_time_scale)
 			end
+		end
 
-			if not script_data.disable_third_person_weapon_animation_events then
-				local third_person_variable_id
-				local hero_player = true
+		if (event_3p or event_1p) and current_action_settings.apply_recoil then
+			first_person_extension:apply_recoil()
+			first_person_extension:play_camera_recoil(current_action_settings.recoil_settings, t)
+		end
+	end
+end
 
-				if CharacterStateHelper.is_enemy_character(owner_unit) then
-					third_person_variable_id = 1
-					hero_player = false
-				end
+WeaponUnitExtension._play_1p_anim = function (self, event_1p, event, first_person_unit, looping_event, anim_time_scale)
+	if not IS_WINDOWS and not IS_LINUX and event == "attack_shoot" then
+		anim_time_scale = anim_time_scale * 1.2
+	end
 
-				if hero_player then
-					third_person_variable_id = Unit.animation_find_variable(owner_unit, "attack_speed")
-				end
+	self.first_person_extension:animation_set_variable("attack_speed", anim_time_scale)
 
-				Unit.animation_set_variable(owner_unit, third_person_variable_id, anim_time_scale)
+	if not looping_event or looping_event and not self._looping_anim_event_started then
+		Unit.animation_event(first_person_unit, event)
 
-				if not looping_event or looping_event and not self._looping_anim_event_started then
-					Unit.animation_event(owner_unit, event_3p)
+		if looping_event then
+			self._looping_anim_event_started = true
+		end
+	end
+end
 
-					if looping_event then
-						self._looping_anim_event_started = true
-					end
-				end
-			end
+WeaponUnitExtension._play_3p_anim = function (self, event_3p, event, owner_unit, looping_event, anim_time_scale)
+	local go_id = Managers.state.unit_storage:go_id(owner_unit)
+	local event_id = NetworkLookup.anims[event_3p]
+	local variable_id = NetworkLookup.anims.attack_speed
 
-			if current_action_settings.apply_recoil then
-				first_person_extension:apply_recoil()
-				first_person_extension:play_camera_recoil(current_action_settings.recoil_settings, t)
+	if not LEVEL_EDITOR_TEST then
+		if self.is_server then
+			Managers.state.network.network_transmit:send_rpc_clients("rpc_anim_event_variable_float", event_id, go_id, variable_id, anim_time_scale)
+		else
+			Managers.state.network.network_transmit:send_rpc_server("rpc_anim_event_variable_float", event_id, go_id, variable_id, anim_time_scale)
+		end
+	end
+
+	if not IS_WINDOWS and not IS_LINUX and event == "attack_shoot" then
+		anim_time_scale = anim_time_scale * 1.2
+	end
+
+	if not script_data.disable_third_person_weapon_animation_events then
+		local third_person_variable_id
+
+		third_person_variable_id = Unit.animation_find_variable(owner_unit, "attack_speed")
+
+		Unit.animation_set_variable(owner_unit, third_person_variable_id, anim_time_scale)
+
+		if not looping_event or looping_event and not self._looping_anim_event_started then
+			Unit.animation_event(owner_unit, event_3p)
+
+			if looping_event then
+				self._looping_anim_event_started = true
 			end
 		end
 	end
@@ -659,7 +686,7 @@ WeaponUnitExtension._finish_action = function (self, reason, data)
 	local first_person_extension = self.first_person_extension
 
 	if first_person_extension then
-		local weapon_template = self._weapon_template
+		local weapon_template = self:_weapon_template()
 		local sway_settings = weapon_template and weapon_template.weapon_sway_settings
 
 		first_person_extension:set_weapon_sway_settings(sway_settings)
@@ -675,32 +702,75 @@ WeaponUnitExtension._finish_action = function (self, reason, data)
 	return chain_action_data
 end
 
+WeaponUnitExtension._weapon_template = function (self)
+	return Weapons[self._weapon_template_name]
+end
+
 WeaponUnitExtension.anim_end_event = function (self, reason, current_action_settings)
-	local go_id = Managers.state.unit_storage:go_id(self.owner_unit)
-	local skin_data = get_skin_action_override_data(self.weapon_skin_anim_overrides, current_action_settings)
-	local event = skin_data and skin_data.anim_end_event or current_action_settings.anim_end_event
 	local anim_end_event_condition_func = current_action_settings.anim_end_event_condition_func
 	local do_event = not anim_end_event_condition_func and true or anim_end_event_condition_func(self.owner_unit, reason, self.ammo_extension)
 
-	if event and do_event then
-		local event_id = NetworkLookup.anims[event]
+	if do_event then
+		local skin_data = get_skin_action_override_data(self.weapon_skin_anim_overrides, current_action_settings)
+		local event = skin_data and skin_data.anim_end_event or current_action_settings.anim_end_event
+		local event_1p = skin_data and skin_data.anim_end_event_1p or current_action_settings.anim_end_event_1p
+		local event_3p = skin_data and skin_data.anim_end_event_3p or current_action_settings.anim_end_event_3p
 
-		if not LEVEL_EDITOR_TEST then
-			if self.is_server then
-				Managers.state.network.network_transmit:send_rpc_clients("rpc_anim_event", event_id, go_id)
+		if event then
+			if type(event) == "table" then
+				for i = 1, #event do
+					self:_play_end_event_1p(event[i])
+					self:_play_end_event_3p(event[i])
+				end
 			else
-				Managers.state.network.network_transmit:send_rpc_server("rpc_anim_event", event_id, go_id)
+				self:_play_end_event_1p(event)
+				self:_play_end_event_3p(event)
 			end
 		end
 
-		Unit.animation_event(self.first_person_unit, event)
+		if event_1p then
+			if type(event_1p) == "table" then
+				for i = 1, #event_1p do
+					self:_play_end_event_1p(event_1p[i])
+				end
+			else
+				self:_play_end_event_1p(event_1p)
+			end
+		end
 
-		if not script_data.disable_third_person_weapon_animation_events then
-			Unit.animation_event(self.owner_unit, event)
+		if event_3p then
+			if type(event_3p) == "table" then
+				for i = 1, #event_3p do
+					self:_play_end_event_3p(event_3p[i])
+				end
+			else
+				self:_play_end_event_3p(event_3p)
+			end
 		end
 
 		self._looping_anim_event_started = nil
 	end
+end
+
+WeaponUnitExtension._play_end_event_3p = function (self, event)
+	local event_id = NetworkLookup.anims[event]
+	local go_id = Managers.state.unit_storage:go_id(self.owner_unit)
+
+	if not LEVEL_EDITOR_TEST then
+		if self.is_server then
+			Managers.state.network.network_transmit:send_rpc_clients("rpc_anim_event", event_id, go_id)
+		else
+			Managers.state.network.network_transmit:send_rpc_server("rpc_anim_event", event_id, go_id)
+		end
+	end
+
+	if not script_data.disable_third_person_weapon_animation_events then
+		Unit.animation_event(self.owner_unit, event)
+	end
+end
+
+WeaponUnitExtension._play_end_event_1p = function (self, event)
+	Unit.animation_event(self.first_person_unit, event)
 end
 
 WeaponUnitExtension.trigger_anim_event = function (self, event)
@@ -784,6 +854,20 @@ WeaponUnitExtension.update = function (self, unit, input, dt, context, t)
 	if self._weapon_update then
 		self._weapon_update(self, dt, t)
 	end
+
+	if self._synced_weapon_state then
+		local weapon_state = self._synced_weapon_states[self._synced_weapon_state]
+
+		if weapon_state.update then
+			weapon_state:update(self.owner_unit, self.unit, self._synced_weapon_state_data, self:_is_local_player(), self.world, dt)
+		end
+	end
+end
+
+WeaponUnitExtension._is_local_player = function (self)
+	local player = Managers.player:owner(self.owner_unit)
+
+	return player and player.local_player
 end
 
 WeaponUnitExtension.is_streak_action_available = function (self, streak_action, t, time_offset)
@@ -1274,7 +1358,7 @@ WeaponUnitExtension.on_wield = function (self, hand_name)
 	local first_person_extension = self.first_person_extension
 
 	if first_person_extension then
-		local weapon_template = self._weapon_template
+		local weapon_template = self:_weapon_template()
 		local sway_settings = weapon_template and weapon_template.weapon_sway_settings
 
 		first_person_extension:set_weapon_sway_settings(sway_settings)
@@ -1289,4 +1373,32 @@ WeaponUnitExtension.on_unwield = function (self, hand_name)
 	if self._weapon_unwield then
 		self._weapon_unwield(self, hand_name)
 	end
+end
+
+WeaponUnitExtension.change_synced_state = function (self, state_name)
+	if self._synced_weapon_state then
+		local weapon_state = self._synced_weapon_states[self._synced_weapon_state]
+
+		if weapon_state.leave then
+			weapon_state:leave(self.owner_unit, self.unit, self._synced_weapon_state_data, self:_is_local_player(), self.world, state_name)
+		end
+	end
+
+	self._synced_weapon_state = state_name
+
+	if state_name then
+		local weapon_state = self._synced_weapon_states[state_name]
+
+		if weapon_state.clear_data_on_enter then
+			table.clear(self._synced_weapon_state_data)
+		end
+
+		if weapon_state.enter then
+			weapon_state:enter(self.owner_unit, self.unit, self._synced_weapon_state_data, self:_is_local_player(), self.world)
+		end
+	end
+end
+
+WeaponUnitExtension.current_synced_state = function (self)
+	return self._synced_weapon_state
 end

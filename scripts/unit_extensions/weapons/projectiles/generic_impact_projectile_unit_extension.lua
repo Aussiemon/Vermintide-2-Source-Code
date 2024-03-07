@@ -83,7 +83,7 @@ end
 
 GenericImpactProjectileUnitExtension._execute_impact = function (self, recent_impacts, num_impacts)
 	local impact = ProjectileTemplates.impact_templates[self.impact_template_name]
-	local explosion_template = ExplosionTemplates[self.explosion_template_name]
+	local explosion_template = ExplosionUtils.get_template(self.explosion_template_name)
 	local server_stop = false
 
 	if self.is_server then
@@ -123,7 +123,7 @@ GenericImpactProjectileUnitExtension.force_impact = function (self, unit, hit_po
 	dummy_impact[ProjectileImpactDataIndex.POSITION] = Vector3Box(hit_position)
 
 	local impact = ProjectileTemplates.impact_templates[self.impact_template_name]
-	local explosion_template = ExplosionTemplates[self.explosion_template_name]
+	local explosion_template = ExplosionUtils.get_template(self.explosion_template_name)
 	local server_stop = false
 
 	if self.is_server then

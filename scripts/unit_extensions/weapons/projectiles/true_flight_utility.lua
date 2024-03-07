@@ -132,3 +132,73 @@ TrueFlightUtility.sort_prioritize_bosses = function (targets, optional_reference
 
 	return targets
 end
+
+local function _calculate_sort_score(target, source_pos, look_direction, boss_weight, special_weight, elite_weight, max_distance, distance_weight, angle_weight, player_weight)
+	local target_breed = Unit.get_data(target, "breed")
+
+	if not target_breed then
+		return 0
+	end
+
+	local target_pos = POSITION_LOOKUP[target]
+	local height = target_breed.height or 2
+	local neck_height = height * 0.75
+	local tag_radius = neck_height * 1.5
+
+	target_pos = target_pos + Vector3(0, 0, neck_height)
+
+	local diff = target_pos - source_pos
+	local distance = Vector3.length(diff)
+	local hypothenuse = math.sqrt(distance * distance + tag_radius * tag_radius)
+	local max_angle = distance / hypothenuse
+
+	look_direction = Vector3.normalize(look_direction)
+
+	local angle = Vector3.dot(Vector3.normalize(diff), look_direction)
+
+	if angle < max_angle then
+		return 0
+	end
+
+	local angle_score = math.inv_lerp(math.acos(1 - max_angle), 0, math.acos(angle))^2 * angle_weight
+	local dist = Vector3.length(diff)
+
+	if max_distance < dist then
+		return 0
+	end
+
+	local dist_score = math.inv_lerp(max_distance, 0, dist) * distance_weight
+	local score = angle_score + dist_score
+
+	if target_breed.is_player then
+		score = score * player_weight
+	elseif target_breed.elite then
+		score = score * elite_weight
+	elseif target_breed.special then
+		score = score * special_weight
+	elseif target_breed.boss then
+		score = score * boss_weight
+	end
+
+	return score
+end
+
+local SCORES = {}
+
+local function _sort_func(target_a, target_b)
+	return SCORES[target_a] > SCORES[target_b]
+end
+
+TrueFlightUtility.sort = function (targets, source_pos, look_direction, boss_weight, special_weight, elite_weight, max_distance, distance_weight, angle_weight, player_weight)
+	table.clear(SCORES)
+
+	for i = 1, #targets do
+		local target = targets[i]
+
+		SCORES[target] = _calculate_sort_score(target, source_pos, look_direction, boss_weight, special_weight, elite_weight, max_distance, distance_weight, angle_weight, player_weight)
+	end
+
+	table.sort(targets, _sort_func)
+
+	return SCORES
+end

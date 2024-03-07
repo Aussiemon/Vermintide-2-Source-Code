@@ -154,7 +154,7 @@ BuffExtension.add_buff = function (self, template_name, params)
 	end
 
 	local buffs = self._buffs
-	local buff_template = BuffTemplates[template_name]
+	local buff_template = BuffUtils.get_buff_template(template_name)
 	local sub_buffs = buff_template.buffs
 	local time_offset = params and params._hot_join_sync_buff_age or 0
 	local start_time = Managers.time:time("game") - time_offset
@@ -540,6 +540,17 @@ BuffExtension._add_stacking_buff = function (self, sub_buff_template, max_stacks
 			end
 
 			should_add_buff = false
+		end
+	end
+
+	local on_add_stack_override_func = StackingBuffFunctions[sub_buff_template.on_add_stack_override_func]
+
+	if on_add_stack_override_func then
+		local current_num_stacks = num_stacks
+		local should_add_buff_override = on_add_stack_override_func(self._unit, sub_buff_template, current_num_stacks, self, params)
+
+		if should_add_buff_override ~= nil then
+			should_add_buff = should_add_buff_override
 		end
 	end
 
@@ -1470,7 +1481,14 @@ BuffExtension.generate_sync_id = function (self)
 	if free_sync_ids then
 		sync_id = free_sync_ids[1]
 
-		fassert(sync_id, "[BuffExtension] Too many synced buffs, no free sync ids left!")
+		if not sync_id then
+			local buff_names = table.tostring(table.select_array(self:active_buffs(), function (_, buff)
+				return string.format("(id: %s) %s", self._id_to_local_sync and self._id_to_local_sync[buff.id], buff.template.name)
+			end))
+
+			ferror("[BuffExtension] Too many synced buffs, no free sync ids left!\nBuffs %s", buff_names)
+		end
+
 		table.swap_delete(free_sync_ids, 1)
 	else
 		sync_id = self._next_sync_id or 1

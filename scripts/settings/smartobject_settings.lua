@@ -271,8 +271,8 @@ SmartObjectSettings.templates.chaos_warrior = {
 		},
 		{
 			animation_fence = "jump_down_fence_3m",
-			fence_horizontal_length = 1.1,
-			fence_land_length = 0.4,
+			fence_horizontal_length = 1.5,
+			fence_land_length = 0,
 			height_threshold = 4,
 			vertical_length = 3,
 			animation_edge = {
@@ -281,8 +281,8 @@ SmartObjectSettings.templates.chaos_warrior = {
 		},
 		{
 			animation_fence = "jump_down_fence_5m",
-			fence_horizontal_length = 1.1,
-			fence_land_length = 0.4,
+			fence_horizontal_length = 1.5,
+			fence_land_length = 0,
 			vertical_length = 5,
 			height_threshold = math.huge,
 			animation_edge = {

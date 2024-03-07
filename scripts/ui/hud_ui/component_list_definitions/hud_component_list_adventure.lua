@@ -374,8 +374,11 @@ local components = {
 		},
 		validation_function = function ()
 			local level_settings = LevelHelper.current_level_settings()
+			local is_valid = level_settings.tutorial_level
 
-			return level_settings.tutorial_level
+			is_valid = is_valid or level_settings.game_mode == "inn_vs"
+
+			return is_valid
 		end,
 	},
 	{
@@ -595,6 +598,9 @@ local visibility_groups = {
 		validation_function = function (ingame_hud)
 			local component = ingame_hud:component("IngamePlayerListUI")
 			local is_active = component and component:is_active()
+			local component = ingame_hud:component("VersusSlotStatusUI")
+
+			is_active = component and component:is_active() or is_active
 
 			return is_active
 		end,

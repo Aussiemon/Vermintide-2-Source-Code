@@ -1212,4 +1212,25 @@ UIFrameSettings = {
 			},
 		},
 	},
+	bar_frame_01 = {
+		texture = "bar_frame_01",
+		texture_size = {
+			128,
+			128,
+		},
+		texture_sizes = {
+			corner = {
+				8,
+				8,
+			},
+			vertical = {
+				8,
+				1,
+			},
+			horizontal = {
+				1,
+				8,
+			},
+		},
+	},
 }

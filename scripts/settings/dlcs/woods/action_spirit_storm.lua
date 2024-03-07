@@ -60,27 +60,20 @@ end
 ActionSpiritStorm.fire = function (self, reason)
 	local current_action = self.current_action
 	local owner_unit = self.owner_unit
-	local owner_player = self.owner_player
+	local target_unit = self.target
+	local storm_spawn_position = POSITION_LOOKUP[target_unit]
 	local overcharge = current_action.overcharge_amount
-	local difficulty_settings = Managers.state.difficulty:get_difficulty_settings()
-	local ignore_hitting_allies = not DamageUtils.allow_friendly_fire_ranged(difficulty_settings, owner_player)
-	local storm_spawn_position = POSITION_LOOKUP[self.target]
 
 	if storm_spawn_position then
-		if Managers.player.is_server then
-			local bb = BLACKBOARDS[self.target]
-			local vext = bb and bb.thornsister_vortex_ext
+		local owner_unit_id = Managers.state.unit_storage:go_id(owner_unit)
+		local target_unit_id = Managers.state.unit_storage:go_id(self.target)
 
-			if vext then
-				vext:refresh_duration()
-			else
-				Managers.state.unit_spawner:request_spawn_network_unit("vortex_unit", storm_spawn_position, Quaternion.identity(), owner_unit, 0)
-			end
-		else
-			local owner_unit_id = Managers.state.unit_storage:go_id(owner_unit)
-			local target_unit_id = Managers.state.unit_storage:go_id(self.target)
+		self.network_transmit:send_rpc_server("rpc_summon_vortex", owner_unit_id, target_unit_id)
 
-			self.network_transmit:send_rpc_server("rpc_summon_vortex", owner_unit_id, target_unit_id)
+		local target_breed = Unit.get_data(target_unit, "breed")
+
+		if target_breed and target_breed.is_player then
+			overcharge = current_action.overcharge_amount_player_target
 		end
 	end
 

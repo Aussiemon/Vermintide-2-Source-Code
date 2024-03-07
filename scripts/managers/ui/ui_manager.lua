@@ -136,6 +136,10 @@ UIManager.end_screen_completed = function (self)
 	return self._ingame_ui:end_screen_completed()
 end
 
+UIManager.activate_end_screen_ui = function (self, screen_name, screen_config, screen_params)
+	self._ingame_ui:activate_end_screen_ui(screen_name, screen_config, screen_params)
+end
+
 UIManager.post_update = function (self, dt, t, disable_ingame_ui)
 	local ingame_ui = self._ingame_ui
 
@@ -231,4 +235,8 @@ UIManager.handle_transition = function (self, new_transition, params)
 			return ingame_ui:handle_transition(new_transition, params)
 		end
 	end
+end
+
+UIManager.ingame_ui = function (self)
+	return self._ingame_ui
 end

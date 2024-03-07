@@ -21,40 +21,6 @@ function get_ai_vs_ai_target(pos, side, breed)
 	end
 end
 
-local HEAR_DISTANCE = 1
-local raycast_points = {
-	"j_hips",
-	"j_leftforearm",
-	"j_rightforearm",
-	"j_head",
-}
-
-local function _line_of_sight_from_random_point(from_pos, target_unit)
-	local random_point = raycast_points[Math.random(1, #raycast_points)]
-	local has_node = Unit.has_node(target_unit, random_point)
-	local tp
-
-	if has_node then
-		local node = Unit.node(target_unit, random_point)
-		local physics_world = World.get_data(Unit.world(target_unit), "physics_world")
-		local target_pos = Unit.world_position(target_unit, node)
-		local distance = Vector3.distance(from_pos, target_pos)
-
-		tp = target_pos
-
-		if distance > HEAR_DISTANCE then
-			local direction = (target_pos - from_pos) / distance
-			local result, pos = PhysicsWorld.immediate_raycast(physics_world, from_pos, direction, distance, "closest", "types", "statics", "collision_filter", "filter_ai_line_of_sight_check")
-
-			if result then
-				return false
-			end
-		end
-	end
-
-	return true
-end
-
 PerceptionUtils.pick_closest_target = function (ai_unit, blackboard, breed)
 	local ai_pos = POSITION_LOOKUP[ai_unit]
 	local closest_enemy
@@ -551,7 +517,7 @@ local function get_lean_target(blackboard, position, side, ai_unit, check_for_wa
 						local node = Unit.node(ai_unit, "j_head")
 						local from_pos = Unit.world_position(ai_unit, node)
 
-						if not _line_of_sight_from_random_point(from_pos, target_unit) then
+						if not AiUtils.line_of_sight_from_random_point(from_pos, target_unit) then
 							goto label_1_0
 						end
 					end
@@ -691,10 +657,14 @@ PerceptionUtils.attack_commander_target_with_fallback = function (ai_unit, black
 	end
 
 	local bb = BLACKBOARDS[commander_target]
-	local dogpile = bb.lean_dogpile - (blackboard.target_unit == commander_target and 1 or 0)
+	local has_dogpile = bb.lean_dogpile
 
-	if dogpile >= bb.crowded_slots then
-		return PerceptionUtils.pick_best_target_near_commander_target(ai_unit, blackboard, breed, t)
+	if has_dogpile then
+		local dogpile = bb.lean_dogpile - (blackboard.target_unit == commander_target and 1 or 0)
+
+		if dogpile >= bb.crowded_slots then
+			return PerceptionUtils.pick_best_target_near_commander_target(ai_unit, blackboard, breed, t)
+		end
 	end
 
 	return commander_target
@@ -723,7 +693,7 @@ local function _calculate_closest_target_with_spillover_score(ai_unit, target_un
 		end
 
 		if not is_horde then
-			local has_los = _line_of_sight_from_random_point(raycast_pos, target_unit)
+			local has_los = AiUtils.line_of_sight_from_random_point(raycast_pos, target_unit)
 
 			if not has_los then
 				return
@@ -1036,7 +1006,7 @@ PerceptionUtils.storm_patrol_death_squad_target_selection = function (ai_unit, b
 				local target_unit_position = POSITION_LOOKUP[target_unit]
 				local distance_sq = Vector3.distance_squared(ai_unit_position, target_unit_position)
 
-				if distance_sq < detection_radius * detection_radius and _line_of_sight_from_random_point(raycast_pos, target_unit) then
+				if distance_sq < detection_radius * detection_radius and AiUtils.line_of_sight_from_random_point(raycast_pos, target_unit) then
 					group_targets[target_unit] = true
 				end
 			end

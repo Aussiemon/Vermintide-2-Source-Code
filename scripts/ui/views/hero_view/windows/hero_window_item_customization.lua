@@ -1207,7 +1207,7 @@ HeroWindowItemCustomization._update_property_option = function (self)
 
 			local property_data = WeaponProperties.properties[property_key]
 			local buff_name = property_data.buff_name
-			local buff_template = BuffTemplates[buff_name]
+			local buff_template = BuffUtils.get_buff_template(buff_name)
 			local buff_data = buff_template.buffs[1]
 			local has_multiplier = buff_data.variable_multiplier ~= nil
 			local property_title_text, advanced_description = UIUtils.get_property_description(property_key, property_value)
@@ -1833,7 +1833,7 @@ HeroWindowItemCustomization._state_setup_property_reroll = function (self)
 
 		if approved then
 			local buff_name = property_data.buff_name
-			local buff_template = BuffTemplates[buff_name]
+			local buff_template = BuffUtils.get_buff_template(buff_name)
 			local buff_data = buff_template.buffs[1]
 			local has_multiplier = buff_data.variable_multiplier ~= nil
 			local property_name = property_data.display_name

@@ -7451,7 +7451,9 @@ UIWidgets.create_splash_video = function (input, video_player_reference)
 			background = {
 				color = Colors.color_definitions.black,
 			},
-			video_style = {},
+			video_style = {
+				color = Colors.color_definitions.white,
+			},
 		},
 		scenegraph_id = input.scenegraph_id,
 	}

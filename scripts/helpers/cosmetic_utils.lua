@@ -59,25 +59,59 @@ CosmeticUtils.is_cosmetic_item = function (item_type)
 	return cosmetic_items[item_type] ~= nil
 end
 
+CosmeticUtils.get_cosmetic_name = function (slot, optional_item_id)
+	local item_name
+
+	if slot == "slot_frame" or slot == "slot_skin" then
+		item_name = NetworkLookup.cosmetics[optional_item_id or 1]
+	else
+		item_name = NetworkLookup.item_names[optional_item_id or 1]
+	end
+
+	return item_name
+end
+
+CosmeticUtils.get_weapon_skin_name = function (slot, optional_skin_id)
+	local skin_name
+
+	if CosmeticUtils.is_weapon_slot(slot) then
+		skin_name = NetworkLookup.weapon_skins[optional_skin_id or 1]
+	end
+
+	return skin_name
+end
+
+CosmeticUtils.get_cosmetic_id = function (slot, optional_item_name)
+	if slot == "slot_frame" or slot == "slot_skin" then
+		return NetworkLookup.cosmetics[optional_item_name or "default"]
+	else
+		return NetworkLookup.item_names[optional_item_name or "n/a"]
+	end
+end
+
+CosmeticUtils.get_weapon_skin_id = function (slot, optional_skin_name)
+	local skin_id
+
+	if CosmeticUtils.is_weapon_slot(slot) then
+		skin_id = NetworkLookup.weapon_skins[optional_skin_name or "n/a"]
+	end
+
+	return skin_id
+end
+
 CosmeticUtils.update_cosmetic_slot = function (player, slot, item_name, skin_name)
 	if not cosmetic_and_weapon_slots_lookup[slot] then
 		return
 	end
 
 	if player and (player.local_player or player.bot_player and player.is_server) and player:sync_data_active() then
-		local name_id = 1
-
-		if slot == "slot_frame" or slot == "slot_skin" then
-			name_id = NetworkLookup.cosmetics[item_name or "default"]
-		else
-			name_id = NetworkLookup.item_names[item_name or "n/a"]
-		end
+		local name_id = CosmeticUtils.get_cosmetic_id(slot, item_name)
 
 		player:set_data(slot, name_id)
 
-		if CosmeticUtils.is_weapon_slot(slot) then
-			local skin_id = NetworkLookup.weapon_skins[skin_name or "n/a"]
+		local skin_id = CosmeticUtils.get_weapon_skin_id(slot, skin_name)
 
+		if skin_id then
 			player:set_data(slot .. "_skin", skin_id)
 		end
 	end
@@ -98,34 +132,26 @@ CosmeticUtils.get_cosmetic_slot = function (player, slot)
 			return nil
 		end
 
-		if slot == "slot_frame" or slot == "slot_skin" then
-			local item_name = NetworkLookup.cosmetics[item_id]
+		local skin_id
 
-			if item_name == "default" then
-				item_name = nil
-			end
-
-			data.item_name = item_name
-		else
-			local item_name = NetworkLookup.item_names[item_id]
-
-			if item_name == "n/a" then
-				item_name = nil
-			end
-
-			data.item_name = item_name
+		if CosmeticUtils.is_weapon_slot(slot) or slot == "slot_pose" then
+			skin_id = player:get_data(slot .. "_skin")
 		end
 
-		if CosmeticUtils.is_weapon_slot(slot) then
-			local weapon_skin_id = player:get_data(slot .. "_skin")
-			local skin_name = weapon_skin_id and NetworkLookup.weapon_skins[weapon_skin_id]
+		local item_name = CosmeticUtils.get_cosmetic_name(slot, item_id)
 
-			if skin_name == "n/a" then
-				skin_name = nil
-			end
-
-			data.skin_name = skin_name
+		if item_name == "default" or item_name == "n/a" then
+			item_name = nil
 		end
+
+		local skin_name = CosmeticUtils.get_weapon_skin_name(slot, skin_id)
+
+		if skin_name == "n/a" then
+			skin_name = nil
+		end
+
+		data.item_name = item_name
+		data.skin_name = skin_name
 
 		return data
 	end

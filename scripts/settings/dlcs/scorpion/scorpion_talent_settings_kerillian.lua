@@ -10,7 +10,6 @@ TalentTrees.wood_elf = {
 	{},
 	{},
 }
-Talents = Talents or {}
 Talents.wood_elf = {}
 
 BuffUtils.copy_talent_buff_names(TalentBuffTemplates.wood_elf)

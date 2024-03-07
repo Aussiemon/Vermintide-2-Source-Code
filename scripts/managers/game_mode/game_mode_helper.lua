@@ -55,29 +55,6 @@ GameModeHelper.side_delaying_loss = function (side_name)
 	return false
 end
 
-GameModeHelper.try_change_player_to_selected_profile = function (profile_synchronizer, network_server, peer_id, local_player_id)
-	local status = Managers.party:get_player_status(peer_id, local_player_id)
-	local selected_profile_index, selected_career_index = status.selected_profile_index, status.selected_career_index
-
-	if selected_profile_index and selected_career_index then
-		local current_profile_index, current_career_index = profile_synchronizer:profile_by_peer(peer_id, local_player_id)
-
-		if current_profile_index ~= selected_profile_index or current_career_index ~= selected_career_index then
-			local is_bot = false
-
-			if not profile_synchronizer:try_reserve_profile_for_peer(peer_id, selected_profile_index) then
-				return false
-			end
-
-			profile_synchronizer:assign_full_profile(peer_id, local_player_id, selected_profile_index, selected_career_index, is_bot)
-
-			return true
-		end
-	end
-
-	return false
-end
-
 GameModeHelper.get_object_sets = function (level_name, game_mode_key)
 	local game_mode_object_sets = GameModeSettings[game_mode_key].object_sets
 	local spawned_object_sets = {}

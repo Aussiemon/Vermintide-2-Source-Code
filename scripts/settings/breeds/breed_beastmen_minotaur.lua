@@ -35,6 +35,7 @@ local breed_data = {
 	far_off_despawn_immunity = true,
 	has_inventory = true,
 	headshot_coop_stamina_fatigue_type = "headshot_special",
+	height = 3,
 	hit_effect_template = "HitEffectsChaosSpawn",
 	hit_mass_count = 50,
 	hit_reaction = "ai_default",
@@ -63,6 +64,7 @@ local breed_data = {
 	radius = 2,
 	reach_distance = 3,
 	run_speed = 6,
+	show_health_bar = true,
 	slot_template = "boss",
 	smart_object_template = "rat_ogre",
 	smart_targeting_height_multiplier = 1.5,
@@ -324,6 +326,10 @@ local AttackIntensityPerDifficulty = {
 			normal = 5,
 			running = 2,
 		},
+		versus_base = {
+			normal = 5,
+			running = 2,
+		},
 	},
 	combo = {
 		easy = {
@@ -358,6 +364,10 @@ local AttackIntensityPerDifficulty = {
 			normal = 3,
 			running = 0.5,
 		},
+		versus_base = {
+			normal = 3,
+			running = 0.5,
+		},
 	},
 	shove = {
 		easy = {
@@ -382,6 +392,9 @@ local AttackIntensityPerDifficulty = {
 			normal = 1,
 		},
 		cataclysm_3 = {
+			normal = 1,
+		},
+		versus_base = {
 			normal = 1,
 		},
 	},
@@ -418,6 +431,10 @@ local AttackIntensityPerDifficulty = {
 			normal = 5,
 			running = 2,
 		},
+		versus_base = {
+			normal = 5,
+			running = 2,
+		},
 	},
 	charge = {
 		easy = {
@@ -442,6 +459,9 @@ local AttackIntensityPerDifficulty = {
 			charge = 10,
 		},
 		cataclysm_3 = {
+			charge = 10,
+		},
+		versus_base = {
 			charge = 10,
 		},
 	},
@@ -611,6 +631,7 @@ local action_data = {
 			harder = 20,
 			hardest = 30,
 			normal = 10,
+			versus_base = 10,
 		},
 		ignore_staggers = {
 			true,

@@ -208,6 +208,9 @@ EntitySystem._init_systems = function (self, entity_system_creation_context)
 
 	entity_system_creation_context.entity_system = self
 
+	local is_versus = Managers.mechanism:current_mechanism_name() == "versus"
+
+	print("entity_system: is_versus", is_versus)
 	self:_add_system("ai_bot_group_system", AIBotGroupSystem, entity_system_creation_context)
 	self:_add_system("target_override_system", TargetOverrideSystem, entity_system_creation_context, {
 		"TargetOverrideExtension",
@@ -241,8 +244,12 @@ EntitySystem._init_systems = function (self, entity_system_creation_context)
 	self:_add_system("ai_inventory_system", AIInventorySystem, entity_system_creation_context)
 	self:_add_system("ai_inventory_item_system", AIInventoryItemSystem, entity_system_creation_context)
 	self:_add_system("objective_socket_system", ObjectiveSocketSystem, entity_system_creation_context)
-	self:_add_system("weave_item_spawner_system", WeaveItemSpawnerSystem, entity_system_creation_context)
-	self:_add_system("weave_objective_system", WeaveObjectiveSystem, entity_system_creation_context)
+
+	if not is_versus then
+		self:_add_system("weave_item_spawner_system", WeaveItemSpawnerSystem, entity_system_creation_context)
+		self:_add_system("weave_objective_system", WeaveObjectiveSystem, entity_system_creation_context)
+	end
+
 	self:_add_system("limited_item_track_system", LimitedItemTrackSystem, entity_system_creation_context)
 	self:_add_system("aggro_system", AggroSystem, entity_system_creation_context)
 	self:_add_system("ping_system", PingSystem, entity_system_creation_context)
@@ -256,14 +263,23 @@ EntitySystem._init_systems = function (self, entity_system_creation_context)
 	self:_add_system("projectile_system", ProjectileSystem, entity_system_creation_context)
 	self:_add_system("mutator_item_system", MutatorItemSystem, entity_system_creation_context)
 	self:_add_system("weave_loadout_system", WeaveLoadoutSystem, entity_system_creation_context)
-	self.entity_manager:add_ignore_extensions({
-		"VersusVolumeObjectiveExtension",
-		"VersusInteractObjectiveExtension",
-		"VersusPayloadObjectiveExtension",
-		"VersusSocketObjectiveExtension",
-		"VersusTargetObjectiveExtension",
-		"VersusMissionObjectiveExtension",
-	})
+
+	if is_versus then
+		self:_add_system("ghost_mode_system", GhostModeSystem, entity_system_creation_context)
+		self:_add_system("versus_item_spawner_system", VersusItemSpawnerSystem, entity_system_creation_context)
+		self:_add_system("versus_objective_system", VersusObjectiveSystem, entity_system_creation_context)
+	else
+		self.entity_manager:add_ignore_extensions({
+			"VersusVolumeObjectiveExtension",
+			"VersusInteractObjectiveExtension",
+			"VersusPayloadObjectiveExtension",
+			"VersusSocketObjectiveExtension",
+			"VersusTargetObjectiveExtension",
+			"VersusMissionObjectiveExtension",
+			"PlayerEquipmentWorldMarkerExtension",
+		})
+	end
+
 	self:_add_system("world_marker_system", WorldMarkerSystem, entity_system_creation_context)
 
 	if DEDICATED_SERVER then
@@ -365,7 +381,7 @@ EntitySystem._init_systems = function (self, entity_system_creation_context)
 		"GenericCameraStateMachineExtension",
 	})
 	self:_add_system("camera_system", CameraSystem, entity_system_creation_context, nil, nil, no_pre_update, has_post_update)
-	self:_add_system("sound_sector_system", SoundSectorSystem, entity_system_creation_context, nil, nil, nil, nil, dont_run_on_dedicated_server)
+	self:_add_system("sound_sector_system", SoundSectorSystem, entity_system_creation_context, nil, nil, nil, nil, nil)
 	self:_add_system("volume_system", VolumeSystem, entity_system_creation_context)
 	self:_add_system("cutscene_system", CutsceneSystem, entity_system_creation_context)
 	self:_add_system("outline_system", OutlineSystem, entity_system_creation_context, nil, nil, nil, nil, dont_run_on_dedicated_server)

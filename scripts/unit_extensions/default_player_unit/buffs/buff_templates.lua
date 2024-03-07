@@ -48,6 +48,7 @@ StatBuffApplicationMethods = {
 	damage_taken_burning_enemy = "stacking_multiplier",
 	damage_taken_elites = "stacking_multiplier",
 	damage_taken_kd = "stacking_multiplier",
+	damage_taken_melee = "stacking_multiplier",
 	damage_taken_ranged = "stacking_multiplier",
 	damage_taken_to_overcharge = "stacking_multiplier",
 	debuff_armoured = "stacking_bonus",
@@ -785,7 +786,12 @@ ProcFunctions = {
 		if Unit.alive(owner_unit) then
 			local template = buff.template
 			local explosion_template = template.explosion_template
-			local world = Application.main_world()
+			local world = Managers.world:world(LevelHelper.INGAME_WORLD_NAME)
+
+			if not world then
+				return
+			end
+
 			local player_position = POSITION_LOOKUP[owner_unit]
 			local rotation = Quaternion.identity()
 			local player = Managers.player:owner(owner_unit)
@@ -1542,17 +1548,18 @@ ProcFunctions = {
 				local raycast_down = true
 				local pickup_system = Managers.state.entity:system("pickup_system")
 
-				if talent_extension:has_talent("bardin_ranger_passive_spawn_healing_draught", "dwarf_ranger", true) then
+				if talent_extension:has_talent("bardin_ranger_passive_spawn_healing_draught") then
 					if math.random(1, 4) > 1 then
 						pickup_system:buff_spawn_pickup("ammo_ranger", player_pos, raycast_down)
 					else
 						pickup_system:buff_spawn_pickup("frag_grenade_t1", player_pos, raycast_down)
 						pickup_system:buff_spawn_pickup("ammo_ranger", player_pos, raycast_down)
 					end
-				elseif talent_extension:has_talent("bardin_ranger_passive_spawn_potions_or_bombs", "dwarf_ranger", true) then
-					local drop_result = math.random(1, 5)
+				elseif talent_extension:has_talent("bardin_ranger_passive_spawn_potions_or_bombs") then
+					local spawn_chance = TalentUtils.get_talent_attribute("bardin_ranger_passive_spawn_potions_or_bombs", "spawn_chance")
+					local drop_result = math.random()
 
-					if drop_result == 1 then
+					if drop_result <= spawn_chance then
 						local potion_result = math.random(1, 5)
 
 						if potion_result >= 1 and potion_result <= 3 then
@@ -3738,6 +3745,7 @@ ProcFunctions = {
 				harder = "blocked_attack",
 				hardest = "blocked_attack",
 				normal = "blocked_attack",
+				versus_base = "blocked_attack",
 			}
 
 			if breed and breed.name == "hero_es_knight" and not DamageUtils.check_block(owner_unit, knight_unit, fatigue_type, "front") then
@@ -4217,6 +4225,20 @@ StackingBuffFunctions = {
 		dummy_buff.template = sub_buff_template
 
 		BuffFunctionTemplates.functions.reduce_cooldown_percent(unit, dummy_buff, new_buff_params)
+	end,
+	fire_grenade_dot_add = function (unit, sub_buff_template, current_num_stacks, buff_extension, new_buff_params)
+		local should_add_buff = true
+		local breed = AiUtils.unit_breed(unit)
+
+		if breed and breed.is_player then
+			local mechanism_name = Managers.mechanism:current_mechanism_name()
+
+			if mechanism_name == "versus" then
+				should_add_buff = current_num_stacks < (sub_buff_template.max_player_stacks_in_versus or math.huge)
+			end
+		end
+
+		return should_add_buff
 	end,
 }
 PotionSpreadTrinketTemplates = {
@@ -5247,13 +5269,32 @@ BuffTemplates = {
 				damage_profile = "burning_dot_firegrenade",
 				damage_type = "burninating",
 				duration = 6,
+				max_player_stacks_in_versus = 1,
 				name = "burning_dot_fire_grenade",
+				on_add_stack_override_func = "fire_grenade_dot_add",
 				time_between_dot_damages = 1,
 				update_func = "apply_dot_damage",
 				update_start_delay = 1,
+				versus_player_duration = 3,
 				perks = {
 					buff_perks.burning,
 				},
+				max_stacks = math.huge,
+				duration_modifier_func = function (unit, sub_buff_template, duration, buff_extension, params)
+					local is_versus = Managers.mechanism:current_mechanism_name() == "versus"
+
+					if not is_versus then
+						return duration
+					end
+
+					local breed = AiUtils.unit_breed(unit)
+
+					if breed and breed.is_player then
+						return sub_buff_template.versus_player_duration
+					end
+
+					return duration
+				end,
 			},
 		},
 	},
@@ -5448,6 +5489,13 @@ BuffTemplates = {
 						1,
 					},
 					cataclysm_3 = {
+						1,
+						1,
+						0,
+						4,
+						1,
+					},
+					versus_base = {
 						1,
 						1,
 						0,
@@ -6818,6 +6866,13 @@ BuffTemplates = {
 						9,
 						1,
 					},
+					versus_base = {
+						1,
+						1,
+						0,
+						6.5,
+						1,
+					},
 				},
 				perks = {
 					buff_perks.burning_warpfire,
@@ -6898,6 +6953,13 @@ BuffTemplates = {
 						9,
 						4,
 					},
+					versus_base = {
+						3,
+						1,
+						0,
+						6.5,
+						2,
+					},
 				},
 				perks = {
 					buff_perks.burning_warpfire,
@@ -6977,6 +7039,13 @@ BuffTemplates = {
 						0,
 						9,
 						4,
+					},
+					versus_base = {
+						10,
+						1,
+						0,
+						6.5,
+						1,
 					},
 				},
 				perks = {
@@ -7143,6 +7212,13 @@ BuffTemplates = {
 						4,
 						1,
 					},
+					versus_base = {
+						1,
+						1,
+						0,
+						1,
+						1,
+					},
 				},
 			},
 		},
@@ -7305,6 +7381,13 @@ BuffTemplates = {
 						1,
 						0,
 						4,
+						1,
+					},
+					versus_base = {
+						1,
+						1,
+						0,
+						1,
 						1,
 					},
 				},
@@ -7734,6 +7817,13 @@ BuffTemplates = {
 						10,
 						1,
 					},
+					versus_base = {
+						1,
+						1,
+						0,
+						2,
+						1,
+					},
 				},
 			},
 			{
@@ -7841,6 +7931,13 @@ BuffTemplates = {
 						1,
 						0,
 						4,
+						1,
+					},
+					versus_base = {
+						1,
+						1,
+						0,
+						1,
 						1,
 					},
 				},
@@ -7952,6 +8049,13 @@ BuffTemplates = {
 						1,
 						0,
 						4,
+						1,
+					},
+					versus_base = {
+						1,
+						1,
+						0,
+						1,
 						1,
 					},
 				},
@@ -8161,6 +8265,13 @@ BuffTemplates = {
 						16,
 						1,
 					},
+					versus_base = {
+						1,
+						1,
+						0,
+						3,
+						1,
+					},
 				},
 			},
 			{
@@ -8316,6 +8427,13 @@ BuffTemplates = {
 						8.5,
 						6,
 					},
+					versus_base = {
+						2,
+						2,
+						0,
+						2.5,
+						3,
+					},
 				},
 				perks = {
 					buff_perks.burning_warpfire,
@@ -8392,6 +8510,13 @@ BuffTemplates = {
 						0,
 						5,
 						1,
+					},
+					versus_base = {
+						3,
+						2,
+						0,
+						1.5,
+						2,
 					},
 				},
 				perks = {
@@ -8500,6 +8625,13 @@ BuffTemplates = {
 						1,
 						0,
 						4,
+						1,
+					},
+					versus_base = {
+						1,
+						1,
+						0,
+						1,
 						1,
 					},
 				},

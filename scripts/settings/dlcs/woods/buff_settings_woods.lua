@@ -64,6 +64,11 @@ settings.buff_templates = {
 				perks = {
 					buff_perks.poisoned,
 				},
+				mechanism_overrides = {
+					versus = {
+						damage_profile = "thorn_sister_poison_vs",
+					},
+				},
 			},
 		},
 	},

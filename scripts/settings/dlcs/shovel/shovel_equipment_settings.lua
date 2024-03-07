@@ -80,8 +80,6 @@ settings.inventory_package_list = {
 	"units/beings/player/bright_wizard_necromancer/headpiece/bw_n_hat_02",
 	"units/beings/player/bright_wizard_necromancer/headpiece/bw_n_hat_03",
 	"units/beings/player/bright_wizard_necromancer/headpiece/bw_n_hat_04",
-	"units/weapons/player/wpn_bw_sickle_01/wpn_bw_sickle_01",
-	"units/weapons/player/wpn_bw_sickle_01/wpn_bw_sickle_01_3p",
 	"units/weapons/player/wpn_bw_ghost_scythe_01/wpn_bw_ghost_scythe_01",
 	"units/weapons/player/wpn_bw_ghost_scythe_01/wpn_bw_ghost_scythe_01_3p",
 	"units/weapons/player/wpn_bw_ghost_scythe_01/wpn_bw_ghost_scythe_01_fire",

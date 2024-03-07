@@ -60,7 +60,7 @@ ThornSisterWallExtension.update = function (self, unit, input, dt, context, t)
 end
 
 ThornSisterWallExtension.trigger_area_damage = function (self)
-	self._area_damage_extension:enable(true)
+	self._area_damage_extension:enable_area_damage(true)
 
 	if self._is_server then
 		local network_manager = Managers.state.network
@@ -113,7 +113,7 @@ ThornSisterWallExtension.despawn = function (self)
 			end
 		end
 
-		self._area_damage_extension:enable(false)
+		self._area_damage_extension:enable_area_damage(false)
 	end
 
 	Unit.flow_event(self._unit, "despawn")

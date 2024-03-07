@@ -1,4 +1,4 @@
-﻿-- chunkname: @scripts/unit_extensions/objectives/versus_interact_objective_extension_testify.lua
+﻿-- chunkname: @scripts/unit_extensions/objectives/testify/versus_interact_objective_extension_testify.lua
 
 local VersusInteractObjectiveExtensionTestify = {
 	versus_objective_simulate_interaction = function (versus_interact_objective_extension)

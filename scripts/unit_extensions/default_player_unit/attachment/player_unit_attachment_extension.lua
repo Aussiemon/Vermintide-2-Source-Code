@@ -365,7 +365,7 @@ PlayerUnitAttachmentExtension._apply_buffs = function (self, buffs_by_buffer, it
 	for buffer, buffs in pairs(buffs_by_buffer) do
 		if self._is_server or buffer == "client" or buffer == "both" then
 			for buff_name, variable_data in pairs(buffs) do
-				local buff_data = BuffTemplates[buff_name]
+				local buff_data = BuffUtils.get_buff_template(buff_name)
 
 				fassert(buff_data, "buff name %s does not exist on item %s, typo?", buff_name, item_name)
 				table.clear(params)

@@ -64,6 +64,7 @@ DialogueSettings.level_specific_load_files = {
 		"dialogues/generated/bright_wizard_military",
 		"dialogues/generated/witch_hunter_military",
 		"dialogues/generated/empire_soldier_military",
+		"dialogues/generated/hero_conversations_military",
 	},
 	prologue = {
 		"dialogues/generated/conversations_prologue",
@@ -75,6 +76,7 @@ DialogueSettings.level_specific_load_files = {
 		"dialogues/generated/bright_wizard_mines",
 		"dialogues/generated/witch_hunter_mines",
 		"dialogues/generated/empire_soldier_mines",
+		"dialogues/generated/hero_conversations_mines",
 	},
 	ussingen = {
 		"dialogues/generated/wood_elf_ussingen",
@@ -98,6 +100,7 @@ DialogueSettings.level_specific_load_files = {
 		"dialogues/generated/witch_hunter_skaven_stronghold",
 		"dialogues/generated/empire_soldier_skaven_stronghold",
 		"dialogues/generated/wood_elf_skaven_stronghold",
+		"dialogues/generated/hero_conversations_skaven_stronghold",
 		"dialogues/generated/skaven_warlord_skaven_stronghold_level",
 	},
 	ussingen_demo = {
@@ -113,6 +116,7 @@ DialogueSettings.level_specific_load_files = {
 		"dialogues/generated/bright_wizard_nurgle",
 		"dialogues/generated/dwarf_ranger_nurgle",
 		"dialogues/generated/witch_hunter_nurgle",
+		"dialogues/generated/hero_conversations_nurgle",
 	},
 	warcamp = {
 		"dialogues/generated/wood_elf_warcamp",
@@ -163,6 +167,7 @@ DialogueSettings.level_specific_load_files = {
 		"dialogues/generated/bright_wizard_bell",
 		"dialogues/generated/dwarf_ranger_bell",
 		"dialogues/generated/witch_hunter_bell",
+		"dialogues/generated/hero_conversations_bell",
 	},
 	ground_zero = {
 		"dialogues/generated/wood_elf_ground_zero",

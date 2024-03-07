@@ -153,6 +153,23 @@ local function is_valid_player_and_target_unit_exclude_local_player(player_profi
 	end
 end
 
+local function get_ping_hero_event_text(target_unit, event_settings)
+	local player_manager = Managers.player
+	local callee_player = player_manager:owner(target_unit)
+
+	if callee_player then
+		local event_text_id = event_settings.event_text
+		local profile_index = callee_player:profile_index()
+		local profile = SPProfiles[profile_index]
+		local display_name_short = profile.ingame_short_display_name
+		local parameters = FrameTable.alloc_table()
+
+		parameters[1] = display_name_short
+
+		return event_text_id, parameters
+	end
+end
+
 SocialWheelPriority = {
 	{
 		"response",
@@ -228,6 +245,26 @@ SocialWheelPriority = {
 			local target_side = Managers.state.side.side_by_unit[target_player.player_unit]
 
 			return not Managers.state.side:is_enemy_by_side(player_side, target_side)
+		end,
+	},
+	{
+		"enemy_hero_player",
+		function (active_context, player, social_wheel_unit)
+			local target_player = social_wheel_unit and Managers.player:owner(social_wheel_unit)
+
+			if not target_player then
+				return false
+			end
+
+			local player_side = Managers.state.side.side_by_unit[player.player_unit]
+
+			if player_side:name() ~= "dark_pact" then
+				return false
+			end
+
+			local target_side = Managers.state.side.side_by_unit[target_player.player_unit]
+
+			return Managers.state.side:is_enemy_by_side(player_side, target_side)
 		end,
 	},
 }
@@ -575,6 +612,274 @@ SocialWheelSettings = {
 		individual_bg = true,
 		wedge_adjustment = 0.85,
 	},
+	versus_heroes_gamepad = {
+		angle = 2 * math.pi,
+		size = {
+			250,
+			250,
+		},
+		validation_function = function ()
+			local is_versus = Managers.mechanism:current_mechanism_name() == "versus"
+
+			if not is_versus then
+				return false
+			end
+
+			local game_mode = Managers.state.game_mode:game_mode_key()
+			local mechanism_settings = MechanismSettings[Managers.mechanism:current_mechanism_name()]
+			local is_in_versus_gamemode = mechanism_settings.gamemode_lookup.default == game_mode
+
+			return is_in_versus_gamemode
+		end,
+		{
+			{
+				event_text = "social_wheel_heroes_general_help",
+				icon = "radial_chat_icon_help",
+				name = "social_wheel_heroes_general_help",
+				ping_sound_effect = "versus_ping_marker_imminent",
+				text = "social_wheel_heroes_general_help",
+				vo_event_name = "vw_cover_me",
+				data = {},
+				ping_type = PingTypes.VO_ONLY,
+			},
+			{
+				event_text = "social_wheel_heroes_general_need_ammunition",
+				icon = "radial_chat_icon_need_ammo",
+				name = "social_wheel_heroes_general_need_ammunition",
+				ping_sound_effect = "versus_ping_marker_communication",
+				text = "social_wheel_heroes_general_need_ammunition",
+				data = {},
+				ping_type = PingTypes.VO_ONLY,
+			},
+			{
+				event_text = "social_wheel_heroes_general_come_here",
+				icon = "radial_chat_icon_come_here",
+				name = "social_wheel_heroes_general_come_here",
+				ping_sound_effect = "versus_ping_marker_tactical",
+				text = "social_wheel_heroes_general_come_here",
+				vo_event_name = "vw_gather",
+				data = {},
+				ping_type = PingTypes.VO_ONLY,
+			},
+			{
+				event_text = "social_wheel_heroes_general_yes",
+				icon = "radial_chat_icon_yes",
+				name = "social_wheel_heroes_general_yes",
+				ping_sound_effect = "versus_ping_marker_communication",
+				text = "social_wheel_heroes_general_yes",
+				vo_event_name = "vw_affirmative",
+				data = {},
+				ping_type = PingTypes.VO_ONLY,
+			},
+			{
+				event_text = "social_wheel_heroes_general_thank_you",
+				icon = "radial_chat_icon_thank_you",
+				name = "social_wheel_heroes_general_thank_you",
+				ping_sound_effect = "versus_ping_marker_communication",
+				text = "social_wheel_heroes_general_thank_you",
+				vo_event_name = "vw_thank_you",
+				data = {},
+				ping_type = PingTypes.VO_ONLY,
+			},
+			{
+				event_text = "social_wheel_heroes_general_no",
+				icon = "radial_chat_icon_no",
+				name = "social_wheel_heroes_general_no",
+				ping_sound_effect = "versus_ping_marker_communication_no",
+				text = "social_wheel_heroes_general_no",
+				vo_event_name = "vw_negation",
+				data = {},
+				ping_type = PingTypes.VO_ONLY,
+			},
+			{
+				event_text = "social_wheel_heroes_general_boss",
+				icon = "radial_chat_icon_boss",
+				name = "social_wheel_heroes_general_boss",
+				ping_sound_effect = "versus_ping_marker_imminent",
+				text = "social_wheel_heroes_general_boss",
+				data = {},
+				ping_type = PingTypes.VO_ONLY,
+			},
+			{
+				event_text = "social_wheel_heroes_general_need_healing",
+				icon = "radial_chat_icon_need_healing",
+				name = "social_wheel_heroes_general_need_healing",
+				ping_sound_effect = "versus_ping_marker_communication",
+				text = "social_wheel_heroes_general_need_healing",
+				data = {},
+				ping_type = PingTypes.VO_ONLY,
+			},
+		},
+		{},
+		has_pages = true,
+		individual_bg = false,
+		wedge_adjustment = 0.85,
+	},
+	dark_pact_gamepad = {
+		angle = 2 * math.pi,
+		size = {
+			250,
+			250,
+		},
+		validation_function = function ()
+			local is_versus = Managers.mechanism:current_mechanism_name() == "versus"
+
+			if not is_versus then
+				return false
+			end
+
+			local game_mode = Managers.state.game_mode:game_mode_key()
+			local mechanism_settings = MechanismSettings[Managers.mechanism:current_mechanism_name()]
+			local is_in_versus_gamemode = mechanism_settings.gamemode_lookup.default == game_mode
+
+			return is_in_versus_gamemode
+		end,
+		{
+			{
+				event_text = "vs_social_wheel_dark_pact_general_attack",
+				icon = "radial_chat_icon_attack",
+				name = "vs_social_wheel_dark_pact_general_attack",
+				ping_sound_effect = "versus_ping_marker_imminent",
+				text = "vs_social_wheel_dark_pact_general_attack",
+				vo_event_name = "vw_attack_now",
+				data = {},
+				ping_type = PingTypes.VO_ONLY,
+			},
+			{
+				event_text = "vs_social_wheel_dark_pact_general_ready",
+				icon = "radial_chat_icon_ready",
+				name = "vs_social_wheel_dark_pact_general_ready",
+				ping_sound_effect = "versus_ping_marker_tactical",
+				text = "vs_social_wheel_dark_pact_general_ready",
+				vo_event_name = "vw_affirmative",
+				data = {},
+				ping_type = PingTypes.VO_ONLY,
+			},
+			{
+				event_text = "vs_social_wheel_dark_pact_general_group_up",
+				icon = "radial_chat_icon_gather",
+				name = "vs_social_wheel_dark_pact_general_group_up",
+				ping_sound_effect = "versus_ping_marker_tactical",
+				text = "vs_social_wheel_dark_pact_general_group_up",
+				vo_event_name = "vw_gather",
+				data = {},
+				ping_type = PingTypes.VO_ONLY,
+			},
+			{
+				event_text = "vs_social_wheel_dark_pact_general_yes",
+				icon = "radial_chat_icon_yes",
+				name = "vs_social_wheel_dark_pact_general_yes",
+				ping_sound_effect = "versus_ping_marker_communication",
+				text = "vs_social_wheel_dark_pact_general_yes",
+				vo_event_name = "vw_affirmative",
+				data = {},
+				ping_type = PingTypes.VO_ONLY,
+			},
+			{
+				event_text = "social_wheel_dark_pact_general_thank_you",
+				icon = "radial_chat_icon_thank_you",
+				name = "social_wheel_dark_pact_general_thank_you",
+				ping_sound_effect = "versus_ping_marker_communication",
+				text = "social_wheel_dark_pact_general_thank_you",
+				vo_event_name = "vw_thank_you",
+				data = {},
+				ping_type = PingTypes.VO_ONLY,
+			},
+			{
+				event_text = "vs_social_wheel_dark_pact_general_no",
+				icon = "radial_chat_icon_no",
+				name = "vs_social_wheel_dark_pact_general_no",
+				ping_sound_effect = "versus_ping_marker_communication",
+				text = "vs_social_wheel_dark_pact_general_no",
+				vo_event_name = "vw_negation",
+				data = {},
+				ping_type = PingTypes.VO_ONLY,
+			},
+			{
+				event_text = "vs_social_wheel_dark_pact_general_cover_me",
+				icon = "radial_chat_icon_cover",
+				name = "vs_social_wheel_dark_pact_general_cover_me",
+				ping_sound_effect = "versus_ping_marker_tactical",
+				text = "vs_social_wheel_dark_pact_general_cover_me",
+				vo_event_name = "vw_cover_me",
+				data = {},
+				ping_type = PingTypes.VO_ONLY,
+			},
+			{
+				event_text = "vs_social_wheel_dark_pact_general_wait",
+				icon = "radial_chat_icon_wait",
+				name = "vs_social_wheel_dark_pact_general_wait",
+				ping_sound_effect = "versus_ping_marker_tactical",
+				text = "vs_social_wheel_dark_pact_general_wait",
+				vo_event_name = "vw_wait",
+				data = {},
+				ping_type = PingTypes.VO_ONLY,
+			},
+		},
+		{},
+		has_pages = true,
+		individual_bg = false,
+		wedge_adjustment = 0.85,
+	},
+	enemy_hero_player_gamepad = {
+		angle = 2 * math.pi,
+		size = {
+			250,
+			250,
+		},
+		validation_function = function ()
+			local is_versus = Managers.mechanism:current_mechanism_name() == "versus"
+
+			if not is_versus then
+				return false
+			end
+
+			local game_mode = Managers.state.game_mode:game_mode_key()
+			local mechanism_settings = MechanismSettings[Managers.mechanism:current_mechanism_name()]
+			local is_in_versus_gamemode = mechanism_settings.gamemode_lookup.default == game_mode
+
+			return is_in_versus_gamemode
+		end,
+		{
+			{
+				event_text = "vs_social_wheel_dark_pact_player_ambush",
+				icon = "radial_chat_icon_ambush",
+				name = "vs_social_wheel_dark_pact_player_ambush",
+				ping_sound_effect = "versus_ping_marker_imminent",
+				text = "vs_social_wheel_dark_pact_general_ambush",
+				vo_event_name = "vw_ambush",
+				event_text_func = get_ping_hero_event_text,
+				data = {},
+				ping_type = PingTypes.ENEMY_AMBUSH,
+			},
+			{
+				event_text = "vs_social_wheel_dark_pact_player_cover_me",
+				icon = "radial_chat_icon_cover",
+				name = "vs_social_wheel_dark_pact_player_cover_me",
+				ping_sound_effect = "versus_ping_marker_tactical",
+				text = "vs_social_wheel_dark_pact_general_cover_me",
+				vo_event_name = "vw_cover_me",
+				event_text_func = get_ping_hero_event_text,
+				data = {},
+				ping_type = PingTypes.PLAYER_COVER_ME,
+			},
+			{
+				event_text = "vs_social_wheel_dark_pact_player_attack",
+				icon = "radial_chat_icon_attack",
+				name = "vs_social_wheel_dark_pact_player_attack",
+				ping_sound_effect = "versus_ping_marker_imminent",
+				text = "vs_social_wheel_dark_pact_general_attack",
+				vo_event_name = "vw_attack_now",
+				event_text_func = get_ping_hero_event_text,
+				data = {},
+				ping_type = PingTypes.ENEMY_ATTACK,
+			},
+		},
+		{},
+		has_pages = true,
+		individual_bg = false,
+		wedge_adjustment = 0.85,
+	},
 }
 
 DLCUtils.dofile("social_wheel_settings")
@@ -592,7 +897,7 @@ for _, category_settings in pairs(SocialWheelSettings) do
 	if category_settings.has_pages then
 		for i = 1, #category_settings do
 			for _, setting in ipairs(category_settings[i]) do
-				local name = setting.name
+				local name = setting.name or settings.category_name
 
 				fassert(SocialWheelSettingsLookup[name] == nil, "You have a duplicate entry in SocialWheelSettings (%s), each entry must have a unique name!", name)
 
@@ -601,7 +906,7 @@ for _, category_settings in pairs(SocialWheelSettings) do
 		end
 	else
 		for _, setting in ipairs(category_settings) do
-			local name = setting.name
+			local name = setting.name or setting.category_name
 
 			fassert(SocialWheelSettingsLookup[name] == nil, "You have a duplicate entry in SocialWheelSettings (%s), each entry must have a unique name!", name)
 

@@ -27,6 +27,7 @@ settings.light_weight_projectiles = {
 			250,
 			250,
 			250,
+			40,
 		},
 		first_person_hit_flow_events = {
 			"arrow_left",
@@ -75,7 +76,6 @@ settings.explosion_templates = {
 			max_damage_radius = 4,
 			player_push_speed = 10,
 			radius = 7,
-			sound_event_name = "Play_enemy_combat_warpfire_backpack_explode",
 			difficulty_power_level = {
 				easy = {
 					power_level = 800,
@@ -106,6 +106,10 @@ settings.explosion_templates = {
 					power_level_glance = 800,
 				},
 				cataclysm_3 = {
+					power_level = 800,
+					power_level_glance = 800,
+				},
+				versus_base = {
 					power_level = 800,
 					power_level_glance = 800,
 				},
@@ -132,7 +136,6 @@ settings.explosion_templates = {
 			max_damage_radius = 3,
 			player_push_speed = 10,
 			radius = 4,
-			sound_event_name = "Play_enemy_combat_warpfire_backpack_explode",
 			difficulty_power_level = {
 				easy = {
 					power_level = 800,
@@ -163,6 +166,10 @@ settings.explosion_templates = {
 					power_level_glance = 800,
 				},
 				cataclysm_3 = {
+					power_level = 800,
+					power_level_glance = 800,
+				},
+				versus_base = {
 					power_level = 800,
 					power_level_glance = 800,
 				},

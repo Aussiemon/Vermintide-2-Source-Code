@@ -12,6 +12,7 @@ local breed_data = {
 	exchange_order = 1,
 	far_off_despawn_immunity = true,
 	flesh_material = "stone",
+	height = 2.6,
 	hit_effect_template = "HitEffectsShadowTotem",
 	ignore_activate_unit = true,
 	immediate_threat = true,

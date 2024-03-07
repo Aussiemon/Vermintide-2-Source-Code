@@ -112,15 +112,10 @@ TalentExtension.apply_buffs_from_talents = function (self, talent_ids)
 	end
 
 	local is_server_bot = self.is_server and player.bot_player
-	local talents = Talents[hero_name]
-
-	if not talents then
-		return
-	end
 
 	for i = 1, #talent_ids do
 		local talent_id = talent_ids[i]
-		local talent_data = talents[talent_id]
+		local talent_data = TalentUtils.get_talent_by_id(hero_name, talent_id)
 
 		if talent_data then
 			local buffs = talent_data.buffs
@@ -183,18 +178,13 @@ TalentExtension.update_talent_weapon_index = function (self, talent_ids)
 	end
 
 	local hero_name = self._hero_name
-	local talents = Talents[hero_name]
-
-	if not talents then
-		return
-	end
 
 	self.talent_career_skill_index = 1
 	self.talent_career_weapon_index = nil
 
 	for i = 1, #talent_ids do
 		local talent_id = talent_ids[i]
-		local talent_data = talents[talent_id]
+		local talent_data = TalentUtils.get_talent_by_id(hero_name, talent_id)
 
 		if talent_data then
 			if talent_data.talent_career_skill_index then
@@ -279,7 +269,7 @@ TalentExtension.has_talent_perk = function (self, perk)
 
 	for i = 1, #talent_ids do
 		local talent_id = talent_ids[i]
-		local talent_data = Talents[hero_name][talent_id]
+		local talent_data = TalentUtils.get_talent_by_id(hero_name, talent_id)
 
 		if talent_data then
 			local perks = talent_data.perks
@@ -303,7 +293,7 @@ TalentExtension.get_talent_names = function (self)
 	local hero_name = self._hero_name
 
 	for _, talent_id in ipairs(talent_ids) do
-		local talent_data = Talents[hero_name][talent_id]
+		local talent_data = TalentUtils.get_talent_by_id(hero_name, talent_id)
 
 		talent_names[#talent_names + 1] = talent_data.name
 	end
@@ -334,7 +324,7 @@ TalentExtension._check_talent_package_dendencies = function (self, talent_ids, i
 
 	for i = 1, #talent_ids do
 		local talent_id = talent_ids[i]
-		local talent_data = Talents[hero_name][talent_id]
+		local talent_data = TalentUtils.get_talent_by_id(hero_name, talent_id)
 
 		if talent_data.requires_packages then
 			new_dependencies_n = new_dependencies_n + 1

@@ -305,7 +305,7 @@ HeroWindowPrestige._set_prestige_reward_portrait_frame = function (self, frame_s
 	if frame_settings_name then
 		local widget_definition = UIWidgets.create_portrait_frame("reward_portrait_root", frame_settings_name, "", 1, nil, portrait_image)
 
-		widget = UIWidget.init(widget_definition)
+		widget = UIWidget.init(widget_definition, self.ui_renderer)
 
 		local widget_content = widget.content
 

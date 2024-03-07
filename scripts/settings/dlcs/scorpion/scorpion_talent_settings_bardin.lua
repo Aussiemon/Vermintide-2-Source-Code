@@ -10,7 +10,6 @@ TalentTrees.dwarf_ranger = {
 	{},
 	{},
 }
-Talents = Talents or {}
 Talents.dwarf_ranger = {}
 
 BuffUtils.copy_talent_buff_names(TalentBuffTemplates.dwarf_ranger)

@@ -2,11 +2,13 @@
 
 CareerConstants = {
 	bw_necromancer = {
+		armored_pet_health_additional_modifier = 1.25,
 		lifetaker_bonus = 0.02,
 		lifetaker_duration = 5,
 		lifetaker_max_stacks = 5,
 		max_range = 20,
 		passive_dot_duration = 1,
+		pet_balance_health_modifier = 0.45,
 		pets_per_rank = 6,
 	},
 	dr_engineer = {
@@ -24,5 +26,13 @@ CareerConstants = {
 	},
 	bw_scholar = {
 		perk_3_max_overcharge = 0.5,
+	},
+	dr_ranger = {
+		ability_duration = 10,
+		ability_duration_versus = 6,
+	},
+	es_mercenary = {
+		ability_heal_amount = 25,
+		ability_heal_amount_versus = 15,
 	},
 }

@@ -74,7 +74,7 @@ PlayerUnitWeaveLoadoutExtension._get_weave_buffs = function (self)
 		local property_data = WeaveProperties.properties[property_key]
 		local buff_name = property_data.buff_name
 
-		fassert(BuffTemplates[buff_name], "Weave buff %q does not exist", buff_name)
+		fassert(BuffUtils.get_buff_template(buff_name), "Weave buff %q does not exist", buff_name)
 
 		local costs = weaves_interface:get_property_mastery_costs(property_key)
 		local max_num_upgrades = #costs
@@ -92,7 +92,7 @@ PlayerUnitWeaveLoadoutExtension._get_weave_buffs = function (self)
 		local trait_data = WeaveTraits.traits[trait_key]
 		local buff_name = trait_data.buff_name
 
-		fassert(BuffTemplates[buff_name], "Weave buff %q does not exist", buff_name)
+		fassert(BuffUtils.get_buff_template(buff_name), "Weave buff %q does not exist", buff_name)
 
 		local buffer = trait_data.buffer or "client"
 
@@ -110,7 +110,7 @@ PlayerUnitWeaveLoadoutExtension._apply_buffs = function (self, buffs_by_buffer)
 	for buffer, buffs in pairs(buffs_by_buffer) do
 		if self._is_server or buffer == "client" or buffer == "both" then
 			for buff_name, variable_data in pairs(buffs) do
-				local buff_data = BuffTemplates[buff_name]
+				local buff_data = BuffUtils.get_buff_template(buff_name)
 				local params = {}
 
 				for data_type, data_value in pairs(variable_data) do

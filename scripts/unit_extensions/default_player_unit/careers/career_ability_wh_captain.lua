@@ -165,15 +165,15 @@ CareerAbilityWHCaptain._run_ability = function (self, new_initial_speed)
 	end
 
 	local explosion_template_name = "victor_captain_activated_ability_stagger"
-	local explosion_template = ExplosionTemplates[explosion_template_name]
+	local explosion_template = ExplosionUtils.get_template(explosion_template_name)
 
 	if talent_extension:has_talent("victor_captain_activated_ability_stagger_ping_debuff", "witch_hunter", true) then
 		if talent_extension:has_talent("victor_witchhunter_improved_damage_taken_ping", "witch_hunter", true) then
 			explosion_template_name = "victor_captain_activated_ability_stagger_ping_debuff_improved"
-			explosion_template = ExplosionTemplates[explosion_template_name]
+			explosion_template = ExplosionUtils.get_template(explosion_template_name)
 		else
 			explosion_template_name = "victor_captain_activated_ability_stagger_ping_debuff"
-			explosion_template = ExplosionTemplates[explosion_template_name]
+			explosion_template = ExplosionUtils.get_template(explosion_template_name)
 		end
 	end
 

@@ -24,7 +24,6 @@ UILayer = {
 	menu_gradient = 399,
 	options_menu = 700,
 	popup = 950,
-	rcon = 870,
 	tooltip = 950,
 	transition = 850,
 	tutorial = 75,

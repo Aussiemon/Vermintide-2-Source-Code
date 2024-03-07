@@ -336,7 +336,7 @@ BossHealthUI._show_boss_health_bar = function (self, unit)
 		local ai_system = Managers.state.entity:system("ai_system")
 		local attributes = ai_system:get_attributes(unit)
 
-		should_show_health_bar = breed and breed.boss or attributes.grudge_marked ~= nil
+		should_show_health_bar = breed and breed.show_health_bar or attributes.grudge_marked ~= nil
 	end
 
 	if should_show_health_bar then
@@ -389,13 +389,17 @@ BossHealthUI.event_set_prioritized_unit = function (self, unit, reason)
 	end
 end
 
-BossHealthUI.event_clear_prioritized_unit = function (self, reason)
+BossHealthUI.event_clear_prioritized_unit = function (self, reason, reset)
 	if self._prioritized_reason ~= reason then
 		return
 	end
 
 	self._prioritized_unit = nil
 	self._prioritized_reason = nil
+
+	if reset then
+		self:_reset()
+	end
 end
 
 BossHealthUI._reset = function (self)

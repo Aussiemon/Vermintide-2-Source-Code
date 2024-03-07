@@ -349,11 +349,14 @@ GameModeInn.local_player_game_starts = function (self, player, loading_context)
 		if IS_CONSOLE then
 			transition_name = "initial_character_selection_force"
 			menu_state_name = "character"
-		else
+		elseif GameSettingsDevelopment.skip_start_screen or Development.parameter("skip_start_screen") then
 			local show_hero_selection = not SaveData.first_hero_selection_made and not Managers.backend:is_waiting_for_user_input()
 
 			transition_name = "initial_start_menu_view_force"
 			menu_state_name = show_hero_selection and "character" or "overview"
+		else
+			transition_name = "initial_character_selection_force"
+			menu_state_name = "character"
 		end
 
 		Managers.ui:handle_transition(transition_name, {
@@ -403,4 +406,6 @@ GameModeInn._cb_start_menu_closed = function (self)
 	if player_data_changed then
 		Managers.save:auto_save(SaveFileName, SaveData, nil)
 	end
+
+	Managers.ui:ingame_ui().has_left_menu = true
 end

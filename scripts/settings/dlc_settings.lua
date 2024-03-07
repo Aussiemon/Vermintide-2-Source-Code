@@ -296,6 +296,24 @@ DLCSettings = DLCSettings or {
 			common = "scripts/settings/dlcs/fall_collection_2021/fall_collection_2021_common_settings",
 		},
 	},
+	carousel = {
+		level_settings = "levels/honduras_dlcs/carousel/level_settings_carousel",
+		localization = "localization/carousel",
+		package_name = "resource_packages/dlcs/carousel",
+		additional_settings = {
+			backend = "scripts/settings/dlcs/carousel/carousel_backend_settings",
+			badges = "scripts/settings/dlcs/carousel/carousel_badge_definitions",
+			buff = "scripts/settings/dlcs/carousel/carousel_buff_settings",
+			character_states = "scripts/settings/dlcs/carousel/carousel_character_state_settings",
+			common = "scripts/settings/dlcs/carousel/carousel_common_settings",
+			equipment = "scripts/settings/dlcs/carousel/carousel_equipment_settings",
+			experience = "scripts/settings/dlcs/carousel/carousel_experience_settings",
+			game_object_initializers = "scripts/settings/dlcs/carousel/carousel_game_object_initializers",
+			game_object_templates = "scripts/settings/dlcs/carousel/carousel_game_object_templates",
+			sound = "scripts/settings/dlcs/carousel/carousel_sound_settings",
+			ui = "scripts/settings/dlcs/carousel/carousel_ui_settings",
+		},
+	},
 	gotwf = {
 		localization = "localization/gotwf_balance",
 		package_name = "resource_packages/dlcs/gotwf",
@@ -414,5 +432,12 @@ DLCSettings = DLCSettings or {
 	},
 	crawl_2023 = {
 		localization = "localization/crawl_2023",
+	},
+	premium_career_bundle = {
+		localization = "localization/cosmetics_2024_q1",
+		package_name = "resource_packages/dlcs/premium_career_bundle",
+		additional_settings = {
+			common = "scripts/settings/dlcs/premium_career_bundle/premium_career_bundle_common_settings",
+		},
 	},
 }

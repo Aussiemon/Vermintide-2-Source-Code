@@ -355,6 +355,11 @@ weapon_template.tooltip_detail = {
 	},
 }
 
+local fireball_vs = table.clone(weapon_template)
+
+fireball_vs.actions.action_one.default.impact_data.damage_profile = "staff_fireball_vs"
+
 return {
 	staff_fireball_fireball_template_1 = table.clone(weapon_template),
+	staff_fireball_fireball_template_1_vs = table.clone(fireball_vs),
 }

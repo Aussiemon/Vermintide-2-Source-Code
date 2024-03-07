@@ -23,6 +23,7 @@ settings.vortex_templates = {
 		outer_fx_z_scale_multiplier = 0.1,
 		override_movement_speed = 3,
 		player_actions_allowed = true,
+		post_vortex_buff = "vortex_base",
 		random_wander = true,
 		start_radius = 0.1,
 		start_sound_event_name = "Play_curse_blood_storm_loop",

@@ -579,6 +579,29 @@ weapon_template.wwise_dep_right_hand = {
 	"wwise/flamethrower",
 }
 
+local staff_death_vs = table.clone(weapon_template)
+
+staff_death_vs.actions.action_one.soul_rip.damage_steps = {
+	{
+		damage_profile = "staff_suck_damage_vs",
+		overcharge_amount = 1,
+		repeat_count = 4,
+		repeat_delay = 0.2,
+		start_delay = 0.25,
+	},
+	{
+		can_crit = true,
+		damage_profile = "soul_rip_vs",
+		overcharge_amount = 10,
+		overcharge_amount_player_target = 35,
+		proc_buffs = true,
+		repeat_count = 1,
+		repeat_delay = 0,
+		start_delay = 0.5,
+	},
+}
+
 return {
-	staff_death = weapon_template,
+	staff_death = table.clone(weapon_template),
+	staff_death_vs = table.clone(staff_death_vs),
 }

@@ -5,7 +5,7 @@ require("scripts/entity_system/systems/dialogues/tag_query")
 TagQueryDatabase = class(TagQueryDatabase)
 
 TagQueryDatabase.init = function (self)
-	self.database = RuleDatabase.initialize(4096)
+	self.database = RuleDatabase.initialize()
 	self.rule_id_mapping = {}
 	self.rules_n = 0
 	self.contexts_by_object = {}
@@ -74,67 +74,159 @@ local context_indexes = table.mirror_array_inplace({
 	"user_memory",
 	"faction_memory",
 })
+local DEBUG_VO_RULE
 
 TagQueryDatabase.define_rule = function (self, rule_definition)
 	local dialogue_name = rule_definition.name
-	local criterias = rule_definition.criterias
-	local real_criterias = table.clone(criterias)
 
-	rule_definition.real_criterias = real_criterias
+	rule_definition.real_criterias = table.clone(rule_definition.criterias)
+
+	local criterias = {}
+
+	for i = 1, #rule_definition.criterias do
+		local criteria = rule_definition.criterias[i]
+
+		self:parse_criteria(criteria, rule_definition.criterias, criterias, rule_definition)
+	end
 
 	local num_criterias = #criterias
-	local context_indexes = context_indexes
 
 	rule_definition.n_criterias = num_criterias
 
 	fassert(num_criterias <= (RuleDatabase.RULE_MAX_NUM_CRITERIA or 8), "Too many criteria in dialogue %s", dialogue_name)
-
-	for i = 1, num_criterias do
-		local criteria = criterias[i]
-		local context_name = criteria[1]
-
-		fassert(context_indexes[context_name], "No such context name %q", context_name)
-
-		local operator = criteria[3]
-		local value
-
-		if operator == "TIMEDIFF" then
-			operator = criteria[4]
-
-			fassert(operator, "No operator besides TIMEDIFF in rule %q", rule_definition.name)
-
-			value = criteria[5]
-			criteria[5] = true
-		else
-			value = criteria[4]
-			criteria[5] = false
-		end
-
-		local operator_index = operator_lookup[operator]
-
-		fassert(operator_index, "No such rule operator named %q in rule %q", tostring(operator), rule_definition.name)
-
-		criteria[3] = operator_index
-
-		local value_type = type(value)
-
-		if value_type == "string" then
-			criteria[4] = value
-		elseif value_type == "boolean" then
-			value = value and 1 or 0
-			criteria[4] = value
-		else
-			fassert(value_type == "number")
-
-			criteria[4] = value
-		end
-	end
 
 	local rule_id = RuleDatabase.add_rule(self.database, dialogue_name, num_criterias, criterias)
 
 	self.rule_id_mapping[rule_id] = rule_definition
 	self.rule_id_mapping[rule_definition.name] = rule_id
 	self.rules_n = self.rules_n + 1
+end
+
+local COMMON_CRITERIA_INDICES = table.mirror_array_inplace({
+	"context_name",
+	"criteria_key",
+	"operator",
+})
+local CRITERIA_INDICES = table.copy_array(COMMON_CRITERIA_INDICES)
+
+table.mirror_array_inplace(table.append(CRITERIA_INDICES, {
+	"value",
+	"combining_operator",
+}))
+
+local CRITERIA_INDICES_TIMEDIFF = table.copy_array(COMMON_CRITERIA_INDICES)
+
+table.mirror_array_inplace(table.append(CRITERIA_INDICES_TIMEDIFF, {
+	"operator",
+	"value",
+	"combining_operator",
+}))
+
+local function criteria_value(criteria, key)
+	local index
+	local is_time_diff = criteria[COMMON_CRITERIA_INDICES.operator] == "TIMEDIFF"
+
+	if is_time_diff then
+		return criteria[CRITERIA_INDICES_TIMEDIFF[key]]
+	else
+		return criteria[CRITERIA_INDICES[key]]
+	end
+end
+
+local PARSED_CRITERIA_INDICES = table.mirror_array_inplace({
+	"context_name",
+	"criteria_key",
+	"operator_index",
+	"value",
+	"has_time_diff",
+	"combining_operator_id",
+	"combining_operator_group_id",
+})
+
+local function find_last_combine_group_id(criterias)
+	for i = #criterias, 1, -1 do
+		local group_id = criterias[i][PARSED_CRITERIA_INDICES.combining_operator_group_id]
+
+		if group_id ~= 0 then
+			return group_id
+		end
+	end
+end
+
+local combined_criteria_lookup = {
+	AND_NEXT = RuleDatabase.COMBINING_OPERATOR_AND,
+	OR_NEXT = RuleDatabase.COMBINING_OPERATOR_OR,
+}
+
+local function get_combining_id_and_group(criteria, combining_operator, previous_criteria, parsed_criterias, rule_definition)
+	local previous_parsed_criteria = parsed_criterias[#parsed_criterias]
+	local combining_operator_group_id = 0
+	local combining_operator_id = combined_criteria_lookup[combining_operator]
+
+	if not combining_operator_id then
+		fassert(not combining_operator, "[DialogueSystem] Unknown operator '%s' found in rule '%s'", combining_operator, rule_definition.name)
+
+		local previous_combining_operator = previous_criteria and criteria_value(previous_criteria, "combining_operator")
+		local previous_is_combining = previous_combining_operator and previous_combining_operator ~= "AND_NEXT"
+
+		if previous_is_combining then
+			combining_operator_id = combined_criteria_lookup.OR_NEXT
+			combining_operator_group_id = previous_parsed_criteria[PARSED_CRITERIA_INDICES.combining_operator_group_id]
+		else
+			combining_operator_id = combined_criteria_lookup.AND_NEXT
+		end
+	else
+		local combined_with_previous = combining_operator == (previous_criteria and criteria_value(previous_criteria, "combining_operator"))
+
+		if combined_with_previous then
+			combining_operator_group_id = previous_parsed_criteria[PARSED_CRITERIA_INDICES.combining_operator_group_id]
+		elseif combining_operator_id ~= combined_criteria_lookup.AND_NEXT then
+			combining_operator_group_id = (find_last_combine_group_id(parsed_criterias) or 0) + 1
+		end
+	end
+
+	return combining_operator_id, combining_operator_group_id
+end
+
+TagQueryDatabase.parse_criteria = function (self, criteria, criterias, parsed_criterias, rule_definition)
+	local context_name = criteria[COMMON_CRITERIA_INDICES.context_name]
+	local criteria_key = criteria[COMMON_CRITERIA_INDICES.criteria_key]
+	local operator = criteria[COMMON_CRITERIA_INDICES.operator]
+	local value = criteria_value(criteria, "value")
+	local combining_operator = criteria_value(criteria, "combining_operator")
+	local has_time_diff = operator == "TIMEDIFF"
+
+	if has_time_diff then
+		operator = criteria_value(criteria, "operator")
+
+		fassert(operator_lookup[operator], "No operator besides TIMEDIFF in rule %q", rule_definition.name)
+	end
+
+	local operator_index = operator_lookup[operator]
+
+	fassert(operator_index, "No such rule operator named %q in rule %q", tostring(operator), rule_definition.name)
+	fassert(context_indexes[context_name], "No such context name %q", context_name)
+
+	local value_type = type(value)
+
+	fassert(value_type == "boolean" or value_type == "string" or value_type == "number", "Unsupported type %s in rule %s", value_type, rule_definition.name)
+
+	if value_type == "boolean" then
+		value = value and 1 or 0
+	end
+
+	local previous_criteria = criterias[#parsed_criterias]
+	local combining_operator_id, combining_operator_group_id = get_combining_id_and_group(criteria, combining_operator, previous_criteria, parsed_criterias, rule_definition)
+
+	parsed_criterias[#parsed_criterias + 1] = {
+		[PARSED_CRITERIA_INDICES.context_name] = context_name,
+		[PARSED_CRITERIA_INDICES.criteria_key] = criteria_key,
+		[PARSED_CRITERIA_INDICES.operator_index] = operator_index,
+		[PARSED_CRITERIA_INDICES.value] = value,
+		[PARSED_CRITERIA_INDICES.has_time_diff] = has_time_diff,
+		[PARSED_CRITERIA_INDICES.combining_operator_id] = combining_operator_id,
+		[PARSED_CRITERIA_INDICES.combining_operator_group_id] = combining_operator_group_id,
+	}
 end
 
 TagQueryDatabase.iterate_queries = function (self, t)

@@ -292,7 +292,7 @@ HeroView.on_enter = function (self, params)
 
 	self:create_ui_elements()
 
-	local profile_index = self.profile_synchronizer:profile_by_peer(self.peer_id, self.local_player_id)
+	local profile_index = self.profile_synchronizer:profile_by_peer(self.peer_id, self.local_player_id) or 1
 
 	self:set_current_hero(profile_index)
 

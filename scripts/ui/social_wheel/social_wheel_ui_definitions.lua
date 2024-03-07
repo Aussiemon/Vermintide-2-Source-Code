@@ -146,7 +146,7 @@ local function create_social_widget(settings, widget_angle, category_settings, g
 						local active_context = get_active_context_func()
 
 						if is_valid_func and active_context then
-							content.is_valid = is_valid_func(settings.data, active_context)
+							content.is_valid = is_valid_func(settings.data, active_context, content, style)
 						end
 					end,
 					content_check_function = function (content, style)

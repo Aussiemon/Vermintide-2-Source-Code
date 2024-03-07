@@ -41,7 +41,7 @@ return {
 		data.units = {}
 		data.decal_unit_name = "units/decals/decal_heavens_01"
 		data.audio_system = Managers.state.entity:system("audio_system")
-		data.explosion_template = ExplosionTemplates.lightning_strike_twitch
+		data.explosion_template = ExplosionUtils.get_template("lightning_strike_twitch")
 		data.follow_time = data.explosion_template.follow_time
 		data.time_to_explode = data.explosion_template.time_to_explode
 		data.extension_init_data = {

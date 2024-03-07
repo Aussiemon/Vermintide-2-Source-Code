@@ -81,7 +81,8 @@ return {
 			blackboard.optional_spawn_data = blackboard.optional_spawn_data or {}
 			blackboard.optional_spawn_data.prevent_killed_enemy_dialogue = true
 
-			local player_unit = DialogueSystem:get_random_player()
+			local dialogue_system = Managers.state.entity:system("dialogue_system")
+			local player_unit = dialogue_system:get_random_player()
 
 			if player_unit then
 				local dialogue_input = ScriptUnit.extension_input(player_unit, "dialogue_system")
@@ -109,7 +110,8 @@ return {
 
 			data.marked_unit = nil
 
-			local unit = DialogueSystem:get_random_player()
+			local dialogue_system = Managers.state.entity:system("dialogue_system")
+			local unit = dialogue_system:get_random_player()
 
 			if unit then
 				local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")

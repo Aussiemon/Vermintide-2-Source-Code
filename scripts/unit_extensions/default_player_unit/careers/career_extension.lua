@@ -1,5 +1,7 @@
 ﻿-- chunkname: @scripts/unit_extensions/default_player_unit/careers/career_extension.lua
 
+require("scripts/unit_extensions/default_player_unit/careers/career_utils")
+
 CareerExtension = class(CareerExtension)
 
 local ABILITY_READY_ANTI_SPAM_DELAY = 1
@@ -28,7 +30,7 @@ CareerExtension.init = function (self, extension_init_context, unit, extension_i
 	self._career_data = career_data
 	self._breed = career_data.breed or profile.breed
 
-	local num_abilities = #career_data.activated_ability
+	local num_abilities = CareerUtils.num_abilities(profile_index, career_index)
 
 	self._num_abilities = num_abilities
 	self._abilities = {}
@@ -36,7 +38,7 @@ CareerExtension.init = function (self, extension_init_context, unit, extension_i
 	self._last_ability_ready_t = 0
 
 	for ability_id = 1, num_abilities do
-		local ability_data = career_data.activated_ability[ability_id]
+		local ability_data = CareerUtils.get_ability_data(profile_index, career_index, ability_id)
 		local ability_class = ability_data.ability_class
 		local cooldown = (ability_data.spawn_cooldown_percent or 0) * ability_data.cooldown
 		local cooldown_percent_int = extension_init_data.ability_cooldown_percent_int or 100
@@ -65,7 +67,8 @@ CareerExtension.init = function (self, extension_init_context, unit, extension_i
 		}
 	end
 
-	local passive_ability_classes = career_data.passive_ability.passive_ability_classes
+	local passive_ability = CareerUtils.get_passive_ability_by_career(career_data)
+	local passive_ability_classes = passive_ability.passive_ability_classes
 	local num_passive_abilities = passive_ability_classes and #passive_ability_classes or 0
 
 	self._passive_abilities = {}
@@ -126,7 +129,7 @@ end
 
 CareerExtension.extensions_ready = function (self, world, unit)
 	local buff_extension = ScriptUnit.extension(unit, "buff_system")
-	local passive_ability_data = self._career_data.passive_ability
+	local passive_ability_data = CareerUtils.get_passive_ability_by_career(self._career_data)
 	local buffs = passive_ability_data.buffs
 	local player = self.player
 
@@ -373,11 +376,14 @@ CareerExtension.start_activated_ability_cooldown = function (self, ability_id, r
 
 	local network_manager = Managers.state.network
 	local unit_id = network_manager:unit_game_object_id(unit)
+	local game = network_manager:game()
 
-	if self.is_server then
-		network_manager.network_transmit:send_rpc_clients("rpc_ability_activated", unit_id, ability_id)
-	else
-		network_manager.network_transmit:send_rpc_server("rpc_ability_activated", unit_id, ability_id)
+	if game then
+		if self.is_server then
+			network_manager.network_transmit:send_rpc_clients("rpc_ability_activated", unit_id, ability_id)
+		else
+			network_manager.network_transmit:send_rpc_server("rpc_ability_activated", unit_id, ability_id)
+		end
 	end
 
 	local min_cooldown = ability.max_cooldown * (1 - ability.cost)
@@ -660,19 +666,29 @@ CareerExtension.get_career_power_level = function (self)
 	local career_name = self._career_name
 	local profile_name = self._profile_name
 	local power_level = MIN_POWER_LEVEL
+	local game_mode_manager = Managers.state.game_mode
+	local game_mode_key = game_mode_manager and game_mode_manager:game_mode_key()
 
-	if player.bot_player then
-		local leader_player = Managers.player:party_leader_player()
+	if game_mode_key == "versus" and player.bot_player then
+		local game_mode_setting = GameModeSettings[game_mode_key]
 
-		if leader_player then
-			player = leader_player
+		if game_mode_setting and game_mode_setting.power_level_override then
+			power_level = game_mode_setting.power_level_override
 		end
-	end
-
-	if player.remote then
-		power_level = player:get_data("power_level")
 	else
-		power_level = BackendUtils.get_total_power_level(profile_name, career_name)
+		if player.bot_player then
+			local leader_player = Managers.player:party_leader_player()
+
+			if leader_player then
+				player = leader_player
+			end
+		end
+
+		if player.remote then
+			power_level = player:get_data("power_level")
+		else
+			power_level = BackendUtils.get_total_power_level(profile_name, career_name)
+		end
 	end
 
 	local buff_extension = self._buff_extension

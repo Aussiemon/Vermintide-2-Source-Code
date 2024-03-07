@@ -29,7 +29,7 @@ end
 local DIALOGUES_TO_REMOVE = {}
 
 DialogueStateHandler.update = function (self, t)
-	if #self._playing_dialogues == 0 then
+	if table.is_empty(self._playing_dialogues) then
 		return
 	end
 
@@ -39,7 +39,7 @@ DialogueStateHandler.update = function (self, t)
 	local start_index = self._current_index
 	local level = LevelHelper:current_level(self._world)
 
-	while true do
+	repeat
 		local dialogue_data = self._playing_dialogues[self._current_index]
 
 		if t > dialogue_data.expected_end then
@@ -51,15 +51,11 @@ DialogueStateHandler.update = function (self, t)
 			debug_printf("Triggering %s after %.2fs", dialogue_data.identifier, t - dialogue_data.start_time)
 		end
 
-		self._current_index = 1 + self._current_index % #self._playing_dialogues
+		self._current_index = math.index_wrapper(self._current_index + 1, #self._playing_dialogues)
 		num_checks = num_checks + 1
+	until self._current_index == start_index or num_checks >= MAX_DIALOGUE_CHECKS_PER_FRAME
 
-		if self._current_index == start_index or num_checks >= MAX_DIALOGUE_CHECKS_PER_FRAME then
-			break
-		end
-	end
-
-	if #DIALOGUES_TO_REMOVE > 0 then
+	if not table.is_empty(DIALOGUES_TO_REMOVE) then
 		table.sort(DIALOGUES_TO_REMOVE)
 
 		for i = #DIALOGUES_TO_REMOVE, 1, -1 do

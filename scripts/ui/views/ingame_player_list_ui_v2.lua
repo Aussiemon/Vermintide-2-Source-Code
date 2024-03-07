@@ -493,7 +493,7 @@ end
 
 IngamePlayerListUI._create_player_portrait = function (self, portrait_frame, portrait_image, player_level_text)
 	local definition = UIWidgets.create_portrait_frame("player_portrait", portrait_frame, player_level_text, 1, nil, portrait_image)
-	local widget = UIWidget.init(definition)
+	local widget = UIWidget.init(definition, self._ui_top_renderer)
 
 	self._player_portrait_widget = widget
 end
@@ -823,8 +823,9 @@ IngamePlayerListUI._update_player_information = function (self, dt, t)
 			end
 
 			local portrait_frame_name = portrait_frame_name or portrait_frame and portrait_frame.item_name or "default"
+			local current_portrait_frame_name = player_data.portrait_frame and player_data.portrait_frame.item_name
 
-			if player_data.career_index ~= career_index or display_name ~= player_data.hero_name or player_level_text ~= player_data.player_level_text or portrait_frame ~= player_data.portrait_frame then
+			if player_data.career_index ~= career_index or display_name ~= player_data.hero_name or player_level_text ~= player_data.player_level_text or portrait_frame_name ~= current_portrait_frame_name then
 				player_data.career_index = career_index
 
 				local portrait_widget = self:_create_portrait_frame_widget(portrait_frame_name, portrait_image, player_level_text)
@@ -837,6 +838,7 @@ IngamePlayerListUI._update_player_information = function (self, dt, t)
 				player_data.player_level_text = player_level_text
 				player_data.portrait_widget = portrait_widget
 				player_data.hero_name = display_name
+				player_data.portrait_frame = portrait_frame
 
 				if player_data.is_local_player then
 					player_data.sync_local_player_info = true
@@ -858,8 +860,8 @@ IngamePlayerListUI._update_player_information = function (self, dt, t)
 			if player_data.sync_local_player_info then
 				player_data.sync_local_player_info = nil
 
-				local passive_ability_data = career_settings.passive_ability
-				local activated_ability_data = career_settings.activated_ability[1]
+				local passive_ability_data = CareerUtils.get_passive_ability_by_career(career_settings)
+				local activated_ability_data = CareerUtils.get_ability_data_by_career(career_settings, 1)
 				local activated_display_name = activated_ability_data.display_name
 				local activated_icon = activated_ability_data.icon
 
@@ -885,7 +887,7 @@ end
 
 IngamePlayerListUI._create_portrait_frame_widget = function (self, frame_settings_name, portrait_texture, player_level_text)
 	local widget_definition = UIWidgets.create_portrait_frame("player_list_portrait", frame_settings_name, player_level_text, 1, nil, portrait_texture)
-	local widget = UIWidget.init(widget_definition)
+	local widget = UIWidget.init(widget_definition, self._ui_top_renderer)
 	local widget_content = widget.content
 
 	widget_content.frame_settings_name = frame_settings_name
@@ -1476,11 +1478,10 @@ IngamePlayerListUI._update_dynamic_widget_information = function (self, dt, t)
 			if talent_extension then
 				local talent_ids = talent_extension:get_talent_ids()
 				local profile_name = player:profile_display_name()
-				local profile_talents = Talents[profile_name]
 
 				for i = 1, 6 do
 					local id = talent_ids[i]
-					local talent = profile_talents and profile_talents[id]
+					local talent = TalentUtils.get_talent_by_id(profile_name, id)
 					local talent_icon = talent and talent.icon
 					local talent_content = content["talent_" .. i]
 

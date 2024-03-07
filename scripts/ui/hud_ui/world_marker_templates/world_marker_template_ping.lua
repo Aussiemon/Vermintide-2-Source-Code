@@ -89,6 +89,9 @@ template.create_widget_definition = function (scenegraph_id)
 					pass_type = "text",
 					style_id = "text",
 					text_id = "text",
+					content_check_function = function (content)
+						return Managers.mechanism:current_mechanism_name() ~= "versus"
+					end,
 				},
 				{
 					pass_type = "text",
@@ -112,12 +115,12 @@ template.create_widget_definition = function (scenegraph_id)
 				horizontal_alignment = "center",
 				vertical_alignment = "center",
 				texture_size = {
-					79,
-					79,
+					59.25,
+					59.25,
 				},
 				default_size = {
-					79,
-					79,
+					59.25,
+					59.25,
 				},
 				color = {
 					255,
@@ -135,12 +138,12 @@ template.create_widget_definition = function (scenegraph_id)
 				horizontal_alignment = "center",
 				vertical_alignment = "center",
 				texture_size = {
-					75,
-					75,
+					56.25,
+					56.25,
 				},
 				default_size = {
-					75,
-					75,
+					56.25,
+					56.25,
 				},
 				color = {
 					255,
@@ -158,12 +161,12 @@ template.create_widget_definition = function (scenegraph_id)
 				horizontal_alignment = "center",
 				vertical_alignment = "center",
 				texture_size = {
-					75,
-					75,
+					56.25,
+					56.25,
 				},
 				default_size = {
-					75,
-					75,
+					56.25,
+					56.25,
 				},
 				color = {
 					255,
@@ -355,7 +358,7 @@ template.create_widget_definition = function (scenegraph_id)
 				},
 				offset = {
 					-75,
-					-90,
+					-110,
 					2,
 				},
 			},

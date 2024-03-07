@@ -6,6 +6,7 @@ local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
 local generic_input_actions = definitions.generic_input_actions
 local DO_RELOAD = false
+local DEFAULT_COSMETICS_LAYOUT = "cosmetics_selection"
 
 HeroWindowCosmeticsLoadoutConsole = class(HeroWindowCosmeticsLoadoutConsole)
 HeroWindowCosmeticsLoadoutConsole.NAME = "HeroWindowCosmeticsLoadoutConsole"
@@ -217,7 +218,12 @@ HeroWindowCosmeticsLoadoutConsole._handle_gamepad_input = function (self, dt, t)
 	end
 
 	if input_service:get("confirm", true) then
-		parent:set_layout_by_name("cosmetics_selection")
+		local widgets_by_name = self._widgets_by_name
+		local widget = widgets_by_name.loadout_grid
+		local content = widget.content
+		local layout_name = content["layout_" .. tostring(selected_row) .. "_1"]
+
+		parent:set_layout_by_name(layout_name or DEFAULT_COSMETICS_LAYOUT)
 	end
 end
 
@@ -233,8 +239,13 @@ HeroWindowCosmeticsLoadoutConsole._handle_input = function (self, dt, t)
 	local slot_index_pressed = self:_is_equipment_slot_pressed()
 
 	if slot_index_pressed then
+		local widgets_by_name = self._widgets_by_name
+		local widget = widgets_by_name.loadout_grid
+		local content = widget.content
+		local layout_name = content["layout_" .. tostring(slot_index_pressed) .. "_1"]
+
 		self:_play_sound("play_gui_cosmetics_selection_click")
-		parent:set_layout_by_name("cosmetics_selection")
+		parent:set_layout_by_name(layout_name or DEFAULT_COSMETICS_LAYOUT)
 	end
 end
 
@@ -361,6 +372,7 @@ HeroWindowCosmeticsLoadoutConsole._equip_item_presentation = function (self, ite
 
 		content[item_tooltip_name] = display_name
 		content["item" .. name_sufix] = item
+		content["layout" .. name_sufix] = slot.layout_name or DEFAULT_COSMETICS_LAYOUT
 
 		local backend_id = item.backend_id
 		local rarity = item.rarity

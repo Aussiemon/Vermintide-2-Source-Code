@@ -1489,4 +1489,5 @@ return {
 	"wwise/coghammer",
 	"wwise/steampistol",
 	"wwise/javelin",
+	"wwise/scythe",
 }

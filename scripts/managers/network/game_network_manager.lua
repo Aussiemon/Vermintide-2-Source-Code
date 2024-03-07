@@ -762,18 +762,6 @@ GameNetworkManager.game_object_destroyed_twitch_vote = function (self, game_obje
 	Managers.twitch:remove_game_object_id(game_object_id)
 end
 
-GameNetworkManager.game_object_created_versus_character_selection_unit = function (self, game_object_id, owner_id, go_template)
-	local mechanism = Managers.mechanism:game_mechanism()
-
-	mechanism._party_selection_logic._go_id = game_object_id
-end
-
-GameNetworkManager.game_object_destroyed_versus_character_selection_unit = function (self, game_object_id)
-	local mechanism = Managers.mechanism:game_mechanism()
-
-	mechanism._party_selection_logic._go_id = nil
-end
-
 GameNetworkManager.game_object_created_career_data = function (self, go_id, owner_peer_id)
 	local career_extension = self:_career_extension(go_id)
 

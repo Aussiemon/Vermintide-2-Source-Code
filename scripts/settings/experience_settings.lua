@@ -164,6 +164,13 @@ ExperienceSettings.get_highest_character_level = function ()
 	return highest_level
 end
 
+ExperienceSettings.get_character_level = function (display_name)
+	local hero_attributes = Managers.backend:get_interface("hero_attributes")
+	local hero_experience = hero_attributes:get(display_name, "experience") or 0
+
+	return ExperienceSettings.get_level(hero_experience)
+end
+
 ExperienceSettings.max_experience = total_defined_experience
 ExperienceSettings.max_level = num_defined_levels
 ExperienceSettings.multiplier = 1

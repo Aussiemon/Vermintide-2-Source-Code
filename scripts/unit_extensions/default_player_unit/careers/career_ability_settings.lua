@@ -42,6 +42,21 @@ ActivatedAbilitySettings = {
 			display_name = "career_active_name_dr_3",
 			icon = "bardin_ranger_activated_ability",
 			weapon_name = "bardin_ranger_career_skill_weapon",
+			description_values = {
+				{
+					value = CareerConstants.dr_ranger.ability_duration,
+				},
+			},
+			mechanism_overrides = {
+				versus = {
+					cooldown = 140,
+					description_values = {
+						{
+							value = CareerConstants.dr_ranger.ability_duration_versus,
+						},
+					},
+				},
+			},
 		},
 	},
 	es_1 = {
@@ -60,6 +75,11 @@ ActivatedAbilitySettings = {
 			display_name = "career_active_name_es_2",
 			icon = "markus_knight_activated_ability",
 			ability_class = CareerAbilityESKnight,
+			mechanism_overrides = {
+				versus = {
+					cooldown = 60,
+				},
+			},
 		},
 	},
 	es_3 = {
@@ -69,6 +89,23 @@ ActivatedAbilitySettings = {
 			display_name = "career_active_name_markus_mercenary",
 			icon = "markus_mercenary_activated_ability",
 			ability_class = CareerAbilityESMercenary,
+			heal_amount = CareerConstants.es_mercenary.ability_heal_amount,
+			description_values = {
+				{
+					value = CareerConstants.es_mercenary.ability_heal_amount,
+				},
+			},
+			mechanism_overrides = {
+				versus = {
+					description = "career_active_desc_markus_mercenary_2",
+					description_values = {
+						{
+							value = CareerConstants.es_mercenary.ability_heal_amount_versus,
+						},
+					},
+					heal_amount = CareerConstants.es_mercenary.ability_heal_amount_versus,
+				},
+			},
 		},
 	},
 	we_1 = {
@@ -94,6 +131,11 @@ ActivatedAbilitySettings = {
 			display_name = "career_active_name_we_2",
 			icon = "kerillian_maidenguard_activated_ability",
 			ability_class = CareerAbilityWEMaidenGuard,
+			mechanism_overrides = {
+				versus = {
+					cooldown = 40,
+				},
+			},
 		},
 	},
 	we_3 = {
@@ -159,6 +201,11 @@ ActivatedAbilitySettings = {
 			display_name = "career_active_name_bw_2",
 			icon = "sienna_adept_activated_ability",
 			ability_class = CareerAbilityBWAdept,
+			mechanism_overrides = {
+				versus = {
+					cooldown = 80,
+				},
+			},
 		},
 	},
 	bw_3 = {

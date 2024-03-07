@@ -28,6 +28,7 @@ return {
 	"scripts/settings/equipment/weapon_templates/1h_flails",
 	"scripts/settings/equipment/weapon_templates/halberds",
 	"scripts/settings/equipment/weapon_templates/spears_wood_elf",
+	"scripts/settings/equipment/weapon_templates/vs_ratling_gunner_gun",
 	"scripts/settings/equipment/weapon_templates/shortbows",
 	"scripts/settings/equipment/weapon_templates/shortbows_hagbane",
 	"scripts/settings/equipment/weapon_templates/longbows",

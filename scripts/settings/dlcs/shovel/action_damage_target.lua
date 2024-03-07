@@ -71,9 +71,12 @@ end
 
 ActionDamageTarget._apply_damage_step = function (self, hit_unit, power_level, step_data, t)
 	local damage_profile = step_data.damage_profile
+	local overcharge_amount = step_data.overcharge_amount
 	local breed = Unit.get_data(hit_unit, "breed")
 
 	if breed then
+		overcharge_amount = breed.is_player and step_data.overcharge_amount_player_target or overcharge_amount
+
 		if step_data.can_crit then
 			self._is_critical_strike = ActionUtils.is_critical_strike(self.owner_unit, self.current_action, t)
 
@@ -105,8 +108,6 @@ ActionDamageTarget._apply_damage_step = function (self, hit_unit, power_level, s
 	local damage_profile_id = NetworkLookup.damage_profiles[damage_profile]
 
 	self.weapon_system:send_rpc_attack_hit(damage_source_id, attacker_unit_id, hit_unit_id, hit_zone_id, hit_position, attack_direction, damage_profile_id, "power_level", power_level, "hit_target_index", 1, "blocking", false, "shield_break_procced", false, "boost_curve_multiplier", ranged_boost_curve_multiplier, "is_critical_strike", self._is_critical_strike, "can_damage", true, "can_stagger", true, "first_hit", true)
-
-	local overcharge_amount = step_data.overcharge_amount
 
 	if overcharge_amount then
 		local buff_extension = self.owner_buff_extension

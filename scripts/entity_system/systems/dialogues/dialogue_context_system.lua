@@ -11,15 +11,14 @@ DialogueContextSystem.init = function (self, context, system_name)
 
 	entity_manager:register_system(self, system_name, extensions)
 
-	self.entity_manager = entity_manager
 	self._next_player_key = nil
-	self.unit_extension_data = {}
+	self._unit_extension_data = {}
 
 	GarbageLeakDetector.register_object(self, "dialogue_context_system")
 end
 
 DialogueContextSystem.destroy = function (self)
-	self.unit_extension_data = nil
+	self._unit_extension_data = nil
 end
 
 DialogueContextSystem.on_add_extension = function (self, world, unit, extension_name, extension_init_data)
@@ -35,13 +34,13 @@ DialogueContextSystem.on_add_extension = function (self, world, unit, extension_
 
 	ScriptUnit.set_extension(unit, "dialogue_context_system", extension, {})
 
-	self.unit_extension_data[unit] = extension
+	self._unit_extension_data[unit] = extension
 
 	return extension
 end
 
 DialogueContextSystem.on_remove_extension = function (self, unit, extension_name)
-	self.unit_extension_data[unit] = nil
+	self._unit_extension_data[unit] = nil
 
 	ScriptUnit.remove_extension(unit, self.NAME)
 end
@@ -50,7 +49,7 @@ DialogueContextSystem.extensions_ready = function (self, world, unit, extension_
 	local health_extension = ScriptUnit.extension(unit, "health_system")
 	local status_extension = ScriptUnit.extension(unit, "status_system")
 	local proximity_extension = ScriptUnit.extension(unit, "proximity_system")
-	local extension = self.unit_extension_data[unit]
+	local extension = self._unit_extension_data[unit]
 
 	extension.health_extension = health_extension
 	extension.status_extension = status_extension
@@ -62,7 +61,7 @@ DialogueContextSystem.update = function (self, system_context, t)
 		self._next_player_key = nil
 	end
 
-	local next_player_key, extension = next(self.unit_extension_data, self._next_player_key)
+	local next_player_key, extension = next(self._unit_extension_data, self._next_player_key)
 
 	self._next_player_key = next_player_key
 

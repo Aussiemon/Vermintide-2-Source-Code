@@ -488,7 +488,7 @@ UIRenderer.draw_widget = function (self, widget)
 					local content_change_function = pass.content_change_function
 
 					if content_change_function then
-						content_change_function(pass_content, pass_style, ui_animations, dt)
+						content_change_function(pass_content, pass_style, ui_animations, dt, self.render_settings)
 					end
 				end
 			end

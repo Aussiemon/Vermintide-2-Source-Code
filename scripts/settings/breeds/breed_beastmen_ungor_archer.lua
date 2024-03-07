@@ -29,6 +29,7 @@ local breed_data = {
 	has_inventory = true,
 	has_running_attack = true,
 	headshot_coop_stamina_fatigue_type = "headshot_special",
+	height = 1.7,
 	hit_effect_template = "HitEffectsStormVermin",
 	hit_mass_count = 4,
 	hit_reaction = "ai_default",
@@ -90,7 +91,7 @@ local breed_data = {
 	stagger_duration_difficulty_mod = BreedTweaks.stagger_duration_difficulty_mod.default,
 	hit_mass_counts = BreedTweaks.hit_mass_counts.ungor,
 	bloodlust_health = BreedTweaks.bloodlust_health.beastmen_horde,
-	stagger_modifier_function = function (stagger_type, duration, length, hit_zone_name, blackboard, breed, direction)
+	stagger_modifier_function = function (stagger_type, duration, length, hit_zone_name, blackboard, breed)
 		if blackboard.stagger_type == stagger_types.heavy then
 			if stagger_type == stagger_types.heavy and blackboard.heavy_stagger_immune_time then
 				stagger_type = stagger_types.none
@@ -304,6 +305,9 @@ local AttackIntensityPerDifficulty = {
 		cataclysm_3 = {
 			normal = 2,
 		},
+		versus_base = {
+			normal = 2,
+		},
 	},
 	running = {
 		easy = {
@@ -328,6 +332,9 @@ local AttackIntensityPerDifficulty = {
 			running = 2.5,
 		},
 		cataclysm_3 = {
+			running = 2.5,
+		},
+		versus_base = {
 			running = 2.5,
 		},
 	},
@@ -442,6 +449,7 @@ local action_data = {
 			0.8,
 			0.9,
 			1,
+			0.4,
 		},
 	},
 	normal_attack = {

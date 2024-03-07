@@ -135,6 +135,7 @@ local standalone_texture = {
 	loading_screen = true,
 	loading_screen_default = true,
 	loading_title_divider = true,
+	local_player_score_bar = true,
 	loot_presentation_circle_glow_common = true,
 	loot_presentation_circle_glow_common_large = true,
 	loot_presentation_circle_glow_exotic = true,
@@ -169,6 +170,7 @@ local standalone_texture = {
 	news_splash_scroll_end = true,
 	news_splash_scroll_middle = true,
 	offscreen_clear = true,
+	opponent_score_bar = true,
 	options_menu_divider_glow_01 = true,
 	options_menu_divider_glow_02 = true,
 	overcharge_bar = true,
@@ -201,10 +203,18 @@ local standalone_texture = {
 	teammate_hp_bar_2 = true,
 	teammate_hp_bar_3 = true,
 	teammate_hp_bar_4 = true,
+	teammate_hp_bar_5 = true,
+	teammate_hp_bar_6 = true,
+	teammate_hp_bar_7 = true,
+	teammate_hp_bar_8 = true,
 	teammate_hp_bar_color_tint_1 = true,
 	teammate_hp_bar_color_tint_2 = true,
 	teammate_hp_bar_color_tint_3 = true,
 	teammate_hp_bar_color_tint_4 = true,
+	teammate_hp_bar_color_tint_5 = true,
+	teammate_hp_bar_color_tint_6 = true,
+	teammate_hp_bar_color_tint_7 = true,
+	teammate_hp_bar_color_tint_8 = true,
 	teammate_hp_bar_mask = true,
 	tile_texture_01 = true,
 	twitch_ammo = true,
@@ -318,6 +328,7 @@ local standalone_texture = {
 	vermintide_2_logo_demo = true,
 	vermintide_2_logo_tutorial = true,
 	vermintide_logo_title = true,
+	versus_objective_progress_bar = true,
 	vote_a = true,
 	vote_b = true,
 	weave_button_passive_glow = true,
@@ -578,5 +589,13 @@ UIAtlasHelper.has_texture_by_name = function (texture_name)
 		return true
 	else
 		return false
+	end
+end
+
+UIAtlasHelper.add_standalone_texture_by_name = function (texture_name)
+	if standalone_texture[texture_name] or ui_atlas_settings[texture_name] then
+		return
+	else
+		standalone_texture[texture_name] = true
 	end
 end

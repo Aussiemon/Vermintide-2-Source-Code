@@ -10,7 +10,6 @@ TalentTrees.bright_wizard = {
 	{},
 	{},
 }
-Talents = Talents or {}
 Talents.bright_wizard = {}
 
 for name, data in pairs(TalentBuffTemplates.bright_wizard) do

@@ -66,7 +66,36 @@ UIPasses.rect = {
 	end,
 }
 UIPasses.texture = {
-	init = function (pass_definition)
+	init = function (pass_definition, content, style, ui_renderer)
+		if pass_definition.clone and ui_renderer then
+			local gui = ui_renderer.gui
+
+			if pass_definition.retained_mode then
+				gui = ui_renderer.gui_retained
+			end
+
+			local material_name = content[pass_definition.texture_id or "texture_id"]
+			local new_material_name = Application.guid()
+
+			Gui.clone_material_from_template(gui, new_material_name, material_name)
+
+			pass_definition.cloned_material = new_material_name
+			content[pass_definition.texture_id or "texture_id"] = new_material_name
+		end
+
+		if pass_definition.material_func and ui_renderer then
+			local gui = ui_renderer.gui
+
+			if pass_definition.retained_mode then
+				gui = ui_renderer.gui_retained
+			end
+
+			local context = pass_definition.context
+			local texture_name = content[pass_definition.texture_id or "texture_id"]
+
+			pass_definition.material_func(gui, texture_name, context)
+		end
+
 		if pass_definition.retained_mode then
 			return {
 				dirty = true,
@@ -400,7 +429,27 @@ UIPasses.list_pass = {
 	end,
 }
 UIPasses.gradient_mask_texture = {
-	init = function (pass_definition)
+	init = function (pass_definition, content, style, ui_renderer)
+		if pass_definition.clone and ui_renderer then
+			local gui = ui_renderer.gui
+
+			if pass_definition.retained_mode then
+				gui = ui_renderer.gui_retained
+			end
+
+			local material_name = content[pass_definition.texture_id or "texture_id"]
+			local new_material_name = Application.guid()
+
+			Gui.clone_material_from_template(gui, new_material_name, material_name)
+
+			pass_definition.cloned_material = new_material_name
+			content[pass_definition.texture_id or "texture_id"] = new_material_name
+
+			if not UIAtlasHelper.has_atlas_settings_by_texture_name(material_name) then
+				UIAtlasHelper.add_standalone_texture_by_name(new_material_name)
+			end
+		end
+
 		if pass_definition.retained_mode then
 			return {
 				dirty = true,

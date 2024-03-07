@@ -2244,6 +2244,18 @@ UIPlayerPortraitFrameSettings = {
 			},
 		},
 	},
+	frame_celebration_06 = {
+		{
+			layer = 10,
+			texture = "portrait_frame_celebration_6",
+			color = {
+				255,
+				255,
+				255,
+				255,
+			},
+		},
+	},
 	frame_scorpion_complete_all_helmgart_levels_cataclysm = {
 		{
 			layer = 10,

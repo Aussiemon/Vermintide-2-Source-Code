@@ -641,7 +641,8 @@ settings.buff_function_templates = {
 
 				if t > buff.update_dialogue_delay_time then
 					local dialogue_name = "curse_very_negative_effect_happened"
-					local random_player = DialogueSystem:get_random_player()
+					local dialogue_system = Managers.state.entity:system("dialogue_system")
+					local random_player = dialogue_system:get_random_player()
 
 					if random_player ~= nil then
 						local dialogue_input = ScriptUnit.extension_input(random_player, "dialogue_system")
@@ -931,7 +932,7 @@ settings.buff_function_templates = {
 		local explosion_template_name = buff_template.explosion_template_name
 		local damage_source_name = buff_template.damage_source_name or "buff"
 		local explosion_position = POSITION_LOOKUP[owner_unit] or Unit.world_position(owner_unit, 0)
-		local explosion_template = ExplosionTemplates[explosion_template_name]
+		local explosion_template = ExplosionUtils.get_template(explosion_template_name)
 
 		DamageUtils.create_explosion(world, owner_unit, explosion_position, Quaternion.identity(), explosion_template, 1, damage_source_name, true, false, owner_unit, 0, false)
 
@@ -1326,7 +1327,7 @@ settings.proc_functions = {
 	ai_create_explosion = settings.buff_function_templates.ai_create_explosion,
 	grudge_mark_shockwave = function (owner_unit, buff, params, world)
 		local damage_source = "grenade_frag_01"
-		local explosion_template = ExplosionTemplates.grudge_mark_shockwave
+		local explosion_template = ExplosionUtils.get_template("grudge_mark_shockwave")
 		local explosion_position = POSITION_LOOKUP[owner_unit]
 
 		DamageUtils.create_explosion(world, owner_unit, explosion_position, Quaternion.identity(), explosion_template, 1, damage_source, true, false, owner_unit, false)

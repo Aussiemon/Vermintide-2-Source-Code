@@ -1144,9 +1144,7 @@ weapon_template.actions = {
 			anim_end_event = "attack_finished",
 			anim_event = "attack_throw",
 			anim_event_infinite_ammo = "attack_throw",
-			anim_event_infinite_ammo_3p = "attack_throw",
 			anim_event_last_ammo = "attack_throw_last",
-			anim_event_last_ammo_3p = "attack_throw_last",
 			apply_recoil = true,
 			attack_template = "arrow_sniper_1",
 			charge_value = "zoomed_arrow_hit",
@@ -1562,6 +1560,12 @@ weapon_template.tooltip_detail = {
 	},
 }
 
+local javelin_vs = table.clone(weapon_template)
+
+javelin_vs.actions.action_one.throw_charged.impact_data.damage_profile = "thrown_javelin"
+javelin_vs.ammo_data.max_ammo = 3
+
 return {
-	javelin_template = weapon_template,
+	javelin_template = table.clone(weapon_template),
+	javelin_template_vs = table.clone(javelin_vs),
 }

@@ -23,7 +23,7 @@ CareerActionNames = {
 local function local_is_unlocked_function(career, hero_name, hero_level)
 	local unlocked, reason = career:override_available_for_mechanism()
 
-	if unlocked ~= nil then
+	if not unlocked then
 		return unlocked, reason
 	end
 
@@ -43,14 +43,14 @@ local function local_is_dlc_unlocked(career)
 end
 
 local function local_override_available_for_mechanism(career)
-	local settings = Managers.mechanism:mechanism_setting("override_career_availability")
+	local settings = Managers.mechanism:mechanism_setting_for_title("override_career_availability")
 	local career_name = career.display_name
 
-	if settings and settings[career_name] ~= nil then
-		return settings[career_name], "disabled_for_mechanism"
+	if settings and settings[career_name] == false then
+		return false, "disabled_for_mechanism"
 	end
 
-	return nil
+	return true
 end
 
 CareerSettings = {
@@ -82,7 +82,6 @@ CareerSettings = {
 			attack_speed_speed = 10,
 			base_critical_strike_chance = 0.05,
 			max_hp = 150,
-			max_hp_kd = 300,
 			movement_speed = 10,
 		},
 		video = {
@@ -161,7 +160,6 @@ CareerSettings = {
 		attributes = {
 			base_critical_strike_chance = 0.05,
 			max_hp = 125,
-			max_hp_kd = 300,
 			movement_speed = 9,
 		},
 		video = {
@@ -241,7 +239,6 @@ CareerSettings = {
 		attributes = {
 			base_critical_strike_chance = 0.05,
 			max_hp = 100,
-			max_hp_kd = 300,
 			movement_speed = 8,
 		},
 		video = {
@@ -320,7 +317,6 @@ CareerSettings = {
 		attributes = {
 			base_critical_strike_chance = 0.05,
 			max_hp = 100,
-			max_hp_kd = 300,
 		},
 		video = {
 			material_name = "es_huntsman",
@@ -398,7 +394,6 @@ CareerSettings = {
 		attributes = {
 			base_critical_strike_chance = 0.05,
 			max_hp = 150,
-			max_hp_kd = 300,
 		},
 		video = {
 			material_name = "es_knight",
@@ -476,7 +471,6 @@ CareerSettings = {
 		attributes = {
 			base_critical_strike_chance = 0.05,
 			max_hp = 125,
-			max_hp_kd = 300,
 		},
 		video = {
 			material_name = "es_mercenary",
@@ -554,7 +548,6 @@ CareerSettings = {
 		attributes = {
 			base_critical_strike_chance = 0.1,
 			max_hp = 100,
-			max_hp_kd = 300,
 		},
 		video = {
 			material_name = "we_shade",
@@ -632,7 +625,6 @@ CareerSettings = {
 		attributes = {
 			base_critical_strike_chance = 0.05,
 			max_hp = 125,
-			max_hp_kd = 300,
 		},
 		video = {
 			material_name = "we_maidenguard",
@@ -710,7 +702,6 @@ CareerSettings = {
 		attributes = {
 			base_critical_strike_chance = 0.05,
 			max_hp = 100,
-			max_hp_kd = 300,
 		},
 		video = {
 			material_name = "we_waywatcher",
@@ -812,7 +803,6 @@ CareerSettings = {
 		attributes = {
 			base_critical_strike_chance = 0.05,
 			max_hp = 150,
-			max_hp_kd = 300,
 		},
 		video = {
 			material_name = "wh_zealot",
@@ -893,7 +883,6 @@ CareerSettings = {
 		attributes = {
 			base_critical_strike_chance = 0.05,
 			max_hp = 100,
-			max_hp_kd = 300,
 		},
 		video = {
 			material_name = "wh_bountyhunter",
@@ -971,7 +960,6 @@ CareerSettings = {
 		attributes = {
 			base_critical_strike_chance = 0.1,
 			max_hp = 125,
-			max_hp_kd = 300,
 		},
 		video = {
 			material_name = "wh_captain",
@@ -1049,7 +1037,6 @@ CareerSettings = {
 		attributes = {
 			base_critical_strike_chance = 0.05,
 			max_hp = 100,
-			max_hp_kd = 300,
 		},
 		video = {
 			material_name = "bw_scholar",
@@ -1127,7 +1114,6 @@ CareerSettings = {
 		attributes = {
 			base_critical_strike_chance = 0.05,
 			max_hp = 100,
-			max_hp_kd = 300,
 		},
 		video = {
 			material_name = "bw_adept",
@@ -1205,7 +1191,6 @@ CareerSettings = {
 		attributes = {
 			base_critical_strike_chance = 0.05,
 			max_hp = 150,
-			max_hp_kd = 300,
 		},
 		video = {
 			material_name = "bw_unchained",
@@ -1280,7 +1265,6 @@ CareerSettings = {
 		attributes = {
 			base_critical_strike_chance = 0.05,
 			max_hp = 150,
-			max_hp_kd = 300,
 		},
 		video = {
 			material_name = "es_knight",
@@ -1351,6 +1335,8 @@ CareerNameAchievementMapping = {
 }
 
 DLCUtils.require_list("career_setting_files")
+
+CareerSettingsOriginal = table.shallow_copy(CareerSettings)
 
 if script_data.honduras_demo then
 	CareerSettings.we_shade.preview_items = {

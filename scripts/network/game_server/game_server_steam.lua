@@ -52,6 +52,10 @@ GameServerInternal.run_callbacks = function (game_server, callback_object)
 	SteamGameServer.run_callbacks(game_server, callback_object)
 end
 
+GameServerInternal.remove_member = function (game_server, peer_id)
+	SteamGameServer.remove_member(game_server, peer_id)
+end
+
 GameServerInternal.user_name = function (game_server, peer_id)
 	return SteamGameServer.name(game_server, peer_id)
 end

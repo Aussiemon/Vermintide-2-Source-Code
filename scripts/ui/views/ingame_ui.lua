@@ -311,7 +311,17 @@ IngameUI.weaves_requirements_fulfilled = function (self)
 	local twitch_connection = Managers.twitch and (Managers.twitch:is_connected() or Managers.twitch:is_activated())
 
 	if twitch_connection then
+		Managers.state.event:trigger("weave_tutorial_message", WeaveUITutorials.twitch_not_supported_for_weaves)
+
 		return false
+	elseif not Managers.player.is_server then
+		local lobby = Managers.state.network:lobby()
+
+		if lobby:lobby_data("twitch_enabled") == "true" then
+			Managers.state.event:trigger("weave_tutorial_message", WeaveUITutorials.twitch_not_supported_for_weaves_client)
+
+			return false
+		end
 	end
 
 	local player_manager = Managers.player
@@ -322,7 +332,9 @@ IngameUI.weaves_requirements_fulfilled = function (self)
 	for _, level_key in pairs(MainGameLevels) do
 		local level_settings = LevelSettings[level_key]
 
-		if level_settings.game_mode == "adventure" and statistics_db:get_persistent_stat(stats_id, "completed_levels", level_key) < 1 then
+		if level_settings.mechanism == "adventure" and statistics_db:get_persistent_stat(stats_id, "completed_levels", level_key) < 1 then
+			Managers.state.event:trigger("weave_tutorial_message", WeaveUITutorials.requirements_not_met)
+
 			return false
 		end
 	end
@@ -332,7 +344,9 @@ IngameUI.weaves_requirements_fulfilled = function (self)
 	for _, level_key in pairs(scorpion_dlc_levels) do
 		local level_settings = LevelSettings[level_key]
 
-		if level_settings.game_mode == "adventure" and statistics_db:get_persistent_stat(stats_id, "completed_levels", level_key) < 1 then
+		if level_settings.mechanism == "adventure" and statistics_db:get_persistent_stat(stats_id, "completed_levels", level_key) < 1 then
+			Managers.state.event:trigger("weave_tutorial_message", WeaveUITutorials.requirements_not_met)
+
 			return false
 		end
 	end
@@ -400,10 +414,22 @@ IngameUI.handle_menu_hotkeys = function (self, dt, input_service, hotkeys_enable
 				end
 			end
 		else
-			local disable_when_matchmaking = mapping_data.disable_when_matchmaking
-			local disable_when_matchmaking_ready = mapping_data.disable_when_matchmaking_ready
+			local disable_when_matchmaking, disable_when_matchmaking_ready, disable_not_matchmaking
+			local mechanism_name = Managers.mechanism:current_mechanism_name()
+			local disable_for_mechanism = mapping_data.disable_for_mechanism and mapping_data.disable_for_mechanism[mechanism_name]
+
+			if disable_for_mechanism then
+				disable_when_matchmaking = disable_for_mechanism.matchmaking
+				disable_when_matchmaking_ready = disable_for_mechanism.matchmaking_ready
+				disable_not_matchmaking = disable_for_mechanism.not_matchmaking
+			end
+
+			local is_matchmaking_versus = Managers.matchmaking:is_matchmaking_versus()
 			local vote_blocked = table.contains(hotkeys_blocked_during_vote, input)
 			local transition_not_allowed = player_ready_for_game and disable_when_matchmaking_ready or is_game_matchmaking and disable_when_matchmaking or vote_blocked and currently_voting
+
+			transition_not_allowed = transition_not_allowed or disable_not_matchmaking
+
 			local new_view = views[mapping_data.view]
 			local can_interact_flag = mapping_data.can_interact_flag
 			local can_interact_func = mapping_data.can_interact_func
@@ -549,6 +575,18 @@ IngameUI.update = function (self, dt, t, disable_ingame_ui, end_of_level_ui)
 		local allowed_to_access_menu = true
 		local ingame_player_list_ui = ingame_hud:component("IngamePlayerListUI")
 		local player_list_active = ingame_player_list_ui and ingame_player_list_ui:is_active()
+		local versus_tab_ui = ingame_hud:component("VersusTabUI")
+		local versus_slot_status_ui = ingame_hud:component("VersusSlotStatusUI")
+
+		player_list_active = versus_tab_ui and versus_tab_ui:is_active() or versus_slot_status_ui and versus_slot_status_ui:is_active() or player_list_active
+		allowed_to_access_menu = not gamepad_active or not Managers.matchmaking:is_matchmaking_versus()
+
+		local game_mode = Managers.state.game_mode:game_mode()
+
+		if game_mode.menu_access_allowed_in_state and not game_mode:menu_access_allowed_in_state() then
+			allowed_to_access_menu = false
+		end
+
 		local fade_active = Managers.transition:in_fade_active()
 
 		if allowed_to_access_menu and not player_list_active and not disable_toggle_menu and not self:pending_transition() and not fade_active and not self:end_screen_active() and not self.menu_active and not self.leave_game and not self.return_to_title_screen and not self:get_active_popup("profile_picker") and input_service:get("toggle_menu", true) then

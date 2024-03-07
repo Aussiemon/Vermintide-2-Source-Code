@@ -18,13 +18,15 @@ PlayerUnitOverchargeExtension.init = function (self, extension_init_context, uni
 	self.overcharge_crit_interval = 1
 	self.venting_overcharge = false
 	self.vent_damage_pool = 0
-	self.no_damage = global_is_inside_inn
+	self.no_damage = global_is_inside_inn or overcharge_data.no_damage
 	self.lockout = false
 	self.prev_lockout = false
 	self.overcharge_threshold = overcharge_data.overcharge_threshold or 0
 	self.overcharge_value_decrease_rate = overcharge_data.overcharge_value_decrease_rate or 0
 	self.time_until_overcharge_decreases = overcharge_data.time_until_overcharge_decreases or 0
 	self.hit_overcharge_threshold_sound = overcharge_data.hit_overcharge_threshold_sound or "ui_special_attack_ready"
+	self.critical_overcharge_margin = overcharge_data.critical_overcharge_margin or 1.2
+	self.overcharge_depleted_func = overcharge_data.overcharge_depleted_func
 	self.screen_space_particle = overcharge_data.onscreen_particles_id or "fx/screenspace_overheat_indicator"
 	self.screen_space_particle_critical = overcharge_data.critical_onscreen_particles_id or not overcharge_data.no_critical_onscreen_particles and "fx/screenspace_overheat_critical"
 	self._lerped_overcharge_fraction = 0
@@ -310,6 +312,10 @@ PlayerUnitOverchargeExtension.update = function (self, unit, input, dt, context,
 	if post_amount < pre_amount then
 		self._buff_extension:trigger_procs("on_overcharge_lost", pre_amount - post_amount, self.max_value)
 	end
+
+	if self.overcharge_value == 0 and pre_amount ~= 0 and self.overcharge_depleted_func then
+		self.overcharge_depleted_func(self.unit, self.first_person_extension, self.time1)
+	end
 end
 
 PlayerUnitOverchargeExtension.add_charge = function (self, overcharge_amount, charge_level, overcharge_type)
@@ -348,7 +354,9 @@ PlayerUnitOverchargeExtension.add_charge = function (self, overcharge_amount, ch
 		return
 	end
 
-	if current_overcharge_value <= max_value * 0.97 and max_value < current_overcharge_value + overcharge_amount then
+	local critical_overcharge_margin = self.critical_overcharge_margin
+
+	if current_overcharge_value <= max_value - critical_overcharge_margin and max_value < current_overcharge_value + overcharge_amount then
 		local state_settings = self._overcharge_states[OVERCHARGE_LEVELS.critical]
 
 		self:_trigger_hud_sound(state_settings.sound_event, self.first_person_extension)

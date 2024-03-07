@@ -27,6 +27,7 @@ local breed_data = {
 	flingable = true,
 	has_inventory = true,
 	headshot_coop_stamina_fatigue_type = "headshot_special",
+	height = 2.4,
 	hit_effect_template = "HitEffectsChaosExaltedSorcerer",
 	hit_reaction = "ai_default",
 	initial_is_passive = false,
@@ -44,6 +45,7 @@ local breed_data = {
 	radius = 1,
 	run_speed = 0.65,
 	server_controlled_health_bar = true,
+	show_health_bar = true,
 	smart_object_template = "special",
 	smart_targeting_height_multiplier = 2.2,
 	smart_targeting_outer_width = 0.7,
@@ -267,6 +269,7 @@ local action_data = {
 			harder = 0.5,
 			hardest = 0,
 			normal = 3,
+			versus_base = 3,
 		},
 	},
 	spawn_boss_vortex = {
@@ -594,6 +597,7 @@ local action_data = {
 			harder = "sorcerer_boss_event_defensive",
 			hardest = "sorcerer_boss_event_defensive",
 			normal = "sorcerer_boss_event_defensive",
+			versus_base = "sorcerer_boss_event_defensive",
 		},
 		ignore_staggers = {
 			true,
@@ -622,6 +626,7 @@ local action_data = {
 			harder = "sorcerer_extra_spawn",
 			hardest = "sorcerer_extra_spawn",
 			normal = "sorcerer_extra_spawn",
+			versus_base = "sorcerer_extra_spawn",
 		},
 		ignore_staggers = {
 			true,

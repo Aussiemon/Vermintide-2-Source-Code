@@ -990,10 +990,8 @@ AISystem.update_debug_draw = function (self, t)
 		end
 	end
 
-	if script_data.debug_ai_targets then
-		local debug_sphere_position
-
-		for unit, extension in pairs(self.ai_units_alive) do
+	for unit, extension in pairs(self.ai_units_alive) do
+		if script_data.debug_ai_targets then
 			local blackboard = extension._blackboard
 			local enemy = blackboard.target_unit
 
@@ -1004,20 +1002,29 @@ AISystem.update_debug_draw = function (self, t)
 				QuickDrawer:box(Unit.world_pose(enemy, 0), Vector3(0.5, 0.5, 1.5), Color(125, 255, 0, 0))
 			end
 		end
-	end
 
-	if script_data.debug_stagger then
-		for unit, extension in pairs(self.ai_units_alive) do
-			repeat
-				local blackboard = extension._blackboard
-				local stagger_immunity = blackboard.stagger_immunity
+		if script_data.debug_ai_heights then
+			local from = POSITION_LOOKUP[unit]
+			local height = AiUtils.breed_height(unit)
 
-				if not stagger_immunity then
-					break
-				end
+			if height then
+				local to = POSITION_LOOKUP[unit] + Vector3(0, 0, height)
 
+				QuickDrawer:sphere(from, 0.5, Colors.get("yellow"))
+				QuickDrawer:line(from, to, Colors.get("yellow"))
+				QuickDrawer:sphere(to, 0.5, Colors.get("yellow"))
+			else
+				QuickDrawer:sphere(from + Vector3(0, 0, 1), 1.5, Colors.get("red"))
+			end
+		end
+
+		if script_data.debug_stagger then
+			local blackboard = extension._blackboard
+			local stagger_immunity = blackboard.stagger_immunity
+
+			if stagger_immunity then
 				local color = Managers.state.debug:color(unit)
-				local x, y, z, w = Quaternion.to_elements(color)
+				local _, y, z, w = Quaternion.to_elements(color)
 				local color_vector = Vector3(y, z, w)
 				local viewport_name = "player_1"
 				local head_node = Unit.node(unit, "c_head")
@@ -1039,112 +1046,86 @@ AISystem.update_debug_draw = function (self, t)
 					index = index + 1
 
 					Managers.state.debug_text:output_unit_text("STAGGER_IMMUNE:HIGH_HEALTH", 0.2, unit, head_node, Vector3.up() * 0.2 * index, 0.1, "stagger_immunity", color_vector, viewport_name)
+				else
+					local action = blackboard.action
+					local ignore_staggers = action and action.ignore_staggers
 
-					index = index + 1
+					if ignore_staggers then
+						local ignore_stagger_info = action.name .. ": "
 
-					break
-				end
+						for i = 1, 7 do
+							local ignore_stagger_value = type(ignore_staggers[i]) == "table" and tostring(health_percent > ignore_staggers[i].health.min and health_percent <= ignore_staggers[i].health.max) or tostring(ignore_staggers[i])
 
-				local action = blackboard.action
-				local ignore_staggers = action and action.ignore_staggers
-
-				if ignore_staggers then
-					local ignore_stagger_info = action.name .. ": "
-
-					for i = 1, 7 do
-						local ignore_stagger_value = type(ignore_staggers[i]) == "table" and tostring(health_percent > ignore_staggers[i].health.min and health_percent <= ignore_staggers[i].health.max) or tostring(ignore_staggers[i])
-
-						ignore_stagger_info = ignore_stagger_info .. "[" .. ignore_stagger_value .. "]"
-					end
-
-					Managers.state.debug_text:output_unit_text(ignore_stagger_info, 0.2, unit, head_node, Vector3.up() * 0.2 * index, 0.1, "stagger_immunity", color_vector, viewport_name)
-
-					index = index + 1
-				end
-
-				local stagger_immune = false
-
-				if stagger_immunity.stagger_immune_at then
-					stagger_immune = t < stagger_immunity.stagger_immune_at + stagger_immunity.time and stagger_immunity.debug_damage_left > 0
-
-					if stagger_immune then
-						local time_left = math.round_with_precision(stagger_immunity.stagger_immune_at + stagger_immunity.time - t, 2)
-
-						Managers.state.debug_text:output_unit_text("time left:" .. time_left, 0.2, unit, head_node, Vector3.up() * 0.2 * index, 0.1, "stagger_immunity", color_vector, viewport_name)
-
-						index = index + 1
-
-						Managers.state.debug_text:output_unit_text("damage left:" .. stagger_immunity.debug_damage_left, 0.2, unit, head_node, Vector3.up() * 0.2 * index, 0.1, "stagger_immunity", color_vector, viewport_name)
-
-						index = index + 1
-
-						Managers.state.debug_text:output_unit_text("STAGGER_IMMUNE:HITS", 0.2, unit, head_node, Vector3.up() * 0.2 * index, 0.1, "stagger_immunity", color_vector, viewport_name)
-
-						index = index + 1
-					end
-				end
-
-				if not stagger_immune then
-					local hits_until_stagger_immunity = "hits_until_stagger_immunity:" .. stagger_immunity.num_attacks - (stagger_immunity.num_hits or 0)
-
-					Managers.state.debug_text:output_unit_text(hits_until_stagger_immunity, 0.2, unit, head_node, Vector3.up() * 0.2 * index, 0.1, "stagger_immunity", color_vector, viewport_name)
-
-					index = index + 1
-				end
-			until true
-		end
-	end
-
-	if script_data.debug_ai_attack_pattern then
-		for unit, extension in pairs(self.ai_units_alive) do
-			repeat
-				local blackboard = BLACKBOARDS[unit]
-				local spine_node = Unit.has_node(unit, "j_spine") and Unit.node(unit, "j_spine")
-
-				if spine_node then
-					local position = Unit.world_position(unit, spine_node)
-					local have_slot = blackboard.have_slot
-					local debug_text_manager = Managers.state.debug_text
-
-					debug_text_manager:clear_unit_text(unit, "attack_type")
-
-					if blackboard.stagger or blackboard.blocked then
-						QuickDrawer:sphere(position, 0.25, Colors.get("blue"))
-
-						break
-					end
-
-					if have_slot > 0 then
-						do
-							local attack_cooldown_at = blackboard.attack_cooldown_at
-
-							if blackboard.attack_token then
-								QuickDrawer:sphere(position, 0.35, Colors.get("red"))
-
-								do
-									local attack_type = blackboard.action.attack_intensity_type and blackboard.action.attack_intensity_type or "normal"
-
-									debug_text_manager:output_unit_text(attack_type, 0.16, unit, spine_node, Vector3.zero(), nil, "attack_type", Vector3(255, 255, 255), "player_1")
-								end
-
-								break
-							end
-
-							if t < attack_cooldown_at then
-								QuickDrawer:sphere(position, 0.35, Colors.get("orange"))
-
-								break
-							end
-
-							QuickDrawer:sphere(position, 0.25, Colors.get("lime"))
+							ignore_stagger_info = ignore_stagger_info .. "[" .. ignore_stagger_value .. "]"
 						end
 
-						break
+						Managers.state.debug_text:output_unit_text(ignore_stagger_info, 0.2, unit, head_node, Vector3.up() * 0.2 * index, 0.1, "stagger_immunity", color_vector, viewport_name)
+
+						index = index + 1
 					end
 
+					local stagger_immune = false
+
+					if stagger_immunity.stagger_immune_at then
+						stagger_immune = t < stagger_immunity.stagger_immune_at + stagger_immunity.time and stagger_immunity.debug_damage_left > 0
+
+						if stagger_immune then
+							local time_left = math.round_with_precision(stagger_immunity.stagger_immune_at + stagger_immunity.time - t, 2)
+
+							Managers.state.debug_text:output_unit_text("time left:" .. time_left, 0.2, unit, head_node, Vector3.up() * 0.2 * index, 0.1, "stagger_immunity", color_vector, viewport_name)
+
+							index = index + 1
+
+							Managers.state.debug_text:output_unit_text("damage left:" .. stagger_immunity.debug_damage_left, 0.2, unit, head_node, Vector3.up() * 0.2 * index, 0.1, "stagger_immunity", color_vector, viewport_name)
+
+							index = index + 1
+
+							Managers.state.debug_text:output_unit_text("STAGGER_IMMUNE:HITS", 0.2, unit, head_node, Vector3.up() * 0.2 * index, 0.1, "stagger_immunity", color_vector, viewport_name)
+
+							index = index + 1
+						end
+					end
+
+					if not stagger_immune then
+						local hits_until_stagger_immunity = "hits_until_stagger_immunity:" .. stagger_immunity.num_attacks - (stagger_immunity.num_hits or 0)
+
+						Managers.state.debug_text:output_unit_text(hits_until_stagger_immunity, 0.2, unit, head_node, Vector3.up() * 0.2 * index, 0.1, "stagger_immunity", color_vector, viewport_name)
+					end
+				end
+			end
+		end
+
+		if script_data.debug_ai_attack_pattern then
+			local blackboard = BLACKBOARDS[unit]
+			local spine_node = Unit.has_node(unit, "j_spine") and Unit.node(unit, "j_spine")
+
+			if spine_node then
+				local position = Unit.world_position(unit, spine_node)
+				local have_slot = blackboard.have_slot
+				local debug_text_manager = Managers.state.debug_text
+
+				debug_text_manager:clear_unit_text(unit, "attack_type")
+
+				if blackboard.stagger or blackboard.blocked then
+					QuickDrawer:sphere(position, 0.25, Colors.get("blue"))
+				elseif have_slot > 0 then
+					local attack_cooldown_at = blackboard.attack_cooldown_at
+
+					if blackboard.attack_token then
+						QuickDrawer:sphere(position, 0.35, Colors.get("red"))
+
+						local attack_type = blackboard.action.attack_intensity_type and blackboard.action.attack_intensity_type or "normal"
+
+						debug_text_manager:output_unit_text(attack_type, 0.16, unit, spine_node, Vector3.zero(), nil, "attack_type", Vector3(255, 255, 255), "player_1")
+					elseif t < attack_cooldown_at then
+						QuickDrawer:sphere(position, 0.35, Colors.get("orange"))
+					else
+						QuickDrawer:sphere(position, 0.25, Colors.get("lime"))
+					end
+				else
 					QuickDrawer:sphere(position, 0.25, Colors.get("gray"))
 				end
-			until true
+			end
 		end
 	end
 

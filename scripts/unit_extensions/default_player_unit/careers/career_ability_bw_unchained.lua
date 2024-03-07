@@ -155,13 +155,13 @@ CareerAbilityBWUnchained._run_ability = function (self, new_initial_speed)
 	local explosion_template_name = "explosion_bw_unchained_ability"
 	local scale = 1
 
-	if talent_extension:has_talent("sienna_unchained_activated_ability_fire_aura", "bright_wizard", true) then
+	if talent_extension:has_talent("sienna_unchained_activated_ability_fire_aura") then
 		explosion_template_name = "explosion_bw_unchained_ability_increased_radius"
 	end
 
 	local career_power_level = career_extension:get_career_power_level()
 
-	if talent_extension:has_talent("sienna_unchained_activated_ability_temp_health", "bright_wizard", true) then
+	if talent_extension:has_talent("sienna_unchained_activated_ability_temp_health") then
 		local radius = 10
 		local nearby_player_units = FrameTable.alloc_table()
 		local proximity_extension = Managers.state.entity:system("proximity_system")
@@ -170,7 +170,7 @@ CareerAbilityBWUnchained._run_ability = function (self, new_initial_speed)
 		Broadphase.query(broadphase, POSITION_LOOKUP[owner_unit], radius, nearby_player_units)
 
 		local side_manager = Managers.state.side
-		local heal_amount = 30
+		local heal_amount = TalentUtils.get_talent_attribute("sienna_unchained_activated_ability_temp_health", "heal_amount")
 		local heal_type_id = NetworkLookup.heal_types.career_skill
 
 		for _, player_unit in pairs(nearby_player_units) do
@@ -184,7 +184,7 @@ CareerAbilityBWUnchained._run_ability = function (self, new_initial_speed)
 		end
 	end
 
-	local explosion_template = ExplosionTemplates[explosion_template_name]
+	local explosion_template = ExplosionUtils.get_template(explosion_template_name)
 	local owner_unit_go_id = network_manager:unit_game_object_id(owner_unit)
 	local damage_source = "career_ability"
 	local explosion_template_id = NetworkLookup.explosion_templates[explosion_template_name]

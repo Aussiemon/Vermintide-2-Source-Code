@@ -82,16 +82,17 @@ PackageManager.load = function (self, package_name, reference_name, callback, as
 
 			self._packages[package_name] = resource_handle
 		else
-			local resource_handle = Application.resource_package(package_name)
-
-			ResourcePackage.load(resource_handle)
-
 			self._asynch_packages[package_name] = {
-				handle = resource_handle,
 				callbacks = {
 					callback,
 				},
 			}
+
+			local resource_handle = Application.resource_package(package_name)
+
+			ResourcePackage.load(resource_handle)
+
+			self._asynch_packages[package_name].handle = resource_handle
 		end
 	end
 end
@@ -99,20 +100,25 @@ end
 PackageManager.force_load = function (self, package_name)
 	debug_print("Force_load:  %s", package_name)
 
-	local package = self._asynch_packages[package_name]
+	local resource_handle = self:_get_async_handle(package_name, true)
 
-	assert(package, "Package %q is not being loaded", package_name)
+	if not resource_handle then
+		resource_handle = Application.resource_package(package_name)
 
-	local resource_handle = package.handle
+		ResourcePackage.load(resource_handle)
+	end
 
 	assert(not self._packages[package_name], "Package %q is already loaded", package_name)
 	ResourcePackage.flush(resource_handle)
 
 	self._packages[package_name] = resource_handle
+
+	local package_data = self._asynch_packages[package_name]
+
 	self._asynch_packages[package_name] = nil
 
-	if package.callbacks then
-		for _, callback in ipairs(package.callbacks) do
+	if package_data.callbacks then
+		for _, callback in ipairs(package_data.callbacks) do
 			callback()
 		end
 	end
@@ -123,9 +129,9 @@ end
 PackageManager.force_load_queued_package = function (self, package_name)
 	debug_print("Force_load_queued_package:  %s", package_name)
 
-	local package = self._queued_async_packages[package_name]
+	local package_data = self._queued_async_packages[package_name]
 
-	assert(package, "Package %q is not being loaded", package_name)
+	assert(package_data, "Package %q is not being loaded", package_name)
 
 	local resource_handle = Application.resource_package(package_name)
 
@@ -136,8 +142,8 @@ PackageManager.force_load_queued_package = function (self, package_name)
 	self._packages[package_name] = resource_handle
 	self._queued_async_packages[package_name] = nil
 
-	if package.callbacks then
-		for _, callback in ipairs(package.callbacks) do
+	if package_data.callbacks then
+		for _, callback in ipairs(package_data.callbacks) do
 			callback()
 		end
 	end
@@ -163,21 +169,22 @@ PackageManager._pop_queue = function (self)
 		queued_package_name = nil
 	end
 
-	if queued_package_name and self._queued_async_packages[queued_package_name] then
+	if self._queued_async_packages[queued_package_name] then
 		local data = self._queued_async_packages[queued_package_name]
 
 		debug_print("Queueing new asynch package:  %s", queued_package_name)
+
+		self._queued_async_packages[queued_package_name] = nil
+		self._queue_order = table.crop(self._queue_order, index + 1)
+		self._asynch_packages[queued_package_name] = {
+			callbacks = data.callbacks,
+		}
 
 		local resource_handle = Application.resource_package(queued_package_name)
 
 		ResourcePackage.load(resource_handle)
 
-		self._asynch_packages[queued_package_name] = {
-			handle = resource_handle,
-			callbacks = data.callbacks,
-		}
-		self._queued_async_packages[queued_package_name] = nil
-		self._queue_order = table.crop(self._queue_order, index + 1)
+		self._asynch_packages[queued_package_name].handle = resource_handle
 	else
 		table.clear(self._queue_order)
 	end
@@ -197,13 +204,7 @@ PackageManager.unload = function (self, package_name, reference_name)
 	end
 
 	if table.is_empty(references) then
-		local resource_handle = self._packages[package_name]
-
-		if self._asynch_packages[package_name] then
-			resource_handle = self._asynch_packages[package_name].handle
-
-			assert(resource_handle, "Package '" .. tostring(package_name) .. "' is not loaded")
-		end
+		local resource_handle = self:_get_async_handle(package_name, true) or self._packages[package_name]
 
 		if resource_handle then
 			ResourcePackage.unload(resource_handle)
@@ -285,11 +286,11 @@ PackageManager.reference_count = function (self, package, reference_name)
 	return reference_count
 end
 
-PackageManager.update = function (self)
+PackageManager.update = function (self, dt)
 	for package_name, package in pairs(self._asynch_packages) do
-		local resource_handle = package.handle
+		local resource_handle = self:_get_async_handle(package_name, false)
 
-		if ResourcePackage.has_loaded(resource_handle) then
+		if resource_handle and ResourcePackage.has_loaded(resource_handle) then
 			debug_print("Finished loading asynchronous package:  %s", package_name)
 			self:force_load(package_name)
 
@@ -331,16 +332,22 @@ PackageManager.unload_dangling_painting_materials = function (self)
 	end
 end
 
+PackageManager._get_async_handle = function (self, package_name, clear_debug_delay)
+	local load_data = self._asynch_packages[package_name]
+
+	if load_data then
+		local resource_handle = load_data.handle
+
+		fassert(resource_handle, "Package '%s' is not loaded", package_name)
+
+		return resource_handle
+	end
+end
+
 PackageManager._force_unload = function (self, package_name)
 	table.clear(self._references[package_name])
 
-	local resource_handle = self._packages[package_name]
-
-	if self._asynch_packages[package_name] then
-		resource_handle = self._asynch_packages[package_name].handle
-
-		assert(resource_handle, "Package '" .. tostring(package_name) .. "' is not loaded")
-	end
+	local resource_handle = self:_get_async_handle(package_name, true) or self._packages[package_name]
 
 	if resource_handle then
 		ResourcePackage.unload(resource_handle)

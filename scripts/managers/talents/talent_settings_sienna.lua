@@ -211,7 +211,8 @@ local buff_tweak_data = {
 		duration = 10,
 	},
 	sienna_unchained_activated_ability_temp_health = {
-		display_bonus = 30,
+		heal_amount = 30,
+		heal_amount_versus = 20,
 	},
 	sienna_unchained_activated_ability_power_on_enemies_hit_buff = {
 		duration = 15,
@@ -1137,7 +1138,6 @@ TalentTrees.bright_wizard = {
 		},
 	},
 }
-Talents = Talents or {}
 Talents.bright_wizard = {
 	{
 		buffer = "server",
@@ -1147,7 +1147,7 @@ Talents.bright_wizard = {
 		num_ranks = 1,
 		description_values = {
 			{
-				value = BuffTemplates.reaper.buffs[1].max_targets,
+				value = BuffUtils.get_buff_template("reaper", "adventure").buffs[1].max_targets,
 			},
 		},
 		buffs = {
@@ -1163,7 +1163,7 @@ Talents.bright_wizard = {
 		description_values = {
 			{
 				value_type = "percent",
-				value = BuffTemplates.bloodlust.buffs[1].multiplier,
+				value = BuffUtils.get_buff_template("bloodlust", "adventure").buffs[1].multiplier,
 			},
 		},
 		buffs = {
@@ -1179,7 +1179,7 @@ Talents.bright_wizard = {
 		description_values = {
 			{
 				value_type = "percent",
-				value = BuffTemplates.conqueror.buffs[1].multiplier,
+				value = BuffUtils.get_buff_template("conqueror", "adventure").buffs[1].multiplier,
 			},
 		},
 		buffs = {
@@ -1399,11 +1399,11 @@ Talents.bright_wizard = {
 		description_values = {
 			{
 				value_type = "percent",
-				value = BuffTemplates.smiter_unbalance.buffs[1].display_multiplier,
+				value = BuffUtils.get_buff_template("smiter_unbalance", "adventure").buffs[1].display_multiplier,
 			},
 			{
 				value_type = "percent",
-				value = BuffTemplates.smiter_unbalance.buffs[1].max_display_multiplier,
+				value = BuffUtils.get_buff_template("smiter_unbalance", "adventure").buffs[1].max_display_multiplier,
 			},
 		},
 		buffs = {
@@ -1419,11 +1419,11 @@ Talents.bright_wizard = {
 		description_values = {
 			{
 				value_type = "percent",
-				value = BuffTemplates.linesman_unbalance.buffs[1].display_multiplier,
+				value = BuffUtils.get_buff_template("linesman_unbalance", "adventure").buffs[1].display_multiplier,
 			},
 			{
 				value_type = "percent",
-				value = BuffTemplates.linesman_unbalance.buffs[1].max_display_multiplier,
+				value = BuffUtils.get_buff_template("linesman_unbalance", "adventure").buffs[1].max_display_multiplier,
 			},
 		},
 		buffs = {
@@ -1439,7 +1439,7 @@ Talents.bright_wizard = {
 		description_values = {
 			{
 				value_type = "percent",
-				value = BuffTemplates.power_level_unbalance.buffs[1].multiplier,
+				value = BuffUtils.get_buff_template("power_level_unbalance", "adventure").buffs[1].multiplier,
 			},
 		},
 		buffs = {
@@ -1466,7 +1466,7 @@ Talents.bright_wizard = {
 		description_values = {
 			{
 				value_type = "percent",
-				value = BuffTemplates.bloodlust.buffs[1].multiplier,
+				value = BuffUtils.get_buff_template("bloodlust", "adventure").buffs[1].multiplier,
 			},
 		},
 		buffs = {
@@ -1482,7 +1482,7 @@ Talents.bright_wizard = {
 		description_values = {
 			{
 				value_type = "percent",
-				value = BuffTemplates.conqueror.buffs[1].multiplier,
+				value = BuffUtils.get_buff_template("conqueror", "adventure").buffs[1].multiplier,
 			},
 		},
 		buffs = {
@@ -1690,18 +1690,18 @@ Talents.bright_wizard = {
 		description_values = {
 			{
 				value_type = "percent",
-				value = BuffTemplates.tank_unbalance_buff.buffs[1].bonus,
+				value = BuffUtils.get_buff_template("tank_unbalance_buff", "adventure").buffs[1].bonus,
 			},
 			{
-				value = BuffTemplates.tank_unbalance_buff.buffs[1].duration,
-			},
-			{
-				value_type = "percent",
-				value = BuffTemplates.tank_unbalance.buffs[1].display_multiplier,
+				value = BuffUtils.get_buff_template("tank_unbalance_buff", "adventure").buffs[1].duration,
 			},
 			{
 				value_type = "percent",
-				value = BuffTemplates.tank_unbalance.buffs[1].max_display_multiplier,
+				value = BuffUtils.get_buff_template("tank_unbalance", "adventure").buffs[1].display_multiplier,
+			},
+			{
+				value_type = "percent",
+				value = BuffUtils.get_buff_template("tank_unbalance", "adventure").buffs[1].max_display_multiplier,
 			},
 		},
 		buffs = {
@@ -1717,11 +1717,11 @@ Talents.bright_wizard = {
 		description_values = {
 			{
 				value_type = "percent",
-				value = BuffTemplates.smiter_unbalance.buffs[1].display_multiplier,
+				value = BuffUtils.get_buff_template("smiter_unbalance", "adventure").buffs[1].display_multiplier,
 			},
 			{
 				value_type = "percent",
-				value = BuffTemplates.smiter_unbalance.buffs[1].max_display_multiplier,
+				value = BuffUtils.get_buff_template("smiter_unbalance", "adventure").buffs[1].max_display_multiplier,
 			},
 		},
 		buffs = {
@@ -1737,7 +1737,7 @@ Talents.bright_wizard = {
 		description_values = {
 			{
 				value_type = "percent",
-				value = BuffTemplates.power_level_unbalance.buffs[1].multiplier,
+				value = BuffUtils.get_buff_template("power_level_unbalance", "adventure").buffs[1].multiplier,
 			},
 		},
 		buffs = {
@@ -1763,7 +1763,7 @@ Talents.bright_wizard = {
 		num_ranks = 1,
 		description_values = {
 			{
-				value = BuffTemplates.reaper.buffs[1].max_targets,
+				value = BuffUtils.get_buff_template("reaper", "adventure").buffs[1].max_targets,
 			},
 		},
 		buffs = {
@@ -1779,7 +1779,7 @@ Talents.bright_wizard = {
 		description_values = {
 			{
 				value_type = "percent",
-				value = BuffTemplates.conqueror.buffs[1].multiplier,
+				value = BuffUtils.get_buff_template("conqueror", "adventure").buffs[1].multiplier,
 			},
 		},
 		buffs = {
@@ -1972,10 +1972,25 @@ Talents.bright_wizard = {
 		num_ranks = 1,
 		description_values = {
 			{
-				value = buff_tweak_data.sienna_unchained_activated_ability_temp_health.display_bonus,
+				value = buff_tweak_data.sienna_unchained_activated_ability_temp_health.heal_amount,
 			},
 		},
 		buffs = {},
+		attributes = {
+			heal_amount = buff_tweak_data.sienna_unchained_activated_ability_temp_health.heal_amount,
+		},
+		mechanism_overrides = {
+			versus = {
+				description_values = {
+					{
+						value = buff_tweak_data.sienna_unchained_activated_ability_temp_health.heal_amount_versus,
+					},
+				},
+				attributes = {
+					heal_amount = buff_tweak_data.sienna_unchained_activated_ability_temp_health.heal_amount_versus,
+				},
+			},
+		},
 	},
 	{
 		buffer = "server",
@@ -1986,18 +2001,18 @@ Talents.bright_wizard = {
 		description_values = {
 			{
 				value_type = "percent",
-				value = BuffTemplates.tank_unbalance_buff.buffs[1].bonus,
+				value = BuffUtils.get_buff_template("tank_unbalance_buff", "adventure").buffs[1].bonus,
 			},
 			{
-				value = BuffTemplates.tank_unbalance_buff.buffs[1].duration,
-			},
-			{
-				value_type = "percent",
-				value = BuffTemplates.tank_unbalance.buffs[1].display_multiplier,
+				value = BuffUtils.get_buff_template("tank_unbalance_buff", "adventure").buffs[1].duration,
 			},
 			{
 				value_type = "percent",
-				value = BuffTemplates.tank_unbalance.buffs[1].max_display_multiplier,
+				value = BuffUtils.get_buff_template("tank_unbalance", "adventure").buffs[1].display_multiplier,
+			},
+			{
+				value_type = "percent",
+				value = BuffUtils.get_buff_template("tank_unbalance", "adventure").buffs[1].max_display_multiplier,
 			},
 		},
 		buffs = {
@@ -2013,11 +2028,11 @@ Talents.bright_wizard = {
 		description_values = {
 			{
 				value_type = "percent",
-				value = BuffTemplates.linesman_unbalance.buffs[1].display_multiplier,
+				value = BuffUtils.get_buff_template("linesman_unbalance", "adventure").buffs[1].display_multiplier,
 			},
 			{
 				value_type = "percent",
-				value = BuffTemplates.linesman_unbalance.buffs[1].max_display_multiplier,
+				value = BuffUtils.get_buff_template("linesman_unbalance", "adventure").buffs[1].max_display_multiplier,
 			},
 		},
 		buffs = {
@@ -2033,7 +2048,7 @@ Talents.bright_wizard = {
 		description_values = {
 			{
 				value_type = "percent",
-				value = BuffTemplates.power_level_unbalance.buffs[1].multiplier,
+				value = BuffUtils.get_buff_template("power_level_unbalance", "adventure").buffs[1].multiplier,
 			},
 		},
 		buffs = {

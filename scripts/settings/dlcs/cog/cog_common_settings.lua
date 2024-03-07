@@ -5,6 +5,9 @@ local settings = DLCSettings.cog
 settings.career_setting_files = {
 	"scripts/settings/dlcs/cog/career_settings_cog",
 }
+settings.player_breeds = {
+	"scripts/settings/dlcs/cog/player_breeds_cog",
+}
 settings.career_ability_settings = {
 	"scripts/settings/dlcs/cog/passive_ability_engineer",
 	"scripts/settings/dlcs/cog/career_ability_settings_cog",

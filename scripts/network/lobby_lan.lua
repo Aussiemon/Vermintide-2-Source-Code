@@ -45,7 +45,7 @@ LobbyInternal.open_channel = function (lobby, peer)
 end
 
 LobbyInternal.close_channel = function (lobby, channel)
-	print("LobbyInternal.close_channel lobby: %s, channel: %s", lobby, channel)
+	printf("LobbyInternal.close_channel lobby: %s, channel: %s", lobby, channel)
 	LanLobby.close_channel(lobby, channel)
 end
 

@@ -120,6 +120,7 @@ SpawnUnitTemplates.vortex_unit = {
 			outer_decal_unit = Managers.state.unit_spawner:spawn_network_unit(outer_decal_unit_name, "network_synched_dummy_unit", nil, outer_spawn_pose)
 		end
 
+		local side_id = Managers.state.side.side_by_unit[source_unit].side_id
 		local UNIT_TEMPLATE_NAME = "vortex_unit"
 		local extension_init_data = {
 			area_damage_system = {
@@ -127,6 +128,8 @@ SpawnUnitTemplates.vortex_unit = {
 				inner_decal_unit = inner_decal_unit,
 				outer_decal_unit = outer_decal_unit,
 				owner_unit = source_unit,
+				side_id = side_id,
+				target_unit = target_unit,
 			},
 		}
 

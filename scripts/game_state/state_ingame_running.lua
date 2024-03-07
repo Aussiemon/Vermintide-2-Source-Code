@@ -253,6 +253,8 @@ StateInGameRunning._setup_end_of_level_UI = function (self)
 	elseif not Managers.state.game_mode:setting("skip_level_end_view") then
 		local game_won = not self.game_lost
 		local game_mode_key = Managers.state.game_mode:game_mode_key()
+		local mechanism_name = Managers.mechanism:current_mechanism_name()
+		local is_versus = mechanism_name == "versus"
 		local hero_name
 		local peer_id = Network.peer_id()
 		local local_player_id = self.local_player_id
@@ -279,6 +281,10 @@ StateInGameRunning._setup_end_of_level_UI = function (self)
 		level_end_view_context.completed_weave = self._completed_weave
 		level_end_view_context.profile_synchronizer = self.profile_synchronizer
 
+		if is_versus then
+			level_end_view_context.party_composition = Managers.party:get_party_composition()
+		end
+
 		if self.is_server then
 			local players_session_score = Managers.mechanism:get_players_session_score(self.statistics_db, self.profile_synchronizer, self._saved_scoreboard_stats)
 
@@ -293,20 +299,31 @@ StateInGameRunning._setup_end_of_level_UI = function (self)
 		if not self._booted_eac_untrusted then
 			local level, start_experience, start_experience_pool = self.rewards:get_level_start()
 			local win_track_start_experience = self.rewards:get_win_track_experience_start()
-			local mechanism_name = Managers.mechanism:current_mechanism_name()
 			local rewards, end_of_level_rewards_arguments = self.rewards:get_rewards()
+			local win_conditions = mechanism_name == "versus" and Managers.mechanism:game_mechanism():win_conditions()
 
-			level_end_view_context.rewards = {
-				end_of_level_rewards = table.clone(rewards),
-				level_start = {
-					level,
-					start_experience,
-					start_experience_pool,
-				},
-				mission_results = table.clone(self.rewards:get_mission_results()),
-				win_track_start_experience = win_track_start_experience,
-			}
-			level_end_view_context.end_of_level_rewards_arguments = table.clone(end_of_level_rewards_arguments)
+			if is_versus then
+				level_end_view_context.rewards = {
+					end_of_level_rewards = {},
+					level_start = {},
+					mission_results = {},
+					win_track_start_experience = {},
+					team_scores = win_conditions and win_conditions:get_total_scores(),
+				}
+			else
+				level_end_view_context.rewards = {
+					end_of_level_rewards = table.clone(rewards),
+					level_start = {
+						level,
+						start_experience,
+						start_experience_pool,
+					},
+					mission_results = table.clone(self.rewards:get_mission_results()),
+					win_track_start_experience = win_track_start_experience,
+				}
+			end
+
+			level_end_view_context.end_of_level_rewards_arguments = end_of_level_rewards_arguments and table.clone(end_of_level_rewards_arguments) or {}
 		end
 
 		level_end_view_context.level_end_view = Managers.mechanism:get_level_end_view()
@@ -531,6 +548,8 @@ StateInGameRunning.gm_event_end_conditions_met = function (self, reason, checkpo
 	local register_statistics = true
 	local is_final_objective = Managers.mechanism:is_final_round()
 
+	Managers.mechanism:load_end_screen_resources()
+
 	if game_mode_key == "survival" then
 		if game_won then
 			print("Game won")
@@ -630,7 +649,7 @@ StateInGameRunning.gm_event_end_conditions_met = function (self, reason, checkpo
 		stats_interface:save()
 	end
 
-	local screen_name, screen_config, screen_params = Managers.state.game_mode:get_end_screen_config(game_won, game_lost, player)
+	local screen_name, screen_config, screen_params = Managers.state.game_mode:get_end_screen_config(game_won, game_lost, player, reason)
 	local is_booted_unstrusted = self._booted_eac_untrusted
 	local is_game_mode_weave = game_mode_key == "weave"
 	local weave_tier, score, num_players, weave_progress
@@ -669,7 +688,7 @@ StateInGameRunning.gm_event_end_conditions_met = function (self, reason, checkpo
 				self:_award_end_of_level_rewards(statistics_db, stats_id, game_won, difficulty_key)
 			end
 
-			print(screen_name, screen_config, screen_params)
+			print("end screen_name:", screen_name, screen_config, screen_params)
 			ingame_ui:activate_end_screen_ui(screen_name, screen_config, screen_params)
 		end
 
@@ -815,8 +834,20 @@ StateInGameRunning.update = function (self, dt, t)
 	if ingame_ui then
 		local ui_ready = not ingame_ui.survey_active and not self.has_setup_end_of_level and ingame_ui:end_screen_active() and ingame_ui:end_screen_fade_in_complete()
 		local rewards_ready = self._booted_eac_untrusted or self.rewards:rewards_generated() and not self.rewards:consuming_deed() and self.chests_package_name and Managers.package:has_loaded(self.chests_package_name, "global")
+		local mechanism_name = Managers.mechanism:current_mechanism_name()
 
-		if ui_ready and rewards_ready then
+		if mechanism_name == "versus" then
+			rewards_ready = true
+		end
+
+		if ui_ready then
+			local mechanism_manager = Managers.mechanism
+			local is_final_round = mechanism_manager:is_final_round()
+
+			if is_final_round and rewards_ready then
+				self:_setup_end_of_level_UI()
+			end
+		elseif ui_ready and rewards_ready then
 			self:_setup_end_of_level_UI()
 		end
 	end

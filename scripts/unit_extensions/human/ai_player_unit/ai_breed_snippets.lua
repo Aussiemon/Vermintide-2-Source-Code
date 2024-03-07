@@ -333,8 +333,8 @@ AiBreedSnippets.on_chaos_troll_spawn = function (unit, blackboard)
 	local breed = blackboard.breed
 	local difficulty_rank = Managers.state.difficulty:get_difficulty_rank()
 
-	blackboard.max_health_regen_per_sec = breed.max_health_regen_per_sec[difficulty_rank]
-	blackboard.max_health_regen_time = breed.max_health_regen_time[difficulty_rank]
+	blackboard.max_health_regen_per_sec = breed.max_health_regen_per_sec[difficulty_rank] or breed.max_health_regen_per_sec[2]
+	blackboard.max_health_regen_time = breed.max_health_regen_time[difficulty_rank] or breed.max_health_regen_time[2]
 
 	local can_start_angry = true
 
@@ -392,8 +392,8 @@ AiBreedSnippets.on_chaos_dummy_troll_spawn = function (unit, blackboard)
 	local breed = blackboard.breed
 	local difficulty_rank = Managers.state.difficulty:get_difficulty_rank()
 
-	blackboard.max_health_regen_per_sec = breed.max_health_regen_per_sec[difficulty_rank]
-	blackboard.max_health_regen_time = breed.max_health_regen_time[difficulty_rank]
+	blackboard.max_health_regen_per_sec = breed.max_health_regen_per_sec[difficulty_rank] or breed.max_health_regen_per_sec[2]
+	blackboard.max_health_regen_time = breed.max_health_regen_time[difficulty_rank] or breed.max_health_regen_time[2]
 	blackboard.idle_sound_timer = Managers.time:time("game") + 2
 	blackboard.play_alert = true
 end

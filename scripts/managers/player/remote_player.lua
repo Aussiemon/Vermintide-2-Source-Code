@@ -9,7 +9,7 @@ RemotePlayer.init = function (self, network_manager, peer, player_controlled, is
 	self.is_server = is_server
 	self._player_controlled = player_controlled
 	self._ui_id = ui_id
-	self._observed_player_id = nil
+	self._observed_unit = nil
 	self._account_id = account_id
 	self._debug_name = Localize("tutorial_no_text")
 	self.owned_units = {}
@@ -270,10 +270,10 @@ RemotePlayer.get_party = function (self)
 	return Managers.party:get_party(status.party_id)
 end
 
-RemotePlayer.observed_player_id = function (self)
-	return self._observed_player_id
+RemotePlayer.observed_unit = function (self)
+	return self._observed_unit
 end
 
-RemotePlayer.set_observed_player_id = function (self, player_id)
-	self._observed_player_id = player_id
+RemotePlayer.set_observed_unit = function (self, unit)
+	self._observed_unit = unit
 end

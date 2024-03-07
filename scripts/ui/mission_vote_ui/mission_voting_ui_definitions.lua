@@ -3883,6 +3883,30 @@ local deus_custom_widget = {
 		description = Localize("start_game_window_other_options_strict_matchmaking_description"),
 	}, nil, "menu_frame_03_morris"),
 }
+local versus_quickplay_widgets = {
+	game_option_1 = create_settings_option("game_option_1", scenegraph_definition.game_option_1.size, Localize("start_game_window_difficulty"), "difficulty_option_1", "game_options_bg_02"),
+	reward_presentation = create_reward_presentation("reward_presentation", scenegraph_definition.reward_presentation.size),
+}
+local versus_custom_widgets = {
+	game_option_1 = create_settings_option("game_option_1", scenegraph_definition.game_option_1.size, Localize("start_game_window_mission"), nil, "game_options_bg_01"),
+	game_option_2 = create_settings_option("game_option_2", scenegraph_definition.game_option_2.size, Localize("start_game_window_difficulty"), "difficulty_option_1", "game_options_bg_02"),
+	additional_option = create_additional_settings_option("additional_option", scenegraph_definition.additional_option.size, Localize("start_game_window_other_options_title"), "game_options_bg_03"),
+	player_hosted_frame = UIWidgets.create_frame("strict_matchmaking_button_frame", scenegraph_definition.strict_matchmaking_button_frame.size, window_frame, 1),
+	player_hosted_button = UIWidgets.create_default_checkbox_button("strict_matchmaking_button", scenegraph_definition.strict_matchmaking_button.size, Localize("player_hosted_title"), 24, {
+		title = Localize("player_hosted_title"),
+		description = Localize("player_hosted_desc"),
+	}),
+	dedicated_server_win_frame = UIWidgets.create_frame("host_button_frame", scenegraph_definition.host_button_frame.size, window_frame, 1),
+	dedicated_server_win_button = UIWidgets.create_default_checkbox_button("host_button", scenegraph_definition.host_button.size, Localize("dedicated_server_win_title"), 24, {
+		title = Localize("dedicated_server_win_title"),
+		description = Localize("dedicated_server_win_desc"),
+	}),
+	dedicated_server_aws_frame = UIWidgets.create_frame("private_button_frame", scenegraph_definition.private_button_frame.size, window_frame, 1),
+	dedicated_server_aws_button = UIWidgets.create_default_checkbox_button("private_button", scenegraph_definition.private_button.size, Localize("dedicated_server_aws_title"), 24, {
+		title = Localize("dedicated_server_aws_title"),
+		description = Localize("dedicated_server_aws_desc"),
+	}),
+}
 local twitch_mode_widget_funcs = {
 	twitch_disclaimer = create_twitch_disclaimer,
 	twitch_mode = create_twitch_mode,
@@ -3919,6 +3943,8 @@ return {
 	weave_quickplay_widgets = weave_quickplay_widgets,
 	twitch_mode_widget_funcs = twitch_mode_widget_funcs,
 	switch_mechanism_widgets = switch_mechanism_widgets,
+	versus_quickplay_widgets = versus_quickplay_widgets,
+	versus_custom_widgets = versus_custom_widgets,
 	widgets = widgets,
 	widgets_deus = widgets_deus,
 }

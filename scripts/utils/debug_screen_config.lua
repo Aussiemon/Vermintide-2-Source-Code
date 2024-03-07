@@ -103,6 +103,12 @@ local settings = {
 	},
 	{
 		category = "Allround useful stuff!",
+		description = "Takes you in the game as fast as possible, skipping delays and picking etc",
+		is_boolean = true,
+		setting_name = "dev_quick_start",
+	},
+	{
+		category = "Allround useful stuff!",
 		description = "Teleports the player to a portal hub element",
 		setting_name = "teleport player",
 		item_source = {},
@@ -253,12 +259,6 @@ local settings = {
 		description = "Do not show unseen rewards at login",
 		is_boolean = true,
 		setting_name = "dont_show_unseen_rewards",
-	},
-	{
-		category = "Allround useful stuff!",
-		description = "Use LAN instead of Steam",
-		is_boolean = true,
-		setting_name = "use_lan_backend",
 	},
 	{
 		category = "Allround useful stuff!",
@@ -784,6 +784,10 @@ local settings = {
 				local career = careers[script_data.wanted_career_index] or careers[1]
 				local force_respawn = true
 
+				if career.display_name == "vs_undecided" then
+					return
+				end
+
 				Managers.state.network:request_profile(1, profile_name, career.display_name, force_respawn)
 			end
 		end,
@@ -806,11 +810,12 @@ local settings = {
 			for k, party in ipairs(parties) do
 				local index = #options + 1
 				local num_used_slots = party.num_used_slots - party.num_bots
+				local num_slots = party.num_slots
 
-				if num_used_slots < party.num_slots then
-					options[index] = string.format("%s (%d/%d)", party.party_id, num_used_slots, party.num_slots)
+				if num_used_slots < num_slots then
+					options[index] = string.format("%s (%d/%d)", party.party_id, num_used_slots, num_slots)
 				else
-					options[index] = string.format("%s (%d/%d) FULL!", party.party_id, num_used_slots, party.num_slots)
+					options[index] = string.format("%s (%d/%d) FULL!", party.party_id, num_used_slots, num_slots)
 				end
 
 				data[index] = party.party_id
@@ -837,31 +842,16 @@ local settings = {
 						Managers.state.spawn:delayed_despawn(player)
 					end
 
-					local available_profiles = side.available_profiles or PROFILES_BY_AFFILIATION.heroes
+					local camera_system = Managers.state.entity:system("camera_system")
 
-					if available_profiles then
-						for k = 1, #available_profiles do
-							local profile_name = available_profiles[k]
+					if party.name == "spectators" then
+						local profile = PROFILES_BY_NAME.spectator
 
-							if profile_name then
-								local profile_index = FindProfileIndex(profile_name)
-								local career_index = 1
-								local career_name = SPProfiles[profile_index].careers[career_index].display_name
+						camera_system:initialize_camera_states(player, profile.index, 1)
+					else
+						local profile_index = FindProfileIndex("witch_hunter")
 
-								if Managers.mechanism:profile_available(profile_name, career_name) then
-									local force_respawn = true
-
-									Managers.state.network:request_profile(1, profile_name, career_name, force_respawn)
-
-									local camera_system = Managers.state.entity:system("camera_system")
-									local player = Managers.player:local_player()
-
-									camera_system:initialize_camera_states(player, profile_index, career_index)
-
-									break
-								end
-							end
-						end
+						camera_system:initialize_camera_states(player, profile_index, 1)
 					end
 
 					local sides = Managers.state.side:sides()
@@ -1016,6 +1006,12 @@ local settings = {
 		setting_name = "infinite_ammo",
 	},
 	{
+		category = "Versus",
+		description = "Exits ghost mode automatically",
+		is_boolean = true,
+		setting_name = "disable_ghost_mode",
+	},
+	{
 		category = "Player mechanics",
 		description = "Activated ability cooldowns set to 5 seconds",
 		is_boolean = true,
@@ -1089,6 +1085,12 @@ local settings = {
 		setting_name = "debug_action_anim_events",
 	},
 	{
+		category = "AI",
+		description = "Show animation events called for selected unit.",
+		is_boolean = true,
+		setting_name = "debug_selected_unit_anim_events",
+	},
+	{
 		category = "Player mechanics",
 		description = "Visualize ledges",
 		is_boolean = true,
@@ -1117,6 +1119,8 @@ local settings = {
 			local buff_templates = BuffTemplates
 
 			for key, item in pairs(buff_templates) do
+				item = BuffUtils.get_buff_template(key)
+
 				if item.buffs and item.buffs[1] and not item.buffs[1].dormant then
 					options[#options + 1] = key
 				end
@@ -1376,6 +1380,112 @@ local settings = {
 		description = "Disables triggering weapon animations for third person. Useful for testing new weapons. öddfg (to spite Seb)",
 		is_boolean = true,
 		setting_name = "disable_third_person_weapon_animation_events",
+	},
+	{
+		category = "Player mechanics",
+		description = "Enables players to leave ghost mode while in los",
+		is_boolean = true,
+		setting_name = "allow_ghost_mode_los",
+	},
+	{
+		category = "Player mechanics",
+		description = "Enables players to leave ghost mode while in within range",
+		is_boolean = true,
+		setting_name = "allow_ghost_mode_range",
+	},
+	{
+		category = "Player mechanics",
+		description = "Enables players to leave ghost mode always",
+		is_boolean = true,
+		setting_name = "always_allow_leave_ghost_mode",
+	},
+	{
+		category = "Versus",
+		description = "Disable blacklisting servers in search / matchmaking",
+		is_boolean = true,
+		setting_name = "blacklisting_disabled_vs",
+	},
+	{
+		category = "Versus",
+		description = "Skips to a set in VS. Will mess up UI paramaters",
+		setting_name = "vs_skip_to_set",
+		item_source = {},
+		load_items_source_func = function (options)
+			table.clear(options)
+
+			if Managers.level_transition_handler:in_hub_level() or Managers.mechanism:current_mechanism_name() ~= "versus" then
+				return
+			end
+
+			local mechanism = Managers.mechanism:game_mechanism()
+			local num_sets = mechanism:get_level_settings().num_sets
+			local current_set = mechanism:get_current_set()
+
+			for set = 1, num_sets do
+				if current_set < set then
+					options[#options + 1] = set
+				end
+			end
+		end,
+		func = function (options, index)
+			local key = options[index]
+
+			if not key then
+				return
+			end
+
+			Managers.mechanism:game_mechanism():debug_skip_to_set(key)
+		end,
+	},
+	{
+		category = "Versus",
+		description = "Add score for the current scoring party",
+		setting_name = "vs_add_score",
+		item_source = {
+			1,
+			2,
+			3,
+			5,
+			10,
+			15,
+			25,
+			50,
+			100,
+		},
+		custom_item_source_order = function (item_source, options)
+			for _, v in ipairs(item_source) do
+				local option = v
+
+				options[#options + 1] = option
+			end
+		end,
+		func = function (options, index)
+			if Managers.level_transition_handler:in_hub_level() then
+				return
+			end
+
+			local value = options[index]
+			local win_conditions = Managers.mechanism:game_mechanism():win_conditions()
+
+			win_conditions:add_score(value)
+		end,
+	},
+	{
+		category = "Versus",
+		description = "Unhoists local player",
+		setting_name = "vs_unhoist_local_player",
+		func = function (options, index)
+			local player = Managers.player:local_player(1)
+			local player_unit = player.player_unit
+
+			StatusUtils.set_grabbed_by_pack_master_network("pack_master_dropping", player_unit, true, nil)
+		end,
+	},
+	{
+		category = "Versus",
+		description = "draws spheres where player is teleported to",
+		is_boolean = true,
+		setting_name = "vs_debug_hoist",
 	},
 	{
 		category = "Player mechanics",
@@ -2275,6 +2385,24 @@ local settings = {
 		description = "Find it annoying that the game ends every time you die? Well enable this setting then!",
 		is_boolean = true,
 		setting_name = "disable_gamemode_end",
+	},
+	{
+		category = "Gamemode/level",
+		description = "Find it annoying that the game ends every time you die? Well enable this setting then!",
+		is_boolean = true,
+		setting_name = "disable_gamemode_end_hero_check",
+	},
+	{
+		category = "Gamemode/level",
+		description = "Game will not end even though if all players die",
+		is_boolean = true,
+		setting_name = "lose_condition_disabled",
+	},
+	{
+		category = "Gamemode/level",
+		description = "Game will not end until bots have died. (Only for Versus now)",
+		is_boolean = true,
+		setting_name = "lose_condition_also_count_bots",
 	},
 	{
 		category = "Gamemode/level",
@@ -5564,6 +5692,28 @@ local settings = {
 				},
 			},
 			{
+				description = "15 seconds",
+				commands = {
+					{
+						"network",
+						"latency",
+						"15",
+						"15",
+					},
+				},
+			},
+			{
+				description = "30 seconds",
+				commands = {
+					{
+						"network",
+						"latency",
+						"30",
+						"30",
+					},
+				},
+			},
+			{
 				description = "low latency",
 				commands = {
 					{
@@ -5859,7 +6009,7 @@ local settings = {
 	},
 	{
 		category = "Dialogue",
-		description = "Used to debug dialog files, facial expressions and missing vo/subtitles. To skip use: DebugVo_jump_to('line_number/line_id')",
+		description = "Used to debug dialog files, facial expressions and missing vo/subtitles. To skip use: DebugVo.jump_to(('line_number/line_id')",
 		setting_name = "debug_dialogue_files",
 		item_source = {},
 		load_items_source_func = function (options)
@@ -5868,7 +6018,7 @@ local settings = {
 			local dialogue_system = Managers.state.entity:system("dialogue_system")
 
 			if dialogue_system then
-				local loaded_files = dialogue_system.tagquery_loader.debug_loaded_files
+				local loaded_files = dialogue_system:tagquery_loader().debug_loaded_files
 
 				if loaded_files then
 					for file_name in pairs(loaded_files) do
@@ -5880,7 +6030,9 @@ local settings = {
 			end
 		end,
 		func = function (options, index)
-			DebugVoByFile(options[index], false)
+			local dialogue_system = Managers.state.entity:system("dialogue_system")
+
+			dialogue_system:debug_vo_by_file(options[index], false)
 		end,
 	},
 	{
@@ -6127,6 +6279,70 @@ local settings = {
 		description = "Enables logging for the package manager",
 		is_boolean = true,
 		setting_name = "package_debug",
+	},
+	{
+		category = "Network",
+		description = "Adds a delay to package loading requests",
+		setting_name = "package_loading_latency",
+		item_source = {
+			"off",
+			{
+				0.05,
+				0.2,
+			},
+			{
+				0.2,
+				0.5,
+			},
+			1,
+			{
+				1,
+				2,
+			},
+			5,
+			15,
+			30,
+		},
+		custom_item_source_order = function (item_source, options)
+			for i, v in ipairs(item_source) do
+				local option = v
+
+				if type(option) == "string" then
+					options[i] = option
+				elseif type(option) == "table" then
+					options[i] = {
+						option[1],
+						option[2] or option[1],
+					}
+				else
+					options[i] = {
+						option,
+						option,
+					}
+				end
+			end
+		end,
+		item_display_func = function (option, idx, options)
+			if type(option) == "string" then
+				return option
+			elseif type(option) == "table" then
+				return string.format("%s - %s seconds", option[1], option[2] or option[1])
+			else
+				return string.format("%s second%s", option, option == 1 and "s" or "")
+			end
+		end,
+		func = function (options, index)
+			local val = options[index]
+
+			if val == "off" then
+				script_data.package_loading_latency = nil
+			else
+				script_data.package_loading_latency = type(val) == "table" and val or {
+					val,
+					val,
+				}
+			end
+		end,
 	},
 	{
 		category = "Misc",
@@ -6641,6 +6857,18 @@ local settings = {
 	},
 	{
 		category = "Bots",
+		description = "THis will fill the Bot won't melee at enemy players, but still attack ai enemies. Versus Specific",
+		is_boolean = true,
+		setting_name = "disable_versus_darkpact_bots",
+	},
+	{
+		category = "Bots",
+		description = "Writes out the spawn status of darkpact bots on screen.",
+		is_boolean = true,
+		setting_name = "show_versus_darkpact_bot_debug",
+	},
+	{
+		category = "Bots",
 		description = "Bots will only use ranged attacks.",
 		is_boolean = true,
 		setting_name = "ai_bots_disable_ranged_attacks",
@@ -6830,12 +7058,6 @@ local settings = {
 		description = "Performance Manager Debug",
 		is_boolean = true,
 		setting_name = "performance_debug",
-	},
-	{
-		category = "Backend",
-		description = "Requires restart. Disables the backend and emulates it with a local save.",
-		is_boolean = true,
-		setting_name = "use_local_backend",
 	},
 	{
 		category = "Backend",
@@ -7822,6 +8044,12 @@ local settings = {
 		setting_name = "show_weave_objectives",
 	},
 	{
+		category = "Versus",
+		description = "Pause the objective timer for versus",
+		is_boolean = true,
+		setting_name = "versus_objective_timer_paused",
+	},
+	{
 		category = "Gamemode/level",
 		description = "Activates all objectives for the current weave",
 		setting_name = "activate_all_weave_objectives",
@@ -7859,6 +8087,18 @@ local settings = {
 				objectives,
 			})
 		end,
+	},
+	{
+		category = "Player mechanics",
+		description = "Sets all players max health to 5000",
+		is_boolean = true,
+		setting_name = "player_lots_of_max_health",
+	},
+	{
+		category = "Player mechanics",
+		description = "Sets all players max knock down health to 5000",
+		is_boolean = true,
+		setting_name = "player_lots_of_max_kd_health",
 	},
 	{
 		category = "Player mechanics",
@@ -8632,6 +8872,64 @@ local settings = {
 		description = "Debug crafting crafting recipes",
 		is_boolean = true,
 		setting_name = "craft_recipe_debug",
+	},
+	{
+		category = "Versus",
+		description = "Allows the player to force start a versus game with only one player",
+		is_boolean = true,
+		setting_name = "allow_versus_force_start_single_player",
+	},
+	{
+		category = "Versus",
+		description = "starts the round",
+		setting_name = "start_player_hosted_round",
+		func = function (options, index)
+			local game_mode_manager = Managers.state.game_mode
+
+			game_mode_manager:round_started()
+			printf("Round started!")
+		end,
+	},
+	{
+		category = "Versus",
+		description = "Trigger boss terror event",
+		setting_name = "inject_playable_boss_into_main_path",
+		func = function (options, index)
+			print("Playable boss patrols injected into the main path now")
+			Managers.state.conflict.level_analysis:inject_playable_boss_into_main_path()
+		end,
+	},
+	{
+		category = "Versus",
+		description = "Trigger boss terror event",
+		is_boolean = true,
+		setting_name = "debug_playable_boss",
+	},
+	{
+		category = "Versus",
+		description = "starts the round",
+		setting_name = "end_player_hosted_round",
+		func = function (options, index)
+			if Managers.level_transition_handler:in_hub_level() then
+				printf("Failed to end round - Match not started")
+
+				return false
+			end
+
+			local game_mode_manager = Managers.state.game_mode
+
+			game_mode_manager:round_started()
+
+			local win_conditions = Managers.mechanism:game_mechanism():win_conditions()
+
+			win_conditions:set_time(0)
+
+			DebugScreen.active = false
+
+			printf("Round ended!")
+
+			return true
+		end,
 	},
 }
 

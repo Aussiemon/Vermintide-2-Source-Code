@@ -391,7 +391,7 @@ local talents = {
 		num_ranks = 1,
 		description_values = {
 			{
-				value = BuffTemplates.regrowth.buffs[1].bonus,
+				value = BuffUtils.get_buff_template("regrowth", "adventure").buffs[1].bonus,
 			},
 		},
 		buffs = {
@@ -407,7 +407,7 @@ local talents = {
 		description_values = {
 			{
 				value_type = "percent",
-				value = BuffTemplates.bloodlust.buffs[1].multiplier,
+				value = BuffUtils.get_buff_template("bloodlust", "adventure").buffs[1].multiplier,
 			},
 		},
 		buffs = {
@@ -423,7 +423,7 @@ local talents = {
 		description_values = {
 			{
 				value_type = "percent",
-				value = BuffTemplates.conqueror.buffs[1].multiplier,
+				value = BuffUtils.get_buff_template("conqueror", "adventure").buffs[1].multiplier,
 			},
 		},
 		buffs = {
@@ -484,11 +484,11 @@ local talents = {
 		description_values = {
 			{
 				value_type = "percent",
-				value = BuffTemplates.smiter_unbalance.buffs[1].display_multiplier,
+				value = BuffUtils.get_buff_template("smiter_unbalance", "adventure").buffs[1].display_multiplier,
 			},
 			{
 				value_type = "percent",
-				value = BuffTemplates.smiter_unbalance.buffs[1].max_display_multiplier,
+				value = BuffUtils.get_buff_template("smiter_unbalance", "adventure").buffs[1].max_display_multiplier,
 			},
 		},
 		buffs = {
@@ -504,11 +504,11 @@ local talents = {
 		description_values = {
 			{
 				value_type = "percent",
-				value = BuffTemplates.linesman_unbalance.buffs[1].display_multiplier,
+				value = BuffUtils.get_buff_template("linesman_unbalance", "adventure").buffs[1].display_multiplier,
 			},
 			{
 				value_type = "percent",
-				value = BuffTemplates.linesman_unbalance.buffs[1].max_display_multiplier,
+				value = BuffUtils.get_buff_template("linesman_unbalance", "adventure").buffs[1].max_display_multiplier,
 			},
 		},
 		buffs = {
@@ -524,7 +524,7 @@ local talents = {
 		description_values = {
 			{
 				value_type = "percent",
-				value = BuffTemplates.power_level_unbalance.buffs[1].multiplier,
+				value = BuffUtils.get_buff_template("power_level_unbalance", "adventure").buffs[1].multiplier,
 			},
 		},
 		buffs = {

@@ -122,7 +122,7 @@ BTPlaceStandardAction.anim_cb_place_standard = function (self, unit, blackboard)
 
 			local world = blackboard.world
 			local explosion_position = Unit.local_position(standard_unit, 0)
-			local explosion_template = ExplosionTemplates.standard_bearer_explosion
+			local explosion_template = ExplosionUtils.get_template("standard_bearer_explosion")
 			local damage_source = blackboard.breed.name
 			local broadphase = blackboard.group_blackboard.broadphase
 			local radius = explosion_template.explosion.radius

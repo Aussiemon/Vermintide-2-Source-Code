@@ -21,6 +21,10 @@ UnitFrameUI.init = function (self, ingame_ui_context, definitions, data, frame_i
 	self.peer_id = ingame_ui_context.peer_id
 	self.player_manager = ingame_ui_context.player_manager
 	self.ui_animations = {}
+	self._damage_events = {}
+	self._dmg_part_pool = {}
+	self._hash_order = {}
+	self._hash_widget_lookup = {}
 	self.world = ingame_ui_context.world_manager:world("level_world")
 	self._show_respawn_ui = false
 	self.data = data
@@ -30,6 +34,14 @@ UnitFrameUI.init = function (self, ingame_ui_context, definitions, data, frame_i
 
 	self._ammo_ui_data = {}
 	self.weapon_changed = false
+
+	if player_data.is_player_darkpact then
+		Managers.state.event:register(self, "enter_ghostmode", "on_enter_ghostmode")
+	end
+end
+
+UnitFrameUI.on_enter_ghostmode = function (self, in_ghostmode, player_unit)
+	self:show_main_healthbar(not in_ghostmode)
 end
 
 UnitFrameUI._create_ui_elements = function (self, frame_index)
@@ -49,6 +61,14 @@ UnitFrameUI._create_ui_elements = function (self, frame_index)
 		default_dynamic = widgets.default_dynamic,
 		default_static = widgets.default_static,
 	}
+	self._damage_widgets = {}
+
+	if self.features_list.damage then
+		for _, widget in pairs(definitions.damage_widget_definitions) do
+			self._damage_widgets[#self._damage_widgets + 1] = UIWidget.init(widget)
+		end
+	end
+
 	self._portrait_widgets = {
 		portrait_static = widgets.portrait_static,
 	}
@@ -107,6 +127,7 @@ end
 
 UnitFrameUI.destroy = function (self)
 	self:set_visible(false)
+	Managers.state.event:unregister("enter_ghostmode", self)
 end
 
 UnitFrameUI.is_visible = function (self)
@@ -155,6 +176,16 @@ UnitFrameUI.set_portrait_alpha = function (self, alpha)
 	self:set_dirty()
 end
 
+UnitFrameUI.set_damage_alpha = function (self, alpha)
+	self._damage_alpha_multiplier = alpha
+
+	for _, widget in pairs(self._damage_widgets) do
+		self:_set_widget_dirty(widget)
+	end
+
+	self:set_dirty()
+end
+
 UnitFrameUI.set_equipment_alpha = function (self, alpha)
 	self._equipment_alpha_multiplier = alpha
 
@@ -191,6 +222,13 @@ UnitFrameUI.set_respawn_alpha = function (self, alpha)
 	for _, widget in pairs(self._respawn_widgets) do
 		self:_set_widget_dirty(widget)
 	end
+
+	self:set_dirty()
+end
+
+UnitFrameUI.show_main_healthbar = function (self, show)
+	self._widgets.health_dynamic.content.visible = show
+	self._widgets.default_static.content.show_health_bar = show
 
 	self:set_dirty()
 end
@@ -242,6 +280,10 @@ UnitFrameUI.update = function (self, dt, t)
 		dirty = true
 	end
 
+	if update_damage and self:_update_damage_feedback(dt, t) then
+		dirty = true
+	end
+
 	if dirty then
 		self:set_dirty()
 	end
@@ -284,11 +326,13 @@ UnitFrameUI.draw = function (self, dt)
 		if HudCustomizer.run(self.ui_renderer, self.ui_scenegraph, customizer_data_player_portrait) then
 			UIUtils.mark_dirty(self._portrait_widgets)
 			UIUtils.mark_dirty(self._default_widgets)
+			UIUtils.mark_dirty(self._damage_widgets)
 
 			self._dirty = true
 		elseif HudCustomizer.run(self.ui_renderer, self.ui_scenegraph, customizer_data_player_status) then
 			UIUtils.mark_dirty(self._health_widgets)
 			UIUtils.mark_dirty(self._ability_widgets)
+			UIUtils.mark_dirty(self._damage_widgets)
 
 			self._dirty = true
 		end
@@ -297,6 +341,7 @@ UnitFrameUI.draw = function (self, dt)
 		UIUtils.mark_dirty(self._default_widgets)
 		UIUtils.mark_dirty(self._health_widgets)
 		UIUtils.mark_dirty(self._ability_widgets)
+		UIUtils.mark_dirty(self._damage_widgets)
 
 		self._dirty = true
 	end
@@ -316,6 +361,12 @@ UnitFrameUI.draw = function (self, dt)
 	render_settings.alpha_multiplier = self._default_alpha_multiplier or alpha_multiplier
 
 	for _, widget in pairs(self._default_widgets) do
+		UIRenderer.draw_widget(ui_renderer, widget)
+	end
+
+	render_settings.alpha_multiplier = self._damage_alpha_multiplier or alpha_multiplier
+
+	for _, widget in pairs(self._damage_widgets) do
 		UIRenderer.draw_widget(ui_renderer, widget)
 	end
 
@@ -397,7 +448,7 @@ UnitFrameUI.set_portrait_frame = function (self, frame_settings_name, level_text
 
 	local retained_mode = true
 	local widget_definition = UIWidgets.create_portrait_frame("portrait_pivot", frame_settings_name, level_text, scale, retained_mode)
-	local widget = UIWidget.init(widget_definition)
+	local widget = UIWidget.init(widget_definition, self.ui_renderer)
 
 	widgets.portrait_static = widget
 	portrait_widgets.portrait_static = widgets.portrait_static
@@ -843,6 +894,11 @@ UnitFrameUI.show_respawn_countdown = function (self, player, is_local_player, sp
 	widget_content.total_countdown_time = spawn_timer
 	widget_content.state = "countdown"
 	widget_content.respawn_info_text = "Respawn in"
+
+	local widget_style = widget.style
+	local style_n = widget_style.respawn_countdown_text
+
+	style_n.text_color[1] = 255
 end
 
 UnitFrameUI.update_respawn_countdown = function (self, dt, t)
@@ -870,8 +926,8 @@ UnitFrameUI.update_respawn_countdown = function (self, dt, t)
 		widget_content.respawn_countdown_text = string.format("%d", math.abs(respawn_delta))
 	elseif state == "fadeout" then
 		local widget_style = widget.style
-		local fadeout_time = widget_content.fadeout_time - dt
-		local normalized_alpha = (fadeout_time - dt) / widget_content.total_fadeout_time
+		local fadeout_time = (widget_content.fadeout_time or 0) - dt
+		local normalized_alpha = math.max(fadeout_time, 0) / widget_content.total_fadeout_time
 		local alpha = normalized_alpha * 255
 		local style_n = widget_style.respawn_countdown_text
 
@@ -1523,4 +1579,345 @@ UnitFrameUI.update_numeric_ui_career_ability = function (self, game, go_id, play
 	widget.content.ability_cooldown = UIUtils.format_time(ability_cooldown)
 
 	self:_set_widget_dirty(widget)
+end
+
+local pop_time_between_dmg = 0.01
+local pop_dmg_time = 0.7
+local pop_dmg_life_time = 2
+local dmg_lookup1 = {
+	[0] = ".00",
+	[25] = ".25",
+	[50] = ".50",
+	[75] = ".75",
+}
+local dmg_lookup2 = {
+	[0] = " ",
+	[5] = "½",
+	[25] = "¼",
+	[75] = "¾",
+}
+local dmg_decimals_lookup = dmg_lookup1
+local MAX_NUMBER_OF_DAMAGE_MESSAGES = 4
+
+UnitFrameUI.add_damage_feedback = function (self, hash, is_local_player, event_type, attacker_player, target_player, damage_amount)
+	local events = self._damage_events
+	local full_hash = hash .. event_type
+	local hash_order = self._hash_order
+	local dmg_part_pool = self._dmg_part_pool
+	local t = Managers.time:time("game")
+	local existing_event = events[full_hash]
+	local target_name = target_player:cached_name() or target_player.character_name
+
+	if not existing_event then
+		existing_event = {
+			first_index = 0,
+			last_index = 0,
+			num_dmg_parts = 0,
+			running_parts = 0,
+			shown_amount = 0,
+			shown_amount_decimal = "",
+			text = "",
+			text_width = 0,
+			event_type = event_type,
+			dmg_parts = Script.new_array(32),
+			next_increment = t - pop_time_between_dmg,
+			remove_time = math.huge,
+			local_player = is_local_player,
+			target_name = target_name,
+		}
+		events[full_hash] = existing_event
+
+		local order_index = #hash_order + 1
+
+		hash_order[order_index] = full_hash
+		existing_event.hash_order = order_index
+
+		local widget = self._damage_widgets[order_index]
+
+		self._hash_widget_lookup[full_hash] = widget
+		widget.content.visible = true
+	elseif existing_event.disabled then
+		existing_event.disabled = false
+
+		local order_index = #hash_order + 1
+
+		hash_order[order_index] = full_hash
+		existing_event.hash_order = order_index
+
+		local widget = self._damage_widgets[order_index]
+
+		self._hash_widget_lookup[full_hash] = widget
+		widget.content.visible = true
+	end
+
+	if false then
+		-- Nothing
+	end
+
+	local dmg_parts = existing_event.dmg_parts
+
+	existing_event.num_dmg_parts = existing_event.num_dmg_parts + 1
+
+	local integer = math.floor(damage_amount)
+	local dec = damage_amount - integer
+	local dec_lookup = math.floor(dec * 100 + 0.5)
+	local parts = dmg_decimals_lookup[dec_lookup] or "  "
+	local damage_amount_txt = integer .. parts
+
+	dmg_parts[existing_event.num_dmg_parts] = {
+		damage_amount,
+		0,
+		"no_id_yet",
+		damage_amount_txt,
+		0,
+	}
+	existing_event.remove_time = math.huge
+
+	if #hash_order > MAX_NUMBER_OF_DAMAGE_MESSAGES then
+		fassert(false)
+
+		local first_hash = hash_order[1]
+
+		events[first_hash] = nil
+
+		table.remove(hash_order, 1)
+		table.remove(self._hash_widget_lookup, 1)
+	end
+end
+
+local damage_templates = {
+	dealing_damage = {
+		text_function = function (total_amount, target_name, last_amount)
+			return string.format("%s", target_name), total_amount, last_amount
+		end,
+		sound_function = function ()
+			return
+		end,
+	},
+	other_dealing_damage = {
+		text_function = function (total_amount, target_name, last_amount)
+			return string.format("%s  ", target_name), total_amount, last_amount
+		end,
+		sound_function = function ()
+			return "versus_ui_team_damage_indicator"
+		end,
+	},
+}
+local dmg_history_style_lookup = {
+	"text_last_dmg",
+	"text_last_dmg_2",
+	"text_last_dmg_3",
+	"text_last_dmg_4",
+	"text_last_dmg_5",
+	"text_last_dmg_6",
+	"text_last_dmg_7",
+	"text_last_dmg_8",
+	"text_last_dmg_9",
+	"text_last_dmg_10",
+}
+
+UnitFrameUI._cleanup_damage_event = function (self, event, full_hash)
+	event.num_dmg_parts = 0
+	event.shown_amount = 0
+	event.shown_amount_decimal = ""
+	event.last_index = 0
+	event.first_index = 0
+	event.remove_time = math.huge
+	event.text = ""
+	event.running_parts = 0
+	event.disabled = true
+
+	local widget = self._hash_widget_lookup[full_hash]
+	local widget_style = widget.style
+	local dmg_parts = event.dmg_parts
+
+	for i = 1, #dmg_parts do
+		local dmg_part = dmg_parts[i]
+
+		dmg_part[1] = 0
+		dmg_part[2] = math.huge
+
+		local damage_id = dmg_part[3]
+		local style = widget_style[damage_id]
+
+		if style then
+			style.text_color[1] = 0
+		end
+	end
+end
+
+UnitFrameUI._update_damage_feedback = function (self, dt, t)
+	local hash_order = self._hash_order
+	local num_rows = #hash_order
+
+	if num_rows <= 0 then
+		return
+	end
+
+	local ui_renderer = self.ui_renderer
+	local ui_scenegraph = self.ui_scenegraph
+	local input_service = self.input_manager:get_service("Player")
+
+	for i = num_rows, 1, -1 do
+		local full_hash = hash_order[i]
+		local widget = self._hash_widget_lookup[full_hash]
+		local widget_content = widget.content
+		local widget_style = widget.style
+		local event = self._damage_events[full_hash]
+		local template = damage_templates[event.event_type]
+
+		if t > event.remove_time then
+			self:_cleanup_damage_event(event, full_hash)
+			table.remove(hash_order, i)
+
+			widget_content.visible = false
+		elseif t > event.next_increment and event.last_index < event.num_dmg_parts then
+			event.last_index = event.last_index + 1
+
+			local dmg_part = event.dmg_parts[event.last_index]
+
+			dmg_part[2] = t + pop_dmg_life_time
+
+			local index = (event.last_index - 1) % 10 + 1
+			local damage_id = dmg_history_style_lookup[index]
+
+			dmg_part[3] = damage_id
+			dmg_part[5] = index
+			event.old_shown_amount = event.shown_amount
+			event.shown_amount = event.shown_amount + dmg_part[1]
+			event.old_shown_amount_decimal = event.shown_amount_decimal
+
+			local dec = event.shown_amount - math.floor(event.shown_amount)
+			local dec_lookup = math.floor(dec * 100 + 0.5)
+
+			event.shown_amount_decimal = dmg_decimals_lookup[dec_lookup] or ".??"
+
+			if event.running_parts == 0 then
+				event.first_index = 1
+			end
+
+			event.running_parts = event.running_parts + 1
+			event.next_increment = t + pop_time_between_dmg
+			event.scale_timer = t + pop_dmg_time
+
+			local wwise_world = Managers.world:wwise_world(self.world)
+			local sound_event = template.sound_function()
+
+			if sound_event then
+				WwiseWorld.trigger_event(wwise_world, sound_event)
+			end
+
+			event.text = event.target_name
+			event.remove_time = t + pop_dmg_life_time
+
+			local font, scaled_font_size = UIFontByResolution(widget_style.text)
+
+			event.text_width = UIRenderer.text_size(ui_renderer, event.text, font[1], scaled_font_size)
+		end
+
+		local time_left = event.remove_time - t
+		local fade_duration = UISettings.damage_feedback.fade_duration
+		local alpha = 255 * math.clamp(time_left / fade_duration, 0, 1)
+
+		widget_content.text = event.text
+		widget_content.icon_texture = event.icon_texture
+		widget_style.text.text_color[1] = alpha
+		widget_style.text.offset[1] = event.text_width * 0.5
+
+		local v, v2, scale = 0, 0, 0
+
+		if event.scale_timer then
+			if t <= event.scale_timer then
+				v = math.clamp((event.scale_timer - t) / pop_dmg_time, 0, 1)
+				v2 = v > 0.5 and 0.7 or 0
+				scale = math.ease_pulse(v)
+			else
+				event.scale_timer = nil
+			end
+		end
+
+		event.text_total_sum = v > 0.5 and event.old_shown_amount or event.shown_amount
+
+		local font, scaled_font_size = UIFontByResolution(widget.style.text_total_sum)
+		local text_width = UIRenderer.text_size(ui_renderer, math.floor(event.text_total_sum), font[1], scaled_font_size)
+
+		event.text_width_total_sum = text_width
+
+		local tcol = DamageUtils.get_color_from_damage(event.text_total_sum)
+		local DAMAGE_FONT_SIZE = 24
+
+		widget_style.text_total_sum.font_size = DAMAGE_FONT_SIZE + 10 * scale
+
+		local total_dmg_width = DAMAGE_FONT_SIZE * #tostring("99.99") * 0.2
+		local total_dmg_offset = widget_style.text.offset[1] + event.text_width * 0.5 + total_dmg_width
+
+		widget_style.text_total_sum.offset[1] = total_dmg_offset
+		widget_style.text_total_sum.text_color = tcol
+		widget_style.text_total_sum.text_color[1] = math.clamp(alpha, 1, 254)
+
+		local damage_icon = widget_style.damage_icon
+
+		damage_icon.color = tcol
+
+		local icon_scale = 24 + 10 * scale * v2
+
+		damage_icon.size[1] = icon_scale
+		damage_icon.size[2] = icon_scale
+		widget.content.text_total_sum = math.floor(event.text_total_sum)
+		event.text_total_sum_decimal_part = v > 0.5 and event.old_shown_amount_decimal or event.shown_amount_decimal
+		widget.content.text_total_sum_decimal_part = event.text_total_sum_decimal_part
+		widget_style.text_total_sum_decimal_part.offset[1] = total_dmg_offset + event.text_width_total_sum * 0.5
+		widget_style.text_total_sum_decimal_part.text_color = widget_style.text_total_sum.text_color
+
+		local last_dmg_start_offset = total_dmg_offset + total_dmg_width
+		local dmg_parts = event.dmg_parts
+		local first_index = event.first_index
+
+		if event.running_parts > 0 then
+			local end_time = dmg_parts[first_index][2]
+
+			if end_time < t then
+				local remove_part = dmg_parts[first_index]
+				local damage_id = remove_part[3]
+				local style = widget_style[damage_id]
+
+				style.text_color[1] = 0
+				remove_part[2] = math.huge
+				first_index = first_index + 1
+				event.first_index = first_index
+				event.running_parts = event.running_parts - 1
+			end
+
+			local from = first_index
+			local to = event.last_index
+			local k = 1
+
+			for i = from, to do
+				local dmg_part = dmg_parts[i]
+				local part_damage = dmg_part[4]
+				local part_time = dmg_part[2]
+				local damage_id = dmg_part[3]
+				local style = widget_style[damage_id]
+				local z = math.clamp((part_time - t) / pop_dmg_life_time, 0, 1)
+
+				style.offset[1] = last_dmg_start_offset + math.easeOutCubic(1 - z) * 200
+				style.text_color[2] = tcol[2]
+				style.text_color[3] = tcol[3]
+				style.text_color[4] = tcol[4]
+				style.text_color[1] = z * z * 255
+				widget_content[damage_id] = part_damage
+				k = k + 1
+			end
+		end
+	end
+
+	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt)
+
+	for _, widget in pairs(self._hash_widget_lookup) do
+		UIRenderer.draw_widget(ui_renderer, widget)
+	end
+
+	UIRenderer.end_pass(ui_renderer)
+
+	return true
 end

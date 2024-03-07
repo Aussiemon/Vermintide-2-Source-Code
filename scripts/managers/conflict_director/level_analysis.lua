@@ -1171,7 +1171,7 @@ LevelAnalysis._override_generated_event_list = function (self, generated_event_l
 		local boss_settings = director.boss
 		local chance_of_encampment = boss_settings[terror_event_category].chance_of_encampment
 
-		if override_spawners[i] and chance_of_encampment >= self:_random() then
+		if override_spawners[i] and chance_of_encampment > self:_random() then
 			list[#list + 1] = i
 		end
 	end

@@ -30,6 +30,7 @@ settings.buff_templates = {
 					harder = 6,
 					hardest = 8,
 					normal = 2,
+					versus_base = 2,
 				},
 			},
 		},

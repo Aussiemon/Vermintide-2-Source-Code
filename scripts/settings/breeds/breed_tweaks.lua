@@ -11,6 +11,7 @@ local health_step_multipliers = {
 	4.5,
 	6,
 	7.5,
+	1,
 }
 local stagger_step_multipliers = {
 	1,
@@ -21,6 +22,7 @@ local stagger_step_multipliers = {
 	2.25,
 	3.5,
 	3.5,
+	0.85,
 }
 local elite_stagger_step_multipliers = {
 	1,
@@ -31,6 +33,7 @@ local elite_stagger_step_multipliers = {
 	2.75,
 	3.5,
 	3.5,
+	1,
 }
 local mass_step_multipliers = {
 	1,
@@ -41,6 +44,7 @@ local mass_step_multipliers = {
 	2.5,
 	3.25,
 	4.5,
+	1,
 }
 local elite_health_step_multipliers = {
 	1,
@@ -51,6 +55,7 @@ local elite_health_step_multipliers = {
 	5.4,
 	6.4,
 	7.4,
+	1.5,
 }
 local elite_stagger_step_multipliers = {
 	1,
@@ -61,6 +66,7 @@ local elite_stagger_step_multipliers = {
 	2.75,
 	3.5,
 	4,
+	1,
 }
 local elite_mass_step_multipliers = {
 	1,
@@ -71,6 +77,7 @@ local elite_mass_step_multipliers = {
 	2.5,
 	3.25,
 	4.5,
+	1,
 }
 local horde_health_step_multipliers = {
 	1,
@@ -81,6 +88,7 @@ local horde_health_step_multipliers = {
 	4.2,
 	5.1,
 	6,
+	1,
 }
 local horde_stagger_step_multipliers = {
 	1,
@@ -91,6 +99,7 @@ local horde_stagger_step_multipliers = {
 	2.25,
 	3,
 	3,
+	1,
 }
 local horde_mass_step_multipliers = {
 	1,
@@ -101,6 +110,7 @@ local horde_mass_step_multipliers = {
 	2,
 	2.75,
 	3,
+	1,
 }
 local boss_health_step_multipliers = {
 	1,
@@ -111,6 +121,7 @@ local boss_health_step_multipliers = {
 	5,
 	6.5,
 	8,
+	1,
 }
 
 local function networkify_health(health_amount)
@@ -125,7 +136,7 @@ end
 local function health_steps(value, step_multipliers)
 	local value_steps = {}
 
-	for i = 1, 8 do
+	for i = 1, 9 do
 		local step_value = value * step_multipliers[i]
 		local networkifyed_health = networkify_health(step_value)
 
@@ -138,7 +149,7 @@ end
 local function steps(value, step_multipliers)
 	local value_steps = {}
 
-	for i = 1, 8 do
+	for i = 1, 9 do
 		local raw_value = value * step_multipliers[i]
 		local decimal = raw_value % 1
 		local rounded_decimal = math.round(decimal * 4) * 0.25
@@ -356,6 +367,7 @@ BreedTweaks.stagger_duration_difficulty_mod = {
 		harder = 1.25,
 		hardest = 1.15,
 		normal = 1.5,
+		versus_base = 1.5,
 	},
 	fast = {
 		cataclysm = 0.75,
@@ -366,6 +378,7 @@ BreedTweaks.stagger_duration_difficulty_mod = {
 		harder = 1,
 		hardest = 1,
 		normal = 1,
+		versus_base = 1,
 	},
 }
 BreedTweaks.hit_mass_counts = {
@@ -395,6 +408,7 @@ BreedTweaks.difficulty_damage = {
 		harder = 16,
 		hardest = 22,
 		normal = 7,
+		versus_base = 7,
 	},
 	beastmen_headbutt_attack = {
 		cataclysm = 20,
@@ -405,6 +419,7 @@ BreedTweaks.difficulty_damage = {
 		harder = 12,
 		hardest = 16,
 		normal = 4,
+		versus_base = 4,
 	},
 	skirmish_roamer_attack = {
 		cataclysm = 15,
@@ -415,6 +430,7 @@ BreedTweaks.difficulty_damage = {
 		harder = 8,
 		hardest = 10,
 		normal = 3,
+		versus_base = 3,
 	},
 	chaos_roamer_attack = {
 		cataclysm = 25,
@@ -425,6 +441,7 @@ BreedTweaks.difficulty_damage = {
 		harder = 12,
 		hardest = 20,
 		normal = 5,
+		versus_base = 5,
 	},
 	chaos_horde_attack = {
 		cataclysm = 20,
@@ -435,6 +452,7 @@ BreedTweaks.difficulty_damage = {
 		harder = 12,
 		hardest = 16,
 		normal = 4,
+		versus_base = 4,
 	},
 	skaven_roamer_attack = {
 		cataclysm = 20,
@@ -445,6 +463,7 @@ BreedTweaks.difficulty_damage = {
 		harder = 10,
 		hardest = 15,
 		normal = 3,
+		versus_base = 3,
 	},
 	skaven_horde_attack = {
 		cataclysm = 16,
@@ -455,6 +474,7 @@ BreedTweaks.difficulty_damage = {
 		harder = 8,
 		hardest = 12,
 		normal = 2.5,
+		versus_base = 2.5,
 	},
 	elite_attack = {
 		cataclysm = 60,
@@ -465,6 +485,7 @@ BreedTweaks.difficulty_damage = {
 		harder = 30,
 		hardest = 50,
 		normal = 15,
+		versus_base = 15,
 	},
 	elite_attack_heavy = {
 		cataclysm = 150,
@@ -475,6 +496,7 @@ BreedTweaks.difficulty_damage = {
 		harder = 50,
 		hardest = 100,
 		normal = 30,
+		versus_base = 30,
 	},
 	elite_attack_shielded = {
 		cataclysm = 50,
@@ -485,6 +507,7 @@ BreedTweaks.difficulty_damage = {
 		harder = 25,
 		hardest = 40,
 		normal = 15,
+		versus_base = 20,
 	},
 	elite_attack_shielded_frenzy = {
 		cataclysm = 14,
@@ -495,6 +518,7 @@ BreedTweaks.difficulty_damage = {
 		harder = 10,
 		hardest = 14,
 		normal = 4,
+		versus_base = 4,
 	},
 	elite_attack_quick = {
 		cataclysm = 30,
@@ -505,6 +529,7 @@ BreedTweaks.difficulty_damage = {
 		harder = 16,
 		hardest = 20,
 		normal = 12,
+		versus_base = 12,
 	},
 	berzerker_frenzy_attack = {
 		cataclysm = 25,
@@ -515,6 +540,7 @@ BreedTweaks.difficulty_damage = {
 		harder = 12,
 		hardest = 20,
 		normal = 2,
+		versus_base = 2,
 	},
 	boss_slam_attack = {
 		cataclysm = 60,
@@ -525,6 +551,7 @@ BreedTweaks.difficulty_damage = {
 		harder = 40,
 		hardest = 60,
 		normal = 15,
+		versus_base = 15,
 	},
 	boss_slam_attack_blocked = {
 		cataclysm = 10,
@@ -535,6 +562,7 @@ BreedTweaks.difficulty_damage = {
 		harder = 9,
 		hardest = 10,
 		normal = 2,
+		versus_base = 2,
 	},
 	boss_combo_attack = {
 		cataclysm = 50,
@@ -545,6 +573,7 @@ BreedTweaks.difficulty_damage = {
 		harder = 25,
 		hardest = 40,
 		normal = 10,
+		versus_base = 10,
 	},
 }
 BreedTweaks.bloodlust_health = {
@@ -584,6 +613,10 @@ BreedTweaks.blocked_duration = {
 			0.5,
 			0.75,
 		},
+		versus_base = {
+			1,
+			1.2,
+		},
 	},
 	skaven_horde = {
 		harder = {
@@ -605,6 +638,10 @@ BreedTweaks.blocked_duration = {
 		cataclysm_3 = {
 			0.5,
 			0.75,
+		},
+		versus_base = {
+			1,
+			1.2,
 		},
 	},
 	skaven_elite = {
@@ -628,6 +665,10 @@ BreedTweaks.blocked_duration = {
 			0.5,
 			0.75,
 		},
+		versus_base = {
+			1,
+			1.2,
+		},
 	},
 	chaos_roamer = {
 		harder = {
@@ -649,6 +690,10 @@ BreedTweaks.blocked_duration = {
 		cataclysm_3 = {
 			0.5,
 			0.75,
+		},
+		versus_base = {
+			1,
+			1.2,
 		},
 	},
 	chaos_horde = {
@@ -672,6 +717,10 @@ BreedTweaks.blocked_duration = {
 			0.5,
 			0.75,
 		},
+		versus_base = {
+			1,
+			1.2,
+		},
 	},
 	chaos_elite = {
 		harder = {
@@ -693,6 +742,10 @@ BreedTweaks.blocked_duration = {
 		cataclysm_3 = {
 			0.5,
 			0.75,
+		},
+		versus_base = {
+			1,
+			1.2,
 		},
 	},
 	beastmen_roamer = {
@@ -716,6 +769,10 @@ BreedTweaks.blocked_duration = {
 			0.5,
 			0.75,
 		},
+		versus_base = {
+			1,
+			1.2,
+		},
 	},
 	beastmen_elite = {
 		harder = {
@@ -737,6 +794,10 @@ BreedTweaks.blocked_duration = {
 		cataclysm_3 = {
 			0.5,
 			0.75,
+		},
+		versus_base = {
+			1,
+			1.2,
 		},
 	},
 }
@@ -762,6 +823,10 @@ BreedTweaks.attack_finished_duration = {
 			1,
 			1.2,
 		},
+		versus_base = {
+			1.6,
+			1.8,
+		},
 	},
 	skaven_horde = {
 		harder = {
@@ -783,6 +848,10 @@ BreedTweaks.attack_finished_duration = {
 		cataclysm_3 = {
 			1,
 			1.2,
+		},
+		versus_base = {
+			1.6,
+			1.8,
 		},
 	},
 	skaven_elite = {
@@ -806,6 +875,10 @@ BreedTweaks.attack_finished_duration = {
 			1,
 			1.2,
 		},
+		versus_base = {
+			1.6,
+			1.8,
+		},
 	},
 	chaos_roamer = {
 		harder = {
@@ -827,6 +900,10 @@ BreedTweaks.attack_finished_duration = {
 		cataclysm_3 = {
 			1,
 			1.2,
+		},
+		versus_base = {
+			1.7,
+			2,
 		},
 	},
 	chaos_horde = {
@@ -850,6 +927,10 @@ BreedTweaks.attack_finished_duration = {
 			1,
 			1.2,
 		},
+		versus_base = {
+			1.7,
+			2,
+		},
 	},
 	beastmen_horde = {
 		harder = {
@@ -871,6 +952,10 @@ BreedTweaks.attack_finished_duration = {
 		cataclysm_3 = {
 			1.5,
 			1.8,
+		},
+		versus_base = {
+			1.7,
+			2,
 		},
 	},
 	beastmen_roamer = {
@@ -894,6 +979,10 @@ BreedTweaks.attack_finished_duration = {
 			1,
 			1.2,
 		},
+		versus_base = {
+			1.4,
+			1.6,
+		},
 	},
 	beastmen_elite = {
 		harder = {
@@ -916,6 +1005,10 @@ BreedTweaks.attack_finished_duration = {
 			1.5,
 			1.8,
 		},
+		versus_base = {
+			1.7,
+			2,
+		},
 	},
 }
 BreedTweaks.dodge_windows = {
@@ -925,6 +1018,7 @@ BreedTweaks.dodge_windows = {
 		cataclysm_3 = 0.25,
 		harder = 0.25,
 		hardest = 0.25,
+		versus_base = 0.25,
 	},
 	running_attack = {
 		cataclysm = 0.75,
@@ -932,6 +1026,7 @@ BreedTweaks.dodge_windows = {
 		cataclysm_3 = 0.75,
 		harder = 0.75,
 		hardest = 0.75,
+		versus_base = 0.75,
 	},
 	piercing_attack = {
 		cataclysm = 0.25,
@@ -939,6 +1034,7 @@ BreedTweaks.dodge_windows = {
 		cataclysm_3 = 0.25,
 		harder = 0.25,
 		hardest = 0.25,
+		versus_base = 0.25,
 	},
 	fast_attack = {
 		cataclysm = 0,
@@ -946,6 +1042,7 @@ BreedTweaks.dodge_windows = {
 		cataclysm_3 = 0,
 		harder = 0,
 		hardest = 0,
+		versus_base = 0,
 	},
 }
 BreedTweaks.dodge_window_durations = {
@@ -955,6 +1052,7 @@ BreedTweaks.dodge_window_durations = {
 		cataclysm_3 = 0.5,
 		harder = 0.5,
 		hardest = 0.5,
+		versus_base = 0.5,
 	},
 	running_attack = {
 		cataclysm = 0.75,
@@ -962,6 +1060,7 @@ BreedTweaks.dodge_window_durations = {
 		cataclysm_3 = 0.75,
 		harder = 0.75,
 		hardest = 0.75,
+		versus_base = 0.75,
 	},
 	piercing_attack = {
 		cataclysm = 1,
@@ -982,6 +1081,7 @@ BreedTweaks.fatigue_types = {
 			harder = "blocked_attack",
 			hardest = "blocked_attack_2",
 			normal = "blocked_attack",
+			versus_base = "blocked_attack",
 		},
 		running_attack = {
 			cataclysm = "blocked_attack_2",
@@ -992,6 +1092,7 @@ BreedTweaks.fatigue_types = {
 			harder = "blocked_attack",
 			hardest = "blocked_attack",
 			normal = "blocked_attack",
+			versus_base = "blocked_attack",
 		},
 	},
 	horde = {
@@ -1004,6 +1105,7 @@ BreedTweaks.fatigue_types = {
 			harder = "blocked_attack",
 			hardest = "blocked_attack",
 			normal = "blocked_attack",
+			versus_base = "blocked_attack",
 		},
 		running_attack = {
 			cataclysm = "blocked_attack_2",
@@ -1014,6 +1116,7 @@ BreedTweaks.fatigue_types = {
 			harder = "blocked_attack",
 			hardest = "blocked_attack",
 			normal = "blocked_attack",
+			versus_base = "blocked_attack",
 		},
 	},
 	elite_cleave = {
@@ -1026,6 +1129,7 @@ BreedTweaks.fatigue_types = {
 			harder = "blocked_sv_cleave",
 			hardest = "blocked_sv_cleave",
 			normal = "blocked_sv_cleave",
+			versus_base = "blocked_sv_cleave",
 		},
 		running_attack = {
 			cataclysm = "blocked_sv_cleave",
@@ -1036,6 +1140,7 @@ BreedTweaks.fatigue_types = {
 			harder = "blocked_sv_cleave",
 			hardest = "blocked_sv_cleave",
 			normal = "blocked_sv_cleave",
+			versus_base = "blocked_sv_cleave",
 		},
 	},
 	elite_sweep = {
@@ -1048,6 +1153,7 @@ BreedTweaks.fatigue_types = {
 			harder = "blocked_sv_sweep",
 			hardest = "blocked_sv_sweep_2",
 			normal = "blocked_sv_sweep",
+			versus_base = "blocked_sv_sweep",
 		},
 		running_attack = {
 			cataclysm = "blocked_sv_sweep_2",
@@ -1058,6 +1164,7 @@ BreedTweaks.fatigue_types = {
 			harder = "blocked_sv_sweep",
 			hardest = "blocked_sv_sweep_2",
 			normal = "blocked_sv_sweep",
+			versus_base = "blocked_sv_sweep",
 		},
 	},
 	boss_combo = {
@@ -1070,6 +1177,7 @@ BreedTweaks.fatigue_types = {
 			harder = "blocked_sv_sweep",
 			hardest = "blocked_sv_sweep",
 			normal = "blocked_sv_sweep",
+			versus_base = "blocked_sv_sweep",
 		},
 		running_attack = {
 			cataclysm = "blocked_sv_sweep",
@@ -1080,6 +1188,7 @@ BreedTweaks.fatigue_types = {
 			harder = "blocked_sv_sweep",
 			hardest = "blocked_sv_sweep",
 			normal = "blocked_sv_sweep",
+			versus_base = "blocked_sv_sweep",
 		},
 		light_combo = {
 			cataclysm = "chaos_spawn_combo",
@@ -1090,6 +1199,7 @@ BreedTweaks.fatigue_types = {
 			harder = "chaos_spawn_combo",
 			hardest = "chaos_spawn_combo",
 			normal = "chaos_spawn_combo",
+			versus_base = "chaos_spawn_combo",
 		},
 	},
 	headbutt = {
@@ -1102,6 +1212,7 @@ BreedTweaks.fatigue_types = {
 			harder = "blocked_headbutt",
 			hardest = "blocked_headbutt",
 			normal = "blocked_headbutt",
+			versus_base = "blocked_headbutt",
 		},
 	},
 }
@@ -1627,6 +1738,71 @@ BreedTweaks.diminishing_damage_and_cooldown = {
 				},
 			},
 		},
+		versus_base = {
+			{
+				damage = 2,
+				cooldown = {
+					2.75,
+					3,
+				},
+			},
+			{
+				damage = 2,
+				cooldown = {
+					2.75,
+					3,
+				},
+			},
+			{
+				damage = 1.5,
+				cooldown = {
+					1,
+					2,
+				},
+			},
+			{
+				damage = 1,
+				cooldown = {
+					1.25,
+					2.25,
+				},
+			},
+			{
+				damage = 1,
+				cooldown = {
+					1.5,
+					2.5,
+				},
+			},
+			{
+				damage = 1,
+				cooldown = {
+					1.75,
+					2.75,
+				},
+			},
+			{
+				damage = 1,
+				cooldown = {
+					2,
+					3,
+				},
+			},
+			{
+				damage = 1,
+				cooldown = {
+					2.25,
+					3.25,
+				},
+			},
+			{
+				damage = 1,
+				cooldown = {
+					2.5,
+					3.5,
+				},
+			},
+		},
 	},
 	horde = {
 		easy = {
@@ -2146,6 +2322,71 @@ BreedTweaks.diminishing_damage_and_cooldown = {
 				cooldown = {
 					0,
 					0,
+				},
+			},
+		},
+		versus_base = {
+			{
+				damage = 2,
+				cooldown = {
+					1.75,
+					2.25,
+				},
+			},
+			{
+				damage = 2,
+				cooldown = {
+					1.75,
+					2.25,
+				},
+			},
+			{
+				damage = 1.5,
+				cooldown = {
+					2,
+					2.5,
+				},
+			},
+			{
+				damage = 1,
+				cooldown = {
+					2,
+					2.5,
+				},
+			},
+			{
+				damage = 1,
+				cooldown = {
+					2.5,
+					3.5,
+				},
+			},
+			{
+				damage = 1,
+				cooldown = {
+					2.5,
+					3.5,
+				},
+			},
+			{
+				damage = 1,
+				cooldown = {
+					2.5,
+					3.5,
+				},
+			},
+			{
+				damage = 1,
+				cooldown = {
+					2.5,
+					3.5,
+				},
+			},
+			{
+				damage = 1,
+				cooldown = {
+					2.5,
+					3.5,
 				},
 			},
 		},
@@ -2671,6 +2912,71 @@ BreedTweaks.diminishing_damage_and_cooldown = {
 				},
 			},
 		},
+		versus_base = {
+			{
+				damage = 2,
+				cooldown = {
+					2,
+					3,
+				},
+			},
+			{
+				damage = 2,
+				cooldown = {
+					2,
+					3,
+				},
+			},
+			{
+				damage = 1.5,
+				cooldown = {
+					2,
+					3,
+				},
+			},
+			{
+				damage = 1,
+				cooldown = {
+					2.25,
+					3.25,
+				},
+			},
+			{
+				damage = 1,
+				cooldown = {
+					2.5,
+					3.5,
+				},
+			},
+			{
+				damage = 1,
+				cooldown = {
+					2.75,
+					3.75,
+				},
+			},
+			{
+				damage = 1,
+				cooldown = {
+					3,
+					4,
+				},
+			},
+			{
+				damage = 1,
+				cooldown = {
+					3.25,
+					4.25,
+				},
+			},
+			{
+				damage = 1,
+				cooldown = {
+					3.5,
+					4.5,
+				},
+			},
+		},
 	},
 }
 BreedTweaks.standard_bearer_spawn_list = {
@@ -2716,6 +3022,10 @@ BreedTweaks.standard_bearer_spawn_list = {
 		"beastmen_gor",
 		"beastmen_gor",
 		"beastmen_gor",
+	},
+	versus_base = {
+		"beastmen_ungor",
+		"beastmen_ungor",
 	},
 }
 BreedTweaks.standard_bearer_spawn_list_replacements = {

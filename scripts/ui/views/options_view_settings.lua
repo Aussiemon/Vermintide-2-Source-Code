@@ -449,10 +449,12 @@ local audio_settings_definition = {
 		},
 	},
 	{
+		show_only_with_voip = true,
 		size_y = 30,
 		widget_type = "empty",
 	},
 	{
+		show_only_with_voip = true,
 		text = "settings_view_header_voice_communication",
 		widget_type = "title",
 	},
@@ -460,6 +462,7 @@ local audio_settings_definition = {
 		callback = "cb_voip_enabled",
 		saved_value = "cb_voip_enabled_saved_value",
 		setup = "cb_voip_enabled_setup",
+		show_only_with_voip = true,
 		tooltip_text = "tooltip_voip_enabled",
 		widget_type = "stepper",
 	},
@@ -467,6 +470,7 @@ local audio_settings_definition = {
 		callback = "cb_voip_push_to_talk",
 		saved_value = "cb_voip_push_to_talk_saved_value",
 		setup = "cb_voip_push_to_talk_setup",
+		show_only_with_voip = true,
 		tooltip_text = "tooltip_voip_push_to_talk",
 		widget_type = "stepper",
 	},
@@ -474,6 +478,7 @@ local audio_settings_definition = {
 		callback = "cb_voip_bus_volume",
 		saved_value = "cb_voip_bus_volume_saved_value",
 		setup = "cb_voip_bus_volume_setup",
+		show_only_with_voip = true,
 		tooltip_text = "tooltip_voip_volume",
 		widget_type = "slider",
 	},
@@ -587,6 +592,16 @@ local audio_settings_definition = {
 		},
 	},
 }
+local audio_settings_definition_without_voip = {}
+
+for i = 1, #audio_settings_definition do
+	local definition = audio_settings_definition[i]
+
+	if not definition.show_only_with_voip then
+		audio_settings_definition_without_voip[#audio_settings_definition_without_voip + 1] = definition
+	end
+end
+
 local gameplay_settings_definition = {
 	{
 		text = "settings_view_header_input",
@@ -1764,6 +1779,50 @@ local keybind_settings_definition = {
 			"ingame_vote_no",
 		},
 	},
+	{
+		size_y = 30,
+		widget_type = "empty",
+	},
+	{
+		text = "settings_view_versus",
+		widget_type = "title",
+	},
+	{
+		keybind_description = "ping_only_movement",
+		keymappings_key = "PlayerControllerKeymaps",
+		widget_type = "keybind",
+		actions = {
+			"ping_only_movement",
+		},
+	},
+	{
+		keybind_description = "ping_only_item",
+		keymappings_key = "PlayerControllerKeymaps",
+		widget_type = "keybind",
+		actions = {
+			"ping_only_item",
+		},
+	},
+	{
+		keybind_description = "ping_only_enemy",
+		keymappings_key = "PlayerControllerKeymaps",
+		widget_type = "keybind",
+		actions = {
+			"ping_only_enemy",
+		},
+	},
+	{
+		keybind_description = "vs_ghost_catch_up",
+		keymappings_key = "PlayerControllerKeymaps",
+		widget_type = "keybind",
+		actions = {
+			"ghost_mode_enter",
+		},
+	},
+	{
+		size_y = 30,
+		widget_type = "empty",
+	},
 }
 
 for i, keybind_setting in ipairs(keybind_settings_definition) do
@@ -2019,6 +2078,36 @@ local network_settings_definition = {
 
 generate_settings(network_settings_definition)
 
+local versus_settings_definition = {
+	{
+		text = "settings_view_versus_damage_feedback",
+		widget_type = "title",
+	},
+	{
+		callback = "cb_vs_hud_damage_feedback_in_world",
+		saved_value = "cb_vs_hud_damage_feedback_in_world_saved_value",
+		setup = "cb_vs_hud_damage_feedback_in_world_setup",
+		tooltip_text = "tooltip_vs_hud_damage_feedback_in_world",
+		widget_type = "stepper",
+	},
+	{
+		callback = "cb_vs_hud_damage_feedback_on_yourself",
+		saved_value = "cb_vs_hud_damage_feedback_on_yourself_saved_value",
+		setup = "cb_vs_hud_damage_feedback_on_yourself_setup",
+		tooltip_text = "tooltip_vs_hud_damage_feedback_on_yourself",
+		widget_type = "stepper",
+	},
+	{
+		callback = "cb_vs_hud_damage_feedback_on_teammates",
+		saved_value = "cb_vs_hud_damage_feedback_on_yourself_saved_value",
+		setup = "cb_vs_hud_damage_feedback_on_teammates_setup",
+		tooltip_text = "tooltip_vs_hud_damage_feedback_on_teammates",
+		widget_type = "stepper",
+	},
+}
+
+generate_settings(versus_settings_definition)
+
 local needs_reload_settings = {
 	"screen_resolution",
 	"fullscreen",
@@ -2092,15 +2181,20 @@ if rawget(_G, "Tobii") then
 	SettingsMenuNavigation[#SettingsMenuNavigation + 1] = "tobii_eyetracking_settings"
 end
 
+title_button_definitions[#title_button_definitions + 1] = UIWidgets.create_text_button("settings_button_10", "settings_view_versus", 18)
+SettingsMenuNavigation[#SettingsMenuNavigation + 1] = "versus_settings"
+
 return {
 	video_settings_definition = video_settings_definition,
 	audio_settings_definition = audio_settings_definition,
+	audio_settings_definition_without_voip = audio_settings_definition_without_voip,
 	gameplay_settings_definition = gameplay_settings_definition,
 	display_settings_definition = display_settings_definition,
 	keybind_settings_definition = keybind_settings_definition,
 	gamepad_settings_definition = gamepad_settings_definition,
 	tobii_settings_definition = tobii_settings_definition,
 	network_settings_definition = network_settings_definition,
+	versus_settings_definition = versus_settings_definition,
 	needs_restart_settings = needs_restart_settings,
 	needs_reload_settings = needs_reload_settings,
 	ignore_keybind = ignore_keybind,

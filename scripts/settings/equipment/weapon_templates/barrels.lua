@@ -223,4 +223,5 @@ return {
 	beer_barrel = beer_barrel,
 	magic_barrel = magic_barrel,
 	wizards_barrel = wizards_barrel,
+	whale_oil_barrel = whale_oil_barrel,
 }

@@ -92,7 +92,9 @@ BTComboAttackAction.enter = function (self, unit, blackboard, t)
 	end
 
 	if action.start_sound_event then
-		DialogueSystem:trigger_general_unit_event(unit, action.start_sound_event)
+		local dialogue_system = Managers.state.entity:system("dialogue_system")
+
+		dialogue_system:trigger_general_unit_event(unit, action.start_sound_event)
 	end
 
 	local target_unit_slot_extension = ScriptUnit.has_extension(target_unit, "ai_slot_system")
@@ -396,7 +398,9 @@ BTComboAttackAction.attack_success = function (self, unit, blackboard)
 	local breed = blackboard.breed
 
 	if breed.use_backstab_vo and blackboard.backstab_attack_trigger then
-		DialogueSystem:trigger_backstab_hit(blackboard.target_unit, unit)
+		local dialogue_system = Managers.state.entity:system("dialogue_system")
+
+		dialogue_system:trigger_backstab_hit(blackboard.target_unit, unit)
 
 		blackboard.backstab_attack_trigger = false
 	end
@@ -605,6 +609,8 @@ BTComboAttackAction.anim_cb_attack_vce = function (self, unit, blackboard)
 	local game = network_manager:game()
 
 	if game then
-		DialogueSystem:trigger_attack(blackboard, blackboard.target_unit, unit, false, false)
+		local dialogue_system = Managers.state.entity:system("dialogue_system")
+
+		dialogue_system:trigger_attack(blackboard, blackboard.target_unit, unit, false, false)
 	end
 end

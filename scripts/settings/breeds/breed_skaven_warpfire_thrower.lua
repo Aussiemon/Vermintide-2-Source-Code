@@ -24,6 +24,7 @@ local breed_data = {
 	flingable = true,
 	has_inventory = true,
 	headshot_coop_stamina_fatigue_type = "headshot_special",
+	height = 1.5,
 	hit_effect_template = "HitEffectsRatlingGunner",
 	hit_reaction = "ai_default",
 	is_always_spawnable = true,

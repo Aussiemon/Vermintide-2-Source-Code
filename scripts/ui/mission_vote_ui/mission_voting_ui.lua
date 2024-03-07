@@ -13,6 +13,8 @@ local deus_quickplay_widget_definitions = definitions.deus_quickplay_widget
 local deus_custom_widget_definitions = definitions.deus_custom_widget
 local twitch_mode_widget_funcs = definitions.twitch_mode_widget_funcs
 local switch_mechanism_widget_definitions = definitions.switch_mechanism_widgets
+local versus_quickplay_widget_definitions = definitions.versus_quickplay_widgets
+local versus_custom_widget_definitions = definitions.versus_custom_widgets
 
 MissionVotingUI = class(MissionVotingUI)
 
@@ -66,6 +68,8 @@ MissionVotingUI.create_ui_elements = function (self)
 	self._adventure_game_widgets, self._adventure_game_widgets_by_name = UIUtils.create_widgets(adventure_game_widget_definitions)
 	self._game_mode_widgets, self._game_mode_widgets_by_name = UIUtils.create_widgets(game_mode_widget_definitions)
 	self._switch_mechanism_widgets, self._switch_mechanism_widgets_by_name = UIUtils.create_widgets(switch_mechanism_widget_definitions)
+	self._versus_quickplay_widgets, self._versus_quickplay_widgets_by_name = UIUtils.create_widgets(versus_quickplay_widget_definitions)
+	self._versus_custom_widgets, self._versus_custom_widgets_by_name = UIUtils.create_widgets(versus_custom_widget_definitions)
 
 	local twitch_widgets, twitch_widgets_by_name = {}, {}
 	local is_server = self._is_server
@@ -192,6 +196,22 @@ MissionVotingUI.start_vote = function (self, active_voting)
 			local theme = vote_data.dominant_god
 
 			self:_set_deus_custom_game_presentation(difficulty, journey_name, private_game, always_host, strict_matchmaking, theme)
+		end
+	elseif mechanism == "versus" then
+		local player_hosted = vote_data.player_hosted
+
+		if not player_hosted then
+			local difficulty = vote_data.difficulty
+
+			self:_set_versus_quickplay_presentation(difficulty)
+		else
+			local mission_id = vote_data.mission_id or "bell_pvp"
+			local difficulty = vote_data.difficulty
+			local player_hosted = vote_data.player_hosted
+			local dedicated_servers_win = vote_data.dedicated_servers_win
+			local dedicated_servers_aws = vote_data.dedicated_servers_aws
+
+			self:_set_versus_custom_game_presentation(difficulty, mission_id, player_hosted, dedicated_servers_win, dedicated_servers_aws)
 		end
 	else
 		local quick_game = vote_data.quick_game
@@ -662,6 +682,77 @@ MissionVotingUI._set_deus_custom_game_presentation = function (self, difficulty,
 	strict_matchmaking_button.style.hover_glow.color[1] = 0
 end
 
+MissionVotingUI._set_versus_quickplay_presentation = function (self, difficulty)
+	local difficulty_settings = DifficultySettings[difficulty]
+	local difficulty_display_name = difficulty_settings.display_name
+	local difficulty_display_image = difficulty_settings.display_image
+	local difficulty_frame_texture = difficulty_settings.completed_frame_texture or "map_frame_00"
+	local adventure_game_widgets_by_name = self._adventure_game_widgets_by_name
+	local game_option_1 = adventure_game_widgets_by_name.game_option_1
+
+	game_option_1.content.option_text = Localize(difficulty_display_name)
+	game_option_1.content.icon = difficulty_display_image
+	game_option_1.content.icon_frame = difficulty_frame_texture
+	self._presentation_type = "versus_quickplay"
+end
+
+MissionVotingUI._set_versus_custom_game_presentation = function (self, difficulty, mission_id, player_hosted, dedicated_servers_win, dedicated_servers_aws)
+	local versus_custom_widgets_by_name = self._versus_custom_widgets_by_name
+	local game_option_1 = versus_custom_widgets_by_name.game_option_1
+	local game_option_1_content = game_option_1.content
+	local level_display_name, level_image
+
+	if mission_id == "any" then
+		level_display_name = "random_level"
+		level_image = "level_image_any"
+	else
+		local level_settings = LevelSettings[mission_id]
+
+		level_display_name = level_settings.display_name
+		level_image = level_settings.level_image
+	end
+
+	local level_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(level_image)
+
+	game_option_1_content.icon = level_image
+
+	local level_texture_size = game_option_1.style.icon.texture_size
+
+	level_texture_size[1] = level_texture_settings.size[1]
+	level_texture_size[2] = level_texture_settings.size[2]
+
+	local difficulty_settings = DifficultySettings[difficulty]
+	local difficulty_display_name = difficulty_settings.display_name
+	local difficulty_display_image = difficulty_settings.display_image
+	local game_option_2 = versus_custom_widgets_by_name.game_option_2
+
+	game_option_2.content.option_text = Localize(difficulty_display_name)
+	game_option_2.content.icon = difficulty_display_image
+
+	local additional_option = versus_custom_widgets_by_name.additional_option
+
+	additional_option.content.option_text = ""
+
+	local player_hosted_widget = versus_custom_widgets_by_name.player_hosted_button
+
+	player_hosted_widget.content.button_hotspot.disable_button = true
+	player_hosted_widget.content.button_hotspot.is_selected = player_hosted
+	player_hosted_widget.style.hover_glow.color[1] = 0
+
+	local dedicated_servers_win_widget = versus_custom_widgets_by_name.dedicated_server_win_button
+
+	dedicated_servers_win_widget.content.button_hotspot.disable_button = true
+	dedicated_servers_win_widget.content.button_hotspot.is_selected = dedicated_servers_win
+	dedicated_servers_win_widget.style.hover_glow.color[1] = 0
+
+	local dedicated_servers_aws_widget = versus_custom_widgets_by_name.dedicated_server_aws_button
+
+	dedicated_servers_aws_widget.content.button_hotspot.disable_button = true
+	dedicated_servers_aws_widget.content.button_hotspot.is_selected = dedicated_servers_aws
+	dedicated_servers_aws_widget.style.hover_glow.color[1] = 0
+	self._presentation_type = "versus_custom"
+end
+
 MissionVotingUI._update_vote_timer = function (self)
 	local voting_manager = self.voting_manager
 	local vote_template = voting_manager:active_vote_template()
@@ -944,6 +1035,34 @@ MissionVotingUI.draw = function (self, dt)
 
 			for i = 1, #switch_mechanism_widgets do
 				local widget = switch_mechanism_widgets[i]
+
+				if widget.snap_pixel_positions ~= nil then
+					render_settings.snap_pixel_positions = widget.snap_pixel_positions
+				end
+
+				UIRenderer.draw_widget(ui_top_renderer, widget)
+
+				render_settings.snap_pixel_positions = snap_pixel_positions
+			end
+		elseif presentation_type == "versus_quickplay" then
+			local versus_quickplay_widgets = self._versus_quickplay_widgets
+
+			for i = 1, #versus_quickplay_widgets do
+				local widget = versus_quickplay_widgets[i]
+
+				if widget.snap_pixel_positions ~= nil then
+					render_settings.snap_pixel_positions = widget.snap_pixel_positions
+				end
+
+				UIRenderer.draw_widget(ui_top_renderer, widget)
+
+				render_settings.snap_pixel_positions = snap_pixel_positions
+			end
+		elseif presentation_type == "versus_custom" then
+			local versus_custom_widgets = self._versus_custom_widgets
+
+			for i = 1, #versus_custom_widgets do
+				local widget = versus_custom_widgets[i]
 
 				if widget.snap_pixel_positions ~= nil then
 					render_settings.snap_pixel_positions = widget.snap_pixel_positions

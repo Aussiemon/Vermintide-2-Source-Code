@@ -2,6 +2,7 @@
 
 require("scripts/settings/weaves/weave_loadout/weave_loadout_settings")
 require("scripts/settings/equipment/power_level_settings")
+require("scripts/helpers/weave_utils")
 
 BackendInterfaceWeavesPlayFab = class(BackendInterfaceWeavesPlayFab)
 
@@ -12,12 +13,6 @@ local LOADOUT_INTERFACE_OVERRIDES = {
 	slot_ranged = "weaves",
 	slot_skin = "items",
 }
-
-local function magic_level_to_power_level(magic_level)
-	local settings = PowerLevelFromMagicLevel
-
-	return math.min(math.ceil(settings.starting_power_level + magic_level * settings.power_level_per_magic_level), settings.max_power_level)
-end
 
 local function career_magic_level_to_power_level(magic_level)
 	local settings = PowerLevelFromMagicLevel
@@ -42,7 +37,7 @@ BackendInterfaceWeavesPlayFab.init = function (self, backend_mirror)
 
 	for _, item in pairs(inventory_items) do
 		if item.magic_level then
-			item.power_level = magic_level_to_power_level(item.magic_level)
+			item.power_level = WeaveUtils.magic_level_to_power_level(item.magic_level)
 		end
 	end
 
@@ -773,7 +768,7 @@ end
 
 BackendInterfaceWeavesPlayFab.get_item_power_level = function (self, item_backend_id)
 	local magic_level = self:get_item_magic_level(item_backend_id)
-	local power_level = magic_level_to_power_level(magic_level)
+	local power_level = WeaveUtils.magic_level_to_power_level(magic_level)
 
 	return power_level
 end
@@ -840,7 +835,7 @@ BackendInterfaceWeavesPlayFab.upgrade_item_magic_level_cb = function (self, exte
 
 	backend_mirror:update_item_field(item_backend_id, "magic_level", new_magic_level)
 
-	local new_power_level = magic_level_to_power_level(new_magic_level)
+	local new_power_level = WeaveUtils.magic_level_to_power_level(new_magic_level)
 
 	backend_mirror:update_item_field(item_backend_id, "power_level", new_power_level)
 	backend_mirror:set_essence(new_essence)
@@ -902,7 +897,7 @@ BackendInterfaceWeavesPlayFab.buy_magic_item_cb = function (self, external_cb, r
 
 		backend_mirror:add_item(backend_id, item)
 
-		item.power_level = magic_level_to_power_level(item.CustomData.magic_level)
+		item.power_level = WeaveUtils.magic_level_to_power_level(item.CustomData.magic_level)
 	end
 
 	backend_mirror:set_essence(new_essence)

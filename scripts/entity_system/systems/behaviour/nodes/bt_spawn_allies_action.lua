@@ -114,7 +114,7 @@ BTSpawnAllies.leave = function (self, unit, blackboard, t, reason)
 			if type(blackboard.action.defensive_mode_duration) == "table" then
 				local difficulty_rank = Managers.state.difficulty:get_difficulty_rank()
 
-				blackboard.defensive_mode_duration = blackboard.action.defensive_mode_duration[difficulty_rank]
+				blackboard.defensive_mode_duration = blackboard.action.defensive_mode_duration[difficulty_rank] or blackboard.action.defensive_mode_duration[2]
 			else
 				blackboard.defensive_mode_duration = blackboard.action.defensive_mode_duration
 			end
@@ -131,7 +131,7 @@ BTSpawnAllies.leave = function (self, unit, blackboard, t, reason)
 		if blackboard.action.defensive_mode_duration and type(blackboard.action.defensive_mode_duration) == "table" then
 			local difficulty_rank = Managers.state.difficulty:get_difficulty_rank()
 
-			blackboard.defensive_mode_duration = blackboard.action.defensive_mode_duration[difficulty_rank]
+			blackboard.defensive_mode_duration = blackboard.action.defensive_mode_duration[difficulty_rank] or blackboard.action.defensive_mode_duration[2]
 		else
 			blackboard.defensive_mode_duration = blackboard.action.defensive_mode_duration or 20
 		end

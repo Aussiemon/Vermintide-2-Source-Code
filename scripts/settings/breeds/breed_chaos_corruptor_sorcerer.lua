@@ -9,6 +9,7 @@ local breed_data = {
 	death_sound_event = "chaos_sorcerer_corrupt_death",
 	debug_spawn_category = "Specials",
 	dialogue_source_name = "chaos_corruptor_sorcerer",
+	height = 1.8,
 	is_always_spawnable = true,
 	is_of_interest_func = "is_of_interest_to_corruptor",
 	is_resurrectable = false,
@@ -224,6 +225,7 @@ local action_data = {
 			harder = 15,
 			hardest = 25,
 			normal = 5,
+			versus_base = 5,
 		},
 		health_leech = {
 			cataclysm = 30,
@@ -234,6 +236,7 @@ local action_data = {
 			harder = 10,
 			hardest = 20,
 			normal = 2,
+			versus_base = 2,
 		},
 	},
 	quick_teleport = {

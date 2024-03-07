@@ -194,16 +194,18 @@ GearUtils.spawn_inventory_unit = function (world, hand, item_template, item_unit
 	local unit_template_3p_name = item_data.third_person_extension_template or item_template.third_person_extension_template or "weapon_unit_3p"
 	local extension_init_data_3p
 
-	if item_template.uses_weapon_system_on_3p and not owner_unit_1p then
-		extension_init_data_3p = {
-			weapon_system = {
-				item_template = item_template,
-			},
-		}
-	else
+	if owner_unit_1p then
 		unit_template_3p_name = "weapon_unit_3p"
-		extension_init_data_3p = {}
 	end
+
+	extension_init_data_3p = {
+		weapon_system = {
+			item_template = item_template,
+			item_name = item_name,
+			owner_unit = owner_unit_3p,
+			world = world,
+		},
+	}
 
 	local weapon_unit_3p_name = weapon_unit_name .. "_3p"
 	local weapon_unit_3p = Managers.state.unit_spawner:spawn_local_unit_with_extensions(weapon_unit_3p_name, unit_template_3p_name, extension_init_data_3p)

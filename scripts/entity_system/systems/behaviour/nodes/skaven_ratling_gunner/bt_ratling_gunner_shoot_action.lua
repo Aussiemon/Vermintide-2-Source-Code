@@ -316,7 +316,10 @@ BTRatlingGunnerShootAction._start_shooting = function (self, blackboard, unit, d
 		GwNavBoxObstacle.set_transform(sight_obstacle, sight_pose)
 		GwNavBoxObstacle.set_does_trigger_tagvolume(fire_obstacle, true)
 		GwNavBoxObstacle.set_does_trigger_tagvolume(sight_obstacle, true)
-		DialogueSystem:trigger_targeted_by_ratling(data.target_unit)
+
+		local dialogue_system = Managers.state.entity:system("dialogue_system")
+
+		dialogue_system:trigger_targeted_by_ratling(data.target_unit)
 	end
 
 	if CLIENT_CONTROLLED_RATLING_GUN then
@@ -594,7 +597,7 @@ BTRatlingGunnerShootAction._shoot = function (self, unit, blackboard)
 	local spread_direction = Quaternion.forward(spread_rot)
 	local collision_filter = "filter_enemy_player_afro_ray_projectile"
 	local difficulty_rank = Managers.state.difficulty:get_difficulty_rank()
-	local power_level = light_weight_projectile_template.attack_power_level[difficulty_rank]
+	local power_level = light_weight_projectile_template.attack_power_level[difficulty_rank] or light_weight_projectile_template.attack_power_level[2]
 	local action_data = {
 		power_level = power_level,
 		damage_profile = light_weight_projectile_template.damage_profile,

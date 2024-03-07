@@ -27,6 +27,7 @@ local breed_data = {
 	follow_reach = 1,
 	has_inventory = true,
 	has_running_attack = true,
+	height = 1.7,
 	hit_effect_template = "HitEffectsBeastmenGor",
 	hit_mass_count = 3,
 	hit_reaction = "ai_default",
@@ -116,7 +117,7 @@ local breed_data = {
 		walk_animation_merge_options = {},
 		move_animation_merge_options = {},
 	},
-	stagger_modifier_function = function (stagger_type, duration, length, hit_zone_name, blackboard, breed, direction)
+	stagger_modifier_function = function (stagger_type, duration, length, hit_zone_name, blackboard, breed)
 		if blackboard.stagger_type == stagger_types.heavy then
 			if stagger_type == stagger_types.heavy and blackboard.heavy_stagger_immune_time then
 				stagger_type = stagger_types.heavy
@@ -324,6 +325,10 @@ local AttackIntensityPerDifficulty = {
 			normal = 2,
 			running = 2.5,
 		},
+		versus_base = {
+			normal = 2,
+			running = 2.5,
+		},
 	},
 	running = {
 		easy = {
@@ -355,6 +360,10 @@ local AttackIntensityPerDifficulty = {
 			running = 2.5,
 		},
 		cataclysm_3 = {
+			normal = 1,
+			running = 2.5,
+		},
+		versus_base = {
 			normal = 1,
 			running = 2.5,
 		},

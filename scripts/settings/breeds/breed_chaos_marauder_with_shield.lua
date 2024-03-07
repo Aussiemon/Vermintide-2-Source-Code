@@ -25,6 +25,7 @@ local breed_data = {
 	flingable = true,
 	has_inventory = true,
 	has_running_attack = true,
+	height = 1.8,
 	hit_effect_template = "HitEffectsChaosMarauderShield",
 	hit_mass_count = 3,
 	hit_mass_count_block = 6,
@@ -114,7 +115,7 @@ local breed_data = {
 		40,
 		40,
 	},
-	stagger_modifier_function = function (stagger_type, duration, length, hit_zone_name, blackboard, breed, direction)
+	stagger_modifier_function = function (stagger_type, duration, length, hit_zone_name, blackboard, breed)
 		if blackboard.stagger_type == stagger_types.heavy then
 			if stagger_type == stagger_types.heavy and blackboard.heavy_stagger_immune_time then
 				stagger_type = stagger_types.none
@@ -307,6 +308,9 @@ local AttackIntensityPerDifficulty = {
 		cataclysm_3 = {
 			normal = 2,
 		},
+		versus_base = {
+			normal = 2,
+		},
 	},
 	running = {
 		easy = {
@@ -331,6 +335,9 @@ local AttackIntensityPerDifficulty = {
 			running = 2.5,
 		},
 		cataclysm_3 = {
+			running = 2.5,
+		},
+		versus_base = {
 			running = 2.5,
 		},
 	},

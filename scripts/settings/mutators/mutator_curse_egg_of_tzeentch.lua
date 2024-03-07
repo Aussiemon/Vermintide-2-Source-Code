@@ -210,7 +210,8 @@ return {
 
 				audio_system:play_2d_audio_event(SOUND_EVENTS.ALERT_MEDIUM)
 
-				local player_unit = DialogueSystem:get_random_player()
+				local dialogue_system = Managers.state.entity:system("dialogue_system")
+				local player_unit = dialogue_system:get_random_player()
 
 				if player_unit then
 					local dialogue_input = ScriptUnit.extension_input(player_unit, "dialogue_system")
@@ -293,7 +294,8 @@ return {
 				mission_system:end_mission(EGG_MISSION_NAME, true)
 			end
 
-			local player_unit = DialogueSystem:get_random_player()
+			local dialogue_system = Managers.state.entity:system("dialogue_system")
+			local player_unit = dialogue_system:get_random_player()
 
 			if player_unit then
 				local dialogue_input = ScriptUnit.extension_input(player_unit, "dialogue_system")
@@ -319,7 +321,8 @@ return {
 	monster_spawned = function (data, unit)
 		data.template.on_egg_destroyed(data, unit)
 
-		local player_unit = DialogueSystem:get_random_player()
+		local dialogue_system = Managers.state.entity:system("dialogue_system")
+		local player_unit = dialogue_system:get_random_player()
 
 		if player_unit then
 			local dialogue_input = ScriptUnit.extension_input(player_unit, "dialogue_system")

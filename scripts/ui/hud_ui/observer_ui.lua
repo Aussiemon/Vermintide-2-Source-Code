@@ -52,34 +52,44 @@ ObserverUI.handle_observer_player_changed = function (self)
 		return
 	end
 
-	local observed_player_id = camera_extension:get_observed_player_id()
+	local peer_id = self.peer_id
+	local player = self.player_manager:player_from_peer_id(peer_id)
+	local observed_unit = player:observed_unit()
 
-	if observed_player_id then
-		local current_observing_player_id = self.observing_player_id
+	if Unit.alive(observed_unit) then
+		local current_observed_unit = self._observed_unit
 
-		if not current_observing_player_id or current_observing_player_id ~= observed_player_id then
-			self:set_observer_player(observed_player_id)
+		if current_observed_unit ~= observed_unit then
+			self:_set_observed_unit(current_observed_unit)
 		end
 	else
 		self:stop_draw_observer_ui()
 	end
 end
 
-ObserverUI.set_observer_player = function (self, player_id)
+ObserverUI._set_observed_unit = function (self, unit)
 	local profiles = SPProfiles
 	local profile_synchronizer = self.profile_synchronizer
 	local player_manager = Managers.player
 	local players = player_manager:players()
-	local follow_player = players[player_id]
-	local is_player_controlled = follow_player:is_player_controlled()
-	local local_player_id = follow_player:local_player_id()
-	local profile_index = profile_synchronizer:profile_by_peer(follow_player.peer_id, local_player_id)
-	local hero_display_name = profiles[profile_index] and profiles[profile_index].display_name
-	local player_name = follow_player:name()
+	local is_player_controlled = false
+	local unit_name = ""
+	local owner_player = Managers.player:owner(unit)
+	local unit_display_name = ""
 
-	self.player_name_widget.content.text = is_player_controlled and player_name or player_name .. " (BOT)"
-	self.hero_name_widget.content.text = hero_display_name
-	self.observing_player_id = player_id
+	if owner_player then
+		is_player_controlled = owner_player:is_player_controlled()
+		unit_name = owner_player:name()
+
+		local local_player_id = owner_player:local_player_id()
+		local profile_index = profile_synchronizer:profile_by_peer(owner_player.peer_id, local_player_id)
+
+		unit_display_name = profiles[profile_index] and profiles[profile_index].display_name
+	end
+
+	self.player_name_widget.content.text = is_player_controlled and unit_name or unit_name .. " (BOT)"
+	self.hero_name_widget.content.text = unit_display_name
+	self._observed_unit = unit
 	self._skip_bar_animation = true
 	self.player_name_widget.element.dirty = true
 	self.hero_name_widget.element.dirty = true
@@ -87,7 +97,7 @@ ObserverUI.set_observer_player = function (self, player_id)
 end
 
 ObserverUI.stop_draw_observer_ui = function (self)
-	self.observing_player_id = nil
+	self._observed_unit = nil
 	self.divider_widget.element.dirty = true
 	self.player_name_widget.element.dirty = true
 	self.hero_name_widget.element.dirty = true
@@ -106,8 +116,8 @@ ObserverUI.update = function (self, dt, t)
 
 	self:handle_observer_player_changed()
 
-	if self.observing_player_id then
-		self:update_follow_player_health_bar(self.observing_player_id)
+	if self._observed_unit then
+		self:_update_follow_unit_health_bar(self._observed_unit)
 		self:update_health_animations(dt)
 
 		self._skip_bar_animation = nil
@@ -177,18 +187,10 @@ ObserverUI.is_visible = function (self)
 	return self._is_visible
 end
 
-ObserverUI.update_follow_player_health_bar = function (self, peer_id)
+ObserverUI._update_follow_unit_health_bar = function (self, unit)
 	local profile_synchronizer = self.profile_synchronizer
 	local player_manager = Managers.player
-	local players = player_manager:players()
-	local player = players[peer_id]
-
-	if not player then
-		return
-	end
-
-	local local_player_id = player:local_player_id()
-	local player_unit = player.player_unit
+	local owner_player = player_manager:owner(unit)
 	local health_percent, is_knocked_down, is_dead, is_wounded, is_ready_for_assisted_respawn
 	local shield_percent = 0
 	local active_percentage = 1
@@ -197,9 +199,9 @@ ObserverUI.update_follow_player_health_bar = function (self, peer_id)
 	local bar_content = hp_bar_widget.content
 	local bar_style = hp_bar_widget.style
 
-	if player_unit then
-		local health_extension = ScriptUnit.extension(player_unit, "health_system")
-		local status_extension = ScriptUnit.extension(player_unit, "status_system")
+	if owner_player then
+		local health_extension = ScriptUnit.extension(unit, "health_system")
+		local status_extension = ScriptUnit.extension(unit, "status_system")
 
 		health_percent = health_extension:current_health_percent()
 
@@ -236,7 +238,7 @@ ObserverUI.update_follow_player_health_bar = function (self, peer_id)
 		is_knocked_down = status_extension:is_knocked_down() and health_percent > 0
 		is_ready_for_assisted_respawn = status_extension:is_ready_for_assisted_respawn()
 
-		local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
+		local buff_extension = ScriptUnit.extension(unit, "buff_system")
 		local num_grimoires = buff_extension:num_buff_perk("skaven_grimoire")
 		local multiplier = buff_extension:apply_buffs_to_value(PlayerUnitDamageSettings.GRIMOIRE_HEALTH_DEBUFF, "curse_protection")
 		local num_twitch_grimoires = buff_extension:num_buff_perk("twitch_grimoire")
@@ -303,19 +305,22 @@ ObserverUI.update_follow_player_health_bar = function (self, peer_id)
 		end
 	end
 
-	local profile_index = profile_synchronizer:profile_by_peer(player.peer_id, local_player_id)
+	if owner_player then
+		local local_player_id = owner_player:local_player_id()
+		local profile_index = profile_synchronizer:profile_by_peer(owner_player.peer_id, local_player_id)
 
-	if profile_index then
-		if is_knocked_down or is_dead then
-			num_of_health_dividers = MIN_HEALTH_DIVIDERS
-		else
-			num_of_health_dividers = MAX_HEALTH_DIVIDERS
+		if profile_index then
+			if is_knocked_down or is_dead then
+				num_of_health_dividers = MIN_HEALTH_DIVIDERS
+			else
+				num_of_health_dividers = MAX_HEALTH_DIVIDERS
+			end
+
+			bar_content.hp_bar.low_health = low_health
+			bar_content.hp_bar.is_knocked_down = is_knocked_down
+			bar_content.hp_bar.is_wounded = is_wounded
+			bar_style.hp_bar_divider.texture_amount = num_of_health_dividers
 		end
-
-		bar_content.hp_bar.low_health = low_health
-		bar_content.hp_bar.is_knocked_down = is_knocked_down
-		bar_content.hp_bar.is_wounded = is_wounded
-		bar_style.hp_bar_divider.texture_amount = num_of_health_dividers
 	end
 
 	local resolution_modified = RESOLUTION_LOOKUP.modified

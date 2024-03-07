@@ -10,6 +10,7 @@ local breed_data = {
 	dialogue_source_name = "chaos_corruptor_sorcerer",
 	far_off_despawn_immunity = true,
 	has_inventory = true,
+	height = 2.4,
 	hit_effect_template = "HitEffectsDummySorcerer",
 	ignore_bot_opportunity = true,
 	is_of_interest_func = "is_of_interest_to_corruptor",

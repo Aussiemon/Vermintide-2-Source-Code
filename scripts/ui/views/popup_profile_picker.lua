@@ -111,7 +111,7 @@ PopupProfilePicker._INPUT_DEVICES = {
 	"mouse",
 }
 
-PopupProfilePicker.show = function (self, current_profile_index, current_career_index, time_until_cancel, join_by_lobby_browser, _difficulty, lobby_data)
+PopupProfilePicker.show = function (self, current_profile_index, current_career_index, time_until_cancel, join_by_lobby_browser, _difficulty, lobby_data, optional_locked_profile_index)
 	self._join_lobby_result = nil
 	self._lobby_data = lobby_data
 
@@ -125,6 +125,7 @@ PopupProfilePicker.show = function (self, current_profile_index, current_career_
 	self:_select_hero(profile_index, career_index, ignore_sound)
 
 	self._cancel_timer = time_until_cancel
+	self._optional_locked_profile_index = optional_locked_profile_index
 
 	local input_manager = self._input_manager
 
@@ -409,6 +410,9 @@ PopupProfilePicker._update_occupied_profiles = function (self)
 	for i = 1, #hero_icon_widgets do
 		local profile_index = ProfilePriority[i]
 		local occupied = self._lobby_data and not ProfileSynchronizer.is_free_in_lobby(profile_index, lobby_data)
+
+		occupied = self._optional_locked_profile_index == profile_index or occupied
+
 		local widget = hero_icon_widgets[i]
 		local content = widget.content
 		local button_hotspot = content.button_hotspot
@@ -418,6 +422,8 @@ PopupProfilePicker._update_occupied_profiles = function (self)
 
 	if self._lobby_data then
 		local taken = not ProfileSynchronizer.is_free_in_lobby(self._selected_profile_index, lobby_data)
+
+		taken = self._optional_locked_profile_index == self._selected_profile_index or taken
 
 		for i = 1, #hero_widgets do
 			local widget = hero_widgets[i]

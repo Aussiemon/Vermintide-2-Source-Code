@@ -140,7 +140,7 @@ player.kill_skaven_storm_vermin_warlord_difficulty_rank = {
 }
 player.highest_equipped_rarity = {}
 
-for _, slot in ipairs({
+local slot_types = {
 	"melee",
 	"ranged",
 	"necklace",
@@ -149,7 +149,9 @@ for _, slot in ipairs({
 	"hat",
 	"skin",
 	"frame",
-}) do
+}
+
+for _, slot in ipairs(slot_types) do
 	player.highest_equipped_rarity[slot] = {
 		source = "player_data",
 		value = 0,

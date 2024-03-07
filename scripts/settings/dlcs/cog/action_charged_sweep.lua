@@ -140,7 +140,7 @@ ActionChargedSweep._apply_discharge_effect = function (self, discharge_effect, d
 			local weapon_unit = self.weapon_unit
 			local network_manager = Managers.state.network
 			local network_transmit = network_manager.network_transmit
-			local impact_explosion_template = ExplosionTemplates[impact_explosion_template_name]
+			local impact_explosion_template = ExplosionUtils.get_template(impact_explosion_template_name)
 			local owner_unit_go_id = network_manager:unit_game_object_id(owner_unit)
 			local impact_explosion_template_id = NetworkLookup.explosion_templates[impact_explosion_template_name]
 

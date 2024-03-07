@@ -269,6 +269,7 @@ weapon_template.overcharge_data = {
 	overcharge_warning_med_sound_event = "drakegun_overcharge_warning_med",
 	time_until_overcharge_decreases = 0.5,
 }
+weapon_template.overcharge_data.critical_overcharge_margin = weapon_template.overcharge_data.max_value * 0.03
 weapon_template.attack_meta_data = {
 	aim_at_node = "j_spine1",
 	always_charge_before_firing = false,

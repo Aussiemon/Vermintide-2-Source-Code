@@ -5,6 +5,9 @@ local settings = DLCSettings.woods
 settings.career_setting_files = {
 	"scripts/settings/dlcs/woods/career_settings_woods",
 }
+settings.player_breeds = {
+	"scripts/settings/dlcs/woods/player_breeds_woods",
+}
 settings.career_ability_settings = {
 	"scripts/settings/dlcs/woods/career_ability_settings_woods",
 }
@@ -317,6 +320,14 @@ settings.game_object_initializers = {
 			owner_unit_id = Managers.state.network:unit_game_object_id(owner_unit)
 		end
 
+		local target_unit = vortex_extension.target_unit
+		local target_unit_id = NetworkConstants.invalid_game_object_id
+
+		if Unit.alive(target_unit) then
+			target_unit_id = Managers.state.network:unit_game_object_id(target_unit)
+		end
+
+		local side_id = Managers.state.side.side_by_unit[owner_unit].side_id
 		local data_table = {
 			fx_radius_percentage = 1,
 			height_percentage = 1,
@@ -330,6 +341,8 @@ settings.game_object_initializers = {
 			inner_decal_unit_id = inner_decal_unit_id,
 			outer_decal_unit_id = outer_decal_unit_id,
 			owner_unit_id = owner_unit_id,
+			side_id = side_id,
+			target_unit_id = target_unit_id,
 		}
 
 		return data_table
@@ -380,7 +393,7 @@ settings.game_object_extractors = {
 		local nav_mesh_effect
 
 		if explosion_template_name then
-			local template = ExplosionTemplates[explosion_template_name]
+			local template = ExplosionUtils.get_template(explosion_template_name)
 
 			if template then
 				local aoe_data = template.aoe
@@ -447,12 +460,17 @@ settings.game_object_extractors = {
 		local outer_decal_unit = Managers.state.unit_storage:unit(outer_decal_unit_id)
 		local owner_unit_id = GameSession.game_object_field(game_session, game_object_id, "owner_unit_id")
 		local owner_unit = Managers.state.unit_storage:unit(owner_unit_id)
+		local side_id = GameSession.game_object_field(game_session, game_object_id, "side_id")
+		local target_unit_id = GameSession.game_object_field(game_session, game_object_id, "target_unit_id")
+		local target_unit = Managers.state.unit_storage:unit(target_unit_id)
 		local extension_init_data = {
 			area_damage_system = {
 				vortex_template_name = vortex_template_name,
 				inner_decal_unit = inner_decal_unit,
 				outer_decal_unit = outer_decal_unit,
 				owner_unit = owner_unit,
+				side_id = side_id,
+				target_unit = target_unit,
 			},
 		}
 		local unit_template_name = "vortex_unit"

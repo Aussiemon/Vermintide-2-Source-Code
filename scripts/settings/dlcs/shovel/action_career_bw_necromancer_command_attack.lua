@@ -6,6 +6,9 @@ local IGNORED_BREEDS = {
 	critter_rat = true,
 }
 local CALCULATED_TARGET_BY_OWNER = {}
+local HIT_AI_UNITS = {}
+local HIT_PLAYER_UNITS = {}
+local ALL_HIT_UNITS = {}
 
 ActionCareerBWNecromancerCommandAttack.pre_calculate_target = function (owner_unit)
 	local commander_extension = ScriptUnit.extension(owner_unit, "ai_commander_system")
@@ -18,29 +21,55 @@ ActionCareerBWNecromancerCommandAttack.pre_calculate_target = function (owner_un
 
 	local own_position = fp_extension:current_position()
 	local look_direction = Quaternion.forward(fp_extension:current_rotation())
-	local dummy_table = FrameTable.alloc_table()
-	local ai_system = Managers.state.entity:system("ai_system")
-	local ai_broadphase = ai_system.broadphase
-	local hit_ai_units = FrameTable.alloc_table()
-	local num_hit_ai_units = EngineOptimized.smart_targeting_query(ai_broadphase, own_position, look_direction, 0, 50, 0.1, 0.2, 0.8, 5, hit_ai_units, dummy_table, dummy_table)
+	local own_position = fp_extension:current_position()
+	local look_direction = Quaternion.forward(fp_extension:current_rotation())
+	local broadphase_categories = Managers.state.side.side_by_unit[owner_unit].enemy_broadphase_categories
 
-	TrueFlightUtility.sort_prioritize_bosses(hit_ai_units)
+	table.clear(ALL_HIT_UNITS)
 
-	local side_manager = Managers.state.side
-	local unit = owner_unit
+	local range = 50
+	local num_hit_ai_units = AiUtils.broadphase_query(own_position, range, HIT_AI_UNITS, broadphase_categories)
 
 	for i = 1, num_hit_ai_units do
-		local hit_unit = hit_ai_units[i]
-		local blackboard = BLACKBOARDS[hit_unit]
-		local breed_name = blackboard and blackboard.breed.name
+		ALL_HIT_UNITS[i] = HIT_AI_UNITS[i]
+	end
 
-		if IGNORED_BREEDS[breed_name] then
-			-- Nothing
-		elseif side_manager:is_enemy(unit, hit_unit) then
+	local num_hit_player_units = PlayerUtils.broadphase_query(own_position, range, HIT_PLAYER_UNITS, broadphase_categories)
+
+	for i = 1, num_hit_player_units do
+		ALL_HIT_UNITS[i + num_hit_ai_units] = HIT_PLAYER_UNITS[i]
+	end
+
+	local boss_weight = 1
+	local special_weight = 1
+	local elite_weight = 1
+	local player_weight = 1.5
+	local scores = TrueFlightUtility.sort(ALL_HIT_UNITS, own_position, look_direction, boss_weight, special_weight, elite_weight, range, 0.7, 1.8, player_weight)
+
+	for i = 1, num_hit_ai_units + num_hit_player_units do
+		repeat
+			local hit_unit = ALL_HIT_UNITS[i]
+			local blackboard = BLACKBOARDS[hit_unit]
+			local breed_name = blackboard and blackboard.breed.name
+
+			if scores[hit_unit] == 0 then
+				return false
+			end
+
+			if IGNORED_BREEDS[breed_name] or not HEALTH_ALIVE[hit_unit] then
+				break
+			end
+
+			local los = AiUtils.line_of_sight_from_random_point(own_position, hit_unit, math.huge)
+
+			if not los then
+				break
+			end
+
 			CALCULATED_TARGET_BY_OWNER[owner_unit] = hit_unit
 
 			return true
-		end
+		until true
 	end
 end
 

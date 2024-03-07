@@ -297,7 +297,7 @@ RespawnHandler.server_update = function (self, dt, t, slots)
 			if not data.ready_for_respawn and not data.respawn_timer then
 				local peer_id = status.peer_id
 				local local_player_id = status.local_player_id
-				local respawn_time = Development.parameter("fast_respawns") and 2 or RESPAWN_TIME
+				local respawn_time = Development.parameter("fast_respawns") and 2 or Managers.mechanism:setting("hero_respawn_time") or RESPAWN_TIME
 
 				if peer_id and local_player_id then
 					local player = Managers.player:player(peer_id, local_player_id)

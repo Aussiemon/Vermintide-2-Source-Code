@@ -29,22 +29,25 @@ LobbyHost.init = function (self, network_options, lobby)
 	self.platform = PLATFORM
 end
 
-LobbyHost.destroy = function (self)
-	print("[LobbyHost] Destroying")
+LobbyHost.kick_all_except = function (self, ignored_peers)
+	if self.lobby ~= nil and self.lobby.kick then
+		ignored_peers = ignored_peers or {}
 
-	if self.lobby ~= nil then
 		local my_peer_id = self.peer_id
 
-		if self.lobby.kick then
-			for _, peer_id in ipairs(self.lobby:members()) do
-				if peer_id ~= my_peer_id then
-					self.lobby:kick(peer_id)
-				end
+		for _, peer_id in ipairs(self.lobby:members()) do
+			if peer_id ~= my_peer_id and not ignored_peers[peer_id] then
+				self.lobby:kick(peer_id)
 			end
 		end
-
-		self.lobby_members = nil
 	end
+end
+
+LobbyHost.destroy = function (self)
+	print("[LobbyHost] Destroying")
+	self:kick_all_except()
+
+	self.lobby_members = nil
 
 	self:_free_lobby()
 	GarbageLeakDetector.register_object(self, "Lobby Host")

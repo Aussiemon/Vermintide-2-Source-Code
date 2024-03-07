@@ -34,9 +34,19 @@ ProximitySystem.init = function (self, context, system_name)
 	self.ai_unit_extensions_map = {}
 	self.special_unit_extension_map = {}
 	self.unit_forwards = {}
+
+	local all_categories = FrameTable.alloc_table()
+	local sides = Managers.state.side:sides()
+
+	for i = 1, #sides do
+		local side = sides[i]
+
+		all_categories[#all_categories + 1] = side:name()
+	end
+
 	self.enemy_broadphase = Broadphase(PROXIMITY_DISTANCE_ENEMIES, 128)
 	self.special_units_broadphase = Broadphase(SPECIAL_PROXIMITY_DISTANCE, 8)
-	self.player_units_broadphase = Broadphase(PROXIMITY_DISTANCE_FRIENDS, 4)
+	self.player_units_broadphase = Broadphase(PROXIMITY_DISTANCE_FRIENDS, 8, all_categories)
 	self.enemy_check_raycasts = {}
 	self.raycast_read_index = 1
 	self.raycast_write_index = 1
@@ -107,7 +117,7 @@ ProximitySystem.on_add_extension = function (self, world, unit, extension_name, 
 		}
 		extension.raycast_timer = 0
 		extension.hear_timer = 0
-		extension.player_broadphase_id = Broadphase.add(self.player_units_broadphase, unit, Unit.world_position(unit, 0), 0.5)
+		extension.player_broadphase_id = Broadphase.add(self.player_units_broadphase, unit, Unit.world_position(unit, 0), 0.5, extension_init_data.side.broadphase_category)
 
 		local breed = extension_init_data.breed or extension_init_data.profile.breed
 

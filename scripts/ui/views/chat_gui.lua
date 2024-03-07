@@ -60,7 +60,6 @@ ChatGui.set_input_manager = function (self, input_manager)
 			irc_chat = true,
 			keybind = true,
 			popup = true,
-			rcon = true,
 			twitch = true,
 		}
 
@@ -860,18 +859,22 @@ ChatGui._update_input = function (self, input_service, menu_input_service, dt, n
 				end
 
 				local current_message_target_info = Managers.chat:current_message_target()
-				local current_message_target = "[" .. tostring(current_message_target_info.message_target) .. "]  "
-				local font, scaled_font_size = UIFontByResolution(self.chat_input_widget.style.channel_text)
-				local text_width, text_height, min = UIRenderer.text_size(self.ui_renderer, current_message_target, font[1], scaled_font_size)
 
-				self.chat_input_widget.content.channel_field = current_message_target
+				if current_message_target_info then
+					local current_message_target = "[" .. tostring(current_message_target_info.message_target) .. "]  "
+					local font, scaled_font_size = UIFontByResolution(self.chat_input_widget.style.channel_text)
+					local text_width, text_height, min = UIRenderer.text_size(self.ui_renderer, current_message_target, font[1], scaled_font_size)
 
-				local channel_text_color = IRC_CHANNEL_COLORS[current_message_target_info.message_target_type]
+					self.chat_input_widget.content.channel_field = current_message_target
 
-				self:_apply_color_values(self.chat_input_widget.style.channel_text.text_color, channel_text_color)
+					local channel_text_color = IRC_CHANNEL_COLORS[current_message_target_info.message_target_type]
 
-				self.ui_scenegraph.chat_input_text.size[1] = definitions.CHAT_INPUT_TEXT_WIDTH - text_width
-				self.chat_input_widget.style.text.offset[1] = self.chat_input_widget.style.channel_text.offset[1] + text_width
+					self:_apply_color_values(self.chat_input_widget.style.channel_text.text_color, channel_text_color)
+
+					self.ui_scenegraph.chat_input_text.size[1] = definitions.CHAT_INPUT_TEXT_WIDTH - text_width
+					self.chat_input_widget.style.text.offset[1] = self.chat_input_widget.style.channel_text.offset[1] + text_width
+				end
+
 				self.chat_input_widget.content.caret_index = 1
 				self.chat_input_widget.content.text_index = 1
 			end

@@ -39,6 +39,7 @@ InteractionHelper.interactions = {
 	weave_leaderboard_access = {},
 	inn_door_transition = {},
 	deus_door_transition = {},
+	carousel_door_transition = {},
 }
 
 DLCUtils.map_list("interactions", function (interaction)

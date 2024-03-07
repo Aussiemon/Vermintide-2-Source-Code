@@ -21,9 +21,9 @@ if IS_WINDOWS then
 	ANIMATION_TIMES = {
 		OPEN = {
 			ALPHA = 0.45,
-			MOVE_X = 1.5,
-			MOVE_Y = 1.5,
-			SIZE = 1.5,
+			MOVE_X = 0.3,
+			MOVE_Y = 0.3,
+			SIZE = 0.3,
 		},
 		CLOSE = {
 			ALPHA = 0.1,
@@ -36,9 +36,9 @@ else
 	ANIMATION_TIMES = {
 		OPEN = {
 			ALPHA = 0.45,
-			MOVE_X = 0.75,
-			MOVE_Y = 0.75,
-			SIZE = 0.75,
+			MOVE_X = 0.3,
+			MOVE_Y = 0.3,
+			SIZE = 0.3,
 		},
 		CLOSE = {
 			ALPHA = 0.1,
@@ -92,7 +92,6 @@ SocialWheelUI.init = function (self, parent, ingame_ui_context)
 	self._ingame_ui_context = ingame_ui_context
 	self._peer_id = ingame_ui_context.peer_id
 	self._player = ingame_ui_context.player
-	self._side_name = Managers.state.side:get_side_from_player_unique_id(self._player:unique_id()):name()
 	self._wwise_world = ingame_ui_context.wwise_world
 
 	if not IS_WINDOWS then
@@ -115,6 +114,7 @@ SocialWheelUI.init = function (self, parent, ingame_ui_context)
 
 	self:_create_ui_elements()
 	self:_register_rpcs()
+	Managers.state.event:register(self, "on_player_joined_side", "on_player_joined_side")
 end
 
 SocialWheelUI._create_ui_elements = function (self)
@@ -135,37 +135,40 @@ SocialWheelUI._create_ui_elements = function (self)
 
 	for category_name, category_settings in pairs(SocialWheelSettings) do
 		local has_pages = category_settings.has_pages
+		local validation_function = category_settings.validation_function
 
-		if not has_pages then
-			local num_category_settings = #category_settings
-			local category_widgets = Script.new_array(num_category_settings)
-
-			self._selection_widgets[category_name] = category_widgets
-
-			for i = 1, num_category_settings do
-				local widget = definitions.create_social_widget(category_settings[i], self:_widget_angle(category_settings.angle, num_category_settings, i), category_settings, get_active_context_func)
-
-				category_widgets[i] = UIWidget.init(widget)
-			end
-		else
-			local num_pages = #category_settings
-			local category_widget_pages = Script.new_table(num_pages, 2)
-
-			category_widget_pages.num_pages = num_pages
-			category_widget_pages.current_page = 1
-			self._selection_widgets[category_name] = category_widget_pages
-
-			for page_idx = 1, num_pages do
-				local page = category_settings[page_idx]
-				local num_category_settings = #page
+		if not validation_function or validation_function() then
+			if not has_pages then
+				local num_category_settings = #category_settings
 				local category_widgets = Script.new_array(num_category_settings)
 
-				category_widget_pages[page_idx] = category_widgets
+				self._selection_widgets[category_name] = category_widgets
 
 				for i = 1, num_category_settings do
-					local widget = definitions.create_social_widget(page[i], self:_widget_angle(category_settings.angle, num_category_settings, i), category_settings, get_active_context_func, page_idx)
+					local widget = definitions.create_social_widget(category_settings[i], self:_widget_angle(category_settings.angle, num_category_settings, i), category_settings, get_active_context_func)
 
 					category_widgets[i] = UIWidget.init(widget)
+				end
+			else
+				local num_pages = #category_settings
+				local category_widget_pages = Script.new_table(num_pages, 2)
+
+				category_widget_pages.num_pages = num_pages
+				category_widget_pages.current_page = 1
+				self._selection_widgets[category_name] = category_widget_pages
+
+				for page_idx = 1, num_pages do
+					local page = category_settings[page_idx]
+					local num_category_settings = #page
+					local category_widgets = Script.new_array(num_category_settings)
+
+					category_widget_pages[page_idx] = category_widgets
+
+					for i = 1, num_category_settings do
+						local widget = definitions.create_social_widget(page[i], self:_widget_angle(category_settings.angle, num_category_settings, i), category_settings, get_active_context_func, page_idx)
+
+						category_widgets[i] = UIWidget.init(widget)
+					end
 				end
 			end
 		end
@@ -200,6 +203,8 @@ SocialWheelUI.destroy = function (self)
 	if player_interactor_ext then
 		player_interactor_ext:enable_interactions(true)
 	end
+
+	Managers.state.event:unregister("on_player_joined_side", self)
 end
 
 SocialWheelUI._widget_angle = function (self, total_angle, num_elements, i)
@@ -640,8 +645,7 @@ SocialWheelUI._open_menu = function (self, dt, t, input_service, increment_page)
 	end
 
 	local unique_id = self._player:unique_id()
-	local side = Managers.state.side:get_side_from_player_unique_id(unique_id)
-	local side_name = side:name()
+	local side_name = self._side_name
 	local side_settings = Managers.state.game_mode:setting("social_wheel_by_side")
 	local category
 
@@ -654,9 +658,10 @@ SocialWheelUI._open_menu = function (self, dt, t, input_service, increment_page)
 	if IS_WINDOWS then
 		local gamepad_enabled = Managers.input:is_device_active("gamepad")
 		local layout_settings = Application.user_setting("social_wheel_gamepad_layout")
+		local should_use_gamepad = Managers.state.game_mode:setting("should_use_gamepad_social_wheel")
 		local use_gamepad_layout = layout_settings == "auto" and gamepad_enabled or layout_settings == "always"
 
-		if use_gamepad_layout then
+		if use_gamepad_layout or should_use_gamepad then
 			category = category .. "_gamepad"
 		end
 	else
@@ -1144,4 +1149,14 @@ end
 
 SocialWheelUI.is_active = function (self)
 	return self._active_context ~= nil
+end
+
+SocialWheelUI.on_player_joined_side = function (self, unique_id, local_player_id, side_id)
+	local player = Managers.player:player_from_unique_id(unique_id)
+
+	if player.local_player then
+		local side = Managers.state.side:get_side(side_id)
+
+		self._side_name = side:name()
+	end
 end

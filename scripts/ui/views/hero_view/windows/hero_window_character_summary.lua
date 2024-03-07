@@ -748,15 +748,14 @@ HeroWindowCharacterSummary._populate_talents = function (self, hero_name, career
 	local career_settings = CareerSettings[career_name]
 	local tree = TalentTrees[hero_name][career_settings.talent_tree_index]
 	local talents = self._selected_talents
-	local all_talents = Talents[hero_name]
 	local width_spacing = 12
 	local layer_offset = 5
 
 	for i = 1, NumTalentRows do
 		local unlock_name = "talent_point_" .. i
 		local row_unlocked = ProgressionUnlocks.is_unlocked(unlock_name, hero_level)
-		local talent_unlock_level = TalentUnlockLevels[unlock_name]
-		local level_text = tostring(talent_unlock_level)
+		local talent_template = ProgressionUnlocks.get_unlock(unlock_name)
+		local level_text = tostring(talent_template.level_requirement)
 		local slot_widget = UIWidget.init(widget_definition)
 
 		slot_widgets[i] = slot_widget
@@ -778,7 +777,7 @@ HeroWindowCharacterSummary._populate_talents = function (self, hero_name, career
 
 			local talent_name = tree[i][j]
 			local id = TalentIDLookup[talent_name]
-			local talent_data = all_talents[id]
+			local talent_data = TalentUtils.get_talent_by_id(hero_name, id)
 			local content = widget.content
 
 			content.icon = talent_data and talent_data.icon or "icons_placeholder"
@@ -1061,8 +1060,11 @@ HeroWindowCharacterSummary._populate_career_info = function (self, career_name)
 		255,
 		255,
 	}
-	local passive_ability_data = career_settings.passive_ability
-	local activated_ability_data = career_settings.activated_ability[1]
+	local passive_ability_data = CareerUtils.get_passive_ability_by_career(career_settings)
+	local profile = PROFILES_BY_CAREER_NAMES[career_name]
+	local profile_index = profile.index
+	local career_index = career_index_from_name(profile_index, career_name)
+	local activated_ability_data = CareerUtils.get_ability_data_by_career(career_settings, 1)
 	local passive_display_name = passive_ability_data.display_name
 	local passive_icon = passive_ability_data.icon
 	local activated_display_name = activated_ability_data.display_name

@@ -17,6 +17,7 @@ local breed_data = {
 	exchange_order = 1,
 	flingable = true,
 	has_inventory = true,
+	height = 1.5,
 	hit_effect_template = "HitEffectsSkavenLootRat",
 	hit_reaction = "ai_default",
 	initial_is_passive = false,

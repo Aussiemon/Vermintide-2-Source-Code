@@ -19,3 +19,9 @@ WeaveUtils.get_rating = function (score)
 
 	return rating
 end
+
+WeaveUtils.magic_level_to_power_level = function (magic_level)
+	local settings = PowerLevelFromMagicLevel
+
+	return math.min(math.ceil(settings.starting_power_level + magic_level * settings.power_level_per_magic_level), settings.max_power_level)
+end

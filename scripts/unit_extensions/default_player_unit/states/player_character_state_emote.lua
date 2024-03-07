@@ -138,7 +138,8 @@ PlayerCharacterStateEmote.update = function (self, unit, input, dt, context, t)
 		zoom_input = input_service:get("emote_camera_zoom").y * zoom_sensitivity
 	end
 
-	local social_wheel = Managers.ui:get_hud_component("SocialWheelUI")
+	local social_wheel_class = Managers.mechanism:get_social_wheel_class()
+	local social_wheel = Managers.ui:get_hud_component(social_wheel_class)
 	local is_social_wheel_active = social_wheel and social_wheel:is_active()
 
 	if not is_social_wheel_active and input_service:get("emote_toggle_hud_visibility") then

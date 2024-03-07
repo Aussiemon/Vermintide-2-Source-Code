@@ -84,6 +84,10 @@ settings.explosion_templates = {
 					power_level = 1000,
 					power_level_glance = 500,
 				},
+				versus_base = {
+					power_level = 200,
+					power_level_glance = 200,
+				},
 			},
 		},
 	},

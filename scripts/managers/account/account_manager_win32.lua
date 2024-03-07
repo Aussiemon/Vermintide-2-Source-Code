@@ -150,6 +150,10 @@ AccountManager.region = function (self)
 	return self._country_code
 end
 
+AccountManager.set_should_teardown_xboxlive = function (self)
+	return
+end
+
 AccountManager.friends_list_initiated = function (self)
 	return
 end
@@ -196,4 +200,8 @@ end
 
 AccountManager.console_type_setting = function (self)
 	return true
+end
+
+AccountManager.initiate_leave_game = function (self)
+	return
 end

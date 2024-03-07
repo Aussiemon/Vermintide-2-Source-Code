@@ -105,7 +105,7 @@ StateTitleScreenInitNetwork._next_state = function (self)
 			return
 		end
 
-		if GameSettingsDevelopment.skip_start_screen then
+		if GameSettingsDevelopment.skip_start_screen or Development.parameter("skip_start_screen") then
 			return StateTitleScreenLoadSave
 		else
 			if script_data.honduras_demo and not self._title_start_ui:is_ready() then

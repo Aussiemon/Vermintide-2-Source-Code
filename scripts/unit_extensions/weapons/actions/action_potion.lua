@@ -65,7 +65,7 @@ ActionPotion.finish = function (self, reason)
 
 	local increased_buff_template = buff_template .. "_increased"
 
-	if buff_extension:has_buff_perk("potion_duration") and BuffTemplates[increased_buff_template] then
+	if buff_extension:has_buff_perk("potion_duration") and BuffUtils.get_buff_template(increased_buff_template) then
 		buff_template = increased_buff_template
 	end
 

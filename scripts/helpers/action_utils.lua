@@ -273,6 +273,16 @@ ActionUtils.get_power_level_for_target = function (optional_target_unit, origina
 	attack_power = attack_power * attack_armor_power_modifer
 	impact_power = impact_power * impact_armor_power_modifer
 
+	local is_player_target = breed and breed.is_player
+
+	if is_player_target then
+		local attack_player_target_modifier = target_settings.attack_player_target_power_modifier
+		local impact_player_target_modifier = target_settings.impact_player_target_power_modifier
+
+		attack_power = attack_power * (attack_player_target_modifier or 1)
+		impact_power = impact_power * (impact_player_target_modifier or 1)
+	end
+
 	return attack_power, impact_power
 end
 
@@ -741,7 +751,7 @@ local last_attack_critical = false
 
 ActionUtils.is_critical_strike = function (unit, action, t, overrides)
 	local buff_extension = ScriptUnit.extension(unit, "buff_system")
-	local talent_extension = ScriptUnit.extension(unit, "talent_system")
+	local talent_extension = ScriptUnit.has_extension(unit, "talent_system")
 	local is_crit = false
 
 	if script_data.no_critical_strikes then
@@ -753,7 +763,7 @@ ActionUtils.is_critical_strike = function (unit, action, t, overrides)
 		is_crit = last_attack_critical
 	elseif buff_extension:has_buff_perk("guaranteed_crit") then
 		is_crit = true
-	elseif talent_extension:has_talent_perk("no_random_crits") then
+	elseif talent_extension and talent_extension:has_talent_perk("no_random_crits") then
 		is_crit = false
 	else
 		local crit_chance = ActionUtils.get_critical_strike_chance(unit, action, overrides or action)

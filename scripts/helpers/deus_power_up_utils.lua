@@ -209,7 +209,7 @@ DeusPowerUpUtils.get_talent_from_power_up = function (talent_index, talent_tier,
 	local talent_name = TalentTrees[profile_name][talent_tree_index][talent_tier][talent_index]
 	local lookup = TalentIDLookup[talent_name]
 
-	return Talents[profile_name][lookup.talent_id]
+	return TalentUtils.get_talent_by_id(profile_name, lookup.talent_id)
 end
 
 DeusPowerUpUtils.get_talent_power_up_from_tier_and_column = function (tier, column)

@@ -9,7 +9,7 @@ ImguiProfiler.init = function (self)
 end
 
 ImguiProfiler.is_persistent = function (self)
-	return false
+	return true
 end
 
 ImguiProfiler.on_show = function (self)

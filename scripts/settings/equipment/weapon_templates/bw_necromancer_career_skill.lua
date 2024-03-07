@@ -73,7 +73,7 @@ weapon_template.actions = {
 
 				local inventory_extension = ScriptUnit.extension(owner_unit, "inventory_system")
 
-				inventory_extension:wield_previous_weapon()
+				inventory_extension:wield_previous_non_level_slot()
 			end,
 		},
 	},

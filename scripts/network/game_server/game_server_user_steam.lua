@@ -8,7 +8,14 @@ GameServerInternal.lobby_data_version = 2
 GameServerInternal.join_server = function (game_server_info, password)
 	local ip_address = game_server_info.ip_port
 	local use_eac = true
-	local game_server_lobby = Network.join_steam_server(use_eac, ip_address, password)
+	local invitee = game_server_info.invitee
+	local game_server_lobby
+
+	if invitee then
+		game_server_lobby = Network.join_steam_server(use_eac, ip_address, password, invitee)
+	else
+		game_server_lobby = Network.join_steam_server(use_eac, ip_address, password)
+	end
 
 	SteamGameServerLobby.auto_update_data(game_server_lobby)
 
@@ -39,7 +46,7 @@ if not DEDICATED_SERVER then
 	end
 
 	GameServerInternal.close_channel = function (lobby, channel)
-		print("LobbyInternal.close_channel lobby: %s, channel: %s", lobby, channel)
+		printf("LobbyInternal.close_channel lobby: %s, channel: %s", lobby, channel)
 		SteamGameServerLobby.close_channel(lobby, channel)
 	end
 end

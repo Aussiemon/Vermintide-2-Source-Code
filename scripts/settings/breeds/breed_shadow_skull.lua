@@ -14,6 +14,7 @@ local breed_data = {
 	exchange_order = 1,
 	far_off_despawn_immunity = true,
 	flesh_material = "stone",
+	height = 0.3,
 	hit_effect_template = "HitEffectsShadowSkull",
 	hit_reaction = "ai_default",
 	ignore_activate_unit = true,
@@ -30,6 +31,7 @@ local breed_data = {
 	target_head_node = "c_skull",
 	target_selection = "pick_closest_target",
 	threat_value = 10,
+	trueflight_lock_radius = 1.5,
 	unit_template = "shadow_skull_unit",
 	max_health = {
 		3,

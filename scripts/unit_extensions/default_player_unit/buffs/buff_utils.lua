@@ -1,5 +1,7 @@
 ﻿-- chunkname: @scripts/unit_extensions/default_player_unit/buffs/buff_utils.lua
 
+require("scripts/managers/game_mode/mechanisms/mechanism_overrides")
+
 local buff_perk_names = require("scripts/unit_extensions/default_player_unit/buffs/settings/buff_perk_names")
 
 BuffUtils = BuffUtils or {}
@@ -31,7 +33,7 @@ BuffUtils.copy_talent_buff_names = function (buffs)
 end
 
 BuffUtils.get_max_stacks = function (buff_name, buff_index)
-	local buffs = BuffTemplates[buff_name].buffs
+	local buffs = BuffUtils.get_buff_template(buff_name).buffs
 	local max_stacks = buffs[buff_index or 1].max_stacks
 
 	return max_stacks or nil
@@ -220,6 +222,14 @@ BuffUtils.create_liquid_forward = function (unit, buff)
 			network_manager:rpc_play_particle_effect(nil, effect_name_id, NetworkConstants.invalid_game_object_id, node_id, position, rotation_offset, false)
 		end
 	end
+end
+
+BuffUtils.get_buff_template = function (name, optional_mechanism_name)
+	if not BuffTemplates[name] then
+		return
+	end
+
+	return MechanismOverrides.get(BuffTemplates[name], optional_mechanism_name)
 end
 
 BalefireDots = BalefireDots or {}

@@ -11,6 +11,7 @@ local breed_data = {
 	default_inventory_template = "chaos_sorcerer_vortex",
 	dialogue_source_name = "chaos_vortex_sorcerer",
 	has_inventory = true,
+	height = 1.8,
 	is_always_spawnable = true,
 	is_of_interest_func = "is_of_interest_to_vortex",
 	max_vortex_units = 1,

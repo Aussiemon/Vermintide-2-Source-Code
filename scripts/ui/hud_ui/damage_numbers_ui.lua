@@ -92,7 +92,7 @@ DamageNumbersUI.update = function (self, dt, viewport_name)
 	self:draw(dt)
 end
 
-DamageNumbersUI.event_add_damage_number = function (self, damage, size, unit, time, color, is_critical_strike)
+DamageNumbersUI.event_add_damage_number = function (self, damage, size, unit, time, color, is_critical_strike, z_offset_override)
 	local camera_position = Camera.world_position(self.camera)
 	local unit_position = Unit.world_position(unit, 0)
 	local cam_to_unit_dir = Vector3.normalize(unit_position - camera_position)
@@ -101,13 +101,14 @@ DamageNumbersUI.event_add_damage_number = function (self, damage, size, unit, ti
 	local is_infront = forward_dot >= 0 and forward_dot <= 1
 
 	if is_infront then
-		local size = size or 1
-		local color = color or Vector3(255, 255, 255)
+		size = size or 1
+		color = color or Vector3(255, 255, 255)
+
 		local new_text = {
 			alpha = 255,
 			floating_speed = 150,
 			size = size,
-			text = damage * 100,
+			text = damage,
 			color = {
 				255,
 				color.x,
@@ -119,6 +120,7 @@ DamageNumbersUI.event_add_damage_number = function (self, damage, size, unit, ti
 			random_x_offset = math.random(-60, 60),
 			random_y_offset = math.random(-40, 40),
 			is_critical_strike = is_critical_strike,
+			z_offset = z_offset_override,
 		}
 
 		self._unit_texts[unit] = self._unit_texts[unit] or {}
@@ -159,7 +161,6 @@ DamageNumbersUI.draw = function (self, dt)
 	local damage_text_offset = damage_text_widget.offset
 	local world_to_screen = Camera.world_to_screen
 	local z_offset = 1.85
-	local z_offset_dps = 0.4
 	local inverse_scale = RESOLUTION_LOOKUP.inv_scale
 	local World_position = Unit.world_position
 	local easeOutCubic = math.easeOutCubic
@@ -169,7 +170,7 @@ DamageNumbersUI.draw = function (self, dt)
 		if Unit.alive(unit) then
 			local world_position = World_position(unit, 0)
 
-			world_position[3] = world_position[3] + z_offset
+			world_position[3] = world_position[3] + (unit_texts.z_offset or z_offset)
 
 			local world_to_screen_position = world_to_screen(camera, world_position)
 

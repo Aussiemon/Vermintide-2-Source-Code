@@ -84,6 +84,7 @@ local unit_templates = {
 			"PingTargetExtension",
 			"PlayerUnitFadeExtension",
 			"PlayerUnitDarknessExtension",
+			"PlayerEquipmentWorldMarkerExtension",
 		},
 		husk_extensions_server = {
 			"SimpleHuskInventoryExtension",
@@ -107,6 +108,7 @@ local unit_templates = {
 			"PlayerUnitFadeExtension",
 			"PlayerUnitDarknessExtension",
 			"PlayerUnitAttackIntensityExtension",
+			"PlayerEquipmentWorldMarkerExtension",
 			"AICommanderExtension",
 		},
 	},
@@ -366,6 +368,7 @@ local unit_templates = {
 			"PlayerUnitEnergyExtension",
 			"PlayerUnitVisualEffectsExtension",
 			"PlayerUnitAttackIntensityExtension",
+			"PlayerEquipmentWorldMarkerExtension",
 			"AICommanderExtension",
 		},
 		husk_extensions = {
@@ -397,6 +400,7 @@ local unit_templates = {
 			"PlayerHuskEnergyExtension",
 			"PlayerHuskVisualEffectsExtension",
 			"HuskTalentExtension",
+			"PlayerEquipmentWorldMarkerExtension",
 		},
 	},
 	ai_unit_base = {
@@ -2454,7 +2458,9 @@ local unit_templates = {
 		},
 	},
 	weapon_unit_3p = {
-		self_owned_extensions = {},
+		self_owned_extensions = {
+			"HuskWeaponUnitExtension",
+		},
 	},
 	torch_unit_3p = {
 		self_owned_extensions = {

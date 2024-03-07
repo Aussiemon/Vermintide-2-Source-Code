@@ -2102,7 +2102,7 @@ end
 
 HeroViewStateLoot._create_player_portrait = function (self, scenegraph_id, portrait_frame, portrait_image, player_level_text, optional_scale)
 	local definition = UIWidgets.create_portrait_frame(scenegraph_id, portrait_frame, player_level_text, optional_scale or 1, nil, portrait_image)
-	local widget = UIWidget.init(definition)
+	local widget = UIWidget.init(definition, self.ui_top_renderer)
 
 	return widget
 end
@@ -2734,7 +2734,7 @@ end
 
 HeroViewStateLoot._create_portrait_frame_widget = function (self, frame_settings_name, portrait_texture, player_level_text)
 	local widget_definition = UIWidgets.create_portrait_frame("info_portrait_root", frame_settings_name, player_level_text, 1, nil, portrait_texture)
-	local widget = UIWidget.init(widget_definition)
+	local widget = UIWidget.init(widget_definition, self.ui_top_renderer)
 	local widget_content = widget.content
 
 	widget_content.frame_settings_name = frame_settings_name

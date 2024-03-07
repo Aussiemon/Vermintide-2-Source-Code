@@ -14,10 +14,14 @@ local ObjectiveSystemTestify = {
 		local objective_data = {}
 		local objective_positions = objective_system:current_objectives_position()
 		local _, objective_position = next(objective_positions)
-		local _, travel_dist, _, _, _ = EngineOptimized.closest_pos_at_main_path(objective_position)
+		local x = Math.random_range(-10, 10)
+		local y = Math.random_range(-10, 10)
+		local pos = objective_position + Vector3(x, y, 0)
+		local main_path_pos, _, _, _, _ = EngineOptimized.closest_pos_at_main_path(pos)
 
-		objective_data.position = objective_position
-		objective_data.main_path_point = travel_dist
+		objective_data.objective_position = objective_position
+		objective_data.random_position = pos
+		objective_data.main_path_position = main_path_pos
 
 		return objective_data
 	end,
@@ -47,16 +51,28 @@ local ObjectiveSystemTestify = {
 		local _, extension = next(objective_system._main_objectives)
 
 		if not extension then
-			return "objective not handled by Testify"
-		elseif extension._time_to_capture ~= nil then
-			return "capture point"
-		elseif extension._trigger_type == "interaction_success" then
-			return "interact"
-		elseif extension._trigger_type == "any_alive_players_inside" then
-			return "reach area"
-		else
-			return "objective not handled by Testify"
+			local _, extension_data = next(objective_system._objective_lists[#objective_system._objective_lists])
+
+			if not extension then
+				return "objective_not_supported"
+			end
 		end
+
+		local name = extension.NAME
+
+		if name == "VersusCapturePointObjectiveExtension" then
+			return "objective_capture_point"
+		end
+
+		if name == "VersusInteractObjectiveExtension" then
+			return "objective_interact"
+		end
+
+		if name == "VersusVolumeObjectiveExtension" then
+			return "objective_volume"
+		end
+
+		return "objective_not_supported"
 	end,
 	weave_spawn_essence_on_first_bot_position = function (objective_system)
 		local first_bot_unit = Managers.player:bots()[1].player_unit
@@ -68,6 +84,28 @@ local ObjectiveSystemTestify = {
 		end
 
 		objective_system:add_score(2)
+	end,
+	get_num_main_objectives = function (objective_system)
+		return objective_system:num_main_objectives()
+	end,
+	get_current_main_objective = function (objective_system)
+		local index = objective_system:current_objective_index()
+
+		if index < objective_system:num_main_objectives() then
+			return index
+		end
+
+		local name = next(objective_system._objective_lists[index])
+		local extension = objective_system._objectives_by_name[name]
+
+		if extension:is_done() then
+			return
+		end
+
+		return index
+	end,
+	wait_for_objectives_to_activate = function (objective_system)
+		return objective_system:is_active()
 	end,
 }
 

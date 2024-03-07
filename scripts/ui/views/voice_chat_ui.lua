@@ -235,6 +235,8 @@ VoiceChatUI.init = function (self, ingame_ui_context)
 	self._lobby = ingame_ui_context.lobby
 	self._cached_names = {}
 	self._talking_peers = {}
+	self._push_to_talk_talking = 0
+	self._push_to_talk_active = false
 	self._dirty = true
 	self._safe_rect = Application.user_setting("safe_rect") or 0
 
@@ -352,6 +354,25 @@ VoiceChatUI._update_talking_state = function (self, members_table)
 			self._dirty = true
 		end
 	end
+
+	self:_evaluate_push_to_talk()
+end
+
+VoiceChatUI._evaluate_push_to_talk = function (self)
+	if not self.voip:push_to_talk_enabled() then
+		return
+	end
+
+	local my_peer_id = Network.peer_id()
+	local push_to_talk_active = self.voip:is_push_to_talk_active()
+	local push_to_talk_talking = self.voip:is_talking(my_peer_id)
+	local push_to_talk_was_active = self._push_to_talk_active
+	local push_to_talk_was_talking = self._push_to_talk_talking > self._timer
+
+	self._push_to_talk_active = push_to_talk_active
+	self._push_to_talk_talking = push_to_talk_talking and self._timer + UI_REMOVE_DELAY or self._push_to_talk_talking
+	self._talking_peers[my_peer_id] = push_to_talk_active and self._timer + UI_REMOVE_DELAY or self._talking_peers[my_peer_id]
+	self._dirty = not push_to_talk_was_active and push_to_talk_active or push_to_talk_was_talking ~= push_to_talk_talking or self._push_to_talk_talking < self._timer or self._dirty
 end
 
 VoiceChatUI._update_widgets = function (self)
@@ -359,6 +380,7 @@ VoiceChatUI._update_widgets = function (self)
 		return
 	end
 
+	local my_peer_id = Network.peer_id()
 	local index = 1
 
 	for peer_id, _ in pairs(self._talking_peers) do
@@ -396,8 +418,14 @@ VoiceChatUI._update_widgets = function (self)
 		local name_widget_element = name_widget.element
 
 		name_widget_content.text = cropped_name
-		name_widget_content.visible = true
 		name_widget_element.dirty = true
+
+		if self.voip:push_to_talk_enabled() and peer_id == my_peer_id then
+			name_widget_content.visible = self._push_to_talk_talking > self._timer
+		else
+			name_widget_content.visible = true
+		end
+
 		index = index + 1
 	end
 

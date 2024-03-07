@@ -38,7 +38,6 @@ BenchmarkSettings = {
 		player_invincible = true,
 		screen_space_player_camera_reactions = false,
 		spawn_empty_chest = true,
-		wanted_profile = "empire_soldier_tutorial",
 	},
 	attract_mode_settings = {
 		display_name = "intel_loading_screen_attract_mode",
@@ -97,6 +96,7 @@ for _, arg in pairs(args) do
 		BenchmarkSettings.parameters.hide_fps = false
 		BenchmarkSettings.parameters.show_fps = true
 		BenchmarkSettings.parameters.attract_mode = true
+		BenchmarkSettings.parameters.skip_start_screen = true
 
 		override_display_name(BenchmarkSettings.benchmark_mode_settings)
 		override_development_parameter_func(BenchmarkSettings.parameters)

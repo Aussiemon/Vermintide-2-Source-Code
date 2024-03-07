@@ -1360,17 +1360,16 @@ end
 
 ConflictUtils.teleport_ai_unit = function (unit, teleport_position, play_sound, play_effect)
 	if teleport_position then
-		local blackboard = BLACKBOARDS[unit]
-
 		if ALIVE[unit] then
+			local blackboard = BLACKBOARDS[unit]
 			local navigation_extension = blackboard.navigation_extension
-
-			navigation_extension:set_navbot_position(teleport_position)
-
 			local locomotion_extension = blackboard.locomotion_extension
 
-			locomotion_extension:teleport_to(teleport_position)
-			Managers.state.entity:system("ai_bot_group_system"):enemy_teleported(unit, teleport_position)
+			if navigation_extension and locomotion_extension then
+				navigation_extension:set_navbot_position(teleport_position)
+				locomotion_extension:teleport_to(teleport_position)
+				Managers.state.entity:system("ai_bot_group_system"):enemy_teleported(unit, teleport_position)
+			end
 		end
 
 		local ping_system = Managers.state.entity:system("ping_system")

@@ -66,7 +66,8 @@ return {
 
 			Managers.state.unit_spawner:spawn_network_unit(skull_unit, data.unit_extension_template, data.extension_init_data, position, rotation)
 
-			local random_player_unit = DialogueSystem:get_random_player()
+			local dialogue_system = Managers.state.entity:system("dialogue_system")
+			local random_player_unit = dialogue_system:get_random_player()
 
 			if random_player_unit then
 				local dialogue_input = ScriptUnit.extension_input(random_player_unit, "dialogue_system")

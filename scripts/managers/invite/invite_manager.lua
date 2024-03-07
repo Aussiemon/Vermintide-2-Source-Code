@@ -56,6 +56,7 @@ InviteManager._handle_invitation = function (self, invite_type, lobby_id, params
 		lobby_data.id = lobby_id
 		lobby_data.server_info = {
 			ip_port = lobby_id,
+			invitee = invitee,
 		}
 		self.lobby_data = lobby_data
 	end

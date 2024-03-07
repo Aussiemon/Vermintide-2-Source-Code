@@ -443,7 +443,6 @@ HeroWindowWeaveProperties._setup_menu_options = function (self, career_name, slo
 		local widget_size = scenegraph_definition[scenegraph_id].size
 		local widget_definition = create_menu_option_talent_definition(scenegraph_id, widget_size, masked)
 		local hero_name = self._hero_name
-		local all_talents = Talents[hero_name]
 		local menu_option_key = "talent"
 		local menu_option = {}
 
@@ -458,7 +457,7 @@ HeroWindowWeaveProperties._setup_menu_options = function (self, career_name, slo
 
 			for _, talent_name in ipairs(talents) do
 				local talent_id = TalentIDLookup[talent_name].talent_id
-				local talent_data = all_talents[talent_id]
+				local talent_data = TalentUtils.get_talent_by_id(hero_name, talent_id)
 				local required_forge_level = backend_interface_weaves:get_talent_required_forge_level(talent_name) or 0
 				local icon = talent_data and talent_data.icon or "icons_placeholder"
 				local title_text = talent_data and Localize(talent_data.name) or "Undefined"
@@ -536,7 +535,7 @@ HeroWindowWeaveProperties._setup_menu_options = function (self, career_name, slo
 				local property_data = WeaveProperties.properties[property_key]
 				local required_forge_level = backend_interface_weaves:get_property_required_forge_level(property_key) or 0
 				local buff_name = property_data.buff_name
-				local buff_template = BuffTemplates[buff_name]
+				local buff_template = BuffUtils.get_buff_template(buff_name)
 				local buff_data = buff_template.buffs[1]
 				local has_multiplier = buff_data.variable_multiplier ~= nil
 				local icon = property_data.icon or "icons_placeholder"
@@ -649,10 +648,6 @@ HeroWindowWeaveProperties._populate_menu_option_widget = function (self, entry_d
 
 	if menu_option == "talent" then
 		local talent_key = entry_data.key
-		local hero_name = self._hero_name
-		local all_talents = Talents[hero_name]
-		local talent_id = TalentIDLookup[talent_key].talent_id
-		local talent_data = all_talents[talent_id]
 		local used_amount = 0
 		local current_talents = loadout.talent
 
@@ -1687,7 +1682,6 @@ HeroWindowWeaveProperties._sync_backend_loadout = function (self, upgraded)
 		local type_slots = slots[slot_type]
 		local slot_type_strings = menu_option_category_localized_strings[slot_type]
 		local hero_name = self._hero_name
-		local all_talents = Talents[hero_name]
 
 		for slot_index, slot in ipairs(type_slots) do
 			local slot_category = slot.category
@@ -1717,7 +1711,7 @@ HeroWindowWeaveProperties._sync_backend_loadout = function (self, upgraded)
 				end
 
 				local talent_id = TalentIDLookup[talent_key].talent_id
-				local talent_data = all_talents[talent_id]
+				local talent_data = TalentUtils.get_talent_by_id(hero_name, talent_id)
 				local cost_value = backend_interface_weaves:get_talent_mastery_cost(talent_key)
 				local icon = talent_data and talent_data.icon or "icons_placeholder"
 				local presentation_data = slot.presentation_data

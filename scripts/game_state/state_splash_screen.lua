@@ -352,10 +352,12 @@ StateSplashScreen.on_exit = function (self, application_shutdown)
 		self.input_manager = nil
 		Managers.input = nil
 
-		if GameSettingsDevelopment.skip_start_screen then
+		if GameSettingsDevelopment.skip_start_screen or Development.parameter("skip_start_screen") then
 			Managers.package:unload("resource_packages/start_menu_splash", "StateSplashScreen")
 		end
 
 		VisualAssertLog.cleanup()
+
+		self.parent.loading_context.windows_auto_sign_in = true
 	end
 end

@@ -74,16 +74,6 @@ LevelEndView._setup_pages_victory = function (self, rewards)
 
 	index_by_state_name.EndViewStateSummary = table.size(index_by_state_name) + 1
 
-	local win_tracks_interface = Managers.backend:get_interface("win_tracks")
-
-	if win_tracks_interface then
-		local win_track_id = win_tracks_interface:get_current_win_track_id()
-
-		if win_track_id and win_track_id ~= "" then
-			index_by_state_name.EndViewStateWinTracks = table.size(index_by_state_name) + 1
-		end
-	end
-
 	if chest then
 		index_by_state_name.EndViewStateChest = table.size(index_by_state_name) + 1
 	end
@@ -97,17 +87,6 @@ LevelEndView._setup_pages_defeat = function (self)
 	local index_by_state_name = {}
 
 	index_by_state_name.EndViewStateSummary = table.size(index_by_state_name) + 1
-
-	local win_tracks_interface = Managers.backend:get_interface("win_tracks")
-
-	if win_tracks_interface then
-		local win_track_id = win_tracks_interface:get_current_win_track_id()
-
-		if win_track_id and win_track_id ~= "" then
-			index_by_state_name.EndViewStateWinTracks = table.size(index_by_state_name) + 1
-		end
-	end
-
 	index_by_state_name.EndViewStateScore = table.size(index_by_state_name) + 1
 
 	return index_by_state_name

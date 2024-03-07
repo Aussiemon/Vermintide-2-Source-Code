@@ -2,6 +2,685 @@
 
 StoreDlcSettings = {
 	{
+		dlc_name = "premium_career_bundle",
+		information_text = "description_five_premium_career_bundle",
+		name = "display_name_premium_career_bundle",
+		prio = 10,
+		show_in_slideshow = true,
+		slideshow_text = "description_five_premium_career_bundle",
+		slideshow_texture = "store_slideshow_dlc_premium_career_bundle",
+		store_page_url = "https://store.steampowered.com/bundle/38849",
+		store_texture = "gui/1080p/single_textures/store_bundle/store_item_icon_premium_career_bundle",
+		store_texture_package = "resource_packages/store/dlc_icons/premium_career_bundle/premium_career_bundle",
+		available_platforms = {
+			"win32",
+			"xb1",
+			"ps4",
+		},
+		layout = {
+			{
+				id = "dlc_big_image",
+				type = "big_image",
+				settings = {
+					localize = false,
+					show_frame = true,
+					text = "",
+					texture_package = "resource_packages/store/dlc_icons/premium_career_bundle/premium_career_bundle",
+					texture_path = "gui/1080p/single_textures/store/slideshow/store_slideshow_dlc_premium_career_bundle",
+					image_size = {
+						800.4,
+						591.6,
+					},
+					size = {
+						800.4,
+						591.6,
+					},
+				},
+			},
+			{
+				type = "spacing",
+			},
+			{
+				type = "divider_horizontal",
+			},
+			{
+				type = "spacing",
+			},
+			{
+				type = "header_text",
+				settings = {
+					localize = true,
+					text = "menu_store_dlc_title_including",
+				},
+			},
+			{
+				type = "body_text",
+				settings = {
+					localize = true,
+					text = "description_five_premium_career_bundle",
+				},
+			},
+			{
+				id = "dlc_feature_1",
+				type = "dlc_feature_vertical_long",
+				settings = {
+					add_frame = true,
+					localize = true,
+					text = "store_lake_desc",
+					texture_package = "resource_packages/store/dlc_icons/premium_career_bundle/premium_career_bundle",
+					texture_path = "gui/1080p/single_textures/dlc_store/lake/dlc_store_banner_lake",
+				},
+			},
+			{
+				type = "spacing",
+			},
+			{
+				type = "divider_horizontal",
+			},
+			{
+				type = "spacing",
+			},
+			{
+				id = "dlc_feature_2",
+				type = "dlc_feature_vertical_long",
+				settings = {
+					add_frame = true,
+					localize = true,
+					text = "store_cog_desc",
+					texture_package = "resource_packages/store/dlc_icons/premium_career_bundle/premium_career_bundle",
+					texture_path = "gui/1080p/single_textures/dlc_store/cog/dlc_store_banner_cog",
+				},
+			},
+			{
+				type = "spacing",
+			},
+			{
+				type = "divider_horizontal",
+			},
+			{
+				type = "spacing",
+			},
+			{
+				id = "dlc_feature_3",
+				type = "dlc_feature_vertical_long",
+				settings = {
+					add_frame = true,
+					localize = true,
+					text = "store_woods_desc",
+					texture_package = "resource_packages/store/dlc_icons/premium_career_bundle/premium_career_bundle",
+					texture_path = "gui/1080p/single_textures/dlc_store/woods/dlc_store_banner_woods",
+				},
+			},
+			{
+				type = "spacing",
+			},
+			{
+				type = "divider_horizontal",
+			},
+			{
+				type = "spacing",
+			},
+			{
+				id = "dlc_feature_4",
+				type = "dlc_feature_vertical_long",
+				settings = {
+					add_frame = true,
+					localize = true,
+					text = "store_bless_desc",
+					texture_package = "resource_packages/store/dlc_icons/premium_career_bundle/premium_career_bundle",
+					texture_path = "gui/1080p/single_textures/dlc_store/bless/dlc_store_banner_bless",
+				},
+			},
+			{
+				type = "spacing",
+			},
+			{
+				type = "divider_horizontal",
+			},
+			{
+				type = "spacing",
+			},
+			{
+				id = "dlc_feature_5",
+				type = "dlc_feature_vertical_long",
+				settings = {
+					add_frame = true,
+					localize = true,
+					text = "store_shovel_desc",
+					texture_package = "resource_packages/store/dlc_icons/premium_career_bundle/premium_career_bundle",
+					texture_path = "gui/1080p/single_textures/dlc_store/shovel/dlc_store_banner_shovel",
+				},
+			},
+			{
+				type = "spacing",
+			},
+			{
+				type = "divider_horizontal",
+			},
+		},
+		layout_console = {
+			{
+				id = "dlc_big_image",
+				type = "big_image",
+				settings = {
+					localize = false,
+					show_frame = true,
+					text = "",
+					texture_package = "resource_packages/store/dlc_icons/premium_career_bundle/premium_career_bundle",
+					texture_path = "gui/1080p/single_textures/store/slideshow/store_slideshow_dlc_premium_career_bundle",
+					image_size = {
+						800.4,
+						591.6,
+					},
+					size = {
+						800.4,
+						591.6,
+					},
+				},
+			},
+			{
+				type = "spacing",
+			},
+			{
+				type = "divider_horizontal",
+			},
+			{
+				type = "spacing",
+			},
+			{
+				type = "header_text",
+				settings = {
+					localize = true,
+					text = "menu_store_dlc_title_including",
+				},
+			},
+			{
+				type = "body_text",
+				settings = {
+					localize = true,
+					text = "description_five_premium_career_bundle",
+				},
+			},
+			{
+				id = "dlc_feature_1",
+				type = "dlc_feature_vertical_long",
+				settings = {
+					add_frame = true,
+					localize = true,
+					text = "store_lake_desc",
+					texture_package = "resource_packages/store/dlc_icons/premium_career_bundle/premium_career_bundle",
+					texture_path = "gui/1080p/single_textures/dlc_store/lake/dlc_store_banner_lake",
+				},
+			},
+			{
+				type = "spacing",
+			},
+			{
+				type = "divider_horizontal",
+			},
+			{
+				type = "spacing",
+			},
+			{
+				id = "dlc_feature_2",
+				type = "dlc_feature_vertical_long",
+				settings = {
+					add_frame = true,
+					localize = true,
+					text = "store_cog_desc",
+					texture_package = "resource_packages/store/dlc_icons/premium_career_bundle/premium_career_bundle",
+					texture_path = "gui/1080p/single_textures/dlc_store/cog/dlc_store_banner_cog",
+				},
+			},
+			{
+				type = "spacing",
+			},
+			{
+				type = "divider_horizontal",
+			},
+			{
+				type = "spacing",
+			},
+			{
+				id = "dlc_feature_3",
+				type = "dlc_feature_vertical_long",
+				settings = {
+					add_frame = true,
+					localize = true,
+					text = "store_woods_desc",
+					texture_package = "resource_packages/store/dlc_icons/premium_career_bundle/premium_career_bundle",
+					texture_path = "gui/1080p/single_textures/dlc_store/woods/dlc_store_banner_woods",
+				},
+			},
+			{
+				type = "spacing",
+			},
+			{
+				type = "divider_horizontal",
+			},
+			{
+				type = "spacing",
+			},
+			{
+				id = "dlc_feature_4",
+				type = "dlc_feature_vertical_long",
+				settings = {
+					add_frame = true,
+					localize = true,
+					text = "store_bless_desc",
+					texture_package = "resource_packages/store/dlc_icons/premium_career_bundle/premium_career_bundle",
+					texture_path = "gui/1080p/single_textures/dlc_store/bless/dlc_store_banner_bless",
+				},
+			},
+			{
+				type = "spacing",
+			},
+			{
+				type = "divider_horizontal",
+			},
+			{
+				type = "spacing",
+			},
+			{
+				id = "dlc_feature_5",
+				type = "dlc_feature_vertical_long",
+				settings = {
+					add_frame = true,
+					localize = true,
+					text = "store_shovel_desc",
+					texture_package = "resource_packages/store/dlc_icons/premium_career_bundle/premium_career_bundle",
+					texture_path = "gui/1080p/single_textures/dlc_store/shovel/dlc_store_banner_shovel",
+				},
+			},
+			{
+				type = "spacing",
+			},
+			{
+				type = "divider_horizontal",
+			},
+		},
+	},
+	{
+		dlc_name = "premium_career_bundle_upgrade",
+		information_text = "description_premium_career_bundle_upgrade",
+		name = "display_name_premium_career_bundle_upgrade",
+		prio = 10,
+		show_in_slideshow = true,
+		slideshow_text = "description_premium_career_bundle_upgrade",
+		slideshow_texture = "store_slideshow_dlc_premium_career_bundle_upgrade",
+		store_page_url = "https://store.steampowered.com/bundle/38850",
+		store_texture = "gui/1080p/single_textures/store_bundle/store_item_icon_premium_career_bundle_upgrade",
+		store_texture_package = "resource_packages/store/dlc_icons/premium_career_bundle/premium_career_bundle",
+		available_platforms = {
+			"win32",
+		},
+		layout = {
+			{
+				id = "dlc_big_image",
+				type = "big_image",
+				settings = {
+					localize = false,
+					show_frame = true,
+					text = "",
+					texture_package = "resource_packages/store/dlc_icons/premium_career_bundle/premium_career_bundle",
+					texture_path = "gui/1080p/single_textures/store/slideshow/store_slideshow_dlc_premium_career_bundle_upgrade",
+					image_size = {
+						800.4,
+						591.6,
+					},
+					size = {
+						800.4,
+						591.6,
+					},
+				},
+			},
+			{
+				type = "spacing",
+			},
+			{
+				type = "divider_horizontal",
+			},
+			{
+				type = "spacing",
+			},
+			{
+				type = "header_text",
+				settings = {
+					localize = true,
+					text = "menu_store_dlc_title_including",
+				},
+			},
+			{
+				type = "body_text",
+				settings = {
+					localize = true,
+					text = "description_premium_career_bundle_upgrade",
+				},
+			},
+			{
+				id = "dlc_feature_1",
+				type = "dlc_feature_vertical_long",
+				settings = {
+					add_frame = true,
+					localize = true,
+					text = "store_lake_upgrade_desc",
+					texture_package = "resource_packages/store/dlc_icons/premium_career_bundle/premium_career_bundle",
+					texture_path = "gui/1080p/single_textures/dlc_store/lake/dlc_store_banner_lake_upgrade",
+				},
+			},
+			{
+				type = "header_text",
+				settings = {
+					localize = true,
+					text = "menu_store_dlc_title_including",
+				},
+			},
+			{
+				type = "body_text",
+				settings = {
+					localize = true,
+					text = "dlc_lake_upgrade_slate_04_description",
+				},
+			},
+			{
+				type = "body_text",
+				settings = {
+					localize = true,
+					text = "dlc_lake_upgrade_slate_05_description",
+				},
+			},
+			{
+				type = "body_text",
+				settings = {
+					localize = true,
+					text = "dlc_lake_upgrade_slate_01_description",
+				},
+			},
+			{
+				type = "body_text",
+				settings = {
+					localize = true,
+					text = "dlc_lake_upgrade_slate_02_description",
+				},
+			},
+			{
+				type = "body_text",
+				settings = {
+					localize = true,
+					text = "dlc_lake_upgrade_slate_03_description",
+				},
+			},
+			{
+				type = "spacing",
+			},
+			{
+				type = "divider_horizontal",
+			},
+			{
+				type = "spacing",
+			},
+			{
+				id = "dlc_feature_2",
+				type = "dlc_feature_vertical_long",
+				settings = {
+					add_frame = true,
+					localize = true,
+					text = "store_cog_upgrade_desc",
+					texture_package = "resource_packages/store/dlc_icons/premium_career_bundle/premium_career_bundle",
+					texture_path = "gui/1080p/single_textures/dlc_store/cog/dlc_store_banner_cog_upgrade",
+				},
+			},
+			{
+				type = "header_text",
+				settings = {
+					localize = true,
+					text = "menu_store_dlc_title_including",
+				},
+			},
+			{
+				type = "body_text",
+				settings = {
+					localize = true,
+					text = "dlc_cog_upgrade_slate_04_description",
+				},
+			},
+			{
+				type = "body_text",
+				settings = {
+					localize = true,
+					text = "dlc_cog_upgrade_slate_05_description",
+				},
+			},
+			{
+				type = "body_text",
+				settings = {
+					localize = true,
+					text = "dlc_cog_upgrade_slate_01_description",
+				},
+			},
+			{
+				type = "body_text",
+				settings = {
+					localize = true,
+					text = "dlc_cog_upgrade_slate_02_description",
+				},
+			},
+			{
+				type = "body_text",
+				settings = {
+					localize = true,
+					text = "dlc_cog_upgrade_slate_03_description",
+				},
+			},
+			{
+				type = "spacing",
+			},
+			{
+				type = "divider_horizontal",
+			},
+			{
+				type = "spacing",
+			},
+			{
+				id = "dlc_feature_3",
+				type = "dlc_feature_vertical_long",
+				settings = {
+					add_frame = true,
+					localize = true,
+					text = "store_woods_upgrade_desc",
+					texture_package = "resource_packages/store/dlc_icons/premium_career_bundle/premium_career_bundle",
+					texture_path = "gui/1080p/single_textures/dlc_store/woods/dlc_store_banner_woods_upgrade",
+				},
+			},
+			{
+				type = "header_text",
+				settings = {
+					localize = true,
+					text = "menu_store_dlc_title_including",
+				},
+			},
+			{
+				type = "body_text",
+				settings = {
+					localize = true,
+					text = "dlc_woods_upgrade_slate_04_description",
+				},
+			},
+			{
+				type = "body_text",
+				settings = {
+					localize = true,
+					text = "dlc_woods_upgrade_slate_05_description",
+				},
+			},
+			{
+				type = "body_text",
+				settings = {
+					localize = true,
+					text = "dlc_woods_upgrade_slate_06_description",
+				},
+			},
+			{
+				type = "body_text",
+				settings = {
+					localize = true,
+					text = "dlc_woods_upgrade_slate_01_description",
+				},
+			},
+			{
+				type = "body_text",
+				settings = {
+					localize = true,
+					text = "dlc_woods_upgrade_slate_02_description",
+				},
+			},
+			{
+				type = "body_text",
+				settings = {
+					localize = true,
+					text = "dlc_woods_upgrade_slate_03_description",
+				},
+			},
+			{
+				type = "spacing",
+			},
+			{
+				type = "divider_horizontal",
+			},
+			{
+				type = "spacing",
+			},
+			{
+				id = "dlc_feature_4",
+				type = "dlc_feature_vertical_long",
+				settings = {
+					add_frame = true,
+					localize = true,
+					text = "store_bless_upgrade_desc",
+					texture_package = "resource_packages/store/dlc_icons/premium_career_bundle/premium_career_bundle",
+					texture_path = "gui/1080p/single_textures/dlc_store/bless/dlc_store_banner_bless_upgrade",
+				},
+			},
+			{
+				type = "header_text",
+				settings = {
+					localize = true,
+					text = "menu_store_dlc_title_including",
+				},
+			},
+			{
+				type = "body_text",
+				settings = {
+					localize = true,
+					text = "dlc_bless_upgrade_slate_04_description",
+				},
+			},
+			{
+				type = "body_text",
+				settings = {
+					localize = true,
+					text = "dlc_bless_upgrade_slate_05_description",
+				},
+			},
+			{
+				type = "body_text",
+				settings = {
+					localize = true,
+					text = "dlc_bless_upgrade_slate_06_description",
+				},
+			},
+			{
+				type = "body_text",
+				settings = {
+					localize = true,
+					text = "dlc_bless_upgrade_slate_01_description",
+				},
+			},
+			{
+				type = "body_text",
+				settings = {
+					localize = true,
+					text = "dlc_bless_upgrade_slate_02_description",
+				},
+			},
+			{
+				type = "body_text",
+				settings = {
+					localize = true,
+					text = "dlc_bless_upgrade_slate_03_description",
+				},
+			},
+			{
+				type = "spacing",
+			},
+			{
+				type = "divider_horizontal",
+			},
+			{
+				type = "spacing",
+			},
+			{
+				id = "dlc_feature_5",
+				type = "dlc_feature_vertical_long",
+				settings = {
+					add_frame = true,
+					localize = true,
+					text = "store_shovel_upgrade_desc",
+					texture_package = "resource_packages/store/dlc_icons/premium_career_bundle/premium_career_bundle",
+					texture_path = "gui/1080p/single_textures/dlc_store/shovel/dlc_store_banner_shovel_upgrade",
+				},
+			},
+			{
+				type = "header_text",
+				settings = {
+					localize = true,
+					text = "menu_store_dlc_title_including",
+				},
+			},
+			{
+				type = "body_text",
+				settings = {
+					localize = true,
+					text = "dlc_shovel_upgrade_slate_03_description",
+				},
+			},
+			{
+				type = "body_text",
+				settings = {
+					localize = true,
+					text = "dlc_shovel_upgrade_slate_04_description",
+				},
+			},
+			{
+				type = "body_text",
+				settings = {
+					localize = true,
+					text = "dlc_shovel_upgrade_slate_05_description",
+				},
+			},
+			{
+				type = "body_text",
+				settings = {
+					localize = true,
+					text = "dlc_bless_upgrade_slate_02_description",
+				},
+			},
+			{
+				type = "body_text",
+				settings = {
+					localize = true,
+					text = "dlc_bless_upgrade_slate_03_description",
+				},
+			},
+			{
+				type = "spacing",
+			},
+			{
+				type = "divider_horizontal",
+			},
+		},
+	},
+	{
 		dlc_name = "five_career_bundle_0007",
 		information_text = "description_five_career_bundle_0007",
 		is_bundle = true,

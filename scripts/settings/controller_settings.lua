@@ -409,7 +409,7 @@ PlayerControllerKeymaps.win32 = InputUtils.keymaps_key_approved("win32") and {
 	},
 	ghost_mode_exit = {
 		"mouse",
-		"left",
+		"right",
 		"pressed",
 	},
 	emote_camera_zoom = {
@@ -3975,30 +3975,46 @@ TitleLoadingFilters.ps4 = InputUtils.keymaps_key_approved("ps4") and TitleLoadin
 TitleLoadingFilters.ps_pad = InputUtils.keymaps_key_approved("ps_pad") and TitleLoadingFilters_ps4
 TitleScreenKeyMaps = {}
 TitleScreenKeyMaps.win32 = InputUtils.keymaps_key_approved("win32") and {
-	move_left_raw = {
-		"gamepad",
-		"d_left",
-		"pressed",
-	},
-	move_right_raw = {
-		"gamepad",
-		"d_right",
-		"pressed",
-	},
 	move_up_raw = {
-		"gamepad",
-		"d_up",
+		"keyboard",
+		"up",
 		"pressed",
 	},
 	move_down_raw = {
-		"gamepad",
-		"d_down",
+		"keyboard",
+		"down",
 		"pressed",
 	},
-	analog_input = {
-		"gamepad",
+	move_left_raw = {
+		"keyboard",
 		"left",
-		"axis",
+		"pressed",
+	},
+	move_right_raw = {
+		"keyboard",
+		"right",
+		"pressed",
+	},
+	analog_input = {},
+	move_up_alt_raw = {
+		"keyboard",
+		"w",
+		"pressed",
+	},
+	move_down_alt_raw = {
+		"keyboard",
+		"s",
+		"pressed",
+	},
+	move_left_alt_raw = {
+		"keyboard",
+		"a",
+		"pressed",
+	},
+	move_right_alt_raw = {
+		"keyboard",
+		"d",
+		"pressed",
 	},
 	cursor = {
 		"mouse",
@@ -4322,6 +4338,7 @@ TitleScreenFilters.win32 = InputUtils.keymaps_key_approved("win32") and {
 		threshold = 0.7,
 		input_mappings = {
 			"move_down_raw",
+			"move_down_alt_raw",
 		},
 		axis_mappings = {
 			"analog_input",
@@ -4337,6 +4354,7 @@ TitleScreenFilters.win32 = InputUtils.keymaps_key_approved("win32") and {
 		threshold = 0.7,
 		input_mappings = {
 			"move_up_raw",
+			"move_up_alt_raw",
 		},
 		axis_mappings = {
 			"analog_input",
@@ -4352,6 +4370,7 @@ TitleScreenFilters.win32 = InputUtils.keymaps_key_approved("win32") and {
 		threshold = 0.7,
 		input_mappings = {
 			"move_left_raw",
+			"move_left_altraw",
 		},
 		axis_mappings = {
 			"analog_input",
@@ -4367,6 +4386,7 @@ TitleScreenFilters.win32 = InputUtils.keymaps_key_approved("win32") and {
 		threshold = 0.7,
 		input_mappings = {
 			"move_right_raw",
+			"move_right_alt_raw",
 		},
 		axis_mappings = {
 			"analog_input",
@@ -4808,6 +4828,64 @@ IngamePlayerListKeymaps.win32 = InputUtils.keymaps_key_approved("win32") and {
 		"wheel",
 		"axis",
 	},
+	versus_status_list_pressed_1 = {
+		"keyboard",
+		"left alt",
+		"pressed",
+	},
+	versus_status_list_pressed_2 = {
+		"keyboard",
+		"right alt",
+		"pressed",
+	},
+	versus_status_list_held_1 = {
+		"keyboard",
+		"left alt",
+		"held",
+	},
+	versus_status_list_held_2 = {
+		"keyboard",
+		"right alt",
+		"held",
+	},
+	versus_status_list_toggle = {},
+	versus_status_list_exit_1 = {
+		"keyboard",
+		"left alt",
+		"pressed",
+	},
+	versus_status_list_exit_2 = {
+		"keyboard",
+		"right alt",
+		"pressed",
+	},
+	versus_status_list_exit_3 = {
+		"keyboard",
+		"esc",
+		"pressed",
+	},
+	close_versus_status_list_1 = {
+		"keyboard",
+		"left alt",
+		"released",
+	},
+	close_versus_status_list_2 = {
+		"keyboard",
+		"right alt",
+		"released",
+	},
+	activate_versus_status_list_1 = {
+		"mouse",
+		"right",
+		"pressed",
+	},
+	activate_versus_status_list_2 = {
+		"keyboard",
+		"enter",
+		"pressed",
+	},
+	force_start = {},
+	switch_team = {},
 	move_up = {},
 	move_down = {},
 	mute_voice = {},
@@ -4905,6 +4983,23 @@ IngamePlayerListKeymaps.xb1 = InputUtils.keymaps_key_approved("xb1") and {
 		"right_shoulder",
 		"released",
 	},
+	versus_status_list_toggle = {
+		"gamepad",
+		"start",
+		"pressed",
+	},
+	versus_status_list_exit = {},
+	activate_versus_status_list = {},
+	force_start = {
+		"gamepad",
+		"y",
+		"pressed",
+	},
+	switch_team = {
+		"gamepad",
+		"x",
+		"pressed",
+	},
 }
 IngamePlayerListKeymaps.ps4 = InputUtils.keymaps_key_approved("ps4") and {
 	toggle_menu = {
@@ -4993,6 +5088,23 @@ IngamePlayerListKeymaps.ps4 = InputUtils.keymaps_key_approved("ps4") and {
 		"gamepad",
 		"r1",
 		"released",
+	},
+	versus_status_list_toggle = {
+		"gamepad",
+		"options",
+		"pressed",
+	},
+	versus_status_list_exit = {},
+	activate_versus_status_list = {},
+	force_start = {
+		"gamepad",
+		"triangle",
+		"pressed",
+	},
+	switch_team = {
+		"gamepad",
+		"square",
+		"pressed",
 	},
 }
 IngamePlayerListKeymaps.ps_pad = InputUtils.keymaps_key_approved("ps_pad") and {
@@ -5083,6 +5195,23 @@ IngamePlayerListKeymaps.ps_pad = InputUtils.keymaps_key_approved("ps_pad") and {
 		"r1",
 		"released",
 	},
+	versus_status_list_toggle = {
+		"ps_pad",
+		"options",
+		"pressed",
+	},
+	versus_status_list_exit = {},
+	activate_versus_status_list = {},
+	force_start = {
+		"ps_pad",
+		"triangle",
+		"pressed",
+	},
+	switch_team = {
+		"ps_pad",
+		"square",
+		"pressed",
+	},
 }
 IngamePlayerListFilters = {}
 IngamePlayerListFilters.win32 = InputUtils.keymaps_key_approved("win32") and {
@@ -5098,6 +5227,42 @@ IngamePlayerListFilters.win32 = InputUtils.keymaps_key_approved("win32") and {
 		input_mappings = {
 			button_1 = "activate_ingame_player_list_1",
 			button_2 = "activate_ingame_player_list_2",
+		},
+	},
+	versus_status_list_pressed = {
+		filter_type = "or",
+		input_mappings = {
+			button_1 = "versus_status_list_pressed_1",
+			button_2 = "versus_status_list_pressed_2",
+		},
+	},
+	versus_status_list_held = {
+		filter_type = "or",
+		input_mappings = {
+			button_1 = "versus_status_list_held_1",
+			button_2 = "versus_status_list_held_2",
+		},
+	},
+	close_versus_status_list = {
+		filter_type = "or",
+		input_mappings = {
+			button_1 = "close_versus_status_list_1",
+			button_2 = "close_versus_status_list_2",
+		},
+	},
+	versus_status_list_exit = {
+		filter_type = "or",
+		input_mappings = {
+			button_1 = "versus_status_list_exit_1",
+			button_2 = "versus_status_list_exit_2",
+			button_3 = "versus_status_list_exit_2",
+		},
+	},
+	activate_versus_status_list = {
+		filter_type = "or",
+		input_mappings = {
+			button_1 = "activate_versus_status_list_1",
+			button_2 = "activate_versus_status_list_2",
 		},
 	},
 }
@@ -5278,6 +5443,11 @@ IngameMenuKeymaps.win32 = InputUtils.keymaps_key_approved("win32") and {
 		"keyboard",
 		"d",
 		"held",
+	},
+	versus_menu_toggle = {
+		"keyboard",
+		"left alt",
+		"pressed",
 	},
 	analog_input = {},
 	skip = {
@@ -5655,6 +5825,11 @@ IngameMenuKeymaps.xb1 = InputUtils.keymaps_key_approved("xb1") and {
 		"left",
 		"axis",
 	},
+	versus_menu_toggle = {
+		"gamepad",
+		"start",
+		"pressed",
+	},
 	confirm = {
 		"gamepad",
 		"a",
@@ -5720,12 +5895,22 @@ IngameMenuKeymaps.xb1 = InputUtils.keymaps_key_approved("xb1") and {
 		"right_shoulder",
 		"pressed",
 	},
+	cycle_next_alt_raw = {
+		"gamepad",
+		"right_shoulder",
+		"pressed",
+	},
 	cycle_next_hold = {
 		"gamepad",
 		"right_shoulder",
 		"held",
 	},
 	cycle_previous = {
+		"gamepad",
+		"left_shoulder",
+		"pressed",
+	},
+	cycle_prev_raw = {
 		"gamepad",
 		"left_shoulder",
 		"pressed",
@@ -5940,6 +6125,11 @@ IngameMenuKeymaps.ps4 = InputUtils.keymaps_key_approved("ps4") and {
 		"left",
 		"axis",
 	},
+	versus_menu_toggle = {
+		"gamepad",
+		"options",
+		"pressed",
+	},
 	confirm = {
 		"gamepad",
 		"cross",
@@ -6005,12 +6195,22 @@ IngameMenuKeymaps.ps4 = InputUtils.keymaps_key_approved("ps4") and {
 		"r1",
 		"pressed",
 	},
+	cycle_next_alt_raw = {
+		"gamepad",
+		"r1",
+		"pressed",
+	},
 	cycle_next_hold = {
 		"gamepad",
 		"r1",
 		"held",
 	},
 	cycle_previous = {
+		"gamepad",
+		"l1",
+		"pressed",
+	},
+	cycle_prev_raw = {
 		"gamepad",
 		"l1",
 		"pressed",
@@ -6225,6 +6425,11 @@ IngameMenuKeymaps.ps_pad = InputUtils.keymaps_key_approved("ps_pad") and {
 		"left",
 		"axis",
 	},
+	versus_menu_toggle = {
+		"ps_pad",
+		"options",
+		"pressed",
+	},
 	confirm = {
 		"ps_pad",
 		"cross",
@@ -6290,12 +6495,22 @@ IngameMenuKeymaps.ps_pad = InputUtils.keymaps_key_approved("ps_pad") and {
 		"r1",
 		"pressed",
 	},
+	cycle_next_alt_raw = {
+		"ps_pad",
+		"r1",
+		"pressed",
+	},
 	cycle_next_hold = {
 		"ps_pad",
 		"r1",
 		"held",
 	},
 	cycle_previous = {
+		"ps_pad",
+		"l1",
+		"pressed",
+	},
+	cycle_prev_raw = {
 		"ps_pad",
 		"l1",
 		"pressed",

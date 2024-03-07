@@ -10,7 +10,6 @@ TalentTrees.witch_hunter = {
 	{},
 	{},
 }
-Talents = Talents or {}
 Talents.witch_hunter = {}
 
 for name, data in pairs(TalentBuffTemplates.witch_hunter) do

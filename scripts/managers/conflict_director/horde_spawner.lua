@@ -90,6 +90,13 @@ HordeSpawner.execute_fallback = function (self, horde_type, side_id, fallback, r
 	end
 end
 
+HordeSpawner._add_horde = function (self, horde)
+	local hordes = self.hordes
+	local id = #hordes + 1
+
+	hordes[id] = horde
+end
+
 HordeSpawner.execute_event_horde = function (self, t, terror_event_type, side_id, composition_type, limit_spawners, silent, group_template, strictly_not_close_to_players, sound_settings, use_closest_spawners, source_unit, optional_data)
 	local horde = self:_execute_event_horde(t, side_id, composition_type, limit_spawners, silent, group_template, strictly_not_close_to_players, sound_settings, use_closest_spawners, source_unit, optional_data)
 
@@ -101,10 +108,7 @@ HordeSpawner.execute_event_horde = function (self, t, terror_event_type, side_id
 		horde.terror_event_ids = terror_event_type
 	end
 
-	local hordes = self.hordes
-	local id = #hordes + 1
-
-	hordes[id] = horde
+	self:_add_horde(horde)
 
 	return horde
 end
@@ -545,10 +549,8 @@ HordeSpawner.execute_ambush_horde = function (self, extra_data, side_id, fallbac
 		self.conflict_director.pacing:annotate_graph("(A)Horde:" .. num_to_spawn, "lime")
 	end
 
-	local hordes = self.hordes
-	local id = #hordes + 1
+	self:_add_horde(horde)
 
-	hordes[id] = horde
 	self.last_paced_horde_type = "ambush"
 	self.num_paced_hordes = self.num_paced_hordes + 1
 
@@ -921,10 +923,7 @@ HordeSpawner.execute_vector_horde = function (self, extra_data, side_id, fallbac
 		conflict_director.pacing:annotate_graph("(V)Horde:" .. num_to_spawn, "lime")
 	end
 
-	local hordes = self.hordes
-	local id = #hordes + 1
-
-	hordes[id] = horde
+	self:_add_horde(horde)
 
 	local horde_wave = extra_data and extra_data.horde_wave
 
@@ -1200,10 +1199,8 @@ HordeSpawner.execute_vector_blob_horde = function (self, extra_data, side_id, fa
 		self:play_sound(stinger_name, horde.epicenter_pos:unbox())
 	end
 
-	local hordes = self.hordes
-	local id = #hordes + 1
+	self:_add_horde(horde)
 
-	hordes[id] = horde
 	self.last_paced_horde_type = "vector_blob"
 	self.num_paced_hordes = self.num_paced_hordes + 1
 

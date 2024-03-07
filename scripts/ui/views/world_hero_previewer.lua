@@ -28,6 +28,7 @@ HeroPreviewer.init = function (self, ingame_ui_context, unique_id, delayed_spawn
 	self._requested_mip_streaming_units = {}
 	self._delayed_spawn = delayed_spawn
 	self._activated = not delayed_spawn
+	self._loading_done = false
 	self._equipment_units[InventorySettings.slots_by_name.slot_melee.slot_index] = {}
 	self._equipment_units[InventorySettings.slots_by_name.slot_ranged.slot_index] = {}
 end
@@ -93,12 +94,38 @@ HeroPreviewer.update = function (self, dt, t)
 	return
 end
 
-HeroPreviewer.post_update = function (self, dt)
+HeroPreviewer.post_update = function (self, dt, t)
 	self:_update_units_visibility(dt)
+	self:_update_lerped_location(t)
 	self:_handle_hero_spawn_request()
 	self:_poll_hero_package_loading()
 	self:_poll_item_package_loading()
 	self:_update_delayed_material_changes()
+end
+
+HeroPreviewer._update_lerped_location = function (self, t)
+	if not self._character_destination_location then
+		return
+	end
+
+	if t < self._lerp_end_time then
+		local diff = self._lerp_end_time - t
+		local progress = 1 - diff / self._lerp_time
+		local eased_progress = math.easeOutCubic(progress)
+		local x = math.lerp(self.character_location[1], self._character_destination_location[1], eased_progress)
+		local y = math.lerp(self.character_location[2], self._character_destination_location[2], eased_progress)
+		local z = math.lerp(self.character_location[3], self._character_destination_location[3], eased_progress)
+		local character_unit = self.character_unit
+
+		if character_unit and Unit.alive(character_unit) then
+			Unit.set_local_position(character_unit, 0, Vector3(x, y, z))
+		end
+	else
+		self.character_location = self._character_destination_location
+		self._character_destination_location = nil
+		self._lerp_time = nil
+		self._lerp_end_time = nil
+	end
 end
 
 HeroPreviewer._update_unit_mip_streaming = function (self)
@@ -249,6 +276,12 @@ HeroPreviewer._update_units_visibility = function (self, dt)
 			end
 		end
 	end
+
+	self._loading_done = true
+end
+
+HeroPreviewer.loading_done = function (self)
+	return self._loading_done
 end
 
 HeroPreviewer._set_character_visibility = function (self, visible)
@@ -593,7 +626,7 @@ HeroPreviewer.spawn_prop = function (self, prop_spawn_settings)
 	self:_load_packages(prop_spawn_settings.package_names)
 end
 
-HeroPreviewer.equip_item = function (self, item_name, slot, backend_id, skin)
+HeroPreviewer.equip_item = function (self, item_name, slot, backend_id, skin, skip_wield_anim)
 	local skin_data = self.character_unit_skin_data
 
 	if skin_data and skin_data.always_hide_attachment_slots then
@@ -613,6 +646,8 @@ HeroPreviewer.equip_item = function (self, item_name, slot, backend_id, skin)
 			return
 		end
 	end
+
+	self._loading_done = false
 
 	local item_slot_type = slot.type
 	local slot_index = slot.slot_index
@@ -650,6 +685,7 @@ HeroPreviewer.equip_item = function (self, item_name, slot, backend_id, skin)
 				unit_attachment_node_linking = unit_attachment_node_linking,
 				material_settings = material_settings,
 				is_ammo_unit = item_units.ammo_unit ~= nil,
+				skip_wield_anim = skip_wield_anim,
 			}
 			package_names[#package_names + 1] = left_unit
 		end
@@ -673,6 +709,7 @@ HeroPreviewer.equip_item = function (self, item_name, slot, backend_id, skin)
 				unit_attachment_node_linking = unit_attachment_node_linking,
 				material_settings = material_settings,
 				is_ammo_unit = item_units.ammo_unit ~= nil,
+				skip_wield_anim = skip_wield_anim,
 			}
 
 			if right_hand_unit ~= left_hand_unit then
@@ -845,11 +882,12 @@ HeroPreviewer._spawn_item = function (self, item_name, spawn_data)
 		local unit_attachment_node_linking = unit_spawn_data.unit_attachment_node_linking
 		local character_material_changes = unit_spawn_data.character_material_changes
 		local material_settings = unit_spawn_data.material_settings
+		local skip_wield_anim = unit_spawn_data.skip_wield_anim
 
 		if item_slot_type == "melee" or item_slot_type == "ranged" then
 			local unit = World.spawn_unit(world, unit_name)
 
-			self:_spawn_item_unit(unit, item_slot_type, item_template, unit_attachment_node_linking, scene_graph_links, material_settings)
+			self:_spawn_item_unit(unit, item_slot_type, item_template, unit_attachment_node_linking, scene_graph_links, material_settings, skip_wield_anim)
 
 			local should_wield = self._wielded_slot_type == item_slot_type
 
@@ -883,7 +921,7 @@ HeroPreviewer._spawn_item = function (self, item_name, spawn_data)
 
 			self._equipment_units[slot_index] = unit
 
-			self:_spawn_item_unit(unit, item_slot_type, item_template, unit_attachment_node_linking, scene_graph_links)
+			self:_spawn_item_unit(unit, item_slot_type, item_template, unit_attachment_node_linking, scene_graph_links, nil, skip_wield_anim)
 		end
 
 		local show_attachments_event = item_template.show_attachments_event
@@ -920,7 +958,7 @@ local function get_wield_anim(default, optional_switch, career_name)
 	return optional_switch and optional_switch[career_name] or default
 end
 
-HeroPreviewer._spawn_item_unit = function (self, unit, item_slot_type, item_template, unit_attachment_node_linking, scene_graph_links, material_settings)
+HeroPreviewer._spawn_item_unit = function (self, unit, item_slot_type, item_template, unit_attachment_node_linking, scene_graph_links, material_settings, skip_wield_anim)
 	local world = self.world
 	local character_unit = self.character_unit
 	local character_visible = self:character_visible()
@@ -930,7 +968,7 @@ HeroPreviewer._spawn_item_unit = function (self, unit, item_slot_type, item_temp
 			unit_attachment_node_linking = unit_attachment_node_linking.wielded
 
 			if not script_data.disable_third_person_weapon_animation_events then
-				local wield_anim = item_template.wield_anim
+				local wield_anim = not skip_wield_anim and item_template.wield_anim
 
 				if wield_anim then
 					local wield_anim = get_wield_anim(nil, item_template.wield_anim_career_3p, self._current_career_name) or get_wield_anim(wield_anim, item_template.wield_anim_career, self._current_career_name)
@@ -1055,6 +1093,10 @@ HeroPreviewer.wield_weapon_slot = function (self, slot_type)
 
 		self:equip_item(item_name, InventorySettings.slots_by_name.slot_ranged, backend_id, skin_name)
 	end
+end
+
+HeroPreviewer.set_wielded_weapon_slot = function (self, slot_type)
+	self._wielded_slot_type = slot_type
 end
 
 HeroPreviewer.item_name_by_slot_type = function (self, item_slot_type)
@@ -1235,6 +1277,12 @@ HeroPreviewer.set_hero_location = function (self, location)
 			Unit.set_local_position(character_unit, 0, Vector3Aux.unbox(location))
 		end
 	end
+end
+
+HeroPreviewer.set_hero_location_lerped = function (self, location, lerp_time)
+	self._character_destination_location = location
+	self._lerp_time = lerp_time
+	self._lerp_end_time = Managers.time:time("game") + lerp_time
 end
 
 HeroPreviewer.set_hero_rotation = function (self, angle)

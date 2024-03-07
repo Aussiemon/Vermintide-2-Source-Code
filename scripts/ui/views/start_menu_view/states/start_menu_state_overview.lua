@@ -384,7 +384,7 @@ StartMenuStateOverview._create_player_portrait = function (self, portrait_image,
 	local scale = 1
 	local retained_mode = false
 	local definition = UIWidgets.create_portrait_frame("portrait_root", player_portrait_frame, level_text, scale, retained_mode, portrait_image)
-	local widget = UIWidget.init(definition)
+	local widget = UIWidget.init(definition, self.ui_top_renderer)
 
 	self._player_portrait_widget = widget
 end

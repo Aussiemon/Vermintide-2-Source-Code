@@ -234,9 +234,13 @@ PlayFabRequestQueue._send_request = function (self, entry)
 	local error_cb = error_callback and callback(self, "playfab_request_error_cb", error_callback, entry.id)
 
 	PlayFabClientApi[api_function_name](request, success_cb, error_cb)
+
+	self._current_api_call = request.FunctionName
 end
 
 PlayFabRequestQueue.playfab_request_success_cb = function (self, success_callback, id, result)
+	self._current_api_call = nil
+
 	local entry = self._active_entry
 	local function_result = result.FunctionResult
 
@@ -273,6 +277,8 @@ PlayFabRequestQueue.playfab_request_success_cb = function (self, success_callbac
 end
 
 PlayFabRequestQueue.playfab_request_error_cb = function (self, error_callback, id, result)
+	self._current_api_call = nil
+
 	local entry = self._active_entry
 	local request = entry.request
 
@@ -317,4 +323,8 @@ PlayFabRequestQueue._get_eac_response = function (self, challenge)
 	end
 
 	return eac_response, response
+end
+
+PlayFabRequestQueue.current_api_call = function (self)
+	return self._current_api_call
 end

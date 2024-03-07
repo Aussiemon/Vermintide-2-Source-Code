@@ -106,6 +106,12 @@ ActionAssertFuncs = {
 		fassert(damage_profile, "No damage profile set for [\"%s.%s\"] in weapon [\"%s\"]", action_name, sub_action_name, weapon_name)
 		fassert(DamageProfileTemplates[damage_profile], "Damage profile [\"%s\"] does not exist", damage_profile)
 	end,
+	warpfire_thrower = function (weapon_name, action_name, sub_action_name, action)
+		local damage_profile = action.damage_profile
+
+		fassert(damage_profile, "No damage profile set for [\"%s.%s\"] in weapon [\"%s\"]", action_name, sub_action_name, weapon_name)
+		fassert(DamageProfileTemplates[damage_profile], "Damage profile [\"%s\"] does not exist", damage_profile)
+	end,
 	charge = function (weapon_name, action_name, sub_action_name, action)
 		local charge_time = action.charge_time
 

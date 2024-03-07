@@ -20,7 +20,7 @@ local function stagger_enemies(radius, attacker_unit, explosion_template_name, p
 	local rotation = Quaternion.identity()
 	local career_extension = ScriptUnit.has_extension(attacker_unit, "career_system")
 	local career_power_level = career_extension and career_extension:get_career_power_level()
-	local explosion_template = ExplosionTemplates[explosion_template_name]
+	local explosion_template = ExplosionUtils.get_template(explosion_template_name)
 
 	explosion_template.explosion.radius = radius
 

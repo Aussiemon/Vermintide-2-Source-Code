@@ -241,7 +241,7 @@ DiceRoller._check_for_achievement = function (self, reward_backend_id)
 		local trinket_as_hero
 
 		for _, trait_name in pairs(trinket_traits) do
-			local trait = BuffTemplates[trait_name]
+			local trait = BuffUtils.get_buff_template(trait_name)
 			local trinket_hero = trait.roll_dice_as_hero
 
 			if trinket_hero then

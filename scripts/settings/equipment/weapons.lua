@@ -214,6 +214,7 @@ DotTypeLookup = DotTypeLookup or {
 	corpse_explosion_default = "poison_dot",
 	death_staff_dot = "burning_dot",
 	sienna_necromancer_4_3_dot = "burning_dot",
+	vs_ratling_gunner_slow = "burning_dot",
 	weapon_bleed_dot_dagger = "poison_dot",
 	weapon_bleed_dot_maidenguard = "poison_dot",
 	weapon_bleed_dot_whc = "poison_dot",
@@ -232,9 +233,6 @@ local checked_templates = {
 	vs_gutter_runner = {},
 	vs_ratling_gunner = {},
 	vs_warpfire_thrower = {},
-	vs_chaos_spawn = {},
-	vs_stormfiend = {},
-	vs_rat_ogre = {},
 }
 
 for _, item in pairs(ItemMasterList) do

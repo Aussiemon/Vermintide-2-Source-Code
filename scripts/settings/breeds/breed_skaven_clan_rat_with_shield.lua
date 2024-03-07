@@ -24,6 +24,7 @@ local breed_data = {
 	flingable = true,
 	has_inventory = true,
 	has_running_attack = true,
+	height = 1.4,
 	hit_effect_template = "HitEffectsSkavenClanRatShield",
 	hit_mass_count = 1.5,
 	hit_mass_count_block = 3,
@@ -310,6 +311,9 @@ local AttackIntensityPerDifficulty = {
 		cataclysm_3 = {
 			normal = 2,
 		},
+		versus_base = {
+			normal = 2,
+		},
 	},
 	running = {
 		easy = {
@@ -334,6 +338,9 @@ local AttackIntensityPerDifficulty = {
 			running = 2.5,
 		},
 		cataclysm_3 = {
+			running = 2.5,
+		},
+		versus_base = {
 			running = 2.5,
 		},
 	},

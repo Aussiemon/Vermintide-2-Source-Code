@@ -232,6 +232,7 @@ BulldozerPlayer.spawn = function (self, optional_position, optional_rotation, is
 		hit_reaction_system = {
 			hit_reaction_template = "player",
 			is_husk = false,
+			hit_effect_template = breed.hit_effect_template,
 		},
 		death_system = {
 			death_reaction_template = "player",
@@ -569,10 +570,10 @@ BulldozerPlayer.get_party = function (self)
 	return Managers.party:get_party(status.party_id)
 end
 
-BulldozerPlayer.observed_player_id = function (self)
-	return self._observed_player_id
+BulldozerPlayer.observed_unit = function (self)
+	return self._observed_unit
 end
 
-BulldozerPlayer.set_observed_player_id = function (self, player_id)
-	self._observed_player_id = player_id
+BulldozerPlayer.set_observed_unit = function (self, unit)
+	self._observed_unit = unit
 end

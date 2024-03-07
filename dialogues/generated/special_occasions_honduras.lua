@@ -780,6 +780,32 @@ return function ()
 				OP.EQ,
 				"bright_wizard",
 			},
+			{
+				"user_memory",
+				"player_missed_bomb",
+				OP.EQ,
+				0,
+			},
+			{
+				"faction_memory",
+				"time_since_player_missed_bomb",
+				OP.TIMEDIFF,
+				OP.GT,
+				20,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_player_missed_bomb",
+				OP.TIMESET,
+			},
+			{
+				"user_memory",
+				"player_missed_bomb",
+				OP.ADD,
+				1,
+			},
 		},
 	})
 	define_rule({
@@ -1601,6 +1627,32 @@ return function ()
 				OP.EQ,
 				"bright_wizard",
 			},
+			{
+				"user_memory",
+				"player_missed_bomb",
+				OP.EQ,
+				0,
+			},
+			{
+				"faction_memory",
+				"time_since_player_missed_bomb",
+				OP.TIMEDIFF,
+				OP.GT,
+				20,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_player_missed_bomb",
+				OP.TIMESET,
+			},
+			{
+				"user_memory",
+				"player_missed_bomb",
+				OP.ADD,
+				1,
+			},
 		},
 	})
 	define_rule({
@@ -2300,6 +2352,32 @@ return function ()
 				"player_profile",
 				OP.EQ,
 				"bright_wizard",
+			},
+			{
+				"user_memory",
+				"player_missed_bomb",
+				OP.EQ,
+				0,
+			},
+			{
+				"faction_memory",
+				"time_since_player_missed_bomb",
+				OP.TIMEDIFF,
+				OP.GT,
+				20,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_player_missed_bomb",
+				OP.TIMESET,
+			},
+			{
+				"user_memory",
+				"player_missed_bomb",
+				OP.ADD,
+				1,
 			},
 		},
 	})
@@ -4627,6 +4705,32 @@ return function ()
 				OP.EQ,
 				"bright_wizard",
 			},
+			{
+				"user_memory",
+				"player_missed_bomb",
+				OP.EQ,
+				0,
+			},
+			{
+				"faction_memory",
+				"time_since_player_missed_bomb",
+				OP.TIMEDIFF,
+				OP.GT,
+				20,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_player_missed_bomb",
+				OP.TIMESET,
+			},
+			{
+				"user_memory",
+				"player_missed_bomb",
+				OP.ADD,
+				1,
+			},
 		},
 	})
 	define_rule({
@@ -6588,6 +6692,32 @@ return function ()
 				OP.EQ,
 				"dwarf_ranger",
 			},
+			{
+				"user_memory",
+				"player_missed_bomb",
+				OP.EQ,
+				0,
+			},
+			{
+				"faction_memory",
+				"time_since_player_missed_bomb",
+				OP.TIMEDIFF,
+				OP.GT,
+				20,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_player_missed_bomb",
+				OP.TIMESET,
+			},
+			{
+				"user_memory",
+				"player_missed_bomb",
+				OP.ADD,
+				1,
+			},
 		},
 	})
 	define_rule({
@@ -7499,6 +7629,32 @@ return function ()
 				"player_profile",
 				OP.EQ,
 				"dwarf_ranger",
+			},
+			{
+				"user_memory",
+				"player_missed_bomb",
+				OP.EQ,
+				0,
+			},
+			{
+				"faction_memory",
+				"time_since_player_missed_bomb",
+				OP.TIMEDIFF,
+				OP.GT,
+				20,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_player_missed_bomb",
+				OP.TIMESET,
+			},
+			{
+				"user_memory",
+				"player_missed_bomb",
+				OP.ADD,
+				1,
 			},
 		},
 	})
@@ -10826,6 +10982,32 @@ return function ()
 				OP.EQ,
 				"dwarf_ranger",
 			},
+			{
+				"user_memory",
+				"player_missed_bomb",
+				OP.EQ,
+				0,
+			},
+			{
+				"faction_memory",
+				"time_since_player_missed_bomb",
+				OP.TIMEDIFF,
+				OP.GT,
+				20,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_player_missed_bomb",
+				OP.TIMESET,
+			},
+			{
+				"user_memory",
+				"player_missed_bomb",
+				OP.ADD,
+				1,
+			},
 		},
 	})
 	define_rule({
@@ -11735,6 +11917,32 @@ return function ()
 				OP.EQ,
 				"dwarf_ranger",
 			},
+			{
+				"user_memory",
+				"player_missed_bomb",
+				OP.EQ,
+				0,
+			},
+			{
+				"faction_memory",
+				"time_since_player_missed_bomb",
+				OP.TIMEDIFF,
+				OP.GT,
+				20,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_player_missed_bomb",
+				OP.TIMESET,
+			},
+			{
+				"user_memory",
+				"player_missed_bomb",
+				OP.ADD,
+				1,
+			},
 		},
 	})
 	define_rule({
@@ -12619,6 +12827,32 @@ return function ()
 				"player_profile",
 				OP.EQ,
 				"empire_soldier",
+			},
+			{
+				"user_memory",
+				"player_missed_bomb",
+				OP.EQ,
+				0,
+			},
+			{
+				"faction_memory",
+				"time_since_player_missed_bomb",
+				OP.TIMEDIFF,
+				OP.GT,
+				20,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_player_missed_bomb",
+				OP.TIMESET,
+			},
+			{
+				"user_memory",
+				"player_missed_bomb",
+				OP.ADD,
+				1,
 			},
 		},
 	})
@@ -13523,6 +13757,32 @@ return function ()
 				OP.EQ,
 				"empire_soldier",
 			},
+			{
+				"user_memory",
+				"player_missed_bomb",
+				OP.EQ,
+				0,
+			},
+			{
+				"faction_memory",
+				"time_since_player_missed_bomb",
+				OP.TIMEDIFF,
+				OP.GT,
+				20,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_player_missed_bomb",
+				OP.TIMESET,
+			},
+			{
+				"user_memory",
+				"player_missed_bomb",
+				OP.ADD,
+				1,
+			},
 		},
 	})
 	define_rule({
@@ -14395,6 +14655,32 @@ return function ()
 				"player_profile",
 				OP.EQ,
 				"empire_soldier",
+			},
+			{
+				"user_memory",
+				"player_missed_bomb",
+				OP.EQ,
+				0,
+			},
+			{
+				"faction_memory",
+				"time_since_player_missed_bomb",
+				OP.TIMEDIFF,
+				OP.GT,
+				20,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_player_missed_bomb",
+				OP.TIMESET,
+			},
+			{
+				"user_memory",
+				"player_missed_bomb",
+				OP.ADD,
+				1,
 			},
 		},
 	})
@@ -17481,6 +17767,32 @@ return function ()
 				OP.EQ,
 				"empire_soldier",
 			},
+			{
+				"user_memory",
+				"player_missed_bomb",
+				OP.EQ,
+				0,
+			},
+			{
+				"faction_memory",
+				"time_since_player_missed_bomb",
+				OP.TIMEDIFF,
+				OP.GT,
+				20,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_player_missed_bomb",
+				OP.TIMESET,
+			},
+			{
+				"user_memory",
+				"player_missed_bomb",
+				OP.ADD,
+				1,
+			},
 		},
 	})
 	define_rule({
@@ -17833,13 +18145,7 @@ return function ()
 				"query_context",
 				"pickup_name",
 				OP.EQ,
-				"pickup_frag_grenade_t2",
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"wood_elf",
+				"frag_grenade_t2",
 			},
 			{
 				"query_context",
@@ -17848,10 +18154,29 @@ return function ()
 				"dwarf_ranger",
 			},
 			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"wood_elf",
+			},
+			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
 				"wood_elf",
+			},
+			{
+				"global_context",
+				"level_time",
+				OP.GT,
+				200,
+			},
+			{
+				"faction_memory",
+				"last_saw_pickup",
+				OP.TIMEDIFF,
+				OP.LT,
+				3,
 			},
 			{
 				"user_memory",
@@ -19451,6 +19776,32 @@ return function ()
 				OP.EQ,
 				"wood_elf",
 			},
+			{
+				"user_memory",
+				"player_missed_bomb",
+				OP.EQ,
+				0,
+			},
+			{
+				"faction_memory",
+				"time_since_player_missed_bomb",
+				OP.TIMEDIFF,
+				OP.GT,
+				20,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_player_missed_bomb",
+				OP.TIMESET,
+			},
+			{
+				"user_memory",
+				"player_missed_bomb",
+				OP.ADD,
+				1,
+			},
 		},
 	})
 	define_rule({
@@ -20447,6 +20798,32 @@ return function ()
 				"player_profile",
 				OP.EQ,
 				"wood_elf",
+			},
+			{
+				"user_memory",
+				"player_missed_bomb",
+				OP.EQ,
+				0,
+			},
+			{
+				"faction_memory",
+				"time_since_player_missed_bomb",
+				OP.TIMEDIFF,
+				OP.GT,
+				20,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_player_missed_bomb",
+				OP.TIMESET,
+			},
+			{
+				"user_memory",
+				"player_missed_bomb",
+				OP.ADD,
+				1,
 			},
 		},
 	})
@@ -22906,6 +23283,32 @@ return function ()
 				OP.EQ,
 				"wood_elf",
 			},
+			{
+				"user_memory",
+				"player_missed_bomb",
+				OP.EQ,
+				0,
+			},
+			{
+				"faction_memory",
+				"time_since_player_missed_bomb",
+				OP.TIMEDIFF,
+				OP.GT,
+				20,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_player_missed_bomb",
+				OP.TIMESET,
+			},
+			{
+				"user_memory",
+				"player_missed_bomb",
+				OP.ADD,
+				1,
+			},
 		},
 	})
 	define_rule({
@@ -23554,6 +23957,32 @@ return function ()
 				"player_profile",
 				OP.EQ,
 				"wood_elf",
+			},
+			{
+				"user_memory",
+				"player_missed_bomb",
+				OP.EQ,
+				0,
+			},
+			{
+				"faction_memory",
+				"time_since_player_missed_bomb",
+				OP.TIMEDIFF,
+				OP.GT,
+				20,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_player_missed_bomb",
+				OP.TIMESET,
+			},
+			{
+				"user_memory",
+				"player_missed_bomb",
+				OP.ADD,
+				1,
 			},
 		},
 	})
@@ -24400,6 +24829,32 @@ return function ()
 				"player_profile",
 				OP.EQ,
 				"witch_hunter",
+			},
+			{
+				"user_memory",
+				"player_missed_bomb",
+				OP.EQ,
+				0,
+			},
+			{
+				"faction_memory",
+				"time_since_player_missed_bomb",
+				OP.TIMEDIFF,
+				OP.GT,
+				20,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_player_missed_bomb",
+				OP.TIMESET,
+			},
+			{
+				"user_memory",
+				"player_missed_bomb",
+				OP.ADD,
+				1,
 			},
 		},
 	})
@@ -26049,6 +26504,32 @@ return function ()
 				"player_profile",
 				OP.EQ,
 				"witch_hunter",
+			},
+			{
+				"user_memory",
+				"player_missed_bomb",
+				OP.EQ,
+				0,
+			},
+			{
+				"faction_memory",
+				"time_since_player_missed_bomb",
+				OP.TIMEDIFF,
+				OP.GT,
+				20,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_player_missed_bomb",
+				OP.TIMESET,
+			},
+			{
+				"user_memory",
+				"player_missed_bomb",
+				OP.ADD,
+				1,
 			},
 		},
 	})
@@ -28116,6 +28597,32 @@ return function ()
 				OP.EQ,
 				"witch_hunter",
 			},
+			{
+				"user_memory",
+				"player_missed_bomb",
+				OP.EQ,
+				0,
+			},
+			{
+				"faction_memory",
+				"time_since_player_missed_bomb",
+				OP.TIMEDIFF,
+				OP.GT,
+				20,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_player_missed_bomb",
+				OP.TIMESET,
+			},
+			{
+				"user_memory",
+				"player_missed_bomb",
+				OP.ADD,
+				1,
+			},
 		},
 	})
 	define_rule({
@@ -28797,6 +29304,32 @@ return function ()
 				"player_profile",
 				OP.EQ,
 				"witch_hunter",
+			},
+			{
+				"user_memory",
+				"player_missed_bomb",
+				OP.EQ,
+				0,
+			},
+			{
+				"faction_memory",
+				"time_since_player_missed_bomb",
+				OP.TIMEDIFF,
+				OP.GT,
+				20,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_player_missed_bomb",
+				OP.TIMESET,
+			},
+			{
+				"user_memory",
+				"player_missed_bomb",
+				OP.ADD,
+				1,
 			},
 		},
 	})
@@ -41547,7 +42080,7 @@ return function ()
 			},
 		},
 		pwe_gameplay_dwarf_picks_up_a_bomb = {
-			category = "default",
+			category = "special_occasion",
 			database = "special_occasions_honduras",
 			dialogue_animations_n = 1,
 			face_animations_n = 1,

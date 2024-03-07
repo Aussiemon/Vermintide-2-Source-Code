@@ -37,6 +37,7 @@ local challenge_settings = {
 					30,
 					30,
 					30,
+					10,
 				},
 			},
 			{
@@ -51,12 +52,14 @@ local challenge_settings = {
 					20,
 					20,
 					20,
+					10,
 				},
 			},
 			{
 				reward = "markus_questing_knight_passive_cooldown_reduction",
 				type = "kill_monsters",
 				amount = {
+					1,
 					1,
 					1,
 					1,
@@ -79,6 +82,7 @@ local challenge_settings = {
 					1,
 					1,
 					1,
+					1,
 				},
 				condition = only_when_grims_allowed_and_there_from_the_start,
 			},
@@ -86,6 +90,7 @@ local challenge_settings = {
 				reward = "markus_questing_knight_passive_damage_taken",
 				type = "find_tome",
 				amount = {
+					1,
 					1,
 					1,
 					1,
@@ -113,6 +118,176 @@ local challenge_settings = {
 			},
 		},
 	},
+	versus = {
+		always_reset_quest_pool = true,
+		possible_challenges = {
+			{
+				reward = "markus_questing_knight_passive_cooldown_reduction",
+				type = "kill_elites",
+				amount = {
+					10,
+					10,
+					10,
+					10,
+					10,
+					10,
+					10,
+					10,
+					10,
+				},
+			},
+			{
+				reward = "markus_questing_knight_passive_attack_speed",
+				type = "kill_elites",
+				amount = {
+					10,
+					10,
+					10,
+					10,
+					10,
+					10,
+					10,
+					10,
+					10,
+				},
+			},
+			{
+				reward = "markus_questing_knight_passive_power_level",
+				type = "kill_elites",
+				amount = {
+					10,
+					10,
+					10,
+					10,
+					10,
+					10,
+					10,
+					10,
+					10,
+				},
+			},
+			{
+				reward = "markus_questing_knight_passive_damage_taken",
+				type = "kill_elites",
+				amount = {
+					10,
+					10,
+					10,
+					10,
+					10,
+					10,
+					10,
+					10,
+					10,
+				},
+			},
+			{
+				reward = "markus_questing_knight_passive_health_regen",
+				type = "kill_elites",
+				amount = {
+					10,
+					10,
+					10,
+					10,
+					10,
+					10,
+					10,
+					10,
+					10,
+				},
+			},
+			{
+				reward = "markus_questing_knight_passive_cooldown_reduction",
+				type = "kill_enemies",
+				amount = {
+					50,
+					50,
+					50,
+					50,
+					50,
+					50,
+					50,
+					50,
+					50,
+				},
+			},
+			{
+				reward = "markus_questing_knight_passive_attack_speed",
+				type = "kill_enemies",
+				amount = {
+					50,
+					50,
+					50,
+					50,
+					50,
+					50,
+					50,
+					50,
+					50,
+				},
+			},
+			{
+				reward = "markus_questing_knight_passive_power_level",
+				type = "kill_enemies",
+				amount = {
+					50,
+					50,
+					50,
+					50,
+					50,
+					50,
+					50,
+					50,
+					50,
+				},
+			},
+			{
+				reward = "markus_questing_knight_passive_damage_taken",
+				type = "kill_enemies",
+				amount = {
+					50,
+					50,
+					50,
+					50,
+					50,
+					50,
+					50,
+					50,
+					50,
+				},
+			},
+			{
+				reward = "markus_questing_knight_passive_health_regen",
+				type = "kill_enemies",
+				amount = {
+					50,
+					50,
+					50,
+					50,
+					50,
+					50,
+					50,
+					50,
+					50,
+				},
+			},
+		},
+		side_quest_challenge = {
+			reward = "markus_questing_knight_passive_strength_potion",
+			type = "kill_enemies",
+			amount = {
+				50,
+				50,
+				50,
+				50,
+				50,
+				50,
+				50,
+				50,
+				50,
+			},
+		},
+	},
 }
 
 for _, dlc in pairs(DLCSettings) do
@@ -126,6 +301,13 @@ PassiveAbilityQuestingKnight.init = function (self, extension_init_context, unit
 	self._player = extension_init_data.player
 	self._is_server = extension_init_context.is_server
 	self._player_unique_id = extension_init_data.player:unique_id()
+	self._quest_seed = Managers.mechanism:get_level_seed()
+
+	if Managers.mechanism:current_mechanism_name() == "versus" then
+		local current_set = Managers.mechanism:game_mechanism():get_current_set()
+
+		self._quest_seed = self._quest_seed + current_set
+	end
 end
 
 PassiveAbilityQuestingKnight.extensions_ready = function (self, world, unit)
@@ -150,14 +332,17 @@ PassiveAbilityQuestingKnight.extensions_ready = function (self, world, unit)
 	self._buff_extension = ScriptUnit.extension(unit, "buff_system")
 	self._talent_extension = ScriptUnit.extension(unit, "talent_system")
 
-	if self._talent_extension:initial_talent_synced() then
-		self:_create_quests()
-	else
-		self:_register_events()
-	end
+	self:_create_quests()
+	self:_register_events()
 end
 
 PassiveAbilityQuestingKnight._create_quests = function (self)
+	if not self._talent_extension:initial_talent_synced() then
+		self:_delay_quest_creation()
+
+		return
+	end
+
 	local challenge_manager = Managers.venture.challenge
 	local player_unique_id = self._player_unique_id
 	local status = Managers.party:get_status_from_unique_id(player_unique_id)
@@ -198,6 +383,8 @@ end
 
 PassiveAbilityQuestingKnight._generate_quest_pool = function (self)
 	local challenge_list = table.clone(self:_get_possible_challenges())
+
+	table.shuffle(challenge_list, self._quest_seed)
 
 	return challenge_list
 end
@@ -251,8 +438,7 @@ PassiveAbilityQuestingKnight._start_quest_from_pool = function (self, quest_pool
 			break
 		end
 
-		local challenge_to_add_id = math.random(num_available_challenges)
-		local challenge_to_add = quest_pool[challenge_to_add_id]
+		local challenge_to_add = quest_pool[num_available_challenges]
 		local challenge_reward = challenge_to_add.reward
 
 		if self._talent_extension:has_talent("markus_questing_knight_passive_improved_reward") then
@@ -260,10 +446,14 @@ PassiveAbilityQuestingKnight._start_quest_from_pool = function (self, quest_pool
 		end
 
 		challenge_manager:add_challenge(challenge_to_add.type, false, "questing_knight", challenge_reward, self._player_unique_id, challenge_to_add.amount[difficulty_rank])
-		table.swap_delete(quest_pool, challenge_to_add_id)
+		table.remove(quest_pool, num_available_challenges)
 
 		num_available_challenges = num_available_challenges - 1
 	end
+end
+
+PassiveAbilityQuestingKnight._delay_quest_creation = function (self)
+	Managers.state.event:register(self, "on_initial_talents_synced", "on_initial_talents_synced")
 end
 
 PassiveAbilityQuestingKnight.on_initial_talents_synced = function (self, talent_extension)
@@ -272,8 +462,8 @@ PassiveAbilityQuestingKnight.on_initial_talents_synced = function (self, talent_
 			return
 		end
 
+		Managers.state.event:unregister("on_initial_talents_synced", self)
 		self:_create_quests()
-		self:_unregister_events()
 	end
 end
 
@@ -282,13 +472,22 @@ PassiveAbilityQuestingKnight.destroy = function (self)
 end
 
 PassiveAbilityQuestingKnight._register_events = function (self)
-	Managers.state.event:register(self, "on_initial_talents_synced", "on_initial_talents_synced")
+	if Managers.mechanism:current_mechanism_name() == "versus" then
+		Managers.state.event:register(self, "on_talents_changed", "on_talents_changed")
+	end
+end
+
+PassiveAbilityQuestingKnight.on_talents_changed = function (self, unit, talent_extension)
+	if self._talent_extension == talent_extension then
+		self:_create_quests()
+	end
 end
 
 PassiveAbilityQuestingKnight._unregister_events = function (self)
 	local event_manager = Managers.state.event
 
 	if event_manager then
+		Managers.state.event:unregister("on_talents_changed", self)
 		Managers.state.event:unregister("on_initial_talents_synced", self)
 	end
 end

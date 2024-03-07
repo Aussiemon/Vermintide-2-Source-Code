@@ -13,7 +13,7 @@ weapon_template.actions = {
 			alert_sound_range_hit = 2,
 			ammo_usage = 1,
 			anim_event = "attack_shoot",
-			anim_event_infinite_ammo = "attack_shoot_no_reload",
+			anim_event_infinite_ammo_1p = "attack_shoot_no_reload",
 			anim_event_last_ammo = "attack_shoot_last",
 			anim_event_no_ammo_left = "attack_shoot_last",
 			apply_recoil = true,
@@ -67,7 +67,7 @@ weapon_template.actions = {
 			ammo_usage = 1,
 			anim_end_event = "to_unzoom",
 			anim_event = "attack_shoot",
-			anim_event_infinite_ammo = "attack_shoot_no_reload",
+			anim_event_infinite_ammo_1p = "attack_shoot_no_reload",
 			anim_event_last_ammo = "attack_shoot_last",
 			anim_event_no_ammo_left = "attack_shoot_last",
 			apply_recoil = true,
@@ -321,6 +321,12 @@ weapon_template.tooltip_detail = {
 	},
 }
 
+local crossbow_bolt_vs = table.clone(weapon_template)
+
+crossbow_bolt_vs.actions.action_one.default.impact_data.damage_profile = "crossbow_bolt_vs"
+crossbow_bolt_vs.actions.action_one.zoomed_shot.impact_data.damage_profile = "crossbow_bolt_vs"
+
 return {
 	crossbow_template_1 = table.clone(weapon_template),
+	crossbow_template_1_vs = table.clone(crossbow_bolt_vs),
 }

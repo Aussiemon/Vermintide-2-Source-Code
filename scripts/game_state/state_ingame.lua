@@ -57,7 +57,6 @@ require("scripts/managers/decal/decal_manager")
 require("scripts/managers/performance_title/performance_title_manager")
 require("scripts/managers/achievements/achievement_manager")
 require("scripts/managers/quest/quest_manager")
-require("scripts/managers/badge/badge_manager")
 require("scripts/managers/challenges/challenge_manager")
 require("scripts/managers/status_effect/status_effect_manager")
 require("scripts/utils/fps_reporter")
@@ -397,6 +396,15 @@ StateIngame.on_enter = function (self)
 		self.machines[i] = GameStateMachine:new(self, StateInGameRunning, params, true)
 	end
 
+	if self.is_server and DEDICATED_SERVER then
+		local game_mode_key = Managers.state.game_mode:game_mode_key()
+
+		if game_mode_key == "versus" then
+			self._saved_scoreboard_stats = self.parent.loading_context.saved_scoreboard_stats
+			self.parent.loading_context.saved_scoreboard_stats = nil
+		end
+	end
+
 	if checkpoint_data then
 		Managers.state.entity:system("mission_system"):load_checkpoint_data(checkpoint_data.mission)
 	end
@@ -464,6 +472,10 @@ StateIngame.on_enter = function (self)
 		else
 			Managers.state.entity:system("pickup_system"):populate_pickups()
 		end
+	end
+
+	if self.is_server then
+		Managers.state.entity:system("surrounding_aware_system"):populate_global_observers()
 	end
 
 	Managers.state.entity:system("payload_system"):init_payloads()
@@ -863,7 +875,7 @@ end
 StateIngame.update = function (self, dt, main_t)
 	self.dt = dt
 
-	if not self.network_client or self.network_client.state == "game_started" then
+	if not self.network_client or self.network_client.state == NetworkClientStates.game_started then
 		self.network_clock:update(dt)
 		self.network_timer_handler:update(dt, main_t)
 	end
@@ -874,7 +886,6 @@ StateIngame.update = function (self, dt, main_t)
 	Managers.state.network:update(dt)
 	Managers.backend:update(dt, main_t)
 	self.input_manager:update(dt, main_t)
-	Managers.state.badge:update(dt, main_t)
 	Managers.level_transition_handler:update()
 
 	local t = Managers.time:time("game")
@@ -1049,36 +1060,37 @@ StateIngame._check_exit = function (self, t)
 	local waiting_user_input = backend_manager:is_waiting_for_user_input()
 	local backend_items = backend_manager:get_interface("items")
 	local waiting_for_item_poll = (backend_items:num_current_item_server_requests() ~= 0 or UISettings.waiting_for_response) and not backend_manager:is_disconnected()
+	local transition, join_lobby_data
+
+	for _, machine in pairs(self.machines) do
+		machine:state():check_invites()
+
+		transition, join_lobby_data = machine:state():wanted_transition()
+	end
+
+	if script_data.hammer_join and Managers.time:time("game") > 5 then
+		transition = "restart_game"
+
+		Development.set_parameter("auto_join", true)
+	elseif not IS_WINDOWS and Managers.account:leaving_game() then
+		transition = "return_to_title_screen"
+	end
+
+	transition = transition or Managers.state.game_mode:wanted_transition()
+
+	if not transition and Managers.game_server then
+		transition = Managers.game_server:get_transition()
+	end
+
+	if not transition and script_data.honduras_demo then
+		transition = Managers.time:get_demo_transition()
+	end
 
 	if not self.exit_type and not waiting_user_input and not waiting_for_item_poll then
-		local transition, join_lobby_data
-
-		for _, machine in pairs(self.machines) do
-			machine:state():check_invites()
-
-			transition, join_lobby_data = machine:state():wanted_transition()
-		end
-
-		if script_data.hammer_join and Managers.time:time("game") > 5 then
-			transition = "restart_game"
-
-			Development.set_parameter("auto_join", true)
-		elseif not IS_WINDOWS and Managers.account:leaving_game() then
-			transition = "return_to_title_screen"
-		end
-
-		transition = transition or Managers.state.game_mode:wanted_transition()
-
-		if not transition and Managers.game_server then
-			transition = Managers.game_server:get_transition()
-		end
-
-		if not transition and script_data.honduras_demo then
-			transition = Managers.time:get_demo_transition()
-		end
-
 		local level_transition_handler = Managers.level_transition_handler
 		local level_transition_type = level_transition_handler:needs_level_load() and level_transition_handler:get_current_level_transition_type()
+
+		self._last_transition_fail = nil
 
 		if transition or join_lobby_data or level_transition_type then
 			print("TRANSITION", transition, join_lobby_data, level_transition_type)
@@ -1157,7 +1169,7 @@ StateIngame._check_exit = function (self, t)
 
 			Managers.transition:fade_in(GameSettings.transition_fade_in_speed, nil)
 			Managers.transition:show_loading_icon()
-		elseif self.network_client and self.network_client.state == "denied_enter_game" then
+		elseif self.network_client and self.network_client.state == NetworkClientStates.denied_enter_game then
 			if self.network_client.host_to_migrate_to == nil then
 				self.exit_type = "join_lobby_failed"
 			else
@@ -1172,7 +1184,7 @@ StateIngame._check_exit = function (self, t)
 
 			Managers.transition:fade_in(GameSettings.transition_fade_in_speed, nil)
 			Managers.transition:show_loading_icon()
-		elseif self.network_client and self.network_client.state == "eac_match_failed" then
+		elseif self.network_client and self.network_client.state == NetworkClientStates.eac_match_failed then
 			self.exit_type = "join_lobby_failed"
 
 			if network_manager:in_game_session() then
@@ -1183,7 +1195,7 @@ StateIngame._check_exit = function (self, t)
 
 			Managers.transition:fade_in(GameSettings.transition_fade_in_speed, nil)
 			Managers.transition:show_loading_icon()
-		elseif self.network_client and self.network_client.state == "lost_connection_to_host" and lobby and lobby:lost_connection_to_lobby() then
+		elseif self.network_client and self.network_client.state == NetworkClientStates.lost_connection_to_host and lobby and lobby:lost_connection_to_lobby() then
 			if self.network_client == nil or self.network_client.host_to_migrate_to == nil then
 				self.exit_type = "rejoin_party"
 
@@ -1200,7 +1212,7 @@ StateIngame._check_exit = function (self, t)
 				Managers.transition:fade_in(GameSettings.transition_fade_in_speed, nil)
 				Managers.transition:show_loading_icon()
 			end
-		elseif lobby and lobby.state == LobbyState.FAILED or self.network_client and self.network_client.state == "lost_connection_to_host" then
+		elseif lobby and lobby.state == LobbyState.FAILED or self.network_client and self.network_client.state == NetworkClientStates.lost_connection_to_host then
 			if self.network_client == nil or self.network_client.host_to_migrate_to == nil then
 				self.exit_type = "lobby_state_failed"
 			else
@@ -1290,6 +1302,12 @@ StateIngame._check_exit = function (self, t)
 			Managers.transition:fade_in(GameSettings.transition_fade_in_speed, nil)
 			Managers.transition:show_loading_icon()
 		elseif transition == "leave_game" or transition == "quit_game" or self._quit_game then
+			local is_versus = Managers.mechanism:current_mechanism_name() == "versus"
+
+			if is_versus then
+				Managers.matchmaking:on_leave_game()
+			end
+
 			if transition == "leave_game" then
 				self.exit_type = "left_game"
 			else
@@ -1317,24 +1335,43 @@ StateIngame._check_exit = function (self, t)
 
 			Managers.transition:show_loading_icon()
 		elseif transition == "return_to_pc_menu" then
-			self.exit_type = "return_to_pc_menu"
+			if GameSettingsDevelopment.skip_start_screen or Development.parameter("skip_start_screen") then
+				self.exit_type = "return_to_pc_menu"
 
-			if self.network_server then
-				self.network_server:disconnect_all_peers("host_left_game")
-			elseif self._lobby_client and self._lobby_client.state == LobbyState.JOINED then
-				print("Leaving lobby, noting it as one I don't want to matchmake back into soon")
-				Managers.matchmaking:add_broken_lobby_client(self._lobby_client, t, true)
+				if self.network_server then
+					self.network_server:disconnect_all_peers("host_left_game")
+				elseif self._lobby_client and self._lobby_client.state == LobbyState.JOINED then
+					print("Leaving lobby, noting it as one I don't want to matchmake back into soon")
+					Managers.matchmaking:add_broken_lobby_client(self._lobby_client, t, true)
+				end
+
+				if network_manager:in_game_session() then
+					local force_diconnect = not self.is_server
+
+					network_manager:leave_game(force_diconnect)
+				end
+
+				Managers.matchmaking:cancel_matchmaking()
+				Managers.transition:fade_in(GameSettings.transition_fade_in_speed)
+				Managers.transition:show_loading_icon()
+			else
+				self.exit_type = "return_to_title_screen"
+
+				if not Managers.account:leaving_game() then
+					Managers.account:initiate_leave_game()
+				end
+
+				if network_manager:in_game_session() then
+					local force_diconnect = true
+
+					network_manager:leave_game(force_diconnect)
+				end
+
+				self.leave_lobby = true
+
+				Managers.transition:fade_in(GameSettings.transition_fade_in_speed, nil)
+				Managers.transition:show_loading_icon()
 			end
-
-			if network_manager:in_game_session() then
-				local force_diconnect = not self.is_server
-
-				network_manager:leave_game(force_diconnect)
-			end
-
-			Managers.matchmaking:cancel_matchmaking()
-			Managers.transition:fade_in(GameSettings.transition_fade_in_speed)
-			Managers.transition:show_loading_icon()
 		elseif transition == "afk_kick" then
 			self.exit_type = "afk_kick"
 
@@ -1419,6 +1456,17 @@ StateIngame._check_exit = function (self, t)
 
 			Managers.transition:fade_in(GameSettings.transition_fade_in_speed, nil)
 			Managers.transition:show_loading_icon()
+		elseif transition == "versus_migration" then
+			self.exit_type = "versus_migration"
+
+			if network_manager:in_game_session() then
+				local force_disconnect = true
+
+				network_manager:leave_game(force_disconnect)
+			end
+
+			Managers.transition:fade_in(GameSettings.transition_fade_in_speed, nil)
+			Managers.transition:show_loading_icon()
 		elseif transition == "restart_game_server" then
 			self.exit_type = "restart_game_server"
 
@@ -1468,6 +1516,10 @@ StateIngame._check_exit = function (self, t)
 				end
 			end
 		end
+	elseif transition and self._last_transition_fail ~= transition then
+		self._last_transition_fail = transition
+
+		print("TRANSITION failed", "\n\ttransition:", transition, "\n\texit_type:", self.exit_type, "\n\twaiting_user_input:", waiting_user_input, "\n\tnum_server_requests:", backend_items:num_current_item_server_requests(), "\n\twaiting_for_response:", UISettings.waiting_for_response)
 	end
 
 	local SESSION_LEAVE_TIMEOUT = 4
@@ -1607,6 +1659,19 @@ StateIngame._check_exit = function (self, t)
 			self.parent.loading_context.wanted_party_index = self:wanted_party_index()
 			self.parent.loading_context.time_spent_in_level = math.floor(Managers.time and Managers.time:time("game") or -1)
 			self.parent.loading_context.end_reason = "host_migration"
+			self.leave_lobby = true
+
+			return StateLoading
+		elseif exit_type == "versus_migration" then
+			local versus_migration_info = Managers.mechanism:game_mechanism():create_versus_migration_info(self._gm_event_end_conditions_met, self._gm_event_end_reason)
+
+			self.parent.loading_context.versus_migration_info = versus_migration_info
+
+			local loading_context = self.parent.loading_context
+
+			loading_context.versus_migration = true
+			self.parent.loading_context.time_spent_in_level = math.floor(Managers.time and Managers.time:time("game") or -1)
+			self.parent.loading_context.end_reason = "versus_migration"
 			self.leave_lobby = true
 
 			return StateLoading
@@ -1945,8 +2010,10 @@ StateIngame.on_exit = function (self, application_shutdown)
 		local party_join = join_data ~= nil and join_data.join_method == "party"
 
 		if self._lobby_host then
-			if party_join then
-				Managers.party:store_lobby(self._lobby_host:steal_lobby())
+			local is_versus = Managers.mechanism:current_mechanism_name() == "versus"
+
+			if is_versus and not DEDICATED_SERVER then
+				Managers.mechanism:clear_player_reservation_handler()
 			end
 
 			if self.network_server then
@@ -1986,13 +2053,11 @@ StateIngame.on_exit = function (self, application_shutdown)
 			self.parent.loading_context.lobby_client = nil
 		end
 
-		if application_shutdown and rawget(_G, "LobbyInternal") then
+		if application_shutdown and rawget(_G, "LobbyInternal") and LobbyInternal.client then
 			if Managers.party:has_party_lobby() then
 				local lobby = Managers.party:steal_lobby()
 
-				if type(lobby) ~= "table" then
-					LobbyInternal.leave_lobby(lobby)
-				end
+				LobbyInternal.leave_lobby(lobby)
 			end
 
 			LobbyInternal.shutdown_client()
@@ -2347,7 +2412,6 @@ StateIngame._setup_state_context = function (self, world, is_server, network_eve
 		Managers.state.quest = QuestManager:new(self.statistics_db)
 	end
 
-	Managers.state.badge = BadgeManager:new(self.statistics_db, network_event_delegate, is_server)
 	Managers.state.achievement = AchievementManager:new(self.world, self.statistics_db)
 
 	if DEDICATED_SERVER then
@@ -2461,6 +2525,17 @@ StateIngame.gm_event_end_conditions_met = function (self, reason, checkpoint_ava
 
 	for _, machine in pairs(self.machines) do
 		machine:state():gm_event_end_conditions_met(reason, checkpoint_available, percentages_completed)
+	end
+
+	if self.is_server and DEDICATED_SERVER then
+		local is_final_objective = Managers.mechanism:is_final_round()
+		local players_session_score = Managers.mechanism:get_players_session_score(self.statistics_db, self.profile_synchronizer, self._saved_scoreboard_stats)
+
+		if is_final_objective then
+			Managers.mechanism:sync_players_session_score(self.statistics_db, self.profile_synchronizer, players_session_score)
+		else
+			self.parent.loading_context.saved_scoreboard_stats = players_session_score
+		end
 	end
 end
 

@@ -167,12 +167,8 @@ CareerAbilityESMercenary._run_ability = function (self, new_initial_speed)
 		end
 	end
 
-	local heal_amount = 25
-
-	if talent_extension:has_talent("markus_mercenary_activated_ability_improved_healing") then
-		heal_amount = 45
-	end
-
+	local ability_template = CareerUtils.get_ability_data(career_extension:profile_index(), career_extension:career_index(), 1)
+	local heal_amount = ability_template.heal_amount
 	local heal_type_id = NetworkLookup.heal_types.career_skill
 
 	for _, player_unit in pairs(nearby_player_units) do
@@ -200,7 +196,7 @@ CareerAbilityESMercenary._run_ability = function (self, new_initial_speed)
 	end
 
 	local explosion_template_name = "kruber_mercenary_activated_ability_stagger"
-	local explosion_template = ExplosionTemplates[explosion_template_name]
+	local explosion_template = ExplosionUtils.get_template(explosion_template_name)
 	local scale = 1
 	local damage_source = "career_ability"
 	local is_husk = false

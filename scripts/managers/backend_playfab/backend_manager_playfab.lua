@@ -64,6 +64,7 @@ BackendManagerPlayFab.init = function (self, signin_name, mirror_name, server_qu
 	self._current_talents_interface_override = nil
 	self._total_power_level_interface_overrides = {}
 	self._metadata = {
+		client_type = "client",
 		client_version = VersionSettings.version,
 		realm = HAS_STEAM and script_data["eac-untrusted"] and "modded" or "official",
 	}
@@ -414,6 +415,10 @@ BackendManagerPlayFab._update_state = function (self)
 				local signin_result = signin:get_signin_result()
 
 				self._backend_mirror = self._mirror:new(signin_result)
+
+				if Managers.mechanism then
+					Managers.mechanism:refresh_mechanism_setting_for_title()
+				end
 			end
 		elseif self._signin_timeout < os.time() then
 			self._need_signin = false
@@ -1090,6 +1095,10 @@ BackendManagerPlayFab.player_id = function (self)
 	return playfab_id
 end
 
+BackendManagerPlayFab.switch_mechanism = function (self, mechanism_key)
+	self._backend_mirror:set_mechanism(mechanism_key)
+end
+
 BackendManagerPlayFab.load_mechanism_loadout = function (self, mechanism_key)
 	self._backend_mirror:request_characters(mechanism_key)
 end
@@ -1156,4 +1165,12 @@ end
 
 BackendManagerPlayFab.get_twitch_app_access_token = function (self)
 	return self._backend_mirror:get_twitch_app_access_token()
+end
+
+BackendManagerPlayFab.get_current_api_call = function (self)
+	if not self._backend_mirror then
+		return
+	end
+
+	return self._backend_mirror:current_api_call()
 end

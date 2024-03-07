@@ -33,6 +33,10 @@ LevelTransitionHandler.init = function (self)
 
 	local level_key, environment_variation_id, level_seed, mechanism, game_mode, conflict_director, locked_director_functions, difficulty, difficulty_tweak, extra_packages
 
+	if DEDICATED_SERVER then
+		mechanism = "versus"
+	end
+
 	level_key, environment_variation_id, level_seed, mechanism, game_mode, conflict_director, locked_director_functions, difficulty, difficulty_tweak, extra_packages = LevelTransitionHandler.apply_defaults_to_level_data(level_key, level_seed, environment_variation_id, mechanism, game_mode, conflict_director, locked_director_functions, difficulty, difficulty_tweak, extra_packages)
 
 	local default_level_data = {
@@ -574,10 +578,13 @@ LevelTransitionHandler.apply_defaults_to_level_data = function (level_key, envir
 		end
 	end
 
+	local game_mode_settings = GameModeSettings[game_mode]
+	local forced_difficulty = game_mode_settings and game_mode_settings.forced_difficulty
+
 	environment_variation_id = environment_variation_id or 0
 	conflict_director = script_data.override_conflict_settings or conflict_director or level_settings.conflict_settings or "default"
 	locked_director_functions = locked_director_functions or {}
-	difficulty = script_data.current_difficulty_setting or difficulty or "normal"
+	difficulty = script_data.current_difficulty_setting or forced_difficulty or difficulty or "normal"
 	difficulty_tweak = script_data.current_difficulty_tweak_setting or difficulty_tweak or 0
 
 	if is_server and script_data.random_level_seed_from_toolcenter and not level_seed then

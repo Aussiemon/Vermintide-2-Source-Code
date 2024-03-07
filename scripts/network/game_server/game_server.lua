@@ -3,6 +3,8 @@
 require("scripts/network/game_server/game_server_aux")
 require("scripts/network/lobby_members")
 
+local game_server_testify = script_data.testify and require("scripts/network/game_server/testify/game_server_testify")
+
 GameServer = class(GameServer)
 
 local function dprintf(string, ...)
@@ -26,6 +28,20 @@ GameServer.init = function (self, network_options, server_name)
 	self._data_table = {}
 	self._server_name = server_name
 	self._network_initialized = false
+end
+
+GameServer.kick_all_except = function (self, ignored_peers)
+	if GameServerInternal.remove_member then
+		ignored_peers = ignored_peers or {}
+
+		local my_peer_id = self._data_table.host
+
+		for _, peer_id in ipairs(self._members) do
+			if peer_id ~= my_peer_id and not ignored_peers[peer_id] then
+				GameServerInternal.remove_member(self._game_server, peer_id)
+			end
+		end
+	end
 end
 
 GameServer.destroy = function (self)
@@ -75,6 +91,10 @@ GameServer.update = function (self, dt, t)
 	end
 
 	GameServerInternal.run_callbacks(self._game_server, self)
+
+	if script_data.testify then
+		Testify:poll_requests_through_handler(game_server_testify, self)
+	end
 
 	return self._state
 end
@@ -180,8 +200,8 @@ GameServer.server_member_added = function (self, peer_id)
 	printf("Member %s was added", peer_id)
 end
 
-GameServer.server_slot_allocation_request = function (self, reserver, peers)
-	if Managers.mechanism:try_reserve_game_server_slots(reserver, peers) then
+GameServer.server_slot_allocation_request = function (self, reserver, peers, invitee)
+	if Managers.mechanism:try_reserve_game_server_slots(reserver, peers, invitee) then
 		printf("Request by %s to allocate %d slots was approved", reserver, #peers)
 
 		return true
@@ -199,4 +219,8 @@ end
 
 GameServer.lost_connection_to_lobby = function (self)
 	return false
+end
+
+GameServer.get_aws_session = function (self)
+	return self._aws_session
 end

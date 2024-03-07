@@ -456,7 +456,7 @@ EndViewStateWeave._fill_portrait = function (self, slot, portrait_frame, level_t
 	local widget_definition = UIWidgets.create_portrait_frame("player_frame", portrait_frame, level_text, 1, nil, portrait_image)
 	local hero_widget = self._hero_widgets[slot]
 
-	hero_widget = UIWidget.init(widget_definition)
+	hero_widget = UIWidget.init(widget_definition, self.ui_top_renderer)
 	hero_widget.offset = {
 		x_offset,
 		0,

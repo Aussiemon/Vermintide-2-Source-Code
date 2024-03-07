@@ -79,8 +79,6 @@ settings.inventory_package_list = {
 	"units/weapons/player/wpn_dw_xbow_02_t1/wpn_dw_xbow_02_t1_magic_01_3p",
 	"units/weapons/player/wpn_empire_blunderbuss_02_t1/wpn_empire_blunderbuss_02_t1_magic_01",
 	"units/weapons/player/wpn_empire_blunderbuss_02_t1/wpn_empire_blunderbuss_02_t1_magic_01_3p",
-	"units/weapons/player/wpn_emp_longrifle_03_t2/wpn_emp_longrifle_03_t2_magic_01",
-	"units/weapons/player/wpn_emp_longrifle_03_t2/wpn_emp_longrifle_03_t2_magic_01_3p",
 	"units/weapons/player/wpn_empire_handgun_02_t2/wpn_empire_handgun_02_t2_magic_01",
 	"units/weapons/player/wpn_empire_handgun_02_t2/wpn_empire_handgun_02_t2_magic_01_3p",
 	"units/weapons/player/wpn_dw_drake_pistol_01_t1/wpn_dw_drake_pistol_01_t1_magic_01",

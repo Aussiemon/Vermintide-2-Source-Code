@@ -51,6 +51,7 @@ local breed_data = {
 	force_walk_while_tired = true,
 	has_inventory = true,
 	has_running_attack = true,
+	height = 1.6,
 	hesitation_timer = 5,
 	hit_effect = "fx/skull_shatter",
 	hit_effect_template = "HitEffectsChaosMarauder",
@@ -142,14 +143,15 @@ local breed_data = {
 		1,
 	},
 	max_health = {
-		16.650000000000002,
-		16.650000000000002,
-		24.75,
-		29.25,
-		45,
-		67.5,
-		67.5,
-		67.5,
+		37 * CareerConstants.bw_necromancer.pet_balance_health_modifier,
+		37 * CareerConstants.bw_necromancer.pet_balance_health_modifier,
+		55 * CareerConstants.bw_necromancer.pet_balance_health_modifier,
+		65 * CareerConstants.bw_necromancer.pet_balance_health_modifier,
+		100 * CareerConstants.bw_necromancer.pet_balance_health_modifier,
+		150 * CareerConstants.bw_necromancer.pet_balance_health_modifier,
+		150 * CareerConstants.bw_necromancer.pet_balance_health_modifier,
+		150 * CareerConstants.bw_necromancer.pet_balance_health_modifier,
+		37 * CareerConstants.bw_necromancer.pet_balance_health_modifier,
 	},
 	bloodlust_health = BreedTweaks.bloodlust_health.chaos_roamer,
 	hit_mass_counts = {
@@ -175,7 +177,7 @@ local breed_data = {
 		40,
 		40,
 	},
-	stagger_modifier_function = function (stagger, duration, length, hit_zone_name, blackboard, breed, direction)
+	stagger_modifier_function = function (stagger, duration, length, hit_zone_name, blackboard, breed)
 		if blackboard.stagger_type == 3 then
 			if stagger == 3 and blackboard.heavy_stagger_immune_time then
 				stagger = 0
@@ -465,6 +467,9 @@ local AttackIntensityPerDifficulty = {
 		cataclysm_3 = {
 			normal = 2,
 		},
+		versus_base = {
+			normal = 2,
+		},
 	},
 	running = {
 		easy = {
@@ -489,6 +494,9 @@ local AttackIntensityPerDifficulty = {
 			running = 2.5,
 		},
 		cataclysm_3 = {
+			running = 2.5,
+		},
+		versus_base = {
 			running = 2.5,
 		},
 	},
@@ -522,6 +530,10 @@ local AttackIntensityPerDifficulty = {
 			normal = 2.5,
 		},
 		cataclysm_3 = {
+			frenzy = 5,
+			normal = 2.5,
+		},
+		versus_base = {
 			frenzy = 5,
 			normal = 2.5,
 		},
@@ -1285,6 +1297,14 @@ local action_data = {
 				0,
 				10,
 				5,
+			},
+			versus_base = {
+				6,
+				3,
+				9,
+				0,
+				5,
+				2,
 			},
 		},
 		hit_ai_func = hit_ai_func,

@@ -521,7 +521,7 @@ end
 
 DeusRunStatsUi._create_player_portrait = function (self, portrait_frame, portrait_image, player_level_text)
 	local definition = UIWidgets.create_portrait_frame("player_portrait", portrait_frame, player_level_text, 1, nil, portrait_image)
-	local widget = UIWidget.init(definition)
+	local widget = UIWidget.init(definition, self._ui_top_renderer)
 
 	table.insert(self._widgets, widget)
 

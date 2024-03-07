@@ -24,7 +24,7 @@ BackendInterfaceTalentsPlayfab._refresh = function (self)
 					career_talents[i] = tonumber(career_talents[i])
 				end
 
-				self:_validate_talents(career_name, career_talents)
+				self:_validate_talents(career_name, career_talents, settings.talent_tree_index)
 
 				talents[career_name] = career_talents
 			end
@@ -34,23 +34,35 @@ BackendInterfaceTalentsPlayfab._refresh = function (self)
 	self._dirty = false
 end
 
-BackendInterfaceTalentsPlayfab._validate_talents = function (self, career_name, career_talents)
+BackendInterfaceTalentsPlayfab._validate_talents = function (self, career_name, career_talents, talent_tree_index)
 	local profile = PROFILES_BY_CAREER_NAMES[career_name]
+
+	if not profile then
+		return
+	end
+
 	local profile_name = profile.display_name
 	local hero_experience = self._backend_mirror:get_read_only_data(profile_name .. "_experience")
 	local hero_level = ExperienceSettings.get_level(hero_experience)
-	local talent_unlock_levels = TalentUnlockLevels
+	local override_talents = PlayerUtils.get_talent_overrides_by_career(career_name)
+	local talent_trees = TalentTrees[profile_name]
+	local talent_tree = talent_trees and talent_trees[talent_tree_index]
 	local changed = false
 
 	for i = 1, #career_talents do
 		local selected_talent = career_talents[i]
 
 		if selected_talent > 0 then
-			local required_level = talent_unlock_levels["talent_point_" .. i]
-
-			if hero_level < required_level then
+			if not ProgressionUnlocks.is_unlocked("talent_point_" .. i, hero_level) then
 				career_talents[i] = 0
 				changed = true
+			elseif override_talents and talent_tree then
+				local selected_talent_name = talent_tree[i][selected_talent]
+
+				if override_talents[selected_talent_name] == false then
+					career_talents[i] = 0
+					changed = true
+				end
 			end
 		end
 	end

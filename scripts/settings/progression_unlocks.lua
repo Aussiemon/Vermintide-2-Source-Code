@@ -12,6 +12,11 @@ for key, level_requirement in pairs(TalentUnlockLevels) do
 		unlock_type = "icon",
 		value = "options_button_icon_talents_glow",
 		level_requirement = level_requirement,
+		mechanism_overrides = {
+			versus = {
+				level_requirement = 0,
+			},
+		},
 	}
 end
 
@@ -30,6 +35,11 @@ progression_unlocks.es_huntsman = {
 	title = "es_huntsman",
 	unlock_type = "career",
 	value = "es_huntsman",
+	mechanism_overrides = {
+		versus = {
+			level_requirement = 0,
+		},
+	},
 }
 progression_unlocks.es_knight = {
 	description = "end_screen_career_unlocked",
@@ -38,6 +48,11 @@ progression_unlocks.es_knight = {
 	title = "es_knight",
 	unlock_type = "career",
 	value = "es_knight",
+	mechanism_overrides = {
+		versus = {
+			level_requirement = 0,
+		},
+	},
 }
 progression_unlocks.dr_ranger = {
 	description = "n/a",
@@ -54,6 +69,11 @@ progression_unlocks.dr_ironbreaker = {
 	title = "dr_ironbreaker",
 	unlock_type = "career",
 	value = "dr_ironbreaker",
+	mechanism_overrides = {
+		versus = {
+			level_requirement = 0,
+		},
+	},
 }
 progression_unlocks.dr_slayer = {
 	description = "end_screen_career_unlocked",
@@ -62,6 +82,11 @@ progression_unlocks.dr_slayer = {
 	title = "dr_slayer",
 	unlock_type = "career",
 	value = "dr_slayer",
+	mechanism_overrides = {
+		versus = {
+			level_requirement = 0,
+		},
+	},
 }
 progression_unlocks.wh_captain = {
 	description = "end_screen_career_unlocked",
@@ -78,6 +103,11 @@ progression_unlocks.wh_bountyhunter = {
 	title = "wh_bountyhunter",
 	unlock_type = "career",
 	value = "wh_bountyhunter",
+	mechanism_overrides = {
+		versus = {
+			level_requirement = 0,
+		},
+	},
 }
 progression_unlocks.wh_zealot = {
 	description = "end_screen_career_unlocked",
@@ -86,6 +116,11 @@ progression_unlocks.wh_zealot = {
 	title = "wh_zealot",
 	unlock_type = "career",
 	value = "wh_zealot",
+	mechanism_overrides = {
+		versus = {
+			level_requirement = 0,
+		},
+	},
 }
 progression_unlocks.we_waywatcher = {
 	description = "end_screen_career_unlocked",
@@ -102,6 +137,11 @@ progression_unlocks.we_maidenguard = {
 	title = "we_maidenguard",
 	unlock_type = "career",
 	value = "we_maidenguard",
+	mechanism_overrides = {
+		versus = {
+			level_requirement = 0,
+		},
+	},
 }
 progression_unlocks.we_shade = {
 	description = "end_screen_career_unlocked",
@@ -110,6 +150,11 @@ progression_unlocks.we_shade = {
 	title = "we_shade",
 	unlock_type = "career",
 	value = "we_shade",
+	mechanism_overrides = {
+		versus = {
+			level_requirement = 0,
+		},
+	},
 }
 progression_unlocks.bw_adept = {
 	description = "end_screen_career_unlocked",
@@ -126,6 +171,11 @@ progression_unlocks.bw_scholar = {
 	title = "bw_scholar",
 	unlock_type = "career",
 	value = "bw_scholar",
+	mechanism_overrides = {
+		versus = {
+			level_requirement = 0,
+		},
+	},
 }
 progression_unlocks.bw_unchained = {
 	description = "end_screen_career_unlocked",
@@ -134,6 +184,11 @@ progression_unlocks.bw_unchained = {
 	title = "bw_unchained",
 	unlock_type = "career",
 	value = "bw_unchained",
+	mechanism_overrides = {
+		versus = {
+			level_requirement = 0,
+		},
+	},
 }
 
 DLCUtils.merge("progression_unlocks", progression_unlocks)
@@ -160,19 +215,22 @@ ProgressionUnlocks = {}
 ProgressionUnlocks.all_unlocks_for_debug = progression_unlocks
 
 ProgressionUnlocks.get_unlock = function (unlock_name, profile)
-	local template = progression_unlocks[unlock_name]
+	local progression_unlocks_for_mechanism = MechanismOverrides.get(progression_unlocks)
+	local template = progression_unlocks_for_mechanism[unlock_name]
 
 	return template
 end
 
 ProgressionUnlocks.get_profile_unlock = function (unlock_name, profile)
-	local template = profile_unlocks[profile][unlock_name]
+	local mechanism_profile_unlocks = MechanismOverrides.get(profile_unlocks)
+	local template = mechanism_profile_unlocks[profile][unlock_name]
 
 	return template
 end
 
 ProgressionUnlocks.is_unlocked = function (unlock_name, level)
-	local template = progression_unlocks[unlock_name]
+	local progression_unlocks_for_mechanism = MechanismOverrides.get(progression_unlocks)
+	local template = progression_unlocks_for_mechanism[unlock_name]
 
 	fassert(template, "[ProgressionUnlocks] no template named %q", tostring(unlock_name))
 
@@ -183,8 +241,9 @@ end
 
 ProgressionUnlocks.get_level_unlocks = function (level, profile)
 	local templates = {}
+	local progression_unlocks_for_mechanism = MechanismOverrides.get(progression_unlocks)
 
-	for unlock_name, template in pairs(progression_unlocks) do
+	for unlock_name, template in pairs(progression_unlocks_for_mechanism) do
 		if (not template.profile or template.profile == profile) and template.level_requirement == level then
 			templates[#templates + 1] = template
 		end
@@ -198,10 +257,12 @@ ProgressionUnlocks.is_unlocked_for_profile = function (unlock_name, profile, lev
 		return true
 	end
 
-	local profile_templates = profile_unlocks[profile]
+	local mechanism_profile_unlocks = MechanismOverrides.get(profile_unlocks)
+	local profile_templates = mechanism_profile_unlocks[profile]
 
 	fassert(profile_templates, "No unlocks found for profile %s", profile)
 
+	local progression_unlocks_for_mechanism = MechanismOverrides.get(progression_unlocks)
 	local template = profile_templates[unlock_name]
 
 	if template == nil then
@@ -250,7 +311,9 @@ ProgressionUnlocks.get_quests_unlocked = function (level_key)
 	end
 
 	if quests_unlocked then
-		return progression_unlocks.quests
+		local progression_unlocks_for_mechanism = MechanismOverrides.get(progression_unlocks)
+
+		return progression_unlocks_for_mechanism.quests
 	end
 end
 

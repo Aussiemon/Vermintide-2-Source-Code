@@ -23,6 +23,7 @@ local breed_data = {
 	flingable = false,
 	has_inventory = true,
 	headshot_coop_stamina_fatigue_type = "headshot_special",
+	height = 1.45,
 	hit_effect_template = "HitEffectsSkavenPackMaster",
 	hit_reaction = "ai_default",
 	is_always_spawnable = true,

@@ -10,6 +10,11 @@ ActivatedAbilitySettings.es_4 = {
 		display_name = "career_active_name_markus_questingknight",
 		icon = "markus_questing_knight_activated_ability",
 		weapon_name = "markus_questingknight_career_skill_weapon",
+		mechanism_overrides = {
+			versus = {
+				cooldown = 40,
+			},
+		},
 	},
 }
 PassiveAbilitySettings.es_4 = {

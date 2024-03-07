@@ -312,8 +312,24 @@ InputService.set_disabled_input_group = function (self, disabled_input_group)
 	self.disabled_input_group = disabled_input_group
 end
 
-InputService.set_input_blocked = function (self, input_data_name, blocked)
-	self.blocked_input[input_data_name] = blocked or nil
+InputService.set_input_blocked = function (self, input_data_name, blocked, optional_reason)
+	local blocked_input = self.blocked_input
+	local reasons = blocked_input[input_data_name]
+
+	if not reasons and not blocked then
+		return
+	end
+
+	reasons = reasons or {}
+	blocked_input[input_data_name] = reasons
+
+	local reason = optional_reason or "_no_reason"
+
+	reasons[reason] = blocked or nil
+
+	if not next(reasons) then
+		blocked_input[input_data_name] = nil
+	end
 end
 
 InputService.set_hover = function (self, hover)

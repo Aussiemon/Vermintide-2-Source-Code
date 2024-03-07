@@ -16,6 +16,7 @@ local pig_data = {
 	exchange_order = 1,
 	flingable = false,
 	has_inventory = false,
+	height = 1,
 	hit_effect_template = "HitEffectsCritterPig",
 	hit_reaction = "ai_default",
 	ignore_activate_unit = true,
@@ -77,6 +78,7 @@ local pig_data = {
 		3,
 		3,
 		3,
+		3,
 	},
 	num_push_anims = {
 		push_backward = 4,
@@ -108,6 +110,7 @@ local rat_data = {
 	exchange_order = 1,
 	flingable = false,
 	has_inventory = false,
+	height = 0.4,
 	hit_effect_template = "HitEffectsCritterRat",
 	hit_reaction = "ai_default",
 	ignore_activate_unit = true,
@@ -169,6 +172,7 @@ local rat_data = {
 		1,
 		1,
 		1,
+		1,
 	},
 	num_push_anims = {
 		push_backward = 4,
@@ -209,6 +213,7 @@ local nurgling_data = {
 	exchange_order = 1,
 	flingable = false,
 	has_inventory = true,
+	height = 0.5,
 	hit_effect_template = "HitEffectsCritterRat",
 	hit_reaction = "ai_default",
 	ignore_activate_unit = true,
@@ -278,6 +283,7 @@ local nurgling_data = {
 	},
 	infighting = InfightingSettings.small,
 	max_health = {
+		1,
 		1,
 		1,
 		1,

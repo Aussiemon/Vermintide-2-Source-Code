@@ -1061,6 +1061,40 @@ StartGameStateSettingsOverview.play = function (self, t, vote_type, force_close_
 		}
 
 		self.parent:start_game(params)
+	elseif vote_type == "versus_quickplay" then
+		local player_hosted_enabled = self:using_player_hosted_search()
+		local search_for_dedicated_server, search_for_didicated_aws_server = self:using_dedicated_servers_search()
+		local params = {
+			difficulty = "versus_base",
+			join_method = "party",
+			matchmaking_type = "standard",
+			mechanism = "versus",
+			private_game = false,
+			quick_game = true,
+			player_hosted = player_hosted_enabled,
+			dedicated_servers_win = search_for_dedicated_server,
+			dedicated_servers_aws = search_for_didicated_aws_server,
+			request_type = vote_type,
+		}
+
+		self.parent:start_game(params)
+	elseif vote_type == "versus_custom" then
+		local is_private = is_offline or self:is_private_option_enabled()
+		local params = {
+			dedicated_servers_aws = false,
+			dedicated_servers_win = false,
+			difficulty = "versus_base",
+			join_method = "party",
+			matchmaking_type = "custom",
+			mechanism = "versus",
+			player_hosted = true,
+			quick_game = false,
+			mission_id = self:get_selected_level_id() or "any",
+			private_game = is_private,
+			request_type = vote_type,
+		}
+
+		self.parent:start_game(params)
 	elseif vote_type == "weave" then
 		local weave_name = self:get_selected_weave_id()
 		local weave_template = WeaveSettings.templates[weave_name]

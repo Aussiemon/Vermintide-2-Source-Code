@@ -1530,6 +1530,9 @@ weapon_template.wwise_dep_right_hand = {
 	"wwise/two_handed_swords",
 }
 
+local bastard_sword_vs = table.clone(weapon_template)
+
 return {
 	bastard_sword_template = weapon_template,
+	bastard_sword_template_vs = table.clone(bastard_sword_vs),
 }

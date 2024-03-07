@@ -1305,7 +1305,6 @@ weapon_template.actions = {
 		default = {
 			anim_end_event = "parry_finished",
 			anim_event = "parry_pose",
-			anim_event_3p = "parry_pose",
 			cooldown = 0.15,
 			hold_input = "action_two_hold",
 			kind = "block",

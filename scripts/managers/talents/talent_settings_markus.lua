@@ -1694,7 +1694,6 @@ TalentTrees.empire_soldier = {
 		},
 	},
 }
-Talents = Talents or {}
 Talents.empire_soldier = {
 	{
 		buffer = "server",
@@ -1727,7 +1726,7 @@ Talents.empire_soldier = {
 		description_values = {
 			{
 				value_type = "percent",
-				value = BuffTemplates.conqueror.buffs[1].multiplier,
+				value = BuffUtils.get_buff_template("conqueror", "adventure").buffs[1].multiplier,
 			},
 		},
 		buffs = {
@@ -1754,10 +1753,10 @@ Talents.empire_soldier = {
 		description_values = {
 			{
 				value_type = "percent",
-				value = BuffTemplates.defence_debuff_enemies.buffs[1].multiplier,
+				value = BuffUtils.get_buff_template("defence_debuff_enemies", "adventure").buffs[1].multiplier,
 			},
 			{
-				value = BuffTemplates.defence_debuff_enemies.buffs[1].duration,
+				value = BuffUtils.get_buff_template("defence_debuff_enemies", "adventure").buffs[1].duration,
 			},
 		},
 		buffs = {
@@ -1924,18 +1923,18 @@ Talents.empire_soldier = {
 		description_values = {
 			{
 				value_type = "percent",
-				value = BuffTemplates.tank_unbalance_buff.buffs[1].bonus,
+				value = BuffUtils.get_buff_template("tank_unbalance_buff", "adventure").buffs[1].bonus,
 			},
 			{
-				value = BuffTemplates.tank_unbalance_buff.buffs[1].duration,
-			},
-			{
-				value_type = "percent",
-				value = BuffTemplates.tank_unbalance.buffs[1].display_multiplier,
+				value = BuffUtils.get_buff_template("tank_unbalance_buff", "adventure").buffs[1].duration,
 			},
 			{
 				value_type = "percent",
-				value = BuffTemplates.tank_unbalance.buffs[1].max_display_multiplier,
+				value = BuffUtils.get_buff_template("tank_unbalance", "adventure").buffs[1].display_multiplier,
+			},
+			{
+				value_type = "percent",
+				value = BuffUtils.get_buff_template("tank_unbalance", "adventure").buffs[1].max_display_multiplier,
 			},
 		},
 		buffs = {
@@ -1951,11 +1950,11 @@ Talents.empire_soldier = {
 		description_values = {
 			{
 				value_type = "percent",
-				value = BuffTemplates.smiter_unbalance.buffs[1].display_multiplier,
+				value = BuffUtils.get_buff_template("smiter_unbalance", "adventure").buffs[1].display_multiplier,
 			},
 			{
 				value_type = "percent",
-				value = BuffTemplates.smiter_unbalance.buffs[1].max_display_multiplier,
+				value = BuffUtils.get_buff_template("smiter_unbalance", "adventure").buffs[1].max_display_multiplier,
 			},
 		},
 		buffs = {
@@ -1971,7 +1970,7 @@ Talents.empire_soldier = {
 		description_values = {
 			{
 				value_type = "percent",
-				value = BuffTemplates.power_level_unbalance.buffs[1].multiplier,
+				value = BuffUtils.get_buff_template("power_level_unbalance", "adventure").buffs[1].multiplier,
 			},
 		},
 		buffs = {
@@ -1986,7 +1985,7 @@ Talents.empire_soldier = {
 		num_ranks = 1,
 		description_values = {
 			{
-				value = BuffTemplates.reaper.buffs[1].max_targets,
+				value = BuffUtils.get_buff_template("reaper", "adventure").buffs[1].max_targets,
 			},
 		},
 		buffs = {
@@ -2013,7 +2012,7 @@ Talents.empire_soldier = {
 		description_values = {
 			{
 				value_type = "percent",
-				value = BuffTemplates.conqueror.buffs[1].multiplier,
+				value = BuffUtils.get_buff_template("conqueror", "adventure").buffs[1].multiplier,
 			},
 		},
 		buffs = {
@@ -2245,18 +2244,18 @@ Talents.empire_soldier = {
 		description_values = {
 			{
 				value_type = "percent",
-				value = BuffTemplates.tank_unbalance_buff.buffs[1].bonus,
+				value = BuffUtils.get_buff_template("tank_unbalance_buff", "adventure").buffs[1].bonus,
 			},
 			{
-				value = BuffTemplates.tank_unbalance_buff.buffs[1].duration,
-			},
-			{
-				value_type = "percent",
-				value = BuffTemplates.tank_unbalance.buffs[1].display_multiplier,
+				value = BuffUtils.get_buff_template("tank_unbalance_buff", "adventure").buffs[1].duration,
 			},
 			{
 				value_type = "percent",
-				value = BuffTemplates.tank_unbalance.buffs[1].max_display_multiplier,
+				value = BuffUtils.get_buff_template("tank_unbalance", "adventure").buffs[1].display_multiplier,
+			},
+			{
+				value_type = "percent",
+				value = BuffUtils.get_buff_template("tank_unbalance", "adventure").buffs[1].max_display_multiplier,
 			},
 		},
 		buffs = {
@@ -2272,11 +2271,11 @@ Talents.empire_soldier = {
 		description_values = {
 			{
 				value_type = "percent",
-				value = BuffTemplates.linesman_unbalance.buffs[1].display_multiplier,
+				value = BuffUtils.get_buff_template("linesman_unbalance", "adventure").buffs[1].display_multiplier,
 			},
 			{
 				value_type = "percent",
-				value = BuffTemplates.linesman_unbalance.buffs[1].max_display_multiplier,
+				value = BuffUtils.get_buff_template("linesman_unbalance", "adventure").buffs[1].max_display_multiplier,
 			},
 		},
 		buffs = {
@@ -2292,7 +2291,7 @@ Talents.empire_soldier = {
 		description_values = {
 			{
 				value_type = "percent",
-				value = BuffTemplates.power_level_unbalance.buffs[1].multiplier,
+				value = BuffUtils.get_buff_template("power_level_unbalance", "adventure").buffs[1].multiplier,
 			},
 		},
 		buffs = {
@@ -2307,7 +2306,7 @@ Talents.empire_soldier = {
 		num_ranks = 1,
 		description_values = {
 			{
-				value = BuffTemplates.reaper.buffs[1].max_targets,
+				value = BuffUtils.get_buff_template("reaper", "adventure").buffs[1].max_targets,
 			},
 		},
 		buffs = {
@@ -2323,7 +2322,7 @@ Talents.empire_soldier = {
 		description_values = {
 			{
 				value_type = "percent",
-				value = BuffTemplates.bloodlust.buffs[1].multiplier,
+				value = BuffUtils.get_buff_template("bloodlust", "adventure").buffs[1].multiplier,
 			},
 		},
 		buffs = {
@@ -2339,7 +2338,7 @@ Talents.empire_soldier = {
 		description_values = {
 			{
 				value_type = "percent",
-				value = BuffTemplates.conqueror.buffs[1].multiplier,
+				value = BuffUtils.get_buff_template("conqueror", "adventure").buffs[1].multiplier,
 			},
 		},
 		buffs = {
@@ -2528,11 +2527,11 @@ Talents.empire_soldier = {
 		description_values = {
 			{
 				value_type = "percent",
-				value = BuffTemplates.linesman_unbalance.buffs[1].display_multiplier,
+				value = BuffUtils.get_buff_template("linesman_unbalance", "adventure").buffs[1].display_multiplier,
 			},
 			{
 				value_type = "percent",
-				value = BuffTemplates.linesman_unbalance.buffs[1].max_display_multiplier,
+				value = BuffUtils.get_buff_template("linesman_unbalance", "adventure").buffs[1].max_display_multiplier,
 			},
 		},
 		buffs = {
@@ -2548,11 +2547,11 @@ Talents.empire_soldier = {
 		description_values = {
 			{
 				value_type = "percent",
-				value = BuffTemplates.smiter_unbalance.buffs[1].display_multiplier,
+				value = BuffUtils.get_buff_template("smiter_unbalance", "adventure").buffs[1].display_multiplier,
 			},
 			{
 				value_type = "percent",
-				value = BuffTemplates.smiter_unbalance.buffs[1].max_display_multiplier,
+				value = BuffUtils.get_buff_template("smiter_unbalance", "adventure").buffs[1].max_display_multiplier,
 			},
 		},
 		buffs = {
@@ -2568,7 +2567,7 @@ Talents.empire_soldier = {
 		description_values = {
 			{
 				value_type = "percent",
-				value = BuffTemplates.power_level_unbalance.buffs[1].multiplier,
+				value = BuffUtils.get_buff_template("power_level_unbalance", "adventure").buffs[1].multiplier,
 			},
 		},
 		buffs = {

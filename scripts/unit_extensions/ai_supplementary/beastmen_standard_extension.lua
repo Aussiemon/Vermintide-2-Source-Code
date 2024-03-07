@@ -147,7 +147,7 @@ BeastmenStandardExtension.on_death = function (self, killer_unit)
 
 	if Unit.alive(killer_unit) and killer_unit ~= self.unit then
 		local explosion_position = Unit.local_position(self.unit, 0)
-		local explosion_template = ExplosionTemplates.standard_death_explosion
+		local explosion_template = ExplosionUtils.get_template("standard_death_explosion")
 		local damage_source = "beastmen_standard_bearer"
 
 		DamageUtils.create_explosion(self.world, killer_unit or self.unit, explosion_position, Quaternion.identity(), explosion_template, 1, damage_source, self.is_server, false, self.unit, false)

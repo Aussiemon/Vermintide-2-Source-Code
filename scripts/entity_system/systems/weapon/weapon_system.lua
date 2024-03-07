@@ -1,6 +1,7 @@
 ﻿-- chunkname: @scripts/entity_system/systems/weapon/weapon_system.lua
 
 require("scripts/unit_extensions/weapons/weapon_unit_extension")
+require("scripts/unit_extensions/weapons/husk_weapon_unit_extension")
 require("scripts/unit_extensions/weapons/ai_weapon_unit_extension")
 require("scripts/unit_extensions/weapons/single_weapon_unit_extension")
 
@@ -23,6 +24,7 @@ local RPCS = {
 	"rpc_weapon_blood",
 	"rpc_play_fx",
 	"rpc_change_single_weapon_state",
+	"rpc_change_synced_weapon_state",
 	"rpc_summon_vortex",
 	"rpc_start_soul_rip",
 	"rpc_stop_soul_rip",
@@ -30,6 +32,7 @@ local RPCS = {
 }
 local extensions = {
 	"WeaponUnitExtension",
+	"HuskWeaponUnitExtension",
 	"AiWeaponUnitExtension",
 	"SingleWeaponUnitExtension",
 }
@@ -190,7 +193,7 @@ WeaponSystem.send_rpc_attack_hit = function (self, damage_source_id, attacker_un
 			local ai_system = Managers.state.entity:system("ai_system")
 			local attributes = ai_system:get_attributes(hit_unit)
 
-			if breed and breed.boss or attributes.grudge_marked then
+			if breed and breed.show_health_bar or attributes.grudge_marked then
 				Managers.state.event:trigger("boss_health_bar_set_prioritized_unit", hit_unit, "damage_done")
 			end
 		end
@@ -387,14 +390,24 @@ WeaponSystem.update_synced_geiser_particle_effects = function (self, context, t)
 	local world = self.world
 	local physics_world = World.get_data(world, "physics_world")
 
-	for unit, data in pairs(self._geiser_particle_effects) do
-		local unit_id = network_manager:unit_game_object_id(unit)
+	for unit_id, data in pairs(self._geiser_particle_effects) do
+		repeat
+			local unit = network_manager:game_object_or_level_unit(unit_id)
 
-		if not unit_id then
-			World.destroy_particles(world, data.geiser_effect)
+			if not ALIVE[unit] then
+				if data.geiser_effect then
+					World.destroy_particles(world, data.geiser_effect)
+				end
 
-			self._geiser_particle_effects[unit] = nil
-		else
+				self._geiser_particle_effects[unit] = nil
+
+				break
+			end
+
+			if not data.geiser_effect then
+				break
+			end
+
 			local charge_value = (t - data.time_to_shoot) / data.charge_time
 			local radius = math.min(data.max_radius, data.max_radius * charge_value + data.min_radius)
 			local player_position = GameSession.game_object_field(game, unit_id, "aim_position")
@@ -412,7 +425,7 @@ WeaponSystem.update_synced_geiser_particle_effects = function (self, context, t)
 
 			World.move_particles(world, data.geiser_effect, position)
 			World.set_particles_variable(world, data.geiser_effect, data.geiser_effect_variable, Vector3(radius * 2, radius * 2, 1))
-		end
+		until true
 	end
 end
 
@@ -519,6 +532,71 @@ WeaponSystem.change_single_weapon_state = function (self, owner_unit, state, exc
 	end
 end
 
+WeaponSystem.rpc_change_synced_weapon_state = function (self, channel_id, owner_unit_id, state_id)
+	local owner_unit = Managers.state.unit_storage:unit(owner_unit_id)
+
+	if not owner_unit then
+		return
+	end
+
+	local skip_sync = true
+	local state_name = NetworkLookup.weapon_synced_states[state_id]
+
+	if state_name == "n/a" then
+		state_name = nil
+	end
+
+	self:change_synced_weapon_state(owner_unit, state_name, skip_sync)
+
+	if self.is_server then
+		local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
+		self.network_transmit:send_rpc_clients_except("rpc_change_synced_weapon_state", peer_id, owner_unit_id, state_id)
+	end
+end
+
+WeaponSystem.change_synced_weapon_state = function (self, owner_unit, state_name, skip_sync)
+	local weapon_unit = self:_first_wielded_weapon_unit(owner_unit)
+	local weapon_extension = ScriptUnit.extension(weapon_unit, "weapon_system")
+
+	weapon_extension:change_synced_state(state_name)
+
+	if not skip_sync then
+		local owner_unit_id = Managers.state.unit_storage:go_id(owner_unit)
+		local state_id = NetworkLookup.weapon_synced_states[state_name or "n/a"]
+
+		if self.is_server then
+			self.network_transmit:send_rpc_clients("rpc_change_synced_weapon_state", owner_unit_id, state_id)
+		else
+			self.network_transmit:send_rpc_server("rpc_change_synced_weapon_state", owner_unit_id, state_id)
+		end
+	end
+end
+
+WeaponSystem.get_synced_weapon_state = function (self, owner_unit)
+	local weapon_unit = self:_first_wielded_weapon_unit(owner_unit)
+
+	if not weapon_unit then
+		return nil
+	end
+
+	local weapon_extension = ScriptUnit.extension(weapon_unit, "weapon_system")
+
+	if not weapon_extension.current_synced_state then
+		return nil
+	end
+
+	return weapon_extension:current_synced_state()
+end
+
+WeaponSystem._first_wielded_weapon_unit = function (self, owner_unit)
+	local inventory_extension = ScriptUnit.extension(owner_unit, "inventory_system")
+	local equipment = inventory_extension:equipment()
+	local weapon_unit = equipment.left_hand_wielded_unit or equipment.right_hand_wielded_unit or equipment.left_hand_wielded_unit_3p or equipment.right_hand_wielded_unit_3p
+
+	return weapon_unit
+end
+
 WeaponSystem.rpc_start_beam = function (self, channel_id, unit_id, beam_effect_id, beam_end_effect_id, range)
 	if not LEVEL_EDITOR_TEST then
 		local unit = self.unit_storage:unit(unit_id)
@@ -570,12 +648,30 @@ end
 
 WeaponSystem.rpc_start_geiser = function (self, channel_id, unit_id, geiser_effect_id, min_radius, max_radius, charge_time, angle)
 	if not LEVEL_EDITOR_TEST then
-		if self.is_server then
-			local side_manager = Managers.state.side
-			local peer_id = CHANNEL_TO_PEER_ID[channel_id]
-			local side = side_manager:get_side_from_player_unique_id(peer_id .. ":1")
+		local peer_id = CHANNEL_TO_PEER_ID[channel_id]
 
-			self.network_transmit:send_rpc_side_clients_except("rpc_start_geiser", side, true, peer_id, unit_id, geiser_effect_id, min_radius, max_radius, charge_time, angle)
+		if not peer_id then
+			return
+		end
+
+		local side_manager = Managers.state.side
+		local side = side_manager:get_side_from_player_unique_id(peer_id .. ":1")
+		local geiser_effect_name = NetworkLookup.effects[geiser_effect_id]
+		local geiser_data = {
+			side = side,
+			min_radius = min_radius,
+			max_radius = max_radius,
+			charge_time = charge_time,
+			angle = angle,
+			time_to_shoot = Managers.time:time("game"),
+			start_time = Managers.time:time("game"),
+			geiser_effect_name = geiser_effect_name,
+		}
+
+		self._geiser_particle_effects[unit_id] = geiser_data
+
+		if self.is_server then
+			self.network_transmit:send_rpc_side_clients_except("rpc_start_geiser", side, true, true, peer_id, unit_id, geiser_effect_id, min_radius, max_radius, charge_time, angle)
 
 			if DEDICATED_SERVER then
 				return
@@ -589,40 +685,28 @@ WeaponSystem.rpc_start_geiser = function (self, channel_id, unit_id, geiser_effe
 			end
 		end
 
-		local unit = self.unit_storage:unit(unit_id)
-		local geiser_effect_name = NetworkLookup.effects[geiser_effect_id]
 		local world = self.world
 
-		self._geiser_particle_effects[unit] = {
-			geiser_effect = World.create_particles(world, geiser_effect_name, Vector3.zero()),
-			geiser_effect_variable = World.find_particles_variable(world, geiser_effect_name, "charge_radius"),
-			geiser_effect_name = geiser_effect_name,
-			min_radius = min_radius,
-			max_radius = max_radius,
-			charge_time = charge_time,
-			angle = angle,
-			time_to_shoot = Managers.time:time("game"),
-			start_time = Managers.time:time("game"),
-		}
+		geiser_data.geiser_effect = World.create_particles(world, geiser_effect_name, Vector3.zero())
+		geiser_data.geiser_effect_variable = World.find_particles_variable(world, geiser_effect_name, "charge_radius")
 	end
 end
 
 WeaponSystem.rpc_end_geiser = function (self, channel_id, unit_id)
 	if not LEVEL_EDITOR_TEST then
 		local world = self.world
-		local unit = self.unit_storage:unit(unit_id)
-		local data = self._geiser_particle_effects[unit]
+		local data = self._geiser_particle_effects[unit_id]
 
-		if data then
+		if data and data.geiser_effect then
 			World.destroy_particles(world, data.geiser_effect)
+		end
 
-			self._geiser_particle_effects[unit] = nil
+		self._geiser_particle_effects[unit_id] = nil
 
-			if self.is_server then
-				local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+		if self.is_server then
+			local peer_id = CHANNEL_TO_PEER_ID[channel_id]
 
-				self.network_transmit:send_rpc_clients_except("rpc_end_geiser", peer_id, unit_id)
-			end
+			self.network_transmit:send_rpc_clients_except("rpc_end_geiser", peer_id, unit_id)
 		end
 	end
 end
@@ -683,7 +767,6 @@ end
 
 WeaponSystem.rpc_summon_vortex = function (self, channel_id, owner_unit_id, target_unit_id)
 	if not LEVEL_EDITOR_TEST then
-		local world = self.world
 		local unit = self.unit_storage:unit(owner_unit_id)
 		local target_unit = self.unit_storage:unit(target_unit_id)
 		local bb = BLACKBOARDS[target_unit]
@@ -697,11 +780,28 @@ WeaponSystem.rpc_summon_vortex = function (self, channel_id, owner_unit_id, targ
 				local storm_spawn_position = POSITION_LOOKUP[target_unit]
 
 				if storm_spawn_position then
-					Managers.state.unit_spawner:request_spawn_network_unit("vortex_unit", storm_spawn_position, Quaternion.identity(), unit, 0)
+					self:_summon_vortex(storm_spawn_position, target_unit, unit)
 				end
 			end
 		end
 	end
+end
+
+WeaponSystem._summon_vortex = function (self, position, target_unit, owner_unit)
+	local unit_name = "units/weapons/enemy/wpn_chaos_plague_vortex/wpn_chaos_plague_vortex"
+	local vortex_template_name = "spirit_storm"
+	local side_id = Managers.state.side.side_by_unit[owner_unit].side_id
+	local UNIT_TEMPLATE_NAME = "vortex_unit"
+	local extension_init_data = {
+		area_damage_system = {
+			vortex_template_name = vortex_template_name,
+			owner_unit = owner_unit,
+			side_id = side_id,
+			target_unit = target_unit,
+		},
+	}
+
+	Managers.state.unit_spawner:spawn_network_unit(unit_name, UNIT_TEMPLATE_NAME, extension_init_data, position, Quaternion.identity())
 end
 
 WeaponSystem.rpc_set_stormfiend_beam = function (self, channel_id, unit_id, arm_id, active)
@@ -779,8 +879,7 @@ WeaponSystem.hot_join_sync = function (self, peer_id)
 		RPC.rpc_start_beam(channel_id, unit_id, beam_effect_id, beam_end_effect_id, data.range)
 	end
 
-	for unit, data in pairs(self._geiser_particle_effects) do
-		local unit_id = Managers.state.network:unit_game_object_id(unit)
+	for unit_id, data in pairs(self._geiser_particle_effects) do
 		local geiser_effect_id = NetworkLookup.effects[data.geiser_effect_name]
 		local min_radius = data.min_radius
 		local max_radius = data.max_radius

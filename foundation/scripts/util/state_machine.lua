@@ -26,7 +26,7 @@ end
 StateMachine = class(StateMachine)
 
 local function debug_print(format, ...)
-	printf("[StateMachine] " .. format, ...)
+	cprintf("[StateMachine] " .. format, ...)
 end
 
 StateMachine.init = function (self, parent, start_state, params, profiling_debugging_enabled)

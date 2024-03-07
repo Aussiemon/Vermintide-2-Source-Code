@@ -114,6 +114,7 @@ EnvironmentalHazards = {
 				700,
 				700,
 				700,
+				300,
 			},
 		},
 	},

@@ -167,6 +167,7 @@ PassiveAbilityWarriorPriest.modify_resource = function (self, amount, ignore_dif
 				1,
 				1,
 				0.7,
+				1.5,
 			}
 
 			amount = amount * difficulty_tweak[self._difficulty_rank]

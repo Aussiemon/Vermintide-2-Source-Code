@@ -5,6 +5,9 @@ local settings = DLCSettings.bless
 settings.career_setting_files = {
 	"scripts/settings/dlcs/bless/career_settings_bless",
 }
+settings.player_breeds = {
+	"scripts/settings/dlcs/bless/player_breeds_bless",
+}
 settings.career_ability_settings = {
 	"scripts/settings/dlcs/bless/career_ability_settings_bless",
 }

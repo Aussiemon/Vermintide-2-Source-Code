@@ -217,7 +217,7 @@ BTClanRatFollowAction._update_walking = function (self, unit, blackboard, dt, t)
 	local leave_walk_dist_sq = leave_walk_distance and leave_walk_distance * leave_walk_distance or LEAVE_WALK_DISTANCE_SQ
 	local should_walk = self:_should_walk(destination, self_pos, leave_walk_dist_sq, rotation)
 	local run = not use_slow_approach and not should_walk
-	local target_moving_fast = not use_slow_approach and velocity_away and velocity_away > WALK_MAX_TARGET_VELOCITY
+	local target_moving_fast = not use_slow_approach and velocity_away and velocity_away > WALK_MAX_TARGET_VELOCITY and not action_data.ignore_target_velocity
 	local is_tired = blackboard.action.custom_is_tired_function and blackboard.action.custom_is_tired_function(unit, blackboard)
 	local run_anim = is_tired and blackboard.action.alt_tired_anim or "move_fwd"
 
