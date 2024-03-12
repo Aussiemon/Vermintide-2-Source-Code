@@ -220,7 +220,7 @@ StartGameWindowVersusQuickplay._can_play = function (self)
 		is_party_leader = Managers.party:is_leader(local_player_peer_id) or self._ingame_ui_context.is_server
 	end
 
-	local can_play = (is_player_alone_in_party or is_party_leader) and not script_data.eac_untrusted
+	local can_play = (is_player_alone_in_party or is_party_leader) and not script_data["eac-untrusted"]
 
 	return can_play
 end

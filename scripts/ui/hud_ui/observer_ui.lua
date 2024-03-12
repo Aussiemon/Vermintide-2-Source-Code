@@ -56,6 +56,10 @@ ObserverUI.handle_observer_player_changed = function (self)
 	local player = self.player_manager:player_from_peer_id(peer_id)
 	local observed_unit = player:observed_unit()
 
+	if not ALIVE[observed_unit] then
+		observed_unit = player.player_unit
+	end
+
 	if Unit.alive(observed_unit) then
 		local current_observed_unit = self._observed_unit
 

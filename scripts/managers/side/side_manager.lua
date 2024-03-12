@@ -187,10 +187,6 @@ SideManager.add_player_unit_to_side = function (self, player_unit, side_id)
 	end
 
 	self._player_units_lookup[player_unit] = true
-
-	local player = Managers.player:owner(player_unit)
-
-	Managers.state.event:trigger("on_player_joined_side", player:unique_id(), player:local_player_id(), side_id)
 end
 
 SideManager.remove_player_unit_from_side = function (self, player_unit)

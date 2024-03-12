@@ -46,7 +46,6 @@ local EGG_UNIT_TEMPLATE = "egg_of_tzeentch_unit"
 local EGG_UNIT_NAME = "units/props/egg_of_tzeentch"
 local EGG_EXTENSION_INIT_DATA = {
 	buff_system = {
-		breed = "n/a",
 		initial_buff_names = {
 			"objective_unit",
 			"health_bar",

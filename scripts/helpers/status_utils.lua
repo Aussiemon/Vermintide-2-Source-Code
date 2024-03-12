@@ -269,6 +269,10 @@ end
 StatusUtils.set_in_vortex_network = function (affected_unit, in_vortex, vortex_unit)
 	fassert(Managers.player.is_server or LEVEL_EDITOR_TEST)
 
+	if not ALIVE[affected_unit] then
+		return false
+	end
+
 	local status_extension = ScriptUnit.extension(affected_unit, "status_system")
 
 	status_extension:set_in_vortex(in_vortex, vortex_unit)
@@ -280,6 +284,8 @@ StatusUtils.set_in_vortex_network = function (affected_unit, in_vortex, vortex_u
 
 		network_manager.network_transmit:send_rpc_clients("rpc_status_change_bool", NetworkLookup.statuses.in_vortex, in_vortex, go_id, vortex_go_id)
 	end
+
+	return true
 end
 
 StatusUtils.set_near_vortex_network = function (affected_unit, near_vortex, vortex_unit)

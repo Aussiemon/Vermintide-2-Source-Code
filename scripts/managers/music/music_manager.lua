@@ -915,7 +915,7 @@ MusicManager._update_versus_game_state = function (self, music_player, dt, t)
 
 	if side_close_to_winning then
 		local state
-		local side_name = side and side:name()
+		local side_name = self:_get_side_name()
 
 		state = side_name == side_close_to_winning and "close_to_win" or "time_is_running_out"
 

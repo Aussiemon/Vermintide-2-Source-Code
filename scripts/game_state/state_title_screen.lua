@@ -37,11 +37,13 @@ StateTitleScreen.on_enter = function (self, params)
 
 		Managers.mechanism = GameMechanismManager:new()
 
-		if rawget(_G, "LobbyInternal") and LobbyInternal.network_initialized() and LobbyInternal.client and (IS_PS4 or Managers.account:offline_mode()) then
+		if rawget(_G, "LobbyInternal") and LobbyInternal.network_initialized() and (IS_PS4 or Managers.account:offline_mode()) then
 			if Managers.party:has_party_lobby() then
 				local lobby = Managers.party:steal_lobby()
 
-				LobbyInternal.leave_lobby(lobby)
+				if type(lobby) ~= "table" then
+					LobbyInternal.leave_lobby(lobby)
+				end
 			end
 
 			LobbyInternal.shutdown_client()
@@ -420,7 +422,9 @@ StateTitleScreen.on_exit = function (self, application_shutdown)
 		if Managers.party:has_party_lobby() then
 			local lobby = Managers.party:steal_lobby()
 
-			LobbyInternal.leave_lobby(lobby)
+			if type(lobby) ~= "table" then
+				LobbyInternal.leave_lobby(lobby)
+			end
 		end
 
 		LobbyInternal.shutdown_client()

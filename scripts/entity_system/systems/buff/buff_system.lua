@@ -1049,24 +1049,36 @@ BuffSystem._hot_join_sync_synced_buffs = function (self, peer_id)
 			for buff_id, sync_type in pairs(buff_to_sync_type) do
 				if sync_type == BuffSyncType.All then
 					local buff = extension:get_buff_by_id(buff_id)
-					local template_name_id = NetworkLookup.buff_templates[buff.buff_template_name]
-					local server_sync_id = id_to_server_sync[buff_id]
 
-					table.clear(buff_params)
+					if buff then
+						local template_name_id = NetworkLookup.buff_templates[buff.buff_template_name]
+						local server_sync_id = id_to_server_sync[buff_id]
 
-					buff_params.external_optional_bonus = buff.bonus
-					buff_params.external_optional_multiplier = buff.multiplier
-					buff_params.external_optional_value = buff.value
-					buff_params.external_optional_proc_chance = buff.proc_chance
-					buff_params.external_optional_range = buff.range
-					buff_params.damage_source = buff.damage_source
-					buff_params.power_level = buff.power_level
-					buff_params.attacker_unit = buff.attacker_unit
-					buff_params.source_attacker_unit = buff.source_attacker_unit
-					buff_params._hot_join_sync_buff_age = buff.duration and math.min(t - buff.start_time, 6550)
+						table.clear(buff_params)
 
-					self:_pack_buff_params(buff_params, packed_buff_param_ids, packed_buff_param_vals, unit)
-					network_transmit:send_rpc("rpc_add_buff_synced_relay_params", peer_id, unit_id, template_name_id, server_sync_id, sync_type_id, packed_buff_param_ids, packed_buff_param_vals)
+						buff_params.external_optional_bonus = buff.bonus
+						buff_params.external_optional_multiplier = buff.multiplier
+						buff_params.external_optional_value = buff.value
+						buff_params.external_optional_proc_chance = buff.proc_chance
+						buff_params.external_optional_range = buff.range
+						buff_params.damage_source = buff.damage_source
+						buff_params.power_level = buff.power_level
+						buff_params.attacker_unit = buff.attacker_unit
+						buff_params.source_attacker_unit = buff.source_attacker_unit
+						buff_params._hot_join_sync_buff_age = buff.duration and math.min(t - buff.start_time, 6550)
+
+						self:_pack_buff_params(buff_params, packed_buff_param_ids, packed_buff_param_vals, unit)
+						network_transmit:send_rpc("rpc_add_buff_synced_relay_params", peer_id, unit_id, template_name_id, server_sync_id, sync_type_id, packed_buff_param_ids, packed_buff_param_vals)
+					else
+						if extension.debug_buff_names then
+							local buff_name = extension.debug_buff_names[buff_id]
+
+							print("Server would have crashed buff name ", buff_name)
+							Crashify.print_exception("[BuffSystem]", "buff_id points to missing buff: %s", buff_name)
+						end
+
+						buff_to_sync_type[buff_id] = nil
+					end
 				end
 			end
 		end

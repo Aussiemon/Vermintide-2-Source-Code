@@ -36,7 +36,7 @@ NetworkClient.init = function (self, server_peer_id, wanted_profile_index, wante
 	if self.wanted_profile_index then
 		local profile = SPProfiles[self.wanted_profile_index]
 
-		if profile.affiliation == "dark_pact" then
+		if profile and profile.affiliation == "dark_pact" then
 			self.wanted_party_index = 2
 		end
 	end

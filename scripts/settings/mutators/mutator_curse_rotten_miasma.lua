@@ -93,7 +93,6 @@ local function setup_rotten_miasma(buff_name)
 
 	local extension_init_data = {
 		buff_system = {
-			breed = "n/a",
 			initial_buff_names = {
 				buff_name,
 			},

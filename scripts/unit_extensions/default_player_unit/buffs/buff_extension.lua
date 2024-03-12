@@ -93,6 +93,12 @@ BuffExtension.extensions_ready = function (self, world, unit)
 	end
 end
 
+BuffExtension.game_object_initialized = function (self, unit, go_id)
+	if self._breed and self._breed.is_player then
+		self.debug_buff_names = {}
+	end
+end
+
 BuffExtension.destroy = function (self)
 	self:clear()
 end
@@ -161,6 +167,10 @@ BuffExtension.add_buff = function (self, template_name, params)
 	local id = self:claim_buff_id()
 	local world = self.world
 	local is_server = self.is_server
+
+	if self.debug_buff_names then
+		self.debug_buff_names[id] = buff_template.buffs and buff_template.buffs[1] and buff_template.buffs[1].name
+	end
 
 	if self._num_buffs == 0 then
 		Managers.state.entity:system("buff_system"):set_buff_ext_active(unit, true)

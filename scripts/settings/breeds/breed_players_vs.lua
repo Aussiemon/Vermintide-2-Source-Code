@@ -223,18 +223,18 @@ vs_warpfire_thrower.shoot_warpfire_wind_up_movement_speed = {
 vs_warpfire_thrower.shoot_warpfire_movement_speed_mod = 2
 vs_warpfire_thrower.shoot_warpfire_max_flame_time = 4
 vs_warpfire_thrower.shoot_warpfire_attack_range = 10
-vs_warpfire_thrower.shoot_warpfire_close_attack_range = 5
-vs_warpfire_thrower.shoot_warpfire_close_attack_cooldown = 0.35
+vs_warpfire_thrower.shoot_warpfire_close_attack_range = 7
+vs_warpfire_thrower.shoot_warpfire_close_attack_cooldown = 0.2
 vs_warpfire_thrower.shoot_warpfire_close_attack_hit_radius = 1.5
 vs_warpfire_thrower.shoot_warpfire_close_attack_dot = 0.9
 vs_warpfire_thrower.shoot_warpfire_minimum_forced_cooldown = 0.6
 vs_warpfire_thrower.shoot_warpfire_long_attack_damage = {
-	2,
-	2,
-	2,
-	2,
-	2,
-	2,
+	2.5,
+	2.5,
+	2.5,
+	2.5,
+	2.5,
+	2.5,
 }
 vs_warpfire_thrower.stagger_duration = {
 	1,

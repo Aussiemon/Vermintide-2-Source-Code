@@ -204,27 +204,30 @@ end
 SummonedVortexExtension.destroy = function (self)
 	local unit = self.unit
 	local target_unit = self._target_unit
-	local blackboard = BLACKBOARDS[target_unit]
 
-	if blackboard then
-		if self._target_is_player then
-			StatusUtils.set_in_vortex_network(target_unit, false, nil)
-		else
-			local velocity = Vector3(0, 0, -6)
-			local locomotion_extension = blackboard.locomotion_extension
+	if HEALTH_ALIVE[target_unit] then
+		local blackboard = BLACKBOARDS[target_unit]
 
-			if locomotion_extension then
-				locomotion_extension:set_wanted_velocity(velocity)
-				locomotion_extension:set_affected_by_gravity(true)
-				locomotion_extension:set_movement_type("constrained_by_mover")
+		if blackboard then
+			if self._target_is_player then
+				StatusUtils.set_in_vortex_network(target_unit, false, nil)
+			else
+				local velocity = Vector3(0, 0, -6)
+				local locomotion_extension = blackboard.locomotion_extension
+
+				if locomotion_extension then
+					locomotion_extension:set_wanted_velocity(velocity)
+					locomotion_extension:set_affected_by_gravity(true)
+					locomotion_extension:set_movement_type("constrained_by_mover")
+				end
+
+				local ejected_from_vortex = blackboard.ejected_from_vortex or Vector3Box()
+
+				ejected_from_vortex:store(velocity)
+
+				blackboard.ejected_from_vortex = ejected_from_vortex
+				blackboard.in_vortex_state = "ejected_from_vortex"
 			end
-
-			local ejected_from_vortex = blackboard.ejected_from_vortex or Vector3Box()
-
-			ejected_from_vortex:store(velocity)
-
-			blackboard.ejected_from_vortex = ejected_from_vortex
-			blackboard.in_vortex_state = "ejected_from_vortex"
 		end
 	end
 
@@ -448,8 +451,10 @@ SummonedVortexExtension._update_attract_outside_target = function (self, vortex_
 	else
 		self._target_is_caught = true
 
+		local set_in_vortex_network_success = true
+
 		if self._target_is_player then
-			StatusUtils.set_in_vortex_network(target_unit, true, self.unit)
+			set_in_vortex_network_success = StatusUtils.set_in_vortex_network(target_unit, true, self.unit)
 		else
 			target_blackboard.in_vortex_state = "in_vortex_init"
 			target_blackboard.in_vortex = true
@@ -481,7 +486,9 @@ SummonedVortexExtension._update_attract_outside_target = function (self, vortex_
 			target_blackboard.eject_height = ConflictUtils.random_interval(vortex_template.ai_eject_height)
 		end
 
-		Managers.state.achievement:trigger_event("vortex_caught_unit", self._owner_unit, target_unit)
+		if not self._target_is_player or set_in_vortex_network_success then
+			Managers.state.achievement:trigger_event("vortex_caught_unit", self._owner_unit, target_unit)
+		end
 	end
 end
 

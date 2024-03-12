@@ -898,7 +898,9 @@ UnitFrameUI.show_respawn_countdown = function (self, player, is_local_player, sp
 	local widget_style = widget.style
 	local style_n = widget_style.respawn_countdown_text
 
-	style_n.text_color[1] = 255
+	if style_n then
+		style_n.text_color[1] = 255
+	end
 end
 
 UnitFrameUI.update_respawn_countdown = function (self, dt, t)
@@ -911,6 +913,7 @@ UnitFrameUI.update_respawn_countdown = function (self, dt, t)
 	local widget = player_frame and self:_widget_by_name("respawn_dynamic") or self:_widget_by_name("default_dynamic")
 	local widget_content = widget.content
 	local state = widget_content.state
+	local fallback_fadeout_time = 0.66
 
 	if state == "countdown" then
 		local respawn_delta = widget_content.respawn_timer - Managers.time:time("game")
@@ -918,7 +921,7 @@ UnitFrameUI.update_respawn_countdown = function (self, dt, t)
 		if respawn_delta <= 0 then
 			local total_fadeout_time = widget_content.total_fadeout_time
 
-			widget_content.fadeout_time = total_fadeout_time
+			widget_content.fadeout_time = total_fadeout_time or fallback_fadeout_time
 			state = "fadeout"
 			respawn_delta = 0
 		end
@@ -926,8 +929,8 @@ UnitFrameUI.update_respawn_countdown = function (self, dt, t)
 		widget_content.respawn_countdown_text = string.format("%d", math.abs(respawn_delta))
 	elseif state == "fadeout" then
 		local widget_style = widget.style
-		local fadeout_time = (widget_content.fadeout_time or 0) - dt
-		local normalized_alpha = math.max(fadeout_time, 0) / widget_content.total_fadeout_time
+		local fadeout_time = (widget_content.fadeout_time or fallback_fadeout_time) - dt
+		local normalized_alpha = math.max(fadeout_time, 0) / (widget_content.total_fadeout_time or fallback_fadeout_time)
 		local alpha = normalized_alpha * 255
 		local style_n = widget_style.respawn_countdown_text
 

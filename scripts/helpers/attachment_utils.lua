@@ -74,6 +74,12 @@ AttachmentUtils.link = function (world, source, target, node_linking)
 end
 
 AttachmentUtils.hot_join_sync = function (peer_id, unit, slots, synced_buffs)
+	local is_marked_for_deletion = Managers.state.unit_spawner:is_marked_for_deletion(unit)
+
+	if is_marked_for_deletion then
+		return
+	end
+
 	local unit_go_id = Managers.state.unit_storage:go_id(unit)
 
 	for slot_name, slot_data in pairs(slots) do

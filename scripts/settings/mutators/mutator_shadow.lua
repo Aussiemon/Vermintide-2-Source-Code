@@ -200,6 +200,10 @@ return {
 		local local_player = player_manager:local_player()
 		local observed_unit = local_player:observed_unit()
 
+		if not ALIVE[observed_unit] then
+			observed_unit = local_player.player_unit
+		end
+
 		for i = 1, enemies_per_frame do
 			faded_current_index = faded_current_index + 1
 

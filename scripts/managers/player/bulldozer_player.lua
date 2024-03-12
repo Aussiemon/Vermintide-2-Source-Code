@@ -289,6 +289,7 @@ BulldozerPlayer.spawn = function (self, optional_position, optional_rotation, is
 		buff_system = {
 			is_husk = false,
 			initial_buff_names = initial_buff_names,
+			breed = breed,
 		},
 		statistics_system = {
 			template = "player",

@@ -38,7 +38,6 @@ return {
 		data.unit_extension_template = "buffed_timed_explosion_unit"
 		data.extension_init_data = {
 			buff_system = {
-				breed = "n/a",
 				initial_buff_names = {
 					buff_name,
 				},

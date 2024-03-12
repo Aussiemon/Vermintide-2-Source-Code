@@ -399,7 +399,7 @@ WeaponSystem.update_synced_geiser_particle_effects = function (self, context, t)
 					World.destroy_particles(world, data.geiser_effect)
 				end
 
-				self._geiser_particle_effects[unit] = nil
+				self._geiser_particle_effects[unit_id] = nil
 
 				break
 			end
@@ -517,9 +517,12 @@ WeaponSystem.change_single_weapon_state = function (self, owner_unit, state, exc
 
 	if blackboard then
 		local weapon_unit = blackboard.weapon_unit
-		local single_weapon_extension = ScriptUnit.extension(weapon_unit, "weapon_system")
 
-		single_weapon_extension:change_state(state)
+		if weapon_unit then
+			local single_weapon_extension = ScriptUnit.extension(weapon_unit, "weapon_system")
+
+			single_weapon_extension:change_state(state)
+		end
 	end
 
 	local owner_unit_id = Managers.state.unit_storage:go_id(owner_unit)

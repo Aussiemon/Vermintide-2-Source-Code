@@ -257,7 +257,6 @@ InteractionDefinitions.deus_setup_rally_flag = {
 
 				local extension_init_data = {
 					buff_system = {
-						breed = "n/a",
 						initial_buff_names = {
 							"deus_rally_flag_aoe_buff",
 						},

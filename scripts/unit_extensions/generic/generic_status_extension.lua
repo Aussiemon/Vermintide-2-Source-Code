@@ -2346,6 +2346,12 @@ GenericStatusExtension.max_wounds_network_safe = function (self)
 end
 
 GenericStatusExtension.hot_join_sync = function (self, sender)
+	local is_marked_for_deletion = Managers.state.unit_spawner:is_marked_for_deletion(self.unit)
+
+	if is_marked_for_deletion then
+		return
+	end
+
 	local lookup = NetworkLookup.statuses
 	local network_manager = Managers.state.network
 	local self_game_object_id = network_manager:unit_game_object_id(self.unit)

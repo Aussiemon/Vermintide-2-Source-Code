@@ -2077,11 +2077,13 @@ StateLoading._destroy_network = function (self, application_shutdown)
 		Managers.account:set_current_lobby(nil)
 	end
 
-	if rawget(_G, "LobbyInternal") and LobbyInternal.client then
+	if rawget(_G, "LobbyInternal") then
 		if Managers.party:has_party_lobby() then
 			local lobby = Managers.party:steal_lobby()
 
-			LobbyInternal.leave_lobby(lobby)
+			if type(lobby) ~= "table" then
+				LobbyInternal.leave_lobby(lobby)
+			end
 		end
 
 		LobbyInternal.shutdown_client()

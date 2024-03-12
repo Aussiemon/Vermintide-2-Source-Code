@@ -90,7 +90,7 @@ CareerAbilityBWNecromancerCommand._update_outlines = function (self, t)
 	if data then
 		local status_extension = ScriptUnit.has_extension(data.unit, "status_system")
 
-		if not HEALTH_ALIVE[data.unit] or data.command_type == CommandSyncTypes.player and not status_extension:is_knocked_down() then
+		if not HEALTH_ALIVE[data.unit] or status_extension and status_extension:is_invisible() or data.command_type == CommandSyncTypes.player and not status_extension:is_knocked_down() then
 			if ALIVE[data.unit] then
 				data.extension:remove_outline(data.id)
 			end
@@ -232,6 +232,19 @@ CareerAbilityBWNecromancerCommand.command_attack_enemy = function (self, target_
 		local target_unit_id = self._unit_storage:go_id(target_unit)
 
 		self._network_transmit:send_rpc_server("rpc_necromancer_command_charge", target_unit_id)
+	end
+end
+
+CareerAbilityBWNecromancerCommand.any_skeleton_targeting_enemy = function (self, target_enemy)
+	local commander_extension = self._commander_extension
+	local units = commander_extension:get_controlled_units()
+
+	for controlled_unit in pairs(units) do
+		local blackboard = BLACKBOARDS[controlled_unit]
+
+		if blackboard.commander_target == target_enemy or blackboard.target_unit == target_enemy then
+			return true
+		end
 	end
 end
 

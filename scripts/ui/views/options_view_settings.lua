@@ -1820,6 +1820,14 @@ local keybind_settings_definition = {
 		},
 	},
 	{
+		keybind_description = "action_ghost_mode_exit",
+		keymappings_key = "PlayerControllerKeymaps",
+		widget_type = "keybind",
+		actions = {
+			"ghost_mode_exit",
+		},
+	},
+	{
 		size_y = 30,
 		widget_type = "empty",
 	},

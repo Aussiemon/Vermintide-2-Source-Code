@@ -324,10 +324,12 @@ StateTitleScreenInitNetwork.on_exit = function (self, application_shutdown)
 	end
 
 	if application_shutdown then
-		if Managers.party:has_party_lobby() and LobbyInternal.client then
+		if Managers.party:has_party_lobby() then
 			local lobby = Managers.party:steal_lobby()
 
-			LobbyInternal.leave_lobby(lobby)
+			if type(lobby) ~= "table" then
+				LobbyInternal.leave_lobby(lobby)
+			end
 		end
 
 		if self._lobby_finder then

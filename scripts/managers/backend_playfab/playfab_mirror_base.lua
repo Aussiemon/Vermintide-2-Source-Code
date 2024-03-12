@@ -2203,7 +2203,11 @@ PlayFabMirrorBase.commit = function (self, skip_queue, commit_complete_callback)
 			id = self:_commit_internal(nil, queued_commit.commit_complete_callbacks)
 		end
 	elseif not queued_commit.active then
-		id = self:_queue_commit(commit_complete_callback)
+		if commit_complete_callback then
+			add_callback(queued_commit, commit_complete_callback)
+		end
+
+		id = self:_queue_commit(commit_complete_callback, queued_commit.commit_complete_callbacks)
 	elseif commit_complete_callback then
 		add_callback(queued_commit, commit_complete_callback)
 	end
@@ -2367,10 +2371,14 @@ PlayFabMirrorBase.update_read_only_data_request_cb = function (self, commit_id, 
 		self:set_read_only_data(key, number_value or new_value, true)
 	end
 
-	self._characters_data_mirror = cjson.decode(self._read_only_data_mirror[self._characters_data_key])
+	local new_characters_data_string = hero_attributes[self._characters_data_key]
 
-	for character_name, character_data in pairs(self._characters_data_mirror) do
-		table.merge_recursive(self._career_data_mirror, character_data.careers)
+	if new_characters_data_string then
+		self._characters_data_mirror = cjson.decode(new_characters_data_string)
+
+		for character_name, character_data in pairs(self._characters_data_mirror) do
+			table.merge_recursive(self._career_data_mirror, character_data.careers)
+		end
 	end
 
 	commit.wait_for_read_only_data = false

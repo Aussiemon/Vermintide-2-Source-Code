@@ -265,6 +265,10 @@ ChatManager.remove_message_target = function (self, message_target)
 		self.message_targets_lut[message_target] = nil
 		self.message_targets[target_index] = nil
 
+		if not self.message_targets[self.current_message_target_index] then
+			self.current_message_target_index = 1
+		end
+
 		return true
 	end
 end

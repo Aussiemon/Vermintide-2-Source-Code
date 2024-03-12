@@ -458,6 +458,12 @@ end
 local temp_table = {}
 
 GearUtils.hot_join_sync = function (peer_id, unit, equipment, additional_items)
+	local is_marked_for_deletion = Managers.state.unit_spawner:is_marked_for_deletion(unit)
+
+	if is_marked_for_deletion then
+		return
+	end
+
 	local slots = equipment.slots
 	local unit_object_id = Managers.state.unit_storage:go_id(unit)
 	local channel_id = PEER_ID_TO_CHANNEL[peer_id]

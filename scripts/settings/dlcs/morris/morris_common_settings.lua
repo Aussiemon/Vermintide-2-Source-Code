@@ -562,7 +562,6 @@ settings.game_object_extractors = {
 
 		local extension_init_data = {
 			buff_system = {
-				breed = "n/a",
 				initial_buff_names = initial_buff_names,
 			},
 		}
@@ -624,7 +623,6 @@ settings.game_object_extractors = {
 				is_husk = true,
 			},
 			buff_system = {
-				breed = "n/a",
 				initial_buff_names = initial_buff_names,
 			},
 			timed_spawner_system = {
@@ -657,7 +655,6 @@ settings.game_object_extractors = {
 				explosion_template_name = NetworkLookup.explosion_templates[explosion_template_name],
 			},
 			buff_system = {
-				breed = "n/a",
 				initial_buff_names = initial_buff_names,
 			},
 		}

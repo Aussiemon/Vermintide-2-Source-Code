@@ -174,6 +174,13 @@ if has_steam and not disable_voip or DEDICATED_SERVER then
 			end
 
 			local room_id = voip_rooms[party_id]
+
+			if not room_id then
+				printf("[VOIP] no voip room_ids when trying to adding peer %s ", peer_id)
+
+				return
+			end
+
 			local room_members = SteamVoipRoom.members(room_id)
 			local member_is_in_room = table.find(room_members, peer_id)
 

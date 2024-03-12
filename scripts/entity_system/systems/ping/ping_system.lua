@@ -140,7 +140,9 @@ PingSystem._update_client = function (self, context, t)
 	local pinged_units = self._pinged_units
 
 	for pinger_unit, data in pairs(pinged_units) do
-		if not ALIVE[pinger_unit] then
+		local remove = not ALIVE[pinger_unit] or not data.position and not ALIVE[data.pinged_unit]
+
+		if remove then
 			self:_remove_ping(pinger_unit)
 		end
 	end

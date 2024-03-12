@@ -441,7 +441,7 @@ CareerSettings.vs_warpfire_thrower = {
 	passive_ability = PassiveAbilitySettings.vs_warpfire_thrower,
 	attributes = {
 		base_critical_strike_chance = 0.05,
-		max_hp = 25,
+		max_hp = 40,
 	},
 	video = {
 		material_name = "dr_slayer",

@@ -349,8 +349,14 @@ PlayerHuskLocomotionExtension.rpc_animation_set_variable = function (self, index
 end
 
 PlayerHuskLocomotionExtension.hot_join_sync = function (self, sender)
-	local player_object_id = self.id
 	local unit = self.unit
+	local is_marked_for_deletion = Managers.state.unit_spawner:is_marked_for_deletion(unit)
+
+	if is_marked_for_deletion then
+		return
+	end
+
+	local player_object_id = self.id
 	local channel_id = PEER_ID_TO_CHANNEL[sender]
 
 	RPC.rpc_sync_anim_state_3(channel_id, player_object_id, Unit.animation_get_state(unit))

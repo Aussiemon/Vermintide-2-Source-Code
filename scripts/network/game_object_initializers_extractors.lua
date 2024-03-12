@@ -2158,6 +2158,7 @@ go_type_table = {
 				buff_system = {
 					is_husk = true,
 					initial_buff_names = initial_buff_names,
+					breed = breed,
 				},
 				statistics_system = {
 					template = "player",
@@ -2313,6 +2314,7 @@ go_type_table = {
 				},
 				buff_system = {
 					is_husk = true,
+					breed = breed,
 				},
 				statistics_system = {
 					template = "player",

@@ -1279,7 +1279,9 @@ EnemyPackageLoader._send_rpc_to_server = function (self, rpc_name, ...)
 	local rpc = RPC[rpc_name]
 	local channel_id = PEER_ID_TO_CHANNEL[self._server_peer_id]
 
-	rpc(channel_id, self._unique_connection_key, ...)
+	if channel_id then
+		rpc(channel_id, self._unique_connection_key, ...)
+	end
 end
 
 EnemyPackageLoader._send_rpc_to_clients = function (self, rpc_name, ...)

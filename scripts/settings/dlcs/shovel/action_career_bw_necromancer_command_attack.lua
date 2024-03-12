@@ -37,7 +37,12 @@ ActionCareerBWNecromancerCommandAttack.pre_calculate_target = function (owner_un
 	local num_hit_player_units = PlayerUtils.broadphase_query(own_position, range, HIT_PLAYER_UNITS, broadphase_categories)
 
 	for i = 1, num_hit_player_units do
-		ALL_HIT_UNITS[i + num_hit_ai_units] = HIT_PLAYER_UNITS[i]
+		local status_extension = ScriptUnit.has_extension(HIT_PLAYER_UNITS[i], "status_system")
+		local is_invisible = status_extension and status_extension:is_invisible()
+
+		if not is_invisible then
+			ALL_HIT_UNITS[#ALL_HIT_UNITS + 1] = HIT_PLAYER_UNITS[i]
+		end
 	end
 
 	local boss_weight = 1

@@ -40,6 +40,12 @@ PlayerHuskWeaveLoadoutExtension._apply_buffs = function (self, buffs)
 end
 
 PlayerHuskWeaveLoadoutExtension.hot_join_sync = function (self, sender)
+	local is_marked_for_deletion = Managers.state.unit_spawner:is_marked_for_deletion(self._unit)
+
+	if is_marked_for_deletion then
+		return
+	end
+
 	local rpc_params = self._synced_buff_params
 
 	if rpc_params then

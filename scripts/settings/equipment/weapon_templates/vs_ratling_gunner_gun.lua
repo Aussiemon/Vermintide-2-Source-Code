@@ -206,7 +206,6 @@ weapon_template.actions = {
 			end,
 		},
 	},
-	action_inspect = ActionTemplates.action_inspect,
 	action_wield = ActionTemplates.wield,
 }
 weapon_template.left_hand_unit = "units/weapons/player/dark_pact/wpn_skaven_warpfiregun/wpn_skaven_warpfiregun"

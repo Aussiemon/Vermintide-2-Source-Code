@@ -8,7 +8,7 @@ PlayerUnitGhostModeExtension.init = function (self, extension_init_context, unit
 	self._network_transmit = extension_init_context.network_transmit
 	self._is_server = self._network_transmit.is_server
 	self._unit_storage = extension_init_context.unit_storage
-	self._teleport_unit_index = 0
+	self._teleport_unit_index = 1
 
 	local side_id = extension_init_data.side_id
 
@@ -187,9 +187,7 @@ PlayerUnitGhostModeExtension._teleport_to_next_enemy = function (self)
 		return
 	end
 
-	if not self._teleport_unit_index then
-		self._teleport_unit_index = self._teleport_unit_index + 1
-	end
+	self._teleport_unit_index = math.min(self._teleport_unit_index, num_enemy_units)
 
 	self:set_allowed_to_leave(false, "los")
 
@@ -200,12 +198,7 @@ PlayerUnitGhostModeExtension._teleport_to_next_enemy = function (self)
 	self._locomotion_extension:teleport_to(target_pos)
 
 	self._has_teleported = true
-	self._teleport_unit_index = self._teleport_unit_index + 1
-
-	if num_enemy_units < self._teleport_unit_index then
-		self._teleport_unit_index = 1
-	end
-
+	self._teleport_unit_index = math.index_wrapper(self._teleport_unit_index + 1, num_enemy_units)
 	target_unit = enemy_units[self._teleport_unit_index]
 
 	Managers.state.event:trigger("add_gameplay_info_event", "ghost_catchup", true, nil, target_unit)

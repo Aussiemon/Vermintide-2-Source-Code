@@ -2053,11 +2053,13 @@ StateIngame.on_exit = function (self, application_shutdown)
 			self.parent.loading_context.lobby_client = nil
 		end
 
-		if application_shutdown and rawget(_G, "LobbyInternal") and LobbyInternal.client then
+		if application_shutdown and rawget(_G, "LobbyInternal") then
 			if Managers.party:has_party_lobby() then
 				local lobby = Managers.party:steal_lobby()
 
-				LobbyInternal.leave_lobby(lobby)
+				if type(lobby) ~= "table" then
+					LobbyInternal.leave_lobby(lobby)
+				end
 			end
 
 			LobbyInternal.shutdown_client()

@@ -116,7 +116,10 @@ PackmasterStateGrabbing.update = function (self, unit, input, dt, context, t)
 			CharacterStateHelper.play_animation_event_first_person(first_person_extension, "claw_closed")
 		end
 
-		if grab_target then
+		local ghost_mode_extension = ScriptUnit.extension(unit, "ghost_mode_system")
+		local is_in_ghost_mode = ghost_mode_extension:is_in_ghost_mode()
+
+		if grab_target and not is_in_ghost_mode then
 			local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
 			local event_data = FrameTable.alloc_table()
 

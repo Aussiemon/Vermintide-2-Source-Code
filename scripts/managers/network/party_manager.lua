@@ -85,7 +85,7 @@ PartyManager.has_party_lobby = function (self)
 end
 
 PartyManager.store_lobby = function (self, lobby_or_data)
-	debug_printf("Party lobby has been stored")
+	debug_printf("Party lobby has been stored '%s'", lobby_or_data)
 	self:_free_lobby()
 
 	self._party_lobby_or_data = lobby_or_data
