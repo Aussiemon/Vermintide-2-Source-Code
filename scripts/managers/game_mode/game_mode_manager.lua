@@ -1222,3 +1222,7 @@ end
 GameModeManager.is_joinable = function (self)
 	return self._game_mode:is_joinable()
 end
+
+GameModeManager.mutator_handler = function (self)
+	return self._mutator_handler
+end

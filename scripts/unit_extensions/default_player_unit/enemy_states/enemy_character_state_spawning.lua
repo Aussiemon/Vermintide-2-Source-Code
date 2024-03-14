@@ -131,7 +131,7 @@ EnemyCharacterStateSpawning.update = function (self, unit, input, dt, context, t
 		local ghost_mode_extension = ScriptUnit.extension(unit, "ghost_mode_system")
 		local force_leave = true
 
-		ghost_mode_extension:request_leave_ghost_mode(force_leave)
+		ghost_mode_extension:try_leave_ghost_mode(force_leave)
 
 		local fade_speed = 5
 

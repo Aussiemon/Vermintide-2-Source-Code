@@ -27,13 +27,13 @@ CameraStateObserverSpectator.on_enter = function (self, unit, input, dt, context
 	local dark_pact_side = Managers.state.side:get_side_from_name("dark_pact")
 	local dark_pact_units = dark_pact_side.PLAYER_AND_BOT_UNITS
 
-	for _, unit in ipairs(dark_pact_units) do
-		if Unit.alive(unit) then
-			local ghost_mode_system = ScriptUnit.extension(unit, "ghost_mode_system")
+	for _, participating_player_unit in ipairs(dark_pact_units) do
+		if ALIVE[participating_player_unit] then
+			local ghost_mode_extension = ScriptUnit.extension(participating_player_unit, "ghost_mode_system")
 
-			if ghost_mode_system:is_in_ghost_mode() then
-				ghost_mode_system:leave_ghost_mode(true)
-				ghost_mode_system:enter_ghost_mode()
+			if ghost_mode_extension:is_in_ghost_mode() then
+				ghost_mode_extension:husk_leave_ghost_mode(true)
+				ghost_mode_extension:husk_enter_ghost_mode()
 			end
 		end
 	end

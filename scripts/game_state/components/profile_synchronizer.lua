@@ -67,6 +67,7 @@ local function _add_slot_item_packages(packages_list, slot, item_data, optional_
 end
 
 local _combined_requires_packages = {}
+local EMPTY_TABLE = {}
 
 local function profile_packages(profile_index, career_index, is_first_person)
 	local profile = SPProfiles[profile_index]
@@ -104,9 +105,21 @@ local function profile_packages(profile_index, career_index, is_first_person)
 		packages_list[career.package_name] = false
 	end
 
-	do
+	local game_mode_manager = Managers.state.game_mode
+	local is_whiterun = game_mode_manager and game_mode_manager:has_activated_mutator("whiterun")
+	local talent_ids
+
+	if is_whiterun then
+		table.clear(EMPTY_TABLE)
+
+		talent_ids = EMPTY_TABLE
+	else
 		local talent_interface = Managers.backend:get_talents_interface()
-		local talent_ids = talent_interface:get_talent_ids(career_name)
+
+		talent_ids = talent_interface:get_talent_ids(career_name)
+	end
+
+	do
 		local career_requires_packages = career.requires_packages
 
 		if career_requires_packages then
@@ -131,9 +144,6 @@ local function profile_packages(profile_index, career_index, is_first_person)
 	end
 
 	if career.talent_packages then
-		local talent_interface = Managers.backend:get_talents_interface()
-		local talent_ids = talent_interface:get_talent_ids(career_name)
-
 		career.talent_packages(talent_ids, packages_list, is_first_person)
 	end
 

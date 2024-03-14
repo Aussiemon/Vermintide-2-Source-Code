@@ -34,8 +34,9 @@ TalentExtension.extensions_ready = function (self, world, unit)
 
 	self:_check_talent_package_dendencies(talent_ids, true)
 	self:apply_buffs_from_talents(talent_ids)
-	self:update_talent_weapon_index(talent_ids)
+	self:_update_talent_weapon_index(talent_ids)
 	self:_broadcast_talents_changed()
+	self:_check_resync()
 end
 
 TalentExtension.game_object_initialized = function (self, unit, unit_go_id)
@@ -49,17 +50,9 @@ TalentExtension.talents_changed = function (self)
 
 	self:_check_talent_package_dendencies(talent_ids)
 	self:apply_buffs_from_talents(talent_ids)
-	self:update_talent_weapon_index(talent_ids)
+	self:_update_talent_weapon_index(talent_ids)
 	self.inventory_extension:update_career_skill_weapon_slot_safe()
-
-	if self._needs_loadout_resync then
-		self._needs_loadout_resync = false
-
-		local peer_id = self.player:network_id()
-		local local_player_id = self.player:local_player_id()
-
-		Managers.state.network.profile_synchronizer:resync_loadout(peer_id, local_player_id)
-	end
+	self:_check_resync()
 
 	if Managers.state.network:game() then
 		self:_send_rpc_sync_talents(talent_ids)
@@ -172,29 +165,34 @@ TalentExtension.apply_buffs_from_talents = function (self, talent_ids)
 	end
 end
 
-TalentExtension.update_talent_weapon_index = function (self, talent_ids)
-	if Managers.state.game_mode:has_activated_mutator("whiterun") then
-		return
-	end
+TalentExtension._update_talent_weapon_index = function (self, talent_ids)
+	local talents_available = not Managers.state.game_mode:has_activated_mutator("whiterun")
+	local previous_weapon_index = self.talent_career_weapon_index
 
-	local hero_name = self._hero_name
-
-	self.talent_career_skill_index = 1
 	self.talent_career_weapon_index = nil
+	self.talent_career_skill_index = 1
 
-	for i = 1, #talent_ids do
-		local talent_id = talent_ids[i]
-		local talent_data = TalentUtils.get_talent_by_id(hero_name, talent_id)
+	if talents_available then
+		local hero_name = self._hero_name
 
-		if talent_data then
-			if talent_data.talent_career_skill_index then
-				self.talent_career_skill_index = talent_data.talent_career_skill_index
-			end
+		for i = 1, #talent_ids do
+			local talent_id = talent_ids[i]
+			local talent_data = TalentUtils.get_talent_by_id(hero_name, talent_id)
 
-			if talent_data.talent_career_weapon_index then
-				self.talent_career_weapon_index = talent_data.talent_career_weapon_index
+			if talent_data then
+				if talent_data.talent_career_skill_index then
+					self.talent_career_skill_index = talent_data.talent_career_skill_index
+				end
+
+				if talent_data.talent_career_weapon_index then
+					self.talent_career_weapon_index = talent_data.talent_career_weapon_index
+				end
 			end
 		end
+	end
+
+	if previous_weapon_index ~= self.talent_career_weapon_index then
+		self._needs_loadout_resync = true
 	end
 end
 
@@ -318,6 +316,14 @@ TalentExtension.initial_talent_synced = function (self)
 end
 
 TalentExtension._check_talent_package_dendencies = function (self, talent_ids, initial_setup)
+	local career_settings = self.career_extension:career_settings()
+
+	if career_settings.talent_packages then
+		self._needs_loadout_resync = true
+
+		return
+	end
+
 	local new_dependencies = {}
 	local new_dependencies_n = 0
 	local hero_name = self._hero_name
@@ -351,4 +357,17 @@ TalentExtension._check_talent_package_dendencies = function (self, talent_ids, i
 			end
 		end
 	end
+end
+
+TalentExtension._check_resync = function (self)
+	if not self._needs_loadout_resync then
+		return
+	end
+
+	self._needs_loadout_resync = false
+
+	local peer_id = self.player:network_id()
+	local local_player_id = self.player:local_player_id()
+
+	Managers.state.network.profile_synchronizer:resync_loadout(peer_id, local_player_id)
 end

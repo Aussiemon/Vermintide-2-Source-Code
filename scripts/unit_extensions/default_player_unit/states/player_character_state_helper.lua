@@ -1867,13 +1867,13 @@ end
 CharacterStateHelper.ghost_mode = function (ghost_mode_extension, input_extension)
 	if not ghost_mode_extension:is_in_ghost_mode() then
 		if input_extension:get("ghost_mode_enter") and ghost_mode_extension:allowed_to_enter() then
-			ghost_mode_extension:request_enter_ghost_mode()
+			ghost_mode_extension:try_enter_ghost_mode()
 		end
 	elseif ghost_mode_extension:is_in_ghost_mode() then
 		if input_extension:get("ghost_mode_exit") and ghost_mode_extension:allowed_to_leave() then
 			local force_leave = false
 
-			ghost_mode_extension:request_leave_ghost_mode(force_leave)
+			ghost_mode_extension:try_leave_ghost_mode(force_leave)
 		end
 
 		if input_extension:get("ghost_mode_enter") then

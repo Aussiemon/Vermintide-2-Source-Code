@@ -389,6 +389,7 @@ GameModeSettings.versus.dark_pact_bot_respawn_timers = {
 	10,
 	20,
 }
+GameModeSettings.versus.dark_pact_catch_up_distance = 30
 GameModeSettings.versus.dark_pact_minimum_spawn_distance = 10
 GameModeSettings.versus.dark_pact_minimum_spawn_distance_vertical = 3.5
 GameModeSettings.versus.forced_difficulty = "versus_base"

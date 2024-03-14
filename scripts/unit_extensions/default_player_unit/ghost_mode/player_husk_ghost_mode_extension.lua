@@ -7,51 +7,23 @@ PlayerHuskGhostModeExtension.init = function (self, extension_init_context, unit
 	self._world = extension_init_context.world
 	self._network_transmit = extension_init_context.network_transmit
 	self._is_server = self._network_transmit.is_server
-	self._allowed_to_leave = false
 	self._ghost_mode_active = false
-	self._reason_not_allowed_to_leave = nil
-	self._reason_allowed_to_enter = nil
-	self._teleport_target_type = "disabled"
 	self._is_husk = true
 end
 
 PlayerHuskGhostModeExtension.extensions_ready = function (self)
 	self._inventory_extension = ScriptUnit.extension(self._unit, "inventory_system")
 	self._breed = Unit.get_data(self._unit, "breed")
-end
 
-PlayerUnitGhostModeExtension.game_object_initialized = function (self, unit, go_id)
 	local start_in_ghost_mode = true
 
 	if start_in_ghost_mode then
-		self:enter_ghost_mode()
+		self:husk_enter_ghost_mode()
 	end
 end
 
 PlayerHuskGhostModeExtension.destroy = function (self)
 	self:_clear_world_marker()
-end
-
-PlayerHuskGhostModeExtension.set_allowed_to_leave = function (self, allowed_to_leave, reason)
-	self._allowed_to_leave = allowed_to_leave
-	self._reason_not_allowed_to_leave = reason
-end
-
-PlayerHuskGhostModeExtension.set_allowed_to_enter = function (self, allowed_to_enter, reason)
-	self._allowed_to_enter = allowed_to_enter
-	self._reason_allowed_to_enter = reason
-end
-
-PlayerHuskGhostModeExtension.allowed_to_enter = function (self)
-	return self._allowed_to_enter, self._reason_allowed_to_enter
-end
-
-PlayerHuskGhostModeExtension.allowed_to_leave = function (self)
-	if Development.parameter("disable_ghost_mode") then
-		return true
-	else
-		return self._allowed_to_leave, self._reason_not_allowed_to_leave
-	end
 end
 
 PlayerHuskGhostModeExtension.is_in_ghost_mode = function (self)
@@ -101,7 +73,7 @@ PlayerHuskGhostModeExtension._is_spectator = function (self)
 	return self._is_spectator
 end
 
-PlayerHuskGhostModeExtension.enter_ghost_mode = function (self)
+PlayerHuskGhostModeExtension.husk_enter_ghost_mode = function (self)
 	self._ghost_mode_active = true
 
 	if not DEDICATED_SERVER then
@@ -157,7 +129,7 @@ PlayerHuskGhostModeExtension.cb_world_marker_spawned = function (self, unit, mar
 	self._marker_id = marker_id
 end
 
-PlayerHuskGhostModeExtension.leave_ghost_mode = function (self)
+PlayerHuskGhostModeExtension.husk_leave_ghost_mode = function (self)
 	self._ghost_mode_active = false
 
 	local player_unit = self._unit
@@ -202,8 +174,4 @@ end
 
 PlayerHuskGhostModeExtension.set_safe_spot = function (self, safe_spot)
 	self._safe_spot = safe_spot
-end
-
-PlayerHuskGhostModeExtension.set_teleport_target_type = function (self, teleport_target_type)
-	self._teleport_target_type = teleport_target_type
 end

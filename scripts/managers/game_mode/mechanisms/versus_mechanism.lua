@@ -112,6 +112,7 @@ VersusMechanism.init = function (self, settings)
 	Network.log("warnings")
 
 	self._voip_rooms = {}
+	self._message_targets_initiated = false
 
 	self:_reset(settings, true)
 end
@@ -1099,6 +1100,10 @@ function register_chat_channel_for_party(channel_id, party_id)
 end
 
 VersusMechanism.get_chat_channel = function (self, player, alt_chat_input)
+	if not self._message_targets_initiated then
+		return
+	end
+
 	if alt_chat_input then
 		return 1, CHAT_MESSAGE_TARGETS.all.message_target
 	end
@@ -1135,6 +1140,8 @@ VersusMechanism.setup_chats = function (self)
 	for _, message_target_data in pairs(CHAT_MESSAGE_TARGETS) do
 		Managers.chat:add_message_target(message_target_data.message_target, message_target_data.message_target_type, message_target_data.message_target_key)
 	end
+
+	self._message_targets_initiated = true
 end
 
 VersusMechanism.unregister_chats = function (self)
@@ -1144,6 +1151,8 @@ VersusMechanism.unregister_chats = function (self)
 	for _, message_target_data in pairs(CHAT_MESSAGE_TARGETS) do
 		Managers.chat:remove_message_target(message_target_data.message_target)
 	end
+
+	self._message_targets_initiated = false
 end
 
 VersusMechanism.try_reserve_game_server_slots = function (self, reserver, peers, invitee)

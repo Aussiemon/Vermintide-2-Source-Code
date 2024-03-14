@@ -226,3 +226,7 @@ end
 VersusBaseObjectiveExtension.is_active = function (self)
 	return self._activated
 end
+
+VersusBaseObjectiveExtension.get_parent_name = function (self)
+	return self._parent_objective_name
+end

@@ -382,7 +382,7 @@ ObjectiveSystem._update_server = function (self, dt, t)
 		for i = #sub_objects_to_remove, 1, -1 do
 			local index = sub_objects_to_remove[i]
 
-			table.remove(extensions, index)
+			table.swap_delete(extensions, index)
 		end
 
 		if #extensions < 1 then
@@ -532,10 +532,16 @@ end
 ObjectiveSystem._complete_main_objective = function (self, extension)
 	self._num_completed_main_objectives = self._num_completed_main_objectives + 1
 	self._current_num_completed_main_objectives = self._current_num_completed_main_objectives + 1
-	self._last_main_objective_completed = extension
 
 	LevelHelper:flow_event(self._world, "main_objective_completed")
-	Managers.state.event:trigger("obj_main_objective_completed", self._num_completed_main_objectives, self._current_num_completed_main_objectives, extension)
+
+	local parent_name = extension:get_parent_name()
+
+	if not parent_name or parent_name == "n/a" then
+		self._last_main_objective_completed = extension
+
+		Managers.state.event:trigger("obj_main_objective_completed", self._num_completed_main_objectives, self._current_num_completed_main_objectives, extension)
+	end
 end
 
 ObjectiveSystem._complete_parent_objective = function (self, objective_context)

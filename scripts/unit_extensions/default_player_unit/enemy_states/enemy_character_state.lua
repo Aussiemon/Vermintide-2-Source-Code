@@ -52,7 +52,9 @@ EnemyCharacterState.handle_disabled_ghost_mode = function (self)
 	local in_ghost_mode = ghost_mode_extension:is_in_ghost_mode()
 
 	if in_ghost_mode and Development.parameter("disable_ghost_mode") then
-		ghost_mode_extension:leave_ghost_mode()
+		local force_leave = true
+
+		ghost_mode_extension:try_leave_ghost_mode(force_leave)
 	end
 end
 

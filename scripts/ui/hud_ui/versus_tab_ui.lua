@@ -4,6 +4,7 @@ local definitions = local_require("scripts/ui/hud_ui/versus_tab_ui_definitions")
 local animation_definitions = definitions.animation_definitions
 local scenegraph_definition = definitions.scenegraph_definition
 local create_empty_frame_widget = definitions.create_empty_frame_widget
+local console_cursor_definition = definitions.console_cursor_definition
 local NUM_MAX_TEAMS = 2
 local NUM_TEAMS_SIZE = 4
 local DO_RELOAD = false
@@ -89,6 +90,7 @@ VersusTabUI._create_ui_elements = function (self)
 	end
 
 	self._item_tooltip = UIWidget.init(definitions.item_tooltip)
+	self._console_cursor = UIWidget.init(console_cursor_definition)
 	self._widgets_by_name = widgets_by_name
 	self._widgets = widgets
 	DO_RELOAD = false
@@ -176,6 +178,7 @@ VersusTabUI._draw = function (self, dt)
 	local input_manager = self._input_manager
 	local input_service = input_manager:get_service("player_list_input")
 	local render_settings = self._render_settings
+	local gamepad_active = input_manager:is_device_active("gamepad")
 	local alpha_multiplier = render_settings.alpha_multiplier or 1
 
 	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt, nil, render_settings)
@@ -229,6 +232,11 @@ VersusTabUI._draw = function (self, dt)
 	self._widgets_by_name.objective_text.content.visible = self._round_has_started and true or false
 
 	UIRenderer.draw_widget(ui_renderer, self._item_tooltip)
+
+	if gamepad_active then
+		UIRenderer.draw_widget(ui_renderer, self._console_cursor)
+	end
+
 	UIRenderer.end_pass(ui_renderer)
 
 	render_settings.alpha_multiplier = alpha_multiplier
@@ -413,7 +421,13 @@ VersusTabUI._handle_input = function (self, dt)
 		self:set_active(false)
 	elseif not self.cursor_active then
 		if not in_fade_active and input_service:get("ingame_player_list_toggle") then
-			self:_activate_cursor()
+			if not self._active then
+				self:set_active(true)
+
+				if not self.cursor_active then
+					self:_activate_cursor()
+				end
+			end
 		elseif input_service:get("ingame_player_list_pressed") then
 			if not self._active then
 				self:set_active(true)

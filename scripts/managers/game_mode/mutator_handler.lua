@@ -639,6 +639,8 @@ MutatorHandler._activate_mutator = function (self, name, active_mutators, mutato
 		mutator_data.deactivate_at_t = t + optional_duration
 	end
 
+	active_mutators[name] = mutator_data
+
 	if self._is_server then
 		local server_template = template.server
 
@@ -659,8 +661,6 @@ MutatorHandler._activate_mutator = function (self, name, active_mutators, mutato
 		template.register_rpcs(mutator_context, mutator_data, self.network_event_delegate)
 	end
 
-	active_mutators[name] = mutator_data
-
 	if self._is_server then
 		local mutator_id = NetworkLookup.mutator_templates[name]
 		local activated_by_twitch = not not mutator_data.activated_by_twitch
@@ -680,6 +680,9 @@ MutatorHandler._deactivate_mutator = function (self, name, active_mutators, muta
 		template.unregister_rpcs(mutator_context, mutator_data)
 	end
 
+	active_mutators[name] = nil
+	self._mutators[name] = nil
+
 	if self._is_server then
 		local server_template = template.server
 
@@ -695,9 +698,6 @@ MutatorHandler._deactivate_mutator = function (self, name, active_mutators, muta
 			client_template.stop_function(mutator_context, mutator_data, is_destroy)
 		end
 	end
-
-	active_mutators[name] = nil
-	self._mutators[name] = nil
 
 	if self._is_server and not is_destroy then
 		local mutator_id = NetworkLookup.mutator_templates[name]

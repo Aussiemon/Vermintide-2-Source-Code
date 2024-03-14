@@ -1601,15 +1601,7 @@ StateIngame._check_exit = function (self, t)
 			self.parent.loading_context.time_spent_in_level = math.floor(Managers.time and Managers.time:time("game") or -1)
 			self.parent.loading_context.end_reason = exit_type
 
-			if exit_type == "lobby_state_failed" then
-				if IS_WINDOWS or IS_LINUX then
-					return StateTitleScreen
-				else
-					return StateLoading
-				end
-			else
-				return StateLoading
-			end
+			return StateLoading
 		elseif exit_type == "return_to_pc_menu" then
 			printf("[StateIngame] Transition to StateLoadingRestartNetwork on %q", self.exit_type)
 

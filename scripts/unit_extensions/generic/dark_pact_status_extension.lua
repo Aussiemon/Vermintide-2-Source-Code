@@ -1,5 +1,7 @@
 ﻿-- chunkname: @scripts/unit_extensions/generic/dark_pact_status_extension.lua
 
+require("scripts/entity_system/systems/ghost_mode/ghost_mode_utils")
+
 local stagger_types = require("scripts/utils/stagger_types")
 
 DarkPactStatusExtension = class(DarkPactStatusExtension, GenericStatusExtension)
@@ -95,13 +97,12 @@ DarkPactStatusExtension.get_in_ghost_mode = function (self)
 end
 
 DarkPactStatusExtension.in_view_enemy_party_players = function (self, unit, player, physics_world)
-	local ghost_mode_system = Managers.state.entity:system("ghost_mode_system")
 	local peer_id = player:network_id()
 	local local_player_id = player:local_player_id()
 	local party = Managers.party:get_party_from_player_id(peer_id, local_player_id)
 	local side = Managers.state.side.side_by_party[party]
 	local enemy_positions = side.ENEMY_PLAYER_AND_BOT_POSITIONS
-	local in_los = ghost_mode_system:in_line_of_sight_of_enemies(unit, enemy_positions, physics_world)
+	local in_los = GhostModeUtils.in_line_of_sight_of_enemies(unit, enemy_positions, physics_world)
 
 	return in_los
 end

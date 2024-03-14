@@ -7869,6 +7869,40 @@ local settings = {
 	},
 	{
 		category = "Items",
+		description = "Lists all mutators with functionality to immediately start or stop them. Does not require restart of level. !! Does not work for every mutator.",
+		setting_name = "Start or stop mutator",
+		item_source = {},
+		load_items_source_func = function (options)
+			table.clear(options)
+
+			for key, _ in pairs(MutatorTemplates) do
+				options[#options + 1] = key
+			end
+
+			table.sort(options)
+		end,
+		func = function (options, index)
+			local mutator_handler = Managers.state.game_mode:mutator_handler()
+			local mutator_name = options[index]
+
+			if not mutator_handler:has_mutator(mutator_name) then
+				mutator_handler:initialize_mutators({
+					mutator_name,
+				})
+				Debug.sticky_text("Initialized mutator %s", mutator_name)
+			end
+
+			if mutator_handler:has_activated_mutator(mutator_name) then
+				mutator_handler:deactivate_mutator(mutator_name)
+				Debug.sticky_text("Stopped mutator %s", mutator_name)
+			else
+				mutator_handler:activate_mutator(mutator_name)
+				Debug.sticky_text("Started mutator %s", mutator_name)
+			end
+		end,
+	},
+	{
+		category = "Items",
 		description = "Lists all blessings with functionality to activate them. Requires restart of a deus level or loading the next one",
 		setting_name = "Activate or Deactivate Blessings",
 		item_source = {},

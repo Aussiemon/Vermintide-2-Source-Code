@@ -585,7 +585,7 @@ ChatGui._update_input = function (self, input_service, menu_input_service, dt, n
 				channel_id, message_target = mechanism:get_chat_channel(Managers.player:local_player(), alt_chat_input)
 			end
 
-			self.channel_id = channel_id
+			self.channel_id = channel_id or 1
 			self.alt_chat_input = alt_chat_input
 
 			if message_target then
@@ -851,7 +851,7 @@ ChatGui._update_input = function (self, input_service, menu_input_service, dt, n
 					channel_id, message_target = mechanism:get_chat_channel(Managers.player:local_player(), alt_chat_input)
 				end
 
-				self.channel_id = channel_id
+				self.channel_id = channel_id or 1
 				self.alt_chat_input = alt_chat_input
 
 				if message_target then

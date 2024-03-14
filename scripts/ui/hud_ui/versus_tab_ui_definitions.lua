@@ -158,6 +158,20 @@ local scenegraph_definition = {
 			10,
 		},
 	},
+	console_cursor = {
+		horizontal_alignment = "center",
+		parent = "screen",
+		vertical_alignment = "center",
+		size = {
+			1920,
+			1080,
+		},
+		position = {
+			0,
+			0,
+			-10,
+		},
+	},
 	team_1 = {
 		horizontal_alignment = "left",
 		parent = "screen",
@@ -817,7 +831,9 @@ function create_empty_frame_widget(scenegraph_id)
 		},
 		content = {
 			empty = false,
-			hotspot = {},
+			hotspot = {
+				allow_multi_hover = true,
+			},
 			shadow_frame = shadow_frame_settings.texture,
 			hover_frame = hover_frame_settings.texture,
 			empty_hover = empty_hover_frame_settings.texture,
@@ -956,5 +972,6 @@ return {
 	animation_definitions = animation_definitions,
 	scenegraph_definition = scenegraph_definition,
 	widget_definitions = widget_definitions,
+	console_cursor_definition = UIWidgets.create_console_cursor("console_cursor"),
 	item_tooltip = UIWidgets.create_simple_item_presentation("item_tooltip", UISettings.console_tooltip_pass_definitions),
 }

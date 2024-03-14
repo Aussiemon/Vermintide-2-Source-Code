@@ -2628,6 +2628,9 @@ PlayFabMirrorBase.unequip_disabled_items = function (self)
 	local profiles_by_career_names = PROFILES_BY_CAREER_NAMES
 	local inventory_items = self._inventory_items
 	local table_contains = table.contains
+	local mechanism_name = Managers.mechanism:current_mechanism_name()
+
+	mechanism_name = mechanism_name == "versus" and mechanism_name or nil
 
 	for career_name, slot_data in pairs(self._career_data) do
 		local character = profiles_by_career_names[career_name]
@@ -2643,7 +2646,7 @@ PlayFabMirrorBase.unequip_disabled_items = function (self)
 						local item = inventory_items[slot_value]
 
 						if item and item_availability[item.ItemId] == false then
-							local valid_item_id = self:_find_valid_item_for_slot(item_availability, career_settings, slot_name, career_name)
+							local valid_item_id = self:_find_valid_item_for_slot(item_availability, career_settings, slot_name, career_name, mechanism_name)
 
 							if valid_item_id then
 								self:set_character_data(career_name, slot_name, valid_item_id, true)
@@ -2656,9 +2659,10 @@ PlayFabMirrorBase.unequip_disabled_items = function (self)
 	end
 end
 
-PlayFabMirrorBase._find_valid_item_for_slot = function (self, override_item_availability, career_settings, slot_name, career_name)
+PlayFabMirrorBase._find_valid_item_for_slot = function (self, override_item_availability, career_settings, slot_name, career_name, mechanism_name)
 	local item_master_list = ItemMasterList
 	local table_contains = table.contains
+	local empty_tbl = {}
 
 	for inventory_id, inventory_item in pairs(self._inventory_items) do
 		if override_item_availability[inventory_item.ItemId] ~= false then
@@ -2667,7 +2671,11 @@ PlayFabMirrorBase._find_valid_item_for_slot = function (self, override_item_avai
 			local can_wield = master_list_item.can_wield
 
 			if correct_slot and can_wield and table_contains(can_wield, career_name) then
-				return inventory_id, inventory_item
+				local item_for_mechanism = not mechanism_name or table_contains(master_list_item.mechanisms or empty_tbl, mechanism_name)
+
+				if item_for_mechanism then
+					return inventory_id, inventory_item
+				end
 			end
 		end
 	end
