@@ -515,10 +515,6 @@ BTChargePositionAction._is_at_edge = function (self, unit, blackboard, from, dir
 	if not hit2 then
 		return true
 	end
-
-	if false then
-		-- Nothing
-	end
 end
 
 BTChargePositionAction._check_smartobjects = function (self, unit, blackboard)

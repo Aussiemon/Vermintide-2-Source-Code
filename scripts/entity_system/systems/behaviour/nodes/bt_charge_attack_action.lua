@@ -284,10 +284,6 @@ BTChargeAttackAction._start_lunge = function (self, unit, blackboard, lunge_data
 
 			return
 		end
-
-		if false then
-			-- Nothing
-		end
 	end
 
 	blackboard.charge_state = "lunge"
@@ -704,10 +700,6 @@ BTChargeAttackAction._is_at_edge = function (self, unit, blackboard, from, direc
 
 	if not hit2 then
 		return true
-	end
-
-	if false then
-		-- Nothing
 	end
 end
 

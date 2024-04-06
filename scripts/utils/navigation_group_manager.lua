@@ -478,10 +478,6 @@ NavigationGroupManager.make_sure_group_centers_are_on_mesh = function (self)
 				if p then
 					group._group_center:store(p)
 				end
-
-				if false then
-					-- Nothing
-				end
 			end
 		end
 	end

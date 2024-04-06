@@ -542,10 +542,6 @@ IngameVotingUI.update_input_progress = function (self, active_voting)
 		self.option_yes.style.bar.offset[1] = self.option_yes.style.bar.default_offset[1]
 	end
 
-	if false then
-		-- Nothing
-	end
-
 	return hold_input_pressed
 end
 

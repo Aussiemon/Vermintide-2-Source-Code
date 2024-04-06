@@ -148,10 +148,6 @@ NavigationUtils.get_position_on_interpolated_spline = function (spline_curve, po
 		previous_subdivision_position = previous_subdivision.points[2]:unbox()
 	end
 
-	if false then
-		-- Nothing
-	end
-
 	if best_subdivision_index < #closest_subdivisions then
 		local next_subdivision = closest_subdivisions[best_subdivision_index + 1]
 

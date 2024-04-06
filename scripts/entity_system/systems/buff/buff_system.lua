@@ -703,10 +703,6 @@ BuffSystem._pack_buff_params = function (self, buff_params, dest_param_ids, dest
 			dest_param_ids[num_params] = buff_params_list_lookup[name]
 			dest_param_vals[num_params] = buff_param_packing_methods[name].pack(val, self, unit)
 		end
-
-		if false then
-			-- Nothing
-		end
 	end
 
 	if packed_buff_param_flags > 0 then

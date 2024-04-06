@@ -233,10 +233,6 @@ TutorialUI.update = function (self, dt, t)
 
 				self.tutorial_tooltip_ui:hide()
 			end
-
-			if false then
-				-- Nothing
-			end
 		elseif self.active_tooltip_name or self.active_tooltip_widget then
 			if active_template and active_template.is_mission_tutorial then
 				UIRenderer.set_element_visible(ui_renderer, self.active_tooltip_widget.element, false)

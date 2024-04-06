@@ -972,10 +972,6 @@ DebugScreen.reset_settings = function ()
 		elseif cs.func then
 			-- Nothing
 		end
-
-		if false then
-			-- Nothing
-		end
 	end
 
 	if all_false then

@@ -1653,10 +1653,6 @@ UnitFrameUI.add_damage_feedback = function (self, hash, is_local_player, event_t
 		widget.content.visible = true
 	end
 
-	if false then
-		-- Nothing
-	end
-
 	local dmg_parts = existing_event.dmg_parts
 
 	existing_event.num_dmg_parts = existing_event.num_dmg_parts + 1

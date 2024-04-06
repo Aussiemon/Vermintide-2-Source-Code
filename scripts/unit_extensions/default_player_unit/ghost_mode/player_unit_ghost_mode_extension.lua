@@ -267,10 +267,6 @@ PlayerUnitGhostModeExtension.teleport_player = function (self)
 	elseif self._teleport_target_type == "safe_spot" then
 		self:_teleport_to_safe_spot()
 	end
-
-	if false then
-		-- Nothing
-	end
 end
 
 PlayerUnitGhostModeExtension._teleport_to_next_enemy = function (self)

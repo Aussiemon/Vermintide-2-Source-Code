@@ -185,10 +185,6 @@ local function delete_slot(slot, unit_extension_data)
 			end
 		end
 	end
-
-	if false then
-		-- Nothing
-	end
 end
 
 local function disable_slot(slot, unit_extension_data)

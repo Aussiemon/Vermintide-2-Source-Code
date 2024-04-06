@@ -48,10 +48,6 @@ StateMachine._change_state = function (self, new_state, params)
 		end
 	end
 
-	if false then
-		-- Nothing
-	end
-
 	if self._profiling_debugging_enabled then
 		local scope_name = profiler_scope(new_state.NAME, "create")
 
@@ -68,10 +64,6 @@ StateMachine._change_state = function (self, new_state, params)
 		self._state:on_enter(params)
 	elseif self._state.on_enter then
 		self._state:on_enter(params)
-	end
-
-	if false then
-		-- Nothing
 	end
 end
 

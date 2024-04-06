@@ -374,10 +374,6 @@ DeusRunController.rpc_deus_set_initial_soft_currency = function (self, sender_ch
 		self._run_state:set_peer_initialized(sender, true)
 		self:_add_coin_tracking_entry(sender, REAL_PLAYER_LOCAL_ID, new_coins, "set initial soft currency")
 	end
-
-	if false then
-		-- Nothing
-	end
 end
 
 DeusRunController.rpc_deus_set_initial_setup = function (self, sender_channel_id, profile_index, career_index, initial_talents_for_career, melee_item_string, ranged_item_string)
@@ -387,10 +383,6 @@ DeusRunController.rpc_deus_set_initial_setup = function (self, sender_channel_id
 		self:_add_initial_talents_as_power_ups(sender, REAL_PLAYER_LOCAL_ID, profile_index, career_index, initial_talents_for_career)
 		self:_add_initial_weapons_to_loadout(sender, REAL_PLAYER_LOCAL_ID, profile_index, career_index, melee_item_string, ranged_item_string)
 		self._run_state:set_profile_initialized(sender, REAL_PLAYER_LOCAL_ID, profile_index, career_index, true)
-	end
-
-	if false then
-		-- Nothing
 	end
 
 	local granted_non_party_end_of_level_power_ups = self._run_state:get_granted_non_party_end_of_level_power_ups(sender, REAL_PLAYER_LOCAL_ID, profile_index, career_index)
@@ -946,10 +938,6 @@ DeusRunController.shop_buy_health = function (self)
 
 		RPC.rpc_deus_shop_heal_player(server_channel_id)
 	end
-
-	if false then
-		-- Nothing
-	end
 end
 
 DeusRunController.shop_buy_blessing = function (self, blessing_name)
@@ -960,10 +948,6 @@ DeusRunController.shop_buy_blessing = function (self, blessing_name)
 		local server_channel_id = PEER_ID_TO_CHANNEL[server_peer_id]
 
 		RPC.rpc_deus_shop_blessing_selected(server_channel_id, blessing_name)
-	end
-
-	if false then
-		-- Nothing
 	end
 end
 

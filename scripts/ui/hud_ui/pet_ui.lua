@@ -241,7 +241,7 @@ PetUI._update_pet_container = function (self, dt, t, player)
 	local pet_attack_status = self._pet_attack_status
 	local inventory_extension = ScriptUnit.has_extension(player_unit, "inventory_system")
 	local wielded_item_template = inventory_extension and inventory_extension:get_wielded_slot_item_template()
-	local in_command_mode = wielded_item_template and not not wielded_item_template.is_command_utility_weapon
+	local in_command_mode = not not wielded_item_template and not not wielded_item_template.is_command_utility_weapon
 	local reposition_widgets = false
 
 	for unit in pairs(controlled_units) do

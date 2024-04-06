@@ -24,10 +24,6 @@ BTInterestPointChooseAction.enter = function (self, unit, blackboard, t)
 
 		blackboard.ip_request_id = interest_point_system_api.start_async_claim_request(unit, position, min_range, max_range)
 	end
-
-	if false then
-		-- Nothing
-	end
 end
 
 BTInterestPointChooseAction.leave = function (self, unit, blackboard, t, reason, destroy)

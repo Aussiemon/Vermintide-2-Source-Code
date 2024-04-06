@@ -53,10 +53,6 @@ NetworkedAnimationVariableTemplates = {
 				if animation_variable then
 					Unit.animation_set_variable(unit, animation_variable, final_value)
 				end
-
-				if false then
-					-- Nothing
-				end
 			end
 		end,
 	},

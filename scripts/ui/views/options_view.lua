@@ -5273,9 +5273,7 @@ OptionsView.cb_fsr_enabled = function (self, content, style, called_from_graphic
 end
 
 OptionsView.cb_fsr_enabled_condition = function (self, content, style)
-	if false then
-		-- Nothing
-	elseif self:_get_current_user_setting("dlss_enabled") then
+	if self:_get_current_user_setting("dlss_enabled") then
 		self:_set_setting_override(content, style, "fsr_enabled", false)
 		self:_set_override_reason(content, "menu_settings_dlss_enabled")
 

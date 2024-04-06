@@ -61,10 +61,6 @@ MutatorItemSystem.spawn_mutator_items = function (self, config)
 
 			units[#units + 1] = unit
 		end
-
-		if false then
-			-- Nothing
-		end
 	end
 
 	return units

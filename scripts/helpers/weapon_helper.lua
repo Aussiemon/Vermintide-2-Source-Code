@@ -421,18 +421,10 @@ WeaponHelper.ground_target = function (self, physics_world, fitting_unit, origin
 							hit_position = step_back_position
 						end
 					end
-
-					if false then
-						-- Nothing
-					end
 				end
 			end
 
 			return true, hit_position
-		end
-
-		if false then
-			-- Nothing
 		end
 
 		velocity = velocity + gravity * time_step

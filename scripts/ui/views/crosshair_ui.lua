@@ -141,10 +141,6 @@ CrosshairUI.update_enabled_crosshair_styles = function (self)
 			end
 		end
 
-		if false then
-			-- Nothing
-		end
-
 		self._enabled_style = enabled_style
 		self._enabled_crosshair_styles = crosshairs
 	end

@@ -392,10 +392,6 @@ DeusShopView.update = function (self, dt, t)
 		self._finished = true
 	end
 
-	if false then
-		-- Nothing
-	end
-
 	local unit_previewer = self._unit_previewer
 
 	if unit_previewer then

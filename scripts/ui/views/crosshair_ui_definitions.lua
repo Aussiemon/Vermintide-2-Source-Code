@@ -901,9 +901,7 @@ local animations_definitions = {
 
 				for _, component in pairs(style) do
 					if not component.angle then
-						if false then
-							-- Nothing
-						end
+						-- Nothing
 					else
 						local angle = component.angle
 						local offset_x = -move_progres * math.cos(angle)
@@ -937,9 +935,7 @@ local animations_definitions = {
 
 				for _, component in pairs(style) do
 					if not component.angle then
-						if false then
-							-- Nothing
-						end
+						-- Nothing
 					else
 						local angle = component.angle
 						local offset_x = -move_progres * math.cos(angle)

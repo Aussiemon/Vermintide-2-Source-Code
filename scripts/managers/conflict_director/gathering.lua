@@ -58,10 +58,6 @@ Gathering.write_dogpiled_attackers = function (self, dogpiled_attackers_on_unit)
 
 					t = t .. ") -> u" .. tostring(Unit.get_data(unit, "unique_id"))
 				end
-
-				if false then
-					-- Nothing
-				end
 			end
 		end
 	end

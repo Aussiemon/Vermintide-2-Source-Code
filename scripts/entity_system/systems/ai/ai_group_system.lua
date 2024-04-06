@@ -593,10 +593,6 @@ AIGroupSystem.update = function (self, context, t)
 				self.groups_to_initialize[group.id] = nil
 			end
 		end
-
-		if false then
-			-- Nothing
-		end
 	end
 
 	for id, group in pairs(self.groups_to_update) do

@@ -173,10 +173,6 @@ CareerAbilityVortexSorcerer._landing_postion_valid = function (self, start_pos, 
 			data.astar = nil
 			data.astar_timer = t + 0.01
 		end
-
-		if false then
-			-- Nothing
-		end
 	elseif t > data.astar_timer then
 		local nav_world = Managers.state.entity:system("ai_system"):nav_world()
 		local astar = GwNavAStar.create(nav_world)
@@ -266,10 +262,6 @@ CareerAbilityVortexSorcerer._stop_priming = function (self)
 		if astar and not GwNavAStar.processing_finished(astar) then
 			GwNavAStar.cancel(astar)
 			GwNavAStar.destroy(astar)
-		end
-
-		if false then
-			-- Nothing
 		end
 
 		self._astar_data = nil

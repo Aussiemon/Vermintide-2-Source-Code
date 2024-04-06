@@ -259,10 +259,6 @@ VersusMechanism.create_voip_rooms = function (self)
 		if not self._voip_rooms[i] then
 			self._voip_rooms[i] = SteamVoip.create_room()
 		end
-
-		if false then
-			-- Nothing
-		end
 	end
 end
 

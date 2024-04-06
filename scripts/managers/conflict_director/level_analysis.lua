@@ -704,10 +704,6 @@ LevelAnalysis.group_spawners = function (self, spawners, level_sections)
 			end
 		end
 
-		if false then
-			-- Nothing
-		end
-
 		last_map_section_index = map_section_index
 	end
 

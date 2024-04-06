@@ -852,8 +852,4 @@ StateTitleScreenMainMenu._waiting_for_backend_signin = function (self)
 
 		self._state = "none"
 	end
-
-	if false then
-		-- Nothing
-	end
 end

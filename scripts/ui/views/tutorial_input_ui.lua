@@ -179,10 +179,6 @@ TutorialInputUI._update_tooltip = function (self, dt, t)
 		self:fade_in()
 	end
 
-	if false then
-		-- Nothing
-	end
-
 	local input_widgets = self._tutorial_tooltip_input_widgets
 
 	if force_update or tooltip_name ~= active_tooltip_name or gamepad_active ~= widget_content.using_gamepad_input or self._input_changed then

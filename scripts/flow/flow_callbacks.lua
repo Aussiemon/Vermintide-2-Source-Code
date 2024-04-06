@@ -1586,10 +1586,6 @@ function flow_callback_ussingen_barrel_challenge(params)
 
 			return flow_return_table
 		end
-
-		if false then
-			-- Nothing
-		end
 	end
 
 	flow_return_table.is_valid_barrel = 0
@@ -1618,10 +1614,6 @@ function flow_callback_ussingen_barrel_challenge_completed(params)
 					local statistics_db = Managers.player:statistics_db()
 
 					statistics_db:increment_stat_and_sync_to_clients(stat_names[i])
-				end
-
-				if false then
-					-- Nothing
 				end
 			end
 		end
@@ -5341,10 +5333,6 @@ function flow_callback_trigger_event_on_sub_level(params)
 
 		if sub_level then
 			Level.trigger_event(sub_level, event_name)
-		end
-
-		if false then
-			-- Nothing
 		end
 	end
 end

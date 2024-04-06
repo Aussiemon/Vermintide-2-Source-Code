@@ -404,18 +404,10 @@ PlayerUnitFirstPerson._draw_smart_objects = function (self, jump_data, smart_obj
 		drawer:sphere(control_points[1], 0.02, debug_color)
 	end
 
-	if false then
-		-- Nothing
-	end
-
 	is_position_on_navmesh = GwNavQueries.triangle_from_position(nav_world, control_points[2])
 
 	if is_position_on_navmesh then
 		drawer:sphere(control_points[2], 0.02, debug_color)
-	end
-
-	if false then
-		-- Nothing
 	end
 end
 

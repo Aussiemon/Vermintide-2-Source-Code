@@ -107,10 +107,6 @@ PlayerCharacterStateLeaveLedgeHangingPullUp.update = function (self, unit, input
 		return
 	end
 
-	if false then
-		-- Nothing
-	end
-
 	if status_extension.start_climb_rotation then
 		local wanted_rotation = self.start_rotation_box:unbox()
 		local current_rotation = Unit.local_rotation(unit, 0)
@@ -145,10 +141,6 @@ PlayerCharacterStateLeaveLedgeHangingPullUp.calculate_end_position = function (s
 
 	if nav_mesh_pos and is_close then
 		new_position = nav_mesh_pos
-	end
-
-	if false then
-		-- Nothing
 	end
 
 	self.end_position:store(new_position)

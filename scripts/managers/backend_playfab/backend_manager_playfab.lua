@@ -430,10 +430,6 @@ BackendManagerPlayFab._update_state = function (self)
 			self:_post_error(error_data)
 		end
 	end
-
-	if false then
-		-- Nothing
-	end
 end
 
 function string_is_url(str)

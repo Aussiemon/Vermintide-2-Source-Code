@@ -513,10 +513,6 @@ Graph.draw = function (self, gui, input_service, t)
 				Gui.rect(gui, p2 + origin + Vector3(-3, -3, 100), Vector3(6, 6, 0), point_color)
 			end
 
-			if false then
-				-- Nothing
-			end
-
 			p1 = p2
 		end
 	end

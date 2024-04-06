@@ -1313,10 +1313,6 @@ PerceptionUtils.pick_rat_ogre_target_with_weights = function (unit, blackboard, 
 				end
 			end
 		end
-
-		if false then
-			-- Nothing
-		end
 	end
 
 	local infighting = breed.infighting

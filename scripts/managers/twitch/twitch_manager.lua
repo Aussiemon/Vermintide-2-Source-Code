@@ -80,7 +80,7 @@ local twitch_difficulty_override = {
 
 TwitchManager.game_mode_supported = function (self, game_mode, difficulty)
 	local supported_game_modes = TwitchSettings.supported_game_modes[PLATFORM]
-	local supported = supported_game_modes[game_mode] or not not twitch_difficulty_override[difficulty]
+	local supported = not not supported_game_modes[game_mode] or not not twitch_difficulty_override[difficulty]
 
 	return supported
 end

@@ -10355,10 +10355,6 @@ UIWidgets.create_window_category_button = function (scenegraph_id, size, button_
 						if not button_hotspot.disable_button and not button_hotspot.is_selected then
 							-- Nothing
 						end
-
-						if false then
-							-- Nothing
-						end
 					end,
 				},
 				{
@@ -10932,10 +10928,6 @@ UIWidgets.create_window_category_button_mirrored = function (scenegraph_id, size
 						local button_hotspot = parent_content.button_hotspot
 
 						if not button_hotspot.disable_button and not button_hotspot.is_selected then
-							-- Nothing
-						end
-
-						if false then
 							-- Nothing
 						end
 					end,

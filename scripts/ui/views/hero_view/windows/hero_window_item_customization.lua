@@ -815,10 +815,6 @@ HeroWindowItemCustomization._option_selected = function (self, input_index, igno
 		self:_change_state(selected_widget_name)
 	end
 
-	if false then
-		-- Nothing
-	end
-
 	local mouse_active = Managers.input:is_device_active("mouse")
 	local old_selection_index = self._active_selection_index
 

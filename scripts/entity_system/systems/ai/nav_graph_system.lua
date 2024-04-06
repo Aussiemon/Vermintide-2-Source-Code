@@ -256,10 +256,6 @@ NavGraphSystem.on_add_extension = function (self, world, unit, extension_name, e
 		if smart_object_id and self.smart_objects[smart_object_id] and not self.no_nav_mesh and (not Unit.has_data(unit, "enabled_on_spawn") or Unit.get_data(unit, "enabled_on_spawn") == true) then
 			self:init_nav_graphs(unit, smart_object_id, extension)
 		end
-
-		if false then
-			-- Nothing
-		end
 	end
 
 	if extension_name == "LevelUnitSmartObjectExtension" then

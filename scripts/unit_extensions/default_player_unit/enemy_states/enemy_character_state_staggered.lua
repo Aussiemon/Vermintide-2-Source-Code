@@ -188,10 +188,6 @@ EnemyCharacterStateStaggered.update = function (self, unit, input, dt, context, 
 		return
 	end
 
-	if false then
-		-- Nothing
-	end
-
 	locomotion_extension:set_disable_rotation_update()
 
 	local look_sense_override = 0.5

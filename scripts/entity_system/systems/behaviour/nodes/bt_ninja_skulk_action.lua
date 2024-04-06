@@ -359,10 +359,6 @@ BTNinjaSkulkAction.in_crosshairs = function (self, unit, blackboard, t, data)
 			end
 		end
 
-		if false then
-			-- Nothing
-		end
-
 		if status_extension.aim_unit then
 			data.aiming_at_me = status_extension.aim_unit
 		end

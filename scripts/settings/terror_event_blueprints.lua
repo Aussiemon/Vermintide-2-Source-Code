@@ -41,10 +41,6 @@ for level_key, level_data in pairs(LevelSettings) do
 
 		fetch_terror_events(level_key, override_file_ending)
 	end
-
-	if false then
-		-- Nothing
-	end
 end
 
 fetch_terror_events("weaves")

@@ -1913,10 +1913,6 @@ HeroViewStateLoot._setup_rewards = function (self, rewards)
 				data.frame_widget = frame_widget
 			end
 
-			if false then
-				-- Nothing
-			end
-
 			active_reward_options[#active_reward_options + 1] = data
 		end
 	end

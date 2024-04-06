@@ -1303,10 +1303,6 @@ PlayFabMirrorBase._cb_steam_user_inventory = function (self, result, item_list, 
 				self:add_item(backend_id, steam_item, true, skip_mark_as_new)
 				debug_printf("Steam Item: %q, %q, %q, %q, %q", item_key, steam_itemdefid, steam_backend_unique_id, flags, amount)
 			end
-
-			if false then
-				-- Nothing
-			end
 		end
 	else
 		debug_printf("ERROR could not retrieve get steam user inventory. result-code: %q", result)

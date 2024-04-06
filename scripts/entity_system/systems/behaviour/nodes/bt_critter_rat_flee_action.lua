@@ -202,10 +202,6 @@ BTCritterRatFleeAction._get_random_flee_pos_in_front_of_target = function (self,
 		-- Nothing
 	end
 
-	if false then
-		-- Nothing
-	end
-
 	blackboard.using_random_point_in_front_of_target = false
 	blackboard.using_random_point = true
 

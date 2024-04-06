@@ -2536,10 +2536,6 @@ DamageUtils.check_distance = function (action, blackboard, attacking_unit, targe
 		if dist <= (current_action.weapon_reach or breed.weapon_reach or breed.radius) + player_radius then
 			return true
 		end
-
-		if false then
-			-- Nothing
-		end
 	end
 
 	return false

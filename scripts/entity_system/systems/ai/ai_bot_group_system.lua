@@ -2707,10 +2707,6 @@ local function detect_cylinder(nav_world, traverse_logic, bot_position, bot_heig
 		if success then
 			return to
 		end
-
-		if false then
-			-- Nothing
-		end
 	end
 end
 

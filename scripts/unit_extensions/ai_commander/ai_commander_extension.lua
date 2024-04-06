@@ -655,10 +655,6 @@ AICommanderExtension._avoid_unit = function (self, avoid_unit, controlled_unit, 
 		end
 	end
 
-	if false then
-		-- Nothing
-	end
-
 	return follow_pos
 end
 

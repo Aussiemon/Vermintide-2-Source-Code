@@ -489,14 +489,6 @@ SpawnZoneBaker.generate_spawns = function (self, spawn_cycle_length, goal_densit
 					end
 				end
 			end
-
-			if false then
-				-- Nothing
-			end
-		end
-
-		if false then
-			-- Nothing
 		end
 	end
 

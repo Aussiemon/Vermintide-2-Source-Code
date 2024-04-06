@@ -41,10 +41,6 @@ EventManager.trigger = function (self, event_name, ...)
 			object[callback_name](object, ...)
 		end
 	end
-
-	if false then
-		-- Nothing
-	end
 end
 
 EventManager.register_referenced = function (self, reference, object, ...)

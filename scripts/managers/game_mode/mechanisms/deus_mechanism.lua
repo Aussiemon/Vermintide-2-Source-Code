@@ -609,10 +609,6 @@ DeusMechanism.game_round_ended = function (self, t, dt, reason, reason_data)
 					next_state = self:_transition_to_inn()
 				end
 			end
-
-			if false then
-				-- Nothing
-			end
 		end
 	end
 

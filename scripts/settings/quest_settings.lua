@@ -300,10 +300,6 @@ QuestSettings.send_completed_message = function (challenge_stat_id)
 
 			break
 		end
-
-		if false then
-			-- Nothing
-		end
 	end
 
 	if has_not_completed_challenge then
@@ -314,10 +310,6 @@ QuestSettings.send_completed_message = function (challenge_stat_id)
 			local localize_parameters = false
 
 			Managers.chat:send_system_chat_message(1, message, 1, localize_parameters, true)
-		end
-
-		if false then
-			-- Nothing
 		end
 	end
 end

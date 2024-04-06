@@ -534,14 +534,6 @@ ObjectiveSystem._complete_main_objective = function (self, extension)
 	self._current_num_completed_main_objectives = self._current_num_completed_main_objectives + 1
 
 	LevelHelper:flow_event(self._world, "main_objective_completed")
-
-	local parent_name = extension:get_parent_name()
-
-	if not parent_name or parent_name == "n/a" then
-		self._last_main_objective_completed = extension
-
-		Managers.state.event:trigger("obj_main_objective_completed", self._num_completed_main_objectives, self._current_num_completed_main_objectives, extension)
-	end
 end
 
 ObjectiveSystem._complete_parent_objective = function (self, objective_context)

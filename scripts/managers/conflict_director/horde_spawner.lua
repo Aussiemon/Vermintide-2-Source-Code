@@ -1626,10 +1626,6 @@ HordeSpawner.hidden_cover_points = function (self, broadphase, epicenter_pos, pl
 						num_found_points = num_found_points + 1
 						found_cover_points[num_found_points] = cover_unit
 					end
-
-					if false then
-						-- Nothing
-					end
 				end
 			end
 		end

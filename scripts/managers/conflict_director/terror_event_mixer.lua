@@ -104,10 +104,6 @@ TerrorEventMixer.init_functions = {
 				breed_name = breed_name[Math.random(1, #breed_name)]
 			end
 
-			if false then
-				-- Nothing
-			end
-
 			if num_to_spawn_scaled then
 				local chosen_amount = Managers.state.difficulty:get_difficulty_value_from_table(num_to_spawn_scaled)
 

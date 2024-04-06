@@ -283,10 +283,6 @@ ChatGui.update = function (self, dt, menu_active, menu_input_service, no_unblock
 		if self.chat_focused then
 			input_service = input_manager:get_service("chat_input")
 		end
-
-		if false then
-			-- Nothing
-		end
 	elseif self.chat_focused then
 		input_service = input_manager:get_service("chat_input")
 	end

@@ -3663,7 +3663,7 @@ local function create_lobby_entry_func(offset_y, lobby_data, flag_index, joinabl
 					style_id = "selected_level_name_shadow",
 					text_id = "selected_level_name",
 					content_check_function = function (content, style)
-						return content.joinable or not content.selected and not content.lobby_hotspot.is_hover
+						return not not content.joinable or not content.selected and not content.lobby_hotspot.is_hover
 					end,
 				},
 				{
@@ -3740,7 +3740,7 @@ local function create_lobby_entry_func(offset_y, lobby_data, flag_index, joinabl
 					style_id = "difficulty_shadow",
 					text_id = "difficulty_id",
 					content_check_function = function (content, style)
-						return content.joinable or not content.selected and not content.lobby_hotspot.is_hover
+						return not not content.joinable or not content.selected and not content.lobby_hotspot.is_hover
 					end,
 				},
 				{
@@ -3748,7 +3748,7 @@ local function create_lobby_entry_func(offset_y, lobby_data, flag_index, joinabl
 					style_id = "num_players_shadow",
 					text_id = "num_players_id",
 					content_check_function = function (content, style)
-						return content.joinable or not content.selected and not content.lobby_hotspot.is_hover
+						return not not content.joinable or not content.selected and not content.lobby_hotspot.is_hover
 					end,
 				},
 			},
