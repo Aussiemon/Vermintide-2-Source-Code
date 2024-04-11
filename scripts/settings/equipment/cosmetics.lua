@@ -2997,6 +2997,12 @@ Cosmetics.frame_karak_02 = {
 Cosmetics.frame_karak_03 = {
 	icon = "unit_frame_02",
 }
+Cosmetics.frame_karak_04 = {
+	icon = "unit_frame_02",
+}
+Cosmetics.frame_karak_05 = {
+	icon = "unit_frame_02",
+}
 Cosmetics.frame_necromancer_01 = {
 	icon = "unit_frame_02",
 }

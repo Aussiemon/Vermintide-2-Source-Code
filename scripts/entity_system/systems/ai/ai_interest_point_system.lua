@@ -375,6 +375,11 @@ AIInterestPointSystem.spawn_interest_points = function (self)
 
 			if point.is_position_on_navmesh then
 				local breed = members[i]
+
+				if not breed.name then
+					breed = breed[math.random(1, #breed)]
+				end
+
 				local optional_data = {
 					ignore_event_counter = true,
 				}

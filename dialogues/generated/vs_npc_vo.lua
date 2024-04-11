@@ -522,9 +522,9 @@ return function ()
 				"vmg_a_vs_hero_bright_wizard_dead_a_03",
 			},
 			sound_events_duration = {
-				2.9854193925858,
-				2.9854193925858,
-				2.9854193925858,
+				3.0027136802673,
+				3.0027136802673,
+				3.0027136802673,
 			},
 		},
 		vmg_vs_hero_dwarf_ranger_dead_a = {
@@ -557,9 +557,9 @@ return function ()
 				"vmg_a_vs_hero_dwarf_ranger_dead_a_03",
 			},
 			sound_events_duration = {
-				2.9854193925858,
-				2.9854193925858,
-				2.9854193925858,
+				3.0027136802673,
+				3.2422504425049,
+				3.2675104141235,
 			},
 		},
 		vmg_vs_hero_empire_soldier_dead_a = {
@@ -592,9 +592,9 @@ return function ()
 				"vmg_a_vs_hero_empire_soldier_dead_a_03",
 			},
 			sound_events_duration = {
-				2.9854193925858,
-				2.9854193925858,
-				3.086014509201,
+				3.0027136802673,
+				3.0191799402237,
+				4.5402173995972,
 			},
 		},
 		vmg_vs_hero_witch_hunter_dead_a = {
@@ -627,9 +627,9 @@ return function ()
 				"vmg_a_vs_hero_witch_hunter_dead_a_03",
 			},
 			sound_events_duration = {
-				2.9854193925858,
-				2.9854193925858,
-				2.9854193925858,
+				3.0027136802673,
+				3.0027136802673,
+				3.0027136802673,
 			},
 		},
 		vmg_vs_hero_wood_elf_dead_a = {
@@ -662,9 +662,9 @@ return function ()
 				"vmg_a_vs_hero_wood_elf_dead_a_03",
 			},
 			sound_events_duration = {
-				2.9854193925858,
-				2.9854193925858,
-				2.9854193925858,
+				3.0027136802673,
+				3.0027136802673,
+				3.0027136802673,
 			},
 		},
 		vmg_vs_heroes_objective_almost_completed_a = {
@@ -697,9 +697,9 @@ return function ()
 				"vmg_a_vs_heroes_objective_almost_completed_a_03",
 			},
 			sound_events_duration = {
-				2.9854193925858,
-				3.3664178848267,
-				3.329993724823,
+				3.1276097297669,
+				4.0865116119385,
+				3.4948487281799,
 			},
 		},
 		vmg_vs_heroes_objective_completed_a = {
@@ -733,9 +733,9 @@ return function ()
 				"vmg_a_vs_heroes_objective_completed_a_03",
 			},
 			sound_events_duration = {
-				4.7192521095276,
-				4.9304494857788,
-				5.9209570884705,
+				4.9278583526611,
+				5.2698378562927,
+				5.6943969726563,
 			},
 		},
 		vmg_vs_heroes_objective_completed_b = {
@@ -768,9 +768,9 @@ return function ()
 				"vmg_a_vs_heroes_objective_completed_b_03",
 			},
 			sound_events_duration = {
-				2.5047733783722,
-				3.22944688797,
-				3.4005990028381,
+				3.5276324748993,
+				4.6652965545654,
+				4.4437870979309,
 			},
 		},
 		vmg_vs_heroes_objective_reached_a = {
@@ -803,9 +803,9 @@ return function ()
 				"vmg_a_vs_heroes_objective_reached_a_03",
 			},
 			sound_events_duration = {
-				3.9843239784241,
-				5.1823873519897,
-				5.3881311416626,
+				5.2295074462891,
+				4.8204927444458,
+				6.2253274917603,
 			},
 		},
 		vmg_vs_heroes_reached_safe_room_a = {
@@ -838,9 +838,9 @@ return function ()
 				"vmg_a_vs_heroes_reached_safe_room_a_03",
 			},
 			sound_events_duration = {
-				4.6908149719238,
-				6.3440756797791,
-				5.7505078315735,
+				5.478129863739,
+				8.6326942443848,
+				6.9529151916504,
 			},
 		},
 		vmg_vs_heroes_reached_waystone_a = {
@@ -873,9 +873,9 @@ return function ()
 				"vmg_a_vs_heroes_reached_waystone_a_03",
 			},
 			sound_events_duration = {
-				6.2858176231384,
-				7.0596332550049,
-				7.1433877944946,
+				6.3729104995728,
+				7.7145962715149,
+				7.119047164917,
 			},
 		},
 		vmg_vs_heroes_team_wipe_a = {
@@ -908,9 +908,9 @@ return function ()
 				"vmg_a_vs_heroes_team_wipe_a_03",
 			},
 			sound_events_duration = {
-				6.9522128105164,
-				7.5098400115967,
-				7.4019370079041,
+				7.028694152832,
+				5.4314961433411,
+				7.6631050109863,
 			},
 		},
 		vmg_vs_new_spawn_horde_a = {
@@ -943,9 +943,9 @@ return function ()
 				"vmg_a_vs_new_spawn_horde_a_03",
 			},
 			sound_events_duration = {
-				3.8135657310486,
-				5.0597243309021,
-				5.6842622756958,
+				4.8035025596619,
+				5.0483283996582,
+				7.3498873710632,
 			},
 		},
 		vmg_vs_new_spawn_monster_a = {
@@ -978,9 +978,9 @@ return function ()
 				"vmg_a_vs_new_spawn_monster_a_03",
 			},
 			sound_events_duration = {
-				4.2440309524536,
-				5.0123929977417,
-				2.9854193925858,
+				4.2196116447449,
+				3.0027136802673,
+				3.0392000675201,
 			},
 		},
 		vmg_vs_pactsworn_wipe_a = {
@@ -1013,9 +1013,9 @@ return function ()
 				"vmg_a_vs_pactsworn_wipe_a_03",
 			},
 			sound_events_duration = {
-				4.4588713645935,
-				6.1248903274536,
-				4.6973972320557,
+				4.9327158927917,
+				6.7193632125855,
+				5.2688660621643,
 			},
 		},
 		vmg_vs_round_start_go_a = {
@@ -1048,9 +1048,9 @@ return function ()
 				"vmg_a_vs_round_start_go_a_03",
 			},
 			sound_events_duration = {
-				2.3146924972534,
-				2.0251932144165,
-				2.0024213790894,
+				3.7565751075745,
+				3.5243787765503,
+				3.4920001029968,
 			},
 		},
 		vmg_vs_round_start_rant_a = {
@@ -1083,9 +1083,9 @@ return function ()
 				"vmg_a_vs_round_start_rant_a_03",
 			},
 			sound_events_duration = {
-				7.5452575683594,
-				7.6466002464294,
-				7.8681015968323,
+				8.5326251983643,
+				7.8234076499939,
+				8.0429744720459,
 			},
 		},
 	})

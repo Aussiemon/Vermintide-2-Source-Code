@@ -3,7 +3,7 @@
 local RPCS = {
 	"rpc_necromancer_passive_spawn_pet",
 	"rpc_necromancer_respawn_all_pets",
-	"rpc_necromancer_passive_stragglify_pets",
+	"rpc_necromancer_passive_kill_pets",
 }
 local PositionModesLookup
 
@@ -183,7 +183,7 @@ PassiveAbilityNecromancerCharges.spawn_army_pet = function (self, spawn_index, o
 		if not breed_name then
 			spawn_index = spawn_index - num_army
 			breed_name = extra_skeletons[spawn_index]
-			template_name = "necromancer_pet_straggler"
+			template_name = "necromancer_pet_army"
 			done = spawn_index >= #extra_skeletons
 		end
 	end
@@ -271,9 +271,9 @@ PassiveAbilityNecromancerCharges.rpc_necromancer_passive_spawn_pet = function (s
 	self:_queue_pet(breed_name, position, position_mode, template_name)
 end
 
-PassiveAbilityNecromancerCharges.stragglify_pets = function (self, peer_id)
+PassiveAbilityNecromancerCharges.kill_pets = function (self, peer_id)
 	if not self._is_server then
-		self._network_transmit:send_rpc_server("rpc_necromancer_passive_stragglify_pets")
+		self._network_transmit:send_rpc_server("rpc_necromancer_passive_kill_pets")
 
 		return
 	end
@@ -285,9 +285,9 @@ PassiveAbilityNecromancerCharges.stragglify_pets = function (self, peer_id)
 		for pet_unit in pairs(self._spawned_pets) do
 			if HEALTH_ALIVE[pet_unit] then
 				local template = commander_ext:controlled_unit_template(pet_unit)
-				local straggler_template = "necromancer_pet_straggler"
+				local army_template = "necromancer_pet_army"
 
-				if template.name ~= straggler_template then
+				if template.name ~= army_template then
 					AiUtils.kill_unit(pet_unit)
 				end
 			end
@@ -297,8 +297,8 @@ PassiveAbilityNecromancerCharges.stragglify_pets = function (self, peer_id)
 	end
 end
 
-PassiveAbilityNecromancerCharges.rpc_necromancer_passive_stragglify_pets = function (self, channel_id)
-	assert(self._is_server, "[PassiveAbilityNecromancerCharges] 'rpc_necromancer_passive_stragglify_pets' is a server only function.")
+PassiveAbilityNecromancerCharges.rpc_necromancer_passive_kill_pets = function (self, channel_id)
+	assert(self._is_server, "[PassiveAbilityNecromancerCharges] 'rpc_necromancer_passive_kill_pets' is a server only function.")
 
 	local peer_id = CHANNEL_TO_PEER_ID[channel_id]
 
@@ -306,7 +306,7 @@ PassiveAbilityNecromancerCharges.rpc_necromancer_passive_stragglify_pets = funct
 		return
 	end
 
-	self:stragglify_pets(peer_id)
+	self:kill_pets(peer_id)
 end
 
 PassiveAbilityNecromancerCharges.rpc_necromancer_respawn_all_pets = function (self, channel_id)

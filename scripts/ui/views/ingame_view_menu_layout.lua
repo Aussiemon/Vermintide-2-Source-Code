@@ -570,9 +570,9 @@ else
 					transition = "leave_group",
 				},
 				{
+					display_name = "menu_return_to_title_screen",
 					fade = false,
 					transition = "return_to_title_screen",
-					display_name = quit_menu_button_text,
 				},
 			},
 			host = {
@@ -608,9 +608,9 @@ else
 					display_name = disband_party_button_text,
 				},
 				{
+					display_name = "menu_return_to_title_screen",
 					fade = false,
 					transition = "return_to_title_screen",
-					display_name = quit_menu_button_text,
 				},
 			},
 			client = {
@@ -646,9 +646,9 @@ else
 					display_name = leave_party_button_text,
 				},
 				{
+					display_name = "menu_return_to_title_screen",
 					fade = false,
 					transition = "return_to_title_screen",
-					display_name = quit_menu_button_text,
 				},
 			},
 			demo = {
@@ -689,9 +689,9 @@ else
 					transition = "leave_group",
 				},
 				{
+					display_name = "menu_return_to_title_screen",
 					fade = false,
 					transition = "return_to_title_screen",
-					display_name = quit_menu_button_text,
 				},
 			},
 			host = {
@@ -712,9 +712,9 @@ else
 					display_name = disband_party_button_text,
 				},
 				{
+					display_name = "menu_return_to_title_screen",
 					fade = false,
 					transition = "return_to_title_screen",
-					display_name = quit_menu_button_text,
 				},
 			},
 			client = {
@@ -735,9 +735,9 @@ else
 					display_name = leave_party_button_text,
 				},
 				{
+					display_name = "menu_return_to_title_screen",
 					fade = false,
 					transition = "return_to_title_screen",
-					display_name = quit_menu_button_text,
 				},
 			},
 			tutorial = {
@@ -755,8 +755,8 @@ else
 					transition = "leave_group",
 				},
 				{
+					display_name = "menu_return_to_title_screen",
 					transition = "return_to_title_screen",
-					display_name = quit_menu_button_text,
 				},
 			},
 			demo = {

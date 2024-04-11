@@ -165,7 +165,7 @@ StatusSystem.rpc_status_change_bool = function (self, channel_id, status_id, sta
 	elseif status == "invisible" then
 		status_ext:set_invisible(status_bool)
 	elseif status == "in_end_zone" then
-		status_ext:set_in_end_zone(status_bool)
+		status_ext:set_in_end_zone(status_bool, other_unit)
 	elseif status == "in_liquid" then
 		status_ext:set_in_liquid(status_bool, other_unit)
 	elseif status == "charged" then

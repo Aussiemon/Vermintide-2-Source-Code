@@ -2023,12 +2023,12 @@ go_type_table = {
 			local dialogue_extension = ScriptUnit.extension(unit, "dialogue_system")
 			local dialogue_profile = dialogue_extension.dialogue_profile
 			local side = Managers.state.side.side_by_unit[unit]
-			local side_id = side.side_id
+			local side_id = side and side.side_id
 			local data_table = {
 				go_type = NetworkLookup.go_types.dialogue_node,
 				husk_unit = NetworkLookup.husks[unit_name],
 				dialogue_profile = NetworkLookup.dialogue_profiles[dialogue_profile],
-				side_id = side_id or 0,
+				side_id = side_id and side_id > 0 and side_id or nil,
 			}
 
 			return data_table

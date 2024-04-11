@@ -284,6 +284,32 @@ BTLeaveHooks.destroy_unit_leave_hook = function (unit, blackboard, t)
 	Managers.state.conflict:destroy_unit(unit, blackboard, "debug")
 end
 
+BTLeaveHooks.remove_goal_destination = function (unit, blackboard, t)
+	blackboard.goal_destination = nil
+end
+
+BTLeaveHooks.bulwark_stagger_leave = function (unit, blackboard, t)
+	Managers.state.network:anim_event(unit, "stagger_finished")
+
+	if not blackboard.reset_after_stagger then
+		return
+	end
+
+	local breed = blackboard.breed
+
+	blackboard.max_stagger_reached = nil
+	blackboard.reset_on_stagger_leave = nil
+	blackboard.stagger = 0
+	blackboard.cached_stagger = 0
+	blackboard.stagger_level = nil
+	blackboard.stagger_recover_time = breed.stagger_recover_time
+	blackboard.reset_after_stagger = nil
+
+	local ai_shield_extension = ScriptUnit.extension(unit, "ai_shield_system")
+
+	ai_shield_extension:set_is_blocking(true)
+end
+
 BTLeaveHooks.beastmen_standard_bearer_leave_move_and_plant_standard = function (unit, blackboard, t)
 	blackboard.move_and_place_standard = nil
 	blackboard.stagger = nil

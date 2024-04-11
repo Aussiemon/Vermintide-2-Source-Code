@@ -1108,7 +1108,15 @@ local function add_breeds_from_breed_packs(breed_packs, difficulty, output)
 			local breed = breed_members[j]
 			local breed_name = breed.name
 
-			output[breed_name] = true
+			if breed_name then
+				output[breed_name] = true
+			else
+				for k, sub_breed in ipairs(breed) do
+					local breed_name = sub_breed.name
+
+					output[breed_name] = true
+				end
+			end
 		end
 	end
 end

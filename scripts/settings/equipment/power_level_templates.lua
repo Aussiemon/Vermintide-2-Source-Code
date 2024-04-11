@@ -3254,10 +3254,6 @@ PowerLevelTemplates = {
 				},
 			},
 			power_distribution = {
-				attack = 0.3,
-				impact = 0.2,
-			},
-			power_distribution = {
 				attack = 0.32,
 				impact = 0.2,
 			},

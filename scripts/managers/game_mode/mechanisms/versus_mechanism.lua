@@ -1391,10 +1391,10 @@ VersusMechanism.get_custom_lobby_sort = function (self)
 			local ping_diff = math.abs(a_ping - b_ping)
 
 			if ping_diff <= 40 then
-				local a_id = Steam.id_hex_to_dec(a_server_info.id)
-				local b_id = Steam.id_hex_to_dec(b_server_info.id)
+				local a_id = a_server_info.id or "ffffffffffffffff"
+				local b_id = b_server_info.id or "ffffffffffffffff"
 
-				return a_id < b_id
+				return PlayerUtils.peer_id_compare(a_id, b_id)
 			end
 
 			return a_ping < b_ping

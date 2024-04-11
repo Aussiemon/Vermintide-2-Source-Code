@@ -246,6 +246,94 @@ return function ()
 		},
 	})
 	define_rule({
+		name = "pwe_generic_found_key_known_purpose_a",
+		response = "pwe_generic_found_key_known_purpose_a",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item",
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"generic_key_known_purpose",
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"wood_elf",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf",
+			},
+			{
+				"faction_memory",
+				"generic_key",
+				OP.EQ,
+				0,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"generic_key",
+				OP.ADD,
+				1,
+			},
+		},
+	})
+	define_rule({
+		name = "pwe_generic_found_key_unknown_purpose_a",
+		response = "pwe_generic_found_key_unknown_purpose_a",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item",
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"generic_key_unknown_purpose",
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"wood_elf",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf",
+			},
+			{
+				"faction_memory",
+				"generic_key",
+				OP.EQ,
+				0,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"generic_key",
+				OP.ADD,
+				1,
+			},
+		},
+	})
+	define_rule({
 		name = "pwe_generic_getting_dark_outside",
 		response = "pwe_generic_getting_dark_outside",
 		criterias = {
@@ -962,6 +1050,74 @@ return function ()
 				1.1813958883286,
 				0.85874998569489,
 				0.98718750476837,
+			},
+		},
+		pwe_generic_found_key_known_purpose_a = {
+			category = "level_talk",
+			database = "wood_elf_generic_vo",
+			dialogue_animations_n = 3,
+			face_animations_n = 3,
+			randomize_indexes_n = 0,
+			sound_events_n = 3,
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+			},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+			},
+			localization_strings = {
+				"pwe_gameplay_found_key_known_purpose_a_01",
+				"pwe_gameplay_found_key_known_purpose_a_02",
+				"pwe_gameplay_found_key_known_purpose_a_03",
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pwe_gameplay_found_key_known_purpose_a_01",
+				"pwe_gameplay_found_key_known_purpose_a_02",
+				"pwe_gameplay_found_key_known_purpose_a_03",
+			},
+			sound_events_duration = {
+				1.9008541107178,
+				1.7396041154861,
+				1.8878124952316,
+			},
+		},
+		pwe_generic_found_key_unknown_purpose_a = {
+			category = "level_talk",
+			database = "wood_elf_generic_vo",
+			dialogue_animations_n = 3,
+			face_animations_n = 3,
+			randomize_indexes_n = 0,
+			sound_events_n = 3,
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+			},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+			},
+			localization_strings = {
+				"pwe_gameplay_found_key_unknown_purpose_a_01",
+				"pwe_gameplay_found_key_unknown_purpose_a_02",
+				"pwe_gameplay_found_key_unknown_purpose_a_03",
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pwe_gameplay_found_key_unknown_purpose_a_01",
+				"pwe_gameplay_found_key_unknown_purpose_a_02",
+				"pwe_gameplay_found_key_unknown_purpose_a_03",
+			},
+			sound_events_duration = {
+				1.5154374837875,
+				2.5117082595825,
+				1.6583125591278,
 			},
 		},
 		pwe_generic_getting_dark_outside = {

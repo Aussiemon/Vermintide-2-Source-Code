@@ -408,6 +408,9 @@ LevelTransitionHandler._set_next_level = function (self, level_transition_type, 
 	fassert(is_server, "only the server handles next level logic")
 
 	local level_key, environment_variation_id, level_seed, mechanism, game_mode, conflict_director, locked_director_functions, difficulty, difficulty_tweak, extra_packages = LevelTransitionHandler.apply_defaults_to_level_data(optional_level_key, optional_environment_variation_id, optional_level_seed, optional_mechanism, optional_game_mode, optional_conflict_director, optional_locked_director_functions, optional_difficulty, optional_difficulty_tweak, optional_extra_packages, is_server)
+
+	self:_append_event_packages(level_key, extra_packages)
+
 	local new_level_session_id = math.random_seed()
 
 	print("set_next_level( lvl:%s, mc:%s, gm:%s, env:%s, seed:%d, conflict:%s, lckd_director_funcs:{%s}, diff:%s, diff_tweak:%d, id:%d, lt:%s, extra_packages:%s)", tostring(level_key), mechanism, game_mode, tostring(environment_variation_id), level_seed, conflict_director, table.concat(locked_director_functions, ","), difficulty, difficulty_tweak, new_level_session_id, level_transition_type, table.tostring(extra_packages))
@@ -426,6 +429,51 @@ LevelTransitionHandler._set_next_level = function (self, level_transition_type, 
 		level_transition_type = level_transition_type,
 		extra_packages = extra_packages,
 	}
+end
+
+LevelTransitionHandler._append_event_packages = function (self, level_key, extra_packages)
+	local level_setting = LevelSettings[level_key]
+	local is_hub_level = level_setting and level_setting.hub_level
+
+	if is_hub_level then
+		return
+	end
+
+	local live_event_interface = Managers.backend:get_interface("live_events")
+	local special_events = live_event_interface:get_special_events()
+
+	if not special_events then
+		return
+	end
+
+	local mutators_list = {}
+
+	for i = 1, #special_events do
+		local special_event_data = special_events[i]
+		local valid_levels = special_event_data.level_keys
+
+		if not valid_levels or table.is_empty(valid_levels) or table.contains(valid_levels, self._level_key) then
+			local weekly_override_type = special_event_data.weekly_event
+
+			if weekly_override_type then
+				if weekly_override_type == "override" then
+					table.clear(mutators_list)
+					table.append(mutators_list, special_event_data.mutators)
+				elseif weekly_override_type == "append" then
+					table.append(mutators_list, special_event_data.mutators)
+				end
+			end
+		end
+	end
+
+	for i = 1, #mutators_list do
+		local mutator_name = mutators_list[i]
+		local mutator_packages = MutatorTemplates[mutator_name].packages
+
+		if mutator_packages then
+			table.append(extra_packages, mutator_packages)
+		end
+	end
 end
 
 LevelTransitionHandler._load_level_packages = function (self, level_key)

@@ -140,9 +140,9 @@ PingSystem._update_client = function (self, context, t)
 	local pinged_units = self._pinged_units
 
 	for pinger_unit, data in pairs(pinged_units) do
-		local remove = not ALIVE[pinger_unit] or not data.position and not ALIVE[data.pinged_unit]
+		local valid_ping = ALIVE[pinger_unit] and (data.position or ALIVE[data.pinged_unit])
 
-		if remove then
+		if not valid_ping then
 			self:_remove_ping(pinger_unit)
 		end
 	end
@@ -154,23 +154,34 @@ PingSystem.hot_join_sync = function (self, sender)
 	local channel_id = PEER_ID_TO_CHANNEL[sender]
 
 	for pinger_unit, data in pairs(pinged_units) do
-		local pinged_unit = data.pinged_unit
-		local pinger_unit_id = network_manager:unit_game_object_id(pinger_unit)
-		local pinged_unit_id, is_level_unit
+		repeat
+			local pinged_unit = data.pinged_unit
 
-		if pinged_unit then
-			pinged_unit_id, is_level_unit = network_manager:game_object_or_level_id(pinged_unit)
-		end
-
-		local position = data.position
-
-		if pinger_unit_id then
-			if pinged_unit_id then
-				RPC.rpc_ping_unit(channel_id, pinger_unit_id, pinged_unit_id, is_level_unit, data.flash, data.ping_type, data.social_wheel_event_id)
-			elseif position then
-				RPC.rpc_ping_world_position(channel_id, pinger_unit_id, Vector3(unpack(position)), data.ping_type, data.social_wheel_event_id)
+			if not ALIVE[pinger_unit] or pinged_unit and not ALIVE[pinged_unit] then
+				break
 			end
-		end
+
+			local pinger_unit_id = network_manager:unit_game_object_id(pinger_unit)
+			local pinged_unit_id, is_level_unit
+
+			if pinged_unit then
+				pinged_unit_id, is_level_unit = network_manager:game_object_or_level_id(pinged_unit)
+			end
+
+			local position = data.position
+
+			if pinger_unit_id then
+				if pinged_unit_id then
+					RPC.rpc_ping_unit(channel_id, pinger_unit_id, pinged_unit_id, is_level_unit, data.flash, data.ping_type, data.social_wheel_event_id)
+
+					break
+				end
+
+				if position then
+					RPC.rpc_ping_world_position(channel_id, pinger_unit_id, Vector3(unpack(position)), data.ping_type, data.social_wheel_event_id)
+				end
+			end
+		until true
 	end
 end
 
@@ -440,18 +451,28 @@ PingSystem.is_ping_response = function (self, pinged_unit, sender_unique_id, pos
 		local return_ping_type, existing_position, return_pinger_unit
 
 		for pinger_unit, data in pairs(self._pinged_units) do
-			existing_position = data.position and Vector3(unpack(data.position)) or POSITION_LOOKUP[data.pinged_unit]
+			repeat
+				existing_position = data.position and Vector3(unpack(data.position)) or POSITION_LOOKUP[data.pinged_unit]
 
-			local distance = Vector3.distance_squared(existing_position, position)
-
-			if distance <= MAX_PING_RESPONSE_DISTANCE then
-				if sender_unique_id == data.pinger_unique_id then
-					return sent_ping_is_context and PingTypes.CANCEL or sent_ping_type, existing_position, nil
-				elseif data.parent_pinger_unit == nil then
-					return_ping_type = sent_ping_is_context and PingTypes.ACKNOWLEDGE or sent_ping_type
-					return_pinger_unit = pinger_unit
+				if not existing_position then
+					break
 				end
-			end
+
+				local distance = Vector3.distance_squared(existing_position, position)
+
+				if distance <= MAX_PING_RESPONSE_DISTANCE then
+					if sender_unique_id == data.pinger_unique_id then
+						do return sent_ping_is_context and PingTypes.CANCEL or sent_ping_type, existing_position, nil end
+
+						break
+					end
+
+					if data.parent_pinger_unit == nil then
+						return_ping_type = sent_ping_is_context and PingTypes.ACKNOWLEDGE or sent_ping_type
+						return_pinger_unit = pinger_unit
+					end
+				end
+			until true
 		end
 
 		return return_ping_type, position, return_pinger_unit
@@ -819,7 +840,7 @@ PingSystem.rpc_ping_unit = function (self, channel_id, pinger_unit_id, pinged_un
 
 		for _, data in pairs(ping_templates) do
 			if data:check_func(pinger_unit, pinged_unit) then
-				do_ping, chat_messages, ping_icon = data:exec_func(self, pinger_unit, pinged_unit, ping_type, self._current_mechanism_name)
+				do_ping, chat_messages, ping_icon = data:exec_func(self, pinger_unit, pinged_unit, ping_type, social_wheel_event_id, self._current_mechanism_name)
 
 				break
 			end
@@ -858,7 +879,7 @@ PingSystem.rpc_ping_world_position = function (self, channel_id, pinger_unit_id,
 
 		for _, data in pairs(ping_templates) do
 			if data:check_func(pinger_unit, nil) then
-				_, chat_messages, _ = data:exec_func(self, pinger_unit, nil, ping_type, self._current_mechanism_name)
+				_, chat_messages, _ = data:exec_func(self, pinger_unit, nil, ping_type, social_wheel_event_id, self._current_mechanism_name)
 
 				break
 			end

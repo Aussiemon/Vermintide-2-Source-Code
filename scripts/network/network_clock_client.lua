@@ -124,9 +124,7 @@ NetworkClockClient.update = function (self, dt)
 		if request_timer >= SYNC_TIME_STEP then
 			request_timer = 0
 
-			if PEER_ID_TO_CHANNEL[network_manager.network_transmit.server_peer_id] then
-				network_manager.network_transmit:send_rpc_server("rpc_network_current_server_time_request", self._clock)
-			end
+			network_manager.network_transmit:send_rpc_server("rpc_network_current_server_time_request", self._clock)
 		end
 
 		self._request_timer = request_timer

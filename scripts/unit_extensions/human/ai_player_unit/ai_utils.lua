@@ -1015,7 +1015,7 @@ AiUtils.show_polearm = function (packmaster_unit, show)
 	end
 end
 
-AiUtils.stagger = function (unit, blackboard, attacker_unit, stagger_direction, stagger_length, stagger_type, stagger_duration, stagger_animation_scale, t, stagger_value, always_stagger, is_push, should_play_push_sound)
+AiUtils.stagger = function (unit, blackboard, attacker_unit, stagger_direction, stagger_length, stagger_type, stagger_duration, stagger_animation_scale, t, stagger_value, always_stagger, is_push, should_play_push_sound, optional_predicted_damage)
 	fassert(stagger_type > 0, "Tried to use invalid stagger type %q", stagger_type)
 
 	local is_staggered = blackboard.stagger
@@ -1061,7 +1061,7 @@ AiUtils.stagger = function (unit, blackboard, attacker_unit, stagger_direction, 
 		end
 
 		if breed.before_stagger_enter_function then
-			breed.before_stagger_enter_function(unit, blackboard, attacker_unit, is_push)
+			breed.before_stagger_enter_function(unit, blackboard, attacker_unit, is_push, stagger_value_to_add, optional_predicted_damage)
 		end
 
 		if ai_extension.attacked then

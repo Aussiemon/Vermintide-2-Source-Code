@@ -216,6 +216,22 @@ beer_barrel.actions.action_dropped.default.projectile_info = {
 	projectile_unit_template_name = "pickup_projectile_unit",
 }
 
+local whale_oil_barrel = table.clone(weapon_template)
+
+whale_oil_barrel.left_hand_unit = "units/weapons/player/pup_whale_oil_barrel/wpn_whale_oil_barrel_01"
+whale_oil_barrel.actions.action_one.default.projectile_info = {
+	drop_on_player_destroyed = true,
+	pickup_name = "whale_oil_barrel",
+	projectile_unit_name = "units/weapons/player/pup_whale_oil_barrel/pup_whale_oil_barrel_01",
+	projectile_unit_template_name = "explosive_pickup_projectile_unit",
+}
+whale_oil_barrel.actions.action_dropped.default.projectile_info = {
+	drop_on_player_destroyed = true,
+	pickup_name = "whale_oil_barrel",
+	projectile_unit_name = "units/weapons/player/pup_whale_oil_barrel/pup_whale_oil_barrel_01",
+	projectile_unit_template_name = "explosive_pickup_projectile_unit",
+}
+
 return {
 	explosive_barrel = explosive_barrel,
 	explosive_barrel_objective = explosive_barrel_objective,

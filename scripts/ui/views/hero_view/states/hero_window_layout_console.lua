@@ -120,11 +120,7 @@ local window_layouts = {
 			panel = 1,
 		},
 		can_add_function = function (mechanism_name)
-			if mechanism_name == "versus" or mechanism_name == "inn_vs" then
-				return false
-			else
-				return true
-			end
+			return mechanism_name ~= "versus" and mechanism_name ~= "inn_vs"
 		end,
 	},
 	{
@@ -227,7 +223,42 @@ local window_layouts = {
 		},
 	},
 }
-local MAX_ACTIVE_WINDOWS = 5
+local MAX_ACTIVE_WINDOWS = 6
+
+DLCUtils.map("hero_view_window_layout_console", function (hero_view_window_layout_console)
+	local new_windows = hero_view_window_layout_console.windows
+
+	if new_windows then
+		for name, window in pairs(new_windows) do
+			windows[name] = window
+		end
+	end
+
+	local new_window_layouts = hero_view_window_layout_console.window_layouts
+
+	if new_window_layouts then
+		for i = 1, #new_window_layouts do
+			window_layouts[#window_layouts + 1] = new_window_layouts[i]
+		end
+	end
+end)
+DLCUtils.map("hero_view_window_layout_console", function (hero_view_window_layout_console)
+	local new_windows = hero_view_window_layout_console.windows
+
+	if new_windows then
+		for name, window in pairs(new_windows) do
+			windows[name] = window
+		end
+	end
+
+	local new_window_layouts = hero_view_window_layout_console.window_layouts
+
+	if new_window_layouts then
+		for i = 1, #new_window_layouts do
+			window_layouts[#window_layouts + 1] = new_window_layouts[i]
+		end
+	end
+end)
 
 return {
 	max_active_windows = MAX_ACTIVE_WINDOWS,

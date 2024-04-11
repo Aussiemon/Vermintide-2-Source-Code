@@ -1580,7 +1580,7 @@ settings.buff_function_templates = {
 		local career_extension = ScriptUnit.extension(necromancer_unit, "career_system")
 		local passive_ability = career_extension:get_passive_ability_by_name("bw_necromancer")
 
-		passive_ability:stragglify_pets()
+		passive_ability:kill_pets()
 	end,
 	raise_dead_update = function (owner_unit, buff, params, world)
 		if buff._spawning_done then

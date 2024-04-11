@@ -189,6 +189,34 @@ HitReactions.templates = {
 			Managers.state.game_mode:ai_hit_by_player(unit, attacker_unit, hit)
 		end,
 	},
+	chaos_bulwark = {
+		unit = function (unit, dt, context, t, hit)
+			HitReactions.templates.ai_default.unit(unit, dt, context, t, hit)
+
+			local hit_weakspot = hit[DamageDataIndex.HIT_ZONE] == "weakspot"
+
+			if hit_weakspot then
+				local ai_shield_extension = ScriptUnit.extension(unit, "ai_shield_system")
+
+				if not ai_shield_extension.is_blocking then
+					Unit.flow_event(unit, "lua_on_weakspot_hit")
+				end
+			end
+		end,
+		husk = function (unit, dt, context, t, hit)
+			HitReactions.templates.ai_default.husk(unit, dt, context, t, hit)
+
+			local hit_weakspot = hit[DamageDataIndex.HIT_ZONE] == "weakspot"
+
+			if hit_weakspot then
+				local ai_shield_extension = ScriptUnit.extension(unit, "ai_shield_system")
+
+				if not ai_shield_extension:get_is_blocking() then
+					Unit.flow_event(unit, "lua_on_weakspot_hit")
+				end
+			end
+		end,
+	},
 }
 
 HitReactions.get_reaction = function (hit_reaction_template, is_husk)

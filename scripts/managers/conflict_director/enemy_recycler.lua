@@ -55,6 +55,80 @@ EnemyRecycler.init = function (self, world, nav_world, pos_list, pack_sizes, pac
 	self:setup(pos_list, pack_sizes, pack_rotations, pack_members, zone_data_list)
 end
 
+EnemyRecycler.debug_print_all_unspawned_packs = function (self)
+	local areas = self.areas
+
+	for i = 1, #areas do
+		local area = areas[i]
+		local units_in_area = area[AREA_UNITS]
+		local pack_members = area[AREA_PACK_MEMBERS]
+		local area_type = area[AREA_TYPE]
+
+		if not units_in_area and pack_members and area_type == "pack" then
+			for j = 1, #pack_members do
+				local breed = pack_members[j]
+
+				if breed.name then
+					print("Found breed:", breed.name, "in area:", i)
+				else
+					for k = 1, #breed do
+						print("Found sub-breeds:", breed[k].name, "in area:", i)
+					end
+				end
+			end
+		end
+	end
+end
+
+EnemyRecycler.get_replacement_breed = function (self, override_breed)
+	local replace_breed
+
+	if type(override_breed) == "table" then
+		replace_breed = Breeds[override_breed[math.random(1, #override_breed)]]
+	else
+		replace_breed = Breeds[override_breed]
+	end
+
+	return replace_breed
+end
+
+EnemyRecycler.patch_override_breed = function (self, breed_name, override_breed)
+	local areas = self.areas
+
+	for i = 1, #areas do
+		local area = areas[i]
+		local units_in_area = area[AREA_UNITS]
+		local pack_members = area[AREA_PACK_MEMBERS]
+		local area_type = area[AREA_TYPE]
+
+		if not units_in_area and pack_members and area_type == "pack" then
+			for j = 1, #pack_members do
+				local breed = pack_members[j]
+
+				if breed.name then
+					if breed.name == breed_name then
+						local replacement = self:get_replacement_breed(override_breed)
+
+						pack_members[j] = replacement
+
+						print("Replacing breed:", breed_name, "with:", replacement.name, "in area:", i)
+					end
+				else
+					for k = 1, #breed do
+						if breed[k].name == breed_name then
+							local replacement = self:get_replacement_breed(override_breed)
+
+							breed[k] = replacement
+
+							print("Replacing sub-breed:", breed_name, "with:", replacement.name, "in area:", i)
+						end
+					end
+				end
+			end
+		end
+	end
+end
+
 EnemyRecycler._random = function (self, ...)
 	local seed, value = Math.next_random(self._seed, ...)
 

@@ -236,6 +236,11 @@ VolumeExtensionSettings = VolumeExtensionSettings or {
 				traversal_cost = "inferno",
 			},
 		},
+		ai_avoid_area = {
+			[AI] = {
+				traversal_cost = "inferno",
+			},
+		},
 	},
 	movement_volume = {
 		generic_slowdown = {

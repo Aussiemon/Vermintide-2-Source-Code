@@ -4650,6 +4650,56 @@ return function ()
 		},
 	})
 	define_rule({
+		name = "pbw_gameplay_pinging_ecws_a",
+		response = "pbw_gameplay_pinging_ecws_a",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_enemy",
+			},
+			{
+				"query_context",
+				"is_ping",
+				OP.EQ,
+				1,
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_bulwark",
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"bright_wizard",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard",
+			},
+			{
+				"faction_memory",
+				"time_since_ping_enemy",
+				OP.TIMEDIFF,
+				OP.GT,
+				7,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_ping_enemy",
+				OP.TIMESET,
+			},
+		},
+	})
+	define_rule({
 		name = "pbw_gameplay_player_pounced",
 		response = "pbw_gameplay_player_pounced",
 		criterias = {
@@ -5762,6 +5812,63 @@ return function ()
 			{
 				"faction_memory",
 				"last_seen_ungor_archer",
+				OP.TIMESET,
+			},
+		},
+	})
+	define_rule({
+		name = "pbw_gameplay_seeing_an_ecws_a",
+		response = "pbw_gameplay_seeing_an_ecws_a",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_enemy",
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_bulwark",
+			},
+			{
+				"query_context",
+				"distance",
+				OP.GTEQ,
+				4,
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"bright_wizard",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard",
+			},
+			{
+				"faction_memory",
+				"last_heard_globadier",
+				OP.TIMEDIFF,
+				OP.GT,
+				20,
+			},
+			{
+				"faction_memory",
+				"last_seen_globadier",
+				OP.TIMEDIFF,
+				OP.GT,
+				60,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"last_seen_globadier",
 				OP.TIMESET,
 			},
 		},
@@ -12900,6 +13007,45 @@ return function ()
 				1.8435416221619,
 			},
 		},
+		pbw_gameplay_pinging_ecws_a = {
+			category = "enemy_alerts",
+			database = "bright_wizard_honduras",
+			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+			},
+			face_animations = {
+				"face_contempt",
+				"face_contempt",
+				"face_contempt",
+				"face_contempt",
+			},
+			localization_strings = {
+				"pbw_gameplay_pinging_ecws_a_01",
+				"pbw_gameplay_pinging_ecws_a_02",
+				"pbw_gameplay_pinging_ecws_a_03",
+				"pbw_gameplay_pinging_ecws_a_04",
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pbw_gameplay_pinging_ecws_a_01",
+				"pbw_gameplay_pinging_ecws_a_02",
+				"pbw_gameplay_pinging_ecws_a_03",
+				"pbw_gameplay_pinging_ecws_a_04",
+			},
+			sound_events_duration = {
+				1.1297916173935,
+				1.5457916259766,
+				2.2016041278839,
+				1.6708958148956,
+			},
+		},
 		pbw_gameplay_player_pounced = {
 			category = "player_alerts",
 			database = "bright_wizard_honduras",
@@ -14117,6 +14263,45 @@ return function ()
 				2.9178750514984,
 				2.2228333950043,
 				3.2124583721161,
+			},
+		},
+		pbw_gameplay_seeing_an_ecws_a = {
+			category = "enemy_alerts_high",
+			database = "bright_wizard_honduras",
+			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+			},
+			face_animations = {
+				"face_contempt",
+				"face_contempt",
+				"face_contempt",
+				"face_contempt",
+			},
+			localization_strings = {
+				"pbw_gameplay_seeing_an_ecws_a_01",
+				"pbw_gameplay_seeing_an_ecws_a_02",
+				"pbw_gameplay_seeing_an_ecws_a_03",
+				"pbw_gameplay_seeing_an_ecws_a_04",
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pbw_gameplay_seeing_an_ecws_a_01",
+				"pbw_gameplay_seeing_an_ecws_a_02",
+				"pbw_gameplay_seeing_an_ecws_a_03",
+				"pbw_gameplay_seeing_an_ecws_a_04",
+			},
+			sound_events_duration = {
+				2.6157500743866,
+				3.2265000343323,
+				3.0998332500458,
+				3.3285624980927,
 			},
 		},
 		pbw_gameplay_self_heal = {

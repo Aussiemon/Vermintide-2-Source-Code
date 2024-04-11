@@ -19861,6 +19861,1113 @@ HordeCompositions = {
 			start_time = 0,
 		},
 	},
+	whaling_mid_event_chaos_02 = {
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"chaos_marauder",
+					{
+						5,
+						6,
+					},
+					"chaos_fanatic",
+					{
+						5,
+						6,
+					},
+				},
+			},
+			{
+				name = "mixed",
+				weight = 3,
+				breeds = {
+					"chaos_marauder_with_shield",
+					{
+						2,
+						3,
+					},
+					"chaos_marauder",
+					{
+						2,
+						3,
+					},
+					"chaos_fanatic",
+					{
+						5,
+						6,
+					},
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"chaos_marauder",
+					{
+						8,
+						9,
+					},
+					"chaos_fanatic",
+					{
+						5,
+						6,
+					},
+				},
+			},
+			{
+				name = "mixed",
+				weight = 3,
+				breeds = {
+					"chaos_marauder_with_shield",
+					{
+						2,
+						3,
+					},
+					"chaos_marauder",
+					{
+						4,
+						5,
+					},
+					"chaos_fanatic",
+					{
+						5,
+						6,
+					},
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"chaos_marauder",
+					{
+						10,
+						11,
+					},
+					"chaos_fanatic",
+					{
+						5,
+						6,
+					},
+				},
+			},
+			{
+				name = "mixed",
+				weight = 3,
+				breeds = {
+					"chaos_marauder_with_shield",
+					{
+						3,
+						4,
+					},
+					"chaos_marauder",
+					{
+						6,
+						7,
+					},
+					"chaos_fanatic",
+					{
+						5,
+						6,
+					},
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"chaos_marauder",
+					{
+						12,
+						14,
+					},
+					"chaos_fanatic",
+					{
+						5,
+						6,
+					},
+				},
+			},
+			{
+				name = "mixed",
+				weight = 3,
+				breeds = {
+					"chaos_marauder_with_shield",
+					{
+						3,
+						4,
+					},
+					"chaos_marauder",
+					{
+						8,
+						9,
+					},
+					"chaos_fanatic",
+					{
+						5,
+						6,
+					},
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"chaos_marauder",
+					{
+						12,
+						14,
+					},
+					"chaos_fanatic",
+					{
+						5,
+						6,
+					},
+					"chaos_raider",
+					{
+						2,
+						3,
+					},
+				},
+			},
+			{
+				name = "mixed",
+				weight = 3,
+				breeds = {
+					"chaos_marauder_with_shield",
+					{
+						3,
+						4,
+					},
+					"chaos_marauder",
+					{
+						13,
+						14,
+					},
+					"chaos_fanatic",
+					{
+						5,
+						6,
+					},
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"chaos_marauder",
+					{
+						14,
+						16,
+					},
+					"chaos_fanatic",
+					{
+						5,
+						6,
+					},
+					"chaos_raider",
+					{
+						2,
+						3,
+					},
+				},
+			},
+			{
+				name = "mixed",
+				weight = 3,
+				breeds = {
+					"chaos_marauder_with_shield",
+					{
+						4,
+						5,
+					},
+					"chaos_marauder",
+					{
+						15,
+						16,
+					},
+					"chaos_fanatic",
+					{
+						5,
+						6,
+					},
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"chaos_marauder",
+					{
+						14,
+						16,
+					},
+					"chaos_fanatic",
+					{
+						5,
+						6,
+					},
+					"chaos_raider",
+					{
+						2,
+						3,
+					},
+				},
+			},
+			{
+				name = "mixed",
+				weight = 3,
+				breeds = {
+					"chaos_marauder_with_shield",
+					{
+						4,
+						5,
+					},
+					"chaos_marauder",
+					{
+						16,
+						17,
+					},
+					"chaos_fanatic",
+					{
+						5,
+						6,
+					},
+				},
+			},
+		},
+	},
+	whaling_end_event_chaos_01 = {
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"chaos_marauder",
+					{
+						5,
+						6,
+					},
+					"chaos_fanatic",
+					{
+						5,
+						6,
+					},
+				},
+			},
+			{
+				name = "mixed",
+				weight = 3,
+				breeds = {
+					"chaos_marauder_with_shield",
+					{
+						2,
+						3,
+					},
+					"chaos_marauder",
+					{
+						2,
+						3,
+					},
+					"chaos_fanatic",
+					{
+						5,
+						6,
+					},
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"chaos_marauder",
+					{
+						8,
+						9,
+					},
+					"chaos_fanatic",
+					{
+						5,
+						6,
+					},
+				},
+			},
+			{
+				name = "mixed",
+				weight = 3,
+				breeds = {
+					"chaos_marauder_with_shield",
+					{
+						2,
+						3,
+					},
+					"chaos_marauder",
+					{
+						4,
+						5,
+					},
+					"chaos_fanatic",
+					{
+						5,
+						6,
+					},
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"chaos_marauder",
+					{
+						10,
+						11,
+					},
+					"chaos_fanatic",
+					{
+						5,
+						6,
+					},
+				},
+			},
+			{
+				name = "mixed",
+				weight = 3,
+				breeds = {
+					"chaos_marauder_with_shield",
+					{
+						3,
+						4,
+					},
+					"chaos_marauder",
+					{
+						6,
+						7,
+					},
+					"chaos_fanatic",
+					{
+						5,
+						6,
+					},
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"chaos_marauder",
+					{
+						12,
+						14,
+					},
+					"chaos_fanatic",
+					{
+						5,
+						6,
+					},
+				},
+			},
+			{
+				name = "mixed",
+				weight = 3,
+				breeds = {
+					"chaos_marauder_with_shield",
+					{
+						3,
+						4,
+					},
+					"chaos_marauder",
+					{
+						8,
+						9,
+					},
+					"chaos_fanatic",
+					{
+						5,
+						6,
+					},
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"chaos_marauder",
+					{
+						12,
+						14,
+					},
+					"chaos_fanatic",
+					{
+						5,
+						6,
+					},
+					"chaos_raider",
+					{
+						2,
+						3,
+					},
+				},
+			},
+			{
+				name = "mixed",
+				weight = 3,
+				breeds = {
+					"chaos_marauder_with_shield",
+					{
+						3,
+						4,
+					},
+					"chaos_marauder",
+					{
+						10,
+						11,
+					},
+					"chaos_fanatic",
+					{
+						5,
+						6,
+					},
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"chaos_marauder",
+					{
+						14,
+						16,
+					},
+					"chaos_fanatic",
+					{
+						5,
+						6,
+					},
+					"chaos_raider",
+					{
+						2,
+						3,
+					},
+				},
+			},
+			{
+				name = "mixed",
+				weight = 3,
+				breeds = {
+					"chaos_marauder_with_shield",
+					{
+						4,
+						5,
+					},
+					"chaos_marauder",
+					{
+						12,
+						13,
+					},
+					"chaos_fanatic",
+					{
+						5,
+						6,
+					},
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"chaos_marauder",
+					{
+						14,
+						16,
+					},
+					"chaos_fanatic",
+					{
+						5,
+						6,
+					},
+					"chaos_raider",
+					{
+						2,
+						3,
+					},
+				},
+			},
+			{
+				name = "mixed",
+				weight = 3,
+				breeds = {
+					"chaos_marauder_with_shield",
+					{
+						4,
+						5,
+					},
+					"chaos_marauder",
+					{
+						14,
+						15,
+					},
+					"chaos_fanatic",
+					{
+						5,
+						6,
+					},
+				},
+			},
+		},
+	},
+	whaling_mid_event_chaos_01 = {
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"chaos_marauder",
+					{
+						5,
+						6,
+					},
+					"chaos_fanatic",
+					{
+						20,
+						25,
+					},
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"chaos_marauder",
+					{
+						8,
+						9,
+					},
+					"chaos_fanatic",
+					{
+						20,
+						25,
+					},
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"chaos_marauder",
+					{
+						10,
+						11,
+					},
+					"chaos_fanatic",
+					{
+						20,
+						25,
+					},
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"chaos_marauder",
+					{
+						12,
+						14,
+					},
+					"chaos_fanatic",
+					{
+						20,
+						25,
+					},
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"chaos_marauder",
+					{
+						12,
+						14,
+					},
+					"chaos_fanatic",
+					{
+						20,
+						25,
+					},
+					"chaos_raider",
+					{
+						2,
+						3,
+					},
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"chaos_marauder",
+					{
+						14,
+						16,
+					},
+					"chaos_fanatic",
+					{
+						20,
+						25,
+					},
+					"chaos_raider",
+					{
+						2,
+						3,
+					},
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"chaos_marauder",
+					{
+						14,
+						16,
+					},
+					"chaos_fanatic",
+					{
+						20,
+						25,
+					},
+					"chaos_raider",
+					{
+						2,
+						3,
+					},
+				},
+			},
+		},
+	},
+	whaling_mid_event_spice_chaos_raiders = {
+		{
+			{
+				name = "raiders",
+				weight = 3,
+				breeds = {
+					"chaos_marauder",
+					{
+						5,
+						6,
+					},
+					"chaos_raider",
+					{
+						1,
+						2,
+					},
+				},
+			},
+		},
+		{
+			{
+				name = "raiders",
+				weight = 3,
+				breeds = {
+					"chaos_marauder",
+					{
+						5,
+						6,
+					},
+					"chaos_raider",
+					{
+						2,
+						3,
+					},
+				},
+			},
+		},
+		{
+			{
+				name = "raiders",
+				weight = 3,
+				breeds = {
+					"chaos_marauder",
+					{
+						5,
+						6,
+					},
+					"chaos_raider",
+					{
+						3,
+						4,
+					},
+				},
+			},
+		},
+		{
+			{
+				name = "raiders",
+				weight = 3,
+				breeds = {
+					"chaos_marauder",
+					{
+						5,
+						6,
+					},
+					"chaos_raider",
+					{
+						5,
+						6,
+					},
+				},
+			},
+		},
+		{
+			{
+				name = "raiders",
+				weight = 3,
+				breeds = {
+					"chaos_marauder",
+					{
+						5,
+						6,
+					},
+					"chaos_raider",
+					{
+						8,
+						9,
+					},
+				},
+			},
+		},
+		{
+			{
+				name = "raiders",
+				weight = 3,
+				breeds = {
+					"chaos_marauder",
+					{
+						5,
+						6,
+					},
+					"chaos_raider",
+					{
+						8,
+						9,
+					},
+				},
+			},
+		},
+		{
+			{
+				name = "raiders",
+				weight = 3,
+				breeds = {
+					"chaos_marauder",
+					{
+						5,
+						6,
+					},
+					"chaos_raider",
+					{
+						8,
+						9,
+					},
+				},
+			},
+		},
+	},
+	whaling_mid_event_spice_chaos_berzerkers = {
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"chaos_marauder",
+					{
+						5,
+						6,
+					},
+					"chaos_berzerker",
+					{
+						1,
+						2,
+					},
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"chaos_marauder",
+					{
+						5,
+						6,
+					},
+					"chaos_berzerker",
+					{
+						2,
+						3,
+					},
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"chaos_marauder",
+					{
+						5,
+						6,
+					},
+					"chaos_berzerker",
+					{
+						3,
+						4,
+					},
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"chaos_marauder",
+					{
+						5,
+						6,
+					},
+					"chaos_berzerker",
+					{
+						4,
+						5,
+					},
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"chaos_marauder",
+					{
+						5,
+						6,
+					},
+					"chaos_berzerker",
+					{
+						5,
+						6,
+					},
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"chaos_marauder",
+					{
+						5,
+						6,
+					},
+					"chaos_berzerker",
+					{
+						5,
+						6,
+					},
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"chaos_marauder",
+					{
+						5,
+						6,
+					},
+					"chaos_berzerker",
+					{
+						5,
+						6,
+					},
+				},
+			},
+		},
+	},
+	whaling_mid_event_spice_chaos_shields = {
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"chaos_marauder",
+					{
+						5,
+						6,
+					},
+					"chaos_marauder_with_shield",
+					{
+						3,
+						4,
+					},
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"chaos_marauder",
+					{
+						5,
+						6,
+					},
+					"chaos_marauder_with_shield",
+					{
+						4,
+						5,
+					},
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"chaos_marauder",
+					{
+						5,
+						6,
+					},
+					"chaos_marauder_with_shield",
+					{
+						5,
+						6,
+					},
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"chaos_marauder",
+					{
+						5,
+						6,
+					},
+					"chaos_marauder_with_shield",
+					{
+						7,
+						8,
+					},
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"chaos_marauder",
+					{
+						5,
+						6,
+					},
+					"chaos_marauder_with_shield",
+					{
+						8,
+						9,
+					},
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"chaos_marauder",
+					{
+						5,
+						6,
+					},
+					"chaos_marauder_with_shield",
+					{
+						8,
+						9,
+					},
+				},
+			},
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"chaos_marauder",
+					{
+						5,
+						6,
+					},
+					"chaos_marauder_with_shield",
+					{
+						8,
+						9,
+					},
+				},
+			},
+		},
+	},
 	pathfind_test_light = {
 		{
 			{

@@ -246,6 +246,94 @@ return function ()
 		},
 	})
 	define_rule({
+		name = "pbw_generic_found_key_known_purpose_a",
+		response = "pbw_generic_found_key_known_purpose_a",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item",
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"generic_key_known_purpose",
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"bright_wizard",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard",
+			},
+			{
+				"faction_memory",
+				"generic_key",
+				OP.EQ,
+				0,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"generic_key",
+				OP.ADD,
+				1,
+			},
+		},
+	})
+	define_rule({
+		name = "pbw_generic_found_key_unknown_purpose_a",
+		response = "pbw_generic_found_key_unknown_purpose_a",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item",
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"generic_key_unknown_purpose",
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"bright_wizard",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard",
+			},
+			{
+				"faction_memory",
+				"generic_key",
+				OP.EQ,
+				0,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"generic_key",
+				OP.ADD,
+				1,
+			},
+		},
+	})
+	define_rule({
 		name = "pbw_generic_getting_dark_outside",
 		response = "pbw_generic_getting_dark_outside",
 		criterias = {
@@ -962,6 +1050,74 @@ return function ()
 				1.1784166097641,
 				1.0940208435059,
 				1.9392708539963,
+			},
+		},
+		pbw_generic_found_key_known_purpose_a = {
+			category = "level_talk",
+			database = "bright_wizard_generic_vo",
+			dialogue_animations_n = 3,
+			face_animations_n = 3,
+			randomize_indexes_n = 0,
+			sound_events_n = 3,
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+			},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+			},
+			localization_strings = {
+				"pbw_gameplay_found_key_known_purpose_a_01",
+				"pbw_gameplay_found_key_known_purpose_a_02",
+				"pbw_gameplay_found_key_known_purpose_a_03",
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pbw_gameplay_found_key_known_purpose_a_01",
+				"pbw_gameplay_found_key_known_purpose_a_02",
+				"pbw_gameplay_found_key_known_purpose_a_03",
+			},
+			sound_events_duration = {
+				1.1974166631699,
+				1.8944375514984,
+				1.6510833501816,
+			},
+		},
+		pbw_generic_found_key_unknown_purpose_a = {
+			category = "level_talk",
+			database = "bright_wizard_generic_vo",
+			dialogue_animations_n = 3,
+			face_animations_n = 3,
+			randomize_indexes_n = 0,
+			sound_events_n = 3,
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+			},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+			},
+			localization_strings = {
+				"pbw_gameplay_found_key_unknown_purpose_a_01",
+				"pbw_gameplay_found_key_unknown_purpose_a_02",
+				"pbw_gameplay_found_key_unknown_purpose_a_03",
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pbw_gameplay_found_key_unknown_purpose_a_01",
+				"pbw_gameplay_found_key_unknown_purpose_a_02",
+				"pbw_gameplay_found_key_unknown_purpose_a_03",
+			},
+			sound_events_duration = {
+				1.45993745327,
+				1.5460833311081,
+				1.0101041793823,
 			},
 		},
 		pbw_generic_getting_dark_outside = {

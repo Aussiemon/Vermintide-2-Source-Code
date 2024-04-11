@@ -59,6 +59,14 @@ BTConditions.stagger = function (blackboard)
 	end
 end
 
+BTConditions.stagger_activated = function (blackboard)
+	if blackboard.stagger_activated then
+		return true
+	end
+
+	return false
+end
+
 BTConditions.grey_seer_stagger = function (blackboard)
 	if blackboard.stagger then
 		if blackboard.stagger_prohibited then

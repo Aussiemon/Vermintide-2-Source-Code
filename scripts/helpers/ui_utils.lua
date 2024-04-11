@@ -362,6 +362,25 @@ UIUtils.is_button_pressed = function (widget, hotspot_name, keyboard_input)
 	return false
 end
 
+UIUtils.is_right_button_pressed = function (widget, hotspot_name, keyboard_input)
+	if widget then
+		local content = widget.content
+		local hotspot = content[hotspot_name] or content.button_hotspot or content.hotspot
+
+		if hotspot.on_right_click then
+			hotspot.on_right_click = false
+
+			return true
+		elseif hotspot.is_selected and keyboard_input then
+			hotspot.is_selected = false
+
+			return true
+		end
+	end
+
+	return false
+end
+
 UIUtils.is_button_held = function (widget, hotspot_name)
 	if widget then
 		local content = widget.content

@@ -414,16 +414,6 @@ GenericStatusExtension.update = function (self, unit, input, dt, context, t)
 	for _, func in pairs(self.update_funcs) do
 		func(self, t)
 	end
-
-	if self.player.local_player then
-		local in_end_zone = self:is_in_end_zone()
-
-		if self._current_end_zone_state ~= in_end_zone then
-			Wwise.set_state("inside_waystone", in_end_zone and "true" or "false")
-
-			self._current_end_zone_state = in_end_zone
-		end
-	end
 end
 
 GenericStatusExtension.set_spawn_grace_time = function (self, duration)
@@ -2429,14 +2419,29 @@ GenericStatusExtension.hot_join_sync = function (self, sender)
 	RPC.rpc_status_change_bool(channel_id, lookup.in_end_zone, self.in_end_zone, self_game_object_id, 0)
 end
 
-GenericStatusExtension.set_in_end_zone = function (self, in_end_zone)
+GenericStatusExtension.set_in_end_zone = function (self, in_end_zone, end_zone_unit)
 	if self.is_server and self.in_end_zone ~= in_end_zone then
 		local go_id = Managers.state.unit_storage:go_id(self.unit)
+		local end_zone_go_id, end_zone_is_level_unit = Managers.state.network:game_object_or_level_id(end_zone_unit)
 
-		Managers.state.network.network_transmit:send_rpc_clients("rpc_status_change_bool", NetworkLookup.statuses.in_end_zone, in_end_zone, go_id, 0)
+		end_zone_go_id = end_zone_go_id or NetworkConstants.invalid_game_object_id
+
+		Managers.state.network.network_transmit:send_rpc_clients("rpc_status_change_bool", NetworkLookup.statuses.in_end_zone, in_end_zone, go_id, end_zone_go_id)
 	end
 
 	self.in_end_zone = in_end_zone
+
+	if self.player.local_player and self._current_end_zone_state ~= in_end_zone then
+		local end_zone_mutes_sound = true
+
+		if end_zone_unit then
+			end_zone_mutes_sound = not Unit.get_data(end_zone_unit, "effects_disabled")
+		end
+
+		Wwise.set_state("inside_waystone", in_end_zone and end_zone_mutes_sound and "true" or "false")
+
+		self._current_end_zone_state = in_end_zone
+	end
 end
 
 GenericStatusExtension.set_is_aiming = function (self, aiming)

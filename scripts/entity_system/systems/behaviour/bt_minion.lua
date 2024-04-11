@@ -36,6 +36,7 @@ dofile("scripts/entity_system/systems/behaviour/trees/chaos/chaos_troll_behavior
 dofile("scripts/entity_system/systems/behaviour/trees/chaos/chaos_dummy_troll_behavior")
 dofile("scripts/entity_system/systems/behaviour/trees/chaos/chaos_dummy_sorcerer_behavior")
 dofile("scripts/entity_system/systems/behaviour/trees/chaos/chaos_warrior_behavior")
+dofile("scripts/entity_system/systems/behaviour/trees/chaos/chaos_bulwark_behavior")
 dofile("scripts/entity_system/systems/behaviour/trees/chaos/chaos_vortex_behavior")
 dofile("scripts/entity_system/systems/behaviour/trees/chaos/chaos_vortex_sorcerer_behavior")
 dofile("scripts/entity_system/systems/behaviour/trees/chaos/chaos_plague_sorcerer_behavior")

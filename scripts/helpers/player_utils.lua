@@ -114,3 +114,21 @@ PlayerUtils.broadphase_query = function (position, radius, result_table, broadph
 
 	return num_hits
 end
+
+PlayerUtils.peer_id_compare = function (peer_a, peer_b)
+	local upper_a = tonumber(string.format("0x%s", string.sub(peer_a, 1, 8)))
+	local upper_b = tonumber(string.format("0x%s", string.sub(peer_b, 1, 8)))
+
+	if upper_a ~= upper_b then
+		return upper_a < upper_b
+	end
+
+	local lower_a = tonumber(string.format("0x%s", string.sub(peer_a, 8, 16)))
+	local lower_b = tonumber(string.format("0x%s", string.sub(peer_b, 8, 16)))
+
+	if lower_a ~= lower_b then
+		return lower_a < lower_b
+	end
+
+	return true
+end

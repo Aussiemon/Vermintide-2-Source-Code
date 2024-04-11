@@ -198,6 +198,8 @@ BTAlertedAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	if not blackboard.confirmed_player_sighting then
 		Managers.state.network:anim_event(unit, "to_passive")
 	end
+
+	blackboard.lerp_into_follow = blackboard.breed.lerp_alerted_into_follow_speed or nil
 end
 
 local function contains(wanted_event, event)

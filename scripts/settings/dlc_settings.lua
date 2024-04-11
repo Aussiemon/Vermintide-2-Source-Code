@@ -399,6 +399,17 @@ DLCSettings = DLCSettings or {
 			sound = "scripts/settings/dlcs/karak_azgaraz/karak_azgaraz_sound_settings_part_3",
 		},
 	},
+	karak_azgaraz_part_4 = {
+		localization = "localization/whaling_village",
+		package_name = "resource_packages/dlcs/karak_azgaraz_part_4",
+		additional_settings = {
+			achievements = "scripts/settings/dlcs/karak_azgaraz/karak_azgaraz_achievement_settings_part_4",
+			ai = "scripts/settings/dlcs/karak_azgaraz/karak_azgaraz_ai_settings_part_4",
+			common = "scripts/settings/dlcs/karak_azgaraz/karak_azgaraz_common_settings_part_4",
+			level = "scripts/settings/dlcs/karak_azgaraz/karak_azgaraz_level_settings_part_4",
+			sound = "scripts/settings/dlcs/karak_azgaraz/karak_azgaraz_sound_settings_part_4",
+		},
+	},
 	cosmetics_2023_q1 = {
 		localization = "localization/cosmetics_2023_q1",
 		package_name = "resource_packages/dlcs/cosmetics_2023_q1",

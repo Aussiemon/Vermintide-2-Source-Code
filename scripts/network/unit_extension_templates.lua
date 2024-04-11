@@ -646,6 +646,34 @@ local unit_templates = {
 			},
 		},
 	},
+	ai_unit_chaos_bulwark = {
+		base_template = "ai_unit_base",
+		go_type = "ai_unit_with_inventory_and_shield",
+		self_owned_extensions = {
+			"AILineOfSightExtension",
+			"AIInventoryExtension",
+			"AIEnemySlotExtension",
+			"PingTargetExtension",
+			"BulwarkShieldExtension",
+			"GenericUnitAimExtension",
+		},
+		husk_extensions = {
+			"AIInventoryExtension",
+			"PingTargetExtension",
+			"BulwarkHuskShieldExtension",
+			"GenericUnitAimExtension",
+		},
+		remove_when_killed = {
+			self_owned_extensions = {
+				"AILineOfSightExtension",
+				"AIEnemySlotExtension",
+				"GenericUnitAimExtension",
+			},
+			husk_extensions = {
+				"GenericUnitAimExtension",
+			},
+		},
+	},
 	ai_unit_training_dummy_bob = {
 		go_type = "ai_unit_training_dummy_bob",
 		self_owned_extensions = {

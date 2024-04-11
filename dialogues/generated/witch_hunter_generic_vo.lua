@@ -246,6 +246,94 @@ return function ()
 		},
 	})
 	define_rule({
+		name = "pwh_generic_found_key_known_purpose_a",
+		response = "pwh_generic_found_key_known_purpose_a",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item",
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"generic_key_known_purpose",
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"witch_hunter",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter",
+			},
+			{
+				"faction_memory",
+				"generic_key",
+				OP.EQ,
+				0,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"generic_key",
+				OP.ADD,
+				1,
+			},
+		},
+	})
+	define_rule({
+		name = "pwh_generic_found_key_unknown_purpose_a",
+		response = "pwh_generic_found_key_unknown_purpose_a",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item",
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"generic_key_unknown_purpose",
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"witch_hunter",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter",
+			},
+			{
+				"faction_memory",
+				"generic_key",
+				OP.EQ,
+				0,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"generic_key",
+				OP.ADD,
+				1,
+			},
+		},
+	})
+	define_rule({
 		name = "pwh_generic_getting_dark_outside",
 		response = "pwh_generic_getting_dark_outside",
 		criterias = {
@@ -962,6 +1050,74 @@ return function ()
 				1.4766249656677,
 				1.3646041154861,
 				1.2576667070389,
+			},
+		},
+		pwh_generic_found_key_known_purpose_a = {
+			category = "level_talk",
+			database = "witch_hunter_generic_vo",
+			dialogue_animations_n = 3,
+			face_animations_n = 3,
+			randomize_indexes_n = 0,
+			sound_events_n = 3,
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+			},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+			},
+			localization_strings = {
+				"pwh_gameplay_found_key_known_purpose_a_01",
+				"pwh_gameplay_found_key_known_purpose_a_02",
+				"pwh_gameplay_found_key_known_purpose_a_03",
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pwh_gameplay_found_key_known_purpose_a_01",
+				"pwh_gameplay_found_key_known_purpose_a_02",
+				"pwh_gameplay_found_key_known_purpose_a_03",
+			},
+			sound_events_duration = {
+				2.0362083911896,
+				1.7925000190735,
+				2.0216040611267,
+			},
+		},
+		pwh_generic_found_key_unknown_purpose_a = {
+			category = "level_talk",
+			database = "witch_hunter_generic_vo",
+			dialogue_animations_n = 3,
+			face_animations_n = 3,
+			randomize_indexes_n = 0,
+			sound_events_n = 3,
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+			},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+			},
+			localization_strings = {
+				"pwh_gameplay_found_key_unknown_purpose_a_01",
+				"pwh_gameplay_found_key_unknown_purpose_a_02",
+				"pwh_gameplay_found_key_unknown_purpose_a_03",
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pwh_gameplay_found_key_unknown_purpose_a_01",
+				"pwh_gameplay_found_key_unknown_purpose_a_02",
+				"pwh_gameplay_found_key_unknown_purpose_a_03",
+			},
+			sound_events_duration = {
+				2.8103542327881,
+				1.9000624418259,
+				2.8217709064484,
 			},
 		},
 		pwh_generic_getting_dark_outside = {

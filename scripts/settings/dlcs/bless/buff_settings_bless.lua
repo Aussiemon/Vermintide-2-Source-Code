@@ -942,7 +942,7 @@ settings.buff_function_templates = {
 			return
 		end
 
-		if ALIVE[owner_unit] then
+		if ALIVE[owner_unit] and ALIVE[buff.attacker_unit] then
 			local data = buff.value
 
 			if data.perm_hp > 0 then

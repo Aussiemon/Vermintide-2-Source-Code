@@ -2229,6 +2229,28 @@ InteractionDefinitions.talents_access.client.hud_description = function (interac
 	return Unit.get_data(interactable_unit, "interaction_data", "hud_description"), "interaction_action_open"
 end
 
+InteractionDefinitions.loadout_access = InteractionDefinitions.loadout_access or table.clone(InteractionDefinitions.smartobject)
+InteractionDefinitions.loadout_access.config.swap_to_3p = false
+
+InteractionDefinitions.loadout_access.client.stop = function (world, interactor_unit, interactable_unit, data, config, t, result)
+	data.start_time = nil
+
+	if result == InteractionResult.SUCCESS and not data.is_husk then
+		Managers.ui:handle_transition("character_selection_force", {
+			menu_state_name = "loadouts",
+			use_fade = true,
+		})
+	end
+end
+
+InteractionDefinitions.loadout_access.client.can_interact = function (interactor_unit, interactable_unit, data, config)
+	return true
+end
+
+InteractionDefinitions.loadout_access.client.hud_description = function (interactable_unit, data, config, fail_reason, interactor_unit)
+	return Unit.get_data(interactable_unit, "interaction_data", "hud_description"), "interaction_action_open"
+end
+
 InteractionDefinitions.cosmetics_access = InteractionDefinitions.cosmetics_access or table.clone(InteractionDefinitions.smartobject)
 InteractionDefinitions.cosmetics_access.config.swap_to_3p = false
 

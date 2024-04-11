@@ -246,6 +246,94 @@ return function ()
 		},
 	})
 	define_rule({
+		name = "pdr_generic_found_key_known_purpose_a",
+		response = "pdr_generic_found_key_known_purpose_a",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item",
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"generic_key_known_purpose",
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"dwarf_ranger",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger",
+			},
+			{
+				"faction_memory",
+				"generic_key",
+				OP.EQ,
+				0,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"generic_key",
+				OP.ADD,
+				1,
+			},
+		},
+	})
+	define_rule({
+		name = "pdr_generic_found_key_unknown_purpose_a",
+		response = "pdr_generic_found_key_unknown_purpose_a",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item",
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"generic_key_unknown_purpose",
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"dwarf_ranger",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger",
+			},
+			{
+				"faction_memory",
+				"generic_key",
+				OP.EQ,
+				0,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"generic_key",
+				OP.ADD,
+				1,
+			},
+		},
+	})
+	define_rule({
 		name = "pdr_generic_getting_dark_outside",
 		response = "pdr_generic_getting_dark_outside",
 		criterias = {
@@ -962,6 +1050,74 @@ return function ()
 				1.6719791889191,
 				2.022125005722,
 				1.5072083473206,
+			},
+		},
+		pdr_generic_found_key_known_purpose_a = {
+			category = "level_talk",
+			database = "dwarf_ranger_generic_vo",
+			dialogue_animations_n = 3,
+			face_animations_n = 3,
+			randomize_indexes_n = 0,
+			sound_events_n = 3,
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+			},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+			},
+			localization_strings = {
+				"pdr_gameplay_found_key_known_purpose_a_01",
+				"pdr_gameplay_found_key_known_purpose_a_02",
+				"pdr_gameplay_found_key_known_purpose_a_03",
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pdr_gameplay_found_key_known_purpose_a_01",
+				"pdr_gameplay_found_key_known_purpose_a_02",
+				"pdr_gameplay_found_key_known_purpose_a_03",
+			},
+			sound_events_duration = {
+				1.9094791412354,
+				1.7547916173935,
+				1.7470624446869,
+			},
+		},
+		pdr_generic_found_key_unknown_purpose_a = {
+			category = "level_talk",
+			database = "dwarf_ranger_generic_vo",
+			dialogue_animations_n = 3,
+			face_animations_n = 3,
+			randomize_indexes_n = 0,
+			sound_events_n = 3,
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+			},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+			},
+			localization_strings = {
+				"pdr_gameplay_found_key_unknown_purpose_a_01",
+				"pdr_gameplay_found_key_unknown_purpose_a_02",
+				"pdr_gameplay_found_key_unknown_purpose_a_03",
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pdr_gameplay_found_key_unknown_purpose_a_01",
+				"pdr_gameplay_found_key_unknown_purpose_a_02",
+				"pdr_gameplay_found_key_unknown_purpose_a_03",
+			},
+			sound_events_duration = {
+				1.5256667137146,
+				1.5436041355133,
+				2.0860834121704,
 			},
 		},
 		pdr_generic_getting_dark_outside = {

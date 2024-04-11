@@ -22,7 +22,7 @@ BTSpawningAction.enter = function (self, unit, blackboard, t)
 
 	local breed = blackboard.breed
 
-	blackboard.uses_spawn_animation = blackboard.spawn_type == "horde" or breed.uses_spawn_animation
+	blackboard.uses_spawn_animation = blackboard.spawn_type == "horde" or breed.uses_spawn_animation or blackboard.spawn_animation_override
 
 	if blackboard.uses_spawn_animation then
 		local ai_extension = ScriptUnit.extension(unit, "ai_system")
@@ -68,6 +68,8 @@ BTSpawningAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	blackboard.spawning_finished = nil
 	blackboard.spawn_last_pos = nil
 	blackboard.fallback_landing_t = nil
+	blackboard.spawn_animation_override = nil
+	blackboard.spawn_exit_time = nil
 
 	local ai_navigation = blackboard.navigation_extension
 
@@ -127,10 +129,11 @@ BTSpawningAction.run = function (self, unit, blackboard, t, dt)
 
 	local locomotion_extension = blackboard.locomotion_extension
 	local spawning_finished = blackboard.spawning_finished
+	local spawn_exit_time_finished = not blackboard.spawn_exit_time and true or t > blackboard.spawn_exit_time
 	local nav_world = blackboard.nav_world
 	local current_pos = POSITION_LOOKUP[unit]
 
-	if spawning_finished then
+	if spawning_finished and spawn_exit_time_finished then
 		if blackboard.instant_spawn then
 			return "done"
 		elseif not blackboard.spawn_landing_state then

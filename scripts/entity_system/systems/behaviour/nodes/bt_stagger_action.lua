@@ -194,6 +194,7 @@ BTStaggerAction.clean_blackboard = function (self, blackboard)
 	blackboard.stagger_type = nil
 	blackboard.staggering_id = nil
 	blackboard.active_node = nil
+	blackboard.stagger_activated = nil
 end
 
 BTStaggerAction.leave = function (self, unit, blackboard, t, reason, destroy)

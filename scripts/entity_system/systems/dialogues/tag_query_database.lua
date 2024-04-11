@@ -289,6 +289,10 @@ TagQueryDatabase.iterate_query = function (self, t)
 	return query
 end
 
+TagQueryDatabase.has_queries = function (self)
+	return not table.is_empty(self.queries)
+end
+
 TagQueryDatabase._debug_print_query = function (self, query, user_context_list, global_context)
 	print("--------------- STARTING NEW QUERY ---------------")
 	print("Query context:")

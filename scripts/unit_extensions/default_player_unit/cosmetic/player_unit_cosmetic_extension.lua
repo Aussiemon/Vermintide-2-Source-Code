@@ -188,7 +188,7 @@ end
 PlayerUnitCosmeticExtension.update = function (self, unit, dummy_input, dt, context, t)
 	self._queue_3p_event_name = nil
 
-	if POSITION_LOOKUP[unit] then
+	if ALIVE[unit] then
 		self:_update_player_standing_still_events(t)
 	end
 end
@@ -243,7 +243,7 @@ PlayerUnitCosmeticExtension._update_player_standing_still_events = function (sel
 
 	if t > last_tick + afk_data.tickrate then
 		local last_pos = afk_data.last_player_pos:unbox()
-		local current_pos = POSITION_LOOKUP[unit]
+		local current_pos = Unit.local_position(unit, 0)
 
 		if Vector3.distance_squared(last_pos, current_pos) > 0.1 then
 			afk_data.last_player_move_t = t

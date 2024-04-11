@@ -40,6 +40,45 @@ AnimationCallbackTemplates.server.anim_cb_stunned_finished = function (unit, par
 	blackboard.blocked = nil
 end
 
+AnimationCallbackTemplates.server.anim_cb_stagger_light_finished = function (unit, param)
+	if not ALIVE[unit] then
+		return
+	end
+
+	local breed = Unit.get_data(unit, "breed")
+	local blackboard = BLACKBOARDS[unit]
+
+	if breed.handle_stagger_anim_cb then
+		breed.handle_stagger_anim_cb(unit, blackboard, "anim_cb_stagger_light_finished")
+	end
+end
+
+AnimationCallbackTemplates.server.anim_cb_stagger_medium_finished = function (unit, param)
+	if not ALIVE[unit] then
+		return
+	end
+
+	local breed = Unit.get_data(unit, "breed")
+	local blackboard = BLACKBOARDS[unit]
+
+	if breed.handle_stagger_anim_cb then
+		breed.handle_stagger_anim_cb(unit, blackboard, "anim_cb_stagger_medium_finished")
+	end
+end
+
+AnimationCallbackTemplates.server.anim_cb_stagger_heavy_finished = function (unit, param)
+	if not ALIVE[unit] then
+		return
+	end
+
+	local breed = Unit.get_data(unit, "breed")
+	local blackboard = BLACKBOARDS[unit]
+
+	if breed.handle_stagger_anim_cb then
+		breed.handle_stagger_anim_cb(unit, blackboard, "anim_cb_stagger_heavy_finished")
+	end
+end
+
 AnimationCallbackTemplates.server.anim_cb_tp_end_enter = function (unit, param)
 	local blackboard = BLACKBOARDS[unit]
 
@@ -945,6 +984,30 @@ AnimationCallbackTemplates.client.anim_cb_enable_skeleton_collison = function (u
 	local ai_extension = ScriptUnit.extension(unit, "ai_system")
 
 	ai_extension.player_locomotion_constrain_radius = breed.player_locomotion_constrain_radius or nil
+end
+
+AnimationCallbackTemplates.server.anim_cb_shielded = function (unit, param)
+	if ScriptUnit.has_extension(unit, "ai_shield_system") then
+		local shield_extension = ScriptUnit.extension(unit, "ai_shield_system")
+
+		shield_extension:set_is_blocking(true)
+	end
+
+	local blackboard = BLACKBOARDS[unit]
+
+	blackboard.shield_is_up = true
+end
+
+AnimationCallbackTemplates.server.anim_cb_unshielded = function (unit, param)
+	if ScriptUnit.has_extension(unit, "ai_shield_system") then
+		local shield_extension = ScriptUnit.extension(unit, "ai_shield_system")
+
+		shield_extension:set_is_blocking(false)
+	end
+
+	local blackboard = BLACKBOARDS[unit]
+
+	blackboard.shield_is_up = false
 end
 
 DLCUtils.require_list("animation_callback_template_files")

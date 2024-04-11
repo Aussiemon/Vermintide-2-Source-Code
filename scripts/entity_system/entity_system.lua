@@ -158,6 +158,8 @@ require("scripts/unit_extensions/cutscene_camera/cutscene_camera")
 require("scripts/unit_extensions/smart_targeting/player_unit_smart_targeting_extension")
 require("scripts/unit_extensions/human/ai_player_unit/ai_shield_user_extension")
 require("scripts/unit_extensions/human/ai_player_unit/ai_shield_user_husk_extension")
+require("scripts/unit_extensions/human/ai_player_unit/bulwark_shield_extension")
+require("scripts/unit_extensions/human/ai_player_unit/bulwark_husk_shield_extension")
 require("scripts/unit_extensions/props/quest_challenge_prop_extension")
 require("scripts/unit_extensions/weaves/weave_capture_point_extension")
 require("scripts/unit_extensions/weaves/weave_target_extension")
@@ -240,6 +242,8 @@ EntitySystem._init_systems = function (self, entity_system_creation_context)
 	self:_add_system("ai_shield_system", ExtensionSystemBase, entity_system_creation_context, {
 		"AIShieldUserExtension",
 		"AIShieldUserHuskExtension",
+		"BulwarkShieldExtension",
+		"BulwarkHuskShieldExtension",
 	})
 	self:_add_system("ai_inventory_system", AIInventorySystem, entity_system_creation_context)
 	self:_add_system("ai_inventory_item_system", AIInventoryItemSystem, entity_system_creation_context)

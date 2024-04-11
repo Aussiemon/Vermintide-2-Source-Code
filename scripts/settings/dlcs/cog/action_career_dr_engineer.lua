@@ -12,13 +12,14 @@ ActionCareerDREngineer.init = function (self, world, item_name, is_server, owner
 end
 
 ActionCareerDREngineer.client_owner_start_action = function (self, new_action, t, chain_action_data, power_level, action_init_data)
+	ActionCareerDREngineer.super.client_owner_start_action(self, new_action, t, chain_action_data, power_level)
+
 	if self._talent_extension:has_talent("bardin_engineer_reduced_ability_fire_slowdown") then
 		self._max_rps = new_action.max_rps * 1.3
 		self._current_rps = self._max_rps
 	end
 
 	Managers.state.achievement:trigger_event("crank_gun_fire_start", self.owner_unit)
-	ActionCareerDREngineer.super.client_owner_start_action(self, new_action, t, chain_action_data, power_level)
 end
 
 ActionCareerDREngineer._update_attack_speed = function (self, t)

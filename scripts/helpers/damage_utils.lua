@@ -579,6 +579,8 @@ local function do_stagger_calculation(stagger_table, breed, blackboard, attacker
 	local is_ranged
 	local optional_modifier_data = FrameTable.alloc_table()
 
+	optional_modifier_data.damage_profile = damage_profile
+
 	if breed then
 		local item_data = rawget(ItemMasterList, damage_source)
 		local weapon_template_name = item_data and item_data.template
@@ -589,9 +591,10 @@ local function do_stagger_calculation(stagger_table, breed, blackboard, attacker
 
 			is_ranged = buff_type and RangedBuffTypes[buff_type]
 			optional_modifier_data.is_ranged = is_ranged
-			optional_modifier_data.is_explosion = damage_profile.is_explosion
 		end
 	end
+
+	optional_modifier_data.is_ranged = is_ranged
 
 	local stagger_count = is_player and status_extension and status_extension:stagger_count() or blackboard.stagger_count or 0
 
@@ -798,6 +801,10 @@ local function do_stagger_calculation(stagger_table, breed, blackboard, attacker
 		duration = math.max(duration + math.random() * 0.25, 0)
 	end
 
+	if breed.max_stagger_duration then
+		duration = math.min(duration, breed.max_stagger_duration)
+	end
+
 	if damage_profile.is_pull and target_unit then
 		local target_position = POSITION_LOOKUP[target_unit] or Unit.world_position(target_unit, 0)
 		local attacker_position = POSITION_LOOKUP[attacker_unit] or Unit.world_position(attacker_unit, 0)
@@ -920,8 +927,6 @@ end
 DamageUtils.stagger_player = function (unit, breed, stagger_direction, stagger_length, stagger_type, stagger_duration, stagger_animation_scale, t, stagger_value, always_stagger, is_push, should_play_push_sound)
 	fassert(stagger_type > 0, "Tried to use invalid stagger type %q", stagger_type)
 
-	stagger_value = stagger_value or 1
-
 	local difficulty_settings = Managers.state.difficulty:get_difficulty_settings()
 	local difficulty_modifier = difficulty_settings.stagger_modifier
 	local status_extension = ScriptUnit.has_extension(unit, "status_system")
@@ -932,8 +937,10 @@ DamageUtils.stagger_player = function (unit, breed, stagger_direction, stagger_l
 		return
 	end
 
+	stagger_value = stagger_value or 1
+	stagger_animation_scale = stagger_animation_scale or 1
+
 	local stagger_time = stagger_duration * difficulty_modifier
-	local stagger_animation_scale = stagger_animation_scale or 1
 	local accumulated_stagger = status_extension:accumulated_stagger()
 	local accumulated_clamped = math.clamp(accumulated_stagger and accumulated_stagger + stagger_value or stagger_value, 0, 2)
 
@@ -3375,7 +3382,7 @@ local function action_ignores_stagger(blackboard, attack_template, stagger_type,
 	end
 end
 
-DamageUtils.stagger_ai = function (t, damage_profile, target_index, power_level, target_unit, attacker_unit, hit_zone_name, attack_direction, boost_curve_multiplier, is_critical_strike, blocked, damage_source, source_attacker_unit)
+DamageUtils.stagger_ai = function (t, damage_profile, target_index, power_level, target_unit, attacker_unit, hit_zone_name, attack_direction, boost_curve_multiplier, is_critical_strike, blocked, damage_source, source_attacker_unit, optional_predicted_damage)
 	local hazard = EnvironmentalHazards[damage_source]
 
 	if not damage_profile.always_stagger_ai and not DamageUtils.is_enemy(source_attacker_unit or attacker_unit, target_unit) and (not hazard or not hazard.enemy.can_stagger) then
@@ -3436,7 +3443,7 @@ DamageUtils.stagger_ai = function (t, damage_profile, target_index, power_level,
 		if is_player then
 			DamageUtils.stagger_player(target_unit, blackboard.breed, attack_direction, stagger_length, stagger_type, stagger_duration, attack_template.stagger_animation_scale, t, stagger_value, attack_template.always_stagger, is_push)
 		else
-			AiUtils.stagger(target_unit, blackboard, attacker_unit, attack_direction, stagger_length, stagger_type, stagger_duration, attack_template.stagger_animation_scale, t, stagger_value, attack_template.always_stagger, is_push)
+			AiUtils.stagger(target_unit, blackboard, attacker_unit, attack_direction, stagger_length, stagger_type, stagger_duration, attack_template.stagger_animation_scale, t, stagger_value, attack_template.always_stagger, is_push, nil, optional_predicted_damage)
 		end
 
 		local attacker_buff_extension = attacker_unit and ScriptUnit.has_extension(attacker_unit, "buff_system")
@@ -3458,7 +3465,7 @@ local damage_source_procs = {
 	charge_ability_hit_blast = "on_charge_ability_hit_blast",
 }
 
-DamageUtils.server_apply_hit = function (t, attacker_unit, target_unit, hit_zone_name, hit_position, attack_direction, hit_ragdoll_actor, damage_source, power_level, damage_profile, target_index, boost_curve_multiplier, is_critical_strike, can_damage, can_stagger, blocking, shield_breaking_hit, backstab_multiplier, first_hit, total_hits, source_attacker_unit)
+DamageUtils.server_apply_hit = function (t, attacker_unit, target_unit, hit_zone_name, hit_position, attack_direction, hit_ragdoll_actor, damage_source, power_level, damage_profile, target_index, boost_curve_multiplier, is_critical_strike, can_damage, can_stagger, blocking, shield_breaking_hit, backstab_multiplier, first_hit, total_hits, source_attacker_unit, optional_predicted_damage)
 	source_attacker_unit = source_attacker_unit or attacker_unit
 
 	local buff_extension = ScriptUnit.has_extension(attacker_unit, "buff_system")
@@ -3541,7 +3548,7 @@ DamageUtils.server_apply_hit = function (t, attacker_unit, target_unit, hit_zone
 			stagger_power_level = 0
 		end
 
-		DamageUtils.stagger_ai(t, damage_profile, target_index, stagger_power_level, target_unit, attacker_unit, hit_zone_name, attack_direction, boost_curve_multiplier, is_critical_strike, blocking, damage_source, source_attacker_unit)
+		DamageUtils.stagger_ai(t, damage_profile, target_index, stagger_power_level, target_unit, attacker_unit, hit_zone_name, attack_direction, boost_curve_multiplier, is_critical_strike, blocking, damage_source, source_attacker_unit, optional_predicted_damage)
 	end
 end
 
@@ -3787,11 +3794,13 @@ DamageUtils.add_hit_reaction = function (hit_unit, breed, husk, attack_direction
 		end
 	end
 
-	if not hit_anim then
-		local hit_unit_dir = Quaternion.forward(unit_local_rotation(hit_unit, 0))
-		local angle_difference = Vector3.flat_angle(hit_unit_dir, attack_direction)
+	local hit_unit_dir = Quaternion.forward(unit_local_rotation(hit_unit, 0))
+	local angle_difference = Vector3.flat_angle(hit_unit_dir, attack_direction)
 
-		hit_anim = (angle_difference < -math.pi * 0.75 or angle_difference > math.pi * 0.75) and "hit_reaction_backward" or angle_difference < -math.pi * 0.25 and "hit_reaction_left" or angle_difference < math.pi * 0.25 and "hit_reaction_forward" or "hit_reaction_right"
+	if not hit_anim and breed.hit_reaction_function then
+		hit_anim = breed.hit_reaction_function(hit_unit, breed, hit_unit_dir, attack_direction, angle_difference)
+	else
+		hit_anim = hit_anim or (angle_difference < -math.pi * 0.75 or angle_difference > math.pi * 0.75) and "hit_reaction_backward" or angle_difference < -math.pi * 0.25 and "hit_reaction_left" or angle_difference < math.pi * 0.25 and "hit_reaction_forward" or "hit_reaction_right"
 	end
 
 	unit_animation_event(hit_unit, hit_anim)

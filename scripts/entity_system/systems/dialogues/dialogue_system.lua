@@ -261,6 +261,7 @@ DialogueSystem.init = function (self, entity_system_creation_context, system_nam
 
 	self._global_context.level_time = 0
 	self._next_story_line_update_t = DialogueSettings.story_start_delay
+	self._ensured_event_queue = {}
 end
 
 DialogueSystem._load_special_event_dialogues = function (self, package_name, mechanism_name)
@@ -684,13 +685,19 @@ DialogueSystem._update_currently_playing_dialogues = function (self, dt)
 
 	for unit, extension in pairs(playing_units) do
 		repeat
+			local currently_playing_dialogue = extension.currently_playing_dialogue
+
 			if not unit_alive(unit) then
 				playing_units[unit] = nil
 
+				if currently_playing_dialogue then
+					currently_playing_dialogue.currently_playing_id = nil
+					currently_playing_dialogue.currently_playing_unit = nil
+					self._playing_dialogues[currently_playing_dialogue] = nil
+				end
+
 				break
 			end
-
-			local currently_playing_dialogue = extension.currently_playing_dialogue
 
 			fassert(currently_playing_dialogue, "Dialogue for playing unit was nil!")
 
@@ -906,6 +913,12 @@ DialogueSystem.physics_async_update = function (self, context, t)
 	self:_update_incapacitation(t)
 
 	local tagquery_database = self._tagquery_database
+
+	if not tagquery_database:has_queries() then
+		self:_trigger_next_ensured_event(t)
+	end
+
+	local tagquery_database = self._tagquery_database
 	local query = tagquery_database:iterate_queries(LOCAL_GAMETIME)
 
 	if enabled and (self._global_context.level_time > DialogueSettings.dialogue_level_start_delay or self:has_local_player_moved_from_start_position()) then
@@ -927,7 +940,7 @@ DialogueSystem.physics_async_update = function (self, context, t)
 				fassert(category_setting, "No category setting for category %q used in dialogue %q", dialogue_category, result)
 
 				local player_manager = Managers.player
-				local local_player = player_manager:local_player()
+				local owner_player = player_manager:owner(dialogue_actor_unit)
 				local side_manager = Managers.state.side
 				local playing_dialogues = self._playing_dialogues
 				local will_play = true
@@ -938,7 +951,7 @@ DialogueSystem.physics_async_update = function (self, context, t)
 					local interrupted_by = playing_dialogue_category_data.interrupted_by
 					local only_play_for_allies = playing_dialogue.only_allies
 					local not_heard_since_enemy = only_play_for_allies and not side_manager:is_ally(dialogue_actor_unit, playing_dialogue.currently_playing_unit)
-					local not_heard_since_local = playing_dialogue.only_local and (not local_player or local_player ~= player_manager:owner(dialogue_actor_unit))
+					local not_heard_since_local = playing_dialogue.only_local and (not owner_player or owner_player ~= player_manager:owner(playing_dialogue.currently_playing_unit))
 
 					if not_heard_since_enemy or not_heard_since_local then
 						-- Nothing
@@ -1053,14 +1066,13 @@ DialogueSystem.physics_async_update = function (self, context, t)
 
 					if dialogue.only_local then
 						local owner = Managers.player:owner(dialogue_actor_unit)
+						local owner_peer = owner and owner:network_id()
 
-						if owner then
-							local peer_id = owner:network_id()
-
-							network_manager.network_transmit:send_rpc("rpc_play_dialogue_event", peer_id, go_id, is_level_unit, dialogue_id, dialogue_index)
+						if owner_peer then
+							network_manager.network_transmit:send_rpc("rpc_play_dialogue_event", owner_peer, go_id, is_level_unit, dialogue_id, dialogue_index)
 						end
 
-						if owner ~= local_player then
+						if owner_peer ~= Network.peer_id() then
 							network_manager.network_transmit:send_rpc_server("rpc_play_dialogue_event", go_id, is_level_unit, dialogue_id, dialogue_index)
 						end
 					elseif dialogue.only_allies then
@@ -1773,6 +1785,7 @@ DialogueSystem.rpc_interrupt_dialogue_event = function (self, channel_id, go_id,
 		dialogue.currently_playing_id = nil
 		dialogue.dialogue_timer = nil
 		extension.currently_playing_dialogue = nil
+		self._playing_dialogues[dialogue] = nil
 		self._playing_units[dialogue_actor_unit] = nil
 
 		local player_manager = Managers.player
@@ -1794,4 +1807,36 @@ DialogueSystem.rpc_update_current_wind = function (self, channel_id, weave_name_
 	local current_wind = NetworkLookup.weave_winds[weave_name_id]
 
 	self._global_context.current_wind = current_wind
+end
+
+local EnsuredEventIndexLookup = table.mirror_array({
+	"unit",
+	"concept",
+	"event_data",
+	"identifier",
+})
+
+DialogueSystem._trigger_next_ensured_event = function (self, t)
+	local queued_ensured_event = self._ensured_event_queue
+	local ensured_event = table.remove(queued_ensured_event, 1)
+	local unit = ensured_event and ensured_event[EnsuredEventIndexLookup.unit]
+
+	if ALIVE[unit] then
+		local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
+		local concept = ensured_event[EnsuredEventIndexLookup.concept]
+		local event_data = ensured_event[EnsuredEventIndexLookup.event_data]
+		local identifier = ensured_event[EnsuredEventIndexLookup.identifier]
+
+		dialogue_input:trigger_dialogue_event(concept, event_data, identifier)
+		self:_update_new_events(t)
+	end
+end
+
+DialogueSystem.queue_ensured_dialogue_event = function (self, unit, concept, event_data, identifier)
+	self._ensured_event_queue[#self._ensured_event_queue + 1] = {
+		[EnsuredEventIndexLookup.unit] = unit,
+		[EnsuredEventIndexLookup.concept] = concept,
+		[EnsuredEventIndexLookup.event_data] = event_data,
+		[EnsuredEventIndexLookup.identifier] = identifier,
+	}
 end

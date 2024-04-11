@@ -218,6 +218,7 @@ PackageChunkPackages = {
 	"resource_packages/dlcs/karak_azgaraz_part_1",
 	"resource_packages/dlcs/karak_azgaraz_part_2",
 	"resource_packages/dlcs/karak_azgaraz_part_3",
+	"resource_packages/dlcs/karak_azgaraz_part_4",
 	"resource_packages/dlcs/cosmetics_2023_q2",
 	"resource_packages/dlcs/shovel",
 	"resource_packages/dlcs/gotwf",

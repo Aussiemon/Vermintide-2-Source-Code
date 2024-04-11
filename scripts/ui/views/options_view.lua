@@ -1415,6 +1415,8 @@ OptionsView.update_gamepad_layout_widget = function (self, keymaps, using_left_h
 		end
 	end
 
+	local sort_table = {}
+
 	for button_name, actions in pairs(display_keybinds) do
 		for i = 1, #actions do
 			local action_name = actions[i]
@@ -1422,7 +1424,16 @@ OptionsView.update_gamepad_layout_widget = function (self, keymaps, using_left_h
 			if not widget_content[button_name] then
 				widget_content[button_name] = Localize(action_name)
 			else
-				local display_text = widget_content[button_name] .. "/" .. Localize(action_name)
+				table.clear(sort_table)
+
+				local loc_action_name = Localize(action_name)
+
+				sort_table[1] = loc_action_name
+				sort_table[2] = widget_content[button_name]
+
+				table.sort(sort_table)
+
+				local display_text = sort_table[1] .. "/" .. sort_table[2]
 
 				widget_content[button_name] = display_text
 			end
@@ -2343,8 +2354,9 @@ OptionsView.apply_changes = function (self, user_settings, render_settings, bot_
 
 	local overcharge_opacity = user_settings.overcharge_opacity
 	local player_manager = Managers.player
+	local game = Managers.state.network and Managers.state.network:game()
 
-	if overcharge_opacity and player_manager then
+	if overcharge_opacity and player_manager and game then
 		local local_player = player_manager:local_player()
 		local player_unit = local_player.player_unit
 		local overcharge_extension = ScriptUnit.extension(player_unit, "overcharge_system")

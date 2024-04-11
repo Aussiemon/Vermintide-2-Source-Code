@@ -1072,6 +1072,12 @@ CharacterSelectionStateCharacter.update = function (self, dt, t)
 		self:_handle_input(dt, t)
 	end
 
+	self:draw(dt, t)
+
+	return self:_handle_transitions()
+end
+
+CharacterSelectionStateCharacter._handle_transitions = function (self)
 	local wanted_state = self:_wanted_state()
 
 	if not self._transition_timer and not self:pending_profile_request() and (wanted_state or self._new_state) then
@@ -1081,8 +1087,6 @@ CharacterSelectionStateCharacter.update = function (self, dt, t)
 			return wanted_state or self._new_state
 		end
 	end
-
-	self:draw(dt, t)
 end
 
 CharacterSelectionStateCharacter.post_update = function (self, dt, t)

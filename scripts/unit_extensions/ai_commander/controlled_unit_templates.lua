@@ -30,15 +30,15 @@ ControlledUnitTemplates.necromancer_pet_ability = {
 	pet_ui_type = "buff",
 	disband_type = ControlledUnitDisbandType.kill,
 }
-ControlledUnitTemplates.necromancer_pet_straggler = {
-	client_version = "necromancer_pet_straggler_client",
+ControlledUnitTemplates.necromancer_pet_army = {
+	client_version = "necromancer_pet_army_client",
 	duration = 20,
 	pet_ui_type = "buff",
 	disband_type = ControlledUnitDisbandType.kill,
 }
-ControlledUnitTemplates.necromancer_pet_straggler_client = table.clone(ControlledUnitTemplates.necromancer_pet_straggler)
-ControlledUnitTemplates.necromancer_pet_straggler_client.disband_type = ControlledUnitDisbandType.none
-ControlledUnitTemplates.necromancer_pet_straggler_client.pet_ui_type = "server_controlled"
+ControlledUnitTemplates.necromancer_pet_army_client = table.clone(ControlledUnitTemplates.necromancer_pet_army)
+ControlledUnitTemplates.necromancer_pet_army_client.disband_type = ControlledUnitDisbandType.none
+ControlledUnitTemplates.necromancer_pet_army_client.pet_ui_type = "server_controlled"
 
 for name, template in pairs(ControlledUnitTemplates) do
 	template.name = name

@@ -1254,8 +1254,32 @@ PartyManager._server_set_client_friend_party = function (self, friend_party_id)
 
 	table.fill(friend_party_peers, max_friend_party_size, "")
 
-	for i = 1, #friend_party.peers do
-		friend_party_peers[i] = friend_party.peers[i]
+	local peers = friend_party.peers
+	local num_party_peers = peers
+
+	if max_friend_party_size < num_party_peers then
+		table.dump(peers, "friend party peers")
+		Crashify.print_exception("[PartyManager]", "Friend party stragglers found. Party size: %s", num_party_peers)
+	end
+
+	for i = 1, num_party_peers do
+		local peer = peers[i]
+
+		if PEER_ID_TO_CHANNEL[peer] then
+			local next_idx = #friend_party_peers + 1
+
+			if max_friend_party_size < next_idx then
+				print("Too many peers in the same party:", peer)
+			else
+				friend_party_peers[next_idx] = peers[i]
+			end
+		else
+			print("Straggling peer:", peer)
+
+			peers = table.shallow_copy(peers)
+
+			self:server_remove_friend_party_peer(peer)
+		end
 	end
 
 	self:_server_send_rpc_to_friend_party("rpc_set_client_friend_party", friend_party_id, friend_party_peers)

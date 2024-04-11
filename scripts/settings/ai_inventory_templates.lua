@@ -804,6 +804,24 @@ items.zombie_blob_03 = {
 	weak_spot = "head",
 	attachment_node_linking = AttachmentNodeLinking.ai_zombie_blob_head,
 }
+items.wpn_bulwark_sledge_01 = {
+	unit_name = "units/weapons/enemy/wpn_chaos_set/wpn_chaos_heavy_maul_01",
+	attachment_node_linking = AttachmentNodeLinking.ai_bulwark_weapon,
+}
+items.wpn_bulwark_shield_01 = {
+	unit_extension_template = "ai_shield_unit",
+	unit_name = "units/weapons/enemy/wpn_chaos_set/wpn_chaos_heavy_shield_01",
+	attachment_node_linking = AttachmentNodeLinking.ai_bulwark_shield,
+	drop_unit_names = {
+		"units/weapons/enemy/wpn_chaos_shields/wpn_moc_shield1_break_01",
+		"units/weapons/enemy/wpn_chaos_shields/wpn_moc_shield1_break_03",
+	},
+}
+items.woc_bulwark_helmet_01 = {
+	unit_extension_template = "ai_helmet_unit",
+	unit_name = "units/beings/enemies/addons/chaos_warrior/woc_helmet_bulwark_01",
+	attachment_node_linking = AttachmentNodeLinking.ai_helmet,
+}
 items.wpn_npc_skeleton_sword_01_right = {
 	drop_on_hit = true,
 	unit_name = "units/weapons/enemy/wpn_npc_skeleton_set/wpn_npc_skeleton_sword_01",
@@ -1591,6 +1609,15 @@ item_categories.undead_ethereal_skeleton_shield = {
 item_categories.undead_ethereal_skeleton_2h_hammer = {
 	items.wpn_undead_ethereal_skeleton_2h_hammer_01,
 }
+item_categories.chaos_bulwark_weapon = {
+	items.wpn_bulwark_sledge_01,
+}
+item_categories.chaos_bulwark_shield = {
+	items.wpn_bulwark_shield_01,
+}
+item_categories.chaos_bulwark_helmet = {
+	items.woc_bulwark_helmet_01,
+}
 item_categories.berzerker_helmet = {}
 item_categories.berzerker_right = {
 	items.wpn_moc_axe_01_right,
@@ -1945,6 +1972,15 @@ InventoryConfigurations.warrior_axe = {
 	items = {
 		item_categories.axe,
 		item_categories.warrior_helmet,
+	},
+}
+InventoryConfigurations.chaos_bulwark = {
+	anim_state_event = "to_sword",
+	enemy_hit_sound = "sword",
+	items = {
+		item_categories.chaos_bulwark_weapon,
+		item_categories.chaos_bulwark_shield,
+		item_categories.chaos_bulwark_helmet,
 	},
 }
 InventoryConfigurations.exalted_axe = {

@@ -279,7 +279,7 @@ VersusObjectiveSystem.game_object_destroyed = function (self, game_object_id)
 	local game_mode = game_mode_manager and game_mode_manager:game_mode()
 	local game_mode_state = game_mode and game_mode:game_mode_state()
 
-	if game_mode_state == "match_running_state" then
+	if game_mode_state == "pre_start_round_state" or game_mode_state == "match_running_state" then
 		VersusObjectiveSystem.super.game_object_destroyed(self, game_object_id)
 	end
 end

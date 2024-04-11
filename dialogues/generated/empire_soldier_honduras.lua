@@ -5806,6 +5806,56 @@ return function ()
 		},
 	})
 	define_rule({
+		name = "pes_gameplay_pinging_ecws_a",
+		response = "pes_gameplay_pinging_ecws_a",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_enemy",
+			},
+			{
+				"query_context",
+				"is_ping",
+				OP.EQ,
+				1,
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_bulwark",
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"empire_soldier",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier",
+			},
+			{
+				"faction_memory",
+				"time_since_ping_enemy",
+				OP.TIMEDIFF,
+				OP.GT,
+				7,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_ping_enemy",
+				OP.TIMESET,
+			},
+		},
+	})
+	define_rule({
 		name = "pes_gameplay_player_pounced",
 		response = "pes_gameplay_player_pounced",
 		criterias = {
@@ -6961,6 +7011,63 @@ return function ()
 			{
 				"faction_memory",
 				"last_seen_ungor_archer",
+				OP.TIMESET,
+			},
+		},
+	})
+	define_rule({
+		name = "pes_gameplay_seeing_an_ecws_a",
+		response = "pes_gameplay_seeing_an_ecws_a",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_enemy",
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_bulwark",
+			},
+			{
+				"query_context",
+				"distance",
+				OP.GTEQ,
+				4,
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"empire_soldier",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier",
+			},
+			{
+				"faction_memory",
+				"last_heard_globadier",
+				OP.TIMEDIFF,
+				OP.GT,
+				20,
+			},
+			{
+				"faction_memory",
+				"last_seen_globadier",
+				OP.TIMEDIFF,
+				OP.GT,
+				60,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"last_seen_globadier",
 				OP.TIMESET,
 			},
 		},
@@ -15170,6 +15277,45 @@ return function ()
 				2.0038125514984,
 			},
 		},
+		pes_gameplay_pinging_ecws_a = {
+			category = "enemy_alerts",
+			database = "empire_soldier_honduras",
+			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+			},
+			face_animations = {
+				"face_contempt",
+				"face_contempt",
+				"face_contempt",
+				"face_contempt",
+			},
+			localization_strings = {
+				"pes_gameplay_pinging_ecws_a_01",
+				"pes_gameplay_pinging_ecws_a_02",
+				"pes_gameplay_pinging_ecws_a_03",
+				"pes_gameplay_pinging_ecws_a_04",
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pes_gameplay_pinging_ecws_a_01",
+				"pes_gameplay_pinging_ecws_a_02",
+				"pes_gameplay_pinging_ecws_a_03",
+				"pes_gameplay_pinging_ecws_a_04",
+			},
+			sound_events_duration = {
+				0.95335417985916,
+				1.4087916612625,
+				1.3314583301544,
+				1.8163750171661,
+			},
+		},
 		pes_gameplay_player_pounced = {
 			category = "player_alerts",
 			database = "empire_soldier_honduras",
@@ -16407,6 +16553,45 @@ return function ()
 				0.71314585208893,
 				1.4965416193008,
 				1.1017082929611,
+			},
+		},
+		pes_gameplay_seeing_an_ecws_a = {
+			category = "enemy_alerts_high",
+			database = "empire_soldier_honduras",
+			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+			},
+			face_animations = {
+				"face_contempt",
+				"face_contempt",
+				"face_contempt",
+				"face_contempt",
+			},
+			localization_strings = {
+				"pes_gameplay_seeing_an_ecws_a_01",
+				"pes_gameplay_seeing_an_ecws_a_02",
+				"pes_gameplay_seeing_an_ecws_a_03",
+				"pes_gameplay_seeing_an_ecws_a_04",
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pes_gameplay_seeing_an_ecws_a_01",
+				"pes_gameplay_seeing_an_ecws_a_02",
+				"pes_gameplay_seeing_an_ecws_a_03",
+				"pes_gameplay_seeing_an_ecws_a_04",
+			},
+			sound_events_duration = {
+				1.6608542203903,
+				2.3884582519531,
+				2.4019999504089,
+				2.5488541126251,
 			},
 		},
 		pes_gameplay_self_heal = {

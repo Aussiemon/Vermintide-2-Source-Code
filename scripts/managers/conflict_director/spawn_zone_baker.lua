@@ -669,6 +669,14 @@ SpawnZoneBaker._generate_pack_members = function (self, pack_type, pack_size, zo
 
 		for i = 1, pack_size do
 			local breed = pack_members[i]
+
+			if not breed.name then
+				local index = math.random(1, #breed)
+
+				breed = breed[index]
+				pack_members[i] = breed
+			end
+
 			local data = breed_count[breed.name]
 
 			if data then

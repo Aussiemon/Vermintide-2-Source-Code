@@ -1818,6 +1818,10 @@ PlayFabMirrorBase._create_fake_inventory_items = function (self, fake_inventory_
 		local weapon_skins = WeaponSkins
 
 		for skin_name, optional_offline_backend_id in pairs(fake_inventory_items) do
+			if skin_name == "bw_necromancy_staff_skin_02" then
+				local temp = 0
+			end
+
 			local item_key, rarity = weapon_skins.matching_weapon_skin_item_key(skin_name)
 
 			if item_key and rawget(ItemMasterList, item_key) then
@@ -2529,7 +2533,7 @@ PlayFabMirrorBase._setup_careers = function (self)
 							broken_slots_data[career_name] = broken_slots
 
 							debug_printf("Broken item slots for career: %q", career_name)
-							table.dump(broken_slots)
+							table.dump(broken_slots, "BROKEN_SLOTS", 2)
 						end
 					end
 				end

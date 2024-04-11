@@ -224,6 +224,10 @@ ProjectileLinkerSystem.rpc_link_pickup = function (self, channel_id, pickup_unit
 	local pickup_unit = Managers.state.unit_storage:unit(pickup_unit_go_id)
 	local hit_unit = Managers.state.network:game_object_or_level_unit(hit_unit_go_id, is_level_unit)
 
+	if not Unit.alive(pickup_unit) or not Unit.alive(hit_unit) then
+		return
+	end
+
 	self:link_pickup(pickup_unit, link_position, link_rotation, hit_unit, node_index)
 end
 

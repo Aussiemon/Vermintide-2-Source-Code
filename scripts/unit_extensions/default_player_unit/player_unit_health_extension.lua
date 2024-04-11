@@ -25,13 +25,29 @@ PlayerUnitHealthExtension.init = function (self, extension_init_context, unit, e
 	self.wounded_degen_timer = 0
 	self._is_husk = player.remote or player.bot_player
 
-	local game_mode_settings = Managers.state.game_mode:settings()
-
-	self._floating_damage_numbers = game_mode_settings.use_floating_damage_numbers and not DEDICATED_SERVER
+	self:update_options()
 
 	if self.is_server and not is_local_player and not is_bot then
 		self:create_health_game_object()
 	end
+
+	self._streak_debug_duration = -10
+	self._streak_debug_damage = 0
+
+	Managers.state.event:register(self, "on_game_options_changed", "update_options")
+end
+
+PlayerUnitHealthExtension.update_options = function (self)
+	local game_mode_settings = Managers.state.game_mode:settings()
+
+	self._use_floating_damage_numbers = game_mode_settings.use_floating_damage_numbers and not DEDICATED_SERVER
+
+	local setting = Application.user_setting("vs_floating_damage")
+
+	self._show_floating_damage = setting == "floating" or setting == "both"
+	self._show_floating_streak_damage = setting == "streak" or setting == "both"
+	self._min_streak_font_size = game_mode_settings.min_streak_font_size or 50
+	self._max_streak_font_size = game_mode_settings.max_streak_font_size or 100
 end
 
 PlayerUnitHealthExtension.hot_join_sync = function (self, sender)
@@ -211,6 +227,8 @@ PlayerUnitHealthExtension._revive = function (self, unit, t)
 	StatusUtils.set_revived_network(unit, false)
 end
 
+local display_data = {}
+
 PlayerUnitHealthExtension.update = function (self, dt, context, t)
 	local status_extension = self.status_extension
 	local unit = self.unit
@@ -348,6 +366,29 @@ PlayerUnitHealthExtension.update = function (self, dt, context, t)
 
 	if Managers.mechanism:current_mechanism_name() == "versus" then
 		self:_update_outline_color(t, dt)
+
+		if DebugKeyHandler.key_pressed("t", "test terror", "ai", "left shift") then
+			local streak_damage = 40
+			local is_critical_strike = false
+			local text_size = 70
+			local duration = 2
+			local c = DamageUtils.get_color_from_damage(streak_damage)
+			local z_offset_override = 0
+			local color = Vector3(c[2], c[3], c[4])
+
+			display_data.floating_speed = 0
+
+			local amount_numbers = 10
+			local damage_amount = streak_damage / amount_numbers
+			local angle = math.pi * 2 / amount_numbers
+
+			for i = 1, amount_numbers do
+				Managers.state.event:trigger("add_damage_number", damage_amount, text_size, self.unit, duration, color, is_critical_strike, z_offset_override, {
+					variant_name = "floating_radial_damage",
+					angle = angle,
+				})
+			end
+		end
 	end
 end
 
@@ -419,6 +460,42 @@ PlayerUnitHealthExtension.apply_client_predicted_damage = function (self, predic
 	return
 end
 
+local using_bucket_damage = true
+local streak_duration = 1.2
+
+PlayerUnitHealthExtension.create_streak_damage = function (self, streak_damage)
+	local text_size = math.auto_lerp(0, 30, self._min_streak_font_size, self._max_streak_font_size, streak_damage)
+	local duration = streak_duration
+	local c = DamageUtils.get_color_from_damage(streak_damage)
+	local z_offset_override = 0
+	local color = Vector3(c[2], c[3], c[4])
+	local dmg_int = math.floor(streak_damage)
+	local dmg_dec = streak_damage % 1 * 10
+
+	display_data.floating_speed = 0
+	display_data.id = true
+	display_data.using_bucket_damage = using_bucket_damage
+	display_data.damage = streak_damage
+	display_data.variant_name = "streak_damage"
+
+	local is_critical_strike = false
+	local text
+	local ts = math.auto_lerp(0, 30, 50, 100, streak_damage)
+
+	if using_bucket_damage then
+		text = "{#size(" .. ts .. ")}" .. dmg_int
+	else
+		text = "{#size(" .. ts .. ")}" .. dmg_int .. "{#size(" .. math.floor(ts / 2) .. ")}" .. dmg_dec
+	end
+
+	Managers.state.event:trigger("add_damage_number", text, text_size, self.unit, duration, color, is_critical_strike, z_offset_override, display_data)
+
+	self._streak_id = display_data.id
+end
+
+local min_font_size = 50
+local max_font_size = 100
+
 PlayerUnitHealthExtension.add_damage = function (self, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, source_attacker_unit, hit_react_type, is_critical_strike, added_dot, first_hit, total_hits, attack_type, backstab_multiplier)
 	if DamageUtils.is_in_inn then
 		return
@@ -435,7 +512,7 @@ PlayerUnitHealthExtension.add_damage = function (self, attacker_unit, damage_amo
 	local attacker_breed = Unit.get_data(attacker_unit, "breed") or bb and bb.breed
 
 	if attacker_breed then
-		if self._floating_damage_numbers then
+		if self._use_floating_damage_numbers then
 			local show_hud_damage_feedback_in_world = Application.user_setting("hud_damage_feedback_in_world")
 			local attacker_player = Managers.player:owner(attacker_unit)
 
@@ -445,16 +522,54 @@ PlayerUnitHealthExtension.add_damage = function (self, attacker_unit, damage_amo
 				local t = Managers.time:time("game")
 				local time_since_last_dmg = t - last_dmg_time
 
-				if time_since_last_dmg > 2 then
+				if time_since_last_dmg > 1 then
 					streak_damage = damage_amount
+
+					if self._show_floating_streak_damage then
+						self:create_streak_damage(streak_damage)
+					end
 				else
 					streak_damage = streak_damage + damage_amount
+
+					if self._streak_id then
+						local dmg_int = math.floor(streak_damage)
+						local ts = math.auto_lerp(0, 30, min_font_size, max_font_size, streak_damage)
+						local c = DamageUtils.get_color_from_damage(streak_damage)
+						local text
+
+						if using_bucket_damage then
+							text = "{#size(" .. ts .. ")}" .. dmg_int
+
+							Managers.state.event:trigger("alter_damage_number", unit, self._streak_id, {
+								text = text,
+								time = streak_duration,
+								color = c,
+								damage = streak_damage,
+							})
+						else
+							local dmg_dec = streak_damage % 1 * 10
+
+							text = "{#size(" .. ts .. ")}" .. dmg_int .. "{#size(" .. math.floor(ts / 2) .. ")}" .. dmg_dec
+
+							Managers.state.event:trigger("alter_damage_number", unit, self._streak_id, {
+								text = text,
+								time = streak_duration,
+								color = c,
+								damage = streak_damage,
+							})
+						end
+					end
 				end
 
 				self._streak_damage_time = t
 				self._streak_damage = streak_damage
 
-				DamageUtils.add_unit_floating_damage_numbers(unit, damage_type, damage_amount, is_critical_strike, streak_damage, attacker_breed.z_onscreen_damage_offset, attacker_breed.damage_numbers_font_override)
+				if self._show_floating_damage then
+					DamageUtils.add_unit_floating_damage_numbers(unit, damage_type, damage_amount, is_critical_strike, streak_damage, attacker_breed.z_onscreen_damage_offset, attacker_breed.damage_numbers_font_override, {
+						variant_name = "floating_damage",
+						using_streak_damage = self._show_floating_streak_damage,
+					})
+				end
 			end
 		end
 

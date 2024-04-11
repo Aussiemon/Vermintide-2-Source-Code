@@ -25,7 +25,7 @@ local buff_tweak_data = {
 	bardin_engineer_heal_share = {},
 	bardin_engineer_2_1 = {},
 	bardin_engineer_2_1_cooldown = {
-		duration = 120,
+		duration = 180,
 	},
 	bardin_engineer_ranged_pierce = {
 		bonus = 1,

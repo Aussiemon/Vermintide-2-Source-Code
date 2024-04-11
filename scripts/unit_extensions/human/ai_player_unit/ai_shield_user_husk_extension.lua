@@ -42,3 +42,12 @@ AIShieldUserHuskExtension.can_block_attack = function (self, attacker_unit, true
 
 	return can_block_attack
 end
+
+AIShieldUserHuskExtension.get_is_blocking = function (self)
+	local unit = self._unit
+	local game_object_id = Managers.state.unit_storage:go_id(unit)
+	local game = Managers.state.network:game()
+	local is_blocking = GameSession.game_object_field(game, game_object_id, "is_blocking")
+
+	return is_blocking
+end

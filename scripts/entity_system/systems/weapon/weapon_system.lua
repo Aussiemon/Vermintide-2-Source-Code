@@ -238,9 +238,20 @@ WeaponSystem.rpc_attack_hit = function (self, channel_id, damage_source_id, atta
 		target_index = nil
 	end
 
+	local optional_predicted_damage
 	local shield_breaking_hit = false
 
 	if blackboard and blackboard.breed and blackboard.breed.is_ai then
+		if blackboard.breed.use_predicted_damage_in_stagger_calculation then
+			local target_settings = damage_profile.targets and damage_profile.targets[target_index] or damage_profile.default_target
+
+			if target_settings then
+				local boost_curve = BoostCurves[target_settings.boost_curve_type]
+
+				optional_predicted_damage = DamageUtils.calculate_damage(DamageOutput, hit_unit, attacker_unit, hit_zone_name, power_level, boost_curve, boost_curve_multiplier, is_critical_strike, damage_profile, target_index, backstab_multiplier, damage_source)
+			end
+		end
+
 		if hit_unit_is_enemy and uses_slot_system and target_override_extension and attacker_not_incapacitated then
 			local has_override_targets = next(blackboard.override_targets)
 
@@ -258,7 +269,7 @@ WeaponSystem.rpc_attack_hit = function (self, channel_id, damage_source_id, atta
 
 	local t = self.t
 
-	DamageUtils.server_apply_hit(t, attacker_unit, hit_unit, hit_zone_name or "full", hit_position, attack_direction, hit_ragdoll_actor, damage_source, power_level, damage_profile, target_index, boost_curve_multiplier, is_critical_strike, can_damage, can_stagger, blocking, shield_breaking_hit, backstab_multiplier, first_hit, total_hits)
+	DamageUtils.server_apply_hit(t, attacker_unit, hit_unit, hit_zone_name or "full", hit_position, attack_direction, hit_ragdoll_actor, damage_source, power_level, damage_profile, target_index, boost_curve_multiplier, is_critical_strike, can_damage, can_stagger, blocking, shield_breaking_hit, backstab_multiplier, first_hit, total_hits, nil, optional_predicted_damage)
 end
 
 WeaponSystem.destroy = function (self)

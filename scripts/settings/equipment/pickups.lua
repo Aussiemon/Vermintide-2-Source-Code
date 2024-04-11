@@ -256,6 +256,21 @@ Pickups.level_events.explosive_barrel = {
 	unit_template_name = "explosive_pickup_projectile_unit",
 	wield_on_pickup = true,
 }
+Pickups.level_events.whale_oil_barrel = {
+	additional_data_func = "explosive_barrel",
+	debug_pickup_category = "level_event",
+	hud_description = "explosive_barrel",
+	individual_pickup = false,
+	item_description = "explosive_barrel",
+	item_name = "whale_oil_barrel",
+	only_once = true,
+	slot_name = "slot_level_event",
+	spawn_weighting = 1,
+	type = "explosive_inventory_item",
+	unit_name = "units/weapons/player/pup_whale_oil_barrel/pup_whale_oil_barrel_01",
+	unit_template_name = "explosive_pickup_projectile_unit",
+	wield_on_pickup = true,
+}
 Pickups.level_events.lamp_oil = {
 	additional_data_func = "explosive_barrel",
 	debug_pickup_category = "level_event",

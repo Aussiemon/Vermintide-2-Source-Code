@@ -36,3 +36,27 @@ ItemMasterList.frame_karak_03 = {
 	temporary_template = "frame_karak_03",
 	can_wield = CanWieldAllItemTemplates,
 }
+ItemMasterList.frame_karak_04 = {
+	description = "frame_karak_04_description",
+	display_name = "frame_karak_04_name",
+	hud_icon = "unit_frame_02",
+	information_text = "information_text_frame",
+	inventory_icon = "icon_portrait_frame_karak_4_01",
+	item_type = "frame",
+	rarity = "promo",
+	slot_type = "frame",
+	temporary_template = "frame_karak_04",
+	can_wield = CanWieldAllItemTemplates,
+}
+ItemMasterList.frame_karak_05 = {
+	description = "frame_karak_05_description",
+	display_name = "frame_karak_05_name",
+	hud_icon = "unit_frame_02",
+	information_text = "information_text_frame",
+	inventory_icon = "icon_portrait_frame_karak_4_02",
+	item_type = "frame",
+	rarity = "promo",
+	slot_type = "frame",
+	temporary_template = "frame_karak_05",
+	can_wield = CanWieldAllItemTemplates,
+}

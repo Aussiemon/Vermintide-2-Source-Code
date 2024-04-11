@@ -30,17 +30,7 @@ vs_gutter_runner.time_before_ramping_damage = 1.5
 vs_gutter_runner.time_to_reach_max_damage = 3
 vs_gutter_runner.base_damage = 2.5
 vs_gutter_runner.final_damage_multiplier = 4
-vs_gutter_runner.stagger_duration = {
-	1,
-	1,
-	1,
-	1,
-	1,
-	1,
-	1,
-	1,
-	1,
-}
+vs_gutter_runner.max_stagger_duration = 0.4
 vs_gutter_runner.stagger_resistance = 2
 vs_gutter_runner.stagger_resistance_ranged = 6
 vs_gutter_runner.stagger_threshold_light = 1
@@ -81,17 +71,7 @@ vs_packmaster.equip_hook_weapon_spawn_time = 0.3333333333333333
 vs_packmaster.equip_hook_exit_state_time = 0.6666666666666666
 vs_packmaster.dragging_time_to_damage = 1
 vs_packmaster.dragging_damage_amount = 4
-vs_packmaster.stagger_duration = {
-	1,
-	1,
-	1,
-	1,
-	1,
-	1,
-	1,
-	1,
-	1,
-}
+vs_gutter_runner.max_stagger_duration = 0.4
 vs_packmaster.stagger_resistance = 100
 vs_packmaster.stagger_resistance_ranged = 100
 vs_packmaster.stagger_threshold_light = 1
@@ -135,17 +115,7 @@ vs_poison_wind_globadier.globe_throw_dot_difficulty_damage = {
 	9,
 }
 vs_poison_wind_globadier.globe_throw_dot_damage_interval = 1
-vs_poison_wind_globadier.stagger_duration = {
-	1,
-	1,
-	1,
-	1,
-	1,
-	1,
-	1,
-	1,
-	1,
-}
+vs_gutter_runner.max_stagger_duration = 0.4
 vs_poison_wind_globadier.stagger_resistance = 100
 vs_poison_wind_globadier.stagger_resistance_ranged = 500
 vs_poison_wind_globadier.stagger_threshold_light = 1
@@ -184,17 +154,7 @@ vs_ratling_gunner.shoot_ratlinggun_minimum_forced_cooldown = 0.01
 vs_ratling_gunner.shoot_ratlinggun_max_firing_time = 100
 vs_ratling_gunner.max_ammo = 120
 vs_ratling_gunner.armor_category = 1
-vs_ratling_gunner.stagger_duration = {
-	1,
-	1,
-	1,
-	1,
-	1,
-	1,
-	1,
-	1,
-	1,
-}
+vs_gutter_runner.max_stagger_duration = 0.4
 vs_ratling_gunner.diff_stagger_resist = nil
 vs_ratling_gunner.stagger_resistance = 2.5
 vs_ratling_gunner.stagger_resistance_ranged = 9
@@ -236,17 +196,7 @@ vs_warpfire_thrower.shoot_warpfire_long_attack_damage = {
 	2.5,
 	2.5,
 }
-vs_warpfire_thrower.stagger_duration = {
-	1,
-	1,
-	1,
-	1,
-	1,
-	1,
-	1,
-	1,
-	1,
-}
+vs_gutter_runner.max_stagger_duration = 0.4
 vs_warpfire_thrower.diff_stagger_resist = nil
 vs_warpfire_thrower.stagger_resistance = 3.5
 vs_warpfire_thrower.stagger_resistance_ranged = 7

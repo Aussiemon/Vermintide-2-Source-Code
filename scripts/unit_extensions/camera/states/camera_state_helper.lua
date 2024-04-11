@@ -75,7 +75,14 @@ CameraStateHelper.get_valid_unit_to_observe = function (reverse, optional_side, 
 	local players = table.values(Managers.player:human_and_bot_players())
 
 	table.sort(players, function (a, b)
-		return (a.game_object_id or 0) <= (b.game_object_id or 0)
+		local a_id = a:network_id()
+		local b_id = b:network_id()
+
+		if a_id == b_id then
+			return a:local_player_id() < b:local_player_id()
+		end
+
+		return PlayerUtils.peer_id_compare(a_id, b_id)
 	end)
 
 	for i = 1, #players do

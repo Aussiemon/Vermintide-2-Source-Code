@@ -296,6 +296,7 @@ UISettings = UISettings or {
 		beastmen_ungor = "unit_frame_portrait_enemy_standard_bearer",
 		beastmen_ungor_archer = "unit_frame_portrait_enemy_standard_bearer",
 		chaos_berzerker = "unit_frame_portrait_enemy_savage",
+		chaos_bulwark = "unit_frame_portrait_enemy_chaos_bulwark",
 		chaos_corruptor_sorcerer = "unit_frame_portrait_enemy_sorcerer_corruptor",
 		chaos_exalted_champion_norsca = "unit_frame_portrait_enemy_chaos_warrior",
 		chaos_exalted_champion_warcamp = "unit_frame_portrait_enemy_chaos_warrior",

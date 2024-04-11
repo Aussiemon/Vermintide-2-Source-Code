@@ -35,6 +35,7 @@ PlayerUnitStatusSettings.fatigue_point_costs = {
 	blocked_sv_cleave = 16,
 	blocked_sv_sweep = 4,
 	blocked_sv_sweep_2 = 6,
+	bulwark_shield_bash = 12,
 	career_victor_captain = -10,
 	chaos_cleave = 30,
 	chaos_spawn_combo = 2,

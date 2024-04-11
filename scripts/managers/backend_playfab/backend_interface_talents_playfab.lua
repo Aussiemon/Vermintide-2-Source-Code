@@ -10,6 +10,10 @@ BackendInterfaceTalentsPlayfab.init = function (self, backend_mirror)
 end
 
 BackendInterfaceTalentsPlayfab._refresh = function (self)
+	self:_refresh_talents()
+end
+
+BackendInterfaceTalentsPlayfab._refresh_talents = function (self)
 	local talents = self._talents
 	local backend_mirror = self._backend_mirror
 
@@ -34,7 +38,7 @@ BackendInterfaceTalentsPlayfab._refresh = function (self)
 	self._dirty = false
 end
 
-BackendInterfaceTalentsPlayfab._validate_talents = function (self, career_name, career_talents, talent_tree_index)
+BackendInterfaceTalentsPlayfab._validate_talents = function (self, career_name, career_talents, talent_tree_index, skip_quipping_talents)
 	local profile = PROFILES_BY_CAREER_NAMES[career_name]
 
 	if not profile then
@@ -67,7 +71,7 @@ BackendInterfaceTalentsPlayfab._validate_talents = function (self, career_name, 
 		end
 	end
 
-	if changed then
+	if changed and not skip_quipping_talents then
 		self:set_talents(career_name, career_talents)
 	end
 end
@@ -84,13 +88,13 @@ BackendInterfaceTalentsPlayfab.make_dirty = function (self)
 	self._dirty = true
 end
 
-BackendInterfaceTalentsPlayfab.get_talent_ids = function (self, career_name)
+BackendInterfaceTalentsPlayfab.get_talent_ids = function (self, career_name, optional_talents)
 	local career_settings = CareerSettings[career_name]
 	local profile_name = career_settings.profile_name
 	local talent_tree_index = career_settings.talent_tree_index
 	local talent_tree = talent_tree_index and TalentTrees[profile_name][talent_tree_index]
 	local talent_ids = {}
-	local talents = self:get_talents(career_name)
+	local talents = optional_talents or self:get_talents(career_name)
 
 	if talents then
 		for i = 1, #talents do
@@ -142,7 +146,8 @@ BackendInterfaceTalentsPlayfab.get_talents = function (self, career_name)
 		self:_refresh()
 	end
 
-	local talents = self._talents[career_name]
+	local talents = self._talents
+	local career_talents = talents[career_name]
 
-	return talents
+	return career_talents
 end

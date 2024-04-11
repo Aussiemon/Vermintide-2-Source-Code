@@ -246,6 +246,94 @@ return function ()
 		},
 	})
 	define_rule({
+		name = "pes_generic_found_key_known_purpose_a",
+		response = "pes_generic_found_key_known_purpose_a",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item",
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"generic_key_known_purpose",
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"empire_soldier",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier",
+			},
+			{
+				"faction_memory",
+				"generic_key",
+				OP.EQ,
+				0,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"generic_key",
+				OP.ADD,
+				1,
+			},
+		},
+	})
+	define_rule({
+		name = "pes_generic_found_key_unknown_purpose_a",
+		response = "pes_generic_found_key_unknown_purpose_a",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item",
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"generic_key_unknown_purpose",
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"empire_soldier",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier",
+			},
+			{
+				"faction_memory",
+				"generic_key",
+				OP.EQ,
+				0,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"generic_key",
+				OP.ADD,
+				1,
+			},
+		},
+	})
+	define_rule({
 		name = "pes_generic_getting_dark_outside",
 		response = "pes_generic_getting_dark_outside",
 		criterias = {
@@ -962,6 +1050,74 @@ return function ()
 				1.0933125019074,
 				1.1788541078568,
 				0.95772916078568,
+			},
+		},
+		pes_generic_found_key_known_purpose_a = {
+			category = "level_talk",
+			database = "empire_soldier_generic_vo",
+			dialogue_animations_n = 3,
+			face_animations_n = 3,
+			randomize_indexes_n = 0,
+			sound_events_n = 3,
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+			},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+			},
+			localization_strings = {
+				"pes_gameplay_found_key_known_purpose_a_01",
+				"pes_gameplay_found_key_known_purpose_a_02",
+				"pes_gameplay_found_key_known_purpose_a_03",
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pes_gameplay_found_key_known_purpose_a_01",
+				"pes_gameplay_found_key_known_purpose_a_02",
+				"pes_gameplay_found_key_known_purpose_a_03",
+			},
+			sound_events_duration = {
+				0.88354164361954,
+				1.0237292051315,
+				1.2346667051315,
+			},
+		},
+		pes_generic_found_key_unknown_purpose_a = {
+			category = "level_talk",
+			database = "empire_soldier_generic_vo",
+			dialogue_animations_n = 3,
+			face_animations_n = 3,
+			randomize_indexes_n = 0,
+			sound_events_n = 3,
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+			},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+			},
+			localization_strings = {
+				"pes_gameplay_found_key_unknown_purpose_a_01",
+				"pes_gameplay_found_key_unknown_purpose_a_02",
+				"pes_gameplay_found_key_unknown_purpose_a_03",
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pes_gameplay_found_key_unknown_purpose_a_01",
+				"pes_gameplay_found_key_unknown_purpose_a_02",
+				"pes_gameplay_found_key_unknown_purpose_a_03",
+			},
+			sound_events_duration = {
+				1.8389791250229,
+				1.8184167146683,
+				1.7078541517258,
 			},
 		},
 		pes_generic_getting_dark_outside = {

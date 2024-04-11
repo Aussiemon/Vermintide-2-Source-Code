@@ -1550,6 +1550,47 @@ DeathReactions.templates = {
 			end,
 		},
 	},
+	level_object_hit_context = {
+		unit = {
+			pre_start = function (unit, context, t, killing_blow)
+				return
+			end,
+			start = function (unit, context, t, killing_blow, is_server)
+				Managers.state.game_mode:level_object_killed(unit, killing_blow)
+				Unit.set_flow_variable(unit, "current_health", 0)
+				Unit.flow_event(unit, "lua_on_death")
+
+				local local_player = Managers.player:local_player()
+				local player_unit = local_player and local_player.player_unit
+
+				if player_unit and player_unit == killing_blow[DamageDataIndex.SOURCE_ATTACKER_UNIT] then
+					Unit.flow_event(unit, "lua_local_player_killing_blow")
+				end
+			end,
+			update = function (unit, dt, context, t, data)
+				return
+			end,
+		},
+		husk = {
+			pre_start = function (unit, context, t, killing_blow)
+				return
+			end,
+			start = function (unit, context, t, killing_blow, is_server)
+				Managers.state.game_mode:level_object_killed(unit, killing_blow)
+				Unit.flow_event(unit, "lua_on_death")
+
+				local local_player = Managers.player:local_player()
+				local player_unit = local_player and local_player.player_unit
+
+				if player_unit and player_unit == killing_blow[DamageDataIndex.SOURCE_ATTACKER_UNIT] then
+					Unit.flow_event(unit, "lua_local_player_killing_blow")
+				end
+			end,
+			update = function (unit, dt, context, t, data)
+				return
+			end,
+		},
+	},
 	standard = {
 		unit = {
 			pre_start = function (unit, context, t, killing_blow)
@@ -1849,6 +1890,13 @@ DeathReactions.templates = {
 				Unit.set_flow_variable(unit, "current_health", 0)
 				Unit.flow_event(unit, "lua_on_death")
 
+				local local_player = Managers.player:local_player()
+				local player_unit = local_player and local_player.player_unit
+
+				if player_unit and player_unit == killing_blow[DamageDataIndex.ATTACKER] then
+					Unit.flow_event(unit, "lua_local_player_killing_blow")
+				end
+
 				death_extension.death_has_started = true
 
 				return data, DeathReactions.IS_NOT_DONE
@@ -1963,6 +2011,13 @@ DeathReactions.templates = {
 					local buff = buff_extension:get_buff_type("bubonic_blob_buff")
 
 					buff_extension:remove_buff(buff.id)
+				end
+
+				local local_player = Managers.player:local_player()
+				local player_unit = local_player and local_player.player_unit
+
+				if player_unit and player_unit == killing_blow[DamageDataIndex.ATTACKER] then
+					Unit.flow_event(unit, "lua_local_player_killing_blow")
 				end
 
 				return data, DeathReactions.IS_NOT_DONE

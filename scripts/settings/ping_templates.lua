@@ -36,7 +36,6 @@ IgnoreFreeEvents = {
 }
 IgnoreChatPings = {
 	[PingTypes.CANCEL] = true,
-	[PingTypes.ENEMY_GENERIC] = true,
 	[PingTypes.MOVEMENT_GENERIC] = true,
 	[PingTypes.PING_ONLY] = true,
 	[PingTypes.ENEMY_POSITION] = true,

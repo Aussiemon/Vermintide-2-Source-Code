@@ -1372,6 +1372,19 @@ function flow_callback_get_random_player(params)
 	return nil
 end
 
+function flow_callback_get_local_player_unit(params)
+	local player = Managers.player:local_player()
+	local player_unit = player and player.player_unit
+
+	if player_unit and Unit.alive(player_unit) then
+		flow_return_table.localplayer = player_unit
+	else
+		flow_return_table.localplayer = nil
+	end
+
+	return flow_return_table
+end
+
 function flow_callback_get_random_player_or_global_observer(params)
 	local players = Managers.player:human_and_bot_players()
 	local surrounding_aware_system = Managers.state.entity:system("surrounding_aware_system")
@@ -1456,6 +1469,81 @@ function flow_callback_trigger_dialogue_event(params)
 		dialogue_input:trigger_dialogue_event(params.concept, event_table, params.identifier)
 	else
 		print(string.format("[flow_callback_trigger_dialogue_event] No extension found belonging to system \"dialogue_system\" for unit %s", tostring(unit)))
+	end
+end
+
+function flow_callback_trigger_networked_dialogue_event(params)
+	local unit = params.source
+
+	fassert(unit, "Calling flow_callback_trigger_dialogue_event without passing unit")
+
+	if ScriptUnit.has_extension(unit, "dialogue_system") then
+		local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
+		local event_table = FrameTable.alloc_table()
+
+		if params.argument1_name then
+			event_table[params.argument1_name] = tonumber(params.argument1) or params.argument1
+		end
+
+		if params.argument2_name then
+			event_table[params.argument2_name] = tonumber(params.argument2) or params.argument2
+		end
+
+		if params.argument3_name then
+			event_table[params.argument3_name] = tonumber(params.argument3) or params.argument3
+		end
+
+		dialogue_input:trigger_networked_dialogue_event(params.concept, event_table, params.identifier)
+	else
+		print(string.format("[flow_callback_trigger_networked_dialogue_event] No extension found belonging to system \"dialogue_system\" for unit %s", tostring(unit)))
+	end
+end
+
+function flow_callback_trigger_ensured_dialogue_event(params)
+	local is_server = Managers.player.is_server
+
+	if not is_server then
+		return
+	end
+
+	local unit = params.source
+
+	fassert(unit, "Calling flow_callback_trigger_dialogue_event without passing unit")
+
+	if ScriptUnit.has_extension(unit, "dialogue_system") then
+		local event_table = {}
+
+		if params.argument1_name then
+			event_table[params.argument1_name] = tonumber(params.argument1) or params.argument1
+		end
+
+		if params.argument2_name then
+			event_table[params.argument2_name] = tonumber(params.argument2) or params.argument2
+		end
+
+		if params.argument3_name then
+			event_table[params.argument3_name] = tonumber(params.argument3) or params.argument3
+		end
+
+		local dialogue_system = Managers.state.entity:system("dialogue_system")
+
+		dialogue_system:queue_ensured_dialogue_event(unit, params.concept, event_table, params.identifier)
+	else
+		print(string.format("[flow_callback_trigger_networked_dialogue_event] No extension found belonging to system \"dialogue_system\" for unit %s", tostring(unit)))
+	end
+end
+
+function flow_callback_trigger_ensured_dialogue_event_on_players(params)
+	local players = Managers.player:players()
+
+	for _, player in pairs(players) do
+		local unit = player.player_unit
+
+		if ALIVE[unit] then
+			params.source = unit
+
+			flow_callback_trigger_ensured_dialogue_event(params)
+		end
 	end
 end
 
@@ -5563,4 +5651,26 @@ function flow_callback_lock_available_hero(params)
 	flow_return_table.locked_profile_index = locked_profile_index
 
 	return flow_return_table
+end
+
+function flow_callback_whaling_village_buboes_destroyed(params)
+	local achievement_manager = Managers.state.achievement
+
+	achievement_manager:trigger_event("dwarf_feculent_buboes")
+end
+
+function flow_callback_whaling_village_statue_emote(params)
+	Managers.state.achievement:trigger_event("dwarf_statue_emote", params.is_inside)
+end
+
+function flow_callback_whaling_village_go_fish(params)
+	local achievement_manager = Managers.state.achievement
+
+	achievement_manager:trigger_event("dwarf_go_fish")
+end
+
+function flow_callback_whaling_village_elevator_speedrun(params)
+	local achievement_manager = Managers.state.achievement
+
+	achievement_manager:trigger_event("dwarf_elevator_speedrun")
 end

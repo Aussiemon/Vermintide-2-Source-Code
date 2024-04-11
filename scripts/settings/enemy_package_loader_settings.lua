@@ -50,6 +50,7 @@ EnemyPackageLoaderSettings.categories = {
 			"pet_skeleton_with_shield",
 			"pet_skeleton_dual_wield",
 			"pet_skeleton_armored",
+			"chaos_bulwark",
 			"critter_nurgling",
 		},
 	},

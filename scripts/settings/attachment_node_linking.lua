@@ -8204,6 +8204,34 @@ AttachmentNodeLinking = {
 			},
 		},
 	},
+	ai_bulwark_shield = {
+		wielded = {
+			{
+				source = "j_leftweaponattach",
+				target = 0,
+			},
+		},
+		unwielded = {
+			{
+				source = "j_leftweaponattach",
+				target = 0,
+			},
+		},
+	},
+	ai_bulwark_weapon = {
+		wielded = {
+			{
+				source = "j_rightweaponattach",
+				target = 0,
+			},
+		},
+		unwielded = {
+			{
+				source = "j_rightweaponattach",
+				target = 0,
+			},
+		},
+	},
 	ai_zombie_blob_left = {
 		{
 			source = "j_leftarm_roll",

@@ -1976,6 +1976,7 @@ StateLoading._update_loadout_resync = function (self)
 
 		loadout_changed = loadout_changed or talents_changed
 
+		Managers.backend:get_interface("talents"):make_dirty()
 		print("[StateLoading] loadout_changed:", loadout_changed, "old_loadout:", old_loadout, "new_loadout:", new_loadout, "level_key:", level_key, "game_mode:", game_mode)
 		Managers.mechanism:update_loadout()
 

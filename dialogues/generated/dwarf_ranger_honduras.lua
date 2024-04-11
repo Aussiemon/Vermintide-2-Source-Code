@@ -5679,6 +5679,56 @@ return function ()
 		},
 	})
 	define_rule({
+		name = "pdr_gameplay_pinging_ecws_a",
+		response = "pdr_gameplay_pinging_ecws_a",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_enemy",
+			},
+			{
+				"query_context",
+				"is_ping",
+				OP.EQ,
+				1,
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_bulwark",
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"dwarf_ranger",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger",
+			},
+			{
+				"faction_memory",
+				"time_since_ping_enemy",
+				OP.TIMEDIFF,
+				OP.GT,
+				7,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_ping_enemy",
+				OP.TIMESET,
+			},
+		},
+	})
+	define_rule({
 		name = "pdr_gameplay_player_pounced",
 		response = "pdr_gameplay_player_pounced",
 		criterias = {
@@ -6842,6 +6892,63 @@ return function ()
 			{
 				"faction_memory",
 				"last_seen_ungor_archer",
+				OP.TIMESET,
+			},
+		},
+	})
+	define_rule({
+		name = "pdr_gameplay_seeing_an_ecws_a",
+		response = "pdr_gameplay_seeing_an_ecws_a",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_enemy",
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_bulwark",
+			},
+			{
+				"query_context",
+				"distance",
+				OP.GTEQ,
+				4,
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"dwarf_ranger",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger",
+			},
+			{
+				"faction_memory",
+				"last_heard_globadier",
+				OP.TIMEDIFF,
+				OP.GT,
+				20,
+			},
+			{
+				"faction_memory",
+				"last_seen_globadier",
+				OP.TIMEDIFF,
+				OP.GT,
+				60,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"last_seen_globadier",
 				OP.TIMESET,
 			},
 		},
@@ -15671,6 +15778,45 @@ return function ()
 				1.8464374542236,
 			},
 		},
+		pdr_gameplay_pinging_ecws_a = {
+			category = "enemy_alerts",
+			database = "dwarf_ranger_honduras",
+			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+			},
+			face_animations = {
+				"face_contempt",
+				"face_contempt",
+				"face_contempt",
+				"face_contempt",
+			},
+			localization_strings = {
+				"pdr_gameplay_pinging_ecws_a_01",
+				"pdr_gameplay_pinging_ecws_a_02",
+				"pdr_gameplay_pinging_ecws_a_03",
+				"pdr_gameplay_pinging_ecws_a_04",
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pdr_gameplay_pinging_ecws_a_01",
+				"pdr_gameplay_pinging_ecws_a_02",
+				"pdr_gameplay_pinging_ecws_a_03",
+				"pdr_gameplay_pinging_ecws_a_04",
+			},
+			sound_events_duration = {
+				1.5426249504089,
+				1.3719166517258,
+				1.7834792137146,
+				1.9964791536331,
+			},
+		},
 		pdr_gameplay_player_pounced = {
 			category = "player_alerts",
 			database = "dwarf_ranger_honduras",
@@ -16942,6 +17088,45 @@ return function ()
 				1.8029791116715,
 				2.6275832653046,
 				1.199979186058,
+			},
+		},
+		pdr_gameplay_seeing_an_ecws_a = {
+			category = "enemy_alerts_high",
+			database = "dwarf_ranger_honduras",
+			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+			},
+			face_animations = {
+				"face_contempt",
+				"face_contempt",
+				"face_contempt",
+				"face_contempt",
+			},
+			localization_strings = {
+				"pdr_gameplay_seeing_an_ecws_a_01",
+				"pdr_gameplay_seeing_an_ecws_a_02",
+				"pdr_gameplay_seeing_an_ecws_a_03",
+				"pdr_gameplay_seeing_an_ecws_a_04",
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pdr_gameplay_seeing_an_ecws_a_01",
+				"pdr_gameplay_seeing_an_ecws_a_02",
+				"pdr_gameplay_seeing_an_ecws_a_03",
+				"pdr_gameplay_seeing_an_ecws_a_04",
+			},
+			sound_events_duration = {
+				2.3724167346954,
+				3.0904791355133,
+				2.6018126010895,
+				3.6461250782013,
 			},
 		},
 		pdr_gameplay_self_heal = {

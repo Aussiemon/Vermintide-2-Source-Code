@@ -229,6 +229,18 @@ ItemMasterList.wizards_barrel = {
 	temporary_template = "wizards_barrel",
 	can_wield = CanWieldAllItemTemplates,
 }
+ItemMasterList.whale_oil_barrel = {
+	gamepad_hud_icon = "consumables_icon_defence",
+	hud_icon = "consumables_icon_defence",
+	inventory_icon = "icons_placeholder",
+	is_local = true,
+	item_type = "explosive_inventory_item",
+	left_hand_unit = "units/weapons/player/pup_whale_oil_barrel/wpn_whale_oil_barrel_01",
+	rarity = "plentiful",
+	slot_type = "healthkit",
+	temporary_template = "whale_oil_barrel",
+	can_wield = CanWieldAllItemTemplates,
+}
 ItemMasterList.wpn_gargoyle_head = {
 	gamepad_hud_icon = "consumables_icon_defence",
 	hud_icon = "consumables_icon_defence",

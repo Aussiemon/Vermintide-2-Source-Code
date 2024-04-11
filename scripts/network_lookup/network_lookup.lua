@@ -384,6 +384,7 @@ NetworkLookup.husks = {
 	"units/beings/enemies/chaos_warrior/chr_chaos_warrior",
 	"units/beings/enemies/chaos_warrior/chr_chaos_warrior_exalted",
 	"units/beings/enemies/chaos_warrior_boss/chr_chaos_warrior_boss",
+	"units/beings/enemies/chaos_warrior_bulwark/chr_chaos_warrior_bulwark",
 	"units/beings/enemies/chaos_troll/chr_chaos_troll",
 	"units/beings/enemies/chaos_tentacle/chr_chaos_tentacle",
 	"units/beings/enemies/chaos_tentacle_portal/chr_chaos_tentacle_portal",
@@ -474,6 +475,9 @@ NetworkLookup.husks = {
 	"units/weapons/player/pup_magic_barrel/pup_magic_barrel_01",
 	"units/weapons/player/pup_magic_barrel/wpn_magic_barrel_01",
 	"units/weapons/player/pup_magic_barrel/wpn_magic_barrel_01_3p",
+	"units/weapons/player/pup_whale_oil_barrel/pup_whale_oil_barrel_01",
+	"units/weapons/player/pup_whale_oil_barrel/wpn_whale_oil_barrel_01",
+	"units/weapons/player/pup_whale_oil_barrel/wpn_whale_oil_barrel_01_3p",
 	"units/weapons/player/pup_wizards_barrel_01/pup_wizards_barrel_01",
 	"units/weapons/player/pup_wizards_barrel_01/wpn_wizards_barrel_01",
 	"units/weapons/player/pup_wizards_barrel_01/wpn_wizards_barrel_01_3p",
@@ -1290,6 +1294,8 @@ NetworkLookup.effects = {
 	"fx/chr_chaos_sorcerer_teleport_direction",
 	"fx/chr_stormvermin_champion_beam_impact_dot",
 	"fx/chr_stormvermin_champion_beam_anticipation_dot",
+	"fx/chr_chaos_warrior_bulwark_explosion",
+	"fx/chr_chaos_warrior_bulwark_shield_impact",
 	"spawn_cylinder",
 	"fx/wpnfx_flamethrower_1p_01",
 	"fx/wpnfx_flamethrower_01",
@@ -1590,6 +1596,8 @@ NetworkLookup.sound_events = {
 	"Play_hud_versus_score_points",
 	"Play_versus_hud_last_hero_down_riser",
 	"Stop_versus_hud_last_hero_down_riser",
+	"Play_enemy_chaos_bulwark_stagger",
+	"Play_enemy_chaos_bulwark_stagger_break",
 }
 
 do
@@ -1697,6 +1705,7 @@ NetworkLookup.melee_impact_sound_types = create_lookup({
 NetworkLookup.sound_event_param_names = {
 	"drakegun_charge_fire",
 	"enemy_vo",
+	"bulwark_stagger_amount",
 }
 NetworkLookup.sound_event_param_string_values = {
 	"skaven_slave",
@@ -1770,6 +1779,7 @@ NetworkLookup.dialogue_events = {
 	"overcharge_critical",
 	"overcharge_explode",
 	"overcharge_lockout_end",
+	"seen_item",
 	"vs_mg_round_start",
 	"vs_mg_heroes_left_safe_room",
 	"vs_mg_heroes_objective_reached",
@@ -1823,6 +1833,7 @@ NetworkLookup.dialogue_event_data_names = {
 	"trail_cog",
 	"training_dummy",
 	"training_dummy_armored",
+	"whale_oil_barrel",
 	"stance_type",
 	"offensive",
 	"defensive",
@@ -1835,6 +1846,7 @@ NetworkLookup.dialogue_event_data_names = {
 	"ranged_weapon",
 	"fail_reason",
 	"out_of_ammo",
+	"item_tag",
 }
 
 DLCUtils.append("dialogue_event_data_lookup", NetworkLookup.dialogue_event_data_names)

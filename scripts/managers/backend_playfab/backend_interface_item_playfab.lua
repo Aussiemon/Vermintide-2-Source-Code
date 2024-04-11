@@ -290,7 +290,9 @@ BackendInterfaceItemPlayfab.get_loadout = function (self)
 		self:_refresh()
 	end
 
-	return self._loadouts
+	local loadouts = self._loadouts
+
+	return loadouts
 end
 
 BackendInterfaceItemPlayfab.get_loadout_by_career_name = function (self, career_name)
@@ -298,7 +300,9 @@ BackendInterfaceItemPlayfab.get_loadout_by_career_name = function (self, career_
 		self:_refresh()
 	end
 
-	return self._loadouts[career_name]
+	local loadouts = self:get_loadout()
+
+	return loadouts[career_name]
 end
 
 BackendInterfaceItemPlayfab.get_loadout_item_id = function (self, career_name, slot_name)
@@ -437,7 +441,7 @@ BackendInterfaceItemPlayfab.check_for_loot = function (self)
 end
 
 BackendInterfaceItemPlayfab.equipped_by = function (self, backend_id)
-	local loadouts = self._loadouts
+	local loadouts = self:get_loadout()
 	local equipped_careers = {}
 
 	for career_name, items_by_slot in pairs(loadouts) do

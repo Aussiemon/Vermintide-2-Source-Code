@@ -216,7 +216,22 @@ BuffSystem._next_free_server_buff_id = function (self)
 		self.next_server_buff_id = self.next_server_buff_id + 1
 	end
 
-	fassert(free_buff_id <= NetworkConstants.server_controlled_buff_id.max, "[BuffSystem] ERROR! Too many server controlled buffs! (%d/%d)", free_buff_id, NetworkConstants.server_controlled_buff_id.max)
+	if free_buff_id > NetworkConstants.server_controlled_buff_id.max then
+		print("===== [BuffSystem] server controlled buffs dump =====")
+
+		local count = 0
+
+		for unit, buffs in pairs(self.server_controlled_buffs) do
+			for server_id, buff_data in pairs(buffs) do
+				print(unit, server_id, HEALTH_ALIVE[unit], buff_data.template_name, buff_data.attacker_unit)
+
+				count = count + 1
+			end
+		end
+
+		printf("Found %s buffs", count)
+		ferror("[BuffSystem] ERROR! Too many server controlled buffs! (%d/%d)", free_buff_id, NetworkConstants.server_controlled_buff_id.max)
+	end
 
 	return free_buff_id
 end

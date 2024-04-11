@@ -104,7 +104,13 @@ SimpleInventoryExtension.extensions_ready = function (self, world, unit)
 
 	self:add_equipment_by_category("weapon_slots")
 	self:add_equipment_by_category("enemy_weapon_slots")
-	self:update_career_skill_weapon_slot_safe()
+
+	local skill_index = talent_extension and talent_extension:get_talent_career_skill_index() or 1
+	local weapon_index = talent_extension and talent_extension:get_talent_career_weapon_index()
+
+	self.initial_inventory.slot_career_skill_weapon = career_extension:career_skill_weapon_name(skill_index, weapon_index)
+
+	self:add_equipment_by_category("career_skill_weapon_slots")
 
 	local additional_items = self.initial_inventory.additional_items
 

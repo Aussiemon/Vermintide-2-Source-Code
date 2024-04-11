@@ -1060,37 +1060,36 @@ StateIngame._check_exit = function (self, t)
 	local waiting_user_input = backend_manager:is_waiting_for_user_input()
 	local backend_items = backend_manager:get_interface("items")
 	local waiting_for_item_poll = (backend_items:num_current_item_server_requests() ~= 0 or UISettings.waiting_for_response) and not backend_manager:is_disconnected()
-	local transition, join_lobby_data
-
-	for _, machine in pairs(self.machines) do
-		machine:state():check_invites()
-
-		transition, join_lobby_data = machine:state():wanted_transition()
-	end
-
-	if script_data.hammer_join and Managers.time:time("game") > 5 then
-		transition = "restart_game"
-
-		Development.set_parameter("auto_join", true)
-	elseif not IS_WINDOWS and Managers.account:leaving_game() then
-		transition = "return_to_title_screen"
-	end
-
-	transition = transition or Managers.state.game_mode:wanted_transition()
-
-	if not transition and Managers.game_server then
-		transition = Managers.game_server:get_transition()
-	end
-
-	if not transition and script_data.honduras_demo then
-		transition = Managers.time:get_demo_transition()
-	end
 
 	if not self.exit_type and not waiting_user_input and not waiting_for_item_poll then
+		local transition, join_lobby_data
+
+		for _, machine in pairs(self.machines) do
+			machine:state():check_invites()
+
+			transition, join_lobby_data = machine:state():wanted_transition()
+		end
+
+		if script_data.hammer_join and Managers.time:time("game") > 5 then
+			transition = "restart_game"
+
+			Development.set_parameter("auto_join", true)
+		elseif not IS_WINDOWS and Managers.account:leaving_game() then
+			transition = "return_to_title_screen"
+		end
+
+		transition = transition or Managers.state.game_mode:wanted_transition()
+
+		if not transition and Managers.game_server then
+			transition = Managers.game_server:get_transition()
+		end
+
+		if not transition and script_data.honduras_demo then
+			transition = Managers.time:get_demo_transition()
+		end
+
 		local level_transition_handler = Managers.level_transition_handler
 		local level_transition_type = level_transition_handler:needs_level_load() and level_transition_handler:get_current_level_transition_type()
-
-		self._last_transition_fail = nil
 
 		if transition or join_lobby_data or level_transition_type then
 			print("TRANSITION", transition, join_lobby_data, level_transition_type)
@@ -1516,10 +1515,6 @@ StateIngame._check_exit = function (self, t)
 				end
 			end
 		end
-	elseif transition and self._last_transition_fail ~= transition then
-		self._last_transition_fail = transition
-
-		print("TRANSITION failed", "\n\ttransition:", transition, "\n\texit_type:", self.exit_type, "\n\twaiting_user_input:", waiting_user_input, "\n\tnum_server_requests:", backend_items:num_current_item_server_requests(), "\n\twaiting_for_response:", UISettings.waiting_for_response)
 	end
 
 	local SESSION_LEAVE_TIMEOUT = 4

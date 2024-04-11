@@ -1193,6 +1193,7 @@ local sound_events = {
 	crowbill_stab_hit = "stab_hit",
 	hammer_2h_hit = "blunt_hit",
 	javelin_stab_hit = "stab_hit",
+	slashing_dagger_hit = "slashing_hit",
 	slashing_hit = "slashing_hit",
 	stab_hit = "stab_hit",
 }
@@ -1238,7 +1239,12 @@ ActionSweep._play_character_impact = function (self, is_server, attacker_unit, h
 	local hit_effect
 
 	if blocking then
-		hit_effect = target_unit_armor == 2 and "fx/hit_enemy_shield_metal" or "fx/hit_enemy_shield"
+		if breed.blocking_hit_effect then
+			hit_effect = breed.blocking_hit_effect
+		else
+			hit_effect = target_unit_armor == 2 and "fx/hit_enemy_shield_metal" or "fx/hit_enemy_shield"
+		end
+
 		damage_type = "no_damage"
 	elseif target_invulerable then
 		hit_effect = "fx/hit_enemy_shield_metal"

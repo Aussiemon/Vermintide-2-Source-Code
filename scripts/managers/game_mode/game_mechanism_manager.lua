@@ -1030,6 +1030,7 @@ GameMechanismManager.rpc_sync_players_session_score = function (self, channel_id
 
 	if self._game_mechanism.get_players_session_score then
 		unsynced_players_session_score, mechanism_stats_by_player = self._game_mechanism:get_players_session_score(statistics_db, self._profile_synchronizer)
+		mechanism_stats_by_player = mechanism_stats_by_player or ScoreboardHelper.num_stats_per_player
 	end
 
 	unsynced_players_session_score = unsynced_players_session_score or ScoreboardHelper.get_grouped_topic_statistics(statistics_db, self._profile_synchronizer)
@@ -1149,7 +1150,7 @@ GameMechanismManager.setup_mechanism_parties = function (self)
 		self._game_mechanism:setup_mechanism_parties()
 	end
 
-	if self._lobby and self._lobby.set_max_members then
+	if not IS_CONSOLE and self._lobby and self._lobby.set_max_members then
 		self._lobby:set_max_members(self:max_instance_members())
 	end
 end

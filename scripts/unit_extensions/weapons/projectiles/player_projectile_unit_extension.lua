@@ -653,7 +653,7 @@ PlayerProjectileUnitExtension.hit_enemy = function (self, impact_data, hit_unit,
 		end
 	end
 
-	if breed.is_player then
+	if breed.is_player or breed.play_ranged_hit_reacts then
 		local husk = not self._owner_player.local_player
 
 		DamageUtils.add_hit_reaction(hit_unit, breed, husk, hit_direction, false)
@@ -945,6 +945,7 @@ PlayerProjectileUnitExtension.hit_level_unit = function (self, impact_data, hit_
 			unit_set_flow_variable(hit_unit, "hit_actor", hit_actor)
 			unit_set_flow_variable(hit_unit, "hit_direction", hit_direction)
 			unit_set_flow_variable(hit_unit, "hit_position", hit_position)
+			Unit.flow_event(hit_unit, "lua_level_unit_hit_by_local_player_projectile")
 			Unit.flow_event(hit_unit, "lua_simple_damage")
 		end
 	end

@@ -11,6 +11,7 @@ PerformanceManager.init = function (self, gui, is_server, level_key)
 		beastmen_ungor = true,
 		beastmen_ungor_archer = true,
 		chaos_berzerker = true,
+		chaos_bulwark = true,
 		chaos_fanatic = true,
 		chaos_marauder = true,
 		chaos_marauder_with_shield = true,

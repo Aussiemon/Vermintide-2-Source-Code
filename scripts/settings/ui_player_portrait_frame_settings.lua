@@ -509,6 +509,48 @@ UIPlayerPortraitFrameSettings = {
 			},
 		},
 	},
+	frame_karak_04 = {
+		{
+			layer = 10,
+			texture = "portrait_frame_whaling_01",
+			color = {
+				255,
+				255,
+				255,
+				255,
+			},
+			size = {
+				128,
+				140,
+			},
+			offset = {
+				0,
+				-61,
+				0,
+			},
+		},
+	},
+	frame_karak_05 = {
+		{
+			layer = 10,
+			texture = "portrait_frame_whaling_02",
+			color = {
+				255,
+				255,
+				255,
+				255,
+			},
+			size = {
+				128,
+				140,
+			},
+			offset = {
+				0,
+				-61,
+				0,
+			},
+		},
+	},
 	frame_necromancer_01 = {
 		{
 			layer = 10,

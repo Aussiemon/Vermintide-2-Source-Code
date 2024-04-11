@@ -821,7 +821,7 @@ SocialWheelSettings = {
 		individual_bg = false,
 		wedge_adjustment = 0.85,
 	},
-	enemy_hero_player_gamepad = {
+	enemy_hero_player = {
 		angle = 2 * math.pi,
 		size = {
 			250,

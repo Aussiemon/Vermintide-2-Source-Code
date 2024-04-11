@@ -349,6 +349,17 @@ Commands = {
 			return true, "Script data changed!"
 		end,
 	},
+	set_disable_gamemode_end = {
+		description = "Set disable game mode end setting",
+		example = "disable_gamemode_end <bool>",
+		max_args = 1,
+		min_args = 1,
+		func = function (bool)
+			script_data.disable_gamemode_end = bool
+
+			return true, "Game mode end has changed"
+		end,
+	},
 	set_time = {
 		description = "Set the objective timer",
 		example = "set_time <time>",
@@ -721,6 +732,16 @@ Commands = {
 			end
 
 			return false, "Failed to kick player - Player not found"
+		end,
+	},
+	spawn_horde = {
+		description = "spawns a horde",
+		max_args = 0,
+		min_args = 0,
+		func = function ()
+			Managers.state.conflict:debug_spawn_horde()
+
+			return true, "Spawning horde"
 		end,
 	},
 }

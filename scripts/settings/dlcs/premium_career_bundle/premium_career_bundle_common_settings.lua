@@ -33,5 +33,31 @@ settings.unlock_settings = {
 		},
 	},
 }
-settings.unlock_settings_xb1 = {}
-settings.unlock_settings_ps4 = {}
+settings.unlock_settings_xb1 = {
+	premium_career_bundle = {
+		backend_reward_id = "premium_career_bundle",
+		class = "UnlockDlc",
+		id = "51445039-3837-3035-C032-42353531D100",
+		requires_restart = true,
+	},
+}
+settings.unlock_settings_ps4 = {
+	CUSA13595_00 = {
+		premium_career_bundle = {
+			backend_reward_id = "premium_career_bundle",
+			class = "UnlockDlc",
+			id = "0a282aa920c44c02a1ab700cb227edfa",
+			product_label = "00USCAREERSANDCO",
+			requires_restart = true,
+		},
+	},
+	CUSA13645_00 = {
+		premium_career_bundle = {
+			backend_reward_id = "premium_career_bundle",
+			class = "UnlockDlc",
+			id = "8cc4259a478f46a9b2132cfe6cdf44d3",
+			product_label = "00EUCAREERSANDCO",
+			requires_restart = true,
+		},
+	},
+}

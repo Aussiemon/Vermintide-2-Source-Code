@@ -984,13 +984,8 @@ NetworkServer.eac_check_peer = function (self, peer_id)
 	local server_state, peer_state
 
 	if DEDICATED_SERVER then
-		if BUILD == "release" then
-			server_state = EACServer.state(self._eac_server, self.my_peer_id)
-			peer_state = EACServer.state(self._eac_server, peer_id)
-		else
-			server_state = EACServer.state(self._eac_server, self.my_peer_id)
-			peer_state = EACServer.state(self._eac_server, peer_id)
-		end
+		server_state = "trusted"
+		peer_state = "trusted"
 	else
 		local host = self.lobby_host
 
