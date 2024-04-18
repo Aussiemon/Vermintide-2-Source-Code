@@ -254,7 +254,7 @@ ImguiBuffsDebug._update_controls = function (self)
 	if sync_type == BuffSyncType.Client or sync_type == BuffSyncType.ClientAndServer then
 		local found_peer_ids = FrameTable.alloc_table()
 		local actual_peer_ids = FrameTable.alloc_table()
-		local peer_ids = table.select_array(table.keys(Managers.player:human_players()), function (new_t, unique_id)
+		local peer_ids = table.select_array(table.keys(Managers.player:human_players()), function (_, unique_id)
 			local peer_id = string.sub(unique_id, 1, string.find(unique_id, ":") - 1)
 
 			if not found_peer_ids[peer_id] then

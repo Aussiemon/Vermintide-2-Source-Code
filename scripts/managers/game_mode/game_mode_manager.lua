@@ -1164,10 +1164,14 @@ GameModeManager.lock_available_hero = function (self)
 	for _, player in pairs(players) do
 		local profile_index = player:profile_index()
 
-		occupied_profiles[profile_index] = true
+		if profile_index then
+			occupied_profiles[profile_index] = true
+		end
 	end
 
-	for profile_index, profile_name in ipairs(available_profiles) do
+	for _, profile_name in ipairs(available_profiles) do
+		local profile_index = FindProfileIndex(profile_name)
+
 		if not occupied_profiles[profile_index] then
 			self._locked_profile_index = profile_index
 
@@ -1175,7 +1179,47 @@ GameModeManager.lock_available_hero = function (self)
 		end
 	end
 
-	assert(self._locked_profile_index, "[GameModeManager:lock_available_hero] Couldn't find unoccupied hero")
+	if not self._locked_profile_index then
+		local parties = Managers.party:parties_by_name()
+		local party_id = parties.heroes.party_id
+		local last_bot_status = Managers.party:get_last_added_bot_for_party(party_id)
+
+		if last_bot_status then
+			self._locked_profile_index = last_bot_status.profile_index
+
+			return self._locked_profile_index
+		end
+	end
+
+	if not self._locked_profile_index then
+		table.clear(occupied_profiles)
+
+		local human_players = Managers.player:human_players()
+
+		for _, player in pairs(human_players) do
+			local profile_index = player:profile_index()
+
+			occupied_profiles[profile_index] = true
+		end
+
+		for _, profile_name in ipairs(available_profiles) do
+			local profile_index = FindProfileIndex(profile_name)
+
+			if not occupied_profiles[profile_index] then
+				self._locked_profile_index = profile_index
+
+				return self._locked_profile_index
+			end
+		end
+	end
+
+	if not self._locked_profile_index then
+		local fallback_profile_name = available_profiles[1]
+
+		self._locked_profile_index = FindProfileIndex(fallback_profile_name)
+
+		return self._locked_profile_index
+	end
 end
 
 GameModeManager.hero_is_locked = function (self, profile_index)

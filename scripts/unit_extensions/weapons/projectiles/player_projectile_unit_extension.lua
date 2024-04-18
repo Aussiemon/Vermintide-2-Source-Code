@@ -708,6 +708,10 @@ PlayerProjectileUnitExtension.hit_enemy_damage = function (self, damage_profile,
 
 	if not action.ignore_shield_hit then
 		shield_blocked = AiUtils.attack_is_shield_blocked(hit_unit, owner_unit, trueflight_blocking, hit_direction)
+
+		if shield_blocked and breed and breed.blocking_hit_effect then
+			EffectHelper.player_ranged_block_hit_particles(self._world, breed.blocking_hit_effect, hit_position, hit_direction, hit_unit)
+		end
 	end
 
 	breed = AiUtils.unit_breed(hit_unit)

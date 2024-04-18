@@ -965,7 +965,17 @@ table.select_array = function (t, selector)
 	local new_t = {}
 
 	for i = 1, #t do
-		new_t[#new_t + 1] = selector(new_t, t[i])
+		new_t[#new_t + 1] = selector(i, t[i])
+	end
+
+	return new_t
+end
+
+table.select_map = function (t, selector)
+	local new_t = {}
+
+	for k, v in pairs(t) do
+		new_t[k] = selector(k, v)
 	end
 
 	return new_t

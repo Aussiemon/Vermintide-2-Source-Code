@@ -697,6 +697,10 @@ ProfileSynchronizer.set_own_actually_ingame = function (self, actually_ingame)
 	self._state:set_own_actually_ingame(actually_ingame)
 end
 
+ProfileSynchronizer.get_own_actually_ingame = function (self)
+	self._state:get_actually_ingame(Network.peer_id())
+end
+
 ProfileSynchronizer.others_actually_ingame = function (self)
 	local network_state = self._state
 	local own_peer_id = network_state:get_own_peer_id()

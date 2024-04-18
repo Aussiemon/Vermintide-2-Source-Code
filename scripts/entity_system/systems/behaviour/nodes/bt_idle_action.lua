@@ -28,6 +28,8 @@ BTIdleAction.enter = function (self, unit, blackboard, t)
 
 	if action and action.alerted_anims and blackboard.confirmed_player_sighting then
 		animation = action.alerted_anims[math.random(1, #action.alerted_anims)]
+	elseif action and action.idle_combat and not blackboard.is_passive then
+		animation = randomize(action.idle_combat)
 	elseif action and action.idle_animation then
 		animation = randomize(action.idle_animation)
 	elseif blackboard.is_passive and blackboard.spawn_type ~= "horde" and blackboard.spawn_type ~= "horde_hidden" then

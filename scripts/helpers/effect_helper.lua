@@ -268,7 +268,14 @@ EffectHelper.play_skinned_surface_material_effects = function (effect_name, worl
 	end
 
 	if not skip_particles then
-		local particles = effect_settings.particles and effect_settings.particles[material]
+		local custom_shield_block_particles = breed and breed.blocking_hit_effect and shield_blocked
+		local particles
+
+		if custom_shield_block_particles then
+			particles = breed.blocking_hit_effect
+		else
+			particles = effect_settings.particles and effect_settings.particles[material]
+		end
 
 		if particles then
 			local normal_rotation = Quaternion.look(normal, Vector3.up())
@@ -323,6 +330,12 @@ EffectHelper.player_melee_hit_particles = function (world, particles_name, hit_p
 	if damage_type and damage_type ~= "no_damage" then
 		Managers.state.blood:add_blood_ball(hit_position, hit_direction, damage_type, hit_unit)
 	end
+end
+
+EffectHelper.player_ranged_block_hit_particles = function (world, particles_name, hit_position, hit_direction, hit_unit)
+	local hit_rotation = Quaternion.look(hit_direction)
+
+	World.create_particles(world, particles_name, hit_position, hit_rotation)
 end
 
 EffectHelper.play_melee_hit_effects = function (sound_event, world, hit_position, sound_type, husk, hit_unit)

@@ -11,6 +11,7 @@ return {
 			beastmen_minotaur = "beastmen_standard_bearer",
 			beastmen_standard_bearer = "beastmen_bestigor",
 			chaos_berzerker = "chaos_marauder",
+			chaos_bulwark = "chaos_raider",
 			chaos_corruptor_sorcerer = "chaos_raider",
 			chaos_exalted_champion_norsca = "chaos_warrior",
 			chaos_exalted_champion_warcamp = "chaos_warrior",
@@ -51,6 +52,7 @@ return {
 		data.breed_explosion_templates = {
 			beastmen_bestigor = "generic_mutator_explosion_medium",
 			beastmen_minotaur = "generic_mutator_explosion_large",
+			chaos_bulwark = "generic_mutator_explosion_medium",
 			chaos_exalted_champion_norsca = "generic_mutator_explosion_medium",
 			chaos_exalted_champion_warcamp = "generic_mutator_explosion_medium",
 			chaos_exalted_sorcerer = "generic_mutator_explosion_medium",

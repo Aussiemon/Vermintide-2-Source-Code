@@ -1572,6 +1572,12 @@ DeusRunController.get_player_consumable_potion_slot = function (self, peer_id, l
 	return self._run_state:get_player_consumable_potion_slot(peer_id, local_player_id, profile_index, career_index)
 end
 
+DeusRunController.get_player_additional_items = function (self, peer_id, local_player_id)
+	local profile_index, career_index = self._run_state:get_player_profile(peer_id, local_player_id)
+
+	return self._run_state:get_player_additional_items(peer_id, local_player_id, profile_index, career_index)
+end
+
 DeusRunController.get_player_consumable_grenade_slot = function (self, peer_id, local_player_id)
 	local profile_index, career_index = self._run_state:get_player_profile(peer_id, local_player_id)
 
@@ -1668,15 +1674,6 @@ DeusRunController.save_game_mode_data = function (self, peer_id, local_player_id
 
 	local existing_consumable_potion_slot = self._run_state:get_player_consumable_potion_slot(peer_id, local_player_id, profile_index, career_index)
 	local new_consumable_potion_slot = data.consumables.slot_potion
-
-	if not new_consumable_potion_slot then
-		local additional_items = data.additional_items
-		local additional_potion_slot = additional_items and additional_items.slot_potion
-		local additional_potion_items = additional_potion_slot and additional_potion_slot.items
-		local additional_potion_item = additional_potion_items and additional_potion_items[1]
-
-		new_consumable_potion_slot = additional_potion_item and additional_potion_item.name
-	end
 
 	if existing_consumable_potion_slot ~= new_consumable_potion_slot then
 		self._run_state:set_player_consumable_potion_slot(peer_id, local_player_id, profile_index, career_index, new_consumable_potion_slot)

@@ -133,9 +133,13 @@ PassiveAbilityNecromancerCharges.destroy = function (self)
 	self._network_event_delegate:unregister(self)
 	self:_unregister_events()
 
-	local game_session = Managers.state.network:game()
+	local in_game_session = Managers.state.network:in_game_session()
 
-	if not game_session then
+	if not in_game_session then
+		return
+	end
+
+	if not Managers.state.network.profile_synchronizer:get_own_actually_ingame() then
 		return
 	end
 

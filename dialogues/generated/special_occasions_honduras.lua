@@ -5991,6 +5991,37 @@ return function ()
 		},
 	})
 	define_rule({
+		name = "pbw_gameplay_wizard_potions_above_half_health_03_reply_04",
+		response = "pbw_gameplay_wizard_potions_above_half_health_03_reply_04",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwh_gameplay_wizard_potions_above_half_health_03",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard",
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_early_healing_draught",
+				OP.TIMESET,
+			},
+		},
+	})
+	define_rule({
 		name = "pbw_killing_a_second_rat_ogre_02",
 		response = "pbw_killing_a_second_rat_ogre_02",
 		criterias = {
@@ -8694,6 +8725,37 @@ return function ()
 		},
 	})
 	define_rule({
+		name = "pdr_gameplay_ranger_potions_above_half_health_01_reply_03",
+		response = "pdr_gameplay_ranger_potions_above_half_health_01_reply_03",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwh_gameplay_ranger_potions_above_half_health_01",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger",
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_early_healing_draught",
+				OP.TIMESET,
+			},
+		},
+	})
+	define_rule({
 		name = "pdr_gameplay_ranger_potions_above_half_health_02_reply_01",
 		response = "pdr_gameplay_ranger_potions_above_half_health_02_reply_01",
 		criterias = {
@@ -8787,6 +8849,37 @@ return function ()
 		},
 	})
 	define_rule({
+		name = "pdr_gameplay_ranger_potions_above_half_health_02_reply_04",
+		response = "pdr_gameplay_ranger_potions_above_half_health_02_reply_04",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwh_gameplay_ranger_potions_above_half_health_02",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger",
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_early_healing_draught",
+				OP.TIMESET,
+			},
+		},
+	})
+	define_rule({
 		name = "pdr_gameplay_ranger_potions_above_half_health_03_reply_01",
 		response = "pdr_gameplay_ranger_potions_above_half_health_03_reply_01",
 		criterias = {
@@ -8863,6 +8956,37 @@ return function ()
 				"sound_event",
 				OP.EQ,
 				"pwe_gameplay_ranger_potions_above_half_health_03",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger",
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_early_healing_draught",
+				OP.TIMESET,
+			},
+		},
+	})
+	define_rule({
+		name = "pdr_gameplay_ranger_potions_above_half_health_03_reply_04",
+		response = "pdr_gameplay_ranger_potions_above_half_health_03_reply_04",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwh_gameplay_ranger_potions_above_half_health_03",
 			},
 			{
 				"user_context",
@@ -17121,6 +17245,37 @@ return function ()
 		},
 	})
 	define_rule({
+		name = "pes_gameplay_soldier_potions_above_half_health_02_reply_04",
+		response = "pes_gameplay_soldier_potions_above_half_health_02_reply_04",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwh_gameplay_soldier_potions_above_half_health_02",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier",
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_early_healing_draught",
+				OP.TIMESET,
+			},
+		},
+	})
+	define_rule({
 		name = "pes_gameplay_soldier_potions_above_half_health_03_reply_01",
 		response = "pes_gameplay_soldier_potions_above_half_health_03_reply_01",
 		criterias = {
@@ -18933,6 +19088,37 @@ return function ()
 		},
 	})
 	define_rule({
+		name = "pwe_gameplay_elf_potions_above_half_health_01_reply_03",
+		response = "pwe_gameplay_elf_potions_above_half_health_01_reply_03",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwh_gameplay_elf_potions_above_half_health_01",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf",
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_early_healing_draught",
+				OP.TIMESET,
+			},
+		},
+	})
+	define_rule({
 		name = "pwe_gameplay_elf_potions_above_half_health_02_reply_01",
 		response = "pwe_gameplay_elf_potions_above_half_health_02_reply_01",
 		criterias = {
@@ -18978,6 +19164,37 @@ return function ()
 				"sound_event",
 				OP.EQ,
 				"pes_gameplay_elf_potions_above_half_health_02",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf",
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_early_healing_draught",
+				OP.TIMESET,
+			},
+		},
+	})
+	define_rule({
+		name = "pwe_gameplay_elf_potions_above_half_health_02_reply_03",
+		response = "pwe_gameplay_elf_potions_above_half_health_02_reply_03",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwh_gameplay_elf_potions_above_half_health_02",
 			},
 			{
 				"user_context",
@@ -24859,6 +25076,156 @@ return function ()
 		},
 	})
 	define_rule({
+		name = "pwh_gameplay_elf_potions_above_half_health_01",
+		response = "pwh_gameplay_elf_potions_above_half_health_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"early_healing_draught",
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"witch_hunter",
+			},
+			{
+				"query_context",
+				"target_name",
+				OP.EQ,
+				"wood_elf",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter",
+			},
+			{
+				"user_memory",
+				"time_since_early_healing_draught",
+				OP.TIMEDIFF,
+				OP.GT,
+				900,
+			},
+		},
+		on_done = {
+			{
+				"user_memory",
+				"time_since_early_healing_draught",
+				OP.TIMESET,
+			},
+		},
+	})
+	define_rule({
+		name = "pwh_gameplay_elf_potions_above_half_health_01_reply_01",
+		response = "pwh_gameplay_elf_potions_above_half_health_01_reply_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwe_gameplay_elf_potions_above_half_health_01_reply_03",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter",
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_early_healing_draught",
+				OP.TIMESET,
+			},
+		},
+	})
+	define_rule({
+		name = "pwh_gameplay_elf_potions_above_half_health_02",
+		response = "pwh_gameplay_elf_potions_above_half_health_02",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"early_healing_draught",
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"witch_hunter",
+			},
+			{
+				"query_context",
+				"target_name",
+				OP.EQ,
+				"wood_elf",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter",
+			},
+			{
+				"user_memory",
+				"time_since_early_healing_draught",
+				OP.TIMEDIFF,
+				OP.GT,
+				900,
+			},
+		},
+		on_done = {
+			{
+				"user_memory",
+				"time_since_early_healing_draught",
+				OP.TIMESET,
+			},
+		},
+	})
+	define_rule({
+		name = "pwh_gameplay_elf_potions_above_half_health_02_reply_01",
+		response = "pwh_gameplay_elf_potions_above_half_health_02_reply_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwe_gameplay_elf_potions_above_half_health_02_reply_03",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter",
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_early_healing_draught",
+				OP.TIMESET,
+			},
+		},
+	})
+	define_rule({
 		name = "pwh_gameplay_hanging_help",
 		response = "pwh_gameplay_hanging_help",
 		criterias = {
@@ -26530,6 +26897,231 @@ return function ()
 				"player_missed_bomb",
 				OP.ADD,
 				1,
+			},
+		},
+	})
+	define_rule({
+		name = "pwh_gameplay_ranger_potions_above_half_health_01",
+		response = "pwh_gameplay_ranger_potions_above_half_health_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"early_healing_draught",
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"witch_hunter",
+			},
+			{
+				"query_context",
+				"target_name",
+				OP.EQ,
+				"dwarf_ranger",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter",
+			},
+			{
+				"user_memory",
+				"time_since_early_healing_draught",
+				OP.TIMEDIFF,
+				OP.GT,
+				900,
+			},
+		},
+		on_done = {
+			{
+				"user_memory",
+				"time_since_early_healing_draught",
+				OP.TIMESET,
+			},
+		},
+	})
+	define_rule({
+		name = "pwh_gameplay_ranger_potions_above_half_health_01_reply_01",
+		response = "pwh_gameplay_ranger_potions_above_half_health_01_reply_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pdr_gameplay_ranger_potions_above_half_health_01_reply_03",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter",
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_early_healing_draught",
+				OP.TIMESET,
+			},
+		},
+	})
+	define_rule({
+		name = "pwh_gameplay_ranger_potions_above_half_health_02",
+		response = "pwh_gameplay_ranger_potions_above_half_health_02",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"early_healing_draught",
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"witch_hunter",
+			},
+			{
+				"query_context",
+				"target_name",
+				OP.EQ,
+				"dwarf_ranger",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter",
+			},
+			{
+				"user_memory",
+				"time_since_early_healing_draught",
+				OP.TIMEDIFF,
+				OP.GT,
+				900,
+			},
+		},
+		on_done = {
+			{
+				"user_memory",
+				"time_since_early_healing_draught",
+				OP.TIMESET,
+			},
+		},
+	})
+	define_rule({
+		name = "pwh_gameplay_ranger_potions_above_half_health_02_reply_01",
+		response = "pwh_gameplay_ranger_potions_above_half_health_02_reply_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pdr_gameplay_ranger_potions_above_half_health_02_reply_04",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter",
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_early_healing_draught",
+				OP.TIMESET,
+			},
+		},
+	})
+	define_rule({
+		name = "pwh_gameplay_ranger_potions_above_half_health_03",
+		response = "pwh_gameplay_ranger_potions_above_half_health_03",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"early_healing_draught",
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"witch_hunter",
+			},
+			{
+				"query_context",
+				"target_name",
+				OP.EQ,
+				"dwarf_ranger",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter",
+			},
+			{
+				"user_memory",
+				"time_since_early_healing_draught",
+				OP.TIMEDIFF,
+				OP.GT,
+				900,
+			},
+		},
+		on_done = {
+			{
+				"user_memory",
+				"time_since_early_healing_draught",
+				OP.TIMESET,
+			},
+		},
+	})
+	define_rule({
+		name = "pwh_gameplay_ranger_potions_above_half_health_03_reply_01",
+		response = "pwh_gameplay_ranger_potions_above_half_health_03_reply_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pdr_gameplay_ranger_potions_above_half_health_03_reply_04",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter",
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_early_healing_draught",
+				OP.TIMESET,
 			},
 		},
 	})
@@ -28564,6 +29156,50 @@ return function ()
 		},
 	})
 	define_rule({
+		name = "pwh_gameplay_soldier_potions_above_half_health_02",
+		response = "pwh_gameplay_soldier_potions_above_half_health_02",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"early_healing_draught",
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"witch_hunter",
+			},
+			{
+				"query_context",
+				"target_name",
+				OP.EQ,
+				"empire_soldier",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter",
+			},
+			{
+				"user_memory",
+				"time_since_early_healing_draught",
+				OP.TIMEDIFF,
+				OP.GT,
+				900,
+			},
+		},
+		on_done = {
+			{
+				"user_memory",
+				"time_since_early_healing_draught",
+				OP.TIMESET,
+			},
+		},
+	})
+	define_rule({
 		name = "pwh_gameplay_solider_misses_bomb_01",
 		response = "pwh_gameplay_solider_misses_bomb_01",
 		criterias = {
@@ -29396,6 +30032,50 @@ return function ()
 		},
 	})
 	define_rule({
+		name = "pwh_gameplay_wizard_potions_above_half_health_03",
+		response = "pwh_gameplay_wizard_potions_above_half_health_03",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"early_healing_draught",
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"witch_hunter",
+			},
+			{
+				"query_context",
+				"target_name",
+				OP.EQ,
+				"bright_wizard",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter",
+			},
+			{
+				"user_memory",
+				"time_since_early_healing_draught",
+				OP.TIMEDIFF,
+				OP.GT,
+				900,
+			},
+		},
+		on_done = {
+			{
+				"user_memory",
+				"time_since_early_healing_draught",
+				OP.TIMESET,
+			},
+		},
+	})
+	define_rule({
 		name = "pwh_gameplay_wizard_potions_above_half_health_03_reply_01",
 		response = "pwh_gameplay_wizard_potions_above_half_health_03_reply_01",
 		criterias = {
@@ -29416,6 +30096,74 @@ return function ()
 				"player_profile",
 				OP.EQ,
 				"witch_hunter",
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_early_healing_draught",
+				OP.TIMESET,
+			},
+		},
+	})
+	define_rule({
+		name = "pwh_gameplay_wizard_potions_above_half_health_03_reply_02",
+		response = "pwh_gameplay_wizard_potions_above_half_health_03_reply_02",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pbw_gameplay_wizard_potions_above_half_health_03_reply_04",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter",
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_early_healing_draught",
+				OP.TIMESET,
+			},
+		},
+	})
+	define_rule({
+		name = "pwh_pwh_gameplay_soldier_potions_above_half_health_02_reply_01",
+		response = "pwh_pwh_gameplay_soldier_potions_above_half_health_02_reply_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak",
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pes_gameplay_soldier_potions_above_half_health_02_reply_04",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter",
+			},
+			{
+				"global_context",
+				"es_questingknight",
+				OP.EQ,
+				0,
 			},
 		},
 		on_done = {
@@ -33492,6 +34240,28 @@ return function ()
 				[1] = 2.0208957195282,
 			},
 		},
+		pbw_gameplay_wizard_potions_above_half_health_03_reply_04 = {
+			category = "casual_talk",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_neutral",
+			},
+			localization_strings = {
+				[1] = "pbw_gameplay_wizard_potions_above_half_health_03_reply_04",
+			},
+			sound_events = {
+				[1] = "pbw_gameplay_wizard_potions_above_half_health_03_reply_04",
+			},
+			sound_events_duration = {
+				[1] = 0.81927084922791,
+			},
+		},
 		pbw_killing_a_second_rat_ogre_02 = {
 			category = "special_occasion",
 			database = "special_occasions_honduras",
@@ -35368,6 +36138,28 @@ return function ()
 				[1] = 5.4451456069946,
 			},
 		},
+		pdr_gameplay_ranger_potions_above_half_health_01_reply_03 = {
+			category = "casual_talk",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_neutral",
+			},
+			localization_strings = {
+				[1] = "pdr_gameplay_ranger_potions_above_half_health_01_reply_03",
+			},
+			sound_events = {
+				[1] = "pdr_gameplay_ranger_potions_above_half_health_01_reply_03",
+			},
+			sound_events_duration = {
+				[1] = 3.2645833492279,
+			},
+		},
 		pdr_gameplay_ranger_potions_above_half_health_02_reply_01 = {
 			category = "casual_talk",
 			database = "special_occasions_honduras",
@@ -35434,6 +36226,28 @@ return function ()
 				[1] = 2.9191875457764,
 			},
 		},
+		pdr_gameplay_ranger_potions_above_half_health_02_reply_04 = {
+			category = "casual_talk",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_neutral",
+			},
+			localization_strings = {
+				[1] = "pdr_gameplay_ranger_potions_above_half_health_02_reply_04",
+			},
+			sound_events = {
+				[1] = "pdr_gameplay_ranger_potions_above_half_health_02_reply_04",
+			},
+			sound_events_duration = {
+				[1] = 3.3283751010895,
+			},
+		},
 		pdr_gameplay_ranger_potions_above_half_health_03_reply_01 = {
 			category = "casual_talk",
 			database = "special_occasions_honduras",
@@ -35498,6 +36312,28 @@ return function ()
 			},
 			sound_events_duration = {
 				[1] = 4.3161668777466,
+			},
+		},
+		pdr_gameplay_ranger_potions_above_half_health_03_reply_04 = {
+			category = "casual_talk",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_neutral",
+			},
+			localization_strings = {
+				[1] = "pdr_gameplay_ranger_potions_above_half_health_03_reply_04",
+			},
+			sound_events = {
+				[1] = "pdr_gameplay_ranger_potions_above_half_health_03_reply_04",
+			},
+			sound_events_duration = {
+				[1] = 2.2877082824707,
 			},
 		},
 		pdr_gameplay_ranger_potions_above_half_health_04_reply_01 = {
@@ -41419,6 +42255,28 @@ return function ()
 				[1] = 1.9096250534058,
 			},
 		},
+		pes_gameplay_soldier_potions_above_half_health_02_reply_04 = {
+			category = "casual_talk",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_neutral",
+			},
+			localization_strings = {
+				[1] = "pes_gameplay_soldier_potions_above_half_health_02_reply_04",
+			},
+			sound_events = {
+				[1] = "pes_gameplay_soldier_potions_above_half_health_02_reply_04",
+			},
+			sound_events_duration = {
+				[1] = 4.3956873416901,
+			},
+		},
 		pes_gameplay_soldier_potions_above_half_health_03_reply_01 = {
 			category = "casual_talk",
 			database = "special_occasions_honduras",
@@ -42739,6 +43597,28 @@ return function ()
 				[1] = 3.8659167289734,
 			},
 		},
+		pwe_gameplay_elf_potions_above_half_health_01_reply_03 = {
+			category = "casual_talk",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_neutral",
+			},
+			localization_strings = {
+				[1] = "pwe_gameplay_elf_potions_above_half_health_01_reply_03",
+			},
+			sound_events = {
+				[1] = "pwe_gameplay_elf_potions_above_half_health_01_reply_03",
+			},
+			sound_events_duration = {
+				[1] = 5.3971877098083,
+			},
+		},
 		pwe_gameplay_elf_potions_above_half_health_02_reply_01 = {
 			category = "casual_talk",
 			database = "special_occasions_honduras",
@@ -42781,6 +43661,28 @@ return function ()
 			},
 			sound_events_duration = {
 				[1] = 3.3643124103546,
+			},
+		},
+		pwe_gameplay_elf_potions_above_half_health_02_reply_03 = {
+			category = "casual_talk",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_neutral",
+			},
+			localization_strings = {
+				[1] = "pwe_gameplay_elf_potions_above_half_health_02_reply_03",
+			},
+			sound_events = {
+				[1] = "pwe_gameplay_elf_potions_above_half_health_02_reply_03",
+			},
+			sound_events_duration = {
+				[1] = 4.7010626792908,
 			},
 		},
 		pwe_gameplay_elf_potions_above_half_health_03_reply_01 = {
@@ -46702,6 +47604,94 @@ return function ()
 				[1] = 2.9102499485016,
 			},
 		},
+		pwh_gameplay_elf_potions_above_half_health_01 = {
+			category = "casual_talk",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_smug",
+			},
+			localization_strings = {
+				[1] = "pwh_gameplay_elf_potions_above_half_health_01",
+			},
+			sound_events = {
+				[1] = "pwh_gameplay_elf_potions_above_half_health_01",
+			},
+			sound_events_duration = {
+				[1] = 3.8222916126251,
+			},
+		},
+		pwh_gameplay_elf_potions_above_half_health_01_reply_01 = {
+			category = "casual_talk",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_neutral",
+			},
+			localization_strings = {
+				[1] = "pwh_gameplay_elf_potions_above_half_health_01_reply_01",
+			},
+			sound_events = {
+				[1] = "pwh_gameplay_elf_potions_above_half_health_01_reply_01",
+			},
+			sound_events_duration = {
+				[1] = 2.7792499065399,
+			},
+		},
+		pwh_gameplay_elf_potions_above_half_health_02 = {
+			category = "casual_talk",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_smug",
+			},
+			localization_strings = {
+				[1] = "pwh_gameplay_elf_potions_above_half_health_02",
+			},
+			sound_events = {
+				[1] = "pwh_gameplay_elf_potions_above_half_health_02",
+			},
+			sound_events_duration = {
+				[1] = 2.6821665763855,
+			},
+		},
+		pwh_gameplay_elf_potions_above_half_health_02_reply_01 = {
+			category = "casual_talk",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_neutral",
+			},
+			localization_strings = {
+				[1] = "pwh_gameplay_elf_potions_above_half_health_02_reply_01",
+			},
+			sound_events = {
+				[1] = "pwh_gameplay_elf_potions_above_half_health_02_reply_01",
+			},
+			sound_events_duration = {
+				[1] = 1.1868749856949,
+			},
+		},
 		pwh_gameplay_hanging_help = {
 			category = "player_alerts",
 			database = "special_occasions_honduras",
@@ -47915,6 +48905,138 @@ return function ()
 			},
 			sound_events_duration = {
 				[1] = 5.2872290611267,
+			},
+		},
+		pwh_gameplay_ranger_potions_above_half_health_01 = {
+			category = "casual_talk",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_smug",
+			},
+			localization_strings = {
+				[1] = "pwh_gameplay_ranger_potions_above_half_health_01",
+			},
+			sound_events = {
+				[1] = "pwh_gameplay_ranger_potions_above_half_health_01",
+			},
+			sound_events_duration = {
+				[1] = 2.4495000839233,
+			},
+		},
+		pwh_gameplay_ranger_potions_above_half_health_01_reply_01 = {
+			category = "casual_talk",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_neutral",
+			},
+			localization_strings = {
+				[1] = "pwh_gameplay_ranger_potions_above_half_health_01_reply_01",
+			},
+			sound_events = {
+				[1] = "pwh_gameplay_ranger_potions_above_half_health_01_reply_01",
+			},
+			sound_events_duration = {
+				[1] = 3.2312290668488,
+			},
+		},
+		pwh_gameplay_ranger_potions_above_half_health_02 = {
+			category = "casual_talk",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_smug",
+			},
+			localization_strings = {
+				[1] = "pwh_gameplay_ranger_potions_above_half_health_02",
+			},
+			sound_events = {
+				[1] = "pwh_gameplay_ranger_potions_above_half_health_02",
+			},
+			sound_events_duration = {
+				[1] = 3.4193749427795,
+			},
+		},
+		pwh_gameplay_ranger_potions_above_half_health_02_reply_01 = {
+			category = "casual_talk",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_neutral",
+			},
+			localization_strings = {
+				[1] = "pwh_gameplay_ranger_potions_above_half_health_02_reply_01",
+			},
+			sound_events = {
+				[1] = "pwh_gameplay_ranger_potions_above_half_health_02_reply_01",
+			},
+			sound_events_duration = {
+				[1] = 2.095541715622,
+			},
+		},
+		pwh_gameplay_ranger_potions_above_half_health_03 = {
+			category = "casual_talk",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_smug",
+			},
+			localization_strings = {
+				[1] = "pwh_gameplay_ranger_potions_above_half_health_03",
+			},
+			sound_events = {
+				[1] = "pwh_gameplay_ranger_potions_above_half_health_03",
+			},
+			sound_events_duration = {
+				[1] = 6.2178750038147,
+			},
+		},
+		pwh_gameplay_ranger_potions_above_half_health_03_reply_01 = {
+			category = "casual_talk",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_neutral",
+			},
+			localization_strings = {
+				[1] = "pwh_gameplay_ranger_potions_above_half_health_03_reply_01",
+			},
+			sound_events = {
+				[1] = "pwh_gameplay_ranger_potions_above_half_health_03_reply_01",
+			},
+			sound_events_duration = {
+				[1] = 2.7486667633057,
 			},
 		},
 		pwh_gameplay_response_043 = {
@@ -49455,6 +50577,28 @@ return function ()
 				[1] = 2.170104265213,
 			},
 		},
+		pwh_gameplay_soldier_potions_above_half_health_02 = {
+			category = "casual_talk",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_smug",
+			},
+			localization_strings = {
+				[1] = "pwh_gameplay_soldier_potions_above_half_health_02",
+			},
+			sound_events = {
+				[1] = "pwh_gameplay_soldier_potions_above_half_health_02",
+			},
+			sound_events_duration = {
+				[1] = 2.2024166584015,
+			},
+		},
 		pwh_gameplay_solider_misses_bomb_01 = {
 			category = "special_occasion",
 			database = "special_occasions_honduras",
@@ -49983,6 +51127,28 @@ return function ()
 				[1] = 2.943437576294,
 			},
 		},
+		pwh_gameplay_wizard_potions_above_half_health_03 = {
+			category = "casual_talk",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_smug",
+			},
+			localization_strings = {
+				[1] = "pwh_gameplay_wizard_potions_above_half_health_03",
+			},
+			sound_events = {
+				[1] = "pwh_gameplay_wizard_potions_above_half_health_03",
+			},
+			sound_events_duration = {
+				[1] = 2.7536041736603,
+			},
+		},
 		pwh_gameplay_wizard_potions_above_half_health_03_reply_01 = {
 			category = "casual_talk",
 			database = "special_occasions_honduras",
@@ -50003,6 +51169,50 @@ return function ()
 			},
 			sound_events_duration = {
 				[1] = 4.358916759491,
+			},
+		},
+		pwh_gameplay_wizard_potions_above_half_health_03_reply_02 = {
+			category = "casual_talk",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_neutral",
+			},
+			localization_strings = {
+				[1] = "pwh_gameplay_wizard_potions_above_half_health_03_reply_02",
+			},
+			sound_events = {
+				[1] = "pwh_gameplay_wizard_potions_above_half_health_03_reply_02",
+			},
+			sound_events_duration = {
+				[1] = 2.536333322525,
+			},
+		},
+		pwh_pwh_gameplay_soldier_potions_above_half_health_02_reply_01 = {
+			category = "casual_talk",
+			database = "special_occasions_honduras",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_neutral",
+			},
+			localization_strings = {
+				[1] = "pwh_pwh_gameplay_soldier_potions_above_half_health_02_reply_01",
+			},
+			sound_events = {
+				[1] = "pwh_pwh_gameplay_soldier_potions_above_half_health_02_reply_01",
+			},
+			sound_events_duration = {
+				[1] = 8.430832862854,
 			},
 		},
 	})

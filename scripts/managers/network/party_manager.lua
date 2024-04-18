@@ -350,7 +350,7 @@ PartyManager.request_join_party = function (self, peer_id, local_player_id, part
 
 					status = Managers.party:get_player_status(bot_peer_id, bot_local_player_id)
 				else
-					status = self:_get_last_added_bot_for_party(party_id)
+					status = self:get_last_added_bot_for_party(party_id)
 				end
 
 				self:remove_peer_from_party(status.peer_id, status.local_player_id, status.party_id)
@@ -677,7 +677,7 @@ PartyManager.is_player_in_party = function (self, unique_id, party_id)
 	return party_id == player_status.party_id
 end
 
-PartyManager._get_last_added_bot_for_party = function (self, party_id)
+PartyManager.get_last_added_bot_for_party = function (self, party_id)
 	local party = self._parties[party_id]
 	local slot_id = party.bot_add_order[party.num_bots]
 	local status = party.slots[slot_id]

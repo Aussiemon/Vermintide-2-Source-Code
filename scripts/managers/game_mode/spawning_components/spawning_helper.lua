@@ -79,7 +79,7 @@ SpawningHelper.fill_consumable_table = function (consumables, inventory_extensio
 		local item_data = slot_data and slot_data.item_data
 		local item_key = item_data and item_data.key
 
-		if item_data and item_data.skip_sync then
+		if not item_data or item_data.skip_sync then
 			consumables[slot_name] = nil
 		else
 			consumables[slot_name] = item_key

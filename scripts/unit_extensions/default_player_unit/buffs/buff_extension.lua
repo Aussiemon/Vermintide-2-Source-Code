@@ -91,12 +91,8 @@ BuffExtension.extensions_ready = function (self, world, unit)
 	if self._num_buffs > 0 then
 		Managers.state.entity:system("buff_system"):set_buff_ext_active(self._unit, true)
 	end
-end
 
-BuffExtension.game_object_initialized = function (self, unit, go_id)
-	if self._breed and self._breed.is_player then
-		self.debug_buff_names = {}
-	end
+	self.debug_buff_names = {}
 end
 
 BuffExtension.destroy = function (self)
@@ -1492,11 +1488,15 @@ BuffExtension.generate_sync_id = function (self)
 		sync_id = free_sync_ids[1]
 
 		if not sync_id then
-			local buff_names = table.tostring(table.select_array(self:active_buffs(), function (_, buff)
-				return string.format("(id: %s) %s", self._id_to_local_sync and self._id_to_local_sync[buff.id], buff.template.name)
-			end))
+			if self.debug_buff_names then
+				table.dump(table.select_map(self._local_sync_to_id, function (local_sync_id, buff_id)
+					return string.format("(id: %s) %s", local_sync_id, self.debug_buff_names[buff_id])
+				end), "Synced Buffs")
+			else
+				print("[BuffExtension] Not a player")
+			end
 
-			ferror("[BuffExtension] Too many synced buffs, no free sync ids left!\nBuffs %s", buff_names)
+			error("[BuffExtension] Too many synced buffs, no free sync ids left!")
 		end
 
 		table.swap_delete(free_sync_ids, 1)

@@ -103,11 +103,9 @@ local breed_data = {
 	race = "chaos",
 	radius = 1,
 	run_speed = 4.8,
-	shield_block_threshold = 2,
 	shield_blunt_block_sound = "blunt_hit_shield_metal",
 	shield_burning_block_sound = "Play_weapon_fire_torch_metal_shield_hit",
 	shield_health = 3,
-	shield_open_stagger_threshold = 12,
 	shield_slashing_block_sound = "slashing_hit_shield_metal",
 	shield_stab_block_sound = "stab_hit_shield_metal",
 	shield_user = true,
@@ -238,6 +236,80 @@ local breed_data = {
 
 		return stagger_type, duration, length
 	end,
+	stagger_difficulty_tweak_index = {
+		{
+			shield_block_threshold = 2,
+			shield_open_stagger_threshold = 6,
+			stagger_regen_rate = {
+				1,
+				0.1,
+			},
+		},
+		{
+			shield_block_threshold = 2,
+			shield_open_stagger_threshold = 8,
+			stagger_regen_rate = {
+				1,
+				0.1,
+			},
+		},
+		{
+			shield_block_threshold = 2,
+			shield_open_stagger_threshold = 10,
+			stagger_regen_rate = {
+				1.5,
+				0.5,
+			},
+		},
+		{
+			shield_block_threshold = 3,
+			shield_open_stagger_threshold = 10,
+			stagger_regen_rate = {
+				1.5,
+				0.5,
+			},
+		},
+		{
+			shield_block_threshold = 3,
+			shield_open_stagger_threshold = 12,
+			stagger_regen_rate = {
+				2,
+				1,
+			},
+		},
+		{
+			shield_block_threshold = 4,
+			shield_open_stagger_threshold = 12,
+			stagger_regen_rate = {
+				2,
+				1,
+			},
+		},
+		{
+			shield_block_threshold = 4,
+			shield_open_stagger_threshold = 12,
+			stagger_regen_rate = {
+				2,
+				1,
+			},
+		},
+		{
+			shield_block_threshold = 4,
+			shield_open_stagger_threshold = 12,
+			stagger_regen_rate = {
+				2,
+				1,
+			},
+		},
+		{
+			shield_block_threshold = 2,
+			shield_open_stagger_threshold = 8,
+			stagger_regen_rate = {
+				1,
+				0.1,
+			},
+		},
+	},
 	before_stagger_enter_function = function (unit, blackboard, attacker_unit, is_push, stagger_value_to_add, predicted_damage)
 		local ai_shield_extension = ScriptUnit.extension(unit, "ai_shield_system")
 		local t = Managers.time:time("game")
@@ -248,57 +320,7 @@ local breed_data = {
 
 		local difficulty_manager = Managers.state.difficulty
 		local difficulty_rank = difficulty_manager:get_difficulty_rank()
-		local difficulty_tweak_index = {
-			{
-				shield_block_threshold = 2,
-				shield_open_stagger_threshold = 6,
-				stagger_regen_rate = {
-					1,
-					0.1,
-				},
-			},
-			{
-				shield_block_threshold = 2,
-				shield_open_stagger_threshold = 8,
-				stagger_regen_rate = {
-					1,
-					0.1,
-				},
-			},
-			{
-				shield_block_threshold = 2,
-				shield_open_stagger_threshold = 10,
-				stagger_regen_rate = {
-					1.5,
-					0.5,
-				},
-			},
-			{
-				shield_block_threshold = 3,
-				shield_open_stagger_threshold = 10,
-				stagger_regen_rate = {
-					1.5,
-					0.5,
-				},
-			},
-			{
-				shield_block_threshold = 3,
-				shield_open_stagger_threshold = 12,
-				stagger_regen_rate = {
-					2,
-					1,
-				},
-			},
-			{
-				shield_block_threshold = 4,
-				shield_open_stagger_threshold = 12,
-				stagger_regen_rate = {
-					2,
-					1,
-				},
-			},
-		}
-		local difficulty_tweaks = difficulty_tweak_index[difficulty_rank]
+		local difficulty_tweaks = breed.stagger_difficulty_tweak_index[difficulty_rank]
 		local shield_open_stagger_threshold = difficulty_tweaks.shield_open_stagger_threshold
 		local shield_block_threshold = difficulty_tweaks.shield_block_threshold
 		local stagger_regen_rate = difficulty_tweaks.stagger_regen_rate
@@ -347,7 +369,7 @@ local breed_data = {
 		blackboard.cached_stagger = blackboard.stagger
 
 		if not blackboard.max_stagger_reached and blackboard.stagger_level ~= custom_stagger_types.heavy then
-			ai_shield_extension:play_shield_hit_sfx(blackboard.stagger_level == custom_stagger_types.shield_open_stagger, blackboard.cached_stagger, breed.shield_open_stagger_threshold)
+			ai_shield_extension:play_shield_hit_sfx(blackboard.stagger_level == custom_stagger_types.shield_open_stagger, blackboard.cached_stagger, shield_open_stagger_threshold)
 		end
 	end,
 	hitzone_multiplier_types = {
@@ -678,6 +700,15 @@ local AttackIntensityPerDifficulty = {
 	},
 }
 local action_data = {
+	idle = {
+		idle = {
+			"idle",
+			"idle_2",
+		},
+		idle_combat = {
+			"idle_defence",
+		},
+	},
 	alerted = {
 		no_hesitation = true,
 		override_time_alerted = 0.2,

@@ -108,6 +108,25 @@ DeusRunStatsView._update_inventory = function (self)
 	local own_peer_id = run_controller:get_own_peer_id()
 	local healing_slot = run_controller:get_player_consumable_healthkit_slot(own_peer_id, REAL_PLAYER_LOCAL_ID)
 	local potion_slot = run_controller:get_player_consumable_potion_slot(own_peer_id, REAL_PLAYER_LOCAL_ID)
+	local potion_item = rawget(ItemMasterList, potion_slot)
+
+	if not potion_item or potion_item.hide_in_frame_ui then
+		local additional_items = run_controller:get_player_additional_items(own_peer_id, REAL_PLAYER_LOCAL_ID)
+		local additional_potions = additional_items.slot_potion and additional_items.slot_potion.items
+
+		if additional_potions then
+			for i = 1, #additional_potions do
+				local additional_item_data = additional_potions[i]
+
+				if not additional_item_data.hide_in_frame_ui then
+					potion_slot = additional_item_data.key
+
+					break
+				end
+			end
+		end
+	end
+
 	local grenade_slot = run_controller:get_player_consumable_grenade_slot(own_peer_id, REAL_PLAYER_LOCAL_ID)
 
 	if self._melee ~= melee or self._ranged ~= ranged or self._potion_slot ~= potion_slot or self._grenade_slot ~= grenade_slot or self._healing_slot ~= healing_slot then

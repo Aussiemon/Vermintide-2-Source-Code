@@ -12,6 +12,7 @@ BreedBehaviors.chaos_bulwark = {
 	{
 		"BTInVortexAction",
 		condition = "in_vortex",
+		leave_hook = "bulwark_vortex_leave",
 		name = "in_vortex",
 	},
 	{
@@ -90,12 +91,6 @@ BreedBehaviors.chaos_bulwark = {
 			action_data = ACTIONS.special_attack_sweep,
 		},
 		{
-			"BTStormVerminAttackAction",
-			condition = "ask_target_before_attacking",
-			name = "special_attack_launch",
-			action_data = ACTIONS.special_attack_launch,
-		},
-		{
 			"BTBulwarkFollowAction",
 			name = "follow",
 			action_data = ACTIONS.follow,
@@ -120,6 +115,7 @@ BreedBehaviors.chaos_bulwark = {
 		"BTIdleAction",
 		condition = "no_target",
 		name = "idle",
+		action_data = ACTIONS.idle,
 	},
 	{
 		"BTFallbackIdleAction",

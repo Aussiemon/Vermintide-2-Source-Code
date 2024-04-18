@@ -310,6 +310,19 @@ BTLeaveHooks.bulwark_stagger_leave = function (unit, blackboard, t)
 	ai_shield_extension:set_is_blocking(true)
 end
 
+BTLeaveHooks.bulwark_vortex_leave = function (unit, blackboard, t)
+	local breed = blackboard.breed
+
+	blackboard.max_stagger_reached = nil
+	blackboard.reset_on_stagger_leave = nil
+	blackboard.stagger = 0
+	blackboard.cached_stagger = 0
+	blackboard.stagger_level = nil
+	blackboard.stagger_recover_time = breed.stagger_recover_time
+	blackboard.reset_after_stagger = nil
+	blackboard.stagger_activated = false
+end
+
 BTLeaveHooks.beastmen_standard_bearer_leave_move_and_plant_standard = function (unit, blackboard, t)
 	blackboard.move_and_place_standard = nil
 	blackboard.stagger = nil

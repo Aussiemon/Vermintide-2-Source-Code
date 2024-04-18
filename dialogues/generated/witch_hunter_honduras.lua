@@ -8337,6 +8337,30 @@ return function ()
 		},
 	})
 	define_rule({
+		name = "pwh_last_hero_standing",
+		response = "pwh_last_hero_standing",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"last_hero_standing",
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"witch_hunter",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter",
+			},
+		},
+	})
+	define_rule({
 		name = "pwh_objective_achieved_all_but_one_goal",
 		response = "pwh_objective_achieved_all_but_one_goal",
 		criterias = {
@@ -18590,6 +18614,50 @@ return function ()
 				4.0006251335144,
 				6.8399167060852,
 				4.2823748588562,
+			},
+		},
+		pwh_last_hero_standing = {
+			category = "player_alerts",
+			database = "witch_hunter_honduras",
+			dialogue_animations_n = 5,
+			face_animations_n = 5,
+			randomize_indexes_n = 0,
+			sound_events_n = 5,
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+			},
+			face_animations = {
+				"face_pain",
+				"face_pain",
+				"face_pain",
+				"face_pain",
+				"face_pain",
+			},
+			localization_strings = {
+				"pwh_gameplay_last_hero_standing_02",
+				"pwh_gameplay_last_hero_standing_03",
+				"pwh_gameplay_last_hero_standing_04",
+				"pwh_gameplay_last_hero_standing_07",
+				"pwh_gameplay_last_hero_standing_08",
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pwh_gameplay_last_hero_standing_02",
+				"pwh_gameplay_last_hero_standing_03",
+				"pwh_gameplay_last_hero_standing_04",
+				"pwh_gameplay_last_hero_standing_07",
+				"pwh_gameplay_last_hero_standing_08",
+			},
+			sound_events_duration = {
+				3.4211874008179,
+				2.9197082519531,
+				5.7066459655762,
+				4.8555417060852,
+				4.9133334159851,
 			},
 		},
 		pwh_objective_achieved_all_but_one_goal = {

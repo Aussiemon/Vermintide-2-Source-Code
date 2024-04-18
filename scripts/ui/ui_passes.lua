@@ -2065,7 +2065,8 @@ UIPasses.text = {
 			end
 		elseif ui_style.horizontal_scroll then
 			local start_index = ui_content.text_index
-			local end_index = UTF8Utils.string_length(text)
+			local text_length = UTF8Utils.string_length(text)
+			local end_index = ui_content.end_index or text_length
 			local replacing_character = ui_style.replacing_character
 
 			if replacing_character then
@@ -2073,9 +2074,10 @@ UIPasses.text = {
 			end
 
 			local sub_string, sub_string_width
-			local jump_to_end = ui_content.jump_to_end
+			local jump_to_end = ui_content.jump_to_end or text_length < ui_content.caret_index
 
 			if jump_to_end then
+				end_index = UTF8Utils.string_length(text)
 				start_index = end_index
 				ui_content.jump_to_end = nil
 				sub_string_width = 0
@@ -2100,6 +2102,7 @@ UIPasses.text = {
 				end
 
 				ui_content.text_index = start_index
+				ui_content.end_index = nil
 			else
 				sub_string = UTF8Utils.sub_string(text, start_index, end_index)
 			end
@@ -2108,8 +2111,10 @@ UIPasses.text = {
 
 			if caret_index > end_index + 1 then
 				ui_content.text_index = ui_content.text_index + 1
+				ui_content.end_index = end_index + 1
 			elseif caret_index < start_index then
 				ui_content.text_index = ui_content.text_index - 1
+				ui_content.end_index = end_index - 1
 			end
 
 			local caret_size = ui_style.caret_size
