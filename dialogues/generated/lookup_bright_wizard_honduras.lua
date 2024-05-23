@@ -164,6 +164,7 @@ assert(DialogueLookup[DialogueLookup_n + 161] == nil)
 assert(DialogueLookup[DialogueLookup_n + 162] == nil)
 assert(DialogueLookup[DialogueLookup_n + 163] == nil)
 assert(DialogueLookup[DialogueLookup_n + 164] == nil)
+assert(DialogueLookup[DialogueLookup_n + 165] == nil)
 
 DialogueLookup[DialogueLookup_n + 1] = "pbw_activate_ability_battle_wizard"
 DialogueLookup[DialogueLookup_n + 2] = "pbw_activate_ability_pyromancer"
@@ -328,5 +329,6 @@ DialogueLookup[DialogueLookup_n + 160] = "pbw_objective_goal_achieved_escape"
 DialogueLookup[DialogueLookup_n + 161] = "pbw_objective_goal_achieved_more_left"
 DialogueLookup[DialogueLookup_n + 162] = "pbw_objective_interacting_with_objective"
 DialogueLookup[DialogueLookup_n + 163] = "pbw_objective_nearing_objective_deadline"
-DialogueLookup[DialogueLookup_n + 164] = "pbw_targeted_by_ratling"
-DialogueLookup_n = DialogueLookup_n + 164
+DialogueLookup[DialogueLookup_n + 164] = "pbw_objective_picking_up_grimoire"
+DialogueLookup[DialogueLookup_n + 165] = "pbw_targeted_by_ratling"
+DialogueLookup_n = DialogueLookup_n + 165

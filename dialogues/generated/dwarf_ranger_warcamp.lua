@@ -2048,7 +2048,7 @@ return function ()
 			},
 		},
 		pdr_level_chaos_war_camp_battering_ram_01 = {
-			category = "cut_scene",
+			category = "level_talk_must_play",
 			database = "dwarf_ranger_warcamp",
 			dialogue_animations_n = 4,
 			face_animations_n = 4,
@@ -2087,7 +2087,7 @@ return function ()
 			},
 		},
 		pdr_level_chaos_war_camp_battering_ram_use_01 = {
-			category = "cut_scene",
+			category = "level_talk",
 			database = "dwarf_ranger_warcamp",
 			dialogue_animations_n = 4,
 			face_animations_n = 4,

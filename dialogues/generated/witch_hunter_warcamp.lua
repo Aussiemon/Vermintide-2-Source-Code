@@ -1593,7 +1593,7 @@ return function ()
 			},
 		},
 		pwh_level_chaos_war_camp_battering_ram_01 = {
-			category = "cut_scene",
+			category = "level_talk_must_play",
 			database = "witch_hunter_warcamp",
 			dialogue_animations_n = 4,
 			face_animations_n = 4,

@@ -716,6 +716,56 @@ return function ()
 		},
 	})
 	define_rule({
+		name = "pbw_gameplay_collecting_a_faith_coin",
+		response = "pbw_gameplay_collecting_a_faith_coin",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"on_pickup",
+			},
+			{
+				"query_context",
+				"pickup_name",
+				OP.EQ,
+				"deus_soft_currency",
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"bright_wizard",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard",
+			},
+			{
+				"user_context",
+				"enemies_close",
+				OP.EQ,
+				0,
+			},
+			{
+				"faction_memory",
+				"time_since_pilgrims_coins",
+				OP.TIMEDIFF,
+				OP.GT,
+				40,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_pilgrims_coins",
+				OP.TIMESET,
+			},
+		},
+	})
+	define_rule({
 		name = "pbw_gameplay_curse_damage_taken",
 		response = "pbw_gameplay_curse_damage_taken",
 		criterias = {
@@ -1203,6 +1253,30 @@ return function ()
 		},
 	})
 	define_rule({
+		name = "pbw_gameplay_cursed_chest_activated",
+		response = "pbw_gameplay_cursed_chest_activated",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"deus_cursed_chest_activated",
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"bright_wizard",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard",
+			},
+		},
+	})
+	define_rule({
 		name = "pbw_gameplay_cursed_chest_ping",
 		response = "pbw_gameplay_cursed_chest_ping",
 		criterias = {
@@ -1327,6 +1401,106 @@ return function ()
 				"player_profile",
 				OP.EQ,
 				"bright_wizard",
+			},
+		},
+	})
+	define_rule({
+		name = "pbw_gameplay_seeing_a_faith_coin",
+		response = "pbw_gameplay_seeing_a_faith_coin",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item",
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"deus_pilgrims_coins",
+			},
+			{
+				"query_context",
+				"distance",
+				OP.GT,
+				7,
+			},
+			{
+				"query_context",
+				"distance",
+				OP.LT,
+				12,
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"bright_wizard",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard",
+			},
+			{
+				"user_context",
+				"enemies_close",
+				OP.EQ,
+				0,
+			},
+			{
+				"faction_memory",
+				"time_since_pilgrims_coins",
+				OP.TIMEDIFF,
+				OP.GT,
+				50,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_pilgrims_coins",
+				OP.TIMESET,
+			},
+		},
+	})
+	define_rule({
+		name = "pbw_gameplay_using_a_weapon_shrine",
+		response = "pbw_gameplay_using_a_weapon_shrine",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"deus_using_a_weapon_shrine",
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"bright_wizard",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard",
+			},
+			{
+				"faction_memory",
+				"time_since_using_a_weapon_shrine",
+				OP.TIMEDIFF,
+				OP.GT,
+				40,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_using_a_weapon_shrine",
+				OP.TIMESET,
 			},
 		},
 	})
@@ -1465,6 +1639,50 @@ return function ()
 				"player_profile",
 				OP.EQ,
 				"bright_wizard",
+			},
+		},
+	})
+	define_rule({
+		name = "pbw_morris_curse_tzeentch_egg",
+		response = "pbw_morris_curse_tzeentch_egg",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item",
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"curse_tzeentch_egg",
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"bright_wizard",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard",
+			},
+			{
+				"faction_memory",
+				"time_since_spotting_curse_objective",
+				OP.TIMEDIFF,
+				OP.GT,
+				90,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_spotting_curse_objective",
+				OP.TIMESET,
 			},
 		},
 	})
@@ -1797,6 +2015,56 @@ return function ()
 				"player_profile",
 				OP.EQ,
 				"dwarf_ranger",
+			},
+		},
+	})
+	define_rule({
+		name = "pdr_gameplay_collecting_a_faith_coin",
+		response = "pdr_gameplay_collecting_a_faith_coin",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"on_pickup",
+			},
+			{
+				"query_context",
+				"pickup_name",
+				OP.EQ,
+				"deus_soft_currency",
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"dwarf_ranger",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger",
+			},
+			{
+				"user_context",
+				"enemies_close",
+				OP.EQ,
+				0,
+			},
+			{
+				"faction_memory",
+				"time_since_pilgrims_coins",
+				OP.TIMEDIFF,
+				OP.GT,
+				40,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_pilgrims_coins",
+				OP.TIMESET,
 			},
 		},
 	})
@@ -2288,6 +2556,30 @@ return function ()
 		},
 	})
 	define_rule({
+		name = "pdr_gameplay_cursed_chest_activated",
+		response = "pdr_gameplay_cursed_chest_activated",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"deus_cursed_chest_activated",
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"dwarf_ranger",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger",
+			},
+		},
+	})
+	define_rule({
 		name = "pdr_gameplay_cursed_chest_ping",
 		response = "pdr_gameplay_cursed_chest_ping",
 		criterias = {
@@ -2412,6 +2704,106 @@ return function ()
 				"player_profile",
 				OP.EQ,
 				"dwarf_ranger",
+			},
+		},
+	})
+	define_rule({
+		name = "pdr_gameplay_seeing_a_faith_coin",
+		response = "pdr_gameplay_seeing_a_faith_coin",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item",
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"deus_pilgrims_coins",
+			},
+			{
+				"query_context",
+				"distance",
+				OP.GT,
+				7,
+			},
+			{
+				"query_context",
+				"distance",
+				OP.LT,
+				12,
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"dwarf_ranger",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger",
+			},
+			{
+				"user_context",
+				"enemies_close",
+				OP.EQ,
+				0,
+			},
+			{
+				"faction_memory",
+				"time_since_pilgrims_coins",
+				OP.TIMEDIFF,
+				OP.GT,
+				50,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_pilgrims_coins",
+				OP.TIMESET,
+			},
+		},
+	})
+	define_rule({
+		name = "pdr_gameplay_using_a_weapon_shrine",
+		response = "pdr_gameplay_using_a_weapon_shrine",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"deus_using_a_weapon_shrine",
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"dwarf_ranger",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger",
+			},
+			{
+				"faction_memory",
+				"time_since_using_a_weapon_shrine",
+				OP.TIMEDIFF,
+				OP.GT,
+				40,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_using_a_weapon_shrine",
+				OP.TIMESET,
 			},
 		},
 	})
@@ -2550,6 +2942,50 @@ return function ()
 				"player_profile",
 				OP.EQ,
 				"dwarf_ranger",
+			},
+		},
+	})
+	define_rule({
+		name = "pdr_morris_curse_tzeentch_egg",
+		response = "pdr_morris_curse_tzeentch_egg",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item",
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"curse_tzeentch_egg",
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"dwarf_ranger",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger",
+			},
+			{
+				"faction_memory",
+				"time_since_spotting_curse_objective",
+				OP.TIMEDIFF,
+				OP.GT,
+				90,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_spotting_curse_objective",
+				OP.TIMESET,
 			},
 		},
 	})
@@ -2882,6 +3318,56 @@ return function ()
 				"player_profile",
 				OP.EQ,
 				"empire_soldier",
+			},
+		},
+	})
+	define_rule({
+		name = "pes_gameplay_collecting_a_faith_coin",
+		response = "pes_gameplay_collecting_a_faith_coin",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"on_pickup",
+			},
+			{
+				"query_context",
+				"pickup_name",
+				OP.EQ,
+				"deus_soft_currency",
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"empire_soldier",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier",
+			},
+			{
+				"user_context",
+				"enemies_close",
+				OP.EQ,
+				0,
+			},
+			{
+				"faction_memory",
+				"time_since_pilgrims_coins",
+				OP.TIMEDIFF,
+				OP.GT,
+				40,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_pilgrims_coins",
+				OP.TIMESET,
 			},
 		},
 	})
@@ -3373,6 +3859,30 @@ return function ()
 		},
 	})
 	define_rule({
+		name = "pes_gameplay_cursed_chest_activated",
+		response = "pes_gameplay_cursed_chest_activated",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"deus_cursed_chest_activated",
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"empire_soldier",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier",
+			},
+		},
+	})
+	define_rule({
 		name = "pes_gameplay_cursed_chest_ping",
 		response = "pes_gameplay_cursed_chest_ping",
 		criterias = {
@@ -3497,6 +4007,106 @@ return function ()
 				"player_profile",
 				OP.EQ,
 				"empire_soldier",
+			},
+		},
+	})
+	define_rule({
+		name = "pes_gameplay_seeing_a_faith_coin",
+		response = "pes_gameplay_seeing_a_faith_coin",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item",
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"deus_pilgrims_coins",
+			},
+			{
+				"query_context",
+				"distance",
+				OP.GT,
+				7,
+			},
+			{
+				"query_context",
+				"distance",
+				OP.LT,
+				12,
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"empire_soldier",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier",
+			},
+			{
+				"user_context",
+				"enemies_close",
+				OP.EQ,
+				0,
+			},
+			{
+				"faction_memory",
+				"time_since_pilgrims_coins",
+				OP.TIMEDIFF,
+				OP.GT,
+				50,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_pilgrims_coins",
+				OP.TIMESET,
+			},
+		},
+	})
+	define_rule({
+		name = "pes_gameplay_using_a_weapon_shrine",
+		response = "pes_gameplay_using_a_weapon_shrine",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"deus_using_a_weapon_shrine",
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"empire_soldier",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier",
+			},
+			{
+				"faction_memory",
+				"time_since_using_a_weapon_shrine",
+				OP.TIMEDIFF,
+				OP.GT,
+				40,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_using_a_weapon_shrine",
+				OP.TIMESET,
 			},
 		},
 	})
@@ -3635,6 +4245,50 @@ return function ()
 				"player_profile",
 				OP.EQ,
 				"empire_soldier",
+			},
+		},
+	})
+	define_rule({
+		name = "pes_morris_curse_tzeentch_egg",
+		response = "pes_morris_curse_tzeentch_egg",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item",
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"curse_tzeentch_egg",
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"empire_soldier",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier",
+			},
+			{
+				"faction_memory",
+				"time_since_spotting_curse_objective",
+				OP.TIMEDIFF,
+				OP.GT,
+				90,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_spotting_curse_objective",
+				OP.TIMESET,
 			},
 		},
 	})
@@ -3967,6 +4621,56 @@ return function ()
 				"player_profile",
 				OP.EQ,
 				"wood_elf",
+			},
+		},
+	})
+	define_rule({
+		name = "pwe_gameplay_collecting_a_faith_coin",
+		response = "pwe_gameplay_collecting_a_faith_coin",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"on_pickup",
+			},
+			{
+				"query_context",
+				"pickup_name",
+				OP.EQ,
+				"deus_soft_currency",
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"wood_elf",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf",
+			},
+			{
+				"user_context",
+				"enemies_close",
+				OP.EQ,
+				0,
+			},
+			{
+				"faction_memory",
+				"time_since_pilgrims_coins",
+				OP.TIMEDIFF,
+				OP.GT,
+				40,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_pilgrims_coins",
+				OP.TIMESET,
 			},
 		},
 	})
@@ -4458,6 +5162,30 @@ return function ()
 		},
 	})
 	define_rule({
+		name = "pwe_gameplay_cursed_chest_activated",
+		response = "pwe_gameplay_cursed_chest_activated",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"deus_cursed_chest_activated",
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"wood_elf",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf",
+			},
+		},
+	})
+	define_rule({
 		name = "pwe_gameplay_cursed_chest_ping",
 		response = "pwe_gameplay_cursed_chest_ping",
 		criterias = {
@@ -4582,6 +5310,106 @@ return function ()
 				"player_profile",
 				OP.EQ,
 				"wood_elf",
+			},
+		},
+	})
+	define_rule({
+		name = "pwe_gameplay_seeing_a_faith_coin",
+		response = "pwe_gameplay_seeing_a_faith_coin",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item",
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"deus_pilgrims_coins",
+			},
+			{
+				"query_context",
+				"distance",
+				OP.GT,
+				7,
+			},
+			{
+				"query_context",
+				"distance",
+				OP.LT,
+				12,
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"wood_elf",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf",
+			},
+			{
+				"user_context",
+				"enemies_close",
+				OP.EQ,
+				0,
+			},
+			{
+				"faction_memory",
+				"time_since_pilgrims_coins",
+				OP.TIMEDIFF,
+				OP.GT,
+				50,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_pilgrims_coins",
+				OP.TIMESET,
+			},
+		},
+	})
+	define_rule({
+		name = "pwe_gameplay_using_a_weapon_shrine",
+		response = "pwe_gameplay_using_a_weapon_shrine",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"deus_using_a_weapon_shrine",
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"wood_elf",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf",
+			},
+			{
+				"faction_memory",
+				"time_since_using_a_weapon_shrine",
+				OP.TIMEDIFF,
+				OP.GT,
+				40,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_using_a_weapon_shrine",
+				OP.TIMESET,
 			},
 		},
 	})
@@ -4720,6 +5548,50 @@ return function ()
 				"player_profile",
 				OP.EQ,
 				"wood_elf",
+			},
+		},
+	})
+	define_rule({
+		name = "pwe_morris_curse_tzeentch_egg",
+		response = "pwe_morris_curse_tzeentch_egg",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item",
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"curse_tzeentch_egg",
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"wood_elf",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf",
+			},
+			{
+				"faction_memory",
+				"time_since_spotting_curse_objective",
+				OP.TIMEDIFF,
+				OP.GT,
+				90,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_spotting_curse_objective",
+				OP.TIMESET,
 			},
 		},
 	})
@@ -5052,6 +5924,56 @@ return function ()
 				"player_profile",
 				OP.EQ,
 				"witch_hunter",
+			},
+		},
+	})
+	define_rule({
+		name = "pwh_gameplay_collecting_a_faith_coin",
+		response = "pwh_gameplay_collecting_a_faith_coin",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"on_pickup",
+			},
+			{
+				"query_context",
+				"pickup_name",
+				OP.EQ,
+				"deus_soft_currency",
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"witch_hunter",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter",
+			},
+			{
+				"user_context",
+				"enemies_close",
+				OP.EQ,
+				0,
+			},
+			{
+				"faction_memory",
+				"time_since_pilgrims_coins",
+				OP.TIMEDIFF,
+				OP.GT,
+				40,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_pilgrims_coins",
+				OP.TIMESET,
 			},
 		},
 	})
@@ -5543,6 +6465,30 @@ return function ()
 		},
 	})
 	define_rule({
+		name = "pwh_gameplay_cursed_chest_activated",
+		response = "pwh_gameplay_cursed_chest_activated",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"deus_cursed_chest_activated",
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"witch_hunter",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter",
+			},
+		},
+	})
+	define_rule({
 		name = "pwh_gameplay_cursed_chest_ping",
 		response = "pwh_gameplay_cursed_chest_ping",
 		criterias = {
@@ -5667,6 +6613,106 @@ return function ()
 				"player_profile",
 				OP.EQ,
 				"witch_hunter",
+			},
+		},
+	})
+	define_rule({
+		name = "pwh_gameplay_seeing_a_faith_coin",
+		response = "pwh_gameplay_seeing_a_faith_coin",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item",
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"deus_pilgrims_coins",
+			},
+			{
+				"query_context",
+				"distance",
+				OP.GT,
+				7,
+			},
+			{
+				"query_context",
+				"distance",
+				OP.LT,
+				12,
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"witch_hunter",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter",
+			},
+			{
+				"user_context",
+				"enemies_close",
+				OP.EQ,
+				0,
+			},
+			{
+				"faction_memory",
+				"time_since_pilgrims_coins",
+				OP.TIMEDIFF,
+				OP.GT,
+				50,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_pilgrims_coins",
+				OP.TIMESET,
+			},
+		},
+	})
+	define_rule({
+		name = "pwh_gameplay_using_a_weapon_shrine",
+		response = "pwh_gameplay_using_a_weapon_shrine",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"deus_using_a_weapon_shrine",
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"witch_hunter",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter",
+			},
+			{
+				"faction_memory",
+				"time_since_using_a_weapon_shrine",
+				OP.TIMEDIFF,
+				OP.GT,
+				40,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_using_a_weapon_shrine",
+				OP.TIMESET,
 			},
 		},
 	})
@@ -5805,6 +6851,50 @@ return function ()
 				"player_profile",
 				OP.EQ,
 				"witch_hunter",
+			},
+		},
+	})
+	define_rule({
+		name = "pwh_morris_curse_tzeentch_egg",
+		response = "pwh_morris_curse_tzeentch_egg",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item",
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"curse_tzeentch_egg",
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"witch_hunter",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter",
+			},
+			{
+				"faction_memory",
+				"time_since_spotting_curse_objective",
+				OP.TIMEDIFF,
+				OP.GT,
+				90,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_spotting_curse_objective",
+				OP.TIMESET,
 			},
 		},
 	})
@@ -7145,6 +8235,45 @@ return function ()
 				2.109833240509,
 			},
 		},
+		pbw_gameplay_collecting_a_faith_coin = {
+			category = "seen_items",
+			database = "hero_conversations_dlc_morris_ingame",
+			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+			},
+			localization_strings = {
+				"pbw_gameplay_collecting_a_faith_coin_01",
+				"pbw_gameplay_collecting_a_faith_coin_02",
+				"pbw_gameplay_collecting_a_faith_coin_03",
+				"pbw_gameplay_collecting_a_faith_coin_04",
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pbw_gameplay_collecting_a_faith_coin_01",
+				"pbw_gameplay_collecting_a_faith_coin_02",
+				"pbw_gameplay_collecting_a_faith_coin_03",
+				"pbw_gameplay_collecting_a_faith_coin_04",
+			},
+			sound_events_duration = {
+				2.7822291851044,
+				1.528520822525,
+				1.9693541526794,
+				2.0327084064484,
+			},
+		},
 		pbw_gameplay_curse_damage_taken = {
 			category = "player_alerts",
 			database = "hero_conversations_dlc_morris_ingame",
@@ -7652,6 +8781,40 @@ return function ()
 				4.1546459197998,
 			},
 		},
+		pbw_gameplay_cursed_chest_activated = {
+			category = "player_feedback",
+			database = "hero_conversations_dlc_morris_ingame",
+			dialogue_animations_n = 3,
+			face_animations_n = 3,
+			randomize_indexes_n = 0,
+			sound_events_n = 3,
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+			},
+			face_animations = {
+				"face_concerned",
+				"face_concerned",
+				"face_concerned",
+			},
+			localization_strings = {
+				"pbw_gameplay_cursed_chest_activated_01",
+				"pbw_gameplay_cursed_chest_activated_02",
+				"pbw_gameplay_cursed_chest_activated_04",
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pbw_gameplay_cursed_chest_activated_01",
+				"pbw_gameplay_cursed_chest_activated_02",
+				"pbw_gameplay_cursed_chest_activated_04",
+			},
+			sound_events_duration = {
+				1.5962500572205,
+				1.352041721344,
+				2.9738957881927,
+			},
+		},
 		pbw_gameplay_cursed_chest_ping = {
 			category = "player_feedback",
 			database = "hero_conversations_dlc_morris_ingame",
@@ -7770,7 +8933,7 @@ return function ()
 			},
 		},
 		pbw_gameplay_rally_flag = {
-			category = "level_talk",
+			category = "player_alerts",
 			database = "hero_conversations_dlc_morris_ingame",
 			dialogue_animations_n = 4,
 			face_animations_n = 4,
@@ -7806,6 +8969,84 @@ return function ()
 				1.6410000324249,
 				3.120854139328,
 				3.2895624637604,
+			},
+		},
+		pbw_gameplay_seeing_a_faith_coin = {
+			category = "seen_items",
+			database = "hero_conversations_dlc_morris_ingame",
+			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+			},
+			localization_strings = {
+				"pbw_gameplay_seeing_a_faith_coin_01",
+				"pbw_gameplay_seeing_a_faith_coin_02",
+				"pbw_gameplay_seeing_a_faith_coin_03",
+				"pbw_gameplay_seeing_a_faith_coin_04",
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pbw_gameplay_seeing_a_faith_coin_01",
+				"pbw_gameplay_seeing_a_faith_coin_02",
+				"pbw_gameplay_seeing_a_faith_coin_03",
+				"pbw_gameplay_seeing_a_faith_coin_04",
+			},
+			sound_events_duration = {
+				1.7675833702087,
+				2.1841042041779,
+				1.4639791250229,
+				2.0814583301544,
+			},
+		},
+		pbw_gameplay_using_a_weapon_shrine = {
+			category = "seen_items",
+			database = "hero_conversations_dlc_morris_ingame",
+			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+			},
+			face_animations = {
+				"face_happy",
+				"face_happy",
+				"face_happy",
+				"face_happy",
+			},
+			localization_strings = {
+				"pbw_gameplay_using_a_weapon_shrine_01",
+				"pbw_gameplay_using_a_weapon_shrine_02",
+				"pbw_gameplay_using_a_weapon_shrine_03",
+				"pbw_gameplay_using_a_weapon_shrine_04",
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pbw_gameplay_using_a_weapon_shrine_01",
+				"pbw_gameplay_using_a_weapon_shrine_02",
+				"pbw_gameplay_using_a_weapon_shrine_03",
+				"pbw_gameplay_using_a_weapon_shrine_04",
+			},
+			sound_events_duration = {
+				2.6681458950043,
+				2.4331667423248,
+				3.5095417499542,
+				2.2817709445953,
 			},
 		},
 		pbw_gorge_event_start = {
@@ -8121,6 +9362,45 @@ return function ()
 				3.5312917232513,
 				3.4600207805634,
 				1.7867292165756,
+			},
+		},
+		pbw_morris_curse_tzeentch_egg = {
+			category = "seen_items",
+			database = "hero_conversations_dlc_morris_ingame",
+			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+			},
+			face_animations = {
+				"face_angry",
+				"face_angry",
+				"face_angry",
+				"face_angry",
+			},
+			localization_strings = {
+				"pbw_morris_tzeentch_egg_a_01",
+				"pbw_morris_tzeentch_egg_a_02",
+				"pbw_morris_tzeentch_egg_a_03",
+				"pbw_morris_tzeentch_egg_a_04",
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pbw_morris_tzeentch_egg_a_01",
+				"pbw_morris_tzeentch_egg_a_02",
+				"pbw_morris_tzeentch_egg_a_03",
+				"pbw_morris_tzeentch_egg_a_04",
+			},
+			sound_events_duration = {
+				2.0299999713898,
+				1.4052292108536,
+				1.4514374732971,
+				2.1391041278839,
 			},
 		},
 		pbw_morris_foreboding = {
@@ -8631,6 +9911,45 @@ return function ()
 				3.0012083053589,
 			},
 		},
+		pdr_gameplay_collecting_a_faith_coin = {
+			category = "seen_items",
+			database = "hero_conversations_dlc_morris_ingame",
+			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+			},
+			localization_strings = {
+				"pdr_gameplay_collecting_a_faith_coin_01",
+				"pdr_gameplay_collecting_a_faith_coin_02",
+				"pdr_gameplay_collecting_a_faith_coin_03",
+				"pdr_gameplay_collecting_a_faith_coin_04",
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pdr_gameplay_collecting_a_faith_coin_01",
+				"pdr_gameplay_collecting_a_faith_coin_02",
+				"pdr_gameplay_collecting_a_faith_coin_03",
+				"pdr_gameplay_collecting_a_faith_coin_04",
+			},
+			sound_events_duration = {
+				2.8169584274292,
+				1.3796458244324,
+				1.5495417118073,
+				2.001770734787,
+			},
+		},
 		pdr_gameplay_curse_damage_taken = {
 			category = "player_alerts",
 			database = "hero_conversations_dlc_morris_ingame",
@@ -9138,6 +10457,45 @@ return function ()
 				1.6199791431427,
 			},
 		},
+		pdr_gameplay_cursed_chest_activated = {
+			category = "player_feedback",
+			database = "hero_conversations_dlc_morris_ingame",
+			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+			},
+			face_animations = {
+				"face_concerned",
+				"face_concerned",
+				"face_concerned",
+				"face_concerned",
+			},
+			localization_strings = {
+				"pdr_gameplay_cursed_chest_activated_01",
+				"pdr_gameplay_cursed_chest_activated_02",
+				"pdr_gameplay_cursed_chest_activated_03",
+				"pdr_gameplay_cursed_chest_activated_04",
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pdr_gameplay_cursed_chest_activated_01",
+				"pdr_gameplay_cursed_chest_activated_02",
+				"pdr_gameplay_cursed_chest_activated_03",
+				"pdr_gameplay_cursed_chest_activated_04",
+			},
+			sound_events_duration = {
+				2.1813957691193,
+				2.0827915668488,
+				2.9801666736603,
+				2.1557083129883,
+			},
+		},
 		pdr_gameplay_cursed_chest_ping = {
 			category = "player_feedback",
 			database = "hero_conversations_dlc_morris_ingame",
@@ -9256,7 +10614,7 @@ return function ()
 			},
 		},
 		pdr_gameplay_rally_flag = {
-			category = "level_talk",
+			category = "player_alerts",
 			database = "hero_conversations_dlc_morris_ingame",
 			dialogue_animations_n = 4,
 			face_animations_n = 4,
@@ -9292,6 +10650,84 @@ return function ()
 				2.8671250343323,
 				3.0489375591278,
 				2.6952707767487,
+			},
+		},
+		pdr_gameplay_seeing_a_faith_coin = {
+			category = "seen_items",
+			database = "hero_conversations_dlc_morris_ingame",
+			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+			},
+			localization_strings = {
+				"pdr_gameplay_seeing_a_faith_coin_01",
+				"pdr_gameplay_seeing_a_faith_coin_02",
+				"pdr_gameplay_seeing_a_faith_coin_03",
+				"pdr_gameplay_seeing_a_faith_coin_04",
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pdr_gameplay_seeing_a_faith_coin_01",
+				"pdr_gameplay_seeing_a_faith_coin_02",
+				"pdr_gameplay_seeing_a_faith_coin_03",
+				"pdr_gameplay_seeing_a_faith_coin_04",
+			},
+			sound_events_duration = {
+				2.8790624141693,
+				1.6751041412354,
+				1.8892500400543,
+				1.9747500419617,
+			},
+		},
+		pdr_gameplay_using_a_weapon_shrine = {
+			category = "seen_items",
+			database = "hero_conversations_dlc_morris_ingame",
+			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+			},
+			face_animations = {
+				"face_happy",
+				"face_happy",
+				"face_happy",
+				"face_happy",
+			},
+			localization_strings = {
+				"pdr_gameplay_using_a_weapon_shrine_01",
+				"pdr_gameplay_using_a_weapon_shrine_02",
+				"pdr_gameplay_using_a_weapon_shrine_03",
+				"pdr_gameplay_using_a_weapon_shrine_04",
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pdr_gameplay_using_a_weapon_shrine_01",
+				"pdr_gameplay_using_a_weapon_shrine_02",
+				"pdr_gameplay_using_a_weapon_shrine_03",
+				"pdr_gameplay_using_a_weapon_shrine_04",
+			},
+			sound_events_duration = {
+				1.3035833835602,
+				1.9350625276566,
+				1.5041667222977,
+				3.2759375572205,
 			},
 		},
 		pdr_gorge_event_start = {
@@ -9607,6 +11043,45 @@ return function ()
 				2.9963958263397,
 				3.2206666469574,
 				4.5878958702087,
+			},
+		},
+		pdr_morris_curse_tzeentch_egg = {
+			category = "seen_items",
+			database = "hero_conversations_dlc_morris_ingame",
+			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+			},
+			face_animations = {
+				"face_angry",
+				"face_angry",
+				"face_angry",
+				"face_angry",
+			},
+			localization_strings = {
+				"pdr_morris_tzeentch_egg_a_01",
+				"pdr_morris_tzeentch_egg_a_02",
+				"pdr_morris_tzeentch_egg_a_03",
+				"pdr_morris_tzeentch_egg_a_04",
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pdr_morris_tzeentch_egg_a_01",
+				"pdr_morris_tzeentch_egg_a_02",
+				"pdr_morris_tzeentch_egg_a_03",
+				"pdr_morris_tzeentch_egg_a_04",
+			},
+			sound_events_duration = {
+				1.325291633606,
+				1.614041686058,
+				1.5673333406448,
+				1.9264792203903,
 			},
 		},
 		pdr_morris_foreboding = {
@@ -10117,6 +11592,45 @@ return function ()
 				3.8898334503174,
 			},
 		},
+		pes_gameplay_collecting_a_faith_coin = {
+			category = "seen_items",
+			database = "hero_conversations_dlc_morris_ingame",
+			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+			},
+			localization_strings = {
+				"pes_gameplay_collecting_a_faith_coin_01",
+				"pes_gameplay_collecting_a_faith_coin_02",
+				"pes_gameplay_collecting_a_faith_coin_03",
+				"pes_gameplay_collecting_a_faith_coin_04",
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pes_gameplay_collecting_a_faith_coin_01",
+				"pes_gameplay_collecting_a_faith_coin_02",
+				"pes_gameplay_collecting_a_faith_coin_03",
+				"pes_gameplay_collecting_a_faith_coin_04",
+			},
+			sound_events_duration = {
+				1.4999375343323,
+				1.4994167089462,
+				1.4373124837875,
+				1.4276041984558,
+			},
+		},
 		pes_gameplay_curse_damage_taken = {
 			category = "player_alerts",
 			database = "hero_conversations_dlc_morris_ingame",
@@ -10624,6 +12138,45 @@ return function ()
 				1.6454792022705,
 			},
 		},
+		pes_gameplay_cursed_chest_activated = {
+			category = "player_feedback",
+			database = "hero_conversations_dlc_morris_ingame",
+			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+			},
+			face_animations = {
+				"face_concerned",
+				"face_concerned",
+				"face_concerned",
+				"face_concerned",
+			},
+			localization_strings = {
+				"pes_gameplay_cursed_chest_activated_01",
+				"pes_gameplay_cursed_chest_activated_02",
+				"pes_gameplay_cursed_chest_activated_03",
+				"pes_gameplay_cursed_chest_activated_04",
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pes_gameplay_cursed_chest_activated_01",
+				"pes_gameplay_cursed_chest_activated_02",
+				"pes_gameplay_cursed_chest_activated_03",
+				"pes_gameplay_cursed_chest_activated_04",
+			},
+			sound_events_duration = {
+				1.4681041240692,
+				1.02889585495,
+				1.3423750400543,
+				1.9064375162125,
+			},
+		},
 		pes_gameplay_cursed_chest_ping = {
 			category = "player_feedback",
 			database = "hero_conversations_dlc_morris_ingame",
@@ -10742,7 +12295,7 @@ return function ()
 			},
 		},
 		pes_gameplay_rally_flag = {
-			category = "level_talk",
+			category = "player_alerts",
 			database = "hero_conversations_dlc_morris_ingame",
 			dialogue_animations_n = 4,
 			face_animations_n = 4,
@@ -10778,6 +12331,84 @@ return function ()
 				2.9084167480469,
 				2.7862501144409,
 				4.4114999771118,
+			},
+		},
+		pes_gameplay_seeing_a_faith_coin = {
+			category = "seen_items",
+			database = "hero_conversations_dlc_morris_ingame",
+			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+			},
+			localization_strings = {
+				"pes_gameplay_seeing_a_faith_coin_01",
+				"pes_gameplay_seeing_a_faith_coin_02",
+				"pes_gameplay_seeing_a_faith_coin_03",
+				"pes_gameplay_seeing_a_faith_coin_04",
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pes_gameplay_seeing_a_faith_coin_01",
+				"pes_gameplay_seeing_a_faith_coin_02",
+				"pes_gameplay_seeing_a_faith_coin_03",
+				"pes_gameplay_seeing_a_faith_coin_04",
+			},
+			sound_events_duration = {
+				1.0264375209808,
+				1.6376667022705,
+				1.9759792089462,
+				2.1858332157135,
+			},
+		},
+		pes_gameplay_using_a_weapon_shrine = {
+			category = "seen_items",
+			database = "hero_conversations_dlc_morris_ingame",
+			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+			},
+			face_animations = {
+				"face_happy",
+				"face_happy",
+				"face_happy",
+				"face_happy",
+			},
+			localization_strings = {
+				"pes_gameplay_using_a_weapon_shrine_01",
+				"pes_gameplay_using_a_weapon_shrine_02",
+				"pes_gameplay_using_a_weapon_shrine_03",
+				"pes_gameplay_using_a_weapon_shrine_04",
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pes_gameplay_using_a_weapon_shrine_01",
+				"pes_gameplay_using_a_weapon_shrine_02",
+				"pes_gameplay_using_a_weapon_shrine_03",
+				"pes_gameplay_using_a_weapon_shrine_04",
+			},
+			sound_events_duration = {
+				1.4069374799728,
+				1.8567500114441,
+				2.3390624523163,
+				2.7241249084473,
 			},
 		},
 		pes_gorge_event_start = {
@@ -11093,6 +12724,45 @@ return function ()
 				3.857479095459,
 				3.1690208911896,
 				3.9386875629425,
+			},
+		},
+		pes_morris_curse_tzeentch_egg = {
+			category = "seen_items",
+			database = "hero_conversations_dlc_morris_ingame",
+			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+			},
+			face_animations = {
+				"face_angry",
+				"face_angry",
+				"face_angry",
+				"face_angry",
+			},
+			localization_strings = {
+				"pes_morris_tzeentch_egg_a_01",
+				"pes_morris_tzeentch_egg_a_02",
+				"pes_morris_tzeentch_egg_a_03",
+				"pes_morris_tzeentch_egg_a_04",
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pes_morris_tzeentch_egg_a_01",
+				"pes_morris_tzeentch_egg_a_02",
+				"pes_morris_tzeentch_egg_a_03",
+				"pes_morris_tzeentch_egg_a_04",
+			},
+			sound_events_duration = {
+				1.2598541975021,
+				1.2313333749771,
+				1.6694791316986,
+				1.7224583625793,
 			},
 		},
 		pes_morris_foreboding = {
@@ -11603,6 +13273,45 @@ return function ()
 				2.3893332481384,
 			},
 		},
+		pwe_gameplay_collecting_a_faith_coin = {
+			category = "seen_items",
+			database = "hero_conversations_dlc_morris_ingame",
+			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+			},
+			localization_strings = {
+				"pwe_gameplay_collecting_a_faith_coin_01",
+				"pwe_gameplay_collecting_a_faith_coin_02",
+				"pwe_gameplay_collecting_a_faith_coin_03",
+				"pwe_gameplay_collecting_a_faith_coin_04",
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pwe_gameplay_collecting_a_faith_coin_01",
+				"pwe_gameplay_collecting_a_faith_coin_02",
+				"pwe_gameplay_collecting_a_faith_coin_03",
+				"pwe_gameplay_collecting_a_faith_coin_04",
+			},
+			sound_events_duration = {
+				0.94066667556763,
+				1.6174374818802,
+				1.3417708873749,
+				1.9100625514984,
+			},
+		},
 		pwe_gameplay_curse_damage_taken = {
 			category = "player_alerts",
 			database = "hero_conversations_dlc_morris_ingame",
@@ -12110,6 +13819,45 @@ return function ()
 				2.2584166526794,
 			},
 		},
+		pwe_gameplay_cursed_chest_activated = {
+			category = "player_feedback",
+			database = "hero_conversations_dlc_morris_ingame",
+			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+			},
+			face_animations = {
+				"face_concerned",
+				"face_concerned",
+				"face_concerned",
+				"face_concerned",
+			},
+			localization_strings = {
+				"pwe_gameplay_cursed_chest_activated_01",
+				"pwe_gameplay_cursed_chest_activated_02",
+				"pwe_gameplay_cursed_chest_activated_03",
+				"pwe_gameplay_cursed_chest_activated_04",
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pwe_gameplay_cursed_chest_activated_01",
+				"pwe_gameplay_cursed_chest_activated_02",
+				"pwe_gameplay_cursed_chest_activated_03",
+				"pwe_gameplay_cursed_chest_activated_04",
+			},
+			sound_events_duration = {
+				2.7307915687561,
+				2.9798333644867,
+				3.121791601181,
+				2.9169375896454,
+			},
+		},
 		pwe_gameplay_cursed_chest_ping = {
 			category = "player_feedback",
 			database = "hero_conversations_dlc_morris_ingame",
@@ -12228,7 +13976,7 @@ return function ()
 			},
 		},
 		pwe_gameplay_rally_flag = {
-			category = "level_talk",
+			category = "player_alerts",
 			database = "hero_conversations_dlc_morris_ingame",
 			dialogue_animations_n = 4,
 			face_animations_n = 4,
@@ -12264,6 +14012,84 @@ return function ()
 				2.4144582748413,
 				1.8509896397591,
 				5.1466040611267,
+			},
+		},
+		pwe_gameplay_seeing_a_faith_coin = {
+			category = "seen_items",
+			database = "hero_conversations_dlc_morris_ingame",
+			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+			},
+			localization_strings = {
+				"pwe_gameplay_seeing_a_faith_coin_01",
+				"pwe_gameplay_seeing_a_faith_coin_02",
+				"pwe_gameplay_seeing_a_faith_coin_03",
+				"pwe_gameplay_seeing_a_faith_coin_04",
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pwe_gameplay_seeing_a_faith_coin_01",
+				"pwe_gameplay_seeing_a_faith_coin_02",
+				"pwe_gameplay_seeing_a_faith_coin_03",
+				"pwe_gameplay_seeing_a_faith_coin_04",
+			},
+			sound_events_duration = {
+				1.3475416898727,
+				1.9762500524521,
+				2.0613541603088,
+				2.5646667480469,
+			},
+		},
+		pwe_gameplay_using_a_weapon_shrine = {
+			category = "seen_items",
+			database = "hero_conversations_dlc_morris_ingame",
+			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+			},
+			face_animations = {
+				"face_happy",
+				"face_happy",
+				"face_happy",
+				"face_happy",
+			},
+			localization_strings = {
+				"pwe_gameplay_using_a_weapon_shrine_01",
+				"pwe_gameplay_using_a_weapon_shrine_02",
+				"pwe_gameplay_using_a_weapon_shrine_03",
+				"pwe_gameplay_using_a_weapon_shrine_04",
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pwe_gameplay_using_a_weapon_shrine_01",
+				"pwe_gameplay_using_a_weapon_shrine_02",
+				"pwe_gameplay_using_a_weapon_shrine_03",
+				"pwe_gameplay_using_a_weapon_shrine_04",
+			},
+			sound_events_duration = {
+				1.5598332881927,
+				2.4627916812897,
+				2.6427707672119,
+				3.4636874198914,
 			},
 		},
 		pwe_gorge_event_start = {
@@ -12579,6 +14405,45 @@ return function ()
 				4.9646043777466,
 				5.7408957481384,
 				6.001437664032,
+			},
+		},
+		pwe_morris_curse_tzeentch_egg = {
+			category = "seen_items",
+			database = "hero_conversations_dlc_morris_ingame",
+			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+			},
+			face_animations = {
+				"face_angry",
+				"face_angry",
+				"face_angry",
+				"face_angry",
+			},
+			localization_strings = {
+				"pwe_morris_tzeentch_egg_a_01",
+				"pwe_morris_tzeentch_egg_a_02",
+				"pwe_morris_tzeentch_egg_a_03",
+				"pwe_morris_tzeentch_egg_a_04",
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pwe_morris_tzeentch_egg_a_01",
+				"pwe_morris_tzeentch_egg_a_02",
+				"pwe_morris_tzeentch_egg_a_03",
+				"pwe_morris_tzeentch_egg_a_04",
+			},
+			sound_events_duration = {
+				2.1853749752045,
+				2.0611457824707,
+				1.4969166517258,
+				1.5841875076294,
 			},
 		},
 		pwe_morris_foreboding = {
@@ -13089,6 +14954,45 @@ return function ()
 				2.1793959140778,
 			},
 		},
+		pwh_gameplay_collecting_a_faith_coin = {
+			category = "seen_items",
+			database = "hero_conversations_dlc_morris_ingame",
+			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+			},
+			localization_strings = {
+				"pwh_gameplay_collecting_a_faith_coin_01",
+				"pwh_gameplay_collecting_a_faith_coin_02",
+				"pwh_gameplay_collecting_a_faith_coin_03",
+				"pwh_gameplay_collecting_a_faith_coin_04",
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pwh_gameplay_collecting_a_faith_coin_01",
+				"pwh_gameplay_collecting_a_faith_coin_02",
+				"pwh_gameplay_collecting_a_faith_coin_03",
+				"pwh_gameplay_collecting_a_faith_coin_04",
+			},
+			sound_events_duration = {
+				1.3749166727066,
+				2.3473124504089,
+				1.7409166097641,
+				2.4567084312439,
+			},
+		},
 		pwh_gameplay_curse_damage_taken = {
 			category = "player_alerts",
 			database = "hero_conversations_dlc_morris_ingame",
@@ -13596,6 +15500,28 @@ return function ()
 				3.929229259491,
 			},
 		},
+		pwh_gameplay_cursed_chest_activated = {
+			category = "player_feedback",
+			database = "hero_conversations_dlc_morris_ingame",
+			dialogue_animations_n = 1,
+			face_animations_n = 1,
+			sound_events_n = 1,
+			dialogue_animations = {
+				[1] = "dialogue_talk",
+			},
+			face_animations = {
+				[1] = "face_concerned",
+			},
+			localization_strings = {
+				[1] = "pwh_gameplay_cursed_chest_activated_01",
+			},
+			sound_events = {
+				[1] = "pwh_gameplay_cursed_chest_activated_01",
+			},
+			sound_events_duration = {
+				[1] = 2.479395866394,
+			},
+		},
 		pwh_gameplay_cursed_chest_ping = {
 			category = "player_feedback",
 			database = "hero_conversations_dlc_morris_ingame",
@@ -13714,7 +15640,7 @@ return function ()
 			},
 		},
 		pwh_gameplay_rally_flag = {
-			category = "level_talk",
+			category = "player_alerts",
 			database = "hero_conversations_dlc_morris_ingame",
 			dialogue_animations_n = 4,
 			face_animations_n = 4,
@@ -13750,6 +15676,84 @@ return function ()
 				3.6040000915527,
 				2.7769582271576,
 				2.715916633606,
+			},
+		},
+		pwh_gameplay_seeing_a_faith_coin = {
+			category = "seen_items",
+			database = "hero_conversations_dlc_morris_ingame",
+			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+			},
+			localization_strings = {
+				"pwh_gameplay_seeing_a_faith_coin_01",
+				"pwh_gameplay_seeing_a_faith_coin_02",
+				"pwh_gameplay_seeing_a_faith_coin_03",
+				"pwh_gameplay_seeing_a_faith_coin_04",
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pwh_gameplay_seeing_a_faith_coin_01",
+				"pwh_gameplay_seeing_a_faith_coin_02",
+				"pwh_gameplay_seeing_a_faith_coin_03",
+				"pwh_gameplay_seeing_a_faith_coin_04",
+			},
+			sound_events_duration = {
+				2.089250087738,
+				2.3359582424164,
+				3.024395942688,
+				2.7699582576752,
+			},
+		},
+		pwh_gameplay_using_a_weapon_shrine = {
+			category = "seen_items",
+			database = "hero_conversations_dlc_morris_ingame",
+			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+			},
+			face_animations = {
+				"face_happy",
+				"face_happy",
+				"face_happy",
+				"face_happy",
+			},
+			localization_strings = {
+				"pwh_gameplay_using_a_weapon_shrine_01",
+				"pwh_gameplay_using_a_weapon_shrine_02",
+				"pwh_gameplay_using_a_weapon_shrine_03",
+				"pwh_gameplay_using_a_weapon_shrine_04",
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pwh_gameplay_using_a_weapon_shrine_01",
+				"pwh_gameplay_using_a_weapon_shrine_02",
+				"pwh_gameplay_using_a_weapon_shrine_03",
+				"pwh_gameplay_using_a_weapon_shrine_04",
+			},
+			sound_events_duration = {
+				2.6222083568573,
+				3.5774791240692,
+				3.2893333435059,
+				2.1514792442322,
 			},
 		},
 		pwh_gorge_event_start = {
@@ -14065,6 +16069,45 @@ return function ()
 				5.7389583587647,
 				6.0165209770203,
 				8.6740627288818,
+			},
+		},
+		pwh_morris_curse_tzeentch_egg = {
+			category = "seen_items",
+			database = "hero_conversations_dlc_morris_ingame",
+			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+			},
+			face_animations = {
+				"face_angry",
+				"face_angry",
+				"face_angry",
+				"face_angry",
+			},
+			localization_strings = {
+				"pwh_morris_tzeentch_egg_a_01",
+				"pwh_morris_tzeentch_egg_a_02",
+				"pwh_morris_tzeentch_egg_a_03",
+				"pwh_morris_tzeentch_egg_a_04",
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pwh_morris_tzeentch_egg_a_01",
+				"pwh_morris_tzeentch_egg_a_02",
+				"pwh_morris_tzeentch_egg_a_03",
+				"pwh_morris_tzeentch_egg_a_04",
+			},
+			sound_events_duration = {
+				1.9614791870117,
+				2.1595416069031,
+				2.5796041488648,
+				2.0508332252502,
 			},
 		},
 		pwh_morris_foreboding = {

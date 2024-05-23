@@ -2,6 +2,50 @@
 
 return function ()
 	define_rule({
+		name = "pdr_gameplay_path_clear",
+		response = "pdr_gameplay_path_clear",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item",
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"generic_path_clear",
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"dwarf_ranger",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger",
+			},
+			{
+				"faction_memory",
+				"generic_path_clear",
+				OP.EQ,
+				0,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"generic_path_clear",
+				OP.ADD,
+				1,
+			},
+		},
+	})
+	define_rule({
 		name = "pdr_generic_assemble",
 		response = "pdr_generic_assemble",
 		criterias = {
@@ -818,6 +862,45 @@ return function ()
 		},
 	})
 	add_dialogues({
+		pdr_gameplay_path_clear = {
+			category = "level_talk",
+			database = "dwarf_ranger_generic_vo",
+			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+			},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm",
+			},
+			localization_strings = {
+				"pdr_gameplay_path_clear_01",
+				"pdr_gameplay_path_clear_02",
+				"pdr_gameplay_path_clear_03",
+				"pdr_gameplay_path_clear_04",
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pdr_gameplay_path_clear_01",
+				"pdr_gameplay_path_clear_02",
+				"pdr_gameplay_path_clear_03",
+				"pdr_gameplay_path_clear_04",
+			},
+			sound_events_duration = {
+				1.8214583396912,
+				1.163645863533,
+				0.85487502813339,
+				1.8477708101273,
+			},
+		},
 		pdr_generic_assemble = {
 			category = "level_talk",
 			database = "dwarf_ranger_generic_vo",

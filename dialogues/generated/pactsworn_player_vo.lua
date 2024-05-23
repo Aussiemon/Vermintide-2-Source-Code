@@ -25,7 +25,7 @@ return function ()
 			},
 			{
 				"user_memory",
-				"time_since_spawning_gutter_runner",
+				"time_since_spawning",
 				OP.TIMEDIFF,
 				OP.GT,
 				10,
@@ -34,7 +34,7 @@ return function ()
 		on_done = {
 			{
 				"user_memory",
-				"time_since_spawning_gutter_runner",
+				"time_since_spawning",
 				OP.TIMESET,
 			},
 		},
@@ -47,7 +47,7 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"taunting",
+				"seen_enemy",
 			},
 			{
 				"query_context",
@@ -57,15 +57,42 @@ return function ()
 			},
 			{
 				"query_context",
-				"source_name",
+				"enemy_tag",
 				OP.EQ,
-				"vs_gutter_runner",
+				"hero_dr_ranger",
+				CombiningOP.OR_NEXT,
 			},
 			{
 				"query_context",
-				"target_name",
+				"enemy_tag",
 				OP.EQ,
-				"dwarf_ranger",
+				"hero_dr_ironbreaker",
+				CombiningOP.OR_NEXT,
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"hero_dr_slayer",
+				CombiningOP.OR_NEXT,
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"hero_dr_engineer",
+			},
+			{
+				"user_context",
+				"is_in_ghost_mode",
+				OP.EQ,
+				0,
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"vs_gutter_runner",
 			},
 			{
 				"user_context",
@@ -75,7 +102,7 @@ return function ()
 			},
 			{
 				"user_memory",
-				"time_since_taunting_bardin",
+				"time_since_taunting",
 				OP.TIMEDIFF,
 				OP.GT,
 				10,
@@ -84,7 +111,7 @@ return function ()
 		on_done = {
 			{
 				"user_memory",
-				"time_since_taunting_bardin",
+				"time_since_taunting",
 				OP.TIMESET,
 			},
 		},
@@ -97,7 +124,7 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"taunting",
+				"seen_enemy",
 			},
 			{
 				"query_context",
@@ -107,15 +134,42 @@ return function ()
 			},
 			{
 				"query_context",
-				"source_name",
+				"enemy_tag",
 				OP.EQ,
-				"vs_gutter_runner",
+				"hero_we_waywatcher",
+				CombiningOP.OR_NEXT,
 			},
 			{
 				"query_context",
-				"target_name",
+				"enemy_tag",
 				OP.EQ,
-				"wood_elf",
+				"hero_we_maidenguard",
+				CombiningOP.OR_NEXT,
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"hero_we_shade",
+				CombiningOP.OR_NEXT,
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"hero_we_thornsister",
+			},
+			{
+				"user_context",
+				"is_in_ghost_mode",
+				OP.EQ,
+				0,
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"vs_gutter_runner",
 			},
 			{
 				"user_context",
@@ -125,7 +179,7 @@ return function ()
 			},
 			{
 				"user_memory",
-				"time_since_taunting_kerillian",
+				"time_since_taunting",
 				OP.TIMEDIFF,
 				OP.GT,
 				10,
@@ -134,7 +188,7 @@ return function ()
 		on_done = {
 			{
 				"user_memory",
-				"time_since_taunting_kerillian",
+				"time_since_taunting",
 				OP.TIMESET,
 			},
 		},
@@ -147,7 +201,7 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"taunting",
+				"seen_enemy",
 			},
 			{
 				"query_context",
@@ -157,15 +211,42 @@ return function ()
 			},
 			{
 				"query_context",
-				"source_name",
+				"enemy_tag",
 				OP.EQ,
-				"vs_gutter_runner",
+				"hero_es_mercenary",
+				CombiningOP.OR_NEXT,
 			},
 			{
 				"query_context",
-				"target_name",
+				"enemy_tag",
 				OP.EQ,
-				"empire_soldier",
+				"hero_es_huntsman",
+				CombiningOP.OR_NEXT,
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"hero_es_knight",
+				CombiningOP.OR_NEXT,
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"hero_es_questingknight",
+			},
+			{
+				"user_context",
+				"is_in_ghost_mode",
+				OP.EQ,
+				0,
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"vs_gutter_runner",
 			},
 			{
 				"user_context",
@@ -175,7 +256,7 @@ return function ()
 			},
 			{
 				"user_memory",
-				"time_since_taunting_kruber",
+				"time_since_taunting",
 				OP.TIMEDIFF,
 				OP.GT,
 				10,
@@ -184,7 +265,7 @@ return function ()
 		on_done = {
 			{
 				"user_memory",
-				"time_since_taunting_kruber",
+				"time_since_taunting",
 				OP.TIMESET,
 			},
 		},
@@ -197,7 +278,7 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"taunting",
+				"seen_enemy",
 			},
 			{
 				"query_context",
@@ -207,15 +288,42 @@ return function ()
 			},
 			{
 				"query_context",
-				"source_name",
+				"enemy_tag",
 				OP.EQ,
-				"vs_gutter_runner",
+				"hero_wh_captain",
+				CombiningOP.OR_NEXT,
 			},
 			{
 				"query_context",
-				"target_name",
+				"enemy_tag",
 				OP.EQ,
-				"witch_hunter",
+				"hero_wh_bountyhunter",
+				CombiningOP.OR_NEXT,
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"hero_wh_zealot",
+				CombiningOP.OR_NEXT,
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"hero_wh_priest",
+			},
+			{
+				"user_context",
+				"is_in_ghost_mode",
+				OP.EQ,
+				0,
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"vs_gutter_runner",
 			},
 			{
 				"user_context",
@@ -225,7 +333,7 @@ return function ()
 			},
 			{
 				"user_memory",
-				"time_since_taunting_saltzpyre",
+				"time_since_taunting",
 				OP.TIMEDIFF,
 				OP.GT,
 				10,
@@ -234,7 +342,7 @@ return function ()
 		on_done = {
 			{
 				"user_memory",
-				"time_since_taunting_saltzpyre",
+				"time_since_taunting",
 				OP.TIMESET,
 			},
 		},
@@ -247,7 +355,7 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"taunting",
+				"seen_enemy",
 			},
 			{
 				"query_context",
@@ -257,15 +365,42 @@ return function ()
 			},
 			{
 				"query_context",
-				"source_name",
+				"enemy_tag",
 				OP.EQ,
-				"vs_gutter_runner",
+				"hero_bw_scholar",
+				CombiningOP.OR_NEXT,
 			},
 			{
 				"query_context",
-				"target_name",
+				"enemy_tag",
 				OP.EQ,
-				"bright_wizard",
+				"hero_bw_adept",
+				CombiningOP.OR_NEXT,
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"hero_bw_unchained",
+				CombiningOP.OR_NEXT,
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"hero_bw_necromancer",
+			},
+			{
+				"user_context",
+				"is_in_ghost_mode",
+				OP.EQ,
+				0,
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"vs_gutter_runner",
 			},
 			{
 				"user_context",
@@ -275,7 +410,7 @@ return function ()
 			},
 			{
 				"user_memory",
-				"time_since_taunting_sienna",
+				"time_since_taunting",
 				OP.TIMEDIFF,
 				OP.GT,
 				10,
@@ -284,7 +419,7 @@ return function ()
 		on_done = {
 			{
 				"user_memory",
-				"time_since_taunting_sienna",
+				"time_since_taunting",
 				OP.TIMESET,
 			},
 		},
@@ -319,7 +454,7 @@ return function ()
 			},
 			{
 				"user_memory",
-				"time_since_gutter_runner_vw_affirmative",
+				"time_since_vw_affirmative",
 				OP.TIMEDIFF,
 				OP.GT,
 				5,
@@ -328,7 +463,7 @@ return function ()
 		on_done = {
 			{
 				"user_memory",
-				"time_since_gutter_runner_vw_affirmative",
+				"time_since_vw_affirmative",
 				OP.TIMESET,
 			},
 		},
@@ -363,7 +498,7 @@ return function ()
 			},
 			{
 				"user_memory",
-				"time_since_gutter_runner_vw_ambush",
+				"time_since_vw_ambush",
 				OP.TIMEDIFF,
 				OP.GT,
 				5,
@@ -372,7 +507,7 @@ return function ()
 		on_done = {
 			{
 				"user_memory",
-				"time_since_gutter_runner_vw_ambush",
+				"time_since_vw_ambush",
 				OP.TIMESET,
 			},
 		},
@@ -407,7 +542,7 @@ return function ()
 			},
 			{
 				"user_memory",
-				"time_since_gutter_runner_vw_attack_now",
+				"time_since_vw_attack_now",
 				OP.TIMEDIFF,
 				OP.GT,
 				5,
@@ -416,7 +551,7 @@ return function ()
 		on_done = {
 			{
 				"user_memory",
-				"time_since_gutter_runner_vw_attack_now",
+				"time_since_vw_attack_now",
 				OP.TIMESET,
 			},
 		},
@@ -451,7 +586,7 @@ return function ()
 			},
 			{
 				"user_memory",
-				"time_since_gutter_runner_vw_cover_me",
+				"time_since_vw_cover_me",
 				OP.TIMEDIFF,
 				OP.GT,
 				5,
@@ -460,7 +595,7 @@ return function ()
 		on_done = {
 			{
 				"user_memory",
-				"time_since_gutter_runner_vw_cover_me",
+				"time_since_vw_cover_me",
 				OP.TIMESET,
 			},
 		},
@@ -495,7 +630,7 @@ return function ()
 			},
 			{
 				"user_memory",
-				"time_since_gutter_runner_vw_gather",
+				"time_since_vw_gather",
 				OP.TIMEDIFF,
 				OP.GT,
 				5,
@@ -504,7 +639,7 @@ return function ()
 		on_done = {
 			{
 				"user_memory",
-				"time_since_gutter_runner_vw_gather",
+				"time_since_vw_gather",
 				OP.TIMESET,
 			},
 		},
@@ -539,7 +674,7 @@ return function ()
 			},
 			{
 				"user_memory",
-				"time_since_gutter_runner_vw_go_here",
+				"time_since_vw_go_here",
 				OP.TIMEDIFF,
 				OP.GT,
 				5,
@@ -548,7 +683,7 @@ return function ()
 		on_done = {
 			{
 				"user_memory",
-				"time_since_gutter_runner_vw_go_here",
+				"time_since_vw_go_here",
 				OP.TIMESET,
 			},
 		},
@@ -583,7 +718,7 @@ return function ()
 			},
 			{
 				"user_memory",
-				"time_since_gutter_runner_vw_negation",
+				"time_since_vw_negation",
 				OP.TIMEDIFF,
 				OP.GT,
 				5,
@@ -592,7 +727,7 @@ return function ()
 		on_done = {
 			{
 				"user_memory",
-				"time_since_gutter_runner_vw_negation",
+				"time_since_vw_negation",
 				OP.TIMESET,
 			},
 		},
@@ -627,7 +762,7 @@ return function ()
 			},
 			{
 				"user_memory",
-				"time_since_gutter_runner_vw_thanks",
+				"time_since_vw_thanks",
 				OP.TIMEDIFF,
 				OP.GT,
 				5,
@@ -636,7 +771,7 @@ return function ()
 		on_done = {
 			{
 				"user_memory",
-				"time_since_gutter_runner_vw_thanks",
+				"time_since_vw_thanks",
 				OP.TIMESET,
 			},
 		},
@@ -671,7 +806,7 @@ return function ()
 			},
 			{
 				"user_memory",
-				"time_since_gutter_runner_vw_wait",
+				"time_since_vw_wait",
 				OP.TIMEDIFF,
 				OP.GT,
 				5,
@@ -680,7 +815,7 @@ return function ()
 		on_done = {
 			{
 				"user_memory",
-				"time_since_gutter_runner_vw_wait",
+				"time_since_vw_wait",
 				OP.TIMESET,
 			},
 		},
@@ -709,7 +844,7 @@ return function ()
 			},
 			{
 				"user_memory",
-				"time_since_spawning_globadier",
+				"time_since_spawning",
 				OP.TIMEDIFF,
 				OP.GT,
 				10,
@@ -718,7 +853,7 @@ return function ()
 		on_done = {
 			{
 				"user_memory",
-				"time_since_spawning_globadier",
+				"time_since_spawning",
 				OP.TIMESET,
 			},
 		},
@@ -731,7 +866,7 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"taunting",
+				"seen_enemy",
 			},
 			{
 				"query_context",
@@ -741,15 +876,42 @@ return function ()
 			},
 			{
 				"query_context",
-				"source_name",
+				"enemy_tag",
 				OP.EQ,
-				"vs_poison_wind_globadier",
+				"hero_dr_ranger",
+				CombiningOP.OR_NEXT,
 			},
 			{
 				"query_context",
-				"target_name",
+				"enemy_tag",
 				OP.EQ,
-				"dwarf_ranger",
+				"hero_dr_ironbreaker",
+				CombiningOP.OR_NEXT,
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"hero_dr_slayer",
+				CombiningOP.OR_NEXT,
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"hero_dr_engineer",
+			},
+			{
+				"user_context",
+				"is_in_ghost_mode",
+				OP.EQ,
+				0,
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"vs_poison_wind_globadier",
 			},
 			{
 				"user_context",
@@ -759,7 +921,7 @@ return function ()
 			},
 			{
 				"user_memory",
-				"time_since_taunting_bardin",
+				"time_since_taunting",
 				OP.TIMEDIFF,
 				OP.GT,
 				10,
@@ -768,7 +930,7 @@ return function ()
 		on_done = {
 			{
 				"user_memory",
-				"time_since_taunting_bardin",
+				"time_since_taunting",
 				OP.TIMESET,
 			},
 		},
@@ -781,7 +943,7 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"taunting",
+				"seen_enemy",
 			},
 			{
 				"query_context",
@@ -791,15 +953,42 @@ return function ()
 			},
 			{
 				"query_context",
-				"source_name",
+				"enemy_tag",
 				OP.EQ,
-				"vs_poison_wind_globadier",
+				"hero_we_waywatcher",
+				CombiningOP.OR_NEXT,
 			},
 			{
 				"query_context",
-				"target_name",
+				"enemy_tag",
 				OP.EQ,
-				"wood_elf",
+				"hero_we_maidenguard",
+				CombiningOP.OR_NEXT,
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"hero_we_shade",
+				CombiningOP.OR_NEXT,
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"hero_we_thornsister",
+			},
+			{
+				"user_context",
+				"is_in_ghost_mode",
+				OP.EQ,
+				0,
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"vs_poison_wind_globadier",
 			},
 			{
 				"user_context",
@@ -809,7 +998,7 @@ return function ()
 			},
 			{
 				"user_memory",
-				"time_since_taunting_kerillian",
+				"time_since_taunting",
 				OP.TIMEDIFF,
 				OP.GT,
 				10,
@@ -818,7 +1007,7 @@ return function ()
 		on_done = {
 			{
 				"user_memory",
-				"time_since_taunting_kerillian",
+				"time_since_taunting",
 				OP.TIMESET,
 			},
 		},
@@ -831,7 +1020,7 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"taunting",
+				"seen_enemy",
 			},
 			{
 				"query_context",
@@ -841,15 +1030,42 @@ return function ()
 			},
 			{
 				"query_context",
-				"source_name",
+				"enemy_tag",
 				OP.EQ,
-				"vs_poison_wind_globadier",
+				"hero_es_mercenary",
+				CombiningOP.OR_NEXT,
 			},
 			{
 				"query_context",
-				"target_name",
+				"enemy_tag",
 				OP.EQ,
-				"empire_soldier",
+				"hero_es_huntsman",
+				CombiningOP.OR_NEXT,
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"hero_es_knight",
+				CombiningOP.OR_NEXT,
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"hero_es_questingknight",
+			},
+			{
+				"user_context",
+				"is_in_ghost_mode",
+				OP.EQ,
+				0,
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"vs_poison_wind_globadier",
 			},
 			{
 				"user_context",
@@ -859,7 +1075,7 @@ return function ()
 			},
 			{
 				"user_memory",
-				"time_since_taunting_kruber",
+				"time_since_taunting",
 				OP.TIMEDIFF,
 				OP.GT,
 				10,
@@ -868,7 +1084,7 @@ return function ()
 		on_done = {
 			{
 				"user_memory",
-				"time_since_taunting_kruber",
+				"time_since_taunting",
 				OP.TIMESET,
 			},
 		},
@@ -881,7 +1097,7 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"taunting",
+				"seen_enemy",
 			},
 			{
 				"query_context",
@@ -891,15 +1107,42 @@ return function ()
 			},
 			{
 				"query_context",
-				"source_name",
+				"enemy_tag",
 				OP.EQ,
-				"vs_poison_wind_globadier",
+				"hero_wh_captain",
+				CombiningOP.OR_NEXT,
 			},
 			{
 				"query_context",
-				"target_name",
+				"enemy_tag",
 				OP.EQ,
-				"witch_hunter",
+				"hero_wh_bountyhunter",
+				CombiningOP.OR_NEXT,
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"hero_wh_zealot",
+				CombiningOP.OR_NEXT,
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"hero_wh_priest",
+			},
+			{
+				"user_context",
+				"is_in_ghost_mode",
+				OP.EQ,
+				0,
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"vs_poison_wind_globadier",
 			},
 			{
 				"user_context",
@@ -909,7 +1152,7 @@ return function ()
 			},
 			{
 				"user_memory",
-				"time_since_taunting_saltzpyre",
+				"time_since_taunting",
 				OP.TIMEDIFF,
 				OP.GT,
 				10,
@@ -918,7 +1161,7 @@ return function ()
 		on_done = {
 			{
 				"user_memory",
-				"time_since_taunting_saltzpyre",
+				"time_since_taunting",
 				OP.TIMESET,
 			},
 		},
@@ -931,7 +1174,7 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"taunting",
+				"seen_enemy",
 			},
 			{
 				"query_context",
@@ -941,15 +1184,42 @@ return function ()
 			},
 			{
 				"query_context",
-				"source_name",
+				"enemy_tag",
 				OP.EQ,
-				"vs_poison_wind_globadier",
+				"hero_bw_scholar",
+				CombiningOP.OR_NEXT,
 			},
 			{
 				"query_context",
-				"target_name",
+				"enemy_tag",
 				OP.EQ,
-				"bright_wizard",
+				"hero_bw_adept",
+				CombiningOP.OR_NEXT,
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"hero_bw_unchained",
+				CombiningOP.OR_NEXT,
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"hero_bw_necromancer",
+			},
+			{
+				"user_context",
+				"is_in_ghost_mode",
+				OP.EQ,
+				0,
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"vs_poison_wind_globadier",
 			},
 			{
 				"user_context",
@@ -959,7 +1229,7 @@ return function ()
 			},
 			{
 				"user_memory",
-				"time_since_taunting_sienna",
+				"time_since_taunting",
 				OP.TIMEDIFF,
 				OP.GT,
 				10,
@@ -968,7 +1238,7 @@ return function ()
 		on_done = {
 			{
 				"user_memory",
-				"time_since_taunting_sienna",
+				"time_since_taunting",
 				OP.TIMESET,
 			},
 		},
@@ -1041,7 +1311,7 @@ return function ()
 			},
 			{
 				"user_memory",
-				"time_since_globadier_vw_affirmative",
+				"time_since_vw_affirmative",
 				OP.TIMEDIFF,
 				OP.GT,
 				5,
@@ -1050,7 +1320,7 @@ return function ()
 		on_done = {
 			{
 				"user_memory",
-				"time_since_globadier_vw_affirmative",
+				"time_since_vw_affirmative",
 				OP.TIMESET,
 			},
 		},
@@ -1085,7 +1355,7 @@ return function ()
 			},
 			{
 				"user_memory",
-				"time_since_globadier_vw_ambush",
+				"time_since_vw_ambush",
 				OP.TIMEDIFF,
 				OP.GT,
 				5,
@@ -1094,7 +1364,7 @@ return function ()
 		on_done = {
 			{
 				"user_memory",
-				"time_since_globadier_vw_ambush",
+				"time_since_vw_ambush",
 				OP.TIMESET,
 			},
 		},
@@ -1129,7 +1399,7 @@ return function ()
 			},
 			{
 				"user_memory",
-				"time_since_globadier_vw_attack_now",
+				"time_since_vw_attack_now",
 				OP.TIMEDIFF,
 				OP.GT,
 				5,
@@ -1138,7 +1408,7 @@ return function ()
 		on_done = {
 			{
 				"user_memory",
-				"time_since_globadier_vw_attack_now",
+				"time_since_vw_attack_now",
 				OP.TIMESET,
 			},
 		},
@@ -1173,7 +1443,7 @@ return function ()
 			},
 			{
 				"user_memory",
-				"time_since_globadier_vw_cover_me",
+				"time_since_vw_cover_me",
 				OP.TIMEDIFF,
 				OP.GT,
 				5,
@@ -1182,7 +1452,7 @@ return function ()
 		on_done = {
 			{
 				"user_memory",
-				"time_since_globadier_vw_cover_me",
+				"time_since_vw_cover_me",
 				OP.TIMESET,
 			},
 		},
@@ -1217,7 +1487,7 @@ return function ()
 			},
 			{
 				"user_memory",
-				"time_since_globadier_vw_gather",
+				"time_since_vw_gather",
 				OP.TIMEDIFF,
 				OP.GT,
 				5,
@@ -1226,7 +1496,7 @@ return function ()
 		on_done = {
 			{
 				"user_memory",
-				"time_since_globadier_vw_gather",
+				"time_since_vw_gather",
 				OP.TIMESET,
 			},
 		},
@@ -1261,7 +1531,7 @@ return function ()
 			},
 			{
 				"user_memory",
-				"time_since_globadier_vw_go_here",
+				"time_since_vw_go_here",
 				OP.TIMEDIFF,
 				OP.GT,
 				5,
@@ -1270,7 +1540,7 @@ return function ()
 		on_done = {
 			{
 				"user_memory",
-				"time_since_globadier_vw_go_here",
+				"time_since_vw_go_here",
 				OP.TIMESET,
 			},
 		},
@@ -1305,7 +1575,7 @@ return function ()
 			},
 			{
 				"user_memory",
-				"time_since_globadier_vw_negation",
+				"time_since_vw_negation",
 				OP.TIMEDIFF,
 				OP.GT,
 				5,
@@ -1314,7 +1584,7 @@ return function ()
 		on_done = {
 			{
 				"user_memory",
-				"time_since_globadier_vw_negation",
+				"time_since_vw_negation",
 				OP.TIMESET,
 			},
 		},
@@ -1349,7 +1619,7 @@ return function ()
 			},
 			{
 				"user_memory",
-				"time_since_poison_wind_globadier_vw_thanks",
+				"time_since_vw_thanks",
 				OP.TIMEDIFF,
 				OP.GT,
 				5,
@@ -1358,7 +1628,7 @@ return function ()
 		on_done = {
 			{
 				"user_memory",
-				"time_since_poison_wind_globadier_vw_thanks",
+				"time_since_vw_thanks",
 				OP.TIMESET,
 			},
 		},
@@ -1393,7 +1663,7 @@ return function ()
 			},
 			{
 				"user_memory",
-				"time_since_globadier_vw_wait",
+				"time_since_vw_wait",
 				OP.TIMEDIFF,
 				OP.GT,
 				5,
@@ -1402,7 +1672,7 @@ return function ()
 		on_done = {
 			{
 				"user_memory",
-				"time_since_globadier_vw_wait",
+				"time_since_vw_wait",
 				OP.TIMESET,
 			},
 		},
@@ -1583,7 +1853,7 @@ return function ()
 			},
 			{
 				"user_memory",
-				"time_since_spawning_packmaster",
+				"time_since_spawning",
 				OP.TIMEDIFF,
 				OP.GT,
 				10,
@@ -1592,7 +1862,7 @@ return function ()
 		on_done = {
 			{
 				"user_memory",
-				"time_since_spawning_packmaster",
+				"time_since_spawning",
 				OP.TIMESET,
 			},
 		},
@@ -1605,7 +1875,7 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"taunting",
+				"seen_enemy",
 			},
 			{
 				"query_context",
@@ -1615,15 +1885,42 @@ return function ()
 			},
 			{
 				"query_context",
-				"source_name",
+				"enemy_tag",
 				OP.EQ,
-				"vs_packmaster",
+				"hero_dr_ranger",
+				CombiningOP.OR_NEXT,
 			},
 			{
 				"query_context",
-				"target_name",
+				"enemy_tag",
 				OP.EQ,
-				"dwarf_ranger",
+				"hero_dr_ironbreaker",
+				CombiningOP.OR_NEXT,
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"hero_dr_slayer",
+				CombiningOP.OR_NEXT,
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"hero_dr_engineer",
+			},
+			{
+				"user_context",
+				"is_in_ghost_mode",
+				OP.EQ,
+				0,
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"vs_packmaster",
 			},
 			{
 				"user_context",
@@ -1633,7 +1930,7 @@ return function ()
 			},
 			{
 				"user_memory",
-				"time_since_taunting_bardin",
+				"time_since_taunting",
 				OP.TIMEDIFF,
 				OP.GT,
 				10,
@@ -1642,7 +1939,7 @@ return function ()
 		on_done = {
 			{
 				"user_memory",
-				"time_since_taunting_bardin",
+				"time_since_taunting",
 				OP.TIMESET,
 			},
 		},
@@ -1655,7 +1952,7 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"taunting",
+				"seen_enemy",
 			},
 			{
 				"query_context",
@@ -1665,15 +1962,42 @@ return function ()
 			},
 			{
 				"query_context",
-				"source_name",
+				"enemy_tag",
 				OP.EQ,
-				"vs_packmaster",
+				"hero_we_waywatcher",
+				CombiningOP.OR_NEXT,
 			},
 			{
 				"query_context",
-				"target_name",
+				"enemy_tag",
 				OP.EQ,
-				"wood_elf",
+				"hero_we_maidenguard",
+				CombiningOP.OR_NEXT,
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"hero_we_shade",
+				CombiningOP.OR_NEXT,
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"hero_we_thornsister",
+			},
+			{
+				"user_context",
+				"is_in_ghost_mode",
+				OP.EQ,
+				0,
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"vs_packmaster",
 			},
 			{
 				"user_context",
@@ -1683,7 +2007,7 @@ return function ()
 			},
 			{
 				"user_memory",
-				"time_since_taunting_kerillian",
+				"time_since_taunting",
 				OP.TIMEDIFF,
 				OP.GT,
 				10,
@@ -1692,7 +2016,7 @@ return function ()
 		on_done = {
 			{
 				"user_memory",
-				"time_since_taunting_kerillian",
+				"time_since_taunting",
 				OP.TIMESET,
 			},
 		},
@@ -1705,7 +2029,7 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"taunting",
+				"seen_enemy",
 			},
 			{
 				"query_context",
@@ -1715,15 +2039,42 @@ return function ()
 			},
 			{
 				"query_context",
-				"source_name",
+				"enemy_tag",
 				OP.EQ,
-				"vs_packmaster",
+				"hero_es_mercenary",
+				CombiningOP.OR_NEXT,
 			},
 			{
 				"query_context",
-				"target_name",
+				"enemy_tag",
 				OP.EQ,
-				"empire_soldier",
+				"hero_es_huntsman",
+				CombiningOP.OR_NEXT,
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"hero_es_knight",
+				CombiningOP.OR_NEXT,
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"hero_es_questingknight",
+			},
+			{
+				"user_context",
+				"is_in_ghost_mode",
+				OP.EQ,
+				0,
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"vs_packmaster",
 			},
 			{
 				"user_context",
@@ -1733,7 +2084,7 @@ return function ()
 			},
 			{
 				"user_memory",
-				"time_since_taunting_kruber",
+				"time_since_taunting",
 				OP.TIMEDIFF,
 				OP.GT,
 				10,
@@ -1742,7 +2093,7 @@ return function ()
 		on_done = {
 			{
 				"user_memory",
-				"time_since_taunting_kruber",
+				"time_since_taunting",
 				OP.TIMESET,
 			},
 		},
@@ -1755,7 +2106,7 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"taunting",
+				"seen_enemy",
 			},
 			{
 				"query_context",
@@ -1765,15 +2116,42 @@ return function ()
 			},
 			{
 				"query_context",
-				"source_name",
+				"enemy_tag",
 				OP.EQ,
-				"vs_packmaster",
+				"hero_wh_captain",
+				CombiningOP.OR_NEXT,
 			},
 			{
 				"query_context",
-				"target_name",
+				"enemy_tag",
 				OP.EQ,
-				"witch_hunter",
+				"hero_wh_bountyhunter",
+				CombiningOP.OR_NEXT,
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"hero_wh_zealot",
+				CombiningOP.OR_NEXT,
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"hero_wh_priest",
+			},
+			{
+				"user_context",
+				"is_in_ghost_mode",
+				OP.EQ,
+				0,
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"vs_packmaster",
 			},
 			{
 				"user_context",
@@ -1783,7 +2161,7 @@ return function ()
 			},
 			{
 				"user_memory",
-				"time_since_taunting_saltzpyre",
+				"time_since_taunting",
 				OP.TIMEDIFF,
 				OP.GT,
 				10,
@@ -1792,7 +2170,7 @@ return function ()
 		on_done = {
 			{
 				"user_memory",
-				"time_since_taunting_saltzpyre",
+				"time_since_taunting",
 				OP.TIMESET,
 			},
 		},
@@ -1805,7 +2183,7 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"taunting",
+				"seen_enemy",
 			},
 			{
 				"query_context",
@@ -1815,15 +2193,42 @@ return function ()
 			},
 			{
 				"query_context",
-				"source_name",
+				"enemy_tag",
 				OP.EQ,
-				"vs_packmaster",
+				"hero_bw_scholar",
+				CombiningOP.OR_NEXT,
 			},
 			{
 				"query_context",
-				"target_name",
+				"enemy_tag",
 				OP.EQ,
-				"bright_wizard",
+				"hero_bw_adept",
+				CombiningOP.OR_NEXT,
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"hero_bw_unchained",
+				CombiningOP.OR_NEXT,
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"hero_bw_necromancer",
+			},
+			{
+				"user_context",
+				"is_in_ghost_mode",
+				OP.EQ,
+				0,
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"vs_packmaster",
 			},
 			{
 				"user_context",
@@ -1833,7 +2238,7 @@ return function ()
 			},
 			{
 				"user_memory",
-				"time_since_taunting_sienna",
+				"time_since_taunting",
 				OP.TIMEDIFF,
 				OP.GT,
 				10,
@@ -1842,7 +2247,7 @@ return function ()
 		on_done = {
 			{
 				"user_memory",
-				"time_since_taunting_sienna",
+				"time_since_taunting",
 				OP.TIMESET,
 			},
 		},
@@ -1877,7 +2282,7 @@ return function ()
 			},
 			{
 				"user_memory",
-				"time_since_packmaster_vw_affirmative",
+				"time_since_vw_affirmative",
 				OP.TIMEDIFF,
 				OP.GT,
 				5,
@@ -1886,7 +2291,7 @@ return function ()
 		on_done = {
 			{
 				"user_memory",
-				"time_since_packmaster_vw_affirmative",
+				"time_since_vw_affirmative",
 				OP.TIMESET,
 			},
 		},
@@ -1921,7 +2326,7 @@ return function ()
 			},
 			{
 				"user_memory",
-				"time_since_packmaster_vw_ambush",
+				"time_since_vw_ambush",
 				OP.TIMEDIFF,
 				OP.GT,
 				5,
@@ -1930,7 +2335,7 @@ return function ()
 		on_done = {
 			{
 				"user_memory",
-				"time_since_packmaster_vw_ambush",
+				"time_since_vw_ambush",
 				OP.TIMESET,
 			},
 		},
@@ -1965,7 +2370,7 @@ return function ()
 			},
 			{
 				"user_memory",
-				"time_since_packmaster_vw_attack_now",
+				"time_since_vw_attack_now",
 				OP.TIMEDIFF,
 				OP.GT,
 				5,
@@ -1974,7 +2379,7 @@ return function ()
 		on_done = {
 			{
 				"user_memory",
-				"time_since_packmaster_vw_attack_now",
+				"time_since_vw_attack_now",
 				OP.TIMESET,
 			},
 		},
@@ -2009,7 +2414,7 @@ return function ()
 			},
 			{
 				"user_memory",
-				"time_since_packmaster_vw_cover_me",
+				"time_since_vw_cover_me",
 				OP.TIMEDIFF,
 				OP.GT,
 				5,
@@ -2018,7 +2423,7 @@ return function ()
 		on_done = {
 			{
 				"user_memory",
-				"time_since_packmaster_vw_cover_me",
+				"time_since_vw_cover_me",
 				OP.TIMESET,
 			},
 		},
@@ -2053,7 +2458,7 @@ return function ()
 			},
 			{
 				"user_memory",
-				"time_since_packmaster_vw_gather",
+				"time_since_vw_gather",
 				OP.TIMEDIFF,
 				OP.GT,
 				5,
@@ -2062,7 +2467,7 @@ return function ()
 		on_done = {
 			{
 				"user_memory",
-				"time_since_packmaster_vw_gather",
+				"time_since_vw_gather",
 				OP.TIMESET,
 			},
 		},
@@ -2097,7 +2502,7 @@ return function ()
 			},
 			{
 				"user_memory",
-				"time_since_packmaster_vw_go_here",
+				"time_since_vw_go_here",
 				OP.TIMEDIFF,
 				OP.GT,
 				5,
@@ -2106,7 +2511,7 @@ return function ()
 		on_done = {
 			{
 				"user_memory",
-				"time_since_packmaster_vw_go_here",
+				"time_since_vw_go_here",
 				OP.TIMESET,
 			},
 		},
@@ -2141,7 +2546,7 @@ return function ()
 			},
 			{
 				"user_memory",
-				"time_since_packmaster_vw_negation",
+				"time_since_vw_negation",
 				OP.TIMEDIFF,
 				OP.GT,
 				5,
@@ -2150,7 +2555,7 @@ return function ()
 		on_done = {
 			{
 				"user_memory",
-				"time_since_packmaster_vw_negation",
+				"time_since_vw_negation",
 				OP.TIMESET,
 			},
 		},
@@ -2185,7 +2590,7 @@ return function ()
 			},
 			{
 				"user_memory",
-				"time_since_packmaster_vw_thanks",
+				"time_since_vw_thanks",
 				OP.TIMEDIFF,
 				OP.GT,
 				5,
@@ -2194,7 +2599,7 @@ return function ()
 		on_done = {
 			{
 				"user_memory",
-				"time_since_packmaster_vw_thanks",
+				"time_since_vw_thanks",
 				OP.TIMESET,
 			},
 		},
@@ -2229,7 +2634,7 @@ return function ()
 			},
 			{
 				"user_memory",
-				"time_since_packmaster_vw_wait",
+				"time_since_vw_wait",
 				OP.TIMEDIFF,
 				OP.GT,
 				5,
@@ -2238,7 +2643,7 @@ return function ()
 		on_done = {
 			{
 				"user_memory",
-				"time_since_packmaster_vw_wait",
+				"time_since_vw_wait",
 				OP.TIMESET,
 			},
 		},
@@ -2267,7 +2672,7 @@ return function ()
 			},
 			{
 				"user_memory",
-				"time_since_spawning_ratling_gunner",
+				"time_since_spawning",
 				OP.TIMEDIFF,
 				OP.GT,
 				10,
@@ -2276,7 +2681,7 @@ return function ()
 		on_done = {
 			{
 				"user_memory",
-				"time_since_spawning_ratling_gunner",
+				"time_since_spawning",
 				OP.TIMESET,
 			},
 		},
@@ -2289,7 +2694,7 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"taunting",
+				"seen_enemy",
 			},
 			{
 				"query_context",
@@ -2299,15 +2704,42 @@ return function ()
 			},
 			{
 				"query_context",
-				"source_name",
+				"enemy_tag",
 				OP.EQ,
-				"vs_ratling_gunner",
+				"hero_dr_ranger",
+				CombiningOP.OR_NEXT,
 			},
 			{
 				"query_context",
-				"target_name",
+				"enemy_tag",
 				OP.EQ,
-				"dwarf_ranger",
+				"hero_dr_ironbreaker",
+				CombiningOP.OR_NEXT,
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"hero_dr_slayer",
+				CombiningOP.OR_NEXT,
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"hero_dr_engineer",
+			},
+			{
+				"user_context",
+				"is_in_ghost_mode",
+				OP.EQ,
+				0,
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"vs_ratling_gunner",
 			},
 			{
 				"user_context",
@@ -2317,7 +2749,7 @@ return function ()
 			},
 			{
 				"user_memory",
-				"time_since_taunting_bardin",
+				"time_since_taunting",
 				OP.TIMEDIFF,
 				OP.GT,
 				10,
@@ -2326,7 +2758,7 @@ return function ()
 		on_done = {
 			{
 				"user_memory",
-				"time_since_taunting_bardin",
+				"time_since_taunting",
 				OP.TIMESET,
 			},
 		},
@@ -2339,7 +2771,7 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"taunting",
+				"seen_enemy",
 			},
 			{
 				"query_context",
@@ -2349,15 +2781,42 @@ return function ()
 			},
 			{
 				"query_context",
-				"source_name",
+				"enemy_tag",
 				OP.EQ,
-				"vs_ratling_gunner",
+				"hero_we_waywatcher",
+				CombiningOP.OR_NEXT,
 			},
 			{
 				"query_context",
-				"target_name",
+				"enemy_tag",
 				OP.EQ,
-				"wood_elf",
+				"hero_we_maidenguard",
+				CombiningOP.OR_NEXT,
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"hero_we_shade",
+				CombiningOP.OR_NEXT,
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"hero_we_thornsister",
+			},
+			{
+				"user_context",
+				"is_in_ghost_mode",
+				OP.EQ,
+				0,
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"vs_ratling_gunner",
 			},
 			{
 				"user_context",
@@ -2367,7 +2826,7 @@ return function ()
 			},
 			{
 				"user_memory",
-				"time_since_taunting_kerillian",
+				"time_since_taunting",
 				OP.TIMEDIFF,
 				OP.GT,
 				10,
@@ -2376,7 +2835,7 @@ return function ()
 		on_done = {
 			{
 				"user_memory",
-				"time_since_taunting_kerillian",
+				"time_since_taunting",
 				OP.TIMESET,
 			},
 		},
@@ -2389,7 +2848,7 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"taunting",
+				"seen_enemy",
 			},
 			{
 				"query_context",
@@ -2399,15 +2858,42 @@ return function ()
 			},
 			{
 				"query_context",
-				"source_name",
+				"enemy_tag",
 				OP.EQ,
-				"vs_ratling_gunner",
+				"hero_es_mercenary",
+				CombiningOP.OR_NEXT,
 			},
 			{
 				"query_context",
-				"target_name",
+				"enemy_tag",
 				OP.EQ,
-				"empire_soldier",
+				"hero_es_huntsman",
+				CombiningOP.OR_NEXT,
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"hero_es_knight",
+				CombiningOP.OR_NEXT,
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"hero_es_questingknight",
+			},
+			{
+				"user_context",
+				"is_in_ghost_mode",
+				OP.EQ,
+				0,
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"vs_ratling_gunner",
 			},
 			{
 				"user_context",
@@ -2417,7 +2903,7 @@ return function ()
 			},
 			{
 				"user_memory",
-				"time_since_taunting_kruber",
+				"time_since_taunting",
 				OP.TIMEDIFF,
 				OP.GT,
 				10,
@@ -2426,7 +2912,7 @@ return function ()
 		on_done = {
 			{
 				"user_memory",
-				"time_since_taunting_kruber",
+				"time_since_taunting",
 				OP.TIMESET,
 			},
 		},
@@ -2439,7 +2925,7 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"taunting",
+				"seen_enemy",
 			},
 			{
 				"query_context",
@@ -2449,15 +2935,42 @@ return function ()
 			},
 			{
 				"query_context",
-				"source_name",
+				"enemy_tag",
 				OP.EQ,
-				"vs_ratling_gunner",
+				"hero_wh_captain",
+				CombiningOP.OR_NEXT,
 			},
 			{
 				"query_context",
-				"target_name",
+				"enemy_tag",
 				OP.EQ,
-				"witch_hunter",
+				"hero_wh_bountyhunter",
+				CombiningOP.OR_NEXT,
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"hero_wh_zealot",
+				CombiningOP.OR_NEXT,
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"hero_wh_priest",
+			},
+			{
+				"user_context",
+				"is_in_ghost_mode",
+				OP.EQ,
+				0,
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"vs_ratling_gunner",
 			},
 			{
 				"user_context",
@@ -2467,7 +2980,7 @@ return function ()
 			},
 			{
 				"user_memory",
-				"time_since_taunting_saltzpyre",
+				"time_since_taunting",
 				OP.TIMEDIFF,
 				OP.GT,
 				10,
@@ -2476,7 +2989,7 @@ return function ()
 		on_done = {
 			{
 				"user_memory",
-				"time_since_taunting_saltzpyre",
+				"time_since_taunting",
 				OP.TIMESET,
 			},
 		},
@@ -2489,7 +3002,7 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"taunting",
+				"seen_enemy",
 			},
 			{
 				"query_context",
@@ -2499,15 +3012,42 @@ return function ()
 			},
 			{
 				"query_context",
-				"source_name",
+				"enemy_tag",
 				OP.EQ,
-				"vs_ratling_gunner",
+				"hero_bw_scholar",
+				CombiningOP.OR_NEXT,
 			},
 			{
 				"query_context",
-				"target_name",
+				"enemy_tag",
 				OP.EQ,
-				"bright_wizard",
+				"hero_bw_adept",
+				CombiningOP.OR_NEXT,
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"hero_bw_unchained",
+				CombiningOP.OR_NEXT,
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"hero_bw_necromancer",
+			},
+			{
+				"user_context",
+				"is_in_ghost_mode",
+				OP.EQ,
+				0,
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"vs_ratling_gunner",
 			},
 			{
 				"user_context",
@@ -2517,7 +3057,7 @@ return function ()
 			},
 			{
 				"user_memory",
-				"time_since_taunting_sienna",
+				"time_since_taunting",
 				OP.TIMEDIFF,
 				OP.GT,
 				10,
@@ -2526,7 +3066,7 @@ return function ()
 		on_done = {
 			{
 				"user_memory",
-				"time_since_taunting_sienna",
+				"time_since_taunting",
 				OP.TIMESET,
 			},
 		},
@@ -2561,7 +3101,7 @@ return function ()
 			},
 			{
 				"user_memory",
-				"time_since_ratling_gunner_vw_affirmative",
+				"time_since_vw_affirmative",
 				OP.TIMEDIFF,
 				OP.GT,
 				5,
@@ -2570,7 +3110,7 @@ return function ()
 		on_done = {
 			{
 				"user_memory",
-				"time_since_ratling_gunner_vw_affirmative",
+				"time_since_vw_affirmative",
 				OP.TIMESET,
 			},
 		},
@@ -2605,7 +3145,7 @@ return function ()
 			},
 			{
 				"user_memory",
-				"time_since_ratling_gunner_vw_ambush",
+				"time_since_vw_ambush",
 				OP.TIMEDIFF,
 				OP.GT,
 				5,
@@ -2614,7 +3154,7 @@ return function ()
 		on_done = {
 			{
 				"user_memory",
-				"time_since_ratling_gunner_vw_ambush",
+				"time_since_vw_ambush",
 				OP.TIMESET,
 			},
 		},
@@ -2649,7 +3189,7 @@ return function ()
 			},
 			{
 				"user_memory",
-				"time_since_ratling_gunner_vw_attack_now",
+				"time_since_vw_attack_now",
 				OP.TIMEDIFF,
 				OP.GT,
 				5,
@@ -2658,7 +3198,7 @@ return function ()
 		on_done = {
 			{
 				"user_memory",
-				"time_since_ratling_gunner_vw_attack_now",
+				"time_since_vw_attack_now",
 				OP.TIMESET,
 			},
 		},
@@ -2693,7 +3233,7 @@ return function ()
 			},
 			{
 				"user_memory",
-				"time_since_ratling_gunner_vw_cover_me",
+				"time_since_vw_cover_me",
 				OP.TIMEDIFF,
 				OP.GT,
 				5,
@@ -2702,7 +3242,7 @@ return function ()
 		on_done = {
 			{
 				"user_memory",
-				"time_since_ratling_gunner_vw_cover_me",
+				"time_since_vw_cover_me",
 				OP.TIMESET,
 			},
 		},
@@ -2737,7 +3277,7 @@ return function ()
 			},
 			{
 				"user_memory",
-				"time_since_ratling_gunner_vw_gather",
+				"time_since_vw_gather",
 				OP.TIMEDIFF,
 				OP.GT,
 				5,
@@ -2746,7 +3286,7 @@ return function ()
 		on_done = {
 			{
 				"user_memory",
-				"time_since_ratling_gunner_vw_gather",
+				"time_since_vw_gather",
 				OP.TIMESET,
 			},
 		},
@@ -2781,7 +3321,7 @@ return function ()
 			},
 			{
 				"user_memory",
-				"time_since_ratling_gunner_vw_go_here",
+				"time_since_vw_go_here",
 				OP.TIMEDIFF,
 				OP.GT,
 				5,
@@ -2790,7 +3330,7 @@ return function ()
 		on_done = {
 			{
 				"user_memory",
-				"time_since_ratling_gunner_vw_go_here",
+				"time_since_vw_go_here",
 				OP.TIMESET,
 			},
 		},
@@ -2825,7 +3365,7 @@ return function ()
 			},
 			{
 				"user_memory",
-				"time_since_ratling_gunner_vw_negation",
+				"time_since_vw_negation",
 				OP.TIMEDIFF,
 				OP.GT,
 				5,
@@ -2834,7 +3374,7 @@ return function ()
 		on_done = {
 			{
 				"user_memory",
-				"time_since_ratling_gunner_vw_negation",
+				"time_since_vw_negation",
 				OP.TIMESET,
 			},
 		},
@@ -2869,7 +3409,7 @@ return function ()
 			},
 			{
 				"user_memory",
-				"time_since_ratling_gunner_vw_thanks",
+				"time_since_vw_thanks",
 				OP.TIMEDIFF,
 				OP.GT,
 				5,
@@ -2878,7 +3418,7 @@ return function ()
 		on_done = {
 			{
 				"user_memory",
-				"time_since_ratling_gunner_vw_thanks",
+				"time_since_vw_thanks",
 				OP.TIMESET,
 			},
 		},
@@ -2913,7 +3453,7 @@ return function ()
 			},
 			{
 				"user_memory",
-				"time_since_ratling_gunner_vw_wait",
+				"time_since_vw_wait",
 				OP.TIMEDIFF,
 				OP.GT,
 				5,
@@ -2922,7 +3462,7 @@ return function ()
 		on_done = {
 			{
 				"user_memory",
-				"time_since_ratling_gunner_vw_wait",
+				"time_since_vw_wait",
 				OP.TIMESET,
 			},
 		},
@@ -2951,7 +3491,7 @@ return function ()
 			},
 			{
 				"user_memory",
-				"time_since_spawning_warpfire_thrower",
+				"time_since_spawning",
 				OP.TIMEDIFF,
 				OP.GT,
 				10,
@@ -2960,7 +3500,7 @@ return function ()
 		on_done = {
 			{
 				"user_memory",
-				"time_since_spawning_warpfire_thrower",
+				"time_since_spawning",
 				OP.TIMESET,
 			},
 		},
@@ -2973,7 +3513,7 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"taunting",
+				"seen_enemy",
 			},
 			{
 				"query_context",
@@ -2983,15 +3523,42 @@ return function ()
 			},
 			{
 				"query_context",
-				"source_name",
+				"enemy_tag",
 				OP.EQ,
-				"vs_warpfire_thrower",
+				"hero_dr_ranger",
+				CombiningOP.OR_NEXT,
 			},
 			{
 				"query_context",
-				"target_name",
+				"enemy_tag",
 				OP.EQ,
-				"dwarf_ranger",
+				"hero_dr_ironbreaker",
+				CombiningOP.OR_NEXT,
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"hero_dr_slayer",
+				CombiningOP.OR_NEXT,
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"hero_dr_engineer",
+			},
+			{
+				"user_context",
+				"is_in_ghost_mode",
+				OP.EQ,
+				0,
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"vs_warpfire_thrower",
 			},
 			{
 				"user_context",
@@ -3001,7 +3568,7 @@ return function ()
 			},
 			{
 				"user_memory",
-				"time_since_taunting_bardin",
+				"time_since_taunting",
 				OP.TIMEDIFF,
 				OP.GT,
 				10,
@@ -3010,7 +3577,7 @@ return function ()
 		on_done = {
 			{
 				"user_memory",
-				"time_since_taunting_bardin",
+				"time_since_taunting",
 				OP.TIMESET,
 			},
 		},
@@ -3023,7 +3590,7 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"taunting",
+				"seen_enemy",
 			},
 			{
 				"query_context",
@@ -3033,15 +3600,42 @@ return function ()
 			},
 			{
 				"query_context",
-				"source_name",
+				"enemy_tag",
 				OP.EQ,
-				"vs_warpfire_thrower",
+				"hero_we_waywatcher",
+				CombiningOP.OR_NEXT,
 			},
 			{
 				"query_context",
-				"target_name",
+				"enemy_tag",
 				OP.EQ,
-				"wood_elf",
+				"hero_we_maidenguard",
+				CombiningOP.OR_NEXT,
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"hero_we_shade",
+				CombiningOP.OR_NEXT,
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"hero_we_thornsister",
+			},
+			{
+				"user_context",
+				"is_in_ghost_mode",
+				OP.EQ,
+				0,
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"vs_warpfire_thrower",
 			},
 			{
 				"user_context",
@@ -3051,7 +3645,7 @@ return function ()
 			},
 			{
 				"user_memory",
-				"time_since_taunting_kerillian",
+				"time_since_taunting",
 				OP.TIMEDIFF,
 				OP.GT,
 				10,
@@ -3060,7 +3654,7 @@ return function ()
 		on_done = {
 			{
 				"user_memory",
-				"time_since_taunting_kerillian",
+				"time_since_taunting",
 				OP.TIMESET,
 			},
 		},
@@ -3073,7 +3667,7 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"taunting",
+				"seen_enemy",
 			},
 			{
 				"query_context",
@@ -3083,15 +3677,42 @@ return function ()
 			},
 			{
 				"query_context",
-				"source_name",
+				"enemy_tag",
 				OP.EQ,
-				"vs_warpfire_thrower",
+				"hero_es_mercenary",
+				CombiningOP.OR_NEXT,
 			},
 			{
 				"query_context",
-				"target_name",
+				"enemy_tag",
 				OP.EQ,
-				"empire_soldier",
+				"hero_es_huntsman",
+				CombiningOP.OR_NEXT,
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"hero_es_knight",
+				CombiningOP.OR_NEXT,
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"hero_es_questingknight",
+			},
+			{
+				"user_context",
+				"is_in_ghost_mode",
+				OP.EQ,
+				0,
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"vs_warpfire_thrower",
 			},
 			{
 				"user_context",
@@ -3101,7 +3722,7 @@ return function ()
 			},
 			{
 				"user_memory",
-				"time_since_taunting_kruber",
+				"time_since_taunting",
 				OP.TIMEDIFF,
 				OP.GT,
 				10,
@@ -3110,7 +3731,7 @@ return function ()
 		on_done = {
 			{
 				"user_memory",
-				"time_since_taunting_kruber",
+				"time_since_taunting",
 				OP.TIMESET,
 			},
 		},
@@ -3123,7 +3744,7 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"taunting",
+				"seen_enemy",
 			},
 			{
 				"query_context",
@@ -3133,15 +3754,42 @@ return function ()
 			},
 			{
 				"query_context",
-				"source_name",
+				"enemy_tag",
 				OP.EQ,
-				"vs_warpfire_thrower",
+				"hero_wh_captain",
+				CombiningOP.OR_NEXT,
 			},
 			{
 				"query_context",
-				"target_name",
+				"enemy_tag",
 				OP.EQ,
-				"witch_hunter",
+				"hero_wh_bountyhunter",
+				CombiningOP.OR_NEXT,
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"hero_wh_zealot",
+				CombiningOP.OR_NEXT,
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"hero_wh_priest",
+			},
+			{
+				"user_context",
+				"is_in_ghost_mode",
+				OP.EQ,
+				0,
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"vs_warpfire_thrower",
 			},
 			{
 				"user_context",
@@ -3151,7 +3799,7 @@ return function ()
 			},
 			{
 				"user_memory",
-				"time_since_taunting_saltzpyre",
+				"time_since_taunting",
 				OP.TIMEDIFF,
 				OP.GT,
 				10,
@@ -3160,7 +3808,7 @@ return function ()
 		on_done = {
 			{
 				"user_memory",
-				"time_since_taunting_saltzpyre",
+				"time_since_taunting",
 				OP.TIMESET,
 			},
 		},
@@ -3173,7 +3821,7 @@ return function ()
 				"query_context",
 				"concept",
 				OP.EQ,
-				"taunting",
+				"seen_enemy",
 			},
 			{
 				"query_context",
@@ -3183,15 +3831,42 @@ return function ()
 			},
 			{
 				"query_context",
-				"source_name",
+				"enemy_tag",
 				OP.EQ,
-				"vs_warpfire_thrower",
+				"hero_bw_scholar",
+				CombiningOP.OR_NEXT,
 			},
 			{
 				"query_context",
-				"target_name",
+				"enemy_tag",
 				OP.EQ,
-				"bright_wizard",
+				"hero_bw_adept",
+				CombiningOP.OR_NEXT,
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"hero_bw_unchained",
+				CombiningOP.OR_NEXT,
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"hero_bw_necromancer",
+			},
+			{
+				"user_context",
+				"is_in_ghost_mode",
+				OP.EQ,
+				0,
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"vs_warpfire_thrower",
 			},
 			{
 				"user_context",
@@ -3201,7 +3876,7 @@ return function ()
 			},
 			{
 				"user_memory",
-				"time_since_taunting_sienna",
+				"time_since_taunting",
 				OP.TIMEDIFF,
 				OP.GT,
 				10,
@@ -3210,7 +3885,7 @@ return function ()
 		on_done = {
 			{
 				"user_memory",
-				"time_since_taunting_sienna",
+				"time_since_taunting",
 				OP.TIMESET,
 			},
 		},
@@ -3245,7 +3920,7 @@ return function ()
 			},
 			{
 				"user_memory",
-				"time_since_warpfire_thrower_vw_affirmative",
+				"time_since_vw_affirmative",
 				OP.TIMEDIFF,
 				OP.GT,
 				5,
@@ -3254,7 +3929,7 @@ return function ()
 		on_done = {
 			{
 				"user_memory",
-				"time_since_warpfire_thrower_vw_affirmative",
+				"time_since_vw_affirmative",
 				OP.TIMESET,
 			},
 		},
@@ -3289,7 +3964,7 @@ return function ()
 			},
 			{
 				"user_memory",
-				"time_since_warpfire_thrower_vw_ambush",
+				"time_since_vw_ambush",
 				OP.TIMEDIFF,
 				OP.GT,
 				5,
@@ -3298,7 +3973,7 @@ return function ()
 		on_done = {
 			{
 				"user_memory",
-				"time_since_warpfire_thrower_vw_ambush",
+				"time_since_vw_ambush",
 				OP.TIMESET,
 			},
 		},
@@ -3333,7 +4008,7 @@ return function ()
 			},
 			{
 				"user_memory",
-				"time_since_warpfire_thrower_vw_attack_now",
+				"time_since_vw_attack_now",
 				OP.TIMEDIFF,
 				OP.GT,
 				5,
@@ -3342,7 +4017,7 @@ return function ()
 		on_done = {
 			{
 				"user_memory",
-				"time_since_warpfire_thrower_vw_attack_now",
+				"time_since_vw_attack_now",
 				OP.TIMESET,
 			},
 		},
@@ -3377,7 +4052,7 @@ return function ()
 			},
 			{
 				"user_memory",
-				"time_since_warpfire_thrower_vw_cover_me",
+				"time_since_vw_cover_me",
 				OP.TIMEDIFF,
 				OP.GT,
 				5,
@@ -3386,7 +4061,7 @@ return function ()
 		on_done = {
 			{
 				"user_memory",
-				"time_since_warpfire_thrower_vw_cover_me",
+				"time_since_vw_cover_me",
 				OP.TIMESET,
 			},
 		},
@@ -3421,7 +4096,7 @@ return function ()
 			},
 			{
 				"user_memory",
-				"time_since_warpfire_thrower_vw_gather",
+				"time_since_vw_gather",
 				OP.TIMEDIFF,
 				OP.GT,
 				5,
@@ -3430,7 +4105,7 @@ return function ()
 		on_done = {
 			{
 				"user_memory",
-				"time_since_warpfire_thrower_vw_gather",
+				"time_since_vw_gather",
 				OP.TIMESET,
 			},
 		},
@@ -3465,7 +4140,7 @@ return function ()
 			},
 			{
 				"user_memory",
-				"time_since_warpfire_thrower_vw_go_here",
+				"time_since_vw_go_here",
 				OP.TIMEDIFF,
 				OP.GT,
 				5,
@@ -3474,7 +4149,7 @@ return function ()
 		on_done = {
 			{
 				"user_memory",
-				"time_since_warpfire_thrower_vw_go_here",
+				"time_since_vw_go_here",
 				OP.TIMESET,
 			},
 		},
@@ -3509,7 +4184,7 @@ return function ()
 			},
 			{
 				"user_memory",
-				"time_since_warpfire_thrower_vw_negation",
+				"time_since_vw_negation",
 				OP.TIMEDIFF,
 				OP.GT,
 				5,
@@ -3518,7 +4193,7 @@ return function ()
 		on_done = {
 			{
 				"user_memory",
-				"time_since_warpfire_thrower_vw_negation",
+				"time_since_vw_negation",
 				OP.TIMESET,
 			},
 		},
@@ -3553,7 +4228,7 @@ return function ()
 			},
 			{
 				"user_memory",
-				"time_since_warpfire_thrower_vw_thanks",
+				"time_since_vw_thanks",
 				OP.TIMEDIFF,
 				OP.GT,
 				5,
@@ -3562,7 +4237,7 @@ return function ()
 		on_done = {
 			{
 				"user_memory",
-				"time_since_warpfire_thrower_vw_thanks",
+				"time_since_vw_thanks",
 				OP.TIMESET,
 			},
 		},
@@ -3597,7 +4272,7 @@ return function ()
 			},
 			{
 				"user_memory",
-				"time_since_warpfire_thrower_vw_wait",
+				"time_since_vw_wait",
 				OP.TIMEDIFF,
 				OP.GT,
 				5,
@@ -3606,7 +4281,7 @@ return function ()
 		on_done = {
 			{
 				"user_memory",
-				"time_since_warpfire_thrower_vw_wait",
+				"time_since_vw_wait",
 				OP.TIMESET,
 			},
 		},

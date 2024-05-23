@@ -10256,7 +10256,7 @@ return function ()
 				[1] = "pbw_village_36_onboard_01_b_01",
 			},
 			sound_events_duration = {
-				[1] = 3.5998332500458,
+				[1] = 3.6998331546783,
 			},
 		},
 		pbw_village_36_onboard_02_a = {
@@ -10301,7 +10301,7 @@ return function ()
 				[1] = "pbw_village_36_onboard_03_b_01",
 			},
 			sound_events_duration = {
-				[1] = 3.899395942688,
+				[1] = 3.9993958473206,
 			},
 		},
 		pbw_village_36_onboard_04_b = {
@@ -10323,7 +10323,7 @@ return function ()
 				[1] = "pbw_village_36_onboard_04_b_01",
 			},
 			sound_events_duration = {
-				[1] = 2.5126874446869,
+				[1] = 2.7126874923706,
 			},
 		},
 		pdr_village_03_gather_unique_02_e = {
@@ -11203,7 +11203,7 @@ return function ()
 				[1] = "pdr_village_36_onboard_01_b_01",
 			},
 			sound_events_duration = {
-				[1] = 3.0659792423248,
+				[1] = 3.1659791469574,
 			},
 		},
 		pdr_village_36_onboard_03_a = {
@@ -13153,7 +13153,7 @@ return function ()
 				[1] = "pwe_village_36_onboard_02_b_01",
 			},
 			sound_events_duration = {
-				[1] = 2.6188750267029,
+				[1] = 2.7188749313355,
 			},
 		},
 		pwe_village_36_onboard_04_a = {
@@ -13198,7 +13198,7 @@ return function ()
 				[1] = "pwe_village_36_onboard_05_b_01",
 			},
 			sound_events_duration = {
-				[1] = 2.0558750629425,
+				[1] = 2.1558749675751,
 			},
 		},
 		pwh_village_03_gather_unique_01_a = {
@@ -14284,7 +14284,7 @@ return function ()
 				[1] = "pwh_village_36_onboard_02_b_01",
 			},
 			sound_events_duration = {
-				[1] = 5.2833123207092,
+				[1] = 5.3833122253418,
 			},
 		},
 		pwh_village_36_onboard_03_b = {

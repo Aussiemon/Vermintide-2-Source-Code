@@ -181,6 +181,8 @@ assert(DialogueLookup[DialogueLookup_n + 178] == nil)
 assert(DialogueLookup[DialogueLookup_n + 179] == nil)
 assert(DialogueLookup[DialogueLookup_n + 180] == nil)
 assert(DialogueLookup[DialogueLookup_n + 181] == nil)
+assert(DialogueLookup[DialogueLookup_n + 182] == nil)
+assert(DialogueLookup[DialogueLookup_n + 183] == nil)
 
 DialogueLookup[DialogueLookup_n + 1] = "pwe_ability_activate_shade"
 DialogueLookup[DialogueLookup_n + 2] = "pwe_activate_ability_handmaiden"
@@ -357,10 +359,12 @@ DialogueLookup[DialogueLookup_n + 172] = "pwe_objective_correct_path_stairs_up"
 DialogueLookup[DialogueLookup_n + 173] = "pwe_objective_correct_path_street"
 DialogueLookup[DialogueLookup_n + 174] = "pwe_objective_correct_path_this_way"
 DialogueLookup[DialogueLookup_n + 175] = "pwe_objective_correct_path_up"
-DialogueLookup[DialogueLookup_n + 176] = "pwe_objective_goal_achieved_escape"
-DialogueLookup[DialogueLookup_n + 177] = "pwe_objective_goal_achieved_more_left"
-DialogueLookup[DialogueLookup_n + 178] = "pwe_objective_interacting_with_objective"
-DialogueLookup[DialogueLookup_n + 179] = "pwe_objective_nearing_objective_deadline"
-DialogueLookup[DialogueLookup_n + 180] = "pwe_spotting_ferry_lady"
-DialogueLookup[DialogueLookup_n + 181] = "pwe_targeted_by_ratling"
-DialogueLookup_n = DialogueLookup_n + 181
+DialogueLookup[DialogueLookup_n + 176] = "pwe_objective_dropping_grimoire"
+DialogueLookup[DialogueLookup_n + 177] = "pwe_objective_goal_achieved_escape"
+DialogueLookup[DialogueLookup_n + 178] = "pwe_objective_goal_achieved_more_left"
+DialogueLookup[DialogueLookup_n + 179] = "pwe_objective_interacting_with_objective"
+DialogueLookup[DialogueLookup_n + 180] = "pwe_objective_nearing_objective_deadline"
+DialogueLookup[DialogueLookup_n + 181] = "pwe_objective_picking_up_grimoire"
+DialogueLookup[DialogueLookup_n + 182] = "pwe_spotting_ferry_lady"
+DialogueLookup[DialogueLookup_n + 183] = "pwe_targeted_by_ratling"
+DialogueLookup_n = DialogueLookup_n + 183

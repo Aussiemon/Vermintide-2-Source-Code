@@ -7983,20 +7983,6 @@ return function ()
 				OP.EQ,
 				"bright_wizard",
 			},
-			{
-				"user_memory",
-				"time_since_throwing_grimoire",
-				OP.TIMEDIFF,
-				OP.GT,
-				1,
-			},
-		},
-		on_done = {
-			{
-				"user_memory",
-				"time_since_throwing_grimoire",
-				OP.TIMESET,
-			},
 		},
 	})
 	define_rule({
@@ -8172,6 +8158,36 @@ return function ()
 				"faction_memory",
 				"time_since_objective_nearing_objective_deadline_done",
 				OP.TIMESET,
+			},
+		},
+	})
+	define_rule({
+		name = "pbw_objective_picking_up_grimoire",
+		response = "pbw_objective_picking_up_grimoire",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"on_pickup",
+			},
+			{
+				"query_context",
+				"pickup_name",
+				OP.EQ,
+				"wpn_grimoire_01",
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"bright_wizard",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard",
 			},
 		},
 	})
@@ -9337,9 +9353,9 @@ return function ()
 			},
 			sound_events_duration = {
 				1.9435625076294,
-				1.9435625076294,
 				2.8723125457764,
 				3.2912499904633,
+				2.2728126049042,
 			},
 		},
 		pbw_gameplay_dwarf_ranger_eaten = {
@@ -9499,9 +9515,9 @@ return function ()
 			},
 			sound_events_duration = {
 				2.2264583110809,
-				2.2264583110809,
 				2.80433344841,
 				1.534916639328,
+				3.3312916755676,
 			},
 		},
 		pbw_gameplay_dwarf_ranger_on_a_frenzy = {
@@ -9641,9 +9657,9 @@ return function ()
 			},
 			sound_events_duration = {
 				1.4603958129883,
-				1.4603958129883,
 				2.2594792842865,
 				2.2577707767487,
+				3.1028332710266,
 			},
 		},
 		pbw_gameplay_empire_soldier_eaten = {
@@ -9927,13 +9943,13 @@ return function ()
 				3.4615623950958,
 				3.7342290878296,
 				2.9417083263397,
-				2.1350207328796,
-				3.4615623950958,
-				3.7342290878296,
-				2.9417083263397,
 				2.1363749504089,
 				2.3259999752045,
 				2.9300625324249,
+				4.4816250801086,
+				3.9060416221619,
+				4.3575000762939,
+				2.8135833740234,
 			},
 		},
 		pbw_gameplay_friendly_fire_dwarf_ranger = {
@@ -10058,9 +10074,9 @@ return function ()
 			},
 			sound_events_duration = {
 				2.15660405159,
-				2.15660405159,
 				2.424124956131,
 				2.6000833511352,
+				3.2588334083557,
 			},
 		},
 		pbw_gameplay_friendly_fire_wood_elf = {
@@ -10098,8 +10114,8 @@ return function ()
 			sound_events_duration = {
 				1.2641667127609,
 				2.1018540859222,
-				1.2641667127609,
-				2.1018540859222,
+				4.1787710189819,
+				4.3544998168945,
 			},
 		},
 		pbw_gameplay_globadier_guck = {
@@ -10155,10 +10171,10 @@ return function ()
 				1.8086041212082,
 				1.4441250562668,
 				0.96220833063126,
-				1.3954999446869,
-				1.8086041212082,
-				1.4441250562668,
-				0.96220833063126,
+				2.6103749275208,
+				2.056458234787,
+				1.8310208320618,
+				1.8897500038147,
 			},
 		},
 		pbw_gameplay_healing_draught = {
@@ -10220,14 +10236,14 @@ return function ()
 			sound_events_duration = {
 				1.2832083702087,
 				1.141104221344,
-				1.2832083702087,
-				1.141104221344,
 				1.7506666183472,
 				1.5041874647141,
 				1.7153749465942,
 				1.5084166526794,
 				1.2167500257492,
 				1.6612083911896,
+				1.2221875190735,
+				1.7748957872391,
 			},
 		},
 		pbw_gameplay_healing_dwarf_ranger = {
@@ -10440,9 +10456,9 @@ return function ()
 			},
 			sound_events_duration = {
 				1.4887917041779,
-				1.4887917041779,
 				1.7024583816528,
 				2.9942917823791,
+				2.0530834197998,
 			},
 		},
 		pbw_gameplay_heard_empire_soldier_in_trouble = {
@@ -10479,9 +10495,9 @@ return function ()
 			},
 			sound_events_duration = {
 				1.6243749856949,
-				1.6243749856949,
 				1.7200208902359,
 				2.6290209293366,
+				1.76016664505,
 			},
 		},
 		pbw_gameplay_heard_witch_hunter_in_trouble = {
@@ -10558,18 +10574,20 @@ return function ()
 			sound_events_duration = {
 				1.5703749656677,
 				1.7235000133514,
-				1.5703749656677,
-				1.7235000133514,
+				1.0262291431427,
+				1.3082708120346,
 			},
 		},
 		pbw_gameplay_hearing_a_Skaven_warpfire_thrower_combat = {
 			category = "enemy_alerts_high",
 			database = "bright_wizard_honduras",
-			dialogue_animations_n = 6,
-			face_animations_n = 6,
+			dialogue_animations_n = 8,
+			face_animations_n = 8,
 			randomize_indexes_n = 0,
-			sound_events_n = 6,
+			sound_events_n = 8,
 			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
 				"dialogue_shout",
 				"dialogue_shout",
 				"dialogue_shout",
@@ -10584,6 +10602,8 @@ return function ()
 				"face_fear",
 				"face_fear",
 				"face_fear",
+				"face_fear",
+				"face_fear",
 			},
 			localization_strings = {
 				"pbw_gameplay_hearing_a_Skaven_warpfire_thrower_combat_01",
@@ -10592,6 +10612,8 @@ return function ()
 				"pbw_gameplay_hearing_a_Skaven_warpfire_thrower_combat_04",
 				"pbw_gameplay_hearing_a_Skaven_warpfire_thrower_combat_05",
 				"pbw_gameplay_hearing_a_Skaven_warpfire_thrower_combat_06",
+				"pbw_gameplay_hearing_a_Skaven_warpfire_thrower_combat_07",
+				"pbw_gameplay_hearing_a_Skaven_warpfire_thrower_combat_08",
 			},
 			randomize_indexes = {},
 			sound_events = {
@@ -10601,6 +10623,8 @@ return function ()
 				"pbw_gameplay_hearing_a_Skaven_warpfire_thrower_combat_04",
 				"pbw_gameplay_hearing_a_Skaven_warpfire_thrower_combat_05",
 				"pbw_gameplay_hearing_a_Skaven_warpfire_thrower_combat_06",
+				"pbw_gameplay_hearing_a_Skaven_warpfire_thrower_combat_07",
+				"pbw_gameplay_hearing_a_Skaven_warpfire_thrower_combat_08",
 			},
 			sound_events_duration = {
 				1.4961667060852,
@@ -10609,6 +10633,8 @@ return function ()
 				1.5720416307449,
 				1.112104177475,
 				0.85039585828781,
+				1.2514582872391,
+				1.3091875314713,
 			},
 		},
 		pbw_gameplay_hearing_a_chaos_spawn_combat = {
@@ -11528,9 +11554,9 @@ return function ()
 			},
 			sound_events_duration = {
 				1.1928124427795,
-				1.1928124427795,
 				2.1330208778381,
 				1.4213750362396,
+				2.2615833282471,
 			},
 		},
 		pbw_gameplay_helped_by_empire_soldier = {
@@ -11571,9 +11597,9 @@ return function ()
 			},
 			sound_events_duration = {
 				1.2418541908264,
-				1.2418541908264,
 				1.3056458234787,
 				1.4301458597183,
+				1.8839374780655,
 				2.4242084026337,
 			},
 		},
@@ -11611,9 +11637,9 @@ return function ()
 			},
 			sound_events_duration = {
 				1.7616666555405,
-				1.7616666555405,
 				1.93850004673,
 				2.2696459293366,
+				3.5965209007263,
 			},
 		},
 		pbw_gameplay_helped_by_wood_elf = {
@@ -11650,9 +11676,9 @@ return function ()
 			},
 			sound_events_duration = {
 				1.3215416669846,
-				1.3215416669846,
 				1.2043333053589,
 				2.0004999637604,
+				2.3414583206177,
 			},
 		},
 		pbw_gameplay_hit_by_goo = {
@@ -12475,9 +12501,9 @@ return function ()
 			},
 			sound_events_duration = {
 				1.932458281517,
-				1.932458281517,
 				1.8917499780655,
 				1.6289166212082,
+				1.6356041431427,
 			},
 		},
 		pbw_gameplay_killing_lootrat = {
@@ -12685,27 +12711,26 @@ return function ()
 			},
 			localization_strings = {
 				"pbw_gameplay_low_on_health_05",
-				"pbw_gameplay_low_on_health_09",
 				"pbw_gameplay_low_on_health_10",
 				"pbw_gameplay_low_on_health_11",
 				"pbw_gameplay_low_on_health_12",
 				"pbw_gameplay_low_on_health_13",
 				"pbw_gameplay_low_on_health_14",
 				"pbw_gameplay_low_on_health_15",
+				"pbw_gameplay_low_on_health_16",
 			},
 			randomize_indexes = {},
 			sound_events = {
 				"pbw_gameplay_low_on_health_05",
-				"pbw_gameplay_low_on_health_09",
 				"pbw_gameplay_low_on_health_10",
 				"pbw_gameplay_low_on_health_11",
 				"pbw_gameplay_low_on_health_12",
 				"pbw_gameplay_low_on_health_13",
 				"pbw_gameplay_low_on_health_14",
 				"pbw_gameplay_low_on_health_15",
+				"pbw_gameplay_low_on_health_16",
 			},
 			sound_events_duration = {
-				1.4831666946411,
 				1.4831666946411,
 				2.9396250247955,
 				1.79787504673,
@@ -12713,6 +12738,7 @@ return function ()
 				1.8741562366486,
 				2.2006042003632,
 				2.7965834140778,
+				1.692541718483,
 			},
 		},
 		pbw_gameplay_no_nearby_teammates = {
@@ -14859,7 +14885,6 @@ return function ()
 				0.88877081871033,
 				0.77170830965042,
 				1.6242500543594,
-				1.6242500543594,
 				2.4931042194366,
 				3.5491666793823,
 				2.4626874923706,
@@ -14870,6 +14895,7 @@ return function ()
 				2.8706042766571,
 				1.578541636467,
 				1.620437502861,
+				1.5957916975021,
 			},
 		},
 		pbw_gameplay_standard_bearer_buff_active = {
@@ -16977,6 +17003,45 @@ return function ()
 				1.2134166955948,
 				2.1688332557678,
 				1.4989166259766,
+			},
+		},
+		pbw_objective_picking_up_grimoire = {
+			category = "player_feedback",
+			database = "bright_wizard_honduras",
+			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+			},
+			localization_strings = {
+				"pbw_objective_picking_up_grimoire_05",
+				"pbw_objective_picking_up_grimoire_06",
+				"pbw_objective_picking_up_grimoire_07",
+				"pbw_objective_picking_up_grimoire_08",
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pbw_objective_picking_up_grimoire_05",
+				"pbw_objective_picking_up_grimoire_06",
+				"pbw_objective_picking_up_grimoire_07",
+				"pbw_objective_picking_up_grimoire_08",
+			},
+			sound_events_duration = {
+				3.6848957538605,
+				4.1743125915527,
+				4.2561459541321,
+				3.9659376144409,
 			},
 		},
 		pbw_targeted_by_ratling = {

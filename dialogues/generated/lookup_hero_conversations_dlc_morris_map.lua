@@ -8,6 +8,16 @@ assert(DialogueLookup[DialogueLookup_n + 5] == nil)
 assert(DialogueLookup[DialogueLookup_n + 6] == nil)
 assert(DialogueLookup[DialogueLookup_n + 7] == nil)
 assert(DialogueLookup[DialogueLookup_n + 8] == nil)
+assert(DialogueLookup[DialogueLookup_n + 9] == nil)
+assert(DialogueLookup[DialogueLookup_n + 10] == nil)
+assert(DialogueLookup[DialogueLookup_n + 11] == nil)
+assert(DialogueLookup[DialogueLookup_n + 12] == nil)
+assert(DialogueLookup[DialogueLookup_n + 13] == nil)
+assert(DialogueLookup[DialogueLookup_n + 14] == nil)
+assert(DialogueLookup[DialogueLookup_n + 15] == nil)
+assert(DialogueLookup[DialogueLookup_n + 16] == nil)
+assert(DialogueLookup[DialogueLookup_n + 17] == nil)
+assert(DialogueLookup[DialogueLookup_n + 18] == nil)
 
 DialogueLookup[DialogueLookup_n + 1] = "nfl_morris_before_shrine_tutorial_01"
 DialogueLookup[DialogueLookup_n + 2] = "nfl_morris_map_shrine_tutorial_one"
@@ -17,4 +27,14 @@ DialogueLookup[DialogueLookup_n + 5] = "nfl_morris_map_tutorial_five"
 DialogueLookup[DialogueLookup_n + 6] = "nfl_morris_map_tutorial_one"
 DialogueLookup[DialogueLookup_n + 7] = "nfl_morris_map_tutorial_three"
 DialogueLookup[DialogueLookup_n + 8] = "nfl_morris_map_tutorial_two"
-DialogueLookup_n = DialogueLookup_n + 8
+DialogueLookup[DialogueLookup_n + 9] = "pbw_gameplay_purchasing_blessing"
+DialogueLookup[DialogueLookup_n + 10] = "pbw_gameplay_shrine_hurry"
+DialogueLookup[DialogueLookup_n + 11] = "pdr_gameplay_purchasing_blessing"
+DialogueLookup[DialogueLookup_n + 12] = "pdr_gameplay_shrine_hurry"
+DialogueLookup[DialogueLookup_n + 13] = "pes_gameplay_purchasing_blessing"
+DialogueLookup[DialogueLookup_n + 14] = "pes_gameplay_shrine_hurry"
+DialogueLookup[DialogueLookup_n + 15] = "pwe_gameplay_purchasing_blessing"
+DialogueLookup[DialogueLookup_n + 16] = "pwe_gameplay_shrine_hurry"
+DialogueLookup[DialogueLookup_n + 17] = "pwh_gameplay_purchasing_blessing"
+DialogueLookup[DialogueLookup_n + 18] = "pwh_gameplay_shrine_hurry"
+DialogueLookup_n = DialogueLookup_n + 18

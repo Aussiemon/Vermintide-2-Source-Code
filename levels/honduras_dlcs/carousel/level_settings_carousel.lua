@@ -69,6 +69,54 @@ settings.missions = {
 		mission_template_name = "goal",
 		text = "level_objective_description_military_02",
 	},
+	versus_mission_farmlands_key = {
+		mission_template_name = "goal",
+		text = "level_objective_description_farmlands_07",
+	},
+	versus_mission_objective_barn = {
+		mission_template_name = "goal",
+		text = "level_objective_description_farmlands_08",
+	},
+	versus_mission_monster = {
+		mission_template_name = "goal",
+		text = "level_objective_description_farmlands_09",
+	},
+	mission_fort_bonfire_001 = {
+		mission_template_name = "goal",
+		text = "level_objective_description_fort_09",
+	},
+	mission_fort_bonfire_002 = {
+		mission_template_name = "goal",
+		text = "level_objective_description_fort_09",
+	},
+	mission_fort_bonfire_003 = {
+		mission_template_name = "goal",
+		text = "level_objective_description_fort_09",
+	},
+	mission_fort_bonfire_004 = {
+		mission_template_name = "goal",
+		text = "level_objective_description_fort_09",
+	},
+	mission_fort_bonfire_005 = {
+		mission_template_name = "goal",
+		text = "level_objective_description_fort_09",
+	},
+	mission_fort_breach_wall = {
+		mission_template_name = "goal",
+		text = "level_objective_description_fort_16",
+	},
+	versus_fort_cannon_balls = {
+		mission_template_name = "goal",
+		text = "level_objective_description_fort_16",
+	},
+	versus_fort_secret_elevator = {
+		mission_template_name = "goal",
+		text = "level_objective_description_fort_17",
+	},
+	versus_fort_open_portcullis = {
+		mission_template_name = "goal",
+		text = "level_objective_description_fort_20",
+	},
 }
 LevelSettings.carousel_hub = {
 	ambient_sound_event = "silent_default_world_sound",
@@ -120,6 +168,49 @@ LevelSettings.carousel_hub = {
 				},
 			},
 		},
+	},
+	supported_game_modes = {
+		versus = true,
+	},
+}
+LevelSettings.farmlands_pvp = {
+	ambient_sound_event = "silent_default_world_sound",
+	boss_spawning_method = "hand_placed",
+	default_surface_material = "dirt",
+	description_text = "nik_loading_screen_farmland_01",
+	display_name = "level_name_farmlands",
+	dlc_name = "carousel",
+	environment_state = "exterior",
+	game_mode = "versus",
+	knocked_down_setting = "knocked_down",
+	level_image = "level_icon_09",
+	level_name = "levels/honduras_dlcs/carousel/farmlands_pvp/world",
+	loading_ui_package_name = "loading_screen_7",
+	main_game_level = false,
+	mechanism = "versus",
+	player_aux_bus_name = "environment_reverb_outside",
+	source_aux_bus_name = "environment_reverb_outside_source",
+	unlockable = true,
+	use_mini_patrols = false,
+	packages = {
+		"resource_packages/levels/honduras/farmlands_common",
+		"resource_packages/levels/honduras/farmlands",
+		"resource_packages/levels/dlcs/carousel/farmlands_pvp_meta",
+		"resource_packages/levels/dlcs/carousel/versus_dependencies",
+	},
+	level_particle_effects = {},
+	level_screen_effects = {},
+	loading_screen_wwise_events = {
+		"nik_loading_screen_farmland_01",
+		"nik_loading_screen_farmland_02",
+	},
+	locations = {
+		"location_farmlands_pvp_farmlands",
+		"location_farmlands_pvp_wet_field",
+		"location_farmlands_pvp_oak_hill",
+		"location_farmlands_pvp_farmstead_01",
+		"location_farmlands_pvp_farmstead_02",
+		"location_farmlands_pvp_farmstead_03",
 	},
 	supported_game_modes = {
 		versus = true,

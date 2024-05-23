@@ -181,6 +181,8 @@ assert(DialogueLookup[DialogueLookup_n + 178] == nil)
 assert(DialogueLookup[DialogueLookup_n + 179] == nil)
 assert(DialogueLookup[DialogueLookup_n + 180] == nil)
 assert(DialogueLookup[DialogueLookup_n + 181] == nil)
+assert(DialogueLookup[DialogueLookup_n + 182] == nil)
+assert(DialogueLookup[DialogueLookup_n + 183] == nil)
 
 DialogueLookup[DialogueLookup_n + 1] = "pes_activate_ability_grail_knight"
 DialogueLookup[DialogueLookup_n + 2] = "pes_activate_ability_huntsman"
@@ -358,9 +360,11 @@ DialogueLookup[DialogueLookup_n + 173] = "pes_objective_correct_path_stairs_up"
 DialogueLookup[DialogueLookup_n + 174] = "pes_objective_correct_path_street"
 DialogueLookup[DialogueLookup_n + 175] = "pes_objective_correct_path_this_way"
 DialogueLookup[DialogueLookup_n + 176] = "pes_objective_correct_path_up"
-DialogueLookup[DialogueLookup_n + 177] = "pes_objective_goal_achieved_escape"
-DialogueLookup[DialogueLookup_n + 178] = "pes_objective_goal_achieved_more_left"
-DialogueLookup[DialogueLookup_n + 179] = "pes_objective_interacting_with_objective"
-DialogueLookup[DialogueLookup_n + 180] = "pes_objective_nearing_objective_deadline"
-DialogueLookup[DialogueLookup_n + 181] = "pes_targeted_by_ratling"
-DialogueLookup_n = DialogueLookup_n + 181
+DialogueLookup[DialogueLookup_n + 177] = "pes_objective_dropping_grimoire"
+DialogueLookup[DialogueLookup_n + 178] = "pes_objective_goal_achieved_escape"
+DialogueLookup[DialogueLookup_n + 179] = "pes_objective_goal_achieved_more_left"
+DialogueLookup[DialogueLookup_n + 180] = "pes_objective_interacting_with_objective"
+DialogueLookup[DialogueLookup_n + 181] = "pes_objective_nearing_objective_deadline"
+DialogueLookup[DialogueLookup_n + 182] = "pes_objective_picking_up_grimoire"
+DialogueLookup[DialogueLookup_n + 183] = "pes_targeted_by_ratling"
+DialogueLookup_n = DialogueLookup_n + 183

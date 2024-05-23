@@ -2,6 +2,50 @@
 
 return function ()
 	define_rule({
+		name = "pbw_gameplay_path_clear",
+		response = "pbw_gameplay_path_clear",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item",
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"generic_path_clear",
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"bright_wizard",
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard",
+			},
+			{
+				"faction_memory",
+				"generic_path_clear",
+				OP.EQ,
+				0,
+			},
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"generic_path_clear",
+				OP.ADD,
+				1,
+			},
+		},
+	})
+	define_rule({
 		name = "pbw_generic_assemble",
 		response = "pbw_generic_assemble",
 		criterias = {
@@ -818,6 +862,45 @@ return function ()
 		},
 	})
 	add_dialogues({
+		pbw_gameplay_path_clear = {
+			category = "level_talk",
+			database = "bright_wizard_generic_vo",
+			dialogue_animations_n = 4,
+			face_animations_n = 4,
+			randomize_indexes_n = 0,
+			sound_events_n = 4,
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+			},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm",
+			},
+			localization_strings = {
+				"pbw_gameplay_path_clear_01",
+				"pbw_gameplay_path_clear_02",
+				"pbw_gameplay_path_clear_03",
+				"pbw_gameplay_path_clear_04",
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pbw_gameplay_path_clear_01",
+				"pbw_gameplay_path_clear_02",
+				"pbw_gameplay_path_clear_03",
+				"pbw_gameplay_path_clear_04",
+			},
+			sound_events_duration = {
+				1.3549582958221,
+				1.7879166603088,
+				1.0822917222977,
+				2.1028957366943,
+			},
+		},
 		pbw_generic_assemble = {
 			category = "level_talk",
 			database = "bright_wizard_generic_vo",
